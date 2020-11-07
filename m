@@ -2,66 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 452722AA79E
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Nov 2020 20:29:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BC6D2AA7A3
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Nov 2020 20:30:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728219AbgKGT33 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Nov 2020 14:29:29 -0500
-Received: from asavdk4.altibox.net ([109.247.116.15]:35530 "EHLO
-        asavdk4.altibox.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725836AbgKGT32 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Nov 2020 14:29:28 -0500
-Received: from ravnborg.org (unknown [188.228.123.71])
+        id S1728555AbgKGTa1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Nov 2020 14:30:27 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46342 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725836AbgKGTa1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 7 Nov 2020 14:30:27 -0500
+Received: from paulmck-ThinkPad-P72.home (50-39-104-11.bvtn.or.frontiernet.net [50.39.104.11])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by asavdk4.altibox.net (Postfix) with ESMTPS id 8498E8052E;
-        Sat,  7 Nov 2020 20:29:24 +0100 (CET)
-Date:   Sat, 7 Nov 2020 20:29:22 +0100
-From:   Sam Ravnborg <sam@ravnborg.org>
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
-        David Airlie <airlied@linux.ie>,
-        dri-devel@lists.freedesktop.org, Huang Rui <ray.huang@amd.com>,
-        Rob Clark <rob@ti.com>, Gareth Hughes <gareth@valinux.com>,
-        amd-gfx@lists.freedesktop.org, Rob Clark <rob.clark@linaro.org>,
-        Tomi Valkeinen <tomi.valkeinen@ti.com>,
-        Keith Whitwell <keith@tungstengraphics.com>,
-        Andy Gross <andy.gross@ti.com>, linux-media@vger.kernel.org,
-        Leo Li <sunpeng.li@amd.com>, linaro-mm-sig@lists.linaro.org,
-        by <jhartmann@precisioninsight.com>,
-        Jeff Hartmann <jhartmann@valinux.com>,
-        linux-kernel@vger.kernel.org, Faith <faith@valinux.com>,
-        Alex Deucher <alexander.deucher@amd.com>
-Subject: Re: [PATCH 00/19] [Set 2] Rid W=1 warnings from GPU
-Message-ID: <20201107192922.GA1039949@ravnborg.org>
-References: <20201106214949.2042120-1-lee.jones@linaro.org>
- <9d4be6a4-4f39-b908-4086-2b6adb695465@amd.com>
- <20201107173406.GA1030984@ravnborg.org>
- <20201107184138.GS2063125@dell>
+        by mail.kernel.org (Postfix) with ESMTPSA id AFCF320723;
+        Sat,  7 Nov 2020 19:30:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604777426;
+        bh=EQMjDRBd8BSlKp/VlSTumlRp+3ncqT09LVmSQ8AJGGI=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=a1OnXJ9CPCARVo/gAYW2MQ/XUG5Vowdybylwa31Z7i9n4cUP8LfrHGGherXaUcqa+
+         UllDxEv13hEhFSoyoqE5oMB48rxq8iPkPusYlRqeonSNrEaeRuwI+YjdEF+hAO9zfY
+         hEOPYB6dRx8IzKuDXdqnbwdiL7rJvjrvRC9WtMsE=
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id 78C0335225E2; Sat,  7 Nov 2020 11:30:26 -0800 (PST)
+Date:   Sat, 7 Nov 2020 11:30:26 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Wang Qing <wangqing@vivo.com>
+Cc:     Davidlohr Bueso <dave@stgolabs.net>,
+        Josh Triplett <josh@joshtriplett.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] locking: remove duplicate include of percpu-rwsem.h
+Message-ID: <20201107193026.GE3249@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <1604737443-16241-1-git-send-email-wangqing@vivo.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201107184138.GS2063125@dell>
-X-CMAE-Score: 0
-X-CMAE-Analysis: v=2.3 cv=VafZwmh9 c=1 sm=1 tr=0
-        a=S6zTFyMACwkrwXSdXUNehg==:117 a=S6zTFyMACwkrwXSdXUNehg==:17
-        a=kj9zAlcOel0A:10 a=z3vUUUWfv_O9Fg17TOIA:9 a=CjuIK1q_8ugA:10
+In-Reply-To: <1604737443-16241-1-git-send-email-wangqing@vivo.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Nov 07, 2020 at 06:41:38PM +0000, Lee Jones wrote:
-> On Sat, 07 Nov 2020, Sam Ravnborg wrote:
+On Sat, Nov 07, 2020 at 04:24:03PM +0800, Wang Qing wrote:
+> Remove duplicate header include which is unnecessary.
 > 
-> > Hi Christian.
-> > 
-> > > I'm not sure if we want to do some of the suggested changes to radeon.
-> > 
-> > All patches for radeon looks good to me except "drm/radeon/radeon: Move
-> > prototype into shared header".
-> 
-> Was that the one where the prototype needs moving to radeon.h?
-Yes,
+> Signed-off-by: Wang Qing <wangqing@vivo.com>
 
-	Sam
+Queued for further review and testing, thank you!
+
+I had to apply against v5.10-rc1 and then cherry-pick the result, which
+did work fine.  However, in the future, could you please post patches
+against the -rcu tree's "dev" branch?
+
+Please see https://kernel.org/pub/linux/kernel/people/paulmck/rcutodo.html
+for more information.
+
+And as always, I could not resist a bit of wordsmithing, so please see
+below and let me know if I messed anything up.
+
+							Thanx, Paul
+
+------------------------------------------------------------------------
+
+commit ad6dcb7c338ad322ddeeb75594bc77dcdbeb43de
+Author: Wang Qing <wangqing@vivo.com>
+Date:   Sat Nov 7 16:24:03 2020 +0800
+
+    locking: Remove duplicate include of percpu-rwsem.h
+    
+    This commit removes an unnecessary #include.
+    
+    Signed-off-by: Wang Qing <wangqing@vivo.com>
+    Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+
+diff --git a/kernel/locking/locktorture.c b/kernel/locking/locktorture.c
+index fd838ce..0ab94e1 100644
+--- a/kernel/locking/locktorture.c
++++ b/kernel/locking/locktorture.c
+@@ -27,7 +27,6 @@
+ #include <linux/moduleparam.h>
+ #include <linux/delay.h>
+ #include <linux/slab.h>
+-#include <linux/percpu-rwsem.h>
+ #include <linux/torture.h>
+ #include <linux/reboot.h>
+ 
