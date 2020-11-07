@@ -2,78 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF39B2AA741
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Nov 2020 18:39:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1171E2AA748
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Nov 2020 18:46:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728491AbgKGRjr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Nov 2020 12:39:47 -0500
-Received: from smtprelay0223.hostedemail.com ([216.40.44.223]:39430 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727218AbgKGRjr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Nov 2020 12:39:47 -0500
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay07.hostedemail.com (Postfix) with ESMTP id B98E3181D341E;
-        Sat,  7 Nov 2020 17:39:45 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:152:355:379:599:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:1963:2393:2559:2562:2692:2827:3138:3139:3140:3141:3142:3353:3622:3865:3866:3867:3868:3870:3871:3872:3874:4321:5007:6119:6120:6691:7901:7903:9040:10004:10400:10848:11232:11658:11783:11914:12297:12740:12895:13069:13076:13149:13230:13311:13357:13894:14096:14097:14659:21060:21080:21451:21627:21660:21972:30012:30054:30075:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: side79_2f0f021272dd
-X-Filterd-Recvd-Size: 2419
-Received: from XPS-9350.home (unknown [47.151.133.149])
-        (Authenticated sender: joe@perches.com)
-        by omf18.hostedemail.com (Postfix) with ESMTPA;
-        Sat,  7 Nov 2020 17:39:44 +0000 (UTC)
-Message-ID: <6ed68a7898c5505d3106223b7ad47950a0c79dc3.camel@perches.com>
-Subject: Re: [PATCH] net/dsa: remove unused macros to tame gcc warning
-From:   Joe Perches <joe@perches.com>
-To:     Alex Shi <alex.shi@linux.alibaba.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Andrew Lunn <andrew@lunn.ch>
-Cc:     Vivien Didelot <vivien.didelot@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Date:   Sat, 07 Nov 2020 09:39:42 -0800
-In-Reply-To: <b3274bdb-5680-0c24-9800-8c025bfa119a@linux.alibaba.com>
-References: <1604641050-6004-1-git-send-email-alex.shi@linux.alibaba.com>
-         <20201106141820.GP933237@lunn.ch>
-         <24690741-cc10-eec1-33c6-7960c8b7fac6@gmail.com>
-         <b3274bdb-5680-0c24-9800-8c025bfa119a@linux.alibaba.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.1-1 
+        id S1728454AbgKGRqO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Nov 2020 12:46:14 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34604 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727305AbgKGRqO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 7 Nov 2020 12:46:14 -0500
+Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.4])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id D29B220878;
+        Sat,  7 Nov 2020 17:46:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604771174;
+        bh=qfZ3VmMYwVntgdcYb/LX3LnhnzFyi7oFus8Cl8eq+yI=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=q88sDzz6oM+Ef5DcBkyrpWq0FxdRHAMj7skajZDkCDsr/ub+5g7fCnlZWnOkTwtDl
+         b1dqpnSq5vBcsDF6WsQVe/rXMU619oav/BghRvfZ+4RKiBz4N4TZjLQUAO7Z9Wxmh9
+         Y19l9IX8B137vdXYK3szji8BLINXxGgQKjSzYEyY=
+Date:   Sat, 7 Nov 2020 09:46:13 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Huazhong Tan <tanhuazhong@huawei.com>
+Cc:     <davem@davemloft.net>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <salil.mehta@huawei.com>,
+        <yisen.zhuang@huawei.com>, <linuxarm@huawei.com>
+Subject: Re: [PATCH net-next 02/11] net: hns3: add support for 1us unit GL
+ configuration
+Message-ID: <20201107094613.261fe05b@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <1604730681-32559-3-git-send-email-tanhuazhong@huawei.com>
+References: <1604730681-32559-1-git-send-email-tanhuazhong@huawei.com>
+        <1604730681-32559-3-git-send-email-tanhuazhong@huawei.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 2020-11-07 at 20:54 +0800, Alex Shi wrote:
-> 在 2020/11/7 上午12:39, Florian Fainelli 写道:
-> > > It is good to remember that there are multiple readers of source
-> > > files. There is the compiler which generates code from it, and there
-> > > is the human trying to understand what is going on, what the hardware
-> > > can do, how we could maybe extend the code in the future to make use
-> > > of bits are currently don't, etc.
-> > > 
-> > > The compiler has no use of these macros, at the moment. But i as a
-> > > human do. It is valuable documentation, given that there is no open
-> > > datasheet for this hardware.
-> > > 
-> > > I would say these warnings are bogus, and the code should be left
-> > > alone.
-> > Agreed, these definitions are intended to document what the hardware
-> > does. These warnings are getting too far.
-> 
-> Thanks for all comments! I agree these info are much meaningful.
-> Is there other way to tame the gcc warning? like put them into a .h file
-> or covered by comments?
+On Sat, 7 Nov 2020 14:31:12 +0800 Huazhong Tan wrote:
+> For device whose version is above V3(include V3), the GL
+> configuration can set as 1us unit, so adds support for
+> configuring this field.
+>=20
+> Signed-off-by: Huazhong Tan <tanhuazhong@huawei.com>
 
-Does _any_ version of gcc have this warning on by default?
+Doesn't build.
 
-I still think my proposal of moving the warning from W=2 to W=3
-quite reasonable.
-
-Another possibility is to turn the warning off altogether.
-
-
+drivers/net/ethernet/hisilicon/hns3/hns3_ethtool.c: In function =E2=80=98hn=
+s3_check_gl_coalesce_para=E2=80=99:
+drivers/net/ethernet/hisilicon/hns3/hns3_ethtool.c:1152:6: error: =E2=80=98=
+ae_dev=E2=80=99 undeclared (first use in this function); did you mean =E2=
+=80=98netdev=E2=80=99?
+ 1152 |  if (ae_dev->dev_version >=3D HNAE3_DEVICE_VERSION_V3)
+      |      ^~~~~~
+      |      netdev
+drivers/net/ethernet/hisilicon/hns3/hns3_ethtool.c:1152:6: note: each undec=
+lared identifier is reported only once for each function it appears in
+make[6]: *** [drivers/net/ethernet/hisilicon/hns3/hns3_ethtool.o] Error 1
+make[5]: *** [drivers/net/ethernet/hisilicon/hns3] Error 2
+make[4]: *** [drivers/net/ethernet/hisilicon] Error 2
+make[4]: *** Waiting for unfinished jobs....
+make[3]: *** [drivers/net/ethernet] Error 2
+make[2]: *** [drivers/net] Error 2
+make[2]: *** Waiting for unfinished jobs....
+make[1]: *** [drivers] Error 2
+make: *** [__sub-make] Error 2
