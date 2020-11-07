@@ -2,106 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E1112AA6AC
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Nov 2020 17:28:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C7752AA6B4
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Nov 2020 17:43:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728458AbgKGQ2O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Nov 2020 11:28:14 -0500
-Received: from z5.mailgun.us ([104.130.96.5]:21710 "EHLO z5.mailgun.us"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726333AbgKGQ2N (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Nov 2020 11:28:13 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1604766492; h=Content-Type: MIME-Version: Message-ID:
- In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
- bh=8kmAMZ+csPrpMbMJNA/e5p7nRkQrNNS59KEPN5JBprA=; b=RZOxOKvFXKSpWBz8aGT0mnPYV+30kl0h3EinenLrELrNR5Yav2K7zUwnzfv+mqihmtqtdeTw
- LgZJ/2dA0XOVjQ0nctn9+uQ1JChbzXN88U+PUYGc5+rO6dKCnNgNT3XhujsfdEpHY16EUat4
- qSu8KgM16DJtYPq5W2xbEiRaWn0=
-X-Mailgun-Sending-Ip: 104.130.96.5
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n01.prod.us-west-2.postgun.com with SMTP id
- 5fa6cb191d3980f7d6d08ae6 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Sat, 07 Nov 2020 16:28:09
- GMT
-Sender: kvalo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 48261C433C8; Sat,  7 Nov 2020 16:28:09 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from tynnyri.adurom.net (tynnyri.adurom.net [51.15.11.48])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 53D65C433C6;
-        Sat,  7 Nov 2020 16:28:06 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 53D65C433C6
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
-From:   Kalle Valo <kvalo@codeaurora.org>
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     Brian Norris <briannorris@chromium.org>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        Linux Kernel <linux-kernel@vger.kernel.org>,
-        Yan-Hsuan Chuang <yhchuang@realtek.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        linux-wireless <linux-wireless@vger.kernel.org>,
-        "\<netdev\@vger.kernel.org\>" <netdev@vger.kernel.org>
-Subject: Re: [PATCH 41/41] realtek: rtw88: pci: Add prototypes for .probe, .remove and .shutdown
-References: <20201102112410.1049272-1-lee.jones@linaro.org>
-        <20201102112410.1049272-42-lee.jones@linaro.org>
-        <CA+ASDXOobW1_qL5SCGS86aoGvhKDMoBzjxbAwn+QjHfkqZhukw@mail.gmail.com>
-        <20201103084453.GJ4488@dell>
-Date:   Sat, 07 Nov 2020 18:28:02 +0200
-In-Reply-To: <20201103084453.GJ4488@dell> (Lee Jones's message of "Tue, 3 Nov
-        2020 08:44:53 +0000")
-Message-ID: <87y2jd5dyl.fsf@tynnyri.adurom.net>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        id S1728366AbgKGQh5 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Sat, 7 Nov 2020 11:37:57 -0500
+Received: from 066-188-043-236.biz.spectrum.com ([66.188.43.236]:21748 "EHLO
+        w3601domain.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726284AbgKGQh5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 7 Nov 2020 11:37:57 -0500
+X-Greylist: delayed 730 seconds by postgrey-1.27 at vger.kernel.org; Sat, 07 Nov 2020 11:37:55 EST
+Received: from [149.56.66.208] ([149.56.66.208]) by w3601domain.com with Microsoft SMTPSVC(6.0.3790.4675);
+         Sat, 7 Nov 2020 11:25:43 -0500
+Content-Type: text/plain; charset="iso-8859-1"
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8BIT
+Content-Description: Mail message body
+Subject: =?utf-8?q?Abschlie=C3=9Fende_Mitteilung_f=C3=BCr_die_Zahlung_des_nicht_be?=
+ =?utf-8?q?anspruchten_Preisgeldes=2C=2E?=
+To:     Recipients <abogado.vcolon@mail2consultant.com>
+From:   "ABOGADO VITALIS MANUEL COLON" <abogado.vcolon@mail2consultant.com>
+Date:   Sat, 07 Nov 2020 08:25:39 -0800
+Reply-To: analyn.hernandez@mail2lawyer.com
+Message-ID: <WEX11XuZi0me3abTd9Q00003ddd@w3601domain.com>
+X-OriginalArrivalTime: 07 Nov 2020 16:25:43.0476 (UTC) FILETIME=[A3BF7F40:01D6B522]
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Lee Jones <lee.jones@linaro.org> writes:
+ANWALTSKANZLEI: ABOGADO VITALIS MANUEL COLON.
+Calle de Raimundo Fernández Villaverde, 50, 28010 Madrid, Spanien.
+E mail. analyn.hernandez@mail2lawyer.com
 
-> On Mon, 02 Nov 2020, Brian Norris wrote:
->
->> On Mon, Nov 2, 2020 at 3:25 AM Lee Jones <lee.jones@linaro.org> wrote:
->> > --- a/drivers/net/wireless/realtek/rtw88/pci.h
->> > +++ b/drivers/net/wireless/realtek/rtw88/pci.h
->> > @@ -212,6 +212,10 @@ struct rtw_pci {
->> >         void __iomem *mmap;
->> >  };
->> >
->> > +int rtw_pci_probe(struct pci_dev *pdev, const struct pci_device_id *id);
->> > +void rtw_pci_remove(struct pci_dev *pdev);
->> > +void rtw_pci_shutdown(struct pci_dev *pdev);
->> > +
->> >
->> 
->> These definitions are already in 4 other header files:
->> 
->> drivers/net/wireless/realtek/rtw88/rtw8723de.h
->> drivers/net/wireless/realtek/rtw88/rtw8821ce.h
->> drivers/net/wireless/realtek/rtw88/rtw8822be.h
->> drivers/net/wireless/realtek/rtw88/rtw8822ce.h
->> 
->> Seems like you should be moving them, not just adding yet another duplicate.
->
-> I followed the current convention.
->
-> Happy to optimise if that's what is required.
+AKTENZEICHEN: JMCB-ES/11-547/05-17
 
-I agree with Brian, these and rtw_pm_ops should be moved to pci.h to
-avoid code duplication.
+KUNDENNUMMER: MD-DE/LOT-516
 
--- 
-https://patchwork.kernel.org/project/linux-wireless/list/
+Abschließende Mitteilung für die Zahlung des nicht beanspruchten Preisgeldes.
 
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+Wir möchten Sie darüber informieren, dass das Büro für nicht eingeforderte Preisgelder in Spanien unsere Anwaltskanzlei mit der rechtlichen Beratung bei der Bearbeitung und Auszahlung von nicht eingeforderten Preisgeldern beauftragt hat, die auf Ihren Namen gutgeschrieben und seit über zwei Jahren nicht eingefordert wurden.
+
+Der Gesamtbetrag der ihnen zusteht beträgt momentan 4.540.225.10 EURO
+
+Das ursprüngliche Preisgeld belief sich auf 2.906.315,00 EURO. Dieser Beitrag wurde mehr als zwei Jahre lang investiert, daher die Erhöhung auf den oben genannten Gesamtbetrag. Nach Angaben der Geschäftsstelle des nicht beanspruchten Preisgeldes wurde dieses Geld als nicht beanspruchter Gewinn einer Lotteriegesellschaft in Ihrem Namen eingezahlt und in Ihrem Namen versichert.
+
+Wie die Lotteriegesellschaft mitteilte, wurde ihnen das Geld nach einer Weihnachtsaktion Lotterie überreicht. Nach Angaben der Lotteriegesellschaft wurden sie kontaktiert, um Sie über dieses Geld zu informieren, aber leider hatte sich bis zum Ende des festgelegten Zeitraums niemand gemeldet, um den Gewinn einzufordern, weshalb das Geld zur Verwaltung eingezahlt wurde.
+
+Nach spanischem Recht muss der Eigentümer alle zwei Jahre über seinen verfügbaren Gewinn informiert werden, und wenn das Geld nicht wieder eingefordert wird, wird der Eigentümer informiert. Der Gewinn wird über eine Investmentgesellschaft für einen weiteren Zeitraum von zwei Jahren reinvestiert. Wir sind daher vom Amt für die nicht beanspruchten Preisgelder angewiesen worden, Ihnen zu schreiben.
+
+Dies ist eine Benachrichtigung für die Inanspruchnahme dieses Geldes.
+
+Bitte beachten Sie, dass die Lotteriegesellschaft Ihre Identität überprüfen und bestätigen wird, bevor sie Ihnen das Geld ausbezahlt, und wir werden Sie beraten, wie Sie Ihren Anspruch geltend machen können. Wenden Sie sich daher bitte an unseren deutschsprachigen Anwalt DR. ANALYN YOA HERNANDEZ unter der oben genannten E-Mail-Adresse, sie ist für Zahlungen ins Ausland zuständig und wird Ihnen in dieser Angelegenheit behilflich sein. Der Anspruch sollte vor dem 28.11.2020 geltend gemacht werden, da das Geld sonst reinvestiert würde.  Wir freuen uns darauf, von Ihnen zu hören, während wir Ihnen unseren Rechtsbeistand zusichern.
+
+Mit freundlichen Grüßen
+
+ABOGADO VITALIS MANUEL COLON
+RECHTSANWAELTE AM OBERSTN GERICHTSHOF
+
+Bitte füllen Sie den nachstehenden Abschnitt aus und senden Sie ihn per E-Mail an unser Büro zurück, damit wir den Legalisierung Prozess einleiten können und das Geld von der International Lotto Investment Bank an Sie ausgezahlt wird.
+Der Verificacións Prozess durch unsere Kanzlei ist für Sie kostenlos.
+
+Unsere Kosten werden von der internationalen Lotto Kommission am Ende des Prozesses bezahlt.  Wenn sie die erforderlichen Informationen nicht vor ablauf der frist einreichen,kann die Anwaltskanzlei Garrigues und Partner nicht haftbar gemacht werden.
+
+Ein Bestätigungsschreiben wird Ihnen per E-Mail zugesandt, sobald die Überprüfung durchgeführt wurde. Die Informationen, die Sie uns zur Verfügung stellen, werden zur Zahlung an die Investmentbank weitergeleitet, Ihre Daten werden gemäß den Datenschutzbestimmungen der Europäischen Union streng vertraulich behandelt.
+
+ANMELDEFORMULAR FÜR DEN GEWINNANSPRUCH DEN GEWINNANSPRUCH
+VORNAME
+NAME
+AKTENZEICHEN
+ANSCHRIFT
+TELEFON:
+MOBILE NO:
+FAX
+GEB.DATUM
+BERUF
+NATIONALITÄT
+ABLAUFDATUM 28/11/2020 BITTE LEGEN SIE DIESEM SCHREIBEN EINE KOPIE IHRES PERSONALAUSWEISES ODER IHRES REISEPASSES BEL
+RECHTSANWAELTE AM OBERSTN GERICHTSHOF
