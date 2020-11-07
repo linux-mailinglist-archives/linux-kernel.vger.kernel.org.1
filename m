@@ -2,117 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 796332AA30D
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Nov 2020 08:41:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1372B2AA311
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Nov 2020 08:42:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727909AbgKGHlL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Nov 2020 02:41:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35174 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725985AbgKGHlL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Nov 2020 02:41:11 -0500
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D03D2C0613CF
-        for <linux-kernel@vger.kernel.org>; Fri,  6 Nov 2020 23:41:09 -0800 (PST)
-Received: by mail-pl1-x643.google.com with SMTP id x23so2032118plr.6
-        for <linux-kernel@vger.kernel.org>; Fri, 06 Nov 2020 23:41:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
-        h=date:subject:cc:from:to:message-id;
-        bh=Aj52fNi+6qkhS7kowQN13Bo7Tv7SK9o+ZxNTLM9lCXM=;
-        b=AJYIQmr+DjHlfx85x8SwEqe9jZibSh8Q4nTZ2gU2RisyBQzJCtfaUCSEGrsE6YXF+T
-         Li1apuSs+Pyg+Y8pjyNCvUgUTXckI9QjmiCnrhc0Lkk4EKQ08FufNLRecan+nUBsuLpO
-         AapxciKiwfPXBUnW7kirqen7sm5S8LR2aaSjn+wc0Febdg2iI9kuO3R78r8Y9udvB9f/
-         +ahCAyQiE5R2MkGAyE9fT+BxbTh9kPAxuMwq2HnSK2ZpmvQ/81ogWpjahCxs9g0IkxOK
-         +HxOTqaWS+GXHalZp8en/BiOtueK5WTU5E2qxwe/M+jBDKcnOwBZ3WKEZLnQ80cBmbT+
-         RLQw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:subject:cc:from:to:message-id;
-        bh=Aj52fNi+6qkhS7kowQN13Bo7Tv7SK9o+ZxNTLM9lCXM=;
-        b=OduiFBZqWtFAxQieFIhn9f5tNqk45YLfTfYTL7T2c2XOL4LYF0R3gya5sqOaq6w8yi
-         eRdIjH9sXv0mQO6mGTtfQrMT3RvamFHBpYdEXLodPdktGNJLvgnXHDJRcRZvF1h6QhcN
-         fcbhYSugLcV4cwGTZ9WBsXgbDJoxUw9nCo/ivFIfhQ6nwDaYY3O152Suj5cUaL3TZswy
-         wcLGwRu0KgQt1u6l+OkES9tifiLE1b7W+sJheJ5jp0N7GmXIrHD53uzywj3FhKEuKBLQ
-         9XSlmws/Xai5q5/ay5BTCkJu07clXicnL+IEey8ZP25HLL6PaqUS+ZFVmklGTXQzZx/U
-         GW2g==
-X-Gm-Message-State: AOAM532lOESB2fEOVTHj9L1fpsYblkmn14bhLTmXPqKH+m0P/7JRjoME
-        y0PCtpCdKA+0FUCCmLfhuX5BYyMYWEj/SQ==
-X-Google-Smtp-Source: ABdhPJyO7FhNpvfOl8UtSFGhcRQbIwhjpnT16iiwvxMvOsq87oRipgIWzN6N8NJlf41nOC4LHNbVXQ==
-X-Received: by 2002:a17:90a:ca91:: with SMTP id y17mr3154280pjt.205.1604734869258;
-        Fri, 06 Nov 2020 23:41:09 -0800 (PST)
-Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
-        by smtp.gmail.com with ESMTPSA id v24sm4739929pjh.19.2020.11.06.23.41.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 06 Nov 2020 23:41:08 -0800 (PST)
-Date:   Fri, 06 Nov 2020 23:41:08 -0800 (PST)
-X-Google-Original-Date: Fri, 06 Nov 2020 23:41:04 PST (-0800)
-Subject: [GIT PULL] RISC-V Fixes for 5.10-rc3
-CC:         linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
-From:   Palmer Dabbelt <palmer@dabbelt.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Message-ID: <mhng-3492671f-a069-445d-a6d8-89363714a1fb@palmerdabbelt-glaptop1>
+        id S1727931AbgKGHmf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Nov 2020 02:42:35 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40416 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725985AbgKGHmf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 7 Nov 2020 02:42:35 -0500
+Received: from saruman (88-113-213-94.elisa-laajakaista.fi [88.113.213.94])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 59D7520704;
+        Sat,  7 Nov 2020 07:42:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604734954;
+        bh=/Nx6GNYibA0Lp1RdYl6hW7mxOH1UmCuCU069gcP3gs4=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=yJWvWc/gNpkadD/OBa6LLOUQYL6IcWGLhyGAubhPqCRQpETfryX1TqTXPwCaLL4I2
+         bNvFriX3YULOj+h/2cDmF2FEACQZnIMgUwwJ7Z03QCmkwtxTZyeTqCuYeHP2/92A8+
+         gXfhw+qaC6jJ+Mcdj2KbxBgSIiLimY4U8GaGM/mU=
+From:   Felipe Balbi <balbi@kernel.org>
+To:     Lindsey Stanpoor <lindsey.stanpoor@gmail.com>,
+        linux-usb@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org
+Cc:     gregkh@linuxfoundation.org, robh+dt@kernel.org, heiko@sntech.de,
+        cnemo@tutanota.com
+Subject: Re: [PATCH v4 1/4] dt-bindings: usb: add rk3328 dwc3 docs
+In-Reply-To: <CAEr9=gsH2UhjMO_55FKmGKS0DYrT_-XKf0iwCKCNc93epbiXNw@mail.gmail.com>
+References: <20200902181234.13955-1-lindsey.stanpoor@gmail.com>
+ <CAEr9=gsH2UhjMO_55FKmGKS0DYrT_-XKf0iwCKCNc93epbiXNw@mail.gmail.com>
+Date:   Sat, 07 Nov 2020 09:42:26 +0200
+Message-ID: <87ft5ly5nh.fsf@kernel.org>
+MIME-Version: 1.0
+Content-Type: multipart/signed; boundary="=-=-=";
+        micalg=pgp-sha256; protocol="application/pgp-signature"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following changes since commit 3650b228f83adda7e5ee532e2b90429c03f7b9ec:
+--=-=-=
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
 
-  Linux 5.10-rc1 (2020-10-25 15:14:11 -0700)
 
-are available in the Git repository at:
+Hi,
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/riscv/linux.git tags/riscv-for-linus-5.10-rc3
+Lindsey Stanpoor <lindsey.stanpoor@gmail.com> writes:
+> On Wed, Sep 2, 2020 at 11:12 AM <lindsey.stanpoor@gmail.com> wrote:
+>>
+>> From: Cameron Nemo <cnemo@tutanota.com>
+>>
+>> Document compatible for dwc3 on the Rockchip rk3328 platform.
+>
+> Hi all,
+>
+> Wanted to give this patch submission a gentle ping.
+>
+> Rob Herring acked the documentation changes, but I have not heard
+> anything
+> from the USB or Rockchip maintainers. This patchset would facilitate USB3
+> support for Rockchip rk3328 devices like the Pine Rock64.
+>
+> If there is anything I can do to help move this along, please let me know.
 
-for you to fetch changes up to c2c81bb2f69138f902e1a58d3bef6ad97fb8a92c:
+Sorry, it had fallen through the cracks. It's now in my testing/next.
 
-  RISC-V: Fix the VDSO symbol generaton for binutils-2.35+ (2020-11-06 00:03:48 -0800)
+=2D-=20
+balbi
 
-----------------------------------------------------------------
-RISC-V Fixes for 5.10-rc3
+--=-=-=
+Content-Type: application/pgp-signature; name="signature.asc"
 
-* An SPDX comment style fix.
-* A fix to ignore memory that is unusable.
-* A fix to avoid setting a kernel text offset for the !MMU kernels, where
-  skipping the first page of memory is both unnecessary and costly.
-* A fix to avoid passing the flag bits in satp to pfn_to_virt().
-* A fix to __put_kernel_nofault, where we had the arguments to
-  __put_user_nocheck reversed.
-* A workaround for a bug in the FU540 to avoid triggering PMP issues during
-  early boot.
-* A change to how we pull symbols out of the vDSO.  The old mechanism was
-  removed from binutils-2.35 (and has been backported to Debian's 2.34).
+-----BEGIN PGP SIGNATURE-----
 
-----------------------------------------------------------------
-Anup Patel (1):
-      RISC-V: Use non-PGD mappings for early DTB access
-
-Atish Patra (1):
-      RISC-V: Remove any memblock representing unusable memory area
-
-Changbin Du (1):
-      riscv: uaccess: fix __put_kernel_nofault()
-
-Liu Shaohua (1):
-      riscv: fix pfn_to_virt err in do_page_fault().
-
-Palmer Dabbelt (1):
-      RISC-V: Fix the VDSO symbol generaton for binutils-2.35+
-
-Ryan Kosta (1):
-      risc-v: kernel: ftrace: Fixes improper SPDX comment style
-
-Sean Anderson (1):
-      riscv: Set text_offset correctly for M-Mode
-
- arch/riscv/include/asm/uaccess.h  |  2 +-
- arch/riscv/kernel/ftrace.c        |  2 +-
- arch/riscv/kernel/head.S          |  5 +++++
- arch/riscv/kernel/vdso/.gitignore |  1 +
- arch/riscv/kernel/vdso/Makefile   | 18 +++++++++---------
- arch/riscv/kernel/vdso/so2s.sh    |  6 ++++++
- arch/riscv/mm/fault.c             |  4 +++-
- arch/riscv/mm/init.c              | 32 +++++++++++++++++++++-----------
- 8 files changed, 47 insertions(+), 23 deletions(-)
- create mode 100755 arch/riscv/kernel/vdso/so2s.sh
+iQJFBAEBCAAvFiEElLzh7wn96CXwjh2IzL64meEamQYFAl+mT+MRHGJhbGJpQGtl
+cm5lbC5vcmcACgkQzL64meEamQaRDw/+N2up7hCZG55bDPN8oLRW452ZCzSwXD70
+l5s+0/0dgPw6mwsSoOH1Xd/tPdtLS5gAgnNCYZzBiiCgFBgeaHKwQQ6vweSKLRRG
+BYWVAQuU2dnEZN2lCq29/CilnywKd8Rx05V1UDtoHcVPmioMi3Z8F957s5ggAo+w
+6GgrjcI2h42zsm13oqOgBAU92gik5toDEzVjW999/oGOdH+aZFLd5k3GC+nTVlmf
+AOwYDiRAHHHcIWfbKOz2ZtpkP31b++y4OcNUzZPgIIp+WO5kNm+BiSjuC60kAAuL
+kyC1WOg1uOXRP6IYQp3l90tO8VV3ZHshxxeLssbQ70TMggZacCCl/pg5qR0I8/Gr
+G6SM1bpCIhlw9LwTF0rstbvtFUVVWEWQvfmpKaQMlFvi3bcDPbv5Q/94pYvwKemK
+ieD+dK0K9ZvNAQe3+CqPqH14tIbNKZ8E/u/CFp+kItL6pUf+iVfd7urFbn+Ye8A3
+EU1C3iJEKNiwoDGPWJUB13DlqgyJyn0AC8twRhB1dvqW2B2+GqU7tTfKzYvFDJx4
+MAVBSVKmdTUUT6idPFYbo9BvK84tz9EkBcOqYXEKvEL0LgKgbfD6rOKUxcC3p+GV
+BKUkhMVmTFGGcRYsYZNytla0ioWJ+Q880PA5pQ1WBoXyHhpw4EC11tjQoEgQLcDs
+FcTTx6Jz0S8=
+=ZUy6
+-----END PGP SIGNATURE-----
+--=-=-=--
