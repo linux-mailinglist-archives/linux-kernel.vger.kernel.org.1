@@ -2,65 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E09292AA657
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Nov 2020 16:35:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 993882AA65D
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Nov 2020 16:39:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726303AbgKGPfm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Nov 2020 10:35:42 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46712 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726043AbgKGPfl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Nov 2020 10:35:41 -0500
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0478820719;
-        Sat,  7 Nov 2020 15:35:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604763341;
-        bh=+kFYdvrx6Wym6Fki79wysbMv/AfXfI4m4fIIQZ+Lb1g=;
+        id S1728144AbgKGPj0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Nov 2020 10:39:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52408 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726144AbgKGPj0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 7 Nov 2020 10:39:26 -0500
+Received: from fieldses.org (fieldses.org [IPv6:2600:3c00:e000:2f7::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45474C0613CF;
+        Sat,  7 Nov 2020 07:39:26 -0800 (PST)
+Received: by fieldses.org (Postfix, from userid 2815)
+        id 626651C25; Sat,  7 Nov 2020 10:39:24 -0500 (EST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 fieldses.org 626651C25
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fieldses.org;
+        s=default; t=1604763564;
+        bh=OiHzKhgk2PHE2aqJryJ2eHQ/6HtBN1HOJxiFjEz+G58=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ikl/bu4XJrzlowDJu7Pf17hzLoZ81PrhpqGr//5Y8oaLNLJJLhPutZ7cPBc1zOMlj
-         8MBcBcHBHJ1l0MgCAZIUkS7tsgV3WeqjIqhtJD6XAJx89Hpf2IBPJ/QwcBhjsrXeb3
-         ADqmC91NtRBc0imTLA8/IMoe5mWYLVkk/ytK6wKk=
-Date:   Sat, 7 Nov 2020 16:36:25 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Peilin Ye <yepeilin.cs@gmail.com>
-Cc:     Lee Jones <lee.jones@linaro.org>,
-        Russell King - ARM Linux <linux@armlinux.org.uk>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        stable <stable@vger.kernel.org>
-Subject: Re: [PATCH v2 1/1] Fonts: Replace discarded const qualifier
-Message-ID: <20201107153625.GA116750@kroah.com>
-References: <20201030181822.570402-1-lee.jones@linaro.org>
- <20201102183242.2031659-1-yepeilin.cs@gmail.com>
- <20201103085324.GL4488@dell>
- <CAKMK7uGV10+TEWWMJod1-MRD1jkLqvOGUu4Qk9S84WJAUaB7Mg@mail.gmail.com>
- <20201103091538.GA2663113@kroah.com>
- <20201103095239.GW401619@phenom.ffwll.local>
- <20201103105523.GO4488@dell>
- <20201107051918.GA2209915@PWN>
+        b=OE6vvBgMUKsWV4o3GwYIaw+zzlbayVgcaz8/V1JxixZ+R8at8OKDpAjvs2bd29PQe
+         yv+TwtVVLHKk6XDMnjTClLZNARa+gsff1QV7OEi0Q6ubLUSz8S73q42gFxqsPv82+b
+         6WfhvmKolD6wBBTtiYU1/zwk5+WGkAOgaLQCCWTw=
+Date:   Sat, 7 Nov 2020 10:39:24 -0500
+From:   "J. Bruce Fields" <bfields@fieldses.org>
+To:     Alex Dewar <alex.dewar90@gmail.com>
+Cc:     Chuck Lever <chuck.lever@oracle.com>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Anna Schumaker <anna.schumaker@netapp.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Artur Molchanov <arturmolchanov@gmail.com>,
+        linux-nfs@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] net/sunrpc: Fix return value from proc_do_xprt()
+Message-ID: <20201107153924.GA16447@fieldses.org>
+References: <20201024145240.23245-1-alex.dewar90@gmail.com>
+ <20201106220721.GE26028@fieldses.org>
+ <20201107134940.c2hmfpcx743bqc5o@medion>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201107051918.GA2209915@PWN>
+In-Reply-To: <20201107134940.c2hmfpcx743bqc5o@medion>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Nov 07, 2020 at 12:19:18AM -0500, Peilin Ye wrote:
-> Hi all,
+On Sat, Nov 07, 2020 at 01:49:40PM +0000, Alex Dewar wrote:
+> On Fri, Nov 06, 2020 at 05:07:21PM -0500, J. Bruce Fields wrote:
+> > Whoops, got 3 independent patches for this and overlooked this one.  See
+> > https://lore.kernel.org/linux-nfs/20201106205959.GB26028@fieldses.org/T/#t
+> > 
+> > --b.
 > 
-> On Tue, Nov 03, 2020 at 10:55:23AM +0000, Lee Jones wrote:
-> > Would you be kind enough to let us know when this lands in Mainline
-> > please?  We'll need to back-port it to start fixing up our Stable
-> > kernels ASAP.
-> 
-> Patch is in mainline now:
-> 
-> 9522750c66c689b739e151fcdf895420dc81efc0 Fonts: Replace discarded const qualifier
+> That looks like a cleaner fix. Thanks for looking anyhow and sorry for
+> the noise!
 
-Now queued up for stable, thanks!
+Not noise, all these efforts are appreciated.---b.
 
-greg k-h
+> 
+> > 
+> > On Sat, Oct 24, 2020 at 03:52:40PM +0100, Alex Dewar wrote:
+> > > Commit c09f56b8f68d ("net/sunrpc: Fix return value for sysctl
+> > > sunrpc.transports") attempted to add error checking for the call to
+> > > memory_read_from_buffer(), however its return value was assigned to a
+> > > size_t variable, so any negative values would be lost in the cast. Fix
+> > > this.
+> > > 
+> > > Addresses-Coverity-ID: 1498033: Control flow issues (NO_EFFECT)
+> > > Fixes: c09f56b8f68d ("net/sunrpc: Fix return value for sysctl sunrpc.transports")
+> > > Signed-off-by: Alex Dewar <alex.dewar90@gmail.com>
+> > > ---
+> > >  net/sunrpc/sysctl.c | 7 +++++--
+> > >  1 file changed, 5 insertions(+), 2 deletions(-)
+> > > 
+> > > diff --git a/net/sunrpc/sysctl.c b/net/sunrpc/sysctl.c
+> > > index a18b36b5422d..c95a2b84dd95 100644
+> > > --- a/net/sunrpc/sysctl.c
+> > > +++ b/net/sunrpc/sysctl.c
+> > > @@ -62,6 +62,7 @@ rpc_unregister_sysctl(void)
+> > >  static int proc_do_xprt(struct ctl_table *table, int write,
+> > >  			void *buffer, size_t *lenp, loff_t *ppos)
+> > >  {
+> > > +	ssize_t bytes_read;
+> > >  	char tmpbuf[256];
+> > >  	size_t len;
+> > >  
+> > > @@ -70,12 +71,14 @@ static int proc_do_xprt(struct ctl_table *table, int write,
+> > >  		return 0;
+> > >  	}
+> > >  	len = svc_print_xprts(tmpbuf, sizeof(tmpbuf));
+> > > -	*lenp = memory_read_from_buffer(buffer, *lenp, ppos, tmpbuf, len);
+> > > +	bytes_read = memory_read_from_buffer(buffer, *lenp, ppos, tmpbuf, len);
+> > >  
+> > > -	if (*lenp < 0) {
+> > > +	if (bytes_read < 0) {
+> > >  		*lenp = 0;
+> > >  		return -EINVAL;
+> > >  	}
+> > > +
+> > > +	*lenp = bytes_read;
+> > >  	return 0;
+> > >  }
+> > >  
+> > > -- 
+> > > 2.29.1
