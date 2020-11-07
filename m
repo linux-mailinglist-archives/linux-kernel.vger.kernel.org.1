@@ -2,91 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E1972AA757
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Nov 2020 18:58:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 76FB62AA75B
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Nov 2020 19:07:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728548AbgKGR6Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Nov 2020 12:58:16 -0500
-Received: from mx0b-002e3701.pphosted.com ([148.163.143.35]:15900 "EHLO
-        mx0b-002e3701.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726021AbgKGR6P (ORCPT
+        id S1728424AbgKGSHz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Nov 2020 13:07:55 -0500
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:47912 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726333AbgKGSHz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Nov 2020 12:58:15 -0500
-Received: from pps.filterd (m0134424.ppops.net [127.0.0.1])
-        by mx0b-002e3701.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0A7HpUIT030820;
-        Sat, 7 Nov 2020 17:57:57 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hpe.com; h=date : from : to : cc :
- subject : message-id : reply-to : references : content-type : in-reply-to
- : mime-version; s=pps0720;
- bh=19AOhJSg8287gbPV9wDB4l5dczCLNW+uqRNvFL42X6U=;
- b=bigOhbIaNPut4w8m9qKIQWF7/d+s3mOe5gd3a+QTMpO9bczduiadQLGoik5NmVu61jT9
- Hvrv/wsJoD8DNgSzPdP7IWBJjzibeZzQF7bw5Y8kS0jmlXCPMyC+dMaZk54aXtfTfLr2
- B0KNJDg5R+W6M1nQ3Omo8Gj+BApLmqfP17OaiHRkXrKNvyS0MDbYeelwsM4lBqZFYfS3
- QBwUaJ1sJuP1hbyQ4KRvT4t2viCotSyHmUm3uXHGsbyWWzk79UJtBOvebZ6zkaJwa7Fl
- x7TWo7W4xL0X4yo0lQF8Z9chviFzJNWY68XJ8P9Jibk5ids/kDaAMk25O49fkH+tCjKc TQ== 
-Received: from g2t2354.austin.hpe.com (g2t2354.austin.hpe.com [15.233.44.27])
-        by mx0b-002e3701.pphosted.com with ESMTP id 34nmm4awuf-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sat, 07 Nov 2020 17:57:57 +0000
-Received: from g2t2360.austin.hpecorp.net (g2t2360.austin.hpecorp.net [16.196.225.135])
-        by g2t2354.austin.hpe.com (Postfix) with ESMTP id 2F66081;
-        Sat,  7 Nov 2020 17:57:56 +0000 (UTC)
-Received: from rfwz62 (rfwz62.americas.hpqcorp.net [10.33.237.8])
-        by g2t2360.austin.hpecorp.net (Postfix) with ESMTP id 513553A;
-        Sat,  7 Nov 2020 17:57:54 +0000 (UTC)
-Date:   Sat, 7 Nov 2020 10:57:54 -0700
-From:   rwright@hpe.com
-To:     Hans de Goede <hdegoede@redhat.com>
-Cc:     jani.nikula@linux.intel.com, joonas.lahtinen@linux.intel.com,
-        rodrigo.vivi@intel.com, airlied@linux.ie, daniel@ffwll.ch,
-        sumit.semwal@linaro.org, christian.koenig@amd.com,
-        wambui.karugax@gmail.com, chris@chris-wilson.co.uk,
-        matthew.auld@intel.com, akeem.g.abodunrin@intel.com,
-        prathap.kumar.valsan@intel.com, mika.kuoppala@linux.intel.com,
-        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org
-Subject: Re: [PATCH v3 0/3] Reduce context clear batch size to avoid gpu hang
-Message-ID: <20201107175754.GA13311@rfwz62>
-Reply-To: rwright@hpe.com
-References: <20201101174132.10513-1-rwright@hpe.com>
- <8cdf0dd0-2a2f-bae9-71ea-89a88fdb14a5@redhat.com>
- <20201102195710.GA12790@rfwz62>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201102195710.GA12790@rfwz62>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        Sat, 7 Nov 2020 13:07:55 -0500
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: aratiu)
+        with ESMTPSA id 803CB1F45390
+From:   Adrian Ratiu <adrian.ratiu@collabora.com>
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Nathan Chancellor <natechancellor@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Russell King <linux@armlinux.org.uk>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Collabora Kernel ML <kernel@collabora.com>,
+        Ard Biesheuvel <ardb@kernel.org>
+Subject: Re: [PATCH 2/2] arm: lib: xor-neon: disable clang vectorization
+In-Reply-To: <CAKwvOdkodob0M0r_AK_4nG3atLGMyNENMd6qVAHSPa92Zh7UZA@mail.gmail.com>
+References: <20201106051436.2384842-1-adrian.ratiu@collabora.com>
+ <20201106051436.2384842-3-adrian.ratiu@collabora.com>
+ <20201106101419.GB3811063@ubuntu-m3-large-x86>
+ <87wnyyvh56.fsf@collabora.com>
+ <CAKwvOdkodob0M0r_AK_4nG3atLGMyNENMd6qVAHSPa92Zh7UZA@mail.gmail.com>
+Date:   Sat, 07 Nov 2020 20:07:47 +0200
+Message-ID: <87tuu1ujkc.fsf@collabora.com>
 MIME-Version: 1.0
-X-HPE-SCL: -1
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-11-07_09:2020-11-05,2020-11-07 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- bulkscore=0 adultscore=0 phishscore=0 mlxlogscore=690 spamscore=0
- clxscore=1015 priorityscore=1501 suspectscore=0 impostorscore=0 mlxscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2011070129
+Content-Type: text/plain; format=flowed
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 02, 2020 at 12:57:10PM -0700, rwright@hpe.com wrote:
-> On Mon, Nov 02, 2020 at 10:48:54AM +0100, Hans de Goede wrote:
-> > Hi,
-> > 
-> ...
-> That said, if the i915 maintainers respond in favor of the simpler
-> unconditional reduction of the batch size, I will be glad to
-> propose a much simpler version of my patch.
-> ...
+On Fri, 06 Nov 2020, Nick Desaulniers <ndesaulniers@google.com> 
+wrote:
+> On Fri, Nov 6, 2020 at 3:50 AM Adrian Ratiu 
+> <adrian.ratiu@collabora.com> wrote: 
+>> 
+>> Hi Nathan, 
+>> 
+>> On Fri, 06 Nov 2020, Nathan Chancellor 
+>> <natechancellor@gmail.com> wrote: 
+>> > + Ard, who wrote this code. 
+>> > 
+>> > On Fri, Nov 06, 2020 at 07:14:36AM +0200, Adrian Ratiu wrote: 
+>> >> Due to a Clang bug [1] neon autoloop vectorization does not 
+>> >> happen or happens badly with no gains and considering 
+>> >> previous GCC experiences which generated unoptimized code 
+>> >> which was worse than the default asm implementation, it is 
+>> >> safer to default clang builds to the known good generic 
+>> >> implementation.  The kernel currently supports a minimum 
+>> >> Clang version of v10.0.1, see commit 1f7a44f63e6c 
+>> >> ("compiler-clang: add build check for clang 10.0.1").   When 
+>> >> the bug gets eventually fixed, this commit could be reverted 
+>> >> or, if the minimum clang version bump takes a long time, a 
+>> >> warning could be added for users to upgrade their compilers 
+>> >> like was done for GCC.   [1] 
+>> >> https://bugs.llvm.org/show_bug.cgi?id=40976  Signed-off-by: 
+>> >> Adrian Ratiu <adrian.ratiu@collabora.com> 
+>> > 
+>> > Thank you for the patch! We are also tracking this here: 
+>> > 
+>> > https://github.com/ClangBuiltLinux/linux/issues/496 
+>> > 
+>> > It was on my TODO to revist getting the warning eliminated, 
+>> > which likely would have involved a patch like this as well. 
+>> > 
+>> > I am curious if it is worth revisting or dusting off Arnd's 
+>> > patch in the LLVM bug tracker first. I have not tried it 
+>> > personally. If that is not a worthwhile option, I am fine 
+>> > with this for now. It would be nice to try and get a fix 
+>> > pinned down on the LLVM side at some point but alas, finite 
+>> > amount of resources and people :( 
+>> 
+>> I tested Arnd's kernel patch from the LLVM bugtracker [1], but 
+>> with the Clang v10.0.1 I still get warnings like the following 
+>> even though the __restrict workaround seems to affect the 
+>> generated instructions: 
+>> 
+>> ./include/asm-generic/xor.h:15:2: remark: the cost-model 
+>> indicates that interleaving is not beneficial 
+>> [-Rpass-missed=loop-vectorize] 
+>> ./include/asm-generic/xor.h:11:1: remark: List vectorization 
+>> was possible but not beneficial with cost 0 >= 0 
+>> [-Rpass-missed=slp-vectorizer] xor_8regs_2(unsigned long bytes, 
+>> unsigned long *__restrict p1, unsigned long *__restrict p2) 
+> 
+> If it's just a matter of overruling the cost model #pragma clang 
+> loop vectorize(enable) 
+> 
+> will do the trick. 
+> 
+> Indeed, ``` diff --git a/include/asm-generic/xor.h 
+> b/include/asm-generic/xor.h index b62a2a56a4d4..8796955498b7 
+> 100644 --- a/include/asm-generic/xor.h +++ 
+> b/include/asm-generic/xor.h @@ -12,6 +12,7 @@ 
+> xor_8regs_2(unsigned long bytes, unsigned long *p1, unsigned 
+> long *p2) 
+>  { 
+>         long lines = bytes / (sizeof (long)) / 8; 
+> 
+> +#pragma clang loop vectorize(enable) 
+>         do { 
+>                 p1[0] ^= p2[0]; p1[1] ^= p2[1]; 
+> @@ -32,6 +33,7 @@ xor_8regs_3(unsigned long bytes, unsigned long 
+> *p1, unsigned long *p2, 
+>  { 
+>         long lines = bytes / (sizeof (long)) / 8; 
+> 
+> +#pragma clang loop vectorize(enable) 
+>         do { 
+>                 p1[0] ^= p2[0] ^ p3[0]; p1[1] ^= p2[1] ^ p3[1]; 
+> @@ -53,6 +55,7 @@ xor_8regs_4(unsigned long bytes, unsigned long 
+> *p1, unsigned long *p2, 
+>  { 
+>         long lines = bytes / (sizeof (long)) / 8; 
+> 
+> +#pragma clang loop vectorize(enable) 
+>         do { 
+>                 p1[0] ^= p2[0] ^ p3[0] ^ p4[0]; p1[1] ^= p2[1] ^ 
+>                 p3[1] ^ p4[1]; 
+> @@ -75,6 +78,7 @@ xor_8regs_5(unsigned long bytes, unsigned long 
+> *p1, unsigned long *p2, 
+>  { 
+>         long lines = bytes / (sizeof (long)) / 8; 
+> 
+> +#pragma clang loop vectorize(enable) 
+>         do { 
+>                 p1[0] ^= p2[0] ^ p3[0] ^ p4[0] ^ p5[0]; p1[1] ^= 
+>                 p2[1] ^ p3[1] ^ p4[1] ^ p5[1]; 
+> ``` seems to generate the vectorized code. 
+> 
+> Why don't we find a way to make those pragma's more toolchain 
+> portable, rather than open coding them like I have above rather 
+> than this series?
 
-I received a suggestion from Mika Kuoppala to test 
-https://patchwork.freedesktop.org/patch/399174/?series=83531&rev=1 as a
-solution for the GPU hang I observed, and the test was successful.
-I recommend this patch as a better approch than my own, as it 
-addresses more general cases without introducing a new quirk.
+Hi Nick,
 
---
-Randy Wright            Usmail: Hewlett Packard Enterprise
-Email: rwright@hpe.com          Servers Linux Enablement
-Phone: (970) 898-0998           3404 E. Harmony Rd, Mailstop 36
-                                Fort Collins, CO 80528-9599 
+Thank you very much for the suggestion.
+
+I agree. If a toolchain portable way can be found to realiably 
+trigger the optimization, I will gladly replace this patch. :)
+
+Will work on it starting Monday then report back my findings or, 
+if I can get it to work in a satisfying manner, send a v2 series 
+directly.
+
+The first patch is still needed because it's more of a general 
+cleanup as Nathan correctly observed.
+
+Regards,
+Adrian
+
+>
+> -- 
+> Thanks,
+> ~Nick Desaulniers
