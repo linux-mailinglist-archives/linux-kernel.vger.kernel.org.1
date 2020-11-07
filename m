@@ -2,164 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A30082AA51B
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Nov 2020 13:54:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 370982AA518
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Nov 2020 13:53:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728099AbgKGMyI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Nov 2020 07:54:08 -0500
-Received: from relay5.mymailcheap.com ([159.100.248.207]:41091 "EHLO
-        relay5.mymailcheap.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727494AbgKGMyI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Nov 2020 07:54:08 -0500
-Received: from relay3.mymailcheap.com (relay3.mymailcheap.com [217.182.119.157])
-        by relay5.mymailcheap.com (Postfix) with ESMTPS id B856B260EC;
-        Sat,  7 Nov 2020 12:54:05 +0000 (UTC)
-Received: from filter2.mymailcheap.com (filter2.mymailcheap.com [91.134.140.82])
-        by relay3.mymailcheap.com (Postfix) with ESMTPS id 2E1AE3ECDF;
-        Sat,  7 Nov 2020 13:54:03 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-        by filter2.mymailcheap.com (Postfix) with ESMTP id 0DC472A7DD;
-        Sat,  7 Nov 2020 13:54:03 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mymailcheap.com;
-        s=default; t=1604753643;
-        bh=nNi1KvzAc00IXvO21wt65MRQZ7lDmDRlFXMh2RjU9Dk=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=CujcacLMGt6bnTlK0IWoQIv5CLCgse7yOt7zu0FFFwz0PToKOquCit4Df1GhWBbzv
-         QHSxrlSxyd4aGHxK07hhADfPtGSpnURlM06vJTU7eHv9+QDN7iOcwdkVpUyzVY20nd
-         TZ9bED1wFFEoOhTYueL5uKtCzueUDCo1ARk5UUPE=
-X-Virus-Scanned: Debian amavisd-new at filter2.mymailcheap.com
-Received: from filter2.mymailcheap.com ([127.0.0.1])
-        by localhost (filter2.mymailcheap.com [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id rvsIdDPY0VRU; Sat,  7 Nov 2020 13:54:01 +0100 (CET)
-Received: from mail20.mymailcheap.com (mail20.mymailcheap.com [51.83.111.147])
-        (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by filter2.mymailcheap.com (Postfix) with ESMTPS;
-        Sat,  7 Nov 2020 13:54:01 +0100 (CET)
-Received: from [213.133.102.83] (ml.mymailcheap.com [213.133.102.83])
-        by mail20.mymailcheap.com (Postfix) with ESMTP id 6C54A40849;
-        Sat,  7 Nov 2020 12:54:01 +0000 (UTC)
-Authentication-Results: mail20.mymailcheap.com;
-        dkim=pass (1024-bit key; unprotected) header.d=aosc.io header.i=@aosc.io header.b="fN8gZvPD";
-        dkim-atps=neutral
-AI-Spam-Status: Not processed
-Received: from ice-e5v2.lan (unknown [59.41.162.181])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail20.mymailcheap.com (Postfix) with ESMTPSA id 44A9340849;
-        Sat,  7 Nov 2020 12:53:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=aosc.io; s=default;
-        t=1604753635; bh=nNi1KvzAc00IXvO21wt65MRQZ7lDmDRlFXMh2RjU9Dk=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=fN8gZvPDQ8dFOYQDRQeVwPfOvb0OEn5tkmNr3FvX/+uctar1JkO6S5NUC7Vs4Uc8l
-         iOgx/BlgVR96Gg3owsH1ucyXXcbAN8aw4aVA9WTg1sXpnPszLi7N0+58Rb9f2L5YAM
-         78q2Wwq0FWfkK8Nl1MBgCiY0Ap0oxEwKMFBGBv40=
-From:   Icenowy Zheng <icenowy@aosc.io>
-To:     Rob Herring <robh+dt@kernel.org>,
-        Maxime Ripard <mripard@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@siol.net>
-Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-sunxi@googlegroups.com,
-        Icenowy Zheng <icenowy@aosc.io>
-Subject: [PATCH 3/3] arm64: allwinner: dts: a64: add DT for PineTab developer sample
-Date:   Sat,  7 Nov 2020 20:53:32 +0800
-Message-Id: <20201107125332.2223197-1-icenowy@aosc.io>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201107124958.2222253-1-icenowy@aosc.io>
-References: <20201107124958.2222253-1-icenowy@aosc.io>
+        id S1728075AbgKGMxj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Nov 2020 07:53:39 -0500
+Received: from foss.arm.com ([217.140.110.172]:50880 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727494AbgKGMxi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 7 Nov 2020 07:53:38 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A4C6F1474;
+        Sat,  7 Nov 2020 04:53:37 -0800 (PST)
+Received: from e120937-lin (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 2B6B03F66E;
+        Sat,  7 Nov 2020 04:53:36 -0800 (PST)
+Date:   Sat, 7 Nov 2020 12:53:34 +0000
+From:   Cristian Marussi <cristian.marussi@arm.com>
+To:     Thara Gopinath <thara.gopinath@linaro.org>
+Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        sudeep.holla@arm.com, lukasz.luba@arm.com,
+        james.quinlan@broadcom.com, Jonathan.Cameron@Huawei.com,
+        f.fainelli@gmail.com, etienne.carriere@linaro.org,
+        vincent.guittot@linaro.org, souvik.chakravarty@arm.com
+Subject: Re: [PATCH v2 2/8] firmware: arm_scmi: introduce protocol handles
+Message-ID: <20201107125333.GA42652@e120937-lin>
+References: <20201028202914.43662-1-cristian.marussi@arm.com>
+ <20201028202914.43662-3-cristian.marussi@arm.com>
+ <ceda764f-6cd9-9e47-edc7-2e915c920301@linaro.org>
+ <20201104174427.GB24640@e120937-lin>
+ <745d52d0-8578-6a25-c55e-e628d970e9fe@linaro.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: 6C54A40849
-X-Spamd-Result: default: False [6.40 / 20.00];
-         ARC_NA(0.00)[];
-         RCVD_VIA_SMTP_AUTH(0.00)[];
-         R_DKIM_ALLOW(0.00)[aosc.io:s=default];
-         RECEIVED_SPAMHAUS_PBL(0.00)[59.41.162.181:received];
-         FROM_HAS_DN(0.00)[];
-         TO_DN_SOME(0.00)[];
-         R_MISSING_CHARSET(2.50)[];
-         TO_MATCH_ENVRCPT_ALL(0.00)[];
-         TAGGED_RCPT(0.00)[dt];
-         MIME_GOOD(-0.10)[text/plain];
-         BROKEN_CONTENT_TYPE(1.50)[];
-         R_SPF_SOFTFAIL(0.00)[~all:c];
-         DMARC_NA(0.00)[aosc.io];
-         ML_SERVERS(-3.10)[213.133.102.83];
-         DKIM_TRACE(0.00)[aosc.io:+];
-         RCPT_COUNT_SEVEN(0.00)[9];
-         MID_CONTAINS_FROM(1.00)[];
-         DBL_PROHIBIT(0.00)[0.0.0.0:email];
-         RCVD_NO_TLS_LAST(0.10)[];
-         FROM_EQ_ENVFROM(0.00)[];
-         MIME_TRACE(0.00)[0:+];
-         ASN(0.00)[asn:24940, ipnet:213.133.96.0/19, country:DE];
-         RCVD_COUNT_TWO(0.00)[2];
-         SUSPICIOUS_RECIPS(1.50)[];
-         HFILTER_HELO_BAREIP(3.00)[213.133.102.83,1]
-X-Rspamd-Server: mail20.mymailcheap.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <745d52d0-8578-6a25-c55e-e628d970e9fe@linaro.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Some developers received PineTab samples that used an old LCD panel.
+Hi Thara
 
-Add device tree for these samples.
+thanks for the feedback.
 
-Signed-off-by: Icenowy Zheng <icenowy@aosc.io>
----
- arch/arm64/boot/dts/allwinner/Makefile        |  1 +
- .../dts/allwinner/sun50i-a64-pinetab-dev.dts  | 28 +++++++++++++++++++
- 2 files changed, 29 insertions(+)
- create mode 100644 arch/arm64/boot/dts/allwinner/sun50i-a64-pinetab-dev.dts
+On Fri, Nov 06, 2020 at 11:26:44AM -0500, Thara Gopinath wrote:
+> 
+> 
+> On 11/4/20 12:44 PM, Cristian Marussi wrote:
+> > Hi
+> > 
+> > On Wed, Nov 04, 2020 at 11:16:18AM -0500, Thara Gopinath wrote:
+> > > 
+> > > Hi Cristian,
+> > > 
+> > > On 10/28/20 4:29 PM, Cristian Marussi wrote:
+> > > > Add basic protocol handles definitions and helpers support.
+> > > > All protocols initialization code and SCMI drivers probing is still
+> > > > performed using the handle based interface.
+> > > > 
+> > > > Signed-off-by: Cristian Marussi <cristian.marussi@arm.com>
+> > > > ---
+> > > >    drivers/firmware/arm_scmi/common.h | 61 ++++++++++++++++++++++++++++
+> > > >    drivers/firmware/arm_scmi/driver.c | 64 ++++++++++++++++++++++++++++++
+> > > >    2 files changed, 125 insertions(+)
+> > > > 
+> > > > diff --git a/drivers/firmware/arm_scmi/common.h b/drivers/firmware/arm_scmi/common.h
+> > > > index b08a8ddbc22a..f0678be02a09 100644
+> > > > --- a/drivers/firmware/arm_scmi/common.h
+> > > > +++ b/drivers/firmware/arm_scmi/common.h
+> > > > @@ -151,6 +151,67 @@ int scmi_xfer_get_init(const struct scmi_handle *h, u8 msg_id, u8 prot_id,
+> > > >    		       size_t tx_size, size_t rx_size, struct scmi_xfer **p);
+> > > >    void scmi_reset_rx_to_maxsz(const struct scmi_handle *handle,
+> > > >    			    struct scmi_xfer *xfer);
+> > > > +
+> > > > +struct scmi_xfer_ops;
+> > > > +
+> > > > +/**
+> > > > + * struct scmi_protocol_handle  - Reference to an initialized protocol instance
+> > > > + *
+> > > > + * @dev: A reference to the associated SCMI instance device (handle->dev).
+> > > > + * @xops: A reference to a struct holding refs to the core xfer operations that
+> > > > + *	  can be used by the protocol implementation to generate SCMI messages.
+> > > > + * @set_priv: A method to set protocol private data for this instance.
+> > > > + * @get_priv: A method to get protocol private data previously set.
+> > > > + *
+> > > > + * This structure represents a protocol initialized against specific SCMI
+> > > > + * instance and it will be used as follows:
+> > > > + * - as a parameter fed from the core to the protocol initialization code so
+> > > > + *   that it can access the core xfer operations to build and generate SCMI
+> > > > + *   messages exclusively for the specific underlying protocol instance.
+> > > > + * - as an opaque handle fed by an SCMI driver user when it tries to access
+> > > > + *   this protocol through its own protocol operations.
+> > > > + *   In this case this handle will be returned as an opaque object together
+> > > > + *   with the related protocol operations when the SCMI driver tries to access
+> > > > + *   the protocol.
+> > > > + */
+> > > > +struct scmi_protocol_handle {
+> > > > +	struct device *dev;
+> > > > +	const struct scmi_xfer_ops *xops;
+> > > > +	int (*set_priv)(const struct scmi_protocol_handle *ph, void *priv);
+> > > > +	void *(*get_priv)(const struct scmi_protocol_handle *ph);
+> > > > +};
+> > > 
+> > > So scmi_xfer_ops are the ops that actually talks with the scmi firmware on
+> > > the other end , right ? IIUC, these ops are the same for all the protocols
+> > > of a scmi instance. Imho, this struct is not the right place for these ops
+> > > to reside.You are inadvertently exposing scmi internal details to the client
+> > > drivers. There is no reason why this should be part of scmi_handle. The
+> > > protocols can extract it from the handle during protocol_reigster, right?
+> > > 
+> > > So, now to the second part, why do you need a scmi_protocol_handle? Again
+> > > IIUC, if you have set_priv and get_priv hooks and get_ops and put_ops hooks,
+> > > there is nothing that scmi_protocol_handle is providing extra, right? As
+> > > mentioned in the comments for last patch any reason all of this cannot be
+> > > rolled into scmi_protocol?
+> > 
+> > The basic idea for protocol_hande existence is that the protocol code
+> > should be able to access the core xfer ops (without EXPORTing all
+> > scmi_xfer ops) but protoX should NOT be allowed to mistakenly or
+> > maliciously build and send protoY messages: since the protocol_handle
+> > for protoX is embedded in a specific protocol_instance in this way you
+> > can call from your protocol code something like:
+> > 
+> > ph->xops->xfer_get_init(ph, ...)
+> 
+> I am still confused by this one... scmi_protocol_instance has a pointer to
+> scmi_handle. So why not handle->xops->xfer_get_init(pi, ....). Here also
+> protoX will not be allowed to send protoY messages, right? And then again
+> set_priv and get_priv can be moved to scmi_protocol_instance right ?
+> 
 
-diff --git a/arch/arm64/boot/dts/allwinner/Makefile b/arch/arm64/boot/dts/allwinner/Makefile
-index 211d1e9d4701..a221dcebfad4 100644
---- a/arch/arm64/boot/dts/allwinner/Makefile
-+++ b/arch/arm64/boot/dts/allwinner/Makefile
-@@ -13,6 +13,7 @@ dtb-$(CONFIG_ARCH_SUNXI) += sun50i-a64-pinephone-1.0.dtb
- dtb-$(CONFIG_ARCH_SUNXI) += sun50i-a64-pinephone-1.1.dtb
- dtb-$(CONFIG_ARCH_SUNXI) += sun50i-a64-pinephone-1.2.dtb
- dtb-$(CONFIG_ARCH_SUNXI) += sun50i-a64-pinetab.dtb
-+dtb-$(CONFIG_ARCH_SUNXI) += sun50i-a64-pinetab-dev.dtb
- dtb-$(CONFIG_ARCH_SUNXI) += sun50i-a64-sopine-baseboard.dtb
- dtb-$(CONFIG_ARCH_SUNXI) += sun50i-a64-teres-i.dtb
- dtb-$(CONFIG_ARCH_SUNXI) += sun50i-a100-allwinner-perf1.dtb
-diff --git a/arch/arm64/boot/dts/allwinner/sun50i-a64-pinetab-dev.dts b/arch/arm64/boot/dts/allwinner/sun50i-a64-pinetab-dev.dts
-new file mode 100644
-index 000000000000..3a4153890f3e
---- /dev/null
-+++ b/arch/arm64/boot/dts/allwinner/sun50i-a64-pinetab-dev.dts
-@@ -0,0 +1,28 @@
-+// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
-+/*
-+ * Copyright (C) 2020 Icenowy Zheng <icenowy@aosc.io>
-+ *
-+ */
-+
-+/dts-v1/;
-+
-+#include "sun50i-a64-pinetab.dts"
-+
-+/ {
-+	model = "PineTab Developer Sample";
-+	compatible = "pine64,pinetab-dev", "allwinner,sun50i-a64";
-+};
-+
-+&dsi {
-+	/delete-node/ panel@0;
-+
-+	panel@0 {
-+		compatible = "feixin,k101-im2ba02";
-+		reg = <0>;
-+		avdd-supply = <&reg_dc1sw>;
-+		dvdd-supply = <&reg_dc1sw>;
-+		cvdd-supply = <&reg_ldo_io1>;
-+		reset-gpios = <&pio 3 24 GPIO_ACTIVE_HIGH>; /* PD24 */
-+		backlight = <&backlight>;
-+	};
-+};
--- 
-2.28.0
+So given that there a number of different 'actors' playing in the SCMI
+stack, the basic idea/attempt in general was to expose to each single actor
+just the bare minimum needed data structs with the bare minimum needed level
+of access (read-only const when no write-access is needed).
+
+We can consider 3 main SCMI actors in these regards:
+
+- SCMI core which takes care to keep track of all the available/loadable
+  protocols and to provide access to such protocols via get_ops while
+  allocating proper instances and tracking the lifecycle of all the needed
+  resources: to do that the core needs all the data in protocol_instance.
+
+- SCMI Protocols that basically just need to be able to build and send
+  messages related to their implemented protocols, and also storing any
+  needed per-protocol private data somewhere; to do that a protocol
+  implementation really needs only:
+   
+   + xfer_ops possibly restricted to its own protocol ID
+   + a dev to use optionally for its own devres
+   + a way to store private data specific to the SCMI instance if needed
+
+  In order to realize this the core indeed passes down the protocols'
+  init code a const protocol_handle, so that the protocol has available
+  all of the above and nothing more, while the core, with the usual
+  containmr_of trick, can retrieve the containing protocol_instance
+  needed to process properly the xfer_ops.
+  What I really don't like are the bulky set_priv/get_priv ops instead
+  of a much simpler ph->priv kind-of-access: but this bulky accessors are
+  in fact needed because ph is passed as const to protocol init.
+  Not sure if I can play some trick here to avoid this without making
+  the code even more complex.
+
+  Note also that, the usage of the protocol_handle in the init code
+  enforces as a consequence its usage also in the exposed protocol
+  operations, because if I had kept the old perf_ops(handle, ) style
+  interface that would have meant that the protocol core should have
+  been able to somehow ask the core for the proper handle to use like:
+   
+   ph = scmi_map_protocol(handle, SCMI_PROTOCOL_X)
+
+  which would have defeated all of the above attempt to effectively restrict
+  the access of protoX to proto ID=X, since any protocol could have
+  grabbed any other protocol_handle of choice with the above map interface.
+  (beside being an unneeded repetition)
+
+- at last, there are SCMI drivers that basically just need to able to grab
+  access to their desired protocols, if available, and use those specific
+  protocol operations related to the SCMI handle instance they refer: here
+  the trick to limit the visibility of the data to the bare minimum needs,
+  as said, is that the protocol_handle is just an opaque pointer for the
+  SCMI driver, it cannot be dereferenced and accessed by the SCMI driver.
+
+
+Regards
+
+Cristian
+
+
+> 
+> -- 
+> Warm Regards
+> Thara
