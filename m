@@ -2,86 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F2032AA56F
+	by mail.lfdr.de (Postfix) with ESMTP id 862A12AA56E
 	for <lists+linux-kernel@lfdr.de>; Sat,  7 Nov 2020 14:34:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728114AbgKGNel (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Nov 2020 08:34:41 -0500
-Received: from mout.gmx.net ([212.227.15.18]:42515 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727608AbgKGNek (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1728078AbgKGNek (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Sat, 7 Nov 2020 08:34:40 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1604756033;
-        bh=mTjCLBPoUnUm5mv2iC4xNF5c9rw+uX5O8rOaunwsyHI=;
-        h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
-        b=YpG05YhngRx5/Qhp2ZD7+gaoSI3Di75w2V44f/tWqoS0ocHhILt2cQsEA6yp/oK7l
-         UYAlcA05oQ/O9B6RkGEhNYelKjGaT5ffdm8Y2Qyk/yeI3EXK66L/tJYbCOUW4TdVho
-         tLQ+BwDsv6gzeqHuVwihHhsFXHbzsloBlpdv/tjo=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from longitude ([37.201.214.162]) by mail.gmx.com (mrgmx005
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1Mr9Fs-1jvzba492s-00oJvo; Sat, 07
- Nov 2020 14:33:53 +0100
-From:   =?UTF-8?q?Jonathan=20Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>
-To:     linux-kernel@vger.kernel.org
-Cc:     =?UTF-8?q?Jonathan=20Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Christian Eggers <ceggers@arri.de>,
-        Vadym Kochan <vadym.kochan@plvision.eu>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Subject: [PATCH] eeprom: at25: Add example part numbers
-Date:   Sat,  7 Nov 2020 14:33:35 +0100
-Message-Id: <20201107133337.1066271-1-j.neuschaefer@gmx.net>
-X-Mailer: git-send-email 2.28.0
+Received: from out30-44.freemail.mail.aliyun.com ([115.124.30.44]:56002 "EHLO
+        out30-44.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727084AbgKGNei (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 7 Nov 2020 08:34:38 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R521e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04400;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0UEWYIIT_1604756073;
+Received: from IT-FVFX43SYHV2H.lan(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0UEWYIIT_1604756073)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Sat, 07 Nov 2020 21:34:33 +0800
+Subject: Re: [PATCH] mm/memcg: update page struct member in comments
+To:     Roman Gushchin <guro@fb.com>
+Cc:     hannes@cmpxchg.org, akpm@linux-foundation.org,
+        Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        cgroups@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+References: <1604662413-5734-1-git-send-email-alex.shi@linux.alibaba.com>
+ <20201106205140.GA2285866@carbon.dhcp.thefacebook.com>
+From:   Alex Shi <alex.shi@linux.alibaba.com>
+Message-ID: <1491c150-1cc0-6062-08ea-9c891548a3bc@linux.alibaba.com>
+Date:   Sat, 7 Nov 2020 21:34:15 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
+ Gecko/20100101 Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:OQlHIy0HMWRSw2jDTyLDFT3weIIvwbZf2uYNtMdiQPpYs0cB7x8
- pCsC4Izmqwm4u367mgMDy2juhpP2cd4k+ZBtCcROVGhItK6DTiYKWFc34qaErZgfj5npD5h
- havw/85c++d2hf1TzVzE/fi00hqEgDqgDBidqW/ydwm3A+cdQSlc2RXFW/4McpqMzUFd77t
- US1IisWhe8XncftQMsrsQ==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:jkBpQ0NJZaU=:luYZovjqW5Pktj2Hsi3Gct
- LH1fRwFMDoZnhCrgLnekJfKMxcL+DELPw58bdAvgfrKiO/h45Fx0o3WdAbvRpyh7E5R41/cbh
- hemUEj8NV+92ianalrsfXu2JAsoBi4EQTVRGEF0As1GUUmKKJcteTkdMwTEB87gjg/SWQrioG
- QQjrTuKVbTkVrtuEHas5xTKN7r5kFFBX43F/Xrm9uIw8V6+WagE7gFRMqT2ymb24qz1yEVMGD
- Yk5t/lSof1LkvTxyRf1Ct4pMXja5VzAy0H1qC4ENdUf6x+0Wi/z17+lwPjh0s744mLNF0xgtA
- yyxlgF6/T7pSpXioidLmcW6zpFB4+cQnORn5Dod+OwD2I/fyqkp4lDEoXWy4mlt6kltrUu2pD
- Rug4W/2A0ouGyeixmbX4OtufzzWNkimJPvJsWo/WScJEqR1NlKuA6HDRXd2aZ3GURc3WF6GeI
- KOEQUGSJynPh6tgpg64ieX6ME/o+SbKzykqBRd3bwnkHBohC6u7Xh8xv6WaAJmEIcK1ZsZJ6V
- K+N0Vrma5yEfr4/ZAdPKxmq8JCrq+CAZmRzM4dv1Eoe8ywEUqqX2SsJt7zgXtXFToPaiL0qcZ
- b9vwVsMXTA270WixOWyLVOZ0Z/FvssHG0K1SuwhcDKJeLeFDeupjwXY23DqJzg5AD1k/oR5wq
- FYuVnlBjvbenL1BlvsIXgc1NXaHB3FEJFf9wkihCtmySKv2KIoBhxQKKzZoyYA+QWM8f5iHc2
- XF/LN1/kJ6hv9HLWDFgeelzQ15EThyvqZIp/j83W4TeYJESjd+t/J+ZKFAc32Hs/tWUrfCRBy
- 2YXJd5a2/Us2igG3zE/GnAaFozzzI3gky41irhNBZta5KLwCcKy77TxbJpAR3kfBkpITcSGY9
- TMBPWXhzGUMNqb9Gq2eIzildhIun1azdF+5u0s0Ds=
+In-Reply-To: <20201106205140.GA2285866@carbon.dhcp.thefacebook.com>
+Content-Type: text/plain; charset=gbk
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-To save the interested reader some time, add examples of AT25 part
-numbers that correspond to EEPROMs rather than flashes.
 
-Signed-off-by: Jonathan Neusch=C3=A4fer <j.neuschaefer@gmx.net>
-=2D--
- drivers/misc/eeprom/at25.c | 3 +++
- 1 file changed, 3 insertions(+)
 
-diff --git a/drivers/misc/eeprom/at25.c b/drivers/misc/eeprom/at25.c
-index 3b7d8b7584f4d..b76e4901b4a49 100644
-=2D-- a/drivers/misc/eeprom/at25.c
-+++ b/drivers/misc/eeprom/at25.c
-@@ -22,6 +22,9 @@
-  * mean that some AT25 products are EEPROMs, and others are FLASH.
-  * Handle FLASH chips with the drivers/mtd/devices/m25p80.c driver,
-  * not this one!
-+ *
-+ * EEPROMs that can be used with this driver include, for example:
-+ *   AT25M02, AT25128B
+ÔÚ 2020/11/7 ÉÏÎç4:51, Roman Gushchin Ð´µÀ:
+> There are "page and memcg binding" and "page's memcg" used in similar cases,
+> I think it's more obvious than "page_memcg(page) being stable".
+> 
+> Maybe it helps to address Ira's comment.
+> 
+> Anyway, please feel free to add:
+> Acked-by: Roman Gushchin <guro@fb.com>
+> 
+> Thanks!
+
+Thanks a lot! Roman.
+here is the updated patch with your suggestion and ack.
+
+
+From 0db2bd8f3833ec5e58c6978f771b05e4902e5156 Mon Sep 17 00:00:00 2001
+From: Alex Shi <alex.shi@linux.alibaba.com>
+Date: Fri, 6 Nov 2020 19:33:33 +0800
+Subject: [PATCH v2] mm/memcg: update page struct member in comments
+
+The page->mem_cgroup member is replaced by memcg_data, and add a helper
+page_memcg() for it. Need to update comments to avoid confusing.
+
+Signed-off-by: Alex Shi <alex.shi@linux.alibaba.com>
+Acked-by: Roman Gushchin <guro@fb.com>
+Cc: Johannes Weiner <hannes@cmpxchg.org>
+Cc: Michal Hocko <mhocko@kernel.org>
+Cc: Vladimir Davydov <vdavydov.dev@gmail.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: cgroups@vger.kernel.org
+Cc: linux-mm@kvack.org
+Cc: linux-kernel@vger.kernel.org
+---
+ mm/memcontrol.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index 7657f16cf992..b6560ab1adc4 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -1330,7 +1330,7 @@ void lruvec_memcg_debug(struct lruvec *lruvec, struct page *page)
+  * @page: the page
+  * @pgdat: pgdat of the page
+  *
+- * This function relies on page->mem_cgroup being stable - see the
++ * This function relies on page's memcg being stable - see the
+  * access rules in commit_charge().
   */
-
- struct at25_data {
-=2D-
-2.28.0
+ struct lruvec *mem_cgroup_page_lruvec(struct page *page, struct pglist_data *pgdat)
+@@ -2942,7 +2942,7 @@ static void commit_charge(struct page *page, struct mem_cgroup *memcg)
+ {
+ 	VM_BUG_ON_PAGE(page_memcg(page), page);
+ 	/*
+-	 * Any of the following ensures page->mem_cgroup stability:
++	 * Any of the following ensures page's memcg stability:
+ 	 *
+ 	 * - the page lock
+ 	 * - LRU isolation
+-- 
+1.8.3.1
 
