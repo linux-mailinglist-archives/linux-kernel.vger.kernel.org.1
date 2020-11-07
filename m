@@ -2,88 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 662E02AA69B
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Nov 2020 17:13:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 95A8A2AA69C
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Nov 2020 17:16:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728277AbgKGQNh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Nov 2020 11:13:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57682 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726284AbgKGQNh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Nov 2020 11:13:37 -0500
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 082D4C0613CF
-        for <linux-kernel@vger.kernel.org>; Sat,  7 Nov 2020 08:13:37 -0800 (PST)
-Received: by mail-pl1-x643.google.com with SMTP id b12so2410756plr.4
-        for <linux-kernel@vger.kernel.org>; Sat, 07 Nov 2020 08:13:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=P5jbgj6ga3DTAIYJLP70354dsAkH43LDVwNjCSc3Lu8=;
-        b=JVzsJXqnRxVNXvlRmJMFPFOahQlHR9Afqzwd04hKgojEWJKuB/n5dsHk1UEFWKgw+A
-         1cMq+UmuQG8L1UnMR5Ca1nQE2WrbFNV0ktIpKjRy/sX+iMIK5bct30X0xU5mwIvTAjBf
-         ODs8HE3iHHGqcDqudeBT40ITTnu59wtKgS766jR1c/WWsRn5eLaz9Xb0+KiCbub+OWHm
-         MCD5qKz/smkYJctz7zvPJtbqJ3jDeeN9Qt05JRHXeXpN09qsmZFQ34JRg+73CpmO1tvd
-         +H0yS7/AaD2uEqyuTXecxpgsUSoAFmz0vsseQ0ztbHREOWuBUzFbxR9wn/FKeKGlfbCj
-         I1KQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=P5jbgj6ga3DTAIYJLP70354dsAkH43LDVwNjCSc3Lu8=;
-        b=Viw0DNVJT5Z5W4lYf6qsjCpLITKWigNsUm85D3hS4FSWgdPWq7DOGTXcdH4EVWcire
-         /YHWLGoY+H/z2DyJ1264vFinvbyKL1so/dYfv614aRvNcfIecL8H14WNWMUsquIHW01G
-         1tKSS9JfontiT8n5o8YQLpCWqdXe6TTtzPtVHiFA3dguudAhFsH+jvzioUWkavBlUmut
-         9Nze/N1Z3nGZ2yjCPKww5K2pF3csTzIlf1L42Ouz/7j02Zgt4aJALY8gWUfOq8W+kIBW
-         LVDEMn/QXuvGJ/+eaaxSNHP5Xbrzh/QnNpthRN5k5DOvDFbwKN+eWOqrrf+wxyNTrbwa
-         Amvw==
-X-Gm-Message-State: AOAM530L+YpkoqEbmlB9VLQGMiiu496FDhm9Bu292/nMOvi/GPkJyaEW
-        /UYYztDrRMG1CK9/rOqlOA==
-X-Google-Smtp-Source: ABdhPJzo8ABN6u+mCozytwwHLIrUDVpJSNi7I1by0dKWmCdbnYZnYUpcGIzn9/b4+GA5dQotttfeUQ==
-X-Received: by 2002:a17:902:8504:b029:d6:7552:19ab with SMTP id bj4-20020a1709028504b02900d6755219abmr6032101plb.83.1604765616580;
-        Sat, 07 Nov 2020 08:13:36 -0800 (PST)
-Received: from he-cluster.localdomain (67.216.221.250.16clouds.com. [67.216.221.250])
-        by smtp.gmail.com with ESMTPSA id l62sm5623296pga.63.2020.11.07.08.13.35
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sat, 07 Nov 2020 08:13:35 -0800 (PST)
-From:   xiakaixu1987@gmail.com
-X-Google-Original-From: kaixuxia@tencent.com
-To:     perex@perex.cz, tiwai@suse.com
-Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-        Kaixu Xia <kaixuxia@tencent.com>
-Subject: [PATCH] ALSA: firewire: fix comparison to bool warning
-Date:   Sun,  8 Nov 2020 00:13:31 +0800
-Message-Id: <1604765611-8209-1-git-send-email-kaixuxia@tencent.com>
-X-Mailer: git-send-email 1.8.3.1
+        id S1726297AbgKGQQC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Nov 2020 11:16:02 -0500
+Received: from m42-4.mailgun.net ([69.72.42.4]:41917 "EHLO m42-4.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726284AbgKGQQB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 7 Nov 2020 11:16:01 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1604765760; h=Date: Message-Id: Cc: To: References:
+ In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
+ Content-Type: Sender; bh=yhmc/4tFcs6/ljdXZP2KS0wx0WYz/n+ogGlaNkCjmrM=;
+ b=sFVxlmFgri4r9GRS9cp667hRef+vplfgftjH4Lm4mtQMV43kp0X1wtxM4HNpIljzo0yOzxBs
+ NiZCZhdx9/89DXnI2ip7hk7Ijz0Kt/oACaSwf943MNGm3NuyJK+1VyK61/L0oW6Qkw12Brms
+ 2/6m68chdkcPSeuov9b/1yXkIRQ=
+X-Mailgun-Sending-Ip: 69.72.42.4
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n07.prod.us-east-1.postgun.com with SMTP id
+ 5fa6c8248c0d657314464acd (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Sat, 07 Nov 2020 16:15:32
+ GMT
+Sender: kvalo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 0A318C433CB; Sat,  7 Nov 2020 16:15:32 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        MISSING_DATE,MISSING_MID,SPF_FAIL,URIBL_BLOCKED autolearn=no
+        autolearn_force=no version=3.4.0
+Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 0A013C433C6;
+        Sat,  7 Nov 2020 16:15:28 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 0A013C433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Subject: Re: [03/41] rtlwifi: rtl8192cu: mac: Fix some missing/ill-documented
+ function parameters
+From:   Kalle Valo <kvalo@codeaurora.org>
+In-Reply-To: <20201102112410.1049272-4-lee.jones@linaro.org>
+References: <20201102112410.1049272-4-lee.jones@linaro.org>
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     linux-kernel@vger.kernel.org, Lee Jones <lee.jones@linaro.org>,
+        Ping-Ke Shih <pkshih@realtek.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Larry Finger <Larry.Finger@lwfinger.net>,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org
+User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.5.2
+Message-Id: <20201107161532.0A318C433CB@smtp.codeaurora.org>
+Date:   Sat,  7 Nov 2020 16:15:32 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kaixu Xia <kaixuxia@tencent.com>
+Lee Jones <lee.jones@linaro.org> wrote:
 
-Fix the following coccicheck warning:
+> Fixes the following W=1 kernel build warning(s):
+> 
+>  drivers/net/wireless/realtek/rtlwifi/rtl8192cu/mac.c:124: warning: Function parameter or member 'hw' not described in 'rtl92c_llt_write'
+>  drivers/net/wireless/realtek/rtlwifi/rtl8192cu/mac.c:124: warning: Excess function parameter 'io' description in 'rtl92c_llt_write'
+>  drivers/net/wireless/realtek/rtlwifi/rtl8192cu/mac.c:155: warning: Function parameter or member 'hw' not described in 'rtl92c_init_llt_table'
+>  drivers/net/wireless/realtek/rtlwifi/rtl8192cu/mac.c:155: warning: Excess function parameter 'io' description in 'rtl92c_init_llt_table'
+> 
+> Cc: Ping-Ke Shih <pkshih@realtek.com>
+> Cc: Kalle Valo <kvalo@codeaurora.org>
+> Cc: "David S. Miller" <davem@davemloft.net>
+> Cc: Jakub Kicinski <kuba@kernel.org>
+> Cc: Larry Finger <Larry.Finger@lwfinger.net>
+> Cc: linux-wireless@vger.kernel.org
+> Cc: netdev@vger.kernel.org
+> Signed-off-by: Lee Jones <lee.jones@linaro.org>
 
-./sound/firewire/amdtp-stream.h:273:6-19: WARNING: Comparison to bool
+11 patches applied to wireless-drivers-next.git, thanks.
 
-Reported-by: Tosk Robot <tencent_os_robot@tencent.com>
-Signed-off-by: Kaixu Xia <kaixuxia@tencent.com>
----
- sound/firewire/amdtp-stream.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+230f874e4d95 rtlwifi: rtl8192cu: mac: Fix some missing/ill-documented function parameters
+906a1b4f81a3 rtlwifi: rtl8192cu: trx: Demote clear abuse of kernel-doc format
+bb053d0251a2 rtlwifi: halbtc8723b2ant: Remove a bunch of set but unused variables
+87b08d1ecb93 rtlwifi: phy: Remove set but unused variable 'bbvalue'
+0c73dab72f53 rtlwifi: halbtc8821a1ant: Remove set but unused variable 'wifi_rssi_state'
+0a43d993ee7e rtlwifi: rtl8723be: Remove set but unused variable 'lc_cal'
+6c75eab0417b rtlwifi: rtl8188ee: Remove set but unused variable 'reg_ea4'
+28f811876262 rtlwifi: halbtc8821a2ant: Remove a bunch of unused variables
+44ec6d9df96d rtlwifi: rtl8723be: Remove set but unused variable 'cck_highpwr'
+29c6099a3890 rtlwifi: rtl8821ae: phy: Remove a couple of unused variables
+398d816a64eb rtlwifi: rtl8821ae: Place braces around empty if() body
 
-diff --git a/sound/firewire/amdtp-stream.h b/sound/firewire/amdtp-stream.h
-index 2ceb57d1d58e..a3daa1f2c1c4 100644
---- a/sound/firewire/amdtp-stream.h
-+++ b/sound/firewire/amdtp-stream.h
-@@ -270,7 +270,7 @@ static inline bool amdtp_stream_wait_callback(struct amdtp_stream *s,
- 					      unsigned int timeout)
- {
- 	return wait_event_timeout(s->callback_wait,
--				  s->callbacked == true,
-+				  s->callbacked,
- 				  msecs_to_jiffies(timeout)) > 0;
- }
- 
 -- 
-2.20.0
+https://patchwork.kernel.org/project/linux-wireless/patch/20201102112410.1049272-4-lee.jones@linaro.org/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
