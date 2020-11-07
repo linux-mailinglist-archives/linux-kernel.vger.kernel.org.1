@@ -2,62 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CC472AA7A4
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Nov 2020 20:33:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EDF2C2AA7A6
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Nov 2020 20:35:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728612AbgKGTdQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Nov 2020 14:33:16 -0500
-Received: from asavdk4.altibox.net ([109.247.116.15]:35724 "EHLO
-        asavdk4.altibox.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725836AbgKGTdP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Nov 2020 14:33:15 -0500
-Received: from ravnborg.org (unknown [188.228.123.71])
+        id S1728658AbgKGTf3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Nov 2020 14:35:29 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46720 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725836AbgKGTf2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 7 Nov 2020 14:35:28 -0500
+Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.4])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by asavdk4.altibox.net (Postfix) with ESMTPS id 846088052E;
-        Sat,  7 Nov 2020 20:33:12 +0100 (CET)
-Date:   Sat, 7 Nov 2020 20:33:11 +0100
-From:   Sam Ravnborg <sam@ravnborg.org>
-To:     Paul Cercueil <paul@crapouillou.net>
-Cc:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
-        od@zcrc.me, linux-kernel@vger.kernel.org,
-        dri-devel@lists.freedesktop.org
-Subject: Re: [PATCH] drm/ingenic: ipu: Search for scaling coefs up to 102% of
- the screen
-Message-ID: <20201107193311.GB1039949@ravnborg.org>
-References: <20201105083905.8780-1-paul@crapouillou.net>
+        by mail.kernel.org (Postfix) with ESMTPSA id CA8D620723;
+        Sat,  7 Nov 2020 19:35:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604777728;
+        bh=AjR96+yaBayijL7Wx5/CF+M4oB4bNnVhjNMokSzY7Uk=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=BrPhYw+rrMLsFZlKDu2tGpqYgtcQjR7sz+Macvy6nbmXUqefoxI4ztwUCMELNqBMH
+         i6hSl2n2KID7nAY0xngZfvLkMO5dpnWzUab61en/NwoK+2RYL+WlIUQDFtyc8FEZ8r
+         JE6onVK4n3YxpYzp/ck2X6YCHRzGZgNcH8S8KWss=
+Date:   Sat, 7 Nov 2020 11:35:27 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Radhey Shyam Pandey <radhey.shyam.pandey@xilinx.com>
+Cc:     <davem@davemloft.net>, <michal.simek@xilinx.com>,
+        <netdev@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <git@xilinx.com>,
+        Shravya Kumbham <shravya.kumbham@xilinx.com>
+Subject: Re: [PATCH net-next] net: emaclite: Add error handling for
+ of_address_ and phy read functions
+Message-ID: <20201107113527.18232c34@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <1604410265-30246-1-git-send-email-radhey.shyam.pandey@xilinx.com>
+References: <1604410265-30246-1-git-send-email-radhey.shyam.pandey@xilinx.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201105083905.8780-1-paul@crapouillou.net>
-X-CMAE-Score: 0
-X-CMAE-Analysis: v=2.3 cv=VafZwmh9 c=1 sm=1 tr=0
-        a=S6zTFyMACwkrwXSdXUNehg==:117 a=S6zTFyMACwkrwXSdXUNehg==:17
-        a=kj9zAlcOel0A:10 a=ER_8r6IbAAAA:8 a=7gkXJVJtAAAA:8
-        a=XnjrpGiWGA5PLGppdLwA:9 a=CjuIK1q_8ugA:10 a=9LHmKk7ezEChjTCyhBa9:22
-        a=E9Po1WZjFZOl8hwRPBS3:22
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Paul.
-
-On Thu, Nov 05, 2020 at 08:39:05AM +0000, Paul Cercueil wrote:
-> Increase the scaled image's theorical width/height until we find a
-> configuration that has valid scaling coefficients, up to 102% of the
-> screen's resolution. This makes sure that we can scale from almost
-> every resolution possible at the cost of a very small distorsion.
-> The CRTC_W / CRTC_H are not modified.
+On Tue, 3 Nov 2020 19:01:05 +0530 Radhey Shyam Pandey wrote:
+> From: Shravya Kumbham <shravya.kumbham@xilinx.com>
 > 
-> This algorithm was already in place but would not try to go above the
-> screen's resolution, and as a result would only work if the CRTC_W /
-> CRTC_H were smaller than the screen resolution. It will now try until it
-> reaches 102% of the screen's resolution.
+> Add ret variable, conditions to check the return value and it's error
+> path for of_address_to_resource() and phy_read() functions.
 > 
-> Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+> Addresses-Coverity: Event check_return value.
+> Signed-off-by: Shravya Kumbham <shravya.kumbham@xilinx.com>
+> Signed-off-by: Radhey Shyam Pandey <radhey.shyam.pandey@xilinx.com>
 
-Looks like the patch does what the descriptions says.
-So in other words - look OK to me. I am not confident enogh for a r-b
-but my code reading is enough to warrant an a-b:
-Acked-by: Sam Ravnborg <sam@ravnborg.org>
+Any reason not to apply this to net as a fix?
+
+> diff --git a/drivers/net/ethernet/xilinx/xilinx_emaclite.c b/drivers/net/ethernet/xilinx/xilinx_emaclite.c
+> index 0c26f5b..fc5ccd1 100644
+> --- a/drivers/net/ethernet/xilinx/xilinx_emaclite.c
+> +++ b/drivers/net/ethernet/xilinx/xilinx_emaclite.c
+> @@ -820,7 +820,7 @@ static int xemaclite_mdio_write(struct mii_bus *bus, int phy_id, int reg,
+>  static int xemaclite_mdio_setup(struct net_local *lp, struct device *dev)
+>  {
+>  	struct mii_bus *bus;
+> -	int rc;
+> +	int rc, ret;
+>  	struct resource res;
+>  	struct device_node *np = of_get_parent(lp->phy_node);
+>  	struct device_node *npp;
+> @@ -834,7 +834,13 @@ static int xemaclite_mdio_setup(struct net_local *lp, struct device *dev)
+>  	}
+>  	npp = of_get_parent(np);
+>  
+> -	of_address_to_resource(npp, 0, &res);
+> +	ret = of_address_to_resource(npp, 0, &res);
+> +	if (ret) {
+> +		dev_err(dev, "%s resource error!\n",
+> +			dev->of_node->full_name);
+> +		of_node_put(lp->phy_node);
+
+I'm always confused by the of_* refcounting. Why do you need to put
+phy_node here, and nowhere else in this function?
+
+> +		return ret;
+> +	}
+
+>  		/* Restart auto negotiation */
+>  		bmcr = phy_read(lp->phy_dev, MII_BMCR);
+> +		if (bmcr < 0) {
+> +			dev_err(&lp->ndev->dev, "phy_read failed\n");
+> +			phy_disconnect(lp->phy_dev);
+> +			lp->phy_dev = NULL;
+> +
+> +			return bmcr;
+> +		}
+>  		bmcr |= (BMCR_ANENABLE | BMCR_ANRESTART);
+>  		phy_write(lp->phy_dev, MII_BMCR, bmcr);
+
+Does it really make much sense to validate the return value of
+phy_read() but not check any errors from phy_write()s?
