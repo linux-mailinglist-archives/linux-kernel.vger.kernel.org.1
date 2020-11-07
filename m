@@ -2,97 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BFECB2AA3F1
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Nov 2020 09:47:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 142152AA3E7
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Nov 2020 09:37:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728116AbgKGIr4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Nov 2020 03:47:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45444 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727886AbgKGIr4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Nov 2020 03:47:56 -0500
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9339C0613CF;
-        Sat,  7 Nov 2020 00:47:55 -0800 (PST)
-Received: by mail-pg1-x544.google.com with SMTP id t14so3033755pgg.1;
-        Sat, 07 Nov 2020 00:47:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=bZpwuF564hbZcjyk1Oa3agUsSrTimItihmfB6dOlwo0=;
-        b=dNufYki4/f8inIB48XW9zbx02c1GAIXLf/NB1ZMUb20uN6nh48EVt0obJFEx0f1wXJ
-         fiefojpmCv5oLzE3L79EsBU14XZqJ+R+hBlrZW5us0t7oKlxEpDk9Brw50qRyoZrsli8
-         QSKxmIaCliW0kqGEUyMEV/IpOh9LIN0+kdZYZ83HFxL+Jue9U7h4k0+BId2fkRkVtvJH
-         BTKqusBoNto2xEUscbF/IXHlRM5lTLmJ0fdqi56I0V9PxBxqqT0UqRNxL5iAeaQ7ffK5
-         e4HgQVKEm6vZd4U75Tp+gCYaRBbC/yfkd95sxm2aMX/YOGfqDBljBc7vU+jZcOcng2TS
-         8gpQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=bZpwuF564hbZcjyk1Oa3agUsSrTimItihmfB6dOlwo0=;
-        b=CSLWQjbqnviD/ZiAalryg/QO5YyOIQ0OwC74RGPJ4d3fN5GizToR5aq80LVXd8YJsX
-         1P144QiAfk84d8psdxWCRUG6egk4SUHS7Z0hsk2PRpKcldqpqz3Fca9oGX/68yEtwAzU
-         Z/IbZMe7RAxqYaWAtBZSsk4BPi/y2pZn2sK8wNn6ny6saSGlv5gTf3jpqgO0gOl1RrfD
-         tOTHhRDCPM9FB5Tf50QHXqJ00EFdn4KwytqaJpyzfXy2S9Ci5me0hQ7QQ9XnOy/0rPoD
-         4vK3iLCpelGunYVahqOO1zRkqZAljkm9vAYUVhcWw5sUyObIzZatge13VH/0/vNGIBUI
-         vRZA==
-X-Gm-Message-State: AOAM530tv4odyeTeZvzVlfFYz79mV3wAhJF3/GLYQ+l4btr8iHuWD3/Q
-        5dVRY0werPH90516YyvWu6g=
-X-Google-Smtp-Source: ABdhPJyo+FW7XO57lJER/2gj1PHntYkEnSKY/kVUOVoSnSaFsTTvdxETY9+5fopyvoRYXQNw8nKKwQ==
-X-Received: by 2002:a63:381:: with SMTP id 123mr5167410pgd.112.1604738875435;
-        Sat, 07 Nov 2020 00:47:55 -0800 (PST)
-Received: from Asurada-Nvidia (thunderhill.nvidia.com. [216.228.112.22])
-        by smtp.gmail.com with ESMTPSA id f71sm4474710pfa.155.2020.11.07.00.47.54
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Sat, 07 Nov 2020 00:47:54 -0800 (PST)
-Date:   Sat, 7 Nov 2020 00:35:39 -0800
-From:   Nicolin Chen <nicoleotsuka@gmail.com>
-To:     thierry.reding@gmail.com, joro@8bytes.org
-Cc:     vdumpa@nvidia.com, jonathanh@nvidia.com, digetx@gmail.com,
-        linux-tegra@vger.kernel.org, iommu@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, hch@infradead.org
-Subject: Re: [PATCH v4 0/2] iommu/tegra-smmu: Two followup changes
-Message-ID: <20201107083538.GA24113@Asurada-Nvidia>
-References: <20200929061325.10197-1-nicoleotsuka@gmail.com>
+        id S1728173AbgKGIhU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Nov 2020 03:37:20 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48590 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728093AbgKGIhU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 7 Nov 2020 03:37:20 -0500
+Received: from mail-ot1-f43.google.com (mail-ot1-f43.google.com [209.85.210.43])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id C064B20872;
+        Sat,  7 Nov 2020 08:37:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604738239;
+        bh=w4U/UL1lvYAslbUWD/fsjmoZFQx7khixAloqPEBIX+8=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=f2vu2lwdokEHxurAhG52b0TNKg14+owYA1kauL8JiHyRFO/1uKxTX8W+DNRfQ/xRr
+         O4gOYxRLRBLfktM/Mg/1QUOKIAm+ZuB7MjepJBktMJcVZCEWBU9/fuBgQUjH6YjJka
+         jhEXzWDI1l8JHRfwnq1ZTcnPObYKpngiliUflQ3E=
+Received: by mail-ot1-f43.google.com with SMTP id k3so3581439otp.12;
+        Sat, 07 Nov 2020 00:37:19 -0800 (PST)
+X-Gm-Message-State: AOAM531lPmqLfn6aKmNgsMbQ0kEF4gzU/O2SaiyznfsgZO5dtd6JUU1h
+        diwZ7OQJ9BOh8NsY6GVzuz2ivgJduCNAisNEOYI=
+X-Google-Smtp-Source: ABdhPJyHG0914bC2DpBc0bby7WmDT1RzD2jWXi0CvhEBt2MGBK9BJTEuw8wIfEglwO4ciIQu0rMzI3Xw+IPCn2xtWXc=
+X-Received: by 2002:a9d:62c1:: with SMTP id z1mr3601691otk.108.1604738239175;
+ Sat, 07 Nov 2020 00:37:19 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200929061325.10197-1-nicoleotsuka@gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+References: <20201107083432.3175710-1-ndesaulniers@google.com>
+In-Reply-To: <20201107083432.3175710-1-ndesaulniers@google.com>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Sat, 7 Nov 2020 09:37:07 +0100
+X-Gmail-Original-Message-ID: <CAMj1kXE=V96pJ7xK=9xMh-1Eph4FH7S4WDXDyJUH+82_Zn5DXA@mail.gmail.com>
+Message-ID: <CAMj1kXE=V96pJ7xK=9xMh-1Eph4FH7S4WDXDyJUH+82_Zn5DXA@mail.gmail.com>
+Subject: Re: [PATCH] ACPI: GED: fix -Wformat
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 28, 2020 at 11:13:23PM -0700, Nicolin Chen wrote:
-> Two followup patches for tegra-smmu:
-> PATCH-1 is a clean-up patch for the recently applied SWGROUP change.
-> PATCH-2 fixes a potential race condition
+On Sat, 7 Nov 2020 at 09:34, Nick Desaulniers <ndesaulniers@google.com> wrote:
+>
+> Clang is more aggressive about -Wformat warnings when the format flag
+> specifies a type smaller than the parameter. It turns out that gsi is an
+> int. Fixes:
+>
+> drivers/acpi/evged.c:105:48: warning: format specifies type 'unsigned
+> char' but the argument has type 'unsigned int' [-Wformat]
+> trigger == ACPI_EDGE_SENSITIVE ? 'E' : 'L', gsi);
+>                                             ^~~
+>
+> Link: https://github.com/ClangBuiltLinux/linux/issues/378
+> Fixes: commit ea6f3af4c5e6 ("ACPI: GED: add support for _Exx / _Lxx handler methods")
 
-These two changes have Acked-by and Reviewed-by for a month already.
-Who can apply them?
+Please drop the word 'commit' here
 
-Thanks
-Nic
+> Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
 
-> Changelog
-> v3->v4:
->  * PATCH-2: Fixed typo in subject
-> v2->v3:
->  * PATCH-2: renamed "err_unlock" to "unlock"
-> v1->v2:
->  * Separated first two changs of V1 so they may get applied first,
->    since the other three changes need some extra time to finalize.
-> 
-> Nicolin Chen (2):
->   iommu/tegra-smmu: Unwrap tegra_smmu_group_get
->   iommu/tegra-smmu: Expand mutex protection range
-> 
->  drivers/iommu/tegra-smmu.c | 53 ++++++++++++++++++--------------------
->  1 file changed, 25 insertions(+), 28 deletions(-)
-> 
-> -- 
-> 2.17.1
-> 
+Acked-by: Ard Biesheuvel <ardb@kernel.org>
+
+> ---
+>  drivers/acpi/evged.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/acpi/evged.c b/drivers/acpi/evged.c
+> index b1a7f8d6965e..fe6b6792c8bb 100644
+> --- a/drivers/acpi/evged.c
+> +++ b/drivers/acpi/evged.c
+> @@ -101,7 +101,7 @@ static acpi_status acpi_ged_request_interrupt(struct acpi_resource *ares,
+>
+>         switch (gsi) {
+>         case 0 ... 255:
+> -               sprintf(ev_name, "_%c%02hhX",
+> +               sprintf(ev_name, "_%c%02X",
+>                         trigger == ACPI_EDGE_SENSITIVE ? 'E' : 'L', gsi);
+>
+>                 if (ACPI_SUCCESS(acpi_get_handle(handle, ev_name, &evt_handle)))
+> --
+> 2.29.2.222.g5d2a92d10f8-goog
+>
