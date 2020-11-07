@@ -2,101 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 492812AA63A
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Nov 2020 16:28:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6970F2AA63F
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Nov 2020 16:30:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727768AbgKGP2b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Nov 2020 10:28:31 -0500
-Received: from wind.enjellic.com ([76.10.64.91]:59914 "EHLO wind.enjellic.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726043AbgKGP2a (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Nov 2020 10:28:30 -0500
-Received: from wind.enjellic.com (localhost [127.0.0.1])
-        by wind.enjellic.com (8.15.2/8.15.2) with ESMTP id 0A7FRxAi029719;
-        Sat, 7 Nov 2020 09:27:59 -0600
-Received: (from greg@localhost)
-        by wind.enjellic.com (8.15.2/8.15.2/Submit) id 0A7FRwYv029718;
-        Sat, 7 Nov 2020 09:27:58 -0600
-Date:   Sat, 7 Nov 2020 09:27:58 -0600
-From:   "Dr. Greg" <greg@enjellic.com>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>, x86@kernel.org,
-        linux-sgx@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
-        Jethro Beekman <jethro@fortanix.com>,
-        Darren Kenny <darren.kenny@oracle.com>,
-        andriy.shevchenko@linux.intel.com, asapek@google.com, bp@alien8.de,
-        cedric.xing@intel.com, chenalexchen@google.com,
-        conradparker@google.com, cyhanish@google.com,
-        dave.hansen@intel.com, haitao.huang@intel.com, kai.huang@intel.com,
-        kai.svahn@intel.com, kmoy@google.com, ludloff@google.com,
-        luto@kernel.org, nhorman@redhat.com, npmccallum@redhat.com,
-        puiterwijk@redhat.com, rientjes@google.com, tglx@linutronix.de,
-        yaozhangx@google.com, mikko.ylinen@intel.com
-Subject: Re: [PATCH v40 10/24] mm: Add 'mprotect' hook to struct vm_operations_struct
-Message-ID: <20201107152758.GB29530@wind.enjellic.com>
-Reply-To: "Dr. Greg" <greg@enjellic.com>
-References: <20201104145430.300542-1-jarkko.sakkinen@linux.intel.com> <20201104145430.300542-11-jarkko.sakkinen@linux.intel.com> <20201106174359.GA24109@wind.enjellic.com> <20201106211311.GT17076@casper.infradead.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201106211311.GT17076@casper.infradead.org>
-User-Agent: Mutt/1.4i
-X-Greylist: Sender passed SPF test, not delayed by milter-greylist-4.2.3 (wind.enjellic.com [127.0.0.1]); Sat, 07 Nov 2020 09:28:00 -0600 (CST)
+        id S1727954AbgKGPaT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Nov 2020 10:30:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50986 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726043AbgKGPaT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 7 Nov 2020 10:30:19 -0500
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2EF9C0613CF;
+        Sat,  7 Nov 2020 07:30:18 -0800 (PST)
+Received: by mail-pl1-x643.google.com with SMTP id x23so2369470plr.6;
+        Sat, 07 Nov 2020 07:30:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=9NXH+Ms7XkWHFZBe4Cvg39ykSyyKv7UXBKIHhl19iEo=;
+        b=FRmLSBi0+GDidM3ZaJpQ6FPDJhqM5IibBL6livR2q8y9+Z93auYFYRTnKx/QhHPfon
+         qHV6T3V7FEnXf8oWwYAbMWSa7NWdA1yyhfVKSQm6oL9CaUSy6NMgBcYV0JLs0P86ZqAi
+         7Gr29uUJ5+bgs1ze8gDKv9iiIcQqRXWPf3lmloWObxrA7BeOhC/vz7cOqxuTZlORcdZh
+         d3QTUgmC7GUsL6oe+W7ki1PkIk6RxJdSWObwx5bEK93U7IZHWxErN4FretyTbyvsGfQh
+         AzD6kv5cEGbXvbdda1k/wbNGAyOHgPjje3EW9a8MaiUQGpuiSmsGXGmQmhoclnb0siRv
+         kCrg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=9NXH+Ms7XkWHFZBe4Cvg39ykSyyKv7UXBKIHhl19iEo=;
+        b=CRRb4bZmPRPdt6qVa99RB4LF6EsuV6IXN+U2KKPqKE8+oqH4TKxal4wMAOQi7yXQbv
+         Boo0vJ28Rdg0CKQTh4ZIzdK3g6YYNPEsNXOojp7KMNSWZOWZn2gWwFzf+fwQp6NdIkyV
+         jPzEamMoseo/2Ntc0s27v4vtLqMOS8tWHQSV47IEJa8jAGknJxPHt32JZTVq/+OH2a5x
+         4kGpRWWIid82/qgBSGSf/jS/2uh+DIFxi/ygKG4WTHsyfiMxK5XQNFj2EZ44JJPcbQYp
+         LCc7IO8dYClKoPfn52YP2ku0L+h+qxWH38PkL9ouE9D5c7N+o89yBqj1+4qzojxUgJIW
+         ISmg==
+X-Gm-Message-State: AOAM530+7fLws6EXSfVkFaFmF659dv+qvQiUEKWSu2SlAjRTpwrgoKOQ
+        wYJE/7Sk72z+ECyoN65bRmo5AIv5KeRA
+X-Google-Smtp-Source: ABdhPJwq37eTVs9NlA7M/eF5J2yHMnTVyNXkWu4QuZzoIdgh08llFivFr7vyvR7F8xQqcMDHCHU5ng==
+X-Received: by 2002:a17:902:56e:b029:d5:d861:6b17 with SMTP id 101-20020a170902056eb02900d5d8616b17mr5810449plf.17.1604763018332;
+        Sat, 07 Nov 2020 07:30:18 -0800 (PST)
+Received: from he-cluster.localdomain (67.216.221.250.16clouds.com. [67.216.221.250])
+        by smtp.gmail.com with ESMTPSA id w70sm4816913pfc.11.2020.11.07.07.30.16
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Sat, 07 Nov 2020 07:30:17 -0800 (PST)
+From:   xiakaixu1987@gmail.com
+X-Google-Original-From: kaixuxia@tencent.com
+To:     adobriyan@gmail.com
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Kaixu Xia <kaixuxia@tencent.com>
+Subject: [PATCH] proc: fix comparison to bool warning
+Date:   Sat,  7 Nov 2020 23:30:11 +0800
+Message-Id: <1604763011-7972-1-git-send-email-kaixuxia@tencent.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 06, 2020 at 09:13:11PM +0000, Matthew Wilcox wrote:
-> On Fri, Nov 06, 2020 at 11:43:59AM -0600, Dr. Greg wrote:
-> > The 900 pound primate in the room, that no one is acknowledging, is
-> > that this technology was designed to not allow the operating system to
-> > have any control over what it is doing.  In the mindset of kernel
-> > developers, the operating system is the absolute authority on
-> > security, so we find ourselves in a situation where the kernel needs
-> > to try and work around this fact so any solutions will be imperfect at
-> > best.
-> > 
-> > As I've noted before, this is actually a primary objective of enclave
-> > authors, since one of the desires for 'Confidential Computing' is to
-> > hide things like proprietary algorithms from the platform owners.  I
-> > think the driver needs to acknowledge this fact and equip platform
-> > owners with the simplest and most effective security solutions that
-> > are available.
+From: Kaixu Xia <kaixuxia@tencent.com>
 
-> Or we need to not merge "technology" that subverts the owner of the
-> hardware.  Remember: root kit authors are inventive buggers.
+Fix the following coccicheck warning:
 
-That will be an interesting philosophical argument for Linux moving
-forward.  I've often stated that there is going to be a natural
-political tension between the objectives of open-source and advances
-in platform security.  By definition, advancing the latter will result
-in technology that contrains what can be done with a platform.
+./fs/proc/generic.c:370:5-31: WARNING: Comparison to bool
 
-It may have made more sense for the SGX driver to be mainline when the
-technology was going to be ubiquitous.  Given the decision by Intel to
-monetize the platform, by limiting its implementation to high end
-server platforms, the case could be made that it is a driver best
-supported by the distributions or cloud providers.
+Reported-by: Tosk Robot <tencent_os_robot@tencent.com>
+Signed-off-by: Kaixu Xia <kaixuxia@tencent.com>
+---
+ fs/proc/generic.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-I'm neither for or against inclusion, I'm simply advocating that we
-make informed decisions on the driver implementation that benefits the
-user community.  FWIW, based on knowledge that has come from building
-application stacks on top of the technology for a half decade now.
+diff --git a/fs/proc/generic.c b/fs/proc/generic.c
+index 2f9fa179194d..4533eb826af7 100644
+--- a/fs/proc/generic.c
++++ b/fs/proc/generic.c
+@@ -367,7 +367,7 @@ struct proc_dir_entry *proc_register(struct proc_dir_entry *dir,
+ 
+ 	write_lock(&proc_subdir_lock);
+ 	dp->parent = dir;
+-	if (pde_subdir_insert(dir, dp) == false) {
++	if (!pde_subdir_insert(dir, dp)) {
+ 		WARN(1, "proc_dir_entry '%s/%s' already registered\n",
+ 		     dir->name, dp->name);
+ 		write_unlock(&proc_subdir_lock);
+-- 
+2.20.0
 
-Have a good weekend.
-
-Dr. Greg
-
-As always,
-Dr. Greg Wettstein, Ph.D, Worker      Autonomously self-defensive
-Enjellic Systems Development, LLC     IOT platforms and edge devices.
-4206 N. 19th Ave.
-Fargo, ND  58102
-PH: 701-281-1686                      EMAIL: greg@enjellic.com
-------------------------------------------------------------------------------
-"Atilla The Hun's Maxim: If you're going to rape, pillage and burn, be sure
- to do things in that order."
-                                -- P.J. Plauger
-                                   Programming On Purpose
