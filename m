@@ -2,108 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EAD4B2AA625
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Nov 2020 16:14:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 01E102AA631
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Nov 2020 16:14:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728353AbgKGPOH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Nov 2020 10:14:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48498 "EHLO
+        id S1728381AbgKGPOo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Nov 2020 10:14:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48606 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728269AbgKGPOB (ORCPT
+        with ESMTP id S1726275AbgKGPOn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Nov 2020 10:14:01 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15048C0613CF;
-        Sat,  7 Nov 2020 07:14:01 -0800 (PST)
-Date:   Sat, 07 Nov 2020 15:13:58 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1604762039;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=2L1Ab5lfKvpXfP4ba2r896rfGE+wEzY7ZUOzSpCenXo=;
-        b=gziXdjJWnrzpxCVQgJQBLirpzHvmdsSnfipfynK146uj7Xrn3b6XK6DXZfAHcRUWzxfIlG
-        sVTP99HeSQKgYtWx/2x5t8A35oEVmec69zsoNYNBA3MZ1m3xBjuw//Te5fa4k35wNdwO6d
-        QapALAF36EDdbg8LABL/wA3rKq+VjJ0S8CrmP2uSf538/k44laPpgD5yMPNIgxpGKx1TcN
-        wekiZkKgJoMJRfUL7LWHHQXqWEY/tjSZjn+xqRU7BhDKld07pia1sufL/guZswmvzaMeRq
-        KzuQOIinBkG4WsUYysHR+338DsNJp4aRbdJAd3tAK8JKhArGnrQubzMRuCuNoA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1604762039;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=2L1Ab5lfKvpXfP4ba2r896rfGE+wEzY7ZUOzSpCenXo=;
-        b=vAavmJfvnSDMpTWQzQCImP8ZeR3UtdYSCBTgLU6fvxMXQ+eFMQSWVb8dmcBcZf9/w7Ytp5
-        DiWpB573AKv0naCw==
-From:   "tip-bot2 for Ingo Molnar" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: perf/kprobes] locking/atomics: Regenerate the atomics-check SHA1's
-Cc:     Ingo Molnar <mingo@kernel.org>, linux-kernel@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Will Deacon <will.deacon@arm.com>, x86@kernel.org
+        Sat, 7 Nov 2020 10:14:43 -0500
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93EABC0613D2
+        for <linux-kernel@vger.kernel.org>; Sat,  7 Nov 2020 07:14:43 -0800 (PST)
+Received: by mail-wm1-x343.google.com with SMTP id h2so4190308wmm.0
+        for <linux-kernel@vger.kernel.org>; Sat, 07 Nov 2020 07:14:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=5Yfpcznfq7zUC+nbLYSd5qw9mgk2f1+fj8pB/pC5wlY=;
+        b=OdxcA/HWczLQ90m1mnY48hp3qEOBvLprtrlUSRDiLVQPdiPIaKMmmXp/mQLsSd0sKK
+         mOVPeIQ4LT8aH8g8HdwQItMt4AUvV+6siH4x51zO91HFX3HysYW0LmzGthb1pFGr1brY
+         awUYslxY/OgiFK5LReEhL6axPFWgesZxAV/DiqUILXxjBnEFRXHVt6Ld1BXWtb5hbgsX
+         n3zFf+NsdBb6KHxE4JwYCdTIq/jUj9tkLIGmV4gXqhxKBsMSwK/ZS4LiB49MYVSaVfOn
+         wpxVIz322u55aL2OIiCtrOZXNlM2ABvBav6YcdbDPHvYqcAcVJDR5Lh770fj0JQs3wvD
+         NwHg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=5Yfpcznfq7zUC+nbLYSd5qw9mgk2f1+fj8pB/pC5wlY=;
+        b=YIQDsAFTNvJtTsRXh/wUV2rykUrxGBtLIDfRaaROI6bgtlDsJxhNGq3yPSHAUOteuP
+         mB5bDqq3aj0rlY3Jgvvn3Dg//M3dPkn1Q6bgTYHrtKjTYvKldYxLC/14RO/IkH8PcJJs
+         tGeOs85dPBwEmbjhKfb9QZHOlJRmOC2Z45ZO7JWnoIDj/f1TctGS9VWD0FprhNgx9B0Q
+         ovMfDF7jSPsQ46jd/yploD+xPZJFXZljmObHhegntqp68bt7RRH3BnTNkr7GtRZ1vzN8
+         CNZb4jfdb3nFx04qcoTUFXjRjwPa37sWP8NWGYTB5kcMsjV3IQTE5+E7IyRmMnYtSyFl
+         g79w==
+X-Gm-Message-State: AOAM532kaxJ7b/1ENnr1/xYUE6nnlNjLE2verMqEike7zI1p9rot295o
+        r0NWHssGy2YukHRGfe3veDBgxg==
+X-Google-Smtp-Source: ABdhPJxPCaNJ0MahQ/W3b9fSaGgk7MqXhKrOOHN2l3VTEbRE4u5vnj39pfkLusOtw7OARbYyPzCG8A==
+X-Received: by 2002:a7b:c848:: with SMTP id c8mr2974808wml.86.1604762082229;
+        Sat, 07 Nov 2020 07:14:42 -0800 (PST)
+Received: from dell ([91.110.221.236])
+        by smtp.gmail.com with ESMTPSA id f20sm6370386wmc.26.2020.11.07.07.14.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 07 Nov 2020 07:14:41 -0800 (PST)
+Date:   Sat, 7 Nov 2020 15:14:24 +0000
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Sam Ravnborg <sam@ravnborg.org>
+Cc:     David Airlie <airlied@linux.ie>, linux-kernel@vger.kernel.org,
+        amd-gfx@lists.freedesktop.org,
+        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+        linaro-mm-sig@lists.linaro.org, dri-devel@lists.freedesktop.org,
+        Alex Deucher <alexander.deucher@amd.com>,
+        linux-media@vger.kernel.org
+Subject: Re: [PATCH 10/19] drm/radeon/radeon: Move prototype into shared
+ header
+Message-ID: <20201107151424.GR2063125@dell>
+References: <20201106214949.2042120-1-lee.jones@linaro.org>
+ <20201106214949.2042120-11-lee.jones@linaro.org>
+ <20201107142651.GA1014611@ravnborg.org>
 MIME-Version: 1.0
-Message-ID: <160476203869.11244.7869849163897430965.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2.linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201107142651.GA1014611@ravnborg.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the perf/kprobes branch of tip:
+On Sat, 07 Nov 2020, Sam Ravnborg wrote:
 
-Commit-ID:     a70a04b3844f59c29573a8581d5c263225060dd6
-Gitweb:        https://git.kernel.org/tip/a70a04b3844f59c29573a8581d5c263225060dd6
-Author:        Ingo Molnar <mingo@kernel.org>
-AuthorDate:    Sat, 07 Nov 2020 12:54:49 +01:00
-Committer:     Ingo Molnar <mingo@kernel.org>
-CommitterDate: Sat, 07 Nov 2020 13:20:41 +01:00
+> Hi Lee,
+> 
+> On Fri, Nov 06, 2020 at 09:49:40PM +0000, Lee Jones wrote:
+> > Unfortunately, a suitable one didn't already exist.
+> > 
+> > Fixes the following W=1 kernel build warning(s):
+> > 
+> >  drivers/gpu/drm/radeon/radeon_device.c:637:6: warning: no previous prototype for ‘radeon_device_is_virtual’ [-Wmissing-prototypes]
+> >  637 | bool radeon_device_is_virtual(void)
+> >  | ^~~~~~~~~~~~~~~~~~~~~~~~
+> > 
+> > Cc: Alex Deucher <alexander.deucher@amd.com>
+> > Cc: "Christian König" <christian.koenig@amd.com>
+> > Cc: David Airlie <airlied@linux.ie>
+> > Cc: Daniel Vetter <daniel@ffwll.ch>
+> > Cc: Sumit Semwal <sumit.semwal@linaro.org>
+> > Cc: amd-gfx@lists.freedesktop.org
+> > Cc: dri-devel@lists.freedesktop.org
+> > Cc: linux-media@vger.kernel.org
+> > Cc: linaro-mm-sig@lists.linaro.org
+> > Signed-off-by: Lee Jones <lee.jones@linaro.org>
+> > ---
+> >  drivers/gpu/drm/radeon/radeon_device.c |  1 +
+> >  drivers/gpu/drm/radeon/radeon_device.h | 32 ++++++++++++++++++++++++++
+> >  drivers/gpu/drm/radeon/radeon_drv.c    |  3 +--
+> >  3 files changed, 34 insertions(+), 2 deletions(-)
+> >  create mode 100644 drivers/gpu/drm/radeon/radeon_device.h
+> 
+> Other public functions in radeon_device.c have their prototype in
+> radeon.h - for example radeon_is_px()
+> 
+> Add radeon_device_is_virtual() there so we avoiid this new header.
 
-locking/atomics: Regenerate the atomics-check SHA1's
+I'm happy to do that, if it's deemed better.
 
-The include/asm-generic/atomic-instrumented.h checksum got out
-of sync, so regenerate it. (No change to actual code.)
-
-Also make scripts/atomic/gen-atomics.sh executable, to make
-it easier to use.
-
-The auto-generated atomic header signatures are now fine:
-
-  thule:~/tip> scripts/atomic/check-atomics.sh
-  thule:~/tip>
-
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Cc: linux-kernel@vger.kernel.org
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Paul E. McKenney <paulmck@kernel.org>
-Cc: Will Deacon <will.deacon@arm.com>
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
----
- include/asm-generic/atomic-instrumented.h | 2 +-
- scripts/atomic/gen-atomics.sh             | 0
- 2 files changed, 1 insertion(+), 1 deletion(-)
- mode change 100644 => 100755 scripts/atomic/gen-atomics.sh
-
-diff --git a/include/asm-generic/atomic-instrumented.h b/include/asm-generic/atomic-instrumented.h
-index 492cc95..888b6cf 100644
---- a/include/asm-generic/atomic-instrumented.h
-+++ b/include/asm-generic/atomic-instrumented.h
-@@ -1830,4 +1830,4 @@ atomic64_dec_if_positive(atomic64_t *v)
- })
- 
- #endif /* _ASM_GENERIC_ATOMIC_INSTRUMENTED_H */
--// 9d5e6a315fb1335d02f0ccd3655a91c3dafcc63e
-+// 4bec382e44520f4d8267e42620054db26a659ea3
-diff --git a/scripts/atomic/gen-atomics.sh b/scripts/atomic/gen-atomics.sh
-old mode 100644
-new mode 100755
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
