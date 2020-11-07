@@ -2,119 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E93492AA776
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Nov 2020 19:43:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 398152AA77B
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Nov 2020 19:57:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728627AbgKGSnA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Nov 2020 13:43:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52488 "EHLO
+        id S1728596AbgKGS5O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Nov 2020 13:57:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54746 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725836AbgKGSm5 (ORCPT
+        with ESMTP id S1725836AbgKGS5O (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Nov 2020 13:42:57 -0500
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA9D0C0613CF
-        for <linux-kernel@vger.kernel.org>; Sat,  7 Nov 2020 10:42:55 -0800 (PST)
-Received: by mail-wm1-x341.google.com with SMTP id 10so3719242wml.2
-        for <linux-kernel@vger.kernel.org>; Sat, 07 Nov 2020 10:42:55 -0800 (PST)
+        Sat, 7 Nov 2020 13:57:14 -0500
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CC2AC0613CF;
+        Sat,  7 Nov 2020 10:57:14 -0800 (PST)
+Received: by mail-pg1-x542.google.com with SMTP id z24so3628868pgk.3;
+        Sat, 07 Nov 2020 10:57:14 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=yxqmyl67WCvQeMIwKoccf4bZzL/NHq26s0+nbTo7KwE=;
-        b=yHaxWk7OZ/8bNPjGJtgE12wRzGMSUpP0LHHMJmBlM3pINildvwfUf7zKM44Z0+ayxi
-         dYm8U/8Uyn7ZBWJwEZn8LMkK5hmV/VijiEm5y8jq+c+rw/9mBjsB/U3dp30Flk4YTmhd
-         ipj6dPYOMauRXQDPmJ5H9EzlsM1MGxk+6v1Oi1CH/DHrMtCAn8O76sRZ57dmk2cX1lPt
-         gp4hjGVSTNzWejVHXlX/TS6s+k4lu9asrLktFIGPh3Dh0iQ57Ct1YSlNklIiszx71bM0
-         qyCf22qXMDQiNeax1Ez3sSoLRGVZ3+0uSTcgCk5WuoIP5M4LJrvpu39FPLB5IQSo0gYr
-         TNug==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=afHTW824kBEGWvvhUfZ3PFiZzmUwUob7a4RTUq6L29M=;
+        b=o7ScU2Xor+ZuZiG+hPCasydHyXeqbZkNHK3eIs5iVsazHLeSlwETo1FzIG4JhtDPfu
+         8duzNH3Gvwd+jeqOSOUv8CjLncS0AQ0XShWCAEpqlNonfo9kDYvLrYqqYT+qSiDM7wX9
+         YZiM3TBqJ7ssVrcBtc7ccbhDYYOvXythStyjRYjxqdWbvg6vpIp4ijSGwUhxUNdAQpU/
+         1ssIxh08PjgKPlPKBa7GJT6mtRWkrWNjdXNtauOgBZaW1RukvGhCa9yVPyj51/PRG8Hl
+         Azc0iBK+GRcFrXAN54ENbhsqUUVjp8fQosN0i4gUcaP8JKulxEd3AXwJ07QlarWJKXt8
+         MBuQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=yxqmyl67WCvQeMIwKoccf4bZzL/NHq26s0+nbTo7KwE=;
-        b=IT/M1us/MU9cJ57Fupj/qXryu86mh/zMeohakINcxBjcmUPXpHJMFMcS0RSlDYwhPH
-         9GpnTVvk7rAcVFDD3GPKGzY3EqO8p5QBRae6SDeTKmcfuFRgT2xKuWgNbLOWcQnooPfs
-         wsZ57hfZDd4zSXv1WVHKnHPSFvHwba+t1zUpDLO5VjFR/aGoBYvyOjCZdoqhe4ojhzI3
-         wHSCVmK6M3ps0Jx2QxiuTLXGeOJmIMx7WfMj+xtK7+SL26Er+L/1nIiDIF1PS6T7NId+
-         IK2rT/Tkx8recgU5H06DgPRjY/NTc3MwtHMxgnzQT/SpFagpFcqGHc4U5ZOnVLsA1dsq
-         xT1w==
-X-Gm-Message-State: AOAM530210fLB0vtlFJOQd+OV1vGxOEWVyhXXXV2Gc6y1h1rrCarfWoh
-        8j4JlNsRhgsB6bjhaxvUIyDiQw==
-X-Google-Smtp-Source: ABdhPJyTo90E+wkDFc5CnRqPxWZxg0Iab+ECawWBxFPgKSL2swBaR69JoZ5rex4sqhxialZ9QevG6Q==
-X-Received: by 2002:a7b:c846:: with SMTP id c6mr5626026wml.143.1604774574501;
-        Sat, 07 Nov 2020 10:42:54 -0800 (PST)
-Received: from dell ([91.110.221.236])
-        by smtp.gmail.com with ESMTPSA id e6sm7093053wrs.7.2020.11.07.10.42.53
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=afHTW824kBEGWvvhUfZ3PFiZzmUwUob7a4RTUq6L29M=;
+        b=MBvh0kqxoTzpV+0MoLJDuIkZ2+gnUOpFhhL8tQfFuTh6T1FA02jZHt2dv2tgPdeFJk
+         CrEeRhCq0NLw6QU+uPphh7gpuZIIKeakoS/QVTMZEENKVEfzMRU922lLG2TpBNLkdM9g
+         6iRFE1CtBU6GkQGtGjcG4vgR0JYNbP0cOCFj3JBIylp9Wvj3y003SKanUmWOKFBUaPjy
+         UVuUXuTwX6qMbr7BpdHtOSvVUlSlZNA8Hm0Yz8xEMK4x45TLl3q/GNGtSK6Dmdnkj0VT
+         QjRpLugKoH+86GYb1iHLR+ppxuR24wA3hKUSVFapO83Ol7GgCxRn7ANuV8Yje4EDaUXv
+         JuSg==
+X-Gm-Message-State: AOAM530G86BZxgSIvqw7UbhcU54kc+A2c+iFIrz6zqSSxfcsVYfHSEjb
+        EyjEIzMzpJIpj+sBL/FBBX4=
+X-Google-Smtp-Source: ABdhPJw2amXadmyF/5X65byZ9X2cW/hVkSb20cYEJFED8+QmCEouNiXV3miVxY+8b3LExk2iYfmWMQ==
+X-Received: by 2002:a65:6201:: with SMTP id d1mr6502774pgv.156.1604775432941;
+        Sat, 07 Nov 2020 10:57:12 -0800 (PST)
+Received: from localhost.localdomain ([45.118.167.194])
+        by smtp.googlemail.com with ESMTPSA id q12sm6738025pfc.84.2020.11.07.10.57.07
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 07 Nov 2020 10:42:53 -0800 (PST)
-Date:   Sat, 7 Nov 2020 18:42:52 +0000
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Kalle Valo <kvalo@codeaurora.org>
-Cc:     Brian Norris <briannorris@chromium.org>,
-        Linux Kernel <linux-kernel@vger.kernel.org>,
-        Yan-Hsuan Chuang <yhchuang@realtek.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        linux-wireless <linux-wireless@vger.kernel.org>,
-        "<netdev@vger.kernel.org>" <netdev@vger.kernel.org>
-Subject: Re: [PATCH 41/41] realtek: rtw88: pci: Add prototypes for .probe,
- .remove and .shutdown
-Message-ID: <20201107184252.GT2063125@dell>
-References: <20201102112410.1049272-1-lee.jones@linaro.org>
- <20201102112410.1049272-42-lee.jones@linaro.org>
- <CA+ASDXOobW1_qL5SCGS86aoGvhKDMoBzjxbAwn+QjHfkqZhukw@mail.gmail.com>
- <20201103084453.GJ4488@dell>
- <87y2jd5dyl.fsf@tynnyri.adurom.net>
+        Sat, 07 Nov 2020 10:57:12 -0800 (PST)
+From:   Anmol Karn <anmol.karan123@gmail.com>
+To:     ralf@linux-mips.org, davem@davemloft.net, kuba@kernel.org
+Cc:     saeed@kernel.org, gregkh@linuxfoundation.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-hams@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        syzkaller-bugs@googlegroups.com, anmol.karan123@gmail.com,
+        syzbot+a1c743815982d9496393@syzkaller.appspotmail.com
+Subject: [Linux-kernel-mentees] [PATCH v2] net: rose: Fix Null pointer dereference in rose_send_frame()
+Date:   Sun,  8 Nov 2020 00:26:54 +0530
+Message-Id: <20201107185654.4339-1-anmol.karan123@gmail.com>
+X-Mailer: git-send-email 2.29.2
+In-Reply-To: <20201105155600.9711-1-anmol.karan123@gmail.com>
+References: <20201105155600.9711-1-anmol.karan123@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <87y2jd5dyl.fsf@tynnyri.adurom.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 07 Nov 2020, Kalle Valo wrote:
+rose_send_frame() dereferences `neigh->dev` when called from
+rose_transmit_clear_request(), and the first occurrence of the
+`neigh` is in rose_loopback_timer() as `rose_loopback_neigh`,
+and it is initialized in rose_add_loopback_neigh() as NULL.
+i.e when `rose_loopback_neigh` used in rose_loopback_timer()
+its `->dev` was still NULL and rose_loopback_timer() was calling
+rose_rx_call_request() without checking for NULL.
 
-> Lee Jones <lee.jones@linaro.org> writes:
-> 
-> > On Mon, 02 Nov 2020, Brian Norris wrote:
-> >
-> >> On Mon, Nov 2, 2020 at 3:25 AM Lee Jones <lee.jones@linaro.org> wrote:
-> >> > --- a/drivers/net/wireless/realtek/rtw88/pci.h
-> >> > +++ b/drivers/net/wireless/realtek/rtw88/pci.h
-> >> > @@ -212,6 +212,10 @@ struct rtw_pci {
-> >> >         void __iomem *mmap;
-> >> >  };
-> >> >
-> >> > +int rtw_pci_probe(struct pci_dev *pdev, const struct pci_device_id *id);
-> >> > +void rtw_pci_remove(struct pci_dev *pdev);
-> >> > +void rtw_pci_shutdown(struct pci_dev *pdev);
-> >> > +
-> >> >
-> >> 
-> >> These definitions are already in 4 other header files:
-> >> 
-> >> drivers/net/wireless/realtek/rtw88/rtw8723de.h
-> >> drivers/net/wireless/realtek/rtw88/rtw8821ce.h
-> >> drivers/net/wireless/realtek/rtw88/rtw8822be.h
-> >> drivers/net/wireless/realtek/rtw88/rtw8822ce.h
-> >> 
-> >> Seems like you should be moving them, not just adding yet another duplicate.
-> >
-> > I followed the current convention.
-> >
-> > Happy to optimise if that's what is required.
-> 
-> I agree with Brian, these and rtw_pm_ops should be moved to pci.h to
-> avoid code duplication.
+- net/rose/rose_link.c
+This bug seems to get triggered in this line:
 
-Will do, thanks.
+rose_call = (ax25_address *)neigh->dev->dev_addr;
 
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+Fix it by adding NULL checking for `rose_loopback_neigh->dev`
+in rose_loopback_timer().
+
+Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+Reported-by: syzbot+a1c743815982d9496393@syzkaller.appspotmail.com
+Tested-by: syzbot+a1c743815982d9496393@syzkaller.appspotmail.com
+Link: https://syzkaller.appspot.com/bug?id=9d2a7ca8c7f2e4b682c97578dfa3f236258300b3
+Signed-off-by: Anmol Karn <anmol.karan123@gmail.com>
+---
+Changes in v3:
+        - Corrected checkpatch warnings and errors (Suggested-by: Saeed Mahameed <saeed@kernel.org>)
+	- Added "Fixes:" tag (Suggested-by: Saeed Mahameed <saeed@kernel.org>)
+Changes in v2:
+	- Added NULL check in rose_loopback_timer() (Suggested-by: Greg KH <gregkh@linuxfoundation.org>)
+
+ net/rose/rose_loopback.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/net/rose/rose_loopback.c b/net/rose/rose_loopback.c
+index 7b094275ea8b..2c51756ed7bf 100644
+--- a/net/rose/rose_loopback.c
++++ b/net/rose/rose_loopback.c
+@@ -96,7 +96,8 @@ static void rose_loopback_timer(struct timer_list *unused)
+ 		}
+
+ 		if (frametype == ROSE_CALL_REQUEST) {
+-			if ((dev = rose_dev_get(dest)) != NULL) {
++			dev = rose_dev_get(dest);
++			if (rose_loopback_neigh->dev && dev) {
+ 				if (rose_rx_call_request(skb, dev, rose_loopback_neigh, lci_o) == 0)
+ 					kfree_skb(skb);
+ 			} else {
+-
+2.29.2
+
