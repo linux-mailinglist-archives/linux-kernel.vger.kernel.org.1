@@ -2,266 +2,291 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C6EA2AAB55
-	for <lists+linux-kernel@lfdr.de>; Sun,  8 Nov 2020 15:09:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FDB72AAB58
+	for <lists+linux-kernel@lfdr.de>; Sun,  8 Nov 2020 15:11:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728472AbgKHOJg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 8 Nov 2020 09:09:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34678 "EHLO
+        id S1728464AbgKHOLm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 8 Nov 2020 09:11:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35002 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727570AbgKHOJf (ORCPT
+        with ESMTP id S1727844AbgKHOLl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 8 Nov 2020 09:09:35 -0500
-Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AABD4C0613CF;
-        Sun,  8 Nov 2020 06:09:35 -0800 (PST)
-Received: by mail-il1-x143.google.com with SMTP id x7so5940277ili.5;
-        Sun, 08 Nov 2020 06:09:35 -0800 (PST)
+        Sun, 8 Nov 2020 09:11:41 -0500
+Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB0FCC0613D3
+        for <linux-kernel@vger.kernel.org>; Sun,  8 Nov 2020 06:11:41 -0800 (PST)
+Received: by mail-pl1-x632.google.com with SMTP id x23so3254215plr.6
+        for <linux-kernel@vger.kernel.org>; Sun, 08 Nov 2020 06:11:41 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=liY3w/84TNyKn7LtOQHXFyCyNKcsJ74hNzmrRrfZmXw=;
-        b=lEAZUocS510W1r1DsC3Ma037QRTUsrbGgjRlPDRHzjBOHo0fTgbJM76GsP37ovgfOc
-         29TrerMl2uQHwrqnt9vKyfKzXymYm3b+ku9vjjBfWdbz4+EnpWnyYFjc3sbHtaI4cmbQ
-         neAAyaRQCr1ItFUFasFGhYdjUbeq5p3ObDmDD0TEwe0ZtA4zJgBsCmbQNaaxxfSllsJs
-         ptJGqXptxxZUiYopaP3H/Q9/zkS4Dd9ByiLcP/y1bttgRpRFVY9mbJwSnDti8UIi7vIo
-         fhO1Pm4e0u0iwo+gf8/nzLHzR75u5/1O3bgmCELcIjVe1XNFA7R72R+r/63DNqiPRLas
-         YKdw==
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=2aF5NaoDkK2ZcMpmMV4l4ZLBE98BuwSgPzZ5P5ulSGs=;
+        b=r8a1yp/F3kNUNVyLMKlRBhl3dY/sw+BfRjs2khXncZ+IcSy3wqMSo9cn6S3lHf5gBZ
+         T01P4kIkm/FzOqZ/GLdZYLufIThXzQ2XtQQ9pkXfHkJTI5Wqr7BLUp3I/khSalOR9te2
+         xQY6Yz1oP8HwuujDG4w02UXhrfN9fvi5AnwOVMHt0s5I6pXwLvyjKFLqNsysYHrMuhsJ
+         EAQ4QsStMsdgXGCwLnqdPaaG2/MFaYKI+p96uHMpVS20d5I2dH7HVa9iBvj5y7yvwq2n
+         OzYtRpshMrK0H0RKW7mN/w6eqCR6V46/4fUz5xUKMTUpLxmwPT3PWSjl1z2voK3ZDK+g
+         pH9w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=liY3w/84TNyKn7LtOQHXFyCyNKcsJ74hNzmrRrfZmXw=;
-        b=JnFATDsNE2dfQYv6FtOTvwSDzh4aooxt7UzMD1a8/j4Kn8fqz4cdFv9OeW+dAevhNP
-         KgcUuHhTPQna486SWxJ05z+1UNkE9OKSLHampe+Kn4twWquGJuzGM950XyE+aoCnS+Cb
-         cXEXRv5wwY3Vz5iOD+yFCFc20cA5DdCaxO+KQiT0LTec4ukHJvxQPxrPGa4eYMuPgVQv
-         9Bzz9Zm23mN6oiaYghQudk4J4EbeKuMs+cxYgsLpI7oMVWfkCo5Y+/5w9aBpNHVnLdqS
-         NRAxUem7hd/NPxOmyk83Nx4IqUtRWpyhbea3LeX0C7YcMgMAxdeSrRwrf2UUjEosYtjR
-         9hYQ==
-X-Gm-Message-State: AOAM531fC9dWnWnz93O+cUk+bCycnlg4s48S+jcSnI4ePrXTQggbSt/a
-        ty6t8VyX7Q9vmFAsp9PeEvC72zIDrOlLllg7Gro3moT+xQtS1A==
-X-Google-Smtp-Source: ABdhPJyjC9T79dpHflQACN8JbKz89HP/Zx8FZrpVqCKLLwk9Ji7Md93oZXVQEB8C10tE2yXQzcTWPiD2YSYOoVSOE/c=
-X-Received: by 2002:a92:da10:: with SMTP id z16mr6599759ilm.20.1604844574990;
- Sun, 08 Nov 2020 06:09:34 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=2aF5NaoDkK2ZcMpmMV4l4ZLBE98BuwSgPzZ5P5ulSGs=;
+        b=CqLWQEphP9ggj3e8a1AQ21EWTOyJsLph2Z3PqzmmVEV+1vl/QGtRTa/tTlzPBHmtHY
+         6TwZHUgj/3v4oKMAUFf6FC2uFufoteeCXOHlkOGtH2bXP1OD5e0qXP1DBXEC4XhhgxfF
+         c6ExQ5th1wfd2j+TxeireZwok0hxUx+6Q9XJKLVbW/tZdlComuqDhmh+GVzrQY3BzMf3
+         8bw9QoiPWsfP+urT1/avZYcHuKE6Qs+VWsttSrUJQ1KRV+JRLlcLb1+LsvBn3yVGXDFh
+         cLFckOwHXKechm5FJ+LscdpZmqBSuMbBLIK/Pw+6Ln8aIumWdWxuzZDRMbFHe8ZKL6QF
+         SFbw==
+X-Gm-Message-State: AOAM533zheRojc8FgvgU5c6atMuwGnb7ktock78kGZLeKjF7kOlWHKCs
+        BYMx2y1ANcI8FyAd6UnlzX16TA==
+X-Google-Smtp-Source: ABdhPJw6hMkEOMDskOGoCGVgf+fV/337gzTkrkWC7pp/WtaP4oN3OfepzT6SygsSJORM5gKr1J0UTA==
+X-Received: by 2002:a17:902:684b:b029:d6:e482:9fee with SMTP id f11-20020a170902684bb02900d6e4829feemr9254378pln.10.1604844701033;
+        Sun, 08 Nov 2020 06:11:41 -0800 (PST)
+Received: from localhost.localdomain ([103.136.220.94])
+        by smtp.gmail.com with ESMTPSA id z11sm8754047pfk.52.2020.11.08.06.11.30
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Sun, 08 Nov 2020 06:11:40 -0800 (PST)
+From:   Muchun Song <songmuchun@bytedance.com>
+To:     corbet@lwn.net, mike.kravetz@oracle.com, tglx@linutronix.de,
+        mingo@redhat.com, bp@alien8.de, x86@kernel.org, hpa@zytor.com,
+        dave.hansen@linux.intel.com, luto@kernel.org, peterz@infradead.org,
+        viro@zeniv.linux.org.uk, akpm@linux-foundation.org,
+        paulmck@kernel.org, mchehab+huawei@kernel.org,
+        pawan.kumar.gupta@linux.intel.com, rdunlap@infradead.org,
+        oneukum@suse.com, anshuman.khandual@arm.com, jroedel@suse.de,
+        almasrymina@google.com, rientjes@google.com, willy@infradead.org,
+        osalvador@suse.de, mhocko@suse.com
+Cc:     duanxiongchun@bytedance.com, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-fsdevel@vger.kernel.org,
+        Muchun Song <songmuchun@bytedance.com>
+Subject: [PATCH v3 00/21] Free some vmemmap pages of hugetlb page
+Date:   Sun,  8 Nov 2020 22:10:52 +0800
+Message-Id: <20201108141113.65450-1-songmuchun@bytedance.com>
+X-Mailer: git-send-email 2.21.0 (Apple Git-122)
 MIME-Version: 1.0
-References: <20201108131953.2462644-1-olteanv@gmail.com> <20201108131953.2462644-4-olteanv@gmail.com>
-In-Reply-To: <20201108131953.2462644-4-olteanv@gmail.com>
-From:   DENG Qingfang <dqfext@gmail.com>
-Date:   Sun, 8 Nov 2020 22:09:25 +0800
-Message-ID: <CALW65jb+Njb3WkY-TUhsHh1YWEzfMcXoRAXshnT8ke02wc10Uw@mail.gmail.com>
-Subject: Re: [RFC PATCH net-next 3/3] net: dsa: listen for SWITCHDEV_{FDB,DEL}_ADD_TO_DEVICE
- on foreign bridge neighbors
-To:     Vladimir Oltean <olteanv@gmail.com>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        netdev <netdev@vger.kernel.org>, linux-kernel@vger.kernel.org,
-        Tobias Waldekranz <tobias@waldekranz.com>,
-        Marek Behun <marek.behun@nic.cz>,
-        Russell King - ARM Linux admin <linux@armlinux.org.uk>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Nov 8, 2020 at 9:20 PM Vladimir Oltean <olteanv@gmail.com> wrote:
->
-> Some DSA switches (and not only) cannot learn source MAC addresses from
-> packets injected from the CPU. They only perform hardware address
-> learning from inbound traffic.
->
-> This can be problematic when we have a bridge spanning some DSA switch
-> ports and some non-DSA ports (which we'll call "foreign interfaces" from
-> DSA's perspective).
->
-> There are 2 classes of problems created by the lack of learning on
-> CPU-injected traffic:
-> - excessive flooding, due to the fact that DSA treats those addresses as
->   unknown
-> - the risk of stale routes, which can lead to temporary packet loss
->
-> To illustrate the second class, consider the following situation, which
-> is common in production equipment (wireless access points, where there
-> is a WLAN interface and an Ethernet switch, and these form a single
-> bridging domain).
->
->  AP 1:
->  +------------------------------------------------------------------------+
->  |                                          br0                           |
->  +------------------------------------------------------------------------+
->  +------------+ +------------+ +------------+ +------------+ +------------+
->  |    swp0    | |    swp1    | |    swp2    | |    swp3    | |    wlan0   |
->  +------------+ +------------+ +------------+ +------------+ +------------+
->        |                                                       ^        ^
->        |                                                       |        |
->        |                                                       |        |
->        |                                                    Client A  Client B
->        |
->        |
->        |
->  +------------+ +------------+ +------------+ +------------+ +------------+
->  |    swp0    | |    swp1    | |    swp2    | |    swp3    | |    wlan0   |
->  +------------+ +------------+ +------------+ +------------+ +------------+
->  +------------------------------------------------------------------------+
->  |                                          br0                           |
->  +------------------------------------------------------------------------+
->  AP 2
->
-> - br0 of AP 1 will know that Clients A and B are reachable via wlan0
-> - the hardware fdb of a DSA switch driver today is not kept in sync with
->   the software entries on other bridge ports, so it will not know that
->   clients A and B are reachable via the CPU port UNLESS the hardware
->   switch itself performs SA learning from traffic injected from the CPU.
->   Nonetheless, a substantial number of switches don't.
-> - the hardware fdb of the DSA switch on AP 2 may autonomously learn that
->   Client A and B are reachable through swp0. Therefore, the software br0
->   of AP 2 also may or may not learn this. In the example we're
->   illustrating, some Ethernet traffic has been going on, and br0 from AP
->   2 has indeed learnt that it can reach Client B through swp0.
->
-> One of the wireless clients, say Client B, disconnects from AP 1 and
-> roams to AP 2. The topology now looks like this:
->
->  AP 1:
->  +------------------------------------------------------------------------+
->  |                                          br0                           |
->  +------------------------------------------------------------------------+
->  +------------+ +------------+ +------------+ +------------+ +------------+
->  |    swp0    | |    swp1    | |    swp2    | |    swp3    | |    wlan0   |
->  +------------+ +------------+ +------------+ +------------+ +------------+
->        |                                                            ^
->        |                                                            |
->        |                                                         Client A
->        |
->        |
->        |                                                         Client B
->        |                                                            |
->        |                                                            v
->  +------------+ +------------+ +------------+ +------------+ +------------+
->  |    swp0    | |    swp1    | |    swp2    | |    swp3    | |    wlan0   |
->  +------------+ +------------+ +------------+ +------------+ +------------+
->  +------------------------------------------------------------------------+
->  |                                          br0                           |
->  +------------------------------------------------------------------------+
->  AP 2
->
-> - br0 of AP 1 still knows that Client A is reachable via wlan0 (no change)
-> - br0 of AP 1 will (possibly) know that Client B has left wlan0. There
->   are cases where it might never find out though. Either way, DSA today
->   does not process that notification in any way.
-> - the hardware FDB of the DSA switch on AP 1 may learn autonomously that
->   Client B can be reached via swp0, if it receives any packet with
->   Client 1's source MAC address over Ethernet.
-> - the hardware FDB of the DSA switch on AP 2 still thinks that Client B
->   can be reached via swp0. It does not know that it has roamed to wlan0,
->   because it doesn't perform SA learning from the CPU port.
->
-> Now Client A contacts Client B.
-> AP 1 routes the packet fine towards swp0 and delivers it on the Ethernet
-> segment.
-> AP 2 sees a frame on swp0 and its fdb says that the destination is swp0.
-> Hairpinning is disabled => drop.
->
-> This problem comes from the fact that these switches have a 'blind spot'
-> for addresses coming from software bridging. The generic solution is not
-> to assume that hardware learning can be enabled somehow, but to listen
-> to more bridge learning events. It turns out that the bridge driver does
-> learn in software from all inbound frames, in __br_handle_local_finish.
-> A proper SWITCHDEV_FDB_ADD_TO_DEVICE notification is emitted for the
-> addresses serviced by the bridge on 'foreign' interfaces. The problem is
-> that DSA currently only cares about SWITCHDEV_FDB_ADD_TO_DEVICE events
-> received on its own interfaces, such as static FDB entries.
->
-> Luckily we can change that, and DSA can listen to all switchdev FDB
-> add/del events in the system and figure out if those events were emitted
-> by a bridge that spans at least one of DSA's own ports. In case that is
-> true, DSA will also offload that address towards its own CPU port, in
-> the eventuality that there might be bridge clients attached to the DSA
-> switch who want to talk to the station connected to the foreign
-> interface.
->
-> Reported-by: DENG Qingfang <dqfext@gmail.com>
-> Signed-off-by: Vladimir Oltean <olteanv@gmail.com>
-> ---
->  net/dsa/slave.c | 51 ++++++++++++++++++++++++++++++++++++++++++++-----
->  1 file changed, 46 insertions(+), 5 deletions(-)
->
-> diff --git a/net/dsa/slave.c b/net/dsa/slave.c
-> index b34da39722c7..5b3b07a39105 100644
-> --- a/net/dsa/slave.c
-> +++ b/net/dsa/slave.c
-> @@ -2120,6 +2120,28 @@ static void dsa_slave_switchdev_event_work(struct work_struct *work)
->                 dev_put(dp->slave);
->  }
->
-> +static int dsa_lower_dev_walk(struct net_device *lower_dev,
-> +                             struct netdev_nested_priv *priv)
-> +{
-> +       if (dsa_slave_dev_check(lower_dev)) {
-> +               priv->data = netdev_priv(lower_dev);
-> +               return 1;
-> +       }
-> +
-> +       return 0;
-> +}
-> +
-> +struct dsa_slave_priv *dsa_slave_dev_lower_find(struct net_device *dev)
-> +{
-> +       struct netdev_nested_priv priv = {
-> +               .data = NULL,
-> +       };
-> +
-> +       netdev_walk_all_lower_dev_rcu(dev, dsa_lower_dev_walk, &priv);
-> +
-> +       return priv.data;
-> +}
-> +
->  /* Called under rcu_read_lock() */
->  static int dsa_slave_switchdev_event(struct notifier_block *unused,
->                                      unsigned long event, void *ptr)
-> @@ -2140,13 +2162,32 @@ static int dsa_slave_switchdev_event(struct notifier_block *unused,
->         case SWITCHDEV_FDB_DEL_TO_DEVICE:
->                 fdb_info = ptr;
->
-> -               if (!dsa_slave_dev_check(dev))
-> -                       return NOTIFY_DONE;
-> +               if (dsa_slave_dev_check(dev)) {
-> +                       if (!fdb_info->added_by_user)
-> +                               return NOTIFY_OK;
-> +
-> +                       dp = dsa_slave_to_port(dev);
-> +               } else {
-> +                       /* Snoop addresses learnt on foreign interfaces
-> +                        * bridged with us, for switches that don't
-> +                        * automatically learn SA from CPU-injected traffic
-> +                        */
+Hi all,
 
-Can it be turned off for switches that support SA learning from CPU?
+This patch series will free some vmemmap pages(struct page structures)
+associated with each hugetlbpage when preallocated to save memory.
 
-> +                       struct net_device *br_dev;
-> +                       struct dsa_slave_priv *p;
->
-> -               if (!fdb_info->added_by_user)
-> -                       return NOTIFY_OK;
-> +                       br_dev = netdev_master_upper_dev_get_rcu(dev);
-> +                       if (!br_dev)
-> +                               return NOTIFY_DONE;
->
-> -               dp = dsa_slave_to_port(dev);
-> +                       if (!netif_is_bridge_master(br_dev))
-> +                               return NOTIFY_DONE;
-> +
-> +                       p = dsa_slave_dev_lower_find(br_dev);
-> +                       if (!p)
-> +                               return NOTIFY_DONE;
-> +
-> +                       dp = p->dp->cpu_dp;
-> +               }
->
->                 switchdev_work = kzalloc(sizeof(*switchdev_work), GFP_ATOMIC);
->                 if (!switchdev_work)
-> --
-> 2.25.1
->
+Nowadays we track the status of physical page frames using `struct page`
+arranged in one or more arrays. And here exists one-to-one mapping between
+the physical page frame and the corresponding `struct page`.
+
+The hugetlbpage support is built on top of multiple page size support
+that is provided by most modern architectures. For example, x86 CPUs
+normally support 4K and 2M (1G if architecturally supported) page sizes.
+Every hugetlbpage has more than one `struct page`. The 2M hugetlbpage
+has 512 `struct page` and 1G hugetlbpage has 4096 `struct page`. But
+in the core of hugetlbpage only uses the first 4 `struct page` to store
+metadata associated with each hugetlbpage. The rest of the `struct page`
+are usually read the compound_head field which are all the same value.
+If we can free some struct page memory to buddy system so that we can
+save a lot of memory.
+
+When the system boot up, every 2M hugetlbpage has 512 `struct page` which
+is 8 pages(sizeof(struct page) * 512 / PAGE_SIZE).
+
+   hugetlbpage                  struct pages(8 pages)          page frame(8 pages)
+  +-----------+ ---virt_to_page---> +-----------+   mapping to   +-----------+
+  |           |                     |     0     | -------------> |     0     |
+  |           |                     |     1     | -------------> |     1     |
+  |           |                     |     2     | -------------> |     2     |
+  |           |                     |     3     | -------------> |     3     |
+  |           |                     |     4     | -------------> |     4     |
+  |     2M    |                     |     5     | -------------> |     5     |
+  |           |                     |     6     | -------------> |     6     |
+  |           |                     |     7     | -------------> |     7     |
+  |           |                     +-----------+                +-----------+
+  |           |
+  |           |
+  +-----------+
+
+
+When a hugetlbpage is preallocated, we can change the mapping from above to
+bellow.
+
+   hugetlbpage                  struct pages(8 pages)          page frame(8 pages)
+  +-----------+ ---virt_to_page---> +-----------+   mapping to   +-----------+
+  |           |                     |     0     | -------------> |     0     |
+  |           |                     |     1     | -------------> |     1     |
+  |           |                     |     2     | -------------> +-----------+
+  |           |                     |     3     | -----------------^ ^ ^ ^ ^
+  |           |                     |     4     | -------------------+ | | |
+  |     2M    |                     |     5     | ---------------------+ | |
+  |           |                     |     6     | -----------------------+ |
+  |           |                     |     7     | -------------------------+
+  |           |                     +-----------+
+  |           |
+  |           |
+  +-----------+
+
+For tail pages, the value of compound_head is the same. So we can reuse
+first page of tail page structs. We map the virtual addresses of the
+remaining 6 pages of tail page structs to the first tail page struct,
+and then free these 6 pages. Therefore, we need to reserve at least 2
+pages as vmemmap areas.
+
+When a hugetlbpage is freed to the buddy system, we should allocate six
+pages for vmemmap pages and restore the previous mapping relationship.
+
+If we uses the 1G hugetlbpage, we can save 4095 pages. This is a very
+substantial gain. On our server, run some SPDK/QEMU applications which
+will use 1000GB hugetlbpage. With this feature enabled, we can save
+~16GB(1G hugepage)/~11GB(2MB hugepage) memory.
+
+Because there are vmemmap page tables reconstruction on the freeing/allocating
+path, it increases some overhead. Here are some overhead analysis.
+
+1) Allocating 10240 2MB hugetlb pages.
+
+   a) With this patch series applied:
+   # time echo 10240 > /proc/sys/vm/nr_hugepages
+
+   real     0m0.166s
+   user     0m0.000s
+   sys      0m0.166s
+
+   # bpftrace -e 'kprobe:alloc_fresh_huge_page { @start[tid] = nsecs; } kretprobe:alloc_fresh_huge_page /@start[tid]/ { @latency = hist(nsecs - @start[tid]); delete(@start[tid]); }'
+   Attaching 2 probes...
+
+   @latency:
+   [8K, 16K)           8360 |@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@|
+   [16K, 32K)          1868 |@@@@@@@@@@@                                         |
+   [32K, 64K)            10 |                                                    |
+   [64K, 128K)            2 |                                                    |
+
+   b) Without this patch series:
+   # time echo 10240 > /proc/sys/vm/nr_hugepages
+
+   real     0m0.066s
+   user     0m0.000s
+   sys      0m0.066s
+
+   # bpftrace -e 'kprobe:alloc_fresh_huge_page { @start[tid] = nsecs; } kretprobe:alloc_fresh_huge_page /@start[tid]/ { @latency = hist(nsecs - @start[tid]); delete(@start[tid]); }'
+   Attaching 2 probes...
+
+   @latency:
+   [4K, 8K)           10176 |@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@|
+   [8K, 16K)             62 |                                                    |
+   [16K, 32K)             2 |                                                    |
+
+   Summarize: this feature is about ~2x slower than before.
+
+2) Freeing 10240 @MB hugetlb pages.
+
+   a) With this patch series applied:
+   # time echo 0 > /proc/sys/vm/nr_hugepages
+
+   real     0m0.004s
+   user     0m0.000s
+   sys      0m0.002s
+
+   # bpftrace -e 'kprobe:__free_hugepage { @start[tid] = nsecs; } kretprobe:__free_hugepage /@start[tid]/ { @latency = hist(nsecs - @start[tid]); delete(@start[tid]); }'
+   Attaching 2 probes...
+
+   @latency:
+   [16K, 32K)         10240 |@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@|
+
+   b) Without this patch series:
+   # time echo 0 > /proc/sys/vm/nr_hugepages
+
+   real     0m0.077s
+   user     0m0.001s
+   sys      0m0.075s
+
+   # bpftrace -e 'kprobe:__free_hugepage { @start[tid] = nsecs; } kretprobe:__free_hugepage /@start[tid]/ { @latency = hist(nsecs - @start[tid]); delete(@start[tid]); }'
+   Attaching 2 probes...
+
+   @latency:
+   [4K, 8K)            9950 |@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@|
+   [8K, 16K)            287 |@                                                   |
+   [16K, 32K)             3 |                                                    |
+
+   Summarize: The overhead of __free_hugepage is about ~2-4x slower than before.
+              But according to the allocation test above, I think that here is
+	      also ~2x slower than before.
+
+              But why the 'real' time of patched is smaller than before? Because
+	      In this patch series, the freeing hugetlb is asynchronous(through
+	      kwoker).
+
+Although the overhead has increased. But the overhead is not on the
+allocating/freeing of each hugetlb page, it is only once when we reserve
+some hugetlb pages through /proc/sys/vm/nr_hugepages. Once the reservation
+is successful, the subsequent allocating, freeing and using are the same
+as before (not patched). So I think that the overhead is acceptable.
+
+  changelog in v3:
+  1. Rename some helps function name. Thanks Mike.
+  2. Rework some code. Thanks Mike and Oscar.
+  3. Remap the tail vmemmap page with PAGE_KERNEL_RO instead of
+     PAGE_KERNEL. Thanks Matthew.
+  4. Add some overhead analysis in the cover letter.
+  5. Use vmemap pmd table lock instead of a hugetlb specific global lock.
+
+  changelog in v2:
+  1. Fix do not call dissolve_compound_page in alloc_huge_page_vmemmap().
+  2. Fix some typo and code style problems.
+  3. Remove unused handle_vmemmap_fault().
+  4. Merge some commits to one commit suggested by Mike.
+
+Muchun Song (21):
+  mm/memory_hotplug: Move bootmem info registration API to
+    bootmem_info.c
+  mm/memory_hotplug: Move {get,put}_page_bootmem() to bootmem_info.c
+  mm/hugetlb: Introduce a new config HUGETLB_PAGE_FREE_VMEMMAP
+  mm/hugetlb: Introduce nr_free_vmemmap_pages in the struct hstate
+  mm/hugetlb: Introduce pgtable allocation/freeing helpers
+  mm/bootmem_info: Introduce {free,prepare}_vmemmap_page()
+  mm/bootmem_info: Combine bootmem info and type into page->freelist
+  mm/vmemmap: Initialize page table lock for vmemmap
+  mm/hugetlb: Free the vmemmap pages associated with each hugetlb page
+  mm/hugetlb: Defer freeing of hugetlb pages
+  mm/hugetlb: Allocate the vmemmap pages associated with each hugetlb
+    page
+  mm/hugetlb: Introduce remap_huge_page_pmd_vmemmap helper
+  mm/hugetlb: Use PG_slab to indicate split pmd
+  mm/hugetlb: Support freeing vmemmap pages of gigantic page
+  mm/hugetlb: Add a BUILD_BUG_ON to check if struct page size is a power
+    of two
+  mm/hugetlb: Set the PageHWPoison to the raw error page
+  mm/hugetlb: Flush work when dissolving hugetlb page
+  mm/hugetlb: Add a kernel parameter hugetlb_free_vmemmap
+  mm/hugetlb: Merge pte to huge pmd only for gigantic page
+  mm/hugetlb: Gather discrete indexes of tail page
+  mm/hugetlb: Add BUILD_BUG_ON to catch invalid usage of tail struct
+    page
+
+ Documentation/admin-guide/kernel-parameters.txt |   9 +
+ Documentation/admin-guide/mm/hugetlbpage.rst    |   3 +
+ arch/x86/include/asm/hugetlb.h                  |  17 +
+ arch/x86/include/asm/pgtable_64_types.h         |   8 +
+ arch/x86/mm/init_64.c                           |   7 +-
+ fs/Kconfig                                      |  16 +
+ include/linux/bootmem_info.h                    |  79 +++
+ include/linux/hugetlb.h                         |  45 ++
+ include/linux/hugetlb_cgroup.h                  |  15 +-
+ include/linux/memory_hotplug.h                  |  27 -
+ include/linux/mm.h                              |  49 ++
+ mm/Makefile                                     |   1 +
+ mm/bootmem_info.c                               | 124 ++++
+ mm/hugetlb.c                                    | 806 +++++++++++++++++++++++-
+ mm/memory_hotplug.c                             | 116 ----
+ mm/sparse-vmemmap.c                             |  31 +
+ mm/sparse.c                                     |   5 +-
+ 17 files changed, 1181 insertions(+), 177 deletions(-)
+ create mode 100644 include/linux/bootmem_info.h
+ create mode 100644 mm/bootmem_info.c
+
+-- 
+2.11.0
+
