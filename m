@@ -2,104 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 369232AADB9
-	for <lists+linux-kernel@lfdr.de>; Sun,  8 Nov 2020 22:43:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DBAE52AADC2
+	for <lists+linux-kernel@lfdr.de>; Sun,  8 Nov 2020 23:10:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728965AbgKHVnz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 8 Nov 2020 16:43:55 -0500
-Received: from ozlabs.org ([203.11.71.1]:40993 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727570AbgKHVnz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 8 Nov 2020 16:43:55 -0500
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CTngq5GHQz9s0b;
-        Mon,  9 Nov 2020 08:43:51 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1604871833;
-        bh=J2WBoTzRiTm4cJ6T//yQ5D8O8Bk3/W6JTxEF7Zuo+Lk=;
-        h=Date:From:To:Cc:Subject:From;
-        b=DGUdZD9CRBXZy13UUGPYXOLLai1Xz7e/OqQaPejZ6S6wWDVQqt2yMiteQsv61YyrU
-         WVbZSQzQ0oXVAjhrgYTD0MNMBXVAyACtZy+M/XMsmTEuXyzu4GMiGQgFb04F92irjr
-         uCsK/xnXBibvdW4wH5eq8xJwqk3GHaYCHlrGoezTE939vVLd9bO5JTQcJyvafn0u+L
-         RQJi18duCsfD6zl1KsEw13kcdPQB7ufZiT5hQ7/MZsUwXFtnjjwLHxcL8heYJm9shO
-         ceC15anSyo4mGQafQ0JgJSO/ybDbU1LEX979bohTLXwTTIM89qq+AZEdhMRpMDG+W/
-         MXtB6kReW75fw==
-Date:   Mon, 9 Nov 2020 08:43:50 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@elte.hu>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Peter Zijlstra <peterz@infradead.org>
-Cc:     David Woodhouse <dwmw@amazon.co.uk>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: Fixes tag needs some work in the tip tree
-Message-ID: <20201109084350.75624851@canb.auug.org.au>
+        id S1728511AbgKHWKk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 8 Nov 2020 17:10:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52440 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727570AbgKHWKj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 8 Nov 2020 17:10:39 -0500
+Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FE57C0613CF
+        for <linux-kernel@vger.kernel.org>; Sun,  8 Nov 2020 14:10:39 -0800 (PST)
+Received: by mail-ed1-x541.google.com with SMTP id e18so6735920edy.6
+        for <linux-kernel@vger.kernel.org>; Sun, 08 Nov 2020 14:10:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=googlemail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=LeizlBIhrONwi1zUfvnaytr0f4firOnFbhs2cQ5A+dA=;
+        b=QAFGlZFnBnIxjenxIPbtz10/wcCiOaLzkcoXHArQNkl3qzMsMzT5If6rPLz2uVYlcT
+         5XGTPN7XXlpvRiZq4nLxzFt2xoPXUgCsfBe4b3268VPFzWLtQ1ZjaNleiE86/UUrx+2K
+         /XXHREWzdkdme2RhFLrlLBFTG1aCgXWZCtcac8NKKKCWqKVhtIJE/xbaTV2jgxt/YUDT
+         84F8YE0t6+HaMCIOCCmx3J5hqzDiHQXq2u3b9tvE6gilMP7z4Qxxe6xVl+gkLbQH1tX0
+         iOM+MJbJLOLuavrqUmkwpnUGnO5jPe0Jaf3ZC/xyrO5WuT1mA674yzapU6nOX02pwpHx
+         rYeQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=LeizlBIhrONwi1zUfvnaytr0f4firOnFbhs2cQ5A+dA=;
+        b=OYYicuDyjA8cjauBZRy44Qv1unx8UEM8UV8M2NLM6mBDqyD7ye1LmZVX5GfNRAKGX5
+         jwTnb5zqg0TICvtJmV35YrqAFPqVaJ23/1Zte0TQxsEojTx9qjAol7WejagoG0LvKQui
+         a7idBR2YiKsvsiO9VXitVojRrIEmX8xPmsi3K2dqfuvp0FoCXxBETsLfz0z56SSqUFSj
+         W0kK6Znz7EFtWo9M7xnBjHWd8GvQXXSe4Fz+m7bsrBeP5pRgp2yBt3rLwse0uWO7vxlT
+         prBhX+T5ENTCT9uLNkvC0cH2Rz8zbW3OCY6T6nG264rUOueaKsrCnKDOnddwSm1ON5eH
+         pehw==
+X-Gm-Message-State: AOAM5309wBoR+XMRAn67VqrgMR3v7vzQlCfJUi3HuFmpgcwC2KdTs2uA
+        963I36g37n3naZjKVHttXx9A6aateVYRD1xXZqo=
+X-Google-Smtp-Source: ABdhPJzQpwb1XQIG1Sp+x3CRY5rDrdUQkAY/lj4tZHGqSnAzfSmvUoQihhwA7DERq2+RuM1AalGED2ndhrQbRpgwujc=
+X-Received: by 2002:aa7:df81:: with SMTP id b1mr12210809edy.365.1604873437961;
+ Sun, 08 Nov 2020 14:10:37 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/lu2ApLBn7M2FT7VHIKKk7DH";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+References: <1604642930-29019-1-git-send-email-chunfeng.yun@mediatek.com> <1604642930-29019-6-git-send-email-chunfeng.yun@mediatek.com>
+In-Reply-To: <1604642930-29019-6-git-send-email-chunfeng.yun@mediatek.com>
+From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Date:   Sun, 8 Nov 2020 23:10:26 +0100
+Message-ID: <CAFBinCAeTRCaho7Pc56YaX2wbEOrbW+Rx9GxMA1GsJr1Yqhp4A@mail.gmail.com>
+Subject: Re: [PATCH v2 06/17] phy: lantiq: convert to devm_platform_ioremap_resource
+To:     Chunfeng Yun <chunfeng.yun@mediatek.com>
+Cc:     Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/lu2ApLBn7M2FT7VHIKKk7DH
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
-
-Hi all,
-
-In commit
-
-  f36a74b9345a ("x86/ioapic: Use I/O-APIC ID for finding irqdomain, not ind=
-ex")
-
-Fixes tag
-
-  Fixes: b643128b917 ("x86/ioapic: Use irq_find_matching_fwspec() to find r=
-emapping irqdomain")
-
-has these problem(s):
-
-  - SHA1 should be at least 12 digits long
-
-In commit
-
-  26573a97746c ("x86/apic: Fix x2apic enablement without interrupt remappin=
-g")
-
-Fixes tag
-
-  Fixes: ce69a784504 ("x86/apic: Enable x2APIC without interrupt remapping =
-under KVM")
-
-has these problem(s):
-
-  - SHA1 should be at least 12 digits long
-
-This can be fxed in the future by setting core.abbrev to 12 (or more)
-or (for git v2.11 or later) just making sure it is not set (or set to
-"auto").
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/lu2ApLBn7M2FT7VHIKKk7DH
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl+oZpcACgkQAVBC80lX
-0GzXjQf9GrPZEqlwOJeFoBZwJGXZgqIwIACMYgxDjFRMJeES5Lyamfk2Nm7Iu8CU
-St2efYMJMpwPjGqYaCkcz72LkIxK6/56NaZjh91xaPp6khXoemyhfZ7NJCMdt/6Z
-c1bIKLg8IMb584Q1/lE+8y/EpuZ1KcJ5W3NS3ehyk6GXwtIXMWxTFWdSjKK9LZWt
-NKXMLyx8iisj7JWWF3mrZ2FOrXYr/jwEzoyzzJEKfa/vm8fU2zftIMrDwMFGq+XJ
-osrD9y2mxCDuo5aQUvj/I2sYx61S9IH7o5Xpy4JtQfI1pLN8NB0iA+7IwNwWNclJ
-hwGLfBdZePZ0bK+I4GSo2XkBC/2HyA==
-=udeT
------END PGP SIGNATURE-----
-
---Sig_/lu2ApLBn7M2FT7VHIKKk7DH--
+On Fri, Nov 6, 2020 at 7:09 AM Chunfeng Yun <chunfeng.yun@mediatek.com> wrote:
+>
+> Use devm_platform_ioremap_resource to simplify code
+>
+> Signed-off-by: Chunfeng Yun <chunfeng.yun@mediatek.com>
+Reviewed-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
