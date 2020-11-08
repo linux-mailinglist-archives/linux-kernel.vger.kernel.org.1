@@ -2,296 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4416C2AAB07
-	for <lists+linux-kernel@lfdr.de>; Sun,  8 Nov 2020 13:48:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BC1992AAB0A
+	for <lists+linux-kernel@lfdr.de>; Sun,  8 Nov 2020 14:02:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728429AbgKHMsQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 8 Nov 2020 07:48:16 -0500
-Received: from out28-217.mail.aliyun.com ([115.124.28.217]:43863 "EHLO
-        out28-217.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726607AbgKHMsP (ORCPT
+        id S1728350AbgKHNCH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 8 Nov 2020 08:02:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52516 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726607AbgKHNCG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 8 Nov 2020 07:48:15 -0500
-X-Alimail-AntiSpam: AC=CONTINUE;BC=0.0755932|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_system_inform|0.235119-0.0038911-0.76099;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047213;MF=zhouyanjie@wanyeetech.com;NM=1;PH=DS;RN=18;RT=18;SR=0;TI=SMTPD_---.Iu5FFCC_1604839687;
-Received: from 192.168.10.152(mailfrom:zhouyanjie@wanyeetech.com fp:SMTPD_---.Iu5FFCC_1604839687)
-          by smtp.aliyun-inc.com(10.147.41.138);
-          Sun, 08 Nov 2020 20:48:08 +0800
-Subject: Re: [PATCH 2/2] MIPS: Ingenic: Refresh defconfig for Ingenic SoCs
- based boards.
-To:     "H. Nikolaus Schaller" <hns@goldelico.com>
-Cc:     tsbogend@alpha.franken.de, paul@crapouillou.net,
-        robh+dt@kernel.org, linux-kernel@vger.kernel.org,
-        linux-mips@vger.kernel.org, devicetree@vger.kernel.org,
-        nixiaoming@huawei.com, paulburton@kernel.org, krzk@kernel.org,
-        ak@linux.intel.com, ebiederm@xmission.com,
-        dongsheng.qiu@ingenic.com, aric.pzqi@ingenic.com,
-        rick.tyliu@ingenic.com, yanfei.li@ingenic.com,
-        sernia.zhou@foxmail.com, zhenwenjin@gmail.com
-References: <20201107115251.86182-1-zhouyanjie@wanyeetech.com>
- <20201107115251.86182-3-zhouyanjie@wanyeetech.com>
- <4F963CAF-23DA-4798-8948-F3BD89B2D55E@goldelico.com>
-From:   Zhou Yanjie <zhouyanjie@wanyeetech.com>
-Message-ID: <fea3a4f9-dcd3-296d-6f3e-f45bae763d30@wanyeetech.com>
-Date:   Sun, 8 Nov 2020 20:48:07 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
-MIME-Version: 1.0
-In-Reply-To: <4F963CAF-23DA-4798-8948-F3BD89B2D55E@goldelico.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+        Sun, 8 Nov 2020 08:02:06 -0500
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6194AC0613CF;
+        Sun,  8 Nov 2020 05:02:05 -0800 (PST)
+Received: by mail-pg1-x541.google.com with SMTP id z24so4568010pgk.3;
+        Sun, 08 Nov 2020 05:02:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=baQXkRR6e9uHEZqC3za9aR5n/gsZOkBVETdFnf8c6uM=;
+        b=sC78MXFhLyF1YgRln72rPRqiI3EmKP4W97GcI6U5fLkgmVfgaiq76kRXHLAKx4TC/x
+         BV4OSa1aVM3Cc+ESWfDhTjk3JcJikElj1sCSesbFEdVrRkE+RF//1JrFl5DHU0IRMmOt
+         uvxLVIH0qAvdm+uGjn0P8gqPwEy+jTvW4g30O8lhWwOeO+sS07V3XigVWOHyEfmu/1c1
+         A8ORLGdG2UoTuSAeoG1pz6O3vhfAeyGtBSt6OW3YjZ7FCheSQrORYkT//UtR1fjYllG4
+         zsLFk7R4heTpms9CcFllMvVeGGfH/4cDUbiiEbwcPd4HrdZeGgPAsW76MArPv6PkmZ3G
+         uW8w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=baQXkRR6e9uHEZqC3za9aR5n/gsZOkBVETdFnf8c6uM=;
+        b=aFkQ7b/vjENAW6RzHi48Sw0O2VH0GQz4WZcA5DvbbL55UZG2iqb1IXBC4yXZKioslS
+         nB6MMAbpcgSnQIuVbZ6FbVsvuh9yoDKr3NadxlT5L7rSE4WBAHJuWdkVqMu4Zz4MyuAV
+         BsomgQqEHWT8qy2fKxUQXa9IaUrZCwhSjT+T+Sfp+VmiadlFT9xrYUPT7Y63qfMhvDiS
+         arX4gvsWzPL4J6fvnlmbpQfwGQyREEBT3zPiEiw6DDWIlKhqWeRu6iuY+ofWv3qEaAiL
+         OzDL/BeVa4a97Nu5c/IsrcZMseTYnVxoMUDEBdmybItqK2+wv+FSD5tlkKkZUfZ/jpOZ
+         u1JQ==
+X-Gm-Message-State: AOAM532SE+JpVLASkY5o8GyHtOjj43fU2kA5UGRcVD4jPP5CaBGZUl3s
+        AHXSnIS/GJhadKSOSoYNzg==
+X-Google-Smtp-Source: ABdhPJzIOJssGmKJYbWQ0xau3+hOEvaYPQxO+6BvCj2Dl94hbw1p0fx2k9F2oqWBXOYN25wCyj+XFw==
+X-Received: by 2002:aa7:92d4:0:b029:163:e68e:5ffb with SMTP id k20-20020aa792d40000b0290163e68e5ffbmr9329624pfa.40.1604840524948;
+        Sun, 08 Nov 2020 05:02:04 -0800 (PST)
+Received: from he-cluster.localdomain (67.216.221.250.16clouds.com. [67.216.221.250])
+        by smtp.gmail.com with ESMTPSA id z17sm7558650pga.85.2020.11.08.05.02.03
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Sun, 08 Nov 2020 05:02:04 -0800 (PST)
+From:   xiakaixu1987@gmail.com
+X-Google-Original-From: kaixuxia@tencent.com
+To:     james.smart@broadcom.com, dick.kennedy@broadcom.com,
+        martin.petersen@oracle.com
+Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Kaixu Xia <kaixuxia@tencent.com>
+Subject: [PATCH] scsi: lpfc: make lpfc_sli_process_sol_iocb() void
+Date:   Sun,  8 Nov 2020 21:01:58 +0800
+Message-Id: <1604840518-12625-1-git-send-email-kaixuxia@tencent.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Nikolaus,
+From: Kaixu Xia <kaixuxia@tencent.com>
 
-On 2020/11/8 上午3:05, H. Nikolaus Schaller wrote:
->> Am 07.11.2020 um 12:52 schrieb 周琰杰 (Zhou Yanjie) <zhouyanjie@wanyeetech.com>:
->>
->> 1.Refresh defconfig of CI20 to support OTG and RNG.
->> 2.Refresh defconfig of CU1000-Neo to support OTG/RNG/OST/SC16IS752.
->> 3.Refresh defconfig of CU1830-Neo to support OTG/DTRNG/OST/SC16IS752.
->>
->> Tested-by: 周正 (Zhou Zheng) <sernia.zhou@foxmail.com>
->> Signed-off-by: 周琰杰 (Zhou Yanjie) <zhouyanjie@wanyeetech.com>
->> ---
->> arch/mips/configs/ci20_defconfig       | 14 ++++++++++++--
->> arch/mips/configs/cu1000-neo_defconfig | 28 +++++++++++++++++++++++-----
->> arch/mips/configs/cu1830-neo_defconfig | 32 +++++++++++++++++++++++++-------
->> 3 files changed, 60 insertions(+), 14 deletions(-)
->>
->> diff --git a/arch/mips/configs/ci20_defconfig b/arch/mips/configs/ci20_defconfig
->> index 052c5ad0f2b1..80fbe57d68d4 100644
->> --- a/arch/mips/configs/ci20_defconfig
->> +++ b/arch/mips/configs/ci20_defconfig
->> @@ -49,6 +49,8 @@ CONFIG_MTD_RAW_NAND=y
->> CONFIG_MTD_NAND_JZ4780=y
->> CONFIG_MTD_UBI=y
->> CONFIG_MTD_UBI_FASTMAP=y
->> +CONFIG_SCSI=y
->> +CONFIG_BLK_DEV_SD=y
->> CONFIG_NETDEVICES=y
->> # CONFIG_NET_VENDOR_ARC is not set
->> # CONFIG_NET_VENDOR_BROADCOM is not set
->> @@ -77,7 +79,6 @@ CONFIG_SERIAL_8250_NR_UARTS=5
->> CONFIG_SERIAL_8250_RUNTIME_UARTS=5
->> CONFIG_SERIAL_8250_INGENIC=y
->> CONFIG_SERIAL_OF_PLATFORM=y
->> -# CONFIG_HW_RANDOM is not set
->> CONFIG_I2C=y
->> CONFIG_I2C_JZ4780=y
->> CONFIG_SPI=y
->> @@ -99,7 +100,12 @@ CONFIG_IR_GPIO_TX=m
->> CONFIG_MEDIA_SUPPORT=m
->> # CONFIG_VGA_CONSOLE is not set
->> # CONFIG_HID is not set
->> -# CONFIG_USB_SUPPORT is not set
->> +CONFIG_USB=y
->> +CONFIG_USB_STORAGE=y
->> +CONFIG_USB_DWC2=y
->> +CONFIG_USB_SERIAL=y
->> +CONFIG_USB_SERIAL_CH341=y
->> +CONFIG_USB_GADGET=y
->> CONFIG_MMC=y
->> CONFIG_MMC_JZ4740=y
->> CONFIG_NEW_LEDS=y
->> @@ -131,8 +137,12 @@ CONFIG_MEMORY=y
->> CONFIG_JZ4780_NEMC=y
->> CONFIG_PWM=y
->> CONFIG_PWM_JZ4740=m
-> maybe you can add
->
-> +CONFIG_JZ4780_EFUSE=y
->
-> here. It was forgotten when we made the NVRAM for Ethernet working.
+The function lpfc_sli_process_sol_iocb() always return 1, so there's no
+reason for a return value. In addition, no other functions will use the
+return value of lpfc_sli_process_sol_iocb().
 
+Convert lpfc_sli_process_sol_iocb() to a void function, and fix the
+following Coccinelle warning:
 
-Sure, I will add it in the next version.
+./drivers/scsi/lpfc/lpfc_sli.c:3247:5-7: Unneeded variable: "rc". Return "1" on line 3372
 
+Reported-by: Tosk Robot <tencent_os_robot@tencent.com>
+Signed-off-by: Kaixu Xia <kaixuxia@tencent.com>
+---
+ drivers/scsi/lpfc/lpfc_sli.c | 7 ++-----
+ 1 file changed, 2 insertions(+), 5 deletions(-)
 
->> +CONFIG_JZ4770_PHY=y
->> CONFIG_EXT4_FS=y
->> # CONFIG_DNOTIFY is not set
->> +CONFIG_AUTOFS_FS=y
->> +CONFIG_VFAT_FS=y
->> +CONFIG_FAT_DEFAULT_UTF8=y
->> CONFIG_PROC_KCORE=y
->> # CONFIG_PROC_PAGE_MONITOR is not set
->> CONFIG_TMPFS=y
->> diff --git a/arch/mips/configs/cu1000-neo_defconfig b/arch/mips/configs/cu1000-neo_defconfig
->> index 55d0690a3ffe..9d75f5b77d5d 100644
->> --- a/arch/mips/configs/cu1000-neo_defconfig
->> +++ b/arch/mips/configs/cu1000-neo_defconfig
->> @@ -25,6 +25,7 @@ CONFIG_HIGHMEM=y
->> CONFIG_HZ_100=y
->> # CONFIG_SECCOMP is not set
->> # CONFIG_SUSPEND is not set
->> +CONFIG_MODULES=y
->> # CONFIG_CORE_DUMP_DEFAULT_ELF_HEADERS is not set
->> # CONFIG_COMPACTION is not set
->> CONFIG_CMA=y
->> @@ -32,15 +33,17 @@ CONFIG_NET=y
->> CONFIG_PACKET=y
->> CONFIG_UNIX=y
->> CONFIG_INET=y
->> -CONFIG_CFG80211=y
->> +CONFIG_CFG80211=m
->> CONFIG_UEVENT_HELPER=y
->> CONFIG_UEVENT_HELPER_PATH="/sbin/hotplug"
->> CONFIG_DEVTMPFS=y
->> # CONFIG_ALLOW_DEV_COREDUMP is not set
->> +CONFIG_SCSI=y
->> +CONFIG_BLK_DEV_SD=y
->> CONFIG_NETDEVICES=y
->> CONFIG_STMMAC_ETH=y
->> CONFIG_SMSC_PHY=y
->> -CONFIG_BRCMFMAC=y
->> +CONFIG_BRCMFMAC=m
->> # CONFIG_INPUT_KEYBOARD is not set
->> # CONFIG_INPUT_MOUSE is not set
->> # CONFIG_SERIO is not set
->> @@ -52,16 +55,25 @@ CONFIG_SERIAL_8250_NR_UARTS=3
->> CONFIG_SERIAL_8250_RUNTIME_UARTS=3
->> CONFIG_SERIAL_8250_INGENIC=y
->> CONFIG_SERIAL_OF_PLATFORM=y
->> -# CONFIG_HW_RANDOM is not set
->> +CONFIG_SERIAL_SC16IS7XX=y
->> +# CONFIG_SERIAL_SC16IS7XX_I2C is not set
->> +CONFIG_SERIAL_SC16IS7XX_SPI=y
->> CONFIG_I2C=y
->> CONFIG_I2C_JZ4780=y
->> +CONFIG_SPI=y
->> +CONFIG_SPI_GPIO=y
->> CONFIG_GPIO_SYSFS=y
->> -CONFIG_SENSORS_ADS7828=y
->> +CONFIG_SENSORS_ADS7828=m
->> CONFIG_WATCHDOG=y
->> CONFIG_JZ4740_WDT=y
->> # CONFIG_VGA_CONSOLE is not set
->> # CONFIG_HID is not set
->> -# CONFIG_USB_SUPPORT is not set
->> +CONFIG_USB=y
->> +CONFIG_USB_STORAGE=y
->> +CONFIG_USB_DWC2=y
->> +CONFIG_USB_SERIAL=y
->> +CONFIG_USB_SERIAL_CH341=y
->> +CONFIG_USB_GADGET=y
->> CONFIG_MMC=y
->> CONFIG_MMC_JZ4740=y
->> CONFIG_NEW_LEDS=y
->> @@ -72,16 +84,22 @@ CONFIG_RTC_CLASS=y
->> CONFIG_RTC_DRV_JZ4740=y
->> CONFIG_DMADEVICES=y
->> CONFIG_DMA_JZ4780=y
->> +# CONFIG_INGENIC_TIMER is not set
->> +CONFIG_INGENIC_SYSOST=y
->> # CONFIG_IOMMU_SUPPORT is not set
->> +CONFIG_JZ4770_PHY=y
->> CONFIG_EXT4_FS=y
->> # CONFIG_DNOTIFY is not set
->> CONFIG_AUTOFS_FS=y
->> +CONFIG_VFAT_FS=y
->> +CONFIG_FAT_DEFAULT_UTF8=y
->> CONFIG_PROC_KCORE=y
->> # CONFIG_PROC_PAGE_MONITOR is not set
->> CONFIG_TMPFS=y
->> CONFIG_CONFIGFS_FS=y
->> CONFIG_NFS_FS=y
->> CONFIG_NLS=y
->> +CONFIG_NLS_CODEPAGE_437=y
->> CONFIG_NLS_CODEPAGE_936=y
->> CONFIG_NLS_CODEPAGE_950=y
->> CONFIG_NLS_ASCII=y
->> diff --git a/arch/mips/configs/cu1830-neo_defconfig b/arch/mips/configs/cu1830-neo_defconfig
->> index e7064851a47a..29decd0003c6 100644
->> --- a/arch/mips/configs/cu1830-neo_defconfig
->> +++ b/arch/mips/configs/cu1830-neo_defconfig
->> @@ -25,6 +25,7 @@ CONFIG_HIGHMEM=y
->> CONFIG_HZ_100=y
->> # CONFIG_SECCOMP is not set
->> # CONFIG_SUSPEND is not set
->> +CONFIG_MODULES=y
->> # CONFIG_CORE_DUMP_DEFAULT_ELF_HEADERS is not set
->> # CONFIG_COMPACTION is not set
->> CONFIG_CMA=y
->> @@ -32,18 +33,20 @@ CONFIG_NET=y
->> CONFIG_PACKET=y
->> CONFIG_UNIX=y
->> CONFIG_INET=y
->> -CONFIG_CFG80211=y
->> +CONFIG_CFG80211=m
->> CONFIG_UEVENT_HELPER=y
->> CONFIG_UEVENT_HELPER_PATH="/sbin/hotplug"
->> CONFIG_DEVTMPFS=y
->> # CONFIG_ALLOW_DEV_COREDUMP is not set
->> +CONFIG_SCSI=y
->> +CONFIG_BLK_DEV_SD=y
->> CONFIG_MD=y
->> -CONFIG_BLK_DEV_MD=y
->> -CONFIG_BLK_DEV_DM=y
->> +CONFIG_BLK_DEV_MD=m
->> +CONFIG_BLK_DEV_DM=m
->> CONFIG_NETDEVICES=y
->> CONFIG_STMMAC_ETH=y
->> CONFIG_ICPLUS_PHY=y
->> -CONFIG_BRCMFMAC=y
->> +CONFIG_BRCMFMAC=m
->> # CONFIG_INPUT_KEYBOARD is not set
->> # CONFIG_INPUT_MOUSE is not set
->> # CONFIG_SERIO is not set
->> @@ -55,16 +58,25 @@ CONFIG_SERIAL_8250_NR_UARTS=2
->> CONFIG_SERIAL_8250_RUNTIME_UARTS=2
->> CONFIG_SERIAL_8250_INGENIC=y
->> CONFIG_SERIAL_OF_PLATFORM=y
->> -# CONFIG_HW_RANDOM is not set
->> +CONFIG_SERIAL_SC16IS7XX=y
->> +# CONFIG_SERIAL_SC16IS7XX_I2C is not set
->> +CONFIG_SERIAL_SC16IS7XX_SPI=y
->> CONFIG_I2C=y
->> CONFIG_I2C_JZ4780=y
->> +CONFIG_SPI=y
->> +CONFIG_SPI_GPIO=y
->> CONFIG_GPIO_SYSFS=y
->> -CONFIG_SENSORS_ADS7828=y
->> +CONFIG_SENSORS_ADS7828=m
->> CONFIG_WATCHDOG=y
->> CONFIG_JZ4740_WDT=y
->> # CONFIG_VGA_CONSOLE is not set
->> # CONFIG_HID is not set
->> -# CONFIG_USB_SUPPORT is not set
->> +CONFIG_USB=y
->> +CONFIG_USB_STORAGE=y
->> +CONFIG_USB_DWC2=y
->> +CONFIG_USB_SERIAL=y
->> +CONFIG_USB_SERIAL_CH341=y
->> +CONFIG_USB_GADGET=y
->> CONFIG_MMC=y
->> CONFIG_MMC_JZ4740=y
->> CONFIG_NEW_LEDS=y
->> @@ -75,16 +87,22 @@ CONFIG_RTC_CLASS=y
->> CONFIG_RTC_DRV_JZ4740=y
->> CONFIG_DMADEVICES=y
->> CONFIG_DMA_JZ4780=y
->> +# CONFIG_INGENIC_TIMER is not set
->> +CONFIG_INGENIC_SYSOST=y
->> # CONFIG_IOMMU_SUPPORT is not set
->> +CONFIG_JZ4770_PHY=y
->> CONFIG_EXT4_FS=y
->> # CONFIG_DNOTIFY is not set
->> CONFIG_AUTOFS_FS=y
->> +CONFIG_VFAT_FS=y
->> +CONFIG_FAT_DEFAULT_UTF8=y
->> CONFIG_PROC_KCORE=y
->> # CONFIG_PROC_PAGE_MONITOR is not set
->> CONFIG_TMPFS=y
->> CONFIG_CONFIGFS_FS=y
->> CONFIG_NFS_FS=y
->> CONFIG_NLS=y
->> +CONFIG_NLS_CODEPAGE_437=y
->> CONFIG_NLS_CODEPAGE_936=y
->> CONFIG_NLS_CODEPAGE_950=y
->> CONFIG_NLS_ASCII=y
->> -- 
->> 2.11.0
->>
+diff --git a/drivers/scsi/lpfc/lpfc_sli.c b/drivers/scsi/lpfc/lpfc_sli.c
+index e158cd77d387..45c8cac61c76 100644
+--- a/drivers/scsi/lpfc/lpfc_sli.c
++++ b/drivers/scsi/lpfc/lpfc_sli.c
+@@ -3239,12 +3239,11 @@ lpfc_sli_iocbq_lookup_by_tag(struct lpfc_hba *phba,
+  * is changed to IOSTAT_LOCAL_REJECT/IOERR_SLI_ABORTED.
+  * This function always returns 1.
+  **/
+-static int
++static void
+ lpfc_sli_process_sol_iocb(struct lpfc_hba *phba, struct lpfc_sli_ring *pring,
+ 			  struct lpfc_iocbq *saveq)
+ {
+ 	struct lpfc_iocbq *cmdiocbp;
+-	int rc = 1;
+ 	unsigned long iflag;
+ 
+ 	cmdiocbp = lpfc_sli_iocbq_lookup(phba, pring, saveq);
+@@ -3368,8 +3367,6 @@ lpfc_sli_process_sol_iocb(struct lpfc_hba *phba, struct lpfc_sli_ring *pring,
+ 					 saveq->iocb.ulpContext);
+ 		}
+ 	}
+-
+-	return rc;
+ }
+ 
+ /**
+@@ -3761,7 +3758,7 @@ lpfc_sli_sp_handle_rspiocb(struct lpfc_hba *phba, struct lpfc_sli_ring *pring,
+ 		switch (type) {
+ 		case LPFC_SOL_IOCB:
+ 			spin_unlock_irqrestore(&phba->hbalock, iflag);
+-			rc = lpfc_sli_process_sol_iocb(phba, pring, saveq);
++			lpfc_sli_process_sol_iocb(phba, pring, saveq);
+ 			spin_lock_irqsave(&phba->hbalock, iflag);
+ 			break;
+ 
+-- 
+2.20.0
+
