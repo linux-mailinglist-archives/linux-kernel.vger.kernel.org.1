@@ -2,68 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C5A92AACB1
-	for <lists+linux-kernel@lfdr.de>; Sun,  8 Nov 2020 18:59:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E6F02AACB5
+	for <lists+linux-kernel@lfdr.de>; Sun,  8 Nov 2020 19:01:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728719AbgKHR7u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 8 Nov 2020 12:59:50 -0500
-Received: from asavdk4.altibox.net ([109.247.116.15]:45508 "EHLO
-        asavdk4.altibox.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727570AbgKHR7u (ORCPT
+        id S1728789AbgKHSA4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 8 Nov 2020 13:00:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42392 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727570AbgKHSA4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 8 Nov 2020 12:59:50 -0500
-Received: from ravnborg.org (unknown [188.228.123.71])
+        Sun, 8 Nov 2020 13:00:56 -0500
+Received: from ssl.serverraum.org (ssl.serverraum.org [IPv6:2a01:4f8:151:8464::1:2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43875C0613CF;
+        Sun,  8 Nov 2020 10:00:56 -0800 (PST)
+Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by asavdk4.altibox.net (Postfix) with ESMTPS id 39F3B80538;
-        Sun,  8 Nov 2020 18:59:47 +0100 (CET)
-Date:   Sun, 8 Nov 2020 18:59:45 +0100
-From:   Sam Ravnborg <sam@ravnborg.org>
-To:     trix@redhat.com
-Cc:     tzimmermann@suse.de, airlied@linux.ie,
-        nouveau@lists.freedesktop.org, gustavoars@kernel.org,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        kraxel@redhat.com, spice-devel@lists.freedesktop.org,
-        airlied@redhat.com, virtualization@lists.linux-foundation.org,
-        bskeggs@redhat.com
-Subject: Re: [PATCH] drm: remove unneeded break
-Message-ID: <20201108175945.GA1508644@ravnborg.org>
-References: <20201019163115.25814-1-trix@redhat.com>
- <20201019170641.GA963808@ravnborg.org>
+        by ssl.serverraum.org (Postfix) with ESMTPSA id E7E6822F99;
+        Sun,  8 Nov 2020 19:00:46 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
+        t=1604858450;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=P5mdmJCjp3mWQK68q4UXJyoMZpxRwtUapcv3lDuVJZQ=;
+        b=kxsySbbeaBZxeiWbEjD7dj0jUhLWxVscCHqHal5CeXliKmIzchULDHZy6Nifh7GocJqhTC
+        4l+iS0yg5OFwpvuDFAgVYeV/7jeYxZKZv+J7QKi63xjCIgrDGmdmuH+YJHiurikIhSr5Q3
+        d9ADQYoT3WHZbhYkHmVzSWKBFAjuh3A=
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201019170641.GA963808@ravnborg.org>
-X-CMAE-Score: 0
-X-CMAE-Analysis: v=2.3 cv=VafZwmh9 c=1 sm=1 tr=0
-        a=S6zTFyMACwkrwXSdXUNehg==:117 a=S6zTFyMACwkrwXSdXUNehg==:17
-        a=kj9zAlcOel0A:10 a=20KFwNOVAAAA:8 a=7gkXJVJtAAAA:8
-        a=fi46lLvuFyj7XQ7yi5sA:9 a=CjuIK1q_8ugA:10 a=E9Po1WZjFZOl8hwRPBS3:22
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Sun, 08 Nov 2020 19:00:46 +0100
+From:   Michael Walle <michael@walle.cc>
+To:     linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Shawn Guo <shawnguo@kernel.org>, Li Yang <leoyang.li@nxp.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Claudiu Manoil <claudiu.manoil@nxp.com>,
+        Ioana Ciornei <ioana.cionei@nxp.com>,
+        Vladimir Oltean <vladimir.oltean@nxp.com>
+Subject: Re: [PATCH net] arm64: dts: fsl-ls1028a-kontron-sl28: specify in-band
+ mode for ENETC
+In-Reply-To: <20201101131905.8316-1-michael@walle.cc>
+References: <20201101131905.8316-1-michael@walle.cc>
+User-Agent: Roundcube Webmail/1.4.9
+Message-ID: <b2b33b89e0f363344fc3b036e58d5cdc@walle.cc>
+X-Sender: michael@walle.cc
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Tom
-On Mon, Oct 19, 2020 at 07:06:41PM +0200, Sam Ravnborg wrote:
-> Hi Tom
-> On Mon, Oct 19, 2020 at 09:31:15AM -0700, trix@redhat.com wrote:
-> > From: Tom Rix <trix@redhat.com>
-> > 
-> > A break is not needed if it is preceded by a return or break
-> > 
-> > Signed-off-by: Tom Rix <trix@redhat.com>
-> 
-> Looks good and builds with no warnings.
-> 
-> One of the diffs made me - "oh this looks wrong". But after I looked again
-> it was right and the resulting code is more readable - so good.
-> 
-> Acked-by: Sam Ravnborg <sam@ravnborg.org>
-> 
-> Was tempted to just apply to drm-misc-next but will give others the
-> opportunity to chime in.
+Hi,
 
-Thanks.
-Now applied to drm-misc-next - will show up in -next in a week or so.
+Am 2020-11-01 14:19, schrieb Michael Walle:
+> Since commit 71b77a7a27a3 ("enetc: Migrate to PHYLINK and PCS_LYNX") 
+> the
+> network port of the Kontron sl28 board is broken. After the migration 
+> to
+> phylink the device tree has to specify the in-band-mode property. Add
+> it.
+> 
+> Fixes: 71b77a7a27a3 ("enetc: Migrate to PHYLINK and PCS_LYNX")
+> Suggested-by: Vladimir Oltean <vladimir.oltean@nxp.com>
+> Signed-off-by: Michael Walle <michael@walle.cc>
 
-	Sam
+Ping. will this go through the net queue or Shawn's queue. In any case,
+it should make it into a fixes queue, because this board is currently
+broken in 5.10-rc2.
+
+Thanks,
+-michael
