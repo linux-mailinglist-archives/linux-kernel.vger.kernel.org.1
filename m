@@ -2,73 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B543D2AAE1F
-	for <lists+linux-kernel@lfdr.de>; Sun,  8 Nov 2020 23:55:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 88A972AAE2C
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 00:08:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728974AbgKHWzI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 8 Nov 2020 17:55:08 -0500
-Received: from mail-io1-f69.google.com ([209.85.166.69]:54226 "EHLO
-        mail-io1-f69.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727929AbgKHWzH (ORCPT
+        id S1728997AbgKHXIm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 8 Nov 2020 18:08:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33104 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727929AbgKHXIl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 8 Nov 2020 17:55:07 -0500
-Received: by mail-io1-f69.google.com with SMTP id c17so4485693iom.20
-        for <linux-kernel@vger.kernel.org>; Sun, 08 Nov 2020 14:55:05 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=Mk8JTr7hVOq3EefkDcYJtK1cseL+MNVUi7YjoZxo834=;
-        b=ECLAiR+smpVFF3TBQ7NqM9NQYdQqtxMZxhKWo5iilxN+RDfRqXM0g5q1DRha1YC6o2
-         2B5kNcaRKuGRxmoQT9X1kIQyCCqv7a9A6m3IhlT2t1ASjim+ZVZ5oPTTw0/F8ilFd2VY
-         KWpNHvpRsQdunqMAiVOY99bv+LGbXCZCbMdcWX3J9aZ3vAE0ZVYsMr335KnoXV0yCCKW
-         mSHOczwQHhdNyPA/hRuK08XQ4WDjxuEfNqrfellPZ+wmpfi5P+9CdukuUIsddxW913YK
-         C1TZJye4hOl7dCCzlyhqPPdPuRYx7eciSqty0O9sX0644i35QlLG0lL0d5gh8paBVGNV
-         X6LQ==
-X-Gm-Message-State: AOAM530O59GiME/OnLZYlKh+zRH+VVVZKVuK1O7SAUYz82Wq9+3lQUIl
-        0LsYqEczWX/zXJJi45NAhHS7XUk8ubz2IQ4M5U7SsxIet4Dg
-X-Google-Smtp-Source: ABdhPJz46elvAlGQb+4iBu5GDJETkvSCwZYY3fQO4J1bsg3UipRMv59OOfwhgZstYtR/XAJyLUrU+ZktTcqi0Zw4wr4tBtTIjClC
+        Sun, 8 Nov 2020 18:08:41 -0500
+X-Greylist: delayed 3505 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sun, 08 Nov 2020 15:08:41 PST
+Received: from twosheds.infradead.org (twosheds.infradead.org [IPv6:2001:8b0:10b:1:21d:7dff:fe04:dbe2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24754C0613CF;
+        Sun,  8 Nov 2020 15:08:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=twosheds.20170209; h=Content-Transfer-Encoding:
+        Content-Type:MIME-Version:Cc:To:From:Subject:Date:References:In-Reply-To:
+        Message-ID:Sender:Reply-To:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=ip8hF5BftOjZIayundc04w+NG5HSfhZUwkO7oX7/MuE=; b=NiBdShb0quc3A87cncLeElMkU
+        Cri9O/nbA3Q+cNPO5g/LWL4pRN8LVSIPCprSE7pkDC1/SD+RCusucXgeaGh083P9AzPmUcSurgctN
+        65DwvYtYuTDYLCGpw0sFErehScpOJwI5U+OjZs5j2fKo66NvnHgjrLxy+16yxG8HAbhbpHOsW3g3Q
+        DH1Xx6+f/SMU1g87foW1UhUlpzDmkWdfoeqoQwmj9FvQVJEqZJtl/dikNVCxzNLdSAg3rmyg22Djm
+        EvYat3/TMQuvYHlgDzjAPBV9dYu8A0rQ/uebwa1ueCrRheDuAUIf4sOmDgctB+CIy55cyaOOZieDl
+        bs9trAlLA==;
+Received: from localhost ([127.0.0.1] helo=twosheds.infradead.org)
+        by twosheds.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kbssT-00CBlH-SM; Sun, 08 Nov 2020 22:09:38 +0000
+Received: from 2001:8b0:10b:1:b16b:5d8a:941b:e15c
+        (SquirrelMail authenticated user dwmw2)
+        by twosheds.infradead.org with HTTP;
+        Sun, 8 Nov 2020 22:09:38 -0000
+Message-ID: <59034a932606e25c0b260540fff0b6dc.squirrel@twosheds.infradead.org>
+In-Reply-To: <87k0uvk0oc.fsf@nanos.tec.linutronix.de>
+References: <20201030224534.GN2620339@nvidia.com>
+    <ec52cedf-3a99-5ca1-ffbb-d8f8c4f62395@intel.com>
+    <20201102132158.GA3352700@nvidia.com>
+    <MWHPR11MB1645675ED03E23674A705DF68C110@MWHPR11MB1645.namprd11.prod.outlook.com>
+    <20201103124351.GM2620339@nvidia.com>
+    <MWHPR11MB164544C9CFCC3F162C1C6FC18CEF0@MWHPR11MB1645.namprd11.prod.outlook.com>
+    <20201104124017.GW2620339@nvidia.com>
+    <MWHPR11MB1645862A8F7CF7FB8DD011778CEF0@MWHPR11MB1645.namprd11.prod.outlook.com>
+    <20201104135415.GX2620339@nvidia.com>
+    <MWHPR11MB1645524BDEDF8899914F32AE8CED0@MWHPR11MB1645.namprd11.prod.outlook.com>
+    <20201106131415.GT2620339@nvidia.com>
+    <87k0uvk0oc.fsf@nanos.tec.linutronix.de>
+Date:   Sun, 8 Nov 2020 22:09:38 -0000
+Subject: Re: [PATCH v4 06/17] PCI: add SIOV and IMS capability detection
+From:   "David Woodhouse" <dwmw2@infradead.org>
+To:     "Thomas Gleixner" <tglx@linutronix.de>
+Cc:     "Jason Gunthorpe" <jgg@nvidia.com>,
+        "Tian\, Kevin" <kevin.tian@intel.com>,
+        "Jiang\, Dave" <dave.jiang@intel.com>,
+        "Bjorn Helgaas" <helgaas@kernel.org>,
+        "vkoul\@kernel.org" <vkoul@kernel.org>,
+        "Dey\, Megha" <megha.dey@intel.com>,
+        "maz\@kernel.org" <maz@kernel.org>,
+        "bhelgaas\@google.com" <bhelgaas@google.com>,
+        "alex.williamson\@redhat.com" <alex.williamson@redhat.com>,
+        "Pan\, Jacob jun" <jacob.jun.pan@intel.com>,
+        "Raj\, Ashok" <ashok.raj@intel.com>,
+        "Liu\, Yi L" <yi.l.liu@intel.com>,
+        "Lu\, Baolu" <baolu.lu@intel.com>,
+        "Kumar\, Sanjay K" <sanjay.k.kumar@intel.com>,
+        "Luck\, Tony" <tony.luck@intel.com>,
+        "jing.lin\@intel.com" <jing.lin@intel.com>,
+        "Williams\, Dan J" <dan.j.williams@intel.com>,
+        "kwankhede\@nvidia.com" <kwankhede@nvidia.com>,
+        "eric.auger\@redhat.com" <eric.auger@redhat.com>,
+        "parav\@mellanox.com" <parav@mellanox.com>,
+        "rafael\@kernel.org" <rafael@kernel.org>,
+        "netanelg\@mellanox.com" <netanelg@mellanox.com>,
+        "shahafs\@mellanox.com" <shahafs@mellanox.com>,
+        "yan.y.zhao\@linux.intel.com" <yan.y.zhao@linux.intel.com>,
+        "pbonzini\@redhat.com" <pbonzini@redhat.com>,
+        "Ortiz\, Samuel" <samuel.ortiz@intel.com>,
+        "Hossain\, Mona" <mona.hossain@intel.com>,
+        "dmaengine\@vger.kernel.org" <dmaengine@vger.kernel.org>,
+        "linux-kernel\@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-pci\@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        "kvm\@vger.kernel.org" <kvm@vger.kernel.org>
+User-Agent: SquirrelMail/1.4.23 [SVN]-1.fc30.20190710
 MIME-Version: 1.0
-X-Received: by 2002:a02:b1cb:: with SMTP id u11mr8883124jah.95.1604876105313;
- Sun, 08 Nov 2020 14:55:05 -0800 (PST)
-Date:   Sun, 08 Nov 2020 14:55:05 -0800
-In-Reply-To: <000000000000c57f2d05ac4c5b8e@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000002a736805b3a05697@google.com>
-Subject: Re: BUG: corrupted list in kobject_add_internal
-From:   syzbot <syzbot+dd768a260f7358adbaf9@syzkaller.appspotmail.com>
-To:     abhishekpandit@chromium.org, coiby.xu@gmail.com,
-        davem@davemloft.net, dvyukov@google.com,
-        gregkh@linuxfoundation.org, johan.hedberg@gmail.com,
-        kuba@kernel.org, linux-bluetooth@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-kernel@vger.kernel.org, marcel@holtmann.org,
-        netdev@vger.kernel.org, rafael@kernel.org,
-        sonnysasaka@chromium.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain;charset=utf-8
+Content-Transfer-Encoding: 8bit
+X-Priority: 3 (Normal)
+Importance: Normal
+X-SRS-Rewrite: SMTP reverse-path rewritten from <dwmw2@infradead.org> by twosheds.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot suspects this issue was fixed by commit:
 
-commit a46b7ed4d52d09bd6c7ab53b2217d04fc2f02c65
-Author: Sonny Sasaka <sonnysasaka@chromium.org>
-Date:   Fri Aug 14 19:09:09 2020 +0000
 
-    Bluetooth: Fix auto-creation of hci_conn at Conn Complete event
+> On Fri, Nov 06 2020 at 09:14, Jason Gunthorpe wrote:
+>> On Fri, Nov 06, 2020 at 09:48:34AM +0000, Tian, Kevin wrote:
+>> For instance you could put a "disable IMS" flag in the ACPI tables, in
+>> the config space of the emuulated root port, or any other areas that
+>> clearly belong to the platform.
+>>
+>> The OS logic would be
+>>  - If no IMS information found then use IMS (Bare metal)
+>>  - If the IMS disable flag is found then
+>>    - If (future) hypercall available and the OS knows how to use it
+>>      then use IMS
+>>    - If no hypercall found, or no OS knowledge, fail IMS
+>
+> That does not work because an older hypervisor would not have that
+> disable flag and the guest kernel would assume to be on bare metal (if
+> no other indicators are there).
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=13d75792500000
-start commit:   d6efb3ac Merge tag 'tty-5.9-rc1' of git://git.kernel.org/p..
-git tree:       upstream
-kernel config:  https://syzkaller.appspot.com/x/.config?x=ff87594cecb7e666
-dashboard link: https://syzkaller.appspot.com/bug?extid=dd768a260f7358adbaf9
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=105054aa900000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=16ab6976900000
+In the absence of a forward-thinking design from Intel perhaps we could
+use the existence of an IOMMU with interrupt remapping and not caching
+mode as the indication that it's bare metal?
 
-If the result looks correct, please mark the issue as fixed by replying with:
+-- 
+dwmw2
 
-#syz fix: Bluetooth: Fix auto-creation of hci_conn at Conn Complete event
-
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
