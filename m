@@ -2,90 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E17502AA8B4
-	for <lists+linux-kernel@lfdr.de>; Sun,  8 Nov 2020 02:12:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C1BBE2AA8B6
+	for <lists+linux-kernel@lfdr.de>; Sun,  8 Nov 2020 02:14:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728792AbgKHBMH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Nov 2020 20:12:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56128 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725838AbgKHBMG (ORCPT
+        id S1728762AbgKHBOB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Nov 2020 20:14:01 -0500
+Received: from www262.sakura.ne.jp ([202.181.97.72]:56248 "EHLO
+        www262.sakura.ne.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726060AbgKHBOB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Nov 2020 20:12:06 -0500
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6399C0613CF;
-        Sat,  7 Nov 2020 17:12:06 -0800 (PST)
-Received: by mail-pf1-x441.google.com with SMTP id y7so4848787pfq.11;
-        Sat, 07 Nov 2020 17:12:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=PJ6pbPsgfV69uxn7Wd3OP+li9YYh0k+lJUu4SV9HT1k=;
-        b=vUqQ6qaiYblfX0a/cUKKF0Hkg1/Y9zvNQgqoG+btG305wBt9A6CF32gSVdF9nrbn56
-         rRISFuqP5QXSHMtYqvNk6M5iVpgYg45yLPHxgI50jAEChaGDGoyKAMZGeFk7PHnX0XdB
-         q6TFaNXwEA8RicWtuvLOri7NZtF9dmNC3QrXgE2CsRhEdHBvXHwmWBjOkQEIi3VSre7j
-         jEg8MI4iXmMvIhk/hdCKk7J+wCz6LbnoM8Pdj/mpzEbPM047WVoUNPrrCe4v8XsPIPVG
-         qjDOhBkaivREVQoAVelvC06csFtbmlbWESlaBOYocpkeieFC9jtPoSNtB8hq68GKQmAx
-         qgSQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=PJ6pbPsgfV69uxn7Wd3OP+li9YYh0k+lJUu4SV9HT1k=;
-        b=SstKyX/T1NdyvHeYzKrlPFMpAMGSX9sgeo4QYuThEJhenAF01Ia6mWmVGulaHs28n5
-         YYrNUNFPyolt/DVqJ6/YC7mvnhUxmnQ8wYbuiopKbV9OXDnipgH0L4skebezyirzKWQy
-         MzRe3F2G8yr2YTRKxXx++9GIRbZ/3kj/Z/hjdX+AbylzQ+rqYrSSpQWFBpdgQIvfSs/+
-         AUwaVJAHrkzTyTNu12XgZ5EsUchAKb1a7NrkRtp64sOqVbsE59NN4gnQnpHOnf/eKR6o
-         ocpo0izpNG3i3OjwPWfHiyKX9MluTfc0nRI1pl/y3XmBZd3EPGvKCeHK/CmP7MPGoutx
-         gfWQ==
-X-Gm-Message-State: AOAM533H+fsDKfw71KVKWW2CNWA6q3r6pFkC5/snyTKS7vC5Z3mYzlHP
-        TuoiIj7PxKf/N4iEVt8XxdMoVaaew2vMY0g=
-X-Google-Smtp-Source: ABdhPJxSr7mJoYy54ZWcv/jwCbiExGM4dd9i4tuuhLmORxxOIdEkY91emU9ZFTVGGZL0QF6o5GnDaA==
-X-Received: by 2002:aa7:8b03:0:b029:152:a364:5084 with SMTP id f3-20020aa78b030000b0290152a3645084mr7838050pfd.29.1604797926394;
-        Sat, 07 Nov 2020 17:12:06 -0800 (PST)
-Received: from he-cluster.localdomain (67.216.221.250.16clouds.com. [67.216.221.250])
-        by smtp.gmail.com with ESMTPSA id o16sm6353275pgn.66.2020.11.07.17.12.05
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sat, 07 Nov 2020 17:12:05 -0800 (PST)
-From:   xiakaixu1987@gmail.com
-X-Google-Original-From: kaixuxia@tencent.com
-To:     irusskikh@marvell.com, andrew@lunn.ch, davem@davemloft.net,
-        kuba@kernel.org
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Kaixu Xia <kaixuxia@tencent.com>
-Subject: [PATCH v2] net: atlantic: Remove unnecessary conversion to bool
-Date:   Sun,  8 Nov 2020 09:11:59 +0800
-Message-Id: <1604797919-10157-1-git-send-email-kaixuxia@tencent.com>
-X-Mailer: git-send-email 1.8.3.1
+        Sat, 7 Nov 2020 20:14:01 -0500
+Received: from fsav108.sakura.ne.jp (fsav108.sakura.ne.jp [27.133.134.235])
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 0A81DxVN060525;
+        Sun, 8 Nov 2020 10:13:59 +0900 (JST)
+        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
+Received: from www262.sakura.ne.jp (202.181.97.72)
+ by fsav108.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav108.sakura.ne.jp);
+ Sun, 08 Nov 2020 10:13:59 +0900 (JST)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav108.sakura.ne.jp)
+Received: from [192.168.1.9] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
+        (authenticated bits=0)
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 0A81Dx49060520
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
+        Sun, 8 Nov 2020 10:13:59 +0900 (JST)
+        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
+Subject: Re: [PATCH 1/2] tomoyo: Convert get_user_pages*() to
+ pin_user_pages*()
+To:     John Hubbard <jhubbard@nvidia.com>,
+        Souptick Joarder <jrdr.linux@gmail.com>
+Cc:     linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Jan Kara <jack@suse.cz>,
+        Matthew Wilcox <willy@infradead.org>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>
+References: <1604737451-19082-1-git-send-email-jrdr.linux@gmail.com>
+ <e5401549-8c31-2c6d-58dd-864232de17af@nvidia.com>
+ <e6859981-bc3c-9513-99e5-a99849786156@nvidia.com>
+From:   Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+Message-ID: <5efeb909-3e02-ba14-7a86-f18562a2fe69@i-love.sakura.ne.jp>
+Date:   Sun, 8 Nov 2020 10:13:55 +0900
+User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
+MIME-Version: 1.0
+In-Reply-To: <e6859981-bc3c-9513-99e5-a99849786156@nvidia.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kaixu Xia <kaixuxia@tencent.com>
+On 2020/11/08 4:17, John Hubbard wrote:
+> On 11/7/20 1:04 AM, John Hubbard wrote:
+>> On 11/7/20 12:24 AM, Souptick Joarder wrote:
+>>> In 2019, we introduced pin_user_pages*() and now we are converting
+>>> get_user_pages*() to the new API as appropriate. [1] & [2] could
+>>> be referred for more information. This is case 5 as per document [1].
+>>
+>> It turns out that Case 5 can be implemented via a better pattern, as long
+>> as we're just dealing with a page at a time, briefly:
+>>
+>> lock_page()
+>> write to page's data
+>> unlock_page()
+>>
+>> ...which neatly synchronizes with writeback and other fs activities.
+> 
+> Ahem, I left out a key step: set_page_dirty()!
+> 
+> lock_page()
+> write to page's data
+> set_page_dirty()
+> unlock_page()
+> 
 
-The '!=' expression itself is bool, no need to convert it to bool.
-Fix the following coccicheck warning:
-
-./drivers/net/ethernet/aquantia/atlantic/aq_nic.c:1477:34-39: WARNING: conversion to bool not needed here
-
-Reported-by: Tosk Robot <tencent_os_robot@tencent.com>
-Signed-off-by: Kaixu Xia <kaixuxia@tencent.com>
----
- drivers/net/ethernet/aquantia/atlantic/aq_nic.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/net/ethernet/aquantia/atlantic/aq_nic.c b/drivers/net/ethernet/aquantia/atlantic/aq_nic.c
-index bf5e0e9bd0e2..6c049864dac0 100644
---- a/drivers/net/ethernet/aquantia/atlantic/aq_nic.c
-+++ b/drivers/net/ethernet/aquantia/atlantic/aq_nic.c
-@@ -1474,7 +1474,7 @@ int aq_nic_setup_tc_mqprio(struct aq_nic_s *self, u32 tcs, u8 *prio_tc_map)
- 		for (i = 0; i < sizeof(cfg->prio_tc_map); i++)
- 			cfg->prio_tc_map[i] = cfg->tcs * i / 8;
- 
--	cfg->is_qos = (tcs != 0 ? true : false);
-+	cfg->is_qos = !!tcs;
- 	cfg->is_ptp = (cfg->tcs <= AQ_HW_PTP_TC);
- 	if (!cfg->is_ptp)
- 		netdev_warn(self->ndev, "%s\n",
--- 
-2.20.0
-
+Excuse me, but Documentation/core-api/pin_user_pages.rst says 
+"CASE 5: Pinning in order to _write_ to the data within the page"
+while tomoyo_dump_page() is for "_read_ the data within the page".
+Do we want to convert to pin_user_pages_remote() or lock_page() ?
