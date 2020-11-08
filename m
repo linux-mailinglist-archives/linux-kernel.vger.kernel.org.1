@@ -2,255 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BBEB2AA9E7
-	for <lists+linux-kernel@lfdr.de>; Sun,  8 Nov 2020 07:59:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 045B72AA9F6
+	for <lists+linux-kernel@lfdr.de>; Sun,  8 Nov 2020 08:35:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728319AbgKHG7I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 8 Nov 2020 01:59:08 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37184 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726062AbgKHG7I (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 8 Nov 2020 01:59:08 -0500
-Received: from aquarius.haifa.ibm.com (nesher1.haifa.il.ibm.com [195.110.40.7])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C2107221FE;
-        Sun,  8 Nov 2020 06:58:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604818747;
-        bh=zY00vAD1luWw8Wz9ntfdosu1D6lwJ6iTAdVQg6SgGXI=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=uZQotty/fCgSAotIoYPPjcleeGFQedZ2bXn1MRORp/bIAqmn6GCWAIBmKHllxFrNq
-         tYDNPq2tKZV1KfkQLXAqFbMI7lSkhDmdOOnBLTD8vmdi4Kxgu9YUr/5kgD2A6CtDp6
-         oVY7PS5zQhpEg7nfD0kucNDwH5IiyQ87oPOjfrKg=
-From:   Mike Rapoport <rppt@kernel.org>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Albert Ou <aou@eecs.berkeley.edu>,
-        Andy Lutomirski <luto@kernel.org>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Borislav Petkov <bp@alien8.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Christoph Lameter <cl@linux.com>,
+        id S1727673AbgKHHee (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 8 Nov 2020 02:34:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58776 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726014AbgKHHee (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 8 Nov 2020 02:34:34 -0500
+Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF64CC0613CF;
+        Sat,  7 Nov 2020 23:34:33 -0800 (PST)
+Received: by mail-ej1-x642.google.com with SMTP id gn41so7801498ejc.4;
+        Sat, 07 Nov 2020 23:34:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:date:to:cc:subject:in-reply-to:message-id:references
+         :user-agent:mime-version;
+        bh=EtaEzhxwenaqaXTQFj3napoTw7vDymU9qv/CcKvdwmE=;
+        b=ZnE/glUABu9QGDkOHxquGmDxrQqIHjLEvt5SpxMBg5Xx0xSiyv1zagNoZJRPOQMQIx
+         qdNM//HIPnmvQW29aMQG231tebEkJrdlrSk/RahX3E7b49r/vxmfvSEughuZumxN+nID
+         MVuon/6ytPQ+gyT0bdF6Jkk4z6oxkhEcMHORr8JrosV2NKc6yOI+FaGCSf4Ohu1uAtJM
+         kr7rTmyWRdmLt0Z2pOK8DGkoktpJY6GnEahi78kVIqQ+g61w2LOB6Rpipi7owxHMbFmv
+         yGqLkRw7isCy4TIuSsh6riO4BqNYCkgy6fpR8kxjKZkRwinisy0lgJ7BWfq9x3BF0fT2
+         GP+Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:date:to:cc:subject:in-reply-to:message-id
+         :references:user-agent:mime-version;
+        bh=EtaEzhxwenaqaXTQFj3napoTw7vDymU9qv/CcKvdwmE=;
+        b=Ck43XtnWGlObu2UpURofEgMC32FIwWjEeo681zXase6MDJKf4lZCDRVxExiAtEk0hc
+         MyMnsQNVTLMQDh1NSkwnD+/jFReLYw0dpbw76zCmKnZ0DpGfVTDMEbM4+ptwdlhyI38j
+         JnxKxR7zznevTtPEevI/H285UuQu2s/UzU2k+0fe/1ueIfgNqkqbW1MEzDnJ/VcXOE9R
+         3kvmeE6W3H/XQxiVl8DZrvJNObCXwAQ4+BLgV4Pt4p6JhuaBfZtw5OS/ajqfo9UHxCF5
+         sJRXOnZAetW0Ad4IeSIWHIRHSglCSWHacLXBeIwe6ephPTsrzid/YLPj5RibgNimNWhY
+         xYqw==
+X-Gm-Message-State: AOAM5314BLyxeP7TDRQ/6SO88htj5bgDA5n2Pi+JnfiZtOJlFUdNQ6P4
+        nXzOjCMXSBANF9+IqicJT3A=
+X-Google-Smtp-Source: ABdhPJwf8HUCG+aejCdj3kNsW0NI3G/bOwmVp0UeenyfCbR1SkEQkajHmqVIoPa6OwQmCefvdWyXAA==
+X-Received: by 2002:a17:906:f18f:: with SMTP id gs15mr10050425ejb.474.1604820872490;
+        Sat, 07 Nov 2020 23:34:32 -0800 (PST)
+Received: from felia ([2001:16b8:2d34:bd00:5df6:61b:5ed6:df51])
+        by smtp.gmail.com with ESMTPSA id f25sm5202614edr.53.2020.11.07.23.34.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 07 Nov 2020 23:34:31 -0800 (PST)
+From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
+X-Google-Original-From: Lukas Bulwahn <lukas@gmail.com>
+Date:   Sun, 8 Nov 2020 08:34:30 +0100 (CET)
+X-X-Sender: lukas@felia
+To:     Joe Perches <joe@perches.com>,
+        Aditya Srivastava <yashsri421@gmail.com>,
+        Dwaipayan Ray <dwaipayanray1@gmail.com>
+cc:     Nick Desaulniers <ndesaulniers@google.com>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        Jozsef Kadlecsik <kadlec@netfilter.org>,
+        Florian Westphal <fw@strlen.de>,
         "David S. Miller" <davem@davemloft.net>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        David Hildenbrand <david@redhat.com>,
-        David Rientjes <rientjes@google.com>,
-        "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Len Brown <len.brown@intel.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Mike Rapoport <rppt@kernel.org>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Mackerras <paulus@samba.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Pavel Machek <pavel@ucw.cz>, Pekka Enberg <penberg@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Will Deacon <will@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, linux-pm@vger.kernel.org,
-        linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, sparclinux@vger.kernel.org,
-        x86@kernel.org
-Subject: [PATCH v5 5/5] arch, mm: make kernel_page_present() always available
-Date:   Sun,  8 Nov 2020 08:57:58 +0200
-Message-Id: <20201108065758.1815-6-rppt@kernel.org>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201108065758.1815-1-rppt@kernel.org>
-References: <20201108065758.1815-1-rppt@kernel.org>
+        Jakub Kicinski <kuba@kernel.org>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        clang-built-linux@googlegroups.com
+Subject: Re: [PATCH] netfilter: conntrack: fix -Wformat
+In-Reply-To: <4910042649a4f3ab22fac93191b8c1fa0a2e17c3.camel@perches.com>
+Message-ID: <alpine.DEB.2.21.2011080829080.4909@felia>
+References: <20201107075550.2244055-1-ndesaulniers@google.com> <4910042649a4f3ab22fac93191b8c1fa0a2e17c3.camel@perches.com>
+User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/mixed; boundary="8323329-296194858-1604820871=:4909"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mike Rapoport <rppt@linux.ibm.com>
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
-For architectures that enable ARCH_HAS_SET_MEMORY having the ability to
-verify that a page is mapped in the kernel direct map can be useful
-regardless of hibernation.
+--8323329-296194858-1604820871=:4909
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 
-Add RISC-V implementation of kernel_page_present(), update its forward
-declarations and stubs to be a part of set_memory API and remove ugly
-ifdefery in inlcude/linux/mm.h around current declarations of
-kernel_page_present().
 
-Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
-Acked-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
----
- arch/arm64/include/asm/cacheflush.h |  1 +
- arch/arm64/mm/pageattr.c            |  4 +---
- arch/riscv/include/asm/set_memory.h |  1 +
- arch/riscv/mm/pageattr.c            | 29 +++++++++++++++++++++++++++++
- arch/x86/include/asm/set_memory.h   |  1 +
- arch/x86/mm/pat/set_memory.c        |  4 +---
- include/linux/mm.h                  |  7 -------
- include/linux/set_memory.h          |  5 +++++
- 8 files changed, 39 insertions(+), 13 deletions(-)
 
-diff --git a/arch/arm64/include/asm/cacheflush.h b/arch/arm64/include/asm/cacheflush.h
-index 9384fd8fc13c..45217f21f1fe 100644
---- a/arch/arm64/include/asm/cacheflush.h
-+++ b/arch/arm64/include/asm/cacheflush.h
-@@ -140,6 +140,7 @@ int set_memory_valid(unsigned long addr, int numpages, int enable);
- 
- int set_direct_map_invalid_noflush(struct page *page);
- int set_direct_map_default_noflush(struct page *page);
-+bool kernel_page_present(struct page *page);
- 
- #include <asm-generic/cacheflush.h>
- 
-diff --git a/arch/arm64/mm/pageattr.c b/arch/arm64/mm/pageattr.c
-index 439325532be1..92eccaf595c8 100644
---- a/arch/arm64/mm/pageattr.c
-+++ b/arch/arm64/mm/pageattr.c
-@@ -186,8 +186,8 @@ void __kernel_map_pages(struct page *page, int numpages, int enable)
- 
- 	set_memory_valid((unsigned long)page_address(page), numpages, enable);
- }
-+#endif /* CONFIG_DEBUG_PAGEALLOC */
- 
--#ifdef CONFIG_HIBERNATION
- /*
-  * This function is used to determine if a linear map page has been marked as
-  * not-valid. Walk the page table and check the PTE_VALID bit. This is based
-@@ -234,5 +234,3 @@ bool kernel_page_present(struct page *page)
- 	ptep = pte_offset_kernel(pmdp, addr);
- 	return pte_valid(READ_ONCE(*ptep));
- }
--#endif /* CONFIG_HIBERNATION */
--#endif /* CONFIG_DEBUG_PAGEALLOC */
-diff --git a/arch/riscv/include/asm/set_memory.h b/arch/riscv/include/asm/set_memory.h
-index 4c5bae7ca01c..d690b08dff2a 100644
---- a/arch/riscv/include/asm/set_memory.h
-+++ b/arch/riscv/include/asm/set_memory.h
-@@ -24,6 +24,7 @@ static inline int set_memory_nx(unsigned long addr, int numpages) { return 0; }
- 
- int set_direct_map_invalid_noflush(struct page *page);
- int set_direct_map_default_noflush(struct page *page);
-+bool kernel_page_present(struct page *page);
- 
- #endif /* __ASSEMBLY__ */
- 
-diff --git a/arch/riscv/mm/pageattr.c b/arch/riscv/mm/pageattr.c
-index 321b09d2e2ea..87ba5a68bbb8 100644
---- a/arch/riscv/mm/pageattr.c
-+++ b/arch/riscv/mm/pageattr.c
-@@ -198,3 +198,32 @@ void __kernel_map_pages(struct page *page, int numpages, int enable)
- 			     __pgprot(0), __pgprot(_PAGE_PRESENT));
- }
- #endif
-+
-+bool kernel_page_present(struct page *page)
-+{
-+	unsigned long addr = (unsigned long)page_address(page);
-+	pgd_t *pgd;
-+	pud_t *pud;
-+	p4d_t *p4d;
-+	pmd_t *pmd;
-+	pte_t *pte;
-+
-+	pgd = pgd_offset_k(addr);
-+	if (!pgd_present(*pgd))
-+		return false;
-+
-+	p4d = p4d_offset(pgd, addr);
-+	if (!p4d_present(*p4d))
-+		return false;
-+
-+	pud = pud_offset(p4d, addr);
-+	if (!pud_present(*pud))
-+		return false;
-+
-+	pmd = pmd_offset(pud, addr);
-+	if (!pmd_present(*pmd))
-+		return false;
-+
-+	pte = pte_offset_kernel(pmd, addr);
-+	return pte_present(*pte);
-+}
-diff --git a/arch/x86/include/asm/set_memory.h b/arch/x86/include/asm/set_memory.h
-index 5948218f35c5..4352f08bfbb5 100644
---- a/arch/x86/include/asm/set_memory.h
-+++ b/arch/x86/include/asm/set_memory.h
-@@ -82,6 +82,7 @@ int set_pages_rw(struct page *page, int numpages);
- 
- int set_direct_map_invalid_noflush(struct page *page);
- int set_direct_map_default_noflush(struct page *page);
-+bool kernel_page_present(struct page *page);
- 
- extern int kernel_set_to_readonly;
- 
-diff --git a/arch/x86/mm/pat/set_memory.c b/arch/x86/mm/pat/set_memory.c
-index bc9be96b777f..16f878c26667 100644
---- a/arch/x86/mm/pat/set_memory.c
-+++ b/arch/x86/mm/pat/set_memory.c
-@@ -2226,8 +2226,8 @@ void __kernel_map_pages(struct page *page, int numpages, int enable)
- 
- 	arch_flush_lazy_mmu_mode();
- }
-+#endif /* CONFIG_DEBUG_PAGEALLOC */
- 
--#ifdef CONFIG_HIBERNATION
- bool kernel_page_present(struct page *page)
- {
- 	unsigned int level;
-@@ -2239,8 +2239,6 @@ bool kernel_page_present(struct page *page)
- 	pte = lookup_address((unsigned long)page_address(page), &level);
- 	return (pte_val(*pte) & _PAGE_PRESENT);
- }
--#endif /* CONFIG_HIBERNATION */
--#endif /* CONFIG_DEBUG_PAGEALLOC */
- 
- int __init kernel_map_pages_in_pgd(pgd_t *pgd, u64 pfn, unsigned long address,
- 				   unsigned numpages, unsigned long page_flags)
-diff --git a/include/linux/mm.h b/include/linux/mm.h
-index 260113ba660a..fe9a8d35a6eb 100644
---- a/include/linux/mm.h
-+++ b/include/linux/mm.h
-@@ -2942,16 +2942,9 @@ static inline void debug_pagealloc_unmap_pages(struct page *page, int numpages)
- 	if (debug_pagealloc_enabled_static())
- 		__kernel_map_pages(page, numpages, 0);
- }
--
--#ifdef CONFIG_HIBERNATION
--extern bool kernel_page_present(struct page *page);
--#endif	/* CONFIG_HIBERNATION */
- #else	/* CONFIG_DEBUG_PAGEALLOC */
- static inline void debug_pagealloc_map_pages(struct page *page, int numpages) {}
- static inline void debug_pagealloc_unmap_pages(struct page *page, int numpages) {}
--#ifdef CONFIG_HIBERNATION
--static inline bool kernel_page_present(struct page *page) { return true; }
--#endif	/* CONFIG_HIBERNATION */
- #endif	/* CONFIG_DEBUG_PAGEALLOC */
- 
- #ifdef __HAVE_ARCH_GATE_AREA
-diff --git a/include/linux/set_memory.h b/include/linux/set_memory.h
-index 860e0f843c12..fe1aa4e54680 100644
---- a/include/linux/set_memory.h
-+++ b/include/linux/set_memory.h
-@@ -23,6 +23,11 @@ static inline int set_direct_map_default_noflush(struct page *page)
- {
- 	return 0;
- }
-+
-+static inline bool kernel_page_present(struct page *page)
-+{
-+	return true;
-+}
- #endif
- 
- #ifndef set_mce_nospec
--- 
-2.28.0
+On Sat, 7 Nov 2020, Joe Perches wrote:
 
+> On Fri, 2020-11-06 at 23:55 -0800, Nick Desaulniers wrote:
+> > Clang is more aggressive about -Wformat warnings when the format flag
+> > specifies a type smaller than the parameter. Fixes 8 instances of:
+> > 
+> > warning: format specifies type 'unsigned short' but the argument has
+> > type 'int' [-Wformat]
+> 
+> Likely clang's -Wformat message is still bogus.
+> Wasn't that going to be fixed?
+> 
+> Integer promotions are already done on these types to int anyway.
+> Didn't we have this discussion last year?
+> 
+> https://lore.kernel.org/lkml/CAKwvOd=mqzj2pAZEUsW-M_62xn4pijpCJmP=B1h_-wEb0NeZsA@mail.gmail.com/
+> https://lore.kernel.org/lkml/CAHk-=wgoxnmsj8GEVFJSvTwdnWm8wVJthefNk2n6+4TC=20e0Q@mail.gmail.com/
+> https://lore.kernel.org/lkml/a68114afb134b8633905f5a25ae7c4e6799ce8f1.camel@perches.com/
+> 
+> Look at commit cbacb5ab0aa0 ("docs: printk-formats: Stop encouraging use
+> of unnecessary %h[xudi] and %hh[xudi]")
+> 
+> The "h" and "hh" things should never be used. The only reason for them
+> being used if if you have an "int", but you want to print it out as a
+> "char" (and honestly, that is a really bad reason, you'd be better off
+> just using a proper cast to make the code more obvious).
+>
+
+Joe, would this be a good rule to check for in checkpatch?
+
+Can Dwaipayan or Aditya give it a try to create a suitable patch to add 
+such a rule?
+
+Dwaipayan, Aditya, if Joe thinks it is worth a rule, it is "first come, 
+first serve" for you to take that task. 
+
+Lukas
+
+> So if what you have a "char" (or unsigned char) you should always just
+> print it out as an "int", knowing that the compiler already did the
+> proper type conversion.
+> 
+> > diff --git a/net/netfilter/nf_conntrack_standalone.c b/net/netfilter/nf_conntrack_standalone.c
+> []
+> > @@ -50,38 +50,38 @@ print_tuple(struct seq_file *s, const struct nf_conntrack_tuple *tuple,
+> >  
+> > 
+> >  	switch (l4proto->l4proto) {
+> >  	case IPPROTO_ICMP:
+> > -		seq_printf(s, "type=%u code=%u id=%u ",
+> > +		seq_printf(s, "type=%u code=%u id=%hu ",
+> 
+> etc...
+> 
+> 
+> -- 
+> You received this message because you are subscribed to the Google Groups "Clang Built Linux" group.
+> To unsubscribe from this group and stop receiving emails from it, send an email to clang-built-linux+unsubscribe@googlegroups.com.
+> To view this discussion on the web visit https://groups.google.com/d/msgid/clang-built-linux/4910042649a4f3ab22fac93191b8c1fa0a2e17c3.camel%40perches.com.
+> 
+--8323329-296194858-1604820871=:4909--
