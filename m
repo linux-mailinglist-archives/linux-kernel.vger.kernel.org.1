@@ -2,100 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25ED52AAD5D
-	for <lists+linux-kernel@lfdr.de>; Sun,  8 Nov 2020 21:21:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B0F62AAD5F
+	for <lists+linux-kernel@lfdr.de>; Sun,  8 Nov 2020 21:26:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728828AbgKHUVp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 8 Nov 2020 15:21:45 -0500
-Received: from mail-eopbgr760075.outbound.protection.outlook.com ([40.107.76.75]:63478
-        "EHLO NAM02-CY1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727570AbgKHUVp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 8 Nov 2020 15:21:45 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=M99dUAmJJqQNmkUZzqMlVZihsFWkY19YXDkriQovAERBD3X4P1kklIifNgy+YMcqdy+ypnm/7sVlraz3EWNL0A4eqrjn6f3K65b1oyWo0C975YnCeTG6KHA4um5NzXixWc1Gjj7IDw1kzT3WKl7+l8tyC/o51cWW+3M9JA0c2+s6233j+o2kuHtyRZEl4bg10pNqvvYdNXcf6IaWjhNDNv7xJ5o41GjcFgcw4xUHlfcT/rugBOESF5cdEslpaNm2/kRZUsgd1Cdu22r98QFSuRVwM/w5BaLPLZxMBOk40GXg8qnaw2xJdX4Zo6phRiihTAGS9cJsTaF1rNzagXG79A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=iLAK9FzJCGbK3dUFfXIe7ExR8HpHqLU6wJAyh2n3a8E=;
- b=Iqo0pD7gUs9EuyqjUopzXW0OGL2dHv/1pm9SB1plUJBkUi08Ee8XaGWDhbxeZL/joX4C0ogyc0Vc1w28V8bZ8whH7DHgOZ1K4RycLLalZ9r7L2bYLtrBQj1EP4bMspdPCem07Rm2BU/OLgdfQSOq3sgysVpA6SMVTLnRRhFS05loGquDiSaxJfZPr38lt4f57xekY1823Hj+j7GdOflIRPSwyMsWfafd2m+VGCow2aBaCET1GPqZ+vmFwMITCO1YiCBQJoSe/w63ILEWGOmLiozrDIa92+HPWoD6fxAlTGIJq8kaSNkoQgpXFLAIDxf/5330hULEi8dEjlxQ9MzZ9A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=windriver.com; dmarc=pass action=none
- header.from=windriver.com; dkim=pass header.d=windriver.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=windriversystems.onmicrosoft.com;
- s=selector2-windriversystems-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=iLAK9FzJCGbK3dUFfXIe7ExR8HpHqLU6wJAyh2n3a8E=;
- b=Dx78A9ir6aY3bdQdLCnUrMBn6iCJGjt5fW7JuKAJqMkZWxnaD1Sayzc3TJRN6uwL5Jpy8sAQjINriHtWV//yYyUmmB8Tv3L8iBbx82mt5ZauBtKKaA62E+JiAB/S2ok4UF8kPn6S+oskB+9a51tuwYradc9qxBS+Wd/RlGGNM5k=
-Authentication-Results: huawei.com; dkim=none (message not signed)
- header.d=none;huawei.com; dmarc=none action=none header.from=windriver.com;
-Received: from DM6PR11MB4545.namprd11.prod.outlook.com (2603:10b6:5:2ae::14)
- by DM5PR1101MB2091.namprd11.prod.outlook.com (2603:10b6:4:57::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3541.21; Sun, 8 Nov
- 2020 20:21:42 +0000
-Received: from DM6PR11MB4545.namprd11.prod.outlook.com
- ([fe80::4985:c74a:ffcb:6f40]) by DM6PR11MB4545.namprd11.prod.outlook.com
- ([fe80::4985:c74a:ffcb:6f40%4]) with mapi id 15.20.3541.024; Sun, 8 Nov 2020
- 20:21:42 +0000
-Subject: Re: [PATCH 0/4] RFC: support for global CPU list abbreviations
-To:     paulmck@kernel.org
-Cc:     linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-        Frederic Weisbecker <fweisbec@gmail.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@kernel.org>, Li Zefan <lizefan@huawei.com>
-References: <20201108160816.896881-1-paul.gortmaker@windriver.com>
- <20201108180222.GA17637@paulmck-ThinkPad-P72>
-From:   Paul Gortmaker <paul.gortmaker@windriver.com>
-Message-ID: <ca462940-c81d-d968-c870-e1a991331522@windriver.com>
-Date:   Sun, 8 Nov 2020 15:21:40 -0500
+        id S1728738AbgKHU0L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 8 Nov 2020 15:26:11 -0500
+Received: from mga01.intel.com ([192.55.52.88]:54394 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727570AbgKHU0K (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 8 Nov 2020 15:26:10 -0500
+IronPort-SDR: OO9yiOJHARPb+j7HHrl965y0sMPydzdZ/ZWBUKcpBfZ7Zs4gYU79NAWDK7kVs+UFrpnBjG6VRf
+ zBZrbFgaMmFA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9799"; a="187666902"
+X-IronPort-AV: E=Sophos;i="5.77,462,1596524400"; 
+   d="scan'208";a="187666902"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Nov 2020 12:26:10 -0800
+IronPort-SDR: M4MU2q7rLHq3pOm2zAD5wyTvSqmTbTI6hmiclfjfICb+JOg1cyQBJJQ8gACWSqhpdKeMgPDZ+E
+ gVeDB4i6fldQ==
+X-IronPort-AV: E=Sophos;i="5.77,462,1596524400"; 
+   d="scan'208";a="327034107"
+Received: from mraj1-mobl2.amr.corp.intel.com (HELO [10.212.176.125]) ([10.212.176.125])
+  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Nov 2020 12:26:09 -0800
+Subject: Re: [PATCH v40 19/24] x86/vdso: Implement a vDSO for Intel SGX
+ enclave call
+To:     Jethro Beekman <jethro@fortanix.com>,
+        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
+        x86@kernel.org, linux-sgx@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Cedric Xing <cedric.xing@intel.com>, akpm@linux-foundation.org,
+        andriy.shevchenko@linux.intel.com, asapek@google.com, bp@alien8.de,
+        chenalexchen@google.com, conradparker@google.com,
+        cyhanish@google.com, haitao.huang@intel.com, kai.huang@intel.com,
+        kai.svahn@intel.com, kmoy@google.com, ludloff@google.com,
+        luto@kernel.org, nhorman@redhat.com, npmccallum@redhat.com,
+        puiterwijk@redhat.com, rientjes@google.com, tglx@linutronix.de,
+        yaozhangx@google.com, mikko.ylinen@intel.com
+References: <20201104145430.300542-1-jarkko.sakkinen@linux.intel.com>
+ <20201104145430.300542-20-jarkko.sakkinen@linux.intel.com>
+ <aa60d492-b902-5ff2-38a0-306a31b0eaf5@fortanix.com>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+ z5cecg==
+Message-ID: <81ef069f-fdbc-a804-350a-19df672b2136@intel.com>
+Date:   Sun, 8 Nov 2020 12:26:08 -0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
-In-Reply-To: <20201108180222.GA17637@paulmck-ThinkPad-P72>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [24.212.229.210]
-X-ClientProxiedBy: YT1PR01CA0085.CANPRD01.PROD.OUTLOOK.COM
- (2603:10b6:b01:2d::24) To DM6PR11MB4545.namprd11.prod.outlook.com
- (2603:10b6:5:2ae::14)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [172.25.35.34] (24.212.229.210) by YT1PR01CA0085.CANPRD01.PROD.OUTLOOK.COM (2603:10b6:b01:2d::24) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3541.21 via Frontend Transport; Sun, 8 Nov 2020 20:21:42 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: eca0c73a-3749-46c8-11d5-08d88423e828
-X-MS-TrafficTypeDiagnostic: DM5PR1101MB2091:
-X-Microsoft-Antispam-PRVS: <DM5PR1101MB2091FA83077347C4D536D23783EB0@DM5PR1101MB2091.namprd11.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:6430;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Qpp4EALCv43EKNhQ6Yidypc6kUf8lIipn6jY1CibsM6+5qfJ5moWC/kVYOZP5BLJ5yjlxpzBvzitFFPGJ5+KkjNmnMXXYOzPNq/YXysH6LNcTc/4t61nnFPYeYmwXLuDPBxd43vUilUgRuLULfUlWU5FThheedCUzRD59Pt+4ZYbu2zpSDTyzu6Z2WqkLMnNu+99FjAh9xtCnlUUjlHX/fdjo4syvd2/MU3KFgha/7Lx1MPStBoznX2+kxYV/bshkgKeC/ED1YOLPPmNBM8sQgxua1GnfudQHF8x3pCPZ4kYAduyvMdLQdDxVVFvfhAZ+41dG6DUOq11EuqfnmymA3Lp6Eb2oJh+9KZQOr+uQZThASWvRozIgpfijlRqs1xc
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR11MB4545.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(376002)(136003)(39830400003)(396003)(346002)(2906002)(8936002)(478600001)(66946007)(4326008)(54906003)(956004)(36756003)(44832011)(52116002)(86362001)(53546011)(2616005)(66556008)(66476007)(31686004)(16526019)(4744005)(26005)(6486002)(6916009)(8676002)(316002)(31696002)(16576012)(186003)(5660300002)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: CsPQm/23+SOuVR79We/6KFU0amBE/oLVROZ0hzhn27/0bYi63PKLPfYGId7tpusvJQcvU6gPulGK2MIgJU5hWcKXx1hjLCEsFLq/BCf8wqTnQcDWpZVQ+EMFofQhIJnOUwiYm6Q4mT/yVw2/EtIHNFArRJftzFdchlVOSk3frQjm8r2hLPU0L0ZkDcC1APZguJ6XwuAirp2YxPa5dEZxR2r3hgZzXBKMJrTvGFMbQvsdh0LIw963dKKEr2R7QBJkfyuwLrvaXlCujiFcqvp3IVlhjCpinx9vYyuHjZ9v306oa7okqUUd9Z8otL1OWVKssYlvJXEATxzAJyz17HL/qbcUy6D6NK0QFWZw9r56KAy80wnff/lzAyujRKwJNAWL53k8co2b7JUsZ9esLyIl49gHXRhYBB+VgHh6j2mHDZVxCQf5NaRjwfgqQchUDDRCNGASnJI3DBBJDZ8Y9EaWh9XBtG7N4iuBW0H2dkpW3UI07smkkVdFVOZiCuEuR2215Vg49ylJufdmsPWMqdQtb84S1W+3xkxGGKU9O2FRA0uSdRxu3lsw6jFvKi9UcBvF1SFZVT++a7hJrE7y02EOyXY9Vmv6/XmUKgGcE1iPRTDhXvcM9Pc/uPNJk0o4I6a6X2l3B774i2yXyRePQjSP6w==
-X-OriginatorOrg: windriver.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: eca0c73a-3749-46c8-11d5-08d88423e828
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR11MB4545.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Nov 2020 20:21:42.7692
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ddb2873-a1ad-4a18-ae4e-4644631433be
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: sntfQfOJUdto3zevSCeJgyEFt5YMTliMuxXfDDELzOmGNpLTzzDKF1nyxeLxaXiunPvLLm9271tJR8quKXQYftHfx8vjtRWEWoEDVNVSoH8=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR1101MB2091
+In-Reply-To: <aa60d492-b902-5ff2-38a0-306a31b0eaf5@fortanix.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-11-08 1:02 p.m., Paul E. McKenney wrote:
+On 11/8/20 12:08 PM, Jethro Beekman wrote:
+>> + * Most exceptions reported on ENCLU, including those that occur within the
+>> + * enclave, are fixed up and reported synchronously instead of being delivered
+>> + * via a standard signal. Debug Exceptions (#DB) and Breakpoints (#BP) are
+>> + * never fixed up and are always delivered via standard signals. On synchrously
 
- > Or I can carry them if you wish.  My expected changes in response to
- > this series are shown below, and are also what I used to test it.
+Jarrko, do you see the synchronously typo?                           ^	
 
-Thanks Paul - that would get linux-next exposure w/o me pestering sfr.
-If nobody else has objections, having them in rcu-next would be great.
 
-Paul.
---
+>> + * reported exceptions, -EFAULT is returned
+> This part about EFAULT is also bogus.
+
+Do you have any suggestions to improve it?  What should it say instead?
+
