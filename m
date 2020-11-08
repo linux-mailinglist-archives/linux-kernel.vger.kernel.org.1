@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF3882AA92D
-	for <lists+linux-kernel@lfdr.de>; Sun,  8 Nov 2020 06:18:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 57D682AA934
+	for <lists+linux-kernel@lfdr.de>; Sun,  8 Nov 2020 06:18:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726207AbgKHFSB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 8 Nov 2020 00:18:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37824 "EHLO
+        id S1728727AbgKHFSW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 8 Nov 2020 00:18:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37842 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726178AbgKHFR7 (ORCPT
+        with ESMTP id S1728563AbgKHFSA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 8 Nov 2020 00:17:59 -0500
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7D1DC0613D3
-        for <linux-kernel@vger.kernel.org>; Sat,  7 Nov 2020 21:17:58 -0800 (PST)
-Received: by mail-wm1-x341.google.com with SMTP id h2so5098388wmm.0
-        for <linux-kernel@vger.kernel.org>; Sat, 07 Nov 2020 21:17:58 -0800 (PST)
+        Sun, 8 Nov 2020 00:18:00 -0500
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D8FFC0613D3
+        for <linux-kernel@vger.kernel.org>; Sat,  7 Nov 2020 21:18:00 -0800 (PST)
+Received: by mail-wr1-x441.google.com with SMTP id p8so4535173wrx.5
+        for <linux-kernel@vger.kernel.org>; Sat, 07 Nov 2020 21:17:59 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=arista.com; s=googlenew;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=PJo4NJDNG1P32pfdiK6qTmwCPGbFDEEHy5zNr4wBr24=;
-        b=AGAilGIvOqeJ+SKiMKGXGZ/ISTN8hS/VfK9gs+9QwISNAbZku50Qk7wluelqBJ6kbe
-         4ANV8HNBWB7HNIw6V1hilfEAfP0FIeoXAj28uB3n3SgTxjj2kC10k4rW4V13S3agH0Ng
-         Dyd4zVbgiCt4+Seu/ofV09cR5iI8JrjElJ/Df2AfHw0A1rt4rz8Rvf7coehfcX2WI7o9
-         a7Bj98iNZewX4kLg7h/bs4M26kLIlGlFE6ftS2ptEgs6pO+AqoQZ5Aw5EVDShLK1ZP5k
-         KN8xw0fLMQNFZA0R8vuES3sYsnZjZETSYpkxECpmxYBoMbtYP1ys07EuY1ZiqYXGfg1A
-         yBzA==
+        bh=fExVMF3x849hpWEoXsiuAej0hbqK5p8nn8Jzl4zYU/s=;
+        b=gw4/zFWoE7j3JEv2zAF276jCJTDR0h2WI8sPwNFAe9ncSoW5leIOk+G3Ntof1hJHUZ
+         oK+kdnTQxDPwcF2Xz/lRhk9wsFuatVWjfEaknaHi+p1aCBgsR4PkP3lS0zJNEN0IgaCp
+         97AaVlQnAkK2SXumNFHYS5q4e457wowEyo1vZ7c9JfdxFvRTNsL4x6sjBfczj6aWGB5h
+         mlpeZPP3ABgak5zXPsyBczg7sHlHQnWwrJMSLXpn1o/HmYUrlqN8fBIzAO9qsIlZAWXv
+         nKgjeUPIlh44fZGZ+OzDvTPD6kazMw9t7rgjw32wCrGCF4gVoxDf6hL+wQR2yDH3l4Mh
+         gwjA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=PJo4NJDNG1P32pfdiK6qTmwCPGbFDEEHy5zNr4wBr24=;
-        b=sV4N/85rv9J/KGUyRIJJvWLgYtBWyycCI2tyl/CHJHYmLvgLuLs9sTLxZOBxc47zsv
-         SehpzdmMaCB7MEuNqd3TcFgMwT8Hb+2+gKcQ92i47dPSZs9oCusGpH03XnjfwJ6xnlRf
-         oiXf3hykbRFGN6dItQboge2JquDjVXIuhZ8yQdlLd9ITGqt1iYn1qruV89d/Z/SQtVCd
-         awfC+vHkhXLMM5j8OJmWq6EGbnFFxHAA4n3+Aeq90ND1v/h972PuOlwy2y/oYucxrR9W
-         v5uO1AwieUQrMy1DUIL82fpdGczpWRufyq6hM6oklcgB0dcTsFneWEiIP8NKdY2q9KRr
-         UCLw==
-X-Gm-Message-State: AOAM533joWXDGlxc4uD+8jwP/BHoUx00kteOH2FwHvDz3pyYvygrbJDU
-        7JbjId5zYSKaRlvnF2V8p1x8L2Y3tAD5ibIb
-X-Google-Smtp-Source: ABdhPJyfXymifjn309sLGsQwZMT9ClM6crIQICSx7N4tqkR9CmakNpsxnYh/CMQ2HrdLqWzR+PjttQ==
-X-Received: by 2002:a1c:230e:: with SMTP id j14mr7548867wmj.187.1604812677226;
-        Sat, 07 Nov 2020 21:17:57 -0800 (PST)
+        bh=fExVMF3x849hpWEoXsiuAej0hbqK5p8nn8Jzl4zYU/s=;
+        b=YZD8gMNHixjRZ/WzwfufS/QKJgOWlUkGYcugGjOBosMSPGUz3OFx1K4NFdcsqzCR+f
+         3PMl3GgJz4q2Bv6zb0d58rZrTA4yrak41364m397uUKHZybdXSCL5xmo/b0y2mKj2rK/
+         nyD8ZfvnX690xoglbnGRbSEDcf/iHeX7+Y5kimW5HDwKZrfXYAzNSO/MVU/9wHccqdzT
+         FErDVyQK06/zT1L8Ascu6oOq6TT0MGxJt3trKY8IB11EmItkc9h96TTD6cYgRM/2dWmY
+         8yAt+r1xS/0GLQLZ5K98zvwBPUmr04856eC0UrpQzZ+eIH66jAOZQ3pnzzkQqB0m63Og
+         GpEA==
+X-Gm-Message-State: AOAM531UVPTd599/me0tTMyvwiO2Vf34ROCES7FEo/dA/dm3SrpvPceY
+        1i3QHVNLtfoOYK75pyhDw0t9MwR5LGtY/Jkm
+X-Google-Smtp-Source: ABdhPJwR0RODupGrDkZO+RSFDSzVocvmZ/PZzvz2KApdsKzdEe+03QfRRlgX3a3ghm3Lk4zrdOuGvQ==
+X-Received: by 2002:a5d:4207:: with SMTP id n7mr10868421wrq.76.1604812678587;
+        Sat, 07 Nov 2020 21:17:58 -0800 (PST)
 Received: from localhost.localdomain ([2a02:8084:e84:2480:228:f8ff:fe6f:83a8])
-        by smtp.gmail.com with ESMTPSA id r10sm8378462wmg.16.2020.11.07.21.17.55
+        by smtp.gmail.com with ESMTPSA id r10sm8378462wmg.16.2020.11.07.21.17.57
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 07 Nov 2020 21:17:56 -0800 (PST)
+        Sat, 07 Nov 2020 21:17:58 -0800 (PST)
 From:   Dmitry Safonov <dima@arista.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     Dmitry Safonov <0x7f454c46@gmail.com>,
@@ -65,10 +65,11 @@ Cc:     Dmitry Safonov <0x7f454c46@gmail.com>,
         Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
         Thomas Gleixner <tglx@linutronix.de>,
         Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Will Deacon <will@kernel.org>, x86@kernel.org
-Subject: [PATCH 18/19] arm64/vdso: Migrate native signals to user_landing
-Date:   Sun,  8 Nov 2020 05:17:28 +0000
-Message-Id: <20201108051730.2042693-19-dima@arista.com>
+        Will Deacon <will@kernel.org>, x86@kernel.org,
+        linux-mips@vger.kernel.org
+Subject: [PATCH 19/19] mips/vdso: Migrate to user_landing
+Date:   Sun,  8 Nov 2020 05:17:29 +0000
+Message-Id: <20201108051730.2042693-20-dima@arista.com>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20201108051730.2042693-1-dima@arista.com>
 References: <20201108051730.2042693-1-dima@arista.com>
@@ -79,112 +80,106 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 Generic way to track the land vma area.
-As a bonus, after unmapping vdso, kernel won't try to land on its
+As a bonus, after unmapping sigpage, kernel won't try to land on its
 previous position.
 
+Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc: linux-mips@vger.kernel.org
 Signed-off-by: Dmitry Safonov <dima@arista.com>
 ---
- arch/arm64/kernel/signal.c | 10 +++++++---
- arch/arm64/kernel/vdso.c   | 13 +++----------
- 2 files changed, 10 insertions(+), 13 deletions(-)
+ arch/mips/Kconfig         |  1 +
+ arch/mips/kernel/signal.c | 11 +++++++----
+ arch/mips/kernel/vdso.c   |  2 +-
+ arch/mips/vdso/genvdso.c  |  8 --------
+ 4 files changed, 9 insertions(+), 13 deletions(-)
 
-diff --git a/arch/arm64/kernel/signal.c b/arch/arm64/kernel/signal.c
-index bec6ef69704f..4c1dfbc1aed3 100644
---- a/arch/arm64/kernel/signal.c
-+++ b/arch/arm64/kernel/signal.c
-@@ -723,9 +723,10 @@ static int get_sigframe(struct rt_sigframe_user_layout *user,
- 	return 0;
- }
+diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
+index 5e696ab80df4..eedb1683ec8e 100644
+--- a/arch/mips/Kconfig
++++ b/arch/mips/Kconfig
+@@ -10,6 +10,7 @@ config MIPS
+ 	select ARCH_HAS_SETUP_ADDITIONAL_PAGES
+ 	select ARCH_HAS_TICK_BROADCAST if GENERIC_CLOCKEVENTS_BROADCAST
+ 	select ARCH_HAS_UBSAN_SANITIZE_ALL
++	select ARCH_HAS_USER_LANDING
+ 	select ARCH_SUPPORTS_UPROBES
+ 	select ARCH_USE_BUILTIN_BSWAP
+ 	select ARCH_USE_CMPXCHG_LOCKREF if 64BIT
+diff --git a/arch/mips/kernel/signal.c b/arch/mips/kernel/signal.c
+index f1e985109da0..eb79272d3cc2 100644
+--- a/arch/mips/kernel/signal.c
++++ b/arch/mips/kernel/signal.c
+@@ -806,11 +806,13 @@ struct mips_abi mips_abi = {
  
--static void setup_return(struct pt_regs *regs, struct k_sigaction *ka,
-+static int setup_return(struct pt_regs *regs, struct k_sigaction *ka,
- 			 struct rt_sigframe_user_layout *user, int usig)
+ static void handle_signal(struct ksignal *ksig, struct pt_regs *regs)
  {
 +	unsigned long land = (unsigned long)current->mm->user_landing;
- 	__sigrestore_t sigtramp;
+ 	sigset_t *oldset = sigmask_to_save();
+-	int ret;
++	int ret = 1;
+ 	struct mips_abi *abi = current->thread.abi;
+-	void *vdso = current->mm->context.vdso;
  
- 	regs->regs[0] = usig;
-@@ -754,10 +755,13 @@ static void setup_return(struct pt_regs *regs, struct k_sigaction *ka,
++	if (land == UNMAPPED_USER_LANDING)
++		goto err;
+ 	/*
+ 	 * If we were emulating a delay slot instruction, exit that frame such
+ 	 * that addresses in the sigframe are as expected for userland and we
+@@ -843,12 +845,13 @@ static void handle_signal(struct ksignal *ksig, struct pt_regs *regs)
+ 	rseq_signal_deliver(ksig, regs);
  
- 	if (ka->sa.sa_flags & SA_RESTORER)
- 		sigtramp = ka->sa.sa_restorer;
-+	else if (land != UNMAPPED_USER_LANDING)
-+		sigtramp = VDSO_SYMBOL(land, sigtramp);
+ 	if (sig_uses_siginfo(&ksig->ka, abi))
+-		ret = abi->setup_rt_frame(vdso + abi->vdso->off_rt_sigreturn,
++		ret = abi->setup_rt_frame(land + abi->vdso->off_rt_sigreturn,
+ 					  ksig, regs, oldset);
  	else
--		sigtramp = VDSO_SYMBOL(current->mm->context.vdso, sigtramp);
-+		return 1;
+-		ret = abi->setup_frame(vdso + abi->vdso->off_sigreturn,
++		ret = abi->setup_frame(land + abi->vdso->off_sigreturn,
+ 				       ksig, regs, oldset);
  
- 	regs->regs[30] = (unsigned long)sigtramp;
-+	return 0;
++err:
+ 	signal_setup_done(ret, ksig, 0);
  }
  
- static int setup_rt_frame(int usig, struct ksignal *ksig, sigset_t *set,
-@@ -780,7 +784,7 @@ static int setup_rt_frame(int usig, struct ksignal *ksig, sigset_t *set,
- 	err |= __save_altstack(&frame->uc.uc_stack, regs->sp);
- 	err |= setup_sigframe(&user, regs, set);
- 	if (err == 0) {
--		setup_return(regs, &ksig->ka, &user, usig);
-+		err = setup_return(regs, &ksig->ka, &user, usig);
- 		if (ksig->ka.sa.sa_flags & SA_SIGINFO) {
- 			err |= copy_siginfo_to_user(&frame->info, &ksig->info);
- 			regs->regs[1] = (unsigned long)&frame->info;
-diff --git a/arch/arm64/kernel/vdso.c b/arch/arm64/kernel/vdso.c
-index 08e8f1d56d92..d710fcd7141c 100644
---- a/arch/arm64/kernel/vdso.c
-+++ b/arch/arm64/kernel/vdso.c
-@@ -78,12 +78,6 @@ static union {
- } vdso_data_store __page_aligned_data;
- struct vdso_data *vdso_data = vdso_data_store.data;
+diff --git a/arch/mips/kernel/vdso.c b/arch/mips/kernel/vdso.c
+index a4a321252df6..5523ba25ab3d 100644
+--- a/arch/mips/kernel/vdso.c
++++ b/arch/mips/kernel/vdso.c
+@@ -183,7 +183,7 @@ int arch_setup_additional_pages(unsigned long *sysinfo_ehdr)
+ 		goto out;
+ 	}
  
--static void vdso_mremap(const struct vm_special_mapping *sm,
--		struct vm_area_struct *new_vma)
--{
--	current->mm->context.vdso = (void *)new_vma->vm_start;
--}
--
- static int __vdso_init(enum vdso_abi abi)
- {
- 	int i;
-@@ -239,7 +233,6 @@ static int __setup_additional_pages(enum vdso_abi abi,
- 		gp_flags = VM_ARM64_BTI;
+-	mm->context.vdso = (void *)vdso_addr;
++	mm->user_landing = (void __user *)vdso_addr;
+ 	*sysinfo_ehdr = vdso_addr;
+ 	ret = 0;
  
- 	vdso_base += VVAR_NR_PAGES * PAGE_SIZE;
--	mm->context.vdso = (void *)vdso_base;
- 	ret = _install_special_mapping(mm, vdso_base, vdso_text_len,
- 				       VM_READ|VM_EXEC|gp_flags|
- 				       VM_MAYREAD|VM_MAYWRITE|VM_MAYEXEC,
-@@ -247,12 +240,14 @@ static int __setup_additional_pages(enum vdso_abi abi,
- 	if (IS_ERR(ret))
- 		goto up_fail;
+diff --git a/arch/mips/vdso/genvdso.c b/arch/mips/vdso/genvdso.c
+index 0303d30cde03..8f581a2c8578 100644
+--- a/arch/mips/vdso/genvdso.c
++++ b/arch/mips/vdso/genvdso.c
+@@ -259,13 +259,6 @@ int main(int argc, char **argv)
+ 	fprintf(out_file, "#include <linux/linkage.h>\n");
+ 	fprintf(out_file, "#include <linux/mm.h>\n");
+ 	fprintf(out_file, "#include <asm/vdso.h>\n");
+-	fprintf(out_file, "static void vdso_mremap(\n");
+-	fprintf(out_file, "	const struct vm_special_mapping *sm,\n");
+-	fprintf(out_file, "	struct vm_area_struct *new_vma)\n");
+-	fprintf(out_file, "{\n");
+-	fprintf(out_file, "	current->mm->context.vdso =\n");
+-	fprintf(out_file, "	(void *)(new_vma->vm_start);\n");
+-	fprintf(out_file, "}\n");
  
-+	/* 32-bit ABI is to land on sigpage, 64-bit on vdso */
-+	if (abi == VDSO_ABI_AA64)
-+		mm->user_landing = (void __user *)vdso_base;
- 	*sysinfo_ehdr = vdso_base;
+ 	/* Write out the stripped VDSO data. */
+ 	fprintf(out_file,
+@@ -290,7 +283,6 @@ int main(int argc, char **argv)
+ 	fprintf(out_file, "\t.mapping = {\n");
+ 	fprintf(out_file, "\t\t.name = \"[vdso]\",\n");
+ 	fprintf(out_file, "\t\t.pages = vdso_pages,\n");
+-	fprintf(out_file, "\t\t.mremap = vdso_mremap,\n");
+ 	fprintf(out_file, "\t},\n");
  
- 	return 0;
- 
- up_fail:
--	mm->context.vdso = NULL;
- 	return PTR_ERR(ret);
- }
- 
-@@ -285,7 +280,6 @@ static struct vm_special_mapping aarch32_vdso_maps[] = {
- 	},
- 	[AA32_MAP_VDSO] = {
- 		.name = "[vdso]",
--		.mremap = vdso_mremap,
- 	},
- };
- 
-@@ -431,7 +425,6 @@ static struct vm_special_mapping aarch64_vdso_maps[] __ro_after_init = {
- 	},
- 	[AA64_MAP_VDSO] = {
- 		.name	= "[vdso]",
--		.mremap = vdso_mremap,
- 	},
- };
- 
+ 	/* Calculate and write symbol offsets to <output file> */
 -- 
 2.28.0
 
