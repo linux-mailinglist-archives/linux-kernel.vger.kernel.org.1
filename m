@@ -2,122 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 88A972AAE2C
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 00:08:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 722DB2AAE25
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 00:08:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728997AbgKHXIm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 8 Nov 2020 18:08:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33104 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727929AbgKHXIl (ORCPT
+        id S1728834AbgKHXHR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 8 Nov 2020 18:07:17 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:47710 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727929AbgKHXHR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 8 Nov 2020 18:08:41 -0500
-X-Greylist: delayed 3505 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sun, 08 Nov 2020 15:08:41 PST
-Received: from twosheds.infradead.org (twosheds.infradead.org [IPv6:2001:8b0:10b:1:21d:7dff:fe04:dbe2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24754C0613CF;
-        Sun,  8 Nov 2020 15:08:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=twosheds.20170209; h=Content-Transfer-Encoding:
-        Content-Type:MIME-Version:Cc:To:From:Subject:Date:References:In-Reply-To:
-        Message-ID:Sender:Reply-To:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=ip8hF5BftOjZIayundc04w+NG5HSfhZUwkO7oX7/MuE=; b=NiBdShb0quc3A87cncLeElMkU
-        Cri9O/nbA3Q+cNPO5g/LWL4pRN8LVSIPCprSE7pkDC1/SD+RCusucXgeaGh083P9AzPmUcSurgctN
-        65DwvYtYuTDYLCGpw0sFErehScpOJwI5U+OjZs5j2fKo66NvnHgjrLxy+16yxG8HAbhbpHOsW3g3Q
-        DH1Xx6+f/SMU1g87foW1UhUlpzDmkWdfoeqoQwmj9FvQVJEqZJtl/dikNVCxzNLdSAg3rmyg22Djm
-        EvYat3/TMQuvYHlgDzjAPBV9dYu8A0rQ/uebwa1ueCrRheDuAUIf4sOmDgctB+CIy55cyaOOZieDl
-        bs9trAlLA==;
-Received: from localhost ([127.0.0.1] helo=twosheds.infradead.org)
-        by twosheds.infradead.org with esmtp (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kbssT-00CBlH-SM; Sun, 08 Nov 2020 22:09:38 +0000
-Received: from 2001:8b0:10b:1:b16b:5d8a:941b:e15c
-        (SquirrelMail authenticated user dwmw2)
-        by twosheds.infradead.org with HTTP;
-        Sun, 8 Nov 2020 22:09:38 -0000
-Message-ID: <59034a932606e25c0b260540fff0b6dc.squirrel@twosheds.infradead.org>
-In-Reply-To: <87k0uvk0oc.fsf@nanos.tec.linutronix.de>
-References: <20201030224534.GN2620339@nvidia.com>
-    <ec52cedf-3a99-5ca1-ffbb-d8f8c4f62395@intel.com>
-    <20201102132158.GA3352700@nvidia.com>
-    <MWHPR11MB1645675ED03E23674A705DF68C110@MWHPR11MB1645.namprd11.prod.outlook.com>
-    <20201103124351.GM2620339@nvidia.com>
-    <MWHPR11MB164544C9CFCC3F162C1C6FC18CEF0@MWHPR11MB1645.namprd11.prod.outlook.com>
-    <20201104124017.GW2620339@nvidia.com>
-    <MWHPR11MB1645862A8F7CF7FB8DD011778CEF0@MWHPR11MB1645.namprd11.prod.outlook.com>
-    <20201104135415.GX2620339@nvidia.com>
-    <MWHPR11MB1645524BDEDF8899914F32AE8CED0@MWHPR11MB1645.namprd11.prod.outlook.com>
-    <20201106131415.GT2620339@nvidia.com>
-    <87k0uvk0oc.fsf@nanos.tec.linutronix.de>
-Date:   Sun, 8 Nov 2020 22:09:38 -0000
-Subject: Re: [PATCH v4 06/17] PCI: add SIOV and IMS capability detection
-From:   "David Woodhouse" <dwmw2@infradead.org>
-To:     "Thomas Gleixner" <tglx@linutronix.de>
-Cc:     "Jason Gunthorpe" <jgg@nvidia.com>,
-        "Tian\, Kevin" <kevin.tian@intel.com>,
-        "Jiang\, Dave" <dave.jiang@intel.com>,
-        "Bjorn Helgaas" <helgaas@kernel.org>,
-        "vkoul\@kernel.org" <vkoul@kernel.org>,
-        "Dey\, Megha" <megha.dey@intel.com>,
-        "maz\@kernel.org" <maz@kernel.org>,
-        "bhelgaas\@google.com" <bhelgaas@google.com>,
-        "alex.williamson\@redhat.com" <alex.williamson@redhat.com>,
-        "Pan\, Jacob jun" <jacob.jun.pan@intel.com>,
-        "Raj\, Ashok" <ashok.raj@intel.com>,
-        "Liu\, Yi L" <yi.l.liu@intel.com>,
-        "Lu\, Baolu" <baolu.lu@intel.com>,
-        "Kumar\, Sanjay K" <sanjay.k.kumar@intel.com>,
-        "Luck\, Tony" <tony.luck@intel.com>,
-        "jing.lin\@intel.com" <jing.lin@intel.com>,
-        "Williams\, Dan J" <dan.j.williams@intel.com>,
-        "kwankhede\@nvidia.com" <kwankhede@nvidia.com>,
-        "eric.auger\@redhat.com" <eric.auger@redhat.com>,
-        "parav\@mellanox.com" <parav@mellanox.com>,
-        "rafael\@kernel.org" <rafael@kernel.org>,
-        "netanelg\@mellanox.com" <netanelg@mellanox.com>,
-        "shahafs\@mellanox.com" <shahafs@mellanox.com>,
-        "yan.y.zhao\@linux.intel.com" <yan.y.zhao@linux.intel.com>,
-        "pbonzini\@redhat.com" <pbonzini@redhat.com>,
-        "Ortiz\, Samuel" <samuel.ortiz@intel.com>,
-        "Hossain\, Mona" <mona.hossain@intel.com>,
-        "dmaengine\@vger.kernel.org" <dmaengine@vger.kernel.org>,
-        "linux-kernel\@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-pci\@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        "kvm\@vger.kernel.org" <kvm@vger.kernel.org>
-User-Agent: SquirrelMail/1.4.23 [SVN]-1.fc30.20190710
+        Sun, 8 Nov 2020 18:07:17 -0500
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1604876836;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=F2GMvMxuw9C07O50HklVxv9DDobdLyUS5hM1A7VEEQM=;
+        b=HHy8ULY458RylAle8YXvD/j7zwAqn7icr8I6jVfaHDPCeywD4Uml3UPq0sAKsnNgV+iRZl
+        0A4lRPLJ1y5o3yLs0KRQPv40kMD9rGLjz791pa7+jY/tb8L/INs13fGD2gpdzAwXED6UzU
+        xGYQHtxBd6T5PGMp7+Cz9DGnbCupFvLBLYH9tMTW1cVOmdF4CbANIrz1r4j7KgdqPGFBUQ
+        7yIde0+5JB6jj9udHhahRAz1i7nctrkrIEGSCNrYidNrhXohay4cOyFlnqcWVhUO22NOm+
+        BeYhPJj01JaSvLKyX4txkyTgGWbBaOrDXnVd73O7MxdG6wEHUhlCb9QOpQ2fJQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1604876836;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=F2GMvMxuw9C07O50HklVxv9DDobdLyUS5hM1A7VEEQM=;
+        b=xPQeUFysOSPdEsVnhRBtYJntraTrcRN8CLAfjuKRb4sq3UCCJltDeoN3mgc2l+6OOtJ+Cs
+        z4/cjwRW2zY3ilDA==
+To:     Alexey Kardashevskiy <aik@ozlabs.ru>, linuxppc-dev@lists.ozlabs.org
+Cc:     =?utf-8?Q?C=C3=A9dric?= Le Goater <clg@kaod.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>, Qian Cai <cai@lca.pw>,
+        Rob Herring <robh@kernel.org>,
+        Frederic Barrat <fbarrat@linux.ibm.com>,
+        Michal =?utf-8?Q?Such=C3=A1nek?= <msuchanek@suse.de>,
+        David Gibson <david@gibson.dropbear.id.au>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH kernel v2] irq: Add reference counting to IRQ mappings
+In-Reply-To: <4ed56f8d-3fe4-2d5d-6ec4-139efc742cb2@ozlabs.ru>
+References: <20201029110141.94304-1-aik@ozlabs.ru> <4ed56f8d-3fe4-2d5d-6ec4-139efc742cb2@ozlabs.ru>
+Date:   Mon, 09 Nov 2020 00:07:15 +0100
+Message-ID: <87blg7jvmk.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain;charset=utf-8
-Content-Transfer-Encoding: 8bit
-X-Priority: 3 (Normal)
-Importance: Normal
-X-SRS-Rewrite: SMTP reverse-path rewritten from <dwmw2@infradead.org> by twosheds.infradead.org. See http://www.infradead.org/rpr.html
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-> On Fri, Nov 06 2020 at 09:14, Jason Gunthorpe wrote:
->> On Fri, Nov 06, 2020 at 09:48:34AM +0000, Tian, Kevin wrote:
->> For instance you could put a "disable IMS" flag in the ACPI tables, in
->> the config space of the emuulated root port, or any other areas that
->> clearly belong to the platform.
->>
->> The OS logic would be
->>  - If no IMS information found then use IMS (Bare metal)
->>  - If the IMS disable flag is found then
->>    - If (future) hypercall available and the OS knows how to use it
->>      then use IMS
->>    - If no hypercall found, or no OS knowledge, fail IMS
+On Fri, Nov 06 2020 at 14:06, Alexey Kardashevskiy wrote:
+> Hi,
 >
-> That does not work because an older hypervisor would not have that
-> disable flag and the guest kernel would assume to be on bare metal (if
-> no other indicators are there).
+> This one seems to be broken in the domain associating part so please 
+> ignore it, I'll post v3 soon. Thanks,
 
-In the absence of a forward-thinking design from Intel perhaps we could
-use the existence of an IOMMU with interrupt remapping and not caching
-mode as the indication that it's bare metal?
+When you do that please use a proper subject line:
 
--- 
-dwmw2
+ [ PATCH vN ] $subsystem: Shortlog
 
+and to find the subsystem string just run git log kernel/irq/irqdomain.c
+for hints.
+
+Thanks,
+
+        tglx
