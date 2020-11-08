@@ -2,110 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F5BB2AAA2D
-	for <lists+linux-kernel@lfdr.de>; Sun,  8 Nov 2020 10:06:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CA3022AAA2F
+	for <lists+linux-kernel@lfdr.de>; Sun,  8 Nov 2020 10:12:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727667AbgKHJF2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 8 Nov 2020 04:05:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44442 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726178AbgKHJF1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 8 Nov 2020 04:05:27 -0500
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7AF2C0613CF;
-        Sun,  8 Nov 2020 01:05:25 -0800 (PST)
-Received: by mail-wm1-x343.google.com with SMTP id h62so5180034wme.3;
-        Sun, 08 Nov 2020 01:05:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=mTNZBKYJ1G1f6Z95iwkriRbl+3lpqOyLnQqlrb4E3MI=;
-        b=SVyCi3m7XSEed+6txPdAxhuenlfedG4U98T0WBK87KMW5CbqIsj6t7yYleHdAI00HD
-         ma0lYoNceQhicSL6Ie7RfQ6OeG+TgusZhkbUb97AttJB3LD85/lre03tl9oc9ic5YedQ
-         GE3gCDNGWFbVBqjhop775wceogjWTuTEgOL6FtCklp3khs6QJBjvpFRJPW2QZgkhTE6g
-         Qgsybl8xuvvT0otpyCJOcY6lGv+bIKuuvNkV+XkNwUbVPoZ+CdIUuVrDYOghgs+cz6l1
-         u+MIN3DnX+Y4qC4z7Jl6KzLw4G0AP59ALp0DxD+3mdDP27kfymJoy0W+x9kMF5vC2e8/
-         AFxQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=mTNZBKYJ1G1f6Z95iwkriRbl+3lpqOyLnQqlrb4E3MI=;
-        b=NephOE4CVjPT5yCGWVkBJOzuRVYQ8dTltd+JidhqedRarvNrG0FNP6sA3H8IPFndUw
-         y0s84031za+0u4YnieNF+YO+SYDqoofx8nUQ2fMjujlgytoARHMHeBbD9bO/paGHl9qX
-         rc927bA0BGC/YYuOXl7//V9by+aUuLeIiOoAC8KuJH6HKCbFuRf/BTg2jNmF4OO7XVGC
-         oagewszfp9quJfhN/VP92WuLG3oqvGmYBOgfhKkjXeL5HFXF+EyQWRtHjt0HwARm+/o8
-         I2YeueUFTmlQnwH5EdzJ0Z448ck2bbQVjQ43Bu/eBt8XXeOOGhyJYJuAyzq0wQQvpI2a
-         cYqw==
-X-Gm-Message-State: AOAM5303HUDosITWxEuSrJc8lLECS3KtP/fzMCb1U9ET0689b9HqbOKA
-        1X7OEvfn6SsdlU486ME1P7U=
-X-Google-Smtp-Source: ABdhPJx5ZmDFpwYhhuqYxO5PCzXdYiKkhbQqTh0Ws7SrjUDZmjN0iowXgd6QygNcB70GpAim3Pj58A==
-X-Received: by 2002:a1c:dc43:: with SMTP id t64mr8450029wmg.93.1604826324417;
-        Sun, 08 Nov 2020 01:05:24 -0800 (PST)
-Received: from gmail.com (54033286.catv.pool.telekom.hu. [84.3.50.134])
-        by smtp.gmail.com with ESMTPSA id o197sm9045599wme.17.2020.11.08.01.05.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 08 Nov 2020 01:05:23 -0800 (PST)
-Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
-Date:   Sun, 8 Nov 2020 10:05:21 +0100
-From:   Ingo Molnar <mingo@kernel.org>
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     x86-ml <x86@kernel.org>, linux-tip-commits@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Will Deacon <will.deacon@arm.com>
-Subject: Re: [tip: perf/kprobes] locking/atomics: Regenerate the
- atomics-check SHA1's
-Message-ID: <20201108090521.GA108695@gmail.com>
-References: <160476203869.11244.7869849163897430965.tip-bot2@tip-bot2>
- <20201107160444.GB30275@zn.tnic>
+        id S1727655AbgKHJLl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 8 Nov 2020 04:11:41 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42138 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726099AbgKHJLk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 8 Nov 2020 04:11:40 -0500
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 985A0206E3;
+        Sun,  8 Nov 2020 09:11:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604826700;
+        bh=nDNxAtrBPS2tDV2KcZN06hO/zTzru/CpsYng1FbwwRw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=W1qbwCiwryQXHg0VNixMzP7l5h1ADzhIGn40eIMUumw3En1K8pt93yb3GQ87A5Swy
+         27/2khEHlFy+RXWyMPxycBUr0GfK97xa5irjI1x3vAYOwJZHrlVLgzwVMfxZeIDwAq
+         nJBBK5U6xJgzJ9XcVvwqeJ/SdUchnxitX/qz3+H0=
+Date:   Sun, 8 Nov 2020 10:11:36 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Atul <leoatul12@gmail.com>
+Cc:     perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] ALSA: usb-audio: Fix coding style problems
+Message-ID: <20201108091136.GA44749@kroah.com>
+References: <20201108083515.5256-1-leoatul12@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201107160444.GB30275@zn.tnic>
+In-Reply-To: <20201108083515.5256-1-leoatul12@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-* Borislav Petkov <bp@alien8.de> wrote:
-
-> On Sat, Nov 07, 2020 at 03:13:58PM -0000, tip-bot2 for Ingo Molnar wrote:
-> > The following commit has been merged into the perf/kprobes branch of tip:
-> > 
-> > Commit-ID:     a70a04b3844f59c29573a8581d5c263225060dd6
-> > Gitweb:        https://git.kernel.org/tip/a70a04b3844f59c29573a8581d5c263225060dd6
-> > Author:        Ingo Molnar <mingo@kernel.org>
-> > AuthorDate:    Sat, 07 Nov 2020 12:54:49 +01:00
-> > Committer:     Ingo Molnar <mingo@kernel.org>
-> > CommitterDate: Sat, 07 Nov 2020 13:20:41 +01:00
-> > 
-> > locking/atomics: Regenerate the atomics-check SHA1's
-> > 
-> > The include/asm-generic/atomic-instrumented.h checksum got out
-> > of sync, so regenerate it. (No change to actual code.)
-> > 
-> > Also make scripts/atomic/gen-atomics.sh executable, to make
-    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-> > it easier to use.
-    ^^^^^^^^^^^^^^^^^
-
-> >  mode change 100644 => 100755 scripts/atomic/gen-atomics.sh
-> 		^^^^^^^^^^^^^^^
+On Sun, Nov 08, 2020 at 02:05:16PM +0530, Atul wrote:
+> From: Atul Gopinathan <leoatul12@gmail.com>
 > 
-> That looks like it snuck in but it shouldn't have...
+> Hi,
 
-So that mode change to executable was intentional, as mentioned in the 
-changelog.
+No need for this to be in the changelog.
 
-Or did I miss something?
+> 
+> This patch fixes some coding style warnings and errors that were
+> generated using scripts/checkpatch.pl.
 
-Thanks,
+You should be explicit about _what_ warnings and errors.  And probably
+break them out into individual patches, one per warning/error type.
 
-	Ingo
+But more importantly, always run your patch through checkpatch.pl when
+you are done, as you just _ADDED_ warnings to the kernel with this
+change:
+
+> @@ -895,9 +896,10 @@ static int snd_usb_nativeinstruments_boot_quirk(struct usb_device *dev)
+>  	usb_reset_device(dev);
+>  
+>  	/* return -EAGAIN, so the creation of an audio interface for this
+> -	 * temporary device is aborted. The device will reconnect with a
+> -	 * new product ID */
+> -	return -EAGAIN;
+> +     * temporary device is aborted. The device will reconnect with a
+> +     * new product ID
+> +     */
+> +    return -EAGAIN;
+>  }
+>  
+>  static void mbox2_setup_48_24_magic(struct usb_device *dev)
+
+You turned tabs into spaces, not allowed, sorry.
+
+If you want to do basic checkpatch cleanups, try starting in the
+drivers/staging/ area of the kernel, which is much more forgiving and
+set up just for this type of thing, instead of trying to do this in the
+"core" kernel portions, where you have to deal with other real code
+changing happening at the same time.
+
+good luck!
+
+greg k-h
