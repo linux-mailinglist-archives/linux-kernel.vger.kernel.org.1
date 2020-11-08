@@ -2,126 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 935B82AAA8B
-	for <lists+linux-kernel@lfdr.de>; Sun,  8 Nov 2020 11:29:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 111002AAA90
+	for <lists+linux-kernel@lfdr.de>; Sun,  8 Nov 2020 11:30:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728232AbgKHK2Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 8 Nov 2020 05:28:24 -0500
-Received: from bilbo.ozlabs.org ([203.11.71.1]:52029 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727844AbgKHK2Y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 8 Nov 2020 05:28:24 -0500
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CTVhP0Gfzz9sSs;
-        Sun,  8 Nov 2020 21:28:20 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
-        s=201909; t=1604831301;
-        bh=t3PyH9o+kH1Xy3t/BWQqpDW6qPE1C4JOyrsXYipaCKQ=;
-        h=From:To:Cc:Subject:Date:From;
-        b=cesw+TM2itv2HS0DD3OtNBfd8JRf1aN5tUZ1zz7fxY5E/Jkdymc8PsAC5g2JjAJPc
-         O4s0TptTDfHpPj15uaIF4/++ZO9VbNQyhlmlK3DqIT7evLmJII6ydhKwc0DYYj930h
-         puwxFEct085IOuRosLQ3s+6eSwRDBCT/2XE2vO7z9MZ2iri/r+6dZkywAY/UB7vynB
-         JRwN5daENhD7J4FuWfh2+Dke6R7c3teD1O7utEPDA0s9kKThBfRrJR3ZaYPezsmRtc
-         JZj74fpYpBeo50KGa5gm2cIUelVARF8FGfJ291sI49D3tcFCkQVjXRlXWIH6lrVUze
-         0zKZwfc+w7hUQ==
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     cai@redhat.com, cheloha@linux.ibm.com, christophe.leroy@csgroup.eu,
-        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        paulmck@kernel.org
-Subject: [GIT PULL] Please pull powerpc/linux.git powerpc-5.10-3 tag
-Date:   Sun, 08 Nov 2020 21:28:03 +1100
-Message-ID: <87361kta6k.fsf@mpe.ellerman.id.au>
-MIME-Version: 1.0
-Content-Type: text/plain
+        id S1728479AbgKHK3s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 8 Nov 2020 05:29:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57402 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728267AbgKHK3m (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 8 Nov 2020 05:29:42 -0500
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 187E2C0613CF
+        for <linux-kernel@vger.kernel.org>; Sun,  8 Nov 2020 02:29:42 -0800 (PST)
+Received: by ozlabs.org (Postfix, from userid 1034)
+        id 4CTVjr60s3z9sTL; Sun,  8 Nov 2020 21:29:36 +1100 (AEDT)
+From:   Michael Ellerman <patch-notifications@ellerman.id.au>
+To:     Paul Mackerras <paulus@samba.org>, schwab@linux-m68k.org,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        erhard_f@mailbox.org, Michael Ellerman <mpe@ellerman.id.au>
+Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+In-Reply-To: <9e225a856a8b22e0e77587ee22ab7a2f5bca8753.1604740029.git.christophe.leroy@csgroup.eu>
+References: <9e225a856a8b22e0e77587ee22ab7a2f5bca8753.1604740029.git.christophe.leroy@csgroup.eu>
+Subject: Re: [PATCH] powerpc/32s: Use relocation offset when setting early hash table
+Message-Id: <160483134461.1400561.5111956119334566016.b4-ty@ellerman.id.au>
+Date:   Sun,  8 Nov 2020 21:29:36 +1100 (AEDT)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA256
+On Sat, 7 Nov 2020 09:07:40 +0000 (UTC), Christophe Leroy wrote:
+> When calling early_hash_table(), the kernel hasn't been yet
+> relocated to its linking address, so data must be addressed
+> with relocation offset.
+> 
+> Add relocation offset to write into Hash in early_hash_table().
 
-Hi Linus,
+Applied to powerpc/fixes.
 
-Please pull some more powerpc fixes for 5.10:
+[1/1] powerpc/32s: Use relocation offset when setting early hash table
+      https://git.kernel.org/powerpc/c/01776f070ffcbf336be3bf1672bd3c589548d6c4
 
-The following changes since commit 3cea11cd5e3b00d91caf0b4730194039b45c5891:
-
-  Linux 5.10-rc2 (2020-11-01 14:43:51 -0800)
-
-are available in the git repository at:
-
-  https://git.kernel.org/pub/scm/linux/kernel/git/powerpc/linux.git tags/powerpc-5.10-3
-
-for you to fetch changes up to 3fb4a8fa28b740709bdd3229b80279957f4d37ed:
-
-  powerpc/numa: Fix build when CONFIG_NUMA=n (2020-11-06 14:16:19 +1100)
-
-- ------------------------------------------------------------------
-powerpc fixes for 5.10 #3
-
-Fix miscompilation with GCC 4.9 by using asm_goto_volatile for put_user().
-
-A fix for an RCU splat at boot caused by a recent lockdep change.
-
-A fix for a possible deadlock in our EEH debugfs code.
-
-Several fixes for handling of _PAGE_ACCESSED on 32-bit platforms.
-
-A build fix when CONFIG_NUMA=n.
-
-Thanks to:
-  Andreas Schwab,
-  Christophe Leroy,
-  Oliver O'Halloran,
-  Qian Cai,
-  Scott Cheloha.
-
-- ------------------------------------------------------------------
-Christophe Leroy (4):
-      powerpc/603: Always fault when _PAGE_ACCESSED is not set
-      powerpc/40x: Always fault when _PAGE_ACCESSED is not set
-      powerpc/8xx: Always fault when _PAGE_ACCESSED is not set
-      powerpc/8xx: Manage _PAGE_ACCESSED through APG bits in L1 entry
-
-Michael Ellerman (1):
-      powerpc: Use asm_goto_volatile for put_user()
-
-Qian Cai (2):
-      powerpc/eeh_cache: Fix a possible debugfs deadlock
-      powerpc/smp: Call rcu_cpu_starting() earlier
-
-Scott Cheloha (1):
-      powerpc/numa: Fix build when CONFIG_NUMA=n
-
-
- arch/powerpc/include/asm/nohash/32/kup-8xx.h |  2 +-
- arch/powerpc/include/asm/nohash/32/mmu-8xx.h | 47 +++++++-------------
- arch/powerpc/include/asm/nohash/32/pte-8xx.h |  9 ++--
- arch/powerpc/include/asm/topology.h          | 12 +++--
- arch/powerpc/include/asm/uaccess.h           |  4 +-
- arch/powerpc/kernel/eeh_cache.c              |  5 ++-
- arch/powerpc/kernel/head_40x.S               |  8 ----
- arch/powerpc/kernel/head_8xx.S               | 46 +++----------------
- arch/powerpc/kernel/head_book3s_32.S         | 12 -----
- arch/powerpc/kernel/smp.c                    |  3 +-
- 10 files changed, 44 insertions(+), 104 deletions(-)
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCAAdFiEEJFGtCPCthwEv2Y/bUevqPMjhpYAFAl+nyAsACgkQUevqPMjh
-pYA96BAAkrA88BcH3Bpqkd34iCCIUPzLY/iBedtj6zJCtPOOgxEA82SJFLdauJ4t
-PmbHCofRuuz29Rv+7zBwAZ+VyDhUbOyYXUvsLEAdYqMr8PpFvsfhit7F/c+IG/pF
-rW+V1GoCn/npcyPFgUE13gwAI0y3etbc3znwcEu9ASIa/JWho2EGqfHNoTuYsgfq
-Q9xRmucEAiA4DUN9Fq5o4PrETWIkp/UoDg8VumA0KJKyvZ+YvaFI9eRfEw1Kc6jB
-sN3vKSyRd4PbFBqfzjl+mVX0MUteLY5T9AZ80v4Yd78e+dXxCQPwE3EIa7suEoH5
-vu6Wdu+bShR49kx5BqjbU9yNZ8rRXH2LmUDpn/FosVlAy1xduZTEhy1xp2IYU/I/
-yWGmnZXDlhrdLcIIpFwsJ+kGqMEyfGSn1VBt2zZgbHBVpydHFUoq8NmLEpQ6Lsc8
-vcA/f8kmm9IA6uidYzvxWSFxm9OqW/2aG/kLDkWrjfGmU4plO/0bA972MsxTN+95
-2brPIsbAyDv4dB2oOjkB6vf8CNEUQSLRdUyA5bkPXLggPQCzAGUx1nApWkQQ3iCe
-ge0Gi6RIpL/vfiHrmVNNjdHdgUkLqhmSPd4mUknW9IFoUicuUEdnV8z1PjwWyVyQ
-e/nDpDRNJc552KGDYdhfaa+qBTwL4tagjCnXYluvwysrIH1+pLk=
-=VisH
------END PGP SIGNATURE-----
+cheers
