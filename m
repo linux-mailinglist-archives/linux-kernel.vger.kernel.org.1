@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CBBB22AA925
-	for <lists+linux-kernel@lfdr.de>; Sun,  8 Nov 2020 06:17:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 450402AA926
+	for <lists+linux-kernel@lfdr.de>; Sun,  8 Nov 2020 06:17:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726635AbgKHFRk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 8 Nov 2020 00:17:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37744 "EHLO
+        id S1727858AbgKHFRp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 8 Nov 2020 00:17:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37748 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726144AbgKHFRi (ORCPT
+        with ESMTP id S1728197AbgKHFRk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 8 Nov 2020 00:17:38 -0500
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7289BC0613CF
-        for <linux-kernel@vger.kernel.org>; Sat,  7 Nov 2020 21:17:38 -0800 (PST)
-Received: by mail-wm1-x343.google.com with SMTP id 10so4327158wml.2
-        for <linux-kernel@vger.kernel.org>; Sat, 07 Nov 2020 21:17:38 -0800 (PST)
+        Sun, 8 Nov 2020 00:17:40 -0500
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1D89C0613CF
+        for <linux-kernel@vger.kernel.org>; Sat,  7 Nov 2020 21:17:39 -0800 (PST)
+Received: by mail-wm1-x342.google.com with SMTP id t67so601929wmt.5
+        for <linux-kernel@vger.kernel.org>; Sat, 07 Nov 2020 21:17:39 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=arista.com; s=googlenew;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=vUd6dOqdaOWw315aR0DaswcpfTZy/jRQxum4V+Ace34=;
-        b=DyO5TdvXGIW3umY4xtrgWizP3A2aAZwUGxv6+dU2uEDkKIX+BLZY8pYQV9lKibvunC
-         3+ZKvwDHe3rJ6NvGf9opUeFCT+9ksalRilRutQfSdICVTFWalVdvpYzf/+M3Ae6kRoXt
-         Swx5wzJTGvr4OQ/MMjguWf0ewSBxguOP8ObI1V8QWW/+q4PKLkrnzjgLKds0hwWyAQNr
-         cvtGqgjSNNhfoKnI8/4KqCi2PfM/0O3FHJUDBq//78oWZ4So2wKE1/ZHAwl09tLhTcuY
-         xxlzS6fYqPeCajHUw72d2CfLoHNXcsNAnp2/y7DJ1i4uGIJGrXzwjzUU2uPLSC0tbQPA
-         5p1A==
+        bh=4WHLpcykIsrds4UgqFFWlVA4TctWnk+5lHUD15tJI+w=;
+        b=B/5tyvYr8H3L8z/xppTySZZ5FXidhsgr6XysK6KGhiOH94mt9YSBMAaGDxbdF7efjj
+         SbqrT10pB8AnC9otIXliEJdsq0pVHdpkP6bfNzgLxYgdcSxra8EMvsyY+ejJivKekRsr
+         DzvM5asvdhHqrgqXhPv5ExkkyW/lo1us4WKYXX2y3FJOLKjyNEuIOrjn9/v2UNDyEbog
+         LnZj5LghsMYdLAkPRDBi8Qn+xU7PtjsPTv1EjkBhsOogzsJJyHBJEhAf2o+GHakngRf+
+         aIrG8cHXQ8NpdBT6Fxmyp7c6E0T6soQUg3D8El+hTpr06VJ1B6lmfBTi9zVCUjuURuWw
+         mWGA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=vUd6dOqdaOWw315aR0DaswcpfTZy/jRQxum4V+Ace34=;
-        b=Vq3yv0SQHR4S+pExPyCTnbpMXuBPHnbnpXndtGVHUXybtDN/n/CdB6fRCrUOhV7Z3T
-         rWjTYbMPc7XEvT35VoukDplFm6USbrhU0FuZ7JvYJTUOu+3geRtqiGEIf4JGzO4Q0bC6
-         PuRlLbaNRjlCGemu1310JQLgq155FxmNMHa+TLdg+LFtM1g+WkiRvVcHJpp6BnebtG1g
-         TtS1UmhuhksbbBrYCfvwAG238F6PzCt8vT177CcXNzpnrvI1tsIbEfwxcG9EKE4IkzIH
-         1kc1OTVBbgDzyLbYt87mRWoj61HU5hG+CHQ97QBRkjWglA3ZByuolWM24oVfs1suJA/2
-         EGdg==
-X-Gm-Message-State: AOAM533O4upUr59cc9vDp9AVBzWIktQl7aKQa2MBosx3MT+oNHGV56x/
-        8exu3gul4cAArBoiphO8AAYXJSMauIk4249t
-X-Google-Smtp-Source: ABdhPJyf40y2NIrNfMJo2pbmAsRC6pzfkHEuGCTePTp8z+b9n7j04SFKCAxCLgCv+7nw1EJSl3Vs7g==
-X-Received: by 2002:a1c:b104:: with SMTP id a4mr7553746wmf.138.1604812656972;
-        Sat, 07 Nov 2020 21:17:36 -0800 (PST)
+        bh=4WHLpcykIsrds4UgqFFWlVA4TctWnk+5lHUD15tJI+w=;
+        b=WBNPA6HINJpsbhdVeysX+mxgfcLqJCtj5w+cK5Y6r2dKbrjuaB7IyDP0Bieqg7WZt7
+         FTmfARGKqkVUthAF8CowBbNK+NLCBh86hT0wAl/DkMdhFW0F6IEWeJ7me6WT0ZtO506h
+         efi2vW/9/NWFTp57t0JNflDSiR13sOMdKQC1+YcyN++z6d1aR8rL3ZF1qdw0jYi5CBif
+         9V0A11SyUjWPSN43+gKJFJMSM+2TwoRnBifFWFz6L9846TAa6EvHuR0e5GuQRI8ns3w3
+         wdj4cLhBBVYArn0u5G1GuwphJep5mpviiVcY2MaKevxx5OhvmtfgPazpITC0g330RHQE
+         Q26g==
+X-Gm-Message-State: AOAM5301c3oxqMSZgxEE0VT3m/+rTeh5x+Zv3vzmSCiMSJph9vizaJSP
+        CA4keomfsgppGJXOMz590YUYBruyLnwrHfL3
+X-Google-Smtp-Source: ABdhPJx/vKqhFEHSrW5hicbBqtbtJagDhiZQuzkINWoGfoTh9wWdC11AWDE8UvGyLUZNnEtRgblQUQ==
+X-Received: by 2002:a7b:cc05:: with SMTP id f5mr7704630wmh.123.1604812658265;
+        Sat, 07 Nov 2020 21:17:38 -0800 (PST)
 Received: from localhost.localdomain ([2a02:8084:e84:2480:228:f8ff:fe6f:83a8])
-        by smtp.gmail.com with ESMTPSA id r10sm8378462wmg.16.2020.11.07.21.17.35
+        by smtp.gmail.com with ESMTPSA id r10sm8378462wmg.16.2020.11.07.21.17.37
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 07 Nov 2020 21:17:36 -0800 (PST)
+        Sat, 07 Nov 2020 21:17:37 -0800 (PST)
 From:   Dmitry Safonov <dima@arista.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     Dmitry Safonov <0x7f454c46@gmail.com>,
@@ -65,11 +65,10 @@ Cc:     Dmitry Safonov <0x7f454c46@gmail.com>,
         Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
         Thomas Gleixner <tglx@linutronix.de>,
         Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Will Deacon <will@kernel.org>, x86@kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: [PATCH 03/19] arm64: Use in_compat_task() in arch_setup_additional_pages()
-Date:   Sun,  8 Nov 2020 05:17:13 +0000
-Message-Id: <20201108051730.2042693-4-dima@arista.com>
+        Will Deacon <will@kernel.org>, x86@kernel.org
+Subject: [PATCH 04/19] x86: Remove compat_arch_setup_additional_pages()
+Date:   Sun,  8 Nov 2020 05:17:14 +0000
+Message-Id: <20201108051730.2042693-5-dima@arista.com>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20201108051730.2042693-1-dima@arista.com>
 References: <20201108051730.2042693-1-dima@arista.com>
@@ -79,88 +78,116 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Instead of providing compat_arch_setup_additional_pages(), check if the
-task is compatible from personality, which is set earlier in
-load_elf_binary(). That will align code with powerpc and sparc, also
-it'll allow to completely remove compat_arch_setyp_addtional_pages()
-macro after doing the same for x86, simiplifying the binfmt code
-in the end.
+The same as for x32 task, detect ia32 task by in_ia32_syscall().
+It's valid as new-execed task is pretending to be in a syscall of
+relevant bitness/ABI, see the comment near in_32bit_syscall().
 
-Cc: linux-arm-kernel@lists.infradead.org
+Removing compat_arch_setup_additional_pages() provides single point of
+entry - arch_setup_additional_pages(), makes ifdeffery easier to read,
+aligns the code with powerpc and sparc (mips also has single vdso setup
+function, but instead of taking bitness from mm.context, takes vdso
+image pointer there).
+Together with arm64 code align to use in_compat_task(), it makes
+possible to remove compat_arch_setup_additional_pages() macro
+re-definition from compat elf code (another redefined marco less).
+
+Cc: x86@kernel.org
 Signed-off-by: Dmitry Safonov <dima@arista.com>
 ---
- arch/arm64/include/asm/elf.h |  5 -----
- arch/arm64/kernel/vdso.c     | 21 ++++++++++-----------
- 2 files changed, 10 insertions(+), 16 deletions(-)
+ arch/x86/entry/vdso/vma.c  | 41 +++++++++++++++++++-------------------
+ arch/x86/include/asm/elf.h |  5 -----
+ 2 files changed, 21 insertions(+), 25 deletions(-)
 
-diff --git a/arch/arm64/include/asm/elf.h b/arch/arm64/include/asm/elf.h
-index d1073ffa7f24..a81953bcc1cf 100644
---- a/arch/arm64/include/asm/elf.h
-+++ b/arch/arm64/include/asm/elf.h
-@@ -237,11 +237,6 @@ do {									\
- #else
- #define COMPAT_ARCH_DLINFO
- #endif
--struct linux_binprm;
--extern int aarch32_setup_additional_pages(struct linux_binprm *bprm,
--					  int uses_interp);
--#define compat_arch_setup_additional_pages \
--					aarch32_setup_additional_pages
- 
- #endif /* CONFIG_COMPAT */
- 
-diff --git a/arch/arm64/kernel/vdso.c b/arch/arm64/kernel/vdso.c
-index cee5d04ea9ad..1b710deb84d6 100644
---- a/arch/arm64/kernel/vdso.c
-+++ b/arch/arm64/kernel/vdso.c
-@@ -401,29 +401,24 @@ static int aarch32_sigreturn_setup(struct mm_struct *mm)
- 	return PTR_ERR_OR_ZERO(ret);
+diff --git a/arch/x86/entry/vdso/vma.c b/arch/x86/entry/vdso/vma.c
+index 4eea508e9b10..aace862ed9a1 100644
+--- a/arch/x86/entry/vdso/vma.c
++++ b/arch/x86/entry/vdso/vma.c
+@@ -376,48 +376,49 @@ int map_vdso_once(const struct vdso_image *image, unsigned long addr)
  }
  
--int aarch32_setup_additional_pages(struct linux_binprm *bprm, int uses_interp)
-+static int aarch32_setup_additional_pages(struct linux_binprm *bprm,
-+					  int uses_interp)
+ #if defined(CONFIG_X86_32) || defined(CONFIG_IA32_EMULATION)
+-static int load_vdso32(void)
++static int load_vdso_ia32(void)
  {
- 	struct mm_struct *mm = current->mm;
- 	int ret;
+ 	if (vdso32_enabled != 1)  /* Other values all mean "disabled" */
+ 		return 0;
  
--	if (mmap_write_lock_killable(mm))
--		return -EINTR;
--
- 	ret = aarch32_kuser_helpers_setup(mm);
- 	if (ret)
--		goto out;
-+		return ret;
- 
- 	if (IS_ENABLED(CONFIG_COMPAT_VDSO)) {
- 		ret = __setup_additional_pages(VDSO_ABI_AA32, mm, bprm,
- 					       uses_interp);
- 		if (ret)
--			goto out;
-+			return ret;
- 	}
- 
--	ret = aarch32_sigreturn_setup(mm);
--out:
--	mmap_write_unlock(mm);
--	return ret;
-+	return aarch32_sigreturn_setup(mm);
+ 	return map_vdso(&vdso_image_32, 0);
  }
- #endif /* CONFIG_COMPAT */
++#else
++static int load_vdso_ia32(void)
++{
++	WARN_ON_ONCE(1);
++	return -ENODATA;
++}
+ #endif
  
-@@ -460,7 +455,11 @@ int arch_setup_additional_pages(struct linux_binprm *bprm, int uses_interp)
- 	if (mmap_write_lock_killable(mm))
- 		return -EINTR;
+ #ifdef CONFIG_X86_64
+-int arch_setup_additional_pages(struct linux_binprm *bprm, int uses_interp)
++static int load_vdso_64(void)
+ {
+ 	if (!vdso64_enabled)
+ 		return 0;
  
--	ret = __setup_additional_pages(VDSO_ABI_AA64, mm, bprm, uses_interp);
-+	if (is_compat_task())
-+		ret = aarch32_setup_additional_pages(bprm, uses_interp);
-+	else
-+		ret = __setup_additional_pages(VDSO_ABI_AA64, mm, bprm, uses_interp);
+-	return map_vdso_randomized(&vdso_image_64);
+-}
+-
+-#ifdef CONFIG_COMPAT
+-int compat_arch_setup_additional_pages(struct linux_binprm *bprm,
+-				       int uses_interp)
+-{
+ #ifdef CONFIG_X86_X32_ABI
+-	if (in_x32_syscall()) {
+-		if (!vdso64_enabled)
+-			return 0;
++	if (in_x32_syscall())
+ 		return map_vdso_randomized(&vdso_image_x32);
+-	}
+ #endif
+-#ifdef CONFIG_IA32_EMULATION
+-	return load_vdso32();
 +
- 	mmap_write_unlock(mm);
++	return map_vdso_randomized(&vdso_image_64);
++}
+ #else
+-	return 0;
+-#endif
++static int load_vdso_64(void)
++{
++	WARN_ON_ONCE(1);
++	return -ENODATA;
+ }
+ #endif
+-#else
++
+ int arch_setup_additional_pages(struct linux_binprm *bprm, int uses_interp)
+ {
+-	return load_vdso32();
++	if (in_ia32_syscall())
++		return load_vdso_ia32();
++
++	return load_vdso_64();
+ }
+-#endif
  
- 	return ret;
+ #ifdef CONFIG_X86_64
+ static __init int vdso_setup(char *s)
+diff --git a/arch/x86/include/asm/elf.h b/arch/x86/include/asm/elf.h
+index d00b723eea2d..51a08f6b18e5 100644
+--- a/arch/x86/include/asm/elf.h
++++ b/arch/x86/include/asm/elf.h
+@@ -377,11 +377,6 @@ else									\
+ 	((unsigned long)current->mm->context.vdso +			\
+ 	 vdso_image_32.sym___kernel_vsyscall)
+ 
+-struct linux_binprm;
+-extern int compat_arch_setup_additional_pages(struct linux_binprm *bprm,
+-					      int uses_interp);
+-#define compat_arch_setup_additional_pages compat_arch_setup_additional_pages
+-
+ /* Do not change the values. See get_align_mask() */
+ enum align_flags {
+ 	ALIGN_VA_32	= BIT(0),
 -- 
 2.28.0
 
