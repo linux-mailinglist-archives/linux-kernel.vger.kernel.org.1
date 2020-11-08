@@ -2,212 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 81CED2AAA88
-	for <lists+linux-kernel@lfdr.de>; Sun,  8 Nov 2020 11:17:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 935B82AAA8B
+	for <lists+linux-kernel@lfdr.de>; Sun,  8 Nov 2020 11:29:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728179AbgKHKRE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 8 Nov 2020 05:17:04 -0500
-Received: from asavdk4.altibox.net ([109.247.116.15]:48588 "EHLO
-        asavdk4.altibox.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726115AbgKHKRE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 8 Nov 2020 05:17:04 -0500
-Received: from ravnborg.org (unknown [188.228.123.71])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1728232AbgKHK2Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 8 Nov 2020 05:28:24 -0500
+Received: from bilbo.ozlabs.org ([203.11.71.1]:52029 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727844AbgKHK2Y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 8 Nov 2020 05:28:24 -0500
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        by asavdk4.altibox.net (Postfix) with ESMTPS id 4FC7D80534;
-        Sun,  8 Nov 2020 11:17:00 +0100 (CET)
-Date:   Sun, 8 Nov 2020 11:16:59 +0100
-From:   Sam Ravnborg <sam@ravnborg.org>
-To:     Vinay Simha BN <simhavcs@gmail.com>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>
-Cc:     Jernej Skrabec <jernej.skrabec@siol.net>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        David Airlie <airlied@linux.ie>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:DRM DRIVERS" <dri-devel@lists.freedesktop.org>,
-        Andrzej Hajda <a.hajda@samsung.com>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>
-Subject: Re: [PATCH RESEND v2] drm/bridge/tc358775: Fixes bus formats read
-Message-ID: <20201108101659.GE1129714@ravnborg.org>
-References: <1603349147-3495-1-git-send-email-simhavcs@gmail.com>
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CTVhP0Gfzz9sSs;
+        Sun,  8 Nov 2020 21:28:20 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
+        s=201909; t=1604831301;
+        bh=t3PyH9o+kH1Xy3t/BWQqpDW6qPE1C4JOyrsXYipaCKQ=;
+        h=From:To:Cc:Subject:Date:From;
+        b=cesw+TM2itv2HS0DD3OtNBfd8JRf1aN5tUZ1zz7fxY5E/Jkdymc8PsAC5g2JjAJPc
+         O4s0TptTDfHpPj15uaIF4/++ZO9VbNQyhlmlK3DqIT7evLmJII6ydhKwc0DYYj930h
+         puwxFEct085IOuRosLQ3s+6eSwRDBCT/2XE2vO7z9MZ2iri/r+6dZkywAY/UB7vynB
+         JRwN5daENhD7J4FuWfh2+Dke6R7c3teD1O7utEPDA0s9kKThBfRrJR3ZaYPezsmRtc
+         JZj74fpYpBeo50KGa5gm2cIUelVARF8FGfJ291sI49D3tcFCkQVjXRlXWIH6lrVUze
+         0zKZwfc+w7hUQ==
+From:   Michael Ellerman <mpe@ellerman.id.au>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     cai@redhat.com, cheloha@linux.ibm.com, christophe.leroy@csgroup.eu,
+        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        paulmck@kernel.org
+Subject: [GIT PULL] Please pull powerpc/linux.git powerpc-5.10-3 tag
+Date:   Sun, 08 Nov 2020 21:28:03 +1100
+Message-ID: <87361kta6k.fsf@mpe.ellerman.id.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1603349147-3495-1-git-send-email-simhavcs@gmail.com>
-X-CMAE-Score: 0
-X-CMAE-Analysis: v=2.3 cv=VafZwmh9 c=1 sm=1 tr=0
-        a=S6zTFyMACwkrwXSdXUNehg==:117 a=S6zTFyMACwkrwXSdXUNehg==:17
-        a=kj9zAlcOel0A:10 a=pGLkceISAAAA:8 a=e5mUnYsNAAAA:8
-        a=jR0aiFpPjobASAg4OfgA:9 a=CjuIK1q_8ugA:10 a=Vxmtnl_E_bksehYqCbjh:22
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Laurent,
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA256
 
-On Thu, Oct 22, 2020 at 12:15:47PM +0530, Vinay Simha BN wrote:
-> - atomic_check removed
-> - video data input and output formats added
-> - bus formats read from drm_bridge_state.output_bus_cfg.format
->   and .atomic_get_input_bus_fmts() instead of connector
-> 
-> Signed-off-by: Vinay Simha BN <simhavcs@gmail.com>
+Hi Linus,
 
-could you try to find time to review this patch?
+Please pull some more powerpc fixes for 5.10:
 
-You already provided valuable feedback and it looks fine to me.
-But it would be perfect if you could find time to take a look.
+The following changes since commit 3cea11cd5e3b00d91caf0b4730194039b45c5891:
 
-Thanks in advance,
+  Linux 5.10-rc2 (2020-11-01 14:43:51 -0800)
 
-	Sam
+are available in the git repository at:
 
-> 
-> ---
-> v1:
->  * Laurent Pinchart review comments incorporated
->    drm_bridge_state.output_bus_cfg.format
->    instead of connector
-> v2:
->  * Laurent Pinchart review comments incorporated
->    atomic_check removed
->    video data input and output formats added
-> ---
->  drivers/gpu/drm/bridge/tc358775.c | 75 ++++++++++++++++++++++++++++++---------
->  1 file changed, 58 insertions(+), 17 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/bridge/tc358775.c b/drivers/gpu/drm/bridge/tc358775.c
-> index 2272adc..cc27570 100644
-> --- a/drivers/gpu/drm/bridge/tc358775.c
-> +++ b/drivers/gpu/drm/bridge/tc358775.c
-> @@ -271,6 +271,20 @@ struct tc_data {
->  	struct gpio_desc	*stby_gpio;
->  	u8			lvds_link; /* single-link or dual-link */
->  	u8			bpc;
-> +	u32			output_bus_fmt;
-> +};
-> +
-> +static const u32 tc_lvds_in_bus_fmts[] = {
-> +	MEDIA_BUS_FMT_RGB565_1X16,
-> +	MEDIA_BUS_FMT_RGB666_1X18,
-> +	MEDIA_BUS_FMT_RGB666_1X24_CPADHI,
-> +	MEDIA_BUS_FMT_RBG888_1X24,
-> +};
-> +
-> +static const u32 tc_lvds_out_bus_fmts[] = {
-> +	MEDIA_BUS_FMT_RGB888_1X7X4_JEIDA,
-> +	MEDIA_BUS_FMT_RGB888_1X7X4_SPWG,
-> +	MEDIA_BUS_FMT_RGB666_1X7X3_SPWG,
->  };
->  
->  static inline struct tc_data *bridge_to_tc(struct drm_bridge *b)
-> @@ -359,19 +373,6 @@ static void d2l_write(struct i2c_client *i2c, u16 addr, u32 val)
->  			ret, addr);
->  }
->  
-> -/* helper function to access bus_formats */
-> -static struct drm_connector *get_connector(struct drm_encoder *encoder)
-> -{
-> -	struct drm_device *dev = encoder->dev;
-> -	struct drm_connector *connector;
-> -
-> -	list_for_each_entry(connector, &dev->mode_config.connector_list, head)
-> -		if (connector->encoder == encoder)
-> -			return connector;
-> -
-> -	return NULL;
-> -}
-> -
->  static void tc_bridge_enable(struct drm_bridge *bridge)
->  {
->  	struct tc_data *tc = bridge_to_tc(bridge);
-> @@ -380,7 +381,10 @@ static void tc_bridge_enable(struct drm_bridge *bridge)
->  	u32 val = 0;
->  	u16 dsiclk, clkdiv, byteclk, t1, t2, t3, vsdelay;
->  	struct drm_display_mode *mode;
-> -	struct drm_connector *connector = get_connector(bridge->encoder);
-> +	struct drm_bridge_state *state =
-> +			drm_priv_to_bridge_state(bridge->base.state);
-> +
-> +	tc->output_bus_fmt = state->output_bus_cfg.format;
->  
->  	mode = &bridge->encoder->crtc->state->adjusted_mode;
->  
-> @@ -451,14 +455,13 @@ static void tc_bridge_enable(struct drm_bridge *bridge)
->  	d2l_write(tc->i2c, LVPHY0, LV_PHY0_PRBS_ON(4) | LV_PHY0_ND(6));
->  
->  	dev_dbg(tc->dev, "bus_formats %04x bpc %d\n",
-> -		connector->display_info.bus_formats[0],
-> +		tc->output_bus_fmt,
->  		tc->bpc);
->  	/*
->  	 * Default hardware register settings of tc358775 configured
->  	 * with MEDIA_BUS_FMT_RGB888_1X7X4_JEIDA jeida-24 format
->  	 */
-> -	if (connector->display_info.bus_formats[0] ==
-> -		MEDIA_BUS_FMT_RGB888_1X7X4_SPWG) {
-> +	if (tc->output_bus_fmt == MEDIA_BUS_FMT_RGB888_1X7X4_SPWG) {
->  		/* VESA-24 */
->  		d2l_write(tc->i2c, LV_MX0003, LV_MX(LVI_R0, LVI_R1, LVI_R2, LVI_R3));
->  		d2l_write(tc->i2c, LV_MX0407, LV_MX(LVI_R4, LVI_R7, LVI_R5, LVI_G0));
-> @@ -590,6 +593,40 @@ static int tc358775_parse_dt(struct device_node *np, struct tc_data *tc)
->  	return 0;
->  }
->  
-> +static u32 *
-> +tc_bridge_get_input_bus_fmts(struct drm_bridge *bridge,
-> +			     struct drm_bridge_state *bridge_state,
-> +			     struct drm_crtc_state *crtc_state,
-> +			     struct drm_connector_state *conn_state,
-> +			     u32 output_fmt,
-> +			     unsigned int *num_input_fmts)
-> +{
-> +	u32 *input_fmts = NULL;
-> +	u8 i;
-> +
-> +	*num_input_fmts = 0;
-> +
-> +	for (i = 0 ; i < ARRAY_SIZE(tc_lvds_out_bus_fmts) ; ++i) {
-> +		if (output_fmt == tc_lvds_out_bus_fmts[i])
-> +			break;
-> +	}
-> +
-> +	if (i == ARRAY_SIZE(tc_lvds_out_bus_fmts))
-> +		return NULL;
-> +
-> +	*num_input_fmts = ARRAY_SIZE(tc_lvds_in_bus_fmts);
-> +
-> +	input_fmts = kcalloc(*num_input_fmts, ARRAY_SIZE(tc_lvds_in_bus_fmts),
-> +			     GFP_KERNEL);
-> +	if (!input_fmts)
-> +		return NULL;
-> +
-> +	for (i = 0; i < ARRAY_SIZE(tc_lvds_in_bus_fmts); ++i)
-> +		input_fmts[i] = tc_lvds_in_bus_fmts[i];
-> +
-> +	return input_fmts;
-> +}
-> +
->  static int tc_bridge_attach(struct drm_bridge *bridge,
->  			    enum drm_bridge_attach_flags flags)
->  {
-> @@ -639,6 +676,10 @@ static int tc_bridge_attach(struct drm_bridge *bridge,
->  }
->  
->  static const struct drm_bridge_funcs tc_bridge_funcs = {
-> +	.atomic_duplicate_state = drm_atomic_helper_bridge_duplicate_state,
-> +	.atomic_destroy_state = drm_atomic_helper_bridge_destroy_state,
-> +	.atomic_reset = drm_atomic_helper_bridge_reset,
-> +	.atomic_get_input_bus_fmts = tc_bridge_get_input_bus_fmts,
->  	.attach = tc_bridge_attach,
->  	.pre_enable = tc_bridge_pre_enable,
->  	.enable = tc_bridge_enable,
-> -- 
-> 2.7.4
-> 
-> _______________________________________________
-> dri-devel mailing list
-> dri-devel@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+  https://git.kernel.org/pub/scm/linux/kernel/git/powerpc/linux.git tags/powerpc-5.10-3
+
+for you to fetch changes up to 3fb4a8fa28b740709bdd3229b80279957f4d37ed:
+
+  powerpc/numa: Fix build when CONFIG_NUMA=n (2020-11-06 14:16:19 +1100)
+
+- ------------------------------------------------------------------
+powerpc fixes for 5.10 #3
+
+Fix miscompilation with GCC 4.9 by using asm_goto_volatile for put_user().
+
+A fix for an RCU splat at boot caused by a recent lockdep change.
+
+A fix for a possible deadlock in our EEH debugfs code.
+
+Several fixes for handling of _PAGE_ACCESSED on 32-bit platforms.
+
+A build fix when CONFIG_NUMA=n.
+
+Thanks to:
+  Andreas Schwab,
+  Christophe Leroy,
+  Oliver O'Halloran,
+  Qian Cai,
+  Scott Cheloha.
+
+- ------------------------------------------------------------------
+Christophe Leroy (4):
+      powerpc/603: Always fault when _PAGE_ACCESSED is not set
+      powerpc/40x: Always fault when _PAGE_ACCESSED is not set
+      powerpc/8xx: Always fault when _PAGE_ACCESSED is not set
+      powerpc/8xx: Manage _PAGE_ACCESSED through APG bits in L1 entry
+
+Michael Ellerman (1):
+      powerpc: Use asm_goto_volatile for put_user()
+
+Qian Cai (2):
+      powerpc/eeh_cache: Fix a possible debugfs deadlock
+      powerpc/smp: Call rcu_cpu_starting() earlier
+
+Scott Cheloha (1):
+      powerpc/numa: Fix build when CONFIG_NUMA=n
+
+
+ arch/powerpc/include/asm/nohash/32/kup-8xx.h |  2 +-
+ arch/powerpc/include/asm/nohash/32/mmu-8xx.h | 47 +++++++-------------
+ arch/powerpc/include/asm/nohash/32/pte-8xx.h |  9 ++--
+ arch/powerpc/include/asm/topology.h          | 12 +++--
+ arch/powerpc/include/asm/uaccess.h           |  4 +-
+ arch/powerpc/kernel/eeh_cache.c              |  5 ++-
+ arch/powerpc/kernel/head_40x.S               |  8 ----
+ arch/powerpc/kernel/head_8xx.S               | 46 +++----------------
+ arch/powerpc/kernel/head_book3s_32.S         | 12 -----
+ arch/powerpc/kernel/smp.c                    |  3 +-
+ 10 files changed, 44 insertions(+), 104 deletions(-)
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEJFGtCPCthwEv2Y/bUevqPMjhpYAFAl+nyAsACgkQUevqPMjh
+pYA96BAAkrA88BcH3Bpqkd34iCCIUPzLY/iBedtj6zJCtPOOgxEA82SJFLdauJ4t
+PmbHCofRuuz29Rv+7zBwAZ+VyDhUbOyYXUvsLEAdYqMr8PpFvsfhit7F/c+IG/pF
+rW+V1GoCn/npcyPFgUE13gwAI0y3etbc3znwcEu9ASIa/JWho2EGqfHNoTuYsgfq
+Q9xRmucEAiA4DUN9Fq5o4PrETWIkp/UoDg8VumA0KJKyvZ+YvaFI9eRfEw1Kc6jB
+sN3vKSyRd4PbFBqfzjl+mVX0MUteLY5T9AZ80v4Yd78e+dXxCQPwE3EIa7suEoH5
+vu6Wdu+bShR49kx5BqjbU9yNZ8rRXH2LmUDpn/FosVlAy1xduZTEhy1xp2IYU/I/
+yWGmnZXDlhrdLcIIpFwsJ+kGqMEyfGSn1VBt2zZgbHBVpydHFUoq8NmLEpQ6Lsc8
+vcA/f8kmm9IA6uidYzvxWSFxm9OqW/2aG/kLDkWrjfGmU4plO/0bA972MsxTN+95
+2brPIsbAyDv4dB2oOjkB6vf8CNEUQSLRdUyA5bkPXLggPQCzAGUx1nApWkQQ3iCe
+ge0Gi6RIpL/vfiHrmVNNjdHdgUkLqhmSPd4mUknW9IFoUicuUEdnV8z1PjwWyVyQ
+e/nDpDRNJc552KGDYdhfaa+qBTwL4tagjCnXYluvwysrIH1+pLk=
+=VisH
+-----END PGP SIGNATURE-----
