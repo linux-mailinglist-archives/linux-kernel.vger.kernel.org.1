@@ -2,260 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E7FC82AACEB
-	for <lists+linux-kernel@lfdr.de>; Sun,  8 Nov 2020 19:47:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D68632AACEF
+	for <lists+linux-kernel@lfdr.de>; Sun,  8 Nov 2020 19:48:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728837AbgKHSr3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 8 Nov 2020 13:47:29 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:46766 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727929AbgKHSr2 (ORCPT
+        id S1728868AbgKHSsS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 8 Nov 2020 13:48:18 -0500
+Received: from mail-ej1-f68.google.com ([209.85.218.68]:35598 "EHLO
+        mail-ej1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727570AbgKHSsS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 8 Nov 2020 13:47:28 -0500
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1604861245;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=nMdXIUQv1z/k426DEU72kKVysg01VGeaOzxRSP/qal0=;
-        b=b7feI/arY6CD5lf2I2p9k9GYW2RmTPAoRdJQkbAm6r7TKkjzpFzE+xaONp46pHZ/tK0fJs
-        AdxzWx7zw5I0i5JixuhXo9C20d+Inv5jKzQS/3w4amjq5PgLqdN4tEO4T+mtX5JOnMdXqT
-        cDjH00m3RBs0jMGpb3yacvi/U2Puad9I+xDRce373sLt4gUx1FSopWszyF2dsNBgZoyCG6
-        QZmNAG5Ma8jizaZhqDiIBazCJ58wDIsV6mgj5RPltRHI6uO/zp0JTsVxfI32pQ3mOpE9zE
-        q+c0BzFlqPZ4EbrXjre2FfQLFlu1+izB7rTyrlQLfslk6RuGrHdfLs2NjiKvXw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1604861245;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=nMdXIUQv1z/k426DEU72kKVysg01VGeaOzxRSP/qal0=;
-        b=xmlsUO/bFuyHJXkS8LZm4PGsWh6dMSwpfWr59WoCCOCb3doADnFgaD7IVW3V4IK54m7idk
-        f4K4IlVCgg5N/MCA==
-To:     Jason Gunthorpe <jgg@nvidia.com>,
-        Dan Williams <dan.j.williams@intel.com>
-Cc:     "Raj\, Ashok" <ashok.raj@intel.com>,
-        "Tian\, Kevin" <kevin.tian@intel.com>,
-        "Jiang\, Dave" <dave.jiang@intel.com>,
-        Bjorn Helgaas <helgaas@kernel.org>,
-        "vkoul\@kernel.org" <vkoul@kernel.org>,
-        "Dey\, Megha" <megha.dey@intel.com>,
-        "maz\@kernel.org" <maz@kernel.org>,
-        "bhelgaas\@google.com" <bhelgaas@google.com>,
-        "alex.williamson\@redhat.com" <alex.williamson@redhat.com>,
-        "Pan\, Jacob jun" <jacob.jun.pan@intel.com>,
-        "Liu\, Yi L" <yi.l.liu@intel.com>,
-        "Lu\, Baolu" <baolu.lu@intel.com>,
-        "Kumar\, Sanjay K" <sanjay.k.kumar@intel.com>,
-        "Luck\, Tony" <tony.luck@intel.com>,
-        "jing.lin\@intel.com" <jing.lin@intel.com>,
-        "kwankhede\@nvidia.com" <kwankhede@nvidia.com>,
-        "eric.auger\@redhat.com" <eric.auger@redhat.com>,
-        "parav\@mellanox.com" <parav@mellanox.com>,
-        "rafael\@kernel.org" <rafael@kernel.org>,
-        "netanelg\@mellanox.com" <netanelg@mellanox.com>,
-        "shahafs\@mellanox.com" <shahafs@mellanox.com>,
-        "yan.y.zhao\@linux.intel.com" <yan.y.zhao@linux.intel.com>,
-        "pbonzini\@redhat.com" <pbonzini@redhat.com>,
-        "Ortiz\, Samuel" <samuel.ortiz@intel.com>,
-        "Hossain\, Mona" <mona.hossain@intel.com>,
-        "dmaengine\@vger.kernel.org" <dmaengine@vger.kernel.org>,
-        "linux-kernel\@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-pci\@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        "kvm\@vger.kernel.org" <kvm@vger.kernel.org>
-Subject: Re: [PATCH v4 06/17] PCI: add SIOV and IMS capability detection
-In-Reply-To: <20201107001207.GA2620339@nvidia.com>
-References: <20201103124351.GM2620339@nvidia.com> <MWHPR11MB164544C9CFCC3F162C1C6FC18CEF0@MWHPR11MB1645.namprd11.prod.outlook.com> <20201104124017.GW2620339@nvidia.com> <MWHPR11MB1645862A8F7CF7FB8DD011778CEF0@MWHPR11MB1645.namprd11.prod.outlook.com> <20201104135415.GX2620339@nvidia.com> <MWHPR11MB1645524BDEDF8899914F32AE8CED0@MWHPR11MB1645.namprd11.prod.outlook.com> <20201106131415.GT2620339@nvidia.com> <20201106164850.GA85879@otc-nc-03> <20201106175131.GW2620339@nvidia.com> <CAPcyv4iYHA1acfo=+fTk+U_TrLbSWJjA6v4oeTXgVYDTrnCoGw@mail.gmail.com> <20201107001207.GA2620339@nvidia.com>
-Date:   Sun, 08 Nov 2020 19:47:24 +0100
-Message-ID: <87pn4nk7nn.fsf@nanos.tec.linutronix.de>
+        Sun, 8 Nov 2020 13:48:18 -0500
+Received: by mail-ej1-f68.google.com with SMTP id f23so2509998ejk.2;
+        Sun, 08 Nov 2020 10:48:16 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=e4MFmro9LRzZqM00MSLpje3m5vP1BDJdx4WIA1ubdow=;
+        b=s6GSTn8H+FVYnSwPPpC11opJlBDUZWGeZtZA8V7/GtBiXKPn0mJ/8jEjSMF4FtU9jq
+         PHXSZumsUggnU+VG9T81emvWOCg1R1CrF+ZdRjTcw2jnBrWK2WIUknm92+XsrJFuXVq5
+         pSbKkjhwB65iSBdG88zx93PUdve9qFaCa8w8lvKIlwEfSm7oB+DzGYVrBwISizzhEzp6
+         M/QLcnkCRQ/yfAur0xGC58uNzx1rCozbuweas0740rL/kxyG398cRyfo7vpkXAaZ0BOx
+         NH0leQNcOCJhj3fzLQQvL8kJ6YtF1PBNfSB8Nlswg8RChHrcQ8t4wj5z1vuRgoC9NVN1
+         ZbRg==
+X-Gm-Message-State: AOAM530IJyG1JT5bFHsL9KdrPCggNvh/PlHPM6gY05cvAAz6tdTeyacw
+        pjjowrNgyOP99fbvTi4HkMo=
+X-Google-Smtp-Source: ABdhPJybxe86P3/r3o9BXNWCXrIOkAU1VasfBNaZH9VotvbwckDMDeAI6+VnIdMDrHItkHNXmDtwbQ==
+X-Received: by 2002:a17:906:85c1:: with SMTP id i1mr12060491ejy.157.1604861296017;
+        Sun, 08 Nov 2020 10:48:16 -0800 (PST)
+Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
+        by smtp.googlemail.com with ESMTPSA id q8sm6754088ejy.102.2020.11.08.10.48.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 08 Nov 2020 10:48:14 -0800 (PST)
+Date:   Sun, 8 Nov 2020 19:48:13 +0100
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Adam Ford <aford173@gmail.com>
+Cc:     linux-arm-kernel@lists.infradead.org, aford@beaconembedded.com,
+        Rob Herring <robh+dt@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Andrey Smirnov <andrew.smirnov@gmail.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH V2 5/5] arm64: dts: imx8mn: Add GPU node
+Message-ID: <20201108184813.GD7078@kozik-lap>
+References: <20201107140026.1974312-1-aford173@gmail.com>
+ <20201107140026.1974312-5-aford173@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20201107140026.1974312-5-aford173@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 06 2020 at 20:12, Jason Gunthorpe wrote:
-> All IMS device drivers will work correctly. No VMM device emulation is
-> ever needed to translate addr/data pairs.
->
-> Earlier in this thread Kevin said hyper-v is already working this way,
-> even for MSI/MSI-X. To me this says it is fundamentally a KVM platform
-> problem and it should not be solved by PCI capability flags.
+On Sat, Nov 07, 2020 at 08:00:25AM -0600, Adam Ford wrote:
+> According to the documentation from NXP, the i.MX8M Nano has a
+> Vivante GC7000 Ultra Lite as its GPU core.
+> 
+> With this patch, the Etnaviv driver presents the GPU as:
+>    etnaviv-gpu 38000000.gpu: model: GC7000, revision: 6203
+> 
+> The stock operating voltage for the i.MX8M Nano is .85V which means
+> the GPU needs to run at 400MHz.  For boards where the operating
+> voltage is higher, this can be increased.
+> 
+> Signed-off-by: Adam Ford <aford173@gmail.com>
+> ---
+> V2:  Move into this series
+>      Update clocking description
+> 
+>  arch/arm64/boot/dts/freescale/imx8mn.dtsi | 25 +++++++++++++++++++++++
+>  1 file changed, 25 insertions(+)
+> 
+> diff --git a/arch/arm64/boot/dts/freescale/imx8mn.dtsi b/arch/arm64/boot/dts/freescale/imx8mn.dtsi
+> index 5e4b6934de40..6e650ea422a7 100644
+> --- a/arch/arm64/boot/dts/freescale/imx8mn.dtsi
+> +++ b/arch/arm64/boot/dts/freescale/imx8mn.dtsi
+> @@ -1008,6 +1008,31 @@ gpmi: nand-controller@33002000 {
+>  			status = "disabled";
+>  		};
+>  
+> +		gpu: gpu@38000000 {
+> +			compatible = "vivante,gc";
+> +			reg = <0x38000000 0x8000>;
+> +			interrupts = <GIC_SPI 3 IRQ_TYPE_LEVEL_HIGH>;
+> +			clocks = <&clk IMX8MN_CLK_GPU_AHB>,
+> +				<&clk IMX8MN_CLK_GPU_BUS_ROOT>,
+> +				<&clk IMX8MN_CLK_GPU_CORE_ROOT>,
+> +				<&clk IMX8MN_CLK_GPU_SHADER_DIV>;
+> +			clock-names = "reg", "bus", "core", "shader";
+> +			assigned-clocks = <&clk IMX8MN_CLK_GPU_CORE_SRC>,
+> +					  <&clk IMX8MN_CLK_GPU_SHADER_SRC>,
+> +					  <&clk IMX8MN_CLK_GPU_AXI>,
+> +					  <&clk IMX8MN_CLK_GPU_AHB>,
+> +					  <&clk IMX8MN_GPU_PLL>,
+> +					  <&clk IMX8MN_CLK_GPU_CORE_DIV>,
+> +					  <&clk IMX8MN_CLK_GPU_SHADER_DIV>;
+> +			assigned-clock-parents = <&clk IMX8MN_GPU_PLL_OUT>,
+> +						  <&clk IMX8MN_GPU_PLL_OUT>,
+> +						  <&clk IMX8MN_SYS_PLL1_800M>,
+> +						  <&clk IMX8MN_SYS_PLL1_800M>;
+> +			assigned-clock-rates = <0>, <0>, <800000000>, <400000000>, <1200000000>,
+> +				<400000000>, <400000000>;
 
-I mostly agree but want to add a few clarifications about the
-terminology and the boundaries because I think there is where lot of the
-confusion comes from.
+It would be nice to align indentation here to <0> above.
 
-Let me go back to the basic structure both at the hardware and at the
-software level.
+Reviewed-by: Krzysztof Kozlowski <krzk@kernel.org>
 
-The basic structure is:
+Best regards,
+Krzysztof
 
-  [CPU] -- [Bridge] -- Bus -- [Device]
-
-This applies to all kind of buses where the bridge directly translates
-into the CPUs address space. Now let's look at the boundaries:
-
-                |
-                |
-  [CPU] -- [Bri | dge] -- Bus -- [Device]
-                |   
-                |
-
-The boundary is in the middle of the bridge because the CPU side of the
-bridge is obviously CPU and therefore architecture specific. The Bus
-side of the bridge is architecture agnostic.
-
-Now let's add an IOMMU:
-
-  [CPU] -- [IOMMU] -- [Bridge] -- Bus -- [Device]
-
-and in theory the boundary moves now to:
-
-               |
-               |
-  [CPU] -- [IO | MMU] -- [Bridge] -- Bus -- [Device]
-               |
-               |
-
-because with an IOMMU the bridge could become CPU and architecture
-agnostic. In reality this is not the case as the bridge is still the
-same thing.
-
-Now let's look at MSI. As established above, the Bus and the Device are
-CPU and architecture agnostic and the Device merily uses a composed
-message which is stored at some place accessible to the device to send
-that message when it raises an interrupt. So where is this message
-composed?
-
-The basic case:
-
-                   |
-                   |
-  [CPU]    -- [Bri | dge] -- Bus -- [Device]
-                   |
-  Alloc +           
-  Compose                   Store     Use
-
-The Bridge is irrelevant here as it just is involved in the
-transport. Nevertheless the Bridge is only transport in the view of the
-interrupt subsystem.
-
-The IOMMU case:
-
-               |
-               |
-  [CPU] -- [IO | MMU] -- [Bridge] -- Bus -- [Device]
-               |
-            Alloc +
-  Alloc     Compose                 Store     Use
-
-
-That's exactly reflected in hierarchical irq domains:
-
-                       |
-                       |
-  [CPU]        -- [Bri | dge] --    Bus    -- [Device]
-                       |   
-  Alloc +           
-  Compose                         Store        Use
-
-  Vectordomain                   Busdomain
-
-and:
-
-                     |
-                     |
-  [CPU]       -- [IO | MMU]  -- [Bridge] --    Bus    -- [Device]
-                     |
-                  Alloc +   
-  Alloc           Compose                    Store       Use
-
-  Vectordomain   Remapdomain                Busdomain
-
-
-Now if we look at the virtualization scenario and device hand through
-then the structure in the guest view is not any different from the basic
-case. This works with PCI-MSI[X] and the IDXD IMS variant because the
-hypervisor can trap the access to the storage and translate the message:
-
-                   |
-                   |
-  [CPU]    -- [Bri | dge] -- Bus -- [Device]
-                   |
-  Alloc +
-  Compose                   Store     Use
-                             |
-                             | Trap
-                             v
-                             Hypervisor translates and stores
-
-But obviously with an IMS storage location which is software controlled
-by the guest side driver (the case Jason is interested in) the above
-cannot work for obvious reasons.
-
-That means the guest needs a way to ask the hypervisor for a proper
-translation, i.e. a hypercall. Now where to do that? Looking at the
-above remapping case it's pretty obvious:
-
-
-                     |
-                     |
-  [CPU]       -- [VI | RT]  -- [Bridge] --    Bus    -- [Device]
-                     |
-  Alloc          "Compose"                   Store         Use
-
-  Vectordomain   HCALLdomain                Busdomain
-                 |        ^
-                 |        |
-                 v        | 
-            Hypervisor    
-               Alloc + Compose
-
-Why? Because it reflects the boundaries and leaves the busdomain part
-agnostic as it should be. And it works for _all_ variants of Busdomains.
-
-Now the question which I can't answer is whether this can work correctly
-in terms of isolation. If the IMS storage is in guest memory (queue
-storage) then the guest driver can obviously write random crap into it
-which the device will happily send. (For MSI and IDXD style IMS it
-still can trap the store).
-
-Is the IOMMU/Interrupt remapping unit able to catch such messages which
-go outside the space to which the guest is allowed to signal to? If yes,
-problem solved. If no, then IMS storage in guest memory can't ever work.
-
-Coming back to this:
-
-> In the end pci_subdevice_msi_create_irq_domain() is a platform
-> function. Either it should work completely on every device with no
-> device-specific emulation required in the VMM, or it should not work
-> at all and return -EOPNOTSUPP.
-
-The subdevice domain is a 'Busdomain' according to the structure
-above. It does not and should never have any clue about the underlying
-system. It's in the agnostic part and always works. It simply does not
-care what's underneath. So it won't return -EOPNOTSUPP.
-
-What it has to do is to transport the IMS in queue memory requirement to
-the underlying parent domain.
-
-So in case that the HCALL domain is missing, the Vector domain needs
-return an error code on domain creation. If the HCALL domain is there
-then the domain creation works and in case of actual interrupt
-allocation the hypercall either returns a valid composed message or an
-appropriate error code.
-
-But there's a catch:
-
-This only works when the guest OS actually knows that it runs in a
-VM. If the guest can't figure that out, i.e. via CPUID, this cannot be
-solved because from the guest OS view that's the same as running on bare
-metal. Obviously on bare metal the Vector domain can and must handle
-this.
-
-So this needs some thought.
-
-Thanks,
-
-        tglx
