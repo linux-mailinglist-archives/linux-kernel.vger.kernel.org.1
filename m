@@ -2,218 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF6BB2AAE35
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 00:20:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C3892AAE38
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 00:23:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728933AbgKHXUN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 8 Nov 2020 18:20:13 -0500
-Received: from relay6-d.mail.gandi.net ([217.70.183.198]:34753 "EHLO
-        relay6-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727949AbgKHXUN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 8 Nov 2020 18:20:13 -0500
-X-Originating-IP: 86.194.74.19
-Received: from localhost (lfbn-lyo-1-997-19.w86-194.abo.wanadoo.fr [86.194.74.19])
-        (Authenticated sender: alexandre.belloni@bootlin.com)
-        by relay6-d.mail.gandi.net (Postfix) with ESMTPSA id 646B2C0007;
-        Sun,  8 Nov 2020 23:20:09 +0000 (UTC)
-From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
-To:     Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Ludovic Desroches <ludovic.desroches@microchip.com>
-Cc:     linux-rtc@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] rtc: at91rm9200: add correction support
-Date:   Mon,  9 Nov 2020 00:20:00 +0100
-Message-Id: <20201108232001.1580128-1-alexandre.belloni@bootlin.com>
-X-Mailer: git-send-email 2.28.0
+        id S1728962AbgKHXXE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 8 Nov 2020 18:23:04 -0500
+Received: from ozlabs.org ([203.11.71.1]:55171 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727949AbgKHXXE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 8 Nov 2020 18:23:04 -0500
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CTqtF5NZqz9sSf;
+        Mon,  9 Nov 2020 10:23:01 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1604877781;
+        bh=9Kz9jfaTBlizIbjTWQU2huAKZtn3zrpAZ1BRXUOk8Js=;
+        h=Date:From:To:Cc:Subject:From;
+        b=Ox5VqPsDXcxeYqzvcXh7llGzvnOhZN+o4wiGFc7stW/rMI5SEo1pg8UTAEjt0PtDV
+         Rkqkk/NWSv9Rq4ZN08TN+v3H6/w+cXX+sQ+sats2cCS+VX5Zdm/6QhQSSYIru+xmYr
+         TvxPzuC2jGSw784xWX25a8tJKKnKKtsYQcRn8vSuxFvt8DbNnYUjzTiFg8pvg9XQax
+         ziA92s6WpPOkHklwgR2bfxLO48tSp/zMqBXUSzJnij5ALX9ZemYau4sBk+yYgaBZ4F
+         n80O/YoW6/fmxGyT3c7r10O2RoY9yvAIiXFeRpOUkVUInoDvWAi/gm1eRRnlyM6pkt
+         6fM+7OG6qRZVA==
+Date:   Mon, 9 Nov 2020 10:23:00 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Krzysztof Kozlowski <krzk@kernel.org>
+Cc:     Dmitry Osipenko <digetx@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: build failure after merge of the drivers-memory tree
+Message-ID: <20201109102300.539961bb@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; boundary="Sig_/mJTKNNHvjHNMfuQMXEoFU.h";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The sama5d4 and sama5d2 RTCs are able to correct for imprecise crystals, up
-to 1953 ppm.
+--Sig_/mJTKNNHvjHNMfuQMXEoFU.h
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
+Hi all,
+
+After merging the drivers-memory tree, today's linux-next build (x86_64
+allmodconfig) failed like this:
+
+In file included from drivers/devfreq/tegra20-devfreq.c:18:
+include/soc/tegra/mc.h: In function 'devm_tegra_memory_controller_get':
+include/soc/tegra/mc.h:211:1: error: no return statement in function return=
+ing non-void [-Werror=3Dreturn-type]
+  211 | }
+      | ^
+
+Caused by commit
+
+  1f1997eb44b1 ("memory: tegra: Add and use devm_tegra_memory_controller_ge=
+t()")
+
+I have added the following fix patch for today:
+
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+Date: Mon, 9 Nov 2020 10:19:44 +1100
+Subject: [PATCH] fix "memory: tegra: Add and use
+ devm_tegra_memory_controller_get()"
+
+Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
 ---
- drivers/rtc/rtc-at91rm9200.c | 103 +++++++++++++++++++++++++++++++++--
- 1 file changed, 99 insertions(+), 4 deletions(-)
+ include/soc/tegra/mc.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/rtc/rtc-at91rm9200.c b/drivers/rtc/rtc-at91rm9200.c
-index 5e811e04cb21..1eea187d9850 100644
---- a/drivers/rtc/rtc-at91rm9200.c
-+++ b/drivers/rtc/rtc-at91rm9200.c
-@@ -36,6 +36,10 @@
- #define		AT91_RTC_UPDCAL		BIT(1)		/* Update Request Calendar Register */
- 
- #define	AT91_RTC_MR		0x04			/* Mode Register */
-+#define		AT91_RTC_HRMOD		BIT(0)		/* 12/24 hour mode */
-+#define		AT91_RTC_NEGPPM		BIT(4)		/* Negative PPM correction */
-+#define		AT91_RTC_CORRECTION	GENMASK(14, 8)	/* Slow clock correction */
-+#define		AT91_RTC_HIGHPPM	BIT(15)		/* High PPM correction */
- 
- #define	AT91_RTC_TIMR		0x08			/* Time Register */
- #define		AT91_RTC_SEC		GENMASK(6, 0)	/* Current Second */
-@@ -77,6 +81,9 @@
- #define		AT91_RTC_NVTIMALR	BIT(2)		/* Non valid Time Alarm */
- #define		AT91_RTC_NVCALALR	BIT(3)		/* Non valid Calendar Alarm */
- 
-+#define AT91_RTC_CORR_DIVIDEND		3906000
-+#define AT91_RTC_CORR_LOW_RATIO		20
-+
- #define at91_rtc_read(field) \
- 	readl_relaxed(at91_rtc_regs + field)
- #define at91_rtc_write(field, val) \
-@@ -84,6 +91,7 @@
- 
- struct at91_rtc_config {
- 	bool use_shadow_imr;
-+	bool has_correction;
- };
- 
- static const struct at91_rtc_config *at91_rtc_config;
-@@ -293,6 +301,75 @@ static int at91_rtc_alarm_irq_enable(struct device *dev, unsigned int enabled)
- 	return 0;
+diff --git a/include/soc/tegra/mc.h b/include/soc/tegra/mc.h
+index 43876216de34..d731407e23bb 100644
+--- a/include/soc/tegra/mc.h
++++ b/include/soc/tegra/mc.h
+@@ -207,7 +207,7 @@ struct tegra_mc *devm_tegra_memory_controller_get(struc=
+t device *dev);
+ static inline struct tegra_mc *
+ devm_tegra_memory_controller_get(struct device *dev)
+ {
+-	ERR_PTR(-ENODEV);
++	return ERR_PTR(-ENODEV);
  }
- 
-+static int at91_rtc_readoffset(struct device *dev, long *offset)
-+{
-+	u32 mr = at91_rtc_read(AT91_RTC_MR);
-+	long val = FIELD_GET(AT91_RTC_CORRECTION, mr);
-+
-+	if (!val) {
-+		*offset = 0;
-+		return 0;
-+	}
-+
-+	val++;
-+
-+	if (!(mr & AT91_RTC_NEGPPM))
-+		val = -val;
-+
-+	if (!(mr & AT91_RTC_HIGHPPM))
-+		val *= AT91_RTC_CORR_LOW_RATIO;
-+
-+	*offset = DIV_ROUND_CLOSEST(AT91_RTC_CORR_DIVIDEND, val);
-+
-+	return 0;
-+}
-+
-+static int at91_rtc_setoffset(struct device *dev, long offset)
-+{
-+	long corr;
-+	u32 mr;
-+
-+	if (offset > AT91_RTC_CORR_DIVIDEND / 2)
-+		return -ERANGE;
-+	if (offset < -AT91_RTC_CORR_DIVIDEND / 2)
-+		return -ERANGE;
-+
-+	mr = at91_rtc_read(AT91_RTC_MR);
-+	mr &= ~(AT91_RTC_NEGPPM | AT91_RTC_CORRECTION | AT91_RTC_HIGHPPM);
-+
-+	if (offset > 0)
-+		mr |= AT91_RTC_NEGPPM;
-+	else
-+		offset = -offset;
-+
-+	/* offset less than 764 ppb, disable correction*/
-+	if (offset < 764) {
-+		at91_rtc_write(AT91_RTC_MR, mr & ~AT91_RTC_NEGPPM);
-+
-+		return 0;
-+	}
-+
-+	/*
-+	 * 29208 ppb is the perfect cutoff between low range and high range
-+	 * low range values are never better than high range value after that.
-+	 */
-+	if (offset < 29208) {
-+		corr = DIV_ROUND_CLOSEST(AT91_RTC_CORR_DIVIDEND, offset * AT91_RTC_CORR_LOW_RATIO);
-+	} else {
-+		corr = DIV_ROUND_CLOSEST(AT91_RTC_CORR_DIVIDEND, offset);
-+		mr |= AT91_RTC_HIGHPPM;
-+	}
-+
-+	if (corr > 128)
-+		corr = 128;
-+
-+	mr |= FIELD_PREP(AT91_RTC_CORRECTION, corr - 1);
-+
-+	at91_rtc_write(AT91_RTC_MR, mr);
-+
-+	return 0;
-+}
-+
- /*
-  * IRQ handler for the RTC
-  */
-@@ -343,6 +420,10 @@ static const struct at91_rtc_config at91sam9x5_config = {
- 	.use_shadow_imr	= true,
- };
- 
-+static const struct at91_rtc_config sama5d4_config = {
-+	.has_correction = true,
-+};
-+
- static const struct of_device_id at91_rtc_dt_ids[] = {
- 	{
- 		.compatible = "atmel,at91rm9200-rtc",
-@@ -352,10 +433,10 @@ static const struct of_device_id at91_rtc_dt_ids[] = {
- 		.data = &at91sam9x5_config,
- 	}, {
- 		.compatible = "atmel,sama5d4-rtc",
--		.data = &at91rm9200_config,
-+		.data = &sama5d4_config,
- 	}, {
- 		.compatible = "atmel,sama5d2-rtc",
--		.data = &at91rm9200_config,
-+		.data = &sama5d4_config,
- 	}, {
- 		/* sentinel */
- 	}
-@@ -370,6 +451,16 @@ static const struct rtc_class_ops at91_rtc_ops = {
- 	.alarm_irq_enable = at91_rtc_alarm_irq_enable,
- };
- 
-+static const struct rtc_class_ops sama5d4_rtc_ops = {
-+	.read_time	= at91_rtc_readtime,
-+	.set_time	= at91_rtc_settime,
-+	.read_alarm	= at91_rtc_readalarm,
-+	.set_alarm	= at91_rtc_setalarm,
-+	.alarm_irq_enable = at91_rtc_alarm_irq_enable,
-+	.set_offset	= at91_rtc_setoffset,
-+	.read_offset	= at91_rtc_readoffset,
-+};
-+
- /*
-  * Initialize and install RTC driver
-  */
-@@ -416,7 +507,7 @@ static int __init at91_rtc_probe(struct platform_device *pdev)
- 	}
- 
- 	at91_rtc_write(AT91_RTC_CR, 0);
--	at91_rtc_write(AT91_RTC_MR, 0);		/* 24 hour mode */
-+	at91_rtc_write(AT91_RTC_MR, at91_rtc_read(AT91_RTC_MR) & ~AT91_RTC_HRMOD);
- 
- 	/* Disable all interrupts */
- 	at91_rtc_write_idr(AT91_RTC_ACKUPD | AT91_RTC_ALARM |
-@@ -437,7 +528,11 @@ static int __init at91_rtc_probe(struct platform_device *pdev)
- 	if (!device_can_wakeup(&pdev->dev))
- 		device_init_wakeup(&pdev->dev, 1);
- 
--	rtc->ops = &at91_rtc_ops;
-+	if (at91_rtc_config->has_correction)
-+		rtc->ops = &sama5d4_rtc_ops;
-+	else
-+		rtc->ops = &at91_rtc_ops;
-+
- 	rtc->range_min = RTC_TIMESTAMP_BEGIN_1900;
- 	rtc->range_max = RTC_TIMESTAMP_END_2099;
- 	ret = rtc_register_device(rtc);
--- 
+ #endif
+=20
+--=20
 2.28.0
 
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/mJTKNNHvjHNMfuQMXEoFU.h
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl+ofdQACgkQAVBC80lX
+0GwKsgf8C3c9FlIaMxyDQjiqU0F55uwZcreIZ96JWGLtlTRLB1adPo4m6vFshCAd
+EyWoj+fzd+Jdsd9Pja+6rOmr76zHw68mRyfcdZqgoe3WjS32CtBK0WViZAKfNyUO
+XokhE7Y2MuJP0BIDvGJcS6ZvRUIY4HhoYMit6qf2wD70VvQzj75LX6X3wX/m17dj
+4QdlAAFxAz4bTczn2Ief0PEEAoiGsHq3s11OPpOiV2iUTW+/5lumYjV5Yt8ZOBDb
+xbSU9kjPIoXr/xqfgS8johk4a4DLZ1NetFERgYotXMa6qeswsx8PJBUR1VBkEOeo
+5UXQC+qnVmbAUL6R/NaKgltLZkfuJQ==
+=Y3RR
+-----END PGP SIGNATURE-----
+
+--Sig_/mJTKNNHvjHNMfuQMXEoFU.h--
