@@ -2,70 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 428842AAC96
-	for <lists+linux-kernel@lfdr.de>; Sun,  8 Nov 2020 18:22:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 54D922AAC98
+	for <lists+linux-kernel@lfdr.de>; Sun,  8 Nov 2020 18:22:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728626AbgKHRWI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 8 Nov 2020 12:22:08 -0500
-Received: from mail-io1-f72.google.com ([209.85.166.72]:38301 "EHLO
-        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727570AbgKHRWI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 8 Nov 2020 12:22:08 -0500
-Received: by mail-io1-f72.google.com with SMTP id e21so4233062iod.5
-        for <linux-kernel@vger.kernel.org>; Sun, 08 Nov 2020 09:22:08 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=eZACx1XpHn/TCjzHcQemMkrViEyAo5WxQGRjHxgnnxQ=;
-        b=swZsxmLRxVubv90TjJn1k2PwxpegrNuKaBEUPLyLBMgj46vx2j1m0Iy3AuT+vUNcuk
-         teRKs5eaWsntaSeNCsEo0rmqds/zaaIX2jbhw5NqeD/S6iyeR4jibFX0w+YWKy6KUjSk
-         2ydogdIV96NL3oxxiBSSJUmyevZTc2iUxd9nFOIqaV9HR+iXqPEibYAnoG/46RO2bCB+
-         qwElezJal+hHfYoTcNCEMO7fbg7OOFosjejkpZncZQ5LAR2jpco3IJ+y+xEbuYSlrMRT
-         RXIr5KaUyX8LlrJoe/p9H3+AGoMbS3ZZPmSqGYU9QQzCva0YovmEOPTiDa7gqmE8NUEG
-         AYGA==
-X-Gm-Message-State: AOAM532KvDTMIu5UkaWwRbLTQFbgGfqhsa2srfxvOItNwG5Df050CjT4
-        NIUinXJR9v1IeYgHjIOPRK+9fcmBWCP8QJ+VwXXy907tbEwD
-X-Google-Smtp-Source: ABdhPJz6eJZhahQVk2GSxFF4Y7ogqWeAQpCf2TE9sSWZqAr0QdPmPHWIO6Z1oJXfYR80t+8pyzXk7yNWshTaYh62WzNcf/NmGeIq
+        id S1728723AbgKHRWg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 8 Nov 2020 12:22:36 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53486 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727570AbgKHRWg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 8 Nov 2020 12:22:36 -0500
+Received: from localhost (c-67-169-218-210.hsd1.or.comcast.net [67.169.218.210])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5344C206DC;
+        Sun,  8 Nov 2020 17:22:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604856155;
+        bh=hrkhzcP3WDPHy+13jA46SqQwjXo+5SKZT44YOaZ5TLM=;
+        h=Date:From:To:Cc:Subject:From;
+        b=VibmF4UIghi1HeGGzpdVzM9gW4bv/FgUw2rwq7XdJIrmXNLq9Z4NFANIsFpATtNpV
+         bF39u58EL1Fu8kQHq7gPhcxkOM/NZgYDESrkCEEfYIJXXHjUAanp5Yo723TlSmotWw
+         l+LhBQOIHdbJd3f0BfFdPsaunVAn4ngFiiOSyMJ8=
+Date:   Sun, 8 Nov 2020 09:22:35 -0800
+From:   "Darrick J. Wong" <djwong@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     "Darrick J. Wong" <djwong@kernel.org>,
+        linux-fsdevel@vger.kernel.org, linux-xfs@vger.kernel.org,
+        david@fromorbit.com, linux-kernel@vger.kernel.org,
+        sandeen@sandeen.net, hch@lst.de
+Subject: [GIT PULL] xfs: fixes for 5.10-rc3
+Message-ID: <20201108172235.GA9695@magnolia>
 MIME-Version: 1.0
-X-Received: by 2002:a6b:d21a:: with SMTP id q26mr7285163iob.128.1604856127764;
- Sun, 08 Nov 2020 09:22:07 -0800 (PST)
-Date:   Sun, 08 Nov 2020 09:22:07 -0800
-In-Reply-To: <00000000000018a47605af074c7d@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000006942a305b39baf75@google.com>
-Subject: Re: WARNING in syscall_exit_to_user_mode
-From:   syzbot <syzbot+7ffc7214b893651d52b8@syzkaller.appspotmail.com>
-To:     b.zolnierkie@samsung.com, christian@brauner.io,
-        dan.carpenter@oracle.com, george.kennedy@oracle.com,
-        keescook@chromium.org, linux-kernel@vger.kernel.org,
-        luto@kernel.org, mingo@kernel.org, peterz@infradead.org,
-        syzkaller-bugs@googlegroups.com, tglx@linutronix.de
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot suspects this issue was fixed by commit:
+Hi Linus,
 
-commit a49145acfb975d921464b84fe00279f99827d816
-Author: George Kennedy <george.kennedy@oracle.com>
-Date:   Tue Jul 7 19:26:03 2020 +0000
+Please pull this branch containing bug fixes for 5.10.
 
-    fbmem: add margin check to fb_check_caps()
+The branch merges cleanly with upstream as of a few minutes ago, so
+please let me know if anything strange happens.
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=17a21f32500000
-start commit:   f4d51dff Linux 5.9-rc4
-git tree:       upstream
-kernel config:  https://syzkaller.appspot.com/x/.config?x=a9075b36a6ae26c9
-dashboard link: https://syzkaller.appspot.com/bug?extid=7ffc7214b893651d52b8
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=122d7335900000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=13cea1a5900000
+--D
 
-If the result looks correct, please mark the issue as fixed by replying with:
+The following changes since commit 3650b228f83adda7e5ee532e2b90429c03f7b9ec:
 
-#syz fix: fbmem: add margin check to fb_check_caps()
+  Linux 5.10-rc1 (2020-10-25 15:14:11 -0700)
 
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/fs/xfs/xfs-linux.git tags/xfs-5.10-fixes-3
+
+for you to fetch changes up to 46afb0628b86347933b16ac966655f74eab65c8c:
+
+  xfs: only flush the unshared range in xfs_reflink_unshare (2020-11-04 17:41:56 -0800)
+
+----------------------------------------------------------------
+Fixes for 5.10-rc3:
+- Fix an uninitialized struct problem.
+- Fix an iomap problem zeroing unwritten EOF blocks.
+- Fix some clumsy error handling when writeback fails on
+  blocksize < pagesize filesystems.
+- Fix a retry loop not resetting loop variables properly.
+- Fix scrub flagging rtinherit inodes on a non-rt fs, since the kernel
+  actually does permit that combination.
+- Fix excessive page cache flushing when unsharing part of a file.
+
+----------------------------------------------------------------
+Brian Foster (3):
+      xfs: flush new eof page on truncate to avoid post-eof corruption
+      iomap: support partial page discard on writeback block mapping failure
+      iomap: clean up writeback state logic on writepage error
+
+Darrick J. Wong (4):
+      xfs: set xefi_discard when creating a deferred agfl free log intent item
+      xfs: fix missing CoW blocks writeback conversion retry
+      xfs: fix scrub flagging rtinherit even if there is no rt device
+      xfs: only flush the unshared range in xfs_reflink_unshare
+
+ fs/iomap/buffered-io.c    | 30 ++++++++++--------------------
+ fs/xfs/libxfs/xfs_alloc.c |  1 +
+ fs/xfs/libxfs/xfs_bmap.h  |  2 +-
+ fs/xfs/scrub/inode.c      |  3 +--
+ fs/xfs/xfs_aops.c         | 20 ++++++++++++--------
+ fs/xfs/xfs_iops.c         | 10 ++++++++++
+ fs/xfs/xfs_reflink.c      |  3 ++-
+ include/linux/iomap.h     |  2 +-
+ 8 files changed, 38 insertions(+), 33 deletions(-)
