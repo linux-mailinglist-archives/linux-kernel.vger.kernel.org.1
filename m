@@ -2,91 +2,218 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 64AD62AAE30
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 00:15:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BF6BB2AAE35
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 00:20:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728988AbgKHXPa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 8 Nov 2020 18:15:30 -0500
-Received: from gloria.sntech.de ([185.11.138.130]:45296 "EHLO gloria.sntech.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728928AbgKHXP3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 8 Nov 2020 18:15:29 -0500
-Received: from p508fc9d6.dip0.t-ipconnect.de ([80.143.201.214] helo=phil.localnet)
-        by gloria.sntech.de with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <heiko@sntech.de>)
-        id 1kbtu8-0005QO-Bn; Mon, 09 Nov 2020 00:15:24 +0100
-From:   Heiko Stuebner <heiko@sntech.de>
-To:     Rob Herring <robh+dt@kernel.org>,
-        Jagan Teki <jagan@amarulasolutions.com>
-Cc:     Suniel Mahesh <sunil@amarulasolutions.com>,
-        Michael Trimarchi <michael@amarulasolutions.com>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        linux-amarula <linux-amarula@amarulasolutions.com>,
-        Jagan Teki <jagan@amarulasolutions.com>
-Subject: Re: [PATCH v4 0/7] arm64: dts: rockchip: Add Engicam PX30.Core
-Date:   Mon, 09 Nov 2020 00:15:23 +0100
-Message-ID: <2320954.tcIoyGMtcG@phil>
-In-Reply-To: <20200929083217.25406-1-jagan@amarulasolutions.com>
-References: <20200929083217.25406-1-jagan@amarulasolutions.com>
+        id S1728933AbgKHXUN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 8 Nov 2020 18:20:13 -0500
+Received: from relay6-d.mail.gandi.net ([217.70.183.198]:34753 "EHLO
+        relay6-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727949AbgKHXUN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 8 Nov 2020 18:20:13 -0500
+X-Originating-IP: 86.194.74.19
+Received: from localhost (lfbn-lyo-1-997-19.w86-194.abo.wanadoo.fr [86.194.74.19])
+        (Authenticated sender: alexandre.belloni@bootlin.com)
+        by relay6-d.mail.gandi.net (Postfix) with ESMTPSA id 646B2C0007;
+        Sun,  8 Nov 2020 23:20:09 +0000 (UTC)
+From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
+To:     Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Ludovic Desroches <ludovic.desroches@microchip.com>
+Cc:     linux-rtc@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] rtc: at91rm9200: add correction support
+Date:   Mon,  9 Nov 2020 00:20:00 +0100
+Message-Id: <20201108232001.1580128-1-alexandre.belloni@bootlin.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+The sama5d4 and sama5d2 RTCs are able to correct for imprecise crystals, up
+to 1953 ppm.
 
-Am Dienstag, 29. September 2020, 10:32:10 CET schrieb Jagan Teki:
-> PX30.Core is an EDIMM SOM based on Rockchip PX30 from Engicam.
-> 
-> PX30.Core needs to mount on top of Engicam baseboards for creating
-> complete platform boards.
-> 
-> Possible baseboards are,
-> - EDIMM2.2 Starter Kit
-> - C.TOUCH 2.0 Carrier Board
-> 
-> Changes for v4:
-> - collect Rob A-b
-> Changes for v3:
-> - resolved Johan comments about sorting node properties
-> - add copyright to Amarula Solutions
-> - update px30 dtsi author
-> Changes for v2:
-> - include C.TOUCH 2.0 carrier board
-> - skip 10" OF LCD as it requires separate dts with panel support.
-> 
-> Note: These baseboards can be used for i.MX8 SOM's as well. So having
-> baseboard on respective SoC seems to be easy rather than making it
-> common across all.
-> 
-> Any inputs?
-> Jagan.
-> 
-> Jagan Teki (6):
->   dt-bindings: arm: rockchip: Add Engicam PX30.Core EDIMM2.2 Starter Kit
->   arm64: dts: rockchip: px30: Add Engicam EDIMM2.2 Starter Kit
->   arm64: dts: rockchip: Add Engicam PX30.Core EDIMM2.2 Starter Kit
->   dt-bindings: arm: rockchip: Add Engicam PX30.Core C.TOUCH 2.0
->   arm64: dts: rockchip: px30: Add Engicam C.TOUCH 2.0
->   arm64: dts: rockchip: Add Engicam PX30.Core C.TOUCH 2.0
-> 
-> Michael Trimarchi (1):
->   arm64: dts: rockchip: Add Engicam PX30.Core SOM
+Signed-off-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
+---
+ drivers/rtc/rtc-at91rm9200.c | 103 +++++++++++++++++++++++++++++++++--
+ 1 file changed, 99 insertions(+), 4 deletions(-)
 
-I've applied the patches for 5.11 with some changes:
-(1) engicam,px30-px30-core became engicam,px30-core
-(2) px30-px30-core.dtsi became px30-engicam-px30-core.dtsi
-
-That double px30 is unnecessary and confusing in compatibles
-and the px30-core thingy needed something less generic, as that is
-not px30-specific but specific to the engicam boards.
-
-
-Heiko
-
+diff --git a/drivers/rtc/rtc-at91rm9200.c b/drivers/rtc/rtc-at91rm9200.c
+index 5e811e04cb21..1eea187d9850 100644
+--- a/drivers/rtc/rtc-at91rm9200.c
++++ b/drivers/rtc/rtc-at91rm9200.c
+@@ -36,6 +36,10 @@
+ #define		AT91_RTC_UPDCAL		BIT(1)		/* Update Request Calendar Register */
+ 
+ #define	AT91_RTC_MR		0x04			/* Mode Register */
++#define		AT91_RTC_HRMOD		BIT(0)		/* 12/24 hour mode */
++#define		AT91_RTC_NEGPPM		BIT(4)		/* Negative PPM correction */
++#define		AT91_RTC_CORRECTION	GENMASK(14, 8)	/* Slow clock correction */
++#define		AT91_RTC_HIGHPPM	BIT(15)		/* High PPM correction */
+ 
+ #define	AT91_RTC_TIMR		0x08			/* Time Register */
+ #define		AT91_RTC_SEC		GENMASK(6, 0)	/* Current Second */
+@@ -77,6 +81,9 @@
+ #define		AT91_RTC_NVTIMALR	BIT(2)		/* Non valid Time Alarm */
+ #define		AT91_RTC_NVCALALR	BIT(3)		/* Non valid Calendar Alarm */
+ 
++#define AT91_RTC_CORR_DIVIDEND		3906000
++#define AT91_RTC_CORR_LOW_RATIO		20
++
+ #define at91_rtc_read(field) \
+ 	readl_relaxed(at91_rtc_regs + field)
+ #define at91_rtc_write(field, val) \
+@@ -84,6 +91,7 @@
+ 
+ struct at91_rtc_config {
+ 	bool use_shadow_imr;
++	bool has_correction;
+ };
+ 
+ static const struct at91_rtc_config *at91_rtc_config;
+@@ -293,6 +301,75 @@ static int at91_rtc_alarm_irq_enable(struct device *dev, unsigned int enabled)
+ 	return 0;
+ }
+ 
++static int at91_rtc_readoffset(struct device *dev, long *offset)
++{
++	u32 mr = at91_rtc_read(AT91_RTC_MR);
++	long val = FIELD_GET(AT91_RTC_CORRECTION, mr);
++
++	if (!val) {
++		*offset = 0;
++		return 0;
++	}
++
++	val++;
++
++	if (!(mr & AT91_RTC_NEGPPM))
++		val = -val;
++
++	if (!(mr & AT91_RTC_HIGHPPM))
++		val *= AT91_RTC_CORR_LOW_RATIO;
++
++	*offset = DIV_ROUND_CLOSEST(AT91_RTC_CORR_DIVIDEND, val);
++
++	return 0;
++}
++
++static int at91_rtc_setoffset(struct device *dev, long offset)
++{
++	long corr;
++	u32 mr;
++
++	if (offset > AT91_RTC_CORR_DIVIDEND / 2)
++		return -ERANGE;
++	if (offset < -AT91_RTC_CORR_DIVIDEND / 2)
++		return -ERANGE;
++
++	mr = at91_rtc_read(AT91_RTC_MR);
++	mr &= ~(AT91_RTC_NEGPPM | AT91_RTC_CORRECTION | AT91_RTC_HIGHPPM);
++
++	if (offset > 0)
++		mr |= AT91_RTC_NEGPPM;
++	else
++		offset = -offset;
++
++	/* offset less than 764 ppb, disable correction*/
++	if (offset < 764) {
++		at91_rtc_write(AT91_RTC_MR, mr & ~AT91_RTC_NEGPPM);
++
++		return 0;
++	}
++
++	/*
++	 * 29208 ppb is the perfect cutoff between low range and high range
++	 * low range values are never better than high range value after that.
++	 */
++	if (offset < 29208) {
++		corr = DIV_ROUND_CLOSEST(AT91_RTC_CORR_DIVIDEND, offset * AT91_RTC_CORR_LOW_RATIO);
++	} else {
++		corr = DIV_ROUND_CLOSEST(AT91_RTC_CORR_DIVIDEND, offset);
++		mr |= AT91_RTC_HIGHPPM;
++	}
++
++	if (corr > 128)
++		corr = 128;
++
++	mr |= FIELD_PREP(AT91_RTC_CORRECTION, corr - 1);
++
++	at91_rtc_write(AT91_RTC_MR, mr);
++
++	return 0;
++}
++
+ /*
+  * IRQ handler for the RTC
+  */
+@@ -343,6 +420,10 @@ static const struct at91_rtc_config at91sam9x5_config = {
+ 	.use_shadow_imr	= true,
+ };
+ 
++static const struct at91_rtc_config sama5d4_config = {
++	.has_correction = true,
++};
++
+ static const struct of_device_id at91_rtc_dt_ids[] = {
+ 	{
+ 		.compatible = "atmel,at91rm9200-rtc",
+@@ -352,10 +433,10 @@ static const struct of_device_id at91_rtc_dt_ids[] = {
+ 		.data = &at91sam9x5_config,
+ 	}, {
+ 		.compatible = "atmel,sama5d4-rtc",
+-		.data = &at91rm9200_config,
++		.data = &sama5d4_config,
+ 	}, {
+ 		.compatible = "atmel,sama5d2-rtc",
+-		.data = &at91rm9200_config,
++		.data = &sama5d4_config,
+ 	}, {
+ 		/* sentinel */
+ 	}
+@@ -370,6 +451,16 @@ static const struct rtc_class_ops at91_rtc_ops = {
+ 	.alarm_irq_enable = at91_rtc_alarm_irq_enable,
+ };
+ 
++static const struct rtc_class_ops sama5d4_rtc_ops = {
++	.read_time	= at91_rtc_readtime,
++	.set_time	= at91_rtc_settime,
++	.read_alarm	= at91_rtc_readalarm,
++	.set_alarm	= at91_rtc_setalarm,
++	.alarm_irq_enable = at91_rtc_alarm_irq_enable,
++	.set_offset	= at91_rtc_setoffset,
++	.read_offset	= at91_rtc_readoffset,
++};
++
+ /*
+  * Initialize and install RTC driver
+  */
+@@ -416,7 +507,7 @@ static int __init at91_rtc_probe(struct platform_device *pdev)
+ 	}
+ 
+ 	at91_rtc_write(AT91_RTC_CR, 0);
+-	at91_rtc_write(AT91_RTC_MR, 0);		/* 24 hour mode */
++	at91_rtc_write(AT91_RTC_MR, at91_rtc_read(AT91_RTC_MR) & ~AT91_RTC_HRMOD);
+ 
+ 	/* Disable all interrupts */
+ 	at91_rtc_write_idr(AT91_RTC_ACKUPD | AT91_RTC_ALARM |
+@@ -437,7 +528,11 @@ static int __init at91_rtc_probe(struct platform_device *pdev)
+ 	if (!device_can_wakeup(&pdev->dev))
+ 		device_init_wakeup(&pdev->dev, 1);
+ 
+-	rtc->ops = &at91_rtc_ops;
++	if (at91_rtc_config->has_correction)
++		rtc->ops = &sama5d4_rtc_ops;
++	else
++		rtc->ops = &at91_rtc_ops;
++
+ 	rtc->range_min = RTC_TIMESTAMP_BEGIN_1900;
+ 	rtc->range_max = RTC_TIMESTAMP_END_2099;
+ 	ret = rtc_register_device(rtc);
+-- 
+2.28.0
 
