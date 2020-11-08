@@ -2,127 +2,202 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7AFF32AAA14
-	for <lists+linux-kernel@lfdr.de>; Sun,  8 Nov 2020 09:27:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B80F92AAA1B
+	for <lists+linux-kernel@lfdr.de>; Sun,  8 Nov 2020 09:40:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728172AbgKHI1a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 8 Nov 2020 03:27:30 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48336 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726115AbgKHI1a (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 8 Nov 2020 03:27:30 -0500
-Received: from mail-ot1-f45.google.com (mail-ot1-f45.google.com [209.85.210.45])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 82E612151B;
-        Sun,  8 Nov 2020 08:27:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604824049;
-        bh=T9rK7jzM4Uo8lISDVLvutAoFUbM+bhC60Dfzze4KpJ0=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=HjG6ii8k7TFQjX7JNqHv2lOviskc+54D1iF0wnjynFrjUOv74BY09q9iKn9AiZ298
-         OVL3Hn7g6gEiqpY3r32Y3Tf/SG+Z/yEIilaYUVAqwNSzoK28HX/cx5Yl23vSoreGLF
-         ix9qGQ+vvFIMcSktEa4OIhiHn2alhbh3rIC5R02E=
-Received: by mail-ot1-f45.google.com with SMTP id n11so5644966ota.2;
-        Sun, 08 Nov 2020 00:27:29 -0800 (PST)
-X-Gm-Message-State: AOAM531doHEiAfXi0qUAi+8r4uufpQGtV2pK0Mpx15BjTndko+eEYZMv
-        tdKUU5iXc0k9ABQ4D6jtVftBq+LUmmEA3RNK6Ow=
-X-Google-Smtp-Source: ABdhPJwGPcL/jY9Wx83MiEfwJ8vLr/COIt3JPH8IQANmhl0uIxcK1xw4JkTzas8PArDafbyk6I6ykok3k/Z2l+HmWUM=
-X-Received: by 2002:a9d:65d5:: with SMTP id z21mr6116013oth.251.1604824048822;
- Sun, 08 Nov 2020 00:27:28 -0800 (PST)
+        id S1726633AbgKHIkW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 8 Nov 2020 03:40:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40604 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726099AbgKHIkW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 8 Nov 2020 03:40:22 -0500
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0172C0613CF
+        for <linux-kernel@vger.kernel.org>; Sun,  8 Nov 2020 00:40:21 -0800 (PST)
+Received: by mail-pg1-x544.google.com with SMTP id i7so4353426pgh.6
+        for <linux-kernel@vger.kernel.org>; Sun, 08 Nov 2020 00:40:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=e5VwdaEjgsZk9d7Ak55UoaWyuSNZ0/fq+3rKztiMq2g=;
+        b=gNVYtJdxkLhPn0jAxtNIP9etInvOqXYtCQvAHs0/MyXHH5j1+JgAIlj51Ks8nSmigf
+         zwbRUe2apF6YVYksl9XrrQ8lIiGnG61h4hE62XEj8gCc0p0XHPeTLdG3S3iBmP6dv2bY
+         yf8Zdf5/orZHyoKZ1NzMVk78D1f30H9D4bjzx0Ja4GaEAfonskjWwjSjrxlMK2pTDhMk
+         4tbhp+0OdR3AsQkZe3gjgvmrzBdJ7whURB9iuEWhEKFxbhslvKlKLDW+dgqTbjLyBV+T
+         gi6FWLDeOoPSJyY5qfRBwbc272JWgaflvA8/TWpNUztS7S672w0/HtWhk6jc+rfP1Jns
+         P41g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=e5VwdaEjgsZk9d7Ak55UoaWyuSNZ0/fq+3rKztiMq2g=;
+        b=JwY00VR7qrLl6RUe6sfK+YN6/5DrUtGd8Sk5IB9QUKe1P9kX+HDVKLghZeVUoQ+7+Q
+         76bFlmdKHOOXoaroC+0rlApzu7gSxj/LzHPT4/xDzlDqEyvzGxyBsOeIDWjEwG0GsCwM
+         bCG6G3jAKwx+CFd5cOxi9nCReczdQf49hWsuUpOB0z22ZST3TF6TPkcdt0uxu81RJEEH
+         DT3AvvBAHLA7YPH1ol7ohqp/JdiPJtAtc5IBU9Swi/paEUhc7CzbkO9IaCijeerj/VIw
+         CmnejnUxbxPD4GjxsD3GJwU5zv8wDOD/6xo1UCFF/FJe//LZXSrMNHAJotwGImI/B6Dm
+         rpKw==
+X-Gm-Message-State: AOAM531iH7ZR1Ymq23k9APJGsvRHgXPYBV5Mpzr0GH6XMLYoPsYyP2oz
+        7tjAiHw+7vUrlMTDoOYWSk+N4LcqXDEBkc6v
+X-Google-Smtp-Source: ABdhPJz/1JTHr0rMzRDRcdqbvq60gQKDNRij2RyfBMdfsEpTtVXzrAlcRUyWDDu3+wFa5uhw0esFFw==
+X-Received: by 2002:aa7:9f0c:0:b029:18a:e524:3b90 with SMTP id g12-20020aa79f0c0000b029018ae5243b90mr9203629pfr.77.1604824821086;
+        Sun, 08 Nov 2020 00:40:21 -0800 (PST)
+Received: from localhost.localdomain ([122.164.210.133])
+        by smtp.gmail.com with ESMTPSA id q12sm616258pjl.41.2020.11.08.00.40.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 08 Nov 2020 00:40:20 -0800 (PST)
+From:   Atul <leoatul12@gmail.com>
+To:     perex@perex.cz
+Cc:     tiwai@suse.com, alsa-devel@alsa-project.org,
+        gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
+        Atul Gopinathan <leoatul12@gmail.com>
+Subject: [PATCH] ALSA: usb-audio: Fix coding style problems
+Date:   Sun,  8 Nov 2020 14:05:16 +0530
+Message-Id: <20201108083515.5256-1-leoatul12@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20201106221743.3271965-1-arnd@kernel.org> <20201107160612.2909063a@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20201107160612.2909063a@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Sun, 8 Nov 2020 09:27:12 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a3ROYs1FADZw8he0sZwfuM=XCvkOpzK=GHO+URf4opeDQ@mail.gmail.com>
-Message-ID: <CAK8P3a3ROYs1FADZw8he0sZwfuM=XCvkOpzK=GHO+URf4opeDQ@mail.gmail.com>
-Subject: Re: [RFC net-next 00/28] ndo_ioctl rework
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     Networking <netdev@vger.kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        linux-wireless <linux-wireless@vger.kernel.org>,
-        bridge@lists.linux-foundation.org, linux-hams@vger.kernel.org,
-        Christoph Hellwig <hch@lst.de>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Nov 8, 2020 at 1:06 AM Jakub Kicinski <kuba@kernel.org> wrote:
->
-> On Fri,  6 Nov 2020 23:17:15 +0100 Arnd Bergmann wrote:
-> > Any suggestions on how to proceed? I think the ndo_siocdevprivate
-> > change is the most interesting here, and I would like to get
-> > that merged.
->
-> Splitting out / eliminating ioctl pass-thry in general seems like
-> a nice clean up. How did you get the ndo_eth_ioctl patch done, was
-> it manual work?
+From: Atul Gopinathan <leoatul12@gmail.com>
 
-I had done a fairly detailed manual search through all drivers
-with a .ndo_do_ioctl function to find the SIOCDEVPRIVATE users,
-based on a simple shell script. After I had converted all of those,
-I realized that 80% of the remaining ndo_do_ioctl users were
-in drivers/net/ethernet, implementing the same five commands,
-so I did a 'git grep -wl ndo_do_ioctl drivers/net/ethernet/ |
-sed -i "s:ndo_do_ioctl:ndo_eth_ioctl"' and converted the rest
-by hand.
+Hi,
 
-FWIW, this is what remains afterwards:
+This patch fixes some coding style warnings and errors that were
+generated using scripts/checkpatch.pl.
 
-$ git grep -w ndo_do_ioctl
-Documentation/networking/netdevices.rst:ndo_do_ioctl:
-drivers/char/pcmcia/synclink_cs.c:      .ndo_do_ioctl   = hdlcdev_ioctl,
-drivers/net/appletalk/cops.c:        .ndo_do_ioctl           = cops_ioctl,
-drivers/net/appletalk/ltpc.c:   .ndo_do_ioctl           = ltpc_ioctl,
-drivers/net/bonding/bond_main.c:        .ndo_do_ioctl           = bond_do_ioctl,
-drivers/net/wan/c101.c: .ndo_do_ioctl   = c101_ioctl,
-drivers/net/wan/cosa.c: .ndo_do_ioctl   = cosa_net_ioctl,
-drivers/net/wan/farsync.c:      .ndo_do_ioctl   = fst_ioctl,
-drivers/net/wan/fsl_ucc_hdlc.c: .ndo_do_ioctl   = uhdlc_ioctl,
-drivers/net/wan/hdlc_fr.c:      .ndo_do_ioctl   = pvc_ioctl,
-drivers/net/wan/hostess_sv11.c: .ndo_do_ioctl   = hostess_ioctl,
-drivers/net/wan/ixp4xx_hss.c:   .ndo_do_ioctl   = hss_hdlc_ioctl,
-drivers/net/wan/lmc/lmc_main.c: .ndo_do_ioctl   = lmc_ioctl,
-drivers/net/wan/n2.c:   .ndo_do_ioctl   = n2_ioctl,
-drivers/net/wan/pc300too.c:     .ndo_do_ioctl   = pc300_ioctl,
-drivers/net/wan/pci200syn.c:    .ndo_do_ioctl   = pci200_ioctl,
-drivers/net/wan/sealevel.c:     .ndo_do_ioctl   = sealevel_ioctl,
-drivers/net/wan/wanxl.c:        .ndo_do_ioctl   = wanxl_ioctl,
-drivers/tty/synclink.c: .ndo_do_ioctl   = hdlcdev_ioctl,
-drivers/tty/synclink_gt.c:      .ndo_do_ioctl   = hdlcdev_ioctl,
-drivers/tty/synclinkmp.c:       .ndo_do_ioctl   = hdlcdev_ioctl,
-include/linux/netdevice.h: * int (*ndo_do_ioctl)(struct net_device
-*dev, struct ifreq *ifr, int cmd);
-include/linux/netdevice.h:      int
-(*ndo_do_ioctl)(struct net_device *dev,
-net/appletalk/aarp.c:   if (!(ops->ndo_do_ioctl(iface->dev, &atreq,
-SIOCSIFADDR))) {
-net/appletalk/aarp.c:           ops->ndo_do_ioctl(iface->dev, &atreq,
-SIOCGIFADDR);
-net/bridge/br_device.c: .ndo_do_ioctl            = br_dev_ioctl,
-net/core/dev_ioctl.c:   if (ops->ndo_do_ioctl) {
-net/core/dev_ioctl.c:                   return ops->ndo_do_ioctl(dev, ifr, cmd);
-net/ieee802154/socket.c:        if (dev->type == ARPHRD_IEEE802154 &&
-dev->netdev_ops->ndo_do_ioctl)
-net/ieee802154/socket.c:                ret =
-dev->netdev_ops->ndo_do_ioctl(dev, &ifr, cmd);
-net/mac802154/iface.c:  .ndo_do_ioctl           = mac802154_wpan_ioctl,
+Signed-off-by: Atul Gopinathan <leoatul12@gmail.com>
+---
+ sound/usb/pcm.c    | 16 ++++++++--------
+ sound/usb/quirks.c | 21 +++++++++++----------
+ 2 files changed, 19 insertions(+), 18 deletions(-)
 
-> > For the wireless drivers, removing the old drivers
-> > instead of just the dead code might be an alternative, depending
-> > on whether anyone thinks there might still be users.
->
-> Dunno if you want to dig into removal with a series like this,
-> anything using ioctls will be pretty old (with the exception
-> of what you separated into ndo_eth_ioctl). You may get bogged
-> down.
+diff --git a/sound/usb/pcm.c b/sound/usb/pcm.c
+index a860303cc522..ed5c77ce8e14 100644
+--- a/sound/usb/pcm.c
++++ b/sound/usb/pcm.c
+@@ -104,7 +104,7 @@ static struct audioformat *find_format(struct snd_usb_substream *subs)
+ 				continue;
+ 		}
+ 		attr = fp->ep_attr & USB_ENDPOINT_SYNCTYPE;
+-		if (! found) {
++		if (!found) {
+ 			found = fp;
+ 			cur_attr = attr;
+ 			continue;
+@@ -304,7 +304,7 @@ static int search_roland_implicit_fb(struct usb_device *dev, int ifnum,
+ 	if (altsd->bAlternateSetting != altsetting ||
+ 	    altsd->bInterfaceClass != USB_CLASS_VENDOR_SPEC ||
+ 	    (altsd->bInterfaceSubClass != 2 &&
+-	     altsd->bInterfaceProtocol != 2   ) ||
++	     altsd->bInterfaceProtocol != 2) ||
+ 	    altsd->bNumEndpoints < 1)
+ 		return -ENOENT;
+ 	epd = get_endpoint(*alts, 0);
+@@ -482,8 +482,9 @@ static int set_sync_endpoint(struct snd_usb_substream *subs,
+ 
+ 	/* check sync-pipe endpoint */
+ 	/* ... and check descriptor size before accessing bSynchAddress
+-	   because there is a version of the SB Audigy 2 NX firmware lacking
+-	   the audio fields in the endpoint descriptors */
++     * because there is a version of the SB Audigy 2 NX firmware lacking
++     * the audio fields in the endpoint descriptors
++     */
+ 	if ((get_endpoint(alts, 1)->bmAttributes & USB_ENDPOINT_XFERTYPE_MASK) != USB_ENDPOINT_XFER_ISOC ||
+ 	    (get_endpoint(alts, 1)->bLength >= USB_DT_ENDPOINT_AUDIO_SIZE &&
+ 	     get_endpoint(alts, 1)->bSynchAddress != 0)) {
+@@ -911,7 +912,7 @@ static int snd_usb_pcm_prepare(struct snd_pcm_substream *substream)
+ 	struct usb_interface *iface;
+ 	int ret;
+ 
+-	if (! subs->cur_audiofmt) {
++	if (!subs->cur_audiofmt) {
+ 		dev_err(&subs->dev->dev, "no format is specified!\n");
+ 		return -ENXIO;
+ 	}
+@@ -973,9 +974,8 @@ static int snd_usb_pcm_prepare(struct snd_pcm_substream *substream)
+ 	return ret;
+ }
+ 
+-static const struct snd_pcm_hardware snd_usb_hardware =
+-{
+-	.info =			SNDRV_PCM_INFO_MMAP |
++static const struct snd_pcm_hardware snd_usb_hardware = {
++	.info =		SNDRV_PCM_INFO_MMAP |
+ 				SNDRV_PCM_INFO_MMAP_VALID |
+ 				SNDRV_PCM_INFO_BATCH |
+ 				SNDRV_PCM_INFO_INTERLEAVED |
+diff --git a/sound/usb/quirks.c b/sound/usb/quirks.c
+index c989ad8052ae..b6f3345db93f 100644
+--- a/sound/usb/quirks.c
++++ b/sound/usb/quirks.c
+@@ -398,7 +398,7 @@ static int create_autodetect_quirks(struct snd_usb_audio *chip,
+ }
+ 
+ /*
+- * Create a stream for an Edirol UA-700/UA-25/UA-4FX interface.  
++ * Create a stream for an Edirol UA-700/UA-25/UA-4FX interface.
+  * The only way to detect the sample rate is by looking at wMaxPacketSize.
+  */
+ static int create_uaxx_quirk(struct snd_usb_audio *chip,
+@@ -593,7 +593,7 @@ static int snd_usb_extigy_boot_quirk(struct usb_device *dev, struct usb_interfac
+ 	    le16_to_cpu(get_cfg_desc(config)->wTotalLength) == EXTIGY_FIRMWARE_SIZE_NEW) {
+ 		dev_dbg(&dev->dev, "sending Extigy boot sequence...\n");
+ 		/* Send message to force it to reconnect with full interface. */
+-		err = snd_usb_ctl_msg(dev, usb_sndctrlpipe(dev,0),
++		err = snd_usb_ctl_msg(dev, usb_sndctrlpipe(dev, 0),
+ 				      0x10, 0x43, 0x0001, 0x000a, NULL, 0);
+ 		if (err < 0)
+ 			dev_dbg(&dev->dev, "error sending boot message: %d\n", err);
+@@ -646,8 +646,9 @@ static int snd_usb_fasttrackpro_boot_quirk(struct usb_device *dev)
+ 				"error usb_driver_set_configuration: %d\n",
+ 				err);
+ 		/* Always return an error, so that we stop creating a device
+-		   that will just be destroyed and recreated with a new
+-		   configuration */
++         * that will just be destroyed and recreated with a new
++         * configuration
++         */
+ 		return -ENODEV;
+ 	} else
+ 		dev_info(&dev->dev, "Fast Track Pro config OK\n");
+@@ -895,9 +896,10 @@ static int snd_usb_nativeinstruments_boot_quirk(struct usb_device *dev)
+ 	usb_reset_device(dev);
+ 
+ 	/* return -EAGAIN, so the creation of an audio interface for this
+-	 * temporary device is aborted. The device will reconnect with a
+-	 * new product ID */
+-	return -EAGAIN;
++     * temporary device is aborted. The device will reconnect with a
++     * new product ID
++     */
++    return -EAGAIN;
+ }
+ 
+ static void mbox2_setup_48_24_magic(struct usb_device *dev)
+@@ -919,7 +921,6 @@ static void mbox2_setup_48_24_magic(struct usb_device *dev)
+ 		0x81, 0xa2, 0x0100, 0x0086, &srate, 0x0003);
+ 	snd_usb_ctl_msg(dev, usb_sndctrlpipe(dev, 0),
+ 		0x81, 0xa2, 0x0100, 0x0003, &srate, 0x0003);
+-	return;
+ }
+ 
+ /* Digidesign Mbox 2 needs to load firmware onboard
+@@ -1830,8 +1831,8 @@ void snd_usb_audioformat_attributes_quirk(struct snd_usb_audio *chip,
+ 		/* doesn't set the sample rate attribute, but supports it */
+ 		fp->attributes |= UAC_EP_CS_ATTR_SAMPLE_RATE;
+ 		break;
+-	case USB_ID(0x0763, 0x2001):  /* M-Audio Quattro USB */
+-	case USB_ID(0x0763, 0x2012):  /* M-Audio Fast Track Pro USB */
++	case USB_ID(0x0763, 0x2001): /* M-Audio Quattro USB */
++	case USB_ID(0x0763, 0x2012): /* M-Audio Fast Track Pro USB */
+ 	case USB_ID(0x047f, 0x0ca1): /* plantronics headset */
+ 	case USB_ID(0x077d, 0x07af): /* Griffin iMic (note that there is
+ 					an older model 77d:223) */
+-- 
+2.25.1
 
-Ok
-
-      Arnd
