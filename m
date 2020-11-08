@@ -2,97 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2AA82AAC2A
-	for <lists+linux-kernel@lfdr.de>; Sun,  8 Nov 2020 17:20:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B30D62AAC2C
+	for <lists+linux-kernel@lfdr.de>; Sun,  8 Nov 2020 17:23:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728516AbgKHQUO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 8 Nov 2020 11:20:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54998 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726388AbgKHQUN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 8 Nov 2020 11:20:13 -0500
-Received: from mail-vs1-xe41.google.com (mail-vs1-xe41.google.com [IPv6:2607:f8b0:4864:20::e41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50F30C0613CF
-        for <linux-kernel@vger.kernel.org>; Sun,  8 Nov 2020 08:20:13 -0800 (PST)
-Received: by mail-vs1-xe41.google.com with SMTP id x11so3568136vsx.12
-        for <linux-kernel@vger.kernel.org>; Sun, 08 Nov 2020 08:20:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:sender:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=EtWv1Upqse4K8kWMKX6HbWJ+YQUeL+CnHl4ZoThqHDc=;
-        b=mDH02XsXCjqtHtWBs1CnTAFYqTmc/CnG9IEg+f/IHE//P9W4YekYEY132qMAlZA0es
-         /TfBtZlw6O16Hpbp920yGqTeb7iTk7pGUQYXVSDUE/oX0QRtWSZnZ503GPyaA5inlKB2
-         jFtHSyjv+0GdMl6bDumiY+0ul352u3cBCUi4s3MwMAHIb+MorpUEtzvACJU8lMsRa0GS
-         bwp6Gc8qdxWLZ/cSja+CdDhHwlJIQNi0RZY+EjaCkpIw76mi4cMalA7B+MMyBJPVXQtg
-         ffOFDfnasGqbIWyGgN71Pp5jC0Z/dUmb2KEu8VnhQmFW/OJtgiTGU1/Ktr8Jx3dEujGA
-         raAQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:sender:from:date
-         :message-id:subject:to:content-transfer-encoding;
-        bh=EtWv1Upqse4K8kWMKX6HbWJ+YQUeL+CnHl4ZoThqHDc=;
-        b=fXEOb93xKV7x+5daxqTPa4Ujy2AWHVb+RZb91akYH9nv1tZbhdJYIFa2wcRcX8ouqL
-         tFv3VGcQp1kPlVf3dpBXqTRPf4iZ4XKgQ+lEA3qrrqAFsBiMkJNSffP0wWbv0raGICTI
-         OUia1D6rd9sG9q/4naO4IQMHGkvkS6XfCn6WTBnh39+RP/Voze6tBKkPOPSQ1HlN1SJF
-         n3w7Po1P+5w/8577GlYcWNawz647CpYb273F8znJCZ4g+5WokoeBBvWAvq9FkfPl4qAT
-         3+cYLO3MrdwbElFgl0DpQT8UjpbVSbg8edJj0cg43204OEsSnEY3NqhmQK4aGkPSJ7Rw
-         3EOA==
-X-Gm-Message-State: AOAM53094L/5Hn64M2YaS6JpA8bcrvGcWYjIjlTW7OLrdao7TiX0rnLw
-        gidJvS+6v12WX+1SrgUadIcj70KiHipdRjeRo3c=
-X-Google-Smtp-Source: ABdhPJyugUyVklKqxLLY8VBAdB3neGNheStncTOxnAu4e57TF2JhJRb1eYbsju5piH1Jjx0j0KHi5E7VTbPW5asBHtY=
-X-Received: by 2002:a67:e2c1:: with SMTP id i1mr6436423vsm.2.1604852412404;
- Sun, 08 Nov 2020 08:20:12 -0800 (PST)
+        id S1728143AbgKHQX4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 8 Nov 2020 11:23:56 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59708 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726388AbgKHQXz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 8 Nov 2020 11:23:55 -0500
+Received: from archlinux (cpc149474-cmbg20-2-0-cust94.5-4.cable.virginm.net [82.4.196.95])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id ED226208B6;
+        Sun,  8 Nov 2020 16:23:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604852635;
+        bh=avBVJRnkd7Xw7yPfPzdT/w2Ilk+ZbHTnHDLOiYSuk1M=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=xZeW3GZjrpTZY/b5Slt348II/ReXiYPkl27WWHfiYzP093VzGFnkMwRCzwW2E3Xl7
+         2aP/y3w+02WcSNvd4to5ETYmZKZfHPrqVUPFboJRCgswI8ysk5rVbO+RdgmY/sgIM6
+         eO5MrjojHnkgKsrk7GHVOX+BOdrKMJvUsF6rIvzg=
+Date:   Sun, 8 Nov 2020 16:23:49 +0000
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Gene Chen <gene.chen.richtek@gmail.com>
+Cc:     robh+dt@kernel.org, matthias.bgg@gmail.com, knaack.h@gmx.de,
+        lars@metafoo.de, pmeerw@pmeerw.net, devicetree@vger.kernel.org,
+        linux-iio@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+        gene_chen@richtek.com, Wilma.Wu@mediatek.com,
+        shufan_lee@richtek.com, cy_huang@richtek.com,
+        benjamin.chao@mediatek.com
+Subject: Re: [PATCH v7 0/3] iio: adc: mt6360: Add ADC driver for MT6360
+Message-ID: <20201108162317.598ae8cc@archlinux>
+In-Reply-To: <20201101154019.39932a2e@archlinux>
+References: <1603181267-15610-1-git-send-email-gene.chen.richtek@gmail.com>
+        <20201101154019.39932a2e@archlinux>
+X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Reply-To: mrssabah51b@gmail.com
-Sender: bbab3060@gmail.com
-Received: by 2002:ab0:341:0:0:0:0:0 with HTTP; Sun, 8 Nov 2020 08:20:12 -0800 (PST)
-From:   MRS SABAH IBRAHIM <absa50602@gmail.com>
-Date:   Sun, 8 Nov 2020 17:20:12 +0100
-X-Google-Sender-Auth: mMUTmp_RNo5DY0677iOzBvxmkb4
-Message-ID: <CABbt5Nq4+GwpB90a9u2EPbHYG9S3kYewfK9TWQDzhCUan7fcGg@mail.gmail.com>
-Subject: Compensation for your effort
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear Friend,
+On Sun, 1 Nov 2020 15:40:19 +0000
+Jonathan Cameron <jic23@kernel.org> wrote:
 
-How are you I hope you are very fine with your entire family? If so
-glory be to Almighty God.
-I'm happy to inform you about my success in getting those funds
-transferred under the cooperation of a new partner from GREECE,
-Presently I=E2=80=99m in GREECE for a better treatment and building of the
-orphanage home projects with the total money.
+> On Tue, 20 Oct 2020 16:07:44 +0800
+> Gene Chen <gene.chen.richtek@gmail.com> wrote:
+> 
+> > In-Reply-To: 
+> > 
+> > This patch series add MT6360 ADC support contains driver, testing document
+> > and binding document
+> >   
+> Hi Gene,
+> 
+> Other than that small edit needed in the dt binding this is stalled on
+> the label code getting upstreamed into the core.
+> 
+> I've asked Cristian to repost that so hopefully we can resolve that dependency
+> and get this merged fairly soon.
+> 
+> For the dt thing I can just drop the description entirely, but would prefer
+> if you sent a v8 fixing the tags issue Rob pointed out and also fixing that
+> description.
+I've tweaked as described and applied to the togreg branch of iio.git and
+pushed out as testing for the autobuilders to poke at it more than I do.
 
-Meanwhile, I didn't forget your past efforts and attempts to assist me
-in transferring those funds and use it for the building of the
-orphanage home and helping the less privilege.
+Thanks,
 
-Please contact my nurse in Burkina Faso, her name is Mrs. Manal Yusuf
-, ask her to send you the compensation of $600,000.00USD which i have
-credited with  the United Bank for Africa (UBA) bank into an ATM card
-before i traveled for my treatment, you will indicate your contact as
-my else's business associate that tried to help me, but it could not
-work out for us, and I appreciated your good efforts at that time very
-much. so feel free and get in touched with the nurse Mrs. Manal Yusuf
-(email: mrs1manalyusuf@gmail.com  ) and instruct her the address where
-to send the ATM card to you.
+Jonathan
 
-Please i am in the hospital here, i would not have much time to check
-emails or  respond to you, but in case you have any important message
-do send me as an update, i might instruct the doctor to check it and
-respond to you, meanwhile, once you received the ATM CARD,  do not
-delay to inform me.
+> 
+> Thanks,
+> 
+> Jonathan
+> 
+> > Gene Chen (2)
+> >   dt-bindings: iio: adc: add bindings doc for MT6360 ADC
+> >   Documentation: ABI: testing: mt6360: Add ADC sysfs guideline
+> >   iio: adc: mt6360: Add ADC driver for MT6360
+> > 
+> >  Documentation/ABI/testing/sysfs-bus-iio-adc-mt6360                 |   78 ++
+> >  Documentation/devicetree/bindings/iio/adc/mediatek,mt6360-adc.yaml |   34 
+> >  drivers/iio/adc/Kconfig                                            |   11 
+> >  drivers/iio/adc/Makefile                                           |    1 
+> >  drivers/iio/adc/mt6360-adc.c                                       |  372 ++++++++++
+> >  5 files changed, 496 insertions(+)
+> > 
+> > changelogs between v1 & v2
+> >  - adc: use IIO_CHAN_INFO_PROCESSED only
+> >  - adc: use devm_iio_triggered_buffer_setup
+> >  - adc: use use s64 to record timestamp
+> > 
+> > changelogs between v2 & v3
+> >  - Rearrange include file order by alphabet
+> >  - Set line length constraint below 100
+> >  - Add Document for testing adc sysfs node guideline
+> >  - Set compiler 64 bit aligned when handle iio timestamp
+> > 
+> > changelogs between v3 & v4
+> >  - Fix sysfs guideline description
+> >  - Replace iio channel processed by raw/scale/offset
+> >  - Add comment of read adc flow for special HW design
+> > 
+> > changelogs between v4 & v5
+> >  - Rename dt-bindings aligned to file name
+> >  - Aligned sysfs node name with driver and add VBUSDIVX description
+> >  - Add ADC channel sysfs node "*_labels"
+> > 
+> > changelogs between v5 & v6
+> >  - Memset aligned adc data
+> >  - Remove strong casting void pointer
+> > 
+> > changelogs between v6 & v7
+> >  - Avoid adc polling infinite loop
+> >   
+> 
 
-Finally, remember that I had forwarded an instruction to the nurse on
-your behalf to deliver the ATM card to you, so feel free to get in
-touch with her by email she will send the ATM card to you without any
-delay.
-
-Thank you and God bless you.
-MRS SABAH IBRAHIM
