@@ -2,171 +2,209 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C39B72AAE57
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 00:41:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 269112AAE63
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 00:57:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728911AbgKHXlw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 8 Nov 2020 18:41:52 -0500
-Received: from nat-hk.nvidia.com ([203.18.50.4]:8994 "EHLO nat-hk.nvidia.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727929AbgKHXlv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 8 Nov 2020 18:41:51 -0500
-Received: from HKMAIL104.nvidia.com (Not Verified[10.18.92.9]) by nat-hk.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5fa8823b0000>; Mon, 09 Nov 2020 07:41:50 +0800
-Received: from HKMAIL103.nvidia.com (10.18.16.12) by HKMAIL104.nvidia.com
- (10.18.16.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Sun, 8 Nov
- 2020 23:41:46 +0000
-Received: from NAM12-MW2-obe.outbound.protection.outlook.com (104.47.66.42) by
- HKMAIL103.nvidia.com (10.18.16.12) with Microsoft SMTP Server (TLS) id
- 15.0.1473.3 via Frontend Transport; Sun, 8 Nov 2020 23:41:46 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Jfnd+lOskl6J7SnN5En45Mst+Z4UiVR3/VAXWTVclSPyh3KOcyrov36olkP7W19JTreGfwos41v4FgYJf6wVTN6H15tumR+htzMzndeUu4SPsc/QhA++zaxbaN7MjrB/GDauyJ8xrPEh5gnHFXI2ADtN3Y5ZHqyGdb+2k9o8oo1ECET+M8tLlRD8C01ofOpjJR0Hb6twrHcqeCy4wQKYcTcTk3oYLi+C7x95Vv5SUVKR8f3SP23fIfoo3RaSKjvB1C05q83EdAnVpWEgR0uoQRc7s/RnlwsTgTMX3J+HZCirPA4L+m+p5tMSVDlHzkeMqDIXBCjkVWTgNnyw2MvnBQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=qyQgFcagNLvj5CGIcgvqxl7yQQqRxNgUFqeXMmPi3/0=;
- b=LoDNOSf02sgADsTwWk566MWpDicI1z2jpmuLbFqgo6x1DLfTCDa1UUmXRnlRe1/48bEW8FLl5/ubaZtKcn5enPOonCljvZp2UInFoHwLFEyGKxAP1f/6w8JlKRt0VgAuQvGWA7aDkfqAQaLaqqVBgEDxHuBOI7rN/Auwjo4cIoxlxVVQXk4KK2UOFoyhhTbOslneMKazha+HxJnGoq04VID4M8Sg4RXw73R3Gh5bq4ZzTTZUndQuTYumY36cmBk0rlOTwM+jgWby2ca75yLBkolKQPu5uTvnp+y2rhzPRPt+Ev3P+ZXBkeNAQu7QpoxaTk+sqiBGfNRE+2K53suX6A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM5PR1201MB0203.namprd12.prod.outlook.com (2603:10b6:4:56::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3541.21; Sun, 8 Nov
- 2020 23:41:43 +0000
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::cdbe:f274:ad65:9a78]) by DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::cdbe:f274:ad65:9a78%7]) with mapi id 15.20.3499.032; Sun, 8 Nov 2020
- 23:41:43 +0000
-Date:   Sun, 8 Nov 2020 19:41:42 -0400
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     "Raj, Ashok" <ashok.raj@intel.com>
-CC:     Dan Williams <dan.j.williams@intel.com>,
-        "Tian, Kevin" <kevin.tian@intel.com>,
-        "Jiang, Dave" <dave.jiang@intel.com>,
-        Bjorn Helgaas <helgaas@kernel.org>,
-        "vkoul@kernel.org" <vkoul@kernel.org>,
-        "Dey, Megha" <megha.dey@intel.com>,
-        "maz@kernel.org" <maz@kernel.org>,
-        "bhelgaas@google.com" <bhelgaas@google.com>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
-        "Pan, Jacob jun" <jacob.jun.pan@intel.com>,
-        "Liu, Yi L" <yi.l.liu@intel.com>, "Lu, Baolu" <baolu.lu@intel.com>,
-        "Kumar, Sanjay K" <sanjay.k.kumar@intel.com>,
-        "Luck, Tony" <tony.luck@intel.com>,
-        "jing.lin@intel.com" <jing.lin@intel.com>,
-        "kwankhede@nvidia.com" <kwankhede@nvidia.com>,
-        "eric.auger@redhat.com" <eric.auger@redhat.com>,
-        "parav@mellanox.com" <parav@mellanox.com>,
-        "rafael@kernel.org" <rafael@kernel.org>,
-        "netanelg@mellanox.com" <netanelg@mellanox.com>,
-        "shahafs@mellanox.com" <shahafs@mellanox.com>,
-        "yan.y.zhao@linux.intel.com" <yan.y.zhao@linux.intel.com>,
-        "pbonzini@redhat.com" <pbonzini@redhat.com>,
-        "Ortiz, Samuel" <samuel.ortiz@intel.com>,
-        "Hossain, Mona" <mona.hossain@intel.com>,
-        "dmaengine@vger.kernel.org" <dmaengine@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>
-Subject: Re: [PATCH v4 06/17] PCI: add SIOV and IMS capability detection
-Message-ID: <20201108234142.GD2620339@nvidia.com>
-References: <20201104124017.GW2620339@nvidia.com>
- <MWHPR11MB1645862A8F7CF7FB8DD011778CEF0@MWHPR11MB1645.namprd11.prod.outlook.com>
- <20201104135415.GX2620339@nvidia.com>
- <MWHPR11MB1645524BDEDF8899914F32AE8CED0@MWHPR11MB1645.namprd11.prod.outlook.com>
- <20201106131415.GT2620339@nvidia.com> <20201106164850.GA85879@otc-nc-03>
- <20201106175131.GW2620339@nvidia.com>
- <CAPcyv4iYHA1acfo=+fTk+U_TrLbSWJjA6v4oeTXgVYDTrnCoGw@mail.gmail.com>
- <20201107001207.GA2620339@nvidia.com>
- <20201108181124.GA28173@araj-mobl1.jf.intel.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20201108181124.GA28173@araj-mobl1.jf.intel.com>
-X-ClientProxiedBy: MN2PR17CA0033.namprd17.prod.outlook.com
- (2603:10b6:208:15e::46) To DM6PR12MB3834.namprd12.prod.outlook.com
- (2603:10b6:5:14a::12)
+        id S1728895AbgKHX5G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 8 Nov 2020 18:57:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40528 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727929AbgKHX5G (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 8 Nov 2020 18:57:06 -0500
+Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C964C0613CF;
+        Sun,  8 Nov 2020 15:57:05 -0800 (PST)
+Received: by mail-ed1-x544.google.com with SMTP id t9so3501432edq.8;
+        Sun, 08 Nov 2020 15:57:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=PGamHc40mKzhU25Zb9aPppdurT1c5ZVz9OGw2I95gP8=;
+        b=Hspko1qv5zfA1Es2MVWPFYTvbtzFGM5En5okK739qVJ+3OgS2eUD98hB62XUsUl9W6
+         deKwqjNeKJsaHDCyNAtsqH3NbfeGZq7H0F5LFdlaU0cJOZCYLEYe8xxyMO3IDdm0hBLw
+         bWtcPmU3GPd0lXdXKlnreIj2rMcVYZ5at/CE5gcWxNTi5ZVekWRpoGjIQI+l4ISm9UXd
+         tqSQWQDxc/c97U0IxuY7WVmlOG73lxHL1kdsI74Um1iAz1xfhqdb4mvd+EuDHXr4P6dE
+         7stIW5U1eoKLlYox0mbYeTAlYz6Gz7h45wMec9OMXK+MzGfqoRWeXP+/HLbr5TnRrYaX
+         sclw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=PGamHc40mKzhU25Zb9aPppdurT1c5ZVz9OGw2I95gP8=;
+        b=seCHg7z3IJbiaFEwmxQ7dZUi/LvFglu91fYXAwPnytznaVy2B5CmZWB/isen5fkr/Y
+         dX0sVPsP4vXZy+naOS/l1lHudTsPdIse8EaQabaaNsKArt8hs8B9vKmlpIA67ImGF1qW
+         qcA7raretsBv0w/vYdbmgyDgFc/VJMR0gMMM1uuy40sIa0A8wsqwINeM3jsHWwxX3FlJ
+         owA0r+VOnnYXRj4IIOlNsxtG7Hb3RbLkwanZCwuuO1nG/w374rFjonLp10iPuJosCjsk
+         J3fMaG7fdWTFcDrBEIkgHjScpthEPvIwPsDTbA/dsJbr7Qxm+v4gsIBPems4YQFi/LkK
+         t1+g==
+X-Gm-Message-State: AOAM531bPyxfjVSnS4XDZAY4K+Ay2x3+tr0K9M0NMgy8O6jm5akvwUlc
+        4GfcswglroFKy+CLmbmhfbPxKrtTIKA=
+X-Google-Smtp-Source: ABdhPJwO5BzDFLgSKUpwxQd1NhD5tHLkSTpfXkF1RyziA0+JwMhRECfR8DxdX144Gt5zOzo2VHJg6g==
+X-Received: by 2002:aa7:d890:: with SMTP id u16mr12805100edq.159.1604879824218;
+        Sun, 08 Nov 2020 15:57:04 -0800 (PST)
+Received: from skbuf ([188.25.2.177])
+        by smtp.gmail.com with ESMTPSA id j3sm7339425edh.25.2020.11.08.15.57.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 08 Nov 2020 15:57:03 -0800 (PST)
+Date:   Mon, 9 Nov 2020 01:57:02 +0200
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     DENG Qingfang <dqfext@gmail.com>,
+        Tobias Waldekranz <tobias@waldekranz.com>,
+        Marek Behun <marek.behun@nic.cz>,
+        Russell King - ARM Linux admin <linux@armlinux.org.uk>
+Subject: Re: [RFC PATCH net-next 1/3] net: dsa: don't use
+ switchdev_notifier_fdb_info in dsa_switchdev_event_work
+Message-ID: <20201108235702.eoxxekhynkaqnotw@skbuf>
+References: <20201108131953.2462644-1-olteanv@gmail.com>
+ <20201108131953.2462644-2-olteanv@gmail.com>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (156.34.48.30) by MN2PR17CA0033.namprd17.prod.outlook.com (2603:10b6:208:15e::46) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3541.21 via Frontend Transport; Sun, 8 Nov 2020 23:41:43 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1kbuJa-001jmr-BZ; Sun, 08 Nov 2020 19:41:42 -0400
-X-LD-Processed: 43083d15-7273-40c1-b7db-39efd9ccc17a,ExtAddr
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1604878910; bh=qyQgFcagNLvj5CGIcgvqxl7yQQqRxNgUFqeXMmPi3/0=;
-        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
-         From:To:CC:Subject:Message-ID:References:Content-Type:
-         Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
-         X-MS-Exchange-MessageSentRepresentingType:X-LD-Processed;
-        b=Gjlhbnxq0vU9Gdn8NHmuPj8GalxuFY1m9YjpgYkxxbmUcQlsq7fhHEa0gbk27MPg1
-         Ms861TpkU11Ahr7+85ED8ha4M+79VZXKO5hIY9uKYzM3wes/k+WlnJxRoRhgwAZaCC
-         ZP9N4KfYlK2qJTEoN3YVBrI54upQNsAFnbj78ECJoWWLrph6Xy27l+ssamBnajb+je
-         f3BK5BWuY/L+pYkrityDCnw4e73ed3DgvzUOIzavwufAp/obJQn34ltfUd6aQXg/yF
-         FJcWzMiisjpsR532wIUtyqe1K49LB9RksanySjjecAEYEs7vomL+zPD2boXTLBF68W
-         oQIQIFNpRO6Fw==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201108131953.2462644-2-olteanv@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Nov 08, 2020 at 10:11:24AM -0800, Raj, Ashok wrote:
+On Sun, Nov 08, 2020 at 03:19:51PM +0200, Vladimir Oltean wrote:
+> diff --git a/net/dsa/slave.c b/net/dsa/slave.c
+> index 59c80052e950..30db8230e30b 100644
+> --- a/net/dsa/slave.c
+> +++ b/net/dsa/slave.c
+> @@ -2062,72 +2062,62 @@ static int dsa_slave_netdevice_event(struct notifier_block *nb,
+>  	return NOTIFY_DONE;
+>  }
+>  
+> -struct dsa_switchdev_event_work {
+> -	struct work_struct work;
+> -	struct switchdev_notifier_fdb_info fdb_info;
+> -	struct net_device *dev;
+> -	unsigned long event;
+> -};
+> +static void
+> +dsa_fdb_offload_notify(struct dsa_switchdev_event_work *switchdev_work)
+> +{
+> +	struct dsa_switch *ds = switchdev_work->ds;
+> +	struct dsa_port *dp = dsa_to_port(ds, switchdev_work->port);
+> +	struct switchdev_notifier_fdb_info info;
+> +
+> +	if (!dsa_is_user_port(ds, dp->index))
+> +		return;
+> +
+> +	info.addr = switchdev_work->addr;
+> +	info.vid = switchdev_work->vid;
+> +	info.offloaded = true;
+> +	call_switchdev_notifiers(SWITCHDEV_FDB_OFFLOADED,
+> +				 dp->slave, &info.info, NULL);
+> +}
+>  
+>  static void dsa_slave_switchdev_event_work(struct work_struct *work)
+>  {
+>  	struct dsa_switchdev_event_work *switchdev_work =
+>  		container_of(work, struct dsa_switchdev_event_work, work);
+> -	struct net_device *dev = switchdev_work->dev;
+> -	struct switchdev_notifier_fdb_info *fdb_info;
+> -	struct dsa_port *dp = dsa_slave_to_port(dev);
+> +	struct dsa_switch *ds = switchdev_work->ds;
+> +	struct dsa_port *dp;
+>  	int err;
+>  
+> +	dp = dsa_to_port(ds, switchdev_work->port);
+> +
+>  	rtnl_lock();
+>  	switch (switchdev_work->event) {
+>  	case SWITCHDEV_FDB_ADD_TO_DEVICE:
+> -		fdb_info = &switchdev_work->fdb_info;
+> -		if (!fdb_info->added_by_user)
+> -			break;
+> -
+> -		err = dsa_port_fdb_add(dp, fdb_info->addr, fdb_info->vid);
+> +		err = dsa_port_fdb_add(dp, switchdev_work->addr,
+> +				       switchdev_work->vid);
+>  		if (err) {
+> -			netdev_dbg(dev, "fdb add failed err=%d\n", err);
+> +			dev_dbg(ds->dev, "port %d fdb add failed err=%d\n",
+> +				dp->index, err);
+>  			break;
+>  		}
+> -		fdb_info->offloaded = true;
+> -		call_switchdev_notifiers(SWITCHDEV_FDB_OFFLOADED, dev,
+> -					 &fdb_info->info, NULL);
+> +		dsa_fdb_offload_notify(switchdev_work);
+>  		break;
+>  
+>  	case SWITCHDEV_FDB_DEL_TO_DEVICE:
+> -		fdb_info = &switchdev_work->fdb_info;
+> -		if (!fdb_info->added_by_user)
+> -			break;
+> -
+> -		err = dsa_port_fdb_del(dp, fdb_info->addr, fdb_info->vid);
+> +		err = dsa_port_fdb_del(dp, switchdev_work->addr,
+> +				       switchdev_work->vid);
+>  		if (err) {
+> -			netdev_dbg(dev, "fdb del failed err=%d\n", err);
+> -			dev_close(dev);
+> +			dev_dbg(ds->dev, "port %d fdb del failed err=%d\n",
+> +				dp->index, err);
+> +			if (dsa_is_user_port(ds, dp->index))
+> +				dev_close(dp->slave);
 
-> > On (kvm) virtualization the addr/data pair the IRQ domain hands out
-> > doesn't work. It is some fake thing.
-> 
-> Is it really some fake thing? I thought the vCPU and vector are real
-> for a guest, and VMM ensures when interrupts are delivered they are either.
+Not sure that this dev_close() serves any real purpose, it stands in the
+way a little. It was introduced "to indicate inconsistent situation".
 
-It is fake in the sense it is programmed into no hardware.
- 
-It is real in the sense it is an ABI contract with the VMM.
+commit c9eb3e0f870105242a15a5e628ed202cf32afe0d
+Author: Arkadi Sharshevsky <arkadis@mellanox.com>
+Date:   Sun Aug 6 16:15:42 2017 +0300
 
-> > On something like IDXD this emulation is not so hard, on something
-> > like mlx5 this is completely unworkable. Further we never do
-> > emulation on our devices, they always pass native hardware through,
-> > even for SIOV-like cases.
-> 
-> So is that true for interrupts too? 
+    net: dsa: Add support for learning FDB through notification
 
-There is no *mlx5* emulation. We ride on the generic MSI emulation KVM
-is going.
+    Add support for learning FDB through notification. The driver defers
+    the hardware update via ordered work queue. In case of a successful
+    FDB add a notification is sent back to bridge.
 
-> Possibly you have the interrupt entries sitting in memory resident
-> on the device?
+    In case of hw FDB del failure the static FDB will be deleted from
+    the bridge, thus, the interface is moved to down state in order to
+    indicate inconsistent situation.
 
-For SRIOV, yes. The appeal of IMS is to move away from that.
+I hope it's ok to only close a net device if it exists, I can't think of
+anything smarter.
 
-> Don't we need the VMM to ensure they are brokered by VMM in either
-> one of the two ways above?
+>  		}
+>  		break;
+>  	}
+>  	rtnl_unlock();
+>  
+> -	kfree(switchdev_work->fdb_info.addr);
+>  	kfree(switchdev_work);
+> -	dev_put(dev);
+> -}
+> -
+> -static int
+> -dsa_slave_switchdev_fdb_work_init(struct dsa_switchdev_event_work *
+> -				  switchdev_work,
+> -				  const struct switchdev_notifier_fdb_info *
+> -				  fdb_info)
+> -{
+> -	memcpy(&switchdev_work->fdb_info, fdb_info,
+> -	       sizeof(switchdev_work->fdb_info));
+> -	switchdev_work->fdb_info.addr = kzalloc(ETH_ALEN, GFP_ATOMIC);
+> -	if (!switchdev_work->fdb_info.addr)
+> -		return -ENOMEM;
+> -	ether_addr_copy((u8 *)switchdev_work->fdb_info.addr,
+> -			fdb_info->addr);
+> -	return 0;
+> +	if (dsa_is_user_port(ds, dp->index))
+> +		dev_put(dp->slave);
+>  }
 
-Yes, no matter what the VMM has to know the guest wants an interrupt
-routed in and setup the VMM part of the equation. With SRIOV this is
-all done with the MSI trapping.
-
-> What if the guest creates some addr in the 0xfee... range how do we
-> take care of interrupt remapping and such without any VMM assist?
-
-Not sure I understand this?
-
-> That's true. Probably this can work the same even for MSIx types too then?
-
-Yes, once you have the ability to hypercall to create the addr/data
-pair then it can work with MSI and the VMM can stop emulation. It
-would be a nice bit of uniformity to close this, but switching the VMM
-from legacy to new mode is going to be tricky, I fear.
-
-> I agree with the overall idea and we should certainly take that into
-> consideration when we need IMS in guest support and in context of
-> interrupt remapping.
-
-The issue with things, as they sit now, is SRIOV.
-
-If any driver starts using pci_subdevice_msi_create_irq_domain() then
-it fails if the VF is assigned to a guest with SRVIO. This is a real
-and important, use case for many devices today!
-
-The "solution" can't be to go back and retroactively change every
-shipping device to add PCI capability blocks, and ensure that every
-existing VMM strips them out before assigning the device (including
-Hyper-V!!)  :(
-
-Jason
+The reference counting is broken here. It doesn't line up with the
+dev_hold(dev) done in the last patch, which is on a non-DSA interface.
+Anyway I think a net_device refcount is way too much for what we need
+here, which is to ensure that DSA doesn't get unbound. I think I'll just
+simplify to get_device(ds->dev) and put_device(ds->dev).
