@@ -2,98 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 959F32AAA3D
-	for <lists+linux-kernel@lfdr.de>; Sun,  8 Nov 2020 10:17:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D4F692AAA47
+	for <lists+linux-kernel@lfdr.de>; Sun,  8 Nov 2020 10:24:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728011AbgKHJR4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 8 Nov 2020 04:17:56 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:48177 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726099AbgKHJRy (ORCPT
+        id S1728046AbgKHJXy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 8 Nov 2020 04:23:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47264 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726115AbgKHJXw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 8 Nov 2020 04:17:54 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1604827073;
+        Sun, 8 Nov 2020 04:23:52 -0500
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 455A0C0613CF;
+        Sun,  8 Nov 2020 01:23:52 -0800 (PST)
+Received: from zn.tnic (p200300ec2f270b00c61e0f9d91d0a6f9.dip0.t-ipconnect.de [IPv6:2003:ec:2f27:b00:c61e:f9d:91d0:a6f9])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 10E001EC026D;
+        Sun,  8 Nov 2020 10:23:49 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1604827429;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=u+SyHTLXvA92ERGNZfFFmss47jMa+rGIK1ltcexiZx8=;
-        b=MTTrWfgLA3OvU+vI+OICrKFS5VcoHNr1YDdL3OiqW3maxXW6DxpHAYudUG8+UoQOs1o1xt
-        o0txZdKCdWw2+X1CjdKjV+/zGF2BU1jR7i41qkVyffqEk0WOujD/My3RRT+TLWnCFh3PBp
-        RtKyAVbmfz+17u4bW3lkXvSOnAgBHp8=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-8-yLfPzlVXNuGm0D4nD8Nksw-1; Sun, 08 Nov 2020 04:17:51 -0500
-X-MC-Unique: yLfPzlVXNuGm0D4nD8Nksw-1
-Received: by mail-wm1-f69.google.com with SMTP id t201so1463405wmt.1
-        for <linux-kernel@vger.kernel.org>; Sun, 08 Nov 2020 01:17:51 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=u+SyHTLXvA92ERGNZfFFmss47jMa+rGIK1ltcexiZx8=;
-        b=RaEGRXw93qw9KvDUqcB+q4MD9/OwGUd4mz6V/2AZb/YwI8tZdXcoUokCGypF7B1z1u
-         thUFE/oF4dPieh8MzcmNMu5B0HUGijMMOotuYwJefkf6uOlh+uJ+KUqHROiyjyv7fQbA
-         AF6g/IsrbpBUbxtBX05bjAOH2El2gTWntJS9uDWVLDktSajV8ussR4Aqg699xR3nkMNZ
-         0cTc+rHAmld4jC4B8SWqtvU4t4LE09JpWR1nnbWiimnuRxx8Z8MvgrJbRhuMp5+jjOFI
-         q+2hTwrCVAULZ6cN5hqUSprN3cPtjihogJ/Uuh8olHV2PemdVML9saDTtiomaAUtqOsQ
-         1CHw==
-X-Gm-Message-State: AOAM531yQU3dkwZZAJD0f3hy41jlmwbUODe+YV6atXtyNbAkF3c3w4/9
-        HGuIYvKPJ9DiuJWMPgSNb38WAeVJ3me+jbMeIvDjPK57Lmjwzz2Cwg2waOq+LkbY5O5z61H2Q+I
-        asqGtrBk9nmrghxAXvWiDJvDm
-X-Received: by 2002:adf:97dd:: with SMTP id t29mr12224614wrb.185.1604827070540;
-        Sun, 08 Nov 2020 01:17:50 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJy08lVb2EwMSaKb1c4rkEPpz4MxNziRJKopK1G2CeEdBzdBA7Q3j2i80FOCbZqEHTSG3V8yXQ==
-X-Received: by 2002:adf:97dd:: with SMTP id t29mr12224595wrb.185.1604827070386;
-        Sun, 08 Nov 2020 01:17:50 -0800 (PST)
-Received: from ?IPv6:2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e? ([2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e])
-        by smtp.gmail.com with ESMTPSA id y4sm8747871wmj.2.2020.11.08.01.17.49
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 08 Nov 2020 01:17:49 -0800 (PST)
-Subject: Re: [PATCH 2/3] vfio/virqfd: Drain events from eventfd in
- virqfd_wakeup()
-To:     Alex Williamson <alex.williamson@redhat.com>,
-        David Woodhouse <dwmw2@infradead.org>
-Cc:     Cornelia Huck <cohuck@redhat.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Jens Axboe <axboe@kernel.dk>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
-References: <1faa5405-3640-f4ad-5cd9-89a9e5e834e9@redhat.com>
- <20201027135523.646811-1-dwmw2@infradead.org>
- <20201027135523.646811-3-dwmw2@infradead.org>
- <20201106162956.5821c536@x1.home>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <f45eeeba-2060-45cc-b5f5-140c3a83afd0@redhat.com>
-Date:   Sun, 8 Nov 2020 10:17:48 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=a2buimtAL9Eb9fZo0UU8VGJS+43FqGvckYGeJUnPTII=;
+        b=Xt22yXlrTKBB7g13Tl+fr4qsoIWvqxyCfcZlZB9EC9d8M24zllrTbQUPw04fTtJJR8APy2
+        L49iu/SnDVRl+Pv0sqU+354TVIesQJ0ZTxZSHjQQcC7/8cnZBBKnvVTD5lEVc3StrRq3NQ
+        iXw+GyKeNDG06XEShKimlx8lS0B1gxs=
+Date:   Sun, 8 Nov 2020 10:23:33 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     Ingo Molnar <mingo@kernel.org>
+Cc:     x86-ml <x86@kernel.org>, linux-tip-commits@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Will Deacon <will.deacon@arm.com>
+Subject: Re: [tip: perf/kprobes] locking/atomics: Regenerate the
+ atomics-check SHA1's
+Message-ID: <20201108092333.GA13870@zn.tnic>
+References: <160476203869.11244.7869849163897430965.tip-bot2@tip-bot2>
+ <20201107160444.GB30275@zn.tnic>
+ <20201108090521.GA108695@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20201106162956.5821c536@x1.home>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20201108090521.GA108695@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 07/11/20 00:29, Alex Williamson wrote:
->> From: David Woodhouse<dwmw@amazon.co.uk>
->>
->> Don't allow the events to accumulate in the eventfd counter, drain them
->> as they are handled.
->>
->> Signed-off-by: David Woodhouse<dwmw@amazon.co.uk>
->> ---
-> Acked-by: Alex Williamson<alex.williamson@redhat.com>
-> 
-> Paolo, I assume you'll add this to your queue.  Thanks,
-> 
-> Alex
-> 
+On Sun, Nov 08, 2020 at 10:05:21AM +0100, Ingo Molnar wrote:
+> So that mode change to executable was intentional, as mentioned in the 
+> changelog.
 
-Yes, thanks.
+Yeah, I thought we don't make them executable in the tree but I guess we
+do, at least most of them, from looking at git ls-files *.sh output.
 
-Paolo
+Thx.
 
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
