@@ -2,135 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F26BB2AAC24
-	for <lists+linux-kernel@lfdr.de>; Sun,  8 Nov 2020 17:17:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E2AA82AAC2A
+	for <lists+linux-kernel@lfdr.de>; Sun,  8 Nov 2020 17:20:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728521AbgKHQRV convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Sun, 8 Nov 2020 11:17:21 -0500
-Received: from mga11.intel.com ([192.55.52.93]:55549 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727570AbgKHQRV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 8 Nov 2020 11:17:21 -0500
-IronPort-SDR: mKCd1juH7vxvASpt0r080pgNAk+ZfIvYbfB0+NUhHlZuSHQITugBw/qhFXi1LfKhKhhgVXDuST
- uS6O+coJtYbQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9799"; a="166203565"
-X-IronPort-AV: E=Sophos;i="5.77,461,1596524400"; 
-   d="scan'208";a="166203565"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Nov 2020 08:17:20 -0800
-IronPort-SDR: 3ZxeBRFZbMMreUPvHJJ2Ey+k68QI4ilDh52fFEYPUHmS+T3RX9hoaDFVFU9CfgmXCMsgWfAg47
- omc+luBodAOg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,461,1596524400"; 
-   d="scan'208";a="540502546"
-Received: from irsmsx604.ger.corp.intel.com ([163.33.146.137])
-  by orsmga005.jf.intel.com with ESMTP; 08 Nov 2020 08:17:17 -0800
-Received: from irsmsx601.ger.corp.intel.com (163.33.146.7) by
- IRSMSX604.ger.corp.intel.com (163.33.146.137) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Sun, 8 Nov 2020 16:17:16 +0000
-Received: from irsmsx601.ger.corp.intel.com ([163.33.146.7]) by
- irsmsx601.ger.corp.intel.com ([163.33.146.7]) with mapi id 15.01.1713.004;
- Sun, 8 Nov 2020 16:17:16 +0000
-From:   "Rojewski, Cezary" <cezary.rojewski@intel.com>
-To:     Greg KH <gregkh@linuxfoundation.org>,
-        "Gorski, Mateusz" <mateusz.gorski@linux.intel.com>
-CC:     "stable@vger.kernel.org" <stable@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
-        Mark Brown <broonie@kernel.org>
-Subject: RE: [PATCH] ASoC: Intel: Skylake: Add alternative topology binary
- name
-Thread-Topic: [PATCH] ASoC: Intel: Skylake: Add alternative topology binary
- name
-Thread-Index: AQHWsesetrmyqB6A606/K4JDH1AqQKm2iiKAgAFSVACAAAM7AIAGkXhQ
-Date:   Sun, 8 Nov 2020 16:17:16 +0000
-Message-ID: <0f6a673556974a289c2b81f3a8cc7536@intel.com>
-References: <20201103141047.15053-1-mateusz.gorski@linux.intel.com>
- <20201103153541.GC3267686@kroah.com>
- <d6006431-420f-55c7-0f78-977507e11fcf@linux.intel.com>
- <20201104115810.GA1694250@kroah.com>
-In-Reply-To: <20201104115810.GA1694250@kroah.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-product: dlpe-windows
-dlp-reaction: no-action
-dlp-version: 11.5.1.3
-x-originating-ip: [163.33.253.164]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        id S1728516AbgKHQUO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 8 Nov 2020 11:20:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54998 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726388AbgKHQUN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 8 Nov 2020 11:20:13 -0500
+Received: from mail-vs1-xe41.google.com (mail-vs1-xe41.google.com [IPv6:2607:f8b0:4864:20::e41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50F30C0613CF
+        for <linux-kernel@vger.kernel.org>; Sun,  8 Nov 2020 08:20:13 -0800 (PST)
+Received: by mail-vs1-xe41.google.com with SMTP id x11so3568136vsx.12
+        for <linux-kernel@vger.kernel.org>; Sun, 08 Nov 2020 08:20:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:sender:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=EtWv1Upqse4K8kWMKX6HbWJ+YQUeL+CnHl4ZoThqHDc=;
+        b=mDH02XsXCjqtHtWBs1CnTAFYqTmc/CnG9IEg+f/IHE//P9W4YekYEY132qMAlZA0es
+         /TfBtZlw6O16Hpbp920yGqTeb7iTk7pGUQYXVSDUE/oX0QRtWSZnZ503GPyaA5inlKB2
+         jFtHSyjv+0GdMl6bDumiY+0ul352u3cBCUi4s3MwMAHIb+MorpUEtzvACJU8lMsRa0GS
+         bwp6Gc8qdxWLZ/cSja+CdDhHwlJIQNi0RZY+EjaCkpIw76mi4cMalA7B+MMyBJPVXQtg
+         ffOFDfnasGqbIWyGgN71Pp5jC0Z/dUmb2KEu8VnhQmFW/OJtgiTGU1/Ktr8Jx3dEujGA
+         raAQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:sender:from:date
+         :message-id:subject:to:content-transfer-encoding;
+        bh=EtWv1Upqse4K8kWMKX6HbWJ+YQUeL+CnHl4ZoThqHDc=;
+        b=fXEOb93xKV7x+5daxqTPa4Ujy2AWHVb+RZb91akYH9nv1tZbhdJYIFa2wcRcX8ouqL
+         tFv3VGcQp1kPlVf3dpBXqTRPf4iZ4XKgQ+lEA3qrrqAFsBiMkJNSffP0wWbv0raGICTI
+         OUia1D6rd9sG9q/4naO4IQMHGkvkS6XfCn6WTBnh39+RP/Voze6tBKkPOPSQ1HlN1SJF
+         n3w7Po1P+5w/8577GlYcWNawz647CpYb273F8znJCZ4g+5WokoeBBvWAvq9FkfPl4qAT
+         3+cYLO3MrdwbElFgl0DpQT8UjpbVSbg8edJj0cg43204OEsSnEY3NqhmQK4aGkPSJ7Rw
+         3EOA==
+X-Gm-Message-State: AOAM53094L/5Hn64M2YaS6JpA8bcrvGcWYjIjlTW7OLrdao7TiX0rnLw
+        gidJvS+6v12WX+1SrgUadIcj70KiHipdRjeRo3c=
+X-Google-Smtp-Source: ABdhPJyugUyVklKqxLLY8VBAdB3neGNheStncTOxnAu4e57TF2JhJRb1eYbsju5piH1Jjx0j0KHi5E7VTbPW5asBHtY=
+X-Received: by 2002:a67:e2c1:: with SMTP id i1mr6436423vsm.2.1604852412404;
+ Sun, 08 Nov 2020 08:20:12 -0800 (PST)
 MIME-Version: 1.0
+Reply-To: mrssabah51b@gmail.com
+Sender: bbab3060@gmail.com
+Received: by 2002:ab0:341:0:0:0:0:0 with HTTP; Sun, 8 Nov 2020 08:20:12 -0800 (PST)
+From:   MRS SABAH IBRAHIM <absa50602@gmail.com>
+Date:   Sun, 8 Nov 2020 17:20:12 +0100
+X-Google-Sender-Auth: mMUTmp_RNo5DY0677iOzBvxmkb4
+Message-ID: <CABbt5Nq4+GwpB90a9u2EPbHYG9S3kYewfK9TWQDzhCUan7fcGg@mail.gmail.com>
+Subject: Compensation for your effort
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-11-04 12:58 PM, Greg KH wrote:
-> On Wed, Nov 04, 2020 at 12:46:36PM +0100, Gorski, Mateusz wrote:
->>
->>>> [ Upstream commit 1b290ef023b3eeb4f4688b582fecb773915ef937 ]
->>>>
->>>> Add alternative topology binary file name based on used machine driver
->>>> and fallback to use this name after failed attempt to load topology file
->>>> with name based on NHLT.
->>>> This change addresses multiple issues with current mechanism, for
->>>> example - there are devices without NHLT table, and that currently
->>>> results in tplg_name being empty.
-...
+Dear Friend,
 
->>> What problems are people facing, and what kernel(s) are you asking for
->>> this to be ported to, and why can't people just use 5.8 or newer if they
->>> have this new hardware?
->>>
->>
->> I forgot to add - I wanted this change to be merged to stable 5.4 kernel.
->> Please let me know if I should resend this patch with this information
->> included.
->>
->> As for the user issues - topology binary file name is currently created
->> according to information from NHLT. The problem is, that some laptops (for
->> example Dell XPS 13) do not have NHLT at all. This results in topology
->> binary name being empty (" ").
->> This patch adds alternative name based on loaded machine driver.
->>
->> It applies not only to new hardware, please note that the mentioned Dell XPS
->> 13 is based on Kabylake. This issue existed on upstream from the beginning
->> of Skylake driver and was only recently addressed.
-> 
-> When was that laptop released and is this the only change that is needed
-> in order for the 5.4.y kernel to work properly on it?
-> 
+How are you I hope you are very fine with your entire family? If so
+glory be to Almighty God.
+I'm happy to inform you about my success in getting those funds
+transferred under the cooperation of a new partner from GREECE,
+Presently I=E2=80=99m in GREECE for a better treatment and building of the
+orphanage home projects with the total money.
 
-Sorry for the late answer, Greg. To address your concerns and questions
-let me elaborate:
+Meanwhile, I didn't forget your past efforts and attempts to assist me
+in transferring those funds and use it for the building of the
+orphanage home and helping the less privilege.
 
-Indeed, this change is not the only one required to enable DMIC + HDA
-configuration for customers. The following series is essential:
+Please contact my nurse in Burkina Faso, her name is Mrs. Manal Yusuf
+, ask her to send you the compensation of $600,000.00USD which i have
+credited with  the United Bank for Africa (UBA) bank into an ATM card
+before i traveled for my treatment, you will indicate your contact as
+my else's business associate that tried to help me, but it could not
+work out for us, and I appreciated your good efforts at that time very
+much. so feel free and get in touched with the nurse Mrs. Manal Yusuf
+(email: mrs1manalyusuf@gmail.com  ) and instruct her the address where
+to send the ATM card to you.
 
-[PATCH 0/7] ASoC: Intel: Skylake: Fix HDaudio and Dmic
-https://lore.kernel.org/alsa-devel/20200305145314.32579-1-cezary.rojewski@intel.com/
+Please i am in the hospital here, i would not have much time to check
+emails or  respond to you, but in case you have any important message
+do send me as an update, i might instruct the doctor to check it and
+respond to you, meanwhile, once you received the ATM CARD,  do not
+delay to inform me.
 
-as it's not just enabling said configuration, it is fixing several
-issues along the road with /skylake and HDA. And the issues are
-certainly not limited to just Dell XPS 13, these trouble many
-SKL/KBL/AML laptop models available on the market - those where AudioDSP
-configuration is enabled by default.
+Finally, remember that I had forwarded an instruction to the nurse on
+your behalf to deliver the ATM card to you, so feel free to get in
+touch with her by email she will send the ATM card to you without any
+delay.
 
-Backport presented in this very patch provided by Mateusz touches on yet
-another subject. More often than not, incomplete -or- incorrect topology
-binary is the cause of configuration issues and updating it usually
-resolves them. Unfortunately, user needed to be very precise when naming
-the new topology file. Name is quite complicated as it is based on data
-coming from NHLT's (ACPI table) header. Asking user to either provide
-their NHLT or decode the header themselves is inconvenient to say
-the least. And thus alternative-topology-name patch came to life.
-
-I'll check what's missing on v5.4.y and get to porting mentioned series.
-Should happen early next week.
-
-Thanks,
-Czarek
-
+Thank you and God bless you.
+MRS SABAH IBRAHIM
