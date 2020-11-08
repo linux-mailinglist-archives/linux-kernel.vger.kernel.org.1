@@ -2,118 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E436D2AAAC6
-	for <lists+linux-kernel@lfdr.de>; Sun,  8 Nov 2020 13:04:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E19542AAAC8
+	for <lists+linux-kernel@lfdr.de>; Sun,  8 Nov 2020 13:13:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728238AbgKHMEY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 8 Nov 2020 07:04:24 -0500
-Received: from mailrelay4-2.pub.mailoutpod1-cph3.one.com ([46.30.212.3]:59702
-        "EHLO mailrelay4-2.pub.mailoutpod1-cph3.one.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726607AbgKHMEX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 8 Nov 2020 07:04:23 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bitmath.org; s=20191106;
-        h=content-transfer-encoding:content-type:in-reply-to:mime-version:date:
-         message-id:from:references:cc:to:subject:from;
-        bh=cK24sQlDTwMS0988AqreL/OWkybNBUC25kHUvCli+HA=;
-        b=kams2iYmdueo/9rlztHCPnuUJfdIS1d/rrC/v0zF5KzH9h9TCEecofobzM998Y95gzuJhKYr0ee9C
-         ehg4X/k7RSvfU73+Rkyo2B6YegYS7u/xh+iNeXTY+Z1QHMFgjXR7ri/IjfXQ9jySAfpuG2XSloRMHh
-         cYlu4KLFyprQIEfzpUFpbGGKZZyc46OQBYfKWGBqFok22JjUxFNCz7D/5ksxvSBMDRgXQkbE06M/Xm
-         +4kvHfAQa8FUdPAxUczsSLsnu7oEqL5/XfzRjdmXTQdregCkjRNap3HD0zfWJ5ZkzT4Alhswn8NBjh
-         Iol9yVTDZHGhZaNUku6UL+oIccj5S4Q==
-X-HalOne-Cookie: 893d880919a1bc3da693fb6cde4714added48034
-X-HalOne-ID: 887ff14d-21ba-11eb-bb7e-d0431ea8bb10
-Received: from [192.168.19.13] (h-155-4-128-97.na.cust.bahnhof.se [155.4.128.97])
-        by mailrelay4.pub.mailoutpod1-cph3.one.com (Halon) with ESMTPSA
-        id 887ff14d-21ba-11eb-bb7e-d0431ea8bb10;
-        Sun, 08 Nov 2020 12:04:20 +0000 (UTC)
-Subject: Re: [PATCH v3] applesmc: Re-work SMC comms
-To:     Brad Campbell <brad@fnarfbargle.com>,
-        Andreas Kemnade <andreas@kemnade.info>
-Cc:     Arnd Bergmann <arnd@arndb.de>, linux-hwmon@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        hns@goldelico.com, Guenter Roeck <linux@roeck-us.net>,
-        Jean Delvare <jdelvare@suse.com>
-References: <70331f82-35a1-50bd-685d-0b06061dd213@fnarfbargle.com>
- <3c72ccc3-4de1-b5d0-423d-7b8c80991254@fnarfbargle.com>
- <6d071547-10ee-ca92-ec8b-4b5069d04501@bitmath.org>
- <8e117844-d62a-bcb1-398d-c59cc0d4b878@fnarfbargle.com>
- <e5a856b1-fb1a-db5d-0fde-c86d0bcca1df@bitmath.org>
- <aa60f673-427a-1a47-7593-54d1404c3c92@bitmath.org>
- <9109d059-d9cb-7464-edba-3f42aa78ce92@bitmath.org>
- <5310c0ab-0f80-1f9e-8807-066223edae13@bitmath.org>
- <57057d07-d3a0-8713-8365-7b12ca222bae@fnarfbargle.com>
- <41909045-9486-78d9-76c2-73b99a901b83@bitmath.org>
- <20201108101429.GA28460@mars.bitmath.org>
- <bdabe861-8717-8948-80a0-ca2173c2e22a@fnarfbargle.com>
-From:   Henrik Rydberg <rydberg@bitmath.org>
-Message-ID: <af08ee3b-313d-700c-7e70-c57d20d3be5d@bitmath.org>
-Date:   Sun, 8 Nov 2020 13:04:32 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1728106AbgKHMLB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 8 Nov 2020 07:11:01 -0500
+Received: from mx2.suse.de ([195.135.220.15]:56446 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726210AbgKHMLA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 8 Nov 2020 07:11:00 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1604837458;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=LMxUbZmKpoftJaR4p1JKT4oaedBDHSwqphXapOjtz48=;
+        b=EUV/I00AYACgE12fm4u9M/O0Tj6Jkp4uR/6sosnIyfQRS+SGQrnWyx2yGxNlXzPguXE/R+
+        lb+b4ACmHCwVcNJQWwfrUXb97M5G2TLiU5vjsI/xep5osts9X0OYTyKv/qXey6p+dHYRyF
+        r28PJcrwtGCgLfgmqiBnmRzjvpeGqLQ=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 8CE2FAB93;
+        Sun,  8 Nov 2020 12:10:58 +0000 (UTC)
+From:   Qu Wenruo <wqu@suse.com>
+To:     linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org
+Cc:     linux-kernel@vger.kernel.org, shawn.lin@rock-chips.com
+Subject: [PATCH] PCI: Rockchip: output proper error message for regulator error
+Date:   Sun,  8 Nov 2020 20:10:52 +0800
+Message-Id: <20201108121052.240909-1-wqu@suse.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-In-Reply-To: <bdabe861-8717-8948-80a0-ca2173c2e22a@fnarfbargle.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-11-08 12:57, Brad Campbell wrote:
-> On 8/11/20 9:14 pm, Henrik Rydberg wrote:
->> On Sun, Nov 08, 2020 at 09:35:28AM +0100, Henrik Rydberg wrote:
->>> Hi Brad,
->>>
->>> On 2020-11-08 02:00, Brad Campbell wrote:
->>>> G'day Henrik,
->>>>
->>>> I noticed you'd also loosened up the requirement for SMC_STATUS_BUSY in read_smc(). I assume
->>>> that causes problems on the early Macbook. This is revised on the one sent earlier.
->>>> If you could test this on your Air1,1 it'd be appreciated.
->>>
->>> No, I managed to screw up the patch; you can see that I carefully added the
->>> same treatment for the read argument, being unsure if the BUSY state would
->>> remain during the AVAILABLE data phase. I can check that again, but
->>> unfortunately the patch in this email shows the same problem.
->>>
->>> I think it may be worthwhile to rethink the behavior of wait_status() here.
->>> If one machine shows no change after a certain status bit change, then
->>> perhaps the others share that behavior, and we are waiting in vain. Just
->>> imagine how many years of cpu that is, combined. ;-)
->>
->> Here is a modification along that line.
->>
->> Compared to your latest version, this one has wait_status() return the
->> actual status on success. Instead of waiting for BUSY, it waits for
->> the other status bits, and checks BUSY afterwards. So as not to wait
->> unneccesarily, the udelay() is placed together with the single
->> outb(). The return value of send_byte_data() is augmented with
->> -EAGAIN, which is then used in send_command() to create the resend
->> loop.
->>
->> I reach 41 reads per second on the MBA1,1 with this version, which is
->> getting close to the performance prior to the problems.
-> 
-> G'day Henrik,
-> 
-> I like this one. It's slower on my laptop (40 rps vs 50 on the MacbookPro11,1) and the same 17 rps on the iMac 12,2 but it's as reliable
-> and if it works for both of yours then I think it's a winner. I can't really diagnose the iMac properly as I'm 2,800KM away and have
-> nobody to reboot it if I kill it. 5.7.2 gives 20 rps, so 17 is ok for me.
-> 
-> Andreas, could I ask you to test this one?
-> 
-> Odd my original version worked on your Air3,1 and the other 3 machines without retry.
-> I wonder how many commands require retries, how many retires are actually required, and what we are going wrong on the Air1,1 that requires
-> one or more retries.
-> 
-> I just feels like a brute force approach because there's something we're missing.
+There is a regression caused by commit aea6cb99703e ("regulator: resolve
+supply after creating regulator") which makes RK808 unable to register
+its regulators.
 
-I would think you are right. There should be a way to follow the status 
-changes in realtime, so one can determine handshake and processing from 
-that information. At least, with this change, we are making the blunt 
-instrument a little smaller.
+This leads to vpcie1v8 and vpcie0v9 unable to be looked up, causing
+rockchip pcie root controller unable to initialize.
 
-Cheers,
-Henrik
+At the same time, the dmesg shows nothing about the problem, making
+debug much harder.
+
+This patch will introduce a macro, rockchip_get_regulator(), which we
+can get mandatory or optional regulator with just one line, with proper
+error message when it goes wrong.
+
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+---
+ drivers/pci/controller/pcie-rockchip-host.c | 58 ++++++++++++++-------
+ 1 file changed, 38 insertions(+), 20 deletions(-)
+
+diff --git a/drivers/pci/controller/pcie-rockchip-host.c b/drivers/pci/controller/pcie-rockchip-host.c
+index 9705059523a6..981ea882ba26 100644
+--- a/drivers/pci/controller/pcie-rockchip-host.c
++++ b/drivers/pci/controller/pcie-rockchip-host.c
+@@ -578,6 +578,33 @@ static int rockchip_pcie_setup_irq(struct rockchip_pcie *rockchip)
+ 	return 0;
+ }
+ 
++#define rockchip_get_regulator(rockchip, name, optional)		\
++({									\
++	struct device *dev = rockchip->dev;				\
++	int ret = 0;							\
++									\
++	if (optional)							\
++		rockchip->name = devm_regulator_get_optional(dev,	\
++							     #name);	\
++	else								\
++		rockchip->name = devm_regulator_get(dev, #name);	\
++	if (IS_ERR(rockchip->name)) {					\
++		ret = PTR_ERR(rockchip->name);				\
++		if (ret != -ENODEV || !optional) {			\
++			dev_err(dev, "failed to get %s regulator: %d\n",\
++				#name, ret);				\
++		} else if (optional) {					\
++			dev_info(dev, "no %s regulator found, skip\n",	\
++				 #name);				\
++			ret = 0;					\
++		}							\
++	}								\
++	ret;								\
++});
++
++#define OPTIONAL	true
++#define MANDATORY	false
++
+ /**
+  * rockchip_pcie_parse_host_dt - Parse Device Tree
+  * @rockchip: PCIe port information
+@@ -586,7 +613,6 @@ static int rockchip_pcie_setup_irq(struct rockchip_pcie *rockchip)
+  */
+ static int rockchip_pcie_parse_host_dt(struct rockchip_pcie *rockchip)
+ {
+-	struct device *dev = rockchip->dev;
+ 	int err;
+ 
+ 	err = rockchip_pcie_parse_dt(rockchip);
+@@ -597,29 +623,21 @@ static int rockchip_pcie_parse_host_dt(struct rockchip_pcie *rockchip)
+ 	if (err)
+ 		return err;
+ 
+-	rockchip->vpcie12v = devm_regulator_get_optional(dev, "vpcie12v");
+-	if (IS_ERR(rockchip->vpcie12v)) {
+-		if (PTR_ERR(rockchip->vpcie12v) != -ENODEV)
+-			return PTR_ERR(rockchip->vpcie12v);
+-		dev_info(dev, "no vpcie12v regulator found\n");
+-	}
++	err = rockchip_get_regulator(rockchip, vpcie12v, OPTIONAL);
++	if (err)
++		return err;
+ 
+-	rockchip->vpcie3v3 = devm_regulator_get_optional(dev, "vpcie3v3");
+-	if (IS_ERR(rockchip->vpcie3v3)) {
+-		if (PTR_ERR(rockchip->vpcie3v3) != -ENODEV)
+-			return PTR_ERR(rockchip->vpcie3v3);
+-		dev_info(dev, "no vpcie3v3 regulator found\n");
+-	}
++	err = rockchip_get_regulator(rockchip, vpcie3v3, OPTIONAL);
++	if (err)
++		return err;
+ 
+-	rockchip->vpcie1v8 = devm_regulator_get(dev, "vpcie1v8");
+-	if (IS_ERR(rockchip->vpcie1v8))
+-		return PTR_ERR(rockchip->vpcie1v8);
++	err = rockchip_get_regulator(rockchip, vpcie1v8, MANDATORY);
++	if (err)
++		return err;
+ 
+-	rockchip->vpcie0v9 = devm_regulator_get(dev, "vpcie0v9");
+-	if (IS_ERR(rockchip->vpcie0v9))
+-		return PTR_ERR(rockchip->vpcie0v9);
++	err = rockchip_get_regulator(rockchip, vpcie0v9, MANDATORY);
+ 
+-	return 0;
++	return err;
+ }
+ 
+ static int rockchip_pcie_set_vpcie(struct rockchip_pcie *rockchip)
+-- 
+2.29.2
+
