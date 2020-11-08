@@ -2,65 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8803B2AAA0B
-	for <lists+linux-kernel@lfdr.de>; Sun,  8 Nov 2020 09:21:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 86DC12AAA10
+	for <lists+linux-kernel@lfdr.de>; Sun,  8 Nov 2020 09:22:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727834AbgKHIUg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 8 Nov 2020 03:20:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37594 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726115AbgKHIUg (ORCPT
+        id S1728222AbgKHIWH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 8 Nov 2020 03:22:07 -0500
+Received: from mailrelay1-2.pub.mailoutpod1-cph3.one.com ([46.30.212.0]:26658
+        "EHLO mailrelay1-2.pub.mailoutpod1-cph3.one.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726115AbgKHIWH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 8 Nov 2020 03:20:36 -0500
-Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3F24C0613CF;
-        Sun,  8 Nov 2020 00:20:35 -0800 (PST)
-Received: by mail-ed1-x544.google.com with SMTP id e18so5496830edy.6;
-        Sun, 08 Nov 2020 00:20:35 -0800 (PST)
+        Sun, 8 Nov 2020 03:22:07 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=ifqNO6WT8GZNIez7I1EN9ZSl8l1s4Z8Z+CHlW50umKs=;
-        b=Yr6Wvw/HBi6nAaqlb0rzVqBfNcfNQMor5KK3vmiynOkYfRg6nlUKlaL5IcUO1T2vXm
-         6FM1aYWx6Gojir15CUJA3GEyjdZiovHBbkxMq1J+yYE2roNeUyGZMiWqwGIYVfyBC/tw
-         gEqP2lW0A8Ij+dykErpDcCQXNQvKcRvXbaC0I7zTJKsHmIlV+/T5+6oQLwPhTNh3bkMt
-         Lu+cQM5r1SIm0vTBQEk7KRO1iYMzlrQqESZZYjIZXJ432p0AzDnA+zdLa0u6Rcj02LJn
-         GgQ5wTGk+HB7Ee02z+j8Htp8zR0Mka6rKRi+9ODODEgIJU+9h5SaXu8eyCQRbLqwuv4T
-         C+nA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=ifqNO6WT8GZNIez7I1EN9ZSl8l1s4Z8Z+CHlW50umKs=;
-        b=Ta5aORNT44Vvf+HuE1r2kjSnqlhabqhN8ksLK5vI5Fat1Rl5SX0XVAPRuWMFMU4d6G
-         lf0GjXBfYoqvnLI0/xMnptXBBWTvCtgrwwByZDMNlX5Jh6oNyOTzjY/PFN+8NtmulFhg
-         FIM3AF07XR5LE8YI9tPcmzYbhMtOcKlCd0KPCXYj57wVpUb5+a/sOYtQTY3ifEI9EkK4
-         egBR0fhafup1ysN29SirPgI2XJ4IrY2DPJJdoIB4vWbFgj4uE/+8l+tE2dDks0gpBz+z
-         7l4Yjdp6+Bm+euTFaWSCQTLOirKutzM2Vqd5cTCs36fZK07y90mU80IwfuTx5J++IyCK
-         7VVA==
-X-Gm-Message-State: AOAM531ePeh8BLc/KzLYS3Cs19D4ZYeJoGqB3Vm7Fafp+ng2C3BY64cw
-        6JyNMLBH2pfF6EMHT4oSc+0GDmHu708=
-X-Google-Smtp-Source: ABdhPJwfMHCXP4RBQEQL4Gf9jNstd7Ec9h9vmcnbHtFyopsv1zvxVjEUqTeG7LWiE+/EQ6GQzNfg4g==
-X-Received: by 2002:aa7:d858:: with SMTP id f24mr9722267eds.12.1604823634581;
-        Sun, 08 Nov 2020 00:20:34 -0800 (PST)
-Received: from [192.168.0.103] ([77.124.113.118])
-        by smtp.gmail.com with ESMTPSA id d23sm5320280edp.36.2020.11.08.00.20.33
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 08 Nov 2020 00:20:33 -0800 (PST)
-Subject: Re: [PATCH] net/mlx4: Assign boolean values to a bool variable
-To:     xiakaixu1987@gmail.com, tariqt@nvidia.com, tariqt@mellanox.com
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Kaixu Xia <kaixuxia@tencent.com>
-References: <1604732038-6057-1-git-send-email-kaixuxia@tencent.com>
-From:   Tariq Toukan <ttoukan.linux@gmail.com>
-Message-ID: <9c8efc31-3237-ed3b-bfba-c13494b6452d@gmail.com>
-Date:   Sun, 8 Nov 2020 10:20:33 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        d=bitmath.org; s=20191106;
+        h=content-transfer-encoding:content-type:in-reply-to:mime-version:date:
+         message-id:from:references:cc:to:subject:from;
+        bh=vcNxa8iue2751WIIc39z1vwhRHUbXhsp3/e3p7XyzFM=;
+        b=Q+Nu9eZKLBv+w/mIVGV2z68aLti+/evalA6kRi+r/mMLTKiZXGpEJ4oQZuO/arz/QjMahEdgu3Yvj
+         rx17ytYYFtg5Yu9msDoBxeC9SG4WTVsllVFMuETcCZ89LTc+KjL49nsVZaMAI/MoLmYVHLZHuDb//o
+         cWxo3IGuUEpFtzLCGUT3gazOPrQ7gld6e8a9L9ouO6sPLPlWdDxihzVbhRW04qvUEZHeScsdN/+P0f
+         HM/BKqOM17AgDWflqhypR3EGWt/nw/AnshP4HjiG6n8JTAWjNY7TXyz7zwrpzVdAiOwWFUNob+Vhoh
+         pmAT5ccKgW6yqbMIlRCQ9CK8ZU21WqA==
+X-HalOne-Cookie: 0cc1958e164cd661d1012c3cb799f400dc010809
+X-HalOne-ID: 7a4837aa-219b-11eb-9658-d0431ea8a283
+Received: from [192.168.19.13] (h-155-4-128-97.na.cust.bahnhof.se [155.4.128.97])
+        by mailrelay1.pub.mailoutpod1-cph3.one.com (Halon) with ESMTPSA
+        id 7a4837aa-219b-11eb-9658-d0431ea8a283;
+        Sun, 08 Nov 2020 08:22:02 +0000 (UTC)
+Subject: Re: [PATCH] applesmc: Re-work SMC comms v2
+To:     Brad Campbell <brad@fnarfbargle.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>, linux-hwmon@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        hns@goldelico.com, Guenter Roeck <linux@roeck-us.net>,
+        Andreas Kemnade <andreas@kemnade.info>,
+        Jean Delvare <jdelvare@suse.com>
+References: <20200930105442.3f642f6c@aktux> <20201002002251.28462e64@aktux>
+ <7543ef85-727d-96c3-947e-5b18e9e6c44d@roeck-us.net>
+ <20201006090226.4275c824@kemnade.info>
+ <db042e9b-be41-11b1-7059-3881b1da5c8b@fnarfbargle.com>
+ <68467f1b-cea1-47ea-a4d4-8319214b072a@fnarfbargle.com>
+ <20201104142057.62493c12@aktux>
+ <2436afef-99c6-c352-936d-567bf553388c@fnarfbargle.com>
+ <7a085650-2399-08c0-3c4d-6cd1fa28a365@roeck-us.net>
+ <fc36d066-c432-e7d2-312f-a0a592446fe2@fnarfbargle.com>
+ <10027199-5d31-93e7-9bd8-7baaebff8b71@roeck-us.net>
+ <70331f82-35a1-50bd-685d-0b06061dd213@fnarfbargle.com>
+ <3c72ccc3-4de1-b5d0-423d-7b8c80991254@fnarfbargle.com>
+ <6d071547-10ee-ca92-ec8b-4b5069d04501@bitmath.org>
+ <8e117844-d62a-bcb1-398d-c59cc0d4b878@fnarfbargle.com>
+ <e5a856b1-fb1a-db5d-0fde-c86d0bcca1df@bitmath.org>
+ <aa60f673-427a-1a47-7593-54d1404c3c92@bitmath.org>
+ <9109d059-d9cb-7464-edba-3f42aa78ce92@bitmath.org>
+ <5310c0ab-0f80-1f9e-8807-066223edae13@bitmath.org>
+ <26d3f4f5-2e9a-cd20-1531-74cf44ef738c@fnarfbargle.com>
+From:   Henrik Rydberg <rydberg@bitmath.org>
+Message-ID: <bddf0050-4189-4ca4-8077-71683bcc4b10@bitmath.org>
+Date:   Sun, 8 Nov 2020 09:22:14 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-In-Reply-To: <1604732038-6057-1-git-send-email-kaixuxia@tencent.com>
+In-Reply-To: <26d3f4f5-2e9a-cd20-1531-74cf44ef738c@fnarfbargle.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -68,39 +68,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Brad,
 
-
-On 11/7/2020 8:53 AM, xiakaixu1987@gmail.com wrote:
-> From: Kaixu Xia <kaixuxia@tencent.com>
+> G'day Henrik,
 > 
-> Fix the following coccinelle warnings:
+> Which kernel was this based on? It won't apply to my 5.9 tree.
+
+I was being lazy and applied the diff to linus/master on top of my 
+current stable branch. More importantly, I sent the mail out from an 
+email client that may not format the patch properly; I'll fix that.
+
+> I assume the sprinkling of udelay(APPLESMC_MIN_WAIT) means the SMC is
+> slow in getting its status register set up. Could we instead just put
+> a single one of those up-front in wait_status?
+
+That works fine, just a matter of taste.
+
+> Any chance you could try this one? I've added a retry to send_command and
+> added a single global APPLESMC_MIN_WAIT before each status read.
 > 
+>  From looking at your modified send_command, it appears the trigger for a
+> retry is sending a command and the SMC doing absolutely nothing. This
+> should do the same thing.
 
-Hi Kaixu,
+Not quite, unfortunately. The patch that works waits for a drop of 
+IB_CLOSED, then checks the BUSY status. If not seen, it resends 
+immediately, never expecting to see it. The patch in this email creates 
+a dreadfully sluggish probe, and the occasional failure.
 
-Which coccinelle version gave this warning?
+> Interestingly enough, by adding the udelay to wait_status on my machine I've
+> gone from 24 reads/s to 50 reads/s.
 
+Yep, I experience the same positive effect.
 
-> ./drivers/net/ethernet/mellanox/mlx4/en_rx.c:687:1-17: WARNING: Assignment of 0/1 to bool variable
-> 
-> Reported-by: Tosk Robot <tencent_os_robot@tencent.com>
-> Signed-off-by: Kaixu Xia <kaixuxia@tencent.com>
-> ---
->   drivers/net/ethernet/mellanox/mlx4/en_rx.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/net/ethernet/mellanox/mlx4/en_rx.c b/drivers/net/ethernet/mellanox/mlx4/en_rx.c
-> index 502d1b97855c..b0f79a5151cf 100644
-> --- a/drivers/net/ethernet/mellanox/mlx4/en_rx.c
-> +++ b/drivers/net/ethernet/mellanox/mlx4/en_rx.c
-> @@ -684,7 +684,7 @@ int mlx4_en_process_rx_cq(struct net_device *dev, struct mlx4_en_cq *cq, int bud
->   	xdp_prog = rcu_dereference(ring->xdp_prog);
->   	xdp.rxq = &ring->xdp_rxq;
->   	xdp.frame_sz = priv->frag_info[0].frag_stride;
-> -	doorbell_pending = 0;
-> +	doorbell_pending = false;
->   
->   	/* We assume a 1:1 mapping between CQEs and Rx descriptors, so Rx
->   	 * descriptor offset can be deduced from the CQE index instead of
-> 
+> I've left out the remainder of the cleanups. Once we get a minimally working
+> patch I was going to look at a few cleanups, and I have some patches pending
+> to allow writing to the SMC from userspace (for setting BCLM and BFCL mainly)
 
+All fine. I will respond to the v3 mail separately.
+
+Henrik
