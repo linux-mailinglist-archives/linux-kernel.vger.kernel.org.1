@@ -2,111 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 534442AAB19
-	for <lists+linux-kernel@lfdr.de>; Sun,  8 Nov 2020 14:15:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CE6032AAB14
+	for <lists+linux-kernel@lfdr.de>; Sun,  8 Nov 2020 14:14:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728531AbgKHNO6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 8 Nov 2020 08:14:58 -0500
-Received: from hera.aquilenet.fr ([185.233.100.1]:38360 "EHLO
-        hera.aquilenet.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728425AbgKHNOv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 8 Nov 2020 08:14:51 -0500
-Received: from localhost (localhost [127.0.0.1])
-        by hera.aquilenet.fr (Postfix) with ESMTP id EFCFCCF8;
-        Sun,  8 Nov 2020 14:14:45 +0100 (CET)
-X-Virus-Scanned: Debian amavisd-new at aquilenet.fr
-Received: from hera.aquilenet.fr ([127.0.0.1])
-        by localhost (hera.aquilenet.fr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id m1gaJec65rC8; Sun,  8 Nov 2020 14:14:45 +0100 (CET)
-Received: from function.youpi.perso.aquilenet.fr (lfbn-bor-1-56-204.w90-50.abo.wanadoo.fr [90.50.148.204])
-        by hera.aquilenet.fr (Postfix) with ESMTPSA id 11869CF7;
-        Sun,  8 Nov 2020 14:14:44 +0100 (CET)
-Received: from samy by function.youpi.perso.aquilenet.fr with local (Exim 4.94)
-        (envelope-from <samuel.thibault@ens-lyon.org>)
-        id 1kbkUj-009KMT-Vb; Sun, 08 Nov 2020 14:12:33 +0100
-Date:   Sun, 8 Nov 2020 14:12:33 +0100
-From:   Samuel Thibault <samuel.thibault@ens-lyon.org>
-To:     gregkh@linuxfoundation.org
-Cc:     linux-kernel@vger.kernel.org, speakup@linux-speakup.org
-Subject: [PATCH] speakup ttyio: Do not schedule() in ttyio_in_nowait
-Message-ID: <20201108131233.tadycr73sxlvodgo@function>
-Mail-Followup-To: Samuel Thibault <samuel.thibault@ens-lyon.org>,
-        gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
-        speakup@linux-speakup.org
+        id S1728411AbgKHNO1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 8 Nov 2020 08:14:27 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51612 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727958AbgKHNOR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 8 Nov 2020 08:14:17 -0500
+Received: from localhost (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 48823206ED;
+        Sun,  8 Nov 2020 13:14:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604841256;
+        bh=ACYX+dzqwM+pqodv+7eTSQQ2v0JAOW2m9T80x7FTPzM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=L7O5RXI+yzbk9LJKFBokN0v+ZLqHuE7BSPzd/SEoYkJL2mr6e+0/xOPHnkYQo25O3
+         /UDhFntFg3btGKPdbvIgZ7uts47RwM5PImyTFkgAyYN0xww3jegvoMHNo684oXWm0N
+         S8mMTnROEGw5L21GeHKLPP2Lh0iAleDFd7FcqgyY=
+Date:   Sun, 8 Nov 2020 08:14:15 -0500
+From:   Sasha Levin <sashal@kernel.org>
+To:     Neil Armstrong <narmstrong@baylibre.com>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Kevin Hilman <khilman@baylibre.com>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-amlogic@lists.infradead.org
+Subject: Re: [PATCH AUTOSEL 5.9 02/35] arm64: dts: meson-axg: add USB nodes
+Message-ID: <20201108131415.GO2092@sasha-vm>
+References: <20201103011840.182814-1-sashal@kernel.org>
+ <20201103011840.182814-2-sashal@kernel.org>
+ <d3ef0d93-a95b-2109-ef6b-3d70ce3b9cc3@baylibre.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Disposition: inline
-Organization: I am not organized
-User-Agent: NeoMutt/20170609 (1.8.3)
+In-Reply-To: <d3ef0d93-a95b-2109-ef6b-3d70ce3b9cc3@baylibre.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-With the ltlk and spkout drivers, the index read function, i.e.
-in_nowait, is getting called from the read_all_doc mechanism, from
-the timer softirq:
+On Tue, Nov 03, 2020 at 09:55:45AM +0100, Neil Armstrong wrote:
+>On 03/11/2020 02:18, Sasha Levin wrote:
+>> From: Neil Armstrong <narmstrong@baylibre.com>
+>>
+>> [ Upstream commit 1b208bab34dc3f4ef8f408105017d4a7b72b2a2f ]
+>>
+>> This adds the USB Glue node, with the USB2 & USB3 controllers along the single
+>> USB2 PHY node.
+>>
+>> Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
+>> Reviewed-by: Kevin Hilman <khilman@baylibre.com>
+>> Reviewed-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+>> Signed-off-by: Kevin Hilman <khilman@baylibre.com>
+>> Signed-off-by: Sasha Levin <sashal@kernel.org>
+>> ---
+>>  arch/arm64/boot/dts/amlogic/meson-axg.dtsi | 50 ++++++++++++++++++++++
+>>  1 file changed, 50 insertions(+)
+>>
+>> diff --git a/arch/arm64/boot/dts/amlogic/meson-axg.dtsi b/arch/arm64/boot/dts/amlogic/meson-axg.dtsi
+>> index b9efc8469265d..fae48efae83e9 100644
+>> --- a/arch/arm64/boot/dts/amlogic/meson-axg.dtsi
+>> +++ b/arch/arm64/boot/dts/amlogic/meson-axg.dtsi
+>> @@ -171,6 +171,46 @@ soc {
+>>  		#size-cells = <2>;
+>>  		ranges;
+>>
+>> +		usb: usb@ffe09080 {
+>> +			compatible = "amlogic,meson-axg-usb-ctrl";
+>> +			reg = <0x0 0xffe09080 0x0 0x20>;
+>> +			interrupts = <GIC_SPI 16 IRQ_TYPE_LEVEL_HIGH>;
+>> +			#address-cells = <2>;
+>> +			#size-cells = <2>;
+>> +			ranges;
+>> +
+>> +			clocks = <&clkc CLKID_USB>, <&clkc CLKID_USB1_DDR_BRIDGE>;
+>> +			clock-names = "usb_ctrl", "ddr";
+>> +			resets = <&reset RESET_USB_OTG>;
+>> +
+>> +			dr_mode = "otg";
+>> +
+>> +			phys = <&usb2_phy1>;
+>> +			phy-names = "usb2-phy1";
+>> +
+>> +			dwc2: usb@ff400000 {
+>> +				compatible = "amlogic,meson-g12a-usb", "snps,dwc2";
+>> +				reg = <0x0 0xff400000 0x0 0x40000>;
+>> +				interrupts = <GIC_SPI 31 IRQ_TYPE_LEVEL_HIGH>;
+>> +				clocks = <&clkc CLKID_USB1>;
+>> +				clock-names = "otg";
+>> +				phys = <&usb2_phy1>;
+>> +				dr_mode = "peripheral";
+>> +				g-rx-fifo-size = <192>;
+>> +				g-np-tx-fifo-size = <128>;
+>> +				g-tx-fifo-size = <128 128 16 16 16>;
+>> +			};
+>> +
+>> +			dwc3: usb@ff500000 {
+>> +				compatible = "snps,dwc3";
+>> +				reg = <0x0 0xff500000 0x0 0x100000>;
+>> +				interrupts = <GIC_SPI 30 IRQ_TYPE_LEVEL_HIGH>;
+>> +				dr_mode = "host";
+>> +				maximum-speed = "high-speed";
+>> +				snps,dis_u2_susphy_quirk;
+>> +			};
+>> +		};
+>> +
+>>  		ethmac: ethernet@ff3f0000 {
+>>  			compatible = "amlogic,meson-axg-dwmac",
+>>  				     "snps,dwmac-3.70a",
+>> @@ -1734,6 +1774,16 @@ sd_emmc_c: mmc@7000 {
+>>  				clock-names = "core", "clkin0", "clkin1";
+>>  				resets = <&reset RESET_SD_EMMC_C>;
+>>  			};
+>> +
+>> +			usb2_phy1: phy@9020 {
+>> +				compatible = "amlogic,meson-gxl-usb2-phy";
+>> +				#phy-cells = <0>;
+>> +				reg = <0x0 0x9020 0x0 0x20>;
+>> +				clocks = <&clkc CLKID_USB>;
+>> +				clock-names = "phy";
+>> +				resets = <&reset RESET_USB_OTG>;
+>> +				reset-names = "phy";
+>> +			};
+>>  		};
+>>
+>>  		sram: sram@fffc0000 {
+>>
+>
+>Hi Sasha,
+>
+>This needs also support in the dwc3-meson-g12a driver, you can drop it from backport.
 
-Call Trace:
- <IRQ>
- dump_stack+0x71/0x98
- dequeue_task_idle+0x1f/0x28
- __schedule+0x167/0x5d6
- ? trace_hardirqs_on+0x2e/0x3a
- ? usleep_range+0x7f/0x7f
- schedule+0x8a/0xae
- schedule_timeout+0xb1/0xea
- ? del_timer_sync+0x31/0x31
- do_wait_for_common+0xba/0x12b
- ? wake_up_q+0x45/0x45
- wait_for_common+0x37/0x50
- ttyio_in+0x2a/0x6b
- spk_ttyio_in_nowait+0xc/0x13
- spk_get_index_count+0x20/0x93
- cursor_done+0x1c6/0x4c6
- ? read_all_doc+0xb1/0xb1
- call_timer_fn+0x89/0x140
- run_timer_softirq+0x164/0x1a5
- ? read_all_doc+0xb1/0xb1
- ? hrtimer_forward+0x7b/0x87
- ? timerqueue_add+0x62/0x68
- ? enqueue_hrtimer+0x95/0x9f
- __do_softirq+0x181/0x31f
- irq_exit+0x6a/0x86
-smp_apic_timer_interrupt+0x15e/0x183
- apic_timer_interrupt+0xf/0x20
- </IRQ>
+Dropped, thanks!
 
-We thus should not schedule() at all, even with timeout == 0, this
-crashes the kernel.  We can however use try_wait_for_completion()
-instead of wait_for_completion_timeout(0).
-
-Cc: stable@vger.kernel.org
-Signed-off-by: Samuel Thibault <samuel.thibault@ens-lyon.org>
-Reported-by: John Covici <covici@ccs.covici.com>
-Tested-by: John Covici <covici@ccs.covici.com>
-
----
- drivers/accessibility/speakup/spk_ttyio.c |   10 ++++++----
- 1 file changed, 6 insertions(+), 4 deletions(-)
-
---- a/drivers/accessibility/speakup/spk_ttyio.c
-+++ b/drivers/accessibility/speakup/spk_ttyio.c
-@@ -298,11 +298,13 @@ static unsigned char ttyio_in(int timeou
- 	struct spk_ldisc_data *ldisc_data = speakup_tty->disc_data;
- 	char rv;
- 
--	if (wait_for_completion_timeout(&ldisc_data->completion,
-+	if (!timeout) {
-+		if (!try_wait_for_completion(&ldisc_data->completion))
-+			return 0xff;
-+	} else if (wait_for_completion_timeout(&ldisc_data->completion,
- 					usecs_to_jiffies(timeout)) == 0) {
--		if (timeout)
--			pr_warn("spk_ttyio: timeout (%d)  while waiting for input\n",
--				timeout);
-+		pr_warn("spk_ttyio: timeout (%d)  while waiting for input\n",
-+			timeout);
- 		return 0xff;
- 	}
- 
+-- 
+Thanks,
+Sasha
