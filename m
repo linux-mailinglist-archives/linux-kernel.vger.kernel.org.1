@@ -2,161 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 987822AAAF2
-	for <lists+linux-kernel@lfdr.de>; Sun,  8 Nov 2020 13:19:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B3CD2AAAFF
+	for <lists+linux-kernel@lfdr.de>; Sun,  8 Nov 2020 13:39:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728485AbgKHMTX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 8 Nov 2020 07:19:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46002 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728197AbgKHMTV (ORCPT
+        id S1726210AbgKHMjJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 8 Nov 2020 07:39:09 -0500
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:48204 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726607AbgKHMjJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 8 Nov 2020 07:19:21 -0500
-Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0198C0613CF;
-        Sun,  8 Nov 2020 04:19:20 -0800 (PST)
-Received: by mail-lf1-x142.google.com with SMTP id l2so8264578lfk.0;
-        Sun, 08 Nov 2020 04:19:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:from:to:cc:references:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=2sZ4icayrxxDWpa2xJypEQHGIoro/hg/XjsXfIMVIO0=;
-        b=rFpONZz/Kl33uh/dizvuNJQR2av8Rv5uFlJ5DePIU/DxOtnlMkNpGoI3JXUj2MWsEF
-         ir6IGHMPuOz5Ha0JkEbKS4xflgVuaxejRvr3J7nUUQOCUdjtzTtB+/2LCSIwZ1YYD/TJ
-         lKE8uooAVEPA5V7sGNiXi7IF5izcclg1E7XOW+XQRLEz/SOzhIs5xZCH9hY7R371YhQJ
-         LdeTxesJm0/t9nWD/LlBWtdARIzCuiHjTsZN8sOpocViLXo7UpaGVp/CBzAK20Ddkauz
-         tbH9apGbBjlfs/0xTDfRayemP603Ij5uZuDJzOs53HjDllldmig65ToOUo4o93xa8AYC
-         tAvw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=2sZ4icayrxxDWpa2xJypEQHGIoro/hg/XjsXfIMVIO0=;
-        b=a0VrwSjIo7DPx418VgQPnP7O7neTTCqu0icPt2WzwWobZaZX1emMwqLA2mUVDMX658
-         52FSjkV2QnBRR4J78NbYum7oKX0gTvu2Dw9twhUdkxnlfVUTX1rGhgpUELBgHg3qIL61
-         scNfR/wW9t5p1secyzgnGI8+dgkBPJNAdTJf+qVWH4ejy5/GudXp2ObX6C3QgYvdOrkU
-         PwIbCk/kDjaTc09rRblXGAqkasN4vEsF58vS5kOtsrc/wuiu8TCvVOMqcd/nBIefEvi0
-         7+d70o5zJ6ENSEwPttjK9P08P15Ds7UStyF7yq5yWzRZHYY8VnLsh+qMqDFtTtx86CBF
-         1JXg==
-X-Gm-Message-State: AOAM532WNQm7NkHr9PMosQY1fp/5mdNCTavtHa/F9S0seojw693xnAA6
-        eQg4GAvPsnQi0Y+/Emf2qficb/gmkfA=
-X-Google-Smtp-Source: ABdhPJx2JpfTMAfVNhGgqvUuTHG0na3AuqFBXgT3nmIXEBqvHyuzg1Il4cTfxq8l0jMElMVqEADDJg==
-X-Received: by 2002:a05:6512:3250:: with SMTP id c16mr469413lfr.404.1604837959047;
-        Sun, 08 Nov 2020 04:19:19 -0800 (PST)
-Received: from [192.168.2.145] (109-252-193-159.dynamic.spd-mgts.ru. [109.252.193.159])
-        by smtp.googlemail.com with ESMTPSA id d26sm1479402ljj.102.2020.11.08.04.19.17
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 08 Nov 2020 04:19:18 -0800 (PST)
-Subject: Re: [PATCH v1 00/30] Introduce core voltage scaling for NVIDIA
- Tegra20/30 SoCs
-From:   Dmitry Osipenko <digetx@gmail.com>
-To:     Ulf Hansson <ulf.hansson@linaro.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Peter Chen <Peter.Chen@nxp.com>,
-        Mark Brown <broonie@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Peter Geis <pgwipeout@gmail.com>,
-        Nicolas Chauvet <kwizart@gmail.com>,
-        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
-        driverdevel <devel@driverdev.osuosl.org>,
-        Linux USB List <linux-usb@vger.kernel.org>,
-        linux-pwm@vger.kernel.org,
-        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        DTML <devicetree@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        linux-tegra <linux-tegra@vger.kernel.org>
-References: <20201104234427.26477-1-digetx@gmail.com>
- <CAPDyKFr7qTU2RPhA_ZrbCayoTTNUEno1zdmvmv+8HBe-Owrfeg@mail.gmail.com>
- <cd147ab0-1304-a491-7a56-ee6199c02d32@gmail.com>
-Message-ID: <2716c195-083a-112f-f1e5-2f6b7152a4b5@gmail.com>
-Date:   Sun, 8 Nov 2020 15:19:16 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Sun, 8 Nov 2020 07:39:09 -0500
+Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-23-cvzoPkr0P8OQXUzDMaoxCg-1; Sun, 08 Nov 2020 12:39:04 +0000
+X-MC-Unique: cvzoPkr0P8OQXUzDMaoxCg-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
+ Server (TLS) id 15.0.1347.2; Sun, 8 Nov 2020 12:39:04 +0000
+Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
+ AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
+ Sun, 8 Nov 2020 12:39:04 +0000
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Andrew Lunn' <andrew@lunn.ch>, Joe Perches <joe@perches.com>
+CC:     Alex Shi <alex.shi@linux.alibaba.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        "Vladimir Oltean" <olteanv@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        "Jakub Kicinski" <kuba@kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH] net/dsa: remove unused macros to tame gcc warning
+Thread-Topic: [PATCH] net/dsa: remove unused macros to tame gcc warning
+Thread-Index: AQHWtVXzDoDYS6gyQUa+zdC/SmUjzqm+K9hg
+Date:   Sun, 8 Nov 2020 12:39:03 +0000
+Message-ID: <e0a266295d4e4e9b96546f99b2ebc3a5@AcuMS.aculab.com>
+References: <1604641050-6004-1-git-send-email-alex.shi@linux.alibaba.com>
+ <20201106141820.GP933237@lunn.ch>
+ <24690741-cc10-eec1-33c6-7960c8b7fac6@gmail.com>
+ <b3274bdb-5680-0c24-9800-8c025bfa119a@linux.alibaba.com>
+ <6ed68a7898c5505d3106223b7ad47950a0c79dc3.camel@perches.com>
+ <20201107223301.GY933237@lunn.ch>
+In-Reply-To: <20201107223301.GY933237@lunn.ch>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-In-Reply-To: <cd147ab0-1304-a491-7a56-ee6199c02d32@gmail.com>
-Content-Type: text/plain; charset=utf-8
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-05.11.2020 18:22, Dmitry Osipenko пишет:
-> 05.11.2020 12:45, Ulf Hansson пишет:
-> ...
->> I need some more time to review this, but just a quick check found a
->> few potential issues...
-> 
-> Thank you for starting the review! I'm pretty sure it will take a couple
-> revisions until all the questions will be resolved :)
-> 
->> The "core-supply", that you specify as a regulator for each
->> controller's device node, is not the way we describe power domains.
->> Instead, it seems like you should register a power-domain provider
->> (with the help of genpd) and implement the ->set_performance_state()
->> callback for it. Each device node should then be hooked up to this
->> power-domain, rather than to a "core-supply". For DT bindings, please
->> have a look at Documentation/devicetree/bindings/power/power-domain.yaml
->> and Documentation/devicetree/bindings/power/power_domain.txt.
->>
->> In regards to the "sync state" problem (preventing to change
->> performance states until all consumers have been attached), this can
->> then be managed by the genpd provider driver instead.
-> 
-> I'll need to take a closer look at GENPD, thank you for the suggestion.
-> 
-> Sounds like a software GENPD driver which manages clocks and voltages
-> could be a good idea, but it also could be an unnecessary
-> over-engineering. Let's see..
-> 
+RnJvbTogQW5kcmV3IEx1bm4NCj4gU2VudDogMDcgTm92ZW1iZXIgMjAyMCAyMjozMw0KPiANCj4g
+T24gU2F0LCBOb3YgMDcsIDIwMjAgYXQgMDk6Mzk6NDJBTSAtMDgwMCwgSm9lIFBlcmNoZXMgd3Jv
+dGU6DQo+ID4gT24gU2F0LCAyMDIwLTExLTA3IGF0IDIwOjU0ICswODAwLCBBbGV4IFNoaSB3cm90
+ZToNCj4gPiA+IOWcqCAyMDIwLzExLzcg5LiK5Y2IMTI6MzksIEZsb3JpYW4gRmFpbmVsbGkg5YaZ
+6YGTOg0KPiA+ID4gPiA+IEl0IGlzIGdvb2QgdG8gcmVtZW1iZXIgdGhhdCB0aGVyZSBhcmUgbXVs
+dGlwbGUgcmVhZGVycyBvZiBzb3VyY2UNCj4gPiA+ID4gPiBmaWxlcy4gVGhlcmUgaXMgdGhlIGNv
+bXBpbGVyIHdoaWNoIGdlbmVyYXRlcyBjb2RlIGZyb20gaXQsIGFuZCB0aGVyZQ0KPiA+ID4gPiA+
+IGlzIHRoZSBodW1hbiB0cnlpbmcgdG8gdW5kZXJzdGFuZCB3aGF0IGlzIGdvaW5nIG9uLCB3aGF0
+IHRoZSBoYXJkd2FyZQ0KPiA+ID4gPiA+IGNhbiBkbywgaG93IHdlIGNvdWxkIG1heWJlIGV4dGVu
+ZCB0aGUgY29kZSBpbiB0aGUgZnV0dXJlIHRvIG1ha2UgdXNlDQo+ID4gPiA+ID4gb2YgYml0cyBh
+cmUgY3VycmVudGx5IGRvbid0LCBldGMuDQo+ID4gPiA+ID4NCj4gPiA+ID4gPiBUaGUgY29tcGls
+ZXIgaGFzIG5vIHVzZSBvZiB0aGVzZSBtYWNyb3MsIGF0IHRoZSBtb21lbnQuIEJ1dCBpIGFzIGEN
+Cj4gPiA+ID4gPiBodW1hbiBkby4gSXQgaXMgdmFsdWFibGUgZG9jdW1lbnRhdGlvbiwgZ2l2ZW4g
+dGhhdCB0aGVyZSBpcyBubyBvcGVuDQo+ID4gPiA+ID4gZGF0YXNoZWV0IGZvciB0aGlzIGhhcmR3
+YXJlLg0KPiA+ID4gPiA+DQo+ID4gPiA+ID4gSSB3b3VsZCBzYXkgdGhlc2Ugd2FybmluZ3MgYXJl
+IGJvZ3VzLCBhbmQgdGhlIGNvZGUgc2hvdWxkIGJlIGxlZnQNCj4gPiA+ID4gPiBhbG9uZS4NCj4g
+PiA+ID4gQWdyZWVkLCB0aGVzZSBkZWZpbml0aW9ucyBhcmUgaW50ZW5kZWQgdG8gZG9jdW1lbnQg
+d2hhdCB0aGUgaGFyZHdhcmUNCj4gPiA+ID4gZG9lcy4gVGhlc2Ugd2FybmluZ3MgYXJlIGdldHRp
+bmcgdG9vIGZhci4NCj4gPiA+DQo+ID4gPiBUaGFua3MgZm9yIGFsbCBjb21tZW50cyEgSSBhZ3Jl
+ZSB0aGVzZSBpbmZvIGFyZSBtdWNoIG1lYW5pbmdmdWwuDQo+ID4gPiBJcyB0aGVyZSBvdGhlciB3
+YXkgdG8gdGFtZSB0aGUgZ2NjIHdhcm5pbmc/IGxpa2UgcHV0IHRoZW0gaW50byBhIC5oIGZpbGUN
+Cj4gPiA+IG9yIGNvdmVyZWQgYnkgY29tbWVudHM/DQo+ID4NCj4gPiBEb2VzIF9hbnlfIHZlcnNp
+b24gb2YgZ2NjIGhhdmUgdGhpcyB3YXJuaW5nIG9uIGJ5IGRlZmF1bHQ/DQo+ID4NCj4gPiBJIHN0
+aWxsIHRoaW5rIG15IHByb3Bvc2FsIG9mIG1vdmluZyB0aGUgd2FybmluZyBmcm9tIFc9MiB0byBX
+PTMNCj4gPiBxdWl0ZSByZWFzb25hYmxlLg0KPiA+DQo+ID4gQW5vdGhlciBwb3NzaWJpbGl0eSBp
+cyB0byB0dXJuIHRoZSB3YXJuaW5nIG9mZiBhbHRvZ2V0aGVyLg0KPiANCj4gTGV0cyB0ZXJuIHRo
+ZSBxdWVzdGlvbiBhcm91bmQgZmlyc3QuIEhvdyBtYW55IHJlYWwgYnVncyBoYXZlIHlvdSBmb3Vu
+ZA0KPiB3aXRoIHRoaXMgd2FybmluZz8gUGxhY2VzIHdoZXJlIHRoZSAjZGVmaW5lIHNob3VsZCBv
+ZiBiZWVuIHVzZWQsIGJ1dA0KPiB3YXMgbm90PyBUaGVuIHdlIGNhbiBnZXQgYW4gaWRlYSBvZiB0
+aGUgdmFsdWUgb2YgdGhpcyB3YXJuaW5nLiBNeQ0KPiBndWVzcyB3b3VsZCBiZSwgaXRzIHZhbHVl
+IGlzIH4gMCBmb3IgdGhlIGtlcm5lbC4gSWYgc28sIHdlIHNob3VsZCBqdXN0DQo+IHR1cm4gaXQg
+b2ZmLg0KDQpTb21ldGltZXMgdGhlcmUgYXJlIGRlZmluZXMgZm9yIDAsIDEgYW5kIDIgKGVudW1l
+cmF0aW9uIG9yIGJpdG1hcCkNCmFuZCB0aGUgb25lIGZvciAwIGlzIG5ldmVyIHVzZWQuDQpSYXRo
+ZXIgdGhhbiBkZWxldGUgdGhlIGRlZmluZSBmb3IgMCAod2hpY2ggaGFzIGJlZW4gcHJvcG9zZWQg
+YXQNCmxlYXN0IG9uY2UgaW4gdGhpcyBzZXJpZXMpIHRoZSAnZml4JyB3b3VsZCBiZSB0byBmaW5k
+IHRoZQ0KaW5pdGlhbGlzYXRpb24gYW5kIHJlcGxhY2UgdGhlIGxpdGVyYWwgMCB3aXRoIHRoZSBk
+ZWZpbmUuDQpPVE9IIGl0IGlzIHByb2JhYmx5IGltcGxpY2l0IGZyb20gYSBtZW1zZXQoKS4NCg0K
+RXZlbiBpZiBuZXZlciBhY3R1YWxseSB1c2VkIHRoZSBkZWZpbmUgZm9yIDAgaGVscHMgdGhlDQpo
+dW1hbiByZWFkaW5nIHRoZSBjb2RlLg0KDQpUaGUgc2FtZSBpcyB0cnVlIHdoZW4gdGhlcmUgYXJl
+IGRlZmluZXMgZm9yIGhhcmR3YXJlIHJlZ2lzdGVyIGJpdHMuDQpJdCBpcyB1c2VmdWwgdG8ga25v
+dyB3aGF0IHRoZXkgYWxsIG1lYW4gLSBldmVuIGlmIHNvbWUgYXJlbid0IHVzZWQuDQoNCglEYXZp
+ZA0KDQotDQpSZWdpc3RlcmVkIEFkZHJlc3MgTGFrZXNpZGUsIEJyYW1sZXkgUm9hZCwgTW91bnQg
+RmFybSwgTWlsdG9uIEtleW5lcywgTUsxIDFQVCwgVUsNClJlZ2lzdHJhdGlvbiBObzogMTM5NzM4
+NiAoV2FsZXMpDQo=
 
-Hello Ulf and all,
-
-I took a detailed look at the GENPD and tried to implement it. Here is
-what was found:
-
-1. GENPD framework doesn't aggregate performance requests from the
-attached devices. This means that if deviceA requests performance state
-10 and then deviceB requests state 3, then framework will set domain's
-state to 3 instead of 10.
-
-https://elixir.bootlin.com/linux/v5.10-rc2/source/drivers/base/power/domain.c#L376
-
-2. GENPD framework has a sync() callback in the genpd.domain structure,
-but this callback isn't allowed to be used by the GENPD implementation.
-The GENPD framework always overrides that callback for its own needs.
-Hence GENPD doesn't allow to solve the bootstrapping
-state-synchronization problem in a nice way.
-
-https://elixir.bootlin.com/linux/v5.10-rc2/source/drivers/base/power/domain.c#L2606
-
-3. Tegra doesn't have a dedicated hardware power-controller for the core
-domain, instead there is only an external voltage regulator. Hence we
-will need to create a phony device-tree node for the virtual power
-domain, which is probably a wrong thing to do.
-
-===
-
-Perhaps it should be possible to create some hacks to work around
-bullets 2 and 3 in order to achieve what we need for DVFS on Tegra, but
-bullet 1 isn't solvable without changing how the GENPD core works.
-
-Altogether, the GENPD in its current form is a wrong abstraction for a
-system-wide DVFS in a case where multiple devices share power domain and
-this domain is a voltage regulator. The regulator framework is the
-correct abstraction in this case for today.
