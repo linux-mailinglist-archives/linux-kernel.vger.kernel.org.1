@@ -2,68 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F7D12AAA02
-	for <lists+linux-kernel@lfdr.de>; Sun,  8 Nov 2020 08:54:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 52A822AAA0D
+	for <lists+linux-kernel@lfdr.de>; Sun,  8 Nov 2020 09:21:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727683AbgKHHyT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 8 Nov 2020 02:54:19 -0500
-Received: from out30-56.freemail.mail.aliyun.com ([115.124.30.56]:49985 "EHLO
-        out30-56.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726869AbgKHHyT (ORCPT
+        id S1728128AbgKHIVe convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Sun, 8 Nov 2020 03:21:34 -0500
+Received: from wp148.webpack.hosteurope.de ([80.237.132.155]:36272 "EHLO
+        wp148.webpack.hosteurope.de" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726115AbgKHIVe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 8 Nov 2020 02:54:19 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R131e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04426;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=3;SR=0;TI=SMTPD_---0UEabaDp_1604822057;
-Received: from aliy80.localdomain(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0UEabaDp_1604822057)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Sun, 08 Nov 2020 15:54:17 +0800
-From:   Alex Shi <alex.shi@linux.alibaba.com>
-Cc:     Anton Altaparmakov <anton@tuxera.com>,
-        linux-ntfs-dev@lists.sourceforge.net, linux-kernel@vger.kernel.org
-Subject: [PATCH] fs/ntfs: remove unused varible attr_len
-Date:   Sun,  8 Nov 2020 15:54:16 +0800
-Message-Id: <1604822056-65430-1-git-send-email-alex.shi@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-To:     unlisted-recipients:; (no To-header on input)
+        Sun, 8 Nov 2020 03:21:34 -0500
+X-Greylist: delayed 2278 seconds by postgrey-1.27 at vger.kernel.org; Sun, 08 Nov 2020 03:21:33 EST
+Received: from ip1f127119.dynamic.kabel-deutschland.de ([31.18.113.25] helo=[192.168.178.34]); authenticated
+        by wp148.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        id 1kbfMD-0003E2-AC; Sun, 08 Nov 2020 08:43:25 +0100
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 8BIT
+From:   Roelof Berg <rberg@berg-solutions.de>
+Mime-Version: 1.0 (1.0)
+Subject: Re: [PATCH v2] lan743x: correctly handle chips with internal PHY
+Date:   Sun, 8 Nov 2020 08:43:24 +0100
+Message-Id: <180E897D-A99A-43E2-8033-AE1C2499C5BF@berg-solutions.de>
+References: <20201108041447.GZ933237@lunn.ch>
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Bryan Whitehead <bryan.whitehead@microchip.com>,
+        David S Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <20201108041447.GZ933237@lunn.ch>
+To:     Sven Van Asbroeck <thesven73@gmail.com>
+X-Mailer: iPhone Mail (17G68)
+X-bounce-key: webpack.hosteurope.de;rberg@berg-solutions.de;1604823693;fc97992f;
+X-HE-SMSGID: 1kbfMD-0003E2-AC
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This varible isn't used anymore, remove it to skip W=1 warning:
-fs/ntfs/inode.c:2350:6: warning: variable ‘attr_len’ set but not used
-[-Wunused-but-set-variable]
+My last customer has a fixed link setup, contact me if you need one. Maybe they let me have it and I can test all future patches on fixed link as well. I tested the current driver version on a Lan7430 EVM in a PC by the way and it seemed to be working. I have the EVM still here if needed.
 
-Signed-off-by: Alex Shi <alex.shi@linux.alibaba.com>
-Cc: Anton Altaparmakov <anton@tuxera.com> 
-Cc: linux-ntfs-dev@lists.sourceforge.net 
-Cc: linux-kernel@vger.kernel.org 
----
- fs/ntfs/inode.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
-
-diff --git a/fs/ntfs/inode.c b/fs/ntfs/inode.c
-index caf563981532..d3127ea201ec 100644
---- a/fs/ntfs/inode.c
-+++ b/fs/ntfs/inode.c
-@@ -2347,7 +2347,6 @@ int ntfs_truncate(struct inode *vi)
- 	ATTR_RECORD *a;
- 	const char *te = "  Leaving file length out of sync with i_size.";
- 	int err, mp_size, size_change, alloc_change;
--	u32 attr_len;
- 
- 	ntfs_debug("Entering for inode 0x%lx.", vi->i_ino);
- 	BUG_ON(NInoAttr(ni));
-@@ -2721,7 +2720,7 @@ int ntfs_truncate(struct inode *vi)
- 	 * this cannot fail since we are making the attribute smaller thus by
- 	 * definition there is enough space to do so.
- 	 */
--	attr_len = le32_to_cpu(a->length);
-+	le32_to_cpu(a->length);
- 	err = ntfs_attr_record_resize(m, a, mp_size +
- 			le16_to_cpu(a->data.non_resident.mapping_pairs_offset));
- 	BUG_ON(err);
--- 
-1.8.3.1
-
+Greetings,
+Roelof
