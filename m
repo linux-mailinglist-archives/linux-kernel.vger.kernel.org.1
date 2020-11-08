@@ -2,244 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4CFA2AAA22
-	for <lists+linux-kernel@lfdr.de>; Sun,  8 Nov 2020 09:49:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F5BB2AAA2D
+	for <lists+linux-kernel@lfdr.de>; Sun,  8 Nov 2020 10:06:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727440AbgKHIsA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 8 Nov 2020 03:48:00 -0500
-Received: from asavdk4.altibox.net ([109.247.116.15]:44494 "EHLO
-        asavdk4.altibox.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726115AbgKHIsA (ORCPT
+        id S1727667AbgKHJF2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 8 Nov 2020 04:05:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44442 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726178AbgKHJF1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 8 Nov 2020 03:48:00 -0500
-Received: from ravnborg.org (unknown [188.228.123.71])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by asavdk4.altibox.net (Postfix) with ESMTPS id 94A2280522;
-        Sun,  8 Nov 2020 09:47:55 +0100 (CET)
-Date:   Sun, 8 Nov 2020 09:47:54 +0100
-From:   Sam Ravnborg <sam@ravnborg.org>
-To:     Douglas Anderson <dianders@chromium.org>
-Cc:     Thierry Reding <thierry.reding@gmail.com>, robdclark@chromium.org,
-        David Airlie <airlied@linux.ie>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        Rob Herring <robh+dt@kernel.org>
-Subject: Re: [PATCH v3 1/3] drm: panel: simple: Allow timing constraints, not
- fixed delays
-Message-ID: <20201108084754.GA1119120@ravnborg.org>
-References: <20201105135639.v3.1.I31c4f8b111dbef1ab658f206764655ae983bc560@changeid>
+        Sun, 8 Nov 2020 04:05:27 -0500
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7AF2C0613CF;
+        Sun,  8 Nov 2020 01:05:25 -0800 (PST)
+Received: by mail-wm1-x343.google.com with SMTP id h62so5180034wme.3;
+        Sun, 08 Nov 2020 01:05:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=mTNZBKYJ1G1f6Z95iwkriRbl+3lpqOyLnQqlrb4E3MI=;
+        b=SVyCi3m7XSEed+6txPdAxhuenlfedG4U98T0WBK87KMW5CbqIsj6t7yYleHdAI00HD
+         ma0lYoNceQhicSL6Ie7RfQ6OeG+TgusZhkbUb97AttJB3LD85/lre03tl9oc9ic5YedQ
+         GE3gCDNGWFbVBqjhop775wceogjWTuTEgOL6FtCklp3khs6QJBjvpFRJPW2QZgkhTE6g
+         Qgsybl8xuvvT0otpyCJOcY6lGv+bIKuuvNkV+XkNwUbVPoZ+CdIUuVrDYOghgs+cz6l1
+         u+MIN3DnX+Y4qC4z7Jl6KzLw4G0AP59ALp0DxD+3mdDP27kfymJoy0W+x9kMF5vC2e8/
+         AFxQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=mTNZBKYJ1G1f6Z95iwkriRbl+3lpqOyLnQqlrb4E3MI=;
+        b=NephOE4CVjPT5yCGWVkBJOzuRVYQ8dTltd+JidhqedRarvNrG0FNP6sA3H8IPFndUw
+         y0s84031za+0u4YnieNF+YO+SYDqoofx8nUQ2fMjujlgytoARHMHeBbD9bO/paGHl9qX
+         rc927bA0BGC/YYuOXl7//V9by+aUuLeIiOoAC8KuJH6HKCbFuRf/BTg2jNmF4OO7XVGC
+         oagewszfp9quJfhN/VP92WuLG3oqvGmYBOgfhKkjXeL5HFXF+EyQWRtHjt0HwARm+/o8
+         I2YeueUFTmlQnwH5EdzJ0Z448ck2bbQVjQ43Bu/eBt8XXeOOGhyJYJuAyzq0wQQvpI2a
+         cYqw==
+X-Gm-Message-State: AOAM5303HUDosITWxEuSrJc8lLECS3KtP/fzMCb1U9ET0689b9HqbOKA
+        1X7OEvfn6SsdlU486ME1P7U=
+X-Google-Smtp-Source: ABdhPJx5ZmDFpwYhhuqYxO5PCzXdYiKkhbQqTh0Ws7SrjUDZmjN0iowXgd6QygNcB70GpAim3Pj58A==
+X-Received: by 2002:a1c:dc43:: with SMTP id t64mr8450029wmg.93.1604826324417;
+        Sun, 08 Nov 2020 01:05:24 -0800 (PST)
+Received: from gmail.com (54033286.catv.pool.telekom.hu. [84.3.50.134])
+        by smtp.gmail.com with ESMTPSA id o197sm9045599wme.17.2020.11.08.01.05.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 08 Nov 2020 01:05:23 -0800 (PST)
+Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
+Date:   Sun, 8 Nov 2020 10:05:21 +0100
+From:   Ingo Molnar <mingo@kernel.org>
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     x86-ml <x86@kernel.org>, linux-tip-commits@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Will Deacon <will.deacon@arm.com>
+Subject: Re: [tip: perf/kprobes] locking/atomics: Regenerate the
+ atomics-check SHA1's
+Message-ID: <20201108090521.GA108695@gmail.com>
+References: <160476203869.11244.7869849163897430965.tip-bot2@tip-bot2>
+ <20201107160444.GB30275@zn.tnic>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201105135639.v3.1.I31c4f8b111dbef1ab658f206764655ae983bc560@changeid>
-X-CMAE-Score: 0
-X-CMAE-Analysis: v=2.3 cv=VafZwmh9 c=1 sm=1 tr=0
-        a=S6zTFyMACwkrwXSdXUNehg==:117 a=S6zTFyMACwkrwXSdXUNehg==:17
-        a=kj9zAlcOel0A:10 a=cm27Pg_UAAAA:8 a=e5mUnYsNAAAA:8
-        a=wPsJ2gbrx_q22NF4ILYA:9 a=CjuIK1q_8ugA:10 a=xmb-EsYY8bH0VWELuYED:22
-        a=Vxmtnl_E_bksehYqCbjh:22
+In-Reply-To: <20201107160444.GB30275@zn.tnic>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Douglas.
 
-On Thu, Nov 05, 2020 at 01:57:39PM -0800, Douglas Anderson wrote:
-> The simple panel code currently allows panels to define fixed delays
-> at certain stages of initialization.  These work OK, but they don't
-> really map all that clearly to the requirements presented in many
-> panel datasheets.  Instead of defining a fixed delay, those datasheets
-> provide a timing diagram and specify a minimum amount of time that
-> needs to pass from event A to event B.
+* Borislav Petkov <bp@alien8.de> wrote:
+
+> On Sat, Nov 07, 2020 at 03:13:58PM -0000, tip-bot2 for Ingo Molnar wrote:
+> > The following commit has been merged into the perf/kprobes branch of tip:
+> > 
+> > Commit-ID:     a70a04b3844f59c29573a8581d5c263225060dd6
+> > Gitweb:        https://git.kernel.org/tip/a70a04b3844f59c29573a8581d5c263225060dd6
+> > Author:        Ingo Molnar <mingo@kernel.org>
+> > AuthorDate:    Sat, 07 Nov 2020 12:54:49 +01:00
+> > Committer:     Ingo Molnar <mingo@kernel.org>
+> > CommitterDate: Sat, 07 Nov 2020 13:20:41 +01:00
+> > 
+> > locking/atomics: Regenerate the atomics-check SHA1's
+> > 
+> > The include/asm-generic/atomic-instrumented.h checksum got out
+> > of sync, so regenerate it. (No change to actual code.)
+> > 
+> > Also make scripts/atomic/gen-atomics.sh executable, to make
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> > it easier to use.
+    ^^^^^^^^^^^^^^^^^
+
+> >  mode change 100644 => 100755 scripts/atomic/gen-atomics.sh
+> 		^^^^^^^^^^^^^^^
 > 
-> Because of the way things are currently defined, most panels end up
-> over-delaying.  One prime example here is that a number of panels I've
-> looked at define the amount of time that must pass between turning a
-> panel off and turning it back on again.  Since there is no way to
-> specify this, many developers have listed this as the "unprepare"
-> delay.  However, if nobody ever tried to turn the panel on again in
-> the next 500 ms (or whatever the delay was) then this delay was
-> pointless.  It's better to do the delay only in the case that someone
-> tried to turn the panel on too quickly.
-> 
-> Let's support specifying delays as constraints.  We'll start with the
-> one above and also a second one: the minimum time between prepare
-> being done and doing the enable.  On the panel I'm looking at, there's
-> an 80 ms minimum time between HPD being asserted by the panel and
-> setting the backlight enable GPIO.  By specifying as a constraint we
-> can enforce this without over-delaying.  Specifically the link
-> training is allowed to happen in parallel with this delay so adding a
-> fixed 80 ms delay isn't ideal.
-Nice and detaild explanation - thanks.
+> That looks like it snuck in but it shouldn't have...
 
-Reading through this a few times it seems that a simpler approach would
-be to change the semantics of the dealys we already have a little and
-only add one new field:
+So that mode change to executable was intentional, as mentioned in the 
+changelog.
 
-       struct {
-                unsigned int prepare;
-                unsigned int hpd_absent_delay;
-		unsigned int prepare_to_enable;
-                unsigned int enable;
-                unsigned int disable;
-                unsigned int unprepare;
-        } delay;
+Or did I miss something?
 
-The lines marked "//*" are new or changed:
+Thanks,
 
-prepare()
-//*enforce unprepare time
-// enable regulator
-// set enable gpio
-// do fixed prepare delay (this is time until we can trust hpd)
-// wait for HPD GPIO if applicable, otherwise do fixed hpd_absent_delay
-//*start counting for prepare_to_enable
-
-enable()
-//*enforce prepare_to_enable min time
-// enable backlight if applicable
-
-panel shows nice pictures of kitties
-
-disable()
-// disable backlight is applicable
-// fixed disable delay
-
-unprepare()
-// unset enable gpio
-// disable regulator
-//*start counting for unprepare delay
-
-
-This should not break any exisitng panels - and we avoid that we have
-two delays that are almost the same.
-
-Would that work for you?
-
-Note that no new struct was introduced - this is all dealys so keep it in
-the same struct.
-
-A dew details in the following.
-
-	Sam
-
-> 
-> Signed-off-by: Douglas Anderson <dianders@chromium.org>
-> ---
-> 
-> Changes in v3:
-> - Fixed totally backwards "if" tests.  :(
-> 
-> Changes in v2:
-> - Inline the kernel doc for the two new members.
-A nice follow-up patch would be to move the remaining fields as inline
-doc. But let us settle on this first.
-
->  struct panel_simple {
->  	struct drm_panel base;
-> -	bool prepared;
->  	bool enabled;
->  	bool no_hpd;
->  
-> +	ktime_t prepared_time;
-> +	ktime_t unprepared_time;
-> +
->  	const struct panel_desc *desc;
->  
->  	struct regulator *supply;
-> @@ -230,6 +294,20 @@ static int panel_simple_get_non_edid_modes(struct panel_simple *panel,
->  	return num;
->  }
->  
-> +static void panel_simple_wait_min_time(ktime_t start_ktime, unsigned int min_ms)
-> +{
-> +	ktime_t now_ktime, min_ktime;
-> +
-> +	if (!min_ms)
-> +		return;
-> +
-> +	min_ktime = ktime_add(start_ktime, ms_to_ktime(min_ms));
-> +	now_ktime = ktime_get();
-> +
-> +	if (ktime_before(now_ktime, min_ktime))
-> +		msleep(ktime_to_ms(ktime_sub(min_ktime, now_ktime)) + 1);
-> +}
-panel_simple_wait()?
-
-
-> +
->  static int panel_simple_disable(struct drm_panel *panel)
->  {
->  	struct panel_simple *p = to_panel_simple(panel);
-> @@ -249,18 +327,19 @@ static int panel_simple_unprepare(struct drm_panel *panel)
->  {
->  	struct panel_simple *p = to_panel_simple(panel);
->  
-> -	if (!p->prepared)
-> +	if (p->prepared_time == 0)
->  		return 0;
->  
->  	gpiod_set_value_cansleep(p->enable_gpio, 0);
->  
->  	regulator_disable(p->supply);
->  
-> +	p->prepared_time = 0;
-> +	p->unprepared_time = ktime_get();
-> +
->  	if (p->desc->delay.unprepare)
->  		msleep(p->desc->delay.unprepare);
->  
-> -	p->prepared = false;
-> -
->  	return 0;
->  }
->  
-> @@ -296,9 +375,12 @@ static int panel_simple_prepare(struct drm_panel *panel)
->  	int err;
->  	int hpd_asserted;
->  
-> -	if (p->prepared)
-> +	if (p->prepared_time != 0)
->  		return 0;
->  
-> +	panel_simple_wait_min_time(p->unprepared_time,
-> +				   p->desc->min_times.unprepare_to_prepare);
-> +
->  	err = regulator_enable(p->supply);
->  	if (err < 0) {
->  		dev_err(panel->dev, "failed to enable supply: %d\n", err);
-> @@ -333,7 +415,7 @@ static int panel_simple_prepare(struct drm_panel *panel)
->  		}
->  	}
->  
-> -	p->prepared = true;
-> +	p->prepared_time = ktime_get();
->  
->  	return 0;
->  }
-> @@ -348,6 +430,9 @@ static int panel_simple_enable(struct drm_panel *panel)
->  	if (p->desc->delay.enable)
->  		msleep(p->desc->delay.enable);
->  
-> +	panel_simple_wait_min_time(p->prepared_time,
-> +				   p->desc->min_times.prepare_to_enable);
-> +
->  	p->enabled = true;
->  
->  	return 0;
-> @@ -514,7 +599,7 @@ static int panel_simple_probe(struct device *dev, const struct panel_desc *desc)
->  		return -ENOMEM;
->  
->  	panel->enabled = false;
-> -	panel->prepared = false;
-> +	panel->prepared_time = 0;
->  	panel->desc = desc;
->  
->  	panel->no_hpd = of_property_read_bool(dev->of_node, "no-hpd");
-> -- 
-> 2.29.1.341.ge80a0c044ae-goog
-> 
-> _______________________________________________
-> dri-devel mailing list
-> dri-devel@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+	Ingo
