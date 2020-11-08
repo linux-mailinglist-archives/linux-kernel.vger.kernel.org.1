@@ -2,79 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 33D7B2AACD8
-	for <lists+linux-kernel@lfdr.de>; Sun,  8 Nov 2020 19:41:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 06BD42AACDB
+	for <lists+linux-kernel@lfdr.de>; Sun,  8 Nov 2020 19:42:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728684AbgKHSlU convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Sun, 8 Nov 2020 13:41:20 -0500
-Received: from mail-ej1-f67.google.com ([209.85.218.67]:41532 "EHLO
-        mail-ej1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727570AbgKHSlU (ORCPT
+        id S1728803AbgKHSm2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 8 Nov 2020 13:42:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48750 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727570AbgKHSm1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 8 Nov 2020 13:41:20 -0500
-Received: by mail-ej1-f67.google.com with SMTP id cw8so9133937ejb.8;
-        Sun, 08 Nov 2020 10:41:18 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=Ey9X7mPMBcATwPjhwdqocaqwR7EqA7Y/rZNNR5RdnGY=;
-        b=JXASts0jJ7Y30AAf1vWiurm0v08R813Lm2DBlwZ7CddL+dSNgxA2zDzKKzO+g3X+3L
-         xY6u8uFtmKZ3AeG5vHsMd5yMNIOIA46NBPX6i92Tgu3miW3yqEiieB25VnBVGLTpvv+8
-         Vxu5NKMUIxz4xmGME4GWC9TMNWOW1bqdWaS2MqENsMlfS1KsEK48Fn6vPws2KCSSD4/7
-         cSSWLnXbDtoFijWhvy232SmOaJI81wIngSEcu9Yg3WWOz8Q4oQFsZcOrX0RMCjtFXPDl
-         GKLeLiFcziLdiqCM5rCQE3M8LYXdZKFZ0SefKQs8IXaCUKUolXOTLo36M0EvNMGL0ZOb
-         +n+A==
-X-Gm-Message-State: AOAM533U8L39zhiOsNfE85wY6qUUnWulR9XfgNoHT6EOylBHlQk8tadV
-        0s35/wQk4lZO4cD+fA6/nHw=
-X-Google-Smtp-Source: ABdhPJxPftdb0DK3Om5Civ5TCbbbeFZ38vXXSSJJ0NcXWXu5sfffH/1OSZyDfxSKUk1ndKnQHcAgTA==
-X-Received: by 2002:a17:906:cd0f:: with SMTP id oz15mr11870595ejb.200.1604860878295;
-        Sun, 08 Nov 2020 10:41:18 -0800 (PST)
-Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
-        by smtp.googlemail.com with ESMTPSA id b1sm6945826edh.24.2020.11.08.10.41.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 08 Nov 2020 10:41:17 -0800 (PST)
-Date:   Sun, 8 Nov 2020 19:41:15 +0100
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     =?utf-8?B?UGF3ZcWC?= Chmiel <pawel.mikolaj.chmiel@gmail.com>
-Cc:     kgene@kernel.org, mturquette@baylibre.com, sboyd@kernel.org,
-        s.nawrocki@samsung.com, tomasz.figa@gmail.com,
-        cw00.choi@samsung.com, linux-samsung-soc@vger.kernel.org,
-        linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] clk: exynos7: Keep aclk_fsys1_200 enabled
-Message-ID: <20201108184115.GA7078@kozik-lap>
-References: <20201107121456.25562-1-pawel.mikolaj.chmiel@gmail.com>
+        Sun, 8 Nov 2020 13:42:27 -0500
+Received: from viti.kaiser.cx (viti.kaiser.cx [IPv6:2a01:238:43fe:e600:cd0c:bd4a:7a3:8e9f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4680C0613CF
+        for <linux-kernel@vger.kernel.org>; Sun,  8 Nov 2020 10:42:27 -0800 (PST)
+Received: from dslb-084-059-242-201.084.059.pools.vodafone-ip.de ([84.59.242.201] helo=martin-debian-2.paytec.ch)
+        by viti.kaiser.cx with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.89)
+        (envelope-from <martin@kaiser.cx>)
+        id 1kbpdt-0006Of-1o; Sun, 08 Nov 2020 19:42:21 +0100
+From:   Martin Kaiser <martin@kaiser.cx>
+To:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Florian Fainelli <f.fainelli@gmail.com>
+Cc:     bcm-kernel-feedback-list@broadcom.com,
+        linux-rpi-kernel@lists.infradead.org, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Martin Kaiser <martin@kaiser.cx>
+Subject: [PATCH] PCI: brcmstb: Remove irq handler and data in one go
+Date:   Sun,  8 Nov 2020 19:42:08 +0100
+Message-Id: <20201108184208.19790-1-martin@kaiser.cx>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8BIT
-In-Reply-To: <20201107121456.25562-1-pawel.mikolaj.chmiel@gmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Nov 07, 2020 at 01:14:56PM +0100, Paweł Chmiel wrote:
-> This clock must be always enabled to allow access to any registers in
-> fsys1 CMU. Until proper solution based on runtime PM is applied
-> (similar to what was done for Exynos5433), fix this by calling
-> clk_prepare_enable() directly from clock provider driver.
-> 
-> It was observed on Samsung Galaxy S6 device (based on Exynos7420), where
-> UFS module is probed before pmic used to power that device.
-> In this case defer probe was happening and that clock was disabled by
-> UFS driver, causing whole boot to hang on next CMU access.
-> 
-> Signed-off-by: Paweł Chmiel <pawel.mikolaj.chmiel@gmail.com>
-> ---
-> Changes from v1:
->   - Instead of marking clock as critical, enable it manually in driver.
-> ---
->  drivers/clk/samsung/clk-exynos7.c | 5 +++++
->  1 file changed, 5 insertions(+)
+Replace the two separate calls for removing the irq handler and data with a
+single irq_set_chained_handler_and_data() call.
 
-Acked-by: Krzysztof Kozlowski <krzk@kernel.org>
+Signed-off-by: Martin Kaiser <martin@kaiser.cx>
+---
+ drivers/pci/controller/pcie-brcmstb.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-Best regards,
-Krzysztof
+diff --git a/drivers/pci/controller/pcie-brcmstb.c b/drivers/pci/controller/pcie-brcmstb.c
+index bea86899bd5d..7c666f4deb47 100644
+--- a/drivers/pci/controller/pcie-brcmstb.c
++++ b/drivers/pci/controller/pcie-brcmstb.c
+@@ -606,8 +606,7 @@ static void brcm_msi_remove(struct brcm_pcie *pcie)
+ 
+ 	if (!msi)
+ 		return;
+-	irq_set_chained_handler(msi->irq, NULL);
+-	irq_set_handler_data(msi->irq, NULL);
++	irq_set_chained_handler_and_data(msi->irq, NULL, NULL);
+ 	brcm_free_domains(msi);
+ }
+ 
+-- 
+2.20.1
+
