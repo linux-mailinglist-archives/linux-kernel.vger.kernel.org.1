@@ -2,110 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D3C372AA8E6
-	for <lists+linux-kernel@lfdr.de>; Sun,  8 Nov 2020 03:17:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D0042AA8EA
+	for <lists+linux-kernel@lfdr.de>; Sun,  8 Nov 2020 03:23:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728568AbgKHCRX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Nov 2020 21:17:23 -0500
-Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:4294 "EHLO
-        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727432AbgKHCRX (ORCPT
+        id S1728816AbgKHCXj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Nov 2020 21:23:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39178 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727432AbgKHCXj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Nov 2020 21:17:23 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5fa755360000>; Sat, 07 Nov 2020 18:17:26 -0800
-Received: from [10.2.62.222] (172.20.13.39) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Sun, 8 Nov
- 2020 02:17:22 +0000
-Subject: Re: [PATCH 1/2] tomoyo: Convert get_user_pages*() to
- pin_user_pages*()
-To:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-        Souptick Joarder <jrdr.linux@gmail.com>
-CC:     <linux-security-module@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, Jan Kara <jack@suse.cz>,
-        Matthew Wilcox <willy@infradead.org>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>
-References: <1604737451-19082-1-git-send-email-jrdr.linux@gmail.com>
- <e5401549-8c31-2c6d-58dd-864232de17af@nvidia.com>
- <e6859981-bc3c-9513-99e5-a99849786156@nvidia.com>
- <5efeb909-3e02-ba14-7a86-f18562a2fe69@i-love.sakura.ne.jp>
-From:   John Hubbard <jhubbard@nvidia.com>
-Message-ID: <8590eb4c-256b-9ab0-5291-de8ec8d75276@nvidia.com>
-Date:   Sat, 7 Nov 2020 18:17:22 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        Sat, 7 Nov 2020 21:23:39 -0500
+Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC372C0613CF;
+        Sat,  7 Nov 2020 18:23:38 -0800 (PST)
+Received: by mail-qt1-x842.google.com with SMTP id i7so3728871qti.6;
+        Sat, 07 Nov 2020 18:23:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=6rkqQI9V9lROFbHJI+B+EQmZZyK1AJ6qNQuTyiy8+Ro=;
+        b=GQnXisneiPdHkYaiMmc3TvSVsZSfPyaVl5jFngbAVpaGwXA1+vI5bpmR5/wu5Youf9
+         7mzqBjHvL+B+TZC31bLwRynRhLqAURLN8UZZy3S9EKgpWcVWiT2mDsaUzOGnOUpNG/rr
+         tKDEL5nQpe7iychN0ocyq5JnAhbbgPZwrdqNh4Gu8oiUuLTBcgxz0CbV96Y4GbIX5XNL
+         dMjDxrZ9RK1o9/2UYV8NMmSnqZmKeJMXqORgHNqD0auvYmBBw7Cy9vihmr1Ejvnac6WX
+         /qkLdiyRPSGr5qpWDTBfJliqqnGlGwcdTMDjlPFnwxbkmfaKWBlfzvWUJ5PYABmjUJFj
+         3PQw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=6rkqQI9V9lROFbHJI+B+EQmZZyK1AJ6qNQuTyiy8+Ro=;
+        b=sXUIWrbJVsMoIVQS318waEofXc/N6BJEDiMIWyCO8rZolccVQO9/xN6N3JQrKBje0I
+         JPAW4WUvrRcCoGAjh2athnCrrQqiw35IKCeCVvewmoE4prfHL/a/G+eQd/450UGo/H1D
+         kthwRimWmylgUwP5tT+ATWYOOUoidB/hmcd06cLy35XugLoFIhcj9QrWEetNbtL7z2A2
+         9YrACp4+y7CxPQADwWTL9RKFAd1yE3q4BQa/tMBZ9Ot6vYnMT9vpG8gZGwFnaWoGW50/
+         gd1Vm5fs6Xu9aEHqoLrOFtGIsKUBRDm5/7Z5fwz2Q2GY4ouz3W3yAVX8DnMSqiXGJCP1
+         rGKA==
+X-Gm-Message-State: AOAM531f4ia9Uf8hjEGuY5P07KBS0I7/12bed00Mji6Io73C1MKjc1yj
+        2JbFzauZAaa7O8u6z2AUM9I=
+X-Google-Smtp-Source: ABdhPJyUQT1gVbgMNtgfSnHby5r3ccDU+40KTRx6CFNr40pcnKHIfUtVm7QlNCNCU4Sx0oDsAa0zGg==
+X-Received: by 2002:ac8:51d0:: with SMTP id d16mr7795879qtn.315.1604802217837;
+        Sat, 07 Nov 2020 18:23:37 -0800 (PST)
+Received: from localhost.localdomain ([2604:1380:45f1:1d00::1])
+        by smtp.gmail.com with ESMTPSA id w138sm3702277qkb.130.2020.11.07.18.23.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 07 Nov 2020 18:23:37 -0800 (PST)
+From:   Nathan Chancellor <natechancellor@gmail.com>
+To:     Shawn Guo <shawnguo@kernel.org>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Frieder Schrempf <frieder.schrempf@kontron.de>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Nathan Chancellor <natechancellor@gmail.com>
+Subject: [PATCH] arm64: dts: imx: Fix imx8mm-kontron-n801x-s.dtb target
+Date:   Sat,  7 Nov 2020 19:23:21 -0700
+Message-Id: <20201108022321.2114430-1-natechancellor@gmail.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-In-Reply-To: <5efeb909-3e02-ba14-7a86-f18562a2fe69@i-love.sakura.ne.jp>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [172.20.13.39]
-X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
- HQMAIL107.nvidia.com (172.20.187.13)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1604801846; bh=bZw7mGT3w9m9Y7Dcs1zQ8kMzt3zbk0xOy0bnGCS8rTo=;
-        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
-         MIME-Version:In-Reply-To:Content-Type:Content-Language:
-         Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy;
-        b=KwQOvJlPbMb8l1LvLiXBuWlemKRJklt034S8TtxjqEZihTCiD8g5QN0t6wKKQvaHz
-         +z976OMLMd1KuEPS0ePWMLkrj3uloIX+iq0Illa97fG+TlNx7rwVF48wLJFouyb6ii
-         xynhFkFd3FCzClfGE5fSbeYcYSX+myRwpxMK8Hm6IrvA97g1UvojqfkF74l31PJIlW
-         uVNdlnucxfihmp6tGOpfQo8jf2Xj6JugueL7ZgPPXfVG2D9rUXTbY5lon1CCjavKc+
-         ngaO0ffk2mpxhMomkPXaQny4xj1znfBzODXVuFVRv1IbiNLwDh9taMExkRCtsuUz1P
-         ErPRefHfMICVg==
+X-Patchwork-Bot: notify
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/7/20 5:13 PM, Tetsuo Handa wrote:
-> On 2020/11/08 4:17, John Hubbard wrote:
->> On 11/7/20 1:04 AM, John Hubbard wrote:
->>> On 11/7/20 12:24 AM, Souptick Joarder wrote:
->>>> In 2019, we introduced pin_user_pages*() and now we are converting
->>>> get_user_pages*() to the new API as appropriate. [1] & [2] could
->>>> be referred for more information. This is case 5 as per document [1].
->>>
->>> It turns out that Case 5 can be implemented via a better pattern, as long
->>> as we're just dealing with a page at a time, briefly:
->>>
->>> lock_page()
->>> write to page's data
->>> unlock_page()
->>>
->>> ...which neatly synchronizes with writeback and other fs activities.
->>
->> Ahem, I left out a key step: set_page_dirty()!
->>
->> lock_page()
->> write to page's data
->> set_page_dirty()
->> unlock_page()
->>
-> 
-> Excuse me, but Documentation/core-api/pin_user_pages.rst says
-> "CASE 5: Pinning in order to _write_ to the data within the page"
-> while tomoyo_dump_page() is for "_read_ the data within the page".
-> Do we want to convert to pin_user_pages_remote() or lock_page() ?
-> 
+$ make -skj"$(nproc)" ARCH=arm64 CROSS_COMPILE=aarch64-linux- \
+INSTALL_DTBS_PATH=rootfs distclean defconfig dtbs dtbs_install
+...
+make[3]: *** No rule to make target
+'rootfs/freescale/imx8mm-kontron-n801x-s.dts', needed by
+'__dtbs_install'
+...
 
-Sorry, I missed the direction here, was too focused on the Case 5
-aspect. Yes. Case 5 (which, again, I think we're about to re-document)
-is only about *writing* to data within the page.
+It should be .dtb, not .dts.
 
-So in this case, where it is just reading from the page, I think it's
-already from a gup vs pup point of view.
+Fixes: 8668d8b2e67f ("arm64: dts: Add the Kontron i.MX8M Mini SoMs and baseboards")
+Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
+---
+ arch/arm64/boot/dts/freescale/Makefile | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-btw, it's not clear to me whether the current code is susceptible to any
-sort of problem involving something writing to the page while it
-is being dumped (I am curious). But changing from gup to pup wouldn't
-fix that, if it were a problem. It a separate question from this patch.
+diff --git a/arch/arm64/boot/dts/freescale/Makefile b/arch/arm64/boot/dts/freescale/Makefile
+index 876bf484bbe6..6f0777ee6cd6 100644
+--- a/arch/arm64/boot/dts/freescale/Makefile
++++ b/arch/arm64/boot/dts/freescale/Makefile
+@@ -32,7 +32,7 @@ dtb-$(CONFIG_ARCH_LAYERSCAPE) += fsl-lx2162a-qds.dtb
+ dtb-$(CONFIG_ARCH_MXC) += imx8mm-beacon-kit.dtb
+ dtb-$(CONFIG_ARCH_MXC) += imx8mm-evk.dtb
+ dtb-$(CONFIG_ARCH_MXC) += imx8mm-ddr4-evk.dtb
+-dtb-$(CONFIG_ARCH_MXC) += imx8mm-kontron-n801x-s.dts
++dtb-$(CONFIG_ARCH_MXC) += imx8mm-kontron-n801x-s.dtb
+ dtb-$(CONFIG_ARCH_MXC) += imx8mm-var-som-symphony.dtb
+ dtb-$(CONFIG_ARCH_MXC) += imx8mn-evk.dtb
+ dtb-$(CONFIG_ARCH_MXC) += imx8mn-ddr4-evk.dtb
 
-(Souptick, if you're interested, the Case 5 documentation change and
-callsite retrofit is all yours if you want it. Otherwise it's on
-my list.)
-
-thanks,
+base-commit: 39fabe22e0f8c00334882ceac1dc70ffbd7f4871
 -- 
-John Hubbard
-NVIDIA
+2.29.2
+
