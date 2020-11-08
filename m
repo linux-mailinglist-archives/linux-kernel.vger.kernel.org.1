@@ -2,168 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0EF32AAC26
-	for <lists+linux-kernel@lfdr.de>; Sun,  8 Nov 2020 17:17:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F26BB2AAC24
+	for <lists+linux-kernel@lfdr.de>; Sun,  8 Nov 2020 17:17:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728640AbgKHQRX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 8 Nov 2020 11:17:23 -0500
-Received: from saturn.retrosnub.co.uk ([46.235.226.198]:51122 "EHLO
-        saturn.retrosnub.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726388AbgKHQRW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 8 Nov 2020 11:17:22 -0500
-X-Greylist: delayed 507 seconds by postgrey-1.27 at vger.kernel.org; Sun, 08 Nov 2020 11:17:21 EST
-Received: from archlinux (cpc149474-cmbg20-2-0-cust94.5-4.cable.virginm.net [82.4.196.95])
-        by saturn.retrosnub.co.uk (Postfix; Retrosnub mail submission) with ESMTPSA id 329779E010B;
-        Sun,  8 Nov 2020 16:08:52 +0000 (GMT)
-Date:   Sun, 8 Nov 2020 16:08:51 +0000
-From:   Jonathan Cameron <jic23@jic23.retrosnub.co.uk>
-To:     Cristian Pop <cristian.pop@analog.com>
-Cc:     <linux-iio@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v7 1/5] iio: core: Add optional symbolic label to a
- device channel
-Message-ID: <20201108160851.68dfe62a@archlinux>
-In-Reply-To: <20201101153803.471eafa8@archlinux>
-References: <20200928090959.88842-1-cristian.pop@analog.com>
-        <20201101153803.471eafa8@archlinux>
-X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S1728521AbgKHQRV convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Sun, 8 Nov 2020 11:17:21 -0500
+Received: from mga11.intel.com ([192.55.52.93]:55549 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727570AbgKHQRV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 8 Nov 2020 11:17:21 -0500
+IronPort-SDR: mKCd1juH7vxvASpt0r080pgNAk+ZfIvYbfB0+NUhHlZuSHQITugBw/qhFXi1LfKhKhhgVXDuST
+ uS6O+coJtYbQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9799"; a="166203565"
+X-IronPort-AV: E=Sophos;i="5.77,461,1596524400"; 
+   d="scan'208";a="166203565"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Nov 2020 08:17:20 -0800
+IronPort-SDR: 3ZxeBRFZbMMreUPvHJJ2Ey+k68QI4ilDh52fFEYPUHmS+T3RX9hoaDFVFU9CfgmXCMsgWfAg47
+ omc+luBodAOg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,461,1596524400"; 
+   d="scan'208";a="540502546"
+Received: from irsmsx604.ger.corp.intel.com ([163.33.146.137])
+  by orsmga005.jf.intel.com with ESMTP; 08 Nov 2020 08:17:17 -0800
+Received: from irsmsx601.ger.corp.intel.com (163.33.146.7) by
+ IRSMSX604.ger.corp.intel.com (163.33.146.137) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Sun, 8 Nov 2020 16:17:16 +0000
+Received: from irsmsx601.ger.corp.intel.com ([163.33.146.7]) by
+ irsmsx601.ger.corp.intel.com ([163.33.146.7]) with mapi id 15.01.1713.004;
+ Sun, 8 Nov 2020 16:17:16 +0000
+From:   "Rojewski, Cezary" <cezary.rojewski@intel.com>
+To:     Greg KH <gregkh@linuxfoundation.org>,
+        "Gorski, Mateusz" <mateusz.gorski@linux.intel.com>
+CC:     "stable@vger.kernel.org" <stable@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
+        Mark Brown <broonie@kernel.org>
+Subject: RE: [PATCH] ASoC: Intel: Skylake: Add alternative topology binary
+ name
+Thread-Topic: [PATCH] ASoC: Intel: Skylake: Add alternative topology binary
+ name
+Thread-Index: AQHWsesetrmyqB6A606/K4JDH1AqQKm2iiKAgAFSVACAAAM7AIAGkXhQ
+Date:   Sun, 8 Nov 2020 16:17:16 +0000
+Message-ID: <0f6a673556974a289c2b81f3a8cc7536@intel.com>
+References: <20201103141047.15053-1-mateusz.gorski@linux.intel.com>
+ <20201103153541.GC3267686@kroah.com>
+ <d6006431-420f-55c7-0f78-977507e11fcf@linux.intel.com>
+ <20201104115810.GA1694250@kroah.com>
+In-Reply-To: <20201104115810.GA1694250@kroah.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-product: dlpe-windows
+dlp-reaction: no-action
+dlp-version: 11.5.1.3
+x-originating-ip: [163.33.253.164]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 1 Nov 2020 15:38:03 +0000
-Jonathan Cameron <jic23@kernel.org> wrote:
+On 2020-11-04 12:58 PM, Greg KH wrote:
+> On Wed, Nov 04, 2020 at 12:46:36PM +0100, Gorski, Mateusz wrote:
+>>
+>>>> [ Upstream commit 1b290ef023b3eeb4f4688b582fecb773915ef937 ]
+>>>>
+>>>> Add alternative topology binary file name based on used machine driver
+>>>> and fallback to use this name after failed attempt to load topology file
+>>>> with name based on NHLT.
+>>>> This change addresses multiple issues with current mechanism, for
+>>>> example - there are devices without NHLT table, and that currently
+>>>> results in tplg_name being empty.
+...
 
-> On Mon, 28 Sep 2020 12:09:55 +0300
-> Cristian Pop <cristian.pop@analog.com> wrote:
+>>> What problems are people facing, and what kernel(s) are you asking for
+>>> this to be ported to, and why can't people just use 5.8 or newer if they
+>>> have this new hardware?
+>>>
+>>
+>> I forgot to add - I wanted this change to be merged to stable 5.4 kernel.
+>> Please let me know if I should resend this patch with this information
+>> included.
+>>
+>> As for the user issues - topology binary file name is currently created
+>> according to information from NHLT. The problem is, that some laptops (for
+>> example Dell XPS 13) do not have NHLT at all. This results in topology
+>> binary name being empty (" ").
+>> This patch adds alternative name based on loaded machine driver.
+>>
+>> It applies not only to new hardware, please note that the mentioned Dell XPS
+>> 13 is based on Kabylake. This issue existed on upstream from the beginning
+>> of Skylake driver and was only recently addressed.
 > 
-> > If a label is defined in the device tree for this channel add that
-> > to the channel specific attributes. This is useful for userspace to
-> > be able to identify an individual channel.
-> > 
-> > Signed-off-by: Cristian Pop <cristian.pop@analog.com>  
+> When was that laptop released and is this the only change that is needed
+> in order for the 5.4.y kernel to work properly on it?
 > 
-> Hi Cristian,
-> 
-> I think the DT binding part of this has gotten lost now, so please
-> repost the whole series making sure to include Rob H and DT list.
-> 
-> I have proposed a conversion of the adc.txt file now.  I'll deal
-> with merging your changes into there if necessary though.
-> May be worth mentioning that in the cover letter for the resend.
 
-Rob found it and acked, so all good on that front.
+Sorry for the late answer, Greg. To address your concerns and questions
+let me elaborate:
 
-It did manage to cross with some of the work to take large parts
-of iio_dev opaque so I've had to modify it a tiny bit.
+Indeed, this change is not the only one required to enable DMIC + HDA
+configuration for customers. The following series is essential:
 
-Please check the result in the testing branch of iio.git.
+[PATCH 0/7] ASoC: Intel: Skylake: Fix HDaudio and Dmic
+https://lore.kernel.org/alsa-devel/20200305145314.32579-1-cezary.rojewski@intel.com/
+
+as it's not just enabling said configuration, it is fixing several
+issues along the road with /skylake and HDA. And the issues are
+certainly not limited to just Dell XPS 13, these trouble many
+SKL/KBL/AML laptop models available on the market - those where AudioDSP
+configuration is enabled by default.
+
+Backport presented in this very patch provided by Mateusz touches on yet
+another subject. More often than not, incomplete -or- incorrect topology
+binary is the cause of configuration issues and updating it usually
+resolves them. Unfortunately, user needed to be very precise when naming
+the new topology file. Name is quite complicated as it is based on data
+coming from NHLT's (ACPI table) header. Asking user to either provide
+their NHLT or decode the header themselves is inconvenient to say
+the least. And thus alternative-topology-name patch came to life.
+
+I'll check what's missing on v5.4.y and get to porting mentioned series.
+Should happen early next week.
 
 Thanks,
-
-Jonathan
-
-> 
-> Thanks,
-> 
-> Jonathan
-> 
-> > ---
-> >  drivers/iio/industrialio-core.c | 40 +++++++++++++++++++++++++++++++++
-> >  include/linux/iio/iio.h         |  6 +++++
-> >  2 files changed, 46 insertions(+)
-> > 
-> > diff --git a/drivers/iio/industrialio-core.c b/drivers/iio/industrialio-core.c
-> > index 6e388293c828..b577fff35641 100644
-> > --- a/drivers/iio/industrialio-core.c
-> > +++ b/drivers/iio/industrialio-core.c
-> > @@ -669,6 +669,19 @@ ssize_t iio_format_value(char *buf, unsigned int type, int size, int *vals)
-> >  }
-> >  EXPORT_SYMBOL_GPL(iio_format_value);
-> >  
-> > +static ssize_t iio_read_channel_label(struct device *dev,
-> > +				      struct device_attribute *attr,
-> > +				      char *buf)
-> > +{
-> > +	struct iio_dev *indio_dev = dev_to_iio_dev(dev);
-> > +	struct iio_dev_attr *this_attr = to_iio_dev_attr(attr);
-> > +
-> > +	if (!indio_dev->info->read_label)
-> > +		return -EINVAL;
-> > +
-> > +	return indio_dev->info->read_label(indio_dev, this_attr->c, buf);
-> > +}
-> > +
-> >  static ssize_t iio_read_channel_info(struct device *dev,
-> >  				     struct device_attribute *attr,
-> >  				     char *buf)
-> > @@ -1137,6 +1150,28 @@ int __iio_add_chan_devattr(const char *postfix,
-> >  	return ret;
-> >  }
-> >  
-> > +static int iio_device_add_channel_label(struct iio_dev *indio_dev,
-> > +					 struct iio_chan_spec const *chan)
-> > +{
-> > +	int ret;
-> > +
-> > +	if (!indio_dev->info->read_label)
-> > +		return 0;
-> > +
-> > +	ret = __iio_add_chan_devattr("label",
-> > +				     chan,
-> > +				     &iio_read_channel_label,
-> > +				     NULL,
-> > +				     0,
-> > +				     IIO_SEPARATE,
-> > +				     &indio_dev->dev,
-> > +				     &indio_dev->channel_attr_list);
-> > +	if (ret < 0)
-> > +		return ret;
-> > +
-> > +	return 1;
-> > +}
-> > +
-> >  static int iio_device_add_info_mask_type(struct iio_dev *indio_dev,
-> >  					 struct iio_chan_spec const *chan,
-> >  					 enum iio_shared_by shared_by,
-> > @@ -1270,6 +1305,11 @@ static int iio_device_add_channel_sysfs(struct iio_dev *indio_dev,
-> >  		return ret;
-> >  	attrcount += ret;
-> >  
-> > +	ret = iio_device_add_channel_label(indio_dev, chan);
-> > +	if (ret < 0)
-> > +		return ret;
-> > +	attrcount += ret;
-> > +
-> >  	if (chan->ext_info) {
-> >  		unsigned int i = 0;
-> >  		for (ext_info = chan->ext_info; ext_info->name; ext_info++) {
-> > diff --git a/include/linux/iio/iio.h b/include/linux/iio/iio.h
-> > index 2e45b3ceafa7..9a3cf4815148 100644
-> > --- a/include/linux/iio/iio.h
-> > +++ b/include/linux/iio/iio.h
-> > @@ -362,6 +362,8 @@ struct iio_trigger; /* forward declaration */
-> >   *			and max. For lists, all possible values are enumerated.
-> >   * @write_raw:		function to write a value to the device.
-> >   *			Parameters are the same as for read_raw.
-> > + * @read_label:		function to request label name for a specified label,
-> > + *			for better channel identification.
-> >   * @write_raw_get_fmt:	callback function to query the expected
-> >   *			format/precision. If not set by the driver, write_raw
-> >   *			returns IIO_VAL_INT_PLUS_MICRO.
-> > @@ -420,6 +422,10 @@ struct iio_info {
-> >  			 int val2,
-> >  			 long mask);
-> >  
-> > +	int (*read_label)(struct iio_dev *indio_dev,
-> > +			 struct iio_chan_spec const *chan,
-> > +			 char *label);
-> > +
-> >  	int (*write_raw_get_fmt)(struct iio_dev *indio_dev,
-> >  			 struct iio_chan_spec const *chan,
-> >  			 long mask);  
-> 
+Czarek
 
