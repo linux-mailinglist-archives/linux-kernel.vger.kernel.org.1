@@ -2,92 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 157522AA8A2
-	for <lists+linux-kernel@lfdr.de>; Sun,  8 Nov 2020 01:46:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A1EFD2AA8A5
+	for <lists+linux-kernel@lfdr.de>; Sun,  8 Nov 2020 01:57:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728634AbgKHAqa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Nov 2020 19:46:30 -0500
-Received: from mail-40133.protonmail.ch ([185.70.40.133]:60593 "EHLO
-        mail-40133.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726053AbgKHAqa (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Nov 2020 19:46:30 -0500
-Date:   Sun, 08 Nov 2020 00:46:15 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me; s=protonmail;
-        t=1604796387; bh=LOZ/q4BZZQQmIvWoLo/yfk47gGQwkc69xB7RkRHk/ec=;
-        h=Date:To:From:Cc:Reply-To:Subject:From;
-        b=S/4EhYGcNNYt2yG69lFK6vHdOBSC+NOFAY591UUI35bXN1bd+ObM2YWGtnhVWci1w
-         d/SrVoBqm2nyFK7Eglixioax8rehkINydYq/tpBT/0vpvGBjMvM5zlOOh69VV2s+Lh
-         NCa5Shm9CbzIks5qNN8CbLNQHw6R76hiZA0ploy7GTRga9Ud2d1C+6eQouwdtOfC9m
-         jB1karvaB0DPBnm4/OT0ZW99V15w3Vlv/lUa5suc9BqedsnqRUnvLtoTOUok7iolSe
-         Y9yefGqIwcRfizC9Cvz796byD1E0o8YMGplw+jBPr4YdWO4fwc7DR2XPYQCV/j6wG7
-         t7wHEHcWTXu2w==
-To:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-From:   Alexander Lobakin <alobakin@pm.me>
-Cc:     Michal Kubecek <mkubecek@suse.cz>,
-        Maxim Mikityanskiy <maximmi@mellanox.com>,
-        Alexander Lobakin <alobakin@pm.me>, netdev@vger.kernel.org,
+        id S1726380AbgKHA4r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Nov 2020 19:56:47 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46080 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725838AbgKHA4q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 7 Nov 2020 19:56:46 -0500
+Received: from localhost.localdomain (c-73-231-172-41.hsd1.ca.comcast.net [73.231.172.41])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2727520885;
+        Sun,  8 Nov 2020 00:56:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604797006;
+        bh=/261giqM3SGf4BphJk8rBUodxqpoAGphORKU+/3G2W0=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=xwxjPDl+XMKb88dppa9KT+Klv8aXbRwQ9UGlyqntIQflE109bvZuC45A7d+VPQSkP
+         HlaRq/4a0y7UT/eq66pLNjY31kTs3c/Oe55Q7eIP0wyTXMGzGwyVV++cJEmvTutyvv
+         hDDjFCRLopKIALYmz5iaDG/uEfbBN4f5SlzK+O/U=
+Date:   Sat, 7 Nov 2020 16:56:45 -0800
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     Stefan Agner <stefan@agner.ch>
+Cc:     minchan@kernel.org, ngupta@vflare.org,
+        sergey.senozhatsky.work@gmail.com, sjenning@linux.vnet.ibm.com,
+        gregkh@linuxfoundation.org, arnd@arndb.de, linux-mm@kvack.org,
         linux-kernel@vger.kernel.org
-Reply-To: Alexander Lobakin <alobakin@pm.me>
-Subject: [PATCH v2 net] ethtool: netlink: add missing netdev_features_change() call
-Message-ID: <ahA2YWXYICz5rbUSQqNG4roJ8OlJzzYQX7PTiG80@cp4-web-028.plabs.ch>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+Subject: Re: [PATCH] mm/zsmalloc: include sparsemem.h for MAX_PHYSMEM_BITS
+Message-Id: <20201107165645.1b139b595b6b64feaca61bcb@linux-foundation.org>
+In-Reply-To: <bdfa44bf1c570b05d6c70898e2bbb0acf234ecdf.1604762181.git.stefan@agner.ch>
+References: <bdfa44bf1c570b05d6c70898e2bbb0acf234ecdf.1604762181.git.stefan@agner.ch>
+X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-After updating userspace Ethtool from 5.7 to 5.9, I noticed that
-NETDEV_FEAT_CHANGE is no more raised when changing netdev features
-through Ethtool.
-That's because the old Ethtool ioctl interface always calls
-netdev_features_change() at the end of user request processing to
-inform the kernel that our netdevice has some features changed, but
-the new Netlink interface does not. Instead, it just notifies itself
-with ETHTOOL_MSG_FEATURES_NTF.
-Replace this ethtool_notify() call with netdev_features_change(), so
-the kernel will be aware of any features changes, just like in case
-with the ioctl interface. This does not omit Ethtool notifications,
-as Ethtool itself listens to NETDEV_FEAT_CHANGE and drops
-ETHTOOL_MSG_FEATURES_NTF on it
-(net/ethtool/netlink.c:ethnl_netdev_event()).
+On Sat,  7 Nov 2020 16:22:06 +0100 Stefan Agner <stefan@agner.ch> wrote:
 
-From v1 [1]:
-- dropped extra new line as advised by Jakub;
-- no functional changes.
+> Most architectures define MAX_PHYSMEM_BITS in asm/sparsemem.h and don't
+> include it in asm/pgtable.h. Include asm/sparsemem.h directly to get
+> the MAX_PHYSMEM_BITS define on all architectures.
+> 
+> This fixes a crash when accessing zram on 32-bit ARM platform with LPAE and
+> more than 4GB of memory:
+>   Unable to handle kernel NULL pointer dereference at virtual address 00000000
 
-[1] https://lore.kernel.org/netdev/AlZXQ2o5uuTVHCfNGOiGgJ8vJ3KgO5YIWAnQjH0c=
-DE@cp3-web-009.plabs.ch
-
-Fixes: 0980bfcd6954 ("ethtool: set netdev features with FEATURES_SET reques=
-t")
-Signed-off-by: Alexander Lobakin <alobakin@pm.me>
----
- net/ethtool/features.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/net/ethtool/features.c b/net/ethtool/features.c
-index 8ee4cdbd6b82..1c9f4df273bd 100644
---- a/net/ethtool/features.c
-+++ b/net/ethtool/features.c
-@@ -280,7 +280,7 @@ int ethnl_set_features(struct sk_buff *skb, struct genl=
-_info *info)
- =09=09=09=09=09  active_diff_mask, compact);
- =09}
- =09if (mod)
--=09=09ethtool_notify(dev, ETHTOOL_MSG_FEATURES_NTF, NULL);
-+=09=09netdev_features_change(dev);
-=20
- out_rtnl:
- =09rtnl_unlock();
---=20
-2.29.2
-
+Mysterious.  Presumably without this include, some compilation unit is
+picking up the wrong value of MAX_PHYSMEM_BITS?  But I couldn't
+actually see where/how this occurs.  Can you please explain further?
 
