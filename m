@@ -2,69 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 299F02AADC4
-	for <lists+linux-kernel@lfdr.de>; Sun,  8 Nov 2020 23:13:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 77AA12AADCB
+	for <lists+linux-kernel@lfdr.de>; Sun,  8 Nov 2020 23:19:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728925AbgKHWNp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 8 Nov 2020 17:13:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52914 "EHLO
+        id S1728887AbgKHWT1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 8 Nov 2020 17:19:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53778 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727570AbgKHWNp (ORCPT
+        with ESMTP id S1727570AbgKHWT0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 8 Nov 2020 17:13:45 -0500
-Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1908C0613CF
-        for <linux-kernel@vger.kernel.org>; Sun,  8 Nov 2020 14:13:44 -0800 (PST)
-Received: by mail-ed1-x541.google.com with SMTP id a15so6753474edy.1
-        for <linux-kernel@vger.kernel.org>; Sun, 08 Nov 2020 14:13:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Zadr8S1exGYvbFBWcZYnrHIH74MhDue7HE7SBukcCYU=;
-        b=ZS3/RrmUsyd26siknMWP9hBPyVlLToCszbcuKFgMMGb025nOIQgZWIQ6ZwJ147RqaH
-         EKVpCGvfVXt9vXH/lM3kDv0NtYdy1S6MI12zDiuRr0rVSNKGgf7cA1IFP9WPqA3/WHhx
-         Dq+e+OjQNM/qG1dGk4wPK9vKSG1IzXd3qhMRJ81vTVOvM9pFMeX6R7RtUKJlV7uONu7p
-         xkW5CszwYqBngjyOQYp9KF1GlmFQuRrMu/lMpSDz7COpme/4Iw55FU4vLI98hvShL9CG
-         /MqttJcFkHzxYOyF3d0ZSScmtMENwrknzgD/6v/7Vh48w332cTfu8sGP67VKtNTMqF2S
-         P1lQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Zadr8S1exGYvbFBWcZYnrHIH74MhDue7HE7SBukcCYU=;
-        b=pf1O1arTItZoDX7l46WImUjyNGyWRyfYdi7jKwfVZO8zx8lT1TjaKW3PxT4/GHDMW/
-         qtDhRwDebOk18V92sJrQzNG/m5IrGrhQ4uyT4oUsA4m+AFNv9NVd6o9D7M8z50gCZKMg
-         DjXrreYUmT0AvLa0UAt6x5wJdgkxRolCORuociC/wWCS8g5YMQKPB9QAtQi7qdDhKZpk
-         sFm7A2ifdjiE9jHZry4jn9FfWafyI0DH9+qg0rFA4nkEkv25r+gzmDIqyw1hwAOd4Lwr
-         uEgWdZj55NqGYiw0swjvZgzChqHtg55nVEmpgnGGy92bgkQhbKZvQBfYzy+8a7jdY88n
-         57tQ==
-X-Gm-Message-State: AOAM532e9uV9RZi/Up7+AZrIAR1RMfFAhfRXjbVzXzzPgEm30yue0reZ
-        Mmu9PA/w3DoTc1pB8ST4WsTur9hk47S8zT1pcWA=
-X-Google-Smtp-Source: ABdhPJx7xBHJqmrYHCq3KgX31T0CG77X4kaGHcuM6zY+ZJ7+918xPieTS3Ydr8/NkwE08ivM14/Nv10OkaOKTkqFQAU=
-X-Received: by 2002:aa7:c889:: with SMTP id p9mr12160883eds.110.1604873623378;
- Sun, 08 Nov 2020 14:13:43 -0800 (PST)
+        Sun, 8 Nov 2020 17:19:26 -0500
+Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4498C0613CF;
+        Sun,  8 Nov 2020 14:19:25 -0800 (PST)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CTpSm2BWrz9sRK;
+        Mon,  9 Nov 2020 09:19:20 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1604873961;
+        bh=NEv8n5KzQuX8kW5uISsolwqQKxhUB6+CLsJVOPYMj1M=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=GBtrbmhXWSI1CLhucXV00FF38IOVG828y4J8H0iAPjTjLkURgN0jBjpZ8AxqCTj+X
+         u33wEzx7QJ7BjjJN3oN9yB9u+PAdfGNWuM5JshA4oi9cFv6ZYQlgn5NGuAdLRdLo3V
+         9+qkEHTy2rk3/CpZIsPHYMAADitNLZo2MbrTvHjey0Aj6brkWpF4rB6z1Uyanl0tB9
+         ZSY3G0RROCI0cTMnV7a8bwBF8JtgMTXAd/Vz9pR6OUFI+D0XKTbM9WkmyyG4Zcl/QQ
+         PzQMm/ylRz2IJt/4t0CZv79wjhMIdD08MT9NafhERhJBJ7vQhf1rqnCaxnkrGs2MWq
+         oGapHeocRmr2w==
+Date:   Mon, 9 Nov 2020 09:19:19 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Nathan Chancellor <natechancellor@gmail.com>
+Cc:     Valdis =?UTF-8?B?S2zEk3RuaWVrcw==?= <valdis.kletnieks@vt.edu>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-next@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: next-20201105 - build issue with KASAN on ARM
+Message-ID: <20201109091919.6e77162a@canb.auug.org.au>
+In-Reply-To: <20201107200453.GA92349@ubuntu-m3-large-x86>
+References: <7021.1604774000@turing-police>
+        <20201107200453.GA92349@ubuntu-m3-large-x86>
 MIME-Version: 1.0
-References: <1604378274-6860-1-git-send-email-yejune.deng@gmail.com>
-In-Reply-To: <1604378274-6860-1-git-send-email-yejune.deng@gmail.com>
-From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Date:   Sun, 8 Nov 2020 23:13:32 +0100
-Message-ID: <CAFBinCDjzt7jjEgTcxc+dMLojmnhMzm=1FX3bEcyDC7RGu0MTA@mail.gmail.com>
-Subject: Re: [PATCH] phy: amlogic: Replace devm_reset_control_array_get()
-To:     Yejune Deng <yejune.deng@gmail.com>
-Cc:     khilman@baylibre.com, Neil Armstrong <narmstrong@baylibre.com>,
-        jbrunet@baylibre.com, p.zabel@pengutronix.de, repk@triplefau.lt,
-        lorenzo.pieralisi@arm.com, kishon@ti.com, vkoul@kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-amlogic@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; boundary="Sig_/gAlRvQ1xlm=eGk0Uvm2bwwB";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 3, 2020 at 5:38 AM Yejune Deng <yejune.deng@gmail.com> wrote:
+--Sig_/gAlRvQ1xlm=eGk0Uvm2bwwB
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
+
+Hi Nathan,
+
+On Sat, 7 Nov 2020 13:04:53 -0700 Nathan Chancellor <natechancellor@gmail.c=
+om> wrote:
 >
-> devm_reset_control_array_get_exclusive() looks more readable
->
-> Signed-off-by: Yejune Deng <yejune.deng@gmail.com>
-Reviewed-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+> Because it builds fine if you check out Russell's branch. This build
+> error only happens because of a treewide change in -mm that was applied
+> after the ARM merge:
+>=20
+> https://lore.kernel.org/linux-arm-kernel/20201106094434.GA3268933@ubuntu-=
+m3-large-x86/
+>=20
+> https://lore.kernel.org/linux-arm-kernel/20201106180929.GD2959494@ubuntu-=
+m3-large-x86/
+>=20
+> Stephen could apply that diff as a fixup for the -mm patch when he
+> builds -next or I can send it as a formal patch for him to apply.
+
+I have applied the patch by hand today, but please send a patch to
+Andrew pointing out that it should go in his post -next series (or
+possibly he should also move
+treewide-remove-stringification-from-__alias-macro-definition.patch
+into the post -next series).
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/gAlRvQ1xlm=eGk0Uvm2bwwB
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl+obucACgkQAVBC80lX
+0GzS8Qf+IuLqwFpMPWyN9ZauYNQVMdL4beEw6UxJjG/i/nnODD/OY9MjcDjSU4n9
+hzhUjLwBU/6j/iKCfVHBo8GhGGnpVKTno7u5nmAxTsJ7BnVmAfXj3zPLauXPfxDe
+8JYiJxy2RaFm5Suy3VqSssUvqmFIQe1pasmbUOXrJG8cATXqicJ57mSQ3NIWimO0
+5FtQbRguIPOIOMq2SzZFsXTDKKoBmhS+872yd9oFXxSyFGlBIAJha7Haa4NUBaoP
+9HhdE/Fu9pWfT4r6H5NhVgpYNKhuFoG/Ms1AJproDAVL2Bry4GoOTkddDmSW0d5t
+mW2mkGAE3GctIz2n13fWqpn7lXttsA==
+=7CEl
+-----END PGP SIGNATURE-----
+
+--Sig_/gAlRvQ1xlm=eGk0Uvm2bwwB--
