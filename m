@@ -2,155 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F5562AABE5
-	for <lists+linux-kernel@lfdr.de>; Sun,  8 Nov 2020 16:26:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 52AC52AABB4
+	for <lists+linux-kernel@lfdr.de>; Sun,  8 Nov 2020 16:01:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728624AbgKHP0l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 8 Nov 2020 10:26:41 -0500
-Received: from m12-13.163.com ([220.181.12.13]:34084 "EHLO m12-13.163.com"
+        id S1728384AbgKHPBJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 8 Nov 2020 10:01:09 -0500
+Received: from mout01.posteo.de ([185.67.36.65]:51390 "EHLO mout01.posteo.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726814AbgKHP0k (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 8 Nov 2020 10:26:40 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=Date:From:Subject:Message-ID:MIME-Version; bh=vi3Bj
-        fzpqssVUtirGQmg9J3S/o92w2Pdis4J9PzyuEA=; b=LR99cRZns097oGxzgUbGR
-        7KE9mcPJVTRCuG6VwZtTjH/ZxYSu8Ep5ls1k8VD6cVygCRVrZ20KDGC0ieAQ40DC
-        SCrWZCc4DRWEpPzTLY4LMfkfXiWVtGYGDMcKfwFQp8C6VndvC0UDjtG4rCGEuJEe
-        hFo380z8ezfUdAFqcT8MTE=
-Received: from localhost (unknown [101.86.208.122])
-        by smtp9 (Coremail) with SMTP id DcCowAAHZwOrAqhfgSskPg--.40498S2;
-        Sun, 08 Nov 2020 22:37:31 +0800 (CST)
-Date:   Sun, 8 Nov 2020 22:37:31 +0800
-From:   Hui Su <sh_def@163.com>
-To:     akpm@linux-foundation.org, hannes@cmpxchg.org, mhocko@kernel.org,
-        vdavydov.dev@gmail.com, shakeelb@google.com, guro@fb.com,
-        laoar.shao@gmail.com, chris@chrisdown.name,
-        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-        linux-mm@kvack.org
-Cc:     sh_def@163.com
-Subject: [PATCH v2] mm/memcontrol:rewrite mem_cgroup_page_lruvec()
-Message-ID: <20201108143731.GA74138@rlk>
+        id S1726814AbgKHPBJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 8 Nov 2020 10:01:09 -0500
+Received: from submission (posteo.de [89.146.220.130]) 
+        by mout01.posteo.de (Postfix) with ESMTPS id 07AAD16005C
+        for <linux-kernel@vger.kernel.org>; Sun,  8 Nov 2020 16:01:06 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=posteo.net; s=2017;
+        t=1604847667; bh=j4NtEyY0TPhEih2tWYK0zsBOnE2tBviMpYDeQpDvF+Q=;
+        h=Date:From:To:Cc:Subject:From;
+        b=AlXiF0Ue2E3tMkA4s5ybvZ3JzBXLoQaeXfml5GUmD13bDsb0pQqe8SChFxyCi+I5r
+         gouIHlG6QkhTahxNFG7QU9XZTp4+qORKCWNBHzfUt/kraM756zrrX19OLG1RH2aRsZ
+         YjOEou4yScrOG1DjGGMorQ63YKZXUNlLK9jUPnMNO5DS5Ue/74pqI7dwIJiwZpRazv
+         IfF98c1zZZVdoChd6xh+I6BVH/2ttC5OepZUPV9XdnWaKrHZVOg6rweZdoCT1uSrnj
+         vsJWadA6yolkuu3i4/Z/MtqNMh0bS8ajlfVfn5RUb8076qswi6BQv8SQMdhiZf5abd
+         5jBFC3M5w30ow==
+Received: from customer (localhost [127.0.0.1])
+        by submission (posteo.de) with ESMTPSA id 4CTcl569Jmz9rxV;
+        Sun,  8 Nov 2020 16:01:05 +0100 (CET)
+Date:   Sun, 8 Nov 2020 16:01:04 +0100
+From:   Wilken Gottwalt <wilken.gottwalt@posteo.net>
+To:     linux-kernel@vger.kernel.org
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Maxime Ripard <mripard@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>
+Subject: [PATCH] documentation: arm: sunxi: add Allwinner H616 documents
+Message-ID: <20201108150104.GA66507@monster.powergraphx.local>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-X-CM-TRANSID: DcCowAAHZwOrAqhfgSskPg--.40498S2
-X-Coremail-Antispam: 1Uf129KBjvJXoWxWF4UJr4DZr1UKrW7tr1kZrb_yoW5tF43pF
-        ZxG3W3Z398JrWYqr4xta1q9a4fZa1xJw43Jr17Jw1IvF13K340q3W2kr1rXFWUuFySyrnr
-        trZ0kr18G3yqvFDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x0zRRT5JUUUUU=
-X-Originating-IP: [101.86.208.122]
-X-CM-SenderInfo: xvkbvvri6rljoofrz/1tbifwvWX1r6mir7KwAAs9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-mem_cgroup_page_lruvec() in memcontrol.c and
-mem_cgroup_lruvec() in memcontrol.h is very similar
-except for the param(page and memcg) which also can be
-convert to each other.
+Add the current and cleaned Allwinner H616 datasheet and user manual.
 
-So rewrite mem_cgroup_page_lruvec() with mem_cgroup_lruvec().
-
-v1->v2:
-use page_memcg() instead of 'page->mem_cgroup'.
-
-Acked-by: Michal Hocko <mhocko@suse.com>
-Acked-by: Johannes Weiner <hannes@cmpxchg.org>
-Reviewed-by: Shakeel Butt <shakeelb@google.com>
-Signed-off-by: Hui Su <sh_def@163.com>
+Signed-off-by: Wilken Gottwalt <wilken.gottwalt@posteo.net>
 ---
- include/linux/memcontrol.h | 16 +++++++++++++--
- mm/memcontrol.c            | 40 --------------------------------------
- 2 files changed, 14 insertions(+), 42 deletions(-)
+ Documentation/arm/sunxi.rst | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
-diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-index e391e3c56de5..727af7c74e91 100644
---- a/include/linux/memcontrol.h
-+++ b/include/linux/memcontrol.h
-@@ -457,9 +457,10 @@ mem_cgroup_nodeinfo(struct mem_cgroup *memcg, int nid)
- /**
-  * mem_cgroup_lruvec - get the lru list vector for a memcg & node
-  * @memcg: memcg of the wanted lruvec
-+ * @pgdat: pglist_data
-  *
-  * Returns the lru list vector holding pages for a given @memcg &
-- * @node combination. This can be the node lruvec, if the memory
-+ * @pgdat combination. This can be the node lruvec, if the memory
-  * controller is disabled.
-  */
- static inline struct lruvec *mem_cgroup_lruvec(struct mem_cgroup *memcg,
-@@ -489,7 +490,18 @@ static inline struct lruvec *mem_cgroup_lruvec(struct mem_cgroup *memcg,
- 	return lruvec;
- }
+diff --git a/Documentation/arm/sunxi.rst b/Documentation/arm/sunxi.rst
+index 0c536ae1d7c2..b85d1e2f2d47 100644
+--- a/Documentation/arm/sunxi.rst
++++ b/Documentation/arm/sunxi.rst
+@@ -158,3 +158,13 @@ SunXi family
+ 	* User Manual
  
--struct lruvec *mem_cgroup_page_lruvec(struct page *, struct pglist_data *);
-+/**
-+ * mem_cgroup_page_lruvec - return lruvec for isolating/putting an LRU page
-+ * @page: the page
-+ * @pgdat: pgdat of the page
-+ *
-+ * This function relies on page->mem_cgroup being stable.
-+ */
-+static inline struct lruvec *mem_cgroup_page_lruvec(struct page *page,
-+						struct pglist_data *pgdat)
-+{
-+	return mem_cgroup_lruvec(page_memcg(page), pgdat);
-+}
- 
- struct mem_cgroup *mem_cgroup_from_task(struct task_struct *p);
- 
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index 3dcbf24d2227..9d4e1150b194 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -1330,46 +1330,6 @@ int mem_cgroup_scan_tasks(struct mem_cgroup *memcg,
- 	return ret;
- }
- 
--/**
-- * mem_cgroup_page_lruvec - return lruvec for isolating/putting an LRU page
-- * @page: the page
-- * @pgdat: pgdat of the page
-- *
-- * This function relies on page->mem_cgroup being stable - see the
-- * access rules in commit_charge().
-- */
--struct lruvec *mem_cgroup_page_lruvec(struct page *page, struct pglist_data *pgdat)
--{
--	struct mem_cgroup_per_node *mz;
--	struct mem_cgroup *memcg;
--	struct lruvec *lruvec;
--
--	if (mem_cgroup_disabled()) {
--		lruvec = &pgdat->__lruvec;
--		goto out;
--	}
--
--	memcg = page->mem_cgroup;
--	/*
--	 * Swapcache readahead pages are added to the LRU - and
--	 * possibly migrated - before they are charged.
--	 */
--	if (!memcg)
--		memcg = root_mem_cgroup;
--
--	mz = mem_cgroup_page_nodeinfo(memcg, page);
--	lruvec = &mz->lruvec;
--out:
--	/*
--	 * Since a node can be onlined after the mem_cgroup was created,
--	 * we have to be prepared to initialize lruvec->zone here;
--	 * and if offlined then reonlined, we need to reinitialize it.
--	 */
--	if (unlikely(lruvec->pgdat != pgdat))
--		lruvec->pgdat = pgdat;
--	return lruvec;
--}
--
- /**
-  * mem_cgroup_update_lru_size - account for adding or removing an lru page
-  * @lruvec: mem_cgroup per zone lru vector
+ 	  https://linux-sunxi.org/images/4/46/Allwinner_H6_V200_User_Manual_V1.1.pdf
++
++      - Allwinner H616
++
++	* Datasheet
++
++	  https://linux-sunxi.org/images/b/b9/H616_Datasheet_V1.0_cleaned.pdf
++
++	* User Manual
++
++	  https://linux-sunxi.org/images/2/24/H616_User_Manual_V1.0_cleaned.pdf
 -- 
-2.29.0
-
+2.29.2
 
