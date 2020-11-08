@@ -2,44 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52A822AAA0D
-	for <lists+linux-kernel@lfdr.de>; Sun,  8 Nov 2020 09:21:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D63C2AAA05
+	for <lists+linux-kernel@lfdr.de>; Sun,  8 Nov 2020 09:02:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728128AbgKHIVe convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Sun, 8 Nov 2020 03:21:34 -0500
-Received: from wp148.webpack.hosteurope.de ([80.237.132.155]:36272 "EHLO
-        wp148.webpack.hosteurope.de" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726115AbgKHIVe (ORCPT
+        id S1727332AbgKHICH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 8 Nov 2020 03:02:07 -0500
+Received: from out30-54.freemail.mail.aliyun.com ([115.124.30.54]:44737 "EHLO
+        out30-54.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726062AbgKHICG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 8 Nov 2020 03:21:34 -0500
-X-Greylist: delayed 2278 seconds by postgrey-1.27 at vger.kernel.org; Sun, 08 Nov 2020 03:21:33 EST
-Received: from ip1f127119.dynamic.kabel-deutschland.de ([31.18.113.25] helo=[192.168.178.34]); authenticated
-        by wp148.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        id 1kbfMD-0003E2-AC; Sun, 08 Nov 2020 08:43:25 +0100
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 8BIT
-From:   Roelof Berg <rberg@berg-solutions.de>
-Mime-Version: 1.0 (1.0)
-Subject: Re: [PATCH v2] lan743x: correctly handle chips with internal PHY
-Date:   Sun, 8 Nov 2020 08:43:24 +0100
-Message-Id: <180E897D-A99A-43E2-8033-AE1C2499C5BF@berg-solutions.de>
-References: <20201108041447.GZ933237@lunn.ch>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Bryan Whitehead <bryan.whitehead@microchip.com>,
-        David S Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: <20201108041447.GZ933237@lunn.ch>
-To:     Sven Van Asbroeck <thesven73@gmail.com>
-X-Mailer: iPhone Mail (17G68)
-X-bounce-key: webpack.hosteurope.de;rberg@berg-solutions.de;1604823693;fc97992f;
-X-HE-SMSGID: 1kbfMD-0003E2-AC
+        Sun, 8 Nov 2020 03:02:06 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R171e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04394;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=4;SR=0;TI=SMTPD_---0UEadUVK_1604822521;
+Received: from aliy80.localdomain(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0UEadUVK_1604822521)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Sun, 08 Nov 2020 16:02:01 +0800
+From:   Alex Shi <alex.shi@linux.alibaba.com>
+Cc:     Antonino Daplas <adaplas@gmail.com>, linux-fbdev@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] video: fbdev: riva: remove some unused varibles
+Date:   Sun,  8 Nov 2020 16:01:59 +0800
+Message-Id: <1604822519-65607-1-git-send-email-alex.shi@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-My last customer has a fixed link setup, contact me if you need one. Maybe they let me have it and I can test all future patches on fixed link as well. I tested the current driver version on a Lan7430 EVM in a PC by the way and it seemed to be working. I have the EVM still here if needed.
+Couple of variables are actually useless, remove them to save some gcc
+warning:
+drivers/video/fbdev/riva/riva_hw.c:250:21: warning: variable ‘mlwm’ set
+but not used [-Wunused-but-set-variable]
+drivers/video/fbdev/riva/riva_hw.c:665:15: warning: variable ‘vraw’ set
+but not used [-Wunused-but-set-variable]
+drivers/video/fbdev/riva/riva_hw.c:665:9: warning: variable ‘craw’ set
+but not used [-Wunused-but-set-variable]
+drivers/video/fbdev/riva/riva_hw.c:659:73: warning: variable ‘align’ set
+but not used [-Wunused-but-set-variable]
+drivers/video/fbdev/riva/riva_hw.c:659:50: warning: variable
+‘color_key_enable’ set but not used [-Wunused-but-set-variable]
 
-Greetings,
-Roelof
+Signed-off-by: Alex Shi <alex.shi@linux.alibaba.com>
+Cc: Antonino Daplas <adaplas@gmail.com> 
+Cc: linux-fbdev@vger.kernel.org 
+Cc: dri-devel@lists.freedesktop.org 
+Cc: linux-kernel@vger.kernel.org 
+---
+ drivers/video/fbdev/riva/riva_hw.c | 14 +++-----------
+ 1 file changed, 3 insertions(+), 11 deletions(-)
+
+diff --git a/drivers/video/fbdev/riva/riva_hw.c b/drivers/video/fbdev/riva/riva_hw.c
+index 4168ac464565..bcf9c4b4de31 100644
+--- a/drivers/video/fbdev/riva/riva_hw.c
++++ b/drivers/video/fbdev/riva/riva_hw.c
+@@ -247,14 +247,13 @@ static int nv3_iterate(nv3_fifo_info *res_info, nv3_sim_state * state, nv3_arb_i
+     int mburst_size = 32;
+     int mmisses, gmisses, vmisses;
+     int misses;
+-    int vlwm, glwm, mlwm;
++    int vlwm, glwm;
+     int last, next, cur;
+     int max_gfsize ;
+     long ns;
+ 
+     vlwm = 0;
+     glwm = 0;
+-    mlwm = 0;
+     vfsize = 0;
+     gfsize = 0;
+     cur = ainfo->cur;
+@@ -656,13 +655,12 @@ static char nv3_get_param(nv3_fifo_info *res_info, nv3_sim_state * state, nv3_ar
+     nv4_sim_state *arb
+ )
+ {
+-    int data, pagemiss, cas,width, video_enable, color_key_enable, bpp, align;
++    int data, pagemiss, cas,width, video_enable, bpp;
+     int nvclks, mclks, pclks, vpagemiss, crtpagemiss, vbs;
+     int found, mclk_extra, mclk_loop, cbs, m1, p1;
+     int mclk_freq, pclk_freq, nvclk_freq, mp_enable;
+     int us_m, us_n, us_p, video_drain_rate, crtc_drain_rate;
+     int vpm_us, us_video, vlwm, video_fill_us, cpm_us, us_crt,clwm;
+-    int craw, vraw;
+ 
+     fifo->valid = 1;
+     pclk_freq = arb->pclk_khz;
+@@ -672,9 +670,7 @@ static char nv3_get_param(nv3_fifo_info *res_info, nv3_sim_state * state, nv3_ar
+     cas = arb->mem_latency;
+     width = arb->memory_width >> 6;
+     video_enable = arb->enable_video;
+-    color_key_enable = arb->gr_during_vid;
+     bpp = arb->pix_bpp;
+-    align = arb->mem_aligned;
+     mp_enable = arb->enable_mp;
+     clwm = 0;
+     vlwm = 0;
+@@ -782,8 +778,6 @@ static char nv3_get_param(nv3_fifo_info *res_info, nv3_sim_state * state, nv3_ar
+                 mclk_extra--;
+             }
+         }
+-        craw = clwm;
+-        vraw = vlwm;
+         if (clwm < 384) clwm = 384;
+         if (vlwm < 128) vlwm = 128;
+         data = (int)(clwm);
+@@ -842,7 +836,7 @@ static char nv3_get_param(nv3_fifo_info *res_info, nv3_sim_state * state, nv3_ar
+     nv10_sim_state *arb
+ )
+ {
+-    int data, pagemiss, cas,width, video_enable, color_key_enable, bpp, align;
++    int data, pagemiss, cas,width, video_enable, bpp;
+     int nvclks, mclks, pclks, vpagemiss, crtpagemiss, vbs;
+     int nvclk_fill, us_extra;
+     int found, mclk_extra, mclk_loop, cbs, m1;
+@@ -863,9 +857,7 @@ static char nv3_get_param(nv3_fifo_info *res_info, nv3_sim_state * state, nv3_ar
+     cas = arb->mem_latency;
+     width = arb->memory_width/64;
+     video_enable = arb->enable_video;
+-    color_key_enable = arb->gr_during_vid;
+     bpp = arb->pix_bpp;
+-    align = arb->mem_aligned;
+     mp_enable = arb->enable_mp;
+     clwm = 0;
+     vlwm = 1024;
+-- 
+1.8.3.1
+
