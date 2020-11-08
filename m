@@ -2,91 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24AEF2AABCB
-	for <lists+linux-kernel@lfdr.de>; Sun,  8 Nov 2020 16:10:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A95732AABCE
+	for <lists+linux-kernel@lfdr.de>; Sun,  8 Nov 2020 16:12:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728772AbgKHPKW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 8 Nov 2020 10:10:22 -0500
-Received: from mout.gmx.net ([212.227.15.18]:37455 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728143AbgKHPKV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 8 Nov 2020 10:10:21 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1604848216;
-        bh=2U7Twia+KWF7ZCXIaRhk3lmYvbvEfN7RWuJCjzDjxYU=;
-        h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
-        b=NuOuUB6z9cpcf++BVp39cJjTh91v87udKBeVvFv+74X5xSwqGpoUiKr6IE3WKGXzb
-         yNTBOD9SVRm/QG771XV/ZckR8wrd3gkI9k94NmqnYRGEJ/p3sezBmUVZ4QncjgvWJH
-         RMCXO8WPpiLi/mCwZ+lkks/J9qa+3X2B0mEonySw=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from longitude ([37.201.214.162]) by mail.gmx.com (mrgmx005
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1MTzf6-1klEFO3IkE-00QzsV; Sun, 08
- Nov 2020 16:10:16 +0100
-From:   =?UTF-8?q?Jonathan=20Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>
-To:     linux-doc@vger.kernel.org
-Cc:     =?UTF-8?q?Jonathan=20Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>,
-        Jonathan Corbet <corbet@lwn.net>, linux-kernel@vger.kernel.org
-Subject: [PATCH] docs: driver-api: mtd: intel-spi: Improve formatting of shell commands
-Date:   Sun,  8 Nov 2020 16:10:04 +0100
-Message-Id: <20201108151005.1843666-1-j.neuschaefer@gmx.net>
-X-Mailer: git-send-email 2.28.0
+        id S1728551AbgKHPLu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 8 Nov 2020 10:11:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44430 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727570AbgKHPLt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 8 Nov 2020 10:11:49 -0500
+Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06B8AC0613CF;
+        Sun,  8 Nov 2020 07:11:49 -0800 (PST)
+Received: by mail-ed1-x542.google.com with SMTP id q3so6059333edr.12;
+        Sun, 08 Nov 2020 07:11:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:sender:from:date:message-id
+         :subject:to:cc;
+        bh=mz8zZn6hvRpj6Q4wr0nq4rIYkR+MONLI7vCkIZaxeaY=;
+        b=YuEuc0aieZuFG+xeVWDLDV/QzLCaWuBqgB/t+fjTmIA0FPVpRq8djVuxre0yn0dofn
+         I1drFe5aNX3GItRAmw+O1roPJHSB7FeqXRPJxtgPyBbneTm2c8rC3OCLgfpx6elxYdF8
+         1TSKAMU/x6uRBPMnEqgdxl6ntqd5iTlR6Z+2X1uL26c211n2LX1dx99dPinemfmnmgmj
+         ju5RmaZdtQ3Vah3M0Eus/4LAPY53r/BaZWgmWAvbf/DMqutG89qDVKZvqx3m0E4MB99Y
+         js1h/OgdEOOTZ/D1seu6bslY8Dl/JNYDrwt8+Wo9VItPyLJCJufR3z2QKS1aBZN1PEOe
+         C5gg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:sender:from
+         :date:message-id:subject:to:cc;
+        bh=mz8zZn6hvRpj6Q4wr0nq4rIYkR+MONLI7vCkIZaxeaY=;
+        b=TCBk2CpDcij1MQFFaGCfWziz1ONxSCS3fUf0qMYu1T2iAB5X7I48qpkeoE3jYeuihC
+         H/OGDWKVwHhTvWXLvZPY8Do6TPEjphzEwF/Fe60lgZbaVLbnHZxhuoOFteTyUFlWxvA/
+         5FDCIYb7jO/oWGHRHdwQcgKryBlwcnNOS63BqQW+zD0QFTh/wNXN643FETamQD+qoWAs
+         rreeX00EnfBh/88+PVzHBAJHND7SG8S33eOVXU9Tn8W+V0zSsiD0M8HsMgC89ezckQCx
+         RWI2PFi/QA8u7xaPCFD5G7mCfqe+nqHwfISNloOUQsj5upYUXcL0JyCi+wX7JlbuBM3L
+         gwUg==
+X-Gm-Message-State: AOAM530TtaJTRaS2Dli9yCTJwzZwfdM2zFZB4S2+qLX8LO9o2eGPQ7wV
+        hoxXkLoslZ/zxsOUIrVdfWkT9/VtN8opxgkIEbseoOCD
+X-Google-Smtp-Source: ABdhPJwnoa6bGnnPgl4Q1UhnZIeJBpi6gPdD0oYDgO/5/cze2FGXsvjbwbkojus19YQcZY/Gz1EtHSvqigrCRy7e2Ks=
+X-Received: by 2002:a17:907:2166:: with SMTP id rl6mr11174428ejb.61.1604848307710;
+ Sun, 08 Nov 2020 07:11:47 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:yiTBKBlvLRgXed6myindJcLlHXdjd5Ndqeo6M5NEKAQMZBU7YCj
- bzHbVOF0B9JpqcKGMNK/Ik6aXJdF3qBXeHBrgRIhTOkrHCerXM6Shum0kMi8TVN/dC0xIok
- OBcKp7Eqnrh8s2OujQH6lCELl81uCmH45fp0kJmv+WSZP0MQFx9vm6TUAY6+LlJ9vQMk06x
- AHcNNUFXLsW34zB9S0lxg==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:wDctJC3Z0zA=:5DOU6b8hMjf8oAQ9iA5jFh
- Ul7TyFKoQJ4xI1O859qXoTVXkxsKbgGoEFcB2xzgli5edfcNgvoeUyZqkrOzOvf16A1mKSxBe
- 47EOE66wAmPPbU+fyK9dUYagenRk7Z124eRuzjnu68AwrndMHJ74AXTvdcJ+3BTAS+PZS17Zn
- mKGdK/wSJP407iuv49U04rDYPweo/m9dn7CJDJGxLMv1Bhpw7JFfa4gNQUcTTYLXK5HEd5kBO
- G/zh+wBss5wVMMO/MHyUKL5iPsfXMmEA6znqpRtSkHvFXQvCX1gEvGlW4nKqV627CDX+2Ig2S
- L/w6Mzn3qY16FkYpcPCW+V4LSwKlxEoM8Zgjzz3GLSVdGY0FsN95yCM7rzdayXs53lf6w7nNK
- WajFS0eF8ufoLSspQUBFYwRxQN+mFDykAwHY+ky+i8K/TZIMJX+7BR7mpQ9+DryayvNsxXqia
- 4sf9Rshhrh1gJ24uET/iSAtssqunf+NSknfnRVUDxUteIzKSTcueCDinStzP4J8dLzopBL7md
- B7HmDONPK2gQyl7QxaGMal6aJMOVIY2ADI5Y4lY2TkM42Ed2vLa7OlNSFeZkcsySPXkLnXv2I
- E9QWh81+07PYRJHgpsnTgXa8aiuLi5Esw7mimSpOMwXdNUx/blRSdTOaNRhchjQ7/8cNrLh3m
- fkZzpBG/Em20Pq0gUvZuszYQlMD7+2yDnwuyBOIWTnKaZCZIvJlmDmy6QWKXGX39fw+DHuqz+
- yLw29H4UCQashIlvoccXPD6sJhIEBYmz1YJRuN0r2nrGCJCqpEtjKG95MfPwg83CUlA8kB03A
- VuhDUVrsBu6cQKSg5saCNPOjWUFBSUQJ0Ry937eHWaXnN3XjITDF3vcTL1p0D3fOF19XBdvfi
- 8nXn0zVCnR7+345a1p7p0wogz7bIQiijTIMwWNsXo=
+References: <20180129005948.7714-1-bjorn.andersson@linaro.org>
+ <CAKZGPAPrwXNeYk+bDiMBRczVf4PaBANnzhmenZie+V0BJ7OqBg@mail.gmail.com> <CACRpkdZ2UzA=Hyw+b20dCqzu8+L7_D1bTM44MKbbue2VFCY4UQ@mail.gmail.com>
+In-Reply-To: <CACRpkdZ2UzA=Hyw+b20dCqzu8+L7_D1bTM44MKbbue2VFCY4UQ@mail.gmail.com>
+Sender: getarunks@gmail.com
+X-Google-Sender-Delegation: getarunks@gmail.com
+From:   Arun KS <arunks.linux@gmail.com>
+Date:   Sun, 8 Nov 2020 20:41:36 +0530
+X-Google-Sender-Auth: v7oOVuzKmc_SZlk15grZ33XZAyc
+Message-ID: <CAKZGPAPGP7=_W8c5DA5E0eKmawF10XSO92_+E4hSE1cNFE_vcA@mail.gmail.com>
+Subject: Re: [PATCH] pinctrl: msm: Use dynamic GPIO numbering
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        MSM <linux-arm-msm@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Timur Tabi <timur@codeaurora.org>,
+        Arun KS <getarunks@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Format the shell commands and output in steps 6 and 8 as code blocks,
-for consistency with the rest of the document.
+On Thu, Nov 5, 2020 at 3:46 PM Linus Walleij <linus.walleij@linaro.org> wrote:
+>
+> On Fri, Oct 23, 2020 at 4:21 PM Arun KS <arunks.linux@gmail.com> wrote:
+>
+> > Im only concerned because, after this change, the use of gpio number
+> > from user space has become a little difficult.
+>
+> This makes me a bit puzzled so I need to push back a bit
+> here.
+>
+> What is this userspace and what interface is it using?
+>
+> We recommend using the GPIO character device with
+> libgpiod for userspace applications:
+> https://www.kernel.org/doc/html/latest/driver-api/gpio/using-gpio.html
 
-Signed-off-by: Jonathan Neusch=C3=A4fer <j.neuschaefer@gmx.net>
-=2D--
- Documentation/driver-api/mtd/intel-spi.rst | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Thanks Linus. Makes sense. Basically using the gpiochipset and offset
+to it will solve my problem. Earlier, while using the sysfs interface,
+it used to be one to one mapping with real gpio numbers.
 
-diff --git a/Documentation/driver-api/mtd/intel-spi.rst b/Documentation/dr=
-iver-api/mtd/intel-spi.rst
-index 0e6d9cd5388dd..0465f68792625 100644
-=2D-- a/Documentation/driver-api/mtd/intel-spi.rst
-+++ b/Documentation/driver-api/mtd/intel-spi.rst
-@@ -52,7 +52,7 @@ Linux.
- 	16384+0 records out
- 	8388608 bytes (8.4 MB) copied, 10.0269 s, 837 kB/s
-
-- 6) Verify the backup:
-+ 6) Verify the backup::
-
- 	# sha1sum /dev/mtd0ro bios.bak
- 	fdbb011920572ca6c991377c4b418a0502668b73  /dev/mtd0ro
-@@ -66,7 +66,7 @@ Linux.
- 	# flash_erase /dev/mtd0 0 0
- 	Erasing 4 Kibyte @ 7ff000 -- 100 % complete
-
-- 8) Once completed without errors you can write the new BIOS image:
-+ 8) Once completed without errors you can write the new BIOS image::
-
-     # dd if=3DMNW2MAX1.X64.0092.R01.1605221712.bin of=3D/dev/mtd0
-
-=2D-
-2.28.0
-
+Regards,
+Arun
+>
+> Is there any problem with this?
+>
+> sysfs is deprecated for years now:
+> https://www.kernel.org/doc/html/latest/admin-guide/gpio/sysfs.html
+>
+> Yours,
+> Linus Walleij
