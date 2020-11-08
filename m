@@ -2,87 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A8832AAB22
-	for <lists+linux-kernel@lfdr.de>; Sun,  8 Nov 2020 14:22:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B26E02AAB21
+	for <lists+linux-kernel@lfdr.de>; Sun,  8 Nov 2020 14:22:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728614AbgKHNWj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 8 Nov 2020 08:22:39 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52608 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728197AbgKHNWM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 8 Nov 2020 08:22:12 -0500
-Received: from localhost (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 71619206E3;
-        Sun,  8 Nov 2020 13:21:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604841695;
-        bh=SkSaZbbxbQKlOyOPpNzaJmiIA3JNvn8dwgGWjfjN+QE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=B4LVcidPH89nRcLhaaOqQuqZ//Xwx4z/bwAId7RogC4qHijueLwYDdlMOGsBajKnw
-         ixHHmNnGau6nQGSI7eZSMZg+vvZeoN5wJIbx9j+OSjsobsDFy5NY2O/cM0kM0NRKJe
-         UDvCl7vF/UFzDXD/gth7CDHwo3hiY2AO9NNQvFgE=
-Date:   Sun, 8 Nov 2020 08:21:34 -0500
-From:   Sasha Levin <sashal@kernel.org>
-To:     Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Kevin Hilman <khilman@baylibre.com>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-amlogic@lists.infradead.org
-Subject: Re: [PATCH AUTOSEL 5.4 05/24] arm64: dts: amlogic: meson-g12: use
- the G12A specific dwmac compatible
-Message-ID: <20201108132134.GQ2092@sasha-vm>
-References: <20201103012007.183429-1-sashal@kernel.org>
- <20201103012007.183429-5-sashal@kernel.org>
- <CAFBinCCZiO9Xe1WKT8MZ-90c7m1u_m1Mt-OXf=Pyuo0vukQQ5g@mail.gmail.com>
+        id S1728588AbgKHNW3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 8 Nov 2020 08:22:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55538 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728267AbgKHNWL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 8 Nov 2020 08:22:11 -0500
+Received: from mail-vs1-xe41.google.com (mail-vs1-xe41.google.com [IPv6:2607:f8b0:4864:20::e41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78E7DC0613CF;
+        Sun,  8 Nov 2020 05:21:53 -0800 (PST)
+Received: by mail-vs1-xe41.google.com with SMTP id x11so3411601vsx.12;
+        Sun, 08 Nov 2020 05:21:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=8JQ1el9D2LALj0FcpzFmr4ujCcSZ5M2XjTP6XGBrnow=;
+        b=nPWtn0STAepOPyKQv8Ug9XcmX79xnAbr3q3Fv4QgxGFK9V1+jGtSB9TzOR2h11Z96o
+         N3sX72sK3qINQ70L+et5ssvZdR2UxRkekNNFjeTcwElYtgVZuAhMM4LemD0g47WTCISc
+         4xX+9+Uf1wA8pg96YVfSMf77pIHCAkJA4Jfop/t/zKtQCsreQe8oq8VjPU6uNqLefSGv
+         0eO3E1JRB+Pmk8Ft/SxDhdgPHdHO23EF46svLojAOjtXuaDzJCu+gFhgxHYmdmhGa9Sp
+         gR0kMOXbpL7RDufDAZDWBappNGiS93Ny+VDDCLyZQDw4/sAOwVBDUt+TGKG3j9kuHaux
+         yMyQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=8JQ1el9D2LALj0FcpzFmr4ujCcSZ5M2XjTP6XGBrnow=;
+        b=k7umAXw7auM/PHV9GRW0ZWegJkYImxpHgOXW/HRDcIgmGrLufrOk5D+dFx56aEWUGi
+         dCe0SVLkuXHVxt1zlr46xZ+XEgOun+/5SAmqie6UCtj07lFQPIG+l/IsvBnfmms5IEAA
+         pmjOBLirFMLmmVPwgQOVRGFPQj5OODS0huZ9eOYKICGhEjQoCPB88R2ePrlPCjo6Izaj
+         q7mXEZGMmvUkAbUtl4OccUll3QNMezzXTTr/jKVoOXDOE2MgInrgWA3CRMwAunQfZKYL
+         xx4556N7swEhzk0GxA+wS1pVDg7dMeiQzem2CeM7hUeRMmMPruP+5umpxwtYNdPru7Sb
+         XSLg==
+X-Gm-Message-State: AOAM533UjbPcw2ksJSiQk/8fwp+aeVXJxtK4hF+3FouHpAsX9b1JiP2C
+        bOQ7O7MpViOFgN0uKyUdItMK0j3q/y8pz1XQJSzJDfiN
+X-Google-Smtp-Source: ABdhPJwGqfEVBjMGWDHMmXDH1js+DipI1El06ign1qLqtxoCIdoYvfb1JTiEm5zXjpcLCpXX53Zxfq4zDyzVc4CKfXQ=
+X-Received: by 2002:a67:2ac1:: with SMTP id q184mr5431305vsq.57.1604841712469;
+ Sun, 08 Nov 2020 05:21:52 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <CAFBinCCZiO9Xe1WKT8MZ-90c7m1u_m1Mt-OXf=Pyuo0vukQQ5g@mail.gmail.com>
+References: <20201106134324.20656-1-TheSven73@gmail.com> <20201108041447.GZ933237@lunn.ch>
+In-Reply-To: <20201108041447.GZ933237@lunn.ch>
+From:   Sven Van Asbroeck <thesven73@gmail.com>
+Date:   Sun, 8 Nov 2020 08:21:41 -0500
+Message-ID: <CAGngYiVk+33AUBC9mpZ4pty1w=JH6_JKRfAqbJLby919E6Lybw@mail.gmail.com>
+Subject: Re: [PATCH v2] lan743x: correctly handle chips with internal PHY
+To:     Andrew Lunn <andrew@lunn.ch>
+Cc:     Bryan Whitehead <bryan.whitehead@microchip.com>,
+        David S Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
+        Roelof Berg <rberg@berg-solutions.de>,
+        netdev <netdev@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 03, 2020 at 06:53:17AM +0100, Martin Blumenstingl wrote:
->Hi Sasha,
+On Sat, Nov 7, 2020 at 11:14 PM Andrew Lunn <andrew@lunn.ch> wrote:
 >
->On Tue, Nov 3, 2020 at 2:20 AM Sasha Levin <sashal@kernel.org> wrote:
->>
->> From: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
->>
->> [ Upstream commit 1fdc97ae450ede2b4911d6737a57e6fca63b5f4a ]
->>
->> We have a dedicated "amlogic,meson-g12a-dwmac" compatible string for the
->> Ethernet controller since commit 3efdb92426bf4 ("dt-bindings: net:
->> dwmac-meson: Add a compatible string for G12A onwards").
->> Using the AXG compatible string worked fine so far because the
->> dwmac-meson8b driver doesn't handle the newly introduced register bits
->> for G12A. However, once that changes the driver must be probed with the
->> correct compatible string to manage these new register bits.
->>
->> Signed-off-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
->> Reviewed-by: Neil Armstrong <narmstrong@baylibre.com>
->> Signed-off-by: Kevin Hilman <khilman@baylibre.com>
->> Link: https://lore.kernel.org/r/20200925211743.537496-1-martin.blumenstingl@googlemail.com
->> Signed-off-by: Sasha Levin <sashal@kernel.org>
->if this patch will be included in 5.4-stable then please also backport
->the following two commits:
->- 3efdb92426bf4 ("dt-bindings: net: dwmac-meson: Add a compatible
->string for G12A onwards")
->- a4f63342d03d2d ("net: stmmac: dwmac-meson8b: add a compatible string
->for G12A SoCs")
+> This also has nothing to do with the problem you are fixing. It is a
+> sensible thing to do, but it should be a separate patch, and target
+> net-next, since it is not a fix.
 >
->Without these above two commits we'll lose Ethernet connectivity
->because there's no G12A compatible string in 5.4 yet
->
->The quick solution would be to not backport this patch because the
->driver in question doesn't do anything with the new compatible string
->yet.
 
-I'll drop it from older branches that don't have those commits, thanks!
-
--- 
-Thanks,
-Sasha
+Agreed - I will spin a truly minimal v3.
