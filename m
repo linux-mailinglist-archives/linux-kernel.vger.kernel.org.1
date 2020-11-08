@@ -2,83 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D5982AAA5B
-	for <lists+linux-kernel@lfdr.de>; Sun,  8 Nov 2020 10:31:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 52A262AAA71
+	for <lists+linux-kernel@lfdr.de>; Sun,  8 Nov 2020 10:56:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728111AbgKHJbY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 8 Nov 2020 04:31:24 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53542 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726115AbgKHJbY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 8 Nov 2020 04:31:24 -0500
-Received: from mail-ej1-f49.google.com (mail-ej1-f49.google.com [209.85.218.49])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S1728204AbgKHJxa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 8 Nov 2020 04:53:30 -0500
+Received: from asavdk4.altibox.net ([109.247.116.15]:47482 "EHLO
+        asavdk4.altibox.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726115AbgKHJx3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 8 Nov 2020 04:53:29 -0500
+Received: from ravnborg.org (unknown [188.228.123.71])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2AA9C206ED;
-        Sun,  8 Nov 2020 09:31:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604827883;
-        bh=eOwD/VuP9PtqPjph5jxwLC0h4nX9LAzZMDOhtB6y0P4=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=Tx/D/Nv/ueX6gu+HA9Djkqh+/s+tZjeUmSV6XxavLHcuXLivAoQ938sE8UIPBs5Qc
-         JFfWt9IGEHKM3pW9z4yRPwJg4PLrd0duTN7iyUK/Y3pKolmadoi62Al3eeldkIaLmY
-         +KfXg36yLC+y3tibJswITBxw9McwSKuTJrPGAX98=
-Received: by mail-ej1-f49.google.com with SMTP id o23so7985784ejn.11;
-        Sun, 08 Nov 2020 01:31:23 -0800 (PST)
-X-Gm-Message-State: AOAM532pPIV03INNFVtS/Asog37+3N48+TYF+NEjpK47Q5p9EOA5/9KC
-        E6fhQNDAdEnnZAc/CtSQm58/YrGRq4NPPPtGjeo=
-X-Google-Smtp-Source: ABdhPJy1gghEjZlAAJmQ4Ellt2u7JgNZI89WPI/GJbKzVxjl24E8tA0NMQhC8dvhatCuuhzf1wQUvZnQ9WmvonJjKPs=
-X-Received: by 2002:a17:907:d1e:: with SMTP id gn30mr10552868ejc.148.1604827881778;
- Sun, 08 Nov 2020 01:31:21 -0800 (PST)
+        by asavdk4.altibox.net (Postfix) with ESMTPS id 0A07E8051F;
+        Sun,  8 Nov 2020 10:53:23 +0100 (CET)
+Date:   Sun, 8 Nov 2020 10:53:22 +0100
+From:   Sam Ravnborg <sam@ravnborg.org>
+To:     Jonathan Liu <net147@gmail.com>,
+        Russell King <rmk+kernel@arm.linux.org.uk>
+Cc:     linux-rockchip@lists.infradead.org,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        Fabio Estevam <fabio.estevam@freescale.com>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        David Airlie <airlied@linux.ie>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Andrzej Hajda <a.hajda@samsung.com>,
+        Boris Brezillon <boris.brezillon@collabora.com>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Russell King <rmk+kernel@arm.linux.org.uk>,
+        Liu Ying <victor.liu@nxp.com>
+Subject: Re: [PATCH] drm: bridge: dw-hdmi: Avoid resetting force in the
+ detect function
+Message-ID: <20201108095322.GA1129714@ravnborg.org>
+References: <20201031081747.372599-1-net147@gmail.com>
 MIME-Version: 1.0
-References: <20201108022321.2114430-1-natechancellor@gmail.com>
-In-Reply-To: <20201108022321.2114430-1-natechancellor@gmail.com>
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-Date:   Sun, 8 Nov 2020 10:31:10 +0100
-X-Gmail-Original-Message-ID: <CAJKOXPdVVgRMaCPfq3nPR232KQyKVVewm5LveUSuyfqE8sScQg@mail.gmail.com>
-Message-ID: <CAJKOXPdVVgRMaCPfq3nPR232KQyKVVewm5LveUSuyfqE8sScQg@mail.gmail.com>
-Subject: Re: [PATCH] arm64: dts: imx: Fix imx8mm-kontron-n801x-s.dtb target
-To:     Nathan Chancellor <natechancellor@gmail.com>
-Cc:     Shawn Guo <shawnguo@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        Frieder Schrempf <frieder.schrempf@kontron.de>,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201031081747.372599-1-net147@gmail.com>
+X-CMAE-Score: 0
+X-CMAE-Analysis: v=2.3 cv=VafZwmh9 c=1 sm=1 tr=0
+        a=S6zTFyMACwkrwXSdXUNehg==:117 a=S6zTFyMACwkrwXSdXUNehg==:17
+        a=kj9zAlcOel0A:10 a=pGLkceISAAAA:8 a=e5mUnYsNAAAA:8
+        a=O2yIyfgj_DPdiSikqUcA:9 a=CjuIK1q_8ugA:10 a=Vxmtnl_E_bksehYqCbjh:22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 8 Nov 2020 at 03:23, Nathan Chancellor <natechancellor@gmail.com> wrote:
+Russell,
 
-Hi,
+On Sat, Oct 31, 2020 at 07:17:47PM +1100, Jonathan Liu wrote:
+> It has been observed that resetting force in the detect function can
+> result in the PHY being powered down in response to hot-plug detect
+> being asserted, even when the HDMI connector is forced on.
+> 
+> Enabling debug messages and adding a call to dump_stack() in
+> dw_hdmi_phy_power_off() shows the following in dmesg:
+> [  160.637413] dwhdmi-rockchip ff940000.hdmi: EVENT=plugin
+> [  160.637433] dwhdmi-rockchip ff940000.hdmi: PHY powered down in 0 iterations
+> 
+> Call trace:
+> dw_hdmi_phy_power_off
+> dw_hdmi_phy_disable
+> dw_hdmi_update_power
+> dw_hdmi_detect
+> dw_hdmi_connector_detect
+> drm_helper_probe_detect_ctx
+> drm_helper_hpd_irq_event
+> dw_hdmi_irq
+> irq_thread_fn
+> irq_thread
+> kthread
+> ret_from_fork
+> 
+> Fixes: 381f05a7a842 ("drm: bridge/dw_hdmi: add connector mode forcing")
+> Signed-off-by: Jonathan Liu <net147@gmail.com>
 
-Thanks for the fixes.
+you are the original author of this code - any comments on this patch?
 
-Please mark patches with versions, this should be v2. Otherwise
-maintainer might apply the older one,
-You also need to add versioning changelog after ---.
+	Sam
 
-> $ make -skj"$(nproc)" ARCH=arm64 CROSS_COMPILE=aarch64-linux- \
-> INSTALL_DTBS_PATH=rootfs distclean defconfig dtbs dtbs_install
-
-All this is still irrelevant. Just: "make dtbs". Don't add unrelated
-details like how many processes you spawn, where do you want to
-install DTBS or even all other make targets.
-Everyone should know how to cross compile so simple: make dtbs
-
-> ...
-> make[3]: *** No rule to make target
-> 'rootfs/freescale/imx8mm-kontron-n801x-s.dts', needed by
-> '__dtbs_install'
-
-This should be joined with previous line. I mentioned it in your previous patch.
-
-> ...
-
-Also not needed dots. This is small change and should go with small
-and accurate description. Blowing the description does not help.
-
-Reviewed-by: Krzysztof Kozlowski <krzk@kernel.org>
-
-Best regards,
-Krzysztof
+> ---
+>  drivers/gpu/drm/bridge/synopsys/dw-hdmi.c | 6 ------
+>  1 file changed, 6 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/bridge/synopsys/dw-hdmi.c b/drivers/gpu/drm/bridge/synopsys/dw-hdmi.c
+> index 748df1cacd2b..0c79a9ba48bb 100644
+> --- a/drivers/gpu/drm/bridge/synopsys/dw-hdmi.c
+> +++ b/drivers/gpu/drm/bridge/synopsys/dw-hdmi.c
+> @@ -2327,12 +2327,6 @@ static enum drm_connector_status dw_hdmi_detect(struct dw_hdmi *hdmi)
+>  {
+>  	enum drm_connector_status result;
+>  
+> -	mutex_lock(&hdmi->mutex);
+> -	hdmi->force = DRM_FORCE_UNSPECIFIED;
+> -	dw_hdmi_update_power(hdmi);
+> -	dw_hdmi_update_phy_mask(hdmi);
+> -	mutex_unlock(&hdmi->mutex);
+> -
+>  	result = hdmi->phy.ops->read_hpd(hdmi, hdmi->phy.data);
+>  
+>  	mutex_lock(&hdmi->mutex);
+> -- 
+> 2.29.1
+> 
+> _______________________________________________
+> dri-devel mailing list
+> dri-devel@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/dri-devel
