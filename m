@@ -2,69 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D4F692AAA47
-	for <lists+linux-kernel@lfdr.de>; Sun,  8 Nov 2020 10:24:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BB5852AAA4F
+	for <lists+linux-kernel@lfdr.de>; Sun,  8 Nov 2020 10:26:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728046AbgKHJXy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 8 Nov 2020 04:23:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47264 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726115AbgKHJXw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 8 Nov 2020 04:23:52 -0500
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 455A0C0613CF;
-        Sun,  8 Nov 2020 01:23:52 -0800 (PST)
-Received: from zn.tnic (p200300ec2f270b00c61e0f9d91d0a6f9.dip0.t-ipconnect.de [IPv6:2003:ec:2f27:b00:c61e:f9d:91d0:a6f9])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1728211AbgKHJZn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 8 Nov 2020 04:25:43 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51886 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726099AbgKHJZh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 8 Nov 2020 04:25:37 -0500
+Received: from mail-lj1-f171.google.com (mail-lj1-f171.google.com [209.85.208.171])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 10E001EC026D;
-        Sun,  8 Nov 2020 10:23:49 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1604827429;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=a2buimtAL9Eb9fZo0UU8VGJS+43FqGvckYGeJUnPTII=;
-        b=Xt22yXlrTKBB7g13Tl+fr4qsoIWvqxyCfcZlZB9EC9d8M24zllrTbQUPw04fTtJJR8APy2
-        L49iu/SnDVRl+Pv0sqU+354TVIesQJ0ZTxZSHjQQcC7/8cnZBBKnvVTD5lEVc3StrRq3NQ
-        iXw+GyKeNDG06XEShKimlx8lS0B1gxs=
-Date:   Sun, 8 Nov 2020 10:23:33 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     Ingo Molnar <mingo@kernel.org>
-Cc:     x86-ml <x86@kernel.org>, linux-tip-commits@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Will Deacon <will.deacon@arm.com>
-Subject: Re: [tip: perf/kprobes] locking/atomics: Regenerate the
- atomics-check SHA1's
-Message-ID: <20201108092333.GA13870@zn.tnic>
-References: <160476203869.11244.7869849163897430965.tip-bot2@tip-bot2>
- <20201107160444.GB30275@zn.tnic>
- <20201108090521.GA108695@gmail.com>
+        by mail.kernel.org (Postfix) with ESMTPSA id D0D0720719;
+        Sun,  8 Nov 2020 09:25:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604827536;
+        bh=0Re+BH04OjvQtiodOP0PAVO/kqbxE/PMUbtENeeHUCU=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=T8aftoYJoOfJoY2D59wtyqCFPrcSPDuCqBe6z9Y88z18itxLZYrLQQoUiySYprX/w
+         CeltL21788RGxrGqCPGHjUWJsuUW/aiyLgkfQF5xQteJWVIw4gGxwp93kbsT47/9ed
+         KFVVrs14i0T/haKa/knwEHH/Xo7Crf9KJaPhdmXY=
+Received: by mail-lj1-f171.google.com with SMTP id r17so693827ljg.5;
+        Sun, 08 Nov 2020 01:25:35 -0800 (PST)
+X-Gm-Message-State: AOAM5335wt3uT3SLq365qpcyGeMWT4K9imATGHktiEFQSWv9lqgxs+Pk
+        re73Q0gs2V+w/MHHyiwkoNSjw5m3HQY3g0MvC+g=
+X-Google-Smtp-Source: ABdhPJyddR8brDR4uTwLcrWRTsQ0eYz6SRGBrDUoAv5c7VKMt2AwiBlznvTTelNyXgQ/X1oyJ30XbCrkOlR4o4w9iyo=
+X-Received: by 2002:a2e:b536:: with SMTP id z22mr4077018ljm.177.1604827534166;
+ Sun, 08 Nov 2020 01:25:34 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20201108090521.GA108695@gmail.com>
+References: <cover.1604646059.git.viresh.kumar@linaro.org>
+In-Reply-To: <cover.1604646059.git.viresh.kumar@linaro.org>
+From:   Ilia Lin <ilia.lin@kernel.org>
+Date:   Sun, 8 Nov 2020 11:25:22 +0200
+X-Gmail-Original-Message-ID: <CA+5LGR0UwGUeXPw3Jbd7=VkY7fY_rKV_YjLpWV4GbHnvP23Ejg@mail.gmail.com>
+Message-ID: <CA+5LGR0UwGUeXPw3Jbd7=VkY7fY_rKV_YjLpWV4GbHnvP23Ejg@mail.gmail.com>
+Subject: Re: [PATCH 0/7] opp: Allow dev_pm_opp_put_*() APIs to accept NULL opp_table
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     Alyssa Rosenzweig <alyssa.rosenzweig@collabora.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        Ilia Lin <ilia.lin@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Kukjin Kim <kgene@kernel.org>,
+        Kyungmin Park <kyungmin.park@samsung.com>,
+        MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Nishanth Menon <nm@ti.com>, Qiang Yu <yuq825@gmail.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Rob Herring <robh@kernel.org>,
+        Stanimir Varbanov <stanimir.varbanov@linaro.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Steven Price <steven.price@arm.com>,
+        Tomeu Vizoso <tomeu.vizoso@collabora.com>,
+        Viresh Kumar <vireshk@kernel.org>,
+        "open list:QUALCOMM CPUFREQ DRIVER MSM8996/APQ8096" 
+        <linux-pm@vger.kernel.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>, digetx@gmail.com,
+        dri-devel@lists.freedesktop.org, lima@lists.freedesktop.org,
+        linux-arm-kernel@lists.infradead.org,
+        "open list:ARM/QUALCOMM SUPPORT" <linux-arm-msm@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        linux-media@vger.kernel.org, linux-samsung-soc@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Nov 08, 2020 at 10:05:21AM +0100, Ingo Molnar wrote:
-> So that mode change to executable was intentional, as mentioned in the 
-> changelog.
+Reviewed-by: Ilia Lin <ilia.lin@kernel.org>
 
-Yeah, I thought we don't make them executable in the tree but I guess we
-do, at least most of them, from looking at git ls-files *.sh output.
 
-Thx.
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+On Fri, Nov 6, 2020 at 9:05 AM Viresh Kumar <viresh.kumar@linaro.org> wrote:
+>
+> Hello,
+>
+> This patchset updates the dev_pm_opp_put_*() helpers to accept a NULL
+> pointer for the OPP table, in order to allow the callers to drop the
+> unnecessary checks they had to carry.
+>
+> All these must get merged upstream through the OPP tree as there is a
+> hard dependency on the first patch here. Thanks.
+>
+> Viresh Kumar (7):
+>   opp: Allow dev_pm_opp_put_*() APIs to accept NULL opp_table
+>   cpufreq: dt: dev_pm_opp_put_regulators() accepts NULL argument
+>   cpufreq: qcom-cpufreq-nvmem: dev_pm_opp_put_*() accepts NULL argument
+>   devfreq: exynos: dev_pm_opp_put_*() accepts NULL argument
+>   drm/lima: dev_pm_opp_put_*() accepts NULL argument
+>   drm/panfrost: dev_pm_opp_put_*() accepts NULL argument
+>   media: venus: dev_pm_opp_put_*() accepts NULL argument
+>
+>  drivers/cpufreq/cpufreq-dt.c                   |  6 ++----
+>  drivers/cpufreq/qcom-cpufreq-nvmem.c           | 15 ++++++---------
+>  drivers/devfreq/exynos-bus.c                   | 12 ++++--------
+>  drivers/gpu/drm/lima/lima_devfreq.c            | 13 ++++---------
+>  drivers/gpu/drm/panfrost/panfrost_devfreq.c    |  6 ++----
+>  drivers/media/platform/qcom/venus/pm_helpers.c |  3 +--
+>  drivers/opp/core.c                             | 18 ++++++++++++++++++
+>  7 files changed, 37 insertions(+), 36 deletions(-)
+>
+> --
+> 2.25.0.rc1.19.g042ed3e048af
+>
