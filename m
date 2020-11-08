@@ -2,81 +2,244 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EF6F2AAA1C
-	for <lists+linux-kernel@lfdr.de>; Sun,  8 Nov 2020 09:42:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B4CFA2AAA22
+	for <lists+linux-kernel@lfdr.de>; Sun,  8 Nov 2020 09:49:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727974AbgKHIlv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 8 Nov 2020 03:41:51 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:7155 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726115AbgKHIlu (ORCPT
+        id S1727440AbgKHIsA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 8 Nov 2020 03:48:00 -0500
+Received: from asavdk4.altibox.net ([109.247.116.15]:44494 "EHLO
+        asavdk4.altibox.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726115AbgKHIsA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 8 Nov 2020 03:41:50 -0500
-Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4CTSK65FCqz15QkT;
-        Sun,  8 Nov 2020 16:41:30 +0800 (CST)
-Received: from SWX921481.china.huawei.com (10.126.203.211) by
- DGGEMS402-HUB.china.huawei.com (10.3.19.202) with Microsoft SMTP Server id
- 14.3.487.0; Sun, 8 Nov 2020 16:41:28 +0800
-From:   Barry Song <song.bao.hua@hisilicon.com>
-To:     <akpm@linux-foundation.org>, <linux-mm@kvack.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <linuxarm@huawei.com>, Barry Song <song.bao.hua@hisilicon.com>,
-        "John Hubbard" <jhubbard@nvidia.com>,
-        Ralph Campbell <rcampbell@nvidia.com>,
-        "Randy Dunlap" <rdunlap@infradead.org>,
-        John Garry <john.garry@huawei.com>
-Subject: [PATCH v2] mm/gup_test: GUP_TEST depends on DEBUG_FS
-Date:   Sun, 8 Nov 2020 21:37:32 +1300
-Message-ID: <20201108083732.15336-1-song.bao.hua@hisilicon.com>
-X-Mailer: git-send-email 2.21.0.windows.1
+        Sun, 8 Nov 2020 03:48:00 -0500
+Received: from ravnborg.org (unknown [188.228.123.71])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by asavdk4.altibox.net (Postfix) with ESMTPS id 94A2280522;
+        Sun,  8 Nov 2020 09:47:55 +0100 (CET)
+Date:   Sun, 8 Nov 2020 09:47:54 +0100
+From:   Sam Ravnborg <sam@ravnborg.org>
+To:     Douglas Anderson <dianders@chromium.org>
+Cc:     Thierry Reding <thierry.reding@gmail.com>, robdclark@chromium.org,
+        David Airlie <airlied@linux.ie>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        Rob Herring <robh+dt@kernel.org>
+Subject: Re: [PATCH v3 1/3] drm: panel: simple: Allow timing constraints, not
+ fixed delays
+Message-ID: <20201108084754.GA1119120@ravnborg.org>
+References: <20201105135639.v3.1.I31c4f8b111dbef1ab658f206764655ae983bc560@changeid>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.126.203.211]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201105135639.v3.1.I31c4f8b111dbef1ab658f206764655ae983bc560@changeid>
+X-CMAE-Score: 0
+X-CMAE-Analysis: v=2.3 cv=VafZwmh9 c=1 sm=1 tr=0
+        a=S6zTFyMACwkrwXSdXUNehg==:117 a=S6zTFyMACwkrwXSdXUNehg==:17
+        a=kj9zAlcOel0A:10 a=cm27Pg_UAAAA:8 a=e5mUnYsNAAAA:8
+        a=wPsJ2gbrx_q22NF4ILYA:9 a=CjuIK1q_8ugA:10 a=xmb-EsYY8bH0VWELuYED:22
+        a=Vxmtnl_E_bksehYqCbjh:22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Without DEBUG_FS, all the code in gup_test becomes meaningless. For sure
-kernel provides debugfs stub while DEBUG_FS is disabled, but the point
-here is that GUP_TEST can do nothing without DEBUG_FS.
+Hi Douglas.
 
-Cc: John Hubbard <jhubbard@nvidia.com>
-Cc: Ralph Campbell <rcampbell@nvidia.com>
-Cc: Randy Dunlap <rdunlap@infradead.org>
-Suggested-by: John Garry <john.garry@huawei.com>
-Signed-off-by: Barry Song <song.bao.hua@hisilicon.com>
----
- -v2:
- add comment as a prompt to users as commented by John and Randy, thanks!
+On Thu, Nov 05, 2020 at 01:57:39PM -0800, Douglas Anderson wrote:
+> The simple panel code currently allows panels to define fixed delays
+> at certain stages of initialization.  These work OK, but they don't
+> really map all that clearly to the requirements presented in many
+> panel datasheets.  Instead of defining a fixed delay, those datasheets
+> provide a timing diagram and specify a minimum amount of time that
+> needs to pass from event A to event B.
+> 
+> Because of the way things are currently defined, most panels end up
+> over-delaying.  One prime example here is that a number of panels I've
+> looked at define the amount of time that must pass between turning a
+> panel off and turning it back on again.  Since there is no way to
+> specify this, many developers have listed this as the "unprepare"
+> delay.  However, if nobody ever tried to turn the panel on again in
+> the next 500 ms (or whatever the delay was) then this delay was
+> pointless.  It's better to do the delay only in the case that someone
+> tried to turn the panel on too quickly.
+> 
+> Let's support specifying delays as constraints.  We'll start with the
+> one above and also a second one: the minimum time between prepare
+> being done and doing the enable.  On the panel I'm looking at, there's
+> an 80 ms minimum time between HPD being asserted by the panel and
+> setting the backlight enable GPIO.  By specifying as a constraint we
+> can enforce this without over-delaying.  Specifically the link
+> training is allowed to happen in parallel with this delay so adding a
+> fixed 80 ms delay isn't ideal.
+Nice and detaild explanation - thanks.
 
- mm/Kconfig | 4 ++++
- 1 file changed, 4 insertions(+)
+Reading through this a few times it seems that a simpler approach would
+be to change the semantics of the dealys we already have a little and
+only add one new field:
 
-diff --git a/mm/Kconfig b/mm/Kconfig
-index 01b0ae0cd9d3..a7ff0d31afd5 100644
---- a/mm/Kconfig
-+++ b/mm/Kconfig
-@@ -836,6 +836,7 @@ config PERCPU_STATS
- 
- config GUP_TEST
- 	bool "Enable infrastructure for get_user_pages()-related unit tests"
-+	depends on DEBUG_FS
- 	help
- 	  Provides /sys/kernel/debug/gup_test, which in turn provides a way
- 	  to make ioctl calls that can launch kernel-based unit tests for
-@@ -853,6 +854,9 @@ config GUP_TEST
- 
- 	  See tools/testing/selftests/vm/gup_test.c
- 
-+comment "GUP_TEST needs to have DEBUG_FS enabled"
-+	depends on !GUP_TEST && !DEBUG_FS
-+
- config GUP_GET_PTE_LOW_HIGH
- 	bool
- 
--- 
-2.25.1
+       struct {
+                unsigned int prepare;
+                unsigned int hpd_absent_delay;
+		unsigned int prepare_to_enable;
+                unsigned int enable;
+                unsigned int disable;
+                unsigned int unprepare;
+        } delay;
 
+The lines marked "//*" are new or changed:
+
+prepare()
+//*enforce unprepare time
+// enable regulator
+// set enable gpio
+// do fixed prepare delay (this is time until we can trust hpd)
+// wait for HPD GPIO if applicable, otherwise do fixed hpd_absent_delay
+//*start counting for prepare_to_enable
+
+enable()
+//*enforce prepare_to_enable min time
+// enable backlight if applicable
+
+panel shows nice pictures of kitties
+
+disable()
+// disable backlight is applicable
+// fixed disable delay
+
+unprepare()
+// unset enable gpio
+// disable regulator
+//*start counting for unprepare delay
+
+
+This should not break any exisitng panels - and we avoid that we have
+two delays that are almost the same.
+
+Would that work for you?
+
+Note that no new struct was introduced - this is all dealys so keep it in
+the same struct.
+
+A dew details in the following.
+
+	Sam
+
+> 
+> Signed-off-by: Douglas Anderson <dianders@chromium.org>
+> ---
+> 
+> Changes in v3:
+> - Fixed totally backwards "if" tests.  :(
+> 
+> Changes in v2:
+> - Inline the kernel doc for the two new members.
+A nice follow-up patch would be to move the remaining fields as inline
+doc. But let us settle on this first.
+
+>  struct panel_simple {
+>  	struct drm_panel base;
+> -	bool prepared;
+>  	bool enabled;
+>  	bool no_hpd;
+>  
+> +	ktime_t prepared_time;
+> +	ktime_t unprepared_time;
+> +
+>  	const struct panel_desc *desc;
+>  
+>  	struct regulator *supply;
+> @@ -230,6 +294,20 @@ static int panel_simple_get_non_edid_modes(struct panel_simple *panel,
+>  	return num;
+>  }
+>  
+> +static void panel_simple_wait_min_time(ktime_t start_ktime, unsigned int min_ms)
+> +{
+> +	ktime_t now_ktime, min_ktime;
+> +
+> +	if (!min_ms)
+> +		return;
+> +
+> +	min_ktime = ktime_add(start_ktime, ms_to_ktime(min_ms));
+> +	now_ktime = ktime_get();
+> +
+> +	if (ktime_before(now_ktime, min_ktime))
+> +		msleep(ktime_to_ms(ktime_sub(min_ktime, now_ktime)) + 1);
+> +}
+panel_simple_wait()?
+
+
+> +
+>  static int panel_simple_disable(struct drm_panel *panel)
+>  {
+>  	struct panel_simple *p = to_panel_simple(panel);
+> @@ -249,18 +327,19 @@ static int panel_simple_unprepare(struct drm_panel *panel)
+>  {
+>  	struct panel_simple *p = to_panel_simple(panel);
+>  
+> -	if (!p->prepared)
+> +	if (p->prepared_time == 0)
+>  		return 0;
+>  
+>  	gpiod_set_value_cansleep(p->enable_gpio, 0);
+>  
+>  	regulator_disable(p->supply);
+>  
+> +	p->prepared_time = 0;
+> +	p->unprepared_time = ktime_get();
+> +
+>  	if (p->desc->delay.unprepare)
+>  		msleep(p->desc->delay.unprepare);
+>  
+> -	p->prepared = false;
+> -
+>  	return 0;
+>  }
+>  
+> @@ -296,9 +375,12 @@ static int panel_simple_prepare(struct drm_panel *panel)
+>  	int err;
+>  	int hpd_asserted;
+>  
+> -	if (p->prepared)
+> +	if (p->prepared_time != 0)
+>  		return 0;
+>  
+> +	panel_simple_wait_min_time(p->unprepared_time,
+> +				   p->desc->min_times.unprepare_to_prepare);
+> +
+>  	err = regulator_enable(p->supply);
+>  	if (err < 0) {
+>  		dev_err(panel->dev, "failed to enable supply: %d\n", err);
+> @@ -333,7 +415,7 @@ static int panel_simple_prepare(struct drm_panel *panel)
+>  		}
+>  	}
+>  
+> -	p->prepared = true;
+> +	p->prepared_time = ktime_get();
+>  
+>  	return 0;
+>  }
+> @@ -348,6 +430,9 @@ static int panel_simple_enable(struct drm_panel *panel)
+>  	if (p->desc->delay.enable)
+>  		msleep(p->desc->delay.enable);
+>  
+> +	panel_simple_wait_min_time(p->prepared_time,
+> +				   p->desc->min_times.prepare_to_enable);
+> +
+>  	p->enabled = true;
+>  
+>  	return 0;
+> @@ -514,7 +599,7 @@ static int panel_simple_probe(struct device *dev, const struct panel_desc *desc)
+>  		return -ENOMEM;
+>  
+>  	panel->enabled = false;
+> -	panel->prepared = false;
+> +	panel->prepared_time = 0;
+>  	panel->desc = desc;
+>  
+>  	panel->no_hpd = of_property_read_bool(dev->of_node, "no-hpd");
+> -- 
+> 2.29.1.341.ge80a0c044ae-goog
+> 
+> _______________________________________________
+> dri-devel mailing list
+> dri-devel@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/dri-devel
