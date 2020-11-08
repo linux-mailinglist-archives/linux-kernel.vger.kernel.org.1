@@ -2,57 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A1EFD2AA8A5
-	for <lists+linux-kernel@lfdr.de>; Sun,  8 Nov 2020 01:57:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 12FE22AA8A8
+	for <lists+linux-kernel@lfdr.de>; Sun,  8 Nov 2020 01:59:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726380AbgKHA4r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Nov 2020 19:56:47 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46080 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725838AbgKHA4q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Nov 2020 19:56:46 -0500
-Received: from localhost.localdomain (c-73-231-172-41.hsd1.ca.comcast.net [73.231.172.41])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2727520885;
-        Sun,  8 Nov 2020 00:56:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604797006;
-        bh=/261giqM3SGf4BphJk8rBUodxqpoAGphORKU+/3G2W0=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=xwxjPDl+XMKb88dppa9KT+Klv8aXbRwQ9UGlyqntIQflE109bvZuC45A7d+VPQSkP
-         HlaRq/4a0y7UT/eq66pLNjY31kTs3c/Oe55Q7eIP0wyTXMGzGwyVV++cJEmvTutyvv
-         hDDjFCRLopKIALYmz5iaDG/uEfbBN4f5SlzK+O/U=
-Date:   Sat, 7 Nov 2020 16:56:45 -0800
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Stefan Agner <stefan@agner.ch>
-Cc:     minchan@kernel.org, ngupta@vflare.org,
-        sergey.senozhatsky.work@gmail.com, sjenning@linux.vnet.ibm.com,
-        gregkh@linuxfoundation.org, arnd@arndb.de, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mm/zsmalloc: include sparsemem.h for MAX_PHYSMEM_BITS
-Message-Id: <20201107165645.1b139b595b6b64feaca61bcb@linux-foundation.org>
-In-Reply-To: <bdfa44bf1c570b05d6c70898e2bbb0acf234ecdf.1604762181.git.stefan@agner.ch>
-References: <bdfa44bf1c570b05d6c70898e2bbb0acf234ecdf.1604762181.git.stefan@agner.ch>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S1728672AbgKHA7O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Nov 2020 19:59:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54164 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725838AbgKHA7N (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 7 Nov 2020 19:59:13 -0500
+Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DA45C0613CF;
+        Sat,  7 Nov 2020 16:59:13 -0800 (PST)
+Received: by mail-qt1-x842.google.com with SMTP id i7so3653658qti.6;
+        Sat, 07 Nov 2020 16:59:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=AsoeVCmseQ5falp3iLcr/023VW5hw+9BKoCmJiBAHrM=;
+        b=I6pWa/qy63L5WDoz0Trohqivs1fJhx3Ftlr1xuEKVx+OL9oWs+Vk7fg4t3R8EAqqcI
+         LfEAJmtBoMby7sWL9nr1Bwos+DeYoTij6/zbNQe2SOFJ1wkbyyw8mQvHyN2Ql88hh01/
+         BvmseNbmqd+I5AvewzWOaC8eXza+ly7g5joM8x2qh9oyAVbmHdV3aTaHTE8SB8xaFKSj
+         Ndp0O+v3eQX9FG0xfd8dEbUlu9med/6gyaTF1hJ2bz4yJ77xk5/w60CZpyEDhxO53wkN
+         3TvePkULpSyqFHrBRY9geyKhhw3r1+HXqPwbFAMqGZ3tyqKHIBMS8tQHii9cw5pDyb/N
+         NC3g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=AsoeVCmseQ5falp3iLcr/023VW5hw+9BKoCmJiBAHrM=;
+        b=IgEMtR/8/WBpxZxgeKQRcvD7hIB8cw2vKFAdpk0yCXrnV2nSy5umUO5v/4UJ2ukdXX
+         aBs+TPCcyShRxg+Hl75Wzk8fC57bjfQvcJKpVi17wUTojyIxFP61vTXd9vRKvBG0VOyX
+         a87Ufukesj6whH/2GUf0x+q0Wsjtddka7y6MIQNpJJ1fTLHYGheO7QJ9qaJ/Wdf3+o9s
+         /KuuL6Q650laLKfMLeqRaGx5HsyCS7cboVu53a/qM6au4tK5lXNKUWWUx01y4/MzAofR
+         O08MfNjyNrJHVKcKGexV/c8qv1IdIEIH3kZfHy3ONBMsv7F0WqIbNS2XesnLMHzNLwkK
+         f1og==
+X-Gm-Message-State: AOAM531ed2hJBL4sAlYlvqCIg8zLado5NSLSDRNcnVTcG9BW2ujRfVtL
+        HVWMOyTwtJVniCCisiGT4ej2Vf03/9Q=
+X-Google-Smtp-Source: ABdhPJwm8GbJkxLqfOIO2w/9boHTysTjvBVD8nbbUVGeWvKW8boB6H3XG1z2taCJgaKFb7ZLVlPSgQ==
+X-Received: by 2002:ac8:5191:: with SMTP id c17mr8095758qtn.116.1604797152258;
+        Sat, 07 Nov 2020 16:59:12 -0800 (PST)
+Received: from ubuntu-m3-large-x86 ([2604:1380:45f1:1d00::1])
+        by smtp.gmail.com with ESMTPSA id r14sm3465343qtu.25.2020.11.07.16.59.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 07 Nov 2020 16:59:11 -0800 (PST)
+Date:   Sat, 7 Nov 2020 17:59:10 -0700
+From:   Nathan Chancellor <natechancellor@gmail.com>
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     "James E . J . Bottomley" <jejb@linux.ibm.com>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>,
+        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        clang-built-linux@googlegroups.com
+Subject: Re: [PATCH] scsi: core: fix -Wformat
+Message-ID: <20201108005910.GA95971@ubuntu-m3-large-x86>
+References: <20201107081132.2629071-1-ndesaulniers@google.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201107081132.2629071-1-ndesaulniers@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat,  7 Nov 2020 16:22:06 +0100 Stefan Agner <stefan@agner.ch> wrote:
-
-> Most architectures define MAX_PHYSMEM_BITS in asm/sparsemem.h and don't
-> include it in asm/pgtable.h. Include asm/sparsemem.h directly to get
-> the MAX_PHYSMEM_BITS define on all architectures.
+On Sat, Nov 07, 2020 at 12:11:32AM -0800, Nick Desaulniers wrote:
+> Clang is more aggressive about -Wformat warnings when the format flag
+> specifies a type smaller than the parameter. Turns out, struct
+> Scsi_Host's member can_queue is actually an int. Fixes:
 > 
-> This fixes a crash when accessing zram on 32-bit ARM platform with LPAE and
-> more than 4GB of memory:
->   Unable to handle kernel NULL pointer dereference at virtual address 00000000
+> warning: format specifies type 'short' but the argument has type 'int'
+> [-Wformat]
+> shost_rd_attr(can_queue, "%hd\n");
+> ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>                           %d
+> Link: https://github.com/ClangBuiltLinux/linux/issues/378
+> Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
 
-Mysterious.  Presumably without this include, some compilation unit is
-picking up the wrong value of MAX_PHYSMEM_BITS?  But I couldn't
-actually see where/how this occurs.  Can you please explain further?
+Reviewed-by: Nathan Chancellor <natechancellor@gmail.com>
 
+> ---
+>  drivers/scsi/scsi_sysfs.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/scsi/scsi_sysfs.c b/drivers/scsi/scsi_sysfs.c
+> index d6e344fa33ad..b6378c8ca783 100644
+> --- a/drivers/scsi/scsi_sysfs.c
+> +++ b/drivers/scsi/scsi_sysfs.c
+> @@ -370,7 +370,7 @@ static DEVICE_ATTR(eh_deadline, S_IRUGO | S_IWUSR, show_shost_eh_deadline, store
+>  
+>  shost_rd_attr(unique_id, "%u\n");
+>  shost_rd_attr(cmd_per_lun, "%hd\n");
+> -shost_rd_attr(can_queue, "%hd\n");
+> +shost_rd_attr(can_queue, "%d\n");
+>  shost_rd_attr(sg_tablesize, "%hu\n");
+>  shost_rd_attr(sg_prot_tablesize, "%hu\n");
+>  shost_rd_attr(unchecked_isa_dma, "%d\n");
+> -- 
+> 2.29.2.222.g5d2a92d10f8-goog
+> 
