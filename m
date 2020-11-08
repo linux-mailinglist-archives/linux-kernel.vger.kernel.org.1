@@ -2,122 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2D3A2AACE0
-	for <lists+linux-kernel@lfdr.de>; Sun,  8 Nov 2020 19:44:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 987982AACE9
+	for <lists+linux-kernel@lfdr.de>; Sun,  8 Nov 2020 19:46:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728824AbgKHSot (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 8 Nov 2020 13:44:49 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35536 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728191AbgKHSot (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 8 Nov 2020 13:44:49 -0500
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B35A920731;
-        Sun,  8 Nov 2020 18:44:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604861088;
-        bh=LXOiMNYM7kGcZAGWndQIk3yHIk7KW8ixrefg31JUDMc=;
-        h=Date:From:To:Cc:Subject:From;
-        b=xM5ggfq1jcHdOl0gqK0UzDpDZeTUZiFlwBn0oksrLndV5B8WDEbNHjuUVXvqSq53J
-         mQfpYt7oe131AyIccj66t1Rw3B/u7H3K0iKzEKyBUY4BECzRHWVYVDCs3CrJDpeWT6
-         /BQMo2BhA3bkBIWd2uPmUpCkw8lkz/fetzwuygII=
-Date:   Sun, 8 Nov 2020 19:45:49 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org
-Subject: [GIT PULL] USB driver fixes for 5.10-rc3
-Message-ID: <20201108184549.GA66721@kroah.com>
+        id S1728897AbgKHSp7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 8 Nov 2020 13:45:59 -0500
+Received: from mail-ej1-f66.google.com ([209.85.218.66]:36856 "EHLO
+        mail-ej1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728006AbgKHSp6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 8 Nov 2020 13:45:58 -0500
+Received: by mail-ej1-f66.google.com with SMTP id o21so9157834ejb.3;
+        Sun, 08 Nov 2020 10:45:55 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ypJHyCJWF+HG7FnMt3TbOQAd6qV1vaj6bcRrg3nAJsk=;
+        b=lRZwVzcwvDfHP0kvmsaNMuS+1LZOuMVDm37dNy0bKD6/ZbAXxYvzPqyNorIUrKCNtG
+         gsN+ew3BflwC5lX4utIhiBKbdMj8A6M08bngntIqJLSEstT+3TNgKLVH2DJeGv37TggR
+         gaDvB11enfXUjHhUWKYKm7Ch++iRU+9NRdiQaDhEIbNZODDXVyH7MqH/J4vrWtiFyEU/
+         fuoKi0i2/g3YBZrGS39SnXUzRJRHWOHpGeyknnbrvxrKYeee5pgj9p8v35JesKEt+qq2
+         I/fwsssdX8UNCnGV5F5IRg6leDhOnbWY5Ae9ImjNzOELmLbRp7U7voHQKK45fjrGH3qr
+         iWow==
+X-Gm-Message-State: AOAM533iFFKalGvUdSv/Cz2RYICC7VmnHEx9hu+Yc42PqQ/OkARdvVa4
+        Io2dmM3DhQwg0R9JBF0I6vU=
+X-Google-Smtp-Source: ABdhPJwIxjwPKd1DKdMBrirMKqTdHxM6M+BihRlNqfx5G7Mr37NlFXLCzCOYWJuV9yopYWJXBU4mBg==
+X-Received: by 2002:a17:906:5fd9:: with SMTP id k25mr12524584ejv.166.1604861155308;
+        Sun, 08 Nov 2020 10:45:55 -0800 (PST)
+Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
+        by smtp.googlemail.com with ESMTPSA id l25sm6636831eds.65.2020.11.08.10.45.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 08 Nov 2020 10:45:54 -0800 (PST)
+Date:   Sun, 8 Nov 2020 19:45:52 +0100
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Adam Ford <aford173@gmail.com>
+Cc:     linux-arm-kernel@lists.infradead.org, aford@beaconembedded.com,
+        Rob Herring <robh+dt@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Andrey Smirnov <andrew.smirnov@gmail.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH V2 4/5] arm64: dts: imx8mn: Add power-domain reference in
+ USB controller
+Message-ID: <20201108184552.GC7078@kozik-lap>
+References: <20201107140026.1974312-1-aford173@gmail.com>
+ <20201107140026.1974312-4-aford173@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
+In-Reply-To: <20201107140026.1974312-4-aford173@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following changes since commit 3cea11cd5e3b00d91caf0b4730194039b45c5891:
+On Sat, Nov 07, 2020 at 08:00:24AM -0600, Adam Ford wrote:
+> The USB OTG controller cannot be used until the power-domain is enabled
+> unless it was started in the bootloader.
+> 
+> Adding the power-domain reference to the OTG node allows the OTG
+> controller to operate.
+> 
+> Signed-off-by: Adam Ford <aford173@gmail.com>
+> ---
+> V2:  No change
+> 
 
-  Linux 5.10-rc2 (2020-11-01 14:43:51 -0800)
+Reviewed-by: Krzysztof Kozlowski <krzk@kernel.org>
 
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/usb.git tags/usb-5.10-rc3
-
-for you to fetch changes up to db388a6cb7ed986077d3a275712bfc2e28082760:
-
-  Merge tag 'usb-serial-5.10-rc3' of https://git.kernel.org/pub/scm/linux/kernel/git/johan/usb-serial into usb-linus (2020-11-07 15:56:37 +0100)
-
-----------------------------------------------------------------
-USB fixes for 5.10-rc3
-
-Here are some small USB fixes and new device ids for 5.10-rc3
-
-They include:
-	- USB gadget fixes for some reported issues
-	- Fixes for the every-troublesome apple fastcharge driver,
-	  hopefully we finally have it right.
-	- More USB core quirks for odd devices
-	- USB serial driver fixes for some long-standing issues that
-	  were recently found
-	- some new USB serial driver device ids
-
-All have been in linux-next with no reported issues.
-
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
-----------------------------------------------------------------
-Alan Stern (1):
-      USB: Add NO_LPM quirk for Kingston flash drive
-
-Daniele Palmas (2):
-      USB: serial: option: add LE910Cx compositions 0x1203, 0x1230, 0x1231
-      USB: serial: option: add Telit FN980 composition 0x1055
-
-Evgeny Novikov (1):
-      usb: gadget: goku_udc: fix potential crashes in probe
-
-Greg Kroah-Hartman (2):
-      Merge tag 'fixes-for-v5.10-rc2' of git://git.kernel.org/.../balbi/usb into usb-linus
-      Merge tag 'usb-serial-5.10-rc3' of https://git.kernel.org/.../johan/usb-serial into usb-linus
-
-Heikki Krogerus (1):
-      usb: dwc3: pci: add support for the Intel Alder Lake-S
-
-Johan Hovold (1):
-      USB: serial: cyberjack: fix write-URB completion race
-
-Macpaul Lin (1):
-      usb: mtu3: fix panic in mtu3_gadget_stop()
-
-Martin Blumenstingl (1):
-      usb: dwc2: Avoid leaving the error_debugfs label unused
-
-Ran Wang (1):
-      usb: gadget: fsl: fix null pointer checking
-
-Thinh Nguyen (1):
-      usb: dwc3: ep0: Fix delay status handling
-
-Zhang Qilong (1):
-      USB: apple-mfi-fastcharge: fix reference leak in apple_mfi_fc_set_property
-
-Ziyi Cao (1):
-      USB: serial: option: add Quectel EC200T module support
-
-Zqiang (1):
-      usb: raw-gadget: fix memory leak in gadget_setup
-
- drivers/usb/core/quirks.c               |  3 +++
- drivers/usb/dwc2/platform.c             |  3 +++
- drivers/usb/dwc3/dwc3-pci.c             |  4 ++++
- drivers/usb/dwc3/ep0.c                  |  3 ++-
- drivers/usb/gadget/legacy/raw_gadget.c  |  5 ++++-
- drivers/usb/gadget/udc/fsl_udc_core.c   |  2 +-
- drivers/usb/gadget/udc/goku_udc.c       |  2 +-
- drivers/usb/misc/apple-mfi-fastcharge.c |  4 +++-
- drivers/usb/mtu3/mtu3_gadget.c          |  1 +
- drivers/usb/serial/cyberjack.c          |  7 ++++++-
- drivers/usb/serial/option.c             | 10 ++++++++++
- 11 files changed, 38 insertions(+), 6 deletions(-)
+Best regards,
+Krzysztof
