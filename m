@@ -2,138 +2,307 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF76C2AA916
-	for <lists+linux-kernel@lfdr.de>; Sun,  8 Nov 2020 05:34:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A10F62AA91A
+	for <lists+linux-kernel@lfdr.de>; Sun,  8 Nov 2020 05:46:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727608AbgKHEeY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Nov 2020 23:34:24 -0500
-Received: from frasgout.his.huawei.com ([185.176.79.56]:2072 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726062AbgKHEeX (ORCPT
+        id S1726470AbgKHEqJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Nov 2020 23:46:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32844 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726062AbgKHEqI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Nov 2020 23:34:23 -0500
-Received: from fraeml708-chm.china.huawei.com (unknown [172.18.147.226])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4CTLpQ6pvSz67HfG;
-        Sun,  8 Nov 2020 12:33:02 +0800 (CST)
-Received: from lhreml722-chm.china.huawei.com (10.201.108.73) by
- fraeml708-chm.china.huawei.com (10.206.15.36) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1913.5; Sun, 8 Nov 2020 05:34:21 +0100
-Received: from dggemi761-chm.china.huawei.com (10.1.198.147) by
- lhreml722-chm.china.huawei.com (10.201.108.73) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.1913.5; Sun, 8 Nov 2020 04:34:20 +0000
-Received: from dggemi761-chm.china.huawei.com ([10.9.49.202]) by
- dggemi761-chm.china.huawei.com ([10.9.49.202]) with mapi id 15.01.1913.007;
- Sun, 8 Nov 2020 12:34:18 +0800
-From:   "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>
-To:     Randy Dunlap <rdunlap@infradead.org>,
-        John Hubbard <jhubbard@nvidia.com>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-CC:     Linuxarm <linuxarm@huawei.com>,
-        Ralph Campbell <rcampbell@nvidia.com>,
-        John Garry <john.garry@huawei.com>
-Subject: RE: [PATCH] mm/gup_benchmark: GUP_BENCHMARK depends on DEBUG_FS
-Thread-Topic: [PATCH] mm/gup_benchmark: GUP_BENCHMARK depends on DEBUG_FS
-Thread-Index: AQHWspKkrOQfdWDOqkGzzyoK3BLHUam7SjKAgAG/lxD//4AMgIAAM28AgAAckACAAK7tEP//hnEAgAACPYCAAA3ogIAAig1A
-Date:   Sun, 8 Nov 2020 04:34:18 +0000
-Message-ID: <5b76cc7a3ca44e958e18f48ed4c5291d@hisilicon.com>
-References: <20201104100552.20156-1-song.bao.hua@hisilicon.com>
- <e8ecbf3e-438e-934e-0335-ec9b3e097022@nvidia.com>
- <9286e2d0e17a47a1874dc4a96d83a38f@hisilicon.com>
- <e6b74390-6a80-9aae-17b2-536ffa0d1aae@nvidia.com>
- <a5f5b63a-ff9d-ed74-212f-f959f038b781@infradead.org>
- <2c968615-587c-b978-7961-8391c70382b2@nvidia.com>
- <869059977c224a3aa31bfb42a4a8148d@hisilicon.com>
- <dd9e5f78-d627-89d6-2b9d-f2912213171f@nvidia.com>
- <8eaa47c0-a62d-46da-4fd6-93f2b5b2910d@nvidia.com>
- <e08c812d-80bf-12ec-794e-a726a1b37433@infradead.org>
-In-Reply-To: <e08c812d-80bf-12ec-794e-a726a1b37433@infradead.org>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.126.200.224]
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        Sat, 7 Nov 2020 23:46:08 -0500
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34596C0613CF
+        for <linux-kernel@vger.kernel.org>; Sat,  7 Nov 2020 20:46:08 -0800 (PST)
+Received: by mail-wr1-x441.google.com with SMTP id p1so5279568wrf.12
+        for <linux-kernel@vger.kernel.org>; Sat, 07 Nov 2020 20:46:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=kCWk0yHeS1wjwiAqSGVF8CAmBgVxMNWcAcpfrZJFKXQ=;
+        b=bncIfLMEhIhf7p3qNlJMaJXxZYBlNlPppMIDwC6qBcFouu+QSlXhlHPXizLJ8hBtL/
+         WCKm0wwjy/KKNfw0C5gWf5AdPC2aw/xoqlXLEpVFY4avKUqXGNqfKyEoqvRc0hEG1D0d
+         /VkeAxkla5uARM5zc3oNHzKD0yDoNPDeEFjxKsXB3FcaBxqKmIiuIBUyRqj9IATGMp1p
+         lVkZZ3krJ6Q3I9PhjRBuM9axpeBRboqsx4LHAVvfCg4egVKyNBcX75zphnU+NjN+EJdy
+         As6LViIJrqUDRQy+Yhp27CfU+Ykm5/VbG3tqY5sCSZZz5DppbYctf8Ntw2ItvqjYa1pt
+         xpqQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=kCWk0yHeS1wjwiAqSGVF8CAmBgVxMNWcAcpfrZJFKXQ=;
+        b=nJDgHX8MZFvkP60kag9W5KeT0hCgIQKVj8lyHdfYc00Y+noPfjixqj6ubSRaV7hceH
+         cag9P/4iKyf66SVnjyrifHWzHl4/jrU8zYyPtG2TkXteQGPrkHNlWtZkpXR3Amxe9nzb
+         g3nMvahx3xG/5mis+WfLXlc9bMHvRw5hsmHLMmQQNITIZpwQFhWvf35+UathJX9d7pxd
+         NokJPOKcP84iArAspPY3xUqYFGfC7CjTw7zAinNVfSxyfThKjKbovRCl8qnm0qsLxgkx
+         GzcJ7kgH6BFE102xUbWX5LihGv1ILlyDaX5QECnO3SFV3/j+ZA9HtXopm0oyv04Tf9Ls
+         EIOw==
+X-Gm-Message-State: AOAM530gC7aoNTBfv8ktJyWq1A2TihJAx7K/SiYX3tdloKjC+uq7r7mf
+        wI0O9ZDE+9Jpchdy+WE9zwjmY+LM/pBlgzy+avg96A==
+X-Google-Smtp-Source: ABdhPJy7hMgby+PNhVLfJkV0Tf8Yl675dF+Zz3FUcuMm9+MPNQJ7rQokxwra5JiuygyPfG19CIbrlUSd+ZVqtf0xkH0=
+X-Received: by 2002:adf:ed04:: with SMTP id a4mr11526384wro.172.1604810766379;
+ Sat, 07 Nov 2020 20:46:06 -0800 (PST)
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+References: <20201106231635.3528496-1-soheil.kdev@gmail.com> <20201107174343.d94369d044c821fb8673bafd@linux-foundation.org>
+In-Reply-To: <20201107174343.d94369d044c821fb8673bafd@linux-foundation.org>
+From:   Soheil Hassas Yeganeh <soheil@google.com>
+Date:   Sat, 7 Nov 2020 23:45:30 -0500
+Message-ID: <CACSApva7rcbvtSyV6XY0q3eFQqmPXV=0zY9X1FPKkUk-hSodpA@mail.gmail.com>
+Subject: Re: [PATCH 0/8] simplify ep_poll
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        linux-fsdevel@vger.kernel.org,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Khazhismel Kumykov <khazhy@google.com>,
+        Guantao Liu <guantaol@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogUmFuZHkgRHVubGFwIFtt
-YWlsdG86cmR1bmxhcEBpbmZyYWRlYWQub3JnXQ0KPiBTZW50OiBTdW5kYXksIE5vdmVtYmVyIDgs
-IDIwMjAgNToxMiBQTQ0KPiBUbzogSm9obiBIdWJiYXJkIDxqaHViYmFyZEBudmlkaWEuY29tPjsg
-U29uZyBCYW8gSHVhIChCYXJyeSBTb25nKQ0KPiA8c29uZy5iYW8uaHVhQGhpc2lsaWNvbi5jb20+
-OyBha3BtQGxpbnV4LWZvdW5kYXRpb24ub3JnOw0KPiBsaW51eC1tbUBrdmFjay5vcmc7IGxpbnV4
-LWtlcm5lbEB2Z2VyLmtlcm5lbC5vcmcNCj4gQ2M6IExpbnV4YXJtIDxsaW51eGFybUBodWF3ZWku
-Y29tPjsgUmFscGggQ2FtcGJlbGwNCj4gPHJjYW1wYmVsbEBudmlkaWEuY29tPjsgSm9obiBHYXJy
-eSA8am9obi5nYXJyeUBodWF3ZWkuY29tPg0KPiBTdWJqZWN0OiBSZTogW1BBVENIXSBtbS9ndXBf
-YmVuY2htYXJrOiBHVVBfQkVOQ0hNQVJLIGRlcGVuZHMgb24NCj4gREVCVUdfRlMNCj4gDQo+IE9u
-IDExLzcvMjAgNzoyMiBQTSwgSm9obiBIdWJiYXJkIHdyb3RlOg0KPiA+IE9uIDExLzcvMjAgNzox
-NCBQTSwgSm9obiBIdWJiYXJkIHdyb3RlOg0KPiA+PiBPbiAxMS83LzIwIDY6NTggUE0sIFNvbmcg
-QmFvIEh1YSAoQmFycnkgU29uZykgd3JvdGU6DQo+ID4+Pj4gT24gMTEvNy8yMCAyOjIwIFBNLCBS
-YW5keSBEdW5sYXAgd3JvdGU6DQo+ID4+Pj4+IE9uIDExLzcvMjAgMTE6MTYgQU0sIEpvaG4gSHVi
-YmFyZCB3cm90ZToNCj4gPj4+Pj4+IE9uIDExLzcvMjAgMTE6MDUgQU0sIFNvbmcgQmFvIEh1YSAo
-QmFycnkgU29uZykgd3JvdGU6DQo+ID4+Pj4+Pj4+IEZyb206IEpvaG4gSHViYmFyZCBbbWFpbHRv
-OmpodWJiYXJkQG52aWRpYS5jb21dDQo+ID4+Pj4+PiAuLi4NCj4gPj4+PiBCdXQgaWYgeW91IHJl
-YWxseSBkaXNhZ3JlZSwgdGhlbiBJJ2QgZ28gd2l0aCwganVzdCBkcm9wIHRoZSBwYXRjaCBlbnRp
-cmVseSwNCj4gYmVjYXVzZQ0KPiA+Pj4+IGl0IGRvZXNuJ3QgcmVhbGx5IG1ha2UgdGhpbmdzIGJl
-dHRlciBhcyB3cml0dGVuLi4uSU1ITyBhbnl3YXkuIDopDQo+ID4+Pg0KPiA+Pj4gSnVzdCBpbWFn
-aW5lIGEgY2FzZSwgd2UgZG9uJ3QgZW5hYmxlIERFQlVHX0ZTIGJ1dCB3ZSBlbmFibGUgR1VQX1RF
-U1QsDQo+IHdlIHdpbGwNCj4gPj4+IGdldCBhbiBpbWFnZSB3aXRoIHRvdGFsbHkgdXNlbGVzcyBj
-b2RlIHNlY3Rpb24gc2luY2UgR1VQX1RFU1QgZGVwZW5kcyBvbg0KPiBkZWJ1Z2ZzDQo+ID4+PiBl
-bnRyeSB0byBwZXJmb3JtIGFueSB1c2VmdWwgZnVuY3Rpb25hbGl0eS4NCj4gPj4+DQo+ID4+DQo+
-ID4+IExvb2tpbmcgYXQgdGhlIGNob2ljZXMsIGZyb20gdGhlIHVzZXIncyAodXN1YWxseSBrZXJu
-ZWwgZGV2ZWxvcGVyJ3MpDQo+IGV4cGVyaWVuY2U6DQo+ID4+DQo+ID4+IGEpIFRoZSB1c2VyIGVu
-YWJsZXMgR1VQX1RFU1QsIHRoZW4gYm9vdHMgdXAsIHJ1bnMsIGFuZCBpcyBicmllZmx5IHN1cnBy
-aXNlZA0KPiBieSBhDQo+ID4+IHJ1bnRpbWUgZmFpbHVyZS4gQnV0IGl0J3MgYSB2ZXJ5IHF1aWNr
-IGRpYWdub3NpczogIm9wZW46IE5vIHN1Y2ggZmlsZSBvcg0KPiBkaXJlY3RvcnkiLA0KPiA+PiB3
-aGVuIHRyeWluZyB0byBtYWtlIHRoYXQgaW9jdGwgY2FsbC4gVGhlIHBhdGggaW5kaWNhdGVzIHRo
-YXQgaXQncyBhIGRlYnVnIGZzDQo+IHBhdGgsDQo+ID4+IHNvIHRoZSBzb2x1dGlvbiBpcyBwcmV0
-dHkgY2xlYXIsIGF0IGxlYXN0IGZvciB0aGUgbWFpbiBhdWRpZW5jZS4NCj4gPj4NCj4gPj4gYikg
-VGhlIG90aGVyIGNob2ljZTogdGhlIHVzZXIgKm5ldmVyIGV2ZW4gc2VlcyogR1VQX1RFU1QgYXMg
-YSBjaG9pY2UuIFRoaXMNCj4gZXNwZWNpYWxseQ0KPiA+PiBib3RoZXJzIG1lIGJlY2F1c2Ugc29t
-ZXRpbWVzIHlvdSBmaW5kIHRoaW5ncyBieSBwb2tpbmcgYXJvdW5kIGluIHRoZQ0KPiBtZW51LCBh
-bHRob3VnaA0KPiA+PiBvZiBjb3Vyc2UgInlvdSBzaG91bGQgYWxyZWFkeSBrbm93IGFib3V0IGl0
-Ii4uLmJ1dCB0aGVyZSdzIGEgbG90IHRvICJhbHJlYWR5DQo+IGtub3ciDQo+ID4+IGluIGEgbGFy
-Z2Uga2VybmVsLg0KPiA+Pg0KPiA+PiDCoEZyb20gYSB1c2VyIGV4cGVyaWVuY2UsIGl0J3Mgd2F5
-IGJldHRlciB0byBzaW1wbHkgc2VlIHdoYXQgeW91IHdhbnQsIGFuZA0KPiBzZWxlY3QgaXQNCj4g
-Pj4gaW4gdGhlIG1lbnUuIE9yLCBhdCBsZWFzdCBnZXQgc29tZSBwcm9tcHQgdGhhdCB5b3UgbmVl
-ZCB0byBwcmUtc2VsZWN0DQo+IHNvbWV0aGluZyBlbHNlLg0KPiA+Pg0KPiA+DQo+ID4gLi4uYW5k
-IGFnYWluLCB0aGlzIGlzIGFsbCBmYWxsb3V0IGZyb20gS2NvbmZpZy4gSSBtaWdodCBiZSBtaXNz
-aW5nIHNvbWUgYWR2YW5jZWQNCj4gPiBmZWF0dXJlLCBiZWNhdXNlIGl0IHNlZW1zIHN1cnByaXNp
-bmcgdG8gb25seSBiZSBhbGxvd2VkIHRvIGNob29zZSBiZXR3ZWVuDQo+ID4gbWlzc2luZyBkZXBl
-bmRlbmNpZXMgKHdoaWNoIHRoaXMgcGF0Y2ggd291bGQgY29ycmVjdCksIG9yIGEgcG9vcmVyIHVz
-ZXINCj4gZXhwZXJpZW5jZQ0KPiA+ICh3aGljaCBJIGFyZ3VlIHRoYXQgdGhpcyBwYXRjaCB3b3Vs
-ZCBhbHNvIHByb3ZpZGUpLg0KPiA+DQo+ID4gSWRlYWxseSwgd2UnZCBqdXN0IHNldCB1cCB0aGUg
-ZGVwZW5kZW5jaWVzLCBhbmQgdGhlbiBoYXZlIHNvbWUgb3B0aW9ucyBmb3INCj4gPiB2aXNpYmls
-aXR5LCBidXQgSSdtIG5vdCBhd2FyZSBvZiBhbnkgd2F5IHRvIGRvIHRoYXQuLi5hbmQgYWZ0ZXIg
-YSBxdWljayBwZWVrDQo+ID4gYXQgRG9jdW1lbnRhdGlvbi9rYnVpbGQva2NvbmZpZy1tYWNyby1s
-YW5ndWFnZS5yc3QgaXQgbG9va3MgcHJldHR5IGJhcmUNCj4gYm9uZXMuDQo+IA0KPiBMb29rIGF0
-IGtjb25maWctbGFuZ3VhZ2UucnN0IGluc3RlYWQuDQo+IA0KPiBPbmUgdGhpbmcgdGhhdCBjb3Vs
-ZCBiZSBkb25lIChhbmQgaXMgZG9uZSBpbiBhIGZldyBwbGFjZXMgZm9yIG90aGVyIHJlYXNvbnMp
-IGlzDQo+IHRvIGFkZA0KPiBhIEtjb25maWcgY29tbWVudCBpZiBERUJVR19GUyBpcyBub3QgZW5h
-YmxlZDoNCj4gDQo+IGNvbW1lbnQgIkdVUF9URVNUIG5lZWRzIHRvIGhhdmUgREVCVUdfRlMgZW5h
-YmxlZCINCj4gCWRlcGVuZHMgb24gIUdVUF9URVNUICYmICFERUJVR19GUw0KPiANCj4gZS5nLiBk
-cml2ZXJzL2hpZC91c2JoaWQvS2NvbmZpZzoNCj4gDQo+IGNvbW1lbnQgIklucHV0IGNvcmUgc3Vw
-cG9ydCBpcyBuZWVkZWQgZm9yIFVTQiBISUQgaW5wdXQgbGF5ZXIgb3IgSElEQlANCj4gc3VwcG9y
-dCINCj4gCWRlcGVuZHMgb24gVVNCX0hJRCAmJiBJTlBVVD1uDQoNCg0KVGhpcyBpcyBpbnRlcmVz
-dGluZy4NClRoYW5rcyBmb3Igc2hhcmluZyB0aGlzLiBJJ3ZlIG5ldmVyIHJlYWxpemVkIHdlIGNh
-biBkbyB0aGlzIGtpbmQgb2YgY29tbWVudHMuDQpXaGF0IEkgaGF2ZSBiZWVuIGFsd2F5cyBkb2lu
-ZyBpcyBzaW1wbHkgcmVhZGluZyB0aGUgc3RhdHVzIGZyb20gbWVudWNvbmZpZy4NCkZvciBleGFt
-cGxlLCB0byB1c2UgSUlPX0NPTlNVTUVSU19QRVJfVFJJR0dFUiwgSSBzZWFyY2ggaXQgaW4gbWVu
-dWNvbmZpZw0KYnkgIi8iLCBJIGdldDoNCg0KU3ltYm9sOiBJSU9fQ09OU1VNRVJTX1BFUl9UUklH
-R0VSIFs9XQ0KICDilIIgVHlwZSAgOiBpbnRlZ2VyDQogIOKUgiBEZWZpbmVkIGF0IGRyaXZlcnMv
-aWlvL0tjb25maWc6NDENCiAg4pSCICAgUHJvbXB0OiBNYXhpbXVtIG51bWJlciBvZiBjb25zdW1l
-cnMgcGVyIHRyaWdnZXINCiAg4pSCICAgRGVwZW5kcyBvbjogSUlPIFs9bl0gJiYgSUlPX1RSSUdH
-RVIgWz1uXQ0KICDilIIgICBMb2NhdGlvbjoNCiAg4pSCICAgICAtPiBEZXZpY2UgRHJpdmVycw0K
-ICDilIIgKDEpICAgLT4gSW5kdXN0cmlhbCBJL08gc3VwcG9ydCAoSUlPIFs9bl0pDQogIOKUgiAg
-ICAgICAgIC0+IEVuYWJsZSB0cmlnZ2VyZWQgc2FtcGxpbmcgc3VwcG9ydCAoSUlPX1RSSUdHRVIg
-Wz1uXSkNCiAg4pSCDQoNClRoZSBtZW51Y29uZmlnIHRlbGxzIG1lIGl0IGRlcGVuZHMgb24gSUlP
-IGFuZCBJSU9fVFJJR0dFUi4gQnV0IGJvdGggb2YNCnRoZW0gYXJlICJuIi4gc28gdGhlIG5leHQg
-c3RlcCwgSSBhbSBnb2luZyB0byBtYWtlIElJTyBhbmQgSUlPX1RSSUdHRVINCiJ5Ii4NCg0KDQo+
-IA0KPiANCj4gLS0NCj4gflJhbmR5DQoNClRoYW5rcw0KQmFycnkNCg0K
+On Sat, Nov 7, 2020 at 8:43 PM Andrew Morton <akpm@linux-foundation.org> wrote:
+>
+> On Fri,  6 Nov 2020 18:16:27 -0500 Soheil Hassas Yeganeh <soheil.kdev@gmail.com> wrote:
+>
+> > From: Soheil Hassas Yeganeh <soheil@google.com>
+> >
+> > This patch series is a follow up based on the suggestions and feedback by Linus:
+> > https://lkml.kernel.org/r/CAHk-=wizk=OxUyQPbO8MS41w2Pag1kniUV5WdD5qWL-gq1kjDA@mail.gmail.com
+>
+> Al Viro has been playing in here as well - see the below, from
+> linux-next.
+>
+> I think I'll leave it to you folks to sort this out, please.
+
+Thank you Andrew for pointing that out!  Sorry that I didn't notice Al
+Viro's nice clean ups.
+
+The changes are all orthogonal and apply cleanly except "epoll: pull
+fatal signal checks into ep_send_events()".   The conflict is trivial
+and the following patch should cleanly apply to linux-next/master (I
+didn't move the initialization of `res = 0` after the new branch to
+keep it simple).
+
+FWIW, I also stress-tested the patch series applied on top of
+linux-next/master for a couple of hours.
+
+Could you please let me know whether I should send a V2 of the patch
+series for linux-next? Thanks!
+
+Subject: [PATCH linux-next] epoll: pull fatal signal checks into
+ep_send_events()
+
+To simplify the code, pull in checking the fatal signals into
+ep_send_events().  ep_send_events() is called only from ep_poll().
+
+Note that, previously, we were always checking fatal events, but
+it is checked only if eavail is true.  This should be fine because
+the goal of that check is to quickly return from epoll_wait() when
+there is a pending fatal signal.
+
+Suggested-by: Willem de Bruijn <willemb@google.com>
+Signed-off-by: Soheil Hassas Yeganeh <soheil@google.com>
+Reviewed-by: Eric Dumazet <edumazet@google.com>
+Reviewed-by: Willem de Bruijn <willemb@google.com>
+Reviewed-by: Khazhismel Kumykov <khazhy@google.com>
+Change-Id: I68bbaf02db564e64815bcd8ed3c1cd272cfe832f
+---
+ fs/eventpoll.c | 17 ++++++++---------
+ 1 file changed, 8 insertions(+), 9 deletions(-)
+
+diff --git a/fs/eventpoll.c b/fs/eventpoll.c
+index 06fb0de4bcc7..42f6bfc5f24e 100644
+--- a/fs/eventpoll.c
++++ b/fs/eventpoll.c
+@@ -1625,6 +1625,14 @@ static int ep_send_events(struct eventpoll *ep,
+        poll_table pt;
+        int res = 0;
+
++       /*
++        * Always short-circuit for fatal signals to allow threads to make a
++        * timely exit without the chance of finding more events available and
++        * fetching repeatedly.
++        */
++       if (fatal_signal_pending(current))
++               return -EINTR;
++
+        init_poll_funcptr(&pt, NULL);
+
+        mutex_lock(&ep->mtx);
+@@ -1846,15 +1854,6 @@ static int ep_poll(struct eventpoll *ep, struct
+epoll_event __user *events,
+        }
+
+ send_events:
+-       if (fatal_signal_pending(current)) {
+-               /*
+-                * Always short-circuit for fatal signals to allow
+-                * threads to make a timely exit without the chance of
+-                * finding more events available and fetching
+-                * repeatedly.
+-                */
+-               return -EINTR;
+-       }
+        /*
+         * Try to transfer events to user space. In case we get 0 events and
+         * there's still timeout left over, we go trying again in search of
+
+--
+2.29.2.222.g5d2a92d10f8-goog
+
+
+
+
+> commit 57804b1cc4616780c72a2d0930d1bd0d5bd3ed4c
+> Author:     Al Viro <viro@zeniv.linux.org.uk>
+> AuthorDate: Mon Aug 31 13:41:30 2020 -0400
+> Commit:     Al Viro <viro@zeniv.linux.org.uk>
+> CommitDate: Sun Oct 25 20:02:01 2020 -0400
+>
+>     lift locking/unlocking ep->mtx out of ep_{start,done}_scan()
+>
+>     get rid of depth/ep_locked arguments there and document
+>     the kludge in ep_item_poll() that has lead to ep_locked existence in
+>     the first place
+>
+>     Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
+>
+> diff --git a/fs/eventpoll.c b/fs/eventpoll.c
+> index ac996b959e94..f9c567af1f5f 100644
+> --- a/fs/eventpoll.c
+> +++ b/fs/eventpoll.c
+> @@ -554,20 +554,13 @@ static inline void ep_pm_stay_awake_rcu(struct epitem *epi)
+>         rcu_read_unlock();
+>  }
+>
+> -static void ep_start_scan(struct eventpoll *ep,
+> -                         int depth, bool ep_locked,
+> -                         struct list_head *txlist)
+> -{
+> -       lockdep_assert_irqs_enabled();
+> -
+> -       /*
+> -        * We need to lock this because we could be hit by
+> -        * eventpoll_release_file() and epoll_ctl().
+> -        */
+> -
+> -       if (!ep_locked)
+> -               mutex_lock_nested(&ep->mtx, depth);
+>
+> +/*
+> + * ep->mutex needs to be held because we could be hit by
+> + * eventpoll_release_file() and epoll_ctl().
+> + */
+> +static void ep_start_scan(struct eventpoll *ep, struct list_head *txlist)
+> +{
+>         /*
+>          * Steal the ready list, and re-init the original one to the
+>          * empty list. Also, set ep->ovflist to NULL so that events
+> @@ -576,6 +569,7 @@ static void ep_start_scan(struct eventpoll *ep,
+>          * because we want the "sproc" callback to be able to do it
+>          * in a lockless way.
+>          */
+> +       lockdep_assert_irqs_enabled();
+>         write_lock_irq(&ep->lock);
+>         list_splice_init(&ep->rdllist, txlist);
+>         WRITE_ONCE(ep->ovflist, NULL);
+> @@ -583,7 +577,6 @@ static void ep_start_scan(struct eventpoll *ep,
+>  }
+>
+>  static void ep_done_scan(struct eventpoll *ep,
+> -                        int depth, bool ep_locked,
+>                          struct list_head *txlist)
+>  {
+>         struct epitem *epi, *nepi;
+> @@ -624,9 +617,6 @@ static void ep_done_scan(struct eventpoll *ep,
+>         list_splice(txlist, &ep->rdllist);
+>         __pm_relax(ep->ws);
+>         write_unlock_irq(&ep->lock);
+> -
+> -       if (!ep_locked)
+> -               mutex_unlock(&ep->mtx);
+>  }
+>
+>  static void epi_rcu_free(struct rcu_head *head)
+> @@ -763,11 +753,16 @@ static __poll_t ep_item_poll(const struct epitem *epi, poll_table *pt,
+>
+>         ep = epi->ffd.file->private_data;
+>         poll_wait(epi->ffd.file, &ep->poll_wait, pt);
+> -       locked = pt && (pt->_qproc == ep_ptable_queue_proc);
+>
+> -       ep_start_scan(ep, depth, locked, &txlist);
+> +       // kludge: ep_insert() calls us with ep->mtx already locked
+> +       locked = pt && (pt->_qproc == ep_ptable_queue_proc);
+> +       if (!locked)
+> +               mutex_lock_nested(&ep->mtx, depth);
+> +       ep_start_scan(ep, &txlist);
+>         res = ep_read_events_proc(ep, &txlist, depth + 1);
+> -       ep_done_scan(ep, depth, locked, &txlist);
+> +       ep_done_scan(ep, &txlist);
+> +       if (!locked)
+> +               mutex_unlock(&ep->mtx);
+>         return res & epi->event.events;
+>  }
+>
+> @@ -809,9 +804,11 @@ static __poll_t ep_eventpoll_poll(struct file *file, poll_table *wait)
+>          * Proceed to find out if wanted events are really available inside
+>          * the ready list.
+>          */
+> -       ep_start_scan(ep, 0, false, &txlist);
+> +       mutex_lock(&ep->mtx);
+> +       ep_start_scan(ep, &txlist);
+>         res = ep_read_events_proc(ep, &txlist, 1);
+> -       ep_done_scan(ep, 0, false, &txlist);
+> +       ep_done_scan(ep, &txlist);
+> +       mutex_unlock(&ep->mtx);
+>         return res;
+>  }
+>
+> @@ -1573,15 +1570,13 @@ static int ep_send_events(struct eventpoll *ep,
+>
+>         init_poll_funcptr(&pt, NULL);
+>
+> -       ep_start_scan(ep, 0, false, &txlist);
+> +       mutex_lock(&ep->mtx);
+> +       ep_start_scan(ep, &txlist);
+>
+>         /*
+>          * We can loop without lock because we are passed a task private list.
+> -        * Items cannot vanish during the loop because ep_scan_ready_list() is
+> -        * holding "mtx" during this call.
+> +        * Items cannot vanish during the loop we are holding ep->mtx.
+>          */
+> -       lockdep_assert_held(&ep->mtx);
+> -
+>         list_for_each_entry_safe(epi, tmp, &txlist, rdllink) {
+>                 struct wakeup_source *ws;
+>                 __poll_t revents;
+> @@ -1609,9 +1604,8 @@ static int ep_send_events(struct eventpoll *ep,
+>
+>                 /*
+>                  * If the event mask intersect the caller-requested one,
+> -                * deliver the event to userspace. Again, ep_scan_ready_list()
+> -                * is holding ep->mtx, so no operations coming from userspace
+> -                * can change the item.
+> +                * deliver the event to userspace. Again, we are holding ep->mtx,
+> +                * so no operations coming from userspace can change the item.
+>                  */
+>                 revents = ep_item_poll(epi, &pt, 1);
+>                 if (!revents)
+> @@ -1645,7 +1639,8 @@ static int ep_send_events(struct eventpoll *ep,
+>                         ep_pm_stay_awake(epi);
+>                 }
+>         }
+> -       ep_done_scan(ep, 0, false, &txlist);
+> +       ep_done_scan(ep, &txlist);
+> +       mutex_unlock(&ep->mtx);
+>
+>         return res;
+>  }
+>
