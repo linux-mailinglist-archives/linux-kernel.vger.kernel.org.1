@@ -2,123 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B30D62AAC2C
-	for <lists+linux-kernel@lfdr.de>; Sun,  8 Nov 2020 17:23:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C9042AAC2F
+	for <lists+linux-kernel@lfdr.de>; Sun,  8 Nov 2020 17:26:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728143AbgKHQX4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 8 Nov 2020 11:23:56 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59708 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726388AbgKHQXz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 8 Nov 2020 11:23:55 -0500
-Received: from archlinux (cpc149474-cmbg20-2-0-cust94.5-4.cable.virginm.net [82.4.196.95])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id ED226208B6;
-        Sun,  8 Nov 2020 16:23:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604852635;
-        bh=avBVJRnkd7Xw7yPfPzdT/w2Ilk+ZbHTnHDLOiYSuk1M=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=xZeW3GZjrpTZY/b5Slt348II/ReXiYPkl27WWHfiYzP093VzGFnkMwRCzwW2E3Xl7
-         2aP/y3w+02WcSNvd4to5ETYmZKZfHPrqVUPFboJRCgswI8ysk5rVbO+RdgmY/sgIM6
-         eO5MrjojHnkgKsrk7GHVOX+BOdrKMJvUsF6rIvzg=
-Date:   Sun, 8 Nov 2020 16:23:49 +0000
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Gene Chen <gene.chen.richtek@gmail.com>
-Cc:     robh+dt@kernel.org, matthias.bgg@gmail.com, knaack.h@gmx.de,
-        lars@metafoo.de, pmeerw@pmeerw.net, devicetree@vger.kernel.org,
-        linux-iio@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
-        gene_chen@richtek.com, Wilma.Wu@mediatek.com,
-        shufan_lee@richtek.com, cy_huang@richtek.com,
-        benjamin.chao@mediatek.com
-Subject: Re: [PATCH v7 0/3] iio: adc: mt6360: Add ADC driver for MT6360
-Message-ID: <20201108162317.598ae8cc@archlinux>
-In-Reply-To: <20201101154019.39932a2e@archlinux>
-References: <1603181267-15610-1-git-send-email-gene.chen.richtek@gmail.com>
-        <20201101154019.39932a2e@archlinux>
-X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S1728578AbgKHQZy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 8 Nov 2020 11:25:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55878 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726388AbgKHQZx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 8 Nov 2020 11:25:53 -0500
+Received: from mail-oi1-x241.google.com (mail-oi1-x241.google.com [IPv6:2607:f8b0:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DD64C0613CF;
+        Sun,  8 Nov 2020 08:25:53 -0800 (PST)
+Received: by mail-oi1-x241.google.com with SMTP id j7so7388018oie.12;
+        Sun, 08 Nov 2020 08:25:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:from:to:cc:subject:date:message-id;
+        bh=y7H39mVcek5Gfl56DHtreNxTggw3nG3wMjBDYefwKcM=;
+        b=Hkqc6KqANTQA9J7hn0qNGLRUAlI789x2UIJoG5SaxN+GcRD9H4JuunadDC/f25iian
+         UKfA3zzoidXobrURZ95TdiBLmAObXjFkE5urNHNz1C+R5ZvlPFu9pJidxArPWoBWR2yG
+         g/wXN475xGRXQTp+I+iZIGaagirPaRbHUkxhCJkPnhkvSMw70gsQA1Z+k71AYwRlF0f8
+         HxTP5Tn+s+vwzYPgPuiKqLm9d3RNBX9OKWYnOvzDNgOr/R/qmKW5pLfijEMjUJPazela
+         vtBfE7TTJpp7HsKGRGmP8l2OOPTesgwKNzlQ9hEsXxiWtpg+fPBQ7s+xJA2DUTX89hfG
+         I/pQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id;
+        bh=y7H39mVcek5Gfl56DHtreNxTggw3nG3wMjBDYefwKcM=;
+        b=C2jXRgiJqY+QatZksEZFbqWx0HScagKBhc3a6t4cNm/simvANtmUUQ4KIg9rzJofC0
+         SjE0MiKjnBZ1r0YTOLOyILvWQdzpPgb8ab56OxdftKdVbXvXxXOVw60K2fQ81YBYunjV
+         /MuteQr0uoSqM24VwVT5HHkCkY1wuXk56eexcCHOg9IuRqDvjEv9jNtlr1iOjAsYb3hv
+         OVuoUInUx6J3dcryL7VW7TBX+gofnpTLCO5OU8etf89KMoMo37SiBoe9MQmA7BKxhZjt
+         oLndphgM4LGXh5WgVQ6UB0lD3ZvS2tWKZIHWP+5NwH3D8NYAMAwEbJuovyP00LtA8Wj0
+         I2TA==
+X-Gm-Message-State: AOAM5315DbzovSnYx0glOvsNLkQs6MxZ98FFxSD7K1GPhm+nhWNKxC2u
+        fGQVM7ayb+x+UHFXQs1WHM8=
+X-Google-Smtp-Source: ABdhPJxnrrMiXp39hxTKAWz6CjXselwNzDcNG3ayrWRQORvL9ZhRgigY1R9QPVpjInU+cePYhVEkDw==
+X-Received: by 2002:aca:ed06:: with SMTP id l6mr6629612oih.2.1604852752994;
+        Sun, 08 Nov 2020 08:25:52 -0800 (PST)
+Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id w18sm1875348otl.38.2020.11.08.08.25.52
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Sun, 08 Nov 2020 08:25:52 -0800 (PST)
+Sender: Guenter Roeck <groeck7@gmail.com>
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Wim Van Sebroeck <wim@linux-watchdog.org>
+Cc:     linux-watchdog@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Guenter Roeck <linux@roeck-us.net>
+Subject: [PATCH 1/2] watchdog: armada_37xx: Add missing dependency on HAS_IOMEM
+Date:   Sun,  8 Nov 2020 08:25:49 -0800
+Message-Id: <20201108162550.27660-1-linux@roeck-us.net>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 1 Nov 2020 15:40:19 +0000
-Jonathan Cameron <jic23@kernel.org> wrote:
+The following kbuild warning is seen on a system without HAS_IOMEM.
 
-> On Tue, 20 Oct 2020 16:07:44 +0800
-> Gene Chen <gene.chen.richtek@gmail.com> wrote:
-> 
-> > In-Reply-To: 
-> > 
-> > This patch series add MT6360 ADC support contains driver, testing document
-> > and binding document
-> >   
-> Hi Gene,
-> 
-> Other than that small edit needed in the dt binding this is stalled on
-> the label code getting upstreamed into the core.
-> 
-> I've asked Cristian to repost that so hopefully we can resolve that dependency
-> and get this merged fairly soon.
-> 
-> For the dt thing I can just drop the description entirely, but would prefer
-> if you sent a v8 fixing the tags issue Rob pointed out and also fixing that
-> description.
-I've tweaked as described and applied to the togreg branch of iio.git and
-pushed out as testing for the autobuilders to poke at it more than I do.
+WARNING: unmet direct dependencies detected for MFD_SYSCON
+  Depends on [n]: HAS_IOMEM [=n]
+  Selected by [y]:
+  - ARMADA_37XX_WATCHDOG [=y] && WATCHDOG [=y] && (ARCH_MVEBU || COMPILE_TEST
 
-Thanks,
+This results in a subsequent compile error.
 
-Jonathan
+drivers/watchdog/armada_37xx_wdt.o: in function `armada_37xx_wdt_probe':
+armada_37xx_wdt.c:(.text+0xdc): undefined reference to `devm_ioremap'
 
-> 
-> Thanks,
-> 
-> Jonathan
-> 
-> > Gene Chen (2)
-> >   dt-bindings: iio: adc: add bindings doc for MT6360 ADC
-> >   Documentation: ABI: testing: mt6360: Add ADC sysfs guideline
-> >   iio: adc: mt6360: Add ADC driver for MT6360
-> > 
-> >  Documentation/ABI/testing/sysfs-bus-iio-adc-mt6360                 |   78 ++
-> >  Documentation/devicetree/bindings/iio/adc/mediatek,mt6360-adc.yaml |   34 
-> >  drivers/iio/adc/Kconfig                                            |   11 
-> >  drivers/iio/adc/Makefile                                           |    1 
-> >  drivers/iio/adc/mt6360-adc.c                                       |  372 ++++++++++
-> >  5 files changed, 496 insertions(+)
-> > 
-> > changelogs between v1 & v2
-> >  - adc: use IIO_CHAN_INFO_PROCESSED only
-> >  - adc: use devm_iio_triggered_buffer_setup
-> >  - adc: use use s64 to record timestamp
-> > 
-> > changelogs between v2 & v3
-> >  - Rearrange include file order by alphabet
-> >  - Set line length constraint below 100
-> >  - Add Document for testing adc sysfs node guideline
-> >  - Set compiler 64 bit aligned when handle iio timestamp
-> > 
-> > changelogs between v3 & v4
-> >  - Fix sysfs guideline description
-> >  - Replace iio channel processed by raw/scale/offset
-> >  - Add comment of read adc flow for special HW design
-> > 
-> > changelogs between v4 & v5
-> >  - Rename dt-bindings aligned to file name
-> >  - Aligned sysfs node name with driver and add VBUSDIVX description
-> >  - Add ADC channel sysfs node "*_labels"
-> > 
-> > changelogs between v5 & v6
-> >  - Memset aligned adc data
-> >  - Remove strong casting void pointer
-> > 
-> > changelogs between v6 & v7
-> >  - Avoid adc polling infinite loop
-> >   
-> 
+Add the missing dependency.
+
+Reported-by: Necip Fazil Yildiran <fazilyildiran@gmail.com>
+Fixes: 54e3d9b518c8 ("watchdog: Add support for Armada 37xx CPU watchdog")
+Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+---
+ drivers/watchdog/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/drivers/watchdog/Kconfig b/drivers/watchdog/Kconfig
+index fd7968635e6d..b3e8bdaa2a11 100644
+--- a/drivers/watchdog/Kconfig
++++ b/drivers/watchdog/Kconfig
+@@ -386,6 +386,7 @@ config ARM_SBSA_WATCHDOG
+ config ARMADA_37XX_WATCHDOG
+ 	tristate "Armada 37xx watchdog"
+ 	depends on ARCH_MVEBU || COMPILE_TEST
++	depends on HAS_IOMEM
+ 	select MFD_SYSCON
+ 	select WATCHDOG_CORE
+ 	help
+-- 
+2.17.1
 
