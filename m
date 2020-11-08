@@ -2,110 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D02332AACFF
-	for <lists+linux-kernel@lfdr.de>; Sun,  8 Nov 2020 19:51:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E335F2AAD17
+	for <lists+linux-kernel@lfdr.de>; Sun,  8 Nov 2020 20:00:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728957AbgKHSvg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 8 Nov 2020 13:51:36 -0500
-Received: from ssl.serverraum.org ([176.9.125.105]:54145 "EHLO
-        ssl.serverraum.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728904AbgKHSvc (ORCPT
+        id S1728808AbgKHTAX convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Sun, 8 Nov 2020 14:00:23 -0500
+Received: from mail-ed1-f66.google.com ([209.85.208.66]:43400 "EHLO
+        mail-ed1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727570AbgKHTAW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 8 Nov 2020 13:51:32 -0500
-Received: from apollo.fritz.box (unknown [IPv6:2a02:810c:c200:2e91:6257:18ff:fec4:ca34])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by ssl.serverraum.org (Postfix) with ESMTPSA id 22C7C23E63;
-        Sun,  8 Nov 2020 19:51:29 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
-        t=1604861489;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=JH5gvZvLtD+T6J5gJa7u72Ihh3TsKWgIHzRE/YcUp4c=;
-        b=meQsPxlbtXajdgdWxX06jAMgrkn06oDTGxMF5rh19gKHlrAlSlqSWQxIb9KY9RyBMdkS01
-        m41g+wFvildS8iADOqXtkiyAXkCMKaktUlBael4xagTXeHfVIKrIvrL2dr1c5k+oaew006
-        I1uupI6t7kGO60VbX5nkSWbjvP9OBtU=
-From:   Michael Walle <michael@walle.cc>
-To:     linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Cc:     Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>, Li Yang <leoyang.li@nxp.com>,
-        "Y . b . Lu" <yangbo.lu@nxp.com>,
-        Xiaowei Bao <xiaowei.bao@nxp.com>,
-        Ashish Kumar <Ashish.Kumar@nxp.com>,
-        Vladimir Oltean <vladimir.oltean@nxp.com>,
-        Michael Walle <michael@walle.cc>
-Subject: [RFC PATCH v3 9/9] arm64: dts: lx2160a: fix FlexSPI clock
-Date:   Sun,  8 Nov 2020 19:51:13 +0100
-Message-Id: <20201108185113.31377-10-michael@walle.cc>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20201108185113.31377-1-michael@walle.cc>
-References: <20201108185113.31377-1-michael@walle.cc>
+        Sun, 8 Nov 2020 14:00:22 -0500
+Received: by mail-ed1-f66.google.com with SMTP id b9so6449932edu.10;
+        Sun, 08 Nov 2020 11:00:21 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=OUgbcezo0h/mAz6/tn0xA6XFgWNb6IgqpXDUg+2j+Es=;
+        b=BDsZAtR8MoPsmFOW/5K7vjbEcPPzpmKWgy9oRh61Ii4SRdJpHOq2qtsm1gmovLrAbL
+         KYfR9oFJcbhAUTputeEn0KvQqxi9DtahjqN9koft0wBtPdGANcqF81fPTMXhgRUr+vVt
+         UgSd/zO0sCmMPa+d/09TtRCkbGXbiHhfl4XmgmKrH4e0Y5EfWDq0PNx/bm6PNKcPnc8n
+         nJkhELS0CrK0rMgXcxzqRSyvVYpNcoN4OHcx+rL0MBN9DlwQ/Y4nOIHVb0jVtRsGFbLG
+         1TZ7JPQNBv59F2hasu+08W0cAYtDGk8SqTtqOJfU/dLZzbLD6MkBnoM9656/szJx58/w
+         ASlA==
+X-Gm-Message-State: AOAM530KBxn6doihYi6RScCZyHQ5sd2iTHgbXHbp8LBLQNBRP9lnifbo
+        u3NUZeAT7AeZkUn4NSZSC/8=
+X-Google-Smtp-Source: ABdhPJwH+j1xAfl18vYu+bpVR8+rFRo9/cS0c7eskeVY7JZ8u5wW9xbyisGlfRpUw3ADztWKjNN7Kw==
+X-Received: by 2002:aa7:dcd6:: with SMTP id w22mr11798948edu.19.1604862020676;
+        Sun, 08 Nov 2020 11:00:20 -0800 (PST)
+Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
+        by smtp.googlemail.com with ESMTPSA id rn2sm6674691ejb.94.2020.11.08.11.00.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 08 Nov 2020 11:00:19 -0800 (PST)
+Date:   Sun, 8 Nov 2020 20:00:17 +0100
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     =?utf-8?B?UGF3ZcWC?= Chmiel <pawel.mikolaj.chmiel@gmail.com>
+Cc:     kgene@kernel.org, alim.akhtar@samsung.com, robh+dt@kernel.org,
+        a.kesavan@samsung.com, naveenkrishna.ch@gmail.com,
+        thomas.ab@samsung.com, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/2] arm64: dts: exynos: Include common syscon
+ restart/poweroff for Exynos7
+Message-ID: <20201108190017.GA28948@kozik-lap>
+References: <20201107133926.37187-1-pawel.mikolaj.chmiel@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8BIT
+In-Reply-To: <20201107133926.37187-1-pawel.mikolaj.chmiel@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Now that we have a proper driver for the FlexSPI interface use it. This
-will fix SCK frequency switching on Layerscape SoCs.
+On Sat, Nov 07, 2020 at 02:39:25PM +0100, Paweł Chmiel wrote:
+> Exynos7 uses the same syscon reboot and poweroff nodes as other Exynos
+> SoCs, so instead of duplicating code we can just include common dtsi
+> file, which already contains definitions of them. After this change,
+> poweroff node will be also available, previously this dts file did
+> contain only reboot node.
+> 
+> Fixes: fb026cb65247 ("arm64: dts: Add reboot node for exynos7")
+> Fixes: b9024cbc937d ("arm64: dts: Add initial device tree support for exynos7")
+> Signed-off-by: Paweł Chmiel <pawel.mikolaj.chmiel@gmail.com>
+> ---
+> Changes from v1:
+>   - Split into two separate patches.
+>   - Include existing exynos-syscon-restart.dtsi to avoid code
+>     duplication.
+> ---
+>  arch/arm64/boot/dts/exynos/exynos7.dtsi | 9 ++-------
+>  1 file changed, 2 insertions(+), 7 deletions(-)
+> 
 
-Signed-off-by: Michael Walle <michael@walle.cc>
----
-Thanks to Vladimir Oltean, this was partially tested on a LX2160A RDB. But
-this patch is marked as RFC nonetheless, because there is too much
-difference in the clock tree between LS1028A and LX2160A. It would be nice
-if someone could test it and add a Tested-by.
+Thanks, applied.
 
-Changes since v2:
- - none
-
-Changes since v1:
- - none
-
- arch/arm64/boot/dts/freescale/fsl-lx2160a.dtsi | 15 +++++++++++++--
- 1 file changed, 13 insertions(+), 2 deletions(-)
-
-diff --git a/arch/arm64/boot/dts/freescale/fsl-lx2160a.dtsi b/arch/arm64/boot/dts/freescale/fsl-lx2160a.dtsi
-index 0a54a54ec770..130de5f7ff5e 100644
---- a/arch/arm64/boot/dts/freescale/fsl-lx2160a.dtsi
-+++ b/arch/arm64/boot/dts/freescale/fsl-lx2160a.dtsi
-@@ -661,9 +661,20 @@
- 		};
- 
- 		dcfg: syscon@1e00000 {
--			compatible = "fsl,lx2160a-dcfg", "syscon";
-+			#address-cells = <1>;
-+			#size-cells = <1>;
-+			compatible = "fsl,lx2160a-dcfg", "syscon", "simple-mfd";
- 			reg = <0x0 0x1e00000 0x0 0x10000>;
-+			ranges = <0x0 0x0 0x1e00000 0x10000>;
- 			little-endian;
-+
-+			fspi_clk: clock-controller@900 {
-+				compatible = "fsl,lx2160a-flexspi-clk";
-+				reg = <0x900 0x4>;
-+				#clock-cells = <0>;
-+				clocks = <&clockgen 4 0>;
-+				clock-output-names = "fspi_clk";
-+			};
- 		};
- 
- 		tmu: tmu@1f80000 {
-@@ -778,7 +789,7 @@
- 			      <0x0 0x20000000 0x0 0x10000000>;
- 			reg-names = "fspi_base", "fspi_mmap";
- 			interrupts = <GIC_SPI 25 IRQ_TYPE_LEVEL_HIGH>;
--			clocks = <&clockgen 4 3>, <&clockgen 4 3>;
-+			clocks = <&clockgen 4 3>, <&fspi_clk>;
- 			clock-names = "fspi_en", "fspi";
- 			status = "disabled";
- 		};
--- 
-2.20.1
+Best regards,
+Krzysztof
 
