@@ -2,184 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A2BF2AAC4D
-	for <lists+linux-kernel@lfdr.de>; Sun,  8 Nov 2020 17:52:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C08B2AAC50
+	for <lists+linux-kernel@lfdr.de>; Sun,  8 Nov 2020 17:53:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728760AbgKHQvk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 8 Nov 2020 11:51:40 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33738 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728689AbgKHQvj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 8 Nov 2020 11:51:39 -0500
-Received: from ogabbay-VM.habana-labs.com (unknown [213.57.90.10])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0904122240;
-        Sun,  8 Nov 2020 16:51:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604854298;
-        bh=eZ0k0xIIuX1RrkhqZukVjOvR52MoBHvrBRufhHJIaOE=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=LJyoMEcoMRpctKeEJBcjTU5D5ExeIJaRX3334oJ7OyrIUdG1m1bKkm9VZpYo43IWQ
-         rA6PwVAg82msoGojSR0UJWc/W4uAsw2zcd78EpOPfpRcW3msFfdn/jt6MZNEdpc+xx
-         DMT5xTOK6CoACXPV2hw9mp2DlV1bzYzDxhaj0p1g=
-From:   Oded Gabbay <ogabbay@kernel.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     SW_Drivers@habana.ai, Tomer Tayar <ttayar@habana.ai>
-Subject: [PATCH] habanalabs: Rename hw_queues_mirror to cs_mirror
-Date:   Sun,  8 Nov 2020 18:51:29 +0200
-Message-Id: <20201108165129.13100-3-ogabbay@kernel.org>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20201108165129.13100-1-ogabbay@kernel.org>
-References: <20201108165129.13100-1-ogabbay@kernel.org>
+        id S1728781AbgKHQxC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 8 Nov 2020 11:53:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60086 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728104AbgKHQxB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 8 Nov 2020 11:53:01 -0500
+Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 925C9C0613CF;
+        Sun,  8 Nov 2020 08:53:01 -0800 (PST)
+Received: by mail-ej1-x644.google.com with SMTP id 7so8884153ejm.0;
+        Sun, 08 Nov 2020 08:53:01 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=Rikl1cMUQrKKRfEty9vlE0bbTP/gldAUaSt6ZFA6Ac4=;
+        b=O7ZSLo3dzGjafmpqqFnclreHOVe9FkJWqozL3Ixox4tRNR66EfsvsldQX1ywpxfjsN
+         RxLCV/t8rwjqoS0VNyMR9fAvqEPMRCKifgbUkEpBu4oXxgck+aKQ9vQfihDe31SW7T2+
+         HF9wV5lavJbBkjFH6CL5mrwyIfFsF5B8Q+Sm4Rp5j0ti2oDzuuNc71na6PoL1/31jGTf
+         WYBg/D3Dz3clJFZmKqg7M+Xukf6JxXQKulyUYLP7osdyFrPVBXlNXIg/gRSMcBLLA9sq
+         TOzmPfq0y0Nv4So+3kAdpzo7RU/NUEXay5V1Wl9GmjFupYnCUkQFXnl91YAv/lerJSCq
+         6Z7Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Rikl1cMUQrKKRfEty9vlE0bbTP/gldAUaSt6ZFA6Ac4=;
+        b=OlUrt2vLc3eKwbna8ayh0DL28QpmRWo6RwKDO2aQy7Ug1yPYzgov5XpPykNmBgj0TX
+         Z2qsBZMEgMX0JyNCdUfGRob1NQyRTUVHyndehJ47Zg/5uW0sO/Ge5azcKhiIoDwvD61x
+         dT9A8MJDTfaqExYigKolEUGw5zqJX1p81afJNfKXBsKNFQVrBu/vDzJ9EYs9fnnGv2pj
+         //LNspaF+1PY9iO2ASbmqZNMr8HIIWXG0LZAX96gY6OXO1I/fKyAX/H7StJKdqVFEvOZ
+         Rgv4rbPZ+VlpL/rhNOOeLvzMwa7UVDa+vBjcudbuMZxc71P14XM99xDY3nkGjHvuKnSZ
+         xrbA==
+X-Gm-Message-State: AOAM533OIUr44fedt6CyX7zjBBq7QSUvrn/wF6eSB8ycVR7FWu+od19U
+        PtmFH6usjydv+Yp0gPGflFc=
+X-Google-Smtp-Source: ABdhPJzKeFZ4YDUaRqvql2Gqeb1pkAFCZ/bH4q99bP/i+x+1fPoTwk4Ei85xGYCuw3ehxLZ+6mSYeA==
+X-Received: by 2002:a17:906:74c6:: with SMTP id z6mr11832276ejl.448.1604854380356;
+        Sun, 08 Nov 2020 08:53:00 -0800 (PST)
+Received: from ?IPv6:2a01:110f:b59:fd00:a483:75f7:76d4:f590? ([2a01:110f:b59:fd00:a483:75f7:76d4:f590])
+        by smtp.gmail.com with ESMTPSA id b6sm6684948edu.21.2020.11.08.08.52.58
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 08 Nov 2020 08:52:59 -0800 (PST)
+Subject: Re: [RFC PATCH 1/3] leds: Add driver for QPNP flash led
+To:     =?UTF-8?B?TsOtY29sYXMgRi4gUi4gQS4gUHJhZG8=?= 
+        <nfraprado@protonmail.com>, Pavel Machek <pavel@ucw.cz>,
+        Dan Murphy <dmurphy@ti.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     linux-leds@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        Brian Masney <masneyb@onstation.org>,
+        Luca Weiss <luca@z3ntu.xyz>,
+        Russell King <linux@armlinux.org.uk>,
+        Georgi Djakov <georgi.djakov@linaro.org>,
+        linux-kernel@vger.kernel.org, lkcamp@lists.libreplanetbr.org,
+        andrealmeid@collabora.com
+References: <20201106165737.1029106-1-nfraprado@protonmail.com>
+ <20201106165737.1029106-2-nfraprado@protonmail.com>
+From:   Jacek Anaszewski <jacek.anaszewski@gmail.com>
+Message-ID: <e132bb75-66fb-0cbb-c636-5ef5f279d161@gmail.com>
+Date:   Sun, 8 Nov 2020 17:52:56 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
+MIME-Version: 1.0
+In-Reply-To: <20201106165737.1029106-2-nfraprado@protonmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tomer Tayar <ttayar@habana.ai>
+Hi Nicolas,
 
-Future command submission types might be submitted to HW not via the
-QMAN queues path. However, it would be still required to have the TDR
-mechanism for these CS, and thus the patch renames the TDR fields and
-replaces the hw_queues_ prefix with cs_.
+We have LED flash class framework since 2015. Please refer to the
+following files:
 
-Signed-off-by: Tomer Tayar <ttayar@habana.ai>
-Reviewed-by: Oded Gabbay <ogabbay@kernel.org>
-Signed-off-by: Oded Gabbay <ogabbay@kernel.org>
----
- .../habanalabs/common/command_submission.c     | 18 ++++++++----------
- drivers/misc/habanalabs/common/device.c        |  4 ++--
- drivers/misc/habanalabs/common/habanalabs.h    |  8 ++++----
- drivers/misc/habanalabs/common/hw_queue.c      | 12 ++++++------
- 4 files changed, 20 insertions(+), 22 deletions(-)
+Documentation/leds/leds-class-flash.rst
+Documentation/ABI/testing/sysfs-class-led-flash
+Documentation/devicetree/bindings/leds/common.yaml
+drivers/leds/led-class-flash.c
 
-diff --git a/drivers/misc/habanalabs/common/command_submission.c b/drivers/misc/habanalabs/common/command_submission.c
-index ec014ef39484..516cbaacc03e 100644
---- a/drivers/misc/habanalabs/common/command_submission.c
-+++ b/drivers/misc/habanalabs/common/command_submission.c
-@@ -343,25 +343,24 @@ static void cs_do_release(struct kref *ref)
- 	/* Need to update CI for internal queues */
- 	hl_int_hw_queue_update_ci(cs);
- 
--	spin_lock(&hdev->hw_queues_mirror_lock);
--	/* remove CS from hw_queues mirror list */
-+	/* remove CS from CS mirror list */
-+	spin_lock(&hdev->cs_mirror_lock);
- 	list_del_init(&cs->mirror_node);
--	spin_unlock(&hdev->hw_queues_mirror_lock);
-+	spin_unlock(&hdev->cs_mirror_lock);
- 
- 	/* Don't cancel TDR in case this CS was timedout because we might be
- 	 * running from the TDR context
- 	 */
--	if (!cs->timedout &&
--			hdev->timeout_jiffies != MAX_SCHEDULE_TIMEOUT) {
-+	if (!cs->timedout && hdev->timeout_jiffies != MAX_SCHEDULE_TIMEOUT) {
- 		struct hl_cs *next;
- 
- 		if (cs->tdr_active)
- 			cancel_delayed_work_sync(&cs->work_tdr);
- 
--		spin_lock(&hdev->hw_queues_mirror_lock);
-+		spin_lock(&hdev->cs_mirror_lock);
- 
- 		/* queue TDR for next CS */
--		next = list_first_entry_or_null(&hdev->hw_queues_mirror_list,
-+		next = list_first_entry_or_null(&hdev->cs_mirror_list,
- 						struct hl_cs, mirror_node);
- 
- 		if (next && !next->tdr_active) {
-@@ -370,7 +369,7 @@ static void cs_do_release(struct kref *ref)
- 						hdev->timeout_jiffies);
- 		}
- 
--		spin_unlock(&hdev->hw_queues_mirror_lock);
-+		spin_unlock(&hdev->cs_mirror_lock);
- 	}
- 
- out:
-@@ -534,8 +533,7 @@ void hl_cs_rollback_all(struct hl_device *hdev)
- 		flush_workqueue(hdev->cq_wq[i]);
- 
- 	/* Make sure we don't have leftovers in the H/W queues mirror list */
--	list_for_each_entry_safe(cs, tmp, &hdev->hw_queues_mirror_list,
--				mirror_node) {
-+	list_for_each_entry_safe(cs, tmp, &hdev->cs_mirror_list, mirror_node) {
- 		cs_get(cs);
- 		cs->aborted = true;
- 		dev_warn_ratelimited(hdev->dev, "Killing CS %d.%llu\n",
-diff --git a/drivers/misc/habanalabs/common/device.c b/drivers/misc/habanalabs/common/device.c
-index 348faf31668b..ce0a1270e5ff 100644
---- a/drivers/misc/habanalabs/common/device.c
-+++ b/drivers/misc/habanalabs/common/device.c
-@@ -343,8 +343,8 @@ static int device_early_init(struct hl_device *hdev)
- 	mutex_init(&hdev->send_cpu_message_lock);
- 	mutex_init(&hdev->debug_lock);
- 	mutex_init(&hdev->mmu_cache_lock);
--	INIT_LIST_HEAD(&hdev->hw_queues_mirror_list);
--	spin_lock_init(&hdev->hw_queues_mirror_lock);
-+	INIT_LIST_HEAD(&hdev->cs_mirror_list);
-+	spin_lock_init(&hdev->cs_mirror_lock);
- 	INIT_LIST_HEAD(&hdev->fpriv_list);
- 	mutex_init(&hdev->fpriv_list_lock);
- 	atomic_set(&hdev->in_reset, 0);
-diff --git a/drivers/misc/habanalabs/common/habanalabs.h b/drivers/misc/habanalabs/common/habanalabs.h
-index 40b566c4b791..eb968c30adb9 100644
---- a/drivers/misc/habanalabs/common/habanalabs.h
-+++ b/drivers/misc/habanalabs/common/habanalabs.h
-@@ -1699,8 +1699,8 @@ struct hl_mmu_funcs {
-  * @eq_wq: work queue of event queue for executing work in process context.
-  * @kernel_ctx: Kernel driver context structure.
-  * @kernel_queues: array of hl_hw_queue.
-- * @hw_queues_mirror_list: CS mirror list for TDR.
-- * @hw_queues_mirror_lock: protects hw_queues_mirror_list.
-+ * @cs_mirror_list: CS mirror list for TDR.
-+ * @cs_mirror_lock: protects cs_mirror_list.
-  * @kernel_cb_mgr: command buffer manager for creating/destroying/handling CGs.
-  * @event_queue: event queue for IRQ from CPU-CP.
-  * @dma_pool: DMA pool for small allocations.
-@@ -1810,8 +1810,8 @@ struct hl_device {
- 	struct workqueue_struct		*eq_wq;
- 	struct hl_ctx			*kernel_ctx;
- 	struct hl_hw_queue		*kernel_queues;
--	struct list_head		hw_queues_mirror_list;
--	spinlock_t			hw_queues_mirror_lock;
-+	struct list_head		cs_mirror_list;
-+	spinlock_t			cs_mirror_lock;
- 	struct hl_cb_mgr		kernel_cb_mgr;
- 	struct hl_eq			event_queue;
- 	struct dma_pool			*dma_pool;
-diff --git a/drivers/misc/habanalabs/common/hw_queue.c b/drivers/misc/habanalabs/common/hw_queue.c
-index f9550fcf5500..d1d30fb36410 100644
---- a/drivers/misc/habanalabs/common/hw_queue.c
-+++ b/drivers/misc/habanalabs/common/hw_queue.c
-@@ -578,20 +578,20 @@ int hl_hw_queue_schedule_cs(struct hl_cs *cs)
- 	else if (cs->type == CS_TYPE_COLLECTIVE_WAIT)
- 		hdev->asic_funcs->collective_wait_init_cs(cs);
- 
--	spin_lock(&hdev->hw_queues_mirror_lock);
--	list_add_tail(&cs->mirror_node, &hdev->hw_queues_mirror_list);
-+	spin_lock(&hdev->cs_mirror_lock);
-+	list_add_tail(&cs->mirror_node, &hdev->cs_mirror_list);
- 
- 	/* Queue TDR if the CS is the first entry and if timeout is wanted */
- 	if ((hdev->timeout_jiffies != MAX_SCHEDULE_TIMEOUT) &&
--			(list_first_entry(&hdev->hw_queues_mirror_list,
-+			(list_first_entry(&hdev->cs_mirror_list,
- 					struct hl_cs, mirror_node) == cs)) {
- 		cs->tdr_active = true;
- 		schedule_delayed_work(&cs->work_tdr, hdev->timeout_jiffies);
--		spin_unlock(&hdev->hw_queues_mirror_lock);
--	} else {
--		spin_unlock(&hdev->hw_queues_mirror_lock);
-+
- 	}
- 
-+	spin_unlock(&hdev->cs_mirror_lock);
-+
- 	if (!hdev->cs_active_cnt++) {
- 		struct hl_device_idle_busy_ts *ts;
- 
+Thare are also few LED flash drivers in the tree. Since there seems to
+be boost feature present on the the device then you might want to
+compare drivers/leds/leds-max77693.c with its bindings
+Documentation/devicetree/bindings/mfd/max77693.txt (refer to LED part).
+
+Please also remember to include DT bindings patch to your series.
+
+On 11/6/20 5:58 PM, Nícolas F. R. A. Prado wrote:
+> Add driver for the QPNP flash LED. It works over SPMI and is part of the
+> PM8941 PMIC.
+> 
+> Signed-off-by: Nícolas F. R. A. Prado <nfraprado@protonmail.com>
+> ---
+>   drivers/leds/Kconfig     |    9 +
+>   drivers/leds/Makefile    |    1 +
+>   drivers/leds/leds-qpnp.c | 1351 ++++++++++++++++++++++++++++++++++++++
+>   3 files changed, 1361 insertions(+)
+>   create mode 100644 drivers/leds/leds-qpnp.c
+> 
+
 -- 
-2.17.1
-
+Best regards,
+Jacek Anaszewski
