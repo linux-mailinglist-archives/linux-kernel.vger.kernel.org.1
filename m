@@ -2,84 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0B212AA89D
-	for <lists+linux-kernel@lfdr.de>; Sun,  8 Nov 2020 01:41:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0187A2AA8A0
+	for <lists+linux-kernel@lfdr.de>; Sun,  8 Nov 2020 01:43:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728562AbgKHAlA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Nov 2020 19:41:00 -0500
-Received: from mout.gmx.net ([212.227.17.20]:36341 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726043AbgKHAk7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Nov 2020 19:40:59 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1604796053;
-        bh=mWjJ0DimkQwVS54NM2sHgfMoe5IdgjJ/+4WF1B+qSqk=;
-        h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
-        b=Tw2DfqbjweXEwICfxJl5BtYyA0Uhmhhy5iOAQ5SORJ4kcEUPk+zqw8ClmmOJcSN3Y
-         hYTi5H4+XEA/m6x8kLCEeNVO6KoJemeR42vJ3duqWNlB3qKQQB3jLP77JxmDsCWtjj
-         qadyZ4JMBZyQ57k0YA6tTyhp0LCZ0e6t3wJMKM4o=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from longitude ([37.201.214.162]) by mail.gmx.com (mrgmx104
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1N7zFj-1kEtDK2wGx-01550s; Sun, 08
- Nov 2020 01:40:53 +0100
-From:   =?UTF-8?q?Jonathan=20Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>
-To:     linux-doc@vger.kernel.org
-Cc:     =?UTF-8?q?Jonathan=20Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>,
-        Jan Kara <jack@suse.com>, Jonathan Corbet <corbet@lwn.net>,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] docs: filesystems: Reduce ext2.rst to one top-level heading
-Date:   Sun,  8 Nov 2020 01:40:45 +0100
-Message-Id: <20201108004045.1378676-1-j.neuschaefer@gmx.net>
-X-Mailer: git-send-email 2.28.0
+        id S1728716AbgKHAnO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Nov 2020 19:43:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51710 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726043AbgKHAnO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 7 Nov 2020 19:43:14 -0500
+Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5390C0613CF;
+        Sat,  7 Nov 2020 16:43:13 -0800 (PST)
+Received: by mail-lj1-x242.google.com with SMTP id y25so4784048lja.9;
+        Sat, 07 Nov 2020 16:43:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=dCChJ5ZSl/RZr19brXxPue8N9XgRog2mo+oIzDL+zH4=;
+        b=Q10C4iB8VHfgvPEzzHV9LVPwrpZ0u4XhXLTWmlmgvRtJRTOj5MfM5/IkFCLQ3fkoct
+         zLkTBwxMBSGpCn/BqxFswp7iNnnXJKAALGkTxYUcGXOcICeUKzdLwvZVWFwUh8dhyYLl
+         R0zLIwJvGJ1wZOeq2GfWkntRyLT9hrVdBrJzEV5uMC5u2Q6OCuxhbzcVLqsXjYhjcPQh
+         MNqkJSH2vlKJMKN/pJnu68Ip7D8uGtnxmr9/8PeCrU6+PlPzJSgOcRK0id8SI3QlJyHc
+         +ahyiyUv2warRJDyMQ6SLgyU2kCBgvCWjZ4o6w3y/2EHYKG/5B827ozjotYJHjzk34fJ
+         +OfA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=dCChJ5ZSl/RZr19brXxPue8N9XgRog2mo+oIzDL+zH4=;
+        b=VEiVxQZGFBj/Ox0RCxLRxzZe1o6QRD016ESnJ24EdtY5d7SIjwJvkgbtJ08MKbtIK2
+         ritgeb1Zsd37FMQg4vo5l4593ZNVV6vUrX5GFlEHUDkiUoCiR9e7DIXgUb2u81+kSwkk
+         RUgrTFyvloVzA/zmrkwBnYLg/NgJ4uBskPhCPUjYvWiyZuW5K21JVE5hjdkdOGWwQYIf
+         qfcjOPP2vpzcfj3aO6nHohsNstRJwoFpfPpWwtBjojz6GDbaqp+Yv/AfNmSeTn820iKV
+         WPbcKiikifzOuq0IOYGcUax7wrHURGNKkbvZHXSXRyi0IyTUbLwvhWHtnYMyHJ+4lb0r
+         INrg==
+X-Gm-Message-State: AOAM532MY+Xqmx38a+i1s5lkACEUcWf63KXQc5Yj2px6QDSfZ/u+LDs+
+        rmg33BC4CKDXr9t9jyPjzOvqA9qn10308AvLomE=
+X-Google-Smtp-Source: ABdhPJwMxxHJGUxG1SdOzMLokykLWftsgHLqhmv2rMK659iUfYWKxUK5Hz8YGs5BNWYIbEHay/JZzZS8xw8NqFXuTKg=
+X-Received: by 2002:a2e:5d4:: with SMTP id 203mr3381837ljf.137.1604796192202;
+ Sat, 07 Nov 2020 16:43:12 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:FrMulFltGVWOjEpimVwcelAsU54AfJhW7agEtWJr3SUQ6i/FENY
- IsEZuhmLJmtq7HLKvlDZTC7GErNatFT+tBBLwkdNPQwuXhFNMk5VKBDzD63ahnJhc4jmA8b
- 52gqZkKIFj4EShMxt/q6jzJQG+QulT02AP0U0i1zDWkth5p9z+/pSjHWrjcqfCdZkbB+5v6
- JYSPDXK+74a3nzHNBuF2Q==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:Yxo3+nVz7NI=:qnGx4iHfeeuwuMGNDE7hYE
- e5MJvWmsFUTzJM9TqZuW8vfel8ty+P1Daswlu7l369/PSvLytbMQjhr5XHzQAj5WuU7WiyDBe
- K59LizNUBEwICICgg08attubAoHTTZ5WjRS9Mw1BwWQmLo2QJMXKa28joR0r/v42Xyb+Ecd/B
- rvtsG1eAnyP8RiVrgUo6o4T8lqFu2YGKSbL0XMGYR1vEm9KScSf8+NOelaLCuFHLedchBV86m
- p/RpFu8gg9j7OgG149R2qbK+/JabqHc//Xdmu1oQEvYCgqvGPldr3kyAVRM4lSHq1UEcUyUZU
- 2GzPxYG/DM236++Rb7WfffuUNyDweeZup8rfJ4CesUdSvL3orPq+plMrkU8SAXHLWNiBynNeI
- rY27V9l2VecvbWlePW9mh8SYHFj48SlhTxG+42ez5Nt8hZ4X/EcELOgXDv669/pw3FtSQyIhR
- aJFNg21fl6r/iDWoJYWMWyTuDx/pE+szsu/wfHXlfkPhlZPxg4u4DPVd7RewxvcE4oGlnaaZM
- sTm86F/Q3BOhFh0QEP7PLB0hUbpD7aFTvn+fULqdPtEMVPODT02cwOx3s+2CHLQU2OGS+QoH8
- H+I5tyomYIo9HBG+a8GrjiNtLW3drEjOUb7d9tteTfFvPLXn+xFpvc/Jz5+KGUsev1KR8sXqY
- Z2/g4R6GBYuOQbY4rYQIUyd8RGjX/gFORfSiyfsfXak9fTw1IZDsa3iUzq5ki+jClwhqXgGZh
- iOstyHJsykJZDlEdq7wk9xAu52JcVbG5BcdXVhYB8InVHiFMAQIj27nTn+IliIpiFXHM9msDY
- LxFSQzvpCvFVKPZUQBicneRyEkXhAbxF/AnZXngpAUK9vzenMGt8pe9e/EyE9DsO+Uv4XXmJO
- ifdk5e8KI7CscBzCHJcUPh8h3uNgKw9IJYdqYEUH4=
+References: <1604644960-48378-1-git-send-email-dong.menglong@zte.com.cn> <20201107154825.7e878d9a@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20201107154825.7e878d9a@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+From:   Menglong Dong <menglong8.dong@gmail.com>
+Date:   Sun, 8 Nov 2020 08:42:58 +0800
+Message-ID: <CADxym3ZdNxB2p+QOuJq0FacHLbobMNSgOrYqZte_FBLfXsh+Qw@mail.gmail.com>
+Subject: Re: [PATCH] net: ipv4: remove redundant initialization in inet_rtm_deladdr
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     davem@davemloft.net, kuznet@ms2.inr.ac.ru, yoshfuji@linux-ipv6.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Menglong Dong <dong.menglong@zte.com.cn>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This prevents the other headings like "Options" and "Specification" from
-leaking out and being listed separately in the table of contents.
+Dear Jakub,
 
-Signed-off-by: Jonathan Neusch=C3=A4fer <j.neuschaefer@gmx.net>
-=2D--
- Documentation/filesystems/ext2.rst | 1 +
- 1 file changed, 1 insertion(+)
+On Sun, Nov 8, 2020 at 7:48 AM Jakub Kicinski <kuba@kernel.org> wrote:
+>
+> On Fri,  6 Nov 2020 01:42:37 -0500 menglong8.dong@gmail.com wrote:
+> > From: Menglong Dong <dong.menglong@zte.com.cn>
+> >
+> > The initialization for 'err' with '-EINVAL' is redundant and
+> > can be removed, as it is updated soon.
+> >
+> > Signed-off-by: Menglong Dong <dong.menglong@zte.com.cn>
+>
+> How many changes like this are there in the kernel right now?
+>
+> I'm afraid that if there are too many it's not worth the effort.
+>
+> Also - what tool do you use to find those, we need to make sure new
+> instances don't get into the tree.
+>
 
-diff --git a/Documentation/filesystems/ext2.rst b/Documentation/filesystem=
-s/ext2.rst
-index d83dbbb162e20..c2fce22cfd035 100644
-=2D-- a/Documentation/filesystems/ext2.rst
-+++ b/Documentation/filesystems/ext2.rst
-@@ -1,6 +1,7 @@
- .. SPDX-License-Identifier: GPL-2.0
+I didn't use any tools. Maybe some general tools, such as kw,
+coverity, coccicheck,
+are able to find these changes(as far as I know, they can).
 
+In fact, I find these changes by my eyes. I believe 'err' is the most
+likely victim
+and checked every usage of it in 'net' directory. Here are all the
+changes I found,
+and I think there won't be too many.
 
-+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D
- The Second Extended Filesystem
- =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D
-
-=2D-
-2.28.0
-
+Cheers,
+Menglong Dong
