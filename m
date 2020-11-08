@@ -2,98 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92F212AAD9F
-	for <lists+linux-kernel@lfdr.de>; Sun,  8 Nov 2020 22:18:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FB2C2AADA2
+	for <lists+linux-kernel@lfdr.de>; Sun,  8 Nov 2020 22:18:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728853AbgKHVSQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 8 Nov 2020 16:18:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44410 "EHLO
+        id S1728910AbgKHVSa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 8 Nov 2020 16:18:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44448 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727570AbgKHVSP (ORCPT
+        with ESMTP id S1728873AbgKHVS3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 8 Nov 2020 16:18:15 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31E4BC0613CF;
-        Sun,  8 Nov 2020 13:18:15 -0800 (PST)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1604870291;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=WLr6jSvCYWuNA0ltbN0LGAoOd+LlXioZ9NtNTF1g6Q8=;
-        b=LsVEhYlyqxlkC9Fj/a5ogNdP4GBaq7NgJaRBgD+F8LKyL/eUXB24hoEoRXxcfp8yJH3xl+
-        y3kgvoAUAxmMAj0o4uNN1bf3dP7NsTBzZx6+wAtqkOLf9GFxZj8q0tlgnWOvA85AgZUOSF
-        eBNeYPr5/SO45fI74YNQvKurKx45i2EuqOm+epEl6Wn2x50RCuc0tyv23+v1TkAkO/mImM
-        Q+lIILRqqC7gFlcrAj7wP9JNtc9BQY3A/+eoaQmE+6IqoLDdfGXVT9WnI+QjtccfSvK1qa
-        xVbwYJezU4UwPGLFtICxpvq0CccXhvP/H/837ckI3XbCMjvMpLrRC/DxYGashw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1604870291;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=WLr6jSvCYWuNA0ltbN0LGAoOd+LlXioZ9NtNTF1g6Q8=;
-        b=iXtAMBL5+7mmU80vLPpJBjYUaK92bfGd8UDxruSkd6KVFY2LsbxjTWXRf7eNk6v11hLS3c
-        sZs/oIqKTY4RRuAg==
-To:     Jason Gunthorpe <jgg@nvidia.com>,
-        "Tian\, Kevin" <kevin.tian@intel.com>
-Cc:     "Jiang\, Dave" <dave.jiang@intel.com>,
-        Bjorn Helgaas <helgaas@kernel.org>,
-        "vkoul\@kernel.org" <vkoul@kernel.org>,
-        "Dey\, Megha" <megha.dey@intel.com>,
-        "maz\@kernel.org" <maz@kernel.org>,
-        "bhelgaas\@google.com" <bhelgaas@google.com>,
-        "alex.williamson\@redhat.com" <alex.williamson@redhat.com>,
-        "Pan\, Jacob jun" <jacob.jun.pan@intel.com>,
-        "Raj\, Ashok" <ashok.raj@intel.com>,
-        "Liu\, Yi L" <yi.l.liu@intel.com>,
-        "Lu\, Baolu" <baolu.lu@intel.com>,
-        "Kumar\, Sanjay K" <sanjay.k.kumar@intel.com>,
-        "Luck\, Tony" <tony.luck@intel.com>,
-        "jing.lin\@intel.com" <jing.lin@intel.com>,
-        "Williams\, Dan J" <dan.j.williams@intel.com>,
-        "kwankhede\@nvidia.com" <kwankhede@nvidia.com>,
-        "eric.auger\@redhat.com" <eric.auger@redhat.com>,
-        "parav\@mellanox.com" <parav@mellanox.com>,
-        "rafael\@kernel.org" <rafael@kernel.org>,
-        "netanelg\@mellanox.com" <netanelg@mellanox.com>,
-        "shahafs\@mellanox.com" <shahafs@mellanox.com>,
-        "yan.y.zhao\@linux.intel.com" <yan.y.zhao@linux.intel.com>,
-        "pbonzini\@redhat.com" <pbonzini@redhat.com>,
-        "Ortiz\, Samuel" <samuel.ortiz@intel.com>,
-        "Hossain\, Mona" <mona.hossain@intel.com>,
-        "dmaengine\@vger.kernel.org" <dmaengine@vger.kernel.org>,
-        "linux-kernel\@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-pci\@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        "kvm\@vger.kernel.org" <kvm@vger.kernel.org>
-Subject: Re: [PATCH v4 06/17] PCI: add SIOV and IMS capability detection
-In-Reply-To: <20201106131415.GT2620339@nvidia.com>
-References: <20201030224534.GN2620339@nvidia.com> <ec52cedf-3a99-5ca1-ffbb-d8f8c4f62395@intel.com> <20201102132158.GA3352700@nvidia.com> <MWHPR11MB1645675ED03E23674A705DF68C110@MWHPR11MB1645.namprd11.prod.outlook.com> <20201103124351.GM2620339@nvidia.com> <MWHPR11MB164544C9CFCC3F162C1C6FC18CEF0@MWHPR11MB1645.namprd11.prod.outlook.com> <20201104124017.GW2620339@nvidia.com> <MWHPR11MB1645862A8F7CF7FB8DD011778CEF0@MWHPR11MB1645.namprd11.prod.outlook.com> <20201104135415.GX2620339@nvidia.com> <MWHPR11MB1645524BDEDF8899914F32AE8CED0@MWHPR11MB1645.namprd11.prod.outlook.com> <20201106131415.GT2620339@nvidia.com>
-Date:   Sun, 08 Nov 2020 22:18:11 +0100
-Message-ID: <87k0uvk0oc.fsf@nanos.tec.linutronix.de>
+        Sun, 8 Nov 2020 16:18:29 -0500
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BA28C0613CF;
+        Sun,  8 Nov 2020 13:18:29 -0800 (PST)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CTn6T5kbKz9sVK;
+        Mon,  9 Nov 2020 08:18:25 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1604870307;
+        bh=uc9QUdHCOAalQw0hmL8RNDtiCYmgWkojlrSCnNbcXuU=;
+        h=Date:From:To:Cc:Subject:From;
+        b=s6c6HIB/mZuqdSEzABkkgBhh/IuUTgYSOeANb+pkISd1ZjJie6XkJMaUV2sBmNO5i
+         npwkpPa+qGiQzszbaS29XTmFIWRMRK8nDkkzhRKgHvI3y17V9v1w5u5jMvI06imulA
+         58pGVDQ45lZABuLjnSTytFxWw9U2Nhn0SO8F21smbfbVsZ4quT5FNx5y7aJ2MUerDd
+         ESE3h08ZBAqCKvedUakmIg6Wr47xxzdI+Jd/ybZOPxPJTVgC8hbEGeuTPvs8qz7c6Z
+         z3ErIWLRnx/KsDs5/gwyOWcNSnnzZD2IdwN2BNTI1mjnpM7dHIiT5qH2Drw794xPE8
+         JxE+IuJgSSBYA==
+Date:   Mon, 9 Nov 2020 08:18:24 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Palmer Dabbelt <palmer@dabbelt.com>, Paul Walmsley <paul@pwsan.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: Signed-off-by missing for commit in the risc-v tree
+Message-ID: <20201109081824.503b61c6@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: multipart/signed; boundary="Sig_/IE_R+RBZcBsTAw5q2MFFgTc";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 06 2020 at 09:14, Jason Gunthorpe wrote:
-> On Fri, Nov 06, 2020 at 09:48:34AM +0000, Tian, Kevin wrote:
-> For instance you could put a "disable IMS" flag in the ACPI tables, in
-> the config space of the emuulated root port, or any other areas that
-> clearly belong to the platform.
->
-> The OS logic would be
->  - If no IMS information found then use IMS (Bare metal)
->  - If the IMS disable flag is found then
->    - If (future) hypercall available and the OS knows how to use it
->      then use IMS
->    - If no hypercall found, or no OS knowledge, fail IMS
+--Sig_/IE_R+RBZcBsTAw5q2MFFgTc
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-That does not work because an older hypervisor would not have that
-disable flag and the guest kernel would assume to be on bare metal (if
-no other indicators are there).
+Hi all,
 
-Thanks
+Commit
 
-        tglx
+  7cc7b0d7528b ("RISC-V: Add kernel image sections to the resource tree")
+
+is missing a Signed-off-by from its committer.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/IE_R+RBZcBsTAw5q2MFFgTc
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl+oYKAACgkQAVBC80lX
+0Gx+Ngf+NyD/ACelINPxHmE1fP2R43DDhBRNJRFnzdwFn3LIltWBfAqINAU6AFLx
+40M6Io+H/AD/JaSao+/fFOqM/Ehv1gl0/7BaPiKy8ETn8Tmh7h+n6mJm5CHQe1Y9
+wph/GFomO0gvn6pz227SA2FVQ1Bj5Iv4GkSjVJ+nFXztngJlldo6Ryy0qeU2EEGr
+Spd6CLUfCzx/BJ6xr92xHqHg3isUrsNHqhdX0RwgyauI7Zltea40sMu5eJtFVPbs
+BOi9aUr9lBYsZf01PjPfIZ1lsvRQJTesmXGu38T34u9g+f5ub0oIlVUiw1lK+rzi
+3nuz1ynWQb32p0e3UWfGftv65IEBKw==
+=IWDv
+-----END PGP SIGNATURE-----
+
+--Sig_/IE_R+RBZcBsTAw5q2MFFgTc--
