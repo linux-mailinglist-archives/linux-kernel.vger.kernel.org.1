@@ -2,26 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E9122AAAC3
-	for <lists+linux-kernel@lfdr.de>; Sun,  8 Nov 2020 12:59:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E436D2AAAC6
+	for <lists+linux-kernel@lfdr.de>; Sun,  8 Nov 2020 13:04:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728303AbgKHL7J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 8 Nov 2020 06:59:09 -0500
-Received: from ns3.fnarfbargle.com ([103.4.19.87]:58292 "EHLO
-        ns3.fnarfbargle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726607AbgKHL7I (ORCPT
+        id S1728238AbgKHMEY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 8 Nov 2020 07:04:24 -0500
+Received: from mailrelay4-2.pub.mailoutpod1-cph3.one.com ([46.30.212.3]:59702
+        "EHLO mailrelay4-2.pub.mailoutpod1-cph3.one.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726607AbgKHMEX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 8 Nov 2020 06:59:08 -0500
-Received: from srv.home ([10.8.0.1] ident=heh2116)
-        by ns3.fnarfbargle.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.84_2)
-        (envelope-from <brad@fnarfbargle.com>)
-        id 1kbjJt-0001jb-JT; Sun, 08 Nov 2020 19:57:17 +0800
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=fnarfbargle.com; s=mail;
-        h=Content-Transfer-Encoding:Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject; bh=nE/mtt8Vq3dIra7/cglcl0QGRIL/RAyj6nZXgAEAhTo=;
-        b=zLsCliUaue4uS8y9Msc3CYJ2lWF0G94SG8Djko6Ij/EOpXmF+EIbILg20SnG7x7cfaZQkKAUApPcDENWjU1QlhiHvhn8cne3+A+gOpRCwJ392xb/QrS3ZaXTSVoZKRu/mOaHyNpRdVznDfFpySe37CsWJJQ2tmwG7mMBbJLHneA=;
+        Sun, 8 Nov 2020 07:04:23 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bitmath.org; s=20191106;
+        h=content-transfer-encoding:content-type:in-reply-to:mime-version:date:
+         message-id:from:references:cc:to:subject:from;
+        bh=cK24sQlDTwMS0988AqreL/OWkybNBUC25kHUvCli+HA=;
+        b=kams2iYmdueo/9rlztHCPnuUJfdIS1d/rrC/v0zF5KzH9h9TCEecofobzM998Y95gzuJhKYr0ee9C
+         ehg4X/k7RSvfU73+Rkyo2B6YegYS7u/xh+iNeXTY+Z1QHMFgjXR7ri/IjfXQ9jySAfpuG2XSloRMHh
+         cYlu4KLFyprQIEfzpUFpbGGKZZyc46OQBYfKWGBqFok22JjUxFNCz7D/5ksxvSBMDRgXQkbE06M/Xm
+         +4kvHfAQa8FUdPAxUczsSLsnu7oEqL5/XfzRjdmXTQdregCkjRNap3HD0zfWJ5ZkzT4Alhswn8NBjh
+         Iol9yVTDZHGhZaNUku6UL+oIccj5S4Q==
+X-HalOne-Cookie: 893d880919a1bc3da693fb6cde4714added48034
+X-HalOne-ID: 887ff14d-21ba-11eb-bb7e-d0431ea8bb10
+Received: from [192.168.19.13] (h-155-4-128-97.na.cust.bahnhof.se [155.4.128.97])
+        by mailrelay4.pub.mailoutpod1-cph3.one.com (Halon) with ESMTPSA
+        id 887ff14d-21ba-11eb-bb7e-d0431ea8bb10;
+        Sun, 08 Nov 2020 12:04:20 +0000 (UTC)
 Subject: Re: [PATCH v3] applesmc: Re-work SMC comms
-To:     Henrik Rydberg <rydberg@bitmath.org>,
+To:     Brad Campbell <brad@fnarfbargle.com>,
         Andreas Kemnade <andreas@kemnade.info>
 Cc:     Arnd Bergmann <arnd@arndb.de>, linux-hwmon@vger.kernel.org,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
@@ -38,269 +46,74 @@ References: <70331f82-35a1-50bd-685d-0b06061dd213@fnarfbargle.com>
  <57057d07-d3a0-8713-8365-7b12ca222bae@fnarfbargle.com>
  <41909045-9486-78d9-76c2-73b99a901b83@bitmath.org>
  <20201108101429.GA28460@mars.bitmath.org>
-From:   Brad Campbell <brad@fnarfbargle.com>
-Message-ID: <bdabe861-8717-8948-80a0-ca2173c2e22a@fnarfbargle.com>
-Date:   Sun, 8 Nov 2020 22:57:17 +1100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.2.2
+ <bdabe861-8717-8948-80a0-ca2173c2e22a@fnarfbargle.com>
+From:   Henrik Rydberg <rydberg@bitmath.org>
+Message-ID: <af08ee3b-313d-700c-7e70-c57d20d3be5d@bitmath.org>
+Date:   Sun, 8 Nov 2020 13:04:32 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-In-Reply-To: <20201108101429.GA28460@mars.bitmath.org>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <bdabe861-8717-8948-80a0-ca2173c2e22a@fnarfbargle.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/11/20 9:14 pm, Henrik Rydberg wrote:
-> On Sun, Nov 08, 2020 at 09:35:28AM +0100, Henrik Rydberg wrote:
->> Hi Brad,
->>
->> On 2020-11-08 02:00, Brad Campbell wrote:
->>> G'day Henrik,
+On 2020-11-08 12:57, Brad Campbell wrote:
+> On 8/11/20 9:14 pm, Henrik Rydberg wrote:
+>> On Sun, Nov 08, 2020 at 09:35:28AM +0100, Henrik Rydberg wrote:
+>>> Hi Brad,
 >>>
->>> I noticed you'd also loosened up the requirement for SMC_STATUS_BUSY in read_smc(). I assume
->>> that causes problems on the early Macbook. This is revised on the one sent earlier.
->>> If you could test this on your Air1,1 it'd be appreciated.
+>>> On 2020-11-08 02:00, Brad Campbell wrote:
+>>>> G'day Henrik,
+>>>>
+>>>> I noticed you'd also loosened up the requirement for SMC_STATUS_BUSY in read_smc(). I assume
+>>>> that causes problems on the early Macbook. This is revised on the one sent earlier.
+>>>> If you could test this on your Air1,1 it'd be appreciated.
+>>>
+>>> No, I managed to screw up the patch; you can see that I carefully added the
+>>> same treatment for the read argument, being unsure if the BUSY state would
+>>> remain during the AVAILABLE data phase. I can check that again, but
+>>> unfortunately the patch in this email shows the same problem.
+>>>
+>>> I think it may be worthwhile to rethink the behavior of wait_status() here.
+>>> If one machine shows no change after a certain status bit change, then
+>>> perhaps the others share that behavior, and we are waiting in vain. Just
+>>> imagine how many years of cpu that is, combined. ;-)
 >>
->> No, I managed to screw up the patch; you can see that I carefully added the
->> same treatment for the read argument, being unsure if the BUSY state would
->> remain during the AVAILABLE data phase. I can check that again, but
->> unfortunately the patch in this email shows the same problem.
+>> Here is a modification along that line.
 >>
->> I think it may be worthwhile to rethink the behavior of wait_status() here.
->> If one machine shows no change after a certain status bit change, then
->> perhaps the others share that behavior, and we are waiting in vain. Just
->> imagine how many years of cpu that is, combined. ;-)
+>> Compared to your latest version, this one has wait_status() return the
+>> actual status on success. Instead of waiting for BUSY, it waits for
+>> the other status bits, and checks BUSY afterwards. So as not to wait
+>> unneccesarily, the udelay() is placed together with the single
+>> outb(). The return value of send_byte_data() is augmented with
+>> -EAGAIN, which is then used in send_command() to create the resend
+>> loop.
+>>
+>> I reach 41 reads per second on the MBA1,1 with this version, which is
+>> getting close to the performance prior to the problems.
 > 
-> Here is a modification along that line.
+> G'day Henrik,
 > 
-> Compared to your latest version, this one has wait_status() return the
-> actual status on success. Instead of waiting for BUSY, it waits for
-> the other status bits, and checks BUSY afterwards. So as not to wait
-> unneccesarily, the udelay() is placed together with the single
-> outb(). The return value of send_byte_data() is augmented with
-> -EAGAIN, which is then used in send_command() to create the resend
-> loop.
+> I like this one. It's slower on my laptop (40 rps vs 50 on the MacbookPro11,1) and the same 17 rps on the iMac 12,2 but it's as reliable
+> and if it works for both of yours then I think it's a winner. I can't really diagnose the iMac properly as I'm 2,800KM away and have
+> nobody to reboot it if I kill it. 5.7.2 gives 20 rps, so 17 is ok for me.
 > 
-> I reach 41 reads per second on the MBA1,1 with this version, which is
-> getting close to the performance prior to the problems.
+> Andreas, could I ask you to test this one?
+> 
+> Odd my original version worked on your Air3,1 and the other 3 machines without retry.
+> I wonder how many commands require retries, how many retires are actually required, and what we are going wrong on the Air1,1 that requires
+> one or more retries.
+> 
+> I just feels like a brute force approach because there's something we're missing.
 
-G'day Henrik,
+I would think you are right. There should be a way to follow the status 
+changes in realtime, so one can determine handshake and processing from 
+that information. At least, with this change, we are making the blunt 
+instrument a little smaller.
 
-I like this one. It's slower on my laptop (40 rps vs 50 on the MacbookPro11,1) and the same 17 rps on the iMac 12,2 but it's as reliable
-and if it works for both of yours then I think it's a winner. I can't really diagnose the iMac properly as I'm 2,800KM away and have
-nobody to reboot it if I kill it. 5.7.2 gives 20 rps, so 17 is ok for me.
-
-Andreas, could I ask you to test this one?
-
-Odd my original version worked on your Air3,1 and the other 3 machines without retry.
-I wonder how many commands require retries, how many retires are actually required, and what we are going wrong on the Air1,1 that requires
-one or more retries. 
-
-I just feels like a brute force approach because there's something we're missing.
-
-> From b4405457f4ba07cff7b7e4f48c47668bee176a25 Mon Sep 17 00:00:00 2001
-> From: Brad Campbell <brad@fnarfbargle.com>
-> Date: Sun, 8 Nov 2020 12:00:03 +1100
-> Subject: [PATCH] hwmon: (applesmc) Re-work SMC comms
-> 
-> Commit fff2d0f701e6 ("hwmon: (applesmc) avoid overlong udelay()")
-> introduced an issue whereby communication with the SMC became
-> unreliable with write errors like :
-> 
-> [  120.378614] applesmc: send_byte(0x00, 0x0300) fail: 0x40
-> [  120.378621] applesmc: LKSB: write data fail
-> [  120.512782] applesmc: send_byte(0x00, 0x0300) fail: 0x40
-> [  120.512787] applesmc: LKSB: write data fail
-> 
-> The original code appeared to be timing sensitive and was not reliable
-> with the timing changes in the aforementioned commit.
-> 
-> This patch re-factors the SMC communication to remove the timing
-> dependencies and restore function with the changes previously
-> committed.
-> 
-> Tested on : MacbookAir6,2 MacBookPro11,1 iMac12,2, MacBookAir1,1,
-> MacBookAir3,1
-> 
-> Fixes: fff2d0f701e6 ("hwmon: (applesmc) avoid overlong udelay()")
-> Reported-by: Andreas Kemnade <andreas@kemnade.info>
-> Tested-by: Andreas Kemnade <andreas@kemnade.info> # MacBookAir6,2
-> Acked-by: Arnd Bergmann <arnd@arndb.de>
-> Signed-off-by: Brad Campbell <brad@fnarfbargle.com>
-> Signed-off-by: Henrik Rydberg <rydberg@bitmath.org>
-> 
-> ---
-> Changelog : 
-> v1 : Inital attempt
-> v2 : Address logic and coding style
-> v3 : Removed some debug hangover. Added tested-by. Modifications for MacBookAir1,1
-> v4 : Do not expect busy state to appear without other state changes
-> 
-> diff --git a/drivers/hwmon/applesmc.c b/drivers/hwmon/applesmc.c
-> index a18887990f4a..ea7c66d5788e 100644
-> --- a/drivers/hwmon/applesmc.c
-> +++ b/drivers/hwmon/applesmc.c
-> @@ -32,6 +32,7 @@
->  #include <linux/hwmon.h>
->  #include <linux/workqueue.h>
->  #include <linux/err.h>
-> +#include <linux/bits.h>
->  
->  /* data port used by Apple SMC */
->  #define APPLESMC_DATA_PORT	0x300
-> @@ -42,6 +43,11 @@
->  
->  #define APPLESMC_MAX_DATA_LENGTH 32
->  
-> +/* Apple SMC status bits */
-> +#define SMC_STATUS_AWAITING_DATA  BIT(0) /* SMC has data waiting */
-> +#define SMC_STATUS_IB_CLOSED      BIT(1) /* Will ignore any input */
-> +#define SMC_STATUS_BUSY           BIT(2) /* Command in progress */
-> +
->  /* wait up to 128 ms for a status change. */
->  #define APPLESMC_MIN_WAIT	0x0010
->  #define APPLESMC_RETRY_WAIT	0x0100
-> @@ -151,65 +157,78 @@ static unsigned int key_at_index;
->  static struct workqueue_struct *applesmc_led_wq;
->  
->  /*
-> - * wait_read - Wait for a byte to appear on SMC port. Callers must
-> - * hold applesmc_lock.
-> + * Wait for specific status bits with a mask on the SMC
-> + * Used before and after writes, and before reads
-> + * On success, returns the full status
-> + * On failure, returns a negative error
->   */
-> -static int wait_read(void)
-> +
-> +static int wait_status(u8 val, u8 mask)
->  {
->  	unsigned long end = jiffies + (APPLESMC_MAX_WAIT * HZ) / USEC_PER_SEC;
->  	u8 status;
->  	int us;
->  
->  	for (us = APPLESMC_MIN_WAIT; us < APPLESMC_MAX_WAIT; us <<= 1) {
-> -		usleep_range(us, us * 16);
->  		status = inb(APPLESMC_CMD_PORT);
-> -		/* read: wait for smc to settle */
-> -		if (status & 0x01)
-> -			return 0;
-> +		if ((status & mask) == val)
-> +			return status;
->  		/* timeout: give up */
->  		if (time_after(jiffies, end))
->  			break;
-> +		usleep_range(us, us * 16);
->  	}
-> -
-> -	pr_warn("wait_read() fail: 0x%02x\n", status);
->  	return -EIO;
->  }
->  
->  /*
-> - * send_byte - Write to SMC port, retrying when necessary. Callers
-> + * send_byte_data - Write to SMC data port. Callers
->   * must hold applesmc_lock.
-> + * Parameter skip must be true on the last write of any
-> + * command or it'll time out.
->   */
-> -static int send_byte(u8 cmd, u16 port)
-> +
-> +static int send_byte_data(u8 cmd, u16 port, bool skip)
->  {
-> -	u8 status;
-> -	int us;
-> -	unsigned long end = jiffies + (APPLESMC_MAX_WAIT * HZ) / USEC_PER_SEC;
-> +	int status;
->  
-> +	status = wait_status(0, SMC_STATUS_IB_CLOSED);
-> +	if (status < 0)
-> +		return status;
->  	outb(cmd, port);
-> -	for (us = APPLESMC_MIN_WAIT; us < APPLESMC_MAX_WAIT; us <<= 1) {
-> -		usleep_range(us, us * 16);
-> -		status = inb(APPLESMC_CMD_PORT);
-> -		/* write: wait for smc to settle */
-> -		if (status & 0x02)
-> -			continue;
-> -		/* ready: cmd accepted, return */
-> -		if (status & 0x04)
-> -			return 0;
-> -		/* timeout: give up */
-> -		if (time_after(jiffies, end))
-> -			break;
-> -		/* busy: long wait and resend */
-> -		udelay(APPLESMC_RETRY_WAIT);
-> -		outb(cmd, port);
-> -	}
-> +	udelay(APPLESMC_MIN_WAIT);
-> +	status = wait_status(0, SMC_STATUS_IB_CLOSED);
-> +	if (status < 0)
-> +		return status;
-> +	if (skip || (status & SMC_STATUS_BUSY))
-> +		return 0;
-> +	return -EAGAIN;
-> +}
->  
-> -	pr_warn("send_byte(0x%02x, 0x%04x) fail: 0x%02x\n", cmd, port, status);
-> -	return -EIO;
-> +static int send_byte(u8 cmd, u16 port)
-> +{
-> +	return send_byte_data(cmd, port, false);
->  }
->  
-> +/*
-> + * send_command - Write a command to the SMC. Callers must hold applesmc_lock.
-> + * If SMC is in undefined state, any new command write resets the state machine.
-> + */
-> +
->  static int send_command(u8 cmd)
->  {
-> -	return send_byte(cmd, APPLESMC_CMD_PORT);
-> +	int ret;
-> +	int i;
-> +
-> +	for (i = 0; i < 16; i++) {
-> +		ret = send_byte(cmd, APPLESMC_CMD_PORT);
-> +		if (!ret)
-> +			return ret;
-> +		if (ret != -EAGAIN)
-> +			break;
-> +		usleep_range(APPLESMC_MIN_WAIT, APPLESMC_MIN_WAIT * 16);
-> +	}
-> +	return -EIO;
->  }
->  
->  static int send_argument(const char *key)
-> @@ -239,7 +258,8 @@ static int read_smc(u8 cmd, const char *key, u8 *buffer, u8 len)
->  	}
->  
->  	for (i = 0; i < len; i++) {
-> -		if (wait_read()) {
-> +		if (wait_status(SMC_STATUS_AWAITING_DATA,
-> +					SMC_STATUS_AWAITING_DATA | SMC_STATUS_IB_CLOSED) < 0) {
->  			pr_warn("%.4s: read data[%d] fail\n", key, i);
->  			return -EIO;
->  		}
-> @@ -250,7 +270,7 @@ static int read_smc(u8 cmd, const char *key, u8 *buffer, u8 len)
->  	for (i = 0; i < 16; i++) {
->  		udelay(APPLESMC_MIN_WAIT);
->  		status = inb(APPLESMC_CMD_PORT);
-> -		if (!(status & 0x01))
-> +		if (!(status & SMC_STATUS_AWAITING_DATA))
->  			break;
->  		data = inb(APPLESMC_DATA_PORT);
->  	}
-> @@ -275,7 +295,7 @@ static int write_smc(u8 cmd, const char *key, const u8 *buffer, u8 len)
->  	}
->  
->  	for (i = 0; i < len; i++) {
-> -		if (send_byte(buffer[i], APPLESMC_DATA_PORT)) {
-> +		if (send_byte_data(buffer[i], APPLESMC_DATA_PORT, i == len - 1)) {
->  			pr_warn("%s: write data fail\n", key);
->  			return -EIO;
->  		}
-> 
-
+Cheers,
+Henrik
