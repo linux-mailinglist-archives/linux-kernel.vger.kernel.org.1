@@ -2,95 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 64EA82AA8F4
-	for <lists+linux-kernel@lfdr.de>; Sun,  8 Nov 2020 04:06:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BD18E2AA8F7
+	for <lists+linux-kernel@lfdr.de>; Sun,  8 Nov 2020 04:14:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728798AbgKHDFM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Nov 2020 22:05:12 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58274 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728367AbgKHDFM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Nov 2020 22:05:12 -0500
-Received: from mail-ej1-f41.google.com (mail-ej1-f41.google.com [209.85.218.41])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 452C32087E
-        for <linux-kernel@vger.kernel.org>; Sun,  8 Nov 2020 03:05:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604804711;
-        bh=HwITghqppKFjK26HFNkFvXzdMOfxOTH9bRWvBg0QmDA=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=zew6Y5tgnmqimVGmhjui7F7w76KEAdyNu1Za/9t6I8gjZdqmAfTRoPh9BQvwRd2po
-         yJBMALuqPFJQq4IejLTs6CIemdiI0+NiWHGJrsSyBjBFZq+AxlZDYivbjT/6BG9QfJ
-         wt7WfgSnjIiVG7oFEV59dfnvP1IEeXVLiri1HdoQ=
-Received: by mail-ej1-f41.google.com with SMTP id 7so7416357ejm.0
-        for <linux-kernel@vger.kernel.org>; Sat, 07 Nov 2020 19:05:11 -0800 (PST)
-X-Gm-Message-State: AOAM530dp2m0CXAK2d/Mx32iADlTwcrguj5tK8b+3fhfuNJz1M4SNZk7
-        y6p7Lqt3vOzrTVzTxofKN8zI8qvtJfRXKR+/cA==
-X-Google-Smtp-Source: ABdhPJzbNJEGNS5slZvCdTXT5PYfqc0qF0yuXh8J6e6Kixynl26cfxzASzgrH63HJNSCBrDaCRKHuQZqNbURrIa1gHw=
-X-Received: by 2002:a17:906:6d0:: with SMTP id v16mr8726811ejb.310.1604804709851;
- Sat, 07 Nov 2020 19:05:09 -0800 (PST)
+        id S1728797AbgKHDOM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Nov 2020 22:14:12 -0500
+Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:5787 "EHLO
+        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728388AbgKHDOM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 7 Nov 2020 22:14:12 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5fa762870001>; Sat, 07 Nov 2020 19:14:15 -0800
+Received: from [10.2.62.222] (172.20.13.39) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Sun, 8 Nov
+ 2020 03:14:11 +0000
+Subject: Re: [PATCH] mm/gup_benchmark: GUP_BENCHMARK depends on DEBUG_FS
+To:     "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+CC:     Linuxarm <linuxarm@huawei.com>,
+        Ralph Campbell <rcampbell@nvidia.com>,
+        John Garry <john.garry@huawei.com>
+References: <20201104100552.20156-1-song.bao.hua@hisilicon.com>
+ <e8ecbf3e-438e-934e-0335-ec9b3e097022@nvidia.com>
+ <9286e2d0e17a47a1874dc4a96d83a38f@hisilicon.com>
+ <e6b74390-6a80-9aae-17b2-536ffa0d1aae@nvidia.com>
+ <a5f5b63a-ff9d-ed74-212f-f959f038b781@infradead.org>
+ <2c968615-587c-b978-7961-8391c70382b2@nvidia.com>
+ <869059977c224a3aa31bfb42a4a8148d@hisilicon.com>
+From:   John Hubbard <jhubbard@nvidia.com>
+Message-ID: <dd9e5f78-d627-89d6-2b9d-f2912213171f@nvidia.com>
+Date:   Sat, 7 Nov 2020 19:14:10 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-References: <20201029152702.533-1-chunkuang.hu@kernel.org> <20201029152702.533-4-chunkuang.hu@kernel.org>
-In-Reply-To: <20201029152702.533-4-chunkuang.hu@kernel.org>
-From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
-Date:   Sun, 8 Nov 2020 11:04:59 +0800
-X-Gmail-Original-Message-ID: <CAAOTY__ZRLubBfNtMFMax8SubM9f9iKLXGzS+bXseXcd9V0Smg@mail.gmail.com>
-Message-ID: <CAAOTY__ZRLubBfNtMFMax8SubM9f9iKLXGzS+bXseXcd9V0Smg@mail.gmail.com>
-Subject: Re: [PATCH 3/3] MAINTAINERS: add files for Mediatek DRM drivers
-To:     Chun-Kuang Hu <chunkuang.hu@kernel.org>
-Cc:     Philipp Zabel <p.zabel@pengutronix.de>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Chunfeng Yun <chunfeng.yun@mediatek.com>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>, Vinod Koul <vkoul@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <869059977c224a3aa31bfb42a4a8148d@hisilicon.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [172.20.13.39]
+X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1604805255; bh=FTByv3SGXWVVSQVivOCXu3gFrqD/yc6jT7uBxoTI9LY=;
+        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
+         MIME-Version:In-Reply-To:Content-Type:Content-Language:
+         Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy;
+        b=ElQlL9ukGrzLDXnyprv/K8G2A1d/4zqB713ApLG0UR0sJVGWv1L1tLWsoLT7+jJd9
+         S/Kz+92IdJX0URgUQGWZWJMWnGO8dWmW0n0XYgJdj2qB5cr5pJx7aEZhYH9EqZBHBL
+         frHL8y3plwdl9M0cQfbzTWga6r4TpE+kmzSO9Uk/OTBZpcj43tO4ihsuv0Wp1HpPvd
+         jmVSzdwwGtgKoXpY05lnoYN4R9yEnGRXcuNkaAAGvo8vIKPo20Z09caFXAaEm09lAL
+         z5CPJUDsGNlsOgw5Pi7Rh/MzWZ3EQGs8zfBUIfhw4aNYOB8Vg0B4gqo/SWZ20LKoO7
+         RIkzO1uHNSg0Q==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-+ Vinod:
+On 11/7/20 6:58 PM, Song Bao Hua (Barry Song) wrote:
+>> On 11/7/20 2:20 PM, Randy Dunlap wrote:
+>>> On 11/7/20 11:16 AM, John Hubbard wrote:
+>>>> On 11/7/20 11:05 AM, Song Bao Hua (Barry Song) wrote:
+>>>>>> From: John Hubbard [mailto:jhubbard@nvidia.com]
+>>>> ...
+>> But if you really disagree, then I'd go with, just drop the patch entirely, because
+>> it doesn't really make things better as written...IMHO anyway. :)
+> 
+> Just imagine a case, we don't enable DEBUG_FS but we enable GUP_TEST, we will
+> get an image with totally useless code section since GUP_TEST depends on debugfs
+> entry to perform any useful functionality.
+> 
 
-Hi, Chunfeng:
+Looking at the choices, from the user's (usually kernel developer's) experience:
 
-Chun-Kuang Hu <chunkuang.hu@kernel.org> =E6=96=BC 2020=E5=B9=B410=E6=9C=882=
-9=E6=97=A5 =E9=80=B1=E5=9B=9B =E4=B8=8B=E5=8D=8811:28=E5=AF=AB=E9=81=93=EF=
-=BC=9A
->
-> Mediatek MIPI DSI phy driver is moved from drivers/gpu/drm/mediatek to
-> drivers/phy/mediatek, so add the new folder to the Mediatek DRM drivers'
-> information.
+a) The user enables GUP_TEST, then boots up, runs, and is briefly surprised by a
+runtime failure. But it's a very quick diagnosis: "open: No such file or directory",
+when trying to make that ioctl call. The path indicates that it's a debug fs path,
+so the solution is pretty clear, at least for the main audience.
 
-Would you like this patch? If so, you could give an acked-by tag on
-this patch, so I could applied the whole series into my tree.
+b) The other choice: the user *never even sees* GUP_TEST as a choice. This especially
+bothers me because sometimes you find things by poking around in the menu, although
+of course "you should already know about it"...but there's a lot to "already know"
+in a large kernel.
 
-Regards,
-Chun-Kuang.
+ From a user experience, it's way better to simply see what you want, and select it
+in the menu. Or, at least get some prompt that you need to pre-select something else.
 
->
-> Signed-off-by: Chun-Kuang Hu <chunkuang.hu@kernel.org>
-> ---
->  MAINTAINERS | 1 +
->  1 file changed, 1 insertion(+)
->
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index e73636b75f29..14f5018c01b6 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -5867,6 +5867,7 @@ S:        Supported
->  F:     Documentation/devicetree/bindings/display/mediatek/
->  F:     drivers/gpu/drm/mediatek/
->  F:     drivers/phy/mediatek/phy-mtk-hdmi*
-> +F:     drivers/phy/mediatek/phy-mtk-mipi*
->
->  DRM DRIVERS FOR NVIDIA TEGRA
->  M:     Thierry Reding <thierry.reding@gmail.com>
-> --
-> 2.17.1
->
+
+> The difference between "depends on" and "select" for this case is like:
+> depends on: if we want to use GUP_TEST, we have to enable DEBUG_FS first;
+> select: if we enable GUP_TEST, Kconfig will enable DEBUG_FS automatically.
+> 
+> To me, I am 60% inclined to "depends on" as I think "DEBUG_FS" is more
+> of a pre-condition of GUP_TEST than an internal part of GUP_TEST. So people
+> should realize the pre-condition must be met before using GUP_TEST and
+
+
+Right, but first of course they must read every single line of the test code
+carefully. And while it is true the you often *do* end up reading most or
+all of the test code, there are situations in which you don't need to. We'd
+be taking away some of those situations. :)
+
+
+> they must manually enable it if they haven't. That's why I think this patch is
+> making things better.
+> 
+
+...which makes things a little bit worse.
+
+
+thanks,
+-- 
+John Hubbard
+NVIDIA
