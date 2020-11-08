@@ -2,38 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 206302AADEF
-	for <lists+linux-kernel@lfdr.de>; Sun,  8 Nov 2020 23:49:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AE2D92AADE2
+	for <lists+linux-kernel@lfdr.de>; Sun,  8 Nov 2020 23:37:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728959AbgKHWtO convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Sun, 8 Nov 2020 17:49:14 -0500
-Received: from [162.244.152.22] ([162.244.152.22]:53564 "EHLO
-        RT-iMan-WCS1.RTLAW.com" rhost-flags-FAIL-FAIL-OK-OK)
-        by vger.kernel.org with ESMTP id S1728016AbgKHWtO (ORCPT
+        id S1728871AbgKHWhm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 8 Nov 2020 17:37:42 -0500
+Received: from relay5-d.mail.gandi.net ([217.70.183.197]:43231 "EHLO
+        relay5-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727570AbgKHWhm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 8 Nov 2020 17:49:14 -0500
-X-Greylist: delayed 1094 seconds by postgrey-1.27 at vger.kernel.org; Sun, 08 Nov 2020 17:49:14 EST
-Received: from [103.151.125.86] ([103.151.125.86]) by RT-iMan-WCS1.RTLAW.com with Microsoft SMTPSVC(10.0.14393.2608);
-         Sun, 8 Nov 2020 17:30:12 -0500
-Content-Type: text/plain; charset="iso-8859-1"
+        Sun, 8 Nov 2020 17:37:42 -0500
+X-Originating-IP: 86.194.74.19
+Received: from localhost (lfbn-lyo-1-997-19.w86-194.abo.wanadoo.fr [86.194.74.19])
+        (Authenticated sender: alexandre.belloni@bootlin.com)
+        by relay5-d.mail.gandi.net (Postfix) with ESMTPSA id F386D1C0002;
+        Sun,  8 Nov 2020 22:37:39 +0000 (UTC)
+From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
+To:     Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>
+Cc:     linux-rtc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] rtc: rv3032: fix nvram nvmem priv pointer
+Date:   Sun,  8 Nov 2020 23:37:10 +0100
+Message-Id: <20201108223710.1574331-1-alexandre.belloni@bootlin.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-Content-Description: Mail message body
-Subject: Re: Bank Deal. 
-To:     Recipients <eric@fca.com>
-From:   "Mr. Eric Axford" <eric@fca.com>
-Date:   Sun, 08 Nov 2020 14:30:10 -0800
-Reply-To: eraxford1@rediffmail.com
-Message-ID: <RT-IMAN-WCS1BbBdR9y00000320@RT-iMan-WCS1.RTLAW.com>
-X-OriginalArrivalTime: 08 Nov 2020 22:30:12.0974 (UTC) FILETIME=[B965D0E0:01D6B61E]
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Good Day,
+The nvmem priv pointer is set to rv3032 but the rv3032_nvram_write and
+rv3032_nvram_read expect the regmap pointer.
 
-I am Mr. Eric Axford a director with Financial Conduct Authority (FCA) UK. I'm soliciting your assistance for transfer of $65.9M into your bank account. Please respond back for more details about this transaction.
+Signed-off-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
+---
+ drivers/rtc/rtc-rv3032.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Yours Truly,
+diff --git a/drivers/rtc/rtc-rv3032.c b/drivers/rtc/rtc-rv3032.c
+index 3e67f71f4261..14e931d6f9c6 100644
+--- a/drivers/rtc/rtc-rv3032.c
++++ b/drivers/rtc/rtc-rv3032.c
+@@ -889,7 +889,7 @@ static int rv3032_probe(struct i2c_client *client)
+ 	if (ret)
+ 		return ret;
+ 
+-	nvmem_cfg.priv = rv3032;
++	nvmem_cfg.priv = rv3032->regmap;
+ 	rtc_nvmem_register(rv3032->rtc, &nvmem_cfg);
+ 	eeprom_cfg.priv = rv3032;
+ 	rtc_nvmem_register(rv3032->rtc, &eeprom_cfg);
+-- 
+2.28.0
 
-Mr. Eric Axford
