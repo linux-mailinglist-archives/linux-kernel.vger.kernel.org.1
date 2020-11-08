@@ -2,173 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CBB132AAC5B
-	for <lists+linux-kernel@lfdr.de>; Sun,  8 Nov 2020 17:57:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 201B92AAC63
+	for <lists+linux-kernel@lfdr.de>; Sun,  8 Nov 2020 18:00:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728749AbgKHQ5k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 8 Nov 2020 11:57:40 -0500
-Received: from pegase1.c-s.fr ([93.17.236.30]:62095 "EHLO pegase1.c-s.fr"
+        id S1728734AbgKHRAA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 8 Nov 2020 12:00:00 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37648 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728104AbgKHQ5k (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 8 Nov 2020 11:57:40 -0500
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 4CTgKV6JHBz9tyqV;
-        Sun,  8 Nov 2020 17:57:34 +0100 (CET)
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id NkLS1fSN036r; Sun,  8 Nov 2020 17:57:34 +0100 (CET)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4CTgKV4v8nz9tyqR;
-        Sun,  8 Nov 2020 17:57:34 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 490A78B77F;
-        Sun,  8 Nov 2020 17:57:38 +0100 (CET)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id 1vTl7CMWKfeE; Sun,  8 Nov 2020 17:57:38 +0100 (CET)
-Received: from po17688vm.idsi0.si.c-s.fr (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id E28068B75B;
-        Sun,  8 Nov 2020 17:57:37 +0100 (CET)
-Received: by po17688vm.idsi0.si.c-s.fr (Postfix, from userid 0)
-        id BCAD966855; Sun,  8 Nov 2020 16:57:37 +0000 (UTC)
-Message-Id: <f7e9cb9e9240feec63cb330abf40b67d1aad852f.1604854583.git.christophe.leroy@csgroup.eu>
-In-Reply-To: <7719261b0a0d2787772339484c33eb809723bca7.1604854583.git.christophe.leroy@csgroup.eu>
-References: <7719261b0a0d2787772339484c33eb809723bca7.1604854583.git.christophe.leroy@csgroup.eu>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Subject: [PATCH v2 3/3] powerpc: Remove RFI macro
-To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Date:   Sun,  8 Nov 2020 16:57:37 +0000 (UTC)
+        id S1727844AbgKHRAA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 8 Nov 2020 12:00:00 -0500
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id CCAD820731;
+        Sun,  8 Nov 2020 16:59:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604854798;
+        bh=/3pNTmN6DjO114ELWmZPyPaEIJmZESt2gO8P0PPsx4I=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=FkSdDNil3jhDNfIfQeFOAhCCLgGgclWaPVNlhSogK6IBnqAt0ofBL/f57dPc4oK+g
+         YcPzilzdpWC1HWRxJ4MFnZrch/bBWg+UJT5N9BBJ8rB5CQ9mj+zfvQQAKxMH34DbnX
+         MAGyWtvlhEPyZyao/0oTbIZ4jZda3YbcuR8gp5G4=
+Date:   Sun, 8 Nov 2020 18:00:59 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     "Rojewski, Cezary" <cezary.rojewski@intel.com>
+Cc:     "Gorski, Mateusz" <mateusz.gorski@linux.intel.com>,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
+        Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: Intel: Skylake: Add alternative topology binary
+ name
+Message-ID: <20201108170059.GA18354@kroah.com>
+References: <20201103141047.15053-1-mateusz.gorski@linux.intel.com>
+ <20201103153541.GC3267686@kroah.com>
+ <d6006431-420f-55c7-0f78-977507e11fcf@linux.intel.com>
+ <20201104115810.GA1694250@kroah.com>
+ <0f6a673556974a289c2b81f3a8cc7536@intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <0f6a673556974a289c2b81f3a8cc7536@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RFI macro is just there to add an infinite loop past
-rfi in order to avoid prefetch on 40x in half a dozen
-of places in entry_32 and head_32.
+On Sun, Nov 08, 2020 at 04:17:16PM +0000, Rojewski, Cezary wrote:
+> On 2020-11-04 12:58 PM, Greg KH wrote:
+> > On Wed, Nov 04, 2020 at 12:46:36PM +0100, Gorski, Mateusz wrote:
+> >>
+> >>>> [ Upstream commit 1b290ef023b3eeb4f4688b582fecb773915ef937 ]
+> >>>>
+> >>>> Add alternative topology binary file name based on used machine driver
+> >>>> and fallback to use this name after failed attempt to load topology file
+> >>>> with name based on NHLT.
+> >>>> This change addresses multiple issues with current mechanism, for
+> >>>> example - there are devices without NHLT table, and that currently
+> >>>> results in tplg_name being empty.
+> ...
+> 
+> >>> What problems are people facing, and what kernel(s) are you asking for
+> >>> this to be ported to, and why can't people just use 5.8 or newer if they
+> >>> have this new hardware?
+> >>>
+> >>
+> >> I forgot to add - I wanted this change to be merged to stable 5.4 kernel.
+> >> Please let me know if I should resend this patch with this information
+> >> included.
+> >>
+> >> As for the user issues - topology binary file name is currently created
+> >> according to information from NHLT. The problem is, that some laptops (for
+> >> example Dell XPS 13) do not have NHLT at all. This results in topology
+> >> binary name being empty (" ").
+> >> This patch adds alternative name based on loaded machine driver.
+> >>
+> >> It applies not only to new hardware, please note that the mentioned Dell XPS
+> >> 13 is based on Kabylake. This issue existed on upstream from the beginning
+> >> of Skylake driver and was only recently addressed.
+> > 
+> > When was that laptop released and is this the only change that is needed
+> > in order for the 5.4.y kernel to work properly on it?
+> > 
+> 
+> Sorry for the late answer, Greg. To address your concerns and questions
+> let me elaborate:
+> 
+> Indeed, this change is not the only one required to enable DMIC + HDA
+> configuration for customers. The following series is essential:
+> 
+> [PATCH 0/7] ASoC: Intel: Skylake: Fix HDaudio and Dmic
+> https://lore.kernel.org/alsa-devel/20200305145314.32579-1-cezary.rojewski@intel.com/
 
-Those places are already full of #ifdefs, so just add a
-few more to explicitely show those loops and remove RFI.
+Great, then they should just use a newer kernel version.  It's crazy to
+think that you can go back in time and get older kernels working for
+newer hardware :)
 
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
----
- arch/powerpc/include/asm/ppc_asm.h |  5 -----
- arch/powerpc/kernel/entry_32.S     | 30 ++++++++++++++++++++++++------
- arch/powerpc/kernel/head_32.h      |  5 ++++-
- 3 files changed, 28 insertions(+), 12 deletions(-)
+thanks,
 
-diff --git a/arch/powerpc/include/asm/ppc_asm.h b/arch/powerpc/include/asm/ppc_asm.h
-index bedf3eb52ebc..101986d4a29d 100644
---- a/arch/powerpc/include/asm/ppc_asm.h
-+++ b/arch/powerpc/include/asm/ppc_asm.h
-@@ -498,11 +498,6 @@ END_FTR_SECTION_NESTED(CPU_FTR_CELL_TB_BUG, CPU_FTR_CELL_TB_BUG, 96)
- #define MTMSRD(r)	mtmsrd	r
- #define MTMSR_EERI(reg)	mtmsrd	reg,1
- #else
--#ifndef CONFIG_40x
--#define	RFI		rfi
--#else
--#define RFI		rfi; b .	/* Prevent prefetch past rfi */
--#endif
- #define MTMSRD(r)	mtmsr	r
- #define MTMSR_EERI(reg)	mtmsr	reg
- #endif
-diff --git a/arch/powerpc/kernel/entry_32.S b/arch/powerpc/kernel/entry_32.S
-index e10e1167ffb1..c7c28e8acc10 100644
---- a/arch/powerpc/kernel/entry_32.S
-+++ b/arch/powerpc/kernel/entry_32.S
-@@ -234,7 +234,10 @@ transfer_to_handler_cont:
- 	mtspr	SPRN_SRR0,r11
- 	mtspr	SPRN_SRR1,r10
- 	mtlr	r9
--	RFI				/* jump to handler, enable MMU */
-+	rfi				/* jump to handler, enable MMU */
-+#ifdef CONFIG_40x
-+	b .	/* Prevent prefetch past rfi */
-+#endif
- 
- #if defined (CONFIG_PPC_BOOK3S_32) || defined(CONFIG_E500)
- 4:	rlwinm	r12,r12,0,~_TLF_NAPPING
-@@ -263,7 +266,10 @@ _ASM_NOKPROBE_SYMBOL(transfer_to_handler_cont)
- 	LOAD_REG_IMMEDIATE(r0, MSR_KERNEL)
- 	mtspr	SPRN_SRR0,r12
- 	mtspr	SPRN_SRR1,r0
--	RFI
-+	rfi
-+#ifdef CONFIG_40x
-+	b .	/* Prevent prefetch past rfi */
-+#endif
- 
- reenable_mmu:
- 	/*
-@@ -321,7 +327,10 @@ stack_ovf:
- #endif
- 	mtspr	SPRN_SRR0,r9
- 	mtspr	SPRN_SRR1,r10
--	RFI
-+	rfi
-+#ifdef CONFIG_40x
-+	b .	/* Prevent prefetch past rfi */
-+#endif
- _ASM_NOKPROBE_SYMBOL(stack_ovf)
- #endif
- 
-@@ -470,7 +479,10 @@ syscall_exit_finish:
- #endif
- 	mtspr	SPRN_SRR0,r7
- 	mtspr	SPRN_SRR1,r8
--	RFI
-+	rfi
-+#ifdef CONFIG_40x
-+	b .	/* Prevent prefetch past rfi */
-+#endif
- _ASM_NOKPROBE_SYMBOL(syscall_exit_finish)
- #ifdef CONFIG_44x
- 2:	li	r7,0
-@@ -600,7 +612,10 @@ ret_from_kernel_syscall:
- #endif
- 	mtspr	SPRN_SRR0, r9
- 	mtspr	SPRN_SRR1, r10
--	RFI
-+	rfi
-+#ifdef CONFIG_40x
-+	b .	/* Prevent prefetch past rfi */
-+#endif
- _ASM_NOKPROBE_SYMBOL(ret_from_kernel_syscall)
- 
- /*
-@@ -803,7 +818,10 @@ fast_exception_return:
- 	REST_GPR(9, r11)
- 	REST_GPR(12, r11)
- 	lwz	r11,GPR11(r11)
--	RFI
-+	rfi
-+#ifdef CONFIG_40x
-+	b .	/* Prevent prefetch past rfi */
-+#endif
- _ASM_NOKPROBE_SYMBOL(fast_exception_return)
- 
- #if !(defined(CONFIG_4xx) || defined(CONFIG_BOOKE))
-diff --git a/arch/powerpc/kernel/head_32.h b/arch/powerpc/kernel/head_32.h
-index 7c767765071d..232000742c9a 100644
---- a/arch/powerpc/kernel/head_32.h
-+++ b/arch/powerpc/kernel/head_32.h
-@@ -222,7 +222,10 @@
- #endif
- 	mtspr	SPRN_SRR1,r10
- 	mtspr	SPRN_SRR0,r11
--	RFI				/* jump to handler, enable MMU */
-+	rfi				/* jump to handler, enable MMU */
-+#ifdef CONFIG_40x
-+	b .	/* Prevent prefetch past rfi */
-+#endif
- 99:	b	ret_from_kernel_syscall
- .endm
- 
--- 
-2.25.0
-
+greg k-h
