@@ -2,163 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5905A2AA8F2
+	by mail.lfdr.de (Postfix) with ESMTP id EB65C2AA8F3
 	for <lists+linux-kernel@lfdr.de>; Sun,  8 Nov 2020 04:06:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728818AbgKHC6I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Nov 2020 21:58:08 -0500
-Received: from frasgout.his.huawei.com ([185.176.79.56]:2070 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728367AbgKHC6I (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Nov 2020 21:58:08 -0500
-Received: from fraeml734-chm.china.huawei.com (unknown [172.18.147.226])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4CTJg90s6Qz67Hnm;
-        Sun,  8 Nov 2020 10:56:37 +0800 (CST)
-Received: from lhreml736-chm.china.huawei.com (10.201.108.87) by
- fraeml734-chm.china.huawei.com (10.206.15.215) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1913.5; Sun, 8 Nov 2020 03:58:05 +0100
-Received: from dggemi761-chm.china.huawei.com (10.1.198.147) by
- lhreml736-chm.china.huawei.com (10.201.108.87) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.1913.5; Sun, 8 Nov 2020 02:58:03 +0000
-Received: from dggemi761-chm.china.huawei.com ([10.9.49.202]) by
- dggemi761-chm.china.huawei.com ([10.9.49.202]) with mapi id 15.01.1913.007;
- Sun, 8 Nov 2020 10:58:01 +0800
-From:   "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>
-To:     John Hubbard <jhubbard@nvidia.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-CC:     Linuxarm <linuxarm@huawei.com>,
-        Ralph Campbell <rcampbell@nvidia.com>,
-        John Garry <john.garry@huawei.com>
-Subject: RE: [PATCH] mm/gup_benchmark: GUP_BENCHMARK depends on DEBUG_FS
-Thread-Topic: [PATCH] mm/gup_benchmark: GUP_BENCHMARK depends on DEBUG_FS
-Thread-Index: AQHWspKkrOQfdWDOqkGzzyoK3BLHUam7SjKAgAG/lxD//4AMgIAAM28AgAAckACAAK7tEA==
-Date:   Sun, 8 Nov 2020 02:58:01 +0000
-Message-ID: <869059977c224a3aa31bfb42a4a8148d@hisilicon.com>
-References: <20201104100552.20156-1-song.bao.hua@hisilicon.com>
- <e8ecbf3e-438e-934e-0335-ec9b3e097022@nvidia.com>
- <9286e2d0e17a47a1874dc4a96d83a38f@hisilicon.com>
- <e6b74390-6a80-9aae-17b2-536ffa0d1aae@nvidia.com>
- <a5f5b63a-ff9d-ed74-212f-f959f038b781@infradead.org>
- <2c968615-587c-b978-7961-8391c70382b2@nvidia.com>
-In-Reply-To: <2c968615-587c-b978-7961-8391c70382b2@nvidia.com>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.126.200.224]
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        id S1728838AbgKHC6c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Nov 2020 21:58:32 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57402 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728826AbgKHC6b (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 7 Nov 2020 21:58:31 -0500
+Received: from mail-ej1-f47.google.com (mail-ej1-f47.google.com [209.85.218.47])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8EDE420874
+        for <linux-kernel@vger.kernel.org>; Sun,  8 Nov 2020 02:58:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604804310;
+        bh=sfNhlZT9sWHAz6wHIE60Y0IGc1gStzzQXPPJyfeVaW8=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=CTT6UkXx7QGP/1Jmi662ReTj0HRqe+ezsLZcpO4VHPY4kUGfY2IP9tOFksIRpUdY/
+         ayDtplGACaNEfHObQJOX1oTGFf+NuBOIMobhR40a2hHbLTkpqzacEx/p+6oUjOLOOm
+         nKwtPG+a0uJoPo+4YzDifnHTdEjmcfPLYEUSQPN8=
+Received: by mail-ej1-f47.google.com with SMTP id o21so7406168ejb.3
+        for <linux-kernel@vger.kernel.org>; Sat, 07 Nov 2020 18:58:30 -0800 (PST)
+X-Gm-Message-State: AOAM530zweDHbWGyLIm65fBOui5eDWfgmoWaf4MOppHQmJj3GJ+g6c8D
+        5utrNpETlcMvvxyiRiRB9hfYlZwPktycSiZx/Q==
+X-Google-Smtp-Source: ABdhPJxqh/Z+g8ZrVqGhyRSVVYKdQJY+9PddAI8gePCHww4scCiVWGrObsDxgbjea1CTpdbkGoNKkI2KltEkViR5CME=
+X-Received: by 2002:a17:906:cc4f:: with SMTP id mm15mr9063951ejb.267.1604804309188;
+ Sat, 07 Nov 2020 18:58:29 -0800 (PST)
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+References: <20201013085512.12857-1-bernard@vivo.com> <CAAOTY__r-2aQLK+oy6uRFnu3xExngBYrSAQ7jCfhWx+Ti0UgFw@mail.gmail.com>
+In-Reply-To: <CAAOTY__r-2aQLK+oy6uRFnu3xExngBYrSAQ7jCfhWx+Ti0UgFw@mail.gmail.com>
+From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
+Date:   Sun, 8 Nov 2020 10:58:19 +0800
+X-Gmail-Original-Message-ID: <CAAOTY_-EgZuxG=6J2WgO7awAcOePXuH8a6_rHENM7C45m-H7ew@mail.gmail.com>
+Message-ID: <CAAOTY_-EgZuxG=6J2WgO7awAcOePXuH8a6_rHENM7C45m-H7ew@mail.gmail.com>
+Subject: Re: [PATCH] drm/mediatek: Optimize functions which do not need to return
+To:     Chun-Kuang Hu <chunkuang.hu@kernel.org>
+Cc:     Bernard Zhao <bernard@vivo.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        opensource.kernel@vivo.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogSm9obiBIdWJiYXJkIFtt
-YWlsdG86amh1YmJhcmRAbnZpZGlhLmNvbV0NCj4gU2VudDogU3VuZGF5LCBOb3ZlbWJlciA4LCAy
-MDIwIDE6MDMgUE0NCj4gVG86IFJhbmR5IER1bmxhcCA8cmR1bmxhcEBpbmZyYWRlYWQub3JnPjsg
-U29uZyBCYW8gSHVhIChCYXJyeSBTb25nKQ0KPiA8c29uZy5iYW8uaHVhQGhpc2lsaWNvbi5jb20+
-OyBha3BtQGxpbnV4LWZvdW5kYXRpb24ub3JnOw0KPiBsaW51eC1tbUBrdmFjay5vcmc7IGxpbnV4
-LWtlcm5lbEB2Z2VyLmtlcm5lbC5vcmcNCj4gQ2M6IExpbnV4YXJtIDxsaW51eGFybUBodWF3ZWku
-Y29tPjsgUmFscGggQ2FtcGJlbGwNCj4gPHJjYW1wYmVsbEBudmlkaWEuY29tPjsgSm9obiBHYXJy
-eSA8am9obi5nYXJyeUBodWF3ZWkuY29tPg0KPiBTdWJqZWN0OiBSZTogW1BBVENIXSBtbS9ndXBf
-YmVuY2htYXJrOiBHVVBfQkVOQ0hNQVJLIGRlcGVuZHMgb24NCj4gREVCVUdfRlMNCj4gDQo+IE9u
-IDExLzcvMjAgMjoyMCBQTSwgUmFuZHkgRHVubGFwIHdyb3RlOg0KPiA+IE9uIDExLzcvMjAgMTE6
-MTYgQU0sIEpvaG4gSHViYmFyZCB3cm90ZToNCj4gPj4gT24gMTEvNy8yMCAxMTowNSBBTSwgU29u
-ZyBCYW8gSHVhIChCYXJyeSBTb25nKSB3cm90ZToNCj4gPj4+PiAtLS0tLU9yaWdpbmFsIE1lc3Nh
-Z2UtLS0tLQ0KPiA+Pj4+IEZyb206IEpvaG4gSHViYmFyZCBbbWFpbHRvOmpodWJiYXJkQG52aWRp
-YS5jb21dDQo+ID4+IC4uLg0KPiA+Pj4+PiAgwqDCoCBjb25maWcgR1VQX0JFTkNITUFSSw0KPiA+
-Pj4+PiAgwqDCoMKgwqDCoMKgIGJvb2wgIkVuYWJsZSBpbmZyYXN0cnVjdHVyZSBmb3IgZ2V0X3Vz
-ZXJfcGFnZXMoKSBhbmQgcmVsYXRlZA0KPiBjYWxscw0KPiA+Pj4+IGJlbmNobWFya2luZyINCj4g
-Pj4+Pj4gK8KgwqDCoCBkZXBlbmRzIG9uIERFQlVHX0ZTDQo+ID4+Pj4NCj4gPj4+Pg0KPiA+Pj4+
-IEkgdGhpbmsgInNlbGVjdCBERUJVR19GUyIgaXMgYmV0dGVyIGhlcmUuICJkZXBlbmRzIG9uIiBo
-YXMgdGhlIG9ibm94aW91cw0KPiA+Pj4+IGJlaGF2aW9yIG9mIGhpZGluZyB0aGUgY2hvaWNlIGZy
-b20geW91LCBpZiB0aGUgZGVwZW5kZW5jaWVzIGFyZW4ndCBhbHJlYWR5DQo+IG1ldC4NCj4gPj4+
-PiBXaGVyZWFzIHdoYXQgdGhlIGRldmVsb3BlciAqcmVhbGx5KiB3YW50cyBpcyBhIG5vLW5vbnNl
-bnNlIGFjdGl2YXRpb24gb2YNCj4gdGhlDQo+ID4+Pj4gY2hvaWNlOiAiZW5hYmxlIEdVUF9CRU5D
-SE1BUksgYW5kIHRoZSBkZWJ1ZyBmcyB0aGF0IGl0IHJlcXVpcmVzIi4NCj4gPj4+Pg0KPiA+Pj4N
-Cj4gPj4+IFRvIHNvbWUgZXh0ZW50LCBJIGFncmVlIHdpdGggeW91LiBCdXQgSSBzdGlsbCB0aGlu
-ayBoZXJlIGl0IGlzIGJldHRlciB0byB1c2UNCj4gImRlcGVuZHMgb24iLg0KPiA+Pj4gQWNjb3Jk
-aW5nIHRvDQo+ID4+PiBodHRwczovL3d3dy5rZXJuZWwub3JnL2RvYy9Eb2N1bWVudGF0aW9uL2ti
-dWlsZC9rY29uZmlnLWxhbmd1YWdlLnR4dA0KPiA+Pj4NCj4gPj4+ICDCoMKgwqDCoHNlbGVjdCBz
-aG91bGQgYmUgdXNlZCB3aXRoIGNhcmUuIHNlbGVjdCB3aWxsIGZvcmNlDQo+ID4+PiAgwqDCoMKg
-wqBhIHN5bWJvbCB0byBhIHZhbHVlIHdpdGhvdXQgdmlzaXRpbmcgdGhlIGRlcGVuZGVuY2llcy4N
-Cj4gPj4+ICDCoMKgwqDCoEJ5IGFidXNpbmcgc2VsZWN0IHlvdSBhcmUgYWJsZSB0byBzZWxlY3Qg
-YSBzeW1ib2wgRk9PIGV2ZW4NCj4gPj4+ICDCoMKgwqDCoGlmIEZPTyBkZXBlbmRzIG9uIEJBUiB0
-aGF0IGlzIG5vdCBzZXQuDQo+ID4+PiAgwqDCoMKgwqBJbiBnZW5lcmFsIHVzZSBzZWxlY3Qgb25s
-eSBmb3Igbm9uLXZpc2libGUgc3ltYm9scw0KPiA+Pj4gIMKgwqDCoMKgKG5vIHByb21wdHMgYW55
-d2hlcmUpIGFuZCBmb3Igc3ltYm9scyB3aXRoIG5vIGRlcGVuZGVuY2llcy4NCj4gPj4+ICDCoMKg
-wqDCoFRoYXQgd2lsbCBsaW1pdCB0aGUgdXNlZnVsbmVzcyBidXQgb24gdGhlIG90aGVyIGhhbmQg
-YXZvaWQNCj4gPj4+ICDCoMKgwqDCoHRoZSBpbGxlZ2FsIGNvbmZpZ3VyYXRpb25zIGFsbCBvdmVy
-Lg0KPiA+Pj4NCj4gPj4+IE9uIHRoZSBvdGhlciBoYW5kLCBpbiBrZXJuZWwgdGhlcmUgYXJlIDc4
-ICJkZXBlbmRzIG9uIERFQlVHX0ZTIiBhbmQNCj4gPj4+IG9ubHkgMTQgInNlbGVjdCBERUJVR19G
-UyIuDQo+ID4+Pg0KPiA+Pg0KPiA+PiBZb3UncmUgbm90IGxvb2tpbmcgYXQgdGhlIGJlc3Qgc3Rh
-dGlzdGljcy4gR28gbG9vayBhdCB3aGF0ICphbHJlYWR5KiBzZWxlY3RzDQo+ID4+IERFQlVHX0ZT
-LCBhbmQgeW91J2xsIGZpbmQgYWJvdXQgNTAgaXRlbXMuDQo+ID4NCj4gPiBTb3JyeSwgSSdtIG5v
-dCBmb2xsb3dpbmcgeW91LiBJIHNlZSB0aGUgc2FtZSAxNCAic2VsZWN0IERFQlVHX0ZTIiBhcyBC
-YXJyeS4NCj4gDQo+IEkgcmFuIG1ha2UgbWVudWNvbmZpZywgYW5kIGxvb2tlZCBhdCBpdC4gQmVj
-YXVzZSBJIHdhbnQgdG8gc2VlIHRoZSB0cnVlIGVuZA0KPiByZXN1bHQsDQo+IGFuZCBJIGRpZG4n
-dCB0cnVzdCBteSBncmVwIHVzZSwgZ2l2ZW4gdGhhdCB0aGUgc3lzdGVtIGhhcyBpbnRlcmxvY2tp
-bmcNCj4gZGVwZW5kZW5jaWVzLA0KPiBhbmQgSSB0aGluayBvbmUgc2VsZWN0IGNvdWxkIGVuZCB1
-cCBhY3RpdmF0aW5nIG90aGVycyAoeWVzPykuDQo+IA0KPiBBbmQgc3VyZSBlbm91Z2gsIHRoZXJl
-IGFyZSA0MiBpdGVtcyBsaXN0ZWQsIGhlcmUgdGhleSBhcmUsIGNsZWFuZWQgdXAgc28gdGhhdA0K
-PiB0aGVyZQ0KPiBpcyBvbmUgcGVyIGxpbmU6DQo+IA0KPiBaU01BTExPQ19TVEFUIFs9bl0NCj4g
-WlNNQUxMT0MgWz1tXQ0KPiBCQ0FDSEVfQ0xPU1VSRVNfREVCVUcgWz1uXQ0KPiBNRCBbPXldDQo+
-IEJDQUNIRSBbPW5dDQo+IERWQl9DOFNFQ1RQRkUgWz1uXQ0KPiBNRURJQV9TVVBQT1JUIFs9bV0N
-Cj4gTUVESUFfUExBVEZPUk1fU1VQUE9SVCBbPXldDQo+IERWQl9QTEFURk9STV9EUklWRVJTIFs9
-bl0NCj4gUElOQ1QNCj4gRFJNX0k5MTVfREVCVUcgWz1uXQ0KPiBIQVNfSU9NRU0gWz15XQ0KPiBF
-WFBFUlQgWz15XQ0KPiBEUk1fSTkxNSBbPW1dDQo+IEVEQUNfREVCVUcgWz1uXQ0KPiBFREFDIFs9
-eV0NCj4gU1VOUlBDX0RFQlVHIFs9bl0NCj4gTkVUV09SS19GSUxFU1lTVEVNUyBbPXldDQo+IFNV
-TlJQQyBbPW1dDQo+IFNZU0NUTCBbPXldDQo+IFBBR0VfT1dORVIgWz1uXQ0KPiBERUJVR19LRVJO
-RUwgWz15XQ0KPiBTVEFDS1RSQUNFX1NVUFBPUlQgWz15XQ0KPiBERUJVR19LTUVNTEVBSyBbPW5d
-DQo+IERFQlVHX0tFUk5FTCBbPXldDQo+IEhBVkVfREVCVUdfS01FTUxFQUsgWz15XQ0KPiBCTEtf
-REVWX0lPX1RSQUNFIFs9bl0NCj4gVFJBQ0lOR19TVVBQT1JUIFs9eV0NCj4gRlRSQUNFIFs9eV0N
-Cj4gU1lTRlMgWz15XQ0KPiBCTE9DSyBbPXldDQo+IFBVTklUX0FUT01fREVCVUcgWz1uXQ0KPiBQ
-Q0kgWz15XQ0KPiBOT1RJRklFUl9FUlJPUl9JTkpFQ1RJT04gWz1uXQ0KPiBERUJVR19LRVJORUwg
-Wz15XQ0KPiBGQUlMX0ZVVEVYIFs9bl0NCj4gRkFVTFRfSU5KRUNUSU9OIFs9bl0NCj4gRlVURVgg
-Wz15XQ0KPiBLQ09WIFs9bl0NCj4gQVJDSF9IQVNfS0NPViBbPXldDQo+IENDX0hBU19TQU5DT1Zf
-VFJBQ0VfUEMgWz15XQ0KPiBHQ0NfUExVR0lOUw0KPiANCj4gDQo+ID4NCj4gPiBJbiBnZW5lcmFs
-IHdlIGRvbid0IHdhbnQgYW55IG9uZSBsYXJnZSAiZmVhdHVyZSIgKG9yIHN1YnN5c3RlbSkgdG8g
-YmUNCj4gZW5hYmxlZA0KPiA+IGJ5IG9uZSBkcml2ZXIuIElmIHNvbWVvbmUgaGFzIGdvbmUgdG8g
-dGhlIHRyb3VibGUgdG8gZGlzYWJsZSBERUJVR19GUyAob3INCj4gd2hhdGV2ZXIpLA0KPiA+IHRo
-ZW4gYSBkaWZmZXJlbnQgS2NvbmZpZyBzeW1ib2wgc2hvdWxkbid0IHVuZG8gdGhhdC4NCj4gPg0K
-PiANCj4gSSBhZ3JlZSB3aXRoIHRoZSAiaW4gZ2VuZXJhbCIgcG9pbnQsIHllcy4gQW5kIG15IGNv
-bXBsYWludCBpcyByZWFsbHkgODAlIGR1ZSB0bw0KPiB0aGUNCj4gdmVyeSB1bmhhcHB5IHNpdHVh
-dGlvbiB3aXRoIEtjb25maWcsIHdoZXJlIHdlIHNlZW0gdG8gZ2V0IGEgY2hvaWNlIGJldHdlZW4N
-Cj4gKmhpZGluZyoNCj4gYSBmZWF0dXJlLCBvciBmb3JjaW5nIGEgZGVwZW5kZW5jeSBicmVhay4g
-V2hhdCB3ZSByZWFsbHkgd2FudCBpcyBhIHdheSB0bw0KPiBpbmRpY2F0ZQ0KPiBhIGRlcGVuZGVu
-Y3kgdGhhdCBkb2Vzbid0IGhpZGUgZW50aXJlIGZlYXR1cmVzLCB1bmxlc3Mgd2Ugd2FudCB0aGF0
-LiAoTWF5YmUgSQ0KPiBzaG91bGQNCj4gYXR0ZW1wdCB0byBnZXQgaW50byB0aGUgaW1wbGVtZW50
-YXRpb24sIGFsdGhvdWdoIEkgc3VzcGVjdCBpdCdzIGhhcmRlciB0aGFuIEkNCj4gcmVhbGl6ZS4p
-DQo+IA0KPiBCdXQgdGhlIG90aGVyIDIwJSBvZiBteSBjb21wbGFpbnQgaXMsIGdpdmVuIHdoYXQg
-d2UgaGF2ZSwgSSB0aGluayB0aGUNCj4gYXBwcm9wcmlhdGUNCj4gYWRhcHRhdGlvbiBmb3IgR1VQ
-X0JFTkNITUFSSydzIHJlbGF0aW9uc2hpcCB0byBERUJVR19GUyAqaW4gcGFydGljdWxhciosIGlz
-Og0KPiBzZWxlY3QuDQo+IA0KPiBBbmQgNDIgb3RoZXIgY29tbWl0dGVycyBoYXZlIGNob3NlbiB0
-aGUgc2FtZSB0aGluZywgZm9yIHRoZWlyIHJlbGF0aW9uc2hpcCB0bw0KPiBERUJVR19GUy4gSSdt
-IGluIGdvb2QgY29tcGFueS4NCj4gDQo+IEJ1dCBpZiB5b3UgcmVhbGx5IGRpc2FncmVlLCB0aGVu
-IEknZCBnbyB3aXRoLCBqdXN0IGRyb3AgdGhlIHBhdGNoIGVudGlyZWx5LCBiZWNhdXNlDQo+IGl0
-IGRvZXNuJ3QgcmVhbGx5IG1ha2UgdGhpbmdzIGJldHRlciBhcyB3cml0dGVuLi4uSU1ITyBhbnl3
-YXkuIDopDQoNCkp1c3QgaW1hZ2luZSBhIGNhc2UsIHdlIGRvbid0IGVuYWJsZSBERUJVR19GUyBi
-dXQgd2UgZW5hYmxlIEdVUF9URVNULCB3ZSB3aWxsDQpnZXQgYW4gaW1hZ2Ugd2l0aCB0b3RhbGx5
-IHVzZWxlc3MgY29kZSBzZWN0aW9uIHNpbmNlIEdVUF9URVNUIGRlcGVuZHMgb24gZGVidWdmcw0K
-ZW50cnkgdG8gcGVyZm9ybSBhbnkgdXNlZnVsIGZ1bmN0aW9uYWxpdHkuDQoNClRoZSBkaWZmZXJl
-bmNlIGJldHdlZW4gImRlcGVuZHMgb24iIGFuZCAic2VsZWN0IiBmb3IgdGhpcyBjYXNlIGlzIGxp
-a2U6DQpkZXBlbmRzIG9uOiBpZiB3ZSB3YW50IHRvIHVzZSBHVVBfVEVTVCwgd2UgaGF2ZSB0byBl
-bmFibGUgREVCVUdfRlMgZmlyc3Q7DQpzZWxlY3Q6IGlmIHdlIGVuYWJsZSBHVVBfVEVTVCwgS2Nv
-bmZpZyB3aWxsIGVuYWJsZSBERUJVR19GUyBhdXRvbWF0aWNhbGx5Lg0KDQpUbyBtZSwgSSBhbSA2
-MCUgaW5jbGluZWQgdG8gImRlcGVuZHMgb24iIGFzIEkgdGhpbmsgIkRFQlVHX0ZTIiBpcyBtb3Jl
-DQpvZiBhIHByZS1jb25kaXRpb24gb2YgR1VQX1RFU1QgdGhhbiBhbiBpbnRlcm5hbCBwYXJ0IG9m
-IEdVUF9URVNULiBTbyBwZW9wbGUNCnNob3VsZCByZWFsaXplIHRoZSBwcmUtY29uZGl0aW9uIG11
-c3QgYmUgbWV0IGJlZm9yZSB1c2luZyBHVVBfVEVTVCBhbmQNCnRoZXkgbXVzdCBtYW51YWxseSBl
-bmFibGUgaXQgaWYgdGhleSBoYXZlbid0LiBUaGF0J3Mgd2h5IEkgdGhpbmsgdGhpcyBwYXRjaCBp
-cw0KbWFraW5nIHRoaW5ncyBiZXR0ZXIuDQoNCkhvd2V2ZXIsIGFzIEkgcmVwbGllZCBiZWZvcmUs
-IHRvIHNvbWUgZXh0ZW50LCBJIGFsc28gYWdyZWUgd2l0aCB5b3UuIGlmIG1vc3QNCnBlb3BsZSB2
-b3RlIGZvciAic2VsZWN0IiBmb3IgdGhpcyBwYXJ0aWN1bGFyIGNhc2UsIEknbSBhbHNvIGhhcHB5
-IHRvIHVzZSAic2VsZWN0Ii4NCg0KPiANCj4gdGhhbmtzLA0KPiAtLQ0KPiBKb2huIEh1YmJhcmQN
-Cj4gTlZJRElBDQoNClRoYW5rcw0KQmFycnkNCg==
+Hi, Bernard:
+
+Chun-Kuang Hu <chunkuang.hu@kernel.org> =E6=96=BC 2020=E5=B9=B410=E6=9C=881=
+7=E6=97=A5 =E9=80=B1=E5=85=AD =E4=B8=8A=E5=8D=8810:50=E5=AF=AB=E9=81=93=EF=
+=BC=9A
+>
+> Bernard Zhao <bernard@vivo.com> =E6=96=BC 2020=E5=B9=B410=E6=9C=8813=E6=
+=97=A5 =E9=80=B1=E4=BA=8C =E4=B8=8B=E5=8D=884:55=E5=AF=AB=E9=81=93=EF=BC=9A
+> >
+> > Function mtk_hdmi_aud_set_input always return 0, no need to
+> > keep the return value. Functions mtk_hdmi_aud_enable_packet &
+> > mtk_hdmi_aud_on_off_hw_ncts are the same, these two functions
+> > just call next functions. Maybe it`s a bit better to just call
+> > the inner function.
+>
+> Reviewed-by: Chun-Kuang Hu <chunkuang.hu@kernel.org>
+>
+
+Applied to mediatek-drm-next [1], thanks.
+
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/chunkuang.hu/linux.git/=
+log/?h=3Dmediatek-drm-next
+
+Regards,
+Chun-Kuang.
+
+> >
+> > Signed-off-by: Bernard Zhao <bernard@vivo.com>
+> > ---
+> >  drivers/gpu/drm/mediatek/mtk_hdmi.c | 27 +++++++--------------------
+> >  1 file changed, 7 insertions(+), 20 deletions(-)
+> >
+> > diff --git a/drivers/gpu/drm/mediatek/mtk_hdmi.c b/drivers/gpu/drm/medi=
+atek/mtk_hdmi.c
+> > index a97725680d4e..f1d987df0550 100644
+> > --- a/drivers/gpu/drm/mediatek/mtk_hdmi.c
+> > +++ b/drivers/gpu/drm/mediatek/mtk_hdmi.c
+> > @@ -870,19 +870,8 @@ static void mtk_hdmi_video_set_display_mode(struct=
+ mtk_hdmi *hdmi,
+> >         mtk_hdmi_hw_msic_setting(hdmi, mode);
+> >  }
+> >
+> > -static int mtk_hdmi_aud_enable_packet(struct mtk_hdmi *hdmi, bool enab=
+le)
+> > -{
+> > -       mtk_hdmi_hw_send_aud_packet(hdmi, enable);
+> > -       return 0;
+> > -}
+> >
+> > -static int mtk_hdmi_aud_on_off_hw_ncts(struct mtk_hdmi *hdmi, bool on)
+> > -{
+> > -       mtk_hdmi_hw_ncts_enable(hdmi, on);
+> > -       return 0;
+> > -}
+> > -
+> > -static int mtk_hdmi_aud_set_input(struct mtk_hdmi *hdmi)
+> > +static void mtk_hdmi_aud_set_input(struct mtk_hdmi *hdmi)
+> >  {
+> >         enum hdmi_aud_channel_type chan_type;
+> >         u8 chan_count;
+> > @@ -912,8 +901,6 @@ static int mtk_hdmi_aud_set_input(struct mtk_hdmi *=
+hdmi)
+> >         chan_count =3D mtk_hdmi_aud_get_chnl_count(chan_type);
+> >         mtk_hdmi_hw_aud_set_i2s_chan_num(hdmi, chan_type, chan_count);
+> >         mtk_hdmi_hw_aud_set_input_type(hdmi, hdmi->aud_param.aud_input_=
+type);
+> > -
+> > -       return 0;
+> >  }
+> >
+> >  static int mtk_hdmi_aud_set_src(struct mtk_hdmi *hdmi,
+> > @@ -921,7 +908,7 @@ static int mtk_hdmi_aud_set_src(struct mtk_hdmi *hd=
+mi,
+> >  {
+> >         unsigned int sample_rate =3D hdmi->aud_param.codec_params.sampl=
+e_rate;
+> >
+> > -       mtk_hdmi_aud_on_off_hw_ncts(hdmi, false);
+> > +       mtk_hdmi_hw_ncts_enable(hdmi, false);
+> >         mtk_hdmi_hw_aud_src_disable(hdmi);
+> >         mtk_hdmi_clear_bits(hdmi, GRL_CFG2, CFG2_ACLK_INV);
+> >
+> > @@ -959,7 +946,7 @@ static int mtk_hdmi_aud_output_config(struct mtk_hd=
+mi *hdmi,
+> >                                       struct drm_display_mode *display_=
+mode)
+> >  {
+> >         mtk_hdmi_hw_aud_mute(hdmi);
+> > -       mtk_hdmi_aud_enable_packet(hdmi, false);
+> > +       mtk_hdmi_hw_send_aud_packet(hdmi, false);
+> >
+> >         mtk_hdmi_aud_set_input(hdmi);
+> >         mtk_hdmi_aud_set_src(hdmi, display_mode);
+> > @@ -968,8 +955,8 @@ static int mtk_hdmi_aud_output_config(struct mtk_hd=
+mi *hdmi,
+> >
+> >         usleep_range(50, 100);
+> >
+> > -       mtk_hdmi_aud_on_off_hw_ncts(hdmi, true);
+> > -       mtk_hdmi_aud_enable_packet(hdmi, true);
+> > +       mtk_hdmi_hw_ncts_enable(hdmi, true);
+> > +       mtk_hdmi_hw_send_aud_packet(hdmi, true);
+> >         mtk_hdmi_hw_aud_unmute(hdmi);
+> >         return 0;
+> >  }
+> > @@ -1097,13 +1084,13 @@ static int mtk_hdmi_output_init(struct mtk_hdmi=
+ *hdmi)
+> >
+> >  static void mtk_hdmi_audio_enable(struct mtk_hdmi *hdmi)
+> >  {
+> > -       mtk_hdmi_aud_enable_packet(hdmi, true);
+> > +       mtk_hdmi_hw_send_aud_packet(hdmi, true);
+> >         hdmi->audio_enable =3D true;
+> >  }
+> >
+> >  static void mtk_hdmi_audio_disable(struct mtk_hdmi *hdmi)
+> >  {
+> > -       mtk_hdmi_aud_enable_packet(hdmi, false);
+> > +       mtk_hdmi_hw_send_aud_packet(hdmi, false);
+> >         hdmi->audio_enable =3D false;
+> >  }
+> >
+> > --
+> > 2.28.0
+> >
