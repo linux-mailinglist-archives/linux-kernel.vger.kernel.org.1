@@ -2,77 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA9082AAD2D
-	for <lists+linux-kernel@lfdr.de>; Sun,  8 Nov 2020 20:16:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 108882AAD33
+	for <lists+linux-kernel@lfdr.de>; Sun,  8 Nov 2020 20:19:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728820AbgKHTQi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 8 Nov 2020 14:16:38 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45930 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727570AbgKHTQi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 8 Nov 2020 14:16:38 -0500
-Received: from mail-ej1-f52.google.com (mail-ej1-f52.google.com [209.85.218.52])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1D40F20731;
-        Sun,  8 Nov 2020 19:16:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604862997;
-        bh=QEuj6gYhZ7TOziSGKJfu5C755NOyl9AcloOpdacc6IA=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=KFLraDMSIK7aQ3C9iKS6c6wjj3sNwzoqDDPfhirnm4/KKopASR0PxKHFUb46szf0x
-         ABBc1RRUQ+0xyuMnCplYnZ62yB+/KevHeqQWAJq8v9xX0bAxXSljfZbBV1rh0mRo3n
-         BKnsGV1A6ye8ZCcIzQiMbyJWENcNpyJ4BDWFQLKk=
-Received: by mail-ej1-f52.google.com with SMTP id cw8so9209472ejb.8;
-        Sun, 08 Nov 2020 11:16:37 -0800 (PST)
-X-Gm-Message-State: AOAM530sqm8uaFB/IKgJTJd0U/K3hRcYaWAUY2LsRxBoa5rMwZQKnec2
-        ct/UTUA5U9IH5uAUbXWHkhhoGoov3Kzr1KX7Iew=
-X-Google-Smtp-Source: ABdhPJygARHEEEdUzXQEDuN8BvHclts3f5lMp40afIblxYzspHArmbtL8L/HK/GF/03Kns46096MGQc0Z9MNopO/JnE=
-X-Received: by 2002:a17:906:a011:: with SMTP id p17mr11716674ejy.119.1604862995692;
- Sun, 08 Nov 2020 11:16:35 -0800 (PST)
+        id S1728631AbgKHTTg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 8 Nov 2020 14:19:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54438 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727910AbgKHTTf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 8 Nov 2020 14:19:35 -0500
+Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B32FC0613CF
+        for <linux-kernel@vger.kernel.org>; Sun,  8 Nov 2020 11:19:34 -0800 (PST)
+Received: by mail-lj1-x244.google.com with SMTP id p15so7464303ljj.8
+        for <linux-kernel@vger.kernel.org>; Sun, 08 Nov 2020 11:19:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=c+7o3ZAjCMSzQzXHBwOqPMlvtl4jWylaEpfZpMKvelQ=;
+        b=anYl+mWXN4SPlC7Nh2s+FUMLPtgq1HipXBWlH+pazRMGbXTtjAVVq75S6XYywvPftV
+         rUcto5ujdbKc+O8ZjxpuhxZQnT20Ssds9aPTzuz3H09Imat+7UMWy90z9HEvFePjJK1D
+         pcdWjG6k6f8wboQ+45Je71S0tfvqw8Wbjrjpw=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=c+7o3ZAjCMSzQzXHBwOqPMlvtl4jWylaEpfZpMKvelQ=;
+        b=jrc59A+m9bPpfOyuwnAbY4S/eCLDhiVE0UYA8XVUmvsVDiM1V7NADzEmhqXvYyy3gV
+         0x0bxLr9H+Znu2er+F61sK4mYxB1UR0+1fsN9b5pEfP/Jcu5BOz0HtTky1yH6H8FD9ED
+         XJ0nq5IB9LxsX5M3GZdW6x9CBKQVHVZ/kj2Lnx/JFSHQqoGzFJKbD8gyjnrjim5kmNHd
+         kZqvm3J0Mi08aK2J5ODa5Nc7t8H6xTKxuyI8KPUr8rFQIBZzvwlX1RPog9jyov/Z/feW
+         5LdJlHm07hOomHXYOKwd/3S4VJmBV9b8LF56J5o8Sle4Wi5ZbFpbK8QcDpWI8ICGTtGF
+         52zg==
+X-Gm-Message-State: AOAM530DO/VxjN1Ud165fFNGZVo5l+A9s85tK3nWRgYL4P93SNi+6/io
+        wSRFdCONshERF0cknyD+Xd5ra20mEqUHaA==
+X-Google-Smtp-Source: ABdhPJxixJgSEnjdIhI0E/iR/TkitmJi9MI3HOqMHL/EG2RlgfKrqoP3AaLo+GN8vPGyYV8nYq8ZZQ==
+X-Received: by 2002:a2e:891a:: with SMTP id d26mr4331683lji.90.1604863172145;
+        Sun, 08 Nov 2020 11:19:32 -0800 (PST)
+Received: from mail-lf1-f50.google.com (mail-lf1-f50.google.com. [209.85.167.50])
+        by smtp.gmail.com with ESMTPSA id e68sm1080381lfd.59.2020.11.08.11.19.31
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 08 Nov 2020 11:19:31 -0800 (PST)
+Received: by mail-lf1-f50.google.com with SMTP id l2so9200745lfk.0
+        for <linux-kernel@vger.kernel.org>; Sun, 08 Nov 2020 11:19:31 -0800 (PST)
+X-Received: by 2002:a19:c703:: with SMTP id x3mr4085792lff.105.1604863170727;
+ Sun, 08 Nov 2020 11:19:30 -0800 (PST)
 MIME-Version: 1.0
-References: <20201108022321.2114430-1-natechancellor@gmail.com>
- <CAJKOXPdVVgRMaCPfq3nPR232KQyKVVewm5LveUSuyfqE8sScQg@mail.gmail.com> <20201108191346.GA4061631@ubuntu-m3-large-x86>
-In-Reply-To: <20201108191346.GA4061631@ubuntu-m3-large-x86>
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-Date:   Sun, 8 Nov 2020 20:16:23 +0100
-X-Gmail-Original-Message-ID: <CAJKOXPfLr=jviF_kzYqC8r_SHxsC5CO38Z0tN57BSGkBz23RdQ@mail.gmail.com>
-Message-ID: <CAJKOXPfLr=jviF_kzYqC8r_SHxsC5CO38Z0tN57BSGkBz23RdQ@mail.gmail.com>
-Subject: Re: [PATCH] arm64: dts: imx: Fix imx8mm-kontron-n801x-s.dtb target
-To:     Nathan Chancellor <natechancellor@gmail.com>
-Cc:     Shawn Guo <shawnguo@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        Frieder Schrempf <frieder.schrempf@kontron.de>,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20201107064722.GA139215@arch-e3.localdomain>
+In-Reply-To: <20201107064722.GA139215@arch-e3.localdomain>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Sun, 8 Nov 2020 11:19:14 -0800
+X-Gmail-Original-Message-ID: <CAHk-=whjyOuO-xwov7UWidBOkWyZv84TVA18hBb01V-hiML+yg@mail.gmail.com>
+Message-ID: <CAHk-=whjyOuO-xwov7UWidBOkWyZv84TVA18hBb01V-hiML+yg@mail.gmail.com>
+Subject: Re: [PATCH] fork: fix copy_process(CLONE_PARENT) race with the
+ exiting ->real_parent
+To:     Eddy Wu <itseddy0402@gmail.com>
+Cc:     Oleg Nesterov <oleg@redhat.com>,
+        Security Officers <security@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        eddy_wu@trendmicro.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 8 Nov 2020 at 20:13, Nathan Chancellor <natechancellor@gmail.com> wrote:
+On Fri, Nov 6, 2020 at 10:47 PM Eddy Wu <itseddy0402@gmail.com> wrote:
 >
-> Hi Krzysztof,
->
-> On Sun, Nov 08, 2020 at 10:31:10AM +0100, Krzysztof Kozlowski wrote:
-> > On Sun, 8 Nov 2020 at 03:23, Nathan Chancellor <natechancellor@gmail.com> wrote:
-> >
-> > Hi,
-> >
-> > Thanks for the fixes.
-> >
-> > Please mark patches with versions, this should be v2. Otherwise
-> > maintainer might apply the older one,
-> > You also need to add versioning changelog after ---.
->
-> I have only sent this one patch. It looks like Anders Roxell sent an
-> identical patch though:
->
-> https://lore.kernel.org/linux-devicetree/20201105111823.1613337-1-anders.roxell@linaro.org/
+> current->group_leader->exit_signal may change during copy_process() if
+> current->real_parent exits, move the assignment inside tasklist_lock to avoid
+> the race.
 
-Oh, damn, I didn't check the authors and got kind of confused seeing a
-v1. Nice timing. :)
+Applied. Thanks,
 
-Anyway, thanks for the patch!
-
-Best regards,
-Krzysztof
+           Linus
