@@ -2,130 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D63C2AAA05
-	for <lists+linux-kernel@lfdr.de>; Sun,  8 Nov 2020 09:02:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BB7162AAA06
+	for <lists+linux-kernel@lfdr.de>; Sun,  8 Nov 2020 09:09:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727332AbgKHICH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 8 Nov 2020 03:02:07 -0500
-Received: from out30-54.freemail.mail.aliyun.com ([115.124.30.54]:44737 "EHLO
-        out30-54.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726062AbgKHICG (ORCPT
+        id S1727457AbgKHIHQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 8 Nov 2020 03:07:16 -0500
+Received: from out30-43.freemail.mail.aliyun.com ([115.124.30.43]:41536 "EHLO
+        out30-43.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726062AbgKHIHQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 8 Nov 2020 03:02:06 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R171e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04394;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=4;SR=0;TI=SMTPD_---0UEadUVK_1604822521;
-Received: from aliy80.localdomain(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0UEadUVK_1604822521)
+        Sun, 8 Nov 2020 03:07:16 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R581e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=alimailimapcm10staff010182156082;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=3;SR=0;TI=SMTPD_---0UEZhB8b_1604822833;
+Received: from IT-FVFX43SYHV2H.lan(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0UEZhB8b_1604822833)
           by smtp.aliyun-inc.com(127.0.0.1);
-          Sun, 08 Nov 2020 16:02:01 +0800
+          Sun, 08 Nov 2020 16:07:14 +0800
+Subject: Re: [PATCH] fs/ntfs: remove unused varible attr_len
 From:   Alex Shi <alex.shi@linux.alibaba.com>
-Cc:     Antonino Daplas <adaplas@gmail.com>, linux-fbdev@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] video: fbdev: riva: remove some unused varibles
-Date:   Sun,  8 Nov 2020 16:01:59 +0800
-Message-Id: <1604822519-65607-1-git-send-email-alex.shi@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
+Cc:     Anton Altaparmakov <anton@tuxera.com>,
+        linux-ntfs-dev@lists.sourceforge.net, linux-kernel@vger.kernel.org
+References: <1604822056-65430-1-git-send-email-alex.shi@linux.alibaba.com>
+Message-ID: <4194376f-898b-b602-81c3-210567712092@linux.alibaba.com>
+Date:   Sun, 8 Nov 2020 16:06:54 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
+ Gecko/20100101 Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+In-Reply-To: <1604822056-65430-1-git-send-email-alex.shi@linux.alibaba.com>
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
 To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Couple of variables are actually useless, remove them to save some gcc
-warning:
-drivers/video/fbdev/riva/riva_hw.c:250:21: warning: variable ‘mlwm’ set
-but not used [-Wunused-but-set-variable]
-drivers/video/fbdev/riva/riva_hw.c:665:15: warning: variable ‘vraw’ set
-but not used [-Wunused-but-set-variable]
-drivers/video/fbdev/riva/riva_hw.c:665:9: warning: variable ‘craw’ set
-but not used [-Wunused-but-set-variable]
-drivers/video/fbdev/riva/riva_hw.c:659:73: warning: variable ‘align’ set
-but not used [-Wunused-but-set-variable]
-drivers/video/fbdev/riva/riva_hw.c:659:50: warning: variable
-‘color_key_enable’ set but not used [-Wunused-but-set-variable]
+
+
+在 2020/11/8 下午3:54, Alex Shi 写道:
+>  	 */
+> -	attr_len = le32_to_cpu(a->length);
+> +	le32_to_cpu(a->length);
+
+This line is also useless. and should be removed. so:
+
+From d1c6de723995adeeecb90c6fd77811dd85b697e6 Mon Sep 17 00:00:00 2001
+From: Alex Shi <alex.shi@linux.alibaba.com>
+Date: Sun, 8 Nov 2020 15:52:32 +0800
+Subject: [PATCH] fs/ntfs: remove unused varible attr_len
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+This varible isn't used anymore, remove it to skip W=1 warning:
+fs/ntfs/inode.c:2350:6: warning: variable ‘attr_len’ set but not used
+[-Wunused-but-set-variable]
 
 Signed-off-by: Alex Shi <alex.shi@linux.alibaba.com>
-Cc: Antonino Daplas <adaplas@gmail.com> 
-Cc: linux-fbdev@vger.kernel.org 
-Cc: dri-devel@lists.freedesktop.org 
-Cc: linux-kernel@vger.kernel.org 
 ---
- drivers/video/fbdev/riva/riva_hw.c | 14 +++-----------
- 1 file changed, 3 insertions(+), 11 deletions(-)
+ fs/ntfs/inode.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-diff --git a/drivers/video/fbdev/riva/riva_hw.c b/drivers/video/fbdev/riva/riva_hw.c
-index 4168ac464565..bcf9c4b4de31 100644
---- a/drivers/video/fbdev/riva/riva_hw.c
-+++ b/drivers/video/fbdev/riva/riva_hw.c
-@@ -247,14 +247,13 @@ static int nv3_iterate(nv3_fifo_info *res_info, nv3_sim_state * state, nv3_arb_i
-     int mburst_size = 32;
-     int mmisses, gmisses, vmisses;
-     int misses;
--    int vlwm, glwm, mlwm;
-+    int vlwm, glwm;
-     int last, next, cur;
-     int max_gfsize ;
-     long ns;
+diff --git a/fs/ntfs/inode.c b/fs/ntfs/inode.c
+index caf563981532..f7e4cbc26eaf 100644
+--- a/fs/ntfs/inode.c
++++ b/fs/ntfs/inode.c
+@@ -2347,7 +2347,6 @@ int ntfs_truncate(struct inode *vi)
+ 	ATTR_RECORD *a;
+ 	const char *te = "  Leaving file length out of sync with i_size.";
+ 	int err, mp_size, size_change, alloc_change;
+-	u32 attr_len;
  
-     vlwm = 0;
-     glwm = 0;
--    mlwm = 0;
-     vfsize = 0;
-     gfsize = 0;
-     cur = ainfo->cur;
-@@ -656,13 +655,12 @@ static char nv3_get_param(nv3_fifo_info *res_info, nv3_sim_state * state, nv3_ar
-     nv4_sim_state *arb
- )
- {
--    int data, pagemiss, cas,width, video_enable, color_key_enable, bpp, align;
-+    int data, pagemiss, cas,width, video_enable, bpp;
-     int nvclks, mclks, pclks, vpagemiss, crtpagemiss, vbs;
-     int found, mclk_extra, mclk_loop, cbs, m1, p1;
-     int mclk_freq, pclk_freq, nvclk_freq, mp_enable;
-     int us_m, us_n, us_p, video_drain_rate, crtc_drain_rate;
-     int vpm_us, us_video, vlwm, video_fill_us, cpm_us, us_crt,clwm;
--    int craw, vraw;
- 
-     fifo->valid = 1;
-     pclk_freq = arb->pclk_khz;
-@@ -672,9 +670,7 @@ static char nv3_get_param(nv3_fifo_info *res_info, nv3_sim_state * state, nv3_ar
-     cas = arb->mem_latency;
-     width = arb->memory_width >> 6;
-     video_enable = arb->enable_video;
--    color_key_enable = arb->gr_during_vid;
-     bpp = arb->pix_bpp;
--    align = arb->mem_aligned;
-     mp_enable = arb->enable_mp;
-     clwm = 0;
-     vlwm = 0;
-@@ -782,8 +778,6 @@ static char nv3_get_param(nv3_fifo_info *res_info, nv3_sim_state * state, nv3_ar
-                 mclk_extra--;
-             }
-         }
--        craw = clwm;
--        vraw = vlwm;
-         if (clwm < 384) clwm = 384;
-         if (vlwm < 128) vlwm = 128;
-         data = (int)(clwm);
-@@ -842,7 +836,7 @@ static char nv3_get_param(nv3_fifo_info *res_info, nv3_sim_state * state, nv3_ar
-     nv10_sim_state *arb
- )
- {
--    int data, pagemiss, cas,width, video_enable, color_key_enable, bpp, align;
-+    int data, pagemiss, cas,width, video_enable, bpp;
-     int nvclks, mclks, pclks, vpagemiss, crtpagemiss, vbs;
-     int nvclk_fill, us_extra;
-     int found, mclk_extra, mclk_loop, cbs, m1;
-@@ -863,9 +857,7 @@ static char nv3_get_param(nv3_fifo_info *res_info, nv3_sim_state * state, nv3_ar
-     cas = arb->mem_latency;
-     width = arb->memory_width/64;
-     video_enable = arb->enable_video;
--    color_key_enable = arb->gr_during_vid;
-     bpp = arb->pix_bpp;
--    align = arb->mem_aligned;
-     mp_enable = arb->enable_mp;
-     clwm = 0;
-     vlwm = 1024;
+ 	ntfs_debug("Entering for inode 0x%lx.", vi->i_ino);
+ 	BUG_ON(NInoAttr(ni));
+@@ -2721,7 +2720,6 @@ int ntfs_truncate(struct inode *vi)
+ 	 * this cannot fail since we are making the attribute smaller thus by
+ 	 * definition there is enough space to do so.
+ 	 */
+-	attr_len = le32_to_cpu(a->length);
+ 	err = ntfs_attr_record_resize(m, a, mp_size +
+ 			le16_to_cpu(a->data.non_resident.mapping_pairs_offset));
+ 	BUG_ON(err);
 -- 
 1.8.3.1
 
