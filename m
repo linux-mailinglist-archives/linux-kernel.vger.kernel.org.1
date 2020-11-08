@@ -2,78 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2218E2AA90B
-	for <lists+linux-kernel@lfdr.de>; Sun,  8 Nov 2020 05:12:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D4932AA90D
+	for <lists+linux-kernel@lfdr.de>; Sun,  8 Nov 2020 05:15:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727494AbgKHEMQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Nov 2020 23:12:16 -0500
-Received: from www262.sakura.ne.jp ([202.181.97.72]:62949 "EHLO
-        www262.sakura.ne.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726062AbgKHEMP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Nov 2020 23:12:15 -0500
-Received: from fsav101.sakura.ne.jp (fsav101.sakura.ne.jp [27.133.134.228])
-        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 0A84CDPO039523;
-        Sun, 8 Nov 2020 13:12:13 +0900 (JST)
-        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
-Received: from www262.sakura.ne.jp (202.181.97.72)
- by fsav101.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav101.sakura.ne.jp);
- Sun, 08 Nov 2020 13:12:13 +0900 (JST)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav101.sakura.ne.jp)
-Received: from [192.168.1.9] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
-        (authenticated bits=0)
-        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 0A84CDQ5039516
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
-        Sun, 8 Nov 2020 13:12:13 +0900 (JST)
-        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
-Subject: Re: [PATCH 1/2] tomoyo: Convert get_user_pages*() to
- pin_user_pages*()
-To:     John Hubbard <jhubbard@nvidia.com>,
-        Souptick Joarder <jrdr.linux@gmail.com>
-Cc:     linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Jan Kara <jack@suse.cz>,
-        Matthew Wilcox <willy@infradead.org>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>
-References: <1604737451-19082-1-git-send-email-jrdr.linux@gmail.com>
- <e5401549-8c31-2c6d-58dd-864232de17af@nvidia.com>
- <e6859981-bc3c-9513-99e5-a99849786156@nvidia.com>
- <5efeb909-3e02-ba14-7a86-f18562a2fe69@i-love.sakura.ne.jp>
- <8590eb4c-256b-9ab0-5291-de8ec8d75276@nvidia.com>
-From:   Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
-Message-ID: <40bd424d-6c4d-8b03-5d97-c572ca777b77@i-love.sakura.ne.jp>
-Date:   Sun, 8 Nov 2020 13:12:09 +0900
-User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        id S1727829AbgKHEO7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Nov 2020 23:14:59 -0500
+Received: from vps0.lunn.ch ([185.16.172.187]:41234 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726062AbgKHEO7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 7 Nov 2020 23:14:59 -0500
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
+        (envelope-from <andrew@lunn.ch>)
+        id 1kbc6J-005rwH-Hv; Sun, 08 Nov 2020 05:14:47 +0100
+Date:   Sun, 8 Nov 2020 05:14:47 +0100
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Sven Van Asbroeck <thesven73@gmail.com>
+Cc:     Bryan Whitehead <bryan.whitehead@microchip.com>,
+        David S Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
+        Roelof Berg <rberg@berg-solutions.de>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] lan743x: correctly handle chips with internal PHY
+Message-ID: <20201108041447.GZ933237@lunn.ch>
+References: <20201106134324.20656-1-TheSven73@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <8590eb4c-256b-9ab0-5291-de8ec8d75276@nvidia.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201106134324.20656-1-TheSven73@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020/11/08 11:17, John Hubbard wrote:
->> Excuse me, but Documentation/core-api/pin_user_pages.rst says
->> "CASE 5: Pinning in order to _write_ to the data within the page"
->> while tomoyo_dump_page() is for "_read_ the data within the page".
->> Do we want to convert to pin_user_pages_remote() or lock_page() ?
->>
+On Fri, Nov 06, 2020 at 08:43:24AM -0500, Sven Van Asbroeck wrote:
+> From: Sven Van Asbroeck <thesven73@gmail.com>
 > 
-> Sorry, I missed the direction here, was too focused on the Case 5
-> aspect. Yes. Case 5 (which, again, I think we're about to re-document)
-> is only about *writing* to data within the page.
+> Commit 6f197fb63850 ("lan743x: Added fixed link and RGMII support")
+> assumes that chips with an internal PHY will never have a devicetree
+> entry. This is incorrect: even for these chips, a devicetree entry
+> can be useful e.g. to pass the mac address from bootloader to chip:
 > 
-> So in this case, where it is just reading from the page, I think it's
-> already from a gup vs pup point of view.
+>     &pcie {
+>             status = "okay";
 > 
-> btw, it's not clear to me whether the current code is susceptible to any
-> sort of problem involving something writing to the page while it
-> is being dumped (I am curious). But changing from gup to pup wouldn't
-> fix that, if it were a problem. It a separate question from this patch.
+>             host@0 {
+>                     reg = <0 0 0 0 0>;
+> 
+>                     #address-cells = <3>;
+>                     #size-cells = <2>;
+> 
+>                     lan7430: ethernet@0 {
+>                             /* LAN7430 with internal PHY */
+>                             compatible = "microchip,lan743x";
+>                             status = "okay";
+>                             reg = <0 0 0 0 0>;
+>                             /* filled in by bootloader */
+>                             local-mac-address = [00 00 00 00 00 00];
+>                     };
+>             };
+>     };
+> 
+> If a devicetree entry is present, the driver will not attach the chip
+> to its internal phy, and the chip will be non-operational.
+> 
+> Fix by tweaking the phy connection algorithm:
+> - first try to connect to a phy specified in the devicetree
+>   (could be 'real' phy, or just a 'fixed-link')
+> - if that doesn't succeed, try to connect to an internal phy, even
+>   if the chip has a devnode
+> 
+> Tested on a LAN7430 with internal PHY. I cannot test a device using
+> fixed-link, as I do not have access to one.
+> 
+> Fixes: 6f197fb63850 ("lan743x: Added fixed link and RGMII support")
+> Tested-by: Sven Van Asbroeck <thesven73@gmail.com> # lan7430
+> Signed-off-by: Sven Van Asbroeck <thesven73@gmail.com>
+> ---
+> 
+> v1 -> v2:
+>     Andrew Lunn: keep patch minimal and correct, so keep open-coded version
+>     of of_phy_get_and_connect().
 
-The "struct page" tomoyo_dump_page() accesses is argv/envp arguments passed
-to execve() syscall. Therefore, these pages are not visible from threads
-except current thread, and thus there is no possibility that these pages
-are modified by other threads while current thread is reading.
+Hi Sven
+
+Why is it required to remove adapter->phy_mode? It is not clear to me
+what this change has to do with not looking for an internal PHY.
+
+> @@ -1063,6 +1065,7 @@ static int lan743x_phy_open(struct lan743x_adapter *adapter)
+>  
+>  	phy_start(phydev);
+>  	phy_start_aneg(phydev);
+> +	phy_attached_info(phydev);
+
+This also has nothing to do with the problem you are fixing. It is a
+sensible thing to do, but it should be a separate patch, and target
+net-next, since it is not a fix.
+
+	  Andrew
