@@ -2,81 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1BBE2AA8B6
-	for <lists+linux-kernel@lfdr.de>; Sun,  8 Nov 2020 02:14:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EA02E2AA8B9
+	for <lists+linux-kernel@lfdr.de>; Sun,  8 Nov 2020 02:16:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728762AbgKHBOB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Nov 2020 20:14:01 -0500
-Received: from www262.sakura.ne.jp ([202.181.97.72]:56248 "EHLO
-        www262.sakura.ne.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726060AbgKHBOB (ORCPT
+        id S1728753AbgKHBQn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Nov 2020 20:16:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56854 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725838AbgKHBQm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Nov 2020 20:14:01 -0500
-Received: from fsav108.sakura.ne.jp (fsav108.sakura.ne.jp [27.133.134.235])
-        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 0A81DxVN060525;
-        Sun, 8 Nov 2020 10:13:59 +0900 (JST)
-        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
-Received: from www262.sakura.ne.jp (202.181.97.72)
- by fsav108.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav108.sakura.ne.jp);
- Sun, 08 Nov 2020 10:13:59 +0900 (JST)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav108.sakura.ne.jp)
-Received: from [192.168.1.9] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
-        (authenticated bits=0)
-        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 0A81Dx49060520
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
-        Sun, 8 Nov 2020 10:13:59 +0900 (JST)
-        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
-Subject: Re: [PATCH 1/2] tomoyo: Convert get_user_pages*() to
- pin_user_pages*()
-To:     John Hubbard <jhubbard@nvidia.com>,
-        Souptick Joarder <jrdr.linux@gmail.com>
-Cc:     linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Jan Kara <jack@suse.cz>,
-        Matthew Wilcox <willy@infradead.org>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>
-References: <1604737451-19082-1-git-send-email-jrdr.linux@gmail.com>
- <e5401549-8c31-2c6d-58dd-864232de17af@nvidia.com>
- <e6859981-bc3c-9513-99e5-a99849786156@nvidia.com>
-From:   Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
-Message-ID: <5efeb909-3e02-ba14-7a86-f18562a2fe69@i-love.sakura.ne.jp>
-Date:   Sun, 8 Nov 2020 10:13:55 +0900
-User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        Sat, 7 Nov 2020 20:16:42 -0500
+Received: from mail.kmu-office.ch (mail.kmu-office.ch [IPv6:2a02:418:6a02::a2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9360AC0613CF
+        for <linux-kernel@vger.kernel.org>; Sat,  7 Nov 2020 17:16:42 -0800 (PST)
+Received: from webmail.kmu-office.ch (unknown [IPv6:2a02:418:6a02::a3])
+        by mail.kmu-office.ch (Postfix) with ESMTPSA id 44BBE5C0578;
+        Sun,  8 Nov 2020 02:16:38 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=agner.ch; s=dkim;
+        t=1604798198;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=dLE43ZLA8hp6UktmPV/LfyXxESj/KMWUrBP1RF1ENVY=;
+        b=DsC/Mq/XXB7fYqz/csDP6ii7P2ZroqESQeOI2mC9ux6+0qR/orbNMOgN1vhjTJA+VtOB9C
+        bFCraFNMPo/XNjKrub1zkWK/TaphtteLuzCx5zQy3p6w16pMDvDWVUIIJrbRiMsDE4s+px
+        ijemFdXgotntVsYjiqoCT0X9Zs6/0D4=
 MIME-Version: 1.0
-In-Reply-To: <e6859981-bc3c-9513-99e5-a99849786156@nvidia.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Date:   Sun, 08 Nov 2020 02:16:37 +0100
+From:   Stefan Agner <stefan@agner.ch>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     minchan@kernel.org, ngupta@vflare.org,
+        sergey.senozhatsky.work@gmail.com, sjenning@linux.vnet.ibm.com,
+        gregkh@linuxfoundation.org, arnd@arndb.de, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mm/zsmalloc: include sparsemem.h for MAX_PHYSMEM_BITS
+In-Reply-To: <20201107165645.1b139b595b6b64feaca61bcb@linux-foundation.org>
+References: <bdfa44bf1c570b05d6c70898e2bbb0acf234ecdf.1604762181.git.stefan@agner.ch>
+ <20201107165645.1b139b595b6b64feaca61bcb@linux-foundation.org>
+User-Agent: Roundcube Webmail/1.4.9
+Message-ID: <fb776accd14ddb5ec1251a6147a2ff45@agner.ch>
+X-Sender: stefan@agner.ch
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020/11/08 4:17, John Hubbard wrote:
-> On 11/7/20 1:04 AM, John Hubbard wrote:
->> On 11/7/20 12:24 AM, Souptick Joarder wrote:
->>> In 2019, we introduced pin_user_pages*() and now we are converting
->>> get_user_pages*() to the new API as appropriate. [1] & [2] could
->>> be referred for more information. This is case 5 as per document [1].
->>
->> It turns out that Case 5 can be implemented via a better pattern, as long
->> as we're just dealing with a page at a time, briefly:
->>
->> lock_page()
->> write to page's data
->> unlock_page()
->>
->> ...which neatly synchronizes with writeback and other fs activities.
+On 2020-11-08 01:56, Andrew Morton wrote:
+> On Sat,  7 Nov 2020 16:22:06 +0100 Stefan Agner <stefan@agner.ch> wrote:
 > 
-> Ahem, I left out a key step: set_page_dirty()!
+>> Most architectures define MAX_PHYSMEM_BITS in asm/sparsemem.h and don't
+>> include it in asm/pgtable.h. Include asm/sparsemem.h directly to get
+>> the MAX_PHYSMEM_BITS define on all architectures.
+>>
+>> This fixes a crash when accessing zram on 32-bit ARM platform with LPAE and
+>> more than 4GB of memory:
+>>   Unable to handle kernel NULL pointer dereference at virtual address 00000000
 > 
-> lock_page()
-> write to page's data
-> set_page_dirty()
-> unlock_page()
-> 
+> Mysterious.  Presumably without this include, some compilation unit is
+> picking up the wrong value of MAX_PHYSMEM_BITS?  But I couldn't
+> actually see where/how this occurs.  Can you please explain further?
 
-Excuse me, but Documentation/core-api/pin_user_pages.rst says 
-"CASE 5: Pinning in order to _write_ to the data within the page"
-while tomoyo_dump_page() is for "_read_ the data within the page".
-Do we want to convert to pin_user_pages_remote() or lock_page() ?
+Not sure if I got that right, but from what I understand if
+MAX_PHYSMEM_BITS is not set in mm/zsmalloc.c it will set
+MAX_PHYSMEM_BITS to BITS_PER_LONG. And this is 32-bit, too short when
+LPAE is in use...
+
+--
+Stefan
