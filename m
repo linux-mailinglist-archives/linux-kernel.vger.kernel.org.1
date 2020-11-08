@@ -2,275 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE36F2AA905
-	for <lists+linux-kernel@lfdr.de>; Sun,  8 Nov 2020 04:42:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E7D0E2AA909
+	for <lists+linux-kernel@lfdr.de>; Sun,  8 Nov 2020 05:12:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726279AbgKHDme (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Nov 2020 22:42:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51338 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726062AbgKHDmc (ORCPT
+        id S1726299AbgKHEFk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Nov 2020 23:05:40 -0500
+Received: from frasgout.his.huawei.com ([185.176.79.56]:2071 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726062AbgKHEFk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Nov 2020 22:42:32 -0500
-Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDD93C0613CF
-        for <linux-kernel@vger.kernel.org>; Sat,  7 Nov 2020 19:42:32 -0800 (PST)
-Received: by mail-ot1-x343.google.com with SMTP id i18so5350264ots.0
-        for <linux-kernel@vger.kernel.org>; Sat, 07 Nov 2020 19:42:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:subject:to:cc:references:from:autocrypt:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=LQQ0xiNqXO7jdAwxsVZwv3t5hfw3t61V5NxKoFNBwII=;
-        b=dRJ5zF1pSYV0Y6Xdd7GoUeh9+Ok1Jx6ewri+7Rgdfl2NZ0m9HyunWezj1wxbjh/pLM
-         2f40fwi7ERRazEB7mcnYVe/QqgVDam6iZNybkh8MLiXri7gzpSIrA7+Ntg3Rds0KnEsg
-         YKP2zWbmw8GpK663sMcMydODrA6EAr96J+JyCkxScOXFp0biQ/kzA5V8BAoo5M15e1Bi
-         YCA3Ui6FBB+X1OaN0gDRfWZzNPsJutcGELj01JWUFIgnlJdYyBmyDHF+MKdRgevQnnvV
-         ecfF363Famz1Dhhf8DKQUkvvk9Lr6bWPHvDM+0QFDFSw4O6G9W5Je3SlDMPyPTv+PYnk
-         5VVw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:subject:to:cc:references:from:autocrypt
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=LQQ0xiNqXO7jdAwxsVZwv3t5hfw3t61V5NxKoFNBwII=;
-        b=Ki41MHRgx/zi7YUB1Rl+2IzZ/SXU3rVCjM603QNsvc+CZixAwASle3/rRW++5KfjN4
-         m+On0G/huFbNhyiCK3LdOzZ7FpZ8M57nyflY9Os1ABxsFTbE+hRAnRspVakJKAjATfxA
-         FOTbI1NXDDPySjV1eLOZKrkeDZxaA3d6hTEWbmzC9sky3FAqzTaftXEPiIbPsc2KFvU3
-         hyXpeh5U/qGcd4tcIQwvnz4/XO3TzFrAltxZpcmfhuo5eVepJeJtW5E19ZYEOmp1WR2o
-         ZOR3ZILMG12OOj3QV047ixdfBy+Pim31YA0Mr9apaEJPsaR4OIOUTGzD1ujrOiYRcHRT
-         qnQA==
-X-Gm-Message-State: AOAM533c001ZQQkc/6FWjVzCzdp8B7NuKnYbCGCp94WNVs9dOamrt0PT
-        uTdyGQqs7Qzx/MpkRvI6xYI=
-X-Google-Smtp-Source: ABdhPJzz4TXgspdN15BX1zjTVR9VJ2JlI+EL8NJeBmBV1fMl7xLmqAD0FVqth2PGXY5p1zYFniuA4g==
-X-Received: by 2002:a05:6830:12d0:: with SMTP id a16mr5795357otq.88.1604806952189;
-        Sat, 07 Nov 2020 19:42:32 -0800 (PST)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id u19sm101930ooq.36.2020.11.07.19.42.31
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 07 Nov 2020 19:42:31 -0800 (PST)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Subject: Re: [PATCH v2]
- Add-driver-for-STMicroelectronics-PM6764-Voltage-Regulator
-To:     Charles <hsu.yungteng@gmail.com>, linux-kernel@vger.kernel.org
-Cc:     alan@redhat.com
-References: <5039acce-1a04-2b89-8818-8a68d650b4a8@gmail.com>
-From:   Guenter Roeck <linux@roeck-us.net>
-Autocrypt: addr=linux@roeck-us.net; keydata=
- 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
- mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
-Message-ID: <6d007ff9-1577-f915-34a8-b56927eff1b6@roeck-us.net>
-Date:   Sat, 7 Nov 2020 19:42:30 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <5039acce-1a04-2b89-8818-8a68d650b4a8@gmail.com>
-Content-Type: text/plain; charset=utf-8
+        Sat, 7 Nov 2020 23:05:40 -0500
+Received: from fraeml705-chm.china.huawei.com (unknown [172.18.147.200])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4CTL961B86z67Hq6;
+        Sun,  8 Nov 2020 12:04:10 +0800 (CST)
+Received: from lhreml733-chm.china.huawei.com (10.201.108.84) by
+ fraeml705-chm.china.huawei.com (10.206.15.54) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.1913.5; Sun, 8 Nov 2020 05:05:38 +0100
+Received: from dggemi761-chm.china.huawei.com (10.1.198.147) by
+ lhreml733-chm.china.huawei.com (10.201.108.84) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.1913.5; Sun, 8 Nov 2020 04:05:36 +0000
+Received: from dggemi761-chm.china.huawei.com ([10.9.49.202]) by
+ dggemi761-chm.china.huawei.com ([10.9.49.202]) with mapi id 15.01.1913.007;
+ Sun, 8 Nov 2020 12:05:35 +0800
+From:   "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>
+To:     John Hubbard <jhubbard@nvidia.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+CC:     Linuxarm <linuxarm@huawei.com>,
+        Ralph Campbell <rcampbell@nvidia.com>,
+        John Garry <john.garry@huawei.com>
+Subject: RE: [PATCH] mm/gup_benchmark: GUP_BENCHMARK depends on DEBUG_FS
+Thread-Topic: [PATCH] mm/gup_benchmark: GUP_BENCHMARK depends on DEBUG_FS
+Thread-Index: AQHWspKkrOQfdWDOqkGzzyoK3BLHUam7SjKAgAG/lxD//4AMgIAAM28AgAAckACAAK7tEP//hnEAgACOzKA=
+Date:   Sun, 8 Nov 2020 04:05:35 +0000
+Message-ID: <fa4163a5c9d34f0690d120f119f8c8ed@hisilicon.com>
+References: <20201104100552.20156-1-song.bao.hua@hisilicon.com>
+ <e8ecbf3e-438e-934e-0335-ec9b3e097022@nvidia.com>
+ <9286e2d0e17a47a1874dc4a96d83a38f@hisilicon.com>
+ <e6b74390-6a80-9aae-17b2-536ffa0d1aae@nvidia.com>
+ <a5f5b63a-ff9d-ed74-212f-f959f038b781@infradead.org>
+ <2c968615-587c-b978-7961-8391c70382b2@nvidia.com>
+ <869059977c224a3aa31bfb42a4a8148d@hisilicon.com>
+ <dd9e5f78-d627-89d6-2b9d-f2912213171f@nvidia.com>
+In-Reply-To: <dd9e5f78-d627-89d6-2b9d-f2912213171f@nvidia.com>
+Accept-Language: en-GB, en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.126.200.224]
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/5/20 11:04 PM, Charles wrote:
-> Add the pmbus driver for the STMicroelectronics pm6764 voltage regulator.
-> 
-> the output voltage use the MFR_READ_VOUT 0xD4
-> vout value returned is linear11
-> 
-> Signed-off-by: Charles Hsu <hsu.yungteng@gmail.com>
-
-I don't find this patch in hwmon patchwork. Please remember
-to cc linux-hwmon@vger.kernel.org.
-
-The subject line needs to be fixed to something like
-
-hwmon: Add driver for STMicroelectronics PM6764 Voltage Regulator
-
-(hwmon tag and no dashes).
-
-> ---
-> v2:
->  - fix formatting.
->  - remove pmbus_do_remove.
->  - Change from .probe to .probe_new. 
-> v1:
->  - Initial patchset.
-> ---
->  drivers/hwmon/pmbus/Kconfig    |  9 ++++
->  drivers/hwmon/pmbus/Makefile   |  1 +
->  drivers/hwmon/pmbus/pm6764tr.c | 79 ++++++++++++++++++++++++++++++++++
-
-Documentation (Documentation/hwmon/pm6764tr.rst) is missing.
-
->  3 files changed, 89 insertions(+)
->  create mode 100644 drivers/hwmon/pmbus/pm6764tr.c
-> 
-> diff --git a/drivers/hwmon/pmbus/Kconfig b/drivers/hwmon/pmbus/Kconfig
-> index a25faf69fce3..9c846facce9f 100644
-> --- a/drivers/hwmon/pmbus/Kconfig
-> +++ b/drivers/hwmon/pmbus/Kconfig
-> @@ -220,6 +220,15 @@ config SENSORS_MP2975
->  	  This driver can also be built as a module. If so, the module will
->  	  be called mp2975.
->  
-> +config SENSORS_PM6764TR
-> +	tristate "ST PM6764TR"
-> +	help
-> +	  If you say yes here you get hardware monitoring support for ST
-> +	  PM6764TR.
-> +
-> +	  This driver can also be built as a module. If so, the module will
-> +	  be called pm6764tr.
-> +
->  config SENSORS_PXE1610
->  	tristate "Infineon PXE1610"
->  	help
-> diff --git a/drivers/hwmon/pmbus/Makefile b/drivers/hwmon/pmbus/Makefile
-> index 4c97ad0bd791..31ebdef5d4a6 100644
-> --- a/drivers/hwmon/pmbus/Makefile
-> +++ b/drivers/hwmon/pmbus/Makefile
-> @@ -25,6 +25,7 @@ obj-$(CONFIG_SENSORS_MAX31785)	+= max31785.o
->  obj-$(CONFIG_SENSORS_MAX34440)	+= max34440.o
->  obj-$(CONFIG_SENSORS_MAX8688)	+= max8688.o
->  obj-$(CONFIG_SENSORS_MP2975)	+= mp2975.o
-> +obj-$(CONFIG_SENSORS_PM6764TR)	+= pm6764tr.o
->  obj-$(CONFIG_SENSORS_PXE1610)	+= pxe1610.o
->  obj-$(CONFIG_SENSORS_TPS40422)	+= tps40422.o
->  obj-$(CONFIG_SENSORS_TPS53679)	+= tps53679.o
-> diff --git a/drivers/hwmon/pmbus/pm6764tr.c b/drivers/hwmon/pmbus/pm6764tr.c
-> new file mode 100644
-> index 000000000000..590435f8e69e
-> --- /dev/null
-> +++ b/drivers/hwmon/pmbus/pm6764tr.c
-> @@ -0,0 +1,79 @@
-> +// SPDX-License-Identifier: GPL-2.0+
-> +/*
-> + * Hardware monitoring driver for Renesas Digital Multiphase Voltage Regulators
-> + *
-
-Renesas ? Is this a cut-and-paste error ?
-
-> + */
-> +
-> +#include <linux/err.h>
-> +#include <linux/i2c.h>
-> +#include <linux/init.h>
-> +#include <linux/kernel.h>
-> +#include <linux/module.h>
-> +#include <linux/mutex.h>
-> +#include "pmbus.h"
-
-This should be the last include file (local includes always come last).
-
-> +#include <linux/pmbus.h>
-> +#include <linux/slab.h>
-> +
-> +#define PM6764TR_PMBUS_READ_VOUT	0xD4
-> +
-> +static int pm6764tr_read_word_data(struct i2c_client *client, int page, int reg)
-> +{
-> +	int ret;
-> +
-> +	switch (reg) {
-> +	case PMBUS_VIRT_READ_VMON:
-> +		ret = pmbus_read_word_data(client, page, PM6764TR_PMBUS_READ_VOUT);
-> +		break;
-> +	default:
-> +		ret = -ENODATA;
-> +		break;
-> +	}
-> +	return ret;
-> +}
-> +
-> +static struct pmbus_driver_info pm6764tr_info = {
-> +	.pages = 1,
-> +	.format[PSC_VOLTAGE_IN] = linear,
-> +	.format[PSC_VOLTAGE_OUT] = vid,
-> +	.format[PSC_TEMPERATURE] = linear,
-> +	.format[PSC_CURRENT_OUT] = linear,
-> +	.format[PSC_POWER] = linear,
-> +	.func[0] = PMBUS_HAVE_VIN | PMBUS_HAVE_IIN |  PMBUS_HAVE_PIN |
-> +	    PMBUS_HAVE_IOUT | PMBUS_HAVE_POUT | PMBUS_HAVE_VMON |
-> +		PMBUS_HAVE_STATUS_IOUT | PMBUS_HAVE_STATUS_VOUT |
-> +		PMBUS_HAVE_TEMP | PMBUS_HAVE_STATUS_TEMP,
-> +	.read_word_data = pm6764tr_read_word_data,
-> +};
-> +
-> +static int pm6764tr_probe(struct i2c_client *client,
-> +			  const struct i2c_device_id *id)
-> +{
-> +	return pmbus_do_probe(client, id, &pm6764tr_info);
-> +}
-> +
-> +static const struct i2c_device_id pm6764tr_id[] = {
-> +	{"pm6764tr", 0},
-> +	{}
-> +};
-> +MODULE_DEVICE_TABLE(i2c, pm6764tr_id);
-> +
-> +static const struct of_device_id pm6764tr_of_match[] = {
-> +	{.compatible = "pm6764tr"},
-> +	{}
-> +};
-> +
-> +/* This is the driver that will be inserted */
-> +static struct i2c_driver pm6764tr_driver = {
-> +	.driver = {
-> +		   .name = "pm6764tr",
-> +		   .of_match_table = of_match_ptr(pm6764tr_of_match),
-> +		   },
-> +	.probe_new = pm6764tr_probe,
-> +	.id_table = pm6764tr_id,
-> +};
-> +
-> +module_i2c_driver(pm6764tr_driver);
-> +
-> +MODULE_AUTHOR("Charles Hsu");
-> +MODULE_DESCRIPTION("PMBus driver for  ST PM6764TR");
-> +MODULE_LICENSE("GPL");
-> -- 
-> 2.25.1
-> 
-
+DQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogSm9obiBIdWJiYXJkIFtt
+YWlsdG86amh1YmJhcmRAbnZpZGlhLmNvbV0NCj4gU2VudDogU3VuZGF5LCBOb3ZlbWJlciA4LCAy
+MDIwIDQ6MTQgUE0NCj4gVG86IFNvbmcgQmFvIEh1YSAoQmFycnkgU29uZykgPHNvbmcuYmFvLmh1
+YUBoaXNpbGljb24uY29tPjsgUmFuZHkgRHVubGFwDQo+IDxyZHVubGFwQGluZnJhZGVhZC5vcmc+
+OyBha3BtQGxpbnV4LWZvdW5kYXRpb24ub3JnOyBsaW51eC1tbUBrdmFjay5vcmc7DQo+IGxpbnV4
+LWtlcm5lbEB2Z2VyLmtlcm5lbC5vcmcNCj4gQ2M6IExpbnV4YXJtIDxsaW51eGFybUBodWF3ZWku
+Y29tPjsgUmFscGggQ2FtcGJlbGwNCj4gPHJjYW1wYmVsbEBudmlkaWEuY29tPjsgSm9obiBHYXJy
+eSA8am9obi5nYXJyeUBodWF3ZWkuY29tPg0KPiBTdWJqZWN0OiBSZTogW1BBVENIXSBtbS9ndXBf
+YmVuY2htYXJrOiBHVVBfQkVOQ0hNQVJLIGRlcGVuZHMgb24NCj4gREVCVUdfRlMNCj4gDQo+IE9u
+IDExLzcvMjAgNjo1OCBQTSwgU29uZyBCYW8gSHVhIChCYXJyeSBTb25nKSB3cm90ZToNCj4gPj4g
+T24gMTEvNy8yMCAyOjIwIFBNLCBSYW5keSBEdW5sYXAgd3JvdGU6DQo+ID4+PiBPbiAxMS83LzIw
+IDExOjE2IEFNLCBKb2huIEh1YmJhcmQgd3JvdGU6DQo+ID4+Pj4gT24gMTEvNy8yMCAxMTowNSBB
+TSwgU29uZyBCYW8gSHVhIChCYXJyeSBTb25nKSB3cm90ZToNCj4gPj4+Pj4+IEZyb206IEpvaG4g
+SHViYmFyZCBbbWFpbHRvOmpodWJiYXJkQG52aWRpYS5jb21dDQo+ID4+Pj4gLi4uDQo+ID4+IEJ1
+dCBpZiB5b3UgcmVhbGx5IGRpc2FncmVlLCB0aGVuIEknZCBnbyB3aXRoLCBqdXN0IGRyb3AgdGhl
+IHBhdGNoIGVudGlyZWx5LA0KPiBiZWNhdXNlDQo+ID4+IGl0IGRvZXNuJ3QgcmVhbGx5IG1ha2Ug
+dGhpbmdzIGJldHRlciBhcyB3cml0dGVuLi4uSU1ITyBhbnl3YXkuIDopDQo+ID4NCj4gPiBKdXN0
+IGltYWdpbmUgYSBjYXNlLCB3ZSBkb24ndCBlbmFibGUgREVCVUdfRlMgYnV0IHdlIGVuYWJsZSBH
+VVBfVEVTVCwgd2UNCj4gd2lsbA0KPiA+IGdldCBhbiBpbWFnZSB3aXRoIHRvdGFsbHkgdXNlbGVz
+cyBjb2RlIHNlY3Rpb24gc2luY2UgR1VQX1RFU1QgZGVwZW5kcyBvbg0KPiBkZWJ1Z2ZzDQo+ID4g
+ZW50cnkgdG8gcGVyZm9ybSBhbnkgdXNlZnVsIGZ1bmN0aW9uYWxpdHkuDQo+ID4NCj4gDQo+IExv
+b2tpbmcgYXQgdGhlIGNob2ljZXMsIGZyb20gdGhlIHVzZXIncyAodXN1YWxseSBrZXJuZWwgZGV2
+ZWxvcGVyJ3MpIGV4cGVyaWVuY2U6DQo+IA0KPiBhKSBUaGUgdXNlciBlbmFibGVzIEdVUF9URVNU
+LCB0aGVuIGJvb3RzIHVwLCBydW5zLCBhbmQgaXMgYnJpZWZseSBzdXJwcmlzZWQgYnkgYQ0KPiBy
+dW50aW1lIGZhaWx1cmUuIEJ1dCBpdCdzIGEgdmVyeSBxdWljayBkaWFnbm9zaXM6ICJvcGVuOiBO
+byBzdWNoIGZpbGUgb3INCj4gZGlyZWN0b3J5IiwNCj4gd2hlbiB0cnlpbmcgdG8gbWFrZSB0aGF0
+IGlvY3RsIGNhbGwuIFRoZSBwYXRoIGluZGljYXRlcyB0aGF0IGl0J3MgYSBkZWJ1ZyBmcyBwYXRo
+LA0KPiBzbyB0aGUgc29sdXRpb24gaXMgcHJldHR5IGNsZWFyLCBhdCBsZWFzdCBmb3IgdGhlIG1h
+aW4gYXVkaWVuY2UuDQoNCnVzZXJzIGNvdWxkIGhhdmUgdGhlc2UgdHdvIGRpZmZlcmVudCBzdG9y
+aWVzOg0KU3RvcnkgQToNCnVzZXJzIHdhbnQgdG8gdXNlIEdVUF9URVNULCBzbyB0aGV5IHNpbXBs
+eSBlbmFibGUgR1VQX1RFU1QsIGJ1aWxkIGEga2VybmVsDQphbmQgcnVuIHRoZSB0ZXN0LiBUaGVu
+IHRoZXkgZ2V0IGZhaWxlZCBhdCBydW50aW1lIGJ1dCB0aGUga2VybmVsIGJ1aWxkIGhhcyBubw0K
+YW55IGlzc3VlLg0KDQpUaGVuIHRoZXkgaGF2ZSB0byByZWFkIHRoZSBjb2RlLCBhbmQgZmlndXJl
+IG91dCBERUJVR19GUyBpcyBhIG11c3QtaGF2ZSwgdGhlbg0KdGhleSBlbmFibGUgREVCVUdfRlMg
+YWZ0ZXJ3YXJkcy4gQWZ0ZXIgdGhhdCwgdGhleSByZS1idWlsZCBrZXJuZWwgYW5kIHJlLXRlc3Qu
+DQoNClVzZXJzIG1pZ2h0IGhhdmUgd2FzdGVkIG9uZSBob3VyIG9uIGl0Lg0KDQpTdG9yeSBCOg0K
+aWYgd2UgcHV0ICJkZXBlbmRzIG9uIiwgdXNlcnMgd2FudCB0byB1c2UgR1VQX1RFU1QsIHRoZW4g
+dGhleSB0cnkgdG8NCmVuYWJsZSAiR1VQX1RFU1QiLCBidXQgdGhleSBjb3VsZG4ndCBlbmFibGUg
+aXQgYXQgYWxsIHNpbmNlIERFQlVHX0ZTIGlzDQpub3QgZW5hYmxlZC4NCg0KQW5kIHRoZXkgdXNl
+ICIvIiB0byBzZWFyY2ggR1VQX1RFU1QsIG1lbnVjb25maWcgd2lsbCBzaG93ICJHVVBfVEVTVCIN
+CmRlcGVuZCBvbiAiREVCVUdfRlMiLCB0aGV5IHdpbGwgZW5hYmxlIERFQlVHX0ZTIHRvIGdldCBH
+VVBfVEVTVA0KZW5hYmxlZC4NCg0KRm9yIHN0b3J5IEIsIHVzZXJzIG9ubHkgc3BlbmQgb25lIG1p
+bnV0ZSBpbiBtZW51Y29uZmlnIDotKQ0KDQo+IA0KPiBiKSBUaGUgb3RoZXIgY2hvaWNlOiB0aGUg
+dXNlciAqbmV2ZXIgZXZlbiBzZWVzKiBHVVBfVEVTVCBhcyBhIGNob2ljZS4gVGhpcw0KPiBlc3Bl
+Y2lhbGx5DQo+IGJvdGhlcnMgbWUgYmVjYXVzZSBzb21ldGltZXMgeW91IGZpbmQgdGhpbmdzIGJ5
+IHBva2luZyBhcm91bmQgaW4gdGhlIG1lbnUsDQo+IGFsdGhvdWdoDQo+IG9mIGNvdXJzZSAieW91
+IHNob3VsZCBhbHJlYWR5IGtub3cgYWJvdXQgaXQiLi4uYnV0IHRoZXJlJ3MgYSBsb3QgdG8gImFs
+cmVhZHkNCj4ga25vdyINCj4gaW4gYSBsYXJnZSBrZXJuZWwuDQo+IA0KPiAgRnJvbSBhIHVzZXIg
+ZXhwZXJpZW5jZSwgaXQncyB3YXkgYmV0dGVyIHRvIHNpbXBseSBzZWUgd2hhdCB5b3Ugd2FudCwg
+YW5kDQo+IHNlbGVjdCBpdA0KPiBpbiB0aGUgbWVudS4gT3IsIGF0IGxlYXN0IGdldCBzb21lIHBy
+b21wdCB0aGF0IHlvdSBuZWVkIHRvIHByZS1zZWxlY3QNCj4gc29tZXRoaW5nIGVsc2UuDQo+IA0K
+DQpJZiB3ZSB0eXBlICIvIiB0byBzZWFyY2ggR1VQX1RFU1QsIG1lbnVjb25maWcgd2lsbCBzaG93
+IGl0IGRlcGVuZHMgb24NCkRFQlVHX0ZTIGFuZCBzaG93IHRoZSBzdGF0dXMgb2YgREVCVUdfRlMg
+WSBvciBOLiBXb3VsZG4ndCBpdCBoYXMgYmVlbg0KYSBwcm9tcHQ/DQoNCj4gDQo+ID4gVGhlIGRp
+ZmZlcmVuY2UgYmV0d2VlbiAiZGVwZW5kcyBvbiIgYW5kICJzZWxlY3QiIGZvciB0aGlzIGNhc2Ug
+aXMgbGlrZToNCj4gPiBkZXBlbmRzIG9uOiBpZiB3ZSB3YW50IHRvIHVzZSBHVVBfVEVTVCwgd2Ug
+aGF2ZSB0byBlbmFibGUgREVCVUdfRlMgZmlyc3Q7DQo+ID4gc2VsZWN0OiBpZiB3ZSBlbmFibGUg
+R1VQX1RFU1QsIEtjb25maWcgd2lsbCBlbmFibGUgREVCVUdfRlMgYXV0b21hdGljYWxseS4NCj4g
+Pg0KPiA+IFRvIG1lLCBJIGFtIDYwJSBpbmNsaW5lZCB0byAiZGVwZW5kcyBvbiIgYXMgSSB0aGlu
+ayAiREVCVUdfRlMiIGlzIG1vcmUNCj4gPiBvZiBhIHByZS1jb25kaXRpb24gb2YgR1VQX1RFU1Qg
+dGhhbiBhbiBpbnRlcm5hbCBwYXJ0IG9mIEdVUF9URVNULiBTbyBwZW9wbGUNCj4gPiBzaG91bGQg
+cmVhbGl6ZSB0aGUgcHJlLWNvbmRpdGlvbiBtdXN0IGJlIG1ldCBiZWZvcmUgdXNpbmcgR1VQX1RF
+U1QgYW5kDQo+IA0KPiANCj4gUmlnaHQsIGJ1dCBmaXJzdCBvZiBjb3Vyc2UgdGhleSBtdXN0IHJl
+YWQgZXZlcnkgc2luZ2xlIGxpbmUgb2YgdGhlIHRlc3QgY29kZQ0KPiBjYXJlZnVsbHkuIEFuZCB3
+aGlsZSBpdCBpcyB0cnVlIHRoZSB5b3Ugb2Z0ZW4gKmRvKiBlbmQgdXAgcmVhZGluZyBtb3N0IG9y
+DQo+IGFsbCBvZiB0aGUgdGVzdCBjb2RlLCB0aGVyZSBhcmUgc2l0dWF0aW9ucyBpbiB3aGljaCB5
+b3UgZG9uJ3QgbmVlZCB0by4gV2UnZA0KPiBiZSB0YWtpbmcgYXdheSBzb21lIG9mIHRob3NlIHNp
+dHVhdGlvbnMuIDopDQo+IA0KDQpBbiBjYXJlbGVzcyBlbmdpbmVlciBsaWtlIG1lIG9mdGVuIGln
+bm9yZSBzb21lIGRlcGVuZGVuY3kgZXZlbiBhZnRlciBJIGhhdmUNCnJlYWQgY29kZSBjYXJlZnVs
+bHkuICJkZXBlbmRzIG9uIiB3aWxsIGVuZm9yY2UgbWUgdG8gcmVzb2x2ZSB0aGUgZGVwZW5kZW5j
+eQ0KZHVyaW5nIGJ1aWxkIHN0YWdlIGFuZCBzYXZlIG1lIG11Y2ggdGltZSA6LSkNCg0KPiANCj4g
+PiB0aGV5IG11c3QgbWFudWFsbHkgZW5hYmxlIGl0IGlmIHRoZXkgaGF2ZW4ndC4gVGhhdCdzIHdo
+eSBJIHRoaW5rIHRoaXMgcGF0Y2ggaXMNCj4gPiBtYWtpbmcgdGhpbmdzIGJldHRlci4NCj4gPg0K
+PiANCj4gLi4ud2hpY2ggbWFrZXMgdGhpbmdzIGEgbGl0dGxlIGJpdCB3b3JzZS4NCg0KRm9yIHRo
+aXMgY2FzZSwgSSBhbSBhbHNvIGhhcHB5IHdpdGggInNlbGVjdCIgYXMgaXQgYWxzbyByZXNvbHZl
+cyB0aGUgcHJvYmxlbSBvZg0Kc3RvcnkgQS4gSnVzdCBrY29uZmlnIGRvY3VtZW50YXRpb24gc2F5
+cyAic2VsZWN0IiBzaG91bGQgYmUgdXNlZCB3aXRoIGNhcmUuDQoNCj4gDQo+IA0KPiB0aGFua3Ms
+DQo+IC0tDQo+IEpvaG4gSHViYmFyZA0KPiBOVklESUENCg0KVGhhbmtzDQpCYXJyeQ0KDQo=
