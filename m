@@ -2,75 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 143CC2AAC94
-	for <lists+linux-kernel@lfdr.de>; Sun,  8 Nov 2020 18:18:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 428842AAC96
+	for <lists+linux-kernel@lfdr.de>; Sun,  8 Nov 2020 18:22:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728599AbgKHRSP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 8 Nov 2020 12:18:15 -0500
-Received: from rere.qmqm.pl ([91.227.64.183]:63776 "EHLO rere.qmqm.pl"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727570AbgKHRSO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 8 Nov 2020 12:18:14 -0500
-Received: from remote.user (localhost [127.0.0.1])
-        by rere.qmqm.pl (Postfix) with ESMTPSA id 4CTgnJ5d78z74;
-        Sun,  8 Nov 2020 18:18:12 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rere.qmqm.pl; s=1;
-        t=1604855892; bh=Fb/1j8jAG4oPFqa4Kck8vmLQUenZTSxCgjIpAXOUgSA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=AIz5Yrc6x+uI2w6qjn7FirriMDrq23JMdiJUv+u9X8BVcdnAkXrTFSi10cll016fE
-         7oUC3Hbovs5qSO4zIkka1V01/I7cyvI4g0fMsjB6Lzpw/hfMRHhHLYk1mq3DljsSJL
-         qU7cYImNhKxdGqq69B99FI4X282tfG7NhgRaG/Tqk/skO9iXq7dgk9vyuIvAn8u02r
-         W8z25/DMBqtT3lPRHYNEZy8pzA2s/YaLjXhpvc58JgUOPhJrfPWfX0P+23lZtxd5Yq
-         Za98QfRf15SOpDMd5F5qxTS0i+nRXnikRMtVyXkNrWowlTwNtcyixFoBNhRmeO88HV
-         6nnL6Lg6Vo52g==
-X-Virus-Status: Clean
-X-Virus-Scanned: clamav-milter 0.102.4 at mail
-Date:   Sun, 8 Nov 2020 18:18:11 +0100
-From:   =?iso-8859-2?Q?Micha=B3_Miros=B3aw?= <mirq-linux@rere.qmqm.pl>
-To:     Qu Wenruo <wqu@suse.com>
-Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        broonie@kernel.org
-Subject: Re: About regression caused by commit aea6cb99703e ("regulator:
- resolve supply after creating regulator")
-Message-ID: <20201108171811.GB10914@qmqm.qmqm.pl>
-References: <c13f1683-97c9-40b4-f740-73eaceb7c98f@suse.com>
+        id S1728626AbgKHRWI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 8 Nov 2020 12:22:08 -0500
+Received: from mail-io1-f72.google.com ([209.85.166.72]:38301 "EHLO
+        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727570AbgKHRWI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 8 Nov 2020 12:22:08 -0500
+Received: by mail-io1-f72.google.com with SMTP id e21so4233062iod.5
+        for <linux-kernel@vger.kernel.org>; Sun, 08 Nov 2020 09:22:08 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=eZACx1XpHn/TCjzHcQemMkrViEyAo5WxQGRjHxgnnxQ=;
+        b=swZsxmLRxVubv90TjJn1k2PwxpegrNuKaBEUPLyLBMgj46vx2j1m0Iy3AuT+vUNcuk
+         teRKs5eaWsntaSeNCsEo0rmqds/zaaIX2jbhw5NqeD/S6iyeR4jibFX0w+YWKy6KUjSk
+         2ydogdIV96NL3oxxiBSSJUmyevZTc2iUxd9nFOIqaV9HR+iXqPEibYAnoG/46RO2bCB+
+         qwElezJal+hHfYoTcNCEMO7fbg7OOFosjejkpZncZQ5LAR2jpco3IJ+y+xEbuYSlrMRT
+         RXIr5KaUyX8LlrJoe/p9H3+AGoMbS3ZZPmSqGYU9QQzCva0YovmEOPTiDa7gqmE8NUEG
+         AYGA==
+X-Gm-Message-State: AOAM532KvDTMIu5UkaWwRbLTQFbgGfqhsa2srfxvOItNwG5Df050CjT4
+        NIUinXJR9v1IeYgHjIOPRK+9fcmBWCP8QJ+VwXXy907tbEwD
+X-Google-Smtp-Source: ABdhPJz6eJZhahQVk2GSxFF4Y7ogqWeAQpCf2TE9sSWZqAr0QdPmPHWIO6Z1oJXfYR80t+8pyzXk7yNWshTaYh62WzNcf/NmGeIq
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-2
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <c13f1683-97c9-40b4-f740-73eaceb7c98f@suse.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Received: by 2002:a6b:d21a:: with SMTP id q26mr7285163iob.128.1604856127764;
+ Sun, 08 Nov 2020 09:22:07 -0800 (PST)
+Date:   Sun, 08 Nov 2020 09:22:07 -0800
+In-Reply-To: <00000000000018a47605af074c7d@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000006942a305b39baf75@google.com>
+Subject: Re: WARNING in syscall_exit_to_user_mode
+From:   syzbot <syzbot+7ffc7214b893651d52b8@syzkaller.appspotmail.com>
+To:     b.zolnierkie@samsung.com, christian@brauner.io,
+        dan.carpenter@oracle.com, george.kennedy@oracle.com,
+        keescook@chromium.org, linux-kernel@vger.kernel.org,
+        luto@kernel.org, mingo@kernel.org, peterz@infradead.org,
+        syzkaller-bugs@googlegroups.com, tglx@linutronix.de
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Nov 08, 2020 at 03:35:33PM +0800, Qu Wenruo wrote:
-> Hi Micha³,
-> 
-> Recently when testing v5.10-rc2, I found my RK3399 boards failed to boot
-> from NVME.
-> 
-> It turns out that, commit aea6cb99703e ("regulator: resolve supply after
-> creating regulator") seems to be the cause.
-> 
-> In RK3399 board, vpcie1v8 and vpcie0v9 of the pcie controller is
-> provided by RK808 regulator.
-> With that commit, now RK808 regulator fails to register:
-> 
-> [    1.402500] rk808-regulator rk808-regulator: there is no dvs0 gpio
-> [    1.403104] rk808-regulator rk808-regulator: there is no dvs1 gpio
-> [    1.419856] rk808 0-001b: failed to register 12 regulator
-> [    1.422801] rk808-regulator: probe of rk808-regulator failed with
-> error -22
+syzbot suspects this issue was fixed by commit:
 
-Hi,
+commit a49145acfb975d921464b84fe00279f99827d816
+Author: George Kennedy <george.kennedy@oracle.com>
+Date:   Tue Jul 7 19:26:03 2020 +0000
 
-This looks lika the problem fixed by commit cf1ad559a20d ("regulator: defer
-probe when trying to get voltage from unresolved supply") recently accepted
-to regulator tree [1]. Can you verify this?
+    fbmem: add margin check to fb_check_caps()
 
-[1] git.kernel.org/pub/scm/linux/kernel/git/broonie/regulator.git for-next 
- 
-Best Regards
-Micha³ Miros³aw
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=17a21f32500000
+start commit:   f4d51dff Linux 5.9-rc4
+git tree:       upstream
+kernel config:  https://syzkaller.appspot.com/x/.config?x=a9075b36a6ae26c9
+dashboard link: https://syzkaller.appspot.com/bug?extid=7ffc7214b893651d52b8
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=122d7335900000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=13cea1a5900000
+
+If the result looks correct, please mark the issue as fixed by replying with:
+
+#syz fix: fbmem: add margin check to fb_check_caps()
+
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
