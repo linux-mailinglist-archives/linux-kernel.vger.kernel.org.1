@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4372B2AA92A
-	for <lists+linux-kernel@lfdr.de>; Sun,  8 Nov 2020 06:17:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 335E82AA938
+	for <lists+linux-kernel@lfdr.de>; Sun,  8 Nov 2020 06:18:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728488AbgKHFRw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 8 Nov 2020 00:17:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37778 "EHLO
+        id S1728213AbgKHFSc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 8 Nov 2020 00:18:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37784 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728350AbgKHFRp (ORCPT
+        with ESMTP id S1728388AbgKHFRr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 8 Nov 2020 00:17:45 -0500
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B908C0613D2
-        for <linux-kernel@vger.kernel.org>; Sat,  7 Nov 2020 21:17:45 -0800 (PST)
-Received: by mail-wr1-x443.google.com with SMTP id l1so929704wrb.9
-        for <linux-kernel@vger.kernel.org>; Sat, 07 Nov 2020 21:17:45 -0800 (PST)
+        Sun, 8 Nov 2020 00:17:47 -0500
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1B3EC0613D2
+        for <linux-kernel@vger.kernel.org>; Sat,  7 Nov 2020 21:17:46 -0800 (PST)
+Received: by mail-wm1-x342.google.com with SMTP id s13so4951951wmh.4
+        for <linux-kernel@vger.kernel.org>; Sat, 07 Nov 2020 21:17:46 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=arista.com; s=googlenew;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=IHpfOP0PLjo6SGxXYfmRoRiTS6gCRlgiW2MJVGqZfaQ=;
-        b=O+TSAOn4fPFmoKIXVbdlQJ98zsck47iQe+/ls6bhKb4uvKtbJzkdOhtsJc0mbfhydu
-         sZgHcKXuw9/MRPnfy6Wmg/cRkC7bqf/u6PzIIEAeNCtEtMp5V9RQWnz/nT71M2Vd/xhv
-         O2HoBeXSHmtPXNYzkIVeRqCBIhXiqkcEfCy+D4m8Ne4SoDn82UI+zEuYa44LHNr4OSAH
-         TF2aUCkma1mioxA5dfSrdwOzQCT4Zig0c9VAJ/ygsIZCUF39dIaDnjdOsDZfr05z3FLf
-         wQqmnDI0lwxVuNwXmDsGT2J+jdu86CqZ+5cIFQcoP53IE1eqS0Uik0qgHVbqkrfbXR62
-         YKkQ==
+        bh=jNfLr2MUDn+yRnjMBh+JTqbF61rd26wUzAa4aRLLOQ0=;
+        b=HEI8SQGYtXIV+QZl6JJjDaPUkZG0ISuzaeDIP6HZy6g9tm5OgDQurVVWtVk5GINgh6
+         71oVVjA05Of0/EFMg720id1UOgeo9/3e0cHlMhRvyWuYJ+8gNcGr6LLRbZMbWbtgwbnJ
+         d8my0E6zwFxl5JW9RUwh9C4oqKTz+l3tVZiaEJNUcZ6PoZnLjmtpdfOw5fwxsSb9JuUz
+         ntuCgLeorOdFc5Oh1d4k/rfgCGMo/oZpdFPGlzDEi01qURYX0oT52mo8K4zBHtR6/3LO
+         Mj4rJmVnajEF6qbrdR/yhaE1EjZGP2PlUA5QE4FT+vTsWcQBU8EjaaSPg6snBSkKeuA+
+         1rng==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=IHpfOP0PLjo6SGxXYfmRoRiTS6gCRlgiW2MJVGqZfaQ=;
-        b=EpNVworNW/zwljA1QQeC+00Gs1MGUpp9hzlLcLqljnBDnmvvbreNj3qGkIEEMcPqly
-         ahJHjiTFgE+KWqr5y3eYRn1eGeJbThIcdOz41sFEyeLasXr9VI3demvuQyfJfcp0p3uw
-         K1ihXQNtpcKQ5CueF3TcVXwXdB4mtiuJPQjQtG5biDRwCWNKSWFQcL3c414NPRrBRn2p
-         kmbkkO8J/WcjMSm6SzAD6TE9azG7Y3mmSxlOft5Py1ENQVPKX8dIMMlkP009cZvhzmp4
-         qdQyXfX5/+0zMT0gD82YM8R5CghVTVY7mnUzgRqBLQyXKSkZrkOXAYFz2PMjwmcPjn4I
-         YVeQ==
-X-Gm-Message-State: AOAM530Ho7003N8yHjgb41/OYF5/KcnqjHQ2rnZr3CVXb9hQ7adgkK+1
-        acESkeSmw1vXk/0n+t0nExlDhxxZo4wL+SzW
-X-Google-Smtp-Source: ABdhPJzbarch1wGZx8GRoQgzMCVxjKfl2OJ7eJ/uAvxhw0QMzi5aOn7+2cxwpSZYOXsmXlc5b4HagA==
-X-Received: by 2002:adf:f083:: with SMTP id n3mr11009579wro.391.1604812663864;
-        Sat, 07 Nov 2020 21:17:43 -0800 (PST)
+        bh=jNfLr2MUDn+yRnjMBh+JTqbF61rd26wUzAa4aRLLOQ0=;
+        b=febx9jQcYGv2IMXnJ/bl+S6Ub8QnPyWSj0hgJnDox2B8pBCF5rUGrLFaN2X1dVuHB1
+         ShHvnSytPM5L+pQl7vvpQil25mBXqLZGqRrINDXeY0LsZUoqexzI3QMR7Rc48l7Z3kA4
+         /jgG56LejyV08TW12N+9k1zt61BxCD0qv6epMctFwZ1dv1IyGHlMvZkYsuiQDExeauIx
+         YId+bDBEm93xo5vTnnGvSAEzuJKZepGTI9JN4k0GTmXfbPFVI+fftmvgLLez84BFwEnA
+         AiqZHRFICh0kvHFqxJ4bD9GH0oYQuebjJPEHzY/1ojw0mrTYxrqDGkmSOYjQixW8Sh7c
+         aczw==
+X-Gm-Message-State: AOAM530W+SV+DLaqz84ly1a2k2xeacAkEhl7M3BXM1QtGGvgPapmTdXv
+        KE63cgvGYi/IY0i+Ccim+x19tDxNk5ojXJUs
+X-Google-Smtp-Source: ABdhPJzn8OMvPlB5ADLsaEbzJcXV9HtJJO6R7x4EgeCZCrjs+1+6ZvuUSpkVxJDwjTHCtpjhyRtYCA==
+X-Received: by 2002:a1c:2803:: with SMTP id o3mr7477214wmo.97.1604812665214;
+        Sat, 07 Nov 2020 21:17:45 -0800 (PST)
 Received: from localhost.localdomain ([2a02:8084:e84:2480:228:f8ff:fe6f:83a8])
-        by smtp.gmail.com with ESMTPSA id r10sm8378462wmg.16.2020.11.07.21.17.42
+        by smtp.gmail.com with ESMTPSA id r10sm8378462wmg.16.2020.11.07.21.17.43
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 07 Nov 2020 21:17:43 -0800 (PST)
+        Sat, 07 Nov 2020 21:17:44 -0800 (PST)
 From:   Dmitry Safonov <dima@arista.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     Dmitry Safonov <0x7f454c46@gmail.com>,
@@ -65,10 +65,13 @@ Cc:     Dmitry Safonov <0x7f454c46@gmail.com>,
         Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
         Thomas Gleixner <tglx@linutronix.de>,
         Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Will Deacon <will@kernel.org>, x86@kernel.org
-Subject: [PATCH 08/19] arm/vdso: Remove vdso pointer from mm->context
-Date:   Sun,  8 Nov 2020 05:17:18 +0000
-Message-Id: <20201108051730.2042693-9-dima@arista.com>
+        Will Deacon <will@kernel.org>, x86@kernel.org,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>, linux-s390@vger.kernel.org
+Subject: [PATCH 09/19] s390/vdso: Remove vdso_base pointer from mm->context
+Date:   Sun,  8 Nov 2020 05:17:19 +0000
+Message-Id: <20201108051730.2042693-10-dima@arista.com>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20201108051730.2042693-1-dima@arista.com>
 References: <20201108051730.2042693-1-dima@arista.com>
@@ -80,64 +83,58 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Not used any more.
 
+Cc: Christian Borntraeger <borntraeger@de.ibm.com>
+Cc: Heiko Carstens <hca@linux.ibm.com>
+Cc: Vasily Gorbik <gor@linux.ibm.com>
+Cc: linux-s390@vger.kernel.org
 Signed-off-by: Dmitry Safonov <dima@arista.com>
 ---
- arch/arm/include/asm/mmu.h |  3 ---
- arch/arm/kernel/vdso.c     | 12 ------------
- 2 files changed, 15 deletions(-)
+ arch/s390/include/asm/mmu.h |  1 -
+ arch/s390/kernel/vdso.c     | 10 ----------
+ 2 files changed, 11 deletions(-)
 
-diff --git a/arch/arm/include/asm/mmu.h b/arch/arm/include/asm/mmu.h
-index 1592a4264488..2397b0a19f59 100644
---- a/arch/arm/include/asm/mmu.h
-+++ b/arch/arm/include/asm/mmu.h
-@@ -12,9 +12,6 @@ typedef struct {
- #endif
- 	unsigned int	vmalloc_seq;
- 	unsigned long	sigpage;
--#ifdef CONFIG_VDSO
--	unsigned long	vdso;
--#endif
- #ifdef CONFIG_BINFMT_ELF_FDPIC
- 	unsigned long	exec_fdpic_loadmap;
- 	unsigned long	interp_fdpic_loadmap;
-diff --git a/arch/arm/kernel/vdso.c b/arch/arm/kernel/vdso.c
-index 710e5ca99a53..4b39c7d8f525 100644
---- a/arch/arm/kernel/vdso.c
-+++ b/arch/arm/kernel/vdso.c
-@@ -47,17 +47,8 @@ static const struct vm_special_mapping vdso_data_mapping = {
- 	.pages = &vdso_data_page,
- };
+diff --git a/arch/s390/include/asm/mmu.h b/arch/s390/include/asm/mmu.h
+index e12ff0f29d1a..095d0596f700 100644
+--- a/arch/s390/include/asm/mmu.h
++++ b/arch/s390/include/asm/mmu.h
+@@ -15,7 +15,6 @@ typedef struct {
+ 	unsigned long gmap_asce;
+ 	unsigned long asce;
+ 	unsigned long asce_limit;
+-	unsigned long vdso_base;
+ 	/* The mmu context belongs to a secure guest. */
+ 	atomic_t is_protected;
+ 	/*
+diff --git a/arch/s390/kernel/vdso.c b/arch/s390/kernel/vdso.c
+index 810b72f8985c..3f07711a07c1 100644
+--- a/arch/s390/kernel/vdso.c
++++ b/arch/s390/kernel/vdso.c
+@@ -58,18 +58,9 @@ static vm_fault_t vdso_fault(const struct vm_special_mapping *sm,
+ 	return 0;
+ }
  
 -static int vdso_mremap(const struct vm_special_mapping *sm,
--		struct vm_area_struct *new_vma)
+-		       struct vm_area_struct *vma)
 -{
--	current->mm->context.vdso = new_vma->vm_start;
+-	current->mm->context.vdso_base = vma->vm_start;
 -
 -	return 0;
 -}
 -
- static struct vm_special_mapping vdso_text_mapping __ro_after_init = {
+ static const struct vm_special_mapping vdso_mapping = {
  	.name = "[vdso]",
+ 	.fault = vdso_fault,
 -	.mremap = vdso_mremap,
  };
  
- struct elfinfo {
-@@ -239,8 +230,6 @@ void arm_install_vdso(struct mm_struct *mm, unsigned long addr,
- 	struct vm_area_struct *vma;
- 	unsigned long len;
+ static int __init vdso_setup(char *str)
+@@ -204,7 +195,6 @@ int arch_setup_additional_pages(unsigned long *sysinfo_ehdr)
+ 		goto out_up;
+ 	}
  
--	mm->context.vdso = 0;
--
- 	if (vdso_text_pagelist == NULL)
- 		return;
- 
-@@ -258,7 +247,6 @@ void arm_install_vdso(struct mm_struct *mm, unsigned long addr,
- 	if (IS_ERR(vma))
- 		return;
- 
--	mm->context.vdso = addr;
- 	*sysinfo_ehdr = addr;
- }
+-	current->mm->context.vdso_base = vdso_base;
+ 	*sysinfo_ehdr = vdso_base;
+ 	rc = 0;
  
 -- 
 2.28.0
