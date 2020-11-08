@@ -2,70 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0193A2AAAB7
-	for <lists+linux-kernel@lfdr.de>; Sun,  8 Nov 2020 12:37:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 685662AAAB8
+	for <lists+linux-kernel@lfdr.de>; Sun,  8 Nov 2020 12:38:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728080AbgKHLg5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 8 Nov 2020 06:36:57 -0500
-Received: from smtprelay0182.hostedemail.com ([216.40.44.182]:45246 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726021AbgKHLg4 (ORCPT
+        id S1728302AbgKHLho (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 8 Nov 2020 06:37:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39628 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726021AbgKHLhn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 8 Nov 2020 06:36:56 -0500
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay01.hostedemail.com (Postfix) with ESMTP id D0F4E100E7B42;
-        Sun,  8 Nov 2020 11:36:55 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 50,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:967:973:982:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1539:1593:1594:1711:1714:1730:1747:1777:1792:2393:2525:2560:2563:2682:2685:2828:2859:2902:2933:2937:2939:2942:2945:2947:2951:2954:3022:3138:3139:3140:3141:3142:3350:3622:3866:3867:3868:3870:3872:3873:3934:3936:3938:3941:3944:3947:3950:3953:3956:3959:4321:4362:5007:7514:9025:10004:10400:10848:11232:11658:11914:12043:12297:12555:12740:12760:12895:12986:13069:13311:13357:13439:14181:14659:14721:14777:21080:21433:21451:21627:21660:21811:21819:21939:30022:30054:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:2,LUA_SUMMARY:none
-X-HE-Tag: deer22_2f0d14d272e3
-X-Filterd-Recvd-Size: 1582
-Received: from XPS-9350.home (unknown [47.151.133.149])
-        (Authenticated sender: joe@perches.com)
-        by omf14.hostedemail.com (Postfix) with ESMTPA;
-        Sun,  8 Nov 2020 11:36:54 +0000 (UTC)
-Message-ID: <87be917b79ca49d71366f553795da0cc81875c24.camel@perches.com>
-Subject: Re: [PATCH v5] checkpatch: improve email parsing
-From:   Joe Perches <joe@perches.com>
-To:     Dwaipayan Ray <dwaipayanray1@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-kernel@vger.kernel.org, lukas.bulwahn@gmail.com,
-        yashsri421@gmail.com
-Date:   Sun, 08 Nov 2020 03:36:53 -0800
-In-Reply-To: <20201108100632.75340-1-dwaipayanray1@gmail.com>
-References: <20201108100632.75340-1-dwaipayanray1@gmail.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.38.1-1 
+        Sun, 8 Nov 2020 06:37:43 -0500
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91DEFC0613CF
+        for <linux-kernel@vger.kernel.org>; Sun,  8 Nov 2020 03:37:43 -0800 (PST)
+Received: by mail-pf1-x443.google.com with SMTP id q5so2413884pfk.6
+        for <linux-kernel@vger.kernel.org>; Sun, 08 Nov 2020 03:37:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=WZtQivcQ+AZubSIg46b9m4DEOzL0fiKWbinL/KFoggA=;
+        b=CaoihXbx23aeFZpxtNy7GTt3o+aBGBdyZlNtc35S0IPP0zW4umWFCe6d3/3HWqgRTx
+         Nup857PQXsKuNwQ/WxQCEngwlATThEUyPZRiSNueccU2gnnrIBG9NlIwIJkZhAsJVTHY
+         H4ShPEqR4II9BqZGn2d+2p9MPhv4t0URYbkWYqV+RisPhX/tuOB/iw7svZo+T8JheyQp
+         mCGcJnh7bDSxYhAVQ+spkz2qSHb/zR5HVvWhi368ldiew1KIxzLsVJfn1PFXTysvMm2Y
+         XNkwu5AhfAq37hwN7CAbOZqlYPDvFhEeo5Y3l538lQyQR3NTkHIOhIuPaTPBmKkBZlHY
+         BToA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=WZtQivcQ+AZubSIg46b9m4DEOzL0fiKWbinL/KFoggA=;
+        b=ODFhdZvAFbm13wla32f5uq/d+5rLiQnSwNl3mJFK1ts+1Pc+kkx9Qp7tYc/yynEJZn
+         BWLXwFPGTz/gYEmMS7wKUA+CPvVgXWLZ+OojXAEg+XTBvJlp6Q9gJg+iIiTzZDvNoVL4
+         xavh1hIiy2grkwxj//V2p//FUplTh6NQk7psk/Pb49nHjYsfCRckCqikdrhgMwibG/YU
+         daNv2aa1ZX9xtw6dpMb7XM2lHTmTbgCqihwjVD9Ud5mdDe3Go5eGLYZKHQBFqv0A7vCA
+         UsjQxHSDeUU9JbYc7QadaO/A60Rt0RcD/WUQJKdtQFLGSDIDXHJvndVjXyVqxGwhGYQe
+         o9dQ==
+X-Gm-Message-State: AOAM533Zn90jkAIt3M5ab1W/SGvlx7HVc7HWLQqp9GOsNfKSNjXXWSh7
+        d2G3s4usuTsxr+n/bIJCoa0=
+X-Google-Smtp-Source: ABdhPJywGga5A++IlHOh+wzruJpPJXt/uQ8cIH1WYVoYxBgFTHkaCuSe8xncy4byXhIzP63Dq87VZQ==
+X-Received: by 2002:a05:6a00:2292:b029:156:8913:e424 with SMTP id f18-20020a056a002292b02901568913e424mr9626833pfe.56.1604835463114;
+        Sun, 08 Nov 2020 03:37:43 -0800 (PST)
+Received: from IGL6397W.cw01.contiwan.com ([27.104.143.83])
+        by smtp.gmail.com with ESMTPSA id t85sm7230263pgb.29.2020.11.08.03.37.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 08 Nov 2020 03:37:42 -0800 (PST)
+From:   Thirumalesha Narasimhappa <nthirumalesha7@gmail.com>
+To:     Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Shivamurthy Shastri <sshivamurthy@micron.com>,
+        Boris Brezillon <boris.brezillon@collabora.com>,
+        Chuanhong Guo <gch981213@gmail.com>,
+        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     Thirumalesha Narasimhappa <nthirumalesha7@gmail.com>
+Subject: [PATCH v7 0/2] Add support for micron SPI NAND MT29F2G01AAAED
+Date:   Sun,  8 Nov 2020 19:37:33 +0800
+Message-Id: <20201108113735.2533-1-nthirumalesha7@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 2020-11-08 at 15:36 +0530, Dwaipayan Ray wrote:
-> checkpatch doesn't report warnings for many common mistakes
-> in emails. Some of which are trailing commas and incorrect
-> use of email comments.
+Adding support for Micron SPI NAND MT29F2G01AAAED device and generalised
+the structure names as per the review comments
 
-(just in case link to parent emailed patch for Andrew)
+v7: Reverted to the v4 except ECC structure related changes
 
-https://lore.kernel.org/lkml/20201108100632.75340-1-dwaipayanray1@gmail.com/T/#u
+v6: Reverted the SPINAND_OP_VARIANTS() as they were in v4 for
+MT29F2G01AAAED device
 
-Thanks Dwaipayan.
+v5: As per the review comments, the changes were reverted to the v2,
+except the MT29F2G01AAAED device related (including the review comments)
 
-Acked-by: Joe Perches <joe@perches.com>
+v4: Split patch into two parts,
+    1. Generalise the oob structure name & function names as show in v3
+    2. Add support for MT29F2G01AAAED device
+       a. Add oob section check in micron_ooblayout_free function
+       b. Rename mt29f2g01aaaed_* to generic name micron_4_*
 
-> Signed-off-by: Dwaipayan Ray <dwaipayanray1@gmail.com>
-> ---
+v3: As per the review comments,
+     1. Renamed read_cache_variants as quadio_read_cache_variants,
+write_cache_variants as
+      x4_write_cache_variants/x1_write_cache_variants,
+update_cache_variants as
+      x4_update_cache_variants/x1_update_cache_variants,
+read_cache_variants as x4_read_cache_variants
+     2. Renamed micron_8_ooblayout as micron_grouped_ooblayout &
+mt29f2g01aaaed_ooblayout as
+      micron_interleaved_ooblayout
+     3. Generalized page size based oob section check in
+mt29f2g01aaaed_ooblayout_ecc function
+      and separate case check for two bytes BBM reserved in
+mt29f2g01aaaed_ooblayout_free function
+     4. Removed mt29f2g01aaaed_ecc_get_status function &
+MICRON_STATUS_ECC_1TO4_BITFLIPS
 
-You should start to add changelog blocks to these
-versioned patches so it's easier to look for what
-changed between versions.
+v2: Removed SPINAND_SELECT_TARGET as per the comments & fixed typo
+errors
 
-here...
+v1: Add support for Micron SPI Nand device MT29F2G01AAAED
 
-> diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+Thirumalesha Narasimhappa (2):
+  mtd: spinand: micron: Generalize the structure names
+  mtd: spinand: micron: Add support for MT29F2G01AAAED
 
-etc...
+ drivers/mtd/nand/spi/micron.c | 124 ++++++++++++++++++++++++++--------
+ 1 file changed, 94 insertions(+), 30 deletions(-)
 
+-- 
+2.25.1
 
