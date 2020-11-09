@@ -2,277 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB4552ABC08
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 14:35:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C39542ABC42
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 14:37:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731920AbgKINdV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 08:33:21 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59494 "EHLO mail.kernel.org"
+        id S1732025AbgKINfl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 08:35:41 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58088 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731138AbgKINGs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 08:06:48 -0500
+        id S1730836AbgKINFV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 08:05:21 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B055B2076E;
-        Mon,  9 Nov 2020 13:06:46 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4978D2076E;
+        Mon,  9 Nov 2020 13:05:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604927207;
-        bh=O0SCRTWO93eCIlxEDHZcwmDLvWrbDDpBynD2p9B8QO8=;
-        h=From:To:Cc:Subject:Date:From;
-        b=s5A2b7gcvBqf+aNuml/3u056xJO4qyahRHeQyzooZnc7f1bc0EoYchKICHv5qj8HA
-         6KY0NFPqI8SDe49m3eJrM9j2yKmlbIqo/w0FPqSz9kkN0IcPEKDb+gjpLuG5MsKKb7
-         IJfM96zI1R+f2m46DSh5eV5H+dprqM/vgjqdGNDo=
+        s=default; t=1604927110;
+        bh=6x+p8QctiVGPPP6oeefOf0nlAAUqaZgX5q0YDOKw/jo=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=un//mu9VptY5k/x0rcaxSwY6G9tBSwQtrQaMun82ID96FlGmNHiEBmf96gLND75DP
+         HdVQZKmaYTYSBwHjZSnSengvuT0LLPPSevjhZOfXl2QwyRWUCvVIqFFbWNfxl5hEM7
+         EPyx3+G8NK0mO8VXW3CjkMN4nyPdm0SC3LnLCuzM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, stable@vger.kernel.org
-Subject: [PATCH 4.14 00/48] 4.14.205-rc1 review
+        stable@vger.kernel.org, Helge Deller <deller@gmx.de>
+Subject: [PATCH 4.9 083/117] hil/parisc: Disable HIL driver when it gets stuck
 Date:   Mon,  9 Nov 2020 13:55:09 +0100
-Message-Id: <20201109125016.734107741@linuxfoundation.org>
+Message-Id: <20201109125029.629241561@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-MIME-Version: 1.0
+In-Reply-To: <20201109125025.630721781@linuxfoundation.org>
+References: <20201109125025.630721781@linuxfoundation.org>
 User-Agent: quilt/0.66
-X-stable: review
-X-Patchwork-Hint: ignore
-X-KernelTest-Patch: http://kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.14.205-rc1.gz
-X-KernelTest-Tree: git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
-X-KernelTest-Branch: linux-4.14.y
-X-KernelTest-Patches: git://git.kernel.org/pub/scm/linux/kernel/git/stable/stable-queue.git
-X-KernelTest-Version: 4.14.205-rc1
-X-KernelTest-Deadline: 2020-11-11T12:50+00:00
+MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is the start of the stable review cycle for the 4.14.205 release.
-There are 48 patches in this series, all will be posted as a response
-to this one.  If anyone has any issues with these being applied, please
-let me know.
+From: Helge Deller <deller@gmx.de>
 
-Responses should be made by Wed, 11 Nov 2020 12:50:04 +0000.
-Anything received after that time might be too late.
+commit 879bc2d27904354b98ca295b6168718e045c4aa2 upstream.
 
-The whole patch series can be found in one patch at:
-	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.14.205-rc1.gz
-or in the git tree and branch at:
-	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.14.y
-and the diffstat can be found below.
+When starting a HP machine with HIL driver but without an HIL keyboard
+or HIL mouse attached, it may happen that data written to the HIL loop
+gets stuck (e.g. because the transaction queue is full).  Usually one
+will then have to reboot the machine because all you see is and endless
+output of:
+ Transaction add failed: transaction already queued?
 
-thanks,
+In the higher layers hp_sdc_enqueue_transaction() is called to queued up
+a HIL packet. This function returns an error code, and this patch adds
+the necessary checks for this return code and disables the HIL driver if
+further packets can't be sent.
 
-greg k-h
+Tested on a HP 730 and a HP 715/64 machine.
 
--------------
-Pseudo-Shortlog of commits:
+Signed-off-by: Helge Deller <deller@gmx.de>
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-    Linux 4.14.205-rc1
+---
+ drivers/input/serio/hil_mlc.c    |   21 ++++++++++++++++++---
+ drivers/input/serio/hp_sdc_mlc.c |    8 ++++----
+ include/linux/hil_mlc.h          |    2 +-
+ 3 files changed, 23 insertions(+), 8 deletions(-)
 
-Tomasz Maciej Nowak <tmn505@gmail.com>
-    arm64: dts: marvell: espressobin: add ethernet alias
-
-Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-    PM: runtime: Resume the device earlier in __device_release_driver()
-
-Vineet Gupta <Vineet.Gupta1@synopsys.com>
-    Revert "ARC: entry: fix potential EFA clobber when TIF_SYSCALL_TRACE"
-
-Vineet Gupta <vgupta@synopsys.com>
-    ARC: stack unwinding: avoid indefinite looping
-
-Macpaul Lin <macpaul.lin@mediatek.com>
-    usb: mtu3: fix panic in mtu3_gadget_stop()
-
-Alan Stern <stern@rowland.harvard.edu>
-    USB: Add NO_LPM quirk for Kingston flash drive
-
-Daniele Palmas <dnlplm@gmail.com>
-    USB: serial: option: add Telit FN980 composition 0x1055
-
-Daniele Palmas <dnlplm@gmail.com>
-    USB: serial: option: add LE910Cx compositions 0x1203, 0x1230, 0x1231
-
-Ziyi Cao <kernel@septs.pw>
-    USB: serial: option: add Quectel EC200T module support
-
-Johan Hovold <johan@kernel.org>
-    USB: serial: cyberjack: fix write-URB completion race
-
-Qinglang Miao <miaoqinglang@huawei.com>
-    serial: txx9: add missing platform_driver_unregister() on error in serial_txx9_init
-
-Claire Chang <tientzu@chromium.org>
-    serial: 8250_mtk: Fix uart_get_baud_rate warning
-
-Eddy Wu <itseddy0402@gmail.com>
-    fork: fix copy_process(CLONE_PARENT) race with the exiting ->real_parent
-
-Daniel Vetter <daniel.vetter@ffwll.ch>
-    vt: Disable KD_FONT_OP_COPY
-
-Zhang Qilong <zhangqilong3@huawei.com>
-    ACPI: NFIT: Fix comparison to '-ENXIO'
-
-Hoegeun Kwon <hoegeun.kwon@samsung.com>
-    drm/vc4: drv: Add error handding for bind
-
-Jeff Vander Stoep <jeffv@google.com>
-    vsock: use ns_capable_noaudit() on socket create
-
-Ming Lei <ming.lei@redhat.com>
-    scsi: core: Don't start concurrent async scan on same host
-
-Gabriel Krisman Bertazi <krisman@collabora.com>
-    blk-cgroup: Pre-allocate tree node on blkg_conf_prep
-
-Gabriel Krisman Bertazi <krisman@collabora.com>
-    blk-cgroup: Fix memleak on error path
-
-Vincent Whitchurch <vincent.whitchurch@axis.com>
-    of: Fix reserved-memory overlap detection
-
-Kairui Song <kasong@redhat.com>
-    x86/kexec: Use up-to-dated screen_info copy to fill boot params
-
-Clément Péron <peron.clem@gmail.com>
-    ARM: dts: sun4i-a10: fix cpu_alert temperature
-
-Mike Galbraith <efault@gmx.de>
-    futex: Handle transient "ownerless" rtmutex state correctly
-
-Qiujun Huang <hqjagain@gmail.com>
-    tracing: Fix out of bounds write in get_trace_buf
-
-Steven Rostedt (VMware) <rostedt@goodmis.org>
-    ftrace: Handle tracing when switching between context
-
-Steven Rostedt (VMware) <rostedt@goodmis.org>
-    ftrace: Fix recursion check for NMI test
-
-Alexander Aring <aahringo@redhat.com>
-    gfs2: Wake up when sd_glock_disposal becomes zero
-
-Jason Gunthorpe <jgg@nvidia.com>
-    mm: always have io_remap_pfn_range() set pgprot_decrypted()
-
-Zqiang <qiang.zhang@windriver.com>
-    kthread_worker: prevent queuing delayed work from timer_fn when it is being canceled
-
-Vasily Gorbik <gor@linux.ibm.com>
-    lib/crc32test: remove extra local_irq_disable/enable
-
-Geoffrey D. Bennett <g@b4.vu>
-    ALSA: usb-audio: Add implicit feedback quirk for Qu-16
-
-Lee Jones <lee.jones@linaro.org>
-    Fonts: Replace discarded const qualifier
-
-Martyna Szapar <martyna.szapar@intel.com>
-    i40e: Memory leak in i40e_config_iwarp_qvlist
-
-Martyna Szapar <martyna.szapar@intel.com>
-    i40e: Fix of memory leak and integer truncation in i40e_virtchnl.c
-
-Grzegorz Siwik <grzegorz.siwik@intel.com>
-    i40e: Wrong truncation from u16 to u8
-
-Sergey Nemov <sergey.nemov@intel.com>
-    i40e: add num_vectors checker in iwarp handler
-
-Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-    i40e: Fix a potential NULL pointer dereference
-
-Luis Chamberlain <mcgrof@kernel.org>
-    blktrace: fix debugfs use after free
-
-Liu Bo <bo.liu@linux.alibaba.com>
-    Blktrace: bail out early if block debugfs is not configured
-
-YueHaibing <yuehaibing@huawei.com>
-    sfp: Fix error handing in sfp_probe()
-
-Petr Malat <oss@malat.biz>
-    sctp: Fix COMM_LOST/CANT_STR_ASSOC err reporting on big-endian platforms
-
-Daniele Palmas <dnlplm@gmail.com>
-    net: usb: qmi_wwan: add Telit LE910Cx 0x1230 composition
-
-Claudiu Manoil <claudiu.manoil@nxp.com>
-    gianfar: Account for Tx PTP timestamp in the skb headroom
-
-Claudiu Manoil <claudiu.manoil@nxp.com>
-    gianfar: Replace skb_realloc_headroom with skb_cow_head for PTP
-
-Hoang Huu Le <hoang.h.le@dektech.com.au>
-    tipc: fix use-after-free in tipc_bcast_get_mode
-
-Juergen Gross <jgross@suse.com>
-    xen/events: don't use chip_data for legacy IRQs
-
-Chris Wilson <chris@chris-wilson.co.uk>
-    drm/i915: Break up error capture compression loops with cond_resched()
-
-
--------------
-
-Diffstat:
-
- Makefile                                           |  4 +--
- arch/arc/kernel/entry.S                            | 16 +++++++----
- arch/arc/kernel/stacktrace.c                       |  7 ++++-
- arch/arm/boot/dts/sun4i-a10.dtsi                   |  2 +-
- .../boot/dts/marvell/armada-3720-espressobin.dts   |  4 +++
- arch/x86/kernel/kexec-bzimage64.c                  |  3 +-
- block/blk-cgroup.c                                 | 15 ++++++++--
- drivers/acpi/nfit/core.c                           |  2 +-
- drivers/base/dd.c                                  |  7 +++--
- drivers/gpu/drm/i915/i915_gpu_error.c              |  3 ++
- drivers/gpu/drm/vc4/vc4_drv.c                      |  1 +
- drivers/net/ethernet/freescale/gianfar.c           | 14 ++--------
- drivers/net/ethernet/intel/i40e/i40e_virtchnl_pf.c | 32 ++++++++++++++++++----
- drivers/net/phy/sfp.c                              |  3 +-
- drivers/net/usb/qmi_wwan.c                         |  1 +
- drivers/of/of_reserved_mem.c                       | 13 +++++++--
- drivers/scsi/scsi_scan.c                           |  7 +++--
- drivers/tty/serial/8250/8250_mtk.c                 |  2 +-
- drivers/tty/serial/serial_txx9.c                   |  3 ++
- drivers/tty/vt/vt.c                                | 24 ++--------------
- drivers/usb/core/quirks.c                          |  3 ++
- drivers/usb/mtu3/mtu3_gadget.c                     |  1 +
- drivers/usb/serial/cyberjack.c                     |  7 ++++-
- drivers/usb/serial/option.c                        | 10 +++++++
- drivers/xen/events/events_base.c                   | 29 ++++++++++++++------
- fs/gfs2/glock.c                                    |  3 +-
- include/asm-generic/pgtable.h                      |  4 ---
- include/linux/mm.h                                 |  9 ++++++
- kernel/fork.c                                      | 10 +++----
- kernel/futex.c                                     | 16 +++++++++--
- kernel/kthread.c                                   |  3 +-
- kernel/trace/blktrace.c                            | 24 ++++++++++------
- kernel/trace/trace.c                               |  2 +-
- kernel/trace/trace.h                               | 26 ++++++++++++++++--
- kernel/trace/trace_selftest.c                      |  9 ++++--
- lib/crc32test.c                                    |  4 ---
- lib/fonts/font_10x18.c                             |  2 +-
- lib/fonts/font_6x10.c                              |  2 +-
- lib/fonts/font_6x11.c                              |  2 +-
- lib/fonts/font_7x14.c                              |  2 +-
- lib/fonts/font_8x16.c                              |  2 +-
- lib/fonts/font_8x8.c                               |  2 +-
- lib/fonts/font_acorn_8x8.c                         |  2 +-
- lib/fonts/font_mini_4x6.c                          |  2 +-
- lib/fonts/font_pearl_8x8.c                         |  2 +-
- lib/fonts/font_sun12x22.c                          |  2 +-
- lib/fonts/font_sun8x16.c                           |  2 +-
- net/sctp/sm_sideeffect.c                           |  4 +--
- net/tipc/core.c                                    |  5 ++++
- net/vmw_vsock/af_vsock.c                           |  2 +-
- sound/usb/pcm.c                                    |  1 +
- 51 files changed, 240 insertions(+), 117 deletions(-)
+--- a/drivers/input/serio/hil_mlc.c
++++ b/drivers/input/serio/hil_mlc.c
+@@ -74,7 +74,7 @@ EXPORT_SYMBOL(hil_mlc_unregister);
+ static LIST_HEAD(hil_mlcs);
+ static DEFINE_RWLOCK(hil_mlcs_lock);
+ static struct timer_list	hil_mlcs_kicker;
+-static int			hil_mlcs_probe;
++static int			hil_mlcs_probe, hil_mlc_stop;
+ 
+ static void hil_mlcs_process(unsigned long unused);
+ static DECLARE_TASKLET_DISABLED(hil_mlcs_tasklet, hil_mlcs_process, 0);
+@@ -704,9 +704,13 @@ static int hilse_donode(hil_mlc *mlc)
+ 		if (!mlc->ostarted) {
+ 			mlc->ostarted = 1;
+ 			mlc->opacket = pack;
+-			mlc->out(mlc);
++			rc = mlc->out(mlc);
+ 			nextidx = HILSEN_DOZE;
+ 			write_unlock_irqrestore(&mlc->lock, flags);
++			if (rc) {
++				hil_mlc_stop = 1;
++				return 1;
++			}
+ 			break;
+ 		}
+ 		mlc->ostarted = 0;
+@@ -717,8 +721,13 @@ static int hilse_donode(hil_mlc *mlc)
+ 
+ 	case HILSE_CTS:
+ 		write_lock_irqsave(&mlc->lock, flags);
+-		nextidx = mlc->cts(mlc) ? node->bad : node->good;
++		rc = mlc->cts(mlc);
++		nextidx = rc ? node->bad : node->good;
+ 		write_unlock_irqrestore(&mlc->lock, flags);
++		if (rc) {
++			hil_mlc_stop = 1;
++			return 1;
++		}
+ 		break;
+ 
+ 	default:
+@@ -786,6 +795,12 @@ static void hil_mlcs_process(unsigned lo
+ 
+ static void hil_mlcs_timer(unsigned long data)
+ {
++	if (hil_mlc_stop) {
++		/* could not send packet - stop immediately. */
++		pr_warn(PREFIX "HIL seems stuck - Disabling HIL MLC.\n");
++		return;
++	}
++
+ 	hil_mlcs_probe = 1;
+ 	tasklet_schedule(&hil_mlcs_tasklet);
+ 	/* Re-insert the periodic task. */
+--- a/drivers/input/serio/hp_sdc_mlc.c
++++ b/drivers/input/serio/hp_sdc_mlc.c
+@@ -213,7 +213,7 @@ static int hp_sdc_mlc_cts(hil_mlc *mlc)
+ 	priv->tseq[2] = 1;
+ 	priv->tseq[3] = 0;
+ 	priv->tseq[4] = 0;
+-	__hp_sdc_enqueue_transaction(&priv->trans);
++	return __hp_sdc_enqueue_transaction(&priv->trans);
+  busy:
+ 	return 1;
+  done:
+@@ -222,7 +222,7 @@ static int hp_sdc_mlc_cts(hil_mlc *mlc)
+ 	return 0;
+ }
+ 
+-static void hp_sdc_mlc_out(hil_mlc *mlc)
++static int hp_sdc_mlc_out(hil_mlc *mlc)
+ {
+ 	struct hp_sdc_mlc_priv_s *priv;
+ 
+@@ -237,7 +237,7 @@ static void hp_sdc_mlc_out(hil_mlc *mlc)
+  do_data:
+ 	if (priv->emtestmode) {
+ 		up(&mlc->osem);
+-		return;
++		return 0;
+ 	}
+ 	/* Shouldn't be sending commands when loop may be busy */
+ 	BUG_ON(down_trylock(&mlc->csem));
+@@ -299,7 +299,7 @@ static void hp_sdc_mlc_out(hil_mlc *mlc)
+ 		BUG_ON(down_trylock(&mlc->csem));
+ 	}
+  enqueue:
+-	hp_sdc_enqueue_transaction(&priv->trans);
++	return hp_sdc_enqueue_transaction(&priv->trans);
+ }
+ 
+ static int __init hp_sdc_mlc_init(void)
+--- a/include/linux/hil_mlc.h
++++ b/include/linux/hil_mlc.h
+@@ -103,7 +103,7 @@ struct hilse_node {
+ 
+ /* Methods for back-end drivers, e.g. hp_sdc_mlc */
+ typedef int	(hil_mlc_cts) (hil_mlc *mlc);
+-typedef void	(hil_mlc_out) (hil_mlc *mlc);
++typedef int	(hil_mlc_out) (hil_mlc *mlc);
+ typedef int	(hil_mlc_in)  (hil_mlc *mlc, suseconds_t timeout);
+ 
+ struct hil_mlc_devinfo {
 
 
