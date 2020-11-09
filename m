@@ -2,79 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96ECB2AC48A
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 20:02:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E28F2AC473
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 20:01:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730700AbgKITCc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 14:02:32 -0500
-Received: from mail-ot1-f67.google.com ([209.85.210.67]:36106 "EHLO
-        mail-ot1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729499AbgKITCb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 14:02:31 -0500
-Received: by mail-ot1-f67.google.com with SMTP id 32so10023715otm.3;
-        Mon, 09 Nov 2020 11:02:30 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Os7Tqy6UODgwd/wlPU8zzDWJnqShuXVfWyTYThhhTQs=;
-        b=aLNKOCb7BKHiWgvV5bGci2OVAIvGf6Pn24eVglj98a9ycz9gRi6gVnWKuGsRG8SO4u
-         nKrFvsXep8Uumk2pXJtS+w+z6dAnPB6/WMB7X1biAtUZnY7m7cBSeTj+Ym/65cjk9SP9
-         2/vF8rQTUVKFDkjD98jm0xTlAaH1sWF6WiBsoGoMZEVZ0MvYzhcypoTx/qRSUnHJkeji
-         puvG9hhFpPTNteomrTkZF8DyG6q697gs+9Jt5rh1y0GxPd8gdedt4/37bBCaBRXviIxY
-         8n8a53ZnmSu6udiqbbK6XUkDENw8lPMb3uibRb1Xn7qUG5WymViIRePiT4SCDQwgaRkL
-         k0tg==
-X-Gm-Message-State: AOAM533TD7a2Rn0qMj1DTQImZcuGgTK19A6q2keP2h3D6CwEtcuc8MvM
-        O20WRlVtQc2vqpJ+VOBX6xKjF4CBkw==
-X-Google-Smtp-Source: ABdhPJzi8cf177x5y7qmvI5oZJQW3sqESbPviEGH6ObpyFz+8kfyg2yeSvBY/c2ERhInbnrt6d4HJQ==
-X-Received: by 2002:a9d:4aa:: with SMTP id 39mr11584971otm.11.1604948550593;
-        Mon, 09 Nov 2020 11:02:30 -0800 (PST)
-Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id x22sm2572439oix.48.2020.11.09.11.02.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 09 Nov 2020 11:02:29 -0800 (PST)
-Received: (nullmailer pid 1593859 invoked by uid 1000);
-        Mon, 09 Nov 2020 19:02:28 -0000
-Date:   Mon, 9 Nov 2020 13:02:28 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     xuyuqing <xuyuqing@huaqin.corp-partner.google.com>
-Cc:     Stephan Gerhold <stephan@gerhold.net>, dgreid@chromium.org,
-        linux-kernel@vger.kernel.org, Taniya Das <tdas@codeaurora.org>,
-        Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org,
-        cychiang@chromium.org, Banajit Goswami <bgoswami@codeaurora.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Andy Gross <agross@kernel.org>,
-        Patrick Lai <plai@codeaurora.org>, dianders@chromium.org,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        linux-arm-kernel@lists.infradead.org,
-        Rob Herring <robh+dt@kernel.org>,
-        Rohit kumar <rohitkr@codeaurora.org>,
-        Srini Kandagatla <srinivas.kandagatla@linaro.org>,
-        zhouguohui@huaqin.corp-partner.google.com,
-        devicetree@vger.kernel.org, tzungbi@chromium.org,
-        judyhsiao@chromium.org, Mark Brown <broonie@kernel.org>,
-        linux-arm-msm@vger.kernel.org
-Subject: Re: [PATCH v1 1/2] ASoC: google: dt-bindings: add new compatible for
- sc7180-coachz
-Message-ID: <20201109190228.GA1593812@bogus>
-References: <20201105013242.298518-1-xuyuqing@huaqin.corp-partner.google.com>
- <20201105013242.298518-2-xuyuqing@huaqin.corp-partner.google.com>
+        id S1730557AbgKITBt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 14:01:49 -0500
+Received: from mga17.intel.com ([192.55.52.151]:32867 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727303AbgKITBr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 14:01:47 -0500
+IronPort-SDR: C5BHEpvy+eVQUntqxm3LXxBEJQyuTgInrcafQFIoRT/GSKSHlf5TEZvYwEDMStTSiBnGcQPAcz
+ AUt4ukrqrzeA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9800"; a="149703977"
+X-IronPort-AV: E=Sophos;i="5.77,464,1596524400"; 
+   d="scan'208";a="149703977"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Nov 2020 11:01:46 -0800
+IronPort-SDR: mVqj0b7salhhAY1TlsagMbJd5HSsuyoA7wn9fxUgtGzkpn5v5qG+nYzSQlS1sCGAX+2AZAdtSd
+ 27XxX9IojKhw==
+X-IronPort-AV: E=Sophos;i="5.77,464,1596524400"; 
+   d="scan'208";a="322550834"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Nov 2020 11:01:43 -0800
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1kcCRB-005Gnb-7p; Mon, 09 Nov 2020 21:02:45 +0200
+Date:   Mon, 9 Nov 2020 21:02:45 +0200
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Lukasz Stelmach <l.stelmach@samsung.com>
+Cc:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Ard Biesheuvel <ard.biesheuvel@linaro.org>,
+        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        platform-driver-x86@vger.kernel.org,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
+Subject: Re: [PATCH v8 3/6] software node: implement reference properties
+Message-ID: <20201109190245.GL4077@smile.fi.intel.com>
+References: <20201109172435.GJ4077@smile.fi.intel.com>
+ <CGME20201109181851eucas1p241de8938e399c0b603c764593b057c41@eucas1p2.samsung.com>
+ <dleftj4klypf5u.fsf%l.stelmach@samsung.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201105013242.298518-2-xuyuqing@huaqin.corp-partner.google.com>
+In-Reply-To: <dleftj4klypf5u.fsf%l.stelmach@samsung.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 05 Nov 2020 09:32:41 +0800, xuyuqing wrote:
-> Add devicetree bindings for coachz in documentation file
-> 
-> Signed-off-by: xuyuqing <xuyuqing@huaqin.corp-partner.google.com>
-> ---
->  .../devicetree/bindings/sound/google,sc7180-trogdor.yaml      | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
-> 
+On Mon, Nov 09, 2020 at 07:18:37PM +0100, Lukasz Stelmach wrote:
+> It was <2020-11-09 pon 19:24>, when Andy Shevchenko wrote:
+> > On Mon, Nov 09, 2020 at 06:02:29PM +0100, Lukasz Stelmach wrote:
+> >> It was <2019-11-07 czw 20:22>, when Dmitry Torokhov wrote:
 
-Acked-by: Rob Herring <robh@kernel.org>
+...
+
+> >> I am writing a piece that needs to provide a list of gpios to a
+> >> diriver. The above example looks like what I need.
+> >
+> > Nope.
+> >
+> > It mustn't be used for GPIOs or PWMs or whatever that either should come via
+> > lookup tables or corresponding firmware interface.
+> 
+> May I ask why? I've read commit descriptions for drivers/base/swnode.c
+> and the discussion on lkml and I understand software nodes as a way to
+> provide (synthesize) a description for a device that is missing a
+> description in the firmware. Another use case seems to be to replace (in
+> the long run) platform data. That is what I am trying to use it for.
+
+Yes. Both are correct. They are simply not applicable for everything
+(it's not a silver bullet).
+
+> I want my device to be configured with either DT or software_nodes
+> created at run time with configfs.
+
+Okay.
+
+> My device is going to use GPIOs
+> described in the DT and it is going to be configured via configfs at run
+> time.
+
+How is this related to swnodes?
+Create GPIO lookup table.
+
+> I could use platform_data to pass structures from configfs but
+> software nodes would let me save some code in the device driver and use
+> the same paths for both static (DT) and dynamic (configfs)
+> configuration.
+> 
+> Probably I have missed something and I will be greatful, if you tell me
+> where I can find more information about software nodes. There are few
+> users in the kernel and it isn't obvious for me how to use software
+> nodes properly.
+
+gpiod_add_lookup_table().
+
+> >> At the moment the driver gets the list from fwnode/of_node. The list
+> >> contain references to phandles which get resolved and and the driver
+> >> ends up with a bunch of gpio descriptors. Great.
+> >> 
+> >> This example looks nice but does the code that reads the reference from
+> >> the gpios property and returns a gpiod actually exist? If it doesn't, I
+> >> am willing to write it.
+> >> 
+> >> At first glance it makes more sense to me to pass (struct gpiod_lookup
+> >> *) instead of (struct software_node *) and make gpiolib's gpiod_find()
+> >> accept lookup tables as parameter instead of searching the
+> >> gpio_lookup_list? Or do you think such temporary table should be
+> >> assembled from the above structure and then used in gpiod_find()?
+> >> 
+> >> Any other suggestions on how to get a bunch of gpios (the description
+> >> for gpios is available in the devicetree) for a device described with a
+> >> software nodes?
+
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
