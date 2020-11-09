@@ -2,44 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B55F2AB6AF
+	by mail.lfdr.de (Postfix) with ESMTP id C8AE32AB6B0
 	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 12:23:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729701AbgKILXL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 06:23:11 -0500
-Received: from userp2120.oracle.com ([156.151.31.85]:41034 "EHLO
+        id S1729678AbgKILXX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 06:23:23 -0500
+Received: from userp2120.oracle.com ([156.151.31.85]:41228 "EHLO
         userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729678AbgKILXK (ORCPT
+        with ESMTP id S1729289AbgKILXW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 06:23:10 -0500
+        Mon, 9 Nov 2020 06:23:22 -0500
 Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0A9BFuNb114316;
-        Mon, 9 Nov 2020 11:22:38 GMT
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0A9BFP1h114208;
+        Mon, 9 Nov 2020 11:22:42 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
  subject : date : message-id : in-reply-to : references; s=corp-2020-01-29;
- bh=RRND8vwCyLglLYQJMzwbQiEDAiTyWUouQaXnoVUx7c4=;
- b=Z1zx0GzaGmrytj2vg/GjbNxtMFMn/Ot8mtC+HVuGNuefA9bQ6xpm9lonA4WIlOw8M9zW
- TieZY7KZlwUbmGcZNbuI7KS6ZxiKny1yIh1nnPRNdw1F111GWsTcmF3yxqqCTn4V73v3
- SLnBtYr6DWYZnbDcz0F2rGvZa2ZWmYE4f9otzB48O4+6c7eo00At+dbRh39148EjNWk6
- Qo0U/QadXCOpTuWewuqoPRZai7eKOFWB9RoceQGQO9v3hsKlKm75IYkKIZUSyiMr5IYO
- uykD/WzhiYrbmHVo+7kHP6+NTdCH31p5zyG2Z5AZ9DXbJaV8NxXe8zHhSp/ztAbX/Kl7 Tw== 
+ bh=tDP56HUESyFbMXkaNeBtkxDMsDRg3NOC8eBiNOHS25c=;
+ b=tz9bVo4/4921MmkRfn3NYYqpaNYSXsdvmfMJKhOouJSW8PtR4uJI4TexlfIxxpY3P5NM
+ 0LLlxwWNYN+95TcBnI63f5gAs+Axsst+z1Y/2hI2N2Anlsb8H9XCof5Q58r3xgf+c0vQ
+ yUtIQFnpz/hNAwnbu89ghGzUOvoDiua7ODTL88v9cKvoshjWRslt+SlXRlR39mPoiDyE
+ ZdYQS/+r9wWgcgDRDkStHazxcTAAUUmzcNwcFagWGU6/eYpiL8dpD3ksitUR2aUD/MFE
+ wgxZI+4rr3++W+1+HX0xfOpLOlmxPbirgxQdwRmmvJ8LR0AJNRWmBFR9ziBSx0jO61Uq 5w== 
 Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by userp2120.oracle.com with ESMTP id 34p72ebk5h-1
+        by userp2120.oracle.com with ESMTP id 34p72ebk5p-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 09 Nov 2020 11:22:38 +0000
+        Mon, 09 Nov 2020 11:22:42 +0000
 Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0A9BL85Q177446;
-        Mon, 9 Nov 2020 11:22:37 GMT
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0A9BL9u0177669;
+        Mon, 9 Nov 2020 11:22:42 GMT
 Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by aserp3030.oracle.com with ESMTP id 34p55ku2we-1
+        by aserp3030.oracle.com with ESMTP id 34p55ku2y1-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 09 Nov 2020 11:22:37 +0000
+        Mon, 09 Nov 2020 11:22:41 +0000
 Received: from abhmp0018.oracle.com (abhmp0018.oracle.com [141.146.116.24])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0A9BMbHe016272;
-        Mon, 9 Nov 2020 11:22:37 GMT
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0A9BMfan016283;
+        Mon, 9 Nov 2020 11:22:41 GMT
 Received: from linux.home (/92.157.91.83)
         by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 09 Nov 2020 03:22:36 -0800
+        with ESMTP ; Mon, 09 Nov 2020 03:22:40 -0800
 From:   Alexandre Chartre <alexandre.chartre@oracle.com>
 To:     "tglx@linutronix.de"@aserv0121.oracle.com,
         "mingo@redhat.com"@aserv0121.oracle.com,
@@ -61,9 +61,9 @@ Cc:     "konrad.wilk@oracle.com"@aserv0121.oracle.com,
         "mgross@linux.intel.com"@aserv0121.oracle.com,
         "kuzuno@gmail.com"@aserv0121.oracle.com,
         "alexandre.chartre@oracle.com"@aserv0121.oracle.com
-Subject: [RFC][PATCH 21/24] x86/entry: Disable stack-protector for IST entry C handlers
-Date:   Mon,  9 Nov 2020 12:23:16 +0100
-Message-Id: <20201109112319.264511-22-alexandre.chartre@oracle.com>
+Subject: [RFC][PATCH 22/24] x86/entry: Defer paranoid entry/exit to C code
+Date:   Mon,  9 Nov 2020 12:23:17 +0100
+Message-Id: <20201109112319.264511-23-alexandre.chartre@oracle.com>
 X-Mailer: git-send-email 2.18.4
 In-Reply-To: <20201109112319.264511-1-alexandre.chartre@oracle.com>
 References: <20201109112319.264511-1-alexandre.chartre@oracle.com>
@@ -82,114 +82,364 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The stack-protector option adds a stack canary to functions vulnerable
-to stack buffer overflow. The stack canary is defined through the GS
-register. Add an attribute to disable the stack-protector option; it
-will be used for C functions which can be called while the GS register
-might not be properly configured yet.
-
-The GS register is not properly configured for the kernel when we enter
-the kernel from userspace. The assembly entry code sets the GS register
-for the kernel using the swapgs instruction or the paranoid_entry function,
-and so, currently, the GS register is correctly configured when assembly
-entry code subsequently transfer control to C code.
-
-Deferring the CR3 register switch from assembly to C code will require to
-reimplement paranoid_entry in C and hence also defer the GS register setup
-for IST entries to C code. To prepare this change, disable stack-protector
-for IST entry C handlers where the GS register setup will eventually
-happen.
+IST entries from the kernel use paranoid entry and exit
+assembly functions to ensure the CR3 and GS registers are
+updated with correct values for the kernel. Move the update
+of the CR3 and GS registers inside the C code of IST handlers.
 
 Signed-off-by: Alexandre Chartre <alexandre.chartre@oracle.com>
 ---
- arch/x86/include/asm/idtentry.h | 25 ++++++++++++++++++++-----
- arch/x86/kernel/nmi.c           |  2 +-
- 2 files changed, 21 insertions(+), 6 deletions(-)
+ arch/x86/entry/entry_64.S      | 72 ++++++++++------------------------
+ arch/x86/kernel/cpu/mce/core.c |  3 ++
+ arch/x86/kernel/nmi.c          | 18 +++++++--
+ arch/x86/kernel/sev-es.c       | 20 +++++++++-
+ arch/x86/kernel/traps.c        | 30 ++++++++++++--
+ 5 files changed, 83 insertions(+), 60 deletions(-)
 
-diff --git a/arch/x86/include/asm/idtentry.h b/arch/x86/include/asm/idtentry.h
-index a6725afaaec0..647af7ea3bf1 100644
---- a/arch/x86/include/asm/idtentry.h
-+++ b/arch/x86/include/asm/idtentry.h
-@@ -94,6 +94,21 @@ void run_sysvec(void (*func)(struct pt_regs *regs), struct pt_regs *regs)
- 		run_sysvec_on_irqstack_cond(func, regs);
+diff --git a/arch/x86/entry/entry_64.S b/arch/x86/entry/entry_64.S
+index 6b88a0eb8975..9ea8187d4405 100644
+--- a/arch/x86/entry/entry_64.S
++++ b/arch/x86/entry/entry_64.S
+@@ -462,16 +462,16 @@ SYM_CODE_START(\asmsym)
+ 	/* Entry from kernel */
+ 
+ 	pushq	$-1			/* ORIG_RAX: no syscall to restart */
+-	/* paranoid_entry returns GS information for paranoid_exit in EBX. */
+-	call	paranoid_entry
+-
++	cld
++	PUSH_AND_CLEAR_REGS
++	ENCODE_FRAME_POINTER
+ 	UNWIND_HINT_REGS
+ 
+ 	movq	%rsp, %rdi		/* pt_regs pointer */
+ 
+ 	call	\cfunc
+ 
+-	jmp	paranoid_exit
++	jmp	restore_regs_and_return_to_kernel
+ 
+ _ASM_NOKPROBE(\asmsym)
+ SYM_CODE_END(\asmsym)
+@@ -507,12 +507,9 @@ SYM_CODE_START(\asmsym)
+ 	 */
+ 	ist_entry_user safe_stack_\cfunc, has_error_code=1
+ 
+-	/*
+-	 * paranoid_entry returns SWAPGS flag for paranoid_exit in EBX.
+-	 * EBX == 0 -> SWAPGS, EBX == 1 -> no SWAPGS
+-	 */
+-	call	paranoid_entry
+-
++	cld
++	PUSH_AND_CLEAR_REGS
++	ENCODE_FRAME_POINTER
+ 	UNWIND_HINT_REGS
+ 
+ 	/*
+@@ -538,7 +535,7 @@ SYM_CODE_START(\asmsym)
+ 	 * identical to the stack in the IRET frame or the VC fall-back stack,
+ 	 * so it is definitly mapped even with PTI enabled.
+ 	 */
+-	jmp	paranoid_exit
++	jmp	restore_regs_and_return_to_kernel
+ 
+ _ASM_NOKPROBE(\asmsym)
+ SYM_CODE_END(\asmsym)
+@@ -555,8 +552,9 @@ SYM_CODE_START(\asmsym)
+ 	UNWIND_HINT_IRET_REGS offset=8
+ 	ASM_CLAC
+ 
+-	/* paranoid_entry returns GS information for paranoid_exit in EBX. */
+-	call	paranoid_entry
++	cld
++	PUSH_AND_CLEAR_REGS
++	ENCODE_FRAME_POINTER
+ 	UNWIND_HINT_REGS
+ 
+ 	movq	%rsp, %rdi		/* pt_regs pointer into first argument */
+@@ -564,7 +562,7 @@ SYM_CODE_START(\asmsym)
+ 	movq	$-1, ORIG_RAX(%rsp)	/* no syscall to restart */
+ 	call	\cfunc
+ 
+-	jmp	paranoid_exit
++	jmp	restore_regs_and_return_to_kernel
+ 
+ _ASM_NOKPROBE(\asmsym)
+ SYM_CODE_END(\asmsym)
+@@ -1119,10 +1117,6 @@ SYM_CODE_END(error_return)
+ /*
+  * Runs on exception stack.  Xen PV does not go through this path at all,
+  * so we can use real assembly here.
+- *
+- * Registers:
+- *	%r14: Used to save/restore the CR3 of the interrupted context
+- *	      when PAGE_TABLE_ISOLATION is in use.  Do not clobber.
+  */
+ SYM_CODE_START(asm_exc_nmi)
+ 	/*
+@@ -1173,7 +1167,7 @@ SYM_CODE_START(asm_exc_nmi)
+ 	 * We also must not push anything to the stack before switching
+ 	 * stacks lest we corrupt the "NMI executing" variable.
+ 	 */
+-	ist_entry_user exc_nmi
++	ist_entry_user exc_nmi_user
+ 
+ 	/* NMI from kernel */
+ 
+@@ -1346,9 +1340,7 @@ repeat_nmi:
+ 	 *
+ 	 * RSP is pointing to "outermost RIP".  gsbase is unknown, but, if
+ 	 * we're repeating an NMI, gsbase has the same value that it had on
+-	 * the first iteration.  paranoid_entry will load the kernel
+-	 * gsbase if needed before we call exc_nmi().  "NMI executing"
+-	 * is zero.
++	 * the first iteration.  "NMI executing" is zero.
+ 	 */
+ 	movq	$1, 10*8(%rsp)		/* Set "NMI executing". */
+ 
+@@ -1372,44 +1364,20 @@ end_repeat_nmi:
+ 	pushq	$-1				/* ORIG_RAX: no syscall to restart */
+ 
+ 	/*
+-	 * Use paranoid_entry to handle SWAPGS, but no need to use paranoid_exit
+-	 * as we should not be calling schedule in NMI context.
+-	 * Even with normal interrupts enabled. An NMI should not be
+-	 * setting NEED_RESCHED or anything that normal interrupts and
++	 * We should not be calling schedule in NMI context. Even with
++	 * normal interrupts enabled. An NMI should not be setting
++	 * NEED_RESCHED or anything that normal interrupts and
+ 	 * exceptions might do.
+ 	 */
+-	call	paranoid_entry
++	cld
++	PUSH_AND_CLEAR_REGS
++	ENCODE_FRAME_POINTER
+ 	UNWIND_HINT_REGS
+ 
+ 	movq	%rsp, %rdi
+ 	movq	$-1, %rsi
+ 	call	exc_nmi
+ 
+-	/* Always restore stashed CR3 value (see paranoid_entry) */
+-	RESTORE_CR3 scratch_reg=%r15 save_reg=%r14
+-
+-	/*
+-	 * The above invocation of paranoid_entry stored the GSBASE
+-	 * related information in R/EBX depending on the availability
+-	 * of FSGSBASE.
+-	 *
+-	 * If FSGSBASE is enabled, restore the saved GSBASE value
+-	 * unconditionally, otherwise take the conditional SWAPGS path.
+-	 */
+-	ALTERNATIVE "jmp nmi_no_fsgsbase", "", X86_FEATURE_FSGSBASE
+-
+-	wrgsbase	%rbx
+-	jmp	nmi_restore
+-
+-nmi_no_fsgsbase:
+-	/* EBX == 0 -> invoke SWAPGS */
+-	testl	%ebx, %ebx
+-	jnz	nmi_restore
+-
+-nmi_swapgs:
+-	SWAPGS_UNSAFE_STACK
+-
+-nmi_restore:
+ 	POP_REGS
+ 
+ 	/*
+diff --git a/arch/x86/kernel/cpu/mce/core.c b/arch/x86/kernel/cpu/mce/core.c
+index 9407c3cd9355..827088f981c6 100644
+--- a/arch/x86/kernel/cpu/mce/core.c
++++ b/arch/x86/kernel/cpu/mce/core.c
+@@ -2022,11 +2022,14 @@ static __always_inline void exc_machine_check_user(struct pt_regs *regs)
+ /* MCE hit kernel mode */
+ DEFINE_IDTENTRY_MCE(exc_machine_check)
+ {
++	struct kernel_entry_state entry_state;
+ 	unsigned long dr7;
+ 
++	kernel_paranoid_entry(&entry_state);
+ 	dr7 = local_db_save();
+ 	exc_machine_check_kernel(regs);
+ 	local_db_restore(dr7);
++	kernel_paranoid_exit(&entry_state);
  }
  
-+/*
-+ * Attribute to disable the stack-protector option. The option is
-+ * disabled using the optimize attribute which clears all optimize
-+ * options. So we need to specify the optimize option to disable but
-+ * also optimize options we want to preserve.
-+ *
-+ * The stack-protector option adds a stack canary to functions
-+ * vulnerable to stack buffer overflow. The stack canary is defined
-+ * through the GS register. So the attribute is used to disable the
-+ * stack-protector option for functions which can be called while the
-+ * GS register might not be properly configured yet.
-+ */
-+#define no_stack_protector	\
-+	__attribute__ ((optimize("-O2,-fno-stack-protector,-fno-omit-frame-pointer")))
-+
- /**
-  * DECLARE_IDTENTRY - Declare functions for simple IDT entry points
-  *		      No error code pushed by hardware
-@@ -410,7 +425,7 @@ static __always_inline void __##func(struct pt_regs *regs)
-  * Maps to DEFINE_IDTENTRY_RAW
-  */
- #define DEFINE_IDTENTRY_IST(func)					\
--	DEFINE_IDTENTRY_RAW(func)
-+	no_stack_protector DEFINE_IDTENTRY_RAW(func)
- 
- /**
-  * DEFINE_IDTENTRY_NOIST - Emit code for NOIST entry points which
-@@ -440,7 +455,7 @@ static __always_inline void __##func(struct pt_regs *regs)
-  * Maps to DEFINE_IDTENTRY_RAW_ERRORCODE
-  */
- #define DEFINE_IDTENTRY_DF(func)					\
--	DEFINE_IDTENTRY_RAW_ERRORCODE(func)
-+	no_stack_protector DEFINE_IDTENTRY_RAW_ERRORCODE(func)
- 
- /**
-  * DEFINE_IDTENTRY_VC_SAFE_STACK - Emit code for VMM communication handler
-@@ -472,7 +487,7 @@ static __always_inline void __##func(struct pt_regs *regs)
-  * VMM communication handler.
-  */
- #define DEFINE_IDTENTRY_VC_SETUP_STACK(func)			\
--	__visible noinstr					\
-+	no_stack_protector __visible noinstr			\
- 	unsigned long setup_stack_##func(struct pt_regs *regs)
- 
- /**
-@@ -482,7 +497,7 @@ static __always_inline void __##func(struct pt_regs *regs)
-  * Maps to DEFINE_IDTENTRY_RAW_ERRORCODE
-  */
- #define DEFINE_IDTENTRY_VC(func)					\
--	DEFINE_IDTENTRY_RAW_ERRORCODE(func)
-+	no_stack_protector DEFINE_IDTENTRY_RAW_ERRORCODE(func)
- 
- #else	/* CONFIG_X86_64 */
- 
-@@ -517,7 +532,7 @@ __visible noinstr void func(struct pt_regs *regs,			\
- 
- /* C-Code mapping */
- #define DECLARE_IDTENTRY_NMI		DECLARE_IDTENTRY_RAW
--#define DEFINE_IDTENTRY_NMI		DEFINE_IDTENTRY_RAW
-+#define DEFINE_IDTENTRY_NMI		no_stack_protector DEFINE_IDTENTRY_RAW
- 
- #ifdef CONFIG_X86_64
- #define DECLARE_IDTENTRY_MCE		DECLARE_IDTENTRY_IST
+ /* The user mode variant. */
 diff --git a/arch/x86/kernel/nmi.c b/arch/x86/kernel/nmi.c
-index be0f654c3095..b6291b683be1 100644
+index b6291b683be1..23c92ffd58fe 100644
 --- a/arch/x86/kernel/nmi.c
 +++ b/arch/x86/kernel/nmi.c
 @@ -473,7 +473,7 @@ static DEFINE_PER_CPU(enum nmi_states, nmi_state);
  static DEFINE_PER_CPU(unsigned long, nmi_cr2);
  static DEFINE_PER_CPU(unsigned long, nmi_dr7);
  
--DEFINE_IDTENTRY_RAW(exc_nmi)
-+DEFINE_IDTENTRY_NMI(exc_nmi)
+-DEFINE_IDTENTRY_NMI(exc_nmi)
++static noinstr void handle_nmi(struct pt_regs *regs)
  {
  	bool irq_state;
  
+@@ -529,9 +529,21 @@ DEFINE_IDTENTRY_NMI(exc_nmi)
+ 		write_cr2(this_cpu_read(nmi_cr2));
+ 	if (this_cpu_dec_return(nmi_state))
+ 		goto nmi_restart;
++}
++
++DEFINE_IDTENTRY_NMI(exc_nmi)
++{
++	struct kernel_entry_state entry_state;
++
++	kernel_paranoid_entry(&entry_state);
++	handle_nmi(regs);
++	kernel_paranoid_exit(&entry_state);
++}
+ 
+-	if (user_mode(regs))
+-		mds_user_clear_cpu_buffers();
++__visible noinstr void exc_nmi_user(struct pt_regs *regs)
++{
++	handle_nmi(regs);
++	mds_user_clear_cpu_buffers();
+ }
+ 
+ void stop_nmi(void)
+diff --git a/arch/x86/kernel/sev-es.c b/arch/x86/kernel/sev-es.c
+index bd977c917cd6..ef9a8b69c25c 100644
+--- a/arch/x86/kernel/sev-es.c
++++ b/arch/x86/kernel/sev-es.c
+@@ -1352,13 +1352,25 @@ DEFINE_IDTENTRY_VC_IST(exc_vmm_communication)
+ struct exc_vc_frame {
+ 	/* pt_regs should be first */
+ 	struct pt_regs regs;
++	/* extra parameters for the handler */
++	struct kernel_entry_state entry_state;
+ };
+ 
+ DEFINE_IDTENTRY_VC_SETUP_STACK(exc_vmm_communication)
+ {
++	struct kernel_entry_state entry_state;
+ 	struct exc_vc_frame *frame;
+ 	unsigned long sp;
+ 
++	/*
++	 * kernel_paranoid_entry() is called first to properly set
++	 * the GS register which is used to access per-cpu variables.
++	 *
++	 * vc_switch_off_ist() uses per-cpu variables so it has to be
++	 * called after kernel_paranoid_entry().
++	 */
++	kernel_paranoid_entry(&entry_state);
++
+ 	/*
+ 	 * Switch off the IST stack to make it free for nested exceptions.
+ 	 * The vc_switch_off_ist() function will switch back to the
+@@ -1370,7 +1382,8 @@ DEFINE_IDTENTRY_VC_SETUP_STACK(exc_vmm_communication)
+ 	/*
+ 	 * Found a safe stack. Set it up as if the entry has happened on
+ 	 * that stack. This means that we need to have pt_regs at the top
+-	 * of the stack.
++	 * of the stack, and we can use the bottom of the stack to pass
++	 * extra parameters (like the kernel entry state) to the handler.
+ 	 *
+ 	 * The effective stack switch happens in assembly code before
+ 	 * the #VC handler is called.
+@@ -1379,16 +1392,21 @@ DEFINE_IDTENTRY_VC_SETUP_STACK(exc_vmm_communication)
+ 
+ 	frame = (struct exc_vc_frame *)sp;
+ 	frame->regs = *regs;
++	frame->entry_state = entry_state;
+ 
+ 	return sp;
+ }
+ 
+ DEFINE_IDTENTRY_VC(exc_vmm_communication)
+ {
++	struct exc_vc_frame *frame = (struct exc_vc_frame *)regs;
++
+ 	if (likely(!on_vc_fallback_stack(regs)))
+ 		safe_stack_exc_vmm_communication(regs, error_code);
+ 	else
+ 		ist_exc_vmm_communication(regs, error_code);
++
++	kernel_paranoid_exit(&frame->entry_state);
+ }
+ 
+ bool __init handle_vc_boot_ghcb(struct pt_regs *regs)
+diff --git a/arch/x86/kernel/traps.c b/arch/x86/kernel/traps.c
+index 9a51aa016fb3..1801791748b8 100644
+--- a/arch/x86/kernel/traps.c
++++ b/arch/x86/kernel/traps.c
+@@ -344,10 +344,10 @@ __visible void __noreturn handle_stack_overflow(const char *message,
+ DEFINE_IDTENTRY_DF(exc_double_fault)
+ {
+ 	static const char str[] = "double fault";
+-	struct task_struct *tsk = current;
+-
++	struct task_struct *tsk;
++	struct kernel_entry_state entry_state;
+ #ifdef CONFIG_VMAP_STACK
+-	unsigned long address = read_cr2();
++	unsigned long address;
+ #endif
+ 
+ #ifdef CONFIG_X86_ESPFIX64
+@@ -371,8 +371,12 @@ DEFINE_IDTENTRY_DF(exc_double_fault)
+ 		regs->cs == __KERNEL_CS &&
+ 		regs->ip == (unsigned long)native_irq_return_iret)
+ 	{
+-		struct pt_regs *gpregs = (struct pt_regs *)this_cpu_read(cpu_tss_rw.x86_tss.sp0) - 1;
+ 		unsigned long *p = (unsigned long *)regs->sp;
++		struct pt_regs *gpregs;
++
++		kernel_paranoid_entry(&entry_state);
++
++		gpregs = (struct pt_regs *)this_cpu_read(cpu_tss_rw.x86_tss.sp0) - 1;
+ 
+ 		/*
+ 		 * regs->sp points to the failing IRET frame on the
+@@ -401,14 +405,28 @@ DEFINE_IDTENTRY_DF(exc_double_fault)
+ 		regs->ip = (unsigned long)asm_exc_general_protection;
+ 		regs->sp = (unsigned long)&gpregs->orig_ax;
+ 
++		kernel_paranoid_exit(&entry_state);
++
+ 		return;
+ 	}
+ #endif
+ 
++	/*
++	 * Switch to the kernel page-table. We are on an IST stack, and
++	 * we are going to die so there is no need to switch to the kernel
++	 * stack even if we are coming from userspace.
++	 */
++	kernel_paranoid_entry(&entry_state);
++
++#ifdef CONFIG_VMAP_STACK
++	address = read_cr2();
++#endif
++
+ 	idtentry_enter_nmi(regs);
+ 	instrumentation_begin();
+ 	notify_die(DIE_TRAP, str, regs, error_code, X86_TRAP_DF, SIGSEGV);
+ 
++	tsk = current;
+ 	tsk->thread.error_code = error_code;
+ 	tsk->thread.trap_nr = X86_TRAP_DF;
+ 
+@@ -973,7 +991,11 @@ static __always_inline void exc_debug_user(struct pt_regs *regs,
+ /* IST stack entry */
+ DEFINE_IDTENTRY_DEBUG(exc_debug)
+ {
++	struct kernel_entry_state entry_state;
++
++	kernel_paranoid_entry(&entry_state);
+ 	exc_debug_kernel(regs, debug_read_clear_dr6());
++	kernel_paranoid_exit(&entry_state);
+ }
+ 
+ /* User entry, runs on regular task stack */
 -- 
 2.18.4
 
