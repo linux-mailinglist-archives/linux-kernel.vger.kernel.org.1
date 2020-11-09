@@ -2,220 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EAA882AC4F2
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 20:28:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 825B72AC4EF
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 20:26:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730279AbgKIT2Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 14:28:16 -0500
-Received: from m12-18.163.com ([220.181.12.18]:55359 "EHLO m12-18.163.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729906AbgKIT2Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 14:28:16 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=0nz9E
-        muVKEDMYgSYXMvDw92+1nLs3pnWhuHOXzVD23s=; b=JkhLOHYetlklEJbGvYwl0
-        AuGNQEkrpIket8hlGCA+VKc1ewUBhVF6kcobIadYleLjMXKQ0vCmePiZr2IcCO/K
-        aFXnYVPIRwe0Hk/JYw4M09r3zDfryU7hcEZABhDAMOPf/jayQDDspgPc3mbFjK7k
-        LlnTYyc2KgbjHj1e18g/iM=
-Received: from localhost.localdomain (unknown [120.229.59.65])
-        by smtp14 (Coremail) with SMTP id EsCowADn6fsRmKlfQZ4cDA--.5141S4;
-        Tue, 10 Nov 2020 03:27:20 +0800 (CST)
-From:   zengzhaoxiu@163.com
-To:     Jann Horn <jannh@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, Zhaoxiu Zeng <zhaoxiu.zeng@gmail.com>
-Subject: [PATCH 2/3] lib: zlib_inflate: improves decompression performance
-Date:   Tue, 10 Nov 2020 03:25:08 +0800
-Message-Id: <20201109192508.14186-1-zengzhaoxiu@163.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201109191601.14053-1-zengzhaoxiu@163.com>
-References: <20201109191601.14053-1-zengzhaoxiu@163.com>
+        id S1730531AbgKIT0V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 14:26:21 -0500
+Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:3514 "EHLO
+        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729697AbgKIT0V (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 14:26:21 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5fa997e30000>; Mon, 09 Nov 2020 11:26:27 -0800
+Received: from HQMAIL109.nvidia.com (172.20.187.15) by HQMAIL111.nvidia.com
+ (172.20.187.18) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 9 Nov
+ 2020 19:26:20 +0000
+Received: from vidyas-desktop.nvidia.com (172.20.13.39) by mail.nvidia.com
+ (172.20.187.15) with Microsoft SMTP Server id 15.0.1473.3 via Frontend
+ Transport; Mon, 9 Nov 2020 19:26:16 +0000
+From:   Vidya Sagar <vidyas@nvidia.com>
+To:     <jingoohan1@gmail.com>, <gustavo.pimentel@synopsys.com>,
+        <lorenzo.pieralisi@arm.com>, <bhelgaas@google.com>,
+        <amurray@thegoodpenguin.co.uk>, <robh@kernel.org>,
+        <treding@nvidia.com>, <jonathanh@nvidia.com>
+CC:     <linux-pci@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <kthota@nvidia.com>, <mmaddireddy@nvidia.com>, <vidyas@nvidia.com>,
+        <sagar.tv@gmail.com>
+Subject: [PATCH] PCI: dwc: Add support to configure for ECRC
+Date:   Tue, 10 Nov 2020 00:56:11 +0530
+Message-ID: <20201109192611.16104-1-vidyas@nvidia.com>
+X-Mailer: git-send-email 2.17.1
+X-NVConfidentiality: public
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: EsCowADn6fsRmKlfQZ4cDA--.5141S4
-X-Coremail-Antispam: 1Uf129KBjvJXoWxZFyfWw4UGr4xWFWfKw47XFb_yoWrGF4xpF
-        n3K39xKryDtr1jyr92yw4rZFykZrZ3WFZrGrZxGrW09ryakrya9ry3Ww10vas7Xr9aqa17
-        Cr43tF98XrZ5X37anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07jYJP_UUUUU=
-X-Originating-IP: [120.229.59.65]
-X-CM-SenderInfo: p2hqw6xkdr5xrx6rljoofrz/1tbiMALXgFWBvwlf2QABsA
+Content-Type: text/plain
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1604949987; bh=WrdEdrC4gKX9JmfklZp1MKvc1216Jflc7mWH75n2yME=;
+        h=From:To:CC:Subject:Date:Message-ID:X-Mailer:X-NVConfidentiality:
+         MIME-Version:Content-Type;
+        b=buvevUye8JLgge1U9Qh9jaUQW2eOluEogZuy2UhY11cnrrcQ3/hTa7m6yFbYlVG0x
+         TK/5lebcwlzcaiObsJdkPu8zJk/S9Bllaugdo3iNMzycpBz0bEr0dEFyBLRcDUY9Bs
+         t3TuIzCqJgI+G9VLOUYmacA7S4nD6MlcuRFjP3wi0toAW+xaNdo00SmgnrztJYS3pm
+         0QArYlZR5Bs+qfCdkKhtt9gsWUSQ9Up2uYzYOkgc/8ryaV+MrS/DDElHwgWvy9cdxH
+         V4LdvRciSUoiHa2R+ORw4h6oMc/HXP+cyclSeRzRxH5DsZXJxAT1Ntw9GqkLLlYRAS
+         RQxna6jhK6N9A==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhaoxiu Zeng <zhaoxiu.zeng@gmail.com>
+DesignWare core has a TLP digest (TD) override bit in one of the control
+registers of ATU. This bit also needs to be programmed for proper ECRC
+functionality. This is currently identified as an issue with DesignWare
+IP version 4.90a.
 
-This patch does:
-1. Cleanup code and reduce branches
-2. Use copy_from_back to copy the matched bytes from the back output buffer
-
-I tested on 5.8.18-300.fc33.x86_64.
-The performance of function zlib_inflate is improved by about 7%.
-If the CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS is disabled in copy_from_back.h,
-the performance is improved by about 5%.
-
-Signed-off-by: Zhaoxiu Zeng <zhaoxiu.zeng@gmail.com>
+Signed-off-by: Vidya Sagar <vidyas@nvidia.com>
 ---
- lib/zlib_inflate/inffast.c | 122 ++++++-------------------------------
- 1 file changed, 17 insertions(+), 105 deletions(-)
+ drivers/pci/controller/dwc/pcie-designware.c | 50 ++++++++++++++++++--
+ drivers/pci/controller/dwc/pcie-designware.h |  1 +
+ 2 files changed, 47 insertions(+), 4 deletions(-)
 
-diff --git a/lib/zlib_inflate/inffast.c b/lib/zlib_inflate/inffast.c
-index ed1f3df27260..c27e45fc5335 100644
---- a/lib/zlib_inflate/inffast.c
-+++ b/lib/zlib_inflate/inffast.c
-@@ -4,29 +4,13 @@
-  */
+diff --git a/drivers/pci/controller/dwc/pcie-designware.c b/drivers/pci/controller/dwc/pcie-designware.c
+index c2dea8fc97c8..ebdc37a58e94 100644
+--- a/drivers/pci/controller/dwc/pcie-designware.c
++++ b/drivers/pci/controller/dwc/pcie-designware.c
+@@ -225,6 +225,44 @@ static void dw_pcie_writel_ob_unroll(struct dw_pcie *pci, u32 index, u32 reg,
+ 	dw_pcie_writel_atu(pci, offset + reg, val);
+ }
  
- #include <linux/zutil.h>
-+#include <asm/copy_from_back.h>
- #include "inftrees.h"
- #include "inflate.h"
- #include "inffast.h"
++static inline u32 dw_pcie_enable_ecrc(u32 val)
++{
++	/*
++	 *     DesignWare core version 4.90A has this strange design issue
++	 * where the 'TD' bit in the Control register-1 of the ATU outbound
++	 * region acts like an override for the ECRC setting i.e. the presence
++	 * of TLP Digest(ECRC) in the outgoing TLPs is solely determined by
++	 * this bit. This is contrary to the PCIe spec which says that the
++	 * enablement of the ECRC is solely determined by the AER registers.
++	 *     Because of this, even when the ECRC is enabled through AER
++	 * registers, the transactions going through ATU won't have TLP Digest
++	 * as there is no way the AER sub-system could program the TD bit which
++	 * is specific to DsignWare core.
++	 *    The best way to handle this scenario is to program the TD bit
++	 * always. It affects only the traffic from root port to downstream
++	 * devices.
++	 * At this point,
++	 *     When ECRC is enabled in AER registers, everything works
++	 * normally
++	 *     When ECRC is NOT enabled in AER registers, then,
++	 * on Root Port:- TLP Digest (DWord size) gets appended to each packet
++	 *                even through it is not required. Since downstream
++	 *                TLPs are mostly for configuration accesses and BAR
++	 *                accesses, they are not in critical path and won't
++	 *                have much negative effect on the performance.
++	 * on End Point:- TLP Digest is received for some/all the packets coming
++	 *                from the root port. TLP Digest is ignored because,
++	 *                as per the PCIe Spec r5.0 v1.0 section 2.2.3 "TLP Digest Rules",
++	 *                when an endpoint receives TLP Digest when its
++	 *                ECRC check functionality is disabled in AER registers,
++	 *                received TLP Digest is just ignored.
++	 * Since there is no issue or error reported either side, best way to
++	 * handle the scenario is to program TD bit by default.
++	 */
++
++	return val | PCIE_ATU_TD;
++}
++
+ static void dw_pcie_prog_outbound_atu_unroll(struct dw_pcie *pci, u8 func_no,
+ 					     int index, int type,
+ 					     u64 cpu_addr, u64 pci_addr,
+@@ -245,8 +283,10 @@ static void dw_pcie_prog_outbound_atu_unroll(struct dw_pcie *pci, u8 func_no,
+ 				 lower_32_bits(pci_addr));
+ 	dw_pcie_writel_ob_unroll(pci, index, PCIE_ATU_UNR_UPPER_TARGET,
+ 				 upper_32_bits(pci_addr));
+-	dw_pcie_writel_ob_unroll(pci, index, PCIE_ATU_UNR_REGION_CTRL1,
+-				 type | PCIE_ATU_FUNC_NUM(func_no));
++	val = type | PCIE_ATU_FUNC_NUM(func_no);
++	if (pci->version == 0x490A)
++		val = dw_pcie_enable_ecrc(val);
++	dw_pcie_writel_ob_unroll(pci, index, PCIE_ATU_UNR_REGION_CTRL1, val);
+ 	dw_pcie_writel_ob_unroll(pci, index, PCIE_ATU_UNR_REGION_CTRL2,
+ 				 PCIE_ATU_ENABLE);
  
- #ifndef ASMINF
+@@ -292,8 +332,10 @@ static void __dw_pcie_prog_outbound_atu(struct dw_pcie *pci, u8 func_no,
+ 			   lower_32_bits(pci_addr));
+ 	dw_pcie_writel_dbi(pci, PCIE_ATU_UPPER_TARGET,
+ 			   upper_32_bits(pci_addr));
+-	dw_pcie_writel_dbi(pci, PCIE_ATU_CR1, type |
+-			   PCIE_ATU_FUNC_NUM(func_no));
++	val = type | PCIE_ATU_FUNC_NUM(func_no);
++	if (pci->version == 0x490A)
++		val = dw_pcie_enable_ecrc(val);
++	dw_pcie_writel_dbi(pci, PCIE_ATU_CR1, val);
+ 	dw_pcie_writel_dbi(pci, PCIE_ATU_CR2, PCIE_ATU_ENABLE);
  
--union uu {
--	unsigned short us;
--	unsigned char b[2];
--};
--
--/* Endian independed version */
--static inline unsigned short
--get_unaligned16(const unsigned short *p)
--{
--	union uu  mm;
--	unsigned char *b = (unsigned char *)p;
--
--	mm.b[0] = b[0];
--	mm.b[1] = b[1];
--	return mm.us;
--}
--
- /*
-    Decode literal, length, and distance codes and write out the resulting
-    literal and match bytes until either not enough input or output is
-@@ -184,104 +168,32 @@ void inflate_fast(z_streamp strm, unsigned start)
-                         state->mode = BAD;
-                         break;
-                     }
--                    from = window;
--                    if (write == 0) {           /* very common case */
--                        from += wsize - op;
--                        if (op < len) {         /* some from window */
--                            len -= op;
--                            do {
--                                *out++ = *from++;
--                            } while (--op);
--                            from = out - dist;  /* rest from output */
--                        }
--                    }
--                    else if (write < op) {      /* wrap around window */
--                        from += wsize + write - op;
--                        op -= write;
--                        if (op < len) {         /* some from end of window */
--                            len -= op;
--                            do {
--                                *out++ = *from++;
--                            } while (--op);
--                            from = window;
--                            if (write < len) {  /* some from start of window */
--                                op = write;
-+                    from = window + write - op;
-+                    if (write < op) {           /* very common case */
-+                        from += wsize;
-+                        if (write) {            /* wrap around window */
-+                            op -= write;
-+                            if (op < len) {     /* some from end of window */
-                                 len -= op;
-                                 do {
-                                     *out++ = *from++;
-                                 } while (--op);
--                                from = out - dist;      /* rest from output */
-+                                from = window;  /* some from start of window */
-+                                op = write;
-                             }
-                         }
-                     }
--                    else {                      /* contiguous in window */
--                        from += write - op;
--                        if (op < len) {         /* some from window */
--                            len -= op;
--                            do {
--                                *out++ = *from++;
--                            } while (--op);
--                            from = out - dist;  /* rest from output */
--                        }
--                    }
--                    while (len > 2) {
--                        *out++ = *from++;
--                        *out++ = *from++;
--                        *out++ = *from++;
--                        len -= 3;
--                    }
--                    if (len) {
--                        *out++ = *from++;
--                        if (len > 1)
-+                    if (op < len) {             /* some from window */
-+                        len -= op;              /* rest from output */
-+                        do {
-                             *out++ = *from++;
-+                        } while (--op);
-+                    } else {
-+                        dist = out - from;
-                     }
-                 }
--                else {
--		    unsigned short *sout;
--		    unsigned long loops;
--
--                    from = out - dist;          /* copy direct from output */
--		    /* minimum length is three */
--		    /* Align out addr */
--		    if (!((long)(out - 1) & 1)) {
--			*out++ = *from++;
--			len--;
--		    }
--		    sout = (unsigned short *)(out);
--		    if (dist > 2) {
--			unsigned short *sfrom;
--
--			sfrom = (unsigned short *)(from);
--			loops = len >> 1;
--			do
--#ifdef CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS
--			    *sout++ = *sfrom++;
--#else
--			    *sout++ = get_unaligned16(sfrom++);
--#endif
--			while (--loops);
--			out = (unsigned char *)sout;
--			from = (unsigned char *)sfrom;
--		    } else { /* dist == 1 or dist == 2 */
--			unsigned short pat16;
--
--			pat16 = *(sout-1);
--			if (dist == 1) {
--				union uu mm;
--				/* copy one char pattern to both bytes */
--				mm.us = pat16;
--				mm.b[0] = mm.b[1];
--				pat16 = mm.us;
--			}
--			loops = len >> 1;
--			do
--			    *sout++ = pat16;
--			while (--loops);
--			out = (unsigned char *)sout;
--		    }
--		    if (len & 1)
--			*out++ = *from++;
--                }
-+                /* copy direct from output */
-+                out = copy_from_back(out, dist, len);
-             }
-             else if ((op & 64) == 0) {          /* 2nd level distance code */
-                 this = dcode[this.val + (hold & ((1U << op) - 1))];
+ 	/*
+diff --git a/drivers/pci/controller/dwc/pcie-designware.h b/drivers/pci/controller/dwc/pcie-designware.h
+index 9d2f511f13fa..285c0ae364ae 100644
+--- a/drivers/pci/controller/dwc/pcie-designware.h
++++ b/drivers/pci/controller/dwc/pcie-designware.h
+@@ -88,6 +88,7 @@
+ #define PCIE_ATU_TYPE_IO		0x2
+ #define PCIE_ATU_TYPE_CFG0		0x4
+ #define PCIE_ATU_TYPE_CFG1		0x5
++#define PCIE_ATU_TD			BIT(8)
+ #define PCIE_ATU_FUNC_NUM(pf)           ((pf) << 20)
+ #define PCIE_ATU_CR2			0x908
+ #define PCIE_ATU_ENABLE			BIT(31)
 -- 
-2.28.0
-
+2.17.1
 
