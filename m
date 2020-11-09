@@ -2,68 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 14BBE2AC4FE
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 20:31:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5234E2AC500
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 20:31:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730569AbgKITbG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 14:31:06 -0500
-Received: from mx3.molgen.mpg.de ([141.14.17.11]:40755 "EHLO mx1.molgen.mpg.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726691AbgKITbG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 14:31:06 -0500
-Received: from [192.168.0.2] (ip5f5af1fc.dynamic.kabel-deutschland.de [95.90.241.252])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: pmenzel)
-        by mx.molgen.mpg.de (Postfix) with ESMTPSA id D6F902064713E;
-        Mon,  9 Nov 2020 20:31:02 +0100 (CET)
-To:     Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Stephan Mueller <smueller@chronox.de>
-Cc:     linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
-From:   Paul Menzel <pmenzel@molgen.mpg.de>
-Subject: jitterentropy: `jent_mod_init()` takes 17 ms
-Message-ID: <02fa159f-4f94-cfb7-1f88-bed91c6542a1@molgen.mpg.de>
-Date:   Mon, 9 Nov 2020 20:31:02 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.1
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        id S1730841AbgKITbW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 14:31:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53570 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726691AbgKITbW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 14:31:22 -0500
+Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F588C0613CF;
+        Mon,  9 Nov 2020 11:31:22 -0800 (PST)
+Received: by mail-qt1-x842.google.com with SMTP id t5so6862306qtp.2;
+        Mon, 09 Nov 2020 11:31:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=wP9KXoUMsiUhA5JKW0pkbm1QMKgjwIQX0z6JW9kJa6s=;
+        b=Zho3QB6MQnSmLfAsGEY74Ebt3PidB9Zz/Oo6q5S0iHVO/2XCci5p0MTGmpNJjcFF+a
+         jZbVSGOhnESX7VObw1jujOz340ZnROHw/SXJhDzeUeKKQG7MLcTd+QcCpDi+1Ta2QR93
+         m2pwuKQ7nDG+yT+Ng+1uEqtHqYYYfhwlGKP7HJy3BeBhQoDUnb0VR2I26Ace7NmsPAye
+         mx788G9pRFcZFrc7ZzS9mCSNuuW0DL2m4txNZZWR0/vaj+AFKQw7k6/zCl2jCHKuH/kk
+         xwiF5XLL8/HCtZhcGpT4lzwDoqVJtIhmDYj7foY+pJHSulkQx9mmq5853wRS95gP2dZr
+         +xLw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=wP9KXoUMsiUhA5JKW0pkbm1QMKgjwIQX0z6JW9kJa6s=;
+        b=jJiDW2IcSYTcS4rMfQrw5ahTyRT2PeMfOqIRW1IMI9N+iwMk5q3Fe3mbzrKvG23h1O
+         8YQyPP2tvYGHyNcv2paxrEuJ8CDkHWgOO+35oW9iJZXbmZvxAvEy5HikYhZv48OelvBb
+         NIjPudYchi24PDH+Ga7oZNN5lRch78FNSCpDmmuQ3h61qf85ft9zifQ7sQoGie48bWm6
+         dlzPNxZ57sNqi5NonhkAX7zHr/+WhmNO2kFdmji7ASYcZseKhP1o9iaA1qCvugYFYYUs
+         RpOO8mb7PYVoOCLoDf9+4UDHquTobBFcwXIoMNibwU6236sGZirGrEdhK3Jjjg5MiVQu
+         beVA==
+X-Gm-Message-State: AOAM5336t9g7Iej9I4tOJLXIi76LcLFvUG0sinImCNQWB0hPOVzDavcW
+        haWttlik2UtDM3cP/letzU4=
+X-Google-Smtp-Source: ABdhPJw6UtAn+o1nNr0oOLN9c0kEcMPx8IxBgAj4Mdys5B2HF6Dugu9LtC8cN/uBrs7Izt0QDYY4lA==
+X-Received: by 2002:ac8:46cf:: with SMTP id h15mr13644007qto.99.1604950281415;
+        Mon, 09 Nov 2020 11:31:21 -0800 (PST)
+Received: from svens-asus.arcx.com ([184.94.50.30])
+        by smtp.gmail.com with ESMTPSA id o14sm6585172qto.16.2020.11.09.11.31.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 09 Nov 2020 11:31:20 -0800 (PST)
+From:   Sven Van Asbroeck <thesven73@gmail.com>
+X-Google-Original-From: Sven Van Asbroeck <TheSven73@gmail.com>
+To:     Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     Sven Van Asbroeck <thesven73@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH net-next v1] net: phy: spi_ks8995: Do not overwrite SPI mode flags
+Date:   Mon,  9 Nov 2020 14:31:17 -0500
+Message-Id: <20201109193117.2017-1-TheSven73@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear Linux folks,
+From: Sven Van Asbroeck <thesven73@gmail.com>
 
+This driver makes sure the underlying SPI bus is set to "mode 0"
+by assigning SPI_MODE_0 to spi->mode. This overwrites all other
+SPI mode flags.
 
-By mistake I built `XFRM_ESP` into the Linux kernel, resulting in
+In some circumstances, this can break the underlying SPI bus driver.
+For example, if SPI_CS_HIGH is set on the SPI bus, the driver
+will clear that flag, which results in a chip-select polarity issue.
 
-     CONFIG_CRYPTO_SEQIV=y
-     CONFIG_CRYPTO_ECHAINIV=y
+Fix by changing only the SPI_MODE_N bits, i.e. SPI_CPHA and SPI_CPOL.
 
-and also the Jitterentropy RNG to be built in.
+Signed-off-by: Sven Van Asbroeck <thesven73@gmail.com>
+---
 
-     CRYPTO_JITTERENTROPY=y
+Tree: git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net-next.git # bff6f1db91e3
 
-So, on the Asus F2A85-M PRO starting Linux 4.10-rc3 with 
-`initcall_debug`, the init method is run unconditionally, and it takes 
-17.5 ms, which is over ten percent of the overall 900 ms the Linux 
-kernel needs until loading the init process.
+To: Andrew Lunn <andrew@lunn.ch>
+To: Heiner Kallweit <hkallweit1@gmail.com>
+To: Jakub Kicinski <kuba@kernel.org>
+Cc: Russell King <linux@armlinux.org.uk>
+Cc: "David S. Miller" <davem@davemloft.net>
+Cc: netdev@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
 
-     [    0.300544] calling  jent_mod_init+0x0/0x2c @ 1
-     [    0.318438] initcall jent_mod_init+0x0/0x2c returned 0 after 
-17471 usecs
+ drivers/net/phy/spi_ks8995.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-Looking at the output of systemd-bootchart, it looks like, that this 
-indeed delayed the boot a little, as the other init methods seem to be 
-ordered after it.
+diff --git a/drivers/net/phy/spi_ks8995.c b/drivers/net/phy/spi_ks8995.c
+index 4b198399bfa2..3c6c87a09b03 100644
+--- a/drivers/net/phy/spi_ks8995.c
++++ b/drivers/net/phy/spi_ks8995.c
+@@ -491,7 +491,9 @@ static int ks8995_probe(struct spi_device *spi)
+ 
+ 	spi_set_drvdata(spi, ks);
+ 
+-	spi->mode = SPI_MODE_0;
++	/* use SPI_MODE_0 without changing any other mode flags */
++	spi->mode &= ~(SPI_CPHA | SPI_CPOL);
++	spi->mode |= SPI_MODE_0;
+ 	spi->bits_per_word = 8;
+ 	err = spi_setup(spi);
+ 	if (err) {
+-- 
+2.17.1
 
-I am now building it as a module, but am wondering if the time can be 
-reduced to below ten milliseconds.
-
-
-Kind regards,
-
-Paul
