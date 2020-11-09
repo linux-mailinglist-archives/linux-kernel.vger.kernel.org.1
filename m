@@ -2,102 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D99D2AB41D
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 10:57:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AAC72AB423
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 10:57:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729212AbgKIJ5Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 04:57:24 -0500
-Received: from mail-ed1-f67.google.com ([209.85.208.67]:33264 "EHLO
-        mail-ed1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727183AbgKIJ5Y (ORCPT
+        id S1729239AbgKIJ5t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 04:57:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48594 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727183AbgKIJ5t (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 04:57:24 -0500
-Received: by mail-ed1-f67.google.com with SMTP id v4so8056928edi.0
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Nov 2020 01:57:23 -0800 (PST)
+        Mon, 9 Nov 2020 04:57:49 -0500
+Received: from mail-yb1-xb41.google.com (mail-yb1-xb41.google.com [IPv6:2607:f8b0:4864:20::b41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA183C0613CF;
+        Mon,  9 Nov 2020 01:57:48 -0800 (PST)
+Received: by mail-yb1-xb41.google.com with SMTP id f140so7650396ybg.3;
+        Mon, 09 Nov 2020 01:57:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=FipAhcEY6Ir/0bMu7F1ZE9qAOr9+LhLFjxwV6mVrxCk=;
+        b=fK9GTjNhMAVfjNLy0bIL8Y4doTMgIrhTKz8xDEwUg9Ij9Ku9v8hF/NtKLW7wWWd1ux
+         TbXB7jhg7ZWNnKmmaDfSHwnhjKKEWj1Tkz/21fsZ2w2VANI1/kiDKuTjpuMi1FSgLJr7
+         ugM0bRnrQ2K8/Ky8IrlC8pwXRRpqiLhe2lFomaJ20FTBwdF2dH1W6CLb0Ewx3TfWAOYX
+         c+h3pwxF64BK9jFkweeXTFMD6MJrg3VWfbUs67TZersIFPlBj9VUfXX+T73C4XkOPtbh
+         p+MqO1czGHEASoGwmBFlPuDrXzcHKX4sKgjWkmDdemwGiqsB8r9dbZhRyO2X8LyOOdk/
+         NIWA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=HB7PqyM3M8LN/TXDaTwoFfWeBEek1r/7MQX0qVK33ZA=;
-        b=mFBnGxPKJEZUpdMZUAzEcxmmPPY2r7xrkLwRuKcyDdEXuOAU7c7iN/nRQ7hKCIblIw
-         9753EdaOULf8kvjkjDPgLEGCA2rDRwPAFq3DbPAAKUgbnJPGkUU95/2Qx78u00nQRGLD
-         CIi9sKensqBb8syXvzJSwAqS+u6rDNR2ZIYoX8OnmZck3PveL5Z/i59P45RlrkkQvzrs
-         XxilbttPW5S2BX9BEaaP/KBClLeZJ+CHDTdenaHGwGeKJGgcJHacSsnoFvTDlZgZDvTi
-         qiIy/sZPafTNN+6pvYcuDoqLyr/KIQG1D/t9Q5/GuuOpUOYgoKLL7TJ8OxLYKucd+0lK
-         QtRQ==
-X-Gm-Message-State: AOAM531oIFUWS0J/e7pR+auYYvdiJjMhsGuKrAvDRxMcW+Thwd8NGEGT
-        H2IsCRLgpPlEoRnoX5CiUM0=
-X-Google-Smtp-Source: ABdhPJyLfaF3JpRuwgXZ1sPIapKan1J0yKoWAJEzSTpzFAarTCeypxdZojbXemwnjd0jAlJWWv/c9w==
-X-Received: by 2002:a05:6402:947:: with SMTP id h7mr14490724edz.85.1604915842716;
-        Mon, 09 Nov 2020 01:57:22 -0800 (PST)
-Received: from ?IPv6:2a0b:e7c0:0:107::49? ([2a0b:e7c0:0:107::49])
-        by smtp.gmail.com with ESMTPSA id la9sm8300736ejb.121.2020.11.09.01.57.21
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 09 Nov 2020 01:57:21 -0800 (PST)
-Subject: Re: [PATCH v1 1/3] vt: keyboard, use GENMAASK()/BIT() macros instead
- of open coded variants
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>,
-        David Laight <David.Laight@aculab.com>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-References: <20201106143551.43908-1-andriy.shevchenko@linux.intel.com>
- <e461a47754974c0d8d0b61981b77ae80@AcuMS.aculab.com>
- <CAHp75VfTFL_7bJ5HyyuATVk32+buD9JoNDhyf1noAfoFGqJ_OQ@mail.gmail.com>
-From:   Jiri Slaby <jirislaby@kernel.org>
-Message-ID: <56794a31-26ed-39eb-4082-75b5ec7cf28a@kernel.org>
-Date:   Mon, 9 Nov 2020 10:57:20 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=FipAhcEY6Ir/0bMu7F1ZE9qAOr9+LhLFjxwV6mVrxCk=;
+        b=sEZfnuCVIm4caO135v7TriVUkzNf/CRlsSmpGIfZqDUnc4ZvoTzQC1OFHs4r+8UCqB
+         4XJauPRjqc2cjPFfylHUpfuWDMwKYrrg3KNFZOSrxOaWkgByDGXZS+FU2wHVeMzkZcxx
+         s+J6pIR/BfO0rNRoy/tMWfX9YeSv69sRaN17No/03GJ+UvOUpfkgwr8JjAu/KA6DRvTC
+         JBdTfaEgdsnmeFR+A7sm6ENJct6QESjYPMteqBcBH76Qm+Bd5cGdExzaG4z2nhDHEGHA
+         6PGj3oQS1hWDuVo8HoiF1i8J9aBqvEHtynKjbfjGl1XxxKKKeRYqDlLwrZpc5N9KuX+E
+         mpeQ==
+X-Gm-Message-State: AOAM532dC0w+ZAr62F8Iqx6/AKAIHiXYKudnbhWG9V7F3LejotGWbDBN
+        0e4aloc+tMypC6QOqEFBL2YQLyexxQFMywZ4vJQ=
+X-Google-Smtp-Source: ABdhPJxgo2tgKLozFLe5IzmfX3h47YoM+mi4OBFJzMtL+8cGL40MSpZaqvE27IgUuhbdXJLHD0sc2u2D0Oa1UHgGK+o=
+X-Received: by 2002:a25:d981:: with SMTP id q123mr10209426ybg.50.1604915868158;
+ Mon, 09 Nov 2020 01:57:48 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <CAHp75VfTFL_7bJ5HyyuATVk32+buD9JoNDhyf1noAfoFGqJ_OQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <CAE1WUT75gu9G62Q9uAALGN6vLX=o7vZ9uhqtVWnbUV81DgmFPw@mail.gmail.com>
+In-Reply-To: <CAE1WUT75gu9G62Q9uAALGN6vLX=o7vZ9uhqtVWnbUV81DgmFPw@mail.gmail.com>
+From:   Ming Lei <tom.leiming@gmail.com>
+Date:   Mon, 9 Nov 2020 17:57:37 +0800
+Message-ID: <CACVXFVNmYoh20atwG9DOE-ZXFMLqNgGucREBsWAEYnDV4eLs1Q@mail.gmail.com>
+Subject: Re: 5.10 tree fails to build
+To:     Amy Parker <enbyamy@gmail.com>
+Cc:     linux-kbuild@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        masahiroy@kernel.org, michal.lkml@markovi.net,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 06. 11. 20, 17:06, Andy Shevchenko wrote:
-> On Fri, Nov 6, 2020 at 5:35 PM David Laight <David.Laight@aculab.com> wrote:
->>
->> From: Andy Shevchenko
->>> Sent: 06 November 2020 14:36
->>>
->>> There are few places when GENMASK() or BIT() macro is suitable and makes code
->>> easier to understand.
->>>
->> ...
->>> -     if ((d & ~0xff) == BRL_UC_ROW) {
->>> -             if ((ch & ~0xff) == BRL_UC_ROW)
->>> +     if ((d & ~GENMASK(7, 0)) == BRL_UC_ROW) {
->>> +             if ((ch & ~GENMASK(7, 0)) == BRL_UC_ROW)
->>>                        return d | ch;
->>
->> Do you really think that makes it more readable?
-> 
-> Yes. Because this tells explicitly how many bits are used for metadata
-> vs. data.
+On Thu, Nov 5, 2020 at 12:58 PM Amy Parker <enbyamy@gmail.com> wrote:
+>
+> On all attempts to build the 5.10 tree (from either release candidate,
+> Linus's tree, Greg's tree, etc), the build crashes on the BTFID vmlinux
+> stage. I've tested this on several different devices with completely
+> different hardware and kernel configs. The symbol for vfs_getattr
+> appears to be missing. Compiles for all of these work on any compile
+> on any 5.9 tree. I've tested all 4 5.9 dot-releases as well as the first
+> two and last two release candidates and Greg's staging tree.
+>
+> The specific error is:
+>   BTFIDS  vmlinux
+> FAILED unresolved symbol vfs_getattr
+> make: *** [Makefile:1164: vmlinux] Error 255
+>
+> Any thoughts as to what's causing this? The main machine I'm
+> compiling with is running kernel 5.8.17 with dwarves 1.17. My
+> kernel config is attached as `kernel_config`.
 
-No, because ~0xff is clearly what it is. GENMASK(7, 0) is:
-1) longer to read & parse by brain with result: "GENMASK undefined"
-2) terrible in this particular use case
+Turns out the issue is introduced in the following commit:
 
-Another instance of an even worse switch:
--		if (arg & ~0x77)
-+		if (arg & ~(GENMASK(6, 4) | GENMASK(2, 0)))
+commit 6e22ab9da79343532cd3cde39df25e5a5478c692
+Author: Jiri Olsa <jolsa@kernel.org>
+Date:   Tue Aug 25 21:21:20 2020 +0200
 
-OTOH, the switch to BIT is legit in all cases except the comparisons 
-with keycode:
--	if (keycode > 127)
-+	if (keycode >= BIT(7))
--		if (keycode < 128) {
-+		if (keycode < BIT(7)) {
+    bpf: Add d_path helper
 
-That's horrid and non-sense too.
+The issue can be observed reliably when building kernel in Fedora 33 with
+F33's kernel config.
 
-sorry,
+GCC: gcc version 10.2.1 20200826 (Red Hat 10.2.1-3) (GCC)
+
 -- 
-js
-suse labs
+Ming Lei
