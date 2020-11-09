@@ -2,97 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9F082ABE92
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 15:24:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E583B2ABE9E
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 15:26:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730671AbgKIOYX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 09:24:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34012 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730035AbgKIOYW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 09:24:22 -0500
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5647BC0613CF;
-        Mon,  9 Nov 2020 06:24:22 -0800 (PST)
-Received: by mail-pg1-x541.google.com with SMTP id r186so7296852pgr.0;
-        Mon, 09 Nov 2020 06:24:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=I0JWH1SE4fNuIvP9pni+ltgPPpUk5UXe6Ja6Dl7UHNM=;
-        b=jevuavzxcW3HQorjQwheDNNI2A/fFPMvKDn0mcJGqAZBwBmCKwMTdKJpXVkQPCC+xc
-         0wzcYAZ5Q9lDDiVmS1vQywVJM7xxtr6bERgHvaw2TEYngDMWsfm/UvAbGMQVmFwZV6AE
-         lsMhtSpPyA8oDLU44HCn1M8NMYKKMjwqaHtlsW2DLk/QnsFFxCiUlGtC6gh6DgouC3yv
-         ZuWZI00QluQK5J/HrBKfORylQVbU6tR9TYZ61UkFhd1dTptjTzMHdN3pV6bzUplif+Sy
-         B0mjgvK9zvjtFqHsvXmc3piUc2zpJLAweR5Z9rqfcxL7qRHQeczNP/gpziee4ovyEAeC
-         SdMA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=I0JWH1SE4fNuIvP9pni+ltgPPpUk5UXe6Ja6Dl7UHNM=;
-        b=HmhhnF8mLX8j7KnSWena5LS4wePUGslk2xCmf8mrR4XxvwYe3hCd4UeDIuPlOR0E7w
-         yuBdI01C1WRWTlTsvjoHngUU+G4XZHY2lZ8W0ivja1L/xLpC00sXYTe/drf1GJ99yf7Q
-         Is0FWJwtrUg2HOALoHX/82FF30aPPEomlm+zZVv5M6iCLk25iq/PFdpoM/AwJa34LNWc
-         j4MeWH/SERu4BdsoAsFfbm5rBuUkYSJSE+ypH4tgo7oDgR4xRURaDUz3KOSUNUJaXA/r
-         UsKWQ/i+zzf03Z1dSzI33t5sVG90OTdsR71L3hiCKUgPmdyeCUEmVfr5ixttSycMvPIa
-         ObZg==
-X-Gm-Message-State: AOAM530vNtA7ozUJYR6RKN91xGbSbD6ntA9HYPDVG3yXD+kNAqg6MjdH
-        1UTxGHPXkH4rMh4BGTtp7Of1IJrrQK8470JmPoM=
-X-Google-Smtp-Source: ABdhPJwidLp7E0/LPaDZe10ybjQfbINm9x2SALC+02oxtUeVB16O5+WJcb4yxzJw4LIARuGK1yf21/HmLLMPqjNbLWw=
-X-Received: by 2002:a63:4511:: with SMTP id s17mr13018417pga.4.1604931861810;
- Mon, 09 Nov 2020 06:24:21 -0800 (PST)
-MIME-Version: 1.0
-References: <20201106150706.29089-1-TheSven73@gmail.com>
-In-Reply-To: <20201106150706.29089-1-TheSven73@gmail.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Mon, 9 Nov 2020 16:25:10 +0200
-Message-ID: <CAHp75VfP1R7bXV6nWWnovWB5BMFcNNEmwBQXheBCUVDbr=xXGA@mail.gmail.com>
-Subject: Re: [PATCH v1] spi: fix client driver breakages when using GPIO descriptors
-To:     Sven Van Asbroeck <thesven73@gmail.com>
-Cc:     Mark Brown <broonie@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Jonathan Cameron <jonathan.cameron@huawei.com>,
-        Simon Han <z.han@kunbus.com>, Lukas Wunner <lukas@wunner.de>,
-        linux-spi <linux-spi@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        id S1730891AbgKIO0L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 09:26:11 -0500
+Received: from mga09.intel.com ([134.134.136.24]:24094 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729454AbgKIO0L (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 09:26:11 -0500
+IronPort-SDR: pnVJxMcNCmI737Ts7Be5z1q0Tj6mwlDJTGYDoUxOFfyvpk+kDDbC1GxwZ1XZYoumcFXsTGGQEH
+ 1JX7ihTZ63Ig==
+X-IronPort-AV: E=McAfee;i="6000,8403,9799"; a="169961952"
+X-IronPort-AV: E=Sophos;i="5.77,463,1596524400"; 
+   d="scan'208";a="169961952"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Nov 2020 06:26:10 -0800
+IronPort-SDR: mY2wdeebCZqKgDBEWwCXA6FJna9yWrJw4ckiD4ryWpIwFa7VLUq/25o6Fq+lb8ekm8xXZMLLyS
+ 6gnvrDRS8Iug==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,463,1596524400"; 
+   d="scan'208";a="354142722"
+Received: from sgsxdev004.isng.intel.com (HELO localhost) ([10.226.88.13])
+  by orsmga008.jf.intel.com with ESMTP; 09 Nov 2020 06:26:07 -0800
+From:   Amireddy Mallikarjuna reddy <mallikarjunax.reddy@linux.intel.com>
+To:     dmaengine@vger.kernel.org, vkoul@kernel.org,
+        devicetree@vger.kernel.org, robh+dt@kernel.org
+Cc:     linux-kernel@vger.kernel.org, andriy.shevchenko@intel.com,
+        chuanhua.lei@linux.intel.com, cheol.yong.kim@intel.com,
+        qi-ming.wu@intel.com, mallikarjunax.reddy@linux.intel.com,
+        malliamireddy009@gmail.com, peter.ujfalusi@ti.com
+Subject: [PATCH v8 0/2] Add Intel LGM SoC DMA support
+Date:   Mon,  9 Nov 2020 22:26:03 +0800
+Message-Id: <cover.1604931666.git.mallikarjunax.reddy@linux.intel.com>
+X-Mailer: git-send-email 2.11.0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 6, 2020 at 5:08 PM Sven Van Asbroeck <thesven73@gmail.com> wrote:
->
-> From: Sven Van Asbroeck <thesven73@gmail.com>
->
-> Commit f3186dd87669 ("spi: Optionally use GPIO descriptors for CS GPIOs")
-> introduced the optional use of GPIO descriptors for chip selects.
->
-> A side-effect of this change: when a SPI bus uses GPIO descriptors,
-> all its client devices have SPI_CS_HIGH set in spi->mode. This flag is
-> required for the SPI bus to operate correctly.
->
-> This unfortunately breaks many client drivers, which use the following
-> pattern to configure their underlying SPI bus:
->
-> static int client_device_probe(struct spi_device *spi)
-> {
->         ...
->         spi->mode = SPI_MODE_0;
->         spi->bits_per_word = 8;
->         err = spi_setup(spi);
->         ..
-> }
->
-> In short, many client drivers overwrite the SPI_CS_HIGH bit in
-> spi->mode, and break the underlying SPI bus driver.
+Add DMA controller driver for Lightning Mountain (LGM) family of SoCs.
 
-Sounds like "many SPI drivers have to be fixed".
+The main function of the DMA controller is the transfer of data from/to any
+peripheral to/from the memory. A memory to memory copy capability can also
+be configured. This ldma driver is used for configure the device and channnels
+for data and control paths.
 
+These controllers provide DMA capabilities for a variety of on-chip
+devices such as SSC, HSNAND and GSWIP.
 
+-------------
+Future Plans:
+-------------
+LGM SoC also supports Hardware Memory Copy engine.
+The role of the HW Memory copy engine is to offload memory copy operations
+from the CPU.
+
+Amireddy Mallikarjuna reddy (2):
+  dt-bindings: dma: Add bindings for Intel LGM SoC
+  Add Intel LGM SoC DMA support.
+
+ .../devicetree/bindings/dma/intel,ldma.yaml        |  134 ++
+ drivers/dma/Kconfig                                |    2 +
+ drivers/dma/Makefile                               |    1 +
+ drivers/dma/lgm/Kconfig                            |    9 +
+ drivers/dma/lgm/Makefile                           |    2 +
+ drivers/dma/lgm/lgm-dma.c                          | 1742 ++++++++++++++++++++
+ include/linux/dma/lgm_dma.h                        |   27 +
+ 7 files changed, 1917 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/dma/intel,ldma.yaml
+ create mode 100644 drivers/dma/lgm/Kconfig
+ create mode 100644 drivers/dma/lgm/Makefile
+ create mode 100644 drivers/dma/lgm/lgm-dma.c
+ create mode 100644 include/linux/dma/lgm_dma.h
 
 -- 
-With Best Regards,
-Andy Shevchenko
+2.11.0
+
