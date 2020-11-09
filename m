@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87DEB2AB61F
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 12:08:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0137E2AB620
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 12:08:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729505AbgKILHC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 06:07:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59482 "EHLO
+        id S1729816AbgKILIb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 06:08:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59496 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729491AbgKILHB (ORCPT
+        with ESMTP id S1729509AbgKILHC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 06:07:01 -0500
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8F5AC0613D6
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Nov 2020 03:07:00 -0800 (PST)
-Received: by mail-wr1-x443.google.com with SMTP id 23so8213786wrc.8
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Nov 2020 03:07:00 -0800 (PST)
+        Mon, 9 Nov 2020 06:07:02 -0500
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 735A8C0613D6
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Nov 2020 03:07:02 -0800 (PST)
+Received: by mail-wr1-x444.google.com with SMTP id k2so4827953wrx.2
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Nov 2020 03:07:02 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=/BZufo5GeZBBjJpVBhVfUUqf7bDRhIufHOC+GeAXTjw=;
-        b=h63NN6JIr7BPg/L5K4tALUY+/tMHu7b/AohNm+Sq0AHtLr7C775RNCqPF5N91xMyBI
-         MOiY+0CB7+nr/djuF77eQh2JjzNwZIgYaGZcGaavyRIGIDOMtNAYYoguPo3Q8xFlwx6L
-         QddH+S2xNU+tvs03WMAyY063pe678sUddwGJwNwh+sGNbGg5ToLYxAiebC7qHygj5JKC
-         wX/om83DYWGS2MTV/IcOR6891AOSOJx6pnI6tFAZh8FUdpFrpM+edanMCufFGJCkBefi
-         wPu7sueEx5oa9fOWdtBQSKZ4a7oTEsuZvbf1jYwrHa9aigN1cKpCLLxVES7TkXXM96mf
-         VUKg==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=2uLK4LNo7fJGEwA0NXfYaAQzvkTW8/WkGHuVu61FcZ4=;
+        b=SLmwWdYmA2Su0OyL+219YDZzeVXOkzpy5gortE6aVnwng+6cHrJzhAQJzNByqcPbPZ
+         isbE6V3Lb9JgstbUlm/PZvCpNxelIDnwHLTINtWIzMAUAJP+6YLk/AWf+cW33RVJOvLq
+         4EQlOOLu8zd+gVrxvr0w9485FxLsZ4uiV1jlwgDMS4E7kDkszYjvid4w0z806pFvA1dO
+         U+nHioEgRrLmfLyR8tH/H/Ge3+qH76H09ubPywZEg/u4KcGzZ6YzgnyKXZKxxyWIo1cW
+         FT3Tuwvxb43JhyG0QmKnG/8uRrjp2S/bO4jEisldpzuA8EOA5eJuEswwYg/l6KV0K70j
+         EAjQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=/BZufo5GeZBBjJpVBhVfUUqf7bDRhIufHOC+GeAXTjw=;
-        b=I1V3o0i8WxWICIUjo7QlTgC4eSVEohbFUD8UhDrsG3CvFaeSACCiWGsjXlK6p81efs
-         F6pKmSqHcGNhAw0ixltty34DcNgOa1hd4aKuBfFOphVDRP/nxSWbSGSYTF2DQfpEoyDF
-         OZulvWWmTMr2W8zWZ5w1LbCNfypR9zoCrP0Jo3W1iwKaQQ4NPrSQ1HUvDEX8C0JuZIB7
-         kdbdW6XJSJeVo/BT5NK8E83liWD18itgtqDZ/LJGRTDuN2ztFZNV+3NDtV3+f62erXWk
-         v8PJjsfBRwOu/qxucZ9egRxb5FQ+8CXDG51GC3zOF4DT9ihf43oVj3fYDJldlOUEhfFP
-         906Q==
-X-Gm-Message-State: AOAM533I+Ywp9V7NaaETksa3TKHFitucUNPxcEeDuys7WE5IxPRSrjtE
-        I3q8oXny5sJq24da4i+2sG34iA==
-X-Google-Smtp-Source: ABdhPJyoLN1aG0XKVyv+yWfCk24OCLDvJjyIFGdAfhV/HDRuWRPPB2x0i9RWfrD3NWEqtPTk5g+kWQ==
-X-Received: by 2002:adf:9066:: with SMTP id h93mr18252220wrh.166.1604920019608;
-        Mon, 09 Nov 2020 03:06:59 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=2uLK4LNo7fJGEwA0NXfYaAQzvkTW8/WkGHuVu61FcZ4=;
+        b=tuw/ni1bc3XJCGv+EJz9Dg9iCglQ8TpVQZDEMquEm9W8XlVyV+pyrLeS8oI2YcrhqH
+         GqJsI8vZZJz5Xt/8Ky8KO/LfUl+NnUK1vPWH73dxMV4OdAHFOlVe8ezpoeMgHFnZIete
+         brAHg1beIFLB5H/kPwf96WgGyS967zNWzYbdnIjde9eDTXgfzrStIABwrLU6j+CRZjDH
+         znxbNa1I+IN0E/tMT/BXgrogWa/k58F8WbLreBWjcQSc0LxK9gHoU36Coagc4aH5qyES
+         eYlnnObHR+iOkJEmJ8DoBwojOpoowSS/Qkl/1El3g4Dvi2vsOL9t6dx9zSWndjmKFu/V
+         Mfcg==
+X-Gm-Message-State: AOAM531bWVDBE9yd7Ita6MkkOmif5PF2iqqDi/KmsZKYQ9l4jlSXUeaL
+        lvN9JS7W5X0lyc4sPejarihoig==
+X-Google-Smtp-Source: ABdhPJwC1VmwvlzIaWje0LLMyGfNJlg7DPW07nQhl2YWyOW+KS6oIpzkSUqvI/A14QOWWdg2F+P+tA==
+X-Received: by 2002:adf:9b98:: with SMTP id d24mr16961027wrc.17.1604920021208;
+        Mon, 09 Nov 2020 03:07:01 -0800 (PST)
 Received: from localhost.localdomain (lfbn-nic-1-190-206.w2-15.abo.wanadoo.fr. [2.15.39.206])
-        by smtp.gmail.com with ESMTPSA id d3sm12815582wre.91.2020.11.09.03.06.57
+        by smtp.gmail.com with ESMTPSA id d3sm12815582wre.91.2020.11.09.03.06.59
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 09 Nov 2020 03:06:58 -0800 (PST)
+        Mon, 09 Nov 2020 03:07:00 -0800 (PST)
 From:   Bartosz Golaszewski <brgl@bgdev.pl>
 To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
         Sumit Semwal <sumit.semwal@linaro.org>,
@@ -80,12 +80,13 @@ Cc:     linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
         netdev@vger.kernel.org, linux-mm@kvack.org,
         alsa-devel@alsa-project.org,
         Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Subject: [PATCH v3 0/9] slab: provide and use krealloc_array()
-Date:   Mon,  9 Nov 2020 12:06:45 +0100
-Message-Id: <20201109110654.12547-1-brgl@bgdev.pl>
+Subject: [PATCH v3 1/9] mm: slab: clarify krealloc()'s behavior with __GFP_ZERO
+Date:   Mon,  9 Nov 2020 12:06:46 +0100
+Message-Id: <20201109110654.12547-2-brgl@bgdev.pl>
 X-Mailer: git-send-email 2.29.1
+In-Reply-To: <20201109110654.12547-1-brgl@bgdev.pl>
+References: <20201109110654.12547-1-brgl@bgdev.pl>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -93,52 +94,31 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 
-Andy brought to my attention the fact that users allocating an array of
-equally sized elements should check if the size multiplication doesn't
-overflow. This is why we have helpers like kmalloc_array().
+__GFP_ZERO is ignored by krealloc() (unless we fall-back to kmalloc()
+path, in which case it's honored). Point that out in the kerneldoc.
 
-However we don't have krealloc_array() equivalent and there are many
-users who do their own multiplication when calling krealloc() for arrays.
+Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+---
+ mm/slab_common.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-This series provides krealloc_array() and uses it in a couple places.
-
-A separate series will follow adding devm_krealloc_array() which is
-needed in the xilinx adc driver.
-
-v1 -> v2:
-- added a kernel doc for krealloc_array()
-- mentioned krealloc et al in the docs
-- collected review tags
-
-v2 -> v3:
-- add a patch improving krealloc()'s kerneldoc
-- fix a typo
-- improve .rst doc
-- tweak line breaks
-
-Bartosz Golaszewski (9):
-  mm: slab: clarify krealloc()'s behavior with __GFP_ZERO
-  mm: slab: provide krealloc_array()
-  ALSA: pcm: use krealloc_array()
-  vhost: vringh: use krealloc_array()
-  pinctrl: use krealloc_array()
-  edac: ghes: use krealloc_array()
-  drm: atomic: use krealloc_array()
-  hwtracing: intel: use krealloc_array()
-  dma-buf: use krealloc_array()
-
- Documentation/core-api/memory-allocation.rst |  4 ++++
- drivers/dma-buf/sync_file.c                  |  3 +--
- drivers/edac/ghes_edac.c                     |  4 ++--
- drivers/gpu/drm/drm_atomic.c                 |  3 ++-
- drivers/hwtracing/intel_th/msu.c             |  2 +-
- drivers/pinctrl/pinctrl-utils.c              |  2 +-
- drivers/vhost/vringh.c                       |  3 ++-
- include/linux/slab.h                         | 18 ++++++++++++++++++
- mm/slab_common.c                             |  6 +++---
- sound/core/pcm_lib.c                         |  4 ++--
- 10 files changed, 36 insertions(+), 13 deletions(-)
-
+diff --git a/mm/slab_common.c b/mm/slab_common.c
+index f9ccd5dc13f3..d6df73f79204 100644
+--- a/mm/slab_common.c
++++ b/mm/slab_common.c
+@@ -1091,9 +1091,9 @@ static __always_inline void *__do_krealloc(const void *p, size_t new_size,
+  * @flags: the type of memory to allocate.
+  *
+  * The contents of the object pointed to are preserved up to the
+- * lesser of the new and old sizes.  If @p is %NULL, krealloc()
+- * behaves exactly like kmalloc().  If @new_size is 0 and @p is not a
+- * %NULL pointer, the object pointed to is freed.
++ * lesser of the new and old sizes (__GFP_ZERO flag is effectively ignored).
++ * If @p is %NULL, krealloc() behaves exactly like kmalloc().  If @new_size
++ * is 0 and @p is not a %NULL pointer, the object pointed to is freed.
+  *
+  * Return: pointer to the allocated memory or %NULL in case of error
+  */
 -- 
 2.29.1
 
