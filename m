@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6C5E2ABA8F
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 14:23:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 748322ABB64
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 14:28:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387924AbgKINUZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 08:20:25 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47942 "EHLO mail.kernel.org"
+        id S1732330AbgKINOc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 08:14:32 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40806 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387586AbgKINUW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 08:20:22 -0500
+        id S1733149AbgKINO2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 08:14:28 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 45E902076E;
-        Mon,  9 Nov 2020 13:20:21 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id BC71220789;
+        Mon,  9 Nov 2020 13:14:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604928021;
-        bh=ctnOPLLHJhy1jQ6TOWEhGszCvAvPxwWh8+vmBkc5cnI=;
+        s=default; t=1604927668;
+        bh=VaIpHISW1bHeg0YK+bGy4dB54g61d2RgvK3sQTLnD6w=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=keEKfwF+X8gMzyv+WS01t3AgQfK/tUMkZLW6FQmYyGYXCBc+8EEAMy34RxWMHeUuz
-         oCMF5LrcbnwcW12znfYNbhkiCO7f7/s/lrm5JCf+mldVtq3G/dpnMZbcvqh+4UjlpC
-         cYpBW2jmzrukZsxumrLwZ1lXI2PLgwcb49Wecn50=
+        b=MfYuJOahE1fbIShIubfDzwK6POVkcxBipckNONQXzhmqdRDfwA+vhjbnW4IGT4Cwp
+         iZhACYpyyuY2bET0VoAH6h8w50BezpIMnj+B8HbQykDNYiu7PJ32KSCjCs0SoxHn7a
+         bAb+8Au5uuZd/nCELhX9yaVfE89gD35mM8LWp8zo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Gratian Crisan <gratian.crisan@ni.com>,
-        Mike Galbraith <efault@gmx.de>,
-        Thomas Gleixner <tglx@linutronix.de>
-Subject: [PATCH 5.9 070/133] futex: Handle transient "ownerless" rtmutex state correctly
-Date:   Mon,  9 Nov 2020 13:55:32 +0100
-Message-Id: <20201109125034.101580315@linuxfoundation.org>
+        stable@vger.kernel.org,
+        "Steven Rostedt (VMware)" <rostedt@goodmis.org>
+Subject: [PATCH 5.4 36/85] ftrace: Fix recursion check for NMI test
+Date:   Mon,  9 Nov 2020 13:55:33 +0100
+Message-Id: <20201109125024.330189877@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201109125030.706496283@linuxfoundation.org>
-References: <20201109125030.706496283@linuxfoundation.org>
+In-Reply-To: <20201109125022.614792961@linuxfoundation.org>
+References: <20201109125022.614792961@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,80 +42,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mike Galbraith <efault@gmx.de>
+From: Steven Rostedt (VMware) <rostedt@goodmis.org>
 
-commit 9f5d1c336a10c0d24e83e40b4c1b9539f7dba627 upstream.
+commit ee11b93f95eabdf8198edd4668bf9102e7248270 upstream.
 
-Gratian managed to trigger the BUG_ON(!newowner) in fixup_pi_state_owner().
-This is one possible chain of events leading to this:
+The code that checks recursion will work to only do the recursion check once
+if there's nested checks. The top one will do the check, the other nested
+checks will see recursion was already checked and return zero for its "bit".
+On the return side, nothing will be done if the "bit" is zero.
 
-Task Prio       Operation
-T1   120	lock(F)
-T2   120	lock(F)   -> blocks (top waiter)
-T3   50 (RT)	lock(F)   -> boosts T1 and blocks (new top waiter)
-XX   		timeout/  -> wakes T2
-		signal
-T1   50		unlock(F) -> wakes T3 (rtmutex->owner == NULL, waiter bit is set)
-T2   120	cleanup   -> try_to_take_mutex() fails because T3 is the top waiter
-     			     and the lower priority T2 cannot steal the lock.
-     			  -> fixup_pi_state_owner() sees newowner == NULL -> BUG_ON()
+The problem is that zero is returned for the "good" bit when in NMI context.
+This will set the bit for NMIs making it look like *all* NMI tracing is
+recursing, and prevent tracing of anything in NMI context!
 
-The comment states that this is invalid and rt_mutex_real_owner() must
-return a non NULL owner when the trylock failed, but in case of a queued
-and woken up waiter rt_mutex_real_owner() == NULL is a valid transient
-state. The higher priority waiter has simply not yet managed to take over
-the rtmutex.
+The simple fix is to return "bit + 1" and subtract that bit on the end to
+get the real bit.
 
-The BUG_ON() is therefore wrong and this is just another retry condition in
-fixup_pi_state_owner().
-
-Drop the locks, so that T3 can make progress, and then try the fixup again.
-
-Gratian provided a great analysis, traces and a reproducer. The analysis is
-to the point, but it confused the hell out of that tglx dude who had to
-page in all the futex horrors again. Condensed version is above.
-
-[ tglx: Wrote comment and changelog ]
-
-Fixes: c1e2f0eaf015 ("futex: Avoid violating the 10th rule of futex")
-Reported-by: Gratian Crisan <gratian.crisan@ni.com>
-Signed-off-by: Mike Galbraith <efault@gmx.de>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 Cc: stable@vger.kernel.org
-Link: https://lore.kernel.org/r/87a6w6x7bb.fsf@ni.com
-Link: https://lore.kernel.org/r/87sg9pkvf7.fsf@nanos.tec.linutronix.de
+Fixes: edc15cafcbfa3 ("tracing: Avoid unnecessary multiple recursion checks")
+Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- kernel/futex.c |   16 ++++++++++++++--
- 1 file changed, 14 insertions(+), 2 deletions(-)
+ kernel/trace/trace.h |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
---- a/kernel/futex.c
-+++ b/kernel/futex.c
-@@ -2380,10 +2380,22 @@ retry:
- 		}
+--- a/kernel/trace/trace.h
++++ b/kernel/trace/trace.h
+@@ -653,7 +653,7 @@ static __always_inline int trace_test_an
+ 	current->trace_recursion = val;
+ 	barrier();
  
- 		/*
--		 * Since we just failed the trylock; there must be an owner.
-+		 * The trylock just failed, so either there is an owner or
-+		 * there is a higher priority waiter than this one.
- 		 */
- 		newowner = rt_mutex_owner(&pi_state->pi_mutex);
--		BUG_ON(!newowner);
-+		/*
-+		 * If the higher priority waiter has not yet taken over the
-+		 * rtmutex then newowner is NULL. We can't return here with
-+		 * that state because it's inconsistent vs. the user space
-+		 * state. So drop the locks and try again. It's a valid
-+		 * situation and not any different from the other retry
-+		 * conditions.
-+		 */
-+		if (unlikely(!newowner)) {
-+			err = -EAGAIN;
-+			goto handle_err;
-+		}
- 	} else {
- 		WARN_ON_ONCE(argowner != current);
- 		if (oldowner == current) {
+-	return bit;
++	return bit + 1;
+ }
+ 
+ static __always_inline void trace_clear_recursion(int bit)
+@@ -663,6 +663,7 @@ static __always_inline void trace_clear_
+ 	if (!bit)
+ 		return;
+ 
++	bit--;
+ 	bit = 1 << bit;
+ 	val &= ~bit;
+ 
 
 
