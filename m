@@ -2,37 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B65412AB8E2
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 13:59:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BE972AB8EB
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 14:00:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730211AbgKIM6t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 07:58:49 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52748 "EHLO mail.kernel.org"
+        id S1730319AbgKIM7T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 07:59:19 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53494 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729984AbgKIM60 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 07:58:26 -0500
+        id S1730290AbgKIM7P (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 07:59:15 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DDFA92076E;
-        Mon,  9 Nov 2020 12:58:24 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B5B032076E;
+        Mon,  9 Nov 2020 12:59:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604926705;
-        bh=/y7H92Kxy/9wo+t0QSJYuIYPw2TgRjpkBGgOFB+T/No=;
+        s=default; t=1604926754;
+        bh=BYAd0+5dQ1U7j/KYmbHG8x8X326XH4AnHZB5ZtYoVtU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hCMeAK/1zV4sDYeKttvLpJEkeAEarrbmwhG/6lgg+zmFnsofXeuIdfN2A+X9LRz2z
-         WQm5cMzWumQUh/PpxBZDngXJWDKZ+NSX4f6itl2fSpJVw7Pmd6OoiHj5vHgyph76mG
-         jNtfNLpPEYVTbYN6KcmDzQRL3BqpwhGOKfG7tngA=
+        b=pvZZO7Bcc/QewcPMHcHAIkzWgw/98ObVBRrQ9wz6aftteSdcndJygymKKQVTgYX0c
+         /gkrS2NFkpl9+9Jc+oqmEbPp5sUtiDi8SPbebwd3cvA/WuT7nG8FdgdjKReqgRyIMZ
+         lze2wOQzJy+ICkTX/i3AWYU1GuLhxakTM4QRWTCE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Lars-Peter Clausen <lars@metafoo.de>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Stable@vger.kernel.org
-Subject: [PATCH 4.4 45/86] iio:gyro:itg3200: Fix timestamp alignment and prevent data leak.
-Date:   Mon,  9 Nov 2020 13:54:52 +0100
-Message-Id: <20201109125023.004403488@linuxfoundation.org>
+        stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Tony Luck <tony.luck@intel.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 4.4 49/86] ia64: fix build error with !COREDUMP
+Date:   Mon,  9 Nov 2020 13:54:56 +0100
+Message-Id: <20201109125023.180242796@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201109125020.852643676@linuxfoundation.org>
 References: <20201109125020.852643676@linuxfoundation.org>
@@ -44,60 +46,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+From: Krzysztof Kozlowski <krzk@kernel.org>
 
-commit 10ab7cfd5522f0041028556dac864a003e158556 upstream.
+commit 7404840d87557c4092bf0272bce5e0354c774bf9 upstream.
 
-One of a class of bugs pointed out by Lars in a recent review.
-iio_push_to_buffers_with_timestamp assumes the buffer used is aligned
-to the size of the timestamp (8 bytes).  This is not guaranteed in
-this driver which uses a 16 byte array of smaller elements on the stack.
-This is fixed by using an explicit c structure. As there are no
-holes in the structure, there is no possiblity of data leakage
-in this case.
+Fix linkage error when CONFIG_BINFMT_ELF is selected but CONFIG_COREDUMP
+is not:
 
-The explicit alignment of ts is not strictly necessary but potentially
-makes the code slightly less fragile.  It also removes the possibility
-of this being cut and paste into another driver where the alignment
-isn't already true.
+    ia64-linux-ld: arch/ia64/kernel/elfcore.o: in function `elf_core_write_extra_phdrs':
+    elfcore.c:(.text+0x172): undefined reference to `dump_emit'
+    ia64-linux-ld: arch/ia64/kernel/elfcore.o: in function `elf_core_write_extra_data':
+    elfcore.c:(.text+0x2b2): undefined reference to `dump_emit'
 
-Fixes: 36e0371e7764 ("iio:itg3200: Use iio_push_to_buffers_with_timestamp()")
-Reported-by: Lars-Peter Clausen <lars@metafoo.de>
-Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc: <Stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20200722155103.979802-6-jic23@kernel.org
+Fixes: 1fcccbac89f5 ("elf coredump: replace ELF_CORE_EXTRA_* macros by functions")
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Cc: Tony Luck <tony.luck@intel.com>
+Cc: Fenghua Yu <fenghua.yu@intel.com>
+Cc: <stable@vger.kernel.org>
+Link: https://lkml.kernel.org/r/20200819064146.12529-1-krzk@kernel.org
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/iio/gyro/itg3200_buffer.c |   13 ++++++++++---
- 1 file changed, 10 insertions(+), 3 deletions(-)
+ arch/ia64/kernel/Makefile |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/iio/gyro/itg3200_buffer.c
-+++ b/drivers/iio/gyro/itg3200_buffer.c
-@@ -49,13 +49,20 @@ static irqreturn_t itg3200_trigger_handl
- 	struct iio_poll_func *pf = p;
- 	struct iio_dev *indio_dev = pf->indio_dev;
- 	struct itg3200 *st = iio_priv(indio_dev);
--	__be16 buf[ITG3200_SCAN_ELEMENTS + sizeof(s64)/sizeof(u16)];
-+	/*
-+	 * Ensure correct alignment and padding including for the
-+	 * timestamp that may be inserted.
-+	 */
-+	struct {
-+		__be16 buf[ITG3200_SCAN_ELEMENTS];
-+		s64 ts __aligned(8);
-+	} scan;
+--- a/arch/ia64/kernel/Makefile
++++ b/arch/ia64/kernel/Makefile
+@@ -42,7 +42,7 @@ endif
+ obj-$(CONFIG_INTEL_IOMMU)	+= pci-dma.o
+ obj-$(CONFIG_SWIOTLB)		+= pci-swiotlb.o
  
--	int ret = itg3200_read_all_channels(st->i2c, buf);
-+	int ret = itg3200_read_all_channels(st->i2c, scan.buf);
- 	if (ret < 0)
- 		goto error_ret;
+-obj-$(CONFIG_BINFMT_ELF)	+= elfcore.o
++obj-$(CONFIG_ELF_CORE)		+= elfcore.o
  
--	iio_push_to_buffers_with_timestamp(indio_dev, buf, pf->timestamp);
-+	iio_push_to_buffers_with_timestamp(indio_dev, &scan, pf->timestamp);
- 
- 	iio_trigger_notify_done(indio_dev->trig);
- 
+ # fp_emulate() expects f2-f5,f16-f31 to contain the user-level state.
+ CFLAGS_traps.o  += -mfixed-range=f2-f5,f16-f31
 
 
