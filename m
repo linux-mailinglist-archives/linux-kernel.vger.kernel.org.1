@@ -2,37 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F0BC2ABBF0
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 14:32:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 49A4B2ABB87
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 14:31:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731673AbgKINci (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 08:32:38 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59940 "EHLO mail.kernel.org"
+        id S1732097AbgKINKd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 08:10:33 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35714 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731279AbgKINHO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 08:07:14 -0500
+        id S1731261AbgKINK2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 08:10:28 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EE84C20731;
-        Mon,  9 Nov 2020 13:07:12 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3634320663;
+        Mon,  9 Nov 2020 13:10:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604927233;
-        bh=6M8/Nor+vjyIdL9iwcVAhnMpVgxFsCFpmtniT6+i9Fk=;
+        s=default; t=1604927426;
+        bh=FrGFnYVtKu4a5On7eAOPWzNYFNNKSIQ2Y5MlWzgAYCs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=K8FgLlWGSgL1uZCi65RDMIKDck/pXCU9WKaVsz+vlp3gjDUroK4rqtkCU00h+xUoO
-         cOlayiTowjDQoVm4uWKLKVfTsrTqhE4bLn/o96CSoR7MJc014RT9V3qLBHMLB7YgSl
-         y0uTbwpo2AMxdodEXpECNB5Q9uJnwgYgF85V3Ndk=
+        b=qS78Wdme28T4DhXJLvzgWnbSqnOoCT0q97rCv3hARUUv0Z8wAarS5XRufsZWt6Zt3
+         rzWn3WDmUmGIJPWfv48pzBGSyIQU2Ji+U66xnfhFEHULzhPLS3iiTISlqwwUJk47CH
+         6okEX1Bq98Yl73a+zNJvh2IDGAWe9Mf1FeVfF2DY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Johan Hovold <johan@kernel.org>
-Subject: [PATCH 4.14 39/48] USB: serial: cyberjack: fix write-URB completion race
-Date:   Mon,  9 Nov 2020 13:55:48 +0100
-Message-Id: <20201109125018.682376775@linuxfoundation.org>
+        stable@vger.kernel.org, Peilin Ye <yepeilin.cs@gmail.com>,
+        Minh Yuan <yuanmingbuaa@gmail.com>, Greg KH <greg@kroah.com>,
+        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+        Daniel Vetter <daniel.vetter@intel.com>
+Subject: [PATCH 4.19 55/71] vt: Disable KD_FONT_OP_COPY
+Date:   Mon,  9 Nov 2020 13:55:49 +0100
+Message-Id: <20201109125022.487432418@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201109125016.734107741@linuxfoundation.org>
-References: <20201109125016.734107741@linuxfoundation.org>
+In-Reply-To: <20201109125019.906191744@linuxfoundation.org>
+References: <20201109125019.906191744@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,57 +44,115 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Johan Hovold <johan@kernel.org>
+From: Daniel Vetter <daniel.vetter@ffwll.ch>
 
-commit 985616f0457d9f555fff417d0da56174f70cc14f upstream.
+commit 3c4e0dff2095c579b142d5a0693257f1c58b4804 upstream.
 
-The write-URB busy flag was being cleared before the completion handler
-was done with the URB, something which could lead to corrupt transfers
-due to a racing write request if the URB is resubmitted.
+It's buggy:
 
-Fixes: 507ca9bc0476 ("[PATCH] USB: add ability for usb-serial drivers to determine if their write urb is currently being used.")
-Cc: stable <stable@vger.kernel.org>     # 2.6.13
-Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Signed-off-by: Johan Hovold <johan@kernel.org>
+On Fri, Nov 06, 2020 at 10:30:08PM +0800, Minh Yuan wrote:
+> We recently discovered a slab-out-of-bounds read in fbcon in the latest
+> kernel ( v5.10-rc2 for now ).  The root cause of this vulnerability is that
+> "fbcon_do_set_font" did not handle "vc->vc_font.data" and
+> "vc->vc_font.height" correctly, and the patch
+> <https://lkml.org/lkml/2020/9/27/223> for VT_RESIZEX can't handle this
+> issue.
+>
+> Specifically, we use KD_FONT_OP_SET to set a small font.data for tty6, and
+> use  KD_FONT_OP_SET again to set a large font.height for tty1. After that,
+> we use KD_FONT_OP_COPY to assign tty6's vc_font.data to tty1's vc_font.data
+> in "fbcon_do_set_font", while tty1 retains the original larger
+> height. Obviously, this will cause an out-of-bounds read, because we can
+> access a smaller vc_font.data with a larger vc_font.height.
+
+Further there was only one user ever.
+- Android's loadfont, busybox and console-tools only ever use OP_GET
+  and OP_SET
+- fbset documentation only mentions the kernel cmdline font: option,
+  not anything else.
+- systemd used OP_COPY before release 232 published in Nov 2016
+
+Now unfortunately the crucial report seems to have gone down with
+gmane, and the commit message doesn't say much. But the pull request
+hints at OP_COPY being broken
+
+https://github.com/systemd/systemd/pull/3651
+
+So in other words, this never worked, and the only project which
+foolishly every tried to use it, realized that rather quickly too.
+
+Instead of trying to fix security issues here on dead code by adding
+missing checks, fix the entire thing by removing the functionality.
+
+Note that systemd code using the OP_COPY function ignored the return
+value, so it doesn't matter what we're doing here really - just in
+case a lone server somewhere happens to be extremely unlucky and
+running an affected old version of systemd. The relevant code from
+font_copy_to_all_vcs() in systemd was:
+
+	/* copy font from active VT, where the font was uploaded to */
+	cfo.op = KD_FONT_OP_COPY;
+	cfo.height = vcs.v_active-1; /* tty1 == index 0 */
+	(void) ioctl(vcfd, KDFONTOP, &cfo);
+
+Note this just disables the ioctl, garbage collecting the now unused
+callbacks is left for -next.
+
+v2: Tetsuo found the old mail, which allowed me to find it on another
+archive. Add the link too.
+
+Acked-by: Peilin Ye <yepeilin.cs@gmail.com>
+Reported-by: Minh Yuan <yuanmingbuaa@gmail.com>
+Cc: Greg KH <greg@kroah.com>
+Cc: Peilin Ye <yepeilin.cs@gmail.com>
+Cc: Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+Signed-off-by: Daniel Vetter <daniel.vetter@intel.com>
+Link: https://lore.kernel.org/r/20201108153806.3140315-1-daniel.vetter@ffwll.ch
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/usb/serial/cyberjack.c |    7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+ drivers/tty/vt/vt.c |   24 ++----------------------
+ 1 file changed, 2 insertions(+), 22 deletions(-)
 
---- a/drivers/usb/serial/cyberjack.c
-+++ b/drivers/usb/serial/cyberjack.c
-@@ -358,11 +358,12 @@ static void cyberjack_write_bulk_callbac
- 	struct cyberjack_private *priv = usb_get_serial_port_data(port);
- 	struct device *dev = &port->dev;
- 	int status = urb->status;
-+	bool resubmitted = false;
- 
--	set_bit(0, &port->write_urbs_free);
- 	if (status) {
- 		dev_dbg(dev, "%s - nonzero write bulk status received: %d\n",
- 			__func__, status);
-+		set_bit(0, &port->write_urbs_free);
- 		return;
- 	}
- 
-@@ -395,6 +396,8 @@ static void cyberjack_write_bulk_callbac
- 			goto exit;
- 		}
- 
-+		resubmitted = true;
-+
- 		dev_dbg(dev, "%s - priv->wrsent=%d\n", __func__, priv->wrsent);
- 		dev_dbg(dev, "%s - priv->wrfilled=%d\n", __func__, priv->wrfilled);
- 
-@@ -411,6 +414,8 @@ static void cyberjack_write_bulk_callbac
- 
- exit:
- 	spin_unlock(&priv->lock);
-+	if (!resubmitted)
-+		set_bit(0, &port->write_urbs_free);
- 	usb_serial_port_softint(port);
+--- a/drivers/tty/vt/vt.c
++++ b/drivers/tty/vt/vt.c
+@@ -4574,27 +4574,6 @@ static int con_font_default(struct vc_da
+ 	return rc;
  }
  
+-static int con_font_copy(struct vc_data *vc, struct console_font_op *op)
+-{
+-	int con = op->height;
+-	int rc;
+-
+-
+-	console_lock();
+-	if (vc->vc_mode != KD_TEXT)
+-		rc = -EINVAL;
+-	else if (!vc->vc_sw->con_font_copy)
+-		rc = -ENOSYS;
+-	else if (con < 0 || !vc_cons_allocated(con))
+-		rc = -ENOTTY;
+-	else if (con == vc->vc_num)	/* nothing to do */
+-		rc = 0;
+-	else
+-		rc = vc->vc_sw->con_font_copy(vc, con);
+-	console_unlock();
+-	return rc;
+-}
+-
+ int con_font_op(struct vc_data *vc, struct console_font_op *op)
+ {
+ 	switch (op->op) {
+@@ -4605,7 +4584,8 @@ int con_font_op(struct vc_data *vc, stru
+ 	case KD_FONT_OP_SET_DEFAULT:
+ 		return con_font_default(vc, op);
+ 	case KD_FONT_OP_COPY:
+-		return con_font_copy(vc, op);
++		/* was buggy and never really used */
++		return -EINVAL;
+ 	}
+ 	return -ENOSYS;
+ }
 
 
