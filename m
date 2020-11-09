@@ -2,72 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D4462AC396
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 19:21:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 038132AC395
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 19:20:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729919AbgKISVB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 13:21:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42720 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729119AbgKISVA (ORCPT
+        id S1729666AbgKISUt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 13:20:49 -0500
+Received: from jabberwock.ucw.cz ([46.255.230.98]:57406 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729119AbgKISUt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 13:21:00 -0500
-Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 810DBC0613CF
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Nov 2020 10:20:58 -0800 (PST)
-Received: by mail-lj1-x242.google.com with SMTP id y16so5508301ljh.0
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Nov 2020 10:20:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=OWLWa7SPKs7GPknksKLCZ9SBMpZmS7lY4U8JqE+JC8A=;
-        b=cl+PlEyZsk5U4kRGAKvFGA45cDIFPb/m73dsIGArh7ozhs6BJiefaaJA5RYzDRDcWv
-         yCBiINhPOFqA/RQjmjg33pIcKQTP7Fk80jlJaTYPFN4XhC3nFJzse2Oe5JcnXXyieqMW
-         ITrWi5Iv+S36B8j8SQ5RHs8nZey6JFtr1NQufErxYbAx5vh7vtZVrQ6i2lhtTP+uzXYk
-         8SVsVsbEbW/pbsubmAt+NeSC61yHTMNbowngDRMR3rceqCe4miCTsHnBhad16infg4gW
-         CqrWVM6rG99eOEcIv1CWcRRt4izVYR3jl+GYZ03dVZsWG+3pwoYqGpuL64VkmGs7ni6/
-         h0pw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=OWLWa7SPKs7GPknksKLCZ9SBMpZmS7lY4U8JqE+JC8A=;
-        b=HsTFg6hSTKjAMXBP1opfD3TXnRuSIzSLCmgzv9xziV0qV9PKK9zo3Uuxs7a3nq2hH9
-         bAJ4NqXf41qlkhYniuz7wx+/uQM1oM9loZ30zpj7boUu5hphgZaeQjXDSN4n4RVZ4Iup
-         pZaO6T1cHjaomL+SW0aX12/30/M/omKK5QTfgpO+I86r44PyIiE4Eieec3ujz8UcZIyU
-         lfNZHoaEtHF04UQEzZFYBUMIgUn71eRT5GrpoazIm9KjDON8tIE3vzob6wFwtWWXbKQT
-         gN8DEVaDyJh1rEF6LMu+/sA2fx3BRPSqb3Ef6E68FeXam80OYAlSiuXn1IH6EBHNi4DS
-         Og+A==
-X-Gm-Message-State: AOAM530CjSdYMQNxCMu0KQNenWS3jn4z/2caRTZUkQK3o8QFGlMXm5zT
-        iVkc2WFnu3eEjeGCP8FGgrAYDKGOnu1Q1mb6rY8kymFajPE=
-X-Google-Smtp-Source: ABdhPJy8dXBEu19X3GHc4E5eM4lK6fxQnh3Gb/2H1WcGyzhJ+mj82aM9DSbv0VHl2/uz+XfjtgldShSvtgysXXRbzDU=
-X-Received: by 2002:a2e:9746:: with SMTP id f6mr6942637ljj.270.1604946056700;
- Mon, 09 Nov 2020 10:20:56 -0800 (PST)
+        Mon, 9 Nov 2020 13:20:49 -0500
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 925701C0B7A; Mon,  9 Nov 2020 19:20:46 +0100 (CET)
+Date:   Mon, 9 Nov 2020 19:20:46 +0100
+From:   Pavel Machek <pavel@ucw.cz>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Chris Wilson <chris@chris-wilson.co.uk>,
+        Mika Kuoppala <mika.kuoppala@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>
+Subject: Re: [PATCH 4.19 01/71] drm/i915: Break up error capture compression
+ loops with cond_resched()
+Message-ID: <20201109182046.GA20488@amd>
+References: <20201109125019.906191744@linuxfoundation.org>
+ <20201109125019.973892170@linuxfoundation.org>
 MIME-Version: 1.0
-References: <20201108003834.12669-1-richard.weiyang@gmail.com>
-In-Reply-To: <20201108003834.12669-1-richard.weiyang@gmail.com>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Mon, 9 Nov 2020 10:20:45 -0800
-Message-ID: <CALvZod7UAm_E1A7q55fsUH8zq6u273u1_aAVDTBhsYW_Dhq_NA@mail.gmail.com>
-Subject: Re: [PATCH] mm/memcg: remove unused definitions
-To:     Wei Yang <richard.weiyang@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux MM <linux-mm@kvack.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Roman Gushchin <guro@fb.com>, Michal Hocko <mhocko@suse.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="OgqxwSJOaUobr8KG"
+Content-Disposition: inline
+In-Reply-To: <20201109125019.973892170@linuxfoundation.org>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-+LKML and linux-mm
 
-On Sat, Nov 7, 2020 at 4:38 PM Wei Yang <richard.weiyang@gmail.com> wrote:
->
-> Some definitions are left unused, just clean them.
->
-> Signed-off-by: Wei Yang <richard.weiyang@gmail.com>
+--OgqxwSJOaUobr8KG
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Reviewed-by: Shakeel Butt <shakeelb@google.com>
+Hi!
+
+> commit 7d5553147613b50149238ac1385c60e5c7cacb34 upstream.
+>=20
+> As the error capture will compress user buffers as directed to by the
+> user, it can take an arbitrary amount of time and space. Break up the
+> compression loops with a call to cond_resched(), that will allow other
+> processes to schedule (avoiding the soft lockups) and also serve as a
+> warning should we try to make this loop atomic in the future.
+
+This was queued for 4.19-stable, but is very likely wrong.
+
+> Testcase: igt/gem_exec_capture/many-*
+> Signed-off-by: Chris Wilson <chris@chris-wilson.co.uk>
+> Cc: Mika Kuoppala <mika.kuoppala@linux.intel.com>
+> Cc: stable@vger.kernel.org
+> Reviewed-by: Mika Kuoppala <mika.kuoppala@linux.intel.com>
+> Link: https://patchwork.freedesktop.org/patch/msgid/20200916090059.3189-2=
+-chris@chris-wilson.co.uk
+> (cherry picked from commit 293f43c80c0027ff9299036c24218ac705ce584e)
+> Signed-off-by: Rodrigo Vivi <rodrigo.vivi@intel.com>
+> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
+> @@ -347,6 +349,7 @@ static int compress_page(struct compress
+>  	if (!i915_memcpy_from_wc(ptr, src, PAGE_SIZE))
+>  		memcpy(ptr, src, PAGE_SIZE);
+>  	dst->pages[dst->page_count++] =3D ptr;
+> +	cond_resched();
+> =20
+>  	return 0;
+>  }
+
+4.19 compress_page begins with
+
+static int compress_page(struct compress *c,
+=2E..
+        page =3D __get_free_page(GFP_ATOMIC | __GFP_NOWARN);
+
+and likely may not sleep. That changed with commit
+a42f45a2a85998453078, but that one is not present in 4.19..
+
+I believe we don't need this in stable: dumping of error file will not
+take so long to trigger softlockup detectors...=20
+
+Best regards,
+                                                                Pavel
+							=09
+>=20
+
+--=20
+http://www.livejournal.com/~pavelmachek
+
+--OgqxwSJOaUobr8KG
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iEYEARECAAYFAl+piH0ACgkQMOfwapXb+vK89ACgu7Vl6vjbAbNNbvzPx6ppWhBn
+USoAn1vS4a68nIaWfU7+oypwqaJLWcbi
+=kSD6
+-----END PGP SIGNATURE-----
+
+--OgqxwSJOaUobr8KG--
