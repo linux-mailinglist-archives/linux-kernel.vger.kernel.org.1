@@ -2,111 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D6A32AB270
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 09:33:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F3EC2AB28E
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 09:38:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728638AbgKIIdH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 03:33:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35532 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726176AbgKIIdH (ORCPT
+        id S1729721AbgKIIix (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 03:38:53 -0500
+Received: from mx07-00178001.pphosted.com ([185.132.182.106]:57074 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726127AbgKIIix (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 03:33:07 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C995C0613CF
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Nov 2020 00:33:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=bGUxI0B07YWLmHjnQQTBE3xPkOaIZ78B6Zxl84c+J9U=; b=Q0sOqOM65heRoPF+jc8XOfTi7g
-        ETiwo1AjafjROzc51giTjimk6ZB9F9uP3QJ9IAXgromYGcMXv5Uz7M1A5libjj07rUw0AiViJKvEJ
-        cnZflQFO7OuhAgj2T1xbTN33my/RlQMFIu/TECRt8mIymXo31FpM0xOU115WFaOqiWj+8QPiNiUVq
-        lRIjQts/Ybh1bDUdp8B7C+XPFkgu4vrNausUHBJXQ6h+m7rdMg9qsXlWNPawI/3AE+jW8Hw7NlZwu
-        YYfxfLixEUE+OVu6bJLMMRT/vz85QhSMXUxVPBkHvzcaxZvrO3+1RlUYlapQpGnlTzPmoSdOS3owl
-        PBjgLdpA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kc2bg-0003Ps-25; Mon, 09 Nov 2020 08:32:56 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 664AB3006E0;
-        Mon,  9 Nov 2020 09:32:51 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 58A282C2296F6; Mon,  9 Nov 2020 09:32:51 +0100 (CET)
-Date:   Mon, 9 Nov 2020 09:32:51 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Tiezhu Yang <yangtiezhu@loongson.cn>
-Cc:     Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
-        linux-kernel@vger.kernel.org, Xuefeng Li <lixuefeng@loongson.cn>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: Re: [PATCH] locking/lock_events: no need to check return value of
- debugfs_create functions
-Message-ID: <20201109083251.GA2594@hirez.programming.kicks-ass.net>
-References: <1604740753-17662-1-git-send-email-yangtiezhu@loongson.cn>
+        Mon, 9 Nov 2020 03:38:53 -0500
+Received: from pps.filterd (m0046037.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0A98WYdR009701;
+        Mon, 9 Nov 2020 09:38:35 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=STMicroelectronics;
+ bh=vHLS0bIzw5/h0yGMsmkOgooOEMMNvU/GzA5iF0cEp9g=;
+ b=1DoW/1wfhl7PPBsyuC7OgVxCKu67Jf2DvVdkL/aAXDpFHZaxrp+wvtHb+A6EKoCnFsu3
+ Qx3zE9IEKTPi9IiZ1hwY1GA4x80q2kbKz+LXZBI7sbJaBLHcA0ydMOSLf8bOPyj9IKGO
+ rWsJ1eCoMzFCsXl8AHAfXoMUl4CroKnmf/mPD5GRQ+OjYMIwieUdpitPhb1F1r4CdLqE
+ 6bvw3jKWM8keGX5rezccYdOdZaSxIVs1ZnJQxJCyWX2eNfqu56I1+A0ruX6obkwSsF7g
+ e9PMhllfeSp1N/jp/0GjlZvbmSbDvcfqXHnxWTy4O0GF3rcCRyoTQr+RQZlvrFjR/ZkO vQ== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 34nj80gspj-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 09 Nov 2020 09:38:35 +0100
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id B085B10002A;
+        Mon,  9 Nov 2020 09:38:34 +0100 (CET)
+Received: from Webmail-eu.st.com (sfhdag3node2.st.com [10.75.127.8])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 36963230480;
+        Mon,  9 Nov 2020 09:38:34 +0100 (CET)
+Received: from lmecxl0912.lme.st.com (10.75.127.46) by SFHDAG3NODE2.st.com
+ (10.75.127.8) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 9 Nov
+ 2020 09:38:33 +0100
+Subject: Re: [PATCH v5 0/4] DCMI BT656 parallel bus mode support
+To:     Sakari Ailus <sakari.ailus@linux.intel.com>
+CC:     Hugues Fruchet <hugues.fruchet@st.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Hans Verkuil <hverkuil@xs4all.nl>,
+        Rob Herring <robh+dt@kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <linux-media@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        Alain Volmat <alain.volmat@st.com>,
+        Yannick Fertre <yannick.fertre@st.com>,
+        Philippe CORNU <philippe.cornu@st.com>
+References: <1604511132-4014-1-git-send-email-hugues.fruchet@st.com>
+ <016661fc-e9dd-bd4a-f26d-00e54626f030@st.com>
+ <20201106115308.GO26150@paasikivi.fi.intel.com>
+From:   Alexandre Torgue <alexandre.torgue@st.com>
+Message-ID: <027a0bb1-788e-dc73-a941-4d55c8ec5481@st.com>
+Date:   Mon, 9 Nov 2020 09:37:51 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1604740753-17662-1-git-send-email-yangtiezhu@loongson.cn>
+In-Reply-To: <20201106115308.GO26150@paasikivi.fi.intel.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.75.127.46]
+X-ClientProxiedBy: SFHDAG3NODE1.st.com (10.75.127.7) To SFHDAG3NODE2.st.com
+ (10.75.127.8)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-11-09_02:2020-11-05,2020-11-09 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Nov 07, 2020 at 05:19:13PM +0800, Tiezhu Yang wrote:
-> When calling debugfs functions, there is no need to ever check the
-> return value.  The function can work or not, but the code logic should
-> never do something different based on this.
+Hi Sakari
 
-I strongly disagree and have told this to Greg before. Having half a
-debug interface is weird at best, so upon failure we remove the whole
-thing, which is consistent.
+On 11/6/20 12:53 PM, Sakari Ailus wrote:
+> Hi Alexandre,
+> 
+> On Thu, Nov 05, 2020 at 10:26:37AM +0100, Alexandre Torgue wrote:
+>> Hi Huges
+>>
+>> On 11/4/20 6:32 PM, Hugues Fruchet wrote:
+>>> Add support of BT656 embedded synchronization bus.
+>>> This mode allows to save hardware synchro lines hsync & vsync
+>>> by replacing them with synchro codes embedded in data stream.
+>>> Add "bus-type" property and make it required so that there is no
+>>> ambiguity between parallel mode (bus-type=5) and BT656 mode (bus-type=6).
+>>>
+>>> ===========
+>>> = history =
+>>> ===========
+>>> version 5:
+>>>     - Add revisited bindings and devicetree with explicit use of "bus-type"
+>>>
+>>> version 4:
+>>>     - Fix typo in commit message
+>>>
+>>> version 3:
+>>>     - Fix bus_width print to %u as per Sakari comment
+>>>
+>>> version 2:
+>>>     - As per Sakari remark, revisit commit message and document
+>>>       BT656 parallel bus mode in bindings
+>>>
+>>> version 1:
+>>>     - Initial submission
+>>>
+>>> Hugues Fruchet (4):
+>>>     media: stm32-dcmi: add support of BT656 bus
+>>>     media: dt-bindings: media: st,stm32-dcmi: add support of BT656 bus
+>>>     ARM: dts: stm32: set bus-type in DCMI endpoint for stm32mp157c-ev1
+>>>       board
+>>>     ARM: dts: stm32: set bus-type in DCMI endpoint for stm32429i-eval
+>>>       board
+>>>
+>>>    .../devicetree/bindings/media/st,stm32-dcmi.yaml   | 38 ++++++++++++++++++++++
+>>>    arch/arm/boot/dts/stm32429i-eval.dts               |  1 +
+>>>    arch/arm/boot/dts/stm32mp157c-ev1.dts              |  1 +
+>>>    drivers/media/platform/stm32/stm32-dcmi.c          | 37 +++++++++++++++++++--
+>>>    4 files changed, 75 insertions(+), 2 deletions(-)
+>>>
+>>
+>> I'll take DT patches on stm32-next tree.
+> 
+> Just checking: that is only the two last patches in the set, or also the
+> binding patch?
 
-> Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
-> ---
->  kernel/locking/lock_events.c | 19 ++++---------------
->  1 file changed, 4 insertions(+), 15 deletions(-)
-> 
-> diff --git a/kernel/locking/lock_events.c b/kernel/locking/lock_events.c
-> index fa2c2f9..bac77a1 100644
-> --- a/kernel/locking/lock_events.c
-> +++ b/kernel/locking/lock_events.c
-> @@ -146,9 +146,6 @@ static int __init init_lockevent_counts(void)
->  	struct dentry *d_counts = debugfs_create_dir(LOCK_EVENTS_DIR, NULL);
->  	int i;
->  
-> -	if (!d_counts)
-> -		goto out;
-> -
->  	/*
->  	 * Create the debugfs files
->  	 *
-> @@ -159,21 +156,13 @@ static int __init init_lockevent_counts(void)
->  	for (i = 0; i < lockevent_num; i++) {
->  		if (skip_lockevent(lockevent_names[i]))
->  			continue;
-> -		if (!debugfs_create_file(lockevent_names[i], 0400, d_counts,
-> -					 (void *)(long)i, &fops_lockevent))
-> -			goto fail_undo;
-> +		debugfs_create_file(lockevent_names[i], 0400, d_counts,
-> +				    (void *)(long)i, &fops_lockevent);
->  	}
->  
-> -	if (!debugfs_create_file(lockevent_names[LOCKEVENT_reset_cnts], 0200,
-> -				 d_counts, (void *)(long)LOCKEVENT_reset_cnts,
-> -				 &fops_lockevent))
-> -		goto fail_undo;
-> +	debugfs_create_file(lockevent_names[LOCKEVENT_reset_cnts], 0200, d_counts,
-> +			    (void *)(long)LOCKEVENT_reset_cnts, &fops_lockevent);
->  
->  	return 0;
-> -fail_undo:
-> -	debugfs_remove_recursive(d_counts);
-> -out:
-> -	pr_warn("Could not create '%s' debugfs entries\n", LOCK_EVENTS_DIR);
-> -	return -ENOMEM;
->  }
->  fs_initcall(init_lockevent_counts);
-> -- 
-> 2.1.0
-> 
+Usually I let drivers/subsystem maintainer taking dt-bindings patches 
+with drivers patches.
+(If binding changes come only with dts(i) patches I take them in my tree)
+
+-->So yes I'll take only the last two patches.
+
+Regards
+alex
+
