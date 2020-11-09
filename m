@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A55A2AB97F
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 14:09:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F1EEF2AB94E
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 14:09:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731948AbgKINJ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 08:09:56 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34920 "EHLO mail.kernel.org"
+        id S1731526AbgKINH7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 08:07:59 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60898 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731286AbgKINJv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 08:09:51 -0500
+        id S1731488AbgKINH5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 08:07:57 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8BAFD20663;
-        Mon,  9 Nov 2020 13:09:50 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id BFE3420663;
+        Mon,  9 Nov 2020 13:07:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604927391;
-        bh=Qig32iJy/AMBo4tI3512+wgkuiXN1kFxWXumB4pjLkQ=;
+        s=default; t=1604927276;
+        bh=UXn15ln4ygLgcUIXrjpN3zPKmVt9mOsFrthSLbTdlVk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=vCUDSKeCkcBD7s+ngxH9UY7NKHBIGPtnytE9hJIsEqCRItAI+kQjkJ3KCCInQQERw
-         Z/FJqFAMmjcAYbE4G1dLHu6nU08GXkWhWtArCpcQ6aVm4iIQ8LfsvX+YAp+vSnWXPW
-         E1euDsgMYi3/rK9creQ9Mqot0rvfqR08j4QetsD4=
+        b=bi7/S9QSuPEE4ksjIImzINSCCqmvor/c00lBCwTRIB3KR8F2tKi9tJ3vbNPaVeIEF
+         hpDHxc/tUSNmx3Tn9mWYau/FpCa0rmJUd0ebAlUGoEHz3i7X32/qmkmukaGb7ByT9z
+         gp7VgYxoCz+yS4bdUcZBbINL928PjxqgOfTFztpk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Qiujun Huang <hqjagain@gmail.com>,
-        "Steven Rostedt (VMware)" <rostedt@goodmis.org>
-Subject: [PATCH 4.19 44/71] tracing: Fix out of bounds write in get_trace_buf
+        stable@vger.kernel.org, Tejun Heo <tj@kernel.org>,
+        Gabriel Krisman Bertazi <krisman@collabora.com>,
+        Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.14 29/48] blk-cgroup: Fix memleak on error path
 Date:   Mon,  9 Nov 2020 13:55:38 +0100
-Message-Id: <20201109125021.968130180@linuxfoundation.org>
+Message-Id: <20201109125018.194959646@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201109125019.906191744@linuxfoundation.org>
-References: <20201109125019.906191744@linuxfoundation.org>
+In-Reply-To: <20201109125016.734107741@linuxfoundation.org>
+References: <20201109125016.734107741@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,38 +43,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Qiujun Huang <hqjagain@gmail.com>
+From: Gabriel Krisman Bertazi <krisman@collabora.com>
 
-commit c1acb4ac1a892cf08d27efcb964ad281728b0545 upstream.
+[ Upstream commit 52abfcbd57eefdd54737fc8c2dc79d8f46d4a3e5 ]
 
-The nesting count of trace_printk allows for 4 levels of nesting. The
-nesting counter starts at zero and is incremented before being used to
-retrieve the current context's buffer. But the index to the buffer uses the
-nesting counter after it was incremented, and not its original number,
-which in needs to do.
+If new_blkg allocation raced with blk_policy change and
+blkg_lookup_check fails, new_blkg is leaked.
 
-Link: https://lkml.kernel.org/r/20201029161905.4269-1-hqjagain@gmail.com
-
-Cc: stable@vger.kernel.org
-Fixes: 3d9622c12c887 ("tracing: Add barrier to trace_printk() buffer nesting modification")
-Signed-off-by: Qiujun Huang <hqjagain@gmail.com>
-Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Acked-by: Tejun Heo <tj@kernel.org>
+Signed-off-by: Gabriel Krisman Bertazi <krisman@collabora.com>
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/trace/trace.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ block/blk-cgroup.c | 1 +
+ 1 file changed, 1 insertion(+)
 
---- a/kernel/trace/trace.c
-+++ b/kernel/trace/trace.c
-@@ -2819,7 +2819,7 @@ static char *get_trace_buf(void)
+diff --git a/block/blk-cgroup.c b/block/blk-cgroup.c
+index 3dc7c0b4adcbb..a7217caea699d 100644
+--- a/block/blk-cgroup.c
++++ b/block/blk-cgroup.c
+@@ -878,6 +878,7 @@ int blkg_conf_prep(struct blkcg *blkcg, const struct blkcg_policy *pol,
+ 		blkg = blkg_lookup_check(pos, pol, q);
+ 		if (IS_ERR(blkg)) {
+ 			ret = PTR_ERR(blkg);
++			blkg_free(new_blkg);
+ 			goto fail_unlock;
+ 		}
  
- 	/* Interrupts must see nesting incremented before we use the buffer */
- 	barrier();
--	return &buffer->buffer[buffer->nesting][0];
-+	return &buffer->buffer[buffer->nesting - 1][0];
- }
- 
- static void put_trace_buf(void)
+-- 
+2.27.0
+
 
 
