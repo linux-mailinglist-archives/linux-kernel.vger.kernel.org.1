@@ -2,86 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6DC22AB770
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 12:45:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 510792AB773
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 12:46:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729509AbgKILpk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 06:45:40 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34988 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729159AbgKILpj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 06:45:39 -0500
-Received: from localhost (unknown [122.171.147.34])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B028220789;
-        Mon,  9 Nov 2020 11:45:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604922338;
-        bh=Sq0xvvrUlIfUwrgwd92TUa8sP2wVyduYHpqVBUexjyY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=cLqQqk/p1pbkgyb4xv019WYnwbtfrM4irwnMHcsw5NTxs5WOLNWgc31fOIxprnAVz
-         SaQ5GKwKM53UGzS3a5TM8BEVpa2YjoO+aoglUHxGw+TqT9uxVtrPOtNdwMxq+SkvYA
-         EkjF3VJ8SPvcINWwwSK3G9vpXyvqAqm12IhyulEo=
-Date:   Mon, 9 Nov 2020 17:15:34 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc:     nm@ti.com, ssantosh@kernel.org, robh+dt@kernel.org,
-        vigneshr@ti.com, dan.j.williams@intel.com, t-kristo@ti.com,
-        lokeshvutla@ti.com, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        dmaengine@vger.kernel.org
-Subject: Re: [PATCH 01/18] dmaengine: of-dma: Add support for optional router
- configuration callback
-Message-ID: <20201109114534.GH3171@vkoul-mobl>
-References: <20200930091412.8020-1-peter.ujfalusi@ti.com>
- <20200930091412.8020-2-peter.ujfalusi@ti.com>
- <20201007054404.GR2968@vkoul-mobl>
- <be615881-1eb4-f8fe-a32d-04fabb6cb27b@ti.com>
- <20201007155533.GZ2968@vkoul-mobl>
- <45adb88b-1ef8-1fbf-08c1-9afc6ea4c6f0@ti.com>
- <20201028055531.GH3550@vkoul-mobl>
- <cf3d3de0-223b-4846-bd9f-b78654ae2d08@ti.com>
+        id S1729576AbgKILqS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 06:46:18 -0500
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:59008 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729455AbgKILqR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 06:46:17 -0500
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0A9BjiSG009421;
+        Mon, 9 Nov 2020 05:45:44 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1604922344;
+        bh=NNwBY8g5f0FY29nACv1fAakM+XMumhmixbP2pLqwiw4=;
+        h=Date:From:To:CC:Subject:References:In-Reply-To;
+        b=qUq2RvTShgzqsdopPtWkYwQMLTz4mNM8c5/u2FLqd4FxlRtwGA4hNT1hto2XBgFkw
+         GnPVa1/FtIWxw6VU8FAQVdjFLrYpaNKmx5ir9411GpGM96FrD7kvdQFDITjyfNxGcI
+         +AmOyWpAQjEHeYjCAqSnTdHcXrznPfcUS8iMDngg=
+Received: from DFLE115.ent.ti.com (dfle115.ent.ti.com [10.64.6.36])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0A9Bjibb127564
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 9 Nov 2020 05:45:44 -0600
+Received: from DFLE112.ent.ti.com (10.64.6.33) by DFLE115.ent.ti.com
+ (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Mon, 9 Nov
+ 2020 05:45:44 -0600
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE112.ent.ti.com
+ (10.64.6.33) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Mon, 9 Nov 2020 05:45:44 -0600
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0A9Bjh93079202;
+        Mon, 9 Nov 2020 05:45:44 -0600
+Date:   Mon, 9 Nov 2020 17:15:43 +0530
+From:   Pratyush Yadav <p.yadav@ti.com>
+To:     Vignesh Raghavendra <vigneshr@ti.com>
+CC:     Tudor Ambarus <tudor.ambarus@microchip.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+        Sekhar Nori <nsekhar@ti.com>,
+        Boris Brezillon <boris.brezillon@collabora.com>
+Subject: Re: [PATCH v16 14/15] mtd: spi-nor: spansion: add support for
+ Cypress Semper flash
+Message-ID: <20201109114541.g6phaz36glhkpajz@ti.com>
+References: <20201005153138.6437-1-p.yadav@ti.com>
+ <20201005153138.6437-15-p.yadav@ti.com>
+ <7d058da8-90ef-8f71-fe86-cc0b27a2895a@ti.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <cf3d3de0-223b-4846-bd9f-b78654ae2d08@ti.com>
+In-Reply-To: <7d058da8-90ef-8f71-fe86-cc0b27a2895a@ti.com>
+User-Agent: NeoMutt/20171215
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 07/11/20 01:28PM, Vignesh Raghavendra wrote:
+> Hi,
+> 
+> [...]
+> 
+> On 10/5/20 9:01 PM, Pratyush Yadav wrote:
+> > +static int spi_nor_cypress_octal_dtr_enable(struct spi_nor *nor, bool enable)
+> > +{
+> > +	struct spi_mem_op op;
+> > +	u8 *buf = nor->bouncebuf;
+> > +	int ret;
+> > +
+> > +	if (enable) {
+> > +		/* Use 24 dummy cycles for memory array reads. */
+> > +		ret = spi_nor_write_enable(nor);
+> > +		if (ret)
+> > +			return ret;
+> > +
+> > +		*buf = SPINOR_REG_CYPRESS_CFR2V_MEMLAT_11_24;
+> > +		op = (struct spi_mem_op)
+> > +			SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_WR_ANY_REG, 1),
+> > +				   SPI_MEM_OP_ADDR(3, SPINOR_REG_CYPRESS_CFR2V,
+> > +						   1),
+> > +				   SPI_MEM_OP_NO_DUMMY,
+> > +				   SPI_MEM_OP_DATA_OUT(1, buf, 1));
+> > +
+> > +		ret = spi_mem_exec_op(nor->spimem, &op);
+> > +		if (ret)
+> > +			return ret;
+> > +
+> > +		ret = spi_nor_wait_till_ready(nor);
+> > +		if (ret)
+> > +			return ret;
+> > +
+> > +		nor->read_dummy = 24;
+> > +	}
+> > +
+> > +	/* Set/unset the octal and DTR enable bits. */
+> > +	ret = spi_nor_write_enable(nor);
+> > +	if (ret)
+> > +		return ret;
+> > +
+> > +	if (enable)
+> > +		*buf = SPINOR_REG_CYPRESS_CFR5V_OCT_DTR_EN;
+> > +	else
+> > +		*buf = SPINOR_REG_CYPRESS_CFR5V_OCT_DTR_DS;
+> > +
+> > +	op = (struct spi_mem_op)
+> > +		SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_WR_ANY_REG, 1),
+> > +			   SPI_MEM_OP_ADDR(enable ? 3 : 4,
+> > +					   SPINOR_REG_CYPRESS_CFR5V,
+> > +					   1),
+> > +			   SPI_MEM_OP_NO_DUMMY,
+> > +			   SPI_MEM_OP_DATA_OUT(1, buf, 1));
+> > +
+> > +	if (!enable)
+> > +		spi_nor_spimem_setup_op(nor, &op, SNOR_PROTO_8_8_8_DTR);
+> > +
+> > +	ret = spi_mem_exec_op(nor->spimem, &op);
+> > +	if (ret)
+> > +		return ret;
+> > +
+> > +	/* Give some time for the mode change to take place. */
+> > +	usleep_range(1000, 1500);
+> > +
+> 
+> This delay is no longer needed right? I can drop it while applying, if
+> you confirm.
 
-Hey Peter,
-
-On 28-10-20, 11:56, Peter Ujfalusi wrote:
-> Hi Vinod,
+Yes, this delay is not needed. Please drop it while applying.
+ 
+> Tudor: Could you provide your R-by?
 > 
-> On 28/10/2020 7.55, Vinod Koul wrote:
-> 
-> >> To summarize:
-> >> In of_dma_route_allocate() the router does not yet know the channel we
-> >> are going to get.
-> >> In of_dma_xlate() the DMA driver does not yet know if the channel will
-> >> use router or not.
-> >> I need to tell the router the event number it has to send, which is
-> >> based on the channel number I got.
-> > 
-> > Sounds reasonable, btw why not pass this information in xlate. Router
-> > will have a different xlate rather than non router right, or is it same.
-> 
-> Yes, the router's have their separate xlate, but in that xlate we do not
-> yet have a channel. I don't know what is the event I need to send from
-> the router to trigger the channel.
-> 
-> > If this information is anyway available in DT might be better to get it
-> > and use from DT
-> 
-> Without a channel number I can not do anything.
-> It is close to a chicken and egg problem.
-
-We get 'channel' in xlate, so wont that help? I think I am still missing
-something here :(
-
+> Regards
+> Vignesh
 
 -- 
-~Vinod
+Regards,
+Pratyush Yadav
+Texas Instruments India
