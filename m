@@ -2,80 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 162BE2AC4D3
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 20:22:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 967FE2AC4E7
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 20:22:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730538AbgKITVv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 14:21:51 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36532 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730417AbgKITVu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 14:21:50 -0500
-Received: from localhost.localdomain (cpe-70-114-140-30.austin.res.rr.com [70.114.140.30])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9B85E206E3;
-        Mon,  9 Nov 2020 19:21:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604949710;
-        bh=TOUAOd/R5eTaHFTLizU4RXRWtH3VPl0iSC0u1G29ujs=;
-        h=From:To:Cc:Subject:Date:From;
-        b=ToNGRCYPSgQmXP2zE+Oi6OE8sZnuPf+McOq9hEkhe22zsK0sMAHeL2tdAog92nQYF
-         exQcB/cm1mS4JGWIAdFves7FPa+HobqmD10cZHKvBDIgTU4eEfTCwAn0ykOzzBKidv
-         LZHoMdR+rOdETEgDNcGnBZYO86dqG2ygG1BNDFGI=
-From:   Dinh Nguyen <dinguyen@kernel.org>
-To:     p.zabel@pengutronix.de
-Cc:     dinguyen@kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCHv2] reset: socfpga: add error handling and release mem-region
-Date:   Mon,  9 Nov 2020 13:21:41 -0600
-Message-Id: <20201109192141.10580-1-dinguyen@kernel.org>
-X-Mailer: git-send-email 2.17.1
+        id S1730874AbgKITWr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 14:22:47 -0500
+Received: from jabberwock.ucw.cz ([46.255.230.98]:35192 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729038AbgKITWq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 14:22:46 -0500
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 1DB591C0B88; Mon,  9 Nov 2020 20:22:45 +0100 (CET)
+Date:   Mon, 9 Nov 2020 20:22:43 +0100
+From:   Pavel Machek <pavel@denx.de>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+        stable@vger.kernel.org
+Subject: Re: [PATCH 4.19 00/71] 4.19.156-rc1 review
+Message-ID: <20201109192243.GA23987@amd>
+References: <20201109125019.906191744@linuxfoundation.org>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="Nq2Wo0NMKNjxTN9z"
+Content-Disposition: inline
+In-Reply-To: <20201109125019.906191744@linuxfoundation.org>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In case of an error, call release_mem_region when an error happens
-during allocation of resources. Also add error handling for the case
-that reset_controller_register fails.
 
-Reported-by: kernel test robot <lkp@intel.com>
-Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
-Signed-off-by: Dinh Nguyen <dinguyen@kernel.org>
----
-v2: return ret value
----
- drivers/reset/reset-socfpga.c | 11 +++++++++--
- 1 file changed, 9 insertions(+), 2 deletions(-)
+--Nq2Wo0NMKNjxTN9z
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/drivers/reset/reset-socfpga.c b/drivers/reset/reset-socfpga.c
-index bdd984296196..2a72f861f798 100644
---- a/drivers/reset/reset-socfpga.c
-+++ b/drivers/reset/reset-socfpga.c
-@@ -44,7 +44,7 @@ static int a10_reset_init(struct device_node *np)
- 	data->membase = ioremap(res.start, size);
- 	if (!data->membase) {
- 		ret = -ENOMEM;
--		goto err_alloc;
-+		goto release_region;
- 	}
- 
- 	if (of_property_read_u32(np, "altr,modrst-offset", &reg_offset))
-@@ -59,7 +59,14 @@ static int a10_reset_init(struct device_node *np)
- 	data->rcdev.of_node = np;
- 	data->status_active_low = true;
- 
--	return reset_controller_register(&data->rcdev);
-+	ret = reset_controller_register(&data->rcdev);
-+	if (ret)
-+		pr_err("unable to register device\n");
-+
-+	return ret;
-+
-+release_region:
-+	release_mem_region(res.start, size);
- 
- err_alloc:
- 	kfree(data);
--- 
-2.17.1
+Hi!
 
+> This is the start of the stable review cycle for the 4.19.156 release.
+> There are 71 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>=20
+> Responses should be made by Wed, 11 Nov 2020 12:50:04 +0000.
+> Anything received after that time might be too late.
+
+> Chris Wilson <chris@chris-wilson.co.uk>
+>     drm/i915: Break up error capture compression loops with
+>     cond_resched()
+
+This one is wrong, as explained in email.
+
+But the series still passes CIP testing:
+
+https://gitlab.com/cip-project/cip-testing/linux-stable-rc-ci/-/pipelines/2=
+13663202
+
+Tested-by: Pavel Machek (CIP) <pavel@denx.de>
+
+Best regards,
+                                                                Pavel
+--=20
+DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
+HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
+
+--Nq2Wo0NMKNjxTN9z
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iEYEARECAAYFAl+plwMACgkQMOfwapXb+vK5HwCgo6AgT0rcAP0dYY7SOxZYvK6b
+FS4AmwYBWgitQxDaLLKjyaFxL8vKJbvL
+=lcY6
+-----END PGP SIGNATURE-----
+
+--Nq2Wo0NMKNjxTN9z--
