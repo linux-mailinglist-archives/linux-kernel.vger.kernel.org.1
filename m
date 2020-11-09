@@ -2,143 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E7B242AC6A0
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 22:07:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B82AC2AC6AD
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 22:10:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730722AbgKIVGu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 16:06:50 -0500
-Received: from mail-bn7nam10on2044.outbound.protection.outlook.com ([40.107.92.44]:60513
-        "EHLO NAM10-BN7-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1729454AbgKIVGs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 16:06:48 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=N6AOGW+UlE59hRQmTO3Acgt7CN4W1o6tet1ZyOYuhxP2kaanbuA1w19CdYekfq27j7BCLP3pkzR79wlM4n+7ngomGpA+A8yhCulM8YUPsYR3mnsof8SwQitHqHha6zgsv3grIH1/lUMwybYpDYHj7lwmJgwLZwnSJbiaE/HYqRJBLCiQu1coumccrGPqE12B+HEK+aG/M/m16WFYNJ1pB4rCF8vekXKxwET1ZZCAgrGvu/SKH3hhIh2RIOHVeZYKRmzazqE/XruquKn5yuAEDraHLnuLly9qs+G2N28OyAhnXbWAA1S9X1ZC2OypNY4kn2aH4F+w4hjOU1dk1QvxPg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=FaniMYfCCkKQiBf8i3oiSqYwFGGYsIcgi872NusruWg=;
- b=UlSubLuTHf5x3J0smRYL8BVbgBc2UZX8grq8ZVMbeSrKT2ux/qrpQim+RRiDBpvg6uNVJMXqvgjx1PSXGCsVeu7XWeqJZhIga7wlVTakmaelgi1tHm9UmLL2gFrZt0WrpKLWDDXuOq4PsACidVoYOhvFDaM1CVw/Ya3DwefVlcMjEcRhyzDL0P4NL7VBel8sOALHlrW+V58GkJits2dsJESzpfgdbN8yMJrjDW1znxCXVgzxEVz4CZsyBHRRLQCBIOYprbfTdma0YMF6cjEaD8v6IgArSNEbay8UBIgQk6gsLR6QREKEK7T+qvg7p+peAsaeFXeunOoZPHRod+s1YA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
+        id S1730825AbgKIVJ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 16:09:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40662 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725946AbgKIVJ5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 16:09:57 -0500
+Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1046FC0613CF;
+        Mon,  9 Nov 2020 13:09:57 -0800 (PST)
+Received: by mail-qt1-x841.google.com with SMTP id g15so3361194qtq.13;
+        Mon, 09 Nov 2020 13:09:57 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=FaniMYfCCkKQiBf8i3oiSqYwFGGYsIcgi872NusruWg=;
- b=YuOAax9CXbk4UjvXerv1AlzA7D8ZX1pMIuMia1ck2rrZ2VHaLUbqsPTwyhpHzYMfu2Lq3ScayUSE7hkb3suX84gItEjxpHlDTBhFaGWJPx243mPSY1MZ1D8iRXaAh6vDx/iDPH3+fP26qmKamQvFwInqt6YDD1VYxTBBzQ9ljtc=
-Authentication-Results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=amd.com;
-Received: from BN8PR12MB3108.namprd12.prod.outlook.com (2603:10b6:408:40::20)
- by BN8PR12MB2979.namprd12.prod.outlook.com (2603:10b6:408:66::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3541.21; Mon, 9 Nov
- 2020 21:06:38 +0000
-Received: from BN8PR12MB3108.namprd12.prod.outlook.com
- ([fe80::9df4:880c:f3f2:679d]) by BN8PR12MB3108.namprd12.prod.outlook.com
- ([fe80::9df4:880c:f3f2:679d%5]) with mapi id 15.20.3541.025; Mon, 9 Nov 2020
- 21:06:38 +0000
-From:   Yazen Ghannam <Yazen.Ghannam@amd.com>
-To:     x86@kernel.org
-Cc:     Yazen Ghannam <Yazen.Ghannam@amd.com>,
-        linux-kernel@vger.kernel.org,
-        Smita.KoralahalliChannabasappa@amd.com, linux-edac@vger.kernel.org,
-        puwen@hygon.cn, kim.phillips@amd.com, thomas.lendacky@amd.com,
-        wei.huang2@amd.com
-Subject: [PATCH 4/4] x86/topology: Set cpu_die_id only if DIE_TYPE found
-Date:   Mon,  9 Nov 2020 21:06:59 +0000
-Message-Id: <20201109210659.754018-5-Yazen.Ghannam@amd.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20201109210659.754018-1-Yazen.Ghannam@amd.com>
-References: <20201109210659.754018-1-Yazen.Ghannam@amd.com>
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [165.204.78.2]
-X-ClientProxiedBy: DM5PR12CA0064.namprd12.prod.outlook.com
- (2603:10b6:3:103::26) To BN8PR12MB3108.namprd12.prod.outlook.com
- (2603:10b6:408:40::20)
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=/0XocD5P4X8PutfEBTr0iQ6o7VPBilDjyKi4NGpWaVc=;
+        b=NGhqvmdqdeTsnOAPi1e5Vd1qdGimaQPD+OZZ7kiZ5p5sQGqAxeqoBFwYejrxi1j2WP
+         f9gXR9FS5Ko+gq0afQJcfyyerPqO9NQuLqIRyJOPGK/al3votarLB9dVrDkf9rfE6pzB
+         nSbwZOgoA4nrUiQpTZI6dh8NaHw9y19ug1V0x6EfqKJzIL4JaJ78FpaO1ljI8BCKNJQC
+         qL5peFy7bg0NzjWgIYZkSmWO0tcV4Nu6HgVInMnWr97rfXw71KU6qw6ADW3PZ+6a/aer
+         o4rX/XGWDDvd64WvJZto4lQdfbtjGV7/9r8jXQvDI79wWemK2m9AUTtm8RZQHj9grU8W
+         IGeg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=/0XocD5P4X8PutfEBTr0iQ6o7VPBilDjyKi4NGpWaVc=;
+        b=BMqKGXRoQDjN4CHoW1w6Uhh3W+eNOEX22689xz0TWVcf09/DKJaHxQX45e9vOwFPsW
+         g/MKk90FqwOZrVKyWEV9EMeTO20Hp+N1Avq1PKjQj5fFO+IpWduqovHg+lvfzaj95dca
+         nD6HxDFwgTnSKhOAL9+6HAZc8EkcPU9RL+2VnGv15Dda6+f7t6xpxFMgo+edQWt5xyI2
+         0PWGLdCTZC1FOlA8qrWZSKcPONaa9UsegLj2rqYX/awl1bu0JXd28ewKm/QpVH5ebo+W
+         dcbSwFriLUzGNgtxVusq4+U9upsnwZU3XH5PEhKxk8V/lzHv+80OmWQ9AC76Jv8dQamf
+         Uwig==
+X-Gm-Message-State: AOAM532TjTYb2qEhEvYB9VjrzjIuB7DzILT4LlonzYiQKxkH9YyAQLnO
+        1Lwq8DTv6lQPpeBgElN8WSw=
+X-Google-Smtp-Source: ABdhPJweV+Szh+PkEAYXoXyjTozPf81Tox2F7Dj/v1OFpc1GcHYkrXzj/rpBR38tMgQhU19OWI65SQ==
+X-Received: by 2002:ac8:5649:: with SMTP id 9mr14720827qtt.379.1604956196346;
+        Mon, 09 Nov 2020 13:09:56 -0800 (PST)
+Received: from localhost.localdomain ([156.146.36.180])
+        by smtp.gmail.com with ESMTPSA id o21sm7161000qko.9.2020.11.09.13.09.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 09 Nov 2020 13:09:55 -0800 (PST)
+From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
+To:     alexander.deucher@amd.com, christian.koenig@amd.com,
+        airlied@linux.ie, daniel@ffwll.ch, jdelvare@suse.de,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        linaro-mm-sig@lists.linaro.org
+Cc:     Bhaskar Chowdhury <unixbhaskar@gmail.com>
+Subject: [PATCH] drivers: amdgpu: amdgpu_display: Fixed the spelling of falg to flag
+Date:   Tue, 10 Nov 2020 02:37:25 +0530
+Message-Id: <20201109210725.24668-1-unixbhaskar@gmail.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from yaz-ethanolx.amd.com (165.204.78.2) by DM5PR12CA0064.namprd12.prod.outlook.com (2603:10b6:3:103::26) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3541.21 via Frontend Transport; Mon, 9 Nov 2020 21:06:36 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: e7dccf44-a248-46f3-de8e-08d884f3591b
-X-MS-TrafficTypeDiagnostic: BN8PR12MB2979:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BN8PR12MB29795E8EB24560BB8A5F86D3F8EA0@BN8PR12MB2979.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:5236;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: MdQ8ZTCqZS8NryJNyXovVXYHSY5OEEJ+zjlojFvbIYOsyZB2vUKLYOVzrrwX5FwboszRoSSKCdB8HOca/WgC/SyQCBg5tYVuUXRhNWATByM9gtEY3scuEdwA0dC7d7xUGD75a7iPwmzKHIyf6Xua59KXgW8hS+tPzsBr5/bEMlnxOjzsNCWQlLLslWNddMngXrMMaLIypqb88QLpuXO8ORrVJhYdOe/MQ0ze1Etc54/HyV3fc29ju1HLXItSkJKnTMWokHWuSKMp466uCVuCqMO8sWJHEOvALgc2fONQGxxMuJBdti4iKYp+myQt6/Sx1FSkesOgtT1uwRF7ZDniEg==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN8PR12MB3108.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(136003)(346002)(366004)(376002)(39860400002)(6486002)(26005)(66946007)(5660300002)(186003)(16526019)(4326008)(1076003)(8936002)(2906002)(83380400001)(66556008)(66476007)(6666004)(36756003)(478600001)(86362001)(316002)(6916009)(2616005)(8676002)(956004)(52116002)(7696005);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: iEGjPI5n9qLifmXI/cmZs2U+Qjvt/mJQ+f7cgR/OfFcZOoMDAD2+gnFhjvamVgieY4cxHwZviGv5OdSduLHrj7ixG2pym8Rr9pppTbI1uKnbutS/5epUyh5wxVWg3DcEif2k7laryXzUaMeQfEODE4s3x0j4MrzMY06Ibavl0UMtmmwSppjhAFyFlUKk1H0lr2vDQ5lLYPlPk5ko6a5QXdPIN0LBC5nOY8iYXlOioXT1/6DVuxAwXaCXiEF14zXPSI8R9F99ARj6YVtKM/OTTPbTAcdVwG4A4bbAq3qGozA8Km0gCpL5vJEqf9UMDJKvva+xfB7lFAQstblCgeJlQLeI3R3fVNYD/i7pzmOXYJwJbTkk7vrR16kxVUcw2pmW4/nV7MtMOvpPmlpwxkMWEf7Il3vg6gmeSC2OHtc3WaEN5Wbc8iBRzddxbI5hjIjYbg7jUxJk4NZNPI4IHCh8lU1CLbJYHHWJEv+jtIj3ChymEHm7EfA58kmGhomFGTiRe6AqOjSB0E2t53yzu0inwLna7Qxt6FxF34zL0uExEaGS9g3sZ2bzrB/lXFJc+nvMmAkZfNBME7I8/6CEhfQfku7hiv6dz1EfNbXebxPaprQW/tPoWx5m73sr7thfWX40CUUgqtkqJu53rXsCUZZXZw==
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: e7dccf44-a248-46f3-de8e-08d884f3591b
-X-MS-Exchange-CrossTenant-AuthSource: BN8PR12MB3108.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Nov 2020 21:06:38.2531
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: NbNmlnxK6rz2dI83qaPsAUUjOTpl6cEnGXHG/+RWkqLrTYSHLbM7fVI0yZ1qqUcCHVhMI3xRnbHiFUEIMJjz6g==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN8PR12MB2979
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yazen Ghannam <yazen.ghannam@amd.com>
+s/falg/flag/p
 
-CPUID Leaf 0x1F defines a DIE_TYPE level, but CPUID Leaf 0xB does not.
-However, detect_extended_topology() will set struct
-cpuinfo_x86.cpu_die_id regardless of whether a valid Die ID was found.
-
-Only set cpu_die_id if a DIE_TYPE level is found. CPU topology code may
-use another value for cpu_die_id, e.g. the AMD NodeId on AMD-based
-systems. Code ordering should be maintained so that the CPUID Leaf 0x1F
-Die ID value will take precedence on systems that may use another value.
-
-Suggested-by: Borislav Petkov <bp@alien8.de>
-Signed-off-by: Yazen Ghannam <yazen.ghannam@amd.com>
+Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
 ---
- arch/x86/kernel/cpu/topology.c | 10 ++++++++--
- 1 file changed, 8 insertions(+), 2 deletions(-)
+ drivers/gpu/drm/amd/amdgpu/amdgpu_display.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/x86/kernel/cpu/topology.c b/arch/x86/kernel/cpu/topology.c
-index d3a0791bc052..1068002c8532 100644
---- a/arch/x86/kernel/cpu/topology.c
-+++ b/arch/x86/kernel/cpu/topology.c
-@@ -96,6 +96,7 @@ int detect_extended_topology(struct cpuinfo_x86 *c)
- 	unsigned int ht_mask_width, core_plus_mask_width, die_plus_mask_width;
- 	unsigned int core_select_mask, core_level_siblings;
- 	unsigned int die_select_mask, die_level_siblings;
-+	bool die_level_present = false;
- 	int leaf;
- 
- 	leaf = detect_extended_topology_leaf(c);
-@@ -126,6 +127,7 @@ int detect_extended_topology(struct cpuinfo_x86 *c)
- 			die_plus_mask_width = BITS_SHIFT_NEXT_LEVEL(eax);
- 		}
- 		if (LEAFB_SUBTYPE(ecx) == DIE_TYPE) {
-+			die_level_present = true;
- 			die_level_siblings = LEVEL_MAX_SIBLINGS(ebx);
- 			die_plus_mask_width = BITS_SHIFT_NEXT_LEVEL(eax);
- 		}
-@@ -139,8 +141,12 @@ int detect_extended_topology(struct cpuinfo_x86 *c)
- 
- 	c->cpu_core_id = apic->phys_pkg_id(c->initial_apicid,
- 				ht_mask_width) & core_select_mask;
--	c->cpu_die_id = apic->phys_pkg_id(c->initial_apicid,
--				core_plus_mask_width) & die_select_mask;
-+
-+	if (die_level_present) {
-+		c->cpu_die_id = apic->phys_pkg_id(c->initial_apicid,
-+					core_plus_mask_width) & die_select_mask;
-+	}
-+
- 	c->phys_proc_id = apic->phys_pkg_id(c->initial_apicid,
- 				die_plus_mask_width);
- 	/*
--- 
-2.25.1
+diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_display.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_display.c
+index 2e8a8b57639f..9223502c1e5b 100644
+--- a/drivers/gpu/drm/amd/amdgpu/amdgpu_display.c
++++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_display.c
+@@ -509,7 +509,7 @@ uint32_t amdgpu_display_supported_domains(struct amdgpu_device *adev,
+ 	 * to avoid hang caused by placement of scanout BO in GTT on certain
+ 	 * APUs. So force the BO placement to VRAM in case this architecture
+ 	 * will not allow USWC mappings.
+-	 * Also, don't allow GTT domain if the BO doens't have USWC falg set.
++	 * Also, don't allow GTT domain if the BO doens't have USWC flag set.
+ 	 */
+ 	if ((bo_flags & AMDGPU_GEM_CREATE_CPU_GTT_USWC) &&
+ 	    amdgpu_bo_support_uswc(bo_flags) &&
+--
+2.26.2
 
