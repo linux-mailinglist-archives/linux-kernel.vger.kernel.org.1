@@ -2,133 +2,268 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 324402AC929
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 00:15:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ED09A2AC92D
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 00:15:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730500AbgKIXPI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 18:15:08 -0500
-Received: from mail-dm6nam10on2048.outbound.protection.outlook.com ([40.107.93.48]:8641
-        "EHLO NAM10-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1729585AbgKIXPH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 18:15:07 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=gDmVu+7JyI8U1Or+o/D4hJWd7tOuLaLcYDi4wMf4ZkUQHdu80mwYiRCcfA1mwV5UOelnKIiAYXyNd19gVKgZXD8zNhCxzaH+o8zCq0mMKL3dwmzqRXpxVRWmwGI1jizzvCF/jvyXs2l0ahka1zu5vBO90mmLHaZnrnLRU6D0Oo/yCQks7mmXnIULS+byp6qbdHK6l75XxK9//Dhy/oCb1h/uLNOc0wV9hTjZIUmjD9K80qa1daU8S9F3SKv/9UUmKhrHLLH0sznyz8MXK+Q+nky+jmn3/ZxZASdpnKYaLJzshtA/H2qhb280PzLQp0MxuHcjK9Q67R3PuYB72WajVw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ayW56KjOrbm2FtXrwE+0VQIu1WQUIarr3FwiWvZmv2k=;
- b=Vk8y5DpjwrtLUUQyakMVL+VW9a2QtauOnmXuuQdrpYKAnO2dRDJ85FgmSAd8FZ8lkjSpKgeI7UrHNRJJ2DNbZ4ymbd87x1G3LucmcHXGLbWSJmbn0k7j4oEYxETEWO01yP1n3nihQMuU8rWEriBHkGtj1xzohB6YtH8ifZUqK0ZLiiZWsa9AODncFaxnk13anXhX/eiyXyOzmz+Nya7HM+cEhNAv+oWdNC7QiK12291IuNdBSSWc+eA/NgkcaXw2D8KH+IbORHAl4b8tn1qs4y62m/IOCekvy/Kag1oxIqvnWFoyMgzdbTIiWrNsf9yt45qODq1BihHJ0I8/iSuIHQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
+        id S1730895AbgKIXPd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 18:15:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60440 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729452AbgKIXPc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 18:15:32 -0500
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DED8C0613CF;
+        Mon,  9 Nov 2020 15:15:32 -0800 (PST)
+Received: by mail-wr1-x441.google.com with SMTP id 23so10644079wrc.8;
+        Mon, 09 Nov 2020 15:15:32 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ayW56KjOrbm2FtXrwE+0VQIu1WQUIarr3FwiWvZmv2k=;
- b=AL4xZebXocu7OfZUl0pRSXuJLtEedYbx9qqhDMy+qvD0uLCu+DR7cBbSEh0LanlJRuVTSm5TJxDHTe57IEuxfJnW1Ghlmrgp3uTDdi5kaDtP4SC1GAOi5vUIyS1zrrf4BvQFiMboqzgK/ycEUMF00Aa/zr/mJ/SKE7MpEPWQqR0=
-Authentication-Results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=amd.com;
-Received: from DM5PR12MB1355.namprd12.prod.outlook.com (2603:10b6:3:6e::7) by
- DM5PR1201MB0219.namprd12.prod.outlook.com (2603:10b6:4:56::19) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.3541.22; Mon, 9 Nov 2020 23:15:05 +0000
-Received: from DM5PR12MB1355.namprd12.prod.outlook.com
- ([fe80::e442:c052:8a2c:5fba]) by DM5PR12MB1355.namprd12.prod.outlook.com
- ([fe80::e442:c052:8a2c:5fba%6]) with mapi id 15.20.3499.032; Mon, 9 Nov 2020
- 23:15:05 +0000
-Subject: Re: [tip: x86/apic] x86/io_apic: Cleanup trigger/polarity helpers
-To:     linux-kernel@vger.kernel.org
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        David Woodhouse <dwmw@amazon.co.uk>, x86 <x86@kernel.org>
-References: <20201024213535.443185-20-dwmw2@infradead.org>
- <160397373817.397.3191135882528008704.tip-bot2@tip-bot2>
-From:   Tom Lendacky <thomas.lendacky@amd.com>
-Message-ID: <e2e06979-cbcf-8771-0b48-c46f2d034aa8@amd.com>
-Date:   Mon, 9 Nov 2020 17:15:03 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-In-Reply-To: <160397373817.397.3191135882528008704.tip-bot2@tip-bot2>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [165.204.77.1]
-X-ClientProxiedBy: SA9PR13CA0072.namprd13.prod.outlook.com
- (2603:10b6:806:23::17) To DM5PR12MB1355.namprd12.prod.outlook.com
- (2603:10b6:3:6e::7)
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=jUkkMN1k1Nmarfzi7mdyLkenP8Z0h5fFEFf0HHFDPZ4=;
+        b=ERHXmS2szbTgYa05ljx7O5X0mTDvdDks2MuN/zp3YSM8pX1qXceo7SGtE86Ka9CNL2
+         HfweYJHgB/qUs1UUfwR9JbWIUeho+oCiaBfxMxPuXi3qqrSY44STV3yzq1FV3kGUNvV+
+         27i4junuhfNr84Ic884l4UCstwWM7QVOv5e3yIzfo6gvT4VlasPUS+hAQxd53BfR2UKp
+         zIx/rwaokOFMDe8xyOZAq69YrHVo/yjy4dIKp0vTalaWFSsSulesn0AF3PCrMY6Yzk4B
+         Ghgu4xGBWfPM16E7gZC6uXv3xQPwcqXBkuRgR8wWkkEB39hXAzE+nRoqL8O3d0mQaLBV
+         5tKg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=jUkkMN1k1Nmarfzi7mdyLkenP8Z0h5fFEFf0HHFDPZ4=;
+        b=BXfMYSSRqhTcNIWaya1UxKy6gst2IcD0q9LxRD7ANKbo1t9ORih/nbgYwswScFSFf9
+         Ip4HNLbKgsVzB+a/uhsUc0yb6MPzVHbVFncGwfpnagd3h9Ft0rn9B3Kv0SbGv9MzD/EI
+         eZNujVe0h92zDQoAUEcTcFJT1ukYVYUVAELorWImCulpL5i0eDGyM0QsfF/AOoCZflfM
+         Eh2FMnIo2z4p/WPlo77LV+m9Y4b64frENwxc5K+DETgQOpUgPirUL2MH5Y/84p26giHq
+         A4t32TfUKMRVr0LO7nFVd/auPlPIOyJK60ySw1ITik9mAd0ZbwsxzKjsVXkPZLk6OWAd
+         U/Fw==
+X-Gm-Message-State: AOAM53178L4kQOyUWCL1NdatVB3gTN8eXs7/YpnbV1qqZAeRjEurmy4I
+        pduGndHWazroPS1ZdNhTaBUCUjHGO7m833URazg=
+X-Google-Smtp-Source: ABdhPJwY/yfydI5jTWgl7hfVjHqfW7lZxoPtyf6NY7E9mEhooa8PH5OQTyqJO0WobeHFQ3ppbO770JerF5rHoCRrB98=
+X-Received: by 2002:a05:6000:7:: with SMTP id h7mr20949037wrx.83.1604963730827;
+ Mon, 09 Nov 2020 15:15:30 -0800 (PST)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [10.236.30.118] (165.204.77.1) by SA9PR13CA0072.namprd13.prod.outlook.com (2603:10b6:806:23::17) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3564.13 via Frontend Transport; Mon, 9 Nov 2020 23:15:04 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: 0b4fb831-f8a2-48e9-e4a1-08d885054ae1
-X-MS-TrafficTypeDiagnostic: DM5PR1201MB0219:
-X-Microsoft-Antispam-PRVS: <DM5PR1201MB0219E35A96A14EDDA31276D0ECEA0@DM5PR1201MB0219.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:1013;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 7d9LrtoJu++cbk1N+MyM11Ws/B3srdLbGYTQLBBhSIRFEDUaY1+9JPjcL0Thq6V1QkZC1fd3snD55W1nM1oenMdMjGpR/pclHVLSZpoHA/5GRnxAop/h+xt3mmJQ5Q0pRo+wzB7EDH+r5CxssdpgduwbgBIR5q+u1xYawN8z2lSUkAEo/kRWC0OVt9UA1NX5zz9ESo+t25gahltgGXjJTJwddaBwRNnaUo7GwAFHJxY38jQ3o0wgEyp4lAjHg2l8rso/bsxRKGA4HHwCVh7FFDUG9xkmSdVajrA5DyCWskdYVzMgZYJjK9V9KhlSO4+s7MLJTP65Az1YQ59gSiWN2LDdfa3YVnIf68eVv29pC63io+7d8w2s6F0TH8M0S7ob0TnlE9yPqTIgqO2MYYeeoCFHTceOteBCMnVE6yNJQAwyTzV3aq1sCekubtudNP6WG9zywPiMsjQvcK2iftKB4Q==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM5PR12MB1355.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(39860400002)(396003)(346002)(136003)(366004)(8676002)(31696002)(26005)(8936002)(16526019)(2616005)(186003)(6486002)(36756003)(83380400001)(52116002)(31686004)(53546011)(86362001)(478600001)(66476007)(66556008)(66946007)(6916009)(966005)(4326008)(16576012)(54906003)(2906002)(5660300002)(956004)(316002)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: n3vY3grdJoLYREDwpysl10YXRhPR4AX3eU8CNJwGdKzHlrqiCZc66xXpd3vjEtEVeCp2oL6Fd+qYlnSC0AJqWuKzoi7hXF+JE2F8NJCbRHUNpv2PaPNqfqBrjCwETv3+QgVFkgReF5PnSGP16X+F9wi9ZbCdxhiIZxpRzFf9f7LbS7jXIUUMBhPlao06L6iY5bsmairaVkhL5lUGS63sMZhgTYPBXx5/fGkp0kQmDbbT9w85sh5YFqkvyk+9VbMtmmrHTGKfJ/nt5w3STNcnQZfgDzOvlmngz2K37qQTVxDt48hm1oytx+vhVq+tg+htonJ68cRglBeHPplyXDpS3mmHxN62B3wSj1nLTc8KNFzF7JKix26jp/dj9gLu65cqt9aOluW5/AC4pmCBT58e8t72GyKsS19BpnedfMeTWWouwPgIO0MGuCQlM5DqiOD5qbdPXKitLHG6BsEgHvU/frnde6cOyDh9u7yA0/3hd84LVGQLZABRC3kXpbtlhrzAQL4LFqkENmKMDTClxavaK2vN9H620btLA5dpFmWvFy73yP9aF3zkiusaU3amXFN0pxBvrux1fygg06gvfoGMRvf1nJoEuhIeiUOa4ebJ3TBgH7/IdgwuEQjrKhsL2I9wV6g5a7F5C/fTFmCUmuHhhQ==
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0b4fb831-f8a2-48e9-e4a1-08d885054ae1
-X-MS-Exchange-CrossTenant-AuthSource: DM5PR12MB1355.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Nov 2020 23:15:05.2743
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: bDPL0iyxzwhtxFZHXkV46Xd7J/CuXt2j8xWHLd8x/UYC8x7cL0cIA7y3hF+vMt7b07oVrLp7JUnoH3uKm2BhXw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR1201MB0219
+References: <20201109222319.2630557-1-jcrouse@codeaurora.org> <20201109222319.2630557-4-jcrouse@codeaurora.org>
+In-Reply-To: <20201109222319.2630557-4-jcrouse@codeaurora.org>
+From:   Rob Clark <robdclark@gmail.com>
+Date:   Mon, 9 Nov 2020 15:15:19 -0800
+Message-ID: <CAF6AEGvUpjO5W=jYO3KjA-1RpzQTqUxvyABmF13CPEa-8_zTfg@mail.gmail.com>
+Subject: Re: [RFC PATCH v1 3/3] drm/msm: Improve the a6xx page fault handler
+To:     Jordan Crouse <jcrouse@codeaurora.org>
+Cc:     linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Will Deacon <will@kernel.org>,
+        "list@263.net:IOMMU DRIVERS <iommu@lists.linux-foundation.org>, Joerg
+        Roedel <joro@8bytes.org>," <iommu@lists.linux-foundation.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        Emil Velikov <emil.velikov@collabora.com>,
+        Eric Anholt <eric@anholt.net>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Jonathan Marek <jonathan@marek.ca>,
+        Sam Ravnborg <sam@ravnborg.org>, Sean Paul <sean@poorly.run>,
+        Sharat Masetty <smasetty@codeaurora.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        freedreno <freedreno@lists.freedesktop.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/29/20 7:15 AM, tip-bot2 for Thomas Gleixner wrote:
-> The following commit has been merged into the x86/apic branch of tip:
-> 
-> Commit-ID:     a27dca645d2c0f31abb7858aa0e10b2fa0f2f659
-> Gitweb:        https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git/commit/?id=a27dca645d2c0f31abb7858aa0e10b2fa0f2f659
-> Author:        Thomas Gleixner <tglx@linutronix.de>
-> AuthorDate:    Sat, 24 Oct 2020 22:35:19 +01:00
-> Committer:     Thomas Gleixner <tglx@linutronix.de>
-> CommitterDate: Wed, 28 Oct 2020 20:26:26 +01:00
-> 
-> x86/io_apic: Cleanup trigger/polarity helpers
-> 
-> 'trigger' and 'polarity' are used throughout the I/O-APIC code for handling
-> the trigger type (edge/level) and the active low/high configuration. While
-> there are defines for initializing these variables and struct members, they
-> are not used consequently and the meaning of 'trigger' and 'polarity' is
-> opaque and confusing at best.
-> 
-> Rename them to 'is_level' and 'active_low' and make them boolean in various
-> structs so it's entirely clear what the meaning is.
+On Mon, Nov 9, 2020 at 2:23 PM Jordan Crouse <jcrouse@codeaurora.org> wrote:
+>
+> Use the new adreno-smmu-priv fault info function to get more SMMU
+> debug registers and print the current TTBR0 to debug per-instance
+> pagetables and figure out which GPU block generated the request.
+>
+> Signed-off-by: Jordan Crouse <jcrouse@codeaurora.org>
+> ---
+>
+>  drivers/gpu/drm/msm/adreno/a5xx_gpu.c |  4 +-
+>  drivers/gpu/drm/msm/adreno/a6xx_gpu.c | 76 +++++++++++++++++++++++++--
+>  drivers/gpu/drm/msm/msm_iommu.c       | 11 +++-
+>  drivers/gpu/drm/msm/msm_mmu.h         |  4 +-
+>  4 files changed, 87 insertions(+), 8 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/msm/adreno/a5xx_gpu.c b/drivers/gpu/drm/msm/adreno/a5xx_gpu.c
+> index d6804a802355..ed4cb81af874 100644
+> --- a/drivers/gpu/drm/msm/adreno/a5xx_gpu.c
+> +++ b/drivers/gpu/drm/msm/adreno/a5xx_gpu.c
+> @@ -933,7 +933,7 @@ bool a5xx_idle(struct msm_gpu *gpu, struct msm_ringbuffer *ring)
+>         return true;
+>  }
+>
+> -static int a5xx_fault_handler(void *arg, unsigned long iova, int flags)
+> +static int a5xx_fault_handler(void *arg, unsigned long iova, int flags, void *data)
+>  {
+>         struct msm_gpu *gpu = arg;
+>         pr_warn_ratelimited("*** gpu fault: iova=%08lx, flags=%d (%u,%u,%u,%u)\n",
+> @@ -943,7 +943,7 @@ static int a5xx_fault_handler(void *arg, unsigned long iova, int flags)
+>                         gpu_read(gpu, REG_A5XX_CP_SCRATCH_REG(6)),
+>                         gpu_read(gpu, REG_A5XX_CP_SCRATCH_REG(7)));
+>
+> -       return -EFAULT;
+> +       return 0;
+>  }
+>
+>  static void a5xx_cp_err_irq(struct msm_gpu *gpu)
+> diff --git a/drivers/gpu/drm/msm/adreno/a6xx_gpu.c b/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
+> index 948f3656c20c..ac6e8cd5cf1a 100644
+> --- a/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
+> +++ b/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
+> @@ -905,18 +905,88 @@ static void a6xx_recover(struct msm_gpu *gpu)
+>         msm_gpu_hw_init(gpu);
+>  }
+>
+> -static int a6xx_fault_handler(void *arg, unsigned long iova, int flags)
+> +static const char *a6xx_uche_fault_block(struct msm_gpu *gpu, u32 mid)
+> +{
+> +       static const char *uche_clients[7] = {
+> +               "VFD", "SP", "VSC", "VPC", "HLSQ", "PC", "LRZ",
+> +       };
+> +       u32 val;
+> +
+> +       if (mid < 1 || mid > 3)
+> +               return "UNKNOWN";
+> +
+> +       /*
+> +        * The source of the data depends on the mid ID read from FSYNR1.
+> +        * and the client ID read from the UCHE block
+> +        */
+> +       val = gpu_read(gpu, REG_A6XX_UCHE_CLIENT_PF);
+> +
+> +       /* mid = 3 is most precise and refers to only one block per client */
+> +       if (mid == 3)
+> +               return uche_clients[val & 7];
+> +
+> +       /* For mid=2 the source is TP or VFD except when the client id is 0 */
+> +       if (mid == 2)
+> +               return ((val & 7) == 0) ? "TP" : "TP|VFD";
+> +
+> +       /* For mid=1 just return "UCHE" as a catchall for everything else */
+> +       return "UCHE";
+> +}
+> +
+> +static const char *a6xx_fault_block(struct msm_gpu *gpu, u32 id)
+> +{
+> +       if (id == 0)
+> +               return "CP";
+> +       else if (id == 4)
+> +               return "CCU";
+> +       else if (id == 6)
+> +               return "CDP Prefetch";
+> +
+> +       return a6xx_uche_fault_block(gpu, id);
+> +}
+> +
+> +#define ARM_SMMU_FSR_TF                 BIT(1)
+> +#define ARM_SMMU_FSR_PF                        BIT(3)
+> +#define ARM_SMMU_FSR_EF                        BIT(4)
+> +
+> +static int a6xx_fault_handler(void *arg, unsigned long iova, int flags, void *data)
+>  {
+>         struct msm_gpu *gpu = arg;
+> +       struct adreno_smmu_fault_info *info = data;
+> +       const char *type = "UNKNOWN";
+>
+> -       pr_warn_ratelimited("*** gpu fault: iova=%08lx, flags=%d (%u,%u,%u,%u)\n",
+> +       /*
+> +        * Print a default message if we couldn't get the data from the
+> +        * adreno-smmu-priv
+> +        */
+> +       if (!info) {
+> +               pr_warn_ratelimited("*** gpu fault: iova=%.16lx flags=%d (%u,%u,%u,%u)\n",
+>                         iova, flags,
+>                         gpu_read(gpu, REG_A6XX_CP_SCRATCH_REG(4)),
+>                         gpu_read(gpu, REG_A6XX_CP_SCRATCH_REG(5)),
+>                         gpu_read(gpu, REG_A6XX_CP_SCRATCH_REG(6)),
+>                         gpu_read(gpu, REG_A6XX_CP_SCRATCH_REG(7)));
+>
+> -       return -EFAULT;
+> +               return 0;
+> +       }
+> +
+> +       if (info->fsr & ARM_SMMU_FSR_TF)
+> +               type = "TRANSLATION";
+> +       else if (info->fsr & ARM_SMMU_FSR_PF)
+> +               type = "PERMISSION";
+> +       else if (info->fsr & ARM_SMMU_FSR_EF)
+> +               type = "EXTERNAL";
+> +
+> +       pr_warn_ratelimited("*** gpu fault: ttbr0=%.16llx iova=%.16lx dir=%s type=%s source=%s (%u,%u,%u,%u)\n",
+> +                       info->ttbr0, iova,
+> +                       flags & IOMMU_FAULT_WRITE ? "WRITE" : "READ", type,
+> +                       a6xx_fault_block(gpu, info->fsynr1 & 0xff),
+> +                       gpu_read(gpu, REG_A6XX_CP_SCRATCH_REG(4)),
+> +                       gpu_read(gpu, REG_A6XX_CP_SCRATCH_REG(5)),
+> +                       gpu_read(gpu, REG_A6XX_CP_SCRATCH_REG(6)),
+> +                       gpu_read(gpu, REG_A6XX_CP_SCRATCH_REG(7)));
+> +
+> +       return 0;
+>  }
+>
+>  static void a6xx_cp_hw_err_irq(struct msm_gpu *gpu)
+> diff --git a/drivers/gpu/drm/msm/msm_iommu.c b/drivers/gpu/drm/msm/msm_iommu.c
+> index 22ac7c692a81..dc04575fc323 100644
+> --- a/drivers/gpu/drm/msm/msm_iommu.c
+> +++ b/drivers/gpu/drm/msm/msm_iommu.c
+> @@ -212,8 +212,17 @@ static int msm_fault_handler(struct iommu_domain *domain, struct device *dev,
+>                 unsigned long iova, int flags, void *arg)
+>  {
+>         struct msm_iommu *iommu = arg;
+> +       struct adreno_smmu_priv *adreno_smmu = dev_get_drvdata(iommu->base.dev);
+> +       struct adreno_smmu_fault_info info, *ptr = NULL;
+> +
+> +       if (adreno_smmu->cookie) {
 
-Running the tip tree on my second generation EPYC system I'm seeing lots
-of the following:
+I suppose, to better deal with whichever order drm vs iommu stuff is merged:
 
-[  105.325371] hpet: Lost 9601 RTC interrupts
-[  105.485766] hpet: Lost 9600 RTC interrupts
-[  105.639182] hpet: Lost 9601 RTC interrupts
-[  105.792155] hpet: Lost 9601 RTC interrupts
-[  105.947076] hpet: Lost 9601 RTC interrupts
-[  106.100876] hpet: Lost 9600 RTC interrupts
-[  106.253444] hpet: Lost 9601 RTC interrupts
-[  106.406722] hpet: Lost 9601 RTC interrupts
+   if (adreno_smmu->get_fault_info) {
+    ...
+  }
 
-preventing the system from booting. I bisected it to this commit.
+I don't think there is a reason to have ->get_fault_info set but ->cookie unset
 
-Additionally, I'm seeing warnings and error messages (which I haven't
-bisected, yet) along these lines:
+BR,
+-R
 
-[   12.790801] WARNING: CPU: 135 PID: 1 at arch/x86/kernel/apic/apic.c:2505 __irq_msi_compose_msg+0x79/0x80
-[   98.121716] irq 3: nobody cared (try booting with the "irqpoll" option)
-[  100.692087] irq 15: nobody cared (try booting with the "irqpoll" option)
-[  100.800217] irq 11: nobody cared (try booting with the "irqpoll" option)
-[  100.800407] irq 10: nobody cared (try booting with the "irqpoll" option)
-
-Thanks,
-Tom
-
+> +               adreno_smmu->get_fault_info(adreno_smmu->cookie, &info);
+> +               ptr = &info;
+> +       }
+> +
+>         if (iommu->base.handler)
+> -               return iommu->base.handler(iommu->base.arg, iova, flags);
+> +               return iommu->base.handler(iommu->base.arg, iova, flags, ptr);
+> +
+>         pr_warn_ratelimited("*** fault: iova=%16lx, flags=%d\n", iova, flags);
+>         return 0;
+>  }
+> diff --git a/drivers/gpu/drm/msm/msm_mmu.h b/drivers/gpu/drm/msm/msm_mmu.h
+> index 61ade89d9e48..a88f44c3268d 100644
+> --- a/drivers/gpu/drm/msm/msm_mmu.h
+> +++ b/drivers/gpu/drm/msm/msm_mmu.h
+> @@ -26,7 +26,7 @@ enum msm_mmu_type {
+>  struct msm_mmu {
+>         const struct msm_mmu_funcs *funcs;
+>         struct device *dev;
+> -       int (*handler)(void *arg, unsigned long iova, int flags);
+> +       int (*handler)(void *arg, unsigned long iova, int flags, void *data);
+>         void *arg;
+>         enum msm_mmu_type type;
+>  };
+> @@ -43,7 +43,7 @@ struct msm_mmu *msm_iommu_new(struct device *dev, struct iommu_domain *domain);
+>  struct msm_mmu *msm_gpummu_new(struct device *dev, struct msm_gpu *gpu);
+>
+>  static inline void msm_mmu_set_fault_handler(struct msm_mmu *mmu, void *arg,
+> -               int (*handler)(void *arg, unsigned long iova, int flags))
+> +               int (*handler)(void *arg, unsigned long iova, int flags, void *data))
+>  {
+>         mmu->arg = arg;
+>         mmu->handler = handler;
+> --
+> 2.25.1
+>
