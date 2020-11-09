@@ -2,103 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40C5B2AB69E
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 12:21:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 968812AB6A2
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 12:22:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729557AbgKILVg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 06:21:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33770 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729499AbgKILVg (ORCPT
+        id S1729573AbgKILWJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 06:22:09 -0500
+Received: from aserp2120.oracle.com ([141.146.126.78]:56460 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726410AbgKILWI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 06:21:36 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 369C3C0613CF;
-        Mon,  9 Nov 2020 03:21:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=23JvPsCJ8bZTGypus7M+0zut1iK9VvweCbVk0Ig98f8=; b=bQ6jS/sW9qpECD2vEn0Z0bk35I
-        jy2A56RXzfv+InB3KOVZ5AxftSOhgBz24VXHMnZNfV3ylx3Yt7eV33Q1nCwChjificIwtmBfi+XTa
-        nPTgGdweB2wtibgtPne9/WvUUgvNwLUZHP6/msRJU7Vu49B80Ajr1h2b5XIWDFTJgdk2erGMWFQHh
-        HyOfmFBU9Q8sCXp6j77lsWamUspYg41Ruoxxk6Bc2zDv47u7bcaIRoF52A096EG+goReJA4i5n2wn
-        PUSe0/XehVsKjg1vBH5LaJwG3gQ67bx2mstnIstbFeStCThTrSuangzmmTK4L85/4WX8Z9cPPZPre
-        ImgPsMSw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kc5Ep-0005Rb-16; Mon, 09 Nov 2020 11:21:31 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 0B51F306099;
-        Mon,  9 Nov 2020 12:21:29 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id EC2E92B09ACF6; Mon,  9 Nov 2020 12:21:28 +0100 (CET)
-Date:   Mon, 9 Nov 2020 12:21:28 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Dan Carpenter <dan.carpenter@oracle.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Darren Hart <dvhart@infradead.org>,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH] futex: Don't enable IRQs unconditionally in
- put_pi_state()
-Message-ID: <20201109112128.GF2594@hirez.programming.kicks-ass.net>
-References: <20201106085205.GA1159983@mwanda>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201106085205.GA1159983@mwanda>
+        Mon, 9 Nov 2020 06:22:08 -0500
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0A9BDjpr007847;
+        Mon, 9 Nov 2020 11:21:20 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id; s=corp-2020-01-29;
+ bh=H0gT6WpK9gdBmwSaGC9Y+S1XZ1H+Jb3W291Pzb4kO/w=;
+ b=qOUx4vw9pLUxfYGW4sIR2SH65/rNTICpMp84URP0/O8TEkBpbgsHiDFscKcNFOSYLZme
+ Mn9aabT14HxKS7eKVI5jOYr593ml95PCP/q0gkRBbsd3J4cMNmwF3VOh++E7lA7JoO6W
+ ha2p6OrY9xUUq3W2jHpL4BXknySW6fSElXIMhGt2MDkS+plt0+T1dvzx4gk4yuIRQcHa
+ dkjff+tdRc8if0iWeUZ3pl87rOKc9C/m7+WiSfxbLPuN4k1x1JZo0qtyFx/RrXWXOAvm
+ BkW41kyaO/8rzt6NsD/Z3rXrt1/obiKa2HQicYMuWeJwGsKAZTuc03kprY8V/E9Xz+AI WA== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by aserp2120.oracle.com with ESMTP id 34nkhknd1g-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 09 Nov 2020 11:21:20 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0A9BK4Sr116406;
+        Mon, 9 Nov 2020 11:21:19 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by userp3030.oracle.com with ESMTP id 34p5gv4w19-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 09 Nov 2020 11:21:19 +0000
+Received: from abhmp0018.oracle.com (abhmp0018.oracle.com [141.146.116.24])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0A9BL8gk014627;
+        Mon, 9 Nov 2020 11:21:14 GMT
+Received: from linux.home (/92.157.91.83)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Mon, 09 Nov 2020 03:21:08 -0800
+From:   Alexandre Chartre <alexandre.chartre@oracle.com>
+To:     "tglx@linutronix.de"@aserv0122.oracle.com,
+        "mingo@redhat.com"@aserv0122.oracle.com,
+        "bp@alien8.de"@aserv0122.oracle.com,
+        "hpa@zytor.com"@aserv0122.oracle.com,
+        "x86@kernel.org"@aserv0122.oracle.com,
+        "dave.hansen@linux.intel.com"@aserv0122.oracle.com,
+        "luto@kernel.org"@aserv0122.oracle.com,
+        "peterz@infradead.org"@aserv0122.oracle.com,
+        "linux-kernel@vger.kernel.org"@aserv0122.oracle.com,
+        "thomas.lendacky@amd.com"@aserv0122.oracle.com,
+        "jroedel@suse.de"@aserv0122.oracle.com
+Cc:     "konrad.wilk@oracle.com"@aserv0122.oracle.com,
+        "jan.setjeeilers@oracle.com"@aserv0122.oracle.com,
+        "junaids@google.com"@aserv0122.oracle.com,
+        "oweisse@google.com"@aserv0122.oracle.com,
+        "rppt@linux.vnet.ibm.com"@aserv0122.oracle.com,
+        "graf@amazon.de"@aserv0122.oracle.com,
+        "mgross@linux.intel.com"@aserv0122.oracle.com,
+        "kuzuno@gmail.com"@aserv0122.oracle.com,
+        "alexandre.chartre@oracle.com"@aserv0122.oracle.com
+Subject: [RFC][PATCH 00/24] x86/pti: Defer CR3 switch to C code
+Date:   Mon,  9 Nov 2020 12:22:55 +0100
+Message-Id: <20201109112319.264511-1-alexandre.chartre@oracle.com>
+X-Mailer: git-send-email 2.18.4
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9799 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 mlxlogscore=999 mlxscore=0
+ spamscore=0 phishscore=0 adultscore=0 malwarescore=0 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2011090075
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9799 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 priorityscore=1501
+ mlxscore=0 suspectscore=0 mlxlogscore=999 lowpriorityscore=0 spamscore=0
+ malwarescore=0 adultscore=0 clxscore=1015 bulkscore=0 impostorscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2011090074
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 06, 2020 at 11:52:05AM +0300, Dan Carpenter wrote:
-> The exit_pi_state_list() function calls put_pi_state() with IRQs
-> disabled and is not expecting that IRQs will be enabled inside the
-> function.  Use the _irqsave() so that IRQs are restored to the original
-> state instead of enabled unconditionally.
-> 
-> Fixes: 153fbd1226fb ("futex: Fix more put_pi_state() vs. exit_pi_state_list() races")
-> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-> ---
-> This is from static analysis and not tested.  I am not very familiar
-> with futex code.
 
-It it exceedingly rare if at all possible to trigger this, but yes, your
-patch is correct.
+With Page Table Isolation (PTI), syscalls as well as interrupts and
+exceptions occurring in userspace enter the kernel with a user
+page-table. The kernel entry code will then switch the page-table
+from the user page-table to the kernel page-table by updating the
+CR3 control register. This CR3 switch is currently done early in
+the kernel entry sequence using assembly code.
 
-Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+This RFC proposes to defer the PTI CR3 switch until we reach C code.
+The benefit is that this simplifies the assembly entry code, and make
+the PTI CR3 switch code easier to understand. This also paves the way
+for further possible projects such an easier integration of Address
+Space Isolation (ASI), or the possibilily to execute some selected
+syscall or interrupt handlers without switching to the kernel page-table
+(and thus avoid the PTI page-table switch overhead).
 
-> 
->  kernel/futex.c | 5 +++--
->  1 file changed, 3 insertions(+), 2 deletions(-)
-> 
-> diff --git a/kernel/futex.c b/kernel/futex.c
-> index f8614ef4ff31..ca84745713bc 100644
-> --- a/kernel/futex.c
-> +++ b/kernel/futex.c
-> @@ -788,8 +788,9 @@ static void put_pi_state(struct futex_pi_state *pi_state)
->  	 */
->  	if (pi_state->owner) {
->  		struct task_struct *owner;
-> +		unsigned long flags;
->  
-> -		raw_spin_lock_irq(&pi_state->pi_mutex.wait_lock);
-> +		raw_spin_lock_irqsave(&pi_state->pi_mutex.wait_lock, flags);
->  		owner = pi_state->owner;
->  		if (owner) {
->  			raw_spin_lock(&owner->pi_lock);
-> @@ -797,7 +798,7 @@ static void put_pi_state(struct futex_pi_state *pi_state)
->  			raw_spin_unlock(&owner->pi_lock);
->  		}
->  		rt_mutex_proxy_unlock(&pi_state->pi_mutex, owner);
-> -		raw_spin_unlock_irq(&pi_state->pi_mutex.wait_lock);
-> +		raw_spin_unlock_irqrestore(&pi_state->pi_mutex.wait_lock, flags);
->  	}
->  
->  	if (current->pi_state_cache) {
-> -- 
-> 2.28.0
-> 
+Deferring CR3 switch to C code means that we need to run more of the
+kernel entry code with the user page-table. To do so, we need to:
+
+ - map more syscall, interrupt and exception entry code into the user
+   page-table (map all noinstr code);
+
+ - map additional data used in the entry code (such as stack canary);
+
+ - run more entry code on the trampoline stack (which is mapped both
+   in the kernel and in the user page-table) until we switch to the
+   kernel page-table and then switch to the kernel stack;
+
+ - have a per-task trampoline stack instead of a per-cpu trampoline
+   stack, so the task can be scheduled out while it hasn't switched
+   to the kernel stack.
+
+Note that, for now, the CR3 switch can only be pushed as far as interrupts
+remain disabled in the entry code. This is because the CR3 switch is done
+based on the privilege level from the CS register from the interrupt frame.
+I plan to fix this but that's some extra complication (need to track if the
+user page-table is used or not).
+
+The proposed patchset is in RFC state to get early feedback about this
+proposal.
+
+The code survives running a kernel build and LTP. Note that changes are
+only for 64-bit at the moment, I haven't looked at 32-bit yet but I will
+definitively check it.
+
+Code is based on v5.10-rc3.
+
+Thanks,
+
+alex.
+
+-----
+
+Alexandre Chartre (24):
+  x86/syscall: Add wrapper for invoking syscall function
+  x86/entry: Update asm_call_on_stack to support more function arguments
+  x86/entry: Consolidate IST entry from userspace
+  x86/sev-es: Define a setup stack function for the VC idtentry
+  x86/entry: Implement ret_from_fork body with C code
+  x86/pti: Provide C variants of PTI switch CR3 macros
+  x86/entry: Fill ESPFIX stack using C code
+  x86/entry: Add C version of SWAPGS and SWAPGS_UNSAFE_STACK
+  x86/entry: Add C version of paranoid_entry/exit
+  x86/pti: Introduce per-task PTI trampoline stack
+  x86/pti: Function to clone page-table entries from a specified mm
+  x86/pti: Function to map per-cpu page-table entry
+  x86/pti: Extend PTI user mappings
+  x86/pti: Use PTI stack instead of trampoline stack
+  x86/pti: Execute syscall functions on the kernel stack
+  x86/pti: Execute IDT handlers on the kernel stack
+  x86/pti: Execute IDT handlers with error code on the kernel stack
+  x86/pti: Execute system vector handlers on the kernel stack
+  x86/pti: Execute page fault handler on the kernel stack
+  x86/pti: Execute NMI handler on the kernel stack
+  x86/entry: Disable stack-protector for IST entry C handlers
+  x86/entry: Defer paranoid entry/exit to C code
+  x86/entry: Remove paranoid_entry and paranoid_exit
+  x86/pti: Defer CR3 switch to C code for non-IST and syscall entries
+
+ arch/x86/entry/common.c               | 259 ++++++++++++-
+ arch/x86/entry/entry_64.S             | 513 ++++++++------------------
+ arch/x86/entry/entry_64_compat.S      |  22 --
+ arch/x86/include/asm/entry-common.h   | 108 ++++++
+ arch/x86/include/asm/idtentry.h       | 153 +++++++-
+ arch/x86/include/asm/irq_stack.h      |  11 +
+ arch/x86/include/asm/page_64_types.h  |  36 +-
+ arch/x86/include/asm/paravirt.h       |  15 +
+ arch/x86/include/asm/paravirt_types.h |  17 +-
+ arch/x86/include/asm/processor.h      |   3 +
+ arch/x86/include/asm/pti.h            |  18 +
+ arch/x86/include/asm/switch_to.h      |   7 +-
+ arch/x86/include/asm/traps.h          |   2 +-
+ arch/x86/kernel/cpu/mce/core.c        |   7 +-
+ arch/x86/kernel/espfix_64.c           |  41 ++
+ arch/x86/kernel/nmi.c                 |  34 +-
+ arch/x86/kernel/sev-es.c              |  52 +++
+ arch/x86/kernel/traps.c               |  61 +--
+ arch/x86/mm/fault.c                   |  11 +-
+ arch/x86/mm/pti.c                     |  71 ++--
+ kernel/fork.c                         |  22 ++
+ 21 files changed, 1002 insertions(+), 461 deletions(-)
+
+-- 
+2.18.4
+
