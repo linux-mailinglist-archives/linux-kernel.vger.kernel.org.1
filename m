@@ -2,93 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51D1A2AB35E
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 10:16:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A50C2AB361
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 10:17:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729220AbgKIJQP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 04:16:15 -0500
-Received: from userp2120.oracle.com ([156.151.31.85]:45306 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726482AbgKIJQO (ORCPT
+        id S1729234AbgKIJRL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 04:17:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42300 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726482AbgKIJRK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 04:16:14 -0500
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0A99FB4a084078;
-        Mon, 9 Nov 2020 09:16:06 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=SESB/eBQmsB5XbY8ocQHPHfBiORlRACTNaDWSyPh8Us=;
- b=UrN9R1d4RviMPVnd5rCNFNPr966taLsyeIAT3HcEayLmIfXdeF2y+aRglRU0qCT3MdzO
- 0C0Eq9pvr7iLd014J/aoaracAa4f0y/4g9DqlkdM9ZPUIJvKOCPkxIVSHAAZwXm00PAh
- y42IQJ5zI7fdtcOMLkaHeZ5Xf0ElOGMkv6LSD/3aBWXbHaLY6RG+hyg4I4cmMMqUOiJt
- odm0Q4zJQl/bv6ofDGRF8yOr3KEhDG0VGbFo2etq23ryY2gqzupjJrS+xCtvMNQPOv4s
- 0iPqFjlJHz5FJhWW9jHoMgZc+1CXjRIg22iKAT5txZs7VdvBamqnbTSlQ90kgMW7Cp60 DQ== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by userp2120.oracle.com with ESMTP id 34p72eay02-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 09 Nov 2020 09:16:06 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0A99G3BT148878;
-        Mon, 9 Nov 2020 09:16:05 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by userp3030.oracle.com with ESMTP id 34p5gv0wds-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 09 Nov 2020 09:16:05 +0000
-Received: from abhmp0019.oracle.com (abhmp0019.oracle.com [141.146.116.25])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0A99G1Bb006946;
-        Mon, 9 Nov 2020 09:16:01 GMT
-Received: from kadam (/41.57.98.10)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 09 Nov 2020 01:16:01 -0800
-Date:   Mon, 9 Nov 2020 12:15:56 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     "J. Bruce Fields" <bfields@fieldses.org>
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: Signed-off-by missing for commit in the nfsd tree
-Message-ID: <20201109091555.GK18329@kadam>
-References: <20201109082032.3bf8f58d@canb.auug.org.au>
- <20201108212936.GD14422@fieldses.org>
+        Mon, 9 Nov 2020 04:17:10 -0500
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95D77C0613CF
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Nov 2020 01:17:10 -0800 (PST)
+Received: by mail-wm1-x343.google.com with SMTP id s13so7229265wmh.4
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Nov 2020 01:17:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=/8J7+TVsK84Hl/hXT+QqDQgHlP8pwg1VmC/OL+3Gn2A=;
+        b=BL7ng4pfh4YApIruaOjnkw+juuxONFz8qbvu0r6n6FA/b6LNQJwpwKqtPJrvjlRgFq
+         pMVa3LUu88J7BrKi2TZYoslRp7zkxMYKZSRL5lRN+PcunD6Xr2KGOoy0SnxOCA1eO6ni
+         Xy5IwQplaEcE8nFExYU0fRuXcszeFpin8IV21xkJjt0L9a+ngmCNL/1o1h9QtqtBhoka
+         kbXMTy+NT4kSxush8SEg61Gf/zcueTbxuK6Uzl0FTFsh36tRhiE8senuZGgPGVFSfjwz
+         Oaf6SKt6QS37oKcALk/gwFOi+BeLUC969BHLjevnolECPCrp2nekVeSi0GsLhoftPEiV
+         r73g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=/8J7+TVsK84Hl/hXT+QqDQgHlP8pwg1VmC/OL+3Gn2A=;
+        b=uNRrLkHdJwUOc0AeO9CGugC+t063p3fJm/sOEHIE8KikYbl4odynk+hPGbBUQhnxWV
+         s2KkdH1KGP1cIRZDX/U7OpROlmBA6wfXKvN0Nl+kMcxKreniGtGx6a1fB9kvBWxoSCQf
+         XHVtWKeFS7y3sZDraeNCkmAAefFbHvW28AKnuexSlui208Fad0bV5Gak+lfbTdtDzbdO
+         EUWwa2J0FEk0T2NCOFrDw+xnguZ6V8tDB1hsYzIPt5TtXGNIYVpcq3V1GOpZrPlIBCDD
+         nNIkwHaRvkEJLOt4GyKWX+KeHnx21HKGw3ahPEk0CBF70x5ZYFEYzILpRfCdm6wwkWhG
+         FVQw==
+X-Gm-Message-State: AOAM531r/61vs1gYl+OrJIMHCbjSsr+vXepsz3g4jG/OjBs8Z/aKYzWN
+        6c8zFN2IT0pGB20SL6aap8RhhQ==
+X-Google-Smtp-Source: ABdhPJzLgDNAfmlt8Dp8TpAfOkmsvtztUSpcdw4J+gp+SWl7HFzUYAmQGtkfSSXOWUsOE0YzQqst4g==
+X-Received: by 2002:a1c:5f45:: with SMTP id t66mr6773036wmb.132.1604913429339;
+        Mon, 09 Nov 2020 01:17:09 -0800 (PST)
+Received: from dell ([91.110.221.180])
+        by smtp.gmail.com with ESMTPSA id u16sm12337564wrn.55.2020.11.09.01.17.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 09 Nov 2020 01:17:08 -0800 (PST)
+Date:   Mon, 9 Nov 2020 09:17:06 +0000
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, Ferruh Yigit <fery@cypress.com>,
+        "at www.cypress.com" <ttdrivers@cypress.com>,
+        linux-input@vger.kernel.org
+Subject: Re: [PATCH 15/20] input: touchscreen: cyttsp4_core:  Move
+ 'cyttsp4_tch_abs_string' to the only file that references it
+Message-ID: <20201109091706.GU2063125@dell>
+References: <20201104162427.2984742-1-lee.jones@linaro.org>
+ <20201104162427.2984742-16-lee.jones@linaro.org>
+ <20201109063603.GS1003057@dtor-ws>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20201108212936.GD14422@fieldses.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9799 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 mlxlogscore=999 mlxscore=0
- spamscore=0 phishscore=0 adultscore=0 malwarescore=0 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2011090060
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9799 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 mlxlogscore=999 mlxscore=0
- malwarescore=0 suspectscore=0 lowpriorityscore=0 adultscore=0 phishscore=0
- priorityscore=1501 spamscore=0 impostorscore=0 clxscore=1011
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2011090060
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201109063603.GS1003057@dtor-ws>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Nov 08, 2020 at 04:29:36PM -0500, J. Bruce Fields wrote:
-> On Mon, Nov 09, 2020 at 08:20:32AM +1100, Stephen Rothwell wrote:
-> > Hi all,
+On Sun, 08 Nov 2020, Dmitry Torokhov wrote:
+
+> On Wed, Nov 04, 2020 at 04:24:22PM +0000, Lee Jones wrote:
+> > Fixes the following W=1 kernel build warning(s):
 > > 
-> > Commit
+> > In file included from drivers/input/touchscreen/cyttsp_i2c_common.c:24:
+> >  drivers/input/touchscreen/cyttsp4_core.h:236:27: warning: ‘cyttsp4_tch_abs_string’ defined but not used [-Wunused-const-variable=]
+> >  236 | static const char  const cyttsp4_tch_abs_string[] = {
+> >  | ^~~~~~~~~~~~~~~~~~~~~~
+> >  In file included from drivers/input/touchscreen/cyttsp4_i2c.c:17:
+> >  drivers/input/touchscreen/cyttsp4_core.h:236:27: warning: ‘cyttsp4_tch_abs_string’ defined but not used [-Wunused-const-variable=]
+> >  236 | static const char * const cyttsp4_tch_abs_string[] = {
+> >  | ^~~~~~~~~~~~~~~~~~~~~~
+> >  In file included from drivers/input/touchscreen/cyttsp4_spi.c:17:
+> >  drivers/input/touchscreen/cyttsp4_core.h:236:27: warning: ‘cyttsp4_tch_abs_string’ defined but not used [-Wunused-const-variable=]
+> >  236 | static const char * const cyttsp4_tch_abs_string[] = {
+> >  | ^~~~~~~~~~~~~~~~~~~~~~
 > > 
-> >   bfb5aa1685d5 ("net/sunrpc: fix useless comparison in proc_do_xprt()")
-> > 
-> > is missing a Signed-off-by from its author.
+> > Cc: Ferruh Yigit <fery@cypress.com>
+> > Cc: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+> > Cc: "at www.cypress.com" <ttdrivers@cypress.com>
+> > Cc: linux-input@vger.kernel.org
+> > Signed-off-by: Lee Jones <lee.jones@linaro.org>
 > 
-> I split the original patch in 2 and fixed a bug in this second patch,
-> but unless I hear otherwise I'll assume Dan's OK with his Signed-off-by
-> staying on both....
+> Applied, thank you.
 
-Yep.  Thanks!
+Thanks for this Dmitry.
 
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+I'll rebase in a couple of days and fix the stragglers.
 
-regards,
-dan carpenter
-
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
