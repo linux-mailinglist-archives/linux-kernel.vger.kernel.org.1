@@ -2,57 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F6092AB808
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 13:18:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1943E2AB809
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 13:18:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729755AbgKIMSk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 07:18:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42822 "EHLO
+        id S1729803AbgKIMSn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 07:18:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42834 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729735AbgKIMSf (ORCPT
+        with ESMTP id S1729750AbgKIMSi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 07:18:35 -0500
-Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1208BC0613CF
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Nov 2020 04:18:35 -0800 (PST)
-Received: by mail-pl1-x644.google.com with SMTP id x15so3830338pll.2
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Nov 2020 04:18:35 -0800 (PST)
+        Mon, 9 Nov 2020 07:18:38 -0500
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2CBEC0613CF
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Nov 2020 04:18:37 -0800 (PST)
+Received: by mail-pg1-x543.google.com with SMTP id e21so6994655pgr.11
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Nov 2020 04:18:37 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=0x0f.com; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=5Rwi6JrG1Bh8jLLcugHVfWoJr8ivQS6AwCC3H82H1b4=;
-        b=I7miMOGhEdT7J0NAhMTCfKP0YfrV8cuu7jT+qTWfzx/UnjvsFFumY3ebjucZ/PY2pX
-         ky0LqVkrGZhe6mB1ixA2yMyu82I9qlME5l0pgUcbg1SSgGYKpmjCRQRm5SnNQf3K0Tg8
-         m15vf4PW2cnoTUbupzdVt1Vk6w6U7qPXghp8U=
+        bh=sSxJk69Cd2LemrQN9ehPZlO0F43/6TrspTvKZvZYbs0=;
+        b=pmuo933XaVA/Fh1QO2JzQbKDac6h4v+Oqyf8ncJqYZu7oaVjlJRKOZwKmCJhUncmdn
+         DfBorPy72/HklgC5k0HSiiIAJ9cXSHXMx93z3lc8+OuZISmktsTJFcGxk/wupSQZF2cK
+         Q7gUtLBoltY4foSLBOhZixUrYKs7D5k4JYRXE=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=5Rwi6JrG1Bh8jLLcugHVfWoJr8ivQS6AwCC3H82H1b4=;
-        b=TDKOY/Q+e+zX7jRiNv7wuu7YUCYay/0B1DFEqW3qyMsNxqfzcY6XNYhIlE/AU9qs07
-         H/hF37WcG4DRPO9BEYmswL0jqD4KCIbYGqnzPwLhv+2tX5EGAq4JqM0SRTeMaYQRvNXx
-         XZuqf/w1KDngV4a1TybjHrQN6DBIfJUXM42R6giXFcWlKCPSuj+g3Bcu+ecW5CJ6Oskn
-         0QS3sRD1AjfJ+DRh2xV1NkpVzze8bG9xE5ONFZ0OJbhOaEdbx+D6fMhLs88HafKG8MaP
-         B9R2nGASrqdXcfzu/0yt3c8erzOeFD2EDwAFyUFMGeWZsniyb0QUqmJAk0q19YCQKbKU
-         UhEQ==
-X-Gm-Message-State: AOAM5308rTcivPXpECuWIe1ch70VuPPaBDH/kJpDA+bM2V+lhNNxe6i3
-        25M+VAODdE3D+a2FhI4RaMId1TXFT7xDfQ==
-X-Google-Smtp-Source: ABdhPJwIBAsn/3BnPLGIM6HYZYH0I3QBpnJKi9ej88OHsCBcUhLvc1UBv92TWmV6pvx2zGKesCPqAg==
-X-Received: by 2002:a17:902:c411:b029:d7:dd6e:60b4 with SMTP id k17-20020a170902c411b02900d7dd6e60b4mr5462718plk.66.1604924314644;
-        Mon, 09 Nov 2020 04:18:34 -0800 (PST)
+        bh=sSxJk69Cd2LemrQN9ehPZlO0F43/6TrspTvKZvZYbs0=;
+        b=JMZ/uNgVrmHHwFi7XVY/5njNho1VN1p2P9xXsfX/ZsJwEK44g2u81IANV3i537Nnx1
+         pz2jmo+CyS74zdiH5I86Mfnd9y+SAWbwBc8R+UIhBfTxvsL6ABiK40CCWHqqyukjsm/z
+         R6Y8OOKsqEqiHQaxd6XryY7L9S4u1EohYPqzmSNvXD23K5kZqEIXRUO6dhLacrYLNK2M
+         iFCzYSi1ZR1fYnfGbngaMrUEnzhB16QbsRLRc1cv6Wv/0RHMwyHGwhpZevJF2WQnsmOh
+         Dy+mxRDhjoLR63MHYFTkDHEXUZqhkvQ4SVhloxBKvQjv93OSvVl6JPgsbRp5iZtAccDv
+         Gt0w==
+X-Gm-Message-State: AOAM531WxkTXt+e3x9Ls9f+a6ZNH76w0HzXJ/B+xDKODvLTYFrMc8K9x
+        JSz3nTfitoPbNth4gDDCe7JglA==
+X-Google-Smtp-Source: ABdhPJzdFErnM/SPti1r7wDEP5FTsyTtZ5m0A/fqhvdDHYaRqZmUPHvt/xRUFxuyf/HE2hWsFGYJ6A==
+X-Received: by 2002:aa7:9f06:0:b029:18a:e1a6:cec9 with SMTP id g6-20020aa79f060000b029018ae1a6cec9mr13488102pfr.20.1604924317330;
+        Mon, 09 Nov 2020 04:18:37 -0800 (PST)
 Received: from shiro.work (p1268123-ipngn200803sizuokaden.shizuoka.ocn.ne.jp. [118.13.124.123])
-        by smtp.googlemail.com with ESMTPSA id i123sm11425204pfc.13.2020.11.09.04.18.32
+        by smtp.googlemail.com with ESMTPSA id i123sm11425204pfc.13.2020.11.09.04.18.34
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 09 Nov 2020 04:18:34 -0800 (PST)
+        Mon, 09 Nov 2020 04:18:36 -0800 (PST)
 From:   Daniel Palmer <daniel@0x0f.com>
 To:     soc@kernel.org, linux-gpio@vger.kernel.org
 Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         linux-kernel@vger.kernel.org, linus.walleij@linaro.org,
         maz@kernel.org, w@1wt.eu, Daniel Palmer <daniel@0x0f.com>
-Subject: [PATCH v3 4/5] ARM: mstar: Add gpio controller to MStar base dtsi
-Date:   Mon,  9 Nov 2020 21:17:30 +0900
-Message-Id: <20201109121731.1537580-5-daniel@0x0f.com>
+Subject: [PATCH v3 5/5] ARM: mstar: Fill in GPIO controller properties for infinity
+Date:   Mon,  9 Nov 2020 21:17:31 +0900
+Message-Id: <20201109121731.1537580-6-daniel@0x0f.com>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201109121731.1537580-1-daniel@0x0f.com>
 References: <20201109121731.1537580-1-daniel@0x0f.com>
@@ -62,40 +62,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The GPIO controller is at the same address in all of the
-currently known chips so create a node for it in the base
-dtsi.
-
-Some extra properties are needed to actually use it so
-disable it by default.
+Fill in the properties needed to use the GPIO controller
+in the infinity and infinity3 chips.
 
 Signed-off-by: Daniel Palmer <daniel@0x0f.com>
 Acked-by: Linus Walleij <linus.walleij@linaro.org>
 ---
- arch/arm/boot/dts/mstar-v7.dtsi | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+ arch/arm/boot/dts/mstar-infinity.dtsi | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-diff --git a/arch/arm/boot/dts/mstar-v7.dtsi b/arch/arm/boot/dts/mstar-v7.dtsi
-index f07880561e11..81369bc07f78 100644
---- a/arch/arm/boot/dts/mstar-v7.dtsi
-+++ b/arch/arm/boot/dts/mstar-v7.dtsi
-@@ -109,6 +109,16 @@ l3bridge: l3bridge@204400 {
- 				reg = <0x204400 0x200>;
- 			};
+diff --git a/arch/arm/boot/dts/mstar-infinity.dtsi b/arch/arm/boot/dts/mstar-infinity.dtsi
+index cd911adef014..0bee517797f4 100644
+--- a/arch/arm/boot/dts/mstar-infinity.dtsi
++++ b/arch/arm/boot/dts/mstar-infinity.dtsi
+@@ -6,6 +6,13 @@
  
-+			gpio: gpio@207800 {
-+				#gpio-cells = <2>;
-+				reg = <0x207800 0x200>;
-+				gpio-controller;
-+				#interrupt-cells = <2>;
-+				interrupt-controller;
-+				interrupt-parent = <&intc_fiq>;
-+				status = "disabled";
-+			};
+ #include "mstar-v7.dtsi"
+ 
++#include <dt-bindings/gpio/msc313-gpio.h>
 +
- 			pm_uart: uart@221000 {
- 				compatible = "ns16550a";
- 				reg = <0x221000 0x100>;
+ &imi {
+ 	reg = <0xa0000000 0x16000>;
+ };
++
++&gpio {
++	compatible = "mstar,msc313-gpio";
++	status = "okay";
++};
 -- 
 2.29.2
 
