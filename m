@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EF7C2AB8E3
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 13:59:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 952332AB8E6
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 13:59:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730226AbgKIM6w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 07:58:52 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52796 "EHLO mail.kernel.org"
+        id S1730247AbgKIM7I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 07:59:08 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52876 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730106AbgKIM6c (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 07:58:32 -0500
+        id S1730158AbgKIM6k (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 07:58:40 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9AFC120789;
-        Mon,  9 Nov 2020 12:58:30 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 18C9320789;
+        Mon,  9 Nov 2020 12:58:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604926711;
-        bh=FCYJJ/2cH0dstbpRZxaKjF+DFq7oQ1F7MjNd2KlXfBQ=;
+        s=default; t=1604926719;
+        bh=kOandtB1ZMev2Spg8KASy1z02WsLM2ai2Cy10DWXrx0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ptTCmIZbXGOBwld42G2kX+OVinr9CN96/PhPcwaRxjkCbxvKdKJ9TUZKF4eJlhPBZ
-         Aam9P6SYHkPO2Do2WZmBH6w6/iU4LpUWkIL4CqfzSrjZkMcOy6mIhW7NWmAgxTCb5G
-         QNrODVpIymAynOzIcO73tK/7Xd9uHVYIx+XRpgo4=
+        b=R6QHAwXBge6T/ti3YMExfezJlPpBcoMa/ox5BH7OaFSg4NMSMqbi3UMrokIlmhuQw
+         DTm9EeJjR9ayZpp4RDvBaETcd2aLgc9+D56udGxqZHaEWhoZOB8i9bykYDgQRlzsTy
+         jLGxUlN83GU9BStlnfcd4lpKdDrSJ7gmn7Yvv7jA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Juergen Gross <jgross@suse.com>,
-        Stefan Bader <stefan.bader@canonical.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Ben Hutchings <benh@debian.org>
-Subject: [PATCH 4.4 64/86] xen/events: dont use chip_data for legacy IRQs
-Date:   Mon,  9 Nov 2020 13:55:11 +0100
-Message-Id: <20201109125023.840446272@linuxfoundation.org>
+        stable@vger.kernel.org, James Jurack <james.jurack@ametek.com>,
+        Claudiu Manoil <claudiu.manoil@nxp.com>,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: [PATCH 4.4 67/86] gianfar: Account for Tx PTP timestamp in the skb headroom
+Date:   Mon,  9 Nov 2020 13:55:14 +0100
+Message-Id: <20201109125023.994044097@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201109125020.852643676@linuxfoundation.org>
 References: <20201109125020.852643676@linuxfoundation.org>
@@ -44,124 +43,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Juergen Gross <jgross@suse.com>
+From: Claudiu Manoil <claudiu.manoil@nxp.com>
 
-commit 0891fb39ba67bd7ae023ea0d367297ffff010781 upstream.
+[ Upstream commit d6a076d68c6b5d6a5800f3990a513facb7016dea ]
 
-Since commit c330fb1ddc0a ("XEN uses irqdesc::irq_data_common::handler_data to store a per interrupt XEN data pointer which contains XEN specific information.")
-Xen is using the chip_data pointer for storing IRQ specific data. When
-running as a HVM domain this can result in problems for legacy IRQs, as
-those might use chip_data for their own purposes.
+When PTP timestamping is enabled on Tx, the controller
+inserts the Tx timestamp at the beginning of the frame
+buffer, between SFD and the L2 frame header. This means
+that the skb provided by the stack is required to have
+enough headroom otherwise a new skb needs to be created
+by the driver to accommodate the timestamp inserted by h/w.
+Up until now the driver was relying on the second option,
+using skb_realloc_headroom() to create a new skb to accommodate
+PTP frames. Turns out that this method is not reliable, as
+reallocation of skbs for PTP frames along with the required
+overhead (skb_set_owner_w, consume_skb) is causing random
+crashes in subsequent skb_*() calls, when multiple concurrent
+TCP streams are run at the same time on the same device
+(as seen in James' report).
+Note that these crashes don't occur with a single TCP stream,
+nor with multiple concurrent UDP streams, but only when multiple
+TCP streams are run concurrently with the PTP packet flow
+(doing skb reallocation).
+This patch enforces the first method, by requesting enough
+headroom from the stack to accommodate PTP frames, and so avoiding
+skb_realloc_headroom() & co, and the crashes no longer occur.
+There's no reason not to set needed_headroom to a large enough
+value to accommodate PTP frames, so in this regard this patch
+is a fix.
 
-Use a local array for this purpose in case of legacy IRQs, avoiding the
-double use.
-
-Cc: stable@vger.kernel.org
-Fixes: c330fb1ddc0a ("XEN uses irqdesc::irq_data_common::handler_data to store a per interrupt XEN data pointer which contains XEN specific information.")
-Signed-off-by: Juergen Gross <jgross@suse.com>
-Tested-by: Stefan Bader <stefan.bader@canonical.com>
-Reviewed-by: Boris Ostrovsky <boris.ostrovsky@oracle.com>
-Link: https://lore.kernel.org/r/20200930091614.13660-1-jgross@suse.com
-Signed-off-by: Juergen Gross <jgross@suse.com>
-[bwh: Backported to 4.9: adjust context]
-Signed-off-by: Ben Hutchings <benh@debian.org>
+Reported-by: James Jurack <james.jurack@ametek.com>
+Fixes: bee9e58c9e98 ("gianfar:don't add FCB length to hard_header_len")
+Signed-off-by: Claudiu Manoil <claudiu.manoil@nxp.com>
+Link: https://lore.kernel.org/r/20201020173605.1173-1-claudiu.manoil@nxp.com
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/xen/events/events_base.c |   29 +++++++++++++++++++++--------
- 1 file changed, 21 insertions(+), 8 deletions(-)
+ drivers/net/ethernet/freescale/gianfar.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/xen/events/events_base.c
-+++ b/drivers/xen/events/events_base.c
-@@ -91,6 +91,8 @@ static bool (*pirq_needs_eoi)(unsigned i
- /* Xen will never allocate port zero for any purpose. */
- #define VALID_EVTCHN(chn)	((chn) != 0)
+--- a/drivers/net/ethernet/freescale/gianfar.c
++++ b/drivers/net/ethernet/freescale/gianfar.c
+@@ -1385,7 +1385,7 @@ static int gfar_probe(struct platform_de
  
-+static struct irq_info *legacy_info_ptrs[NR_IRQS_LEGACY];
-+
- static struct irq_chip xen_dynamic_chip;
- static struct irq_chip xen_percpu_chip;
- static struct irq_chip xen_pirq_chip;
-@@ -155,7 +157,18 @@ int get_evtchn_to_irq(unsigned evtchn)
- /* Get info for IRQ */
- struct irq_info *info_for_irq(unsigned irq)
- {
--	return irq_get_chip_data(irq);
-+	if (irq < nr_legacy_irqs())
-+		return legacy_info_ptrs[irq];
-+	else
-+		return irq_get_chip_data(irq);
-+}
-+
-+static void set_info_for_irq(unsigned int irq, struct irq_info *info)
-+{
-+	if (irq < nr_legacy_irqs())
-+		legacy_info_ptrs[irq] = info;
-+	else
-+		irq_set_chip_data(irq, info);
- }
+ 	if (dev->features & NETIF_F_IP_CSUM ||
+ 	    priv->device_flags & FSL_GIANFAR_DEV_HAS_TIMER)
+-		dev->needed_headroom = GMAC_FCB_LEN;
++		dev->needed_headroom = GMAC_FCB_LEN + GMAC_TXPAL_LEN;
  
- /* Constructors for packed IRQ information. */
-@@ -384,7 +397,7 @@ static void xen_irq_init(unsigned irq)
- 	info->type = IRQT_UNBOUND;
- 	info->refcnt = -1;
- 
--	irq_set_chip_data(irq, info);
-+	set_info_for_irq(irq, info);
- 
- 	list_add_tail(&info->list, &xen_irq_list_head);
- }
-@@ -433,14 +446,14 @@ static int __must_check xen_allocate_irq
- 
- static void xen_free_irq(unsigned irq)
- {
--	struct irq_info *info = irq_get_chip_data(irq);
-+	struct irq_info *info = info_for_irq(irq);
- 
- 	if (WARN_ON(!info))
- 		return;
- 
- 	list_del(&info->list);
- 
--	irq_set_chip_data(irq, NULL);
-+	set_info_for_irq(irq, NULL);
- 
- 	WARN_ON(info->refcnt > 0);
- 
-@@ -610,7 +623,7 @@ EXPORT_SYMBOL_GPL(xen_irq_from_gsi);
- static void __unbind_from_irq(unsigned int irq)
- {
- 	int evtchn = evtchn_from_irq(irq);
--	struct irq_info *info = irq_get_chip_data(irq);
-+	struct irq_info *info = info_for_irq(irq);
- 
- 	if (info->refcnt > 0) {
- 		info->refcnt--;
-@@ -1114,7 +1127,7 @@ int bind_ipi_to_irqhandler(enum ipi_vect
- 
- void unbind_from_irqhandler(unsigned int irq, void *dev_id)
- {
--	struct irq_info *info = irq_get_chip_data(irq);
-+	struct irq_info *info = info_for_irq(irq);
- 
- 	if (WARN_ON(!info))
- 		return;
-@@ -1148,7 +1161,7 @@ int evtchn_make_refcounted(unsigned int
- 	if (irq == -1)
- 		return -ENOENT;
- 
--	info = irq_get_chip_data(irq);
-+	info = info_for_irq(irq);
- 
- 	if (!info)
- 		return -ENOENT;
-@@ -1176,7 +1189,7 @@ int evtchn_get(unsigned int evtchn)
- 	if (irq == -1)
- 		goto done;
- 
--	info = irq_get_chip_data(irq);
-+	info = info_for_irq(irq);
- 
- 	if (!info)
- 		goto done;
+ 	/* Initializing some of the rx/tx queue level parameters */
+ 	for (i = 0; i < priv->num_tx_queues; i++) {
 
 
