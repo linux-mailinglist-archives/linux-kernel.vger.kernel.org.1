@@ -2,87 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C14E32AB85E
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 13:36:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CAE842AB85D
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 13:36:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729693AbgKIMge (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 07:36:34 -0500
-Received: from out30-133.freemail.mail.aliyun.com ([115.124.30.133]:41318 "EHLO
-        out30-133.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729038AbgKIMgd (ORCPT
+        id S1729782AbgKIMgQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 07:36:16 -0500
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:51170 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729693AbgKIMgN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 07:36:33 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R181e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01424;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0UEkNpYe_1604925389;
-Received: from IT-FVFX43SYHV2H.local(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0UEkNpYe_1604925389)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Mon, 09 Nov 2020 20:36:30 +0800
-Subject: Re: [REF PATCH] mm/swap: fix swapon failure
-From:   Alex Shi <alex.shi@linux.alibaba.com>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     linmiaohe@huawei.com, akpm@linux-foundation.org,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        Hugh Dickins <hughd@google.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-References: <1604922436-16597-1-git-send-email-alex.shi@linux.alibaba.com>
- <20201109120705.GZ17076@casper.infradead.org>
- <88fb2ed0-cb0c-2b4b-a73e-3a64fdc0a2cd@linux.alibaba.com>
-Message-ID: <46e34498-01aa-3442-eee3-d3b84a00e1a8@linux.alibaba.com>
-Date:   Mon, 9 Nov 2020 20:36:08 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
- Gecko/20100101 Thunderbird/68.12.0
+        Mon, 9 Nov 2020 07:36:13 -0500
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0A9Ca6jS002188;
+        Mon, 9 Nov 2020 06:36:06 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1604925366;
+        bh=95DTtXkfRsBVcuCi7o8HWOM6vEleEq3iPsJLfzylSFw=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=cABhk27F9dcCrPbnbsUSmtQl5A3/oVFXPewl4+t8S5gnSmitofhnmOy/K6HkUt8Qc
+         vOUeYUqSvL22k+HVYDS3WRKq4+fO7Zr8h+WNhp/bkMsCmUOOR5/PgIB9I0qeYGLVNT
+         FdHsapsUQNBx/ETdJeDCzo7klRTHzyGHOhrB7pSI=
+Received: from DLEE104.ent.ti.com (dlee104.ent.ti.com [157.170.170.34])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0A9Ca6Gn069552
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 9 Nov 2020 06:36:06 -0600
+Received: from DLEE100.ent.ti.com (157.170.170.30) by DLEE104.ent.ti.com
+ (157.170.170.34) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Mon, 9 Nov
+ 2020 06:36:06 -0600
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE100.ent.ti.com
+ (157.170.170.30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Mon, 9 Nov 2020 06:36:06 -0600
+Received: from [192.168.2.6] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0A9Ca3s9035270;
+        Mon, 9 Nov 2020 06:36:03 -0600
+Subject: Re: [PATCH 01/18] dmaengine: of-dma: Add support for optional router
+ configuration callback
+To:     Vinod Koul <vkoul@kernel.org>
+CC:     <nm@ti.com>, <ssantosh@kernel.org>, <robh+dt@kernel.org>,
+        <vigneshr@ti.com>, <dan.j.williams@intel.com>, <t-kristo@ti.com>,
+        <lokeshvutla@ti.com>, <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <dmaengine@vger.kernel.org>
+References: <20200930091412.8020-1-peter.ujfalusi@ti.com>
+ <20200930091412.8020-2-peter.ujfalusi@ti.com>
+ <20201007054404.GR2968@vkoul-mobl>
+ <be615881-1eb4-f8fe-a32d-04fabb6cb27b@ti.com>
+ <20201007155533.GZ2968@vkoul-mobl>
+ <45adb88b-1ef8-1fbf-08c1-9afc6ea4c6f0@ti.com>
+ <20201028055531.GH3550@vkoul-mobl>
+ <cf3d3de0-223b-4846-bd9f-b78654ae2d08@ti.com>
+ <20201109114534.GH3171@vkoul-mobl>
+ <7a7cb455-dd09-b71f-6ecc-fd6108d37051@ti.com>
+ <20201109122306.GO3171@vkoul-mobl>
+From:   Peter Ujfalusi <peter.ujfalusi@ti.com>
+Message-ID: <dffd3284-de4c-eb27-b6cf-1b4acc3cb79d@ti.com>
+Date:   Mon, 9 Nov 2020 14:36:49 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.1
 MIME-Version: 1.0
-In-Reply-To: <88fb2ed0-cb0c-2b4b-a73e-3a64fdc0a2cd@linux.alibaba.com>
-Content-Type: text/plain; charset=gbk
+In-Reply-To: <20201109122306.GO3171@vkoul-mobl>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
-在 2020/11/9 下午8:17, Alex Shi 写道:
+On 09/11/2020 14.23, Vinod Koul wrote:
+> HI Peter,
 > 
-> 
-> 在 2020/11/9 下午8:07, Matthew Wilcox 写道:
->> On Mon, Nov 09, 2020 at 07:47:16PM +0800, Alex Shi wrote:
->>> Go through the context I found the exit_swap_address_space(p->type)
->>> shouldn't be used in good result path. So just move it to error path.
+> On 09-11-20, 14:09, Peter Ujfalusi wrote:
+>> Hi Vinod,
 >>
->> But ... it's not used in the success path.  There's a 'goto' right
->> before it.  Does this really fix your problem?
+>> On 09/11/2020 13.45, Vinod Koul wrote:
+>>>> Without a channel number I can not do anything.
+>>>> It is close to a chicken and egg problem.
+>>>
+>>> We get 'channel' in xlate, so wont that help? I think I am still missing
+>>> something here :(
 >>
+>> Yes, we get channel in xlate, but we get the channel after
+>> ofdma->of_dma_route_allocate()
 > 
-> The trick thing is. It do fix my problem on my centos 7 with gcc 8.3.1...
-> 
-> I am getting headache on this problem...
+> That is correct, so you need this info in allocate somehow..
 
-Checked again on my git tree. nothing weird, and code based on
-cf7cd542d1b5 Add linux-next specific files for 20201104
+To know the event number the router must send to trigger the channel I
+need the router to 'craft' the dmaspec which can be used to request the
+channel.
 
-Sorry, I have no idea where is the problem...
+To request a bcdma channel to be triggered by global trigger 0:
 
+[A]
+<&main_bcdma 1 0 15>
 
-> 
->>> @@ -3339,7 +3339,8 @@ static bool swap_discardable(struct swap_info_struct *si)
->>>  	error = inode_drain_writes(inode);
->>>  	if (error) {
->>>  		inode->i_flags &= ~S_SWAPFILE;
->>> -		goto free_swap_address_space;
->>> +		exit_swap_address_space(p->type);
->>> +		goto bad_swap_unlock_inode;
->>>  	}
->>>  
->>>  	mutex_lock(&swapon_mutex);
->>> @@ -3364,8 +3365,6 @@ static bool swap_discardable(struct swap_info_struct *si)
->>>  
->>>  	error = 0;
->>>  	goto out;
->>> -free_swap_address_space:
->>> -	exit_swap_address_space(p->type);
->>>  bad_swap_unlock_inode:
->>>  	inode_unlock(inode);
->>>  bad_swap:
->>> -- 
->>> 1.8.3.1
->>>
->>>
+main_bcdma - phandle to BCDMA
+1 - triggered by global trigger0
+0 - ignored
+15 - ASEL value
+
+A peripheral can not really use this binding directly as we need to
+configure the get the event to be sent to the given channel's trigger0.
+The binding for the router (l2g if INTA in this case):
+
+[B]
+<&inta_l2g 21 0 15>
+
+inta_l2g - phandle to therouter
+21 - local event index (input event/signal)
+0 - event detection mode (pulsed/rising)
+15 - ASEL value
+
+The of_dma_router_xlate() receives the dmaspec for [B}, the router
+driver creates the dmaspec for [A].
+
+The xlate can not request the channel first as it needs the dmaspec from
+the router to do so.
+
+- P茅ter
+
+Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
+Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
