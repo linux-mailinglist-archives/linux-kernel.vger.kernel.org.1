@@ -2,141 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3990B2AAF3F
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 03:16:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CECAC2AAF56
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 03:17:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729066AbgKICQd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 8 Nov 2020 21:16:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33682 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728006AbgKICQd (ORCPT
+        id S1729404AbgKICRk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 8 Nov 2020 21:17:40 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:47993 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729383AbgKICRi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 8 Nov 2020 21:16:33 -0500
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F791C0613CF;
-        Sun,  8 Nov 2020 18:16:33 -0800 (PST)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        Sun, 8 Nov 2020 21:17:38 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1604888256;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=i30PpoZ3ncDE41feRaeC6jT4a2UBvss9Fqk6sZ2j5No=;
+        b=GzrMfroHYbWHCvj7Ei22kO5Jd/iYkUpOuYJA9slizVurhl97UeAD0Ja9wZLBYuTYYZXkOb
+        LD9cK0NfKarPO4xOtl7sL8FsA0Ggbbk6mWoeFeJNAYyMtwzYDHdiJD+/8vIeOxBK7h7/2y
+        zmDNfTIxkhrjy1ubh+6fVz1+ADPwCRA=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-436-8eRDGP6kPiunpNCEztr0-Q-1; Sun, 08 Nov 2020 21:17:34 -0500
+X-MC-Unique: 8eRDGP6kPiunpNCEztr0-Q-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CTvkL02vKz9s1l;
-        Mon,  9 Nov 2020 13:16:23 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1604888188;
-        bh=850yCADLEwMJTBdfiOiNR5gW6UAvBHPX20KTwrNsbUQ=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=gsx+GOKEpNJJXuX5mz4J7KGzFd+DPyTw6PkCOpB6szbt71fHiW9IQixpJ7dBgnqfX
-         /2l34HhfN6KYSFURw0i9+zBp9WUdo+cVrSuIQMREsY/sQrYIIS3Kq9hxTN4ZwmWfvI
-         iLccCCCRaYl5gBi68PZeMa4R3jj83d5gcdA+3DSO7CTq9UZGqofILIQF0YMSVwVy5+
-         Qay+zt5uI8qz4bhCZk2K3HBx9bK5mCr2JNzTbztVQTRysqT6JOl80s/ob0h7ZXslSZ
-         xDEwr8+Aj3NbmANN9ZzpjZ/BMziXANev36wpfuwtwvofEW5YHZdYTZrg5pN1bsmAFV
-         QnLbpI9uKH13g==
-Date:   Mon, 9 Nov 2020 13:16:20 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     DRI <dri-devel@lists.freedesktop.org>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Dave Airlie <airlied@linux.ie>
-Cc:     Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Intel Graphics <intel-gfx@lists.freedesktop.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Maxime Ripard <maxime@cerno.tech>,
-        Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>
-Subject: Re: linux-next: manual merge of the drm-misc tree with the amdgpu
- tree
-Message-ID: <20201109131620.10282da8@canb.auug.org.au>
-In-Reply-To: <20201103142108.129da15c@canb.auug.org.au>
-References: <20201103142108.129da15c@canb.auug.org.au>
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 88317107464F;
+        Mon,  9 Nov 2020 02:17:33 +0000 (UTC)
+Received: from llong.remote.csb (ovpn-113-56.rdu2.redhat.com [10.10.113.56])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id C12091002391;
+        Mon,  9 Nov 2020 02:17:29 +0000 (UTC)
+Subject: Re: [PATCH v3] inotify: Increase default inotify.max_user_watches
+ limit to 1048576
+To:     Jan Kara <jack@suse.cz>
+Cc:     Amir Goldstein <amir73il@gmail.com>, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Luca BRUNO <lucab@redhat.com>
+References: <20201029194256.7954-1-longman@redhat.com>
+ <20201030105752.GB19757@quack2.suse.cz>
+From:   Waiman Long <longman@redhat.com>
+Organization: Red Hat
+Message-ID: <abca71ed-79c5-7485-3053-6eca0bddc53e@redhat.com>
+Date:   Sun, 8 Nov 2020 21:17:29 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/QD+vvGU3..AqhU0FwrDzcNR";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+In-Reply-To: <20201030105752.GB19757@quack2.suse.cz>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/QD+vvGU3..AqhU0FwrDzcNR
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
-
-Hi all,
-
-On Tue, 3 Nov 2020 14:21:08 +1100 Stephen Rothwell <sfr@canb.auug.org.au> w=
-rote:
+On 10/30/20 6:57 AM, Jan Kara wrote:
+> On Thu 29-10-20 15:42:56, Waiman Long wrote:
+>> The default value of inotify.max_user_watches sysctl parameter was set
+>> to 8192 since the introduction of the inotify feature in 2005 by
+>> commit 0eeca28300df ("[PATCH] inotify"). Today this value is just too
+>> small for many modern usage. As a result, users have to explicitly set
+>> it to a larger value to make it work.
+>>
+>> After some searching around the web, these are the
+>> inotify.max_user_watches values used by some projects:
+>>   - vscode:  524288
+>>   - dropbox support: 100000
+>>   - users on stackexchange: 12228
+>>   - lsyncd user: 2000000
+>>   - code42 support: 1048576
+>>   - monodevelop: 16384
+>>   - tectonic: 524288
+>>   - openshift origin: 65536
+>>
+>> Each watch point adds an inotify_inode_mark structure to an inode to
+>> be watched. It also pins the watched inode.
+>>
+>> Modeled after the epoll.max_user_watches behavior to adjust the default
+>> value according to the amount of addressable memory available, make
+>> inotify.max_user_watches behave in a similar way to make it use no more
+>> than 1% of addressable memory within the range [8192, 1048576].
+>>
+>> For 64-bit archs, inotify_inode_mark plus 2 vfs inode have a size that
+>> is a bit over 1 kbytes (1284 bytes with my x86-64 config).  That means
+>> a system with 128GB or more memory will likely have the maximum value
+>> of 1048576 for inotify.max_user_watches. This default should be big
+>> enough for most use cases.
+>>
+>> [v3: increase inotify watch cost as suggested by Amir and Honza]
+>>
+>> Signed-off-by: Waiman Long <longman@redhat.com>
+> Overall this looks fine. Some remaining nits below.
 >
-> Today's linux-next merge of the drm-misc tree got a conflict in:
->=20
->   drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
->=20
-> between commit:
->=20
->   e8a982355f96 ("drm/amd/display: Add tracepoint for amdgpu_dm")
->=20
-> from the amdgpu tree and commit:
->=20
->   29b77ad7b9ca ("drm/atomic: Pass the full state to CRTC atomic_check")
->=20
-> from the drm-misc tree.
->=20
-> I fixed it up (see below) and can carry the fix as necessary. This
-> is now fixed as far as linux-next is concerned, but any non trivial
-> conflicts should be mentioned to your upstream maintainer when your tree
-> is submitted for merging.  You may also want to consider cooperating
-> with the maintainer of the conflicting tree to minimise any particularly
-> complex conflicts.
-> =20
-> diff --cc drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-> index 28dcaae06993,86fd4420f128..000000000000
-> --- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-> +++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-> @@@ -6003,19 -5514,19 +6003,21 @@@ static void dm_update_crtc_active_plane
->   }
->  =20
->   static int dm_crtc_helper_atomic_check(struct drm_crtc *crtc,
-> - 				       struct drm_crtc_state *state)
-> + 				       struct drm_atomic_state *state)
->   {
-> + 	struct drm_crtc_state *crtc_state =3D drm_atomic_get_new_crtc_state(st=
-ate,
-> + 									  crtc);
->   	struct amdgpu_device *adev =3D drm_to_adev(crtc->dev);
->   	struct dc *dc =3D adev->dm.dc;
-> - 	struct dm_crtc_state *dm_crtc_state =3D to_dm_crtc_state(state);
-> + 	struct dm_crtc_state *dm_crtc_state =3D to_dm_crtc_state(crtc_state);
->   	int ret =3D -EINVAL;
->  =20
-> - 	trace_amdgpu_dm_crtc_atomic_check(state);
-> ++	trace_amdgpu_dm_crtc_atomic_check(crtc_state);
->  +
-> - 	dm_update_crtc_active_planes(crtc, state);
-> + 	dm_update_crtc_active_planes(crtc, crtc_state);
->  =20
->   	if (unlikely(!dm_crtc_state->stream &&
-> - 		     modeset_required(state, NULL, dm_crtc_state->stream))) {
-> + 		     modeset_required(crtc_state, NULL, dm_crtc_state->stream))) {
->   		WARN_ON(1);
->   		return ret;
->   	}
+>> diff --git a/fs/notify/inotify/inotify_user.c b/fs/notify/inotify/inotify_user.c
+>> index 186722ba3894..f8065eda3a02 100644
+>> --- a/fs/notify/inotify/inotify_user.c
+>> +++ b/fs/notify/inotify/inotify_user.c
+>> @@ -37,6 +37,15 @@
+>>   
+>>   #include <asm/ioctls.h>
+>>   
+>> +/*
+>> + * An inotify watch requires allocating an inotify_inode_mark structure as
+>> + * well as pinning the watched inode. Doubling the size of a VFS inode
+>> + * should be more than enough to cover the additional filesystem inode
+>> + * size increase.
+>> + */
+>> +#define INOTIFY_WATCH_COST	(sizeof(struct inotify_inode_mark) + \
+>> +				 2 * sizeof(struct inode))
+>> +
+>>   /* configurable via /proc/sys/fs/inotify/ */
+>>   static int inotify_max_queued_events __read_mostly;
+>>   
+>> @@ -801,6 +810,18 @@ SYSCALL_DEFINE2(inotify_rm_watch, int, fd, __s32, wd)
+>>    */
+>>   static int __init inotify_user_setup(void)
+>>   {
+>> +	unsigned int watches_max;
+>> +	struct sysinfo si;
+>> +
+>> +	si_meminfo(&si);
+>> +	/*
+>> +	 * Allow up to 1% of addressible memory to be allocated for inotify
+> 			     ^^^^ addressable
+>
+>> +	 * watches (per user) limited to the range [8192, 1048576].
+>> +	 */
+>> +	watches_max = (((si.totalram - si.totalhigh) / 100) << PAGE_SHIFT) /
+>> +			INOTIFY_WATCH_COST;
+> 			^^^ So for machines with > 1TB of memory
+> watches_max would overflow. So you probably need to use ulong for that.
+>
+>
+>> +	watches_max = min(1048576U, max(watches_max, 8192U));
+> 			^^^ use clamp() here?
 
-This is now a conflict between the drm tree and the amdgpu tree.
+Yes, it will be easier to read to use clamp() here. Will send out v4 
+withat those changes.
 
---=20
-Cheers,
-Stephen Rothwell
+Thanks,
+Longman
 
---Sig_/QD+vvGU3..AqhU0FwrDzcNR
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl+opnQACgkQAVBC80lX
-0Gx3ZQgAnqiuf8lX60p47PxoyJnIyB1VLzkRmb5qqvefTrd7QvQtkMogzxTlxmXs
-Z9KKj/l8L0e/Is6L4bxUDSJBuOnOIiGXMV0MScLTXzr+oTeuqgxS70+9FxUxdJ0z
-jjAkBLswnFvloNJRE7QfRAh+2tgJ1Mwdk2WcZM8t5h3mDoCu+s6Bj18+BdG3Rl8M
-kspmY5+pYq3as13aK+o6glpJ7UwIXG+cXAIboqg2L84/szLKt8MW6W5+mJZ8o1n9
-TiRHQeElEWN7utjfDptkqcaH94fJUcTteT/iDqGRoLGMnRuo8CopfsLt4T2vlfo0
-wv6tz1cHQFHKgGT2/CXBTuivMxOdXw==
-=Nc+j
------END PGP SIGNATURE-----
-
---Sig_/QD+vvGU3..AqhU0FwrDzcNR--
