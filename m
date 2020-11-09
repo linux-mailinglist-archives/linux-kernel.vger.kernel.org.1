@@ -2,146 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0A1C2AC377
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 19:16:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AD63B2AC38A
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 19:18:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729905AbgKISQ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 13:16:57 -0500
-Received: from mga03.intel.com ([134.134.136.65]:28957 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729119AbgKISQ4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 13:16:56 -0500
-IronPort-SDR: VF5onYZAc8/1OTiEoW9X/29mulry1179yms+OVnt6LcHGHv53pRBPCNPmmfdw0xvHUqZ2iAaIO
- Ngbq1t6CxDww==
-X-IronPort-AV: E=McAfee;i="6000,8403,9800"; a="169959982"
-X-IronPort-AV: E=Sophos;i="5.77,464,1596524400"; 
-   d="scan'208";a="169959982"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Nov 2020 10:16:55 -0800
-IronPort-SDR: cyHAv+dPpAJuTOjA+MSY96RyHFnjXP+bp3stwAjKIb3cSYxMxX/tkjSm7/YJrUm/9rzkVHLCxU
- ADOmnUKrVhSw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,464,1596524400"; 
-   d="scan'208";a="322536111"
-Received: from lkp-server01.sh.intel.com (HELO d0be80f1a028) ([10.239.97.150])
-  by orsmga003.jf.intel.com with ESMTP; 09 Nov 2020 10:16:53 -0800
-Received: from kbuild by d0be80f1a028 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1kcBin-0000LV-2r; Mon, 09 Nov 2020 18:16:53 +0000
-Date:   Tue, 10 Nov 2020 02:16:09 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:x86/urgent] BUILD SUCCESS
- 801284f9737883a2b2639bd494455a72c82fdedf
-Message-ID: <5fa98769.9eQuX8wKT24dGWiC%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S1729797AbgKISSp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 13:18:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42382 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729426AbgKISSp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 13:18:45 -0500
+Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31B45C0613D3
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Nov 2020 10:18:45 -0800 (PST)
+Received: by mail-ej1-x643.google.com with SMTP id s25so13664169ejy.6
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Nov 2020 10:18:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=amarulasolutions.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=FiNrwUISwF83ew9A0Wb1PQjOzvs7NmR058vtWFkrXSA=;
+        b=XCKiiSxj265kGAovEwvBErEpKXrR6NnlpN/l4thHKYBPZIZKDcg4dHWM8nIft7kpHB
+         NBpYPeBcfAU2oahKXuFBy01lLXh/2DNgCKS6996KJt5gbAd7N2jAYSO11FCvpw9fWPyS
+         Qip37jpS+ODYXRdYrj2F6WBpennsHxDNnDaIo=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=FiNrwUISwF83ew9A0Wb1PQjOzvs7NmR058vtWFkrXSA=;
+        b=AHn+8I7QpNNln2aYODh2ONAKSf1dAbBq1bBGp69OtrBCFbwekHhK7wegL23OLKmS2b
+         KZv4eZvYBnVsSFfe6GkaRkW8utIa//aiLRSDhVhu3v3953E4pBbOOg95g03ejtDlyqrw
+         K8W3L2ynIjGs4Y8YYYf6uwSdOibK3zI1f4fcJSn/h6ijqObLT7HjW4mxKhuPzy+O4eu5
+         VNdAo6JE60o0nTMvExS4yq0n3R9GEC+IxKGXy65uDnQi9dUKFO4I6AKwCiIrENVkDZKd
+         xNUClWKZYH647P0THIdVdSi1kS2HIAXZLQyTiIxQ/a0Z3n021o/hU9AQfU3pGu8lY+0x
+         MIBQ==
+X-Gm-Message-State: AOAM532N+Pd7TRODGMu/aQ3tom5ydUobbNtfg8pzVVoDwwzHjfKZQUlo
+        EoLhSDLWxgJ/0LOlQm+7j/q3qFIoCuSTIMzztV+5Sw==
+X-Google-Smtp-Source: ABdhPJwIZbj832ZQWCgre/0E9MllmcikcplewmTeRE+FTjaDLQ9UlEBsbnle0ZDh8exswvBRFOgXVH1TjGRq+nNjHnA=
+X-Received: by 2002:a17:906:5e02:: with SMTP id n2mr15222726eju.295.1604945923889;
+ Mon, 09 Nov 2020 10:18:43 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+References: <20200929083217.25406-1-jagan@amarulasolutions.com> <2320954.tcIoyGMtcG@phil>
+In-Reply-To: <2320954.tcIoyGMtcG@phil>
+From:   Jagan Teki <jagan@amarulasolutions.com>
+Date:   Mon, 9 Nov 2020 23:48:32 +0530
+Message-ID: <CAMty3ZBtQ2f2poAmQCZrws5TZOGX8sn8v-DSpEohi+4=rTYwsw@mail.gmail.com>
+Subject: Re: [PATCH v4 0/7] arm64: dts: rockchip: Add Engicam PX30.Core
+To:     Heiko Stuebner <heiko@sntech.de>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Suniel Mahesh <sunil@amarulasolutions.com>,
+        Michael Trimarchi <michael@amarulasolutions.com>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-amarula <linux-amarula@amarulasolutions.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git  x86/urgent
-branch HEAD: 801284f9737883a2b2639bd494455a72c82fdedf  x86/platform/uv: Recognize UV5 hubless system identifier
+On Mon, Nov 9, 2020 at 4:45 AM Heiko Stuebner <heiko@sntech.de> wrote:
+>
+> Hi,
+>
+> Am Dienstag, 29. September 2020, 10:32:10 CET schrieb Jagan Teki:
+> > PX30.Core is an EDIMM SOM based on Rockchip PX30 from Engicam.
+> >
+> > PX30.Core needs to mount on top of Engicam baseboards for creating
+> > complete platform boards.
+> >
+> > Possible baseboards are,
+> > - EDIMM2.2 Starter Kit
+> > - C.TOUCH 2.0 Carrier Board
+> >
+> > Changes for v4:
+> > - collect Rob A-b
+> > Changes for v3:
+> > - resolved Johan comments about sorting node properties
+> > - add copyright to Amarula Solutions
+> > - update px30 dtsi author
+> > Changes for v2:
+> > - include C.TOUCH 2.0 carrier board
+> > - skip 10" OF LCD as it requires separate dts with panel support.
+> >
+> > Note: These baseboards can be used for i.MX8 SOM's as well. So having
+> > baseboard on respective SoC seems to be easy rather than making it
+> > common across all.
+> >
+> > Any inputs?
+> > Jagan.
+> >
+> > Jagan Teki (6):
+> >   dt-bindings: arm: rockchip: Add Engicam PX30.Core EDIMM2.2 Starter Kit
+> >   arm64: dts: rockchip: px30: Add Engicam EDIMM2.2 Starter Kit
+> >   arm64: dts: rockchip: Add Engicam PX30.Core EDIMM2.2 Starter Kit
+> >   dt-bindings: arm: rockchip: Add Engicam PX30.Core C.TOUCH 2.0
+> >   arm64: dts: rockchip: px30: Add Engicam C.TOUCH 2.0
+> >   arm64: dts: rockchip: Add Engicam PX30.Core C.TOUCH 2.0
+> >
+> > Michael Trimarchi (1):
+> >   arm64: dts: rockchip: Add Engicam PX30.Core SOM
+>
+> I've applied the patches for 5.11 with some changes:
+> (1) engicam,px30-px30-core became engicam,px30-core
+> (2) px30-px30-core.dtsi became px30-engicam-px30-core.dtsi
+>
+> That double px30 is unnecessary and confusing in compatibles
+> and the px30-core thingy needed something less generic, as that is
+> not px30-specific but specific to the engicam boards.
 
-elapsed time: 823m
+Agreed with the updates and thanks for picking up.
 
-configs tested: 82
-configs skipped: 65
+Other than these few patches around the mailing list,  let me know
+your comments, thanks!
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+https://patchwork.kernel.org/project/linux-arm-kernel/patch/20200731160324.142097-1-jagan@amarulasolutions.com/
+https://patchwork.kernel.org/project/linux-arm-kernel/patch/20201023181814.220974-1-jagan@amarulasolutions.com/
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-powerpc                    sam440ep_defconfig
-powerpc                     pseries_defconfig
-m68k                         amcore_defconfig
-arm                         s5pv210_defconfig
-xtensa                  audio_kc705_defconfig
-arc                                 defconfig
-mips                      fuloong2e_defconfig
-sh                         microdev_defconfig
-arm                            mmp2_defconfig
-arm                          collie_defconfig
-sh                        sh7757lcr_defconfig
-m68k                        m5307c3_defconfig
-arm                             rpc_defconfig
-m68k                        m5272c3_defconfig
-c6x                              alldefconfig
-powerpc                      pmac32_defconfig
-arm                          imote2_defconfig
-parisc                           alldefconfig
-arm                        shmobile_defconfig
-arm                   milbeaut_m10v_defconfig
-powerpc                     tqm8540_defconfig
-powerpc                     skiroot_defconfig
-arm                         shannon_defconfig
-arm                           corgi_defconfig
-arm                          gemini_defconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-c6x                              allyesconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-i386                 randconfig-a004-20201109
-i386                 randconfig-a006-20201109
-i386                 randconfig-a005-20201109
-i386                 randconfig-a001-20201109
-i386                 randconfig-a003-20201109
-i386                 randconfig-a002-20201109
-i386                 randconfig-a014-20201109
-i386                 randconfig-a015-20201109
-i386                 randconfig-a013-20201109
-i386                 randconfig-a016-20201109
-i386                 randconfig-a011-20201109
-i386                 randconfig-a012-20201109
-x86_64                                   rhel
-x86_64                           allyesconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                                  kexec
-
-clang tested configs:
-x86_64               randconfig-a012-20201109
-x86_64               randconfig-a015-20201109
-x86_64               randconfig-a013-20201109
-x86_64               randconfig-a011-20201109
-x86_64               randconfig-a014-20201109
-x86_64               randconfig-a016-20201109
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+Jagan.
