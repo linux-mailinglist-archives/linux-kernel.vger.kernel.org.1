@@ -2,147 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EFAC52AB0E6
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 06:36:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 726132AB0E2
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 06:36:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729517AbgKIFgC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 00:36:02 -0500
-Received: from relay1.mymailcheap.com ([144.217.248.100]:58809 "EHLO
-        relay1.mymailcheap.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729507AbgKIFgB (ORCPT
+        id S1729502AbgKIFfv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 00:35:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36192 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729391AbgKIFfu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 00:36:01 -0500
-X-Greylist: delayed 146719 seconds by postgrey-1.27 at vger.kernel.org; Mon, 09 Nov 2020 00:36:00 EST
-Received: from filter2.mymailcheap.com (filter2.mymailcheap.com [91.134.140.82])
-        by relay1.mymailcheap.com (Postfix) with ESMTPS id 39C6D3F1C5;
-        Mon,  9 Nov 2020 05:35:59 +0000 (UTC)
-Received: from localhost (localhost [127.0.0.1])
-        by filter2.mymailcheap.com (Postfix) with ESMTP id 81A4C2A522;
-        Mon,  9 Nov 2020 06:35:58 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mymailcheap.com;
-        s=default; t=1604900158;
-        bh=tQSP6jEb+nlCIph8viKb/ttszWBAoq6XZvKRuUKb5CA=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=doPNJ93GoJjTZl5QedjD4phG2TDg6WsG4I+sQWSUzbmLAiCGr9nKjLYSugpB4sImz
-         RmZtevE3K6Be7T84cT+os7JcOQJP33qLTgfcfRhkEzZRIeLYBROrKFazyYnB0qUs8k
-         gEEuHBt0bXz2Yqoi1v514B7aOguGKHkMLFnoZfmg=
-X-Virus-Scanned: Debian amavisd-new at filter2.mymailcheap.com
-Received: from filter2.mymailcheap.com ([127.0.0.1])
-        by localhost (filter2.mymailcheap.com [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id CvlzvEp4KGyU; Mon,  9 Nov 2020 06:35:57 +0100 (CET)
-Received: from mail20.mymailcheap.com (mail20.mymailcheap.com [51.83.111.147])
-        (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by filter2.mymailcheap.com (Postfix) with ESMTPS;
-        Mon,  9 Nov 2020 06:35:57 +0100 (CET)
-Received: from [148.251.23.173] (ml.mymailcheap.com [148.251.23.173])
-        by mail20.mymailcheap.com (Postfix) with ESMTP id D7A9A41E32;
-        Mon,  9 Nov 2020 05:35:56 +0000 (UTC)
-Authentication-Results: mail20.mymailcheap.com;
-        dkim=pass (1024-bit key; unprotected) header.d=aosc.io header.i=@aosc.io header.b="GoZvr8ns";
-        dkim-atps=neutral
-AI-Spam-Status: Not processed
-Received: from ice-e5v2.lan (unknown [59.41.163.164])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail20.mymailcheap.com (Postfix) with ESMTPSA id 0B91C41E32;
-        Mon,  9 Nov 2020 05:35:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=aosc.io; s=default;
-        t=1604900151; bh=tQSP6jEb+nlCIph8viKb/ttszWBAoq6XZvKRuUKb5CA=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=GoZvr8nsejd+rcofAvapYEAmgKRr/rarnr76ZgkcGjmNMEPXTjZMFQmmiWo7i6zxQ
-         ghLCsJS4s65tZ84txvnkmjsIq2ZzakjTYTPf1NDFrDBTv6bcrw8yVOc9bCY02d1z2R
-         DUrLP1pIP25Ld+9StZ2CfUQkHTfKRR9gXJvzK5O8=
-From:   Icenowy Zheng <icenowy@aosc.io>
-To:     Maxime Ripard <mripard@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Ondrej Jirman <megous@megous.com>
-Cc:     linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-sunxi@googlegroups.com,
-        Icenowy Zheng <icenowy@aosc.io>
-Subject: [RFC PATCH 2/2] clk: sunxi-ng: a64: disable mux and pll notifiers for CPUX reclocking
-Date:   Mon,  9 Nov 2020 13:35:37 +0800
-Message-Id: <20201109053537.54450-1-icenowy@aosc.io>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201109053358.54220-1-icenowy@aosc.io>
-References: <20201109053358.54220-1-icenowy@aosc.io>
+        Mon, 9 Nov 2020 00:35:50 -0500
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4143FC0613D4
+        for <linux-kernel@vger.kernel.org>; Sun,  8 Nov 2020 21:35:50 -0800 (PST)
+Received: by mail-pf1-x441.google.com with SMTP id v12so7026560pfm.13
+        for <linux-kernel@vger.kernel.org>; Sun, 08 Nov 2020 21:35:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=IJUnC1qet5XGxBxbk2JzSrwVUK3/0sjfx2cNNTG8d4M=;
+        b=LstmlGWFsa5jYxw8Vkksf7r52gSPeNdq2rFCsHGIk3c7l0AwqeEGR2gU2Hu2jp53nQ
+         Y9/SJc2XbWbXfLNrk3m8dwkMzOadrr18+gXJf6HMX70IUW4vYncHLxcCR110tbXhs55a
+         EQhxbUj76xTKdvrpBlPVjubbEjZl+Y5zbMCqwugKbJnzkoNSIiP+wDGvpyOw7QL37cSI
+         4aW76kahFRWDdxouicRCqdqVzxB3wv8Aa83PxGUToWRNF9HLbIG9/Gni9TZvQv8NC382
+         ydqorAlKhtADyq79PaRSMdNHK43d74XsaHTphlRarNe6XqB7vDtVzeq4Rj/iiWEks7Q4
+         L/ag==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=IJUnC1qet5XGxBxbk2JzSrwVUK3/0sjfx2cNNTG8d4M=;
+        b=hzLprp2mF1qIYs1MZRnWz0nStrPGP71Z7KomZmbkAkAwo+mSzSTk7BM8RkQRQaVkLX
+         u5NLgm5fNOPGLNzELwtR0Qptg6CgfVnx7D43gKtirw65uWBdnSPpbH/n8LMwgjI30CWz
+         z0UIzTLJzmLPpYP3tNUeDPy7kR1qhcVb+Hdm9niDsoNC7J5awekuQmqy29L9WTmhJrmg
+         QdP+nevG65MernRtdwJHSRflmgp0dwzxMS4eebIgIJy5t9QZDMnJllvlM/H0yfbcS0f2
+         9mLX8dltBLutYaF5zgV2gFN+gvLc+19cZMxRrZuLElSLXaL1YUzR+QdHTEUbpfwjHMcJ
+         O7MA==
+X-Gm-Message-State: AOAM5329ll8Sx/ySQ4r+MDLbupOmqEtxQI7Bi+5OtszxLYMo0ItdT4r9
+        JOnetd2WVwU345+csnICTxGm4A==
+X-Google-Smtp-Source: ABdhPJyFGt53uc1RwZIWqNmOTufjNhL6TQqNB7dxd3bb+lEFg1bJQu36bKwaT5Mj2KBhPEtooXzYdQ==
+X-Received: by 2002:a65:4144:: with SMTP id x4mr11299072pgp.432.1604900149527;
+        Sun, 08 Nov 2020 21:35:49 -0800 (PST)
+Received: from localhost ([122.172.12.172])
+        by smtp.gmail.com with ESMTPSA id e10sm10531236pfl.162.2020.11.08.21.35.48
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Sun, 08 Nov 2020 21:35:48 -0800 (PST)
+Date:   Mon, 9 Nov 2020 11:05:46 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Frank Lee <tiny.windzz@gmail.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Peter Chen <Peter.Chen@nxp.com>,
+        Mark Brown <broonie@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Peter Geis <pgwipeout@gmail.com>,
+        Nicolas Chauvet <kwizart@gmail.com>,
+        driver-dev <devel@driverdev.osuosl.org>,
+        linux-pwm@vger.kernel.org,
+        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
+        DTML <devicetree@vger.kernel.org>, linux-usb@vger.kernel.org,
+        "open list:SECURE DIGITAL HO..." <linux-mmc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        linux-tegra@vger.kernel.org, linux-media@vger.kernel.org
+Subject: Re: [PATCH v1 17/30] mmc: sdhci-tegra: Support OPP and core voltage
+ scaling
+Message-ID: <20201109053546.xupmmsx5qccn46tr@vireshk-i7>
+References: <20201104234427.26477-18-digetx@gmail.com>
+ <CAOh2x==sy1w7_oEV8=toC6uQnSN44wyOixbP_X0BrMsnm1AUFg@mail.gmail.com>
+ <6fa54ce6-d5ae-d04f-7c77-b62c148d92b7@gmail.com>
+ <20201106061513.uyys7njcqcdlah67@vireshk-i7>
+ <a6926456-8bce-a438-bfaa-be334208f004@gmail.com>
+ <CAEExFWsp0DWw1yO84e3vzr_YZkqkd+pyPfQQR3J2W6n3wTX4Jw@mail.gmail.com>
+ <20201109050010.g47zojh6wafvwqva@vireshk-i7>
+ <c584b301-e052-7f01-335d-8f9160865198@gmail.com>
+ <20201109051014.oa6bt4g3ctm2hnuy@vireshk-i7>
+ <4476fed9-a356-b7f1-32ee-935343e23038@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: D7A9A41E32
-X-Spamd-Result: default: False [4.90 / 20.00];
-         ARC_NA(0.00)[];
-         RCVD_VIA_SMTP_AUTH(0.00)[];
-         R_DKIM_ALLOW(0.00)[aosc.io:s=default];
-         RECEIVED_SPAMHAUS_PBL(0.00)[59.41.163.164:received];
-         FROM_HAS_DN(0.00)[];
-         TO_DN_SOME(0.00)[];
-         R_MISSING_CHARSET(2.50)[];
-         TO_MATCH_ENVRCPT_ALL(0.00)[];
-         MIME_GOOD(-0.10)[text/plain];
-         DMARC_NA(0.00)[aosc.io];
-         BROKEN_CONTENT_TYPE(1.50)[];
-         R_SPF_SOFTFAIL(0.00)[~all:c];
-         ML_SERVERS(-3.10)[148.251.23.173];
-         DKIM_TRACE(0.00)[aosc.io:+];
-         RCPT_COUNT_SEVEN(0.00)[9];
-         MID_CONTAINS_FROM(1.00)[];
-         RCVD_NO_TLS_LAST(0.10)[];
-         FROM_EQ_ENVFROM(0.00)[];
-         MIME_TRACE(0.00)[0:+];
-         ASN(0.00)[asn:24940, ipnet:148.251.0.0/16, country:DE];
-         RCVD_COUNT_TWO(0.00)[2];
-         HFILTER_HELO_BAREIP(3.00)[148.251.23.173,1]
-X-Rspamd-Server: mail20.mymailcheap.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <4476fed9-a356-b7f1-32ee-935343e23038@gmail.com>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-After the dividers of PLL-CPUX disabled, there's no need for PLL-CPUX to
-be gated when tweaking the clock of CPUX, thus reparenting CPUX to
-osc24M is also now not needed.
+On 09-11-20, 08:19, Dmitry Osipenko wrote:
+> Thanks, I made it in a different way by simply adding helpers to the
+> pm_opp.h which use devm_add_action_or_reset(). This doesn't require to
+> add new kernel symbols.
 
-Remove these notifiers.
+I will prefer to add it in core.c itself, and yes
+devm_add_action_or_reset() looks better. But I am still not sure for
+which helpers do we need the devm_*() variants, as this is only useful
+for non-CPU devices. But if we have users that we can add right now,
+why not.
 
-Preventing reparenting CPUX is said to be able to help solving the issue
-that the timer jumps backward according to Ondrej Jirman.
+> static inline int devm_pm_opp_of_add_table(struct device *dev)
+> {
+> 	int err;
+> 
+> 	err = dev_pm_opp_of_add_table(dev);
+> 	if (err)
+> 		return err;
+> 
+> 	err = devm_add_action_or_reset(dev, (void*)dev_pm_opp_remove_table,
+> 				       dev);
+> 	if (err)
+> 		return err;
+> 
+> 	return 0;
+> }
 
-Signed-off-by: Icenowy Zheng <icenowy@aosc.io>
----
- drivers/clk/sunxi-ng/ccu-sun50i-a64.c | 14 +-------------
- 1 file changed, 1 insertion(+), 13 deletions(-)
-
-diff --git a/drivers/clk/sunxi-ng/ccu-sun50i-a64.c b/drivers/clk/sunxi-ng/ccu-sun50i-a64.c
-index 6108d150a0e3..67d570efe5bd 100644
---- a/drivers/clk/sunxi-ng/ccu-sun50i-a64.c
-+++ b/drivers/clk/sunxi-ng/ccu-sun50i-a64.c
-@@ -943,7 +943,6 @@ static int sun50i_a64_ccu_probe(struct platform_device *pdev)
- 	struct resource *res;
- 	void __iomem *reg;
- 	u32 val;
--	int ret;
- 
- 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
- 	reg = devm_ioremap_resource(&pdev->dev, res);
-@@ -1029,18 +1028,7 @@ static int sun50i_a64_ccu_probe(struct platform_device *pdev)
- 		writel(val, reg + SUN50I_A64_CPUX_AXI_REG);
- 	}
- 
--	ret = sunxi_ccu_probe(pdev->dev.of_node, reg, &sun50i_a64_ccu_desc);
--	if (ret)
--		return ret;
--
--	/* Gate then ungate PLL CPU after any rate changes */
--	ccu_pll_notifier_register(&sun50i_a64_pll_cpu_nb);
--
--	/* Reparent CPU during PLL CPU rate changes */
--	ccu_mux_notifier_register(pll_cpux_clk.common.hw.clk,
--				  &sun50i_a64_cpu_nb);
--
--	return 0;
-+	return sunxi_ccu_probe(pdev->dev.of_node, reg, &sun50i_a64_ccu_desc);
- }
- 
- static const struct of_device_id sun50i_a64_ccu_ids[] = {
 -- 
-2.28.0
+viresh
