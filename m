@@ -2,106 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 371CF2AC00A
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 16:39:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 374D42AC00E
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 16:39:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729940AbgKIPj2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 10:39:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45694 "EHLO
+        id S1729989AbgKIPjh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 10:39:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45720 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726691AbgKIPj2 (ORCPT
+        with ESMTP id S1729658AbgKIPjh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 10:39:28 -0500
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC886C0613CF;
-        Mon,  9 Nov 2020 07:39:27 -0800 (PST)
-Received: by mail-wr1-x441.google.com with SMTP id k2so5773732wrx.2;
-        Mon, 09 Nov 2020 07:39:27 -0800 (PST)
+        Mon, 9 Nov 2020 10:39:37 -0500
+Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 087A0C0613CF
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Nov 2020 07:39:37 -0800 (PST)
+Received: by mail-pl1-x62a.google.com with SMTP id g11so4897337pll.13
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Nov 2020 07:39:37 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=MIC9xtdEfUk9GCC22X4+Zzg2XIu8aFShc9zTKSGRy5o=;
-        b=jj0OYesOC4bghByHFhacOiHwne1SwqAgKpJetmE9X437Z45juQ90SyEwRgs/zFXOjS
-         af5JPqPpOIVxFhPKOZlIy51b5INeK8dCaejapCzxPzO5ptdbnAx/jsCaOQ1JiNt6KUeY
-         y0NgWnUqD3LnOiIVmd4RDnG/oAnCAB4ZUmVaYGq43E/aKSPWnuIwWdwz+RGYvFdba72T
-         kQygppLs+kDvRNDDz9otzC3JZhZbvdoddfH2yb1m3uZ0kLyxdXVxq0tCq0aOBQajk8su
-         ITlVN3UkIzBqmMQdRusBs7MNaetqQi1uX4Bbm/bi+Ba20mY9a4GQnDO6N2bKYthfdQG1
-         NJhQ==
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=VzY1hjUfAc6GKStaIwRVGn/GJgL4dhk/7nsRnJXrCMQ=;
+        b=bdMxPQw/a1HFaqKUHUJOjpWmnGfObjuyHg3vqLsChRMyZCc0xd8WlMn0alLnGwwmoJ
+         hFKAcPgMf62pzGTyUEoweIpqlv7RqSxvVGJEu/sTpVbn19yDYa+5N8YMoEIaFFENpaSY
+         NDheeAJAswLF8QD0pBRjGRa0DtI5qlY81KF1g73vaMhaWDg7lXncwct3Gg1riqlN0h2Y
+         ilpNad9b/BV1FOlSHSfMfiEsK6LzeywPdzbGiEWlU2rmERnDMqJNt7Ffv8vNX6I9eLdX
+         YSIwvbEogKdb18WGHqhFR5uuLHBitZJu/jDftHgboQajmAKsWTMgBWMVNm+UP8oFaGsO
+         qZCQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=MIC9xtdEfUk9GCC22X4+Zzg2XIu8aFShc9zTKSGRy5o=;
-        b=bSSwOWjzPe+GSTulLHJndljx70mfOEDdTM0NV4vgcOXqEI2FbP7/sELlNgMsZ+Jfsf
-         rn/CM1Cbor1yxXj+ZqOUQRifSHrvuWOwx3aADuuBI/4dBFWNNKkRnYemI0D7yVHuOX9o
-         2nI4EFarbkcQ24QtwMxEtp7IEmunqmQBYwUoLKfV0OTFvRQxLWmgZ0IPsEa77tHThPpI
-         g88WpTsaEultmp+hO7IOfATB+D5k0y10FDD/bXMBVHhBnmUEWuLEmlteksIJaRaxM99L
-         Onw27t0jV0UY8fb7uQGcjxJk6OKC0fhgQNpJ3umZPHoxkgOAvCnDCJodp1JW7LXtH8+M
-         sgMA==
-X-Gm-Message-State: AOAM5301MHfOYd6xODalUWnZmVki2lV9fxzEcsutQeAIuoFqpyy7qjMI
-        gAOmEc/kHtxnDJB+OA140zI=
-X-Google-Smtp-Source: ABdhPJz+yoFlZke7o+COe1FiZyEj6mB9rrELKvWcZ0I7es4x8Tjg98W+tMwrirxY7rqR1p1j8jOnhw==
-X-Received: by 2002:adf:93e1:: with SMTP id 88mr17901739wrp.37.1604936366733;
-        Mon, 09 Nov 2020 07:39:26 -0800 (PST)
-Received: from [192.168.8.114] ([37.170.121.171])
-        by smtp.gmail.com with ESMTPSA id a17sm13859156wra.61.2020.11.09.07.39.25
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 09 Nov 2020 07:39:26 -0800 (PST)
-Subject: Re: [PATCH] net: tcp: ratelimit warnings in tcp_recvmsg
-To:     Menglong Dong <menglong8.dong@gmail.com>,
-        Eric Dumazet <edumazet@google.com>
-Cc:     David Miller <davem@davemloft.net>,
-        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        netdev <netdev@vger.kernel.org>,
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=VzY1hjUfAc6GKStaIwRVGn/GJgL4dhk/7nsRnJXrCMQ=;
+        b=lCF5toncYcfCmvdFsG+Vq0ev3YYVnOiDTpR3HazJIHSRotr2Q3sc5BfUahERL1kHJ2
+         NqSXq6kdY4KikClAI0W9HHIbiO3SVVA0oerJAiAX5Sl+VgZjQ6Wg/gNjbElmcVqfDyn1
+         fd+61bsYDQeElraGLiCgLFSS8A8zJatuJPj7jqKrMn7lfuldwrobFQ4ZBOkVyE7vL+uT
+         t7ps//aal/X490QnSyDwDCPLbSJCT9/GUfUa62Lem07EfZ6GUGVJ8Lw1PzPDNXHWCZS7
+         LM3oCQes8tQvOFPgDYpd3IBA2ON6lRVzRCru8RZOmDJAFzhq6zbLG8CFc+nvvJQRqG/Y
+         zt2w==
+X-Gm-Message-State: AOAM530R0IVKSHl9mrKpCDSq4/E/eY1xBNlWwBmznj9AnPpZyAU51rE6
+        GK5k408k9AExgwFl7RRIzgJu+HpbNjY=
+X-Google-Smtp-Source: ABdhPJwoHWyxKnfYVEVZ8gwkXHNZBtYvGhW9WbvhHURsi/7lCWGxELpqEmF0jppDFWS7+BtgyruOUw==
+X-Received: by 2002:a17:902:8f83:b029:d7:ec99:d2fd with SMTP id z3-20020a1709028f83b02900d7ec99d2fdmr1470629plo.17.1604936376507;
+        Mon, 09 Nov 2020 07:39:36 -0800 (PST)
+Received: from google.com (c-67-188-94-199.hsd1.ca.comcast.net. [67.188.94.199])
+        by smtp.gmail.com with ESMTPSA id l190sm11270280pfl.205.2020.11.09.07.39.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 09 Nov 2020 07:39:35 -0800 (PST)
+Sender: Minchan Kim <minchan.kim@gmail.com>
+Date:   Mon, 9 Nov 2020 07:39:33 -0800
+From:   Minchan Kim <minchan@kernel.org>
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
         LKML <linux-kernel@vger.kernel.org>,
-        Menglong Dong <dong.menglong@zte.com.cn>
-References: <5fa93ef0.1c69fb81.bff98.2afc@mx.google.com>
- <CANn89iJNYyON8khtQYzZi2LdV1ZSopGfnXB1ev9bZ2cDUdekHw@mail.gmail.com>
- <CADxym3bP=BRbVAnDCzmrrAyh3i=QO3gAWnUwpU==TskFY-GHYg@mail.gmail.com>
-From:   Eric Dumazet <eric.dumazet@gmail.com>
-Message-ID: <0ccc35a7-3d19-e37d-52d1-7e900091cc1b@gmail.com>
-Date:   Mon, 9 Nov 2020 16:39:24 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.1
+        linux-mm <linux-mm@kvack.org>
+Subject: Re: [PATCH] mm: introduce oom_kill_disable sysctl knob
+Message-ID: <20201109153933.GA449970@google.com>
+References: <20201106203238.1375577-1-minchan@kernel.org>
+ <20201109073706.GA12240@dhcp22.suse.cz>
 MIME-Version: 1.0
-In-Reply-To: <CADxym3bP=BRbVAnDCzmrrAyh3i=QO3gAWnUwpU==TskFY-GHYg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201109073706.GA12240@dhcp22.suse.cz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 11/9/20 3:48 PM, Menglong Dong wrote:
-> On Mon, Nov 9, 2020 at 9:36 PM Eric Dumazet <edumazet@google.com> wrote:
->>
->> I do not think this patch is useful. That is simply code churn.
->>
->> Can you trigger the WARN() in the latest upstream version ?
->> If yes this is a serious bug that needs urgent attention.
->>
->> Make sure you have backported all needed fixes into your kernel, if
->> you get this warning on a non pristine kernel.
+On Mon, Nov 09, 2020 at 08:37:06AM +0100, Michal Hocko wrote:
+> On Fri 06-11-20 12:32:38, Minchan Kim wrote:
+> > It's hard to have some tests to be supposed to work under heavy
+> > memory pressure(e.g., injecting some memory hogger) because
+> > out-of-memory killer easily kicks out one of processes so system
+> > is broken or system loses the memory pressure state since it has
+> > plenty of free memory soon so.
 > 
-> Theoretically, this WARN() shouldn't be triggered in any branches.
-> Somehow, it just happened in kernel v3.10. This really confused me. I
-> wasn't able to keep tracing it, as it is a product environment.
-> 
-> I notice that the codes for tcp skb receiving didn't change much
-> between v3.10 and the latest upstream version, and guess the latest
-> version can be triggered too.
-> 
-> If something is fixed and this WARN() won't be triggered, just ignore me.
-> 
+> I do not follow the reasoning here. So you want to test for a close to
+> no memory available situation and the oom killer stands in the way
+> because it puts a relief?
 
-Yes, I confirm this WARN() should not trigger.
+Yub, technically, I'd like to have consistent memory pressure to cause
+direct reclaims on proesses on the system and swapping in/out.
 
-The bug is not in tcp recvmsg(), that is why you do not see obvious
-fix for this issue in 3.10
+> 
+> > Even though we could mark existing process's oom_adj to -1000,
+> > it couldn't cover upcoming processes to be forked for the job.
+> 
+> Why?
 
+Thing is the system has out-of-control processes created on demand.
+so only option to prevent OOM is echo -1000 > `pidof the process`
+since they are forked. However, I have no idea when they are forked
+so should race with OOM with /proc polling and OOM is frequently
+ahead of me.
+
+> 
+> > This knob is handy to keep system memory pressure.
+> 
+> This sounds like a very dubious reason to introduce a knob to cripple
+> the system.
+> 
+> I can see some reason to control the oom handling policy because the
+> effect of the oom killer is really disruptive but a global on/off switch
+> sounds like a too coarse interface. Really what kind of production
+> environment would ever go with oom killer disabled completely?
+
+I don't think shipping production system will use it. It would be
+just testing only option.
+My intention uses such heavy memory load to see various system behaviors
+before the production launching because it usually happens in real workload
+once we shipped but hard to generate such a corner case without artificial
+memory pressure.
+
+Any suggestion?
