@@ -2,145 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C7382AB830
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 13:27:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E505C2AB833
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 13:27:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729506AbgKIM1Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 07:27:24 -0500
-Received: from out4436.biz.mail.alibaba.com ([47.88.44.36]:34314 "EHLO
-        out4436.biz.mail.alibaba.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729045AbgKIM1Y (ORCPT
+        id S1729632AbgKIM1g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 07:27:36 -0500
+Received: from mail-ot1-f65.google.com ([209.85.210.65]:46368 "EHLO
+        mail-ot1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727774AbgKIM1f (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 07:27:24 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R861e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04407;MF=baolin.wang@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0UEkOxMS_1604924830;
-Received: from 30.21.164.53(mailfrom:baolin.wang@linux.alibaba.com fp:SMTPD_---0UEkOxMS_1604924830)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Mon, 09 Nov 2020 20:27:10 +0800
-Subject: Re: [PATCH] arm64: PCI: Validate the node before setting node id for
- root bus
-From:   Baolin Wang <baolin.wang@linux.alibaba.com>
-To:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-Cc:     Will Deacon <will@kernel.org>, catalin.marinas@arm.com,
-        baolin.wang7@gmail.com, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-References: <1600770804-116365-1-git-send-email-baolin.wang@linux.alibaba.com>
- <20200928140054.GA11500@willie-the-truck>
- <20200928144957.GA90366@VM20190228-100.tbsite.net>
- <20200928152326.GA15640@e121166-lin.cambridge.arm.com>
- <26284ca5-ea05-0496-629d-9951f49dda8f@linux.alibaba.com>
- <20201001085538.GA5142@e121166-lin.cambridge.arm.com>
- <c9afea6a-4026-05ca-cb6b-9ab7cb513140@linux.alibaba.com>
-Message-ID: <fd8b8138-c3f8-59f6-d57f-704ef5d28d46@linux.alibaba.com>
-Date:   Mon, 9 Nov 2020 20:27:09 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.1
+        Mon, 9 Nov 2020 07:27:35 -0500
+Received: by mail-ot1-f65.google.com with SMTP id g19so8684852otp.13;
+        Mon, 09 Nov 2020 04:27:35 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=gJxFbDvRRCnc/4vPtEw0yIcsdM8RBDOf2GintUurPj8=;
+        b=UAVux4ciTPd1SeKAyalTNxhhg3RRkRU0XA0/T2k6Ghfbcv8i0kCkCp1o4jwHGcgmpX
+         t/aIhGG5IkwH6RK7NZZa5JccDZyffFGg8fvtTEAMUGIEf+0Heuh2AIMXVu9lXDwB0UAT
+         BhuOzkRAo3FgVQG6SiUsTc/2LKy92yb1LyyYekJuCbzljTR/E1ynOr2zsqy84vMQAITU
+         PhaTJ4YK6cKqICMJmBDkau5R6Divwaj7rknH4XPb6/OTO/4Ihk5S/rrHO32upQrH3/48
+         HS/CD+XPKILISSKW8hYWXPLnMuE8q1TO0OVS5TzQABviaXQvYarwaVSiUU4nwgXbz0vG
+         arXg==
+X-Gm-Message-State: AOAM533TUCar/ol9kbw/8f7cZmvnyMh17mLLQlV1TWGYDQmyZv2HQjG7
+        5Ym/fJsnqyuCV7e8tQqGix4OdaqtU1uo+i88XOQ=
+X-Google-Smtp-Source: ABdhPJwE/fbnK2oev/xyYEbPnm7sDAdEc49nsBi9NXsE2ViWsBZmwaotGaEh4n6A1fzAL2ZLV/WKc6d3H97dwWnlKls=
+X-Received: by 2002:a9d:171a:: with SMTP id i26mr10658144ota.260.1604924854832;
+ Mon, 09 Nov 2020 04:27:34 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <c9afea6a-4026-05ca-cb6b-9ab7cb513140@linux.alibaba.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+References: <7417968.Ghue05m4RV@kreacher> <2233690.N3OVLkotou@kreacher>
+ <20201106100712.u336gbtblaxr2cit@vireshk-i7> <CAJZ5v0gT07K-oPa0=f8+Fq6tevqZJ8iWYjtf9YDNUJw1GJEBBA@mail.gmail.com>
+ <20201109043912.7zvfhi42yhr7goy4@vireshk-i7>
+In-Reply-To: <20201109043912.7zvfhi42yhr7goy4@vireshk-i7>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Mon, 9 Nov 2020 13:27:18 +0100
+Message-ID: <CAJZ5v0jEbKEj5OTwrr9y3HXmoSETvicu5FMyzbSY2hDaEOK2QQ@mail.gmail.com>
+Subject: Re: [PATCH 1/2] cpufreq: Introduce target min and max frequency hints
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Zhang Rui <rui.zhang@intel.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Lorenzo,
+On Mon, Nov 9, 2020 at 5:39 AM Viresh Kumar <viresh.kumar@linaro.org> wrote:
+>
+> On 06-11-20, 18:02, Rafael J. Wysocki wrote:
+> > On Fri, Nov 6, 2020 at 11:07 AM Viresh Kumar <viresh.kumar@linaro.org> wrote:
+> > >
+> > > On 05-11-20, 19:23, Rafael J. Wysocki wrote:
+> > > > Index: linux-pm/include/linux/cpufreq.h
+> > > > ===================================================================
+> > > > --- linux-pm.orig/include/linux/cpufreq.h
+> > > > +++ linux-pm/include/linux/cpufreq.h
+> > > > @@ -63,6 +63,8 @@ struct cpufreq_policy {
+> > > >
+> > > >       unsigned int            min;    /* in kHz */
+> > > >       unsigned int            max;    /* in kHz */
+> > > > +     unsigned int            target_min; /* in kHz */
+> > > > +     unsigned int            target_max; /* in kHz */
+> > > >       unsigned int            cur;    /* in kHz, only needed if cpufreq
+> > > >                                        * governors are used */
+> > > >       unsigned int            suspend_freq; /* freq to set during suspend */
+> > >
+> > > Rafael, honestly speaking I didn't like this patch very much.
+> >
+> > So what's the concern, specifically?
+> >
+> > > We need to fix a very specific problem with the intel-pstate driver when it is
+> > > used with powersave/performance governor to make sure the hard limits
+> > > are enforced. And this is something which no one else may face as
+> > > well.
+> >
+> > Well, I predict that the CPPC driver will face this problem too at one point.
+> >
+> > As well as any other driver which doesn't select OPPs directly for
+> > that matter, at least to some extent (note that intel_pstate in the
+> > "passive" mode without HWP has it too, but since there is no way to
+> > enforce the target max in that case, it is not relevant).
+> >
+> > > What about doing something like this instead in the intel_pstate
+> > > driver only to get this fixed ?
+> > >
+> > >         if (!strcmp(policy->governor->name, "powersave") ||
+> > >             !strcmp(policy->governor->name, "performance"))
+> > >                 hard-limit-to-be-enforced;
+> > >
+> > > This would be a much simpler and contained approach IMHO.
+> >
+> > I obviously prefer to do it the way I did in this series, because it
+> > is more general and it is based on the governor telling the driver
+> > what is needed instead of the driver trying to figure out what the
+> > governor is and guessing what may be needed because of that.
+> >
+> > But if you have a very specific technical concern regarding my
+> > approach, I can do it the other way too.
+>
+> I was concerned about adding those fields in the policy structure, but
+> I get that you want to do it in a more generic way.
+>
+> What about adding a field name "fixed" (or something else) in the
+> governor's structure which tells us that the frequency is fixed and
+> must be honored by the driver.
 
-> 
->> On Tue, Sep 29, 2020 at 11:41:29PM +0800, Baolin Wang wrote:
->>> Hi,
->>>
->>> 锟斤拷 2020/9/28 23:23, Lorenzo Pieralisi 写锟斤拷:
->>>> On Mon, Sep 28, 2020 at 10:49:57PM +0800, Baolin Wang wrote:
->>>>> On Mon, Sep 28, 2020 at 03:00:55PM +0100, Will Deacon wrote:
->>>>>> [+ Lorenzo]
->>>>>>
->>>>>> On Tue, Sep 22, 2020 at 06:33:24PM +0800, Baolin Wang wrote:
->>>>>>> If the BIOS disabled the NUMA configuration, but did not change the
->>>>>>> proximity domain description in the SRAT table, so the PCI root bus
->>>>>>> device may get a incorrect node id by acpi_get_node().
->>>>>>
->>>>>> How "incorrect" are we talking here? What actually goes wrong? At 
->>>>>> some
->>>>>> point, we have to trust what the firmware is telling us.
->>>>>
->>>>> What I mean is, if we disable the NUMA from BIOS
->>>>
->>>> Please define what this means ie are you removing SRAT from ACPI static
->>>> tables ?
->>>
->>> Yes.
->>>
->>>>
->>>>> but we did not change the PXM for the PCI devices,
->>>>
->>>> If a _PXM maps to a proximity domain that is not described in the SRAT
->>>> your firmware is buggy.
->>>
->>> Sorry for confusing, that's not what I mean. When the BIOS disable 
->>> the NUMA
->>> (remove the SRAT table), but the PCI devices' _PXM description is still
->>> available, which means we can still get the pxm from 
->>> acpi_evaluate_integer()
->>> in this case.
->>
->> There should not be a _PXM object if the SRAT is not available, that's
->> a firmware bug.
->>
->>> So we can get below inconsistent log on ARM platform:
->>> "No NUMA configuration found
->>> PCI_bus 0000:00 on NUMA node 0
->>> ...
->>> PCI_bus 0000:e3 on NUMA node 1"
->>>
->>> On X86, the pci_acpi_root_get_node() will validate the node before 
->>> setting
->>> the node id for root bus. So I think we can add this validation for ARM
->>> platform. Or anything else I missed?
->>
->> We are not adding checks because x86 does it, it is certainly to paper
->> over a firmware bug that you hopefully still have a chance to fix,
->> let's do that instead of adding code that is not necessary.
-> 
-> Thanks for your input, and I will check this issue with our firmware 
-> colleagues again.
+That would work for powersave/performance and it would suffice for the
+time being, so let me try to implement that.
 
-Sorry for late reply.
+Still, there is a more general problem related to that which is how to
+prevent the perf control in the hardware from going beyond certain
+limits, possibly narrower than the policy min and max.
 
-I did some investigation for this issue. I am sorry I made some 
-misleading description in the commit message. The issue is, when we
-want to disable the NUMA from firmware, we usually just remove the SRAT 
-table from the BIOS. But the devices' proximity domain information is 
-still remain in the ACPI tables.
+For example, the kernel may need to reserve some capacity for deadline
+tasks or similar, or when there is a min utilization clamp in place,
+and it would be good to have a way to let the HW know that it should
+not reduce the available capacity below a certain boundary, even
+though that may appear to be the right thing to do to it. [This is
+kind of addressed by intel_pstate by setting the HWP floor to the
+target frequency requested by the governor, but that is suboptimal,
+because it generally causes too much capacity to be reserved which
+costs energy.]
 
-For example, the IORT table still contains the proximity domain 
-information for the SMMU devices, so in this case, the SMMU devices 
-still can get incorrect NUMA nodes if we remove the SRAT table. But
-the SMMU devices will validate the numa node in 
-arm_smmu_v3_set_proximity() to avoid this issue.
+Analogously, the kernel may not want the HW to increase capacity too
+much when it knows that doing so would not increase the amount of work
+done or when the work being done is not urgent (like when there is a
+max utilization clamp in place),  [This last issue is particularly
+visible in some GPU-related workloads where the processor sees
+conditions for ramping up a "one-core turbo" frequency very high, but
+this is a mistake, because it doesn't cause work to be done any
+faster, since the task doing the work is in fact periodic and it does
+the same amount of work in every period regardless of how fast the CPU
+doing it runs.]
 
-static int  __init arm_smmu_v3_set_proximity(struct device *dev,
-					      struct acpi_iort_node *node)
-{
-	struct acpi_iort_smmu_v3 *smmu;
-
-	smmu = (struct acpi_iort_smmu_v3 *)node->node_data;
-	if (smmu->flags & ACPI_IORT_SMMU_V3_PXM_VALID) {
-		int dev_node = pxm_to_node(smmu->pxm);
-
-		if (dev_node != NUMA_NO_NODE && !node_online(dev_node))
-			return -EINVAL;
-
-		set_dev_node(dev, dev_node);
-		pr_info("SMMU-v3[%llx] Mapped to Proximity domain %d\n",
-			smmu->base_address,
-			smmu->pxm);
-	}
-	return 0;
-}
-
-So similar with SMMU devices, the DSDT table will still contain the PCI 
-root host devices' proximity domain though we already remove the SRAT 
-table. So I think we still need this validation in 
-pcibios_root_bridge_prepare() to avoid this issue like other devices did.
-
-I can update the commit message in next version if you think this is 
-reasonable. Thanks.
+So while the powersave/performance case can be addressed in a simpler
+way, the need for a more general approach is still there.
