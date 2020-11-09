@@ -2,47 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CFC02AC7AC
+	by mail.lfdr.de (Postfix) with ESMTP id DD2B72AC7AD
 	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 22:54:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730964AbgKIVyn convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 9 Nov 2020 16:54:43 -0500
-Received: from us-smtp-delivery-44.mimecast.com ([207.211.30.44]:45809 "EHLO
+        id S1731156AbgKIVyq convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 9 Nov 2020 16:54:46 -0500
+Received: from us-smtp-delivery-44.mimecast.com ([207.211.30.44]:58821 "EHLO
         us-smtp-delivery-44.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730852AbgKIVyn (ORCPT
+        by vger.kernel.org with ESMTP id S1730860AbgKIVyn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 9 Nov 2020 16:54:43 -0500
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-251-XMr6uZ_LPWmWE2VHPGHX6w-1; Mon, 09 Nov 2020 16:54:34 -0500
-X-MC-Unique: XMr6uZ_LPWmWE2VHPGHX6w-1
+ us-mta-531-bWqrHyeaM9ay7TKhHesJJQ-1; Mon, 09 Nov 2020 16:54:37 -0500
+X-MC-Unique: bWqrHyeaM9ay7TKhHesJJQ-1
 Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B8DF4185A0E5;
-        Mon,  9 Nov 2020 21:54:31 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 146D41074662;
+        Mon,  9 Nov 2020 21:54:35 +0000 (UTC)
 Received: from krava.redhat.com (unknown [10.40.192.57])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 6EA5A6EF46;
-        Mon,  9 Nov 2020 21:54:28 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 19A8B6EF6C;
+        Mon,  9 Nov 2020 21:54:31 +0000 (UTC)
 From:   Jiri Olsa <jolsa@kernel.org>
 To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Song Liu <songliubraving@fb.com>,
-        lkml <linux-kernel@vger.kernel.org>,
+Cc:     lkml <linux-kernel@vger.kernel.org>,
         Peter Zijlstra <a.p.zijlstra@chello.nl>,
         Ingo Molnar <mingo@kernel.org>,
         Mark Rutland <mark.rutland@arm.com>,
         Namhyung Kim <namhyung@kernel.org>,
         Alexander Shishkin <alexander.shishkin@linux.intel.com>,
         Michael Petlan <mpetlan@redhat.com>,
+        Song Liu <songliubraving@fb.com>,
         Ian Rogers <irogers@google.com>,
         Stephane Eranian <eranian@google.com>,
         Alexey Budankov <alexey.budankov@linux.intel.com>,
         Andi Kleen <ak@linux.intel.com>,
         Adrian Hunter <adrian.hunter@intel.com>
-Subject: [PATCH 02/24] bpf: Add build_id_parse_size function
-Date:   Mon,  9 Nov 2020 22:53:53 +0100
-Message-Id: <20201109215415.400153-3-jolsa@kernel.org>
+Subject: [PATCH 03/24] perf: Add build id data in mmap2 event
+Date:   Mon,  9 Nov 2020 22:53:54 +0100
+Message-Id: <20201109215415.400153-4-jolsa@kernel.org>
 In-Reply-To: <20201109215415.400153-1-jolsa@kernel.org>
 References: <20201109215415.400153-1-jolsa@kernel.org>
 MIME-Version: 1.0
@@ -57,126 +56,190 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It's possible to have other build id types (other than default
-SHA1). Currently there's also ld support for MD5 build id.
+Adding support to carry build id data in mmap2 event.
 
-Adding build_id_parse_size function, that returns also size of
-the parsed build id, so we can recognize the build id type.
+The build id data replaces maj/min/ino/ino_generation
+fields, whichc are also used to identify map's binary,
+so it's ok to replace them with build id data:
 
-Cc: Alexei Starovoitov <ast@kernel.org>
-Cc: Song Liu <songliubraving@fb.com>
+  union {
+          struct {
+                  u32       maj;
+                  u32       min;
+                  u64       ino;
+                  u64       ino_generation;
+          };
+          struct {
+                  u8        build_id[20];
+                  u8        build_id_size;
+                  u8        __reserved_1;
+                  u16       __reserved_2;
+          };
+  };
+
+Replaced maj/min/ino/ino_generation fields give us size
+of 24 bytes. We use 20 bytes for build id data, 1 byte
+for size and rest is unused.
+
+There's new misc bit for mmap2 to signal there's build
+id data in it:
+
+  #define PERF_RECORD_MISC_BUILD_ID              (1 << 14)
+
 Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 ---
- include/linux/buildid.h |  2 ++
- lib/buildid.c           | 31 ++++++++++++++++++++++++-------
- 2 files changed, 26 insertions(+), 7 deletions(-)
+ include/uapi/linux/perf_event.h | 26 +++++++++++++++++++++-----
+ kernel/events/core.c            | 31 +++++++++++++++++++++++++++----
+ 2 files changed, 48 insertions(+), 9 deletions(-)
 
-diff --git a/include/linux/buildid.h b/include/linux/buildid.h
-index 3be5b49719f1..edba89834b4c 100644
---- a/include/linux/buildid.h
-+++ b/include/linux/buildid.h
-@@ -7,5 +7,7 @@
- #define BUILD_ID_SIZE 20
+diff --git a/include/uapi/linux/perf_event.h b/include/uapi/linux/perf_event.h
+index b95d3c485d27..b6caf61bf9fd 100644
+--- a/include/uapi/linux/perf_event.h
++++ b/include/uapi/linux/perf_event.h
+@@ -384,7 +384,8 @@ struct perf_event_attr {
+ 				aux_output     :  1, /* generate AUX records instead of events */
+ 				cgroup         :  1, /* include cgroup events */
+ 				text_poke      :  1, /* include text poke events */
+-				__reserved_1   : 30;
++				build_id       :  1, /* use build id in mmap2 events */
++				__reserved_1   : 29;
  
- int build_id_parse(struct vm_area_struct *vma, unsigned char *build_id);
-+int build_id_parse_size(struct vm_area_struct *vma, unsigned char *build_id,
-+			__u32 *size);
- 
- #endif
-diff --git a/lib/buildid.c b/lib/buildid.c
-index e8d5feb7ef20..c52f86110635 100644
---- a/lib/buildid.c
-+++ b/lib/buildid.c
-@@ -12,6 +12,7 @@
+ 	union {
+ 		__u32		wakeup_events;	  /* wakeup every n events */
+@@ -688,6 +689,7 @@ struct perf_event_mmap_page {
+  *
+  *   PERF_RECORD_MISC_EXACT_IP           - PERF_RECORD_SAMPLE of precise events
+  *   PERF_RECORD_MISC_SWITCH_OUT_PREEMPT - PERF_RECORD_SWITCH* events
++ *   PERF_RECORD_MISC_BUILD_ID           - PERF_RECORD_MMAP2 event
+  *
+  *
+  * PERF_RECORD_MISC_EXACT_IP:
+@@ -697,9 +699,13 @@ struct perf_event_mmap_page {
+  *
+  * PERF_RECORD_MISC_SWITCH_OUT_PREEMPT:
+  *   Indicates that thread was preempted in TASK_RUNNING state.
++ *
++ * PERF_RECORD_MISC_BUILD_ID:
++ *   Indicates that mmap2 event carries build id data.
   */
- static inline int parse_build_id(void *page_addr,
- 				 unsigned char *build_id,
-+				 __u32 *size,
- 				 void *note_start,
- 				 Elf32_Word note_size)
- {
-@@ -38,6 +39,8 @@ static inline int parse_build_id(void *page_addr,
- 			       nhdr->n_descsz);
- 			memset(build_id + nhdr->n_descsz, 0,
- 			       BUILD_ID_SIZE - nhdr->n_descsz);
-+			if (size)
-+				*size = nhdr->n_descsz;
- 			return 0;
- 		}
- 		new_offs = note_offs + sizeof(Elf32_Nhdr) +
-@@ -50,7 +53,8 @@ static inline int parse_build_id(void *page_addr,
- }
+ #define PERF_RECORD_MISC_EXACT_IP		(1 << 14)
+ #define PERF_RECORD_MISC_SWITCH_OUT_PREEMPT	(1 << 14)
++#define PERF_RECORD_MISC_BUILD_ID		(1 << 14)
+ /*
+  * Reserve the last bit to indicate some extended misc field
+  */
+@@ -911,10 +917,20 @@ enum perf_event_type {
+ 	 *	u64				addr;
+ 	 *	u64				len;
+ 	 *	u64				pgoff;
+-	 *	u32				maj;
+-	 *	u32				min;
+-	 *	u64				ino;
+-	 *	u64				ino_generation;
++	 *	union {
++	 *		struct {
++	 *			u32		maj;
++	 *			u32		min;
++	 *			u64		ino;
++	 *			u64		ino_generation;
++	 *		};
++	 *		struct {
++	 *			u8		build_id[20];
++	 *			u8		build_id_size;
++	 *			u8		__reserved_1;
++	 *			u16		__reserved_2;
++	 *		};
++	 *	};
+ 	 *	u32				prot, flags;
+ 	 *	char				filename[];
+ 	 * 	struct sample_id		sample_id;
+diff --git a/kernel/events/core.c b/kernel/events/core.c
+index da467e1dd49a..808473b6ce85 100644
+--- a/kernel/events/core.c
++++ b/kernel/events/core.c
+@@ -51,6 +51,7 @@
+ #include <linux/proc_ns.h>
+ #include <linux/mount.h>
+ #include <linux/min_heap.h>
++#include <linux/buildid.h>
  
- /* Parse build ID from 32-bit ELF */
--static int get_build_id_32(void *page_addr, unsigned char *build_id)
-+static int get_build_id_32(void *page_addr, unsigned char *build_id,
-+			   __u32 *size)
- {
- 	Elf32_Ehdr *ehdr = (Elf32_Ehdr *)page_addr;
- 	Elf32_Phdr *phdr;
-@@ -65,7 +69,7 @@ static int get_build_id_32(void *page_addr, unsigned char *build_id)
+ #include "internal.h"
  
- 	for (i = 0; i < ehdr->e_phnum; ++i) {
- 		if (phdr[i].p_type == PT_NOTE &&
--		    !parse_build_id(page_addr, build_id,
-+		    !parse_build_id(page_addr, build_id, size,
- 				    page_addr + phdr[i].p_offset,
- 				    phdr[i].p_filesz))
- 			return 0;
-@@ -74,7 +78,8 @@ static int get_build_id_32(void *page_addr, unsigned char *build_id)
- }
+@@ -395,6 +396,7 @@ static atomic_t nr_ksymbol_events __read_mostly;
+ static atomic_t nr_bpf_events __read_mostly;
+ static atomic_t nr_cgroup_events __read_mostly;
+ static atomic_t nr_text_poke_events __read_mostly;
++static atomic_t nr_build_id_events __read_mostly;
  
- /* Parse build ID from 64-bit ELF */
--static int get_build_id_64(void *page_addr, unsigned char *build_id)
-+static int get_build_id_64(void *page_addr, unsigned char *build_id,
-+			   __u32 *size)
- {
- 	Elf64_Ehdr *ehdr = (Elf64_Ehdr *)page_addr;
- 	Elf64_Phdr *phdr;
-@@ -89,7 +94,7 @@ static int get_build_id_64(void *page_addr, unsigned char *build_id)
+ static LIST_HEAD(pmus);
+ static DEFINE_MUTEX(pmus_lock);
+@@ -4672,6 +4674,8 @@ static void unaccount_event(struct perf_event *event)
+ 		dec = true;
+ 	if (event->attr.mmap || event->attr.mmap_data)
+ 		atomic_dec(&nr_mmap_events);
++	if (event->attr.build_id)
++		atomic_dec(&nr_build_id_events);
+ 	if (event->attr.comm)
+ 		atomic_dec(&nr_comm_events);
+ 	if (event->attr.namespaces)
+@@ -7942,6 +7946,8 @@ struct perf_mmap_event {
+ 	u64			ino;
+ 	u64			ino_generation;
+ 	u32			prot, flags;
++	u8			build_id[BUILD_ID_SIZE];
++	u32			build_id_size;
  
- 	for (i = 0; i < ehdr->e_phnum; ++i) {
- 		if (phdr[i].p_type == PT_NOTE &&
--		    !parse_build_id(page_addr, build_id,
-+		    !parse_build_id(page_addr, build_id, size,
- 				    page_addr + phdr[i].p_offset,
- 				    phdr[i].p_filesz))
- 			return 0;
-@@ -98,7 +103,8 @@ static int get_build_id_64(void *page_addr, unsigned char *build_id)
- }
+ 	struct {
+ 		struct perf_event_header	header;
+@@ -7997,13 +8003,23 @@ static void perf_event_mmap_output(struct perf_event *event,
+ 	mmap_event->event_id.pid = perf_event_pid(event, current);
+ 	mmap_event->event_id.tid = perf_event_tid(event, current);
  
- /* Parse build ID of ELF file mapped to vma */
--int build_id_parse(struct vm_area_struct *vma, unsigned char *build_id)
-+static int __build_id_parse(struct vm_area_struct *vma, unsigned char *build_id,
-+			    __u32 *size)
- {
- 	Elf32_Ehdr *ehdr;
- 	struct page *page;
-@@ -126,11 +132,22 @@ int build_id_parse(struct vm_area_struct *vma, unsigned char *build_id)
- 		goto out;
- 
- 	if (ehdr->e_ident[EI_CLASS] == ELFCLASS32)
--		ret = get_build_id_32(page_addr, build_id);
-+		ret = get_build_id_32(page_addr, build_id, size);
- 	else if (ehdr->e_ident[EI_CLASS] == ELFCLASS64)
--		ret = get_build_id_64(page_addr, build_id);
-+		ret = get_build_id_64(page_addr, build_id, size);
- out:
- 	kunmap_atomic(page_addr);
- 	put_page(page);
- 	return ret;
- }
++	if (event->attr.mmap2 && event->attr.build_id)
++		mmap_event->event_id.header.misc |= PERF_RECORD_MISC_BUILD_ID;
 +
-+int build_id_parse(struct vm_area_struct *vma, unsigned char *build_id)
-+{
-+	return __build_id_parse(vma, build_id, NULL);
-+}
+ 	perf_output_put(&handle, mmap_event->event_id);
+ 
+ 	if (event->attr.mmap2) {
+-		perf_output_put(&handle, mmap_event->maj);
+-		perf_output_put(&handle, mmap_event->min);
+-		perf_output_put(&handle, mmap_event->ino);
+-		perf_output_put(&handle, mmap_event->ino_generation);
++		if (event->attr.build_id) {
++			u8 size[4] = { (u8) mmap_event->build_id_size, 0, 0, 0 };
 +
-+int build_id_parse_size(struct vm_area_struct *vma, unsigned char *build_id,
-+			__u32 *size)
-+{
-+	return __build_id_parse(vma, build_id, size);
-+}
++			__output_copy(&handle, mmap_event->build_id, BUILD_ID_SIZE);
++			__output_copy(&handle, size, 4);
++		} else {
++			perf_output_put(&handle, mmap_event->maj);
++			perf_output_put(&handle, mmap_event->min);
++			perf_output_put(&handle, mmap_event->ino);
++			perf_output_put(&handle, mmap_event->ino_generation);
++		}
+ 		perf_output_put(&handle, mmap_event->prot);
+ 		perf_output_put(&handle, mmap_event->flags);
+ 	}
+@@ -8132,6 +8148,11 @@ static void perf_event_mmap_event(struct perf_mmap_event *mmap_event)
+ 
+ 	mmap_event->event_id.header.size = sizeof(mmap_event->event_id) + size;
+ 
++	if (atomic_read(&nr_build_id_events)) {
++		build_id_parse_size(vma, mmap_event->build_id,
++				    &mmap_event->build_id_size);
++	}
++
+ 	perf_iterate_sb(perf_event_mmap_output,
+ 		       mmap_event,
+ 		       NULL);
+@@ -11069,6 +11090,8 @@ static void account_event(struct perf_event *event)
+ 		inc = true;
+ 	if (event->attr.mmap || event->attr.mmap_data)
+ 		atomic_inc(&nr_mmap_events);
++	if (event->attr.build_id)
++		atomic_inc(&nr_build_id_events);
+ 	if (event->attr.comm)
+ 		atomic_inc(&nr_comm_events);
+ 	if (event->attr.namespaces)
 -- 
 2.26.2
 
