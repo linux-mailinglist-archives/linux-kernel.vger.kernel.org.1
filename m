@@ -2,50 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EAEF82AC4E1
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 20:22:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1662B2AC466
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 20:01:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730806AbgKITWT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 14:22:19 -0500
-Received: from mx2.suse.de ([195.135.220.15]:58452 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730337AbgKITWR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 14:22:17 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 1EB9DAB95;
-        Mon,  9 Nov 2020 19:22:15 +0000 (UTC)
-Date:   Mon, 9 Nov 2020 10:59:40 -0800
-From:   Davidlohr Bueso <dave@stgolabs.net>
-To:     Soheil Hassas Yeganeh <soheil@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        linux-fsdevel@vger.kernel.org,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Eric Dumazet <edumazet@google.com>,
-        Willem de Bruijn <willemb@google.com>,
-        Khazhismel Kumykov <khazhy@google.com>,
-        Guantao Liu <guantaol@google.com>
-Subject: Re: [PATCH 0/8] simplify ep_poll
-Message-ID: <20201109185940.logxhnbe4wjotgkb@linux-p48b.lan>
-References: <20201106231635.3528496-1-soheil.kdev@gmail.com>
- <20201107174343.d94369d044c821fb8673bafd@linux-foundation.org>
- <CACSApva7rcbvtSyV6XY0q3eFQqmPXV=0zY9X1FPKkUk-hSodpA@mail.gmail.com>
+        id S1730283AbgKITBc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 14:01:32 -0500
+Received: from mail-ot1-f67.google.com ([209.85.210.67]:41752 "EHLO
+        mail-ot1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727303AbgKITBc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 14:01:32 -0500
+Received: by mail-ot1-f67.google.com with SMTP id n15so10000681otl.8;
+        Mon, 09 Nov 2020 11:01:31 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=sxvGIdy8L6aF+X1tfnngpFsA6hnyaeT/BHnffJ6GLdk=;
+        b=d483n7oA/kU2y7jN0MAYdQPmEavEuG/ovOR1SpHWrnPSMqpi90CETucU2VgvfGpbKo
+         ahvh7xE+vGy9JriKKKnpVbYv6IrCUDPHOkIksrOXiscoIpAh1m+eDyoAv5GinPM+/ehx
+         xUY4PMKmo/+KvUvbArL3nZO4RJzK9EmwH0vabEnAIwW7/2SJK0tV6awn7QAPngGQploF
+         zmgbBLHE6mnrw3myn9FTtT+uQJ5HDnt7F66tFHa5PhW61+YYFXoX2GZeF5pcOUIgfccK
+         v0Uva0fYTaVnem33TJFoD4qxmX1YoqhJcJ7ffu/YvNHx75NN0gstbnYFTDp5K8jyZtn0
+         Ik9w==
+X-Gm-Message-State: AOAM532ZAXABec5b6WZYJkl7yDRjVzx/otjaBXglPsdcDxISXxnjSva9
+        UQzb4rw5Z+ogBzyyAisRuQ==
+X-Google-Smtp-Source: ABdhPJzOhkMgIOJrja36004ip5oRoceuSmOgBqEWKhX4GWjGFsinIHUsPIQPsWh2l7hn0/HugmXZQw==
+X-Received: by 2002:a9d:3d06:: with SMTP id a6mr10887306otc.368.1604948490950;
+        Mon, 09 Nov 2020 11:01:30 -0800 (PST)
+Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id h6sm2563055oia.51.2020.11.09.11.01.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 09 Nov 2020 11:01:30 -0800 (PST)
+Received: (nullmailer pid 1592258 invoked by uid 1000);
+        Mon, 09 Nov 2020 19:01:29 -0000
+Date:   Mon, 9 Nov 2020 13:01:29 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        dri-devel@lists.freedesktop.org,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        linux-usb@vger.kernel.org, devel@driverdev.osuosl.org,
+        linux-media@vger.kernel.org, linux-pwm@vger.kernel.org,
+        Peter Geis <pgwipeout@gmail.com>, linux-tegra@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mmc@vger.kernel.org,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Nicolas Chauvet <kwizart@gmail.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        linux-samsung-soc@vger.kernel.org,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        devicetree@vger.kernel.org,
+        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>, Peter Chen <Peter.Chen@nxp.com>
+Subject: Re: [PATCH v1 04/30] media: dt: bindings: tegra-vde: Document OPP
+ and voltage regulator properties
+Message-ID: <20201109190129.GA1592208@bogus>
+References: <20201104234427.26477-1-digetx@gmail.com>
+ <20201104234427.26477-5-digetx@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CACSApva7rcbvtSyV6XY0q3eFQqmPXV=0zY9X1FPKkUk-hSodpA@mail.gmail.com>
-User-Agent: NeoMutt/20180716
+In-Reply-To: <20201104234427.26477-5-digetx@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 07 Nov 2020, Soheil Hassas Yeganeh wrote:
->FWIW, I also stress-tested the patch series applied on top of
->linux-next/master for a couple of hours.
+On Thu, 05 Nov 2020 02:44:01 +0300, Dmitry Osipenko wrote:
+> Document new DVFS OPP table and voltage regulator properties of the
+> video decoder engine.
+> 
+> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+> ---
+>  .../devicetree/bindings/media/nvidia,tegra-vde.txt   | 12 ++++++++++++
+>  1 file changed, 12 insertions(+)
+> 
 
-Out of curiosity, what exactly did you use for testing?
-
-Thanks,
-Davidlohr
+Reviewed-by: Rob Herring <robh@kernel.org>
