@@ -2,41 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E43E2ABA85
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 14:23:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BD44E2AB943
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 14:07:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387883AbgKINUF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 08:20:05 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47560 "EHLO mail.kernel.org"
+        id S1731386AbgKINHi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 08:07:38 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60386 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387874AbgKINUC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 08:20:02 -0500
+        id S1731369AbgKINHe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 08:07:34 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A5079206D8;
-        Mon,  9 Nov 2020 13:20:00 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9C07C20789;
+        Mon,  9 Nov 2020 13:07:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604928001;
-        bh=QIZEqvD2h/I2HvtgB4hTMz3vjJb6nXdCQk+CbZKlPBQ=;
+        s=default; t=1604927253;
+        bh=HKtZLGfCgdWvCQ5U3VKuBC3uFGSb0cHEyo6P1ocRbho=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qDbPqprgk+XY1jJ/VjS8hnIHp+fONsXhtpoTHJRaTIDD07B5sBK4OfFAJTyFKSPKk
-         TG1Fr3zR6SwMl5BXDfXLbBLYpyWmLU5A51C2d+XuOKfKtA4GjtrRltkbqO3SQT1SMb
-         E/1lbojKg3tL3sbUsNJdXrnUZYfbEMnhEJcrVyFo=
+        b=NGWdSjOmO8b81ups2HFYyQHoXunUBtQnd9eRsKDRTIpzEgd5Qyf68nictl4f5+1jT
+         cGbxZRDJV25J6YZWSdjnSUutjQSAc+1fjIX7+dmTDv1IfliTNNKMIz555hDa2S8Niw
+         fjDhbv2rlyCaiFTLFP+LWQEFayurBEFMZQAczerY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, David Galiffi <David.Galiffi@amd.com>,
-        Bhawanpreet Lakha <Bhawanpreet.Lakha@amd.com>,
-        Aurabindo Pillai <aurabindo.pillai@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.9 092/133] drm/amd/display: Fixed panic during seamless boot.
+        stable@vger.kernel.org, Vineet Gupta <vgupta@synopsys.com>
+Subject: [PATCH 4.14 45/48] ARC: stack unwinding: avoid indefinite looping
 Date:   Mon,  9 Nov 2020 13:55:54 +0100
-Message-Id: <20201109125035.127432677@linuxfoundation.org>
+Message-Id: <20201109125018.978132382@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201109125030.706496283@linuxfoundation.org>
-References: <20201109125030.706496283@linuxfoundation.org>
+In-Reply-To: <20201109125016.734107741@linuxfoundation.org>
+References: <20201109125016.734107741@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,41 +41,72 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: David Galiffi <David.Galiffi@amd.com>
+From: Vineet Gupta <vgupta@synopsys.com>
 
-[ Upstream commit 866e09f0110c6e86071954033e3067975946592a ]
+commit 328d2168ca524d501fc4b133d6be076142bd305c upstream.
 
-[why]
-get_pixel_clk_frequency_100hz is undefined in clock_source_funcs.
+Currently stack unwinder is a while(1) loop which relies on the dwarf
+unwinder to signal termination, which in turn relies on dwarf info to do
+so. This in theory could cause an infinite loop if the dwarf info was
+somehow messed up or the register contents were etc.
 
-[how]
-set function pointer: ".get_pixel_clk_frequency_100hz = get_pixel_clk_frequency_100hz"
+This fix thus detects the excessive looping and breaks the loop.
 
-Signed-off-by: David Galiffi <David.Galiffi@amd.com>
-Reviewed-by: Bhawanpreet Lakha <Bhawanpreet.Lakha@amd.com>
-Acked-by: Aurabindo Pillai <aurabindo.pillai@amd.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+| Mem: 26184K used, 1009136K free, 0K shrd, 0K buff, 14416K cached
+| CPU:  0.0% usr 72.8% sys  0.0% nic 27.1% idle  0.0% io  0.0% irq  0.0% sirq
+| Load average: 4.33 2.60 1.11 2/74 139
+|   PID  PPID USER     STAT   VSZ %VSZ CPU %CPU COMMAND
+|   133     2 root     SWN      0  0.0   3 22.9 [rcu_torture_rea]
+|   132     2 root     SWN      0  0.0   0 22.0 [rcu_torture_rea]
+|   131     2 root     SWN      0  0.0   3 21.5 [rcu_torture_rea]
+|   126     2 root     RW       0  0.0   2  5.4 [rcu_torture_wri]
+|   129     2 root     SWN      0  0.0   0  0.2 [rcu_torture_fak]
+|   137     2 root     SW       0  0.0   0  0.2 [rcu_torture_cbf]
+|   127     2 root     SWN      0  0.0   0  0.1 [rcu_torture_fak]
+|   138   115 root     R     1464  0.1   2  0.1 top
+|   130     2 root     SWN      0  0.0   0  0.1 [rcu_torture_fak]
+|   128     2 root     SWN      0  0.0   0  0.1 [rcu_torture_fak]
+|   115     1 root     S     1472  0.1   1  0.0 -/bin/sh
+|   104     1 root     S     1464  0.1   0  0.0 inetd
+|     1     0 root     S     1456  0.1   2  0.0 init
+|    78     1 root     S     1456  0.1   0  0.0 syslogd -O /var/log/messages
+|   134     2 root     SW       0  0.0   2  0.0 [rcu_torture_sta]
+|    10     2 root     IW       0  0.0   1  0.0 [rcu_preempt]
+|    88     2 root     IW       0  0.0   1  0.0 [kworker/1:1-eve]
+|    66     2 root     IW       0  0.0   2  0.0 [kworker/2:2-eve]
+|    39     2 root     IW       0  0.0   2  0.0 [kworker/2:1-eve]
+| unwinder looping too long, aborting !
+
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Vineet Gupta <vgupta@synopsys.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- drivers/gpu/drm/amd/display/dc/dce/dce_clock_source.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ arch/arc/kernel/stacktrace.c |    7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/amd/display/dc/dce/dce_clock_source.c b/drivers/gpu/drm/amd/display/dc/dce/dce_clock_source.c
-index 9cc65dc1970f8..49ae5ff12da63 100644
---- a/drivers/gpu/drm/amd/display/dc/dce/dce_clock_source.c
-+++ b/drivers/gpu/drm/amd/display/dc/dce/dce_clock_source.c
-@@ -1149,7 +1149,8 @@ static uint32_t dcn3_get_pix_clk_dividers(
- static const struct clock_source_funcs dcn3_clk_src_funcs = {
- 	.cs_power_down = dce110_clock_source_power_down,
- 	.program_pix_clk = dcn3_program_pix_clk,
--	.get_pix_clk_dividers = dcn3_get_pix_clk_dividers
-+	.get_pix_clk_dividers = dcn3_get_pix_clk_dividers,
-+	.get_pixel_clk_frequency_100hz = get_pixel_clk_frequency_100hz
- };
- #endif
- /*****************************************/
--- 
-2.27.0
-
+--- a/arch/arc/kernel/stacktrace.c
++++ b/arch/arc/kernel/stacktrace.c
+@@ -115,7 +115,7 @@ arc_unwind_core(struct task_struct *tsk,
+ 		int (*consumer_fn) (unsigned int, void *), void *arg)
+ {
+ #ifdef CONFIG_ARC_DW2_UNWIND
+-	int ret = 0;
++	int ret = 0, cnt = 0;
+ 	unsigned int address;
+ 	struct unwind_frame_info frame_info;
+ 
+@@ -135,6 +135,11 @@ arc_unwind_core(struct task_struct *tsk,
+ 			break;
+ 
+ 		frame_info.regs.r63 = frame_info.regs.r31;
++
++		if (cnt++ > 128) {
++			printk("unwinder looping too long, aborting !\n");
++			return 0;
++		}
+ 	}
+ 
+ 	return address;		/* return the last address it saw */
 
 
