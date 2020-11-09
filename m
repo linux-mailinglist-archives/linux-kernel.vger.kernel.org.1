@@ -2,136 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 439002AB49F
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 11:19:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D74512AB4A5
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 11:19:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728534AbgKIKTK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 05:19:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51950 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726176AbgKIKTK (ORCPT
+        id S1729156AbgKIKTp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 05:19:45 -0500
+Received: from out4436.biz.mail.alibaba.com ([47.88.44.36]:50778 "EHLO
+        out4436.biz.mail.alibaba.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729049AbgKIKTp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 05:19:10 -0500
-Received: from baptiste.telenet-ops.be (baptiste.telenet-ops.be [IPv6:2a02:1800:120:4::f00:13])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4FF7C0613CF
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Nov 2020 02:19:09 -0800 (PST)
-Received: from ramsan.of.borg ([84.195.186.194])
-        by baptiste.telenet-ops.be with bizsmtp
-        id qAK72300E4C55Sk01AK75L; Mon, 09 Nov 2020 11:19:07 +0100
-Received: from rox.of.borg ([192.168.97.57])
-        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1kc4GQ-000qXw-SL
-        for linux-kernel@vger.kernel.org; Mon, 09 Nov 2020 11:19:06 +0100
-Received: from geert by rox.of.borg with local (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1kc4GQ-009Y2h-Em
-        for linux-kernel@vger.kernel.org; Mon, 09 Nov 2020 11:19:06 +0100
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-To:     linux-kernel@vger.kernel.org
-Subject: Build regressions/improvements in v5.10-rc3
-Date:   Mon,  9 Nov 2020 11:19:06 +0100
-Message-Id: <20201109101906.2275768-1-geert@linux-m68k.org>
-X-Mailer: git-send-email 2.25.1
+        Mon, 9 Nov 2020 05:19:45 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R201e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04426;MF=wenan.mao@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0UEhtjoJ_1604917171;
+Received: from B-44NBMD6M-0121.local(mailfrom:wenan.mao@linux.alibaba.com fp:SMTPD_---0UEhtjoJ_1604917171)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Mon, 09 Nov 2020 18:19:32 +0800
+Subject: Re: [PATCH net v2] net: Update window_clamp if SOCK_RCVBUF is set
+From:   Mao Wenan <wenan.mao@linux.alibaba.com>
+To:     Eric Dumazet <edumazet@google.com>
+Cc:     David Miller <davem@davemloft.net>,
+        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        kernel-janitors@vger.kernel.org
+References: <1604913614-19432-1-git-send-email-wenan.mao@linux.alibaba.com>
+ <1604914417-24578-1-git-send-email-wenan.mao@linux.alibaba.com>
+ <CANn89iKiNdtxaL_yMF6=_8=m001vXVaxvECMGbAiXTYZjfj3oQ@mail.gmail.com>
+ <3b92167c-201c-e85d-822d-06f0c9ac508c@linux.alibaba.com>
+Message-ID: <e5b2727f-af0d-3f38-e0c4-1768c3fe415d@linux.alibaba.com>
+Date:   Mon, 9 Nov 2020 18:19:31 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.3.2
 MIME-Version: 1.0
+In-Reply-To: <3b92167c-201c-e85d-822d-06f0c9ac508c@linux.alibaba.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Below is the list of build error/warning regressions/improvements in
-v5.10-rc3[1] compared to v5.9[2].
-
-Summarized:
-  - build errors: +1/-7
-  - build warnings: +22/-22
-
-JFYI, when comparing v5.10-rc3[1] to v5.10-rc2[3], the summaries are:
-  - build errors: +0/-1
-  - build warnings: +2/-2
-
-Happy fixing! ;-)
-
-Thanks to the linux-next team for providing the build service.
-
-[1] http://kisskb.ellerman.id.au/kisskb/branch/linus/head/f8394f232b1eab649ce2df5c5f15b0e528c92091/ (all 192 configs)
-[2] http://kisskb.ellerman.id.au/kisskb/branch/linus/head/bbf5c979011a099af5dc76498918ed7df445635b/ (all 192 configs)
-[3] http://kisskb.ellerman.id.au/kisskb/branch/linus/head/3cea11cd5e3b00d91caf0b4730194039b45c5891/ (all 192 configs)
 
 
-*** ERRORS ***
+在 2020/11/9 下午6:12, Mao Wenan 写道:
+> 
+> 
+> 在 2020/11/9 下午5:56, Eric Dumazet 写道:
+>> On Mon, Nov 9, 2020 at 10:33 AM Mao Wenan 
+>> <wenan.mao@linux.alibaba.com> wrote:
+>>>
+>>> When net.ipv4.tcp_syncookies=1 and syn flood is happened,
+>>> cookie_v4_check or cookie_v6_check tries to redo what
+>>> tcp_v4_send_synack or tcp_v6_send_synack did,
+>>> rsk_window_clamp will be changed if SOCK_RCVBUF is set,
+>>> which will make rcv_wscale is different, the client
+>>> still operates with initial window scale and can overshot
+>>> granted window, the client use the initial scale but local
+>>> server use new scale to advertise window value, and session
+>>> work abnormally.
+>>
+>> What is not working exactly ?
+>>
+>> Sending a 'big wscale' should not really matter, unless perhaps there
+>> is a buggy stack at the remote end ?
+> 1)in tcp_v4_send_synack, if SO_RCVBUF is set and 
+> tcp_full_space(sk)=65535, pass req->rsk_window_clamp=65535 to 
+> tcp_select_initial_window, rcv_wscale will be zero, and send to client, 
+> the client consider wscale is 0;
+> 2)when ack is back from client, if there is no this patch, 
+> req->rsk_window_clamp is 0, and pass to tcp_select_initial_window, 
+> wscale will be 7, this new rcv_wscale is no way to advertise to client.
+> 3)if server send rcv_wind to client with window=63, it consider the real
+> window is 63*2^7=8064, but client consider the server window is only 
+> 63*2^0=63, it can't send big packet to server, and the send-q of client
+> is full.
+> 
+> 
+>>
+>>>
+>>> Signed-off-by: Mao Wenan <wenan.mao@linux.alibaba.com>
+>>> ---
+>>>   v2: fix for ipv6.
+>>>   net/ipv4/syncookies.c | 4 ++++
+>>>   net/ipv6/syncookies.c | 5 +++++
+>>>   2 files changed, 9 insertions(+)
+>>>
+>>> diff --git a/net/ipv4/syncookies.c b/net/ipv4/syncookies.c
+>>> index 6ac473b..57ce317 100644
+>>> --- a/net/ipv4/syncookies.c
+>>> +++ b/net/ipv4/syncookies.c
+>>> @@ -427,6 +427,10 @@ struct sock *cookie_v4_check(struct sock *sk, 
+>>> struct sk_buff *skb)
+>>>
+>>>          /* Try to redo what tcp_v4_send_synack did. */
+>>>          req->rsk_window_clamp = tp->window_clamp ? 
+>>> :dst_metric(&rt->dst, RTAX_WINDOW);
+>>> +       /* limit the window selection if the user enforce a smaller 
+>>> rx buffer */
+>>> +       if (sk->sk_userlocks & SOCK_RCVBUF_LOCK &&
+>>> +           (req->rsk_window_clamp > tcp_full_space(sk) || 
+>>> req->rsk_window_clamp == 0))
+>>> +               req->rsk_window_clamp = tcp_full_space(sk);
+>>
+>> This seems not needed to me.
+>>
+>> We call tcp_select_initial_window() with tcp_full_space(sk) passed as
+>> the 2nd parameter.
+>>
+>> tcp_full_space(sk) will then apply :
+>>
+>> space = min(*window_clamp, space);
+> 
+> if cookie_v4_check pass window_clamp=0 to tcp_select_initial_window, it 
+> will set window_clamp to max value.
+> (*window_clamp) = (U16_MAX << TCP_MAX_WSCALE);
 
-1 error regressions:
-  + {standard input}: Error: inappropriate arguments for opcode 'adc':  => 170
+window_clamp=0 is from
+req->rsk_window_clamp = tp->window_clamp ? :dst_metric(dst, RTAX_WINDOW);
 
-7 error improvements:
-  - error: modpost: "devm_ioremap" [drivers/net/ethernet/xilinx/ll_temac.ko] undefined!: N/A => 
-  - error: modpost: "devm_ioremap_resource" [drivers/net/ethernet/xilinx/xilinx_emac.ko] undefined!: N/A => 
-  - error: modpost: "devm_of_iomap" [drivers/net/ethernet/xilinx/ll_temac.ko] undefined!: N/A => 
-  - error: modpost: "devm_platform_ioremap_resource" [drivers/iio/adc/adi-axi-adc.ko] undefined!: N/A => 
-  - error: modpost: "devm_platform_ioremap_resource" [drivers/ptp/ptp_ines.ko] undefined!: N/A => 
-  - error: modpost: "devm_platform_ioremap_resource_byname" [drivers/net/ethernet/xilinx/ll_temac.ko] undefined!: N/A => 
-  - error: modpost: "fw_arg3" [drivers/mtd/parsers/bcm63xxpart.ko] undefined!: N/A => 
+and if SO_RCVBUF is set and equal to 65535,req->rsk_window_clamp will be 
+65535.
+req->rsk_window_clamp = tcp_full_space(sk);
 
-
-*** WARNINGS ***
-
-22 warning regressions:
-  + .config: warning: override: reassigning to symbol PPC_64K_PAGES:  => 13113
-  + /kisskb/src/arch/nds32/kernel/setup.c: warning: unused variable 'region' [-Wunused-variable]:  => 247:26
-  + /kisskb/src/drivers/gpu/drm/amd/amdgpu/../pm/swsmu/smu11/navi10_ppt.c: warning: (near initialization for 'nv12_metrics.CurrClock') [-Wmissing-braces]:  => 2539:2
-  + /kisskb/src/drivers/gpu/drm/amd/amdgpu/../pm/swsmu/smu11/navi10_ppt.c: warning: missing braces around initializer [-Wmissing-braces]:  => 2539:2
-  + /kisskb/src/drivers/media/pci/intel/ipu3/ipu3-cio2.h: warning: large integer implicitly truncated to unsigned type [-Woverflow]:  => 22:28
-  + /kisskb/src/drivers/media/platform/marvell-ccic/mmp-driver.c: warning: 'mmpcam_runtime_resume' defined but not used [-Wunused-function]:  => 310:12
-  + /kisskb/src/drivers/media/platform/marvell-ccic/mmp-driver.c: warning: 'mmpcam_runtime_suspend' defined but not used [-Wunused-function]:  => 324:12
-  + /kisskb/src/drivers/misc/habanalabs/common/command_buffer.c: warning: cast to pointer from integer of different size [-Wint-to-pointer-cast]:  => 512:44
-  + /kisskb/src/drivers/net/ethernet/chelsio/inline_crypto/chtls/chtls_cm.c: warning: 'wait_for_states.constprop' uses dynamic stack allocation:  => 441:1
-  + /kisskb/src/drivers/net/ethernet/mscc/ocelot_vcap.c: warning: (near initialization for 'etype.value') [-Wmissing-braces]:  => 755:11
-  + /kisskb/src/drivers/net/ethernet/mscc/ocelot_vcap.c: warning: missing braces around initializer [-Wmissing-braces]:  => 755:11
-  + /kisskb/src/drivers/target/iscsi/cxgbit/cxgbit_target.c: warning: 'cxgbit_tx_datain_iso.isra.40' uses dynamic stack allocation:  => 482:1
-  + /kisskb/src/fs/btrfs/tree-checker.c: warning: (near initialization for 'ri.inode') [-Wmissing-braces]:  => 1056:9
-  + /kisskb/src/fs/btrfs/tree-checker.c: warning: missing braces around initializer [-Wmissing-braces]:  => 1056:9
-  + /kisskb/src/kernel/bpf/cpumap.c: warning: 'cpu_map_bpf_prog_run_xdp.isra.14' uses dynamic stack allocation:  => 295:1
-  + /kisskb/src/kernel/rcu/tasks.h: warning: 'show_rcu_tasks_rude_gp_kthread' defined but not used [-Wunused-function]:  => 710:13
-  + /kisskb/src/mm/slub.c: warning: 'deactivate_slab.isra.60' uses dynamic stack allocation:  => 2295:1
-  + /kisskb/src/mm/slub.c: warning: 'get_partial_node.isra.59' uses dynamic stack allocation:  => 1992:1
-  + /kisskb/src/mm/slub.c: warning: 'unfreeze_partials.isra.58' uses dynamic stack allocation:  => 2363:1
-  + arch/ia64/configs/generic_defconfig: warning: override: reassigning to symbol ATA:  => 58
-  + arch/ia64/configs/generic_defconfig: warning: override: reassigning to symbol ATA_PIIX:  => 59
-  + warning: unmet direct dependencies detected for MFD_CORE:  => N/A
-
-22 warning improvements:
-  - .config: warning: override: reassigning to symbol VIRTUALIZATION: 4103 => 
-  - /kisskb/src/drivers/crypto/chelsio/chtls/chtls_cm.c: warning: 'wait_for_states.constprop' uses dynamic stack allocation: 435:1 => 
-  - /kisskb/src/drivers/crypto/sa2ul.c: warning: cast from pointer to integer of different size [-Wpointer-to-int-cast]: 1486:33 => 
-  - /kisskb/src/drivers/media/platform/fsl-viu.c: warning: "in_be32" redefined: 37 => 
-  - /kisskb/src/drivers/media/platform/fsl-viu.c: warning: "out_be32" redefined: 36 => 
-  - /kisskb/src/drivers/misc/habanalabs/common/habanalabs_ioctl.c: warning: (near initialization for 'cs_counters.cs_counters') [-Wmissing-braces]: 282:9 => 
-  - /kisskb/src/drivers/misc/habanalabs/common/habanalabs_ioctl.c: warning: missing braces around initializer [-Wmissing-braces]: 282:9 => 
-  - /kisskb/src/drivers/net/ethernet/intel/ice/ice_flow.h: warning: cast from pointer to integer of different size [-Wpointer-to-int-cast]: 197:33 => 
-  - /kisskb/src/drivers/net/ethernet/intel/ice/ice_flow.h: warning: cast to pointer from integer of different size [-Wint-to-pointer-cast]: 198:32 => 
-  - /kisskb/src/drivers/scsi/ufs/ufshcd-crypto.c: warning: (near initialization for 'cfg.reg_val') [-Wmissing-braces]: 62:8, 103:8 => 
-  - /kisskb/src/drivers/scsi/ufs/ufshcd-crypto.c: warning: missing braces around initializer [-Wmissing-braces]: 103:8, 62:8 => 
-  - /kisskb/src/drivers/staging/media/tegra-vde/vde.c: warning: 'tegra_vde_runtime_suspend' defined but not used [-Wunused-function]: 916:12 => 
-  - /kisskb/src/drivers/target/iscsi/cxgbit/cxgbit_target.c: warning: 'cxgbit_tx_datain_iso.isra.39' uses dynamic stack allocation: 482:1 => 
-  - /kisskb/src/kernel/bpf/cpumap.c: warning: 'cpu_map_bpf_prog_run_xdp.isra.15' uses dynamic stack allocation: 298:1 => 
-  - /kisskb/src/mm/slub.c: warning: 'deactivate_slab.isra.59' uses dynamic stack allocation: 2293:1 => 
-  - /kisskb/src/mm/slub.c: warning: 'get_partial_node.isra.58' uses dynamic stack allocation: 1992:1 => 
-  - /kisskb/src/mm/slub.c: warning: 'unfreeze_partials.isra.57' uses dynamic stack allocation: 2361:1 => 
-  - /kisskb/src/net/bridge/br_device.c: warning: 'br_get_stats64' uses dynamic stack allocation: 230:1 => 
-  - /kisskb/src/net/smc/smc_llc.c: warning: (near initialization for 'add_llc.hd') [-Wmissing-braces]: 1212:9 => 
-  - /kisskb/src/net/smc/smc_llc.c: warning: (near initialization for 'del_llc.hd') [-Wmissing-braces]: 1245:9 => 
-  - /kisskb/src/net/smc/smc_llc.c: warning: (near initialization for 'delllc.hd') [-Wmissing-braces]: 1317:9 => 
-  - /kisskb/src/net/smc/smc_llc.c: warning: missing braces around initializer [-Wmissing-braces]: 1245:9, 1212:9, 1317:9 => 
-
-Gr{oetje,eeting}s,
-
-						Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-							    -- Linus Torvalds
+> 
+> but space will fetch from sysctl_rmem_max and sysctl_tcp_rmem[2] which 
+> is also big value.
+> space = max_t(u32, space, sock_net(sk)->ipv4.sysctl_tcp_rmem[2]);
+> space = max_t(u32, space, sysctl_rmem_max);
+> 
+> Then,space = min(*window_clamp, space) is a big value, lead wscale to 7,
+> is different from tcp_v4_send_synack.
+> 
+> 
+>>
+>> Please cook a packetdrill test to demonstrate what you are seeing ?
+>>
+> I have real environment and reproduce this case, this patch can fix 
+> that, i will try to use packetdrill with syn cookies and syn flood happen.
