@@ -2,349 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F5692AC12B
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 17:45:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9543A2AC134
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 17:47:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730560AbgKIQpw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 11:45:52 -0500
-Received: from mail-ed1-f66.google.com ([209.85.208.66]:38962 "EHLO
-        mail-ed1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730450AbgKIQpv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 11:45:51 -0500
-Received: by mail-ed1-f66.google.com with SMTP id e18so9473420edy.6
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Nov 2020 08:45:48 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=/i00yYYiOfZXAeylQOZ4SCamzjk84N39paT9Bp0Yp1g=;
-        b=dCmaeQuT9IoplLeYNmaW9gxX3iPLjdbR+OyqeV1aFF/Gq+LV7XlDZGQPD6KwcXT6te
-         gD/GmFdmFlZO9U7p3aJjs+rbh2vxcaVbmWLsDl9cjXwOij/QYlzN3U4urrb3NQChwR2r
-         csAKS9Ymucyi4yFICwBaJ8h77Bk9YkMZdueY+I2nEagk5cSRJ3yz53dSWaSLkRmSJS3a
-         wcgLo3Xk9/JElFJ+d5NLWKPVXxXNhZFmmGWjtKaP+g3fOZFg0czTsBSvHZ3taFF8KiVn
-         37oeiXgIm6dvrNdwfmRWz+i3dVfzXIHSwO5lFXvcsXV9RN8Hvnttvl6W9h3244jKKdkD
-         d4rg==
-X-Gm-Message-State: AOAM530/il4fL+thtKErrSwtVpk8vfAXxYyba4j5RUMgbZWIrv/vu2Cf
-        FcudYN4HN0W1puVoShaFwk+u6MzMLj4/Sn2p
-X-Google-Smtp-Source: ABdhPJxxkFw6JH+2lULL94Y/hMqZHPnnJ40bhp44ufOd7N85YovoH0Y7M1r/2ilcmK4GXPcLQWMUXQ==
-X-Received: by 2002:aa7:db48:: with SMTP id n8mr16891180edt.123.1604940346952;
-        Mon, 09 Nov 2020 08:45:46 -0800 (PST)
-Received: from msft-t490s.teknoraver.net (net-5-95-179-145.cust.vodafonedsl.it. [5.95.179.145])
-        by smtp.gmail.com with ESMTPSA id s19sm9059591ejz.103.2020.11.09.08.45.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 09 Nov 2020 08:45:46 -0800 (PST)
-From:   Matteo Croce <mcroce@linux.microsoft.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Mike Rapoport <rppt@kernel.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Arnd Bergmann <arnd@arndb.de>, Petr Mladek <pmladek@suse.com>,
-        Pavel Tatashin <pasha.tatashin@soleen.com>,
-        Kees Cook <keescook@chromium.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Tyler Hicks <tyhicks@linux.microsoft.com>
-Subject: [PATCH v3] reboot: allow to specify reboot mode via sysfs
-Date:   Mon,  9 Nov 2020 17:45:38 +0100
-Message-Id: <20201109164538.18934-1-mcroce@linux.microsoft.com>
-X-Mailer: git-send-email 2.28.0
+        id S1730584AbgKIQqV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 11:46:21 -0500
+Received: from nat-hk.nvidia.com ([203.18.50.4]:2175 "EHLO nat-hk.nvidia.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726410AbgKIQqV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 11:46:21 -0500
+Received: from HKMAIL103.nvidia.com (Not Verified[10.18.92.77]) by nat-hk.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5fa9725a0001>; Tue, 10 Nov 2020 00:46:18 +0800
+Received: from HKMAIL102.nvidia.com (10.18.16.11) by HKMAIL103.nvidia.com
+ (10.18.16.12) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 9 Nov
+ 2020 16:46:14 +0000
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (104.47.59.170)
+ by HKMAIL102.nvidia.com (10.18.16.11) with Microsoft SMTP Server (TLS) id
+ 15.0.1473.3 via Frontend Transport; Mon, 9 Nov 2020 16:46:13 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=HpHuuuKU3GbdZOzlQUgXrdLgqvH7JSlBF9gromn7ypaxbSYvMmHMhxkhX5Sc4/4kq0TF6P7jsSfqUnKOSOojZsZr2cEY7egcprbSKnukGtvQ3IpMS9bMTjVuLGqT5FINkzM/NrqQcqLJezkGwcrpsMFFIfP9p2Yi6M2/asS701siO4NGmSbQcfs+eM3G0dqnPmRRjcrZ+OBWHQWu8/HOenPhsWlZVvWFc94yDSfkjLl/7s9qJ29PNRIfeFPlzfBNW1aLeL6+PL5j3LjPM/QgMof9oZwIUCfVqSaMJEQsOJTaWY/jESDCdtLidL+xGBMKMzuvZzSGJKsyiuaIhUTijg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=277rR03Fmd1c1EPd3wl3XEAXUDcur6tnQke8sHJIKgU=;
+ b=KaKpxJhNa+NR74Bj5t+nGkkFu4+h0Yslk9fuCC247yIBui/BolHGv9aoXlPsMxm20He3CPALG2AKVBlZJNH/PcXEg4ztQ8BBd7/ao3isCgPIkcejB3brU1/AWD4TZueRhV63Zckygam1edItlUptGQ8BW6LzPtsFUWKbkOGz+wEfk6+Ks6VHrMzOfQ1ARvOVWnr0F81EI91zJ66Cj8U4ZUNTCKL94UZZOQyQKispyI0KIMk5J2qo/mR1qKobj3hR3EyusE3eOjgyOgCmrkPl93eQZpuEWPRXS2njwa3zht3NoyYWU9Y/ykgYf4/94NK6MkgiCGHt3yACRE3meLZs/w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
+ by DM6PR12MB3401.namprd12.prod.outlook.com (2603:10b6:5:39::32) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3541.22; Mon, 9 Nov
+ 2020 16:46:11 +0000
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::cdbe:f274:ad65:9a78]) by DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::cdbe:f274:ad65:9a78%7]) with mapi id 15.20.3499.032; Mon, 9 Nov 2020
+ 16:46:11 +0000
+Date:   Mon, 9 Nov 2020 12:46:08 -0400
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     "Tian, Kevin" <kevin.tian@intel.com>
+CC:     Thomas Gleixner <tglx@linutronix.de>,
+        "Williams, Dan J" <dan.j.williams@intel.com>,
+        "Raj, Ashok" <ashok.raj@intel.com>,
+        "Jiang, Dave" <dave.jiang@intel.com>,
+        Bjorn Helgaas <helgaas@kernel.org>,
+        "vkoul@kernel.org" <vkoul@kernel.org>,
+        "Dey, Megha" <megha.dey@intel.com>,
+        "maz@kernel.org" <maz@kernel.org>,
+        "bhelgaas@google.com" <bhelgaas@google.com>,
+        "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
+        "Pan, Jacob jun" <jacob.jun.pan@intel.com>,
+        "Liu, Yi L" <yi.l.liu@intel.com>, "Lu, Baolu" <baolu.lu@intel.com>,
+        "Kumar, Sanjay K" <sanjay.k.kumar@intel.com>,
+        "Luck, Tony" <tony.luck@intel.com>,
+        "kwankhede@nvidia.com" <kwankhede@nvidia.com>,
+        "eric.auger@redhat.com" <eric.auger@redhat.com>,
+        "parav@mellanox.com" <parav@mellanox.com>,
+        "rafael@kernel.org" <rafael@kernel.org>,
+        "netanelg@mellanox.com" <netanelg@mellanox.com>,
+        "shahafs@mellanox.com" <shahafs@mellanox.com>,
+        "yan.y.zhao@linux.intel.com" <yan.y.zhao@linux.intel.com>,
+        "pbonzini@redhat.com" <pbonzini@redhat.com>,
+        "Ortiz, Samuel" <samuel.ortiz@intel.com>,
+        "Hossain, Mona" <mona.hossain@intel.com>,
+        "dmaengine@vger.kernel.org" <dmaengine@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>
+Subject: Re: [PATCH v4 06/17] PCI: add SIOV and IMS capability detection
+Message-ID: <20201109164608.GF2620339@nvidia.com>
+References: <20201104135415.GX2620339@nvidia.com>
+ <MWHPR11MB1645524BDEDF8899914F32AE8CED0@MWHPR11MB1645.namprd11.prod.outlook.com>
+ <20201106131415.GT2620339@nvidia.com> <20201106164850.GA85879@otc-nc-03>
+ <20201106175131.GW2620339@nvidia.com>
+ <CAPcyv4iYHA1acfo=+fTk+U_TrLbSWJjA6v4oeTXgVYDTrnCoGw@mail.gmail.com>
+ <20201107001207.GA2620339@nvidia.com>
+ <87pn4nk7nn.fsf@nanos.tec.linutronix.de>
+ <20201108232341.GB2620339@nvidia.com>
+ <MWHPR11MB164578A1CC38EB28F6EA8F918CEA0@MWHPR11MB1645.namprd11.prod.outlook.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <MWHPR11MB164578A1CC38EB28F6EA8F918CEA0@MWHPR11MB1645.namprd11.prod.outlook.com>
+X-ClientProxiedBy: BL1PR13CA0112.namprd13.prod.outlook.com
+ (2603:10b6:208:2b9::27) To DM6PR12MB3834.namprd12.prod.outlook.com
+ (2603:10b6:5:14a::12)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (156.34.48.30) by BL1PR13CA0112.namprd13.prod.outlook.com (2603:10b6:208:2b9::27) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3564.13 via Frontend Transport; Mon, 9 Nov 2020 16:46:10 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1kcAIy-00200t-Kf; Mon, 09 Nov 2020 12:46:08 -0400
+X-LD-Processed: 43083d15-7273-40c1-b7db-39efd9ccc17a,ExtAddr
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1604940378; bh=277rR03Fmd1c1EPd3wl3XEAXUDcur6tnQke8sHJIKgU=;
+        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
+         From:To:CC:Subject:Message-ID:References:Content-Type:
+         Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
+         X-MS-Exchange-MessageSentRepresentingType:X-LD-Processed;
+        b=PsjoQMAkqijoe2iem/o0wve7NJ74DR06EK6R+8CyyhzugI8aKrLJThOIYFKZ+nEbm
+         3L4E8hq/PfBX8lmqQaJyXaGasE5/jmmrAawRHteN3sMIF1ucaKOQy37UttiK19Ccyg
+         Nbt3SNLGayHK/O8DQU/Az7tPDWNdRM3bxiVZbKkBgOMOBsCdWd83ZvLkA2sFzfRoPE
+         e2lqw7Sx0RCfsO0BZPaROqsZYaQYpZuhODrzBVb8UVzYXWgblsMD3Q2D9EUaILNTKA
+         Mt/VnM1499XV25YmAm98ZLslPoOZQ7XUdKuhdRcBsdpW4zJKND7knR+tThZlwJNyhL
+         7O79HXUOe7c8Q==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Matteo Croce <mcroce@microsoft.com>
+On Mon, Nov 09, 2020 at 07:37:03AM +0000, Tian, Kevin wrote:
+> >  3) SIOV sub device assigned to the guest.
+> > 
+> >     The difference between SIOV and SRIOV is the device must attach a
+> >     PASID to every TLP triggered by the guest. Logically we'd expect
+> >     when IMS is used in this situation the interrupt MemWr is tagged
+> >     with bus/device/function/PASID to uniquly ID the guest and the same
+> >     security protection scheme from #2 applies.
+> 
+> Unfortunately no. Intel VT-d only treats MemWr w/o PASID to 0xFEExxxxx
+> as interrupt request. MemWr w/ PASID, even to 0xFEE, is translated
+> normally through DMA remapping page table. 
 
-The kernel cmdline reboot= option offers some sort of control
-on how the reboot is issued.
-Add handles in sysfs to allow setting these reboot options, so they
-can be changed when the system is booted, other than at boot time.
+I've heard that current IOMMUs are limited as well, but IMHO, as I
+describe, if you want full symmetry then you want to route interrupts
+via PASID for SIOV. Otherwise the architecture is incomplete.
 
-The handlers are under <sysfs>/kernel/reboot, can be read to
-get the current configuration and written to alter it.
+At least from a Linux and VMM perspective this should be planned
+for. It is the only generic way to have a sub device assigned to a
+guest and still have access to IMS.
 
-	# cd /sys/kernel/reboot/
+> Does your device already implement such capability? We can bring this 
+> request back to the hardware team. 
 
-	# grep . *
-	cpu:0
-	force:0
-	mode:cold
-	type:acpi
+In some cases we can generate PASID tagged TLPs for interrupt
+messages, if there was a reason to do that.
 
-	# echo 2 >cpu
-	# echo yes >force
-	# echo soft >mode
-	# echo bios >type
+> Yes, this is the main worry here. While all agree that using hypercall is 
+> the proper way to virtualize IMS, how to disable it when hypercall is
+> not available is a more urgent demand at current stage.
 
-	# grep . *
-	cpu:2
-	force:1
-	mode:soft
-	type:bios
+Hopefully Thomas's note about checking for virtualization will help..
 
-Before setting anything, check for CAP_SYS_BOOT capability, so it's
-possible to allow an unpriviledged process to change these settings
-simply by relaxing the handles permissions, without opening them to
-the world.
+> btw in reality such ACPI extension doesn't exist yet, which likely will
+> take some time. In the meantime we already have pending usages 
+> like IDXD. Do you suggest holding these patches until we get ASWG 
+> to accept the extension, or accept using Intel IMS cap as a vendor
+> specific mitigation to move forward while the platform flag is being 
+> worked on? Anyway the IMS cap is already defined and can help fix 
+> some broken cases.
 
-Signed-off-by: Matteo Croce <mcroce@microsoft.com>
----
- Documentation/ABI/testing/sysfs-kernel-reboot |  31 +++
- kernel/reboot.c                               | 206 ++++++++++++++++++
- 2 files changed, 237 insertions(+)
- create mode 100644 Documentation/ABI/testing/sysfs-kernel-reboot
+I think you need to sort something generic out, these half baked
+architectures just make it some other teams problem.
 
-diff --git a/Documentation/ABI/testing/sysfs-kernel-reboot b/Documentation/ABI/testing/sysfs-kernel-reboot
-new file mode 100644
-index 0000000000000..ea71347d952cb
---- /dev/null
-+++ b/Documentation/ABI/testing/sysfs-kernel-reboot
-@@ -0,0 +1,31 @@
-+What:		/sys/kernel/reboot
-+Date:		November 2020
-+KernelVersion:	5.11
-+Contact:	Matteo Croce <mcroce@microsoft.com>
-+Description:	Interface to set the kernel reboot mode, similarly to
-+		what can be done via the reboot= cmdline option.
-+		(see Documentation/admin-guide/kernel-parameters.txt)
-+
-+What:		/sys/kernel/reboot/mode
-+Date:		November 2020
-+KernelVersion:	5.11
-+Contact:	Matteo Croce <mcroce@microsoft.com>
-+Description:	Reboot mode. Valid values are: cold warm hard soft gpio
-+
-+What:		/sys/kernel/reboot/type
-+Date:		November 2020
-+KernelVersion:	5.11
-+Contact:	Matteo Croce <mcroce@microsoft.com>
-+Description:	Reboot type. Valid values are: bios acpi kbd triple efi pci
-+
-+What:		/sys/kernel/reboot/cpu
-+Date:		November 2020
-+KernelVersion:	5.11
-+Contact:	Matteo Croce <mcroce@microsoft.com>
-+Description:	CPU number to use to reboot.
-+
-+What:		/sys/kernel/reboot/force
-+Date:		November 2020
-+KernelVersion:	5.11
-+Contact:	Matteo Croce <mcroce@microsoft.com>
-+Description:	Force an immediate reboot.
-diff --git a/kernel/reboot.c b/kernel/reboot.c
-index e7b78d5ae1abf..81cc0f0594c67 100644
---- a/kernel/reboot.c
-+++ b/kernel/reboot.c
-@@ -594,3 +594,209 @@ static int __init reboot_setup(char *str)
- 	return 1;
- }
- __setup("reboot=", reboot_setup);
-+
-+#ifdef CONFIG_SYSFS
-+
-+#define REBOOT_COLD_STR		"cold"
-+#define REBOOT_WARM_STR		"warm"
-+#define REBOOT_HARD_STR		"hard"
-+#define REBOOT_SOFT_STR		"soft"
-+#define REBOOT_GPIO_STR		"gpio"
-+#define REBOOT_UNDEFINED_STR	"undefined"
-+
-+#define BOOT_TRIPLE_STR		"triple"
-+#define BOOT_KBD_STR		"kbd"
-+#define BOOT_BIOS_STR		"bios"
-+#define BOOT_ACPI_STR		"acpi"
-+#define BOOT_EFI_STR		"efi"
-+#define BOOT_CF9_FORCE_STR	"cf9_force"
-+#define BOOT_CF9_SAFE_STR	"cf9_safe"
-+
-+static ssize_t mode_show(struct kobject *kobj, struct kobj_attribute *attr, char *buf)
-+{
-+	const char *val;
-+
-+	switch (reboot_mode) {
-+	case REBOOT_COLD:
-+		val = REBOOT_COLD_STR;
-+		break;
-+	case REBOOT_WARM:
-+		val = REBOOT_WARM_STR;
-+		break;
-+	case REBOOT_HARD:
-+		val = REBOOT_HARD_STR;
-+		break;
-+	case REBOOT_SOFT:
-+		val = REBOOT_SOFT_STR;
-+		break;
-+	case REBOOT_GPIO:
-+		val = REBOOT_GPIO_STR;
-+		break;
-+	default:
-+		val = REBOOT_UNDEFINED_STR;
-+	}
-+
-+	return sprintf(buf, "%s\n", val);
-+}
-+static ssize_t mode_store(struct kobject *kobj, struct kobj_attribute *attr,
-+			  const char *buf, size_t count)
-+{
-+	if (!capable(CAP_SYS_BOOT))
-+		return -EPERM;
-+
-+	if (!strncmp(buf, REBOOT_COLD_STR, strlen(REBOOT_COLD_STR)))
-+		reboot_mode = REBOOT_COLD;
-+	else if (!strncmp(buf, REBOOT_WARM_STR, strlen(REBOOT_WARM_STR)))
-+		reboot_mode = REBOOT_WARM;
-+	else if (!strncmp(buf, REBOOT_HARD_STR, strlen(REBOOT_HARD_STR)))
-+		reboot_mode = REBOOT_HARD;
-+	else if (!strncmp(buf, REBOOT_SOFT_STR, strlen(REBOOT_SOFT_STR)))
-+		reboot_mode = REBOOT_SOFT;
-+	else if (!strncmp(buf, REBOOT_GPIO_STR, strlen(REBOOT_GPIO_STR)))
-+		reboot_mode = REBOOT_GPIO;
-+	else
-+		return -EINVAL;
-+
-+	return count;
-+}
-+static struct kobj_attribute reboot_mode_attr = __ATTR_RW(mode);
-+
-+static ssize_t type_show(struct kobject *kobj, struct kobj_attribute *attr, char *buf)
-+{
-+	const char *val;
-+
-+	switch (reboot_type) {
-+	case BOOT_TRIPLE:
-+		val = BOOT_TRIPLE_STR;
-+		break;
-+	case BOOT_KBD:
-+		val = BOOT_KBD_STR;
-+		break;
-+	case BOOT_BIOS:
-+		val = BOOT_BIOS_STR;
-+		break;
-+	case BOOT_ACPI:
-+		val = BOOT_ACPI_STR;
-+		break;
-+	case BOOT_EFI:
-+		val = BOOT_EFI_STR;
-+		break;
-+	case BOOT_CF9_FORCE:
-+		val = BOOT_CF9_FORCE_STR;
-+		break;
-+	case BOOT_CF9_SAFE:
-+		val = BOOT_CF9_SAFE_STR;
-+		break;
-+	default:
-+		val = REBOOT_UNDEFINED_STR;
-+	}
-+
-+	return sprintf(buf, "%s\n", val);
-+}
-+static ssize_t type_store(struct kobject *kobj, struct kobj_attribute *attr,
-+			  const char *buf, size_t count)
-+{
-+	if (!capable(CAP_SYS_BOOT))
-+		return -EPERM;
-+
-+	if (!strncmp(buf, BOOT_TRIPLE_STR, strlen(BOOT_TRIPLE_STR)))
-+		reboot_mode = BOOT_TRIPLE;
-+	else if (!strncmp(buf, BOOT_KBD_STR, strlen(BOOT_KBD_STR)))
-+		reboot_mode = BOOT_KBD;
-+	else if (!strncmp(buf, BOOT_BIOS_STR, strlen(BOOT_BIOS_STR)))
-+		reboot_mode = BOOT_BIOS;
-+	else if (!strncmp(buf, BOOT_ACPI_STR, strlen(BOOT_ACPI_STR)))
-+		reboot_mode = BOOT_ACPI;
-+	else if (!strncmp(buf, BOOT_EFI_STR, strlen(BOOT_EFI_STR)))
-+		reboot_mode = BOOT_EFI;
-+	else if (!strncmp(buf, BOOT_CF9_FORCE_STR, strlen(BOOT_CF9_FORCE_STR)))
-+		reboot_mode = BOOT_CF9_FORCE;
-+	else if (!strncmp(buf, BOOT_CF9_SAFE_STR, strlen(BOOT_CF9_SAFE_STR)))
-+		reboot_mode = BOOT_CF9_SAFE;
-+	else
-+		return -EINVAL;
-+
-+	return count;
-+}
-+static struct kobj_attribute reboot_type_attr = __ATTR_RW(type);
-+
-+static ssize_t cpu_show(struct kobject *kobj, struct kobj_attribute *attr, char *buf)
-+{
-+	return sprintf(buf, "%d\n", reboot_cpu);
-+}
-+static ssize_t cpu_store(struct kobject *kobj, struct kobj_attribute *attr,
-+			  const char *buf, size_t count)
-+{
-+	unsigned int cpunum;
-+	int rc;
-+
-+	if (!capable(CAP_SYS_BOOT))
-+		return -EPERM;
-+
-+	rc = kstrtouint(buf, 0, &cpunum);
-+
-+	if (rc)
-+		return rc;
-+
-+	if (cpunum >= num_possible_cpus())
-+		return -ERANGE;
-+
-+	reboot_cpu = cpunum;
-+
-+	return count;
-+}
-+static struct kobj_attribute reboot_cpu_attr = __ATTR_RW(cpu);
-+
-+static ssize_t force_show(struct kobject *kobj, struct kobj_attribute *attr, char *buf)
-+{
-+	return sprintf(buf, "%d\n", reboot_force);
-+}
-+static ssize_t force_store(struct kobject *kobj, struct kobj_attribute *attr,
-+			  const char *buf, size_t count)
-+{
-+	bool res;
-+
-+	if (!capable(CAP_SYS_BOOT))
-+		return -EPERM;
-+
-+	if (kstrtobool(buf, &res))
-+		return -EINVAL;
-+
-+	reboot_force = res;
-+
-+	return count;
-+}
-+static struct kobj_attribute reboot_force_attr = __ATTR_RW(force);
-+
-+static struct attribute *reboot_attrs[] = {
-+	&reboot_mode_attr.attr,
-+	&reboot_type_attr.attr,
-+	&reboot_cpu_attr.attr,
-+	&reboot_force_attr.attr,
-+	NULL,
-+};
-+
-+static const struct attribute_group reboot_attr_group = {
-+	.attrs = reboot_attrs,
-+};
-+
-+static int __init reboot_ksysfs_init(void)
-+{
-+	struct kobject *reboot_kobj;
-+	int ret;
-+
-+	reboot_kobj = kobject_create_and_add("reboot", kernel_kobj);
-+	if (!reboot_kobj)
-+		return -ENOMEM;
-+
-+	ret = sysfs_create_group(reboot_kobj, &reboot_attr_group);
-+	if (ret) {
-+		kobject_put(reboot_kobj);
-+		return ret;
-+	}
-+
-+	return 0;
-+}
-+late_initcall(reboot_ksysfs_init);
-+
-+#endif
--- 
-2.28.0
+Thomas's suggestion to check cpuid seems reasonably workable
 
+Jason
