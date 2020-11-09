@@ -2,122 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DDDFC2AC986
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 00:46:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D1552AC989
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 00:47:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730041AbgKIXqp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 18:46:45 -0500
-Received: from mga03.intel.com ([134.134.136.65]:55405 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727311AbgKIXqp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 18:46:45 -0500
-IronPort-SDR: ARip3f3Q5s2qAx3piaL9nkJdSJITktv8PFawiWibhHy4MSOoq9BgAF86XsoHsdVp/IOu59V7Wm
- KphL295KnIhQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9800"; a="170001075"
-X-IronPort-AV: E=Sophos;i="5.77,464,1596524400"; 
-   d="scan'208";a="170001075"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Nov 2020 15:46:44 -0800
-IronPort-SDR: 8yHss2GP6+rx8lVgQdr/uzPkKA29kGB2KjnH0jlk4TvqNbcBsIWE49xMSQn2O3Fv4/GjzKsE0J
- 28pYfrGVjMbA==
-X-IronPort-AV: E=Sophos;i="5.77,464,1596524400"; 
-   d="scan'208";a="541089940"
-Received: from paasikivi.fi.intel.com ([10.237.72.42])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Nov 2020 15:46:41 -0800
-Received: by paasikivi.fi.intel.com (Postfix, from userid 1000)
-        id 89C3220867; Tue, 10 Nov 2020 01:46:38 +0200 (EET)
-Date:   Tue, 10 Nov 2020 01:46:38 +0200
-From:   Sakari Ailus <sakari.ailus@linux.intel.com>
-To:     Alexandre Torgue <alexandre.torgue@st.com>
-Cc:     Hugues Fruchet <hugues.fruchet@st.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Hans Verkuil <hverkuil@xs4all.nl>,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-media@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        Alain Volmat <alain.volmat@st.com>,
-        Yannick Fertre <yannick.fertre@st.com>,
-        Philippe CORNU <philippe.cornu@st.com>
-Subject: Re: [PATCH v5 0/4] DCMI BT656 parallel bus mode support
-Message-ID: <20201109234638.GQ26150@paasikivi.fi.intel.com>
-References: <1604511132-4014-1-git-send-email-hugues.fruchet@st.com>
- <016661fc-e9dd-bd4a-f26d-00e54626f030@st.com>
- <20201106115308.GO26150@paasikivi.fi.intel.com>
- <027a0bb1-788e-dc73-a941-4d55c8ec5481@st.com>
+        id S1730920AbgKIXra (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 18:47:30 -0500
+Received: from mail-02.mail-europe.com ([51.89.119.103]:53964 "EHLO
+        mail-02.mail-europe.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729452AbgKIXra (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 18:47:30 -0500
+Date:   Mon, 09 Nov 2020 23:47:23 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me; s=protonmail;
+        t=1604965646; bh=uYN8M4VNUEQtV4L58BW2W4twRUw/8B/3sQ69oqzf5Ik=;
+        h=Date:To:From:Cc:Reply-To:Subject:From;
+        b=l7C3WflOqe8XWnTmLJY+5gpnzVnH/Mjgx398KZnT/BnobLVmztvbroExU0Dp1Tio+
+         RW9bmknOO7ODew6S59iR0JKK3T4mVRpiP4/WWVzZ5ip2x5+IGleQIV5jJdyQxNiex3
+         svHiWc6NUOCSszEawyMOelTTyAiLaZmqMYOr+OUCRqNI9A+Pe4+v+znt5uxWS3vaRP
+         pQZ3Vo1y9JzyGHEJftnTMFxbV0l2mIbIpYLq7r25dGVVrwqTNYNP5l/jMoZbU/JNSb
+         rQMlFRiUkqanXDR9i/d4crF6kY7oFl/a6m4vvax/P8pphaNiNAa1ReX2MrG9njpwaR
+         jzhuNk4w0ZH1w==
+To:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+From:   Alexander Lobakin <alobakin@pm.me>
+Cc:     Eric Dumazet <edumazet@google.com>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Martin Varghese <martin.varghese@nokia.com>,
+        Pravin B Shelar <pshelar@ovn.org>,
+        Willem de Bruijn <willemb@google.com>,
+        Guillaume Nault <gnault@redhat.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Florian Westphal <fw@strlen.de>,
+        Steffen Klassert <steffen.klassert@secunet.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Yadu Kishore <kyk.segfault@gmail.com>,
+        Vladimir Oltean <vladimir.oltean@nxp.com>,
+        Alexander Lobakin <alobakin@pm.me>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Reply-To: Alexander Lobakin <alobakin@pm.me>
+Subject: [PATCH v2 net-next] net: skb_vlan_untag(): don't reset transport offset if set by GRO layer
+Message-ID: <7JgIkgEztzt0W6ZtC9V9Cnk5qfkrUFYcpN871syCi8@cp4-web-040.plabs.ch>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <027a0bb1-788e-dc73-a941-4d55c8ec5481@st.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
+        mailout.protonmail.ch
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 09, 2020 at 09:37:51AM +0100, Alexandre Torgue wrote:
-> Hi Sakari
-> 
-> On 11/6/20 12:53 PM, Sakari Ailus wrote:
-> > Hi Alexandre,
-> > 
-> > On Thu, Nov 05, 2020 at 10:26:37AM +0100, Alexandre Torgue wrote:
-> > > Hi Huges
-> > > 
-> > > On 11/4/20 6:32 PM, Hugues Fruchet wrote:
-> > > > Add support of BT656 embedded synchronization bus.
-> > > > This mode allows to save hardware synchro lines hsync & vsync
-> > > > by replacing them with synchro codes embedded in data stream.
-> > > > Add "bus-type" property and make it required so that there is no
-> > > > ambiguity between parallel mode (bus-type=5) and BT656 mode (bus-type=6).
-> > > > 
-> > > > ===========
-> > > > = history =
-> > > > ===========
-> > > > version 5:
-> > > >     - Add revisited bindings and devicetree with explicit use of "bus-type"
-> > > > 
-> > > > version 4:
-> > > >     - Fix typo in commit message
-> > > > 
-> > > > version 3:
-> > > >     - Fix bus_width print to %u as per Sakari comment
-> > > > 
-> > > > version 2:
-> > > >     - As per Sakari remark, revisit commit message and document
-> > > >       BT656 parallel bus mode in bindings
-> > > > 
-> > > > version 1:
-> > > >     - Initial submission
-> > > > 
-> > > > Hugues Fruchet (4):
-> > > >     media: stm32-dcmi: add support of BT656 bus
-> > > >     media: dt-bindings: media: st,stm32-dcmi: add support of BT656 bus
-> > > >     ARM: dts: stm32: set bus-type in DCMI endpoint for stm32mp157c-ev1
-> > > >       board
-> > > >     ARM: dts: stm32: set bus-type in DCMI endpoint for stm32429i-eval
-> > > >       board
-> > > > 
-> > > >    .../devicetree/bindings/media/st,stm32-dcmi.yaml   | 38 ++++++++++++++++++++++
-> > > >    arch/arm/boot/dts/stm32429i-eval.dts               |  1 +
-> > > >    arch/arm/boot/dts/stm32mp157c-ev1.dts              |  1 +
-> > > >    drivers/media/platform/stm32/stm32-dcmi.c          | 37 +++++++++++++++++++--
-> > > >    4 files changed, 75 insertions(+), 2 deletions(-)
-> > > > 
-> > > 
-> > > I'll take DT patches on stm32-next tree.
-> > 
-> > Just checking: that is only the two last patches in the set, or also the
-> > binding patch?
-> 
-> Usually I let drivers/subsystem maintainer taking dt-bindings patches with
-> drivers patches.
-> (If binding changes come only with dts(i) patches I take them in my tree)
-> 
-> -->So yes I'll take only the last two patches.
+Similar to commit fda55eca5a33f
+("net: introduce skb_transport_header_was_set()"), avoid resetting
+transport offsets that were already set by GRO layer. This not only
+mirrors the behavior of __netif_receive_skb_core(), but also makes
+sense when it comes to UDP GSO fraglists forwarding: transport offset
+of such skbs is set only once by GRO receive callback and remains
+untouched and correct up to the xmitting driver in 1:1 case, but
+becomes junk after untagging in ingress VLAN case and breaks UDP
+GSO offload. This does not happen after this change, and all types
+of forwarding of UDP GSO fraglists work as expected.
 
-Ack, thanks!
+Since v1 [1]:
+ - keep the code 1:1 with __netif_receive_skb_core() (Jakub).
 
--- 
-Sakari Ailus
+[1] https://lore.kernel.org/netdev/zYurwsZRN7BkqSoikWQLVqHyxz18h4LhHU4NFa2V=
+w@cp4-web-038.plabs.ch
+
+Signed-off-by: Alexander Lobakin <alobakin@pm.me>
+---
+ net/core/skbuff.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/net/core/skbuff.c b/net/core/skbuff.c
+index 1ba8f0163744..aa3d2828b7a2 100644
+--- a/net/core/skbuff.c
++++ b/net/core/skbuff.c
+@@ -5430,7 +5430,8 @@ struct sk_buff *skb_vlan_untag(struct sk_buff *skb)
+ =09=09goto err_free;
+=20
+ =09skb_reset_network_header(skb);
+-=09skb_reset_transport_header(skb);
++=09if (!skb_transport_header_was_set(skb))
++=09=09skb_reset_transport_header(skb);
+ =09skb_reset_mac_len(skb);
+=20
+ =09return skb;
+--=20
+2.29.2
+
+
