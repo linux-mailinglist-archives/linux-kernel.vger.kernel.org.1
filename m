@@ -2,134 +2,317 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 312F62ABE5E
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 15:15:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 76C362ABE67
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 15:16:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731007AbgKIOOw convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 9 Nov 2020 09:14:52 -0500
-Received: from eu-smtp-delivery-151.mimecast.com ([207.82.80.151]:44268 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730467AbgKIOOs (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 09:14:48 -0500
-Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-176-ab1M7LMuPKqwIq9jjcuAtw-1; Mon, 09 Nov 2020 14:14:44 +0000
-X-MC-Unique: ab1M7LMuPKqwIq9jjcuAtw-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
- Server (TLS) id 15.0.1347.2; Mon, 9 Nov 2020 14:14:43 +0000
-Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
- AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
- Mon, 9 Nov 2020 14:14:43 +0000
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Peter Zijlstra' <peterz@infradead.org>
-CC:     Steven Rostedt <rostedt@goodmis.org>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        "mingo@kernel.org" <mingo@kernel.org>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "kan.liang@linux.intel.com" <kan.liang@linux.intel.com>,
-        "acme@kernel.org" <acme@kernel.org>,
-        "mark.rutland@arm.com" <mark.rutland@arm.com>,
-        "alexander.shishkin@linux.intel.com" 
-        <alexander.shishkin@linux.intel.com>,
-        "jolsa@redhat.com" <jolsa@redhat.com>,
-        "namhyung@kernel.org" <namhyung@kernel.org>,
-        "ak@linux.intel.com" <ak@linux.intel.com>,
-        "eranian@google.com" <eranian@google.com>
-Subject: RE: [PATCH 4/6] perf: Optimize get_recursion_context()
-Thread-Topic: [PATCH 4/6] perf: Optimize get_recursion_context()
-Thread-Index: AQHWrxDB+hviZpPrkUisLgNdhr09JamxnS3ggA4n6oCAAB9HwA==
-Date:   Mon, 9 Nov 2020 14:14:43 +0000
-Message-ID: <262e5838b89f4776a1830bc218a6d9a6@AcuMS.aculab.com>
-References: <20201030151345.540479897@infradead.org>
- <20201030151955.187580298@infradead.org> <20201030181138.215b2b6a@carbon>
- <20201030162248.58e388f0@oasis.local.home>
- <20201030230152.GT2594@hirez.programming.kicks-ass.net>
- <6371740df7704217926315e97294a894@AcuMS.aculab.com>
- <20201109121237.GJ2594@hirez.programming.kicks-ass.net>
-In-Reply-To: <20201109121237.GJ2594@hirez.programming.kicks-ass.net>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        id S1730587AbgKIOQb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 09:16:31 -0500
+Received: from mx2.suse.de ([195.135.220.15]:35722 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730088AbgKIOQa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 09:16:30 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1604931388;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=HsVZbhaxkImtoEkYoepjmfxeeVJOWUETsquuxtvijr4=;
+        b=RwZiE7Qp0SaGpyfhtil5BvGWEyt6m1HfXU+0CBJgYQudE3ea9sPX41sCfdkKBNRaA8irl7
+        7xXYnp9Cc0llfwXCRx5oJIVW3toXXUVwT2DH1fGOvPQ2lohyFel16N9EvLuRJatDvVl/Pm
+        7VbZhxmLglXRksAkD0Oi6ZtEuxvgC4I=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id BE2E2ABD1;
+        Mon,  9 Nov 2020 14:16:28 +0000 (UTC)
+Date:   Mon, 9 Nov 2020 15:16:28 +0100
+From:   Petr Mladek <pmladek@suse.com>
+To:     Matteo Croce <mcroce@linux.microsoft.com>
+Cc:     linux-kernel@vger.kernel.org, Mike Rapoport <rppt@kernel.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Pavel Tatashin <pasha.tatashin@soleen.com>,
+        Kees Cook <keescook@chromium.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Tyler Hicks <tyhicks@linux.microsoft.com>
+Subject: Re: [PATCH v2] reboot: allow to specify reboot mode via sysfs
+Message-ID: <20201109141628.GL1602@alley>
+References: <20201106200704.192894-1-mcroce@linux.microsoft.com>
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201106200704.192894-1-mcroce@linux.microsoft.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-> -----Original Message-----
-> From: Peter Zijlstra <peterz@infradead.org>
-> Sent: 09 November 2020 12:13
-> To: David Laight <David.Laight@ACULAB.COM>
-> Cc: Steven Rostedt <rostedt@goodmis.org>; Jesper Dangaard Brouer <brouer@redhat.com>;
-> mingo@kernel.org; tglx@linutronix.de; linux-kernel@vger.kernel.org; kan.liang@linux.intel.com;
-> acme@kernel.org; mark.rutland@arm.com; alexander.shishkin@linux.intel.com; jolsa@redhat.com;
-> namhyung@kernel.org; ak@linux.intel.com; eranian@google.com
-> Subject: Re: [PATCH 4/6] perf: Optimize get_recursion_context()
+On Fri 2020-11-06 21:07:04, Matteo Croce wrote:
+> From: Matteo Croce <mcroce@microsoft.com>
 > 
-> On Sat, Oct 31, 2020 at 12:11:42PM +0000, David Laight wrote:
-> > The gcc 7.5.0 I have handy probably generates the best code for:
-> >
-> > unsigned char q_2(unsigned int pc)
-> > {
-> >         unsigned char rctx = 0;
-> >
-> >         rctx += !!(pc & (NMI_MASK));
-> >         rctx += !!(pc & (NMI_MASK | HARDIRQ_MASK));
-> >         rctx += !!(pc & (NMI_MASK | HARDIRQ_MASK | SOFTIRQ_OFFSET));
-> >
-> >         return rctx;
-> > }
-> >
-> > 0000000000000000 <q_2>:
-> >    0:   f7 c7 00 00 f0 00       test   $0xf00000,%edi     # clock 0
-> >    6:   0f 95 c0                setne  %al                # clock 1
-> >    9:   f7 c7 00 00 ff 00       test   $0xff0000,%edi     # clock 0
-> >    f:   0f 95 c2                setne  %dl                # clock 1
-> >   12:   01 c2                   add    %eax,%edx          # clock 2
-> >   14:   81 e7 00 01 ff 00       and    $0xff0100,%edi
-> >   1a:   0f 95 c0                setne  %al
-> >   1d:   01 d0                   add    %edx,%eax          # clock 3
-> >   1f:   c3                      retq
-> >
-> > I doubt that is beatable.
-> >
-> > I've annotated the register dependency chain.
-> > Likely to be 3 (or maybe 4) clocks.
-> > The other versions are a lot worse (7 or 8) without allowing
-> > for 'sbb' taking 2 clocks on a lot of Intel cpus.
+> The kernel cmdline reboot= option offers some sort of control
+> on how the reboot is issued.
+> Add handles in sysfs to allow setting these reboot options, so they
+> can be changed when the system is booted, other than at boot time.
 > 
-> https://godbolt.org/z/EfnG8E
+> The handlers are under <sysfs>/kernel/reboot, can be read to
+> get the current configuration and written to alter it.
 > 
-> Recent GCC just doesn't want to do that. Still, using u8 makes sense, so
-> I've kept that.
+> --- /dev/null
+> +++ b/Documentation/ABI/testing/sysfs-kernel-reboot
+> @@ -0,0 +1,26 @@
+> +What:		/sys/kernel/reboot
+> +Date:		October 2020
+> +KernelVersion:	5.11
+> +Contact:	Matteo Croce <mcroce@microsoft.com>
+> +Description:	Interface to set the kernel reboot mode, similarly to
+> +		what can be done via the reboot= cmdline option.
+> +		(see Documentation/admin-guide/kernel-parameters.txt)
+> +
+> +What:		/sys/kernel/reboot/mode
+> +What:		/sys/kernel/reboot/type
+> +What:		/sys/kernel/reboot/cpu
+> +What:		/sys/kernel/reboot/force
 
-u8 helps x86 because its 'setne' only affects the low 8 bits.
-I guess that seemed a good idea when it was added (386).
-It doesn't seem to make the other architectures much worse.
+I do not see any file where it is accumulated this way.
+It seems that each path is always described separately.
 
-gcc 10.x can be persuaded to generate the above code.
+I am not sure if it is really needed. But it might be needed
+when processing the API documentation.
 
-https://godbolt.org/z/6GoT94
+Please, split it.
 
-It sometimes seems to me that every new version of gcc is
-larger, slower and generates worse code than the previous one.
 
-	David
+> +
+> +Date:		October 2020
+> +Contact:	Matteo Croce <mcroce@microsoft.com>
+> +Description:	Tune reboot parameters.
+> +
+> +		mode: Reboot mode. Valid values are:
+> +		cold warm hard soft gpio
+> +
+> +		type: Reboot type. Valid values are:
+> +		bios acpi kbd triple efi pci
+> +
+> +		cpu: CPU number to use to reboot.
+> +
+> +		force: Force an immediate reboot.
+> diff --git a/kernel/reboot.c b/kernel/reboot.c
+> index e7b78d5ae1ab..b9e607517ae3 100644
+> --- a/kernel/reboot.c
+> +++ b/kernel/reboot.c
+> @@ -594,3 +594,196 @@ static int __init reboot_setup(char *str)
+>  	return 1;
+>  }
+>  __setup("reboot=", reboot_setup);
+> +
+> +#ifdef CONFIG_SYSFS
+> +
+> +#define STARTS_WITH(s, sc) (!strncmp(s, sc, sizeof(sc)-1))
+> +
+> +static ssize_t mode_show(struct kobject *kobj, struct kobj_attribute *attr, char *buf)
+> +{
+> +	const char *val;
+> +
+> +	switch (reboot_mode) {
+> +	case REBOOT_COLD:
+> +		val = "cold\n";
 
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
+Using "\n" everywhere is weird. Also the same strings are
+repeated in the next functions.
 
+I suggest to define them only once, e.g.
+
+#define REBOOT_COLD_STR "cold"
+#define REBOOT_WARM_STR "warm"
+
+and use here:
+
+	case REBOOT_COLD:
+		val = REBOOT_COLD_STR;
+
+and then at the end
+
+	return sprintf(buf, "%s\n", val);
+
+
+> +		break;
+> +	case REBOOT_WARM:
+> +		val = "warm\n";
+> +		break;
+> +	case REBOOT_HARD:
+> +		val = "hard\n";
+> +		break;
+> +	case REBOOT_SOFT:
+> +		val = "soft\n";
+> +		break;
+> +	case REBOOT_GPIO:
+> +		val = "gpio\n";
+> +		break;
+> +	default:
+> +		val = "undefined\n";
+> +	}
+> +
+> +	return strscpy(buf, val, 10);
+
+"undefined\n" needs 11 bytes to store also the trailing '\0'.
+Anyway, the buffer should be big enough for all variants.
+
+
+> +}
+> +static ssize_t mode_store(struct kobject *kobj, struct kobj_attribute *attr,
+> +			  const char *buf, size_t count)
+> +{
+> +	if (!capable(CAP_SYS_BOOT))
+> +		return -EPERM;
+> +
+> +	if (STARTS_WITH(buf, "cold"))
+> +		reboot_mode = REBOOT_COLD;
+
+I would prefer to open code this and use strlen(). It will be obvious
+what the code does immediately. And I am sure that compilators
+will optimize out the strlen().
+
+
+	if (strncmp(buf, REBOOT_COLD_STR, strlen(REBOOT_COLD_STR)) == 0)
+		reboot_mode = REBOOT_COLD;
+	else if (strncmp(buf, REBOOT_WARM_STR, strlen(REBOOT_WARM_STR) == 0)
+		reboot_mode = REBOOT_WARM;
+	...
+
+
+
+> +	else if (STARTS_WITH(buf, "warm"))
+> +		reboot_mode = REBOOT_WARM;
+> +	else if (STARTS_WITH(buf, "hard"))
+> +		reboot_mode = REBOOT_HARD;
+> +	else if (STARTS_WITH(buf, "soft"))
+> +		reboot_mode = REBOOT_SOFT;
+> +	else if (STARTS_WITH(buf, "gpio"))
+> +		reboot_mode = REBOOT_GPIO;
+> +	else
+> +		return -EINVAL;
+> +
+> +	return count;
+> +}
+> +static struct kobj_attribute reboot_mode_attr = __ATTR_RW(mode);
+> +
+> +static ssize_t type_show(struct kobject *kobj, struct kobj_attribute *attr, char *buf)
+> +{
+> +	const char *val;
+> +
+> +	switch (reboot_type) {
+> +	case BOOT_TRIPLE:
+> +		val = "triple\n";
+
+Same here
+
+		var = BOOT_TRIPLE_STR;
+
+> +		break;
+> +	case BOOT_KBD:
+> +		val = "kbd\n";
+> +		break;
+> +	case BOOT_BIOS:
+> +		val = "bios\n";
+> +		break;
+> +	case BOOT_ACPI:
+> +		val = "acpi\n";
+> +		break;
+> +	case BOOT_EFI:
+> +		val = "efi\n";
+> +		break;
+> +	case BOOT_CF9_FORCE:
+> +		val = "cf9_force\n";
+> +		break;
+> +	case BOOT_CF9_SAFE:
+> +		val = "cf9_safe\n";
+> +		break;
+> +	default:
+> +		val = "undefined\n";
+> +	}
+> +
+> +	return strscpy(buf, val, 10);
+> +}
+> +static ssize_t type_store(struct kobject *kobj, struct kobj_attribute *attr,
+> +			  const char *buf, size_t count)
+> +{
+> +	if (!capable(CAP_SYS_BOOT))
+> +		return -EPERM;
+> +
+> +	if (STARTS_WITH(buf, "triple"))
+> +		reboot_type = BOOT_TRIPLE;
+
+and here:
+
+	if (strncmp(buf, REBOOT_TRIPLE_STR, strlen(REBOOT_TRIPLE_STR)) == 0)
+		reboot_type = REBOOT_TRIPLE;
+
+
+> +	else if (STARTS_WITH(buf, "kbd"))
+> +		reboot_type = BOOT_KBD;
+> +	else if (STARTS_WITH(buf, "bios"))
+> +		reboot_type = BOOT_BIOS;
+> +	else if (STARTS_WITH(buf, "acpi"))
+> +		reboot_type = BOOT_ACPI;
+> +	else if (STARTS_WITH(buf, "efi"))
+> +		reboot_type = BOOT_EFI;
+> +	else if (STARTS_WITH(buf, "cf9_force"))
+> +		reboot_type = BOOT_CF9_FORCE;
+> +	else if (STARTS_WITH(buf, "cf9_safe"))
+> +		reboot_type = BOOT_CF9_SAFE;
+> +	else
+> +		return -EINVAL;
+> +
+> +	return count;
+> +}
+> +static struct kobj_attribute reboot_type_attr = __ATTR_RW(type);
+> +
+> +static ssize_t force_show(struct kobject *kobj, struct kobj_attribute *attr, char *buf)
+> +{
+> +	return sprintf(buf, "%d\n", reboot_force);
+> +}
+> +static ssize_t force_store(struct kobject *kobj, struct kobj_attribute *attr,
+> +			  const char *buf, size_t count)
+> +{
+> +	if (!capable(CAP_SYS_BOOT))
+> +		return -EPERM;
+> +
+> +	if (buf[0] != '0' && buf[0] != '1')
+> +		return -EINVAL;
+
+Please use kstrtobool() that supports also other boolean values,
+for example, 'Y', 'n'.
+
+> +	rc = kstrtouint(buf, 0, &cpunum);
+> +
+> +	reboot_force = buf[0] - '0';
+> +
+> +	return count;
+> +}
+
+> +static int __init reboot_ksysfs_init(void)
+> +{
+> +	struct kobject *reboot_kobj;
+> +	int ret;
+> +
+> +	reboot_kobj = kobject_create_and_add("reboot", kernel_kobj);
+> +	if (!reboot_kobj)
+> +		return -ENOMEM;
+> +
+> +	ret = sysfs_create_group(reboot_kobj, &reboot_attr_group);
+> +	if (ret) {
+> +		kobject_put(reboot_kobj);
+> +		return ret;
+> +	}
+> +
+> +	return 0;
+> +}
+> +core_initcall(reboot_ksysfs_init);
+
+There is no need to create the sysfs interface this early. In fact, it
+might even break because the parent "kernel" node is defined
+as core_initcall() as well. The order is not defined in this case.
+
+I would do it as sybsys_initcall() like or even late_initcall().
+
+Best Regards,
+Petr
