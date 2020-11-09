@@ -2,62 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD49C2AB62A
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 12:09:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 061BD2AB63A
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 12:11:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729449AbgKILJl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 06:09:41 -0500
-Received: from mx08-00178001.pphosted.com ([91.207.212.93]:43142 "EHLO
+        id S1729197AbgKILLJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 06:11:09 -0500
+Received: from mx08-00178001.pphosted.com ([91.207.212.93]:22876 "EHLO
         mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727303AbgKILJl (ORCPT
+        by vger.kernel.org with ESMTP id S1727303AbgKILLJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 06:09:41 -0500
-Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0A9B6cQs001199;
-        Mon, 9 Nov 2020 12:09:31 +0100
+        Mon, 9 Nov 2020 06:11:09 -0500
+Received: from pps.filterd (m0046660.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0A9B7u8n009311;
+        Mon, 9 Nov 2020 12:11:02 +0100
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=subject : to : cc :
  references : from : message-id : date : mime-version : in-reply-to :
  content-type : content-transfer-encoding; s=STMicroelectronics;
- bh=htm0vOekG4ttjg1zbmaMtAIvz7vTW1YVK5qd+mjldiQ=;
- b=exORZa/SUt2HnKsoYhoxGaAQStF/JoUI66u54353aVIeGS02MsI22SAfQunhGpD56Kkp
- gNNifa3uezfBleTBgt+ZxazKTD80fy0XKCbA6qYSy9xg33BqocLlkeARdDp/2b/p+p4H
- q3FLAUAIfFiGB9FwtSTtxLHKFc9kLsbjbZ+SSXJ2qvXLZt1gSXfh1IeARWolzaNkXR1i
- 7KPL/sXkBVsWGFcADuzWD9YzB3NnbLmRtKdSKWg8J4CFbIZQdSQ2ACDsAxLCJ5EMt9xG
- NJF71nS87mFWQf6HbOXsZpBg7Y8JOHol1yBfllxIG3JNporBYPE4uhR1wb0oec8gPGwX Gw== 
+ bh=9bs5t6Bcs74pMRrZFN4Yti7b4GoxPP7Dgl4wugNGlh0=;
+ b=ZL+uSg4JZZJSn0ynN2frvn64ELbA0PyPKRms/JkiSOL2zHu7X5wsgNr2CoeGBZA1oMjZ
+ 6SZ2cfYZo2oaBf7VNEM9iBPcQsEd2qk7aXkD5MQO1GkIqc/OWXHlhGbj1aNfEA15b+Gi
+ /Lna5l8SHpj5ZfrvauYda7sEnFsy9/uqn8gWQK6fUAzeNetTB2CaWe/yjW2lTczd5MpQ
+ rzkXPkLHgpJJAfZhPcaBamTXdkTpPEY5sMAx6Zm8OnNbED0jHwWW8wZOlVSbqE4H5Sr9
+ EJc2bkVbaqqh7s4ocM1rlFi8FLdSB3EfLsQH+pcAlVUJETH+hnR4LDJ66ORDVEA5BiqB uQ== 
 Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 34nkbmsnq9-1
+        by mx07-00178001.pphosted.com with ESMTP id 34nhkcj4gv-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 09 Nov 2020 12:09:31 +0100
+        Mon, 09 Nov 2020 12:11:02 +0100
 Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 60C3310002A;
-        Mon,  9 Nov 2020 12:09:31 +0100 (CET)
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 6004210002A;
+        Mon,  9 Nov 2020 12:11:02 +0100 (CET)
 Received: from Webmail-eu.st.com (sfhdag3node2.st.com [10.75.127.8])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 4811F24D149;
-        Mon,  9 Nov 2020 12:09:31 +0100 (CET)
-Received: from lmecxl0912.lme.st.com (10.75.127.45) by SFHDAG3NODE2.st.com
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 541D824D14B;
+        Mon,  9 Nov 2020 12:11:02 +0100 (CET)
+Received: from lmecxl0912.lme.st.com (10.75.127.44) by SFHDAG3NODE2.st.com
  (10.75.127.8) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 9 Nov
- 2020 12:09:30 +0100
-Subject: Re: [PATCH 0/3] ARM: dts: stm32: enable crypto controllers
+ 2020 12:11:01 +0100
+Subject: Re: [PATCH 1/1] ARM: multi_v7_defconfig: add STM32 crypto support
 To:     Lionel Debieve <lionel.debieve@st.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>
+        Russell King <linux@armlinux.org.uk>
 CC:     <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        Nicolas Toromanoff <nicolas.toromanoff@st.com>
-References: <20201105102331.12984-1-lionel.debieve@st.com>
+        <linux-kernel@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>
+References: <20201105094730.8320-1-lionel.debieve@st.com>
 From:   Alexandre Torgue <alexandre.torgue@st.com>
-Message-ID: <28f5e745-bdac-7cc1-62a9-745e8d41a142@st.com>
-Date:   Mon, 9 Nov 2020 12:08:48 +0100
+Message-ID: <ed3d0ce8-b3f2-f941-afaa-24147da282e4@st.com>
+Date:   Mon, 9 Nov 2020 12:10:19 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20201105102331.12984-1-lionel.debieve@st.com>
+In-Reply-To: <20201105094730.8320-1-lionel.debieve@st.com>
 Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.75.127.45]
-X-ClientProxiedBy: SFHDAG2NODE2.st.com (10.75.127.5) To SFHDAG3NODE2.st.com
+X-Originating-IP: [10.75.127.44]
+X-ClientProxiedBy: SFHDAG4NODE2.st.com (10.75.127.11) To SFHDAG3NODE2.st.com
  (10.75.127.8)
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
  definitions=2020-11-09_02:2020-11-05,2020-11-09 signatures=0
@@ -67,24 +65,34 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Hi Lionel
 
-On 11/5/20 11:23 AM, Lionel Debieve wrote:
-> Enable the crypto controllers in the STM32MP157C-EV1 and STM32MP157A-DK1
-> STM32MP157C-DK2 boards.
+On 11/5/20 10:47 AM, Lionel Debieve wrote:
+> Enable crypto controllers enabling following flags as module:
+> CONFIG_CRYPTO_DEV_STM32_CRC
+> CONFIG_CRYPTO_DEV_STM32_HASH
+> CONFIG_CRYPTO_DEV_STM32_CRYP
 > 
-> Lionel Debieve (2):
->    ARM: dts: stm32: enable HASH by default on stm32mp15
->    ARM: dts: stm32: enable CRYP by default on stm32mp15
+> Signed-off-by: Lionel Debieve <lionel.debieve@st.com>
+> ---
+>   arch/arm/configs/multi_v7_defconfig | 3 +++
+>   1 file changed, 3 insertions(+)
 > 
-> Nicolas Toromanoff (1):
->    ARM: dts: stm32: enable CRC1 by default on stm32mp15
-> 
->   arch/arm/boot/dts/stm32mp157c-dk2.dts  |  4 ++++
->   arch/arm/boot/dts/stm32mp157c-ed1.dts  | 12 ++++++++++++
->   arch/arm/boot/dts/stm32mp15xx-dkx.dtsi |  8 ++++++++
->   3 files changed, 24 insertions(+)
+> diff --git a/arch/arm/configs/multi_v7_defconfig b/arch/arm/configs/multi_v7_defconfig
+> index a611b0c1e540..57eafa2d7775 100644
+> --- a/arch/arm/configs/multi_v7_defconfig
+> +++ b/arch/arm/configs/multi_v7_defconfig
+> @@ -1133,6 +1133,9 @@ CONFIG_CRYPTO_DEV_ATMEL_AES=m
+>   CONFIG_CRYPTO_DEV_ATMEL_TDES=m
+>   CONFIG_CRYPTO_DEV_ATMEL_SHA=m
+>   CONFIG_CRYPTO_DEV_ROCKCHIP=m
+> +CONFIG_CRYPTO_DEV_STM32_CRC=m
+> +CONFIG_CRYPTO_DEV_STM32_HASH=m
+> +CONFIG_CRYPTO_DEV_STM32_CRYP=m
+>   CONFIG_CMA_SIZE_MBYTES=64
+>   CONFIG_PRINTK_TIME=y
+>   CONFIG_MAGIC_SYSRQ=y
 > 
 
-Series applied on stm32-next.
+Applied on stm32-next.
 
-Regards
+Thanks.
 Alex
