@@ -2,152 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C4B12AB1E2
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 08:48:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F56C2AB1E5
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 08:51:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729680AbgKIHs5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 02:48:57 -0500
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:48898 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728904AbgKIHs4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 02:48:56 -0500
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0A97mh32029713;
-        Mon, 9 Nov 2020 01:48:43 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1604908123;
-        bh=/XF0EGf1HmpAsphmVE5gnDEws49RwGsRwfQ6uNTI+4I=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=te3K6raBCO2X5Om0xvSQrZV3ZYHQx5+OmzBLHhwBI6pmhWyGHUM3rUFDvuu00x0xg
-         xR3bagdK4Qcvt7uJ4T7CQf1ZWLDGcylAbfPeGtiL7+9B+jkj50XX8flv1faKKdmBxV
-         g8OI5H9CsB0vBL6sGjxuVpfg0nv5OsNmap1vtTqw=
-Received: from DLEE106.ent.ti.com (dlee106.ent.ti.com [157.170.170.36])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0A97mhYn084647
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 9 Nov 2020 01:48:43 -0600
-Received: from DLEE107.ent.ti.com (157.170.170.37) by DLEE106.ent.ti.com
- (157.170.170.36) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Mon, 9 Nov
- 2020 01:48:43 -0600
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE107.ent.ti.com
- (157.170.170.37) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Mon, 9 Nov 2020 01:48:43 -0600
-Received: from [192.168.2.6] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0A97mesc128217;
-        Mon, 9 Nov 2020 01:48:41 -0600
-Subject: Re: [PATCH 2/4] arm64: dts: ti: k3-j721e*: Cleanup disabled nodes at
- SoC dtsi level
-To:     Nishanth Menon <nm@ti.com>
-CC:     Roger Quadros <rogerq@ti.com>, Keerthy <j-keerthy@ti.com>,
-        Jyri Sarha <jsarha@ti.com>,
-        Tomi Valkeinen <tomi.valkeinen@ti.com>,
-        Lokesh Vutla <lokeshvutla@ti.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Tony Lindgren <tony@atomide.com>,
-        Tero Kristo <t-kristo@ti.com>, <linux-kernel@vger.kernel.org>,
-        <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>
-References: <20201104224356.18040-1-nm@ti.com>
- <20201104224356.18040-3-nm@ti.com>
- <d9324b76-5587-b583-97da-5cb52f294c31@ti.com>
- <20201105140806.326ubfppb4guexpi@cultural>
- <37b4b284-0da5-c602-82a2-2b672f89891f@ti.com>
- <20201106214638.amgltswy6dygnyee@tubular>
-From:   Peter Ujfalusi <peter.ujfalusi@ti.com>
-Message-ID: <400a464f-8d5b-9979-fb77-d939ac3bc994@ti.com>
-Date:   Mon, 9 Nov 2020 09:49:26 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        id S1729685AbgKIHvB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 02:51:01 -0500
+Received: from mx2.suse.de ([195.135.220.15]:33750 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729092AbgKIHvA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 02:51:00 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1604908259;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=qg5Pi+sMAA7PwXHi8JkHRstYeV1aftzdzAHHAsIIAtQ=;
+        b=MhURRHaVmstXZXNgSFKtAk7ca7t+TSOfXWrVZwYRchDM0keBxmMEmUXOTZjVO3xNvgQoEm
+        bYKI9gk9CBuZiHgPjHkX5o6eYw537WrX3vUzqAYn4XRvR39Hp87TSOTagGwjkodSvcOjT9
+        GhzVvld2ARF7iEov7ecElQMdiimyEGE=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 24C7FABCC;
+        Mon,  9 Nov 2020 07:50:59 +0000 (UTC)
+Date:   Mon, 9 Nov 2020 08:50:58 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     NeilBrown <neilb@suse.de>
+Cc:     Tejun Heo <tj@kernel.org>, Lai Jiangshan <jiangshanlai@gmail.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Trond Myklebust <trondmy@hammerspace.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH rfc] workqueue: honour cond_resched() more effectively.
+Message-ID: <20201109075058.GC12240@dhcp22.suse.cz>
+References: <87v9efp7cs.fsf@notabene.neil.brown.name>
 MIME-Version: 1.0
-In-Reply-To: <20201106214638.amgltswy6dygnyee@tubular>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87v9efp7cs.fsf@notabene.neil.brown.name>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 06/11/2020 23.46, Nishanth Menon wrote:
-> On 13:32-20201106, Peter Ujfalusi wrote:
-> [...]
->>>
->>>>
->>>>> default power management functionality etc
->>>>
->>>> Right, so how does that helps with devices present in the SoC, but no
->>>> node at all? First thing which comes to mind is AASRC, we don't have
->>>> Linux driver for it (and no DT binding document), but that does not mean
->>>> that it is not present. How PM would take that into account?
->>>
->>> I think we are mixing topics here -> I was stating the motivation why
->>> devicetree chose such as default.
->>
->> I don't question the fact that 'okay' is the default status if it is not
->> explicitly present. There is no better default than that.
+On Mon 09-11-20 13:54:59, Neil Brown wrote:
 > 
-> ^^ -> Alright, that is all we are trying to do here: defaults in the
-> SoC.dtsi and specific cleanups (firmware reserved / board unused
-> disables) be done in a common board.dtsi (for now, there is no such
-> specific need, I guess).
-
-The default is what it is: default choice which suits most of the nodes.
-
-If the node is not complete in it's present form then it is not in it's
-default state. imho.
-
->>> Alright - what do we suggest we do?
->>
->> Not sure, I'm 'whatever' after [1] makes it to mainline or next.
-> [....]
->> [1]
->> https://lore.kernel.org/alsa-devel/20201106072551.689-1-peter.ujfalusi@ti.com/
+> If a worker task for a normal (bound, non-CPU-intensive) calls
+> cond_resched(), this allows other non-workqueue processes to run, but
+> does *not* allow other workqueue workers to run.  This is because
+> workqueue will only attempt to run one task at a time on each CPU,
+> unless the current task actually sleeps.
 > 
+> This is already a problem for should_reclaim_retry() in mm/page_alloc.c,
+> which inserts a small sleep just to convince workqueue to allow other
+> workers to run.
 > 
-> I don't see the relationship between the series.. I think this series
-> brings no change in dtb, hence with OR without your driver cleanup
-> series, there is no practical regressions.
-
-This series opens up the possibility of nodes leaking to dtb with known
-broken state and the driver should have a better strategy than 'works by
-luck' to handle it ;)
-
->>
->>> Tony, Rob - I need some guidance here.
->>
->> I'm fine whatever way we take, but I think it is up to you to make the
->> call as the maintainer of the TI dts files... ;)
+> It can also be a problem for NFS when closing a very large file (e.g.
+> 100 million pages in memory).  NFS can call the final iput() from a
+> workqueue, which can then take long enough to trigger a workqueue-lockup
+> warning, and long enough for performance problems to be observed.
 > 
-> Yep - I have'nt seen a reason yet that must cause us to change from the
-> Device tree default approach in our debates.
-
-Imho 'disabled' is the default for nodes like McASP as it is:
-"Indicates that the device is not presently operational, but it might
-become operational in the future" (for example, needed properties added
-to the node).
-
->>>> There is no such a tag, but:
->>>> whatever-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
->>>
->>> OK - I have no idea how B4 or patchworks pick that one as :D
->>
->> If we take this road, than I'm okay with it, but I'm going to take
->> silent protest (not sending acked-by or revired-by).
->> That should not stop you doing what you believe is best for the future!
+> I added a WARN_ON_ONCE() in cond_resched() to report when it is run from
+> a workqueue, and got about 20 hits during boot, many of system_wq (aka
+> "events") which suggests there is a real chance that worker are being
+> delayed unnecessarily be tasks which are written to politely relinquish
+> the CPU.
 > 
-> OK - thanks for your review and the discussions, always appreciate
-> getting our views out there.
+> I think that once a worker calls cond_resched(), it should be treated as
+> though it was run from a WQ_CPU_INTENSIVE queue, because only cpu-intensive
+> tasks need to call cond_resched().  This would allow other workers to be
+> scheduled.
 > 
-> if there are no other comments, I will try and post a v2 over the
-> weekend.
+> The following patch achieves this I believe.
 
-OK
+I cannot really judge the implementation because my understanding of the
+WQ concurrency control is very superficial but I echo that the existing
+behavior is really nonintuitive. It certainly burnt me for the oom
+situations where the page allocator cannot make much progress to reclaim
+memory and it has to retry really hard. Having to handle worker context
+explicitly/differently is error prone and as your example of final iput
+in NFS shows that the allocator is not the only path affected so having
+a general solution is better.
 
-- Péter
+That being said I would really love to see cond_resched to work
+transparently.
 
-Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
-Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
+Thanks!
+-- 
+Michal Hocko
+SUSE Labs
