@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B28AA2ABD01
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 14:42:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DE6DD2ABCFD
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 14:42:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731236AbgKINm3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 08:42:29 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55000 "EHLO mail.kernel.org"
+        id S1732583AbgKINmT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 08:42:19 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55034 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730536AbgKINAx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 08:00:53 -0500
+        id S1730538AbgKINA4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 08:00:56 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 57F49216C4;
-        Mon,  9 Nov 2020 13:00:52 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 364DC20684;
+        Mon,  9 Nov 2020 13:00:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604926852;
-        bh=xNOtbpodwxIfYFkm/QNmfkGu1hrR7x9Tgi5laYWWz7Q=;
+        s=default; t=1604926855;
+        bh=LR6TJwTFeV/7ptm/etcGeH6qT/PUkytplgnA/IRB8NY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=v0YA0tx01GHwFlWP7x5WwT2CAFKi9EDcu0Y3Wx0NRRKAj8mlrcAzZz7sXhWS5Xn7S
-         0KgpIJhnYr8UfGd+FODKDiFC+sDU+zPv6tYjTte+CcIeYRZuO2ApfFlSzTkx72EPs7
-         UZKDpwVvuZMFdhVp8f/VzwX6JUIYrPtYBeCOeiMA=
+        b=eU0vBIHQvygJ1yiwTCWTSQQ9+UnAnG0+d7V/pkf64O9eMvsWhzKQE4fs2JHyI3vTs
+         lim+OOuMcPcPNJY4achWXWDpZMc7v4DEf/gEFmT67CsXYpnxODEpNqoZJXxfbVtUE5
+         qLRv0chmkQy6J1qZSHGDu9IEWGxS2vQNaDoZU6Jo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
-        John Ogness <john.ogness@linutronix.de>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
-        Petr Mladek <pmladek@suse.com>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 027/117] printk: reduce LOG_BUF_SHIFT range for H8300
-Date:   Mon,  9 Nov 2020 13:54:13 +0100
-Message-Id: <20201109125026.943723887@linuxfoundation.org>
+        stable@vger.kernel.org, Douglas Anderson <dianders@chromium.org>,
+        Daniel Thompson <daniel.thompson@linaro.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.9 028/117] kgdb: Make "kgdbcon" work properly with "kgdb_earlycon"
+Date:   Mon,  9 Nov 2020 13:54:14 +0100
+Message-Id: <20201109125026.984670452@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201109125025.630721781@linuxfoundation.org>
 References: <20201109125025.630721781@linuxfoundation.org>
@@ -45,40 +43,68 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: John Ogness <john.ogness@linutronix.de>
+From: Douglas Anderson <dianders@chromium.org>
 
-[ Upstream commit 550c10d28d21bd82a8bb48debbb27e6ed53262f6 ]
+[ Upstream commit b18b099e04f450cdc77bec72acefcde7042bd1f3 ]
 
-The .bss section for the h8300 is relatively small. A value of
-CONFIG_LOG_BUF_SHIFT that is larger than 19 will create a static
-printk ringbuffer that is too large. Limit the range appropriately
-for the H8300.
+On my system the kernel processes the "kgdb_earlycon" parameter before
+the "kgdbcon" parameter.  When we setup "kgdb_earlycon" we'll end up
+in kgdb_register_callbacks() and "kgdb_use_con" won't have been set
+yet so we'll never get around to starting "kgdbcon".  Let's remedy
+this by detecting that the IO module was already registered when
+setting "kgdb_use_con" and registering the console then.
 
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: John Ogness <john.ogness@linutronix.de>
-Reviewed-by: Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
-Acked-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
-Signed-off-by: Petr Mladek <pmladek@suse.com>
-Link: https://lore.kernel.org/r/20200812073122.25412-1-john.ogness@linutronix.de
+As part of this, to avoid pre-declaring things, move the handling of
+the "kgdbcon" further down in the file.
+
+Signed-off-by: Douglas Anderson <dianders@chromium.org>
+Link: https://lore.kernel.org/r/20200630151422.1.I4aa062751ff5e281f5116655c976dff545c09a46@changeid
+Signed-off-by: Daniel Thompson <daniel.thompson@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- init/Kconfig | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ kernel/debug/debug_core.c | 22 ++++++++++++++--------
+ 1 file changed, 14 insertions(+), 8 deletions(-)
 
-diff --git a/init/Kconfig b/init/Kconfig
-index b331feeabda42..0a615bdc203a4 100644
---- a/init/Kconfig
-+++ b/init/Kconfig
-@@ -822,7 +822,8 @@ config IKCONFIG_PROC
+diff --git a/kernel/debug/debug_core.c b/kernel/debug/debug_core.c
+index 321ccdbb73649..bc791cec58e63 100644
+--- a/kernel/debug/debug_core.c
++++ b/kernel/debug/debug_core.c
+@@ -94,14 +94,6 @@ int dbg_switch_cpu;
+ /* Use kdb or gdbserver mode */
+ int dbg_kdb_mode = 1;
  
- config LOG_BUF_SHIFT
- 	int "Kernel log buffer size (16 => 64KB, 17 => 128KB)"
--	range 12 25
-+	range 12 25 if !H8300
-+	range 12 19 if H8300
- 	default 17
- 	depends on PRINTK
- 	help
+-static int __init opt_kgdb_con(char *str)
+-{
+-	kgdb_use_con = 1;
+-	return 0;
+-}
+-
+-early_param("kgdbcon", opt_kgdb_con);
+-
+ module_param(kgdb_use_con, int, 0644);
+ module_param(kgdbreboot, int, 0644);
+ 
+@@ -811,6 +803,20 @@ static struct console kgdbcons = {
+ 	.index		= -1,
+ };
+ 
++static int __init opt_kgdb_con(char *str)
++{
++	kgdb_use_con = 1;
++
++	if (kgdb_io_module_registered && !kgdb_con_registered) {
++		register_console(&kgdbcons);
++		kgdb_con_registered = 1;
++	}
++
++	return 0;
++}
++
++early_param("kgdbcon", opt_kgdb_con);
++
+ #ifdef CONFIG_MAGIC_SYSRQ
+ static void sysrq_handle_dbg(int key)
+ {
 -- 
 2.27.0
 
