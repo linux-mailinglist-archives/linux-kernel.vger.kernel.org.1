@@ -2,82 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 99EF82AB3D8
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 10:43:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DE1F92AB3DB
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 10:44:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729176AbgKIJns (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 04:43:48 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:49315 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727774AbgKIJnr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 04:43:47 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1604915026;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Dyt2RPIryDUpKY3QdBsRG/hsGgQZ+lKraaiM8QPeOSM=;
-        b=DkGtZNWKVcTCVOq7+841ciVp71wMlphDAcCsPQ4c/HjSAOGyEC1AnSqvKQwHU0Ztqt/t2n
-        DgMVYqe/NvbqvoUnupW6RHguNYSRwGZ1FWWl3mQXPfyJyxVYn53s5zLQ+0BQN8K02+26TQ
-        CzKMZMmLr50nRMOZ6LpULfW1gOZNmc0=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-91-Y42i76i3NDWOFMA1uA47NQ-1; Mon, 09 Nov 2020 04:43:45 -0500
-X-MC-Unique: Y42i76i3NDWOFMA1uA47NQ-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D5E00801F98;
-        Mon,  9 Nov 2020 09:43:43 +0000 (UTC)
-Received: from starship (unknown [10.35.206.112])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id B217C5D98A;
-        Mon,  9 Nov 2020 09:43:41 +0000 (UTC)
-Message-ID: <a6a6e3936bd130e16ec341628e504adf9d3cb477.camel@redhat.com>
-Subject: Re: linux-next: Fixes tag needs some work in the kvm-fixes tree
-From:   Maxim Levitsky <mlevitsk@redhat.com>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Paolo Bonzini <pbonzini@redhat.com>, KVM <kvm@vger.kernel.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Date:   Mon, 09 Nov 2020 11:43:39 +0200
-In-Reply-To: <20201109081444.6f15fca2@canb.auug.org.au>
-References: <20201109081444.6f15fca2@canb.auug.org.au>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.3 (3.36.3-1.fc32) 
+        id S1729091AbgKIJoO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 04:44:14 -0500
+Received: from foss.arm.com ([217.140.110.172]:36358 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726646AbgKIJoN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 04:44:13 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0A6421042;
+        Mon,  9 Nov 2020 01:44:13 -0800 (PST)
+Received: from [10.57.23.123] (unknown [10.57.23.123])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 24A543F718;
+        Mon,  9 Nov 2020 01:44:11 -0800 (PST)
+Subject: Re: [PATCH v3 18/26] coresight: etm4x: Clean up exception level masks
+To:     Mathieu Poirier <mathieu.poirier@linaro.org>
+Cc:     linux-arm-kernel@lists.infradead.org, mike.leach@linaro.org,
+        coresight@lists.linaro.org, linux-kernel@vger.kernel.org
+References: <20201028220945.3826358-1-suzuki.poulose@arm.com>
+ <20201028220945.3826358-20-suzuki.poulose@arm.com>
+ <20201106185241.GA3299843@xps15>
+From:   Suzuki K Poulose <suzuki.poulose@arm.com>
+Message-ID: <e385a0ff-90e5-de72-78c5-bf4344a854cd@arm.com>
+Date:   Mon, 9 Nov 2020 09:44:04 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.1
 MIME-Version: 1.0
+In-Reply-To: <20201106185241.GA3299843@xps15>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
 Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2020-11-09 at 08:14 +1100, Stephen Rothwell wrote:
-> Hi all,
+On 11/6/20 6:52 PM, Mathieu Poirier wrote:
+> Good morning,
+
+Good morning.
+
 > 
-> In commit
+> On Wed, Oct 28, 2020 at 10:09:37PM +0000, Suzuki K Poulose wrote:
+>> etm4_get_access_type() calculates the exception level bits
+>> for use in address comparator registers. This is also used
+>> by the TRCVICTLR register by shifting to the required position.
+>>
+>> This patch cleans up the logic to make etm4_get_access_type()
+>> calcualte a generic mask which can be used by all users by
+>> shifting to their field.
+>>
+>> No functional changes, only code cleanups.
+>>
+>> Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
+>> ---
+>> Changes since previous version:
+>>    - Fix the duplicate shift. More commentary
+>> ---
+
+>> -/* access level control in TRCVICTLR - same bits as TRCACATRn but shifted */
+>> -#define ETM_EXLEVEL_LSHIFT_TRCVICTLR	8
+>> +/*
+>> + * Exception level mask for Secure and Non-Secure ELs.
+>> + * ETM defines the bits for EL control (e.g, TRVICTLR, TRCACTRn).
+>> + * The Secure and Non-Secure ELs are always to gether.
+>> + * Non-secure EL3 is never implemented.
+>> + * We use the following generic mask as they appear in different
+>> + * registers and this can be shifted for the appropriate
+>> + * fields.
+>> + */
+>> +#define ETM_EXLEVEL_S_APP		BIT(0)	/* Secure EL0		*/
+>> +#define ETM_EXLEVEL_S_OS		BIT(1)	/* Secure EL1		*/
+>> +#define ETM_EXLEVEL_S_HYP		BIT(2)	/* Secure EL2		*/
+>> +#define ETM_EXLEVEL_S_MON		BIT(3)	/* Secure EL3/Montor	*/
 > 
->   cc4cb017678a ("KVM: x86: use positive error values for msr emulation that causes #GP")
-> 
-> Fixes tag
-> 
->   Fixes: 291f35fb2c1d1 ("KVM: x86: report negative values from wrmsr emulation to userspace")
-> 
-> has these problem(s):
-> 
->   - Target SHA1 does not exist
-> 
-> Maybe you meant
-> 
-> Fixes: 7dffecaf4eab ("KVM: x86: report negative values from wrmsr emulation to userspace")
+> s/Montor/Monitor
 > 
 
-This is true. Looks like one of my local commits slipped though.
-Next time I'll check this more carefully.
+>> +#define ETM_EXLEVEL_NS_APP		BIT(4)	/* NonSecure EL0	*/
+>> +#define ETM_EXLEVEL_NS_OS		BIT(5)	/* NonSecure EL1	*/
+>> +#define ETM_EXLEVEL_NS_HYP		BIT(6)	/* NonSecure EL2	*/
+>> +
+>> +#define ETM_EXLEVEL_MASK		(GENMASK(6, 0))
+> 
+> Not used.
+> 
+>> +#define ETM_EXLEVEL_S_MASK		(GENMASK(3, 0))
+>> +#define ETM_EXLEVEL_NS_MASK		(GENMASK(6, 4))
+> 
+> This needs to be GENMASK(2, 0) in order TRCVICTLR_EXLEVEL_NS_SHIFT to be 20.
+> Otherwise the resulting mask is 4 bit off to the left.
+> 
 
-Can this be fixed or is it too late?
 
-Best regards,
-	Maxim Levitsky
+
+Will address the comments. Thanks for spotting the mistakes.
+
+Suzuki
 
