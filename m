@@ -2,206 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94E8D2ABE8C
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 15:22:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E9F082ABE92
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 15:24:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731261AbgKIOWX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 09:22:23 -0500
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:46174 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730041AbgKIOWW (ORCPT
+        id S1730671AbgKIOYX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 09:24:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34012 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730035AbgKIOYW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 09:22:22 -0500
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0A9EM155042079;
-        Mon, 9 Nov 2020 08:22:01 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1604931721;
-        bh=BeJowArEAuNdzFs1nPVZrTg6rdA5Y2jTtFWItMvuN7g=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=B7slKvVqlOTC6Pg4t24Iyw7L3EI75xaTQ8PD8cUYYNZIkZDBXq/dhI5rx5HKfvKyT
-         jitG7SmzvlRe82TFJuJBAWHiV4yVOoQV1dsVQkRbCo0U3dzTgWzzmtAVuTOiQJNAis
-         MUyN7i/qTnY79oQSrG1SOq6lNJhSLsAuIr7gzmnM=
-Received: from DFLE111.ent.ti.com (dfle111.ent.ti.com [10.64.6.32])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0A9EM1lV032432
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 9 Nov 2020 08:22:01 -0600
-Received: from DFLE103.ent.ti.com (10.64.6.24) by DFLE111.ent.ti.com
- (10.64.6.32) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Mon, 9 Nov
- 2020 08:22:00 -0600
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE103.ent.ti.com
- (10.64.6.24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Mon, 9 Nov 2020 08:22:00 -0600
-Received: from [10.250.213.167] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0A9ELoY6109464;
-        Mon, 9 Nov 2020 08:21:53 -0600
-Subject: Re: [PATCH v7 15/18] NTB: Add support for EPF PCI-Express
- Non-Transparent Bridge
-To:     Sherry Sun <sherry.sun@nxp.com>
-CC:     "bhelgaas@google.com" <bhelgaas@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        "lorenzo.pieralisi@arm.com" <lorenzo.pieralisi@arm.com>,
-        "arnd@arndb.de" <arnd@arndb.de>,
-        "jdmason@kudzu.us" <jdmason@kudzu.us>,
-        "dave.jiang@intel.com" <dave.jiang@intel.com>,
-        "allenbh@gmail.com" <allenbh@gmail.com>,
-        "tjoseph@cadence.com" <tjoseph@cadence.com>,
-        Rob Herring <robh@kernel.org>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-ntb@googlegroups.com" <linux-ntb@googlegroups.com>
-References: <20200930153519.7282-16-kishon@ti.com>
- <VI1PR04MB496061EAB6F249F1C394F01092EA0@VI1PR04MB4960.eurprd04.prod.outlook.com>
-From:   Kishon Vijay Abraham I <kishon@ti.com>
-Message-ID: <d6d27475-3464-6772-2122-cc194b8ae022@ti.com>
-Date:   Mon, 9 Nov 2020 19:51:44 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Mon, 9 Nov 2020 09:24:22 -0500
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5647BC0613CF;
+        Mon,  9 Nov 2020 06:24:22 -0800 (PST)
+Received: by mail-pg1-x541.google.com with SMTP id r186so7296852pgr.0;
+        Mon, 09 Nov 2020 06:24:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=I0JWH1SE4fNuIvP9pni+ltgPPpUk5UXe6Ja6Dl7UHNM=;
+        b=jevuavzxcW3HQorjQwheDNNI2A/fFPMvKDn0mcJGqAZBwBmCKwMTdKJpXVkQPCC+xc
+         0wzcYAZ5Q9lDDiVmS1vQywVJM7xxtr6bERgHvaw2TEYngDMWsfm/UvAbGMQVmFwZV6AE
+         lsMhtSpPyA8oDLU44HCn1M8NMYKKMjwqaHtlsW2DLk/QnsFFxCiUlGtC6gh6DgouC3yv
+         ZuWZI00QluQK5J/HrBKfORylQVbU6tR9TYZ61UkFhd1dTptjTzMHdN3pV6bzUplif+Sy
+         B0mjgvK9zvjtFqHsvXmc3piUc2zpJLAweR5Z9rqfcxL7qRHQeczNP/gpziee4ovyEAeC
+         SdMA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=I0JWH1SE4fNuIvP9pni+ltgPPpUk5UXe6Ja6Dl7UHNM=;
+        b=HmhhnF8mLX8j7KnSWena5LS4wePUGslk2xCmf8mrR4XxvwYe3hCd4UeDIuPlOR0E7w
+         yuBdI01C1WRWTlTsvjoHngUU+G4XZHY2lZ8W0ivja1L/xLpC00sXYTe/drf1GJ99yf7Q
+         Is0FWJwtrUg2HOALoHX/82FF30aPPEomlm+zZVv5M6iCLk25iq/PFdpoM/AwJa34LNWc
+         j4MeWH/SERu4BdsoAsFfbm5rBuUkYSJSE+ypH4tgo7oDgR4xRURaDUz3KOSUNUJaXA/r
+         UsKWQ/i+zzf03Z1dSzI33t5sVG90OTdsR71L3hiCKUgPmdyeCUEmVfr5ixttSycMvPIa
+         ObZg==
+X-Gm-Message-State: AOAM530vNtA7ozUJYR6RKN91xGbSbD6ntA9HYPDVG3yXD+kNAqg6MjdH
+        1UTxGHPXkH4rMh4BGTtp7Of1IJrrQK8470JmPoM=
+X-Google-Smtp-Source: ABdhPJwidLp7E0/LPaDZe10ybjQfbINm9x2SALC+02oxtUeVB16O5+WJcb4yxzJw4LIARuGK1yf21/HmLLMPqjNbLWw=
+X-Received: by 2002:a63:4511:: with SMTP id s17mr13018417pga.4.1604931861810;
+ Mon, 09 Nov 2020 06:24:21 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <VI1PR04MB496061EAB6F249F1C394F01092EA0@VI1PR04MB4960.eurprd04.prod.outlook.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+References: <20201106150706.29089-1-TheSven73@gmail.com>
+In-Reply-To: <20201106150706.29089-1-TheSven73@gmail.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Mon, 9 Nov 2020 16:25:10 +0200
+Message-ID: <CAHp75VfP1R7bXV6nWWnovWB5BMFcNNEmwBQXheBCUVDbr=xXGA@mail.gmail.com>
+Subject: Re: [PATCH v1] spi: fix client driver breakages when using GPIO descriptors
+To:     Sven Van Asbroeck <thesven73@gmail.com>
+Cc:     Mark Brown <broonie@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Jonathan Cameron <jonathan.cameron@huawei.com>,
+        Simon Han <z.han@kunbus.com>, Lukas Wunner <lukas@wunner.de>,
+        linux-spi <linux-spi@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Sherry,
+On Fri, Nov 6, 2020 at 5:08 PM Sven Van Asbroeck <thesven73@gmail.com> wrote:
+>
+> From: Sven Van Asbroeck <thesven73@gmail.com>
+>
+> Commit f3186dd87669 ("spi: Optionally use GPIO descriptors for CS GPIOs")
+> introduced the optional use of GPIO descriptors for chip selects.
+>
+> A side-effect of this change: when a SPI bus uses GPIO descriptors,
+> all its client devices have SPI_CS_HIGH set in spi->mode. This flag is
+> required for the SPI bus to operate correctly.
+>
+> This unfortunately breaks many client drivers, which use the following
+> pattern to configure their underlying SPI bus:
+>
+> static int client_device_probe(struct spi_device *spi)
+> {
+>         ...
+>         spi->mode = SPI_MODE_0;
+>         spi->bits_per_word = 8;
+>         err = spi_setup(spi);
+>         ..
+> }
+>
+> In short, many client drivers overwrite the SPI_CS_HIGH bit in
+> spi->mode, and break the underlying SPI bus driver.
 
-On 09/11/20 3:07 pm, Sherry Sun wrote:
-> Hi Kishon,
-> 
->> Subject: [PATCH v7 15/18] NTB: Add support for EPF PCI-Express Non-
->> Transparent Bridge
->>
->> From: Kishon Vijay Abraham I <kishon@ti.com>
->>
->> Add support for EPF PCI-Express Non-Transparent Bridge (NTB) device.
->> This driver is platform independent and could be used by any platform which
->> have multiple PCIe endpoint instances configured using the pci-epf-ntb driver.
->> The driver connnects to the standard NTB sub-system interface. The EPF NTB
->> device has configurable number of memory windows (Max 4), configurable
->> number of doorbell (Max 32), and configurable number of scratch-pad
->> registers.
->>
->> Signed-off-by: Kishon Vijay Abraham I <kishon@ti.com>
->> ---
->>  drivers/ntb/hw/Kconfig          |   1 +
->>  drivers/ntb/hw/Makefile         |   1 +
->>  drivers/ntb/hw/epf/Kconfig      |   6 +
->>  drivers/ntb/hw/epf/Makefile     |   1 +
->>  drivers/ntb/hw/epf/ntb_hw_epf.c | 755
->> ++++++++++++++++++++++++++++++++
->>  5 files changed, 764 insertions(+)
->>  create mode 100644 drivers/ntb/hw/epf/Kconfig  create mode 100644
->> drivers/ntb/hw/epf/Makefile  create mode 100644
->> drivers/ntb/hw/epf/ntb_hw_epf.c
->>
->> diff --git a/drivers/ntb/hw/Kconfig b/drivers/ntb/hw/Kconfig index
->> e77c587060ff..c325be526b80 100644
->> --- a/drivers/ntb/hw/Kconfig
->> +++ b/drivers/ntb/hw/Kconfig
->> @@ -2,4 +2,5 @@
->>  source "drivers/ntb/hw/amd/Kconfig"
->>  source "drivers/ntb/hw/idt/Kconfig"
->>  source "drivers/ntb/hw/intel/Kconfig"
->> +source "drivers/ntb/hw/epf/Kconfig"
->>  source "drivers/ntb/hw/mscc/Kconfig"
->> diff --git a/drivers/ntb/hw/Makefile b/drivers/ntb/hw/Makefile index
->> 4714d6238845..223ca592b5f9 100644
->> --- a/drivers/ntb/hw/Makefile
->> +++ b/drivers/ntb/hw/Makefile
->> @@ -2,4 +2,5 @@
->>  obj-$(CONFIG_NTB_AMD)	+= amd/
->>  obj-$(CONFIG_NTB_IDT)	+= idt/
->>  obj-$(CONFIG_NTB_INTEL)	+= intel/
->> +obj-$(CONFIG_NTB_EPF)	+= epf/
->>  obj-$(CONFIG_NTB_SWITCHTEC) += mscc/
->> diff --git a/drivers/ntb/hw/epf/Kconfig b/drivers/ntb/hw/epf/Kconfig new
->> file mode 100644 index 000000000000..6197d1aab344
->> --- /dev/null
->> +++ b/drivers/ntb/hw/epf/Kconfig
->> @@ -0,0 +1,6 @@
->> +config NTB_EPF
->> +	tristate "Generic EPF Non-Transparent Bridge support"
->> +	depends on m
->> +	help
->> +	  This driver supports EPF NTB on configurable endpoint.
->> +	  If unsure, say N.
->> diff --git a/drivers/ntb/hw/epf/Makefile b/drivers/ntb/hw/epf/Makefile new
->> file mode 100644 index 000000000000..2f560a422bc6
->> --- /dev/null
->> +++ b/drivers/ntb/hw/epf/Makefile
->> @@ -0,0 +1 @@
->> +obj-$(CONFIG_NTB_EPF) += ntb_hw_epf.o
->> diff --git a/drivers/ntb/hw/epf/ntb_hw_epf.c
->> b/drivers/ntb/hw/epf/ntb_hw_epf.c new file mode 100644 index
->> 000000000000..0a144987851a
->> --- /dev/null
->> +++ b/drivers/ntb/hw/epf/ntb_hw_epf.c
->> @@ -0,0 +1,755 @@
-> ......
->> +static int ntb_epf_init_pci(struct ntb_epf_dev *ndev,
->> +			    struct pci_dev *pdev)
->> +{
->> +	struct device *dev = ndev->dev;
->> +	int ret;
->> +
->> +	pci_set_drvdata(pdev, ndev);
->> +
->> +	ret = pci_enable_device(pdev);
->> +	if (ret) {
->> +		dev_err(dev, "Cannot enable PCI device\n");
->> +		goto err_pci_enable;
->> +	}
->> +
->> +	ret = pci_request_regions(pdev, "ntb");
->> +	if (ret) {
->> +		dev_err(dev, "Cannot obtain PCI resources\n");
->> +		goto err_pci_regions;
->> +	}
->> +
->> +	pci_set_master(pdev);
->> +
->> +	ret = dma_set_mask_and_coherent(dev, DMA_BIT_MASK(64));
->> +	if (ret) {
->> +		ret = dma_set_mask_and_coherent(dev,
->> DMA_BIT_MASK(32));
->> +		if (ret) {
->> +			dev_err(dev, "Cannot set DMA mask\n");
->> +			goto err_dma_mask;
->> +		}
->> +		dev_warn(&pdev->dev, "Cannot DMA highmem\n");
->> +	}
->> +
->> +	ndev->ctrl_reg = pci_iomap(pdev, 0, 0);
-> 
-> The second parameter of pci_iomap should be ndev->ctrl_reg_bar instead of the hardcode value 0, right?
-> 
->> +	if (!ndev->ctrl_reg) {
->> +		ret = -EIO;
->> +		goto err_dma_mask;
->> +	}
->> +
->> +	ndev->peer_spad_reg = pci_iomap(pdev, 1, 0);
-> 
-> pci_iomap(pdev, ndev->peer_spad_reg_bar, 0);
-> 
->> +	if (!ndev->peer_spad_reg) {
->> +		ret = -EIO;
->> +		goto err_dma_mask;
->> +	}
->> +
->> +	ndev->db_reg = pci_iomap(pdev, 2, 0);
-> 
-> pci_iomap(pdev, ndev->db_reg_bar, 0);
+Sounds like "many SPI drivers have to be fixed".
 
-Good catch. Will fix it and send. Thank you for reviewing.
 
-Regards,
-Kishon
+
+-- 
+With Best Regards,
+Andy Shevchenko
