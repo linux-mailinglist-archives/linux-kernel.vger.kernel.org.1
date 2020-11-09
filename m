@@ -2,107 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC8B32AB1DC
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 08:46:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A8DB82AB1E0
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 08:47:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729646AbgKIHqD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 02:46:03 -0500
-Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:2863 "EHLO
-        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728038AbgKIHqC (ORCPT
+        id S1729663AbgKIHrq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 02:47:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56788 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728904AbgKIHrq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 02:46:02 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5fa8f3be0000>; Sun, 08 Nov 2020 23:46:06 -0800
-Received: from [10.2.49.75] (10.124.1.5) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 9 Nov
- 2020 07:45:57 +0000
-Subject: Re: [PATCH v2] mm/gup_test: GUP_TEST depends on DEBUG_FS
-To:     Barry Song <song.bao.hua@hisilicon.com>,
-        <akpm@linux-foundation.org>, <linux-mm@kvack.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <linuxarm@huawei.com>, Ralph Campbell <rcampbell@nvidia.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        John Garry <john.garry@huawei.com>
-References: <20201108083732.15336-1-song.bao.hua@hisilicon.com>
-From:   John Hubbard <jhubbard@nvidia.com>
-Message-ID: <cf1b1b35-c608-9b5e-0c1a-216431b83750@nvidia.com>
-Date:   Sun, 8 Nov 2020 23:45:57 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        Mon, 9 Nov 2020 02:47:46 -0500
+Received: from mail-oi1-x241.google.com (mail-oi1-x241.google.com [IPv6:2607:f8b0:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E016C0613CF
+        for <linux-kernel@vger.kernel.org>; Sun,  8 Nov 2020 23:47:46 -0800 (PST)
+Received: by mail-oi1-x241.google.com with SMTP id d9so9328273oib.3
+        for <linux-kernel@vger.kernel.org>; Sun, 08 Nov 2020 23:47:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=n13PinZTPhP6AdpzFjlFN14w77t83uFOC/qxFyrGcZw=;
+        b=QjcRLv/QQoPd/OIoKU7yh0Cx+7J2BnZM25Y0imBCpOM596FC1y0akyMt6pVqC0+sYF
+         ip5ifFDPgSOms/ItK7coaqDb1iVCqmVCWS1kJOVe80qjNRweDi8EyFMzdPWZJ2BrOIaT
+         pI0HTLybv0yuWoK6RWo/acSn6LCyXC9tMVimckDYvLmftpE4dFf7EGoxBFcSq9/CciIW
+         SWvk004eHjY4XMxt+EoFcnvE9xlA+WRoOoEVSXCdXoJmv4E6TdgKyidZPvmbty8dBkyR
+         LPoX/qHkOjen452LcWdU3ECgmwQXGwnwaVvalUHI8YOKYpafkI43x5rOL+gDwiOxR8Of
+         SKXQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=n13PinZTPhP6AdpzFjlFN14w77t83uFOC/qxFyrGcZw=;
+        b=nBKt7QkhMYuq5ctYwCIQ1LAU9/d+/PL9WdFFlug9B9F/6SCh4VgvW6cJAi4+hVtw+W
+         lN1Lb0wT/bj9cVV+n5KjJ22waxCmnLg50skl3NTVn2LJB8YvMFjSRBWD/g2cYt/pupd6
+         Y9mISwvNNWqTro/fGitnfJx8V2aOpO2MHKm4jhdLbRmsclfK4p3eA9/ZodhLhFZxit7l
+         l6dp0w056PBkAIMNCZE0QkDmsf3Uav4JpQmlSozOBcB6/T7ahZ7N3Zm3oxrxoZUWyrK9
+         vJwqnZSFVxMpSDFNDSymNQJN4zW2oiYXLK+Ds4WVNnN0jUXmajpKJqPz+4s2TplOhXrP
+         YqKQ==
+X-Gm-Message-State: AOAM532rwvq4IMmN/IbW1WAvy/ReRV92QZMOMGX8abHBzDFVO9p3ktDh
+        7v5xtvwV6Ku6+GsCa9Uvi6sQvzTNMzc47e02rczsog==
+X-Google-Smtp-Source: ABdhPJwHZA03m8Gi/fFh27mh0ThaPDr93lgpvXgEIojXbWf/Mbym3vOvlnrMhOvrPr74oCtLw9AdGo4sZYRik3MyA3g=
+X-Received: by 2002:aca:d987:: with SMTP id q129mr8629267oig.5.1604908065604;
+ Sun, 08 Nov 2020 23:47:45 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20201108083732.15336-1-song.bao.hua@hisilicon.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.124.1.5]
-X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
- HQMAIL107.nvidia.com (172.20.187.13)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1604907966; bh=SdZB+6OvR+B2m6Dr8AYTdQURpW4L9D2aslhmIOhFRFc=;
-        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
-         MIME-Version:In-Reply-To:Content-Type:Content-Language:
-         Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy;
-        b=d5ei2FuMITj7tyXBKpA5nYPJ5X9cK8bsxQmZjka6pWKPNmoespYSTPkCxr4Fe58HV
-         oaWFayBcFPbXfsPsmmAoK0JoDEcICmeuwt0BcImwTMb5usNY+lJd46sxMB+HWCee0q
-         28wRkgqh4foqfZnXpjffvtaQHsxKp6GWtLxnTF+u9vkTI9ONgmFJsdlM8fxLEd+tVP
-         zG8ruJMqHExQYxoyub1A34GC+MPrypnG6v26UnMGj+4bwz+WmIryDPL+UvTbE+4vDq
-         Vi31EAk7HiJnz5mAgtGgpfMk1+zk1s6kxbspbZWw0wSH1MCba06eJRf2vUbMdNKL4S
-         4JlyYPaFBex1g==
+References: <cover.1604470183.git.Rijo-john.Thomas@amd.com>
+In-Reply-To: <cover.1604470183.git.Rijo-john.Thomas@amd.com>
+From:   Jens Wiklander <jens.wiklander@linaro.org>
+Date:   Mon, 9 Nov 2020 08:47:34 +0100
+Message-ID: <CAHUa44F4L+B=Kr_-hprhMRjgjfnQPRdzPsxq0WFABB6WPKqyog@mail.gmail.com>
+Subject: Re: [PATCH 0/2] AMD-TEE driver bug fixes
+To:     Rijo Thomas <Rijo-john.Thomas@amd.com>
+Cc:     Devaraj Rangasamy <Devaraj.Rangasamy@amd.com>,
+        op-tee@lists.trustedfirmware.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/8/20 12:37 AM, Barry Song wrote:
-> Without DEBUG_FS, all the code in gup_test becomes meaningless. For sure
-> kernel provides debugfs stub while DEBUG_FS is disabled, but the point
-> here is that GUP_TEST can do nothing without DEBUG_FS.
-> 
-> Cc: John Hubbard <jhubbard@nvidia.com>
-> Cc: Ralph Campbell <rcampbell@nvidia.com>
-> Cc: Randy Dunlap <rdunlap@infradead.org>
-> Suggested-by: John Garry <john.garry@huawei.com>
-> Signed-off-by: Barry Song <song.bao.hua@hisilicon.com>
-> ---
->   -v2:
->   add comment as a prompt to users as commented by John and Randy, thanks!
-> 
->   mm/Kconfig | 4 ++++
->   1 file changed, 4 insertions(+)
+Hi Rijo,
 
-Thanks for suffering through a lot of discussion about this!
+On Wed, Nov 4, 2020 at 7:26 AM Rijo Thomas <Rijo-john.Thomas@amd.com> wrote:
+>
+> AMD-TEE driver keeps track of shared memory buffers and their
+> corresponding buffer id's in a global linked list. These buffers are
+> used to share data between x86 and AMD Secure Processor. This patchset
+> fixes issues related to maintaining mapped buffers in a shared linked
+> list.
+>
+> Rijo Thomas (2):
+>   tee: amdtee: fix memory leak due to reset of global shm list
+>   tee: amdtee: synchronize access to shm list
+>
+>  drivers/tee/amdtee/amdtee_private.h |  8 ++++----
+>  drivers/tee/amdtee/core.c           | 26 +++++++++++++++++++-------
+>  2 files changed, 23 insertions(+), 11 deletions(-)
 
-Reviewed-by: John Hubbard <jhubbard@nvidia.com>
+This series looks good. I'll pick it up.
 
-
-thanks,
--- 
-John Hubbard
-NVIDIA
-
-> 
-> diff --git a/mm/Kconfig b/mm/Kconfig
-> index 01b0ae0cd9d3..a7ff0d31afd5 100644
-> --- a/mm/Kconfig
-> +++ b/mm/Kconfig
-> @@ -836,6 +836,7 @@ config PERCPU_STATS
->   
->   config GUP_TEST
->   	bool "Enable infrastructure for get_user_pages()-related unit tests"
-> +	depends on DEBUG_FS
->   	help
->   	  Provides /sys/kernel/debug/gup_test, which in turn provides a way
->   	  to make ioctl calls that can launch kernel-based unit tests for
-> @@ -853,6 +854,9 @@ config GUP_TEST
->   
->   	  See tools/testing/selftests/vm/gup_test.c
->   
-> +comment "GUP_TEST needs to have DEBUG_FS enabled"
-> +	depends on !GUP_TEST && !DEBUG_FS
-> +
->   config GUP_GET_PTE_LOW_HIGH
->   	bool
->   
-> 
-
-
+Thanks,
+Jens
