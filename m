@@ -2,148 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A74A02AC514
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 20:38:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FD852AC53D
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 20:41:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726691AbgKITic (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 14:38:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54688 "EHLO
+        id S1730794AbgKITk6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 14:40:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55094 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729838AbgKITib (ORCPT
+        with ESMTP id S1729875AbgKITk5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 14:38:31 -0500
-Received: from mail-il1-x142.google.com (mail-il1-x142.google.com [IPv6:2607:f8b0:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57AAAC0613D3
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Nov 2020 11:38:30 -0800 (PST)
-Received: by mail-il1-x142.google.com with SMTP id g15so9405372ilc.9
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Nov 2020 11:38:30 -0800 (PST)
+        Mon, 9 Nov 2020 14:40:57 -0500
+Received: from mail-oi1-x242.google.com (mail-oi1-x242.google.com [IPv6:2607:f8b0:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 871F7C0613D4
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Nov 2020 11:40:55 -0800 (PST)
+Received: by mail-oi1-x242.google.com with SMTP id j7so11477492oie.12
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Nov 2020 11:40:55 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=k8+EMc4+ZzXJqSUvzL7W5Ni2fcnDgXtP+EcVau6OBrM=;
-        b=QPGXaCvVRB4KlRGmWhDbpfdbGn0ZC8kDinWCv2x+JjrJI6PBwoifTda0X4VKf0rNxQ
-         G5f1FH27nqN/xBqw4zPvuraKnoNs0119PH5Heq2ppu/7EDCFk0nx0e/UQH7St5Jyp2Y+
-         HIUq6T9oY6yloWEntf74siPKEd6n/qnVKbzM0A/ZiDBKevfaRPikMMkh3VtAfnmFEr3v
-         B1M9cwtK8iHS0GXtivOLEs9X4osprzrKbe5U54/Vs4hicBCtMTmZVDx0rWX9QXher2ip
-         pM6IrJuAtFPR717tRAZeWwiPNDB8Mb2uK6IhnaEJl1n+zPiUdkYuxf5yNEiL5w5T2gkH
-         JhOQ==
+        d=dubeyko-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=RYG5aRqtt1oTe5ehg+dvQZG6g+L+lFoK4HtUJA+r5KM=;
+        b=S9hFOP+Ssq7NyJgZ90LPdfpgmbTnVaBk1SKVIeH1g8gjMUNx6T6NsiGHwyfXHZRZdl
+         rN2R7/sUH/33WrJAZ6eJth6m0PZ8nt7gCUOJNA/+NnH+vmqeJ76NBriWvZDAWObVv7aC
+         puQDLDAL0iZys7rVbPs12KY1ekzhrtKA9OKm7Q08xYn3OKfPiSGE/gXpRU+OggRL7hCD
+         t9dyAUXmlUU7ZJJ1N/Vbyk0MDNYEMJeqbFDivxyIHO1gFH3oruvecsYflB/LUHhqycLA
+         f86pbbJBKMhsFfwfdZ5RKifIbF3uqbaeAMYVHT/C3DiXWVL8ejpdCyZASQnrJAFpSSPH
+         WOtA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=k8+EMc4+ZzXJqSUvzL7W5Ni2fcnDgXtP+EcVau6OBrM=;
-        b=au70rMP1qVhtC65zB4XWTz6EEn/fM+afo8sCHsLg2bk7EZEEpH6McSGHuHcFWwmaZ9
-         6ONYVkG8x1O6n790cNmjYr9JwnuwS3vVhDvLDkAaphAN5Kjnl4h8JpOdm2l5HEzlzNgj
-         d1/4d2QXf7pQB6RsXBJhYPycZyDUlf0kRawBcvY/gOeLpjq3aZ59yanrReCW+T/rJAq3
-         GxhiRhwvU1wH5n/HQhAKG/Bk9F7yxTXCla1qk82Fm4cV7bsgqkw69edxLqhI++7ILhPS
-         ngT8kIqmnta2TI07kgjbtDnHFJLS3DqsfzNGXu3CkW2uLsLKyMAcKpPWXJqX6tzzxHZs
-         ZP5Q==
-X-Gm-Message-State: AOAM5325mvEq5IEFyPSSDkh1RrkmcBSJF6HxvXR0zXT19pYmT0Yta9Xd
-        f+OQuAMudwC9W3O1I4+QRLSTp4ePfYG/6DgIT2gnsg==
-X-Google-Smtp-Source: ABdhPJw0MeG4P26hzsMF6D4SWQfdhHemZQG3avMmoyM+7Vf54D1B9HL4wVsscgX4reE8l0z4nuZgBbBlWbHxr9kgPTQ=
-X-Received: by 2002:a92:9e8b:: with SMTP id s11mr10932147ilk.61.1604950709307;
- Mon, 09 Nov 2020 11:38:29 -0800 (PST)
-MIME-Version: 1.0
-References: <20200909062613.18604-1-lina.wang@mediatek.com>
- <20200915073006.GR20687@gauss3.secunet.de> <CAKD1Yr1VsueZWUtCL4iMWLhnADypUOtDK=dgqM2Y2HDvXc77iw@mail.gmail.com>
- <20201109095813.GV26422@gauss3.secunet.de>
-In-Reply-To: <20201109095813.GV26422@gauss3.secunet.de>
-From:   =?UTF-8?Q?Maciej_=C5=BBenczykowski?= <maze@google.com>
-Date:   Mon, 9 Nov 2020 11:38:16 -0800
-Message-ID: <CANP3RGfuOGoB1msF1evzsgKf5qZZbNDCHDzvgPBHRGyepDuu+g@mail.gmail.com>
-Subject: Re: [PATCH] xfrm:fragmented ipv4 tunnel packets in inner interface
-To:     Steffen Klassert <steffen.klassert@secunet.com>
-Cc:     Lorenzo Colitti <lorenzo@google.com>,
-        mtk81216 <lina.wang@mediatek.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Linux NetDev <netdev@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org,
-        Greg Kroah-Hartman <gregkh@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=RYG5aRqtt1oTe5ehg+dvQZG6g+L+lFoK4HtUJA+r5KM=;
+        b=WgD+EVv1Q2MLn5FtG49nifI3IMBW2qCPr5OEOhLG2XlyXq/NJAixOnoJ2PMWtQYwgK
+         6YHF+7BQ8MVCRNKR6/1kOFOMOeqkW1gAmTJTDo7YpNAOE39aYF3HqGWhF8C2WPJldJO2
+         seYzCrE+WlpG9Un34ZBmFWrQTf1DRyVgFSsmdECGpm8E8UFaYEAhyTerm3gWfn+QWq/G
+         6QxbdwkBTC1ORlP9N6jJcKeX6WaVDGBh+Mqer6bgahCrQlISd1kW5tdVoxmSpgQTfo0R
+         wM+WeopPtWFW3BOyeGTrHFii4uZ2Cy9JvTGBZ6v6MJW1lPp2gp30vO4K3clvv/y+6VxI
+         cCbQ==
+X-Gm-Message-State: AOAM533fkxR1ua+dTt+mqxR9yXDxolYTDyfs8ShDfP6tQa42aQgLuXKK
+        3DLjweQysuOd5cOtipDDt3TVoc/9U0qN6pMQ
+X-Google-Smtp-Source: ABdhPJxQj9r/hWa4Api3frfCsBoxa7VOjekt3gZz5yrRq2nyQzcGhbWOR3ec2irEkqcm4H5r7tFXMA==
+X-Received: by 2002:aca:ac06:: with SMTP id v6mr485050oie.97.1604950854672;
+        Mon, 09 Nov 2020 11:40:54 -0800 (PST)
+Received: from ?IPv6:2600:1700:42f0:6600:2015:92de:6a58:e331? ([2600:1700:42f0:6600:2015:92de:6a58:e331])
+        by smtp.gmail.com with ESMTPSA id w21sm1052968otq.20.2020.11.09.11.40.53
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 09 Nov 2020 11:40:53 -0800 (PST)
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.120.23.2.4\))
+Subject: Re: [PATCH] hfsplus: remove pr_err message on ENOSPC file extend
+ error
+From:   Viacheslav Dubeyko <slava@dubeyko.com>
+In-Reply-To: <20201106215518.390664-1-colin.king@canonical.com>
+Date:   Mon, 9 Nov 2020 11:40:52 -0800
+Cc:     Linux FS devel list <linux-fsdevel@vger.kernel.org>,
+        kernel-janitors@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <C65DFC10-FEF7-4117-894D-F347310ED13E@dubeyko.com>
+References: <20201106215518.390664-1-colin.king@canonical.com>
+To:     Colin King <colin.king@canonical.com>
+X-Mailer: Apple Mail (2.3608.120.23.2.4)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 9, 2020 at 1:58 AM Steffen Klassert
-<steffen.klassert@secunet.com> wrote:
->
-> On Thu, Nov 05, 2020 at 01:52:01PM +0900, Lorenzo Colitti wrote:
-> > On Tue, Sep 15, 2020 at 4:30 PM Steffen Klassert
-> > <steffen.klassert@secunet.com> wrote:
-> > > > In esp's tunnel mode,if inner interface is ipv4,outer is ipv4,one big
-> > > > packet which travels through tunnel will be fragmented with outer
-> > > > interface's mtu,peer server will remove tunnelled esp header and assemble
-> > > > them in big packet.After forwarding such packet to next endpoint,it will
-> > > > be dropped because of exceeding mtu or be returned ICMP(packet-too-big).
-> > >
-> > > What is the exact case where packets are dropped? Given that the packet
-> > > was fragmented (and reassembled), I'd assume the DF bit was not set. So
-> > > every router along the path is allowed to fragment again if needed.
-> >
-> > In general, isn't it just suboptimal to rely on fragmentation if the
-> > sender already knows the packet is too big? That's why we have things
-> > like path MTU discovery (RFC 1191).
->
-> When we setup packets that are sent from a local socket, we take
-> MTU/PMTU info we have into account. So we don't create fragments in
-> that case.
->
-> When forwarding packets it is different. The router that can not
-> TX the packet because it exceeds the MTU of the sending interface
-> is responsible to either fragment (if DF is not set), or send a
-> PMTU notification (if DF is set). So if we are able to transmit
-> the packet, we do it.
->
-> > Fragmentation is generally
-> > expensive, increases the chance of packet loss, and has historically
-> > caused lots of security vulnerabilities. Also, in real world networks,
-> > fragments sometimes just don't work, either because intermediate
-> > routers don't fragment, or because firewalls drop the fragments due to
-> > security reasons.
-> >
-> > While it's possible in theory to ask these operators to configure
-> > their routers to fragment packets, that may not result in the network
-> > being fixed, due to hardware constraints, security policy or other
-> > reasons.
->
-> We can not really do anything here. If a flow has no DF bit set
-> on the packets, we can not rely on PMTU information. If we have PMTU
-> info on the route, then we have it because some other flow (that has
-> DF bit set on the packets) triggered PMTU discovery. That means that
-> the PMTU information is reset when this flow (with DF set) stops
-> sending packets. So the other flow (with DF not set) will send
-> big packets again.
 
-PMTU is by default ignored by forwarding - because it's spoofable.
 
-That said I wonder if my recent changes to honour route mtu (for ipv4)
-haven't fixed this particular issue in the presence of correctly
-configured device/route mtus...
+> On Nov 6, 2020, at 1:55 PM, Colin King <colin.king@canonical.com> =
+wrote:
+>=20
+> From: Colin Ian King <colin.king@canonical.com>
+>=20
+> Currently ENOSPC errors that are triggered from extending a file
+> are spamming the kernel log with messages.  Since ENOSPC is being
+> returned there is enough information to userspace to inform why
+> the extend is failing and the error message is unnecessary and
+> just more logging noise.  This is particularly noticeable when
+> exercising a full hfs filesystem with stress-ng file stress tests.
+>=20
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+> ---
+> fs/hfsplus/extents.c | 6 +-----
+> 1 file changed, 1 insertion(+), 5 deletions(-)
+>=20
+> diff --git a/fs/hfsplus/extents.c b/fs/hfsplus/extents.c
+> index a930ddd15681..6cc30482c82c 100644
+> --- a/fs/hfsplus/extents.c
+> +++ b/fs/hfsplus/extents.c
+> @@ -446,13 +446,9 @@ int hfsplus_file_extend(struct inode *inode, bool =
+zeroout)
+> 	int res;
+>=20
+> 	if (sbi->alloc_file->i_size * 8 <
+> -	    sbi->total_blocks - sbi->free_blocks + 8) {
+> +	    sbi->total_blocks - sbi->free_blocks + 8)
+> 		/* extend alloc file */
+> -		pr_err("extend alloc file! (%llu,%u,%u)\n",
+> -		       sbi->alloc_file->i_size * 8,
+> -		       sbi->total_blocks, sbi->free_blocks);
+> 		return -ENOSPC;
+> -	}
 
-I don't understand if the problem here is locally generated packets,
-or forwarded packets.
+Looks good and sounds reasonable.
 
-It does seem like there is (or was) a bug somewhere... but it might
-already be fixed (see above) or might be caused by a misconfiguration
-of device mtu or routing rules.
+Reviewed-by: Viacheslav Dubeyko <slava@dubeyko.com>
 
-I don't really understand the example.
+Thanks,
+Viacheslav Dubeyko.
 
->
-> > Those operators may also be in a position to place
-> > requirements on devices that have to use their network. If the Linux
-> > stack does not work as is on these networks, then those devices will
-> > have to meet those requirements by making out-of-tree changes. It
-> > would be good to avoid that if there's a better solution (e.g., make
-> > this configurable via sysctl).
->
-> We should not try to workaround broken configurations, there are just
-> too many possibilities to configure a broken network.
+>=20
+> 	mutex_lock(&hip->extents_lock);
+> 	if (hip->alloc_blocks =3D=3D hip->first_blocks)
+> --=20
+> 2.28.0
+>=20
+
