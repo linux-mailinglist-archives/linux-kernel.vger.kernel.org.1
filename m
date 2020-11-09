@@ -2,85 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A241F2AAEE4
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 03:00:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F43E2AAF1A
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 03:10:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729061AbgKICAr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 8 Nov 2020 21:00:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59524 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728006AbgKICAr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 8 Nov 2020 21:00:47 -0500
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12E0CC0613CF;
-        Sun,  8 Nov 2020 18:00:47 -0800 (PST)
-Received: by mail-pf1-x444.google.com with SMTP id 10so6546472pfp.5;
-        Sun, 08 Nov 2020 18:00:47 -0800 (PST)
+        id S1729254AbgKICKu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 8 Nov 2020 21:10:50 -0500
+Received: from mail.djicorp.com ([14.21.64.4]:56013 "EHLO mail.djicorp.com"
+        rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728006AbgKICKu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 8 Nov 2020 21:10:50 -0500
+X-Greylist: delayed 439 seconds by postgrey-1.27 at vger.kernel.org; Sun, 08 Nov 2020 21:10:44 EST
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=M/sHCb58C+UKR7j7ExiS+JKwi2VJLyH2lrJ3bqK2Gik=;
-        b=onmQXo42GH4QBPXq3aS2WWXLgb1MKDov2nWKuR1vw+Nqlex8CACmzk/QlKxG++KUid
-         CJA7WJSPZEXJCq0ujAL37aCvtd3bJzVMqnRib+YvHXGHIYzlSqtlR4quJNzItzfXgCBL
-         d+cO8T3QKbJanNEVf/B4EPcr1d6rDsKsrjcvD9bWNHmEZa0mZR4ypG8hcv9YQF5Y4mGE
-         KJ87qn3gPziQuuKPpaoL1dPA4mVp4zjX45aMJey4TAnL/erlTxn9QnlUGxroiWBlO9yX
-         X0PmPa/Pa9bpI2JrX99Rs0GJtaDE0U8514NYocm9F7skWCrh3wIRLYxW3EjSHtesCMLT
-         N3AQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=M/sHCb58C+UKR7j7ExiS+JKwi2VJLyH2lrJ3bqK2Gik=;
-        b=UOWo/uiJlenzDNEhb5DnDevGEwi1g1de2+gGK2suBNSLd5fo2O2wj6cBNuhfl/omkr
-         aDmowKyjuI5fwUx77MSHRCKheFnEMjd7HyhO461Ydt+KhBMJ+08XdSLZ1SN7FMcScgcT
-         RWfeIwRKZEHkzfztWhbtlNgfHOsI9kAFM//HdlnjR2yIZx8A8/vLh5n3TDpRcSZBj/5W
-         Yja7il9Q65dlR3bc5UKLfr0/CLabdFNiLnQbZYCc1Engv2vYco8xH17QFi7t9q0B0FI+
-         QsVp5wFTQgBSGmuLlhyNp5rZ9Az8h5NwqCeR32fUS/y4tC8W1dGuUvdT4HHSrZ4ApgOi
-         82tw==
-X-Gm-Message-State: AOAM531j8ADpR9XDYW0LajVXLBwsG/c0wwCa0da33SrU7HsAhadTsvr6
-        fU5lD/diXUZTjf+c/xlUjI8m8KZvQ+0=
-X-Google-Smtp-Source: ABdhPJwsjUXczI5pQLNZEYEICG7A/fqZLAkG1tWOGAjdaTFRBrMn0njnEaj292o6jWFTgZrDMlhhTA==
-X-Received: by 2002:a17:90b:1392:: with SMTP id hr18mr9783208pjb.116.1604887246258;
-        Sun, 08 Nov 2020 18:00:46 -0800 (PST)
-Received: from [192.168.1.3] (ip68-111-84-250.oc.oc.cox.net. [68.111.84.250])
-        by smtp.gmail.com with ESMTPSA id x26sm9123491pfn.178.2020.11.08.18.00.43
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 08 Nov 2020 18:00:45 -0800 (PST)
-Subject: Re: [PATCH] PCI: brcmstb: Remove irq handler and data in one go
-To:     Martin Kaiser <martin@kaiser.cx>,
-        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Florian Fainelli <f.fainelli@gmail.com>
-Cc:     bcm-kernel-feedback-list@broadcom.com,
-        linux-rpi-kernel@lists.infradead.org, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20201108184208.19790-1-martin@kaiser.cx>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <29cf71bd-197a-36e1-e931-9b7a60cf5830@gmail.com>
-Date:   Sun, 8 Nov 2020 18:00:42 -0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.4.1
+  d=dji.com; s=djiselector;
+  h=from:to:cc:subject:date:message-id:
+   content-transfer-encoding:mime-version;
+  bh=Z240+qv+bpaWBtHoaivfTDQOaAe0/mMdBO5J3b33XmQ=;
+  b=srUAoI+arnciVZvOdZW54MCe3rXEdOgGzPT/6YHgdr1FQCoN+lCs9uY+
+   nkZsZh8N+sDvHiHeDQkYeJjjLi8ahwRSaNixeFykgfxt3pbH4VZZTMlBc
+   dW8E+HUnjx3ShibgDl4XH8pejsZsAYpjr9UmFP3IghIiLKpQimP0SWagG
+   k=;
+IronPort-SDR: vet+B9TNl9UDuD8I/xDFVhhzTrZHaqch6D1CpYvya6TELaRVv5K08EEJpBtxjd8vPu1wvcwV2t
+ f+hB9LLvf3Mw==
+X-IronPort-Anti-Spam-Filtered: true
+X-IronPort-Anti-Spam-Result: =?us-ascii?q?A2EIBQBCoKhf/7IBCgpiHgEBCxIMR4N?=
+ =?us-ascii?q?DgmOEM6tjgWgLAQEBAQEBAQEBCRMcBAEBhEoZgXomOBMCAwEBCwEBBgEBAQE?=
+ =?us-ascii?q?BBgQCAoZPC4cKPwYSAQYPDygEMBcBDgEEDg2XO5t+CYEwGgKIcIFCCQGBAC6?=
+ =?us-ascii?q?BZYo8gS2BTT8mgSGCDCJshAkBEgGDNIJjBJAdEo13mgAHDoJigRULmWQrgxi?=
+ =?us-ascii?q?KEoU3A48Mk06cK4RDgWuBC3BwgzpPFwKOOBeBAgECjSGBLAIGAQkBAQMJjTe?=
+ =?us-ascii?q?BEQEB?=
+X-IPAS-Result: =?us-ascii?q?A2EIBQBCoKhf/7IBCgpiHgEBCxIMR4NDgmOEM6tjgWgLA?=
+ =?us-ascii?q?QEBAQEBAQEBCRMcBAEBhEoZgXomOBMCAwEBCwEBBgEBAQEBBgQCAoZPC4cKP?=
+ =?us-ascii?q?wYSAQYPDygEMBcBDgEEDg2XO5t+CYEwGgKIcIFCCQGBAC6BZYo8gS2BTT8mg?=
+ =?us-ascii?q?SGCDCJshAkBEgGDNIJjBJAdEo13mgAHDoJigRULmWQrgxiKEoU3A48Mk06cK?=
+ =?us-ascii?q?4RDgWuBC3BwgzpPFwKOOBeBAgECjSGBLAIGAQkBAQMJjTeBEQEB?=
+X-IronPort-AV: E=Sophos;i="5.77,462,1596470400"; 
+   d="scan'208";a="60263688"
+Received: from unknown (HELO mail.dji.com) ([10.10.1.178])
+  by mail.djicorp.com with ESMTP; 09 Nov 2020 10:03:12 +0800
+Received: from MAIL-MBX-cwP04.dji.com (10.10.17.104) by djimail04-in.dji.com
+ (10.10.1.178) with Microsoft SMTP Server (TLS) id 15.0.1104.5; Mon, 9 Nov
+ 2020 10:03:11 +0800
+Received: from MAIL-MBX-cwP02.dji.com (10.10.17.102) by MAIL-MBX-cwP04.dji.com
+ (10.10.17.104) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 9 Nov
+ 2020 10:03:11 +0800
+Received: from MAIL-MBX-cwP02.dji.com ([fe80::f109:aaff:cc3f:6c6e]) by
+ MAIL-MBX-cwP02.dji.com ([fe80::f109:aaff:cc3f:6c6e%17]) with mapi id
+ 15.00.1497.006; Mon, 9 Nov 2020 10:03:11 +0800
+From:   Tim Li <tim.li@dji.com>
+To:     "balbi@kernel.org" <balbi@kernel.org>
+CC:     "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Question: gadget: How to realize uvc and uac composite function?
+Thread-Topic: Question: gadget: How to realize uvc and uac composite function?
+Thread-Index: Ada2PEqQqZapFjGpRP6iM/G2ZHY0Ig==
+Date:   Mon, 9 Nov 2020 02:03:11 +0000
+Message-ID: <883ccf2fb0a34c7d8466db09b3f26e72@MAIL-MBX-cwP02.dji.com>
+Accept-Language: zh-CN, en-US
+Content-Language: zh-CN
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.10.8.101]
+Content-Type: text/plain; charset="gb2312"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-In-Reply-To: <20201108184208.19790-1-martin@kaiser.cx>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 11/8/2020 10:42 AM, Martin Kaiser wrote:
-> Replace the two separate calls for removing the irq handler and data with a
-> single irq_set_chained_handler_and_data() call.
-> 
-> Signed-off-by: Martin Kaiser <martin@kaiser.cx>
-
-Acked-by: Florian Fainelli <f.fainelli@gmail.com>
--- 
-Florian
+SGksDQpWZXJzaW9uOiA0LjkgYW5kIHVhYzEgZHJpdmVyIGlzIFY1LjkuIEkgdGVzdGVkIGl0IGJh
+c2VkIG9uIDQuOSB3aXRoIGJhY2twb3J0ZWQgZHdjMyBkcml2ZXIgZnJvbWUgdjUuOS4NCjEuIEFj
+Y29yZGluZyB0byBjb25maWdmcy11c2ItZ2FkZ2V0LXV2YywgUEMoV2luZG93cyAxMCkgY2FuIGdl
+dCBJU08gZGF0YSBub3JtYWxseTsNCjIuIEFjY29yZGluZyB0byBjb25maWdmcy11c2ItZ2FkZ2V0
+LXVhYzEsIFBDKFdpbmRvd3MgMTApIGNhbiAgaW5zdGFsbCBhdWRpbyBkcml2ZXIgbm9ybWFsbHko
+QUMgSW50ZXJmYWNlLC9DYXB0dWUgSW5wdXQgdGVybWluYWwvU3BlYWtlcik7DQozoaJ1dmMrdWFj
+MSBjb21wb3NpdGUgZGV2aWNlLCBQQyhXaW5kb3dzIDEwKSBjYW4gZ2V0IElTTyBkYXRhIG5vcm1h
+bGx5LCBidXQgUEMgc2hvd3MgdGhhdCB0aGUgdWFjMSBkcml2ZXIgaW5zdGFsbGF0aW9uIGZhaWxl
+ZChBQyBJbnRlcmZhY2UvQ2FwdHVyZSBJbmFjdGl2ZS9QbGF5YmFjayBJbmFjdGl2ZSkuIEFDIElu
+dGVyZmFjZS9DYXB0dXJlIEluYWN0aXZlL1BsYXliYWNrIEluYWN0aXZlIGFsbCBzaG93IHRoZSBk
+ZXZpY2UgY2Fubm90IHN0YXJ0IGNvZGUgMTAsIFRoZSBzZXR0aW5ncyBvZiB0aGUgSS9PIGRldmlj
+ZSBhcmUgaW5jb3JyZWN0IG9yIHRoZSBjb25maWd1cmF0aW9uIHBhcmFtZXRlcnMgb2YgdGhlIGRy
+aXZlciBhcmUgaW5jb3JyZWN0LiBUaHJvdWdoIHRoZSBVU0IgYW5hbHl6ZXIgdG8gY2FwdHVyZSB0
+aGUgcGFja2V0LCBJIGZvdW5kIHRoYXQgdGhlIEluZGV4IHZhbHVlIHNlZW1zIHRvIGJlIHdyb25n
+IHdoZW4gUEMgaG9zdCB0byBnZXQgdGhlIGRlc2NyaXB0b3IuIFRoZSBhY3F1aXNpdGlvbiBpcyBQ
+bGF5YmFjayBJbmFjdGl2ZSBhbmQgQ2FwdHVyZSBJbmFjdGl2ZSwgYW5kIHRoZSBQQyBkaWQgbm90
+IHNlbmQgdGhlIGNvbW1hbmQgcGFja2V0IGFib3V0IHVhYzEuIEl0IGlzIGRpZmZpY3VsdCB0byBk
+ZWJ1ZyBpdC4NCg0KIEkgc2luY2VyZWx5IGhvcGUgdGhhdCBldmVyeW9uZSBjYW4gZ2l2ZSBzb21l
+IHN1Z2dlc3Rpb25zIG9yIHJlbGF0ZWQgcGF0Y2hlcyB0byBoZWxwIG1lLiBUaGFua3MgdmVyeSBt
+dWNoIQ0KDQpSZWdhcmRzLA0KcGVuZ2NoZW5nDQpUaGlzIGVtYWlsIGFuZCBhbnkgYXR0YWNobWVu
+dHMgdGhlcmV0byBtYXkgY29udGFpbiBwcml2YXRlLCBjb25maWRlbnRpYWwsIGFuZCBwcml2aWxl
+Z2VkIG1hdGVyaWFsIGZvciB0aGUgc29sZSB1c2Ugb2YgdGhlIGludGVuZGVkIHJlY2lwaWVudC4g
+QW55IHJldmlldywgY29weWluZywgb3IgZGlzdHJpYnV0aW9uIG9mIHRoaXMgZW1haWwgKG9yIGFu
+eSBhdHRhY2htZW50cyB0aGVyZXRvKSBieSBvdGhlcnMgaXMgc3RyaWN0bHkgcHJvaGliaXRlZC4g
+SWYgeW91IGFyZSBub3QgdGhlIGludGVuZGVkIHJlY2lwaWVudCwgcGxlYXNlIGNvbnRhY3QgdGhl
+IHNlbmRlciBpbW1lZGlhdGVseSBhbmQgcGVybWFuZW50bHkgZGVsZXRlIHRoZSBvcmlnaW5hbCBh
+bmQgYW55IGNvcGllcyBvZiB0aGlzIGVtYWlsIGFuZCBhbnkgYXR0YWNobWVudHMgdGhlcmV0by4N
+Cg0KtMu159fT08q8/rywuL28/sv5sPy6rMTayN2+39PQu/rD3NDUo6zH0r32z97T2r3TytXIy8q5
+08Oho860vq3UytDto6y9+9a5tdrI/cjL1MS2waGiuLTWxrvytKuypbjDtefX09PKvP7W0LXEyM66
+ztDFz6Kho8jnufvE+rK7yvTT2tLUyc+159fT08q8/rXExL+x6r3TytXV36Osx+vE+sGivLTNqNaq
+t6LLzcjLsqLJvrP91K2159fT08q8/rywxuTP4LnYtcS4vbz+oaMNCg==
