@@ -2,104 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11BE62ABCC4
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 14:41:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2313D2ABCC6
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 14:41:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388097AbgKINkX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 08:40:23 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:49859 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2387889AbgKINju (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 08:39:50 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1604929189;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=30aIpkoGzLQHi4d8TJdTBFjnhZT9ynIM5RTZ6XC00zY=;
-        b=ZVkg9UP4xW9Mz8/Lyym9rl+gybcDasCGY1ETQvUl8zJSLQqnfgJ7y6anpQcRH2eM8Px8gy
-        E8zp4b1jx1HyOQelzBnBuN1eKVyAnWQF3hawgPY5GhHBy5ywguqM03+0c9lDPdr4aB2sad
-        ajrGYf26Wj+AcTMcOwCuFvXMp8Z1wPg=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-388-3IWVd2ImOieWVOr-t6U6bA-1; Mon, 09 Nov 2020 08:39:41 -0500
-X-MC-Unique: 3IWVd2ImOieWVOr-t6U6bA-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S1731607AbgKINkr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 08:40:47 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35390 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730602AbgKINkp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 08:40:45 -0500
+Received: from linux-8ccs.fritz.box (p57a236d4.dip0.t-ipconnect.de [87.162.54.212])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 101E1425D4;
-        Mon,  9 Nov 2020 13:39:39 +0000 (UTC)
-Received: from ovpn-113-119.rdu2.redhat.com (ovpn-113-119.rdu2.redhat.com [10.10.113.119])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 324EB5DA6B;
-        Mon,  9 Nov 2020 13:39:32 +0000 (UTC)
-Message-ID: <06a1a6bde51a66461d7b3135349641856315401d.camel@redhat.com>
-Subject: Re: [PATCH v8 17/18] scsi: megaraid_sas: Added support for shared
- host tagset for cpuhotplug
-From:   Qian Cai <cai@redhat.com>
-To:     John Garry <john.garry@huawei.com>,
-        Sumit Saxena <sumit.saxena@broadcom.com>
-Cc:     Kashyap Desai <kashyap.desai@broadcom.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        don.brace@microsemi.com, Ming Lei <ming.lei@redhat.com>,
-        Bart Van Assche <bvanassche@acm.org>, dgilbert@interlog.com,
-        paolo.valente@linaro.org, Hannes Reinecke <hare@suse.de>,
-        Christoph Hellwig <hch@lst.de>, linux-block@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux SCSI List <linux-scsi@vger.kernel.org>,
-        esc.storagedev@microsemi.com,
-        "PDL,MEGARAIDLINUX" <megaraidlinux.pdl@broadcom.com>,
-        chenxiang66@hisilicon.com, luojiaxing@huawei.com,
-        Hannes Reinecke <hare@suse.com>
-Date:   Mon, 09 Nov 2020 08:39:32 -0500
-In-Reply-To: <0c75b881-3096-12cf-07cc-1119ca6a453e@huawei.com>
-References: <1597850436-116171-1-git-send-email-john.garry@huawei.com>
-         <1597850436-116171-18-git-send-email-john.garry@huawei.com>
-         <fe3dff7dae4494e5a88caffbb4d877bbf472dceb.camel@redhat.com>
-         <385d5408-6ba2-6bb6-52d3-b59c9aa9c5e5@huawei.com>
-         <193a0440eed447209c48bda042f0e4db102355e7.camel@redhat.com>
-         <519e0d58-e73e-22ce-0ddb-1be71487ba6d@huawei.com>
-         <d8fd51b11d5d54e6ec7e4e9a4f7dcc83f1215cd3.camel@redhat.com>
-         <d4f86cccccc3bffccc4eda39500ce1e1fee2109a.camel@redhat.com>
-         <7624d3fe1613f19af5c3a77f4ae8fe55@mail.gmail.com>
-         <d1040c06-74ea-7016-d259-195fa52196a9@huawei.com>
-         <CAL2rwxoAAGQDud1djb3_LNvBw95YoYUGhe22FwE=hYhy7XOLSw@mail.gmail.com>
-         <aaf849d38ca3cdd45151ffae9b6a99fe6f6ea280.camel@redhat.com>
-         <0c75b881-3096-12cf-07cc-1119ca6a453e@huawei.com>
-Content-Type: text/plain; charset="UTF-8"
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+        by mail.kernel.org (Postfix) with ESMTPSA id 70B58206CB;
+        Mon,  9 Nov 2020 13:40:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604929244;
+        bh=+VdWaxHs53uvHZ4NxwqLvFRNZhIN+FlD0P6Qe12XBLY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=UHmRwpRfWj1GCfp4m6XlHgP72EKV+XCxsn8k1IKyIayfoky+JcDXfmV/oMIj7Urnq
+         iJY1x+nlspn+KmDTqN6Nyh9RUVFZLXlsYWJj1PRj2tzW+LkAAodZdyOdrW4T2UZidV
+         uC/eje6XrGRRmRb4qVrg82uNbDSxavVBAoRABO0k=
+Date:   Mon, 9 Nov 2020 14:40:39 +0100
+From:   Jessica Yu <jeyu@kernel.org>
+To:     Sergey Shtylyov <s.shtylyov@omprussia.ru>
+Cc:     linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] module: fix comment style
+Message-ID: <20201109134036.GB24810@linux-8ccs.fritz.box>
+References: <7cabd5fd-e413-9b71-004e-56c9c329de23@omprussia.ru>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <7cabd5fd-e413-9b71-004e-56c9c329de23@omprussia.ru>
+X-OS:   Linux linux-8ccs 4.12.14-lp150.12.61-default x86_64
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2020-11-09 at 08:49 +0000, John Garry wrote:
-> On 07/11/2020 00:17, Qian Cai wrote:
-> > On Sat, 2020-11-07 at 00:55 +0530, Sumit Saxena wrote:
-> > > I am able to hit the boot hang and similar kind of stack traces as
-> > > reported by Qian with shared .config on x86 machine.
-> > > In my case the system boots after a hang of 40-45 mins. Qian, is it
-> > > true for you as well ?
-> > I don't know. I had never waited for that long.
-> > 
-> > .
-> > 
-> 
-> Hi Qian,
-> 
-> By chance do have an equivalent arm64 .config, enabling the same RH 
-> config options?
-> 
-> I suppose I could try do this myself also, but an authentic version 
-> would be nicer.
-The closest one I have here is:
-https://cailca.coding.net/public/linux/mm/git/files/master/arm64.config
++++ Sergey Shtylyov [07/11/20 23:20 +0300]:
+>Many comments in this module do not comply with the preferred multi-line
+>comment style as reported by 'scripts/checkpatch.pl':
+>
+>WARNING: Block comments use * on subsequent lines
+>WARNING: Block comments use a trailing */ on a separate line
+>
+>Fix those comments, along with (unreported for some reason?) the starts
+>of the multi-line comments not being /* on their own line...
+>
+>Signed-off-by: Sergey Shtylyov <s.shtylyov@omprussia.ru>
+>
+>---
+>This patch is against the 'modules-next' branch of Jessica Yu's 'linux.git'
+>repo plus my 2 patches posted this week.
+>I'm not sure such patches are welcome, please let me know if they're not...
+>
+>Changes in version 2:
+>- fixed up the comment before find_symbol().
 
-but it only selects the Thunder X2 platform and needs to manually select
-CONFIG_MEGARAID_SAS=m to start with, but none of arm64 systems here have
-megaraid_sas.
+Applied, thanks for the comment cleanups!
 
+Jessica
