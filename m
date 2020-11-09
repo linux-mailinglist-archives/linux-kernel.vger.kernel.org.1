@@ -2,180 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DF8D2AC93F
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 00:23:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 237442AC942
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 00:24:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730778AbgKIXXS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 18:23:18 -0500
-Received: from aserp2120.oracle.com ([141.146.126.78]:58132 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727070AbgKIXXS (ORCPT
+        id S1731104AbgKIXX4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 18:23:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33508 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727070AbgKIXXz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 18:23:18 -0500
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0A9NDj9B189702;
-        Mon, 9 Nov 2020 23:23:16 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : references
- : from : to : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=3ZO8bg9r6TKZ6SnICTJvFF+t0nzlnGOvrSmmh/6z+l4=;
- b=MIY7qmLYADZWKpwvQBlTLpQivDeYJgrZXak5YMLElSdYuaIhEWGFHRDmjNUbOwtguPGL
- BwURdV5V0YSfo+xVpWrOxU9myQ8rv+1MDXTCE0gjstfIeiZTFT7rvmFpCL+DaiZBkZnP
- HndlJfq2eLjxGE1oI7CvhF584Xpt1PEhhJWHkAoLH1FKX5QYpE5m52vOHhww0b5uhsJm
- ERFnD0ATTkR7h6o6ObFJtgN3tc1s/GV8NFoSZS3NjuRYtmI9vpCvUWoVHeRlkh52cGxv
- 7oGhVFWSeGLU1oHJfmvfw0DtttWruYs4SkV58w/Z4EX5YnlKcmJAqM6YMwP7rsUrMm51 Og== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by aserp2120.oracle.com with ESMTP id 34nkhkrt50-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 09 Nov 2020 23:23:16 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0A9NF2Z9061499;
-        Mon, 9 Nov 2020 23:23:15 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by userp3020.oracle.com with ESMTP id 34p5br7x4a-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 09 Nov 2020 23:23:15 +0000
-Received: from abhmp0005.oracle.com (abhmp0005.oracle.com [141.146.116.11])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0A9NNFar028771;
-        Mon, 9 Nov 2020 23:23:15 GMT
-Received: from [192.168.0.193] (/69.207.174.138)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 09 Nov 2020 15:23:14 -0800
-Subject: Re: [PATCH v8 -tip 17/26] sched: Split the cookie and setup per-task
- cookie on fork
-References: <4ff7f030-b797-6711-fb6a-fe39bb02075a@oracle.com>
-From:   chris hyser <chris.hyser@oracle.com>
-To:     "Joel Fernandes (Google)" <joel@joelfernandes.org>,
-        linux-kernel@vger.kernel.org
-X-Forwarded-Message-Id: <4ff7f030-b797-6711-fb6a-fe39bb02075a@oracle.com>
-Message-ID: <6e864ca1-d02b-dc56-7ec2-6224eeb0b32d@oracle.com>
-Date:   Mon, 9 Nov 2020 18:23:13 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.2.2
+        Mon, 9 Nov 2020 18:23:55 -0500
+Received: from mail-ua1-x942.google.com (mail-ua1-x942.google.com [IPv6:2607:f8b0:4864:20::942])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B32B5C0613D3
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Nov 2020 15:23:54 -0800 (PST)
+Received: by mail-ua1-x942.google.com with SMTP id q68so3354135uaq.3
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Nov 2020 15:23:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Hy7TKyZHJ9No+mZr0hZGFgrb+eb/SGeHukhYIRcpwYY=;
+        b=C8uFCOCzFxzBNdhRn2r0/WGEaDr91GKtja37pCqNfRzs7gofDM8nLziq7NcH6XJEdK
+         Z0XpCRpRfgNrcTRcRItT7T+T0Y1+3eyHQnRZotb0nqCFPzxdX7dARuwD7pD7obkBx/AJ
+         Y6fPPiUgJILhKaBMArkw81gVYyYF4TanXNUlE=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Hy7TKyZHJ9No+mZr0hZGFgrb+eb/SGeHukhYIRcpwYY=;
+        b=l91oxFLKrixDd80xdlmhEbNdxe1icDWk0mpwbNgaBY/NvfY6lCNPj7oYBztQuzatUu
+         jmDj5+B195LlJBVQ0rU2DGk68BAOjQcRpFNArTxFn81OLOmf8MQ5BHS6dGuJstWKSiub
+         hV29A0CB+TrvINqqwO/CC7D72GPo/653cFJUtypAMKdxZN8+be1Bb3QLVRHKl3ascXfu
+         699gdx1wZgBFkM88yjaF2bBmZlrqs+0wDWG1dE0uPmQ1Dq1ZcqfH2choe/2n0T0k/Qji
+         pfinhqr0pO66ArXBZS6EC3ZZSJbVK7SeSbXIhSHoVv0h1V7Gd/pn+6MrlAmb3056pAq6
+         FqGQ==
+X-Gm-Message-State: AOAM530POUQVkTw8q1Mu7BiXY26dLXlWcMmFoSbR1gUfKKaDA7BwOgzb
+        3jxSm9ATcMBBwDOj7GUu+TIKoSlDyTfEyQ==
+X-Google-Smtp-Source: ABdhPJzh4YxDqhxgM2fG/GSNvKO7c/DhmvL6cC/5EzsniPxS1BIFM3D+QuBNblj2F4UbFrsv07HqWA==
+X-Received: by 2002:a9f:264a:: with SMTP id 68mr8515733uag.0.1604964233867;
+        Mon, 09 Nov 2020 15:23:53 -0800 (PST)
+Received: from mail-vk1-f170.google.com (mail-vk1-f170.google.com. [209.85.221.170])
+        by smtp.gmail.com with ESMTPSA id m9sm700254vke.10.2020.11.09.15.23.51
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 09 Nov 2020 15:23:52 -0800 (PST)
+Received: by mail-vk1-f170.google.com with SMTP id d191so2285959vka.13
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Nov 2020 15:23:51 -0800 (PST)
+X-Received: by 2002:ac5:cd58:: with SMTP id n24mr6279742vkm.17.1604964231319;
+ Mon, 09 Nov 2020 15:23:51 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <4ff7f030-b797-6711-fb6a-fe39bb02075a@oracle.com>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9800 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 malwarescore=0
- phishscore=0 spamscore=0 mlxlogscore=999 bulkscore=0 suspectscore=0
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2011090147
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9800 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 priorityscore=1501
- mlxscore=0 suspectscore=0 mlxlogscore=999 lowpriorityscore=0 spamscore=0
- malwarescore=0 adultscore=0 clxscore=1015 bulkscore=0 impostorscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2011090147
+References: <20201109213636.1267536-1-dianders@chromium.org> <20201109133526.v5.1.Ied4ce10d229cd7c69abf13a0361ba0b8d82eb9c4@changeid>
+In-Reply-To: <20201109133526.v5.1.Ied4ce10d229cd7c69abf13a0361ba0b8d82eb9c4@changeid>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Mon, 9 Nov 2020 15:23:39 -0800
+X-Gmail-Original-Message-ID: <CAD=FV=UUS1U5YmOFjioU12o3ayb8W2rFh9bPTfaeGiBxZ0cXHg@mail.gmail.com>
+Message-ID: <CAD=FV=UUS1U5YmOFjioU12o3ayb8W2rFh9bPTfaeGiBxZ0cXHg@mail.gmail.com>
+Subject: Re: [PATCH v5 1/4] HID: i2c-hid: Reorganize so ACPI and OF are
+ separate modules
+To:     Jiri Kosina <jkosina@suse.cz>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Cc:     Kai-Heng Feng <kai.heng.feng@canonical.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        "open list:HID CORE LAYER" <linux-input@vger.kernel.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Andrea Borgia <andrea@borgia.bo.it>,
+        Jiri Kosina <jikos@kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Pavel Balan <admin@kryma.net>,
+        Xiaofei Tan <tanxiaofei@huawei.com>,
+        You-Sheng Yang <vicamo.yang@canonical.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> On 10/19/20 9:43 PM, Joel Fernandes (Google) wrote:
->> In order to prevent interference and clearly support both per-task and CGroup
->> APIs, split the cookie into 2 and allow it to be set from either per-task, or
->> CGroup API. The final cookie is the combined value of both and is computed when
->> the stop-machine executes during a change of cookie.
->>
->> Also, for the per-task cookie, it will get weird if we use pointers of any
->> emphemeral objects. For this reason, introduce a refcounted object who's sole
->> purpose is to assign unique cookie value by way of the object's pointer.
->>
->> While at it, refactor the CGroup code a bit. Future patches will introduce more
->> APIs and support.
->>
->> Tested-by: Julien Desfossez <jdesfossez@digitalocean.com>
->> Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
->> ---
->>   include/linux/sched.h |   2 +
->>   kernel/sched/core.c   | 241 ++++++++++++++++++++++++++++++++++++++++--
->>   kernel/sched/debug.c  |   4 +
->>   3 files changed, 236 insertions(+), 11 deletions(-)
->>
->> diff --git a/include/linux/sched.h b/include/linux/sched.h
->> index fe6f225bfbf9..c6034c00846a 100644
->> --- a/include/linux/sched.h
->> +++ b/include/linux/sched.h
->> @@ -688,6 +688,8 @@ struct task_struct {
->>   #ifdef CONFIG_SCHED_CORE
->>       struct rb_node            core_node;
->>       unsigned long            core_cookie;
->> +    unsigned long            core_task_cookie;
->> +    unsigned long            core_group_cookie;
->>       unsigned int            core_occupation;
->>   #endif
->>   diff --git a/kernel/sched/core.c b/kernel/sched/core.c
->> index bab4ea2f5cd8..30a9e4cb5ce1 100644
->> --- a/kernel/sched/core.c
->> +++ b/kernel/sched/core.c
->> @@ -346,11 +346,14 @@ void sched_core_put(void)
->>       mutex_unlock(&sched_core_mutex);
->>   }
->>   +static int sched_core_share_tasks(struct task_struct *t1, struct task_struct *t2);
->> +
->>   #else /* !CONFIG_SCHED_CORE */
->>     static inline void sched_core_enqueue(struct rq *rq, struct task_struct *p) { }
->>   static inline void sched_core_dequeue(struct rq *rq, struct task_struct *p) { }
->>   static bool sched_core_enqueued(struct task_struct *task) { return false; }
->> +static int sched_core_share_tasks(struct task_struct *t1, struct task_struct *t2) { }
->>     #endif /* CONFIG_SCHED_CORE */
->>   @@ -3583,6 +3586,20 @@ int sched_fork(unsigned long clone_flags, struct task_struct *p)
->>   #endif
->>   #ifdef CONFIG_SCHED_CORE
->>       RB_CLEAR_NODE(&p->core_node);
->> +
->> +    /*
->> +     * Tag child via per-task cookie only if parent is tagged via per-task
->> +     * cookie. This is independent of, but can be additive to the CGroup tagging.
->> +     */
->> +    if (current->core_task_cookie) {
->> +
->> +        /* If it is not CLONE_THREAD fork, assign a unique per-task tag. */
->> +        if (!(clone_flags & CLONE_THREAD)) {
->> +            return sched_core_share_tasks(p, p);
->> +               }
->> +        /* Otherwise share the parent's per-task tag. */
->> +        return sched_core_share_tasks(p, current);
->> +    }
->>   #endif
->>       return 0;
->>   } 
+Hi,
 
-sched_core_share_tasks() looks at the value of the new tasks core_task_cookie which is non-zero on a
-process or thread clone and causes underflow for both the enable flag itself and for cookie ref counts.
+On Mon, Nov 9, 2020 at 1:37 PM Douglas Anderson <dianders@chromium.org> wrote:
+>
+> +int i2c_hid_acpi_probe(struct i2c_client *client,
+> +                      const struct i2c_device_id *dev_id)
+> +{
+> +       struct device *dev = &client->dev;
+> +       struct i2c_hid_acpi *ihid_acpi;
+> +       u16 hid_descriptor_address;
+> +       int ret;
+> +
+> +       ihid_acpi = devm_kzalloc(&client->dev, sizeof(*ihid_acpi), GFP_KERNEL);
+> +       if (!ihid_acpi)
+> +               return -ENOMEM;
+> +
 
-So just zero it in __sched_fork().
+Turns out one way to find some folks to help me test this code is to
+break them.  Maybe not a good way, but a way.  :(
 
--chris
+There should have been a:
+
+ihid_acpi->client = client;
+
+...here.  If you're willing to look at Chrome OS gerrit pages, you can
+find the fix at <https://crrev.com/c/2527946>.
+
+If everything about this patch looks good, I'm OK w/ a maintainer
+fixing this when applying.  I'm also happy to send out a v6, but I'll
+wait a little bit in case there are other comments.
 
 
-PATCH] sched: zero out the core scheduling cookie on clone
-
-From: chris hyser <chris.hyser@oracle.com>
-
-As the cookie is reference counted, even if inherited, zero this and allow
-explicit sharing.
-
-Signed-off-by: Chris Hyser <chris.hyser@oracle.com>
----
-  kernel/sched/core.c | 3 +++
-  1 file changed, 3 insertions(+)
-
-diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index fd3cc03..2af0ea6 100644
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -3378,6 +3378,9 @@ static void __sched_fork(unsigned long clone_flags, struct task_struct *p)
-  	p->capture_control = NULL;
-  #endif
-  	init_numa_balancing(clone_flags, p);
-+#ifdef CONFIG_SCHED_CORE
-+	p->core_task_cookie = 0;
-+#endif
-  #ifdef CONFIG_SMP
-  	p->wake_entry.u_flags = CSD_TYPE_TTWU;
-  #endif
--- 
-1.8.3.1
-
+-Doug
