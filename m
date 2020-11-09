@@ -2,167 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2381D2ABE7E
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 15:20:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6960A2ABE7C
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 15:20:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731162AbgKIOUk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 09:20:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33436 "EHLO
+        id S1730972AbgKIOU1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 09:20:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33400 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730782AbgKIOUk (ORCPT
+        with ESMTP id S1729776AbgKIOU0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 09:20:40 -0500
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01F0BC0613D3
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Nov 2020 06:20:38 -0800 (PST)
-Received: by mail-pg1-x544.google.com with SMTP id h6so7278722pgk.4
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Nov 2020 06:20:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=yzZSafk58bq+f5L2n1A+XJgmXIfKfqr55EsbHaz5ToU=;
-        b=anyEXQNBxl/WPiGhQQNwmAQb+fQoGWo0vJCypbVU0olYHgcNgdGNMOWRmxfxeUtv3o
-         g26pAqMiAJOuq6UnzUPj5YGG+tQY8LLQaNhEpp1i2NBpd1rk3QXgSjo3rFc7n4A3rgRT
-         2migm/LzuplMv3qzhqSicOFWm9bKmd8hcj+WFa8U9Bvl1MadZP78fp68EqVPtOeThjkF
-         1FVJmmjavutK+fiGUf9u3YvoXYozI5tKWIP/YFbT7b3r8hcbG+AX8eOKYUa3HalOCEsK
-         wYJoi97fMNPqIHVk3ZtTA4+Sm84h7F7d+jSzQrpK8GataVUIRXUTh5imfrXTBMUYi4jG
-         48lA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=yzZSafk58bq+f5L2n1A+XJgmXIfKfqr55EsbHaz5ToU=;
-        b=hxsC6+yw6fPK0CPsqmdKfm5d2oAyFIvATUI1AB+DDF6/wtS+pLqqKCpAKuTwjp6tcv
-         LzRZSW4KIu9NHnLXPM6DRFx8XknlOtPYQSQcDln4Oau4DiLIyPaTRxXG8aegaBw92YR0
-         sMAFBQ6P70KRjo11Lpt5UmgbBRayOykuAU0o+ouwJR5RKtaBBVb87wKQtbFPTuQ4GdSk
-         Aix2DDkaf4uyPJqxAoO4+dg0fKWlDKIBDYhOIzR+roLy6Br7Cga59XxvAO7YLnx0kn2s
-         KZECfSULUhFyt0T+ejkzsIFG39oGPCmck+PCTFkfb7jXJhH4P5I4747PZ4Tg2LW2HYXE
-         ccmQ==
-X-Gm-Message-State: AOAM5311mUL4dFoTlVSxzpxhNRCxEnw3KdMJP951pgkSJrcYxGi/19uw
-        C5MkUd3SYYmgqDZd8HiTpioV+tVSE4fnAArHtQEDlg==
-X-Google-Smtp-Source: ABdhPJxkpM77kBmju2XOjMh8n98tAVXTI9znLZLfuG3dhhF1nJ7YKOpkysiIxpvhmPZsNVGS0wGQ7jgSEAlN/Hk9bPM=
-X-Received: by 2002:a65:5383:: with SMTP id x3mr12825717pgq.341.1604931638489;
- Mon, 09 Nov 2020 06:20:38 -0800 (PST)
+        Mon, 9 Nov 2020 09:20:26 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A903C0613CF
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Nov 2020 06:20:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=ifTPoe6YK4JOieCL61op/fn3W2iVxY1lQd2pBgg8rZo=; b=bO/oWgDYiBTIrBWklsM0YNltIH
+        gWiIyxPpAoOnLa/2CJQN4lTdylN7CnRGSkYV5zdkXQ7FW2l03RggJuRg8AbiiGUn3GzBMcZGeODW0
+        zQ9z/ZY79kDiCp5u/fAgXIKUSU5jIr4MZIc22pDkno7xt+NwzDtmP5wjlZ3f56R8A/ECfYt4O3Puy
+        THiAu9Z6RQbdToGuMbmuDJJvbaXZGqiyT+GIVfFOLjxQk8+VhHIzCyPyXZh7U8t4BCjQR8hGl+eQI
+        wERjVBEFPzIdUO76juiILCTwvmSGoalz9IzKtiL/fIPaQpX5VvFdwbk6z0ngx5IHAedr5jM9aw32P
+        5O2+wBIg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kc81q-00041U-8l; Mon, 09 Nov 2020 14:20:18 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 773D4300455;
+        Mon,  9 Nov 2020 15:20:16 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 6AF4C2BDD057E; Mon,  9 Nov 2020 15:20:16 +0100 (CET)
+Date:   Mon, 9 Nov 2020 15:20:16 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Trond Myklebust <trondmy@hammerspace.com>
+Cc:     "neilb@suse.de" <neilb@suse.de>,
+        "juri.lelli@redhat.com" <juri.lelli@redhat.com>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "jiangshanlai@gmail.com" <jiangshanlai@gmail.com>,
+        "tj@kernel.org" <tj@kernel.org>,
+        "mhocko@suse.com" <mhocko@suse.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "vincent.guittot@linaro.org" <vincent.guittot@linaro.org>
+Subject: Re: [PATCH rfc] workqueue: honour cond_resched() more effectively.
+Message-ID: <20201109142016.GK2611@hirez.programming.kicks-ass.net>
+References: <87v9efp7cs.fsf@notabene.neil.brown.name>
+ <20201109080038.GY2594@hirez.programming.kicks-ass.net>
+ <aec65c71c09e803285688d5974193a98b4422428.camel@hammerspace.com>
 MIME-Version: 1.0
-References: <20201108141113.65450-1-songmuchun@bytedance.com>
- <20201108141113.65450-4-songmuchun@bytedance.com> <20201109135215.GA4778@localhost.localdomain>
-In-Reply-To: <20201109135215.GA4778@localhost.localdomain>
-From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Mon, 9 Nov 2020 22:20:02 +0800
-Message-ID: <CAMZfGtVMFzFLzd5fMemopHfnsoye9yYN4V06eHZeO8qTu-4fAg@mail.gmail.com>
-Subject: Re: [External] Re: [PATCH v3 03/21] mm/hugetlb: Introduce a new
- config HUGETLB_PAGE_FREE_VMEMMAP
-To:     Oscar Salvador <osalvador@suse.de>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Thomas Gleixner <tglx@linutronix.de>, mingo@redhat.com,
-        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
-        dave.hansen@linux.intel.com, luto@kernel.org,
-        Peter Zijlstra <peterz@infradead.org>, viro@zeniv.linux.org.uk,
-        Andrew Morton <akpm@linux-foundation.org>, paulmck@kernel.org,
-        mchehab+huawei@kernel.org, pawan.kumar.gupta@linux.intel.com,
-        Randy Dunlap <rdunlap@infradead.org>, oneukum@suse.com,
-        anshuman.khandual@arm.com, jroedel@suse.de,
-        Mina Almasry <almasrymina@google.com>,
-        David Rientjes <rientjes@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Xiongchun duan <duanxiongchun@bytedance.com>,
-        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <aec65c71c09e803285688d5974193a98b4422428.camel@hammerspace.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 9, 2020 at 9:52 PM Oscar Salvador <osalvador@suse.de> wrote:
->
-> On Sun, Nov 08, 2020 at 10:10:55PM +0800, Muchun Song wrote:
-> > The purpose of introducing HUGETLB_PAGE_FREE_VMEMMAP is to configure
-> > whether to enable the feature of freeing unused vmemmap associated
-> > with HugeTLB pages. Now only support x86.
-> >
-> > Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-> > ---
-> >  arch/x86/mm/init_64.c |  2 +-
-> >  fs/Kconfig            | 16 ++++++++++++++++
-> >  mm/bootmem_info.c     |  3 +--
-> >  3 files changed, 18 insertions(+), 3 deletions(-)
-> >
-> > diff --git a/arch/x86/mm/init_64.c b/arch/x86/mm/init_64.c
-> > index 0a45f062826e..0435bee2e172 100644
-> > --- a/arch/x86/mm/init_64.c
-> > +++ b/arch/x86/mm/init_64.c
-> > @@ -1225,7 +1225,7 @@ static struct kcore_list kcore_vsyscall;
-> >
-> >  static void __init register_page_bootmem_info(void)
-> >  {
-> > -#ifdef CONFIG_NUMA
-> > +#if defined(CONFIG_NUMA) || defined(CONFIG_HUGETLB_PAGE_FREE_VMEMMAP)
-> >       int i;
-> >
-> >       for_each_online_node(i)
-> > diff --git a/fs/Kconfig b/fs/Kconfig
-> > index 976e8b9033c4..21b8d39a9715 100644
-> > --- a/fs/Kconfig
-> > +++ b/fs/Kconfig
-> > @@ -245,6 +245,22 @@ config HUGETLBFS
-> >  config HUGETLB_PAGE
-> >       def_bool HUGETLBFS
-> >
-> > +config HUGETLB_PAGE_FREE_VMEMMAP
-> > +     bool "Free unused vmemmap associated with HugeTLB pages"
-> > +     default y
-> > +     depends on X86
-> > +     depends on HUGETLB_PAGE
-> > +     depends on SPARSEMEM_VMEMMAP
-> > +     depends on HAVE_BOOTMEM_INFO_NODE
-> > +     help
-> > +       There are many struct page structures associated with each HugeTLB
-> > +       page. But we only use a few struct page structures. In this case,
-> > +       it wastes some memory. It is better to free the unused struct page
-> > +       structures to buddy system which can save some memory. For
-> > +       architectures that support it, say Y here.
-> > +
-> > +       If unsure, say N.
->
-> I am not sure the above is useful for someone who needs to decide
-> whether he needs/wants to enable this or not.
-> I think the above fits better in a Documentation part.
->
-> I suck at this, but what about the following, or something along those
-> lines?
->
-> "
-> When using SPARSEMEM_VMEMMAP, the system can save up some memory
-> from pre-allocated HugeTLB pages when they are not used.
-> 6 pages per 2MB HugeTLB page and 4095 per 1GB HugeTLB page.
-> When the pages are going to be used or freed up, the vmemmap
-> array representing that range needs to be remapped again and
-> the pages we discarded earlier need to be rellocated again.
-> Therefore, this is a trade-off between saving memory and
-> increasing time in allocation/free path.
-> "
+On Mon, Nov 09, 2020 at 01:50:40PM +0000, Trond Myklebust wrote:
+> On Mon, 2020-11-09 at 09:00 +0100, Peter Zijlstra wrote:
 
-Will do. Thanks for your suggestions.
+> > I'm thinking the real problem is that you're abusing workqueues. Just
+> > don't stuff so much work into it that this becomes a problem. Or
+> > rather,
+> > if you do, don't lie to it about it.
+> 
+> If we can't use workqueues to call iput_final() on an inode, then what
+> is the point of having them at all?
 
->
-> It would be also great to point out that this might be a
-> trade-off between saving up memory and increasing the cost
-> of certain operations on allocation/free path.
-> That is why I mentioned it there.
+Running short stuff, apparently.
 
-OK, I will add this to the Documentation part, thanks.
+> Neil's use case is simply a file that has managed to accumulate a
+> seriously large page cache, and is therefore taking a long time to
+> complete the call to truncate_inode_pages_final(). Are you saying we
+> have to allocate a dedicated thread for every case where this happens?
 
->
-> --
-> Oscar Salvador
-> SUSE L3
+I'm not saying anything, but you're trying to wreck the scheduler
+because of a workqueue 'feature'. The 'new' workqueues limit concurrency
+by design, if you're then relying on concurrency for things, you're
+using it wrong.
 
-
-
--- 
-Yours,
-Muchun
+I really don't know what the right answer is here, but I thoroughly hate
+the one proposed.
