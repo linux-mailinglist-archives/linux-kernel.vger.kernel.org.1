@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EBF4F2AB911
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 14:04:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C53F2ABA2C
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 14:16:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730747AbgKINEX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 08:04:23 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56106 "EHLO mail.kernel.org"
+        id S1732954AbgKINQa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 08:16:30 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43442 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730635AbgKINCQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 08:02:16 -0500
+        id S1732251AbgKINQ0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 08:16:26 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 82AEC206C0;
-        Mon,  9 Nov 2020 13:02:14 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 02F57206D8;
+        Mon,  9 Nov 2020 13:16:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604926935;
-        bh=IZBRiAHqmL6Yx4kCr9ZgH/HKRNFI1eQziKvA+vt/HGU=;
+        s=default; t=1604927785;
+        bh=bHymZLqrSXJSBTuyoy+7+TUo85iP5i7JQlwErl6ORZM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=K6UrOjaY/3oqmNZYvtsk8Nr5QnJHKjvYWTIfEdQEKj8p6IlYhDS4W+YqYX8qEAcIp
-         HQ3JUE3HMT6UnxMmKhOrPRwTXdtgS7zocmkZDyyImclXMa+YwQ94K/BXDuQZPG4nbL
-         37f4WLl2A7UU9VlqVpt5llFMZbPTHRZXRXGKb2ew=
+        b=Pjqv3OylFcVrGQtg0+sExhHfPnhpFKCUkNOFfdm2PwrsdQ7A4+59Tr6mHgmvwDk9f
+         N/9lmIxFaZffFbMimPXDCSq4h4C8NT0yqdZKNnnz6pPOZFdYlCecvKwkUKSIh2nvpr
+         2LK8gWEqodf6Q0LZwLXa8DfiTdFpIMLijaEbYF9U=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Martin Fuzzey <martin.fuzzey@flowbird.group>
-Subject: [PATCH 4.9 055/117] w1: mxc_w1: Fix timeout resolution problem leading to bus error
-Date:   Mon,  9 Nov 2020 13:54:41 +0100
-Message-Id: <20201109125028.284906535@linuxfoundation.org>
+        stable@vger.kernel.org, Lyude Paul <lyude@redhat.com>,
+        Ben Skeggs <bskeggs@redhat.com>
+Subject: [PATCH 5.9 020/133] drm/nouveau/kms/nv50-: Program notifier offset before requesting disp caps
+Date:   Mon,  9 Nov 2020 13:54:42 +0100
+Message-Id: <20201109125031.689636633@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201109125025.630721781@linuxfoundation.org>
-References: <20201109125025.630721781@linuxfoundation.org>
+In-Reply-To: <20201109125030.706496283@linuxfoundation.org>
+References: <20201109125030.706496283@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,90 +42,217 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Martin Fuzzey <martin.fuzzey@flowbird.group>
+From: Lyude Paul <lyude@redhat.com>
 
-commit c9723750a699c3bd465493ac2be8992b72ccb105 upstream.
+commit 24d9422e26ea75118acf00172f83417c296f5b5f upstream.
 
-On my platform (i.MX53) bus access sometimes fails with
-	w1_search: max_slave_count 64 reached, will continue next search.
+Not entirely sure why this never came up when I originally tested this
+(maybe some BIOSes already have this setup?) but the ->caps_init vfunc
+appears to cause the display engine to throw an exception on driver
+init, at least on my ThinkPad P72:
 
-The reason is the use of jiffies to implement a 200us timeout in
-mxc_w1_ds2_touch_bit().
-On some platforms the jiffies timer resolution is insufficient for this.
+nouveau 0000:01:00.0: disp: chid 0 mthd 008c data 00000000 0000508c 0000102b
 
-Fix by replacing jiffies by ktime_get().
+This is magic nvidia speak for "You need to have the DMA notifier offset
+programmed before you can call NV507D_GET_CAPABILITIES." So, let's fix
+this by doing that, and also perform an update afterwards to prevent
+racing with the GPU when reading capabilities.
 
-For consistency apply the same change to the other use of jiffies in
-mxc_w1_ds2_reset_bus().
+v2:
+* Don't just program the DMA notifier offset, make sure to actually
+  perform an update
+v3:
+* Don't call UPDATE()
+* Actually read the correct notifier fields, as apparently the
+  CAPABILITIES_DONE field lives in a different location than the main
+  NV_DISP_CORE_NOTIFIER_1 field. As well, 907d+ use a different
+  CAPABILITIES_DONE field then pre-907d cards.
+v4:
+* Don't forget to check the return value of core507d_read_caps()
+v5:
+* Get rid of NV50_DISP_CAPS_NTFY[14], use NV50_DISP_CORE_NTFY
+* Disable notifier after calling GetCapabilities()
 
-Fixes: f80b2581a706 ("w1: mxc_w1: Optimize mxc_w1_ds2_touch_bit()")
-Cc: stable <stable@vger.kernel.org>
-Signed-off-by: Martin Fuzzey <martin.fuzzey@flowbird.group>
-Link: https://lore.kernel.org/r/1601455030-6607-1-git-send-email-martin.fuzzey@flowbird.group
+Signed-off-by: Lyude Paul <lyude@redhat.com>
+Fixes: 4a2cb4181b07 ("drm/nouveau/kms/nv50-: Probe SOR and PIOR caps for DP interlacing support")
+Cc: <stable@vger.kernel.org> # v5.8+
+Signed-off-by: Ben Skeggs <bskeggs@redhat.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/w1/masters/mxc_w1.c |   14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
+ drivers/gpu/drm/nouveau/dispnv50/core.h             |    2 
+ drivers/gpu/drm/nouveau/dispnv50/core507d.c         |   41 +++++++++++++++++++-
+ drivers/gpu/drm/nouveau/dispnv50/core907d.c         |   36 +++++++++++++++++
+ drivers/gpu/drm/nouveau/dispnv50/core917d.c         |    2 
+ drivers/gpu/drm/nouveau/include/nvhw/class/cl507d.h |    5 +-
+ drivers/gpu/drm/nouveau/include/nvhw/class/cl907d.h |    4 +
+ 6 files changed, 85 insertions(+), 5 deletions(-)
 
---- a/drivers/w1/masters/mxc_w1.c
-+++ b/drivers/w1/masters/mxc_w1.c
-@@ -15,7 +15,7 @@
- #include <linux/clk.h>
- #include <linux/delay.h>
- #include <linux/io.h>
--#include <linux/jiffies.h>
-+#include <linux/ktime.h>
- #include <linux/module.h>
- #include <linux/platform_device.h>
+--- a/drivers/gpu/drm/nouveau/dispnv50/core.h
++++ b/drivers/gpu/drm/nouveau/dispnv50/core.h
+@@ -44,6 +44,7 @@ int core507d_new_(const struct nv50_core
+ 		  struct nv50_core **);
+ int core507d_init(struct nv50_core *);
+ void core507d_ntfy_init(struct nouveau_bo *, u32);
++int core507d_read_caps(struct nv50_disp *disp);
+ int core507d_caps_init(struct nouveau_drm *, struct nv50_disp *);
+ int core507d_ntfy_wait_done(struct nouveau_bo *, u32, struct nvif_device *);
+ int core507d_update(struct nv50_core *, u32 *, bool);
+@@ -55,6 +56,7 @@ extern const struct nv50_outp_func pior5
+ int core827d_new(struct nouveau_drm *, s32, struct nv50_core **);
  
-@@ -48,12 +48,12 @@ struct mxc_w1_device {
- static u8 mxc_w1_ds2_reset_bus(void *data)
- {
- 	struct mxc_w1_device *dev = data;
--	unsigned long timeout;
-+	ktime_t timeout;
+ int core907d_new(struct nouveau_drm *, s32, struct nv50_core **);
++int core907d_caps_init(struct nouveau_drm *drm, struct nv50_disp *disp);
+ extern const struct nv50_outp_func dac907d;
+ extern const struct nv50_outp_func sor907d;
  
- 	writeb(MXC_W1_CONTROL_RPP, dev->regs + MXC_W1_CONTROL);
- 
- 	/* Wait for reset sequence 511+512us, use 1500us for sure */
--	timeout = jiffies + usecs_to_jiffies(1500);
-+	timeout = ktime_add_us(ktime_get(), 1500);
- 
- 	udelay(511 + 512);
- 
-@@ -63,7 +63,7 @@ static u8 mxc_w1_ds2_reset_bus(void *dat
- 		/* PST bit is valid after the RPP bit is self-cleared */
- 		if (!(ctrl & MXC_W1_CONTROL_RPP))
- 			return !(ctrl & MXC_W1_CONTROL_PST);
--	} while (time_is_after_jiffies(timeout));
-+	} while (ktime_before(ktime_get(), timeout));
- 
- 	return 1;
+--- a/drivers/gpu/drm/nouveau/dispnv50/core507d.c
++++ b/drivers/gpu/drm/nouveau/dispnv50/core507d.c
+@@ -78,19 +78,56 @@ core507d_ntfy_init(struct nouveau_bo *bo
  }
-@@ -76,12 +76,12 @@ static u8 mxc_w1_ds2_reset_bus(void *dat
- static u8 mxc_w1_ds2_touch_bit(void *data, u8 bit)
+ 
+ int
+-core507d_caps_init(struct nouveau_drm *drm, struct nv50_disp *disp)
++core507d_read_caps(struct nv50_disp *disp)
  {
- 	struct mxc_w1_device *dev = data;
--	unsigned long timeout;
-+	ktime_t timeout;
+ 	struct nvif_push *push = disp->core->chan.push;
+ 	int ret;
  
- 	writeb(MXC_W1_CONTROL_WR(bit), dev->regs + MXC_W1_CONTROL);
+-	if ((ret = PUSH_WAIT(push, 2)))
++	ret = PUSH_WAIT(push, 6);
++	if (ret)
+ 		return ret;
  
- 	/* Wait for read/write bit (60us, Max 120us), use 200us for sure */
--	timeout = jiffies + usecs_to_jiffies(200);
-+	timeout = ktime_add_us(ktime_get(), 200);
- 
- 	udelay(60);
- 
-@@ -91,7 +91,7 @@ static u8 mxc_w1_ds2_touch_bit(void *dat
- 		/* RDST bit is valid after the WR1/RD bit is self-cleared */
- 		if (!(ctrl & MXC_W1_CONTROL_WR(bit)))
- 			return !!(ctrl & MXC_W1_CONTROL_RDST);
--	} while (time_is_after_jiffies(timeout));
-+	} while (ktime_before(ktime_get(), timeout));
- 
- 	return 0;
++	PUSH_MTHD(push, NV507D, SET_NOTIFIER_CONTROL,
++		  NVDEF(NV507D, SET_NOTIFIER_CONTROL, MODE, WRITE) |
++		  NVVAL(NV507D, SET_NOTIFIER_CONTROL, OFFSET, NV50_DISP_CORE_NTFY >> 2) |
++		  NVDEF(NV507D, SET_NOTIFIER_CONTROL, NOTIFY, ENABLE));
++
+ 	PUSH_MTHD(push, NV507D, GET_CAPABILITIES, 0x00000000);
++
++	PUSH_MTHD(push, NV507D, SET_NOTIFIER_CONTROL,
++		  NVDEF(NV507D, SET_NOTIFIER_CONTROL, NOTIFY, DISABLE));
++
+ 	return PUSH_KICK(push);
  }
+ 
+ int
++core507d_caps_init(struct nouveau_drm *drm, struct nv50_disp *disp)
++{
++	struct nv50_core *core = disp->core;
++	struct nouveau_bo *bo = disp->sync;
++	s64 time;
++	int ret;
++
++	NVBO_WR32(bo, NV50_DISP_CORE_NTFY, NV_DISP_CORE_NOTIFIER_1, CAPABILITIES_1,
++				     NVDEF(NV_DISP_CORE_NOTIFIER_1, CAPABILITIES_1, DONE, FALSE));
++
++	ret = core507d_read_caps(disp);
++	if (ret < 0)
++		return ret;
++
++	time = nvif_msec(core->chan.base.device, 2000ULL,
++			 if (NVBO_TD32(bo, NV50_DISP_CORE_NTFY,
++				       NV_DISP_CORE_NOTIFIER_1, CAPABILITIES_1, DONE, ==, TRUE))
++				 break;
++			 usleep_range(1, 2);
++			 );
++	if (time < 0)
++		NV_ERROR(drm, "core caps notifier timeout\n");
++
++	return 0;
++}
++
++int
+ core507d_init(struct nv50_core *core)
+ {
+ 	struct nvif_push *push = core->chan.push;
+--- a/drivers/gpu/drm/nouveau/dispnv50/core907d.c
++++ b/drivers/gpu/drm/nouveau/dispnv50/core907d.c
+@@ -22,11 +22,45 @@
+ #include "core.h"
+ #include "head.h"
+ 
++#include <nvif/push507c.h>
++#include <nvif/timer.h>
++
++#include <nvhw/class/cl907d.h>
++
++#include "nouveau_bo.h"
++
++int
++core907d_caps_init(struct nouveau_drm *drm, struct nv50_disp *disp)
++{
++	struct nv50_core *core = disp->core;
++	struct nouveau_bo *bo = disp->sync;
++	s64 time;
++	int ret;
++
++	NVBO_WR32(bo, NV50_DISP_CORE_NTFY, NV907D_CORE_NOTIFIER_3, CAPABILITIES_4,
++				     NVDEF(NV907D_CORE_NOTIFIER_3, CAPABILITIES_4, DONE, FALSE));
++
++	ret = core507d_read_caps(disp);
++	if (ret < 0)
++		return ret;
++
++	time = nvif_msec(core->chan.base.device, 2000ULL,
++			 if (NVBO_TD32(bo, NV50_DISP_CORE_NTFY,
++				       NV907D_CORE_NOTIFIER_3, CAPABILITIES_4, DONE, ==, TRUE))
++				 break;
++			 usleep_range(1, 2);
++			 );
++	if (time < 0)
++		NV_ERROR(drm, "core caps notifier timeout\n");
++
++	return 0;
++}
++
+ static const struct nv50_core_func
+ core907d = {
+ 	.init = core507d_init,
+ 	.ntfy_init = core507d_ntfy_init,
+-	.caps_init = core507d_caps_init,
++	.caps_init = core907d_caps_init,
+ 	.ntfy_wait_done = core507d_ntfy_wait_done,
+ 	.update = core507d_update,
+ 	.head = &head907d,
+--- a/drivers/gpu/drm/nouveau/dispnv50/core917d.c
++++ b/drivers/gpu/drm/nouveau/dispnv50/core917d.c
+@@ -26,7 +26,7 @@ static const struct nv50_core_func
+ core917d = {
+ 	.init = core507d_init,
+ 	.ntfy_init = core507d_ntfy_init,
+-	.caps_init = core507d_caps_init,
++	.caps_init = core907d_caps_init,
+ 	.ntfy_wait_done = core507d_ntfy_wait_done,
+ 	.update = core507d_update,
+ 	.head = &head917d,
+--- a/drivers/gpu/drm/nouveau/include/nvhw/class/cl507d.h
++++ b/drivers/gpu/drm/nouveau/include/nvhw/class/cl507d.h
+@@ -32,7 +32,10 @@
+ #define NV_DISP_CORE_NOTIFIER_1_COMPLETION_0_DONE_TRUE                               0x00000001
+ #define NV_DISP_CORE_NOTIFIER_1_COMPLETION_0_R0                                      15:1
+ #define NV_DISP_CORE_NOTIFIER_1_COMPLETION_0_TIMESTAMP                               29:16
+-
++#define NV_DISP_CORE_NOTIFIER_1_CAPABILITIES_1                                       0x00000001
++#define NV_DISP_CORE_NOTIFIER_1_CAPABILITIES_1_DONE                                  0:0
++#define NV_DISP_CORE_NOTIFIER_1_CAPABILITIES_1_DONE_FALSE                            0x00000000
++#define NV_DISP_CORE_NOTIFIER_1_CAPABILITIES_1_DONE_TRUE                             0x00000001
+ 
+ // class methods
+ #define NV507D_UPDATE                                                           (0x00000080)
+--- a/drivers/gpu/drm/nouveau/include/nvhw/class/cl907d.h
++++ b/drivers/gpu/drm/nouveau/include/nvhw/class/cl907d.h
+@@ -24,6 +24,10 @@
+ #ifndef _cl907d_h_
+ #define _cl907d_h_
+ 
++#define NV907D_CORE_NOTIFIER_3_CAPABILITIES_4                                       0x00000004
++#define NV907D_CORE_NOTIFIER_3_CAPABILITIES_4_DONE                                  0:0
++#define NV907D_CORE_NOTIFIER_3_CAPABILITIES_4_DONE_FALSE                            0x00000000
++#define NV907D_CORE_NOTIFIER_3_CAPABILITIES_4_DONE_TRUE                             0x00000001
+ #define NV907D_CORE_NOTIFIER_3_CAPABILITIES_CAP_SOR0_20                             0x00000014
+ #define NV907D_CORE_NOTIFIER_3_CAPABILITIES_CAP_SOR0_20_SINGLE_LVDS18               0:0
+ #define NV907D_CORE_NOTIFIER_3_CAPABILITIES_CAP_SOR0_20_SINGLE_LVDS18_FALSE         0x00000000
 
 
