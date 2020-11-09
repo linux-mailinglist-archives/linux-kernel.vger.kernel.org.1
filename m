@@ -2,122 +2,540 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB5F02AC969
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 00:36:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CEAF2AC97A
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 00:43:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730835AbgKIXgT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 18:36:19 -0500
-Received: from mga14.intel.com ([192.55.52.115]:46876 "EHLO mga14.intel.com"
+        id S1729886AbgKIXna convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 9 Nov 2020 18:43:30 -0500
+Received: from aposti.net ([89.234.176.197]:57560 "EHLO aposti.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729706AbgKIXgS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 18:36:18 -0500
-IronPort-SDR: /hkUzJS2uFo17/YvbUEq0cfw1ktoq5nq4om1RHRlFZL88kYlA48kWKLTrNdmeMiYqf2GjefeBY
- 4Ics6RWAmJnw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9800"; a="169103327"
-X-IronPort-AV: E=Sophos;i="5.77,464,1596524400"; 
-   d="scan'208";a="169103327"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Nov 2020 15:36:18 -0800
-IronPort-SDR: y5ErnoSy3mc0U3fBsBaPC9CJ31r33RAtCzc023jlMtBKG6YuPk8PMOlkBb054ebL2bo8r2Tu/d
- vBbhNhxEGL8g==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,464,1596524400"; 
-   d="scan'208";a="365651292"
-Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
-  by orsmga007.jf.intel.com with ESMTP; 09 Nov 2020 15:36:17 -0800
-Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
- fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Mon, 9 Nov 2020 15:36:17 -0800
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Mon, 9 Nov 2020 15:36:16 -0800
-Received: from fmsmsx610.amr.corp.intel.com ([10.18.126.90]) by
- fmsmsx610.amr.corp.intel.com ([10.18.126.90]) with mapi id 15.01.1713.004;
- Mon, 9 Nov 2020 15:36:16 -0800
-From:   "Luck, Tony" <tony.luck@intel.com>
-To:     Jim Mattson <jmattson@google.com>
-CC:     Qian Cai <cai@redhat.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-tip-commits@vger.kernel.org" 
-        <linux-tip-commits@vger.kernel.org>, Boris Petkov <bp@alien8.de>,
-        "Borislav Petkov" <bp@suse.de>, x86 <x86@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>
-Subject: RE: [tip: ras/core] x86/mce: Enable additional error logging on
- certain Intel CPUs
-Thread-Topic: [tip: ras/core] x86/mce: Enable additional error logging on
- certain Intel CPUs
-Thread-Index: AQHWsQncdZGZz6bl20aw0A24zT9Gy6nA6f4A//98jeCAAI8FgP//fTQAgACQpAD//3uPYA==
-Date:   Mon, 9 Nov 2020 23:36:16 +0000
-Message-ID: <bece344ae6944368bf5a9a60e9145bd4@intel.com>
-References: <20201030190807.GA13884@agluck-desk2.amr.corp.intel.com>
- <160431588828.397.16468104725047768957.tip-bot2@tip-bot2>
- <3f863634cd75824907e8ccf8164548c2ef036f20.camel@redhat.com>
- <bfc274fc27724ea39ecac1e7ac834ed8@intel.com>
- <CALMp9eTFaiYkTnVe8xKzg40E4nZ3rAOii0O06bTy0+oLNjyKhA@mail.gmail.com>
- <a22b5468e1c94906b72c4d8bc83c0f64@intel.com>
- <CALMp9eS+SYmPP3OzdK0-Bs1wSBJ4MU_POZe3i5fi3Fd+FTshYw@mail.gmail.com>
-In-Reply-To: <CALMp9eS+SYmPP3OzdK0-Bs1wSBJ4MU_POZe3i5fi3Fd+FTshYw@mail.gmail.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-product: dlpe-windows
-dlp-reaction: no-action
-dlp-version: 11.5.1.3
-x-originating-ip: [10.22.254.132]
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        id S1729243AbgKIXn3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 18:43:29 -0500
+Date:   Mon, 09 Nov 2020 23:37:05 +0000
+From:   Paul Cercueil <paul@crapouillou.net>
+Subject: Re: [PATCH 1/2] MIPS: Ingenic: Add missing nodes for Ingenic SoCs and
+ boards.
+To:     =?UTF-8?b?5ZGo55Cw5p2w?= <zhouyanjie@wanyeetech.com>
+Cc:     tsbogend@alpha.franken.de, robh+dt@kernel.org,
+        linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org,
+        devicetree@vger.kernel.org, nixiaoming@huawei.com,
+        paulburton@kernel.org, krzk@kernel.org, hns@goldelico.com,
+        ak@linux.intel.com, ebiederm@xmission.com,
+        dongsheng.qiu@ingenic.com, aric.pzqi@ingenic.com,
+        rick.tyliu@ingenic.com, yanfei.li@ingenic.com,
+        sernia.zhou@foxmail.com, zhenwenjin@gmail.com
+Message-Id: <TXYJJQ.TVQC48S8AVLH@crapouillou.net>
+In-Reply-To: <20201107115251.86182-2-zhouyanjie@wanyeetech.com>
+References: <20201107115251.86182-1-zhouyanjie@wanyeetech.com>
+        <20201107115251.86182-2-zhouyanjie@wanyeetech.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PiBJIHdvdWxkbid0IGV4cGVjdCBhbGwgaHlwZXJ2aXNvcnMgdG8gbmVjZXNzYXJpbHkgc2V0IENQ
-VUlELjAxSDpFQ1hbYml0DQo+IDMxXS4gQXJjaGl0ZWN0dXJhbGx5LCBvbiBJbnRlbCBDUFVzLCB0
-aGF0IGJpdCBpcyBzaW1wbHkgZGVmaW5lZCBhcw0KPiAibm90IHVzZWQuIiBUaGVyZSBpcyBubyBk
-b2N1bWVudGVkIGNvbnRyYWN0IGJldHdlZW4gSW50ZWwgYW5kDQo+IGh5cGVydmlzb3IgdmVuZG9y
-cyByZWdhcmRpbmcgdGhlIHVzZSBvZiB0aGF0IGJpdC4gKEFNRCwgb24gdGhlIG90aGVyDQo+IGhh
-bmQsICpkb2VzKiBkb2N1bWVudCB0aGF0IGJpdCBhcyAicmVzZXJ2ZWQgZm9yIHVzZSBieSBoeXBl
-cnZpc29yIHRvDQo+IGluZGljYXRlIGd1ZXN0IHN0YXR1cy4iKQ0KDQpNYXliZSBubyBjb250cmFj
-dCAuLi4gYnV0IGEgYnVuY2ggb2YgcGxhY2VzIChtYW55IG9mIHRoZW0gaW4gSW50ZWwNCnNwZWNp
-ZmljIGNvZGUpIHRoYXQgY2hlY2sgZm9yIGl0LiAgUGVyaGFwcyBJIHNob3VsZCBwb2tlIHRoZSBv
-d25lcnMNCm9mIHRoZSBJbnRlbCBTRE0gdG8gYWNjZXB0IHRoZSBpbmV2aXRhYmxlLg0KDQokIGdp
-dCBncmVwICJib290X2NwdV9oYXMoWDg2X0ZFQVRVUkVfSFlQRVJWSVNPUiINCmFyY2gveDg2L2V2
-ZW50cy9jb3JlLmM6IGlmIChib290X2NwdV9oYXMoWDg2X0ZFQVRVUkVfSFlQRVJWSVNPUikpIHsN
-CmFyY2gveDg2L2V2ZW50cy9pbnRlbC9jb3JlLmM6ICAgaWYgKCFib290X2NwdV9oYXMoWDg2X0ZF
-QVRVUkVfSFlQRVJWSVNPUikpDQphcmNoL3g4Ni9ldmVudHMvaW50ZWwvY29yZS5jOiAgICAgICAg
-ICAgaW50IGFzc3VtZSA9IDMgKiAhYm9vdF9jcHVfaGFzKFg4Nl9GRUFUVVJFX0hZUEVSVklTT1Ip
-Ow0KYXJjaC94ODYvZXZlbnRzL2ludGVsL2NzdGF0ZS5jOiBpZiAoYm9vdF9jcHVfaGFzKFg4Nl9G
-RUFUVVJFX0hZUEVSVklTT1IpKQ0KYXJjaC94ODYvZXZlbnRzL2ludGVsL3VuY29yZS5jOiBpZiAo
-Ym9vdF9jcHVfaGFzKFg4Nl9GRUFUVVJFX0hZUEVSVklTT1IpKQ0KYXJjaC94ODYva2VybmVsL2Fw
-aWMvYXBpYy5jOiAgICBpZiAoYm9vdF9jcHVfaGFzKFg4Nl9GRUFUVVJFX0hZUEVSVklTT1IpKQ0K
-YXJjaC94ODYva2VybmVsL2NwdS9idWdzLmM6ICAgICBpZiAoYm9vdF9jcHVfaGFzKFg4Nl9GRUFU
-VVJFX0hZUEVSVklTT1IpKQ0KYXJjaC94ODYva2VybmVsL2NwdS9idWdzLmM6ICAgICBlbHNlIGlm
-IChib290X2NwdV9oYXMoWDg2X0ZFQVRVUkVfSFlQRVJWSVNPUikpDQphcmNoL3g4Ni9rZXJuZWwv
-Y3B1L2J1Z3MuYzogICAgIGlmIChib290X2NwdV9oYXMoWDg2X0ZFQVRVUkVfSFlQRVJWSVNPUikp
-IHsNCmFyY2gveDg2L2tlcm5lbC9jcHUvYnVncy5jOiAgICAgaWYgKGJvb3RfY3B1X2hhcyhYODZf
-RkVBVFVSRV9IWVBFUlZJU09SKSkgew0KYXJjaC94ODYva2VybmVsL2NwdS9pbnRlbC5jOiAgICBp
-ZiAoYm9vdF9jcHVfaGFzKFg4Nl9GRUFUVVJFX0hZUEVSVklTT1IpKQ0KYXJjaC94ODYva2VybmVs
-L2NwdS9tc2h5cGVydi5jOiBpZiAoIWJvb3RfY3B1X2hhcyhYODZfRkVBVFVSRV9IWVBFUlZJU09S
-KSkNCmFyY2gveDg2L2tlcm5lbC9jcHUvdm13YXJlLmM6ICogSWYgIWJvb3RfY3B1X2hhcyhYODZf
-RkVBVFVSRV9IWVBFUlZJU09SKSwgdm13YXJlX2h5cGVyY2FsbF9tb2RlDQphcmNoL3g4Ni9rZXJu
-ZWwvY3B1L3Ztd2FyZS5jOiAgIGlmIChib290X2NwdV9oYXMoWDg2X0ZFQVRVUkVfSFlQRVJWSVNP
-UikpIHsNCmFyY2gveDg2L2tlcm5lbC9qYWlsaG91c2UuYzogICAgICAgICFib290X2NwdV9oYXMo
-WDg2X0ZFQVRVUkVfSFlQRVJWSVNPUikpDQphcmNoL3g4Ni9rZXJuZWwva3ZtLmM6ICBpZiAoYm9v
-dF9jcHVfaGFzKFg4Nl9GRUFUVVJFX0hZUEVSVklTT1IpKQ0KYXJjaC94ODYva2VybmVsL3BhcmF2
-aXJ0LmM6ICAgICBpZiAoIWJvb3RfY3B1X2hhcyhYODZfRkVBVFVSRV9IWVBFUlZJU09SKSkNCmFy
-Y2gveDg2L2tlcm5lbC90c2MuYzogIGlmIChib290X2NwdV9oYXMoWDg2X0ZFQVRVUkVfSFlQRVJW
-SVNPUikgfHwNCmFyY2gveDg2L21tL2luaXRfNjQuYzogIGlmICghYm9vdF9jcHVfaGFzKFg4Nl9G
-RUFUVVJFX0hZUEVSVklTT1IpKSB7DQpkcml2ZXJzL2FjcGkvcHJvY2Vzc29yX2lkbGUuYzogIGlm
-IChib290X2NwdV9oYXMoWDg2X0ZFQVRVUkVfSFlQRVJWSVNPUikpDQpkcml2ZXJzL2dwdS9kcm0v
-YW1kL2FtZGdwdS9hbWRncHVfdmlydC5oOiAgICAgICByZXR1cm4gYm9vdF9jcHVfaGFzKFg4Nl9G
-RUFUVVJFX0hZUEVSVklTT1IpOw0KZHJpdmVycy9ncHUvZHJtL2k5MTUvaTkxNV9tZW1jcHkuYzog
-ICAgICAgICAhYm9vdF9jcHVfaGFzKFg4Nl9GRUFUVVJFX0hZUEVSVklTT1IpKQ0KZHJpdmVycy9n
-cHUvZHJtL3JhZGVvbi9yYWRlb25fZGV2aWNlLmM6IHJldHVybiBib290X2NwdV9oYXMoWDg2X0ZF
-QVRVUkVfSFlQRVJWSVNPUik7DQpkcml2ZXJzL3Zpc29yYnVzL3Zpc29yY2hpcHNldC5jOiAgICAg
-ICAgaWYgKGJvb3RfY3B1X2hhcyhYODZfRkVBVFVSRV9IWVBFUlZJU09SKSkgew0KDQotVG9ueQ0K
+
+
+Le sam. 7 nov. 2020 à 19:52, 周琰杰 (Zhou Yanjie) 
+<zhouyanjie@wanyeetech.com> a écrit :
+> 1.Add OTG/OTG PHY/RNG nodes for JZ4780, CGU/OTG nodes for CI20.
+> 2.Add OTG/OTG PHY/RNG/OST nodes for X1000, SSI/CGU/OST/OTG/SC16IS752
+>   nodes for CU1000-Neo.
+> 3.Add OTG/OTG PHY/DTRNG/OST nodes for X1830, SSI/CGU/OST/OTG/SC16IS752
+>   nodes for CU1830-Neo.
+> 
+> Tested-by: 周正 (Zhou Zheng) <sernia.zhou@foxmail.com>
+> Signed-off-by: 周琰杰 (Zhou Yanjie) <zhouyanjie@wanyeetech.com>
+> ---
+>  arch/mips/boot/dts/ingenic/ci20.dts       | 16 +++++++++
+>  arch/mips/boot/dts/ingenic/cu1000-neo.dts | 60 
+> +++++++++++++++++++++++++++----
+>  arch/mips/boot/dts/ingenic/cu1830-neo.dts | 60 
+> +++++++++++++++++++++++++++----
+>  arch/mips/boot/dts/ingenic/jz4780.dtsi    | 41 +++++++++++++++++++--
+>  arch/mips/boot/dts/ingenic/x1000.dtsi     | 52 
+> ++++++++++++++++++++++++++-
+>  arch/mips/boot/dts/ingenic/x1830.dtsi     | 54 
+> +++++++++++++++++++++++++++-
+>  6 files changed, 267 insertions(+), 16 deletions(-)
+> 
+> diff --git a/arch/mips/boot/dts/ingenic/ci20.dts 
+> b/arch/mips/boot/dts/ingenic/ci20.dts
+> index 75f5bfbf2c37..b31054a41754 100644
+> --- a/arch/mips/boot/dts/ingenic/ci20.dts
+> +++ b/arch/mips/boot/dts/ingenic/ci20.dts
+> @@ -93,6 +93,15 @@
+>  	clock-frequency = <48000000>;
+>  };
+> 
+> +&cgu {
+> +	/*
+> +	 * Use the 32.768 kHz oscillator as the parent of the RTC for a 
+> higher
+> +	 * precision.
+> +	 */
+> +	assigned-clocks = <&cgu JZ4780_CLK_RTC>;
+> +	assigned-clock-parents = <&cgu JZ4780_CLK_RTCLK>;
+> +};
+> +
+>  &mmc0 {
+>  	status = "okay";
+> 
+> @@ -396,6 +405,13 @@
+>  	status = "okay";
+>  };
+> 
+> +&otg {
+> +	status = "okay";
+> +
+> +	assigned-clocks = <&cgu JZ4780_CLK_OTGPHY>;
+> +	assigned-clock-rates = <48000000>;
+> +};
+> +
+>  &pinctrl {
+>  	pins_uart0: uart0 {
+>  		function = "uart0";
+> diff --git a/arch/mips/boot/dts/ingenic/cu1000-neo.dts 
+> b/arch/mips/boot/dts/ingenic/cu1000-neo.dts
+> index 22a1066d637b..44d47d12db12 100644
+> --- a/arch/mips/boot/dts/ingenic/cu1000-neo.dts
+> +++ b/arch/mips/boot/dts/ingenic/cu1000-neo.dts
+> @@ -3,7 +3,7 @@
+> 
+>  #include "x1000.dtsi"
+>  #include <dt-bindings/gpio/gpio.h>
+> -#include <dt-bindings/clock/ingenic,tcu.h>
+> +#include <dt-bindings/clock/ingenic,sysost.h>
+>  #include <dt-bindings/interrupt-controller/irq.h>
+> 
+>  / {
+> @@ -31,6 +31,18 @@
+>  		};
+>  	};
+> 
+> +	ssi: spi-gpio {
+> +		compatible = "spi-gpio";
+> +		#address-cells = <1>;
+> +		#size-cells = <0>;
+> +		num-chipselects = <1>;
+> +
+> +		mosi-gpios = <&gpd 2 GPIO_ACTIVE_HIGH>;
+> +		miso-gpios = <&gpd 3 GPIO_ACTIVE_HIGH>;
+> +		sck-gpios = <&gpd 0 GPIO_ACTIVE_HIGH>;
+> +		cs-gpios = <&gpd 1 GPIO_ACTIVE_HIGH>;
+> +	};
+> +
+>  	wlan_pwrseq: msc1-pwrseq {
+>  		compatible = "mmc-pwrseq-simple";
+> 
+> @@ -43,13 +55,19 @@
+>  	clock-frequency = <24000000>;
+>  };
+> 
+> -&tcu {
+> +&cgu {
+> +	/*
+> +	 * Use the 32.768 kHz oscillator as the parent of the RTC for a 
+> higher
+> +	 * precision.
+> +	 */
+> +	assigned-clocks = <&cgu X1000_CLK_RTC>;
+> +	assigned-clock-parents = <&cgu X1000_CLK_RTCLK>;
+> +};
+> +
+> +&ost {
+>  	/* 1500 kHz for the system timer and clocksource */
+> -	assigned-clocks = <&tcu TCU_CLK_TIMER0>, <&tcu TCU_CLK_TIMER2>;
+> +	assigned-clocks = <&ost OST_CLK_PERCPU_TIMER>, <&ost 
+> OST_CLK_GLOBAL_TIMER>;
+>  	assigned-clock-rates = <1500000>, <1500000>;
+> -
+> -	/* Use channel #0 for the system timer channel #2 for the 
+> clocksource */
+> -	ingenic,pwm-channels-mask = <0xfa>;
+>  };
+> 
+>  &uart2 {
+> @@ -59,6 +77,32 @@
+>  	pinctrl-0 = <&pins_uart2>;
+>  };
+> 
+> +&ssi {
+> +	status = "okay";
+> +
+> +	spi-max-frequency = <50000000>;
+> +
+> +	sc16is752: expander@0 {
+> +		compatible = "nxp,sc16is752";
+> +		reg = <0>; /* CE0 */
+> +		spi-max-frequency = <4000000>;
+> +
+> +		clocks = <&exclk_sc16is752>;
+> +
+> +		interrupt-parent = <&gpc>;
+> +		interrupts = <6 IRQ_TYPE_EDGE_FALLING>;
+> +
+> +		gpio-controller;
+> +		#gpio-cells = <2>;
+> +
+> +		exclk_sc16is752: sc16is752 {
+> +			compatible = "fixed-clock";
+> +			#clock-cells = <0>;
+> +			clock-frequency = <48000000>;
+> +		};
+> +	};
+> +};
+> +
+>  &i2c0 {
+>  	status = "okay";
+> 
+> @@ -135,6 +179,10 @@
+>  	};
+>  };
+> 
+> +&otg {
+> +	status = "okay";
+> +};
+> +
+>  &pinctrl {
+>  	pins_uart2: uart2 {
+>  		function = "uart2";
+> diff --git a/arch/mips/boot/dts/ingenic/cu1830-neo.dts 
+> b/arch/mips/boot/dts/ingenic/cu1830-neo.dts
+> index 640f96c00d63..7a56e344e429 100644
+> --- a/arch/mips/boot/dts/ingenic/cu1830-neo.dts
+> +++ b/arch/mips/boot/dts/ingenic/cu1830-neo.dts
+> @@ -3,7 +3,7 @@
+> 
+>  #include "x1830.dtsi"
+>  #include <dt-bindings/gpio/gpio.h>
+> -#include <dt-bindings/clock/ingenic,tcu.h>
+> +#include <dt-bindings/clock/ingenic,sysost.h>
+>  #include <dt-bindings/interrupt-controller/irq.h>
+> 
+>  / {
+> @@ -31,6 +31,18 @@
+>  		};
+>  	};
+> 
+> +	ssi0: spi-gpio {
+> +		compatible = "spi-gpio";
+> +		#address-cells = <1>;
+> +		#size-cells = <0>;
+> +		num-chipselects = <1>;
+> +
+> +		mosi-gpios = <&gpc 12 GPIO_ACTIVE_HIGH>;
+> +		miso-gpios = <&gpc 11 GPIO_ACTIVE_HIGH>;
+> +		sck-gpios = <&gpc 15 GPIO_ACTIVE_HIGH>;
+> +		cs-gpios = <&gpc 16 GPIO_ACTIVE_HIGH>;
+> +	};
+> +
+>  	wlan_pwrseq: msc1-pwrseq {
+>  		compatible = "mmc-pwrseq-simple";
+> 
+> @@ -43,13 +55,19 @@
+>  	clock-frequency = <24000000>;
+>  };
+> 
+> -&tcu {
+> +&cgu {
+> +	/*
+> +	 * Use the 32.768 kHz oscillator as the parent of the RTC for a 
+> higher
+> +	 * precision.
+> +	 */
+> +	assigned-clocks = <&cgu X1830_CLK_RTC>;
+> +	assigned-clock-parents = <&cgu X1830_CLK_RTCLK>;
+> +};
+> +
+> +&ost {
+>  	/* 1500 kHz for the system timer and clocksource */
+> -	assigned-clocks = <&tcu TCU_CLK_TIMER0>, <&tcu TCU_CLK_TIMER2>;
+> +	assigned-clocks = <&ost OST_CLK_PERCPU_TIMER>, <&ost 
+> OST_CLK_GLOBAL_TIMER>;
+>  	assigned-clock-rates = <1500000>, <1500000>;
+> -
+> -	/* Use channel #0 for the system timer channel #2 for the 
+> clocksource */
+> -	ingenic,pwm-channels-mask = <0xfa>;
+>  };
+> 
+>  &uart1 {
+> @@ -59,6 +77,32 @@
+>  	pinctrl-0 = <&pins_uart1>;
+>  };
+> 
+> +&ssi0 {
+> +	status = "okay";
+> +
+> +	spi-max-frequency = <50000000>;
+> +
+> +	sc16is752: expander@0 {
+> +		compatible = "nxp,sc16is752";
+> +		reg = <0>; /* CE0 */
+> +		spi-max-frequency = <4000000>;
+> +
+> +		clocks = <&exclk_sc16is752>;
+> +
+> +		interrupt-parent = <&gpb>;
+> +		interrupts = <18 IRQ_TYPE_EDGE_FALLING>;
+> +
+> +		gpio-controller;
+> +		#gpio-cells = <2>;
+> +
+> +		exclk_sc16is752: sc16is752 {
+> +			compatible = "fixed-clock";
+> +			#clock-cells = <0>;
+> +			clock-frequency = <48000000>;
+> +		};
+> +	};
+> +};
+> +
+>  &i2c0 {
+>  	status = "okay";
+> 
+> @@ -135,6 +179,10 @@
+>  	};
+>  };
+> 
+> +&otg {
+> +	status = "okay";
+> +};
+> +
+>  &pinctrl {
+>  	pins_uart1: uart1 {
+>  		function = "uart1";
+> diff --git a/arch/mips/boot/dts/ingenic/jz4780.dtsi 
+> b/arch/mips/boot/dts/ingenic/jz4780.dtsi
+> index dfb5a7e1bb21..8837147e5a84 100644
+> --- a/arch/mips/boot/dts/ingenic/jz4780.dtsi
+> +++ b/arch/mips/boot/dts/ingenic/jz4780.dtsi
+> @@ -61,13 +61,30 @@
+>  	};
+> 
+>  	cgu: jz4780-cgu@10000000 {
+> -		compatible = "ingenic,jz4780-cgu";
+> +		compatible = "ingenic,jz4780-cgu", "simple-mfd";
+>  		reg = <0x10000000 0x100>;
+> +		#address-cells = <1>;
+> +		#size-cells = <1>;
+> +		ranges = <0x0 0x10000000 0x100>;
+> +
+> +		#clock-cells = <1>;
+> 
+>  		clocks = <&ext>, <&rtc>;
+>  		clock-names = "ext", "rtc";
+> 
+> -		#clock-cells = <1>;
+> +		otg_phy: usb-phy@3c {
+> +			compatible = "ingenic,jz4780-phy";
+> +			reg = <0x3c 0x10>;
+> +
+> +			clocks = <&cgu JZ4780_CLK_OTG1>;
+> +
+> +			#phy-cells = <0>;
+
+Something I missed in my first email: you lack the "vcc-supply" 
+required property here. But I'm not sure what it should be linked to.
+
+-Paul
+
+> +		};
+> +
+> +		rng: rng@d8 {
+> +			compatible = "ingenic,jz4780-rng";
+> +			reg = <0xd8 0x8>;
+> +		};
+>  	};
+> 
+>  	tcu: timer@10002000 {
+> @@ -494,4 +511,24 @@
+> 
+>  		status = "disabled";
+>  	};
+> +
+> +	otg: usb@13500000 {
+> +		compatible = "ingenic,jz4780-otg", "snps,dwc2";
+> +		reg = <0x13500000 0x40000>;
+> +
+> +		interrupt-parent = <&intc>;
+> +		interrupts = <21>;
+> +
+> +		clocks = <&cgu JZ4780_CLK_UHC>;
+> +		clock-names = "otg";
+> +
+> +		phys = <&otg_phy>;
+> +		phy-names = "usb2-phy";
+> +
+> +		g-rx-fifo-size = <768>;
+> +		g-np-tx-fifo-size = <256>;
+> +		g-tx-fifo-size = <256 256 256 256 256 256 256 512>;
+> +
+> +		status = "disabled";
+> +	};
+>  };
+> diff --git a/arch/mips/boot/dts/ingenic/x1000.dtsi 
+> b/arch/mips/boot/dts/ingenic/x1000.dtsi
+> index 1f1f896dd1f7..854fac58f45e 100644
+> --- a/arch/mips/boot/dts/ingenic/x1000.dtsi
+> +++ b/arch/mips/boot/dts/ingenic/x1000.dtsi
+> @@ -52,13 +52,43 @@
+>  	};
+> 
+>  	cgu: x1000-cgu@10000000 {
+> -		compatible = "ingenic,x1000-cgu";
+> +		compatible = "ingenic,x1000-cgu", "simple-mfd";
+>  		reg = <0x10000000 0x100>;
+> +		#address-cells = <1>;
+> +		#size-cells = <1>;
+> +		ranges = <0x0 0x10000000 0x100>;
+> 
+>  		#clock-cells = <1>;
+> 
+>  		clocks = <&exclk>, <&rtclk>;
+>  		clock-names = "ext", "rtc";
+> +
+> +		otg_phy: usb-phy@3c {
+> +			compatible = "ingenic,x1000-phy";
+> +			reg = <0x3c 0x10>;
+> +
+> +			clocks = <&cgu X1000_CLK_OTGPHY>;
+> +
+> +			#phy-cells = <0>;
+> +		};
+> +
+> +		rng: rng@d8 {
+> +			compatible = "ingenic,x1000-rng";
+> +			reg = <0xd8 0x8>;
+> +		};
+> +	};
+> +
+> +	ost: timer@12000000 {
+> +		compatible = "ingenic,x1000-ost";
+> +		reg = <0x12000000 0x3c>;
+> +
+> +		#clock-cells = <1>;
+> +
+> +		clocks = <&cgu X1000_CLK_OST>;
+> +		clock-names = "ost";
+> +
+> +		interrupt-parent = <&cpuintc>;
+> +		interrupts = <3>;
+>  	};
+> 
+>  	tcu: timer@10002000 {
+> @@ -323,4 +353,24 @@
+>  			status = "disabled";
+>  		};
+>  	};
+> +
+> +	otg: usb@13500000 {
+> +		compatible = "ingenic,x1000-otg", "snps,dwc2";
+> +		reg = <0x13500000 0x40000>;
+> +
+> +		interrupt-parent = <&intc>;
+> +		interrupts = <21>;
+> +
+> +		clocks = <&cgu X1000_CLK_OTG>;
+> +		clock-names = "otg";
+> +
+> +		phys = <&otg_phy>;
+> +		phy-names = "usb2-phy";
+> +
+> +		g-rx-fifo-size = <768>;
+> +		g-np-tx-fifo-size = <256>;
+> +		g-tx-fifo-size = <256 256 256 256 256 256 256 512>;
+> +
+> +		status = "disabled";
+> +	};
+>  };
+> diff --git a/arch/mips/boot/dts/ingenic/x1830.dtsi 
+> b/arch/mips/boot/dts/ingenic/x1830.dtsi
+> index b05dac3ae308..4831350efdf2 100644
+> --- a/arch/mips/boot/dts/ingenic/x1830.dtsi
+> +++ b/arch/mips/boot/dts/ingenic/x1830.dtsi
+> @@ -52,13 +52,38 @@
+>  	};
+> 
+>  	cgu: x1830-cgu@10000000 {
+> -		compatible = "ingenic,x1830-cgu";
+> +		compatible = "ingenic,x1830-cgu", "simple-mfd";
+>  		reg = <0x10000000 0x100>;
+> +		#address-cells = <1>;
+> +		#size-cells = <1>;
+> +		ranges = <0x0 0x10000000 0x100>;
+> 
+>  		#clock-cells = <1>;
+> 
+>  		clocks = <&exclk>, <&rtclk>;
+>  		clock-names = "ext", "rtc";
+> +
+> +		otg_phy: usb-phy@3c {
+> +			compatible = "ingenic,x1830-phy";
+> +			reg = <0x3c 0x10>;
+> +
+> +			clocks = <&cgu X1830_CLK_OTGPHY>;
+> +
+> +			#phy-cells = <0>;
+> +		};
+> +	};
+> +
+> +	ost: timer@12000000 {
+> +		compatible = "ingenic,x1830-ost", "ingenic,x1000-ost";
+> +		reg = <0x12000000 0x3c>;
+> +
+> +		#clock-cells = <1>;
+> +
+> +		clocks = <&cgu X1830_CLK_OST>;
+> +		clock-names = "ost";
+> +
+> +		interrupt-parent = <&cpuintc>;
+> +		interrupts = <4>;
+>  	};
+> 
+>  	tcu: timer@10002000 {
+> @@ -236,6 +261,13 @@
+>  		status = "disabled";
+>  	};
+> 
+> +	dtrng: trng@10072000 {
+> +		compatible = "ingenic,x1830-dtrng";
+> +		reg = <0x10072000 0xc>;
+> +
+> +		clocks = <&cgu X1830_CLK_DTRNG>;
+> +	};
+> +
+>  	pdma: dma-controller@13420000 {
+>  		compatible = "ingenic,x1830-dma";
+>  		reg = <0x13420000 0x400
+> @@ -311,4 +343,24 @@
+>  			status = "disabled";
+>  		};
+>  	};
+> +
+> +	otg: usb@13500000 {
+> +		compatible = "ingenic,x1830-otg", "snps,dwc2";
+> +		reg = <0x13500000 0x40000>;
+> +
+> +		interrupt-parent = <&intc>;
+> +		interrupts = <21>;
+> +
+> +		clocks = <&cgu X1830_CLK_OTG>;
+> +		clock-names = "otg";
+> +
+> +		phys = <&otg_phy>;
+> +		phy-names = "usb2-phy";
+> +
+> +		g-rx-fifo-size = <768>;
+> +		g-np-tx-fifo-size = <256>;
+> +		g-tx-fifo-size = <256 256 256 256 256 256 256 512>;
+> +
+> +		status = "disabled";
+> +	};
+>  };
+> --
+> 2.11.0
+> 
+
+
