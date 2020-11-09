@@ -2,39 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78DE42ABC70
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 14:37:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F07E32ABC1A
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 14:35:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731616AbgKINhi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 08:37:38 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57292 "EHLO mail.kernel.org"
+        id S1732309AbgKINeU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 08:34:20 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58704 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729913AbgKINEM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 08:04:12 -0500
+        id S1730947AbgKINFw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 08:05:52 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2922320663;
-        Mon,  9 Nov 2020 13:04:08 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2767820789;
+        Mon,  9 Nov 2020 13:05:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604927049;
-        bh=kmMfjDW4t3+wdiEPhf8tYLDHxq/71ArM7bQTrfZPWbs=;
+        s=default; t=1604927151;
+        bh=j6bCoaNE1qOxcaAdaphhyk4Ayzv5g6dyD4DCbCvBu2s=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=CS3J+rLT32sipt8DL3slSG5BBlbM/6NbHc7RuS09v1bR4cM1k9YRB3A75gMaNjIXH
-         t7qaOC7r7gYlkCle589EUlqW4o8Bvy/vc6nj53uQJmJIrBum8smXrR2T1fl0PUHfUp
-         eAZOI9wMRqBUpC9zG2r6ioy0+3sw5pKvGpVUe6i4=
+        b=oqeSVjE+CEdmQbt/+AoecOXFa28CNQm9T0oaFqF/yNlrfoXRRW8ProF5KuraopVIC
+         JltG16sPbpf6m9tF9Xo3Q9FSA8VJk8V2Xbxs1pX6hoTu2BzglQUy/ri3AgcLvRd0QN
+         QDlsG1aC7xlBoeB+DIbwCJYlitXM67n1d/8WWSWQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, James Jurack <james.jurack@ametek.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Claudiu Manoil <claudiu.manoil@nxp.com>
-Subject: [PATCH 4.9 094/117] gianfar: Replace skb_realloc_headroom with skb_cow_head for PTP
+        stable@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Andrew Bowers <andrewx.bowers@intel.com>,
+        Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
+        Ben Hutchings <ben.hutchings@codethink.co.uk>
+Subject: [PATCH 4.14 11/48] i40e: Fix a potential NULL pointer dereference
 Date:   Mon,  9 Nov 2020 13:55:20 +0100
-Message-Id: <20201109125030.160234760@linuxfoundation.org>
+Message-Id: <20201109125017.295641477@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201109125025.630721781@linuxfoundation.org>
-References: <20201109125025.630721781@linuxfoundation.org>
+In-Reply-To: <20201109125016.734107741@linuxfoundation.org>
+References: <20201109125016.734107741@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,70 +45,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Claudiu Manoil <claudiu.manoil@nxp.com>
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-[ Upstream commit d145c9031325fed963a887851d9fa42516efd52b ]
+commit 54902349ee95045b67e2f0c39b75f5418540064b upstream.
 
-When PTP timestamping is enabled on Tx, the controller
-inserts the Tx timestamp at the beginning of the frame
-buffer, between SFD and the L2 frame header.  This means
-that the skb provided by the stack is required to have
-enough headroom otherwise a new skb needs to be created
-by the driver to accommodate the timestamp inserted by h/w.
-Up until now the driver was relying on skb_realloc_headroom()
-to create new skbs to accommodate PTP frames.  Turns out that
-this method is not reliable in this context at least, as
-skb_realloc_headroom() for PTP frames can cause random crashes,
-mostly in subsequent skb_*() calls, when multiple concurrent
-TCP streams are run at the same time with the PTP flow
-on the same device (as seen in James' report).  I also noticed
-that when the system is loaded by sending multiple TCP streams,
-the driver receives cloned skbs in large numbers.
-skb_cow_head() instead proves to be stable in this scenario,
-and not only handles cloned skbs too but it's also more efficient
-and widely used in other drivers.
-The commit introducing skb_realloc_headroom in the driver
-goes back to 2009, commit 93c1285c5d92
-("gianfar: reallocate skb when headroom is not enough for fcb").
-For practical purposes I'm referencing a newer commit (from 2012)
-that brings the code to its current structure (and fixes the PTP
-case).
+If 'kzalloc()' fails, a NULL pointer will be dereferenced.
+Return an error code (-ENOMEM) instead.
 
-Fixes: 9c4886e5e63b ("gianfar: Fix invalid TX frames returned on error queue when time stamping")
-Reported-by: James Jurack <james.jurack@ametek.com>
-Suggested-by: Jakub Kicinski <kuba@kernel.org>
-Signed-off-by: Claudiu Manoil <claudiu.manoil@nxp.com>
-Link: https://lore.kernel.org/r/20201029081057.8506-1-claudiu.manoil@nxp.com
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Tested-by: Andrew Bowers <andrewx.bowers@intel.com>
+Signed-off-by: Jeff Kirsher <jeffrey.t.kirsher@intel.com>
+Signed-off-by: Ben Hutchings <ben.hutchings@codethink.co.uk>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/freescale/gianfar.c |   12 ++----------
- 1 file changed, 2 insertions(+), 10 deletions(-)
+ drivers/net/ethernet/intel/i40e/i40e_virtchnl_pf.c |    3 +++
+ 1 file changed, 3 insertions(+)
 
---- a/drivers/net/ethernet/freescale/gianfar.c
-+++ b/drivers/net/ethernet/freescale/gianfar.c
-@@ -2367,20 +2367,12 @@ static int gfar_start_xmit(struct sk_buf
- 		fcb_len = GMAC_FCB_LEN + GMAC_TXPAL_LEN;
+--- a/drivers/net/ethernet/intel/i40e/i40e_virtchnl_pf.c
++++ b/drivers/net/ethernet/intel/i40e/i40e_virtchnl_pf.c
+@@ -423,6 +423,9 @@ static int i40e_config_iwarp_qvlist(stru
+ 	       (sizeof(struct virtchnl_iwarp_qv_info) *
+ 						(qvlist_info->num_vectors - 1));
+ 	vf->qvlist_info = kzalloc(size, GFP_KERNEL);
++	if (!vf->qvlist_info)
++		return -ENOMEM;
++
+ 	vf->qvlist_info->num_vectors = qvlist_info->num_vectors;
  
- 	/* make space for additional header when fcb is needed */
--	if (fcb_len && unlikely(skb_headroom(skb) < fcb_len)) {
--		struct sk_buff *skb_new;
--
--		skb_new = skb_realloc_headroom(skb, fcb_len);
--		if (!skb_new) {
-+	if (fcb_len) {
-+		if (unlikely(skb_cow_head(skb, fcb_len))) {
- 			dev->stats.tx_errors++;
- 			dev_kfree_skb_any(skb);
- 			return NETDEV_TX_OK;
- 		}
--
--		if (skb->sk)
--			skb_set_owner_w(skb_new, skb->sk);
--		dev_consume_skb_any(skb);
--		skb = skb_new;
- 	}
- 
- 	/* total number of fragments in the SKB */
+ 	msix_vf = pf->hw.func_caps.num_msix_vectors_vf;
 
 
