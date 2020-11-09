@@ -2,76 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3607A2AC5F9
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 21:31:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 575F92AC5FF
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 21:34:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729894AbgKIUbK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 15:31:10 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53334 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726952AbgKIUbJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 15:31:09 -0500
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D842020665;
-        Mon,  9 Nov 2020 20:31:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604953869;
-        bh=WpFd5x2PVkqV7vYXRYyparKv1eINTXPsG4jy37yaFpU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=wh5VIjuF6TiKs5MpLhMrI7Wkt6O7vubtpQcIHxDWBDsNKlWG6fBJiVjXVmmgNXlmd
-         pWyhgaW201K03LR2NjrIk6vOgP1ul1WtBkQ+fu3A5VYq7MWAVRyX8AR+OMoB1Fe6ul
-         JNwhioj4AOMKoI2Rfd6w1jcRz+Ox8gLaAnBRw4QY=
-Date:   Mon, 9 Nov 2020 20:30:55 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     Sameer Pujar <spujar@nvidia.com>
-Cc:     lgirdwood@gmail.com, kuninori.morimoto.gx@renesas.com,
-        pierre-louis.bossart@linux.intel.com, perex@perex.cz,
-        tiwai@suse.com, thierry.reding@gmail.com, jonathanh@nvidia.com,
-        alsa-devel@alsa-project.org, linux-tegra@vger.kernel.org,
-        linux-kernel@vger.kernel.org, sharadg@nvidia.com
-Subject: Re: [PATCH v5 0/7] Audio Graph Updates
-Message-ID: <20201109203055.GN6380@sirena.org.uk>
-References: <1604329814-24779-1-git-send-email-spujar@nvidia.com>
+        id S1730002AbgKIUeN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 15:34:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35120 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729452AbgKIUeM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 15:34:12 -0500
+Received: from mail-vs1-xe44.google.com (mail-vs1-xe44.google.com [IPv6:2607:f8b0:4864:20::e44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8837BC0613CF;
+        Mon,  9 Nov 2020 12:34:12 -0800 (PST)
+Received: by mail-vs1-xe44.google.com with SMTP id f7so5732964vsh.10;
+        Mon, 09 Nov 2020 12:34:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=87qto0cmJNMfXhhR85KNP1Rhuduq/+YarKX5RKpLJq4=;
+        b=b8Hv7w7pods6lRb2MVTAeTI318PXPcJ2X/mf6VoHOU1dWUMa4OzAbAzXmqGxPFYDVI
+         hLzVTRFflxxibUzNvbu49L6pXD9HAKhB8frhqF67O0YzlVrQuTUQduO6X55D8IvsBF6r
+         DktnbdCkkyoal3m5MX5Y11e9WXkuv/PlaBKn4tTAt81zZemGwvg+J0IxLQ4OAGPjEtRn
+         KBEYvjCFNN6Rl5mH6s/6gtfH542/Ev0JWGw2dtevutA5ct1ee3kKjdn3DI7nWKhAJodd
+         pMjHgplO1q4MjoXyK0cEIv8rvdpRePLwbbAU7rqAyhe+i61zgMGl5ZGv0dTRgpuzmxwI
+         DtsQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=87qto0cmJNMfXhhR85KNP1Rhuduq/+YarKX5RKpLJq4=;
+        b=AB15qybT+vFYc0f2cILgmiO43C7nLv0vEfnhR21Wj22lFokoW99gLpXuXczCVdj/Xy
+         TIo3ox2VNWNHCUVoWula6R21P5jCwTTae5VoAqVfSexXa9PMgwRk+/UKs2Z3K37F0Bt0
+         FIBaHdiOnj74/aAh0uR2p+yRFJlFAo6vLrhjlwDhQyh/kAqVIACXnPQrPIMFQN7ph0A+
+         gq+2Ba6pMSkHtaE4G282Vgo3kXlTYUz0D46Yw7XQxCvp4EA5mjnkiumWHuwdxdaK7Afs
+         IqbV/NbvdcVYW3tQTjqQATHVlOlRAQlTjBxmQPAFOvmYfC+4KJDvMY1JR42WKodZkZKK
+         x0mQ==
+X-Gm-Message-State: AOAM532A+6kyt0h7rpvuVspA6PUQZA5PvfY0q6CDnD5v6ltaHmlcnEwV
+        sVkgEkS0540S3IqorNm/b1kD/hiB5Kvp2JB60ui1pA44
+X-Google-Smtp-Source: ABdhPJxRjjP8MK53VixK+AlHV22F5DbT6z/6gI5LPDsqRoDdS0UPySdi0gPsp8BPrXSfVmeyj8+D9aiNxZGFFwmDnGw=
+X-Received: by 2002:a67:b347:: with SMTP id b7mr9707146vsm.15.1604954051561;
+ Mon, 09 Nov 2020 12:34:11 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="VnOTrGv5LmZxna7m"
-Content-Disposition: inline
-In-Reply-To: <1604329814-24779-1-git-send-email-spujar@nvidia.com>
-X-Cookie: This fortune is false.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20201109193117.2017-1-TheSven73@gmail.com> <20201109194934.GE1456319@lunn.ch>
+ <CAGngYiVV1_65tZRgnzSxDV5mQGAkur8HwTOer9eDMXhBLvBCXw@mail.gmail.com> <20201109202559.GF1456319@lunn.ch>
+In-Reply-To: <20201109202559.GF1456319@lunn.ch>
+From:   Sven Van Asbroeck <thesven73@gmail.com>
+Date:   Mon, 9 Nov 2020 15:34:00 -0500
+Message-ID: <CAGngYiW+njPG033VpiFHo2ZttgMvfhJOQ3=-pnD4W325p1hUuA@mail.gmail.com>
+Subject: Re: [PATCH net-next v1] net: phy: spi_ks8995: Do not overwrite SPI
+ mode flags
+To:     Andrew Lunn <andrew@lunn.ch>
+Cc:     Heiner Kallweit <hkallweit1@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        "David S. Miller" <davem@davemloft.net>,
+        netdev <netdev@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Nov 9, 2020 at 3:26 PM Andrew Lunn <andrew@lunn.ch> wrote:
+>
+> Then you should consider adding it, and cross post the SPI list.
+>
 
---VnOTrGv5LmZxna7m
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Mon, Nov 02, 2020 at 08:40:07PM +0530, Sameer Pujar wrote:
-> This series is a prepraration for using generic graph driver for Tegra210
-> audio. Tegra audio graph series will be sent in a separate series because
-> it has some dependency over other series for documentation work. This
-> series can focus on the generic ASoC driver updates. Below are the summary
-> of changes done.
-
-Morimoto-san, are you OK with these?
-
---VnOTrGv5LmZxna7m
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl+ppv4ACgkQJNaLcl1U
-h9C7igf/ehUdhv8FtDIM9U/QT/43VbP+1JshhwP6YHiYh2LU7owvxb5luCEdePnf
-GdsbHaQR1BNNk3Yh7xOoBUQumC00jJ8kFojRMDWyPnrAvLyhrL64vlJrcaXfGEJ8
-RwKJrfgPlsKLuVHTMYhGAVX7i3aNMjzvhgw0QrDAy94YSbuf9Fo5YwEWGdhj1V/h
-GOFhPE8TTWeCvFAlF2ByWIdpJXV2pyu46KAAXwhTHkbAY/4xQjUF6KbJN1GsYXMZ
-XlIQeiGpIO1sdyr6HJTpgDH6CtPWR4i6Ayk9zrIm/7u783ja9WcKtO3vZcm1TeeX
-rcYhN/zsPUPkOdPzbqLFU31oCmiHWA==
-=6ntz
------END PGP SIGNATURE-----
-
---VnOTrGv5LmZxna7m--
+Good idea. I will give that a try.
