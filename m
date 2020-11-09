@@ -2,113 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D7172AC187
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 17:57:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 583FB2AC17C
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 17:56:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731110AbgKIQ5I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 11:57:08 -0500
-Received: from cloudserver094114.home.pl ([79.96.170.134]:46558 "EHLO
-        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731027AbgKIQ5G (ORCPT
+        id S1730680AbgKIQ4k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 11:56:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57744 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729776AbgKIQ4j (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 11:57:06 -0500
-Received: from 89-64-87-89.dynamic.chello.pl (89.64.87.89) (HELO kreacher.localnet)
- by serwer1319399.home.pl (79.96.170.134) with SMTP (IdeaSmtpServer 0.83.520)
- id b729a6806886ddaf; Mon, 9 Nov 2020 17:57:03 +0100
-From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
-To:     Linux PM <linux-pm@vger.kernel.org>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        Zhang Rui <rui.zhang@intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Doug Smythies <dsmythies@telus.net>
-Subject: [PATCH v2 4/4] cpufreq: intel_pstate: Take CPUFREQ_GOV_FLAG_STRICT_TARGET into account
-Date:   Mon, 09 Nov 2020 17:55:42 +0100
-Message-ID: <2345253.LYi3vV7ftd@kreacher>
-In-Reply-To: <13269660.K2JYd4sGFX@kreacher>
-References: <13269660.K2JYd4sGFX@kreacher>
+        Mon, 9 Nov 2020 11:56:39 -0500
+Received: from mail-il1-x141.google.com (mail-il1-x141.google.com [IPv6:2607:f8b0:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94C42C0613CF
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Nov 2020 08:56:39 -0800 (PST)
+Received: by mail-il1-x141.google.com with SMTP id t13so8932503ilp.2
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Nov 2020 08:56:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=hb/7csFm2Ot68mGoKZFYFHroBSfAtn3JReEYKuxRQao=;
+        b=Pi7wF3ovUi7Kba8fgczc76Z3cExIg8fdajRKSEfu5/lsorBm6nLKBAYjlfbO9GASoU
+         cy3e/beXlxXtA9oKxqR4iaE4ASHDQGoabb0Abknra/GR6UZcD5jZMXPPuSRjgqSoMH+H
+         8rBEyqKfIXM+usW4uzpJnPiAYQ+gRWcUi1nIZuoEyGEsXd56q5mXYXvbmXUjSU90m0wQ
+         vo1yrYubIyUswgbmp/15GIJsHZYl2Idds64yej4SuYr3Y+kPVtYAD04wqifwlnhYZeJK
+         a8pjTTyy0SG0KvNTx3INR/vqgibVqHG9xmbcbLBfPq0fbAIFt8wMlOfNxvIHdo6g2mag
+         yqUw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=hb/7csFm2Ot68mGoKZFYFHroBSfAtn3JReEYKuxRQao=;
+        b=YCGK8qZuDS2TlglNo0MkTebamzLYfVSfnDBz6AuihuxvSwmGb6iTobUv9rp5bZkYMQ
+         5br1i8jFFMab8XwSizamhAGczHEq+2ghAyMpJLNMiCiOYpLPZpU22DAyNrvy4kPHfSdm
+         gi6qjdpPgXB+9VHEkTquCjbek7i1z4KOpgHIS5bdOK1j1gmdmkuaE/Xq5M9sK7dSp6Zr
+         ROQfXGLXw9/vRYmxtPN1b9vae+b3xsWRCDl+9UnnaIHG5Ap2N4bt4LepUTirvRBcEp27
+         m+BhQsZangARl8Gs733baFwOM3B9+Mn1fjZPZRqGgqh9ZUp23bGzcXbqeduyD10235bU
+         z07w==
+X-Gm-Message-State: AOAM532pzXLmBdbR99gbYtx++0TeAWbO/4ufS8B2oeJg6nNu5LrvrI8o
+        3VWRfoGjfYYwdxsVv6eywRAJWQ==
+X-Google-Smtp-Source: ABdhPJx7JXuJC4U4Ni5xMxauvqtZk1OahLn8ybdO+EYg1THppI0bhOue2eG18do96vWMijA0TkG5vg==
+X-Received: by 2002:a92:9903:: with SMTP id p3mr11613874ili.138.1604940998941;
+        Mon, 09 Nov 2020 08:56:38 -0800 (PST)
+Received: from beast.localdomain (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
+        by smtp.gmail.com with ESMTPSA id j85sm7576556ilg.82.2020.11.09.08.56.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 09 Nov 2020 08:56:38 -0800 (PST)
+From:   Alex Elder <elder@linaro.org>
+To:     davem@davemloft.net, kuba@kernel.org
+Cc:     evgreen@chromium.org, subashab@codeaurora.org,
+        cpratapa@codeaurora.org, bjorn.andersson@linaro.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH net-next 0/4] net: ipa: little fixes
+Date:   Mon,  9 Nov 2020 10:56:31 -0600
+Message-Id: <20201109165635.5449-1-elder@linaro.org>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+This series adds a few small fixes to the IPA code.
 
-Make intel_pstate take the new CPUFREQ_GOV_FLAG_STRICT_TARGET
-governor flag into account when it operates in the passive mode with
-HWP enabled, so as to fix the "powersave" governor behavior in that
-case (currently, HWP is allowed to scale the performance all the way
-up to the policy max limit when the "powersave" governor is used,
-but it should be constrained to the policy min limit then).
+The first patch appeared in a different form in June, and got some
+pushback from David because he felt a problem that can be caught at
+build time *should* be caught at build time.
+  https://lore.kernel.org/netdev/20200610195332.2612233-1-elder@linaro.org/
+I agree with that, but in this case the "problem" was never actually
+a problem.  There's a little more explanation on the patch, but
+basically now we remove the BUILD_BUG_ON() call entirely.
 
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
----
- drivers/cpufreq/intel_pstate.c |   16 +++++++++-------
- 1 file changed, 9 insertions(+), 7 deletions(-)
+The second deletes a line of code that isn't needed.
 
-Index: linux-pm/drivers/cpufreq/intel_pstate.c
-===================================================================
---- linux-pm.orig/drivers/cpufreq/intel_pstate.c
-+++ linux-pm/drivers/cpufreq/intel_pstate.c
-@@ -2527,7 +2527,7 @@ static void intel_cpufreq_trace(struct c
- }
- 
- static void intel_cpufreq_adjust_hwp(struct cpudata *cpu, u32 target_pstate,
--				     bool fast_switch)
-+				     bool strict, bool fast_switch)
- {
- 	u64 prev = READ_ONCE(cpu->hwp_req_cached), value = prev;
- 
-@@ -2539,7 +2539,7 @@ static void intel_cpufreq_adjust_hwp(str
- 	 * field in it, so opportunistically update the max too if needed.
- 	 */
- 	value &= ~HWP_MAX_PERF(~0L);
--	value |= HWP_MAX_PERF(cpu->max_perf_ratio);
-+	value |= HWP_MAX_PERF(strict ? target_pstate : cpu->max_perf_ratio);
- 
- 	if (value == prev)
- 		return;
-@@ -2562,14 +2562,16 @@ static void intel_cpufreq_adjust_perf_ct
- 			      pstate_funcs.get_val(cpu, target_pstate));
- }
- 
--static int intel_cpufreq_update_pstate(struct cpudata *cpu, int target_pstate,
--				       bool fast_switch)
-+static int intel_cpufreq_update_pstate(struct cpufreq_policy *policy,
-+				       int target_pstate, bool fast_switch)
- {
-+	struct cpudata *cpu = all_cpu_data[policy->cpu];
- 	int old_pstate = cpu->pstate.current_pstate;
- 
- 	target_pstate = intel_pstate_prepare_request(cpu, target_pstate);
- 	if (hwp_active) {
--		intel_cpufreq_adjust_hwp(cpu, target_pstate, fast_switch);
-+		intel_cpufreq_adjust_hwp(cpu, target_pstate,
-+					 policy->strict_target, fast_switch);
- 		cpu->pstate.current_pstate = target_pstate;
- 	} else if (target_pstate != old_pstate) {
- 		intel_cpufreq_adjust_perf_ctl(cpu, target_pstate, fast_switch);
-@@ -2609,7 +2611,7 @@ static int intel_cpufreq_target(struct c
- 		break;
- 	}
- 
--	target_pstate = intel_cpufreq_update_pstate(cpu, target_pstate, false);
-+	target_pstate = intel_cpufreq_update_pstate(policy, target_pstate, false);
- 
- 	freqs.new = target_pstate * cpu->pstate.scaling;
- 
-@@ -2628,7 +2630,7 @@ static unsigned int intel_cpufreq_fast_s
- 
- 	target_pstate = DIV_ROUND_UP(target_freq, cpu->pstate.scaling);
- 
--	target_pstate = intel_cpufreq_update_pstate(cpu, target_pstate, true);
-+	target_pstate = intel_cpufreq_update_pstate(policy, target_pstate, true);
- 
- 	return target_pstate * cpu->pstate.scaling;
- }
+The third converts a warning message to be a debug, as requested by
+Stephen Boyd.
 
+And the last one just gets rid of an error message that would be
+output after a different message had already reported a problem.
 
+					-Alex
+
+Alex Elder (4):
+  net: ipa: don't break build on large transaction size
+  net: ipa: get rid of a useless line of code
+  net: ipa: change a warning to debug
+  net: ipa: drop an error message
+
+ drivers/net/ipa/gsi.c      | 7 +------
+ drivers/net/ipa/ipa_main.c | 6 +-----
+ drivers/net/ipa/ipa_mem.c  | 8 ++++----
+ 3 files changed, 6 insertions(+), 15 deletions(-)
+
+-- 
+2.20.1
 
