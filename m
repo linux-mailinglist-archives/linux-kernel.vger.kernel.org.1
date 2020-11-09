@@ -2,165 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B2342AB69B
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 12:21:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 40C5B2AB69E
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 12:21:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729528AbgKILV0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 06:21:26 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:50614 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726410AbgKILV0 (ORCPT
+        id S1729557AbgKILVg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 06:21:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33770 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729499AbgKILVg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 06:21:26 -0500
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1604920883;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=hxcVhqjKdQHN16Wn3gUojFzP/H3f36IpHuQYN7w2nQI=;
-        b=1B0+YQRFrSFk5OrFMiUeH3HdISYFobPGE4d3D+BkpzyRy38zuyERt09Rkm9uO2ZY3CY1NB
-        kyFSlEvTB2+DF9n0XWsfu2ElNP9IjzyWj/tyWlp4zJ6ButCB261QzJlXHR4xgSZf/wrvcs
-        yyFFG4OUniWs/03B4OJmQ/eZ4ORncR9qd361IVTMibsC4vk4A07EwQfQTZh7Yeqxhl3hWN
-        rR1Y+mVdRaaeGHSc+rTyvnKws59f/YKosQZedImPymYrHGwGMJkqpV0NWckzueLRGQUjwR
-        VdRpkPzgm1pv9i6uwL+G/uzLZmRZo350nTDrVDDqOtoWTMxWma7VoMgEqCSKdQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1604920883;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=hxcVhqjKdQHN16Wn3gUojFzP/H3f36IpHuQYN7w2nQI=;
-        b=5Dsc74gZMaZXEqZt6OB04kg/o9ah6ktGvPF95Gk3AcboYZaDk6iZ/dHqSAWwoSdn1uFjk1
-        KN1GqptgfM4mZDDA==
-To:     "Raj\, Ashok" <ashok.raj@intel.com>
-Cc:     Jason Gunthorpe <jgg@nvidia.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        "Tian\, Kevin" <kevin.tian@intel.com>,
-        "Jiang\, Dave" <dave.jiang@intel.com>,
-        Bjorn Helgaas <helgaas@kernel.org>,
-        "vkoul\@kernel.org" <vkoul@kernel.org>,
-        "Dey\, Megha" <megha.dey@intel.com>,
-        "maz\@kernel.org" <maz@kernel.org>,
-        "bhelgaas\@google.com" <bhelgaas@google.com>,
-        "alex.williamson\@redhat.com" <alex.williamson@redhat.com>,
-        "Pan\, Jacob jun" <jacob.jun.pan@intel.com>,
-        "Liu\, Yi L" <yi.l.liu@intel.com>,
-        "Lu\, Baolu" <baolu.lu@intel.com>,
-        "Kumar\, Sanjay K" <sanjay.k.kumar@intel.com>,
-        "Luck\, Tony" <tony.luck@intel.com>,
-        "kwankhede\@nvidia.com" <kwankhede@nvidia.com>,
-        "eric.auger\@redhat.com" <eric.auger@redhat.com>,
-        "parav\@mellanox.com" <parav@mellanox.com>,
-        "rafael\@kernel.org" <rafael@kernel.org>,
-        "netanelg\@mellanox.com" <netanelg@mellanox.com>,
-        "shahafs\@mellanox.com" <shahafs@mellanox.com>,
-        "yan.y.zhao\@linux.intel.com" <yan.y.zhao@linux.intel.com>,
-        "pbonzini\@redhat.com" <pbonzini@redhat.com>,
-        "Ortiz\, Samuel" <samuel.ortiz@intel.com>,
-        "Hossain\, Mona" <mona.hossain@intel.com>,
-        "dmaengine\@vger.kernel.org" <dmaengine@vger.kernel.org>,
-        "linux-kernel\@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-pci\@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        "kvm\@vger.kernel.org" <kvm@vger.kernel.org>,
-        Ashok Raj <ashok.raj@intel.com>
-Subject: Re: [PATCH v4 06/17] PCI: add SIOV and IMS capability detection
-In-Reply-To: <20201108235852.GC32074@araj-mobl1.jf.intel.com>
-References: <20201104124017.GW2620339@nvidia.com> <MWHPR11MB1645862A8F7CF7FB8DD011778CEF0@MWHPR11MB1645.namprd11.prod.outlook.com> <20201104135415.GX2620339@nvidia.com> <MWHPR11MB1645524BDEDF8899914F32AE8CED0@MWHPR11MB1645.namprd11.prod.outlook.com> <20201106131415.GT2620339@nvidia.com> <20201106164850.GA85879@otc-nc-03> <20201106175131.GW2620339@nvidia.com> <CAPcyv4iYHA1acfo=+fTk+U_TrLbSWJjA6v4oeTXgVYDTrnCoGw@mail.gmail.com> <20201107001207.GA2620339@nvidia.com> <87pn4nk7nn.fsf@nanos.tec.linutronix.de> <20201108235852.GC32074@araj-mobl1.jf.intel.com>
-Date:   Mon, 09 Nov 2020 12:21:22 +0100
-Message-ID: <874klykc7h.fsf@nanos.tec.linutronix.de>
+        Mon, 9 Nov 2020 06:21:36 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 369C3C0613CF;
+        Mon,  9 Nov 2020 03:21:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=23JvPsCJ8bZTGypus7M+0zut1iK9VvweCbVk0Ig98f8=; b=bQ6jS/sW9qpECD2vEn0Z0bk35I
+        jy2A56RXzfv+InB3KOVZ5AxftSOhgBz24VXHMnZNfV3ylx3Yt7eV33Q1nCwChjificIwtmBfi+XTa
+        nPTgGdweB2wtibgtPne9/WvUUgvNwLUZHP6/msRJU7Vu49B80Ajr1h2b5XIWDFTJgdk2erGMWFQHh
+        HyOfmFBU9Q8sCXp6j77lsWamUspYg41Ruoxxk6Bc2zDv47u7bcaIRoF52A096EG+goReJA4i5n2wn
+        PUSe0/XehVsKjg1vBH5LaJwG3gQ67bx2mstnIstbFeStCThTrSuangzmmTK4L85/4WX8Z9cPPZPre
+        ImgPsMSw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kc5Ep-0005Rb-16; Mon, 09 Nov 2020 11:21:31 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 0B51F306099;
+        Mon,  9 Nov 2020 12:21:29 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id EC2E92B09ACF6; Mon,  9 Nov 2020 12:21:28 +0100 (CET)
+Date:   Mon, 9 Nov 2020 12:21:28 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        Darren Hart <dvhart@infradead.org>,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH] futex: Don't enable IRQs unconditionally in
+ put_pi_state()
+Message-ID: <20201109112128.GF2594@hirez.programming.kicks-ass.net>
+References: <20201106085205.GA1159983@mwanda>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201106085205.GA1159983@mwanda>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Nov 08 2020 at 15:58, Ashok Raj wrote:
-> On Sun, Nov 08, 2020 at 07:47:24PM +0100, Thomas Gleixner wrote:
->> 
->> 
->> Now if we look at the virtualization scenario and device hand through
->> then the structure in the guest view is not any different from the basic
->> case. This works with PCI-MSI[X] and the IDXD IMS variant because the
->> hypervisor can trap the access to the storage and translate the message:
->> 
->>                    |
->>                    |
->>   [CPU]    -- [Bri | dge] -- Bus -- [Device]
->>                    |
->>   Alloc +
->>   Compose                   Store     Use
->>                              |
->>                              | Trap
->>                              v
->>                              Hypervisor translates and stores
->> 
->
-> The above case, VMM is responsible for writing to the message
-> store. In both cases if its IMS or Legacy MSI/MSIx. VMM handles
-> the writes to the device interrupt region and to the IRTE tables.
+On Fri, Nov 06, 2020 at 11:52:05AM +0300, Dan Carpenter wrote:
+> The exit_pi_state_list() function calls put_pi_state() with IRQs
+> disabled and is not expecting that IRQs will be enabled inside the
+> function.  Use the _irqsave() so that IRQs are restored to the original
+> state instead of enabled unconditionally.
+> 
+> Fixes: 153fbd1226fb ("futex: Fix more put_pi_state() vs. exit_pi_state_list() races")
+> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+> ---
+> This is from static analysis and not tested.  I am not very familiar
+> with futex code.
 
-Yes, but that's just how it's done today and there is no real need to do
-so.
+It it exceedingly rare if at all possible to trigger this, but yes, your
+patch is correct.
 
->> Now the question which I can't answer is whether this can work correctly
->> in terms of isolation. If the IMS storage is in guest memory (queue
->> storage) then the guest driver can obviously write random crap into it
->> which the device will happily send. (For MSI and IDXD style IMS it
->> still can trap the store).
->
-> The isolation problem is not just the guest memory being used as interrrupt
-> store right? If the Store to device region is not trapped and controlled by 
-> VMM, there is no gaurantee the guest OS has done the right thing?
->
-> Thinking about it, guest memory might be more problematic since its not
-> trappable and VMM can't enforce what is written. This is something that
-> needs more attension. But for now the devices supporting memory on device
-> the trap and store by VMM seems to satisfy the security properties you
-> highlight here.
+Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 
-That's not the problem at all. The VMM is not responsible for the
-correctness of the guest OS at all. All the VMM cares about is that the
-guest cannot access anything which does not belong to the guest.
-
-If the guest OS screws up the message (by stupidity or malice), then the
-MSI sent from the passed through device has to be caught by the
-IOMMU/remap unit if an _only_ if it writes to something which it is not
-allowed to.
-
-If it overwrites the guests memory then so be it. The VMM cannot prevent
-the guest OS doing so by a stray pointer either. So why would it worry
-about the MSI going into guest owned lala land?
-
->> Is the IOMMU/Interrupt remapping unit able to catch such messages which
->> go outside the space to which the guest is allowed to signal to? If yes,
->> problem solved. If no, then IMS storage in guest memory can't ever work.
->
-> This can probably work for SRIOV devices where guest owns the entire device.
-> interrupt remap does have RID checks if interrupt arrives at an Interrupt handle
-> not allocated for that BDF.
->
-> But for SIOV devices there is no PASID filtering at the remap level since
-> interrupt messages don't carry PASID in the TLP.
-
-PASID is irrelevant here.
-
-If the device sends a message then the remap unit will see the requester
-ID of the device and if the message it sends is not matching the remap
-tables then it's caught and the guest is terminated. At least that's how
-it should be.
-
->> But there's a catch:
->> 
->> This only works when the guest OS actually knows that it runs in a
->> VM. If the guest can't figure that out, i.e. via CPUID, this cannot be
->
-> Precicely!. It might work if the OS is new, but for legacy the trap-emulate
-> seems both safe and works for legacy as well?
-
-Again, trap emulate does not work for IMS when the IMS store is software
-managed guest memory and not part of the device. And that's the whole
-reason why we are discussing this.
-
-Thanks,
-
-        tglx
+> 
+>  kernel/futex.c | 5 +++--
+>  1 file changed, 3 insertions(+), 2 deletions(-)
+> 
+> diff --git a/kernel/futex.c b/kernel/futex.c
+> index f8614ef4ff31..ca84745713bc 100644
+> --- a/kernel/futex.c
+> +++ b/kernel/futex.c
+> @@ -788,8 +788,9 @@ static void put_pi_state(struct futex_pi_state *pi_state)
+>  	 */
+>  	if (pi_state->owner) {
+>  		struct task_struct *owner;
+> +		unsigned long flags;
+>  
+> -		raw_spin_lock_irq(&pi_state->pi_mutex.wait_lock);
+> +		raw_spin_lock_irqsave(&pi_state->pi_mutex.wait_lock, flags);
+>  		owner = pi_state->owner;
+>  		if (owner) {
+>  			raw_spin_lock(&owner->pi_lock);
+> @@ -797,7 +798,7 @@ static void put_pi_state(struct futex_pi_state *pi_state)
+>  			raw_spin_unlock(&owner->pi_lock);
+>  		}
+>  		rt_mutex_proxy_unlock(&pi_state->pi_mutex, owner);
+> -		raw_spin_unlock_irq(&pi_state->pi_mutex.wait_lock);
+> +		raw_spin_unlock_irqrestore(&pi_state->pi_mutex.wait_lock, flags);
+>  	}
+>  
+>  	if (current->pi_state_cache) {
+> -- 
+> 2.28.0
+> 
