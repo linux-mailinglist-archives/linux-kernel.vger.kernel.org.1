@@ -2,44 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CA992ABDBE
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 14:49:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F191F2ABCFB
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 14:42:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731305AbgKINtK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 08:49:10 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51116 "EHLO mail.kernel.org"
+        id S2387544AbgKINmL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 08:42:11 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55088 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729814AbgKIM4Z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 07:56:25 -0500
+        id S1730547AbgKINBC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 08:01:02 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2E32120867;
-        Mon,  9 Nov 2020 12:56:11 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D12A721D40;
+        Mon,  9 Nov 2020 13:01:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604926572;
-        bh=HeiXkDo1qNKRPsCL1z6v8tavI/15Fj5RsL4khe7PqzU=;
+        s=default; t=1604926861;
+        bh=OS6LUVPUcsiZkv5ftojY040WMhDzeW4LUMXou0etAJY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=klXxp9MTlJ7gUXiLBgXhsMvvJAqcdV9XzywYfY3UCJ0uxPMhZctqQV0dcdkdaDqYN
-         mOYWKY1f7/DOAK+xsKKhxuz1jTEk563L8lDFZ3qOX1Va15nhsDpoHD8REsnMQlId6Y
-         AB5ML/ijbjrfw5elPv0jKhsZJhz3fuTbnxnB3WLE=
+        b=lBiW6JudHwnkj2SMvjYlP0eiD30FQh95IsAkbA40s0ozUDgBSpMMTH03b0t6qTtRG
+         b5bq1/dDc+WMKFPbw0BdSgwxGjT+tZam71KEfUKC9RNXKbhTTrZqFDhtcZevcse/sp
+         Lg5oztN3PZVA2QtpAjgY1IPacC6QryLkC69CRiRE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Jens Axboe <axboe@kernel.dk>
-Subject: [PATCH 4.4 08/86] ata: sata_rcar: Fix DMA boundary mask
-Date:   Mon,  9 Nov 2020 13:54:15 +0100
-Message-Id: <20201109125021.261018273@linuxfoundation.org>
+        stable@vger.kernel.org, Oliver Neukum <oneukum@suse.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.9 030/117] USB: adutux: fix debugging
+Date:   Mon,  9 Nov 2020 13:54:16 +0100
+Message-Id: <20201109125027.078899511@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201109125020.852643676@linuxfoundation.org>
-References: <20201109125020.852643676@linuxfoundation.org>
+In-Reply-To: <20201109125025.630721781@linuxfoundation.org>
+References: <20201109125025.630721781@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -48,70 +42,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Geert Uytterhoeven <geert+renesas@glider.be>
+From: Oliver Neukum <oneukum@suse.com>
 
-commit df9c590986fdb6db9d5636d6cd93bc919c01b451 upstream.
+[ Upstream commit c56150c1bc8da5524831b1dac2eec3c67b89f587 ]
 
-Before commit 9495b7e92f716ab2 ("driver core: platform: Initialize
-dma_parms for platform devices"), the R-Car SATA device didn't have DMA
-parameters.  Hence the DMA boundary mask supplied by its driver was
-silently ignored, as __scsi_init_queue() doesn't check the return value
-of dma_set_seg_boundary(), and the default value of 0xffffffff was used.
+Handling for removal of the controller was missing at one place.
+Add it.
 
-Now the device has gained DMA parameters, the driver-supplied value is
-used, and the following warning is printed on Salvator-XS:
-
-    DMA-API: sata_rcar ee300000.sata: mapping sg segment across boundary [start=0x00000000ffffe000] [end=0x00000000ffffefff] [boundary=0x000000001ffffffe]
-    WARNING: CPU: 5 PID: 38 at kernel/dma/debug.c:1233 debug_dma_map_sg+0x298/0x300
-
-(the range of start/end values depend on whether IOMMU support is
- enabled or not)
-
-The issue here is that SATA_RCAR_DMA_BOUNDARY doesn't have bit 0 set, so
-any typical end value, which is odd, will trigger the check.
-
-Fix this by increasing the DMA boundary value by 1.
-
-This also fixes the following WRITE DMA EXT timeout issue:
-
-    # dd if=/dev/urandom of=/mnt/de1/file1-1024M bs=1M count=1024
-    ata1.00: exception Emask 0x0 SAct 0x0 SErr 0x0 action 0x6 frozen
-    ata1.00: failed command: WRITE DMA EXT
-    ata1.00: cmd 35/00:00:00:e6:0c/00:0a:00:00:00/e0 tag 0 dma 1310720 out
-    res 40/00:01:00:00:00/00:00:00:00:00/00 Emask 0x4 (timeout)
-    ata1.00: status: { DRDY }
-
-as seen by Shimoda-san since commit 429120f3df2dba2b ("block: fix
-splitting segments on boundary masks").
-
-Fixes: 8bfbeed58665dbbf ("sata_rcar: correct 'sata_rcar_sht'")
-Fixes: 9495b7e92f716ab2 ("driver core: platform: Initialize dma_parms for platform devices")
-Fixes: 429120f3df2dba2b ("block: fix splitting segments on boundary masks")
-Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
-Tested-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Tested-by: Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
-Reviewed-by: Christoph Hellwig <hch@lst.de>
-Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Reviewed-by: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
-Reviewed-by: Ulf Hansson <ulf.hansson@linaro.org>
-Cc: stable <stable@vger.kernel.org>
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
+Signed-off-by: Oliver Neukum <oneukum@suse.com>
+Link: https://lore.kernel.org/r/20200917112600.26508-1-oneukum@suse.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/ata/sata_rcar.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/usb/misc/adutux.c | 1 +
+ 1 file changed, 1 insertion(+)
 
---- a/drivers/ata/sata_rcar.c
-+++ b/drivers/ata/sata_rcar.c
-@@ -122,7 +122,7 @@
- /* Descriptor table word 0 bit (when DTA32M = 1) */
- #define SATA_RCAR_DTEND			BIT(0)
+diff --git a/drivers/usb/misc/adutux.c b/drivers/usb/misc/adutux.c
+index 7fb0590187d40..a1bc516be154d 100644
+--- a/drivers/usb/misc/adutux.c
++++ b/drivers/usb/misc/adutux.c
+@@ -210,6 +210,7 @@ static void adu_interrupt_out_callback(struct urb *urb)
  
--#define SATA_RCAR_DMA_BOUNDARY		0x1FFFFFFEUL
-+#define SATA_RCAR_DMA_BOUNDARY		0x1FFFFFFFUL
- 
- /* Gen2 Physical Layer Control Registers */
- #define RCAR_GEN2_PHY_CTL1_REG		0x1704
+ 	if (status != 0) {
+ 		if ((status != -ENOENT) &&
++		    (status != -ESHUTDOWN) &&
+ 		    (status != -ECONNRESET)) {
+ 			dev_dbg(&dev->udev->dev,
+ 				"%s :nonzero status received: %d\n", __func__,
+-- 
+2.27.0
+
 
 
