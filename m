@@ -2,82 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7729D2AB14F
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 07:34:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C8A8B2AB150
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 07:34:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729596AbgKIGeD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 01:34:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45110 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729076AbgKIGeC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 01:34:02 -0500
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 926BCC0613CF;
-        Sun,  8 Nov 2020 22:34:02 -0800 (PST)
-Received: by mail-pf1-x443.google.com with SMTP id q10so7185104pfn.0;
-        Sun, 08 Nov 2020 22:34:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=v++8bd1IUyvw9X6vvcXByPhjPZXgynykom+xOoMhlmM=;
-        b=EySDcw55Ewl5X1c+Vyl5QXKtK/wmO9qDxi3zh74md2x9q8nfZnrwX9x13o+eKSOoMG
-         XKNY8rh93euWg9MTcxK8HB8XOuyYWTIN5VbQdrSiMqsGu6xjBw6CfnJa/gWVMRiWGPJl
-         rvcpEToH3DXIPkJ037s9TT4MrIejEF52AEAT4+jaxCm97WuwB9wyyzqOH260KrcBn3j0
-         16PxVHOQxtc2V7+xJtMZyRYMNsbTWE+wBcRiPV13mFjURzDuDof9uvTWabAvhFEWZ+lv
-         C2loNhrdypU1jZiFKbjGjC1YFtezDgil5Hw0iGK6GTEkBb06SNCg7Nhj1C4BGPoX3fqe
-         QtBA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=v++8bd1IUyvw9X6vvcXByPhjPZXgynykom+xOoMhlmM=;
-        b=PtI7nPSAptI9W96QQGUJ7+3zSW905Q9ACIDotCfzgKonDrA6Q3lgNwnYFINNAi/Zrg
-         wMZX+m5CAWCmcroCX5yPATY8ULOjm6medWgNYLurUxrPJpYknH1p0YooftHgFTrAsQTY
-         edD/6sjXWB4763ary99c0zRbCWD0MGdFdvaQPvIqnpDUXY8XOaHcAk7sjIQIMIYCbqKp
-         oWKCCl0WJuNk4FGSAFmux5VC/K2Ny1ZPbXLhDzvO6BQShJI7Ok0UidBSrj42I0qLffDT
-         8wZMHC+vscu0vK606Gc0dOukEdNiVO10c6Ua1YwebYMGUEnJ2RCBRZI7fzGIAlSP5UmG
-         KLKw==
-X-Gm-Message-State: AOAM533W1maNkgxHHQZDJaWwmt04nZNwP7PfhKCJH08xF8Qyts/hJ2Hv
-        x9u1qWqu6P1LYHsFwDSkvHAmJb0CYKQ=
-X-Google-Smtp-Source: ABdhPJw4xq4pMwy0fY+Na6Gmzs9quPzQyEOW/Kiivgpn4MNSWAwYZydKcrsEy93MozD78mWsd1aAPQ==
-X-Received: by 2002:a17:90a:c381:: with SMTP id h1mr12107584pjt.2.1604903642107;
-        Sun, 08 Nov 2020 22:34:02 -0800 (PST)
-Received: from dtor-ws ([2620:15c:202:201:a6ae:11ff:fe11:fcc3])
-        by smtp.gmail.com with ESMTPSA id l7sm9960078pjg.29.2020.11.08.22.34.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 08 Nov 2020 22:34:01 -0800 (PST)
-Date:   Sun, 8 Nov 2020 22:33:59 -0800
-From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Eugen Hristev <eugen.hristev@microchip.com>,
-        linux-input@vger.kernel.org
-Subject: Re: [PATCH 09/20] input: touchscreen: resistive-adc-touch: Struct
- headers should start with 'struct <name>'
-Message-ID: <20201109063359.GR1003057@dtor-ws>
-References: <20201104162427.2984742-1-lee.jones@linaro.org>
- <20201104162427.2984742-10-lee.jones@linaro.org>
+        id S1729598AbgKIGes (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 01:34:48 -0500
+Received: from mga12.intel.com ([192.55.52.136]:27633 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729076AbgKIGer (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 01:34:47 -0500
+IronPort-SDR: Hy1ZvAHhX4b+JsYm7tbuu3s643L7rxOYF6ZHLe2vWLTgCrSXKegtiG/aK06AmAyV+rYDksBn6c
+ UaYyZHKiMwgw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9799"; a="149035416"
+X-IronPort-AV: E=Sophos;i="5.77,462,1596524400"; 
+   d="scan'208";a="149035416"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Nov 2020 22:34:47 -0800
+IronPort-SDR: epgwv5nkki90oJuuM6jW+S8ec5md4ptPQZLXv9wT+rvJ5nOm4ZXwF4aBldsS9I312p4Oykmr0t
+ e1Ge+n1wmpog==
+X-IronPort-AV: E=Sophos;i="5.77,462,1596524400"; 
+   d="scan'208";a="530588466"
+Received: from tassilo.jf.intel.com ([10.54.74.11])
+  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Nov 2020 22:34:47 -0800
+Date:   Sun, 8 Nov 2020 22:34:46 -0800
+From:   Andi Kleen <ak@linux.intel.com>
+To:     Like Xu <like.xu@linux.intel.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, wei.w.wang@intel.com,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Subject: Re: [PATCH v12 01/11] perf/x86: Fix variable types for LBR registers
+Message-ID: <20201109063446.GM466880@tassilo.jf.intel.com>
+References: <20200613080958.132489-1-like.xu@linux.intel.com>
+ <20200613080958.132489-2-like.xu@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201104162427.2984742-10-lee.jones@linaro.org>
+In-Reply-To: <20200613080958.132489-2-like.xu@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 04, 2020 at 04:24:16PM +0000, Lee Jones wrote:
-> Fixes the following W=1 kernel build warning(s):
+On Sat, Jun 13, 2020 at 04:09:46PM +0800, Like Xu wrote:
+> From: Wei Wang <wei.w.wang@intel.com>
 > 
->  drivers/input/touchscreen/resistive-adc-touch.c:34: warning: cannot understand function prototype: 'struct grts_state '
-> 
-> Cc: Eugen Hristev <eugen.hristev@microchip.com>
-> Cc: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-> Cc: linux-input@vger.kernel.org
-> Signed-off-by: Lee Jones <lee.jones@linaro.org>
+> The MSR variable type can be 'unsigned int', which uses less memory than
+> the longer 'unsigned long'. Fix 'struct x86_pmu' for that. The lbr_nr won't
+> be a negative number, so make it 'unsigned int' as well.
 
-Applied, thank you.
+Hi, 
 
--- 
-Dmitry
+What's the status of this patchkit? It would be quite useful to me (and
+various other people) to use LBRs in guest. I reviewed it earlier and the
+patches all looked good to me.  But i don't see it in any -next tree.
+
+Reviewed-by: Andi Kleen <ak@linux.intel.com>
+
+Could it please be merged?
+
+Thanks,
+
+-Andi
