@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 295E02ABAC2
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 14:23:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 07FBA2AB9EF
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 14:15:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388162AbgKINWG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 08:22:06 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50006 "EHLO mail.kernel.org"
+        id S1733090AbgKINOO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 08:14:14 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40346 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387839AbgKINWC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 08:22:02 -0500
+        id S1729958AbgKINOM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 08:14:12 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id F31E120663;
-        Mon,  9 Nov 2020 13:22:00 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id BDAC020789;
+        Mon,  9 Nov 2020 13:14:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604928121;
-        bh=IAyK6rwbXaedPokaEbAQ1fGa2dVLGXqgJwZU377OoBg=;
+        s=default; t=1604927650;
+        bh=Yb+poyMjHvPJ5NCCLX6WjKFIr6arh83gmJcZlwD9Pe4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=sUNgKQNie+h5L5BOhIUlC2b/2zh60Vwrnl6Xhlu1q9nL33g7XZl2uuUjLLLmhGlvC
-         HJgLM47s03kjW0bL1KgMDT1FWF0xUStB6eQesdgHzr81VH3mT+/EThojoZlhOyjPhT
-         S0I2jNimNQBz1jjcaaxOsnP+E+ytmO6j4bOfvSqQ=
+        b=09gxlNXzvHMTfU3kymvxmfh0JGAFIsj2ecQd6ccfqAR2XhUOLPFTARF74LyFXqAvc
+         bEbMk5vO06V62tGai5R63+PXhE1E+4rShb7GzcFyxLTbXHbrtp0J7+h/3faCTifsA0
+         otaKHaUqK3V7MJaYjGZBA9lY5p9ca93G+rxwbmBU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Martin Leung <martin.leung@amd.com>,
-        Aurabindo Pillai <aurabindo.pillai@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
+        stable@vger.kernel.org, Jun Li <jun.li@nxp.com>,
+        Peter Chen <peter.chen@nxp.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.9 094/133] drm/amd/display: adding ddc_gpio_vga_reg_list to ddc reg defns
+Subject: [PATCH 5.4 59/85] usb: cdns3: gadget: suspicious implicit sign extension
 Date:   Mon,  9 Nov 2020 13:55:56 +0100
-Message-Id: <20201109125035.225118762@linuxfoundation.org>
+Message-Id: <20201109125025.406163166@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201109125030.706496283@linuxfoundation.org>
-References: <20201109125030.706496283@linuxfoundation.org>
+In-Reply-To: <20201109125022.614792961@linuxfoundation.org>
+References: <20201109125022.614792961@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,54 +43,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Martin Leung <martin.leung@amd.com>
+From: Peter Chen <peter.chen@nxp.com>
 
-[ Upstream commit a1d2afc5dde29a943d32bf92eb0408c9f19541fc ]
+[ Upstream commit 5fca3f062879f8e5214c56f3e3e2be6727900f5d ]
 
-why:
-oem-related ddc read/write fails without these regs
+The code:
+trb->length = cpu_to_le32(TRB_BURST_LEN(priv_ep->trb_burst_size)
+	       	| TRB_LEN(length));
 
-how:
-copy from hw_factory_dcn20.c
+TRB_BURST_LEN(priv_ep->trb_burst_size) may be overflow for int 32 if
+priv_ep->trb_burst_size is equal or larger than 0x80;
 
-Signed-off-by: Martin Leung <martin.leung@amd.com>
-Acked-by: Aurabindo Pillai <aurabindo.pillai@amd.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Below is the Coverity warning:
+sign_extension: Suspicious implicit sign extension: priv_ep->trb_burst_size
+with type u8 (8 bits, unsigned) is promoted in priv_ep->trb_burst_size << 24
+to type int (32 bits, signed), then sign-extended to type unsigned long
+(64 bits, unsigned). If priv_ep->trb_burst_size << 24 is greater than 0x7FFFFFFF,
+the upper bits of the result will all be 1.
+
+To fix it, it needs to add an explicit cast to unsigned int type for ((p) << 24).
+
+Reviewed-by: Jun Li <jun.li@nxp.com>
+Signed-off-by: Peter Chen <peter.chen@nxp.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- .../drm/amd/display/dc/gpio/dcn30/hw_factory_dcn30.c | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
+ drivers/usb/cdns3/gadget.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/amd/display/dc/gpio/dcn30/hw_factory_dcn30.c b/drivers/gpu/drm/amd/display/dc/gpio/dcn30/hw_factory_dcn30.c
-index 7e7fb65721073..9d3665f88c523 100644
---- a/drivers/gpu/drm/amd/display/dc/gpio/dcn30/hw_factory_dcn30.c
-+++ b/drivers/gpu/drm/amd/display/dc/gpio/dcn30/hw_factory_dcn30.c
-@@ -117,6 +117,12 @@ static const struct ddc_registers ddc_data_regs_dcn[] = {
- 	ddc_data_regs_dcn2(4),
- 	ddc_data_regs_dcn2(5),
- 	ddc_data_regs_dcn2(6),
-+	{
-+			DDC_GPIO_VGA_REG_LIST(DATA),
-+			.ddc_setup = 0,
-+			.phy_aux_cntl = 0,
-+			.dc_gpio_aux_ctrl_5 = 0
-+	}
- };
+diff --git a/drivers/usb/cdns3/gadget.h b/drivers/usb/cdns3/gadget.h
+index bc4024041ef26..ec5c05454531d 100644
+--- a/drivers/usb/cdns3/gadget.h
++++ b/drivers/usb/cdns3/gadget.h
+@@ -1057,7 +1057,7 @@ struct cdns3_trb {
+ #define TRB_TDL_SS_SIZE_GET(p)	(((p) & GENMASK(23, 17)) >> 17)
  
- static const struct ddc_registers ddc_clk_regs_dcn[] = {
-@@ -126,6 +132,12 @@ static const struct ddc_registers ddc_clk_regs_dcn[] = {
- 	ddc_clk_regs_dcn2(4),
- 	ddc_clk_regs_dcn2(5),
- 	ddc_clk_regs_dcn2(6),
-+	{
-+			DDC_GPIO_VGA_REG_LIST(CLK),
-+			.ddc_setup = 0,
-+			.phy_aux_cntl = 0,
-+			.dc_gpio_aux_ctrl_5 = 0
-+	}
- };
+ /* transfer_len bitmasks - bits 31:24 */
+-#define TRB_BURST_LEN(p)	(((p) << 24) & GENMASK(31, 24))
++#define TRB_BURST_LEN(p)	((unsigned int)((p) << 24) & GENMASK(31, 24))
+ #define TRB_BURST_LEN_GET(p)	(((p) & GENMASK(31, 24)) >> 24)
  
- static const struct ddc_sh_mask ddc_shift[] = {
+ /* Data buffer pointer bitmasks*/
 -- 
 2.27.0
 
