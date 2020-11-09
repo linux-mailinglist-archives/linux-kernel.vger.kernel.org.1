@@ -2,39 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 081B52ABA0B
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 14:15:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 72BE82AB9A7
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 14:11:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732865AbgKINPM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 08:15:12 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41780 "EHLO mail.kernel.org"
+        id S1732318AbgKINLT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 08:11:19 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36786 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1733277AbgKINPG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 08:15:06 -0500
+        id S1730578AbgKINLQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 08:11:16 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 731D320663;
-        Mon,  9 Nov 2020 13:15:05 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4CF222076E;
+        Mon,  9 Nov 2020 13:11:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604927706;
-        bh=fGjK7gRmILnSKAEFXyryQyXVvF2+PkK+LZc9osEOy+I=;
+        s=default; t=1604927475;
+        bh=HKtZLGfCgdWvCQ5U3VKuBC3uFGSb0cHEyo6P1ocRbho=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YujlHXGtCledNgteNtcqSE1f/m36h/mix/1yzZnL6QarfFcJUzOw0CI4O3dLj/CXX
-         XvlQG//7jA4a4XOHYPsrwDyOLDnEWrcJv76DdT8mrevi4M34V9XeOS4fE2qxtjoN6Z
-         FZkMq50QfGJ8Yxuf+W/f6moT2t8WD6F+/uAAepHM=
+        b=qXHM9T227u5tV0YgNvf3pthHRx3/TvRRlqSpdB3GYpa4/0sJu8DWcOj4MMRMWMFrg
+         MS4bLEW8+z/mO8iJek+fbmVTscSdnFgJQgfKbVSrttxua5qMxnQ/SObkIdjTmuUzNq
+         YaISzdAG0VVkW3+HUiUqrMhqbpKH6BRwTrXTFefo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Qian Cai <cai@redhat.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Will Deacon <will@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 62/85] arm64/smp: Move rcu_cpu_starting() earlier
+        stable@vger.kernel.org, Vineet Gupta <vgupta@synopsys.com>
+Subject: [PATCH 4.19 65/71] ARC: stack unwinding: avoid indefinite looping
 Date:   Mon,  9 Nov 2020 13:55:59 +0100
-Message-Id: <20201109125025.543019039@linuxfoundation.org>
+Message-Id: <20201109125022.964669721@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201109125022.614792961@linuxfoundation.org>
-References: <20201109125022.614792961@linuxfoundation.org>
+In-Reply-To: <20201109125019.906191744@linuxfoundation.org>
+References: <20201109125019.906191744@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,67 +41,72 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Qian Cai <cai@redhat.com>
+From: Vineet Gupta <vgupta@synopsys.com>
 
-[ Upstream commit ce3d31ad3cac765484463b4f5a0b6b1f8f1a963e ]
+commit 328d2168ca524d501fc4b133d6be076142bd305c upstream.
 
-The call to rcu_cpu_starting() in secondary_start_kernel() is not early
-enough in the CPU-hotplug onlining process, which results in lockdep
-splats as follows:
+Currently stack unwinder is a while(1) loop which relies on the dwarf
+unwinder to signal termination, which in turn relies on dwarf info to do
+so. This in theory could cause an infinite loop if the dwarf info was
+somehow messed up or the register contents were etc.
 
- WARNING: suspicious RCU usage
- -----------------------------
- kernel/locking/lockdep.c:3497 RCU-list traversed in non-reader section!!
+This fix thus detects the excessive looping and breaks the loop.
 
- other info that might help us debug this:
+| Mem: 26184K used, 1009136K free, 0K shrd, 0K buff, 14416K cached
+| CPU:  0.0% usr 72.8% sys  0.0% nic 27.1% idle  0.0% io  0.0% irq  0.0% sirq
+| Load average: 4.33 2.60 1.11 2/74 139
+|   PID  PPID USER     STAT   VSZ %VSZ CPU %CPU COMMAND
+|   133     2 root     SWN      0  0.0   3 22.9 [rcu_torture_rea]
+|   132     2 root     SWN      0  0.0   0 22.0 [rcu_torture_rea]
+|   131     2 root     SWN      0  0.0   3 21.5 [rcu_torture_rea]
+|   126     2 root     RW       0  0.0   2  5.4 [rcu_torture_wri]
+|   129     2 root     SWN      0  0.0   0  0.2 [rcu_torture_fak]
+|   137     2 root     SW       0  0.0   0  0.2 [rcu_torture_cbf]
+|   127     2 root     SWN      0  0.0   0  0.1 [rcu_torture_fak]
+|   138   115 root     R     1464  0.1   2  0.1 top
+|   130     2 root     SWN      0  0.0   0  0.1 [rcu_torture_fak]
+|   128     2 root     SWN      0  0.0   0  0.1 [rcu_torture_fak]
+|   115     1 root     S     1472  0.1   1  0.0 -/bin/sh
+|   104     1 root     S     1464  0.1   0  0.0 inetd
+|     1     0 root     S     1456  0.1   2  0.0 init
+|    78     1 root     S     1456  0.1   0  0.0 syslogd -O /var/log/messages
+|   134     2 root     SW       0  0.0   2  0.0 [rcu_torture_sta]
+|    10     2 root     IW       0  0.0   1  0.0 [rcu_preempt]
+|    88     2 root     IW       0  0.0   1  0.0 [kworker/1:1-eve]
+|    66     2 root     IW       0  0.0   2  0.0 [kworker/2:2-eve]
+|    39     2 root     IW       0  0.0   2  0.0 [kworker/2:1-eve]
+| unwinder looping too long, aborting !
 
- RCU used illegally from offline CPU!
- rcu_scheduler_active = 1, debug_locks = 1
- no locks held by swapper/1/0.
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Vineet Gupta <vgupta@synopsys.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
- Call trace:
-  dump_backtrace+0x0/0x3c8
-  show_stack+0x14/0x60
-  dump_stack+0x14c/0x1c4
-  lockdep_rcu_suspicious+0x134/0x14c
-  __lock_acquire+0x1c30/0x2600
-  lock_acquire+0x274/0xc48
-  _raw_spin_lock+0xc8/0x140
-  vprintk_emit+0x90/0x3d0
-  vprintk_default+0x34/0x40
-  vprintk_func+0x378/0x590
-  printk+0xa8/0xd4
-  __cpuinfo_store_cpu+0x71c/0x868
-  cpuinfo_store_cpu+0x2c/0xc8
-  secondary_start_kernel+0x244/0x318
-
-This is avoided by moving the call to rcu_cpu_starting up near the
-beginning of the secondary_start_kernel() function.
-
-Signed-off-by: Qian Cai <cai@redhat.com>
-Acked-by: Paul E. McKenney <paulmck@kernel.org>
-Link: https://lore.kernel.org/lkml/160223032121.7002.1269740091547117869.tip-bot2@tip-bot2/
-Link: https://lore.kernel.org/r/20201028182614.13655-1-cai@redhat.com
-Signed-off-by: Will Deacon <will@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/kernel/smp.c | 1 +
- 1 file changed, 1 insertion(+)
+ arch/arc/kernel/stacktrace.c |    7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
-diff --git a/arch/arm64/kernel/smp.c b/arch/arm64/kernel/smp.c
-index 102dc3e7f2e1d..426409e0d0713 100644
---- a/arch/arm64/kernel/smp.c
-+++ b/arch/arm64/kernel/smp.c
-@@ -215,6 +215,7 @@ asmlinkage notrace void secondary_start_kernel(void)
- 	if (system_uses_irq_prio_masking())
- 		init_gic_priority_masking();
+--- a/arch/arc/kernel/stacktrace.c
++++ b/arch/arc/kernel/stacktrace.c
+@@ -115,7 +115,7 @@ arc_unwind_core(struct task_struct *tsk,
+ 		int (*consumer_fn) (unsigned int, void *), void *arg)
+ {
+ #ifdef CONFIG_ARC_DW2_UNWIND
+-	int ret = 0;
++	int ret = 0, cnt = 0;
+ 	unsigned int address;
+ 	struct unwind_frame_info frame_info;
  
-+	rcu_cpu_starting(cpu);
- 	preempt_disable();
- 	trace_hardirqs_off();
+@@ -135,6 +135,11 @@ arc_unwind_core(struct task_struct *tsk,
+ 			break;
  
--- 
-2.27.0
-
+ 		frame_info.regs.r63 = frame_info.regs.r31;
++
++		if (cnt++ > 128) {
++			printk("unwinder looping too long, aborting !\n");
++			return 0;
++		}
+ 	}
+ 
+ 	return address;		/* return the last address it saw */
 
 
