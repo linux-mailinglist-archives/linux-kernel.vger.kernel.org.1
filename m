@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 320A02ABD44
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 14:45:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B667D2ABD43
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 14:45:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388029AbgKINog (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 08:44:36 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53228 "EHLO mail.kernel.org"
+        id S1733140AbgKINof (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 08:44:35 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53258 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730259AbgKIM7B (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 07:59:01 -0500
+        id S1729942AbgKIM7E (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 07:59:04 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 63C1A2083B;
-        Mon,  9 Nov 2020 12:58:59 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 42C342084C;
+        Mon,  9 Nov 2020 12:59:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604926740;
-        bh=ZGX1wJ93pGvHummN/+NwNi/8hSAy4jg10Vu8dky7Fes=;
+        s=default; t=1604926742;
+        bh=GyEvx6frgt88vBR1k0fBG/S5MKjUpJDCfLHN1tv5K4E=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=wnGzmAyaEwfW5Xkc+d29F2cyURZnHlcL9rboIgMtvbU/qrUiCKuf84jvvUWV5bGJy
-         MeKoKeX+uq/xpxFma+MIPxSV+V8BbSU6G7QziVhLBJsaB457SbcLHPcxMFCwaHngVr
-         Wt1YuPf27ws9nx/Cfugs4/JHXgchB1B/pLxG8h0E=
+        b=aLTUiR2kGdqFUPaOTJaHiPd8KkEAk9txGv/VtWn/JFAe3bMKgbb0Qk7oQKK/B+i4o
+         03Qv5JgFi3yrdIl5OCWqii53YMov5ZZOqjtE8wBTyH4TjGFNFlxhzvpbsvZWmq32F9
+         uc35Nb4uvytCCHrKYmP5X67GcGWXdVcvfCJgI9D0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Kairui Song <kasong@redhat.com>,
-        Ingo Molnar <mingo@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 73/86] x86/kexec: Use up-to-dated screen_info copy to fill boot params
-Date:   Mon,  9 Nov 2020 13:55:20 +0100
-Message-Id: <20201109125024.292921822@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Vincent Whitchurch <vincent.whitchurch@axis.com>,
+        Rob Herring <robh@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.4 74/86] of: Fix reserved-memory overlap detection
+Date:   Mon,  9 Nov 2020 13:55:21 +0100
+Message-Id: <20201109125024.341276491@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201109125020.852643676@linuxfoundation.org>
 References: <20201109125020.852643676@linuxfoundation.org>
@@ -42,48 +43,83 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kairui Song <kasong@redhat.com>
+From: Vincent Whitchurch <vincent.whitchurch@axis.com>
 
-[ Upstream commit afc18069a2cb7ead5f86623a5f3d4ad6e21f940d ]
+[ Upstream commit ca05f33316559a04867295dd49f85aeedbfd6bfd ]
 
-kexec_file_load() currently reuses the old boot_params.screen_info,
-but if drivers have change the hardware state, boot_param.screen_info
-could contain invalid info.
+The reserved-memory overlap detection code fails to detect overlaps if
+either of the regions starts at address 0x0.  The code explicitly checks
+for and ignores such regions, apparently in order to ignore dynamically
+allocated regions which have an address of 0x0 at this point.  These
+dynamically allocated regions also have a size of 0x0 at this point, so
+fix this by removing the check and sorting the dynamically allocated
+regions ahead of any static regions at address 0x0.
 
-For example, the video type might be no longer VGA, or the frame buffer
-address might be changed. If the kexec kernel keeps using the old screen_info,
-kexec'ed kernel may attempt to write to an invalid framebuffer
-memory region.
+For example, there are two overlaps in this case but they are not
+currently reported:
 
-There are two screen_info instances globally available, boot_params.screen_info
-and screen_info. Later one is a copy, and is updated by drivers.
+	foo@0 {
+	        reg = <0x0 0x2000>;
+	};
 
-So let kexec_file_load use the updated copy.
+	bar@0 {
+	        reg = <0x0 0x1000>;
+	};
 
-[ mingo: Tidied up the changelog. ]
+	baz@1000 {
+	        reg = <0x1000 0x1000>;
+	};
 
-Signed-off-by: Kairui Song <kasong@redhat.com>
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Link: https://lore.kernel.org/r/20201014092429.1415040-2-kasong@redhat.com
+	quux {
+	        size = <0x1000>;
+	};
+
+but they are after this patch:
+
+ OF: reserved mem: OVERLAP DETECTED!
+ bar@0 (0x00000000--0x00001000) overlaps with foo@0 (0x00000000--0x00002000)
+ OF: reserved mem: OVERLAP DETECTED!
+ foo@0 (0x00000000--0x00002000) overlaps with baz@1000 (0x00001000--0x00002000)
+
+Signed-off-by: Vincent Whitchurch <vincent.whitchurch@axis.com>
+Link: https://lore.kernel.org/r/ded6fd6b47b58741aabdcc6967f73eca6a3f311e.1603273666.git-series.vincent.whitchurch@axis.com
+Signed-off-by: Rob Herring <robh@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/x86/kernel/kexec-bzimage64.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ drivers/of/of_reserved_mem.c | 13 +++++++++++--
+ 1 file changed, 11 insertions(+), 2 deletions(-)
 
-diff --git a/arch/x86/kernel/kexec-bzimage64.c b/arch/x86/kernel/kexec-bzimage64.c
-index 0bf17576dd2af..299e7fb55f16e 100644
---- a/arch/x86/kernel/kexec-bzimage64.c
-+++ b/arch/x86/kernel/kexec-bzimage64.c
-@@ -212,8 +212,7 @@ setup_boot_parameters(struct kimage *image, struct boot_params *params,
- 	params->hdr.hardware_subarch = boot_params.hdr.hardware_subarch;
+diff --git a/drivers/of/of_reserved_mem.c b/drivers/of/of_reserved_mem.c
+index 07dd81586c52b..7ccf077c72a05 100644
+--- a/drivers/of/of_reserved_mem.c
++++ b/drivers/of/of_reserved_mem.c
+@@ -218,6 +218,16 @@ static int __init __rmem_cmp(const void *a, const void *b)
+ 	if (ra->base > rb->base)
+ 		return 1;
  
- 	/* Copying screen_info will do? */
--	memcpy(&params->screen_info, &boot_params.screen_info,
--				sizeof(struct screen_info));
-+	memcpy(&params->screen_info, &screen_info, sizeof(struct screen_info));
++	/*
++	 * Put the dynamic allocations (address == 0, size == 0) before static
++	 * allocations at address 0x0 so that overlap detection works
++	 * correctly.
++	 */
++	if (ra->size < rb->size)
++		return -1;
++	if (ra->size > rb->size)
++		return 1;
++
+ 	return 0;
+ }
  
- 	/* Fill in memsize later */
- 	params->screen_info.ext_mem_k = 0;
+@@ -235,8 +245,7 @@ static void __init __rmem_check_for_overlap(void)
+ 
+ 		this = &reserved_mem[i];
+ 		next = &reserved_mem[i + 1];
+-		if (!(this->base && next->base))
+-			continue;
++
+ 		if (this->base + this->size > next->base) {
+ 			phys_addr_t this_end, next_end;
+ 
 -- 
 2.27.0
 
