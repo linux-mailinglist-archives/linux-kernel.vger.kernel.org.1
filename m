@@ -2,105 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B786D2AC713
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 22:21:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E9252AC72E
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 22:23:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730729AbgKIVV3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 16:21:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42512 "EHLO
+        id S1730607AbgKIVXg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 16:23:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42836 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729451AbgKIVV3 (ORCPT
+        with ESMTP id S1727311AbgKIVXf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 16:21:29 -0500
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 178D5C0613CF;
-        Mon,  9 Nov 2020 13:21:29 -0800 (PST)
-Received: by mail-wm1-x343.google.com with SMTP id d142so946241wmd.4;
-        Mon, 09 Nov 2020 13:21:29 -0800 (PST)
+        Mon, 9 Nov 2020 16:23:35 -0500
+Received: from mail-oo1-xc31.google.com (mail-oo1-xc31.google.com [IPv6:2607:f8b0:4864:20::c31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C4FFC0613CF;
+        Mon,  9 Nov 2020 13:23:35 -0800 (PST)
+Received: by mail-oo1-xc31.google.com with SMTP id q28so1037544oof.1;
+        Mon, 09 Nov 2020 13:23:35 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=GDp8yb+Sw0EolRsci9v+WvLZ9nSbjiU3CL4VUAU4p3U=;
-        b=Eyj0wf9PKyzvgsvHQsyfgZxgGn5vIq16Y8gMdbnhJB78VNyMq8Mwjq0OGH9NFWYzqP
-         Jp6UuxRGSSt/WnTSuor53OoHOFjky9QEJ6mPUsUGscEyfMjbWSca3qO2SBpywYqVQzxx
-         BM493YCgTJ/d53de+QhRi2qbmgbsOr0/olWozoAeGnkl8EBuG7iZwkq5Qbvhl3u7+IL9
-         8YezRO3SLYsejT1YmFbagEQmv40oewW9JRsdViPZ6rQDcyvsRr3o+AVNMa3JTg2QMwHO
-         T6vopTIYAcQCly1h+WlGfDjczNUBTzqzsE5GrfocbjClUg5sdUd0PtV9pCrNHcQaE2+W
-         2HWg==
+        h=date:from:to:cc:message-id:in-reply-to:references:subject
+         :mime-version:content-transfer-encoding;
+        bh=/8e23jmWF0zLSuDrh/DoOClOMWqEUTAgB9D0NlWAzvU=;
+        b=e3OhyFo42YU0Uc9UdimaaWvc4Gx++UhE07xWCD3Tx/k2/P8enGVSxlhwasvrCgZ0FK
+         ueaOzzl8QQLM5FBPxgLBsnE5FAgva3VkZi5NjS3323a9yVT/4HB3VvEd+O/A+isunEB8
+         ok4mDx1YXduyrR7JplZGBPJTXBfESfYvQDimkfYI/63DpEa9VoceJfKht1Z3caOZZGWM
+         4kLPduVKtOnDIG0Lmll93QPZQrEGZ/e7XyQtLHXpNPrjy9LFLuhrQ1C5S9UpEcP5hvev
+         hI909JmbsV0SCHbWlymiA4jEkP7GujqKgyXDEm8J0gIzvMttgKivIMogdrqAs2X3kCDo
+         LqpQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=GDp8yb+Sw0EolRsci9v+WvLZ9nSbjiU3CL4VUAU4p3U=;
-        b=o0iCcHhYx3Aam+IgnEUOcNE9KzE3TTvfsPqzvQNpedE+XCK2nBZv59dCVpBNOJc7LY
-         SS5NinN/6UScvM2dwzhAE2n6bZfC3HeQKVLf0kWwDk6aT2XC3OMMnP4kL4zMCdMqtXRk
-         07bD0nalBE/OrATU3db2oyPTO5NNUkfxc4H+iaAlRu64izStcduJ7toBX2wFPONLb03I
-         BThmxYm3oLoTblXggG8a/RmZ5xpT1VWkpgzNOLMrYhWMoQjDBoHixJekdtDptKVCbwyU
-         YYOr4mhzIKyJ2pkArHWAC0faB1DRm+YM/bZgMRghDjkq1JHCME44jA/LKQyPsgSYbfrr
-         ZAjQ==
-X-Gm-Message-State: AOAM533e/gk/AtwZAztlRVL0Ycs5bmQ2piuRNRZT2fKh7DnWxhwcZ+3T
-        f54v0IWvkwzrV4uBcuFPdrntIAUReKTUj9vqGTU=
-X-Google-Smtp-Source: ABdhPJyIn9jY/EM3NsfRCWQKiTNIKSQPUd00zlTTnc7nT1mAHIfsQMOpQ0BCDXxFJdSy6q+gIIZeHW6pK4msqPWqZAo=
-X-Received: by 2002:a1c:46c6:: with SMTP id t189mr1159422wma.79.1604956887879;
- Mon, 09 Nov 2020 13:21:27 -0800 (PST)
-MIME-Version: 1.0
-References: <20201109210725.24668-1-unixbhaskar@gmail.com>
-In-Reply-To: <20201109210725.24668-1-unixbhaskar@gmail.com>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Mon, 9 Nov 2020 16:21:16 -0500
-Message-ID: <CADnq5_NOmgYM0_0fTQaYr+qn7M_Vrbo1E=mPmuoATQNjRRHTqg@mail.gmail.com>
-Subject: Re: [PATCH] drivers: amdgpu: amdgpu_display: Fixed the spelling of
- falg to flag
-To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>
-Cc:     "Deucher, Alexander" <alexander.deucher@amd.com>,
-        Christian Koenig <christian.koenig@amd.com>,
-        Dave Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Jean Delvare <jdelvare@suse.de>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-media <linux-media@vger.kernel.org>,
-        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
-        <linaro-mm-sig@lists.linaro.org>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
+         :references:subject:mime-version:content-transfer-encoding;
+        bh=/8e23jmWF0zLSuDrh/DoOClOMWqEUTAgB9D0NlWAzvU=;
+        b=grSTw0i1HKmlcNShANMr3oWlM7KUY4FKKnFDm3IwHNFMcxlteRnJfv1Q17iHS1VAvN
+         fJZyDF339TFLU5xOZlHyHhFykY4HVZ4l0bzi2l7+2F39M9S8XS0TqUnjEMjbkNScFPrH
+         VLCg3SF/uTCnxNBvLSvK9GuHviKmc9DYrZObCvdwH/ZJJoU37CgIRtS6yRaMPo94CDT6
+         E4scaiVbW9HGlICucqQzJyxDYBdjTnM/sz1BHrqhZBsA7zBIBl6rcB2mz5Zj2dtA2nAV
+         oOtQDEBZ4BU7CWpcOrp/Hq1kftsweS4Uyotp+voJk3Y7qyIO+UqgB4IgL5P1YJhW+Fa5
+         n5ew==
+X-Gm-Message-State: AOAM532tdemngCgfHwjJ7/n+DJj+3oDwnTMDkctzaSFvpdJk0Hp/BtiD
+        77oRQG4TU/d7qsn3Sl8gZDc=
+X-Google-Smtp-Source: ABdhPJxA352mKQ9xMZ+PPBzsmHTnAFsTAjfbNY+f7PuspaOWhQMA1QIBanNp9Y2UtsPyU03ukg2I5g==
+X-Received: by 2002:a4a:9486:: with SMTP id k6mr11388212ooi.85.1604957014754;
+        Mon, 09 Nov 2020 13:23:34 -0800 (PST)
+Received: from localhost ([184.63.162.180])
+        by smtp.gmail.com with ESMTPSA id w21sm1116483otq.20.2020.11.09.13.23.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 09 Nov 2020 13:23:34 -0800 (PST)
+Date:   Mon, 09 Nov 2020 13:23:27 -0800
+From:   John Fastabend <john.fastabend@gmail.com>
+To:     menglong8.dong@gmail.com, kuba@kernel.org
+Cc:     jhs@mojatatu.com, xiyou.wangcong@gmail.com, jiri@resnulli.us,
+        davem@davemloft.net, ast@kernel.org, daniel@iogearbox.net,
+        kafai@fb.com, songliubraving@fb.com, yhs@fb.com, andrii@kernel.org,
+        john.fastabend@gmail.com, kpsingh@chromium.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org, Menglong Dong <dong.menglong@zte.com.cn>
+Message-ID: <5fa9b34f132a5_8c0e208ca@john-XPS-13-9370.notmuch>
+In-Reply-To: <5fa8e9d4.1c69fb81.5d889.5c64@mx.google.com>
+References: <5fa8e9d4.1c69fb81.5d889.5c64@mx.google.com>
+Subject: RE: [PATCH] net: sched: fix misspellings using misspell-fixer tool
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 9, 2020 at 4:16 PM Bhaskar Chowdhury <unixbhaskar@gmail.com> wrote:
->
-> s/falg/flag/p
->
-> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
-
-Applied.  Thanks!
-
-Alex
-
+menglong8.dong@ wrote:
+> From: Menglong Dong <dong.menglong@zte.com.cn>
+> 
+> Some typos are found out by misspell-fixer tool:
+> 
+> $ misspell-fixer -rnv ./net/sched/
+> ./net/sched/act_api.c:686
+> ./net/sched/act_bpf.c:68
+> ./net/sched/cls_rsvp.h:241
+> ./net/sched/em_cmp.c:44
+> ./net/sched/sch_pie.c:408
+> 
+> Fix typos found by misspell-fixer.
+> 
+> Signed-off-by: Menglong Dong <dong.menglong@zte.com.cn>
 > ---
->  drivers/gpu/drm/amd/amdgpu/amdgpu_display.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_display.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_display.c
-> index 2e8a8b57639f..9223502c1e5b 100644
-> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_display.c
-> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_display.c
-> @@ -509,7 +509,7 @@ uint32_t amdgpu_display_supported_domains(struct amdgpu_device *adev,
->          * to avoid hang caused by placement of scanout BO in GTT on certain
->          * APUs. So force the BO placement to VRAM in case this architecture
->          * will not allow USWC mappings.
-> -        * Also, don't allow GTT domain if the BO doens't have USWC falg set.
-> +        * Also, don't allow GTT domain if the BO doens't have USWC flag set.
->          */
->         if ((bo_flags & AMDGPU_GEM_CREATE_CPU_GTT_USWC) &&
->             amdgpu_bo_support_uswc(bo_flags) &&
-> --
-> 2.26.2
->
-> _______________________________________________
-> amd-gfx mailing list
-> amd-gfx@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/amd-gfx
+
+Hi, you will want to add net-next to the [PATCH *] line next time
+to make it clear this is for net-next. The contents make it
+obvious in this case though.
+
+Also I'm not sure why the bpf@ include but OK.
+
+Acked-by: John Fastabend <john.fastabend@gmail.com>
