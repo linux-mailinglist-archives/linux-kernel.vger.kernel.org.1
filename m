@@ -2,41 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 003012ABB9C
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 14:32:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 87EC72ABCB4
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 14:41:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730834AbgKINM2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 08:12:28 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37756 "EHLO mail.kernel.org"
+        id S2387859AbgKINjs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 08:39:48 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56388 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732546AbgKINML (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 08:12:11 -0500
+        id S1730686AbgKINDl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 08:03:41 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 01C1E2076E;
-        Mon,  9 Nov 2020 13:12:09 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id EFCD02222A;
+        Mon,  9 Nov 2020 13:03:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604927530;
-        bh=BjGt8GDopeSM3gZ1nWWAZcXAqLRJr+0iISeU1sQ3PU8=;
+        s=default; t=1604926994;
+        bh=XIMQnMghpz6vXvnvbYYPsyqWFNGcOkzsRKpAXmee1LQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=juGzCVl8qIxGDiklQ/AqW5XHgA1bNIOodFspjXGMR4cvakMZllWFul4JiQvqoRpYA
-         /0XyPsgeB9uFcB4VIooKaCUhCCrXzAVm453frQYrlOZifsYMBa48Ue+MyYUXBUKPL9
-         EogA9kB/+lCXFiHTLfgzpIh5mPqib1rMZERM12Rw=
+        b=PwMrJmrKMkuIXF7sjk5k+H+L7vTpMxBko5QDx5Z3wK1Ibp68HaCFDtbt0xSzFKKmY
+         BRIDBYsiWGNx/ZYQaRq79/IxRMoxW1MFa+Vw2o0ov05ZDjYydWaXVqkI+EAyktcBBD
+         RdHq5MXT+JU1FHU3OuR58ExKFteZA+0aygZA+58w=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Chris Wilson <chris@chris-wilson.co.uk>,
-        Mika Kuoppala <mika.kuoppala@linux.intel.com>,
-        Bruce Chang <yu.bruce.chang@intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>
-Subject: [PATCH 5.4 02/85] drm/i915/gt: Delay execlist processing for tgl
-Date:   Mon,  9 Nov 2020 13:54:59 +0100
-Message-Id: <20201109125022.735129144@linuxfoundation.org>
+        stable@vger.kernel.org,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Jeff Layton <jlayton@kernel.org>,
+        Ilya Dryomov <idryomov@gmail.com>
+Subject: [PATCH 4.9 074/117] ceph: promote to unsigned long long before shifting
+Date:   Mon,  9 Nov 2020 13:55:00 +0100
+Message-Id: <20201109125029.194101071@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201109125022.614792961@linuxfoundation.org>
-References: <20201109125022.614792961@linuxfoundation.org>
+In-Reply-To: <20201109125025.630721781@linuxfoundation.org>
+References: <20201109125025.630721781@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,55 +44,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chris Wilson <chris@chris-wilson.co.uk>
+From: Matthew Wilcox (Oracle) <willy@infradead.org>
 
-commit 9b99e5ba3e5d68039bd6b657e4bbe520a3521f4c upstream.
+commit c403c3a2fbe24d4ed33e10cabad048583ebd4edf upstream.
 
-When running gem_exec_nop, it floods the system with many requests (with
-the goal of userspace submitting faster than the HW can process a single
-empty batch). This causes the driver to continually resubmit new
-requests onto the end of an active context, a flood of lite-restore
-preemptions. If we time this just right, Tigerlake hangs.
+On 32-bit systems, this shift will overflow for files larger than 4GB.
 
-Inserting a small delay between the processing of CS events and
-submitting the next context, prevents the hang. Naturally it does not
-occur with debugging enabled. The suspicion then is that this is related
-to the issues with the CS event buffer, and inserting an mmio read of
-the CS pointer status appears to be very successful in preventing the
-hang. Other registers, or uncached reads, or plain mb, do not prevent
-the hang, suggesting that register is key -- but that the hang can be
-prevented by a simple udelay, suggests it is just a timing issue like
-that encountered by commit 233c1ae3c83f ("drm/i915/gt: Wait for CSB
-entries on Tigerlake"). Also note that the hang is not prevented by
-applying CTX_DESC_FORCE_RESTORE, or by inserting a delay on the GPU
-between requests.
-
-Signed-off-by: Chris Wilson <chris@chris-wilson.co.uk>
-Cc: Mika Kuoppala <mika.kuoppala@linux.intel.com>
-Cc: Bruce Chang <yu.bruce.chang@intel.com>
-Cc: Joonas Lahtinen <joonas.lahtinen@linux.intel.com>
 Cc: stable@vger.kernel.org
-Acked-by: Mika Kuoppala <mika.kuoppala@linux.intel.com>
-Link: https://patchwork.freedesktop.org/patch/msgid/20201015195023.32346-1-chris@chris-wilson.co.uk
-(cherry picked from commit 6ca7217dffaf1abba91558e67a2efb655ac91405)
-Signed-off-by: Rodrigo Vivi <rodrigo.vivi@intel.com>
+Fixes: 61f68816211e ("ceph: check caps in filemap_fault and page_mkwrite")
+Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+Reviewed-by: Jeff Layton <jlayton@kernel.org>
+Signed-off-by: Ilya Dryomov <idryomov@gmail.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/gpu/drm/i915/gt/intel_lrc.c |    3 +++
- 1 file changed, 3 insertions(+)
+ fs/ceph/addr.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/gpu/drm/i915/gt/intel_lrc.c
-+++ b/drivers/gpu/drm/i915/gt/intel_lrc.c
-@@ -1574,6 +1574,9 @@ static void process_csb(struct intel_eng
- 			if (!inject_preempt_hang(execlists))
- 				ring_set_paused(engine, 0);
- 
-+			/* XXX Magic delay for tgl */
-+			ENGINE_POSTING_READ(engine, RING_CONTEXT_STATUS_PTR);
-+
- 			WRITE_ONCE(execlists->pending[0], NULL);
- 			break;
+--- a/fs/ceph/addr.c
++++ b/fs/ceph/addr.c
+@@ -1392,7 +1392,7 @@ static int ceph_filemap_fault(struct vm_
+ 	struct ceph_inode_info *ci = ceph_inode(inode);
+ 	struct ceph_file_info *fi = vma->vm_file->private_data;
+ 	struct page *pinned_page = NULL;
+-	loff_t off = vmf->pgoff << PAGE_SHIFT;
++	loff_t off = (loff_t)vmf->pgoff << PAGE_SHIFT;
+ 	int want, got, ret;
+ 	sigset_t oldset;
  
 
 
