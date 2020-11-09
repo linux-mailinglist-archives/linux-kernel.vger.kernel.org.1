@@ -2,107 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA8C62AB3CF
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 10:43:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8806D2AB3C9
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 10:42:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729133AbgKIJnF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 04:43:05 -0500
-Received: from foss.arm.com ([217.140.110.172]:36312 "EHLO foss.arm.com"
+        id S1728385AbgKIJm0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 04:42:26 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57962 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729108AbgKIJm6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 04:42:58 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id BC4701424;
-        Mon,  9 Nov 2020 01:42:57 -0800 (PST)
-Received: from e113632-lin.cambridge.arm.com (e113632-lin.cambridge.arm.com [10.1.194.46])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 1DE733F718;
-        Mon,  9 Nov 2020 01:42:56 -0800 (PST)
-From:   Valentin Schneider <valentin.schneider@arm.com>
-To:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Marc Zyngier <maz@kernel.org>,
-        Lorenzo Pieralisi <Lorenzo.Pieralisi@arm.com>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Gregory Clement <gregory.clement@bootlin.com>,
-        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Ray Jui <rjui@broadcom.com>,
-        Scott Branden <sbranden@broadcom.com>
-Subject: [PATCH 5/5] Revert "genirq: Add fasteoi IPI flow"
-Date:   Mon,  9 Nov 2020 09:41:21 +0000
-Message-Id: <20201109094121.29975-6-valentin.schneider@arm.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20201109094121.29975-1-valentin.schneider@arm.com>
-References: <20201109094121.29975-1-valentin.schneider@arm.com>
+        id S1726176AbgKIJm0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 04:42:26 -0500
+Received: from localhost (unknown [122.171.147.34])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 31AD6206ED;
+        Mon,  9 Nov 2020 09:42:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604914945;
+        bh=fGiC/wbOBVU/AIOKWAxFLakzSHrWCDlxgTiGvnuZ/TI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=eN1hCtJW2VkfLcUCkPpeMKwdskJycrGuHy0CVHKmtxoTE3JHotoSw2A8ztqfb095D
+         w6c/R++kyzARnscqdJgWfaYcGc4pl+0AJiGustQhCa0GY5lffoXvmjkPWhvtDfVC1J
+         Kpx0QcUoBFtEDj1S1iZCGq8Zc1uOolPq+azaAUlg=
+Date:   Mon, 9 Nov 2020 15:12:16 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Sia Jee Heng <jee.heng.sia@intel.com>
+Cc:     Eugeniy.Paltsev@synopsys.com, andriy.shevchenko@linux.intel.com,
+        dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 07/15] dmaegine: dw-axi-dmac: Support
+ device_prep_dma_cyclic()
+Message-ID: <20201109094216.GC3171@vkoul-mobl>
+References: <20201027063858.4877-1-jee.heng.sia@intel.com>
+ <20201027063858.4877-8-jee.heng.sia@intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201027063858.4877-8-jee.heng.sia@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-handle_percpu_devid_fasteoi_ipi() has no more users, and
-handle_percpu_devid_irq() can do all that it was supposed to do. Get rid of
-it.
+On 27-10-20, 14:38, Sia Jee Heng wrote:
+> Add support for device_prep_dma_cyclic() callback function to benefit
+> DMA cyclic client, for example ALSA.
+> 
+> Existing AxiDMA driver only support data transfer between memory to memory.
+> Data transfer between device to memory and memory to device in cyclic mode
+> would failed if this interface is not supported by the AxiDMA driver.
+> 
+> Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> Signed-off-by: Sia Jee Heng <jee.heng.sia@intel.com>
+> ---
+>  .../dma/dw-axi-dmac/dw-axi-dmac-platform.c    | 182 +++++++++++++++++-
+>  drivers/dma/dw-axi-dmac/dw-axi-dmac.h         |   2 +
+>  2 files changed, 177 insertions(+), 7 deletions(-)
+> 
+> diff --git a/drivers/dma/dw-axi-dmac/dw-axi-dmac-platform.c b/drivers/dma/dw-axi-dmac/dw-axi-dmac-platform.c
+> index 1124c97025f2..9e574753aaf0 100644
+> --- a/drivers/dma/dw-axi-dmac/dw-axi-dmac-platform.c
+> +++ b/drivers/dma/dw-axi-dmac/dw-axi-dmac-platform.c
+> @@ -15,6 +15,8 @@
+>  #include <linux/err.h>
+>  #include <linux/interrupt.h>
+>  #include <linux/io.h>
+> +#include <linux/iopoll.h>
+> +#include <linux/io-64-nonatomic-lo-hi.h>
+>  #include <linux/kernel.h>
+>  #include <linux/module.h>
+>  #include <linux/of.h>
+> @@ -575,6 +577,135 @@ dma_chan_prep_dma_memcpy(struct dma_chan *dchan, dma_addr_t dst_adr,
+>  	return NULL;
+>  }
+>  
+> +static struct dma_async_tx_descriptor *
+> +dw_axi_dma_chan_prep_cyclic(struct dma_chan *dchan, dma_addr_t dma_addr,
+> +			    size_t buf_len, size_t period_len,
+> +			    enum dma_transfer_direction direction,
+> +			    unsigned long flags)
+> +{
+> +	struct axi_dma_chan *chan = dchan_to_axi_dma_chan(dchan);
+> +	u32 data_width = BIT(chan->chip->dw->hdata->m_data_width);
+> +	struct axi_dma_hw_desc *hw_desc = NULL;
+> +	struct axi_dma_desc *desc = NULL;
+> +	dma_addr_t src_addr = dma_addr;
+> +	u32 num_periods = buf_len / period_len;
+> +	unsigned int reg_width;
+> +	unsigned int mem_width;
+> +	dma_addr_t reg;
+> +	unsigned int i;
+> +	u32 ctllo, ctlhi;
+> +	size_t block_ts;
+> +	u64 llp = 0;
+> +	u8 lms = 0; /* Select AXI0 master for LLI fetching */
+> +
+> +	block_ts = chan->chip->dw->hdata->block_size[chan->id];
+> +
+> +	mem_width = __ffs(data_width | dma_addr | period_len);
+> +	if (mem_width > DWAXIDMAC_TRANS_WIDTH_32)
+> +		mem_width = DWAXIDMAC_TRANS_WIDTH_32;
+> +
+> +	desc = axi_desc_alloc(num_periods);
+> +	if (unlikely(!desc))
+> +		goto err_desc_get;
+> +
+> +	chan->direction = direction;
+> +	desc->chan = chan;
+> +	chan->cyclic = true;
+> +
+> +	switch (direction) {
+> +	case DMA_MEM_TO_DEV:
+> +		reg_width = __ffs(chan->config.dst_addr_width);
+> +		reg = chan->config.dst_addr;
+> +		ctllo = reg_width << CH_CTL_L_DST_WIDTH_POS |
+> +			DWAXIDMAC_CH_CTL_L_NOINC << CH_CTL_L_DST_INC_POS |
+> +			DWAXIDMAC_CH_CTL_L_INC << CH_CTL_L_SRC_INC_POS;
+> +		break;
+> +	case DMA_DEV_TO_MEM:
+> +		reg_width = __ffs(chan->config.src_addr_width);
+> +		reg = chan->config.src_addr;
+> +		ctllo = reg_width << CH_CTL_L_SRC_WIDTH_POS |
+> +			DWAXIDMAC_CH_CTL_L_INC << CH_CTL_L_DST_INC_POS |
+> +			DWAXIDMAC_CH_CTL_L_NOINC << CH_CTL_L_SRC_INC_POS;
+> +		break;
+> +	default:
+> +		return NULL;
+> +	}
+> +
+> +	for (i = 0; i < num_periods; i++) {
+> +		hw_desc = &desc->hw_desc[i];
+> +
+> +		hw_desc->lli = axi_desc_get(chan, &hw_desc->llp);
+> +		if (unlikely(!hw_desc->lli))
+> +			goto err_desc_get;
+> +
+> +		if (direction == DMA_MEM_TO_DEV)
+> +			block_ts = period_len >> mem_width;
+> +		else
+> +			block_ts = period_len >> reg_width;
+> +
+> +		ctlhi = CH_CTL_H_LLI_VALID;
+> +		if (chan->chip->dw->hdata->restrict_axi_burst_len) {
+> +			u32 burst_len = chan->chip->dw->hdata->axi_rw_burst_len;
+> +
+> +			ctlhi |= (CH_CTL_H_ARLEN_EN |
+> +				burst_len << CH_CTL_H_ARLEN_POS |
+> +				CH_CTL_H_AWLEN_EN |
+> +				burst_len << CH_CTL_H_AWLEN_POS);
+> +		}
+> +
+> +		hw_desc->lli->ctl_hi = cpu_to_le32(ctlhi);
+> +
+> +		if (direction == DMA_MEM_TO_DEV)
+> +			ctllo |= mem_width << CH_CTL_L_SRC_WIDTH_POS;
+> +		else
+> +			ctllo |= mem_width << CH_CTL_L_DST_WIDTH_POS;
+> +
+> +		if (direction == DMA_MEM_TO_DEV) {
+> +			write_desc_sar(hw_desc, src_addr);
+> +			write_desc_dar(hw_desc, reg);
+> +		} else {
+> +			write_desc_sar(hw_desc, reg);
+> +			write_desc_dar(hw_desc, src_addr);
+> +		}
+> +
+> +		hw_desc->lli->block_ts_lo = cpu_to_le32(block_ts - 1);
+> +
+> +		ctllo |= (DWAXIDMAC_BURST_TRANS_LEN_4 << CH_CTL_L_DST_MSIZE_POS |
+> +			  DWAXIDMAC_BURST_TRANS_LEN_4 << CH_CTL_L_SRC_MSIZE_POS);
+> +		hw_desc->lli->ctl_lo = cpu_to_le32(ctllo);
+> +
+> +		set_desc_src_master(hw_desc);
+> +
+> +		/*
+> +		 * Set end-of-link to the linked descriptor, so that cyclic
+> +		 * callback function can be triggered during interrupt.
+> +		 */
+> +		set_desc_last(hw_desc);
+> +
+> +		src_addr += period_len;
+> +	}
 
-This reverts commit c5e5ec033c4ab25c53f1fd217849e75deb0bf7bf.
+apart from this bit and use of periods instead of sg_list this seems
+very similar to slave handler, so can you please move common bits to
+helpers and remove/reduce duplicate code
 
-Signed-off-by: Valentin Schneider <valentin.schneider@arm.com>
----
- include/linux/irq.h |  1 -
- kernel/irq/chip.c   | 27 ---------------------------
- 2 files changed, 28 deletions(-)
-
-diff --git a/include/linux/irq.h b/include/linux/irq.h
-index c54365309e97..ca26bec51cec 100644
---- a/include/linux/irq.h
-+++ b/include/linux/irq.h
-@@ -647,7 +647,6 @@ static inline int irq_set_parent(int irq, int parent_irq)
-  */
- extern void handle_level_irq(struct irq_desc *desc);
- extern void handle_fasteoi_irq(struct irq_desc *desc);
--extern void handle_percpu_devid_fasteoi_ipi(struct irq_desc *desc);
- extern void handle_edge_irq(struct irq_desc *desc);
- extern void handle_edge_eoi_irq(struct irq_desc *desc);
- extern void handle_simple_irq(struct irq_desc *desc);
-diff --git a/kernel/irq/chip.c b/kernel/irq/chip.c
-index b9b9618e1aca..0ae308efa604 100644
---- a/kernel/irq/chip.c
-+++ b/kernel/irq/chip.c
-@@ -944,33 +944,6 @@ void handle_percpu_devid_irq(struct irq_desc *desc)
- 		chip->irq_eoi(&desc->irq_data);
- }
- 
--/**
-- * handle_percpu_devid_fasteoi_ipi - Per CPU local IPI handler with per cpu
-- *				     dev ids
-- * @desc:	the interrupt description structure for this irq
-- *
-- * The biggest difference with the IRQ version is that the interrupt is
-- * EOIed early, as the IPI could result in a context switch, and we need to
-- * make sure the IPI can fire again. We also assume that the arch code has
-- * registered an action. If not, we are positively doomed.
-- */
--void handle_percpu_devid_fasteoi_ipi(struct irq_desc *desc)
--{
--	struct irq_chip *chip = irq_desc_get_chip(desc);
--	struct irqaction *action = desc->action;
--	unsigned int irq = irq_desc_get_irq(desc);
--	irqreturn_t res;
--
--	__kstat_incr_irqs_this_cpu(desc);
--
--	if (chip->irq_eoi)
--		chip->irq_eoi(&desc->irq_data);
--
--	trace_irq_handler_entry(irq, action);
--	res = action->handler(irq, raw_cpu_ptr(action->percpu_dev_id));
--	trace_irq_handler_exit(irq, action, res);
--}
--
- /**
-  * handle_percpu_devid_fasteoi_nmi - Per CPU local NMI handler with per cpu
-  *				     dev ids
 -- 
-2.27.0
-
+~Vinod
