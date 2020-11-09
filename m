@@ -2,224 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B85312AB0D8
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 06:34:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EFAC52AB0E6
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 06:36:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729377AbgKIFeK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 00:34:10 -0500
-Received: from mx2.suse.de ([195.135.220.15]:53694 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725865AbgKIFeK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 00:34:10 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1604900048;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=noiwDpF5h6c55/R3o+eIuWv6Yp6OH0DaU2dC3h8Ij3M=;
-        b=Ks60smEgzrqCfdsMA3Cu4ez8mQ/b+lRNUSiTGZd2dzvczdBKhKRw/CT8K9G7IxG1QArf2S
-        tejkI/taZVBfcnX+x//mH5eudTrqyMkDyRhtfyu1O+BfC9KQYOu+rEWkOIM6+3MwuwY+/K
-        91DIj6/Oq6t0ykacjqnRMEOLTCZGe7M=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 7131EABAE;
-        Mon,  9 Nov 2020 05:34:08 +0000 (UTC)
-Subject: Re: [PATCH v2] x86/xen: don't unbind uninitialized lock_kicker_irq
-To:     Brian Masney <bmasney@redhat.com>, boris.ostrovsky@oracle.com,
-        sstabellini@kernel.org
-Cc:     tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
-        hpa@zytor.com, xen-devel@lists.xenproject.org,
-        linux-kernel@vger.kernel.org, dustymabe@redhat.com
-References: <20201107011119.631442-1-bmasney@redhat.com>
-From:   =?UTF-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>
-Message-ID: <5950df5c-79d6-b2bc-4f2b-35624a3c0d1e@suse.com>
-Date:   Mon, 9 Nov 2020 06:34:07 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        id S1729517AbgKIFgC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 00:36:02 -0500
+Received: from relay1.mymailcheap.com ([144.217.248.100]:58809 "EHLO
+        relay1.mymailcheap.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729507AbgKIFgB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 00:36:01 -0500
+X-Greylist: delayed 146719 seconds by postgrey-1.27 at vger.kernel.org; Mon, 09 Nov 2020 00:36:00 EST
+Received: from filter2.mymailcheap.com (filter2.mymailcheap.com [91.134.140.82])
+        by relay1.mymailcheap.com (Postfix) with ESMTPS id 39C6D3F1C5;
+        Mon,  9 Nov 2020 05:35:59 +0000 (UTC)
+Received: from localhost (localhost [127.0.0.1])
+        by filter2.mymailcheap.com (Postfix) with ESMTP id 81A4C2A522;
+        Mon,  9 Nov 2020 06:35:58 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mymailcheap.com;
+        s=default; t=1604900158;
+        bh=tQSP6jEb+nlCIph8viKb/ttszWBAoq6XZvKRuUKb5CA=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=doPNJ93GoJjTZl5QedjD4phG2TDg6WsG4I+sQWSUzbmLAiCGr9nKjLYSugpB4sImz
+         RmZtevE3K6Be7T84cT+os7JcOQJP33qLTgfcfRhkEzZRIeLYBROrKFazyYnB0qUs8k
+         gEEuHBt0bXz2Yqoi1v514B7aOguGKHkMLFnoZfmg=
+X-Virus-Scanned: Debian amavisd-new at filter2.mymailcheap.com
+Received: from filter2.mymailcheap.com ([127.0.0.1])
+        by localhost (filter2.mymailcheap.com [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id CvlzvEp4KGyU; Mon,  9 Nov 2020 06:35:57 +0100 (CET)
+Received: from mail20.mymailcheap.com (mail20.mymailcheap.com [51.83.111.147])
+        (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by filter2.mymailcheap.com (Postfix) with ESMTPS;
+        Mon,  9 Nov 2020 06:35:57 +0100 (CET)
+Received: from [148.251.23.173] (ml.mymailcheap.com [148.251.23.173])
+        by mail20.mymailcheap.com (Postfix) with ESMTP id D7A9A41E32;
+        Mon,  9 Nov 2020 05:35:56 +0000 (UTC)
+Authentication-Results: mail20.mymailcheap.com;
+        dkim=pass (1024-bit key; unprotected) header.d=aosc.io header.i=@aosc.io header.b="GoZvr8ns";
+        dkim-atps=neutral
+AI-Spam-Status: Not processed
+Received: from ice-e5v2.lan (unknown [59.41.163.164])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail20.mymailcheap.com (Postfix) with ESMTPSA id 0B91C41E32;
+        Mon,  9 Nov 2020 05:35:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=aosc.io; s=default;
+        t=1604900151; bh=tQSP6jEb+nlCIph8viKb/ttszWBAoq6XZvKRuUKb5CA=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=GoZvr8nsejd+rcofAvapYEAmgKRr/rarnr76ZgkcGjmNMEPXTjZMFQmmiWo7i6zxQ
+         ghLCsJS4s65tZ84txvnkmjsIq2ZzakjTYTPf1NDFrDBTv6bcrw8yVOc9bCY02d1z2R
+         DUrLP1pIP25Ld+9StZ2CfUQkHTfKRR9gXJvzK5O8=
+From:   Icenowy Zheng <icenowy@aosc.io>
+To:     Maxime Ripard <mripard@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Ondrej Jirman <megous@megous.com>
+Cc:     linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-sunxi@googlegroups.com,
+        Icenowy Zheng <icenowy@aosc.io>
+Subject: [RFC PATCH 2/2] clk: sunxi-ng: a64: disable mux and pll notifiers for CPUX reclocking
+Date:   Mon,  9 Nov 2020 13:35:37 +0800
+Message-Id: <20201109053537.54450-1-icenowy@aosc.io>
+X-Mailer: git-send-email 2.28.0
+In-Reply-To: <20201109053358.54220-1-icenowy@aosc.io>
+References: <20201109053358.54220-1-icenowy@aosc.io>
 MIME-Version: 1.0
-In-Reply-To: <20201107011119.631442-1-bmasney@redhat.com>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="YKXpHhhBagLrE4UFk7e72LVQHqGGgIOur"
+Content-Transfer-Encoding: 8bit
+X-Rspamd-Queue-Id: D7A9A41E32
+X-Spamd-Result: default: False [4.90 / 20.00];
+         ARC_NA(0.00)[];
+         RCVD_VIA_SMTP_AUTH(0.00)[];
+         R_DKIM_ALLOW(0.00)[aosc.io:s=default];
+         RECEIVED_SPAMHAUS_PBL(0.00)[59.41.163.164:received];
+         FROM_HAS_DN(0.00)[];
+         TO_DN_SOME(0.00)[];
+         R_MISSING_CHARSET(2.50)[];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         MIME_GOOD(-0.10)[text/plain];
+         DMARC_NA(0.00)[aosc.io];
+         BROKEN_CONTENT_TYPE(1.50)[];
+         R_SPF_SOFTFAIL(0.00)[~all:c];
+         ML_SERVERS(-3.10)[148.251.23.173];
+         DKIM_TRACE(0.00)[aosc.io:+];
+         RCPT_COUNT_SEVEN(0.00)[9];
+         MID_CONTAINS_FROM(1.00)[];
+         RCVD_NO_TLS_LAST(0.10)[];
+         FROM_EQ_ENVFROM(0.00)[];
+         MIME_TRACE(0.00)[0:+];
+         ASN(0.00)[asn:24940, ipnet:148.251.0.0/16, country:DE];
+         RCVD_COUNT_TWO(0.00)[2];
+         HFILTER_HELO_BAREIP(3.00)[148.251.23.173,1]
+X-Rspamd-Server: mail20.mymailcheap.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---YKXpHhhBagLrE4UFk7e72LVQHqGGgIOur
-Content-Type: multipart/mixed; boundary="5v4Fbrt87IaxiF1E3Az2Gieiq5dDG3qgf";
- protected-headers="v1"
-From: =?UTF-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>
-To: Brian Masney <bmasney@redhat.com>, boris.ostrovsky@oracle.com,
- sstabellini@kernel.org
-Cc: tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
- hpa@zytor.com, xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org,
- dustymabe@redhat.com
-Message-ID: <5950df5c-79d6-b2bc-4f2b-35624a3c0d1e@suse.com>
-Subject: Re: [PATCH v2] x86/xen: don't unbind uninitialized lock_kicker_irq
-References: <20201107011119.631442-1-bmasney@redhat.com>
-In-Reply-To: <20201107011119.631442-1-bmasney@redhat.com>
+After the dividers of PLL-CPUX disabled, there's no need for PLL-CPUX to
+be gated when tweaking the clock of CPUX, thus reparenting CPUX to
+osc24M is also now not needed.
 
---5v4Fbrt87IaxiF1E3Az2Gieiq5dDG3qgf
-Content-Type: multipart/mixed;
- boundary="------------6D3294FCE9D5D6953DCD3E3D"
-Content-Language: en-US
+Remove these notifiers.
 
-This is a multi-part message in MIME format.
---------------6D3294FCE9D5D6953DCD3E3D
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
+Preventing reparenting CPUX is said to be able to help solving the issue
+that the timer jumps backward according to Ondrej Jirman.
 
-On 07.11.20 02:11, Brian Masney wrote:
-> When booting a hyperthreaded system with the kernel parameter
-> 'mitigations=3Dauto,nosmt', the following warning occurs:
->=20
->      WARNING: CPU: 0 PID: 1 at drivers/xen/events/events_base.c:1112 un=
-bind_from_irqhandler+0x4e/0x60
->      ...
->      Hardware name: Xen HVM domU, BIOS 4.2.amazon 08/24/2006
->      ...
->      Call Trace:
->       xen_uninit_lock_cpu+0x28/0x62
->       xen_hvm_cpu_die+0x21/0x30
->       takedown_cpu+0x9c/0xe0
->       ? trace_suspend_resume+0x60/0x60
->       cpuhp_invoke_callback+0x9a/0x530
->       _cpu_up+0x11a/0x130
->       cpu_up+0x7e/0xc0
->       bringup_nonboot_cpus+0x48/0x50
->       smp_init+0x26/0x79
->       kernel_init_freeable+0xea/0x229
->       ? rest_init+0xaa/0xaa
->       kernel_init+0xa/0x106
->       ret_from_fork+0x35/0x40
->=20
-> The secondary CPUs are not activated with the nosmt mitigations and onl=
-y
-> the primary thread on each CPU core is used. In this situation,
-> xen_hvm_smp_prepare_cpus(), and more importantly xen_init_lock_cpu(), i=
-s
-> not called, so the lock_kicker_irq is not initialized for the secondary=
+Signed-off-by: Icenowy Zheng <icenowy@aosc.io>
+---
+ drivers/clk/sunxi-ng/ccu-sun50i-a64.c | 14 +-------------
+ 1 file changed, 1 insertion(+), 13 deletions(-)
 
-> CPUs. Let's fix this by exiting early in xen_uninit_lock_cpu() if the
-> irq is not set to avoid the warning from above for each secondary CPU.
->=20
-> Signed-off-by: Brian Masney <bmasney@redhat.com>
-
-Reviewed-by: Juergen Gross <jgross@suse.com>
-
-
-Juergen
-
---------------6D3294FCE9D5D6953DCD3E3D
-Content-Type: application/pgp-keys;
- name="OpenPGP_0xB0DE9DD628BF132F.asc"
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: attachment;
- filename="OpenPGP_0xB0DE9DD628BF132F.asc"
-
------BEGIN PGP PUBLIC KEY BLOCK-----
-
-xsBNBFOMcBYBCACgGjqjoGvbEouQZw/ToiBg9W98AlM2QHV+iNHsEs7kxWhKMjrioyspZKOBy=
-cWx
-w3ie3j9uvg9EOB3aN4xiTv4qbnGiTr3oJhkB1gsb6ToJQZ8uxGq2kaV2KL9650I1SJvedYm8O=
-f8Z
-d621lSmoKOwlNClALZNew72NjJLEzTalU1OdT7/i1TXkH09XSSI8mEQ/ouNcMvIJNwQpd369y=
-9bf
-IhWUiVXEK7MlRgUG6MvIj6Y3Am/BBLUVbDa4+gmzDC9ezlZkTZG2t14zWPvxXP3FAp2pkW0xq=
-G7/
-377qptDmrk42GlSKN4z76ELnLxussxc7I2hx18NUcbP8+uty4bMxABEBAAHNHEp1ZXJnZW4gR=
-3Jv
-c3MgPGpnQHBmdXBmLm5ldD7CwHkEEwECACMFAlOMcBYCGwMHCwkIBwMCAQYVCAIJCgsEFgIDA=
-QIe
-AQIXgAAKCRCw3p3WKL8TL0KdB/93FcIZ3GCNwFU0u3EjNbNjmXBKDY4FUGNQH2lvWAUy+dnyT=
-hpw
-dtF/jQ6j9RwE8VP0+NXcYpGJDWlNb9/JmYqLiX2Q3TyevpB0CA3dbBQp0OW0fgCetToGIQrg0=
-MbD
-1C/sEOv8Mr4NAfbauXjZlvTj30H2jO0u+6WGM6nHwbh2l5O8ZiHkH32iaSTfN7Eu5RnNVUJbv=
-oPH
-Z8SlM4KWm8rG+lIkGurqqu5gu8q8ZMKdsdGC4bBxdQKDKHEFExLJK/nRPFmAuGlId1E3fe10v=
-5QL
-+qHI3EIPtyfE7i9Hz6rVwi7lWKgh7pe0ZvatAudZ+JNIlBKptb64FaiIOAWDCx1SzR9KdWVyZ=
-2Vu
-IEdyb3NzIDxqZ3Jvc3NAc3VzZS5jb20+wsB5BBMBAgAjBQJTjHCvAhsDBwsJCAcDAgEGFQgCC=
-QoL
-BBYCAwECHgECF4AACgkQsN6d1ii/Ey/HmQf/RtI7kv5A2PS4RF7HoZhPVPogNVbC4YA6lW7Dr=
-Wf0
-teC0RR3MzXfy6pJ+7KLgkqMlrAbN/8Dvjoz78X+5vhH/rDLa9BuZQlhFmvcGtCF8eR0T1v0nC=
-/nu
-AFVGy+67q2DH8As3KPu0344TBDpAvr2uYM4tSqxK4DURx5INz4ZZ0WNFHcqsfvlGJALDeE0Lh=
-ITT
-d9jLzdDad1pQSToCnLl6SBJZjDOX9QQcyUigZFtCXFst4dlsvddrxyqT1f17+2cFSdu7+ynLm=
-XBK
-7abQ3rwJY8SbRO2iRulogc5vr/RLMMlscDAiDkaFQWLoqHHOdfO9rURssHNN8WkMnQfvUewRz=
-80h
-SnVlcmdlbiBHcm9zcyA8amdyb3NzQG5vdmVsbC5jb20+wsB5BBMBAgAjBQJTjHDXAhsDBwsJC=
-AcD
-AgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey8PUQf/ehmgCI9jB9hlgexLvgOtf7PJn=
-FOX
-gMLdBQgBlVPO3/D9R8LtF9DBAFPNhlrsfIG/SqICoRCqUcJ96Pn3P7UUinFG/I0ECGF4EvTE1=
-jnD
-kfJZr6jrbjgyoZHiw/4BNwSTL9rWASyLgqlA8u1mf+c2yUwcGhgkRAd1gOwungxcwzwqgljf0=
-N51
-N5JfVRHRtyfwq/ge+YEkDGcTU6Y0sPOuj4Dyfm8fJzdfHNQsWq3PnczLVELStJNdapwPOoE+l=
-otu
-fe3AM2vAEYJ9rTz3Cki4JFUsgLkHFqGZarrPGi1eyQcXeluldO3m91NK/1xMI3/+8jbO0tsn1=
-tqS
-EUGIJi7ox80eSnVlcmdlbiBHcm9zcyA8amdyb3NzQHN1c2UuZGU+wsB5BBMBAgAjBQJTjHDrA=
-hsD
-BwsJCAcDAgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey+LhQf9GL45eU5vOowA2u5N3=
-g3O
-ZUEBmDHVVbqMtzwlmNC4k9Kx39r5s2vcFl4tXqW7g9/ViXYuiDXb0RfUpZiIUW89siKrkzmQ5=
-dM7
-wRqzgJpJwK8Bn2MIxAKArekWpiCKvBOB/Cc+3EXE78XdlxLyOi/NrmSGRIov0karw2RzMNOu5=
-D+j
-LRZQd1Sv27AR+IP3I8U4aqnhLpwhK7MEy9oCILlgZ1QZe49kpcumcZKORmzBTNh30FVKK1Evm=
-V2x
-AKDoaEOgQB4iFQLhJCdP1I5aSgM5IVFdn7v5YgEYuJYx37IoN1EblHI//x/e2AaIHpzK5h88N=
-Eaw
-QsaNRpNSrcfbFmAg987ATQRTjHAWAQgAyzH6AOODMBjgfWE9VeCgsrwH3exNAU32gLq2xvjpW=
-nHI
-s98ndPUDpnoxWQugJ6MpMncr0xSwFmHEgnSEjK/PAjppgmyc57BwKII3sV4on+gDVFJR6Y8ZR=
-wgn
-BC5mVM6JjQ5xDk8WRXljExRfUX9pNhdE5eBOZJrDRoLUmmjDtKzWaDhIg/+1Hzz93X4fCQkNV=
-bVF
-LELU9bMaLPBG/x5q4iYZ2k2ex6d47YE1ZFdMm6YBYMOljGkZKwYde5ldM9mo45mmwe0icXKLk=
-pEd
-IXKTZeKDO+Hdv1aqFuAcccTg9RXDQjmwhC3yEmrmcfl0+rPghO0Iv3OOImwTEe4co3c1mwARA=
-QAB
-wsBfBBgBAgAJBQJTjHAWAhsMAAoJELDendYovxMvQ/gH/1ha96vm4P/L+bQpJwrZ/dneZcmEw=
-Tbe
-8YFsw2V/Buv6Z4Mysln3nQK5ZadD534CF7TDVft7fC4tU4PONxF5D+/tvgkPfDAfF77zy2AH1=
-vJz
-Q1fOU8lYFpZXTXIHb+559UqvIB8AdgR3SAJGHHt4RKA0F7f5ipYBBrC6cyXJyyoprT10EMvU8=
-VGi
-wXvTyJz3fjoYsdFzpWPlJEBRMedCot60g5dmbdrZ5DWClAr0yau47zpWj3enf1tLWaqcsuylW=
-svi
-uGjKGw7KHQd3bxALOknAp4dN3QwBYCKuZ7AddY9yjynVaD5X7nF9nO5BjR/i1DG86lem3iBDX=
-zXs
-ZDn8R38=3D
-=3D2wuH
------END PGP PUBLIC KEY BLOCK-----
-
---------------6D3294FCE9D5D6953DCD3E3D--
-
---5v4Fbrt87IaxiF1E3Az2Gieiq5dDG3qgf--
-
---YKXpHhhBagLrE4UFk7e72LVQHqGGgIOur
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature"
-
------BEGIN PGP SIGNATURE-----
-
-wsB5BAABCAAjFiEEhRJncuj2BJSl0Jf3sN6d1ii/Ey8FAl+o1M8FAwAAAAAACgkQsN6d1ii/Ey/m
-CAf+Lr22R5JRysNR9BuGXcwWkkWxoz2HyxznekTnFTH6WHZs1xTmnrStNcLH2PKYPQQzAs3QPXc9
-fTsZc9S3Ev+I594scUDzKCe/teXIldn1qcXoq462o1RrXxBbtAN6Q2J0NszICInMRMfr8z/srOwc
-oFtXTq9s4Ib/IzLI3nZQbnDhHSlB0Z8DyVrO0aB/8RJhJu938Fc10p1MWsRlCogWib133r+8piq0
-CeF3MwncLlsfGgFfnbSWT+FNB7iBTcovcf657ks4zQHFk3nMd75/EHC2CYtm1RKzoI9izg/H4/lv
-w/yfICC0TMUy7mO+bRopDMK13i8w2jSVngg9uPXpIw==
-=YR3F
------END PGP SIGNATURE-----
-
---YKXpHhhBagLrE4UFk7e72LVQHqGGgIOur--
+diff --git a/drivers/clk/sunxi-ng/ccu-sun50i-a64.c b/drivers/clk/sunxi-ng/ccu-sun50i-a64.c
+index 6108d150a0e3..67d570efe5bd 100644
+--- a/drivers/clk/sunxi-ng/ccu-sun50i-a64.c
++++ b/drivers/clk/sunxi-ng/ccu-sun50i-a64.c
+@@ -943,7 +943,6 @@ static int sun50i_a64_ccu_probe(struct platform_device *pdev)
+ 	struct resource *res;
+ 	void __iomem *reg;
+ 	u32 val;
+-	int ret;
+ 
+ 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+ 	reg = devm_ioremap_resource(&pdev->dev, res);
+@@ -1029,18 +1028,7 @@ static int sun50i_a64_ccu_probe(struct platform_device *pdev)
+ 		writel(val, reg + SUN50I_A64_CPUX_AXI_REG);
+ 	}
+ 
+-	ret = sunxi_ccu_probe(pdev->dev.of_node, reg, &sun50i_a64_ccu_desc);
+-	if (ret)
+-		return ret;
+-
+-	/* Gate then ungate PLL CPU after any rate changes */
+-	ccu_pll_notifier_register(&sun50i_a64_pll_cpu_nb);
+-
+-	/* Reparent CPU during PLL CPU rate changes */
+-	ccu_mux_notifier_register(pll_cpux_clk.common.hw.clk,
+-				  &sun50i_a64_cpu_nb);
+-
+-	return 0;
++	return sunxi_ccu_probe(pdev->dev.of_node, reg, &sun50i_a64_ccu_desc);
+ }
+ 
+ static const struct of_device_id sun50i_a64_ccu_ids[] = {
+-- 
+2.28.0
