@@ -2,110 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A43752AB404
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 10:52:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 81B5F2AB409
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 10:53:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729116AbgKIJwr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 04:52:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47794 "EHLO
+        id S1728802AbgKIJxp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 04:53:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47948 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727183AbgKIJwq (ORCPT
+        with ESMTP id S1726482AbgKIJxo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 04:52:46 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B3E2C0613CF
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Nov 2020 01:52:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=/kiXkiX5D7NVvwDSqhlwDi0UU90V4tHPpuN14UrYDIg=; b=SumctV0EALjb5+6tBIJn5XjlhQ
-        9aUmtw6uSjOiDijb0EzdjFUlRZQ62bd73/vryFtvlTV7RrRHNsDYCRbUCWSFi0CwxFepi1Xmlqvp2
-        A558M0MQMhQKLZPe0d2TOjipuzvOk0vsX/REimehSc7eDc+nMUu1Ai3ueuphiREW1KyoMKv0guJ9n
-        tbjDfVjv6fNw2H05lj7CF7jbPT7bCi/hNDkAZRZ2xe7ySAYGi5YsTljCltppXR4jYqvXRaA/VjKfZ
-        SFal5m5Ns1GbHGfmV371gETwFvcR9QuTRNS/kUrcRw4rz+utOEDAD0ZuqKgwSiV3iU1Mss9xzBZPV
-        Kv1LwNKg==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kc3qm-0008JB-RJ; Mon, 09 Nov 2020 09:52:37 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id CDE17301324;
-        Mon,  9 Nov 2020 10:52:35 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id B29CD2B09ACF8; Mon,  9 Nov 2020 10:52:35 +0100 (CET)
-Date:   Mon, 9 Nov 2020 10:52:35 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     kan.liang@linux.intel.com
-Cc:     mingo@kernel.org, linux-kernel@vger.kernel.org,
-        namhyung@kernel.org, eranian@google.com, irogers@google.com,
-        gmx@google.com, acme@kernel.org, jolsa@redhat.com,
-        ak@linux.intel.com
-Subject: Re: [PATCH 1/3] perf/core: Flush PMU internal buffers for per-CPU
- events
-Message-ID: <20201109095235.GC2594@hirez.programming.kicks-ass.net>
-References: <20201106212935.28943-1-kan.liang@linux.intel.com>
+        Mon, 9 Nov 2020 04:53:44 -0500
+Received: from mail-yb1-xb41.google.com (mail-yb1-xb41.google.com [IPv6:2607:f8b0:4864:20::b41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95175C0613CF
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Nov 2020 01:53:44 -0800 (PST)
+Received: by mail-yb1-xb41.google.com with SMTP id n142so7630354ybf.7
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Nov 2020 01:53:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=VhnmelEoKg7v8GwmZUSzzOCG7t2GTTQBk/QkznsOk3s=;
+        b=ubFlDbuTR7Vk81ZmeLZX/vBI+YdTquk8SYHVG+OY8vPOVGLsMWLv+AC+Sov+xFb3OS
+         a2U1urW6VqNH5x9K592T2zkx4ZhULKOfysz7wyZybTMsD4NI8xIJrRt7xB98H4GgIm9W
+         xhhK3F6o4PxjkBGdWMpbFN0aGZOy6k51OnVbeBr0YCKuy4wO4WmtaDfJvT/BeWifUH+l
+         wff3VBSeRwi5c6VnUnybkIUtDY5/itwHlMYgklK4AKuNRXyj2xY7h8CY9hQx9z93A2a+
+         g6RVyU5x0zveQ0F20Xs29449WWYfQMBx0ZVRuTmg2OICG3EzOdonP8V1enLAemrIDwJr
+         Bsdw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=VhnmelEoKg7v8GwmZUSzzOCG7t2GTTQBk/QkznsOk3s=;
+        b=QgkfH4mXWhlZuHFaepXJDrcsXHyRXpR83Xk0xIuJTvh+7EhmLGyPxTsssLhNyChiVA
+         pgOUe1kNQzXNp01TyFlSO6IQ8ge4myYMrvPqrhQflrmAHnxJ78/qNO1uHjIian5Si3i1
+         sGcROtDZzSCo5MHUyJW22BTJhL+H1yUNoyEYTcOMF/I0w/l3i15CBLP8qwypDoKQ3I1V
+         e8vTMx6C7G6jp2NO0itVEdPEn+VzOMg5ILZtPaXD/1TG9avraxMsRqq5qkK9+1C7PBK3
+         FNp/KmOqYDcpKcRQUP4WCFvANZV7geQb73QdPQLZbpe35id0QRsIa3d0yfgqJ2N9ss4p
+         tT0w==
+X-Gm-Message-State: AOAM532LFVrJJSzUD7totGxbfFCD7r5qgIX8Zhc5CtUfi0MCKBXIGqpo
+        9G12OSow+fgFulBf35panRcF0EjvO91pqzGV5QsqnQDT
+X-Google-Smtp-Source: ABdhPJwCg/Ag0PL8RlKz4sDSLXrhsVnm284LPJU2wirGri76drVdYCwaPRMOe/MFCDvgOLg4KZsEeLzWqvGdJL51AUA=
+X-Received: by 2002:a25:384c:: with SMTP id f73mr17017482yba.135.1604915622705;
+ Mon, 09 Nov 2020 01:53:42 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201106212935.28943-1-kan.liang@linux.intel.com>
+References: <20201103095828.515831-1-poeschel@lemonage.de> <CANiq72mDG8YJLcpKuE+noUQY5B9K6Cc71ado_dyLFVVf_xzKwA@mail.gmail.com>
+ <20201106101135.xesjdqg2z3hgpqnv@lem-wkst-02.lemonage> <CANiq72niN_gB7Nq_+Vnf9CrBhFZF0_cew-kdj=rAURJ0DWJxnQ@mail.gmail.com>
+ <76f9cd1b-3ace-e8a8-aaee-8d64e0900603@infradead.org>
+In-Reply-To: <76f9cd1b-3ace-e8a8-aaee-8d64e0900603@infradead.org>
+From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Date:   Mon, 9 Nov 2020 10:53:31 +0100
+Message-ID: <CANiq72nrXMoab=c0KvcA6fgn=sRuVsR6Kgx6iCW=XEFx=gnkVw@mail.gmail.com>
+Subject: Re: [PATCH v6 00/25] Make charlcd device independent
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     Lars Poeschel <poeschel@lemonage.de>,
+        Willy Tarreau <willy@haproxy.com>,
+        Ksenija Stanojevic <ksenija.stanojevic@gmail.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 06, 2020 at 01:29:33PM -0800, kan.liang@linux.intel.com wrote:
-> From: Kan Liang <kan.liang@linux.intel.com>
-> 
-> Sometimes the PMU internal buffers have to be flushed for per-CPU events
-> during a context switch, e.g., large PEBS. Otherwise, the perf tool may
-> report samples in locations that do not belong to the process where the
-> samples are processed in, because PEBS does not tag samples with PID/TID.
-> 
-> The current code only flush the buffers for a per-task event. It doesn't
-> check a per-CPU event.
-> 
-> Add a new event state flag, PERF_ATTACH_SCHED_CB, to indicate that the
-> PMU internal buffers have to be flushed for this event during a context
-> switch.
-> 
-> Add sched_cb_entry and perf_sched_cb_usages back to track the PMU/cpuctx
-> which is required to be flushed.
-> 
-> Only need to invoke the sched_task() for per-CPU events in this patch.
-> The per-task events have been handled in perf_event_context_sched_in/out
-> already.
-> 
-> Fixes: 9c964efa4330 ("perf/x86/intel: Drain the PEBS buffer during context switches")
+Hi Randy,
 
-Are you sure? In part this patch looks like a revert of:
+On Fri, Nov 6, 2020 at 5:35 PM Randy Dunlap <rdunlap@infradead.org> wrote:
+>
+> I'm not sure that I understand the question...
+>
+> Include
+> Reported-by: Randy Dunlap <rdunlap@infradead.org>
+> if possible. If not, then don't. It's not a big deal.
+>
+> Integrate the fix from Lars in whatever way works for you.
 
-  44fae179ce73a26733d9e2d346da4e1a1cb94647
-  556cccad389717d6eb4f5a24b45ff41cad3aaabf
+Thanks Randy -- I asked Stephen Rothwell and he told me even for -next
+patches on top are preferred, unless the bug is bad enough. In which
+case, the [] notation can still be used to give credit.
 
-
-> +static void perf_pmu_sched_task(struct task_struct *prev,
-> +				struct task_struct *next,
-> +				bool sched_in)
-> +{
-> +	struct perf_cpu_context *cpuctx;
-> +
-> +	if (prev == next)
-> +		return;
-> +
-> +	list_for_each_entry(cpuctx, this_cpu_ptr(&sched_cb_list), sched_cb_entry) {
-> +		/* will be handled in perf_event_context_sched_in/out */
-> +		if (cpuctx->task_ctx)
-> +			continue;
-
-This seems wrong; cpuctx->task_ctx merely indicates that there is a
-task-ctx for this CPU. Not that the event you're interested in is in
-fact there.
-
-So consider the case where the event is on the CPU context, but we also
-have a task context. Then we'll not issue this call.
-
-> +
-> +		__perf_pmu_sched_task(cpuctx, sched_in);
-> +	}
-> +}
+Cheers,
+Miguel
