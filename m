@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE9E42ABD17
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 14:43:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B17BE2ABD36
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 14:45:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387987AbgKINmw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 08:42:52 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54698 "EHLO mail.kernel.org"
+        id S1729891AbgKINAS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 08:00:18 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54298 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730507AbgKINAd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 08:00:33 -0500
+        id S1730425AbgKINAJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 08:00:09 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8A7B5221F9;
-        Mon,  9 Nov 2020 13:00:31 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id EE70620684;
+        Mon,  9 Nov 2020 13:00:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604926832;
-        bh=3+iVDUeYUQtCG1b7ztjZJ6YpyRlZ9aI6xSrMEGpP3f8=;
+        s=default; t=1604926808;
+        bh=VFw5kgRQrJ0xbQiQbgj6KQOkQHOOJbcDZyvdw3SCgEo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RSkmlikiWs58l0640PBypqud7tvfuwyLNYfXFSJ8bwS0UcE5/BfnpCRtmqpgieMb2
-         2tU12Z6zNnD0fZ/m+a3ZQAxKfEQ9pqBsqffJ/JRun8VAjMfPDVeLKHjtBkUrIH5a5r
-         GIpkR94QJlmHvqpRsk+FdiA04gdomvn/Z17TrCkU=
+        b=r3oLbdi+M3yXLqo+EboKX1C/0x5pf04UwZBYkgEeNg9QgLc07Y3Gf0fVz6C0AohY9
+         5dJrluwGpvB97pMvmZQ3G+lBQvn+qsvZY6Q3mSpFJOKtWDqgeaGhcMdC5+xE0VPC3P
+         NdED/44fuoOmtmX6LxDeifl0Z6yUqn+r2lTOVRNQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Mukesh Ojha <mukesh02@linux.vnet.ibm.com>,
-        Vasant Hegde <hegdevasant@linux.vnet.ibm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Kamal Mostafa <kamal@canonical.com>
-Subject: [PATCH 4.9 003/117] powerpc/powernv/opal-dump : Use IRQ_HANDLED instead of numbers in interrupt handler
-Date:   Mon,  9 Nov 2020 13:53:49 +0100
-Message-Id: <20201109125025.792602108@linuxfoundation.org>
+        stable@vger.kernel.org, Michael Schaller <misch@google.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        dann frazier <dann.frazier@canonical.com>
+Subject: [PATCH 4.9 004/117] efivarfs: Replace invalid slashes with exclamation marks in dentries.
+Date:   Mon,  9 Nov 2020 13:53:50 +0100
+Message-Id: <20201109125025.840680317@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201109125025.630721781@linuxfoundation.org>
 References: <20201109125025.630721781@linuxfoundation.org>
@@ -44,59 +43,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mukesh Ojha <mukesh02@linux.vnet.ibm.com>
+From: Michael Schaller <misch@google.com>
 
-commit b29336c0e1785a28bc40a9fd47c2321671e9792e upstream.
+commit 336af6a4686d885a067ecea8c3c3dd129ba4fc75 upstream.
 
-Fixes: 8034f715f ("powernv/opal-dump: Convert to irq domain")
+Without this patch efivarfs_alloc_dentry creates dentries with slashes in
+their name if the respective EFI variable has slashes in its name. This in
+turn causes EIO on getdents64, which prevents a complete directory listing
+of /sys/firmware/efi/efivars/.
 
-Converts all the return explicit number to a more proper IRQ_HANDLED,
-which looks proper incase of interrupt handler returning case.
+This patch replaces the invalid shlashes with exclamation marks like
+kobject_set_name_vargs does for /sys/firmware/efi/vars/ to have consistently
+named dentries under /sys/firmware/efi/vars/ and /sys/firmware/efi/efivars/.
 
-Here, It also removes error message like "nobody cared" which was
-getting unveiled while returning -1 or 0 from handler.
-
-Signed-off-by: Mukesh Ojha <mukesh02@linux.vnet.ibm.com>
-Reviewed-by: Vasant Hegde <hegdevasant@linux.vnet.ibm.com>
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Cc: Kamal Mostafa <kamal@canonical.com>
+Signed-off-by: Michael Schaller <misch@google.com>
+Link: https://lore.kernel.org/r/20200925074502.150448-1-misch@google.com
+Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
+Signed-off-by: dann frazier <dann.frazier@canonical.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- arch/powerpc/platforms/powernv/opal-dump.c |    9 +++------
- 1 file changed, 3 insertions(+), 6 deletions(-)
+ fs/efivarfs/super.c |    3 +++
+ 1 file changed, 3 insertions(+)
 
---- a/arch/powerpc/platforms/powernv/opal-dump.c
-+++ b/arch/powerpc/platforms/powernv/opal-dump.c
-@@ -385,13 +385,12 @@ static irqreturn_t process_dump(int irq,
- {
- 	int rc;
- 	uint32_t dump_id, dump_size, dump_type;
--	struct dump_obj *dump;
- 	char name[22];
- 	struct kobject *kobj;
+--- a/fs/efivarfs/super.c
++++ b/fs/efivarfs/super.c
+@@ -146,6 +146,9 @@ static int efivarfs_callback(efi_char16_
  
- 	rc = dump_read_info(&dump_id, &dump_size, &dump_type);
- 	if (rc != OPAL_SUCCESS)
--		return rc;
-+		return IRQ_HANDLED;
+ 	name[len + EFI_VARIABLE_GUID_LEN+1] = '\0';
  
- 	sprintf(name, "0x%x-0x%x", dump_type, dump_id);
- 
-@@ -403,12 +402,10 @@ static irqreturn_t process_dump(int irq,
- 	if (kobj) {
- 		/* Drop reference added by kset_find_obj() */
- 		kobject_put(kobj);
--		return 0;
-+		return IRQ_HANDLED;
- 	}
- 
--	dump = create_dump_obj(dump_id, dump_size, dump_type);
--	if (!dump)
--		return -1;
-+	create_dump_obj(dump_id, dump_size, dump_type);
- 
- 	return IRQ_HANDLED;
- }
++	/* replace invalid slashes like kobject_set_name_vargs does for /sys/firmware/efi/vars. */
++	strreplace(name, '/', '!');
++
+ 	inode = efivarfs_get_inode(sb, d_inode(root), S_IFREG | 0644, 0,
+ 				   is_removable);
+ 	if (!inode)
 
 
