@@ -2,38 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4524F2ABD69
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 14:46:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E39C2ABBB7
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 14:32:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387875AbgKINpo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 08:45:44 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52596 "EHLO mail.kernel.org"
+        id S1733112AbgKIN3v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 08:29:51 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37258 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730121AbgKIM6O (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 07:58:14 -0500
+        id S1732433AbgKINLm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 08:11:42 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8349C2084C;
-        Mon,  9 Nov 2020 12:58:13 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D2D712076E;
+        Mon,  9 Nov 2020 13:11:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604926694;
-        bh=rChS9ohT45XC+NAaVNpgooEAM8/l4LdXw2TnJHfHrfU=;
+        s=default; t=1604927501;
+        bh=xO8acoFzs3nbjDPtOlg/JW51YE7e0uH81ivXIGDiy4o=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=h4HtASvtpkExrTxouCbEKPdzcdAdBnHJwiFcX7NpkLH4FlQegJyEw9FsFQNKk6V5D
-         TYS8YY3QrStQRGMA5bLgxOZ0UVMOWItmwCeMmdkfqWxMgh0OpoizlM5leWmXlhLaN8
-         ZCUvaFKegONkcuIWgIA72krddZ4ZgPaAx5VxsFtg=
+        b=dGDAnoSh/3YEsj/z92Zr1msh4vqwA1KrxH0jvJ7ettGQwWJlsytnYLcCJ+fAlwKBe
+         ZNL9OyT523tZ4OCJxKo+wV/xam+KB1pC2c9HL1KOwIbTYzPJoVxEsh/W5agHGQLF8S
+         thbH8xOOWiR5/7kwduThjQbhKGl+qx1/f+PasqTw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>
-Subject: [PATCH 4.4 59/86] ARM: samsung: fix PM debug build with DEBUG_LL but !MMU
-Date:   Mon,  9 Nov 2020 13:55:06 +0100
-Message-Id: <20201109125023.616314593@linuxfoundation.org>
+        stable@vger.kernel.org,
+        syzbot+3485e3773f7da290eecc@syzkaller.appspotmail.com,
+        Oleg Nesterov <oleg@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jens Axboe <axboe@kernel.dk>,
+        Christian Brauner <christian@brauner.io>,
+        "Eric W . Biederman" <ebiederm@xmission.com>,
+        Zhiqiang Liu <liuzhiqiang26@huawei.com>,
+        Tejun Heo <tj@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 5.4 10/85] ptrace: fix task_join_group_stop() for the case when current is traced
+Date:   Mon,  9 Nov 2020 13:55:07 +0100
+Message-Id: <20201109125023.090386322@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201109125020.852643676@linuxfoundation.org>
-References: <20201109125020.852643676@linuxfoundation.org>
+In-Reply-To: <20201109125022.614792961@linuxfoundation.org>
+References: <20201109125022.614792961@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,37 +50,116 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Krzysztof Kozlowski <krzk@kernel.org>
+From: Oleg Nesterov <oleg@redhat.com>
 
-commit 7be0d19c751b02db778ca95e3274d5ea7f31891c upstream.
+commit 7b3c36fc4c231ca532120bbc0df67a12f09c1d96 upstream.
 
-Selecting CONFIG_SAMSUNG_PM_DEBUG (depending on CONFIG_DEBUG_LL) but
-without CONFIG_MMU leads to build errors:
+This testcase
 
-  arch/arm/plat-samsung/pm-debug.c: In function ‘s3c_pm_uart_base’:
-  arch/arm/plat-samsung/pm-debug.c:57:2: error:
-    implicit declaration of function ‘debug_ll_addr’ [-Werror=implicit-function-declaration]
+	#include <stdio.h>
+	#include <unistd.h>
+	#include <signal.h>
+	#include <sys/ptrace.h>
+	#include <sys/wait.h>
+	#include <pthread.h>
+	#include <assert.h>
 
-Fixes: 99b2fc2b8b40 ("ARM: SAMSUNG: Use debug_ll_addr() to get UART base address")
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+	void *tf(void *arg)
+	{
+		return NULL;
+	}
+
+	int main(void)
+	{
+		int pid = fork();
+		if (!pid) {
+			kill(getpid(), SIGSTOP);
+
+			pthread_t th;
+			pthread_create(&th, NULL, tf, NULL);
+
+			return 0;
+		}
+
+		waitpid(pid, NULL, WSTOPPED);
+
+		ptrace(PTRACE_SEIZE, pid, 0, PTRACE_O_TRACECLONE);
+		waitpid(pid, NULL, 0);
+
+		ptrace(PTRACE_CONT, pid, 0,0);
+		waitpid(pid, NULL, 0);
+
+		int status;
+		int thread = waitpid(-1, &status, 0);
+		assert(thread > 0 && thread != pid);
+		assert(status == 0x80137f);
+
+		return 0;
+	}
+
+fails and triggers WARN_ON_ONCE(!signr) in do_jobctl_trap().
+
+This is because task_join_group_stop() has 2 problems when current is traced:
+
+	1. We can't rely on the "JOBCTL_STOP_PENDING" check, a stopped tracee
+	   can be woken up by debugger and it can clone another thread which
+	   should join the group-stop.
+
+	   We need to check group_stop_count || SIGNAL_STOP_STOPPED.
+
+	2. If SIGNAL_STOP_STOPPED is already set, we should not increment
+	   sig->group_stop_count and add JOBCTL_STOP_CONSUME. The new thread
+	   should stop without another do_notify_parent_cldstop() report.
+
+To clarify, the problem is very old and we should blame
+ptrace_init_task().  But now that we have task_join_group_stop() it makes
+more sense to fix this helper to avoid the code duplication.
+
+Reported-by: syzbot+3485e3773f7da290eecc@syzkaller.appspotmail.com
+Signed-off-by: Oleg Nesterov <oleg@redhat.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Cc: Jens Axboe <axboe@kernel.dk>
+Cc: Christian Brauner <christian@brauner.io>
+Cc: "Eric W . Biederman" <ebiederm@xmission.com>
+Cc: Zhiqiang Liu <liuzhiqiang26@huawei.com>
+Cc: Tejun Heo <tj@kernel.org>
 Cc: <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20200910154150.3318-1-krzk@kernel.org
+Link: https://lkml.kernel.org/r/20201019134237.GA18810@redhat.com
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- arch/arm/plat-samsung/Kconfig |    1 +
- 1 file changed, 1 insertion(+)
+ kernel/signal.c |   19 ++++++++++---------
+ 1 file changed, 10 insertions(+), 9 deletions(-)
 
---- a/arch/arm/plat-samsung/Kconfig
-+++ b/arch/arm/plat-samsung/Kconfig
-@@ -239,6 +239,7 @@ config SAMSUNG_PM_DEBUG
- 	bool "Samsung PM Suspend debug"
- 	depends on PM && DEBUG_KERNEL
- 	depends on DEBUG_EXYNOS_UART || DEBUG_S3C24XX_UART || DEBUG_S3C2410_UART
-+	depends on DEBUG_LL && MMU
- 	help
- 	  Say Y here if you want verbose debugging from the PM Suspend and
- 	  Resume code. See <file:Documentation/arm/Samsung-S3C24XX/Suspend.txt>
+--- a/kernel/signal.c
++++ b/kernel/signal.c
+@@ -391,16 +391,17 @@ static bool task_participate_group_stop(
+ 
+ void task_join_group_stop(struct task_struct *task)
+ {
++	unsigned long mask = current->jobctl & JOBCTL_STOP_SIGMASK;
++	struct signal_struct *sig = current->signal;
++
++	if (sig->group_stop_count) {
++		sig->group_stop_count++;
++		mask |= JOBCTL_STOP_CONSUME;
++	} else if (!(sig->flags & SIGNAL_STOP_STOPPED))
++		return;
++
+ 	/* Have the new thread join an on-going signal group stop */
+-	unsigned long jobctl = current->jobctl;
+-	if (jobctl & JOBCTL_STOP_PENDING) {
+-		struct signal_struct *sig = current->signal;
+-		unsigned long signr = jobctl & JOBCTL_STOP_SIGMASK;
+-		unsigned long gstop = JOBCTL_STOP_PENDING | JOBCTL_STOP_CONSUME;
+-		if (task_set_jobctl_pending(task, signr | gstop)) {
+-			sig->group_stop_count++;
+-		}
+-	}
++	task_set_jobctl_pending(task, mask | JOBCTL_STOP_PENDING);
+ }
+ 
+ /*
 
 
