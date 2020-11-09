@@ -2,63 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 136EC2AC6F9
+	by mail.lfdr.de (Postfix) with ESMTP id 810342AC6FA
 	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 22:21:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731465AbgKIVTh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 16:19:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42184 "EHLO
+        id S1731507AbgKIVTj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 16:19:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42188 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731413AbgKIVTf (ORCPT
+        with ESMTP id S1731446AbgKIVTg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 16:19:35 -0500
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F57CC0613CF
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Nov 2020 13:19:35 -0800 (PST)
-Received: by mail-wm1-x341.google.com with SMTP id c16so918295wmd.2
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Nov 2020 13:19:35 -0800 (PST)
+        Mon, 9 Nov 2020 16:19:36 -0500
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B9D1C0613CF
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Nov 2020 13:19:36 -0800 (PST)
+Received: by mail-wm1-x342.google.com with SMTP id 10so952122wml.2
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Nov 2020 13:19:36 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=mP6ncVP3tb6PBoh8PR+HhOmxf1xJDs0FPGkTnD+ivtc=;
-        b=KFykpLfCS//ZsH9E/r0koc17hviNUTM0dyZhwgahRURu3RDlD7WSTPyYvfI4R8B37N
-         ZFI3daldAmSN6II7vkZ85e3c/io1Z3RNNLihM2vj4e44wuAlM7r5dqaY2pDwC8H5SDhx
-         MVXosMn+hWDvCRWFW3ZAc6jqRmjlJQqoWzd+x45NGezmyeXfjnPyZNr4TX3GenC0Kslv
-         8jDKQGDpJUYd5tCK0MisiUthJtNJogiZomkAVQ4mIqAEpuMMcUSgIerN9BLCTgEJ9vGL
-         +NKWgQHleOmv5Wx5VeN25Eq5miaw3qZyfxGB+zMrOE+/foVnBu/M/3DohTb7/Dk+ROoN
-         7rXg==
+        bh=f19bG5OlKZrzXa9sIoz5zZmJ+HLtlGgA3VlLSxdphFA=;
+        b=aCa++B8skb7N4286tYGRf0uVCE5RA7rp82ko+LOn4nj7tYdW1Try+em3OvGh7LqyHJ
+         MRu9QWNM2UQmP4ba30mnVaQj4DEhUYiDtJAvbyg6Z4WqzCMSMMBCywL5BuHEKRLTQ3Nt
+         2X145Ci6pyLdMT7zFdh2R7fTC99dcrsXD0EYw9LuP3OsGdalYW3SAGUiCeNOmz/E9yEK
+         mchlHxBojyQih21VMFDS9OpCNNLApP66gmN4r2PoS0bM6GwOpg6mRa2jMWrpl7BtEGXH
+         FFXqxiP6DlTTZZGtyKGVzWqpe9Tq3bxgTloLVFtq3gA13n/n1cc5NsUa3HUiCib0YktV
+         cJBA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=mP6ncVP3tb6PBoh8PR+HhOmxf1xJDs0FPGkTnD+ivtc=;
-        b=k1M8f3XCMQS5kFvtfRV7mYITPySnKPLNdIQwAw26/co5ygN8FRtCsi7lbXUJGmduyS
-         zgSOys2X5wa0pWlMJ1pgyYhoXMvYE8VfHwGKWjBK8+VlLwNC7VVfxUBMkxd7rh7Yuam+
-         ZAGHee+6p00zKlW6qI3xHoLfXkf4khSbWugU+Drud1Qel/WwIP7D5y4mMFi15aHJkc/2
-         mU8MfaTP/+omlozpW1v6Vr8VNhMBBDP7rIn20Mn5njVSElhmfC0+xlN6c3FpPoLKcnEs
-         NFAu9YD5ElwzWGZQd4th5RIWCoihhjJ9XPyFZq955RBCC73G1kANH+7cAZ9f5wVOPglj
-         +3Xw==
-X-Gm-Message-State: AOAM530n5EkIfmMyaVHoMOJRrQ+WY0mrmuE64dnwuhyQ3PzQbXuTPwQy
-        ZmnRV2b+KxVdITP+KHs8zMEqlQ==
-X-Google-Smtp-Source: ABdhPJwMQ0THyZ4Mbc995Ryvr/CJnNf+FANW5IqZWpqhZmq6ig24FVd7CojcL67BKR9smBQwsI+Y4A==
-X-Received: by 2002:a1c:7f14:: with SMTP id a20mr1125386wmd.95.1604956773891;
-        Mon, 09 Nov 2020 13:19:33 -0800 (PST)
+        bh=f19bG5OlKZrzXa9sIoz5zZmJ+HLtlGgA3VlLSxdphFA=;
+        b=LEkfIX5ayC+vEUcU7Tkvt/70EUsE76sT00hGM0htprvMjbx1fI11uK1oxAIKgKHlp3
+         f6ZGz2cz+PeSw7BGmGprdjMPP07aR3cjJBQsLCtYLlkhIfn6cK7G+WyqKUiC0CwPgcpz
+         DjDKmTazQd0EtAM1Z/ebPRvT32Odqlm2xA5EhGsQ4yiEHLjp5FhZjUFJKSsUl7zRdzxC
+         xK0nR0u+IyibQrat4ua1HkHeaNO6JEglSIYe9bznLC5YsncoazaRR96wS8sT5Qq+moqt
+         KzcqzjAkxrB7X8HwQiYPM3cu/GKZQNS8GVgedQJWBOM81EB9QcNBA/PK/xRMRFazo9pT
+         X+bA==
+X-Gm-Message-State: AOAM531ToI/29j3LM6803yvDj1FcnQWMogvdqnnNvm5Etc7+VSKifgi5
+        CeGrOg4YhqfoS/xLtG5V2fc4Tg==
+X-Google-Smtp-Source: ABdhPJwQU+oNyhuK8854ZDn2P3n7yVLK4Po3zrKf1ArE64AewxBRgP1hJdqCM5548erM822qPbeZIw==
+X-Received: by 2002:a1c:2905:: with SMTP id p5mr1138832wmp.187.1604956775281;
+        Mon, 09 Nov 2020 13:19:35 -0800 (PST)
 Received: from dell.default ([91.110.221.139])
-        by smtp.gmail.com with ESMTPSA id 71sm15170630wrm.20.2020.11.09.13.19.32
+        by smtp.gmail.com with ESMTPSA id 71sm15170630wrm.20.2020.11.09.13.19.33
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 09 Nov 2020 13:19:33 -0800 (PST)
+        Mon, 09 Nov 2020 13:19:34 -0800 (PST)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
 Cc:     linux-kernel@vger.kernel.org,
         Alex Deucher <alexander.deucher@amd.com>,
         =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
         David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>, amd-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org
-Subject: [PATCH 13/20] drm/radeon/evergreen: Move 'rv770_set_clk_bypass_mode' prototype to shared location
-Date:   Mon,  9 Nov 2020 21:18:48 +0000
-Message-Id: <20201109211855.3340030-14-lee.jones@linaro.org>
+        Daniel Vetter <daniel@ffwll.ch>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-media@vger.kernel.org, linaro-mm-sig@lists.linaro.org
+Subject: [PATCH 14/20] drm/radeon: Move 'radeon_pm_acpi_event_handler' prototype into shared header
+Date:   Mon,  9 Nov 2020 21:18:49 +0000
+Message-Id: <20201109211855.3340030-15-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20201109211855.3340030-1-lee.jones@linaro.org>
 References: <20201109211855.3340030-1-lee.jones@linaro.org>
@@ -79,52 +81,42 @@ Cc: Alex Deucher <alexander.deucher@amd.com>
 Cc: "Christian König" <christian.koenig@amd.com>
 Cc: David Airlie <airlied@linux.ie>
 Cc: Daniel Vetter <daniel@ffwll.ch>
+Cc: Sumit Semwal <sumit.semwal@linaro.org>
 Cc: amd-gfx@lists.freedesktop.org
 Cc: dri-devel@lists.freedesktop.org
+Cc: linux-media@vger.kernel.org
+Cc: linaro-mm-sig@lists.linaro.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/gpu/drm/radeon/evergreen.c | 1 -
- drivers/gpu/drm/radeon/r600.c      | 1 -
- drivers/gpu/drm/radeon/radeon.h    | 2 ++
- 3 files changed, 2 insertions(+), 2 deletions(-)
+ drivers/gpu/drm/radeon/radeon.h      | 1 +
+ drivers/gpu/drm/radeon/radeon_acpi.c | 2 --
+ 2 files changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/drivers/gpu/drm/radeon/evergreen.c b/drivers/gpu/drm/radeon/evergreen.c
-index 14d90dc376e71..3541a9444be22 100644
---- a/drivers/gpu/drm/radeon/evergreen.c
-+++ b/drivers/gpu/drm/radeon/evergreen.c
-@@ -223,7 +223,6 @@ extern u32 si_get_csb_size(struct radeon_device *rdev);
- extern void si_get_csb_buffer(struct radeon_device *rdev, volatile u32 *buffer);
- extern u32 cik_get_csb_size(struct radeon_device *rdev);
- extern void cik_get_csb_buffer(struct radeon_device *rdev, volatile u32 *buffer);
--extern void rv770_set_clk_bypass_mode(struct radeon_device *rdev);
- 
- static const u32 evergreen_golden_registers[] =
- {
-diff --git a/drivers/gpu/drm/radeon/r600.c b/drivers/gpu/drm/radeon/r600.c
-index 6e780b0109995..9587792503525 100644
---- a/drivers/gpu/drm/radeon/r600.c
-+++ b/drivers/gpu/drm/radeon/r600.c
-@@ -112,7 +112,6 @@ void r600_fini(struct radeon_device *rdev);
- void r600_irq_disable(struct radeon_device *rdev);
- static void r600_pcie_gen2_enable(struct radeon_device *rdev);
- extern int evergreen_rlc_resume(struct radeon_device *rdev);
--extern void rv770_set_clk_bypass_mode(struct radeon_device *rdev);
- 
- /*
-  * Indirect registers accessor
 diff --git a/drivers/gpu/drm/radeon/radeon.h b/drivers/gpu/drm/radeon/radeon.h
-index 421f6b26512ed..32a2c894ee3ff 100644
+index 32a2c894ee3ff..1cbbaff7cede2 100644
 --- a/drivers/gpu/drm/radeon/radeon.h
 +++ b/drivers/gpu/drm/radeon/radeon.h
-@@ -280,6 +280,8 @@ struct radeon_clock {
- 	uint32_t vco_freq;
- };
+@@ -291,6 +291,7 @@ void radeon_pm_fini(struct radeon_device *rdev);
+ void radeon_pm_compute_clocks(struct radeon_device *rdev);
+ void radeon_pm_suspend(struct radeon_device *rdev);
+ void radeon_pm_resume(struct radeon_device *rdev);
++void radeon_pm_acpi_event_handler(struct radeon_device *rdev);
+ void radeon_combios_get_power_modes(struct radeon_device *rdev);
+ void radeon_atombios_get_power_modes(struct radeon_device *rdev);
+ int radeon_atom_get_clock_dividers(struct radeon_device *rdev,
+diff --git a/drivers/gpu/drm/radeon/radeon_acpi.c b/drivers/gpu/drm/radeon/radeon_acpi.c
+index 6cf1645e7a1a8..0eb594b56af8c 100644
+--- a/drivers/gpu/drm/radeon/radeon_acpi.c
++++ b/drivers/gpu/drm/radeon/radeon_acpi.c
+@@ -45,8 +45,6 @@ static inline bool radeon_atpx_dgpu_req_power_for_displays(void) { return false;
  
-+void rv770_set_clk_bypass_mode(struct radeon_device *rdev);
-+
- /*
-  * Power management
-  */
+ #define ACPI_AC_CLASS           "ac_adapter"
+ 
+-extern void radeon_pm_acpi_event_handler(struct radeon_device *rdev);
+-
+ struct atif_verify_interface {
+ 	u16 size;		/* structure size in bytes (includes size field) */
+ 	u16 version;		/* version */
 -- 
 2.25.1
 
