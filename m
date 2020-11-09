@@ -2,39 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1775B2ABAC4
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 14:23:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 144262AB9AF
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 14:11:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388171AbgKINWI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 08:22:08 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49968 "EHLO mail.kernel.org"
+        id S1732412AbgKINLg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 08:11:36 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37116 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388151AbgKINV7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 08:21:59 -0500
+        id S1729976AbgKINLd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 08:11:33 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 14C122065D;
-        Mon,  9 Nov 2020 13:21:57 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 58A1B2083B;
+        Mon,  9 Nov 2020 13:11:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604928118;
-        bh=6HcL1lHO4SRSWhdjXDo4w7v3qXL87HTS85ZgCKdrzmQ=;
+        s=default; t=1604927493;
+        bh=tZlcrvP/u2SOW6xsK5XcQA6qnRj0C+ld/aGYvZkjYjA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=sNLun7AbASznzTLrumogYUatta0yzJGIRU/T0wLlD+avs9IvehDBqeI2bnwK69iH+
-         mvZS5KG3f4uA0YQygsBwaYOq435W+2kjYtdpHMCoGNItXjfBdIePQyjGC6k+F3KDWj
-         kCI0AD83rducZAQVtcT8oxccbrOIlpbVI25z0g6c=
+        b=Jo/2KGhG8NBK/lPyuhE6SrXneVjuaMNNS034w0n9XjBjUpqGBiUhFcqoA36ude+/7
+         KEcvOHFr9/IJBPxXpM87s9nI3OLKGCDLtY/ZDQY+4o7acgc81e3vr4WmwG/JWfkMpt
+         AUhnmWulOxhDLunlw1MVM0WHPEgdiWuajxG36st4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Karol Herbst <kherbst@redhat.com>,
-        Ben Skeggs <bskeggs@redhat.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.9 103/133] drm/nouveau/gem: fix "refcount_t: underflow; use-after-free"
+        stable@vger.kernel.org,
+        =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Andre Heider <a.heider@gmail.com>,
+        Gregory CLEMENT <gregory.clement@bootlin.com>
+Subject: [PATCH 4.19 71/71] arm64: dts: marvell: espressobin: Add ethernet switch aliases
 Date:   Mon,  9 Nov 2020 13:56:05 +0100
-Message-Id: <20201109125035.642758567@linuxfoundation.org>
+Message-Id: <20201109125023.230263687@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201109125030.706496283@linuxfoundation.org>
-References: <20201109125030.706496283@linuxfoundation.org>
+In-Reply-To: <20201109125019.906191744@linuxfoundation.org>
+References: <20201109125019.906191744@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,36 +45,80 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Karol Herbst <kherbst@redhat.com>
+From: Pali Rohár <pali@kernel.org>
 
-[ Upstream commit 925681454d7b557d404b5d28ef4469fac1b2e105 ]
+commit b64d814257b027e29a474bcd660f6372490138c7 upstream.
 
-we can't use nouveau_bo_ref here as no ttm object was allocated and
-nouveau_bo_ref mainly deals with that. Simply deallocate the object.
+Espressobin boards have 3 ethernet ports and some of them got assigned more
+then one MAC address. MAC addresses are stored in U-Boot environment.
 
-Signed-off-by: Karol Herbst <kherbst@redhat.com>
-Signed-off-by: Ben Skeggs <bskeggs@redhat.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Since commit a2c7023f7075c ("net: dsa: read mac address from DT for slave
+device") kernel can use MAC addresses from DT for particular DSA port.
+
+Currently Espressobin DTS file contains alias just for ethernet0.
+
+This patch defines additional ethernet aliases in Espressobin DTS files, so
+bootloader can fill correct MAC address for DSA switch ports if more MAC
+addresses were specified.
+
+DT alias ethernet1 is used for wan port, DT aliases ethernet2 and ethernet3
+are used for lan ports for both Espressobin revisions (V5 and V7).
+
+Fixes: 5253cb8c00a6f ("arm64: dts: marvell: espressobin: add ethernet alias")
+Cc: <stable@vger.kernel.org> # a2c7023f7075c: dsa: read mac address
+Signed-off-by: Pali Rohár <pali@kernel.org>
+Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+Reviewed-by: Andre Heider <a.heider@gmail.com>
+Signed-off-by: Gregory CLEMENT <gregory.clement@bootlin.com>
+[pali: Backported Espressobin rev V5 changes to 5.4 and 4.19 versions]
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- drivers/gpu/drm/nouveau/nouveau_gem.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ arch/arm64/boot/dts/marvell/armada-3720-espressobin.dts |   12 ++++++++----
+ 1 file changed, 8 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/gpu/drm/nouveau/nouveau_gem.c b/drivers/gpu/drm/nouveau/nouveau_gem.c
-index 81f111ad3f4fd..124d3dcc5c590 100644
---- a/drivers/gpu/drm/nouveau/nouveau_gem.c
-+++ b/drivers/gpu/drm/nouveau/nouveau_gem.c
-@@ -198,7 +198,8 @@ nouveau_gem_new(struct nouveau_cli *cli, u64 size, int align, uint32_t domain,
- 	 * to the caller, instead of a normal nouveau_bo ttm reference. */
- 	ret = drm_gem_object_init(drm->dev, &nvbo->bo.base, size);
- 	if (ret) {
--		nouveau_bo_ref(NULL, &nvbo);
-+		drm_gem_object_release(&nvbo->bo.base);
-+		kfree(nvbo);
- 		return ret;
- 	}
+--- a/arch/arm64/boot/dts/marvell/armada-3720-espressobin.dts
++++ b/arch/arm64/boot/dts/marvell/armada-3720-espressobin.dts
+@@ -21,6 +21,10 @@
  
--- 
-2.27.0
-
+ 	aliases {
+ 		ethernet0 = &eth0;
++		/* for dsa slave device */
++		ethernet1 = &switch0port1;
++		ethernet2 = &switch0port2;
++		ethernet3 = &switch0port3;
+ 		serial0 = &uart0;
+ 		serial1 = &uart1;
+ 	};
+@@ -136,25 +140,25 @@
+ 			#address-cells = <1>;
+ 			#size-cells = <0>;
+ 
+-			port@0 {
++			switch0port0: port@0 {
+ 				reg = <0>;
+ 				label = "cpu";
+ 				ethernet = <&eth0>;
+ 			};
+ 
+-			port@1 {
++			switch0port1: port@1 {
+ 				reg = <1>;
+ 				label = "wan";
+ 				phy-handle = <&switch0phy0>;
+ 			};
+ 
+-			port@2 {
++			switch0port2: port@2 {
+ 				reg = <2>;
+ 				label = "lan0";
+ 				phy-handle = <&switch0phy1>;
+ 			};
+ 
+-			port@3 {
++			switch0port3: port@3 {
+ 				reg = <3>;
+ 				label = "lan1";
+ 				phy-handle = <&switch0phy2>;
 
 
