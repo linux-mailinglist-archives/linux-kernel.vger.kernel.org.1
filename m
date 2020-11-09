@@ -2,84 +2,218 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F59F2AB37C
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 10:23:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E23CF2AB38C
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 10:26:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728947AbgKIJXJ convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 9 Nov 2020 04:23:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43228 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726482AbgKIJXJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 04:23:09 -0500
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5032DC0613CF
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Nov 2020 01:23:09 -0800 (PST)
-Received: from lupine.hi.pengutronix.de ([2001:67c:670:100:3ad5:47ff:feaf:1a17] helo=lupine)
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <p.zabel@pengutronix.de>)
-        id 1kc3O4-0006TO-Q1; Mon, 09 Nov 2020 10:22:56 +0100
-Received: from pza by lupine with local (Exim 4.92)
-        (envelope-from <p.zabel@pengutronix.de>)
-        id 1kc3O3-0004Ta-Sc; Mon, 09 Nov 2020 10:22:55 +0100
-Message-ID: <2aec3ae20bf5a9eefbe691a69c76c91b09af2a35.camel@pengutronix.de>
-Subject: Re: [PATCH] staging: media: imx: drop dependency on ipuv3
-From:   Philipp Zabel <p.zabel@pengutronix.de>
-To:     Martin Kepplinger <martin.kepplinger@puri.sm>,
-        rogerio.silva@nxp.com, slongerbeam@gmail.com, mchehab@kernel.org,
-        shawnguo@kernel.org, festevam@gmail.com
-Cc:     iain.galloway@nxp.com, kernel@puri.sm, kernel@pengutronix.de,
-        linux-imx@nxp.com, linux-media@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Date:   Mon, 09 Nov 2020 10:22:55 +0100
-In-Reply-To: <20201109091340.7223-1-martin.kepplinger@puri.sm>
-References: <20201109091340.7223-1-martin.kepplinger@puri.sm>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-User-Agent: Evolution 3.30.5-1.1 
+        id S1727926AbgKIJ0q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 04:26:46 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51452 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725854AbgKIJ0q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 04:26:46 -0500
+Received: from localhost (unknown [122.171.147.34])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8A2B2206ED;
+        Mon,  9 Nov 2020 09:26:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604914005;
+        bh=dL4w1M7JkVNx/jvqRkMTwFB16AstJVbWAl5jVOs/vbY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=LxYJBAAalRPfZ8WTpklJKiHBlHeOLJCbCKSpQfajxqMUywkxF6TOt1b87Ao2a4l4X
+         hpi9QLckTLjhhVKHA+nh4H+XUw1A0yBPwoeEEW/s2EGxJLE3jFdLz+UP5k0TaZkNip
+         RxM75iJjUV+/AcjW6P0ojJ7A11IW1wyr5yUEpfJY=
+Date:   Mon, 9 Nov 2020 14:56:40 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Sia Jee Heng <jee.heng.sia@intel.com>
+Cc:     Eugeniy.Paltsev@synopsys.com, andriy.shevchenko@linux.intel.com,
+        dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 01/15] dt-bindings: dma: Add YAML schemas for
+ dw-axi-dmac
+Message-ID: <20201109092640.GB3171@vkoul-mobl>
+References: <20201027063858.4877-1-jee.heng.sia@intel.com>
+ <20201027063858.4877-2-jee.heng.sia@intel.com>
 MIME-Version: 1.0
-X-SA-Exim-Connect-IP: 2001:67c:670:100:3ad5:47ff:feaf:1a17
-X-SA-Exim-Mail-From: p.zabel@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201027063858.4877-2-jee.heng.sia@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Martin,
+On 27-10-20, 14:38, Sia Jee Heng wrote:
+> YAML schemas Device Tree (DT) binding is the new format for DT to replace
+> the old format. Introduce YAML schemas DT binding for dw-axi-dmac and
+> remove the old version.
 
-On Mon, 2020-11-09 at 10:13 +0100, Martin Kepplinger wrote:
-> As described in NXPs' linux tree, the imx8m SoC includes the same
-> CSI bridge hardware that is part of imx7d. We should be able to
-> use the "fsl,imx7-csi" driver for imx8m directly.
+I see that Rob and DT folks have not been cced, please do so
+
 > 
-> Since ipuv3 is not relevant for imx8m, drop the build dependency
-> for it.
-> 
-> Signed-off-by: Martin Kepplinger <martin.kepplinger@puri.sm>
+> Signed-off-by: Sia Jee Heng <jee.heng.sia@intel.com>
 > ---
->  drivers/staging/media/imx/Kconfig | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>  .../bindings/dma/snps,dw-axi-dmac.txt         |  39 ------
+>  .../bindings/dma/snps,dw-axi-dmac.yaml        | 124 ++++++++++++++++++
+>  2 files changed, 124 insertions(+), 39 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/dma/snps,dw-axi-dmac.txt
+>  create mode 100644 Documentation/devicetree/bindings/dma/snps,dw-axi-dmac.yaml
 > 
-> diff --git a/drivers/staging/media/imx/Kconfig b/drivers/staging/media/imx/Kconfig
-> index f555aac8a9d5..98272fd92fe4 100644
-> --- a/drivers/staging/media/imx/Kconfig
-> +++ b/drivers/staging/media/imx/Kconfig
-> @@ -2,7 +2,7 @@
->  config VIDEO_IMX_MEDIA
->  	tristate "i.MX5/6 V4L2 media core driver"
+> diff --git a/Documentation/devicetree/bindings/dma/snps,dw-axi-dmac.txt b/Documentation/devicetree/bindings/dma/snps,dw-axi-dmac.txt
+> deleted file mode 100644
+> index dbe160400adc..000000000000
+> --- a/Documentation/devicetree/bindings/dma/snps,dw-axi-dmac.txt
+> +++ /dev/null
+> @@ -1,39 +0,0 @@
+> -Synopsys DesignWare AXI DMA Controller
+> -
+> -Required properties:
+> -- compatible: "snps,axi-dma-1.01a"
+> -- reg: Address range of the DMAC registers. This should include
+> -  all of the per-channel registers.
+> -- interrupt: Should contain the DMAC interrupt number.
+> -- dma-channels: Number of channels supported by hardware.
+> -- snps,dma-masters: Number of AXI masters supported by the hardware.
+> -- snps,data-width: Maximum AXI data width supported by hardware.
+> -  (0 - 8bits, 1 - 16bits, 2 - 32bits, ..., 6 - 512bits)
+> -- snps,priority: Priority of channel. Array size is equal to the number of
+> -  dma-channels. Priority value must be programmed within [0:dma-channels-1]
+> -  range. (0 - minimum priority)
+> -- snps,block-size: Maximum block size supported by the controller channel.
+> -  Array size is equal to the number of dma-channels.
+> -
+> -Optional properties:
+> -- snps,axi-max-burst-len: Restrict master AXI burst length by value specified
+> -  in this property. If this property is missing the maximum AXI burst length
+> -  supported by DMAC is used. [1:256]
+> -
+> -Example:
+> -
+> -dmac: dma-controller@80000 {
+> -	compatible = "snps,axi-dma-1.01a";
+> -	reg = <0x80000 0x400>;
+> -	clocks = <&core_clk>, <&cfgr_clk>;
+> -	clock-names = "core-clk", "cfgr-clk";
+> -	interrupt-parent = <&intc>;
+> -	interrupts = <27>;
+> -
+> -	dma-channels = <4>;
+> -	snps,dma-masters = <2>;
+> -	snps,data-width = <3>;
+> -	snps,block-size = <4096 4096 4096 4096>;
+> -	snps,priority = <0 1 2 3>;
+> -	snps,axi-max-burst-len = <16>;
+> -};
+> diff --git a/Documentation/devicetree/bindings/dma/snps,dw-axi-dmac.yaml b/Documentation/devicetree/bindings/dma/snps,dw-axi-dmac.yaml
+> new file mode 100644
+> index 000000000000..e688d25864bc
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/dma/snps,dw-axi-dmac.yaml
+> @@ -0,0 +1,124 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/dma/snps,dw-axi-dmac.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Synopsys DesignWare AXI DMA Controller
+> +
+> +maintainers:
+> +  - Eugeniy Paltsev <Eugeniy.Paltsev@synopsys.com
+> +
+> +description: |
+> + Synopsys DesignWare AXI DMA Controller DT Binding
+> +
+> +properties:
+> +  compatible:
+> +    enum:
+> +      - snps,axi-dma-1.01a
+> +
+> +  reg:
+> +    items:
+> +      - description: Address range of the DMAC registers.
+> +
+> +  reg-names:
+> +    items:
+> +      - const: axidma_ctrl_regs
+> +
+> +  interrupts:
+> +    maxItems: 1
+> +
+> +  clocks:
+> +    items:
+> +      - description: Bus Clock
+> +      - description: Module Clock
+> +
+> +  clock-names:
+> +    items:
+> +      - const: core-clk
+> +      - const: cfgr-clk
+> +
+> +  '#dma-cells':
+> +    const: 1
+> +
+> +  dma-channels:
+> +    description: |
+> +      Number of channels supported by hardware.
+> +
+> +  snps,dma-masters:
+> +    description: |
+> +      Number of AXI masters supported by the hardware.
+> +    allOf:
+> +      - $ref: /schemas/types.yaml#/definitions/uint32
+> +      - enum: [1, 2]
+> +        default: 2
+> +
+> +  snps,data-width:
+> +    description: |
+> +      AXI data width supported by hardware.
+> +      (0 - 8bits, 1 - 16bits, 2 - 32bits, ..., 6 - 512bits)
+> +    allOf:
+> +      - $ref: /schemas/types.yaml#/definitions/uint32
+> +      - enum: [0, 1, 2, 3, 4, 5, 6]
+> +        default: 4
+> +
+> +  snps,priority:
+> +    description: |
+> +      Channel priority specifier associated with the DMA channels.
+> +    allOf:
+> +      - $ref: /schemas/types.yaml#/definitions/uint32-array
+> +      - minItems: 1
+> +        maxItems: 8
+> +        default: [0, 1, 2, 3]
+> +
+> +  snps,block-size:
+> +    description: |
+> +      Channel block size specifier associated with the DMA channels.
+> +    allOf:
+> +      - $ref: /schemas/types.yaml#/definitions/uint32-array
+> +      - minItems: 1
+> +        maxItems: 8
+> +        default: [4096, 4096, 4096, 4096]
+> +
+> +  snps,axi-max-burst-len:
+> +    description: |
+> +      Restrict master AXI burst length by value specified in this property.
+> +      If this property is missing the maximum AXI burst length supported by
+> +      DMAC is used. [1:256]
+> +    allOf:
+> +      - $ref: /schemas/types.yaml#/definitions/uint32
+> +        default: 16
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - clocks
+> +  - clock-names
+> +  - interrupts
+> +  - '#dma-cells'
+> +  - dma-channels
+> +  - snps,dma-masters
+> +  - snps,data-width
+> +  - snps,priority
+> +  - snps,block-size
 
-VIDEO_IMX_MEDIA builds imx6-media, which does depend on IMX_IPUV3_CORE.
-You only want imx-media-common. I think we have to split the
-configuration option in two.
+Pls add  additionalProperties: false and run latest dt schema tool from
+Rob
 
->  	depends on ARCH_MXC || COMPILE_TEST
-> -	depends on VIDEO_V4L2 && IMX_IPUV3_CORE
-> +	depends on VIDEO_V4L2
->  	select MEDIA_CONTROLLER
->  	select VIDEO_V4L2_SUBDEV_API
->  	depends on HAS_DMA
-
-regards
-Philipp
+-- 
+~Vinod
