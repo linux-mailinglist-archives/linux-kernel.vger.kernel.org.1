@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38D832AB944
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 14:07:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A34612ABA88
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 14:23:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731401AbgKINHk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 08:07:40 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60442 "EHLO mail.kernel.org"
+        id S2387893AbgKINUK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 08:20:10 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47602 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730776AbgKINHg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 08:07:36 -0500
+        id S2387551AbgKINUF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 08:20:05 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7B26320663;
-        Mon,  9 Nov 2020 13:07:35 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B62CE2076E;
+        Mon,  9 Nov 2020 13:20:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604927256;
-        bh=mglHCfp/UlQYcz/a9qJD1teai+Xwpt9IhvQcoqPxHFo=;
+        s=default; t=1604928004;
+        bh=c6strdFNX862Wnk98EAR6chwxrm6G0VD8w8sw8l1sco=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=vUGl9dkKYeXvRE9Yq5bUi88JwrpdVHBHlvBLDqYsKdALdEq8O+w2y5EmlkEHWnrgv
-         7Vrfl3rvar94CZVfWqEbHdTfTcHfiBSnLMn6ISfKNjA95jEkzkOlH82Df6VpPqwN1F
-         5I7GiL9eG9vHN/9svk/H1Y8aEyLUs1M3hZRcQW2s=
+        b=IA/NaK+H2X+sKsXojQwaN5fOkG12uqS8Q/90oyMchVIE0C0vXZb/AQ805qgsJqg7p
+         Ffp1BHAAbfgNnuI3mEp3rRJbMsU3PjYKwSJAY2Bfl7/kvq53mhMs4X8kdhENZP9Heb
+         PxF5BuC6nmCY/H6yt/jMIYGyIa1pvUVj3PoeuDIk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Waldemar Brodkorb <wbx@uclibc-ng.org>,
-        Vineet Gupta <vgupta@synopsys.com>
-Subject: [PATCH 4.14 46/48] Revert "ARC: entry: fix potential EFA clobber when TIF_SYSCALL_TRACE"
+        stable@vger.kernel.org, Tyrel Datwyler <tyreld@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.9 093/133] scsi: ibmvscsi: Fix potential race after loss of transport
 Date:   Mon,  9 Nov 2020 13:55:55 +0100
-Message-Id: <20201109125019.028611206@linuxfoundation.org>
+Message-Id: <20201109125035.175407730@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201109125016.734107741@linuxfoundation.org>
-References: <20201109125016.734107741@linuxfoundation.org>
+In-Reply-To: <20201109125030.706496283@linuxfoundation.org>
+References: <20201109125030.706496283@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,86 +43,149 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vineet Gupta <Vineet.Gupta1@synopsys.com>
+From: Tyrel Datwyler <tyreld@linux.ibm.com>
 
-This reverts commit 00fdec98d9881bf5173af09aebd353ab3b9ac729.
-(but only from 5.2 and prior kernels)
+[ Upstream commit 665e0224a3d76f36da40bd9012270fa629aa42ed ]
 
-The original commit was a preventive fix based on code-review and was
-auto-picked for stable back-port (for better or worse).
-It was OK for v5.3+ kernels, but turned up needing an implicit change
-68e5c6f073bcf70 "(ARC: entry: EV_Trap expects r10 (vs. r9) to have
- exception cause)" merged in v5.3 which itself was not backported.
-So to summarize the stable backport of this patch for v5.2 and prior
-kernels is busted and it won't boot.
+After a loss of transport due to an adapter migration or crash/disconnect
+from the host partner there is a tiny window where we can race adjusting
+the request_limit of the adapter. The request limit is atomically
+increased/decreased to track the number of inflight requests against the
+allowed limit of our VIOS partner.
 
-The obvious solution is backport 68e5c6f073bcf70 but that is a pain as
-it doesn't revert cleanly and each of affected kernels (so far v4.19,
-v4.14, v4.9, v4.4) needs a slightly different massaged varaint.
-So the easier fix is to simply revert the backport from 5.2 and prior.
-The issue was not a big deal as it would cause strace to sporadically
-not work correctly.
+After a transport loss we set the request_limit to zero to reflect this
+state.  However, there is a window where the adapter may attempt to queue a
+command because the transport loss event hasn't been fully processed yet
+and request_limit is still greater than zero.  The hypercall to send the
+event will fail and the error path will increment the request_limit as a
+result.  If the adapter processes the transport event prior to this
+increment the request_limit becomes out of sync with the adapter state and
+can result in SCSI commands being submitted on the now reset connection
+prior to an SRP Login resulting in a protocol violation.
 
-Waldemar Brodkorb first reported this when running ARC uClibc regressions
-on latest stable kernels (with offending backport). Once he bisected it,
-the analysis was trivial, so thx to him for this.
+Fix this race by protecting request_limit with the host lock when changing
+the value via atomic_set() to indicate no transport.
 
-Reported-by: Waldemar Brodkorb <wbx@uclibc-ng.org>
-Bisected-by: Waldemar Brodkorb <wbx@uclibc-ng.org>
-Cc: stable <stable@vger.kernel.org> # 5.2 and prior
-Signed-off-by: Vineet Gupta <vgupta@synopsys.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Link: https://lore.kernel.org/r/20201025001355.4527-1-tyreld@linux.ibm.com
+Signed-off-by: Tyrel Datwyler <tyreld@linux.ibm.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arc/kernel/entry.S |   16 +++++++++++-----
- 1 file changed, 11 insertions(+), 5 deletions(-)
+ drivers/scsi/ibmvscsi/ibmvscsi.c | 36 +++++++++++++++++++++++---------
+ 1 file changed, 26 insertions(+), 10 deletions(-)
 
---- a/arch/arc/kernel/entry.S
-+++ b/arch/arc/kernel/entry.S
-@@ -156,6 +156,7 @@ END(EV_Extension)
- tracesys:
- 	; save EFA in case tracer wants the PC of traced task
- 	; using ERET won't work since next-PC has already committed
-+	lr  r12, [efa]
- 	GET_CURR_TASK_FIELD_PTR   TASK_THREAD, r11
- 	st  r12, [r11, THREAD_FAULT_ADDR]	; thread.fault_address
+diff --git a/drivers/scsi/ibmvscsi/ibmvscsi.c b/drivers/scsi/ibmvscsi/ibmvscsi.c
+index b1f3017b6547a..29fcc44be2d57 100644
+--- a/drivers/scsi/ibmvscsi/ibmvscsi.c
++++ b/drivers/scsi/ibmvscsi/ibmvscsi.c
+@@ -806,6 +806,22 @@ static void purge_requests(struct ibmvscsi_host_data *hostdata, int error_code)
+ 	spin_unlock_irqrestore(hostdata->host->host_lock, flags);
+ }
  
-@@ -198,9 +199,15 @@ tracesys_exit:
- ; Breakpoint TRAP
- ; ---------------------------------------------
- trap_with_param:
--	mov r0, r12	; EFA in case ptracer/gdb wants stop_pc
++/**
++ * ibmvscsi_set_request_limit - Set the adapter request_limit in response to
++ * an adapter failure, reset, or SRP Login. Done under host lock to prevent
++ * race with SCSI command submission.
++ * @hostdata:	adapter to adjust
++ * @limit:	new request limit
++ */
++static void ibmvscsi_set_request_limit(struct ibmvscsi_host_data *hostdata, int limit)
++{
++	unsigned long flags;
 +
-+	; stop_pc info by gdb needs this info
-+	lr  r0, [efa]
- 	mov r1, sp
- 
-+	; Now that we have read EFA, it is safe to do "fake" rtie
-+	;   and get out of CPU exception mode
-+	FAKE_RET_FROM_EXCPN
++	spin_lock_irqsave(hostdata->host->host_lock, flags);
++	atomic_set(&hostdata->request_limit, limit);
++	spin_unlock_irqrestore(hostdata->host->host_lock, flags);
++}
 +
- 	; Save callee regs in case gdb wants to have a look
- 	; SP will grow up by size of CALLEE Reg-File
- 	; NOTE: clobbers r12
-@@ -227,10 +234,6 @@ ENTRY(EV_Trap)
+ /**
+  * ibmvscsi_reset_host - Reset the connection to the server
+  * @hostdata:	struct ibmvscsi_host_data to reset
+@@ -813,7 +829,7 @@ static void purge_requests(struct ibmvscsi_host_data *hostdata, int error_code)
+ static void ibmvscsi_reset_host(struct ibmvscsi_host_data *hostdata)
+ {
+ 	scsi_block_requests(hostdata->host);
+-	atomic_set(&hostdata->request_limit, 0);
++	ibmvscsi_set_request_limit(hostdata, 0);
  
- 	EXCEPTION_PROLOGUE
+ 	purge_requests(hostdata, DID_ERROR);
+ 	hostdata->action = IBMVSCSI_HOST_ACTION_RESET;
+@@ -1146,13 +1162,13 @@ static void login_rsp(struct srp_event_struct *evt_struct)
+ 		dev_info(hostdata->dev, "SRP_LOGIN_REJ reason %u\n",
+ 			 evt_struct->xfer_iu->srp.login_rej.reason);
+ 		/* Login failed.  */
+-		atomic_set(&hostdata->request_limit, -1);
++		ibmvscsi_set_request_limit(hostdata, -1);
+ 		return;
+ 	default:
+ 		dev_err(hostdata->dev, "Invalid login response typecode 0x%02x!\n",
+ 			evt_struct->xfer_iu->srp.login_rsp.opcode);
+ 		/* Login failed.  */
+-		atomic_set(&hostdata->request_limit, -1);
++		ibmvscsi_set_request_limit(hostdata, -1);
+ 		return;
+ 	}
  
--	lr  r12, [efa]
--
--	FAKE_RET_FROM_EXCPN
--
- 	;============ TRAP 1   :breakpoints
- 	; Check ECR for trap with arg (PROLOGUE ensures r9 has ECR)
- 	bmsk.f 0, r9, 7
-@@ -238,6 +241,9 @@ ENTRY(EV_Trap)
+@@ -1163,7 +1179,7 @@ static void login_rsp(struct srp_event_struct *evt_struct)
+ 	 * This value is set rather than added to request_limit because
+ 	 * request_limit could have been set to -1 by this client.
+ 	 */
+-	atomic_set(&hostdata->request_limit,
++	ibmvscsi_set_request_limit(hostdata,
+ 		   be32_to_cpu(evt_struct->xfer_iu->srp.login_rsp.req_lim_delta));
  
- 	;============ TRAP  (no param): syscall top level
+ 	/* If we had any pending I/Os, kick them */
+@@ -1195,13 +1211,13 @@ static int send_srp_login(struct ibmvscsi_host_data *hostdata)
+ 	login->req_buf_fmt = cpu_to_be16(SRP_BUF_FORMAT_DIRECT |
+ 					 SRP_BUF_FORMAT_INDIRECT);
  
-+	; First return from Exception to pure K mode (Exception/IRQs renabled)
-+	FAKE_RET_FROM_EXCPN
-+
- 	; If syscall tracing ongoing, invoke pre-post-hooks
- 	GET_CURR_THR_INFO_FLAGS   r10
- 	btst r10, TIF_SYSCALL_TRACE
+-	spin_lock_irqsave(hostdata->host->host_lock, flags);
+ 	/* Start out with a request limit of 0, since this is negotiated in
+ 	 * the login request we are just sending and login requests always
+ 	 * get sent by the driver regardless of request_limit.
+ 	 */
+-	atomic_set(&hostdata->request_limit, 0);
++	ibmvscsi_set_request_limit(hostdata, 0);
+ 
++	spin_lock_irqsave(hostdata->host->host_lock, flags);
+ 	rc = ibmvscsi_send_srp_event(evt_struct, hostdata, login_timeout * 2);
+ 	spin_unlock_irqrestore(hostdata->host->host_lock, flags);
+ 	dev_info(hostdata->dev, "sent SRP login\n");
+@@ -1781,7 +1797,7 @@ static void ibmvscsi_handle_crq(struct viosrp_crq *crq,
+ 		return;
+ 	case VIOSRP_CRQ_XPORT_EVENT:	/* Hypervisor telling us the connection is closed */
+ 		scsi_block_requests(hostdata->host);
+-		atomic_set(&hostdata->request_limit, 0);
++		ibmvscsi_set_request_limit(hostdata, 0);
+ 		if (crq->format == 0x06) {
+ 			/* We need to re-setup the interpartition connection */
+ 			dev_info(hostdata->dev, "Re-enabling adapter!\n");
+@@ -2137,12 +2153,12 @@ static void ibmvscsi_do_work(struct ibmvscsi_host_data *hostdata)
+ 	}
+ 
+ 	hostdata->action = IBMVSCSI_HOST_ACTION_NONE;
++	spin_unlock_irqrestore(hostdata->host->host_lock, flags);
+ 
+ 	if (rc) {
+-		atomic_set(&hostdata->request_limit, -1);
++		ibmvscsi_set_request_limit(hostdata, -1);
+ 		dev_err(hostdata->dev, "error after %s\n", action);
+ 	}
+-	spin_unlock_irqrestore(hostdata->host->host_lock, flags);
+ 
+ 	scsi_unblock_requests(hostdata->host);
+ }
+@@ -2226,7 +2242,7 @@ static int ibmvscsi_probe(struct vio_dev *vdev, const struct vio_device_id *id)
+ 	init_waitqueue_head(&hostdata->work_wait_q);
+ 	hostdata->host = host;
+ 	hostdata->dev = dev;
+-	atomic_set(&hostdata->request_limit, -1);
++	ibmvscsi_set_request_limit(hostdata, -1);
+ 	hostdata->host->max_sectors = IBMVSCSI_MAX_SECTORS_DEFAULT;
+ 
+ 	if (map_persist_bufs(hostdata)) {
+-- 
+2.27.0
+
 
 
