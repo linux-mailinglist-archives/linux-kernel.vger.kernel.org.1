@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 867E52ABB9B
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 14:32:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A53112ABC0A
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 14:35:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732597AbgKINMY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 08:12:24 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37784 "EHLO mail.kernel.org"
+        id S1731936AbgKINd2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 08:33:28 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59412 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731873AbgKINMO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 08:12:14 -0500
+        id S1731113AbgKINGl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 08:06:41 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DE01C2083B;
-        Mon,  9 Nov 2020 13:12:12 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C03E520789;
+        Mon,  9 Nov 2020 13:06:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604927533;
-        bh=0QOxvSJhpAHWuVkKjKqImBorpm9ydfXg0rELIMh5bqM=;
+        s=default; t=1604927201;
+        bh=a4fewJNY0TNNf/IBkSpKcRWKjiib/2IG8c/d6vocP8E=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=iOTOiwVEy7Ene+3yZa7uOUDVbc8HydgoNaSHsQ0TJEDng05t3RuJndtebbT8ekqJu
-         XjCINdPcrMcj+9OMi/YhLQbAO/VALwM+UWlFyfT5d2+Fya1p5rQ+980DpsXBzPRLSf
-         w1QCxqxH3iiaB0e1ZcreigcW5vYGs/17QM2INLoI=
+        b=h4tOIWWl1Swwko14kLBCr2limz4szF7lK+lKO7PIM9hqlDLvUdeFiOdLFz6G/jR2a
+         ByaL+n5VMraxCo2ZwUF+C+Xl32HmyTYPvz2s7TpjRv3RHjcVITaZYTIaNsQwba76RR
+         P6ArZLS5pXG2IX5vCso4Csilj8iJSDW223jn1S8A=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Petr Malat <oss@malat.biz>,
-        Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 5.4 20/85] sctp: Fix COMM_LOST/CANT_STR_ASSOC err reporting on big-endian platforms
+        stable@vger.kernel.org, YueHaibing <yuehaibing@huawei.com>,
+        Andrew Lunn <andrew@lunn.ch>, Jakub Kicinski <kuba@kernel.org>
+Subject: [PATCH 4.14 08/48] sfp: Fix error handing in sfp_probe()
 Date:   Mon,  9 Nov 2020 13:55:17 +0100
-Message-Id: <20201109125023.555225859@linuxfoundation.org>
+Message-Id: <20201109125017.154511467@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201109125022.614792961@linuxfoundation.org>
-References: <20201109125022.614792961@linuxfoundation.org>
+In-Reply-To: <20201109125016.734107741@linuxfoundation.org>
+References: <20201109125016.734107741@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,44 +42,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Petr Malat <oss@malat.biz>
+From: YueHaibing <yuehaibing@huawei.com>
 
-[ Upstream commit b6df8c81412190fbd5eaa3cec7f642142d9c16cd ]
+[ Upstream commit 9621618130bf7e83635367c13b9a6ee53935bb37 ]
 
-Commit 978aa0474115 ("sctp: fix some type cast warnings introduced since
-very beginning")' broke err reading from sctp_arg, because it reads the
-value as 32-bit integer, although the value is stored as 16-bit integer.
-Later this value is passed to the userspace in 16-bit variable, thus the
-user always gets 0 on big-endian platforms. Fix it by reading the __u16
-field of sctp_arg union, as reading err field would produce a sparse
-warning.
+gpiod_to_irq() never return 0, but returns negative in
+case of error, check it and set gpio_irq to 0.
 
-Fixes: 978aa0474115 ("sctp: fix some type cast warnings introduced since very beginning")
-Signed-off-by: Petr Malat <oss@malat.biz>
-Acked-by: Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>
-Link: https://lore.kernel.org/r/20201030132633.7045-1-oss@malat.biz
+Fixes: 73970055450e ("sfp: add SFP module support")
+Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+Link: https://lore.kernel.org/r/20201031031053.25264-1-yuehaibing@huawei.com
 Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/sctp/sm_sideeffect.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/net/phy/sfp.c |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
---- a/net/sctp/sm_sideeffect.c
-+++ b/net/sctp/sm_sideeffect.c
-@@ -1600,12 +1600,12 @@ static int sctp_cmd_interpreter(enum sct
- 			break;
+--- a/drivers/net/phy/sfp.c
++++ b/drivers/net/phy/sfp.c
+@@ -881,7 +881,8 @@ static int sfp_probe(struct platform_dev
+ 			continue;
  
- 		case SCTP_CMD_INIT_FAILED:
--			sctp_cmd_init_failed(commands, asoc, cmd->obj.u32);
-+			sctp_cmd_init_failed(commands, asoc, cmd->obj.u16);
- 			break;
- 
- 		case SCTP_CMD_ASSOC_FAILED:
- 			sctp_cmd_assoc_failed(commands, asoc, event_type,
--					      subtype, chunk, cmd->obj.u32);
-+					      subtype, chunk, cmd->obj.u16);
- 			break;
- 
- 		case SCTP_CMD_INIT_COUNTER_INC:
+ 		irq = gpiod_to_irq(sfp->gpio[i]);
+-		if (!irq) {
++		if (irq < 0) {
++			irq = 0;
+ 			poll = true;
+ 			continue;
+ 		}
 
 
