@@ -2,203 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DBAF2AAF3B
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 03:15:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3990B2AAF3F
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 03:16:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729217AbgKICO7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 8 Nov 2020 21:14:59 -0500
-Received: from szxga06-in.huawei.com ([45.249.212.32]:7467 "EHLO
-        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728006AbgKICO6 (ORCPT
+        id S1729066AbgKICQd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 8 Nov 2020 21:16:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33682 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728006AbgKICQd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 8 Nov 2020 21:14:58 -0500
-Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4CTvhY092Qzhj9x;
-        Mon,  9 Nov 2020 10:14:53 +0800 (CST)
-Received: from [10.136.114.67] (10.136.114.67) by smtp.huawei.com
- (10.3.19.204) with Microsoft SMTP Server (TLS) id 14.3.487.0; Mon, 9 Nov 2020
- 10:14:56 +0800
-Subject: Re: [f2fs-dev] [PATCH v3 2/2] f2fs: fix compat F2FS_IOC_{MOVE,
- GARBAGE_COLLECT}_RANGE
-To:     Jaegeuk Kim <jaegeuk@kernel.org>, <daeho43@gmail.com>
-CC:     Eric Biggers <ebiggers@kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-f2fs-devel@lists.sourceforge.net>
-References: <20201105010934.16018-1-yuchao0@huawei.com>
- <20201106000550.GD2555324@gmail.com>
- <07454135-539d-a159-deb8-ff29df7e22de@huawei.com>
- <20201106214028.GC1474936@google.com>
-From:   Chao Yu <yuchao0@huawei.com>
-Message-ID: <3108fbd8-94c2-31e6-cbaf-ec4756f3dd88@huawei.com>
-Date:   Mon, 9 Nov 2020 10:14:55 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.9.1
+        Sun, 8 Nov 2020 21:16:33 -0500
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F791C0613CF;
+        Sun,  8 Nov 2020 18:16:33 -0800 (PST)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CTvkL02vKz9s1l;
+        Mon,  9 Nov 2020 13:16:23 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1604888188;
+        bh=850yCADLEwMJTBdfiOiNR5gW6UAvBHPX20KTwrNsbUQ=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=gsx+GOKEpNJJXuX5mz4J7KGzFd+DPyTw6PkCOpB6szbt71fHiW9IQixpJ7dBgnqfX
+         /2l34HhfN6KYSFURw0i9+zBp9WUdo+cVrSuIQMREsY/sQrYIIS3Kq9hxTN4ZwmWfvI
+         iLccCCCRaYl5gBi68PZeMa4R3jj83d5gcdA+3DSO7CTq9UZGqofILIQF0YMSVwVy5+
+         Qay+zt5uI8qz4bhCZk2K3HBx9bK5mCr2JNzTbztVQTRysqT6JOl80s/ob0h7ZXslSZ
+         xDEwr8+Aj3NbmANN9ZzpjZ/BMziXANev36wpfuwtwvofEW5YHZdYTZrg5pN1bsmAFV
+         QnLbpI9uKH13g==
+Date:   Mon, 9 Nov 2020 13:16:20 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     DRI <dri-devel@lists.freedesktop.org>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Dave Airlie <airlied@linux.ie>
+Cc:     Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Intel Graphics <intel-gfx@lists.freedesktop.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Maxime Ripard <maxime@cerno.tech>,
+        Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>
+Subject: Re: linux-next: manual merge of the drm-misc tree with the amdgpu
+ tree
+Message-ID: <20201109131620.10282da8@canb.auug.org.au>
+In-Reply-To: <20201103142108.129da15c@canb.auug.org.au>
+References: <20201103142108.129da15c@canb.auug.org.au>
 MIME-Version: 1.0
-In-Reply-To: <20201106214028.GC1474936@google.com>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.136.114.67]
-X-CFilter-Loop: Reflected
+Content-Type: multipart/signed; boundary="Sig_/QD+vvGU3..AqhU0FwrDzcNR";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020/11/7 5:40, Jaegeuk Kim wrote:
-> On 11/06, Chao Yu wrote:
->> On 2020/11/6 8:05, Eric Biggers wrote:
->>> This patch is marked 2/2, but it seems you sent it out on its own.  Patch series
->>> are supposed to be resend in full; otherwise people can see just one patch and
->>> have no context.
->>
->> That's a historical problem, as in last many years, we (f2fs community) don't have
->> other long-term reviewers except Jaegeuk and me, so we have unwritten rule: only
->> resending changed patch in patchset.
->>
->> IMO, that helps to skip traversing unchanged patches, and focusing reviewing on the
->> real change lines, and certainly we have its context in mind.
->>
->> Personally, I prefer to revise, resend or review patch{,es} of patchset have real
->> change line in f2fs mailing list, anyway we can discuss about the rule here.
-> 
-> Chao, I think we need to change this to resend whole patch-set again, since
-> it's a bit difficult to catch which part of patches were the latest one.
+--Sig_/QD+vvGU3..AqhU0FwrDzcNR
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Oh, I've no objection, if it really helps you.
+Hi all,
 
-+Daeho,
+On Tue, 3 Nov 2020 14:21:08 +1100 Stephen Rothwell <sfr@canb.auug.org.au> w=
+rote:
+>
+> Today's linux-next merge of the drm-misc tree got a conflict in:
+>=20
+>   drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
+>=20
+> between commit:
+>=20
+>   e8a982355f96 ("drm/amd/display: Add tracepoint for amdgpu_dm")
+>=20
+> from the amdgpu tree and commit:
+>=20
+>   29b77ad7b9ca ("drm/atomic: Pass the full state to CRTC atomic_check")
+>=20
+> from the drm-misc tree.
+>=20
+> I fixed it up (see below) and can carry the fix as necessary. This
+> is now fixed as far as linux-next is concerned, but any non trivial
+> conflicts should be mentioned to your upstream maintainer when your tree
+> is submitted for merging.  You may also want to consider cooperating
+> with the maintainer of the conflicting tree to minimise any particularly
+> complex conflicts.
+> =20
+> diff --cc drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
+> index 28dcaae06993,86fd4420f128..000000000000
+> --- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
+> +++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
+> @@@ -6003,19 -5514,19 +6003,21 @@@ static void dm_update_crtc_active_plane
+>   }
+>  =20
+>   static int dm_crtc_helper_atomic_check(struct drm_crtc *crtc,
+> - 				       struct drm_crtc_state *state)
+> + 				       struct drm_atomic_state *state)
+>   {
+> + 	struct drm_crtc_state *crtc_state =3D drm_atomic_get_new_crtc_state(st=
+ate,
+> + 									  crtc);
+>   	struct amdgpu_device *adev =3D drm_to_adev(crtc->dev);
+>   	struct dc *dc =3D adev->dm.dc;
+> - 	struct dm_crtc_state *dm_crtc_state =3D to_dm_crtc_state(state);
+> + 	struct dm_crtc_state *dm_crtc_state =3D to_dm_crtc_state(crtc_state);
+>   	int ret =3D -EINVAL;
+>  =20
+> - 	trace_amdgpu_dm_crtc_atomic_check(state);
+> ++	trace_amdgpu_dm_crtc_atomic_check(crtc_state);
+>  +
+> - 	dm_update_crtc_active_planes(crtc, state);
+> + 	dm_update_crtc_active_planes(crtc, crtc_state);
+>  =20
+>   	if (unlikely(!dm_crtc_state->stream &&
+> - 		     modeset_required(state, NULL, dm_crtc_state->stream))) {
+> + 		     modeset_required(crtc_state, NULL, dm_crtc_state->stream))) {
+>   		WARN_ON(1);
+>   		return ret;
+>   	}
 
-Thanks,
+This is now a conflict between the drm tree and the amdgpu tree.
 
-> 
->>
->>>
->>> On Thu, Nov 05, 2020 at 09:09:34AM +0800, Chao Yu wrote:
->>>> Eric reported a ioctl bug in below link:
->>>>
->>>> https://lore.kernel.org/linux-f2fs-devel/20201103032234.GB2875@sol.localdomain/
->>>>
->>>> That said, on some 32-bit architectures, u64 has only 32-bit alignment,
->>>> notably i386 and x86_32, so that size of struct f2fs_gc_range compiled
->>>> in x86_32 is 20 bytes, however the size in x86_64 is 24 bytes, binary
->>>> compiled in x86_32 can not call F2FS_IOC_GARBAGE_COLLECT_RANGE successfully
->>>> due to mismatched value of ioctl command in between binary and f2fs
->>>> module, similarly, F2FS_IOC_MOVE_RANGE will fail too.
->>>>
->>>> In this patch we introduce two ioctls for compatibility of above special
->>>> 32-bit binary:
->>>> - F2FS_IOC32_GARBAGE_COLLECT_RANGE
->>>> - F2FS_IOC32_MOVE_RANGE
->>>>
->>>
->>> It would be good to add a proper reported-by line, otherwise it's not clear who
->>> "Eric" is (there are lots of Erics):
->>>
->>> Reported-by: Eric Biggers <ebiggers@google.com>
->> Sure, although I attached the link includes original report email, in where it
->> points out who "Eric" is.
->>
->>>
->>>> +static int __f2fs_ioc_gc_range(struct file *filp, struct f2fs_gc_range *range)
->>>>    {
->>>> -	struct inode *inode = file_inode(filp);
->>>> -	struct f2fs_sb_info *sbi = F2FS_I_SB(inode);
->>>> -	struct f2fs_gc_range range;
->>>> +	struct f2fs_sb_info *sbi = F2FS_I_SB(file_inode(filp));
->>>>    	u64 end;
->>>>    	int ret;
->>>> +	if (unlikely(f2fs_cp_error(sbi)))
->>>> +		return -EIO;
->>>> +	if (!f2fs_is_checkpoint_ready(sbi))
->>>> +		return -ENOSPC;
->>>
->>> These two checkpoint-related checks weren't present in the original version.
->>> Is that intentional?
->>
->> Quoted
->>
->>> It would be better to have __f2fs_ioc_gc_range() handle the f2fs_cp_error(),
->>> f2fs_is_checkpoint_ready(), capable(), and f2fs_readonly() checks, so that they
->>> don't have to be duplicated in the native and compat cases.
->>
->>> Similarly for "move range".
->>
->> I missed to check the detail, and just follow, I can clean up it.
->>
->>>
->>>> +static int __f2fs_ioc_move_range(struct file *filp,
->>>> +				struct f2fs_move_range *range)
->>>>    {
->>>> -	struct f2fs_move_range range;
->>>> +	struct f2fs_sb_info *sbi = F2FS_I_SB(file_inode(filp));
->>>>    	struct fd dst;
->>>>    	int err;
->>>> +	if (unlikely(f2fs_cp_error(sbi)))
->>>> +		return -EIO;
->>>> +	if (!f2fs_is_checkpoint_ready(sbi))
->>>> +		return -ENOSPC;
->>>> +
->>>
->>> Likewise here.
->>>
->>>> diff --git a/include/uapi/linux/f2fs.h b/include/uapi/linux/f2fs.h
->>>> index f00199a2e38b..8c14e88a9645 100644
->>>> --- a/include/uapi/linux/f2fs.h
->>>> +++ b/include/uapi/linux/f2fs.h
->>>> @@ -5,6 +5,10 @@
->>>>    #include <linux/types.h>
->>>>    #include <linux/ioctl.h>
->>>> +#ifdef __KERNEL__
->>>> +#include <linux/compat.h>
->>>> +#endif
->>>> +
->>>>    /*
->>>>     * f2fs-specific ioctl commands
->>>>     */
->>>> @@ -65,6 +69,16 @@ struct f2fs_gc_range {
->>>>    	__u64 len;
->>>>    };
->>>> +#if defined(__KERNEL__) && defined(CONFIG_COMPAT)
->>>> +struct compat_f2fs_gc_range {
->>>> +	u32 sync;
->>>> +	compat_u64 start;
->>>> +	compat_u64 len;
->>>> +};
->>>> +#define F2FS_IOC32_GARBAGE_COLLECT_RANGE	_IOW(F2FS_IOCTL_MAGIC, 11,\
->>>> +						struct compat_f2fs_gc_range)
->>>> +#endif
->>>> +
->>>>    struct f2fs_defragment {
->>>>    	__u64 start;
->>>>    	__u64 len;
->>>> @@ -77,6 +91,17 @@ struct f2fs_move_range {
->>>>    	__u64 len;		/* size to move */
->>>>    };
->>>> +#if defined(__KERNEL__) && defined(CONFIG_COMPAT)
->>>> +struct compat_f2fs_move_range {
->>>> +	u32 dst_fd;
->>>> +	compat_u64 pos_in;
->>>> +	compat_u64 pos_out;
->>>> +	compat_u64 len;
->>>> +};
->>>> +#define F2FS_IOC32_MOVE_RANGE		_IOWR(F2FS_IOCTL_MAGIC, 9,	\
->>>> +					struct compat_f2fs_move_range)
->>>> +#endif
->>>> +
->>>>    struct f2fs_flush_device {
->>>>    	__u32 dev_num;		/* device number to flush */
->>>>    	__u32 segments;		/* # of segments to flush */
->>>> -- 
->>>
->>> Did you consider instead putting these compat definitions in an internal kernel
->>> header, or even just in the .c file, to avoid cluttering up the UAPI header?
->>
->> Better.
->>
->> I can move them before their use.
->>
->>>
->>> - Eric
->>> .
->>>
-> .
-> 
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/QD+vvGU3..AqhU0FwrDzcNR
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl+opnQACgkQAVBC80lX
+0Gx3ZQgAnqiuf8lX60p47PxoyJnIyB1VLzkRmb5qqvefTrd7QvQtkMogzxTlxmXs
+Z9KKj/l8L0e/Is6L4bxUDSJBuOnOIiGXMV0MScLTXzr+oTeuqgxS70+9FxUxdJ0z
+jjAkBLswnFvloNJRE7QfRAh+2tgJ1Mwdk2WcZM8t5h3mDoCu+s6Bj18+BdG3Rl8M
+kspmY5+pYq3as13aK+o6glpJ7UwIXG+cXAIboqg2L84/szLKt8MW6W5+mJZ8o1n9
+TiRHQeElEWN7utjfDptkqcaH94fJUcTteT/iDqGRoLGMnRuo8CopfsLt4T2vlfo0
+wv6tz1cHQFHKgGT2/CXBTuivMxOdXw==
+=Nc+j
+-----END PGP SIGNATURE-----
+
+--Sig_/QD+vvGU3..AqhU0FwrDzcNR--
