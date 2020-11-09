@@ -2,103 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EF0F2ABFCB
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 16:27:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D3F742ABFD1
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 16:27:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730949AbgKIP1R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 10:27:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43814 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729776AbgKIP1R (ORCPT
+        id S1731686AbgKIP1w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 10:27:52 -0500
+Received: from relay6-d.mail.gandi.net ([217.70.183.198]:53527 "EHLO
+        relay6-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729776AbgKIP1v (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 10:27:17 -0500
-Received: from mail-ua1-x941.google.com (mail-ua1-x941.google.com [IPv6:2607:f8b0:4864:20::941])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41F77C0613D3
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Nov 2020 07:27:17 -0800 (PST)
-Received: by mail-ua1-x941.google.com with SMTP id p12so2900289uam.1
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Nov 2020 07:27:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=szeredi.hu; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=QC5FHZ1X1/PZam+NsCeIUtWUr/OiX3u5F7vj8wTQSIo=;
-        b=TZWdpaXR4wUJwMonwNlSo3OTC/qsDxggW35onf1TCvbd0i4foe92Hz3iCpRVYUSeML
-         N3TQ+m24KYVG0TZnSUuP+yGO7twvVzionzcpAQgM3GSDOF9RyxFKEA6C/RWvtJ2Fp0zs
-         VY0A4waw4GTL53Ka756yCaYI6rHyKvxTC0XGI=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=QC5FHZ1X1/PZam+NsCeIUtWUr/OiX3u5F7vj8wTQSIo=;
-        b=m1v1zepTa+6SPpV9yY//jOM7N3JzcPnAGuu4h6nJfZrracpaH05/WnFYXfclvC5dT/
-         z3+aKBvS2b/tiEYqwgnhs+MDavGS0tSC7BFPm7xR4bq/xa3GUapbYEvLpJ4dIDqrzdfH
-         g5LGZqeaidVVKxKH4uu3SGp1n12YzJmtG5qaPymFm/Z7g+TVGUwJx34iJkmkGS+7o6Qe
-         DdVyk4N6hVYh9Hd+mTbbnS4mEAABJKylXrI1eT5g87JIPcGUskOMgLkhbKF6FrpZlG6c
-         LK4S/mF7nGFJnh0+DGfTYyz6iaX7VBsGj8P46QOo1nOpOLV5jnWoeGRs4kY7u8YqTz6i
-         b5uQ==
-X-Gm-Message-State: AOAM531JodMnVl6OBCqA+XrIN0dqGj/WhMSb59L55Xi1x1tYbAwcsszL
-        1t+xsYvh/t7MBU4NbrM42CQcd3eYoyPz1mbCBidZWg==
-X-Google-Smtp-Source: ABdhPJz/FTpDS76pZAZFnZy1tGyA7dVPU97SCg5t6g94cDAJBjoVD31hS9aBGwCLPSfehAKXtrOmhVT4uPQ8oVyN4as=
-X-Received: by 2002:ab0:2a11:: with SMTP id o17mr7023753uar.8.1604935636368;
- Mon, 09 Nov 2020 07:27:16 -0800 (PST)
+        Mon, 9 Nov 2020 10:27:51 -0500
+X-Originating-IP: 86.194.74.19
+Received: from localhost (lfbn-lyo-1-997-19.w86-194.abo.wanadoo.fr [86.194.74.19])
+        (Authenticated sender: alexandre.belloni@bootlin.com)
+        by relay6-d.mail.gandi.net (Postfix) with ESMTPSA id 436A7C000E;
+        Mon,  9 Nov 2020 15:27:49 +0000 (UTC)
+Date:   Mon, 9 Nov 2020 16:27:48 +0100
+From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Lars Povlsen <lars.povlsen@microchip.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
+        devicetree <devicetree@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v8 2/3] pinctrl: pinctrl-microchip-sgpio: Add pinctrl
+ driver for Microsemi Serial GPIO
+Message-ID: <20201109152748.GA1691943@piout.net>
+References: <20201109132643.457932-1-lars.povlsen@microchip.com>
+ <20201109132643.457932-3-lars.povlsen@microchip.com>
+ <CAHp75Vdfm7A5=Mi-LZ1sHJS5fSngypZQ50-rGQ7A6kD2kmVFTA@mail.gmail.com>
+ <20201109143237.GJ1257108@piout.net>
+ <CAHp75Vc7eRDq5wUyUdvCZCnV_VS+afGnbJpQeDSeXVE9K_MGng@mail.gmail.com>
 MIME-Version: 1.0
-References: <1e796f9e008fb78fb96358ff74f39bd4865a7c88.1604926010.git.gladkov.alexey@gmail.com>
-In-Reply-To: <1e796f9e008fb78fb96358ff74f39bd4865a7c88.1604926010.git.gladkov.alexey@gmail.com>
-From:   Miklos Szeredi <miklos@szeredi.hu>
-Date:   Mon, 9 Nov 2020 16:27:05 +0100
-Message-ID: <CAJfpegua_ahmNa4p0me6R10wtcPpQVKNiKQOVKjuNW67RHFOOA@mail.gmail.com>
-Subject: Re: [RESEND PATCH v3] fuse: Abort waiting for a response if the
- daemon receives a fatal signal
-To:     Alexey Gladkov <gladkov.alexey@gmail.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>, linux-fsdevel@vger.kernel.org,
-        Alexey Gladkov <legion@kernel.org>,
-        "Eric W. Biederman" <ebiederm@xmission.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHp75Vc7eRDq5wUyUdvCZCnV_VS+afGnbJpQeDSeXVE9K_MGng@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 9, 2020 at 1:48 PM Alexey Gladkov <gladkov.alexey@gmail.com> wrote:
->
-> This patch removes one kind of the deadlocks inside the fuse daemon. The
-> problem appear when the fuse daemon itself makes a file operation on its
-> filesystem and receives a fatal signal.
->
-> This deadlock can be interrupted via fusectl filesystem. But if you have
-> many fuse mountpoints, it will be difficult to figure out which
-> connection to break.
->
-> This patch aborts the connection if the fuse server receives a fatal
-> signal.
+On 09/11/2020 17:16:49+0200, Andy Shevchenko wrote:
+> On Mon, Nov 9, 2020 at 4:32 PM Alexandre Belloni
+> <alexandre.belloni@bootlin.com> wrote:
+> > On 09/11/2020 16:17:40+0200, Andy Shevchenko wrote:
+> > > > +       if (input != bank->is_input) {
+> > >
+> > > > +               dev_err(pctldev->dev, "Pin %d direction as %s is not possible\n",
+> > > > +                       pin, input ? "input" : "output");
+> > >
+> > > Do we need this noise? Isn't user space getting a proper error code as
+> > > per doc and can handle this?
+> >
+> > Why would userspace get the error code?
+> 
+> Huh?! Why it shouldn't. How will users know if they are doing something wrong?
+> 
+> > Userspace should never have to
+> > handle gpios directly or you are doing something wrong.
+> 
+> This is true, but check how error codes are propagated to the user space.
+> 
 
-The patch itself might be acceptable, but I have some questions.
+your point is to remove an error message because the error may be
+propagated to userspace. My point is that userspace should never use
+gpios and the kernel has to be the consumer. I don't see how your answer
+is relevant here. Did you already check all the call sites from the
+kernel too?
 
-To logic of this patch says:
-
-"If a task having the fuse device open in it's fd table receives
-SIGKILL (and filesystem was initially mounted in a non-init user
-namespace), then abort the filesystem operation"
-
-You just say "server" instead of "task having the fuse device open in
-it's fd table" which is sloppy to say the least.  It might also lead
-to regressions, although I agree that it's unlikely.
-
-Also how is this solving any security issue?   Just create the request
-loop using two fuse filesystems and the deadlock avoidance has just
-been circumvented.   So AFAICS "selling" this as a CVE fix is not
-appropriate.
-
-What's the reason for making this user-ns only?   If we drop the
-security aspect, then I don't see any reason not to do this
-unconditionally.
-
-Also note, there's a proper solution for making fuse requests always
-killable, and that is to introduce a shadow locking that ensures
-correct fs operation in the face of requests that have returned and
-released their respective VFS locks.   Now this would be a much more
-complex solution, but also a much more correct one, not having issues
-with correctly defining what a server is (which is not a solvable
-problem).
-
-Thanks,
-Miklos
+-- 
+Alexandre Belloni, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
