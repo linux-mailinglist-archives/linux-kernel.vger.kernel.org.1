@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BAAB02AB90C
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 14:04:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 660582ABA3A
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 14:17:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730333AbgKIND5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 08:03:57 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55498 "EHLO mail.kernel.org"
+        id S1731895AbgKINQ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 08:16:56 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44004 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730574AbgKINBc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 08:01:32 -0500
+        id S1731420AbgKINQw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 08:16:52 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DE8CD20663;
-        Mon,  9 Nov 2020 13:01:30 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B5DE220663;
+        Mon,  9 Nov 2020 13:16:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604926891;
-        bh=x2BiHboh21Ky6ukpGo/gzGRBJffoE2cA9D/CqxUe4r4=;
+        s=default; t=1604927812;
+        bh=mZIslv/rCJwVBv/Ok4vmx5oj9FnjSWf9bLdVcEA5lVw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=2k41koqHWgkZnXuRhUDZKvIR1fDOI+lFbrtR8MaOP+Lo/8uiyB233QL1NpfWFWN37
-         2zqD/hAI3LRu2QBMVPZmoTwWX83aKY2Tlluivfne3lGeUbuZH+LTJ6wdB7qEY0dXby
-         YXrhlJPtc/Ss1qiYJEoO4fd6s2OZHWzWdyuuwJr0=
+        b=Kj0uGVdOqUOUh99J2JVmfoTOHzdEAdNUcqV7RCW0xuu/MI48LjQDLeWa+T+uxeX/c
+         beLcQu7dXFQhgt065cIH6QNxtJw8BGOX+LNEDe4XGfpC3QT3DdXAe/xt1HS1OkXPv3
+         r/KvA9i6WFbs5hEOAmXKH2eZG2qjdEvc2chG6KTI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Andreas Dilger <adilger@dilger.ca>,
-        Ritesh Harjani <riteshh@linux.ibm.com>,
-        Jan Kara <jack@suse.cz>, Theodore Tso <tytso@mit.edu>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 039/117] ext4: Detect already used quota file early
-Date:   Mon,  9 Nov 2020 13:54:25 +0100
-Message-Id: <20201109125027.508154460@linuxfoundation.org>
+        stable@vger.kernel.org, Chris Wilson <chris@chris-wilson.co.uk>,
+        Matthew Auld <matthew.auld@intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>
+Subject: [PATCH 5.9 004/133] drm/i915/gem: Prevent using pgprot_writecombine() if PAT is not supported
+Date:   Mon,  9 Nov 2020 13:54:26 +0100
+Message-Id: <20201109125030.932169228@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201109125025.630721781@linuxfoundation.org>
-References: <20201109125025.630721781@linuxfoundation.org>
+In-Reply-To: <20201109125030.706496283@linuxfoundation.org>
+References: <20201109125030.706496283@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,48 +43,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jan Kara <jack@suse.cz>
+From: Chris Wilson <chris@chris-wilson.co.uk>
 
-[ Upstream commit e0770e91424f694b461141cbc99adf6b23006b60 ]
+commit ba2ebf605d5f32a9be0f7b05d3174bbc501b83fe upstream.
 
-When we try to use file already used as a quota file again (for the same
-or different quota type), strange things can happen. At the very least
-lockdep annotations may be wrong but also inode flags may be wrongly set
-/ reset. When the file is used for two quota types at once we can even
-corrupt the file and likely crash the kernel. Catch all these cases by
-checking whether passed file is already used as quota file and bail
-early in that case.
+Let's not try and use PAT attributes for I915_MAP_WC if the CPU doesn't
+support PAT.
 
-This fixes occasional generic/219 failure due to lockdep complaint.
+Fixes: 6056e50033d9 ("drm/i915/gem: Support discontiguous lmem object maps")
+Signed-off-by: Chris Wilson <chris@chris-wilson.co.uk>
+Reviewed-by: Matthew Auld <matthew.auld@intel.com>
+Cc: <stable@vger.kernel.org> # v5.6+
+Link: https://patchwork.freedesktop.org/patch/msgid/20200915091417.4086-2-chris@chris-wilson.co.uk
+(cherry picked from commit 121ba69ffddc60df11da56f6d5b29bdb45c8eb80)
+Signed-off-by: Rodrigo Vivi <rodrigo.vivi@intel.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-Reviewed-by: Andreas Dilger <adilger@dilger.ca>
-Reported-by: Ritesh Harjani <riteshh@linux.ibm.com>
-Signed-off-by: Jan Kara <jack@suse.cz>
-Link: https://lore.kernel.org/r/20201015110330.28716-1-jack@suse.cz
-Signed-off-by: Theodore Ts'o <tytso@mit.edu>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/ext4/super.c | 5 +++++
- 1 file changed, 5 insertions(+)
+ drivers/gpu/drm/i915/gem/i915_gem_pages.c |    4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-index 472fa29c6f604..2527eb3049494 100644
---- a/fs/ext4/super.c
-+++ b/fs/ext4/super.c
-@@ -5412,6 +5412,11 @@ static int ext4_quota_on(struct super_block *sb, int type, int format_id,
- 	/* Quotafile not on the same filesystem? */
- 	if (path->dentry->d_sb != sb)
- 		return -EXDEV;
+--- a/drivers/gpu/drm/i915/gem/i915_gem_pages.c
++++ b/drivers/gpu/drm/i915/gem/i915_gem_pages.c
+@@ -254,6 +254,10 @@ static void *i915_gem_object_map(struct
+ 	if (!i915_gem_object_has_struct_page(obj) && type != I915_MAP_WC)
+ 		return NULL;
+ 
++	if (GEM_WARN_ON(type == I915_MAP_WC &&
++			!static_cpu_has(X86_FEATURE_PAT)))
++		return NULL;
 +
-+	/* Quota already enabled for this file? */
-+	if (IS_NOQUOTA(d_inode(path->dentry)))
-+		return -EBUSY;
-+
- 	/* Journaling quota? */
- 	if (EXT4_SB(sb)->s_qf_names[type]) {
- 		/* Quotafile not in fs root? */
--- 
-2.27.0
-
+ 	/* A single page can always be kmapped */
+ 	if (n_pte == 1 && type == I915_MAP_WB) {
+ 		struct page *page = sg_page(sgt->sgl);
 
 
