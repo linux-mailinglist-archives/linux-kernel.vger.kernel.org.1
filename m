@@ -2,37 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B31382ABD6A
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 14:46:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A36C2ABC7E
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 14:39:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388033AbgKINpr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 08:45:47 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52578 "EHLO mail.kernel.org"
+        id S1732098AbgKINh7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 08:37:59 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56968 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730119AbgKIM6N (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 07:58:13 -0500
+        id S1730201AbgKINDu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 08:03:50 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C68F12076E;
-        Mon,  9 Nov 2020 12:58:10 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id A83C2206C0;
+        Mon,  9 Nov 2020 13:03:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604926691;
-        bh=6x+p8QctiVGPPP6oeefOf0nlAAUqaZgX5q0YDOKw/jo=;
+        s=default; t=1604927029;
+        bh=NWw+EvJR+pMJNCnEb8dKP/yAa1d7ZSFJ+35CWjpXPrA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=LeQYPXyAIixucAOcOpnvkMDxVAfdL7ud/dce/9tO9Zu1lFVtfexfV0RXJiavaKtaq
-         k0BzO4BJRIfTOn8AQpuBvHii1p1+wNNUYxhCWZjSIB2Tg9xJV0m1LH4z4xiwZEXcI7
-         OcAmm+ZXZHYOI8YKAWDeTvT/8O7+Oi4JGYhBAh/E=
+        b=zR+Aa0geSilw+mTJxrTDRLJvyCMLRGR5I3Thy8KY38h2/4KAuG615H+G0NG+uGzEx
+         Rp4s0T26aH5r0nB9wBiqvTTl31obq+FunexrBjjSw/gEmGU/MdFcRCJ5hl5/98KWPE
+         OY1VWj26DakJ6mEsulc45UZhQIfH5BSMJgSYI9Pk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Helge Deller <deller@gmx.de>
-Subject: [PATCH 4.4 58/86] hil/parisc: Disable HIL driver when it gets stuck
+        stable@vger.kernel.org,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>
+Subject: [PATCH 4.9 079/117] rtc: rx8010: dont modify the global rtc ops
 Date:   Mon,  9 Nov 2020 13:55:05 +0100
-Message-Id: <20201109125023.566965799@linuxfoundation.org>
+Message-Id: <20201109125029.437045558@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201109125020.852643676@linuxfoundation.org>
-References: <20201109125020.852643676@linuxfoundation.org>
+In-Reply-To: <20201109125025.630721781@linuxfoundation.org>
+References: <20201109125025.630721781@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,136 +43,84 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Helge Deller <deller@gmx.de>
+From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 
-commit 879bc2d27904354b98ca295b6168718e045c4aa2 upstream.
+commit d3b14296da69adb7825022f3224ac6137eb30abf upstream.
 
-When starting a HP machine with HIL driver but without an HIL keyboard
-or HIL mouse attached, it may happen that data written to the HIL loop
-gets stuck (e.g. because the transaction queue is full).  Usually one
-will then have to reboot the machine because all you see is and endless
-output of:
- Transaction add failed: transaction already queued?
+The way the driver is implemented is buggy for the (admittedly unlikely)
+use case where there are two RTCs with one having an interrupt configured
+and the second not. This is caused by the fact that we use a global
+rtc_class_ops struct which we modify depending on whether the irq number
+is present or not.
 
-In the higher layers hp_sdc_enqueue_transaction() is called to queued up
-a HIL packet. This function returns an error code, and this patch adds
-the necessary checks for this return code and disables the HIL driver if
-further packets can't be sent.
+Fix it by using two const ops structs with and without alarm operations.
+While at it: not being able to request a configured interrupt is an error
+so don't ignore it and bail out of probe().
 
-Tested on a HP 730 and a HP 715/64 machine.
-
-Signed-off-by: Helge Deller <deller@gmx.de>
-Cc: <stable@vger.kernel.org>
+Fixes: ed13d89b08e3 ("rtc: Add Epson RX8010SJ RTC driver")
+Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Signed-off-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
+Cc: stable@vger.kernel.org
+Link: https://lore.kernel.org/r/20200914154601.32245-2-brgl@bgdev.pl
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
----
- drivers/input/serio/hil_mlc.c    |   21 ++++++++++++++++++---
- drivers/input/serio/hp_sdc_mlc.c |    8 ++++----
- include/linux/hil_mlc.h          |    2 +-
- 3 files changed, 23 insertions(+), 8 deletions(-)
 
---- a/drivers/input/serio/hil_mlc.c
-+++ b/drivers/input/serio/hil_mlc.c
-@@ -74,7 +74,7 @@ EXPORT_SYMBOL(hil_mlc_unregister);
- static LIST_HEAD(hil_mlcs);
- static DEFINE_RWLOCK(hil_mlcs_lock);
- static struct timer_list	hil_mlcs_kicker;
--static int			hil_mlcs_probe;
-+static int			hil_mlcs_probe, hil_mlc_stop;
+---
+ drivers/rtc/rtc-rx8010.c |   24 +++++++++++++++++-------
+ 1 file changed, 17 insertions(+), 7 deletions(-)
+
+--- a/drivers/rtc/rtc-rx8010.c
++++ b/drivers/rtc/rtc-rx8010.c
+@@ -423,16 +423,26 @@ static int rx8010_ioctl(struct device *d
+ 	}
+ }
  
- static void hil_mlcs_process(unsigned long unused);
- static DECLARE_TASKLET_DISABLED(hil_mlcs_tasklet, hil_mlcs_process, 0);
-@@ -704,9 +704,13 @@ static int hilse_donode(hil_mlc *mlc)
- 		if (!mlc->ostarted) {
- 			mlc->ostarted = 1;
- 			mlc->opacket = pack;
--			mlc->out(mlc);
-+			rc = mlc->out(mlc);
- 			nextidx = HILSEN_DOZE;
- 			write_unlock_irqrestore(&mlc->lock, flags);
-+			if (rc) {
-+				hil_mlc_stop = 1;
-+				return 1;
-+			}
- 			break;
- 		}
- 		mlc->ostarted = 0;
-@@ -717,8 +721,13 @@ static int hilse_donode(hil_mlc *mlc)
+-static struct rtc_class_ops rx8010_rtc_ops = {
++static const struct rtc_class_ops rx8010_rtc_ops_default = {
+ 	.read_time = rx8010_get_time,
+ 	.set_time = rx8010_set_time,
+ 	.ioctl = rx8010_ioctl,
+ };
  
- 	case HILSE_CTS:
- 		write_lock_irqsave(&mlc->lock, flags);
--		nextidx = mlc->cts(mlc) ? node->bad : node->good;
-+		rc = mlc->cts(mlc);
-+		nextidx = rc ? node->bad : node->good;
- 		write_unlock_irqrestore(&mlc->lock, flags);
-+		if (rc) {
-+			hil_mlc_stop = 1;
-+			return 1;
-+		}
- 		break;
- 
- 	default:
-@@ -786,6 +795,12 @@ static void hil_mlcs_process(unsigned lo
- 
- static void hil_mlcs_timer(unsigned long data)
- {
-+	if (hil_mlc_stop) {
-+		/* could not send packet - stop immediately. */
-+		pr_warn(PREFIX "HIL seems stuck - Disabling HIL MLC.\n");
-+		return;
-+	}
++static const struct rtc_class_ops rx8010_rtc_ops_alarm = {
++	.read_time = rx8010_get_time,
++	.set_time = rx8010_set_time,
++	.ioctl = rx8010_ioctl,
++	.read_alarm = rx8010_read_alarm,
++	.set_alarm = rx8010_set_alarm,
++	.alarm_irq_enable = rx8010_alarm_irq_enable,
++};
 +
- 	hil_mlcs_probe = 1;
- 	tasklet_schedule(&hil_mlcs_tasklet);
- 	/* Re-insert the periodic task. */
---- a/drivers/input/serio/hp_sdc_mlc.c
-+++ b/drivers/input/serio/hp_sdc_mlc.c
-@@ -213,7 +213,7 @@ static int hp_sdc_mlc_cts(hil_mlc *mlc)
- 	priv->tseq[2] = 1;
- 	priv->tseq[3] = 0;
- 	priv->tseq[4] = 0;
--	__hp_sdc_enqueue_transaction(&priv->trans);
-+	return __hp_sdc_enqueue_transaction(&priv->trans);
-  busy:
- 	return 1;
-  done:
-@@ -222,7 +222,7 @@ static int hp_sdc_mlc_cts(hil_mlc *mlc)
- 	return 0;
- }
- 
--static void hp_sdc_mlc_out(hil_mlc *mlc)
-+static int hp_sdc_mlc_out(hil_mlc *mlc)
+ static int rx8010_probe(struct i2c_client *client,
+ 			const struct i2c_device_id *id)
  {
- 	struct hp_sdc_mlc_priv_s *priv;
+ 	struct i2c_adapter *adapter = to_i2c_adapter(client->dev.parent);
++	const struct rtc_class_ops *rtc_ops;
+ 	struct rx8010_data *rx8010;
+ 	int err = 0;
  
-@@ -237,7 +237,7 @@ static void hp_sdc_mlc_out(hil_mlc *mlc)
-  do_data:
- 	if (priv->emtestmode) {
- 		up(&mlc->osem);
--		return;
-+		return 0;
+@@ -463,16 +473,16 @@ static int rx8010_probe(struct i2c_clien
+ 
+ 		if (err) {
+ 			dev_err(&client->dev, "unable to request IRQ\n");
+-			client->irq = 0;
+-		} else {
+-			rx8010_rtc_ops.read_alarm = rx8010_read_alarm;
+-			rx8010_rtc_ops.set_alarm = rx8010_set_alarm;
+-			rx8010_rtc_ops.alarm_irq_enable = rx8010_alarm_irq_enable;
++			return err;
+ 		}
++
++		rtc_ops = &rx8010_rtc_ops_alarm;
++	} else {
++		rtc_ops = &rx8010_rtc_ops_default;
  	}
- 	/* Shouldn't be sending commands when loop may be busy */
- 	BUG_ON(down_trylock(&mlc->csem));
-@@ -299,7 +299,7 @@ static void hp_sdc_mlc_out(hil_mlc *mlc)
- 		BUG_ON(down_trylock(&mlc->csem));
- 	}
-  enqueue:
--	hp_sdc_enqueue_transaction(&priv->trans);
-+	return hp_sdc_enqueue_transaction(&priv->trans);
- }
  
- static int __init hp_sdc_mlc_init(void)
---- a/include/linux/hil_mlc.h
-+++ b/include/linux/hil_mlc.h
-@@ -103,7 +103,7 @@ struct hilse_node {
+ 	rx8010->rtc = devm_rtc_device_register(&client->dev, client->name,
+-		&rx8010_rtc_ops, THIS_MODULE);
++					       rtc_ops, THIS_MODULE);
  
- /* Methods for back-end drivers, e.g. hp_sdc_mlc */
- typedef int	(hil_mlc_cts) (hil_mlc *mlc);
--typedef void	(hil_mlc_out) (hil_mlc *mlc);
-+typedef int	(hil_mlc_out) (hil_mlc *mlc);
- typedef int	(hil_mlc_in)  (hil_mlc *mlc, suseconds_t timeout);
- 
- struct hil_mlc_devinfo {
+ 	if (IS_ERR(rx8010->rtc)) {
+ 		dev_err(&client->dev, "unable to register the class device\n");
 
 
