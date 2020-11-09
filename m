@@ -2,540 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CEAF2AC97A
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 00:43:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4480E2AC971
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 00:38:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729886AbgKIXna convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 9 Nov 2020 18:43:30 -0500
-Received: from aposti.net ([89.234.176.197]:57560 "EHLO aposti.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729243AbgKIXn3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 18:43:29 -0500
-Date:   Mon, 09 Nov 2020 23:37:05 +0000
-From:   Paul Cercueil <paul@crapouillou.net>
-Subject: Re: [PATCH 1/2] MIPS: Ingenic: Add missing nodes for Ingenic SoCs and
- boards.
-To:     =?UTF-8?b?5ZGo55Cw5p2w?= <zhouyanjie@wanyeetech.com>
-Cc:     tsbogend@alpha.franken.de, robh+dt@kernel.org,
-        linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org,
-        devicetree@vger.kernel.org, nixiaoming@huawei.com,
-        paulburton@kernel.org, krzk@kernel.org, hns@goldelico.com,
-        ak@linux.intel.com, ebiederm@xmission.com,
-        dongsheng.qiu@ingenic.com, aric.pzqi@ingenic.com,
-        rick.tyliu@ingenic.com, yanfei.li@ingenic.com,
-        sernia.zhou@foxmail.com, zhenwenjin@gmail.com
-Message-Id: <TXYJJQ.TVQC48S8AVLH@crapouillou.net>
-In-Reply-To: <20201107115251.86182-2-zhouyanjie@wanyeetech.com>
-References: <20201107115251.86182-1-zhouyanjie@wanyeetech.com>
-        <20201107115251.86182-2-zhouyanjie@wanyeetech.com>
+        id S1730395AbgKIXim (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 18:38:42 -0500
+Received: from mail-40136.protonmail.ch ([185.70.40.136]:19491 "EHLO
+        mail-40136.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729451AbgKIXim (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 18:38:42 -0500
+Date:   Mon, 09 Nov 2020 23:38:32 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me; s=protonmail;
+        t=1604965119; bh=0SNM8tghSknOpfRF/9rHNz25ic5+FUsysSSzdtpnF2c=;
+        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
+        b=QI6Fnwka8dzq1s5nSorKgKDFymjras+RRdLc8DPF9wkeHJWRxYoRcrDVP4SIxgttZ
+         KnUjCXnTS50tJv6l4dI+rwzi0vyKmS0uYnsnhG06MZwFSqkQR6NBoWVYcegC9wkWrX
+         BqJQUxvx/ylZZlhWSplhJkq8Y/X3KDoVDqi9WuLKWqcki5zATOi9HrJbC+0wArA50Y
+         v5NQV9jkfeYQf+wrbeNk07UgQ8m0KH2ZxsKf3SURWYvvvjn5NDMSxUZsWCj+xV1flM
+         v+0rsbIJ5AOnObT++u24biSp3cP2AHXrsOjGbAVYH2KYhzoDsnIIluoq+gMVEMSi5O
+         8ABmtdSy+gT7A==
+To:     Jakub Kicinski <kuba@kernel.org>
+From:   Alexander Lobakin <alobakin@pm.me>
+Cc:     Alexander Lobakin <alobakin@pm.me>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Martin Varghese <martin.varghese@nokia.com>,
+        Pravin B Shelar <pshelar@ovn.org>,
+        Willem de Bruijn <willemb@google.com>,
+        Guillaume Nault <gnault@redhat.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Florian Westphal <fw@strlen.de>,
+        Steffen Klassert <steffen.klassert@secunet.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Yadu Kishore <kyk.segfault@gmail.com>,
+        Vladimir Oltean <vladimir.oltean@nxp.com>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Reply-To: Alexander Lobakin <alobakin@pm.me>
+Subject: Re: [PATCH net-next] net: skb_vlan_untag(): don't reset transport offset if set by GRO layer
+Message-ID: <bMQIWNWpqi1JM4GpszHDFF2THiN226YLT1l0j2oh08@cp7-web-042.plabs.ch>
+In-Reply-To: <20201109152913.289c3cac@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+References: <zYurwsZRN7BkqSoikWQLVqHyxz18h4LhHU4NFa2Vw@cp4-web-038.plabs.ch> <20201109152913.289c3cac@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
+        mailout.protonmail.ch
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Jakub Kicinski <kuba@kernel.org>
+Date: Mon, 9 Nov 2020 15:29:13 -0800
 
+> On Thu, 05 Nov 2020 21:29:01 +0000 Alexander Lobakin wrote:
+>> Similar to commit fda55eca5a33f
+>> ("net: introduce skb_transport_header_was_set()"), avoid resetting
+>> transport offsets that were already set by GRO layer. This not only
+>> mirrors the behavior of __netif_receive_skb_core(), but also makes
+>> sense when it comes to UDP GSO fraglists forwarding: transport offset
+>> of such skbs is set only once by GRO receive callback and remains
+>> untouched and correct up to the xmitting driver in 1:1 case, but
+>> becomes junk after untagging in ingress VLAN case and breaks UDP
+>> GSO offload. This does not happen after this change, and all types
+>> of forwarding of UDP GSO fraglists work as expected.
+>>
+>> Signed-off-by: Alexander Lobakin <alobakin@pm.me>
+>> ---
+>>  net/core/skbuff.c | 4 +++-
+>>  1 file changed, 3 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/net/core/skbuff.c b/net/core/skbuff.c
+>> index c5e6c0b83a92..39c13b9cf79d 100644
+>> --- a/net/core/skbuff.c
+>> +++ b/net/core/skbuff.c
+>> @@ -5441,9 +5441,11 @@ struct sk_buff *skb_vlan_untag(struct sk_buff *sk=
+b)
+>>  =09=09goto err_free;
+>>
+>>  =09skb_reset_network_header(skb);
+>> -=09skb_reset_transport_header(skb);
+>>  =09skb_reset_mac_len(skb);
+>>
+>> +=09if (!skb_transport_header_was_set(skb))
+>> +=09=09skb_reset_transport_header(skb);
+>> +
+>
+> Patch looks fine, thanks, but I don't understand why you decided to
+> move the reset?  It's not like it's not in order of headers, either.
+> Let's keep the series of resets identical to __netif_receive_skb_core(),
+> shall we?
 
-Le sam. 7 nov. 2020 à 19:52, 周琰杰 (Zhou Yanjie) 
-<zhouyanjie@wanyeetech.com> a écrit :
-> 1.Add OTG/OTG PHY/RNG nodes for JZ4780, CGU/OTG nodes for CI20.
-> 2.Add OTG/OTG PHY/RNG/OST nodes for X1000, SSI/CGU/OST/OTG/SC16IS752
->   nodes for CU1000-Neo.
-> 3.Add OTG/OTG PHY/DTRNG/OST nodes for X1830, SSI/CGU/OST/OTG/SC16IS752
->   nodes for CU1830-Neo.
-> 
-> Tested-by: 周正 (Zhou Zheng) <sernia.zhou@foxmail.com>
-> Signed-off-by: 周琰杰 (Zhou Yanjie) <zhouyanjie@wanyeetech.com>
-> ---
->  arch/mips/boot/dts/ingenic/ci20.dts       | 16 +++++++++
->  arch/mips/boot/dts/ingenic/cu1000-neo.dts | 60 
-> +++++++++++++++++++++++++++----
->  arch/mips/boot/dts/ingenic/cu1830-neo.dts | 60 
-> +++++++++++++++++++++++++++----
->  arch/mips/boot/dts/ingenic/jz4780.dtsi    | 41 +++++++++++++++++++--
->  arch/mips/boot/dts/ingenic/x1000.dtsi     | 52 
-> ++++++++++++++++++++++++++-
->  arch/mips/boot/dts/ingenic/x1830.dtsi     | 54 
-> +++++++++++++++++++++++++++-
->  6 files changed, 267 insertions(+), 16 deletions(-)
-> 
-> diff --git a/arch/mips/boot/dts/ingenic/ci20.dts 
-> b/arch/mips/boot/dts/ingenic/ci20.dts
-> index 75f5bfbf2c37..b31054a41754 100644
-> --- a/arch/mips/boot/dts/ingenic/ci20.dts
-> +++ b/arch/mips/boot/dts/ingenic/ci20.dts
-> @@ -93,6 +93,15 @@
->  	clock-frequency = <48000000>;
->  };
-> 
-> +&cgu {
-> +	/*
-> +	 * Use the 32.768 kHz oscillator as the parent of the RTC for a 
-> higher
-> +	 * precision.
-> +	 */
-> +	assigned-clocks = <&cgu JZ4780_CLK_RTC>;
-> +	assigned-clock-parents = <&cgu JZ4780_CLK_RTCLK>;
-> +};
-> +
->  &mmc0 {
->  	status = "okay";
-> 
-> @@ -396,6 +405,13 @@
->  	status = "okay";
->  };
-> 
-> +&otg {
-> +	status = "okay";
-> +
-> +	assigned-clocks = <&cgu JZ4780_CLK_OTGPHY>;
-> +	assigned-clock-rates = <48000000>;
-> +};
-> +
->  &pinctrl {
->  	pins_uart0: uart0 {
->  		function = "uart0";
-> diff --git a/arch/mips/boot/dts/ingenic/cu1000-neo.dts 
-> b/arch/mips/boot/dts/ingenic/cu1000-neo.dts
-> index 22a1066d637b..44d47d12db12 100644
-> --- a/arch/mips/boot/dts/ingenic/cu1000-neo.dts
-> +++ b/arch/mips/boot/dts/ingenic/cu1000-neo.dts
-> @@ -3,7 +3,7 @@
-> 
->  #include "x1000.dtsi"
->  #include <dt-bindings/gpio/gpio.h>
-> -#include <dt-bindings/clock/ingenic,tcu.h>
-> +#include <dt-bindings/clock/ingenic,sysost.h>
->  #include <dt-bindings/interrupt-controller/irq.h>
-> 
->  / {
-> @@ -31,6 +31,18 @@
->  		};
->  	};
-> 
-> +	ssi: spi-gpio {
-> +		compatible = "spi-gpio";
-> +		#address-cells = <1>;
-> +		#size-cells = <0>;
-> +		num-chipselects = <1>;
-> +
-> +		mosi-gpios = <&gpd 2 GPIO_ACTIVE_HIGH>;
-> +		miso-gpios = <&gpd 3 GPIO_ACTIVE_HIGH>;
-> +		sck-gpios = <&gpd 0 GPIO_ACTIVE_HIGH>;
-> +		cs-gpios = <&gpd 1 GPIO_ACTIVE_HIGH>;
-> +	};
-> +
->  	wlan_pwrseq: msc1-pwrseq {
->  		compatible = "mmc-pwrseq-simple";
-> 
-> @@ -43,13 +55,19 @@
->  	clock-frequency = <24000000>;
->  };
-> 
-> -&tcu {
-> +&cgu {
-> +	/*
-> +	 * Use the 32.768 kHz oscillator as the parent of the RTC for a 
-> higher
-> +	 * precision.
-> +	 */
-> +	assigned-clocks = <&cgu X1000_CLK_RTC>;
-> +	assigned-clock-parents = <&cgu X1000_CLK_RTCLK>;
-> +};
-> +
-> +&ost {
->  	/* 1500 kHz for the system timer and clocksource */
-> -	assigned-clocks = <&tcu TCU_CLK_TIMER0>, <&tcu TCU_CLK_TIMER2>;
-> +	assigned-clocks = <&ost OST_CLK_PERCPU_TIMER>, <&ost 
-> OST_CLK_GLOBAL_TIMER>;
->  	assigned-clock-rates = <1500000>, <1500000>;
-> -
-> -	/* Use channel #0 for the system timer channel #2 for the 
-> clocksource */
-> -	ingenic,pwm-channels-mask = <0xfa>;
->  };
-> 
->  &uart2 {
-> @@ -59,6 +77,32 @@
->  	pinctrl-0 = <&pins_uart2>;
->  };
-> 
-> +&ssi {
-> +	status = "okay";
-> +
-> +	spi-max-frequency = <50000000>;
-> +
-> +	sc16is752: expander@0 {
-> +		compatible = "nxp,sc16is752";
-> +		reg = <0>; /* CE0 */
-> +		spi-max-frequency = <4000000>;
-> +
-> +		clocks = <&exclk_sc16is752>;
-> +
-> +		interrupt-parent = <&gpc>;
-> +		interrupts = <6 IRQ_TYPE_EDGE_FALLING>;
-> +
-> +		gpio-controller;
-> +		#gpio-cells = <2>;
-> +
-> +		exclk_sc16is752: sc16is752 {
-> +			compatible = "fixed-clock";
-> +			#clock-cells = <0>;
-> +			clock-frequency = <48000000>;
-> +		};
-> +	};
-> +};
-> +
->  &i2c0 {
->  	status = "okay";
-> 
-> @@ -135,6 +179,10 @@
->  	};
->  };
-> 
-> +&otg {
-> +	status = "okay";
-> +};
-> +
->  &pinctrl {
->  	pins_uart2: uart2 {
->  		function = "uart2";
-> diff --git a/arch/mips/boot/dts/ingenic/cu1830-neo.dts 
-> b/arch/mips/boot/dts/ingenic/cu1830-neo.dts
-> index 640f96c00d63..7a56e344e429 100644
-> --- a/arch/mips/boot/dts/ingenic/cu1830-neo.dts
-> +++ b/arch/mips/boot/dts/ingenic/cu1830-neo.dts
-> @@ -3,7 +3,7 @@
-> 
->  #include "x1830.dtsi"
->  #include <dt-bindings/gpio/gpio.h>
-> -#include <dt-bindings/clock/ingenic,tcu.h>
-> +#include <dt-bindings/clock/ingenic,sysost.h>
->  #include <dt-bindings/interrupt-controller/irq.h>
-> 
->  / {
-> @@ -31,6 +31,18 @@
->  		};
->  	};
-> 
-> +	ssi0: spi-gpio {
-> +		compatible = "spi-gpio";
-> +		#address-cells = <1>;
-> +		#size-cells = <0>;
-> +		num-chipselects = <1>;
-> +
-> +		mosi-gpios = <&gpc 12 GPIO_ACTIVE_HIGH>;
-> +		miso-gpios = <&gpc 11 GPIO_ACTIVE_HIGH>;
-> +		sck-gpios = <&gpc 15 GPIO_ACTIVE_HIGH>;
-> +		cs-gpios = <&gpc 16 GPIO_ACTIVE_HIGH>;
-> +	};
-> +
->  	wlan_pwrseq: msc1-pwrseq {
->  		compatible = "mmc-pwrseq-simple";
-> 
-> @@ -43,13 +55,19 @@
->  	clock-frequency = <24000000>;
->  };
-> 
-> -&tcu {
-> +&cgu {
-> +	/*
-> +	 * Use the 32.768 kHz oscillator as the parent of the RTC for a 
-> higher
-> +	 * precision.
-> +	 */
-> +	assigned-clocks = <&cgu X1830_CLK_RTC>;
-> +	assigned-clock-parents = <&cgu X1830_CLK_RTCLK>;
-> +};
-> +
-> +&ost {
->  	/* 1500 kHz for the system timer and clocksource */
-> -	assigned-clocks = <&tcu TCU_CLK_TIMER0>, <&tcu TCU_CLK_TIMER2>;
-> +	assigned-clocks = <&ost OST_CLK_PERCPU_TIMER>, <&ost 
-> OST_CLK_GLOBAL_TIMER>;
->  	assigned-clock-rates = <1500000>, <1500000>;
-> -
-> -	/* Use channel #0 for the system timer channel #2 for the 
-> clocksource */
-> -	ingenic,pwm-channels-mask = <0xfa>;
->  };
-> 
->  &uart1 {
-> @@ -59,6 +77,32 @@
->  	pinctrl-0 = <&pins_uart1>;
->  };
-> 
-> +&ssi0 {
-> +	status = "okay";
-> +
-> +	spi-max-frequency = <50000000>;
-> +
-> +	sc16is752: expander@0 {
-> +		compatible = "nxp,sc16is752";
-> +		reg = <0>; /* CE0 */
-> +		spi-max-frequency = <4000000>;
-> +
-> +		clocks = <&exclk_sc16is752>;
-> +
-> +		interrupt-parent = <&gpb>;
-> +		interrupts = <18 IRQ_TYPE_EDGE_FALLING>;
-> +
-> +		gpio-controller;
-> +		#gpio-cells = <2>;
-> +
-> +		exclk_sc16is752: sc16is752 {
-> +			compatible = "fixed-clock";
-> +			#clock-cells = <0>;
-> +			clock-frequency = <48000000>;
-> +		};
-> +	};
-> +};
-> +
->  &i2c0 {
->  	status = "okay";
-> 
-> @@ -135,6 +179,10 @@
->  	};
->  };
-> 
-> +&otg {
-> +	status = "okay";
-> +};
-> +
->  &pinctrl {
->  	pins_uart1: uart1 {
->  		function = "uart1";
-> diff --git a/arch/mips/boot/dts/ingenic/jz4780.dtsi 
-> b/arch/mips/boot/dts/ingenic/jz4780.dtsi
-> index dfb5a7e1bb21..8837147e5a84 100644
-> --- a/arch/mips/boot/dts/ingenic/jz4780.dtsi
-> +++ b/arch/mips/boot/dts/ingenic/jz4780.dtsi
-> @@ -61,13 +61,30 @@
->  	};
-> 
->  	cgu: jz4780-cgu@10000000 {
-> -		compatible = "ingenic,jz4780-cgu";
-> +		compatible = "ingenic,jz4780-cgu", "simple-mfd";
->  		reg = <0x10000000 0x100>;
-> +		#address-cells = <1>;
-> +		#size-cells = <1>;
-> +		ranges = <0x0 0x10000000 0x100>;
-> +
-> +		#clock-cells = <1>;
-> 
->  		clocks = <&ext>, <&rtc>;
->  		clock-names = "ext", "rtc";
-> 
-> -		#clock-cells = <1>;
-> +		otg_phy: usb-phy@3c {
-> +			compatible = "ingenic,jz4780-phy";
-> +			reg = <0x3c 0x10>;
-> +
-> +			clocks = <&cgu JZ4780_CLK_OTG1>;
-> +
-> +			#phy-cells = <0>;
+Pure cosmetics, but yeah, let's keep. Will submit v2 in just a minute.
 
-Something I missed in my first email: you lack the "vcc-supply" 
-required property here. But I'm not sure what it should be linked to.
+>>  =09return skb;
+>>
+>>  err_free:
 
--Paul
-
-> +		};
-> +
-> +		rng: rng@d8 {
-> +			compatible = "ingenic,jz4780-rng";
-> +			reg = <0xd8 0x8>;
-> +		};
->  	};
-> 
->  	tcu: timer@10002000 {
-> @@ -494,4 +511,24 @@
-> 
->  		status = "disabled";
->  	};
-> +
-> +	otg: usb@13500000 {
-> +		compatible = "ingenic,jz4780-otg", "snps,dwc2";
-> +		reg = <0x13500000 0x40000>;
-> +
-> +		interrupt-parent = <&intc>;
-> +		interrupts = <21>;
-> +
-> +		clocks = <&cgu JZ4780_CLK_UHC>;
-> +		clock-names = "otg";
-> +
-> +		phys = <&otg_phy>;
-> +		phy-names = "usb2-phy";
-> +
-> +		g-rx-fifo-size = <768>;
-> +		g-np-tx-fifo-size = <256>;
-> +		g-tx-fifo-size = <256 256 256 256 256 256 256 512>;
-> +
-> +		status = "disabled";
-> +	};
->  };
-> diff --git a/arch/mips/boot/dts/ingenic/x1000.dtsi 
-> b/arch/mips/boot/dts/ingenic/x1000.dtsi
-> index 1f1f896dd1f7..854fac58f45e 100644
-> --- a/arch/mips/boot/dts/ingenic/x1000.dtsi
-> +++ b/arch/mips/boot/dts/ingenic/x1000.dtsi
-> @@ -52,13 +52,43 @@
->  	};
-> 
->  	cgu: x1000-cgu@10000000 {
-> -		compatible = "ingenic,x1000-cgu";
-> +		compatible = "ingenic,x1000-cgu", "simple-mfd";
->  		reg = <0x10000000 0x100>;
-> +		#address-cells = <1>;
-> +		#size-cells = <1>;
-> +		ranges = <0x0 0x10000000 0x100>;
-> 
->  		#clock-cells = <1>;
-> 
->  		clocks = <&exclk>, <&rtclk>;
->  		clock-names = "ext", "rtc";
-> +
-> +		otg_phy: usb-phy@3c {
-> +			compatible = "ingenic,x1000-phy";
-> +			reg = <0x3c 0x10>;
-> +
-> +			clocks = <&cgu X1000_CLK_OTGPHY>;
-> +
-> +			#phy-cells = <0>;
-> +		};
-> +
-> +		rng: rng@d8 {
-> +			compatible = "ingenic,x1000-rng";
-> +			reg = <0xd8 0x8>;
-> +		};
-> +	};
-> +
-> +	ost: timer@12000000 {
-> +		compatible = "ingenic,x1000-ost";
-> +		reg = <0x12000000 0x3c>;
-> +
-> +		#clock-cells = <1>;
-> +
-> +		clocks = <&cgu X1000_CLK_OST>;
-> +		clock-names = "ost";
-> +
-> +		interrupt-parent = <&cpuintc>;
-> +		interrupts = <3>;
->  	};
-> 
->  	tcu: timer@10002000 {
-> @@ -323,4 +353,24 @@
->  			status = "disabled";
->  		};
->  	};
-> +
-> +	otg: usb@13500000 {
-> +		compatible = "ingenic,x1000-otg", "snps,dwc2";
-> +		reg = <0x13500000 0x40000>;
-> +
-> +		interrupt-parent = <&intc>;
-> +		interrupts = <21>;
-> +
-> +		clocks = <&cgu X1000_CLK_OTG>;
-> +		clock-names = "otg";
-> +
-> +		phys = <&otg_phy>;
-> +		phy-names = "usb2-phy";
-> +
-> +		g-rx-fifo-size = <768>;
-> +		g-np-tx-fifo-size = <256>;
-> +		g-tx-fifo-size = <256 256 256 256 256 256 256 512>;
-> +
-> +		status = "disabled";
-> +	};
->  };
-> diff --git a/arch/mips/boot/dts/ingenic/x1830.dtsi 
-> b/arch/mips/boot/dts/ingenic/x1830.dtsi
-> index b05dac3ae308..4831350efdf2 100644
-> --- a/arch/mips/boot/dts/ingenic/x1830.dtsi
-> +++ b/arch/mips/boot/dts/ingenic/x1830.dtsi
-> @@ -52,13 +52,38 @@
->  	};
-> 
->  	cgu: x1830-cgu@10000000 {
-> -		compatible = "ingenic,x1830-cgu";
-> +		compatible = "ingenic,x1830-cgu", "simple-mfd";
->  		reg = <0x10000000 0x100>;
-> +		#address-cells = <1>;
-> +		#size-cells = <1>;
-> +		ranges = <0x0 0x10000000 0x100>;
-> 
->  		#clock-cells = <1>;
-> 
->  		clocks = <&exclk>, <&rtclk>;
->  		clock-names = "ext", "rtc";
-> +
-> +		otg_phy: usb-phy@3c {
-> +			compatible = "ingenic,x1830-phy";
-> +			reg = <0x3c 0x10>;
-> +
-> +			clocks = <&cgu X1830_CLK_OTGPHY>;
-> +
-> +			#phy-cells = <0>;
-> +		};
-> +	};
-> +
-> +	ost: timer@12000000 {
-> +		compatible = "ingenic,x1830-ost", "ingenic,x1000-ost";
-> +		reg = <0x12000000 0x3c>;
-> +
-> +		#clock-cells = <1>;
-> +
-> +		clocks = <&cgu X1830_CLK_OST>;
-> +		clock-names = "ost";
-> +
-> +		interrupt-parent = <&cpuintc>;
-> +		interrupts = <4>;
->  	};
-> 
->  	tcu: timer@10002000 {
-> @@ -236,6 +261,13 @@
->  		status = "disabled";
->  	};
-> 
-> +	dtrng: trng@10072000 {
-> +		compatible = "ingenic,x1830-dtrng";
-> +		reg = <0x10072000 0xc>;
-> +
-> +		clocks = <&cgu X1830_CLK_DTRNG>;
-> +	};
-> +
->  	pdma: dma-controller@13420000 {
->  		compatible = "ingenic,x1830-dma";
->  		reg = <0x13420000 0x400
-> @@ -311,4 +343,24 @@
->  			status = "disabled";
->  		};
->  	};
-> +
-> +	otg: usb@13500000 {
-> +		compatible = "ingenic,x1830-otg", "snps,dwc2";
-> +		reg = <0x13500000 0x40000>;
-> +
-> +		interrupt-parent = <&intc>;
-> +		interrupts = <21>;
-> +
-> +		clocks = <&cgu X1830_CLK_OTG>;
-> +		clock-names = "otg";
-> +
-> +		phys = <&otg_phy>;
-> +		phy-names = "usb2-phy";
-> +
-> +		g-rx-fifo-size = <768>;
-> +		g-np-tx-fifo-size = <256>;
-> +		g-tx-fifo-size = <256 256 256 256 256 256 256 512>;
-> +
-> +		status = "disabled";
-> +	};
->  };
-> --
-> 2.11.0
-> 
-
+Thanks,
+Al
 
