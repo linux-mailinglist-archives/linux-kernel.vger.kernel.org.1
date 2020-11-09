@@ -2,71 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B16202AB1C8
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 08:37:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A12FC2AB1CF
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 08:40:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729391AbgKIHhL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 02:37:11 -0500
-Received: from mx2.suse.de ([195.135.220.15]:57480 "EHLO mx2.suse.de"
+        id S1729601AbgKIHkd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 02:40:33 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51166 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728038AbgKIHhK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 02:37:10 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1604907428;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=g/PynSuV8B/34816mCj4wqI5WVsbyHQQr0XxJVvTNIo=;
-        b=oIVN8JybJ7CZI+XPTUH5xh4Sj04Ey0hAzBc33gWEdd4MyEAYPWjESz/sTnXsvi+J1sl+gw
-        rpmRgH1ZF+qMLV9l/+xfTPDYmR7IUGRokWdRDH73Xng6h/qOELhPnyetYNj1PbbA4UbvKP
-        494+FKvPnHfBw2BlPSplltmBKF5qbc4=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id C985AABAE;
-        Mon,  9 Nov 2020 07:37:08 +0000 (UTC)
-Date:   Mon, 9 Nov 2020 08:37:06 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Minchan Kim <minchan@kernel.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>
-Subject: Re: [PATCH] mm: introduce oom_kill_disable sysctl knob
-Message-ID: <20201109073706.GA12240@dhcp22.suse.cz>
-References: <20201106203238.1375577-1-minchan@kernel.org>
+        id S1728038AbgKIHkc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 02:40:32 -0500
+Received: from mail-ot1-f47.google.com (mail-ot1-f47.google.com [209.85.210.47])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 144F42083B;
+        Mon,  9 Nov 2020 07:40:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604907632;
+        bh=CdqrK974gDlyEi/kvuoxck4jtpAjC9LfgZm6/XYiZgY=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=DEDESS5UTt89rYpFy1JTo9+eem+U8D0PsL3fFNaZMEE3KjiBJ03elc67iZw4FU1bB
+         mUCHsOebOnjlDvpmNwsrc6KtbCEsHjGYM+OqDZbmyt8Ed0JpSoV3utniogLonjsiOn
+         ABNS9Tkomj/MdnUmIA1AYQqsNKjurVKyqcJyGsJk=
+Received: by mail-ot1-f47.google.com with SMTP id g19so8030577otp.13;
+        Sun, 08 Nov 2020 23:40:32 -0800 (PST)
+X-Gm-Message-State: AOAM5335BhvIbH2xYNIN2geCrdjLnSQPlsqrMfBUL6YnDwLZE9ph/YZk
+        kNP7Cxzj1KhrrPm4/S8ZMu0LJWUU8bXqx7ybLg4=
+X-Google-Smtp-Source: ABdhPJzngTfH1SnBjj+5ECgJpfUB+wr03SXOGvAH4gaRFZ2p15uaAw/DgQYJzq6/q9wQlR70F3l67DMeWQ/5c/moYT8=
+X-Received: by 2002:a9d:62c1:: with SMTP id z1mr9182745otk.108.1604907631229;
+ Sun, 08 Nov 2020 23:40:31 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201106203238.1375577-1-minchan@kernel.org>
+References: <20201108222156.GA1049451@ubuntu-m3-large-x86> <20201109001712.3384097-1-natechancellor@gmail.com>
+In-Reply-To: <20201109001712.3384097-1-natechancellor@gmail.com>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Mon, 9 Nov 2020 08:40:19 +0100
+X-Gmail-Original-Message-ID: <CAMj1kXEVX7za8JM3_STCeS8-j7WcvYq_vtUU7Or=yT+T9Jj7vw@mail.gmail.com>
+Message-ID: <CAMj1kXEVX7za8JM3_STCeS8-j7WcvYq_vtUU7Or=yT+T9Jj7vw@mail.gmail.com>
+Subject: Re: [PATCH] ARM: boot: Quote aliased symbol names in string.c
+To:     Nathan Chancellor <natechancellor@gmail.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Abbott Liu <liuwenliang@huawei.com>,
+        Ahmad Fatoum <a.fatoum@pengutronix.de>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Joe Perches <joe@perches.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Naresh Kamboju <naresh.kamboju@linaro.org>,
+        =?UTF-8?Q?Valdis_Kl=C4=93tnieks?= <valdis.kletnieks@vt.edu>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 06-11-20 12:32:38, Minchan Kim wrote:
-> It's hard to have some tests to be supposed to work under heavy
-> memory pressure(e.g., injecting some memory hogger) because
-> out-of-memory killer easily kicks out one of processes so system
-> is broken or system loses the memory pressure state since it has
-> plenty of free memory soon so.
+On Mon, 9 Nov 2020 at 01:19, Nathan Chancellor <natechancellor@gmail.com> w=
+rote:
+>
+> Patch "treewide: Remove stringification from __alias macro definition"
+> causes arguments to __alias to no longer be quoted automatically, which
+> breaks CONFIG_KASAN on ARM after commit d6d51a96c7d6 ("ARM: 9014/2:
+> Replace string mem* functions for KASan"):
+>
+> arch/arm/boot/compressed/string.c:24:1: error: attribute 'alias' argument=
+ not a string
+>    24 | void *__memcpy(void *__dest, __const void *__src, size_t __n) __a=
+lias(memcpy);
+>       | ^~~~
+> arch/arm/boot/compressed/string.c:25:1: error: attribute 'alias' argument=
+ not a string
+>    25 | void *__memmove(void *__dest, __const void *__src, size_t count) =
+__alias(memmove);
+>       | ^~~~
+> arch/arm/boot/compressed/string.c:26:1: error: attribute 'alias' argument=
+ not a string
+>    26 | void *__memset(void *s, int c, size_t count) __alias(memset);
+>       | ^~~~
+> make[3]: *** [scripts/Makefile.build:283: arch/arm/boot/compressed/string=
+.o] Error 1
+>
+> Quote the names like the treewide patch does so there is no more error.
+>
+> Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
+> Reported-by: Valdis Kl=C4=93tnieks <valdis.kletnieks@vt.edu>
+> Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
 
-I do not follow the reasoning here. So you want to test for a close to
-no memory available situation and the oom killer stands in the way
-because it puts a relief?
+Acked-by: Ard Biesheuvel <ardb@kernel.org>
 
-> Even though we could mark existing process's oom_adj to -1000,
-> it couldn't cover upcoming processes to be forked for the job.
-
-Why?
-
-> This knob is handy to keep system memory pressure.
-
-This sounds like a very dubious reason to introduce a knob to cripple
-the system.
-
-I can see some reason to control the oom handling policy because the
-effect of the oom killer is really disruptive but a global on/off switch
-sounds like a too coarse interface. Really what kind of production
-environment would ever go with oom killer disabled completely?
-
--- 
-Michal Hocko
-SUSE Labs
+> ---
+>
+> Hi Andrew,
+>
+> Stephen said I should send this along to you so that it can be applied
+> as part of the post -next series. Please let me know if you need any
+> more information or clarification, I tried to document it succinctly in
+> the commit message.
+>
+> Cheers,
+> Nathan
+>
+>  arch/arm/boot/compressed/string.c | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+>
+> diff --git a/arch/arm/boot/compressed/string.c b/arch/arm/boot/compressed=
+/string.c
+> index 8c0fa276d994..cc6198f8a348 100644
+> --- a/arch/arm/boot/compressed/string.c
+> +++ b/arch/arm/boot/compressed/string.c
+> @@ -21,9 +21,9 @@
+>  #undef memcpy
+>  #undef memmove
+>  #undef memset
+> -void *__memcpy(void *__dest, __const void *__src, size_t __n) __alias(me=
+mcpy);
+> -void *__memmove(void *__dest, __const void *__src, size_t count) __alias=
+(memmove);
+> -void *__memset(void *s, int c, size_t count) __alias(memset);
+> +void *__memcpy(void *__dest, __const void *__src, size_t __n) __alias("m=
+emcpy");
+> +void *__memmove(void *__dest, __const void *__src, size_t count) __alias=
+("memmove");
+> +void *__memset(void *s, int c, size_t count) __alias("memset");
+>  #endif
+>
+>  void *memcpy(void *__dest, __const void *__src, size_t __n)
+> --
+> 2.29.2
+>
