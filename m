@@ -2,181 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 79ABD2AAF79
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 03:29:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9141A2AAF80
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 03:30:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729080AbgKIC3d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 8 Nov 2020 21:29:33 -0500
-Received: from szxga06-in.huawei.com ([45.249.212.32]:7468 "EHLO
-        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727979AbgKIC3c (ORCPT
+        id S1729099AbgKICax (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 8 Nov 2020 21:30:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35986 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728191AbgKICaw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 8 Nov 2020 21:29:32 -0500
-Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4CTw1L1NDxzhjDT;
-        Mon,  9 Nov 2020 10:29:26 +0800 (CST)
-Received: from [10.136.114.67] (10.136.114.67) by smtp.huawei.com
- (10.3.19.205) with Microsoft SMTP Server (TLS) id 14.3.487.0; Mon, 9 Nov 2020
- 10:29:25 +0800
-Subject: Re: [f2fs-dev] [PATCH v4 2/2] f2fs: fix compat F2FS_IOC_{MOVE,
- GARBAGE_COLLECT}_RANGE
-To:     Eric Biggers <ebiggers@kernel.org>, Chao Yu <chao@kernel.org>
-CC:     <jaegeuk@kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-f2fs-devel@lists.sourceforge.net>
-References: <20201106065331.76236-1-yuchao0@huawei.com>
- <20201106180324.GA78548@sol.localdomain>
- <a7e78b61-021a-444d-eb36-68ce7aae133e@kernel.org>
- <20201107171635.GA841@sol.localdomain>
-From:   Chao Yu <yuchao0@huawei.com>
-Message-ID: <63efaa5c-bc19-4b16-653d-840bc6a6d9d1@huawei.com>
-Date:   Mon, 9 Nov 2020 10:29:25 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.9.1
+        Sun, 8 Nov 2020 21:30:52 -0500
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD0FFC0613CF;
+        Sun,  8 Nov 2020 18:30:52 -0800 (PST)
+Received: by mail-pf1-x443.google.com with SMTP id 10so6638360pfp.5;
+        Sun, 08 Nov 2020 18:30:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=97bIU7Ah2zcwtrZDaMEPuJqyR/E3fSCE9P48D4HEInw=;
+        b=OXq67GFCmG1/talB0nmpfziKihCuY+Rx5UFaYl8ks6HPFfyUwII3t5rebsXmMyi5Cc
+         Vz0xr5M8wUzVCXNoGR0jlU+rEgnkCPZHLOe8e8fJLAIDxzIN4X84Z7C45Zsxd9kRFSxS
+         hg63obb03f4c4hC75/D6ebzGzT+EJnqY7RT8v0tRWqEofBZz8+cAhxJ7GU+uozSSucDs
+         2PufPZa5BzqBHDUQI7dnd7FxbzhZadtc1cql+h5pUbzq3FOCod564Hs1xGnvblc2D/47
+         kZiOff+fStzW2uHj5Jijs6SzrF0cgvHdPK2liaLYZD6miz9KRwGft4Xd02zKhUEiWAW6
+         VaXg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=97bIU7Ah2zcwtrZDaMEPuJqyR/E3fSCE9P48D4HEInw=;
+        b=U7mdcHlFInEHibGi5M1izQ2dWr5KARaKNhD+COlFJLjgqW40Q0t/Cj3B+MX+u3YGiK
+         wC6Shn/nrDDhHB8DL20JPzdHHMC02rwq644vBwGHqR7mQJ9t6OwvGFpqSypCrxhti5mp
+         bL33faoh8uU/G1/fB1UfEdN959cFNvJpByB4VjuyqnW98KAN5DOXdImQBYY1MQUqdmAx
+         jfum3plPirzLC53q27RfOqUxsKiBu1zthS+QtelYXTAYkeqI/+ZJrqtD+rzEN8xdFmKe
+         Iwk9W1fZgM3uzJTR+Vdtulsh3EHN94rkmDMtQyq7TlY5OCWNOG0B9f5BnEHfoyLQxzUF
+         BcOw==
+X-Gm-Message-State: AOAM532KCTh2BrJVsJiRxyTtzFVxFLc/eAbgKs4km5zGiK+VLOVaY9I7
+        6V3sPgI6wZqHBE6B+S7Jf08=
+X-Google-Smtp-Source: ABdhPJw4TTbCocNADRmWPfrAx64jfokiitVSBIIwLslLQex9yg1k+k9Q8M+HtulejHiRzXcpTjWQog==
+X-Received: by 2002:a17:90a:1f0b:: with SMTP id u11mr10599804pja.105.1604889052272;
+        Sun, 08 Nov 2020 18:30:52 -0800 (PST)
+Received: from dtor-ws ([2620:15c:202:201:a6ae:11ff:fe11:fcc3])
+        by smtp.gmail.com with ESMTPSA id s6sm9882963pfh.9.2020.11.08.18.30.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 08 Nov 2020 18:30:51 -0800 (PST)
+Date:   Sun, 8 Nov 2020 18:30:48 -0800
+From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
+To:     Jonathan =?iso-8859-1?Q?Neusch=E4fer?= <j.neuschaefer@gmx.net>
+Cc:     linux-input@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH 1/3] dt-bindings: input: ektf2127: Add elan,ektf2132
+ compatible string
+Message-ID: <20201109023048.GF1003057@dtor-ws>
+References: <20201106112412.390724-1-j.neuschaefer@gmx.net>
+ <20201106112412.390724-2-j.neuschaefer@gmx.net>
 MIME-Version: 1.0
-In-Reply-To: <20201107171635.GA841@sol.localdomain>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.136.114.67]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201106112412.390724-2-j.neuschaefer@gmx.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020/11/8 1:16, Eric Biggers wrote:
-> On Sat, Nov 07, 2020 at 05:25:23PM +0800, Chao Yu wrote:
->> On 2020/11/7 2:03, Eric Biggers wrote:
->>> On Fri, Nov 06, 2020 at 02:53:31PM +0800, Chao Yu wrote:
->>>> +#if defined(__KERNEL__)
->>>> +struct compat_f2fs_gc_range {
->>>> +	u32 sync;
->>>> +	compat_u64 start;
->>>> +	compat_u64 len;
->>>> +};
->>>
->>> There's no need to use '#if defined(__KERNEL__)' in kernel source files.
->>>
->>> Likewise for compat_f2fs_move_range.
->>
->> Correct.
->>
->>>
->>>> +static int f2fs_compat_ioc_gc_range(struct file *file, unsigned long arg)
->>>> +{
->>>> +	struct f2fs_sb_info *sbi = F2FS_I_SB(file_inode(file));
->>>> +	struct compat_f2fs_gc_range __user *urange;
->>>> +	struct f2fs_gc_range range;
->>>> +	int err;
->>>> +
->>>> +	if (unlikely(f2fs_cp_error(sbi)))
->>>> +		return -EIO;
->>>> +	if (!f2fs_is_checkpoint_ready(sbi))
->>>> +		return -ENOSPC;
->>>
->>> I still don't understand why this checkpoint-related stuff is getting added
->>> here, and only to the compat versions of the ioctls.  It wasn't in the original
->>> version.  If they are needed then they should be added to __f2fs_ioc_gc_range()
->>> and __f2fs_ioc_move_range() (preferably by a separate patch) so that they are
->>
->> If so, cp-related stuff will be checked redundantly in both f2fs_ioctl() and
->> __f2fs_ioc_xxx() function for native GC_RANGE and MOVE_RANGE ioctls, it's
->> not needed.
->>
+On Fri, Nov 06, 2020 at 12:24:10PM +0100, Jonathan Neuschäfer wrote:
+> The eKTF2132 is a touchscreen controller found, for example, in the Kobo
+> Aura ebook reader. It is similar to the ektf2127, but it uses a different
+> packet type to report touch events.
 > 
-> Oh I see, the cp-related checks are at the beginning of f2fs_ioctl() too.
-> 
-> In that case a much better approach would be to add __f2fs_ioctl() which is
-> called by f2fs_ioctl() and f2fs_compat_ioctl(), and have f2fs_ioctl() and
-> f2fs_compat_ioctl() do the cp-related checks but not __f2fs_ioctl().
+> Signed-off-by: Jonathan Neuschäfer <j.neuschaefer@gmx.net>
 
-Will this cleanup make sense to you?
+Applied, thank you.
 
-diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
-index 458724c00d98..1439577108c2 100644
---- a/fs/f2fs/file.c
-+++ b/fs/f2fs/file.c
-@@ -4249,16 +4249,10 @@ struct compat_f2fs_gc_range {
-
-  static int f2fs_compat_ioc_gc_range(struct file *file, unsigned long arg)
-  {
--	struct f2fs_sb_info *sbi = F2FS_I_SB(file_inode(file));
-  	struct compat_f2fs_gc_range __user *urange;
-  	struct f2fs_gc_range range;
-  	int err;
-
--	if (unlikely(f2fs_cp_error(sbi)))
--		return -EIO;
--	if (!f2fs_is_checkpoint_ready(sbi))
--		return -ENOSPC;
--
-  	urange = compat_ptr(arg);
-  	err = get_user(range.sync, &urange->sync);
-  	err |= get_user(range.start, &urange->start);
-@@ -4280,16 +4274,10 @@ struct compat_f2fs_move_range {
-
-  static int f2fs_compat_ioc_move_range(struct file *file, unsigned long arg)
-  {
--	struct f2fs_sb_info *sbi = F2FS_I_SB(file_inode(file));
-  	struct compat_f2fs_move_range __user *urange;
-  	struct f2fs_move_range range;
-  	int err;
-
--	if (unlikely(f2fs_cp_error(sbi)))
--		return -EIO;
--	if (!f2fs_is_checkpoint_ready(sbi))
--		return -ENOSPC;
--
-  	urange = compat_ptr(arg);
-  	err = get_user(range.dst_fd, &urange->dst_fd);
-  	err |= get_user(range.pos_in, &urange->pos_in);
-@@ -4301,6 +4289,27 @@ static int f2fs_compat_ioc_move_range(struct file *file, unsigned long arg)
-  	return __f2fs_ioc_move_range(file, &range);
-  }
-
-+static long __f2fs_compat_ioctl(struct file *file, unsigned int cmd,
-+							unsigned long arg)
-+{
-+	struct f2fs_sb_info *sbi = F2FS_I_SB(file_inode(file));
-+
-+	if (unlikely(f2fs_cp_error(sbi)))
-+		return -EIO;
-+	if (!f2fs_is_checkpoint_ready(sbi))
-+		return -ENOSPC;
-+
-+	switch (cmd) {
-+	case F2FS_IOC32_GARBAGE_COLLECT_RANGE:
-+		return f2fs_compat_ioc_gc_range(file, arg);
-+	case F2FS_IOC32_MOVE_RANGE:
-+		return f2fs_compat_ioc_move_range(file, arg);
-+	default:
-+		return -ENOIOCTLCMD;
-+	}
-+	return 0;
-+}
-+
-  long f2fs_compat_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
-  {
-  	switch (cmd) {
-@@ -4314,9 +4323,8 @@ long f2fs_compat_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
-  		cmd = FS_IOC_GETVERSION;
-  		break;
-  	case F2FS_IOC32_GARBAGE_COLLECT_RANGE:
--		return f2fs_compat_ioc_gc_range(file, arg);
-  	case F2FS_IOC32_MOVE_RANGE:
--		return f2fs_compat_ioc_move_range(file, arg);
-+		return __f2fs_compat_ioctl(file, cmd, arg);
-  	case F2FS_IOC_START_ATOMIC_WRITE:
-  	case F2FS_IOC_COMMIT_ATOMIC_WRITE:
-  	case F2FS_IOC_START_VOLATILE_WRITE:
-
-Thanks,
-
-> 
-> I feel that's still not entirely correct, because ENOTTY should take precedence
-> over EIO or ENOSPC from the cp-related stuff.  But at least it would be
-> consistent between the native and compat ioctls, and the cp-related checks
-> wouldn't have to be duplicated in random ioctls...
-> 
-> - Eric
-> .
-> 
+-- 
+Dmitry
