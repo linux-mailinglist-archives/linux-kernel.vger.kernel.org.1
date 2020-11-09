@@ -2,183 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CD6F2AB112
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 07:04:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A1E12AB114
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 07:05:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729540AbgKIGEo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 01:04:44 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:46119 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729520AbgKIGEo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 01:04:44 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1604901882;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=UBLQUM1X/0MCddQFRLO/RxxvuYfOPaxQX5b2ahy4mRA=;
-        b=IHZE3wIphUKo7R+bQIt/DYIkexZJd4I/Xgy6fqq4qMRlh7420lEaoe5+2ReKQuaJWxmtCZ
-        dsgnIlvVbC4xBNLo6rZRC0FdpYMhXKT4KGtmdX9nmG5wF3RwxNkMd4fN//9Rr3/5lGCslp
-        5hykzW0yfl5SgmvClIZBoS23NXGZVTE=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-253-RLBubNkaMJCIgAKuA2Lw4g-1; Mon, 09 Nov 2020 01:04:38 -0500
-X-MC-Unique: RLBubNkaMJCIgAKuA2Lw4g-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B24B21882FA1;
-        Mon,  9 Nov 2020 06:04:35 +0000 (UTC)
-Received: from [10.72.12.244] (ovpn-12-244.pek2.redhat.com [10.72.12.244])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 55C325C5AF;
-        Mon,  9 Nov 2020 06:04:26 +0000 (UTC)
-Subject: Re: [PATCH virtio] virtio: virtio_console: fix DMA memory allocation
- for rproc serial
-To:     Alexander Lobakin <alobakin@pm.me>
-Cc:     Amit Shah <amit@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Arnaud Pouliquen <arnaud.pouliquen@st.com>,
-        Suman Anna <s-anna@ti.com>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Ohad Ben-Cohen <ohad@wizery.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        virtualization@lists.linux-foundation.org,
-        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org
-References: <AOKowLclCbOCKxyiJ71WeNyuAAj2q8EUtxrXbyky5E@cp7-web-042.plabs.ch>
- <004da56d-aad2-3b69-3428-02a14263289b@redhat.com>
- <aXBO8lWEART2MNuWacIKln3qh6wttCtF2oUd7vthkNU@cp3-web-012.plabs.ch>
-From:   Jason Wang <jasowang@redhat.com>
-Message-ID: <b4aaeab1-4e9f-2b38-0124-e0b0ca9c287b@redhat.com>
-Date:   Mon, 9 Nov 2020 14:04:24 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1729545AbgKIGFX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 01:05:23 -0500
+Received: from mga09.intel.com ([134.134.136.24]:50830 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728951AbgKIGFW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 01:05:22 -0500
+IronPort-SDR: bTp+YyRqYxYjoK5IpKjwzmDHTnBGagLRPxA7QUAk+U+5eBpxKDxIVnbw6n73x8NLH3f+LYl1aZ
+ JaezMS2u3l2Q==
+X-IronPort-AV: E=McAfee;i="6000,8403,9799"; a="169907283"
+X-IronPort-AV: E=Sophos;i="5.77,462,1596524400"; 
+   d="scan'208";a="169907283"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Nov 2020 22:05:22 -0800
+IronPort-SDR: yqh3Xy3eA+4+wmSOlO20YB3mvb6hwPl4wiFRmAP2d69jg01070JRlGdfkBMBpRARtYFYsyIqiO
+ Pq2/Qt0KKteg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,462,1596524400"; 
+   d="scan'208";a="364922628"
+Received: from cli6-desk1.ccr.corp.intel.com (HELO [10.239.161.125]) ([10.239.161.125])
+  by FMSMGA003.fm.intel.com with ESMTP; 08 Nov 2020 22:05:18 -0800
+Subject: Re: [RFC PATCH v3] sched/fair: select idle cpu from idle cpumask for
+ task wakeup
+To:     Vincent Guittot <vincent.guittot@linaro.org>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Tim Chen <tim.c.chen@linux.intel.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Aubrey Li <aubrey.li@intel.com>,
+        Qais Yousef <qais.yousef@arm.com>,
+        Jiang Biao <benbjiang@gmail.com>
+References: <20201021150335.1103231-1-aubrey.li@linux.intel.com>
+ <CAKfTPtAPdagXddz9tHj_hfg_R1R+E6uYcWX+zdbBLgCd4QQE2w@mail.gmail.com>
+From:   "Li, Aubrey" <aubrey.li@linux.intel.com>
+Message-ID: <0f64fde7-51f1-b9e8-31ec-35f0de473fdc@linux.intel.com>
+Date:   Mon, 9 Nov 2020 14:05:17 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
 MIME-Version: 1.0
-In-Reply-To: <aXBO8lWEART2MNuWacIKln3qh6wttCtF2oUd7vthkNU@cp3-web-012.plabs.ch>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAKfTPtAPdagXddz9tHj_hfg_R1R+E6uYcWX+zdbBLgCd4QQE2w@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 2020/11/5 下午8:22, Alexander Lobakin wrote:
-> From: Jason Wang <jasowang@redhat.com>
-> Date: Thu, 5 Nov 2020 11:10:24 +0800
->
-> Hi Jason,
->
->> On 2020/11/4 下午11:31, Alexander Lobakin wrote:
->>> Since commit 086d08725d34 ("remoteproc: create vdev subdevice with
->>> specific dma memory pool"), every remoteproc has a DMA subdevice
->>> ("remoteprocX#vdevYbuffer") for each virtio device, which inherits
->>> DMA capabilities from the corresponding platform device. This allowed
->>> to associate different DMA pools with each vdev, and required from
->>> virtio drivers to perform DMA operations with the parent device
->>> (vdev->dev.parent) instead of grandparent (vdev->dev.parent->parent).
->>>
->>> virtio_rpmsg_bus was already changed in the same merge cycle with
->>> commit d999b622fcfb ("rpmsg: virtio: allocate buffer from parent"),
->>> but virtio_console did not. In fact, operations using the grandparent
->>> worked fine while the grandparent was the platform device, but since
->>> commit c774ad010873 ("remoteproc: Fix and restore the parenting
->>> hierarchy for vdev") this was changed, and now the grandparent device
->>> is the remoteproc device without any DMA capabilities.
->>> So, starting v5.8-rc1 the following warning is observed:
->>>
->>> [    2.483925] ------------[ cut here ]------------
->>> [    2.489148] WARNING: CPU: 3 PID: 101 at kernel/dma/mapping.c:427 0x80e7eee8
->>> [    2.489152] Modules linked in: virtio_console(+)
->>> [    2.503737]  virtio_rpmsg_bus rpmsg_core
->>> [    2.508903]
->>> [    2.528898] <Other modules, stack and call trace here>
->>> [    2.913043]
->>> [    2.914907] ---[ end trace 93ac8746beab612c ]---
->>> [    2.920102] virtio-ports vport1p0: Error allocating inbufs
->>>
->>> kernel/dma/mapping.c:427 is:
->>>
->>> WARN_ON_ONCE(!dev->coherent_dma_mask);
->>>
->>> obviously because the grandparent now is remoteproc dev without any
->>> DMA caps:
->>>
->>> [    3.104943] Parent: remoteproc0#vdev1buffer, grandparent: remoteproc0
->>>
->>> Fix this the same way as it was for virtio_rpmsg_bus, using just the
->>> parent device (vdev->dev.parent, "remoteprocX#vdevYbuffer") for DMA
->>> operations.
->>> This also allows now to reserve DMA pools/buffers for rproc serial
->>> via Device Tree.
->>>
->>> Fixes: c774ad010873 ("remoteproc: Fix and restore the parenting hierarchy for vdev")
->>> Cc: stable@vger.kernel.org # 5.1+
->>> Signed-off-by: Alexander Lobakin <alobakin@pm.me>
->>> ---
->>>    drivers/char/virtio_console.c | 8 ++++----
->>>    1 file changed, 4 insertions(+), 4 deletions(-)
->>>
->>> diff --git a/drivers/char/virtio_console.c b/drivers/char/virtio_console.c
->>> index a2da8f768b94..1836cc56e357 100644
->>> --- a/drivers/char/virtio_console.c
->>> +++ b/drivers/char/virtio_console.c
->>> @@ -435,12 +435,12 @@ static struct port_buffer *alloc_buf(struct virtio_device *vdev, size_t buf_size
->>>    		/*
->>>    		 * Allocate DMA memory from ancestor. When a virtio
->>>    		 * device is created by remoteproc, the DMA memory is
->>> -		 * associated with the grandparent device:
->>> -		 * vdev => rproc => platform-dev.
->>> +		 * associated with the parent device:
->>> +		 * virtioY => remoteprocX#vdevYbuffer.
->>>    		 */
->>> -		if (!vdev->dev.parent || !vdev->dev.parent->parent)
->>> +		buf->dev = vdev->dev.parent;
->>> +		if (!buf->dev)
->>>    			goto free_buf;
->>> -		buf->dev = vdev->dev.parent->parent;
+On 2020/11/6 15:58, Vincent Guittot wrote:
+> On Wed, 21 Oct 2020 at 17:05, Aubrey Li <aubrey.li@linux.intel.com> wrote:
 >>
->> I wonder it could be the right time to introduce dma_dev for virtio
->> instead of depending on something magic via parent.
-> This patch are meant to hit RC window and stable trees as a fix of
-> the bug that is present since v5.8-rc1. So any new features are out
-> of scope of this particular fix.
-
-
-Right.
-
-
->
-> The idea of DMAing through "dev->parent" is that "virtioX" itself is a
-> logical dev, not the real one, but its parent *is*. This logic is used
-> across the whole tree -- every subsystem creates its own logical device,
-> but drivers should always use the backing PCI/platform/etc. devices for
-> DMA operations, which represent the real hardware.
-
-
-Yes, so what I meant is to use different variables for DMA and 
-hierarchy. So it's the responsibility of the lower layer to pass a 
-correct "dma_dev" to the upper layer instead of depending parent.
-
-Anyway for this patch.
-
-Acked-by: Jason Wang <jasowang@redhat.com>
-
-Thanks
-
-
->
->> (Btw I don't even notice that there's transport specific code in virtio
->> console, it's better to avoid it)
+>> From: Aubrey Li <aubrey.li@intel.com>
 >>
->> Thanks
-> Thanks,
-> Al
->
->>>    		/* Increase device refcnt to avoid freeing it */
->>>    		get_device(buf->dev);
+>> Added idle cpumask to track idle cpus in sched domain. When a CPU
+>> enters idle, its corresponding bit in the idle cpumask will be set,
+>> and when the CPU exits idle, its bit will be cleared.
+>>
+>> When a task wakes up to select an idle cpu, scanning idle cpumask
+>> has low cost than scanning all the cpus in last level cache domain,
+>> especially when the system is heavily loaded.
+>>
+>> v2->v3:
+>> - change setting idle cpumask to every idle entry, otherwise schbench
+>>   has a regression of 99th percentile latency.
+>> - change clearing idle cpumask to nohz_balancer_kick(), so updating
+>>   idle cpumask is ratelimited in the idle exiting path.
+>> - set SCHED_IDLE cpu in idle cpumask to allow it as a wakeup target.
+>>
+>> v1->v2:
+>> - idle cpumask is updated in the nohz routines, by initializing idle
+>>   cpumask with sched_domain_span(sd), nohz=off case remains the original
+>>   behavior.
+>>
+>> Cc: Mel Gorman <mgorman@suse.de>
+>> Cc: Vincent Guittot <vincent.guittot@linaro.org>
+>> Cc: Qais Yousef <qais.yousef@arm.com>
+>> Cc: Valentin Schneider <valentin.schneider@arm.com>
+>> Cc: Jiang Biao <benbjiang@gmail.com>
+>> Cc: Tim Chen <tim.c.chen@linux.intel.com>
+>> Signed-off-by: Aubrey Li <aubrey.li@linux.intel.com>
+>> ---
+>>  include/linux/sched/topology.h | 13 ++++++++++
+>>  kernel/sched/fair.c            | 45 +++++++++++++++++++++++++++++++++-
+>>  kernel/sched/idle.c            |  1 +
+>>  kernel/sched/sched.h           |  1 +
+>>  kernel/sched/topology.c        |  3 ++-
+>>  5 files changed, 61 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/include/linux/sched/topology.h b/include/linux/sched/topology.h
+>> index fb11091129b3..43a641d26154 100644
+>> --- a/include/linux/sched/topology.h
+>> +++ b/include/linux/sched/topology.h
+>> @@ -65,8 +65,21 @@ struct sched_domain_shared {
+>>         atomic_t        ref;
+>>         atomic_t        nr_busy_cpus;
+>>         int             has_idle_cores;
+>> +       /*
+>> +        * Span of all idle CPUs in this domain.
+>> +        *
+>> +        * NOTE: this field is variable length. (Allocated dynamically
+>> +        * by attaching extra space to the end of the structure,
+>> +        * depending on how many CPUs the kernel has booted up with)
+>> +        */
+>> +       unsigned long   idle_cpus_span[];
+>>  };
+>>
+>> +static inline struct cpumask *sds_idle_cpus(struct sched_domain_shared *sds)
+>> +{
+>> +       return to_cpumask(sds->idle_cpus_span);
+>> +}
+>> +
+>>  struct sched_domain {
+>>         /* These fields must be setup */
+>>         struct sched_domain __rcu *parent;      /* top domain must be null terminated */
+>> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+>> index 6b3b59cc51d6..088d1995594f 100644
+>> --- a/kernel/sched/fair.c
+>> +++ b/kernel/sched/fair.c
+>> @@ -6023,6 +6023,38 @@ void __update_idle_core(struct rq *rq)
+>>         rcu_read_unlock();
+>>  }
+>>
+>> +static DEFINE_PER_CPU(bool, cpu_idle_state);
+>> +/*
+>> + * Update cpu idle state and record this information
+>> + * in sd_llc_shared->idle_cpus_span.
+>> + */
+>> +void update_idle_cpumask(struct rq *rq, bool idle_state)
+>> +{
+>> +       struct sched_domain *sd;
+>> +       int cpu = cpu_of(rq);
+>> +
+>> +       /*
+>> +        * No need to update idle cpumask if the state
+>> +        * does not change.
+>> +        */
+>> +       if (per_cpu(cpu_idle_state, cpu) == idle_state)
+>> +               return;
+>> +
+>> +       per_cpu(cpu_idle_state, cpu) = idle_state;
+>> +
+>> +       rcu_read_lock();
+>> +
+>> +       sd = rcu_dereference(per_cpu(sd_llc, cpu));
+>> +       if (!sd || !sd->shared)
+>> +               goto unlock;
+>> +       if (idle_state)
+>> +               cpumask_set_cpu(cpu, sds_idle_cpus(sd->shared));
+>> +       else
+>> +               cpumask_clear_cpu(cpu, sds_idle_cpus(sd->shared));
+>> +unlock:
+>> +       rcu_read_unlock();
+>> +}
+>> +
+>>  /*
+>>   * Scan the entire LLC domain for idle cores; this dynamically switches off if
+>>   * there are no idle cores left in the system; tracked through
+>> @@ -6136,7 +6168,12 @@ static int select_idle_cpu(struct task_struct *p, struct sched_domain *sd, int t
+>>
+>>         time = cpu_clock(this);
+>>
+>> -       cpumask_and(cpus, sched_domain_span(sd), p->cpus_ptr);
+>> +       /*
+>> +        * sched_domain_shared is set only at shared cache level,
+>> +        * this works only because select_idle_cpu is called with
+>> +        * sd_llc.
+>> +        */
+>> +       cpumask_and(cpus, sds_idle_cpus(sd->shared), p->cpus_ptr);
+>>
+>>         for_each_cpu_wrap(cpu, cpus, target) {
+>>                 if (!--nr)
+>> @@ -10070,6 +10107,12 @@ static void nohz_balancer_kick(struct rq *rq)
+>>         if (unlikely(rq->idle_balance))
+>>                 return;
+>>
+>> +       /* The CPU is not in idle, update idle cpumask */
+>> +       if (unlikely(sched_idle_cpu(cpu))) {
+>> +               /* Allow SCHED_IDLE cpu as a wakeup target */
+>> +               update_idle_cpumask(rq, true);
+>> +       } else
+>> +               update_idle_cpumask(rq, false);
+> 
+> update_idle_cpumask(rq, sched_idle_cpu(cpu)); ?
 
+This looks much better, thanks! :)
