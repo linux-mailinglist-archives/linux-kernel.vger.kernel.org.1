@@ -2,39 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BE972AB8EB
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 14:00:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D72182AB8D8
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 13:58:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730319AbgKIM7T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 07:59:19 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53494 "EHLO mail.kernel.org"
+        id S1730143AbgKIM62 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 07:58:28 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52470 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730290AbgKIM7P (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 07:59:15 -0500
+        id S1730088AbgKIM6B (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 07:58:01 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B5B032076E;
-        Mon,  9 Nov 2020 12:59:13 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 414EE2083B;
+        Mon,  9 Nov 2020 12:58:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604926754;
-        bh=BYAd0+5dQ1U7j/KYmbHG8x8X326XH4AnHZB5ZtYoVtU=;
+        s=default; t=1604926680;
+        bh=ZLeOPp5R7YSkfvBZOBDb/LOc6Tl0ZFDGmKBNdeIOBdI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=pvZZO7Bcc/QewcPMHcHAIkzWgw/98ObVBRrQ9wz6aftteSdcndJygymKKQVTgYX0c
-         /gkrS2NFkpl9+9Jc+oqmEbPp5sUtiDi8SPbebwd3cvA/WuT7nG8FdgdjKReqgRyIMZ
-         lze2wOQzJy+ICkTX/i3AWYU1GuLhxakTM4QRWTCE=
+        b=DCaAJWi4Nur8vdayUXdmB0XF57gNRed8ADTvUCnu98lje5TH6J32PrUXlTsYVSurI
+         i8ggfB1vItPQrIB4ftqEfTPlSHbkK5naENhRqE4810PU+7weJjrOk6iiJ+rC/z+T0K
+         rLf1KqdDRBjuY/VCRexOIYas0iOq2/QA98KKTRTg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Tony Luck <tony.luck@intel.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 4.4 49/86] ia64: fix build error with !COREDUMP
-Date:   Mon,  9 Nov 2020 13:54:56 +0100
-Message-Id: <20201109125023.180242796@linuxfoundation.org>
+        stable@vger.kernel.org, Stefano Garzarella <sgarzare@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>
+Subject: [PATCH 4.4 54/86] vringh: fix __vringh_iov() when riov and wiov are different
+Date:   Mon,  9 Nov 2020 13:55:01 +0100
+Message-Id: <20201109125023.400876081@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201109125020.852643676@linuxfoundation.org>
 References: <20201109125020.852643676@linuxfoundation.org>
@@ -46,43 +42,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Krzysztof Kozlowski <krzk@kernel.org>
+From: Stefano Garzarella <sgarzare@redhat.com>
 
-commit 7404840d87557c4092bf0272bce5e0354c774bf9 upstream.
+commit 5745bcfbbf89b158416075374254d3c013488f21 upstream.
 
-Fix linkage error when CONFIG_BINFMT_ELF is selected but CONFIG_COREDUMP
-is not:
+If riov and wiov are both defined and they point to different
+objects, only riov is initialized. If the wiov is not initialized
+by the caller, the function fails returning -EINVAL and printing
+"Readable desc 0x... after writable" error message.
 
-    ia64-linux-ld: arch/ia64/kernel/elfcore.o: in function `elf_core_write_extra_phdrs':
-    elfcore.c:(.text+0x172): undefined reference to `dump_emit'
-    ia64-linux-ld: arch/ia64/kernel/elfcore.o: in function `elf_core_write_extra_data':
-    elfcore.c:(.text+0x2b2): undefined reference to `dump_emit'
+This issue happens when descriptors have both readable and writable
+buffers (eg. virtio-blk devices has virtio_blk_outhdr in the readable
+buffer and status as last byte of writable buffer) and we call
+__vringh_iov() to get both type of buffers in two different iovecs.
 
-Fixes: 1fcccbac89f5 ("elf coredump: replace ELF_CORE_EXTRA_* macros by functions")
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Cc: Tony Luck <tony.luck@intel.com>
-Cc: Fenghua Yu <fenghua.yu@intel.com>
-Cc: <stable@vger.kernel.org>
-Link: https://lkml.kernel.org/r/20200819064146.12529-1-krzk@kernel.org
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Let's replace the 'else if' clause with 'if' to initialize both
+riov and wiov if they are not NULL.
+
+As checkpatch pointed out, we also avoid crashing the kernel
+when riov and wiov are both NULL, replacing BUG() with WARN_ON()
+and returning -EINVAL.
+
+Fixes: f87d0fbb5798 ("vringh: host-side implementation of virtio rings.")
+Cc: stable@vger.kernel.org
+Signed-off-by: Stefano Garzarella <sgarzare@redhat.com>
+Link: https://lore.kernel.org/r/20201008204256.162292-1-sgarzare@redhat.com
+Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- arch/ia64/kernel/Makefile |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/vhost/vringh.c |    9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
 
---- a/arch/ia64/kernel/Makefile
-+++ b/arch/ia64/kernel/Makefile
-@@ -42,7 +42,7 @@ endif
- obj-$(CONFIG_INTEL_IOMMU)	+= pci-dma.o
- obj-$(CONFIG_SWIOTLB)		+= pci-swiotlb.o
+--- a/drivers/vhost/vringh.c
++++ b/drivers/vhost/vringh.c
+@@ -272,13 +272,14 @@ __vringh_iov(struct vringh *vrh, u16 i,
+ 	desc_max = vrh->vring.num;
+ 	up_next = -1;
  
--obj-$(CONFIG_BINFMT_ELF)	+= elfcore.o
-+obj-$(CONFIG_ELF_CORE)		+= elfcore.o
++	/* You must want something! */
++	if (WARN_ON(!riov && !wiov))
++		return -EINVAL;
++
+ 	if (riov)
+ 		riov->i = riov->used = 0;
+-	else if (wiov)
++	if (wiov)
+ 		wiov->i = wiov->used = 0;
+-	else
+-		/* You must want something! */
+-		BUG();
  
- # fp_emulate() expects f2-f5,f16-f31 to contain the user-level state.
- CFLAGS_traps.o  += -mfixed-range=f2-f5,f16-f31
+ 	for (;;) {
+ 		void *addr;
 
 
