@@ -2,219 +2,223 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9991D2AB852
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 13:34:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F3E52AB854
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 13:34:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729687AbgKIMe1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 07:34:27 -0500
-Received: from szxga07-in.huawei.com ([45.249.212.35]:7436 "EHLO
-        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726410AbgKIMeZ (ORCPT
+        id S1729766AbgKIMe3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 07:34:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45264 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726410AbgKIMe1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 07:34:25 -0500
-Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4CV9R60cXLz7572;
-        Mon,  9 Nov 2020 20:34:10 +0800 (CST)
-Received: from [10.174.176.61] (10.174.176.61) by
- DGGEMS406-HUB.china.huawei.com (10.3.19.206) with Microsoft SMTP Server id
- 14.3.487.0; Mon, 9 Nov 2020 20:34:09 +0800
-Subject: Re: [PATCH v13 0/8] support reserving crashkernel above 4G on arm64
- kdump
-To:     <tglx@linutronix.de>, <mingo@redhat.com>, <dyoung@redhat.com>,
-        <bhe@redhat.com>, <catalin.marinas@arm.com>, <will@kernel.org>,
-        <corbet@lwn.net>, <John.P.donnelly@oracle.com>,
-        <bhsharma@redhat.com>, <prabhakar.pkin@gmail.com>
-References: <20201031074437.168008-1-chenzhou10@huawei.com>
-CC:     <horms@verge.net.au>, <robh+dt@kernel.org>, <arnd@arndb.de>,
-        <nsaenzjulienne@suse.de>, <james.morse@arm.com>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <kexec@lists.infradead.org>, <linux-doc@vger.kernel.org>,
-        <xiexiuqi@huawei.com>, <guohanjun@huawei.com>,
-        <huawei.libin@huawei.com>, <wangkefeng.wang@huawei.com>
-From:   chenzhou <chenzhou10@huawei.com>
-Message-ID: <6c710d6d-981f-8526-9e92-406bcb67e22c@huawei.com>
-Date:   Mon, 9 Nov 2020 20:34:07 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
- Thunderbird/45.7.1
+        Mon, 9 Nov 2020 07:34:27 -0500
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C360C0613CF;
+        Mon,  9 Nov 2020 04:34:27 -0800 (PST)
+Received: by mail-pg1-x544.google.com with SMTP id h6so7049984pgk.4;
+        Mon, 09 Nov 2020 04:34:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=76lz9d6Ii6PSYL2HYWk36/bgrPK9Hw3WkIKIrFJBsLw=;
+        b=IE+kPuHYp/jcZKjdVvYSKxkhdqKUpcIFOBE5yX2koIZYHk8ZWHQzKMfgvT/OrmU2/J
+         Eud0TDB8QDKA/z2pHm6VdA1Q4xrST8xASR5URzIWygHQp3a7xpZ8zACj5PH/WogPn87F
+         QxbDzek8tgp6qNxnKs0HkQmU54SnDi6s5U6w4GfjL2a4rdZeIZXDM87SB0Zo5pJZnyyR
+         km02YilQ0oRMR7+H78s8qp1Ec7Cud+iNE+rGozPALZmj38DZgsyxHRjfZ9wNHraxAHEO
+         ZvSvFB+/p2wXm1R9/1hG5rcGq6US/iSUknzkuJtZJexW/rdM9mbOHOw5HSWsq7Zy4Z6V
+         7l7g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=76lz9d6Ii6PSYL2HYWk36/bgrPK9Hw3WkIKIrFJBsLw=;
+        b=llkr7uBJxqgFvUYCp0dR/d7p2gkfUC/yAV3eLrtgqbOux25umW8ABhcB5fihMMdq3Y
+         dU2zBC6JJDSMl+O5Ek2uvChWq2sACmEImRtmViqyxCGNJ+zmdp8xblqZHwZb89q46Pw2
+         XUW5xAs1qrZ679XqEb+lgYGQBjhXHoc/5AHHY0E4kWHVfGidquE0zIlqYP1eOXCL/UrJ
+         TQ1tFkDwDAmSsGkGBlZpeOHxUewhqSYKb+ilGnhxClmM18i0mI3l/xOb9vTNu0cbQTvl
+         J4O4urb1bcBrljE1sIU6Qq7EcYAhYE2xqE5XpeA4wgMWz0g7ER1aXI9Rf6P5mNtti87D
+         fpwQ==
+X-Gm-Message-State: AOAM530C+cK4GrG87jzaRJ5n9AcogThA7f6WYIlLYieWaL7D1XFFrAeH
+        m8JndQI0FdOwgwF0NTVTjXk=
+X-Google-Smtp-Source: ABdhPJxl/vCsqHlmlJiHL6amNEf2zZqT92aOPveveVj4LTo1dT08gogXympMqcWcPc3wGR1HcGDfbQ==
+X-Received: by 2002:a62:54c2:0:b029:156:4e4c:ff49 with SMTP id i185-20020a6254c20000b02901564e4cff49mr13494150pfb.26.1604925266688;
+        Mon, 09 Nov 2020 04:34:26 -0800 (PST)
+Received: from syed ([223.225.3.45])
+        by smtp.gmail.com with ESMTPSA id v18sm11297148pfn.35.2020.11.09.04.34.21
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 09 Nov 2020 04:34:25 -0800 (PST)
+Date:   Mon, 9 Nov 2020 18:04:11 +0530
+From:   Syed Nayyar Waris <syednwaris@gmail.com>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     William Breathitt Gray <vilhelm.gray@gmail.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Michal Simek <michal.simek@xilinx.com>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [PATCH v12 4/4] gpio: xilinx: Utilize generic bitmap_get_value
+ and _set_value
+Message-ID: <20201109123411.GA19869@syed>
+References: <cover.1603055402.git.syednwaris@gmail.com>
+ <15a044d3ba23f00c31fd09437bdd3e5924bb91cd.1603055402.git.syednwaris@gmail.com>
+ <CAK8P3a3f=fuq24QwNee3QgoMcSK5rcvLRpdTOWBZ9NJ4d-4bvA@mail.gmail.com>
+ <20201101150033.GA68138@shinobu>
+ <CAK8P3a0y7mh=ZDPefgpawY97gpYv79UXFLBzoGfu3ex2up2aDQ@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20201031074437.168008-1-chenzhou10@huawei.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.176.61]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAK8P3a0y7mh=ZDPefgpawY97gpYv79UXFLBzoGfu3ex2up2aDQ@mail.gmail.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi all,
+On Sun, Nov 01, 2020 at 09:08:29PM +0100, Arnd Bergmann wrote:
+> On Sun, Nov 1, 2020 at 4:00 PM William Breathitt Gray
+> <vilhelm.gray@gmail.com> wrote:
+> >
+> > On Thu, Oct 29, 2020 at 11:44:47PM +0100, Arnd Bergmann wrote:
+> > > On Sun, Oct 18, 2020 at 11:44 PM Syed Nayyar Waris <syednwaris@gmail.com> wrote:
+> > > >
+> > > > This patch reimplements the xgpio_set_multiple() function in
+> > > > drivers/gpio/gpio-xilinx.c to use the new generic functions:
+> > > > bitmap_get_value() and bitmap_set_value(). The code is now simpler
+> > > > to read and understand. Moreover, instead of looping for each bit
+> > > > in xgpio_set_multiple() function, now we can check each channel at
+> > > > a time and save cycles.
+> > >
+> > > This now causes -Wtype-limits warnings in linux-next with gcc-10:
+> >
+> > Hi Arnd,
+> >
+> > What version of gcc-10 are you running? I'm having trouble generating
+> > these warnings so I suspect I'm using a different version than you.
+> 
+> I originally saw it with the binaries from
+> https://mirrors.edge.kernel.org/pub/tools/crosstool/, but I have
+> also been able to reproduce it with a minimal test case on the
+> binaries from godbolt.org, see https://godbolt.org/z/Wq8q4n
+> 
+> > Let me first verify that I understand the problem correctly. The issue
+> > is the possibility of a stack smash in bitmap_set_value() when the value
+> > of start + nbits is larger than the length of the map bitmap memory
+> > region. This is because index (or index + 1) could be outside the range
+> > of the bitmap memory region passed in as map. Is my understanding
+> > correct here?
+> 
+> Yes, that seems to be the case here.
+> 
+> > In xgpio_set_multiple(), the variables width[0] and width[1] serve as
+> > possible start and nbits values for the bitmap_set_value() calls.
+> > Because width[0] and width[1] are unsigned int variables, GCC considers
+> > the possibility that the value of width[0]/width[1] might exceed the
+> > length of the bitmap memory region named old and thus result in a stack
+> > smash.
+> >
+> > I don't know if invalid width values are actually possible for the
+> > Xilinx gpio device, but let's err on the side of safety and assume this
+> > is actually a possibility. We should verify that the combined value of
+> > gpio_width[0] + gpio_width[1] does not exceed 64 bits; we can add a
+> > check for this in xgpio_probe() when we grab the gpio_width values.
+> >
+> > However, we're still left with the GCC warnings because GCC is not smart
+> > enough to know that we've already checked the boundary and width[0] and
+> > width[1] are valid values. I suspect we can avoid this warning is we
+> > refactor bitmap_set_value() to increment map seperately and then set it:
+> 
+> As I understand it, part of the problem is that gcc sees the possible
+> range as being constrained by the operations on 'start' and 'nbits',
+> in particular the shift in BIT_WORD() that put an upper bound on
+> the index, but then it sees that the upper bound is higher than the
+> upper bound of the array, i.e. element zero.
+> 
+> I added a check
+> 
+>       if (start >= 64 || start + size >= 64) return;
+> 
+> in the godbolt.org testcase, which does help limit the start
+> index appropriately, but it is not sufficient to let the compiler
+> see that the 'if (space >= nbits) ' condition is guaranteed to
+> be true for all values here.
+> 
+> > static inline void bitmap_set_value(unsigned long *map,
+> >                                     unsigned long value,
+> >                                     unsigned long start, unsigned long nbits)
+> > {
+> >         const unsigned long offset = start % BITS_PER_LONG;
+> >         const unsigned long ceiling = round_up(start + 1, BITS_PER_LONG);
+> >         const unsigned long space = ceiling - start;
+> >
+> >         map += BIT_WORD(start);
+> >         value &= GENMASK(nbits - 1, 0);
+> >
+> >         if (space >= nbits) {
+> >                 *map &= ~(GENMASK(nbits - 1, 0) << offset);
+> >                 *map |= value << offset;
+> >         } else {
+> >                 *map &= ~BITMAP_FIRST_WORD_MASK(start);
+> >                 *map |= value << offset;
+> >                 map++;
+> >                 *map &= ~BITMAP_LAST_WORD_MASK(start + nbits);
+> >                 *map |= value >> space;
+> >         }
+> > }
+> >
+> > This avoids adding a costly conditional check inside bitmap_set_value()
+> > when almost all bitmap_set_value() calls will have static arguments with
+> > well-defined and obvious boundaries.
+> >
+> > Do you think this would be an acceptable solution to resolve your GCC
+> > warnings?
+> 
+> Unfortunately, it does not seem to make a difference, as gcc still
+> knows that this compiles to the same result, and it produces the same
+> warning as before (see https://godbolt.org/z/rjx34r)
+> 
+>          Arnd
 
-Friendly ping...
+Hi Arnd,
+
+Sharing a different version of bitmap_set_valuei() function. See below.
+
+Let me know if the below solution looks good to you and if it resolves
+the above compiler warning.
 
 
-On 2020/10/31 15:44, Chen Zhou wrote:
-> There are following issues in arm64 kdump:
-> 1. We use crashkernel=X to reserve crashkernel below 4G, which
-> will fail when there is no enough low memory.
-> 2. If reserving crashkernel above 4G, in this case, crash dump
-> kernel will boot failure because there is no low memory available
-> for allocation.
-> 3. Since commit 1a8e1cef7603 ("arm64: use both ZONE_DMA and ZONE_DMA32"),
-> if the memory reserved for crash dump kernel falled in ZONE_DMA32,
-> the devices in crash dump kernel need to use ZONE_DMA will alloc
-> fail.
->
-> To solve these issues, change the behavior of crashkernel=X.
-> crashkernel=X tries low allocation in DMA zone (or the DMA32 zone if
-> CONFIG_ZONE_DMA is disabled), and fall back to high allocation if it fails.
->
-> We can also use "crashkernel=X,high" to select a high region above
-> DMA zone, which also tries to allocate at least 256M low memory in
-> DMA zone automatically (or the DMA32 zone if CONFIG_ZONE_DMA is disabled).
-> "crashkernel=Y,low" can be used to allocate specified size low memory.
->
-> When reserving crashkernel in high memory, some low memory is reserved
-> for crash dump kernel devices. So there may be two regions reserved for
-> crash dump kernel.
-> In order to distinct from the high region and make no effect to the use
-> of existing kexec-tools, rename the low region as "Crash kernel (low)",
-> and pass the low region by reusing DT property
-> "linux,usable-memory-range". We made the low memory region as the last
-> range of "linux,usable-memory-range" to keep compatibility with existing
-> user-space and older kdump kernels.
->
-> Besides, we need to modify kexec-tools:
-> arm64: support more than one crash kernel regions(see [1])
->
-> Another update is document about DT property 'linux,usable-memory-range':
-> schemas: update 'linux,usable-memory-range' node schema(see [2])
->
-> This patchset contains the following eight patches:
-> 0001-x86-kdump-replace-the-hard-coded-alignment-with-macr.patch
-> 0002-x86-kdump-make-the-lower-bound-of-crash-kernel-reser.patch
-> 0003-x86-kdump-use-macro-CRASH_ADDR_LOW_MAX-in-functions-.patch
-> 0004-x86-kdump-move-reserve_crashkernel-_low-into-crash_c.patch
-> 0005-arm64-kdump-introduce-some-macroes-for-crash-kernel-.patch
-> 0006-arm64-kdump-reimplement-crashkernel-X.patch
-> 0007-arm64-kdump-add-memory-for-devices-by-DT-property-li.patch
-> 0008-kdump-update-Documentation-about-crashkernel.patch
->
-> 0001-0003 are some x86 cleanups which prepares for making
-> functionsreserve_crashkernel[_low]() generic.
-> 0004 makes functions reserve_crashkernel[_low]() generic.
-> 0005-0006 reimplements arm64 crashkernel=X.
-> 0007 adds memory for devices by DT property linux,usable-memory-range.
-> 0008 updates the doc.
->
-> Changes since [v12]
-> - Rebased on top of 5.10-rc1.
-> - Keep CRASH_ALIGN as 16M suggested by Dave.
-> - Drop patch "kdump: add threshold for the required memory".
-> - Add Tested-by from John.
->
-> Changes since [v11]
-> - Rebased on top of 5.9-rc4.
-> - Make the function reserve_crashkernel() of x86 generic.
-> Suggested by Catalin, make the function reserve_crashkernel() of x86 generic
-> and arm64 use the generic version to reimplement crashkernel=X.
->
-> Changes since [v10]
-> - Reimplement crashkernel=X suggested by Catalin, Many thanks to Catalin.
->
-> Changes since [v9]
-> - Patch 1 add Acked-by from Dave.
-> - Update patch 5 according to Dave's comments.
-> - Update chosen schema.
->
-> Changes since [v8]
-> - Reuse DT property "linux,usable-memory-range".
-> Suggested by Rob, reuse DT property "linux,usable-memory-range" to pass the low
-> memory region.
-> - Fix kdump broken with ZONE_DMA reintroduced.
-> - Update chosen schema.
->
-> Changes since [v7]
-> - Move x86 CRASH_ALIGN to 2M
-> Suggested by Dave and do some test, move x86 CRASH_ALIGN to 2M.
-> - Update Documentation/devicetree/bindings/chosen.txt.
-> Add corresponding documentation to Documentation/devicetree/bindings/chosen.txt
-> suggested by Arnd.
-> - Add Tested-by from Jhon and pk.
->
-> Changes since [v6]
-> - Fix build errors reported by kbuild test robot.
->
-> Changes since [v5]
-> - Move reserve_crashkernel_low() into kernel/crash_core.c.
-> - Delete crashkernel=X,high.
-> - Modify crashkernel=X,low.
-> If crashkernel=X,low is specified simultaneously, reserve spcified size low
-> memory for crash kdump kernel devices firstly and then reserve memory above 4G.
-> In addition, rename crashk_low_res as "Crash kernel (low)" for arm64, and then
-> pass to crash dump kernel by DT property "linux,low-memory-range".
-> - Update Documentation/admin-guide/kdump/kdump.rst.
->
-> Changes since [v4]
-> - Reimplement memblock_cap_memory_ranges for multiple ranges by Mike.
->
-> Changes since [v3]
-> - Add memblock_cap_memory_ranges back for multiple ranges.
-> - Fix some compiling warnings.
->
-> Changes since [v2]
-> - Split patch "arm64: kdump: support reserving crashkernel above 4G" as
-> two. Put "move reserve_crashkernel_low() into kexec_core.c" in a separate
-> patch.
->
-> Changes since [v1]:
-> - Move common reserve_crashkernel_low() code into kernel/kexec_core.c.
-> - Remove memblock_cap_memory_ranges() i added in v1 and implement that
-> in fdt_enforce_memory_region().
-> There are at most two crash kernel regions, for two crash kernel regions
-> case, we cap the memory range [min(regs[*].start), max(regs[*].end)]
-> and then remove the memory range in the middle.
->
-> [1]: http://lists.infradead.org/pipermail/kexec/2020-June/020737.html
-> [2]: https://github.com/robherring/dt-schema/pull/19 
-> [v1]: https://lkml.org/lkml/2019/4/2/1174
-> [v2]: https://lkml.org/lkml/2019/4/9/86
-> [v3]: https://lkml.org/lkml/2019/4/9/306
-> [v4]: https://lkml.org/lkml/2019/4/15/273
-> [v5]: https://lkml.org/lkml/2019/5/6/1360
-> [v6]: https://lkml.org/lkml/2019/8/30/142
-> [v7]: https://lkml.org/lkml/2019/12/23/411
-> [v8]: https://lkml.org/lkml/2020/5/21/213
-> [v9]: https://lkml.org/lkml/2020/6/28/73
-> [v10]: https://lkml.org/lkml/2020/7/2/1443
-> [v11]: https://lkml.org/lkml/2020/8/1/150
-> [v12]: https://lkml.org/lkml/2020/9/7/1037
->
-> Chen Zhou (8):
->   x86: kdump: replace the hard-coded alignment with macro CRASH_ALIGN
->   x86: kdump: make the lower bound of crash kernel reservation
->     consistent
->   x86: kdump: use macro CRASH_ADDR_LOW_MAX in functions
->     reserve_crashkernel()
->   x86: kdump: move reserve_crashkernel[_low]() into crash_core.c
->   arm64: kdump: introduce some macroes for crash kernel reservation
->   arm64: kdump: reimplement crashkernel=X
->   arm64: kdump: add memory for devices by DT property
->     linux,usable-memory-range
->   kdump: update Documentation about crashkernel
->
->  Documentation/admin-guide/kdump/kdump.rst     |  23 ++-
->  .../admin-guide/kernel-parameters.txt         |  12 +-
->  arch/arm64/include/asm/kexec.h                |  15 ++
->  arch/arm64/include/asm/processor.h            |   1 +
->  arch/arm64/kernel/setup.c                     |  13 +-
->  arch/arm64/mm/init.c                          | 105 ++++-------
->  arch/arm64/mm/mmu.c                           |   4 +
->  arch/x86/include/asm/kexec.h                  |  28 +++
->  arch/x86/kernel/setup.c                       | 153 +---------------
->  include/linux/crash_core.h                    |   4 +
->  include/linux/kexec.h                         |   2 -
->  kernel/crash_core.c                           | 168 ++++++++++++++++++
->  kernel/kexec_core.c                           |  17 --
->  13 files changed, 301 insertions(+), 244 deletions(-)
->
+@@ -1,5 +1,5 @@
+ static inline void bitmap_set_value(unsigned long *map,
+-                                    unsigned long value,
++                                    unsigned long value, const size_t length,
+                                     unsigned long start, unsigned long nbits)
+ {
+         const size_t index = BIT_WORD(start);
+@@ -7,6 +7,9 @@ static inline void bitmap_set_value(unsigned long *map,
+         const unsigned long ceiling = round_up(start + 1, BITS_PER_LONG);
+         const unsigned long space = ceiling - start;
+ 
++       if (index >= length)
++               return;
++
+         value &= GENMASK(nbits - 1, 0);
+ 
+         if (space >= nbits) {
+@@ -15,6 +18,10 @@ static inline void bitmap_set_value(unsigned long *map,
+         } else {
+                 map[index + 0] &= ~BITMAP_FIRST_WORD_MASK(start);
+                 map[index + 0] |= value << offset;
++
++               if (index + 1 >= length)
++                       return;
++
+                 map[index + 1] &= ~BITMAP_LAST_WORD_MASK(start + nbits);
+                 map[index + 1] |= value >> space;
+         }
+
+
+
+
 
