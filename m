@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68A732ABA5F
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 14:18:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0614C2AB968
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 14:09:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732769AbgKINSX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 08:18:23 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45538 "EHLO mail.kernel.org"
+        id S1731773AbgKINI6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 08:08:58 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33818 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387721AbgKINSJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 08:18:09 -0500
+        id S1731761AbgKINI4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 08:08:56 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A6F31206D8;
-        Mon,  9 Nov 2020 13:18:07 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2A64D221F1;
+        Mon,  9 Nov 2020 13:08:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604927888;
-        bh=gyY+1DkSLcznU0Olo7s0bJq06DrF5VPZHNTFOnELTBs=;
+        s=default; t=1604927335;
+        bh=5+CQ+9gu2ZIyGQoSS6i1n8vXSVsi7lG/NeXmXbNhYR0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=O3xo8o+nNYlWfnw6eaXgwlpu2MJcL5r6ysFtBnfKy7J8t1e+6oU8A3HvW3TH/b9Uu
-         yIr+N4jG6ET7XJUH9AKS+l/cVE2ceGsOROwjnpccWLkFaUI3sPCCe43XzRqsa7zBzK
-         xYpXfmPVX7vZz8hEJ3ZNtkfsnN19SnDhffOE4l3g=
+        b=lHZGYQkFizwlf59RUE7oxLgjLAw1vhI08K9XdyNTqop+F8LQkSOsFrFFm5mAVlpwS
+         pUvDGVNinjdrvW6vq+XkShjvYxUaKRGjNJpHOgBRX13380QVluaChfkCQD9U9riD61
+         JrXsoI6xMe+yOuiBlOPafzIIzJ+W7GvdmZ7EKtMM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Zqiang <qiang.zhang@windriver.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Petr Mladek <pmladek@suse.com>, Tejun Heo <tj@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 5.9 055/133] kthread_worker: prevent queuing delayed work from timer_fn when it is being canceled
-Date:   Mon,  9 Nov 2020 13:55:17 +0100
-Message-Id: <20201109125033.368511167@linuxfoundation.org>
+        stable@vger.kernel.org, Johannes Thumshirn <jthumshirn@suse.de>,
+        Qu Wenruo <wqu@suse.com>, David Sterba <dsterba@suse.com>,
+        Ben Hutchings <ben.hutchings@codethink.co.uk>
+Subject: [PATCH 4.19 24/71] btrfs: tree-checker: Make btrfs_check_chunk_valid() return EUCLEAN instead of EIO
+Date:   Mon,  9 Nov 2020 13:55:18 +0100
+Message-Id: <20201109125021.042397566@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201109125030.706496283@linuxfoundation.org>
-References: <20201109125030.706496283@linuxfoundation.org>
+In-Reply-To: <20201109125019.906191744@linuxfoundation.org>
+References: <20201109125019.906191744@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,48 +43,114 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zqiang <qiang.zhang@windriver.com>
+From: Qu Wenruo <wqu@suse.com>
 
-commit 6993d0fdbee0eb38bfac350aa016f65ad11ed3b1 upstream.
+commit bf871c3b43b1dcc3f2a076ff39a8f1ce7959d958 upstream.
 
-There is a small race window when a delayed work is being canceled and
-the work still might be queued from the timer_fn:
+To follow the standard behavior of tree-checker.
 
-	CPU0						CPU1
-kthread_cancel_delayed_work_sync()
-   __kthread_cancel_work_sync()
-     __kthread_cancel_work()
-        work->canceling++;
-					      kthread_delayed_work_timer_fn()
-						   kthread_insert_work();
-
-BUG: kthread_insert_work() should not get called when work->canceling is
-set.
-
-Signed-off-by: Zqiang <qiang.zhang@windriver.com>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Reviewed-by: Petr Mladek <pmladek@suse.com>
-Acked-by: Tejun Heo <tj@kernel.org>
-Cc: <stable@vger.kernel.org>
-Link: https://lkml.kernel.org/r/20201014083030.16895-1-qiang.zhang@windriver.com
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Reviewed-by: Johannes Thumshirn <jthumshirn@suse.de>
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+Reviewed-by: David Sterba <dsterba@suse.com>
+Signed-off-by: David Sterba <dsterba@suse.com>
+[bwh: Cherry-picked for 4.19 to ease backporting later fixes]
+Signed-off-by: Ben Hutchings <ben.hutchings@codethink.co.uk>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
 ---
- kernel/kthread.c |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ fs/btrfs/tree-checker.c |   22 +++++++++++-----------
+ 1 file changed, 11 insertions(+), 11 deletions(-)
 
---- a/kernel/kthread.c
-+++ b/kernel/kthread.c
-@@ -897,7 +897,8 @@ void kthread_delayed_work_timer_fn(struc
- 	/* Move the work from worker->delayed_work_list. */
- 	WARN_ON_ONCE(list_empty(&work->node));
- 	list_del_init(&work->node);
--	kthread_insert_work(worker, work, &worker->work_list);
-+	if (!work->canceling)
-+		kthread_insert_work(worker, work, &worker->work_list);
+--- a/fs/btrfs/tree-checker.c
++++ b/fs/btrfs/tree-checker.c
+@@ -496,7 +496,7 @@ static void chunk_err(const struct btrfs
+ /*
+  * The common chunk check which could also work on super block sys chunk array.
+  *
+- * Return -EIO if anything is corrupted.
++ * Return -EUCLEAN if anything is corrupted.
+  * Return 0 if everything is OK.
+  */
+ int btrfs_check_chunk_valid(struct btrfs_fs_info *fs_info,
+@@ -520,31 +520,31 @@ int btrfs_check_chunk_valid(struct btrfs
+ 	if (!num_stripes) {
+ 		chunk_err(fs_info, leaf, chunk, logical,
+ 			  "invalid chunk num_stripes, have %u", num_stripes);
+-		return -EIO;
++		return -EUCLEAN;
+ 	}
+ 	if (!IS_ALIGNED(logical, fs_info->sectorsize)) {
+ 		chunk_err(fs_info, leaf, chunk, logical,
+ 		"invalid chunk logical, have %llu should aligned to %u",
+ 			  logical, fs_info->sectorsize);
+-		return -EIO;
++		return -EUCLEAN;
+ 	}
+ 	if (btrfs_chunk_sector_size(leaf, chunk) != fs_info->sectorsize) {
+ 		chunk_err(fs_info, leaf, chunk, logical,
+ 			  "invalid chunk sectorsize, have %u expect %u",
+ 			  btrfs_chunk_sector_size(leaf, chunk),
+ 			  fs_info->sectorsize);
+-		return -EIO;
++		return -EUCLEAN;
+ 	}
+ 	if (!length || !IS_ALIGNED(length, fs_info->sectorsize)) {
+ 		chunk_err(fs_info, leaf, chunk, logical,
+ 			  "invalid chunk length, have %llu", length);
+-		return -EIO;
++		return -EUCLEAN;
+ 	}
+ 	if (!is_power_of_2(stripe_len) || stripe_len != BTRFS_STRIPE_LEN) {
+ 		chunk_err(fs_info, leaf, chunk, logical,
+ 			  "invalid chunk stripe length: %llu",
+ 			  stripe_len);
+-		return -EIO;
++		return -EUCLEAN;
+ 	}
+ 	if (~(BTRFS_BLOCK_GROUP_TYPE_MASK | BTRFS_BLOCK_GROUP_PROFILE_MASK) &
+ 	    type) {
+@@ -553,14 +553,14 @@ int btrfs_check_chunk_valid(struct btrfs
+ 			  ~(BTRFS_BLOCK_GROUP_TYPE_MASK |
+ 			    BTRFS_BLOCK_GROUP_PROFILE_MASK) &
+ 			  btrfs_chunk_type(leaf, chunk));
+-		return -EIO;
++		return -EUCLEAN;
+ 	}
  
- 	raw_spin_unlock_irqrestore(&worker->lock, flags);
- }
+ 	if ((type & BTRFS_BLOCK_GROUP_TYPE_MASK) == 0) {
+ 		chunk_err(fs_info, leaf, chunk, logical,
+ 	"missing chunk type flag, have 0x%llx one bit must be set in 0x%llx",
+ 			  type, BTRFS_BLOCK_GROUP_TYPE_MASK);
+-		return -EIO;
++		return -EUCLEAN;
+ 	}
+ 
+ 	if ((type & BTRFS_BLOCK_GROUP_SYSTEM) &&
+@@ -568,7 +568,7 @@ int btrfs_check_chunk_valid(struct btrfs
+ 		chunk_err(fs_info, leaf, chunk, logical,
+ 			  "system chunk with data or metadata type: 0x%llx",
+ 			  type);
+-		return -EIO;
++		return -EUCLEAN;
+ 	}
+ 
+ 	features = btrfs_super_incompat_flags(fs_info->super_copy);
+@@ -580,7 +580,7 @@ int btrfs_check_chunk_valid(struct btrfs
+ 		    (type & BTRFS_BLOCK_GROUP_DATA)) {
+ 			chunk_err(fs_info, leaf, chunk, logical,
+ 			"mixed chunk type in non-mixed mode: 0x%llx", type);
+-			return -EIO;
++			return -EUCLEAN;
+ 		}
+ 	}
+ 
+@@ -594,7 +594,7 @@ int btrfs_check_chunk_valid(struct btrfs
+ 			"invalid num_stripes:sub_stripes %u:%u for profile %llu",
+ 			num_stripes, sub_stripes,
+ 			type & BTRFS_BLOCK_GROUP_PROFILE_MASK);
+-		return -EIO;
++		return -EUCLEAN;
+ 	}
+ 
+ 	return 0;
 
 
