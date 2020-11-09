@@ -2,77 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CBAA2ABC55
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 14:37:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B1BC2ABC50
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 14:37:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731737AbgKINg0 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 9 Nov 2020 08:36:26 -0500
-Received: from coyote.holtmann.net ([212.227.132.17]:41296 "EHLO
-        mail.holtmann.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730383AbgKINEp (ORCPT
+        id S1731633AbgKINgV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 08:36:21 -0500
+Received: from youngberry.canonical.com ([91.189.89.112]:51656 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730753AbgKINEv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 08:04:45 -0500
-Received: from marcel-macbook.fritz.box (p4fefcf0f.dip0.t-ipconnect.de [79.239.207.15])
-        by mail.holtmann.org (Postfix) with ESMTPSA id 2674ECECC6;
-        Mon,  9 Nov 2020 14:11:49 +0100 (CET)
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.120.23.2.4\))
-Subject: Re: [PATCH v5] bluetooth: hci_h5: fix memory leak in h5_close
-From:   Marcel Holtmann <marcel@holtmann.org>
-In-Reply-To: <20201016131447.32107-1-anant.thazhemadam@gmail.com>
-Date:   Mon, 9 Nov 2020 14:04:40 +0100
-Cc:     Johan Hedberg <johan.hedberg@gmail.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        linux-bluetooth <linux-bluetooth@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        syzbot+6ce141c55b2f7aafd1c4@syzkaller.appspotmail.com
-Content-Transfer-Encoding: 8BIT
-Message-Id: <46A02F1A-DABE-4CEE-A43B-F44766D15FFB@holtmann.org>
-References: <20201016131447.32107-1-anant.thazhemadam@gmail.com>
-To:     Anant Thazhemadam <anant.thazhemadam@gmail.com>
-X-Mailer: Apple Mail (2.3608.120.23.2.4)
+        Mon, 9 Nov 2020 08:04:51 -0500
+Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <colin.king@canonical.com>)
+        id 1kc6ql-0006it-A6; Mon, 09 Nov 2020 13:04:47 +0000
+From:   Colin King <colin.king@canonical.com>
+To:     Paul Gortmaker <paul.gortmaker@windriver.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH][next] cpumask: allocate enough space for string and trailing '\0' char
+Date:   Mon,  9 Nov 2020 13:04:47 +0000
+Message-Id: <20201109130447.2080491-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.28.0
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Anant,
+From: Colin Ian King <colin.king@canonical.com>
 
-> When h5_close() is called, h5 is directly freed when !hu->serdev.
-> However, h5->rx_skb is not freed, which causes a memory leak.
-> 
-> Freeing h5->rx_skb and setting it to NULL, fixes this memory leak.
-> 
-> Fixes: ce945552fde4 ("Bluetooth: hci_h5: Add support for serdev enumerated devices")
-> Reported-by: syzbot+6ce141c55b2f7aafd1c4@syzkaller.appspotmail.com
-> Tested-by: syzbot+6ce141c55b2f7aafd1c4@syzkaller.appspotmail.com
-> Signed-off-by: Anant Thazhemadam <anant.thazhemadam@gmail.com>
-> ---
-> Changes in v5:
-> 	* Set h5->rx_skb = NULL unconditionally - to improve code
-> 	  readability
-> 	* Update commit message accordingly
-> 
-> Changes in v4:
-> 	* Free h5->rx_skb even when hu->serdev
-> 	(Suggested by Hans de Goede <hdegoede@redhat.com>)
-> 	* If hu->serdev, then assign h5->rx_skb = NULL
-> 
-> Changes in v3:
-> 	* Free h5->rx_skb when !hu->serdev, and fix the memory leak
-> 	* Do not incorrectly and unnecessarily call serdev_device_close()
-> 
-> Changes in v2:
-> 	* Fixed the Fixes tag
-> 
-> 
-> drivers/bluetooth/hci_h5.c | 3 +++
-> 1 file changed, 3 insertions(+)
+Currently the allocation of cpulist is based on the length of buf but does
+not include the addition end of string '\0' terminator. Static analysis is
+reporting this as a potential out-of-bounds access on cpulist. Fix this by
+allocating enough space for the additional '\0' terminator.
 
-patch has been applied to bluetooth-next tree.
+Addresses-Coverity: ("Out-of-bounds access")
+Fixes: 65987e67f7ff ("cpumask: add "last" alias for cpu list specifications")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+---
+ lib/cpumask.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Regards
-
-Marcel
+diff --git a/lib/cpumask.c b/lib/cpumask.c
+index 34ecb3005941..cb8a3ef0e73e 100644
+--- a/lib/cpumask.c
++++ b/lib/cpumask.c
+@@ -185,7 +185,7 @@ int __ref cpulist_parse(const char *buf, struct cpumask *dstp)
+ {
+ 	int r;
+ 	char *cpulist, last_cpu[5];	/* NR_CPUS <= 9999 */
+-	size_t len = strlen(buf);
++	size_t len = strlen(buf) + 1;
+ 	bool early = !slab_is_available();
+ 
+ 	if (!strcmp(buf, "all")) {
+-- 
+2.28.0
 
