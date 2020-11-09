@@ -2,153 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 99B822AC784
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 22:45:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8AE5B2AC78C
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 22:45:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731109AbgKIVo5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 16:44:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46164 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729247AbgKIVo5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 16:44:57 -0500
-Received: from mail-oo1-xc42.google.com (mail-oo1-xc42.google.com [IPv6:2607:f8b0:4864:20::c42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8A5BC0613CF;
-        Mon,  9 Nov 2020 13:44:56 -0800 (PST)
-Received: by mail-oo1-xc42.google.com with SMTP id n2so2581973ooo.8;
-        Mon, 09 Nov 2020 13:44:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:message-id:in-reply-to:references:subject
-         :mime-version:content-transfer-encoding;
-        bh=/YzuM89mASoBpBkWORGZlFLM10Sp7MghYlJKrb+EkNY=;
-        b=qFXHN0Hu1Ppbdk+WWWVhcyxtDBT7iAO0lch7rqhKqwtgOsN32A7ZB2B6qbGv+g+fIx
-         IzH9tnTdns2zk7BXGT86OBz1nlqGwClvzMPc2fphD8x38m8zzlFjk4945LjNRhzOlyv/
-         YxvevLOoyl8d5Y3fkI65GtxvfeF2/1X5AXiWIBN6t3wZySmwlTTdGRqQeWGmXP2rTTfY
-         4d1lhIUhZxdZDkgDt8SKk6xF0O3YZX0oNHNv9dw5IM/oO/lJiK/BnFEx5tsaziPT8wBz
-         pzmsZFOQ34erT9SMxwHGlIzHvSAuCvtiXSbYLTUZziWkWmutuM50MftjjF553iffnBeN
-         9ZwQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
-         :references:subject:mime-version:content-transfer-encoding;
-        bh=/YzuM89mASoBpBkWORGZlFLM10Sp7MghYlJKrb+EkNY=;
-        b=NM4mkQX6tChv7+bjG1gl5RTyTsDOVJmEzL108xaFvMhc2L0Ep3Bov38ch+3I9BqDnU
-         EsbupkC2jmJXvWW8/rOlQ9PC5vS5zTskWkbOIY2UN1fYmTp7eIxbd3rlKRLxyoz6fWlv
-         PKUDpOGkx2od5160c2+HVt/dk7wyFw/WzjgrW0lsYK7ul63pw3z3a7wvio60OgJLgdEh
-         LunYKGy3N5CFCDSjMhus4kuxhiPB3Ya6Z8LxwmL0rjmS9nO3hGYGdWuyVfM+zi0I01iq
-         6RQxgWz7Ad6oD4U5fWuGNRsXye8z0o3Ml0+bMFljSlhRX9oT/qK8mGfg41ag+oktEH2U
-         vIlQ==
-X-Gm-Message-State: AOAM53391OruVfHX4GjHbcCAoT1hKTu0ZCN+g8TuBN3KDZ85Wj4jQBGA
-        f6UxmOY8rdyQI5xhm88RNpk=
-X-Google-Smtp-Source: ABdhPJwBRerZppo2xOiQvtM4AsleO1AwlnazGnMjZH1eCgy2anI+CQ2RJbRaW99qgAyHWKYW8hIB0w==
-X-Received: by 2002:a4a:8f98:: with SMTP id c24mr1957094ooj.27.1604958296309;
-        Mon, 09 Nov 2020 13:44:56 -0800 (PST)
-Received: from localhost ([184.63.162.180])
-        by smtp.gmail.com with ESMTPSA id p17sm2685090oov.1.2020.11.09.13.44.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 09 Nov 2020 13:44:55 -0800 (PST)
-Date:   Mon, 09 Nov 2020 13:44:48 -0800
-From:   John Fastabend <john.fastabend@gmail.com>
-To:     Alex Shi <alex.shi@linux.alibaba.com>,
-        Jesper Dangaard Brouer <jbrouer@redhat.com>
-Cc:     davem@davemloft.net, Jakub Kicinski <kuba@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Message-ID: <5fa9b850d6de5_8c0e2089d@john-XPS-13-9370.notmuch>
-In-Reply-To: <3d39a08d-2e50-efeb-214f-0c7c2d1605d7@linux.alibaba.com>
-References: <1604641431-6295-1-git-send-email-alex.shi@linux.alibaba.com>
- <20201106171352.5c51342d@carbon>
- <3d39a08d-2e50-efeb-214f-0c7c2d1605d7@linux.alibaba.com>
-Subject: Re: [PATCH] net/xdp: remove unused macro REG_STATE_NEW
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+        id S1731057AbgKIVpe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 16:45:34 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46498 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729247AbgKIVpe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 16:45:34 -0500
+Received: from mail-oi1-f174.google.com (mail-oi1-f174.google.com [209.85.167.174])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id A9DCA21D46
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Nov 2020 21:45:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604958332;
+        bh=WDTIyhqTjCVRPEgsuMxOm4KcjksVm4jG/r82gsohB9w=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=2uMJxTjAZ+Fmj2DYoBwoBRhiKlV95YfFIXjN9kyQFC/FrXTAK44isT/RERDl2G4AC
+         Me6Xxg4QrF61xdxd4rFHr57eifG4BViidKws8+VYTfeViPr9ScCtf060i38sC4lz52
+         SIGorGlFqkqJipeBZT8QVh5GR3/pn1rTxa7mKPt4=
+Received: by mail-oi1-f174.google.com with SMTP id m13so11884091oih.8
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Nov 2020 13:45:32 -0800 (PST)
+X-Gm-Message-State: AOAM533/CuI+Xbi3K3J1MQqnDyCpj/z14o8IvgKTXPcoHNt82EEV5hJQ
+        i3fYG9lJLr1F3ZNwuR+Zzdu993Sl2ogJZnV8Sqk=
+X-Google-Smtp-Source: ABdhPJzEnqI1Z/TX9NvRZvQgFX5/6W28aQEKPArEiMNUGJjEVC89xMcimY5633FuYe9XHLrWITtaoyf+QzDIAT/1C9Y=
+X-Received: by 2002:aca:c60c:: with SMTP id w12mr868574oif.174.1604958331811;
+ Mon, 09 Nov 2020 13:45:31 -0800 (PST)
+MIME-Version: 1.0
+References: <20201109205155.1207545-1-ndesaulniers@google.com>
+ <CAMj1kXEoSF7UXNjJS4A6VtDVbpe7kfqxdZkMS3Sxf1Sr=PvdLA@mail.gmail.com> <CAKwvOdmEu+mf0fVW+4gt1q7F3SkFcLvTbgjivv1qnTo3sBAO7A@mail.gmail.com>
+In-Reply-To: <CAKwvOdmEu+mf0fVW+4gt1q7F3SkFcLvTbgjivv1qnTo3sBAO7A@mail.gmail.com>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Mon, 9 Nov 2020 22:45:19 +0100
+X-Gmail-Original-Message-ID: <CAMj1kXEC6TvkYScMPk0++6atLZe1yrkrUwMRkat33WEwym9t0g@mail.gmail.com>
+Message-ID: <CAMj1kXEC6TvkYScMPk0++6atLZe1yrkrUwMRkat33WEwym9t0g@mail.gmail.com>
+Subject: Re: [PATCH] ARM: decompressor: avoid ADRL pseudo-instruction
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Jian Cai <jiancai@google.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Nicolas Pitre <nico@fluxnic.net>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Alex Shi wrote:
-> =
-
-> =
-
-> =E5=9C=A8 2020/11/7 =E4=B8=8A=E5=8D=8812:13, Jesper Dangaard Brouer =E5=
-=86=99=E9=81=93:
-> > Hmm... REG_STATE_NEW is zero, so it is implicitly set via memset zero=
-.
-> > But it is true that it is technically not directly used or referenced=
-.
-> > =
-
-> > It is mentioned in a comment, so please send V2 with this additional =
-change:
-> =
-
-> Hi Jesper,
-> =
-
-> Thanks a lot for comments. here is the v2:
-> =
-
-> From 2908d25bf2e1c90ad71a83ba056743f45da283e8 Mon Sep 17 00:00:00 2001
-> From: Alex Shi <alex.shi@linux.alibaba.com>
-> Date: Fri, 6 Nov 2020 13:41:58 +0800
-> Subject: [PATCH v2] net/xdp: remove unused macro REG_STATE_NEW
-> =
-
-> To tame gcc warning on it:
-> net/core/xdp.c:20:0: warning: macro "REG_STATE_NEW" is not used
-> [-Wunused-macros]
-> And change related comments as Jesper Dangaard Brouer suggested.
-> =
-
-> Signed-off-by: Alex Shi <alex.shi@linux.alibaba.com>
-> ---
-
->  net/core/xdp.c | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
-> =
-
-> diff --git a/net/core/xdp.c b/net/core/xdp.c
-> index 48aba933a5a8..0df5ee5682d9 100644
-> --- a/net/core/xdp.c
-> +++ b/net/core/xdp.c
-> @@ -19,7 +19,6 @@
->  #include <trace/events/xdp.h>
->  #include <net/xdp_sock_drv.h>
->  =
-
-> -#define REG_STATE_NEW		0x0
->  #define REG_STATE_REGISTERED	0x1
->  #define REG_STATE_UNREGISTERED	0x2
->  #define REG_STATE_UNUSED	0x3
-
-I think having the define there makes it more readable and clear what
-the zero state is. But if we run with unused-macros I guess its even
-uglier to try and mark it with unused attribute.
-
-Acked-by: John Fastabend <john.fastabend@gmail.com>
-
-> @@ -175,7 +174,7 @@ int xdp_rxq_info_reg(struct xdp_rxq_info *xdp_rxq,
->  		return -ENODEV;
->  	}
->  =
-
-> -	/* State either UNREGISTERED or NEW */
-> +	/* State either UNREGISTERED or zero */
->  	xdp_rxq_info_init(xdp_rxq);
->  	xdp_rxq->dev =3D dev;
->  	xdp_rxq->queue_index =3D queue_index;
-> -- =
-
-> 1.8.3.1
-> =
+On Mon, 9 Nov 2020 at 22:09, Nick Desaulniers <ndesaulniers@google.com> wrote:
+>
+> On Mon, Nov 9, 2020 at 12:53 PM Ard Biesheuvel <ardb@kernel.org> wrote:
+> >
+> > On Mon, 9 Nov 2020 at 21:52, Nick Desaulniers <ndesaulniers@google.com> wrote:
+> > >
+> > > As Ard notes in
+> > > commit 54781938ec34 ("crypto: arm/sha256-neon - avoid ADRL pseudo
+> > > instruction")
+> > > commit 0f5e8323777b ("crypto: arm/sha512-neon - avoid ADRL pseudo
+> > > instruction")
+> > >
+> > >   The ADRL pseudo instruction is not an architectural construct, but a
+> > >   convenience macro that was supported by the ARM proprietary assembler
+> > >   and adopted by binutils GAS as well, but only when assembling in 32-bit
+> > >   ARM mode. Therefore, it can only be used in assembler code that is known
+> > >   to assemble in ARM mode only, but as it turns out, the Clang assembler
+> > >   does not implement ADRL at all, and so it is better to get rid of it
+> > >   entirely.
+> > >
+> > >   So replace the ADRL instruction with a ADR instruction that refers to
+> > >   a nearer symbol, and apply the delta explicitly using an additional
+> > >   instruction.
+> > >
+> > > We can use the same technique to generate the same offset. It looks like
+> > > the ADRL pseudo instruction assembles to two SUB instructions in this
+> > > case. Because the largest immediate operand that can be specified for
+> > > this instruction is 0x400, and the distance between the reference and
+> > > the symbol are larger than that, we need to use an intermediary symbol
+> > > (cache_off in this case) to calculate the full range.
+> > >
+> > > Suggested-by: Ard Biesheuvel <ardb@kernel.org>
+> > > Suggested-by: Jian Cai <jiancai@google.com>
+> > > Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
+> > > ---
+> > >  arch/arm/boot/compressed/head.S | 4 +++-
+> > >  1 file changed, 3 insertions(+), 1 deletion(-)
+> > >
+> > > diff --git a/arch/arm/boot/compressed/head.S b/arch/arm/boot/compressed/head.S
+> > > index 2e04ec5b5446..b3eac6f9a709 100644
+> > > --- a/arch/arm/boot/compressed/head.S
+> > > +++ b/arch/arm/boot/compressed/head.S
+> > > @@ -1440,7 +1440,9 @@ ENTRY(efi_enter_kernel)
+> > >                 mov     r4, r0                  @ preserve image base
+> > >                 mov     r8, r1                  @ preserve DT pointer
+> > >
+> > > - ARM(          adrl    r0, call_cache_fn       )
+> > > + ARM(          sub     r0, pc, #.L__efi_enter_kernel-cache_off )
+> > > + ARM(          sub     r0, r0, #cache_off-call_cache_fn        )
+> > > +.L__efi_enter_kernel:
+> > >   THUMB(                adr     r0, call_cache_fn       )
+> > >                 adr     r1, 0f                  @ clean the region of code we
+> > >                 bl      cache_clean_flush       @ may run with the MMU off
+> > > --
+> > > 2.29.2.222.g5d2a92d10f8-goog
+> > >
+> >
+> > This is already fixed in Russell's for-next tree.
+>
+> Ah right, trolling through lore, there was:
+> https://lore.kernel.org/linux-arm-kernel/20200914095706.3985-1-ardb@kernel.org/
+>
+> I didn't see anything in linux-next today, or
+> https://www.armlinux.org.uk/developer/patches/ Incoming or Applied.
+>
+> Did it just get merged into the for-next branch, or is for-next not
+> getting pulled into linux-next?
 
 
-
+It should appear tomorrow.
