@@ -2,86 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 288362AC8EF
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 23:57:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C2B2B2AC8F4
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 23:57:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730642AbgKIW5n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 17:57:43 -0500
-Received: from mga05.intel.com ([192.55.52.43]:8918 "EHLO mga05.intel.com"
+        id S1729971AbgKIW5p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 17:57:45 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35076 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729247AbgKIW5h (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 17:57:37 -0500
-IronPort-SDR: h2ELOHooYsYfyihalgoncIL16c9ZQQfE09sFw5Ni8BIIK1yhLfRIZn+f7C7uMYOuhxaFHCxu99
- GrMhM+LYczFA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9800"; a="254591931"
-X-IronPort-AV: E=Sophos;i="5.77,464,1596524400"; 
-   d="scan'208";a="254591931"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Nov 2020 14:57:36 -0800
-IronPort-SDR: VqKSGBCFWX0LguVXoPh7MdLfU9redKRdqt2OyM6aoeCXjafD/HR2GMHCaXaAwEwslszZohU5xt
- L+Dcc9Tv/FAA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,464,1596524400"; 
-   d="scan'208";a="398447206"
-Received: from fmsmsx605.amr.corp.intel.com ([10.18.126.85])
-  by orsmga001.jf.intel.com with ESMTP; 09 Nov 2020 14:57:36 -0800
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx605.amr.corp.intel.com (10.18.126.85) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Mon, 9 Nov 2020 14:57:36 -0800
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Mon, 9 Nov 2020 14:57:35 -0800
-Received: from fmsmsx610.amr.corp.intel.com ([10.18.126.90]) by
- fmsmsx610.amr.corp.intel.com ([10.18.126.90]) with mapi id 15.01.1713.004;
- Mon, 9 Nov 2020 14:57:35 -0800
-From:   "Luck, Tony" <tony.luck@intel.com>
-To:     Jim Mattson <jmattson@google.com>
-CC:     Qian Cai <cai@redhat.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-tip-commits@vger.kernel.org" 
-        <linux-tip-commits@vger.kernel.org>, Boris Petkov <bp@alien8.de>,
-        "Borislav Petkov" <bp@suse.de>, x86 <x86@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>
-Subject: RE: [tip: ras/core] x86/mce: Enable additional error logging on
- certain Intel CPUs
-Thread-Topic: [tip: ras/core] x86/mce: Enable additional error logging on
- certain Intel CPUs
-Thread-Index: AQHWsQncdZGZz6bl20aw0A24zT9Gy6nA6f4A//98jeCAAI8FgP//fTQA
-Date:   Mon, 9 Nov 2020 22:57:35 +0000
-Message-ID: <a22b5468e1c94906b72c4d8bc83c0f64@intel.com>
-References: <20201030190807.GA13884@agluck-desk2.amr.corp.intel.com>
- <160431588828.397.16468104725047768957.tip-bot2@tip-bot2>
- <3f863634cd75824907e8ccf8164548c2ef036f20.camel@redhat.com>
- <bfc274fc27724ea39ecac1e7ac834ed8@intel.com>
- <CALMp9eTFaiYkTnVe8xKzg40E4nZ3rAOii0O06bTy0+oLNjyKhA@mail.gmail.com>
-In-Reply-To: <CALMp9eTFaiYkTnVe8xKzg40E4nZ3rAOii0O06bTy0+oLNjyKhA@mail.gmail.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-product: dlpe-windows
-dlp-reaction: no-action
-dlp-version: 11.5.1.3
-x-originating-ip: [10.22.254.132]
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        id S1730603AbgKIW5n (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 17:57:43 -0500
+Received: from kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net (unknown [163.114.132.5])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id B67F7206ED;
+        Mon,  9 Nov 2020 22:57:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604962662;
+        bh=if5exp/aKQYCKy51vkQ7RSAFwt504BihFR3Zu9DiVfk=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=EnBmwVUsqJajO3ihH0iy/5Wy7Qw73W5v0Nch8dwmpNYCXxJVDd/p5ZWuoE5W+j81G
+         ZNauvjWjg3xdggsvRaQIM2VMNkUQt4XofSyjD5Kq0HlJ1v9vEGJ4c5wV8aN+2lkp+s
+         kbDYB0lBu6/bFFXD6UbXZ+7XF8533E3AEhXKjbj4=
+Date:   Mon, 9 Nov 2020 14:57:40 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>
+Cc:     Petr Malat <oss@malat.biz>, linux-sctp@vger.kernel.org,
+        Vlad Yasevich <vyasevich@gmail.com>,
+        Neil Horman <nhorman@tuxdriver.com>,
+        "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] sctp: Fix sending when PMTU is less than
+ SCTP_DEFAULT_MINSEGMENT
+Message-ID: <20201109145740.5c63773e@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+In-Reply-To: <20201106102106.GB3556@localhost.localdomain>
+References: <20201105103946.18771-1-oss@malat.biz>
+        <20201106084634.GA3556@localhost.localdomain>
+        <20201106094824.GA7570@bordel.klfree.net>
+        <20201106102106.GB3556@localhost.localdomain>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PiBJIHRob3VnaHQgTGludXggaGFkIGxvbmcgYWdvIGdvbmUgdGhlIHJvdXRlIG9mIHR1cm5pbmcg
-cmRtc3Ivd3Jtc3INCj4gaW50byByZG1zcl9zYWZlL3dybXNyX3NhZmUsIHNvIHRoYXQgdGhlIGd1
-ZXN0IHdvdWxkIGlnbm9yZSB0aGUgI0dQcyBvbg0KPiB3cml0ZXMgYW5kIHJldHVybiB6ZXJvIHRv
-IHRoZSBjYWxsZXIgZm9yICNHUHMgb24gcmVhZHMuDQoNCkxpbnV4IGp1c3Qgc3dpdGNoZWQgdGhh
-dCBhcm91bmQgZm9yIHRoZSBtYWNoaW5lIGNoZWNrIGJhbmtzIC4uLiBpZiB0aGV5ICNHUA0KZmF1
-bHQsIHRoZW4gc29tZXRoaW5nIGlzIHNlcmlvdXNseSB3cm9uZy4NCg0KTWF5YmUgdGhhdCBpc24n
-dCBhIGdlbmVyYWwgY2hhbmdlIG9mIGRpcmVjdGlvbiB0aG91Z2guIFBlcmhhcHMgSQ0Kc2hvdWxk
-IGVpdGhlciB1c2UgcmRtc3JsX3NhZmUoKSBpbiB0aGlzIGNvZGUuIE9yIChiZXR0ZXI/KSBhZGQN
-Cg0KCWlmIChib290X2NwdV9oYXMoWDg2X0ZFQVRVUkVfSFlQRVJWSVNPUikpDQoJCXJldHVybjsN
-Cg0KdG8gdGhlIHN0YXJ0IG9mIGludGVsX2ltY19pbml0KCkuDQoNCi1Ub255DQo=
+On Fri, 6 Nov 2020 07:21:06 -0300 Marcelo Ricardo Leitner wrote:
+> On Fri, Nov 06, 2020 at 10:48:24AM +0100, Petr Malat wrote:
+> > On Fri, Nov 06, 2020 at 05:46:34AM -0300, Marcelo Ricardo Leitner wrote:  
+> > > On Thu, Nov 05, 2020 at 11:39:47AM +0100, Petr Malat wrote:  
+> > > > Function sctp_dst_mtu() never returns lower MTU than
+> > > > SCTP_TRUNC4(SCTP_DEFAULT_MINSEGMENT) even when the actual MTU is less,
+> > > > in which case we rely on the IP fragmentation and must enable it.  
+> > > 
+> > > This should be being handled at sctp_packet_will_fit():  
+> > 
+> > sctp_packet_will_fit() does something a little bit different, it
+> > allows fragmentation, if the packet must be longer than the pathmtu
+> > set in SCTP structures, which is never less than 512 (see
+> > sctp_dst_mtu()) even when the actual mtu is less than 512.
+> > 
+> > One can test it by setting mtu of an interface to e.g. 300,
+> > and sending a longer packet (e.g. 400B):  
+> > >           psize = packet->size;
+> > >           if (packet->transport->asoc)
+> > >                   pmtu = packet->transport->asoc->pathmtu;
+> > >           else
+> > >                   pmtu = packet->transport->pathmtu;  
+> > here the returned pmtu will be 512  
+> 
+> Thing is, your patch is using the same vars to check for it:
+> +       pmtu = tp->asoc ? tp->asoc->pathmtu : tp->pathmtu;
+> 
+> >   
+> > > 
+> > >           /* Decide if we need to fragment or resubmit later. */
+> > >           if (psize + chunk_len > pmtu) {  
+> > This branch will not be taken as the packet length is less then 512  
+> 
+> Right, ok. While then your patch will catch it because pmtu will be
+> SCTP_DEFAULT_MINSEGMENT, as it is checking with '<='.
+> 
+> >   
+> > >            }
+> > >   
+> > And the whole function will return SCTP_XMIT_OK without setting
+> > ipfragok.
+> > 
+> > I think the idea of never going bellow 512 in sctp_dst_mtu() is to
+> > reduce overhead of SCTP headers, which is fine, but when we do that,
+> > we must be sure to allow the IP fragmentation, which is currently
+> > missing.  
+> 
+> Hmm. ip frag is probably just worse than higher header/payload
+> overhead.
+> 
+> > 
+> > The other option would be to keep track of the real MTU in pathmtu
+> > and perform max(512, pathmtu) in sctp_packet_will_fit() function.  
+> 
+> I need to check where this 512 came from. I don't recall it from top
+> of my head and it's from before git history. Maybe we should just drop
+> this limit, if it's artificial. IPV4_MIN_MTU is 68.
+> 
+> > 
+> > Not sure when exactly this got broken, but using MTU less than 512
+> > used to work in 4.9.  
+> 
+> Uhh, that's a bit old already. If you could narrow it down, that would
+> be nice.
+
+I'm dropping this from patchwork, if you conclude that the patch is
+good as is please repost, thanks!
