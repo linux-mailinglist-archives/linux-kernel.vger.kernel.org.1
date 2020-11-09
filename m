@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 41ACB2ABB96
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 14:32:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 10B242ABC49
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 14:37:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731816AbgKINLv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 08:11:51 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37332 "EHLO mail.kernel.org"
+        id S1731250AbgKINfx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 08:35:53 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58116 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731316AbgKINLs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 08:11:48 -0500
+        id S1730837AbgKINFU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 08:05:20 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C31B720789;
-        Mon,  9 Nov 2020 13:11:46 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 29EF620789;
+        Mon,  9 Nov 2020 13:05:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604927507;
-        bh=yMulE9rlSrV7iq5QtWhfmgazFmt1ZpjOySiPk6ta1Xo=;
+        s=default; t=1604927113;
+        bh=MzQblIlLxg3h3xxgE3Uf01tjIDi39O9jXtVbrNnZDdk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=FveUesjE2iiDdYWTojNFVn5sK95Blcr2wvemHrH1nHB0cV0wzBBO81AJSi7jYVlTZ
-         qHBR90zCUMPDAgmH4kvHirO7ejcCXUSWVfLXMtkyLGLfq6PcNR88eFOQSIziEhNDos
-         NzlXl29htUZsoEcWDxyEjG5IPsEzzQUEqoLLjvxk=
+        b=jbAUa514RLNEzpcteSpj5hSPIIqbMQ+KDN/nUw8e0T/HrwRe5y5abINEc6Io8tyY0
+         fMN2TnoS+r87GVBG9GtKjql0NjmF17tiGy1lH942hOztA2pTXx2BK4qS6QdpEbPVK2
+         fskEvBgYIyRbYzIi84oxYAyB2fWHUcMVWNRAn1Ek=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Vinay Kumar Yadav <vinay.yadav@chelsio.com>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 5.4 12/85] chelsio/chtls: fix memory leaks caused by a race
-Date:   Mon,  9 Nov 2020 13:55:09 +0100
-Message-Id: <20201109125023.180764198@linuxfoundation.org>
+        stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>
+Subject: [PATCH 4.9 084/117] ARM: samsung: fix PM debug build with DEBUG_LL but !MMU
+Date:   Mon,  9 Nov 2020 13:55:10 +0100
+Message-Id: <20201109125029.678753438@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201109125022.614792961@linuxfoundation.org>
-References: <20201109125022.614792961@linuxfoundation.org>
+In-Reply-To: <20201109125025.630721781@linuxfoundation.org>
+References: <20201109125025.630721781@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,48 +42,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vinay Kumar Yadav <vinay.yadav@chelsio.com>
+From: Krzysztof Kozlowski <krzk@kernel.org>
 
-[ Upstream commit 8080b462b6aa856ae05ea010441a702599e579f2 ]
+commit 7be0d19c751b02db778ca95e3274d5ea7f31891c upstream.
 
-race between user context and softirq causing memleak,
-consider the call sequence scenario
+Selecting CONFIG_SAMSUNG_PM_DEBUG (depending on CONFIG_DEBUG_LL) but
+without CONFIG_MMU leads to build errors:
 
-chtls_setkey()         //user context
-chtls_peer_close()
-chtls_abort_req_rss()
-chtls_setkey()         //user context
+  arch/arm/plat-samsung/pm-debug.c: In function ‘s3c_pm_uart_base’:
+  arch/arm/plat-samsung/pm-debug.c:57:2: error:
+    implicit declaration of function ‘debug_ll_addr’ [-Werror=implicit-function-declaration]
 
-work request skb queued in chtls_setkey() won't be freed
-because resources are already cleaned for this connection,
-fix it by not queuing work request while socket is closing.
-
-v1->v2:
-- fix W=1 warning.
-
-v2->v3:
-- separate it out from another memleak fix.
-
-Fixes: cc35c88ae4db ("crypto : chtls - CPL handler definition")
-Signed-off-by: Vinay Kumar Yadav <vinay.yadav@chelsio.com>
-Link: https://lore.kernel.org/r/20201102173650.24754-1-vinay.yadav@chelsio.com
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Fixes: 99b2fc2b8b40 ("ARM: SAMSUNG: Use debug_ll_addr() to get UART base address")
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+Cc: <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20200910154150.3318-1-krzk@kernel.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- drivers/crypto/chelsio/chtls/chtls_hw.c |    3 +++
- 1 file changed, 3 insertions(+)
 
---- a/drivers/crypto/chelsio/chtls/chtls_hw.c
-+++ b/drivers/crypto/chelsio/chtls/chtls_hw.c
-@@ -357,6 +357,9 @@ int chtls_setkey(struct chtls_sock *csk,
- 	if (ret)
- 		goto out_notcb;
- 
-+	if (unlikely(csk_flag(sk, CSK_ABORT_SHUTDOWN)))
-+		goto out_notcb;
-+
- 	set_wr_txq(skb, CPL_PRIORITY_DATA, csk->tlshws.txqid);
- 	csk->wr_credits -= DIV_ROUND_UP(len, 16);
- 	csk->wr_unacked += DIV_ROUND_UP(len, 16);
+---
+ arch/arm/plat-samsung/Kconfig |    1 +
+ 1 file changed, 1 insertion(+)
+
+--- a/arch/arm/plat-samsung/Kconfig
++++ b/arch/arm/plat-samsung/Kconfig
+@@ -242,6 +242,7 @@ config SAMSUNG_PM_DEBUG
+ 	bool "Samsung PM Suspend debug"
+ 	depends on PM && DEBUG_KERNEL
+ 	depends on DEBUG_EXYNOS_UART || DEBUG_S3C24XX_UART || DEBUG_S3C2410_UART
++	depends on DEBUG_LL && MMU
+ 	help
+ 	  Say Y here if you want verbose debugging from the PM Suspend and
+ 	  Resume code. See <file:Documentation/arm/Samsung-S3C24XX/Suspend.txt>
 
 
