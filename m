@@ -2,202 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B2ED2AC23B
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 18:29:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CE3A02AC23F
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 18:29:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731935AbgKIR26 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 12:28:58 -0500
-Received: from rere.qmqm.pl ([91.227.64.183]:52664 "EHLO rere.qmqm.pl"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730315AbgKIR2s (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 12:28:48 -0500
-Received: from remote.user (localhost [127.0.0.1])
-        by rere.qmqm.pl (Postfix) with ESMTPSA id 4CVHz25pkRzTS;
-        Mon,  9 Nov 2020 18:28:46 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rere.qmqm.pl; s=1;
-        t=1604942926; bh=sjHesEuhUQBPTBR5PKdh6Su6/OO5b6xTTe6dLO4s9HI=;
-        h=Date:In-Reply-To:References:From:Subject:To:Cc:From;
-        b=LYDMWGv9lgMROWywB17f/jsXKz1lHOZIa3T7ePR4OxiYjk+vcvIiaV6WjVLMW4tKa
-         J8UI70vYFXb42Y62YlDHL8Pt2FqhwoqRlqNc96bH2DtZmcoQFv4KuJoJ3MpWuTw9o+
-         BkCNiwulzIRbL9vOeZCxKB2ULabzYgRJZi92qHqLs/eHH2GVN/oOwm4zBhPBCczkwm
-         CSqi1pQhGwuHvpRg8Hopg8O/ToJwU9ypCCXSzD2yl/kytDf2d8JY8wdF23bIhE+gRU
-         GZ+LF0mnSwn9GoR96a9FuETPkUYAoG+P35QkNqIQoyhFlBpN4O2Y2CUXwE7T9VPEb/
-         txx49+BSa9mFg==
-X-Virus-Status: Clean
-X-Virus-Scanned: clamav-milter 0.102.4 at mail
-Date:   Mon, 09 Nov 2020 18:28:46 +0100
-Message-Id: <44450e64a398bf369a8add72fd5f58e2371c0d99.1604942771.git.mirq-linux@rere.qmqm.pl>
-In-Reply-To: <cover.1604942771.git.mirq-linux@rere.qmqm.pl>
-References: <cover.1604942771.git.mirq-linux@rere.qmqm.pl>
-From:   =?UTF-8?q?Micha=C5=82=20Miros=C5=82aw?= <mirq-linux@rere.qmqm.pl>
-Subject: [PATCH RESEND v8 3/4] input: elants: read touchscreen size for
- EKTF3624
+        id S1731812AbgKIR3J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 12:29:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34606 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731172AbgKIR3G (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 12:29:06 -0500
+Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 145ECC0613D4
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Nov 2020 09:29:06 -0800 (PST)
+Received: by mail-io1-xd43.google.com with SMTP id o11so10607677ioo.11
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Nov 2020 09:29:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=iS7wGl9RDeoaCYAmtEhoMmhifB7Bkd936j4hSXda9EQ=;
+        b=qORLalHDW7LGVeTLFECbEXBBMT8mS1jyJOQ7Axna9Vlw0y963SK1p2R0JlsGhmfOK9
+         8bgUaLFJYUNfcAvFyKnHovCj641LwmTqB6fCfJjil+/qDFOyBb6wlVRxGTwwew8ypGoR
+         LMQFpHhxF5dwrr2ILH6vh1eQOjBomAkSxcUu/wjuB48B6SnZ/VAVB18n90Sl1IFZ8tEF
+         YJK4Zxl435cMVsAjv/26doLLb6IH82kTuey6+N0STwu49m5fkh0CmibRmqKuc5lVOoBf
+         tdhbaoNvTRJQlNWJMkRjjjr+pFroHaJTv7f4NamaIfBe247GhYhVMxqPiQjCiQ2TEOvF
+         Qr8g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=iS7wGl9RDeoaCYAmtEhoMmhifB7Bkd936j4hSXda9EQ=;
+        b=QlXGaSUK038S3e9zpCb7GaX09jDhw7uYQfTJJA4VQMqgzvUf2ohdZVUq+c/jbUVOkA
+         mlrOYQXuQQQ1wg1WLgAtf8R0FfHdosA960OWAZ0A5spPZpAVBb62b1C60LVXWoAwPPTY
+         1h3i9ZyyKX9QQbONFmnjhV5v48u07cZHHu2sjQbwpexLdfWsznwvHn8V9pVNz8/RBUwX
+         OZXRDO/l5wtBI5IdOMVZdjA0nFcysnWyd95vbi+0Zm5cIVJKSbvKdnpsMTzonxMN2LQp
+         oV+6chgCFcv+Ly7FX3nJbcFyBesKwFZd+gfdY6+5Yo3/Pm0C3ykCKf5apWAUYtiKoTGU
+         RXJQ==
+X-Gm-Message-State: AOAM533FPMqACd6l7bozx0+T9a5jXz8WE9Bcg0xBrFsVbQBO02q433nQ
+        60KRAcCsbbGYIh6TBiqSVOFGykq0hpPFRjsdL7oNuA==
+X-Google-Smtp-Source: ABdhPJzXzmeKVEDjebEji3sdG67yPKV/Yns17/N7tod+wD7i2Lnmtm0ujUnV4ku62ZygmGN4tp4NIgrhEXqlnypKKCM=
+X-Received: by 2002:a02:7112:: with SMTP id n18mr11937162jac.34.1604942945017;
+ Mon, 09 Nov 2020 09:29:05 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Johnny Chuang <johnny.chuang.emc@gmail.com>
-Cc:     Dmitry Osipenko <digetx@gmail.com>, linux-input@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Peter Hutterer <peter.hutterer@who-t.net>
+References: <CANn89iLVWFgDvkUygK8Sh_H7=qFmuZKo1h=aoq+F57J28r4EUA@mail.gmail.com>
+ <1604942276-92635-1-git-send-email-wenan.mao@linux.alibaba.com>
+In-Reply-To: <1604942276-92635-1-git-send-email-wenan.mao@linux.alibaba.com>
+From:   Eric Dumazet <edumazet@google.com>
+Date:   Mon, 9 Nov 2020 18:28:53 +0100
+Message-ID: <CANn89i+ABLMJTEKat=9=qujNwe0BFavphzqYc1CQGtrdkwUnXg@mail.gmail.com>
+Subject: Re: [PATCH net v4] net: Update window_clamp if SOCK_RCVBUF is set
+To:     Mao Wenan <wenan.mao@linux.alibaba.com>
+Cc:     David Miller <davem@davemloft.net>,
+        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        kernel-janitors@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-EKTF3624 as present in Asus TF300T tablet has touchscreen size encoded
-in different registers.
+On Mon, Nov 9, 2020 at 6:18 PM Mao Wenan <wenan.mao@linux.alibaba.com> wrote:
+>
+> When net.ipv4.tcp_syncookies=1 and syn flood is happened,
+> cookie_v4_check or cookie_v6_check tries to redo what
+> tcp_v4_send_synack or tcp_v6_send_synack did,
+> rsk_window_clamp will be changed if SOCK_RCVBUF is set,
+> which will make rcv_wscale is different, the client
+> still operates with initial window scale and can overshot
+> granted window, the client use the initial scale but local
+> server use new scale to advertise window value, and session
+> work abnormally.
+>
+> Fixes: e88c64f0a425 ("tcp: allow effective reduction of TCP's rcv-buffer via setsockopt")
+> Signed-off-by: Mao Wenan <wenan.mao@linux.alibaba.com>
+> ---
+>  v4: change fixes tag format, and delay the actual call to
+>  tcp_full_space().
+>  v3: add local variable full_space, add fixes tag.
+>  v2: fix for ipv6.
+>  net/ipv4/syncookies.c | 8 +++++++-
+>  net/ipv6/syncookies.c | 9 ++++++++-
+>  2 files changed, 15 insertions(+), 2 deletions(-)
+>
+> diff --git a/net/ipv4/syncookies.c b/net/ipv4/syncookies.c
+> index 6ac473b..8784e1f 100644
+> --- a/net/ipv4/syncookies.c
+> +++ b/net/ipv4/syncookies.c
+> @@ -327,6 +327,7 @@ struct sock *cookie_v4_check(struct sock *sk, struct sk_buff *skb)
+>         struct inet_request_sock *ireq;
+>         struct tcp_request_sock *treq;
+>         struct tcp_sock *tp = tcp_sk(sk);
+> +       int full_space;
 
-Signed-off-by: Michał Mirosław <mirq-linux@rere.qmqm.pl>
-Reviewed-by: Dmitry Osipenko <digetx@gmail.com>
-Tested-by: Dmitry Osipenko <digetx@gmail.com>
----
- drivers/input/touchscreen/elants_i2c.c | 84 ++++++++++++++++++++++++--
- 1 file changed, 79 insertions(+), 5 deletions(-)
+SGTM. although you could have avoided adding a variable breaking the almost
+correct reverse Christmas tree that some of us prefer.
 
-diff --git a/drivers/input/touchscreen/elants_i2c.c b/drivers/input/touchscreen/elants_i2c.c
-index f1bf3e000e96..c24d8cdc4251 100644
---- a/drivers/input/touchscreen/elants_i2c.c
-+++ b/drivers/input/touchscreen/elants_i2c.c
-@@ -35,7 +35,7 @@
- #include <linux/input/mt.h>
- #include <linux/input/touchscreen.h>
- #include <linux/acpi.h>
--#include <linux/of.h>
-+#include <linux/of_device.h>
- #include <linux/gpio/consumer.h>
- #include <linux/regulator/consumer.h>
- #include <asm/unaligned.h>
-@@ -43,6 +43,10 @@
- /* Device, Driver information */
- #define DEVICE_NAME	"elants_i2c"
- 
-+/* Device IDs */
-+#define EKTH3500	0
-+#define EKTF3624	1
-+
- /* Convert from rows or columns into resolution */
- #define ELAN_TS_RESOLUTION(n, m)   (((n) - 1) * (m))
- 
-@@ -94,6 +98,8 @@
- #define E_ELAN_INFO_REK		0xD0
- #define E_ELAN_INFO_TEST_VER	0xE0
- #define E_ELAN_INFO_FW_ID	0xF0
-+#define E_INFO_X_RES		0x60
-+#define E_INFO_Y_RES		0x63
- #define E_INFO_OSR		0xD6
- #define E_INFO_PHY_SCAN		0xD7
- #define E_INFO_PHY_DRIVER	0xD8
-@@ -157,6 +163,7 @@ struct elants_data {
- 
- 	bool wake_irq_enabled;
- 	bool keep_power_in_suspend;
-+	u8 chip_id;
- 
- 	/* Must be last to be used for DMA operations */
- 	u8 buf[MAX_PACKET_SIZE] ____cacheline_aligned;
-@@ -434,7 +441,58 @@ static int elants_i2c_query_bc_version(struct elants_data *ts)
- 	return 0;
- }
- 
--static int elants_i2c_query_ts_info(struct elants_data *ts)
-+static int elants_i2c_query_ts_info_ektf(struct elants_data *ts)
-+{
-+	struct i2c_client *client = ts->client;
-+	int error;
-+	u8 resp[4];
-+	u16 phy_x, phy_y;
-+	const u8 get_xres_cmd[] = {
-+		CMD_HEADER_READ, E_INFO_X_RES, 0x00, 0x00
-+	};
-+	const u8 get_yres_cmd[] = {
-+		CMD_HEADER_READ, E_INFO_Y_RES, 0x00, 0x00
-+	};
-+
-+	/* Get X/Y size in mm */
-+	error = elants_i2c_execute_command(client, get_xres_cmd,
-+					   sizeof(get_xres_cmd),
-+					   resp, sizeof(resp), 1,
-+					   "get X size");
-+	if (error)
-+		return error;
-+
-+	phy_x = resp[2] | ((resp[3] & 0xF0) << 4);
-+
-+	error = elants_i2c_execute_command(client, get_yres_cmd,
-+					   sizeof(get_yres_cmd),
-+					   resp, sizeof(resp), 1,
-+					   "get Y size");
-+	if (error)
-+		return error;
-+
-+	phy_y = resp[2] | ((resp[3] & 0xF0) << 4);
-+
-+	if (!phy_x || !phy_y) {
-+		dev_warn(&client->dev,
-+			 "invalid size data: %d x %d mm\n",
-+			 phy_x, phy_y);
-+		return 0;
-+	}
-+
-+	dev_dbg(&client->dev, "phy_x=%d, phy_y=%d\n", phy_x, phy_y);
-+
-+	/* calculate resolution from size */
-+	ts->x_max = 2240-1;
-+	ts->x_res = DIV_ROUND_CLOSEST(ts->prop.max_x, phy_x);
-+
-+	ts->y_max = 1408-1;
-+	ts->y_res = DIV_ROUND_CLOSEST(ts->prop.max_y, phy_y);
-+
-+	return 0;
-+}
-+
-+static int elants_i2c_query_ts_info_ekth(struct elants_data *ts)
- {
- 	struct i2c_client *client = ts->client;
- 	int error;
-@@ -588,8 +646,20 @@ static int elants_i2c_initialize(struct elants_data *ts)
- 		error = elants_i2c_query_fw_version(ts);
- 	if (!error)
- 		error = elants_i2c_query_test_version(ts);
--	if (!error)
--		error = elants_i2c_query_ts_info(ts);
-+
-+	switch (ts->chip_id) {
-+	case EKTH3500:
-+		if (!error)
-+			error = elants_i2c_query_ts_info_ekth(ts);
-+		break;
-+	case EKTF3624:
-+		if (!error)
-+			error = elants_i2c_query_ts_info_ektf(ts);
-+		break;
-+	default:
-+		unreachable();
-+		break;
-+	}
- 
- 	if (error)
- 		ts->iap_mode = ELAN_IAP_RECOVERY;
-@@ -1266,6 +1336,9 @@ static int elants_i2c_probe(struct i2c_client *client,
- 	ts->client = client;
- 	i2c_set_clientdata(client, ts);
- 
-+	if (client->dev.of_node)
-+		ts->chip_id = (uintptr_t)of_device_get_match_data(&client->dev);
-+
- 	ts->vcc33 = devm_regulator_get(&client->dev, "vcc33");
- 	if (IS_ERR(ts->vcc33)) {
- 		error = PTR_ERR(ts->vcc33);
-@@ -1495,7 +1568,8 @@ MODULE_DEVICE_TABLE(acpi, elants_acpi_id);
- 
- #ifdef CONFIG_OF
- static const struct of_device_id elants_of_match[] = {
--	{ .compatible = "elan,ekth3500" },
-+	{ .compatible = "elan,ekth3500", .data = (void *)EKTH3500 },
-+	{ .compatible = "elan,ektf3624", .data = (void *)EKTF3624 },
- 	{ /* sentinel */ }
- };
- MODULE_DEVICE_TABLE(of, elants_of_match);
--- 
-2.20.1
+Something like this would look better :
 
+diff --git a/net/ipv4/syncookies.c b/net/ipv4/syncookies.c
+index 6ac473b47f30d4d5e5e9455424b1a91d84e649ee..78af720f3e2c6dcdc7298178c5d2f02f0e425e04
+100644
+--- a/net/ipv4/syncookies.c
++++ b/net/ipv4/syncookies.c
+@@ -331,7 +331,7 @@ struct sock *cookie_v4_check(struct sock *sk,
+struct sk_buff *skb)
+        __u32 cookie = ntohl(th->ack_seq) - 1;
+        struct sock *ret = sk;
+        struct request_sock *req;
+-       int mss;
++       int full_space, mss;
+        struct rtable *rt;
+        __u8 rcv_wscale;
+        struct flowi4 fl4;
