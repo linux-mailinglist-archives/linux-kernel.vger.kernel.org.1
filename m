@@ -2,45 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AED072AB154
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 07:36:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D1972AB15A
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 07:39:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729611AbgKIGgN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 01:36:13 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34748 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727077AbgKIGgN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 01:36:13 -0500
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C92B520684;
-        Mon,  9 Nov 2020 06:36:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604903772;
-        bh=1ZZ5MhRjrfEPQ9Kh1Ors22JcsW13nuOTNKbr4N1+9D0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=DjLCQ5w2DJInuY78aKnPMfMrnPfv2ELH7zVIefxUthgdTFY2McCt1grOYypKnIby3
-         ALSHQXFYnXxtl7NLg2C6JY5z8Gw0bvHKPMx34KDep/WxvrxrU3VoInhKr5XcccuV8r
-         F/DzLVw8v1ed+SzXEyG3Z9e4/990sNTd0gWVnPws=
-Date:   Mon, 9 Nov 2020 07:36:07 +0100
-From:   "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
-To:     Tim Li <tim.li@dji.com>
-Cc:     "balbi@kernel.org" <balbi@kernel.org>,
-        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: Question: gadget: How to realize uvc and uac composite function?
-Message-ID: <20201109063607.GA49716@kroah.com>
-References: <883ccf2fb0a34c7d8466db09b3f26e72@MAIL-MBX-cwP02.dji.com>
+        id S1729531AbgKIGjJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 01:39:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45892 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727077AbgKIGjJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 01:39:09 -0500
+Received: from mail-ot1-x342.google.com (mail-ot1-x342.google.com [IPv6:2607:f8b0:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4F20C0613CF;
+        Sun,  8 Nov 2020 22:39:08 -0800 (PST)
+Received: by mail-ot1-x342.google.com with SMTP id 32so7950100otm.3;
+        Sun, 08 Nov 2020 22:39:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=zkyvDPnChMjILKMRwNunwi+Prr7xVccZh6aPrm5R2nc=;
+        b=bWsE4d/kRO1YXXDePvU25arBO9eRDD76SYg1s79FH52Xcv8x3OsEA9ceqO+MrXiySq
+         06RWKgVMaHAPDYp6T2w5V0egnRKf+8ePvqle6XPkTqDLwCO9k6RZlADRgit2TaS8C7vM
+         ckqgB9Xj4P33qHhuAJ3uqU5xm3ENZ2dGP37gP8uQaFpp8yrduITVhsWKjg/S67nVQBDE
+         YPaak56In5kFDcPlz5leTRLx2eUTka5aJuI1JwdGIPwtkKdCkFcAIdyY5bg1tgNvjM3C
+         1s1ot/5JMqrlabSJUQ0D986Em0rN6oHZJMUxpcRH4IWzvZVXe51OQx5WNGpHraACkhQT
+         Tbfw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=zkyvDPnChMjILKMRwNunwi+Prr7xVccZh6aPrm5R2nc=;
+        b=RMrykrkYhCAVVuGbtuj0zbXO/HsQFtW/h69HkuPzdxiX+0GdseQNY24NAEC24m7GrE
+         8XpgNS5/MPo3oImffkmZqSW24agOJKVhyNSjo+buAKavWYxvV2IBJUYRKA5/+uF3BB/A
+         SYL+2poTyjAlRNu/l2OpXwrlYfpasun9y/VJ9dUmb+9MBz4QzT6pBHTIv/QxMWmldLRy
+         0PUUNOYms6Cz6l/sOJnxF8LxIuVY/4crzqNb2pV9E1lWuai0sCu0WARIfoU24k5jKjck
+         vKHS4QPM/tPPpS/tbwBRAaEhnN5c8w7GsTWbATcOUaoGIFK+iqkSY+f1Zd7NaMpgx9hW
+         7kgA==
+X-Gm-Message-State: AOAM5327LtfNDPCmvglQPYRdpha7KpIk8jWMP3h4ALLatHfTaFsZMHvK
+        csNzjIA7rij0ELCF3QYeml5zt6IXwZIHdr1lAEbr1ONbpog=
+X-Google-Smtp-Source: ABdhPJxVNyWqCbmaBe9xhdITg2xhM7LLbN5Huc7WoNCqayPHJJOEFkL8aPnKbwT6fea5mD2bk+GT4ofa/FRZg6C7vYE=
+X-Received: by 2002:a9d:44c:: with SMTP id 70mr9049354otc.119.1604903948233;
+ Sun, 08 Nov 2020 22:39:08 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <883ccf2fb0a34c7d8466db09b3f26e72@MAIL-MBX-cwP02.dji.com>
+References: <20201106101825.30960-1-alexandru.ardelean@analog.com>
+ <20201106101825.30960-2-alexandru.ardelean@analog.com> <20201106131420.GC14837@roeck-us.net>
+In-Reply-To: <20201106131420.GC14837@roeck-us.net>
+From:   Alexandru Ardelean <ardeleanalex@gmail.com>
+Date:   Mon, 9 Nov 2020 08:38:57 +0200
+Message-ID: <CA+U=DspFSo-PnFpA_8Ztd4+hhZS+W7s=2b3xSpLf_kQ5iYdDgA@mail.gmail.com>
+Subject: Re: [PATCH 2/3] docs: hwmon: (ltc2945): change type of val to ULL in ltc2945_val_to_reg()
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     Alexandru Ardelean <alexandru.ardelean@analog.com>,
+        linux-hwmon@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        jdelvare@suse.com, Mark.Thoren@analog.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 09, 2020 at 02:03:11AM +0000, Tim Li wrote:
-> This email and any attachments thereto may contain private, confidential, and privileged material for the sole use of the intended recipient. Any review, copying, or distribution of this email (or any attachments thereto) by others is strictly prohibited. If you are not the intended recipient, please contact the sender immediately and permanently delete the original and any copies of this email and any attachments thereto.
+On Fri, Nov 6, 2020 at 3:14 PM Guenter Roeck <linux@roeck-us.net> wrote:
+>
+> On Fri, Nov 06, 2020 at 12:18:24PM +0200, Alexandru Ardelean wrote:
+> > In order to account for any potential overflows that could occur.
+> >
+> > Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
+> > ---
+> >  drivers/hwmon/ltc2945.c | 14 +++++++-------
+> >  1 file changed, 7 insertions(+), 7 deletions(-)
+> >
+> > diff --git a/drivers/hwmon/ltc2945.c b/drivers/hwmon/ltc2945.c
+> > index 1cea710df668..75d997d31e01 100644
+> > --- a/drivers/hwmon/ltc2945.c
+> > +++ b/drivers/hwmon/ltc2945.c
+> > @@ -155,7 +155,7 @@ static long long ltc2945_reg_to_val(struct device *dev, u8 reg)
+> >  }
+> >
+> >  static int ltc2945_val_to_reg(struct device *dev, u8 reg,
+> > -                           unsigned long val)
+> > +                           unsigned long long val)
+> >  {
+> >       struct ltc2945_state *st = dev_get_drvdata(dev);
+> >       struct regmap *regmap = st->regmap;
+> > @@ -181,14 +181,14 @@ static int ltc2945_val_to_reg(struct device *dev, u8 reg,
+> >                       return ret;
+> >               if (control & CONTROL_MULT_SELECT) {
+> >                       /* 25 mV * 25 uV = 0.625 uV resolution. */
+> > -                     val = DIV_ROUND_CLOSEST(val, 625);
+> > +                     val = DIV_ROUND_CLOSEST_ULL(val, 625);
+> >               } else {
+> >                       /*
+> >                        * 0.5 mV * 25 uV = 0.0125 uV resolution.
+> >                        * Divide first to avoid overflow;
+> >                        * accept loss of accuracy.
+> >                        */
+> > -                     val = DIV_ROUND_CLOSEST(val, 25) * 2;
+> > +                     val = DIV_ROUND_CLOSEST_ULL(val, 25) * 2;
+> >               }
+> >               break;
+> >       case LTC2945_VIN_H:
+> > @@ -197,7 +197,7 @@ static int ltc2945_val_to_reg(struct device *dev, u8 reg,
+> >       case LTC2945_MAX_VIN_THRES_H:
+> >       case LTC2945_MIN_VIN_THRES_H:
+> >               /* 25 mV resolution. */
+> > -             val /= 25;
+> > +             val = div_u64(val, 25);
+> >               break;
+> >       case LTC2945_ADIN_H:
+> >       case LTC2945_MAX_ADIN_H:
+> > @@ -219,7 +219,7 @@ static int ltc2945_val_to_reg(struct device *dev, u8 reg,
+> >                * dividing the reported current by the sense resistor value
+> >                * in mOhm.
+> >                */
+> > -             val = DIV_ROUND_CLOSEST(val, 25);
+> > +             val = DIV_ROUND_CLOSEST_ULL(val, 25);
+> >               break;
+> >       default:
+> >               return -EINVAL;
+> > @@ -247,13 +247,13 @@ static ssize_t ltc2945_value_store(struct device *dev,
+> >       struct ltc2945_state *st = dev_get_drvdata(dev);
+> >       struct regmap *regmap = st->regmap;
+> >       u8 reg = attr->index;
+> > -     unsigned long val;
+> > +     unsigned long long val;
+> >       u8 regbuf[3];
+> >       int num_regs;
+> >       int regval;
+> >       int ret;
+> >
+> > -     ret = kstrtoul(buf, 10, &val);
+> > +     ret = kstrtoull(buf, 10, &val);
+>
+> This part of the change is unnecessary. Just keep 'val' as-is.
+> ltc2945_val_to_reg() can still accept ull.
 
-Now deleted.
+Ack
+
+>
+> Guenter
+>
+> >       if (ret)
+> >               return ret;
+> >
+> > --
+> > 2.27.0
+> >
