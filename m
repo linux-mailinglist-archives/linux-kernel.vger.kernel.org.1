@@ -2,72 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 384D82AC599
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 20:57:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D89772AC59D
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 20:57:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731215AbgKIT4n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 14:56:43 -0500
-Received: from mail-oi1-f195.google.com ([209.85.167.195]:36349 "EHLO
-        mail-oi1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729499AbgKIT4k (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 14:56:40 -0500
-Received: by mail-oi1-f195.google.com with SMTP id d9so11544869oib.3;
-        Mon, 09 Nov 2020 11:56:40 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=zq4OSZ9JaGzyHJtUxuHumtaJuP69c4e4v9Ljp+32B8s=;
-        b=J+uFJwBFr6qNvmsJrszuKbMZ1xYvUdt1H1eTATavWBuCxHYE/TEurwaM3aEPf8Ux+i
-         0dRk9Z2ICdsqSB/WCtP35R5TUzSUXe07jWpWUbeMLMA6yGQvWuB7gbOu+DF/0rGfCto+
-         ALP63vQlNxslb64oesmDms+SI8zQaL21MBxrXEphRwFT00ocWUVqZgsCMjpOpl3cIZhk
-         VMADCnN99PEJ/liw+OCGGMWHdoQDi/vw5SVRxlQxKg40jLXYgj+9tHdSdaTluHIeAoJY
-         O8A88RTG4Iy+GLRPnvMJeh7F6WTQ3UQ/BUIdkpkRU7OH5REizRaFX6bGKT153QMnkcjH
-         2Qqg==
-X-Gm-Message-State: AOAM531cM4igcR5wWcPDAGTfqOAKyAVa4+Wb6E8E/9kQM3qJ9KNRSxQV
-        I1vOeWtGCnlqwnNPWAHNpw==
-X-Google-Smtp-Source: ABdhPJx/xKhy7I5CJdmrB6xRyYfTpGDYnZgs4S/SmKfdwozrx89kKQAjVaKxAM1uSefCpYD1PxCftA==
-X-Received: by 2002:aca:d886:: with SMTP id p128mr565148oig.16.1604951799788;
-        Mon, 09 Nov 2020 11:56:39 -0800 (PST)
-Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id j21sm2796542otq.18.2020.11.09.11.56.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 09 Nov 2020 11:56:39 -0800 (PST)
-Received: (nullmailer pid 1665137 invoked by uid 1000);
-        Mon, 09 Nov 2020 19:56:38 -0000
-Date:   Mon, 9 Nov 2020 13:56:38 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Cc:     bjorn.andersson@linaro.org, linux-arm-msm@vger.kernel.org,
-        vkoul@kernel.org, devicetree@vger.kernel.org, robh+dt@kernel.org,
-        mturquette@baylibre.com, linux-kernel@vger.kernel.org,
-        sboyd@kernel.org, linux-clk@vger.kernel.org
-Subject: Re: [PATCH v2 3/4] dt-bindings: clock: Introduce RPMHCC bindings for
- SDX55
-Message-ID: <20201109195638.GA1665101@bogus>
-References: <20201105104817.15715-1-manivannan.sadhasivam@linaro.org>
- <20201105104817.15715-4-manivannan.sadhasivam@linaro.org>
+        id S1731331AbgKIT5P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 14:57:15 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45930 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729499AbgKIT5P (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 14:57:15 -0500
+Received: from kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net (c-67-180-217-166.hsd1.ca.comcast.net [67.180.217.166])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5E9E2206D8;
+        Mon,  9 Nov 2020 19:57:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604951834;
+        bh=hqgvKvqsLrWlJnRXYEC8bkCbRe/XLhQPjqC2IZq8Jh0=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=WRjM9/gTqlHnSklr6hkuYho/PC3pcAdQIdHg0iehe5/SprIyh7ThQeDKTnjOnF5r0
+         m3TXyp2ma4vLaERpehnDYDrLk8BfzZaFm1gl4632itLKU9i139xujTwKa0JY9QoZpR
+         4YpW+v8NFSNV0iXiXPZKQsdYbw5Y7cs5K0UDa9EA=
+Date:   Mon, 9 Nov 2020 11:57:13 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Jisheng Zhang <Jisheng.Zhang@synaptics.com>
+Cc:     Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>, netdev@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next] net: stmmac: platform: use optional clk/reset
+ get APIs
+Message-ID: <20201109115713.026aeb68@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+In-Reply-To: <20201109160855.24e911b6@xhacker.debian>
+References: <20201109160855.24e911b6@xhacker.debian>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201105104817.15715-4-manivannan.sadhasivam@linaro.org>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 05 Nov 2020 16:18:16 +0530, Manivannan Sadhasivam wrote:
-> From: Vinod Koul <vkoul@kernel.org>
-> 
-> Add compatible for SDX55 RPMHCC and DT include.
-> 
-> Signed-off-by: Vinod Koul <vkoul@kernel.org>
-> Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-> Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-> ---
->  Documentation/devicetree/bindings/clock/qcom,rpmhcc.yaml | 1 +
->  include/dt-bindings/clock/qcom,rpmh.h                    | 1 +
->  2 files changed, 2 insertions(+)
-> 
+On Mon, 9 Nov 2020 16:09:10 +0800 Jisheng Zhang wrote:
+> @@ -596,14 +595,10 @@ stmmac_probe_config_dt(struct platform_device *pdev, const char **mac)
+>  		dev_dbg(&pdev->dev, "PTP rate %d\n", plat->clk_ptp_rate);
+>  	}
+>  
+> -	plat->stmmac_rst = devm_reset_control_get(&pdev->dev,
+> -						  STMMAC_RESOURCE_NAME);
+> +	plat->stmmac_rst = devm_reset_control_get_optional(&pdev->dev, STMMAC_RESOURCE_NAME);
 
-Acked-by: Rob Herring <robh@kernel.org>
+This code was wrapped at 80 chars, please keep it wrapped.
+
