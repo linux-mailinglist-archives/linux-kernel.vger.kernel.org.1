@@ -2,122 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E5DD82AC57A
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 20:52:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 789052AC578
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 20:52:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730726AbgKITwH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 14:52:07 -0500
-Received: from mga07.intel.com ([134.134.136.100]:50692 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729935AbgKITwG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 14:52:06 -0500
-IronPort-SDR: ta/XfLNxQvwgHJJ/K8ovNsYmI0TIgWzIzTpF/JUcPQpzfYB68ohF9qLp26XZVkTNrunBfvIGWR
- xYK2ZrXq8Tdw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9800"; a="234028378"
-X-IronPort-AV: E=Sophos;i="5.77,464,1596524400"; 
-   d="scan'208";a="234028378"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Nov 2020 11:52:06 -0800
-IronPort-SDR: zzMUeXx4/CX4g14b8qsQbgnkQY6vTPSxofBrGUehwIFtHmg8KBBhTuSmeUhu8qFCXwdmwgo7UD
- 2EbdVgFDikzw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,464,1596524400"; 
-   d="scan'208";a="355824600"
-Received: from linux.intel.com ([10.54.29.200])
-  by fmsmga004.fm.intel.com with ESMTP; 09 Nov 2020 11:52:05 -0800
-Received: from [10.251.16.60] (kliang2-MOBL.ccr.corp.intel.com [10.251.16.60])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by linux.intel.com (Postfix) with ESMTPS id D010D580AE3;
-        Mon,  9 Nov 2020 11:52:03 -0800 (PST)
-Subject: Re: [PATCH 1/3] perf/core: Flush PMU internal buffers for per-CPU
- events
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     mingo@kernel.org, linux-kernel@vger.kernel.org,
-        namhyung@kernel.org, eranian@google.com, irogers@google.com,
-        gmx@google.com, acme@kernel.org, jolsa@redhat.com,
-        ak@linux.intel.com
-References: <20201106212935.28943-1-kan.liang@linux.intel.com>
- <20201109095235.GC2594@hirez.programming.kicks-ass.net>
- <20201109110405.GN2651@hirez.programming.kicks-ass.net>
- <0a1db246-c34a-22a3-160c-3e0c0a38119d@linux.intel.com>
- <20201109173300.GM2611@hirez.programming.kicks-ass.net>
-From:   "Liang, Kan" <kan.liang@linux.intel.com>
-Message-ID: <464c6219-ff34-7470-d941-fe6560cb9e56@linux.intel.com>
-Date:   Mon, 9 Nov 2020 14:52:02 -0500
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.1
+        id S1730149AbgKITvh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 14:51:37 -0500
+Received: from aserp2130.oracle.com ([141.146.126.79]:48338 "EHLO
+        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729247AbgKITvh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 14:51:37 -0500
+Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
+        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0A9Jnvpg124551;
+        Mon, 9 Nov 2020 19:51:07 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=vQL59eFferhmohEwf4bBAScf9qwvzs32dfLpyEY/s/g=;
+ b=g8tM5hfnPP5me+JBqWNKa8AmoDgNM2nM9k724WR1etHZlg+/WIt6VoBCg5jpmKthN/cz
+ OKLj7dcgIC7kVWTInOzbae4aFxKY302ydEUU89/6FV7tAewtsRjnqJ/y1aFT2oIgOf+v
+ ml8e/QQyU91m2iTvIC4PrrjRM20ptcPBFpK6dwrS2F8JYamIUFerhQdMDFsUQ3CNiUBh
+ GlOEL8xVxuhliaFGJZJGHvaz6GVTuUmTmHaE1ykjmjFReMndv1pMOtdm6zCsNRPWOxMt
+ OZHsr1xDfwUBFBPbiuDqLTzbk/tyYaXL98kvkXfS7EY758E9ygn5cqHQhBfj4vVl/EuI KQ== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by aserp2130.oracle.com with ESMTP id 34nh3ar3rf-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 09 Nov 2020 19:51:06 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0A9Jo4T5084300;
+        Mon, 9 Nov 2020 19:51:06 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by userp3030.oracle.com with ESMTP id 34p5gvq9rp-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 09 Nov 2020 19:51:06 +0000
+Received: from abhmp0004.oracle.com (abhmp0004.oracle.com [141.146.116.10])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0A9Jp1km009024;
+        Mon, 9 Nov 2020 19:51:01 GMT
+Received: from linux.home (/92.157.91.83)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Mon, 09 Nov 2020 11:51:01 -0800
+Subject: Re: [RFC][PATCH 00/24] x86/pti: Defer CR3 switch to C code
+To:     Dave Hansen <dave.hansen@intel.com>, tglx@linutronix.de,
+        mingo@redhat.com, bp@alien8.de, hpa@zytor.com, x86@kernel.org,
+        dave.hansen@linux.intel.com, luto@kernel.org, peterz@infradead.org,
+        linux-kernel@vger.kernel.org, thomas.lendacky@amd.com,
+        jroedel@suse.de
+Cc:     konrad.wilk@oracle.com, jan.setjeeilers@oracle.com,
+        junaids@google.com, oweisse@google.com, rppt@linux.vnet.ibm.com,
+        graf@amazon.de, mgross@linux.intel.com, kuzuno@gmail.com
+References: <20201109144425.270789-1-alexandre.chartre@oracle.com>
+ <8d9b6f38-5d98-dc91-cecc-36c7ab829c96@intel.com>
+From:   Alexandre Chartre <alexandre.chartre@oracle.com>
+Message-ID: <d816313f-38f8-bcf0-3411-cdcbe0457d8b@oracle.com>
+Date:   Mon, 9 Nov 2020 20:53:16 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-In-Reply-To: <20201109173300.GM2611@hirez.programming.kicks-ass.net>
+In-Reply-To: <8d9b6f38-5d98-dc91-cecc-36c7ab829c96@intel.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9800 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 mlxlogscore=999 mlxscore=0
+ spamscore=0 phishscore=0 adultscore=0 malwarescore=0 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2011090133
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9800 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 lowpriorityscore=0 priorityscore=1501
+ clxscore=1015 malwarescore=0 mlxscore=0 spamscore=0 suspectscore=0
+ mlxlogscore=999 impostorscore=0 phishscore=0 adultscore=0 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2011090133
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-
-On 11/9/2020 12:33 PM, Peter Zijlstra wrote:
-> On Mon, Nov 09, 2020 at 09:49:31AM -0500, Liang, Kan wrote:
->>> Maybe we can frob x86_pmu_enable()...
->>
->> Could you please elaborate?
+On 11/9/20 8:35 PM, Dave Hansen wrote:
+> On 11/9/20 6:44 AM, Alexandre Chartre wrote:
+>>   - map more syscall, interrupt and exception entry code into the user
+>>     page-table (map all noinstr code);
 > 
-> Something horrible like this. It will detect the first time we enable
-> the PMU on a new task (IOW we did a context switch) and wipe the
-> counters when user RDPMC is on...
->
-
-Oh, you mean the RDPMC patch. It should be doable, but I think 
-sched_task() may be a better place, especially with the new optimization 
-(patch 3). We can set PERF_SCHED_CB_SW_IN bit for the case, so we only 
-do the check for per-task events in sched in.
-
-It looks like the below patch has to unconditionally do the check (even 
-for the non-RDPMC cases), which should be unnecessary.
-
-Anyway, I think the RDPMC patch should depend on the implementation of 
-the sched_task(). We may have further discussion when the design of 
-sched_task() is finalized.
-
-
-Thanks,
-Kan
-
-> diff --git a/arch/x86/events/core.c b/arch/x86/events/core.c
-> index 77b963e5e70a..d862927baaef 100644
-> --- a/arch/x86/events/core.c
-> +++ b/arch/x86/events/core.c
-> @@ -1289,6 +1289,15 @@ static void x86_pmu_enable(struct pmu *pmu)
->   		perf_events_lapic_init();
->   	}
->   
-> +	if (cpuc->current != current) {
-> +		struct mm_struct *mm = current->mm;
-> +
-> +		cpuc->current = current;
-> +
-> +		if (mm && atomic_read(&mm->context.perf_rdpmc_allowed))
-> +			wipe_dirty_counters();
-> +	}
-> +
->   	cpuc->enabled = 1;
->   	barrier();
->   
-> diff --git a/arch/x86/events/perf_event.h b/arch/x86/events/perf_event.h
-> index 7895cf4c59a7..d16118cb3bd0 100644
-> --- a/arch/x86/events/perf_event.h
-> +++ b/arch/x86/events/perf_event.h
-> @@ -248,6 +248,8 @@ struct cpu_hw_events {
->   	unsigned int		txn_flags;
->   	int			is_fake;
->   
-> +	void			*current;
-> +
->   	/*
->   	 * Intel DebugStore bits
->   	 */
+> This seems like the thing we'd want to tag explicitly rather than make
+> it implicit with 'noinstr' code.  Worst-case, shouldn't this be:
 > 
+> #define __entry_func	noinstr
+> 
+> or something?
+
+Yes. I use the easy solution to just use noinstr because noinstr is mostly
+use for entry functions. But if we want to use the user page-table beyond
+the entry functions then we will definitively need a dedicated tag.
+
+> I'd also like to see a lot more discussion about what the rules are for
+> the C code and the compiler.  We can't, for instance, do a normal
+> printk() in this entry functions.  Should we stick them in a special
+> section and have objtool look for suspect patterns or references?
+> 
+> I'm most worried about things like this:
+> 
+> 	if (something_weird)
+> 		pr_warn("this will oops the kernel\n");
+
+That would be similar to noinstr which uses the .noinstr.text section, and if
+I remember correctly objtool detects if a noinstr function calls a non-noinst.
+Similarly here, an entry function should not call a non-entry function.
+
+alex.
