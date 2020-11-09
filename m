@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 79CF52ABA61
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 14:18:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 520822ABB05
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 14:27:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733147AbgKINSa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 08:18:30 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45626 "EHLO mail.kernel.org"
+        id S1732637AbgKINSh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 08:18:37 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45670 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387768AbgKINSP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 08:18:15 -0500
+        id S2387893AbgKINSU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 08:18:20 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 89DF720731;
-        Mon,  9 Nov 2020 13:18:13 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 488952076E;
+        Mon,  9 Nov 2020 13:18:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604927894;
-        bh=RtkL23TvcGBX96ySiRBoFU+aWUt5BvVvPw4uVUD+gK8=;
+        s=default; t=1604927899;
+        bh=rzoNltNt4ufuY0GSBCeGhGAsHBqjolnL9fJSUiI27yg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DmrL4b+MHlBkN/B98izm8i+wGZZ1Xq4lVttHtul0ytd2RM4iWIJjW5VrLeHj8KwyM
-         98+a2sGZhYQiJrLWjc5tQ/uMQIAvA9AkpANgpEGQsGJmxpxDXQa+Vy4dg4S4O0kUXw
-         e4eSRIsHu4UVjwbrhz/ygEUEZBubRyDCC9OGdlLI=
+        b=Sz08jIsvZD64aO3jLKgoug1uAvay8UeG+CFTEmMh7MM1/mgq7Bk21FHmQo7BsMr5d
+         lnxTeQPt0rtBSLayCN1Pnfn2Xq3fUgNauhrLgUjaDV6+EoQXSoiwhg/Pwj844IDRXL
+         JKiiUvspTDuE3QVb1IY7Bzdl7lv9XEKDm95a3Ca0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Song Liu <songliubraving@fb.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Jin Yao <yao.jin@linux.intel.com>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>
-Subject: [PATCH 5.9 057/133] perf hists browser: Increase size of buf in perf_evsel__hists_browse()
-Date:   Mon,  9 Nov 2020 13:55:19 +0100
-Message-Id: <20201109125033.466785711@linuxfoundation.org>
+        stable@vger.kernel.org, Alexander Aring <aahringo@redhat.com>,
+        Andreas Gruenbacher <agruenba@redhat.com>
+Subject: [PATCH 5.9 058/133] gfs2: Wake up when sd_glock_disposal becomes zero
+Date:   Mon,  9 Nov 2020 13:55:20 +0100
+Message-Id: <20201109125033.515552505@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201109125030.706496283@linuxfoundation.org>
 References: <20201109125030.706496283@linuxfoundation.org>
@@ -44,53 +42,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Song Liu <songliubraving@fb.com>
+From: Alexander Aring <aahringo@redhat.com>
 
-commit 86449b12f626a65d2a2ecfada1e024488471f9e2 upstream.
+commit da7d554f7c62d0c17c1ac3cc2586473c2d99f0bd upstream.
 
-Making perf with gcc-9.1.1 generates the following warning:
+Commit fc0e38dae645 ("GFS2: Fix glock deallocation race") fixed a
+sd_glock_disposal accounting bug by adding a missing atomic_dec
+statement, but it failed to wake up sd_glock_wait when that decrement
+causes sd_glock_disposal to reach zero.  As a consequence,
+gfs2_gl_hash_clear can now run into a 10-minute timeout instead of
+being woken up.  Add the missing wakeup.
 
-    CC       ui/browsers/hists.o
-  ui/browsers/hists.c: In function 'perf_evsel__hists_browse':
-  ui/browsers/hists.c:3078:61: error: '%d' directive output may be \
-  truncated writing between 1 and 11 bytes into a region of size \
-  between 2 and 12 [-Werror=format-truncation=]
-
-   3078 |       "Max event group index to sort is %d (index from 0 to %d)",
-        |                                                             ^~
-  ui/browsers/hists.c:3078:7: note: directive argument in the range [-2147483648, 8]
-   3078 |       "Max event group index to sort is %d (index from 0 to %d)",
-        |       ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  In file included from /usr/include/stdio.h:937,
-                   from ui/browsers/hists.c:5:
-
-IOW, the string in line 3078 might be too long for buf[] of 64 bytes.
-
-Fix this by increasing the size of buf[] to 128.
-
-Fixes: dbddf1747441  ("perf report/top TUI: Support hotkeys to let user select any event for sorting")
-Signed-off-by: Song Liu <songliubraving@fb.com>
-Acked-by: Jiri Olsa <jolsa@kernel.org>
-Cc: Jin Yao <yao.jin@linux.intel.com>
-Cc: stable@vger.kernel.org # v5.7+
-Link: http://lore.kernel.org/lkml/20201030235431.534417-1-songliubraving@fb.com
-Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+Fixes: fc0e38dae645 ("GFS2: Fix glock deallocation race")
+Cc: stable@vger.kernel.org # v2.6.39+
+Signed-off-by: Alexander Aring <aahringo@redhat.com>
+Signed-off-by: Andreas Gruenbacher <agruenba@redhat.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- tools/perf/ui/browsers/hists.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/gfs2/glock.c |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
---- a/tools/perf/ui/browsers/hists.c
-+++ b/tools/perf/ui/browsers/hists.c
-@@ -2963,7 +2963,7 @@ static int perf_evsel__hists_browse(stru
- 	struct popup_action actions[MAX_OPTIONS];
- 	int nr_options = 0;
- 	int key = -1;
--	char buf[64];
-+	char buf[128];
- 	int delay_secs = hbt ? hbt->refresh : 0;
+--- a/fs/gfs2/glock.c
++++ b/fs/gfs2/glock.c
+@@ -1081,7 +1081,8 @@ int gfs2_glock_get(struct gfs2_sbd *sdp,
+ out_free:
+ 	kfree(gl->gl_lksb.sb_lvbptr);
+ 	kmem_cache_free(cachep, gl);
+-	atomic_dec(&sdp->sd_glock_disposal);
++	if (atomic_dec_and_test(&sdp->sd_glock_disposal))
++		wake_up(&sdp->sd_glock_wait);
  
- #define HIST_BROWSER_HELP_COMMON					\
+ out:
+ 	return ret;
 
 
