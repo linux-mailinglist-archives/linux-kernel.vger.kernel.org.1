@@ -2,56 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3BF22AC28D
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 18:39:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 203592AC2A7
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 18:40:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731650AbgKIRjK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 12:39:10 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41252 "EHLO mail.kernel.org"
+        id S1732185AbgKIRk4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 12:40:56 -0500
+Received: from pegase1.c-s.fr ([93.17.236.30]:44011 "EHLO pegase1.c-s.fr"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730330AbgKIRjK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 12:39:10 -0500
-Received: from mail-wr1-f50.google.com (mail-wr1-f50.google.com [209.85.221.50])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4123F20578
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Nov 2020 17:39:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604943549;
-        bh=hlWU5zGloECZNFrwjneLZv9TFr5kKDDNTOdv4sM4WJw=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=C2vyZAXthtKbVejAYfokMEHzLWrY0mx5+BZ2K1LjjVWYpnSnEQixeBH0De+uzqubk
-         urQlv1X32ne2iNWEZilSz11T1bBDZEfup7TNmrMMIAkpFJIZ2EroqLWkhYNOCU/J/d
-         jqG/vymsRjO82JnnIowbYRYuW19EMdtY2PKgzYZA=
-Received: by mail-wr1-f50.google.com with SMTP id 23so9634896wrc.8
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Nov 2020 09:39:09 -0800 (PST)
-X-Gm-Message-State: AOAM531Q9zqCDcP1x6cPFr1sFLyN/N+YeOj7vMsKgJqrnrCJvAOy3MZJ
-        T9XKU5D0p4BrAdmUcBdi4yH2NCfLpu7VAlszPTTBJQ==
-X-Google-Smtp-Source: ABdhPJw64Ik7b4CF8w3NkV+aIFZGT1v2JwzOiiqcpzuWWwR9CmmTYAALTFHkV0kT+S/fvdde9zvhLIO76HO3rStWkKo=
-X-Received: by 2002:adf:f0c2:: with SMTP id x2mr12660274wro.184.1604943547814;
- Mon, 09 Nov 2020 09:39:07 -0800 (PST)
-MIME-Version: 1.0
-References: <20201109112319.264511-1-alexandre.chartre@oracle.com> <20201109112319.264511-9-alexandre.chartre@oracle.com>
-In-Reply-To: <20201109112319.264511-9-alexandre.chartre@oracle.com>
-From:   Andy Lutomirski <luto@kernel.org>
-Date:   Mon, 9 Nov 2020 09:38:56 -0800
-X-Gmail-Original-Message-ID: <CALCETrXtqC9w5gAa=UcF=B4z7vKuUL2sutsCJOjaSCK4CX4q0Q@mail.gmail.com>
-Message-ID: <CALCETrXtqC9w5gAa=UcF=B4z7vKuUL2sutsCJOjaSCK4CX4q0Q@mail.gmail.com>
-Subject: Re: [RFC][PATCH 08/24] x86/entry: Add C version of SWAPGS and SWAPGS_UNSAFE_STACK
-To:     Alexandre Chartre <alexandre.chartre@oracle.com>
-Cc:     X86 ML <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        id S1731476AbgKIRk4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 12:40:56 -0500
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 4CVJDv0DNTz9tyTB;
+        Mon,  9 Nov 2020 18:40:47 +0100 (CET)
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id UIuvxbl0moFo; Mon,  9 Nov 2020 18:40:46 +0100 (CET)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4CVJDt66v3z9tyT9;
+        Mon,  9 Nov 2020 18:40:46 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 978298B7C5;
+        Mon,  9 Nov 2020 18:40:52 +0100 (CET)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id 07F2NDf0y9LI; Mon,  9 Nov 2020 18:40:52 +0100 (CET)
+Received: from po17688vm.idsi0.si.c-s.fr (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 5FD688B7C4;
+        Mon,  9 Nov 2020 18:40:52 +0100 (CET)
+Received: by po17688vm.idsi0.si.c-s.fr (Postfix, from userid 0)
+        id 6C87C66086; Mon,  9 Nov 2020 17:40:52 +0000 (UTC)
+Message-Id: <9351d8a775f749d7c881c909388e69af944087b9.1604943353.git.christophe.leroy@csgroup.eu>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Subject: [PATCH for 5.4] powerpc/603: Always fault when _PAGE_ACCESSED is not set
+To:     gregkh@linuxfoundation.org, stable@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Date:   Mon,  9 Nov 2020 17:40:52 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 9, 2020 at 3:22 AM Alexandre Chartre
-<alexandre.chartre@oracle.com> wrote:
->
-> SWAPGS and SWAPGS_UNSAFE_STACK are assembly macros. Add C versions
-> of these macros (swapgs() and swapgs_unsafe_stack()).
+[That is backport of 11522448e641e8f1690c9db06e01985e8e19b401 to linux 5.4]
 
-This needs a very good justification.  It also needs some kind of
-static verification that these helpers are only used by noinstr code,
-and they need to be __always_inline.  And I cannot fathom how C code
-could possibly use SWAPGS_UNSAFE_STACK in a meaningful way.
+The kernel expects pte_young() to work regardless of CONFIG_SWAP.
+
+Make sure a minor fault is taken to set _PAGE_ACCESSED when it
+is not already set, regardless of the selection of CONFIG_SWAP.
+
+Fixes: 84de6ab0e904 ("powerpc/603: don't handle PAGE_ACCESSED in TLB miss handlers.")
+Cc: stable@vger.kernel.org
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Link: https://lore.kernel.org/r/a44367744de54e2315b2f1a8cbbd7f88488072e0.1602342806.git.christophe.leroy@csgroup.eu
+---
+ arch/powerpc/kernel/head_32.S | 12 ------------
+ 1 file changed, 12 deletions(-)
+
+diff --git a/arch/powerpc/kernel/head_32.S b/arch/powerpc/kernel/head_32.S
+index 5e2f2fd78b94..126ba5438430 100644
+--- a/arch/powerpc/kernel/head_32.S
++++ b/arch/powerpc/kernel/head_32.S
+@@ -418,11 +418,7 @@ InstructionTLBMiss:
+ 	cmplw	0,r1,r3
+ #endif
+ 	mfspr	r2, SPRN_SPRG_PGDIR
+-#ifdef CONFIG_SWAP
+ 	li	r1,_PAGE_PRESENT | _PAGE_ACCESSED | _PAGE_EXEC
+-#else
+-	li	r1,_PAGE_PRESENT | _PAGE_EXEC
+-#endif
+ #if defined(CONFIG_MODULES) || defined(CONFIG_DEBUG_PAGEALLOC)
+ 	bge-	112f
+ 	lis	r2, (swapper_pg_dir - PAGE_OFFSET)@ha	/* if kernel address, use */
+@@ -484,11 +480,7 @@ DataLoadTLBMiss:
+ 	lis	r1,PAGE_OFFSET@h		/* check if kernel address */
+ 	cmplw	0,r1,r3
+ 	mfspr	r2, SPRN_SPRG_PGDIR
+-#ifdef CONFIG_SWAP
+ 	li	r1, _PAGE_PRESENT | _PAGE_ACCESSED
+-#else
+-	li	r1, _PAGE_PRESENT
+-#endif
+ 	bge-	112f
+ 	lis	r2, (swapper_pg_dir - PAGE_OFFSET)@ha	/* if kernel address, use */
+ 	addi	r2, r2, (swapper_pg_dir - PAGE_OFFSET)@l	/* kernel page table */
+@@ -564,11 +556,7 @@ DataStoreTLBMiss:
+ 	lis	r1,PAGE_OFFSET@h		/* check if kernel address */
+ 	cmplw	0,r1,r3
+ 	mfspr	r2, SPRN_SPRG_PGDIR
+-#ifdef CONFIG_SWAP
+ 	li	r1, _PAGE_RW | _PAGE_DIRTY | _PAGE_PRESENT | _PAGE_ACCESSED
+-#else
+-	li	r1, _PAGE_RW | _PAGE_DIRTY | _PAGE_PRESENT
+-#endif
+ 	bge-	112f
+ 	lis	r2, (swapper_pg_dir - PAGE_OFFSET)@ha	/* if kernel address, use */
+ 	addi	r2, r2, (swapper_pg_dir - PAGE_OFFSET)@l	/* kernel page table */
+-- 
+2.25.0
+
