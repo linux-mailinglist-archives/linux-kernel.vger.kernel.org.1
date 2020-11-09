@@ -2,90 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA0332AB298
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 09:41:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9174A2AB292
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 09:39:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729708AbgKIIl1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 03:41:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36836 "EHLO
+        id S1726867AbgKIIjp convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 9 Nov 2020 03:39:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36572 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726176AbgKIIl0 (ORCPT
+        with ESMTP id S1726127AbgKIIjp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 03:41:26 -0500
-Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D928C0613CF;
-        Mon,  9 Nov 2020 00:41:26 -0800 (PST)
-Received: by mail-io1-xd42.google.com with SMTP id p7so8956493ioo.6;
-        Mon, 09 Nov 2020 00:41:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=7btXjqBRuinpD7KiP3l3qzjmEFoY9IFXHxyguH0t/3M=;
-        b=vE+TwcYjMnjl7AwZgEbE4ExgYLtEzLZ9W1b12PN/XLNI4hdFVJEqSNaLrYq4mSUvL7
-         UgKnP1i5dxJ3kDif5t4HQiE0FPwh1LxyLOx5fSx4In0KbMRsn+MZrDNjHTLfwr7dotcO
-         xXnXq8aGkjCMBOgz0PlJtjzZr/TwmZNrMcBTYHOy9nZgJH14mNG8Tj6hAaeNd5t40X7U
-         BLyC9irvrGwNBIeXDt3+A8yyTUVjQD5lRDXq9wcMPMmIP5IOOQJX/nh3qUy7SoKkfV39
-         d83cJyDyCveUE/SmLpStqBViRd5GPJ0FNASEEORHcEgKogLCV5J6Vs0w+9QitwI20Swe
-         +x9Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=7btXjqBRuinpD7KiP3l3qzjmEFoY9IFXHxyguH0t/3M=;
-        b=FxxdsbcNZRtqHssxXmSCgP3A6dRhu1qXNpLegnDvRJ3CU6RK3SBVn7hSa4GMLopw47
-         8jvwiq2o5JDv+LmrF2ZbayLkDPmawd4xLxD6FV1F8v8K4tEdVsASiVMA/r//KUIE2ys4
-         Ok6wOLofrAGlJPN1MuiFcYewTBmXKOSE3ZRZonhvezqHuamRPyg3wOg6FZ1NNkJq5KMP
-         kRtlCkvyELRZcDWOloM1CuocYvKWhJ/xeedFpLZG1Mn7HAKPW0PLc/w664IPNjHDDUUF
-         KuxFKd49FQQeyNog/TzD0cwFrWS3HplkIixjpNqx4NQ668v9ZiPwLZgiEyIV0xAoNjlp
-         dbnQ==
-X-Gm-Message-State: AOAM532v99sR4wpcFVMkqX4KSzoNBzwMl3+8XZinlBoPoNUMeELHJZl0
-        w/5dZzPRfEknTcp8rfSVgWg=
-X-Google-Smtp-Source: ABdhPJw6hiS0UuWmPf3RDP3SsSRa2LK8tkwaoyxOfK5zCkid0TToP32VMAetRrUoPeVzj38GlOn+CA==
-X-Received: by 2002:a5d:9a19:: with SMTP id s25mr4307991iol.94.1604911285982;
-        Mon, 09 Nov 2020 00:41:25 -0800 (PST)
-Received: from localhost.localdomain ([156.146.54.75])
-        by smtp.gmail.com with ESMTPSA id t15sm5475191ili.64.2020.11.09.00.41.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 09 Nov 2020 00:41:25 -0800 (PST)
-From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
-To:     alexander.deucher@amd.com, christian.koenig@amd.com,
-        airlied@linux.ie, daniel@ffwll.ch, amd-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        linux-media@vger.kernel.org, linaro-mm-sig@lists.linaro.org,
-        ray.huang@amd.com, nicholas.kazlauskas@amd.com, jdelvare@suse.de
-Cc:     gregkh@linuxfoundation.org,
-        Bhaskar Chowdhury <unixbhaskar@gmail.com>
-Subject: [PATCH] drivers: amdgpu: amdgpu_display.c: Fix a spelling  doens\'t  to doesn\'t
-Date:   Mon,  9 Nov 2020 14:08:24 +0530
-Message-Id: <20201109083824.14664-1-unixbhaskar@gmail.com>
-X-Mailer: git-send-email 2.26.2
+        Mon, 9 Nov 2020 03:39:45 -0500
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB5ADC0613CF
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Nov 2020 00:39:44 -0800 (PST)
+Received: from lupine.hi.pengutronix.de ([2001:67c:670:100:3ad5:47ff:feaf:1a17] helo=lupine)
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <p.zabel@pengutronix.de>)
+        id 1kc2i6-0001PF-L5; Mon, 09 Nov 2020 09:39:34 +0100
+Received: from pza by lupine with local (Exim 4.92)
+        (envelope-from <p.zabel@pengutronix.de>)
+        id 1kc2i5-0008NM-B6; Mon, 09 Nov 2020 09:39:33 +0100
+Message-ID: <6a9ef496c8360c5d4299aec3621306f1ed246dbb.camel@pengutronix.de>
+Subject: Re: [PATCH 6/9] phy: cadence: sierra: Don't configure if any plls
+ are already locked
+From:   Philipp Zabel <p.zabel@pengutronix.de>
+To:     Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>, Rob Herring <robh+dt@kernel.org>
+Cc:     Swapnil Kashinath Jakhade <sjakhade@cadence.com>,
+        Milind Parab <mparab@cadence.com>,
+        Yuti Suresh Amonkar <yamonkar@cadence.com>,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+Date:   Mon, 09 Nov 2020 09:39:33 +0100
+In-Reply-To: <20201103035556.21260-7-kishon@ti.com>
+References: <20201103035556.21260-1-kishon@ti.com>
+         <20201103035556.21260-7-kishon@ti.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+User-Agent: Evolution 3.30.5-1.1 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2001:67c:670:100:3ad5:47ff:feaf:1a17
+X-SA-Exim-Mail-From: p.zabel@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-s/doens't/doesn't/p
+On Tue, 2020-11-03 at 09:25 +0530, Kishon Vijay Abraham I wrote:
+> From: Faiz Abbas <faiz_abbas@ti.com>
+> 
+> Serdes lanes might be shared between multiple cores in some usecases
+> and its not possible to lock PLLs for both the lanes independently
+> by the two cores. This requires a bootloader to configure both the
+> lanes at early boot time.
+> 
+> To handle this case, skip all configuration if any of the plls are
+> already locked. This is done by adding an already_configured flag
+> and using it to gate every register access as well as any phy_ops.
+> 
+> Signed-off-by: Faiz Abbas <faiz_abbas@ti.com>
+> Signed-off-by: Kishon Vijay Abraham I <kishon@ti.com>
+> ---
+>  drivers/phy/cadence/phy-cadence-sierra.c | 127 ++++++++++++++---------
+>  1 file changed, 78 insertions(+), 49 deletions(-)
+> 
+> diff --git a/drivers/phy/cadence/phy-cadence-sierra.c b/drivers/phy/cadence/phy-cadence-sierra.c
+> index e08548417bce..145e42837b7b 100644
+> --- a/drivers/phy/cadence/phy-cadence-sierra.c
+> +++ b/drivers/phy/cadence/phy-cadence-sierra.c
+> @@ -364,6 +364,10 @@ static const struct phy_ops ops = {
+>  	.owner		= THIS_MODULE,
+>  };
+>  
+> +static const struct phy_ops noop_ops = {
+> +	.owner		= THIS_MODULE,
+> +};
+> +
+>  static int cdns_sierra_get_optional(struct cdns_sierra_inst *inst,
+>  				    struct device_node *child)
+>  {
+> @@ -477,6 +481,49 @@ static int cdns_regmap_init_blocks(struct cdns_sierra_phy *sp,
+>  	return 0;
+>  }
+>  
+> +static int cdns_sierra_phy_get_clocks(struct cdns_sierra_phy *sp,
+> +				      struct device *dev)
+> +{
+> +	struct clk *clk;
+> +	int ret;
+> +
+> +	sp->clk = devm_clk_get_optional(dev, "phy_clk");
+> +	if (IS_ERR(sp->clk)) {
+> +		dev_err(dev, "failed to get clock phy_clk\n");
+> +		return PTR_ERR(sp->clk);
+> +	}
+> +
+> +	sp->phy_rst = devm_reset_control_get(dev, "sierra_reset");
 
-Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
----
- drivers/gpu/drm/amd/amdgpu/amdgpu_display.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+While you're at it, please use devm_reset_control_get_exclusive() here
+and ...
 
-diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_display.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_display.c
-index 7cc7af2a6822..a92cb137293a 100644
---- a/drivers/gpu/drm/amd/amdgpu/amdgpu_display.c
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_display.c
-@@ -512,7 +512,7 @@ uint32_t amdgpu_display_supported_domains(struct amdgpu_device *adev,
- 	 * to avoid hang caused by placement of scanout BO in GTT on certain
- 	 * APUs. So force the BO placement to VRAM in case this architecture
- 	 * will not allow USWC mappings.
--	 * Also, don't allow GTT domain if the BO doens't have USWC falg set.
-+	 * Also, don't allow GTT domain if the BO doesn't have USWC falg set.
- 	 */
- 	if ((bo_flags & AMDGPU_GEM_CREATE_CPU_GTT_USWC) &&
- 	    amdgpu_bo_support_uswc(bo_flags) &&
---
-2.26.2
+> +	if (IS_ERR(sp->phy_rst)) {
+> +		dev_err(dev, "failed to get reset\n");
+> +		return PTR_ERR(sp->phy_rst);
+> +	}
+> +
+> +	sp->apb_rst = devm_reset_control_get_optional(dev, "sierra_apb");
 
+... devm_reset_control_get_optional_exclusive() here.
+
+regards
+Philipp
