@@ -2,143 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 510792AB773
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 12:46:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D4952AB772
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 12:46:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729576AbgKILqS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 06:46:18 -0500
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:59008 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729455AbgKILqR (ORCPT
+        id S1729524AbgKILqK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 06:46:10 -0500
+Received: from szxga08-in.huawei.com ([45.249.212.255]:2303 "EHLO
+        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726999AbgKILqK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 06:46:17 -0500
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0A9BjiSG009421;
-        Mon, 9 Nov 2020 05:45:44 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1604922344;
-        bh=NNwBY8g5f0FY29nACv1fAakM+XMumhmixbP2pLqwiw4=;
-        h=Date:From:To:CC:Subject:References:In-Reply-To;
-        b=qUq2RvTShgzqsdopPtWkYwQMLTz4mNM8c5/u2FLqd4FxlRtwGA4hNT1hto2XBgFkw
-         GnPVa1/FtIWxw6VU8FAQVdjFLrYpaNKmx5ir9411GpGM96FrD7kvdQFDITjyfNxGcI
-         +AmOyWpAQjEHeYjCAqSnTdHcXrznPfcUS8iMDngg=
-Received: from DFLE115.ent.ti.com (dfle115.ent.ti.com [10.64.6.36])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0A9Bjibb127564
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 9 Nov 2020 05:45:44 -0600
-Received: from DFLE112.ent.ti.com (10.64.6.33) by DFLE115.ent.ti.com
- (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Mon, 9 Nov
- 2020 05:45:44 -0600
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE112.ent.ti.com
- (10.64.6.33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Mon, 9 Nov 2020 05:45:44 -0600
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0A9Bjh93079202;
-        Mon, 9 Nov 2020 05:45:44 -0600
-Date:   Mon, 9 Nov 2020 17:15:43 +0530
-From:   Pratyush Yadav <p.yadav@ti.com>
-To:     Vignesh Raghavendra <vigneshr@ti.com>
-CC:     Tudor Ambarus <tudor.ambarus@microchip.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-        Sekhar Nori <nsekhar@ti.com>,
-        Boris Brezillon <boris.brezillon@collabora.com>
-Subject: Re: [PATCH v16 14/15] mtd: spi-nor: spansion: add support for
- Cypress Semper flash
-Message-ID: <20201109114541.g6phaz36glhkpajz@ti.com>
-References: <20201005153138.6437-1-p.yadav@ti.com>
- <20201005153138.6437-15-p.yadav@ti.com>
- <7d058da8-90ef-8f71-fe86-cc0b27a2895a@ti.com>
+        Mon, 9 Nov 2020 06:46:10 -0500
+Received: from DGGEMM401-HUB.china.huawei.com (unknown [172.30.72.56])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4CV8ML54sQz13QwC;
+        Mon,  9 Nov 2020 19:45:50 +0800 (CST)
+Received: from dggemi712-chm.china.huawei.com (10.3.20.111) by
+ DGGEMM401-HUB.china.huawei.com (10.3.20.209) with Microsoft SMTP Server (TLS)
+ id 14.3.487.0; Mon, 9 Nov 2020 19:46:05 +0800
+Received: from dggemi761-chm.china.huawei.com (10.1.198.147) by
+ dggemi712-chm.china.huawei.com (10.3.20.111) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.1913.5; Mon, 9 Nov 2020 19:46:04 +0800
+Received: from dggemi761-chm.china.huawei.com ([10.9.49.202]) by
+ dggemi761-chm.china.huawei.com ([10.9.49.202]) with mapi id 15.01.1913.007;
+ Mon, 9 Nov 2020 19:46:04 +0800
+From:   "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>
+To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+CC:     "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        Linuxarm <linuxarm@huawei.com>,
+        "fanghao (A)" <fanghao11@huawei.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Vitaly Wool <vitalywool@gmail.com>,
+        "Luis Claudio R . Goncalves" <lgoncalv@redhat.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S . Miller" <davem@davemloft.net>,
+        Mahipal Challa <mahipalreddy2006@gmail.com>,
+        Seth Jennings <sjenning@redhat.com>,
+        Dan Streetman <ddstreet@ieee.org>,
+        "Wangzhou (B)" <wangzhou1@hisilicon.com>,
+        Colin Ian King <colin.king@canonical.com>
+Subject: RE: [PATCH v7] mm/zswap: move to use crypto_acomp API for hardware
+ acceleration
+Thread-Topic: [PATCH v7] mm/zswap: move to use crypto_acomp API for hardware
+ acceleration
+Thread-Index: AQHWtNNH87FlqW4qs0KvSuGaGT58KKm/Fo6AgACQEbA=
+Date:   Mon, 9 Nov 2020 11:46:04 +0000
+Message-ID: <017c57cee12f4492977425fab7121ad1@hisilicon.com>
+References: <20201107065332.26992-1-song.bao.hua@hisilicon.com>
+ <20201109102909.u34zzudqqng6nhg6@linutronix.de>
+In-Reply-To: <20201109102909.u34zzudqqng6nhg6@linutronix.de>
+Accept-Language: en-GB, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.126.203.196]
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <7d058da8-90ef-8f71-fe86-cc0b27a2895a@ti.com>
-User-Agent: NeoMutt/20171215
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 07/11/20 01:28PM, Vignesh Raghavendra wrote:
-> Hi,
-> 
-> [...]
-> 
-> On 10/5/20 9:01 PM, Pratyush Yadav wrote:
-> > +static int spi_nor_cypress_octal_dtr_enable(struct spi_nor *nor, bool enable)
-> > +{
-> > +	struct spi_mem_op op;
-> > +	u8 *buf = nor->bouncebuf;
-> > +	int ret;
-> > +
-> > +	if (enable) {
-> > +		/* Use 24 dummy cycles for memory array reads. */
-> > +		ret = spi_nor_write_enable(nor);
-> > +		if (ret)
-> > +			return ret;
-> > +
-> > +		*buf = SPINOR_REG_CYPRESS_CFR2V_MEMLAT_11_24;
-> > +		op = (struct spi_mem_op)
-> > +			SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_WR_ANY_REG, 1),
-> > +				   SPI_MEM_OP_ADDR(3, SPINOR_REG_CYPRESS_CFR2V,
-> > +						   1),
-> > +				   SPI_MEM_OP_NO_DUMMY,
-> > +				   SPI_MEM_OP_DATA_OUT(1, buf, 1));
-> > +
-> > +		ret = spi_mem_exec_op(nor->spimem, &op);
-> > +		if (ret)
-> > +			return ret;
-> > +
-> > +		ret = spi_nor_wait_till_ready(nor);
-> > +		if (ret)
-> > +			return ret;
-> > +
-> > +		nor->read_dummy = 24;
-> > +	}
-> > +
-> > +	/* Set/unset the octal and DTR enable bits. */
-> > +	ret = spi_nor_write_enable(nor);
-> > +	if (ret)
-> > +		return ret;
-> > +
-> > +	if (enable)
-> > +		*buf = SPINOR_REG_CYPRESS_CFR5V_OCT_DTR_EN;
-> > +	else
-> > +		*buf = SPINOR_REG_CYPRESS_CFR5V_OCT_DTR_DS;
-> > +
-> > +	op = (struct spi_mem_op)
-> > +		SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_WR_ANY_REG, 1),
-> > +			   SPI_MEM_OP_ADDR(enable ? 3 : 4,
-> > +					   SPINOR_REG_CYPRESS_CFR5V,
-> > +					   1),
-> > +			   SPI_MEM_OP_NO_DUMMY,
-> > +			   SPI_MEM_OP_DATA_OUT(1, buf, 1));
-> > +
-> > +	if (!enable)
-> > +		spi_nor_spimem_setup_op(nor, &op, SNOR_PROTO_8_8_8_DTR);
-> > +
-> > +	ret = spi_mem_exec_op(nor->spimem, &op);
-> > +	if (ret)
-> > +		return ret;
-> > +
-> > +	/* Give some time for the mode change to take place. */
-> > +	usleep_range(1000, 1500);
-> > +
-> 
-> This delay is no longer needed right? I can drop it while applying, if
-> you confirm.
-
-Yes, this delay is not needed. Please drop it while applying.
- 
-> Tudor: Could you provide your R-by?
-> 
-> Regards
-> Vignesh
-
--- 
-Regards,
-Pratyush Yadav
-Texas Instruments India
+DQo+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+IEZyb206IFNlYmFzdGlhbiBBbmRyemVq
+IFNpZXdpb3IgW21haWx0bzpiaWdlYXN5QGxpbnV0cm9uaXguZGVdDQo+IFNlbnQ6IE1vbmRheSwg
+Tm92ZW1iZXIgOSwgMjAyMCAxMToyOSBQTQ0KPiBUbzogU29uZyBCYW8gSHVhIChCYXJyeSBTb25n
+KSA8c29uZy5iYW8uaHVhQGhpc2lsaWNvbi5jb20+DQo+IENjOiBsaW51eC1tbUBrdmFjay5vcmc7
+IGxpbnV4LWNyeXB0b0B2Z2VyLmtlcm5lbC5vcmc7DQo+IGFrcG1AbGludXgtZm91bmRhdGlvbi5v
+cmc7IExpbnV4YXJtIDxsaW51eGFybUBodWF3ZWkuY29tPjsgZmFuZ2hhbyAoQSkNCj4gPGZhbmdo
+YW8xMUBodWF3ZWkuY29tPjsgbGludXgta2VybmVsQHZnZXIua2VybmVsLm9yZzsgVml0YWx5IFdv
+b2wNCj4gPHZpdGFseXdvb2xAZ21haWwuY29tPjsgTHVpcyBDbGF1ZGlvIFIgLiBHb25jYWx2ZXMg
+PGxnb25jYWx2QHJlZGhhdC5jb20+Ow0KPiBIZXJiZXJ0IFh1IDxoZXJiZXJ0QGdvbmRvci5hcGFu
+YS5vcmcuYXU+OyBEYXZpZCBTIC4gTWlsbGVyDQo+IDxkYXZlbUBkYXZlbWxvZnQubmV0PjsgTWFo
+aXBhbCBDaGFsbGEgPG1haGlwYWxyZWRkeTIwMDZAZ21haWwuY29tPjsNCj4gU2V0aCBKZW5uaW5n
+cyA8c2plbm5pbmdAcmVkaGF0LmNvbT47IERhbiBTdHJlZXRtYW4gPGRkc3RyZWV0QGllZWUub3Jn
+PjsNCj4gV2FuZ3pob3UgKEIpIDx3YW5nemhvdTFAaGlzaWxpY29uLmNvbT47IENvbGluIElhbiBL
+aW5nDQo+IDxjb2xpbi5raW5nQGNhbm9uaWNhbC5jb20+DQo+IFN1YmplY3Q6IFJlOiBbUEFUQ0gg
+djddIG1tL3pzd2FwOiBtb3ZlIHRvIHVzZSBjcnlwdG9fYWNvbXAgQVBJIGZvcg0KPiBoYXJkd2Fy
+ZSBhY2NlbGVyYXRpb24NCj4gDQo+IEkndmUgYmVlbiBsb29raW5nIGF0IHRoZSBwYXRjaCBhbmQg
+aXQgbG9va3MgbGlrZSBpdCBzaG91bGQgd29yay4gSGF2aW5nIG51bWJlcnMNCg0KVGhhbmtzIHZl
+cnkgbXVjaCBmb3IgcmV2aWV3aW5nIGl0IGFuZCB0aGUgcHJldmlvdXMgcGF0Y2hlcy4gSSBhcHBy
+ZWNpYXRlLg0KDQo+IHRvIGJhY2t1cCB0aGUgcGVyZm9ybWFuY2UgaW4gdGhlIHB1cmUtc29mdHdh
+cmUgdmVyc2lvbiBhbmQgd2l0aCBIVw0KPiBhY2NlbGVyYXRpb24gd291bGQgX3ZlcnlfIG5pY2Ug
+dG8gaGF2ZS4NCg0KU3VyZS4gVGhlIDFzdCBzdGVwIGlzIGZpeGluZyB0aGUgYnJva2VuIGNvbm5l
+Y3QgYmV0d2VlbiBuZXcgY3J5cHRvIEFQSXMgYW5kDQp6c3dhcC4gVGhlbiB3ZSBhcmUgZ29pbmcg
+dG8gZGlnIGludG8gcG9zc2libGUgcGVyZm9ybWFuY2UgaW1wcm92ZW1lbnRzLg0KSWYgd2UgcHV0
+IGFsbCB0aGUgZ29hbHMgaW4gdGhlIHNpbmdsZSBmaXJzdCBzdGVwLCBpdCB3aWxsIGJlIGhhcmQg
+Zm9yIHVzIHRvIHNlZSBhbg0KYWNjb21wbGlzaG1lbnQgb2YgYW55IHJlYWwgaW1wcm92ZW1lbnQu
+DQoNCj4gDQo+IE9uIDIwMjAtMTEtMDcgMTk6NTM6MzIgWysxMzAwXSwgQmFycnkgU29uZyB3cm90
+ZToNCj4gPiBpbmRleCBmYmI3ODI5Li43M2YwNGRlIDEwMDY0NA0KPiA+IC0tLSBhL21tL3pzd2Fw
+LmMNCj4gPiArKysgYi9tbS96c3dhcC5jDQo+ID4gQEAgLTQxNSwzMCArNDQ1LDU0IEBAIHN0YXRp
+YyBpbnQgenN3YXBfZHN0bWVtX2RlYWQodW5zaWduZWQgaW50IGNwdSkNCj4g4oCmDQo+ID4gKwlh
+Y29tcF9jdHgtPnJlcSA9IHJlcTsNCj4gPiArDQo+ID4gKwljcnlwdG9faW5pdF93YWl0KCZhY29t
+cF9jdHgtPndhaXQpOw0KPiA+ICsJLyoNCj4gPiArCSAqIGlmIHRoZSBiYWNrZW5kIG9mIGFjb21w
+IGlzIGFzeW5jIHppcCwgY3J5cHRvX3JlcV9kb25lKCkgd2lsbCB3YWtldXANCj4gPiArCSAqIGNy
+eXB0b193YWl0X3JlcSgpOyBpZiB0aGUgYmFja2VuZCBvZiBhY29tcCBpcyBzY29tcCwgdGhlIGNh
+bGxiYWNrDQo+ID4gKwkgKiB3b24ndCBiZSBjYWxsZWQsIGNyeXB0b193YWl0X3JlcSgpIHdpbGwg
+cmV0dXJuIHdpdGhvdXQgYmxvY2tpbmcuDQo+ID4gKwkgKi8NCj4gPiArCWFjb21wX3JlcXVlc3Rf
+c2V0X2NhbGxiYWNrKHJlcSwgQ1JZUFRPX1RGTV9SRVFfTUFZX0JBQ0tMT0csDQo+ID4gKwkJCQkg
+ICBjcnlwdG9fcmVxX2RvbmUsICZhY29tcF9jdHgtPndhaXQpOw0KPiA+ICsNCj4gPiArCWFjb21w
+X2N0eC0+bXV0ZXggPSBwZXJfY3B1KHpzd2FwX211dGV4LCBjcHUpOw0KPiA+ICsJYWNvbXBfY3R4
+LT5kc3RtZW0gPSBwZXJfY3B1KHpzd2FwX2RzdG1lbSwgY3B1KTsNCj4gDQo+IFlvdSBhZGRlZCBh
+IGNvbW1lbnQgaGVyZSBhbmQgdGhlcmUgeW91IG5ldmVyIG1lbnRpb25lZCB0aGF0IHRoaXMgc2lu
+Z2xlDQo+IHBlci1DUFUgbXV0ZXggcHJvdGVjdHMgdGhlIHBlci1DUFUgY29udGV4dCAod2hpY2gg
+eW91IGNhbiBoYXZlIG1vcmUgdGhhbg0KPiBvbmUgb24gYSBzaW5nbGUgQ1BVKSBhbmQgdGhlIHNj
+cmF0Y2gvZHN0bWVtIHdoaWNoIGlzIG9uZSBwZXItQ1BVLiBPZiBjb3Vyc2UNCj4gaWYgeW91IHJl
+YWQgdGhlIGNvZGUgeW91IGZpZ3VyZSBpdCBvdXQuDQo+IEkgc3RpbGwgdGhpbmsgdGhhdCB5b3Ug
+c2hvdWxkIGhhdmUgYSBwb29sIG9mIG1lbW9yeSBhbmQgY3J5cHRvIGNvbnRleHRzIHdoaWNoDQo+
+IHlvdSBjYW4gdXNlIGluc3RlYWQgb2YgaGF2aW5nIHRoZW0gc3RyaWN0bHkgcGVyLUNQVS4gVGhl
+IGNvZGUgaXMgZnVsbHkNCj4gcHJlZW1wdGlibGUgYW5kIHlvdSBtYXkgaGF2ZSBtdWx0aXBsZSBy
+ZXF1ZXN0cyBvbiB0aGUgc2FtZSBDUFUuDQo+IFllcywgbG9ja2luZyB3b3JrcyBidXQgYXQgdGhl
+IHNhbWUgeW91IGJsb2NrIHByb2Nlc3Npbmcgd2hpbGUgd2FpdGluZyBvbiBhIGxvY2sNCj4gYW5k
+IHRoZSAicmVzZXJ2ZWQgbWVtb3J5IiBvbiBvdGhlciBDUFVzIHJlbWFpbnMgdW51c2VkLg0KDQpG
+b3Igc3VyZSB0aGUgYnVmZmVyIHBvb2wgd2lsbCBiZSBwdXQgaW50byBteSBUb2RvIGxpc3Qgb24g
+enN3YXAgcHJvamVjdC4gRm9yIHRoaXMNCm1vbWVudCwgbGV0J3MgZml4IHRoZSBicm9rZW4gY29u
+bmVjdGlvbiBiZXR3ZWVuIFpJUCBkcml2ZXJzIGFuZCB6c3dhcCBmaXJzdC4NClRoaXMgd2lsbCBo
+ZWxwIGJ1aWxkIHRoZSBmYWl0aCBvbiB0aGUgd2hvbGUgcHJvamVjdCBhbmQgbW90aXZhdGUgdGhl
+IG1vdmUgdG8NCnRoZSBuZXh0IHN0ZXAuDQoNClN0ZXAgYnkgc3RlcCwgd2Ugd2lsbCBtYWtlIHpz
+d2FwIGJldHRlciBhbmQgYmV0dGVyIG9uIHBlcmZvcm1hbmNlIGJ5IGxldmVyYWdpbmcNCnRoZSBw
+b3dlciBvZiBaSVAgaGFyZHdhcmUuDQoNCj4gDQo+IFNlYmFzdGlhbg0KDQpUaGFua3MNCkJhcnJ5
+DQo=
