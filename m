@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51E402AB978
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 14:09:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F2D842ABB37
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 14:28:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731270AbgKINJj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 08:09:39 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34444 "EHLO mail.kernel.org"
+        id S2387684AbgKINZw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 08:25:52 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44610 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731865AbgKINJ3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 08:09:29 -0500
+        id S1733130AbgKINRZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 08:17:25 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 051EE2076E;
-        Mon,  9 Nov 2020 13:09:26 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 329B920731;
+        Mon,  9 Nov 2020 13:17:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604927367;
-        bh=bBOPXahczJMWEma0bKzrrtfJ7ARjPV24msxAKPLzGag=;
+        s=default; t=1604927844;
+        bh=nTpSDGHgiO6MUNCQKieOmkxc0K5FswgNWb/AlOTnKM0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=tKBvLdQKlmEbSrjkJlNPLWC5wuNTYmgfYJOMvOkYikfRDIYeg2GtQ2tRhBGjY+Y3g
-         4dew27VkX5F8wWLTZKCht+7Rlg+/CvbxDvAaNAkOm1RJ0wIdGdPX5jZ3Lo/oxxrSxD
-         jJevPmvsFEdx4jWcXYbtSBicErDFKmVLLqbukmak=
+        b=wUUwtdX/otS7ZqVos0L8fazDPOB1SzDlf4R0xjVq/vJVrS1SAtR8f2/FrkY9N9Lum
+         nYHVACFlc8QqGlvyN9s46pwx8d5/+G10ljm2POMkG3MviIhBb3CmdB3jv8Mtby6Emx
+         PwAuP06FK9oOfoGEbXacycnYloyTd40kj0cKQPaY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, James Jurack <james.jurack@ametek.com>,
-        Claudiu Manoil <claudiu.manoil@nxp.com>,
+        stable@vger.kernel.org,
+        syzbot+9a8f8bfcc56e8578016c@syzkaller.appspotmail.com,
+        Eelco Chaudron <echaudro@redhat.com>,
         Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 4.19 08/71] gianfar: Account for Tx PTP timestamp in the skb headroom
-Date:   Mon,  9 Nov 2020 13:55:02 +0100
-Message-Id: <20201109125020.299141932@linuxfoundation.org>
+Subject: [PATCH 5.9 041/133] net: openvswitch: silence suspicious RCU usage warning
+Date:   Mon,  9 Nov 2020 13:55:03 +0100
+Message-Id: <20201109125032.686759783@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201109125019.906191744@linuxfoundation.org>
-References: <20201109125019.906191744@linuxfoundation.org>
+In-Reply-To: <20201109125030.706496283@linuxfoundation.org>
+References: <20201109125030.706496283@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,55 +44,77 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Claudiu Manoil <claudiu.manoil@nxp.com>
+From: Eelco Chaudron <echaudro@redhat.com>
 
-[ Upstream commit d6a076d68c6b5d6a5800f3990a513facb7016dea ]
+[ Upstream commit fea07a487c6dd422dc8837237c9d2bc7c33119af ]
 
-When PTP timestamping is enabled on Tx, the controller
-inserts the Tx timestamp at the beginning of the frame
-buffer, between SFD and the L2 frame header. This means
-that the skb provided by the stack is required to have
-enough headroom otherwise a new skb needs to be created
-by the driver to accommodate the timestamp inserted by h/w.
-Up until now the driver was relying on the second option,
-using skb_realloc_headroom() to create a new skb to accommodate
-PTP frames. Turns out that this method is not reliable, as
-reallocation of skbs for PTP frames along with the required
-overhead (skb_set_owner_w, consume_skb) is causing random
-crashes in subsequent skb_*() calls, when multiple concurrent
-TCP streams are run at the same time on the same device
-(as seen in James' report).
-Note that these crashes don't occur with a single TCP stream,
-nor with multiple concurrent UDP streams, but only when multiple
-TCP streams are run concurrently with the PTP packet flow
-(doing skb reallocation).
-This patch enforces the first method, by requesting enough
-headroom from the stack to accommodate PTP frames, and so avoiding
-skb_realloc_headroom() & co, and the crashes no longer occur.
-There's no reason not to set needed_headroom to a large enough
-value to accommodate PTP frames, so in this regard this patch
-is a fix.
+Silence suspicious RCU usage warning in ovs_flow_tbl_masks_cache_resize()
+by replacing rcu_dereference() with rcu_dereference_ovsl().
 
-Reported-by: James Jurack <james.jurack@ametek.com>
-Fixes: bee9e58c9e98 ("gianfar:don't add FCB length to hard_header_len")
-Signed-off-by: Claudiu Manoil <claudiu.manoil@nxp.com>
-Link: https://lore.kernel.org/r/20201020173605.1173-1-claudiu.manoil@nxp.com
+In addition, when creating a new datapath, make sure it's configured under
+the ovs_lock.
+
+Fixes: 9bf24f594c6a ("net: openvswitch: make masks cache size configurable")
+Reported-by: syzbot+9a8f8bfcc56e8578016c@syzkaller.appspotmail.com
+Signed-off-by: Eelco Chaudron <echaudro@redhat.com>
+Link: https://lore.kernel.org/r/160439190002.56943.1418882726496275961.stgit@ebuild
 Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/freescale/gianfar.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ net/openvswitch/datapath.c   |   14 +++++++-------
+ net/openvswitch/flow_table.c |    2 +-
+ 2 files changed, 8 insertions(+), 8 deletions(-)
 
---- a/drivers/net/ethernet/freescale/gianfar.c
-+++ b/drivers/net/ethernet/freescale/gianfar.c
-@@ -1388,7 +1388,7 @@ static int gfar_probe(struct platform_de
+--- a/net/openvswitch/datapath.c
++++ b/net/openvswitch/datapath.c
+@@ -1699,13 +1699,13 @@ static int ovs_dp_cmd_new(struct sk_buff
+ 	parms.port_no = OVSP_LOCAL;
+ 	parms.upcall_portids = a[OVS_DP_ATTR_UPCALL_PID];
  
- 	if (dev->features & NETIF_F_IP_CSUM ||
- 	    priv->device_flags & FSL_GIANFAR_DEV_HAS_TIMER)
--		dev->needed_headroom = GMAC_FCB_LEN;
-+		dev->needed_headroom = GMAC_FCB_LEN + GMAC_TXPAL_LEN;
+-	err = ovs_dp_change(dp, a);
+-	if (err)
+-		goto err_destroy_meters;
+-
+ 	/* So far only local changes have been made, now need the lock. */
+ 	ovs_lock();
  
- 	/* Initializing some of the rx/tx queue level parameters */
- 	for (i = 0; i < priv->num_tx_queues; i++) {
++	err = ovs_dp_change(dp, a);
++	if (err)
++		goto err_unlock_and_destroy_meters;
++
+ 	vport = new_vport(&parms);
+ 	if (IS_ERR(vport)) {
+ 		err = PTR_ERR(vport);
+@@ -1721,8 +1721,7 @@ static int ovs_dp_cmd_new(struct sk_buff
+ 				ovs_dp_reset_user_features(skb, info);
+ 		}
+ 
+-		ovs_unlock();
+-		goto err_destroy_meters;
++		goto err_unlock_and_destroy_meters;
+ 	}
+ 
+ 	err = ovs_dp_cmd_fill_info(dp, reply, info->snd_portid,
+@@ -1737,7 +1736,8 @@ static int ovs_dp_cmd_new(struct sk_buff
+ 	ovs_notify(&dp_datapath_genl_family, reply, info);
+ 	return 0;
+ 
+-err_destroy_meters:
++err_unlock_and_destroy_meters:
++	ovs_unlock();
+ 	ovs_meters_exit(dp);
+ err_destroy_ports:
+ 	kfree(dp->ports);
+--- a/net/openvswitch/flow_table.c
++++ b/net/openvswitch/flow_table.c
+@@ -387,7 +387,7 @@ static struct mask_cache *tbl_mask_cache
+ }
+ int ovs_flow_tbl_masks_cache_resize(struct flow_table *table, u32 size)
+ {
+-	struct mask_cache *mc = rcu_dereference(table->mask_cache);
++	struct mask_cache *mc = rcu_dereference_ovsl(table->mask_cache);
+ 	struct mask_cache *new;
+ 
+ 	if (size == mc->cache_size)
 
 
