@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2630E2AB94A
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 14:07:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ABB832ABB08
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 14:27:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731471AbgKINHy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 08:07:54 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60630 "EHLO mail.kernel.org"
+        id S2387795AbgKINTC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 08:19:02 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46368 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731438AbgKINHr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 08:07:47 -0500
+        id S1729997AbgKINS6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 08:18:58 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 012F420789;
-        Mon,  9 Nov 2020 13:07:43 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9104A20663;
+        Mon,  9 Nov 2020 13:18:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604927264;
-        bh=FsJ/2RInu883qUPI+CrJm8ZPornWb8HEbhEIwXHbLmk=;
+        s=default; t=1604927938;
+        bh=tczHi7cMBPGgCo/VNIvYxlYSUH5/t5MtPFwHmuYLzdA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=oQc5EMWLxc2ENr063NBGcI5x14WMkYyrnVH19IvSXQPZx0xj0idu96fbTSeM40GNW
-         MeD29kemPX6s8YgKFu2puND6m5NGm2CToitv/XoponHHvyagunA11nDve6vetsZCYG
-         cmkB1ojTWtY9MkSbAmbC71iZgtXx6IZl3DrCaZ2I=
+        b=QpsU7KBmd0/fCpAJ8S0NjsptaC1Wl8VV11vsOatCxLp6ALTo07H6iLnry/NF9va91
+         b43nhnrkPlreBr0jMayHqbxde24mJ+eDqyGrqdscbk2vDfzd/Bb1B54q81nO68cL/V
+         1kFmhi7MdnEldHq3IqLgBdG7dp2IfDD44/oj6w5E=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Gratian Crisan <gratian.crisan@ni.com>,
-        Mike Galbraith <efault@gmx.de>,
-        Thomas Gleixner <tglx@linutronix.de>
-Subject: [PATCH 4.14 25/48] futex: Handle transient "ownerless" rtmutex state correctly
-Date:   Mon,  9 Nov 2020 13:55:34 +0100
-Message-Id: <20201109125017.995736996@linuxfoundation.org>
+        stable@vger.kernel.org, Scott K Logan <logans@cottsay.net>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.9 073/133] arm64: dts: meson: add missing g12 rng clock
+Date:   Mon,  9 Nov 2020 13:55:35 +0100
+Message-Id: <20201109125034.243924792@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201109125016.734107741@linuxfoundation.org>
-References: <20201109125016.734107741@linuxfoundation.org>
+In-Reply-To: <20201109125030.706496283@linuxfoundation.org>
+References: <20201109125030.706496283@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,80 +44,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mike Galbraith <efault@gmx.de>
+From: Scott K Logan <logans@cottsay.net>
 
-commit 9f5d1c336a10c0d24e83e40b4c1b9539f7dba627 upstream.
+[ Upstream commit a1afbbb0285797e01313779c71287d936d069245 ]
 
-Gratian managed to trigger the BUG_ON(!newowner) in fixup_pi_state_owner().
-This is one possible chain of events leading to this:
+This adds the missing perpheral clock for the RNG for Amlogic G12. As
+stated in amlogic,meson-rng.yaml, this isn't always necessary for the
+RNG to function, but is better to have in case the clock is disabled for
+some reason prior to loading.
 
-Task Prio       Operation
-T1   120	lock(F)
-T2   120	lock(F)   -> blocks (top waiter)
-T3   50 (RT)	lock(F)   -> boosts T1 and blocks (new top waiter)
-XX   		timeout/  -> wakes T2
-		signal
-T1   50		unlock(F) -> wakes T3 (rtmutex->owner == NULL, waiter bit is set)
-T2   120	cleanup   -> try_to_take_mutex() fails because T3 is the top waiter
-     			     and the lower priority T2 cannot steal the lock.
-     			  -> fixup_pi_state_owner() sees newowner == NULL -> BUG_ON()
-
-The comment states that this is invalid and rt_mutex_real_owner() must
-return a non NULL owner when the trylock failed, but in case of a queued
-and woken up waiter rt_mutex_real_owner() == NULL is a valid transient
-state. The higher priority waiter has simply not yet managed to take over
-the rtmutex.
-
-The BUG_ON() is therefore wrong and this is just another retry condition in
-fixup_pi_state_owner().
-
-Drop the locks, so that T3 can make progress, and then try the fixup again.
-
-Gratian provided a great analysis, traces and a reproducer. The analysis is
-to the point, but it confused the hell out of that tglx dude who had to
-page in all the futex horrors again. Condensed version is above.
-
-[ tglx: Wrote comment and changelog ]
-
-Fixes: c1e2f0eaf015 ("futex: Avoid violating the 10th rule of futex")
-Reported-by: Gratian Crisan <gratian.crisan@ni.com>
-Signed-off-by: Mike Galbraith <efault@gmx.de>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Cc: stable@vger.kernel.org
-Link: https://lore.kernel.org/r/87a6w6x7bb.fsf@ni.com
-Link: https://lore.kernel.org/r/87sg9pkvf7.fsf@nanos.tec.linutronix.de
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Signed-off-by: Scott K Logan <logans@cottsay.net>
+Suggested-by: Neil Armstrong <narmstrong@baylibre.com>
+Reviewed-by: Neil Armstrong <narmstrong@baylibre.com>
+Signed-off-by: Kevin Hilman <khilman@baylibre.com>
+Link: https://lore.kernel.org/r/520a1a8ec7a958b3d918d89563ec7e93a4100a45.camel@cottsay.net
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/futex.c |   16 ++++++++++++++--
- 1 file changed, 14 insertions(+), 2 deletions(-)
+ arch/arm64/boot/dts/amlogic/meson-g12-common.dtsi | 2 ++
+ 1 file changed, 2 insertions(+)
 
---- a/kernel/futex.c
-+++ b/kernel/futex.c
-@@ -2512,10 +2512,22 @@ retry:
- 		}
+diff --git a/arch/arm64/boot/dts/amlogic/meson-g12-common.dtsi b/arch/arm64/boot/dts/amlogic/meson-g12-common.dtsi
+index 1e83ec5b8c91a..81f490e404ca5 100644
+--- a/arch/arm64/boot/dts/amlogic/meson-g12-common.dtsi
++++ b/arch/arm64/boot/dts/amlogic/meson-g12-common.dtsi
+@@ -282,6 +282,8 @@
+ 				hwrng: rng@218 {
+ 					compatible = "amlogic,meson-rng";
+ 					reg = <0x0 0x218 0x0 0x4>;
++					clocks = <&clkc CLKID_RNG0>;
++					clock-names = "core";
+ 				};
+ 			};
  
- 		/*
--		 * Since we just failed the trylock; there must be an owner.
-+		 * The trylock just failed, so either there is an owner or
-+		 * there is a higher priority waiter than this one.
- 		 */
- 		newowner = rt_mutex_owner(&pi_state->pi_mutex);
--		BUG_ON(!newowner);
-+		/*
-+		 * If the higher priority waiter has not yet taken over the
-+		 * rtmutex then newowner is NULL. We can't return here with
-+		 * that state because it's inconsistent vs. the user space
-+		 * state. So drop the locks and try again. It's a valid
-+		 * situation and not any different from the other retry
-+		 * conditions.
-+		 */
-+		if (unlikely(!newowner)) {
-+			err = -EAGAIN;
-+			goto handle_err;
-+		}
- 	} else {
- 		WARN_ON_ONCE(argowner != current);
- 		if (oldowner == current) {
+-- 
+2.27.0
+
 
 
