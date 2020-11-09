@@ -2,114 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B70A2ABEFF
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 15:43:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B28582ABF15
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 15:45:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731728AbgKIOm4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 09:42:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36878 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731612AbgKIOmu (ORCPT
+        id S1732244AbgKIOo0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 09:44:26 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:38236 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1731993AbgKIOoH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 09:42:50 -0500
-Received: from mail-oo1-xc41.google.com (mail-oo1-xc41.google.com [IPv6:2607:f8b0:4864:20::c41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9447FC0613CF;
-        Mon,  9 Nov 2020 06:42:49 -0800 (PST)
-Received: by mail-oo1-xc41.google.com with SMTP id l20so2246125oot.3;
-        Mon, 09 Nov 2020 06:42:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:subject:to:cc:references:from:autocrypt:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=4Qwrq1LSvMb7G5VW3/Pd2Lvzc0jIHM/BqwKNN+CwFsw=;
-        b=E7lY5WejIaifOqlckd4TpihwYktWdNS13JDJFfENaUCT3gV6bshRwLXNEhVpd01EbU
-         oEVNBOUrhqM+bMYhyzPIYDiKlhjSuH0Ig3FntTSakDF/EqjYzcEoBBe8uzG9S2eLY1/v
-         AEjfdvBu8sZI4bbG/Q45CAEHSd1qPThGj+a6xVKQGX/HRpnt6JiFe+oe3SHUf+Fm4Y6h
-         T2++edsuCkurDLhuhcehR16QZ3TDAjMutsWVVMD3GGL+bh4DVaiG9S9jKD/zkSda/ARp
-         ASWHdasimCddWEAdrSw9qwB5B8rl/UPzUmJPVQVR4ahTUYa2tGPDxGMZp+BS1RlzyP/v
-         JCuw==
+        Mon, 9 Nov 2020 09:44:07 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1604933045;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=YPCE6yCI2eHm1BkAkFBsff23HgizVskYri9f1zGQnIc=;
+        b=VUxwZt1fxmdOoyTAcAwBf9zzenNg7mm5MBif2DxMmtqwnx01Z36FkNYHpCX7eQw4V06fBs
+        ZhMgJEIoESTNtiK8A/F8RlHin08oj8so5JkAnpXLU5PKT19yL1szPL4tSHJ0MyihQViPLw
+        o3zSeixZHAK+vuUnYZ7+rmFqOuGlzEc=
+Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
+ [209.85.218.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-390-9skJgKokMQSWhWkkVFDxlQ-1; Mon, 09 Nov 2020 09:44:03 -0500
+X-MC-Unique: 9skJgKokMQSWhWkkVFDxlQ-1
+Received: by mail-ej1-f70.google.com with SMTP id t1so3487456ejb.21
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Nov 2020 06:44:03 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:subject:to:cc:references:from:autocrypt
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=4Qwrq1LSvMb7G5VW3/Pd2Lvzc0jIHM/BqwKNN+CwFsw=;
-        b=hdAtufDTCQOVcCX2UCfEhwxQRcHjIrLeXLgZtpS0bMveEO1A2N9UIm15wyujWjfFwN
-         U0eomGygZqFzxUhkbnCmspfD4jrNeFw0dFbGHdtetYPdgKauxx/UP2uS+G4Ji6CvdlT9
-         +fmjmyG2y9Dv/LKKikIKL0412/i1hNwzOYsp5xyQLCVJQMUbqdOS/zLpHJtvwxdpWgTG
-         riRjP0qD7aV0Hqc1k/eOs8d1lsupzfu078mL/ZdHC7o+Aw5Ccy6Si6uBhizX/eschXh9
-         u4ycS3kQaZtqmE+fWJDX0nrFZeg/iKso94EKWWToML5R9Op+FpS29ph9rRWCI/VSYIM6
-         PHmg==
-X-Gm-Message-State: AOAM5308SFBqIuSCpFi+GqOe4Zi3IKe2ZUSQGG4pBPLfE6L/HY7GrfCs
-        cIYYR/GodTaBy3ykIiKJpyc=
-X-Google-Smtp-Source: ABdhPJw9aXJc1BgwU7A/n4W9UMX4n8wmw6pG2JdwllLnBo7RKZaD7aZnNiYT+RI9MitaBL2vhzlkLw==
-X-Received: by 2002:a4a:2843:: with SMTP id c3mr10157738oof.3.1604932968752;
-        Mon, 09 Nov 2020 06:42:48 -0800 (PST)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id n26sm285837oop.18.2020.11.09.06.42.46
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=YPCE6yCI2eHm1BkAkFBsff23HgizVskYri9f1zGQnIc=;
+        b=S4+TB9+CPjuEhqR6MW0mSyi+m5CMy2acQkxBLYC6Z55LcfbX4nsYgXOagxL6mdCq9L
+         bpF2ZEy6ldowB8EY7m1HN+Fg4Z9EkSK2erYq7flwIcPOX3GRecGxJ7DkSd/6SyD0VMFB
+         oXiw9XcHgqAjWWzgXdZAO5vNVr6ufOZjuyTGTB6r/xIu2IIqcjBUecjTQ+sDguZnn6Fe
+         LhYqt8FOPjK/GAtFR4Tios5SHNUh3ZoA6ftk569GVsixlC6oo9FJWBJvZbMasEVTdqKk
+         alJ2bkIc3roqxf+xYnQubxEHyU3KK3Zb5V2XHXkIeFS0U64rysyC/0WuISh7dIJWCmNU
+         rxfQ==
+X-Gm-Message-State: AOAM533q5VWqwzPID5LnhQVVRc8fnkvNytjAEBZdzOR+IPuNr3CyIqIa
+        S4lSmYaqJAax7R4IJCIUlK6hjFQIjjWLunsE/dT/I/GV56o/0NtNXUlcdFuHv8bQqbc7Ze6S2rc
+        E28Zshat+VBmTSgDZ7QExkgDj
+X-Received: by 2002:a17:906:2683:: with SMTP id t3mr15803978ejc.414.1604933041898;
+        Mon, 09 Nov 2020 06:44:01 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJySA0GBIUbv28XFj4RsyIhHvm1xFXHuQr9V+Kbzrmc7R6ffbTYPV9HgMSrijnsOmUOASjBaQQ==
+X-Received: by 2002:a17:906:2683:: with SMTP id t3mr15803943ejc.414.1604933041655;
+        Mon, 09 Nov 2020 06:44:01 -0800 (PST)
+Received: from x1.localdomain (2001-1c00-0c0c-fe00-6c10-fbf3-14c4-884c.cable.dynamic.v6.ziggo.nl. [2001:1c00:c0c:fe00:6c10:fbf3:14c4:884c])
+        by smtp.gmail.com with ESMTPSA id o31sm8946615edd.94.2020.11.09.06.44.00
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 09 Nov 2020 06:42:47 -0800 (PST)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Subject: Re: [PATCH 3/3] hwmon: (ltc2945): add support for sense resistor
-To:     Alexandru Ardelean <ardeleanalex@gmail.com>
-Cc:     Alexandru Ardelean <alexandru.ardelean@analog.com>,
-        linux-hwmon@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        jdelvare@suse.com, Mark.Thoren@analog.com
-References: <20201106101825.30960-1-alexandru.ardelean@analog.com>
- <20201106101825.30960-3-alexandru.ardelean@analog.com>
- <20201106131727.GD14837@roeck-us.net>
- <CA+U=DsoQNfYQ2o-wKpcqUJ9Xj9u9U4Nas8xKYhcYusU4HyHx1g@mail.gmail.com>
-From:   Guenter Roeck <linux@roeck-us.net>
-Autocrypt: addr=linux@roeck-us.net; keydata=
- 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
- mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
-Message-ID: <11250d2d-c8ec-a1dc-2f80-edc531160d3e@roeck-us.net>
-Date:   Mon, 9 Nov 2020 06:42:45 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Mon, 09 Nov 2020 06:44:01 -0800 (PST)
+Subject: Re: [PATCH v4 1/4] HID: i2c-hid: Reorganize so ACPI and OF are
+ subclasses
+To:     Benjamin Tissoires <benjamin.tissoires@redhat.com>
+Cc:     Doug Anderson <dianders@chromium.org>,
+        Jiri Kosina <jkosina@suse.cz>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        "open list:HID CORE LAYER" <linux-input@vger.kernel.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Andrea Borgia <andrea@borgia.bo.it>,
+        Kai-Heng Feng <kai.heng.feng@canonical.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Aaron Ma <aaron.ma@canonical.com>,
+        Jiri Kosina <jikos@kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Pavel Balan <admin@kryma.net>,
+        Xiaofei Tan <tanxiaofei@huawei.com>,
+        You-Sheng Yang <vicamo.yang@canonical.com>,
+        LKML <linux-kernel@vger.kernel.org>
+References: <20201104012929.3850691-1-dianders@chromium.org>
+ <20201103172824.v4.1.Ied4ce10d229cd7c69abf13a0361ba0b8d82eb9c4@changeid>
+ <ea8d8fa3-4e3e-3c56-cda3-c1f6b155018c@redhat.com>
+ <CAD=FV=XLnL35Ltu0ZF2c_u262TDaJ+oZ_jiME_VUd8V+1P5Vaw@mail.gmail.com>
+ <20283437-4166-b65e-c498-a650bf53cd8e@redhat.com>
+ <CAO-hwJ+C9M8zqaiiAW2CATZtng7B9QPOMBSMts6hPUHE9PmSCQ@mail.gmail.com>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <fd5958b8-106a-4ee8-04d1-f4eb882661e4@redhat.com>
+Date:   Mon, 9 Nov 2020 15:44:00 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.1
 MIME-Version: 1.0
-In-Reply-To: <CA+U=DsoQNfYQ2o-wKpcqUJ9Xj9u9U4Nas8xKYhcYusU4HyHx1g@mail.gmail.com>
+In-Reply-To: <CAO-hwJ+C9M8zqaiiAW2CATZtng7B9QPOMBSMts6hPUHE9PmSCQ@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -117,167 +91,175 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/8/20 10:41 PM, Alexandru Ardelean wrote:
-> On Fri, Nov 6, 2020 at 3:17 PM Guenter Roeck <linux@roeck-us.net> wrote:
->>
->> On Fri, Nov 06, 2020 at 12:18:25PM +0200, Alexandru Ardelean wrote:
->>> The sense resistor is a parameter of the board. It should be configured in
->>> the driver via a device-tree / ACPI property, so that the proper current
->>> measurements can be done in the driver.
->>>
->>> It shouldn't be necessary that userspace need to know about the value of
->>> the resistor. It makes things a bit harder to make the application code
->>> portable from one board to another.
->>>
->>> This change implements support for the sense resistor to be configured from
->>> DT/ACPI and used in current calculations.
->>>
->>
->> This will require a matching deevicetree document.
-> 
-> Ack
-> Will create a dt binding schema doc.
-> Are you fine with being added as maintainer in the DT doc?
-> Seeing as you are the original author of the driver.
-> 
+Hi,
 
-Sure.
-
-Guenter
-
->>
->>> Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
->>> ---
->>>  drivers/hwmon/ltc2945.c | 48 ++++++++++++++++++-----------------------
->>>  1 file changed, 21 insertions(+), 27 deletions(-)
->>>
->>> diff --git a/drivers/hwmon/ltc2945.c b/drivers/hwmon/ltc2945.c
->>> index 75d997d31e01..500401a82c49 100644
->>> --- a/drivers/hwmon/ltc2945.c
->>> +++ b/drivers/hwmon/ltc2945.c
->>> @@ -61,9 +61,11 @@
->>>  /**
->>>   * struct ltc2945_state - driver instance specific data
->>>   * @regmap           regmap object to access device registers
->>> + * @r_sense_uohm     current sense resistor value
->>>   */
->>>  struct ltc2945_state {
->>>       struct regmap           *regmap;
->>> +     u32                     r_sense_uohm;
->>>  };
->>>
->>>  static inline bool is_power_reg(u8 reg)
->>> @@ -101,9 +103,8 @@ static long long ltc2945_reg_to_val(struct device *dev, u8 reg)
->>>       case LTC2945_MAX_POWER_THRES_H:
->>>       case LTC2945_MIN_POWER_THRES_H:
->>>               /*
->>> -              * Convert to uW by assuming current is measured with
->>> -              * an 1mOhm sense resistor, similar to current
->>> -              * measurements.
->>> +              * Convert to uW by and scale it with the configured
->>> +              * sense resistor, similar to current measurements.
->>>                * Control register bit 0 selects if voltage at SENSE+/VDD
->>>                * or voltage at ADIN is used to measure power.
->>>                */
->>> @@ -112,10 +113,10 @@ static long long ltc2945_reg_to_val(struct device *dev, u8 reg)
->>>                       return ret;
->>>               if (control & CONTROL_MULT_SELECT) {
->>>                       /* 25 mV * 25 uV = 0.625 uV resolution. */
->>> -                     val *= 625LL;
->>> +                     val = DIV_ROUND_CLOSEST_ULL(val * 625LL * 1000, st->r_sense_uohm);
->>>               } else {
->>>                       /* 0.5 mV * 25 uV = 0.0125 uV resolution. */
->>> -                     val = (val * 25LL) >> 1;
->>> +                     val = DIV_ROUND_CLOSEST_ULL(val * 25LL * 1000, st->r_sense_uohm) >> 1;
->>>               }
->>>               break;
->>>       case LTC2945_VIN_H:
->>> @@ -140,13 +141,10 @@ static long long ltc2945_reg_to_val(struct device *dev, u8 reg)
->>>       case LTC2945_MAX_SENSE_THRES_H:
->>>       case LTC2945_MIN_SENSE_THRES_H:
->>>               /*
->>> -              * 25 uV resolution. Convert to current as measured with
->>> -              * an 1 mOhm sense resistor, in mA. If a different sense
->>> -              * resistor is installed, calculate the actual current by
->>> -              * dividing the reported current by the sense resistor value
->>> -              * in mOhm.
->>> +              * 25 uV resolution. Convert to current and scale it
->>> +              * with the value of the sense resistor.
->>>                */
->>> -             val *= 25;
->>> +             val = DIV_ROUND_CLOSEST_ULL(val * 25 * 1000, st->r_sense_uohm);
->>>               break;
->>>       default:
->>>               return -EINVAL;
->>> @@ -169,9 +167,8 @@ static int ltc2945_val_to_reg(struct device *dev, u8 reg,
->>>       case LTC2945_MAX_POWER_THRES_H:
->>>       case LTC2945_MIN_POWER_THRES_H:
->>>               /*
->>> -              * Convert to register value by assuming current is measured
->>> -              * with an 1mOhm sense resistor, similar to current
->>> -              * measurements.
->>> +              * Convert to register value, scale it with the configured sense
->>> +              * resistor value, similar to current measurements.
->>>                * Control register bit 0 selects if voltage at SENSE+/VDD
->>>                * or voltage at ADIN is used to measure power, which in turn
->>>                * determines register calculations.
->>> @@ -181,14 +178,10 @@ static int ltc2945_val_to_reg(struct device *dev, u8 reg,
->>>                       return ret;
->>>               if (control & CONTROL_MULT_SELECT) {
->>>                       /* 25 mV * 25 uV = 0.625 uV resolution. */
->>> -                     val = DIV_ROUND_CLOSEST_ULL(val, 625);
->>> +                     val = DIV_ROUND_CLOSEST_ULL(val * 1000, 625 * st->r_sense_uohm);
->>>               } else {
->>> -                     /*
->>> -                      * 0.5 mV * 25 uV = 0.0125 uV resolution.
->>> -                      * Divide first to avoid overflow;
->>> -                      * accept loss of accuracy.
->>> -                      */
->>> -                     val = DIV_ROUND_CLOSEST_ULL(val, 25) * 2;
->>> +                     /* 0.5 mV * 25 uV = 0.0125 uV resolution. */
->>> +                     val = DIV_ROUND_CLOSEST_ULL(val * 2 * 1000, 25 * st->r_sense_uohm);
->>>               }
->>>               break;
->>>       case LTC2945_VIN_H:
->>> @@ -213,13 +206,10 @@ static int ltc2945_val_to_reg(struct device *dev, u8 reg,
->>>       case LTC2945_MAX_SENSE_THRES_H:
->>>       case LTC2945_MIN_SENSE_THRES_H:
->>>               /*
->>> -              * 25 uV resolution. Convert to current as measured with
->>> -              * an 1 mOhm sense resistor, in mA. If a different sense
->>> -              * resistor is installed, calculate the actual current by
->>> -              * dividing the reported current by the sense resistor value
->>> -              * in mOhm.
->>> +              * 25 uV resolution. Convert to current and scale it
->>> +              * with the value of the sense resistor, in mA.
->>>                */
->>> -             val = DIV_ROUND_CLOSEST_ULL(val, 25);
->>> +             val = DIV_ROUND_CLOSEST_ULL(val * 1000, 25 * st->r_sense_uohm);
->>>               break;
->>>       default:
->>>               return -EINVAL;
->>> @@ -475,6 +465,10 @@ static int ltc2945_probe(struct i2c_client *client)
->>>               return PTR_ERR(regmap);
->>>       }
->>>
->>> +     if (device_property_read_u32(dev, "shunt-resistor-micro-ohms",
->>> +                                  &st->r_sense_uohm))
->>> +             st->r_sense_uohm = 1000;
->>> +
->>
->> Devicetree could set shunt-resistor-micro-ohms to 0, which would result
->> in divide by 0 errors.
+On 11/9/20 3:29 PM, Benjamin Tissoires wrote:
+> Hi,
 > 
-> Ack
-> Will do a check for this.
+> sorry for the delay. I have been heavily sidetracked and have a bunch
+> of internal deadlines coming in :/
 > 
+> On Mon, Nov 9, 2020 at 12:24 PM Hans de Goede <hdegoede@redhat.com> wrote:
 >>
->> Guenter
+>> Hi,
 >>
->>>       st->regmap = regmap;
+>> On 11/4/20 5:06 PM, Doug Anderson wrote:
+>>> Hi,
 >>>
->>>       /* Clear faults */
->>> --
->>> 2.27.0
+>>> On Wed, Nov 4, 2020 at 4:07 AM Hans de Goede <hdegoede@redhat.com> wrote:
+>>>>
+>>>>> +#include "i2c-hid.h"
+>>>>> +
+>>>>> +struct i2c_hid_acpi {
+>>>>> +     struct i2chid_subclass_data subclass;
+>>>>
+>>>> This feels a bit weird, we are the subclass so typically we would
+>>>> be embedding a base_class data struct here ...
+>>>>
+>>>> (more remarks below, note just my 2 cents you may want to wait
+>>>> for feedback from others).
+>>>>
+>>>>> +     struct i2c_client *client;
+>>>>
+>>>> You pass this to i2c_hid_core_probe which then stores it own
+>>>> copy, why not just store it in the subclass (or even better
+>>>> baseclass) data struct ?
 >>>
+>>> My goal was to avoid moving the big structure to the header file.
+>>> Without doing that, I think you need something more like the setup I
+>>> have.  I'll wait for Benjamin to comment on whether he'd prefer
+>>> something like what I have here or if I should move the structure.
+>>
+>> Ok, if Benjamin decides to keep things this way, can you consider
+>> renaming i2chid_subclass_data to i2chid_ops ?
+>>
+>> It just feels weird to have a struct with subclass in the name
+>> embedded inside as a member in another struct, usualy the kobject model
+>> works by having the the parent/base-class struct embedded inside
+>> the subclass data struct.
+>>
+>> This also avoids the need for a callback_priv_data pointer to the ops,
+>> as the ops get a pointer to the baseclass data struct as argument and
+>> you can then use container_of to get your own subclassdata struct
+>> since that encapsulates (contains) the baseclass struct.
+>>
+>> Note the dropping of the callback_priv_data pointer only works if you
+>> do move the entire struct to the header.
+> 
+> I am not sure my opinion is the best in this case. However, the one
+> thing I'd like us to do is knowing which use cases we are solving, and
+> this should hopefully help us finding the best approach:
+> 
+> - use case 1: fully upstream driver (like this one)
+>    -> the OEM sets up the DT associated with the embedded devices
+>    -> the kernel is compiled with the proper flags/configs
+>   -> the device works out of the box (yay!)
+> 
+> - use case 2: tinkerer in a garage
+>   -> assembly of a generic SoC + Goodix v-next panel (that needs
+> modifications in the driver)
+>   -> use of a generic (arm?) distribution
+>   -> the user compiles the new (changed) goodix driver
+>   -> the DT is populated (with overloads)
+>   -> the device works
+>   -> do we want to keep compatibility across kernel versions (not
+> recompile the custom module)
+> 
+> - use case 3: Google fixed kernel
+>   -> the kernel is built once for all platforms
+>   -> OEMs can recompile a few drivers if they need, but can not touch
+> the core system
+>   -> DT/goodix specific drivers are embedded
+>   -> device works
+>   -> do we want compatibility across major versions, and how "nice" we
+> want to be with OEM?
+> 
+> I understand that use case 2 should in the end become use case 1, but
+> having a possibility for casual/enthusiasts developers to fix their
+> hardware is always nice.
+> 
+> So to me, having the base struct in an external header means we are
+> adding a lot of ABI and putting a lot more weight to case 1.
+> 
+> Personally, I am not that much in favour of being too strict and I
+> think we also want to help these external drivers. It is true that
+> i2c-hid should be relatively stable from now on, but we can never
+> predict the future, so maybe the external header is not so much a good
+> thing (for me).
+> 
+> Anyway, if we were to extract the base struct, we would need to
+> provide allocators to be able to keep forward compatibility (I think).
+> 
+> Does that help a bit?
+> 
+> [mode bikeshedding on]
+> And to go back to Hans' suggestion, I really prefer i2chid_ops. This
+> whole architecture makes me think of a bus, not a subclass hierarchy.
+> In the same way we have the hid bus, we could have the i2c-hid bus,
+> with separate drivers in it (acpi, of, goodix).
+> 
+> Note that I don't want the i2c-hid to be converted into an actual bus,
+> but just rely on the concepts.
+> [bikeshedding off]
+
+Ok, so TL;DR: keep as is but rename subclass to i2chid_ops. That works
+for me.
+
+>>>>> @@ -156,10 +152,10 @@ struct i2c_hid {
+>>>>>
+>>>>>       wait_queue_head_t       wait;           /* For waiting the interrupt */
+>>>>>
+>>>>> -     struct i2c_hid_platform_data pdata;
+>>>>> -
+>>>>>       bool                    irq_wake_enabled;
+>>>>>       struct mutex            reset_lock;
+>>>>> +
+>>>>> +     struct i2chid_subclass_data *subclass;
+>>>>>  };
+>>>>
+>>>> Personally, I would do things a bit differently here:
+>>>>
+>>>> 1. Just add the
+>>>>
+>>>>         int (*power_up_device)(struct i2chid_subclass_data *subclass);
+>>>>         void (*power_down_device)(struct i2chid_subclass_data *subclass);
+>>>>
+>>>> members which you put in the subclass struct here.
+>>>>
+>>>> 2. Move the declaration of this complete struct to drivers/hid/i2c-hid/i2c-hid.h
+>>>> and use this as the base-class which I described before (and store the client
+>>>> pointer here).
+>>>>
+>>>> 3. And then kzalloc both this baseclass struct + the subclass-data
+>>>> (only the bool "power_fixed" in the ACPI case) in one go in the subclass code
+>>>> replacing 2 kzallocs (+ error checking with one, simplifying the code and
+>>>> reducing memory fragmentation (by a tiny sliver).
+>>>
+>>> Sure, I'll do that if Benjamin likes moving the structure to the header.
+>>>
+>>>
+>>>> About the power_*_device callbacks, I wonder if it would not be more consistent
+>>>> to also have a shutdown callback and make i2c_driver.shutdown point to
+>>>> a (modified) i2c_hid_core_shutdown() function.
+>>>
+>>> Personally this doesn't seem cleaner to me, but I'm happy to do it if
+>>> folks like it better.  Coming up with a name for the callback would be
+>>> a bit awkward, which is a sign that this isn't quite ideal?  For the
+>>> power_up()/power_down() those are sane concepts to abstract out.  Here
+>>> we'd be abstracting out "subclass_shutdown_tail()" or something?
+>>> ...and if a subclass needs something at the head of shutdown, we'd
+>>> need to add a "subclass_shutdown_head()"?
+>>
+>> I have no real preference here either way.
+> 
+> If we are using i2chid_ops, we could just have `shutdown_tail()`.
+> Basically drop any "device" or "subclass" in the op name.
+> This would lead to better code IMO: "ihid->dev_ops->shutdown()" for example
+
+
+This also works for me.
+
+Regards,
+
+Hans
 
