@@ -2,264 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B28582ABF15
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 15:45:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1808A2ABEFB
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 15:42:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732244AbgKIOo0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 09:44:26 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:38236 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1731993AbgKIOoH (ORCPT
+        id S1731543AbgKIOmn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 09:42:43 -0500
+Received: from aserp2120.oracle.com ([141.146.126.78]:46592 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730821AbgKIOmm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 09:44:07 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1604933045;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=YPCE6yCI2eHm1BkAkFBsff23HgizVskYri9f1zGQnIc=;
-        b=VUxwZt1fxmdOoyTAcAwBf9zzenNg7mm5MBif2DxMmtqwnx01Z36FkNYHpCX7eQw4V06fBs
-        ZhMgJEIoESTNtiK8A/F8RlHin08oj8so5JkAnpXLU5PKT19yL1szPL4tSHJ0MyihQViPLw
-        o3zSeixZHAK+vuUnYZ7+rmFqOuGlzEc=
-Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
- [209.85.218.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-390-9skJgKokMQSWhWkkVFDxlQ-1; Mon, 09 Nov 2020 09:44:03 -0500
-X-MC-Unique: 9skJgKokMQSWhWkkVFDxlQ-1
-Received: by mail-ej1-f70.google.com with SMTP id t1so3487456ejb.21
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Nov 2020 06:44:03 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=YPCE6yCI2eHm1BkAkFBsff23HgizVskYri9f1zGQnIc=;
-        b=S4+TB9+CPjuEhqR6MW0mSyi+m5CMy2acQkxBLYC6Z55LcfbX4nsYgXOagxL6mdCq9L
-         bpF2ZEy6ldowB8EY7m1HN+Fg4Z9EkSK2erYq7flwIcPOX3GRecGxJ7DkSd/6SyD0VMFB
-         oXiw9XcHgqAjWWzgXdZAO5vNVr6ufOZjuyTGTB6r/xIu2IIqcjBUecjTQ+sDguZnn6Fe
-         LhYqt8FOPjK/GAtFR4Tios5SHNUh3ZoA6ftk569GVsixlC6oo9FJWBJvZbMasEVTdqKk
-         alJ2bkIc3roqxf+xYnQubxEHyU3KK3Zb5V2XHXkIeFS0U64rysyC/0WuISh7dIJWCmNU
-         rxfQ==
-X-Gm-Message-State: AOAM533q5VWqwzPID5LnhQVVRc8fnkvNytjAEBZdzOR+IPuNr3CyIqIa
-        S4lSmYaqJAax7R4IJCIUlK6hjFQIjjWLunsE/dT/I/GV56o/0NtNXUlcdFuHv8bQqbc7Ze6S2rc
-        E28Zshat+VBmTSgDZ7QExkgDj
-X-Received: by 2002:a17:906:2683:: with SMTP id t3mr15803978ejc.414.1604933041898;
-        Mon, 09 Nov 2020 06:44:01 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJySA0GBIUbv28XFj4RsyIhHvm1xFXHuQr9V+Kbzrmc7R6ffbTYPV9HgMSrijnsOmUOASjBaQQ==
-X-Received: by 2002:a17:906:2683:: with SMTP id t3mr15803943ejc.414.1604933041655;
-        Mon, 09 Nov 2020 06:44:01 -0800 (PST)
-Received: from x1.localdomain (2001-1c00-0c0c-fe00-6c10-fbf3-14c4-884c.cable.dynamic.v6.ziggo.nl. [2001:1c00:c0c:fe00:6c10:fbf3:14c4:884c])
-        by smtp.gmail.com with ESMTPSA id o31sm8946615edd.94.2020.11.09.06.44.00
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 09 Nov 2020 06:44:01 -0800 (PST)
-Subject: Re: [PATCH v4 1/4] HID: i2c-hid: Reorganize so ACPI and OF are
- subclasses
-To:     Benjamin Tissoires <benjamin.tissoires@redhat.com>
-Cc:     Doug Anderson <dianders@chromium.org>,
-        Jiri Kosina <jkosina@suse.cz>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        "open list:HID CORE LAYER" <linux-input@vger.kernel.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Andrea Borgia <andrea@borgia.bo.it>,
-        Kai-Heng Feng <kai.heng.feng@canonical.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Aaron Ma <aaron.ma@canonical.com>,
-        Jiri Kosina <jikos@kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Pavel Balan <admin@kryma.net>,
-        Xiaofei Tan <tanxiaofei@huawei.com>,
-        You-Sheng Yang <vicamo.yang@canonical.com>,
-        LKML <linux-kernel@vger.kernel.org>
-References: <20201104012929.3850691-1-dianders@chromium.org>
- <20201103172824.v4.1.Ied4ce10d229cd7c69abf13a0361ba0b8d82eb9c4@changeid>
- <ea8d8fa3-4e3e-3c56-cda3-c1f6b155018c@redhat.com>
- <CAD=FV=XLnL35Ltu0ZF2c_u262TDaJ+oZ_jiME_VUd8V+1P5Vaw@mail.gmail.com>
- <20283437-4166-b65e-c498-a650bf53cd8e@redhat.com>
- <CAO-hwJ+C9M8zqaiiAW2CATZtng7B9QPOMBSMts6hPUHE9PmSCQ@mail.gmail.com>
-From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <fd5958b8-106a-4ee8-04d1-f4eb882661e4@redhat.com>
-Date:   Mon, 9 Nov 2020 15:44:00 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.1
-MIME-Version: 1.0
-In-Reply-To: <CAO-hwJ+C9M8zqaiiAW2CATZtng7B9QPOMBSMts6hPUHE9PmSCQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        Mon, 9 Nov 2020 09:42:42 -0500
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0A9EY9UD185597;
+        Mon, 9 Nov 2020 14:42:21 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id; s=corp-2020-01-29;
+ bh=DCRdvoq7498R1xxo/4++8FedyNqXTY7mzqVS1JnXL7k=;
+ b=rp+hF6a85lWB/wVsnpao00AjMgHnVXfYgFiCAeK6WP2FJkIWL495Z6708Jbel2t6atZR
+ qyBmSOAmc9lmZYGqm6XqJJKMClYThhs8KDuxnDcTh5gSH8zGXFZL5wjsFxy6UviXB1Uk
+ 87q9Xgp59OLVt1Y1S2cuaE5VgiNG84V4CVse7u3nCggIpzwlyqSA8AmVcQUPOl/u/0ps
+ gUhlaXoQ6l15ACGa6fz8uOReB7vLUDLCmyb4CpQwzJxPqlKKhFqyoAnlWTq2IIoTHATp
+ IW5ZOZSasJqREPJjPgL/MtVLraVhWomWggSRAZpNbERP6+7QN0yrsBdnsT95Se954UKk 5A== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by aserp2120.oracle.com with ESMTP id 34nkhkp7kt-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 09 Nov 2020 14:42:21 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0A9EemKb174417;
+        Mon, 9 Nov 2020 14:42:20 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by aserp3020.oracle.com with ESMTP id 34p5fxs15c-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 09 Nov 2020 14:42:20 +0000
+Received: from abhmp0009.oracle.com (abhmp0009.oracle.com [141.146.116.15])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0A9EgHBt031136;
+        Mon, 9 Nov 2020 14:42:17 GMT
+Received: from linux.nl.oracle.com (/10.175.27.128)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Mon, 09 Nov 2020 06:42:16 -0800
+From:   Alexandre Chartre <alexandre.chartre@oracle.com>
+To:     tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, hpa@zytor.com,
+        x86@kernel.org, dave.hansen@linux.intel.com, luto@kernel.org,
+        peterz@infradead.org, linux-kernel@vger.kernel.org,
+        thomas.lendacky@amd.com, jroedel@suse.de
+Cc:     konrad.wilk@oracle.com, jan.setjeeilers@oracle.com,
+        junaids@google.com, oweisse@google.com, rppt@linux.vnet.ibm.com,
+        graf@amazon.de, mgross@linux.intel.com, kuzuno@gmail.com,
+        alexandre.chartre@oracle.com
+Subject: [RFC][PATCH 00/24] x86/pti: Defer CR3 switch to C code
+Date:   Mon,  9 Nov 2020 15:44:01 +0100
+Message-Id: <20201109144425.270789-1-alexandre.chartre@oracle.com>
+X-Mailer: git-send-email 2.18.4
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9799 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 spamscore=0 malwarescore=0
+ adultscore=0 phishscore=0 bulkscore=0 mlxlogscore=999 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2011090103
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9799 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 priorityscore=1501
+ mlxscore=0 suspectscore=0 mlxlogscore=999 lowpriorityscore=0 spamscore=0
+ malwarescore=0 adultscore=0 clxscore=1015 bulkscore=0 impostorscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2011090102
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+[Resending without messing up email addresses (hopefully!),
+ Please reply using this email thread to have correct emails.
+ Sorry for the noise.]
 
-On 11/9/20 3:29 PM, Benjamin Tissoires wrote:
-> Hi,
-> 
-> sorry for the delay. I have been heavily sidetracked and have a bunch
-> of internal deadlines coming in :/
-> 
-> On Mon, Nov 9, 2020 at 12:24 PM Hans de Goede <hdegoede@redhat.com> wrote:
->>
->> Hi,
->>
->> On 11/4/20 5:06 PM, Doug Anderson wrote:
->>> Hi,
->>>
->>> On Wed, Nov 4, 2020 at 4:07 AM Hans de Goede <hdegoede@redhat.com> wrote:
->>>>
->>>>> +#include "i2c-hid.h"
->>>>> +
->>>>> +struct i2c_hid_acpi {
->>>>> +     struct i2chid_subclass_data subclass;
->>>>
->>>> This feels a bit weird, we are the subclass so typically we would
->>>> be embedding a base_class data struct here ...
->>>>
->>>> (more remarks below, note just my 2 cents you may want to wait
->>>> for feedback from others).
->>>>
->>>>> +     struct i2c_client *client;
->>>>
->>>> You pass this to i2c_hid_core_probe which then stores it own
->>>> copy, why not just store it in the subclass (or even better
->>>> baseclass) data struct ?
->>>
->>> My goal was to avoid moving the big structure to the header file.
->>> Without doing that, I think you need something more like the setup I
->>> have.  I'll wait for Benjamin to comment on whether he'd prefer
->>> something like what I have here or if I should move the structure.
->>
->> Ok, if Benjamin decides to keep things this way, can you consider
->> renaming i2chid_subclass_data to i2chid_ops ?
->>
->> It just feels weird to have a struct with subclass in the name
->> embedded inside as a member in another struct, usualy the kobject model
->> works by having the the parent/base-class struct embedded inside
->> the subclass data struct.
->>
->> This also avoids the need for a callback_priv_data pointer to the ops,
->> as the ops get a pointer to the baseclass data struct as argument and
->> you can then use container_of to get your own subclassdata struct
->> since that encapsulates (contains) the baseclass struct.
->>
->> Note the dropping of the callback_priv_data pointer only works if you
->> do move the entire struct to the header.
-> 
-> I am not sure my opinion is the best in this case. However, the one
-> thing I'd like us to do is knowing which use cases we are solving, and
-> this should hopefully help us finding the best approach:
-> 
-> - use case 1: fully upstream driver (like this one)
->    -> the OEM sets up the DT associated with the embedded devices
->    -> the kernel is compiled with the proper flags/configs
->   -> the device works out of the box (yay!)
-> 
-> - use case 2: tinkerer in a garage
->   -> assembly of a generic SoC + Goodix v-next panel (that needs
-> modifications in the driver)
->   -> use of a generic (arm?) distribution
->   -> the user compiles the new (changed) goodix driver
->   -> the DT is populated (with overloads)
->   -> the device works
->   -> do we want to keep compatibility across kernel versions (not
-> recompile the custom module)
-> 
-> - use case 3: Google fixed kernel
->   -> the kernel is built once for all platforms
->   -> OEMs can recompile a few drivers if they need, but can not touch
-> the core system
->   -> DT/goodix specific drivers are embedded
->   -> device works
->   -> do we want compatibility across major versions, and how "nice" we
-> want to be with OEM?
-> 
-> I understand that use case 2 should in the end become use case 1, but
-> having a possibility for casual/enthusiasts developers to fix their
-> hardware is always nice.
-> 
-> So to me, having the base struct in an external header means we are
-> adding a lot of ABI and putting a lot more weight to case 1.
-> 
-> Personally, I am not that much in favour of being too strict and I
-> think we also want to help these external drivers. It is true that
-> i2c-hid should be relatively stable from now on, but we can never
-> predict the future, so maybe the external header is not so much a good
-> thing (for me).
-> 
-> Anyway, if we were to extract the base struct, we would need to
-> provide allocators to be able to keep forward compatibility (I think).
-> 
-> Does that help a bit?
-> 
-> [mode bikeshedding on]
-> And to go back to Hans' suggestion, I really prefer i2chid_ops. This
-> whole architecture makes me think of a bus, not a subclass hierarchy.
-> In the same way we have the hid bus, we could have the i2c-hid bus,
-> with separate drivers in it (acpi, of, goodix).
-> 
-> Note that I don't want the i2c-hid to be converted into an actual bus,
-> but just rely on the concepts.
-> [bikeshedding off]
+With Page Table Isolation (PTI), syscalls as well as interrupts and
+exceptions occurring in userspace enter the kernel with a user
+page-table. The kernel entry code will then switch the page-table
+from the user page-table to the kernel page-table by updating the
+CR3 control register. This CR3 switch is currently done early in
+the kernel entry sequence using assembly code.
 
-Ok, so TL;DR: keep as is but rename subclass to i2chid_ops. That works
-for me.
+This RFC proposes to defer the PTI CR3 switch until we reach C code.
+The benefit is that this simplifies the assembly entry code, and make
+the PTI CR3 switch code easier to understand. This also paves the way
+for further possible projects such an easier integration of Address
+Space Isolation (ASI), or the possibilily to execute some selected
+syscall or interrupt handlers without switching to the kernel page-table
+(and thus avoid the PTI page-table switch overhead).
 
->>>>> @@ -156,10 +152,10 @@ struct i2c_hid {
->>>>>
->>>>>       wait_queue_head_t       wait;           /* For waiting the interrupt */
->>>>>
->>>>> -     struct i2c_hid_platform_data pdata;
->>>>> -
->>>>>       bool                    irq_wake_enabled;
->>>>>       struct mutex            reset_lock;
->>>>> +
->>>>> +     struct i2chid_subclass_data *subclass;
->>>>>  };
->>>>
->>>> Personally, I would do things a bit differently here:
->>>>
->>>> 1. Just add the
->>>>
->>>>         int (*power_up_device)(struct i2chid_subclass_data *subclass);
->>>>         void (*power_down_device)(struct i2chid_subclass_data *subclass);
->>>>
->>>> members which you put in the subclass struct here.
->>>>
->>>> 2. Move the declaration of this complete struct to drivers/hid/i2c-hid/i2c-hid.h
->>>> and use this as the base-class which I described before (and store the client
->>>> pointer here).
->>>>
->>>> 3. And then kzalloc both this baseclass struct + the subclass-data
->>>> (only the bool "power_fixed" in the ACPI case) in one go in the subclass code
->>>> replacing 2 kzallocs (+ error checking with one, simplifying the code and
->>>> reducing memory fragmentation (by a tiny sliver).
->>>
->>> Sure, I'll do that if Benjamin likes moving the structure to the header.
->>>
->>>
->>>> About the power_*_device callbacks, I wonder if it would not be more consistent
->>>> to also have a shutdown callback and make i2c_driver.shutdown point to
->>>> a (modified) i2c_hid_core_shutdown() function.
->>>
->>> Personally this doesn't seem cleaner to me, but I'm happy to do it if
->>> folks like it better.  Coming up with a name for the callback would be
->>> a bit awkward, which is a sign that this isn't quite ideal?  For the
->>> power_up()/power_down() those are sane concepts to abstract out.  Here
->>> we'd be abstracting out "subclass_shutdown_tail()" or something?
->>> ...and if a subclass needs something at the head of shutdown, we'd
->>> need to add a "subclass_shutdown_head()"?
->>
->> I have no real preference here either way.
-> 
-> If we are using i2chid_ops, we could just have `shutdown_tail()`.
-> Basically drop any "device" or "subclass" in the op name.
-> This would lead to better code IMO: "ihid->dev_ops->shutdown()" for example
+Deferring CR3 switch to C code means that we need to run more of the
+kernel entry code with the user page-table. To do so, we need to:
 
+ - map more syscall, interrupt and exception entry code into the user
+   page-table (map all noinstr code);
 
-This also works for me.
+ - map additional data used in the entry code (such as stack canary);
 
-Regards,
+ - run more entry code on the trampoline stack (which is mapped both
+   in the kernel and in the user page-table) until we switch to the
+   kernel page-table and then switch to the kernel stack;
 
-Hans
+ - have a per-task trampoline stack instead of a per-cpu trampoline
+   stack, so the task can be scheduled out while it hasn't switched
+   to the kernel stack.
+
+Note that, for now, the CR3 switch can only be pushed as far as interrupts
+remain disabled in the entry code. This is because the CR3 switch is done
+based on the privilege level from the CS register from the interrupt frame.
+I plan to fix this but that's some extra complication (need to track if the
+user page-table is used or not).
+
+The proposed patchset is in RFC state to get early feedback about this
+proposal.
+
+The code survives running a kernel build and LTP. Note that changes are
+only for 64-bit at the moment, I haven't looked at 32-bit yet but I will
+definitively check it.
+
+Code is based on v5.10-rc3.
+
+Thanks,
+
+alex.
+
+-----
+
+Alexandre Chartre (24):
+  x86/syscall: Add wrapper for invoking syscall function
+  x86/entry: Update asm_call_on_stack to support more function arguments
+  x86/entry: Consolidate IST entry from userspace
+  x86/sev-es: Define a setup stack function for the VC idtentry
+  x86/entry: Implement ret_from_fork body with C code
+  x86/pti: Provide C variants of PTI switch CR3 macros
+  x86/entry: Fill ESPFIX stack using C code
+  x86/entry: Add C version of SWAPGS and SWAPGS_UNSAFE_STACK
+  x86/entry: Add C version of paranoid_entry/exit
+  x86/pti: Introduce per-task PTI trampoline stack
+  x86/pti: Function to clone page-table entries from a specified mm
+  x86/pti: Function to map per-cpu page-table entry
+  x86/pti: Extend PTI user mappings
+  x86/pti: Use PTI stack instead of trampoline stack
+  x86/pti: Execute syscall functions on the kernel stack
+  x86/pti: Execute IDT handlers on the kernel stack
+  x86/pti: Execute IDT handlers with error code on the kernel stack
+  x86/pti: Execute system vector handlers on the kernel stack
+  x86/pti: Execute page fault handler on the kernel stack
+  x86/pti: Execute NMI handler on the kernel stack
+  x86/entry: Disable stack-protector for IST entry C handlers
+  x86/entry: Defer paranoid entry/exit to C code
+  x86/entry: Remove paranoid_entry and paranoid_exit
+  x86/pti: Defer CR3 switch to C code for non-IST and syscall entries
+
+ arch/x86/entry/common.c               | 259 ++++++++++++-
+ arch/x86/entry/entry_64.S             | 513 ++++++++------------------
+ arch/x86/entry/entry_64_compat.S      |  22 --
+ arch/x86/include/asm/entry-common.h   | 108 ++++++
+ arch/x86/include/asm/idtentry.h       | 153 +++++++-
+ arch/x86/include/asm/irq_stack.h      |  11 +
+ arch/x86/include/asm/page_64_types.h  |  36 +-
+ arch/x86/include/asm/paravirt.h       |  15 +
+ arch/x86/include/asm/paravirt_types.h |  17 +-
+ arch/x86/include/asm/processor.h      |   3 +
+ arch/x86/include/asm/pti.h            |  18 +
+ arch/x86/include/asm/switch_to.h      |   7 +-
+ arch/x86/include/asm/traps.h          |   2 +-
+ arch/x86/kernel/cpu/mce/core.c        |   7 +-
+ arch/x86/kernel/espfix_64.c           |  41 ++
+ arch/x86/kernel/nmi.c                 |  34 +-
+ arch/x86/kernel/sev-es.c              |  52 +++
+ arch/x86/kernel/traps.c               |  61 +--
+ arch/x86/mm/fault.c                   |  11 +-
+ arch/x86/mm/pti.c                     |  71 ++--
+ kernel/fork.c                         |  22 ++
+ 21 files changed, 1002 insertions(+), 461 deletions(-)
+
+-- 
+2.18.4
 
