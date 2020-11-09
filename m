@@ -2,173 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 446CE2AB260
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 09:29:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A71A2AB265
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 09:30:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729025AbgKII3O convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 9 Nov 2020 03:29:14 -0500
-Received: from relay3-d.mail.gandi.net ([217.70.183.195]:37255 "EHLO
-        relay3-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726127AbgKII3O (ORCPT
+        id S1729562AbgKIIaU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 03:30:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35108 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726127AbgKIIaT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 03:29:14 -0500
-X-Originating-IP: 91.224.148.103
-Received: from xps13 (unknown [91.224.148.103])
-        (Authenticated sender: miquel.raynal@bootlin.com)
-        by relay3-d.mail.gandi.net (Postfix) with ESMTPSA id 3DCAD6000C;
-        Mon,  9 Nov 2020 08:28:57 +0000 (UTC)
-Date:   Mon, 9 Nov 2020 09:28:55 +0100
-From:   Miquel Raynal <miquel.raynal@bootlin.com>
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Adrian Hunter <ext-adrian.hunter@nokia.com>,
-        bcm-kernel-feedback-list@broadcom.com,
-        Ben Dooks <ben@simtec.co.uk>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Boris BREZILLON <b.brezillon.dev@gmail.com>,
-        Boris Brezillon <boris.brezillon@collabora.com>,
-        Brian Norris <computersforpeace@gmail.com>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Choudary Kalluri <punnaia@xilinx.com>,
-        Christian =?UTF-8?B?S8O2bmln?= <christian.koenig@amd.com>,
-        Dan Brown <dan_brown@ieee.org>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Dmitriy B <rzk333@gmail.com>, dri-devel@lists.freedesktop.org,
-        Frieder Schrempf <frieder.schrempf@kontron.de>,
-        Jian Zhang <jzhang@ti.com>,
-        Jochen =?UTF-8?B?U2Now6R1Ymxl?= <psionic@psionic.de>,
-        Kamal Dasu <kdasu.kdev@gmail.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Kukjin Kim <kgene@kernel.org>,
-        Kyungmin Park <kyungmin.park@samsung.com>,
-        linaro-mm-sig@lists.linaro.org, linux-media@vger.kernel.org,
-        linux-mtd@lists.infradead.org, linuxppc-dev@lists.ozlabs.org,
-        linux-samsung-soc@vger.kernel.org,
-        Maxime Ripard <mripard@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Naga Sureshkumar Relli <nagasure@xilinx.com>,
-        Nicolas Pitre <nico@fluxnic.net>,
-        Paul Mackerras <paulus@samba.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Qiang Yu <yuq825@gmail.com>,
-        Richard Weinberger <richard@nod.at>,
-        Robert Jarzmik <robert.jarzmik@free.fr>,
-        Sergey Lapin <slapin@ossfans.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Thomas Gleixner <gleixner@linutronix.de>,
+        Mon, 9 Nov 2020 03:30:19 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9DBDC0613CF
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Nov 2020 00:30:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=WJeiuDS5RY1g3teULikUl+DUtvsKRlIt991FGUDmgtA=; b=TWVMBwSqijPntybV+L3JaZ86z2
+        HLb0JV1XmG3sSeGJmrnExfj9YvC7c5bfkgQP6H2eYyCcPHTzRb9w+Z+4yBJnQyRoGz3j3kD6ChUij
+        OdWLkIh7zWy0BoRNsItw41hZzUoTX29PgoiiMDcdxscu2Q9p1gOJ9l/KxYSPETYRRclj2xFdS4uh3
+        pvhI3T/oi7mxUYDj5r8msz9nCMG3h5my+SBAE1C0UlKE1grId83/NBJ36y7LoFkSXsoeYhrqpxou4
+        ShY0J/ECic2cnLsdu7Bm8sc12HorhWKDMcJChGpzDECL5YdSbnp56Fm149eA7G6Q9jcrBYe10oujH
+        txrE2LfA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kc2Yq-0003D4-ED; Mon, 09 Nov 2020 08:30:01 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id D58A53010D2;
+        Mon,  9 Nov 2020 09:29:58 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id C0A142C356C90; Mon,  9 Nov 2020 09:29:58 +0100 (CET)
+Date:   Mon, 9 Nov 2020 09:29:58 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Fenghua Yu <fenghua.yu@intel.com>
+Cc:     Borislav Petkov <bp@alien8.de>,
         Thomas Gleixner <tglx@linutronix.de>,
-        Tudor Ambarus <tudor.ambarus@microchip.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Yoshio Furuyama <ytc-mb-yfuruyama7@kioxia.com>
-Subject: Re: [PATCH v2 00/23] Rid W=1 warnings in MTD
-Message-ID: <20201109092855.495174dc@xps13>
-In-Reply-To: <20201106213655.1838861-1-lee.jones@linaro.org>
-References: <20201106213655.1838861-1-lee.jones@linaro.org>
-Organization: Bootlin
-X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        Ingo Molnar <mingo@redhat.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Xiaoyao Li <xiaoyao.li@intel.com>,
+        Ravi V Shankar <ravi.v.shankar@intel.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>, x86 <x86@kernel.org>
+Subject: Re: [PATCH 2/4] x86/bus_lock: Handle warn and fatal in #DB for bus
+ lock
+Message-ID: <20201109082958.GZ2594@hirez.programming.kicks-ass.net>
+References: <20201108042918.1011889-1-fenghua.yu@intel.com>
+ <20201108042918.1011889-3-fenghua.yu@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201108042918.1011889-3-fenghua.yu@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Lee,
-
-Lee Jones <lee.jones@linaro.org> wrote on Fri,  6 Nov 2020 21:36:32
-+0000:
-
-> This set is part of a larger effort attempting to clean-up W=1
-> kernel builds, which are currently overwhelmingly riddled with
-> niggly little warnings.
+On Sun, Nov 08, 2020 at 04:29:16AM +0000, Fenghua Yu wrote:
+> split_lock_detect=
+> 		#AC for split lock		#DB for bus lock
 > 
-> v1 => v2:
->   - Added tags
->   - Satisfied Miquel's review comments
+> off		Do nothing			Do nothing
 > 
+> warn		Kernel OOPs			Warn once per task and
+> 		Warn once per task and		and continues to run.
+> 		disable future checking 	When both features are
+> 						supported, warn in #DB
+> 
+> fatal		Kernel OOPs			Send SIGBUS to user
+> 		Send SIGBUS to user
+> 		When both features are
+> 		supported, fatal in #AC.
 
-You probably missed my request to update the titles. That's why I
-wanted the entire series to be resent. Anyway, as I forgot a few,
-please find below the prefixes that should be used:
+> +void handle_bus_lock(struct pt_regs *regs)
+> +{
+> +	if (!bld)
+> +		return;
+> +
+> +	pr_warn_ratelimited("#DB: %s/%d took a bus_lock trap at address: 0x%lx\n",
+> +			    current->comm, current->pid, regs->ip);
+> +}
 
-> Lee Jones (23):
->   mtd: mtdpart: Fix misdocumented function parameter 'mtd'
->   mtd: devices: phram: File headers are not good candidates for
->     kernel-doc
->   mtd: nand: onenand: onenand_base: Fix expected kernel-doc formatting
+So the Changelog above, and the state_show() below, seem to suggest
+there should be SIGBUS code in #DB, but I'm having trouble spotting it.
 
-mtd: onenand: Fix...
-
->   mtd: devices: docg3: Fix kernel-doc 'bad line' and 'excessive doc'
->     issues
->   mtd: mtdcore: Fix misspelled function parameter 'section'
-
-mtd: Fix...
-
->   mtd: nand: onenand: onenand_bbt: Fix expected kernel-doc formatting
-
-mtd: onenand: Fix...
-
->   mtd: spi-nor: controllers: hisi-sfc: Demote non-conformant kernel-doc
-
-mtd: spi-nor: hisi-sfc: Demote...
-
->   mtd: ubi: build: Document 'ubi_num' in struct mtd_dev_param
->   mtd: nand: spi: toshiba: Demote non-conformant kernel-doc header
-
-mtd: spinand: toshiba: Demote...
-
->   mtd: ubi: kapi: Correct documentation for 'ubi_leb_read_sg's 'sgl'
->     parameter
->   mtd: ubi: eba: Fix a couple of misdocumentation issues
->   mtd: ubi: wl: Fix a couple of kernel-doc issues
->   mtd: nand: raw: brcmnand: brcmnand: Demote non-conformant kernel-doc
->     headers
-
-mtd: rawnand: brcmnand: Demote...
-
->   mtd: ubi: gluebi: Fix misnamed function parameter documentation
->   mtd: nand: raw: diskonchip: Marking unused variables as
->     __always_unused
-
-mtd: rawnand: diskonchip: Marking...
-
->   mtd: nand: raw: cafe_nand: Remove superfluous param doc and add
->     another
-
-mtd: rawnand: cafe: Remove
-
->   mtd: nand: raw: s3c2410: Add documentation for 2 missing struct
->     members
-
-mtd: rawnand: s3c2410: Add...
-
->   mtd: nand: raw: omap_elm: Finish half populated function header,
->     demote empty ones
-
-mtd: rawnand: omap_elm: Finish
-
->   mtd: nand: raw: omap2: Fix a bunch of kernel-doc misdemeanours
-
-mtd:r rawnand: omap2: Fix
-
->   mtd: nand: raw: sunxi_nand: Document 'sunxi_nfc's 'caps' member
-
-mtd: rawnand: sunxi: Document
-
->   mtd: nand: raw: arasan-nand-controller: Document 'anfc_op's 'buf'
->     member
-
-mtd: rawnand: arasan: Document
-
->   mtd: nand: onenand: onenand_base: Fix some kernel-doc misdemeanours
-
-mtd: onenand: Fix
-
->   mtd: devices: powernv_flash: Add function names to headers and fix
->     'dev'
-
-Otherwise the content of the series looks good to me.
-
-Thanks,
-Miquèl
+> +static void sld_state_show(void)
+> +{
+> +	if (!bld && !sld)
+> +		return;
+> +
+> +	switch (sld_state) {
+> +	case sld_off:
+> +		pr_info("disabled\n");
+> +		break;
+> +
+> +	case sld_warn:
+> +		if (bld)
+> +			pr_info("#DB: warning about user-space bus_locks\n");
+> +		else
+> +			pr_info("#AC: crashing the kernel about kernel split_locks and warning about user-space split_locks\n");
+> +		break;
+> +
+> +	case sld_fatal:
+> +		if (sld)
+> +			pr_info("#AC: crashing the kernel on kernel split_locks and sending SIGBUS on user-space split_locks\n");
+> +		else
+> +			pr_info("#DB: sending SIGBUS on user-space bus_locks\n");
+> +		break;
+> +	}
+> +}
