@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77E7F2ABD07
+	by mail.lfdr.de (Postfix) with ESMTP id 07A8B2ABD06
 	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 14:42:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387962AbgKINmj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 08:42:39 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54912 "EHLO mail.kernel.org"
+        id S2387928AbgKINmh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 08:42:37 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54938 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730521AbgKINAq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 08:00:46 -0500
+        id S1730526AbgKINAs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 08:00:48 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 85324207BC;
-        Mon,  9 Nov 2020 13:00:43 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7CFFC208FE;
+        Mon,  9 Nov 2020 13:00:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604926844;
-        bh=2aNpsB+247XzgCoz+6PtGmrTCTM8X6oQi8JO5s/kF2g=;
+        s=default; t=1604926847;
+        bh=UTcSJl5ekP8ZWhoX//5eD5eN4RCVhhFGs7KUHUXpxz4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=awUEmHHeDNRAljDJpEHErQJDa70sgZgHMxNuKtdgP/Sa16awFzykiVWVOobqk71Am
-         7bu32aR3EgaICM/4izz4Oigarzqh/FWCISN5W4KIsZxnQ0cRIin5vyO7idTiR28/vo
-         JNOEY8WWzIemOHen/ZgoE6iAWPEb9y3FwCdJDcCo=
+        b=aZ3B71oVf0NZHZwbJqJoiywfMOdc/NrVHdOIWYK+ztmySPPug9ckqiGun1M785UEd
+         q21lDILhMAexlxIHJXs3zm5UatYnhrdzDAAejhHvKBb+yYNzMWDuIpoAvSFRS/ZDOn
+         LDyo8ROxwxxTSeLglABieu8oLZbnunIRCtL6uoIM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Sathishkumar Muruganandam <murugana@codeaurora.org>,
-        Kalle Valo <kvalo@codeaurora.org>,
+        stable@vger.kernel.org, Tom Rix <trix@redhat.com>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 024/117] ath10k: fix VHT NSS calculation when STBC is enabled
-Date:   Mon,  9 Nov 2020 13:54:10 +0100
-Message-Id: <20201109125026.802672205@linuxfoundation.org>
+Subject: [PATCH 4.9 025/117] media: tw5864: check status of tw5864_frameinterval_get
+Date:   Mon,  9 Nov 2020 13:54:11 +0100
+Message-Id: <20201109125026.849551537@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201109125025.630721781@linuxfoundation.org>
 References: <20201109125025.630721781@linuxfoundation.org>
@@ -44,56 +44,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sathishkumar Muruganandam <murugana@codeaurora.org>
+From: Tom Rix <trix@redhat.com>
 
-[ Upstream commit 99f41b8e43b8b4b31262adb8ac3e69088fff1289 ]
+[ Upstream commit 780d815dcc9b34d93ae69385a8465c38d423ff0f ]
 
-When STBC is enabled, NSTS_SU value need to be accounted for VHT NSS
-calculation for SU case.
+clang static analysis reports this problem
 
-Without this fix, 1SS + STBC enabled case was reported wrongly as 2SS
-in radiotap header on monitor mode capture.
+tw5864-video.c:773:32: warning: The left expression of the compound
+  assignment is an uninitialized value.
+  The computed value will also be garbage
+        fintv->stepwise.max.numerator *= std_max_fps;
+        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ^
 
-Tested-on: QCA9984 10.4-3.10-00047
+stepwise.max is set with frameinterval, which comes from
 
-Signed-off-by: Sathishkumar Muruganandam <murugana@codeaurora.org>
-Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-Link: https://lore.kernel.org/r/1597392971-3897-1-git-send-email-murugana@codeaurora.org
+	ret = tw5864_frameinterval_get(input, &frameinterval);
+	fintv->stepwise.step = frameinterval;
+	fintv->stepwise.min = frameinterval;
+	fintv->stepwise.max = frameinterval;
+	fintv->stepwise.max.numerator *= std_max_fps;
+
+When tw5864_frameinterval_get() fails, frameinterval is not
+set. So check the status and fix another similar problem.
+
+Signed-off-by: Tom Rix <trix@redhat.com>
+Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/ath/ath10k/htt_rx.c | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+ drivers/media/pci/tw5864/tw5864-video.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
-index fce2064ebc469..3cbc71fa70d18 100644
---- a/drivers/net/wireless/ath/ath10k/htt_rx.c
-+++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
-@@ -620,6 +620,7 @@ static void ath10k_htt_rx_h_rates(struct ath10k *ar,
- 	u8 preamble = 0;
- 	u8 group_id;
- 	u32 info1, info2, info3;
-+	u32 stbc, nsts_su;
+diff --git a/drivers/media/pci/tw5864/tw5864-video.c b/drivers/media/pci/tw5864/tw5864-video.c
+index 27ff6e0d98453..023ff9ebde5e7 100644
+--- a/drivers/media/pci/tw5864/tw5864-video.c
++++ b/drivers/media/pci/tw5864/tw5864-video.c
+@@ -767,6 +767,9 @@ static int tw5864_enum_frameintervals(struct file *file, void *priv,
+ 	fintv->type = V4L2_FRMIVAL_TYPE_STEPWISE;
  
- 	info1 = __le32_to_cpu(rxd->ppdu_start.info1);
- 	info2 = __le32_to_cpu(rxd->ppdu_start.info2);
-@@ -663,11 +664,16 @@ static void ath10k_htt_rx_h_rates(struct ath10k *ar,
- 		   TODO check this */
- 		bw = info2 & 3;
- 		sgi = info3 & 1;
-+		stbc = (info2 >> 3) & 1;
- 		group_id = (info2 >> 4) & 0x3F;
+ 	ret = tw5864_frameinterval_get(input, &frameinterval);
++	if (ret)
++		return ret;
++
+ 	fintv->stepwise.step = frameinterval;
+ 	fintv->stepwise.min = frameinterval;
+ 	fintv->stepwise.max = frameinterval;
+@@ -785,6 +788,9 @@ static int tw5864_g_parm(struct file *file, void *priv,
+ 	cp->capability = V4L2_CAP_TIMEPERFRAME;
  
- 		if (GROUP_ID_IS_SU_MIMO(group_id)) {
- 			mcs = (info3 >> 4) & 0x0F;
--			nss = ((info2 >> 10) & 0x07) + 1;
-+			nsts_su = ((info2 >> 10) & 0x07);
-+			if (stbc)
-+				nss = (nsts_su >> 2) + 1;
-+			else
-+				nss = (nsts_su + 1);
- 		} else {
- 			/* Hardware doesn't decode VHT-SIG-B into Rx descriptor
- 			 * so it's impossible to decode MCS. Also since
+ 	ret = tw5864_frameinterval_get(input, &cp->timeperframe);
++	if (ret)
++		return ret;
++
+ 	cp->timeperframe.numerator *= input->frame_interval;
+ 	cp->capturemode = 0;
+ 	cp->readbuffers = 2;
 -- 
 2.27.0
 
