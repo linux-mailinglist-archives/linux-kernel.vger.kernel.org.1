@@ -2,135 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F3EC2AB28E
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 09:38:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E859C2AB288
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 09:38:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729721AbgKIIix (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 03:38:53 -0500
-Received: from mx07-00178001.pphosted.com ([185.132.182.106]:57074 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726127AbgKIIix (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 03:38:53 -0500
-Received: from pps.filterd (m0046037.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0A98WYdR009701;
-        Mon, 9 Nov 2020 09:38:35 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=STMicroelectronics;
- bh=vHLS0bIzw5/h0yGMsmkOgooOEMMNvU/GzA5iF0cEp9g=;
- b=1DoW/1wfhl7PPBsyuC7OgVxCKu67Jf2DvVdkL/aAXDpFHZaxrp+wvtHb+A6EKoCnFsu3
- Qx3zE9IEKTPi9IiZ1hwY1GA4x80q2kbKz+LXZBI7sbJaBLHcA0ydMOSLf8bOPyj9IKGO
- rWsJ1eCoMzFCsXl8AHAfXoMUl4CroKnmf/mPD5GRQ+OjYMIwieUdpitPhb1F1r4CdLqE
- 6bvw3jKWM8keGX5rezccYdOdZaSxIVs1ZnJQxJCyWX2eNfqu56I1+A0ruX6obkwSsF7g
- e9PMhllfeSp1N/jp/0GjlZvbmSbDvcfqXHnxWTy4O0GF3rcCRyoTQr+RQZlvrFjR/ZkO vQ== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 34nj80gspj-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 09 Nov 2020 09:38:35 +0100
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id B085B10002A;
-        Mon,  9 Nov 2020 09:38:34 +0100 (CET)
-Received: from Webmail-eu.st.com (sfhdag3node2.st.com [10.75.127.8])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 36963230480;
-        Mon,  9 Nov 2020 09:38:34 +0100 (CET)
-Received: from lmecxl0912.lme.st.com (10.75.127.46) by SFHDAG3NODE2.st.com
- (10.75.127.8) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 9 Nov
- 2020 09:38:33 +0100
-Subject: Re: [PATCH v5 0/4] DCMI BT656 parallel bus mode support
-To:     Sakari Ailus <sakari.ailus@linux.intel.com>
-CC:     Hugues Fruchet <hugues.fruchet@st.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Hans Verkuil <hverkuil@xs4all.nl>,
-        Rob Herring <robh+dt@kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <linux-media@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        Alain Volmat <alain.volmat@st.com>,
-        Yannick Fertre <yannick.fertre@st.com>,
-        Philippe CORNU <philippe.cornu@st.com>
-References: <1604511132-4014-1-git-send-email-hugues.fruchet@st.com>
- <016661fc-e9dd-bd4a-f26d-00e54626f030@st.com>
- <20201106115308.GO26150@paasikivi.fi.intel.com>
-From:   Alexandre Torgue <alexandre.torgue@st.com>
-Message-ID: <027a0bb1-788e-dc73-a941-4d55c8ec5481@st.com>
-Date:   Mon, 9 Nov 2020 09:37:51 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <20201106115308.GO26150@paasikivi.fi.intel.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
+        id S1729396AbgKIIiL convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 9 Nov 2020 03:38:11 -0500
+Received: from mga04.intel.com ([192.55.52.120]:11408 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726127AbgKIIiL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 03:38:11 -0500
+IronPort-SDR: pKcpPCuPpBfpS1Prs8QwPve+K6qQau2kxFylwRZZnt/w4dFkGPpTFmBehHtXsNFFQ6gR+VJ7C9
+ VslNo016qpUA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9799"; a="167182604"
+X-IronPort-AV: E=Sophos;i="5.77,463,1596524400"; 
+   d="scan'208";a="167182604"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Nov 2020 00:38:09 -0800
+IronPort-SDR: URgk027lW0k7A9koHZd1eL/Df8fB5ntkbax7hPAPsj+NMg+AVjPmsYUXP56l5fgkmdRM/H4fUs
+ rG+EniBjF9eA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,463,1596524400"; 
+   d="scan'208";a="322363521"
+Received: from irsmsx605.ger.corp.intel.com ([163.33.146.138])
+  by orsmga003.jf.intel.com with ESMTP; 09 Nov 2020 00:38:02 -0800
+Received: from irsmsx601.ger.corp.intel.com (163.33.146.7) by
+ IRSMSX605.ger.corp.intel.com (163.33.146.138) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Mon, 9 Nov 2020 08:38:02 +0000
+Received: from irsmsx601.ger.corp.intel.com ([163.33.146.7]) by
+ irsmsx601.ger.corp.intel.com ([163.33.146.7]) with mapi id 15.01.1713.004;
+ Mon, 9 Nov 2020 08:38:02 +0000
+From:   "Rojewski, Cezary" <cezary.rojewski@intel.com>
+To:     Greg KH <gregkh@linuxfoundation.org>
+CC:     "Gorski, Mateusz" <mateusz.gorski@linux.intel.com>,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
+        Mark Brown <broonie@kernel.org>
+Subject: RE: [PATCH] ASoC: Intel: Skylake: Add alternative topology binary
+ name
+Thread-Topic: [PATCH] ASoC: Intel: Skylake: Add alternative topology binary
+ name
+Thread-Index: AQHWsesetrmyqB6A606/K4JDH1AqQKm2iiKAgAFSVACAAAM7AIAGkXhQgAAMdoCAAQUlgA==
+Date:   Mon, 9 Nov 2020 08:38:02 +0000
+Message-ID: <cb48723796ac40018d5b804da42d0863@intel.com>
+References: <20201103141047.15053-1-mateusz.gorski@linux.intel.com>
+ <20201103153541.GC3267686@kroah.com>
+ <d6006431-420f-55c7-0f78-977507e11fcf@linux.intel.com>
+ <20201104115810.GA1694250@kroah.com>
+ <0f6a673556974a289c2b81f3a8cc7536@intel.com>
+ <20201108170059.GA18354@kroah.com>
+In-Reply-To: <20201108170059.GA18354@kroah.com>
+Accept-Language: en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.75.127.46]
-X-ClientProxiedBy: SFHDAG3NODE1.st.com (10.75.127.7) To SFHDAG3NODE2.st.com
- (10.75.127.8)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-11-09_02:2020-11-05,2020-11-09 signatures=0
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-product: dlpe-windows
+dlp-reaction: no-action
+dlp-version: 11.5.1.3
+x-originating-ip: [163.33.253.164]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
+MIME-Version: 1.0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Sakari
+On 2020-11-08 6:00 PM, Greg KH wrote:
+> On Sun, Nov 08, 2020 at 04:17:16PM +0000, Rojewski, Cezary wrote:
+>> On 2020-11-04 12:58 PM, Greg KH wrote:
+>>> On Wed, Nov 04, 2020 at 12:46:36PM +0100, Gorski, Mateusz wrote:
+>>>>
+>>>>>> [ Upstream commit 1b290ef023b3eeb4f4688b582fecb773915ef937 ]
+>>>>>>
+>>>>>> Add alternative topology binary file name based on used machine driver
+>>>>>> and fallback to use this name after failed attempt to load topology file
+>>>>>> with name based on NHLT.
+>>>>>> This change addresses multiple issues with current mechanism, for
+>>>>>> example - there are devices without NHLT table, and that currently
+>>>>>> results in tplg_name being empty.
+...
 
-On 11/6/20 12:53 PM, Sakari Ailus wrote:
-> Hi Alexandre,
-> 
-> On Thu, Nov 05, 2020 at 10:26:37AM +0100, Alexandre Torgue wrote:
->> Hi Huges
->>
->> On 11/4/20 6:32 PM, Hugues Fruchet wrote:
->>> Add support of BT656 embedded synchronization bus.
->>> This mode allows to save hardware synchro lines hsync & vsync
->>> by replacing them with synchro codes embedded in data stream.
->>> Add "bus-type" property and make it required so that there is no
->>> ambiguity between parallel mode (bus-type=5) and BT656 mode (bus-type=6).
+>>>>> What problems are people facing, and what kernel(s) are you asking for
+>>>>> this to be ported to, and why can't people just use 5.8 or newer if they
+>>>>> have this new hardware?
+>>>>>
+>>>>
+>>>> I forgot to add - I wanted this change to be merged to stable 5.4 kernel.
+>>>> Please let me know if I should resend this patch with this information
+>>>> included.
+>>>>
+>>>> As for the user issues - topology binary file name is currently created
+>>>> according to information from NHLT. The problem is, that some laptops (for
+>>>> example Dell XPS 13) do not have NHLT at all. This results in topology
+>>>> binary name being empty (" ").
+>>>> This patch adds alternative name based on loaded machine driver.
+>>>>
+>>>> It applies not only to new hardware, please note that the mentioned Dell XPS
+>>>> 13 is based on Kabylake. This issue existed on upstream from the beginning
+>>>> of Skylake driver and was only recently addressed.
 >>>
->>> ===========
->>> = history =
->>> ===========
->>> version 5:
->>>     - Add revisited bindings and devicetree with explicit use of "bus-type"
->>>
->>> version 4:
->>>     - Fix typo in commit message
->>>
->>> version 3:
->>>     - Fix bus_width print to %u as per Sakari comment
->>>
->>> version 2:
->>>     - As per Sakari remark, revisit commit message and document
->>>       BT656 parallel bus mode in bindings
->>>
->>> version 1:
->>>     - Initial submission
->>>
->>> Hugues Fruchet (4):
->>>     media: stm32-dcmi: add support of BT656 bus
->>>     media: dt-bindings: media: st,stm32-dcmi: add support of BT656 bus
->>>     ARM: dts: stm32: set bus-type in DCMI endpoint for stm32mp157c-ev1
->>>       board
->>>     ARM: dts: stm32: set bus-type in DCMI endpoint for stm32429i-eval
->>>       board
->>>
->>>    .../devicetree/bindings/media/st,stm32-dcmi.yaml   | 38 ++++++++++++++++++++++
->>>    arch/arm/boot/dts/stm32429i-eval.dts               |  1 +
->>>    arch/arm/boot/dts/stm32mp157c-ev1.dts              |  1 +
->>>    drivers/media/platform/stm32/stm32-dcmi.c          | 37 +++++++++++++++++++--
->>>    4 files changed, 75 insertions(+), 2 deletions(-)
+>>> When was that laptop released and is this the only change that is needed
+>>> in order for the 5.4.y kernel to work properly on it?
 >>>
 >>
->> I'll take DT patches on stm32-next tree.
+>> Sorry for the late answer, Greg. To address your concerns and questions
+>> let me elaborate:
+>>
+>> Indeed, this change is not the only one required to enable DMIC + HDA
+>> configuration for customers. The following series is essential:
+>>
+>> [PATCH 0/7] ASoC: Intel: Skylake: Fix HDaudio and Dmic
+>> https://lore.kernel.org/alsa-devel/20200305145314.32579-1-cezary.rojewski@intel.com/
 > 
-> Just checking: that is only the two last patches in the set, or also the
-> binding patch?
+> Great, then they should just use a newer kernel version.  It's crazy to
+> think that you can go back in time and get older kernels working for
+> newer hardware :)
 
-Usually I let drivers/subsystem maintainer taking dt-bindings patches 
-with drivers patches.
-(If binding changes come only with dts(i) patches I take them in my tree)
+Skylake and Kabylake-based platforms are few years old already, that's
+not exactly a "newer hardware". Icelake and such are and these are not
+part of /skylake driver. Fact is, this should all be part of 4.19 or
+earlier since DMIC + HDA configuration are available even there. And
+receiving laptop with such kernel and no patches fails miserably ; (
 
--->So yes I'll take only the last two patches.
+Unfortunately, kernels 4.19 and below need many more changes than "just"
+6 fixes as HDA-generic soundcard isn't available there. That, however,
+can easily be called "a new feature" so stopping at 5.4 is a fair call.
 
-Regards
-alex
+Thanks,
+Czarek
 
