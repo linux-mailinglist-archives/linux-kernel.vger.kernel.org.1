@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96AAD2AC0F6
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 17:34:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DE4A22AC0F0
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 17:34:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730405AbgKIQeZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 11:34:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54218 "EHLO
+        id S1730462AbgKIQe1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 11:34:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54228 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730338AbgKIQeY (ORCPT
+        with ESMTP id S1729570AbgKIQeX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 11:34:24 -0500
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E371C0613CF
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Nov 2020 08:34:22 -0800 (PST)
-Received: by mail-wm1-x341.google.com with SMTP id c9so8552784wml.5
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Nov 2020 08:34:22 -0800 (PST)
+        Mon, 9 Nov 2020 11:34:23 -0500
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91FF5C0613D6
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Nov 2020 08:34:23 -0800 (PST)
+Received: by mail-wr1-x443.google.com with SMTP id 33so9349818wrl.7
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Nov 2020 08:34:23 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=sCBx5P4x9rsdjCTStj4VjxS9NnyX/fUaX55XeqTCsr4=;
-        b=f18F3y4ZFd7a+kbC/pvw/iBUO+dmjgbMu/qKbKXUMKIebhsTGRS/ueSZlhhyzceKze
-         j6qU+r12PzDSaShQty0j52ufhh0srRNyjnVKG01K6iyOIX9MyZyaMv+DuPYdNtPomJT9
-         7xnw/lwPLG3X9ktt1D8vul00D/nZRfJ2xgXjZGmgPlB7AF7/GAKAbVE/BEhVgKSYZuKA
-         t67t2bx0cXevHHyWL/NdMGVjXhIeRJqtTx7U1QmlS0eEEe+xtw4F+dRLPdMg3wFmd+rv
-         OGjElzArFX6bL/w2qTOjMoALgm2lU0OsCkctm80wpsHJ96WdHdcK8M722n3nEZPxY9w1
-         gS1Q==
+        bh=3Mc/WCoimyInKv5OttzkuOMxxCwc3vdp0zrJE14cUyg=;
+        b=gMWiuTB1fJUCC8XR6i+z/VLugKtN4pCLum34HuJFGXtvoQIiVO2S2GtKo8oSk2oyyj
+         acCJJlzXYYsXpzUDpXWKFVXVP2UHY+VGPam3AvlzZicLpwQAsq9U2dPV/TnvJBAzMaE7
+         Zu2KzElBbJZ/+Q22uz7XSo/zpp2cyTT+xL0PNLU69rlA1EVNlcOK+Ce8BwcSgtTriZPM
+         wN17n2n0pNzW6Mbo7BAA6qnuGCwS1RhwiX0z1Q0onGzdB62BydkZJBju38ISiMwO8Qm4
+         BUJ1pGVwrfH41SZ++jlBVRcemZafb6Q0XdLpqVwHH1KhBObNM/f1tFK+2Kt90ePy9Brw
+         bvsw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=sCBx5P4x9rsdjCTStj4VjxS9NnyX/fUaX55XeqTCsr4=;
-        b=n9oT2aeFibIHxj10TfC44L2Om+Qxa7li2w9dhVOq/KFP3CkZ1K9JKf1fL7glYUtmiC
-         grnDeWpTMz1iYi4xTfgKrMY3Nx0TmKigd9UzhAAFTAgXkqCST87g11UdYvkBCYxtsJGY
-         nOVbUnVVTBrHr7T6cgc4Pau9EymLXZQ9YA62IrJqCz1lqwOJrj30TAGwgw3YpJfRZMN/
-         Vb/GbUNdO3loiYCwzgsrIdDYRbQZVARyKGpDgF+u0nKW6iGnp9NC9f+aF20Cw8Hbj6t1
-         /CbrCaW1L6B8Sgr4YTg0o4v23q7wPEzYaKZ0mlFwZ0hRNJJ9V4xBCkaJ16YBQXJkngNr
-         WXVg==
-X-Gm-Message-State: AOAM532UVukqB4+fKwJ9DBEiRjnKgyqcIUr/G6J9jcp2ipZq2CAF8N+P
-        ebl1SAmADlbIajeKxNxVigi8fg==
-X-Google-Smtp-Source: ABdhPJw/x1QKb7u9D6gvYCwuy76XWLtlh/IAaghGLlqtPSbueAbbPw4ze7FRUXBH+iDRqYmsoZnpIA==
-X-Received: by 2002:a1c:9d94:: with SMTP id g142mr9064wme.66.1604939661316;
-        Mon, 09 Nov 2020 08:34:21 -0800 (PST)
+        bh=3Mc/WCoimyInKv5OttzkuOMxxCwc3vdp0zrJE14cUyg=;
+        b=smVfs5X6aLEV29z4YvtPbBeD3ug3x9g+WJr1CQFKIRFn8L8RLWsJNtxpDxeujYxkhR
+         KwYf/lPn7Defj/H8GEvsMLzXAMoPxFXFmF7hVNzlZFVopzKwzvosolNFiNEOrD1e6Ofw
+         fo8v0apaQ5gM2oTZgDhqPmxxifqvFgG/LevWiVFoqwxyLeES3vO7iziErhDYeLi5LxMj
+         2ZEsjEJIhTMkfkGGXyNCyWI7rjLUY62ZJx6fzKL0d2jiO4lef+tjxejQLaZqCdIpC9xw
+         Z/OLfFmuOWUFLKu6EYM2LP5a02FdvbK15YQ/BzU1OduHNnJyShG2Ma/RbyfZekHyz+Sp
+         Volw==
+X-Gm-Message-State: AOAM533o70n6taL/UpZjHapzRtZAtRA9zM/m6sf+s2GZFglVxODXZ8tW
+        7bWAqDyaokhBzgR6TTbfqhp7Zr0sbvQFLQ==
+X-Google-Smtp-Source: ABdhPJy8ElPMhrg0WMHEclZVVgQClMFRPAkDY7reSfJUdDpF/sAIijxOPDWSrWQK2Sxku0uymdtw/A==
+X-Received: by 2002:a05:6000:36f:: with SMTP id f15mr18757371wrf.78.1604939662403;
+        Mon, 09 Nov 2020 08:34:22 -0800 (PST)
 Received: from debian-brgl.home (amarseille-656-1-4-167.w90-8.abo.wanadoo.fr. [90.8.158.167])
-        by smtp.gmail.com with ESMTPSA id 89sm15072542wrp.58.2020.11.09.08.34.20
+        by smtp.gmail.com with ESMTPSA id 89sm15072542wrp.58.2020.11.09.08.34.21
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 09 Nov 2020 08:34:20 -0800 (PST)
+        Mon, 09 Nov 2020 08:34:21 -0800 (PST)
 From:   Bartosz Golaszewski <brgl@bgdev.pl>
 To:     Alessandro Zummo <a.zummo@towertech.it>,
         Alexandre Belloni <alexandre.belloni@bootlin.com>
 Cc:     linux-rtc@vger.kernel.org, linux-kernel@vger.kernel.org,
         Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Subject: [PATCH 2/8] Revert "rtc: sc27xx: Always read normal alarm when registering RTC device"
-Date:   Mon,  9 Nov 2020 17:34:03 +0100
-Message-Id: <20201109163409.24301-3-brgl@bgdev.pl>
+Subject: [PATCH 3/8] Documentation: list RTC devres helpers in devres.rst
+Date:   Mon,  9 Nov 2020 17:34:04 +0100
+Message-Id: <20201109163409.24301-4-brgl@bgdev.pl>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201109163409.24301-1-brgl@bgdev.pl>
 References: <20201109163409.24301-1-brgl@bgdev.pl>
@@ -67,38 +67,29 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 
-This reverts commit 3822d1bb0df18aa28930f19bc46e0704aea1be0f.
-
-The registered field in struct rtc_device is not supposed to be used by
-drivers and is going to be removed soon. In this function it will be
-always 0 so the check is useless anyway.
+It's customary to list all devres helpers in devres.rst. Add missing RTC
+routines.
 
 Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 ---
- drivers/rtc/rtc-sc27xx.c | 8 ++------
- 1 file changed, 2 insertions(+), 6 deletions(-)
+ Documentation/driver-api/driver-model/devres.rst | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/drivers/rtc/rtc-sc27xx.c b/drivers/rtc/rtc-sc27xx.c
-index 36810dd40cd3..8e3d6be990c5 100644
---- a/drivers/rtc/rtc-sc27xx.c
-+++ b/drivers/rtc/rtc-sc27xx.c
-@@ -415,14 +415,10 @@ static int sprd_rtc_read_alarm(struct device *dev, struct rtc_wkalrm *alrm)
- 	u32 val;
+diff --git a/Documentation/driver-api/driver-model/devres.rst b/Documentation/driver-api/driver-model/devres.rst
+index bb676570acc3..6ffc0f07404f 100644
+--- a/Documentation/driver-api/driver-model/devres.rst
++++ b/Documentation/driver-api/driver-model/devres.rst
+@@ -411,6 +411,10 @@ RESET
+   devm_reset_control_get()
+   devm_reset_controller_register()
  
- 	/*
--	 * Before RTC device is registered, it will check to see if there is an
--	 * alarm already set in RTC hardware, and we always read the normal
--	 * alarm at this time.
--	 *
--	 * Or if aie_timer is enabled, we should get the normal alarm time.
-+	 * If aie_timer is enabled, we should get the normal alarm time.
- 	 * Otherwise we should get auxiliary alarm time.
- 	 */
--	if (rtc->rtc && rtc->rtc->registered && rtc->rtc->aie_timer.enabled == 0)
-+	if (rtc->rtc && rtc->rtc->aie_timer.enabled == 0)
- 		return sprd_rtc_read_aux_alarm(dev, alrm);
++RTC
++  devm_rtc_device_register()
++  devm_rtc_allocate_device()
++
+ SERDEV
+   devm_serdev_device_open()
  
- 	ret = sprd_rtc_get_secs(rtc, SPRD_RTC_ALARM, &secs);
 -- 
 2.29.1
 
