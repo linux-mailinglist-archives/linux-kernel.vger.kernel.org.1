@@ -2,81 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 043C22AC01C
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 16:42:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BB1C32AC02C
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 16:45:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729840AbgKIPmR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 10:42:17 -0500
-Received: from mail-oi1-f195.google.com ([209.85.167.195]:35770 "EHLO
-        mail-oi1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727303AbgKIPmQ (ORCPT
+        id S1729910AbgKIPpH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 10:45:07 -0500
+Received: from mail-oo1-f66.google.com ([209.85.161.66]:36630 "EHLO
+        mail-oo1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730087AbgKIPnH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 10:42:16 -0500
-Received: by mail-oi1-f195.google.com with SMTP id c80so10649164oib.2;
-        Mon, 09 Nov 2020 07:42:16 -0800 (PST)
+        Mon, 9 Nov 2020 10:43:07 -0500
+Received: by mail-oo1-f66.google.com with SMTP id l20so2300143oot.3;
+        Mon, 09 Nov 2020 07:43:07 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=qDCEpBkFLulC00NVUrlJOaEfoieaKfsOXl1ZnSUUlrc=;
-        b=q2i18BmuH62GxVDtK/57VEvvhuqyhJCkBbqldpRkBdigBkgPkZ46quiLPmTIB1sAE5
-         P6U+nd8DYx6T5DzygUpr3fioDkj8c0yTkGJSeUWackc53uU+qmVgmkUy6/YhAW0hYojy
-         A5OY2vNreNZIbEj1VzE51/hEXUjPp8/Q/YJ8lVaCcRfm6Puj6E8jwEoxngMi4qknQ+HR
-         W9yCjAlwM+c6V4lyB5v+Hp+nwtvQSG80beEZSCHezI2s3q0sF/giB86qRnVZc1vGLjH3
-         0MDd1NjS8VwHmoSkemRLa3Ww6FdyY0WE844s1/d2DYZykC+bZGuWeA2t6uKuek/qj18a
-         Kt3g==
-X-Gm-Message-State: AOAM5302J+FPWQroTPmlebiH5WDP7vbIp4wJgMeIofZb0VNyyuSZl684
-        MUF7rXzy1F2+ByL2bUnEcA==
-X-Google-Smtp-Source: ABdhPJwljMkcqsk2ICLQs/kbA6TgKKVTl0MP55hDMb1X5tEip+2F+I7aH4IkZraz/rREs1cBsMTFaw==
-X-Received: by 2002:a54:4614:: with SMTP id p20mr8997965oip.131.1604936535633;
-        Mon, 09 Nov 2020 07:42:15 -0800 (PST)
+         :mime-version:content-disposition:in-reply-to;
+        bh=KQXAVaxmapIU32OVQ6oDnCQfYBC2+6O7V7QppsiIjBA=;
+        b=Oz6hvw6ntyrqwbDV0LJL2BKTyFaDtyyfsHIxL5HEj4bcGC1tK3GwuH6E8nPCzXBmQ7
+         y6dYvcJkaHAmxU/hFYbgomVJZRhh59CkyNX2SXUqxMPyLAuI5yumjeBRhGwlh+Z2mI7W
+         44N7qYaJNb5RM9Yo5XRLwm9QeS9x/NkbUq5ByC03ECiDb8vUBQeWl3sMZHiZBXKqzfQb
+         q5+sxY0qeVGSOlAhslUCLTeLAWklX9VoYNvL2sNJ979fvxbjAKL4FCEsy2o4hoIt/Blm
+         vHA6wEO2ua+vRICxqMmj2c9jV7VIS/2DeFNXImVWhoYJlRAMGYOkzSy7u2DNbiG/OAxM
+         SpnA==
+X-Gm-Message-State: AOAM532YWokHszGkK1PrZ5x1z3hnK7Piq+5fyggrxJ8xzmbhC0ec4ylF
+        C26j3WLSXZ3jYtmCW5SPOw==
+X-Google-Smtp-Source: ABdhPJwsMGHzrlJK5kP0burDP1pADQSPBBt8XDrr9y/gStG3DCJXsFNBx6VAZSTkbSeN5AclFuYc4g==
+X-Received: by 2002:a4a:e1c6:: with SMTP id n6mr6052672oot.68.1604936586868;
+        Mon, 09 Nov 2020 07:43:06 -0800 (PST)
 Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id v5sm2581843otb.44.2020.11.09.07.42.13
+        by smtp.gmail.com with ESMTPSA id c21sm2460394oos.30.2020.11.09.07.43.05
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 09 Nov 2020 07:42:14 -0800 (PST)
-Received: (nullmailer pid 1341840 invoked by uid 1000);
-        Mon, 09 Nov 2020 15:42:13 -0000
-Date:   Mon, 9 Nov 2020 09:42:13 -0600
+        Mon, 09 Nov 2020 07:43:05 -0800 (PST)
+Received: (nullmailer pid 1342982 invoked by uid 1000);
+        Mon, 09 Nov 2020 15:43:04 -0000
+Date:   Mon, 9 Nov 2020 09:43:04 -0600
 From:   Rob Herring <robh@kernel.org>
-To:     =?utf-8?B?5ZGo55Cw5p2wIChaaG91IFlhbmppZSk=?= 
-        <zhouyanjie@wanyeetech.com>
-Cc:     kishon@ti.com, vkoul@kernel.org, dongsheng.qiu@ingenic.com,
-        linux-usb@vger.kernel.org, paul@crapouillou.net,
-        linux-kernel@vger.kernel.org, gregkh@linuxfoundation.org,
-        robh+dt@kernel.org, rick.tyliu@ingenic.com, balbi@kernel.org,
-        sernia.zhou@foxmail.com, zhenwenjin@gmail.com,
-        devicetree@vger.kernel.org, aric.pzqi@ingenic.com,
-        yanfei.li@ingenic.com
-Subject: Re: [PATCH v8 2/3] dt-bindings: USB: Add bindings for Ingenic JZ4775
- and X2000.
-Message-ID: <20201109154213.GA1341312@bogus>
-References: <20201107094758.83291-1-zhouyanjie@wanyeetech.com>
- <20201107094758.83291-3-zhouyanjie@wanyeetech.com>
+To:     Adam Ford <aford173@gmail.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        aford@beaconembedded.com, Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>
+Subject: Re: [PATCH V4 1/5] dt-bindings: soc: imx: Add binding doc for spba
+ bus
+Message-ID: <20201109154304.GA1342665@bogus>
+References: <20201107115809.1866131-1-aford173@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201107094758.83291-3-zhouyanjie@wanyeetech.com>
+In-Reply-To: <20201107115809.1866131-1-aford173@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 07 Nov 2020 17:47:57 +0800, 周琰杰 (Zhou Yanjie) wrote:
-> Move Ingenic USB PHY bindings from Documentation/devicetree/bindings/usb
-> to Documentation/devicetree/bindings/phy, and add bindings for JZ4775 SoC
-> and X2000 SoC.
+On Sat, 07 Nov 2020 05:58:04 -0600, Adam Ford wrote:
+> Add binding doc for fsl,spba-bus.
 > 
-> Signed-off-by: 周琰杰 (Zhou Yanjie) <zhouyanjie@wanyeetech.com>
+> Signed-off-by: Adam Ford <aford173@gmail.com>
 > ---
+> V4:  Correct errors in YAML
+> V3:  New to series
 > 
-> Notes:
->     v8:
->     New patch.
-> 
->  .../{usb/ingenic,jz4770-phy.yaml => phy/ingenic,phy-usb.yaml}         | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
->  rename Documentation/devicetree/bindings/{usb/ingenic,jz4770-phy.yaml => phy/ingenic,phy-usb.yaml} (89%)
+>  .../devicetree/bindings/bus/fsl,spba-bus.yaml | 66 +++++++++++++++++++
+>  1 file changed, 66 insertions(+)
 > 
 
 
@@ -85,15 +77,16 @@ My bot found errors running 'make dt_binding_check' on your patch:
 yamllint warnings/errors:
 
 dtschema/dtc warnings/errors:
-Unknown file referenced: [Errno 2] No such file or directory: '/usr/local/lib/python3.8/dist-packages/dtschema/schemas/usb/ingenic,jz4770-phy.yaml'
-xargs: dt-doc-validate: exited with status 255; aborting
-make[1]: *** [Documentation/devicetree/bindings/Makefile:59: Documentation/devicetree/bindings/processed-schema-examples.json] Error 124
-make: *** [Makefile:1364: dt_binding_check] Error 2
-./Documentation/devicetree/bindings/phy/ingenic,phy-usb.yaml: $id: relative path/filename doesn't match actual path or filename
-	expected: http://devicetree.org/schemas/phy/ingenic,phy-usb.yaml#
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/bus/fsl,spba-bus.yaml: properties:items: [{'const': 'fsl,spba-bus'}, {'const': 'simple-bus'}] is not of type 'object', 'boolean'
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/bus/fsl,spba-bus.yaml: Additional properties are not allowed ('type' was unexpected)
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/bus/fsl,spba-bus.yaml: properties: {'enum': ['$ref', 'additionalItems', 'additionalProperties', 'allOf', 'anyOf', 'const', 'contains', 'default', 'dependencies', 'deprecated', 'description', 'else', 'enum', 'if', 'items', 'maxItems', 'maximum', 'minItems', 'minimum', 'multipleOf', 'not', 'oneOf', 'pattern', 'patternProperties', 'properties', 'propertyNames', 'required', 'then', 'unevaluatedProperties']} is not allowed for 'items'
+./Documentation/devicetree/bindings/bus/fsl,spba-bus.yaml: $id: relative path/filename doesn't match actual path or filename
+	expected: http://devicetree.org/schemas/bus/fsl,spba-bus.yaml#
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/bus/fsl,spba-bus.yaml: ignoring, error in schema: properties: items
+warning: no schema found in file: ./Documentation/devicetree/bindings/bus/fsl,spba-bus.yaml
 
 
-See https://patchwork.ozlabs.org/patch/1396098
+See https://patchwork.ozlabs.org/patch/1396117
 
 The base for the patch is generally the last rc1. Any dependencies
 should be noted.
