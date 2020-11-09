@@ -2,286 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7D472ABF2E
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 15:49:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 923602ABF35
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 15:49:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731684AbgKIOtD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 09:49:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37846 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729454AbgKIOtD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 09:49:03 -0500
-Received: from mail-il1-x141.google.com (mail-il1-x141.google.com [IPv6:2607:f8b0:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C073C0613CF;
-        Mon,  9 Nov 2020 06:49:03 -0800 (PST)
-Received: by mail-il1-x141.google.com with SMTP id x20so8504717ilj.8;
-        Mon, 09 Nov 2020 06:49:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=oNlgGSd4DUOO7ImXU1icnXQvqkJjamhOW1OkMFarb5U=;
-        b=uK+enZDFhy/SMpEp3qhJIFHoJZtxC6RI/WQ2psKrAP7h2nZj0JBKrE/a9GeHDn0LUO
-         ASKKFUOeJ7b/vkVKuocr2b/0nqznUipdKsKK74GmxOazVJ9/267MHXRNBqMxbY1UZwkJ
-         wIH4dyghn1GQDktkYsGtjyqDFNQYk26tuy6cYJtRb7sRJAS8IVbMNwSSq6+s7z5Bef6i
-         AE+4P4mXgF73/AZYGCtiYUju2k/q99TEqBrkypL3ZFJNwe7eourpRUa8zmq/zZLXvvii
-         TNXZ/Xb0ilBZRmPrr2DBmedmCo+b4Q9EeruFcP7trTgRlBWXpY2yK8xrxo2KRW52hvKO
-         9Kvw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=oNlgGSd4DUOO7ImXU1icnXQvqkJjamhOW1OkMFarb5U=;
-        b=twNSkr4WXNniYzSH8kB/dJLusDeNZxwxOJtf7KDMhTz9yPyj84Lr/OIrY3ZmTMB0sA
-         8xwp4hfnwIXEYmPGCzNNqr/o73GNLXdZy1PhgUBoOl8wXo4qI3haqON2fNfIe4slLb1k
-         ATdCexRCxB6z07IOVKRGEVGYvlNioTbu9nHJk9IgO2i+cNoNqioE5eDhjErCiKOyoct0
-         RBWe3gQfPCWJssP4DWSc3rMhykpWDFCsWCD3pZBSX9rXaZmULhrW8QoXZTt5DdrHvDP+
-         0ANk5JOdIrFH2IKNh0F8qmTmwMNWLPnyy38kEWIP6AFf2uN2wioAXjk/npvVBgVQ1DF/
-         CNdg==
-X-Gm-Message-State: AOAM531tpNOUvspXKbdJTcSTQHTW9CKEo3xda71pbYZ1EZ/uMIpdsnqJ
-        Liryl1ccxARdZGATq8s+I2RBbCiYxHFCsR/p+EI=
-X-Google-Smtp-Source: ABdhPJw+6D/c0g1Fi+kWXpK/atafVkUv54yQC5girCMCwLaA3ISwifhOSqBr1TkSbl2qYraX6BxYj3dkreJ50dk/xQc=
-X-Received: by 2002:a92:6f0e:: with SMTP id k14mr11088502ilc.13.1604933342486;
- Mon, 09 Nov 2020 06:49:02 -0800 (PST)
+        id S1731855AbgKIOtf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 09:49:35 -0500
+Received: from mga07.intel.com ([134.134.136.100]:22626 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730892AbgKIOte (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 09:49:34 -0500
+IronPort-SDR: AJ7c/7E0QRPyVPbJxwkFOZYUlcrlBRlt/cbUCupaOoyhNfBCnNJxXQQwVt/OPGKEsay+7iPj7h
+ rO+1/Df4M4fw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9799"; a="233979530"
+X-IronPort-AV: E=Sophos;i="5.77,463,1596524400"; 
+   d="scan'208";a="233979530"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Nov 2020 06:49:33 -0800
+IronPort-SDR: 9y1jn983TpczPBZeJ+0uq/18TUdzT3RfaPJ/P2hvqATKG2pgKWBu5rCaBM1oVCa4ZnkEV9URBz
+ CyzIyR95EPpg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,463,1596524400"; 
+   d="scan'208";a="530766937"
+Received: from linux.intel.com ([10.54.29.200])
+  by fmsmga005.fm.intel.com with ESMTP; 09 Nov 2020 06:49:33 -0800
+Received: from [10.251.16.60] (kliang2-MOBL.ccr.corp.intel.com [10.251.16.60])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by linux.intel.com (Postfix) with ESMTPS id 84A3058096C;
+        Mon,  9 Nov 2020 06:49:32 -0800 (PST)
+From:   "Liang, Kan" <kan.liang@linux.intel.com>
+Subject: Re: [PATCH 1/3] perf/core: Flush PMU internal buffers for per-CPU
+ events
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     mingo@kernel.org, linux-kernel@vger.kernel.org,
+        namhyung@kernel.org, eranian@google.com, irogers@google.com,
+        gmx@google.com, acme@kernel.org, jolsa@redhat.com,
+        ak@linux.intel.com
+References: <20201106212935.28943-1-kan.liang@linux.intel.com>
+ <20201109095235.GC2594@hirez.programming.kicks-ass.net>
+ <20201109110405.GN2651@hirez.programming.kicks-ass.net>
+Message-ID: <0a1db246-c34a-22a3-160c-3e0c0a38119d@linux.intel.com>
+Date:   Mon, 9 Nov 2020 09:49:31 -0500
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.1
 MIME-Version: 1.0
-References: <cover.1603055402.git.syednwaris@gmail.com> <15a044d3ba23f00c31fd09437bdd3e5924bb91cd.1603055402.git.syednwaris@gmail.com>
- <CAK8P3a3f=fuq24QwNee3QgoMcSK5rcvLRpdTOWBZ9NJ4d-4bvA@mail.gmail.com>
- <20201101150033.GA68138@shinobu> <CAK8P3a0y7mh=ZDPefgpawY97gpYv79UXFLBzoGfu3ex2up2aDQ@mail.gmail.com>
- <20201109123411.GA19869@syed> <20201109134128.GA5596@shinobu> <20201109143845.GA8636@shinobu>
-In-Reply-To: <20201109143845.GA8636@shinobu>
-From:   Syed Nayyar Waris <syednwaris@gmail.com>
-Date:   Mon, 9 Nov 2020 20:18:51 +0530
-Message-ID: <CACG_h5pkCizF2WOzU7Fb9TdCMbQxE1JoQZ=JPrBACTEwEb03OA@mail.gmail.com>
-Subject: Re: [PATCH v12 4/4] gpio: xilinx: Utilize generic bitmap_get_value
- and _set_value
-To:     William Breathitt Gray <vilhelm.gray@gmail.com>
-Cc:     Arnd Bergmann <arnd@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Michal Simek <michal.simek@xilinx.com>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20201109110405.GN2651@hirez.programming.kicks-ass.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 9, 2020 at 8:09 PM William Breathitt Gray
-<vilhelm.gray@gmail.com> wrote:
->
-> On Mon, Nov 09, 2020 at 08:41:28AM -0500, William Breathitt Gray wrote:
-> > On Mon, Nov 09, 2020 at 06:04:11PM +0530, Syed Nayyar Waris wrote:
-> > > On Sun, Nov 01, 2020 at 09:08:29PM +0100, Arnd Bergmann wrote:
-> > > > On Sun, Nov 1, 2020 at 4:00 PM William Breathitt Gray
-> > > > <vilhelm.gray@gmail.com> wrote:
-> > > > >
-> > > > > On Thu, Oct 29, 2020 at 11:44:47PM +0100, Arnd Bergmann wrote:
-> > > > > > On Sun, Oct 18, 2020 at 11:44 PM Syed Nayyar Waris <syednwaris@gmail.com> wrote:
-> > > > > > >
-> > > > > > > This patch reimplements the xgpio_set_multiple() function in
-> > > > > > > drivers/gpio/gpio-xilinx.c to use the new generic functions:
-> > > > > > > bitmap_get_value() and bitmap_set_value(). The code is now simpler
-> > > > > > > to read and understand. Moreover, instead of looping for each bit
-> > > > > > > in xgpio_set_multiple() function, now we can check each channel at
-> > > > > > > a time and save cycles.
-> > > > > >
-> > > > > > This now causes -Wtype-limits warnings in linux-next with gcc-10:
-> > > > >
-> > > > > Hi Arnd,
-> > > > >
-> > > > > What version of gcc-10 are you running? I'm having trouble generating
-> > > > > these warnings so I suspect I'm using a different version than you.
-> > > >
-> > > > I originally saw it with the binaries from
-> > > > https://mirrors.edge.kernel.org/pub/tools/crosstool/, but I have
-> > > > also been able to reproduce it with a minimal test case on the
-> > > > binaries from godbolt.org, see https://godbolt.org/z/Wq8q4n
-> > > >
-> > > > > Let me first verify that I understand the problem correctly. The issue
-> > > > > is the possibility of a stack smash in bitmap_set_value() when the value
-> > > > > of start + nbits is larger than the length of the map bitmap memory
-> > > > > region. This is because index (or index + 1) could be outside the range
-> > > > > of the bitmap memory region passed in as map. Is my understanding
-> > > > > correct here?
-> > > >
-> > > > Yes, that seems to be the case here.
-> > > >
-> > > > > In xgpio_set_multiple(), the variables width[0] and width[1] serve as
-> > > > > possible start and nbits values for the bitmap_set_value() calls.
-> > > > > Because width[0] and width[1] are unsigned int variables, GCC considers
-> > > > > the possibility that the value of width[0]/width[1] might exceed the
-> > > > > length of the bitmap memory region named old and thus result in a stack
-> > > > > smash.
-> > > > >
-> > > > > I don't know if invalid width values are actually possible for the
-> > > > > Xilinx gpio device, but let's err on the side of safety and assume this
-> > > > > is actually a possibility. We should verify that the combined value of
-> > > > > gpio_width[0] + gpio_width[1] does not exceed 64 bits; we can add a
-> > > > > check for this in xgpio_probe() when we grab the gpio_width values.
-> > > > >
-> > > > > However, we're still left with the GCC warnings because GCC is not smart
-> > > > > enough to know that we've already checked the boundary and width[0] and
-> > > > > width[1] are valid values. I suspect we can avoid this warning is we
-> > > > > refactor bitmap_set_value() to increment map seperately and then set it:
-> > > >
-> > > > As I understand it, part of the problem is that gcc sees the possible
-> > > > range as being constrained by the operations on 'start' and 'nbits',
-> > > > in particular the shift in BIT_WORD() that put an upper bound on
-> > > > the index, but then it sees that the upper bound is higher than the
-> > > > upper bound of the array, i.e. element zero.
-> > > >
-> > > > I added a check
-> > > >
-> > > >       if (start >= 64 || start + size >= 64) return;
-> > > >
-> > > > in the godbolt.org testcase, which does help limit the start
-> > > > index appropriately, but it is not sufficient to let the compiler
-> > > > see that the 'if (space >= nbits) ' condition is guaranteed to
-> > > > be true for all values here.
-> > > >
-> > > > > static inline void bitmap_set_value(unsigned long *map,
-> > > > >                                     unsigned long value,
-> > > > >                                     unsigned long start, unsigned long nbits)
-> > > > > {
-> > > > >         const unsigned long offset = start % BITS_PER_LONG;
-> > > > >         const unsigned long ceiling = round_up(start + 1, BITS_PER_LONG);
-> > > > >         const unsigned long space = ceiling - start;
-> > > > >
-> > > > >         map += BIT_WORD(start);
-> > > > >         value &= GENMASK(nbits - 1, 0);
-> > > > >
-> > > > >         if (space >= nbits) {
-> > > > >                 *map &= ~(GENMASK(nbits - 1, 0) << offset);
-> > > > >                 *map |= value << offset;
-> > > > >         } else {
-> > > > >                 *map &= ~BITMAP_FIRST_WORD_MASK(start);
-> > > > >                 *map |= value << offset;
-> > > > >                 map++;
-> > > > >                 *map &= ~BITMAP_LAST_WORD_MASK(start + nbits);
-> > > > >                 *map |= value >> space;
-> > > > >         }
-> > > > > }
-> > > > >
-> > > > > This avoids adding a costly conditional check inside bitmap_set_value()
-> > > > > when almost all bitmap_set_value() calls will have static arguments with
-> > > > > well-defined and obvious boundaries.
-> > > > >
-> > > > > Do you think this would be an acceptable solution to resolve your GCC
-> > > > > warnings?
-> > > >
-> > > > Unfortunately, it does not seem to make a difference, as gcc still
-> > > > knows that this compiles to the same result, and it produces the same
-> > > > warning as before (see https://godbolt.org/z/rjx34r)
-> > > >
-> > > >          Arnd
-> > >
-> > > Hi Arnd,
-> > >
-> > > Sharing a different version of bitmap_set_valuei() function. See below.
-> > >
-> > > Let me know if the below solution looks good to you and if it resolves
-> > > the above compiler warning.
-> > >
-> > >
-> > > @@ -1,5 +1,5 @@
-> > >  static inline void bitmap_set_value(unsigned long *map,
-> > > -                                    unsigned long value,
-> > > +                                    unsigned long value, const size_t length,
-> > >                                      unsigned long start, unsigned long nbits)
-> > >  {
-> > >          const size_t index = BIT_WORD(start);
-> > > @@ -7,6 +7,9 @@ static inline void bitmap_set_value(unsigned long *map,
-> > >          const unsigned long ceiling = round_up(start + 1, BITS_PER_LONG);
-> > >          const unsigned long space = ceiling - start;
-> > >
-> > > +       if (index >= length)
-> > > +               return;
-> > > +
-> > >          value &= GENMASK(nbits - 1, 0);
-> > >
-> > >          if (space >= nbits) {
-> > > @@ -15,6 +18,10 @@ static inline void bitmap_set_value(unsigned long *map,
-> > >          } else {
-> > >                  map[index + 0] &= ~BITMAP_FIRST_WORD_MASK(start);
-> > >                  map[index + 0] |= value << offset;
-> > > +
-> > > +               if (index + 1 >= length)
-> > > +                       return;
-> > > +
-> > >                  map[index + 1] &= ~BITMAP_LAST_WORD_MASK(start + nbits);
-> > >                  map[index + 1] |= value >> space;
-> > >          }
-> >
-> > One of my concerns is that we're incurring the latency two additional
-> > conditional checks just to suppress a compiler warning about a case that
-> > wouldn't occur in the actual use of bitmap_set_value(). I'm hoping
-> > there's a way for us to suppress these warnings without adding onto the
-> > latency of this function; given that bitmap_set_value() is intended to
-> > be used in loops, conditionals here could significantly increase latency
-> > in drivers.
-> >
-> > I wonder if array_index_nospec() might have the side effect of
-> > suppressing these warnings for us. For example, would this work:
-> >
-> > static inline void bitmap_set_value(unsigned long *map,
-> >                                   unsigned long value,
-> >                                   unsigned long start, unsigned long nbits)
-> > {
-> >       const unsigned long offset = start % BITS_PER_LONG;
-> >       const unsigned long ceiling = round_up(start + 1, BITS_PER_LONG);
-> >       const unsigned long space = ceiling - start;
-> >       size_t index = BIT_WORD(start);
-> >
-> >       value &= GENMASK(nbits - 1, 0);
-> >
-> >       if (space >= nbits) {
-> >               index = array_index_nospec(index, index + 1);
-> >
-> >               map[index] &= ~(GENMASK(nbits - 1, 0) << offset);
-> >               map[index] |= value << offset;
-> >       } else {
-> >               index = array_index_nospec(index, index + 2);
-> >
-> >               map[index + 0] &= ~BITMAP_FIRST_WORD_MASK(start);
-> >               map[index + 0] |= value << offset;
-> >               map[index + 1] &= ~BITMAP_LAST_WORD_MASK(start + nbits);
-> >               map[index + 1] |= value >> space;
-> >       }
-> > }
-> >
-> > Or is this going to produce the same warning because we're not using an
-> > explicit check against the map array size?
-> >
-> > William Breathitt Gray
->
-> After testing my suggestion, it looks like the warnings are still
-> present. :-(
->
-> Something else I've also considered is perhaps using the GCC built-in
-> function __builtin_unreachable() instead of returning. So in Syed's code
-> we would have the following instead:
->
-> if (index + 1 >= length)
->         __builtin_unreachable();
->
-> This might allow GCC to optimize better and avoid the conditional check
-> all together, thus avoiding latency while also hinting enough context to
-> the compiler to suppress the warnings.
->
-> William Breathitt Gray
 
-I also thought of another optimization. Arnd, William, let me know
-what you think about it.
 
-Since exceeding the array limit is a rather rare event, we can use the
-gcc extension: 'unlikely'  for the boundary checks.
-We can use it at the two places where 'index' and 'index + 1' is being
-checked against the boundary limit.
+On 11/9/2020 6:04 AM, Peter Zijlstra wrote:
+> On Mon, Nov 09, 2020 at 10:52:35AM +0100, Peter Zijlstra wrote:
+>> On Fri, Nov 06, 2020 at 01:29:33PM -0800, kan.liang@linux.intel.com wrote:
+>>> From: Kan Liang <kan.liang@linux.intel.com>
+>>>
+>>> Sometimes the PMU internal buffers have to be flushed for per-CPU events
+>>> during a context switch, e.g., large PEBS. Otherwise, the perf tool may
+>>> report samples in locations that do not belong to the process where the
+>>> samples are processed in, because PEBS does not tag samples with PID/TID.
+>>>
+>>> The current code only flush the buffers for a per-task event. It doesn't
+>>> check a per-CPU event.
+>>>
+>>> Add a new event state flag, PERF_ATTACH_SCHED_CB, to indicate that the
+>>> PMU internal buffers have to be flushed for this event during a context
+>>> switch.
+>>>
+>>> Add sched_cb_entry and perf_sched_cb_usages back to track the PMU/cpuctx
+>>> which is required to be flushed.
+>>>
+>>> Only need to invoke the sched_task() for per-CPU events in this patch.
+>>> The per-task events have been handled in perf_event_context_sched_in/out
+>>> already.
+>>>
+>>> Fixes: 9c964efa4330 ("perf/x86/intel: Drain the PEBS buffer during context switches")
+>>
+>> Are you sure? In part this patch looks like a revert of:
+>>
+>>    44fae179ce73a26733d9e2d346da4e1a1cb94647
+>>    556cccad389717d6eb4f5a24b45ff41cad3aaabf
+> 
 
-It might help optimize the code. Wouldn't it?
+The patch tries to fix a long term PEBS bug with per-CPU event. It's not 
+a revert. I think we still want to keep the optimization for per-task 
+event with 44fae179ce73 and 556cccad3897.
 
-Syed Nayyar Waris
+Here is the story.
+
+- When the large PEBS was introduced (9c964efa4330), the sched_task() 
+should be invoked to flush the PEBS buffer in each context switch. 
+However, The perf_sched_events in account_event() is not updated 
+accordingly. The perf_event_task_sched_* never be invoked for a pure 
+per-CPU context. Only per-task event works.
+    At that time, the perf_pmu_sched_task() is outside of 
+perf_event_context_sched_in/out. It means that perf has to double 
+perf_pmu_disable() for per-task event.
+
+
+- The recent optimization (44fae179ce73 and 556cccad3897) only optimize 
+the per-task event by moving the sched_task() into 
+perf_event_context_sched_in/out. So perf only need to invoke 
+perf_pmu_disable() once.
+   But it doesn't fix the issue in a pure per-CPU context. The per-CPU 
+events are still broken.
+
+
+- The patch 1 tries to fix broken per-CPU events. The CPU context cannot 
+be retrieved from the task->perf_event_ctxp. So it has to be tracked in 
+the sched_cb_list. Yes, the code is very similar to the original codes, 
+but it is actually the new code for per-CPU events. The optimization for 
+per-task events is still kept.
+   For the case, which has both a CPU context and a task context, yes, 
+the __perf_pmu_sched_task() in this patch is not invoked. Because the 
+sched_task() only need to be invoked once in a context switch. The 
+sched_task() will be eventually invoked in the task context.
+
+
+- The following patch 3 tries to optimize the sched_task() further.
+   - We handle the per-CPU event and per-task event in different places. 
+In a pure per-task context, we don't need to go through the 
+sched_cb_list. We can get the information from task->perf_event_ctxp. We 
+introduce a flag to distinguish them.
+   - For most of the cases, we don't need to invoke the sched_task() in 
+both sched in and sched out. We also introduce a flag for PMUs to avoid 
+unnecessary calls.
+
+
+All the implementation and optimization are generic. For example, for 
+power, the BHRB entries are reset in context switch in. They can also 
+benefit from the optimization.
+
+
+> *groan*... I think I might've made a mistake with those two patches. I
+> assumed the whole cpuctx->task_ctx thing was relevant, it is not.
+> 
+> As per perf_sched_cb_{inc,dec}(struct pmu *), the thing we care about is
+> that the *PMU* gets a context switch callback, we don't give a crap
+> about the actual task context. Except that LBR code does, but I'm
+> thinking that started the whole confusion -- and I'm still not sure it's
+> actually correct either.
+> 
+> Now,.. how did we end up with the above two patches anyway... /me frobs
+> around in the inbox... Ah! that daft user RDPMC thing. I wanted to avoid
+> yet another pmu::method().
+> 
+> Hmm.. and the reason I proposed that change is because we'd end up with
+> the sched_cb for every context switch now, not just large-pebs and or
+> lbr crud. And this form avoids the double perf_pmu_disable() and all
+> that.
+
+With the patch set,  I think the double perf_pmu_disable() is still avoided.
+
+> 
+> Maybe we can frob x86_pmu_enable()...
+
+Could you please elaborate?
+
+Thanks,
+Kan
+
