@@ -2,313 +2,209 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B72A92AAED4
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 02:50:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D5B252AAEDB
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 02:58:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729052AbgKIBtv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 8 Nov 2020 20:49:51 -0500
-Received: from szxga06-in.huawei.com ([45.249.212.32]:7466 "EHLO
-        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728866AbgKIBts (ORCPT
+        id S1729029AbgKIB6E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 8 Nov 2020 20:58:04 -0500
+Received: from m176115.mail.qiye.163.com ([59.111.176.115]:44991 "EHLO
+        m176115.mail.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728006AbgKIB6E (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 8 Nov 2020 20:49:48 -0500
-Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4CTv7T6NX2zhZXM;
-        Mon,  9 Nov 2020 09:49:41 +0800 (CST)
-Received: from [10.136.114.67] (10.136.114.67) by smtp.huawei.com
- (10.3.19.204) with Microsoft SMTP Server (TLS) id 14.3.487.0; Mon, 9 Nov 2020
- 09:49:42 +0800
-Subject: Re: [f2fs-dev] [PATCH] f2fs: compress: support chksum
-To:     Jaegeuk Kim <jaegeuk@kernel.org>
-CC:     <linux-kernel@vger.kernel.org>,
-        <linux-f2fs-devel@lists.sourceforge.net>
-References: <20201102122333.76667-1-yuchao0@huawei.com>
- <20201102163123.GD529594@google.com>
- <756e482c-b638-1c09-3868-ae45d33ed2c2@huawei.com>
- <6b5bce0e-c967-b9cf-3544-a8e65595059c@huawei.com>
- <20201106211247.GA1474936@google.com>
-From:   Chao Yu <yuchao0@huawei.com>
-Message-ID: <908682bb-486c-222f-bea7-43fc961ef1b0@huawei.com>
-Date:   Mon, 9 Nov 2020 09:49:42 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.9.1
+        Sun, 8 Nov 2020 20:58:04 -0500
+Received: from vivo-HP-ProDesk-680-G4-PCI-MT.vivo.xyz (unknown [58.251.74.231])
+        by m176115.mail.qiye.163.com (Hmail) with ESMTPA id B87846667E7;
+        Mon,  9 Nov 2020 09:57:58 +0800 (CST)
+From:   Wang Qing <wangqing@vivo.com>
+To:     Harry Wei <harryxiyou@gmail.com>,
+        Alex Shi <alex.shi@linux.alibaba.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Wang Qing <wangqing@vivo.com>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH V4 DOC] doc: zh_CN: add translatation for tmpfs
+Date:   Mon,  9 Nov 2020 09:57:47 +0800
+Message-Id: <1604887072-12997-1-git-send-email-wangqing@vivo.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-In-Reply-To: <20201106211247.GA1474936@google.com>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.136.114.67]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
+        oVCBIfWUFZSU9OGk4YQ09NQxlKVkpNS09DQ0xLTEJLQkxVEwETFhoSFyQUDg9ZV1kWGg8SFR0UWU
+        FZT0tIVUpKS0hKQ1VLWQY+
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6Kxg6Fww*Pj8jPxNKDxYIOk9M
+        MklPCzhVSlVKTUtPQ0NMS0xCTkNDVTMWGhIXVQwaFRwKEhUcOw0SDRRVGBQWRVlXWRILWUFZTkNV
+        SU5KVUxPVUlISllXWQgBWUFDTUhKNwY+
+X-HM-Tid: 0a75aab968309373kuwsb87846667e7
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020/11/7 5:12, Jaegeuk Kim wrote:
-> On 11/03, Chao Yu wrote:
->> On 2020/11/3 10:02, Chao Yu wrote:
->>> On 2020/11/3 0:31, Jaegeuk Kim wrote:
->>>> On 11/02, Chao Yu wrote:
->>>>> This patch supports to store chksum value with compressed
->>>>> data, and verify the integrality of compressed data while
->>>>> reading the data.
->>>>>
->>>>> The feature can be enabled through specifying mount option
->>>>> 'compress_chksum'.
->>>>>
->>>>> Signed-off-by: Chao Yu <yuchao0@huawei.com>
->>>>> ---
->>>>>     Documentation/filesystems/f2fs.rst |  1 +
->>>>>     fs/f2fs/compress.c                 | 20 ++++++++++++++++++++
->>>>>     fs/f2fs/f2fs.h                     | 13 ++++++++++++-
->>>>>     fs/f2fs/inode.c                    |  3 +++
->>>>>     fs/f2fs/super.c                    |  9 +++++++++
->>>>>     include/linux/f2fs_fs.h            |  2 +-
->>>>>     6 files changed, 46 insertions(+), 2 deletions(-)
->>>>>
->>>>> diff --git a/Documentation/filesystems/f2fs.rst b/Documentation/filesystems/f2fs.rst
->>>>> index b8ee761c9922..985ae7d35066 100644
->>>>> --- a/Documentation/filesystems/f2fs.rst
->>>>> +++ b/Documentation/filesystems/f2fs.rst
->>>>> @@ -260,6 +260,7 @@ compress_extension=%s	 Support adding specified extension, so that f2fs can enab
->>>>>     			 For other files, we can still enable compression via ioctl.
->>>>>     			 Note that, there is one reserved special extension '*', it
->>>>>     			 can be set to enable compression for all files.
->>>>> +compress_chksum		 Support verifying chksum of raw data in compressed cluster.
->>>>>     inlinecrypt		 When possible, encrypt/decrypt the contents of encrypted
->>>>>     			 files using the blk-crypto framework rather than
->>>>>     			 filesystem-layer encryption. This allows the use of
->>>>> diff --git a/fs/f2fs/compress.c b/fs/f2fs/compress.c
->>>>> index 14262e0f1cd6..a4e0d2c745b6 100644
->>>>> --- a/fs/f2fs/compress.c
->>>>> +++ b/fs/f2fs/compress.c
->>>>> @@ -602,6 +602,7 @@ static int f2fs_compress_pages(struct compress_ctx *cc)
->>>>>     				f2fs_cops[fi->i_compress_algorithm];
->>>>>     	unsigned int max_len, new_nr_cpages;
->>>>>     	struct page **new_cpages;
->>>>> +	u32 chksum = 0;
->>>>>     	int i, ret;
->>>>>     	trace_f2fs_compress_pages_start(cc->inode, cc->cluster_idx,
->>>>> @@ -655,6 +656,11 @@ static int f2fs_compress_pages(struct compress_ctx *cc)
->>>>>     	cc->cbuf->clen = cpu_to_le32(cc->clen);
->>>>> +	if (fi->i_compress_flag & 1 << COMPRESS_CHKSUM)
->>>>> +		chksum = f2fs_crc32(F2FS_I_SB(cc->inode),
->>>>> +					cc->cbuf->cdata, cc->clen);
->>>>> +	cc->cbuf->chksum = cpu_to_le32(chksum);
->>>>> +
->>>>>     	for (i = 0; i < COMPRESS_DATA_RESERVED_SIZE; i++)
->>>>>     		cc->cbuf->reserved[i] = cpu_to_le32(0);
->>>>> @@ -721,6 +727,7 @@ void f2fs_decompress_pages(struct bio *bio, struct page *page, bool verity)
->>>>>     			(struct decompress_io_ctx *)page_private(page);
->>>>>     	struct f2fs_sb_info *sbi = F2FS_I_SB(dic->inode);
->>>>>     	struct f2fs_inode_info *fi= F2FS_I(dic->inode);
->>>>> +	struct f2fs_sb_info *sbi = F2FS_I_SB(dic->inode);
->>>>>     	const struct f2fs_compress_ops *cops =
->>>>>     			f2fs_cops[fi->i_compress_algorithm];
->>>>>     	int ret;
->>>>> @@ -790,6 +797,19 @@ void f2fs_decompress_pages(struct bio *bio, struct page *page, bool verity)
->>>>>     	ret = cops->decompress_pages(dic);
->>>>> +	if (!ret && fi->i_compress_flag & 1 << COMPRESS_CHKSUM) {
->>>>> +		u32 provided = le32_to_cpu(dic->cbuf->chksum);
->>>>> +		u32 calculated = f2fs_crc32(sbi, dic->cbuf->cdata, dic->clen);
->>>>> +
->>>>> +		if (provided != calculated) {
->>>>> +			printk_ratelimited(
->>>>> +				"%sF2FS-fs (%s): checksum invalid, nid = %lu, %x vs %x",
->>>>> +				KERN_INFO, sbi->sb->s_id, dic->inode->i_ino,
->>>>> +				provided, calculated);
->>>>> +			ret = -EFSCORRUPTED;
->>>>
->>>> Do we need to change fsck.f2fs to recover this?
->>
->> However, we don't know which one is correct, compressed data or chksum value?
->> if compressed data was corrupted, repairing chksum value doesn't help.
->>
->> Or how about adding chksum values for both raw data and compressed data.
->>
->> #define COMPRESS_DATA_RESERVED_SIZE	3
->> struct compress_data {
->> 	__le32 clen;			/* compressed data size */
->> +	__le32 raw_chksum;		/* raw data chksum */
->> +	__le32 compress_chksum;		/* compressed data chksum */
->> 	__le32 reserved[COMPRESS_DATA_RESERVED_SIZE];	/* reserved */
->> 	u8 cdata[];			/* compressed data */
->> };
->>
->> 	raw_chksum	compress_chksum
->> 	match		match			-> data is verified, pass
->> 	not match	match			-> repair raw_chksum
->> 	matcth		not match		-> repair compress_chksum
-> 
-> I think only compress_chksum would be enough. BTW, can we give WARN_ON and
-> marking a FSCK flag without returning EFSCORRUPTED, since we don't really
-> know who was corrupted. If data was corrupted, we should be able to see app
-> corruption. In that case, we can check the kernel log. If checksum was simply
+Translate Documentation/filesystems/tmpfs.rst into Chinese.
 
-I don't think that app will always corrupt once data was corrupted, I doubt its
-behavior could be slightly abnormal in some cases, e.g. it can just cause apps to
-show wrong number in interaction interface.
+Signed-off-by: Wang Qing <wangqing@vivo.com>
 
-In this case, if we fix chksum in fsck, the wrong data will never be found due to
-data's chksum matches data itself after repair.
+Changes in v4:
+ - Modify as Alex required.
+ 
+Changes in v3:
+ - Fix patch format issue.
+---
+ .../translations/zh_CN/filesystems/tmpfs.rst       | 146 +++++++++++++++++++++
+ 1 file changed, 146 insertions(+)
+ create mode 100644 Documentation/translations/zh_CN/filesystems/tmpfs.rst
 
-IMO, the chksum and data was a whole dataset, once they are mismatch, we can
-not trust either of them, fsck should do nothing on them unless we store parity
-bits or replica.
+diff --git a/Documentation/translations/zh_CN/filesystems/tmpfs.rst b/Documentation/translations/zh_CN/filesystems/tmpfs.rst
+new file mode 100644
+index 0000000..28f0d09
+--- /dev/null
++++ b/Documentation/translations/zh_CN/filesystems/tmpfs.rst
+@@ -0,0 +1,146 @@
++.. SPDX-License-Identifier: GPL-2.0
++
++.. include:: ../disclaimer-zh_CN.rst
++
++:Original: :ref:`Documentation/filesystems/tmpfs.rst <tmpfs_index>`
++
++translated by Wang Qing<wangqing@vivo.com>
++
++=====
++Tmpfs
++=====
++
++Tmpfs是一个将所有文件都保存在虚拟内存中的文件系统。
++
++tmpfs中的所有内容都是临时的，也就是说没有任何文件会在硬盘上创建。
++如果卸载tmpfs实例，所有保存在其中的文件都会丢失。
++
++tmpfs将所有文件保存在内核缓存中，随着文件内容增长或缩小可以将不需要的
++页面swap出去。它具有最大限制，可以通过“mount -o remount ...”调整。
++
++和ramfs（创建tmpfs的模板）相比，tmpfs包含交换和限制检查。和tmpfs相似的另
++一个东西是RAM磁盘（/dev/ram*），可以在物理RAM中模拟固定大小的硬盘，并在
++此之上创建一个普通的文件系统。Ramdisks无法swap，因此无法调整它们的大小。
++
++由于tmpfs完全保存于页面缓存和swap中，因此所有tmpfs页面将在/proc/meminfo
++中显示为“Shmem”，而在free(1)中显示为“Shared”。请注意，这些计数还包括
++共享内存(shmem，请参阅ipcs(1))。获得计数的最可靠方法是使用df(1)和du(1)。
++
++tmpfs具有以下用途：
++
++1) 内核总有一个无法看到的内部挂载，用于共享匿名映射和SYSV共享内存。
++
++   挂载不依赖于CONFIG_TMPFS。如果CONFIG_TMPFS未设置，tmpfs对用户不可见。
++   但是内部机制始终存在。
++
++2) glibc 2.2及更高版本期望将tmpfs挂载在/dev/shm上以用于POSIX共享内存
++   (shm_open，shm_unlink)。添加内容到/etc/fstab应注意如下：
++
++	tmpfs	/dev/shm	tmpfs	defaults	0 0
++
++   使用时需要记住创建挂载tmpfs的目录。
++
++   SYSV共享内存无需挂载，内部已默认支持。(在2.3内核版本中，必须挂载
++   tmpfs的前身(shm fs)才能使用SYSV共享内存)
++
++3) 很多人（包括我）都觉的在/tmp和/var/tmp上挂载非常方便，并具有较大的
++   swap分区。目前循环挂载tmpfs可以正常工作，所以大多数发布都应当可以
++   使用mkinitrd通过/tmp访问/tmp。
++
++4) 也许还有更多我不知道的地方:-)
++
++
++tmpfs有三个用于调整大小的挂载选项：
++
++=========  ===========================================================
++size       tmpfs实例分配的字节数限制。默认值是不swap时物理RAM的一半。
++           如果tmpfs实例过大，机器将死锁，因为OOM处理将无法释放该内存。
++nr_blocks  与size相同，但以PAGE_SIZE为单位。
++nr_inodes  tmpfs实例的最大inode个数。默认值是物理内存页数的一半，或者
++           (有高端内存的机器)低端内存RAM的页数，二者以较低者为准。
++=========  ===========================================================
++
++这些参数接受后缀k，m或g表示千，兆和千兆字节，可以在remount时更改。
++size参数也接受后缀％用来限制tmpfs实例占用物理RAM的百分比：
++未指定size或nr_blocks时，默认值为size=50％
++
++如果nr_blocks=0（或size=0），block个数将不受限制；如果nr_inodes=0，
++inode个数将不受限制。这样挂载通常是不明智的，因为它允许任何具有写权限的
++用户通过访问tmpfs耗尽机器上的所有内存；但同时这样做也会增强在多个CPU的
++场景下的访问。
++
++tmpfs具有为所有文件设置NUMA内存分配策略挂载选项(如果启用了CONFIG_NUMA),
++可以通过“mount -o remount ...”调整
++
++======================== =========================
++mpol=default             采用进程分配策略
++                         (请参阅 set_mempolicy(2))
++mpol=prefer:Node         倾向从给定的节点分配
++mpol=bind:NodeList       只允许从指定的链表分配
++mpol=interleave          倾向于依次从每个节点分配
++mpol=interleave:NodeList 依次从每个节点分配
++mpol=local               优先本地节点分配内存
++======================== =========================
++
++NodeList格式是以逗号分隔的十进制数字表示大小和范围，最大和最小范围是用-
++分隔符的十进制数来表示。例如，mpol=bind0-3,5,7,9-15
++
++带有有效NodeList的内存策略将按指定格式保存，在创建文件时使用。当任务在该
++文件系统上创建文件时，会使用到挂载时的内存策略NodeList选项，如果设置的话，
++由调用任务的cpuset[请参见Documentation/admin-guide/cgroup-v1/cpusets.rst]
++以及下面列出的可选标志约束。如果NodeLists为设置为空集，则文件的内存策略将
++恢复为“默认”策略。
++
++NUMA内存分配策略有可选标志，可以用于模式结合。在挂载tmpfs时指定这些可选
++标志可以在NodeList之前生效。
++Documentation/admin-guide/mm/numa_memory_policy.rst列出所有可用的内存
++分配策略模式标志及其对内存策略。
++
++::
++
++	=static		相当于	MPOL_F_STATIC_NODES
++	=relative	相当于	MPOL_F_RELATIVE_NODES
++
++例如，mpol=bind=staticNodeList相当于MPOL_BIND|MPOL_F_STATIC_NODES的分配策略
++
++请注意，如果内核不支持NUMA，那么使用mpol选项挂载tmpfs将会失败；nodelist指定不
++在线的节点也会失败。如果您的系统依赖于此，但内核会运行不带NUMA功能(也许是安全
++revocery内核)，或者具有较少的节点在线，建议从自动模式中省略mpol选项挂载选项。
++可以在以后通过“mount -o remount,mpol=Policy:NodeList MountPoint”添加到挂载点。
++
++要指定初始根目录，可以使用如下挂载选项：
++
++====	====================
++模式	权限用八进制数字表示
++uid	用户ID
++gid	组ID
++====	====================
++
++这些选项对remount没有任何影响。您可以通过chmod(1),chown(1)和chgrp(1)的更改
++已经挂载的参数。
++
++tmpfs具有选择32位还是64位inode的挂载选项：
++
++=======   =============
++inode64   使用64位inode
++inode32   使用32位inode
++=======   =============
++
++在32位内核上，默认是inode32，挂载时指定inode64会被拒绝。
++在64位内核上，默认配置是CONFIG_TMPFS_INODE64。inode64避免了单个设备上可能有多个
++具有相同inode编号的文件；比如32位应用程序使用glibc如果长期访问tmpfs，一旦达到33
++位inode编号，就有EOVERFLOW失败的危险，无法打开大于2GiB的文件，并返回EINVAL。
++
++所以'mount -t tmpfs -o size=10G,nr_inodes=10k,mode=700 tmpfs /mytmpfs'将在
++/mytmpfs上挂载tmpfs实例，分配只能由root用户访问的10GB RAM/SWAP，可以有10240个
++inode的实例。
++
++
++:作者:
++   Christoph Rohland <cr@sap.com>, 1.12.01
++:更新:
++   Hugh Dickins, 4 June 2007
++:更新:
++   KOSAKI Motohiro, 16 Mar 2010
++:更新:
++   Chris Down, 13 July 2020
+-- 
+2.7.4
 
-Thanks,
-
-> corrupted, next fsck will fix the checksum. So, in general, I hope to keep
-> the data as is and raise a flag by the checksum.
-> 
->> 	not match	not match		-> corrupted, can not repair
->>
->> Thanks,
->>
->>>
->>> Yes, prepared to update inode layout in fsck.f2fs w/ kernel side change. >
->>> Thanks,
->>>
->>>>
->>>>> +		}
->>>>> +	}
->>>>> +
->>>>>     out_vunmap_cbuf:
->>>>>     	vm_unmap_ram(dic->cbuf, dic->nr_cpages);
->>>>>     out_vunmap_rbuf:
->>>>> diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
->>>>> index 99bcf4b44a9c..2ae254ab7b7d 100644
->>>>> --- a/fs/f2fs/f2fs.h
->>>>> +++ b/fs/f2fs/f2fs.h
->>>>> @@ -147,7 +147,8 @@ struct f2fs_mount_info {
->>>>>     	/* For compression */
->>>>>     	unsigned char compress_algorithm;	/* algorithm type */
->>>>> -	unsigned compress_log_size;		/* cluster log size */
->>>>> +	unsigned char compress_log_size;	/* cluster log size */
->>>>> +	bool compress_chksum;			/* compressed data chksum */
->>>>>     	unsigned char compress_ext_cnt;		/* extension count */
->>>>>     	unsigned char extensions[COMPRESS_EXT_NUM][F2FS_EXTENSION_LEN];	/* extensions */
->>>>>     };
->>>>> @@ -731,6 +732,7 @@ struct f2fs_inode_info {
->>>>>     	atomic_t i_compr_blocks;		/* # of compressed blocks */
->>>>>     	unsigned char i_compress_algorithm;	/* algorithm type */
->>>>>     	unsigned char i_log_cluster_size;	/* log of cluster size */
->>>>> +	unsigned short i_compress_flag;		/* compress flag */
->>>>>     	unsigned int i_cluster_size;		/* cluster size */
->>>>>     };
->>>>> @@ -1270,9 +1272,15 @@ enum compress_algorithm_type {
->>>>>     	COMPRESS_MAX,
->>>>>     };
->>>>> +enum compress_flag {
->>>>> +	COMPRESS_CHKSUM,
->>>>> +	COMPRESS_MAX_FLAG,
->>>>> +};
->>>>> +
->>>>>     #define COMPRESS_DATA_RESERVED_SIZE		5
->>>>>     struct compress_data {
->>>>>     	__le32 clen;			/* compressed data size */
->>>>> +	__le32 chksum;			/* compressed data chksum */
->>>>>     	__le32 reserved[COMPRESS_DATA_RESERVED_SIZE];	/* reserved */
->>>>>     	u8 cdata[];			/* compressed data */
->>>>>     };
->>>>> @@ -3882,6 +3890,9 @@ static inline void set_compress_context(struct inode *inode)
->>>>>     			F2FS_OPTION(sbi).compress_algorithm;
->>>>>     	F2FS_I(inode)->i_log_cluster_size =
->>>>>     			F2FS_OPTION(sbi).compress_log_size;
->>>>> +	F2FS_I(inode)->i_compress_flag =
->>>>> +			F2FS_OPTION(sbi).compress_chksum ?
->>>>> +				1 << COMPRESS_CHKSUM : 0;
->>>>>     	F2FS_I(inode)->i_cluster_size =
->>>>>     			1 << F2FS_I(inode)->i_log_cluster_size;
->>>>>     	F2FS_I(inode)->i_flags |= F2FS_COMPR_FL;
->>>>> diff --git a/fs/f2fs/inode.c b/fs/f2fs/inode.c
->>>>> index 657db2fb6739..de8f7fc89efa 100644
->>>>> --- a/fs/f2fs/inode.c
->>>>> +++ b/fs/f2fs/inode.c
->>>>> @@ -456,6 +456,7 @@ static int do_read_inode(struct inode *inode)
->>>>>     					le64_to_cpu(ri->i_compr_blocks));
->>>>>     			fi->i_compress_algorithm = ri->i_compress_algorithm;
->>>>>     			fi->i_log_cluster_size = ri->i_log_cluster_size;
->>>>> +			fi->i_compress_flag = ri->i_compress_flag;
->>>>>     			fi->i_cluster_size = 1 << fi->i_log_cluster_size;
->>>>>     			set_inode_flag(inode, FI_COMPRESSED_FILE);
->>>>>     		}
->>>>> @@ -634,6 +635,8 @@ void f2fs_update_inode(struct inode *inode, struct page *node_page)
->>>>>     					&F2FS_I(inode)->i_compr_blocks));
->>>>>     			ri->i_compress_algorithm =
->>>>>     				F2FS_I(inode)->i_compress_algorithm;
->>>>> +			ri->i_compress_flag =
->>>>> +				cpu_to_le16(F2FS_I(inode)->i_compress_flag);
->>>>>     			ri->i_log_cluster_size =
->>>>>     				F2FS_I(inode)->i_log_cluster_size;
->>>>>     		}
->>>>> diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
->>>>> index 00eff2f51807..f8de4d83a5be 100644
->>>>> --- a/fs/f2fs/super.c
->>>>> +++ b/fs/f2fs/super.c
->>>>> @@ -146,6 +146,7 @@ enum {
->>>>>     	Opt_compress_algorithm,
->>>>>     	Opt_compress_log_size,
->>>>>     	Opt_compress_extension,
->>>>> +	Opt_compress_chksum,
->>>>>     	Opt_atgc,
->>>>>     	Opt_err,
->>>>>     };
->>>>> @@ -214,6 +215,7 @@ static match_table_t f2fs_tokens = {
->>>>>     	{Opt_compress_algorithm, "compress_algorithm=%s"},
->>>>>     	{Opt_compress_log_size, "compress_log_size=%u"},
->>>>>     	{Opt_compress_extension, "compress_extension=%s"},
->>>>> +	{Opt_compress_chksum, "compress_chksum"},
->>>>>     	{Opt_atgc, "atgc"},
->>>>>     	{Opt_err, NULL},
->>>>>     };
->>>>> @@ -934,10 +936,14 @@ static int parse_options(struct super_block *sb, char *options, bool is_remount)
->>>>>     			F2FS_OPTION(sbi).compress_ext_cnt++;
->>>>>     			kfree(name);
->>>>>     			break;
->>>>> +		case Opt_compress_chksum:
->>>>> +			F2FS_OPTION(sbi).compress_chksum = true;
->>>>> +			break;
->>>>>     #else
->>>>>     		case Opt_compress_algorithm:
->>>>>     		case Opt_compress_log_size:
->>>>>     		case Opt_compress_extension:
->>>>> +		case Opt_compress_chksum:
->>>>>     			f2fs_info(sbi, "compression options not supported");
->>>>>     			break;
->>>>>     #endif
->>>>> @@ -1523,6 +1529,9 @@ static inline void f2fs_show_compress_options(struct seq_file *seq,
->>>>>     		seq_printf(seq, ",compress_extension=%s",
->>>>>     			F2FS_OPTION(sbi).extensions[i]);
->>>>>     	}
->>>>> +
->>>>> +	if (F2FS_OPTION(sbi).compress_chksum)
->>>>> +		seq_puts(seq, ",compress_chksum");
->>>>>     }
->>>>>     static int f2fs_show_options(struct seq_file *seq, struct dentry *root)
->>>>> diff --git a/include/linux/f2fs_fs.h b/include/linux/f2fs_fs.h
->>>>> index a5dbb57a687f..7dc2a06cf19a 100644
->>>>> --- a/include/linux/f2fs_fs.h
->>>>> +++ b/include/linux/f2fs_fs.h
->>>>> @@ -273,7 +273,7 @@ struct f2fs_inode {
->>>>>     			__le64 i_compr_blocks;	/* # of compressed blocks */
->>>>>     			__u8 i_compress_algorithm;	/* compress algorithm */
->>>>>     			__u8 i_log_cluster_size;	/* log of cluster size */
->>>>> -			__le16 i_padding;		/* padding */
->>>>> +			__le16 i_compress_flag;		/* compress flag */
->>>>>     			__le32 i_extra_end[0];	/* for attribute size calculation */
->>>>>     		} __packed;
->>>>>     		__le32 i_addr[DEF_ADDRS_PER_INODE];	/* Pointers to data blocks */
->>>>> -- 
->>>>> 2.26.2
->>>> .
->>>>
->>>
->>>
->>> _______________________________________________
->>> Linux-f2fs-devel mailing list
->>> Linux-f2fs-devel@lists.sourceforge.net
->>> https://lists.sourceforge.net/lists/listinfo/linux-f2fs-devel
->>> .
->>>
-> .
-> 
