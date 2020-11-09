@@ -2,41 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C33A32AC2F2
+	by mail.lfdr.de (Postfix) with ESMTP id 548422AC2F1
 	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 18:56:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730142AbgKIR4y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 12:56:54 -0500
+        id S1730109AbgKIR4x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 12:56:53 -0500
 Received: from mga06.intel.com ([134.134.136.31]:50655 "EHLO mga06.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730062AbgKIR4x (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1729658AbgKIR4x (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 9 Nov 2020 12:56:53 -0500
-IronPort-SDR: CQwMtEYc1mY+3Gg3U7NtWmJThdeaopRXwjX7Q8muVyHXpmQm8GXNPgba5fxJczSHABT47MLSgX
- EiD6PUu3XE8g==
-X-IronPort-AV: E=McAfee;i="6000,8403,9800"; a="231474115"
+IronPort-SDR: ehyp7WMWajXi/2JPt8KL4mJ0EH7X0kJxsOmi6wEedkvR+3VNeOcJWJKjVXq3c0+0/Ub2S6/PFM
+ O4NPTT9FPr4A==
+X-IronPort-AV: E=McAfee;i="6000,8403,9800"; a="231474113"
 X-IronPort-AV: E=Sophos;i="5.77,464,1596524400"; 
-   d="scan'208";a="231474115"
+   d="scan'208";a="231474113"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Nov 2020 09:56:52 -0800
-IronPort-SDR: MfFpIZb+11PBvoNXJOkFvd+U4N4v7Jk6z0qzgdWqyRfDsLZbVCiyfGep+RNRdnwgfvyBZOSRTI
- s90+2YsGOIdw==
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Nov 2020 09:56:51 -0800
+IronPort-SDR: FXixEf3etHeF/Ny3yEvX0rOecDgk/MxzWcYfXnjKC02xO1X8h7zywmhcUzS2wxEs/7+p44JKTj
+ hjrBK5luBE5A==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.77,464,1596524400"; 
-   d="scan'208";a="308069739"
+   d="scan'208";a="473069220"
 Received: from lkp-server01.sh.intel.com (HELO d0be80f1a028) ([10.239.97.150])
-  by fmsmga007.fm.intel.com with ESMTP; 09 Nov 2020 09:56:51 -0800
+  by orsmga004.jf.intel.com with ESMTP; 09 Nov 2020 09:56:50 -0800
 Received: from kbuild by d0be80f1a028 with local (Exim 4.92)
         (envelope-from <lkp@intel.com>)
-        id 1kcBPO-0000L3-Hx; Mon, 09 Nov 2020 17:56:50 +0000
-Date:   Tue, 10 Nov 2020 01:56:14 +0800
+        id 1kcBPN-0000Ky-QE; Mon, 09 Nov 2020 17:56:49 +0000
+Date:   Tue, 10 Nov 2020 01:56:17 +0800
 From:   kernel test robot <lkp@intel.com>
 To:     "Paul E. McKenney" <paulmck@kernel.org>
 Cc:     linux-kernel@vger.kernel.org
-Subject: [rcu:lkmm-dev] BUILD SUCCESS
- eb48201421b13607a90c1d802789e2e99a254a62
-Message-ID: <5fa982be./wsA/09UnwN/Cpzf%lkp@intel.com>
+Subject: [rcu:rcu/next] BUILD SUCCESS
+ 97c70d140047be950a6428b82f351b0497fd8117
+Message-ID: <5fa982c1.Qsa9CZ3WtgshWZs3%lkp@intel.com>
 User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -45,12 +45,12 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git  lkmm-dev
-branch HEAD: eb48201421b13607a90c1d802789e2e99a254a62  tools/memory-model: Use "-unroll 0" to keep --hw runs finite
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git  rcu/next
+branch HEAD: 97c70d140047be950a6428b82f351b0497fd8117  rcutorture: Use "all" and "last" in "nohz_full" and "rcu_nocbs"
 
 elapsed time: 870m
 
-configs tested: 92
+configs tested: 88
 configs skipped: 2
 
 The following configs have been built successfully.
@@ -62,29 +62,25 @@ arm64                            allyesconfig
 arm64                               defconfig
 arm                              allyesconfig
 arm                              allmodconfig
-powerpc                    sam440ep_defconfig
-powerpc                     pseries_defconfig
 m68k                         amcore_defconfig
-arm                         s5pv210_defconfig
-xtensa                  audio_kc705_defconfig
-arm                         hackkit_defconfig
-sh                        sh7763rdp_defconfig
-xtensa                    smp_lx200_defconfig
-mips                          rb532_defconfig
-arc                              alldefconfig
+mips                        jmr3927_defconfig
+powerpc                     stx_gp3_defconfig
+mips                 decstation_r4k_defconfig
+powerpc                     ppa8548_defconfig
+arm                  colibri_pxa300_defconfig
+arc                          axs101_defconfig
+powerpc                   bluestone_defconfig
+mips                      malta_kvm_defconfig
+powerpc                       holly_defconfig
+sparc                       sparc32_defconfig
 arc                                 defconfig
 mips                      fuloong2e_defconfig
 sh                         microdev_defconfig
 arm                            mmp2_defconfig
 arm                          collie_defconfig
 sh                        sh7757lcr_defconfig
-m68k                        m5307c3_defconfig
-arm                             rpc_defconfig
-m68k                        m5272c3_defconfig
-c6x                              alldefconfig
-powerpc                      pmac32_defconfig
-arm                          imote2_defconfig
 arm                         shannon_defconfig
+powerpc                    sam440ep_defconfig
 nds32                               defconfig
 arm                           corgi_defconfig
 arm                          gemini_defconfig
