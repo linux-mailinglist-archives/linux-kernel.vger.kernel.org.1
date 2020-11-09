@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7764B2AB6DF
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 12:32:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 88EA52AB740
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 12:37:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729500AbgKILcu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 06:32:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35488 "EHLO
+        id S1729937AbgKILhI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 06:37:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35492 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729442AbgKILcq (ORCPT
+        with ESMTP id S1729470AbgKILcr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 06:32:46 -0500
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C80FC0613CF
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Nov 2020 03:32:45 -0800 (PST)
-Received: by mail-wm1-x343.google.com with SMTP id d142so7642478wmd.4
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Nov 2020 03:32:45 -0800 (PST)
+        Mon, 9 Nov 2020 06:32:47 -0500
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67A1BC0613CF
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Nov 2020 03:32:47 -0800 (PST)
+Received: by mail-wr1-x442.google.com with SMTP id b8so8316036wrn.0
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Nov 2020 03:32:47 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=f226i52yIUjNH4HBJOMzOEDrBWriDTS35aJrFSCy+Ic=;
-        b=tKDv7a9REysuwMcfZXBWv7HtDLUfJLSTc25Wz4yG+dYB9FiY+ZSpS20+jeI7ruPf4I
-         /fRs+zUVAIUMH1v15ddDDay1fvfPcrhZMC5kpfB1XWwITdN/8S2pMA+But30yQSNFNB8
-         jXgP2h4bzV7gV3d+faa8zOcxytIQ75QP4e6KxzkSUI0fLT1OOhTj4AvNRjPQ6XdKxesG
-         ND6CsW+tx1PrW/9Sz/H3LHqnbchMyHOUycxmZIOc1N/2GLN4ul752VNg35nnWTjEXdVH
-         EK3JO5SzqaS0OeDrJpetOM5SGKT+6ZRfLDHKcoyYlwBds01zZYnphO02pxAGc+J+wzvK
-         hRJw==
+        bh=9OHqVwmdHbsEbVYkhzfrXC3pmS5HWpDM4H+UgWkOTQ0=;
+        b=KiIaN07Lql/jsar+Pt0YQtblLh2tpYdnoBcMlX29cx4cFAvQMzXKXI+pjxYH3unmqQ
+         B+zG3cP1r+fCsNjx8DeGaHDo8SboteYbmIYfeUizmQMZYo3cUYcCibjZvKN/CLLT+zDq
+         aKmyD15Ykq4sM0Shfe+MpPiQuhryzEAul/E++NLOoq2+NdMg1H5kTt1jdgL5Iw2CCCl5
+         3wAxMjWaTyo1od7ojAO3Q599m4BH9FRsMUHGtqQza1xEDXjT4Un/SuuyGuroklXuacGI
+         gXj7WBqwBRoBphWrGfXGFX1zCd7zDb/0rhYJ+C2fuz932FB5h14Dh/1Vxl+/opRVXRqN
+         +hKg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=f226i52yIUjNH4HBJOMzOEDrBWriDTS35aJrFSCy+Ic=;
-        b=s+CM49ycF/rCAbtdUGBwpuj34E5OfUMWQ19YiDZLv2M4hvjvZo+4gQ0/c7YSfbKJFr
-         +qeQe37NLoO4OLTx6T95mRoXXTjNaeaCMQnK7biptIu84d00Ot31VThm0TQU0k57eYRX
-         0p8BUoB5z+YQnu/x3bXi1/SCafmb0uK41Dtx5RdvrbEFF05lZYn9Smj4qQ6wZmxCxzmc
-         lyQWmYGPS47NA16a3V4IySnoFKDO7UPuzRlmH9hSI8q3H866t7DAaDOdkX8dipfN5GAV
-         NLG5MlbZ0nKFyRwVzME9funbKKA+J+miZeOJx1dwDVCLF0nia3KU0qJosFFQaF8HjV73
-         xBIQ==
-X-Gm-Message-State: AOAM531Y/nh7fUCWxEmE7g6XbKlhXeqnkg49hp3zrZGdvDA/0OFdAxyT
-        Yidd8gieGUfi3ze+dTDb/Cz+qA==
-X-Google-Smtp-Source: ABdhPJwoENuVGCK5XFTaDJ8MaIk0VaZFOfs2tSaTvsARZ9sJi9l+ITqvhV3gCNpUzPG+TP47XhXsRw==
-X-Received: by 2002:a1c:7dc8:: with SMTP id y191mr14412755wmc.118.1604921563823;
-        Mon, 09 Nov 2020 03:32:43 -0800 (PST)
+        bh=9OHqVwmdHbsEbVYkhzfrXC3pmS5HWpDM4H+UgWkOTQ0=;
+        b=lVfEPp9Su+owDX3KY7fTOHh8ox+GNMn1ThZk9Ie6uVhl07I1tkE7u+difwOTidAFN3
+         IG1xo9PjQexXR8oO8AhaKEpBlI44Lrmjt5Hxe0sHq7KDRbo25OKw+QK0N3bor7NZ/lT/
+         5NDpHiBxqBXbJm4VfxwTOMTt7lIWbnX5MELobiFoH96nvle7UbYJcOKSjWwUwN7+f61l
+         VuUcrfy+FWKczgvB8cHDnu4bnH/5j93dEQGX6mwBgv09XneotB/5dIphOkbTzVCKu/2m
+         esLwGRw/tok0eDGq3TDoEDaHpJDL1Fk0mTV4bNuD/LPH6RBxYOnTLuM4a4stM2Nbe3Ue
+         UtpA==
+X-Gm-Message-State: AOAM532KjDEkk4SUIruWISWExCf9mBlWTnoJQ4MqWZUbNUWVzb5R8ZEK
+        yug4rZ0k/BjTpIxCiYoR7LdbkQ==
+X-Google-Smtp-Source: ABdhPJy9YbQLl6FOlXdSqqJeLuvcE3K3eiWcMuLImPT2P8noAXyO9kqewE+UUaL2JJaCpFto5lJFdQ==
+X-Received: by 2002:adf:804b:: with SMTP id 69mr17407493wrk.274.1604921565923;
+        Mon, 09 Nov 2020 03:32:45 -0800 (PST)
 Received: from localhost ([2a01:4b00:8523:2d03:209d:10b7:c480:3e1f])
-        by smtp.gmail.com with ESMTPSA id h4sm12847197wrp.52.2020.11.09.03.32.42
+        by smtp.gmail.com with ESMTPSA id v6sm14976826wrb.53.2020.11.09.03.32.44
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 09 Nov 2020 03:32:42 -0800 (PST)
+        Mon, 09 Nov 2020 03:32:45 -0800 (PST)
 From:   David Brazdil <dbrazdil@google.com>
 To:     kvmarm@lists.cs.columbia.edu
 Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
@@ -64,9 +64,9 @@ Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         Andrew Scull <ascull@google.com>,
         Andrew Walbran <qwandor@google.com>, kernel-team@android.com,
         David Brazdil <dbrazdil@google.com>
-Subject: [PATCH v1 02/24] psci: Accessor for configured PSCI function IDs
-Date:   Mon,  9 Nov 2020 11:32:11 +0000
-Message-Id: <20201109113233.9012-3-dbrazdil@google.com>
+Subject: [PATCH v1 03/24] arm64: Move MAIR_EL1_SET to asm/memory.h
+Date:   Mon,  9 Nov 2020 11:32:12 +0000
+Message-Id: <20201109113233.9012-4-dbrazdil@google.com>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201109113233.9012-1-dbrazdil@google.com>
 References: <20201109113233.9012-1-dbrazdil@google.com>
@@ -76,64 +76,64 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Function IDs used by PSCI are configurable for v0.1 via DT/APCI. If the
-host is using PSCI v0.1, KVM's host PSCI proxy needs to use the same IDs.
-Expose the array holding the information with a read-only accessor.
+KVM currently initializes MAIR_EL2 to the value of MAIR_EL1. In
+preparation for initializing MAIR_EL2 before MAIR_EL1, move the constant
+into a shared header file.
 
 Signed-off-by: David Brazdil <dbrazdil@google.com>
 ---
- drivers/firmware/psci/psci.c | 14 ++++++--------
- include/linux/psci.h         | 10 ++++++++++
- 2 files changed, 16 insertions(+), 8 deletions(-)
+ arch/arm64/include/asm/memory.h | 13 +++++++++++++
+ arch/arm64/mm/proc.S            | 13 -------------
+ 2 files changed, 13 insertions(+), 13 deletions(-)
 
-diff --git a/drivers/firmware/psci/psci.c b/drivers/firmware/psci/psci.c
-index bc1b2d60fdbf..b67b2ba8a084 100644
---- a/drivers/firmware/psci/psci.c
-+++ b/drivers/firmware/psci/psci.c
-@@ -65,16 +65,14 @@ typedef unsigned long (psci_fn)(unsigned long, unsigned long,
- 				unsigned long, unsigned long);
- static psci_fn *invoke_psci_fn;
+diff --git a/arch/arm64/include/asm/memory.h b/arch/arm64/include/asm/memory.h
+index cd61239bae8c..aca00737e771 100644
+--- a/arch/arm64/include/asm/memory.h
++++ b/arch/arm64/include/asm/memory.h
+@@ -152,6 +152,19 @@
+ #define MT_S2_FWB_NORMAL	6
+ #define MT_S2_FWB_DEVICE_nGnRE	1
  
--enum psci_function {
--	PSCI_FN_CPU_SUSPEND,
--	PSCI_FN_CPU_ON,
--	PSCI_FN_CPU_OFF,
--	PSCI_FN_MIGRATE,
--	PSCI_FN_MAX,
--};
++/*
++ * Default MAIR_EL1. MT_NORMAL_TAGGED is initially mapped as Normal memory and
++ * changed during __cpu_setup to Normal Tagged if the system supports MTE.
++ */
++#define MAIR_EL1_SET							\
++	(MAIR_ATTRIDX(MAIR_ATTR_DEVICE_nGnRnE, MT_DEVICE_nGnRnE) |	\
++	 MAIR_ATTRIDX(MAIR_ATTR_DEVICE_nGnRE, MT_DEVICE_nGnRE) |	\
++	 MAIR_ATTRIDX(MAIR_ATTR_DEVICE_GRE, MT_DEVICE_GRE) |		\
++	 MAIR_ATTRIDX(MAIR_ATTR_NORMAL_NC, MT_NORMAL_NC) |		\
++	 MAIR_ATTRIDX(MAIR_ATTR_NORMAL, MT_NORMAL) |			\
++	 MAIR_ATTRIDX(MAIR_ATTR_NORMAL_WT, MT_NORMAL_WT) |		\
++	 MAIR_ATTRIDX(MAIR_ATTR_NORMAL, MT_NORMAL_TAGGED))
++
+ #ifdef CONFIG_ARM64_4K_PAGES
+ #define IOREMAP_MAX_ORDER	(PUD_SHIFT)
+ #else
+diff --git a/arch/arm64/mm/proc.S b/arch/arm64/mm/proc.S
+index 23c326a06b2d..25ff21b3a1c6 100644
+--- a/arch/arm64/mm/proc.S
++++ b/arch/arm64/mm/proc.S
+@@ -45,19 +45,6 @@
+ #define TCR_KASAN_FLAGS 0
+ #endif
+ 
+-/*
+- * Default MAIR_EL1. MT_NORMAL_TAGGED is initially mapped as Normal memory and
+- * changed during __cpu_setup to Normal Tagged if the system supports MTE.
+- */
+-#define MAIR_EL1_SET							\
+-	(MAIR_ATTRIDX(MAIR_ATTR_DEVICE_nGnRnE, MT_DEVICE_nGnRnE) |	\
+-	 MAIR_ATTRIDX(MAIR_ATTR_DEVICE_nGnRE, MT_DEVICE_nGnRE) |	\
+-	 MAIR_ATTRIDX(MAIR_ATTR_DEVICE_GRE, MT_DEVICE_GRE) |		\
+-	 MAIR_ATTRIDX(MAIR_ATTR_NORMAL_NC, MT_NORMAL_NC) |		\
+-	 MAIR_ATTRIDX(MAIR_ATTR_NORMAL, MT_NORMAL) |			\
+-	 MAIR_ATTRIDX(MAIR_ATTR_NORMAL_WT, MT_NORMAL_WT) |		\
+-	 MAIR_ATTRIDX(MAIR_ATTR_NORMAL, MT_NORMAL_TAGGED))
 -
- static u32 psci_function_id[PSCI_FN_MAX];
- 
-+u32 psci_get_function_id(enum psci_function fn)
-+{
-+	WARN_ON(fn >= PSCI_FN_MAX);
-+	return psci_function_id[fn];
-+}
-+
- #define PSCI_0_2_POWER_STATE_MASK		\
- 				(PSCI_0_2_POWER_STATE_ID_MASK | \
- 				PSCI_0_2_POWER_STATE_TYPE_MASK | \
-diff --git a/include/linux/psci.h b/include/linux/psci.h
-index 5b5dcf176aa6..8fe681a7b43d 100644
---- a/include/linux/psci.h
-+++ b/include/linux/psci.h
-@@ -29,6 +29,16 @@ bool psci_has_osi_support(void);
-  */
- int psci_driver_version(void);
- 
-+enum psci_function {
-+	PSCI_FN_CPU_SUSPEND,
-+	PSCI_FN_CPU_ON,
-+	PSCI_FN_CPU_OFF,
-+	PSCI_FN_MIGRATE,
-+	PSCI_FN_MAX,
-+};
-+
-+u32 psci_get_function_id(enum psci_function fn);
-+
- struct psci_operations {
- 	u32 (*get_version)(void);
- 	int (*cpu_suspend)(u32 state, unsigned long entry_point);
+ #ifdef CONFIG_CPU_PM
+ /**
+  * cpu_do_suspend - save CPU registers context
 -- 
 2.29.2.222.g5d2a92d10f8-goog
 
