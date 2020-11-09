@@ -2,102 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B08FB2AC23E
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 18:29:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 54C142AC234
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 18:28:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731977AbgKIR3D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 12:29:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34556 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731708AbgKIR2s (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 12:28:48 -0500
-Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3E68C0613CF;
-        Mon,  9 Nov 2020 09:28:47 -0800 (PST)
-Received: by mail-lf1-x141.google.com with SMTP id e27so13562712lfn.7;
-        Mon, 09 Nov 2020 09:28:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=oob/x6TgbSkIzBqStoRcBvlxDjkg5j4q3OalbOiwR7k=;
-        b=nwt8yOV2OTG2ahjQwYOnUEq41venCHBjAIe1HrKvZtbjCkQRX3EFt+ZZHCrKKUUDtT
-         vbrnhoIbeKSkewOHy7hSGjVR7EZlHvqkid/pllq1f5Ho1vG4R8A/ld0N32CtbLtKJfKB
-         waziUWOsXQpXJuPgGFa65MTkG+FuzU0b3Ck3rqvX13B843l2PenlCwwMMBD6vqVnrwyr
-         5S+Gb6vPBie3zBJXdpd5mZ1YXfCRFLAHIsospYWuyolMt2PZbDLzXwGF4Oe7/2DTEZ9F
-         JY94p9nJ8mt/VG2IN8/woawnytMF5cIF9KxasuQenOeMe0qmZsCOY1Os06OIYJjpc9IN
-         fGfA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=oob/x6TgbSkIzBqStoRcBvlxDjkg5j4q3OalbOiwR7k=;
-        b=hfpy69ukjs9Zcwgtz+n4D9kKcM9Jy9pCSn7ZcHpCRKcvN6XFK9BzTc34lrngKiaa8c
-         zqPdjYTJhuX6+AujZrs+KyMADuonp8yB+6SOzD5J8lhSCylnMCFssKsyC7ZmVbx00tt2
-         NswEFFexMGDGGbd+Oc7Ap74U3Ko/Tt3GOmVF70xc6FFwW/QdAewDxOLPlR2SiNEwMqud
-         o/62jwTRyzWTm1IFAPF+KwR1J3tTF0WCtGrX03CVxJqGn5xJBjznnNolODWwUIl+OlO0
-         Kg/7JEHa+hl0q+iHjz71KeqpBlL/uxz06YcSxMjIyJRumn3ZlChurLnB6Gw+/G1JIAjc
-         cisA==
-X-Gm-Message-State: AOAM532Z/hcs88jaUnOO0rIwRa5KpUHXAK2JwQcW0idxtzzqYSK2Ypgv
-        n/dSwealJ9mkWmAykeMywWG5ET89+ec=
-X-Google-Smtp-Source: ABdhPJzPG+Hasa7/HT5fpa2KLVVDf2BZ4VQ1pJwjqvsImle0uqW7VevhyqTA41Rp1oSUY3tyjrwo7g==
-X-Received: by 2002:a19:90b:: with SMTP id 11mr6487389lfj.316.1604942926195;
-        Mon, 09 Nov 2020 09:28:46 -0800 (PST)
-Received: from elitebook.lan (ip-194-187-74-233.konfederacka.maverick.com.pl. [194.187.74.233])
-        by smtp.googlemail.com with ESMTPSA id j64sm299533lfd.104.2020.11.09.09.28.44
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 09 Nov 2020 09:28:45 -0800 (PST)
-Subject: Re: [PATCH v2] ARM: dts: BCM5301X: Linksys EA9500 add fixed
- partitions
-To:     Vivek Unune <npcomplete13@gmail.com>
-Cc:     florian.fainelli@broadcom.com, Hauke Mehrtens <hauke@hauke-m.de>,
-        bcm-kernel-feedback-list@broadcom.com,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <e64d76cc-90bb-5b54-04de-fde21542e4fe@gmail.com>
- <20201101200804.2460-1-npcomplete13@gmail.com>
-From:   =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
-Message-ID: <b69adfa6-c867-816a-1f1d-d67fbfbd5f42@gmail.com>
-Date:   Mon, 9 Nov 2020 18:28:38 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1731625AbgKIR2q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 12:28:46 -0500
+Received: from rere.qmqm.pl ([91.227.64.183]:49742 "EHLO rere.qmqm.pl"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730315AbgKIR2q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 12:28:46 -0500
+Received: from remote.user (localhost [127.0.0.1])
+        by rere.qmqm.pl (Postfix) with ESMTPSA id 4CVHz103Wgz8p;
+        Mon,  9 Nov 2020 18:28:44 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rere.qmqm.pl; s=1;
+        t=1604942925; bh=k6HbcfJyFMKviEvHHtdNFxeoFr0JewPXEyVplOK1Gjw=;
+        h=Date:From:Subject:To:Cc:From;
+        b=cGpIOVILeAIXY9j4VSuPCNqVXIM9efaQ4SdJMjb6+dc40/onBs/6mCUx3vMTX84Mi
+         fXfXR3kd/NB+alEVMAvmXzk0JesbXvb+V29Bifp+E71pZBc/qvzOX3gjQMfErjtuur
+         CmWfQLwhREG1Y/EfKR0db7Ga6k9n7bACWkprshH2ELZonNSNRlFIQUBsl0JCTiyAju
+         +MGkuLKiNNsnE2McsQKhuP9D0blWqPTrn1xVoLPh+pkimNvAn2Ms9MjeE5bPUiH7jH
+         XMlBnNbpq1Q68oeda41piTp8by6PkBmj5ZqoN5EVYTq/HJ9eHqFufaf4Hip0X7xQPR
+         tqRh/vummTi8w==
+X-Virus-Status: Clean
+X-Virus-Scanned: clamav-milter 0.102.4 at mail
+Date:   Mon, 09 Nov 2020 18:28:41 +0100
+Message-Id: <cover.1604942771.git.mirq-linux@rere.qmqm.pl>
+From:   =?UTF-8?q?Micha=C5=82=20Miros=C5=82aw?= <mirq-linux@rere.qmqm.pl>
+Subject: [PATCH RESEND v8 0/4] input: elants: Support Asus TF300T and Nexus 7 touchscreens
 MIME-Version: 1.0
-In-Reply-To: <20201101200804.2460-1-npcomplete13@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Johnny Chuang <johnny.chuang.emc@gmail.com>
+Cc:     Dmitry Osipenko <digetx@gmail.com>, linux-input@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Peter Hutterer <peter.hutterer@who-t.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 01.11.2020 21:08, Vivek Unune wrote:
-> This router has dual paritions to store trx firmware image and
-> dual partitions for nvram. The second one in each of these cases acts
-> as a backup store.
+This series cleans up the driver a bit and implements changes needed to
+support EKTF3624-based touchscreen used in Asus TF300T, Google Nexus 7
+and similar Tegra3-based tablets.
 
-I'm quite sure CFE is supposed to flash new firmware to the backup
-partition and then mark it as main one. The old firmware partition becomes a
-new backup then.
+---
+v2: extended with Dmitry's patches (replaced v1 patches 3 and 4)
+v3: rebased for v5.7-rc1
+v4: rebased onto v5.7-rc2+ (current Linus' master)
+    update "remove unused axes" and "refactor
+      elants_i2c_execute_command()" patches after review
+    add David's patch converting DT binding to YAML
+v5: rebased onto dtor/input/for-linus
+v6: rebased onto newer dtor/input/for-linus
+    remove yet unused constants from patch 1
+    added a new drive-by cleanup (last patch)
+v7: rebased onto current dtor/input/for-next
+v8: rebased onto current dtor/input/for-linus
+---
 
-That means you need to check which partition bootloader used to handle
-partitioning properly.
+Dmitry Osipenko (1):
+  input: elants: support 0x66 reply opcode for reporting touches
 
+Michał Mirosław (3):
+  input: elants: document some registers and values
+  input: elants: support old touch report format
+  input: elants: read touchscreen size for EKTF3624
 
-> +		partition@200000 {
-> +			label = "firmware";
-> +			reg = <0x0200000 0x01D00000>;
-> +			compatible = "brcm,trx";
-> +		};
-> +
-> +		partition@1F00000 {
-> +			label = "failsafe";
-> +			reg = <0x01F00000 0x01D00000>;
-> +			read-only;
-> +		};
+ drivers/input/touchscreen/elants_i2c.c | 149 +++++++++++++++++++++----
+ 1 file changed, 127 insertions(+), 22 deletions(-)
 
-Here you assume CFE always boots from the first firmware partition.
+-- 
+2.20.1
 
-Unless EA9500 CFE does sth stupid it seems like a 50% - 50% guess.
