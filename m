@@ -2,134 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 730742AB7B3
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 13:04:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A320A2AB7B9
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 13:06:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729530AbgKIMEP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 07:04:15 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39146 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726410AbgKIMEP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 07:04:15 -0500
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8893A20789;
-        Mon,  9 Nov 2020 12:04:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604923453;
-        bh=NLvzFe8LX2GurxJBTWk/+gN/PMnYyodXLMzk/dJFOq4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=m0Yx8nVdJUfbIc5xXr5eyYCCHWMIj+k3v5Cv0QRODAwl6Wd7/9/tyz8wmCAq0HjwG
-         1n0y7oD2r/uIOqxveBOJvaZhN9D6T8mdypt4panNLD5zWf/o3AQiDKAH3Md5wO9gwr
-         aJRFULWTKvF6IkkjIMGoE/uf6v44LIm28eLL5Xj0=
-Date:   Mon, 9 Nov 2020 13:05:12 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Aisheng Dong <aisheng.dong@nxp.com>
-Cc:     Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>
-Subject: Re: [PATCH RESEND] driver core: export device_is_bound() to fix
- build failure
-Message-ID: <20201109120512.GB1832201@kroah.com>
-References: <20201107224727.11015-1-sudipm.mukherjee@gmail.com>
- <20201108082317.GA40741@kroah.com>
- <CADVatmN8SbZWVGf_xe_K1g7M9ArHXF8TUhYyBgQcydBF4_zp9g@mail.gmail.com>
- <20201109103703.GA1310551@kroah.com>
- <AM6PR04MB4966B90C0DEC71A6C86067AA80EA0@AM6PR04MB4966.eurprd04.prod.outlook.com>
- <20201109114125.GC1769924@kroah.com>
- <AM6PR04MB4966F12B67C4104247E0E6A180EA0@AM6PR04MB4966.eurprd04.prod.outlook.com>
+        id S1729592AbgKIMGK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 07:06:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40870 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726410AbgKIMGK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 07:06:10 -0500
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33245C0613CF
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Nov 2020 04:06:10 -0800 (PST)
+Received: by mail-pg1-x542.google.com with SMTP id x13so6978239pgp.7
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Nov 2020 04:06:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=YsQ0RfGEN98O6U0pfoQHdfqC1128zMaGcHe9cgH9UMo=;
+        b=DcVpQWLJJ8Ef9q5EDvIAZ+kgNtC4RUWkM7I2eJ6JniOuRLN+wqPwMXjPDgmGfuQ2cl
+         1IhnPJuJCnChmX8w/UVHdOm01q1x6thwOYVL/nCZOcrIGY/UAyvqGbAIo50G5WPQTp1I
+         9Lim6QnhH/PexeQgOwGK/WhDBo9bys4BXZfr6oAWHFZwlldcCYCiIc8lIpB7GpZDuGfo
+         SASKo2eqpnAJjnSP6bIuHZ6bSJRLuGJm3olKE82UpmPxIQWZvS9G9UKZflXzUtOUWz4Z
+         PjmD6WCSH9rMC6eN+DJzLsmifng8kIOVJDge3HvQGOFwL6EfeHkpelfgAk2Qr/tJs1CA
+         ljTA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=YsQ0RfGEN98O6U0pfoQHdfqC1128zMaGcHe9cgH9UMo=;
+        b=lkLc3ens2C/lynPnTapc1Efo+MR8G/sAlWB574MVSxok3A4zM/0a2yUmr/7yU6I9UU
+         r7xevQxXBkcDQ+V9TwPWo1HLayzPziMzr25iSBKgteHX+ZG9CP4IbmUyrHG02MqUajPL
+         lcQ/RTjc+r8QSendy9iOfI6gdVXKvm8zfw4PMBOUsb34RzL5r8/UGxTtEebcig+ZhOtL
+         pXxVWCPtdakTKg9XVK8ivjnE/8qFTI1rPM0k8z2zJbUVg22xhU4XAkI/WbzLfswYzwxz
+         SWua7pScCA2hfd9xkgw07zwtqyLbR+OpyvjGrdPJ/B5jW2pseIYcikkWoThmF4dlKRqh
+         gIbQ==
+X-Gm-Message-State: AOAM5324ruGGeUof2fnHz0yma2mXa5t+qs/zbyd9EYB+zTOEWdq8CFwp
+        QzDBk2kqD2iFWjKtFbKxv6k6zapKt1i4
+X-Google-Smtp-Source: ABdhPJzeGPBfXiqOqPaPV43WfkRtlBnQZPRzVCLNQBHslfWi+n7S9uZ5N5sCIjoQMjio29+M3oKV5g==
+X-Received: by 2002:a63:2d41:: with SMTP id t62mr12679074pgt.292.1604923569716;
+        Mon, 09 Nov 2020 04:06:09 -0800 (PST)
+Received: from work ([103.59.133.81])
+        by smtp.gmail.com with ESMTPSA id x18sm5555837pfi.206.2020.11.09.04.06.07
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Mon, 09 Nov 2020 04:06:08 -0800 (PST)
+Date:   Mon, 9 Nov 2020 17:36:03 +0530
+From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To:     Bhaumik Bhatt <bbhatt@codeaurora.org>
+Cc:     linux-arm-msm@vger.kernel.org, hemantk@codeaurora.org,
+        jhugo@codeaurora.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 3/6] bus: mhi: core: Expose mhi_get_exec_env() API for
+ controllers
+Message-ID: <20201109120603.GI24289@work>
+References: <1604684690-31065-1-git-send-email-bbhatt@codeaurora.org>
+ <1604684690-31065-4-git-send-email-bbhatt@codeaurora.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <AM6PR04MB4966F12B67C4104247E0E6A180EA0@AM6PR04MB4966.eurprd04.prod.outlook.com>
+In-Reply-To: <1604684690-31065-4-git-send-email-bbhatt@codeaurora.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 09, 2020 at 11:55:46AM +0000, Aisheng Dong wrote:
-> > From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> > Sent: Monday, November 9, 2020 7:41 PM
-> > 
-> > On Mon, Nov 09, 2020 at 10:57:05AM +0000, Aisheng Dong wrote:
-> > > Hi Greg,
-> > >
-> > > > From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> > > > Sent: Monday, November 9, 2020 6:37 PM
-> > > > Subject: Re: [PATCH RESEND] driver core: export device_is_bound() to
-> > > > fix build failure
-> > > >
-> > > > On Mon, Nov 09, 2020 at 10:14:46AM +0000, Sudip Mukherjee wrote:
-> > > > > Hi Greg,
-> > > > >
-> > > > > On Sun, Nov 8, 2020 at 8:23 AM Greg Kroah-Hartman
-> > > > > <gregkh@linuxfoundation.org> wrote:
-> > > > > >
-> > > > > > On Sat, Nov 07, 2020 at 10:47:27PM +0000, Sudip Mukherjee wrote:
-> > > > > > > When CONFIG_MXC_CLK_SCU is configured as 'm' the build fails
-> > > > > > > as it is unable to find device_is_bound(). The error being:
-> > > > > > > ERROR: modpost: "device_is_bound" [drivers/clk/imx/clk-imx-scu.ko]
-> > > > > > >       undefined!
-> > > > > > >
-> > > > > > > Export the symbol so that the module finds it.
-> > > > > > >
-> > > > > > > Fixes: 77d8f3068c63 ("clk: imx: scu: add two cells binding
-> > > > > > > support")
-> > > > > > > Signed-off-by: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-> > > > > > > ---
-> > > > > > >
-> > > > > > > resending with the Fixes: tag.
-> > > > > > >
-> > > > > > >  drivers/base/dd.c | 1 +
-> > > > > > >  1 file changed, 1 insertion(+)
-> > > > > > >
-> > > > > > > diff --git a/drivers/base/dd.c b/drivers/base/dd.c index
-> > > > > > > 148e81969e04..a796a57e5efb 100644
-> > > > > > > --- a/drivers/base/dd.c
-> > > > > > > +++ b/drivers/base/dd.c
-> > > > > > > @@ -353,6 +353,7 @@ bool device_is_bound(struct device *dev)  {
-> > > > > > >       return dev->p &&
-> > > > > > > klist_node_attached(&dev->p->knode_driver);
-> > > > > > >  }
-> > > > > > > +EXPORT_SYMBOL(device_is_bound);
-> > > > > >
-> > > > > > EXPORT_SYMBOL_GPL() please, like all the other exports in this file.
-> > > > > >
-> > > > > > Also, wait, no, don't call this, are you sure you are calling it
-> > > > > > in a race-free way?  And what branch/tree is the above commit in?
-> > > > >
-> > > > > I have not checked fully but since it is being called from probe()
-> > > > > I assume the lock will be held at that time.
-> > > >
-> > > > probe() should never call this function as it makes no sense at all
-> > > > at that point in time.  The driver should be fixed.
-> > >
-> > > Would you suggest if any other API we can use to allow the driver to
-> > > know whether another device has been probed?
-> > 
-> > There is none, sorry, as that just opens up way too many problems.
-> > 
-> > > For imx scu driver in question, it has a special requirement that it
-> > > depends on scu power domain driver. However, there're a huge number
-> > > (200+) of power domains for each device clock, we can't define them all in DT
-> > for a single clock controller node.
-> > >
-> > > That's why we wanted to use device_is_bound() before to check if scu
-> > > power domain is ready or not to support defer probe.
-> > 
-> > Use the device link functionality for this type of thing, that is what it was created
-> > for.
-> > 
+On Fri, Nov 06, 2020 at 09:44:47AM -0800, Bhaumik Bhatt wrote:
+> The mhi_get_exec_env() APIs can be used by the controller drivers
+> to query the execution environment of the MHI device. Expose it
+> so it can be used in some scenarios to determine behavior of
+> controllers.
 > 
-> Thanks for the suggestion. I will check it how to use.
-> BTW, I wonder if dev_driver_string() could be an optional solution which seems a more
-> simple way?
+> Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
 
-Also, how do you really know you even have a valid pointer to that other
-device structure?  How are you getting access to that?
+Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
 
-thanks,
+Thanks,
+Mani
 
-greg k-h
+> ---
+>  drivers/bus/mhi/core/internal.h | 1 -
+>  drivers/bus/mhi/core/main.c     | 1 +
+>  include/linux/mhi.h             | 6 ++++++
+>  3 files changed, 7 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/bus/mhi/core/internal.h b/drivers/bus/mhi/core/internal.h
+> index 7989269..124c1b9 100644
+> --- a/drivers/bus/mhi/core/internal.h
+> +++ b/drivers/bus/mhi/core/internal.h
+> @@ -609,7 +609,6 @@ enum mhi_pm_state __must_check mhi_tryset_pm_state(
+>  					struct mhi_controller *mhi_cntrl,
+>  					enum mhi_pm_state state);
+>  const char *to_mhi_pm_state_str(enum mhi_pm_state state);
+> -enum mhi_ee_type mhi_get_exec_env(struct mhi_controller *mhi_cntrl);
+>  int mhi_queue_state_transition(struct mhi_controller *mhi_cntrl,
+>  			       enum dev_st_transition state);
+>  void mhi_pm_st_worker(struct work_struct *work);
+> diff --git a/drivers/bus/mhi/core/main.c b/drivers/bus/mhi/core/main.c
+> index 778897e..7c45657 100644
+> --- a/drivers/bus/mhi/core/main.c
+> +++ b/drivers/bus/mhi/core/main.c
+> @@ -123,6 +123,7 @@ enum mhi_ee_type mhi_get_exec_env(struct mhi_controller *mhi_cntrl)
+>  
+>  	return (ret) ? MHI_EE_MAX : exec;
+>  }
+> +EXPORT_SYMBOL_GPL(mhi_get_exec_env);
+>  
+>  enum mhi_state mhi_get_mhi_state(struct mhi_controller *mhi_cntrl)
+>  {
+> diff --git a/include/linux/mhi.h b/include/linux/mhi.h
+> index d4841e5..9225d55 100644
+> --- a/include/linux/mhi.h
+> +++ b/include/linux/mhi.h
+> @@ -659,6 +659,12 @@ int mhi_download_rddm_img(struct mhi_controller *mhi_cntrl, bool in_panic);
+>  int mhi_force_rddm_mode(struct mhi_controller *mhi_cntrl);
+>  
+>  /**
+> + * mhi_get_exec_env - Get BHI execution environment of the device
+> + * @mhi_cntrl: MHI controller
+> + */
+> +enum mhi_ee_type mhi_get_exec_env(struct mhi_controller *mhi_cntrl);
+> +
+> +/**
+>   * mhi_get_mhi_state - Get MHI state of the device
+>   * @mhi_cntrl: MHI controller
+>   */
+> -- 
+> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+> a Linux Foundation Collaborative Project
+> 
