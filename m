@@ -2,90 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B1392AC8B2
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 23:36:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F7F42AC8B8
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 23:39:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730352AbgKIWgo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 17:36:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54402 "EHLO
+        id S1730716AbgKIWjg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 17:39:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54852 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729785AbgKIWgn (ORCPT
+        with ESMTP id S1729493AbgKIWjf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 17:36:43 -0500
-Received: from mail-oi1-x22b.google.com (mail-oi1-x22b.google.com [IPv6:2607:f8b0:4864:20::22b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE559C0613CF
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Nov 2020 14:36:41 -0800 (PST)
-Received: by mail-oi1-x22b.google.com with SMTP id d9so12045540oib.3
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Nov 2020 14:36:41 -0800 (PST)
+        Mon, 9 Nov 2020 17:39:35 -0500
+Received: from mail-ua1-x944.google.com (mail-ua1-x944.google.com [IPv6:2607:f8b0:4864:20::944])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D8B8C0613CF;
+        Mon,  9 Nov 2020 14:39:34 -0800 (PST)
+Received: by mail-ua1-x944.google.com with SMTP id w3so3330318uau.2;
+        Mon, 09 Nov 2020 14:39:34 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=CTh6EHdj/sEjVeEM7tTLdCGN17vFXhY30SLk5/K9tus=;
-        b=DQepMCFhAe7e5wzfvOjHy+zSRqIgqviiVN86ZTuq+EjTL/Mjqv1OpUP/DhwbvqVXWt
-         76jrPoQJBhQiAsIMEsumWsQ69zJmoKfDn+XzeIQbC7V9v/kcPPAOCAGzHdulH9SG77xX
-         kA2zleK1xZmj/sADDwAzXXUeIL1Ht0tEFFO/RhzwcEs2ySi+sL23LWKiHjUJctMTcfZV
-         zQf0bfsCwCfeP3brkU25GS2wehLX6WX52wLpctCDKAlLTgBX0yL0HpnPv9yZ94uvaqYy
-         6a4TcSqhRT4gixWuZ4PA86TEB6/POnXjx8nx0X+PAfNhDQm071OPu9Iwx3qzuNL3G8jh
-         9HlA==
+        bh=d+NfxzyRkzRw3pdaoxWCq5v07Uu6q3uueUp1SzP+cfg=;
+        b=PVbOnYVWoiBG+7BlUd44D9i6J4R1FaFGBCwC15kodFPGiM5xAZfldZxDkKRY4SgPAy
+         sXmMbUW138lnptKJkl+ic3I3veoveoMc3yfTHKUvA3o7JSQ7WlLXJ59qjAtIXTdWbDzu
+         EWk+FgM9iabOdBeRoC2Y9nMQRXa6pphze6o+MkSEsBBY107RvfTuvi0+baIUil6L+UmZ
+         89s2lsVHemd7KMNznsXsenWyetsA0BTvuJiW9xY+yhpDJGwfT74Tl5ROMvABy/t55s/u
+         refHcO8RzkG9S6Gt7y0HAKhVJhX8c2yrsnB9dBDpldoCNLX5lAxc1YWfFQUXfsSeufHD
+         gJ3g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=CTh6EHdj/sEjVeEM7tTLdCGN17vFXhY30SLk5/K9tus=;
-        b=J6WIsdEWD0h55Ow1D0nN7wWAznzHphhNxaqMP0vlzDumXJaOqxpdiUrTXXsTcYIrMY
-         I34XUKfHygbcwdPl7EJzrFv6JvBvpMYPdl05eIWXQhnsSAL9w+mrrZCayr0b8zmalmv/
-         F/ZpEJpt61+C5i94h2INtdA7AhKHuY0h3YmvsKvVs7vHRygkMM77e/+DJICc2n8nrf34
-         QUIwVnRBiIHtwN8Votx2khsO+RLd12AcsVefWoxhsqPKOKMIwz7Gyt45Wqv2CpvbCStv
-         0dx+CoW9JZddRgW3pPFVL3wHBJqRkswe1vTJ8MUAZdeIv4msyq11FngDT1fz0shb9mbG
-         MY8g==
-X-Gm-Message-State: AOAM531bO0Q+2GFHdmcg/FUpmrTFWRsSV8r9CaiAkscR8u2qeNhjGTHc
-        8wYDfXK6+njSYFE0fMICI6ps8baaEWx3+y2eKKSmphMxbaQ=
-X-Google-Smtp-Source: ABdhPJyGsZp34bN65P+ZviA1hv7Uw0zaa+Kw38+E6oue4vDWjH3T/+uur8iehxwmbCi7dDf59M+lS1szSQhCxNuYQeo=
-X-Received: by 2002:a54:4082:: with SMTP id i2mr969744oii.28.1604961400870;
- Mon, 09 Nov 2020 14:36:40 -0800 (PST)
+        bh=d+NfxzyRkzRw3pdaoxWCq5v07Uu6q3uueUp1SzP+cfg=;
+        b=r6YhdUSegMyn1PgpizVa5R+TWCz0gWOFhlLE2U5fzABy6RojRNxumHba1WOPv7h1CU
+         Z7v4E4jeYZuvhuGdONe+fSlOgqbjM+HXEtwHKhgywaEuMmmPte/5d6/Z+IqULZS0TBkz
+         HFXNUrd7TZ9QiPSdnwA0QiooMpfWYVNFKUc1cuCr1htT7yjaBJg0CWocLsMI/34Xajyo
+         7Xf9blo8fubstwFbpGZqg3iA+CcGcrBrtD4lMVUAqOQA/qlgUxzKqgN/ewPWnmtRmz+1
+         IXziawaC41m2QY0+0/oCizi6GRLJvJrVMMdOVbmGeHifpxmd2nb1cevQl8hmDAASMGnO
+         DIVg==
+X-Gm-Message-State: AOAM53212Y8XEScwM9S5FSSEX5Dl7w/6015StJfa23XxTR02D/ELOyiq
+        CyhJvub6av2h4Ty0+VT1DOoxaWjzMDOL9jxtSbA=
+X-Google-Smtp-Source: ABdhPJx8SGa88QNC9L9JEyzAt062NmKGsS70aQym3pL39yFfpoN2HuNNHeuoJTeB71KJAUHnVDPcvQIR/KCgLa4tJrA=
+X-Received: by 2002:ab0:380d:: with SMTP id x13mr8341198uav.41.1604961573263;
+ Mon, 09 Nov 2020 14:39:33 -0800 (PST)
 MIME-Version: 1.0
-References: <20201030190807.GA13884@agluck-desk2.amr.corp.intel.com>
- <160431588828.397.16468104725047768957.tip-bot2@tip-bot2> <3f863634cd75824907e8ccf8164548c2ef036f20.camel@redhat.com>
- <bfc274fc27724ea39ecac1e7ac834ed8@intel.com>
-In-Reply-To: <bfc274fc27724ea39ecac1e7ac834ed8@intel.com>
-From:   Jim Mattson <jmattson@google.com>
-Date:   Mon, 9 Nov 2020 14:36:29 -0800
-Message-ID: <CALMp9eTFaiYkTnVe8xKzg40E4nZ3rAOii0O06bTy0+oLNjyKhA@mail.gmail.com>
-Subject: Re: [tip: ras/core] x86/mce: Enable additional error logging on
- certain Intel CPUs
-To:     "Luck, Tony" <tony.luck@intel.com>
-Cc:     Qian Cai <cai@redhat.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-tip-commits@vger.kernel.org" 
-        <linux-tip-commits@vger.kernel.org>, Boris Petkov <bp@alien8.de>,
-        Borislav Petkov <bp@suse.de>, x86 <x86@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>
+References: <20201109193117.2017-1-TheSven73@gmail.com> <20201109130900.39602186@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+ <CAGngYiUt8MBCugYfjUJMa_h0iekubnOwVwenE7gY50DnRXq5VQ@mail.gmail.com>
+ <20201109132421.720a0e13@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+ <CAGngYiXeBRBzDuUScfxnkG2NwO=oPw5dwfxzim1yDf=Lo=LZxA@mail.gmail.com>
+ <20201109140428.27b89e0e@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+ <CAGngYiWUJ=bdJVMjzXBOc54H4Ubx5vQmaFnUbAWUjhaZ8nvP3A@mail.gmail.com>
+ <20201109142322.782b9495@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+ <CAGngYiVaQ4u7-2HJ6X92vJ9D4ZuC+GZhGmr2LhSMjCKBYfbZuA@mail.gmail.com> <20201109143605.0a60b2ab@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+In-Reply-To: <20201109143605.0a60b2ab@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+From:   Sven Van Asbroeck <thesven73@gmail.com>
+Date:   Mon, 9 Nov 2020 17:39:22 -0500
+Message-ID: <CAGngYiWYKsTURi0pRMxX=SjzPnx-OF0cC43dnaGc+o15kLwk_A@mail.gmail.com>
+Subject: Re: [PATCH net-next v1] net: phy: spi_ks8995: Do not overwrite SPI
+ mode flags
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        "David S. Miller" <davem@davemloft.net>,
+        netdev <netdev@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 9, 2020 at 2:09 PM Luck, Tony <tony.luck@intel.com> wrote:
+On Mon, Nov 9, 2020 at 5:36 PM Jakub Kicinski <kuba@kernel.org> wrote:
 >
-> What does KVM do with model specific MSRs?
-
-"Model specific model-specific registers?" :-)
-
-KVM only implements a small subset of MSRs. By default, any access to
-the rest raises #GP.
-
-> Looks like you let the guest believe it was running on one of Sandy Bridge, Ivy Bridge, Haswell (Xeon).
+> Yes, most certainly. Especially with 5.10 being LTS.
 >
-> So, the core MCE code tried to enable extended error reporting.
+> You can send a minimal fix (perhaps what you got already?), and follow
+> up with the helper as suggested by Andrew after ~a week when net is
+> merged into net-next.
 >
-> If there is a mode to have KVM let the guest think that it read/wrote MSR 0x17F,
-> but actually, doesn't do it ... that would seem to be a reasonable thing to do here.
 
-There is an 'ignore_msrs' module parameter, to sink writes and return
-zero on reads for unknown MSRs, but I don't think it's commonly used.
-
-I thought Linux had long ago gone the route of turning rdmsr/wrmsr
-into rdmsr_safe/wrmsr_safe, so that the guest would ignore the #GPs on
-writes and return zero to the caller for #GPs on reads.
+What I already posted (as v1) should be the minimal fix.
+Can we proceed on that basis? I'll follow up with the helper
+after the net -> net-next merge, as you suggested.
