@@ -2,90 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8ED3F2AB22B
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 09:07:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E586F2AB22E
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 09:08:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729778AbgKIIHC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 03:07:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59794 "EHLO
+        id S1729695AbgKIIIO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 03:08:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59976 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728951AbgKIIHC (ORCPT
+        with ESMTP id S1727077AbgKIIIO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 03:07:02 -0500
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08776C0613CF;
-        Mon,  9 Nov 2020 00:07:02 -0800 (PST)
-Received: by mail-pg1-x544.google.com with SMTP id h6so6477747pgk.4;
-        Mon, 09 Nov 2020 00:07:02 -0800 (PST)
+        Mon, 9 Nov 2020 03:08:14 -0500
+Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B611BC0613CF
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Nov 2020 00:08:13 -0800 (PST)
+Received: by mail-lf1-x141.google.com with SMTP id d17so7742098lfq.10
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Nov 2020 00:08:13 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=tdJdOvUDP6y6X9SlPMAqs3qJ1Y16ycODxrmLOvFtfbo=;
-        b=johfybRxzOKso37oy4MEZ3SUY12hPQjBv5T/yRYoiy1QYgFrkptXd78rFmmAS1AU8K
-         8p5YcLdbxJpd/mgPcRbfarMFZqY6mMe24P7ZJR9Zn3S5ubkjr6vfj/oscdB+3wP72r7N
-         SPLVxYxFDXXUqQRLhEwyeWLTibfk9wXGafHJ5kkPi/KQZQNu+1rik2RXmMFxCNKDy4H4
-         Pm+3sfVaO+LrjF3F9flUOIXUqcivvSmM1c70riulGNJQx28oP18tzg+dBe39mkYiPxrI
-         PK12a+XCh44a2sGfOOkYW9ygoWkD0itL9l4+0FNM+N0/Kcgd1L1cYb4qqb0tevMiu+P2
-         x6DQ==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=YPIO337ZqmTg7mGl8r87VRhd1YWWw1c5ZttCJTJ/hp4=;
+        b=LrjCD4vqs7Sxqm4LFrF1+p7XmZeyTUv23gOTsx5IW+7jx9YCWXx7K2N+mIczDcUZcu
+         nFW8idSrK+rQh7AidldUN/u9HP05YFDwYi8IEd+oz1SvKlePaWpfdjJNIJnxM7qdluZb
+         0LkwaCYyKD7N1fqkt0SF7WFI4C7Mhvl/wnaQRKwHjsIml2L9GSvweimMuytfRyIKO4ND
+         +WUNf685Rp4l+35l2ApO2R8uPDJcWGEMkq+DaLifIEjanWq9uT6Qhk0ZmU0bNpenWpWj
+         X05Bh0jli/xoP2oPwjraPKV20CpnNGwR96UcIRr1xeQ2VbuzX5URoMaNFCO13UbzpdSn
+         O15w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=tdJdOvUDP6y6X9SlPMAqs3qJ1Y16ycODxrmLOvFtfbo=;
-        b=ImfixwmnF/V90Jq148uujca64Rp07vMZufbCd0poZ1exVmQb9vmP4pVHHrGoHtNJUA
-         wNzXFhaWITwBfQ8qDHBpB+zuAeqRyY3sU9FnsRLk5jRI6M6seXC7MED5K+1uQp2Kl/AC
-         Zjrhu3gBTV1WUa2+FZHzADQWBgV4A1cgeCEeTkQxV7YoVQhq6Ag7nGHnfqx3psfLKhWc
-         7DcsLnOnjxIda0UCYSK8or2Pz8YEfqJKF6aKZx+VphRYWT3Ch7X55ULqeMGCpTnBd/L6
-         m6PhisuAZR+FL1ukUTPRp7tj8WWh18e4+5xjr1iT45fa8/ODPGw0d7OhGLUqy4zG6dDM
-         9Wmw==
-X-Gm-Message-State: AOAM533VEkppnYRMUrXzEa5k9uqyv7WsRPtFnnpJSWYxRifNpK/DcPth
-        uELPk0KJa/UTeZtBoyp8lQ==
-X-Google-Smtp-Source: ABdhPJyoYoL0Vm+aqhGo9MTk6wLVKwPVDQYJQqI25+85Zv6YuKGNudFyH1WyhbxX6Xx4bD8McDgq6A==
-X-Received: by 2002:a63:6386:: with SMTP id x128mr11713012pgb.148.1604909221650;
-        Mon, 09 Nov 2020 00:07:01 -0800 (PST)
-Received: from he-cluster.localdomain (67.216.221.250.16clouds.com. [67.216.221.250])
-        by smtp.gmail.com with ESMTPSA id gb17sm7522311pjb.21.2020.11.09.00.07.00
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 09 Nov 2020 00:07:01 -0800 (PST)
-From:   xiakaixu1987@gmail.com
-X-Google-Original-From: kaixuxia@tencent.com
-To:     davem@davemloft.net
-Cc:     sparclinux@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Kaixu Xia <kaixuxia@tencent.com>
-Subject: [PATCH] sparc32: Fix comparing pointer to 0 coccicheck warning
-Date:   Mon,  9 Nov 2020 16:06:56 +0800
-Message-Id: <1604909216-16572-1-git-send-email-kaixuxia@tencent.com>
-X-Mailer: git-send-email 1.8.3.1
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=YPIO337ZqmTg7mGl8r87VRhd1YWWw1c5ZttCJTJ/hp4=;
+        b=lGnDH4VdQ+edtwO/C084Ma1UBcdQjTZev2hMN7aNxYu+qa90tevp5vaI0Ui4uadY3C
+         TUVTMl47gKErunTNgcWGOgfe1AZBekUxFKvjpkrqAS9/UZihjZm2SOoTnjNskpr5Dzww
+         nmNMQQaInPMKYH7d7OP7eMXGPwVYBUsfFaA0TgpAtqTA4BMVVjTamcIZP//+mPLF122R
+         cXgLLqWCwwk0cuXNGBEG1YlCP4LLbbrDGPXZaun1ktYbVfN8yVNefdfM/AFQ3EssMjLm
+         66CCAeUAZTKggtI/rLh+K7MczfKZ/Kg/314x3KcOp15wUEl3aOTHI83LgO1InThkk9q7
+         j8vQ==
+X-Gm-Message-State: AOAM531hds9gowQK0PlKw4X3uuPgSy/l3W9Oj4vPvKZ+fBrVD730mzqq
+        n9viLgbgrXD+FqonjVtw7kwyyw==
+X-Google-Smtp-Source: ABdhPJy7uTWVdp8lizHDfGVhQOGWlLkeWorzX2GI0IyF9rL0sSfiw2mMJJ3Kr9w+ml6DdZDawGHHZQ==
+X-Received: by 2002:ac2:4474:: with SMTP id y20mr5699257lfl.160.1604909292192;
+        Mon, 09 Nov 2020 00:08:12 -0800 (PST)
+Received: from jade (h-249-223.A175.priv.bahnhof.se. [98.128.249.223])
+        by smtp.gmail.com with ESMTPSA id t138sm1351538lff.183.2020.11.09.00.08.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 09 Nov 2020 00:08:11 -0800 (PST)
+Date:   Mon, 9 Nov 2020 09:08:09 +0100
+From:   Jens Wiklander <jens.wiklander@linaro.org>
+To:     arm@kernel.org, soc@kernel.org
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        op-tee@lists.trustedfirmware.org,
+        Rijo Thomas <Rijo-john.Thomas@amd.com>,
+        Devaraj Rangasamy <Devaraj.Rangasamy@amd.com>
+Subject: [GIT PULL] AMDTEE driver fixes for v5.10
+Message-ID: <20201109080809.GA3862873@jade>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kaixu Xia <kaixuxia@tencent.com>
+Hello arm-soc maintainers,
 
-Fixes coccicheck warning:
+Please pull these AMDTEE driver fixes which are needed when opening multiple
+contexts or file descriptors.
 
-/arch/sparc/mm/srmmu.c:354:42-43: WARNING comparing pointer to 0
+Note that this isn't a usual Arm driver update. This targets x86/AMD instead,
+but is still part of the TEE subsystem.
 
-Avoid pointer type value compared to 0.
+Thanks,
+Jens
 
-Reported-by: Tosk Robot <tencent_os_robot@tencent.com>
-Signed-off-by: Kaixu Xia <kaixuxia@tencent.com>
----
- arch/sparc/mm/srmmu.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+The following changes since commit bbf5c979011a099af5dc76498918ed7df445635b:
 
-diff --git a/arch/sparc/mm/srmmu.c b/arch/sparc/mm/srmmu.c
-index 0070f8b9a753..26d444223ab1 100644
---- a/arch/sparc/mm/srmmu.c
-+++ b/arch/sparc/mm/srmmu.c
-@@ -351,7 +351,7 @@ pgtable_t pte_alloc_one(struct mm_struct *mm)
- 	pte_t *ptep;
- 	struct page *page;
- 
--	if ((ptep = pte_alloc_one_kernel(mm)) == 0)
-+	if (!(ptep = pte_alloc_one_kernel(mm)))
- 		return NULL;
- 	page = pfn_to_page(__nocache_pa((unsigned long)ptep) >> PAGE_SHIFT);
- 	spin_lock(&mm->page_table_lock);
--- 
-2.20.0
+  Linux 5.9 (2020-10-11 14:15:50 -0700)
 
+are available in the Git repository at:
+
+  git://git.linaro.org:/people/jens.wiklander/linux-tee.git tags/amdtee-fixes-for-5.10
+
+for you to fetch changes up to be353be27874f40837327d9a39e3ad2149ab66d3:
+
+  tee: amdtee: synchronize access to shm list (2020-11-09 08:59:00 +0100)
+
+----------------------------------------------------------------
+AMD-TEE driver bug fixes
+
+AMD-TEE driver keeps track of shared memory buffers and their
+corresponding buffer id's in a global linked list. These buffers are
+used to share data between x86 and AMD Secure Processor. This pull
+request fixes issues related to maintaining mapped buffers in a shared
+linked list.
+
+----------------------------------------------------------------
+Rijo Thomas (2):
+      tee: amdtee: fix memory leak due to reset of global shm list
+      tee: amdtee: synchronize access to shm list
+
+ drivers/tee/amdtee/amdtee_private.h |  8 ++++----
+ drivers/tee/amdtee/core.c           | 26 +++++++++++++++++++-------
+ 2 files changed, 23 insertions(+), 11 deletions(-)
