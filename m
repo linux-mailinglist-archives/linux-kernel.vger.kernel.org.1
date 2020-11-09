@@ -2,116 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 520F32AB543
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 11:46:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EF9632AB546
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 11:46:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729323AbgKIKqR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 05:46:17 -0500
-Received: from mail-am6eur05on2068.outbound.protection.outlook.com ([40.107.22.68]:26923
-        "EHLO EUR05-AM6-obe.outbound.protection.outlook.com"
+        id S1729339AbgKIKqx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 05:46:53 -0500
+Received: from mail-db8eur05on2041.outbound.protection.outlook.com ([40.107.20.41]:20449
+        "EHLO EUR05-DB8-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726535AbgKIKqP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 05:46:15 -0500
+        id S1726535AbgKIKqw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 05:46:52 -0500
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=IoaLq3coQAnWx9sklACY9o+22h4XLJbkfVRUzEa/XJ2csnuk4RocpwCrS6s9aCQMhHVOfIV5LWLGDXmbKX9jHvxEOaswL2Ny9LK81gCiuCJAFO5OS6XSApC3+6Wj1HZyzkU6iyzVs12helkguolOXmDGvpCWd8SbOPGvBRP/mWNbLdzzXWix/HTp++QchGD7CdBZQ+J7RsRMIFhNilPV4dZSijs2o7EkrBj1ReK5Uir/4fAWeKLW2vxamZbzU7Rj2XD++eYR5NiyMBu2GAcp7GcnZI75KM8K8dvokOP2OP3Wa+yVQIaWbMbKcKhPcMFkNPeL5FHs1l2DmOwyXuymrQ==
+ b=hkeRJdY4Kd39QGogOmArs5p5azmCuBxbgzKV8QzkVzWZJXb9Dyq+5LY40c/AEMf7psLjQqG6fd9o7NKcIaRKCUO3sj4o3ev5SgpnRp3JfZJo3wQz3pD403CkCJ72MBLu2FaZ76cNAaSwS6TEXfTBOzN+gY+iQk0E035tkUBOx+sdEkWiVtv9v3GXx0LBpP8VhjNLhzfNUYX7BxPSmq9wWmiDzsxDDqy17Ik34zQAHXtLo2gpVM7sGVDgs1EuIPXboVZoJV/20NwA2ezBUFrWYaEjDNFx77glpwDgzMdzeMRJt34q8M5AtTqPFnr5UVt0wRwtUmHil9tJ1g8o9vWPMw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=b73Q7kNpE1zg9Yl5LwDjvG2EQU4rmCYAKSA8+Fk5x+0=;
- b=VBh+IZApcbm8xkjuHwuxODv4DI8giX6Gls3OckKrjOYo/qgmwf1YPjCZMbDg2UVrcp/Ad10KWddbspY9i6JvzAfW2m01SiwdFk5gmQTBPfcVfzJDaN8eMKEvYH4EMiRveAgDtN3G42GMwH/ifKw/fUhZozBM4yDqJ4talcOj55adqv4ZptNCVdjbUnArGGQHMT07dUtOzL5uKJ2eXPiYM4Gi8X3nwtsIKq0VhEN7tAhEVZS4fTWh9k+VtMYhuIW5KrY4dou/Hgtkn/y4Qp5Cyu98RhpBdNiD2Ot2oMw175g131wP1s9D+dyOnav1B3WaxLS6XJyF9L35McauoNmd0Q==
+ bh=Ab2uzMqXz4V9krXxZpAa7O0DBMlmavKaa4JUqz7br5I=;
+ b=NfPEfoseEwQLGtsrXuQPQdD2q6A9VuP3krUIz5PdkEM4sQwbts5muraltVCz/EfpZAHHniWys3GadXX+ckmsz8q1vVUpT90EudKjavX+lZu8t8tqzkaoX59bpV8FYJdtTe2g6M7vdLVB6gzTwwyl3jQN6ORKxqE/Ip7K+kwsE2a+Wo4t0BDWAhrLCO/EFA/LmZ3ChKuEgms4fZOYaQnhcw8KauK0yT/kZJzbPpEpj5cp2t64mTWmpdQcKk6Y2h3O5j0VH3uNigsfosViuRkIenrrAq8CrLVW9MLQU/mYgTiMaJCaDcizWFC83afbyQYuk/J891RJ3n3h80sq9JZ/xQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
  header.d=nxp.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=b73Q7kNpE1zg9Yl5LwDjvG2EQU4rmCYAKSA8+Fk5x+0=;
- b=WnBtQ9Uhn7ajf1HoUhXeopUw4UTC2Vmlr0gGLiP6iuI2e2PyAr96fleH1WMma733awDBDGjAhepHuIx34OuEQNW76IV5Wrvq8DhtMa4pkIiuYg61+Et17IZq+eY+Nefw7pZmdqKXwjtrC+XUAjuCfuORSh/YHr3gnTA6oiGLfL4=
-Received: from AM6PR04MB5685.eurprd04.prod.outlook.com (2603:10a6:20b:a4::30)
- by AS8PR04MB7526.eurprd04.prod.outlook.com (2603:10a6:20b:299::23) with
+ bh=Ab2uzMqXz4V9krXxZpAa7O0DBMlmavKaa4JUqz7br5I=;
+ b=LQhUgUzxfzsJ93oiFX1cCGsQc7cYvrkgnpiu6UZois3V5M0KFRmIqaHnC2yFrn7weQE0+Mof3j0PBLJCCmepDyjniBN5DkOrkEw02W47N0n/pBng7K6qcs/VJ7Zt/Zpiv6amNDcWbNv48Qet4xWL289x985NNzvwElqxRQSO2Ms=
+Authentication-Results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=nxp.com;
+Received: from VI1PR0402MB3405.eurprd04.prod.outlook.com (2603:10a6:803:3::26)
+ by VI1PR04MB3982.eurprd04.prod.outlook.com (2603:10a6:803:49::30) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3541.21; Mon, 9 Nov
- 2020 10:46:07 +0000
-Received: from AM6PR04MB5685.eurprd04.prod.outlook.com
- ([fe80::c62:742e:bcca:e226]) by AM6PR04MB5685.eurprd04.prod.outlook.com
- ([fe80::c62:742e:bcca:e226%4]) with mapi id 15.20.3499.032; Mon, 9 Nov 2020
- 10:46:06 +0000
-From:   Vladimir Oltean <vladimir.oltean@nxp.com>
-To:     Michael Walle <michael@walle.cc>
-CC:     "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>, Leo Li <leoyang.li@nxp.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Claudiu Manoil <claudiu.manoil@nxp.com>,
-        Ioana Ciornei <ioana.cionei@nxp.com>
-Subject: Re: [PATCH net] arm64: dts: fsl-ls1028a-kontron-sl28: specify in-band
- mode for ENETC
-Thread-Topic: [PATCH net] arm64: dts: fsl-ls1028a-kontron-sl28: specify
- in-band mode for ENETC
-Thread-Index: AQHWsFGeixGx/s/0HU6mwAEfgSmZwam+kYcAgAEY4YA=
-Date:   Mon, 9 Nov 2020 10:46:06 +0000
-Message-ID: <20201109104605.vzg2dt572krlijpk@skbuf>
-References: <20201101131905.8316-1-michael@walle.cc>
- <b2b33b89e0f363344fc3b036e58d5cdc@walle.cc>
-In-Reply-To: <b2b33b89e0f363344fc3b036e58d5cdc@walle.cc>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: walle.cc; dkim=none (message not signed)
- header.d=none;walle.cc; dmarc=none action=none header.from=nxp.com;
-x-originating-ip: [188.25.2.177]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: ff6d9acf-b3c1-4a0a-d5e8-08d8849ca969
-x-ms-traffictypediagnostic: AS8PR04MB7526:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <AS8PR04MB752690D6CF0D8BBEB2FDAAB5E0EA0@AS8PR04MB7526.eurprd04.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:8882;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: fK4z2h5eDGy4LaHUYBLwQ/WZHU5S6y3gPuPNvFqMrv3xRGrfE+d0lW4EFoWIoBTipl380gaqr1kUc6rHoB7zcJBVzdi4kf40CLMHJrEJZga9Ul3rRPv3UgovjYj9UJBTNQ82n+xnPp/hecg0R0WRd4P44633uGwI4RCSMGeU1jQlPxOfs2doMLsFQ4+wf7c3pSkBNDUehEEK3ZeYlgHj+uFq+X68iQvc3ZHIsj2SPdc+zGGM/UkjRT9VANvn21LHVO/EXT3IAnsOIzHo1jwxmCGwbmCkui+lfnnvRJN0o4XHf/2TORgNRIS4dbLsG/0pJgqTU9g2ICXym9GGzPTMOw==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM6PR04MB5685.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(7916004)(4636009)(346002)(396003)(366004)(39860400002)(136003)(376002)(54906003)(66446008)(64756008)(66556008)(66476007)(66946007)(71200400001)(6512007)(9686003)(6486002)(478600001)(186003)(26005)(4326008)(6506007)(76116006)(1076003)(91956017)(5660300002)(33716001)(44832011)(6916009)(86362001)(8676002)(2906002)(8936002)(316002)(4744005);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: 6BJ0DeeQlQV2OMbCVZDiTs0JtwIdkk34RJ/Mk1+JVn74mftY6FmUDpAguFkO8GA356IU/CBP6VDjujhtG3iOk64GRtrEhyz3JL0PutkU6E2ZgqZ4KOU0UoV0FpvcXalRhVIioV++kjaTgSAGAGFJy79Hh5WYA4o0PuASiBUmVMF5+AnolbN9BGlZXxzsbiX6dNx/V01GnccM9CKTJTT2E7LvtSRvKzKkB11RNS03TPDo0PojCX+MJ/oWXnWhcY2W7hkEX0bg3hflR6leh864ATdFQwaAUvnHqVyjI3FitSHPxXekuR7Jl7BA3cvO9Ds2XgpE2VXo+fti7XP2S2TqHf6yqvnP//P1UMAlQjtx63y/COjJO7nUAJcV4hP3mAEdSK8c7dIw1dOYsJ3b/q73pr5SfZg5flAZqUuhL9MILETOdCF+ZHzBhV3hYez5o7Zf+G7FGVoJ5CQSDvU8jujTyQsgGZJnIPnxprC8q0sXOYOVjGO3Ep5AI+mtERjMSOyUAkCp47PHgg7phlOmsR62aXZbSeD767WWtHCcf5OyV9b4iBd288OjbcNzOgWABFEFEE/g6jYLxMQ1svDHiJESxQ0oZPiNUQqNO6ZguSaozy2iXAWW7nKxn+lbi7Q+/S5QqxQDPyF7ctV1V/mo0oXRFA==
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3541.24; Mon, 9 Nov
+ 2020 10:46:48 +0000
+Received: from VI1PR0402MB3405.eurprd04.prod.outlook.com
+ ([fe80::f557:4dcb:4d4d:57f3]) by VI1PR0402MB3405.eurprd04.prod.outlook.com
+ ([fe80::f557:4dcb:4d4d:57f3%2]) with mapi id 15.20.3541.021; Mon, 9 Nov 2020
+ 10:46:48 +0000
+From:   Laurentiu Tudor <laurentiu.tudor@nxp.com>
+To:     robh+dt@kernel.org, leoyang.li@nxp.com, corbet@lwn.net,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        linux-doc@vger.kernel.org
+Cc:     davem@davemloft.net, kuba@kernel.org,
+        linuxppc-dev@lists.ozlabs.org, ioana.ciornei@nxp.com,
+        Ionut-robert Aron <ionut-robert.aron@nxp.com>,
+        Laurentiu Tudor <laurentiu.tudor@nxp.com>
+Subject: [PATCH v2 1/2] dt-bindings: misc: convert fsl,dpaa2-console from txt to YAML
+Date:   Mon,  9 Nov 2020 12:46:34 +0200
+Message-Id: <20201109104635.21116-1-laurentiu.tudor@nxp.com>
+X-Mailer: git-send-email 2.17.1
 Content-Type: text/plain; charset="us-ascii"
-Content-ID: <4EF530CBDB45554BA91F3FDCBF62E55F@eurprd04.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+X-Originating-IP: [83.217.231.2]
+X-ClientProxiedBy: AM8P192CA0020.EURP192.PROD.OUTLOOK.COM
+ (2603:10a6:20b:21b::25) To VI1PR0402MB3405.eurprd04.prod.outlook.com
+ (2603:10a6:803:3::26)
 MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from fsr-ub1864-101.ea.freescale.net (83.217.231.2) by AM8P192CA0020.EURP192.PROD.OUTLOOK.COM (2603:10a6:20b:21b::25) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3541.21 via Frontend Transport; Mon, 9 Nov 2020 10:46:45 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: b9e9794e-8563-44b0-c913-08d8849cc203
+X-MS-TrafficTypeDiagnostic: VI1PR04MB3982:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <VI1PR04MB398230FB2F6CE0C957C8988FECEA0@VI1PR04MB3982.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:6108;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: bFTRmU9p50iy2Z1vmnKa07bvPGalhCVTW6IRZd27Xqkw9HTUtYRke0bj/JuruOWbbQt08MIXyN94ScOXNvWA//d1JpIglU+wlRKL7NWjfNKPLBkvQ0q88z9MA1kdBMzoD9FTfJCk4Z35KpEIBhdMEJmhTaOUhqBdzaeDTeD/ik18ZWxu1t1Vsdosp68ptWcgP1P1eTcwB0pWq7Bpll6xuAVGwWaxHZjLBNl9GnOSWsOPh+a1CNsjxUc+eR+6UEwB6TJE8nT2HCZRbWZ3nmd5QVttUwwooSNebyv5BOTFLsNFVsCjxoYvp4XhxQn+2YdK1iVEiDra7GaoO3b7/GJXrgIBKI8dOQIGYSu7HCQZo562KHyfvLmjC6vpeNAf32MkJmGqag3TfrN4cUPRJ9YbuQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR0402MB3405.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(376002)(39860400002)(346002)(366004)(396003)(2906002)(52116002)(966005)(7416002)(66556008)(1076003)(6506007)(66946007)(66476007)(8676002)(16526019)(6512007)(6486002)(956004)(44832011)(8936002)(6666004)(26005)(316002)(54906003)(4326008)(5660300002)(186003)(83380400001)(36756003)(478600001)(2616005)(86362001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: flg3+jfCsVZpkUWgsMr5XA5B6pou7gsJg9yVlo3bWil1vHwfLHfFMX7T8A2w7eSrJJ0oz+4Yxk45U6NJJDHbjbfVPhwmvJdt8plyX/fgvYkPPFcDc7FNQWeHtGsfpsWj9vCQGLYPLIkgzpFUW8272Lz8dQtUfFhtLfsxWfX2kWZlxsYHNlI7KFL5uZ+ICHlXtf3dIGHJY32WIGj+EizXhQcIVKnouNoDrSkRl201NHJNuFNvrEMagd/Rg+PezPAS/YQaRhkHgQkG/wDfDA7hGtZykVR1lOBsIArPCdZopBTgzpiuIYunY/9utJU9n2O6A9AFjtt7pZh0L7mppKC60XbfnEpuiR3G18huYD7r6ZJ/z0Sq9SgstL2Hu1SEtxbWQxIQ2r3hQ/3GgLLpu6d2A3nJxAeQiysSf3/lmGO34zUGNzLjqWTpyTl3Zm3Lf4ZW17qTZ499Ng3O4AhexA34bF1C8pbLi9+xvQMwco4kn11fvFbgdipfBpw65pz4uqZh5o86xBg5JVCPk2wrQrlI7W7D1mvJAjv0X8u9aHKvfLrSHAgSTUSDvFuqEDIydipEmAnhLkrtzF0aSbHM3QlYqCE41Ji0ey+fNkWWA4HYu5x8jhnxQGLCxPqX10M6XxreEJFEp4IOKYzQAa7aVtwBRg==
 X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: b9e9794e-8563-44b0-c913-08d8849cc203
+X-MS-Exchange-CrossTenant-AuthSource: VI1PR0402MB3405.eurprd04.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: AM6PR04MB5685.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: ff6d9acf-b3c1-4a0a-d5e8-08d8849ca969
-X-MS-Exchange-CrossTenant-originalarrivaltime: 09 Nov 2020 10:46:06.3656
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Nov 2020 10:46:48.1495
  (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: U1ien+ucqqlloYGqQwi8GkxE+I7lB3BN64G7AqEgmT9xtwZ8yDsQ/uwmUoybsc5Ol+FMRSBYRYn9Yp/4ZHrf5w==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS8PR04MB7526
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: RkYQyflUJRA8pLmkPKlXbW1DO5QkIvT595QuXghGf7aMCFab8rQf6j5oiuWIJoMj5KOneZzUrN2j9fVrkw+XBg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB3982
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Nov 08, 2020 at 07:00:46PM +0100, Michael Walle wrote:
-> Hi,
->=20
-> Am 2020-11-01 14:19, schrieb Michael Walle:
-> > Since commit 71b77a7a27a3 ("enetc: Migrate to PHYLINK and PCS_LYNX") th=
-e
-> > network port of the Kontron sl28 board is broken. After the migration t=
-o
-> > phylink the device tree has to specify the in-band-mode property. Add
-> > it.
-> >=20
-> > Fixes: 71b77a7a27a3 ("enetc: Migrate to PHYLINK and PCS_LYNX")
-> > Suggested-by: Vladimir Oltean <vladimir.oltean@nxp.com>
-> > Signed-off-by: Michael Walle <michael@walle.cc>
->=20
-> Ping. will this go through the net queue or Shawn's queue. In any case,
-> it should make it into a fixes queue, because this board is currently
-> broken in 5.10-rc2.
+From: Ionut-robert Aron <ionut-robert.aron@nxp.com>
 
-Michael, this cannot go through the net queue, since you didn't copy
-netdev@vger.kernel.org to the email. It's not in Jakub's patchwork. My
-advice would be to resend it.=
+Convert fsl,dpaa2-console to YAML in order to automate the
+verification process of dts files.
+
+Signed-off-by: Ionut-robert Aron <ionut-robert.aron@nxp.com>
+Signed-off-by: Laurentiu Tudor <laurentiu.tudor@nxp.com>
+---
+Changes in v2:
+ - add missing additionalProperties
+
+ .../bindings/misc/fsl,dpaa2-console.txt       | 11 --------
+ .../bindings/misc/fsl,dpaa2-console.yaml      | 25 +++++++++++++++++++
+ 2 files changed, 25 insertions(+), 11 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/misc/fsl,dpaa2-console.txt
+ create mode 100644 Documentation/devicetree/bindings/misc/fsl,dpaa2-console.yaml
+
+diff --git a/Documentation/devicetree/bindings/misc/fsl,dpaa2-console.txt b/Documentation/devicetree/bindings/misc/fsl,dpaa2-console.txt
+deleted file mode 100644
+index 1442ba5d2d98..000000000000
+--- a/Documentation/devicetree/bindings/misc/fsl,dpaa2-console.txt
++++ /dev/null
+@@ -1,11 +0,0 @@
+-DPAA2 console support
+-
+-Required properties:
+-
+-    - compatible
+-        Value type: <string>
+-        Definition: Must be "fsl,dpaa2-console".
+-    - reg
+-        Value type: <prop-encoded-array>
+-        Definition: A standard property.  Specifies the region where the MCFBA
+-                    (MC firmware base address) register can be found.
+diff --git a/Documentation/devicetree/bindings/misc/fsl,dpaa2-console.yaml b/Documentation/devicetree/bindings/misc/fsl,dpaa2-console.yaml
+new file mode 100644
+index 000000000000..271a3eafc054
+--- /dev/null
++++ b/Documentation/devicetree/bindings/misc/fsl,dpaa2-console.yaml
+@@ -0,0 +1,25 @@
++# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
++# Copyright 2020 NXP
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/misc/fsl,dpaa2-console.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: DPAA2 console support
++
++maintainers:
++  - Laurentiu Tudor <laurentiu.tudor@nxp.com>
++
++properties:
++  compatible:
++    const: "fsl,dpaa2-console"
++
++  reg:
++    description: A standard property. Specifies the region where the MCFBA
++                (MC firmware base address) register can be found.
++
++required:
++  - compatible
++  - reg
++
++additionalProperties: false
+-- 
+2.17.1
+
