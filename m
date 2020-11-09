@@ -2,167 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 193742ABFD2
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 16:28:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EBF332ABFD7
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 16:29:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731776AbgKIP2d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 10:28:33 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:57742 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729940AbgKIP2d (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 10:28:33 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1604935711;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=q4M13rFXdH1RVacgKaE1UkWy4gzYxCZ7aWqF1tml030=;
-        b=eJqKEr9/z03kW3hRZ6qCyUBLlnd1AO6mKtjxvkK4B5LBMxAh5dRR9gbzd/YoaCNsTjvLAm
-        lZzNx8/WMQuT88+YB69Po+VJcs7Tee0VZVZJe9ublot/g2An4co14bDLmVTJfLx6OsHX7i
-        +2oj9YsfZ+mZ1r4yIUGRlEchnPVbG+M=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-418-dQi-tvSrOe6bh5ezzXzt0w-1; Mon, 09 Nov 2020 10:28:28 -0500
-X-MC-Unique: dQi-tvSrOe6bh5ezzXzt0w-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 51480809DCE;
-        Mon,  9 Nov 2020 15:28:27 +0000 (UTC)
-Received: from x1.home (ovpn-112-213.phx2.redhat.com [10.3.112.213])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 8480919C78;
-        Mon,  9 Nov 2020 15:28:23 +0000 (UTC)
-Date:   Mon, 9 Nov 2020 08:28:22 -0700
-From:   Alex Williamson <alex.williamson@redhat.com>
-To:     Vikas Gupta <vikas.gupta@broadcom.com>
-Cc:     Auger Eric <eric.auger@redhat.com>,
-        Cornelia Huck <cohuck@redhat.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Vikram Prakash <vikram.prakash@broadcom.com>
-Subject: Re: [RFC, v0 1/3] vfio/platform: add support for msi
-Message-ID: <20201109082822.650d106a@x1.home>
-In-Reply-To: <CAHLZf_uan_nbewxRgTtbkAAk1rGAggq_3Z4EgtRqsPryt58eOw@mail.gmail.com>
-References: <20201105060257.35269-1-vikas.gupta@broadcom.com>
-        <20201105060257.35269-2-vikas.gupta@broadcom.com>
-        <20201105000806.1df16656@x1.home>
-        <CAHLZf_vyn1RKEsQWcd7=M1462F2hurSvE37aW3b+1QvFAnBTPQ@mail.gmail.com>
-        <20201105201208.5366d71e@x1.home>
-        <CAHLZf_uan_nbewxRgTtbkAAk1rGAggq_3Z4EgtRqsPryt58eOw@mail.gmail.com>
-Organization: Red Hat
+        id S1731881AbgKIP3Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 10:29:25 -0500
+Received: from mga18.intel.com ([134.134.136.126]:20686 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729940AbgKIP3Z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 10:29:25 -0500
+IronPort-SDR: +836LQmsPhMOZBJd3foyX8hI14lmOWlkbIqOWaJcVSQYJEHQ4y3xPLr+baSM3JYgh9jsx7GH0E
+ u0hc20mGWtCw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9800"; a="157601891"
+X-IronPort-AV: E=Sophos;i="5.77,463,1596524400"; 
+   d="scan'208";a="157601891"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Nov 2020 07:29:23 -0800
+IronPort-SDR: hKgppvOKDZycZEu2PMnZm9etdtQbs6NsNSGl3huSYxu4zopxpSJ8gItpqWqk1m72QhTbRaPTft
+ wtiS7HrbGdOg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,463,1596524400"; 
+   d="scan'208";a="473015042"
+Received: from lkp-server01.sh.intel.com (HELO d0be80f1a028) ([10.239.97.150])
+  by orsmga004.jf.intel.com with ESMTP; 09 Nov 2020 07:29:21 -0800
+Received: from kbuild by d0be80f1a028 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1kc96f-0000GH-4N; Mon, 09 Nov 2020 15:29:21 +0000
+Date:   Mon, 09 Nov 2020 23:29:18 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [rcu:dev.2020.11.05a] BUILD SUCCESS
+ ca5bf671578e7427c59907b1bf6cf16c262f1112
+Message-ID: <5fa9604e.E+rKqsPqeyf1RQ6o%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 9 Nov 2020 12:11:15 +0530
-Vikas Gupta <vikas.gupta@broadcom.com> wrote:
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git  dev.2020.11.05a
+branch HEAD: ca5bf671578e7427c59907b1bf6cf16c262f1112  rcu: Mark obtuse portion of stall warning as internal debug
 
-> Hi Alex,
->=20
-> On Fri, Nov 6, 2020 at 8:42 AM Alex Williamson
-> <alex.williamson@redhat.com> wrote:
-> >
-> > On Fri, 6 Nov 2020 08:24:26 +0530
-> > Vikas Gupta <vikas.gupta@broadcom.com> wrote:
-> > =20
-> > > Hi Alex,
-> > >
-> > > On Thu, Nov 5, 2020 at 12:38 PM Alex Williamson
-> > > <alex.williamson@redhat.com> wrote: =20
-> > > >
-> > > > On Thu,  5 Nov 2020 11:32:55 +0530
-> > > > Vikas Gupta <vikas.gupta@broadcom.com> wrote:
-> > > > =20
-> > > > > diff --git a/include/uapi/linux/vfio.h b/include/uapi/linux/vfio.h
-> > > > > index 2f313a238a8f..aab051e8338d 100644
-> > > > > --- a/include/uapi/linux/vfio.h
-> > > > > +++ b/include/uapi/linux/vfio.h
-> > > > > @@ -203,6 +203,7 @@ struct vfio_device_info {
-> > > > >  #define VFIO_DEVICE_FLAGS_AP (1 << 5)        /* vfio-ap device */
-> > > > >  #define VFIO_DEVICE_FLAGS_FSL_MC (1 << 6)    /* vfio-fsl-mc devi=
-ce */
-> > > > >  #define VFIO_DEVICE_FLAGS_CAPS       (1 << 7)        /* Info sup=
-ports caps */
-> > > > > +#define VFIO_DEVICE_FLAGS_MSI        (1 << 8)        /* Device s=
-upports msi */
-> > > > >       __u32   num_regions;    /* Max region index + 1 */
-> > > > >       __u32   num_irqs;       /* Max IRQ index + 1 */
-> > > > >       __u32   cap_offset;     /* Offset within info struct of fir=
-st cap */ =20
-> > > >
-> > > > This doesn't make any sense to me, MSIs are just edge triggered
-> > > > interrupts to userspace, so why isn't this fully described via
-> > > > VFIO_DEVICE_GET_IRQ_INFO?  If we do need something new to describe =
-it,
-> > > > this seems incomplete, which indexes are MSI (IRQ_INFO can describe
-> > > > that)?  We also already support MSI with vfio-pci, so a global flag=
- for
-> > > > the device advertising this still seems wrong.  Thanks,
-> > > >
-> > > > Alex
-> > > > =20
-> > > Since VFIO platform uses indexes for IRQ numbers so I think MSI(s)
-> > > cannot be described using indexes. =20
-> >
-> > That would be news for vfio-pci which has been describing MSIs with
-> > sub-indexes within indexes since vfio started.
-> > =20
-> > > In the patch set there is no difference between MSI and normal
-> > > interrupt for VFIO_DEVICE_GET_IRQ_INFO. =20
-> >
-> > Then what exactly is a global device flag indicating?  Does it indicate
-> > all IRQs are MSI? =20
->=20
-> No, it's not indicating that all are MSI.
-> The rationale behind adding the flag to tell user-space that platform
-> device supports MSI as well. As you mentioned recently added
-> capabilities can help on this, I`ll go through that.
+elapsed time: 723m
 
+configs tested: 95
+configs skipped: 2
 
-It still seems questionable to me to use a device info capability to
-describe an interrupt index specific feature.  The scope seems wrong.
-Why does userspace need to know that this IRQ is MSI rather than
-indicating it's simply an edge triggered interrupt?  That can be done
-using only vfio_irq_info.flags.
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+arc                        nsim_700_defconfig
+powerpc                       holly_defconfig
+xtensa                  audio_kc705_defconfig
+sh                           se7343_defconfig
+arm                  colibri_pxa270_defconfig
+nios2                         3c120_defconfig
+powerpc                mpc7448_hpc2_defconfig
+arm                          badge4_defconfig
+arm                       multi_v4t_defconfig
+h8300                               defconfig
+arm                          collie_defconfig
+arc                                 defconfig
+mips                      fuloong2e_defconfig
+sh                         microdev_defconfig
+arm                            mmp2_defconfig
+sh                        sh7757lcr_defconfig
+m68k                        m5307c3_defconfig
+arm                             rpc_defconfig
+m68k                        m5272c3_defconfig
+c6x                              alldefconfig
+powerpc                      pmac32_defconfig
+arm                          imote2_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+c6x                              allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+x86_64               randconfig-a004-20201109
+x86_64               randconfig-a002-20201109
+x86_64               randconfig-a003-20201109
+x86_64               randconfig-a005-20201109
+x86_64               randconfig-a006-20201109
+x86_64               randconfig-a001-20201109
+i386                 randconfig-a004-20201109
+i386                 randconfig-a006-20201109
+i386                 randconfig-a005-20201109
+i386                 randconfig-a001-20201109
+i386                 randconfig-a003-20201109
+i386                 randconfig-a002-20201109
+i386                 randconfig-a014-20201109
+i386                 randconfig-a015-20201109
+i386                 randconfig-a013-20201109
+i386                 randconfig-a016-20201109
+i386                 randconfig-a011-20201109
+i386                 randconfig-a012-20201109
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+x86_64                                   rhel
+x86_64                           allyesconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                                  kexec
 
-> > > The patch set adds MSI(s), say as an extension, to the normal
-> > > interrupts and handled accordingly. =20
-> >
-> > So we have both "normal" IRQs and MSIs?  How does the user know which
-> > indexes are which? =20
->=20
-> With this patch set, I think this is missing and user space cannot
-> know that particular index is MSI interrupt.
-> For platform devices there is no such mechanism, like index and
-> sub-indexes to differentiate between legacy, MSI or MSIX as it=E2=80=99s =
-there
-> in PCI.
+clang tested configs:
+x86_64               randconfig-a012-20201109
+x86_64               randconfig-a015-20201109
+x86_64               randconfig-a013-20201109
+x86_64               randconfig-a011-20201109
+x86_64               randconfig-a014-20201109
+x86_64               randconfig-a016-20201109
 
-Indexes and sub-indexes are a grouping mechanism of vfio to describe
-related interrupts.  That terminology doesn't exist on PCI either, it's
-meant to be used generically.  It's left to the vfio bus driver how
-userspace associates a given index to a device feature.
-
-> I believe for a particular IRQ index if the flag
-> VFIO_IRQ_INFO_NORESIZE is used then user space can know which IRQ
-> index has MSI(s). Does it make sense?
-
-
-No, no-resize is an implementation detail, not an indication of the
-interrupt mechanism.  It's still not clear to me why it's important to
-expose to userspace that a given interrupt is MSI versus simply
-exposing it as an edge interrupt (ie. automasked =3D false).  If it is
-necessary, the most direct approach might be to expose a capability
-extension in the vfio_irq_info structure to describe it.  Even then
-though, I don't think simply exposing a index as MSI is very
-meaningful.  What is userspace intended to do differently based on this
-information?  Thanks,
-
-Alex
-
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
