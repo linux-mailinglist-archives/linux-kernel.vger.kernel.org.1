@@ -2,209 +2,264 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5B252AAEDB
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 02:58:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CC5F42AAEDF
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 03:00:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729029AbgKIB6E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 8 Nov 2020 20:58:04 -0500
-Received: from m176115.mail.qiye.163.com ([59.111.176.115]:44991 "EHLO
-        m176115.mail.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728006AbgKIB6E (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 8 Nov 2020 20:58:04 -0500
-Received: from vivo-HP-ProDesk-680-G4-PCI-MT.vivo.xyz (unknown [58.251.74.231])
-        by m176115.mail.qiye.163.com (Hmail) with ESMTPA id B87846667E7;
-        Mon,  9 Nov 2020 09:57:58 +0800 (CST)
-From:   Wang Qing <wangqing@vivo.com>
-To:     Harry Wei <harryxiyou@gmail.com>,
-        Alex Shi <alex.shi@linux.alibaba.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Wang Qing <wangqing@vivo.com>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH V4 DOC] doc: zh_CN: add translatation for tmpfs
-Date:   Mon,  9 Nov 2020 09:57:47 +0800
-Message-Id: <1604887072-12997-1-git-send-email-wangqing@vivo.com>
-X-Mailer: git-send-email 2.7.4
+        id S1729048AbgKICAM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 8 Nov 2020 21:00:12 -0500
+Received: from mail-bn8nam11on2064.outbound.protection.outlook.com ([40.107.236.64]:2272
+        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728006AbgKICAM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 8 Nov 2020 21:00:12 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=b+m1Jg4qdOuqv5ChNGF/muB/aS5p6nyfY737yYDdfgp7Dtgw/xOhNXSmDB7v/Wa+w5555ARO2yEVzGopAYvTm7bSnsOAy2tEQLxWcOGbPQG+OZsalaFaqkSiMv3UIu9QAT3vm+6PMWAKlZPPaN7SrLJgQ9kTiAHPNu/2Go5JGfshiHg2EXnetVKLeIHmEVbo4xgpnOvpkSNYcX5b7gI9TXIeSumdStEC0+8FW+MOKjawUFNfnSO6n4+o1LlX1Qs2ezycWU0/7GBmoAsr83oeKpr4Ek6lX3Y11DLRQIbPSbtjz8jiN65L4RHl3A+SosS2VB76o55RybCZykEMtKONeQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=x/6qidCU8HCYN8iCrmdgB9fVq4wAkDYE6DXfnJSTwlI=;
+ b=L6eT8ZG+lpsvTrcRcEAupyXRIutp8GDGX//ulUyUveM2wKBP8JkmzgUPjR3KUS3Lbqc+gkaD4FFnNp57DG4GNoU8Dzv814y7Br5CS/FuE8G7GR3xB4RFeRc7sQhdbeevjS92/53OGGJsq9k8mS+vPxl54e42h/vxY6aiE5U8dTLP3ETO+nK8Oi3dZOa5k4RaqJgH2ZfdtsyKlbrqRR9IIDE8Iaf9aCAe+OEaYYWST+jVO4vCAzmk5ttOMqD9AIKiVCPJ51owhpjpdjdSNvlcUx0uMcoQ7/CqkzbmXQx1Pn/Ak1yU4Hs10f3dK1BYVFHcvMpaPcGFQncI60hA/ziHBQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=synaptics.com; dmarc=pass action=none
+ header.from=synaptics.com; dkim=pass header.d=synaptics.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=Synaptics.onmicrosoft.com; s=selector2-Synaptics-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=x/6qidCU8HCYN8iCrmdgB9fVq4wAkDYE6DXfnJSTwlI=;
+ b=FbrmHzP0cldX9vrS6b9vSdOPVcrer9reAo37NsK/m9bJgazC93iEFAvOzeZ1j5/CJtptewTUUnAXq23Yw69Wj1C1v+5MZlAT3SfBh2YoRP31FPcQ1Z9t2pzv//KeGKrGOFtwYNbx5XN1LVWt2WAH6OTWLY7V4ESVBzMd62Y1HGE=
+Authentication-Results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=synaptics.com;
+Received: from SN2PR03MB2383.namprd03.prod.outlook.com (2603:10b6:804:d::23)
+ by SN6PR03MB3488.namprd03.prod.outlook.com (2603:10b6:805:40::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3541.25; Mon, 9 Nov
+ 2020 02:00:06 +0000
+Received: from SN2PR03MB2383.namprd03.prod.outlook.com
+ ([fe80::49be:5ea3:8961:a22]) by SN2PR03MB2383.namprd03.prod.outlook.com
+ ([fe80::49be:5ea3:8961:a22%6]) with mapi id 15.20.3541.024; Mon, 9 Nov 2020
+ 02:00:06 +0000
+Date:   Mon, 9 Nov 2020 09:59:53 +0800
+From:   Jisheng Zhang <Jisheng.Zhang@synaptics.com>
+To:     Felipe Balbi <balbi@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Kukjin Kim <kgene@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Jerome Brunet <jbrunet@baylibre.com>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Patrice Chotard <patrice.chotard@st.com>
+Cc:     linux-usb@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-amlogic@lists.infradead.org, linux-omap@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org
+Subject: [PATCH usb-next] usb: dwc3: Use devm_of_platform_populate
+Message-ID: <20201109095953.7f810239@xhacker.debian>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [192.147.44.204]
+X-ClientProxiedBy: BYAPR07CA0016.namprd07.prod.outlook.com
+ (2603:10b6:a02:bc::29) To SN2PR03MB2383.namprd03.prod.outlook.com
+ (2603:10b6:804:d::23)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
-        oVCBIfWUFZSU9OGk4YQ09NQxlKVkpNS09DQ0xLTEJLQkxVEwETFhoSFyQUDg9ZV1kWGg8SFR0UWU
-        FZT0tIVUpKS0hKQ1VLWQY+
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6Kxg6Fww*Pj8jPxNKDxYIOk9M
-        MklPCzhVSlVKTUtPQ0NMS0xCTkNDVTMWGhIXVQwaFRwKEhUcOw0SDRRVGBQWRVlXWRILWUFZTkNV
-        SU5KVUxPVUlISllXWQgBWUFDTUhKNwY+
-X-HM-Tid: 0a75aab968309373kuwsb87846667e7
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from xhacker.debian (192.147.44.204) by BYAPR07CA0016.namprd07.prod.outlook.com (2603:10b6:a02:bc::29) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.18 via Frontend Transport; Mon, 9 Nov 2020 02:00:00 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 44c8004b-f22a-48b6-1f46-08d884532e0c
+X-MS-TrafficTypeDiagnostic: SN6PR03MB3488:
+X-Microsoft-Antispam-PRVS: <SN6PR03MB348822E48A9331DC6CE6734FEDEA0@SN6PR03MB3488.namprd03.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:256;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: pz6q4Scy7kSOEoPJoTKTEN1QyJ8wuhasmLYYr0FK9X1nWwR5sRanT8ZbHUvCr34KKQs/LfZLlpkspG5v5Jdu8oEfKInxpoJMACcL7JpfXHqZQKfRKsBbXUTP7wv4P0pAHwAJLqYy3k5EL1Dc7yJZXvLbxN+fp1djjrkMcbfjUxNMHdzo2Oc0dk2kprFXkdsIUN+4aZnBnZWFGPTHA6TVMOrVX5u4XeUF1CHJ/GuEXP7AI/vWIbVcNd2jk6KdkAkNuliZYhJWQM3Q+YqJXA4ODG9SrV+KHMMi2rHDKLy83lNejzhLBsXUy3XscrA7PjkOfsACiWwagJ1lFj5jAsk3GOfERzZcfCqOLKlfPM8JtjXZoA6TcuFKyF6eIyct3K5D
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN2PR03MB2383.namprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39850400004)(366004)(136003)(376002)(396003)(346002)(6506007)(110136005)(186003)(86362001)(26005)(16526019)(316002)(956004)(7696005)(52116002)(8676002)(8936002)(4326008)(7416002)(478600001)(2906002)(9686003)(55016002)(5660300002)(66946007)(83380400001)(1076003)(66476007)(66556008)(6666004)(921003);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: 1Q1xHlRU8kpfURj/DX4KGduQplaxw1CYM5qqyLgNOqoYhOp+9sc1ei4yRKNL3C3LUayE6yIG7feHiGRsnXpygYCvU7KTOlA/nZsjmBxYVvLu2fImxTqdhvWfYJeAH20OIgCOH3vJb1ju/+hQAmf4vPj/JfaoScWpPnsWkVcmIyLzFcayZF8BisjCkv28yiIFa9cmjqox9R2Z1hf+EWHhlyseu7m5/vcDCZyiWctYx1OpACj4AXPhk61asIF5rGSZzkaDP8ZeC5cW9BnaWMtNdCUX88VwKfEirZO0UZkw4tN0IyYtkxItrENrzYZ2F0M0eEn3XDSLlhz59EqsIbf8atXMZKtNF0cwhiXXPAlFeL93oxlNZUWGscOCsRbe5LUoVakBRg+JeMQTFcexV5dvdb+fA4sxwwZ3ywaW27MwcNxOoHA7Cz62RCxPv/VEOVMVUEan85TAO707FFRqdbBN/LzH5PH0YWDVW4rFlWkJSCfqODJFUtG04RVBuiM8vTrLADMg5oI/0uFvG0QnHa69HDwYhciBgX+FY3VUfu+VC6TipFBe0TN3zN3Br8hVq7vWh3SR8DsgoC3JPiYBivyijOYAPl7Ei6cUqznLGKl2aqTa9cX994TvQEhV9zYNHrAmFv4B4QwIu6RDzrl7qtWrRA==
+X-OriginatorOrg: synaptics.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 44c8004b-f22a-48b6-1f46-08d884532e0c
+X-MS-Exchange-CrossTenant-AuthSource: SN2PR03MB2383.namprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Nov 2020 02:00:06.4372
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 335d1fbc-2124-4173-9863-17e7051a2a0e
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: dMYB2hv/U8iOC13y/GxxLjLyMCNSASkO6zaSXf9hu2t+uwe0g4rD8FUuDBvbwdfHj6/gNuUjIVG2ZUPJQNRz/w==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR03MB3488
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Translate Documentation/filesystems/tmpfs.rst into Chinese.
+Use managed API devm_of_platform_populate() to simplify error and exit
+code path.
 
-Signed-off-by: Wang Qing <wangqing@vivo.com>
-
-Changes in v4:
- - Modify as Alex required.
- 
-Changes in v3:
- - Fix patch format issue.
+Signed-off-by: Jisheng Zhang <Jisheng.Zhang@synaptics.com>
 ---
- .../translations/zh_CN/filesystems/tmpfs.rst       | 146 +++++++++++++++++++++
- 1 file changed, 146 insertions(+)
- create mode 100644 Documentation/translations/zh_CN/filesystems/tmpfs.rst
+ drivers/usb/dwc3/dwc3-exynos.c     | 2 +-
+ drivers/usb/dwc3/dwc3-keystone.c   | 2 +-
+ drivers/usb/dwc3/dwc3-meson-g12a.c | 5 +----
+ drivers/usb/dwc3/dwc3-of-simple.c  | 4 +---
+ drivers/usb/dwc3/dwc3-omap.c       | 3 +--
+ drivers/usb/dwc3/dwc3-qcom.c       | 8 ++------
+ drivers/usb/dwc3/dwc3-st.c         | 4 +---
+ 7 files changed, 8 insertions(+), 20 deletions(-)
 
-diff --git a/Documentation/translations/zh_CN/filesystems/tmpfs.rst b/Documentation/translations/zh_CN/filesystems/tmpfs.rst
-new file mode 100644
-index 0000000..28f0d09
---- /dev/null
-+++ b/Documentation/translations/zh_CN/filesystems/tmpfs.rst
-@@ -0,0 +1,146 @@
-+.. SPDX-License-Identifier: GPL-2.0
-+
-+.. include:: ../disclaimer-zh_CN.rst
-+
-+:Original: :ref:`Documentation/filesystems/tmpfs.rst <tmpfs_index>`
-+
-+translated by Wang Qing<wangqing@vivo.com>
-+
-+=====
-+Tmpfs
-+=====
-+
-+Tmpfs是一个将所有文件都保存在虚拟内存中的文件系统。
-+
-+tmpfs中的所有内容都是临时的，也就是说没有任何文件会在硬盘上创建。
-+如果卸载tmpfs实例，所有保存在其中的文件都会丢失。
-+
-+tmpfs将所有文件保存在内核缓存中，随着文件内容增长或缩小可以将不需要的
-+页面swap出去。它具有最大限制，可以通过“mount -o remount ...”调整。
-+
-+和ramfs（创建tmpfs的模板）相比，tmpfs包含交换和限制检查。和tmpfs相似的另
-+一个东西是RAM磁盘（/dev/ram*），可以在物理RAM中模拟固定大小的硬盘，并在
-+此之上创建一个普通的文件系统。Ramdisks无法swap，因此无法调整它们的大小。
-+
-+由于tmpfs完全保存于页面缓存和swap中，因此所有tmpfs页面将在/proc/meminfo
-+中显示为“Shmem”，而在free(1)中显示为“Shared”。请注意，这些计数还包括
-+共享内存(shmem，请参阅ipcs(1))。获得计数的最可靠方法是使用df(1)和du(1)。
-+
-+tmpfs具有以下用途：
-+
-+1) 内核总有一个无法看到的内部挂载，用于共享匿名映射和SYSV共享内存。
-+
-+   挂载不依赖于CONFIG_TMPFS。如果CONFIG_TMPFS未设置，tmpfs对用户不可见。
-+   但是内部机制始终存在。
-+
-+2) glibc 2.2及更高版本期望将tmpfs挂载在/dev/shm上以用于POSIX共享内存
-+   (shm_open，shm_unlink)。添加内容到/etc/fstab应注意如下：
-+
-+	tmpfs	/dev/shm	tmpfs	defaults	0 0
-+
-+   使用时需要记住创建挂载tmpfs的目录。
-+
-+   SYSV共享内存无需挂载，内部已默认支持。(在2.3内核版本中，必须挂载
-+   tmpfs的前身(shm fs)才能使用SYSV共享内存)
-+
-+3) 很多人（包括我）都觉的在/tmp和/var/tmp上挂载非常方便，并具有较大的
-+   swap分区。目前循环挂载tmpfs可以正常工作，所以大多数发布都应当可以
-+   使用mkinitrd通过/tmp访问/tmp。
-+
-+4) 也许还有更多我不知道的地方:-)
-+
-+
-+tmpfs有三个用于调整大小的挂载选项：
-+
-+=========  ===========================================================
-+size       tmpfs实例分配的字节数限制。默认值是不swap时物理RAM的一半。
-+           如果tmpfs实例过大，机器将死锁，因为OOM处理将无法释放该内存。
-+nr_blocks  与size相同，但以PAGE_SIZE为单位。
-+nr_inodes  tmpfs实例的最大inode个数。默认值是物理内存页数的一半，或者
-+           (有高端内存的机器)低端内存RAM的页数，二者以较低者为准。
-+=========  ===========================================================
-+
-+这些参数接受后缀k，m或g表示千，兆和千兆字节，可以在remount时更改。
-+size参数也接受后缀％用来限制tmpfs实例占用物理RAM的百分比：
-+未指定size或nr_blocks时，默认值为size=50％
-+
-+如果nr_blocks=0（或size=0），block个数将不受限制；如果nr_inodes=0，
-+inode个数将不受限制。这样挂载通常是不明智的，因为它允许任何具有写权限的
-+用户通过访问tmpfs耗尽机器上的所有内存；但同时这样做也会增强在多个CPU的
-+场景下的访问。
-+
-+tmpfs具有为所有文件设置NUMA内存分配策略挂载选项(如果启用了CONFIG_NUMA),
-+可以通过“mount -o remount ...”调整
-+
-+======================== =========================
-+mpol=default             采用进程分配策略
-+                         (请参阅 set_mempolicy(2))
-+mpol=prefer:Node         倾向从给定的节点分配
-+mpol=bind:NodeList       只允许从指定的链表分配
-+mpol=interleave          倾向于依次从每个节点分配
-+mpol=interleave:NodeList 依次从每个节点分配
-+mpol=local               优先本地节点分配内存
-+======================== =========================
-+
-+NodeList格式是以逗号分隔的十进制数字表示大小和范围，最大和最小范围是用-
-+分隔符的十进制数来表示。例如，mpol=bind0-3,5,7,9-15
-+
-+带有有效NodeList的内存策略将按指定格式保存，在创建文件时使用。当任务在该
-+文件系统上创建文件时，会使用到挂载时的内存策略NodeList选项，如果设置的话，
-+由调用任务的cpuset[请参见Documentation/admin-guide/cgroup-v1/cpusets.rst]
-+以及下面列出的可选标志约束。如果NodeLists为设置为空集，则文件的内存策略将
-+恢复为“默认”策略。
-+
-+NUMA内存分配策略有可选标志，可以用于模式结合。在挂载tmpfs时指定这些可选
-+标志可以在NodeList之前生效。
-+Documentation/admin-guide/mm/numa_memory_policy.rst列出所有可用的内存
-+分配策略模式标志及其对内存策略。
-+
-+::
-+
-+	=static		相当于	MPOL_F_STATIC_NODES
-+	=relative	相当于	MPOL_F_RELATIVE_NODES
-+
-+例如，mpol=bind=staticNodeList相当于MPOL_BIND|MPOL_F_STATIC_NODES的分配策略
-+
-+请注意，如果内核不支持NUMA，那么使用mpol选项挂载tmpfs将会失败；nodelist指定不
-+在线的节点也会失败。如果您的系统依赖于此，但内核会运行不带NUMA功能(也许是安全
-+revocery内核)，或者具有较少的节点在线，建议从自动模式中省略mpol选项挂载选项。
-+可以在以后通过“mount -o remount,mpol=Policy:NodeList MountPoint”添加到挂载点。
-+
-+要指定初始根目录，可以使用如下挂载选项：
-+
-+====	====================
-+模式	权限用八进制数字表示
-+uid	用户ID
-+gid	组ID
-+====	====================
-+
-+这些选项对remount没有任何影响。您可以通过chmod(1),chown(1)和chgrp(1)的更改
-+已经挂载的参数。
-+
-+tmpfs具有选择32位还是64位inode的挂载选项：
-+
-+=======   =============
-+inode64   使用64位inode
-+inode32   使用32位inode
-+=======   =============
-+
-+在32位内核上，默认是inode32，挂载时指定inode64会被拒绝。
-+在64位内核上，默认配置是CONFIG_TMPFS_INODE64。inode64避免了单个设备上可能有多个
-+具有相同inode编号的文件；比如32位应用程序使用glibc如果长期访问tmpfs，一旦达到33
-+位inode编号，就有EOVERFLOW失败的危险，无法打开大于2GiB的文件，并返回EINVAL。
-+
-+所以'mount -t tmpfs -o size=10G,nr_inodes=10k,mode=700 tmpfs /mytmpfs'将在
-+/mytmpfs上挂载tmpfs实例，分配只能由root用户访问的10GB RAM/SWAP，可以有10240个
-+inode的实例。
-+
-+
-+:作者:
-+   Christoph Rohland <cr@sap.com>, 1.12.01
-+:更新:
-+   Hugh Dickins, 4 June 2007
-+:更新:
-+   KOSAKI Motohiro, 16 Mar 2010
-+:更新:
-+   Chris Down, 13 July 2020
+diff --git a/drivers/usb/dwc3/dwc3-exynos.c b/drivers/usb/dwc3/dwc3-exynos.c
+index 90bb022737da..f567d1e63c05 100644
+--- a/drivers/usb/dwc3/dwc3-exynos.c
++++ b/drivers/usb/dwc3/dwc3-exynos.c
+@@ -110,7 +110,7 @@ static int dwc3_exynos_probe(struct platform_device *pdev)
+ 	}
+ 
+ 	if (node) {
+-		ret = of_platform_populate(node, NULL, NULL, dev);
++		ret = devm_of_platform_populate(dev);
+ 		if (ret) {
+ 			dev_err(dev, "failed to add dwc3 core\n");
+ 			goto populate_err;
+diff --git a/drivers/usb/dwc3/dwc3-keystone.c b/drivers/usb/dwc3/dwc3-keystone.c
+index 9a99253d5ba3..626b16c46688 100644
+--- a/drivers/usb/dwc3/dwc3-keystone.c
++++ b/drivers/usb/dwc3/dwc3-keystone.c
+@@ -157,7 +157,7 @@ static int kdwc3_probe(struct platform_device *pdev)
+ 	kdwc3_enable_irqs(kdwc);
+ 
+ skip_irq:
+-	error = of_platform_populate(node, NULL, NULL, dev);
++	error = devm_of_platform_populate(dev);
+ 	if (error) {
+ 		dev_err(&pdev->dev, "failed to create dwc3 core\n");
+ 		goto err_core;
+diff --git a/drivers/usb/dwc3/dwc3-meson-g12a.c b/drivers/usb/dwc3/dwc3-meson-g12a.c
+index 417e05381b5d..83015bb7b926 100644
+--- a/drivers/usb/dwc3/dwc3-meson-g12a.c
++++ b/drivers/usb/dwc3/dwc3-meson-g12a.c
+@@ -702,7 +702,6 @@ static int dwc3_meson_g12a_probe(struct platform_device *pdev)
+ {
+ 	struct dwc3_meson_g12a	*priv;
+ 	struct device		*dev = &pdev->dev;
+-	struct device_node	*np = dev->of_node;
+ 	void __iomem *base;
+ 	int ret, i;
+ 
+@@ -794,7 +793,7 @@ static int dwc3_meson_g12a_probe(struct platform_device *pdev)
+ 			goto err_phys_power;
+ 	}
+ 
+-	ret = of_platform_populate(np, NULL, NULL, dev);
++	ret = devm_of_platform_populate(dev);
+ 	if (ret)
+ 		goto err_phys_power;
+ 
+@@ -832,8 +831,6 @@ static int dwc3_meson_g12a_remove(struct platform_device *pdev)
+ 	if (priv->drvdata->otg_switch_supported)
+ 		usb_role_switch_unregister(priv->role_switch);
+ 
+-	of_platform_depopulate(dev);
+-
+ 	for (i = 0 ; i < PHY_COUNT ; ++i) {
+ 		phy_power_off(priv->phys[i]);
+ 		phy_exit(priv->phys[i]);
+diff --git a/drivers/usb/dwc3/dwc3-of-simple.c b/drivers/usb/dwc3/dwc3-of-simple.c
+index e62ecd22b3ed..f1c267e39d62 100644
+--- a/drivers/usb/dwc3/dwc3-of-simple.c
++++ b/drivers/usb/dwc3/dwc3-of-simple.c
+@@ -73,7 +73,7 @@ static int dwc3_of_simple_probe(struct platform_device *pdev)
+ 	if (ret)
+ 		goto err_resetc_assert;
+ 
+-	ret = of_platform_populate(np, NULL, NULL, dev);
++	ret = devm_of_platform_populate(dev);
+ 	if (ret)
+ 		goto err_clk_put;
+ 
+@@ -97,8 +97,6 @@ static int dwc3_of_simple_probe(struct platform_device *pdev)
+ 
+ static void __dwc3_of_simple_teardown(struct dwc3_of_simple *simple)
+ {
+-	of_platform_depopulate(simple->dev);
+-
+ 	clk_bulk_disable_unprepare(simple->num_clocks, simple->clks);
+ 	clk_bulk_put_all(simple->num_clocks, simple->clks);
+ 	simple->num_clocks = 0;
+diff --git a/drivers/usb/dwc3/dwc3-omap.c b/drivers/usb/dwc3/dwc3-omap.c
+index 3db17806e92e..46e7a1dd7c50 100644
+--- a/drivers/usb/dwc3/dwc3-omap.c
++++ b/drivers/usb/dwc3/dwc3-omap.c
+@@ -505,7 +505,7 @@ static int dwc3_omap_probe(struct platform_device *pdev)
+ 	if (ret < 0)
+ 		goto err1;
+ 
+-	ret = of_platform_populate(node, NULL, NULL, dev);
++	ret = devm_of_platform_populate(dev);
+ 	if (ret) {
+ 		dev_err(&pdev->dev, "failed to create dwc3 core\n");
+ 		goto err1;
+@@ -535,7 +535,6 @@ static int dwc3_omap_remove(struct platform_device *pdev)
+ 
+ 	dwc3_omap_disable_irqs(omap);
+ 	disable_irq(omap->irq);
+-	of_platform_depopulate(omap->dev);
+ 	pm_runtime_put_sync(&pdev->dev);
+ 	pm_runtime_disable(&pdev->dev);
+ 
+diff --git a/drivers/usb/dwc3/dwc3-qcom.c b/drivers/usb/dwc3/dwc3-qcom.c
+index c703d552bbcf..8f5714c3d379 100644
+--- a/drivers/usb/dwc3/dwc3-qcom.c
++++ b/drivers/usb/dwc3/dwc3-qcom.c
+@@ -636,7 +636,7 @@ static int dwc3_qcom_of_register_core(struct platform_device *pdev)
+ 		return -ENODEV;
+ 	}
+ 
+-	ret = of_platform_populate(np, NULL, NULL, dev);
++	ret = devm_of_platform_populate(dev);
+ 	if (ret) {
+ 		dev_err(dev, "failed to register dwc3 core - %d\n", ret);
+ 		return ret;
+@@ -775,9 +775,7 @@ static int dwc3_qcom_probe(struct platform_device *pdev)
+ interconnect_exit:
+ 	dwc3_qcom_interconnect_exit(qcom);
+ depopulate:
+-	if (np)
+-		of_platform_depopulate(&pdev->dev);
+-	else
++	if (!np)
+ 		platform_device_put(pdev);
+ clk_disable:
+ 	for (i = qcom->num_clocks - 1; i >= 0; i--) {
+@@ -796,8 +794,6 @@ static int dwc3_qcom_remove(struct platform_device *pdev)
+ 	struct device *dev = &pdev->dev;
+ 	int i;
+ 
+-	of_platform_depopulate(dev);
+-
+ 	for (i = qcom->num_clocks - 1; i >= 0; i--) {
+ 		clk_disable_unprepare(qcom->clks[i]);
+ 		clk_put(qcom->clks[i]);
+diff --git a/drivers/usb/dwc3/dwc3-st.c b/drivers/usb/dwc3/dwc3-st.c
+index e733be840545..9ec2ecf8d81f 100644
+--- a/drivers/usb/dwc3/dwc3-st.c
++++ b/drivers/usb/dwc3/dwc3-st.c
+@@ -259,7 +259,7 @@ static int st_dwc3_probe(struct platform_device *pdev)
+ 	}
+ 
+ 	/* Allocate and initialize the core */
+-	ret = of_platform_populate(node, NULL, NULL, dev);
++	ret = devm_of_platform_populate(dev);
+ 	if (ret) {
+ 		dev_err(dev, "failed to add dwc3 core\n");
+ 		goto err_node_put;
+@@ -309,8 +309,6 @@ static int st_dwc3_remove(struct platform_device *pdev)
+ {
+ 	struct st_dwc3 *dwc3_data = platform_get_drvdata(pdev);
+ 
+-	of_platform_depopulate(&pdev->dev);
+-
+ 	reset_control_assert(dwc3_data->rstc_pwrdn);
+ 	reset_control_assert(dwc3_data->rstc_rst);
+ 
 -- 
-2.7.4
+2.29.2
 
