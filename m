@@ -2,102 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6F3E2AC119
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 17:43:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 667182AC11A
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 17:43:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730166AbgKIQkC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 11:40:02 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:57207 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729776AbgKIQkC (ORCPT
+        id S1730376AbgKIQkL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 11:40:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55126 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730189AbgKIQkL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 11:40:02 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1604940001;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=8CRsTblhXHqnxALqI5jnaNHHWl8AWCLUwL4KBhVIVIk=;
-        b=Ah2db9x/H1Dze+zHPSh9GHbOWl6i6eciUPRkQGDy5aTJf8Ey4c1QbphhKk48uvnxvT3W76
-        ZAZaeYn4Gn++EyOKJDGeRcHWNuWpaeJbdDC68qZZUfVlRQuwuLhOUCzi02dw3yJQn/MyTV
-        XXLjzorR+bBfQE8QI0dIbu3eeuBNEXA=
-Received: from mail-qv1-f72.google.com (mail-qv1-f72.google.com
- [209.85.219.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-323-JXCFNUelNzG983UlqUMbZA-1; Mon, 09 Nov 2020 11:39:59 -0500
-X-MC-Unique: JXCFNUelNzG983UlqUMbZA-1
-Received: by mail-qv1-f72.google.com with SMTP id m17so4427355qvg.5
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Nov 2020 08:39:59 -0800 (PST)
+        Mon, 9 Nov 2020 11:40:11 -0500
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1244C0613CF
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Nov 2020 08:40:09 -0800 (PST)
+Received: by mail-wr1-x444.google.com with SMTP id c17so9373167wrc.11
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Nov 2020 08:40:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=vFzYMDoCTE/7BuMCxuGj//okAPwk1hzD+o6O8Pb/N54=;
+        b=dd0LRhluqfhRIc5sOEgklGW7/QhdZrNm2GO5aSXtWNRBkuaWyLPKaVOW1cQduxqCOp
+         mNMNnwHgXBnaesTROkdep44nv2PxqszfcCb+7JEjKWeXGPDsq/ZB0ZfJRRRdFeo+evIF
+         aCGcLuZJm2bPqF70hviQm2EN0UAx0obDEFmy87NX8lWciOSQ8poliSMf1zxeyVbu2BXt
+         XlZ/QBDF0O0njojWJjgWSMGzCOJI+MtVU/bcGrZ0e8Ykd+9oQs7/JuU187Dw9ku6Xk+I
+         OKv3MpxHmXhjWLvGJ3gNqrtZ/KgzW3rGpF13J3zRN165/lQDETRVChL92a5TllgM3Hf4
+         QRcw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=8CRsTblhXHqnxALqI5jnaNHHWl8AWCLUwL4KBhVIVIk=;
-        b=gAt6hQkpf56hhAU83+6qawY/kXhqUT7fq68s482J/vv4PGP0FkOV9RPliXengAIqXY
-         pGNVICavBSlNvlkuKOIgklUQcIfjbhQVPaZX0k3YXzdXdZdC4FbjXgivVdA+R73zaUBf
-         Batx76PX9m64UxVmHcw1VILTDuvw8oGQOT/tdgK7uGFjNZzFpkv4Fjmkl6wZNs5YWOCl
-         7d0J9BmFyZOnqDO1TN+u3ME7Q+l0Fi7nD7TiQjA7vS+HdW0wR7mY/ci79fmmLou9ZpyT
-         B+rB852t1twieNwnjh7WVRWnfwZsYVfAPpdOBnlmqKTIvkxgKWFFwYxEamkIt5/hmx49
-         /uZQ==
-X-Gm-Message-State: AOAM5302d2sc70ZIW92rkXxmthXCOIWhXWU88yyqjEpMaR/ylA8AOTwr
-        LxUUXgWl+w8xsIqt65CPZ5dGB3RsmLsKarotDcWa3mkD/3pYEQ9WW+XGJ6FFIC8MTvUZfdZN9+p
-        sj5Q4IizZ1znRAuGss5vV8XHg
-X-Received: by 2002:a05:620a:140d:: with SMTP id d13mr15079352qkj.470.1604939999322;
-        Mon, 09 Nov 2020 08:39:59 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJw0Wfp4N7gEbWoeZTjAELrh99BqnYeP+F1Ei5ILbbUA+oDIw4oxWG2LrTgptljXZG7JoQIuww==
-X-Received: by 2002:a05:620a:140d:: with SMTP id d13mr15079320qkj.470.1604939999037;
-        Mon, 09 Nov 2020 08:39:59 -0800 (PST)
-Received: from x1.bristot.me (host-95-246-207-183.retail.telecomitalia.it. [95.246.207.183])
-        by smtp.gmail.com with ESMTPSA id 8sm6704830qkb.98.2020.11.09.08.39.55
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 09 Nov 2020 08:39:58 -0800 (PST)
-Subject: Re: [PATCH v4 00/19] sched: Migrate disable support
-To:     Peter Zijlstra <peterz@infradead.org>, tglx@linutronix.de,
-        mingo@kernel.org
-Cc:     linux-kernel@vger.kernel.org, bigeasy@linutronix.de,
-        qais.yousef@arm.com, swood@redhat.com, valentin.schneider@arm.com,
-        juri.lelli@redhat.com, vincent.guittot@linaro.org,
-        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
-        mgorman@suse.de, vincent.donnefort@arm.com, tj@kernel.org,
-        ouwen210@hotmail.com
-References: <20201023101158.088940906@infradead.org>
-From:   Daniel Bristot de Oliveira <bristot@redhat.com>
-Message-ID: <8defae53-c6b4-241a-da79-16719138baf3@redhat.com>
-Date:   Mon, 9 Nov 2020 17:39:54 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=vFzYMDoCTE/7BuMCxuGj//okAPwk1hzD+o6O8Pb/N54=;
+        b=jAJ3M3y02wmEtHlgprnd+wp07SlhPJOHDjp0Pgjbzzfw59f7ozAPoTRdV6WSmz7y0i
+         4s0OcY9ge2fp8wZiMUQYNYvLeG1dlxSttjAVjAskubfzvOIqLG63tXSzxu6ljDNmiW30
+         vWEyel+sZjIqQbi0bUmcytcav/dH4WtSPhse6iXNL9AsZPSUSGaRGf3uQgla59ArR61t
+         WOd+1k0vVBknKesTLD4BwQ6jbo2K2wQ/Vu/8h9UqNKYplNI2Kq2/8jA9uloxUqn/jDss
+         UDlRSyTEqwWYi9COG8f2j+yLybDm2ubWi9PUF3IKQG97lXZzeAAlOc+KPW4s4Jip0lZR
+         loPA==
+X-Gm-Message-State: AOAM532vCvL9AaMdi9PiOJ0VtzoyTIA4QdlQxkk0AlgMMORjshPr0ieS
+        g0GtXdZ9AZi97K6B6AAfSvBHFw==
+X-Google-Smtp-Source: ABdhPJzi2iHSBIfHhM1EAq/pMbkMQftrIzRJgLBNavLLlp93wooaq4GPyuJieZUH4V9f0WvGGG8wdA==
+X-Received: by 2002:a5d:4d0d:: with SMTP id z13mr18164369wrt.23.1604940008605;
+        Mon, 09 Nov 2020 08:40:08 -0800 (PST)
+Received: from dell ([91.110.221.180])
+        by smtp.gmail.com with ESMTPSA id n14sm14137815wrt.8.2020.11.09.08.40.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 09 Nov 2020 08:40:08 -0800 (PST)
+Date:   Mon, 9 Nov 2020 16:40:04 +0000
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Ville =?iso-8859-1?Q?Syrj=E4l=E4?= <ville.syrjala@linux.intel.com>
+Cc:     David Airlie <airlied@linux.ie>,
+        David Francis <David.Francis@amd.com>,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org
+Subject: Re: [PATCH 14/19] gpu: drm: selftests: test-drm_dp_mst_helper: Place
+ 'struct drm_dp_sideband_msg_req_body' onto the heap
+Message-ID: <20201109164004.GZ2063125@dell>
+References: <20201105144517.1826692-1-lee.jones@linaro.org>
+ <20201105144517.1826692-15-lee.jones@linaro.org>
+ <20201109151937.GF6112@intel.com>
+ <20201109161258.GX2063125@dell>
+ <20201109162015.GH6112@intel.com>
 MIME-Version: 1.0
-In-Reply-To: <20201023101158.088940906@infradead.org>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201109162015.GH6112@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/23/20 12:11 PM, Peter Zijlstra wrote:
-> Hi,
+On Mon, 09 Nov 2020, Ville Syrjälä wrote:
+
+> On Mon, Nov 09, 2020 at 04:12:58PM +0000, Lee Jones wrote:
+> > On Mon, 09 Nov 2020, Ville Syrjälä wrote:
+> > 
+> > > On Thu, Nov 05, 2020 at 02:45:12PM +0000, Lee Jones wrote:
+> > > > The stack is too full.
+> > > > 
+> > > > Fixes the following W=1 kernel build warning(s):
+> > > > 
+> > > >  drivers/gpu/drm/selftests/test-drm_dp_mst_helper.c: In function ‘sideband_msg_req_encode_decode’:
+> > > >  drivers/gpu/drm/selftests/test-drm_dp_mst_helper.c:161:1: warning: the frame size of 1176 bytes is larger than 1024 bytes [-Wframe-larger-than=]
+> > > > 
+> > > > Cc: David Airlie <airlied@linux.ie>
+> > > > Cc: Daniel Vetter <daniel@ffwll.ch>
+> > > > Cc: Lyude Paul <lyude@redhat.com>
+> > > > Cc: David Francis <David.Francis@amd.com>
+> > > > Cc: dri-devel@lists.freedesktop.org
+> > > > Signed-off-by: Lee Jones <lee.jones@linaro.org>
+> > > > ---
+> > > >  .../drm/selftests/test-drm_dp_mst_helper.c    | 29 ++++++++++++-------
+> > > >  1 file changed, 18 insertions(+), 11 deletions(-)
+> > > > 
+> > > > diff --git a/drivers/gpu/drm/selftests/test-drm_dp_mst_helper.c b/drivers/gpu/drm/selftests/test-drm_dp_mst_helper.c
+> > > > index 1d696ec001cff..0a539456f6864 100644
+> > > > --- a/drivers/gpu/drm/selftests/test-drm_dp_mst_helper.c
+> > > > +++ b/drivers/gpu/drm/selftests/test-drm_dp_mst_helper.c
+> > > > @@ -120,44 +120,51 @@ sideband_msg_req_equal(const struct drm_dp_sideband_msg_req_body *in,
+> > > >  static bool
+> > > >  sideband_msg_req_encode_decode(struct drm_dp_sideband_msg_req_body *in)
+> > > >  {
+> > > > -	struct drm_dp_sideband_msg_req_body out = {0};
+> > > > +	struct drm_dp_sideband_msg_req_body *out;
+> > > 
+> > > How big is it? And why is it that big?
+> > 
+> > It's a struct of a union of structs.
+> > 
+> > And it's all allocated on the stack.  Bad news!
 > 
-> The fourth version of migrate_disable() for PREEMPT_RT.
-> 
-> Two changes since last time:
-> 
->  - fixes !SMP builds (bigeasy)
->  - TLA+ validation of migrate_disable() vs sched_setaffinity() (valsch)
-> 
-> Esp. that latter resulted in significant changes to patch #10. Huge thanks to
-> Valentin.
+> That doesn't answer my questions.
 
-While I will still work on this, testing more and trying to
-analyze the effects from the (rt) scheduling perspective, I
-do not see any other issues (kudos to Valentin, impressive
-review).
+It answers the second question.
 
-Feel free to add:
+The answer to the first question you can `grep` for yourself. ;)
 
-Reviewed-by: Daniel Bristot de Oliveira <bristot@redhat.com>
-
-Thanks!
--- Daniel
-
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
