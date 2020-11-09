@@ -2,142 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE0662AC3C9
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 19:26:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AD3572AC3CE
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 19:27:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729837AbgKIS0f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 13:26:35 -0500
-Received: from mail1.protonmail.ch ([185.70.40.18]:50307 "EHLO
-        mail1.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729119AbgKIS0f (ORCPT
+        id S1729883AbgKIS10 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 13:27:26 -0500
+Received: from mail-oo1-f67.google.com ([209.85.161.67]:39155 "EHLO
+        mail-oo1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729119AbgKIS1Y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 13:26:35 -0500
-Date:   Mon, 09 Nov 2020 18:26:23 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me; s=protonmail;
-        t=1604946392; bh=+CQqk8Dxom9CvkBxEHpxQ3fmbypfmfAfmwMPYA0at10=;
-        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
-        b=ODxl+KaPXeNe5xY9geajV1P7z08xnqBQeveNMlIDfmlgZRCZOhcL5mfGODJcMvix7
-         tN6CwTvQL/2HF6SAR1C6Rbpvur84pmQvXDr0P7xZuDpO9UTU4r/9dMr4Msr+sqoF0y
-         zJjI0Qqptgl/j/PycMhj9AqBKFBLIMGyeu1tAOVnL5A/1RpTlLmZvVfcWMwdtzr/au
-         G9D0S9nW+FNDdncJi6/TmAD4JQNgF2Sd1a5YVLrKEwiMHFAXk80cWIaP6L1loluO6A
-         36G77T1TzLWvhonTJ4bpiPAYQ9klhHGOaLFCfWoZBTvRTrmlMi7hjnGC3xWlLi64p1
-         5Jdz6D4agwxlA==
-To:     Eric Dumazet <eric.dumazet@gmail.com>
-From:   Alexander Lobakin <alobakin@pm.me>
-Cc:     Alexander Lobakin <alobakin@pm.me>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Willem de Bruijn <willemb@google.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Reply-To: Alexander Lobakin <alobakin@pm.me>
-Subject: Re: [PATCH v2 net] net: udp: fix Fast/frag0 UDP GRO
-Message-ID: <Nc6hn1Qaui1C7hTlHl8CdsNV00CdlHtyjQYv36ZYA@cp4-web-040.plabs.ch>
-In-Reply-To: <d9d09931-8cd3-1eb6-673c-3ae5ebc3ee57@gmail.com>
-References: <0eaG8xtbtKY1dEKCTKUBubGiC9QawGgB3tVZtNqVdY@cp4-web-030.plabs.ch> <d9d09931-8cd3-1eb6-673c-3ae5ebc3ee57@gmail.com>
+        Mon, 9 Nov 2020 13:27:24 -0500
+Received: by mail-oo1-f67.google.com with SMTP id l10so976803oom.6;
+        Mon, 09 Nov 2020 10:27:24 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=88lH12aP72k/JqqtafP44DWoY/B1GwcPDfqd9vj7KR8=;
+        b=GH32kG16r7XUnXnzLe0qgj+f1yrCTwMqXNHBz5KvFHWGYJytsH/79BAAbbmlPzWkYz
+         G/t8mbrt3Yo7xOl+af8yuHJ+/KrNIaFZJjhy2YvdoAtJKrbBhdJkjWhqPJMxYQzeW8qW
+         e1j4duwC1AffYweXGtF5HPkkYhbU9SeIv+Sd9dX45qRGPv0E2Ki3NJNY4URPXUn4gxSU
+         h3MT2sgeG6Ig4G8q0Cj/xaCdE7VyfmQzUzY6Y8aBQquvnN9sTL8ONyAHxIktmHrGUlno
+         P0dyOCRiNSEHeOEqi/OESAbpa9GiE5e8WMchLbjRdWi6vYeksGtL7ZO3IolBRWYIs3Kc
+         pnoQ==
+X-Gm-Message-State: AOAM5327eVnQfhsQj4uKWO6NNJ8ti+0JiG3D5BtUC8yEpx787urna1d5
+        cfbgPCplPN0jg3MqQ4xK5TJdiUNgQQ9JqMHbRaM=
+X-Google-Smtp-Source: ABdhPJxo5Gu9VTamOxr1DOm2plXMdvZ3n4HVqYLlNof+Z9kzeYY4S2nKqn5a8zlU6GgASeJ1F4wFPgIMyvvdzJiC1/I=
+X-Received: by 2002:a4a:e80b:: with SMTP id b11mr10822224oob.1.1604946443729;
+ Mon, 09 Nov 2020 10:27:23 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+References: <CAMj1kXE=V96pJ7xK=9xMh-1Eph4FH7S4WDXDyJUH+82_Zn5DXA@mail.gmail.com>
+ <20201107084939.3512560-1-ndesaulniers@google.com>
+In-Reply-To: <20201107084939.3512560-1-ndesaulniers@google.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Mon, 9 Nov 2020 19:27:12 +0100
+Message-ID: <CAJZ5v0iMGZ5Kj=o7Lo_yZNp8qk5BnpiJZNy4_-zdRJh1tFOSgQ@mail.gmail.com>
+Subject: Re: [PATCH v2] ACPI: GED: fix -Wformat
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>, Ard Biesheuvel <ardb@kernel.org>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        clang-built-linux@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Eric Dumazet <eric.dumazet@gmail.com>
-Date: Mon, 9 Nov 2020 18:37:36 +0100
-
-> On 11/9/20 5:56 PM, Alexander Lobakin wrote:
->> While testing UDP GSO fraglists forwarding through driver that uses
->> Fast GRO (via napi_gro_frags()), I was observing lots of out-of-order
->> iperf packets:
->>
->> [ ID] Interval           Transfer     Bitrate         Jitter
->> [SUM]  0.0-40.0 sec  12106 datagrams received out-of-order
->>
->> Simple switch to napi_gro_receive() any other method without frag0
->> shortcut completely resolved them.
->>
->> I've found that UDP GRO uses udp_hdr(skb) in its .gro_receive()
->> callback. While it's probably OK for non-frag0 paths (when all
->> headers or even the entire frame are already in skb->data), this
->> inline points to junk when using Fast GRO (napi_gro_frags() or
->> napi_gro_receive() with only Ethernet header in skb->data and all
->> the rest in shinfo->frags) and breaks GRO packet compilation and
->> the packet flow itself.
->> To support both modes, skb_gro_header_fast() + skb_gro_header_slow()
->> are typically used. UDP even has an inline helper that makes use of
->> them, udp_gro_udphdr(). Use that instead of troublemaking udp_hdr()
->> to get rid of the out-of-order delivers.
->>
->> Present since the introduction of plain UDP GRO in 5.0-rc1.
->>
->> Since v1 [1]:
->>  - added a NULL pointer check for "uh" as suggested by Willem.
->>
->> [1] https://lore.kernel.org/netdev/YazU6GEzBdpyZMDMwJirxDX7B4sualpDG68AD=
-ZYvJI@cp4-web-034.plabs.ch
->>
->> Fixes: e20cf8d3f1f7 ("udp: implement GRO for plain UDP sockets.")
->> Signed-off-by: Alexander Lobakin <alobakin@pm.me>
->> ---
->>  net/ipv4/udp_offload.c | 7 ++++++-
->>  1 file changed, 6 insertions(+), 1 deletion(-)
->>
->> diff --git a/net/ipv4/udp_offload.c b/net/ipv4/udp_offload.c
->> index e67a66fbf27b..7f6bd221880a 100644
->> --- a/net/ipv4/udp_offload.c
->> +++ b/net/ipv4/udp_offload.c
->> @@ -366,13 +366,18 @@ static struct sk_buff *udp4_ufo_fragment(struct sk=
-_buff *skb,
->>  static struct sk_buff *udp_gro_receive_segment(struct list_head *head,
->>  =09=09=09=09=09       struct sk_buff *skb)
->>  {
->> -=09struct udphdr *uh =3D udp_hdr(skb);
->> +=09struct udphdr *uh =3D udp_gro_udphdr(skb);
->>  =09struct sk_buff *pp =3D NULL;
->>  =09struct udphdr *uh2;
->>  =09struct sk_buff *p;
->>  =09unsigned int ulen;
->>  =09int ret =3D 0;
->>
->> +=09if (unlikely(!uh)) {
+On Sat, Nov 7, 2020 at 9:49 AM Nick Desaulniers <ndesaulniers@google.com> wrote:
 >
-> How uh could be NULL here ?
+> Clang is more aggressive about -Wformat warnings when the format flag
+> specifies a type smaller than the parameter. It turns out that gsi is an
+> int. Fixes:
 >
-> My understanding is that udp_gro_receive() is called
-> only after udp4_gro_receive() or udp6_gro_receive()
-> validated that udp_gro_udphdr(skb) was not NULL.
-
-Right, but only after udp{4,6}_lib_lookup_skb() in certain cases.
-I don't know for sure if their logic can actually edit skb->data,
-so it's better to check from my point of view.
-
->> +=09=09NAPI_GRO_CB(skb)->flush =3D 1;
->> +=09=09return NULL;
->> +=09}
->> +
->>  =09/* requires non zero csum, for symmetry with GSO */
->>  =09if (!uh->check) {
->>  =09=09NAPI_GRO_CB(skb)->flush =3D 1;
->>
+> drivers/acpi/evged.c:105:48: warning: format specifies type 'unsigned
+> char' but the argument has type 'unsigned int' [-Wformat]
+> trigger == ACPI_EDGE_SENSITIVE ? 'E' : 'L', gsi);
+>                                             ^~~
 >
->Why uh2 is left unchanged ?
+> Link: https://github.com/ClangBuiltLinux/linux/issues/378
+> Fixes: ea6f3af4c5e6 ("ACPI: GED: add support for _Exx / _Lxx handler methods")
+> Acked-by: Ard Biesheuvel <ardb@kernel.org>
+> Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
+> ---
+>  drivers/acpi/evged.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 >
->    uh2 =3D udp_hdr(p);
+> diff --git a/drivers/acpi/evged.c b/drivers/acpi/evged.c
+> index b1a7f8d6965e..fe6b6792c8bb 100644
+> --- a/drivers/acpi/evged.c
+> +++ b/drivers/acpi/evged.c
+> @@ -101,7 +101,7 @@ static acpi_status acpi_ged_request_interrupt(struct acpi_resource *ares,
 >
->...
+>         switch (gsi) {
+>         case 0 ... 255:
+> -               sprintf(ev_name, "_%c%02hhX",
+> +               sprintf(ev_name, "_%c%02X",
+>                         trigger == ACPI_EDGE_SENSITIVE ? 'E' : 'L', gsi);
+>
+>                 if (ACPI_SUCCESS(acpi_get_handle(handle, ev_name, &evt_handle)))
+> --
 
-Packets from list_head *head have their headers already pulled to
-skb->data in 100% cases, no need to change anything here.
-I double-checked that udp_hdr(p) always returns the same pointer as
-"p->data + network offset" and left it as it is.
-
-Thanks,
-Al
-
+Applied as 5.10-rc material, thanks!
