@@ -2,100 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C9CE2AC3C3
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 19:24:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AE0662AC3C9
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 19:26:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730125AbgKISYg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 13:24:36 -0500
-Received: from mout.gmx.net ([212.227.17.21]:41837 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729119AbgKISYg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 13:24:36 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1604946242;
-        bh=WqIeflJSIlbYefgQQeWSGrItmuRntyT1T0hegn+ItPU=;
-        h=X-UI-Sender-Class:Date:From:To:Cc:Subject:References:In-Reply-To;
-        b=XCdtV1blAQXrTCOSFtrBcv8Mh9UbKawLpFL3nZHFRYfna4OsIJ9yF6C6pAvhAAuDl
-         /4h3bASY0Ivfwp82T9gQSHpralUDDjpWg0kSSlRBYhaMGc+f/wRhDdp/zqyI72fU1v
-         WRudfFToHwR7fyK1w+SIrckkx4kjx/4ePBaPlcDk=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from ubuntu ([83.52.231.59]) by mail.gmx.com (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MhU5b-1k7Y371Ht5-00ecTa; Mon, 09
- Nov 2020 19:24:02 +0100
-Date:   Mon, 9 Nov 2020 19:23:48 +0100
-From:   John Wood <john.wood@gmx.com>
-To:     Randy Dunlap <rdunlap@infradead.org>,
-        Kees Cook <keescook@chromium.org>, Jann Horn <jannh@google.com>
-Cc:     John Wood <john.wood@gmx.com>, Jonathan Corbet <corbet@lwn.net>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        kernel-hardening@lists.openwall.com
-Subject: Re: [PATCH v2 7/8] Documentation: Add documentation for the Brute LSM
-Message-ID: <20201109182348.GA3110@ubuntu>
-References: <20201025134540.3770-1-john.wood@gmx.com>
- <20201025134540.3770-8-john.wood@gmx.com>
- <2ab35578-832a-6b92-ca9b-2f7d42bc0792@infradead.org>
+        id S1729837AbgKIS0f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 13:26:35 -0500
+Received: from mail1.protonmail.ch ([185.70.40.18]:50307 "EHLO
+        mail1.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729119AbgKIS0f (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 13:26:35 -0500
+Date:   Mon, 09 Nov 2020 18:26:23 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me; s=protonmail;
+        t=1604946392; bh=+CQqk8Dxom9CvkBxEHpxQ3fmbypfmfAfmwMPYA0at10=;
+        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
+        b=ODxl+KaPXeNe5xY9geajV1P7z08xnqBQeveNMlIDfmlgZRCZOhcL5mfGODJcMvix7
+         tN6CwTvQL/2HF6SAR1C6Rbpvur84pmQvXDr0P7xZuDpO9UTU4r/9dMr4Msr+sqoF0y
+         zJjI0Qqptgl/j/PycMhj9AqBKFBLIMGyeu1tAOVnL5A/1RpTlLmZvVfcWMwdtzr/au
+         G9D0S9nW+FNDdncJi6/TmAD4JQNgF2Sd1a5YVLrKEwiMHFAXk80cWIaP6L1loluO6A
+         36G77T1TzLWvhonTJ4bpiPAYQ9klhHGOaLFCfWoZBTvRTrmlMi7hjnGC3xWlLi64p1
+         5Jdz6D4agwxlA==
+To:     Eric Dumazet <eric.dumazet@gmail.com>
+From:   Alexander Lobakin <alobakin@pm.me>
+Cc:     Alexander Lobakin <alobakin@pm.me>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Willem de Bruijn <willemb@google.com>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Reply-To: Alexander Lobakin <alobakin@pm.me>
+Subject: Re: [PATCH v2 net] net: udp: fix Fast/frag0 UDP GRO
+Message-ID: <Nc6hn1Qaui1C7hTlHl8CdsNV00CdlHtyjQYv36ZYA@cp4-web-040.plabs.ch>
+In-Reply-To: <d9d09931-8cd3-1eb6-673c-3ae5ebc3ee57@gmail.com>
+References: <0eaG8xtbtKY1dEKCTKUBubGiC9QawGgB3tVZtNqVdY@cp4-web-030.plabs.ch> <d9d09931-8cd3-1eb6-673c-3ae5ebc3ee57@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2ab35578-832a-6b92-ca9b-2f7d42bc0792@infradead.org>
-X-Provags-ID: V03:K1:WdI92dEESOw+IgoEK7rINKMLkOZRlvr4IU++VYFxIy5Ur0nV16w
- Sqk+PhsyjhswmvKyBUujNzib3b/wlEFMi39I/2/Bce6C0eAMeXnWS9YK6rlW9reHWAz9Szd
- ICX7ASR+WHwx4BL2+H8Aeq3GTAh49+HVm+XJdYJvJgA4+9gc3QJYZQFBI08chIEExKq2+yS
- nAguvprm3r390hvh6TrRQ==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:98HlGKz9byI=:y9WvS6BYmDogmfNlP3PqZd
- sWZq3sMViZO0xAzwsWRVGRHjkt5YyU+C1AqB2JSCjSM8i69/rcn4dBDna+E1t83MSnIjZpQvW
- NeaZmFproIgh57IAwipps3xUj8zq8vmjCGqZten0jYdleE7hRN3Nhn14vdrxjnB/0SS9obIgK
- hKFu5IIEC7sLEHovDjYww3kv6l9ZR89B229SvWx5jTYSCgkAfZ1xNL5C/Blv9gPDFlzMOAtUV
- EzrWNW/1W8gfPufebymUZYPomyz2Jf+5LBPugLT+m1ZTLzo1rA9O7lp+AO5GH+uF3/wnMMNkE
- pCsMl0RqRKJN4L1OoegURKyPmqH7zY/60BThS4RNQ29yB7LGF+usuXQoQneqHgcoWXXBZ4NWM
- XFNXjfRKoGwgo/VHiNcf+UcyBHpoTEoPTIA0D2LnpyuAZW8YTg5zrf5CSS+j2maMyxiIMLvlw
- qwdUB8yW7LmJJMdfU75NWEcxLnj4KOi6RhddjfM1q61f9QSPwNjdnbNtDT6wCW9Sb+lefroBS
- GxNkPOp+8dPaCGGKxJO7iOm5EZPjpusjupOGqBwQb0B7TrK9lJTJmu3YRVBNA4hWjzliTvFzx
- fkSGuTLCStJJi1Jc9aocu5R4O2TZlWWTYpx2M/w30puxorF4WzvWs5JpsEi3DByYIVRBikAVZ
- IkW1mGIFY+Nd2/tQDrSQxe+uLBejHR0k0nc2ihQsGOSXotUvJdkW1PtuMOZ4u+ydyoB2wnmAI
- wCUaD9Bn+3gNcjb7H8+lM9PGYm/jhSY/5rUE6qA3wpgMdNL3JeQmLe3Pdk0JFcVCTjfGxQDNu
- /I/dZ44v3f2rv4wu0X/LaNajwe5DtUSwdq5gUB6dVKSbaQt8qPUXpgKBabvA2gk9QWKHmwmz5
- coBqJksRfE5u8uNHeX9Q==
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
+        mailout.protonmail.ch
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-Thanks for the typos corrections. Will be corrected in the next patch
-version.
+From: Eric Dumazet <eric.dumazet@gmail.com>
+Date: Mon, 9 Nov 2020 18:37:36 +0100
 
-On Sun, Nov 08, 2020 at 08:31:13PM -0800, Randy Dunlap wrote:
+> On 11/9/20 5:56 PM, Alexander Lobakin wrote:
+>> While testing UDP GSO fraglists forwarding through driver that uses
+>> Fast GRO (via napi_gro_frags()), I was observing lots of out-of-order
+>> iperf packets:
+>>
+>> [ ID] Interval           Transfer     Bitrate         Jitter
+>> [SUM]  0.0-40.0 sec  12106 datagrams received out-of-order
+>>
+>> Simple switch to napi_gro_receive() any other method without frag0
+>> shortcut completely resolved them.
+>>
+>> I've found that UDP GRO uses udp_hdr(skb) in its .gro_receive()
+>> callback. While it's probably OK for non-frag0 paths (when all
+>> headers or even the entire frame are already in skb->data), this
+>> inline points to junk when using Fast GRO (napi_gro_frags() or
+>> napi_gro_receive() with only Ethernet header in skb->data and all
+>> the rest in shinfo->frags) and breaks GRO packet compilation and
+>> the packet flow itself.
+>> To support both modes, skb_gro_header_fast() + skb_gro_header_slow()
+>> are typically used. UDP even has an inline helper that makes use of
+>> them, udp_gro_udphdr(). Use that instead of troublemaking udp_hdr()
+>> to get rid of the out-of-order delivers.
+>>
+>> Present since the introduction of plain UDP GRO in 5.0-rc1.
+>>
+>> Since v1 [1]:
+>>  - added a NULL pointer check for "uh" as suggested by Willem.
+>>
+>> [1] https://lore.kernel.org/netdev/YazU6GEzBdpyZMDMwJirxDX7B4sualpDG68AD=
+ZYvJI@cp4-web-034.plabs.ch
+>>
+>> Fixes: e20cf8d3f1f7 ("udp: implement GRO for plain UDP sockets.")
+>> Signed-off-by: Alexander Lobakin <alobakin@pm.me>
+>> ---
+>>  net/ipv4/udp_offload.c | 7 ++++++-
+>>  1 file changed, 6 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/net/ipv4/udp_offload.c b/net/ipv4/udp_offload.c
+>> index e67a66fbf27b..7f6bd221880a 100644
+>> --- a/net/ipv4/udp_offload.c
+>> +++ b/net/ipv4/udp_offload.c
+>> @@ -366,13 +366,18 @@ static struct sk_buff *udp4_ufo_fragment(struct sk=
+_buff *skb,
+>>  static struct sk_buff *udp_gro_receive_segment(struct list_head *head,
+>>  =09=09=09=09=09       struct sk_buff *skb)
+>>  {
+>> -=09struct udphdr *uh =3D udp_hdr(skb);
+>> +=09struct udphdr *uh =3D udp_gro_udphdr(skb);
+>>  =09struct sk_buff *pp =3D NULL;
+>>  =09struct udphdr *uh2;
+>>  =09struct sk_buff *p;
+>>  =09unsigned int ulen;
+>>  =09int ret =3D 0;
+>>
+>> +=09if (unlikely(!uh)) {
 >
-> So an app could read crash_period_threshold and just do a new fork every
-> threshold + 1 time units, right? and not be caught?
-
-Yes, you are right. But we must set a crash_period_threshold that does not
-make an attack feasible. For example, with the default value of 30000 ms,
-an attacker can break the app only once every 30 seconds. So, to guess
-canaries or break ASLR, the attack needs a big amount of time. But it is
-possible.
-
-So, I think that to avoid this scenario we can add a maximum number of
-faults per fork hierarchy. Then, the mitigation will be triggered if the
-application crash period falls under the period threshold or if the number
-of faults exceed the maximum commented.
-
-This way, if an attack is of long duration, it will also be detected and
-mitigated.
-
-What do you think?
-
+> How uh could be NULL here ?
 >
-> thanks for the documentation.
-> --
-> ~Randy
+> My understanding is that udp_gro_receive() is called
+> only after udp4_gro_receive() or udp6_gro_receive()
+> validated that udp_gro_udphdr(skb) was not NULL.
+
+Right, but only after udp{4,6}_lib_lookup_skb() in certain cases.
+I don't know for sure if their logic can actually edit skb->data,
+so it's better to check from my point of view.
+
+>> +=09=09NAPI_GRO_CB(skb)->flush =3D 1;
+>> +=09=09return NULL;
+>> +=09}
+>> +
+>>  =09/* requires non zero csum, for symmetry with GSO */
+>>  =09if (!uh->check) {
+>>  =09=09NAPI_GRO_CB(skb)->flush =3D 1;
+>>
 >
+>Why uh2 is left unchanged ?
+>
+>    uh2 =3D udp_hdr(p);
+>
+>...
+
+Packets from list_head *head have their headers already pulled to
+skb->data in 100% cases, no need to change anything here.
+I double-checked that udp_hdr(p) always returns the same pointer as
+"p->data + network offset" and left it as it is.
 
 Thanks,
-John Wood
+Al
 
