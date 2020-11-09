@@ -2,119 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 439ED2AC18C
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 17:57:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CAC432AC164
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 17:52:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731233AbgKIQ5S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 11:57:18 -0500
-Received: from cloudserver094114.home.pl ([79.96.170.134]:42276 "EHLO
-        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731097AbgKIQ5J (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 11:57:09 -0500
-Received: from 89-64-87-89.dynamic.chello.pl (89.64.87.89) (HELO kreacher.localnet)
- by serwer1319399.home.pl (79.96.170.134) with SMTP (IdeaSmtpServer 0.83.520)
- id b29284a7e0268766; Mon, 9 Nov 2020 17:57:07 +0100
-From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
-To:     Linux PM <linux-pm@vger.kernel.org>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        Zhang Rui <rui.zhang@intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Doug Smythies <dsmythies@telus.net>
-Subject: [PATCH v2 1/4] cpufreq: Introduce governor flags
-Date:   Mon, 09 Nov 2020 17:51:41 +0100
-Message-ID: <1876249.M1ZxxmeKtZ@kreacher>
-In-Reply-To: <13269660.K2JYd4sGFX@kreacher>
-References: <13269660.K2JYd4sGFX@kreacher>
+        id S1730546AbgKIQvy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 11:51:54 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56010 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730130AbgKIQvy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 11:51:54 -0500
+Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 122502074F;
+        Mon,  9 Nov 2020 16:51:52 +0000 (UTC)
+Date:   Mon, 9 Nov 2020 11:51:51 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Jiri Kosina <jikos@kernel.org>,
+        Miroslav Benes <mbenes@suse.cz>, Petr Mladek <pmladek@suse.com>
+Subject: Re: [PATCH 03/11 v3] ftrace: Optimize testing what context current
+ is in
+Message-ID: <20201109115151.1d841d97@oasis.local.home>
+In-Reply-To: <20201109121708.GK2594@hirez.programming.kicks-ass.net>
+References: <20201106023235.367190737@goodmis.org>
+        <20201106023546.558881845@goodmis.org>
+        <20201109121708.GK2594@hirez.programming.kicks-ass.net>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+On Mon, 9 Nov 2020 13:17:08 +0100
+Peter Zijlstra <peterz@infradead.org> wrote:
 
-A new cpufreq governor flag will be added subsequently, so replace
-the bool dynamic_switching fleid in struct cpufreq_governor with a
-flags field and introduce CPUFREQ_GOV_FLAG_DYN_SWITCH to set for
-the "dynamic switching" governors instead of it.
+> This patch is misleading, it doesn't optimize it nearly as much as is
+> possible and actually fixes the softirq case, which isn't at all
+> mentioned.
 
-No intentional functional impact.
+This is actually an old patch I had for some time (it's been in the
+ring buffer code for a while). I honestly didn't even realize that it
+fixed softirq, which is why it isn't mentioned ;-)
 
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
----
- drivers/cpufreq/cpufreq.c          |    2 +-
- drivers/cpufreq/cpufreq_governor.h |    2 +-
- include/linux/cpufreq.h            |    9 +++++++--
- kernel/sched/cpufreq_schedutil.c   |    2 +-
- 4 files changed, 10 insertions(+), 5 deletions(-)
+I only said "optimize" I didn't say "optimal", thus it can be improved
+more. When I first wrote this, I saw non noise improvements with it, so
+it does indeed optimize it.
 
-Index: linux-pm/drivers/cpufreq/cpufreq.c
-===================================================================
---- linux-pm.orig/drivers/cpufreq/cpufreq.c
-+++ linux-pm/drivers/cpufreq/cpufreq.c
-@@ -2254,7 +2254,7 @@ static int cpufreq_init_governor(struct
- 		return -EINVAL;
- 
- 	/* Platform doesn't want dynamic frequency switching ? */
--	if (policy->governor->dynamic_switching &&
-+	if (policy->governor->flags & CPUFREQ_GOV_FLAG_DYN_SWITCH &&
- 	    cpufreq_driver->flags & CPUFREQ_NO_AUTO_DYNAMIC_SWITCHING) {
- 		struct cpufreq_governor *gov = cpufreq_fallback_governor();
- 
-Index: linux-pm/drivers/cpufreq/cpufreq_governor.h
-===================================================================
---- linux-pm.orig/drivers/cpufreq/cpufreq_governor.h
-+++ linux-pm/drivers/cpufreq/cpufreq_governor.h
-@@ -156,7 +156,7 @@ void cpufreq_dbs_governor_limits(struct
- #define CPUFREQ_DBS_GOVERNOR_INITIALIZER(_name_)			\
- 	{								\
- 		.name = _name_,						\
--		.dynamic_switching = true,				\
-+		.flags = CPUFREQ_GOV_FLAG_DYN_SWITCH,			\
- 		.owner = THIS_MODULE,					\
- 		.init = cpufreq_dbs_governor_init,			\
- 		.exit = cpufreq_dbs_governor_exit,			\
-Index: linux-pm/include/linux/cpufreq.h
-===================================================================
---- linux-pm.orig/include/linux/cpufreq.h
-+++ linux-pm/include/linux/cpufreq.h
-@@ -565,12 +565,17 @@ struct cpufreq_governor {
- 					 char *buf);
- 	int	(*store_setspeed)	(struct cpufreq_policy *policy,
- 					 unsigned int freq);
--	/* For governors which change frequency dynamically by themselves */
--	bool			dynamic_switching;
- 	struct list_head	governor_list;
- 	struct module		*owner;
-+	u8			flags;
- };
- 
-+/* Governor flags */
-+
-+/* For governors which change frequency dynamically by themselves */
-+#define CPUFREQ_GOV_FLAG_DYN_SWITCH	BIT(0)
-+
-+
- /* Pass a target to the cpufreq driver */
- unsigned int cpufreq_driver_fast_switch(struct cpufreq_policy *policy,
- 					unsigned int target_freq);
-Index: linux-pm/kernel/sched/cpufreq_schedutil.c
-===================================================================
---- linux-pm.orig/kernel/sched/cpufreq_schedutil.c
-+++ linux-pm/kernel/sched/cpufreq_schedutil.c
-@@ -881,7 +881,7 @@ static void sugov_limits(struct cpufreq_
- struct cpufreq_governor schedutil_gov = {
- 	.name			= "schedutil",
- 	.owner			= THIS_MODULE,
--	.dynamic_switching	= true,
-+	.flags			= CPUFREQ_GOV_FLAG_DYN_SWITCH,
- 	.init			= sugov_init,
- 	.exit			= sugov_exit,
- 	.start			= sugov_start,
+> 
+> Let me go do that other patch.
 
+I'll keep this patch, and replace the code when your version is
+available.
 
+Thanks!
 
+-- Steve
