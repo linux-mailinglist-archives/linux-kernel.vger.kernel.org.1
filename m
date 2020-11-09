@@ -2,130 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B425A2AB690
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 12:21:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B2342AB69B
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 12:21:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729496AbgKILVE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 06:21:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33684 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726410AbgKILVD (ORCPT
+        id S1729528AbgKILV0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 06:21:26 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:50614 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726410AbgKILV0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 06:21:03 -0500
-Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09993C0613CF;
-        Mon,  9 Nov 2020 03:21:03 -0800 (PST)
-Received: by mail-ed1-x543.google.com with SMTP id cq7so8110153edb.4;
-        Mon, 09 Nov 2020 03:21:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=hU4WYD1KmzG04cSTRa81VB9nMC6JMAr9+qywRmieORQ=;
-        b=ivffncbNBnvqFvOVxqcWbV0hPq/Ltibmf3GHl94bopcm/216grQ+BQGVZlOIbgv5Pf
-         xRNJDqDwIXSwamLbX/p1iygsqawMVvm49RJRIt4tNEMYHQhPpV2SHeOUzuPYfilWXW2T
-         pXypFoju2q10dY4x8VsUNVYWKxHAG9MXjfu3yRhrULwAAouCksLlQxBPC7WijFUkOd8M
-         9rKkcE0TzPGW+Qms+6P/Fg+rjYuLtH/qjYB9Y1dHamslXZILFUGfnOVA2vHYW7hhV+gv
-         tCS0061lKBfO0r7PmZ7sDLio7MMRqxS8zSw/E9vOQXqVzyolJ3sIV+5Qu+KLzXO5iK0O
-         FyvQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=hU4WYD1KmzG04cSTRa81VB9nMC6JMAr9+qywRmieORQ=;
-        b=eAOEJN2iQukVZu0KnPumTJiaOgk9KJOVKYi8/WKzEZjAwEZNFIO8wOT0h/Q5U3hWKa
-         r/vS6T0+43KFZQm3hBfv+MlHtXlFqD2CCHOKdcYwGhI/AtgyNfIsM2HPkIoNa8zj81HR
-         igIVoaUK0kunj424GhoQLxXur85YJ/3D2nXm7tUgZis8x6HtZZHsJwFB//iwdaFRLOTU
-         Zcm91JgDWWNUvZUT5rPjJsCuUSOl7ei2dYbYUqOEpSVWdZt5SbIsoiqWf+UmOAAj3V1i
-         Wh7725yeQoCXgvjxWPAM3RIlku/A4uBw2pmWnO2go7UgTnfAj8dmM1ctyyRN+8ptlc5j
-         WilA==
-X-Gm-Message-State: AOAM532rGavMzOVMHuLUyJS6FBmNsHx/slH6YrWEXsvH+m6ouIoVFshI
-        tcXWuIX+VjNiMmd72X0mQCgLQYhr9s2BgdV7FmI=
-X-Google-Smtp-Source: ABdhPJxAkJymNqSjR/UljeVLidNDy9Sfi8sdqcClNPJ1jY4tyCrPXVk2ZYZfzUyF8oKh+J89CmDSjJgzBHin8AZGsnU=
-X-Received: by 2002:a50:ef1a:: with SMTP id m26mr5734314eds.144.1604920861806;
- Mon, 09 Nov 2020 03:21:01 -0800 (PST)
+        Mon, 9 Nov 2020 06:21:26 -0500
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1604920883;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=hxcVhqjKdQHN16Wn3gUojFzP/H3f36IpHuQYN7w2nQI=;
+        b=1B0+YQRFrSFk5OrFMiUeH3HdISYFobPGE4d3D+BkpzyRy38zuyERt09Rkm9uO2ZY3CY1NB
+        kyFSlEvTB2+DF9n0XWsfu2ElNP9IjzyWj/tyWlp4zJ6ButCB261QzJlXHR4xgSZf/wrvcs
+        yyFFG4OUniWs/03B4OJmQ/eZ4ORncR9qd361IVTMibsC4vk4A07EwQfQTZh7Yeqxhl3hWN
+        rR1Y+mVdRaaeGHSc+rTyvnKws59f/YKosQZedImPymYrHGwGMJkqpV0NWckzueLRGQUjwR
+        VdRpkPzgm1pv9i6uwL+G/uzLZmRZo350nTDrVDDqOtoWTMxWma7VoMgEqCSKdQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1604920883;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=hxcVhqjKdQHN16Wn3gUojFzP/H3f36IpHuQYN7w2nQI=;
+        b=5Dsc74gZMaZXEqZt6OB04kg/o9ah6ktGvPF95Gk3AcboYZaDk6iZ/dHqSAWwoSdn1uFjk1
+        KN1GqptgfM4mZDDA==
+To:     "Raj\, Ashok" <ashok.raj@intel.com>
+Cc:     Jason Gunthorpe <jgg@nvidia.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        "Tian\, Kevin" <kevin.tian@intel.com>,
+        "Jiang\, Dave" <dave.jiang@intel.com>,
+        Bjorn Helgaas <helgaas@kernel.org>,
+        "vkoul\@kernel.org" <vkoul@kernel.org>,
+        "Dey\, Megha" <megha.dey@intel.com>,
+        "maz\@kernel.org" <maz@kernel.org>,
+        "bhelgaas\@google.com" <bhelgaas@google.com>,
+        "alex.williamson\@redhat.com" <alex.williamson@redhat.com>,
+        "Pan\, Jacob jun" <jacob.jun.pan@intel.com>,
+        "Liu\, Yi L" <yi.l.liu@intel.com>,
+        "Lu\, Baolu" <baolu.lu@intel.com>,
+        "Kumar\, Sanjay K" <sanjay.k.kumar@intel.com>,
+        "Luck\, Tony" <tony.luck@intel.com>,
+        "kwankhede\@nvidia.com" <kwankhede@nvidia.com>,
+        "eric.auger\@redhat.com" <eric.auger@redhat.com>,
+        "parav\@mellanox.com" <parav@mellanox.com>,
+        "rafael\@kernel.org" <rafael@kernel.org>,
+        "netanelg\@mellanox.com" <netanelg@mellanox.com>,
+        "shahafs\@mellanox.com" <shahafs@mellanox.com>,
+        "yan.y.zhao\@linux.intel.com" <yan.y.zhao@linux.intel.com>,
+        "pbonzini\@redhat.com" <pbonzini@redhat.com>,
+        "Ortiz\, Samuel" <samuel.ortiz@intel.com>,
+        "Hossain\, Mona" <mona.hossain@intel.com>,
+        "dmaengine\@vger.kernel.org" <dmaengine@vger.kernel.org>,
+        "linux-kernel\@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-pci\@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        "kvm\@vger.kernel.org" <kvm@vger.kernel.org>,
+        Ashok Raj <ashok.raj@intel.com>
+Subject: Re: [PATCH v4 06/17] PCI: add SIOV and IMS capability detection
+In-Reply-To: <20201108235852.GC32074@araj-mobl1.jf.intel.com>
+References: <20201104124017.GW2620339@nvidia.com> <MWHPR11MB1645862A8F7CF7FB8DD011778CEF0@MWHPR11MB1645.namprd11.prod.outlook.com> <20201104135415.GX2620339@nvidia.com> <MWHPR11MB1645524BDEDF8899914F32AE8CED0@MWHPR11MB1645.namprd11.prod.outlook.com> <20201106131415.GT2620339@nvidia.com> <20201106164850.GA85879@otc-nc-03> <20201106175131.GW2620339@nvidia.com> <CAPcyv4iYHA1acfo=+fTk+U_TrLbSWJjA6v4oeTXgVYDTrnCoGw@mail.gmail.com> <20201107001207.GA2620339@nvidia.com> <87pn4nk7nn.fsf@nanos.tec.linutronix.de> <20201108235852.GC32074@araj-mobl1.jf.intel.com>
+Date:   Mon, 09 Nov 2020 12:21:22 +0100
+Message-ID: <874klykc7h.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-References: <6fa54ce6-d5ae-d04f-7c77-b62c148d92b7@gmail.com>
- <20201106061513.uyys7njcqcdlah67@vireshk-i7> <a6926456-8bce-a438-bfaa-be334208f004@gmail.com>
- <CAEExFWsp0DWw1yO84e3vzr_YZkqkd+pyPfQQR3J2W6n3wTX4Jw@mail.gmail.com>
- <20201109050010.g47zojh6wafvwqva@vireshk-i7> <c584b301-e052-7f01-335d-8f9160865198@gmail.com>
- <20201109051014.oa6bt4g3ctm2hnuy@vireshk-i7> <4476fed9-a356-b7f1-32ee-935343e23038@gmail.com>
- <20201109053546.xupmmsx5qccn46tr@vireshk-i7> <33a7ad95-a8cf-7b88-0f78-09086c1a4adf@gmail.com>
- <20201109055320.5y5gf2whwast2mi4@vireshk-i7>
-In-Reply-To: <20201109055320.5y5gf2whwast2mi4@vireshk-i7>
-From:   Frank Lee <tiny.windzz@gmail.com>
-Date:   Mon, 9 Nov 2020 19:20:50 +0800
-Message-ID: <CAEExFWuF82B3bPn8T8_vkHODNwP89MDrNOqu-MhObzqTfiYODw@mail.gmail.com>
-Subject: Re: [PATCH v1 17/30] mmc: sdhci-tegra: Support OPP and core voltage scaling
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     Dmitry Osipenko <digetx@gmail.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Peter Chen <Peter.Chen@nxp.com>,
-        Mark Brown <broonie@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Peter Geis <pgwipeout@gmail.com>,
-        Nicolas Chauvet <kwizart@gmail.com>,
-        driver-dev <devel@driverdev.osuosl.org>,
-        linux-pwm@vger.kernel.org,
-        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
-        DTML <devicetree@vger.kernel.org>, linux-usb@vger.kernel.org,
-        "open list:SECURE DIGITAL HO..." <linux-mmc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        linux-tegra@vger.kernel.org, linux-media@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 9, 2020 at 1:53 PM Viresh Kumar <viresh.kumar@linaro.org> wrote=
-:
+On Sun, Nov 08 2020 at 15:58, Ashok Raj wrote:
+> On Sun, Nov 08, 2020 at 07:47:24PM +0100, Thomas Gleixner wrote:
+>> 
+>> 
+>> Now if we look at the virtualization scenario and device hand through
+>> then the structure in the guest view is not any different from the basic
+>> case. This works with PCI-MSI[X] and the IDXD IMS variant because the
+>> hypervisor can trap the access to the storage and translate the message:
+>> 
+>>                    |
+>>                    |
+>>   [CPU]    -- [Bri | dge] -- Bus -- [Device]
+>>                    |
+>>   Alloc +
+>>   Compose                   Store     Use
+>>                              |
+>>                              | Trap
+>>                              v
+>>                              Hypervisor translates and stores
+>> 
 >
-> On 09-11-20, 08:44, Dmitry Osipenko wrote:
-> > 09.11.2020 08:35, Viresh Kumar =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
-> > > On 09-11-20, 08:19, Dmitry Osipenko wrote:
-> > >> Thanks, I made it in a different way by simply adding helpers to the
-> > >> pm_opp.h which use devm_add_action_or_reset(). This doesn't require =
-to
-> > >> add new kernel symbols.
-> > >
-> > > I will prefer to add it in core.c itself, and yes
-> > > devm_add_action_or_reset() looks better. But I am still not sure for
-> > > which helpers do we need the devm_*() variants, as this is only usefu=
-l
-> > > for non-CPU devices. But if we have users that we can add right now,
-> > > why not.
-> >
-> > All current non-CPU drivers (devfreq, mmc, memory, etc) can benefit fro=
-m it.
-> >
-> > For Tegra drivers we need these variants:
-> >
-> > devm_pm_opp_set_supported_hw()
-> > devm_pm_opp_set_regulators() [if we won't use GENPD]
-> > devm_pm_opp_set_clkname()
-> > devm_pm_opp_of_add_table()
->
-> I tried to look earlier for the stuff already merged in and didn't
-> find a lot of stuff where the devm_* could be used, maybe I missed
-> some of it.
->
-> Frank, would you like to refresh your series based on suggestions from
-> Dmitry and make other drivers adapt to the new APIs ?
+> The above case, VMM is responsible for writing to the message
+> store. In both cases if its IMS or Legacy MSI/MSIx. VMM handles
+> the writes to the device interrupt region and to the IRTE tables.
 
-I am glad to do this.=EF=BC=9A=EF=BC=89
+Yes, but that's just how it's done today and there is no real need to do
+so.
 
-Yangtao
+>> Now the question which I can't answer is whether this can work correctly
+>> in terms of isolation. If the IMS storage is in guest memory (queue
+>> storage) then the guest driver can obviously write random crap into it
+>> which the device will happily send. (For MSI and IDXD style IMS it
+>> still can trap the store).
+>
+> The isolation problem is not just the guest memory being used as interrrupt
+> store right? If the Store to device region is not trapped and controlled by 
+> VMM, there is no gaurantee the guest OS has done the right thing?
+>
+> Thinking about it, guest memory might be more problematic since its not
+> trappable and VMM can't enforce what is written. This is something that
+> needs more attension. But for now the devices supporting memory on device
+> the trap and store by VMM seems to satisfy the security properties you
+> highlight here.
+
+That's not the problem at all. The VMM is not responsible for the
+correctness of the guest OS at all. All the VMM cares about is that the
+guest cannot access anything which does not belong to the guest.
+
+If the guest OS screws up the message (by stupidity or malice), then the
+MSI sent from the passed through device has to be caught by the
+IOMMU/remap unit if an _only_ if it writes to something which it is not
+allowed to.
+
+If it overwrites the guests memory then so be it. The VMM cannot prevent
+the guest OS doing so by a stray pointer either. So why would it worry
+about the MSI going into guest owned lala land?
+
+>> Is the IOMMU/Interrupt remapping unit able to catch such messages which
+>> go outside the space to which the guest is allowed to signal to? If yes,
+>> problem solved. If no, then IMS storage in guest memory can't ever work.
+>
+> This can probably work for SRIOV devices where guest owns the entire device.
+> interrupt remap does have RID checks if interrupt arrives at an Interrupt handle
+> not allocated for that BDF.
+>
+> But for SIOV devices there is no PASID filtering at the remap level since
+> interrupt messages don't carry PASID in the TLP.
+
+PASID is irrelevant here.
+
+If the device sends a message then the remap unit will see the requester
+ID of the device and if the message it sends is not matching the remap
+tables then it's caught and the guest is terminated. At least that's how
+it should be.
+
+>> But there's a catch:
+>> 
+>> This only works when the guest OS actually knows that it runs in a
+>> VM. If the guest can't figure that out, i.e. via CPUID, this cannot be
+>
+> Precicely!. It might work if the OS is new, but for legacy the trap-emulate
+> seems both safe and works for legacy as well?
+
+Again, trap emulate does not work for IMS when the IMS store is software
+managed guest memory and not part of the device. And that's the whole
+reason why we are discussing this.
+
+Thanks,
+
+        tglx
