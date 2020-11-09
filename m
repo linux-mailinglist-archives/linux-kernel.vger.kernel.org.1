@@ -2,34 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 664A22ABA97
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 14:23:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C48232ABA9A
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 14:23:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387961AbgKINUm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 08:20:42 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48308 "EHLO mail.kernel.org"
+        id S1730884AbgKINUs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 08:20:48 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48364 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730884AbgKINUj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 08:20:39 -0500
+        id S2387960AbgKINUn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 08:20:43 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BB2D6206D8;
-        Mon,  9 Nov 2020 13:20:38 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9BAEF2083B;
+        Mon,  9 Nov 2020 13:20:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604928039;
-        bh=E5lSHdmMymlin9eyATPYgZBKInfLPQsXgYtM131YSF8=;
+        s=default; t=1604928042;
+        bh=/t+3jZHJb1n+jV2ThxdF7BUzZJwvGnf3gsuDXnIyPRA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=xpuqtaSV0NV3VPbpDyXB4ecl+cIHUM8KI2suG0+9NjEgqsnvCmhY1xJROYUZYKiQ9
-         tqueCLS+aIJ1dg7wYKbfzXlQHWwuq5hCuRtkiVJ4qjERvEGkcq8YTPsDbNWSdqy4cP
-         1+4AsRbDKSz1240h0eXAY6lWPYfs/tc97q+CCodo=
+        b=P7WpGmibd1r1lJTdmsuHr4WkGG4Ttunn7QREomqOxVmSdA6Mk3LRjhd1oqD8wzwzl
+         2dsYGWGipB/nuD7QdJD0NU3pQPks129cWrFSm4XCyTu8Iygez2ZV+f5/pKdt3/B9gd
+         qkCbjQFvKdAmLKlSsVYym8UwuCunVJQCawKWu3iI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Matthias Reichl <hias@horus.com>
-Subject: [PATCH 5.9 107/133] tty: fix crash in release_tty if tty->port is not set
-Date:   Mon,  9 Nov 2020 13:56:09 +0100
-Message-Id: <20201109125035.837647533@linuxfoundation.org>
+        stable@vger.kernel.org, Eddy Wu <eddy_wu@trendmicro.com>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 5.9 108/133] fork: fix copy_process(CLONE_PARENT) race with the exiting ->real_parent
+Date:   Mon,  9 Nov 2020 13:56:10 +0100
+Message-Id: <20201109125035.885276818@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201109125030.706496283@linuxfoundation.org>
 References: <20201109125030.706496283@linuxfoundation.org>
@@ -41,43 +43,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Matthias Reichl <hias@horus.com>
+From: Eddy Wu <itseddy0402@gmail.com>
 
-commit 4466d6d2f80c1193e0845d110277c56da77a6418 upstream.
+commit b4e00444cab4c3f3fec876dc0cccc8cbb0d1a948 upstream.
 
-Commit 2ae0b31e0face ("tty: don't crash in tty_init_dev when missing
-tty_port") didn't fully prevent the crash as the cleanup path in
-tty_init_dev() calls release_tty() which dereferences tty->port
-without checking it for non-null.
+current->group_leader->exit_signal may change during copy_process() if
+current->real_parent exits.
 
-Add tty->port checks to release_tty to avoid the kernel crash.
+Move the assignment inside tasklist_lock to avoid the race.
 
-Fixes: 2ae0b31e0face ("tty: don't crash in tty_init_dev when missing tty_port")
-Signed-off-by: Matthias Reichl <hias@horus.com>
-Link: https://lore.kernel.org/r/20201105123432.4448-1-hias@horus.com
-Cc: stable <stable@vger.kernel.org>
+Signed-off-by: Eddy Wu <eddy_wu@trendmicro.com>
+Acked-by: Oleg Nesterov <oleg@redhat.com>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/tty/tty_io.c |    6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ kernel/fork.c |   10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
---- a/drivers/tty/tty_io.c
-+++ b/drivers/tty/tty_io.c
-@@ -1514,10 +1514,12 @@ static void release_tty(struct tty_struc
- 		tty->ops->shutdown(tty);
- 	tty_save_termios(tty);
- 	tty_driver_remove_tty(tty->driver, tty);
--	tty->port->itty = NULL;
-+	if (tty->port)
-+		tty->port->itty = NULL;
- 	if (tty->link)
- 		tty->link->port->itty = NULL;
--	tty_buffer_cancel_work(tty->port);
-+	if (tty->port)
-+		tty_buffer_cancel_work(tty->port);
- 	if (tty->link)
- 		tty_buffer_cancel_work(tty->link->port);
+--- a/kernel/fork.c
++++ b/kernel/fork.c
+@@ -2167,14 +2167,9 @@ static __latent_entropy struct task_stru
+ 	/* ok, now we should be set up.. */
+ 	p->pid = pid_nr(pid);
+ 	if (clone_flags & CLONE_THREAD) {
+-		p->exit_signal = -1;
+ 		p->group_leader = current->group_leader;
+ 		p->tgid = current->tgid;
+ 	} else {
+-		if (clone_flags & CLONE_PARENT)
+-			p->exit_signal = current->group_leader->exit_signal;
+-		else
+-			p->exit_signal = args->exit_signal;
+ 		p->group_leader = p;
+ 		p->tgid = p->pid;
+ 	}
+@@ -2218,9 +2213,14 @@ static __latent_entropy struct task_stru
+ 	if (clone_flags & (CLONE_PARENT|CLONE_THREAD)) {
+ 		p->real_parent = current->real_parent;
+ 		p->parent_exec_id = current->parent_exec_id;
++		if (clone_flags & CLONE_THREAD)
++			p->exit_signal = -1;
++		else
++			p->exit_signal = current->group_leader->exit_signal;
+ 	} else {
+ 		p->real_parent = current;
+ 		p->parent_exec_id = current->self_exec_id;
++		p->exit_signal = args->exit_signal;
+ 	}
  
+ 	klp_copy_process(p);
 
 
