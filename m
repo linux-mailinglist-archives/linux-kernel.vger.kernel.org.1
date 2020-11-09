@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F8CA2AB8F6
+	by mail.lfdr.de (Postfix) with ESMTP id A7B972AB8F7
 	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 14:01:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730494AbgKINAW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 08:00:22 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54326 "EHLO mail.kernel.org"
+        id S1730550AbgKINBI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 08:01:08 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54490 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730433AbgKINAM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 08:00:12 -0500
+        id S1730483AbgKINAU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 08:00:20 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id F0914207BC;
-        Mon,  9 Nov 2020 13:00:10 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id A87DF20684;
+        Mon,  9 Nov 2020 13:00:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604926811;
-        bh=zZ7orDji2vb815BGMy8W7wwBHaPtZXTZ24EOyC1X92c=;
+        s=default; t=1604926820;
+        bh=yq56alpSp8nwIw3snokF1ceZ19rUu9MMXV9XI93QnR0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=lDc0gqe73viFOZyBkro6jVyO5Llsu6209jvvEnJrbmL+BX90zv0v5r6HkyfKx9V+a
-         Y23n9GStOU4VMJqq2eT+6Si9vneafbewk69JRt7wBjmc9vvefKsKOdMtVGtOoebwei
-         Q14RJrcUdJtQG4bbkwvnFYuRaa4OA1knoSbl3Slg=
+        b=bUOw/4JAL6sdk4gT1dPV5z8w26S49+SkO5+49JyVUOK+ltSmjWZS6T4m0ByVdUvxb
+         k/hu+3eoN31rmY3WTlK/MUWngRoSGro/lfXyq3MWLZBwQWijd/cR1WfgvEKfEHs5Ac
+         70gc6Hf5RDdZSTsKIgYuNjYZ9qW2PgD1RCEMCcBY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Julia Lawall <julia.lawall@inria.fr>,
-        Andrew Gabbasov <andrew_gabbasov@mentor.com>,
-        Sergei Shtylyov <sergei.shtylyov@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 4.9 005/117] ravb: Fix bit fields checking in ravb_hwtstamp_get()
-Date:   Mon,  9 Nov 2020 13:53:51 +0100
-Message-Id: <20201109125025.892293291@linuxfoundation.org>
+        stable@vger.kernel.org, Pradeep P V K <ppvk@codeaurora.org>,
+        Miklos Szeredi <mszeredi@redhat.com>
+Subject: [PATCH 4.9 008/117] fuse: fix page dereference after free
+Date:   Mon,  9 Nov 2020 13:53:54 +0100
+Message-Id: <20201109125026.044111558@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201109125025.630721781@linuxfoundation.org>
 References: <20201109125025.630721781@linuxfoundation.org>
@@ -44,69 +42,111 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andrew Gabbasov <andrew_gabbasov@mentor.com>
+From: Miklos Szeredi <mszeredi@redhat.com>
 
-[ Upstream commit 68b9f0865b1ef545da180c57d54b82c94cb464a4 ]
+commit d78092e4937de9ce55edcb4ee4c5e3c707be0190 upstream.
 
-In the function ravb_hwtstamp_get() in ravb_main.c with the existing
-values for RAVB_RXTSTAMP_TYPE_V2_L2_EVENT (0x2) and RAVB_RXTSTAMP_TYPE_ALL
-(0x6)
+After unlock_request() pages from the ap->pages[] array may be put (e.g. by
+aborting the connection) and the pages can be freed.
 
-if (priv->tstamp_rx_ctrl & RAVB_RXTSTAMP_TYPE_V2_L2_EVENT)
-	config.rx_filter = HWTSTAMP_FILTER_PTP_V2_L2_EVENT;
-else if (priv->tstamp_rx_ctrl & RAVB_RXTSTAMP_TYPE_ALL)
-	config.rx_filter = HWTSTAMP_FILTER_ALL;
+Prevent use after free by grabbing a reference to the page before calling
+unlock_request().
 
-if the test on RAVB_RXTSTAMP_TYPE_ALL should be true,
-it will never be reached.
+The original patch was created by Pradeep P V K.
 
-This issue can be verified with 'hwtstamp_config' testing program
-(tools/testing/selftests/net/hwtstamp_config.c). Setting filter type
-to ALL and subsequent retrieving it gives incorrect value:
-
-$ hwtstamp_config eth0 OFF ALL
-flags = 0
-tx_type = OFF
-rx_filter = ALL
-$ hwtstamp_config eth0
-flags = 0
-tx_type = OFF
-rx_filter = PTP_V2_L2_EVENT
-
-Correct this by converting if-else's to switch.
-
-Fixes: c156633f1353 ("Renesas Ethernet AVB driver proper")
-Reported-by: Julia Lawall <julia.lawall@inria.fr>
-Signed-off-by: Andrew Gabbasov <andrew_gabbasov@mentor.com>
-Reviewed-by: Sergei Shtylyov <sergei.shtylyov@gmail.com>
-Link: https://lore.kernel.org/r/20201026102130.29368-1-andrew_gabbasov@mentor.com
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Reported-by: Pradeep P V K <ppvk@codeaurora.org>
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Miklos Szeredi <mszeredi@redhat.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- drivers/net/ethernet/renesas/ravb_main.c |   10 +++++++---
- 1 file changed, 7 insertions(+), 3 deletions(-)
 
---- a/drivers/net/ethernet/renesas/ravb_main.c
-+++ b/drivers/net/ethernet/renesas/ravb_main.c
-@@ -1729,12 +1729,16 @@ static int ravb_hwtstamp_get(struct net_
- 	config.flags = 0;
- 	config.tx_type = priv->tstamp_tx_ctrl ? HWTSTAMP_TX_ON :
- 						HWTSTAMP_TX_OFF;
--	if (priv->tstamp_rx_ctrl & RAVB_RXTSTAMP_TYPE_V2_L2_EVENT)
-+	switch (priv->tstamp_rx_ctrl & RAVB_RXTSTAMP_TYPE) {
-+	case RAVB_RXTSTAMP_TYPE_V2_L2_EVENT:
- 		config.rx_filter = HWTSTAMP_FILTER_PTP_V2_L2_EVENT;
--	else if (priv->tstamp_rx_ctrl & RAVB_RXTSTAMP_TYPE_ALL)
-+		break;
-+	case RAVB_RXTSTAMP_TYPE_ALL:
- 		config.rx_filter = HWTSTAMP_FILTER_ALL;
--	else
-+		break;
-+	default:
- 		config.rx_filter = HWTSTAMP_FILTER_NONE;
+---
+ fs/fuse/dev.c |   28 ++++++++++++++++++----------
+ 1 file changed, 18 insertions(+), 10 deletions(-)
+
+--- a/fs/fuse/dev.c
++++ b/fs/fuse/dev.c
+@@ -846,15 +846,16 @@ static int fuse_try_move_page(struct fus
+ 	struct page *newpage;
+ 	struct pipe_buffer *buf = cs->pipebufs;
+ 
++	get_page(oldpage);
+ 	err = unlock_request(cs->req);
+ 	if (err)
+-		return err;
++		goto out_put_old;
+ 
+ 	fuse_copy_finish(cs);
+ 
+ 	err = pipe_buf_confirm(cs->pipe, buf);
+ 	if (err)
+-		return err;
++		goto out_put_old;
+ 
+ 	BUG_ON(!cs->nr_segs);
+ 	cs->currbuf = buf;
+@@ -894,7 +895,7 @@ static int fuse_try_move_page(struct fus
+ 	err = replace_page_cache_page(oldpage, newpage, GFP_KERNEL);
+ 	if (err) {
+ 		unlock_page(newpage);
+-		return err;
++		goto out_put_old;
+ 	}
+ 
+ 	get_page(newpage);
+@@ -913,14 +914,19 @@ static int fuse_try_move_page(struct fus
+ 	if (err) {
+ 		unlock_page(newpage);
+ 		put_page(newpage);
+-		return err;
++		goto out_put_old;
+ 	}
+ 
+ 	unlock_page(oldpage);
++	/* Drop ref for ap->pages[] array */
+ 	put_page(oldpage);
+ 	cs->len = 0;
+ 
+-	return 0;
++	err = 0;
++out_put_old:
++	/* Drop ref obtained in this function */
++	put_page(oldpage);
++	return err;
+ 
+ out_fallback_unlock:
+ 	unlock_page(newpage);
+@@ -929,10 +935,10 @@ out_fallback:
+ 	cs->offset = buf->offset;
+ 
+ 	err = lock_request(cs->req);
+-	if (err)
+-		return err;
++	if (!err)
++		err = 1;
+ 
+-	return 1;
++	goto out_put_old;
+ }
+ 
+ static int fuse_ref_page(struct fuse_copy_state *cs, struct page *page,
+@@ -944,14 +950,16 @@ static int fuse_ref_page(struct fuse_cop
+ 	if (cs->nr_segs == cs->pipe->buffers)
+ 		return -EIO;
+ 
++	get_page(page);
+ 	err = unlock_request(cs->req);
+-	if (err)
++	if (err) {
++		put_page(page);
+ 		return err;
 +	}
  
- 	return copy_to_user(req->ifr_data, &config, sizeof(config)) ?
- 		-EFAULT : 0;
+ 	fuse_copy_finish(cs);
+ 
+ 	buf = cs->pipebufs;
+-	get_page(page);
+ 	buf->page = page;
+ 	buf->offset = offset;
+ 	buf->len = count;
 
 
