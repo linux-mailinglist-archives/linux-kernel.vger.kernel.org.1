@@ -2,135 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C01A72AB057
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 05:57:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AED0C2AB05A
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 05:59:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729368AbgKIE5o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 8 Nov 2020 23:57:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58532 "EHLO
+        id S1729394AbgKIE7G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 8 Nov 2020 23:59:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58740 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729308AbgKIE5n (ORCPT
+        with ESMTP id S1728038AbgKIE7F (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 8 Nov 2020 23:57:43 -0500
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0290C0613D3
-        for <linux-kernel@vger.kernel.org>; Sun,  8 Nov 2020 20:57:43 -0800 (PST)
-Received: by mail-pf1-x444.google.com with SMTP id c66so1248500pfa.4
-        for <linux-kernel@vger.kernel.org>; Sun, 08 Nov 2020 20:57:43 -0800 (PST)
+        Sun, 8 Nov 2020 23:59:05 -0500
+Received: from mail-il1-x142.google.com (mail-il1-x142.google.com [IPv6:2607:f8b0:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F55EC0613CF;
+        Sun,  8 Nov 2020 20:59:05 -0800 (PST)
+Received: by mail-il1-x142.google.com with SMTP id y17so7142481ilg.4;
+        Sun, 08 Nov 2020 20:59:05 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to
-         :user-agent;
-        bh=FyxKjiZ7wGO9C/98D++nuGu+ry1VQp8BcqI9FcWr6AY=;
-        b=RFMbsOm5+b/YkDxzKr40E/wqin22/AhBOE2lwZLG0UQH0AHXwHyRlL1bLgnZWKS2xC
-         rPknSvmYqEy+TQV2VWHpgzPz2KTZp3NT1+PIPhpkknp6MDqLPt3ZdfjJgW1D04ue2h3A
-         Zkwy+Yi+kYtICK33XlnaUjLsllIVPgXtyAh6878rxTFij9SxZ5enpfPSQQQuCp3wbRIn
-         fHrGKUyR71w6HcMhMaLKEuvhzNUy+wdZt0GZhkW3Q1D22EyKTD/NbRFJTcp2S6RCT2ol
-         3kzrPKgCimOeaaem2YlEukRl1NhVDQYvDxaY5h2K954VBqJjLuEVQUwL34CqGBw4inIN
-         MeYA==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=4NL1NCgbVYCQehTbE7G2xqXykgisF//g4f3RuFilZ9E=;
+        b=CtdSAF/IkW3uB7+Lr5FBSuiNxXsHnNLqurLUCkS2QA8XJm2M6ZibTJ3ZDalJ8++XVn
+         bPjIFYzcU3OZoDCek4d7mCthF8kr2qn4pcSNd3RjhP5VoD/uO5KgBXvhZe7d8t1IPrTC
+         kIL4uVi9n8WZBva6CGEv9JHRD7rbWKTVjeNzQ2eNZy1KDawAUSwvgIBenDbteDJnJ530
+         kh0HbFw4JQRuj+Lsj1n64BTpDm10ean+xsX+9ybSTYos8WFVZl0i99fzicRgu1jFrRZ/
+         9qek3j31CUQcfNg9NFiaZ4lo5YKjPm88BxtKiBCuKkJvjcArkHXbOfeOVlNbNL3j55Wt
+         DnCQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to:user-agent;
-        bh=FyxKjiZ7wGO9C/98D++nuGu+ry1VQp8BcqI9FcWr6AY=;
-        b=BiPc/LVRiYQoMiWpDxlE4zxi0KmxyVKfBe7YaG0lZUHdc7FJ4DgqPJUUTcZvRdQ8Aj
-         njKQDBKCiQUuVBs2HXcJLtr0FDxyHlUR2sPUVmoB+SvvoPch4/qh0vkM/ZTYh+QyXpKi
-         mIQBiZv+o02ReVux+KM+8MBLPr6BwsY5Nrd81GEpI6Rn9tAZXBXsbN0Dtuy2EUeLRocB
-         cBKROPzLgct03GtNOA3QDfRv90rtslISzQoXdCrqhYPOafovXEPdE5lthN36ke2MPAi/
-         I+uCfzNo66D5p1i/oezYXWBniy3AAbgWp9/CMTj7SsBcn2hrtn7rtd7vXUxm3BdbwP9A
-         WUNw==
-X-Gm-Message-State: AOAM530Z1RZbfR6ZIMp2evm3IDz6N+623cudBuYrkolzPmB0WnrAoyXA
-        5NW/2TNNbRy/QFKA10iPmYe4cw==
-X-Google-Smtp-Source: ABdhPJwM7NF2hWFK9jNfXuDydeaQkSV9pyoWCNDS21hcvCy9gJU7JIjTinuuWKcwD6sHGBdIXToDrA==
-X-Received: by 2002:a17:90a:b88f:: with SMTP id o15mr11062332pjr.94.1604897863092;
-        Sun, 08 Nov 2020 20:57:43 -0800 (PST)
-Received: from localhost ([122.172.12.172])
-        by smtp.gmail.com with ESMTPSA id u197sm4610861pfc.127.2020.11.08.20.57.42
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sun, 08 Nov 2020 20:57:42 -0800 (PST)
-Date:   Mon, 9 Nov 2020 10:27:40 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Kevin Hilman <khilman@kernel.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Len Brown <len.brown@intel.com>, Pavel Machek <pavel@ucw.cz>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Viresh Kumar <vireshk@kernel.org>, Nishanth Menon <nm@ti.com>,
-        Stephen Boyd <sboyd@kernel.org>, linux-pm@vger.kernel.org,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] opp: Don't create an OPP table from
- dev_pm_opp_get_opp_table()
-Message-ID: <20201109045740.y5kpd6tjscoqxhi5@vireshk-i7>
-References: <684ff01900180c0a40ec307dacc673b24eab593b.1604643714.git.viresh.kumar@linaro.org>
- <1012a98950355bd5a52424668050a17c3430cbe0.1604643714.git.viresh.kumar@linaro.org>
- <ec9839dd-5d2d-0d6b-6563-b14da4af1a57@gmail.com>
- <20201109043457.xf55kufhjjz2fvct@vireshk-i7>
- <c5078503-ee14-0f84-85fd-9c6e55d2e897@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=4NL1NCgbVYCQehTbE7G2xqXykgisF//g4f3RuFilZ9E=;
+        b=OWhwJN2or4VXNhmz3VTRBnQqTrxmHEyebQN1LT8nhNcaZzYFYEoOEu/f524x/G0Nxv
+         n2vYidxdayV53Cnz8LvrYp/y4z3TAJGO3sz1Ty8YAqosrdGHumY8vYzJ13INXHpiEDzP
+         zJ5B5FWhuQqDRfCoOLOfLTr4y3DVhZkqM/x/Wk0qMIJ6C592JaaC2S0jLA9byoHkvloP
+         DV8ZlOrTbNjpMhe3V1WDG3bLLLJa4NeKKtfqNPLun/52+ktHtFIIhFrwJqHgC5PCzx9o
+         aWD+2Qg3c+Z/zGIOfZajHrBGm3X9lWryGBLHCBEqjS8Y9wi92433LepxCk9ydpBam9oV
+         l8Bw==
+X-Gm-Message-State: AOAM532LUnd80qcW1ZWE2Spg3flslmIjUChhsSYwGBuuITp4cVf0upD7
+        594VF85m//dhcUFM0EWXHrNdDYgUmlcaC2b6G/CpXdbsgrs=
+X-Google-Smtp-Source: ABdhPJxMhg1PLY/uPC9bIG2dDogWQfpNTx1QZi760hBRRZ4NPS5NPTBR/MUyDH91bo/JvuOeM5LBw/OOir/aKvoPXNQ=
+X-Received: by 2002:a05:6e02:e51:: with SMTP id l17mr8841831ilk.275.1604897944145;
+ Sun, 08 Nov 2020 20:59:04 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <c5078503-ee14-0f84-85fd-9c6e55d2e897@gmail.com>
-User-Agent: NeoMutt/20180716-391-311a52
+References: <20201109035931.4740-1-longman@redhat.com>
+In-Reply-To: <20201109035931.4740-1-longman@redhat.com>
+From:   Amir Goldstein <amir73il@gmail.com>
+Date:   Mon, 9 Nov 2020 06:58:52 +0200
+Message-ID: <CAOQ4uxj26Pb_zyErgnpmKeMThrxnRuO5PAF=igt9mvr_80BkCQ@mail.gmail.com>
+Subject: Re: [PATCH v4] inotify: Increase default inotify.max_user_watches
+ limit to 1048576
+To:     Waiman Long <longman@redhat.com>
+Cc:     Jan Kara <jack@suse.cz>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Luca BRUNO <lucab@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 09-11-20, 07:41, Dmitry Osipenko wrote:
-> 09.11.2020 07:34, Viresh Kumar пишет:
-> > On 06-11-20, 16:18, Dmitry Osipenko wrote:
-> >> 06.11.2020 09:24, Viresh Kumar пишет:
-> >>> It has been found that some users (like cpufreq-dt and others on LKML)
-> >>> have abused the helper dev_pm_opp_get_opp_table() to create the OPP
-> >>> table instead of just finding it, which is the wrong thing to do. This
-> >>> routine was meant for OPP core's internal working and exposed the whole
-> >>> functionality by mistake.
-> >>>
-> >>> Change the scope of dev_pm_opp_get_opp_table() to only finding the
-> >>> table. The internal helpers _opp_get_opp_table*() are thus renamed to
-> >>> _add_opp_table*(), dev_pm_opp_get_opp_table_indexed() is removed (as we
-> >>> don't need the index field for finding the OPP table) and so the only
-> >>> user, genpd, is updated.
-> >>>
-> >>> Note that the prototype of _add_opp_table() was already left in opp.h by
-> >>> mistake when it was removed earlier and so we weren't required to add it
-> >>> now.
-> >>
-> >> Hello Viresh,
-> >>
-> >> It looks like this is not an entirely correct change because previously
-> >> it was possible to get an empty opp_table in order to use it for the
-> >> dev_pm_opp_set_rate(), which would fall back to clk_set_rate if table is
-> >> empty.
-> >>
-> >> Now it's not possible to get an empty table and
-> >> dev_pm_opp_of_add_table() would error out if OPPs are missing in a
-> >> device-tree. Hence it's not possible to implement a fall back without
-> >> abusing opp_set_regulators() or opp_set_supported_hw() for getting the
-> >> empty table. Or am I missing something?
-> > 
-> > For that case you were always required to call
-> > dev_pm_opp_set_clkname(), otherwise how would the OPP core know which
-> > clock to set ? And the same shall work now as well.
-> 
-> Why _allocate_opp_table() grabs the first default clk of a device and
-> assigns it to the created table?
+On Mon, Nov 9, 2020 at 6:00 AM Waiman Long <longman@redhat.com> wrote:
+>
+> The default value of inotify.max_user_watches sysctl parameter was set
+> to 8192 since the introduction of the inotify feature in 2005 by
+> commit 0eeca28300df ("[PATCH] inotify"). Today this value is just too
+> small for many modern usage. As a result, users have to explicitly set
+> it to a larger value to make it work.
+>
+> After some searching around the web, these are the
+> inotify.max_user_watches values used by some projects:
+>  - vscode:  524288
+>  - dropbox support: 100000
+>  - users on stackexchange: 12228
+>  - lsyncd user: 2000000
+>  - code42 support: 1048576
+>  - monodevelop: 16384
+>  - tectonic: 524288
+>  - openshift origin: 65536
+>
+> Each watch point adds an inotify_inode_mark structure to an inode to
+> be watched. It also pins the watched inode.
+>
+> Modeled after the epoll.max_user_watches behavior to adjust the default
+> value according to the amount of addressable memory available, make
+> inotify.max_user_watches behave in a similar way to make it use no more
+> than 1% of addressable memory within the range [8192, 1048576].
+>
+> For 64-bit archs, inotify_inode_mark plus 2 vfs inode have a size that
+> is a bit over 1 kbytes (1284 bytes with my x86-64 config).
 
-Right, it was there so everybody isn't required to call
-dev_pm_opp_set_clkname() if they don't need to pass a connection id
-while getting the clock. But for the case of supporting empty OPP
-tables for cases where we just want dev_pm_opp_set_rate() to act as
-clk_set_rate() (in order for the drivers to avoid supporting two
-different ways of doing so), we do need that call to be made.
+The sentence above seems out of context (where did the 2 vfs inodes
+come from?). Perhaps the comment in the patch should go here above.
 
-We need to add the OPP table explicitly and what happened with
-dev_pm_opp_get_opp_table() was accidental and not what I wanted.
+> That means
+> a system with 128GB or more memory will likely have the maximum value
+> of 1048576 for inotify.max_user_watches. This default should be big
+> enough for most use cases.
+>
+> [v3: increase inotify watch cost as suggested by Amir and Honza]
 
-drivers/mmc/host/sdhci-msm.c has an example of how this is done.
+That patch change log usually doesn't belong in the git commit
+because it adds little value in git log perspective.
 
--- 
-viresh
+If you think that the development process is relevant to understanding
+the patch (like the discussion leading to the formula of the cost)
+then a Link: to the discussion on lore.kernel.org would serve the
+commit better.
+
+>
+> Signed-off-by: Waiman Long <longman@redhat.com>
+
+Apart from this minor nits,
+Reviewed-by: Amir Goldstein <amir73il@gmail.com>
+
+> ---
+>  fs/notify/inotify/inotify_user.c | 23 ++++++++++++++++++++++-
+>  1 file changed, 22 insertions(+), 1 deletion(-)
+>
+> diff --git a/fs/notify/inotify/inotify_user.c b/fs/notify/inotify/inotify_user.c
+> index 186722ba3894..24d17028375e 100644
+> --- a/fs/notify/inotify/inotify_user.c
+> +++ b/fs/notify/inotify/inotify_user.c
+> @@ -37,6 +37,15 @@
+>
+>  #include <asm/ioctls.h>
+>
+> +/*
+> + * An inotify watch requires allocating an inotify_inode_mark structure as
+> + * well as pinning the watched inode. Doubling the size of a VFS inode
+> + * should be more than enough to cover the additional filesystem inode
+> + * size increase.
+> + */
+> +#define INOTIFY_WATCH_COST     (sizeof(struct inotify_inode_mark) + \
+> +                                2 * sizeof(struct inode))
+> +
+>  /* configurable via /proc/sys/fs/inotify/ */
+>  static int inotify_max_queued_events __read_mostly;
+>
+> @@ -801,6 +810,18 @@ SYSCALL_DEFINE2(inotify_rm_watch, int, fd, __s32, wd)
+>   */
+>  static int __init inotify_user_setup(void)
+>  {
+> +       unsigned long watches_max;
+> +       struct sysinfo si;
+> +
+> +       si_meminfo(&si);
+> +       /*
+> +        * Allow up to 1% of addressable memory to be allocated for inotify
+> +        * watches (per user) limited to the range [8192, 1048576].
+> +        */
+> +       watches_max = (((si.totalram - si.totalhigh) / 100) << PAGE_SHIFT) /
+> +                       INOTIFY_WATCH_COST;
+> +       watches_max = clamp(watches_max, 8192UL, 1048576UL);
+> +
+>         BUILD_BUG_ON(IN_ACCESS != FS_ACCESS);
+>         BUILD_BUG_ON(IN_MODIFY != FS_MODIFY);
+>         BUILD_BUG_ON(IN_ATTRIB != FS_ATTRIB);
+> @@ -827,7 +848,7 @@ static int __init inotify_user_setup(void)
+>
+>         inotify_max_queued_events = 16384;
+>         init_user_ns.ucount_max[UCOUNT_INOTIFY_INSTANCES] = 128;
+> -       init_user_ns.ucount_max[UCOUNT_INOTIFY_WATCHES] = 8192;
+> +       init_user_ns.ucount_max[UCOUNT_INOTIFY_WATCHES] = watches_max;
+>
+>         return 0;
+>  }
+> --
+> 2.18.1
+>
