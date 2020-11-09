@@ -2,36 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B17BE2ABD36
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 14:45:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 03DAC2ABD50
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 14:45:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729891AbgKINAS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 08:00:18 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54298 "EHLO mail.kernel.org"
+        id S2387913AbgKINpE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 08:45:04 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54366 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730425AbgKINAJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 08:00:09 -0500
+        id S1730411AbgKINAP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 08:00:15 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EE70620684;
-        Mon,  9 Nov 2020 13:00:07 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D02D1216C4;
+        Mon,  9 Nov 2020 13:00:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604926808;
-        bh=VFw5kgRQrJ0xbQiQbgj6KQOkQHOOJbcDZyvdw3SCgEo=;
+        s=default; t=1604926814;
+        bh=JLcEgLdL/kL4nRVPKC9wWdDIZP3QmaLJDeSXO5Gt35Q=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=r3oLbdi+M3yXLqo+EboKX1C/0x5pf04UwZBYkgEeNg9QgLc07Y3Gf0fVz6C0AohY9
-         5dJrluwGpvB97pMvmZQ3G+lBQvn+qsvZY6Q3mSpFJOKtWDqgeaGhcMdC5+xE0VPC3P
-         NdED/44fuoOmtmX6LxDeifl0Z6yUqn+r2lTOVRNQ=
+        b=0Rt2mgqUr3CLe2BOK/uip1GEt2/Epr0+Yxwd02K6Nfe7X9NFhUjJUxyhLwAG9861M
+         hKKfHodZDKGZnNPOzpdVObopMgo32hJCOrExtomfi4AIQnnOnElHNuMuTDrkT3eqjN
+         8at4/dKEIzDJbRkXbv5LVC/sV/r/zB0QFE4Emhew=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Michael Schaller <misch@google.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        dann frazier <dann.frazier@canonical.com>
-Subject: [PATCH 4.9 004/117] efivarfs: Replace invalid slashes with exclamation marks in dentries.
-Date:   Mon,  9 Nov 2020 13:53:50 +0100
-Message-Id: <20201109125025.840680317@linuxfoundation.org>
+        stable@vger.kernel.org, Jon Maloy <jmaloy@redhat.com>,
+        Thang Hoang Ngo <thang.h.ngo@dektech.com.au>,
+        Tung Nguyen <tung.q.nguyen@dektech.com.au>,
+        Xin Long <lucien.xin@gmail.com>,
+        Cong Wang <xiyou.wangcong@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: [PATCH 4.9 006/117] tipc: fix memory leak caused by tipc_buf_append()
+Date:   Mon,  9 Nov 2020 13:53:52 +0100
+Message-Id: <20201109125025.942325540@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201109125025.630721781@linuxfoundation.org>
 References: <20201109125025.630721781@linuxfoundation.org>
@@ -43,40 +46,72 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Michael Schaller <misch@google.com>
+From: Tung Nguyen <tung.q.nguyen@dektech.com.au>
 
-commit 336af6a4686d885a067ecea8c3c3dd129ba4fc75 upstream.
+[ Upstream commit ceb1eb2fb609c88363e06618b8d4bbf7815a4e03 ]
 
-Without this patch efivarfs_alloc_dentry creates dentries with slashes in
-their name if the respective EFI variable has slashes in its name. This in
-turn causes EIO on getdents64, which prevents a complete directory listing
-of /sys/firmware/efi/efivars/.
+Commit ed42989eab57 ("tipc: fix the skb_unshare() in tipc_buf_append()")
+replaced skb_unshare() with skb_copy() to not reduce the data reference
+counter of the original skb intentionally. This is not the correct
+way to handle the cloned skb because it causes memory leak in 2
+following cases:
+ 1/ Sending multicast messages via broadcast link
+  The original skb list is cloned to the local skb list for local
+  destination. After that, the data reference counter of each skb
+  in the original list has the value of 2. This causes each skb not
+  to be freed after receiving ACK:
+  tipc_link_advance_transmq()
+  {
+   ...
+   /* release skb */
+   __skb_unlink(skb, &l->transmq);
+   kfree_skb(skb); <-- memory exists after being freed
+  }
 
-This patch replaces the invalid shlashes with exclamation marks like
-kobject_set_name_vargs does for /sys/firmware/efi/vars/ to have consistently
-named dentries under /sys/firmware/efi/vars/ and /sys/firmware/efi/efivars/.
+ 2/ Sending multicast messages via replicast link
+  Similar to the above case, each skb cannot be freed after purging
+  the skb list:
+  tipc_mcast_xmit()
+  {
+   ...
+   __skb_queue_purge(pkts); <-- memory exists after being freed
+  }
 
-Signed-off-by: Michael Schaller <misch@google.com>
-Link: https://lore.kernel.org/r/20200925074502.150448-1-misch@google.com
-Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
-Signed-off-by: dann frazier <dann.frazier@canonical.com>
+This commit fixes this issue by using skb_unshare() instead. Besides,
+to avoid use-after-free error reported by KASAN, the pointer to the
+fragment is set to NULL before calling skb_unshare() to make sure that
+the original skb is not freed after freeing the fragment 2 times in
+case skb_unshare() returns NULL.
+
+Fixes: ed42989eab57 ("tipc: fix the skb_unshare() in tipc_buf_append()")
+Acked-by: Jon Maloy <jmaloy@redhat.com>
+Reported-by: Thang Hoang Ngo <thang.h.ngo@dektech.com.au>
+Signed-off-by: Tung Nguyen <tung.q.nguyen@dektech.com.au>
+Reviewed-by: Xin Long <lucien.xin@gmail.com>
+Acked-by: Cong Wang <xiyou.wangcong@gmail.com>
+Link: https://lore.kernel.org/r/20201027032403.1823-1-tung.q.nguyen@dektech.com.au
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
 ---
- fs/efivarfs/super.c |    3 +++
- 1 file changed, 3 insertions(+)
+ net/tipc/msg.c |    5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
---- a/fs/efivarfs/super.c
-+++ b/fs/efivarfs/super.c
-@@ -146,6 +146,9 @@ static int efivarfs_callback(efi_char16_
- 
- 	name[len + EFI_VARIABLE_GUID_LEN+1] = '\0';
- 
-+	/* replace invalid slashes like kobject_set_name_vargs does for /sys/firmware/efi/vars. */
-+	strreplace(name, '/', '!');
-+
- 	inode = efivarfs_get_inode(sb, d_inode(root), S_IFREG | 0644, 0,
- 				   is_removable);
- 	if (!inode)
+--- a/net/tipc/msg.c
++++ b/net/tipc/msg.c
+@@ -140,12 +140,11 @@ int tipc_buf_append(struct sk_buff **hea
+ 	if (fragid == FIRST_FRAGMENT) {
+ 		if (unlikely(head))
+ 			goto err;
+-		if (skb_cloned(frag))
+-			frag = skb_copy(frag, GFP_ATOMIC);
++		*buf = NULL;
++		frag = skb_unshare(frag, GFP_ATOMIC);
+ 		if (unlikely(!frag))
+ 			goto err;
+ 		head = *headbuf = frag;
+-		*buf = NULL;
+ 		TIPC_SKB_CB(head)->tail = NULL;
+ 		if (skb_is_nonlinear(head)) {
+ 			skb_walk_frags(head, tail) {
 
 
