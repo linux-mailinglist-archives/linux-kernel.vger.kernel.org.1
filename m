@@ -2,148 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 332CB2ABE20
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 15:01:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F9E42ABE24
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 15:02:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731422AbgKIOBk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 09:01:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58752 "EHLO
+        id S1730573AbgKIOB5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 09:01:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58800 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730141AbgKIOBk (ORCPT
+        with ESMTP id S1730035AbgKIOB5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 09:01:40 -0500
-Received: from mail-il1-x141.google.com (mail-il1-x141.google.com [IPv6:2607:f8b0:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F2AAC0613D4
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Nov 2020 06:01:40 -0800 (PST)
-Received: by mail-il1-x141.google.com with SMTP id y9so1253377ilb.0
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Nov 2020 06:01:40 -0800 (PST)
+        Mon, 9 Nov 2020 09:01:57 -0500
+Received: from mail-qv1-xf41.google.com (mail-qv1-xf41.google.com [IPv6:2607:f8b0:4864:20::f41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51EEEC0613CF
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Nov 2020 06:01:55 -0800 (PST)
+Received: by mail-qv1-xf41.google.com with SMTP id e5so2338913qvs.1
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Nov 2020 06:01:55 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=R/y3h2V8KUh2HjjXpKhtsmK1j3JU5Ik5x1QmKjAc+dw=;
-        b=sCHfxt1Tg+i5nd302fB2fuH/skV5z9YHP9zYsSGc+aivet4eZV9LHp1n4S5VD2JxlQ
-         vlxHzm2jS2InJ+TtETBPTBs1m/UII6vtfBDqJB3/vIzvBiK5JouLCXz85fRCfIkVE3AP
-         TmugfLHQze9u3h5/dP46mop+7w+c8kW01+ra0FgUSXDlvZZUKm6OA+COJ9N/z20roiCm
-         dkvM1tsT/0jbVgsYqUzvQEtMsoyjgcStAwZGd/ekeDI7v63A2IO5x0xXKsaI7Y/Qzq5F
-         vqQmcg7CRlZgrQu0M4KqGWEduol6rT0cjgG8W+/wAIwrczKmwNMqkuuBmNNloI0buZ7Y
-         uKSA==
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=/ruVSjDZDRurayBLmYyYR2veA1e5iE10q7XYnooMQvs=;
+        b=I7kW91bk0uBvrlkJhQrFt5YKmaWbeu0rpb8qa6RuunmdqC2Hn4Kli2yhGMVByErrZB
+         AZ5Vg9PkOzAAkRxa37YLlZ6HsMTgFOM7vsiq7EQFXLfZ4KQ9I54IEH1laoXwG3Y8Jko2
+         wLY11KBmfS/ZI1yG7JAnk6uUEfVdZRh2MWE8hHWMv/2CPCiSjRO8WnSMl+fSoNnr5BR/
+         8pv6zU9+EhUMnvb7cLMvtxNAZCAYX4Kiui8dIdrdo4DrN5dtk00SSA5WwY/bs7ENg87l
+         qRAOBYFHLOhYlKp5ug+Q9mLrcU+fKnTQRTbPVyMGOlDDHyalAvYfp1BYVQLsw6kko2oI
+         AR0w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=R/y3h2V8KUh2HjjXpKhtsmK1j3JU5Ik5x1QmKjAc+dw=;
-        b=fA+eXG93q2S5I3B+eacovBAYDzFst66e12sii+seYBErSkKORcdWxT6RlF+d2wGDxi
-         cWy6NUZO2s7/aQZu/+1Y5xHSww4ZN5xy7BNoPE+Hr75KholqmIg0NFAokW62docX17cX
-         YaREGoiQIzsa2FmXN4bgD0/T520EwR4OoWkVz+RKxwaxsu011DlSjXwDqxOxP+tvFmEc
-         aVlu6DUXbgdyivjB9+YYa5NPoxCn97BdiIyO8tLeZ+YX19qnj9ovA6OL33Qpwq2mKwYe
-         ftZavDomwnIt6i4Uu3pqYAmQk4YiiXRt+8Uzg7V9n0Dm3oa9lidr1jfDFCveUm8VsDri
-         bVJA==
-X-Gm-Message-State: AOAM532rq76pvShznGXbWcDaspZWpk/NY3OXM8ylaYKmS/Bi/Stln6Jg
-        YwGoqEq+zxH1xR5etg2/URcjsVdVM7W+QARQc+hnyw==
-X-Google-Smtp-Source: ABdhPJxaKVOuDzlxhdWUNS2F1aDUsYr9TZS1F1EZaAf/eBNGDDQ34ZzmFykw1qVrgV1xaz+EFOmyT71gy0MuHe/FhxA=
-X-Received: by 2002:a92:6f11:: with SMTP id k17mr10207429ilc.69.1604930499398;
- Mon, 09 Nov 2020 06:01:39 -0800 (PST)
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=/ruVSjDZDRurayBLmYyYR2veA1e5iE10q7XYnooMQvs=;
+        b=lHF25G+Wt0BBFtjcH6FPpHRv5NSuM6YZ5+OCZ9IWMxxpqIK0yLVO2WZOIZNifNNf/F
+         rBjvkHGE624At/o+P53k+HS5YHr0uSwgSTZd6ro94f1UqUG9FxcFzKqLDPL21zky6miU
+         7rBuYBAP3JZVsB7NBirvEOQShwQFuzdgSIyMMvuZHvoXIhosG4lhttLVZ3XkNokoXNq1
+         Mny/BShuhN42cHR98kLXBVZhfDFrXLuNoIIUT2xj5S3TjQhwGjtWSvU2joXKKXCpNetw
+         mJu3iLPld3UalIfQR6/csaRWHbK4fObG/4vW8+KY2jaz/Zez45L9PSzBw2c7/STlys09
+         StQw==
+X-Gm-Message-State: AOAM532crFrUcbcfsA5HTGpRZcfSrDjORoj3IvP2DCuavwWZSTcEz7lu
+        2OHsjiwela8OB0hoBjOBt5M=
+X-Google-Smtp-Source: ABdhPJy/UCVRsADK6liBFCEnwsUVvRK90KPFjq7S2YvwiDfZjafq9pPvWElV5M4G56YfxDLWZMpEIg==
+X-Received: by 2002:a0c:b2c6:: with SMTP id d6mr14783923qvf.38.1604930514196;
+        Mon, 09 Nov 2020 06:01:54 -0800 (PST)
+Received: from localhost ([2620:10d:c091:480::1:fc2b])
+        by smtp.gmail.com with ESMTPSA id f189sm2240333qkb.84.2020.11.09.06.01.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 09 Nov 2020 06:01:53 -0800 (PST)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Mon, 9 Nov 2020 09:01:41 -0500
+From:   "tj@kernel.org" <tj@kernel.org>
+To:     Trond Myklebust <trondmy@hammerspace.com>
+Cc:     "peterz@infradead.org" <peterz@infradead.org>,
+        "neilb@suse.de" <neilb@suse.de>,
+        "juri.lelli@redhat.com" <juri.lelli@redhat.com>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "jiangshanlai@gmail.com" <jiangshanlai@gmail.com>,
+        "mhocko@suse.com" <mhocko@suse.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "vincent.guittot@linaro.org" <vincent.guittot@linaro.org>
+Subject: Re: [PATCH rfc] workqueue: honour cond_resched() more effectively.
+Message-ID: <20201109140141.GE7496@mtj.duckdns.org>
+References: <87v9efp7cs.fsf@notabene.neil.brown.name>
+ <20201109080038.GY2594@hirez.programming.kicks-ass.net>
+ <aec65c71c09e803285688d5974193a98b4422428.camel@hammerspace.com>
 MIME-Version: 1.0
-References: <1604913614-19432-1-git-send-email-wenan.mao@linux.alibaba.com>
- <1604914417-24578-1-git-send-email-wenan.mao@linux.alibaba.com>
- <CANn89iKiNdtxaL_yMF6=_8=m001vXVaxvECMGbAiXTYZjfj3oQ@mail.gmail.com>
- <3b92167c-201c-e85d-822d-06f0c9ac508c@linux.alibaba.com> <CANn89i+oS75TVKBDOBrr7Ff55Uctq4_HUcM_05Ed8kUL1HkHLw@mail.gmail.com>
- <CANn89iJ5kuEfKAJoWxM9MWV5X6nHXzbtcBkh1OBTak-Y6SzbPQ@mail.gmail.com>
-In-Reply-To: <CANn89iJ5kuEfKAJoWxM9MWV5X6nHXzbtcBkh1OBTak-Y6SzbPQ@mail.gmail.com>
-From:   Eric Dumazet <edumazet@google.com>
-Date:   Mon, 9 Nov 2020 15:01:27 +0100
-Message-ID: <CANn89iLhCjh7ZQRanVEj6Sytzn6LhFOb9Xo7O=teLHPouoeopw@mail.gmail.com>
-Subject: Re: [PATCH net v2] net: Update window_clamp if SOCK_RCVBUF is set
-To:     Mao Wenan <wenan.mao@linux.alibaba.com>
-Cc:     David Miller <davem@davemloft.net>,
-        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        netdev <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        kernel-janitors@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <aec65c71c09e803285688d5974193a98b4422428.camel@hammerspace.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 9, 2020 at 12:41 PM Eric Dumazet <edumazet@google.com> wrote:
->
-> Packetdrill test would be :
->
-> // Force syncookies
-> `sysctl -q net.ipv4.tcp_syncookies=3D2`
->
->     0 socket(..., SOCK_STREAM, IPPROTO_TCP) =3D 3
->    +0 setsockopt(3, SOL_SOCKET, SO_REUSEADDR, [1], 4) =3D 0
->    +0 setsockopt(3, SOL_SOCKET, SO_RCVBUF, [2048], 4) =3D 0
->    +0 bind(3, ..., ...) =3D 0
->    +0 listen(3, 1) =3D 0
->
-> +0 < S 0:0(0) win 32792 <mss 1000,sackOK,TS val 100 ecr 0,nop,wscale 7>
->    +0 > S. 0:0(0) ack 1 <mss 1460,sackOK,TS val 4000 ecr 100,nop,wscale 0=
->
->   +.1 < . 1:1(0) ack 1 win 1024 <nop,nop,TS val 200 ecr 4000>
->    +0 accept(3, ..., ...) =3D 4
-> +0 %{ assert tcpi_snd_wscale =3D=3D 0, tcpi_snd_wscale }%
->
+Hello,
 
-Also, please add to your next submission an appropriate Fixes: tag :
+On Mon, Nov 09, 2020 at 01:50:40PM +0000, Trond Myklebust wrote:
+> > I'm thinking the real problem is that you're abusing workqueues. Just
+> > don't stuff so much work into it that this becomes a problem. Or
+> > rather,
+> > if you do, don't lie to it about it.
+> 
+> If we can't use workqueues to call iput_final() on an inode, then what
+> is the point of having them at all?
+> 
+> Neil's use case is simply a file that has managed to accumulate a
+> seriously large page cache, and is therefore taking a long time to
+> complete the call to truncate_inode_pages_final(). Are you saying we
+> have to allocate a dedicated thread for every case where this happens?
 
-Fixes: e88c64f0a425 ("tcp: allow effective reduction of TCP's
-rcv-buffer via setsockopt")
+I think the right thing to do here is setting CPU_INTENSIVE or using an
+unbound workqueue. Concurrency controlled per-cpu workqueue is unlikely to
+be a good fit if the work can run long enough to need cond_resched(). Better
+to let the scheduler handle it. Making workqueue warn against long-running
+concurrency managed per-cpu work items would be great. I'll put that on my
+todo list but if anyone is interested please be my guest.
 
-> On Mon, Nov 9, 2020 at 12:02 PM Eric Dumazet <edumazet@google.com> wrote:
-> >
-> > On Mon, Nov 9, 2020 at 11:12 AM Mao Wenan <wenan.mao@linux.alibaba.com>=
- wrote:
-> > >
-> > >
-> > >
-> > > =E5=9C=A8 2020/11/9 =E4=B8=8B=E5=8D=885:56, Eric Dumazet =E5=86=99=E9=
-=81=93:
-> > > > On Mon, Nov 9, 2020 at 10:33 AM Mao Wenan <wenan.mao@linux.alibaba.=
-com> wrote:
-> > > >>
-> > > >> When net.ipv4.tcp_syncookies=3D1 and syn flood is happened,
-> > > >> cookie_v4_check or cookie_v6_check tries to redo what
-> > > >> tcp_v4_send_synack or tcp_v6_send_synack did,
-> > > >> rsk_window_clamp will be changed if SOCK_RCVBUF is set,
-> > > >> which will make rcv_wscale is different, the client
-> > > >> still operates with initial window scale and can overshot
-> > > >> granted window, the client use the initial scale but local
-> > > >> server use new scale to advertise window value, and session
-> > > >> work abnormally.
-> > > >
-> > > > What is not working exactly ?
-> > > >
-> > > > Sending a 'big wscale' should not really matter, unless perhaps the=
-re
-> > > > is a buggy stack at the remote end ?
-> > > 1)in tcp_v4_send_synack, if SO_RCVBUF is set and
-> > > tcp_full_space(sk)=3D65535, pass req->rsk_window_clamp=3D65535 to
-> > > tcp_select_initial_window, rcv_wscale will be zero, and send to clien=
-t,
-> > > the client consider wscale is 0;
-> > > 2)when ack is back from client, if there is no this patch,
-> > > req->rsk_window_clamp is 0, and pass to tcp_select_initial_window,
-> > > wscale will be 7, this new rcv_wscale is no way to advertise to clien=
-t.
-> > > 3)if server send rcv_wind to client with window=3D63, it consider the=
- real
-> > > window is 63*2^7=3D8064, but client consider the server window is onl=
-y
-> > > 63*2^0=3D63, it can't send big packet to server, and the send-q of cl=
-ient
-> > > is full.
-> > >
-> >
-> > I see, please change your patches so that tcp_full_space() is used _onc=
-e_
-> >
-> > listener sk_rcvbuf can change under us.
-> >
-> > I really have no idea how window can be set to 63, so please send us
-> > the packetdrill test once you have it.
+Thanks.
+
+-- 
+tejun
