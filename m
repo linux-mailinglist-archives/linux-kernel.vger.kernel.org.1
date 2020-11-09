@@ -2,114 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E2EC2AB237
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 09:10:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F3B432AB239
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 09:12:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728104AbgKIIKv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 03:10:51 -0500
-Received: from mga02.intel.com ([134.134.136.20]:62846 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726176AbgKIIKv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 03:10:51 -0500
-IronPort-SDR: gxmLwP1JQiZOrd8No5teYkSKrcfEpscRAhI19esOpjcCPY2duv/pGtEBDerRYDMSmeF0AE2+Qc
- oTUjbhM+I3nQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9799"; a="156773775"
-X-IronPort-AV: E=Sophos;i="5.77,463,1596524400"; 
-   d="scan'208";a="156773775"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Nov 2020 00:10:50 -0800
-IronPort-SDR: JPGF7s/1+WRJKXVbEL29DP0pLeCBpfrt+lfR0OiQwW6ObwwjiEahRYKJrjzq8LZRfOQ9lF8lVh
- e8vRu1O0yugA==
-X-IronPort-AV: E=Sophos;i="5.77,463,1596524400"; 
-   d="scan'208";a="540740423"
-Received: from xingzhen-mobl.ccr.corp.intel.com (HELO [10.238.4.68]) ([10.238.4.68])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Nov 2020 00:10:47 -0800
-Subject: Re: [LKP] Re: [mm] e6e88712e4: stress-ng.tmpfs.ops_per_sec -69.7%
- regression
-To:     Matthew Wilcox <willy@infradead.org>,
-        Rong Chen <rong.a.chen@intel.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Chris Wilson <chris@chris-wilson.co.uk>,
-        Hugh Dickins <hughd@google.com>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Matthew Auld <matthew.auld@intel.com>,
-        William Kucharski <william.kucharski@oracle.com>,
-        Qian Cai <cai@redhat.com>, LKML <linux-kernel@vger.kernel.org>,
-        lkp@lists.01.org, lkp@intel.com, zhengjun.xing@intel.com
-References: <20201030071715.GV31092@shao2-debian>
- <20201030131711.GJ27442@casper.infradead.org>
- <dc3864d6-f474-02b8-fdf2-ca138afe3735@intel.com>
- <20201030145835.GL27442@casper.infradead.org>
- <d57f327c-a22e-1fb0-26fe-68b4964e75dc@intel.com>
- <20201106205536.GS17076@casper.infradead.org>
-From:   Xing Zhengjun <zhengjun.xing@linux.intel.com>
-Message-ID: <363450b6-0e99-6916-d296-bec81978a78b@linux.intel.com>
-Date:   Mon, 9 Nov 2020 16:10:45 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
-MIME-Version: 1.0
-In-Reply-To: <20201106205536.GS17076@casper.infradead.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+        id S1727872AbgKIIMp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 03:12:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60666 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726176AbgKIIMo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 03:12:44 -0500
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87D44C0613CF;
+        Mon,  9 Nov 2020 00:12:43 -0800 (PST)
+Received: by mail-pf1-x441.google.com with SMTP id z3so7366300pfb.10;
+        Mon, 09 Nov 2020 00:12:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=message-id:from:to:cc:subject:date;
+        bh=ofdLMk/uvLcTlbAnhbZ/80cGJDHKXudLI4N85AsUW5Q=;
+        b=J76FBokT120N6cTACmltyLW6nv7f4of1UpYdicCGgOdt3P+KcX2gid7lUXE7eb92jm
+         TmM81eH2WddQ9tk4wqeAEYiFFrcniOBrrGLZmm/XvjX6lDtIr86uyzfYSyWh9ssIi5FT
+         5qAYixqRxa6mZooXikP6Vd6X0jfbWH/kPR6cxMwBeoBS6YcG9WxyKsy2O9GJ4T54ehzC
+         NAAwNs6n2j8xdzxKmXsL6qfRTAWMkPgGVVh0gUS2aVw+IUf5XpNyWtt0aEuNxu0CY0LN
+         aL1FoYnz4EpEHKaxScHiuYWZrxi/ZqPyNkWtzZduh8dlyId+LO2eHKRkMyp+T3jNKQob
+         Lqow==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:message-id:from:to:cc:subject:date;
+        bh=ofdLMk/uvLcTlbAnhbZ/80cGJDHKXudLI4N85AsUW5Q=;
+        b=SArppXiCPc2SNxo9S7QUVxiUQV1po45uWQ1PNsGXZaCzY+U5E4Eqm14o6cJFHzbLl+
+         OgdiO1BBPNk/3ZIvi9xA2C006WOsYOD5J1uwJNJigRU2g9HPYU1T8lCo+eh8FBIxra8L
+         k5VJebiKlpIgO7AAzO/YInF/VUzhAY22hJH46s0O2INMG92OreyWdxSGdjunH/ZmXxmJ
+         5vQhIlemklIc4WcIq2HZzclXzxzUTFwfc+rPYRYIvvMvWZb2HXG0BZnBR1yB0lTDr8N7
+         8tYsX92le9TlZ3REgS0v5auyMD7L7oM0RA2yi6g0eE3+5YBvLgf3u8oc6PdNqXMixBZm
+         PQAw==
+X-Gm-Message-State: AOAM530p043iPy7EJXol8XuneWOWvMaNklGc7YGdMeHDeKBpGlYsfKgz
+        yHpWtH77BQgsQ5ee/qVlpM6/8MwaUGWZ2Q==
+X-Google-Smtp-Source: ABdhPJxlJsmpEf4XCVdTXh42kpxlhDpSa8p+njPdI2R2RdL3UzDT+im3e5Z86nM/OXXOjQt1MupHRg==
+X-Received: by 2002:a63:2265:: with SMTP id t37mr11659219pgm.387.1604909563183;
+        Mon, 09 Nov 2020 00:12:43 -0800 (PST)
+Received: from localhost.localdomain ([154.93.3.113])
+        by smtp.gmail.com with ESMTPSA id l190sm10001757pfl.205.2020.11.09.00.12.41
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 09 Nov 2020 00:12:42 -0800 (PST)
+Message-ID: <5fa8f9fa.1c69fb81.5ed63.5617@mx.google.com>
+X-Google-Original-Message-ID: <1604909523-59106-1-git-send-email---global>
+From:   menglong8.dong@gmail.com
+X-Google-Original-From: --global
+To:     trond.myklebust@hammerspace.com
+Cc:     anna.schumaker@netapp.com, linux-nfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Menglong Dong <dong.menglong@zte.com.cn>
+Subject: [PATCH] fs/nfs: remove duplicate include
+Date:   Mon,  9 Nov 2020 03:12:03 -0500
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Menglong Dong <dong.menglong@zte.com.cn>
 
+'nfs42.h' is already included above and can be removed here.
 
-On 11/7/2020 4:55 AM, Matthew Wilcox wrote:
-> On Mon, Nov 02, 2020 at 01:21:39PM +0800, Rong Chen wrote:
->> we compared the tmpfs.ops_per_sec: (363 / 103.02) between this commit and
->> parent commit.
-> 
-> Thanks!  I see about a 50% hit on my system, and this patch restores the
-> performance.  Can you verify this works for you?
-> 
-> diff --git a/mm/madvise.c b/mm/madvise.c
-> index 9b065d412e5f..e602333f8c0d 100644
-> --- a/mm/madvise.c
-> +++ b/mm/madvise.c
-> @@ -225,7 +225,7 @@ static void force_shm_swapin_readahead(struct vm_area_struct *vma,
->   		struct address_space *mapping)
->   {
->   	XA_STATE(xas, &mapping->i_pages, linear_page_index(vma, start));
-> -	pgoff_t end_index = end / PAGE_SIZE;
-> +	pgoff_t end_index = linear_page_index(vma, end + PAGE_SIZE - 1);
->   	struct page *page;
->   
->   	rcu_read_lock();
-> _______________________________________________
-> LKP mailing list -- lkp@lists.01.org
-> To unsubscribe send an email to lkp-leave@lists.01.org
-> 
-I test the patch, the regression is disappeared.
+Signed-off-by: Menglong Dong <dong.menglong@zte.com.cn>
+---
+ fs/nfs/nfs4proc.c | 4 ----
+ 1 file changed, 4 deletions(-)
 
-=========================================================================================
-tbox_group/testcase/rootfs/kconfig/compiler/nr_threads/disk/testtime/class/cpufreq_governor/ucode:
+diff --git a/fs/nfs/nfs4proc.c b/fs/nfs/nfs4proc.c
+index 9e0ca9b2b210..807fdaeed357 100644
+--- a/fs/nfs/nfs4proc.c
++++ b/fs/nfs/nfs4proc.c
+@@ -71,10 +71,6 @@
  
-lkp-csl-2sp3/stress-ng/debian-10.4-x86_64-20200603.cgz/x86_64-rhel-8.3/gcc-9/100%/1HDD/100s/memory/performance/0x400002c
-
-commit:
-   f5df8635c5a3c912919c91be64aa198554b0f9ed
-   e6e88712e43b7942df451508aafc2f083266f56b
-   6bc25f0c5e0d55145f7ef087adea2693802a80f3 (this test patch)
-
-f5df8635c5a3c912 e6e88712e43b7942df451508aaf 6bc25f0c5e0d55145f7ef087ade
----------------- --------------------------- ---------------------------
-          %stddev     %change         %stddev     %change         %stddev
-              \          |                \          |                \
-       1198 ±  4%     -69.7%     362.67            +3.3%       1238 ± 
-3%  stress-ng.tmpfs.ops
-      11.62 ±  4%     -69.7%       3.52            +3.4%      12.02 ± 
-3%  stress-ng.tmpfs.ops_per_sec
-
-
-
+ #include "nfs4trace.h"
+ 
+-#ifdef CONFIG_NFS_V4_2
+-#include "nfs42.h"
+-#endif /* CONFIG_NFS_V4_2 */
+-
+ #define NFSDBG_FACILITY		NFSDBG_PROC
+ 
+ #define NFS4_BITMASK_SZ		3
 -- 
-Zhengjun Xing
+2.25.1
+
+
