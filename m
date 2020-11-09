@@ -2,27 +2,28 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F3DF2AB7E8
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 13:11:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 885422AB7EC
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 13:12:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729852AbgKIMLR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 07:11:17 -0500
-Received: from smtp2207-205.mail.aliyun.com ([121.197.207.205]:36774 "EHLO
+        id S1729503AbgKIMM2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 07:12:28 -0500
+Received: from smtp2207-205.mail.aliyun.com ([121.197.207.205]:45910 "EHLO
         smtp2207-205.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727303AbgKIMLR (ORCPT
+        by vger.kernel.org with ESMTP id S1727311AbgKIMM1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 07:11:17 -0500
-X-Alimail-AntiSpam: AC=CONTINUE;BC=0.09605445|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_system_inform|0.0380702-0.0163614-0.945568;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047213;MF=frank@allwinnertech.com;NM=1;PH=DS;RN=6;RT=6;SR=0;TI=SMTPD_---.IuVJ-Tc_1604923868;
-Received: from allwinnertech.com(mailfrom:frank@allwinnertech.com fp:SMTPD_---.IuVJ-Tc_1604923868)
-          by smtp.aliyun-inc.com(10.147.40.44);
-          Mon, 09 Nov 2020 20:11:12 +0800
+        Mon, 9 Nov 2020 07:12:27 -0500
+X-Alimail-AntiSpam: AC=CONTINUE;BC=0.07515754|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_system_inform|0.0384173-0.00122631-0.960356;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047187;MF=frank@allwinnertech.com;NM=1;PH=DS;RN=9;RT=9;SR=0;TI=SMTPD_---.IuVY7XN_1604923937;
+Received: from allwinnertech.com(mailfrom:frank@allwinnertech.com fp:SMTPD_---.IuVY7XN_1604923937)
+          by smtp.aliyun-inc.com(10.147.41.121);
+          Mon, 09 Nov 2020 20:12:21 +0800
 From:   Frank Lee <frank@allwinnertech.com>
-To:     sre@kernel.org, wens@csie.org, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, tiny.windzz@gmail.com
-Cc:     Yangtao Li <frank@allwinnertech.com>
-Subject: [PATCH 2/3] power: supply: axp20x_usb_power: Use power efficient workqueue for debounce
-Date:   Mon,  9 Nov 2020 20:11:04 +0800
-Message-Id: <20201109121104.18201-1-frank@allwinnertech.com>
+To:     vkoul@kernel.org, mripard@kernel.org, wens@csie.org,
+        krzk@kernel.org, colin.king@canonical.com, tiny.windzz@gmail.com
+Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Yangtao Li <frank@allwinnertech.com>
+Subject: [PATCH 3/3] phy: sun4i-usb: Use power efficient workqueue for debounce and poll
+Date:   Mon,  9 Nov 2020 20:12:14 +0800
+Message-Id: <20201109121214.19012-1-frank@allwinnertech.com>
 X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -32,54 +33,81 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Yangtao Li <frank@allwinnertech.com>
 
-The debounce timeout is generally quite long and the work not performance
-critical so allow the scheduler to run the work anywhere rather than in
-the normal per-CPU workqueue.
+The debounce and poll time is generally quite long and the work not
+performance critical so allow the scheduler to run the work anywhere
+rather than in the normal per-CPU workqueue.
 
 Signed-off-by: Yangtao Li <frank@allwinnertech.com>
 ---
- drivers/power/supply/axp20x_usb_power.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ drivers/phy/allwinner/phy-sun4i-usb.c | 14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/power/supply/axp20x_usb_power.c b/drivers/power/supply/axp20x_usb_power.c
-index 3b4fd710347d..70b28b699a80 100644
---- a/drivers/power/supply/axp20x_usb_power.c
-+++ b/drivers/power/supply/axp20x_usb_power.c
-@@ -92,7 +92,7 @@ static irqreturn_t axp20x_usb_power_irq(int irq, void *devid)
+diff --git a/drivers/phy/allwinner/phy-sun4i-usb.c b/drivers/phy/allwinner/phy-sun4i-usb.c
+index 651d5e2a25ce..4787ad13b255 100644
+--- a/drivers/phy/allwinner/phy-sun4i-usb.c
++++ b/drivers/phy/allwinner/phy-sun4i-usb.c
+@@ -326,7 +326,7 @@ static int sun4i_usb_phy_init(struct phy *_phy)
+ 		/* Force ISCR and cable state updates */
+ 		data->id_det = -1;
+ 		data->vbus_det = -1;
+-		queue_delayed_work(system_wq, &data->detect, 0);
++		queue_delayed_work(system_power_efficient_wq, &data->detect, 0);
+ 	}
  
- 	power_supply_changed(power->supply);
+ 	return 0;
+@@ -444,7 +444,7 @@ static int sun4i_usb_phy_power_on(struct phy *_phy)
  
--	mod_delayed_work(system_wq, &power->vbus_detect, DEBOUNCE_TIME);
-+	mod_delayed_work(system_power_efficient_wq, &power->vbus_detect, DEBOUNCE_TIME);
+ 	/* We must report Vbus high within OTG_TIME_A_WAIT_VRISE msec. */
+ 	if (phy->index == 0 && sun4i_usb_phy0_poll(data))
+-		mod_delayed_work(system_wq, &data->detect, DEBOUNCE_TIME);
++		mod_delayed_work(system_power_efficient_wq, &data->detect, DEBOUNCE_TIME);
+ 
+ 	return 0;
+ }
+@@ -465,7 +465,7 @@ static int sun4i_usb_phy_power_off(struct phy *_phy)
+ 	 * Vbus gpio to not trigger an edge irq on Vbus off, so force a rescan.
+ 	 */
+ 	if (phy->index == 0 && !sun4i_usb_phy0_poll(data))
+-		mod_delayed_work(system_wq, &data->detect, POLL_TIME);
++		mod_delayed_work(system_power_efficient_wq, &data->detect, POLL_TIME);
+ 
+ 	return 0;
+ }
+@@ -504,7 +504,7 @@ static int sun4i_usb_phy_set_mode(struct phy *_phy,
+ 
+ 	data->id_det = -1; /* Force reprocessing of id */
+ 	data->force_session_end = true;
+-	queue_delayed_work(system_wq, &data->detect, 0);
++	queue_delayed_work(system_power_efficient_wq, &data->detect, 0);
+ 
+ 	return 0;
+ }
+@@ -616,7 +616,7 @@ static void sun4i_usb_phy0_id_vbus_det_scan(struct work_struct *work)
+ 		extcon_set_state_sync(data->extcon, EXTCON_USB, vbus_det);
+ 
+ 	if (sun4i_usb_phy0_poll(data))
+-		queue_delayed_work(system_wq, &data->detect, POLL_TIME);
++		queue_delayed_work(system_power_efficient_wq, &data->detect, POLL_TIME);
+ }
+ 
+ static irqreturn_t sun4i_usb_phy0_id_vbus_det_irq(int irq, void *dev_id)
+@@ -624,7 +624,7 @@ static irqreturn_t sun4i_usb_phy0_id_vbus_det_irq(int irq, void *dev_id)
+ 	struct sun4i_usb_phy_data *data = dev_id;
+ 
+ 	/* vbus or id changed, let the pins settle and then scan them */
+-	mod_delayed_work(system_wq, &data->detect, DEBOUNCE_TIME);
++	mod_delayed_work(system_power_efficient_wq, &data->detect, DEBOUNCE_TIME);
  
  	return IRQ_HANDLED;
  }
-@@ -117,7 +117,7 @@ static void axp20x_usb_power_poll_vbus(struct work_struct *work)
+@@ -638,7 +638,7 @@ static int sun4i_usb_phy0_vbus_notify(struct notifier_block *nb,
  
- out:
- 	if (axp20x_usb_vbus_needs_polling(power))
--		mod_delayed_work(system_wq, &power->vbus_detect, DEBOUNCE_TIME);
-+		mod_delayed_work(system_power_efficient_wq, &power->vbus_detect, DEBOUNCE_TIME);
- }
+ 	/* Properties on the vbus_power_supply changed, scan vbus_det */
+ 	if (val == PSY_EVENT_PROP_CHANGED && psy == data->vbus_power_supply)
+-		mod_delayed_work(system_wq, &data->detect, DEBOUNCE_TIME);
++		mod_delayed_work(system_power_efficient_wq, &data->detect, DEBOUNCE_TIME);
  
- static int axp20x_get_current_max(struct axp20x_usb_power *power, int *val)
-@@ -525,7 +525,7 @@ static int axp20x_usb_power_resume(struct device *dev)
- 	while (i < power->num_irqs)
- 		enable_irq(power->irqs[i++]);
- 
--	mod_delayed_work(system_wq, &power->vbus_detect, DEBOUNCE_TIME);
-+	mod_delayed_work(system_power_efficient_wq, &power->vbus_detect, DEBOUNCE_TIME);
- 
- 	return 0;
- }
-@@ -647,7 +647,7 @@ static int axp20x_usb_power_probe(struct platform_device *pdev)
- 
- 	INIT_DELAYED_WORK(&power->vbus_detect, axp20x_usb_power_poll_vbus);
- 	if (axp20x_usb_vbus_needs_polling(power))
--		queue_delayed_work(system_wq, &power->vbus_detect, 0);
-+		queue_delayed_work(system_power_efficient_wq, &power->vbus_detect, 0);
- 
- 	return 0;
+ 	return NOTIFY_OK;
  }
 -- 
 2.28.0
