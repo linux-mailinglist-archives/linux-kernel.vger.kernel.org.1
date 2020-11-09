@@ -2,114 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 237442AC942
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 00:24:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 719AA2AC940
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 00:23:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731104AbgKIXX4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 18:23:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33508 "EHLO
+        id S1730931AbgKIXXm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 18:23:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33470 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727070AbgKIXXz (ORCPT
+        with ESMTP id S1727070AbgKIXXm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 18:23:55 -0500
-Received: from mail-ua1-x942.google.com (mail-ua1-x942.google.com [IPv6:2607:f8b0:4864:20::942])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B32B5C0613D3
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Nov 2020 15:23:54 -0800 (PST)
-Received: by mail-ua1-x942.google.com with SMTP id q68so3354135uaq.3
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Nov 2020 15:23:54 -0800 (PST)
+        Mon, 9 Nov 2020 18:23:42 -0500
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11D8EC0613CF
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Nov 2020 15:23:42 -0800 (PST)
+Received: by mail-pf1-x443.google.com with SMTP id w14so7019939pfd.7
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Nov 2020 15:23:42 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Hy7TKyZHJ9No+mZr0hZGFgrb+eb/SGeHukhYIRcpwYY=;
-        b=C8uFCOCzFxzBNdhRn2r0/WGEaDr91GKtja37pCqNfRzs7gofDM8nLziq7NcH6XJEdK
-         Z0XpCRpRfgNrcTRcRItT7T+T0Y1+3eyHQnRZotb0nqCFPzxdX7dARuwD7pD7obkBx/AJ
-         Y6fPPiUgJILhKaBMArkw81gVYyYF4TanXNUlE=
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=pSI6Hxh+VGHB4fhlPl5YbxM+ykFtkRO9Um5a1XP/b8k=;
+        b=YUqFSFaoqWcW7XjBcNuHScwn+EC4flNhnYXz8URi1t85iGaWAZkbWknRMhOwyuVK9x
+         F1n/7KXocrwJBUjodDuZxMOcZTbhilJUlKJ6iBMXq3BZvxS1wUMxOUCQUDP/7NIQfrUY
+         9nV7VMU1OTKBtz2uG/Qz4PRLo0wxd+YTnEsEUp4ObHjYqDfqZAcEqVu0A0zt2Ury+d/9
+         mLw47nmrosV3MnFxpuQ+uN1Ot2KpWRFQ2cAF2hrbgAyeNmLp1s1TcojIevfo9g4BvI9S
+         xgTIMVvHiyQCu6PQGjdfdD7ypawJQMcW5Xc3lhwxalWTUkulzvxItImsiXeb5AEhuaRi
+         G8Gw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Hy7TKyZHJ9No+mZr0hZGFgrb+eb/SGeHukhYIRcpwYY=;
-        b=l91oxFLKrixDd80xdlmhEbNdxe1icDWk0mpwbNgaBY/NvfY6lCNPj7oYBztQuzatUu
-         jmDj5+B195LlJBVQ0rU2DGk68BAOjQcRpFNArTxFn81OLOmf8MQ5BHS6dGuJstWKSiub
-         hV29A0CB+TrvINqqwO/CC7D72GPo/653cFJUtypAMKdxZN8+be1Bb3QLVRHKl3ascXfu
-         699gdx1wZgBFkM88yjaF2bBmZlrqs+0wDWG1dE0uPmQ1Dq1ZcqfH2choe/2n0T0k/Qji
-         pfinhqr0pO66ArXBZS6EC3ZZSJbVK7SeSbXIhSHoVv0h1V7Gd/pn+6MrlAmb3056pAq6
-         FqGQ==
-X-Gm-Message-State: AOAM530POUQVkTw8q1Mu7BiXY26dLXlWcMmFoSbR1gUfKKaDA7BwOgzb
-        3jxSm9ATcMBBwDOj7GUu+TIKoSlDyTfEyQ==
-X-Google-Smtp-Source: ABdhPJzh4YxDqhxgM2fG/GSNvKO7c/DhmvL6cC/5EzsniPxS1BIFM3D+QuBNblj2F4UbFrsv07HqWA==
-X-Received: by 2002:a9f:264a:: with SMTP id 68mr8515733uag.0.1604964233867;
-        Mon, 09 Nov 2020 15:23:53 -0800 (PST)
-Received: from mail-vk1-f170.google.com (mail-vk1-f170.google.com. [209.85.221.170])
-        by smtp.gmail.com with ESMTPSA id m9sm700254vke.10.2020.11.09.15.23.51
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 09 Nov 2020 15:23:52 -0800 (PST)
-Received: by mail-vk1-f170.google.com with SMTP id d191so2285959vka.13
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Nov 2020 15:23:51 -0800 (PST)
-X-Received: by 2002:ac5:cd58:: with SMTP id n24mr6279742vkm.17.1604964231319;
- Mon, 09 Nov 2020 15:23:51 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=pSI6Hxh+VGHB4fhlPl5YbxM+ykFtkRO9Um5a1XP/b8k=;
+        b=JPrTPOj3sNpKco5u5JdEX3UGbSe5mqdvOLxDIYLVN1Ca9z1A8IMjHnPbM9fsfGVecO
+         ui6HNWZ1/r5DKfbuOIFIpGoNXnKf1hOBBepiZi7JJ3H2MnxXFgAuJyqOlD/j0jAO0lUh
+         RRLeJ6Wv86uKV8GPbLJ8gZ42Zn4aQPyU0gH7Mw0S3G/dUnXNOfCPEWG9CSxzck6X3IWh
+         k633Nb7UdyHTaw39oHM0LyOtKhkjAiwhYp7OTw92rmmjhJ2dUChsn+Z9Y7YXP/l7ZMGu
+         qn8HMj9TF8KVy9GD06nZs/B6x89ztjR6Vx7bjynMw6IFrPP7BDD0m+85QKDXO5buK6p8
+         o9YQ==
+X-Gm-Message-State: AOAM531mdj1HiMTybikYcye7TJNKn7d39x42cxsiaMYFxvrZ3LM6huwO
+        V1W1NsCL8fZLD+85JopkqfYezA==
+X-Google-Smtp-Source: ABdhPJwHmgicboxydybrqq+qVuzqbGMjM2UgCfdmY1g7veBRUUzzMpiV4ifMhY7XmcNco3ZD05ORmw==
+X-Received: by 2002:a17:90a:a58e:: with SMTP id b14mr1558289pjq.203.1604964221546;
+        Mon, 09 Nov 2020 15:23:41 -0800 (PST)
+Received: from localhost (c-71-197-186-152.hsd1.wa.comcast.net. [71.197.186.152])
+        by smtp.gmail.com with ESMTPSA id j19sm9886398pfd.189.2020.11.09.15.23.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 09 Nov 2020 15:23:40 -0800 (PST)
+From:   Kevin Hilman <khilman@baylibre.com>
+To:     Catalin Marinas <catalin.marinas@arm.com>,
+        Jerome Brunet <jbrunet@baylibre.com>,
+        Will Deacon <will@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, linux-amlogic@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH] arm64: meson: ship only the necessary clock controllers
+Date:   Mon,  9 Nov 2020 15:23:40 -0800
+Message-Id: <160496421227.17768.3544175809651783421.b4-ty@baylibre.com>
+X-Mailer: git-send-email 2.28.0
+In-Reply-To: <20201020075034.172825-1-jbrunet@baylibre.com>
+References: <20201020075034.172825-1-jbrunet@baylibre.com>
 MIME-Version: 1.0
-References: <20201109213636.1267536-1-dianders@chromium.org> <20201109133526.v5.1.Ied4ce10d229cd7c69abf13a0361ba0b8d82eb9c4@changeid>
-In-Reply-To: <20201109133526.v5.1.Ied4ce10d229cd7c69abf13a0361ba0b8d82eb9c4@changeid>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Mon, 9 Nov 2020 15:23:39 -0800
-X-Gmail-Original-Message-ID: <CAD=FV=UUS1U5YmOFjioU12o3ayb8W2rFh9bPTfaeGiBxZ0cXHg@mail.gmail.com>
-Message-ID: <CAD=FV=UUS1U5YmOFjioU12o3ayb8W2rFh9bPTfaeGiBxZ0cXHg@mail.gmail.com>
-Subject: Re: [PATCH v5 1/4] HID: i2c-hid: Reorganize so ACPI and OF are
- separate modules
-To:     Jiri Kosina <jkosina@suse.cz>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Cc:     Kai-Heng Feng <kai.heng.feng@canonical.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        "open list:HID CORE LAYER" <linux-input@vger.kernel.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Andrea Borgia <andrea@borgia.bo.it>,
-        Jiri Kosina <jikos@kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Pavel Balan <admin@kryma.net>,
-        Xiaofei Tan <tanxiaofei@huawei.com>,
-        You-Sheng Yang <vicamo.yang@canonical.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Tue, 20 Oct 2020 09:50:34 +0200, Jerome Brunet wrote:
+> There now the menu entries for the amlogic clock controllers.
+> Do not select these when ARM64 is enabled so it possible to ship only the
+> required.
 
-On Mon, Nov 9, 2020 at 1:37 PM Douglas Anderson <dianders@chromium.org> wrote:
->
-> +int i2c_hid_acpi_probe(struct i2c_client *client,
-> +                      const struct i2c_device_id *dev_id)
-> +{
-> +       struct device *dev = &client->dev;
-> +       struct i2c_hid_acpi *ihid_acpi;
-> +       u16 hid_descriptor_address;
-> +       int ret;
-> +
-> +       ihid_acpi = devm_kzalloc(&client->dev, sizeof(*ihid_acpi), GFP_KERNEL);
-> +       if (!ihid_acpi)
-> +               return -ENOMEM;
-> +
+Applied, thanks!
 
-Turns out one way to find some folks to help me test this code is to
-break them.  Maybe not a good way, but a way.  :(
+[1/1] arm64: meson: ship only the necessary clock controllers
+      (no commit info)
 
-There should have been a:
-
-ihid_acpi->client = client;
-
-...here.  If you're willing to look at Chrome OS gerrit pages, you can
-find the fix at <https://crrev.com/c/2527946>.
-
-If everything about this patch looks good, I'm OK w/ a maintainer
-fixing this when applying.  I'm also happy to send out a v6, but I'll
-wait a little bit in case there are other comments.
-
-
--Doug
+Best regards,
+-- 
+Kevin Hilman <khilman@baylibre.com>
