@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D3AE42ABCA9
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 14:39:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 307702ABD39
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 14:45:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387593AbgKINj0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 08:39:26 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56772 "EHLO mail.kernel.org"
+        id S1730039AbgKINoI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 08:44:08 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53676 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730667AbgKINDl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 08:03:41 -0500
+        id S1730337AbgKIM7X (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 07:59:23 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0AB7422227;
-        Mon,  9 Nov 2020 13:03:07 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 552CE20684;
+        Mon,  9 Nov 2020 12:59:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604926988;
-        bh=kmxyW4tp29pcFKRl5uENlNGIp7R/xM8PT2Mk2ENCEpQ=;
+        s=default; t=1604926762;
+        bh=DJn9Bzb5YL6m8DBD5B6lJM0UZRtpFwQYvnaivUi/c7c=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=JpG+U7AXyZcO6QxiNXZdGr7vO2qyIYLmh+TEF+A3G0RGZy3R77erbNKkp39GBQKsR
-         pqNNwAIw/o3HhiuykMdqI/V59XOd+zhBI0GJp7YWeukgiCFeKTHFQc9yri2GM26zz4
-         nnUSC47hFeolsxTT2KtOiM7eI+RpPsJRg68VgAjE=
+        b=tLF4S9jo6EgJuAWn/D7/avI7oyUASsQKL2mbVZDEkBLP8EA0sNbqz8AKNHyBTmQif
+         SUhQY4ImcayJmx2LbAzgzEKd4smHKtn46FN37GJm8byodVbSdnLTVu9l6IoutQFZqx
+         y+JqYIgdwq9benLJQk533T8tWRKCI/gbjRdr2jWc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Zhihao Cheng <chengzhihao1@huawei.com>,
-        syzbot+853639d0cb16c31c7a14@syzkaller.appspotmail.com,
-        Richard Weinberger <richard@nod.at>
-Subject: [PATCH 4.9 072/117] ubi: check kthread_should_stop() after the setting of task state
-Date:   Mon,  9 Nov 2020 13:54:58 +0100
-Message-Id: <20201109125029.100072726@linuxfoundation.org>
+        stable@vger.kernel.org,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Dominique Martinet <asmadeus@codewreck.org>
+Subject: [PATCH 4.4 52/86] 9P: Cast to loff_t before multiplying
+Date:   Mon,  9 Nov 2020 13:54:59 +0100
+Message-Id: <20201109125023.319929389@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201109125025.630721781@linuxfoundation.org>
-References: <20201109125025.630721781@linuxfoundation.org>
+In-Reply-To: <20201109125020.852643676@linuxfoundation.org>
+References: <20201109125020.852643676@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,64 +43,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhihao Cheng <chengzhihao1@huawei.com>
+From: Matthew Wilcox (Oracle) <willy@infradead.org>
 
-commit d005f8c6588efcfbe88099b6edafc6f58c84a9c1 upstream.
+commit f5f7ab168b9a60e12a4b8f2bb6fcc91321dc23c1 upstream.
 
-A detach hung is possible when a race occurs between the detach process
-and the ubi background thread. The following sequences outline the race:
+On 32-bit systems, this multiplication will overflow for files larger
+than 4GB.
 
-  ubi thread: if (list_empty(&ubi->works)...
-
-  ubi detach: set_bit(KTHREAD_SHOULD_STOP, &kthread->flags)
-              => by kthread_stop()
-              wake_up_process()
-              => ubi thread is still running, so 0 is returned
-
-  ubi thread: set_current_state(TASK_INTERRUPTIBLE)
-              schedule()
-              => ubi thread will never be scheduled again
-
-  ubi detach: wait_for_completion()
-              => hung task!
-
-To fix that, we need to check kthread_should_stop() after we set the
-task state, so the ubi thread will either see the stop bit and exit or
-the task state is reset to runnable such that it isn't scheduled out
-indefinitely.
-
-Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
-Cc: <stable@vger.kernel.org>
-Fixes: 801c135ce73d5df1ca ("UBI: Unsorted Block Images")
-Reported-by: syzbot+853639d0cb16c31c7a14@syzkaller.appspotmail.com
-Signed-off-by: Richard Weinberger <richard@nod.at>
+Link: http://lkml.kernel.org/r/20201004180428.14494-2-willy@infradead.org
+Cc: stable@vger.kernel.org
+Fixes: fb89b45cdfdc ("9P: introduction of a new cache=mmap model.")
+Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+Signed-off-by: Dominique Martinet <asmadeus@codewreck.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/mtd/ubi/wl.c |   13 +++++++++++++
- 1 file changed, 13 insertions(+)
+ fs/9p/vfs_file.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
---- a/drivers/mtd/ubi/wl.c
-+++ b/drivers/mtd/ubi/wl.c
-@@ -1478,6 +1478,19 @@ int ubi_thread(void *u)
- 		    !ubi->thread_enabled || ubi_dbg_is_bgt_disabled(ubi)) {
- 			set_current_state(TASK_INTERRUPTIBLE);
- 			spin_unlock(&ubi->wl_lock);
-+
-+			/*
-+			 * Check kthread_should_stop() after we set the task
-+			 * state to guarantee that we either see the stop bit
-+			 * and exit or the task state is reset to runnable such
-+			 * that it's not scheduled out indefinitely and detects
-+			 * the stop bit at kthread_should_stop().
-+			 */
-+			if (kthread_should_stop()) {
-+				set_current_state(TASK_RUNNING);
-+				break;
-+			}
-+
- 			schedule();
- 			continue;
- 		}
+--- a/fs/9p/vfs_file.c
++++ b/fs/9p/vfs_file.c
+@@ -624,9 +624,9 @@ static void v9fs_mmap_vm_close(struct vm
+ 	struct writeback_control wbc = {
+ 		.nr_to_write = LONG_MAX,
+ 		.sync_mode = WB_SYNC_ALL,
+-		.range_start = vma->vm_pgoff * PAGE_SIZE,
++		.range_start = (loff_t)vma->vm_pgoff * PAGE_SIZE,
+ 		 /* absolute end, byte at end included */
+-		.range_end = vma->vm_pgoff * PAGE_SIZE +
++		.range_end = (loff_t)vma->vm_pgoff * PAGE_SIZE +
+ 			(vma->vm_end - vma->vm_start - 1),
+ 	};
+ 
 
 
