@@ -2,164 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 350572AC8EA
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 23:56:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D82472AC8EC
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 23:57:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730528AbgKIW4F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 17:56:05 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33752 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729247AbgKIW4F (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 17:56:05 -0500
-Received: from mail-oi1-f182.google.com (mail-oi1-f182.google.com [209.85.167.182])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EB196206CB;
-        Mon,  9 Nov 2020 22:56:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604962564;
-        bh=NsZcofEyIKb2X8Wlt/4XFtO3Nm/unnGQ3KF7Jjksszw=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=cDCeQxbqjfFkAGqw/f5Nud3y8GsIe63Ekh/bRzArzTorzPDlL3PEaKCOK5qqUxbge
-         7S3MlpFqNqS52ji5A+4vJP7296N8ZjgFnxR4MAgcdceBAcjy/bh9XLlE0eVoVxe+f9
-         ojf0Zz9et6kE1WRk8AEt7MDzypyaC7TS/P2+gejM=
-Received: by mail-oi1-f182.google.com with SMTP id w188so6547775oib.1;
-        Mon, 09 Nov 2020 14:56:03 -0800 (PST)
-X-Gm-Message-State: AOAM530ZW+tJSP6TsgLsOxNQNtCe6Aleud1RKuEtKR1GqXn8F9F3tYsk
-        bNj8K+9rPXxjmZCNO2YUq+mC3l9q1kUne4ymOw==
-X-Google-Smtp-Source: ABdhPJwybqjTGBz+FjUfHDk4KxlRIocGcbu+GBXlye/2MonQkkOgu9HS12MHFfXa1YfyQdWekO+6Bphop1H+9jfG8So=
-X-Received: by 2002:aca:5dc2:: with SMTP id r185mr1012366oib.106.1604962563242;
- Mon, 09 Nov 2020 14:56:03 -0800 (PST)
+        id S1730263AbgKIW5g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 17:57:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57656 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729247AbgKIW5g (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 17:57:36 -0500
+Received: from mail-ua1-x944.google.com (mail-ua1-x944.google.com [IPv6:2607:f8b0:4864:20::944])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E785BC0613CF;
+        Mon,  9 Nov 2020 14:57:35 -0800 (PST)
+Received: by mail-ua1-x944.google.com with SMTP id x13so3186564uar.4;
+        Mon, 09 Nov 2020 14:57:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=es9iLiu0OSLSHKxLFLhvMkFrTkEk1Ugq3hgIApTVdA4=;
+        b=QSa2KbZUZBeiY6NmYmou9TcUHL2mMhtVRei27UWYHAb46yUOQkKktBWns05VgjjuTF
+         stFXNzBZCzP1fuwR4TNNxNwyMUzmwhtt5sltInl1r2bKmDdcypwjZbt8PzRIO8KrDwUl
+         ieQvZrehxLl4DUlWtfXWT6e7vG45IlbTywBIhEX8OfjcZ+W90CycrLOFP1YbhebrxoIJ
+         UqD8wmuHA4ImO2iW1pPGSyGwSH4KDHyjJTT2jrixizne93gJD9UdERQRX4s21QoFpVw5
+         OIB3fkOowBrJKZ4zuhdNdB2qECMStmssc2V67oUoNulHdQu/+2+dRVf6zaS14pEti2Xv
+         ArQQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=es9iLiu0OSLSHKxLFLhvMkFrTkEk1Ugq3hgIApTVdA4=;
+        b=IneoU7ooJRnLZfL4MCQgh2pvByP/M2v5Z+GxBROHqHEsiG6nJvQkUvgSsYeAWZnbv4
+         R5u1OrqBeb2pvHlQbcM4n74SBXkrkLkc5hlyyPiGVaAhxbaMhjs7+uqs7ann9jTrkYK7
+         wRoyIZlnJ30XsKkrSCykwL369Y1CQjufhdJbgBe6Hs14gF+fqyoo/7eg93SSWhvwmQvB
+         28QuY7PV9AbXD1sH3u8poyVHViXd6K4rWoFsw453zC+oFo2aagUwFABMAa1Dpxflv8cq
+         T8fo8gWybDi9c+8dLl69xbbxc1vxxIXhlSAymlEUGM5WSzBJ97yHrWG3SVHPrZSO1t8Q
+         41ig==
+X-Gm-Message-State: AOAM532zEmqtSy6T5GZq0nyOdxJqdzoMxeRq5rJp2sUofuKhaK9mdYEm
+        zYXnatngw1NW0r/70S72IDYfzcFA4UqIlIeGkQ8=
+X-Google-Smtp-Source: ABdhPJwFa7an96vyH8MvBY/oU8X6kOVJMSjRz4wVsldBAfAM2w8ioAG4UQs/ueWwRE/AHBC+0/JEcwgX4BOTm9P/POI=
+X-Received: by 2002:ab0:281a:: with SMTP id w26mr8262195uap.49.1604962655139;
+ Mon, 09 Nov 2020 14:57:35 -0800 (PST)
 MIME-Version: 1.0
-References: <20201108185113.31377-1-michael@walle.cc> <20201108185113.31377-4-michael@walle.cc>
- <20201109220543.GA1835644@bogus> <78aa06920a318cfb68e962afe13e8432@walle.cc>
-In-Reply-To: <78aa06920a318cfb68e962afe13e8432@walle.cc>
-From:   Rob Herring <robh@kernel.org>
-Date:   Mon, 9 Nov 2020 16:55:51 -0600
-X-Gmail-Original-Message-ID: <CAL_Jsq+8KSGL1963Zk1-z6-=u-wPOBO52cZg29Y3fUjop09fhg@mail.gmail.com>
-Message-ID: <CAL_Jsq+8KSGL1963Zk1-z6-=u-wPOBO52cZg29Y3fUjop09fhg@mail.gmail.com>
-Subject: Re: [PATCH v3 3/9] clk: qoriq: provide constants for the type
-To:     Michael Walle <michael@walle.cc>
-Cc:     linux-clk <linux-clk@vger.kernel.org>, devicetree@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>, Li Yang <leoyang.li@nxp.com>,
-        "Y . b . Lu" <yangbo.lu@nxp.com>,
-        Xiaowei Bao <xiaowei.bao@nxp.com>,
-        Ashish Kumar <Ashish.Kumar@nxp.com>,
-        Vladimir Oltean <vladimir.oltean@nxp.com>
+References: <20201109193117.2017-1-TheSven73@gmail.com> <20201109130900.39602186@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+ <CAGngYiUt8MBCugYfjUJMa_h0iekubnOwVwenE7gY50DnRXq5VQ@mail.gmail.com>
+ <20201109132421.720a0e13@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+ <CAGngYiXeBRBzDuUScfxnkG2NwO=oPw5dwfxzim1yDf=Lo=LZxA@mail.gmail.com>
+ <20201109140428.27b89e0e@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+ <CAGngYiWUJ=bdJVMjzXBOc54H4Ubx5vQmaFnUbAWUjhaZ8nvP3A@mail.gmail.com>
+ <20201109142322.782b9495@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+ <CAGngYiVaQ4u7-2HJ6X92vJ9D4ZuC+GZhGmr2LhSMjCKBYfbZuA@mail.gmail.com>
+ <20201109143605.0a60b2ab@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+ <CAGngYiWYKsTURi0pRMxX=SjzPnx-OF0cC43dnaGc+o15kLwk_A@mail.gmail.com> <20201109145049.42e0abe5@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+In-Reply-To: <20201109145049.42e0abe5@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+From:   Sven Van Asbroeck <thesven73@gmail.com>
+Date:   Mon, 9 Nov 2020 17:57:23 -0500
+Message-ID: <CAGngYiX_Wt9po7wE82UROvj6hLpR8PrJH4=gMVuiFQYPqAmmLA@mail.gmail.com>
+Subject: Re: [PATCH net-next v1] net: phy: spi_ks8995: Do not overwrite SPI
+ mode flags
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        "David S. Miller" <davem@davemloft.net>,
+        netdev <netdev@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 9, 2020 at 4:39 PM Michael Walle <michael@walle.cc> wrote:
+On Mon, Nov 9, 2020 at 5:50 PM Jakub Kicinski <kuba@kernel.org> wrote:
 >
-> Am 2020-11-09 23:05, schrieb Rob Herring:
-> > On Sun, Nov 08, 2020 at 07:51:07PM +0100, Michael Walle wrote:
-> >> To avoid future mistakes in the device tree for the clockgen module,
-> >> add
-> >> constants for the clockgen subtype as well as a macro for the PLL
-> >> divider.
-> >>
-> >> Signed-off-by: Michael Walle <michael@walle.cc>
-> >> ---
-> >> Changes since v2:
-> >>  - new patch
-> >>
-> >>  drivers/clk/clk-qoriq.c                        | 13 +++++++------
-> >>  include/dt-bindings/clock/fsl,qoriq-clockgen.h | 15 +++++++++++++++
-> >>  2 files changed, 22 insertions(+), 6 deletions(-)
-> >>  create mode 100644 include/dt-bindings/clock/fsl,qoriq-clockgen.h
-> >>
-> >> diff --git a/drivers/clk/clk-qoriq.c b/drivers/clk/clk-qoriq.c
-> >> index 46101c6a20f2..70aa521e7e7f 100644
-> >> --- a/drivers/clk/clk-qoriq.c
-> >> +++ b/drivers/clk/clk-qoriq.c
-> >> @@ -7,6 +7,7 @@
-> >>
-> >>  #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
-> >>
-> >> +#include <dt-bindings/clock/fsl,qoriq-clockgen.h>
-> >>  #include <linux/clk.h>
-> >>  #include <linux/clk-provider.h>
-> >>  #include <linux/clkdev.h>
-> >> @@ -1368,33 +1369,33 @@ static struct clk *clockgen_clk_get(struct
-> >> of_phandle_args *clkspec, void *data)
-> >>      idx = clkspec->args[1];
-> >>
-> >>      switch (type) {
-> >> -    case 0:
-> >> +    case QORIQ_CLK_SYSCLK:
-> >>              if (idx != 0)
-> >>                      goto bad_args;
-> >>              clk = cg->sysclk;
-> >>              break;
-> >> -    case 1:
-> >> +    case QORIQ_CLK_CMUX:
-> >>              if (idx >= ARRAY_SIZE(cg->cmux))
-> >>                      goto bad_args;
-> >>              clk = cg->cmux[idx];
-> >>              break;
-> >> -    case 2:
-> >> +    case QORIQ_CLK_HWACCEL:
-> >>              if (idx >= ARRAY_SIZE(cg->hwaccel))
-> >>                      goto bad_args;
-> >>              clk = cg->hwaccel[idx];
-> >>              break;
-> >> -    case 3:
-> >> +    case QORIQ_CLK_FMAN:
-> >>              if (idx >= ARRAY_SIZE(cg->fman))
-> >>                      goto bad_args;
-> >>              clk = cg->fman[idx];
-> >>              break;
-> >> -    case 4:
-> >> +    case QORIQ_CLK_PLATFORM_PLL:
-> >>              pll = &cg->pll[PLATFORM_PLL];
-> >>              if (idx >= ARRAY_SIZE(pll->div))
-> >>                      goto bad_args;
-> >>              clk = pll->div[idx].clk;
-> >>              break;
-> >> -    case 5:
-> >> +    case QORIQ_CLK_CORECLK:
-> >>              if (idx != 0)
-> >>                      goto bad_args;
-> >>              clk = cg->coreclk;
-> >> diff --git a/include/dt-bindings/clock/fsl,qoriq-clockgen.h
-> >> b/include/dt-bindings/clock/fsl,qoriq-clockgen.h
-> >> new file mode 100644
-> >> index 000000000000..ddec7d0bdc7f
-> >> --- /dev/null
-> >> +++ b/include/dt-bindings/clock/fsl,qoriq-clockgen.h
-> >> @@ -0,0 +1,15 @@
-> >> +/* SPDX-License-Identifier: GPL-2.0-only */
-> >> +
-> >> +#ifndef DT_CLOCK_FSL_QORIQ_CLOCKGEN_H
-> >> +#define DT_CLOCK_FSL_QORIQ_CLOCKGEN_H
-> >> +
-> >> +#define QORIQ_CLK_SYSCLK    0
-> >> +#define QORIQ_CLK_CMUX              1
-> >> +#define QORIQ_CLK_HWACCEL   2
-> >> +#define QORIQ_CLK_FMAN              3
-> >> +#define QORIQ_CLK_PLATFORM_PLL      4
-> >> +#define QORIQ_CLK_CORECLK   5
-> >> +
-> >> +#define QORIQ_CLK_PLL_DIV(x)        ((x) - 1)
-> >
-> > This is not used and doesn't seem like part of the ABI (shared with dts
-> > files).
+>   But please at least repost for net and CC Mark and the SPI list
+>   for input.
 >
-> TBH I haven't found a nice way to integrate this macro into the clock
-> driver. It is used in the device tree for the type PLATFORM_PLL.
-> Previously, you had "<&clockgen 4 1>", where 4 is the PLATFORM_PLL and 1
-> is actually "div-by-2". Thus I replaced it by <&clockgen
-> QORIQ_CLK_PLATFORM_PLL QORIQ_CLK_PLL_DIV(2)>. (I just realized that
-> QORIQ_CLK_PLL_DIV_BY(2) might be a better name.)
+> Maybe Mark has a different idea on how client drivers should behave.
+>
+> Also please obviously CC the author of the patch who introduced
+> the breakage.
 
-Ah okay. I guess this is fine.
+I believe they're aware: I tried to propose a patch to fix this in the
+spi core, but it looks like it was rejected - with feedback: "fix the
+client drivers instead"
 
-Acked-by: Rob Herring <robh@kernel.org>
+https://patchwork.kernel.org/project/spi-devel-general/patch/20201106150706.29089-1-TheSven73@gmail.com/#23747737
 
-Rob
+I will respin this minimal fix as v2, add Fixes tags and Cc the
+people involved, as you suggested.
