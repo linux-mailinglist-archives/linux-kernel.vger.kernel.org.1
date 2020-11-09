@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D6A22ABD40
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 14:45:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BFDF2ABCB0
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 14:39:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387970AbgKINob (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 08:44:31 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53362 "EHLO mail.kernel.org"
+        id S2387820AbgKINjq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 08:39:46 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56284 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730268AbgKIM7J (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 07:59:09 -0500
+        id S1730675AbgKINDl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 08:03:41 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E013E20684;
-        Mon,  9 Nov 2020 12:59:07 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9A43222203;
+        Mon,  9 Nov 2020 13:02:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604926748;
-        bh=eSPdUNSrzMNvWnZGQeWWlmUQk5bq+1LKzjc1HE76wjM=;
+        s=default; t=1604926980;
+        bh=jX58UfIJGWVQV/mjB3kASkMntzspVbtxFRc6eguK0yM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=yx1+sSdTfGtm7Xzx3FnnH2jPECFbYW5uSpoUR2EH2c0y4pKxbjcO1SSPmdVXyYcpX
-         z+yLYOeRJKF91Bxn9aunK4GessXHManKilFr+WjF6VEkTsNVlQwuZbGjqcoJKxWI7e
-         cnxxifqyQl0OIfjgk2uVe/BdjLWINlM0n507ShQ8=
+        b=mAC4pzC99YafjCamYUEEJ5p3WncG/bQLqFVCZ9w+xzKlyDX0oBzXe2SaJsz4ssb31
+         PWWcYDw0hGKScznohN7bAzJwq68OtcNxzPsql5fgbpicr5XtfJES9K6xgNM3oQ6zc/
+         vCKl9qtpMdYGCf/T2xYsfg26MzLOKvb/Ow7SgjeY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Zhihao Cheng <chengzhihao1@huawei.com>,
-        Richard Weinberger <richard@nod.at>
-Subject: [PATCH 4.4 47/86] ubifs: dent: Fix some potential memory leaks while iterating entries
-Date:   Mon,  9 Nov 2020 13:54:54 +0100
-Message-Id: <20201109125023.095438682@linuxfoundation.org>
+        stable@vger.kernel.org, Joel Stanley <joel@jms.id.au>,
+        "Gautham R. Shenoy" <ego@linux.vnet.ibm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Subject: [PATCH 4.9 069/117] powerpc: Warn about use of smt_snooze_delay
+Date:   Mon,  9 Nov 2020 13:54:55 +0100
+Message-Id: <20201109125028.952500547@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201109125020.852643676@linuxfoundation.org>
-References: <20201109125020.852643676@linuxfoundation.org>
+In-Reply-To: <20201109125025.630721781@linuxfoundation.org>
+References: <20201109125025.630721781@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,33 +43,104 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhihao Cheng <chengzhihao1@huawei.com>
+From: Joel Stanley <joel@jms.id.au>
 
-commit 58f6e78a65f1fcbf732f60a7478ccc99873ff3ba upstream.
+commit a02f6d42357acf6e5de6ffc728e6e77faf3ad217 upstream.
 
-Fix some potential memory leaks in error handling branches while
-iterating dent entries. For example, function dbg_check_dir()
-forgets to free pdent if it exists.
+It's not done anything for a long time. Save the percpu variable, and
+emit a warning to remind users to not expect it to do anything.
 
-Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
-Cc: <stable@vger.kernel.org>
-Fixes: 1e51764a3c2ac05a2 ("UBIFS: add new flash file system")
-Signed-off-by: Richard Weinberger <richard@nod.at>
+This uses pr_warn_once instead of pr_warn_ratelimit as testing
+'ppc64_cpu --smt=off' on a 24 core / 4 SMT system showed the warning
+to be noisy, as the online/offline loop is slow.
+
+Fixes: 3fa8cad82b94 ("powerpc/pseries/cpuidle: smt-snooze-delay cleanup.")
+Cc: stable@vger.kernel.org # v3.14
+Signed-off-by: Joel Stanley <joel@jms.id.au>
+Acked-by: Gautham R. Shenoy <ego@linux.vnet.ibm.com>
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Link: https://lore.kernel.org/r/20200902000012.3440389-1-joel@jms.id.au
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- fs/ubifs/debug.c |    1 +
- 1 file changed, 1 insertion(+)
+ arch/powerpc/kernel/sysfs.c |   42 +++++++++++++++++-------------------------
+ 1 file changed, 17 insertions(+), 25 deletions(-)
 
---- a/fs/ubifs/debug.c
-+++ b/fs/ubifs/debug.c
-@@ -1125,6 +1125,7 @@ int dbg_check_dir(struct ubifs_info *c,
- 			err = PTR_ERR(dent);
- 			if (err == -ENOENT)
- 				break;
-+			kfree(pdent);
- 			return err;
- 		}
+--- a/arch/powerpc/kernel/sysfs.c
++++ b/arch/powerpc/kernel/sysfs.c
+@@ -28,29 +28,27 @@
  
+ static DEFINE_PER_CPU(struct cpu, cpu_devices);
+ 
+-/*
+- * SMT snooze delay stuff, 64-bit only for now
+- */
+-
+ #ifdef CONFIG_PPC64
+ 
+-/* Time in microseconds we delay before sleeping in the idle loop */
+-static DEFINE_PER_CPU(long, smt_snooze_delay) = { 100 };
++/*
++ * Snooze delay has not been hooked up since 3fa8cad82b94 ("powerpc/pseries/cpuidle:
++ * smt-snooze-delay cleanup.") and has been broken even longer. As was foretold in
++ * 2014:
++ *
++ *  "ppc64_util currently utilises it. Once we fix ppc64_util, propose to clean
++ *  up the kernel code."
++ *
++ * powerpc-utils stopped using it as of 1.3.8. At some point in the future this
++ * code should be removed.
++ */
+ 
+ static ssize_t store_smt_snooze_delay(struct device *dev,
+ 				      struct device_attribute *attr,
+ 				      const char *buf,
+ 				      size_t count)
+ {
+-	struct cpu *cpu = container_of(dev, struct cpu, dev);
+-	ssize_t ret;
+-	long snooze;
+-
+-	ret = sscanf(buf, "%ld", &snooze);
+-	if (ret != 1)
+-		return -EINVAL;
+-
+-	per_cpu(smt_snooze_delay, cpu->dev.id) = snooze;
++	pr_warn_once("%s (%d) stored to unsupported smt_snooze_delay, which has no effect.\n",
++		     current->comm, current->pid);
+ 	return count;
+ }
+ 
+@@ -58,9 +56,9 @@ static ssize_t show_smt_snooze_delay(str
+ 				     struct device_attribute *attr,
+ 				     char *buf)
+ {
+-	struct cpu *cpu = container_of(dev, struct cpu, dev);
+-
+-	return sprintf(buf, "%ld\n", per_cpu(smt_snooze_delay, cpu->dev.id));
++	pr_warn_once("%s (%d) read from unsupported smt_snooze_delay\n",
++		     current->comm, current->pid);
++	return sprintf(buf, "100\n");
+ }
+ 
+ static DEVICE_ATTR(smt_snooze_delay, 0644, show_smt_snooze_delay,
+@@ -68,16 +66,10 @@ static DEVICE_ATTR(smt_snooze_delay, 064
+ 
+ static int __init setup_smt_snooze_delay(char *str)
+ {
+-	unsigned int cpu;
+-	long snooze;
+-
+ 	if (!cpu_has_feature(CPU_FTR_SMT))
+ 		return 1;
+ 
+-	snooze = simple_strtol(str, NULL, 10);
+-	for_each_possible_cpu(cpu)
+-		per_cpu(smt_snooze_delay, cpu) = snooze;
+-
++	pr_warn("smt-snooze-delay command line option has no effect\n");
+ 	return 1;
+ }
+ __setup("smt-snooze-delay=", setup_smt_snooze_delay);
 
 
