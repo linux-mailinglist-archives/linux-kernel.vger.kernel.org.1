@@ -2,114 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D825A2AB26A
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 09:31:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D6A32AB270
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 09:33:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729717AbgKIIb0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 03:31:26 -0500
-Received: from mga17.intel.com ([192.55.52.151]:44652 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725854AbgKIIb0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 03:31:26 -0500
-IronPort-SDR: /Z/NA4/eALiKwDmdyuK909SYkDzy0bx40ABQD4lke4mhPSj1H3eVp3X+i1irpV26GCoQrTrvQQ
- 8J+KEaJaBeIg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9799"; a="149618669"
-X-IronPort-AV: E=Sophos;i="5.77,463,1596524400"; 
-   d="scan'208";a="149618669"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Nov 2020 00:31:26 -0800
-IronPort-SDR: AKQ/kboLMEHgt3q1Q/RSpYI4QgU5etzJBCq6HUSEl9NN7uV9BQq7ZK/CR6uwVjO+QGfl1Pl55o
- 5BPbaDXxwlYw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,463,1596524400"; 
-   d="scan'208";a="427920663"
-Received: from kuha.fi.intel.com ([10.237.72.162])
-  by fmsmga001.fm.intel.com with SMTP; 09 Nov 2020 00:31:23 -0800
-Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Mon, 09 Nov 2020 10:31:22 +0200
-Date:   Mon, 9 Nov 2020 10:31:22 +0200
-From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
-To:     Prashant Malani <pmalani@chromium.org>
-Cc:     linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
-        gregkh@linuxfoundation.org, Benson Leung <bleung@chromium.org>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        Guenter Roeck <groeck@chromium.org>
-Subject: Re: [PATCH v2 6/6] platform/chrome: cros_ec_typec: Store cable plug
- type
-Message-ID: <20201109083122.GH4062920@kuha.fi.intel.com>
-References: <20201106184104.939284-1-pmalani@chromium.org>
- <20201106184104.939284-7-pmalani@chromium.org>
+        id S1728638AbgKIIdH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 03:33:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35532 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726176AbgKIIdH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 03:33:07 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C995C0613CF
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Nov 2020 00:33:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=bGUxI0B07YWLmHjnQQTBE3xPkOaIZ78B6Zxl84c+J9U=; b=Q0sOqOM65heRoPF+jc8XOfTi7g
+        ETiwo1AjafjROzc51giTjimk6ZB9F9uP3QJ9IAXgromYGcMXv5Uz7M1A5libjj07rUw0AiViJKvEJ
+        cnZflQFO7OuhAgj2T1xbTN33my/RlQMFIu/TECRt8mIymXo31FpM0xOU115WFaOqiWj+8QPiNiUVq
+        lRIjQts/Ybh1bDUdp8B7C+XPFkgu4vrNausUHBJXQ6h+m7rdMg9qsXlWNPawI/3AE+jW8Hw7NlZwu
+        YYfxfLixEUE+OVu6bJLMMRT/vz85QhSMXUxVPBkHvzcaxZvrO3+1RlUYlapQpGnlTzPmoSdOS3owl
+        PBjgLdpA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kc2bg-0003Ps-25; Mon, 09 Nov 2020 08:32:56 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 664AB3006E0;
+        Mon,  9 Nov 2020 09:32:51 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 58A282C2296F6; Mon,  9 Nov 2020 09:32:51 +0100 (CET)
+Date:   Mon, 9 Nov 2020 09:32:51 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Tiezhu Yang <yangtiezhu@loongson.cn>
+Cc:     Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+        linux-kernel@vger.kernel.org, Xuefeng Li <lixuefeng@loongson.cn>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: [PATCH] locking/lock_events: no need to check return value of
+ debugfs_create functions
+Message-ID: <20201109083251.GA2594@hirez.programming.kicks-ass.net>
+References: <1604740753-17662-1-git-send-email-yangtiezhu@loongson.cn>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201106184104.939284-7-pmalani@chromium.org>
+In-Reply-To: <1604740753-17662-1-git-send-email-yangtiezhu@loongson.cn>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 06, 2020 at 10:41:10AM -0800, Prashant Malani wrote:
-> Use the PD VDO Type C cable plug type macro to retrieve and store the
-> cable plug type in the cable descriptor.
-> 
-> Cc: Heikki Krogerus <heikki.krogerus@linux.intel.com>
-> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Signed-off-by: Prashant Malani <pmalani@chromium.org>
+On Sat, Nov 07, 2020 at 05:19:13PM +0800, Tiezhu Yang wrote:
+> When calling debugfs functions, there is no need to ever check the
+> return value.  The function can work or not, but the code logic should
+> never do something different based on this.
 
-Reviewed-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+I strongly disagree and have told this to Greg before. Having half a
+debug interface is weird at best, so upon failure we remove the whole
+thing, which is consistent.
 
+> Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
 > ---
+>  kernel/locking/lock_events.c | 19 ++++---------------
+>  1 file changed, 4 insertions(+), 15 deletions(-)
 > 
-> Changes in v2:
-> - Changed local variable from uint32_to u32.
-> 
->  drivers/platform/chrome/cros_ec_typec.c | 21 ++++++++++++++++++++-
->  1 file changed, 20 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/platform/chrome/cros_ec_typec.c b/drivers/platform/chrome/cros_ec_typec.c
-> index 5e7f0b4ebbec..cf609aa10567 100644
-> --- a/drivers/platform/chrome/cros_ec_typec.c
-> +++ b/drivers/platform/chrome/cros_ec_typec.c
-> @@ -709,6 +709,7 @@ static int cros_typec_handle_sop_prime_disc(struct cros_typec_data *typec, int p
->  		.port = port_num,
->  		.partner_type = TYPEC_PARTNER_SOP_PRIME,
->  	};
-> +	u32 cable_plug_type;
->  	int ret = 0;
+> diff --git a/kernel/locking/lock_events.c b/kernel/locking/lock_events.c
+> index fa2c2f9..bac77a1 100644
+> --- a/kernel/locking/lock_events.c
+> +++ b/kernel/locking/lock_events.c
+> @@ -146,9 +146,6 @@ static int __init init_lockevent_counts(void)
+>  	struct dentry *d_counts = debugfs_create_dir(LOCK_EVENTS_DIR, NULL);
+>  	int i;
 >  
->  	memset(disc, 0, EC_PROTO2_MAX_RESPONSE_SIZE);
-> @@ -722,8 +723,26 @@ static int cros_typec_handle_sop_prime_disc(struct cros_typec_data *typec, int p
->  	/* Parse the PD identity data, even if only 0s were returned. */
->  	cros_typec_parse_pd_identity(&port->c_identity, disc);
+> -	if (!d_counts)
+> -		goto out;
+> -
+>  	/*
+>  	 * Create the debugfs files
+>  	 *
+> @@ -159,21 +156,13 @@ static int __init init_lockevent_counts(void)
+>  	for (i = 0; i < lockevent_num; i++) {
+>  		if (skip_lockevent(lockevent_names[i]))
+>  			continue;
+> -		if (!debugfs_create_file(lockevent_names[i], 0400, d_counts,
+> -					 (void *)(long)i, &fops_lockevent))
+> -			goto fail_undo;
+> +		debugfs_create_file(lockevent_names[i], 0400, d_counts,
+> +				    (void *)(long)i, &fops_lockevent);
+>  	}
 >  
-> -	if (disc->identity_count != 0)
-> +	if (disc->identity_count != 0) {
-> +		cable_plug_type = VDO_TYPEC_CABLE_TYPE(port->c_identity.vdo[0]);
-> +		switch (cable_plug_type) {
-> +		case CABLE_ATYPE:
-> +			desc.type = USB_PLUG_TYPE_A;
-> +			break;
-> +		case CABLE_BTYPE:
-> +			desc.type = USB_PLUG_TYPE_B;
-> +			break;
-> +		case CABLE_CTYPE:
-> +			desc.type = USB_PLUG_TYPE_C;
-> +			break;
-> +		case CABLE_CAPTIVE:
-> +			desc.type = USB_PLUG_CAPTIVE;
-> +			break;
-> +		default:
-> +			desc.type = USB_PLUG_NONE;
-> +		}
->  		desc.active = PD_IDH_PTYPE(port->c_identity.id_header) == IDH_PTYPE_ACABLE;
-> +	}
+> -	if (!debugfs_create_file(lockevent_names[LOCKEVENT_reset_cnts], 0200,
+> -				 d_counts, (void *)(long)LOCKEVENT_reset_cnts,
+> -				 &fops_lockevent))
+> -		goto fail_undo;
+> +	debugfs_create_file(lockevent_names[LOCKEVENT_reset_cnts], 0200, d_counts,
+> +			    (void *)(long)LOCKEVENT_reset_cnts, &fops_lockevent);
 >  
->  	desc.identity = &port->c_identity;
->  
+>  	return 0;
+> -fail_undo:
+> -	debugfs_remove_recursive(d_counts);
+> -out:
+> -	pr_warn("Could not create '%s' debugfs entries\n", LOCK_EVENTS_DIR);
+> -	return -ENOMEM;
+>  }
+>  fs_initcall(init_lockevent_counts);
 > -- 
-> 2.29.1.341.ge80a0c044ae-goog
-
-thanks,
-
--- 
-heikki
+> 2.1.0
+> 
