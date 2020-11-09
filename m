@@ -2,103 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1219F2AB883
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 13:45:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C207C2AB8AF
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 13:51:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729303AbgKIMpM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 07:45:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46912 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727303AbgKIMpL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 07:45:11 -0500
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B811C0613CF
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Nov 2020 04:45:11 -0800 (PST)
-Received: by mail-wr1-x442.google.com with SMTP id k2so5146186wrx.2
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Nov 2020 04:45:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=I5og6iQL2F2KU/9VCiyIO/1t7oyXeSMRtxWJsg/eg+g=;
-        b=gk6Y3BhBCWnU2IL1KQsAWPoRse7BEKzs3cZVZMKCdpCN2TibgOHbiInvSTtrJh0dz0
-         QV+ae6jXdwNLSdZl0/pVilO9Hu1wAJLED+q/pEDus6UEFLxCiMQepflmsXsgo5XRhyi4
-         KNcDee4/GEagpFrxVO+3pSxcRFlDdfDRy1PGyY6YRx81kz+FrNDPsBjzm/EsQCSvbEnV
-         LfX/ObUmMf4K8gsgQ4J8y2L6/kkmxlsPWeDKtZT8MMetegulDNNS/0lBhdDjmKHmUNDO
-         ARxYYsFvBZ/8gdyIDHH/RmX58uyQ3gX5rOkbhR4eLovvIdZBYLBc1cdbzFyuwypS15yY
-         n/Kw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=I5og6iQL2F2KU/9VCiyIO/1t7oyXeSMRtxWJsg/eg+g=;
-        b=if6/7SorkkRAhVPNVNUwNeT24vpkQlz847U2juoBW8q+U6v9qOE8ImtbIlpwh9BsNX
-         hdtQpx0kuFkd3PSvXqIaGUEYwXY2+ao29jI/DOZ3/S7LLh5HMCq/RCxvC/WmY3JfWxtj
-         kMG4+TCVR+jaePMYoZO+vTUM4oPp2BRtAi6yCZtmitdhTQqejiq1zAtCaIQWiDEkDoOL
-         ygM5itr3JnYT+u0svMdOiPjLKzdksYE4smouOMtdutDGZhPz/FJpgdCGIajTbSbvfa5S
-         i2bRUTzrGK+piDWOSCSymAaQFKb8wLYXVsmmXkG/bZkr97vLcU5AsuYTQxY04bm2Kgsa
-         aUFg==
-X-Gm-Message-State: AOAM533/dGMqvzrYB7psOq+gRban5AoafGtGLqvgDTrg1/iLjIJbkkC6
-        iz/z6t+LIQ+9H1x81SxczwprSdP1lekxhA==
-X-Google-Smtp-Source: ABdhPJwfwHgZiyEE+orXJW69vDATKlc6ekwB3kQ5qEptBVB3A8G5yP0BiBpzzsb8ED8FvWBBbdqFCQ==
-X-Received: by 2002:a5d:4084:: with SMTP id o4mr309309wrp.278.1604925910194;
-        Mon, 09 Nov 2020 04:45:10 -0800 (PST)
-Received: from localhost.localdomain ([212.45.67.2])
-        by smtp.googlemail.com with ESMTPSA id d2sm13113259wrq.34.2020.11.09.04.45.08
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 09 Nov 2020 04:45:09 -0800 (PST)
-From:   Georgi Djakov <georgi.djakov@linaro.org>
-To:     linux-pm@vger.kernel.org, luca@z3ntu.xyz, masneyb@onstation.org
-Cc:     bjorn.andersson@linaro.org, saravanak@google.com,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Georgi Djakov <georgi.djakov@linaro.org>
-Subject: [PATCH] interconnect: qcom: msm8974: Don't boost the NoC rate during boot
-Date:   Mon,  9 Nov 2020 14:45:12 +0200
-Message-Id: <20201109124512.10776-1-georgi.djakov@linaro.org>
-X-Mailer: git-send-email 2.28.0
+        id S1729516AbgKIMuV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 07:50:21 -0500
+Received: from raptor.unsafe.ru ([5.9.43.93]:53676 "EHLO raptor.unsafe.ru"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729585AbgKIMtt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 07:49:49 -0500
+Received: from comp-core-i7-2640m-0182e6.redhat.com (ip-89-103-122-167.net.upcbroadband.cz [89.103.122.167])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (No client certificate requested)
+        by raptor.unsafe.ru (Postfix) with ESMTPSA id 23C7420A04;
+        Mon,  9 Nov 2020 12:48:22 +0000 (UTC)
+From:   Alexey Gladkov <gladkov.alexey@gmail.com>
+To:     LKML <linux-kernel@vger.kernel.org>, linux-fsdevel@vger.kernel.org
+Cc:     Alexey Gladkov <legion@kernel.org>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        "Eric W. Biederman" <ebiederm@xmission.com>
+Subject: [RESEND PATCH v3] fuse: Abort waiting for a response if the daemon receives a fatal signal
+Date:   Mon,  9 Nov 2020 13:46:55 +0100
+Message-Id: <1e796f9e008fb78fb96358ff74f39bd4865a7c88.1604926010.git.gladkov.alexey@gmail.com>
+X-Mailer: git-send-email 2.25.4
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
+X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.6.1 (raptor.unsafe.ru [5.9.43.93]); Mon, 09 Nov 2020 12:48:25 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It has been reported that on Fairphone 2 (msm8974-based), increasing
-the clock rate for some of the NoCs during boot may lead to hangs.
-Let's restore the original behavior and not touch the clock rate of
-any of the NoCs to fix the regression.
+This patch removes one kind of the deadlocks inside the fuse daemon. The
+problem appear when the fuse daemon itself makes a file operation on its
+filesystem and receives a fatal signal.
 
-Reported-by: Luca Weiss <luca@z3ntu.xyz>
-Fixes: b1d681d8d324 ("interconnect: Add sync state support")
-Signed-off-by: Georgi Djakov <georgi.djakov@linaro.org>
+This deadlock can be interrupted via fusectl filesystem. But if you have
+many fuse mountpoints, it will be difficult to figure out which
+connection to break.
+
+This patch aborts the connection if the fuse server receives a fatal
+signal.
+
+Reproducer: https://github.com/sargun/fuse-example
+Reference: CVE-2019-20794
+Fixes: 51eb01e73599 ("[PATCH] fuse: no backgrounding on interrupt")
+Сс: Andrew Morton <akpm@osdl.org>
+Cc: Miklos Szeredi <miklos@szeredi.hu>
+Cc: "Eric W. Biederman" <ebiederm@xmission.com>
+Acked-by: "Eric W. Biederman" <ebiederm@xmission.com>
+Signed-off-by: Alexey Gladkov <gladkov.alexey@gmail.com>
 ---
- drivers/interconnect/qcom/msm8974.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
+ fs/fuse/dev.c    | 26 +++++++++++++++++++++++++-
+ fs/fuse/fuse_i.h |  6 ++++++
+ fs/fuse/inode.c  |  3 +++
+ 3 files changed, 34 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/interconnect/qcom/msm8974.c b/drivers/interconnect/qcom/msm8974.c
-index b6b639dad691..da68ce375a89 100644
---- a/drivers/interconnect/qcom/msm8974.c
-+++ b/drivers/interconnect/qcom/msm8974.c
-@@ -637,6 +637,14 @@ static int msm8974_icc_set(struct icc_node *src, struct icc_node *dst)
+diff --git a/fs/fuse/dev.c b/fs/fuse/dev.c
+index 02b3c36b3676..eadfed675791 100644
+--- a/fs/fuse/dev.c
++++ b/fs/fuse/dev.c
+@@ -21,6 +21,7 @@
+ #include <linux/swap.h>
+ #include <linux/splice.h>
+ #include <linux/sched.h>
++#include <linux/fdtable.h>
+ 
+ MODULE_ALIAS_MISCDEV(FUSE_MINOR);
+ MODULE_ALIAS("devname:fuse");
+@@ -357,6 +358,29 @@ static int queue_interrupt(struct fuse_iqueue *fiq, struct fuse_req *req)
  	return 0;
  }
  
-+static int msm8974_get_bw(struct icc_node *node, u32 *avg, u32 *peak)
++static int match_fusedev(const void *p, struct file *file, unsigned fd)
 +{
-+	*avg = 0;
-+	*peak = 0;
-+
-+	return 0;
++	return ((struct fuse_conn *) p)->fusedev_file == file;
 +}
 +
- static int msm8974_icc_probe(struct platform_device *pdev)
++static inline bool is_fuse_daemon(struct fuse_conn *fc)
++{
++	return iterate_fd(current->files, 0, match_fusedev, fc);
++}
++
++static inline bool is_conn_untrusted(struct fuse_conn *fc)
++{
++	return (fc->sb->s_iflags & SB_I_UNTRUSTED_MOUNTER);
++}
++
++static inline bool is_event_finished(struct fuse_conn *fc, struct fuse_req *req)
++{
++	if (fc->check_fusedev_file &&
++	    fatal_signal_pending(current) && is_conn_untrusted(fc) && is_fuse_daemon(fc))
++		fuse_abort_conn(fc);
++	return test_bit(FR_FINISHED, &req->flags);
++}
++
+ static void request_wait_answer(struct fuse_conn *fc, struct fuse_req *req)
  {
- 	const struct msm8974_icc_desc *desc;
-@@ -690,6 +698,7 @@ static int msm8974_icc_probe(struct platform_device *pdev)
- 	provider->aggregate = icc_std_aggregate;
- 	provider->xlate = of_icc_xlate_onecell;
- 	provider->data = data;
-+	provider->get_bw = msm8974_get_bw;
+ 	struct fuse_iqueue *fiq = &fc->iq;
+@@ -399,7 +423,7 @@ static void request_wait_answer(struct fuse_conn *fc, struct fuse_req *req)
+ 	 * Either request is already in userspace, or it was forced.
+ 	 * Wait it out.
+ 	 */
+-	wait_event(req->waitq, test_bit(FR_FINISHED, &req->flags));
++	wait_event(req->waitq, is_event_finished(fc, req));
+ }
  
- 	ret = icc_provider_add(provider);
- 	if (ret) {
+ static void __fuse_request_send(struct fuse_conn *fc, struct fuse_req *req)
+diff --git a/fs/fuse/fuse_i.h b/fs/fuse/fuse_i.h
+index 740a8a7d7ae6..ee9986b3c932 100644
+--- a/fs/fuse/fuse_i.h
++++ b/fs/fuse/fuse_i.h
+@@ -516,6 +516,9 @@ struct fuse_conn {
+ 	/** The group id for this mount */
+ 	kgid_t group_id;
+ 
++	/** The /dev/fuse file for this mount */
++	struct file *fusedev_file;
++
+ 	/** The pid namespace for this mount */
+ 	struct pid_namespace *pid_ns;
+ 
+@@ -720,6 +723,9 @@ struct fuse_conn {
+ 	/* Do not show mount options */
+ 	unsigned int no_mount_options:1;
+ 
++	/** Do not check fusedev_file (virtiofs) */
++	unsigned int check_fusedev_file:1;
++
+ 	/** The number of requests waiting for completion */
+ 	atomic_t num_waiting;
+ 
+diff --git a/fs/fuse/inode.c b/fs/fuse/inode.c
+index bba747520e9b..8dc86e5079e6 100644
+--- a/fs/fuse/inode.c
++++ b/fs/fuse/inode.c
+@@ -1201,6 +1201,8 @@ int fuse_fill_super_common(struct super_block *sb, struct fuse_fs_context *ctx)
+ 	fc->no_control = ctx->no_control;
+ 	fc->no_force_umount = ctx->no_force_umount;
+ 	fc->no_mount_options = ctx->no_mount_options;
++	fc->fusedev_file = fget(ctx->fd);
++	fc->check_fusedev_file = 1;
+ 
+ 	err = -ENOMEM;
+ 	root = fuse_get_root_inode(sb, ctx->rootmode);
+@@ -1348,6 +1350,7 @@ static void fuse_sb_destroy(struct super_block *sb)
+ 
+ 		fuse_abort_conn(fc);
+ 		fuse_wait_aborted(fc);
++		fput(fc->fusedev_file);
+ 
+ 		down_write(&fc->killsb);
+ 		fc->sb = NULL;
+-- 
+2.25.4
+
