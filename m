@@ -2,30 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11F422AB337
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 10:10:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 366AE2AB33B
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 10:10:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729793AbgKIJKN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 04:10:13 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:7064 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727791AbgKIJKN (ORCPT
+        id S1729936AbgKIJKT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 04:10:19 -0500
+Received: from szxga04-in.huawei.com ([45.249.212.190]:7159 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729835AbgKIJKP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 04:10:13 -0500
-Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4CV4vb10HxzhhSm;
-        Mon,  9 Nov 2020 17:10:03 +0800 (CST)
+        Mon, 9 Nov 2020 04:10:15 -0500
+Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4CV4vd09Wzz15RcB;
+        Mon,  9 Nov 2020 17:10:05 +0800 (CST)
 Received: from localhost.localdomain.localdomain (10.175.113.25) by
- DGGEMS404-HUB.china.huawei.com (10.3.19.204) with Microsoft SMTP Server id
- 14.3.487.0; Mon, 9 Nov 2020 17:10:01 +0800
+ DGGEMS408-HUB.china.huawei.com (10.3.19.208) with Microsoft SMTP Server id
+ 14.3.487.0; Mon, 9 Nov 2020 17:10:04 +0800
 From:   Qinglang Miao <miaoqinglang@huawei.com>
-To:     Sudeep Holla <sudeep.holla@arm.com>
-CC:     <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        Qinglang Miao <miaoqinglang@huawei.com>
-Subject: [PATCH] firmware: arm_scmi: fix missing destroy_workqueue() on error in scmi_notification_init
-Date:   Mon, 9 Nov 2020 17:15:17 +0800
-Message-ID: <20201109091517.55895-1-miaoqinglang@huawei.com>
+To:     Nilesh Javali <njavali@marvell.com>,
+        Manish Rangankar <mrangankar@marvell.com>,
+        <GR-QLogic-Storage-Upstream@marvell.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>
+CC:     <linux-scsi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        "Qinglang Miao" <miaoqinglang@huawei.com>
+Subject: [PATCH] scsi: qedi: fix missing destroy_workqueue() on error in __qedi_probe
+Date:   Mon, 9 Nov 2020 17:15:18 +0800
+Message-ID: <20201109091518.55941-1-miaoqinglang@huawei.com>
 X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7BIT
@@ -37,31 +40,37 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 Add the missing destroy_workqueue() before return from
-scmi_notification_init in the error handling case when
-fails to do devm_kcalloc().
+__qedi_probe in the error handling case when fails to
+create workqueue qedi->offload_thread.
 
-Fixes: bd31b249692e ("firmware: arm_scmi: Add notification dispatch and delivery")
+Fixes: ace7f46ba5fd ("scsi: qedi: Add QLogic FastLinQ offload iSCSI driver framework.")
 Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
 ---
- drivers/firmware/arm_scmi/notify.c | 4 +++-
+ drivers/scsi/qedi/qedi_main.c | 4 +++-
  1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/firmware/arm_scmi/notify.c b/drivers/firmware/arm_scmi/notify.c
-index 2754f9d01636..3048e57d9731 100644
---- a/drivers/firmware/arm_scmi/notify.c
-+++ b/drivers/firmware/arm_scmi/notify.c
-@@ -1476,8 +1476,10 @@ int scmi_notification_init(struct scmi_handle *handle)
+diff --git a/drivers/scsi/qedi/qedi_main.c b/drivers/scsi/qedi/qedi_main.c
+index 61fab01d2d52..f5fc7f518f8a 100644
+--- a/drivers/scsi/qedi/qedi_main.c
++++ b/drivers/scsi/qedi/qedi_main.c
+@@ -2766,7 +2766,7 @@ static int __qedi_probe(struct pci_dev *pdev, int mode)
+ 			QEDI_ERR(&qedi->dbg_ctx,
+ 				 "Unable to start offload thread!\n");
+ 			rc = -ENODEV;
+-			goto free_cid_que;
++			goto free_tmf_thread;
+ 		}
  
- 	ni->registered_protocols = devm_kcalloc(handle->dev, SCMI_MAX_PROTO,
- 						sizeof(char *), GFP_KERNEL);
--	if (!ni->registered_protocols)
-+	if (!ni->registered_protocols) {
-+		destroy_workqueue(ni->notify_wq);
- 		goto err;
-+	}
+ 		INIT_DELAYED_WORK(&qedi->recovery_work, qedi_recovery_handler);
+@@ -2790,6 +2790,8 @@ static int __qedi_probe(struct pci_dev *pdev, int mode)
  
- 	mutex_init(&ni->pending_mtx);
- 	hash_init(ni->pending_events_handlers);
+ 	return 0;
+ 
++free_tmf_thread:
++	destroy_workqueue(qedi->tmf_thread);
+ free_cid_que:
+ 	qedi_release_cid_que(qedi);
+ free_uio:
 -- 
 2.23.0
 
