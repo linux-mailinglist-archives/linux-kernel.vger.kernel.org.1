@@ -2,123 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C7742ABE4A
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 15:13:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 896632ABE53
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 15:14:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730472AbgKIONV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 09:13:21 -0500
-Received: from youngberry.canonical.com ([91.189.89.112]:53903 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727826AbgKIONS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 09:13:18 -0500
-Received: from 1.general.cking.uk.vpn ([10.172.193.212])
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <colin.king@canonical.com>)
-        id 1kc7v1-0002TX-Oi; Mon, 09 Nov 2020 14:13:15 +0000
-Subject: Re: net: dsa: hellcreek: Add support for hardware timestamping
-To:     Kurt Kanzenbach <kurt@linutronix.de>,
-        Kamil Alkhouri <kamil.alkhouri@hs-offenburg.de>,
-        Richard Cochran <richardcochran@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        ivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>
-References: <7c4b526c-b229-acdf-d22a-2bf4a206be5b@canonical.com>
- <87v9eer5qm.fsf@kurt>
-From:   Colin Ian King <colin.king@canonical.com>
-Message-ID: <b71b9ba5-c0f1-091f-be4a-8bfb365af87b@canonical.com>
-Date:   Mon, 9 Nov 2020 14:13:15 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
-MIME-Version: 1.0
-In-Reply-To: <87v9eer5qm.fsf@kurt>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        id S1730753AbgKIOOd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 09:14:33 -0500
+Received: from mga09.intel.com ([134.134.136.24]:23208 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730204AbgKIOOc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 09:14:32 -0500
+IronPort-SDR: U0JkdkLxc4kS0lHe2YyrL6ua0S4avkF32euQW81caRTMZ6dhCBov9FNbTefiKwgvnVOJWgNQea
+ AZkxKZoIBZ2g==
+X-IronPort-AV: E=McAfee;i="6000,8403,9799"; a="169960529"
+X-IronPort-AV: E=Sophos;i="5.77,463,1596524400"; 
+   d="scan'208";a="169960529"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Nov 2020 06:14:31 -0800
+IronPort-SDR: /2AUkUFFIHye50qeOb/wwWUcErayFXr0rCRMXb5iJ1IACz/U5c+aiNUo+FpCckFq4Jy8bipb9Q
+ Ew0sV3MozvXA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,463,1596524400"; 
+   d="scan'208";a="307661594"
+Received: from sgsxdev004.isng.intel.com (HELO localhost) ([10.226.88.13])
+  by fmsmga008.fm.intel.com with ESMTP; 09 Nov 2020 06:14:28 -0800
+From:   Amireddy Mallikarjuna reddy <mallikarjunax.reddy@linux.intel.com>
+To:     dmaengine@vger.kernel.org, vkoul@kernel.org,
+        devicetree@vger.kernel.org, robh+dt@kernel.org
+Cc:     linux-kernel@vger.kernel.org, andriy.shevchenko@intel.com,
+        chuanhua.lei@linux.intel.com, cheol.yong.kim@intel.com,
+        qi-ming.wu@intel.com, mallikarjunax.reddy@linux.intel.com,
+        malliamireddy009@gmail.com, peter.ujfalusi@ti.com
+Subject: [PATCH v8 0/2] Add Intel LGM SoC DMA support
+Date:   Mon,  9 Nov 2020 22:14:23 +0800
+Message-Id: <cover.1604930089.git.mallikarjunax.reddy@linux.intel.com>
+X-Mailer: git-send-email 2.11.0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 09/11/2020 13:59, Kurt Kanzenbach wrote:
-> Hi Colin,
-> 
-> On Mon Nov 09 2020, Colin Ian King wrote:
->> Hi
->>
->> Static analysis on linux-next with Coverity has detected a potential
->> null pointer dereference issue on the following commit:
->>
->> commit f0d4ba9eff75a79fccb7793f4d9f12303d458603
->> Author: Kamil Alkhouri <kamil.alkhouri@hs-offenburg.de>
->> Date:   Tue Nov 3 08:10:58 2020 +0100
->>
->>     net: dsa: hellcreek: Add support for hardware timestamping
->>
->> The analysis is as follows:
->>
->> 323                /* Get nanoseconds from ptp packet */
->> 324                type = SKB_PTP_TYPE(skb);
->>
->>    4. returned_null: ptp_parse_header returns NULL (checked 10 out of 12
->> times).
->>    5. var_assigned: Assigning: hdr = NULL return value from
->> ptp_parse_header.
->>
->> 325                hdr  = ptp_parse_header(skb, type);
->>
->>    Dereference null return value (NULL_RETURNS)
->>    6. dereference: Dereferencing a pointer that might be NULL hdr when
->> calling hellcreek_get_reserved_field.
->>
->> 326                ns   = hellcreek_get_reserved_field(hdr);
->> 327                hellcreek_clear_reserved_field(hdr);
->>
->> This issue can only occur if the type & PTP_CLASS_PMASK is not one of
->> PTP_CLASS_IPV4, PTP_CLASS_IPV6 or PTP_CLASS_L2.  I'm not sure if this is
->> a possibility or not, but I'm assuming that it would be useful to
->> perform the null check just in case, but I'm not sure how this affects
->> the hw timestamping code in this function.
-> 
-> I don't see how the null pointer dereference could happen. That's the
-> Rx path you showed above.
-> 
-> The counter part code is:
-> 
-> hellcreek_port_rxtstamp:
-> 
-> 	/* Make sure the message is a PTP message that needs to be timestamped
-> 	 * and the interaction with the HW timestamping is enabled. If not, stop
-> 	 * here
-> 	 */
-> 	hdr = hellcreek_should_tstamp(hellcreek, port, skb, type);
-> 	if (!hdr)
-> 		return false;
-> 
-> 	SKB_PTP_TYPE(skb) = type;
-> 
-> Here the type is stored and hellcreek_should_tstamp() also calls
-> ptp_parse_header() internally. Only when ptp_parse_header() didn't
-> return NULL the first time the timestamping continues. It should be
-> safe.
-> 
-> Also the error handling would be interesting at that point. What should
-> happen if the header is null then? Returning an invalid timestamp?
-> Ignore it?
-> 
-> Hm. I think we have to make sure that it is a valid ptp packet before
-> reaching this code and that's what we've implemented. So, I guess it's
-> OK.
+Add DMA controller driver for Lightning Mountain (LGM) family of SoCs.
 
-OK - thanks, I'll mark this as a false positive.
+The main function of the DMA controller is the transfer of data from/to any
+peripheral to/from the memory. A memory to memory copy capability can also
+be configured. This ldma driver is used for configure the device and channnels
+for data and control paths.
 
-> 
-> Thanks,
-> Kurt
-> 
+These controllers provide DMA capabilities for a variety of on-chip
+devices such as SSC, HSNAND and GSWIP.
+
+-------------
+Future Plans:
+-------------
+LGM SOC also supports Hardware Memory Copy engine.
+The role of the HW Memory copy engine is to offload memory copy operations
+from the CPU.
+
+Amireddy Mallikarjuna reddy (2):
+  dt-bindings: dma: Add bindings for intel LGM SOC
+  Add Intel LGM soc DMA support.
+
+ .../devicetree/bindings/dma/intel,ldma.yaml        |  134 ++
+ drivers/dma/Kconfig                                |    2 +
+ drivers/dma/Makefile                               |    1 +
+ drivers/dma/lgm/Kconfig                            |    9 +
+ drivers/dma/lgm/Makefile                           |    2 +
+ drivers/dma/lgm/lgm-dma.c                          | 1742 ++++++++++++++++++++
+ include/linux/dma/lgm_dma.h                        |   27 +
+ 7 files changed, 1917 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/dma/intel,ldma.yaml
+ create mode 100644 drivers/dma/lgm/Kconfig
+ create mode 100644 drivers/dma/lgm/Makefile
+ create mode 100644 drivers/dma/lgm/lgm-dma.c
+ create mode 100644 include/linux/dma/lgm_dma.h
+
+-- 
+2.11.0
 
