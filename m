@@ -2,83 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E58062AB825
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 13:24:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 310302AB82A
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 13:25:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729651AbgKIMYq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 07:24:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43776 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729045AbgKIMYq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 07:24:46 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16774C0613CF;
-        Mon,  9 Nov 2020 04:24:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=QYxyicf4bRI86iURehj4XaxXYk1FhGdBaBCPgnoMbz0=; b=aG7OXY6dnRW0z5JBjN6Cut532/
-        4+UQM8br17m+Ex3aHax7H2fB7eNmP6SCboF/Et1yPoktDiqu9+I6TplvLGbXNTDlmRiY63U7cNMwa
-        RvseGZS+/Nm+rMfT3cbVtoNDy7HtyLgSDgYpAFGnjgxmFVaWUozY4cykwByXlTlnxRDfpIUlNoaCC
-        uNaO8mZ/b5Kv4ae7eSe+WYuLSB6iEC4ZqP8gBnkyzAw12MPBe9yLsOJtX/BI941NMi7KCrXXpyr6y
-        eS4lVn/h7mF4qg0diI2YuASbbBSGZ4VOjzpS3SMszhD1XWgUJvX8fnpRHH2QdkXYKRGAJVybtNk6x
-        sLSa/xBQ==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kc6Dh-00026q-S8; Mon, 09 Nov 2020 12:24:26 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        id S1729753AbgKIMZM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 07:25:12 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43054 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729507AbgKIMZL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 07:25:11 -0500
+Received: from localhost (unknown [122.171.147.34])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 5915A305C16;
-        Mon,  9 Nov 2020 13:24:24 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 1E258203C5334; Mon,  9 Nov 2020 13:24:24 +0100 (CET)
-Date:   Mon, 9 Nov 2020 13:24:24 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     paulmck@kernel.org
-Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@fb.com, mingo@kernel.org, jiangshanlai@gmail.com,
-        akpm@linux-foundation.org, mathieu.desnoyers@efficios.com,
-        josh@joshtriplett.org, tglx@linutronix.de, rostedt@goodmis.org,
-        dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
-        oleg@redhat.com, joel@joelfernandes.org, Hui Su <sh_def@163.com>
-Subject: Re: [PATCH tip/core/rcu 4/4] docs/rcu: Update the call_rcu() API
-Message-ID: <20201109122424.GN2594@hirez.programming.kicks-ass.net>
-References: <20201105230444.GA18574@paulmck-ThinkPad-P72>
- <20201105230510.18660-4-paulmck@kernel.org>
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 876D5206CB;
+        Mon,  9 Nov 2020 12:25:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604924711;
+        bh=8G7ghePS1bDlhikQ1xbvG/dT3rCGlTM8MU7CGtiAtGk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=bdrmEmW/TOwd9Vp5f9Z8aACcGKEn9UgLO++CcWphKmoQMPaJ4Wt74vYnxHNkzY/OB
+         nzK9aCeOdfGtPDtTm3GlmjSCeZvLSeDTqLxthVUhbojJVHWz5BW1lgFZa1kX1I1dSJ
+         vTmiQVm1H4evMaL6QLugW9ZvriN7h18GD6vPNpcw=
+Date:   Mon, 9 Nov 2020 17:55:07 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Radhey Shyam Pandey <radhey.shyam.pandey@xilinx.com>
+Cc:     dan.j.williams@intel.com, michal.simek@xilinx.com,
+        nick.graumann@gmail.com, andrea.merello@gmail.com,
+        appana.durga.rao@xilinx.com, mcgrof@kernel.org,
+        dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org,
+        git@xilinx.com
+Subject: Re: [PATCH 0/3] dmaengine: xilinx_dma: mcdma fixes
+Message-ID: <20201109122507.GP3171@vkoul-mobl>
+References: <1604473206-32573-1-git-send-email-radhey.shyam.pandey@xilinx.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201105230510.18660-4-paulmck@kernel.org>
+In-Reply-To: <1604473206-32573-1-git-send-email-radhey.shyam.pandey@xilinx.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 05, 2020 at 03:05:10PM -0800, paulmck@kernel.org wrote:
-> From: Hui Su <sh_def@163.com>
-> 
-> This commit updates the documented API of call_rcu() to use the
-> rcu_callback_t typedef instead of the open-coded function definition.
-> 
-> Signed-off-by: Hui Su <sh_def@163.com>
-> Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> ---
->  Documentation/RCU/whatisRCU.rst | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
-> 
-> diff --git a/Documentation/RCU/whatisRCU.rst b/Documentation/RCU/whatisRCU.rst
-> index fb3ff76..1a4723f 100644
-> --- a/Documentation/RCU/whatisRCU.rst
-> +++ b/Documentation/RCU/whatisRCU.rst
-> @@ -497,8 +497,7 @@ long -- there might be other high-priority work to be done.
->  In such cases, one uses call_rcu() rather than synchronize_rcu().
->  The call_rcu() API is as follows::
->  
-> -	void call_rcu(struct rcu_head * head,
-> -		      void (*func)(struct rcu_head *head));
-> +	void call_rcu(struct rcu_head *head, rcu_callback_t func);
+On 04-11-20, 12:30, Radhey Shyam Pandey wrote:
+> This patchset fixes usage of mcdma tx segment and SG capability.
+> It also make use of readl_poll_timeout_atomic variant.
 
-Personally I much prefer the old form, because now I have to go look up
-rcu_callback_t to figure out wtf kind of signature is actually required.
+Applied, thanks
+
+-- 
+~Vinod
