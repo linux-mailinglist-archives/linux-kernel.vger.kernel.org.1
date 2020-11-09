@@ -2,105 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC8FC2AC21B
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 18:23:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F31842AC21E
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 18:24:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731415AbgKIRXs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 12:23:48 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35968 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731289AbgKIRXp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 12:23:45 -0500
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8C9A120789;
-        Mon,  9 Nov 2020 17:23:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604942625;
-        bh=KpCt20A7ERR6pWJuCzP5zzqZs0rKZ+xcgSOTl2CgqnU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=hmUYrUUtyfj3Metpos33juCwPfPhzn55nTCzX99piqHwhxz24g7vI29EV4jm6nFCj
-         BZ1xJlWQ75vmvCSNUzT8RMUvwjp4vI3MP9RykA1UecNzIpZ6m5rettGiV3aAQ5N+dM
-         7MpDh7Vaarp/NlOXNCsxSxvgInKLMMOEGm4/8u3E=
-Date:   Mon, 9 Nov 2020 17:23:31 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     Kefeng Wang <wangkefeng.wang@huawei.com>
-Cc:     Marc Zyngier <maz@kernel.org>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] regmap: Properly free allocated name for regmap_config
- of syscon
-Message-ID: <20201109172331.GJ6380@sirena.org.uk>
-References: <20201109115816.160639-1-wangkefeng.wang@huawei.com>
+        id S1731553AbgKIRYG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 12:24:06 -0500
+Received: from linux.microsoft.com ([13.77.154.182]:38056 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730588AbgKIRYG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 12:24:06 -0500
+Received: from [192.168.0.104] (c-73-42-176-67.hsd1.wa.comcast.net [73.42.176.67])
+        by linux.microsoft.com (Postfix) with ESMTPSA id 0418D20B4905;
+        Mon,  9 Nov 2020 09:24:04 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 0418D20B4905
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1604942645;
+        bh=ta06hzgZzpA5ollIFWxpN65xzXn96qZS7d0S0MEGpnE=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=e20YFcngAW2EheTQNcto50vE8IPR7U6bJ1KFsZZSgd8SV7QIB7x1pSLCf8jIuKGz3
+         9osm//coJGoMMv9BUBy4SCs06mVYnb4vDoHn2vf5s3mzq6bkfeRcg5Dwv/QLyS71+O
+         6NzLb842Vpdr3vNJtLvTrpCmn6hGwUiqrL4VPRG8=
+Subject: Re: [PATCH v5 6/7] IMA: add critical_data to the built-in policy
+ rules
+To:     Mimi Zohar <zohar@linux.ibm.com>,
+        Tushar Sugandhi <tusharsu@linux.microsoft.com>,
+        stephen.smalley.work@gmail.com, casey@schaufler-ca.com,
+        agk@redhat.com, snitzer@redhat.com, gmazyland@gmail.com,
+        paul@paul-moore.com
+Cc:     tyhicks@linux.microsoft.com, sashal@kernel.org, jmorris@namei.org,
+        linux-integrity@vger.kernel.org, selinux@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dm-devel@redhat.com
+References: <20201101222626.6111-1-tusharsu@linux.microsoft.com>
+ <20201101222626.6111-7-tusharsu@linux.microsoft.com>
+ <7219f4404bc1bed6eb090b94363c283ec3266a17.camel@linux.ibm.com>
+ <cdcd63f7-ce1f-4463-f886-c36832d7a706@linux.microsoft.com>
+ <d92869b5-7244-e29e-5d30-c0e06cf45be1@linux.microsoft.com>
+ <c2c6efe8b2903949fb7118b56991988ba9c4f582.camel@linux.ibm.com>
+From:   Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
+Message-ID: <4c568853-1e26-0a7b-f83b-022622e46031@linux.microsoft.com>
+Date:   Mon, 9 Nov 2020 09:24:04 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="yhze8HlyfmXt1APY"
-Content-Disposition: inline
-In-Reply-To: <20201109115816.160639-1-wangkefeng.wang@huawei.com>
-X-Cookie: This fortune is false.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <c2c6efe8b2903949fb7118b56991988ba9c4f582.camel@linux.ibm.com>
+Content-Type: text/plain; charset=iso-8859-15; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 11/8/20 7:46 AM, Mimi Zohar wrote:
+> Hi Lakshmi,
+> 
+> On Fri, 2020-11-06 at 15:51 -0800, Lakshmi Ramasubramanian wrote:
+>>
+>>>>> diff --git a/security/integrity/ima/ima_policy.c
+>>>>> b/security/integrity/ima/ima_policy.c
+>>>>> index ec99e0bb6c6f..dc8fe969d3fe 100644
+>>>>> --- a/security/integrity/ima/ima_policy.c
+>>>>> +++ b/security/integrity/ima/ima_policy.c
+>>>>
+>>>>> @@ -875,6 +884,29 @@ void __init ima_init_policy(void)
+>>>>>                  ARRAY_SIZE(default_appraise_rules),
+>>>>>                  IMA_DEFAULT_POLICY);
+>>>>> +    if (ima_use_critical_data) {
+>>>>> +        template = lookup_template_desc("ima-buf");
+>>>>> +        if (!template) {
+>>>>> +            ret = -EINVAL;
+>>>>> +            goto out;
+>>>>> +        }
+>>>>> +
+>>>>> +        ret = template_desc_init_fields(template->fmt,
+>>>>> +                        &(template->fields),
+>>>>> +                        &(template->num_fields));
+>>>>
+>>>> The default IMA template when measuring buffer data is "ima_buf".   Is
+>>>> there a reason for allocating and initializing it here and not
+>>>> deferring it until process_buffer_measurement()?
+>>>>
+>>>
+>>> You are right - good catch.
+>>> I will remove the above and validate.
+>>>
+>>
+>> process_buffer_measurement() allocates and initializes "ima-buf"
+>> template only when the parameter "func" is NONE. Currently, only
+>> ima_check_blacklist() passes NONE for func when calling
+>> process_buffer_measurement().
+>>
+>> If "func" is anything other than NONE, ima_match_policy() picks
+>> the default IMA template if the IMA policy rule does not specify a template.
+>>
+>> We need to add "ima-buf" in the built-in policy for critical_data so
+>> that the default template is not used for buffer measurement.
+>>
+>> Please let me know if I am missing something.
+>>
+> 
+> Let's explain a bit further what is happening and why.   As you said
+> ima_get_action() returns the template format, which may be the default
+> IMA template or the specific IMA policy rule template format.  This
+> works properly for both the arch specific and custom policies, but not
+> for builtin policies, because the policy rules may contain a rule
+> specific .template field.   When the rules don't contain a rule
+> specific template field, they default to the IMA default template.  In
+> the case of builtin policies, the policy rules cannot contain the
+> .template field.
+> 
+> The default template field for process_buffer_measurement() should
+> always be "ima-buf", not the default IMA template format.   Let's fix
+> this prior to this patch.
+> 
+> Probably something like this:
+> - In addition to initializing the default IMA template, initialize the
+> "ima-buf" template.  Maybe something similiar to
+> ima_template_desc_current().
+> - Set the default in process_buffer_measurement() to "ima-buf", before
+> calling ima_get_action().
+> - modify ima_match_policy() so that the default policy isn't reset when
+> already specified.
+> 
 
---yhze8HlyfmXt1APY
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Sure Mimi - I will try this out and update.
 
-On Mon, Nov 09, 2020 at 07:58:16PM +0800, Kefeng Wang wrote:
+thanks,
+  -lakshmi
 
-> syscon_config.name in of_syscon_register is allocated using kasprintf,
-> which should be freed when it is not used after regmap_set_name, fix
-> the following memory leak.
+> 
+> 
+>>>>
+>>>>> +        if (ret)
+>>>>> +            goto out;
+>>>>> +
+>>>>> +        critical_data_rules[0].template = template;
+>>>>> +        add_rules(critical_data_rules,
+>>>>> +              ARRAY_SIZE(critical_data_rules),
+>>>>> +              IMA_DEFAULT_POLICY);
+>>>>> +    }
+>>>>> +
+>>>>> +out:
+>>>>> +    if (ret)
+>>>>> +        pr_err("%s failed, result: %d\n", __func__, ret);
+>>>>> +
+>>>>>        ima_update_policy_flag();
+>>>>>    }
+>>>>
+>>>
+>>
 
-> unreferenced object 0xffffffe07fe8c150 (size 16):
->   comm "swapper/0", pid 1, jiffies 4294892540 (age 68.168s)
->   hex dump (first 16 bytes):
->     74 65 73 74 40 31 30 30 30 30 30 00 e0 ff ff ff  test@100000.....
->   backtrace:
->     [<0000000023d86736>] create_object+0xe8/0x348
->     [<00000000fe9d1b17>] kmemleak_alloc+0x20/0x2a
-
-Please think hard before including complete backtraces in upstream
-reports, they are very large and contain almost no useful information
-relative to their size so often obscure the relevant content in your
-message. If part of the backtrace is usefully illustrative (it often is
-for search engines if nothing else) then it's usually better to pull out
-the relevant sections.
-
-> @@ -601,6 +601,7 @@ static int regmap_set_name(struct regmap *map, const =
-struct regmap_config *confi
->  		if (!name)
->  			return -ENOMEM;
-> =20
-> +		kfree_const(config->name);
->  		kfree_const(map->name);
->  		map->name =3D name;
->  	}
-
-Why would we free the passed in name here?  The name wes passed in from
-outside regmap in a const configuration struct, we've no idea within
-regmap if it was dynamically allocted or not and it seems very
-surprising that we'd go off and free it.  The whole reason we're
-duplicating it in regmap_set_name() is that we don't know how long it's
-going to be around so we don't want to reference it after having
-returned to the caller.  If the caller has dynamically allocated it then
-the caller should deal with freeing it.
-
---yhze8HlyfmXt1APY
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl+pexIACgkQJNaLcl1U
-h9BbJAf9HS8ShCXMMe+T4vNxhvaDRLyJ5nfYysxdoBkdvFx4GgstxkysI41A/4DI
-gJ8rTG4HR8X+xTtyr6TJCvSn7INz5rdNbXcVtegGRhu7xhelzJg5EVESYU3hAZf8
-rF6yCc1bQ3JhzppnXjCNHtlxwsvMSu2asmZMdOKNwHAJzvuO2m75kVcII0k4h0k0
-mM3mTkjvWpHyXoKlZ8ouB2EVa79cBzOZsMjiH2OSioOqTmzLRAbkud8SvRpbWWDO
-iwQ4la18j3S/3Me/fs+V/x02p3TO76bpEU+N113lZwPtjsCTMDZsvLNlNUaU9Zfo
-6dsAWdOYicKgIFKlTm/kNwyop48EcA==
-=vI4a
------END PGP SIGNATURE-----
-
---yhze8HlyfmXt1APY--
