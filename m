@@ -2,186 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B8E62AB5BD
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 12:03:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E13402AB5B3
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 12:02:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729514AbgKILDN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 06:03:13 -0500
-Received: from mx08-00178001.pphosted.com ([91.207.212.93]:31148 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727930AbgKILDM (ORCPT
+        id S1729474AbgKILCk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 06:02:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58774 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727930AbgKILCj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 06:03:12 -0500
-Received: from pps.filterd (m0046660.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0A9AvmFh021010;
-        Mon, 9 Nov 2020 12:03:02 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=subject : to : references
- : from : message-id : date : mime-version : in-reply-to : content-type :
- content-transfer-encoding; s=STMicroelectronics;
- bh=SjBPRhky3qT+DJICgbZsSvGlruI9JMddOidNQycUyMU=;
- b=UYcd6mfjRPjCZtnnTa9UoHC/uvs1gJpkgHk17QldoBLQBd0EQGOFaXdi1mSMqMvS8IR7
- TDeJSKAJiQBCmP+0hnOqPZ/Ycw+Hchlhx6oSYFJAjm7wCg03lOIjhRrLbrMF9SNoHvAC
- kx6lfsKWcKQWgSWua9/29C56Pyl5VYsg5FBmnWb/EBmqG88/FNykSGCINBJf0kcB4qmG
- LyCvEambVzVjyGI7hvUqkvFBdWZbRlRAZmejvnTNKI4oBKs56a0+jIaHtFlH7S6ao0bd
- X9/SH72EDUzUKlEDIeYL6sfk0b3t6GCZdiFBjU/lnUJdhAg9h1dk4gZKBKJZE2KuI0r7 FA== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 34nhkcj38n-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 09 Nov 2020 12:03:02 +0100
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 7F57610002A;
-        Mon,  9 Nov 2020 12:03:01 +0100 (CET)
-Received: from Webmail-eu.st.com (sfhdag3node2.st.com [10.75.127.8])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 6CC4024C7A0;
-        Mon,  9 Nov 2020 12:03:01 +0100 (CET)
-Received: from lmecxl0912.lme.st.com (10.75.127.47) by SFHDAG3NODE2.st.com
- (10.75.127.8) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 9 Nov
- 2020 12:03:00 +0100
-Subject: Re: [Linux-stm32] [PATCH v7 10/12] ARM: dts: stm32: Fix schema
- warnings for pwm-leds
-To:     Ahmad Fatoum <a.fatoum@pengutronix.de>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, Alexander Dahl <ada@thorsis.com>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>
-References: <20201005203451.9985-1-post@lespocky.de>
- <20201005203451.9985-11-post@lespocky.de>
- <b387bda8-3643-1d27-4996-2aa4dc94d69f@pengutronix.de>
- <20201027100536.cpfizc67gwrolp2z@falbala.internal.home.lespocky.de>
- <f6ed201d-51b6-f278-7a95-3e3e49dc19ee@pengutronix.de>
- <20201031135408.lgpiy5goa7l4cg2k@falbala.internal.home.lespocky.de>
-From:   Alexandre Torgue <alexandre.torgue@st.com>
-Message-ID: <eef76d72-7467-eed7-ac65-93237bd2b3bb@st.com>
-Date:   Mon, 9 Nov 2020 12:02:18 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Mon, 9 Nov 2020 06:02:39 -0500
+Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8C8FC0613D4
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Nov 2020 03:02:39 -0800 (PST)
+Received: by mail-io1-xd42.google.com with SMTP id s10so9347065ioe.1
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Nov 2020 03:02:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=46EkZmI/ZGOaVTRH8d812wliPaOk2GZewbl0v0F4Eyo=;
+        b=YIOg4E4PN687iFY1IuJPotp2yw76l3Skp0u+NRw5/BGL3JjF2TllHuh++huJdAg3SC
+         Nk7CwqYtWrD9EoGoMWh55KwVe/Rsb+4wPyd8MhWNllaSujmAcQsVAqID4C0NSJENKKss
+         jqLxHoV7Q3K++ma7xC68GMjwd5CyvmORJ+ZN7r3SN66Bl8pmA9ibxSsncXIY0Y5Hmqb9
+         Rd8aocrZMsrd87MhpaaqZVeuFnIOlWJft+6bcxwJvWAWTZJ88tCpgQ9KArRUkHgyj1om
+         apufD9WlyaqPCSz6fYjQNvsAs7TdVg5ZhrW4HGOeljICcf17FCYRL43I4TrgVskhG23X
+         vNVA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=46EkZmI/ZGOaVTRH8d812wliPaOk2GZewbl0v0F4Eyo=;
+        b=o9DhOW8Jt/dTEaQHX29n8J0dJIt5p9p/fuMuN6HC4Wm9j4yQIeY16lcbzEnFVoN+zg
+         hoVRY5/lbZk24TNm1v8F8/Ydfw16yBouSeXbeXJ0lc0CZ5K/ATEpodwYcD4aUEH8Ko72
+         FqW7s/YyvJj2NCU7rK9FdisZgq71MmC7bPsLG2TixqGskgS0NzuSMAbKrYD9Dv6wGfML
+         gS9pF0noQoEkDU229quz0Z0MUd6vOKvRMehK3/l5vnQlYfqeolg0UIxC2K5mbQsvcV1R
+         iSTMcEVqhKqg3JKLrRtfv7NU+2h6xnwxJDqHH3goGCuDqI+fvxXm+cl2Qtf6Y4FbnNlz
+         YkzA==
+X-Gm-Message-State: AOAM533lK8SlRjw9T7zMFJj11EyT3GWMQf4zpohWcnVkx7VE9QUlvmhL
+        +wUIBws032NeRXDjk1JB/uYMznmg9fg6j/zXzsx0MQ==
+X-Google-Smtp-Source: ABdhPJyMos/XpSZtJdbJIlOcmZUaM9i+lTLg3k8Opi85W33ruqy5oO29rySH4YpioWiudkEZjTL3zvfSQtW3PUHsJuE=
+X-Received: by 2002:a5e:980e:: with SMTP id s14mr9648251ioj.195.1604919758865;
+ Mon, 09 Nov 2020 03:02:38 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20201031135408.lgpiy5goa7l4cg2k@falbala.internal.home.lespocky.de>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.75.127.47]
-X-ClientProxiedBy: SFHDAG3NODE3.st.com (10.75.127.9) To SFHDAG3NODE2.st.com
- (10.75.127.8)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-11-09_02:2020-11-05,2020-11-09 signatures=0
+References: <1604913614-19432-1-git-send-email-wenan.mao@linux.alibaba.com>
+ <1604914417-24578-1-git-send-email-wenan.mao@linux.alibaba.com>
+ <CANn89iKiNdtxaL_yMF6=_8=m001vXVaxvECMGbAiXTYZjfj3oQ@mail.gmail.com> <3b92167c-201c-e85d-822d-06f0c9ac508c@linux.alibaba.com>
+In-Reply-To: <3b92167c-201c-e85d-822d-06f0c9ac508c@linux.alibaba.com>
+From:   Eric Dumazet <edumazet@google.com>
+Date:   Mon, 9 Nov 2020 12:02:27 +0100
+Message-ID: <CANn89i+oS75TVKBDOBrr7Ff55Uctq4_HUcM_05Ed8kUL1HkHLw@mail.gmail.com>
+Subject: Re: [PATCH net v2] net: Update window_clamp if SOCK_RCVBUF is set
+To:     Mao Wenan <wenan.mao@linux.alibaba.com>
+Cc:     David Miller <davem@davemloft.net>,
+        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        kernel-janitors@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Alex
+On Mon, Nov 9, 2020 at 11:12 AM Mao Wenan <wenan.mao@linux.alibaba.com> wro=
+te:
+>
+>
+>
+> =E5=9C=A8 2020/11/9 =E4=B8=8B=E5=8D=885:56, Eric Dumazet =E5=86=99=E9=81=
+=93:
+> > On Mon, Nov 9, 2020 at 10:33 AM Mao Wenan <wenan.mao@linux.alibaba.com>=
+ wrote:
+> >>
+> >> When net.ipv4.tcp_syncookies=3D1 and syn flood is happened,
+> >> cookie_v4_check or cookie_v6_check tries to redo what
+> >> tcp_v4_send_synack or tcp_v6_send_synack did,
+> >> rsk_window_clamp will be changed if SOCK_RCVBUF is set,
+> >> which will make rcv_wscale is different, the client
+> >> still operates with initial window scale and can overshot
+> >> granted window, the client use the initial scale but local
+> >> server use new scale to advertise window value, and session
+> >> work abnormally.
+> >
+> > What is not working exactly ?
+> >
+> > Sending a 'big wscale' should not really matter, unless perhaps there
+> > is a buggy stack at the remote end ?
+> 1)in tcp_v4_send_synack, if SO_RCVBUF is set and
+> tcp_full_space(sk)=3D65535, pass req->rsk_window_clamp=3D65535 to
+> tcp_select_initial_window, rcv_wscale will be zero, and send to client,
+> the client consider wscale is 0;
+> 2)when ack is back from client, if there is no this patch,
+> req->rsk_window_clamp is 0, and pass to tcp_select_initial_window,
+> wscale will be 7, this new rcv_wscale is no way to advertise to client.
+> 3)if server send rcv_wind to client with window=3D63, it consider the rea=
+l
+> window is 63*2^7=3D8064, but client consider the server window is only
+> 63*2^0=3D63, it can't send big packet to server, and the send-q of client
+> is full.
+>
 
-On 10/31/20 2:54 PM, Alexander Dahl wrote:
-> Hei hei,
-> 
-> On Tue, Oct 27, 2020 at 11:58:10AM +0100, Ahmad Fatoum wrote:
->> Hello,
->>
->> On 10/27/20 11:05 AM, Alexander Dahl wrote:
->>> Hello Ahmad,
->>>
->>> thanks for your feedback, comments below.
->>>
->>
->>>>> -	led-rgb {
->>>>> +	led-controller-2 {
->>>>
->>>> Is a single RGB LED really a controller?
->>>
->>> I just followed the recommendations by Rob here.
->>
->> Do you happen to know if the new multicolor LED support could be used here?
->>
->> I find it unfortunate that the device tree loses information relevant to humans
->> to adhere to a fixed nomenclature. Apparently led-controller isn't even codified
->> in the YAML binding (It's just in the examples). If you respin, please add a
->> comment that this is a single RGB led. I'd prefer to keep the information
->> in the DTB as well though.
-> 
-> Slightly off-topic, but while I was working on the patch based on your
-> feedback I tried to find some information on that Linux Automation
-> MC-1 board.  However I could not find any? Is there some website, some
-> datasheet or maybe a schematic online?  The vendor prefix says "Linux
-> Automation GmbH", but I find only that USB-SD-Mux on their page?
-> 
-> Greets
-> Alex
+I see, please change your patches so that tcp_full_space() is used _once_
 
-I saw that Ahmad Acked this patch but regarding your discussion it seems 
-there are opening questions. Are you going to send an update of it or 
-can I take it ?
+listener sk_rcvbuf can change under us.
 
-regards
-alex
-
-
-
-> 
->>
->>
->>
->>>
->>>>>   		compatible = "pwm-leds";
->>>>>   
->>>>> -		led-red {
->>>>> +		led-2 {
->>>>
->>>> Shouldn't this have been led-1 as well or is the numbering "global" ?
->>>
->>> Also good question. This numbering is for dts only, it usually does
->>> not correspond with LEDs on the board, so it could be numbered per
->>> led-controller as well?
->>
->> I'd prefer that it starts by 1. That way it's aligned with PWM channel
->> ID.
->>
->> Thanks for fixing the dtschema warnings by the way!
->>
->> Cheers,
->> Ahmad
->>
->>>
->>> Greets
->>> Alex
->>>
->>>>
->>>>>   			label = "mc1:red:rgb";
->>>>>   			pwms = <&leds_pwm 1 1000000 0>;
->>>>>   			max-brightness = <255>;
->>>>>   			active-low;
->>>>>   		};
->>>>>   
->>>>> -		led-green {
->>>>> +		led-3 {
->>>>>   			label = "mc1:green:rgb";
->>>>>   			pwms = <&leds_pwm 2 1000000 0>;
->>>>>   			max-brightness = <255>;
->>>>>   			active-low;
->>>>>   		};
->>>>>   
->>>>> -		led-blue {
->>>>> +		led-4 {
->>>>>   			label = "mc1:blue:rgb";
->>>>>   			pwms = <&leds_pwm 3 1000000 0>;
->>>>>   			max-brightness = <255>;
->>>>>
->>>>
->>>> -- 
->>>> Pengutronix e.K.                           |                             |
->>>> Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
->>>> 31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
->>>> Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
->>>
->>
->> -- 
->> Pengutronix e.K.                           |                             |
->> Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
->> 31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
->> Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
-> 
-> 
-> _______________________________________________
-> Linux-stm32 mailing list
-> Linux-stm32@st-md-mailman.stormreply.com
-> https://st-md-mailman.stormreply.com/mailman/listinfo/linux-stm32
-> 
+I really have no idea how window can be set to 63, so please send us
+the packetdrill test once you have it.
