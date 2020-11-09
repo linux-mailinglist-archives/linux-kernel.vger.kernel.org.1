@@ -2,117 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7D052ABF83
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 16:15:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E6FCD2ABF86
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 16:16:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730758AbgKIPPQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 10:15:16 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36386 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729776AbgKIPPQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 10:15:16 -0500
-Received: from mail-oi1-f171.google.com (mail-oi1-f171.google.com [209.85.167.171])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 81FEE2083B;
-        Mon,  9 Nov 2020 15:15:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604934915;
-        bh=uFzFBI18XxshAHcL4NhF+sS3BMnRmbg8BqeNyv++o0M=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=2Tw+6ILFxObelRhzyGvW51nXQ9LjMct/tFT9Qbi6suDFUjer5t5bc3lXSE8PdoZ3x
-         LeLEzfCfXZ7R8YRrQdeKrrUTTym3vVNuogga3ki0aQeSRZe2mQFzDoMWy98/HI0Yg1
-         YUCDbERcXhErSj5WOmjH7mJdL8h8bYI65i+XCpgI=
-Received: by mail-oi1-f171.google.com with SMTP id w145so10533850oie.9;
-        Mon, 09 Nov 2020 07:15:15 -0800 (PST)
-X-Gm-Message-State: AOAM531M6E9C5KDVahnw5nt1RW6SQLmiGahTQXUcuhPxua9sAmhndTZj
-        sGv+2Y17wn8ddaaGQ+BHlr6/BepSgThKr/A5/A==
-X-Google-Smtp-Source: ABdhPJwZOpxjKNbOsGNSg9idbBszbu7k/mTdWpWiUyHqU+3dbB8MLknOWOA7Fat6Wp5mRQPMoAna61QddrvPSp3GwFg=
-X-Received: by 2002:aca:5dc2:: with SMTP id r185mr9550220oib.106.1604934914871;
- Mon, 09 Nov 2020 07:15:14 -0800 (PST)
+        id S1731322AbgKIPQB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 10:16:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42022 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729776AbgKIPQB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 10:16:01 -0500
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F299C0613CF;
+        Mon,  9 Nov 2020 07:16:01 -0800 (PST)
+Received: by mail-pg1-x542.google.com with SMTP id w4so7376935pgg.13;
+        Mon, 09 Nov 2020 07:16:01 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=oOLvQx8+HhSWGqiuawsD+ABNE4D1RR1lEjjhwW8+Rxo=;
+        b=g6YrncnvAMsicaX2OYez16D1w1HqSBMixXeMziDFCAg1c3YaHBYggDb5xCzhrT9lWh
+         lLlZj8EYeJP2ImsdekcPsZebITx2wywrJ+izecmAwicqXDmWsvU4F9fd4RRz0Rdu/6cs
+         WRy95Hj9lcZtZz5JLL4XvbTz+VLinqmNrFV+ENb28a1FS5VHCLqvuiPDQgJPQ3zidiHj
+         PJ0OOIKmcqnt0PW7eCPfGyef2bUo+Sya2hFKU4fxyfZ+OIhc0xnlCuVr6XNaNKrX8EQB
+         a8EqmUYJ791bzyfE6zud+Mhtveq7u6s6cNHMTpVdyVH8EXKPqY9n+ZNObjMvn/xgalOA
+         bhSQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=oOLvQx8+HhSWGqiuawsD+ABNE4D1RR1lEjjhwW8+Rxo=;
+        b=slwfK95xtjHSLXe+vEnMh6L2Oj1UZVYqhPo+EUgoZrAhOGuTvV2oYEqLRCfYnFENS3
+         RMnHeZVJvLzIchrO3iodQoRKthurPxNwLeJHwmAkfmC3sAmCBdP+Pm5JN+GiLoLZnTOt
+         YM7IydKvWlAIyayUP2/HVjlmRnGJg66V7yG2ov1EZqdSCMnyUQwNVgVqUDJjmBGRsUmr
+         8JBzqX+wAgVzHSc1LAlI+RoHoov0IOewvJY968u/B32dcb2GDrY0kuGzJYw150nTACvU
+         ecHm64wvTeGtYLXurEIvodccQBhdwFMHGlio8scQ1q1Oe9YoWA2DKHoIV5dE5K66Cj/W
+         O/tw==
+X-Gm-Message-State: AOAM532BPbiDfZKAdXjcl+9h8RUilHyfzbMgyNrXQnOWvs97nUA6f4XV
+        EpsVH0cY63xr8Dp90bmCdSh83szSKMvPrs/J3vA=
+X-Google-Smtp-Source: ABdhPJxeNsU9Hwez84+xU+qGGQmigq9W99YeW27bkzDtA22/SGSpokr9Pl6p7nH6lNRNSruZNh+GGa+xq5ofrCw+4Gk=
+X-Received: by 2002:a63:4511:: with SMTP id s17mr13187246pga.4.1604934961034;
+ Mon, 09 Nov 2020 07:16:01 -0800 (PST)
 MIME-Version: 1.0
-References: <20201030053153.5319-1-vadivel.muruganx.ramuthevar@linux.intel.com>
- <20201030053153.5319-7-vadivel.muruganx.ramuthevar@linux.intel.com>
- <20201104220321.GB4192737@bogus> <12deb9bb-6b3b-d71b-0a6e-5b58da23e09d@linux.intel.com>
-In-Reply-To: <12deb9bb-6b3b-d71b-0a6e-5b58da23e09d@linux.intel.com>
-From:   Rob Herring <robh@kernel.org>
-Date:   Mon, 9 Nov 2020 09:15:03 -0600
-X-Gmail-Original-Message-ID: <CAL_JsqLh=zGiaVaT2nyJjRDLnryR1ZNbK2D=0+MO4Lb=q--yDw@mail.gmail.com>
-Message-ID: <CAL_JsqLh=zGiaVaT2nyJjRDLnryR1ZNbK2D=0+MO4Lb=q--yDw@mail.gmail.com>
-Subject: Re: [PATCH v6 6/6] dt-bindings: spi: Add compatible for Intel LGM SoC
-To:     "Ramuthevar,Vadivel MuruganX" 
-        <vadivel.muruganx.ramuthevar@linux.intel.com>
-Cc:     Mark Brown <broonie@kernel.org>, Vignesh R <vigneshr@ti.com>,
-        Tudor Ambarus <tudor.ambarus@microchip.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        linux-spi <linux-spi@vger.kernel.org>,
-        devicetree@vger.kernel.org,
-        =?UTF-8?Q?Miqu=C3=A8l_Raynal?= <miquel.raynal@bootlin.com>,
-        simon.k.r.goldschmidt@gmail.com, Dinh Nguyen <dinguyen@kernel.org>,
-        Richard Weinberger <richard@nod.at>,
-        "Kim, Cheol Yong" <cheol.yong.kim@intel.com>,
-        "Wu, Qiming" <qi-ming.wu@intel.com>
+References: <20201109132643.457932-1-lars.povlsen@microchip.com>
+ <20201109132643.457932-3-lars.povlsen@microchip.com> <CAHp75Vdfm7A5=Mi-LZ1sHJS5fSngypZQ50-rGQ7A6kD2kmVFTA@mail.gmail.com>
+ <20201109143237.GJ1257108@piout.net>
+In-Reply-To: <20201109143237.GJ1257108@piout.net>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Mon, 9 Nov 2020 17:16:49 +0200
+Message-ID: <CAHp75Vc7eRDq5wUyUdvCZCnV_VS+afGnbJpQeDSeXVE9K_MGng@mail.gmail.com>
+Subject: Re: [PATCH v8 2/3] pinctrl: pinctrl-microchip-sgpio: Add pinctrl
+ driver for Microsemi Serial GPIO
+To:     Alexandre Belloni <alexandre.belloni@bootlin.com>
+Cc:     Lars Povlsen <lars.povlsen@microchip.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
+        devicetree <devicetree@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Nov 8, 2020 at 7:49 PM Ramuthevar, Vadivel MuruganX
-<vadivel.muruganx.ramuthevar@linux.intel.com> wrote:
->
-> Hi Rob,
->
-> On 5/11/2020 6:03 am, Rob Herring wrote:
-> > On Fri, Oct 30, 2020 at 01:31:53PM +0800, Ramuthevar,Vadivel MuruganX wrote:
-> >> From: Ramuthevar Vadivel Murugan <vadivel.muruganx.ramuthevar@linux.intel.com>
-> >>
-> >> Add compatible for Intel LGM SoC.
-> >>
-> >> Signed-off-by: Ramuthevar Vadivel Murugan <vadivel.muruganx.ramuthevar@linux.intel.com>
-> >> ---
-> >>   Documentation/devicetree/bindings/spi/cadence-quadspi.yaml | 1 +
-> >>   1 file changed, 1 insertion(+)
-> >>
-> >> diff --git a/Documentation/devicetree/bindings/spi/cadence-quadspi.yaml b/Documentation/devicetree/bindings/spi/cadence-quadspi.yaml
-> >> index ec22b040d804..58ecdab939df 100644
-> >> --- a/Documentation/devicetree/bindings/spi/cadence-quadspi.yaml
-> >> +++ b/Documentation/devicetree/bindings/spi/cadence-quadspi.yaml
-> >> @@ -19,6 +19,7 @@ properties:
-> >>             - enum:
-> >>                 - ti,k2g-qspi
-> >>                 - ti,am654-ospi
-> >> +              - intel,lgm-qspi
+On Mon, Nov 9, 2020 at 4:32 PM Alexandre Belloni
+<alexandre.belloni@bootlin.com> wrote:
+> On 09/11/2020 16:17:40+0200, Andy Shevchenko wrote:
+> > > +       if (input != bank->is_input) {
 > >
-> > As this change shows, you don't need 'oneOf' for Intel...
-> As we you have suggested in the previous mail, I framed like below with
-> 'oneOf'
+> > > +               dev_err(pctldev->dev, "Pin %d direction as %s is not possible\n",
+> > > +                       pin, input ? "input" : "output");
+> >
+> > Do we need this noise? Isn't user space getting a proper error code as
+> > per doc and can handle this?
 >
-> properties:
->    compatible:
->      oneOf:
->        - items:
->            - enum:
->                - ti,k2g-qspi
->                - ti,am654-ospi
->            - const: cdns,qspi-nor
->
->        - items:
->            - enum:
->                - intel,lgm-qspi
->                - cadence,qspi   #compatible for generic in future use
+> Why would userspace get the error code?
 
-Why are you not using the documented vendor prefix 'cdns'?
+Huh?! Why it shouldn't. How will users know if they are doing something wrong?
 
-In any case, adding this is pointless. Your 'generic' compatible is below.
+> Userspace should never have to
+> handle gpios directly or you are doing something wrong.
 
-And you still don't need 'oneOf' here. The enum contents here can be
-in the first 'enum'.
-
->            - const: cdns,qspi-nor
->
-> so that ignoring error message warning can be avoided as well, Thanks!
-
-In the example? Fix the example!
+This is true, but check how error codes are propagated to the user space.
 
 
-Rob
+-- 
+With Best Regards,
+Andy Shevchenko
