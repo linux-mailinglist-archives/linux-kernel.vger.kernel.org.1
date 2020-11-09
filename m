@@ -2,127 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 831612AC300
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 18:58:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BFF3D2AC2FD
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 18:58:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730280AbgKIR6n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 12:58:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39204 "EHLO
+        id S1729993AbgKIR6h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 12:58:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39192 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730062AbgKIR6m (ORCPT
+        with ESMTP id S1729599AbgKIR6g (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 12:58:42 -0500
-Received: from mail-yb1-xb41.google.com (mail-yb1-xb41.google.com [IPv6:2607:f8b0:4864:20::b41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCC26C0613CF;
-        Mon,  9 Nov 2020 09:58:40 -0800 (PST)
-Received: by mail-yb1-xb41.google.com with SMTP id i186so9020645ybc.11;
-        Mon, 09 Nov 2020 09:58:40 -0800 (PST)
+        Mon, 9 Nov 2020 12:58:36 -0500
+Received: from mail-qv1-xf43.google.com (mail-qv1-xf43.google.com [IPv6:2607:f8b0:4864:20::f43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B25F7C0613CF;
+        Mon,  9 Nov 2020 09:58:36 -0800 (PST)
+Received: by mail-qv1-xf43.google.com with SMTP id z17so797769qvy.11;
+        Mon, 09 Nov 2020 09:58:36 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Ypr4Kuc9X8rFEI2EWRdGGaNl783YbOoeeQfMY7jHtgI=;
-        b=SOA1Rhwu0dXIyRSvIu5iU3wrgAmvwrXvs3Bfx9DFGRjQOYi+m7nsiMy3s064GwOoPf
-         rKrhT1sCYoFfMbpSEpdhNeBu57E4ckYqVeoMucHWhYigUsDKPOZDZEgjzHgRHUjIR/d+
-         FV2CBdMwN4pMGbQ/prR05wR5rYrdGPm9O7PANyVX6xk7sKEEQTPDTPJe4u5f3m+IL3qE
-         3NQCJZ5GaUOUEccU1hsUxuHZSggEmhTU/I9vQw3UE6HlHpD4h0446bdbVcHrP1hbeJFT
-         uHl2RGa4GLtui214v0Rxz1l0F9Tgk5a+mKyhGkgzUS407d3IXkc4/X3bcyVmMXVvcYWC
-         kp9g==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=3UZgyu+3oKM3r5zc4rdsvwvYvFM1/i4w1UNXGNg+hlc=;
+        b=QJD9LBVQvDa5P61QK2aUMymniL/35kv+JobCg8H4Wbb95vsiIl5UbqGAH5esDuBIms
+         BCkHtYjO2SABMVjq7qqFBfdQW/bGmOf/amhLre1XfbTERkJGtTUhXaPfLWjaXlff76XA
+         Y7weJJGrHWLIYXgAc/hl2Ep8G4S7lL+OhDyusg4ptVUZkO5iSv3Iwdps2edfy1b8QqRM
+         HmFchdn5UQaDjRNhtW3ixoQgk4kMST6N8dXZ+hyMN/cFlKkhXiCm71oG0JnHm/XoBsMY
+         XH1wT1AuiPGlJAUvCnTZtofzOUYH1bPpzDteqQF1PI8b9YxrLThp4N1QHmKX34ukIKvi
+         R2gQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Ypr4Kuc9X8rFEI2EWRdGGaNl783YbOoeeQfMY7jHtgI=;
-        b=MV4fwkJSyRRnzTtPvnebll4/xu+jL/8jQc0IEV4fTXXBraFWbNTDzT9IoRzOZTPWDK
-         WpnEkRaQo+9EhNEui7qg3SnJwNWhfl8eviPkmm6qlJfe4+ymU3PH0Z6cPeEvibXRjUCn
-         LKgfsor4gERFMLF+X/Wtl5HrnpjWTs6dQWtfQBW8BzBR0wz7jK9Q/FTxhFlv1izyY3/R
-         i+OS5FLRIVqhGsLwcmHE7OQeNQkM78YyTa2lRFoqzz5Yd8iV5rUdHb4vTrdeXyhZLZNM
-         /VYlUAl1nc9O12HuUi57iXGSgU6yKVelrquRwwcA1RiFeQAt1HQVjk6or9Ll/BdhcuxT
-         Fchw==
-X-Gm-Message-State: AOAM531Gvshffsmk0tjvxXWkA1ZP3d2XCoYxze5tu42m4/SCzlfhLZKo
-        ceESh3FMz5thSjGpnsLakNBC9R29av9bgMRLv4MPChQKPIkctw==
-X-Google-Smtp-Source: ABdhPJyA2HctkWbIVQauz5gXSOTiVM5JMnbtl4J1OlEsiI4u5mbTqDrcAeuRtHGnrqItJBz+XfqSC8n9zvzvTs/o3XY=
-X-Received: by 2002:a25:bdc7:: with SMTP id g7mr21695549ybk.260.1604944719969;
- Mon, 09 Nov 2020 09:58:39 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=3UZgyu+3oKM3r5zc4rdsvwvYvFM1/i4w1UNXGNg+hlc=;
+        b=Zidl79heivTeYaisyrXH5YR84W0R3vmehwDvk6RXwRuD3K4SlmhvmJRdgTRN7MHXyw
+         Mh673c5YiBTn4+HebTMWpwdzEpf/zBB6xZEBGQmtykKQlqcURUb5IAs7zrtl3H1sBMuw
+         VMfII+ioKvTRA8kF2qY+R+mA8MYRxfBrk1VCWmgBssOAAwKUYn6+Qb92VCMmsiwz4ptW
+         CxHsZTLmaJsoATyP23O1U9SH827fcDzqByi7IZLWMT6sFRA7o99rlKkUs05nYFVZAU9H
+         wjK/LSexykzNQfuuJTbYyX8mQ8fM61RkGNfU3+4HW5WFlgLn/2OMmtoC8OYpWPPeVqgt
+         4xEA==
+X-Gm-Message-State: AOAM5325pSZgEdbSfOLXKIcss8XRVt/bQS/tKHpQcfF+tRSd5j07s88O
+        UMz2ibtj4rnFQGHhwKTzpWc=
+X-Google-Smtp-Source: ABdhPJx39OtlroD2N2vPRb5/O6gHmi4vqWSyQ9dTkJpCA/XtfFA7Pv5k3eRSUt1Z/Yv6rXNT6YkuJA==
+X-Received: by 2002:a0c:9021:: with SMTP id o30mr15759829qvo.1.1604944715946;
+        Mon, 09 Nov 2020 09:58:35 -0800 (PST)
+Received: from ubuntu (ool-45785633.dyn.optonline.net. [69.120.86.51])
+        by smtp.gmail.com with ESMTPSA id d188sm6630280qkb.10.2020.11.09.09.58.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 09 Nov 2020 09:58:35 -0800 (PST)
+Date:   Mon, 9 Nov 2020 12:58:31 -0500
+From:   Vivek Unune <npcomplete13@gmail.com>
+To:     =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
+Cc:     florian.fainelli@broadcom.com, Hauke Mehrtens <hauke@hauke-m.de>,
+        bcm-kernel-feedback-list@broadcom.com,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] ARM: dts: BCM5301X: Linksys EA9500 add fixed
+ partitions
+Message-ID: <20201109175831.GA790352@ubuntu>
+References: <e64d76cc-90bb-5b54-04de-fde21542e4fe@gmail.com>
+ <20201101200804.2460-1-npcomplete13@gmail.com>
+ <b69adfa6-c867-816a-1f1d-d67fbfbd5f42@gmail.com>
 MIME-Version: 1.0
-References: <20201106055111.3972047-1-andrii@kernel.org> <20201106055111.3972047-6-andrii@kernel.org>
- <alpine.LRH.2.21.2011091633450.4154@localhost>
-In-Reply-To: <alpine.LRH.2.21.2011091633450.4154@localhost>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Mon, 9 Nov 2020 09:58:28 -0800
-Message-ID: <CAEf4BzaTyaD4Mz_tVc9WbP9Qv+oAmQNsG--OPwJCJf51xrFK7w@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 5/5] tools/bpftool: add support for in-kernel and
- named BTF in `btf show`
-To:     Alan Maguire <alan.maguire@oracle.com>
-Cc:     Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Jessica Yu <jeyu@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <b69adfa6-c867-816a-1f1d-d67fbfbd5f42@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 9, 2020 at 8:43 AM Alan Maguire <alan.maguire@oracle.com> wrote:
+On Mon, Nov 09, 2020 at 06:28:38PM +0100, Rafał Miłecki wrote:
+> On 01.11.2020 21:08, Vivek Unune wrote:
+> > This router has dual paritions to store trx firmware image and
+> > dual partitions for nvram. The second one in each of these cases acts
+> > as a backup store.
+> 
+> I'm quite sure CFE is supposed to flash new firmware to the backup
+> partition and then mark it as main one. The old firmware partition becomes a
+> new backup then.
 >
-> On Thu, 5 Nov 2020, Andrii Nakryiko wrote:
->
-> > Display vmlinux BTF name and kernel module names when listing available BTFs
-> > on the system.
-> >
-> > In human-readable output mode, module BTFs are reported with "name
-> > [module-name]", while vmlinux BTF will be reported as "name [vmlinux]".
-> > Square brackets are added by bpftool and follow kernel convention when
-> > displaying modules in human-readable text outputs.
-> >
->
-> I had a go at testing this and all looks good, but I was curious
-> if  "bpftool btf dump" is expected to work with module BTF? I see
-> the various modules in /sys/kernel/btf, but if I run:
->
-> # bpftool btf dump file /sys/kernel/btf/ixgbe
+> That means you need to check which partition bootloader used to handle
+> partitioning properly.
+> 
+> 
+> > +		partition@200000 {
+> > +			label = "firmware";
+> > +			reg = <0x0200000 0x01D00000>;
+> > +			compatible = "brcm,trx";
+> > +		};
+> > +
+> > +		partition@1F00000 {
+> > +			label = "failsafe";
+> > +			reg = <0x01F00000 0x01D00000>;
+> > +			read-only;
+> > +		};
+> 
+> Here you assume CFE always boots from the first firmware partition.
+> 
+> Unless EA9500 CFE does sth stupid it seems like a 50% - 50% guess.
 
-You need to specify vmlinux as a base BTF. There is a -B flag for
-that, added in [0]. So just add -B /sys/kernel/btf/vmlinux. I think we
-might want to teach bpftool to do this automatically if we see that
-file points at module BTF in /sys/kernel/btf, as a convenience
-feature.
+Hi Rafał,
 
-  [0] https://patchwork.kernel.org/project/netdevbpf/patch/20201105043402.2530976-12-andrii@kernel.org/
+Indeed, my assumption is to only boot using first partition.
+
+If we ever want to support true dual partitions in future, we need to:
+
+1. Read the boot flag 'bootpartition' and skip the backup partition parsing
+2. Updagrading firmware will write to backup partition and flip the bootpartition
 
 
-> Error: failed to load BTF from /sys/kernel/btf/ixgbe: Invalid argument
->
-> ...while it still works for vmlinux:
->
-> # bpftool btf dump file /sys/kernel/btf/vmlinux
-> [1] INT '(anon)' size=4 bits_offset=0 nr_bits=32 encoding=(none)
-> [2] INT 'long unsigned int' size=8 bits_offset=0 nr_bits=64
-> encoding=(none)
-> ...
->
-> "bpftool btf show" works for ixgbe:
->
-> # bpftool btf show|grep ixgbe
-> 19: name [ixgbe]  size 182074B
->
-> Is this perhaps not expected to work yet? (I updated pahole
-> to the latest changes etc and BTF generation seemed to work
-> fine for modules during kernel build).
->
-> For the "bpftool btf show" functionality, feel free to add
->
-> Tested-by: Alan Maguire <alan.maguire@oracle.com>
+Thanks,
 
-Ok, thanks.
-
->
-> Thanks!
->
-> Alan
+Vivek
