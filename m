@@ -2,40 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6930F2ABA69
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 14:19:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 373362AB9D6
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 14:13:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387781AbgKINS6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 08:18:58 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46312 "EHLO mail.kernel.org"
+        id S1732810AbgKINNL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 08:13:11 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38844 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1733002AbgKINSz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 08:18:55 -0500
+        id S1732803AbgKINNB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 08:13:01 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 66F9820663;
-        Mon,  9 Nov 2020 13:18:54 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C5CCC20789;
+        Mon,  9 Nov 2020 13:12:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604927935;
-        bh=W6jPLtivwdREzKc1Sx0ca72xoqSz5kLzukYIjYx1aAU=;
+        s=default; t=1604927580;
+        bh=PlvWQ3p+5IQ0Q2/Z1yVx6G0GmBmgNXDsF6OIw1LJrWM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=j5nTXZuSNOBPPLGjL7w1kF5YzX1SKQ1h6d4RKxK2lndoZjPkkCf//YGkjoInvGeRJ
-         GR+YZu7Ygle+aHQAA0E4lobO4apVIlg2dvQaiFCPe0zWOeJ61W6q/qAmHb18yq5gn1
-         ieMSS6ovgsEMSczMynWwfJtf6GtPH3XI6vh7A3ds=
+        b=tacooIyKypBxgbffL8tg82cgI2GzF4vfGBqksIVVomaXtzWe5GcVfn27Dy2IaJpDM
+         nIV9Xg2qEkVIq0SsMdGOkbjgeIs8JS6zqi2bKH/tM5KJk03tHbj1Ghv0J9dnQ7hZ+g
+         DwiNd/fkL8mUuEuSYm5SLkk2vQurwvRDAwXE09R0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        =?UTF-8?q?Cl=C3=A9ment=20P=C3=A9ron?= <peron.clem@gmail.com>,
-        Maxime Ripard <maxime@cerno.tech>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.9 072/133] ARM: dts: sun4i-a10: fix cpu_alert temperature
+        "Steven Rostedt (VMware)" <rostedt@goodmis.org>
+Subject: [PATCH 5.4 37/85] ftrace: Handle tracing when switching between context
 Date:   Mon,  9 Nov 2020 13:55:34 +0100
-Message-Id: <20201109125034.198369993@linuxfoundation.org>
+Message-Id: <20201109125024.378396933@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201109125030.706496283@linuxfoundation.org>
-References: <20201109125030.706496283@linuxfoundation.org>
+In-Reply-To: <20201109125022.614792961@linuxfoundation.org>
+References: <20201109125022.614792961@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,40 +42,92 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Clément Péron <peron.clem@gmail.com>
+From: Steven Rostedt (VMware) <rostedt@goodmis.org>
 
-[ Upstream commit dea252fa41cd8ce332d148444e4799235a8a03ec ]
+commit 726b3d3f141fba6f841d715fc4d8a4a84f02c02a upstream.
 
-When running dtbs_check thermal_zone warn about the
-temperature declared.
+When an interrupt or NMI comes in and switches the context, there's a delay
+from when the preempt_count() shows the update. As the preempt_count() is
+used to detect recursion having each context have its own bit get set when
+tracing starts, and if that bit is already set, it is considered a recursion
+and the function exits. But if this happens in that section where context
+has changed but preempt_count() has not been updated, this will be
+incorrectly flagged as a recursion.
 
-thermal-zones: cpu-thermal:trips:cpu-alert0:temperature:0:0: 850000 is greater than the maximum of 200000
+To handle this case, create another bit call TRANSITION and test it if the
+current context bit is already set. Flag the call as a recursion if the
+TRANSITION bit is already set, and if not, set it and continue. The
+TRANSITION bit will be cleared normally on the return of the function that
+set it, or if the current context bit is clear, set it and clear the
+TRANSITION bit to allow for another transition between the current context
+and an even higher one.
 
-It's indeed wrong the real value is 85°C and not 850°C.
+Cc: stable@vger.kernel.org
+Fixes: edc15cafcbfa3 ("tracing: Avoid unnecessary multiple recursion checks")
+Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-Signed-off-by: Clément Péron <peron.clem@gmail.com>
-Signed-off-by: Maxime Ripard <maxime@cerno.tech>
-Link: https://lore.kernel.org/r/20201003100332.431178-1-peron.clem@gmail.com
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/boot/dts/sun4i-a10.dtsi | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ kernel/trace/trace.h          |   23 +++++++++++++++++++++--
+ kernel/trace/trace_selftest.c |    9 +++++++--
+ 2 files changed, 28 insertions(+), 4 deletions(-)
 
-diff --git a/arch/arm/boot/dts/sun4i-a10.dtsi b/arch/arm/boot/dts/sun4i-a10.dtsi
-index 0f95a6ef8543a..1c5a666c54b53 100644
---- a/arch/arm/boot/dts/sun4i-a10.dtsi
-+++ b/arch/arm/boot/dts/sun4i-a10.dtsi
-@@ -143,7 +143,7 @@
- 			trips {
- 				cpu_alert0: cpu-alert0 {
- 					/* milliCelsius */
--					temperature = <850000>;
-+					temperature = <85000>;
- 					hysteresis = <2000>;
- 					type = "passive";
- 				};
--- 
-2.27.0
-
+--- a/kernel/trace/trace.h
++++ b/kernel/trace/trace.h
+@@ -592,6 +592,12 @@ enum {
+ 	 * function is called to clear it.
+ 	 */
+ 	TRACE_GRAPH_NOTRACE_BIT,
++
++	/*
++	 * When transitioning between context, the preempt_count() may
++	 * not be correct. Allow for a single recursion to cover this case.
++	 */
++	TRACE_TRANSITION_BIT,
+ };
+ 
+ #define trace_recursion_set(bit)	do { (current)->trace_recursion |= (1<<(bit)); } while (0)
+@@ -646,8 +652,21 @@ static __always_inline int trace_test_an
+ 		return 0;
+ 
+ 	bit = trace_get_context_bit() + start;
+-	if (unlikely(val & (1 << bit)))
+-		return -1;
++	if (unlikely(val & (1 << bit))) {
++		/*
++		 * It could be that preempt_count has not been updated during
++		 * a switch between contexts. Allow for a single recursion.
++		 */
++		bit = TRACE_TRANSITION_BIT;
++		if (trace_recursion_test(bit))
++			return -1;
++		trace_recursion_set(bit);
++		barrier();
++		return bit + 1;
++	}
++
++	/* Normal check passed, clear the transition to allow it again */
++	trace_recursion_clear(TRACE_TRANSITION_BIT);
+ 
+ 	val |= 1 << bit;
+ 	current->trace_recursion = val;
+--- a/kernel/trace/trace_selftest.c
++++ b/kernel/trace/trace_selftest.c
+@@ -492,8 +492,13 @@ trace_selftest_function_recursion(void)
+ 	unregister_ftrace_function(&test_rec_probe);
+ 
+ 	ret = -1;
+-	if (trace_selftest_recursion_cnt != 1) {
+-		pr_cont("*callback not called once (%d)* ",
++	/*
++	 * Recursion allows for transitions between context,
++	 * and may call the callback twice.
++	 */
++	if (trace_selftest_recursion_cnt != 1 &&
++	    trace_selftest_recursion_cnt != 2) {
++		pr_cont("*callback not called once (or twice) (%d)* ",
+ 			trace_selftest_recursion_cnt);
+ 		goto out;
+ 	}
 
 
