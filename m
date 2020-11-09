@@ -2,119 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 41F1F2AB192
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 08:08:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F18322AB19F
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 08:09:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729638AbgKIHIB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 02:08:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50356 "EHLO
+        id S1729677AbgKIHJa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 02:09:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50588 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729391AbgKIHIB (ORCPT
+        with ESMTP id S1728038AbgKIHJ1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 02:08:01 -0500
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39C50C0613CF;
-        Sun,  8 Nov 2020 23:08:01 -0800 (PST)
-Received: by mail-pl1-x641.google.com with SMTP id u2so4264317pls.10;
-        Sun, 08 Nov 2020 23:08:01 -0800 (PST)
+        Mon, 9 Nov 2020 02:09:27 -0500
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E53AC0613D3
+        for <linux-kernel@vger.kernel.org>; Sun,  8 Nov 2020 23:09:27 -0800 (PST)
+Received: by mail-pg1-x542.google.com with SMTP id x13so6345771pgp.7
+        for <linux-kernel@vger.kernel.org>; Sun, 08 Nov 2020 23:09:27 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=7ig88mEC01f7q0jI6xrbAOl/qIg5GjGP1YYZefcxWLo=;
-        b=mQzWXDc61IGD7Db/edr2dlha/SlcMh5SPFyhVE4wfUJbmHpDoWs2Dv8dFvQJqt4deH
-         5zvwJ+mCwaAjvb49IYEXTFCzJsNC+QFJ/r2rZhUE/Qukui8SKg90Y3r3becM8240izQt
-         Ux8WgfF/ArZSEFi0aWITJjQenOF7zNNyW0TdhmaYrM4kGc5qR5pkbTz4lB5dipcFjDpL
-         FpravKwyxGq+ZzSWwgN7CMXdUfUJflY8u4OeMh+sqItZKtEz0fCSaYk3FYi6va1HgrAL
-         0sDb0JWG4MG85zn2d+hhzhJa9FDaNNSB9L3J7AwMg8+ReuCGXQrZwvF+hjcMa4nbmGqk
-         nV0w==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=/FaU29Y4JMgTHlOU8rTa94tuMXWoPpfGji5be75b2rU=;
+        b=rLcblK+BzZkRhrZxn4EP3AT262nanGmzzXc6E/2nKdNmHuzVWUzVbHEaPXoOX4Qm4H
+         /Zbr2fh+qToihwPlC4AyxBRUMCjaUK8NBBeWp7R78QOMy9/BAkoj9FANA3o4CP1C23M1
+         i4sYs+dAJ1OQ1qus/ttZqstmgjrGBoRFF8JTJt9ujsXH5QpBKssu5SzM5MKVtC0sMRKF
+         uPOPjLL1ZNkJF+JCctLX+aOKyVnc0iI5otQJf0eFRpkL2sTX7hGfu8BckDLzDtvzbpwI
+         IXA49jnMccGgjTmxreO/OHRARVU79oRFygk7m2K1oOrm0odAipLKyfymPx0D6uLdWYAn
+         +z2A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=7ig88mEC01f7q0jI6xrbAOl/qIg5GjGP1YYZefcxWLo=;
-        b=kac7WFs7X+RDcOcw7CtLHT95qjH2472oUKa/nfQBQ1S9eozngeKqAbE7q5OScKqAAj
-         qtaE1sK7BrWp866y7KV5L+LB/ZXYjru9vZ+p7IXtaclk7/g5ZJFC6EUl3QbRZ7Gla9Bg
-         CzJIe1f3VHbzidwr4XTAt/ogKceR5XAWu82ichMnONcNS+XJbVET303Ygc46xSiW2z1N
-         2lADiSbTxHdb2zBms44gi4TcE8Jn0hthRugysU53u/iNt+kKEuEdOkrEbfTJSun73tRE
-         6BpKAniHfnkr15zACv1WSan33/AokNS7dqQLYoMJEtYrazFN9hKbqsUmqDhx2wjzvnNT
-         h2pg==
-X-Gm-Message-State: AOAM530+NaeuavBDasQdKZWmg9bX2C7ioFo62UBbuPNaHXulA8rWpc5x
-        8087GtWLieAiSX2S5OOGpg==
-X-Google-Smtp-Source: ABdhPJwnylcG9t6htJ7XwroOO2HX8dCurPznJUr4q0IvIC02GLDBBsHb/Y3k/plmswIXv69AJYvhJw==
-X-Received: by 2002:a17:902:bc81:b029:d6:ed57:b7c7 with SMTP id bb1-20020a170902bc81b02900d6ed57b7c7mr11074317plb.1.1604905680843;
-        Sun, 08 Nov 2020 23:08:00 -0800 (PST)
-Received: from [10.76.131.47] ([103.7.29.7])
-        by smtp.gmail.com with ESMTPSA id gp22sm9855025pjb.31.2020.11.08.23.07.58
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 08 Nov 2020 23:08:00 -0800 (PST)
-Subject: Re: [PATCH] net/mlx4: Assign boolean values to a bool variable
-To:     Tariq Toukan <ttoukan.linux@gmail.com>, tariqt@nvidia.com,
-        tariqt@mellanox.com
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Kaixu Xia <kaixuxia@tencent.com>
-References: <1604732038-6057-1-git-send-email-kaixuxia@tencent.com>
- <9c8efc31-3237-ed3b-bfba-c13494b6452d@gmail.com>
-From:   kaixuxia <xiakaixu1987@gmail.com>
-Message-ID: <c6901fed-d063-91be-afd6-b6eedb2b65b6@gmail.com>
-Date:   Mon, 9 Nov 2020 15:07:52 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.1
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=/FaU29Y4JMgTHlOU8rTa94tuMXWoPpfGji5be75b2rU=;
+        b=FIq9+DvgZYKvK+pFIUpZ9csLNdVtiT/yrBs/kBwrc/fPosaBpcELDO/2xUgWFxjRcJ
+         ilKBPnb7o9z3vuV7nPvqMpc8MvGbXvWCGERo9xRyjScJwkcQCIn62GtLk1nkTzzt5VVO
+         AuZzkwszrN/ToVT4KNTtN6yZ4/6AQgPuEfsI1H9sKb3W0wV+zDcsYU6Eg7TLMDMaKixm
+         yVcTXMCDToO7zZsUGLN7Rjbe2sd+c6fTt0EtAzNoiMN468OMK0A/Xwq5qq1RfvoAwDhJ
+         j9ZK8kHmrOkZgUIV/LSwBhx7ziaqIjuZxl0MBmQkhY79RB0XUC3X3HVZbpkqHvqmkOlw
+         DfyQ==
+X-Gm-Message-State: AOAM533awmYSXIjT2+gXTKcJYKmvnrmKwDzvZk708KsdWBFb6rIe7UwK
+        y548/0UkhIFWexv7+37gFrsk0ZLTeTvngg==
+X-Google-Smtp-Source: ABdhPJwHnqQfjbd/Ne5UA7inACgKNQYPefTdQYv1OnLT0ZXBJR8ER18iX0wldDJH5BDcTRKrKXUH3w==
+X-Received: by 2002:a17:90a:fd8d:: with SMTP id cx13mr11754034pjb.138.1604905766984;
+        Sun, 08 Nov 2020 23:09:26 -0800 (PST)
+Received: from localhost ([122.172.12.172])
+        by smtp.gmail.com with ESMTPSA id v16sm9163875pgk.26.2020.11.08.23.09.26
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Sun, 08 Nov 2020 23:09:26 -0800 (PST)
+Date:   Mon, 9 Nov 2020 12:39:24 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Ionela Voinescu <ionela.voinescu@arm.com>
+Cc:     rjw@rjwysocki.net, lenb@kernel.org, sudeep.holla@arm.com,
+        morten.rasmussen@arm.com, jeremy.linton@arm.com,
+        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 7/8] cppc_cpufreq: expose information on frequency domains
+Message-ID: <20201109070924.d47rohgumvdial3b@vireshk-i7>
+References: <20201105125524.4409-1-ionela.voinescu@arm.com>
+ <20201105125524.4409-8-ionela.voinescu@arm.com>
 MIME-Version: 1.0
-In-Reply-To: <9c8efc31-3237-ed3b-bfba-c13494b6452d@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201105125524.4409-8-ionela.voinescu@arm.com>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 05-11-20, 12:55, Ionela Voinescu wrote:
+> Use the existing sysfs attribute "freqdomain_cpus" to expose
+> information to userspace about CPUs in the same frequency domain.
+> 
+> Signed-off-by: Ionela Voinescu <ionela.voinescu@arm.com>
+> Cc: Rafael J. Wysocki <rjw@rjwysocki.net>
+> Cc: Viresh Kumar <viresh.kumar@linaro.org>
+> ---
+>  Documentation/ABI/testing/sysfs-devices-system-cpu |  3 ++-
+>  drivers/cpufreq/cppc_cpufreq.c                     | 14 ++++++++++++++
+>  2 files changed, 16 insertions(+), 1 deletion(-)
+> 
+> diff --git a/Documentation/ABI/testing/sysfs-devices-system-cpu b/Documentation/ABI/testing/sysfs-devices-system-cpu
+> index 1a04ca8162ad..0eee30b27ab6 100644
+> --- a/Documentation/ABI/testing/sysfs-devices-system-cpu
+> +++ b/Documentation/ABI/testing/sysfs-devices-system-cpu
+> @@ -264,7 +264,8 @@ Description:	Discover CPUs in the same CPU frequency coordination domain
+>  		attribute is useful for user space DVFS controllers to get better
+>  		power/performance results for platforms using acpi-cpufreq.
+>  
+> -		This file is only present if the acpi-cpufreq driver is in use.
+> +		This file is only present if the acpi-cpufreq or the cppc-cpufreq
+> +		drivers are in use.
+>  
+>  
+>  What:		/sys/devices/system/cpu/cpu*/cache/index3/cache_disable_{0,1}
+> diff --git a/drivers/cpufreq/cppc_cpufreq.c b/drivers/cpufreq/cppc_cpufreq.c
+> index 60ac7f8049b5..b4edeeb57d04 100644
+> --- a/drivers/cpufreq/cppc_cpufreq.c
+> +++ b/drivers/cpufreq/cppc_cpufreq.c
+> @@ -483,6 +483,19 @@ static int cppc_cpufreq_set_boost(struct cpufreq_policy *policy, int state)
+>  	return 0;
+>  }
+>  
+> +static ssize_t show_freqdomain_cpus(struct cpufreq_policy *policy, char *buf)
+> +{
+> +	struct cppc_cpudata *cpu_data = policy->driver_data;
+> +
+> +	return cpufreq_show_cpus(cpu_data->domain->shared_cpu_map, buf);
+> +}
+> +cpufreq_freq_attr_ro(freqdomain_cpus);
+> +
+> +static struct freq_attr *cppc_cpufreq_attr[] = {
+> +	&freqdomain_cpus,
+> +	NULL,
+> +};
+> +
+>  static struct cpufreq_driver cppc_cpufreq_driver = {
+>  	.flags = CPUFREQ_CONST_LOOPS,
+>  	.verify = cppc_verify_policy,
+> @@ -491,6 +504,7 @@ static struct cpufreq_driver cppc_cpufreq_driver = {
+>  	.init = cppc_cpufreq_cpu_init,
+>  	.stop_cpu = cppc_cpufreq_stop_cpu,
+>  	.set_boost = cppc_cpufreq_set_boost,
+> +	.attr = cppc_cpufreq_attr,
+>  	.name = "cppc_cpufreq",
+>  };
 
-
-On 2020/11/8 16:20, Tariq Toukan wrote:
-> 
-> 
-> On 11/7/2020 8:53 AM, xiakaixu1987@gmail.com wrote:
->> From: Kaixu Xia <kaixuxia@tencent.com>
->>
->> Fix the following coccinelle warnings:
->>
-> 
-> Hi Kaixu,
-> 
-> Which coccinelle version gave this warning?
-
-Hi Tariq,
-
-The version is coccinelle-1.0.7.
-
-Thanks,
-Kaixu
-> 
-> 
->> ./drivers/net/ethernet/mellanox/mlx4/en_rx.c:687:1-17: WARNING: Assignment of 0/1 to bool variable
->>
->> Reported-by: Tosk Robot <tencent_os_robot@tencent.com>
->> Signed-off-by: Kaixu Xia <kaixuxia@tencent.com>
->> ---
->>   drivers/net/ethernet/mellanox/mlx4/en_rx.c | 2 +-
->>   1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/drivers/net/ethernet/mellanox/mlx4/en_rx.c b/drivers/net/ethernet/mellanox/mlx4/en_rx.c
->> index 502d1b97855c..b0f79a5151cf 100644
->> --- a/drivers/net/ethernet/mellanox/mlx4/en_rx.c
->> +++ b/drivers/net/ethernet/mellanox/mlx4/en_rx.c
->> @@ -684,7 +684,7 @@ int mlx4_en_process_rx_cq(struct net_device *dev, struct mlx4_en_cq *cq, int bud
->>       xdp_prog = rcu_dereference(ring->xdp_prog);
->>       xdp.rxq = &ring->xdp_rxq;
->>       xdp.frame_sz = priv->frag_info[0].frag_stride;
->> -    doorbell_pending = 0;
->> +    doorbell_pending = false;
->>         /* We assume a 1:1 mapping between CQEs and Rx descriptors, so Rx
->>        * descriptor offset can be deduced from the CQE index instead of
->>
-> 
+Acked-by: Viresh Kumar <viresh.kumar@linaro.org>
 
 -- 
-kaixuxia
+viresh
