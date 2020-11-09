@@ -2,41 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 095E92AC107
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 17:36:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 60CE22AC109
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 17:36:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730637AbgKIQg3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 11:36:29 -0500
-Received: from mga18.intel.com ([134.134.136.126]:27091 "EHLO mga18.intel.com"
+        id S1730662AbgKIQgb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 11:36:31 -0500
+Received: from mga03.intel.com ([134.134.136.65]:18903 "EHLO mga03.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729951AbgKIQg3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 11:36:29 -0500
-IronPort-SDR: V6G48d6xnxO43LvPy2KS7Y0d+bopZQTYipD7gqCJaqXr9qKAkTviZnz/pcnh91iVF24+UOPLWT
- mjPGGVh4R1BA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9800"; a="157612428"
+        id S1730632AbgKIQga (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 11:36:30 -0500
+IronPort-SDR: QAFiAhyOmNvDUVo74GmAiEOpr1z8NzZLWAgPgxH1kASsh/mGLSx66ewh96a2sqITbul9IT0Yj4
+ YXqdkf7VOKQQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9800"; a="169942949"
 X-IronPort-AV: E=Sophos;i="5.77,463,1596524400"; 
-   d="scan'208";a="157612428"
+   d="scan'208";a="169942949"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Nov 2020 08:36:28 -0800
-IronPort-SDR: 0k1PWo2aAioyYtKjnJZAjw04GGuR2GckRt9EW4KXHoyUDSGGkUu4dAcbzb+Dzrs9vE66VuwEQm
- jOc4VLtsjOdQ==
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Nov 2020 08:36:28 -0800
+IronPort-SDR: qczp0MkYauECyqcVNXi2CbmNJculueMF5pLD6HSKYaMTl8Ejzv9yVK4rG1wO9RB4VdKSLNxlhP
+ Suyc7W6yQDJw==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.77,463,1596524400"; 
-   d="scan'208";a="322503028"
+   d="scan'208";a="308037728"
 Received: from lkp-server01.sh.intel.com (HELO d0be80f1a028) ([10.239.97.150])
-  by orsmga003.jf.intel.com with ESMTP; 09 Nov 2020 08:36:27 -0800
+  by fmsmga007.fm.intel.com with ESMTP; 09 Nov 2020 08:36:27 -0800
 Received: from kbuild by d0be80f1a028 with local (Exim 4.92)
         (envelope-from <lkp@intel.com>)
-        id 1kcA9a-0000IF-KR; Mon, 09 Nov 2020 16:36:26 +0000
-Date:   Tue, 10 Nov 2020 00:36:14 +0800
+        id 1kcA9a-0000II-Od; Mon, 09 Nov 2020 16:36:26 +0000
+Date:   Tue, 10 Nov 2020 00:36:19 +0800
 From:   kernel test robot <lkp@intel.com>
 To:     "x86-ml" <x86@kernel.org>
 Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:core/mm] BUILD SUCCESS
- 13f876ba77ebd5125799bb042201f22cf73df154
-Message-ID: <5fa96ffe.UFxzQ0qYwWQZgjSo%lkp@intel.com>
+Subject: [tip:perf/kprobes] BUILD SUCCESS
+ a70a04b3844f59c29573a8581d5c263225060dd6
+Message-ID: <5fa97003.pZdb53hq9vm78aYy%lkp@intel.com>
 User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -45,12 +45,12 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git  core/mm
-branch HEAD: 13f876ba77ebd5125799bb042201f22cf73df154  highmem: High implementation details and document API
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git  perf/kprobes
+branch HEAD: a70a04b3844f59c29573a8581d5c263225060dd6  locking/atomics: Regenerate the atomics-check SHA1's
 
 elapsed time: 723m
 
-configs tested: 122
+configs tested: 126
 configs skipped: 3
 
 The following configs have been built successfully.
@@ -76,6 +76,10 @@ x86_64                           allyesconfig
 openrisc                 simple_smp_defconfig
 xtensa                  cadence_csp_defconfig
 mips                      maltaaprp_defconfig
+powerpc                    sam440ep_defconfig
+powerpc                     pseries_defconfig
+m68k                         amcore_defconfig
+arm                         s5pv210_defconfig
 mips                  cavium_octeon_defconfig
 m68k                             alldefconfig
 nios2                         10m50_defconfig
