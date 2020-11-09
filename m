@@ -2,38 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A9C72AB97A
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 14:09:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6930F2ABA69
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 14:19:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731906AbgKINJn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 08:09:43 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34704 "EHLO mail.kernel.org"
+        id S2387781AbgKINS6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 08:18:58 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46312 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731549AbgKINJj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 08:09:39 -0500
+        id S1733002AbgKINSz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 08:18:55 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id AA0AA20867;
-        Mon,  9 Nov 2020 13:09:38 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 66F9820663;
+        Mon,  9 Nov 2020 13:18:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604927379;
-        bh=65Sq76VAYAD0eVL2bxrHe53cS28VuwSk6Wn7trAvsUc=;
+        s=default; t=1604927935;
+        bh=W6jPLtivwdREzKc1Sx0ca72xoqSz5kLzukYIjYx1aAU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VsDMMKo+DwQJtOGuNnIKb40SQRlWWxMcDMrDw/KI94l35VlWh1psqTNCznaqLmGW9
-         PVyyhgEwxQ2DLkErTH04vAHe33qlRKI92hiuWd89fRaJ6HnvY3JYE8hPb+zHGAHLq2
-         WqXVCf14sx1oPtyk/bf6p6VEtd0bmdD5n418t15s=
+        b=j5nTXZuSNOBPPLGjL7w1kF5YzX1SKQ1h6d4RKxK2lndoZjPkkCf//YGkjoInvGeRJ
+         GR+YZu7Ygle+aHQAA0E4lobO4apVIlg2dvQaiFCPe0zWOeJ61W6q/qAmHb18yq5gn1
+         ieMSS6ovgsEMSczMynWwfJtf6GtPH3XI6vh7A3ds=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Alexander Aring <aahringo@redhat.com>,
-        Andreas Gruenbacher <agruenba@redhat.com>
-Subject: [PATCH 4.19 40/71] gfs2: Wake up when sd_glock_disposal becomes zero
+        stable@vger.kernel.org,
+        =?UTF-8?q?Cl=C3=A9ment=20P=C3=A9ron?= <peron.clem@gmail.com>,
+        Maxime Ripard <maxime@cerno.tech>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.9 072/133] ARM: dts: sun4i-a10: fix cpu_alert temperature
 Date:   Mon,  9 Nov 2020 13:55:34 +0100
-Message-Id: <20201109125021.790613913@linuxfoundation.org>
+Message-Id: <20201109125034.198369993@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201109125019.906191744@linuxfoundation.org>
-References: <20201109125019.906191744@linuxfoundation.org>
+In-Reply-To: <20201109125030.706496283@linuxfoundation.org>
+References: <20201109125030.706496283@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,38 +44,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alexander Aring <aahringo@redhat.com>
+From: Clément Péron <peron.clem@gmail.com>
 
-commit da7d554f7c62d0c17c1ac3cc2586473c2d99f0bd upstream.
+[ Upstream commit dea252fa41cd8ce332d148444e4799235a8a03ec ]
 
-Commit fc0e38dae645 ("GFS2: Fix glock deallocation race") fixed a
-sd_glock_disposal accounting bug by adding a missing atomic_dec
-statement, but it failed to wake up sd_glock_wait when that decrement
-causes sd_glock_disposal to reach zero.  As a consequence,
-gfs2_gl_hash_clear can now run into a 10-minute timeout instead of
-being woken up.  Add the missing wakeup.
+When running dtbs_check thermal_zone warn about the
+temperature declared.
 
-Fixes: fc0e38dae645 ("GFS2: Fix glock deallocation race")
-Cc: stable@vger.kernel.org # v2.6.39+
-Signed-off-by: Alexander Aring <aahringo@redhat.com>
-Signed-off-by: Andreas Gruenbacher <agruenba@redhat.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+thermal-zones: cpu-thermal:trips:cpu-alert0:temperature:0:0: 850000 is greater than the maximum of 200000
 
+It's indeed wrong the real value is 85°C and not 850°C.
+
+Signed-off-by: Clément Péron <peron.clem@gmail.com>
+Signed-off-by: Maxime Ripard <maxime@cerno.tech>
+Link: https://lore.kernel.org/r/20201003100332.431178-1-peron.clem@gmail.com
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/gfs2/glock.c |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ arch/arm/boot/dts/sun4i-a10.dtsi | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/fs/gfs2/glock.c
-+++ b/fs/gfs2/glock.c
-@@ -870,7 +870,8 @@ int gfs2_glock_get(struct gfs2_sbd *sdp,
- out_free:
- 	kfree(gl->gl_lksb.sb_lvbptr);
- 	kmem_cache_free(cachep, gl);
--	atomic_dec(&sdp->sd_glock_disposal);
-+	if (atomic_dec_and_test(&sdp->sd_glock_disposal))
-+		wake_up(&sdp->sd_glock_wait);
- 
- out:
- 	return ret;
+diff --git a/arch/arm/boot/dts/sun4i-a10.dtsi b/arch/arm/boot/dts/sun4i-a10.dtsi
+index 0f95a6ef8543a..1c5a666c54b53 100644
+--- a/arch/arm/boot/dts/sun4i-a10.dtsi
++++ b/arch/arm/boot/dts/sun4i-a10.dtsi
+@@ -143,7 +143,7 @@
+ 			trips {
+ 				cpu_alert0: cpu-alert0 {
+ 					/* milliCelsius */
+-					temperature = <850000>;
++					temperature = <85000>;
+ 					hysteresis = <2000>;
+ 					type = "passive";
+ 				};
+-- 
+2.27.0
+
 
 
