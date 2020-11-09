@@ -2,127 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DC392AC05F
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 17:01:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D81F32AC067
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 17:03:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730003AbgKIQBJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 11:01:09 -0500
-Received: from mx0a-002e3701.pphosted.com ([148.163.147.86]:42670 "EHLO
-        mx0a-002e3701.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726410AbgKIQBI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 11:01:08 -0500
-Received: from pps.filterd (m0148663.ppops.net [127.0.0.1])
-        by mx0a-002e3701.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0A9FrVHn019543;
-        Mon, 9 Nov 2020 16:00:45 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hpe.com; h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- in-reply-to; s=pps0720; bh=8bQpy7by82Vd1CK+FzoGvxlH3x1i+7WMlJUyitAjISk=;
- b=MySd1f55DFmhRGrs7vw+M7katowo9XPyIF4tW9qjWR9Ka3h2o698KoVlIJYuPljcQHDO
- ebhbqmfp+zx8rfzssltrwwCM3b5Ix/lfSLUBFtriTMwlAYyeSsVgTZBcP9ASHb6N5zDh
- mayGK+wfo5j3Pr74jFn7Z3/pvfpSi7Sndd4vH20pqO9Q0QeqZdphCagRwbQZcGeFVlt3
- ODSW+kqGjFSR7LTslaQqQuuw+Tggzcpb8qJbZIuFjEgxov7ZSBbvz5owmPvOGV50a/df
- BIg3gVX+J0SaEfjcfrN697yL/PfIgQZGQeah0bttefweIvW/J9kIFMLPaoposHq71LxT 2w== 
-Received: from g2t2353.austin.hpe.com (g2t2353.austin.hpe.com [15.233.44.26])
-        by mx0a-002e3701.pphosted.com with ESMTP id 34p5evtgt5-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 09 Nov 2020 16:00:45 +0000
-Received: from g2t2360.austin.hpecorp.net (g2t2360.austin.hpecorp.net [16.196.225.135])
-        by g2t2353.austin.hpe.com (Postfix) with ESMTP id CCB6E8B;
-        Mon,  9 Nov 2020 16:00:43 +0000 (UTC)
-Received: from swahl-home.5wahls.com (unknown [16.214.129.62])
-        by g2t2360.austin.hpecorp.net (Postfix) with ESMTP id 84D3237;
-        Mon,  9 Nov 2020 16:00:42 +0000 (UTC)
-Date:   Mon, 9 Nov 2020 10:00:41 -0600
-From:   Steve Wahl <steve.wahl@hpe.com>
-To:     Jiri Slaby <jslaby@suse.cz>
-Cc:     bp@alien8.de, linux-kernel@vger.kernel.org,
-        Mike Travis <mike.travis@hpe.com>,
-        Dimitri Sivanich <dimitri.sivanich@hpe.com>,
-        Steve Wahl <steve.wahl@hpe.com>,
-        Russ Anderson <russ.anderson@hpe.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>
-Subject: Re: [PATCH] x86/platform/uv: drop last traces of uv_flush_tlb_others
-Message-ID: <20201109160041.GS1468175@swahl-home.5wahls.com>
-References: <20201109093653.2042-1-jslaby@suse.cz>
+        id S1729950AbgKIQDH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 11:03:07 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44034 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729658AbgKIQDF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 11:03:05 -0500
+Received: from mail-oi1-f174.google.com (mail-oi1-f174.google.com [209.85.167.174])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 72E74216C4;
+        Mon,  9 Nov 2020 16:03:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604937784;
+        bh=YkEwFfSdMDdq9/clov9ZEns0F1+3sR4zx7EG5cfZhYc=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=mRNOOAn5sC8Z//uTsvBQuvVMEaa0ZT/YLDcQyTdt+DxbBFmTDwhhhv49XpsK3Uked
+         9bpsVbMVj2tcHibCkh1OHn5NfrB/S5Bpfv3V/v4OcjwiTeqrVvqvTTEBrz6qrB6oy1
+         kBhV9RQvAaf3eWxJmgRMo60qLvA4zIR6i4xXItNo=
+Received: by mail-oi1-f174.google.com with SMTP id t16so10693797oie.11;
+        Mon, 09 Nov 2020 08:03:04 -0800 (PST)
+X-Gm-Message-State: AOAM53005avSpymzRA4pAoDaUjogIVXrvnI+2e7mmoQDvic936Iz1XyI
+        n9YLhhkPNd7iJESRYEnOFyV/xiUirT3lQH1T9g==
+X-Google-Smtp-Source: ABdhPJwUDjegKtKBMpqT91zhRknyIWujIwiGxHoxmVjfzOiuKkE6iJqRiSsYwAylWRatkHNGVt6QBND93MEfLu5Qk+c=
+X-Received: by 2002:aca:5dc2:: with SMTP id r185mr9674317oib.106.1604937783677;
+ Mon, 09 Nov 2020 08:03:03 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201109093653.2042-1-jslaby@suse.cz>
-X-HPE-SCL: -1
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-11-09_08:2020-11-05,2020-11-09 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- suspectscore=1 mlxlogscore=857 priorityscore=1501 spamscore=0 adultscore=0
- clxscore=1011 malwarescore=0 bulkscore=0 phishscore=0 impostorscore=0
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2011090109
+References: <20201106165805.31534-1-amelie.delaunay@st.com>
+ <20201106165805.31534-2-amelie.delaunay@st.com> <CAL_Jsq+A=nixpdrT3Omq7Osat=_Egb5g6VGao=gY4CEssOe+xQ@mail.gmail.com>
+ <a0e0bde1-5657-c0f9-9123-6b1dd5a1bd73@st.com>
+In-Reply-To: <a0e0bde1-5657-c0f9-9123-6b1dd5a1bd73@st.com>
+From:   Rob Herring <robh+dt@kernel.org>
+Date:   Mon, 9 Nov 2020 10:02:52 -0600
+X-Gmail-Original-Message-ID: <CAL_JsqLcTNNWm7ChBjhFaTvfDm-kSYXrppcGU8uFTGEEuaT5Tg@mail.gmail.com>
+Message-ID: <CAL_JsqLcTNNWm7ChBjhFaTvfDm-kSYXrppcGU8uFTGEEuaT5Tg@mail.gmail.com>
+Subject: Re: [PATCH v5 1/5] dt-bindings: connector: add typec-power-opmode
+ property to usb-connector
+To:     Amelie DELAUNAY <amelie.delaunay@st.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Badhri Jagan Sridharan <badhri@google.com>,
+        Jun Li <lijun.kernel@gmail.com>, devicetree@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Linux USB List <linux-usb@vger.kernel.org>,
+        "moderated list:ARM/STM32 ARCHITECTURE" 
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Fabrice Gasnier <fabrice.gasnier@st.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Acked-by: Steve Wahl <steve.wahl@hpe.com>
+On Mon, Nov 9, 2020 at 9:54 AM Amelie DELAUNAY <amelie.delaunay@st.com> wrote:
+>
+> On 11/9/20 4:03 PM, Rob Herring wrote:
+> > On Fri, Nov 6, 2020 at 10:58 AM Amelie Delaunay <amelie.delaunay@st.com> wrote:
+> >>
+> >> Power operation mode may depends on hardware design, so, add the optional
+> >> property typec-power-opmode for usb-c connector to select the power
+> >> operation mode capability.
+> >>
+> >> Signed-off-by: Amelie Delaunay <amelie.delaunay@st.com>
+> >> ---
+> >> Hi Bahdri, Rob,
+> >>
+> >> I've added the exlusion with FRS property, but new FRS property name
+> >> should be use here so, be careful.
+> >>
+> >> ---
+> >>   .../bindings/connector/usb-connector.yaml     | 24 +++++++++++++++++++
+> >>   1 file changed, 24 insertions(+)
+> >>
+> >> diff --git a/Documentation/devicetree/bindings/connector/usb-connector.yaml b/Documentation/devicetree/bindings/connector/usb-connector.yaml
+> >> index 62781518aefc..a84464b3e1f2 100644
+> >> --- a/Documentation/devicetree/bindings/connector/usb-connector.yaml
+> >> +++ b/Documentation/devicetree/bindings/connector/usb-connector.yaml
+> >> @@ -93,6 +93,24 @@ properties:
+> >>         - device
+> >>         - dual
+> >>
+> >> +  typec-power-opmode:
+> >> +    description: Determines the power operation mode that the Type C connector
+> >> +      will support and will advertise through CC pins when it has no power
+> >> +      delivery support.
+> >> +      - "default" corresponds to default USB voltage and current defined by the
+> >> +        USB 2.0 and USB 3.2 specifications, 5V 500mA for USB 2.0 ports and
+> >> +        5V 900mA or 1500mA for USB 3.2 ports in single-lane or dual-lane
+> >> +        operation respectively.
+> >> +      - "1.5A" and "3.0A", 5V 1.5A and 5V 3.0A respectively, as defined in USB
+> >> +        Type-C Cable and Connector specification, when Power Delivery is not
+> >> +        supported.
+> >> +    allOf:
+> >> +      - $ref: /schemas/types.yaml#definitions/string
+> >> +    enum:
+> >> +      - default
+> >> +      - 1.5A
+> >> +      - 3.0A
+> >
+> > Use the enums here. Unless you want to define it as actual current as
+> > a numerical value.
+>
+> If I understand your point correctly, I think I should remove allOf here
+> and stick with what is done to describe power-role and data-role
+> property. Right ?
 
-On Mon, Nov 09, 2020 at 10:36:53AM +0100, Jiri Slaby wrote:
-> Commit 39297dde7390 ("x86/platform/uv: Remove UV BAU TLB Shootdown
-> Handler") removed uv_flush_tlb_others. Its declaration was removed also
-> from asm/uv/uv.h. But only for the CONFIG_X86_UV=y case. The inline
-> definition (!X86_UV case) is still in place.
-> 
-> So remove this implementation with everything what was added to support
-> uv_flush_tlb_others:
-> * include of asm/tlbflush.h
-> * forward declarations of struct cpumask, mm_struct, and flush_tlb_info
-> 
-> Signed-off-by: Jiri Slaby <jslaby@suse.cz>
-> Cc: Mike Travis <mike.travis@hpe.com>
-> Cc: Dimitri Sivanich <dimitri.sivanich@hpe.com>
-> Cc: Steve Wahl <steve.wahl@hpe.com>
-> Cc: Russ Anderson <russ.anderson@hpe.com>
-> Cc: Thomas Gleixner <tglx@linutronix.de>
-> Cc: Ingo Molnar <mingo@redhat.com>
-> Cc: Borislav Petkov <bp@alien8.de>
-> Cc: x86@kernel.org
-> Cc: "H. Peter Anvin" <hpa@zytor.com>
-> ---
->  arch/x86/include/asm/uv/uv.h | 10 ----------
->  1 file changed, 10 deletions(-)
-> 
-> diff --git a/arch/x86/include/asm/uv/uv.h b/arch/x86/include/asm/uv/uv.h
-> index 172d3e4a9e4b..648eb23fe7f0 100644
-> --- a/arch/x86/include/asm/uv/uv.h
-> +++ b/arch/x86/include/asm/uv/uv.h
-> @@ -2,14 +2,8 @@
->  #ifndef _ASM_X86_UV_UV_H
->  #define _ASM_X86_UV_UV_H
->  
-> -#include <asm/tlbflush.h>
-> -
->  enum uv_system_type {UV_NONE, UV_LEGACY_APIC, UV_X2APIC};
->  
-> -struct cpumask;
-> -struct mm_struct;
-> -struct flush_tlb_info;
-> -
->  #ifdef CONFIG_X86_UV
->  #include <linux/efi.h>
->  
-> @@ -44,10 +38,6 @@ static inline int is_uv_system(void)	{ return 0; }
->  static inline int is_uv_hubbed(int uv)	{ return 0; }
->  static inline void uv_cpu_init(void)	{ }
->  static inline void uv_system_init(void)	{ }
-> -static inline const struct cpumask *
-> -uv_flush_tlb_others(const struct cpumask *cpumask,
-> -		    const struct flush_tlb_info *info)
-> -{ return cpumask; }
->  
->  #endif	/* X86_UV */
->  
-> -- 
-> 2.29.2
-> 
+No, use the numerical values like FRS:
 
--- 
-Steve Wahl, Hewlett Packard Enterprise
++      "1" refers to default USB power level as described by "Table
+6-14 Fixed Supply PDO - Sink".
++      "2" refers to 1.5A@5V.
++      "3" refers to 3.0A@5V.
++    $ref: /schemas/types.yaml#/definitions/uint32
++    enum: [1, 2, 3]
+
+Rob
