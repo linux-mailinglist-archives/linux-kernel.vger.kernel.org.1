@@ -2,39 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D15522AB9D9
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 14:13:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D76712ABA6F
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 14:22:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732894AbgKINNS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 08:13:18 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39010 "EHLO mail.kernel.org"
+        id S2387438AbgKINTU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 08:19:20 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46570 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732822AbgKINNN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 08:13:13 -0500
+        id S2387673AbgKINTH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 08:19:07 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5D2CF2076E;
-        Mon,  9 Nov 2020 13:13:11 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 38ECD2076E;
+        Mon,  9 Nov 2020 13:19:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604927592;
-        bh=7S/Y4v2vnHgsYbB4mBQerWcEpAGgXVxxYW8mscsoo70=;
+        s=default; t=1604927947;
+        bh=p8CcsK59HrgvsonMBNa8Vf9L18kH0ZWkC9V7dQBVWYI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=PqTAFYvrGApEzf9tn0oqD7q59ZodCFHz2L41lwuYxXsxEMDGP5+2Jt+vUnpk2qLb/
-         dbrB/lpKrVXezONPMb1yq6vyV5DQd9g2LiJL5grkxkIfgNoKC+4oPZkL3QmjWc0sAF
-         kvzWzIlwrKeqwS8hidrR4zz1bOGfMIQQ0Dv3F2sI=
+        b=fi1WQy/+hBXndmNGSnBH3zc9mAvkjTprivwYR319eFRMpoaOVVtD50sM1TwZ5VSmA
+         OloM+h22hFpwilkAMRKvCnbzv4O4YA7TQTT62Hi8f1vP1gfEXdscEHN6kzdC+x1LC+
+         xoHJ8QPTbB3DsMDtmrS0IElyFMm5s+Bk6n/kQrLM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Gratian Crisan <gratian.crisan@ni.com>,
-        Mike Galbraith <efault@gmx.de>,
-        Thomas Gleixner <tglx@linutronix.de>
-Subject: [PATCH 5.4 41/85] futex: Handle transient "ownerless" rtmutex state correctly
+        stable@vger.kernel.org, Kairui Song <kasong@redhat.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Dexuan Cui <decui@microsoft.com>,
+        Jake Oshins <jakeo@microsoft.com>, Wei Hu <weh@microsoft.com>,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.9 076/133] hyperv_fb: Update screen_info after removing old framebuffer
 Date:   Mon,  9 Nov 2020 13:55:38 +0100
-Message-Id: <20201109125024.566606749@linuxfoundation.org>
+Message-Id: <20201109125034.387402598@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201109125022.614792961@linuxfoundation.org>
-References: <20201109125022.614792961@linuxfoundation.org>
+In-Reply-To: <20201109125030.706496283@linuxfoundation.org>
+References: <20201109125030.706496283@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,80 +48,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mike Galbraith <efault@gmx.de>
+From: Kairui Song <kasong@redhat.com>
 
-commit 9f5d1c336a10c0d24e83e40b4c1b9539f7dba627 upstream.
+[ Upstream commit 3cb73bc3fa2a3cb80b88aa63b48409939e0d996b ]
 
-Gratian managed to trigger the BUG_ON(!newowner) in fixup_pi_state_owner().
-This is one possible chain of events leading to this:
+On gen2 HyperV VM, hyperv_fb will remove the old framebuffer, and the
+new allocated framebuffer address could be at a differnt location,
+and it might be no longer a VGA framebuffer.
 
-Task Prio       Operation
-T1   120	lock(F)
-T2   120	lock(F)   -> blocks (top waiter)
-T3   50 (RT)	lock(F)   -> boosts T1 and blocks (new top waiter)
-XX   		timeout/  -> wakes T2
-		signal
-T1   50		unlock(F) -> wakes T3 (rtmutex->owner == NULL, waiter bit is set)
-T2   120	cleanup   -> try_to_take_mutex() fails because T3 is the top waiter
-     			     and the lower priority T2 cannot steal the lock.
-     			  -> fixup_pi_state_owner() sees newowner == NULL -> BUG_ON()
+Update screen_info so that after kexec the kernel won't try to reuse
+the old invalid/stale framebuffer address as VGA, corrupting memory.
 
-The comment states that this is invalid and rt_mutex_real_owner() must
-return a non NULL owner when the trylock failed, but in case of a queued
-and woken up waiter rt_mutex_real_owner() == NULL is a valid transient
-state. The higher priority waiter has simply not yet managed to take over
-the rtmutex.
+[ mingo: Tidied up the changelog. ]
 
-The BUG_ON() is therefore wrong and this is just another retry condition in
-fixup_pi_state_owner().
-
-Drop the locks, so that T3 can make progress, and then try the fixup again.
-
-Gratian provided a great analysis, traces and a reproducer. The analysis is
-to the point, but it confused the hell out of that tglx dude who had to
-page in all the futex horrors again. Condensed version is above.
-
-[ tglx: Wrote comment and changelog ]
-
-Fixes: c1e2f0eaf015 ("futex: Avoid violating the 10th rule of futex")
-Reported-by: Gratian Crisan <gratian.crisan@ni.com>
-Signed-off-by: Mike Galbraith <efault@gmx.de>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Cc: stable@vger.kernel.org
-Link: https://lore.kernel.org/r/87a6w6x7bb.fsf@ni.com
-Link: https://lore.kernel.org/r/87sg9pkvf7.fsf@nanos.tec.linutronix.de
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Signed-off-by: Kairui Song <kasong@redhat.com>
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
+Cc: Dexuan Cui <decui@microsoft.com>
+Cc: Jake Oshins <jakeo@microsoft.com>
+Cc: Wei Hu <weh@microsoft.com>
+Cc: "K. Y. Srinivasan" <kys@microsoft.com>
+Cc: Haiyang Zhang <haiyangz@microsoft.com>
+Cc: Stephen Hemminger <sthemmin@microsoft.com>
+Link: https://lore.kernel.org/r/20201014092429.1415040-3-kasong@redhat.com
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/futex.c |   16 ++++++++++++++--
- 1 file changed, 14 insertions(+), 2 deletions(-)
+ drivers/video/fbdev/hyperv_fb.c | 9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
 
---- a/kernel/futex.c
-+++ b/kernel/futex.c
-@@ -2511,10 +2511,22 @@ retry:
- 		}
+diff --git a/drivers/video/fbdev/hyperv_fb.c b/drivers/video/fbdev/hyperv_fb.c
+index 02411d89cb462..e36fb1a0ecdbd 100644
+--- a/drivers/video/fbdev/hyperv_fb.c
++++ b/drivers/video/fbdev/hyperv_fb.c
+@@ -1114,8 +1114,15 @@ static int hvfb_getmem(struct hv_device *hdev, struct fb_info *info)
+ getmem_done:
+ 	remove_conflicting_framebuffers(info->apertures,
+ 					KBUILD_MODNAME, false);
+-	if (!gen2vm)
++
++	if (gen2vm) {
++		/* framebuffer is reallocated, clear screen_info to avoid misuse from kexec */
++		screen_info.lfb_size = 0;
++		screen_info.lfb_base = 0;
++		screen_info.orig_video_isVGA = 0;
++	} else {
+ 		pci_dev_put(pdev);
++	}
+ 	kfree(info->apertures);
  
- 		/*
--		 * Since we just failed the trylock; there must be an owner.
-+		 * The trylock just failed, so either there is an owner or
-+		 * there is a higher priority waiter than this one.
- 		 */
- 		newowner = rt_mutex_owner(&pi_state->pi_mutex);
--		BUG_ON(!newowner);
-+		/*
-+		 * If the higher priority waiter has not yet taken over the
-+		 * rtmutex then newowner is NULL. We can't return here with
-+		 * that state because it's inconsistent vs. the user space
-+		 * state. So drop the locks and try again. It's a valid
-+		 * situation and not any different from the other retry
-+		 * conditions.
-+		 */
-+		if (unlikely(!newowner)) {
-+			err = -EAGAIN;
-+			goto handle_err;
-+		}
- 	} else {
- 		WARN_ON_ONCE(argowner != current);
- 		if (oldowner == current) {
+ 	return 0;
+-- 
+2.27.0
+
 
 
