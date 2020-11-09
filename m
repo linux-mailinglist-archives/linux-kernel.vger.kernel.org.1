@@ -2,297 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A76612AC782
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 22:44:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 99B822AC784
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 22:45:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730738AbgKIVoN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 16:44:13 -0500
-Received: from aserp2130.oracle.com ([141.146.126.79]:57614 "EHLO
-        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729247AbgKIVoN (ORCPT
+        id S1731109AbgKIVo5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 16:44:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46164 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729247AbgKIVo5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 16:44:13 -0500
-Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
-        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0A9LE3M4082569;
-        Mon, 9 Nov 2020 21:44:07 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=message-id : date :
- from : mime-version : to : cc : subject : references : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=tPDgdWZW3dSiwXq3cg+sLtJu53oZDSjaEc4UXPy6kJU=;
- b=rbReRao2dUuPFKRrTBNhcf50bW7/fvOBtnYLzYIXWnvG6DJWhyn+5XY1p5dJq+an9/Jl
- spppJKO8pcpDE6xxkrqdA1BnLlrmY10oRgbAmR4lusNjGpA8uKXgYwvSgPsEsPnirXdf
- GFXvVQcGFogkNeVBZ8BnWQwfloLa9Y7P4kKsEWA8k+yOs/v9Skv6fSPdUtOIE0GdGXlB
- a2vcupqwMlruWQjrIyuW5US2cwB0TcIj1u9exh0EOW9xA1PdmnaE/xTXRJzXo5qsrKRa
- GkNn+OIeLA7ReX4Nd+iMziOIxcPpGYAdb/u4kJzY9lslYoCKi1F2HesCC94UJlVy5uMe gA== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by aserp2130.oracle.com with ESMTP id 34nh3arnxm-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 09 Nov 2020 21:44:07 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0A9LFPgV183328;
-        Mon, 9 Nov 2020 21:44:07 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by aserp3030.oracle.com with ESMTP id 34p55mhex1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 09 Nov 2020 21:44:07 +0000
-Received: from abhmp0006.oracle.com (abhmp0006.oracle.com [141.146.116.12])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0A9Li6mO004405;
-        Mon, 9 Nov 2020 21:44:06 GMT
-Received: from [192.168.0.28] (/73.189.186.83)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 09 Nov 2020 13:44:06 -0800
-Message-ID: <5FA9B823.9060609@oracle.com>
-Date:   Mon, 09 Nov 2020 13:44:03 -0800
-From:   si-wei liu <si-wei.liu@oracle.com>
-Organization: Oracle Corporation
-User-Agent: Mozilla/5.0 (Windows NT 6.3; WOW64; rv:24.0) Gecko/20100101 Thunderbird/24.2.0
-MIME-Version: 1.0
-To:     Jason Wang <jasowang@redhat.com>, mst@redhat.com,
-        lingshan.zhu@intel.com
-CC:     joao.m.martins@oracle.com, boris.ostrovsky@oracle.com,
-        linux-kernel@vger.kernel.org,
-        virtualization@lists.linux-foundation.org
-Subject: Re: [PATCH v2] vhost-vdpa: fix page pinning leakage in error path
- (rework)
-References: <1604532796-12757-1-git-send-email-si-wei.liu@oracle.com> <dcbe4f3e-42f3-d245-9ee4-b17977ad27a5@redhat.com> <5FA48342.4060404@oracle.com> <64fb6179-c5ff-9552-381f-85b63e704057@redhat.com>
-In-Reply-To: <64fb6179-c5ff-9552-381f-85b63e704057@redhat.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9800 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 spamscore=0 phishscore=0
- mlxlogscore=999 mlxscore=0 malwarescore=0 bulkscore=0 suspectscore=2
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2011090139
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9800 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 lowpriorityscore=0 priorityscore=1501
- clxscore=1015 malwarescore=0 mlxscore=0 spamscore=0 suspectscore=2
- mlxlogscore=999 impostorscore=0 phishscore=0 adultscore=0 bulkscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2011090139
+        Mon, 9 Nov 2020 16:44:57 -0500
+Received: from mail-oo1-xc42.google.com (mail-oo1-xc42.google.com [IPv6:2607:f8b0:4864:20::c42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8A5BC0613CF;
+        Mon,  9 Nov 2020 13:44:56 -0800 (PST)
+Received: by mail-oo1-xc42.google.com with SMTP id n2so2581973ooo.8;
+        Mon, 09 Nov 2020 13:44:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:message-id:in-reply-to:references:subject
+         :mime-version:content-transfer-encoding;
+        bh=/YzuM89mASoBpBkWORGZlFLM10Sp7MghYlJKrb+EkNY=;
+        b=qFXHN0Hu1Ppbdk+WWWVhcyxtDBT7iAO0lch7rqhKqwtgOsN32A7ZB2B6qbGv+g+fIx
+         IzH9tnTdns2zk7BXGT86OBz1nlqGwClvzMPc2fphD8x38m8zzlFjk4945LjNRhzOlyv/
+         YxvevLOoyl8d5Y3fkI65GtxvfeF2/1X5AXiWIBN6t3wZySmwlTTdGRqQeWGmXP2rTTfY
+         4d1lhIUhZxdZDkgDt8SKk6xF0O3YZX0oNHNv9dw5IM/oO/lJiK/BnFEx5tsaziPT8wBz
+         pzmsZFOQ34erT9SMxwHGlIzHvSAuCvtiXSbYLTUZziWkWmutuM50MftjjF553iffnBeN
+         9ZwQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
+         :references:subject:mime-version:content-transfer-encoding;
+        bh=/YzuM89mASoBpBkWORGZlFLM10Sp7MghYlJKrb+EkNY=;
+        b=NM4mkQX6tChv7+bjG1gl5RTyTsDOVJmEzL108xaFvMhc2L0Ep3Bov38ch+3I9BqDnU
+         EsbupkC2jmJXvWW8/rOlQ9PC5vS5zTskWkbOIY2UN1fYmTp7eIxbd3rlKRLxyoz6fWlv
+         PKUDpOGkx2od5160c2+HVt/dk7wyFw/WzjgrW0lsYK7ul63pw3z3a7wvio60OgJLgdEh
+         LunYKGy3N5CFCDSjMhus4kuxhiPB3Ya6Z8LxwmL0rjmS9nO3hGYGdWuyVfM+zi0I01iq
+         6RQxgWz7Ad6oD4U5fWuGNRsXye8z0o3Ml0+bMFljSlhRX9oT/qK8mGfg41ag+oktEH2U
+         vIlQ==
+X-Gm-Message-State: AOAM53391OruVfHX4GjHbcCAoT1hKTu0ZCN+g8TuBN3KDZ85Wj4jQBGA
+        f6UxmOY8rdyQI5xhm88RNpk=
+X-Google-Smtp-Source: ABdhPJwBRerZppo2xOiQvtM4AsleO1AwlnazGnMjZH1eCgy2anI+CQ2RJbRaW99qgAyHWKYW8hIB0w==
+X-Received: by 2002:a4a:8f98:: with SMTP id c24mr1957094ooj.27.1604958296309;
+        Mon, 09 Nov 2020 13:44:56 -0800 (PST)
+Received: from localhost ([184.63.162.180])
+        by smtp.gmail.com with ESMTPSA id p17sm2685090oov.1.2020.11.09.13.44.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 09 Nov 2020 13:44:55 -0800 (PST)
+Date:   Mon, 09 Nov 2020 13:44:48 -0800
+From:   John Fastabend <john.fastabend@gmail.com>
+To:     Alex Shi <alex.shi@linux.alibaba.com>,
+        Jesper Dangaard Brouer <jbrouer@redhat.com>
+Cc:     davem@davemloft.net, Jakub Kicinski <kuba@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Message-ID: <5fa9b850d6de5_8c0e2089d@john-XPS-13-9370.notmuch>
+In-Reply-To: <3d39a08d-2e50-efeb-214f-0c7c2d1605d7@linux.alibaba.com>
+References: <1604641431-6295-1-git-send-email-alex.shi@linux.alibaba.com>
+ <20201106171352.5c51342d@carbon>
+ <3d39a08d-2e50-efeb-214f-0c7c2d1605d7@linux.alibaba.com>
+Subject: Re: [PATCH] net/xdp: remove unused macro REG_STATE_NEW
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Alex Shi wrote:
+> =
 
-On 11/8/2020 7:21 PM, Jason Wang wrote:
->
-> On 2020/11/6 上午6:57, si-wei liu wrote:
->>
->> On 11/4/2020 7:26 PM, Jason Wang wrote:
->>>
->>> On 2020/11/5 上午7:33, Si-Wei Liu wrote:
->>>> Pinned pages are not properly accounted particularly when
->>>> mapping error occurs on IOTLB update. Clean up dangling
->>>> pinned pages for the error path.
->>>>
->>>> The memory usage for bookkeeping pinned pages is reverted
->>>> to what it was before: only one single free page is needed.
->>>> This helps reduce the host memory demand for VM with a large
->>>> amount of memory, or in the situation where host is running
->>>> short of free memory.
->>>>
->>>> Fixes: 4c8cf31885f6 ("vhost: introduce vDPA-based backend")
->>>> Signed-off-by: Si-Wei Liu <si-wei.liu@oracle.com>
->>>> ---
->>>> Changes in v2:
->>>> - Drop the reversion patch
->>>> - Fix unhandled page leak towards the end of page_list
->>>>
->>>>   drivers/vhost/vdpa.c | 79 
->>>> ++++++++++++++++++++++++++++++++++++++++------------
->>>>   1 file changed, 61 insertions(+), 18 deletions(-)
->>>>
->>>> diff --git a/drivers/vhost/vdpa.c b/drivers/vhost/vdpa.c
->>>> index b6d9016..e112854 100644
->>>> --- a/drivers/vhost/vdpa.c
->>>> +++ b/drivers/vhost/vdpa.c
->>>> @@ -560,6 +560,8 @@ static int vhost_vdpa_map(struct vhost_vdpa *v,
->>>>         if (r)
->>>>           vhost_iotlb_del_range(dev->iotlb, iova, iova + size - 1);
->>>> +    else
->>>> +        atomic64_add(size >> PAGE_SHIFT, &dev->mm->pinned_vm);
->>>>         return r;
->>>>   }
->>>> @@ -591,14 +593,16 @@ static int 
->>>> vhost_vdpa_process_iotlb_update(struct vhost_vdpa *v,
->>>>       unsigned long list_size = PAGE_SIZE / sizeof(struct page *);
->>>>       unsigned int gup_flags = FOLL_LONGTERM;
->>>>       unsigned long npages, cur_base, map_pfn, last_pfn = 0;
->>>> -    unsigned long locked, lock_limit, pinned, i;
->>>> +    unsigned long lock_limit, sz2pin, nchunks, i;
->>>>       u64 iova = msg->iova;
->>>> +    long pinned;
->>>>       int ret = 0;
->>>>         if (vhost_iotlb_itree_first(iotlb, msg->iova,
->>>>                       msg->iova + msg->size - 1))
->>>>           return -EEXIST;
->>>>   +    /* Limit the use of memory for bookkeeping */
->>>>       page_list = (struct page **) __get_free_page(GFP_KERNEL);
->>>>       if (!page_list)
->>>>           return -ENOMEM;
->>>> @@ -607,52 +611,75 @@ static int 
->>>> vhost_vdpa_process_iotlb_update(struct vhost_vdpa *v,
->>>>           gup_flags |= FOLL_WRITE;
->>>>         npages = PAGE_ALIGN(msg->size + (iova & ~PAGE_MASK)) >> 
->>>> PAGE_SHIFT;
->>>> -    if (!npages)
->>>> -        return -EINVAL;
->>>> +    if (!npages) {
->>>> +        ret = -EINVAL;
->>>> +        goto free;
->>>> +    }
->>>>         mmap_read_lock(dev->mm);
->>>>   -    locked = atomic64_add_return(npages, &dev->mm->pinned_vm);
->>>>       lock_limit = rlimit(RLIMIT_MEMLOCK) >> PAGE_SHIFT;
->>>> -
->>>> -    if (locked > lock_limit) {
->>>> +    if (npages + atomic64_read(&dev->mm->pinned_vm) > lock_limit) {
->>>>           ret = -ENOMEM;
->>>> -        goto out;
->>>> +        goto unlock;
->>>>       }
->>>>         cur_base = msg->uaddr & PAGE_MASK;
->>>>       iova &= PAGE_MASK;
->>>> +    nchunks = 0;
->>>>         while (npages) {
->>>> -        pinned = min_t(unsigned long, npages, list_size);
->>>> -        ret = pin_user_pages(cur_base, pinned,
->>>> -                     gup_flags, page_list, NULL);
->>>> -        if (ret != pinned)
->>>> +        sz2pin = min_t(unsigned long, npages, list_size);
->>>> +        pinned = pin_user_pages(cur_base, sz2pin,
->>>> +                    gup_flags, page_list, NULL);
->>>> +        if (sz2pin != pinned) {
->>>> +            if (pinned < 0) {
->>>> +                ret = pinned;
->>>> +            } else {
->>>> +                unpin_user_pages(page_list, pinned);
->>>> +                ret = -ENOMEM;
->>>> +            }
->>>>               goto out;
->>>> +        }
->>>> +        nchunks++;
->>>>             if (!last_pfn)
->>>>               map_pfn = page_to_pfn(page_list[0]);
->>>>   -        for (i = 0; i < ret; i++) {
->>>> +        for (i = 0; i < pinned; i++) {
->>>>               unsigned long this_pfn = page_to_pfn(page_list[i]);
->>>>               u64 csize;
->>>>                 if (last_pfn && (this_pfn != last_pfn + 1)) {
->>>>                   /* Pin a contiguous chunk of memory */
->>>>                   csize = (last_pfn - map_pfn + 1) << PAGE_SHIFT;
->>>> -                if (vhost_vdpa_map(v, iova, csize,
->>>> -                           map_pfn << PAGE_SHIFT,
->>>> -                           msg->perm))
->>>> +                ret = vhost_vdpa_map(v, iova, csize,
->>>> +                             map_pfn << PAGE_SHIFT,
->>>> +                             msg->perm);
->>>> +                if (ret) {
->>>> +                    /*
->>>> +                     * Unpin the pages that are left unmapped
->>>> +                     * from this point on in the current
->>>> +                     * page_list. The remaining outstanding
->>>> +                     * ones which may stride across several
->>>> +                     * chunks will be covered in the common
->>>> +                     * error path subsequently.
->>>> +                     */
->>>> +                    unpin_user_pages(&page_list[i],
->>>> +                             pinned - i);
->>>
->>>
->>> Can we simply do last_pfn = this_pfn here?
->> Nope. They are not contiguous segments of memory. Noted the 
->> conditional (this_pfn != last_pfn + 1) being held here.
->
->
-> Right.
->
->
->>
->>>
->>>
->>>>                       goto out;
->>>> +                }
->>>> +
->>>>                   map_pfn = this_pfn;
->>>>                   iova += csize;
->>>> +                nchunks = 0;
->>>>               }
->>>>                 last_pfn = this_pfn;
->>>>           }
->>>>   -        cur_base += ret << PAGE_SHIFT;
->>>> -        npages -= ret;
->>>> +        cur_base += pinned << PAGE_SHIFT;
->>>> +        npages -= pinned;
->>>>       }
->>>>         /* Pin the rest chunk */
->>>> @@ -660,10 +687,26 @@ static int 
->>>> vhost_vdpa_process_iotlb_update(struct vhost_vdpa *v,
->>>>                    map_pfn << PAGE_SHIFT, msg->perm);
->>>>   out:
->>>>       if (ret) {
->>>> +        if (nchunks && last_pfn) {
->>>
->>>
->>> Any reason for checking last_pfn here?
->>>
->>> Note that we did:
->>>
->>> +        nchunks++;
->>>
->>>          if (!last_pfn)
->>>              map_pfn = page_to_pfn(page_list[0]);
->> It's for explicit coding to make sure this common error path can be 
->> reused no matter if last_pfn has a sane value assigned or not. I can 
->> change it to an implicit WARN_ON() if need be.
->
->
-> Just to make sure I understand. A question, when will we get nchunks 
-> != 0 but last_pfn == 0?
-The current code has implicit assumption that nchunks != 0 infers 
-last_pfn != 0. However, this assumption could break subject to code 
-structure changes for eg. failure may occur after the increment of 
-nchunks and before the for loop. I feel it'd be the best to capture this 
-assumption with something explicit.
+> =
 
--Siwei
+> =E5=9C=A8 2020/11/7 =E4=B8=8A=E5=8D=8812:13, Jesper Dangaard Brouer =E5=
+=86=99=E9=81=93:
+> > Hmm... REG_STATE_NEW is zero, so it is implicitly set via memset zero=
+.
+> > But it is true that it is technically not directly used or referenced=
+.
+> > =
 
->
-> Thanks
->
->
->> Thanks,
->> -Siwei
->>
->>>
->>>
->>> Thanks
->>>
->>>
->>>> +            unsigned long pfn;
->>>> +
->>>> +            /*
->>>> +             * Unpin the outstanding pages which are yet to be
->>>> +             * mapped but haven't due to vdpa_map() or
->>>> +             * pin_user_pages() failure.
->>>> +             *
->>>> +             * Mapped pages are accounted in vdpa_map(), hence
->>>> +             * the corresponding unpinning will be handled by
->>>> +             * vdpa_unmap().
->>>> +             */
->>>> +            for (pfn = map_pfn; pfn <= last_pfn; pfn++)
->>>> +                unpin_user_page(pfn_to_page(pfn));
->>>> +        }
->>>>           vhost_vdpa_unmap(v, msg->iova, msg->size);
->>>> -        atomic64_sub(npages, &dev->mm->pinned_vm);
->>>>       }
->>>> +unlock:
->>>>       mmap_read_unlock(dev->mm);
->>>> +free:
->>>>       free_page((unsigned long)page_list);
->>>>       return ret;
->>>>   }
->>>
->>
->
+> > It is mentioned in a comment, so please send V2 with this additional =
+change:
+> =
+
+> Hi Jesper,
+> =
+
+> Thanks a lot for comments. here is the v2:
+> =
+
+> From 2908d25bf2e1c90ad71a83ba056743f45da283e8 Mon Sep 17 00:00:00 2001
+> From: Alex Shi <alex.shi@linux.alibaba.com>
+> Date: Fri, 6 Nov 2020 13:41:58 +0800
+> Subject: [PATCH v2] net/xdp: remove unused macro REG_STATE_NEW
+> =
+
+> To tame gcc warning on it:
+> net/core/xdp.c:20:0: warning: macro "REG_STATE_NEW" is not used
+> [-Wunused-macros]
+> And change related comments as Jesper Dangaard Brouer suggested.
+> =
+
+> Signed-off-by: Alex Shi <alex.shi@linux.alibaba.com>
+> ---
+
+>  net/core/xdp.c | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
+> =
+
+> diff --git a/net/core/xdp.c b/net/core/xdp.c
+> index 48aba933a5a8..0df5ee5682d9 100644
+> --- a/net/core/xdp.c
+> +++ b/net/core/xdp.c
+> @@ -19,7 +19,6 @@
+>  #include <trace/events/xdp.h>
+>  #include <net/xdp_sock_drv.h>
+>  =
+
+> -#define REG_STATE_NEW		0x0
+>  #define REG_STATE_REGISTERED	0x1
+>  #define REG_STATE_UNREGISTERED	0x2
+>  #define REG_STATE_UNUSED	0x3
+
+I think having the define there makes it more readable and clear what
+the zero state is. But if we run with unused-macros I guess its even
+uglier to try and mark it with unused attribute.
+
+Acked-by: John Fastabend <john.fastabend@gmail.com>
+
+> @@ -175,7 +174,7 @@ int xdp_rxq_info_reg(struct xdp_rxq_info *xdp_rxq,
+>  		return -ENODEV;
+>  	}
+>  =
+
+> -	/* State either UNREGISTERED or NEW */
+> +	/* State either UNREGISTERED or zero */
+>  	xdp_rxq_info_init(xdp_rxq);
+>  	xdp_rxq->dev =3D dev;
+>  	xdp_rxq->queue_index =3D queue_index;
+> -- =
+
+> 1.8.3.1
+> =
+
+
 
