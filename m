@@ -2,219 +2,208 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D4B32AB161
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 07:42:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D11862AB16A
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 07:49:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729575AbgKIGmH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 01:42:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46352 "EHLO
+        id S1729468AbgKIGtc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 01:49:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47480 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729076AbgKIGmH (ORCPT
+        with ESMTP id S1727077AbgKIGtc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 01:42:07 -0500
-Received: from mail-ot1-x341.google.com (mail-ot1-x341.google.com [IPv6:2607:f8b0:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28A8BC0613CF;
-        Sun,  8 Nov 2020 22:42:07 -0800 (PST)
-Received: by mail-ot1-x341.google.com with SMTP id i18so7959910ots.0;
-        Sun, 08 Nov 2020 22:42:07 -0800 (PST)
+        Mon, 9 Nov 2020 01:49:32 -0500
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D72B5C0613CF;
+        Sun,  8 Nov 2020 22:49:31 -0800 (PST)
+Received: by mail-pg1-x543.google.com with SMTP id f38so6318108pgm.2;
+        Sun, 08 Nov 2020 22:49:31 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=l6TPt7w5STTkuidwtMwkhl3rGWeFPvxEUTG/PaN57eg=;
-        b=KQ0gqbPix9wruc8m5b3TyJAglBr0E3YAYEzUWCUWIXvO5a7H6drSsp4gTfI9DhChSM
-         2rYp+O13hTz3HCDKo4T+sijJr9WitGLqwKcMiZyHJZwNUKjKr7MNC/9znQF9/kKdDW+d
-         5MKGdQ8HHnBRKtRgHGblNcyF2b+pi1ZqNQRoSpbBHueyaOVGSqe4BNPet7zMbvynKAO0
-         ZPtrSKsVqeY4RUkmjEaEQM0cf5F4xpIy2/KUDkjhWiraWiN3+LiqBtFMkQo/fZGkTzEZ
-         7K5cODGFdlhkSVoqaBJIDVl/Wr2YWVFjzO7Yc3AllArt/JXyGLtDYe9ZRNn5J2gu6iH4
-         FjQQ==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=wyGY1r0td00p5C4NS8c4M57jRtSLCdR+5tu7AC1KQTY=;
+        b=OTdjcLn8iendZ3IJAfWEoU1BuhYUlFKoeZ0wxUH+TgURiGFyd/6+IvGhDtcBHbiujh
+         gxZjtLLRqsV0fObpt5/nEgYga185dz11C/ooLTLKDFY70nSzGt3VIyYv8MuQIu/+R4Rn
+         Gqbno6hjmd58LK5MhOKQ3dLMfnUAUvBXq+JPZP4uqE7A2HD3AQSEkLntue1skmuhvjm0
+         znJX9U0GYiMGZHnmwP2McL6gMY/yOPMjs9phx8fGO+MYVf3kSi54zXraya5gNYvjmdpj
+         chgkJNHxYuOnTS4billMOuDLvv/hqVpJx0xEvf1JpOX55iS49OKNYlLvk4dzhk9D4l4P
+         D6Wg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=l6TPt7w5STTkuidwtMwkhl3rGWeFPvxEUTG/PaN57eg=;
-        b=af9LzWlgghzilzxGia2s80Vsfca7sT/H2yR70Ffv95A17853r3EFmCaMQv8APab6C8
-         lVe/HcMnqFmNJixp4S3PZO/cCPEMgoHB3jm94F1aAxcjRgHdOssojTs9iPsYwEJXGaYm
-         CeGQ7ZoVjtLIL3pSWMgACjXJ9O/t1GNGA851eskYJpKD0T7rHIYypYjqbHxNRz76u6I2
-         9/9WSxCmm6SkTZIT3pzwZl8KXxeFdDtsulcvcZHHMbO4dC+BeIDVQlqJ8qc20VacRNyE
-         AC8ynCLGbt40fHmmYgSobmz+QTF0RqYxSduRjs7MwGxmFuvs+5z+8K/sueKfoMewjDDJ
-         AB5Q==
-X-Gm-Message-State: AOAM530mDjbJ3CRpfi17G1XJq9tflH0I+Zc4jxL6XmFsW5mffqRmm3Hq
-        hvjfyprX2BDC3hAPY5MV28cCFrtUBWNrfRw6blk=
-X-Google-Smtp-Source: ABdhPJwmr0HzBHpa3pM5U/j6HGCmx8UjuPiHY3eCF/a1HxBmE/lECsKWWadQAbfEQIpd5HBYFYy35D/fZRNQjEkACaI=
-X-Received: by 2002:a9d:822:: with SMTP id 31mr9755364oty.224.1604904126483;
- Sun, 08 Nov 2020 22:42:06 -0800 (PST)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=wyGY1r0td00p5C4NS8c4M57jRtSLCdR+5tu7AC1KQTY=;
+        b=k6eWjilkwkarrAdI0nBfrKYTHCMvZV2CB8MijpWAtv1Oddo6JTF4etagxotz4DaOXZ
+         RIyQATTTPxo2phprnzvHU4Eq560CUy8IcVumOszRT0Mv5nlFsr3bIcY944PcjX6WXMkw
+         mrv9DO/EAhFsTwqNOeR1Z06NqvBMudr1vbfkevVSZLHFeF2XOlHWnyng4Zvl8A5RIZFD
+         8bSRwbflK06+lWjw0FniNQzcddm8uPBE95f+VNJ88/u7/sZ2BtlSxqCuEiYoH0/CJZBK
+         6JzZJ3uT2/KILnS0EozWS/PXF7huS3sEqimiG6lYLF1XcZbUo4GKK5W8WDaizToaW6Bj
+         3S+A==
+X-Gm-Message-State: AOAM533fQD8/osjbpNtguHTtsK9qOOQLJJhPAqE256foMurNUjRJFVmv
+        LwO4phBewDIiP6NRt4E6C9bFTHqTySw9KDDH
+X-Google-Smtp-Source: ABdhPJx6mLu/wejEC3V4tBx+EhCMViGlq1Tl7ztKLAAgSMePDS8QxWCD08W4jkR0obduGAY92FupZg==
+X-Received: by 2002:a63:db18:: with SMTP id e24mr11559943pgg.155.1604904570692;
+        Sun, 08 Nov 2020 22:49:30 -0800 (PST)
+Received: from [192.168.86.81] ([106.51.240.240])
+        by smtp.gmail.com with ESMTPSA id u5sm9194292pgj.28.2020.11.08.22.49.24
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 08 Nov 2020 22:49:29 -0800 (PST)
+Subject: Re: [PATCH v6 1/2] kunit: Support for Parameterized Testing
+To:     Marco Elver <elver@google.com>, David Gow <davidgow@google.com>
+Cc:     Brendan Higgins <brendanhiggins@google.com>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Iurii Zaikin <yzaikin@google.com>,
+        Theodore Ts'o <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        KUnit Development <kunit-dev@googlegroups.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-ext4@vger.kernel.org
+References: <20201106192154.51514-1-98.arpi@gmail.com>
+ <CABVgOSkQ6+y7OGw2494cJa2b60EkSjncLNAgc9cJDbS=X9J3WA@mail.gmail.com>
+ <CANpmjNNp2RUCE_ypp2R4MznikTYRYeCDuF7VMp+Hbh=55KWa3A@mail.gmail.com>
+From:   Arpitha Raghunandan <98.arpi@gmail.com>
+Message-ID: <47a05c5a-485d-026b-c1c3-476ed1a97856@gmail.com>
+Date:   Mon, 9 Nov 2020 12:19:22 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20201106101825.30960-1-alexandru.ardelean@analog.com>
- <20201106101825.30960-3-alexandru.ardelean@analog.com> <20201106131727.GD14837@roeck-us.net>
-In-Reply-To: <20201106131727.GD14837@roeck-us.net>
-From:   Alexandru Ardelean <ardeleanalex@gmail.com>
-Date:   Mon, 9 Nov 2020 08:41:55 +0200
-Message-ID: <CA+U=DsoQNfYQ2o-wKpcqUJ9Xj9u9U4Nas8xKYhcYusU4HyHx1g@mail.gmail.com>
-Subject: Re: [PATCH 3/3] hwmon: (ltc2945): add support for sense resistor
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     Alexandru Ardelean <alexandru.ardelean@analog.com>,
-        linux-hwmon@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        jdelvare@suse.com, Mark.Thoren@analog.com
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CANpmjNNp2RUCE_ypp2R4MznikTYRYeCDuF7VMp+Hbh=55KWa3A@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 6, 2020 at 3:17 PM Guenter Roeck <linux@roeck-us.net> wrote:
->
-> On Fri, Nov 06, 2020 at 12:18:25PM +0200, Alexandru Ardelean wrote:
-> > The sense resistor is a parameter of the board. It should be configured in
-> > the driver via a device-tree / ACPI property, so that the proper current
-> > measurements can be done in the driver.
-> >
-> > It shouldn't be necessary that userspace need to know about the value of
-> > the resistor. It makes things a bit harder to make the application code
-> > portable from one board to another.
-> >
-> > This change implements support for the sense resistor to be configured from
-> > DT/ACPI and used in current calculations.
-> >
->
-> This will require a matching deevicetree document.
+On 07/11/20 3:36 pm, Marco Elver wrote:
+> On Sat, 7 Nov 2020 at 05:58, David Gow <davidgow@google.com> wrote:
+>> On Sat, Nov 7, 2020 at 3:22 AM Arpitha Raghunandan <98.arpi@gmail.com> wrote:
+>>>
+>>> Implementation of support for parameterized testing in KUnit.
+>>> This approach requires the creation of a test case using the
+>>> KUNIT_CASE_PARAM macro that accepts a generator function as input.
+>>> This generator function should return the next parameter given the
+>>> previous parameter in parameterized tests. It also provides
+>>> a macro to generate common-case generators.
+>>>
+>>> Signed-off-by: Arpitha Raghunandan <98.arpi@gmail.com>
+>>> Co-developed-by: Marco Elver <elver@google.com>
+>>> Signed-off-by: Marco Elver <elver@google.com>
+>>> ---
+>>
+>> This looks good to me! A couple of minor thoughts about the output
+>> format below, but I'm quite happy to have this as-is regardless.
+>>
+>> Reviewed-by: David Gow <davidgow@google.com>
+>>
+>> Cheers,
+>> -- David
+>>
+>>> Changes v5->v6:
+>>> - Fix alignment to maintain consistency
+>>> Changes v4->v5:
+>>> - Update kernel-doc comments.
+>>> - Use const void* for generator return and prev value types.
+>>> - Add kernel-doc comment for KUNIT_ARRAY_PARAM.
+>>> - Rework parameterized test case execution strategy: each parameter is executed
+>>>   as if it was its own test case, with its own test initialization and cleanup
+>>>   (init and exit are called, etc.). However, we cannot add new test cases per TAP
+>>>   protocol once we have already started execution. Instead, log the result of
+>>>   each parameter run as a diagnostic comment.
+>>> Changes v3->v4:
+>>> - Rename kunit variables
+>>> - Rename generator function helper macro
+>>> - Add documentation for generator approach
+>>> - Display test case name in case of failure along with param index
+>>> Changes v2->v3:
+>>> - Modifictaion of generator macro and method
+>>> Changes v1->v2:
+>>> - Use of a generator method to access test case parameters
+>>>
+>>>  include/kunit/test.h | 36 ++++++++++++++++++++++++++++++++++
+>>>  lib/kunit/test.c     | 46 +++++++++++++++++++++++++++++++-------------
+>>>  2 files changed, 69 insertions(+), 13 deletions(-)
+>>>
+>>> diff --git a/include/kunit/test.h b/include/kunit/test.h
+>>> index db1b0ae666c4..16616d3974f9 100644
+>>> --- a/include/kunit/test.h
+>>> +++ b/include/kunit/test.h
+>>> @@ -107,6 +107,7 @@ struct kunit;
+> [...]
+>>> -       kunit_suite_for_each_test_case(suite, test_case)
+>>> -               kunit_run_case_catch_errors(suite, test_case);
+>>> +       kunit_suite_for_each_test_case(suite, test_case) {
+>>> +               struct kunit test = { .param_value = NULL, .param_index = 0 };
+>>> +               bool test_success = true;
+>>> +
+>>> +               if (test_case->generate_params)
+>>> +                       test.param_value = test_case->generate_params(NULL);
+>>> +
+>>> +               do {
+>>> +                       kunit_run_case_catch_errors(suite, test_case, &test);
+>>> +                       test_success &= test_case->success;
+>>> +
+>>> +                       if (test_case->generate_params) {
+>>> +                               kunit_log(KERN_INFO, &test,
+>>> +                                         KUNIT_SUBTEST_INDENT
+>>> +                                         "# %s: param-%d %s",
+>>
+>> Would it make sense to have this imitate the TAP format a bit more?
+>> So, have "# [ok|not ok] - [name]" as the format? [name] could be
+>> something like "[test_case->name]:param-[index]" or similar.
+>> If we keep it commented out and don't indent it further, it won't
+>> formally be a nested test (though if we wanted to support those later,
+>> it'd be easy to add), but I think it would be nicer to be consistent
+>> here.
+> 
+> The previous attempt [1] at something similar failed because it seems
+> we'd need to teach kunit-tool new tricks [2], too.
+> [1] https://lkml.kernel.org/r/20201105195503.GA2399621@elver.google.com
+> [2] https://lkml.kernel.org/r/20201106123433.GA3563235@elver.google.com
+> 
+> So if we go with a different format, we might need a patch before this
+> one to make kunit-tool compatible with that type of diagnostic.
+> 
+> Currently I think we have the following proposals for a format:
+> 
+> 1. The current "# [test_case->name]: param-[index] [ok|not ok]" --
+> this works well, because no changes to kunit-tool are required, and it
+> also picks up the diagnostic context for the case and displays that on
+> test failure.
+> 
+> 2. Your proposed "# [ok|not ok] - [test_case->name]:param-[index]".
+> As-is, this needs a patch for kunit-tool as well. I just checked, and
+> if we change it to "# [ok|not ok] - [test_case->name]: param-[index]"
+> (note the space after ':') it works without changing kunit-tool. ;-)
+> 
+> 3. Something like "# [ok|not ok] param-[index] - [test_case->name]",
+> which I had played with earlier but kunit-tool is definitely not yet
+> happy with.
+> 
+> So my current preference is (2) with the extra space (no change to
+> kunit-tool required). WDYT?
+> 
 
-Ack
-Will create a dt binding schema doc.
-Are you fine with being added as maintainer in the DT doc?
-Seeing as you are the original author of the driver.
+Which format do we finally go with?
 
->
-> > Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
-> > ---
-> >  drivers/hwmon/ltc2945.c | 48 ++++++++++++++++++-----------------------
-> >  1 file changed, 21 insertions(+), 27 deletions(-)
-> >
-> > diff --git a/drivers/hwmon/ltc2945.c b/drivers/hwmon/ltc2945.c
-> > index 75d997d31e01..500401a82c49 100644
-> > --- a/drivers/hwmon/ltc2945.c
-> > +++ b/drivers/hwmon/ltc2945.c
-> > @@ -61,9 +61,11 @@
-> >  /**
-> >   * struct ltc2945_state - driver instance specific data
-> >   * @regmap           regmap object to access device registers
-> > + * @r_sense_uohm     current sense resistor value
-> >   */
-> >  struct ltc2945_state {
-> >       struct regmap           *regmap;
-> > +     u32                     r_sense_uohm;
-> >  };
-> >
-> >  static inline bool is_power_reg(u8 reg)
-> > @@ -101,9 +103,8 @@ static long long ltc2945_reg_to_val(struct device *dev, u8 reg)
-> >       case LTC2945_MAX_POWER_THRES_H:
-> >       case LTC2945_MIN_POWER_THRES_H:
-> >               /*
-> > -              * Convert to uW by assuming current is measured with
-> > -              * an 1mOhm sense resistor, similar to current
-> > -              * measurements.
-> > +              * Convert to uW by and scale it with the configured
-> > +              * sense resistor, similar to current measurements.
-> >                * Control register bit 0 selects if voltage at SENSE+/VDD
-> >                * or voltage at ADIN is used to measure power.
-> >                */
-> > @@ -112,10 +113,10 @@ static long long ltc2945_reg_to_val(struct device *dev, u8 reg)
-> >                       return ret;
-> >               if (control & CONTROL_MULT_SELECT) {
-> >                       /* 25 mV * 25 uV = 0.625 uV resolution. */
-> > -                     val *= 625LL;
-> > +                     val = DIV_ROUND_CLOSEST_ULL(val * 625LL * 1000, st->r_sense_uohm);
-> >               } else {
-> >                       /* 0.5 mV * 25 uV = 0.0125 uV resolution. */
-> > -                     val = (val * 25LL) >> 1;
-> > +                     val = DIV_ROUND_CLOSEST_ULL(val * 25LL * 1000, st->r_sense_uohm) >> 1;
-> >               }
-> >               break;
-> >       case LTC2945_VIN_H:
-> > @@ -140,13 +141,10 @@ static long long ltc2945_reg_to_val(struct device *dev, u8 reg)
-> >       case LTC2945_MAX_SENSE_THRES_H:
-> >       case LTC2945_MIN_SENSE_THRES_H:
-> >               /*
-> > -              * 25 uV resolution. Convert to current as measured with
-> > -              * an 1 mOhm sense resistor, in mA. If a different sense
-> > -              * resistor is installed, calculate the actual current by
-> > -              * dividing the reported current by the sense resistor value
-> > -              * in mOhm.
-> > +              * 25 uV resolution. Convert to current and scale it
-> > +              * with the value of the sense resistor.
-> >                */
-> > -             val *= 25;
-> > +             val = DIV_ROUND_CLOSEST_ULL(val * 25 * 1000, st->r_sense_uohm);
-> >               break;
-> >       default:
-> >               return -EINVAL;
-> > @@ -169,9 +167,8 @@ static int ltc2945_val_to_reg(struct device *dev, u8 reg,
-> >       case LTC2945_MAX_POWER_THRES_H:
-> >       case LTC2945_MIN_POWER_THRES_H:
-> >               /*
-> > -              * Convert to register value by assuming current is measured
-> > -              * with an 1mOhm sense resistor, similar to current
-> > -              * measurements.
-> > +              * Convert to register value, scale it with the configured sense
-> > +              * resistor value, similar to current measurements.
-> >                * Control register bit 0 selects if voltage at SENSE+/VDD
-> >                * or voltage at ADIN is used to measure power, which in turn
-> >                * determines register calculations.
-> > @@ -181,14 +178,10 @@ static int ltc2945_val_to_reg(struct device *dev, u8 reg,
-> >                       return ret;
-> >               if (control & CONTROL_MULT_SELECT) {
-> >                       /* 25 mV * 25 uV = 0.625 uV resolution. */
-> > -                     val = DIV_ROUND_CLOSEST_ULL(val, 625);
-> > +                     val = DIV_ROUND_CLOSEST_ULL(val * 1000, 625 * st->r_sense_uohm);
-> >               } else {
-> > -                     /*
-> > -                      * 0.5 mV * 25 uV = 0.0125 uV resolution.
-> > -                      * Divide first to avoid overflow;
-> > -                      * accept loss of accuracy.
-> > -                      */
-> > -                     val = DIV_ROUND_CLOSEST_ULL(val, 25) * 2;
-> > +                     /* 0.5 mV * 25 uV = 0.0125 uV resolution. */
-> > +                     val = DIV_ROUND_CLOSEST_ULL(val * 2 * 1000, 25 * st->r_sense_uohm);
-> >               }
-> >               break;
-> >       case LTC2945_VIN_H:
-> > @@ -213,13 +206,10 @@ static int ltc2945_val_to_reg(struct device *dev, u8 reg,
-> >       case LTC2945_MAX_SENSE_THRES_H:
-> >       case LTC2945_MIN_SENSE_THRES_H:
-> >               /*
-> > -              * 25 uV resolution. Convert to current as measured with
-> > -              * an 1 mOhm sense resistor, in mA. If a different sense
-> > -              * resistor is installed, calculate the actual current by
-> > -              * dividing the reported current by the sense resistor value
-> > -              * in mOhm.
-> > +              * 25 uV resolution. Convert to current and scale it
-> > +              * with the value of the sense resistor, in mA.
-> >                */
-> > -             val = DIV_ROUND_CLOSEST_ULL(val, 25);
-> > +             val = DIV_ROUND_CLOSEST_ULL(val * 1000, 25 * st->r_sense_uohm);
-> >               break;
-> >       default:
-> >               return -EINVAL;
-> > @@ -475,6 +465,10 @@ static int ltc2945_probe(struct i2c_client *client)
-> >               return PTR_ERR(regmap);
-> >       }
-> >
-> > +     if (device_property_read_u32(dev, "shunt-resistor-micro-ohms",
-> > +                                  &st->r_sense_uohm))
-> > +             st->r_sense_uohm = 1000;
-> > +
->
-> Devicetree could set shunt-resistor-micro-ohms to 0, which would result
-> in divide by 0 errors.
+>> My other suggestion -- albeit one outside the scope of this initial
+>> version -- would be to allow the "param-%d" name to be overridden
+>> somehow by a test. For example, the ext4 inode test has names for all
+>> its test cases: it'd be nice to be able to display those instead (even
+>> if they're not formatted as identifiers as-is).
+> 
+> Right, I was thinking about this, but it'd need a way to optionally
+> pass another function that converts const void* params to readable
+> strings. But as you say, we should do that as a follow-up patch later
+> because it might require a few more iterations.
+> 
+> [...]
+> 
+> Thanks,
+> -- Marco
+> 
 
-Ack
-Will do a check for this.
-
->
-> Guenter
->
-> >       st->regmap = regmap;
-> >
-> >       /* Clear faults */
-> > --
-> > 2.27.0
-> >
