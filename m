@@ -2,40 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 10F6B2ABBD1
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 14:32:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D6552ABC67
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 14:37:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731884AbgKINbR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 08:31:17 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34610 "EHLO mail.kernel.org"
+        id S1731639AbgKINhK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 08:37:10 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57592 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731889AbgKINJh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 08:09:37 -0500
+        id S1729884AbgKINEn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 08:04:43 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B0C7D2076E;
-        Mon,  9 Nov 2020 13:09:35 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id F00F0216C4;
+        Mon,  9 Nov 2020 13:04:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604927376;
-        bh=H6D+GY6NEyoh7ciiCCRtFNFt8hY+G30jsIjus4pAUx0=;
+        s=default; t=1604927067;
+        bh=27MjlQ3L+4iwZee+WVZ31eD48P6EtzL01HRab65Zr/0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kkqE4hlj7WdZqwQLbzpDwB7ru2wM6O5Ny5scMVVTeWyFV6Boqn1uo3XHHibkaujeu
-         u3F2D2mNn0mQyk/9AvtijZ4fIobp19/eVfI6bKAXbLVaio8gxfewWVUR9ckCFSyoz3
-         TAHGIuhCyhIfKiUGSn+P7ZirBJ416PgCte6dMQ7Q=
+        b=g++hJb8Rgt/zcLxYsXtFMFhgVTXqNr1M453n3W+vwGPdoh8Lsjh2UumR5VOD2HsPs
+         ScrjguDPYnp1bBZxHGMBw/XcP7n7LiVlBsEdU1TfXjzqiiEICmijVOGe6xxrHLxp9w
+         IVev6aTxZAxhiZAOSp66bZZ0ySeB8slBg3ByKNgc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Russell King <linux@armlinux.org.uk>,
-        Lee Jones <lee.jones@linaro.org>,
-        Peilin Ye <yepeilin.cs@gmail.com>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>
-Subject: [PATCH 4.19 31/71] Fonts: Replace discarded const qualifier
+        stable@vger.kernel.org,
+        "Steven Rostedt (VMware)" <rostedt@goodmis.org>
+Subject: [PATCH 4.9 099/117] ftrace: Fix recursion check for NMI test
 Date:   Mon,  9 Nov 2020 13:55:25 +0100
-Message-Id: <20201109125021.371728191@linuxfoundation.org>
+Message-Id: <20201109125030.400396106@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201109125019.906191744@linuxfoundation.org>
-References: <20201109125019.906191744@linuxfoundation.org>
+In-Reply-To: <20201109125025.630721781@linuxfoundation.org>
+References: <20201109125025.630721781@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,171 +42,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lee Jones <lee.jones@linaro.org>
+From: Steven Rostedt (VMware) <rostedt@goodmis.org>
 
-commit 9522750c66c689b739e151fcdf895420dc81efc0 upstream.
+commit ee11b93f95eabdf8198edd4668bf9102e7248270 upstream.
 
-Commit 6735b4632def ("Fonts: Support FONT_EXTRA_WORDS macros for built-in
-fonts") introduced the following error when building rpc_defconfig (only
-this build appears to be affected):
+The code that checks recursion will work to only do the recursion check once
+if there's nested checks. The top one will do the check, the other nested
+checks will see recursion was already checked and return zero for its "bit".
+On the return side, nothing will be done if the "bit" is zero.
 
- `acorndata_8x8' referenced in section `.text' of arch/arm/boot/compressed/ll_char_wr.o:
-    defined in discarded section `.data' of arch/arm/boot/compressed/font.o
- `acorndata_8x8' referenced in section `.data.rel.ro' of arch/arm/boot/compressed/font.o:
-    defined in discarded section `.data' of arch/arm/boot/compressed/font.o
- make[3]: *** [/scratch/linux/arch/arm/boot/compressed/Makefile:191: arch/arm/boot/compressed/vmlinux] Error 1
- make[2]: *** [/scratch/linux/arch/arm/boot/Makefile:61: arch/arm/boot/compressed/vmlinux] Error 2
- make[1]: *** [/scratch/linux/arch/arm/Makefile:317: zImage] Error 2
+The problem is that zero is returned for the "good" bit when in NMI context.
+This will set the bit for NMIs making it look like *all* NMI tracing is
+recursing, and prevent tracing of anything in NMI context!
 
-The .data section is discarded at link time.  Reinstating acorndata_8x8 as
-const ensures it is still available after linking.  Do the same for the
-other 12 built-in fonts as well, for consistency purposes.
+The simple fix is to return "bit + 1" and subtract that bit on the end to
+get the real bit.
 
-Cc: <stable@vger.kernel.org>
-Cc: Russell King <linux@armlinux.org.uk>
-Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Fixes: 6735b4632def ("Fonts: Support FONT_EXTRA_WORDS macros for built-in fonts")
-Signed-off-by: Lee Jones <lee.jones@linaro.org>
-Co-developed-by: Peilin Ye <yepeilin.cs@gmail.com>
-Signed-off-by: Peilin Ye <yepeilin.cs@gmail.com>
-Signed-off-by: Daniel Vetter <daniel.vetter@ffwll.ch>
-Link: https://patchwork.freedesktop.org/patch/msgid/20201102183242.2031659-1-yepeilin.cs@gmail.com
+Cc: stable@vger.kernel.org
+Fixes: edc15cafcbfa3 ("tracing: Avoid unnecessary multiple recursion checks")
+Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- lib/fonts/font_10x18.c     |    2 +-
- lib/fonts/font_6x10.c      |    2 +-
- lib/fonts/font_6x11.c      |    2 +-
- lib/fonts/font_7x14.c      |    2 +-
- lib/fonts/font_8x16.c      |    2 +-
- lib/fonts/font_8x8.c       |    2 +-
- lib/fonts/font_acorn_8x8.c |    2 +-
- lib/fonts/font_mini_4x6.c  |    2 +-
- lib/fonts/font_pearl_8x8.c |    2 +-
- lib/fonts/font_sun12x22.c  |    2 +-
- lib/fonts/font_sun8x16.c   |    2 +-
- 11 files changed, 11 insertions(+), 11 deletions(-)
+ kernel/trace/trace.h |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
---- a/lib/fonts/font_10x18.c
-+++ b/lib/fonts/font_10x18.c
-@@ -8,7 +8,7 @@
+--- a/kernel/trace/trace.h
++++ b/kernel/trace/trace.h
+@@ -542,7 +542,7 @@ static __always_inline int trace_test_an
+ 	current->trace_recursion = val;
+ 	barrier();
  
- #define FONTDATAMAX 9216
+-	return bit;
++	return bit + 1;
+ }
  
--static struct font_data fontdata_10x18 = {
-+static const struct font_data fontdata_10x18 = {
- 	{ 0, 0, FONTDATAMAX, 0 }, {
- 	/* 0 0x00 '^@' */
- 	0x00, 0x00, /* 0000000000 */
---- a/lib/fonts/font_6x10.c
-+++ b/lib/fonts/font_6x10.c
-@@ -3,7 +3,7 @@
+ static __always_inline void trace_clear_recursion(int bit)
+@@ -552,6 +552,7 @@ static __always_inline void trace_clear_
+ 	if (!bit)
+ 		return;
  
- #define FONTDATAMAX 2560
++	bit--;
+ 	bit = 1 << bit;
+ 	val &= ~bit;
  
--static struct font_data fontdata_6x10 = {
-+static const struct font_data fontdata_6x10 = {
- 	{ 0, 0, FONTDATAMAX, 0 }, {
- 	/* 0 0x00 '^@' */
- 	0x00, /* 00000000 */
---- a/lib/fonts/font_6x11.c
-+++ b/lib/fonts/font_6x11.c
-@@ -9,7 +9,7 @@
- 
- #define FONTDATAMAX (11*256)
- 
--static struct font_data fontdata_6x11 = {
-+static const struct font_data fontdata_6x11 = {
- 	{ 0, 0, FONTDATAMAX, 0 }, {
- 	/* 0 0x00 '^@' */
- 	0x00, /* 00000000 */
---- a/lib/fonts/font_7x14.c
-+++ b/lib/fonts/font_7x14.c
-@@ -8,7 +8,7 @@
- 
- #define FONTDATAMAX 3584
- 
--static struct font_data fontdata_7x14 = {
-+static const struct font_data fontdata_7x14 = {
- 	{ 0, 0, FONTDATAMAX, 0 }, {
- 	/* 0 0x00 '^@' */
- 	0x00, /* 0000000 */
---- a/lib/fonts/font_8x16.c
-+++ b/lib/fonts/font_8x16.c
-@@ -10,7 +10,7 @@
- 
- #define FONTDATAMAX 4096
- 
--static struct font_data fontdata_8x16 = {
-+static const struct font_data fontdata_8x16 = {
- 	{ 0, 0, FONTDATAMAX, 0 }, {
- 	/* 0 0x00 '^@' */
- 	0x00, /* 00000000 */
---- a/lib/fonts/font_8x8.c
-+++ b/lib/fonts/font_8x8.c
-@@ -9,7 +9,7 @@
- 
- #define FONTDATAMAX 2048
- 
--static struct font_data fontdata_8x8 = {
-+static const struct font_data fontdata_8x8 = {
- 	{ 0, 0, FONTDATAMAX, 0 }, {
- 	/* 0 0x00 '^@' */
- 	0x00, /* 00000000 */
---- a/lib/fonts/font_acorn_8x8.c
-+++ b/lib/fonts/font_acorn_8x8.c
-@@ -5,7 +5,7 @@
- 
- #define FONTDATAMAX 2048
- 
--static struct font_data acorndata_8x8 = {
-+static const struct font_data acorndata_8x8 = {
- { 0, 0, FONTDATAMAX, 0 }, {
- /* 00 */  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, /* ^@ */
- /* 01 */  0x7e, 0x81, 0xa5, 0x81, 0xbd, 0x99, 0x81, 0x7e, /* ^A */
---- a/lib/fonts/font_mini_4x6.c
-+++ b/lib/fonts/font_mini_4x6.c
-@@ -43,7 +43,7 @@ __END__;
- 
- #define FONTDATAMAX 1536
- 
--static struct font_data fontdata_mini_4x6 = {
-+static const struct font_data fontdata_mini_4x6 = {
- 	{ 0, 0, FONTDATAMAX, 0 }, {
- 	/*{*/
- 	  	/*   Char 0: ' '  */
---- a/lib/fonts/font_pearl_8x8.c
-+++ b/lib/fonts/font_pearl_8x8.c
-@@ -14,7 +14,7 @@
- 
- #define FONTDATAMAX 2048
- 
--static struct font_data fontdata_pearl8x8 = {
-+static const struct font_data fontdata_pearl8x8 = {
-    { 0, 0, FONTDATAMAX, 0 }, {
-    /* 0 0x00 '^@' */
-    0x00, /* 00000000 */
---- a/lib/fonts/font_sun12x22.c
-+++ b/lib/fonts/font_sun12x22.c
-@@ -3,7 +3,7 @@
- 
- #define FONTDATAMAX 11264
- 
--static struct font_data fontdata_sun12x22 = {
-+static const struct font_data fontdata_sun12x22 = {
- 	{ 0, 0, FONTDATAMAX, 0 }, {
- 	/* 0 0x00 '^@' */
- 	0x00, 0x00, /* 000000000000 */
---- a/lib/fonts/font_sun8x16.c
-+++ b/lib/fonts/font_sun8x16.c
-@@ -3,7 +3,7 @@
- 
- #define FONTDATAMAX 4096
- 
--static struct font_data fontdata_sun8x16 = {
-+static const struct font_data fontdata_sun8x16 = {
- { 0, 0, FONTDATAMAX, 0 }, {
- /* */ 0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,
- /* */ 0x00,0x00,0x7e,0x81,0xa5,0x81,0x81,0xbd,0x99,0x81,0x81,0x7e,0x00,0x00,0x00,0x00,
 
 
