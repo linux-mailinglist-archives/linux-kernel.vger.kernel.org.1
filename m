@@ -2,92 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ADD192AC2EF
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 18:56:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 831612AC300
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 18:58:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730043AbgKIR4q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 12:56:46 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46522 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729533AbgKIR4p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 12:56:45 -0500
-Received: from mail-ot1-f46.google.com (mail-ot1-f46.google.com [209.85.210.46])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B0CBE2068D;
-        Mon,  9 Nov 2020 17:56:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604944604;
-        bh=d6Nc5RiBiq3XeVeUekKRvwM0AjmxizMZD3zTXBs+VC4=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=FVYQvb7fC0tGjEnXYBJQ2BU5DlA5DqfngmMFCiFhFKfAgCxqRGKVSe2p8N2HqbQjq
-         /Bnb9Po+fBPysQCXYwDJrdyHYwNF0iTLU4hNyl8lp+hbb10EMnMGCUwtGWDGPMa1tV
-         ni2mTuAYNW6rsVUITrQg8PIcWLnCqm+RlqVrjSYw=
-Received: by mail-ot1-f46.google.com with SMTP id i18so9824898ots.0;
-        Mon, 09 Nov 2020 09:56:44 -0800 (PST)
-X-Gm-Message-State: AOAM530QOW6il7fcYKdDBA5LKSrOX5TY7Y/P11NrIpY0C+FMjy9/xzZ8
-        KlJd09pE0q3kKEIGo+P6bisBkca3Z1eACnXl3hs=
-X-Google-Smtp-Source: ABdhPJzwwdrokAaOrQsqgDF/PuVm5uWw4aTF/jcoTVvzI+iPfxQKuJFv+zTFsqp2WSG5m2QtpOuWLLudtXJ7Iq25qbM=
-X-Received: by 2002:a9d:65d5:: with SMTP id z21mr10432995oth.251.1604944603895;
- Mon, 09 Nov 2020 09:56:43 -0800 (PST)
+        id S1730280AbgKIR6n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 12:58:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39204 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730062AbgKIR6m (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 12:58:42 -0500
+Received: from mail-yb1-xb41.google.com (mail-yb1-xb41.google.com [IPv6:2607:f8b0:4864:20::b41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCC26C0613CF;
+        Mon,  9 Nov 2020 09:58:40 -0800 (PST)
+Received: by mail-yb1-xb41.google.com with SMTP id i186so9020645ybc.11;
+        Mon, 09 Nov 2020 09:58:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Ypr4Kuc9X8rFEI2EWRdGGaNl783YbOoeeQfMY7jHtgI=;
+        b=SOA1Rhwu0dXIyRSvIu5iU3wrgAmvwrXvs3Bfx9DFGRjQOYi+m7nsiMy3s064GwOoPf
+         rKrhT1sCYoFfMbpSEpdhNeBu57E4ckYqVeoMucHWhYigUsDKPOZDZEgjzHgRHUjIR/d+
+         FV2CBdMwN4pMGbQ/prR05wR5rYrdGPm9O7PANyVX6xk7sKEEQTPDTPJe4u5f3m+IL3qE
+         3NQCJZ5GaUOUEccU1hsUxuHZSggEmhTU/I9vQw3UE6HlHpD4h0446bdbVcHrP1hbeJFT
+         uHl2RGa4GLtui214v0Rxz1l0F9Tgk5a+mKyhGkgzUS407d3IXkc4/X3bcyVmMXVvcYWC
+         kp9g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Ypr4Kuc9X8rFEI2EWRdGGaNl783YbOoeeQfMY7jHtgI=;
+        b=MV4fwkJSyRRnzTtPvnebll4/xu+jL/8jQc0IEV4fTXXBraFWbNTDzT9IoRzOZTPWDK
+         WpnEkRaQo+9EhNEui7qg3SnJwNWhfl8eviPkmm6qlJfe4+ymU3PH0Z6cPeEvibXRjUCn
+         LKgfsor4gERFMLF+X/Wtl5HrnpjWTs6dQWtfQBW8BzBR0wz7jK9Q/FTxhFlv1izyY3/R
+         i+OS5FLRIVqhGsLwcmHE7OQeNQkM78YyTa2lRFoqzz5Yd8iV5rUdHb4vTrdeXyhZLZNM
+         /VYlUAl1nc9O12HuUi57iXGSgU6yKVelrquRwwcA1RiFeQAt1HQVjk6or9Ll/BdhcuxT
+         Fchw==
+X-Gm-Message-State: AOAM531Gvshffsmk0tjvxXWkA1ZP3d2XCoYxze5tu42m4/SCzlfhLZKo
+        ceESh3FMz5thSjGpnsLakNBC9R29av9bgMRLv4MPChQKPIkctw==
+X-Google-Smtp-Source: ABdhPJyA2HctkWbIVQauz5gXSOTiVM5JMnbtl4J1OlEsiI4u5mbTqDrcAeuRtHGnrqItJBz+XfqSC8n9zvzvTs/o3XY=
+X-Received: by 2002:a25:bdc7:: with SMTP id g7mr21695549ybk.260.1604944719969;
+ Mon, 09 Nov 2020 09:58:39 -0800 (PST)
 MIME-Version: 1.0
-References: <20201016090833.1892-1-thunder.leizhen@huawei.com>
- <20201016090833.1892-2-thunder.leizhen@huawei.com> <CAK8P3a2TSmsNSi-XFpT6AQ3jvVxJ1AW7Uf5tAo477wtwXZwUzg@mail.gmail.com>
- <e27dc152-7aef-10df-f391-bf56e13e23df@gmail.com> <CAK8P3a13ywHh7igdfDSPQz9Bw8YAnKWFLKARkk2NL5u6=6yb=w@mail.gmail.com>
- <0eee3fd2-7400-7de7-27a7-7fcaa0955854@gmail.com> <d42745b7-ef76-e584-0da2-751ac8c1cf3a@huawei.com>
- <CAK8P3a335TT1+bdHqB=FetPanXXfGv3dC7ZCkx+w+F3j00kj5A@mail.gmail.com>
- <07ab3bdd-dcb1-5a59-d813-f82451b3f028@huawei.com> <5980552d-6e96-fd9f-c758-1b1e9f57100e@huawei.com>
- <43986e17-f493-b3b6-2829-3ba7d92f2e8c@gmail.com>
-In-Reply-To: <43986e17-f493-b3b6-2829-3ba7d92f2e8c@gmail.com>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Mon, 9 Nov 2020 18:56:26 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a374KTVR6vC4civ0pNy8S9n4o8Ni9wCrdko-JO7aRO2GQ@mail.gmail.com>
-Message-ID: <CAK8P3a374KTVR6vC4civ0pNy8S9n4o8Ni9wCrdko-JO7aRO2GQ@mail.gmail.com>
-Subject: Re: [PATCH v2 1/2] arm64: dts: broadcom: clear the warnings caused by
- empty dma-ranges
-To:     Florian Fainelli <f.fainelli@gmail.com>
-Cc:     "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>,
-        Rob Herring <robh+dt@kernel.org>, Ray Jui <rjui@broadcom.com>,
-        Scott Branden <sbranden@broadcom.com>,
-        bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
+References: <20201106055111.3972047-1-andrii@kernel.org> <20201106055111.3972047-6-andrii@kernel.org>
+ <alpine.LRH.2.21.2011091633450.4154@localhost>
+In-Reply-To: <alpine.LRH.2.21.2011091633450.4154@localhost>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Mon, 9 Nov 2020 09:58:28 -0800
+Message-ID: <CAEf4BzaTyaD4Mz_tVc9WbP9Qv+oAmQNsG--OPwJCJf51xrFK7w@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 5/5] tools/bpftool: add support for in-kernel and
+ named BTF in `btf show`
+To:     Alan Maguire <alan.maguire@oracle.com>
+Cc:     Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        Alexei Starovoitov <ast@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Kernel Team <kernel-team@fb.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Jessica Yu <jeyu@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 9, 2020 at 6:30 PM Florian Fainelli <f.fainelli@gmail.com> wrote:
+On Mon, Nov 9, 2020 at 8:43 AM Alan Maguire <alan.maguire@oracle.com> wrote:
 >
-> On 11/8/20 10:18 PM, Leizhen (ThunderTown) wrote:
-> > Hi, everybody:
-> >   How do we deal with this problem? I updated the kernel to the latest and the problem still persists.
+> On Thu, 5 Nov 2020, Andrii Nakryiko wrote:
+>
+> > Display vmlinux BTF name and kernel module names when listing available BTFs
+> > on the system.
 > >
-> >   make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- -j24 dtbs 2>err.txt
-> >   vim err.txt
+> > In human-readable output mode, module BTFs are reported with "name
+> > [module-name]", while vmlinux BTF will be reported as "name [vmlinux]".
+> > Square brackets are added by bpftool and follow kernel convention when
+> > displaying modules in human-readable text outputs.
 > >
-> > arch/arm64/boot/dts/qcom/ipq6018.dtsi:185.3-14: Warning (dma_ranges_format): /soc:dma-ranges: empty "dma-ranges" property but its #address-cells (1) differs from / (2)
-> > arch/arm64/boot/dts/qcom/ipq6018.dtsi:185.3-14: Warning (dma_ranges_format): /soc:dma-ranges: empty "dma-ranges" property but its #size-cells (1) differs from / (2)
-> > arch/arm64/boot/dts/broadcom/stingray/stingray-usb.dtsi:7.3-14: Warning (dma_ranges_format): /usb:dma-ranges: empty "dma-ranges" property but its #address-cells (1) differs from / (2)
-> > arch/arm64/boot/dts/broadcom/stingray/stingray-usb.dtsi:7.3-14: Warning (dma_ranges_format): /usb:dma-ranges: empty "dma-ranges" property but its #size-cells (1) differs from / (2)
-> > arch/arm64/boot/dts/broadcom/stingray/stingray-usb.dtsi:7.3-14: Warning (dma_ranges_format): /usb:dma-ranges: empty "dma-ranges" property but its #address-cells (1) differs from / (2)
-> > arch/arm64/boot/dts/broadcom/stingray/stingray-usb.dtsi:7.3-14: Warning (dma_ranges_format): /usb:dma-ranges: empty "dma-ranges" property but its #size-cells (1) differs from / (2)
-> > arch/arm64/boot/dts/broadcom/stingray/stingray-usb.dtsi:7.3-14: Warning (dma_ranges_format): /usb:dma-ranges: empty "dma-ranges" property but its #address-cells (1) differs from / (2)
-> > arch/arm64/boot/dts/broadcom/stingray/stingray-usb.dtsi:7.3-14: Warning (dma_ranges_format): /usb:dma-ranges: empty "dma-ranges" property but its #size-cells (1) differs from / (2)
 >
-> I was hoping that Ray or Scott could give this a try, and TBH, I am
-> still not a big fan of having to mangle the 'reg' property to be
-> compatible with #address-cells = <2> and #size-cells = <2>, I would have
-> preferred omitting the 'dma-ranges' property entirely.
+> I had a go at testing this and all looks good, but I was curious
+> if  "bpftool btf dump" is expected to work with module BTF? I see
+> the various modules in /sys/kernel/btf, but if I run:
 >
-> We have plenty of time to get this patch applied for v5.11.
+> # bpftool btf dump file /sys/kernel/btf/ixgbe
 
-I would much prefer to get the warning fixed for v5.10, once we know what the
-hardware can or cannot actually do, as it is one of the warnings that shows
-up in every kernelci build.
+You need to specify vmlinux as a base BTF. There is a -B flag for
+that, added in [0]. So just add -B /sys/kernel/btf/vmlinux. I think we
+might want to teach bpftool to do this automatically if we see that
+file points at module BTF in /sys/kernel/btf, as a convenience
+feature.
 
-      Arnd
+  [0] https://patchwork.kernel.org/project/netdevbpf/patch/20201105043402.2530976-12-andrii@kernel.org/
+
+
+> Error: failed to load BTF from /sys/kernel/btf/ixgbe: Invalid argument
+>
+> ...while it still works for vmlinux:
+>
+> # bpftool btf dump file /sys/kernel/btf/vmlinux
+> [1] INT '(anon)' size=4 bits_offset=0 nr_bits=32 encoding=(none)
+> [2] INT 'long unsigned int' size=8 bits_offset=0 nr_bits=64
+> encoding=(none)
+> ...
+>
+> "bpftool btf show" works for ixgbe:
+>
+> # bpftool btf show|grep ixgbe
+> 19: name [ixgbe]  size 182074B
+>
+> Is this perhaps not expected to work yet? (I updated pahole
+> to the latest changes etc and BTF generation seemed to work
+> fine for modules during kernel build).
+>
+> For the "bpftool btf show" functionality, feel free to add
+>
+> Tested-by: Alan Maguire <alan.maguire@oracle.com>
+
+Ok, thanks.
+
+>
+> Thanks!
+>
+> Alan
