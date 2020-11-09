@@ -2,96 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D5812AC94F
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 00:26:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 96E7F2AC950
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 00:26:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731496AbgKIX0E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 18:26:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33850 "EHLO
+        id S1731522AbgKIX0P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 18:26:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33884 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727311AbgKIX0D (ORCPT
+        with ESMTP id S1727311AbgKIX0P (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 18:26:03 -0500
-Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2EBEC0613CF
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Nov 2020 15:26:02 -0800 (PST)
-Received: by mail-io1-xd41.google.com with SMTP id r9so11673028ioo.7
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Nov 2020 15:26:02 -0800 (PST)
+        Mon, 9 Nov 2020 18:26:15 -0500
+Received: from mail-oi1-x230.google.com (mail-oi1-x230.google.com [IPv6:2607:f8b0:4864:20::230])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FCB5C0613CF
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Nov 2020 15:26:15 -0800 (PST)
+Received: by mail-oi1-x230.google.com with SMTP id o25so11325198oie.5
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Nov 2020 15:26:15 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=WL7+YqDlKTcklSMUg90KwsETHJVl7wRfFGlIXBK/35M=;
-        b=fuJt+MdoiBGzQEhIy085EXvAlsYj774Vevr9MMpc/gaqe/Btd5XX3INohGx3S15JcZ
-         88qu4XNPtFPCmgNT/sXKdZ/WJ454kYQw3HyYrV6cafda9uHeauQhzAEGLaJ5+LoZcDZH
-         00dMG4+5FKrDdZ+nbH/Zl/+FZmlZArJCHlQ2M=
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=38DeofOFUIYkLHO9imZX1OTrjAgZGAGUoTcq8TI1vbI=;
+        b=mPXtDnpUWNsQDQKU4BEqEb6c+IKqIlLrne9ZlTQSv44suRs0UqF/YUjFdlHDtAjMs1
+         RmYGq+keKmTrlrYEuEclEQfb2G/lvHqtTA9FuxUhMqU3BDrJHzmm5M3YdxYCauA1xBr4
+         gtILKmrT1UgfmYGzsf4NaQUa5F4PAkylF2fQSexEdt9ZZ1k87Iw5onaGdbtAhGlzGgej
+         aZQu8shSDccyRce7ufVFqQcd6j0bieruHqbOPvWPTLLdyCBkxW9B70n6psBiLinZz+5k
+         W1EDXWHJsd7h/UOKG32Kv5ZYSUB8dyaWBhkHfBd/VMkfy1lbASGoD0qDdseQS/ghNn1k
+         ZmbQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=WL7+YqDlKTcklSMUg90KwsETHJVl7wRfFGlIXBK/35M=;
-        b=YTOkzNFNHbF0Fw/6PAje3Geb0L14MQmED7DYLQ8JK0S/NwP3CYeqOnhtWMWcsS9B3Z
-         G0GXqEv7gi2XFN6JvoynuBwoJyQ3E284I3SM5n3YwdaEzL1oBzUSeqdxBjX7ZY6v25pB
-         zqoqN46+F1hHrvwY8kdRYoPBykjvA3dz5h19OIGpqFpeyos5dPeYkl0lCEW6kKujnNDo
-         QlXNCuQ3Z8QPJkG2Cx/2W9bIX0Ge2zhOoC2GVShPBbRE31HBa1uwcR6s/ZGB2cfY+aqQ
-         9w90dJ99ecxzOE7p/eeZWsb/unzla13HRGV9UTlZXefeA8Z3S0MgDb9oCsbn+j1LTL9f
-         UH0A==
-X-Gm-Message-State: AOAM533mttWyMNWQVma05cAP2RAHPAJjlmllodpcsoa/p2og3G48k3Y8
-        xlEOJXGxQ7aCthoVG6TBpf/TsQ==
-X-Google-Smtp-Source: ABdhPJz2ckT+ICLYlnMORo2X58V8rbLejqvFvefF/PqJclRveF/zm6Eak9IYC4Td8EFED/suCzhPqQ==
-X-Received: by 2002:a02:7112:: with SMTP id n18mr13059341jac.34.1604964362264;
-        Mon, 09 Nov 2020 15:26:02 -0800 (PST)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id t12sm6597093ios.12.2020.11.09.15.26.00
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 09 Nov 2020 15:26:01 -0800 (PST)
-Subject: Re: [PATCH 4.14 00/48] 4.14.205-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de,
-        stable@vger.kernel.org, Shuah Khan <skhan@linuxfoundation.org>
-References: <20201109125016.734107741@linuxfoundation.org>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <49034ba4-e6b0-f382-9cd6-aa075a60f19e@linuxfoundation.org>
-Date:   Mon, 9 Nov 2020 16:26:00 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.2
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=38DeofOFUIYkLHO9imZX1OTrjAgZGAGUoTcq8TI1vbI=;
+        b=ozqKNNaMfBlyXL+u73gRSqCXTx1TYvw446gTQOy/6NTFREYdNIM7vCc7ambjGGc3ht
+         SJTZ0Bya8X3rkcdgl9HOWfVTlXXgBPThwF2PUJ3WMdOnp4i+7iDKNv5gkF0dAUf10IzW
+         xWp7yl+srgDKYEciD5IbGlgfNawAGA1bRG8ToyAa6AFYG3EUlyHFpnqd+Co2HvjTyMVI
+         5lSpowekd3/7rEp4Q7NMB8OOk0RrE+nTR39X6Uxb8gX16pvtL/gCgcUQLNkOP+A1zyDF
+         BZ2X/GI5zGYaQesWRDECuVUXSkdE7zSkTgLZW7p0+43I65YySsJ8NqZQdoSh4K4DNYhU
+         BioQ==
+X-Gm-Message-State: AOAM530GYhLtf9IsppmU4gKs7ouv8HFeVA4aoOhrwoLANZbRoBN4VxE+
+        4CQAjGkT0FXRi6hU+wajZJjGk5pVp6xGU/Mltf/HZw==
+X-Google-Smtp-Source: ABdhPJzPGvNiGQt38mG6elvI4UW6ZTgvh7re8iq8Ub9xo68tgHOVP7tdGXalhNBroZjoV4oXYZYvIP66JnOFv8geHnk=
+X-Received: by 2002:aca:5505:: with SMTP id j5mr1012865oib.6.1604964374323;
+ Mon, 09 Nov 2020 15:26:14 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20201109125016.734107741@linuxfoundation.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20201030190807.GA13884@agluck-desk2.amr.corp.intel.com>
+ <160431588828.397.16468104725047768957.tip-bot2@tip-bot2> <3f863634cd75824907e8ccf8164548c2ef036f20.camel@redhat.com>
+ <bfc274fc27724ea39ecac1e7ac834ed8@intel.com> <CALMp9eTFaiYkTnVe8xKzg40E4nZ3rAOii0O06bTy0+oLNjyKhA@mail.gmail.com>
+ <a22b5468e1c94906b72c4d8bc83c0f64@intel.com>
+In-Reply-To: <a22b5468e1c94906b72c4d8bc83c0f64@intel.com>
+From:   Jim Mattson <jmattson@google.com>
+Date:   Mon, 9 Nov 2020 15:26:02 -0800
+Message-ID: <CALMp9eS+SYmPP3OzdK0-Bs1wSBJ4MU_POZe3i5fi3Fd+FTshYw@mail.gmail.com>
+Subject: Re: [tip: ras/core] x86/mce: Enable additional error logging on
+ certain Intel CPUs
+To:     "Luck, Tony" <tony.luck@intel.com>
+Cc:     Qian Cai <cai@redhat.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-tip-commits@vger.kernel.org" 
+        <linux-tip-commits@vger.kernel.org>, Boris Petkov <bp@alien8.de>,
+        Borislav Petkov <bp@suse.de>, x86 <x86@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/9/20 5:55 AM, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 4.14.205 release.
-> There are 48 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Wed, 11 Nov 2020 12:50:04 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.14.205-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.14.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
-> 
+On Mon, Nov 9, 2020 at 2:57 PM Luck, Tony <tony.luck@intel.com> wrote:
+>
+> > I thought Linux had long ago gone the route of turning rdmsr/wrmsr
+> > into rdmsr_safe/wrmsr_safe, so that the guest would ignore the #GPs on
+> > writes and return zero to the caller for #GPs on reads.
+>
+> Linux just switched that around for the machine check banks ... if they #GP
+> fault, then something is seriously wrong.
+>
+> Maybe that isn't a general change of direction though. Perhaps I
+> should either use rdmsrl_safe() in this code. Or (better?) add
+>
+>         if (boot_cpu_has(X86_FEATURE_HYPERVISOR))
+>                 return;
+>
+> to the start of intel_imc_init().
 
-Compiled and booted on my new AMD Ryzen 7 4700G test system. No major
-errors/warns to report. This is the baseline for this release.
-
-Tested-by: Shuah Khan <skhan@linuxfoundation.org>
-
-thanks,
--- Shuah
+I wouldn't expect all hypervisors to necessarily set CPUID.01H:ECX[bit
+31]. Architecturally, on Intel CPUs, that bit is simply defined as
+"not used." There is no documented contract between Intel and
+hypervisor vendors regarding the use of that bit. (AMD, on the other
+hand, *does* document that bit as "reserved for use by hypervisor to
+indicate guest status.")
