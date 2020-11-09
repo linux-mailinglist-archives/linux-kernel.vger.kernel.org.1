@@ -2,40 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB5C32ABC56
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 14:37:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 34E4F2ABBF8
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 14:35:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732085AbgKINg2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 08:36:28 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57668 "EHLO mail.kernel.org"
+        id S1730926AbgKINFs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 08:05:48 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57712 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729661AbgKINEp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 08:04:45 -0500
+        id S1730742AbgKINEs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 08:04:48 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 79D8F20663;
-        Mon,  9 Nov 2020 13:04:44 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5922B2076E;
+        Mon,  9 Nov 2020 13:04:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604927085;
-        bh=SCX2Bvt7RIbKtlNwma4O1ggwwDDo9Fw7byanKlpDy2E=;
+        s=default; t=1604927087;
+        bh=jHAkwn8opXnjq+jDsnc8Nh3H/Vnp9DiwlCbcaongwUg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ds8ATcy1wa7G5IPRuADtBrAPTmgMLuMx4q5Wphjq4iWgyfbCI+uRbN6WHEczrTFRp
-         AT7CI/8CHkyTRForw4GooTn2rUhQSSAseHrERrMQDVlrw25XG/+fEDhD748kMzTHva
-         OACxblIBlq5BlZIcKl40v8itGRhmVqVYjk7qt6LA=
+        b=YItoeg6iRXrDFhAJ4hAPgH2duD+ntV7tDfJyBxmpXpJ52QBL+GdQSQ60/XvQNjpWv
+         RpJOH8FsIgXHMVPgXnaWumB5coZgfmqWcOg457+ccMeSX6xVAHzb0Opn7UL4X/MEgs
+         az1Qfb5KwlFw/ZBQHKTBDyuECbHAU2u4GJD9nXUw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
-        "Ewan D. Milne" <emilne@redhat.com>,
-        Hannes Reinecke <hare@suse.de>,
-        Bart Van Assche <bvanassche@acm.org>,
-        Lee Duncan <lduncan@suse.com>, Ming Lei <ming.lei@redhat.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        stable@vger.kernel.org, Roman Kiryanov <rkir@google.com>,
+        Jeff Vander Stoep <jeffv@google.com>,
+        James Morris <jamorris@linux.microsoft.com>,
+        Jakub Kicinski <kuba@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 105/117] scsi: core: Dont start concurrent async scan on same host
-Date:   Mon,  9 Nov 2020 13:55:31 +0100
-Message-Id: <20201109125030.680000430@linuxfoundation.org>
+Subject: [PATCH 4.9 106/117] vsock: use ns_capable_noaudit() on socket create
+Date:   Mon,  9 Nov 2020 13:55:32 +0100
+Message-Id: <20201109125030.729066386@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201109125025.630721781@linuxfoundation.org>
 References: <20201109125025.630721781@linuxfoundation.org>
@@ -47,73 +45,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ming Lei <ming.lei@redhat.com>
+From: Jeff Vander Stoep <jeffv@google.com>
 
-[ Upstream commit 831e3405c2a344018a18fcc2665acc5a38c3a707 ]
+[ Upstream commit af545bb5ee53f5261db631db2ac4cde54038bdaf ]
 
-The current scanning mechanism is supposed to fall back to a synchronous
-host scan if an asynchronous scan is in progress. However, this rule isn't
-strictly respected, scsi_prep_async_scan() doesn't hold scan_mutex when
-checking shost->async_scan. When scsi_scan_host() is called concurrently,
-two async scans on same host can be started and a hang in do_scan_async()
-is observed.
+During __vsock_create() CAP_NET_ADMIN is used to determine if the
+vsock_sock->trusted should be set to true. This value is used later
+for determing if a remote connection should be allowed to connect
+to a restricted VM. Unfortunately, if the caller doesn't have
+CAP_NET_ADMIN, an audit message such as an selinux denial is
+generated even if the caller does not want a trusted socket.
 
-Fixes this issue by checking & setting shost->async_scan atomically with
-shost->scan_mutex.
+Logging errors on success is confusing. To avoid this, switch the
+capable(CAP_NET_ADMIN) check to the noaudit version.
 
-Link: https://lore.kernel.org/r/20201010032539.426615-1-ming.lei@redhat.com
-Cc: Christoph Hellwig <hch@lst.de>
-Cc: Ewan D. Milne <emilne@redhat.com>
-Cc: Hannes Reinecke <hare@suse.de>
-Cc: Bart Van Assche <bvanassche@acm.org>
-Reviewed-by: Lee Duncan <lduncan@suse.com>
-Reviewed-by: Bart Van Assche <bvanassche@acm.org>
-Signed-off-by: Ming Lei <ming.lei@redhat.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Reported-by: Roman Kiryanov <rkir@google.com>
+https://android-review.googlesource.com/c/device/generic/goldfish/+/1468545/
+Signed-off-by: Jeff Vander Stoep <jeffv@google.com>
+Reviewed-by: James Morris <jamorris@linux.microsoft.com>
+Link: https://lore.kernel.org/r/20201023143757.377574-1-jeffv@google.com
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/scsi_scan.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+ net/vmw_vsock/af_vsock.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/scsi/scsi_scan.c b/drivers/scsi/scsi_scan.c
-index 67f6f134abc44..397deb69c6595 100644
---- a/drivers/scsi/scsi_scan.c
-+++ b/drivers/scsi/scsi_scan.c
-@@ -1734,15 +1734,16 @@ static void scsi_sysfs_add_devices(struct Scsi_Host *shost)
-  */
- static struct async_scan_data *scsi_prep_async_scan(struct Scsi_Host *shost)
- {
--	struct async_scan_data *data;
-+	struct async_scan_data *data = NULL;
- 	unsigned long flags;
- 
- 	if (strncmp(scsi_scan_type, "sync", 4) == 0)
- 		return NULL;
- 
-+	mutex_lock(&shost->scan_mutex);
- 	if (shost->async_scan) {
- 		shost_printk(KERN_DEBUG, shost, "%s called twice\n", __func__);
--		return NULL;
-+		goto err;
+diff --git a/net/vmw_vsock/af_vsock.c b/net/vmw_vsock/af_vsock.c
+index d6473b8d9a81a..3a2543b9701a9 100644
+--- a/net/vmw_vsock/af_vsock.c
++++ b/net/vmw_vsock/af_vsock.c
+@@ -651,7 +651,7 @@ struct sock *__vsock_create(struct net *net,
+ 		vsk->owner = get_cred(psk->owner);
+ 		vsk->connect_timeout = psk->connect_timeout;
+ 	} else {
+-		vsk->trusted = capable(CAP_NET_ADMIN);
++		vsk->trusted = ns_capable_noaudit(&init_user_ns, CAP_NET_ADMIN);
+ 		vsk->owner = get_current_cred();
+ 		vsk->connect_timeout = VSOCK_DEFAULT_CONNECT_TIMEOUT;
  	}
- 
- 	data = kmalloc(sizeof(*data), GFP_KERNEL);
-@@ -1753,7 +1754,6 @@ static struct async_scan_data *scsi_prep_async_scan(struct Scsi_Host *shost)
- 		goto err;
- 	init_completion(&data->prev_finished);
- 
--	mutex_lock(&shost->scan_mutex);
- 	spin_lock_irqsave(shost->host_lock, flags);
- 	shost->async_scan = 1;
- 	spin_unlock_irqrestore(shost->host_lock, flags);
-@@ -1768,6 +1768,7 @@ static struct async_scan_data *scsi_prep_async_scan(struct Scsi_Host *shost)
- 	return data;
- 
-  err:
-+	mutex_unlock(&shost->scan_mutex);
- 	kfree(data);
- 	return NULL;
- }
 -- 
 2.27.0
 
