@@ -2,118 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF8A72ABDDC
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 14:52:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 658E12ABDE3
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 14:54:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730128AbgKINwX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 08:52:23 -0500
-Received: from mx2.suse.de ([195.135.220.15]:39640 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729939AbgKINwU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 08:52:20 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id ABC11ABD1;
-        Mon,  9 Nov 2020 13:52:18 +0000 (UTC)
-Date:   Mon, 9 Nov 2020 14:52:15 +0100
-From:   Oscar Salvador <osalvador@suse.de>
-To:     Muchun Song <songmuchun@bytedance.com>
-Cc:     corbet@lwn.net, mike.kravetz@oracle.com, tglx@linutronix.de,
-        mingo@redhat.com, bp@alien8.de, x86@kernel.org, hpa@zytor.com,
-        dave.hansen@linux.intel.com, luto@kernel.org, peterz@infradead.org,
-        viro@zeniv.linux.org.uk, akpm@linux-foundation.org,
-        paulmck@kernel.org, mchehab+huawei@kernel.org,
-        pawan.kumar.gupta@linux.intel.com, rdunlap@infradead.org,
-        oneukum@suse.com, anshuman.khandual@arm.com, jroedel@suse.de,
-        almasrymina@google.com, rientjes@google.com, willy@infradead.org,
-        mhocko@suse.com, duanxiongchun@bytedance.com,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH v3 03/21] mm/hugetlb: Introduce a new config
- HUGETLB_PAGE_FREE_VMEMMAP
-Message-ID: <20201109135215.GA4778@localhost.localdomain>
-References: <20201108141113.65450-1-songmuchun@bytedance.com>
- <20201108141113.65450-4-songmuchun@bytedance.com>
+        id S1730341AbgKINwb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 08:52:31 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:25282 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730294AbgKINw0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 08:52:26 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1604929944;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=5QdziHwnq2/sfnnSdLOUcvlJNqFq0ug8vC4I8a9Gu94=;
+        b=blFL8SjngwWBNIc3+F43fOeNZqoJ93+em4qb+P2JscldXKM0ONGrVFRS65bfLo1viLUMzk
+        DAmSY6AeAzepa15cmcZDrYdIa+XTudByB8zAcYu0zUVsOTR3pVVDDXtMj7tDtGLr4bP2wj
+        jxn6+Rkxn8xOIGAelSmN6LsPVVpKe4w=
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
+ [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-285-oXfiRaLDMzy9-68FGXh0OA-1; Mon, 09 Nov 2020 08:52:20 -0500
+X-MC-Unique: oXfiRaLDMzy9-68FGXh0OA-1
+Received: by mail-ed1-f71.google.com with SMTP id y8so2755584edj.5
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Nov 2020 05:52:19 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=5QdziHwnq2/sfnnSdLOUcvlJNqFq0ug8vC4I8a9Gu94=;
+        b=REjIjXzsO6dMddqbkcMes5mvIjTHFq3h0ul/9Vh8gph0YpigtPJDbbcQEjAx1NI522
+         mA/q94KSlNcTjivmWxAVeNZSdP6yc8RNDkh/d889ErgwV3E7zZcVoN39TFYN47KCPP78
+         Ij1XI8pz5u2mf9FRo5ANL9j5KTi9qG9Xw8GP1kIIZCumfIN44caduDoVpc5dZ1vZmoWw
+         nq0FoFb/QtDxZxq3kS3ezt7dxzIoOI4BlgUM9ErGZeFk3ybvqhwEITDr+Hje+qa1wEG1
+         H/BdpaJNPKu+npZNenlEj0O1JUU+e7J+gKKRNcV7JnfaEyunxOiKceCsIf1e7OQhndK3
+         ym4A==
+X-Gm-Message-State: AOAM530SfrOSq+otGytSRQlb5NRdd+NvsR5FQLCUXdJMPO6XlHTUxuCT
+        SxB/pwnWZeBgCSkkKvy53wAdkXbN15x3hWFOEEemSoBCu+lAF1snU9kYPex9SJwtFhNLrcqnwXF
+        3yoXBOt2WjPiohOS9nSfIz7ZM
+X-Received: by 2002:a17:906:3547:: with SMTP id s7mr7195174eja.70.1604929938482;
+        Mon, 09 Nov 2020 05:52:18 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJydsmeHAllJRZIOYN+4WiR1WT7Rcr/2EBEiuscrFSmgornlU1JN5JhQ+Z+/adDV3r0/Jcn47Q==
+X-Received: by 2002:a17:906:3547:: with SMTP id s7mr7195162eja.70.1604929938254;
+        Mon, 09 Nov 2020 05:52:18 -0800 (PST)
+Received: from x1.localdomain (2001-1c00-0c0c-fe00-6c10-fbf3-14c4-884c.cable.dynamic.v6.ziggo.nl. [2001:1c00:c0c:fe00:6c10:fbf3:14c4:884c])
+        by smtp.gmail.com with ESMTPSA id w3sm8853104edt.84.2020.11.09.05.52.17
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 09 Nov 2020 05:52:17 -0800 (PST)
+Subject: Re: [PATCH v3 4/4] pinctrl: amd: remove debounce filter setting in
+ IRQ type setting
+To:     Coiby Xu <coiby.xu@gmail.com>,
+        Linus Walleij <linus.walleij@linaro.org>
+Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
+        linux-gpio@vger.kernel.org,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        stable@vger.kernel.org, open list <linux-kernel@vger.kernel.org>
+References: <20201105231912.69527-1-coiby.xu@gmail.com>
+ <20201105231912.69527-5-coiby.xu@gmail.com>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <fa67aa70-2a14-35af-632b-b0e86dc4b436@redhat.com>
+Date:   Mon, 9 Nov 2020 14:52:17 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201108141113.65450-4-songmuchun@bytedance.com>
+In-Reply-To: <20201105231912.69527-5-coiby.xu@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Nov 08, 2020 at 10:10:55PM +0800, Muchun Song wrote:
-> The purpose of introducing HUGETLB_PAGE_FREE_VMEMMAP is to configure
-> whether to enable the feature of freeing unused vmemmap associated
-> with HugeTLB pages. Now only support x86.
+Hi,
+
+On 11/6/20 12:19 AM, Coiby Xu wrote:
+> Debounce filter setting should be independent from IRQ type setting
+> because according to the ACPI specs, there are separate arguments for
+> specifying debounce timeout and IRQ type in GpioIo() and GpioInt().
 > 
-> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+> This will fix broken touchpads for laptops whose BIOS set the debounce
+> timeout to a relatively large value. For example, the BIOS of Lenovo
+> Legion-5 AMD gaming laptops including 15ARH05 (R7000) and R7000P set
+> the debounce timeout to 124.8ms. This led to the kernel receiving only
+> ~7 HID reports per second from the Synaptics touchpad
+> (MSFT0001:00 06CB:7F28). Existing touchpads like [1][2] are not troubled
+> by this bug because the debounce timeout has been set to 0 by the BIOS
+> before enabling the debounce filter in setting IRQ type.
+> 
+> [1] https://github.com/Syniurge/i2c-amd-mp2/issues/11#issuecomment-721331582
+> [2] https://forum.manjaro.org/t/random-short-touchpad-freezes/30832/28
+> 
+> Cc: Hans de Goede <hdegoede@redhat.com>
+> Cc: Andy Shevchenko <andy.shevchenko@gmail.com>
+> Cc: Benjamin Tissoires <benjamin.tissoires@redhat.com>
+> Cc: stable@vger.kernel.org
+> Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+> BugLink: https://bugs.launchpad.net/ubuntu/+source/linux/+bug/1887190
+> Link: https://lore.kernel.org/linux-gpio/CAHp75VcwiGREBUJ0A06EEw-SyabqYsp%2Bdqs2DpSrhaY-2GVdAA%40mail.gmail.com/
+> Signed-off-by: Coiby Xu <coiby.xu@gmail.com>
+
+I'm not entirely sure about this patch. This is consistent with how we
+already stopped touching the debounce timeout setting during init, so
+that speaks in favor of this change.
+
+Still I'm worried a bit that this might have undesirable side effects.
+
+I guess this should be landed together with Andy's series to apply
+the debounce setting from the ACPI GPIO resources.
+
+Regards,
+
+Hans
+
+
+
+
 > ---
->  arch/x86/mm/init_64.c |  2 +-
->  fs/Kconfig            | 16 ++++++++++++++++
->  mm/bootmem_info.c     |  3 +--
->  3 files changed, 18 insertions(+), 3 deletions(-)
+>  drivers/pinctrl/pinctrl-amd.c | 7 -------
+>  1 file changed, 7 deletions(-)
 > 
-> diff --git a/arch/x86/mm/init_64.c b/arch/x86/mm/init_64.c
-> index 0a45f062826e..0435bee2e172 100644
-> --- a/arch/x86/mm/init_64.c
-> +++ b/arch/x86/mm/init_64.c
-> @@ -1225,7 +1225,7 @@ static struct kcore_list kcore_vsyscall;
+> diff --git a/drivers/pinctrl/pinctrl-amd.c b/drivers/pinctrl/pinctrl-amd.c
+> index e9b761c2b77a..2d4acf21117c 100644
+> --- a/drivers/pinctrl/pinctrl-amd.c
+> +++ b/drivers/pinctrl/pinctrl-amd.c
+> @@ -468,7 +468,6 @@ static int amd_gpio_irq_set_type(struct irq_data *d, unsigned int type)
+>  		pin_reg &= ~BIT(LEVEL_TRIG_OFF);
+>  		pin_reg &= ~(ACTIVE_LEVEL_MASK << ACTIVE_LEVEL_OFF);
+>  		pin_reg |= ACTIVE_HIGH << ACTIVE_LEVEL_OFF;
+> -		pin_reg |= DB_TYPE_REMOVE_GLITCH << DB_CNTRL_OFF;
+>  		irq_set_handler_locked(d, handle_edge_irq);
+>  		break;
 >  
->  static void __init register_page_bootmem_info(void)
->  {
-> -#ifdef CONFIG_NUMA
-> +#if defined(CONFIG_NUMA) || defined(CONFIG_HUGETLB_PAGE_FREE_VMEMMAP)
->  	int i;
+> @@ -476,7 +475,6 @@ static int amd_gpio_irq_set_type(struct irq_data *d, unsigned int type)
+>  		pin_reg &= ~BIT(LEVEL_TRIG_OFF);
+>  		pin_reg &= ~(ACTIVE_LEVEL_MASK << ACTIVE_LEVEL_OFF);
+>  		pin_reg |= ACTIVE_LOW << ACTIVE_LEVEL_OFF;
+> -		pin_reg |= DB_TYPE_REMOVE_GLITCH << DB_CNTRL_OFF;
+>  		irq_set_handler_locked(d, handle_edge_irq);
+>  		break;
 >  
->  	for_each_online_node(i)
-> diff --git a/fs/Kconfig b/fs/Kconfig
-> index 976e8b9033c4..21b8d39a9715 100644
-> --- a/fs/Kconfig
-> +++ b/fs/Kconfig
-> @@ -245,6 +245,22 @@ config HUGETLBFS
->  config HUGETLB_PAGE
->  	def_bool HUGETLBFS
+> @@ -484,7 +482,6 @@ static int amd_gpio_irq_set_type(struct irq_data *d, unsigned int type)
+>  		pin_reg &= ~BIT(LEVEL_TRIG_OFF);
+>  		pin_reg &= ~(ACTIVE_LEVEL_MASK << ACTIVE_LEVEL_OFF);
+>  		pin_reg |= BOTH_EADGE << ACTIVE_LEVEL_OFF;
+> -		pin_reg |= DB_TYPE_REMOVE_GLITCH << DB_CNTRL_OFF;
+>  		irq_set_handler_locked(d, handle_edge_irq);
+>  		break;
 >  
-> +config HUGETLB_PAGE_FREE_VMEMMAP
-> +	bool "Free unused vmemmap associated with HugeTLB pages"
-> +	default y
-> +	depends on X86
-> +	depends on HUGETLB_PAGE
-> +	depends on SPARSEMEM_VMEMMAP
-> +	depends on HAVE_BOOTMEM_INFO_NODE
-> +	help
-> +	  There are many struct page structures associated with each HugeTLB
-> +	  page. But we only use a few struct page structures. In this case,
-> +	  it wastes some memory. It is better to free the unused struct page
-> +	  structures to buddy system which can save some memory. For
-> +	  architectures that support it, say Y here.
-> +
-> +	  If unsure, say N.
+> @@ -492,8 +489,6 @@ static int amd_gpio_irq_set_type(struct irq_data *d, unsigned int type)
+>  		pin_reg |= LEVEL_TRIGGER << LEVEL_TRIG_OFF;
+>  		pin_reg &= ~(ACTIVE_LEVEL_MASK << ACTIVE_LEVEL_OFF);
+>  		pin_reg |= ACTIVE_HIGH << ACTIVE_LEVEL_OFF;
+> -		pin_reg &= ~(DB_CNTRl_MASK << DB_CNTRL_OFF);
+> -		pin_reg |= DB_TYPE_PRESERVE_LOW_GLITCH << DB_CNTRL_OFF;
+>  		irq_set_handler_locked(d, handle_level_irq);
+>  		break;
+>  
+> @@ -501,8 +496,6 @@ static int amd_gpio_irq_set_type(struct irq_data *d, unsigned int type)
+>  		pin_reg |= LEVEL_TRIGGER << LEVEL_TRIG_OFF;
+>  		pin_reg &= ~(ACTIVE_LEVEL_MASK << ACTIVE_LEVEL_OFF);
+>  		pin_reg |= ACTIVE_LOW << ACTIVE_LEVEL_OFF;
+> -		pin_reg &= ~(DB_CNTRl_MASK << DB_CNTRL_OFF);
+> -		pin_reg |= DB_TYPE_PRESERVE_HIGH_GLITCH << DB_CNTRL_OFF;
+>  		irq_set_handler_locked(d, handle_level_irq);
+>  		break;
+>  
+> 
 
-I am not sure the above is useful for someone who needs to decide
-whether he needs/wants to enable this or not.
-I think the above fits better in a Documentation part.
-
-I suck at this, but what about the following, or something along those
-lines? 
-
-"
-When using SPARSEMEM_VMEMMAP, the system can save up some memory
-from pre-allocated HugeTLB pages when they are not used.
-6 pages per 2MB HugeTLB page and 4095 per 1GB HugeTLB page.
-When the pages are going to be used or freed up, the vmemmap
-array representing that range needs to be remapped again and
-the pages we discarded earlier need to be rellocated again.
-Therefore, this is a trade-off between saving memory and
-increasing time in allocation/free path.
-"
-
-It would be also great to point out that this might be a
-trade-off between saving up memory and increasing the cost
-of certain operations on allocation/free path.
-That is why I mentioned it there.
-
--- 
-Oscar Salvador
-SUSE L3
