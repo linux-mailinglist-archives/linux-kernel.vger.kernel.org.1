@@ -2,116 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 956242AC123
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 17:43:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 029AB2AC12A
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 17:45:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730652AbgKIQn3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 11:43:29 -0500
-Received: from aserp2120.oracle.com ([141.146.126.78]:48394 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729776AbgKIQn2 (ORCPT
+        id S1730354AbgKIQpo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 11:45:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56042 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726410AbgKIQpo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 11:43:28 -0500
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0A9GTiGs024900;
-        Mon, 9 Nov 2020 16:43:10 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : in-reply-to : message-id : references : mime-version :
- content-type; s=corp-2020-01-29;
- bh=yoSc8PVnoqz9vLpwLqVpjsZWxikRjgLIIdZmILAbnjM=;
- b=dBIunAvHvyYJ8eDVVK0GgO0D2jj4HnIPOe3U/fnqG71CAARSSvWmpB9UxcqU2v0GcrcT
- 3Mz0lQDFL4oT55eZajk+X+BANRUd3wm8vq+SibOLLy7CYgnejsa7Bl4RAJXqOPjni/3T
- CtRijv3Rg7CVE4biWzGSFAI+W0T12WCTVGBR2i3kLXr4BISyP9SnYBcs5tpnmUiLUnlQ
- Yo7f5CTfxzgMAOZY78BCl2aN+7p415ZNYrrrCc5mocnEJsH5AZF/vStu1BmkK5d9HYDI
- YAQooRbqhu6CLgUu8lkVvrMxHTU3ChueWWQ7/Z42WyJnSZGebMKjmUZGM1KT7ncVP/kz GA== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by aserp2120.oracle.com with ESMTP id 34nkhkpyh6-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 09 Nov 2020 16:43:10 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0A9GU3fY157105;
-        Mon, 9 Nov 2020 16:43:09 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by userp3030.oracle.com with ESMTP id 34p5gvg514-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 09 Nov 2020 16:43:09 +0000
-Received: from abhmp0013.oracle.com (abhmp0013.oracle.com [141.146.116.19])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0A9Gh8du027322;
-        Mon, 9 Nov 2020 16:43:08 GMT
-Received: from dhcp-10-175-204-77.vpn.oracle.com (/10.175.204.77)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 09 Nov 2020 08:43:07 -0800
-Date:   Mon, 9 Nov 2020 16:42:58 +0000 (GMT)
-From:   Alan Maguire <alan.maguire@oracle.com>
-X-X-Sender: alan@localhost
-To:     Andrii Nakryiko <andrii@kernel.org>
-cc:     bpf@vger.kernel.org, netdev@vger.kernel.org, ast@fb.com,
-        daniel@iogearbox.net, kernel-team@fb.com,
-        linux-kernel@vger.kernel.org, rafael@kernel.org, jeyu@kernel.org,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: Re: [PATCH bpf-next 5/5] tools/bpftool: add support for in-kernel
- and named BTF in `btf show`
-In-Reply-To: <20201106055111.3972047-6-andrii@kernel.org>
-Message-ID: <alpine.LRH.2.21.2011091633450.4154@localhost>
-References: <20201106055111.3972047-1-andrii@kernel.org> <20201106055111.3972047-6-andrii@kernel.org>
-User-Agent: Alpine 2.21 (LRH 202 2017-01-01)
+        Mon, 9 Nov 2020 11:45:44 -0500
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD812C0613CF;
+        Mon,  9 Nov 2020 08:45:42 -0800 (PST)
+Received: by mail-pf1-x442.google.com with SMTP id a18so8502537pfl.3;
+        Mon, 09 Nov 2020 08:45:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=71ZA6fbBt/FYq9Yhv+Sw9ZIQkG6/ePxg0ItPs/D9GHo=;
+        b=dFGCRp4HQO2QC53KqPkIOGuKPiTb0MMC+WaFg+uMtDK1oksOXt3Y1c0HQUxtVjOxtt
+         gvy8L27H6qCKEPKY08LIHUuaXdwjWebNkTqKNTS//oAVPDlDPZV5zAU3hWnrafy830Db
+         OYMi+aZqgKS6nIAEU5BJ6KquRDJDcRzIR/6y3gBqGzxyAefFpun5/Z8fjNQ3GlTGdDiY
+         Zpj9pRXkPXX2I9Pzu4OTB8FkueM8e+Hvc0zWrKUpDb5gwZ1i/DaoZGS+yoa9Wg2yt7hf
+         oj0/lbKp8fhdTSGFpGrk/DSl9L4TWz6lmv8HLDu+ZA1rP+ai2pLgBVcv5rAzO7wUSVeX
+         1B2A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=71ZA6fbBt/FYq9Yhv+Sw9ZIQkG6/ePxg0ItPs/D9GHo=;
+        b=P7D8bvkxpo7ApjWaU+S8Co2yXtOnXJTaccStFuZF6RwIi8nbIZYVuBvFhXmw2nRImU
+         U+VgcMfiVzQTBc2YIxCGIZIRPbKMYeUHF0uPXzNRZl2IDklnUnBVQPpSPY4JDGgzufxp
+         q6Aq6I3JCvYC8JoJ8cSyj3Bxyw6bsakeB1M/8DsYjdHkYCqUB8ESpLU97c0Qle65H4zA
+         h08IOSWPg/ppPTF11BcohSyci1prQjizhpa21QnzXTVXULrlUKznuYHhTUD4/cD1vIBS
+         9IaF7nlMbMVBUID6Y1v9xYIZJtXKjJ7Ylkdq91WypktR/M3XZjrTYqgqpkAXEfOSK1nH
+         O9Rw==
+X-Gm-Message-State: AOAM532q7uMdUzQTbN5W0Bv+oA0kxy2aGbLL5c2rxlH7KsSXBO6SpO1n
+        sd9mvgNSQj74+5doOyyG4JM=
+X-Google-Smtp-Source: ABdhPJyEigPHxinw9lcZASoyZh54Ipx/Vyh6HNx1mgZ52ds7e8/f3SY+ZA2LYWRcNIVEWTw2bHRGbQ==
+X-Received: by 2002:a63:d357:: with SMTP id u23mr13835450pgi.106.1604940342272;
+        Mon, 09 Nov 2020 08:45:42 -0800 (PST)
+Received: from syed.domain.name ([103.201.127.51])
+        by smtp.gmail.com with ESMTPSA id p188sm10796880pgp.65.2020.11.09.08.45.37
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 09 Nov 2020 08:45:41 -0800 (PST)
+Date:   Mon, 9 Nov 2020 22:15:29 +0530
+From:   Syed Nayyar Waris <syednwaris@gmail.com>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     William Breathitt Gray <vilhelm.gray@gmail.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Michal Simek <michal.simek@xilinx.com>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [PATCH v12 4/4] gpio: xilinx: Utilize generic bitmap_get_value
+ and _set_value
+Message-ID: <20201109164529.GA28710@syed.domain.name>
+References: <cover.1603055402.git.syednwaris@gmail.com>
+ <15a044d3ba23f00c31fd09437bdd3e5924bb91cd.1603055402.git.syednwaris@gmail.com>
+ <CAK8P3a3f=fuq24QwNee3QgoMcSK5rcvLRpdTOWBZ9NJ4d-4bvA@mail.gmail.com>
+ <20201101150033.GA68138@shinobu>
+ <CAK8P3a0y7mh=ZDPefgpawY97gpYv79UXFLBzoGfu3ex2up2aDQ@mail.gmail.com>
+ <20201109123411.GA19869@syed>
+ <20201109134128.GA5596@shinobu>
+ <CAK8P3a2FMkMc0K+hu0pnqC8wEMeapKPkZXaBm+HFYYPTes5NHA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9800 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 mlxlogscore=999 mlxscore=0
- spamscore=0 phishscore=0 adultscore=0 malwarescore=0 suspectscore=3
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2011090114
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9800 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 priorityscore=1501
- mlxscore=0 suspectscore=3 mlxlogscore=999 lowpriorityscore=0 spamscore=0
- malwarescore=0 adultscore=0 clxscore=1011 bulkscore=0 impostorscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2011090114
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAK8P3a2FMkMc0K+hu0pnqC8wEMeapKPkZXaBm+HFYYPTes5NHA@mail.gmail.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 5 Nov 2020, Andrii Nakryiko wrote:
-
-> Display vmlinux BTF name and kernel module names when listing available BTFs
-> on the system.
+On Mon, Nov 09, 2020 at 03:41:53PM +0100, Arnd Bergmann wrote:
+> On Mon, Nov 9, 2020 at 2:41 PM William Breathitt Gray
+> <vilhelm.gray@gmail.com> wrote:
+> > On Mon, Nov 09, 2020 at 06:04:11PM +0530, Syed Nayyar Waris wrote:
+> >
+> > One of my concerns is that we're incurring the latency two additional
+> > conditional checks just to suppress a compiler warning about a case that
+> > wouldn't occur in the actual use of bitmap_set_value(). I'm hoping
+> > there's a way for us to suppress these warnings without adding onto the
+> > latency of this function; given that bitmap_set_value() is intended to
+> > be used in loops, conditionals here could significantly increase latency
+> > in drivers.
 > 
-> In human-readable output mode, module BTFs are reported with "name
-> [module-name]", while vmlinux BTF will be reported as "name [vmlinux]".
-> Square brackets are added by bpftool and follow kernel convention when
-> displaying modules in human-readable text outputs.
+> At least for this caller, the size check would be a compile-time
+> constant that can be eliminated.
 > 
+> > I wonder if array_index_nospec() might have the side effect of
+> > suppressing these warnings for us. For example, would this work:
+> >
+> > static inline void bitmap_set_value(unsigned long *map,
+> >                                     unsigned long value,
+> >                                     unsigned long start, unsigned long nbits)
+> > {
+> >         const unsigned long offset = start % BITS_PER_LONG;
+> >         const unsigned long ceiling = round_up(start + 1, BITS_PER_LONG);
+> >         const unsigned long space = ceiling - start;
+> >         size_t index = BIT_WORD(start);
+> >
+> >         value &= GENMASK(nbits - 1, 0);
+> >
+> >         if (space >= nbits) {
+> >                 index = array_index_nospec(index, index + 1);
+> >
+> >                 map[index] &= ~(GENMASK(nbits - 1, 0) << offset);
+> >                 map[index] |= value << offset;
+> >         } else {
+> >                 index = array_index_nospec(index, index + 2);
+> >
+> >                 map[index + 0] &= ~BITMAP_FIRST_WORD_MASK(start);
+> >                 map[index + 0] |= value << offset;
+> >                 map[index + 1] &= ~BITMAP_LAST_WORD_MASK(start + nbits);
+> >                 map[index + 1] |= value >> space;
+> >         }
+> > }
+> >
+> > Or is this going to produce the same warning because we're not using an
+> > explicit check against the map array size?
+> 
+> https://godbolt.org/z/fxnsG9
+> 
+> It still warns about the 'map[index + 1]' access: from all I can tell,
+> gcc mainly complains because it cannot rule out that 'space < nbits',
+> and then it knows the size of 'DECLARE_BITMAP(old, 64)' and finds
+> that if 'index + 0' is correct, then 'index + 1' overflows that array.
+> 
+>       Arnd
 
-I had a go at testing this and all looks good, but I was curious
-if  "bpftool btf dump" is expected to work with module BTF? I see
-the various modules in /sys/kernel/btf, but if I run:
+Hi Arnd,
 
-# bpftool btf dump file /sys/kernel/btf/ixgbe
-Error: failed to load BTF from /sys/kernel/btf/ixgbe: Invalid argument
+As suggested by William, sharing another solution to suppress the 
+compiler warning. Please let me know your views on the below fix. Thanks.
 
-...while it still works for vmlinux:
+If its alright, I shall submit a (new) v13 patchset soon. Let me know.
 
-# bpftool btf dump file /sys/kernel/btf/vmlinux
-[1] INT '(anon)' size=4 bits_offset=0 nr_bits=32 encoding=(none)
-[2] INT 'long unsigned int' size=8 bits_offset=0 nr_bits=64 
-encoding=(none)
-...
+@@ -1,5 +1,5 @@
+ static inline void bitmap_set_value(unsigned long *map,
+-                                    unsigned long value,
++                                    unsigned long value, const size_t length,
+                                     unsigned long start, unsigned long nbits)
+ {
+         const size_t index = BIT_WORD(start);
+@@ -15,6 +15,10 @@ static inline void bitmap_set_value(unsigned long *map,
+         } else {
+                 map[index + 0] &= ~BITMAP_FIRST_WORD_MASK(start);
+                 map[index + 0] |= value << offset;
++
++               if (index + 1 >= length)
++                       __builtin_unreachable();
++
+                 map[index + 1] &= ~BITMAP_LAST_WORD_MASK(start + nbits);
+                 map[index + 1] |= value >> space;
+         }
 
-"bpftool btf show" works for ixgbe:
 
-# bpftool btf show|grep ixgbe
-19: name [ixgbe]  size 182074B
-
-Is this perhaps not expected to work yet? (I updated pahole
-to the latest changes etc and BTF generation seemed to work
-fine for modules during kernel build).
-
-For the "bpftool btf show" functionality, feel free to add
-
-Tested-by: Alan Maguire <alan.maguire@oracle.com>
-
-Thanks!
-
-Alan
