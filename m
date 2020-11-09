@@ -2,61 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 243DA2AC184
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 17:57:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B9E532AC181
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 17:57:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731012AbgKIQ4w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 11:56:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57766 "EHLO
+        id S1730942AbgKIQ4r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 11:56:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57774 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730899AbgKIQ4o (ORCPT
+        with ESMTP id S1729776AbgKIQ4o (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 9 Nov 2020 11:56:44 -0500
-Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28B01C0613CF
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Nov 2020 08:56:43 -0800 (PST)
-Received: by mail-io1-xd43.google.com with SMTP id j12so10519359iow.0
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Nov 2020 08:56:43 -0800 (PST)
+Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59C2EC0613D6
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Nov 2020 08:56:44 -0800 (PST)
+Received: by mail-io1-xd42.google.com with SMTP id r9so10491481ioo.7
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Nov 2020 08:56:44 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=/Vdf65yzuDCrr/hvWk0aTTXpWc5ZNNvy02Ck48ydFJk=;
-        b=mibJzcXpvmvzLZWpCf4PGwU3zb/b293QV8UyvXMkNooM1NutYjJ1qw9av82rcrIW3j
-         /l9dlo+1o69PfGRzbXggHMQT/Q97/M3TrkrsQIHRMoW+5d4Z03XqY73BzqhGudOBKgRU
-         lz40pPJbQtuOY0nQ0m7dMkvI02iQ2N1UIpkB73Ok2h1FvynxocisqyhBig3jDqbeZ04n
-         Yo5khOIdzpC8JJsCekgN0lNMAkykgpzY3M5U7WA248uwZgUuvI7vG6Vun6OYS7oGicHC
-         Al+25ntjcAed667J28ayHlmmUgdjKsaF0Sve+1uphCEAI8tXF6rIj+DBpTgCAThXiwNb
-         u+qw==
+        bh=e5NRbYsOo+mspumDtpUEM/+OEsVGUUWKaYNV+1cLmV4=;
+        b=n2hLQ7PHR3cMzHVOFkT8wDfl5WJbEyE2GW1mdy0w/0zYQtDrGdHtRa5QQkWlZxb5Hr
+         ZiWMQ4SWjn76IQEWW6bs+66vkbmPjrt3SckLb2CZHkW+p9Wak7QEf5bBuj4VzDJAYANR
+         26uzhkzrwmiuiGFzwkT2T2MfSJkJlOlFCVp/kYBmRTh15+fi74ulQZ7XJvWatsnYDW0Y
+         T2bG7COiMZqnbvoXO+dF9fb6msEE0blbS5ZJ5IFPkB5PVOHlp3sfiSmFSGsqhdje+l6q
+         lV7Clecaxjr4+g+ck1g54xmyck3PQ7MnZd+oNon49VOoPdS5EzO3Xa5SMgMhdBJ2VOSm
+         MYjw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=/Vdf65yzuDCrr/hvWk0aTTXpWc5ZNNvy02Ck48ydFJk=;
-        b=ngUQucgfMQpTfdOBm/zsTxIOwHx0p/Gpwwip9XU0ToywGKy9/K4a9YQQZypBGVRen4
-         MeBxSZDudaTzPJcn8v1qxZWTgRIIB2ZcurA7o5Eyxf6yG1rqqBPv5FKud1zmILO3RYIg
-         ectzieJy9sLkJeyeQFyoj/I8raWKCiIIzwDlVWvC+Z4JFV5f1f5q+ReYYefyro6emIBg
-         Jtw5G+wWSlMw6BKwab4DnyrQyPJg/kJO5NKoauI/Sc6Ml6w9iTXcNvHYRtcvsoWos+C8
-         Gg3C1ZxmuAfo1pRoF8e46virTjtVWI1jhxA6Y3J7dOoA6NrSqfNjE4TO7CXylxGSWoec
-         uhrQ==
-X-Gm-Message-State: AOAM5319/q/DuTrRQAdeqaXpkSRbTueRhO7Ssmwa6LRY5AxId0g4hGRh
-        Zw0TLjfuC/Xj6AloHQieCZ1R3KF5MKKLEXAD
-X-Google-Smtp-Source: ABdhPJyCZD37+5GLNdlIUheP0c26GJSlEs5udDlo9v9agnXPx/FZTudP0vSl0QZNMsVb0i1r2UAmfA==
-X-Received: by 2002:a02:cb99:: with SMTP id u25mr7544235jap.73.1604941002534;
-        Mon, 09 Nov 2020 08:56:42 -0800 (PST)
+        bh=e5NRbYsOo+mspumDtpUEM/+OEsVGUUWKaYNV+1cLmV4=;
+        b=JOG5vq/p5Hl3laCfZp5AzzcLCqT1U9CdwzfmX8PWBYcXXVkgFVyq43S62SI+0KLrht
+         FAFrwcZTuHoMgGvW9i9SQ5BtbDv/96SoyCNjxQI8e4Wfb9xBuz3QvK6i4z1zw4nT7w6y
+         rgGvU5qadLpIavNzZ/G9RmTqNs9hZPc3ieJ0GLFtUv0y1Xy3UyIcV3lyLVWM3F4WevhC
+         TcFZOegYa9KGbxBvl8lShPpRILI7E57qFjROQ37Zbm1d/17CYN0/CNplf/skw3G/mnh5
+         MjuA8q7LH7NnAgkjkJ+IQdo0NaO6fIgtDZHtrVo7j4M2UDozQtztD1U4i5HAjUxb9oQL
+         nKww==
+X-Gm-Message-State: AOAM533hpWA1/RVI2rQYJB01vnos0qhibXsdyR8jMId6FWGPZDk5a7Ad
+        7RMaqOTbURoc6K/arW+eXlpznA==
+X-Google-Smtp-Source: ABdhPJyvpQkup+PqYKcGOz1XWcaLrFZp3jPITkhcqvG5RUmPyI6LkmNKk9zVqFmftzPFPVRQpOtY+g==
+X-Received: by 2002:a05:6602:21c2:: with SMTP id c2mr10882933ioc.184.1604941003739;
+        Mon, 09 Nov 2020 08:56:43 -0800 (PST)
 Received: from beast.localdomain (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
-        by smtp.gmail.com with ESMTPSA id j85sm7576556ilg.82.2020.11.09.08.56.41
+        by smtp.gmail.com with ESMTPSA id j85sm7576556ilg.82.2020.11.09.08.56.42
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 09 Nov 2020 08:56:41 -0800 (PST)
+        Mon, 09 Nov 2020 08:56:43 -0800 (PST)
 From:   Alex Elder <elder@linaro.org>
 To:     davem@davemloft.net, kuba@kernel.org
 Cc:     evgreen@chromium.org, subashab@codeaurora.org,
         cpratapa@codeaurora.org, bjorn.andersson@linaro.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Stephen Boyd <swboyd@chromium.org>
-Subject: [PATCH net-next 3/4] net: ipa: change a warning to debug
-Date:   Mon,  9 Nov 2020 10:56:34 -0600
-Message-Id: <20201109165635.5449-4-elder@linaro.org>
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH net-next 4/4] net: ipa: drop an error message
+Date:   Mon,  9 Nov 2020 10:56:35 -0600
+Message-Id: <20201109165635.5449-5-elder@linaro.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20201109165635.5449-1-elder@linaro.org>
 References: <20201109165635.5449-1-elder@linaro.org>
@@ -66,46 +65,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When we determine from hardware what the size of IPA memory is
-we compare it against what we learned about it from DT.
+There is no need for gsi_modem_channel_halt() to report an error,
+because gsi_generic_command() will already have done that if the
+command times out.  So get rid of the extra message.
 
-If DT defines a region that's larger than actual memory, we use the
-smaller actual size and issue a warning.
-
-If DT defines a smaller region than actual memory we issue a warning
-too.  But in this case the difference is harmless; so rather than
-issuing a warning, just provide a debug message instead.
-
-Reorder these checks so the one that matters more is done first.
-
-Reported-by: Stephen Boyd <swboyd@chromium.org>
 Signed-off-by: Alex Elder <elder@linaro.org>
 ---
- drivers/net/ipa/ipa_mem.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ drivers/net/ipa/gsi.c | 7 +------
+ 1 file changed, 1 insertion(+), 6 deletions(-)
 
-diff --git a/drivers/net/ipa/ipa_mem.c b/drivers/net/ipa/ipa_mem.c
-index ecfd1f91fce3b..0cc3a3374caa2 100644
---- a/drivers/net/ipa/ipa_mem.c
-+++ b/drivers/net/ipa/ipa_mem.c
-@@ -160,13 +160,13 @@ int ipa_mem_config(struct ipa *ipa)
- 	mem_size = 8 * u32_get_bits(val, SHARED_MEM_SIZE_FMASK);
+diff --git a/drivers/net/ipa/gsi.c b/drivers/net/ipa/gsi.c
+index 961a11d4fb270..3a5998a037dab 100644
+--- a/drivers/net/ipa/gsi.c
++++ b/drivers/net/ipa/gsi.c
+@@ -1661,12 +1661,7 @@ static int gsi_modem_channel_alloc(struct gsi *gsi, u32 channel_id)
  
- 	/* If the sizes don't match, issue a warning */
--	if (ipa->mem_offset + mem_size > ipa->mem_size) {
--		dev_warn(dev, "ignoring larger reported memory size: 0x%08x\n",
--			mem_size);
--	} else if (ipa->mem_offset + mem_size < ipa->mem_size) {
-+	if (ipa->mem_offset + mem_size < ipa->mem_size) {
- 		dev_warn(dev, "limiting IPA memory size to 0x%08x\n",
- 			 mem_size);
- 		ipa->mem_size = mem_size;
-+	} else if (ipa->mem_offset + mem_size > ipa->mem_size) {
-+		dev_dbg(dev, "ignoring larger reported memory size: 0x%08x\n",
-+			mem_size);
- 	}
+ static void gsi_modem_channel_halt(struct gsi *gsi, u32 channel_id)
+ {
+-	int ret;
+-
+-	ret = gsi_generic_command(gsi, channel_id, GSI_GENERIC_HALT_CHANNEL);
+-	if (ret)
+-		dev_err(gsi->dev, "error %d halting modem channel %u\n",
+-			ret, channel_id);
++	(void)gsi_generic_command(gsi, channel_id, GSI_GENERIC_HALT_CHANNEL);
+ }
  
- 	/* Prealloc DMA memory for zeroing regions */
+ /* Setup function for channels */
 -- 
 2.20.1
 
