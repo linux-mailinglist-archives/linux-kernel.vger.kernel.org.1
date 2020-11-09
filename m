@@ -2,187 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FCD22AC6BD
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 22:15:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 54CCD2AC6BB
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 22:15:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730596AbgKIVPf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 16:15:35 -0500
-Received: from mail-40133.protonmail.ch ([185.70.40.133]:41199 "EHLO
-        mail-40133.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725946AbgKIVPc (ORCPT
+        id S1730493AbgKIVPe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 16:15:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41520 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729336AbgKIVPd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 16:15:32 -0500
-Date:   Mon, 09 Nov 2020 21:15:19 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me; s=protonmail;
-        t=1604956528; bh=zTOBwWAH6JdA/Q03nXi6Nv+Ot9+RM1svymVRReyFZ/8=;
-        h=Date:To:From:Cc:Reply-To:Subject:From;
-        b=h62fmhbfhOQh29yjgA3Xy2EV/wnNK+6x2cCmxLhCpZOYToq+Wxq/DKNc4C3L7qly+
-         fhI8MT7TLwEmLfVel4vhk+bByJHsNON9hYijHc0KcPPqXATGQSLf9YoRmliXcx9YRR
-         oivPpGExOwk4+cP7XL0CqUsb79xq3JJWVNPjSh1QfpUw3VYwjGs1xHCq+yzm29xXUp
-         oYbgnAQfcN6pBO1CWZepGdKrAQLQXTBlhGAkzpNr315v/KjAOdyQHoNE2kUQ+wE2pw
-         ADlyQrF79KqzyPbtnlc7pwp+RjhGVit/JxSOSux+tEWPbD2z7QxbtkmP+kd/l6SJcw
-         Q2JPLlNI3x9og==
-To:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-From:   Alexander Lobakin <alobakin@pm.me>
-Cc:     Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Willem de Bruijn <willemb@google.com>,
-        Steffen Klassert <steffen.klassert@secunet.com>,
-        Alexander Lobakin <alobakin@pm.me>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Reply-To: Alexander Lobakin <alobakin@pm.me>
-Subject: [PATCH v3 net] net: udp: fix Fast/frag0 UDP GRO
-Message-ID: <MgZce9htmEtCtHg7pmWxXXfdhmQ6AHrnltXC41zOoo@cp7-web-042.plabs.ch>
+        Mon, 9 Nov 2020 16:15:33 -0500
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4548C0613CF
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Nov 2020 13:15:32 -0800 (PST)
+Received: by mail-wm1-x342.google.com with SMTP id t67so890663wmt.5
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Nov 2020 13:15:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=cPfEKs3WQgi21dRprWvl0/cuPQQi8MnROC+cTFK/Hjk=;
+        b=VK/PVkAs5xGOczSmdLeGGr1UjLAa1wNkT5KEULJPwAMYtTFospgWvQXmWweWxFrYSL
+         q6U6xZf7/8yQcSPJDC9gc29/HZUDZJQxumZl8PUVUzDZQgsTT+tLbqAImT1M6MeJXwyZ
+         oV7xNWvQnVaFCxNiqpxB+3voW1ZQ3/8BmZefBXukvEHYKHRH7eqIWIdfbW70msWZCwkK
+         JvZY5XZ8k+JRvZILBg43HeLT/GvQXGoyf2hxdUCenBQmb+mura13aVQ8f3Xswo3giyBh
+         18whO+eWLkOIZibns4Aiol1Az1LfYRH8imLmYxYgEPw2BD7hcD8kAl5lsTKjRErlRI3g
+         nKRA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=cPfEKs3WQgi21dRprWvl0/cuPQQi8MnROC+cTFK/Hjk=;
+        b=rKsVmoLdP8WSQbEjjq/jUjbzTrQ094BJH75rqZQ/IXlvl8huUSN67xgcuzf/d9uRV3
+         JR7IFhxT11SLPbcNmvWC8zdAG7B/akH43egC6G/8LuNLGRw3kpdF3EkoCPbizQ+d3qeh
+         aZ0vi8gYHMdO6cWRH2bhvSaVYuJdB3A1OGwWUCcbXP1+P9budlP3egvz0mUUIX10BABr
+         vamBPtmOw1MvkTpUXpi5KIRO0CW+9cElHT8Sup+1/4ThrC0Fn+WmMkHi7N3NEgChpYJ4
+         GNQi8uoMyk/wpASCKWrRhq8WXwqhSEHP+/Cq6eYbzW61QP85eYJtiu0g1tgxJVd2sH8+
+         YdoQ==
+X-Gm-Message-State: AOAM533SKMAoAHMjHleY+CNa5LnW7ty77D0BrBdKvJiq/gOvEBsZjDkB
+        d6yyq68+VxetlI6PESJnwltkjw==
+X-Google-Smtp-Source: ABdhPJxyV7TDW5Pt0GMSmlw9Wcknf4YsuZ7MwnLmYcynaZ+tHhjDvCCTux+hN1vU/Ah+Y0DkH8bbAw==
+X-Received: by 2002:a1c:4d03:: with SMTP id o3mr1161753wmh.150.1604956531356;
+        Mon, 09 Nov 2020 13:15:31 -0800 (PST)
+Received: from dell ([91.110.221.139])
+        by smtp.gmail.com with ESMTPSA id 35sm12713729wro.71.2020.11.09.13.15.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 09 Nov 2020 13:15:30 -0800 (PST)
+Date:   Mon, 9 Nov 2020 21:15:28 +0000
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Sam Ravnborg <sam@ravnborg.org>
+Cc:     Alex Deucher <alexdeucher@gmail.com>,
+        David Airlie <airlied@linux.ie>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Maling list - DRI developers 
+        <dri-devel@lists.freedesktop.org>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>
+Subject: Re: [PATCH 17/19] drm/radeon/radeon_kms: Fix misnaming of
+ 'radeon_info_ioctl's dev param
+Message-ID: <20201109211528.GD2063125@dell>
+References: <20201106214949.2042120-1-lee.jones@linaro.org>
+ <20201106214949.2042120-18-lee.jones@linaro.org>
+ <CADnq5_Nys7igVo3sgzK0D4hnm=RHMrEM7Xty80jGROu_sy5svA@mail.gmail.com>
+ <20201109195557.GA1940813@ravnborg.org>
+ <20201109201013.GC2063125@dell>
+ <20201109205236.GA1952447@ravnborg.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201109205236.GA1952447@ravnborg.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-While testing UDP GSO fraglists forwarding through driver that uses
-Fast GRO (via napi_gro_frags()), I was observing lots of out-of-order
-iperf packets:
+On Mon, 09 Nov 2020, Sam Ravnborg wrote:
 
-[ ID] Interval           Transfer     Bitrate         Jitter
-[SUM]  0.0-40.0 sec  12106 datagrams received out-of-order
+> On Mon, Nov 09, 2020 at 08:10:13PM +0000, Lee Jones wrote:
+> > On Mon, 09 Nov 2020, Sam Ravnborg wrote:
+> > 
+> > > Hi Alex,
+> > > On Mon, Nov 09, 2020 at 02:50:35PM -0500, Alex Deucher wrote:
+> > > > On Fri, Nov 6, 2020 at 4:50 PM Lee Jones <lee.jones@linaro.org> wrote:
+> > > > >
+> > > > > Fixes the following W=1 kernel build warning(s):
+> > > > >
+> > > > >  drivers/gpu/drm/radeon/radeon_kms.c:226: warning: Function parameter or member 'dev' not described in 'radeon_info_ioctl'
+> > > > >  drivers/gpu/drm/radeon/radeon_kms.c:226: warning: Excess function parameter 'rdev' description in 'radeon_info_ioctl'
+> > > > >
+> > > > > Cc: Alex Deucher <alexander.deucher@amd.com>
+> > > > > Cc: "Christian König" <christian.koenig@amd.com>
+> > > > > Cc: David Airlie <airlied@linux.ie>
+> > > > > Cc: Daniel Vetter <daniel@ffwll.ch>
+> > > > > Cc: amd-gfx@lists.freedesktop.org
+> > > > > Cc: dri-devel@lists.freedesktop.org
+> > > > > Signed-off-by: Lee Jones <lee.jones@linaro.org>
+> > > > > ---
+> > > > >  drivers/gpu/drm/radeon/radeon_kms.c | 2 +-
+> > > > >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > > > >
+> > > > > diff --git a/drivers/gpu/drm/radeon/radeon_kms.c b/drivers/gpu/drm/radeon/radeon_kms.c
+> > > > > index 0d8fbabffcead..21c206795c364 100644
+> > > > > --- a/drivers/gpu/drm/radeon/radeon_kms.c
+> > > > > +++ b/drivers/gpu/drm/radeon/radeon_kms.c
+> > > > > @@ -213,7 +213,7 @@ static void radeon_set_filp_rights(struct drm_device *dev,
+> > > > >  /**
+> > > > >   * radeon_info_ioctl - answer a device specific request.
+> > > > >   *
+> > > > > - * @rdev: radeon device pointer
+> > > > > + * @dev: radeon device pointer
+> > > > 
+> > > > This should be:
+> > > > + * @dev: drm device pointer
+> > > 
+> > > good spot. I am continuing the work on radeon and will post a patchset
+> > > that contains only radeon fixes with Lee's patches and a few more by me.
+> > > I will fix the above.
+> > 
+> > What do you mean by "continuing on"?
+> > 
+> > How will you prevent your work from conflicting with my current effort?
+> 
+> Quoting from previous mail in this thread:
+> 
+>   "
+>   > > How would you like me to move forward?
+>   >
+>   > Fix the thousand of warnings in other places :-)
+>   > I will take a look at radeon and post a new series based on your work
+>   > with all W=1 warnings fixed.
+> 
+>   I'll drop this patch and carry on ploughing through the rest of them.
+> "
+> 
+> Here I promised you to fix all warnings in the radeon driver.
+> And despite this being more work than anticipated a promise is a
+> promise. So therefore I started working on this.
+> 
+> If you want to do the rest of the radeon driver you are welcome and I
+> will gladly drop this again. Just let me know your preference.
 
-Simple switch to napi_gro_receive() any other method without frag0
-shortcut completely resolved them.
+That was the plan.  To continue on and solve as many warnings as I can
+before I start bumping into more serious issues like the one mentioned
+above.  If you'd like to solve the radeon_init() issue right away;
+however, that would be super helpful.
 
-I've found that UDP GRO uses udp_hdr(skb) in its .gro_receive()
-callback. While it's probably OK for non-frag0 paths (when all
-headers or even the entire frame are already in skb->data), this
-inline points to junk when using Fast GRO (napi_gro_frags() or
-napi_gro_receive() with only Ethernet header in skb->data and all
-the rest in shinfo->frags) and breaks GRO packet compilation and
-the packet flow itself.
-To support both modes, skb_gro_header_fast() + skb_gro_header_slow()
-are typically used. UDP even has an inline helper that makes use of
-them, udp_gro_udphdr(). Use that instead of troublemaking udp_hdr()
-to get rid of the out-of-order delivers.
-
-Present since the introduction of plain UDP GRO in 5.0-rc1.
-
-Since v2 [1]:
- - dropped redundant check introduced in v2 as it's performed right
-   before (thanks to Eric);
- - udp_hdr() switched to data + off for skbs from list (also Eric);
- - fixed possible malfunction of {,__}udp{4,6}_lib_lookup_skb() with
-   Fast/frag0 due to ip{,v6}_hdr() usage (Willem).
-
-Since v1 [2]:
- - added a NULL pointer check for "uh" as suggested by Willem.
-
-[1] https://lore.kernel.org/netdev/0eaG8xtbtKY1dEKCTKUBubGiC9QawGgB3tVZtNqV=
-dY@cp4-web-030.plabs.ch
-[2] https://lore.kernel.org/netdev/YazU6GEzBdpyZMDMwJirxDX7B4sualpDG68ADZYv=
-JI@cp4-web-034.plabs.ch
-
-Fixes: e20cf8d3f1f7 ("udp: implement GRO for plain UDP sockets.")
-Signed-off-by: Alexander Lobakin <alobakin@pm.me>
----
- net/ipv4/udp.c         | 4 ++--
- net/ipv4/udp_offload.c | 9 ++++++---
- net/ipv6/udp.c         | 4 ++--
- 3 files changed, 10 insertions(+), 7 deletions(-)
-
-diff --git a/net/ipv4/udp.c b/net/ipv4/udp.c
-index 09f0a23d1a01..948ddc9a0212 100644
---- a/net/ipv4/udp.c
-+++ b/net/ipv4/udp.c
-@@ -534,7 +534,7 @@ static inline struct sock *__udp4_lib_lookup_skb(struct=
- sk_buff *skb,
- =09=09=09=09=09=09 __be16 sport, __be16 dport,
- =09=09=09=09=09=09 struct udp_table *udptable)
- {
--=09const struct iphdr *iph =3D ip_hdr(skb);
-+=09const struct iphdr *iph =3D skb_gro_network_header(skb);
-=20
- =09return __udp4_lib_lookup(dev_net(skb->dev), iph->saddr, sport,
- =09=09=09=09 iph->daddr, dport, inet_iif(skb),
-@@ -544,7 +544,7 @@ static inline struct sock *__udp4_lib_lookup_skb(struct=
- sk_buff *skb,
- struct sock *udp4_lib_lookup_skb(struct sk_buff *skb,
- =09=09=09=09 __be16 sport, __be16 dport)
- {
--=09const struct iphdr *iph =3D ip_hdr(skb);
-+=09const struct iphdr *iph =3D skb_gro_network_header(skb);
-=20
- =09return __udp4_lib_lookup(dev_net(skb->dev), iph->saddr, sport,
- =09=09=09=09 iph->daddr, dport, inet_iif(skb),
-diff --git a/net/ipv4/udp_offload.c b/net/ipv4/udp_offload.c
-index e67a66fbf27b..dbc4d17c55e9 100644
---- a/net/ipv4/udp_offload.c
-+++ b/net/ipv4/udp_offload.c
-@@ -366,11 +366,11 @@ static struct sk_buff *udp4_ufo_fragment(struct sk_bu=
-ff *skb,
- static struct sk_buff *udp_gro_receive_segment(struct list_head *head,
- =09=09=09=09=09       struct sk_buff *skb)
- {
--=09struct udphdr *uh =3D udp_hdr(skb);
-+=09struct udphdr *uh =3D udp_gro_udphdr(skb);
- =09struct sk_buff *pp =3D NULL;
- =09struct udphdr *uh2;
- =09struct sk_buff *p;
--=09unsigned int ulen;
-+=09u32 ulen, off;
- =09int ret =3D 0;
-=20
- =09/* requires non zero csum, for symmetry with GSO */
-@@ -385,6 +385,9 @@ static struct sk_buff *udp_gro_receive_segment(struct l=
-ist_head *head,
- =09=09NAPI_GRO_CB(skb)->flush =3D 1;
- =09=09return NULL;
- =09}
-+
-+=09off =3D skb_gro_offset(skb);
-+
- =09/* pull encapsulating udp header */
- =09skb_gro_pull(skb, sizeof(struct udphdr));
-=20
-@@ -392,7 +395,7 @@ static struct sk_buff *udp_gro_receive_segment(struct l=
-ist_head *head,
- =09=09if (!NAPI_GRO_CB(p)->same_flow)
- =09=09=09continue;
-=20
--=09=09uh2 =3D udp_hdr(p);
-+=09=09uh2 =3D (void *)p->data + off;
-=20
- =09=09/* Match ports only, as csum is always non zero */
- =09=09if ((*(u32 *)&uh->source !=3D *(u32 *)&uh2->source)) {
-diff --git a/net/ipv6/udp.c b/net/ipv6/udp.c
-index 29d9691359b9..a256ecce76b2 100644
---- a/net/ipv6/udp.c
-+++ b/net/ipv6/udp.c
-@@ -269,7 +269,7 @@ static struct sock *__udp6_lib_lookup_skb(struct sk_buf=
-f *skb,
- =09=09=09=09=09  __be16 sport, __be16 dport,
- =09=09=09=09=09  struct udp_table *udptable)
- {
--=09const struct ipv6hdr *iph =3D ipv6_hdr(skb);
-+=09const struct ipv6hdr *iph =3D skb_gro_network_header(skb);
-=20
- =09return __udp6_lib_lookup(dev_net(skb->dev), &iph->saddr, sport,
- =09=09=09=09 &iph->daddr, dport, inet6_iif(skb),
-@@ -279,7 +279,7 @@ static struct sock *__udp6_lib_lookup_skb(struct sk_buf=
-f *skb,
- struct sock *udp6_lib_lookup_skb(struct sk_buff *skb,
- =09=09=09=09 __be16 sport, __be16 dport)
- {
--=09const struct ipv6hdr *iph =3D ipv6_hdr(skb);
-+=09const struct ipv6hdr *iph =3D skb_gro_network_header(skb);
-=20
- =09return __udp6_lib_lookup(dev_net(skb->dev), &iph->saddr, sport,
- =09=09=09=09 &iph->daddr, dport, inet6_iif(skb),
---=20
-2.29.2
-
-
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
