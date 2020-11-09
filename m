@@ -2,128 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B4FA2ABACF
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 14:23:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 69CFF2AB933
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 14:07:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387632AbgKINWb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 08:22:31 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50292 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732579AbgKINWT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 08:22:19 -0500
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id F235B2076E;
-        Mon,  9 Nov 2020 13:22:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604928138;
-        bh=WKesmw1EB5KG72XqKogbKm0+CFZevf0raON6CsIXZqw=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gQGsQ9JTTqKLp9Z5H1Qpuk6nZQ0zBXt90vcEN33BmboFukMjyCtnO6fFZXQ8G2vf8
-         JrAd4tXpbbVIGjuArxQhqrPbE2fig0syT1wn/MYHpycolLAJMHP7YCwIxjyXa64+2Y
-         nZfmXUcP3trprj3EjJb8u1885WBBAp2fcBgjlqu8=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, =?UTF-8?q?kiyin ?= <kiyin@tencent.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        "Srivatsa S. Bhat" <srivatsa@csail.mit.edu>,
-        Anthony Liguori <aliguori@amazon.com>
-Subject: [PATCH 5.9 133/133] perf/core: Fix a memory leak in perf_event_parse_addr_filter()
-Date:   Mon,  9 Nov 2020 13:56:35 +0100
-Message-Id: <20201109125037.090717654@linuxfoundation.org>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201109125030.706496283@linuxfoundation.org>
-References: <20201109125030.706496283@linuxfoundation.org>
-User-Agent: quilt/0.66
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+        id S1731241AbgKINHE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 08:07:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50332 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731186AbgKING6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 08:06:58 -0500
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0BC1C0613CF;
+        Mon,  9 Nov 2020 05:06:57 -0800 (PST)
+Received: by mail-pf1-x443.google.com with SMTP id w6so2615058pfu.1;
+        Mon, 09 Nov 2020 05:06:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=message-id:from:to:cc:subject:date;
+        bh=pv/qcPPzxY24BJv/TEpfoqjXaGRaaqqNFfUeBE2/vdI=;
+        b=sT3nKO/oUVfm1r6qUVlx1wsZeOwbzS5aKSfpGj0Z7RVxxARSTKPn62yeSyDj5wLZ4r
+         SzsJX7bXPAHAnpL87g/XKHuUAW6Ei5n2yfkmx/BKKtY4579berHzvRlUb9LnN4zKCrbo
+         eKY5UXRUVP2Ku3N1mNY1fW1es+A8LpekORFMxoxkMYzSSHWWtx1UsvxH8Cy17175XzKo
+         SkOsE7Vag79J3/+/ezNwWQH/JCSMCuACPMN1/AM1PYJcK7KhXr1EkJeMXh0yy0gxJQXO
+         3L0u4k7SixloDgV1Bfq2ysVFo/plNGRuGz30g7VlQ8J8Dl7qV7VFglCVhf4AvCU5AXjI
+         cZMA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:message-id:from:to:cc:subject:date;
+        bh=pv/qcPPzxY24BJv/TEpfoqjXaGRaaqqNFfUeBE2/vdI=;
+        b=at32OKK5VyvPKAzwnsn8zJc6LjtKByLCJqx/kEs8HJ0/jfxKXDc2yzTPmHmEJn25+S
+         OenZg49uIIhyfKzn/pPH08dbE4rkuchs2duJlWaCF0uKJEEMU8IYdPg8ENPyZ8ZBBYXw
+         inBzkUF0hofatl0v1BxJ7iokHMjb5v23NDDRTVdOiG+8/wYfXygLVzmCH5jgCGfxJqkr
+         2vX8Yykc8WSdDC6EszHxKwbkbDvSAtPTpW2l3t08FhfRxLhsuQEU68D45W1EvKFnyidV
+         tl6LhPPElWCz8328B95y0yVVBC+R20yJ4VtmkLwkiUyd7zsi2XBGuA1m9clG1gVGr+1U
+         HFzg==
+X-Gm-Message-State: AOAM531q5DKek3vWIbZ/0n9Xcq15LZ3gdM/vUbfv0BHU64x4ciby1b46
+        sDr40SMmsGq2OjYWbnfD9U8=
+X-Google-Smtp-Source: ABdhPJwD4jwkOUq/fxk5ZZIs+ZhQ+9KL97Y1VfG/9OPmSl6RAtuihPW0tL0U8O5xLmZMdq02ZvvZOA==
+X-Received: by 2002:a17:90b:386:: with SMTP id ga6mr3765316pjb.209.1604927217360;
+        Mon, 09 Nov 2020 05:06:57 -0800 (PST)
+Received: from localhost.localdomain ([154.93.3.113])
+        by smtp.gmail.com with ESMTPSA id t18sm8246920pjs.56.2020.11.09.05.06.55
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 09 Nov 2020 05:06:56 -0800 (PST)
+Message-ID: <5fa93ef0.1c69fb81.bff98.2afc@mx.google.com>
+X-Google-Original-Message-ID: <1604927180-63394-1-git-send-email---global>
+From:   menglong8.dong@gmail.com
+X-Google-Original-From: --global
+To:     edumazet@google.com
+Cc:     davem@davemloft.net, kuznet@ms2.inr.ac.ru, yoshfuji@linux-ipv6.org,
+        kuba@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Menglong Dong <dong.menglong@zte.com.cn>
+Subject: [PATCH] net: tcp: ratelimit warnings in tcp_recvmsg
+Date:   Mon,  9 Nov 2020 08:06:20 -0500
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: kiyin(尹亮) <kiyin@tencent.com>
+From: Menglong Dong <dong.menglong@zte.com.cn>
 
-commit 7bdb157cdebbf95a1cd94ed2e01b338714075d00 upstream.
+'before(*seq, TCP_SKB_CB(skb)->seq) == true' means that one or more
+skbs are lost somehow. Once this happen, it seems that it will
+never recover automatically. As a result, a warning will be printed
+and a '-EAGAIN' will be returned in non-block mode.
 
-As shown through runtime testing, the "filename" allocation is not
-always freed in perf_event_parse_addr_filter().
+As a general suituation, users call 'poll' on a socket and then receive
+skbs with 'recv' in non-block mode. This mode will make every
+arriving skb of the socket trigger a warning. Plenty of skbs will cause
+high rate of kernel log.
 
-There are three possible ways that this could happen:
+Besides, WARN is for indicating kernel bugs only and should not be
+user-triggable. Replace it with 'net_warn_ratelimited' here.
 
- - It could be allocated twice on subsequent iterations through the loop,
- - or leaked on the success path,
- - or on the failure path.
+Signed-off-by: Menglong Dong <dong.menglong@zte.com.cn>
+---
+ net/ipv4/tcp.c | 17 ++++++++++-------
+ 1 file changed, 10 insertions(+), 7 deletions(-)
 
-Clean up the code flow to make it obvious that 'filename' is always
-freed in the reallocation path and in the two return paths as well.
-
-We rely on the fact that kfree(NULL) is NOP and filename is initialized
-with NULL.
-
-This fixes the leak. No other side effects expected.
-
-[ Dan Carpenter: cleaned up the code flow & added a changelog. ]
-[ Ingo Molnar: updated the changelog some more. ]
-
-Fixes: 375637bc5249 ("perf/core: Introduce address range filtering")
-Signed-off-by: "kiyin(尹亮)" <kiyin@tencent.com>
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Cc: "Srivatsa S. Bhat" <srivatsa@csail.mit.edu>
-Cc: Anthony Liguori <aliguori@amazon.com>
---
- kernel/events/core.c |   12 +++++-------
- 1 file changed, 5 insertions(+), 7 deletions(-)
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
---- a/kernel/events/core.c
-+++ b/kernel/events/core.c
-@@ -10058,6 +10058,7 @@ perf_event_parse_addr_filter(struct perf
- 			if (token == IF_SRC_FILE || token == IF_SRC_FILEADDR) {
- 				int fpos = token == IF_SRC_FILE ? 2 : 1;
+diff --git a/net/ipv4/tcp.c b/net/ipv4/tcp.c
+index b2bc3d7fe9e8..5e38dfd03036 100644
+--- a/net/ipv4/tcp.c
++++ b/net/ipv4/tcp.c
+@@ -2093,11 +2093,12 @@ int tcp_recvmsg(struct sock *sk, struct msghdr *msg, size_t len, int nonblock,
+ 			/* Now that we have two receive queues this
+ 			 * shouldn't happen.
+ 			 */
+-			if (WARN(before(*seq, TCP_SKB_CB(skb)->seq),
+-				 "TCP recvmsg seq # bug: copied %X, seq %X, rcvnxt %X, fl %X\n",
+-				 *seq, TCP_SKB_CB(skb)->seq, tp->rcv_nxt,
+-				 flags))
++			if (unlikely(before(*seq, TCP_SKB_CB(skb)->seq))) {
++				net_warn_ratelimited("TCP recvmsg seq # bug: copied %X, seq %X, rcvnxt %X, fl %X\n",
++						     *seq, TCP_SKB_CB(skb)->seq, tp->rcv_nxt,
++						     flags);
+ 				break;
++			}
  
-+				kfree(filename);
- 				filename = match_strdup(&args[fpos]);
- 				if (!filename) {
- 					ret = -ENOMEM;
-@@ -10104,16 +10105,13 @@ perf_event_parse_addr_filter(struct perf
- 				 */
- 				ret = -EOPNOTSUPP;
- 				if (!event->ctx->task)
--					goto fail_free_name;
-+					goto fail;
+ 			offset = *seq - TCP_SKB_CB(skb)->seq;
+ 			if (unlikely(TCP_SKB_CB(skb)->tcp_flags & TCPHDR_SYN)) {
+@@ -2108,9 +2109,11 @@ int tcp_recvmsg(struct sock *sk, struct msghdr *msg, size_t len, int nonblock,
+ 				goto found_ok_skb;
+ 			if (TCP_SKB_CB(skb)->tcp_flags & TCPHDR_FIN)
+ 				goto found_fin_ok;
+-			WARN(!(flags & MSG_PEEK),
+-			     "TCP recvmsg seq # bug 2: copied %X, seq %X, rcvnxt %X, fl %X\n",
+-			     *seq, TCP_SKB_CB(skb)->seq, tp->rcv_nxt, flags);
++
++			if (!(flags & MSG_PEEK))
++				net_warn_ratelimited("TCP recvmsg seq # bug 2: copied %X, seq %X, rcvnxt %X, fl %X\n",
++						     *seq, TCP_SKB_CB(skb)->seq, tp->rcv_nxt,
++						     flags);
+ 		}
  
- 				/* look up the path and grab its inode */
- 				ret = kern_path(filename, LOOKUP_FOLLOW,
- 						&filter->path);
- 				if (ret)
--					goto fail_free_name;
--
--				kfree(filename);
--				filename = NULL;
-+					goto fail;
- 
- 				ret = -EINVAL;
- 				if (!filter->path.dentry ||
-@@ -10133,13 +10131,13 @@ perf_event_parse_addr_filter(struct perf
- 	if (state != IF_STATE_ACTION)
- 		goto fail;
- 
-+	kfree(filename);
- 	kfree(orig);
- 
- 	return 0;
- 
--fail_free_name:
--	kfree(filename);
- fail:
-+	kfree(filename);
- 	free_filters_list(filters);
- 	kfree(orig);
- 
+ 		/* Well, if we have backlog, try to process it now yet. */
+-- 
+2.25.1
 
 
