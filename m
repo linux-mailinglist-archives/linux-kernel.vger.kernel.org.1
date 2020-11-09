@@ -2,219 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2846D2AB02F
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 05:31:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E70F32AB034
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 05:35:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729372AbgKIEbZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 8 Nov 2020 23:31:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54468 "EHLO
+        id S1729238AbgKIEfC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 8 Nov 2020 23:35:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55030 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728038AbgKIEbY (ORCPT
+        with ESMTP id S1728802AbgKIEfB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 8 Nov 2020 23:31:24 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C20FC0613CF;
-        Sun,  8 Nov 2020 20:31:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=H2MmivuEFUCxmeEez6uv4vlPLqKUyp4vC9/NvB7etIo=; b=g9PuNzZJJgxLnHOHhcXI9TI9C7
-        gARcoSZfJ4oK3z+7VkdiJKLHy7Ep7N7bs3VzDb5Btz6ORWN1p0w99+JurG/XiMSZqYBfhJlaG+m/V
-        rsOFY65PB8FvjeYV0UCSF8x2HxI8mr+7OOHlvtOZxdbWKYZi/W6It91L9KmNCQkoK5jCqyk/vSyg2
-        UMFnpclpvhyMl6w4tDlv7gnL4eISjhztr+gZQxe+4CAidLvaPYNj0qngJpCFcQCCOpVPYuk52DQyX
-        +hiPzZn5DKO3aVPUGjdAeBnfmmYoHKJp/2aM7n1gUhFaqjNZSX61RxENSbP/htW6SaRPql85cfHp3
-        gZouB/3Q==;
-Received: from [2601:1c0:6280:3f0::a1cb]
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kbypp-0007QS-Ap; Mon, 09 Nov 2020 04:31:19 +0000
-Subject: Re: [PATCH v2 7/8] Documentation: Add documentation for the Brute LSM
-To:     John Wood <john.wood@gmx.com>, Kees Cook <keescook@chromium.org>,
-        Jann Horn <jannh@google.com>
-Cc:     Jonathan Corbet <corbet@lwn.net>, James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        kernel-hardening@lists.openwall.com
-References: <20201025134540.3770-1-john.wood@gmx.com>
- <20201025134540.3770-8-john.wood@gmx.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <2ab35578-832a-6b92-ca9b-2f7d42bc0792@infradead.org>
-Date:   Sun, 8 Nov 2020 20:31:13 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        Sun, 8 Nov 2020 23:35:01 -0500
+Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC65DC0613D3
+        for <linux-kernel@vger.kernel.org>; Sun,  8 Nov 2020 20:35:01 -0800 (PST)
+Received: by mail-pf1-x42f.google.com with SMTP id 10so6918174pfp.5
+        for <linux-kernel@vger.kernel.org>; Sun, 08 Nov 2020 20:35:01 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to
+         :user-agent;
+        bh=VgMOvNA1Ux0qxEI6TA4rcW3mQnTnYdI0FfzgJi/p7s4=;
+        b=jJuZvUmBexr8zx1mQzYCuZOVUssmQpohGfQ9N4nQcSoDPF5PZUHuhumYc7I0DV5++z
+         7nZE+VKCiHjvHJAZLto/qmTwczNztEBpFEmgF1tWM7qFwhD7Ang2SZF8pQMziLCgferf
+         8DoYY4lk0fjfNbrBxcb7VCha3tPcLfiSiyAV3IklHgqD74CQK4LolzVUdtdMcBKQdBFm
+         eQebTPyELwDAv7iSKtucHw6PV47iIyizo14I6MnX06j+M+HNHxj2IShOoyniyDuBiYkO
+         j/708WAWdZVHYG15zUCCH6RsjVvn3FDc3M4BHKyijcKdpPCQgJGTRzN2AXKKezSd6Btp
+         fDLQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to:user-agent;
+        bh=VgMOvNA1Ux0qxEI6TA4rcW3mQnTnYdI0FfzgJi/p7s4=;
+        b=T/Ogkb+cGw9ShHnexoU8pCQdvpLbq1esa+ToQP7apxgTFQBExW+w38lvRIK0cNSfoE
+         solbdvWh2v99Xw1JhYjtIV2d+0ZwpYLWecFBo1YE2g2bImNCt+p5SJbb3IRlpzdjAqn+
+         S7GeLVYf6+p2aSjWqHe28/9ufMgJIBVimafSyxYLs3tYzmk2q2kUiW+3VmPpjzbSviF/
+         yYsLrCtj18o8B7JnCRMFbM1iwYQJ3PDJaHQjCx2rHJwABUUVwr8Biz4o8DNa/Tk2sVHn
+         BdBeuRbBg/qSD5gi/X085EshfFO1ag0v27h2zQGmOw7L71m2VPAtLivVNR7IETcxwst8
+         7qcQ==
+X-Gm-Message-State: AOAM5322DdtMCHsN/ph2UY9rkmMiJ16t/iOjK2VjrvQRcxm3bUfKAvko
+        wvzxuigkPo7fc0Yisz6R1j4FCg==
+X-Google-Smtp-Source: ABdhPJxd85Plq4wIvoEwgdYY6MZLWrgW8Un9rDIMBb1x2J7AsBgFbBTD9DaCZ9TtYT9Gw8RA6RDF2w==
+X-Received: by 2002:a63:2145:: with SMTP id s5mr10709145pgm.288.1604896501055;
+        Sun, 08 Nov 2020 20:35:01 -0800 (PST)
+Received: from localhost ([122.172.12.172])
+        by smtp.gmail.com with ESMTPSA id 82sm8220532pfv.149.2020.11.08.20.34.59
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Sun, 08 Nov 2020 20:34:59 -0800 (PST)
+Date:   Mon, 9 Nov 2020 10:04:57 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Kevin Hilman <khilman@kernel.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Len Brown <len.brown@intel.com>, Pavel Machek <pavel@ucw.cz>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Viresh Kumar <vireshk@kernel.org>, Nishanth Menon <nm@ti.com>,
+        Stephen Boyd <sboyd@kernel.org>, linux-pm@vger.kernel.org,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/2] opp: Don't create an OPP table from
+ dev_pm_opp_get_opp_table()
+Message-ID: <20201109043457.xf55kufhjjz2fvct@vireshk-i7>
+References: <684ff01900180c0a40ec307dacc673b24eab593b.1604643714.git.viresh.kumar@linaro.org>
+ <1012a98950355bd5a52424668050a17c3430cbe0.1604643714.git.viresh.kumar@linaro.org>
+ <ec9839dd-5d2d-0d6b-6563-b14da4af1a57@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20201025134540.3770-8-john.wood@gmx.com>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <ec9839dd-5d2d-0d6b-6563-b14da4af1a57@gmail.com>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/25/20 6:45 AM, John Wood wrote:
-> Add some info detailing what is the Brute LSM, its motivation, weak
-> points of existing implementations, proposed solutions, enabling,
-> disabling and fine tuning.
+On 06-11-20, 16:18, Dmitry Osipenko wrote:
+> 06.11.2020 09:24, Viresh Kumar пишет:
+> > It has been found that some users (like cpufreq-dt and others on LKML)
+> > have abused the helper dev_pm_opp_get_opp_table() to create the OPP
+> > table instead of just finding it, which is the wrong thing to do. This
+> > routine was meant for OPP core's internal working and exposed the whole
+> > functionality by mistake.
+> > 
+> > Change the scope of dev_pm_opp_get_opp_table() to only finding the
+> > table. The internal helpers _opp_get_opp_table*() are thus renamed to
+> > _add_opp_table*(), dev_pm_opp_get_opp_table_indexed() is removed (as we
+> > don't need the index field for finding the OPP table) and so the only
+> > user, genpd, is updated.
+> > 
+> > Note that the prototype of _add_opp_table() was already left in opp.h by
+> > mistake when it was removed earlier and so we weren't required to add it
+> > now.
 > 
-> Signed-off-by: John Wood <john.wood@gmx.com>
-> ---
->  Documentation/admin-guide/LSM/Brute.rst | 118 ++++++++++++++++++++++++
->  Documentation/admin-guide/LSM/index.rst |   1 +
->  security/brute/Kconfig                  |   3 +-
->  3 files changed, 121 insertions(+), 1 deletion(-)
->  create mode 100644 Documentation/admin-guide/LSM/Brute.rst
+> Hello Viresh,
 > 
-> diff --git a/Documentation/admin-guide/LSM/Brute.rst b/Documentation/admin-guide/LSM/Brute.rst
-> new file mode 100644
-> index 000000000000..20c6ccbd625d
-> --- /dev/null
-> +++ b/Documentation/admin-guide/LSM/Brute.rst
-> @@ -0,0 +1,118 @@
-> +.. SPDX-License-Identifier: GPL-2.0
-> +===========================================================
-> +Brute: Fork brute force attack detection and mitigation LSM
-> +===========================================================
-> +
-> +Attacks against vulnerable userspace applications with the purpose to break ASLR
-> +or bypass canaries traditionaly use some level of brute force with the help of
+> It looks like this is not an entirely correct change because previously
+> it was possible to get an empty opp_table in order to use it for the
+> dev_pm_opp_set_rate(), which would fall back to clk_set_rate if table is
+> empty.
+> 
+> Now it's not possible to get an empty table and
+> dev_pm_opp_of_add_table() would error out if OPPs are missing in a
+> device-tree. Hence it's not possible to implement a fall back without
+> abusing opp_set_regulators() or opp_set_supported_hw() for getting the
+> empty table. Or am I missing something?
 
-                      traditionally
+For that case you were always required to call
+dev_pm_opp_set_clkname(), otherwise how would the OPP core know which
+clock to set ? And the same shall work now as well.
 
-> +the fork system call. This is possible since when creating a new process using
-> +fork its memory contents are the same as those of the parent process (the
-> +process that called the fork system call). So, the attacker can test the memory
-> +infinite times to find the correct memory values or the correct memory addresses
-> +without worrying about crashing the application.
-> +
-> +Based on the above scenario it would be nice to have this detected and
-> +mitigated, and this is the goal of this implementation.
-> +
-> +
-> +Other implementations
-> +=====================
-> +
-> +The public version of grsecurity, as a summary, is based on the idea of delay
-
-                                                                           delaying
-
-> +the fork system call if a child died due to a fatal error. This has some issues:
-> +
-> +Bad practices
-> +-------------
-> +
-> +Add delays to the kernel is, in general, a bad idea.
-
-   Adding
-
-> +
-> +Weak points
-> +-----------
-> +
-> +This protection can be bypassed using two different methods since it acts only
-> +when the fork is called after a child has crashed.
-> +
-> +Bypass 1
-> +~~~~~~~~
-> +
-> +So, it would still be possible for an attacker to fork a big amount of children
-> +(in the order of thousands), then probe all of them, and finally wait the
-> +protection time before repeat the steps.
-
-                          repeating
-
-> +
-> +Bypass 2
-> +~~~~~~~~
-> +
-> +This method is based on the idea that the protection doesn't act if the parent
-> +crashes. So, it would still be possible for an attacker to fork a process and
-> +probe itself. Then, fork the child process and probe itself again. This way,
-> +these steps can be repeated infinite times without any mitigation.
-> +
-> +
-> +This implementation
-> +===================
-> +
-> +The main idea behind this implementation is to improve the existing ones
-> +focusing on the weak points annotated before. The solution for the first bypass
-> +method is to detect a fast crash rate instead of only one simple crash. For the
-> +second bypass method the solution is to detect both the crash of parent and
-> +child processes. Moreover, as a mitigation method it is better to kill all the
-> +offending tasks involve in the attack instead of use delays.
-
-                   involved                         using
-
-> +
-> +So, the solution to the two bypass methods previously commented is to use some
-> +statistical data shared across all the processes that can have the same memory
-> +contents. Or in other words, a statistical data shared between all the fork
-> +hierarchy processes after an execve system call.
-> +
-> +The purpose of these statistics is to compute the application crash period in
-> +order to detect an attack. This crash period is the time between the execve
-> +system call and the first fault or the time between two consecutives faults, but
-
-                                                           consecutive
-
-> +this has a drawback. If an application crashes once quickly from the execve
-> +system call or crashes twice in a short period of time for some reason, a false
-> +positive attack will be triggered. To avoid this scenario the shared statistical
-> +data holds a list of the i last crashes timestamps and the application crash
-> +period is computed as follows:
-> +
-> +crash_period = (n_last_timestamp - n_minus_i_timestamp) / i;
-> +
-> +This ways, the size of the last crashes timestamps list allows to fine tuning
-
-        way                                                               tune
-
-> +the detection sensibility.
-> +
-> +When this crash period falls under a certain threshold there is a clear signal
-> +that something malicious is happening. Once detected, the mitigation only kills
-> +the processes that share the same statistical data and so, all the tasks that
-> +can have the same memory contents. This way, an attack is rejected.
-> +
-> +Per system enabling
-> +-------------------
-> +
-> +This feature can be enabled at build time using the CONFIG_SECURITY_FORK_BRUTE
-> +option or using the visual config application under the following menu:
-> +
-> +Security options  --->  Fork brute force attack detection and mitigation
-> +
-> +Per process enabling/disabling
-> +------------------------------
-> +
-> +To allow that specific applications can turn off or turn on the detection and
-> +mitigation of a fork brute force attack when required, there are two new prctls.
-> +
-> +prctl(PR_SECURITY_FORK_BRUTE_ENABLE, 0, 0, 0, 0)  -> To enable the feature
-> +prctl(PR_SECURITY_FORK_BRUTE_DISABLE, 0, 0, 0, 0) -> To disable the feature
-> +
-> +Fine tuning
-> +-----------
-> +
-> +To customize the detection's sensibility there are two new sysctl attributes
-> +that allow to set the last crashes timestamps list size and the application
-> +crash period threshold (in milliseconds). Both are accessible through the
-> +following files respectively.
-> +
-> +/proc/sys/kernel/brute/timestamps_list_size
-> +/proc/sys/kernel/brute/crash_period_threshold
-> +
-> +The list size allows to avoid false positives due to crashes unrelated with a
-> +real attack. The period threshold sets the time limit to detect an attack. And,
-> +since a fork brute force attack will be detected if the application crash period
-> +falls under this threshold, the higher this value, the more sensitive the
-> +detection will be.
-> +
-
-So an app could read crash_period_threshold and just do a new fork every
-threshold + 1 time units, right? and not be caught?
-
-thanks for the documentation.
 -- 
-~Randy
-
+viresh
