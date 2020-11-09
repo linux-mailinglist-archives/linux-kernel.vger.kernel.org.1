@@ -2,173 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 658E12ABDE3
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 14:54:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D10D2ABDEA
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 14:55:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730341AbgKINwb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 08:52:31 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:25282 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730294AbgKINw0 (ORCPT
+        id S1729961AbgKINzb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 08:55:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57778 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729320AbgKINz2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 08:52:26 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1604929944;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=5QdziHwnq2/sfnnSdLOUcvlJNqFq0ug8vC4I8a9Gu94=;
-        b=blFL8SjngwWBNIc3+F43fOeNZqoJ93+em4qb+P2JscldXKM0ONGrVFRS65bfLo1viLUMzk
-        DAmSY6AeAzepa15cmcZDrYdIa+XTudByB8zAcYu0zUVsOTR3pVVDDXtMj7tDtGLr4bP2wj
-        jxn6+Rkxn8xOIGAelSmN6LsPVVpKe4w=
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
- [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-285-oXfiRaLDMzy9-68FGXh0OA-1; Mon, 09 Nov 2020 08:52:20 -0500
-X-MC-Unique: oXfiRaLDMzy9-68FGXh0OA-1
-Received: by mail-ed1-f71.google.com with SMTP id y8so2755584edj.5
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Nov 2020 05:52:19 -0800 (PST)
+        Mon, 9 Nov 2020 08:55:28 -0500
+Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 358EBC0613CF
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Nov 2020 05:55:27 -0800 (PST)
+Received: by mail-lj1-x241.google.com with SMTP id y25so9486176lja.9
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Nov 2020 05:55:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=lqe5HrIHoZLKJYdgktbLvnJ7WzCQkZi69agPba5hbSs=;
+        b=N94TB+YLkY2zbd2qs/JZiN2GasG9bvVVY4+qr0qm28m37JUwCxHLgcQhFLqdiwG6wP
+         36p80N800qtZO5Y5/54aZ3Ds3GAdrT9imWS8aZb8ep4LsnRqxn28rWQ0L4kka52r8KUG
+         Y2WqlS12ZqNcQ/DS/XYF4A0rpu58FzeiaQhUG5lkWFp1nZDw4XW7skWOaX2w4Q67UGUV
+         s40AMt4lrMVcsuOScsZYctM2DZ32eM3D7zQHgRHReNxiC06jnVgWx6g3kZ4JP9zfkx+S
+         5/PrEpERodbnK0pJW7+SRxRRp4I/b2YxzIp3RZBBGl+I+yAbWCR+Um/ECXQr4LTJ/X/9
+         eI2g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=5QdziHwnq2/sfnnSdLOUcvlJNqFq0ug8vC4I8a9Gu94=;
-        b=REjIjXzsO6dMddqbkcMes5mvIjTHFq3h0ul/9Vh8gph0YpigtPJDbbcQEjAx1NI522
-         mA/q94KSlNcTjivmWxAVeNZSdP6yc8RNDkh/d889ErgwV3E7zZcVoN39TFYN47KCPP78
-         Ij1XI8pz5u2mf9FRo5ANL9j5KTi9qG9Xw8GP1kIIZCumfIN44caduDoVpc5dZ1vZmoWw
-         nq0FoFb/QtDxZxq3kS3ezt7dxzIoOI4BlgUM9ErGZeFk3ybvqhwEITDr+Hje+qa1wEG1
-         H/BdpaJNPKu+npZNenlEj0O1JUU+e7J+gKKRNcV7JnfaEyunxOiKceCsIf1e7OQhndK3
-         ym4A==
-X-Gm-Message-State: AOAM530SfrOSq+otGytSRQlb5NRdd+NvsR5FQLCUXdJMPO6XlHTUxuCT
-        SxB/pwnWZeBgCSkkKvy53wAdkXbN15x3hWFOEEemSoBCu+lAF1snU9kYPex9SJwtFhNLrcqnwXF
-        3yoXBOt2WjPiohOS9nSfIz7ZM
-X-Received: by 2002:a17:906:3547:: with SMTP id s7mr7195174eja.70.1604929938482;
-        Mon, 09 Nov 2020 05:52:18 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJydsmeHAllJRZIOYN+4WiR1WT7Rcr/2EBEiuscrFSmgornlU1JN5JhQ+Z+/adDV3r0/Jcn47Q==
-X-Received: by 2002:a17:906:3547:: with SMTP id s7mr7195162eja.70.1604929938254;
-        Mon, 09 Nov 2020 05:52:18 -0800 (PST)
-Received: from x1.localdomain (2001-1c00-0c0c-fe00-6c10-fbf3-14c4-884c.cable.dynamic.v6.ziggo.nl. [2001:1c00:c0c:fe00:6c10:fbf3:14c4:884c])
-        by smtp.gmail.com with ESMTPSA id w3sm8853104edt.84.2020.11.09.05.52.17
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 09 Nov 2020 05:52:17 -0800 (PST)
-Subject: Re: [PATCH v3 4/4] pinctrl: amd: remove debounce filter setting in
- IRQ type setting
-To:     Coiby Xu <coiby.xu@gmail.com>,
-        Linus Walleij <linus.walleij@linaro.org>
-Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
-        linux-gpio@vger.kernel.org,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        stable@vger.kernel.org, open list <linux-kernel@vger.kernel.org>
-References: <20201105231912.69527-1-coiby.xu@gmail.com>
- <20201105231912.69527-5-coiby.xu@gmail.com>
-From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <fa67aa70-2a14-35af-632b-b0e86dc4b436@redhat.com>
-Date:   Mon, 9 Nov 2020 14:52:17 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=lqe5HrIHoZLKJYdgktbLvnJ7WzCQkZi69agPba5hbSs=;
+        b=n20PT1YVCOeBfU2o/3WoOPWtvhnYB/SwVfpICcMcD8eGwR/Ho+YCZGWmdzdLYXSVvE
+         +jMEfFmUz+DdFKBJk/ZhO3mI9OjFwIjWLpobVhFFr3Qw94I7KxdJpkQx3hpBr2NYJCy/
+         v0q2/DKYOO51T2xzH0LmDhSJbFp2WZPH0ZZ7qArOZu2wkMnZHvccEfs9y9nAxyrSYlQc
+         dMzvt4UV8jKKKb39jznXJ8FxTuoxakK4ah6eNfTfGQT8DRHzfEUh3kCOf0FNzyW7s662
+         isUW98wwH4emqcy52MrV2np9YUCARDrx/kfLX+UVQu4lfmGDn7h0mkWt8Q8GGNXgJ1HF
+         mh4Q==
+X-Gm-Message-State: AOAM5300NUOzH61Y4FalDSD5szz99sw1C4ZkDj9ybHo7cK2EHBvWeYoT
+        oPWHKLew4Irck+HQU4I6ympoxgTB1EtvWqyNaryuOEuS3OKsWI5C
+X-Google-Smtp-Source: ABdhPJz3iQtflkEPiWk1FMPU1/Pd2p7uJeOvrzUebarKW+NuNnCZ6Uh/UONYKo/x7LVUoyml/JF+BdvydSLnid3qOuA=
+X-Received: by 2002:a2e:b54a:: with SMTP id a10mr5875868ljn.139.1604930125511;
+ Mon, 09 Nov 2020 05:55:25 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20201105231912.69527-5-coiby.xu@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20201106061433.1483129-1-ajye_huang@compal.corp-partner.google.com>
+ <20201106061433.1483129-2-ajye_huang@compal.corp-partner.google.com>
+In-Reply-To: <20201106061433.1483129-2-ajye_huang@compal.corp-partner.google.com>
+From:   Ajye Huang <ajye_huang@compal.corp-partner.google.com>
+Date:   Mon, 9 Nov 2020 21:55:14 +0800
+Message-ID: <CALprXBZmC=Qxk5fkGn=QJ4xW4tSGMZxb9LFUbqfMge0vLcP-dQ@mail.gmail.com>
+Subject: Re: [PATCH v6 1/2] ASoC: google: dt-bindings: modify machine bindings
+ for two MICs case
+To:     Ajye Huang <ajye.huang@gmail.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        Rohit kumar <rohitkr@codeaurora.org>,
+        Banajit Goswami <bgoswami@codeaurora.org>,
+        Patrick Lai <plai@codeaurora.org>,
+        Srinivasa Rao Mandadapu <srivasam@codeaurora.org>,
+        Srini Kandagatla <srinivas.kandagatla@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Rob Herring <robh@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Cheng-yi Chiang <cychiang@chromium.org>,
+        Tzung-Bi Shih <tzungbi@chromium.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-arm-kernel@lists.infradead.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        ALSA development <alsa-devel@alsa-project.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Hi, Rob
 
-On 11/6/20 12:19 AM, Coiby Xu wrote:
-> Debounce filter setting should be independent from IRQ type setting
-> because according to the ACPI specs, there are separate arguments for
-> specifying debounce timeout and IRQ type in GpioIo() and GpioInt().
-> 
-> This will fix broken touchpads for laptops whose BIOS set the debounce
-> timeout to a relatively large value. For example, the BIOS of Lenovo
-> Legion-5 AMD gaming laptops including 15ARH05 (R7000) and R7000P set
-> the debounce timeout to 124.8ms. This led to the kernel receiving only
-> ~7 HID reports per second from the Synaptics touchpad
-> (MSFT0001:00 06CB:7F28). Existing touchpads like [1][2] are not troubled
-> by this bug because the debounce timeout has been set to 0 by the BIOS
-> before enabling the debounce filter in setting IRQ type.
-> 
-> [1] https://github.com/Syniurge/i2c-amd-mp2/issues/11#issuecomment-721331582
-> [2] https://forum.manjaro.org/t/random-short-touchpad-freezes/30832/28
-> 
-> Cc: Hans de Goede <hdegoede@redhat.com>
-> Cc: Andy Shevchenko <andy.shevchenko@gmail.com>
-> Cc: Benjamin Tissoires <benjamin.tissoires@redhat.com>
-> Cc: stable@vger.kernel.org
-> Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-> BugLink: https://bugs.launchpad.net/ubuntu/+source/linux/+bug/1887190
-> Link: https://lore.kernel.org/linux-gpio/CAHp75VcwiGREBUJ0A06EEw-SyabqYsp%2Bdqs2DpSrhaY-2GVdAA%40mail.gmail.com/
-> Signed-off-by: Coiby Xu <coiby.xu@gmail.com>
+I follow your suggests that adding (maxItems: 1) for dmic-gpis property,
+and keep one example of adding dmic-gpios property in it
 
-I'm not entirely sure about this patch. This is consistent with how we
-already stopped touching the debounce timeout setting during init, so
-that speaks in favor of this change.
+Could you please kindly review it ?
 
-Still I'm worried a bit that this might have undesirable side effects.
+Thank you so much
+Ajye
 
-I guess this should be landed together with Andy's series to apply
-the debounce setting from the ACPI GPIO resources.
-
-Regards,
-
-Hans
-
-
-
-
+On Fri, Nov 6, 2020 at 2:14 PM Ajye Huang <ajye.huang@gmail.com> wrote:
+>
+> Add a property "dmic-gpios" for switching between two MICs.
+>
+> Signed-off-by: Ajye Huang <ajye_huang@compal.corp-partner.google.com>
 > ---
->  drivers/pinctrl/pinctrl-amd.c | 7 -------
->  1 file changed, 7 deletions(-)
-> 
-> diff --git a/drivers/pinctrl/pinctrl-amd.c b/drivers/pinctrl/pinctrl-amd.c
-> index e9b761c2b77a..2d4acf21117c 100644
-> --- a/drivers/pinctrl/pinctrl-amd.c
-> +++ b/drivers/pinctrl/pinctrl-amd.c
-> @@ -468,7 +468,6 @@ static int amd_gpio_irq_set_type(struct irq_data *d, unsigned int type)
->  		pin_reg &= ~BIT(LEVEL_TRIG_OFF);
->  		pin_reg &= ~(ACTIVE_LEVEL_MASK << ACTIVE_LEVEL_OFF);
->  		pin_reg |= ACTIVE_HIGH << ACTIVE_LEVEL_OFF;
-> -		pin_reg |= DB_TYPE_REMOVE_GLITCH << DB_CNTRL_OFF;
->  		irq_set_handler_locked(d, handle_edge_irq);
->  		break;
->  
-> @@ -476,7 +475,6 @@ static int amd_gpio_irq_set_type(struct irq_data *d, unsigned int type)
->  		pin_reg &= ~BIT(LEVEL_TRIG_OFF);
->  		pin_reg &= ~(ACTIVE_LEVEL_MASK << ACTIVE_LEVEL_OFF);
->  		pin_reg |= ACTIVE_LOW << ACTIVE_LEVEL_OFF;
-> -		pin_reg |= DB_TYPE_REMOVE_GLITCH << DB_CNTRL_OFF;
->  		irq_set_handler_locked(d, handle_edge_irq);
->  		break;
->  
-> @@ -484,7 +482,6 @@ static int amd_gpio_irq_set_type(struct irq_data *d, unsigned int type)
->  		pin_reg &= ~BIT(LEVEL_TRIG_OFF);
->  		pin_reg &= ~(ACTIVE_LEVEL_MASK << ACTIVE_LEVEL_OFF);
->  		pin_reg |= BOTH_EADGE << ACTIVE_LEVEL_OFF;
-> -		pin_reg |= DB_TYPE_REMOVE_GLITCH << DB_CNTRL_OFF;
->  		irq_set_handler_locked(d, handle_edge_irq);
->  		break;
->  
-> @@ -492,8 +489,6 @@ static int amd_gpio_irq_set_type(struct irq_data *d, unsigned int type)
->  		pin_reg |= LEVEL_TRIGGER << LEVEL_TRIG_OFF;
->  		pin_reg &= ~(ACTIVE_LEVEL_MASK << ACTIVE_LEVEL_OFF);
->  		pin_reg |= ACTIVE_HIGH << ACTIVE_LEVEL_OFF;
-> -		pin_reg &= ~(DB_CNTRl_MASK << DB_CNTRL_OFF);
-> -		pin_reg |= DB_TYPE_PRESERVE_LOW_GLITCH << DB_CNTRL_OFF;
->  		irq_set_handler_locked(d, handle_level_irq);
->  		break;
->  
-> @@ -501,8 +496,6 @@ static int amd_gpio_irq_set_type(struct irq_data *d, unsigned int type)
->  		pin_reg |= LEVEL_TRIGGER << LEVEL_TRIG_OFF;
->  		pin_reg &= ~(ACTIVE_LEVEL_MASK << ACTIVE_LEVEL_OFF);
->  		pin_reg |= ACTIVE_LOW << ACTIVE_LEVEL_OFF;
-> -		pin_reg &= ~(DB_CNTRl_MASK << DB_CNTRL_OFF);
-> -		pin_reg |= DB_TYPE_PRESERVE_HIGH_GLITCH << DB_CNTRL_OFF;
->  		irq_set_handler_locked(d, handle_level_irq);
->  		break;
->  
-> 
-
+>  .../devicetree/bindings/sound/google,sc7180-trogdor.yaml  | 8 +++++++-
+>  1 file changed, 7 insertions(+), 1 deletion(-)
+>
+> diff --git a/Documentation/devicetree/bindings/sound/google,sc7180-trogdor.yaml b/Documentation/devicetree/bindings/sound/google,sc7180-trogdor.yaml
+> index efc34689d6b5..ce050a9dec94 100644
+> --- a/Documentation/devicetree/bindings/sound/google,sc7180-trogdor.yaml
+> +++ b/Documentation/devicetree/bindings/sound/google,sc7180-trogdor.yaml
+> @@ -34,6 +34,10 @@ properties:
+>    "#size-cells":
+>      const: 0
+>
+> +  dmic-gpios:
+> +    maxItems: 1
+> +    description: GPIO for switching between DMICs
+> +
+>  patternProperties:
+>    "^dai-link(@[0-9])?$":
+>      description:
+> @@ -83,7 +87,7 @@ examples:
+>    - |
+>      sound {
+>          compatible = "google,sc7180-trogdor";
+> -        model = "sc7180-rt5682-max98357a-1mic";
+> +        model = "sc7180-rt5682-max98357a-2mic";
+>
+>          audio-routing =
+>                      "Headphone Jack", "HPOL",
+> @@ -92,6 +96,8 @@ examples:
+>          #address-cells = <1>;
+>          #size-cells = <0>;
+>
+> +        dmic-gpios = <&tlmm 86 0>;
+> +
+>          dai-link@0 {
+>              link-name = "MultiMedia0";
+>              reg = <0>;
+> --
+> 2.25.1
+>
