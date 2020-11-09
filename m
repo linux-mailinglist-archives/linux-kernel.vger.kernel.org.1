@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 203ED2AB9D8
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 14:13:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A55A2AB97F
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 14:09:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731566AbgKINNP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 08:13:15 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38964 "EHLO mail.kernel.org"
+        id S1731948AbgKINJ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 08:09:56 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34920 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732949AbgKINNJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 08:13:09 -0500
+        id S1731286AbgKINJv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 08:09:51 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6402F20663;
-        Mon,  9 Nov 2020 13:13:08 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8BAFD20663;
+        Mon,  9 Nov 2020 13:09:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604927589;
-        bh=4s+s+54s6ztPMdZSnsUCq9B+7cYRD+rien9Avayj+0o=;
+        s=default; t=1604927391;
+        bh=Qig32iJy/AMBo4tI3512+wgkuiXN1kFxWXumB4pjLkQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=goR/b5/zhQU83uZVRO8DKpdkfMMPQPfLeAfJ209/KoSOKo7X101yAsFTdnu60dGOw
-         w+O8y4+SiAEXNTOYOiMqw2n27M0f9qpJhh2RRz4VtnSvwzvAEuyOJy3q6BT9TR0U2C
-         4JEQtMR78XECVqeYVmvveITVxdaJwjuR3U4mBl68=
+        b=vCUDSKeCkcBD7s+ngxH9UY7NKHBIGPtnytE9hJIsEqCRItAI+kQjkJ3KCCInQQERw
+         Z/FJqFAMmjcAYbE4G1dLHu6nU08GXkWhWtArCpcQ6aVm4iIQ8LfsvX+YAp+vSnWXPW
+         E1euDsgMYi3/rK9creQ9Mqot0rvfqR08j4QetsD4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Qiujun Huang <hqjagain@gmail.com>,
         "Steven Rostedt (VMware)" <rostedt@goodmis.org>
-Subject: [PATCH 5.4 40/85] tracing: Fix out of bounds write in get_trace_buf
-Date:   Mon,  9 Nov 2020 13:55:37 +0100
-Message-Id: <20201109125024.516578878@linuxfoundation.org>
+Subject: [PATCH 4.19 44/71] tracing: Fix out of bounds write in get_trace_buf
+Date:   Mon,  9 Nov 2020 13:55:38 +0100
+Message-Id: <20201109125021.968130180@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201109125022.614792961@linuxfoundation.org>
-References: <20201109125022.614792961@linuxfoundation.org>
+In-Reply-To: <20201109125019.906191744@linuxfoundation.org>
+References: <20201109125019.906191744@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -66,7 +66,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 --- a/kernel/trace/trace.c
 +++ b/kernel/trace/trace.c
-@@ -3012,7 +3012,7 @@ static char *get_trace_buf(void)
+@@ -2819,7 +2819,7 @@ static char *get_trace_buf(void)
  
  	/* Interrupts must see nesting incremented before we use the buffer */
  	barrier();
