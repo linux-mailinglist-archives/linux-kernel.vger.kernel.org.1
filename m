@@ -2,223 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F3E52AB854
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 13:34:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D01912AB84F
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 13:34:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729766AbgKIMe3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 07:34:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45264 "EHLO
+        id S1729521AbgKIMeX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 07:34:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45252 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726410AbgKIMe1 (ORCPT
+        with ESMTP id S1729243AbgKIMeW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 07:34:27 -0500
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C360C0613CF;
-        Mon,  9 Nov 2020 04:34:27 -0800 (PST)
-Received: by mail-pg1-x544.google.com with SMTP id h6so7049984pgk.4;
-        Mon, 09 Nov 2020 04:34:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=76lz9d6Ii6PSYL2HYWk36/bgrPK9Hw3WkIKIrFJBsLw=;
-        b=IE+kPuHYp/jcZKjdVvYSKxkhdqKUpcIFOBE5yX2koIZYHk8ZWHQzKMfgvT/OrmU2/J
-         Eud0TDB8QDKA/z2pHm6VdA1Q4xrST8xASR5URzIWygHQp3a7xpZ8zACj5PH/WogPn87F
-         QxbDzek8tgp6qNxnKs0HkQmU54SnDi6s5U6w4GfjL2a4rdZeIZXDM87SB0Zo5pJZnyyR
-         km02YilQ0oRMR7+H78s8qp1Ec7Cud+iNE+rGozPALZmj38DZgsyxHRjfZ9wNHraxAHEO
-         ZvSvFB+/p2wXm1R9/1hG5rcGq6US/iSUknzkuJtZJexW/rdM9mbOHOw5HSWsq7Zy4Z6V
-         7l7g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=76lz9d6Ii6PSYL2HYWk36/bgrPK9Hw3WkIKIrFJBsLw=;
-        b=llkr7uBJxqgFvUYCp0dR/d7p2gkfUC/yAV3eLrtgqbOux25umW8ABhcB5fihMMdq3Y
-         dU2zBC6JJDSMl+O5Ek2uvChWq2sACmEImRtmViqyxCGNJ+zmdp8xblqZHwZb89q46Pw2
-         XUW5xAs1qrZ679XqEb+lgYGQBjhXHoc/5AHHY0E4kWHVfGidquE0zIlqYP1eOXCL/UrJ
-         TQ1tFkDwDAmSsGkGBlZpeOHxUewhqSYKb+ilGnhxClmM18i0mI3l/xOb9vTNu0cbQTvl
-         J4O4urb1bcBrljE1sIU6Qq7EcYAhYE2xqE5XpeA4wgMWz0g7ER1aXI9Rf6P5mNtti87D
-         fpwQ==
-X-Gm-Message-State: AOAM530C+cK4GrG87jzaRJ5n9AcogThA7f6WYIlLYieWaL7D1XFFrAeH
-        m8JndQI0FdOwgwF0NTVTjXk=
-X-Google-Smtp-Source: ABdhPJxl/vCsqHlmlJiHL6amNEf2zZqT92aOPveveVj4LTo1dT08gogXympMqcWcPc3wGR1HcGDfbQ==
-X-Received: by 2002:a62:54c2:0:b029:156:4e4c:ff49 with SMTP id i185-20020a6254c20000b02901564e4cff49mr13494150pfb.26.1604925266688;
-        Mon, 09 Nov 2020 04:34:26 -0800 (PST)
-Received: from syed ([223.225.3.45])
-        by smtp.gmail.com with ESMTPSA id v18sm11297148pfn.35.2020.11.09.04.34.21
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 09 Nov 2020 04:34:25 -0800 (PST)
-Date:   Mon, 9 Nov 2020 18:04:11 +0530
-From:   Syed Nayyar Waris <syednwaris@gmail.com>
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     William Breathitt Gray <vilhelm.gray@gmail.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Michal Simek <michal.simek@xilinx.com>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH v12 4/4] gpio: xilinx: Utilize generic bitmap_get_value
- and _set_value
-Message-ID: <20201109123411.GA19869@syed>
-References: <cover.1603055402.git.syednwaris@gmail.com>
- <15a044d3ba23f00c31fd09437bdd3e5924bb91cd.1603055402.git.syednwaris@gmail.com>
- <CAK8P3a3f=fuq24QwNee3QgoMcSK5rcvLRpdTOWBZ9NJ4d-4bvA@mail.gmail.com>
- <20201101150033.GA68138@shinobu>
- <CAK8P3a0y7mh=ZDPefgpawY97gpYv79UXFLBzoGfu3ex2up2aDQ@mail.gmail.com>
+        Mon, 9 Nov 2020 07:34:22 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB2EEC0613CF;
+        Mon,  9 Nov 2020 04:34:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=DwDvxv7WLb7DK+KemO72iTYuMK2pG/etdrz51DTPEF0=; b=QxVbTOuA/n7a37SnWclYr3N0Ug
+        yXUd1batHmKaLkwRSK2tLisODgZKHzM2nm0XtE+MMRZ3k4/tRCvQ6q2i7z9Z3WHNoVGqphsheYol/
+        hkITLN65MF8qW1cpXrbiEsjr4OJCe2eXbYkGc1UdrllsFeKi39MPaKOgpTYlV/XkC6RCy8PnEMokn
+        0/dgQN7/wk5REx8ofrLbrC7zwUpAZBnjWVJ/Y809YAjX/IAoB+fo9SsNEl5z95r3Cn+50+ZWkYNpw
+        cIrDT0h3AkDciyF23fHAF8azXMKHCGf9uhuPRfriYR7J604lKJ73pdyFrI/t5Ml2SdXboMafR7y3u
+        HxOzLJVg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kc6NF-0003hq-Ik; Mon, 09 Nov 2020 12:34:17 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 46080301324;
+        Mon,  9 Nov 2020 13:34:16 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 2AF76203E2240; Mon,  9 Nov 2020 13:34:16 +0100 (CET)
+Date:   Mon, 9 Nov 2020 13:34:16 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     Daniel Lezcano <daniel.lezcano@linaro.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Lina Iyer <ilina@codeaurora.org>,
+        Frederic Weisbecker <frederic@kernel.org>
+Subject: Re: [PATCH 4/5] cpuidle: governor: Export the needed symbols
+Message-ID: <20201109123416.GO2594@hirez.programming.kicks-ass.net>
+References: <20201015144431.9979-1-daniel.lezcano@linaro.org>
+ <20201015144431.9979-4-daniel.lezcano@linaro.org>
+ <CAJZ5v0i-1eZ+j_6C83qs1-q1FSw0Yx96yQyy0KQBvDxX6KF=3w@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAK8P3a0y7mh=ZDPefgpawY97gpYv79UXFLBzoGfu3ex2up2aDQ@mail.gmail.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+In-Reply-To: <CAJZ5v0i-1eZ+j_6C83qs1-q1FSw0Yx96yQyy0KQBvDxX6KF=3w@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Nov 01, 2020 at 09:08:29PM +0100, Arnd Bergmann wrote:
-> On Sun, Nov 1, 2020 at 4:00 PM William Breathitt Gray
-> <vilhelm.gray@gmail.com> wrote:
+On Thu, Nov 05, 2020 at 03:04:10PM +0100, Rafael J. Wysocki wrote:
+> > diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+> > index 2d95dc3f4644..ceba61bb364d 100644
+> > --- a/kernel/sched/core.c
+> > +++ b/kernel/sched/core.c
+> > @@ -3838,6 +3838,7 @@ unsigned long nr_iowait_cpu(int cpu)
+> >  {
+> >         return atomic_read(&cpu_rq(cpu)->nr_iowait);
+> >  }
+> > +EXPORT_SYMBOL_GPL(nr_iowait_cpu);
+> 
+> Hmm.  See below.
+
+Did anyone read the comment above this function? It's garbage, it should
+be deleted, not made available to a wider audience.
+
+> >  /*
+> >   * IO-wait accounting, and how its mostly bollocks (on SMP).
+> > diff --git a/kernel/time/tick-sched.c b/kernel/time/tick-sched.c
+> > index f0199a4ba1ad..537716124d46 100644
+> > --- a/kernel/time/tick-sched.c
+> > +++ b/kernel/time/tick-sched.c
+> > @@ -500,12 +500,19 @@ static int __init setup_tick_nohz(char *str)
 > >
-> > On Thu, Oct 29, 2020 at 11:44:47PM +0100, Arnd Bergmann wrote:
-> > > On Sun, Oct 18, 2020 at 11:44 PM Syed Nayyar Waris <syednwaris@gmail.com> wrote:
-> > > >
-> > > > This patch reimplements the xgpio_set_multiple() function in
-> > > > drivers/gpio/gpio-xilinx.c to use the new generic functions:
-> > > > bitmap_get_value() and bitmap_set_value(). The code is now simpler
-> > > > to read and understand. Moreover, instead of looping for each bit
-> > > > in xgpio_set_multiple() function, now we can check each channel at
-> > > > a time and save cycles.
-> > >
-> > > This now causes -Wtype-limits warnings in linux-next with gcc-10:
+> >  __setup("nohz=", setup_tick_nohz);
 > >
-> > Hi Arnd,
+> > +bool tick_nohz_is_enabled(void)
+> > +{
+> > +       return tick_nohz_enabled;
+> > +}
+> > +EXPORT_SYMBOL_GPL(tick_nohz_is_enabled);
+> > +
+> >  bool tick_nohz_tick_stopped(void)
+> >  {
+> >         struct tick_sched *ts = this_cpu_ptr(&tick_cpu_sched);
 > >
-> > What version of gcc-10 are you running? I'm having trouble generating
-> > these warnings so I suspect I'm using a different version than you.
-> 
-> I originally saw it with the binaries from
-> https://mirrors.edge.kernel.org/pub/tools/crosstool/, but I have
-> also been able to reproduce it with a minimal test case on the
-> binaries from godbolt.org, see https://godbolt.org/z/Wq8q4n
-> 
-> > Let me first verify that I understand the problem correctly. The issue
-> > is the possibility of a stack smash in bitmap_set_value() when the value
-> > of start + nbits is larger than the length of the map bitmap memory
-> > region. This is because index (or index + 1) could be outside the range
-> > of the bitmap memory region passed in as map. Is my understanding
-> > correct here?
-> 
-> Yes, that seems to be the case here.
-> 
-> > In xgpio_set_multiple(), the variables width[0] and width[1] serve as
-> > possible start and nbits values for the bitmap_set_value() calls.
-> > Because width[0] and width[1] are unsigned int variables, GCC considers
-> > the possibility that the value of width[0]/width[1] might exceed the
-> > length of the bitmap memory region named old and thus result in a stack
-> > smash.
+> >         return ts->tick_stopped;
+> >  }
+> > +EXPORT_SYMBOL_GPL(tick_nohz_tick_stopped);
 > >
-> > I don't know if invalid width values are actually possible for the
-> > Xilinx gpio device, but let's err on the side of safety and assume this
-> > is actually a possibility. We should verify that the combined value of
-> > gpio_width[0] + gpio_width[1] does not exceed 64 bits; we can add a
-> > check for this in xgpio_probe() when we grab the gpio_width values.
-> >
-> > However, we're still left with the GCC warnings because GCC is not smart
-> > enough to know that we've already checked the boundary and width[0] and
-> > width[1] are valid values. I suspect we can avoid this warning is we
-> > refactor bitmap_set_value() to increment map seperately and then set it:
-> 
-> As I understand it, part of the problem is that gcc sees the possible
-> range as being constrained by the operations on 'start' and 'nbits',
-> in particular the shift in BIT_WORD() that put an upper bound on
-> the index, but then it sees that the upper bound is higher than the
-> upper bound of the array, i.e. element zero.
-> 
-> I added a check
-> 
->       if (start >= 64 || start + size >= 64) return;
-> 
-> in the godbolt.org testcase, which does help limit the start
-> index appropriately, but it is not sufficient to let the compiler
-> see that the 'if (space >= nbits) ' condition is guaranteed to
-> be true for all values here.
-> 
-> > static inline void bitmap_set_value(unsigned long *map,
-> >                                     unsigned long value,
-> >                                     unsigned long start, unsigned long nbits)
-> > {
-> >         const unsigned long offset = start % BITS_PER_LONG;
-> >         const unsigned long ceiling = round_up(start + 1, BITS_PER_LONG);
-> >         const unsigned long space = ceiling - start;
-> >
-> >         map += BIT_WORD(start);
-> >         value &= GENMASK(nbits - 1, 0);
-> >
-> >         if (space >= nbits) {
-> >                 *map &= ~(GENMASK(nbits - 1, 0) << offset);
-> >                 *map |= value << offset;
-> >         } else {
-> >                 *map &= ~BITMAP_FIRST_WORD_MASK(start);
-> >                 *map |= value << offset;
-> >                 map++;
-> >                 *map &= ~BITMAP_LAST_WORD_MASK(start + nbits);
-> >                 *map |= value >> space;
+> >  bool tick_nohz_tick_stopped_cpu(int cpu)
+> >  {
+> > @@ -1066,6 +1073,7 @@ bool tick_nohz_idle_got_tick(void)
 > >         }
-> > }
+> >         return false;
+> >  }
+> > +EXPORT_SYMBOL_GPL(tick_nohz_idle_got_tick);
 > >
-> > This avoids adding a costly conditional check inside bitmap_set_value()
-> > when almost all bitmap_set_value() calls will have static arguments with
-> > well-defined and obvious boundaries.
+> >  /**
+> >   * tick_nohz_get_next_hrtimer - return the next expiration time for the hrtimer
+> > @@ -1117,6 +1125,7 @@ ktime_t tick_nohz_get_sleep_length(ktime_t *delta_next)
 > >
-> > Do you think this would be an acceptable solution to resolve your GCC
-> > warnings?
+> >         return ktime_sub(next_event, now);
+> >  }
+> > +EXPORT_SYMBOL_GPL(tick_nohz_get_sleep_length);
 > 
-> Unfortunately, it does not seem to make a difference, as gcc still
-> knows that this compiles to the same result, and it produces the same
-> warning as before (see https://godbolt.org/z/rjx34r)
-> 
->          Arnd
+> Peter please correct me if I'm mistaken, but IMV the above are core
+> kernel internals and they should not be accessible to random modular
+> stuff.
 
-Hi Arnd,
-
-Sharing a different version of bitmap_set_valuei() function. See below.
-
-Let me know if the below solution looks good to you and if it resolves
-the above compiler warning.
-
-
-@@ -1,5 +1,5 @@
- static inline void bitmap_set_value(unsigned long *map,
--                                    unsigned long value,
-+                                    unsigned long value, const size_t length,
-                                     unsigned long start, unsigned long nbits)
- {
-         const size_t index = BIT_WORD(start);
-@@ -7,6 +7,9 @@ static inline void bitmap_set_value(unsigned long *map,
-         const unsigned long ceiling = round_up(start + 1, BITS_PER_LONG);
-         const unsigned long space = ceiling - start;
- 
-+       if (index >= length)
-+               return;
-+
-         value &= GENMASK(nbits - 1, 0);
- 
-         if (space >= nbits) {
-@@ -15,6 +18,10 @@ static inline void bitmap_set_value(unsigned long *map,
-         } else {
-                 map[index + 0] &= ~BITMAP_FIRST_WORD_MASK(start);
-                 map[index + 0] |= value << offset;
-+
-+               if (index + 1 >= length)
-+                       return;
-+
-                 map[index + 1] &= ~BITMAP_LAST_WORD_MASK(start + nbits);
-                 map[index + 1] |= value >> space;
-         }
-
-
-
-
-
+Yeah,... making this available seems unfortunate. Also, I don't really
+see the point, why do we want the idle governors as modules? On the
+cpufreq side we're trying to move away from modules and multiple
+governors.
