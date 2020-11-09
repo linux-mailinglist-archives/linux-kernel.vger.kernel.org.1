@@ -2,244 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6AC632AB6BC
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 12:25:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DBC5B2AB6C0
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 12:26:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729781AbgKILYl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 06:24:41 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:22860 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729523AbgKILYl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 06:24:41 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1604921079;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=MthOriqJfE+60FWjco1JPUkMHNL9HDoZ8g5kvyK76w0=;
-        b=eOytZRoIa+jjjf8hHPg1f8iwyTe2D+Rsebi0PDYeteheqWDM21DFNUSOHwWRCrvem05xvQ
-        gjAwPlTtmT/3PNb4Irtcb4AaUBlfaKfXyRvGth/ypv6Apwz35tOzFJvyXofWf5BlXigrla
-        SYjbSoYQFYsTlzUNS37eJP8kI3xZjYE=
-Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
- [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-547-Tk5_3ynuO5ao8RGtSgkHkQ-1; Mon, 09 Nov 2020 06:24:37 -0500
-X-MC-Unique: Tk5_3ynuO5ao8RGtSgkHkQ-1
-Received: by mail-ed1-f72.google.com with SMTP id d1so2603558edz.14
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Nov 2020 03:24:37 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=MthOriqJfE+60FWjco1JPUkMHNL9HDoZ8g5kvyK76w0=;
-        b=DngxCOYdILx0MAWSyndJFauo18UrS5RQONBI4wwO4LhX4iwdOMC4KuQy8/n418roql
-         ZuD60IyU78yVHUm7AFb6LUzy/4h1ZFxLphlhTPw8TkDqT6DV9zoGVm8gO1st8hXJJhe5
-         C8VEN4LOD/YqcRz9hFUdbnAb+uuS0Bbk/qzZuZKCp2D0vF6tgFT4eb04AbEzOF8rXn6e
-         uxdRKqTMcgfNFzpdEzRlUtjspwzo9ThWMJRLYhecTWJReZd/bAQ8Wm2uAwqAXeNIjvZ8
-         WIW+WI3McN8MZ3tZEBG1c5Bbb2DPQrypIwRcW+djF915P3mfd2HjeAKebUfbneu0Rp7U
-         iHrQ==
-X-Gm-Message-State: AOAM532YOs7TyOfxsGqnRuDxvR0xrQvqm1lJ1pjsNt09UoA1Lg2d96I2
-        L4IzmRpoHrz47E6lMMrebbhdlYEcseHvYOegOrTLrAfSjQA5MVngkML8ySmtZ18YWbF3tQQE0yy
-        CTgFMIh4PX6j4mtwRqt1bHSDU
-X-Received: by 2002:a17:906:745:: with SMTP id z5mr15207869ejb.408.1604921075974;
-        Mon, 09 Nov 2020 03:24:35 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJxckM1hesxtpDoMS8XhbYeZ17Kk4myad+hrrppPCJs4QXpBEf1zd2+2DL7ODfoVcc7HolwbgA==
-X-Received: by 2002:a17:906:745:: with SMTP id z5mr15207850ejb.408.1604921075702;
-        Mon, 09 Nov 2020 03:24:35 -0800 (PST)
-Received: from x1.localdomain (2001-1c00-0c0c-fe00-6c10-fbf3-14c4-884c.cable.dynamic.v6.ziggo.nl. [2001:1c00:c0c:fe00:6c10:fbf3:14c4:884c])
-        by smtp.gmail.com with ESMTPSA id 22sm8352952ejw.27.2020.11.09.03.24.34
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 09 Nov 2020 03:24:35 -0800 (PST)
-Subject: Re: [PATCH v4 1/4] HID: i2c-hid: Reorganize so ACPI and OF are
- subclasses
-To:     Doug Anderson <dianders@chromium.org>
-Cc:     Jiri Kosina <jkosina@suse.cz>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        "open list:HID CORE LAYER" <linux-input@vger.kernel.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Andrea Borgia <andrea@borgia.bo.it>,
-        Kai-Heng Feng <kai.heng.feng@canonical.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Aaron Ma <aaron.ma@canonical.com>,
-        Jiri Kosina <jikos@kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Pavel Balan <admin@kryma.net>,
-        Xiaofei Tan <tanxiaofei@huawei.com>,
-        You-Sheng Yang <vicamo.yang@canonical.com>,
-        LKML <linux-kernel@vger.kernel.org>
-References: <20201104012929.3850691-1-dianders@chromium.org>
- <20201103172824.v4.1.Ied4ce10d229cd7c69abf13a0361ba0b8d82eb9c4@changeid>
- <ea8d8fa3-4e3e-3c56-cda3-c1f6b155018c@redhat.com>
- <CAD=FV=XLnL35Ltu0ZF2c_u262TDaJ+oZ_jiME_VUd8V+1P5Vaw@mail.gmail.com>
-From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <20283437-4166-b65e-c498-a650bf53cd8e@redhat.com>
-Date:   Mon, 9 Nov 2020 12:24:34 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.1
+        id S1729526AbgKILZ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 06:25:57 -0500
+Received: from m42-4.mailgun.net ([69.72.42.4]:12057 "EHLO m42-4.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726410AbgKILZ4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 06:25:56 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1604921155; h=Content-Type: MIME-Version: Message-ID:
+ In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
+ bh=LXllegkU9Hqrn8ABy4ZLKOXWg3z4jJFDK0NqabfEc9c=; b=nhaLo8Ony/WzbycffTPQu+ZvC6HYIaFYLtGDgnFZvRSYLxInVJziZvK89V1vjggJgqfM8MSf
+ snDS9lW/1fZRMQBm8sqsJen+rn6e3uUtUN32DXBo+b4NJ3gKlYrCOLUsa5jfY/AQ3cXBcY/c
+ qZtbnibyPyJIdC0EcCGwDfKhCzU=
+X-Mailgun-Sending-Ip: 69.72.42.4
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n06.prod.us-east-1.postgun.com with SMTP id
+ 5fa92743c1b74298b7447131 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 09 Nov 2020 11:25:55
+ GMT
+Sender: kvalo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 8314EC433FF; Mon,  9 Nov 2020 11:25:54 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 8792BC433C8;
+        Mon,  9 Nov 2020 11:25:50 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 8792BC433C8
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
+From:   Kalle Valo <kvalo@codeaurora.org>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Jakub Kicinski <kuba@kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        "linux-kernel\@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        linux-wireless <linux-wireless@vger.kernel.org>,
+        bridge@lists.linux-foundation.org, linux-hams@vger.kernel.org,
+        Christoph Hellwig <hch@lst.de>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Johannes Berg <johannes@sipsolutions.net>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>
+Subject: Re: [RFC net-next 00/28] ndo_ioctl rework
+References: <20201106221743.3271965-1-arnd@kernel.org>
+        <20201107160612.2909063a@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        <87tuu05c23.fsf@tynnyri.adurom.net>
+        <CAK8P3a3y5WxsibmTzvhv76G+rQ1Zjo_tW0UkXku0VnZdQa-__A@mail.gmail.com>
+Date:   Mon, 09 Nov 2020 13:25:48 +0200
+In-Reply-To: <CAK8P3a3y5WxsibmTzvhv76G+rQ1Zjo_tW0UkXku0VnZdQa-__A@mail.gmail.com>
+        (Arnd Bergmann's message of "Sun, 8 Nov 2020 12:42:49 +0100")
+Message-ID: <87imaeg4ar.fsf@codeaurora.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/24.5 (gnu/linux)
 MIME-Version: 1.0
-In-Reply-To: <CAD=FV=XLnL35Ltu0ZF2c_u262TDaJ+oZ_jiME_VUd8V+1P5Vaw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Arnd Bergmann <arnd@kernel.org> writes:
 
-On 11/4/20 5:06 PM, Doug Anderson wrote:
-> Hi,
-> 
-> On Wed, Nov 4, 2020 at 4:07 AM Hans de Goede <hdegoede@redhat.com> wrote:
+> On Sun, Nov 8, 2020 at 12:21 PM Kalle Valo <kvalo@codeaurora.org> wrote:
+>> Jakub Kicinski <kuba@kernel.org> writes:
 >>
->>> +#include "i2c-hid.h"
->>> +
->>> +struct i2c_hid_acpi {
->>> +     struct i2chid_subclass_data subclass;
+>> So I don't know what to do. Should we try adding a warning like below? :)
 >>
->> This feels a bit weird, we are the subclass so typically we would
->> be embedding a base_class data struct here ...
+>>   "This ancient driver will be removed from the kernel in 2022, but if
+>>    it still works send report to <...@...> to avoid the removal."
 >>
->> (more remarks below, note just my 2 cents you may want to wait
->> for feedback from others).
->>
->>> +     struct i2c_client *client;
->>
->> You pass this to i2c_hid_core_probe which then stores it own
->> copy, why not just store it in the subclass (or even better
->> baseclass) data struct ?
-> 
-> My goal was to avoid moving the big structure to the header file.
-> Without doing that, I think you need something more like the setup I
-> have.  I'll wait for Benjamin to comment on whether he'd prefer
-> something like what I have here or if I should move the structure.
+>> How do other subsystems handle ancient drivers?
+>
+> A good way to get everyone's attention would be to collect as many
+> drivers as possible that are almost certainly unused and move them to
+> drivers/staging/ with a warning like the above, as I just did for
+> drivers/wimax. That would make it to the usual news outlets
+> and lead to the remaining users (if any) noticing it so they can then
+> ask for the drivers to be moved back -- or decide it's time to let go
+> if the hardware can easily be replaced.
 
-Ok, if Benjamin decides to keep things this way, can you consider
-renaming i2chid_subclass_data to i2chid_ops ?
+I like that. I think we first should make a list of drivers which we
+suspect are either unused or not working anymore.
 
-It just feels weird to have a struct with subclass in the name
-embedded inside as a member in another struct, usualy the kobject model
-works by having the the parent/base-class struct embedded inside
-the subclass data struct.
+-- 
+https://patchwork.kernel.org/project/linux-wireless/list/
 
-This also avoids the need for a callback_priv_data pointer to the ops,
-as the ops get a pointer to the baseclass data struct as argument and
-you can then use container_of to get your own subclassdata struct
-since that encapsulates (contains) the baseclass struct.
-
-Note the dropping of the callback_priv_data pointer only works if you
-do move the entire struct to the header.
-
-
-
-> 
-> 
->>> @@ -156,10 +152,10 @@ struct i2c_hid {
->>>
->>>       wait_queue_head_t       wait;           /* For waiting the interrupt */
->>>
->>> -     struct i2c_hid_platform_data pdata;
->>> -
->>>       bool                    irq_wake_enabled;
->>>       struct mutex            reset_lock;
->>> +
->>> +     struct i2chid_subclass_data *subclass;
->>>  };
->>
->> Personally, I would do things a bit differently here:
->>
->> 1. Just add the
->>
->>         int (*power_up_device)(struct i2chid_subclass_data *subclass);
->>         void (*power_down_device)(struct i2chid_subclass_data *subclass);
->>
->> members which you put in the subclass struct here.
->>
->> 2. Move the declaration of this complete struct to drivers/hid/i2c-hid/i2c-hid.h
->> and use this as the base-class which I described before (and store the client
->> pointer here).
->>
->> 3. And then kzalloc both this baseclass struct + the subclass-data
->> (only the bool "power_fixed" in the ACPI case) in one go in the subclass code
->> replacing 2 kzallocs (+ error checking with one, simplifying the code and
->> reducing memory fragmentation (by a tiny sliver).
-> 
-> Sure, I'll do that if Benjamin likes moving the structure to the header.
-> 
-> 
->> About the power_*_device callbacks, I wonder if it would not be more consistent
->> to also have a shutdown callback and make i2c_driver.shutdown point to
->> a (modified) i2c_hid_core_shutdown() function.
-> 
-> Personally this doesn't seem cleaner to me, but I'm happy to do it if
-> folks like it better.  Coming up with a name for the callback would be
-> a bit awkward, which is a sign that this isn't quite ideal?  For the
-> power_up()/power_down() those are sane concepts to abstract out.  Here
-> we'd be abstracting out "subclass_shutdown_tail()" or something?
-> ...and if a subclass needs something at the head of shutdown, we'd
-> need to add a "subclass_shutdown_head()"?
-
-I have no real preference here either way.
-
->> You may also want to consider pointing that shutdown callback to the power_off
->> function in the of case (in a separate commit as that is a behavioral change).
-> 
-> I don't think this is the point of shutdown, but I could be corrected.
-> Shutdown isn't really supposed to be the same as driver remove or
-> anything.  IIUC the main point of shutdown is to support kexec and the
-> goal is to quiesce DMA transactions.  Turning off power has never been
-> a requirement that I was aware of.  We don't want to jam too much
-> stuff in shutdown or else "shutdown" becomes as slow as boot for no
-> good reason, right?
-
-This sorta depends on if the regulators for the HID device are part of the
-PMIC or not. If they are part of the PMIC then on shutdown they will
-typically be turned off by the PMIC. But if they are separate they may
-stay enabled on shutdown.
-
-Anyways I again have no real preference here...
-
-Regards,
-
-Hans
-
-
-
-
-
-
-> 
-> 
->>> diff --git a/drivers/hid/i2c-hid/i2c-hid-of.c b/drivers/hid/i2c-hid/i2c-hid-of.c
->>> new file mode 100644
->>> index 000000000000..e1838cdef0aa
->>> --- /dev/null
->>> +++ b/drivers/hid/i2c-hid/i2c-hid-of.c
->>> @@ -0,0 +1,149 @@
->>> +/*
->>> + * HID over I2C Open Firmware Subclass
->>> + *
->>> + * Copyright (c) 2012 Benjamin Tissoires <benjamin.tissoires@gmail.com>
->>> + * Copyright (c) 2012 Ecole Nationale de l'Aviation Civile, France
->>> + * Copyright (c) 2012 Red Hat, Inc
->>
->> <snip>
->>
->>> +MODULE_DESCRIPTION("HID over I2C OF driver");
->>> +MODULE_AUTHOR("Benjamin Tissoires <benjamin.tissoires@gmail.com>");
->>
->> In case Benjamin misses this during his own review: I'm not sure if he
->> will want to be set as AUTHOR of this, given that part of the plan is
->> for someone else to be the primary point of contact for the of bits.
-> 
-> I can stick myself in as the author if needed.  I'll wait for
-> Benjamin's feedback here.
-> 
-> 
-> -Doug
-> 
-
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
