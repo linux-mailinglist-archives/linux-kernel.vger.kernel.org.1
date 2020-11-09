@@ -2,165 +2,349 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 029AB2AC12A
+	by mail.lfdr.de (Postfix) with ESMTP id 6F5692AC12B
 	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 17:45:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730354AbgKIQpo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 11:45:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56042 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726410AbgKIQpo (ORCPT
+        id S1730560AbgKIQpw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 11:45:52 -0500
+Received: from mail-ed1-f66.google.com ([209.85.208.66]:38962 "EHLO
+        mail-ed1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730450AbgKIQpv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 11:45:44 -0500
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD812C0613CF;
-        Mon,  9 Nov 2020 08:45:42 -0800 (PST)
-Received: by mail-pf1-x442.google.com with SMTP id a18so8502537pfl.3;
-        Mon, 09 Nov 2020 08:45:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=71ZA6fbBt/FYq9Yhv+Sw9ZIQkG6/ePxg0ItPs/D9GHo=;
-        b=dFGCRp4HQO2QC53KqPkIOGuKPiTb0MMC+WaFg+uMtDK1oksOXt3Y1c0HQUxtVjOxtt
-         gvy8L27H6qCKEPKY08LIHUuaXdwjWebNkTqKNTS//oAVPDlDPZV5zAU3hWnrafy830Db
-         OYMi+aZqgKS6nIAEU5BJ6KquRDJDcRzIR/6y3gBqGzxyAefFpun5/Z8fjNQ3GlTGdDiY
-         Zpj9pRXkPXX2I9Pzu4OTB8FkueM8e+Hvc0zWrKUpDb5gwZ1i/DaoZGS+yoa9Wg2yt7hf
-         oj0/lbKp8fhdTSGFpGrk/DSl9L4TWz6lmv8HLDu+ZA1rP+ai2pLgBVcv5rAzO7wUSVeX
-         1B2A==
+        Mon, 9 Nov 2020 11:45:51 -0500
+Received: by mail-ed1-f66.google.com with SMTP id e18so9473420edy.6
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Nov 2020 08:45:48 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=71ZA6fbBt/FYq9Yhv+Sw9ZIQkG6/ePxg0ItPs/D9GHo=;
-        b=P7D8bvkxpo7ApjWaU+S8Co2yXtOnXJTaccStFuZF6RwIi8nbIZYVuBvFhXmw2nRImU
-         U+VgcMfiVzQTBc2YIxCGIZIRPbKMYeUHF0uPXzNRZl2IDklnUnBVQPpSPY4JDGgzufxp
-         q6Aq6I3JCvYC8JoJ8cSyj3Bxyw6bsakeB1M/8DsYjdHkYCqUB8ESpLU97c0Qle65H4zA
-         h08IOSWPg/ppPTF11BcohSyci1prQjizhpa21QnzXTVXULrlUKznuYHhTUD4/cD1vIBS
-         9IaF7nlMbMVBUID6Y1v9xYIZJtXKjJ7Ylkdq91WypktR/M3XZjrTYqgqpkAXEfOSK1nH
-         O9Rw==
-X-Gm-Message-State: AOAM532q7uMdUzQTbN5W0Bv+oA0kxy2aGbLL5c2rxlH7KsSXBO6SpO1n
-        sd9mvgNSQj74+5doOyyG4JM=
-X-Google-Smtp-Source: ABdhPJyEigPHxinw9lcZASoyZh54Ipx/Vyh6HNx1mgZ52ds7e8/f3SY+ZA2LYWRcNIVEWTw2bHRGbQ==
-X-Received: by 2002:a63:d357:: with SMTP id u23mr13835450pgi.106.1604940342272;
-        Mon, 09 Nov 2020 08:45:42 -0800 (PST)
-Received: from syed.domain.name ([103.201.127.51])
-        by smtp.gmail.com with ESMTPSA id p188sm10796880pgp.65.2020.11.09.08.45.37
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 09 Nov 2020 08:45:41 -0800 (PST)
-Date:   Mon, 9 Nov 2020 22:15:29 +0530
-From:   Syed Nayyar Waris <syednwaris@gmail.com>
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     William Breathitt Gray <vilhelm.gray@gmail.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=/i00yYYiOfZXAeylQOZ4SCamzjk84N39paT9Bp0Yp1g=;
+        b=dCmaeQuT9IoplLeYNmaW9gxX3iPLjdbR+OyqeV1aFF/Gq+LV7XlDZGQPD6KwcXT6te
+         gD/GmFdmFlZO9U7p3aJjs+rbh2vxcaVbmWLsDl9cjXwOij/QYlzN3U4urrb3NQChwR2r
+         csAKS9Ymucyi4yFICwBaJ8h77Bk9YkMZdueY+I2nEagk5cSRJ3yz53dSWaSLkRmSJS3a
+         wcgLo3Xk9/JElFJ+d5NLWKPVXxXNhZFmmGWjtKaP+g3fOZFg0czTsBSvHZ3taFF8KiVn
+         37oeiXgIm6dvrNdwfmRWz+i3dVfzXIHSwO5lFXvcsXV9RN8Hvnttvl6W9h3244jKKdkD
+         d4rg==
+X-Gm-Message-State: AOAM530/il4fL+thtKErrSwtVpk8vfAXxYyba4j5RUMgbZWIrv/vu2Cf
+        FcudYN4HN0W1puVoShaFwk+u6MzMLj4/Sn2p
+X-Google-Smtp-Source: ABdhPJxxkFw6JH+2lULL94Y/hMqZHPnnJ40bhp44ufOd7N85YovoH0Y7M1r/2ilcmK4GXPcLQWMUXQ==
+X-Received: by 2002:aa7:db48:: with SMTP id n8mr16891180edt.123.1604940346952;
+        Mon, 09 Nov 2020 08:45:46 -0800 (PST)
+Received: from msft-t490s.teknoraver.net (net-5-95-179-145.cust.vodafonedsl.it. [5.95.179.145])
+        by smtp.gmail.com with ESMTPSA id s19sm9059591ejz.103.2020.11.09.08.45.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 09 Nov 2020 08:45:46 -0800 (PST)
+From:   Matteo Croce <mcroce@linux.microsoft.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Mike Rapoport <rppt@kernel.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Arnd Bergmann <arnd@arndb.de>, Petr Mladek <pmladek@suse.com>,
+        Pavel Tatashin <pasha.tatashin@soleen.com>,
+        Kees Cook <keescook@chromium.org>,
         Andrew Morton <akpm@linux-foundation.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Michal Simek <michal.simek@xilinx.com>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH v12 4/4] gpio: xilinx: Utilize generic bitmap_get_value
- and _set_value
-Message-ID: <20201109164529.GA28710@syed.domain.name>
-References: <cover.1603055402.git.syednwaris@gmail.com>
- <15a044d3ba23f00c31fd09437bdd3e5924bb91cd.1603055402.git.syednwaris@gmail.com>
- <CAK8P3a3f=fuq24QwNee3QgoMcSK5rcvLRpdTOWBZ9NJ4d-4bvA@mail.gmail.com>
- <20201101150033.GA68138@shinobu>
- <CAK8P3a0y7mh=ZDPefgpawY97gpYv79UXFLBzoGfu3ex2up2aDQ@mail.gmail.com>
- <20201109123411.GA19869@syed>
- <20201109134128.GA5596@shinobu>
- <CAK8P3a2FMkMc0K+hu0pnqC8wEMeapKPkZXaBm+HFYYPTes5NHA@mail.gmail.com>
+        Tyler Hicks <tyhicks@linux.microsoft.com>
+Subject: [PATCH v3] reboot: allow to specify reboot mode via sysfs
+Date:   Mon,  9 Nov 2020 17:45:38 +0100
+Message-Id: <20201109164538.18934-1-mcroce@linux.microsoft.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAK8P3a2FMkMc0K+hu0pnqC8wEMeapKPkZXaBm+HFYYPTes5NHA@mail.gmail.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 09, 2020 at 03:41:53PM +0100, Arnd Bergmann wrote:
-> On Mon, Nov 9, 2020 at 2:41 PM William Breathitt Gray
-> <vilhelm.gray@gmail.com> wrote:
-> > On Mon, Nov 09, 2020 at 06:04:11PM +0530, Syed Nayyar Waris wrote:
-> >
-> > One of my concerns is that we're incurring the latency two additional
-> > conditional checks just to suppress a compiler warning about a case that
-> > wouldn't occur in the actual use of bitmap_set_value(). I'm hoping
-> > there's a way for us to suppress these warnings without adding onto the
-> > latency of this function; given that bitmap_set_value() is intended to
-> > be used in loops, conditionals here could significantly increase latency
-> > in drivers.
-> 
-> At least for this caller, the size check would be a compile-time
-> constant that can be eliminated.
-> 
-> > I wonder if array_index_nospec() might have the side effect of
-> > suppressing these warnings for us. For example, would this work:
-> >
-> > static inline void bitmap_set_value(unsigned long *map,
-> >                                     unsigned long value,
-> >                                     unsigned long start, unsigned long nbits)
-> > {
-> >         const unsigned long offset = start % BITS_PER_LONG;
-> >         const unsigned long ceiling = round_up(start + 1, BITS_PER_LONG);
-> >         const unsigned long space = ceiling - start;
-> >         size_t index = BIT_WORD(start);
-> >
-> >         value &= GENMASK(nbits - 1, 0);
-> >
-> >         if (space >= nbits) {
-> >                 index = array_index_nospec(index, index + 1);
-> >
-> >                 map[index] &= ~(GENMASK(nbits - 1, 0) << offset);
-> >                 map[index] |= value << offset;
-> >         } else {
-> >                 index = array_index_nospec(index, index + 2);
-> >
-> >                 map[index + 0] &= ~BITMAP_FIRST_WORD_MASK(start);
-> >                 map[index + 0] |= value << offset;
-> >                 map[index + 1] &= ~BITMAP_LAST_WORD_MASK(start + nbits);
-> >                 map[index + 1] |= value >> space;
-> >         }
-> > }
-> >
-> > Or is this going to produce the same warning because we're not using an
-> > explicit check against the map array size?
-> 
-> https://godbolt.org/z/fxnsG9
-> 
-> It still warns about the 'map[index + 1]' access: from all I can tell,
-> gcc mainly complains because it cannot rule out that 'space < nbits',
-> and then it knows the size of 'DECLARE_BITMAP(old, 64)' and finds
-> that if 'index + 0' is correct, then 'index + 1' overflows that array.
-> 
->       Arnd
+From: Matteo Croce <mcroce@microsoft.com>
 
-Hi Arnd,
+The kernel cmdline reboot= option offers some sort of control
+on how the reboot is issued.
+Add handles in sysfs to allow setting these reboot options, so they
+can be changed when the system is booted, other than at boot time.
 
-As suggested by William, sharing another solution to suppress the 
-compiler warning. Please let me know your views on the below fix. Thanks.
+The handlers are under <sysfs>/kernel/reboot, can be read to
+get the current configuration and written to alter it.
 
-If its alright, I shall submit a (new) v13 patchset soon. Let me know.
+	# cd /sys/kernel/reboot/
 
-@@ -1,5 +1,5 @@
- static inline void bitmap_set_value(unsigned long *map,
--                                    unsigned long value,
-+                                    unsigned long value, const size_t length,
-                                     unsigned long start, unsigned long nbits)
- {
-         const size_t index = BIT_WORD(start);
-@@ -15,6 +15,10 @@ static inline void bitmap_set_value(unsigned long *map,
-         } else {
-                 map[index + 0] &= ~BITMAP_FIRST_WORD_MASK(start);
-                 map[index + 0] |= value << offset;
+	# grep . *
+	cpu:0
+	force:0
+	mode:cold
+	type:acpi
+
+	# echo 2 >cpu
+	# echo yes >force
+	# echo soft >mode
+	# echo bios >type
+
+	# grep . *
+	cpu:2
+	force:1
+	mode:soft
+	type:bios
+
+Before setting anything, check for CAP_SYS_BOOT capability, so it's
+possible to allow an unpriviledged process to change these settings
+simply by relaxing the handles permissions, without opening them to
+the world.
+
+Signed-off-by: Matteo Croce <mcroce@microsoft.com>
+---
+ Documentation/ABI/testing/sysfs-kernel-reboot |  31 +++
+ kernel/reboot.c                               | 206 ++++++++++++++++++
+ 2 files changed, 237 insertions(+)
+ create mode 100644 Documentation/ABI/testing/sysfs-kernel-reboot
+
+diff --git a/Documentation/ABI/testing/sysfs-kernel-reboot b/Documentation/ABI/testing/sysfs-kernel-reboot
+new file mode 100644
+index 0000000000000..ea71347d952cb
+--- /dev/null
++++ b/Documentation/ABI/testing/sysfs-kernel-reboot
+@@ -0,0 +1,31 @@
++What:		/sys/kernel/reboot
++Date:		November 2020
++KernelVersion:	5.11
++Contact:	Matteo Croce <mcroce@microsoft.com>
++Description:	Interface to set the kernel reboot mode, similarly to
++		what can be done via the reboot= cmdline option.
++		(see Documentation/admin-guide/kernel-parameters.txt)
 +
-+               if (index + 1 >= length)
-+                       __builtin_unreachable();
++What:		/sys/kernel/reboot/mode
++Date:		November 2020
++KernelVersion:	5.11
++Contact:	Matteo Croce <mcroce@microsoft.com>
++Description:	Reboot mode. Valid values are: cold warm hard soft gpio
 +
-                 map[index + 1] &= ~BITMAP_LAST_WORD_MASK(start + nbits);
-                 map[index + 1] |= value >> space;
-         }
-
++What:		/sys/kernel/reboot/type
++Date:		November 2020
++KernelVersion:	5.11
++Contact:	Matteo Croce <mcroce@microsoft.com>
++Description:	Reboot type. Valid values are: bios acpi kbd triple efi pci
++
++What:		/sys/kernel/reboot/cpu
++Date:		November 2020
++KernelVersion:	5.11
++Contact:	Matteo Croce <mcroce@microsoft.com>
++Description:	CPU number to use to reboot.
++
++What:		/sys/kernel/reboot/force
++Date:		November 2020
++KernelVersion:	5.11
++Contact:	Matteo Croce <mcroce@microsoft.com>
++Description:	Force an immediate reboot.
+diff --git a/kernel/reboot.c b/kernel/reboot.c
+index e7b78d5ae1abf..81cc0f0594c67 100644
+--- a/kernel/reboot.c
++++ b/kernel/reboot.c
+@@ -594,3 +594,209 @@ static int __init reboot_setup(char *str)
+ 	return 1;
+ }
+ __setup("reboot=", reboot_setup);
++
++#ifdef CONFIG_SYSFS
++
++#define REBOOT_COLD_STR		"cold"
++#define REBOOT_WARM_STR		"warm"
++#define REBOOT_HARD_STR		"hard"
++#define REBOOT_SOFT_STR		"soft"
++#define REBOOT_GPIO_STR		"gpio"
++#define REBOOT_UNDEFINED_STR	"undefined"
++
++#define BOOT_TRIPLE_STR		"triple"
++#define BOOT_KBD_STR		"kbd"
++#define BOOT_BIOS_STR		"bios"
++#define BOOT_ACPI_STR		"acpi"
++#define BOOT_EFI_STR		"efi"
++#define BOOT_CF9_FORCE_STR	"cf9_force"
++#define BOOT_CF9_SAFE_STR	"cf9_safe"
++
++static ssize_t mode_show(struct kobject *kobj, struct kobj_attribute *attr, char *buf)
++{
++	const char *val;
++
++	switch (reboot_mode) {
++	case REBOOT_COLD:
++		val = REBOOT_COLD_STR;
++		break;
++	case REBOOT_WARM:
++		val = REBOOT_WARM_STR;
++		break;
++	case REBOOT_HARD:
++		val = REBOOT_HARD_STR;
++		break;
++	case REBOOT_SOFT:
++		val = REBOOT_SOFT_STR;
++		break;
++	case REBOOT_GPIO:
++		val = REBOOT_GPIO_STR;
++		break;
++	default:
++		val = REBOOT_UNDEFINED_STR;
++	}
++
++	return sprintf(buf, "%s\n", val);
++}
++static ssize_t mode_store(struct kobject *kobj, struct kobj_attribute *attr,
++			  const char *buf, size_t count)
++{
++	if (!capable(CAP_SYS_BOOT))
++		return -EPERM;
++
++	if (!strncmp(buf, REBOOT_COLD_STR, strlen(REBOOT_COLD_STR)))
++		reboot_mode = REBOOT_COLD;
++	else if (!strncmp(buf, REBOOT_WARM_STR, strlen(REBOOT_WARM_STR)))
++		reboot_mode = REBOOT_WARM;
++	else if (!strncmp(buf, REBOOT_HARD_STR, strlen(REBOOT_HARD_STR)))
++		reboot_mode = REBOOT_HARD;
++	else if (!strncmp(buf, REBOOT_SOFT_STR, strlen(REBOOT_SOFT_STR)))
++		reboot_mode = REBOOT_SOFT;
++	else if (!strncmp(buf, REBOOT_GPIO_STR, strlen(REBOOT_GPIO_STR)))
++		reboot_mode = REBOOT_GPIO;
++	else
++		return -EINVAL;
++
++	return count;
++}
++static struct kobj_attribute reboot_mode_attr = __ATTR_RW(mode);
++
++static ssize_t type_show(struct kobject *kobj, struct kobj_attribute *attr, char *buf)
++{
++	const char *val;
++
++	switch (reboot_type) {
++	case BOOT_TRIPLE:
++		val = BOOT_TRIPLE_STR;
++		break;
++	case BOOT_KBD:
++		val = BOOT_KBD_STR;
++		break;
++	case BOOT_BIOS:
++		val = BOOT_BIOS_STR;
++		break;
++	case BOOT_ACPI:
++		val = BOOT_ACPI_STR;
++		break;
++	case BOOT_EFI:
++		val = BOOT_EFI_STR;
++		break;
++	case BOOT_CF9_FORCE:
++		val = BOOT_CF9_FORCE_STR;
++		break;
++	case BOOT_CF9_SAFE:
++		val = BOOT_CF9_SAFE_STR;
++		break;
++	default:
++		val = REBOOT_UNDEFINED_STR;
++	}
++
++	return sprintf(buf, "%s\n", val);
++}
++static ssize_t type_store(struct kobject *kobj, struct kobj_attribute *attr,
++			  const char *buf, size_t count)
++{
++	if (!capable(CAP_SYS_BOOT))
++		return -EPERM;
++
++	if (!strncmp(buf, BOOT_TRIPLE_STR, strlen(BOOT_TRIPLE_STR)))
++		reboot_mode = BOOT_TRIPLE;
++	else if (!strncmp(buf, BOOT_KBD_STR, strlen(BOOT_KBD_STR)))
++		reboot_mode = BOOT_KBD;
++	else if (!strncmp(buf, BOOT_BIOS_STR, strlen(BOOT_BIOS_STR)))
++		reboot_mode = BOOT_BIOS;
++	else if (!strncmp(buf, BOOT_ACPI_STR, strlen(BOOT_ACPI_STR)))
++		reboot_mode = BOOT_ACPI;
++	else if (!strncmp(buf, BOOT_EFI_STR, strlen(BOOT_EFI_STR)))
++		reboot_mode = BOOT_EFI;
++	else if (!strncmp(buf, BOOT_CF9_FORCE_STR, strlen(BOOT_CF9_FORCE_STR)))
++		reboot_mode = BOOT_CF9_FORCE;
++	else if (!strncmp(buf, BOOT_CF9_SAFE_STR, strlen(BOOT_CF9_SAFE_STR)))
++		reboot_mode = BOOT_CF9_SAFE;
++	else
++		return -EINVAL;
++
++	return count;
++}
++static struct kobj_attribute reboot_type_attr = __ATTR_RW(type);
++
++static ssize_t cpu_show(struct kobject *kobj, struct kobj_attribute *attr, char *buf)
++{
++	return sprintf(buf, "%d\n", reboot_cpu);
++}
++static ssize_t cpu_store(struct kobject *kobj, struct kobj_attribute *attr,
++			  const char *buf, size_t count)
++{
++	unsigned int cpunum;
++	int rc;
++
++	if (!capable(CAP_SYS_BOOT))
++		return -EPERM;
++
++	rc = kstrtouint(buf, 0, &cpunum);
++
++	if (rc)
++		return rc;
++
++	if (cpunum >= num_possible_cpus())
++		return -ERANGE;
++
++	reboot_cpu = cpunum;
++
++	return count;
++}
++static struct kobj_attribute reboot_cpu_attr = __ATTR_RW(cpu);
++
++static ssize_t force_show(struct kobject *kobj, struct kobj_attribute *attr, char *buf)
++{
++	return sprintf(buf, "%d\n", reboot_force);
++}
++static ssize_t force_store(struct kobject *kobj, struct kobj_attribute *attr,
++			  const char *buf, size_t count)
++{
++	bool res;
++
++	if (!capable(CAP_SYS_BOOT))
++		return -EPERM;
++
++	if (kstrtobool(buf, &res))
++		return -EINVAL;
++
++	reboot_force = res;
++
++	return count;
++}
++static struct kobj_attribute reboot_force_attr = __ATTR_RW(force);
++
++static struct attribute *reboot_attrs[] = {
++	&reboot_mode_attr.attr,
++	&reboot_type_attr.attr,
++	&reboot_cpu_attr.attr,
++	&reboot_force_attr.attr,
++	NULL,
++};
++
++static const struct attribute_group reboot_attr_group = {
++	.attrs = reboot_attrs,
++};
++
++static int __init reboot_ksysfs_init(void)
++{
++	struct kobject *reboot_kobj;
++	int ret;
++
++	reboot_kobj = kobject_create_and_add("reboot", kernel_kobj);
++	if (!reboot_kobj)
++		return -ENOMEM;
++
++	ret = sysfs_create_group(reboot_kobj, &reboot_attr_group);
++	if (ret) {
++		kobject_put(reboot_kobj);
++		return ret;
++	}
++
++	return 0;
++}
++late_initcall(reboot_ksysfs_init);
++
++#endif
+-- 
+2.28.0
 
