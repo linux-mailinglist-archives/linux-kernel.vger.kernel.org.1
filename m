@@ -2,38 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F3752ABC76
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 14:37:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 04FD82ABD48
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 14:45:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731088AbgKINht (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 08:37:49 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57186 "EHLO mail.kernel.org"
+        id S1730233AbgKINos (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 08:44:48 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53142 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730574AbgKINEB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 08:04:01 -0500
+        id S1730236AbgKIM6y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 07:58:54 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5834C206C0;
-        Mon,  9 Nov 2020 13:04:00 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id A479D207BC;
+        Mon,  9 Nov 2020 12:58:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604927040;
-        bh=MtlvGRWe2qwEI7VVlrOQM0QQgFMweTtcax3lMK04H5U=;
+        s=default; t=1604926734;
+        bh=3HCqwV0v5Z9fU/pJA5G5eNy4Y8/ioYdgYMEM3GG9b5U=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=zEC+L7FqEDkFYzNP0K2n61QHw1H6iLmQARk4OCPT3tpYIRkT0SCVclJrdd246nYNd
-         FqeCkfsDvuwlQXaoKmJTrkKi1wmSroCK7dmIwtIUB/aQU0Pm/rRFXd/rf1ev6GoO6x
-         aOS0AMmbOdmWn2wpJbI053LH03a7Z7rBlu/Utby0=
+        b=YBXaLA8UyX4qYOfOC3No6D0O6JvN2TEg8r8JEji9mvMhhW1G3C4rPGqge0yzhIELY
+         XZVIW16QRG6pYB0YnW2VApHylEKhaV9zI2MD3KvfJ79a/RSk6cFPP+lQdsJyxWfS7/
+         6vTFpt4M13IyidDzNMYRecgeBVnH7a4Z6W2H8xok=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Alexander Sverdlin <alexander.sverdlin@nokia.com>
-Subject: [PATCH 4.9 091/117] staging: octeon: Drop on uncorrectable alignment or FCS error
-Date:   Mon,  9 Nov 2020 13:55:17 +0100
-Message-Id: <20201109125030.013078386@linuxfoundation.org>
+        =?UTF-8?q?Cl=C3=A9ment=20P=C3=A9ron?= <peron.clem@gmail.com>,
+        Maxime Ripard <maxime@cerno.tech>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.4 72/86] ARM: dts: sun4i-a10: fix cpu_alert temperature
+Date:   Mon,  9 Nov 2020 13:55:19 +0100
+Message-Id: <20201109125024.243967904@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201109125025.630721781@linuxfoundation.org>
-References: <20201109125025.630721781@linuxfoundation.org>
+In-Reply-To: <20201109125020.852643676@linuxfoundation.org>
+References: <20201109125020.852643676@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,90 +44,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alexander Sverdlin <alexander.sverdlin@nokia.com>
+From: Clément Péron <peron.clem@gmail.com>
 
-commit 49d28ebdf1e30d806410eefc7de0a7a1ca5d747c upstream.
+[ Upstream commit dea252fa41cd8ce332d148444e4799235a8a03ec ]
 
-Currently in case of alignment or FCS error if the packet cannot be
-corrected it's still not dropped. Report the error properly and drop the
-packet while making the code around a little bit more readable.
+When running dtbs_check thermal_zone warn about the
+temperature declared.
 
-Fixes: 80ff0fd3ab64 ("Staging: Add octeon-ethernet driver files.")
-Signed-off-by: Alexander Sverdlin <alexander.sverdlin@nokia.com>
-Cc: stable <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20201016145630.41852-1-alexander.sverdlin@nokia.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+thermal-zones: cpu-thermal:trips:cpu-alert0:temperature:0:0: 850000 is greater than the maximum of 200000
 
+It's indeed wrong the real value is 85°C and not 850°C.
+
+Signed-off-by: Clément Péron <peron.clem@gmail.com>
+Signed-off-by: Maxime Ripard <maxime@cerno.tech>
+Link: https://lore.kernel.org/r/20201003100332.431178-1-peron.clem@gmail.com
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/staging/octeon/ethernet-rx.c |   34 +++++++++++++++++++---------------
- 1 file changed, 19 insertions(+), 15 deletions(-)
+ arch/arm/boot/dts/sun4i-a10.dtsi | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/staging/octeon/ethernet-rx.c
-+++ b/drivers/staging/octeon/ethernet-rx.c
-@@ -83,15 +83,17 @@ static inline int cvm_oct_check_rcv_erro
- 	else
- 		port = work->word1.cn38xx.ipprt;
- 
--	if ((work->word2.snoip.err_code == 10) && (work->word1.len <= 64)) {
-+	if ((work->word2.snoip.err_code == 10) && (work->word1.len <= 64))
- 		/*
- 		 * Ignore length errors on min size packets. Some
- 		 * equipment incorrectly pads packets to 64+4FCS
- 		 * instead of 60+4FCS.  Note these packets still get
- 		 * counted as frame errors.
- 		 */
--	} else if (work->word2.snoip.err_code == 5 ||
--		   work->word2.snoip.err_code == 7) {
-+		return 0;
-+
-+	if (work->word2.snoip.err_code == 5 ||
-+	    work->word2.snoip.err_code == 7) {
- 		/*
- 		 * We received a packet with either an alignment error
- 		 * or a FCS error. This may be signalling that we are
-@@ -122,7 +124,10 @@ static inline int cvm_oct_check_rcv_erro
- 				/* Port received 0xd5 preamble */
- 				work->packet_ptr.s.addr += i + 1;
- 				work->word1.len -= i + 5;
--			} else if ((*ptr & 0xf) == 0xd) {
-+				return 0;
-+			}
-+
-+			if ((*ptr & 0xf) == 0xd) {
- 				/* Port received 0xd preamble */
- 				work->packet_ptr.s.addr += i;
- 				work->word1.len -= i + 4;
-@@ -132,21 +137,20 @@ static inline int cvm_oct_check_rcv_erro
- 					    ((*(ptr + 1) & 0xf) << 4);
- 					ptr++;
- 				}
--			} else {
--				printk_ratelimited("Port %d unknown preamble, packet dropped\n",
--						   port);
--				cvm_oct_free_work(work);
--				return 1;
-+				return 0;
- 			}
-+
-+			printk_ratelimited("Port %d unknown preamble, packet dropped\n",
-+					   port);
-+			cvm_oct_free_work(work);
-+			return 1;
- 		}
--	} else {
--		printk_ratelimited("Port %d receive error code %d, packet dropped\n",
--				   port, work->word2.snoip.err_code);
--		cvm_oct_free_work(work);
--		return 1;
- 	}
- 
--	return 0;
-+	printk_ratelimited("Port %d receive error code %d, packet dropped\n",
-+			   port, work->word2.snoip.err_code);
-+	cvm_oct_free_work(work);
-+	return 1;
- }
- 
- static int cvm_oct_poll(struct oct_rx_group *rx_group, int budget)
+diff --git a/arch/arm/boot/dts/sun4i-a10.dtsi b/arch/arm/boot/dts/sun4i-a10.dtsi
+index aa90f319309ba..b8bbc8c187994 100644
+--- a/arch/arm/boot/dts/sun4i-a10.dtsi
++++ b/arch/arm/boot/dts/sun4i-a10.dtsi
+@@ -137,7 +137,7 @@
+ 			trips {
+ 				cpu_alert0: cpu_alert0 {
+ 					/* milliCelsius */
+-					temperature = <850000>;
++					temperature = <85000>;
+ 					hysteresis = <2000>;
+ 					type = "passive";
+ 				};
+-- 
+2.27.0
+
 
 
