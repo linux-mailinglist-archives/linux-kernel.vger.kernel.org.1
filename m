@@ -2,105 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 46C5A2AAFCB
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 04:15:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 39FEB2AAFD1
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 04:18:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729072AbgKIDPE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 8 Nov 2020 22:15:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42792 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728038AbgKIDPE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 8 Nov 2020 22:15:04 -0500
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6286C0613CF;
-        Sun,  8 Nov 2020 19:15:03 -0800 (PST)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CTx1s4jkHz9s0b;
-        Mon,  9 Nov 2020 14:14:47 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1604891701;
-        bh=SyBfwsVcZpmvqzZ++GMaEw332DGDt7SxdOfJb+41Z4I=;
-        h=Date:From:To:Cc:Subject:From;
-        b=DIyPcdVE3Io4CEaijge3W4DJWMfjXIhtf6i+SqocVUVSRAAEuvquKk6z0wSeHXzSh
-         jEHh0oetMS8Ev5g5AJ5TnT7AtXzdrjKPjx0gZbSSv76O3TqgH2VxG93Jngn2RiXfhu
-         SColWTkAfd2CkRbdtgDoDwxyaE9W+yDkEZZ44hsiMLSjs5r8V9uDLhpNKtWTQ/zAlJ
-         GF8tuZ3/EVfEWQy9X7y8gV2FhqSzAUNlyav0akrRMUf0tRm17yfDrh1LPw1ZXgXcGh
-         xC8QS6k1N03fDJE+NPWwPQB8U+Wv3101ahZ9PZ7qu+D13ho7/fxIM1BHKRz8jr/ET/
-         +WyOHOdJHmAvg==
-Date:   Mon, 9 Nov 2020 14:14:46 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@elte.hu>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Jens Axboe <axboe@kernel.dk>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: manual merge of the tip tree with the block tree
-Message-ID: <20201109141446.3370914b@canb.auug.org.au>
-MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/Tcn5_2_DZDwAsyCr67qhFql";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+        id S1729153AbgKIDSj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 8 Nov 2020 22:18:39 -0500
+Received: from mga01.intel.com ([192.55.52.88]:4228 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728038AbgKIDSj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 8 Nov 2020 22:18:39 -0500
+IronPort-SDR: VTK8oPIDsk8nPhGRsYZ+4vV0dVoPHbfUluP4MFUxMskz6vfqK+dDZ0c6FPuMzjnV8vUyvbwE44
+ Bt4+cD9mBc8g==
+X-IronPort-AV: E=McAfee;i="6000,8403,9799"; a="187689004"
+X-IronPort-AV: E=Sophos;i="5.77,462,1596524400"; 
+   d="scan'208";a="187689004"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Nov 2020 19:18:38 -0800
+IronPort-SDR: 2l1G6DPPNNJf5pPWc39XARrnxuTHhZSUa9Mk7i6cBsaN3wbgLzOciCJu5RiEBHXSYEn7a4YJMK
+ gheLaOcT9ePw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,462,1596524400"; 
+   d="scan'208";a="353988795"
+Received: from unknown (HELO wwanmoha-iLBPG2.png.intel.com) ([10.88.227.42])
+  by orsmga008.jf.intel.com with ESMTP; 08 Nov 2020 19:18:35 -0800
+From:   Wan Ahmad Zainie <wan.ahmad.zainie.wan.mohamad@intel.com>
+To:     kishon@ti.com, vkoul@kernel.org, robh+dt@kernel.org
+Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        andriy.shevchenko@linux.intel.com, mgross@linux.intel.com,
+        lakshmi.bai.raja.subramanian@intel.com,
+        wan.ahmad.zainie.wan.mohamad@intel.com
+Subject: [PATCH v2 0/2] phy: intel: Add Keem Bay USB PHY support
+Date:   Mon,  9 Nov 2020 11:16:52 +0800
+Message-Id: <20201109031654.22443-1-wan.ahmad.zainie.wan.mohamad@intel.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/Tcn5_2_DZDwAsyCr67qhFql
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Hi.
 
-Hi all,
+Intel Keem Bay USB subsystem incorporates DesignWare USB3.1 controller,
+an USB3.1 (Gen1/2) PHY and an USB2.0 PHY. It is a Dual Role Device
+(DRD), operating as either a USB host or a USB device.
 
-Today's linux-next merge of the tip tree got a conflict in:
+The patchset is tested on Keem Bay EVM.
 
-  include/linux/sched/signal.h
-  include/linux/tracehook.h
-  kernel/signal.c
-  kernel/task_work.c
+Thank you.
 
-between commits:
+Best regards,
+Zainie
 
-  fdb5f027ce66 ("task_work: use TIF_NOTIFY_SIGNAL if available")
-  bf6996650675 ("task_work: remove legacy TWA_SIGNAL path")
-  ceb39b7c17b7 ("kernel: remove checking for TIF_NOTIFY_SIGNAL")
+Changes since v1:
+- Remove 2 patches that had been merged. Reduced To, Cc list.
+- Rebased to v5.10-rc3.
+- Add Rob's Reviewed-by tag in the first patch.
+- Use ARCH_KEEMBAY in Kconfig.
+- Update #include header; remove <linux/of_address.h>, and add
+  <linux/bits.h>.
+- Remove unnecessary comments.
 
-from the block tree and commit:
-
-  114518eb6430 ("task_work: Use TIF_NOTIFY_SIGNAL if available")
-  12db8b690010 ("entry: Add support for TIF_NOTIFY_SIGNAL")
-
-from the tip tree.
-
-I fixed it up (I just used the former versions - this may be wrong,
-please let me know) and can carry the fix as necessary. This is now fixed
-as far as linux-next is concerned, but any non trivial conflicts should
-be mentioned to your upstream maintainer when your tree is submitted for
-merging.  You may also want to consider cooperating with the maintainer
-of the conflicting tree to minimise any particularly complex conflicts.
+Note: I resend this v2 as my previous v2 sent on Oct 28 not seen
+in mailing lists.
 
 
+Wan Ahmad Zainie (2):
+  dt-bindings: phy: Add Intel Keem Bay USB PHY bindings
+  phy: intel: Add Keem Bay USB PHY support
 
---=20
-Cheers,
-Stephen Rothwell
+ .../bindings/phy/intel,phy-keembay-usb.yaml   |  44 +++
+ drivers/phy/intel/Kconfig                     |  12 +
+ drivers/phy/intel/Makefile                    |   1 +
+ drivers/phy/intel/phy-intel-keembay-usb.c     | 288 ++++++++++++++++++
+ 4 files changed, 345 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/phy/intel,phy-keembay-usb.yaml
+ create mode 100644 drivers/phy/intel/phy-intel-keembay-usb.c
 
---Sig_/Tcn5_2_DZDwAsyCr67qhFql
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+-- 
+2.17.1
 
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl+otCYACgkQAVBC80lX
-0Gw/JAf/U3/EL0KIfWk/Iq0zOsHJGPii43F+DNfwoyFvKj8uvV/5hurnGJwn0fqR
-xEVaKzuB1URdk/n6IUYUM8oYFa3fSETAOmK4ttPpRKQcrBOU45FrBMJFSR+BijvY
-LXCx2DS0XZXrZy40VcQm4eb4tEPZ/rLSA5SqiWwQA2gqsoXydarqDkRTpx+ZpTPS
-uTJZjw5PFMCxrP/cyUS0CetDi9VmJ/KveFvP0tqBngPJsyI6/9F/+KtbO1eKknMO
-h2v9cPQb723+dVR4rFMjuaBWZpsc/NV9LGLjJaoRSCT7UVjo19yPvtFqGoEl1c7D
-+l5NIGLTXPk/xDizEMNSOoU/LVjGPw==
-=3fGX
------END PGP SIGNATURE-----
-
---Sig_/Tcn5_2_DZDwAsyCr67qhFql--
