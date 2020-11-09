@@ -2,72 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA6BE2AB3DD
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 10:44:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 49C7C2AB3E8
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 10:46:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729181AbgKIJod (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 04:44:33 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59150 "EHLO mail.kernel.org"
+        id S1729101AbgKIJqt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 04:46:49 -0500
+Received: from comms.puri.sm ([159.203.221.185]:59448 "EHLO comms.puri.sm"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726646AbgKIJob (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 04:44:31 -0500
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 39E2A206ED;
-        Mon,  9 Nov 2020 09:44:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604915069;
-        bh=dkQUreQkm6GVXf3wbW77146mTQTUWGCf4AZoWBluopk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=BGPDsYkU9amPsMDGQWS+t1ct1mMz47zcrP257HyLnTmPll/Ei3CD4DqSSRDQleF1h
-         a5n2sHvQqLaBX28Sdv8X7iAr1FZkHFRJxK+Dh+3D66B9bVemyNnFAz5s0SEsWmzssE
-         y6PJ5rZz5Np4wf4LExBCoGsolUlKJZ9zpwV33BAc=
-Date:   Mon, 9 Nov 2020 10:45:29 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Bernard Zhao <bernard@vivo.com>
-Cc:     Jiri Slaby <jirislaby@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, opensource.kernel@vivo.com
-Subject: Re: [PATCH 2/2] drivers/tty: delete break after goto/return
-Message-ID: <20201109094529.GA832649@kroah.com>
-References: <20201107032924.25044-1-bernard@vivo.com>
- <20201107032924.25044-3-bernard@vivo.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201107032924.25044-3-bernard@vivo.com>
+        id S1728866AbgKIJqs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 04:46:48 -0500
+Received: from localhost (localhost [127.0.0.1])
+        by comms.puri.sm (Postfix) with ESMTP id 275A4E03D9;
+        Mon,  9 Nov 2020 01:46:48 -0800 (PST)
+Received: from comms.puri.sm ([127.0.0.1])
+        by localhost (comms.puri.sm [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id W6rHdbftXP-5; Mon,  9 Nov 2020 01:46:47 -0800 (PST)
+From:   Martin Kepplinger <martin.kepplinger@puri.sm>
+To:     rogerio.silva@nxp.com, slongerbeam@gmail.com,
+        p.zabel@pengutronix.de, mchehab@kernel.org, shawnguo@kernel.org,
+        festevam@gmail.com
+Cc:     iain.galloway@nxp.com, kernel@puri.sm, kernel@pengutronix.de,
+        linux-imx@nxp.com, linux-media@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Martin Kepplinger <martin.kepplinger@puri.sm>
+Subject: [PATCH] staging: media: imx: Split config option in 2
+Date:   Mon,  9 Nov 2020 10:46:33 +0100
+Message-Id: <20201109094633.13518-1-martin.kepplinger@puri.sm>
+In-Reply-To: <2aec3ae20bf5a9eefbe691a69c76c91b09af2a35.camel@pengutronix.de>
+References: <2aec3ae20bf5a9eefbe691a69c76c91b09af2a35.camel@pengutronix.de>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 06, 2020 at 07:29:24PM -0800, Bernard Zhao wrote:
-> Delete break after goto/return, which will never run.
-> 
-> Signed-off-by: Bernard Zhao <bernard@vivo.com>
-> ---
->  drivers/tty/nozomi.c | 4 ----
->  1 file changed, 4 deletions(-)
+As described in NXPs' linux tree, the imx8m SoC includes the same
+CSI bridge hardware that is part of imx7d. We should be able to
+use the "fsl,imx7-csi" driver for imx8m directly.
 
-If you look at the commits for this file:
+Since ipuv3 is not relevant for imx8m we create VIDEO_IMX7_MEDIA and
+split up the configuration option in 2 menus (on 1 entry each
+for now but that can be changed later).
 
-	$ git log --oneline drivers/tty/nozomi.c | head -n 5
-	1a460c36078e tty: nozomi: remove unneeded break
-	caa47cc63947 tty: nozomi: Use scnprintf() for avoiding potential buffer overflow
-	e2c2e7987106 tty: nozomi: fix spelling mistake "reserverd" -> "reserved"
-	18b1345e60ae tty: nozomi: Use dev_get_drvdata
-	c392ed464205 tty/nozomi: use pci_iomap instead of ioremap_nocache
+Signed-off-by: Martin Kepplinger <martin.kepplinger@puri.sm>
+---
 
-You will notice that you should probably put the driver name in the
-subject line.  Otherwise this patch really looks like you are doing this
-action on all of drivers/tty/ right?
+thanks, you're right. did you have something like this in mind?
 
-Same for patch 1/2 as was pointed out by others.
+                            martin
 
-thanks,
 
-greg k-h
+
+ drivers/staging/media/imx/Kconfig | 27 ++++++++++++++++++++++++---
+ 1 file changed, 24 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/staging/media/imx/Kconfig b/drivers/staging/media/imx/Kconfig
+index f555aac8a9d5..a888d9b918b5 100644
+--- a/drivers/staging/media/imx/Kconfig
++++ b/drivers/staging/media/imx/Kconfig
+@@ -13,6 +13,20 @@ config VIDEO_IMX_MEDIA
+ 	  Say yes here to enable support for video4linux media controller
+ 	  driver for the i.MX5/6 SOC.
+ 
++config VIDEO_IMX7_MEDIA
++	tristate "i.MX7/8 V4L2 media core driver"
++	depends on ARCH_MXC || COMPILE_TEST
++	depends on VIDEO_V4L2
++	select MEDIA_CONTROLLER
++	select VIDEO_V4L2_SUBDEV_API
++	depends on HAS_DMA
++	select VIDEOBUF2_DMA_CONTIG
++	select V4L2_FWNODE
++	select V4L2_MEM2MEM_DEV
++	help
++	  Say yes here to enable support for video4linux media controller
++	  driver for the i.MX7/8M SOC.
++
+ if VIDEO_IMX_MEDIA
+ menu "i.MX5/6/7 Media Sub devices"
+ 
+@@ -23,12 +37,19 @@ config VIDEO_IMX_CSI
+ 	help
+ 	  A video4linux camera sensor interface driver for i.MX5/6.
+ 
++endmenu
++endif
++
++if VIDEO_IMX7_MEDIA
++menu "i.MX7/8 Media Sub devices"
++
+ config VIDEO_IMX7_CSI
+-	tristate "i.MX6UL/L / i.MX7 Camera Sensor Interface driver"
+-	depends on VIDEO_IMX_MEDIA && VIDEO_DEV && I2C
++	tristate "i.MX7 / i.MX8M Camera Sensor Interface driver"
++	depends on VIDEO_IMX7_MEDIA && VIDEO_DEV && I2C
+ 	default y
+ 	help
+ 	  Enable support for video4linux camera sensor interface driver for
+-	  i.MX6UL/L or i.MX7.
++	  i.MX6UL/L, i.MX7 or i.MX8M.
++
+ endmenu
+ endif
+-- 
+2.20.1
+
