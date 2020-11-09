@@ -2,85 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 623F32AC5ED
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 21:27:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3607A2AC5F9
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 21:31:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730127AbgKIU1I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 15:27:08 -0500
-Received: from mx2.suse.de ([195.135.220.15]:54912 "EHLO mx2.suse.de"
+        id S1729894AbgKIUbK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 15:31:10 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53334 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726952AbgKIU1I (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 15:27:08 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 066A4AB95;
-        Mon,  9 Nov 2020 20:27:07 +0000 (UTC)
-Date:   Mon, 9 Nov 2020 21:27:05 +0100
-From:   Michal =?iso-8859-1?Q?Such=E1nek?= <msuchanek@suse.de>
-To:     "Darrick J. Wong" <darrick.wong@oracle.com>
-Cc:     linux-xfs@vger.kernel.org, linux-ext4@vger.kernel.org,
-        Theodore Ts'o <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Ira Weiny <ira.weiny@intel.com>, Jan Kara <jack@suse.cz>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] xfs: show the dax option in mount options.
-Message-ID: <20201109202705.GZ29778@kitsune.suse.cz>
-References: <cover.1604948373.git.msuchanek@suse.de>
- <f9f7ba25e97dacd92c09eb3ee6a4aca8b4f72b00.1604948373.git.msuchanek@suse.de>
- <20201109192419.GC9695@magnolia>
+        id S1726952AbgKIUbJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 15:31:09 -0500
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id D842020665;
+        Mon,  9 Nov 2020 20:31:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604953869;
+        bh=WpFd5x2PVkqV7vYXRYyparKv1eINTXPsG4jy37yaFpU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=wh5VIjuF6TiKs5MpLhMrI7Wkt6O7vubtpQcIHxDWBDsNKlWG6fBJiVjXVmmgNXlmd
+         pWyhgaW201K03LR2NjrIk6vOgP1ul1WtBkQ+fu3A5VYq7MWAVRyX8AR+OMoB1Fe6ul
+         JNwhioj4AOMKoI2Rfd6w1jcRz+Ox8gLaAnBRw4QY=
+Date:   Mon, 9 Nov 2020 20:30:55 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     Sameer Pujar <spujar@nvidia.com>
+Cc:     lgirdwood@gmail.com, kuninori.morimoto.gx@renesas.com,
+        pierre-louis.bossart@linux.intel.com, perex@perex.cz,
+        tiwai@suse.com, thierry.reding@gmail.com, jonathanh@nvidia.com,
+        alsa-devel@alsa-project.org, linux-tegra@vger.kernel.org,
+        linux-kernel@vger.kernel.org, sharadg@nvidia.com
+Subject: Re: [PATCH v5 0/7] Audio Graph Updates
+Message-ID: <20201109203055.GN6380@sirena.org.uk>
+References: <1604329814-24779-1-git-send-email-spujar@nvidia.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="VnOTrGv5LmZxna7m"
 Content-Disposition: inline
-In-Reply-To: <20201109192419.GC9695@magnolia>
+In-Reply-To: <1604329814-24779-1-git-send-email-spujar@nvidia.com>
+X-Cookie: This fortune is false.
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 09, 2020 at 11:24:19AM -0800, Darrick J. Wong wrote:
-> On Mon, Nov 09, 2020 at 08:10:08PM +0100, Michal Suchanek wrote:
-> > xfs accepts both dax and dax_enum but shows only dax_enum. Show both
-> > options.
-> > 
-> > Fixes: 8d6c3446ec23 ("fs/xfs: Make DAX mount option a tri-state")
-> > Signed-off-by: Michal Suchanek <msuchanek@suse.de>
-> > ---
-> >  fs/xfs/xfs_super.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > 
-> > diff --git a/fs/xfs/xfs_super.c b/fs/xfs/xfs_super.c
-> > index e3e229e52512..a3b00003840d 100644
-> > --- a/fs/xfs/xfs_super.c
-> > +++ b/fs/xfs/xfs_super.c
-> > @@ -163,7 +163,7 @@ xfs_fs_show_options(
-> >  		{ XFS_MOUNT_GRPID,		",grpid" },
-> >  		{ XFS_MOUNT_DISCARD,		",discard" },
-> >  		{ XFS_MOUNT_LARGEIO,		",largeio" },
-> > -		{ XFS_MOUNT_DAX_ALWAYS,		",dax=always" },
-> > +		{ XFS_MOUNT_DAX_ALWAYS,		",dax,dax=always" },
-> 
-> NAK, programs that require DAX semantics for files stored on XFS must
-> call statx to detect the STATX_ATTR_DAX flag, as outlined in "Enabling
-> DAX on xfs" in Documentation/filesystems/dax.txt.
-statx can be used to query S_DAX.  NOTE that only regular files will
-ever have S_DAX set and therefore statx will never indicate that S_DAX
-is set on directories.
 
-The filesystem may not have any files so statx cannot be used.
+--VnOTrGv5LmZxna7m
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-If you reject this method of detection please provide an actual usable
-alternative.
+On Mon, Nov 02, 2020 at 08:40:07PM +0530, Sameer Pujar wrote:
+> This series is a prepraration for using generic graph driver for Tegra210
+> audio. Tegra audio graph series will be sent in a separate series because
+> it has some dependency over other series for documentation work. This
+> series can focus on the generic ASoC driver updates. Below are the summary
+> of changes done.
 
-Thanks
+Morimoto-san, are you OK with these?
 
-Michal
+--VnOTrGv5LmZxna7m
+Content-Type: application/pgp-signature; name="signature.asc"
 
-> 
-> --D
-> 
-> >  		{ XFS_MOUNT_DAX_NEVER,		",dax=never" },
-> >  		{ 0, NULL }
-> >  	};
-> > -- 
-> > 2.26.2
-> > 
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl+ppv4ACgkQJNaLcl1U
+h9C7igf/ehUdhv8FtDIM9U/QT/43VbP+1JshhwP6YHiYh2LU7owvxb5luCEdePnf
+GdsbHaQR1BNNk3Yh7xOoBUQumC00jJ8kFojRMDWyPnrAvLyhrL64vlJrcaXfGEJ8
+RwKJrfgPlsKLuVHTMYhGAVX7i3aNMjzvhgw0QrDAy94YSbuf9Fo5YwEWGdhj1V/h
+GOFhPE8TTWeCvFAlF2ByWIdpJXV2pyu46KAAXwhTHkbAY/4xQjUF6KbJN1GsYXMZ
+XlIQeiGpIO1sdyr6HJTpgDH6CtPWR4i6Ayk9zrIm/7u783ja9WcKtO3vZcm1TeeX
+rcYhN/zsPUPkOdPzbqLFU31oCmiHWA==
+=6ntz
+-----END PGP SIGNATURE-----
+
+--VnOTrGv5LmZxna7m--
