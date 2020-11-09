@@ -2,176 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E579A2AC432
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 19:54:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BC5CD2AC435
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 19:54:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730227AbgKISyH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 13:54:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47868 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729243AbgKISyG (ORCPT
+        id S1729976AbgKISys (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 13:54:48 -0500
+Received: from out01.mta.xmission.com ([166.70.13.231]:58140 "EHLO
+        out01.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729451AbgKISys (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 13:54:06 -0500
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91CF9C0613CF;
-        Mon,  9 Nov 2020 10:54:06 -0800 (PST)
-Received: by mail-wm1-x342.google.com with SMTP id a65so477841wme.1;
-        Mon, 09 Nov 2020 10:54:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=OvzMD659ywrxq8cwYUTmLS551BX9LjK8A0JTdHbis88=;
-        b=pD05OrEPFS2g2Xpn8cZxWSKC3h18glZBQlXzdHkY0I4OesAfy3Y1pq9u8PATIqbqf+
-         ogID5o+JuvO//f3/poA7FzcQ0IbcNPkEnjkVhsJw5bOvE0wM6f0NXTOpeGtPIaFeDWCD
-         jtejADySeQbEjJRjjgUhSVZDqLrODPO41VQWh0d4GYJCTC/GIfMWUr4CY1yJRqOrmIdd
-         lOnVNt1fw9+s3EqC2pMGBPWoI0Cyjk7hS3T2n2ulL5PIhMMNmi6dtWAgKuCj5U11mrwk
-         IJwvFSmJPW5b6/eKneBJ+jWLP+gzAIfdyDlMmTiz6RJWKCoN8eoXKtdVTpzhFd6ft0MP
-         WxBA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=OvzMD659ywrxq8cwYUTmLS551BX9LjK8A0JTdHbis88=;
-        b=TDn3sujJ6sz7qQ8AyjW9HO/tDTLxH0e4Gcr3zd39tpArqBGg0tPgt30w+FpsffDh0e
-         7m3vcBrEtkpXHvxjmQBMjw2iv9bQ9ZbPZiPCOkQd3vVX4FPdzDHARjiux5wP35wMKVUp
-         VKJy4u1r3GJps/3FQS1GtDDmUamd9aG5WEXfJeI9RwLjBpi1yNuG4Ko9gvPi0lnPWBkc
-         o0kzId0zBjZHUs1KkEbNqCVsbjcRzlygu1MP762qWWmd8B8POjjeSi3vBfCKs0yPsfXS
-         176GEsuxcG54aPPqgfD2Kd9Eq55oP5jdnlvXU8XwDMTm1krfnZu0PJgPBEPSk8NRg1mc
-         1UxA==
-X-Gm-Message-State: AOAM5301VteiywC1miQl16F0+ghsfxUeFEmoFxvjOxXWrOP2zZxj4tXh
-        SxAs1psknMK5ILcb6vEkllL6xj7Hp9A=
-X-Google-Smtp-Source: ABdhPJz8Ivh1nkGhAmS7AtezO5VKur/i0+6GuwGQfnBJh6PrnLvje+F0asXnJ+QTVzzWwvzN4+QBbw==
-X-Received: by 2002:a1c:7e11:: with SMTP id z17mr608535wmc.83.1604948044891;
-        Mon, 09 Nov 2020 10:54:04 -0800 (PST)
-Received: from [192.168.8.114] ([37.170.31.34])
-        by smtp.gmail.com with ESMTPSA id p10sm14068008wre.2.2020.11.09.10.54.03
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 09 Nov 2020 10:54:04 -0800 (PST)
-Subject: Re: [PATCH v2 net] net: udp: fix Fast/frag0 UDP GRO
-To:     Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-        Eric Dumazet <eric.dumazet@gmail.com>
-Cc:     Alexander Lobakin <alobakin@pm.me>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Network Development <netdev@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-References: <0eaG8xtbtKY1dEKCTKUBubGiC9QawGgB3tVZtNqVdY@cp4-web-030.plabs.ch>
- <d9d09931-8cd3-1eb6-673c-3ae5ebc3ee57@gmail.com>
- <CA+FuTSc0QLM4QpinZ1XiLreRECBDVbanwoFtMhnF6caEWjXTBw@mail.gmail.com>
-From:   Eric Dumazet <eric.dumazet@gmail.com>
-Message-ID: <3729478a-77b5-aeb5-0192-49f0e0d170ac@gmail.com>
-Date:   Mon, 9 Nov 2020 19:54:02 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.1
+        Mon, 9 Nov 2020 13:54:48 -0500
+Received: from in01.mta.xmission.com ([166.70.13.51])
+        by out01.mta.xmission.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1kcCJS-000ISx-Bh; Mon, 09 Nov 2020 11:54:46 -0700
+Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=x220.xmission.com)
+        by in01.mta.xmission.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.87)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1kcCJQ-0003GV-Vx; Mon, 09 Nov 2020 11:54:45 -0700
+From:   ebiederm@xmission.com (Eric W. Biederman)
+To:     Miklos Szeredi <miklos@szeredi.hu>
+Cc:     Alexey Gladkov <gladkov.alexey@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-fsdevel@vger.kernel.org, Alexey Gladkov <legion@kernel.org>
+References: <1e796f9e008fb78fb96358ff74f39bd4865a7c88.1604926010.git.gladkov.alexey@gmail.com>
+        <CAJfpegua_ahmNa4p0me6R10wtcPpQVKNiKQOVKjuNW67RHFOOA@mail.gmail.com>
+Date:   Mon, 09 Nov 2020 12:54:36 -0600
+In-Reply-To: <CAJfpegua_ahmNa4p0me6R10wtcPpQVKNiKQOVKjuNW67RHFOOA@mail.gmail.com>
+        (Miklos Szeredi's message of "Mon, 9 Nov 2020 16:27:05 +0100")
+Message-ID: <87v9ee2wer.fsf@x220.int.ebiederm.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-In-Reply-To: <CA+FuTSc0QLM4QpinZ1XiLreRECBDVbanwoFtMhnF6caEWjXTBw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-XM-SPF: eid=1kcCJQ-0003GV-Vx;;;mid=<87v9ee2wer.fsf@x220.int.ebiederm.org>;;;hst=in01.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
+X-XM-AID: U2FsdGVkX1/d2S5mWTCu4h6MXhqaa47cMXFJAUb7ZKI=
+X-SA-Exim-Connect-IP: 68.227.160.95
+X-SA-Exim-Mail-From: ebiederm@xmission.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa01.xmission.com
+X-Spam-Level: 
+X-Spam-Status: No, score=0.5 required=8.0 tests=ALL_TRUSTED,BAYES_50,
+        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,XMSubLong autolearn=disabled
+        version=3.4.2
+X-Spam-Virus: No
+X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.4998]
+        *  0.7 XMSubLong Long Subject
+        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
+        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
+        *      [sa01 1397; Body=1 Fuz1=1 Fuz2=1]
+X-Spam-DCC: XMission; sa01 1397; Body=1 Fuz1=1 Fuz2=1 
+X-Spam-Combo: ;Miklos Szeredi <miklos@szeredi.hu>
+X-Spam-Relay-Country: 
+X-Spam-Timing: total 742 ms - load_scoreonly_sql: 0.03 (0.0%),
+        signal_user_changed: 3.8 (0.5%), b_tie_ro: 2.5 (0.3%), parse: 1.07
+        (0.1%), extract_message_metadata: 12 (1.6%), get_uri_detail_list: 2.7
+        (0.4%), tests_pri_-1000: 3.4 (0.5%), tests_pri_-950: 1.09 (0.1%),
+        tests_pri_-900: 0.80 (0.1%), tests_pri_-90: 89 (12.1%), check_bayes:
+        88 (11.8%), b_tokenize: 6 (0.7%), b_tok_get_all: 7 (1.0%),
+        b_comp_prob: 2.1 (0.3%), b_tok_touch_all: 70 (9.4%), b_finish: 0.80
+        (0.1%), tests_pri_0: 295 (39.7%), check_dkim_signature: 0.38 (0.1%),
+        check_dkim_adsp: 23 (3.2%), poll_dns_idle: 339 (45.7%), tests_pri_10:
+        2.2 (0.3%), tests_pri_500: 331 (44.6%), rewrite_mail: 0.00 (0.0%)
+Subject: Re: [RESEND PATCH v3] fuse: Abort waiting for a response if the daemon receives a fatal signal
+X-Spam-Flag: No
+X-SA-Exim-Version: 4.2.1 (built Thu, 05 May 2016 13:38:54 -0600)
+X-SA-Exim-Scanned: Yes (on in01.mta.xmission.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Miklos Szeredi <miklos@szeredi.hu> writes:
 
-
-On 11/9/20 7:28 PM, Willem de Bruijn wrote:
-> On Mon, Nov 9, 2020 at 12:37 PM Eric Dumazet <eric.dumazet@gmail.com> wrote:
+> On Mon, Nov 9, 2020 at 1:48 PM Alexey Gladkov <gladkov.alexey@gmail.com> wrote:
 >>
+>> This patch removes one kind of the deadlocks inside the fuse daemon. The
+>> problem appear when the fuse daemon itself makes a file operation on its
+>> filesystem and receives a fatal signal.
 >>
+>> This deadlock can be interrupted via fusectl filesystem. But if you have
+>> many fuse mountpoints, it will be difficult to figure out which
+>> connection to break.
 >>
->> On 11/9/20 5:56 PM, Alexander Lobakin wrote:
->>> While testing UDP GSO fraglists forwarding through driver that uses
->>> Fast GRO (via napi_gro_frags()), I was observing lots of out-of-order
->>> iperf packets:
->>>
->>> [ ID] Interval           Transfer     Bitrate         Jitter
->>> [SUM]  0.0-40.0 sec  12106 datagrams received out-of-order
->>>
->>> Simple switch to napi_gro_receive() any other method without frag0
->>> shortcut completely resolved them.
->>>
->>> I've found that UDP GRO uses udp_hdr(skb) in its .gro_receive()
->>> callback. While it's probably OK for non-frag0 paths (when all
->>> headers or even the entire frame are already in skb->data), this
->>> inline points to junk when using Fast GRO (napi_gro_frags() or
->>> napi_gro_receive() with only Ethernet header in skb->data and all
->>> the rest in shinfo->frags) and breaks GRO packet compilation and
->>> the packet flow itself.
->>> To support both modes, skb_gro_header_fast() + skb_gro_header_slow()
->>> are typically used. UDP even has an inline helper that makes use of
->>> them, udp_gro_udphdr(). Use that instead of troublemaking udp_hdr()
->>> to get rid of the out-of-order delivers.
->>>
->>> Present since the introduction of plain UDP GRO in 5.0-rc1.
->>>
->>> Since v1 [1]:
->>>  - added a NULL pointer check for "uh" as suggested by Willem.
->>>
->>> [1] https://lore.kernel.org/netdev/YazU6GEzBdpyZMDMwJirxDX7B4sualpDG68ADZYvJI@cp4-web-034.plabs.ch
->>>
->>> Fixes: e20cf8d3f1f7 ("udp: implement GRO for plain UDP sockets.")
->>> Signed-off-by: Alexander Lobakin <alobakin@pm.me>
->>> ---
->>>  net/ipv4/udp_offload.c | 7 ++++++-
->>>  1 file changed, 6 insertions(+), 1 deletion(-)
->>>
->>> diff --git a/net/ipv4/udp_offload.c b/net/ipv4/udp_offload.c
->>> index e67a66fbf27b..7f6bd221880a 100644
->>> --- a/net/ipv4/udp_offload.c
->>> +++ b/net/ipv4/udp_offload.c
->>> @@ -366,13 +366,18 @@ static struct sk_buff *udp4_ufo_fragment(struct sk_buff *skb,
->>>  static struct sk_buff *udp_gro_receive_segment(struct list_head *head,
->>>                                              struct sk_buff *skb)
->>>  {
->>> -     struct udphdr *uh = udp_hdr(skb);
->>> +     struct udphdr *uh = udp_gro_udphdr(skb);
->>>       struct sk_buff *pp = NULL;
->>>       struct udphdr *uh2;
->>>       struct sk_buff *p;
->>>       unsigned int ulen;
->>>       int ret = 0;
->>>
->>> +     if (unlikely(!uh)) {
->>
->> How uh could be NULL here ?
->>
->> My understanding is that udp_gro_receive() is called
->> only after udp4_gro_receive() or udp6_gro_receive()
->> validated that udp_gro_udphdr(skb) was not NULL.
-> 
-> Oh indeed. This has already been checked before.
-> 
->>> +             NAPI_GRO_CB(skb)->flush = 1;
->>> +             return NULL;
->>> +     }
->>> +
->>>       /* requires non zero csum, for symmetry with GSO */
->>>       if (!uh->check) {
->>>               NAPI_GRO_CB(skb)->flush = 1;
->>>
->>
->> Why uh2 is left unchanged ?
->>
->>     uh2 = udp_hdr(p);
-> 
-> Isn't that the same as th2 = tcp_hdr(p) in tcp_gro_receive? no frag0
-> optimization to worry about for packets on the list.
+>> This patch aborts the connection if the fuse server receives a fatal
+>> signal.
+>
+> The patch itself might be acceptable, but I have some questions.
+>
+> To logic of this patch says:
+>
+> "If a task having the fuse device open in it's fd table receives
+> SIGKILL (and filesystem was initially mounted in a non-init user
+> namespace), then abort the filesystem operation"
+>
+> You just say "server" instead of "task having the fuse device open in
+> it's fd table" which is sloppy to say the least.  It might also lead
+> to regressions, although I agree that it's unlikely.
+>
+> Also how is this solving any security issue?   Just create the request
+> loop using two fuse filesystems and the deadlock avoidance has just
+> been circumvented.   So AFAICS "selling" this as a CVE fix is not
+> appropriate.
 
-My feeling was that tcp_gro_receive() is terminal in the GRO stack.
+The original report came in with a CVE on it.  So referencing that CVE
+seems reasonable.  Even if the issue isn't particularly serious.  It is
+very annoying not to be able to kill processes with SIGKILL or the OOM
+killer.
 
-While UDP could be encapsulated in UDP :)
+You have a good point about the looping issue.  I wonder if there is a
+way to enhance this comparatively simple approach to prevent the more
+complex scenario you mention.
 
-I guess we do not support this yet.
+Does tweaking the code to close every connection represented by a fuse
+file descriptor after a SIGKILL has been delevered create any problems?
 
-Years ago we made sure to propagate the current header offset into GRO stack
-(when we added SIT/IPIP/GRE support to GRO)
-299603e8370a93dd5d8e8d800f0dff1ce2c53d36 ("net-gro: Prepare GRO stack for the upcoming tunneling support")
+> What's the reason for making this user-ns only?  If we drop the
+> security aspect, then I don't see any reason not to do this
+> unconditionally.
 
 
-udp_hdr() is using transport header, which is unique for skb "on the list"
+> Also note, there's a proper solution for making fuse requests always
+> killable, and that is to introduce a shadow locking that ensures
+> correct fs operation in the face of requests that have returned and
+> released their respective VFS locks.   Now this would be a much more
+> complex solution, but also a much more correct one, not having issues
+> with correctly defining what a server is (which is not a solvable
+> problem).
+
+Is this the solution that was removed at some point from fuse,
+or are you talking about something else?
+
+I think you are talking about adding a set of fuse specific locks
+so fuse does not need to rely on the vfs locks.  I don't quite have
+enough insight to see that bigger problem so if you can expand in more
+detail I would appreciate it.
+
+Eric
 
