@@ -2,489 +2,216 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C8F72AB711
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 12:34:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 999482AB735
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 12:36:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729952AbgKILe2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 06:34:28 -0500
-Received: from esa1.hgst.iphmx.com ([68.232.141.245]:44538 "EHLO
-        esa1.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730009AbgKILeW (ORCPT
+        id S1730081AbgKILgQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 06:36:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35650 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729760AbgKILd2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 06:34:22 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1604921661; x=1636457661;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:content-transfer-encoding:mime-version;
-  bh=NJu9N/iQ773oJL4JYaBWpzXl/lb8cvH1l2me7w9PtQs=;
-  b=f4/3I6B06eohVHDdVUv+35Gaq/LF1jwF475CKNB4c72KKmlDlNMhMzqs
-   otSA+IPsHPk1kOgjJ4Dfo2LErT0d2FaRkTTLwrcda6GBtAxLorHjPwHjC
-   Hv+adjOjLAiy/UK0eslKzVSWngbrSMzdwhYO2F+T50FYFGEar2l0fFxG9
-   pUG68NV6X/DOKCsvY8KOL0S6fRE7KZpzwKXFY6J6Hu/SYnB8mP3ulfXr+
-   ZaOvnzakKBxLdAFIlHYw5MNHbVg2yDnG/rHtLpDKOXCkL1NbsqlatSZTr
-   yhItCPhdFcOUOV28sVaAj0Qc9O+TArx+3QkTwgsQ2GakGtBMhJ7YsAvDJ
-   Q==;
-IronPort-SDR: tRTtO1qmFEvYw1GYnHoZTqsMKdojcXckELMYG1ch77JSr01p3dtlBgNViFyJxDOccMFXMQ2LOJ
- n2tpX0zIfUhh4j+XkQVikKBYbI2NXMNDAYI6PR9kruPpKUq57r2UPIQS2eO+YpMUv/qFNlYSuh
- OvwNXlQyA0vXOUxihb1KaspklyfNLU4pYBRe0Utu71qcE+emzOzI4W5uWq7GOBs+zfGG+mITGf
- Uu8XYtz0Rpa0j5uDWuJxwKdgF2XVVcpIXzRHUX2CmrqREgXvYpxsLV09nBvQYIlCoVGlXOPv9f
- ir0=
-X-IronPort-AV: E=Sophos;i="5.77,463,1596470400"; 
-   d="scan'208";a="262186929"
-Received: from mail-bn8nam11lp2174.outbound.protection.outlook.com (HELO NAM11-BN8-obe.outbound.protection.outlook.com) ([104.47.58.174])
-  by ob1.hgst.iphmx.com with ESMTP; 09 Nov 2020 19:34:18 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=NdxyjW3jDlT4BmU7VZpxkhou+q3dJ1az8JLchEZwpBFkOtLIYL1S5Ld6c73xbcN/YZf6TiqtY253w/pbXrUmRoTIiuIBEI/yQLhiGR3qUOnFZoQwhNbJgIZ40oxY9ezOefLVG4yTTC4o0ghWTV8pyKoHSKxz3Y6pH/ZbHjO5EuI3Y0Jm/vjGD5got2n5vbOtYr/0xT/7UK+3qdq0JaSiw5eIVRL9AHdoXTaGXg4GT0AIQQmDzi5tdmb66jgbBgrtkfU62A0oCuYZK/buijkHwhmCpJ+EKjjTCwp1raealq0VoCg5N3nuygXKRij+XtDGAbvXsT25eN4SCZPyJXkZtA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Q0xSyGEMsS5yNoqFz6yLwtHySdmmMcoVSaygeEXJNNk=;
- b=Dw85fkfqx3pkhoLbWlLjSm5PsEp9JRoLvV8wa3mebF5DMb/YDTaZxsgHbu8jDN6DSkJD0we9tl7y+H04b0ZschXMaL5aD6TQ7kE3RoB4DiCgDTgA2QUDpm+Wlu1sEEZbQBcJ0Q16yyQAwL0qGMo73NO1E79BpT+smxPnV3YyNarrG+nxyx16xXQnRrwZjOWkow+TdeoHHWO3sSPw/EUpzYVPWj7Rk1dHZngs95mY69+l2AxPeCL/T0mluLupPE/+zzc4wQvMWbi4QpoeK1BiMPI7tDcS0SoY7OMVHqfOwz8rNBMzc4HbivM6gJXTk3OV1lqKKN9zKHrw+5jC37Xghg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
+        Mon, 9 Nov 2020 06:33:28 -0500
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A62EC0613D3
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Nov 2020 03:33:28 -0800 (PST)
+Received: by mail-wr1-x444.google.com with SMTP id k2so4916462wrx.2
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Nov 2020 03:33:28 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Q0xSyGEMsS5yNoqFz6yLwtHySdmmMcoVSaygeEXJNNk=;
- b=K9GCOVDr4Ux6asNMp4E5xRcajuNIKC0Is3fXFbneagYTN7bbJU+GaUIyo4K3dzz/UjgIPoETwAcwomCAHgENH9gsuSlo4okKvmBbhMAYsKxah2go1R/h8WNZJhMO+81fCGDu10T2Qn2RDgBbYXd3l8J7CekPOM0Fyu9zyvu626w=
-Authentication-Results: dabbelt.com; dkim=none (message not signed)
- header.d=none;dabbelt.com; dmarc=none action=none header.from=wdc.com;
-Received: from DM6PR04MB6201.namprd04.prod.outlook.com (2603:10b6:5:127::32)
- by DM6PR04MB3866.namprd04.prod.outlook.com (2603:10b6:5:ad::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3541.21; Mon, 9 Nov
- 2020 11:34:17 +0000
-Received: from DM6PR04MB6201.namprd04.prod.outlook.com
- ([fe80::d035:e2c6:c11:51dd]) by DM6PR04MB6201.namprd04.prod.outlook.com
- ([fe80::d035:e2c6:c11:51dd%6]) with mapi id 15.20.3541.025; Mon, 9 Nov 2020
- 11:34:17 +0000
-From:   Anup Patel <anup.patel@wdc.com>
-To:     Palmer Dabbelt <palmer@dabbelt.com>,
-        Palmer Dabbelt <palmerdabbelt@google.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Alexander Graf <graf@amazon.com>,
-        Atish Patra <atish.patra@wdc.com>,
-        Alistair Francis <Alistair.Francis@wdc.com>,
-        Damien Le Moal <damien.lemoal@wdc.com>,
-        Anup Patel <anup@brainfault.org>, kvm@vger.kernel.org,
-        kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org,
-        linux-kernel@vger.kernel.org, Anup Patel <anup.patel@wdc.com>
-Subject: [PATCH v15 09/17] RISC-V: KVM: Implement VMID allocator
-Date:   Mon,  9 Nov 2020 17:02:32 +0530
-Message-Id: <20201109113240.3733496-10-anup.patel@wdc.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20201109113240.3733496-1-anup.patel@wdc.com>
-References: <20201109113240.3733496-1-anup.patel@wdc.com>
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [122.171.188.68]
-X-ClientProxiedBy: MAXPR01CA0099.INDPRD01.PROD.OUTLOOK.COM
- (2603:1096:a00:5d::17) To DM6PR04MB6201.namprd04.prod.outlook.com
- (2603:10b6:5:127::32)
+        d=google.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=yiVqo0I7pGB5oEXJoL4wsfNNfOXq8d133w3c7AwQTmA=;
+        b=GGA3JU5M9+tIOvlhbl+W31KWNkSPWds3SMYdI2y84Pb3DQsror8hLpYrnonQblZsI+
+         JTqPx3DioUxKwT2W5XvGzA/MhoW4J4VZh0ul97rvAkv+Kr8U7J28OQUN0cZqVzvX8oe4
+         BZrYy1qKA41ohpNXJgymlX8cnWolNzJcTztyhG1iix/9gWfqj3dXmm7lrksUk8hHzLFS
+         r3QVhaBdVrzR4f0NJQjZ6/zG9mdRnJQsPNtJC7tMcGpwVrk+e41ajZwyLfzkJYUOJkKm
+         KuVgYUCmiD/cycIAYCfFwSA7TPdRCMmKsNTANlHO6cmOltdjOhGA6GKjpSuSXDGNc8mZ
+         KJGg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=yiVqo0I7pGB5oEXJoL4wsfNNfOXq8d133w3c7AwQTmA=;
+        b=sGcrDkfF6WJH5Rfn3j8TbHKgjGGPZAtLe+LzOcmVbuZmK6+f0zf8Oi2swZdmoOa1KP
+         0ELIVZnwiuCeOYvZgzdUrImu1mppMnM/1whm+Nt4LOaVFH8bv2iCzcLVOCNneytBC1oa
+         WDzASwfQpnaFny7+gt+ssdWi0prFg/39AwPq4Ql8IT/eDxaoNroVtskdAHH2UZS8SM47
+         TtIYHEq2dtrm5K3V28ChhZc9npwILXgykBBfHGB3evQhZulozV24+jx2Skr5tusvD7E/
+         gyJrmLfQwNl3wEHBKcaoXXxJpM9i465FaDiZ5TlQka5WH4uab3a74hiJNmcdsSp58n15
+         6FYw==
+X-Gm-Message-State: AOAM532tKW6bCIx+Y5C0UwzoBjduUyYYGClrQ71gj0qu7d3CfCiVnPG1
+        zBNQMyVsIqjUmF1lM8ttijqr1A==
+X-Google-Smtp-Source: ABdhPJwsxb54EYyLHnV2E1XBcoH6JNqqkZcyLkTXWH8b0BTZda5qQTihScZQ+OrfOTSrBdeqjMvt4w==
+X-Received: by 2002:adf:e3cf:: with SMTP id k15mr1457671wrm.259.1604921606682;
+        Mon, 09 Nov 2020 03:33:26 -0800 (PST)
+Received: from localhost ([2a01:4b00:8523:2d03:209d:10b7:c480:3e1f])
+        by smtp.gmail.com with ESMTPSA id u10sm13507690wrw.36.2020.11.09.03.33.25
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 09 Nov 2020 03:33:25 -0800 (PST)
+From:   David Brazdil <dbrazdil@google.com>
+To:     kvmarm@lists.cs.columbia.edu
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Marc Zyngier <maz@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Dennis Zhou <dennis@kernel.org>,
+        Tejun Heo <tj@kernel.org>, Christoph Lameter <cl@linux.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Quentin Perret <qperret@google.com>,
+        Andrew Scull <ascull@google.com>,
+        Andrew Walbran <qwandor@google.com>, kernel-team@android.com,
+        David Brazdil <dbrazdil@google.com>
+Subject: [PATCH v1 23/24] kvm: arm64: Trap host SMCs in protected mode.
+Date:   Mon,  9 Nov 2020 11:32:32 +0000
+Message-Id: <20201109113233.9012-24-dbrazdil@google.com>
+X-Mailer: git-send-email 2.29.2
+In-Reply-To: <20201109113233.9012-1-dbrazdil@google.com>
+References: <20201109113233.9012-1-dbrazdil@google.com>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from wdc.com (122.171.188.68) by MAXPR01CA0099.INDPRD01.PROD.OUTLOOK.COM (2603:1096:a00:5d::17) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3541.21 via Frontend Transport; Mon, 9 Nov 2020 11:34:12 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: 63d3f23c-2f57-41e2-a384-08d884a36440
-X-MS-TrafficTypeDiagnostic: DM6PR04MB3866:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <DM6PR04MB386697FAE84595C01B0FDFD18DEA0@DM6PR04MB3866.namprd04.prod.outlook.com>
-WDCIPOUTBOUND: EOP-TRUE
-X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: kt951RCtAtuWvjNcMG5JXPMi/PXCppN/Tfy3XWbcFciOU6UjPcOvKWOdGdzPXlg0avDPGR2/U3sTi3ZTYvrQVKGCM45xCn/VTc1LyBkUekpEOTisLag6q/TGzMScEVDGSk0TfSwt2iJIL7IzAVPn90EDHEiN6czzHZqYBRj0VuVOu7AKy7hSotSqe5VmzTmDqS8+w4sTBusBdIpvfEM0U/YH6oBHXQ3NcFh7ghnb1aVvBKAEsKiW/+z9OeGBubdmXKFPpoHqrxv5UIon2mBKYUK3xkKIEkI51NKMFhOeiZCMsqmF1oosnJQBh9/jtsig
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR04MB6201.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(346002)(396003)(136003)(39860400002)(376002)(55016002)(7416002)(83380400001)(1076003)(44832011)(16526019)(186003)(316002)(26005)(8676002)(110136005)(54906003)(5660300002)(52116002)(7696005)(956004)(30864003)(2616005)(478600001)(66476007)(66556008)(4326008)(66946007)(6666004)(2906002)(36756003)(86362001)(8886007)(8936002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: nnLvncIjU+SEwU9DOODFc+BCSNDorc3flkWcScnd9z9Eey26trmMqlg2ICoLmzqcQn9e3OQKpb50hcYYLSiOwRGdFil/lJsrMVALklp6FNhdZciXfkHgDVB43Y8H6EZHhhJbiHULwlQrJPtXfLqWYkJVMSx7BFmJ739VVuDlwvYrFg/R99lwQ+MXFCEKVrJErj6zJbuXqD/WNNV6m7WOAUi69YM+0qBUJJ3MWhim4wUm9ESaCRrDfyHygNIfCI25yv9ebxRWA8mmV3Rh5UxXS6BtN+ucJIUVt/p7aP11NlPLAcJFaXCmSC0AHVCCuYU9VcNuCT51wxYORXiyB6pYOsxbuxmp0VQxw5RbimSOf/PrO88MZquzWCQhn3sMAM+1seuDVDqoGP8Aozup45gqsPDabD19bOFqTEKl8N+tTmEuCHRm+erf4nhVb2HAPrLw2EsBk6/nCFZgj9O3AYkYvnPY2hyEEsZfy+sO8h+AoDocMSgdZJpkUh/lbunkHHXDco8mvc0kyVsI0w6knAuWLWQsgsb+D/w+dGAJxnDiEVZor1OFdlD7r/BeazZY2WB2LWZyLSF53RsAnHF6RoSzxmxnc8SsY+a98UnPFKPmY+9jBRDguZ0px69Zh0E6qDX1Iu33PBCgsAVFfv01wBUgCA==
-X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 63d3f23c-2f57-41e2-a384-08d884a36440
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR04MB6201.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Nov 2020 11:34:17.1297
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: dVQGbsMdLRV0cHRWlPYFi6mgQIiT820hsm25e8QSGua2mUSiArL/Gi+gGlPYYJ9hMHt6fGQ47maEuFws7pjwWg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR04MB3866
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We implement a simple VMID allocator for Guests/VMs which:
-1. Detects number of VMID bits at boot-time
-2. Uses atomic number to track VMID version and increments
-   VMID version whenever we run-out of VMIDs
-3. Flushes Guest TLBs on all host CPUs whenever we run-out
-   of VMIDs
-4. Force updates HW Stage2 VMID for each Guest VCPU whenever
-   VMID changes using VCPU request KVM_REQ_UPDATE_HGATP
+While protected nVHE KVM is installed, start trapping all host SMCs.
+By default, these are simply forwarded to EL3, but PSCI SMCs are
+validated first.
 
-Signed-off-by: Anup Patel <anup.patel@wdc.com>
-Acked-by: Paolo Bonzini <pbonzini@redhat.com>
-Reviewed-by: Paolo Bonzini <pbonzini@redhat.com>
-Reviewed-by: Alexander Graf <graf@amazon.com>
+Create new constant HCR_HOST_NVHE_PROTECTED_FLAGS with the new set of HCR
+flags to use while the nVHE vector is installed when the kernel was
+booted with the protected flag enabled. Switch back to the default HCR
+flags when switching back to the stub vector.
+
+Signed-off-by: David Brazdil <dbrazdil@google.com>
 ---
- arch/riscv/include/asm/kvm_host.h |  24 ++++++
- arch/riscv/kvm/Makefile           |   3 +-
- arch/riscv/kvm/main.c             |   4 +
- arch/riscv/kvm/tlb.S              |  74 ++++++++++++++++++
- arch/riscv/kvm/vcpu.c             |   9 +++
- arch/riscv/kvm/vm.c               |   6 ++
- arch/riscv/kvm/vmid.c             | 120 ++++++++++++++++++++++++++++++
- 7 files changed, 239 insertions(+), 1 deletion(-)
- create mode 100644 arch/riscv/kvm/tlb.S
- create mode 100644 arch/riscv/kvm/vmid.c
+ arch/arm64/include/asm/kvm_arm.h   |  1 +
+ arch/arm64/kernel/image-vars.h     |  4 ++++
+ arch/arm64/kvm/arm.c               | 35 ++++++++++++++++++++++++++++++
+ arch/arm64/kvm/hyp/nvhe/hyp-init.S |  8 +++++++
+ arch/arm64/kvm/hyp/nvhe/switch.c   |  5 ++++-
+ 5 files changed, 52 insertions(+), 1 deletion(-)
 
-diff --git a/arch/riscv/include/asm/kvm_host.h b/arch/riscv/include/asm/kvm_host.h
-index 47655fe2f4b9..08681e58c695 100644
---- a/arch/riscv/include/asm/kvm_host.h
-+++ b/arch/riscv/include/asm/kvm_host.h
-@@ -27,6 +27,7 @@
- #define KVM_REQ_SLEEP \
- 	KVM_ARCH_REQ_FLAGS(0, KVM_REQUEST_WAIT | KVM_REQUEST_NO_WAKEUP)
- #define KVM_REQ_VCPU_RESET		KVM_ARCH_REQ(1)
-+#define KVM_REQ_UPDATE_HGATP		KVM_ARCH_REQ(2)
+diff --git a/arch/arm64/include/asm/kvm_arm.h b/arch/arm64/include/asm/kvm_arm.h
+index 64ce29378467..4e90c2debf70 100644
+--- a/arch/arm64/include/asm/kvm_arm.h
++++ b/arch/arm64/include/asm/kvm_arm.h
+@@ -80,6 +80,7 @@
+ 			 HCR_FMO | HCR_IMO | HCR_PTW )
+ #define HCR_VIRT_EXCP_MASK (HCR_VSE | HCR_VI | HCR_VF)
+ #define HCR_HOST_NVHE_FLAGS (HCR_RW | HCR_API | HCR_APK | HCR_ATA)
++#define HCR_HOST_NVHE_PROTECTED_FLAGS (HCR_HOST_NVHE_FLAGS | HCR_TSC)
+ #define HCR_HOST_VHE_FLAGS (HCR_RW | HCR_TGE | HCR_E2H)
  
- struct kvm_vm_stat {
- 	ulong remote_tlb_flush;
-@@ -49,7 +50,19 @@ struct kvm_vcpu_stat {
- struct kvm_arch_memory_slot {
- };
+ /* TCR_EL2 Registers bits */
+diff --git a/arch/arm64/kernel/image-vars.h b/arch/arm64/kernel/image-vars.h
+index 78a42a7cdb72..75cda51674f4 100644
+--- a/arch/arm64/kernel/image-vars.h
++++ b/arch/arm64/kernel/image-vars.h
+@@ -62,9 +62,13 @@ __efistub__ctype		= _ctype;
+  */
  
-+struct kvm_vmid {
-+	/*
-+	 * Writes to vmid_version and vmid happen with vmid_lock held
-+	 * whereas reads happen without any lock held.
-+	 */
-+	unsigned long vmid_version;
-+	unsigned long vmid;
-+};
+ /* Alternative callbacks for init-time patching of nVHE hyp code. */
++KVM_NVHE_ALIAS(kvm_patch_hcr_flags);
+ KVM_NVHE_ALIAS(kvm_patch_vector_branch);
+ KVM_NVHE_ALIAS(kvm_update_va_mask);
+ 
++/* Static key enabled when the user opted into nVHE protected mode. */
++KVM_NVHE_ALIAS(kvm_protected_mode);
 +
- struct kvm_arch {
-+	/* stage2 vmid */
-+	struct kvm_vmid vmid;
-+
- 	/* stage2 page table */
- 	pgd_t *pgd;
- 	phys_addr_t pgd_phys;
-@@ -180,6 +193,11 @@ static inline void kvm_arch_vcpu_uninit(struct kvm_vcpu *vcpu) {}
- static inline void kvm_arch_sched_in(struct kvm_vcpu *vcpu, int cpu) {}
- static inline void kvm_arch_vcpu_block_finish(struct kvm_vcpu *vcpu) {}
+ /* Global kernel state accessed by nVHE hyp code. */
+ KVM_NVHE_ALIAS(kvm_vgic_global_state);
  
-+void __kvm_riscv_hfence_gvma_vmid_gpa(unsigned long gpa, unsigned long vmid);
-+void __kvm_riscv_hfence_gvma_vmid(unsigned long vmid);
-+void __kvm_riscv_hfence_gvma_gpa(unsigned long gpa);
-+void __kvm_riscv_hfence_gvma_all(void);
-+
- int kvm_riscv_stage2_map(struct kvm_vcpu *vcpu,
- 			 struct kvm_memory_slot *memslot,
- 			 gpa_t gpa, unsigned long hva,
-@@ -189,6 +207,12 @@ int kvm_riscv_stage2_alloc_pgd(struct kvm *kvm);
- void kvm_riscv_stage2_free_pgd(struct kvm *kvm);
- void kvm_riscv_stage2_update_hgatp(struct kvm_vcpu *vcpu);
- 
-+void kvm_riscv_stage2_vmid_detect(void);
-+unsigned long kvm_riscv_stage2_vmid_bits(void);
-+int kvm_riscv_stage2_vmid_init(struct kvm *kvm);
-+bool kvm_riscv_stage2_vmid_ver_changed(struct kvm_vmid *vmid);
-+void kvm_riscv_stage2_vmid_update(struct kvm_vcpu *vcpu);
-+
- void __kvm_riscv_unpriv_trap(void);
- 
- unsigned long kvm_riscv_vcpu_unpriv_read(struct kvm_vcpu *vcpu,
-diff --git a/arch/riscv/kvm/Makefile b/arch/riscv/kvm/Makefile
-index 54991cc55c00..b32f60edf48c 100644
---- a/arch/riscv/kvm/Makefile
-+++ b/arch/riscv/kvm/Makefile
-@@ -9,6 +9,7 @@ ccflags-y := -Ivirt/kvm -Iarch/riscv/kvm
- 
- kvm-objs := $(common-objs-y)
- 
--kvm-objs += main.o vm.o mmu.o vcpu.o vcpu_exit.o vcpu_switch.o
-+kvm-objs += main.o vm.o vmid.o tlb.o mmu.o
-+kvm-objs += vcpu.o vcpu_exit.o vcpu_switch.o
- 
- obj-$(CONFIG_KVM)	+= kvm.o
-diff --git a/arch/riscv/kvm/main.c b/arch/riscv/kvm/main.c
-index 47926f0c175d..49a4941e3838 100644
---- a/arch/riscv/kvm/main.c
-+++ b/arch/riscv/kvm/main.c
-@@ -79,8 +79,12 @@ int kvm_arch_init(void *opaque)
- 		return -ENODEV;
- 	}
- 
-+	kvm_riscv_stage2_vmid_detect();
-+
- 	kvm_info("hypervisor extension available\n");
- 
-+	kvm_info("VMID %ld bits available\n", kvm_riscv_stage2_vmid_bits());
-+
- 	return 0;
+diff --git a/arch/arm64/kvm/arm.c b/arch/arm64/kvm/arm.c
+index 574aa2d026e6..c09b95cfa00a 100644
+--- a/arch/arm64/kvm/arm.c
++++ b/arch/arm64/kvm/arm.c
+@@ -1861,6 +1861,41 @@ void kvm_arch_exit(void)
+ 	kvm_perf_teardown();
  }
  
-diff --git a/arch/riscv/kvm/tlb.S b/arch/riscv/kvm/tlb.S
-new file mode 100644
-index 000000000000..c858570f0856
---- /dev/null
-+++ b/arch/riscv/kvm/tlb.S
-@@ -0,0 +1,74 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+/*
-+ * Copyright (C) 2019 Western Digital Corporation or its affiliates.
-+ *
-+ * Authors:
-+ *     Anup Patel <anup.patel@wdc.com>
-+ */
-+
-+#include <linux/linkage.h>
-+#include <asm/asm.h>
-+
-+	.text
-+	.altmacro
-+	.option norelax
-+
-+	/*
-+	 * Instruction encoding of hfence.gvma is:
-+	 * HFENCE.GVMA rs1, rs2
-+	 * HFENCE.GVMA zero, rs2
-+	 * HFENCE.GVMA rs1
-+	 * HFENCE.GVMA
-+	 *
-+	 * rs1!=zero and rs2!=zero ==> HFENCE.GVMA rs1, rs2
-+	 * rs1==zero and rs2!=zero ==> HFENCE.GVMA zero, rs2
-+	 * rs1!=zero and rs2==zero ==> HFENCE.GVMA rs1
-+	 * rs1==zero and rs2==zero ==> HFENCE.GVMA
-+	 *
-+	 * Instruction encoding of HFENCE.GVMA is:
-+	 * 0110001 rs2(5) rs1(5) 000 00000 1110011
-+	 */
-+
-+ENTRY(__kvm_riscv_hfence_gvma_vmid_gpa)
-+	/*
-+	 * rs1 = a0 (GPA)
-+	 * rs2 = a1 (VMID)
-+	 * HFENCE.GVMA a0, a1
-+	 * 0110001 01011 01010 000 00000 1110011
-+	 */
-+	.word 0x62b50073
-+	ret
-+ENDPROC(__kvm_riscv_hfence_gvma_vmid_gpa)
-+
-+ENTRY(__kvm_riscv_hfence_gvma_vmid)
-+	/*
-+	 * rs1 = zero
-+	 * rs2 = a0 (VMID)
-+	 * HFENCE.GVMA zero, a0
-+	 * 0110001 01010 00000 000 00000 1110011
-+	 */
-+	.word 0x62a00073
-+	ret
-+ENDPROC(__kvm_riscv_hfence_gvma_vmid)
-+
-+ENTRY(__kvm_riscv_hfence_gvma_gpa)
-+	/*
-+	 * rs1 = a0 (GPA)
-+	 * rs2 = zero
-+	 * HFENCE.GVMA a0
-+	 * 0110001 00000 01010 000 00000 1110011
-+	 */
-+	.word 0x62050073
-+	ret
-+ENDPROC(__kvm_riscv_hfence_gvma_gpa)
-+
-+ENTRY(__kvm_riscv_hfence_gvma_all)
-+	/*
-+	 * rs1 = zero
-+	 * rs2 = zero
-+	 * HFENCE.GVMA
-+	 * 0110001 00000 00000 000 00000 1110011
-+	 */
-+	.word 0x62000073
-+	ret
-+ENDPROC(__kvm_riscv_hfence_gvma_all)
-diff --git a/arch/riscv/kvm/vcpu.c b/arch/riscv/kvm/vcpu.c
-index 43962a25fa55..7192b6edd826 100644
---- a/arch/riscv/kvm/vcpu.c
-+++ b/arch/riscv/kvm/vcpu.c
-@@ -637,6 +637,12 @@ static void kvm_riscv_check_vcpu_requests(struct kvm_vcpu *vcpu)
- 
- 		if (kvm_check_request(KVM_REQ_VCPU_RESET, vcpu))
- 			kvm_riscv_reset_vcpu(vcpu);
-+
-+		if (kvm_check_request(KVM_REQ_UPDATE_HGATP, vcpu))
-+			kvm_riscv_stage2_update_hgatp(vcpu);
-+
-+		if (kvm_check_request(KVM_REQ_TLB_FLUSH, vcpu))
-+			__kvm_riscv_hfence_gvma_all();
- 	}
- }
- 
-@@ -682,6 +688,8 @@ int kvm_arch_vcpu_ioctl_run(struct kvm_vcpu *vcpu)
- 		/* Check conditions before entering the guest */
- 		cond_resched();
- 
-+		kvm_riscv_stage2_vmid_update(vcpu);
-+
- 		kvm_riscv_check_vcpu_requests(vcpu);
- 
- 		preempt_disable();
-@@ -718,6 +726,7 @@ int kvm_arch_vcpu_ioctl_run(struct kvm_vcpu *vcpu)
- 		kvm_riscv_update_hvip(vcpu);
- 
- 		if (ret <= 0 ||
-+		    kvm_riscv_stage2_vmid_ver_changed(&vcpu->kvm->arch.vmid) ||
- 		    kvm_request_pending(vcpu)) {
- 			vcpu->mode = OUTSIDE_GUEST_MODE;
- 			local_irq_enable();
-diff --git a/arch/riscv/kvm/vm.c b/arch/riscv/kvm/vm.c
-index 496a86a74236..282d67617229 100644
---- a/arch/riscv/kvm/vm.c
-+++ b/arch/riscv/kvm/vm.c
-@@ -26,6 +26,12 @@ int kvm_arch_init_vm(struct kvm *kvm, unsigned long type)
- 	if (r)
- 		return r;
- 
-+	r = kvm_riscv_stage2_vmid_init(kvm);
-+	if (r) {
-+		kvm_riscv_stage2_free_pgd(kvm);
-+		return r;
-+	}
-+
- 	return 0;
- }
- 
-diff --git a/arch/riscv/kvm/vmid.c b/arch/riscv/kvm/vmid.c
-new file mode 100644
-index 000000000000..2c6253b293bc
---- /dev/null
-+++ b/arch/riscv/kvm/vmid.c
-@@ -0,0 +1,120 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Copyright (C) 2019 Western Digital Corporation or its affiliates.
-+ *
-+ * Authors:
-+ *     Anup Patel <anup.patel@wdc.com>
-+ */
-+
-+#include <linux/bitops.h>
-+#include <linux/cpumask.h>
-+#include <linux/errno.h>
-+#include <linux/err.h>
-+#include <linux/module.h>
-+#include <linux/kvm_host.h>
-+#include <asm/csr.h>
-+#include <asm/sbi.h>
-+
-+static unsigned long vmid_version = 1;
-+static unsigned long vmid_next;
-+static unsigned long vmid_bits;
-+static DEFINE_SPINLOCK(vmid_lock);
-+
-+void kvm_riscv_stage2_vmid_detect(void)
++static inline u32 __init __gen_mov_hcr_insn(u64 hcr, u32 rd, int i)
 +{
-+	unsigned long old;
++	int shift = 48 - (i * 16);
++	u16 imm = (hcr >> shift) & GENMASK(16, 0);
 +
-+	/* Figure-out number of VMID bits in HW */
-+	old = csr_read(CSR_HGATP);
-+	csr_write(CSR_HGATP, old | HGATP_VMID_MASK);
-+	vmid_bits = csr_read(CSR_HGATP);
-+	vmid_bits = (vmid_bits & HGATP_VMID_MASK) >> HGATP_VMID_SHIFT;
-+	vmid_bits = fls_long(vmid_bits);
-+	csr_write(CSR_HGATP, old);
-+
-+	/* We polluted local TLB so flush all guest TLB */
-+	__kvm_riscv_hfence_gvma_all();
-+
-+	/* We don't use VMID bits if they are not sufficient */
-+	if ((1UL << vmid_bits) < num_possible_cpus())
-+		vmid_bits = 0;
++	return aarch64_insn_gen_movewide(rd, imm, shift,
++					 AARCH64_INSN_VARIANT_64BIT,
++					 (i == 0) ? AARCH64_INSN_MOVEWIDE_ZERO
++						  : AARCH64_INSN_MOVEWIDE_KEEP);
 +}
 +
-+unsigned long kvm_riscv_stage2_vmid_bits(void)
-+{
-+	return vmid_bits;
-+}
-+
-+int kvm_riscv_stage2_vmid_init(struct kvm *kvm)
-+{
-+	/* Mark the initial VMID and VMID version invalid */
-+	kvm->arch.vmid.vmid_version = 0;
-+	kvm->arch.vmid.vmid = 0;
-+
-+	return 0;
-+}
-+
-+bool kvm_riscv_stage2_vmid_ver_changed(struct kvm_vmid *vmid)
-+{
-+	if (!vmid_bits)
-+		return false;
-+
-+	return unlikely(READ_ONCE(vmid->vmid_version) !=
-+			READ_ONCE(vmid_version));
-+}
-+
-+void kvm_riscv_stage2_vmid_update(struct kvm_vcpu *vcpu)
++void __init kvm_patch_hcr_flags(struct alt_instr *alt,
++				__le32 *origptr, __le32 *updptr, int nr_inst)
 +{
 +	int i;
-+	struct kvm_vcpu *v;
-+	struct cpumask hmask;
-+	struct kvm_vmid *vmid = &vcpu->kvm->arch.vmid;
++	u32 rd;
 +
-+	if (!kvm_riscv_stage2_vmid_ver_changed(vmid))
++	BUG_ON(nr_inst != 4);
++
++	/* Skip for VHE and unprotected nVHE modes. */
++	if (!is_kvm_protected_mode())
 +		return;
 +
-+	spin_lock(&vmid_lock);
++	rd = aarch64_insn_decode_register(AARCH64_INSN_REGTYPE_RD,
++					  le32_to_cpu(origptr[0]));
 +
-+	/*
-+	 * We need to re-check the vmid_version here to ensure that if
-+	 * another vcpu already allocated a valid vmid for this vm.
-+	 */
-+	if (!kvm_riscv_stage2_vmid_ver_changed(vmid)) {
-+		spin_unlock(&vmid_lock);
-+		return;
++	for (i = 0; i < nr_inst; i++) {
++		u32 oinsn = __gen_mov_hcr_insn(HCR_HOST_NVHE_FLAGS, rd, i);
++		u32 insn = __gen_mov_hcr_insn(HCR_HOST_NVHE_PROTECTED_FLAGS, rd, i);
++
++		BUG_ON(oinsn != le32_to_cpu(origptr[i]));
++		updptr[i] = cpu_to_le32(insn);
 +	}
-+
-+	/* First user of a new VMID version? */
-+	if (unlikely(vmid_next == 0)) {
-+		WRITE_ONCE(vmid_version, READ_ONCE(vmid_version) + 1);
-+		vmid_next = 1;
-+
-+		/*
-+		 * We ran out of VMIDs so we increment vmid_version and
-+		 * start assigning VMIDs from 1.
-+		 *
-+		 * This also means existing VMIDs assignement to all Guest
-+		 * instances is invalid and we have force VMID re-assignement
-+		 * for all Guest instances. The Guest instances that were not
-+		 * running will automatically pick-up new VMIDs because will
-+		 * call kvm_riscv_stage2_vmid_update() whenever they enter
-+		 * in-kernel run loop. For Guest instances that are already
-+		 * running, we force VM exits on all host CPUs using IPI and
-+		 * flush all Guest TLBs.
-+		 */
-+		riscv_cpuid_to_hartid_mask(cpu_online_mask, &hmask);
-+		sbi_remote_hfence_gvma(cpumask_bits(&hmask), 0, 0);
-+	}
-+
-+	vmid->vmid = vmid_next;
-+	vmid_next++;
-+	vmid_next &= (1 << vmid_bits) - 1;
-+
-+	WRITE_ONCE(vmid->vmid_version, READ_ONCE(vmid_version));
-+
-+	spin_unlock(&vmid_lock);
-+
-+	/* Request stage2 page table update for all VCPUs */
-+	kvm_for_each_vcpu(i, v, vcpu->kvm)
-+		kvm_make_request(KVM_REQ_UPDATE_HGATP, v);
 +}
++
+ static int __init early_kvm_protected_cfg(char *buf)
+ {
+ 	bool val;
+diff --git a/arch/arm64/kvm/hyp/nvhe/hyp-init.S b/arch/arm64/kvm/hyp/nvhe/hyp-init.S
+index f999a35b2c8c..bbe6c5f558e0 100644
+--- a/arch/arm64/kvm/hyp/nvhe/hyp-init.S
++++ b/arch/arm64/kvm/hyp/nvhe/hyp-init.S
+@@ -88,6 +88,12 @@ SYM_CODE_END(__kvm_hyp_init)
+  * x0: struct kvm_nvhe_init_params PA
+  */
+ SYM_CODE_START(___kvm_hyp_init)
++alternative_cb kvm_patch_hcr_flags
++	mov_q	x1, HCR_HOST_NVHE_FLAGS
++alternative_cb_end
++	msr	hcr_el2, x1
++	isb
++
+ 	ldr	x1, [x0, #NVHE_INIT_TPIDR_EL2]
+ 	msr	tpidr_el2, x1
+ 
+@@ -220,6 +226,8 @@ reset:
+ 	bic	x5, x5, x6		// Clear SCTL_M and etc
+ 	pre_disable_mmu_workaround
+ 	msr	sctlr_el2, x5
++	mov_q	x5, HCR_HOST_NVHE_FLAGS
++	msr	hcr_el2, x5
+ 	isb
+ 
+ 	/* Install stub vectors */
+diff --git a/arch/arm64/kvm/hyp/nvhe/switch.c b/arch/arm64/kvm/hyp/nvhe/switch.c
+index 8ae8160bc93a..f605b25a9afc 100644
+--- a/arch/arm64/kvm/hyp/nvhe/switch.c
++++ b/arch/arm64/kvm/hyp/nvhe/switch.c
+@@ -96,7 +96,10 @@ static void __deactivate_traps(struct kvm_vcpu *vcpu)
+ 	mdcr_el2 |= MDCR_EL2_E2PB_MASK << MDCR_EL2_E2PB_SHIFT;
+ 
+ 	write_sysreg(mdcr_el2, mdcr_el2);
+-	write_sysreg(HCR_HOST_NVHE_FLAGS, hcr_el2);
++	if (is_kvm_protected_mode())
++		write_sysreg(HCR_HOST_NVHE_PROTECTED_FLAGS, hcr_el2);
++	else
++		write_sysreg(HCR_HOST_NVHE_FLAGS, hcr_el2);
+ 	write_sysreg(CPTR_EL2_DEFAULT, cptr_el2);
+ 	write_sysreg(__kvm_hyp_host_vector, vbar_el2);
+ }
 -- 
-2.25.1
+2.29.2.222.g5d2a92d10f8-goog
 
