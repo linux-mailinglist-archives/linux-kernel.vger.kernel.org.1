@@ -2,214 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 802822AAE94
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 01:47:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CBE202AAE9F
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 01:58:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729003AbgKIArr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 8 Nov 2020 19:47:47 -0500
-Received: from mga01.intel.com ([192.55.52.88]:58397 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728893AbgKIArr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 8 Nov 2020 19:47:47 -0500
-IronPort-SDR: Aku8qYzNuxeWeXdwvHSsVSsNhABZzblrt/VFtZcCazdZZISzPAU+O4U1VKMo/kotSboUUL/87z
- B9IPOU7LnVUQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9799"; a="187678676"
-X-IronPort-AV: E=Sophos;i="5.77,462,1596524400"; 
-   d="scan'208";a="187678676"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Nov 2020 16:47:46 -0800
-IronPort-SDR: LIazK+p36YZskcz9+89d2j03gfAfuj1pMw+Na467pJWeN2Po+78rqceiLoEekgXJENEBhXh54Q
- XsGgcoDRsK8A==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,462,1596524400"; 
-   d="scan'208";a="365309302"
-Received: from lkp-server02.sh.intel.com (HELO defa7f6e4f65) ([10.239.97.151])
-  by orsmga007.jf.intel.com with ESMTP; 08 Nov 2020 16:47:45 -0800
-Received: from kbuild by defa7f6e4f65 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1kbvLU-00001z-Rb; Mon, 09 Nov 2020 00:47:44 +0000
-Date:   Mon, 09 Nov 2020 08:46:43 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [rcu:rcu/next] BUILD SUCCESS
- 5a33ec6d55458d140534fd5e715b533e348b7225
-Message-ID: <5fa89173.8RlKpj/zpLih+KI0%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S1728928AbgKIA6A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 8 Nov 2020 19:58:00 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:7063 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728068AbgKIA57 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 8 Nov 2020 19:57:59 -0500
+Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4CTszf73VzzhfnT;
+        Mon,  9 Nov 2020 08:57:50 +0800 (CST)
+Received: from [127.0.0.1] (10.74.149.191) by DGGEMS404-HUB.china.huawei.com
+ (10.3.19.204) with Microsoft SMTP Server id 14.3.487.0; Mon, 9 Nov 2020
+ 08:57:50 +0800
+Subject: Re: [PATCH net-next 02/11] net: hns3: add support for 1us unit GL
+ configuration
+To:     Jakub Kicinski <kuba@kernel.org>
+CC:     <davem@davemloft.net>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <salil.mehta@huawei.com>,
+        <yisen.zhuang@huawei.com>, <linuxarm@huawei.com>
+References: <1604730681-32559-1-git-send-email-tanhuazhong@huawei.com>
+ <1604730681-32559-3-git-send-email-tanhuazhong@huawei.com>
+ <20201107094613.261fe05b@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+From:   tanhuazhong <tanhuazhong@huawei.com>
+Message-ID: <c9249ca4-db17-bd86-66ce-e860fd445a0b@huawei.com>
+Date:   Mon, 9 Nov 2020 08:57:50 +0800
+User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.5.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <20201107094613.261fe05b@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.74.149.191]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git  rcu/next
-branch HEAD: 5a33ec6d55458d140534fd5e715b533e348b7225  rcu/segcblist: Add additional comments to explain smp_mb()
 
-elapsed time: 4372m
 
-configs tested: 150
-configs skipped: 3
+On 2020/11/8 1:46, Jakub Kicinski wrote:
+> On Sat, 7 Nov 2020 14:31:12 +0800 Huazhong Tan wrote:
+>> For device whose version is above V3(include V3), the GL
+>> configuration can set as 1us unit, so adds support for
+>> configuring this field.
+>>
+>> Signed-off-by: Huazhong Tan <tanhuazhong@huawei.com>
+> 
+> Doesn't build.
+> 
+> drivers/net/ethernet/hisilicon/hns3/hns3_ethtool.c: In function ‘hns3_check_gl_coalesce_para’:
+> drivers/net/ethernet/hisilicon/hns3/hns3_ethtool.c:1152:6: error: ‘ae_dev’ undeclared (first use in this function); did you mean ‘netdev’?
+>   1152 |  if (ae_dev->dev_version >= HNAE3_DEVICE_VERSION_V3)
+>        |      ^~~~~~
+>        |      netdev
+> drivers/net/ethernet/hisilicon/hns3/hns3_ethtool.c:1152:6: note: each undeclared identifier is reported only once for each function it appears in
+> make[6]: *** [drivers/net/ethernet/hisilicon/hns3/hns3_ethtool.o] Error 1
+> make[5]: *** [drivers/net/ethernet/hisilicon/hns3] Error 2
+> make[4]: *** [drivers/net/ethernet/hisilicon] Error 2
+> make[4]: *** Waiting for unfinished jobs....
+> make[3]: *** [drivers/net/ethernet] Error 2
+> make[2]: *** [drivers/net] Error 2
+> make[2]: *** Waiting for unfinished jobs....
+> make[1]: *** [drivers] Error 2
+> make: *** [__sub-make] Error 2
+> 
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+Will fix it.
+Thanks.
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-powerpc                      tqm8xx_defconfig
-sh                          rsk7269_defconfig
-sh                        sh7763rdp_defconfig
-powerpc                      cm5200_defconfig
-mips                        maltaup_defconfig
-arm                           viper_defconfig
-arm                  colibri_pxa300_defconfig
-arm                         lpc18xx_defconfig
-arm                      tct_hammer_defconfig
-powerpc                       ebony_defconfig
-powerpc                 mpc8313_rdb_defconfig
-nios2                         3c120_defconfig
-sh                          r7780mp_defconfig
-sparc                               defconfig
-powerpc                     ep8248e_defconfig
-powerpc                   lite5200b_defconfig
-powerpc                 mpc834x_itx_defconfig
-c6x                                 defconfig
-mips                       bmips_be_defconfig
-sparc                       sparc32_defconfig
-sh                           se7724_defconfig
-mips                        nlm_xlr_defconfig
-arm                  colibri_pxa270_defconfig
-mips                       lemote2f_defconfig
-s390                          debug_defconfig
-arm                        mini2440_defconfig
-arm                       versatile_defconfig
-sh                            shmin_defconfig
-powerpc                 mpc834x_mds_defconfig
-c6x                        evmc6457_defconfig
-arm                           tegra_defconfig
-mips                         rt305x_defconfig
-powerpc                     powernv_defconfig
-powerpc                     taishan_defconfig
-powerpc                mpc7448_hpc2_defconfig
-arm                       multi_v4t_defconfig
-powerpc                 mpc836x_rdk_defconfig
-mips                malta_kvm_guest_defconfig
-sh                          rsk7264_defconfig
-arm                          lpd270_defconfig
-powerpc                           allnoconfig
-powerpc                 mpc837x_rdb_defconfig
-arm                         hackkit_defconfig
-arc                     haps_hs_smp_defconfig
-riscv                            alldefconfig
-arm                         s3c2410_defconfig
-powerpc                         ps3_defconfig
-powerpc                    amigaone_defconfig
-m68k                            mac_defconfig
-nds32                            alldefconfig
-sh                         ap325rxa_defconfig
-arm                          gemini_defconfig
-arm                            xcep_defconfig
-mips                          ath79_defconfig
-arm                          moxart_defconfig
-arm                      footbridge_defconfig
-powerpc                     kmeter1_defconfig
-sh                           se7722_defconfig
-mips                      malta_kvm_defconfig
-powerpc                      ppc44x_defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                                defconfig
-m68k                             allmodconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-c6x                              allyesconfig
-nds32                               defconfig
-csky                                defconfig
-alpha                               defconfig
-nios2                            allyesconfig
-alpha                            allyesconfig
-arc                                 defconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-x86_64               randconfig-a004-20201105
-x86_64               randconfig-a003-20201105
-x86_64               randconfig-a005-20201105
-x86_64               randconfig-a002-20201105
-x86_64               randconfig-a006-20201105
-x86_64               randconfig-a001-20201105
-i386                 randconfig-a004-20201104
-i386                 randconfig-a006-20201104
-i386                 randconfig-a005-20201104
-i386                 randconfig-a001-20201104
-i386                 randconfig-a002-20201104
-i386                 randconfig-a003-20201104
-x86_64               randconfig-a012-20201104
-x86_64               randconfig-a015-20201104
-x86_64               randconfig-a013-20201104
-x86_64               randconfig-a011-20201104
-x86_64               randconfig-a014-20201104
-x86_64               randconfig-a016-20201104
-x86_64               randconfig-a012-20201106
-x86_64               randconfig-a011-20201106
-x86_64               randconfig-a013-20201106
-x86_64               randconfig-a014-20201106
-x86_64               randconfig-a016-20201106
-x86_64               randconfig-a015-20201106
-i386                 randconfig-a015-20201104
-i386                 randconfig-a013-20201104
-i386                 randconfig-a014-20201104
-i386                 randconfig-a016-20201104
-i386                 randconfig-a011-20201104
-i386                 randconfig-a012-20201104
-i386                 randconfig-a015-20201105
-i386                 randconfig-a013-20201105
-i386                 randconfig-a014-20201105
-i386                 randconfig-a016-20201105
-i386                 randconfig-a011-20201105
-i386                 randconfig-a012-20201105
-riscv                    nommu_k210_defconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allyesconfig
-riscv                            allmodconfig
-x86_64                              defconfig
-x86_64                                  kexec
-x86_64                                   rhel
-x86_64                           allyesconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                               rhel-8.3
+> .
+> 
 
-clang tested configs:
-x86_64               randconfig-a004-20201104
-x86_64               randconfig-a003-20201104
-x86_64               randconfig-a005-20201104
-x86_64               randconfig-a002-20201104
-x86_64               randconfig-a006-20201104
-x86_64               randconfig-a001-20201104
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
