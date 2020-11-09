@@ -2,79 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51EB82AB764
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 12:43:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 507B22AB769
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 12:43:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729625AbgKILnh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 06:43:37 -0500
-Received: from foss.arm.com ([217.140.110.172]:38304 "EHLO foss.arm.com"
+        id S1729688AbgKILnw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 06:43:52 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34534 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727311AbgKILnh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 06:43:37 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D9901106F;
-        Mon,  9 Nov 2020 03:43:36 -0800 (PST)
-Received: from [10.57.54.223] (unknown [10.57.54.223])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 4CE423F718;
-        Mon,  9 Nov 2020 03:43:32 -0800 (PST)
-Subject: Re: [PATCH] dma-pool: no need to check return value of debugfs_create
- functions
-To:     Tiezhu Yang <yangtiezhu@loongson.cn>,
-        Christoph Hellwig <hch@lst.de>,
-        Marek Szyprowski <m.szyprowski@samsung.com>
-Cc:     iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
-        Xuefeng Li <lixuefeng@loongson.cn>
-References: <1604743392-21601-1-git-send-email-yangtiezhu@loongson.cn>
-From:   Robin Murphy <robin.murphy@arm.com>
-Message-ID: <936ffd36-8814-a8d2-ab94-3edc0642e5a7@arm.com>
-Date:   Mon, 9 Nov 2020 11:43:25 +0000
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
- Thunderbird/78.4.1
+        id S1727311AbgKILnw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 06:43:52 -0500
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id B4A5A20789;
+        Mon,  9 Nov 2020 11:43:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604922231;
+        bh=PYG/t8cgnN0DROMTJhPKE5TMqpEZ4rNKTZqNwXdVvIk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=yfpavlva+m5+0oZRrWiiM0V+wNBLfltuIA3gP6Yk/MCN5YZxFtdCFreUVvN5CEjzG
+         kLExU5POHU5wQuVHk3hX40lG4JxWYBQYC1vTP9ioP/A+XYd0hlnGsvDSAUmc7Yfyci
+         iIkKmboH9jF9+5zwy5M1gw5FNa7M2Ic3zietbIiA=
+Date:   Mon, 9 Nov 2020 12:44:51 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     stable@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Arnaldo Carvalho de Melo <acme@redhat.com>
+Subject: Re: [PATCH v4.19] tools: perf: Fix build error in v4.19.y
+Message-ID: <20201109114451.GE1769924@kroah.com>
+References: <20201108003124.100732-1-linux@roeck-us.net>
 MIME-Version: 1.0
-In-Reply-To: <1604743392-21601-1-git-send-email-yangtiezhu@loongson.cn>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201108003124.100732-1-linux@roeck-us.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-11-07 10:03, Tiezhu Yang wrote:
-> When calling debugfs functions, there is no need to ever check the
-> return value.  The function can work or not, but the code logic should
-> never do something different based on this.
-
-Well, the only difference in behaviour is that it won't attempt to call 
-further debugfs functions if they're definitely going to fail anyway, so 
-no "real" logic is affected. AFAICS it's not possible for 
-debugfs_create_dir() to return NULL, so this check makes no practical 
-difference, just means that if it did ever fail we would save a bit of 
-unnecessary work by not subsequently calling all the way down to the "if 
-(IS_ERR(parent))" check in start_creating() several times.
-
-So the given justification is a little overdramatic for this particular 
-situation, when it's really just that it's not worth optimising an 
-unexpected failure case, but the change itself is obviously fine.
-
-Reviewed-by: Robin Murphy <robin.murphy@arm.com>
-
-> Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+On Sat, Nov 07, 2020 at 04:31:24PM -0800, Guenter Roeck wrote:
+> perf may fail to build in v4.19.y with the following error.
+> 
+> util/evsel.c: In function ‘perf_evsel__exit’:
+> util/util.h:25:28: error:
+> 	passing argument 1 of ‘free’ discards ‘const’ qualifier from pointer target type
+> 
+> This is observed (at least) with gcc v6.5.0. The underlying problem is
+> the following statement.
+> 	zfree(&evsel->pmu_name);
+> evsel->pmu_name is decared 'const *'. zfree in turn is defined as
+> 	#define zfree(ptr) ({ free(*ptr); *ptr = NULL; })
+> and thus passes the const * to free(). The problem is not seen
+> in the upstream kernel since zfree() has been rewritten there.
+> 
+> The problem has been introduced into v4.19.y with the backport of upstream
+> commit d4953f7ef1a2 (perf parse-events: Fix 3 use after frees found with
+> clang ASAN).
+> 
+> One possible fix of this problem would be to not declare pmu_name
+> as const. This patch chooses to typecast the parameter of zfree()
+> to void *, following the guidance from the upstream kernel which
+> does the same since commit 7f7c536f23e6a ("tools lib: Adopt
+> zalloc()/zfree() from tools/perf")
+> 
+> Fixes: a0100a363098 ("perf parse-events: Fix 3 use after frees found with clang ASAN")
+> Signed-off-by: Guenter Roeck <linux@roeck-us.net>
 > ---
->   kernel/dma/pool.c | 3 ---
->   1 file changed, 3 deletions(-)
+> This patch only applies to v4.19.y and has no upstream equivalent.
 > 
-> diff --git a/kernel/dma/pool.c b/kernel/dma/pool.c
-> index d4637f7..5f84e6c 100644
-> --- a/kernel/dma/pool.c
-> +++ b/kernel/dma/pool.c
-> @@ -38,9 +38,6 @@ static void __init dma_atomic_pool_debugfs_init(void)
->   	struct dentry *root;
->   
->   	root = debugfs_create_dir("dma_pools", NULL);
-> -	if (IS_ERR_OR_NULL(root))
-> -		return;
-> -
->   	debugfs_create_ulong("pool_size_dma", 0400, root, &pool_size_dma);
->   	debugfs_create_ulong("pool_size_dma32", 0400, root, &pool_size_dma32);
->   	debugfs_create_ulong("pool_size_kernel", 0400, root, &pool_size_kernel);
+>  tools/perf/util/util.h | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
+> diff --git a/tools/perf/util/util.h b/tools/perf/util/util.h
+> index dc58254a2b69..8c01b2cfdb1a 100644
+> --- a/tools/perf/util/util.h
+> +++ b/tools/perf/util/util.h
+> @@ -22,7 +22,7 @@ static inline void *zalloc(size_t size)
+>  	return calloc(1, size);
+>  }
+>  
+> -#define zfree(ptr) ({ free(*ptr); *ptr = NULL; })
+> +#define zfree(ptr) ({ free((void *)*ptr); *ptr = NULL; })
+>  
+>  struct dirent;
+>  struct nsinfo;
+> -- 
+> 2.17.1
+> 
+
+Now queued up, thanks.
+
+greg k-h
