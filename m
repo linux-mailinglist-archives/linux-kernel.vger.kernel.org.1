@@ -2,156 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D8962AC125
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 17:43:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 956242AC123
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 17:43:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730694AbgKIQnb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 11:43:31 -0500
-Received: from mga01.intel.com ([192.55.52.88]:1653 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729776AbgKIQn3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1730652AbgKIQn3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Mon, 9 Nov 2020 11:43:29 -0500
-IronPort-SDR: 6aQ7ALDdk7n8Z5ENq04jUQpaGUbrhuKXv1dHcSaCTCW30FdyzePAeI/cJZQKNrABwZi8rxCp3Y
- TuTmDYWvN7ig==
-X-IronPort-AV: E=McAfee;i="6000,8403,9800"; a="187783395"
-X-IronPort-AV: E=Sophos;i="5.77,463,1596524400"; 
-   d="scan'208";a="187783395"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Nov 2020 08:43:29 -0800
-IronPort-SDR: H1V8KyPf0wcvkNUvdF5+a4c610izO+KjuBsGbpn82hGuLRwo1mphJ4miZO0Fo+ghnBR7ea8319
- I3u1sgIkOyow==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,463,1596524400"; 
-   d="scan'208";a="428055322"
-Received: from lkp-server01.sh.intel.com (HELO d0be80f1a028) ([10.239.97.150])
-  by fmsmga001.fm.intel.com with ESMTP; 09 Nov 2020 08:43:28 -0800
-Received: from kbuild by d0be80f1a028 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1kcAGN-0000IS-9O; Mon, 09 Nov 2020 16:43:27 +0000
-Date:   Tue, 10 Nov 2020 00:42:57 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [rcu:kcsan] BUILD SUCCESS
- 1d094cefc37e5ed4dec44a41841c8628f6b548a2
-Message-ID: <5fa97191.lQ5icIRF5BloqMNT%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+Received: from aserp2120.oracle.com ([141.146.126.78]:48394 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729776AbgKIQn2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 11:43:28 -0500
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0A9GTiGs024900;
+        Mon, 9 Nov 2020 16:43:10 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : in-reply-to : message-id : references : mime-version :
+ content-type; s=corp-2020-01-29;
+ bh=yoSc8PVnoqz9vLpwLqVpjsZWxikRjgLIIdZmILAbnjM=;
+ b=dBIunAvHvyYJ8eDVVK0GgO0D2jj4HnIPOe3U/fnqG71CAARSSvWmpB9UxcqU2v0GcrcT
+ 3Mz0lQDFL4oT55eZajk+X+BANRUd3wm8vq+SibOLLy7CYgnejsa7Bl4RAJXqOPjni/3T
+ CtRijv3Rg7CVE4biWzGSFAI+W0T12WCTVGBR2i3kLXr4BISyP9SnYBcs5tpnmUiLUnlQ
+ Yo7f5CTfxzgMAOZY78BCl2aN+7p415ZNYrrrCc5mocnEJsH5AZF/vStu1BmkK5d9HYDI
+ YAQooRbqhu6CLgUu8lkVvrMxHTU3ChueWWQ7/Z42WyJnSZGebMKjmUZGM1KT7ncVP/kz GA== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by aserp2120.oracle.com with ESMTP id 34nkhkpyh6-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 09 Nov 2020 16:43:10 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0A9GU3fY157105;
+        Mon, 9 Nov 2020 16:43:09 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by userp3030.oracle.com with ESMTP id 34p5gvg514-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 09 Nov 2020 16:43:09 +0000
+Received: from abhmp0013.oracle.com (abhmp0013.oracle.com [141.146.116.19])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0A9Gh8du027322;
+        Mon, 9 Nov 2020 16:43:08 GMT
+Received: from dhcp-10-175-204-77.vpn.oracle.com (/10.175.204.77)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Mon, 09 Nov 2020 08:43:07 -0800
+Date:   Mon, 9 Nov 2020 16:42:58 +0000 (GMT)
+From:   Alan Maguire <alan.maguire@oracle.com>
+X-X-Sender: alan@localhost
+To:     Andrii Nakryiko <andrii@kernel.org>
+cc:     bpf@vger.kernel.org, netdev@vger.kernel.org, ast@fb.com,
+        daniel@iogearbox.net, kernel-team@fb.com,
+        linux-kernel@vger.kernel.org, rafael@kernel.org, jeyu@kernel.org,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: [PATCH bpf-next 5/5] tools/bpftool: add support for in-kernel
+ and named BTF in `btf show`
+In-Reply-To: <20201106055111.3972047-6-andrii@kernel.org>
+Message-ID: <alpine.LRH.2.21.2011091633450.4154@localhost>
+References: <20201106055111.3972047-1-andrii@kernel.org> <20201106055111.3972047-6-andrii@kernel.org>
+User-Agent: Alpine 2.21 (LRH 202 2017-01-01)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=US-ASCII
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9800 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 mlxlogscore=999 mlxscore=0
+ spamscore=0 phishscore=0 adultscore=0 malwarescore=0 suspectscore=3
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2011090114
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9800 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 priorityscore=1501
+ mlxscore=0 suspectscore=3 mlxlogscore=999 lowpriorityscore=0 spamscore=0
+ malwarescore=0 adultscore=0 clxscore=1011 bulkscore=0 impostorscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2011090114
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git  kcsan
-branch HEAD: 1d094cefc37e5ed4dec44a41841c8628f6b548a2  kcsan: Fix encoding masks and regain address bit
+On Thu, 5 Nov 2020, Andrii Nakryiko wrote:
 
-elapsed time: 797m
+> Display vmlinux BTF name and kernel module names when listing available BTFs
+> on the system.
+> 
+> In human-readable output mode, module BTFs are reported with "name
+> [module-name]", while vmlinux BTF will be reported as "name [vmlinux]".
+> Square brackets are added by bpftool and follow kernel convention when
+> displaying modules in human-readable text outputs.
+> 
 
-configs tested: 92
-configs skipped: 2
+I had a go at testing this and all looks good, but I was curious
+if  "bpftool btf dump" is expected to work with module BTF? I see
+the various modules in /sys/kernel/btf, but if I run:
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+# bpftool btf dump file /sys/kernel/btf/ixgbe
+Error: failed to load BTF from /sys/kernel/btf/ixgbe: Invalid argument
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-powerpc                    sam440ep_defconfig
-powerpc                     pseries_defconfig
-m68k                         amcore_defconfig
-arm                         s5pv210_defconfig
-xtensa                  audio_kc705_defconfig
-nios2                         3c120_defconfig
-powerpc                mpc7448_hpc2_defconfig
-arm                          badge4_defconfig
-arm                       multi_v4t_defconfig
-h8300                               defconfig
-arc                                 defconfig
-mips                      fuloong2e_defconfig
-sh                         microdev_defconfig
-arm                            mmp2_defconfig
-arm                          collie_defconfig
-sh                        sh7757lcr_defconfig
-m68k                        m5307c3_defconfig
-arm                             rpc_defconfig
-m68k                        m5272c3_defconfig
-c6x                              alldefconfig
-powerpc                      pmac32_defconfig
-arm                          imote2_defconfig
-arm                         shannon_defconfig
-nds32                               defconfig
-arm                           corgi_defconfig
-arm                          gemini_defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-c6x                              allyesconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-i386                 randconfig-a004-20201109
-i386                 randconfig-a006-20201109
-i386                 randconfig-a005-20201109
-i386                 randconfig-a001-20201109
-i386                 randconfig-a003-20201109
-i386                 randconfig-a002-20201109
-i386                 randconfig-a014-20201109
-i386                 randconfig-a015-20201109
-i386                 randconfig-a013-20201109
-i386                 randconfig-a016-20201109
-i386                 randconfig-a011-20201109
-i386                 randconfig-a012-20201109
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-x86_64                                   rhel
-x86_64                           allyesconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                                  kexec
+...while it still works for vmlinux:
 
-clang tested configs:
-x86_64               randconfig-a012-20201109
-x86_64               randconfig-a015-20201109
-x86_64               randconfig-a013-20201109
-x86_64               randconfig-a011-20201109
-x86_64               randconfig-a014-20201109
-x86_64               randconfig-a016-20201109
+# bpftool btf dump file /sys/kernel/btf/vmlinux
+[1] INT '(anon)' size=4 bits_offset=0 nr_bits=32 encoding=(none)
+[2] INT 'long unsigned int' size=8 bits_offset=0 nr_bits=64 
+encoding=(none)
+...
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+"bpftool btf show" works for ixgbe:
+
+# bpftool btf show|grep ixgbe
+19: name [ixgbe]  size 182074B
+
+Is this perhaps not expected to work yet? (I updated pahole
+to the latest changes etc and BTF generation seemed to work
+fine for modules during kernel build).
+
+For the "bpftool btf show" functionality, feel free to add
+
+Tested-by: Alan Maguire <alan.maguire@oracle.com>
+
+Thanks!
+
+Alan
