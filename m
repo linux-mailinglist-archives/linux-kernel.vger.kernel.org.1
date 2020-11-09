@@ -2,36 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 263522ABBF2
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 14:32:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D8E792ABBED
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 14:32:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732191AbgKINcn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 08:32:43 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59822 "EHLO mail.kernel.org"
+        id S1731303AbgKINHS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 08:07:18 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59854 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731246AbgKINHF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 08:07:05 -0500
+        id S1731250AbgKINHJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 08:07:09 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5B8122076E;
-        Mon,  9 Nov 2020 13:07:04 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1B9DA20663;
+        Mon,  9 Nov 2020 13:07:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604927224;
-        bh=GFIFI44qs4r6l4lmcWfvQhJQNiQN67Chm1RWxlpTfHw=;
+        s=default; t=1604927227;
+        bh=0LisRcsaOQwUHAi14yXqT89DRf0dyrFbssm8tp7AO6g=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=zC2IEcZDI5OM/i/dV8dRmg2muWa3XS9LXuCYcUcsVMEShRBHjx1DEMH6MJQ2p2KFr
-         iJnJfuzShGRthJQIz8at2NGhvRa+mbrC9sLIZHDCoAXEq0J5QBP9ttmk1u0WeWX9Ez
-         cFQYhiovPIS4SJJXzNXfRXhqLjQtwm6r5Jj+rWUc=
+        b=wogt0c1AI4YmdAxN1h3k1lFcXaI1+6m8GQa3BNVj+NHojSzMxjiTjUs23JCrOY7vo
+         KErdpcEMKIN55HWCUSyc58JroH9+fUQlQjVVeIYVfUn99MqgnjYN8kA4nTKAk3TmBY
+         Ts6TQS6oJMYT1SpeVbX7UhonnKgyjmZhatBDt3ec=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Eddy Wu <eddy_wu@trendmicro.com>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 4.14 36/48] fork: fix copy_process(CLONE_PARENT) race with the exiting ->real_parent
-Date:   Mon,  9 Nov 2020 13:55:45 +0100
-Message-Id: <20201109125018.531280982@linuxfoundation.org>
+        stable@vger.kernel.org, Claire Chang <tientzu@chromium.org>
+Subject: [PATCH 4.14 37/48] serial: 8250_mtk: Fix uart_get_baud_rate warning
+Date:   Mon,  9 Nov 2020 13:55:46 +0100
+Message-Id: <20201109125018.583456285@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201109125016.734107741@linuxfoundation.org>
 References: <20201109125016.734107741@linuxfoundation.org>
@@ -43,55 +41,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Eddy Wu <itseddy0402@gmail.com>
+From: Claire Chang <tientzu@chromium.org>
 
-commit b4e00444cab4c3f3fec876dc0cccc8cbb0d1a948 upstream.
+commit 912ab37c798770f21b182d656937072b58553378 upstream.
 
-current->group_leader->exit_signal may change during copy_process() if
-current->real_parent exits.
+Mediatek 8250 port supports speed higher than uartclk / 16. If the baud
+rates in both the new and the old termios setting are higher than
+uartclk / 16, the WARN_ON in uart_get_baud_rate() will be triggered.
+Passing NULL as the old termios so uart_get_baud_rate() will use
+uartclk / 16 - 1 as the new baud rate which will be replaced by the
+original baud rate later by tty_termios_encode_baud_rate() in
+mtk8250_set_termios().
 
-Move the assignment inside tasklist_lock to avoid the race.
-
-Signed-off-by: Eddy Wu <eddy_wu@trendmicro.com>
-Acked-by: Oleg Nesterov <oleg@redhat.com>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Fixes: 551e553f0d4a ("serial: 8250_mtk: Fix high-speed baud rates clamping")
+Signed-off-by: Claire Chang <tientzu@chromium.org>
+Link: https://lore.kernel.org/r/20201102120749.374458-1-tientzu@chromium.org
+Cc: stable <stable@vger.kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- kernel/fork.c |   10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ drivers/tty/serial/8250/8250_mtk.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/kernel/fork.c
-+++ b/kernel/fork.c
-@@ -1833,14 +1833,9 @@ static __latent_entropy struct task_stru
- 	/* ok, now we should be set up.. */
- 	p->pid = pid_nr(pid);
- 	if (clone_flags & CLONE_THREAD) {
--		p->exit_signal = -1;
- 		p->group_leader = current->group_leader;
- 		p->tgid = current->tgid;
- 	} else {
--		if (clone_flags & CLONE_PARENT)
--			p->exit_signal = current->group_leader->exit_signal;
--		else
--			p->exit_signal = (clone_flags & CSIGNAL);
- 		p->group_leader = p;
- 		p->tgid = p->pid;
- 	}
-@@ -1885,9 +1880,14 @@ static __latent_entropy struct task_stru
- 	if (clone_flags & (CLONE_PARENT|CLONE_THREAD)) {
- 		p->real_parent = current->real_parent;
- 		p->parent_exec_id = current->parent_exec_id;
-+		if (clone_flags & CLONE_THREAD)
-+			p->exit_signal = -1;
-+		else
-+			p->exit_signal = current->group_leader->exit_signal;
- 	} else {
- 		p->real_parent = current;
- 		p->parent_exec_id = current->self_exec_id;
-+		p->exit_signal = (clone_flags & CSIGNAL);
- 	}
+--- a/drivers/tty/serial/8250/8250_mtk.c
++++ b/drivers/tty/serial/8250/8250_mtk.c
+@@ -56,7 +56,7 @@ mtk8250_set_termios(struct uart_port *po
+ 	 */
+ 	baud = tty_termios_baud_rate(termios);
  
- 	klp_copy_process(p);
+-	serial8250_do_set_termios(port, termios, old);
++	serial8250_do_set_termios(port, termios, NULL);
+ 
+ 	tty_termios_encode_baud_rate(termios, baud, baud);
+ 
 
 
