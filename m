@@ -2,96 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D01D2AB472
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 11:08:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1ED862AB46B
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 11:07:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729246AbgKIKIP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 05:08:15 -0500
-Received: from mx07-00178001.pphosted.com ([185.132.182.106]:32488 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726176AbgKIKIO (ORCPT
+        id S1729358AbgKIKHe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 05:07:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50146 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726176AbgKIKHd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 05:08:14 -0500
-Received: from pps.filterd (m0046037.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0A9A2V9d010554;
-        Mon, 9 Nov 2020 11:07:59 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=STMicroelectronics;
- bh=FPLSmiDPRdoUr1m+ss77hjLUotPubH/KZ4b2fNX41no=;
- b=s7Njn+pOnZ+fmI7U3NXuMOGV3C/YzAFpMhD64WLkRLXR/ZlsyngO816SBJm/IkCpJCQ+
- zd+QEnS1YJk8WFVWjaUbmH9+7AeBS2kbYqqLdJ7CMsHWz+KKNsAh0qyDIF3humKc70u+
- 0bQmz8pS9K5JjXasTJgoZQaPUZBhxPj57QpEMGszigIFkD68DJL/Xbz55dFGZsqIZYHJ
- I8EjTG/WlbedmsdDWI2OoZAvtxnkUWL8d3QDp3ufIF30bI0TiydTM4RaFQq9dj5vvBOD
- nm1vZuIlNflEFfG4m0RQ5ZBHDDP1U+OB/ZKVP3LzqFuQtp09b0GflyS+A1YAKPg2RGJ5 7g== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 34nj80h98e-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 09 Nov 2020 11:07:59 +0100
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 7091710002A;
-        Mon,  9 Nov 2020 11:07:59 +0100 (CET)
-Received: from Webmail-eu.st.com (sfhdag3node2.st.com [10.75.127.8])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 53B3B233C35;
-        Mon,  9 Nov 2020 11:07:59 +0100 (CET)
-Received: from lmecxl0912.lme.st.com (10.75.127.44) by SFHDAG3NODE2.st.com
- (10.75.127.8) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 9 Nov
- 2020 11:07:58 +0100
-Subject: Re: [PATCH] ARM: multi_v7_defconfig: enable counter subsystem and
- stm32 counter drivers
-To:     Fabrice Gasnier <fabrice.gasnier@st.com>
-CC:     <vilhelm.gray@gmail.com>, <arnd@arndb.de>, <linux@armlinux.org.uk>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-References: <1602835229-10903-1-git-send-email-fabrice.gasnier@st.com>
-From:   Alexandre Torgue <alexandre.torgue@st.com>
-Message-ID: <fdc3f436-3d06-4e3d-fc51-f484fc58f0e5@st.com>
-Date:   Mon, 9 Nov 2020 11:07:16 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Mon, 9 Nov 2020 05:07:33 -0500
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D01B2C0613CF
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Nov 2020 02:07:31 -0800 (PST)
+Received: by mail-wm1-x343.google.com with SMTP id h62so7358624wme.3
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Nov 2020 02:07:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=isovalent-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=WA6hvKE9VJojFQOzi9QEpYRT857z2U07FeG13Vkm4y0=;
+        b=v1eQhOPuLvv6blbzGVB56oqqQICvaxSyKfVPwDu/whIjXbzF+6Z3Yz9d3xmhR9Zt3i
+         +GxMaYQq4uglWuXeQPXQYNAXK7eXQ4soSggjqEaLAoM24ugAjDS813YTi4YJorCWeNLH
+         sr1w+DiRFCryKmCJUAPvYV5j09B1Sho0yU6gaa1C8W/th76nHpl1nNewR0OX1oejHKmr
+         zzs+Nbe+0keJXwpjjfyJ8LmW0s0ZFxpltmhh8bj+Ha+jZumZ0kpzRo2r7BuuW0Hte9cN
+         5/z4RodIHOVZ3dzkDlQ+XwyaFUx+MzGMr3soi8wghwwKOBZEhTM9tce/rbTgR8H0B3C4
+         xaxg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=WA6hvKE9VJojFQOzi9QEpYRT857z2U07FeG13Vkm4y0=;
+        b=iCJ6bZTGz1tGkC6KRAE0CrAWV5APvv9uTi1vWzl/m6qgEUPe4Buawo/tSLVZGUiQ+a
+         EKFyIdzBaZ0F/C9aA6sbi/7E+2jHrJpSHMnN1X+B70q+rFkBPPbfsO7fJWrYq3acZxfv
+         AWsBlDqYctvTurs7GuSoxB0EGOtPyCRANw9S0fwd0sgvWlYPse4sMshyNz6uOb+Z8dSA
+         9GJiF9AF3f7MOwa1V9rn3OI3+Z2DLsUeIys9HuhBuq/YueCwVX1z9l/lct9yXCT8PY2k
+         OlJtcwHSgXsdYKuFP9HV3VQ+nIOtJ+VBQi/JoflzenGEc+FawW3Lxd92KpXyBoamNDcA
+         Uqzw==
+X-Gm-Message-State: AOAM532yyNIpwjobuUHWODIIEWmQXYSHJ7C4ROV4wjIsol0jxaG6k3za
+        OmUTFzHLovu/Dhg6CYmaCITvFzuyQg60AdGc
+X-Google-Smtp-Source: ABdhPJxsbT0TdfPHOjOjCdO+rNmo/rLDcowmmWqxQcWEBQ/Jp48JlwJ3FR5FJ7pnbWslYwRp4BJMHw==
+X-Received: by 2002:a1c:bcd6:: with SMTP id m205mr13307911wmf.47.1604916449257;
+        Mon, 09 Nov 2020 02:07:29 -0800 (PST)
+Received: from [192.168.1.12] ([194.35.116.160])
+        by smtp.gmail.com with ESMTPSA id y63sm11692139wmg.28.2020.11.09.02.07.28
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 09 Nov 2020 02:07:28 -0800 (PST)
+Subject: Re: [PATCH bpf] tools: bpftool: Add missing close before bpftool net
+ attach exit
+To:     Wang Hai <wanghai38@huawei.com>, ast@kernel.org,
+        daniel@iogearbox.net, kafai@fb.com, songliubraving@fb.com,
+        yhs@fb.com, andrii@kernel.org, john.fastabend@gmail.com,
+        kpsingh@chromium.org, toke@redhat.com, danieltimlee@gmail.com
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20201109070410.65833-1-wanghai38@huawei.com>
+From:   Quentin Monnet <quentin@isovalent.com>
+Message-ID: <48e85eae-659b-9116-35c8-e4e01a8c05b6@isovalent.com>
+Date:   Mon, 9 Nov 2020 10:07:22 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.1
 MIME-Version: 1.0
-In-Reply-To: <1602835229-10903-1-git-send-email-fabrice.gasnier@st.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
+In-Reply-To: <20201109070410.65833-1-wanghai38@huawei.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.75.127.44]
-X-ClientProxiedBy: SFHDAG1NODE1.st.com (10.75.127.1) To SFHDAG3NODE2.st.com
- (10.75.127.8)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-11-09_02:2020-11-05,2020-11-09 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi fabrice
-
-On 10/16/20 10:00 AM, Fabrice Gasnier wrote:
-> This enables the counter subsystem and drivers for the stm32 timer and LP
-> timer.
+On 09/11/2020 07:04, Wang Hai wrote:
+> progfd is created by prog_parse_fd(), before 'bpftool net attach' exit,
+> it should be closed.
 > 
-> Signed-off-by: Fabrice Gasnier <fabrice.gasnier@st.com>
-> ---
->   arch/arm/configs/multi_v7_defconfig | 3 +++
->   1 file changed, 3 insertions(+)
-> 
-> diff --git a/arch/arm/configs/multi_v7_defconfig b/arch/arm/configs/multi_v7_defconfig
-> index e9e76e3..f052db3 100644
-> --- a/arch/arm/configs/multi_v7_defconfig
-> +++ b/arch/arm/configs/multi_v7_defconfig
-> @@ -1092,6 +1092,9 @@ CONFIG_FSI_MASTER_ASPEED=m
->   CONFIG_FSI_SCOM=m
->   CONFIG_FSI_SBEFIFO=m
->   CONFIG_FSI_OCC=m
-> +CONFIG_COUNTER=m
-> +CONFIG_STM32_TIMER_CNT=m
-> +CONFIG_STM32_LPTIMER_CNT=m
->   CONFIG_EXT4_FS=y
->   CONFIG_AUTOFS4_FS=y
->   CONFIG_MSDOS_FS=y
-> 
+> Fixes: 04949ccc273e ("tools: bpftool: add net attach command to attach XDP on interface")
+> Signed-off-by: Wang Hai <wanghai38@huawei.com>
 
-Applied on stm32-next.
+Reviewed-by: Quentin Monnet <quentin@isovalent.com>
 
-Thanks.
-Alex
+Thanks!
+Quentin
