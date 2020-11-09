@@ -2,85 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 64D502ABD53
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 14:45:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C71162ABDB7
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 14:49:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732822AbgKINpR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 08:45:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56218 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730582AbgKINpP (ORCPT
+        id S1730063AbgKINsy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 08:48:54 -0500
+Received: from alln-iport-3.cisco.com ([173.37.142.90]:64818 "EHLO
+        alln-iport-3.cisco.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727311AbgKINsy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 08:45:15 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A00AC0613D3;
-        Mon,  9 Nov 2020 05:45:15 -0800 (PST)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1604929514;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=TMKySgGJgC1fqz614HZz1ur6mH4gmtdE+AG/O021Ias=;
-        b=m2cDXe8Z/AnJJ/BZv3cB/VhCAmw2qIm951Tn09Z4Tlsg9tErFUH5YZO3+ab0+PmFfiI+T3
-        gRUX2QiiFf9FAmZjVWj+jVzvAA5vVwo1mstJ/0Q9fV3mGrJibfDIj/ST9cytivOjk+Fpvt
-        g/MYphUc/wNUghBy7R/L992qE2BqF93+N563fPvQvHhmUswPO8eaTm5IVxDgJEG5BaoBZy
-        6WdQMzJq1Uh1OkI5dT3ggLFj6oWypw8UNJniv0rc8FzKLdsdcpJ9o9oUj2LQl7lv0jGzH2
-        DZOEflje1GH+OOWGRStYipDNwdkzfn/tRpYjGmMHl5IaChzK9+64SAPPWttRDg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1604929514;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=TMKySgGJgC1fqz614HZz1ur6mH4gmtdE+AG/O021Ias=;
-        b=3yphkHe0cvkfQQ6zuhIs4vXWijI48wy30HySpUaTMakqdXd2tELtHlJWch85RL6u8HtKTg
-        B44WLCjTJFrZ2/CA==
-To:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Ingo Molnar <mingo@elte.hu>, "H. Peter Anvin" <hpa@zytor.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Jens Axboe <axboe@kernel.dk>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: manual merge of the tip tree with the block tree
-In-Reply-To: <20201109141446.3370914b@canb.auug.org.au>
-References: <20201109141446.3370914b@canb.auug.org.au>
-Date:   Mon, 09 Nov 2020 14:45:13 +0100
-Message-ID: <871rh2k5jq.fsf@nanos.tec.linutronix.de>
+        Mon, 9 Nov 2020 08:48:54 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=cisco.com; i=@cisco.com; l=1125; q=dns/txt; s=iport;
+  t=1604929733; x=1606139333;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=+rC6FP3TNck1fsu5tlDKlL3Y2RDPof8joSWrF1AxAKQ=;
+  b=kCJBUexZuHbnFAaJZfma1a5D46i6LM7TMBlKYc5ejjW38BS0uPzNc2Fm
+   SuWkirGqJjl7jdJm4QLj29ZGFUO4R+kt1g7a27IQiV+p+rqSI8Pz5c2IJ
+   dOZaEAhIQ3xDhg8AFOjA5zRINnndHZRQG6j676C+66ehz5sPxOoxR9sMM
+   8=;
+X-IPAS-Result: =?us-ascii?q?A0DUCQCER6lf/40NJK1iHgEBCxIMQIN5gU0vLgqVU5wrC?=
+ =?us-ascii?q?wEBAQ0BAS0CBAEBhEoCghICJTgTAgMBAQEDAgMBAQEBBQEBAQIBBgRxhWILh?=
+ =?us-ascii?q?XMBBAF5BQsCAQghJQ8jJQIEDgWGDSCsd3SBNIpOgTiNPxuBQT+EIz6EBTmFd?=
+ =?us-ascii?q?gScPZtpCiCCTZsNIqFwk06gRgIRFYEzOCOBV3AVgyRQFwINnGh0OAIGCgEBA?=
+ =?us-ascii?q?wl8iwaBNQGBEAEB?=
+X-IronPort-Anti-Spam-Filtered: true
+X-IronPort-AV: E=Sophos;i="5.77,463,1596499200"; 
+   d="scan'208";a="576345433"
+Received: from alln-core-8.cisco.com ([173.36.13.141])
+  by alln-iport-3.cisco.com with ESMTP/TLS/DHE-RSA-SEED-SHA; 09 Nov 2020 13:48:52 +0000
+Received: from XCH-RCD-003.cisco.com (xch-rcd-003.cisco.com [173.37.102.13])
+        by alln-core-8.cisco.com (8.15.2/8.15.2) with ESMTPS id 0A9Dmq6k022761
+        (version=TLSv1.2 cipher=AES256-SHA bits=256 verify=FAIL);
+        Mon, 9 Nov 2020 13:48:52 GMT
+Received: from xch-aln-004.cisco.com (173.36.7.14) by XCH-RCD-003.cisco.com
+ (173.37.102.13) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 9 Nov
+ 2020 07:48:52 -0600
+Received: from xch-aln-004.cisco.com ([173.36.7.14]) by XCH-ALN-004.cisco.com
+ ([173.36.7.14]) with mapi id 15.00.1497.000; Mon, 9 Nov 2020 07:48:52 -0600
+From:   "Denys Zagorui -X (dzagorui - GLOBALLOGIC INC at Cisco)" 
+        <dzagorui@cisco.com>
+To:     "masahiroy@kernel.org" <masahiroy@kernel.org>
+CC:     "michal.lkml@markovi.net" <michal.lkml@markovi.net>,
+        "linux-kbuild@vger.kernel.org" <linux-kbuild@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v3] kbuild: use -fmacro-prefix-map for .S sources
+Thread-Topic: [PATCH v3] kbuild: use -fmacro-prefix-map for .S sources
+Thread-Index: AQHWsRJPpKcKNHVlGkuCBAHPiPYhnqm/255b
+Date:   Mon, 9 Nov 2020 13:48:52 +0000
+Message-ID: <1604929732138.17256@cisco.com>
+References: <20201102120853.96855-1-dzagorui@cisco.com>
+In-Reply-To: <20201102120853.96855-1-dzagorui@cisco.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [173.38.209.6]
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain
+X-Outbound-SMTP-Client: 173.37.102.13, xch-rcd-003.cisco.com
+X-Outbound-Node: alln-core-8.cisco.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 09 2020 at 14:14, Stephen Rothwell wrote:
-> Today's linux-next merge of the tip tree got a conflict in:
->
->   include/linux/sched/signal.h
->   include/linux/tracehook.h
->   kernel/signal.c
->   kernel/task_work.c
->
-> between commits:
->
->   fdb5f027ce66 ("task_work: use TIF_NOTIFY_SIGNAL if available")
->   bf6996650675 ("task_work: remove legacy TWA_SIGNAL path")
->   ceb39b7c17b7 ("kernel: remove checking for TIF_NOTIFY_SIGNAL")
->
-> from the block tree and commit:
->
->   114518eb6430 ("task_work: Use TIF_NOTIFY_SIGNAL if available")
->   12db8b690010 ("entry: Add support for TIF_NOTIFY_SIGNAL")
->
-> from the tip tree.
-
-Jens, how is that supposed to work?
-
-You need to merge the 'core-entry-notify-signal' tag from the tip tree
-into your next branch to make the follow up changes actually work.
-
-Ideally you send the whole arch + core cleanup muck my way once the
-architecture people are happy.
-
-Thanks,
-
-        tglx
+> Follow-up to a73619a845d5 ("kbuild: use -fmacro-prefix-map to make=0A=
+> __FILE__ a relative path") commit. Assembler sources also use __FILE__=0A=
+> macro so this flag should be also apllied to that sources.=0A=
+>=0A=
+> Signed-off-by: Denys Zagorui <dzagorui@cisco.com>=0A=
+> ---=0A=
+>  Makefile | 2 +-=0A=
+>  1 file changed, 1 insertion(+), 1 deletion(-)=0A=
+>=0A=
+> diff --git a/Makefile b/Makefile=0A=
+> index ee2284a5cad2..81e480fc6805 100644=0A=
+> --- a/Makefile=0A=
+> +++ b/Makefile=0A=
+> @@ -946,7 +946,7 @@ KBUILD_CFLAGS   +=3D $(call cc-option,-Werror=3Dincom=
+patible-pointer-types)=0A=
+>  KBUILD_CFLAGS   +=3D $(call cc-option,-Werror=3Ddesignated-init)=0A=
+>=0A=
+>  # change __FILE__ to the relative path from the srctree=0A=
+> -KBUILD_CFLAGS  +=3D $(call cc-option,-fmacro-prefix-map=3D$(srctree)/=3D=
+)=0A=
+> +KBUILD_CPPFLAGS +=3D $(call cc-option,-fmacro-prefix-map=3D$(srctree)/=
+=3D)=0A=
+>=0A=
+>  # ensure -fcf-protection is disabled when using retpoline as it is=0A=
+>  # incompatible with -mindirect-branch=3Dthunk-extern=0A=
+> --=0A=
+> 2.19.0.dirty=0A=
+=0A=
+ping=0A=
+=0A=
