@@ -2,174 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 878672AB056
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 05:57:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C01A72AB057
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 05:57:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729262AbgKIE5e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 8 Nov 2020 23:57:34 -0500
-Received: from mx0b-0016f401.pphosted.com ([67.231.156.173]:64670 "EHLO
-        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728038AbgKIE5d (ORCPT
+        id S1729368AbgKIE5o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 8 Nov 2020 23:57:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58532 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729308AbgKIE5n (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 8 Nov 2020 23:57:33 -0500
-Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
-        by mx0b-0016f401.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0A94rCLw015108;
-        Sun, 8 Nov 2020 20:56:45 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
- subject : date : message-id : references : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=pfpt0220;
- bh=13DjEgYtNijdBjDuD8MAiJ8OyiqtMH3YWuHp6Ah0g14=;
- b=ew2VBRlpJsuGIKjB+8hr9yzfUHEvIVmAlS3JDPBnJUKOMaJSJIjS8k8U1IwUPA9aWvsM
- /pA6dEi3K78b/GewNhRFE9NalEIdQLFpCeSI0wyG9vT96ncvXb4yrp9s4k88DqAMPzLb
- 36H/CdweCChQyBdDC9FCvThbkigAXABV3cd6rntWcPxPC8koDILp59Sz/EgCe0D4mfdW
- YTlLfUJm5pCJ0IbRMUAHk3NP1u8r5XlqmavcnPo0fv5x9RcmC6bQBDOnS9+xczakBKLr
- lbZxeYBpcwds6n0vAo/3q2Hui0x+8S7J9Wp+L8tLKKl2HEWSSF9FI1Xojz+fiJNNYbvu EQ== 
-Received: from sc-exch03.marvell.com ([199.233.58.183])
-        by mx0b-0016f401.pphosted.com with ESMTP id 34nuys8gg4-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Sun, 08 Nov 2020 20:56:45 -0800
-Received: from DC5-EXCH01.marvell.com (10.69.176.38) by SC-EXCH03.marvell.com
- (10.93.176.83) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Sun, 8 Nov
- 2020 20:56:43 -0800
-Received: from SC-EXCH04.marvell.com (10.93.176.84) by DC5-EXCH01.marvell.com
- (10.69.176.38) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Sun, 8 Nov
- 2020 20:56:43 -0800
-Received: from NAM04-SN1-obe.outbound.protection.outlook.com (104.47.44.58) by
- SC-EXCH04.marvell.com (10.93.176.84) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2 via Frontend Transport; Sun, 8 Nov 2020 20:56:42 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Eilm3HFVfgAXoEj8S0kiCHZLK9Kbo7mkbQX4o4n7lWKL8rMqTPeqcarilwfixqxmZjgRr/kDUS/+NOclIqZ2xdEs5Q2xw1Emq7xcBTEBJh0Wfdo+kvV76bJYsxFbdXLnlZpiEetU527mcIM6zDX936U+TX2UN45qDepgEHPN+ObKe31R0oravZjNZddgxco4Vbj0jKu5YYin+j2YfpghQw8qFReGHWyRkGGhu0djhPjH5Jd7cdbXedFKSYdiEFFU+cwY4w7X8IKRg5DoS7/dARnHPlJiOugjbb5/HJSNncbpQQkkAv+MB9g44X3phKzxGkvAdDdKAaKpzXi3oohBnw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=13DjEgYtNijdBjDuD8MAiJ8OyiqtMH3YWuHp6Ah0g14=;
- b=Zal4WkaNxEimAiJ64t0wmIji66+dAVey4rk9QXqJsO3qXfqmazlGctBM79YktyGSGqknwwGJWpVUYbnYV5LzZyUDKV9Z9LFemKIgtaJqgz2jQjsosa7eA4eAoBkL+y8b7G3RkML9EEX2f4A1Mv4YS7ebvSRhqZ/QtwFbSh0Uj8dENg2IDOL1XaAFueoCxj43Dyup5+M4M5hTCXEONUhnKAE1TI2E86Yr9V5/uoqgxoKWFF4lKUmUHpWTWbWdKv6AQ9aPLnbTM6asnzszRoMSMn2xQTl28abVIl+FyGw/ENNaUvVuW8TU1zEqQ7JvMI3FgkQ2NMbjKPees73XQ2x8JQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=marvell.com; dmarc=pass action=none header.from=marvell.com;
- dkim=pass header.d=marvell.com; arc=none
+        Sun, 8 Nov 2020 23:57:43 -0500
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0290C0613D3
+        for <linux-kernel@vger.kernel.org>; Sun,  8 Nov 2020 20:57:43 -0800 (PST)
+Received: by mail-pf1-x444.google.com with SMTP id c66so1248500pfa.4
+        for <linux-kernel@vger.kernel.org>; Sun, 08 Nov 2020 20:57:43 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=marvell.onmicrosoft.com; s=selector1-marvell-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=13DjEgYtNijdBjDuD8MAiJ8OyiqtMH3YWuHp6Ah0g14=;
- b=Wd+N6tVY5xoDrnLR24ZNsnbBPbgta7ksUb2cL6W15PR8LPV5bpcKxL1i8yXc8dYWDUSs5ntX6qE32rdi9mr7L6IrzWLxoLoxpG4/sFMCGOFG0cbQ0Dwjd+M9U+j02Bff4zi3cwN7pj+kDPSGyxGHKemTyTEvNx+JOsDZZdNJdmk=
-Received: from DM6PR18MB3034.namprd18.prod.outlook.com (2603:10b6:5:18c::32)
- by DM6PR18MB2602.namprd18.prod.outlook.com (2603:10b6:5:15d::25) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3541.25; Mon, 9 Nov
- 2020 04:56:40 +0000
-Received: from DM6PR18MB3034.namprd18.prod.outlook.com
- ([fe80::a087:2131:1284:66e7]) by DM6PR18MB3034.namprd18.prod.outlook.com
- ([fe80::a087:2131:1284:66e7%7]) with mapi id 15.20.3541.025; Mon, 9 Nov 2020
- 04:56:40 +0000
-From:   Saurav Kashyap <skashyap@marvell.com>
-To:     "xiakaixu1987@gmail.com" <xiakaixu1987@gmail.com>,
-        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>
-CC:     "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Kaixu Xia <kaixuxia@tencent.com>
-Subject: RE: [PATCH] scsi: bnx2fc: fix comparison to bool warning
-Thread-Topic: [PATCH] scsi: bnx2fc: fix comparison to bool warning
-Thread-Index: AQHWtSZXw7LwU+PJ/EKQqIb/yr/v3am/PtBw
-Date:   Mon, 9 Nov 2020 04:56:40 +0000
-Message-ID: <DM6PR18MB3034D9FD587A112D92062257D2EA0@DM6PR18MB3034.namprd18.prod.outlook.com>
-References: <1604767920-8361-1-git-send-email-kaixuxia@tencent.com>
-In-Reply-To: <1604767920-8361-1-git-send-email-kaixuxia@tencent.com>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=marvell.com;
-x-originating-ip: [117.211.149.245]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 6f4b65ea-04e4-45b5-a27d-08d8846bd880
-x-ms-traffictypediagnostic: DM6PR18MB2602:
-x-microsoft-antispam-prvs: <DM6PR18MB2602E5DA2F70930EE8F94D10D2EA0@DM6PR18MB2602.namprd18.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:6108;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: DtUL7nckaPcHksa4wkZYTeZjMbl2lRnjcZwg+z2xBPFltCbhOkX9/Hr3V6lU7VY/2q62/023IopVtmgwVEw/uE9WbcNxZgHgke1MewhuhN3LCRLeMgEDOI3Jt9rrz6sQ2GhoVmrAeA+EG0Rh+38gXwM3mLAzAnC1RsaS6IEqDMCvwnpthIWAzxt0u2J1r7fCW3nc7g1NamrygbuylSJN3gx9T201gd2TpRKPiAP+hpLyQ1p/i8+Zxw8GFng+YUZT566gcgArjcj/yeduoUzx+PH4SCMh4Sd6TUofX8ytgMZhheMPIE6rUMVeNLIGuHdWt9QKbUGsDJD4tDsUxxO3xg==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR18MB3034.namprd18.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(346002)(396003)(39850400004)(366004)(376002)(83380400001)(9686003)(8936002)(4326008)(8676002)(2906002)(55016002)(478600001)(316002)(110136005)(54906003)(86362001)(6506007)(26005)(186003)(52536014)(7696005)(53546011)(33656002)(66946007)(66446008)(66556008)(76116006)(64756008)(66476007)(5660300002)(71200400001);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: mz1DgVr9Jx9kNCD2KCalt9Tt1C6r91wdu41l6XeEEyr5hJOypbFL76AV00vuHM0BJBxRukg3PRUJHTph3fCaIOPRenJfv7W1OZRnqXOq6u6oZDCr+qeNyG+sjc/8qLrKdX2vAzJaVwBtBRdMuwtmURJW7fgPEW7YBpo/bd8HbXC9T4FHsUOFBWcmO2XyoNFRXr9M2hJipkTaodtRyxBcFKN2hGIGP2ItFElEmrwEnN7psyq+VVk0vKpgbs+pcc97nyeNQ7kU8+vqWrYgorwHF3yrnx43vS575eMxv2xXHcWl4Yz/T8I6a1aiLobBsvVT8rmLyos73a80wXTI7bLraey0gkygLQYLSRzu6UFyJ9HzsUlvwSvon8wxVPCa+CzzPWoe1IAg0q442W7Gf6Es1O9WwQYGLu3qo5W/zYFEPXXtZpYl9XVV+siutySw7vih3Vw1XDCl51y7hXXOdL6Z22v7pgHkMYvG9CQSGcuvZn5kFSIdJIPi/dx6s74yQsjV/OS8mQWTO+4y6xp9LoAlvQP0lMKiaJdS3DLIggZPMuDVcpmmblFZQGWldIc6490ZC3f8NWbsS5FlIDEvtoQwsuK0i3/G/44393+wtXjfzuSbPXYM7ocKqxbjGJ1c7y1gXobyqMUdyGl9Rr+9Y9S0HQ==
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to
+         :user-agent;
+        bh=FyxKjiZ7wGO9C/98D++nuGu+ry1VQp8BcqI9FcWr6AY=;
+        b=RFMbsOm5+b/YkDxzKr40E/wqin22/AhBOE2lwZLG0UQH0AHXwHyRlL1bLgnZWKS2xC
+         rPknSvmYqEy+TQV2VWHpgzPz2KTZp3NT1+PIPhpkknp6MDqLPt3ZdfjJgW1D04ue2h3A
+         Zkwy+Yi+kYtICK33XlnaUjLsllIVPgXtyAh6878rxTFij9SxZ5enpfPSQQQuCp3wbRIn
+         fHrGKUyR71w6HcMhMaLKEuvhzNUy+wdZt0GZhkW3Q1D22EyKTD/NbRFJTcp2S6RCT2ol
+         3kzrPKgCimOeaaem2YlEukRl1NhVDQYvDxaY5h2K954VBqJjLuEVQUwL34CqGBw4inIN
+         MeYA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to:user-agent;
+        bh=FyxKjiZ7wGO9C/98D++nuGu+ry1VQp8BcqI9FcWr6AY=;
+        b=BiPc/LVRiYQoMiWpDxlE4zxi0KmxyVKfBe7YaG0lZUHdc7FJ4DgqPJUUTcZvRdQ8Aj
+         njKQDBKCiQUuVBs2HXcJLtr0FDxyHlUR2sPUVmoB+SvvoPch4/qh0vkM/ZTYh+QyXpKi
+         mIQBiZv+o02ReVux+KM+8MBLPr6BwsY5Nrd81GEpI6Rn9tAZXBXsbN0Dtuy2EUeLRocB
+         cBKROPzLgct03GtNOA3QDfRv90rtslISzQoXdCrqhYPOafovXEPdE5lthN36ke2MPAi/
+         I+uCfzNo66D5p1i/oezYXWBniy3AAbgWp9/CMTj7SsBcn2hrtn7rtd7vXUxm3BdbwP9A
+         WUNw==
+X-Gm-Message-State: AOAM530Z1RZbfR6ZIMp2evm3IDz6N+623cudBuYrkolzPmB0WnrAoyXA
+        5NW/2TNNbRy/QFKA10iPmYe4cw==
+X-Google-Smtp-Source: ABdhPJwM7NF2hWFK9jNfXuDydeaQkSV9pyoWCNDS21hcvCy9gJU7JIjTinuuWKcwD6sHGBdIXToDrA==
+X-Received: by 2002:a17:90a:b88f:: with SMTP id o15mr11062332pjr.94.1604897863092;
+        Sun, 08 Nov 2020 20:57:43 -0800 (PST)
+Received: from localhost ([122.172.12.172])
+        by smtp.gmail.com with ESMTPSA id u197sm4610861pfc.127.2020.11.08.20.57.42
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Sun, 08 Nov 2020 20:57:42 -0800 (PST)
+Date:   Mon, 9 Nov 2020 10:27:40 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Kevin Hilman <khilman@kernel.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Len Brown <len.brown@intel.com>, Pavel Machek <pavel@ucw.cz>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Viresh Kumar <vireshk@kernel.org>, Nishanth Menon <nm@ti.com>,
+        Stephen Boyd <sboyd@kernel.org>, linux-pm@vger.kernel.org,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/2] opp: Don't create an OPP table from
+ dev_pm_opp_get_opp_table()
+Message-ID: <20201109045740.y5kpd6tjscoqxhi5@vireshk-i7>
+References: <684ff01900180c0a40ec307dacc673b24eab593b.1604643714.git.viresh.kumar@linaro.org>
+ <1012a98950355bd5a52424668050a17c3430cbe0.1604643714.git.viresh.kumar@linaro.org>
+ <ec9839dd-5d2d-0d6b-6563-b14da4af1a57@gmail.com>
+ <20201109043457.xf55kufhjjz2fvct@vireshk-i7>
+ <c5078503-ee14-0f84-85fd-9c6e55d2e897@gmail.com>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR18MB3034.namprd18.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 6f4b65ea-04e4-45b5-a27d-08d8846bd880
-X-MS-Exchange-CrossTenant-originalarrivaltime: 09 Nov 2020 04:56:40.0621
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 70e1fb47-1155-421d-87fc-2e58f638b6e0
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: NbkymrKcudEENrSKJFcdKi0ISBhqZ4FgvF15UkDTJQ/8L48dq5wV4XYOTV7AnC15IAOjCAq83k/UBgHY8s2Gjw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR18MB2602
-X-OriginatorOrg: marvell.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-11-09_01:2020-11-05,2020-11-09 signatures=0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <c5078503-ee14-0f84-85fd-9c6e55d2e897@gmail.com>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On 09-11-20, 07:41, Dmitry Osipenko wrote:
+> 09.11.2020 07:34, Viresh Kumar пишет:
+> > On 06-11-20, 16:18, Dmitry Osipenko wrote:
+> >> 06.11.2020 09:24, Viresh Kumar пишет:
+> >>> It has been found that some users (like cpufreq-dt and others on LKML)
+> >>> have abused the helper dev_pm_opp_get_opp_table() to create the OPP
+> >>> table instead of just finding it, which is the wrong thing to do. This
+> >>> routine was meant for OPP core's internal working and exposed the whole
+> >>> functionality by mistake.
+> >>>
+> >>> Change the scope of dev_pm_opp_get_opp_table() to only finding the
+> >>> table. The internal helpers _opp_get_opp_table*() are thus renamed to
+> >>> _add_opp_table*(), dev_pm_opp_get_opp_table_indexed() is removed (as we
+> >>> don't need the index field for finding the OPP table) and so the only
+> >>> user, genpd, is updated.
+> >>>
+> >>> Note that the prototype of _add_opp_table() was already left in opp.h by
+> >>> mistake when it was removed earlier and so we weren't required to add it
+> >>> now.
+> >>
+> >> Hello Viresh,
+> >>
+> >> It looks like this is not an entirely correct change because previously
+> >> it was possible to get an empty opp_table in order to use it for the
+> >> dev_pm_opp_set_rate(), which would fall back to clk_set_rate if table is
+> >> empty.
+> >>
+> >> Now it's not possible to get an empty table and
+> >> dev_pm_opp_of_add_table() would error out if OPPs are missing in a
+> >> device-tree. Hence it's not possible to implement a fall back without
+> >> abusing opp_set_regulators() or opp_set_supported_hw() for getting the
+> >> empty table. Or am I missing something?
+> > 
+> > For that case you were always required to call
+> > dev_pm_opp_set_clkname(), otherwise how would the OPP core know which
+> > clock to set ? And the same shall work now as well.
+> 
+> Why _allocate_opp_table() grabs the first default clk of a device and
+> assigns it to the created table?
 
+Right, it was there so everybody isn't required to call
+dev_pm_opp_set_clkname() if they don't need to pass a connection id
+while getting the clock. But for the case of supporting empty OPP
+tables for cases where we just want dev_pm_opp_set_rate() to act as
+clk_set_rate() (in order for the drivers to avoid supporting two
+different ways of doing so), we do need that call to be made.
 
-> -----Original Message-----
-> From: xiakaixu1987@gmail.com <xiakaixu1987@gmail.com>
-> Sent: Saturday, November 7, 2020 10:22 PM
-> To: jejb@linux.ibm.com; martin.petersen@oracle.com
-> Cc: linux-scsi@vger.kernel.org; linux-kernel@vger.kernel.org; Kaixu Xia
-> <kaixuxia@tencent.com>
-> Subject: [PATCH] scsi: bnx2fc: fix comparison to bool warning
->=20
-> From: Kaixu Xia <kaixuxia@tencent.com>
->=20
-> Fix the following coccicheck warning:
->=20
-> ./drivers/scsi/bnx2fc/bnx2fc_fcoe.c:2089:5-23: WARNING: Comparison to boo=
-l
-> ./drivers/scsi/bnx2fc/bnx2fc_fcoe.c:2187:5-23: WARNING: Comparison to boo=
-l
->=20
-> Reported-by: Tosk Robot <tencent_os_robot@tencent.com>
-> Signed-off-by: Kaixu Xia <kaixuxia@tencent.com>
-> ---
->  drivers/scsi/bnx2fc/bnx2fc_fcoe.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
->=20
-> diff --git a/drivers/scsi/bnx2fc/bnx2fc_fcoe.c
-> b/drivers/scsi/bnx2fc/bnx2fc_fcoe.c
-> index 6890bbe04a8c..b612f5ea647e 100644
-> --- a/drivers/scsi/bnx2fc/bnx2fc_fcoe.c
-> +++ b/drivers/scsi/bnx2fc/bnx2fc_fcoe.c
-> @@ -2086,7 +2086,7 @@ static int __bnx2fc_disable(struct fcoe_ctlr *ctlr)
->  {
->  	struct bnx2fc_interface *interface =3D fcoe_ctlr_priv(ctlr);
->=20
-> -	if (interface->enabled =3D=3D true) {
-> +	if (interface->enabled) {
->  		if (!ctlr->lp) {
->  			pr_err(PFX "__bnx2fc_disable: lport not found\n");
->  			return -ENODEV;
-> @@ -2184,7 +2184,7 @@ static int __bnx2fc_enable(struct fcoe_ctlr *ctlr)
->  	struct cnic_fc_npiv_tbl *npiv_tbl;
->  	struct fc_lport *lport;
->=20
-> -	if (interface->enabled =3D=3D false) {
-> +	if (!interface->enabled) {
->  		if (!ctlr->lp) {
->  			pr_err(PFX "__bnx2fc_enable: lport not found\n");
->  			return -ENODEV;
->
-Thanks for a patch.
+We need to add the OPP table explicitly and what happened with
+dev_pm_opp_get_opp_table() was accidental and not what I wanted.
 
-Acked-by: Saurav Kashyap <skashyap@marvell.com>
+drivers/mmc/host/sdhci-msm.c has an example of how this is done.
 
-Thanks,
-~Saurav
- --
-> 2.20.0
-
-
+-- 
+viresh
