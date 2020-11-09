@@ -2,188 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8806D2AB3C9
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 10:42:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 97A7A2AB3D3
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 10:43:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728385AbgKIJm0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 04:42:26 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57962 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726176AbgKIJm0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 04:42:26 -0500
-Received: from localhost (unknown [122.171.147.34])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 31AD6206ED;
-        Mon,  9 Nov 2020 09:42:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604914945;
-        bh=fGiC/wbOBVU/AIOKWAxFLakzSHrWCDlxgTiGvnuZ/TI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=eN1hCtJW2VkfLcUCkPpeMKwdskJycrGuHy0CVHKmtxoTE3JHotoSw2A8ztqfb095D
-         w6c/R++kyzARnscqdJgWfaYcGc4pl+0AJiGustQhCa0GY5lffoXvmjkPWhvtDfVC1J
-         Kpx0QcUoBFtEDj1S1iZCGq8Zc1uOolPq+azaAUlg=
-Date:   Mon, 9 Nov 2020 15:12:16 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Sia Jee Heng <jee.heng.sia@intel.com>
-Cc:     Eugeniy.Paltsev@synopsys.com, andriy.shevchenko@linux.intel.com,
-        dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 07/15] dmaegine: dw-axi-dmac: Support
- device_prep_dma_cyclic()
-Message-ID: <20201109094216.GC3171@vkoul-mobl>
-References: <20201027063858.4877-1-jee.heng.sia@intel.com>
- <20201027063858.4877-8-jee.heng.sia@intel.com>
+        id S1729192AbgKIJnL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 04:43:11 -0500
+Received: from new2-smtp.messagingengine.com ([66.111.4.224]:33657 "EHLO
+        new2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729119AbgKIJnJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 04:43:09 -0500
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 1456D580195;
+        Mon,  9 Nov 2020 04:43:08 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute6.internal (MEProxy); Mon, 09 Nov 2020 04:43:08 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm1; bh=lmiqVPfBRO9HsD4eiakrDCNXKqB
+        n8TEbx/O27OWVDLI=; b=mypyW2SRGaFWVqh9eIwS+6XSviN7iSg5vBD0DujP08f
+        NTMwnLh+7qpBOyAYunecocrgYA+ZD83xDOK8186OMOoFQ+Xb0nOs2zQyXlkxhlw6
+        HPv8vT2JZq1TKs+X9DjJJUUqPy0aDbbd3pVpyIuUbMaFmpDcu9YttXA0ME5BnQU+
+        NcaufGiE2apM4uhQXjANLBhcteDxGlRwLTkXGVsU/zW13YivuK5ePcX7SSPvnSiC
+        kKmx6Y/c5qCfRB6yCY5NEzOLq4M2cUyL8aw1cmhpEM7yYILzhXH2Mca48y8YDMTT
+        EKe976E321k4CFGyXoCKSvuRwNw03gU6RZDx6NzuRbw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=lmiqVP
+        fBRO9HsD4eiakrDCNXKqBn8TEbx/O27OWVDLI=; b=H7qY1QFWL2E1stPQpyP9eg
+        AAJ4inT9BR8xe2fI1/fkS8WJi0i6ZctMYo+URIun6SRJm2+L4WN/fxQqwdjgfDPt
+        ygQ9aQNUbTllTVupPO7i8IqlrkLimVvKL4ZTPQk8aBq3f9DnNR2zi95Te3Iw+Kad
+        7hwMUljwZ6V/YSmI7p2I8dPUgAQYYjexVXkrIaXnYF6RIzR8o6iiJI//IyDqQbAW
+        zlG6aJJEq2h648P35sUz05qDSNox7LNPkaAyka7Ab/YwvSWwmrltpi1ZSwVMz76C
+        rgmGmYuvrqlNJKZEk0tutQTo7iwFqKEjmZnDm+Q7AQosE729qDxk192LxCSTf/VQ
+        ==
+X-ME-Sender: <xms:KQ-pXwe_i8dNiJZAY4tlnzKs9XbqOj8MBM7z25Mxwdov2thimc9DLg>
+    <xme:KQ-pXyO8ivi7WZ8BAwODuMeesd9QLkTkBWKTaIn0WyOYT9lYWpAF-L9znw6Jvor15
+    cieyRFDbpVwMEIUN8E>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrudduhedgtdekucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
+    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
+    htvghrnhepleekgeehhfdutdeljefgleejffehfffgieejhffgueefhfdtveetgeehieeh
+    gedunecukfhppeeltddrkeelrdeikedrjeeinecuvehluhhsthgvrhfuihiivgeptdenuc
+    frrghrrghmpehmrghilhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
+X-ME-Proxy: <xmx:KQ-pXxjlvTmOlgd9bjlnbeGUPVWLSCvcZhonXSR4YQ4KX-CI1c81Ow>
+    <xmx:KQ-pX1-HsXhn-od1yaHQFkk1IpgBnrmnLSb9H6eruasLpI3dYiJP3w>
+    <xmx:KQ-pX8vBDU1Pcsf3hAEUlTyz0uO8CENMf2hwZwyqRlIqjkqsQvmEtw>
+    <xmx:LA-pX8FUnd_DscCKNzgrRd-uO6wlsVUSe8fyyt0RSAgNhH-tifm-HA>
+Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 0230C3280065;
+        Mon,  9 Nov 2020 04:43:04 -0500 (EST)
+Date:   Mon, 9 Nov 2020 10:43:03 +0100
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Christoph Hellwig <hch@lst.de>, Hans Verkuil <hverkuil@xs4all.nl>,
+        wens@kernel.org
+Cc:     Daniel Vetter <daniel.vetter@intel.com>,
+        David Airlie <airlied@linux.ie>,
+        Paul Kocialkowski <paul.kocialkowski@bootlin.com>,
+        Yong Deng <yong.deng@magewell.com>,
+        linux-arm-kernel@lists.infradead.org,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, devel@driverdev.osuosl.org,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Robin Murphy <robin.murphy@arm.com>
+Subject: Re: [PATCH 0/7] sunxi: Remove the calls to dma_direct_set_offset
+Message-ID: <20201109094303.llqsxqoxjagiqa55@gilmour.lan>
+References: <20201106151411.321743-1-maxime@cerno.tech>
+ <20201106160737.GA31913@lst.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="ukr2zryovmvm4axa"
 Content-Disposition: inline
-In-Reply-To: <20201027063858.4877-8-jee.heng.sia@intel.com>
+In-Reply-To: <20201106160737.GA31913@lst.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 27-10-20, 14:38, Sia Jee Heng wrote:
-> Add support for device_prep_dma_cyclic() callback function to benefit
-> DMA cyclic client, for example ALSA.
-> 
-> Existing AxiDMA driver only support data transfer between memory to memory.
-> Data transfer between device to memory and memory to device in cyclic mode
-> would failed if this interface is not supported by the AxiDMA driver.
-> 
-> Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> Signed-off-by: Sia Jee Heng <jee.heng.sia@intel.com>
-> ---
->  .../dma/dw-axi-dmac/dw-axi-dmac-platform.c    | 182 +++++++++++++++++-
->  drivers/dma/dw-axi-dmac/dw-axi-dmac.h         |   2 +
->  2 files changed, 177 insertions(+), 7 deletions(-)
-> 
-> diff --git a/drivers/dma/dw-axi-dmac/dw-axi-dmac-platform.c b/drivers/dma/dw-axi-dmac/dw-axi-dmac-platform.c
-> index 1124c97025f2..9e574753aaf0 100644
-> --- a/drivers/dma/dw-axi-dmac/dw-axi-dmac-platform.c
-> +++ b/drivers/dma/dw-axi-dmac/dw-axi-dmac-platform.c
-> @@ -15,6 +15,8 @@
->  #include <linux/err.h>
->  #include <linux/interrupt.h>
->  #include <linux/io.h>
-> +#include <linux/iopoll.h>
-> +#include <linux/io-64-nonatomic-lo-hi.h>
->  #include <linux/kernel.h>
->  #include <linux/module.h>
->  #include <linux/of.h>
-> @@ -575,6 +577,135 @@ dma_chan_prep_dma_memcpy(struct dma_chan *dchan, dma_addr_t dst_adr,
->  	return NULL;
->  }
->  
-> +static struct dma_async_tx_descriptor *
-> +dw_axi_dma_chan_prep_cyclic(struct dma_chan *dchan, dma_addr_t dma_addr,
-> +			    size_t buf_len, size_t period_len,
-> +			    enum dma_transfer_direction direction,
-> +			    unsigned long flags)
-> +{
-> +	struct axi_dma_chan *chan = dchan_to_axi_dma_chan(dchan);
-> +	u32 data_width = BIT(chan->chip->dw->hdata->m_data_width);
-> +	struct axi_dma_hw_desc *hw_desc = NULL;
-> +	struct axi_dma_desc *desc = NULL;
-> +	dma_addr_t src_addr = dma_addr;
-> +	u32 num_periods = buf_len / period_len;
-> +	unsigned int reg_width;
-> +	unsigned int mem_width;
-> +	dma_addr_t reg;
-> +	unsigned int i;
-> +	u32 ctllo, ctlhi;
-> +	size_t block_ts;
-> +	u64 llp = 0;
-> +	u8 lms = 0; /* Select AXI0 master for LLI fetching */
-> +
-> +	block_ts = chan->chip->dw->hdata->block_size[chan->id];
-> +
-> +	mem_width = __ffs(data_width | dma_addr | period_len);
-> +	if (mem_width > DWAXIDMAC_TRANS_WIDTH_32)
-> +		mem_width = DWAXIDMAC_TRANS_WIDTH_32;
-> +
-> +	desc = axi_desc_alloc(num_periods);
-> +	if (unlikely(!desc))
-> +		goto err_desc_get;
-> +
-> +	chan->direction = direction;
-> +	desc->chan = chan;
-> +	chan->cyclic = true;
-> +
-> +	switch (direction) {
-> +	case DMA_MEM_TO_DEV:
-> +		reg_width = __ffs(chan->config.dst_addr_width);
-> +		reg = chan->config.dst_addr;
-> +		ctllo = reg_width << CH_CTL_L_DST_WIDTH_POS |
-> +			DWAXIDMAC_CH_CTL_L_NOINC << CH_CTL_L_DST_INC_POS |
-> +			DWAXIDMAC_CH_CTL_L_INC << CH_CTL_L_SRC_INC_POS;
-> +		break;
-> +	case DMA_DEV_TO_MEM:
-> +		reg_width = __ffs(chan->config.src_addr_width);
-> +		reg = chan->config.src_addr;
-> +		ctllo = reg_width << CH_CTL_L_SRC_WIDTH_POS |
-> +			DWAXIDMAC_CH_CTL_L_INC << CH_CTL_L_DST_INC_POS |
-> +			DWAXIDMAC_CH_CTL_L_NOINC << CH_CTL_L_SRC_INC_POS;
-> +		break;
-> +	default:
-> +		return NULL;
-> +	}
-> +
-> +	for (i = 0; i < num_periods; i++) {
-> +		hw_desc = &desc->hw_desc[i];
-> +
-> +		hw_desc->lli = axi_desc_get(chan, &hw_desc->llp);
-> +		if (unlikely(!hw_desc->lli))
-> +			goto err_desc_get;
-> +
-> +		if (direction == DMA_MEM_TO_DEV)
-> +			block_ts = period_len >> mem_width;
-> +		else
-> +			block_ts = period_len >> reg_width;
-> +
-> +		ctlhi = CH_CTL_H_LLI_VALID;
-> +		if (chan->chip->dw->hdata->restrict_axi_burst_len) {
-> +			u32 burst_len = chan->chip->dw->hdata->axi_rw_burst_len;
-> +
-> +			ctlhi |= (CH_CTL_H_ARLEN_EN |
-> +				burst_len << CH_CTL_H_ARLEN_POS |
-> +				CH_CTL_H_AWLEN_EN |
-> +				burst_len << CH_CTL_H_AWLEN_POS);
-> +		}
-> +
-> +		hw_desc->lli->ctl_hi = cpu_to_le32(ctlhi);
-> +
-> +		if (direction == DMA_MEM_TO_DEV)
-> +			ctllo |= mem_width << CH_CTL_L_SRC_WIDTH_POS;
-> +		else
-> +			ctllo |= mem_width << CH_CTL_L_DST_WIDTH_POS;
-> +
-> +		if (direction == DMA_MEM_TO_DEV) {
-> +			write_desc_sar(hw_desc, src_addr);
-> +			write_desc_dar(hw_desc, reg);
-> +		} else {
-> +			write_desc_sar(hw_desc, reg);
-> +			write_desc_dar(hw_desc, src_addr);
-> +		}
-> +
-> +		hw_desc->lli->block_ts_lo = cpu_to_le32(block_ts - 1);
-> +
-> +		ctllo |= (DWAXIDMAC_BURST_TRANS_LEN_4 << CH_CTL_L_DST_MSIZE_POS |
-> +			  DWAXIDMAC_BURST_TRANS_LEN_4 << CH_CTL_L_SRC_MSIZE_POS);
-> +		hw_desc->lli->ctl_lo = cpu_to_le32(ctllo);
-> +
-> +		set_desc_src_master(hw_desc);
-> +
-> +		/*
-> +		 * Set end-of-link to the linked descriptor, so that cyclic
-> +		 * callback function can be triggered during interrupt.
-> +		 */
-> +		set_desc_last(hw_desc);
-> +
-> +		src_addr += period_len;
-> +	}
 
-apart from this bit and use of periods instead of sg_list this seems
-very similar to slave handler, so can you please move common bits to
-helpers and remove/reduce duplicate code
+--ukr2zryovmvm4axa
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
--- 
-~Vinod
+Hi Christoph, Chen-Yu, Hans,
+
+On Fri, Nov 06, 2020 at 05:07:37PM +0100, Christoph Hellwig wrote:
+> Thanks,
+>=20
+> this looks good to me:
+>=20
+> Reviewed-by: Christoph Hellwig <hch@lst.de>
+>=20
+> Can you include this patch at the end of your series to that it gets
+> picked up with the other patches?
+
+I guess the easiest to avoid bisection issues would be to merge all this
+through drm-misc, would that work for you?
+
+Maxime
+
+--ukr2zryovmvm4axa
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCX6kPJwAKCRDj7w1vZxhR
+xVdNAQDHWf5opH2Wk5MBiU7aGQjw4usXGRwBxWeeBmmVLm8FsQEA8Y3/aoi85/VG
+utrIfztWYorSmqfL/yhtZhR8bdeSEwg=
+=ZXtW
+-----END PGP SIGNATURE-----
+
+--ukr2zryovmvm4axa--
