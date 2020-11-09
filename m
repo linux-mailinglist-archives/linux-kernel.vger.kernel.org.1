@@ -2,69 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 552FA2AB76D
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 12:45:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C6DC22AB770
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 12:45:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729486AbgKILpe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 06:45:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37682 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727311AbgKILpd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 06:45:33 -0500
-Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 511D9C0613CF;
-        Mon,  9 Nov 2020 03:45:33 -0800 (PST)
-Received: by mail-ej1-x643.google.com with SMTP id i19so11783753ejx.9;
-        Mon, 09 Nov 2020 03:45:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=/yXwjxlb/R7fLQTrA52Uzwgs+Ty2nvGfWq3imMItftg=;
-        b=sXCfZVwQ9VfdI69jCYsqb4Loblfu7TmKvK/dXCkUYWck7Ue6XxVHJQZ9tX9PlxM9DE
-         acZsLxIEKrQFT2KAdjhC0hfA8Lvxr7UbG51F/2s3KFPzo6fXZKQFh4l8c38GcpvumKTB
-         MClpAVD5I8GdOA87/ixOGFmaGACAlqvbuW/0eCOqOLD3iW6+mrA1eFgCFXMNSLUd6hVb
-         UtRULTvGG5J6xLtWBjCrILOkljfIViQbWKkVlHirjehRYSgqu7eX6HM+zRdbtoWrpGLQ
-         4Du8R1bkAFWY49yJniV4HAzT0QYjWUv9V2og5l2KWwnA26jZ+WT6uA7cgS52Ka49hNNy
-         sn4Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=/yXwjxlb/R7fLQTrA52Uzwgs+Ty2nvGfWq3imMItftg=;
-        b=ald9y/cndfs5cTjFgCNFCxXsfZL9qIouraC/m6/UtKB3KYnpVd7rjApbsh2rokARNP
-         WWWT7RsB1yLpX1kj/4IKL2x7hrRe5Fe4ur5LXugXpVXykVhrmM6tym0JpBvtphKszDw3
-         cAevGydKUDOy/yDoIqFu8tpXsR/RqnKVZ9WV8rC+N55YFlDKFm8+RcitaVRi8uICnhC4
-         w4q4vM/6ybi5n+cuwDtVhIafAhBwkjixAWL8SiU1emchazUdiSu2879u0xNGZlIdYGdp
-         vzaez0ZSS25RQVXhob4hhc/rcWlyk+RLfUMyedeEIJfdTwWbNs5XpTc/3RoMEirC77mA
-         wvRg==
-X-Gm-Message-State: AOAM530MTz/LMD/FQqUj9O/Cw8WeWLP28WJECeSvU8EDIP8w0IuX9hLf
-        naCy6VxEk8BUMXyt/SxVA3ZNR4RYmMGVD7TFqgg=
-X-Google-Smtp-Source: ABdhPJz6oMyKZ0dKqB4kDi4EbIy/POPWmbRO06zSRQ1WsUqKbtpGr0zDiz6D545tVpcxd+DEzUuepQN/zqg1Hx6EGFw=
-X-Received: by 2002:a17:906:a186:: with SMTP id s6mr15116271ejy.193.1604922332070;
- Mon, 09 Nov 2020 03:45:32 -0800 (PST)
+        id S1729509AbgKILpk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 06:45:40 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34988 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729159AbgKILpj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 06:45:39 -0500
+Received: from localhost (unknown [122.171.147.34])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id B028220789;
+        Mon,  9 Nov 2020 11:45:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604922338;
+        bh=Sq0xvvrUlIfUwrgwd92TUa8sP2wVyduYHpqVBUexjyY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=cLqQqk/p1pbkgyb4xv019WYnwbtfrM4irwnMHcsw5NTxs5WOLNWgc31fOIxprnAVz
+         SaQ5GKwKM53UGzS3a5TM8BEVpa2YjoO+aoglUHxGw+TqT9uxVtrPOtNdwMxq+SkvYA
+         EkjF3VJ8SPvcINWwwSK3G9vpXyvqAqm12IhyulEo=
+Date:   Mon, 9 Nov 2020 17:15:34 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc:     nm@ti.com, ssantosh@kernel.org, robh+dt@kernel.org,
+        vigneshr@ti.com, dan.j.williams@intel.com, t-kristo@ti.com,
+        lokeshvutla@ti.com, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        dmaengine@vger.kernel.org
+Subject: Re: [PATCH 01/18] dmaengine: of-dma: Add support for optional router
+ configuration callback
+Message-ID: <20201109114534.GH3171@vkoul-mobl>
+References: <20200930091412.8020-1-peter.ujfalusi@ti.com>
+ <20200930091412.8020-2-peter.ujfalusi@ti.com>
+ <20201007054404.GR2968@vkoul-mobl>
+ <be615881-1eb4-f8fe-a32d-04fabb6cb27b@ti.com>
+ <20201007155533.GZ2968@vkoul-mobl>
+ <45adb88b-1ef8-1fbf-08c1-9afc6ea4c6f0@ti.com>
+ <20201028055531.GH3550@vkoul-mobl>
+ <cf3d3de0-223b-4846-bd9f-b78654ae2d08@ti.com>
 MIME-Version: 1.0
-References: <20201109114302.22740-1-frank@allwinnertech.com>
-In-Reply-To: <20201109114302.22740-1-frank@allwinnertech.com>
-From:   Frank Lee <tiny.windzz@gmail.com>
-Date:   Mon, 9 Nov 2020 19:45:21 +0800
-Message-ID: <CAEExFWvXrKS_Ge1vBJoQZFzFn-qv4jpP7Rpp0xkgyAaVWtoRww@mail.gmail.com>
-Subject: Re: [PATCH] thermal: sun8i: Use bitmap API instead of open code
-To:     Frank Lee <frank@allwinnertech.com>
-Cc:     Vasily Khoruzhick <anarsoul@gmail.com>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>, amitk@kernel.org,
-        Maxime Ripard <mripard@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cf3d3de0-223b-4846-bd9f-b78654ae2d08@ti.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I forgot to add "V2", I will resend.
 
-Yangtao
+Hey Peter,
+
+On 28-10-20, 11:56, Peter Ujfalusi wrote:
+> Hi Vinod,
+> 
+> On 28/10/2020 7.55, Vinod Koul wrote:
+> 
+> >> To summarize:
+> >> In of_dma_route_allocate() the router does not yet know the channel we
+> >> are going to get.
+> >> In of_dma_xlate() the DMA driver does not yet know if the channel will
+> >> use router or not.
+> >> I need to tell the router the event number it has to send, which is
+> >> based on the channel number I got.
+> > 
+> > Sounds reasonable, btw why not pass this information in xlate. Router
+> > will have a different xlate rather than non router right, or is it same.
+> 
+> Yes, the router's have their separate xlate, but in that xlate we do not
+> yet have a channel. I don't know what is the event I need to send from
+> the router to trigger the channel.
+> 
+> > If this information is anyway available in DT might be better to get it
+> > and use from DT
+> 
+> Without a channel number I can not do anything.
+> It is close to a chicken and egg problem.
+
+We get 'channel' in xlate, so wont that help? I think I am still missing
+something here :(
+
+
+-- 
+~Vinod
