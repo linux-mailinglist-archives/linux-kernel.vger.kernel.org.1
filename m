@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 321072AB60D
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 12:08:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B57AE2AB60C
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 12:08:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729806AbgKILIF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 06:08:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59546 "EHLO
+        id S1729792AbgKILID (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 06:08:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59550 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729589AbgKILHK (ORCPT
+        with ESMTP id S1729603AbgKILHK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 9 Nov 2020 06:07:10 -0500
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE6EBC061A47
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Nov 2020 03:07:05 -0800 (PST)
-Received: by mail-wr1-x443.google.com with SMTP id o15so383637wru.6
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Nov 2020 03:07:05 -0800 (PST)
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F235C0617A7
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Nov 2020 03:07:07 -0800 (PST)
+Received: by mail-wr1-x444.google.com with SMTP id w1so8229619wrm.4
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Nov 2020 03:07:07 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=1txfIvaUE40Ou/j75EYKcgw6u17F5C6+DdlKPQ0ay3M=;
-        b=bV0WOhcjc6Y2rIR+7HT+QGO/LnwlTLaGqiH/bueGYgN1eqaiyqgBu630Wi1/Fe4Izr
-         My6WbzMB2G0+0Jww/tXr7Bv9T9tCSh7nAf3FDc9HnmXqm0/SZK/yuCq88k07niiSIbdE
-         Kni1bJikZg3lnovvS5+pSl6sF1scmJC1eailBHWvAIqLxr8aFY7ZvU8r5E11qXi2Th71
-         zhnarT2xZ1wCpMgNr9yCr/3M5lq5u3cCkFTpjL9pfSKNowIMNdFSn0mY3iQlibP5Tto4
-         Lgmzc95ZSUUq1X+Al8zvn1+ubttScKkHoe5x6HV2U03u2h9rIhdyiJw4IDWSPdJhmDMn
-         +W6A==
+        bh=m2ikj+dhQ1Zeha09QctzFr3Pm7l2AwdyE1EcOPpxBQc=;
+        b=lrGFiV0JEwMQZrmMw1exEx6p70DOim7QTqsGe9oOJfscxaaDbqtNd51mDY2gLrVO6e
+         AJaVU6gEvJ5Rqj0pmzF+RQrIAx3UUypf5ocQh5+MxoPZ8v5DbPYgi+LUXOO0xXncPOxJ
+         vazruXakD7raTY00eG7zaplUuhpuFOzAXeDC0+Go3Z91tS4RB4jYmtz+tumRzgHuHKVW
+         Q3APL+KmLaN9niAGudHytA7iWz6ha072HjPWCU0qqHVWmvaciARBx8JEUQUEjIamSyMq
+         CKw7PL+YgCXUcrNMDTeAPsCWzL8tuPTeq/pLQmlfpQnNOHY3qjMybpVo+6SdERNaMi03
+         sDgw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=1txfIvaUE40Ou/j75EYKcgw6u17F5C6+DdlKPQ0ay3M=;
-        b=dOQngsEjOcnaofPS+au87Jn0eAvr3jUEXS/78wCqlyBHSsRqY/p3IHMzpuBrHpE9UJ
-         cqcTLNwhO9ZIaHAgpSA+YCyqV4MsIKxi50CWTrOX20nG687V223rchjVdjLZap318fiO
-         UF0OS9Ko2U/xuXfWpx6VsFW/AqlruW4+HrzufvPKLea4UwvFOh2wYco36SuBmL6EzOtS
-         +Q4LxtbSbJTgTUxm9Kdu9OjdHSGeBAaXvrRtBT8ynrM/69lN8pos6PLU3BYBz37EloNw
-         Oet+0gRxPm6xqFmVn7KpYIjqmObSqaRoOgTr6rTOZOxv6s1slHpz9rbSnyCV4ZNP4sLC
-         0DWA==
-X-Gm-Message-State: AOAM5318GCc3NfB/SodziMgtdnzh6BEnOE8ALciXmM+x4bQhHsfHbgwX
-        XIE7TUZ7tFpGKAFzkL/GgwhetA==
-X-Google-Smtp-Source: ABdhPJzHXOuOWGraTd+tlh1Rh/Cikbums2QDN+ELEwiirpKRCwDTD+P/KjLkxHpoeG3VOPOYn45WFQ==
-X-Received: by 2002:adf:fd03:: with SMTP id e3mr11725240wrr.303.1604920024684;
-        Mon, 09 Nov 2020 03:07:04 -0800 (PST)
+        bh=m2ikj+dhQ1Zeha09QctzFr3Pm7l2AwdyE1EcOPpxBQc=;
+        b=SrbaE1WPXK84tOgLQt51fcSWKMXfj2mHkSeRCZRZWj+QlJ/PIHyNdorTl8dcH/JaTn
+         RRHelu7YStunQcdPSQgJbOXlP2aD8VwZvTVeHTFSL2dvIv29K2sOkhV2xO7VKl/6ODhO
+         PcqcayLEYEQFzoMuUiQ78DwoVkAaaZN7AXR7prrODCkxc2ogYjXGJalpbKpUSeymyUXO
+         CL0URQeMokQ//I/H9NTCelsnQ6ArlTM0kscfnjJY2eebvthcI5iYYquF7QnPgiClLq+r
+         fjDIm0dXSq6E3zUPQfDMAhN4lzkyGKuOxVCg/vSv+wJm0Xe2ywRvMZqLvJMf9vjc25Tc
+         bEjA==
+X-Gm-Message-State: AOAM532lK/pvtUpm+WqNIDLNSoIkrUbE5hw7QUPiEKR8Hc7AeFCSKT9M
+        3gb0iAGQf/LrB+093zf8Oy7kuA==
+X-Google-Smtp-Source: ABdhPJyDQDC3mJ8XBzXRPLr9tujc8yB1EaUC1zlVXx3gghE7oqzt7WatCScZ7dhRaCoAETe4X60pOw==
+X-Received: by 2002:a5d:54c5:: with SMTP id x5mr3869675wrv.297.1604920026445;
+        Mon, 09 Nov 2020 03:07:06 -0800 (PST)
 Received: from localhost.localdomain (lfbn-nic-1-190-206.w2-15.abo.wanadoo.fr. [2.15.39.206])
-        by smtp.gmail.com with ESMTPSA id d3sm12815582wre.91.2020.11.09.03.07.02
+        by smtp.gmail.com with ESMTPSA id d3sm12815582wre.91.2020.11.09.03.07.04
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 09 Nov 2020 03:07:04 -0800 (PST)
+        Mon, 09 Nov 2020 03:07:05 -0800 (PST)
 From:   Bartosz Golaszewski <brgl@bgdev.pl>
 To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
         Sumit Semwal <sumit.semwal@linaro.org>,
@@ -79,11 +79,10 @@ Cc:     linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
         kvm@vger.kernel.org, virtualization@lists.linux-foundation.org,
         netdev@vger.kernel.org, linux-mm@kvack.org,
         alsa-devel@alsa-project.org,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH v3 3/9] ALSA: pcm: use krealloc_array()
-Date:   Mon,  9 Nov 2020 12:06:48 +0100
-Message-Id: <20201109110654.12547-4-brgl@bgdev.pl>
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Subject: [PATCH v3 4/9] vhost: vringh: use krealloc_array()
+Date:   Mon,  9 Nov 2020 12:06:49 +0100
+Message-Id: <20201109110654.12547-5-brgl@bgdev.pl>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201109110654.12547-1-brgl@bgdev.pl>
 References: <20201109110654.12547-1-brgl@bgdev.pl>
@@ -99,26 +98,25 @@ Use the helper that checks for overflows internally instead of manually
 calculating the size of the new array.
 
 Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Reviewed-by: Takashi Iwai <tiwai@suse.de>
+Acked-by: Michael S. Tsirkin <mst@redhat.com>
 ---
- sound/core/pcm_lib.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/vhost/vringh.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/sound/core/pcm_lib.c b/sound/core/pcm_lib.c
-index bda3514c7b2d..b7e3d8f44511 100644
---- a/sound/core/pcm_lib.c
-+++ b/sound/core/pcm_lib.c
-@@ -1129,8 +1129,8 @@ int snd_pcm_hw_rule_add(struct snd_pcm_runtime *runtime, unsigned int cond,
- 	if (constrs->rules_num >= constrs->rules_all) {
- 		struct snd_pcm_hw_rule *new;
- 		unsigned int new_rules = constrs->rules_all + 16;
--		new = krealloc(constrs->rules, new_rules * sizeof(*c),
--			       GFP_KERNEL);
-+		new = krealloc_array(constrs->rules, new_rules,
-+				     sizeof(*c), GFP_KERNEL);
- 		if (!new) {
- 			va_end(args);
- 			return -ENOMEM;
+diff --git a/drivers/vhost/vringh.c b/drivers/vhost/vringh.c
+index 8bd8b403f087..08a0e1c842df 100644
+--- a/drivers/vhost/vringh.c
++++ b/drivers/vhost/vringh.c
+@@ -198,7 +198,8 @@ static int resize_iovec(struct vringh_kiov *iov, gfp_t gfp)
+ 
+ 	flag = (iov->max_num & VRINGH_IOV_ALLOCATED);
+ 	if (flag)
+-		new = krealloc(iov->iov, new_num * sizeof(struct iovec), gfp);
++		new = krealloc_array(iov->iov, new_num,
++				     sizeof(struct iovec), gfp);
+ 	else {
+ 		new = kmalloc_array(new_num, sizeof(struct iovec), gfp);
+ 		if (new) {
 -- 
 2.29.1
 
