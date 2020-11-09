@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6331A2AB6EA
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 12:33:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 19DBB2AB73F
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 12:37:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729581AbgKILdD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 06:33:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35514 "EHLO
+        id S1729547AbgKILhE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 06:37:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35520 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729503AbgKILcz (ORCPT
+        with ESMTP id S1729530AbgKILc4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 06:32:55 -0500
+        Mon, 9 Nov 2020 06:32:56 -0500
 Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 948F6C0613CF
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Nov 2020 03:32:53 -0800 (PST)
-Received: by mail-wr1-x443.google.com with SMTP id k2so4914580wrx.2
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Nov 2020 03:32:53 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE8F4C0613D3
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Nov 2020 03:32:55 -0800 (PST)
+Received: by mail-wr1-x443.google.com with SMTP id s8so1210625wrw.10
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Nov 2020 03:32:55 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=dD+HnXjMAuT9iIEK7PkEi17VFy6Rjc2aSGW4eJxjMmM=;
-        b=Fxm0HnjlRiCRvpWF4beee7iVOFjv2Qaw21ps+7x79tMQJfT6FNyrr/xGavtNXDvjzu
-         51epSIouMwzseNia68qwSyOMPyRzHL19sFirCC43Fe46MjxglK6FJFd2wjudNtt66VqM
-         fqRYVtTi1izaLS10Y7ZO7h9NUmWfNxugf1n4K4XyYxKI2IroTZspHZ1hPfaDveiwV3gm
-         f7cvO8HiWxy9KjAjrDe1t3eEsZVK6myBeucm4XXZRqEt2JVMbmx9fVH2tOSCzu49n3b/
-         3JpiFHlpxlH2iezie9R07ceB4ujU4fqscWcxxngFZE19BU6OFayYXr3n0Vc/3iiOSvgg
-         A4bA==
+        bh=E1NKlSXbosotz7yE3k2vTKr2ydlvsygMA7t9DehWpvE=;
+        b=l5mFBYX18Rn7YX+QOaWfw6pSERAucDkfSD0fLjY2La9KEXAkogCnx0MlXxkUnnQruE
+         hcRz3mFUUHEK7BkHrKmHKS7z4K9kzSMySOyP7FbGc3/T8JrugpkNZIt/AJ44AdxcV/y9
+         7EGITSkupXBoishh0kGdsfNPWgvqpzGLGKMdOBFcz0OhhjZ9kNWpadYeoPxbZ90OQ0rG
+         QoZLm++zKXNxDhFNzhQ4FEt5gWvnAlfXkA27lW91g6b2Ie32EmXFrFBg/m4ggOxY1441
+         ypg58scvklmkltXN9bpd2eLzNMuaLpFOQc9Qw8AdB4l22lVMqsm9gnPrsu3lwPJtpD7k
+         bfQw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=dD+HnXjMAuT9iIEK7PkEi17VFy6Rjc2aSGW4eJxjMmM=;
-        b=clPbvOd6YAfImzgGWOmxw43UG/IILKDfnNcpgn0MTZlmPXA9eQaaBt1Yc8xhWYEGf2
-         SJcCB1SCFXx4qXrZD+g8JST3NXRwgPUEWM8klc0gBIVS6I9K45fF6/Y6+DFhxXw5s44d
-         GvAIeTBigVVfB71R5SQ7+z4sw8TjhUvVijDElBYkur1btksFPpVNYgzsB1he/dUXSqXV
-         1OJFUgT7qLa1YU4W0dhNktSvnC3V5Ttr+4b2Sj/73KBx0U7uDqpUB4ipiJnZXo1kjnEI
-         OFE3jgcEO5mRqMQkl/4LIZ//45JukHoBDu7gzlq2tpYvHM8hszBCayeaCX2ML2xCWfIb
-         yPOw==
-X-Gm-Message-State: AOAM533J+JAEz6yXiEyMRU0NlrpkJEYtpAl8X9M0G+qPnOId00rSrq/d
-        ECod7NAkvgnhGYJHydRu9q8i9w==
-X-Google-Smtp-Source: ABdhPJz41ehkFfXRIlLvAsM/Z4zHvUymv8X3f2L/Q8G9Xp+RnyzjpOnflk7vt/regvRGdeQ9p7LFgA==
-X-Received: by 2002:adf:ea47:: with SMTP id j7mr17229972wrn.126.1604921572143;
-        Mon, 09 Nov 2020 03:32:52 -0800 (PST)
+        bh=E1NKlSXbosotz7yE3k2vTKr2ydlvsygMA7t9DehWpvE=;
+        b=sbZsWdovy0mpJFsfvnr/ad1/DaHPQ7CCbTiop+6dqSqa/XQHvDRsX0gf6TsYelxWIm
+         Gs2/ySCXOMFPjNDrYs5IaS9/SCgKi/gnLIhBw/bpDexn7tDEVFROZb7kJyFOBC16LyA1
+         mByzYxC19mNwCe5G69pfdHwaNwTIjkPx6pk8H8FhZTI0qKirEs04x3gzMUjyztxjrD24
+         5W5kw2Y4qABUgtujpbMiJO+KW+O0zDjqys3pkPtoVy93A0Dx84Q1dV8rxqNQl4d4GkqR
+         jciEYb5cLtu0ctOgrQGpTvZammtIkweRudhUR3gUcL3BG6RgGzjGDP2vtoc8FicB/LIp
+         mPpA==
+X-Gm-Message-State: AOAM532wH466Z8CLljXO6+Dd2T0Rdd8sFoKsKDOgYXdxa/S2S6Gcjx0M
+        TdWvVXkkSNENd3Z7V8526BXuyw==
+X-Google-Smtp-Source: ABdhPJz/l/6GQDBPHymkPNzaoMyRUmvzkHblO9n04gDj4zUaNX37jiQdcZNRxwl4SGl32T4mexwRmg==
+X-Received: by 2002:adf:e287:: with SMTP id v7mr17824035wri.252.1604921574345;
+        Mon, 09 Nov 2020 03:32:54 -0800 (PST)
 Received: from localhost ([2a01:4b00:8523:2d03:209d:10b7:c480:3e1f])
-        by smtp.gmail.com with ESMTPSA id p4sm12907274wrm.51.2020.11.09.03.32.50
+        by smtp.gmail.com with ESMTPSA id f23sm12132699wmb.43.2020.11.09.03.32.52
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 09 Nov 2020 03:32:51 -0800 (PST)
+        Mon, 09 Nov 2020 03:32:53 -0800 (PST)
 From:   David Brazdil <dbrazdil@google.com>
 To:     kvmarm@lists.cs.columbia.edu
 Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
@@ -64,9 +64,9 @@ Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         Andrew Scull <ascull@google.com>,
         Andrew Walbran <qwandor@google.com>, kernel-team@android.com,
         David Brazdil <dbrazdil@google.com>
-Subject: [PATCH v1 06/24] kvm: arm64: Support per_cpu_ptr in nVHE hyp code
-Date:   Mon,  9 Nov 2020 11:32:15 +0000
-Message-Id: <20201109113233.9012-7-dbrazdil@google.com>
+Subject: [PATCH v1 07/24] kvm: arm64: Create nVHE copy of cpu_logical_map
+Date:   Mon,  9 Nov 2020 11:32:16 +0000
+Message-Id: <20201109113233.9012-8-dbrazdil@google.com>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201109113233.9012-1-dbrazdil@google.com>
 References: <20201109113233.9012-1-dbrazdil@google.com>
@@ -76,96 +76,82 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When compiling with __KVM_NVHE_HYPERVISOR__ redefine per_cpu_offset() to
-__hyp_per_cpu_offset() which looks up the base of the nVHE per-CPU
-region of the given cpu and computes its offset from the
-.hyp.data..percpu section.
+When KVM starts validating host's PSCI requests, it will need to map
+MPIDR back to the CPU ID. To this end, copy cpu_logical_map into nVHE
+hyp memory when KVM is initialized.
 
-This enables use of per_cpu_ptr() helpers in nVHE hyp code. Until now
-only this_cpu_ptr() was supported by setting TPIDR_EL2.
+Only copy the information for CPUs that are online at the point of KVM
+initialization so that KVM rejects CPUs whose features were not checked
+against the finalized capabilities.
 
 Signed-off-by: David Brazdil <dbrazdil@google.com>
 ---
- arch/arm64/include/asm/percpu.h  |  6 ++++++
- arch/arm64/kernel/image-vars.h   |  3 +++
- arch/arm64/kvm/hyp/nvhe/Makefile |  3 ++-
- arch/arm64/kvm/hyp/nvhe/percpu.c | 22 ++++++++++++++++++++++
- 4 files changed, 33 insertions(+), 1 deletion(-)
- create mode 100644 arch/arm64/kvm/hyp/nvhe/percpu.c
+ arch/arm64/kvm/arm.c             | 17 +++++++++++++++++
+ arch/arm64/kvm/hyp/nvhe/percpu.c | 16 ++++++++++++++++
+ 2 files changed, 33 insertions(+)
 
-diff --git a/arch/arm64/include/asm/percpu.h b/arch/arm64/include/asm/percpu.h
-index 1599e17379d8..8f1661603b78 100644
---- a/arch/arm64/include/asm/percpu.h
-+++ b/arch/arm64/include/asm/percpu.h
-@@ -239,6 +239,12 @@ PERCPU_RET_OP(add, add, ldadd)
- #define this_cpu_cmpxchg_8(pcp, o, n)	\
- 	_pcp_protect_return(cmpxchg_relaxed, pcp, o, n)
+diff --git a/arch/arm64/kvm/arm.c b/arch/arm64/kvm/arm.c
+index 9ba9db2aa7f8..b85b4294b72d 100644
+--- a/arch/arm64/kvm/arm.c
++++ b/arch/arm64/kvm/arm.c
+@@ -1481,6 +1481,21 @@ static inline void hyp_cpu_pm_exit(void)
+ }
+ #endif
  
-+#ifdef __KVM_NVHE_HYPERVISOR__
-+extern unsigned long __hyp_per_cpu_offset(unsigned int cpu);
-+#define __per_cpu_offset
-+#define per_cpu_offset(cpu)	__hyp_per_cpu_offset((cpu))
-+#endif
-+
- #include <asm-generic/percpu.h>
- 
- /* Redefine macros for nVHE hyp under DEBUG_PREEMPT to avoid its dependencies. */
-diff --git a/arch/arm64/kernel/image-vars.h b/arch/arm64/kernel/image-vars.h
-index c615b285ff5b..78a42a7cdb72 100644
---- a/arch/arm64/kernel/image-vars.h
-+++ b/arch/arm64/kernel/image-vars.h
-@@ -103,6 +103,9 @@ KVM_NVHE_ALIAS(gic_nonsecure_priorities);
- KVM_NVHE_ALIAS(__start___kvm_ex_table);
- KVM_NVHE_ALIAS(__stop___kvm_ex_table);
- 
-+/* Array containing bases of nVHE per-CPU memory regions. */
-+KVM_NVHE_ALIAS(kvm_arm_hyp_percpu_base);
-+
- #endif /* CONFIG_KVM */
- 
- #endif /* __ARM64_KERNEL_IMAGE_VARS_H */
-diff --git a/arch/arm64/kvm/hyp/nvhe/Makefile b/arch/arm64/kvm/hyp/nvhe/Makefile
-index ddde15fe85f2..c45f440cce51 100644
---- a/arch/arm64/kvm/hyp/nvhe/Makefile
-+++ b/arch/arm64/kvm/hyp/nvhe/Makefile
-@@ -6,7 +6,8 @@
- asflags-y := -D__KVM_NVHE_HYPERVISOR__
- ccflags-y := -D__KVM_NVHE_HYPERVISOR__
- 
--obj-y := timer-sr.o sysreg-sr.o debug-sr.o switch.o tlb.o hyp-init.o host.o hyp-main.o
-+obj-y := timer-sr.o sysreg-sr.o debug-sr.o switch.o tlb.o hyp-init.o host.o \
-+	 hyp-main.o percpu.o
- obj-y += ../vgic-v3-sr.o ../aarch32.o ../vgic-v2-cpuif-proxy.o ../entry.o \
- 	 ../fpsimd.o ../hyp-entry.o
- 
-diff --git a/arch/arm64/kvm/hyp/nvhe/percpu.c b/arch/arm64/kvm/hyp/nvhe/percpu.c
-new file mode 100644
-index 000000000000..5fd0c5696907
---- /dev/null
-+++ b/arch/arm64/kvm/hyp/nvhe/percpu.c
-@@ -0,0 +1,22 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ * Copyright (C) 2020 - Google LLC
-+ * Author: David Brazdil <dbrazdil@google.com>
-+ */
-+
-+#include <asm/kvm_asm.h>
-+#include <asm/kvm_hyp.h>
-+#include <asm/kvm_mmu.h>
-+
-+unsigned long __hyp_per_cpu_offset(unsigned int cpu)
++static void init_cpu_logical_map(void)
 +{
-+	unsigned long *cpu_base_array;
-+	unsigned long this_cpu_base;
++	extern u64 kvm_nvhe_sym(__cpu_logical_map)[NR_CPUS];
++	int cpu;
 +
-+	if (cpu >= ARRAY_SIZE(kvm_arm_hyp_percpu_base))
++	/*
++	 * Copy the MPIDR <-> logical CPU ID mapping to hyp.
++	 * Only copy the set of online CPUs whose features have been chacked
++	 * against the finalized system capabilities. The hypervisor will not
++	 * allow any other CPUs from the `possible` set to boot.
++	 */
++	for_each_online_cpu(cpu)
++		CHOOSE_NVHE_SYM(__cpu_logical_map)[cpu] = cpu_logical_map(cpu);
++}
++
+ static int init_common_resources(void)
+ {
+ 	return kvm_set_ipa_limit();
+@@ -1659,6 +1674,8 @@ static int init_hyp_mode(void)
+ 		}
+ 	}
+ 
++	init_cpu_logical_map();
++
+ 	return 0;
+ 
+ out_err:
+diff --git a/arch/arm64/kvm/hyp/nvhe/percpu.c b/arch/arm64/kvm/hyp/nvhe/percpu.c
+index 5fd0c5696907..d0b9dbc2df45 100644
+--- a/arch/arm64/kvm/hyp/nvhe/percpu.c
++++ b/arch/arm64/kvm/hyp/nvhe/percpu.c
+@@ -8,6 +8,22 @@
+ #include <asm/kvm_hyp.h>
+ #include <asm/kvm_mmu.h>
+ 
++/*
++ * nVHE copy of data structures tracking available CPU cores.
++ * Only entries for CPUs that were online at KVM init are populated.
++ * Other CPUs should not be allowed to boot because their features were
++ * not checked against the finalized system capabilities.
++ */
++u64 __ro_after_init __cpu_logical_map[NR_CPUS] = { [0 ... NR_CPUS-1] = INVALID_HWID };
++
++u64 cpu_logical_map(int cpu)
++{
++	if (cpu < 0 || cpu >= ARRAY_SIZE(__cpu_logical_map))
 +		hyp_panic();
 +
-+	cpu_base_array = kern_hyp_va(&kvm_arm_hyp_percpu_base[0]);
-+	this_cpu_base = kern_hyp_va(cpu_base_array[cpu]);
-+	return this_cpu_base - (unsigned long)&__per_cpu_start;
++	return __cpu_logical_map[cpu];
 +}
++
+ unsigned long __hyp_per_cpu_offset(unsigned int cpu)
+ {
+ 	unsigned long *cpu_base_array;
 -- 
 2.29.2.222.g5d2a92d10f8-goog
 
