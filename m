@@ -2,38 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF6B22ABA04
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 14:15:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2882C2ABA9D
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 14:23:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733250AbgKINO5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 08:14:57 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41356 "EHLO mail.kernel.org"
+        id S2387993AbgKINUy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 08:20:54 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48526 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1733241AbgKINOv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 08:14:51 -0500
+        id S2387988AbgKINUw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 08:20:52 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E0C6120663;
-        Mon,  9 Nov 2020 13:14:50 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6C0EA2076E;
+        Mon,  9 Nov 2020 13:20:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604927691;
-        bh=rLhjXJeRAW8D0097gZ8jQCcXv8gLYuj/zeHcbNeT4lQ=;
+        s=default; t=1604928051;
+        bh=GSlhinP0ajG89SWkjKT8XVTuEdeiZOeCztjRjQ9zIfg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=xF29v1Dr2Pup66Q0egzcVCH1CBoS0XgyLVpcKC0gPEDRVeg7l2hfnFqoQ681B4z5S
-         L+rzfEClx+l6KVzsKb1wIt+MJ37jfK8XQtef9KtUVCVAtaDajuCBbS/t9dgpfO6Dbj
-         S5Y9YhVKvQO9LQxSrSo6THrsAZwxJUH4QuUeUP7I=
+        b=rVtjKaUUO329E/LiHarrXjUJUSzGWUrJpUlMoa4KxRYTLdQ8q2QvLnm481F1j9pX9
+         Td+cfj9NbjLxz22+9evtGX3RqE4V2m7anRIFKUr1u/1qkXfMqNKw0DjKGs/eZaZWQc
+         YguYSPVhDm0v2jS4YFBCBqhk+G9SM1U4VvaGKT4k=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
-        Felipe Balbi <balbi@kernel.org>
-Subject: [PATCH 5.4 75/85] usb: dwc3: ep0: Fix delay status handling
-Date:   Mon,  9 Nov 2020 13:56:12 +0100
-Message-Id: <20201109125026.180567725@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>
+Subject: [PATCH 5.9 111/133] s390/mm: make pmd/pud_deref() large page aware
+Date:   Mon,  9 Nov 2020 13:56:13 +0100
+Message-Id: <20201109125036.029459109@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201109125022.614792961@linuxfoundation.org>
-References: <20201109125022.614792961@linuxfoundation.org>
+In-Reply-To: <20201109125030.706496283@linuxfoundation.org>
+References: <20201109125030.706496283@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,43 +44,115 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Thinh Nguyen <Thinh.Nguyen@synopsys.com>
+From: Gerald Schaefer <gerald.schaefer@linux.ibm.com>
 
-commit fa27e2f6c5e674f3f1225f9ca7a7821faaf393bb upstream.
+commit b0e98aa9c411585eb586b2fa98873c936735008e upstream.
 
-If we want to send a control status on our own time (through
-delayed_status), make sure to handle a case where we may queue the
-delayed status before the host requesting for it (when XferNotReady
-is generated). Otherwise, the driver won't send anything because it's
-not EP0_STATUS_PHASE yet. To resolve this, regardless whether
-dwc->ep0state is EP0_STATUS_PHASE, make sure to clear the
-dwc->delayed_status flag if dwc3_ep0_send_delayed_status() is called.
-The control status can be sent when the host requests it later.
+pmd/pud_deref() assume that they will never operate on large pmd/pud
+entries, and therefore only use the non-large _xxx_ENTRY_ORIGIN mask.
+With commit 9ec8fa8dc331b ("s390/vmemmap: extend modify_pagetable()
+to handle vmemmap"), that assumption is no longer true, at least for
+pmd_deref().
 
-Cc: <stable@vger.kernel.org>
-Fixes: d97c78a1908e ("usb: dwc3: gadget: END_TRANSFER before CLEAR_STALL command")
-Signed-off-by: Thinh Nguyen <Thinh.Nguyen@synopsys.com>
-Signed-off-by: Felipe Balbi <balbi@kernel.org>
+In theory, we could end up with wrong addresses because some of the
+non-address bits of a large entry would not be masked out.
+In practice, this does not (yet) show any impact, because vmemmap_free()
+is currently never used for s390.
+
+Fix pmd/pud_deref() to check for the entry type and use the
+_xxx_ENTRY_ORIGIN_LARGE mask for large entries.
+
+While at it, also move pmd/pud_pfn() around, in order to avoid code
+duplication, because they do the same thing.
+
+Fixes: 9ec8fa8dc331b ("s390/vmemmap: extend modify_pagetable() to handle vmemmap")
+Cc: <stable@vger.kernel.org> # 5.9
+Signed-off-by: Gerald Schaefer <gerald.schaefer@linux.ibm.com>
+Reviewed-by: Alexander Gordeev <agordeev@linux.ibm.com>
+Signed-off-by: Heiko Carstens <hca@linux.ibm.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/usb/dwc3/ep0.c |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ arch/s390/include/asm/pgtable.h |   52 +++++++++++++++++++++++-----------------
+ 1 file changed, 30 insertions(+), 22 deletions(-)
 
---- a/drivers/usb/dwc3/ep0.c
-+++ b/drivers/usb/dwc3/ep0.c
-@@ -1058,10 +1058,11 @@ void dwc3_ep0_send_delayed_status(struct
- {
- 	unsigned int direction = !dwc->ep0_expect_in;
- 
-+	dwc->delayed_status = false;
-+
- 	if (dwc->ep0state != EP0_STATUS_PHASE)
- 		return;
- 
--	dwc->delayed_status = false;
- 	__dwc3_ep0_do_control_status(dwc, dwc->eps[direction]);
+--- a/arch/s390/include/asm/pgtable.h
++++ b/arch/s390/include/asm/pgtable.h
+@@ -691,16 +691,6 @@ static inline int pud_large(pud_t pud)
+ 	return !!(pud_val(pud) & _REGION3_ENTRY_LARGE);
  }
  
+-static inline unsigned long pud_pfn(pud_t pud)
+-{
+-	unsigned long origin_mask;
+-
+-	origin_mask = _REGION_ENTRY_ORIGIN;
+-	if (pud_large(pud))
+-		origin_mask = _REGION3_ENTRY_ORIGIN_LARGE;
+-	return (pud_val(pud) & origin_mask) >> PAGE_SHIFT;
+-}
+-
+ #define pmd_leaf	pmd_large
+ static inline int pmd_large(pmd_t pmd)
+ {
+@@ -746,16 +736,6 @@ static inline int pmd_none(pmd_t pmd)
+ 	return pmd_val(pmd) == _SEGMENT_ENTRY_EMPTY;
+ }
+ 
+-static inline unsigned long pmd_pfn(pmd_t pmd)
+-{
+-	unsigned long origin_mask;
+-
+-	origin_mask = _SEGMENT_ENTRY_ORIGIN;
+-	if (pmd_large(pmd))
+-		origin_mask = _SEGMENT_ENTRY_ORIGIN_LARGE;
+-	return (pmd_val(pmd) & origin_mask) >> PAGE_SHIFT;
+-}
+-
+ #define pmd_write pmd_write
+ static inline int pmd_write(pmd_t pmd)
+ {
+@@ -1230,11 +1210,39 @@ static inline pte_t mk_pte(struct page *
+ #define pud_index(address) (((address) >> PUD_SHIFT) & (PTRS_PER_PUD-1))
+ #define pmd_index(address) (((address) >> PMD_SHIFT) & (PTRS_PER_PMD-1))
+ 
+-#define pmd_deref(pmd) (pmd_val(pmd) & _SEGMENT_ENTRY_ORIGIN)
+-#define pud_deref(pud) (pud_val(pud) & _REGION_ENTRY_ORIGIN)
+ #define p4d_deref(pud) (p4d_val(pud) & _REGION_ENTRY_ORIGIN)
+ #define pgd_deref(pgd) (pgd_val(pgd) & _REGION_ENTRY_ORIGIN)
+ 
++static inline unsigned long pmd_deref(pmd_t pmd)
++{
++	unsigned long origin_mask;
++
++	origin_mask = _SEGMENT_ENTRY_ORIGIN;
++	if (pmd_large(pmd))
++		origin_mask = _SEGMENT_ENTRY_ORIGIN_LARGE;
++	return pmd_val(pmd) & origin_mask;
++}
++
++static inline unsigned long pmd_pfn(pmd_t pmd)
++{
++	return pmd_deref(pmd) >> PAGE_SHIFT;
++}
++
++static inline unsigned long pud_deref(pud_t pud)
++{
++	unsigned long origin_mask;
++
++	origin_mask = _REGION_ENTRY_ORIGIN;
++	if (pud_large(pud))
++		origin_mask = _REGION3_ENTRY_ORIGIN_LARGE;
++	return pud_val(pud) & origin_mask;
++}
++
++static inline unsigned long pud_pfn(pud_t pud)
++{
++	return pud_deref(pud) >> PAGE_SHIFT;
++}
++
+ /*
+  * The pgd_offset function *always* adds the index for the top-level
+  * region/segment table. This is done to get a sequence like the
 
 
