@@ -2,98 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B7082AB17B
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 07:57:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 71F6D2AB17D
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 07:58:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729618AbgKIG5q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 01:57:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48762 "EHLO
+        id S1729593AbgKIG6l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 01:58:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48906 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727077AbgKIG5p (ORCPT
+        with ESMTP id S1729092AbgKIG6l (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 01:57:45 -0500
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D948C0613D3
-        for <linux-kernel@vger.kernel.org>; Sun,  8 Nov 2020 22:57:45 -0800 (PST)
-Received: by mail-pl1-x643.google.com with SMTP id t18so4272832plo.0
-        for <linux-kernel@vger.kernel.org>; Sun, 08 Nov 2020 22:57:45 -0800 (PST)
+        Mon, 9 Nov 2020 01:58:41 -0500
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A5AEC0613CF
+        for <linux-kernel@vger.kernel.org>; Sun,  8 Nov 2020 22:58:41 -0800 (PST)
+Received: by mail-pg1-x541.google.com with SMTP id f27so2928663pgl.1
+        for <linux-kernel@vger.kernel.org>; Sun, 08 Nov 2020 22:58:41 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to:user-agent;
-        bh=KF1/cMn6ow1Nl4dL4x6qzs3WxXHhYa+fonGftd0XHGk=;
-        b=zXLhGIo6SEIUKcewyE6ufIb64yJVWCABNtTkBYh7d4D4TvYXa540vr/vFWmzrxVxyb
-         wlC0XFXCqonycWbXTsMVO+x3Py2FcLnChddb3OLJ3dHSS1jUaozYWj2h74tMNky805Uw
-         lOObM4byt6gHew/oAXo1GSDjAxHmOjPTe/D30uCZl/Rji4N4RWJH1n0EHvS0LMlTTY5e
-         h6iD19z5V/2lsqIBMxCuPE3/J0o1IoJNinBcoUQtFEtYKl05r24H3x0kFQ1yWbb1jdi0
-         XyOkkwP7iOzCyo84BvoARxMew7Flcf1qG2gciFljzZc+UgbEDc3bSwkFZxCi307NPWcH
-         +zpQ==
+        bh=2m8+zrjrEqIAdz7ru4iFegmvw0HBGZhyRWa9kU3n9ac=;
+        b=j4bgt8ZPiyFYAstlaw2H3AO9CW/Lqa+F4KKiN2s0inqCxfxSJQarTfHBVGlOMAOTEA
+         MV1FSBH1cUgIeZL51laSQKpr7EXW32f2p8Fo66uWSi9ErUFd0TV/XQqQFQvBlbusvAdf
+         NPtRC2XjcOn3MrcdZhO6NhXpJYkMvcAYifzoLtn3kREK7bSWhgdrRv7sfybzLjP1crER
+         /fddalax0aIc5hcBDH47mtUHX2QzYazuzHBScfrAcPAIfoDVoEEW1KR74tQek+PZ3VOt
+         JeiigLBjYI67Dr5RAG/rsQZ8bm6e36R5ussthERMlnTrcIdspyn1OwpBrBRv3S3BIBIl
+         WITA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=KF1/cMn6ow1Nl4dL4x6qzs3WxXHhYa+fonGftd0XHGk=;
-        b=D7E6X5AusIypcWRqhgkdcZsD+q/dlqfUyIEqgpaPHO5qmyHgHk2T2h1UbzRO3tdHbA
-         UdSks/aFO6EHtVxAyvh1QSvb7T7/G94l4vPBdnYcfIfnb5R0tz+ZCytJWrmQJ+8fzmbA
-         CgAbIPSyEgtT8xRS2PiSCY4C+SPj+fbSymfaWjukWyGfyUuQZIoH+dshOawWXL5IO8L2
-         Xa4ntEqNlz/lJEIc4faHvChBpexIUxwJuCwMEAJaTnbhSG2YeDfPs3tfH+hIifUcKC7R
-         yQUKzlyW73m7rqaLJr7iwNMXdJ6gBz7bbyxoc3ckVjfASxRo0y9+XTM1hFTXE/A95Tyy
-         B8qQ==
-X-Gm-Message-State: AOAM532HwPVgJeRtV6/ux3nIeJtMxA9KZLHZXLyscPvCcVqsyquFZdRT
-        LDubFm117IpIqoCymmeE8LWOyA==
-X-Google-Smtp-Source: ABdhPJw+XEDLwRGrEJmvpdHPokEDmxTA6uwQTvouoJ2/owTVyISLQ9AuM70t0bW5X57j8Gwmgr9IJA==
-X-Received: by 2002:a17:902:6bc8:b029:d6:d9d:f28c with SMTP id m8-20020a1709026bc8b02900d60d9df28cmr11217116plt.17.1604905065103;
-        Sun, 08 Nov 2020 22:57:45 -0800 (PST)
+        bh=2m8+zrjrEqIAdz7ru4iFegmvw0HBGZhyRWa9kU3n9ac=;
+        b=lfu1JF+kB8rX51irKvFcruJ+lfDdLSOQiNrD2INmMf/PDMsKruuu3N8IMEnm9cX6KX
+         W/mqwo/sE12qebPNpg8Z2XgntlXM4LX05zmSA4kItxiw8Byj8OIOuE9ACODrXtzPn43I
+         jpFyckR0+U3WK+ZtdOV5Cu4TO9aw1x6F4ORN1CS67EPITUUc/3u2RWQCCYXYG+Y0XTBK
+         PbcjHwMbIZqzgUcz1MUIal0oYMhNFgtR5YC51iUuhQABPfL+OjIyqvC/MURC9pdQmw+E
+         5HIMwYHvlidDfbn2o4jOi4Payzw/sQFEEie4CiV8vHXbUzWHoTOquI4quNsPRURHMFYQ
+         HV4Q==
+X-Gm-Message-State: AOAM532n3LuSNB5uq8hJ5Szl3Wp8pZQY/aM8iG71vrotoXItl5+o7uSS
+        tjtWMWs2mhaBdt8Br4FvTbsYAA==
+X-Google-Smtp-Source: ABdhPJyMlIcB+i2+e0Cq91DtTvjHI7oKbKtjB9O82fkoKSZdp7bADUbNT8k4pkKJg+exgv2q+9/sJQ==
+X-Received: by 2002:a63:5146:: with SMTP id r6mr12066092pgl.212.1604905120975;
+        Sun, 08 Nov 2020 22:58:40 -0800 (PST)
 Received: from localhost ([122.172.12.172])
-        by smtp.gmail.com with ESMTPSA id d9sm3157998pfn.191.2020.11.08.22.57.43
+        by smtp.gmail.com with ESMTPSA id gf17sm10582972pjb.15.2020.11.08.22.58.39
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sun, 08 Nov 2020 22:57:43 -0800 (PST)
-Date:   Mon, 9 Nov 2020 12:27:42 +0530
+        Sun, 08 Nov 2020 22:58:40 -0800 (PST)
+Date:   Mon, 9 Nov 2020 12:28:38 +0530
 From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Lukasz Luba <lukasz.luba@arm.com>
-Cc:     Nicola Mazzucato <nicola.mazzucato@arm.com>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
-        sudeep.holla@arm.com, rjw@rjwysocki.net, vireshk@kernel.org,
-        robh+dt@kernel.org, sboyd@kernel.org, nm@ti.com,
-        daniel.lezcano@linaro.org, morten.rasmussen@arm.com,
-        chris.redpath@arm.com
-Subject: Re: [PATCH v3 3/3] [RFC] CPUFreq: Add support for
- cpu-perf-dependencies
-Message-ID: <20201109065742.22czfgyjhsjmkytf@vireshk-i7>
-References: <20201102120115.29993-1-nicola.mazzucato@arm.com>
- <20201102120115.29993-4-nicola.mazzucato@arm.com>
- <20201106092020.za3oxg7gutzc3y2b@vireshk-i7>
- <0a334a73-45ef-58ff-7dfd-9df6f4ff290a@arm.com>
- <20201106105514.bhtdklyhn7goml64@vireshk-i7>
- <7f73bcd6-0f06-4ef0-7f02-0751e6c4d94b@arm.com>
+To:     Ionela Voinescu <ionela.voinescu@arm.com>
+Cc:     rjw@rjwysocki.net, lenb@kernel.org, sudeep.holla@arm.com,
+        morten.rasmussen@arm.com, jeremy.linton@arm.com,
+        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/8] cppc_cpufreq: fix misspelling, code style and
+ readability issues
+Message-ID: <20201109065838.xja23gzvy7ku2rvl@vireshk-i7>
+References: <20201105125524.4409-1-ionela.voinescu@arm.com>
+ <20201105125524.4409-2-ionela.voinescu@arm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <7f73bcd6-0f06-4ef0-7f02-0751e6c4d94b@arm.com>
+In-Reply-To: <20201105125524.4409-2-ionela.voinescu@arm.com>
 User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 06-11-20, 11:14, Lukasz Luba wrote:
-> I also had similar doubts, because if we make frequency requests
-> independently for each CPU, why not having N cooling devs, which
-> will set independently QoS max freq for them...
+On 05-11-20, 12:55, Ionela Voinescu wrote:
+> Fix a few trivial issues in the cppc_cpufreq driver:
 > 
-> What convinced me:
-> EAS and FIE would know the 'real' frequency of the cluster, IPA
-> can use it also and have only one cooling device per cluster.
+>  - indentation of function arguments
+>  - consistent use of tabs (vs space) in defines
+>  - spelling: s/Offest/Offset, s/trasition/transition
+>  - order of local variables, from long pointers to structures to
+>    short ret and i (index) variables, to improve readability
 > 
-> We would like to keep this old style 'one cooling device per cpuset'.
-> I don't have strong opinion and if it would appear that there are
-> some errors in freq estimation for cluster, then maybe it does make
-> more sense to have cdev per CPU...
+> Signed-off-by: Ionela Voinescu <ionela.voinescu@arm.com>
+> Cc: Rafael J. Wysocki <rjw@rjwysocki.net>
+> Cc: Viresh Kumar <viresh.kumar@linaro.org>
+> ---
+>  drivers/cpufreq/cppc_cpufreq.c | 32 ++++++++++++++++----------------
+>  1 file changed, 16 insertions(+), 16 deletions(-)
 
-Let me rephrase my question. What is it that doesn't work _correctly_
-with cdev per cpufreq policy in your case? What doesn't work well if
-the thermal stuff keeps looking at only the related_cpus thing and not
-the cpu-perf-dependencies thing?
+Acked-by: Viresh Kumar <viresh.kumar@linaro.org>
 
 -- 
 viresh
