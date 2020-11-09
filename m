@@ -2,39 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 947502AB95C
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 14:09:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BDC932AB91E
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 14:07:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731685AbgKINIe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 08:08:34 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33322 "EHLO mail.kernel.org"
+        id S1730970AbgKINFz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 08:05:55 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58210 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731664AbgKINIb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 08:08:31 -0500
+        id S1730834AbgKINFW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 08:05:22 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 91D3B2076E;
-        Mon,  9 Nov 2020 13:08:30 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 09CA2216C4;
+        Mon,  9 Nov 2020 13:05:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604927311;
-        bh=ComJf9D52Oz0A/H1nooircs6qDFo+Nb/quiTYKT8his=;
+        s=default; t=1604927116;
+        bh=BOsl6SC0tXgvyKcXa4j+kfTk4+H/XUveJ0IHI+8yMGI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=JKg48L6V5pZsfDt75pgEg2En+CF68m6YMqWdrS54FRoZCYLuDCQumMw6HXTfgbYsR
-         /YLnO9ByXtBHwaaMcr0fe9RU54ZkD24Pil0SLqJRdTiY59bkBsWTWpTo9+aspy/O83
-         Z4qpqFTuFsq3zN5Xusfd8nTWbZMZ1Khwf7j/eVeI=
+        b=Bketw6aRNPUk6euEH/GsjlmyOBF51UU780t+dHTpLqNvxmaI5sJfiSljLRHcG6EuY
+         ow2oZUre36U7In6mYZTz0fwmK+/+ASMpQE5621F/pOkrJqCkvdzrJmkOySJuO/B4+4
+         5ijdXfjr7GFKH6YYZVtjM6A4LmnXUYXAH3UEN4nY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Qu Wenruo <wqu@suse.com>,
-        David Sterba <dsterba@suse.com>,
-        Ben Hutchings <ben.hutchings@codethink.co.uk>
-Subject: [PATCH 4.19 17/71] btrfs: extent_io: Handle errors better in extent_write_full_page()
+        stable@vger.kernel.org, Krzysztof Kozlowski <krzk@kernel.org>
+Subject: [PATCH 4.9 085/117] ARM: s3c24xx: fix missing system reset
 Date:   Mon,  9 Nov 2020 13:55:11 +0100
-Message-Id: <20201109125020.725148118@linuxfoundation.org>
+Message-Id: <20201109125029.722160245@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201109125019.906191744@linuxfoundation.org>
-References: <20201109125019.906191744@linuxfoundation.org>
+In-Reply-To: <20201109125025.630721781@linuxfoundation.org>
+References: <20201109125025.630721781@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,90 +41,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Qu Wenruo <wqu@suse.com>
+From: Krzysztof Kozlowski <krzk@kernel.org>
 
-commit 3065976b045f77a910809fa7699f99a1e7c0dbbb upstream.
+commit f6d7cde84f6c5551586c8b9b68d70f8e6dc9a000 upstream.
 
-Since now flush_write_bio() could return error, kill the BUG_ON() first.
-Then don't call flush_write_bio() unconditionally, instead we check the
-return value from __extent_writepage() first.
+Commit f6361c6b3880 ("ARM: S3C24XX: remove separate restart code")
+removed usage of the watchdog reset platform code in favor of the
+Samsung SoC watchdog driver.  However the latter was not selected thus
+S3C24xx platforms lost reset abilities.
 
-If __extent_writepage() fails, we do cleanup, and return error without
-submitting the possible corrupted or half-baked bio.
-
-If __extent_writepage() successes, then we call flush_write_bio() and
-return the result.
-
-Signed-off-by: Qu Wenruo <wqu@suse.com>
-Reviewed-by: David Sterba <dsterba@suse.com>
-Signed-off-by: David Sterba <dsterba@suse.com>
-Signed-off-by: Ben Hutchings <ben.hutchings@codethink.co.uk>
+Cc: <stable@vger.kernel.org>
+Fixes: f6361c6b3880 ("ARM: S3C24XX: remove separate restart code")
+Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- fs/btrfs/extent_io.c |   24 +++++++++++++++++++++---
- 1 file changed, 21 insertions(+), 3 deletions(-)
 
---- a/fs/btrfs/extent_io.c
-+++ b/fs/btrfs/extent_io.c
-@@ -160,6 +160,16 @@ static int __must_check submit_one_bio(s
- 	return blk_status_to_errno(ret);
- }
- 
-+/* Cleanup unsubmitted bios */
-+static void end_write_bio(struct extent_page_data *epd, int ret)
-+{
-+	if (epd->bio) {
-+		epd->bio->bi_status = errno_to_blk_status(ret);
-+		bio_endio(epd->bio);
-+		epd->bio = NULL;
-+	}
-+}
-+
- /*
-  * Submit bio from extent page data via submit_one_bio
-  *
-@@ -3461,6 +3471,9 @@ done:
-  * records are inserted to lock ranges in the tree, and as dirty areas
-  * are found, they are marked writeback.  Then the lock bits are removed
-  * and the end_io handler clears the writeback ranges
-+ *
-+ * Return 0 if everything goes well.
-+ * Return <0 for error.
-  */
- static int __extent_writepage(struct page *page, struct writeback_control *wbc,
- 			      struct extent_page_data *epd)
-@@ -3528,6 +3541,7 @@ done:
- 		end_extent_writepage(page, ret, start, page_end);
- 	}
- 	unlock_page(page);
-+	ASSERT(ret <= 0);
- 	return ret;
- 
- done_unlocked:
-@@ -4067,7 +4081,6 @@ retry:
- int extent_write_full_page(struct page *page, struct writeback_control *wbc)
- {
- 	int ret;
--	int flush_ret;
- 	struct extent_page_data epd = {
- 		.bio = NULL,
- 		.tree = &BTRFS_I(page->mapping->host)->io_tree,
-@@ -4076,9 +4089,14 @@ int extent_write_full_page(struct page *
- 	};
- 
- 	ret = __extent_writepage(page, wbc, &epd);
-+	ASSERT(ret <= 0);
-+	if (ret < 0) {
-+		end_write_bio(&epd, ret);
-+		return ret;
-+	}
- 
--	flush_ret = flush_write_bio(&epd);
--	BUG_ON(flush_ret < 0);
-+	ret = flush_write_bio(&epd);
-+	ASSERT(ret <= 0);
- 	return ret;
- }
- 
+---
+ arch/arm/Kconfig |    2 ++
+ 1 file changed, 2 insertions(+)
+
+--- a/arch/arm/Kconfig
++++ b/arch/arm/Kconfig
+@@ -601,7 +601,9 @@ config ARCH_S3C24XX
+ 	select HAVE_S3C_RTC if RTC_CLASS
+ 	select MULTI_IRQ_HANDLER
+ 	select NEED_MACH_IO_H
++	select S3C2410_WATCHDOG
+ 	select SAMSUNG_ATAGS
++	select WATCHDOG
+ 	help
+ 	  Samsung S3C2410, S3C2412, S3C2413, S3C2416, S3C2440, S3C2442, S3C2443
+ 	  and S3C2450 SoCs based systems, such as the Simtec Electronics BAST
 
 
