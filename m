@@ -2,246 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C855C2AB2A4
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 09:44:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CD5FC2AB2A6
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 09:44:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729710AbgKIIo3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 03:44:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37304 "EHLO
+        id S1729759AbgKIIof (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 03:44:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37320 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726127AbgKIIo3 (ORCPT
+        with ESMTP id S1729730AbgKIIoe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 03:44:29 -0500
-Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E7B1C0613CF
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Nov 2020 00:44:28 -0800 (PST)
-Received: by mail-io1-xd44.google.com with SMTP id r9so8959311ioo.7
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Nov 2020 00:44:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=RIRgyAMXJjLfVFMqCQlszvGTKJgWTVVNdfsMpr9P4rg=;
-        b=JeW7DbmVCEFLd0s7HWdYCXyYhQ3TX8n3xXniE9dcywi8mvjno1nTRp1ZoJqHTYh2Gm
-         hCHyovA4zkBP5Z98O5aFbk25wfrQojLUir6AgGHMGBgsO6HtcY7TFi56eeIe/QRcjXlM
-         Ll4pg+Y53NQkNKsg2cNjQBroeIAR5PCQ7lWQ/8K/Af6fZEetcrKo9WyzlGyLsWAYgu/a
-         tyZCxqnQb+mhuw1xB25mnRyC4E+TORvfVzEsJ8wGtwRo1SjjO3MotxdPVtFFHJWSoeZo
-         YnGJo68LMUH4FbWP8+ozCxeMm17qXYYQmxylbqTVHFVyyVQobQ8v04Dca53uZeU7a1md
-         BIPA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=RIRgyAMXJjLfVFMqCQlszvGTKJgWTVVNdfsMpr9P4rg=;
-        b=SKuqbTIBmOHq02mdDdt1a4sxodq21CVJOQwQ04+oR1doTIYyh9lkdfsqLW9FpcTnad
-         sG5bFBEM+Y8P1I/f7IQeC//+IrQBqrn6Lnd+Wgu1ifFxqWaIeUKUEFrALuOLVyYFFUTh
-         tccC9Z6YrLLbjXn2HoXfR4aKvZYU0XM3weBswHibBM2I3FKKB/w3/yp4920e6gncpOti
-         r0weGrjDVfIz0HsHxoXFy47rImjmkT6evvLctC2Zc1Sbh/603mLC+Jk/OBJ/ly86rnf8
-         pTFrryOfej2oFnP4Pj7YCMwbGRGbxy+L9u+8GESWhxdRqQmtSblYJd8LqeDeMTzoUWA2
-         9MDA==
-X-Gm-Message-State: AOAM532u74OUAqj0WSco0lL7uDb4OSZXnCj1ZhW7HMkdUPRL9LbPZNlr
-        h8qLHxvrTA+9nGveqbSuFRs=
-X-Google-Smtp-Source: ABdhPJxDXETH46W+Gjo2nbBtBz1OcySj31kaHUoP/+PtcYlCGEFCIkyO+94E2iMHk6Z4xHubvjYI+g==
-X-Received: by 2002:a5d:858b:: with SMTP id f11mr9345620ioj.0.1604911466861;
-        Mon, 09 Nov 2020 00:44:26 -0800 (PST)
-Received: from auth2-smtp.messagingengine.com (auth2-smtp.messagingengine.com. [66.111.4.228])
-        by smtp.gmail.com with ESMTPSA id l4sm5345607ioj.41.2020.11.09.00.44.25
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 09 Nov 2020 00:44:25 -0800 (PST)
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailauth.nyi.internal (Postfix) with ESMTP id DF64E27C0054;
-        Mon,  9 Nov 2020 03:44:22 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute5.internal (MEProxy); Mon, 09 Nov 2020 03:44:22 -0500
-X-ME-Sender: <xms:ZgGpXxFjfV2awZUnORsETQQCJSUz1HBSKwsIqmF3gV4Cvy9VBijBVQ>
-    <xme:ZgGpX2WQBs-SmO9QkN3C6FVmpEjWZ6dzanpt03QgnvlFDyr_g1CqKLwXFHS0o06Q-
-    NyJCB6RPhKSVFsHPg>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedruddugedguddvjecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpeffhffvuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepuehoqhhu
-    nhcuhfgvnhhguceosghoqhhunhdrfhgvnhhgsehgmhgrihhlrdgtohhmqeenucggtffrrg
-    htthgvrhhnpedvleeigedugfegveejhfejveeuveeiteejieekvdfgjeefudehfefhgfeg
-    vdegjeenucfkphepudeijedrvddvtddrvddruddvieenucevlhhushhtvghrufhiiigvpe
-    dtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegsohhquhhnodhmvghsmhhtphgruhhthhhp
-    vghrshhonhgrlhhithihqdeiledvgeehtdeigedqudejjeekheehhedvqdgsohhquhhnrd
-    hfvghngheppehgmhgrihhlrdgtohhmsehfihigmhgvrdhnrghmvg
-X-ME-Proxy: <xmx:ZgGpXzKRArYUFNLCAKdZ4ta1508JrlScM5ucCyrR8UV-PnEk-DYPiQ>
-    <xmx:ZgGpX3EqhkjBOPzTFsC7eV8MFej7WK84mdFFPeDWom-SEGub5FqrhQ>
-    <xmx:ZgGpX3VcscVuBOvDL_QbLPtdi7_SOYXWdpPNP-AF1tGuaLyYIDtjJQ>
-    <xmx:ZgGpX9dged4ShN2MFkDSQda5l_B_zqrb1eGeOUSSEYqMJUhSbL65_A>
-Received: from localhost (unknown [167.220.2.126])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 09A9A328005D;
-        Mon,  9 Nov 2020 03:44:21 -0500 (EST)
-Date:   Mon, 9 Nov 2020 16:44:10 +0800
-From:   Boqun Feng <boqun.feng@gmail.com>
-To:     Filipe Manana <fdmanana@suse.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>, peterz@infradead.org,
-        Jan Kara <jack@suse.cz>, David Sterba <dsterba@suse.com>,
-        Nikolay Borisov <nborisov@suse.com>, Qu Wenruo <wqu@suse.com>
-Subject: Re: possible lockdep regression introduced by 4d004099a668
- ("lockdep: Fix lockdep recursion")
-Message-ID: <20201109084410.GA286534@boqun-archlinux>
-References: <a5cf643b-842f-7a60-73c7-85d738a9276f@suse.com>
- <20201103140828.GA2713762@boqun-archlinux>
- <283e8f43-91d1-7a19-ed9a-ac6cd13d41ce@suse.com>
- <20201104022236.GA1118860@boqun-archlinux>
- <20201104033914.GA2739173@boqun-archlinux>
- <f8a30ef7-f03b-26d5-21df-f7f8ac373bae@suse.com>
- <7fd90864-a15d-8757-017e-7d73a7d4eac8@suse.com>
- <20201105011012.GB2748545@boqun-archlinux>
+        Mon, 9 Nov 2020 03:44:34 -0500
+Received: from mail.andi.de1.cc (mail.andi.de1.cc [IPv6:2a01:238:4321:8900:456f:ecd6:43e:202c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CD80C0613CF;
+        Mon,  9 Nov 2020 00:44:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=kemnade.info; s=20180802; h=Content-Transfer-Encoding:Content-Type:
+        MIME-Version:References:In-Reply-To:Message-ID:Subject:Cc:To:From:Date:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=TzAYk+oLfVC+xVZW8MM6v2hBnX5j/D5hCWL6Cocma5o=; b=Dt4afT0z6eA27cnX+8KRhbMcrn
+        29om7M2uPWubzw18vMW7SHfQwjicrvhjDvY+Ez+XvS+hyyWqy8n8jRGptzGAajg5ylxKGRw5aNIJ0
+        e/Y1Rd44uXpCKW7i6+fg/LsUwsCATVPJsbZuRcIGbVeNg170AZnX0e7jwJz0SwR+oivA=;
+Received: from p200300ccff0815001a3da2fffebfd33a.dip0.t-ipconnect.de ([2003:cc:ff08:1500:1a3d:a2ff:febf:d33a] helo=aktux)
+        by mail.andi.de1.cc with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.89)
+        (envelope-from <andreas@kemnade.info>)
+        id 1kc2mn-0008R6-8n; Mon, 09 Nov 2020 09:44:25 +0100
+Date:   Mon, 9 Nov 2020 09:44:24 +0100
+From:   Andreas Kemnade <andreas@kemnade.info>
+To:     Henrik Rydberg <rydberg@bitmath.org>
+Cc:     Brad Campbell <brad@fnarfbargle.com>,
+        Arnd Bergmann <arnd@arndb.de>, linux-hwmon@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        hns@goldelico.com, Guenter Roeck <linux@roeck-us.net>,
+        Jean Delvare <jdelvare@suse.com>
+Subject: Re: [PATCH v3] applesmc: Re-work SMC comms
+Message-ID: <20201109094424.1c10651f@aktux>
+In-Reply-To: <20201108101429.GA28460@mars.bitmath.org>
+References: <70331f82-35a1-50bd-685d-0b06061dd213@fnarfbargle.com>
+        <3c72ccc3-4de1-b5d0-423d-7b8c80991254@fnarfbargle.com>
+        <6d071547-10ee-ca92-ec8b-4b5069d04501@bitmath.org>
+        <8e117844-d62a-bcb1-398d-c59cc0d4b878@fnarfbargle.com>
+        <e5a856b1-fb1a-db5d-0fde-c86d0bcca1df@bitmath.org>
+        <aa60f673-427a-1a47-7593-54d1404c3c92@bitmath.org>
+        <9109d059-d9cb-7464-edba-3f42aa78ce92@bitmath.org>
+        <5310c0ab-0f80-1f9e-8807-066223edae13@bitmath.org>
+        <57057d07-d3a0-8713-8365-7b12ca222bae@fnarfbargle.com>
+        <41909045-9486-78d9-76c2-73b99a901b83@bitmath.org>
+        <20201108101429.GA28460@mars.bitmath.org>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201105011012.GB2748545@boqun-archlinux>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Score: -1.0 (-)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Filipe,
+On Sun, 8 Nov 2020 11:14:29 +0100
+Henrik Rydberg <rydberg@bitmath.org> wrote:
 
-On Thu, Nov 05, 2020 at 09:10:12AM +0800, Boqun Feng wrote:
-> On Wed, Nov 04, 2020 at 07:54:40PM +0000, Filipe Manana wrote:
-> [...]
+> On Sun, Nov 08, 2020 at 09:35:28AM +0100, Henrik Rydberg wrote:
+> > Hi Brad,
 > > 
-> > Ok, so I ran 5.10-rc2 plus your two patches (the fix and the debug one):
+> > On 2020-11-08 02:00, Brad Campbell wrote:  
+> > > G'day Henrik,
+> > > 
+> > > I noticed you'd also loosened up the requirement for SMC_STATUS_BUSY in read_smc(). I assume
+> > > that causes problems on the early Macbook. This is revised on the one sent earlier.
+> > > If you could test this on your Air1,1 it'd be appreciated.  
 > > 
-> > diff --git a/kernel/locking/lockdep.c b/kernel/locking/lockdep.c
-> > index b71ad8d9f1c9..b31d4ad482c7 100644
-> > --- a/kernel/locking/lockdep.c
-> > +++ b/kernel/locking/lockdep.c
-> > @@ -539,8 +539,10 @@ static struct lock_trace *save_trace(void)
-> >                 LOCK_TRACE_SIZE_IN_LONGS;
+> > No, I managed to screw up the patch; you can see that I carefully added the
+> > same treatment for the read argument, being unsure if the BUSY state would
+> > remain during the AVAILABLE data phase. I can check that again, but
+> > unfortunately the patch in this email shows the same problem.
 > > 
-> >         if (max_entries <= 0) {
-> > -               if (!debug_locks_off_graph_unlock())
-> > +               if (!debug_locks_off_graph_unlock()) {
-> > +                       WARN_ON_ONCE(1);
-> >                         return NULL;
-> > +               }
-> > 
-> >                 print_lockdep_off("BUG: MAX_STACK_TRACE_ENTRIES too low!");
-> >                 dump_stack();
-> > @@ -5465,7 +5467,7 @@ noinstr int lock_is_held_type(const struct
-> > lockdep_map *lock, int read)
-> >         unsigned long flags;
-> >         int ret = 0;
-> > 
-> > -       if (unlikely(!lockdep_enabled()))
-> > +       if (unlikely(debug_locks && !lockdep_enabled()))
-> >                 return 1; /* avoid false negative lockdep_assert_held() */
-> > 
-> >         raw_local_irq_save(flags);
-> > 
-> > With 3 runs of all fstests, the WARN_ON_ONCE(1) wasn't triggered.
-> > Unexpected, right?
-> > 
+> > I think it may be worthwhile to rethink the behavior of wait_status() here.
+> > If one machine shows no change after a certain status bit change, then
+> > perhaps the others share that behavior, and we are waiting in vain. Just
+> > imagine how many years of cpu that is, combined. ;-)  
 > 
-> Kinda, that means we still don't know why lockdep was turned off.
+> Here is a modification along that line.
 > 
-> > Should I try something else?
-> > 
+> Compared to your latest version, this one has wait_status() return the
+> actual status on success. Instead of waiting for BUSY, it waits for
+> the other status bits, and checks BUSY afterwards. So as not to wait
+> unneccesarily, the udelay() is placed together with the single
+> outb(). The return value of send_byte_data() is augmented with
+> -EAGAIN, which is then used in send_command() to create the resend
+> loop.
 > 
-> Thanks for trying this. Let me set up the reproducer on my side, and see
-> if I could get more information.
+> I reach 41 reads per second on the MBA1,1 with this version, which is
+> getting close to the performance prior to the problems.
+> 
+> From b4405457f4ba07cff7b7e4f48c47668bee176a25 Mon Sep 17 00:00:00 2001
+> From: Brad Campbell <brad@fnarfbargle.com>
+> Date: Sun, 8 Nov 2020 12:00:03 +1100
+> Subject: [PATCH] hwmon: (applesmc) Re-work SMC comms
+> 
+> Commit fff2d0f701e6 ("hwmon: (applesmc) avoid overlong udelay()")
+> introduced an issue whereby communication with the SMC became
+> unreliable with write errors like :
+> 
+> [  120.378614] applesmc: send_byte(0x00, 0x0300) fail: 0x40
+> [  120.378621] applesmc: LKSB: write data fail
+> [  120.512782] applesmc: send_byte(0x00, 0x0300) fail: 0x40
+> [  120.512787] applesmc: LKSB: write data fail
+> 
+> The original code appeared to be timing sensitive and was not reliable
+> with the timing changes in the aforementioned commit.
+> 
+> This patch re-factors the SMC communication to remove the timing
+> dependencies and restore function with the changes previously
+> committed.
+> 
+> Tested on : MacbookAir6,2 MacBookPro11,1 iMac12,2, MacBookAir1,1,
+> MacBookAir3,1
+> 
+> Fixes: fff2d0f701e6 ("hwmon: (applesmc) avoid overlong udelay()")
+> Reported-by: Andreas Kemnade <andreas@kemnade.info>
+> Tested-by: Andreas Kemnade <andreas@kemnade.info> # MacBookAir6,2
+> Acked-by: Arnd Bergmann <arnd@arndb.de>
+> Signed-off-by: Brad Campbell <brad@fnarfbargle.com>
+> Signed-off-by: Henrik Rydberg <rydberg@bitmath.org>
+> 
+> ---
+> Changelog : 
+> v1 : Inital attempt
+> v2 : Address logic and coding style
+> v3 : Removed some debug hangover. Added tested-by. Modifications for MacBookAir1,1
+> v4 : Do not expect busy state to appear without other state changes
 > 
 
-I could hit this with btrfs/187, and when we hit it, lockdep will report
-the deadlock and turn off, and I think this is the root cause for your
-hitting the original problem, I will add some analysis after the lockdep
-splat.
-
-[12295.973309] ============================================
-[12295.974770] WARNING: possible recursive locking detected
-[12295.974770] 5.10.0-rc2-btrfs-next-71 #20 Not tainted
-[12295.974770] --------------------------------------------
-[12295.974770] zsh/701247 is trying to acquire lock:
-[12295.974770] ffff92cef43480b8 (&eb->lock){++++}-{2:2}, at: btrfs_tree_read_lock_atomic+0x34/0x140 [btrfs]
-[12295.974770] 
-               but task is already holding lock:
-[12295.974770] ffff92cef434a038 (&eb->lock){++++}-{2:2}, at: btrfs_tree_read_lock_atomic+0x34/0x140 [btrfs]
-[12295.974770] 
-               other info that might help us debug this:
-[12295.974770]  Possible unsafe locking scenario:
-
-[12295.974770]        CPU0
-[12295.974770]        ----
-[12295.974770]   lock(&eb->lock);
-[12295.974770]   lock(&eb->lock);
-[12295.974770] 
-                *** DEADLOCK ***
-
-[12295.974770]  May be due to missing lock nesting notation
-
-[12295.974770] 2 locks held by zsh/701247:
-[12295.974770]  #0: ffff92cef3d315b0 (&sig->cred_guard_mutex){+.+.}-{3:3}, at: bprm_execve+0xaa/0x920
-[12295.974770]  #1: ffff92cef434a038 (&eb->lock){++++}-{2:2}, at: btrfs_tree_read_lock_atomic+0x34/0x140 [btrfs]
-[12295.974770] 
-               stack backtrace:
-[12295.974770] CPU: 6 PID: 701247 Comm: zsh Not tainted 5.10.0-rc2-btrfs-next-71 #20
-[12295.974770] Hardware name: Microsoft Corporation Virtual Machine/Virtual Machine, BIOS Hyper-V UEFI Release v4.0 12/17/2019
-[12295.974770] Call Trace:
-[12295.974770]  dump_stack+0x8b/0xb0
-[12295.974770]  __lock_acquire.cold+0x175/0x2e9
-[12295.974770]  lock_acquire+0x15b/0x490
-[12295.974770]  ? btrfs_tree_read_lock_atomic+0x34/0x140 [btrfs]
-[12295.974770]  ? read_block_for_search+0xf4/0x350 [btrfs]
-[12295.974770]  _raw_read_lock+0x40/0xa0
-[12295.974770]  ? btrfs_tree_read_lock_atomic+0x34/0x140 [btrfs]
-[12295.974770]  btrfs_tree_read_lock_atomic+0x34/0x140 [btrfs]
-[12295.974770]  btrfs_search_slot+0x6ac/0xca0 [btrfs]
-[12295.974770]  btrfs_lookup_xattr+0x7d/0xd0 [btrfs]
-[12295.974770]  btrfs_getxattr+0x67/0x130 [btrfs]
-[12295.974770]  __vfs_getxattr+0x53/0x70
-[12295.974770]  get_vfs_caps_from_disk+0x68/0x1a0
-[12295.974770]  ? sched_clock_cpu+0x114/0x180
-[12295.974770]  cap_bprm_creds_from_file+0x181/0x6c0
-[12295.974770]  security_bprm_creds_from_file+0x2a/0x40
-[12295.974770]  begin_new_exec+0xf4/0xc40
-[12295.974770]  ? load_elf_phdrs+0x6b/0xb0
-[12295.974770]  load_elf_binary+0x66b/0x1620
-[12295.974770]  ? read_hv_sched_clock_tsc+0x5/0x20
-[12295.974770]  ? sched_clock+0x5/0x10
-[12295.974770]  ? sched_clock_local+0x12/0x80
-[12295.974770]  ? sched_clock_cpu+0x114/0x180
-[12295.974770]  bprm_execve+0x3ce/0x920
-[12295.974770]  do_execveat_common+0x1b0/0x1f0
-[12295.974770]  __x64_sys_execve+0x39/0x50
-[12295.974770]  do_syscall_64+0x33/0x80
-[12295.974770]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-[12295.974770] RIP: 0033:0x7f6aaefc13cb
-[12295.974770] Code: 48 3d 00 f0 ff ff 76 e7 f7 d8 64 41 89 00 eb df 0f 1f 80 00 00 00 00 f7 d8 64 41 89 00 eb dc f3 0f 1e fa b8 3b 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d 75 4a 0f 00 f7 d8 64 89 01 48
-[12295.974770] RSP: 002b:00007ffd33b54d58 EFLAGS: 00000207 ORIG_RAX: 000000000000003b
-[12295.974770] RAX: ffffffffffffffda RBX: 00007f6aaf28bc88 RCX: 00007f6aaefc13cb
-[12295.974770] RDX: 00007ffd33b5fd98 RSI: 00007f6aaf28bc88 RDI: 00007ffd33b55280
-[12295.974770] RBP: 00007ffd33b54d80 R08: 00007ffd33b54ce0 R09: 0000000000000001
-[12295.974770] R10: 0000000000000008 R11: 0000000000000207 R12: 00007ffd33b55280
-
-The deadlock senario reported by this splat is as follow:
-
-	CPU 0					CPU 2
-	=====					=====
-	btrfs_search_slot():
-	  btrfs_tree_read_lock_atomic():
-	    read_lock(&eb->lock);		<a random writer>
-						write_lock(&eb->lock);
-						// waiting for the lock
-	  ...
-	  btrfs_tree_read_lock_atomic():
-	    read_lock(&eb->lock); // blocked because the fairness.
-
-In short, you can not use nested read_lock() on the same lock. However,
-I'm not sure whether we have the real problem here, because I don't
-think btrfs_search_slot() can pick the same extent buffer twice in
-btrfs_search_slot(). Also copy the author of the code for more
-information.
+still works here (MacBookAir6,2)
 
 Regards,
-Boqun
-
-> Regards,
-> Boqun
-> 
-> > Thanks.
-> > 
-> > 
+Andreas
