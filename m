@@ -2,113 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EF932AC120
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 17:43:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D8962AC125
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 17:43:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730518AbgKIQmy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 11:42:54 -0500
-Received: from mail-40134.protonmail.ch ([185.70.40.134]:36031 "EHLO
-        mail-40134.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726410AbgKIQmx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 11:42:53 -0500
-Date:   Mon, 09 Nov 2020 16:42:44 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me; s=protonmail;
-        t=1604940170; bh=B3gjp1cx0ay+GW92ZkmYrI76+YY6rmkXid9EU3kmo4M=;
-        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
-        b=cHg3+r/VBaOAQAqKH7+E2qA9Hc9DX0O2NnWAHfX+/aedZZOas+n2vI0jWC/816fSq
-         zjs9J4sOo/Cr8uOuHaxIBf8bFtVMP+QsG/qmybPsLDTiVG1o7sTJqYhE/NWQrxJT/T
-         IdQjGmpSidm5ASb6acIiDSOXEy4/Seq1bHl3kEh8S+tMrto/GkeTFEIZXkk2c8neeA
-         WyIKivXtWw5sGzcccnPZi5HDx+aiCb899aGkUX1jLgepX3w7C8a5J5wY6MeVx7ipGI
-         geMD+EtF/ZbiDcFUTLULkT0LiITrtt7uHM5VNJtrnXYasLphmsr8bHHQQGAPW5+rP1
-         lhk0Zyc/Ydd7g==
-To:     Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-From:   Alexander Lobakin <alobakin@pm.me>
-Cc:     Alexander Lobakin <alobakin@pm.me>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Reply-To: Alexander Lobakin <alobakin@pm.me>
-Subject: Re: [PATCH net] net: udp: fix Fast/frag0 UDP GRO
-Message-ID: <XSgG3DIkTqqsRK6pTSfiht6Uyy0DaJYdPbHjPv1ac@cp4-web-027.plabs.ch>
-In-Reply-To: <CA+FuTSfokZNJv2g2mCK284UTj7nN_-qXei42J4QWt7YniSrKog@mail.gmail.com>
-References: <YazU6GEzBdpyZMDMwJirxDX7B4sualpDG68ADZYvJI@cp4-web-034.plabs.ch> <CA+FuTSfokZNJv2g2mCK284UTj7nN_-qXei42J4QWt7YniSrKog@mail.gmail.com>
+        id S1730694AbgKIQnb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 11:43:31 -0500
+Received: from mga01.intel.com ([192.55.52.88]:1653 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729776AbgKIQn3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 11:43:29 -0500
+IronPort-SDR: 6aQ7ALDdk7n8Z5ENq04jUQpaGUbrhuKXv1dHcSaCTCW30FdyzePAeI/cJZQKNrABwZi8rxCp3Y
+ TuTmDYWvN7ig==
+X-IronPort-AV: E=McAfee;i="6000,8403,9800"; a="187783395"
+X-IronPort-AV: E=Sophos;i="5.77,463,1596524400"; 
+   d="scan'208";a="187783395"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Nov 2020 08:43:29 -0800
+IronPort-SDR: H1V8KyPf0wcvkNUvdF5+a4c610izO+KjuBsGbpn82hGuLRwo1mphJ4miZO0Fo+ghnBR7ea8319
+ I3u1sgIkOyow==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,463,1596524400"; 
+   d="scan'208";a="428055322"
+Received: from lkp-server01.sh.intel.com (HELO d0be80f1a028) ([10.239.97.150])
+  by fmsmga001.fm.intel.com with ESMTP; 09 Nov 2020 08:43:28 -0800
+Received: from kbuild by d0be80f1a028 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1kcAGN-0000IS-9O; Mon, 09 Nov 2020 16:43:27 +0000
+Date:   Tue, 10 Nov 2020 00:42:57 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [rcu:kcsan] BUILD SUCCESS
+ 1d094cefc37e5ed4dec44a41841c8628f6b548a2
+Message-ID: <5fa97191.lQ5icIRF5BloqMNT%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-Date: Mon, 9 Nov 2020 09:36:12 -0500
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git  kcsan
+branch HEAD: 1d094cefc37e5ed4dec44a41841c8628f6b548a2  kcsan: Fix encoding masks and regain address bit
 
-> On Sat, Nov 7, 2020 at 8:11 PM Alexander Lobakin <alobakin@pm.me> wrote:
->>
->> While testing UDP GSO fraglists forwarding through driver that uses
->> Fast GRO (via napi_gro_frags()), I was observing lots of out-of-order
->> iperf packets:
->>
->> [ ID] Interval           Transfer     Bitrate         Jitter
->> [SUM]  0.0-40.0 sec  12106 datagrams received out-of-order
->>
->> Simple switch to napi_gro_receive() any other method without frag0
->> shortcut completely resolved them.
->>
->> I've found that UDP GRO uses udp_hdr(skb) in its .gro_receive()
->> callback. While it's probably OK for non-frag0 paths (when all
->> headers or even the entire frame are already in skb->data), this
->> inline points to junk when using Fast GRO (napi_gro_frags() or
->> napi_gro_receive() with only Ethernet header in skb->data and all
->> the rest in shinfo->frags) and breaks GRO packet compilation and
->> the packet flow itself.
->> To support both modes, skb_gro_header_fast() + skb_gro_header_slow()
->> are typically used. UDP even has an inline helper that makes use of
->> them, udp_gro_udphdr(). Use that instead of troublemaking udp_hdr()
->> to get rid of the out-of-order delivers.
->>
->> Present since the introduction of plain UDP GRO in 5.0-rc1.
->>
->> Fixes: e20cf8d3f1f7 ("udp: implement GRO for plain UDP sockets.")
->> Signed-off-by: Alexander Lobakin <alobakin@pm.me>
->> ---
->>  net/ipv4/udp_offload.c | 2 +-
->>  1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/net/ipv4/udp_offload.c b/net/ipv4/udp_offload.c
->> index e67a66fbf27b..13740e9fe6ec 100644
->> --- a/net/ipv4/udp_offload.c
->> +++ b/net/ipv4/udp_offload.c
->> @@ -366,7 +366,7 @@ static struct sk_buff *udp4_ufo_fragment(struct sk_b=
-uff *skb,
->>  static struct sk_buff *udp_gro_receive_segment(struct list_head *head,
->>                                                struct sk_buff *skb)
->>  {
->> -       struct udphdr *uh =3D udp_hdr(skb);
->> +       struct udphdr *uh =3D udp_gro_udphdr(skb);
->>         struct sk_buff *pp =3D NULL;
->>         struct udphdr *uh2;
->>         struct sk_buff *p;
->
-> Good catch. skb_gro_header_slow may fail and return NULL. Need to
-> check that before dereferencing uh below in
+elapsed time: 797m
 
-Ah, sure. It's very unlikely condition, but "better safe than sorry"
-(c). Thanks, will do v2 soon.
+configs tested: 92
+configs skipped: 2
 
->>         /* requires non zero csum, for symmetry with GSO */
->>         if (!uh->check) {
->>                 NAPI_GRO_CB(skb)->flush =3D 1;
->>                 return NULL;
->>         }
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-Al
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+powerpc                    sam440ep_defconfig
+powerpc                     pseries_defconfig
+m68k                         amcore_defconfig
+arm                         s5pv210_defconfig
+xtensa                  audio_kc705_defconfig
+nios2                         3c120_defconfig
+powerpc                mpc7448_hpc2_defconfig
+arm                          badge4_defconfig
+arm                       multi_v4t_defconfig
+h8300                               defconfig
+arc                                 defconfig
+mips                      fuloong2e_defconfig
+sh                         microdev_defconfig
+arm                            mmp2_defconfig
+arm                          collie_defconfig
+sh                        sh7757lcr_defconfig
+m68k                        m5307c3_defconfig
+arm                             rpc_defconfig
+m68k                        m5272c3_defconfig
+c6x                              alldefconfig
+powerpc                      pmac32_defconfig
+arm                          imote2_defconfig
+arm                         shannon_defconfig
+nds32                               defconfig
+arm                           corgi_defconfig
+arm                          gemini_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+c6x                              allyesconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+i386                 randconfig-a004-20201109
+i386                 randconfig-a006-20201109
+i386                 randconfig-a005-20201109
+i386                 randconfig-a001-20201109
+i386                 randconfig-a003-20201109
+i386                 randconfig-a002-20201109
+i386                 randconfig-a014-20201109
+i386                 randconfig-a015-20201109
+i386                 randconfig-a013-20201109
+i386                 randconfig-a016-20201109
+i386                 randconfig-a011-20201109
+i386                 randconfig-a012-20201109
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+x86_64                                   rhel
+x86_64                           allyesconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                                  kexec
 
+clang tested configs:
+x86_64               randconfig-a012-20201109
+x86_64               randconfig-a015-20201109
+x86_64               randconfig-a013-20201109
+x86_64               randconfig-a011-20201109
+x86_64               randconfig-a014-20201109
+x86_64               randconfig-a016-20201109
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
