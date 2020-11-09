@@ -2,66 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9704D2AC3A4
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 19:22:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EFD42AC3AE
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 19:23:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730544AbgKISWm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 13:22:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43014 "EHLO
+        id S1730696AbgKISWx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 13:22:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43020 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730477AbgKISWk (ORCPT
+        with ESMTP id S1730332AbgKISWm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 13:22:40 -0500
-Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF303C0613CF
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Nov 2020 10:22:39 -0800 (PST)
-Received: by mail-wr1-x436.google.com with SMTP id 23so9806360wrc.8
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Nov 2020 10:22:39 -0800 (PST)
+        Mon, 9 Nov 2020 13:22:42 -0500
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDA0EC0613CF
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Nov 2020 10:22:41 -0800 (PST)
+Received: by mail-wm1-x343.google.com with SMTP id d142so390818wmd.4
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Nov 2020 10:22:41 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=ADB+AAqc36iIolfkYxxVJScxpF6foqJc0x2xHW3DbKM=;
-        b=vImUAQgru/P1DyZmBgAln/TyoEMcDySk7hxkXNzXfIPa+mv5PhGgEQZsAA25vJfOc/
-         jaErWIcHgnjxf/YaUETrcNKHUEAUW0SfwslvXmOf6Pn+eDGzpccebenmrULsxPBDQ9LE
-         6ecSrXNhd1US1iUnpPZAYFPZiaZUFIHYQHPYMdhIqy1qywCmb7VLJnFFewBL+XlcIT2r
-         fl+xPCo/nDNwQZm6RUhO9y0bkcR12jGYkVwxzoRAyh8nR4BmnhVMaSFIOCfucNJhkRjq
-         PUCxPvDlr+kEhvHOpdSgUce/jRskV3yeqKdYRU89lB4NVy53+m03mt3kqS6CrltaYOT1
-         D2bg==
+        bh=agE410NhHkG/VilLjKYAizauXJMrtB10xUIGh/10Z74=;
+        b=Z4+xXsux0cuxaF0X0CxSUo3a337YVpcYhtV1lfsrsLYeg+rP4mBKxEDnfCcV32WgQs
+         nwvFDV0UVswNzv+7k9HnNM9G42WDu95sxlT3VuXoi73XDGB9l7A3Sd6ny3gvazveNwCa
+         9BF3Lm8IbmMKQLvBRIrW8GctWJWfoNTZslH//t/ip+jPJuTZwgO/3BP+dNUZz1zwdUO5
+         D/3nfNGkBbHbn4XHeEJB2/HS32axERrHMrMitwM8hiYsiwk/osob6aQ5y3A0A8JbCRMG
+         D1Vg8ROq/Fn28PyM2WXP/DincnC/LRQ7WGSGhTWQbp0J9f52aTUCQGArOWmWLceSZENc
+         /KDw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=ADB+AAqc36iIolfkYxxVJScxpF6foqJc0x2xHW3DbKM=;
-        b=otGgAOKR/Y8rfHU3tiFqwUJdR1GB26z4JweV7qD5tJaKrdGsHRmh3cdCpjjpOYGcBe
-         KYJ768PG2oqO8VbGh/IuuolB/+KVOpPf7tX8P8r9fnlMq8skoDRQTG7xPjfhHOUUIip0
-         Dkrshctvqqwxv0sRHbhwmSlv9ZI0cfB03YL+l1iPDDNoG1e2JE3QK9q0mys4t/WBMJiT
-         3D4gt2cCuBAn0uDP9DBWhB+xLEve1FrkSOhZwFBCS7LCIL6mgyvEaJ+PT/6vCYTg71/E
-         H4PH2bReaKLBUm6TBrav8yiogHITgkhexxQyvLEsMXk9VECcF7YbDN7gXBTM+mJxWUCo
-         5DTw==
-X-Gm-Message-State: AOAM53074SVs3+JUAnfcKMQxEEKt8TenR73OXMSOuSZlujT7Y2VrCYqv
-        3YW5OXyh2NEos+AUgCwIjU3Hog==
-X-Google-Smtp-Source: ABdhPJweKjVihFPDGUyG8QTWMX/jceAlHX92Eopvs5Ax2RtHmD14lk1ab7w58X0SKxD3UhLKCbjr5Q==
-X-Received: by 2002:adf:fb06:: with SMTP id c6mr20536782wrr.117.1604946158570;
-        Mon, 09 Nov 2020 10:22:38 -0800 (PST)
+        bh=agE410NhHkG/VilLjKYAizauXJMrtB10xUIGh/10Z74=;
+        b=B4BVPebsyUO4oCZ0DXCFwUI3bgFhj4SLdYBKHxAptdrE9x7/dfcX3kmybPhF72M9wT
+         mbDBkp1QIOXdmvlEmpYbnEg5P+UlTwD34dz6mXWlAVpECAKu2oXds5AcekwhKX5K3/nj
+         DIKO9eK4/qZO6JHaczxMQfYvjI/GgHUEpiT2OCG2yWEIU3hUs4w4QaE7WOobcPN0404f
+         koT0Od7M39kV5zC843SkQTOIqn9+5EfT1A3WUV5nYmDxSk1JmzRdPdSFJs25mvB0jIG9
+         /sNKdtizoB0xAlWOUBuqkT39WR2ywfETCxChGNyWuz1kNLGQrA0MihZEF35G0ZAdIB8Y
+         I3Jg==
+X-Gm-Message-State: AOAM533jo0ccNPFgZ0TlOuRVyw5j5rg/t5CRx0KX7DXghA8KafxLFU3+
+        LYHo2IkNhmdA23RC0YhnvO7mx0fo3jjLq7uG
+X-Google-Smtp-Source: ABdhPJyw3u7oovt0s0+EZWOET6iA5NhMchu1kRYIDRZYcKaCmHuKTbHQTjEihlIA9JdcEXKzNEVNSw==
+X-Received: by 2002:a7b:c772:: with SMTP id x18mr445117wmk.185.1604946160461;
+        Mon, 09 Nov 2020 10:22:40 -0800 (PST)
 Received: from dell.default ([91.110.221.180])
-        by smtp.gmail.com with ESMTPSA id g186sm735365wma.1.2020.11.09.10.22.37
+        by smtp.gmail.com with ESMTPSA id g186sm735365wma.1.2020.11.09.10.22.39
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 09 Nov 2020 10:22:37 -0800 (PST)
+        Mon, 09 Nov 2020 10:22:39 -0800 (PST)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
-Cc:     linux-kernel@vger.kernel.org,
-        Brian Norris <computersforpeace@gmail.com>,
-        Kamal Dasu <kdasu.kdev@gmail.com>,
+Cc:     linux-kernel@vger.kernel.org, Richard Weinberger <richard@nod.at>,
         Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
         Vignesh Raghavendra <vigneshr@ti.com>,
-        linux-mtd@lists.infradead.org,
-        bcm-kernel-feedback-list@broadcom.com,
-        Florian Fainelli <f.fainelli@gmail.com>
-Subject: [PATCH v3 13/23] mtd: rawnand: brcmnand: Demote non-conformant kernel-doc headers
-Date:   Mon,  9 Nov 2020 18:21:56 +0000
-Message-Id: <20201109182206.3037326-14-lee.jones@linaro.org>
+        linux-mtd@lists.infradead.org
+Subject: [PATCH v3 14/23] mtd: ubi: gluebi: Fix misnamed function parameter documentation
+Date:   Mon,  9 Nov 2020 18:21:57 +0000
+Message-Id: <20201109182206.3037326-15-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20201109182206.3037326-1-lee.jones@linaro.org>
 References: <20201109182206.3037326-1-lee.jones@linaro.org>
@@ -73,67 +68,31 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Fixes the following W=1 kernel build warning(s):
 
- drivers/mtd/nand/raw/brcmnand/brcmnand.c:1854: warning: Function parameter or member 'host' not described in 'brcmnand_edu_trans'
- drivers/mtd/nand/raw/brcmnand/brcmnand.c:1854: warning: Function parameter or member 'addr' not described in 'brcmnand_edu_trans'
- drivers/mtd/nand/raw/brcmnand/brcmnand.c:1854: warning: Function parameter or member 'buf' not described in 'brcmnand_edu_trans'
- drivers/mtd/nand/raw/brcmnand/brcmnand.c:1854: warning: Function parameter or member 'len' not described in 'brcmnand_edu_trans'
- drivers/mtd/nand/raw/brcmnand/brcmnand.c:1854: warning: Function parameter or member 'cmd' not described in 'brcmnand_edu_trans'
- drivers/mtd/nand/raw/brcmnand/brcmnand.c:1951: warning: Function parameter or member 'host' not described in 'brcmnand_fill_dma_desc'
- drivers/mtd/nand/raw/brcmnand/brcmnand.c:1951: warning: Function parameter or member 'desc' not described in 'brcmnand_fill_dma_desc'
- drivers/mtd/nand/raw/brcmnand/brcmnand.c:1951: warning: Function parameter or member 'addr' not described in 'brcmnand_fill_dma_desc'
- drivers/mtd/nand/raw/brcmnand/brcmnand.c:1951: warning: Function parameter or member 'buf' not described in 'brcmnand_fill_dma_desc'
- drivers/mtd/nand/raw/brcmnand/brcmnand.c:1951: warning: Function parameter or member 'len' not described in 'brcmnand_fill_dma_desc'
- drivers/mtd/nand/raw/brcmnand/brcmnand.c:1951: warning: Function parameter or member 'dma_cmd' not described in 'brcmnand_fill_dma_desc'
- drivers/mtd/nand/raw/brcmnand/brcmnand.c:1951: warning: Function parameter or member 'begin' not described in 'brcmnand_fill_dma_desc'
- drivers/mtd/nand/raw/brcmnand/brcmnand.c:1951: warning: Function parameter or member 'end' not described in 'brcmnand_fill_dma_desc'
- drivers/mtd/nand/raw/brcmnand/brcmnand.c:1951: warning: Function parameter or member 'next_desc' not described in 'brcmnand_fill_dma_desc'
- drivers/mtd/nand/raw/brcmnand/brcmnand.c:1977: warning: Function parameter or member 'host' not described in 'brcmnand_dma_run'
- drivers/mtd/nand/raw/brcmnand/brcmnand.c:1977: warning: Function parameter or member 'desc' not described in 'brcmnand_dma_run'
+ drivers/mtd/ubi/gluebi.c:446: warning: Function parameter or member 'ns_ptr' not described in 'gluebi_notify'
+ drivers/mtd/ubi/gluebi.c:446: warning: Excess function parameter 'ptr' description in 'gluebi_notify'
 
-Cc: Brian Norris <computersforpeace@gmail.com>
-Cc: Kamal Dasu <kdasu.kdev@gmail.com>
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>
 Cc: Richard Weinberger <richard@nod.at>
+Cc: Miquel Raynal <miquel.raynal@bootlin.com>
 Cc: Vignesh Raghavendra <vigneshr@ti.com>
 Cc: linux-mtd@lists.infradead.org
-Cc: bcm-kernel-feedback-list@broadcom.com
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
-Acked-by: Florian Fainelli <f.fainelli@gmail.com>
 ---
- drivers/mtd/nand/raw/brcmnand/brcmnand.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/mtd/ubi/gluebi.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/mtd/nand/raw/brcmnand/brcmnand.c b/drivers/mtd/nand/raw/brcmnand/brcmnand.c
-index 2da39ab892869..659eaa6f0980c 100644
---- a/drivers/mtd/nand/raw/brcmnand/brcmnand.c
-+++ b/drivers/mtd/nand/raw/brcmnand/brcmnand.c
-@@ -1846,7 +1846,7 @@ static void brcmnand_write_buf(struct nand_chip *chip, const uint8_t *buf,
- 	}
- }
- 
--/**
-+/*
-  *  Kick EDU engine
+diff --git a/drivers/mtd/ubi/gluebi.c b/drivers/mtd/ubi/gluebi.c
+index cc547b37cace5..1b980d15d9fbf 100644
+--- a/drivers/mtd/ubi/gluebi.c
++++ b/drivers/mtd/ubi/gluebi.c
+@@ -439,7 +439,7 @@ static int gluebi_resized(struct ubi_volume_info *vi)
+  * gluebi_notify - UBI notification handler.
+  * @nb: registered notifier block
+  * @l: notification type
+- * @ptr: pointer to the &struct ubi_notification object
++ * @ns_ptr: pointer to the &struct ubi_notification object
   */
- static int brcmnand_edu_trans(struct brcmnand_host *host, u64 addr, u32 *buf,
-@@ -1937,7 +1937,7 @@ static int brcmnand_edu_trans(struct brcmnand_host *host, u64 addr, u32 *buf,
- 	return ret;
- }
- 
--/**
-+/*
-  * Construct a FLASH_DMA descriptor as part of a linked list. You must know the
-  * following ahead of time:
-  *  - Is this descriptor the beginning or end of a linked list?
-@@ -1970,7 +1970,7 @@ static int brcmnand_fill_dma_desc(struct brcmnand_host *host,
- 	return 0;
- }
- 
--/**
-+/*
-  * Kick the FLASH_DMA engine, with a given DMA descriptor
-  */
- static void brcmnand_dma_run(struct brcmnand_host *host, dma_addr_t desc)
+ static int gluebi_notify(struct notifier_block *nb, unsigned long l,
+ 			 void *ns_ptr)
 -- 
 2.25.1
 
