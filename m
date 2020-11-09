@@ -2,119 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE58D2AC0FE
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 17:35:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E42EE2AC104
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 17:35:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730275AbgKIQfH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 11:35:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54338 "EHLO
+        id S1730602AbgKIQfe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 11:35:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54414 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730208AbgKIQfF (ORCPT
+        with ESMTP id S1729570AbgKIQfd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 11:35:05 -0500
-Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DDCEC0613CF
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Nov 2020 08:35:05 -0800 (PST)
-Received: by mail-ej1-x642.google.com with SMTP id o9so13194564ejg.1
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Nov 2020 08:35:05 -0800 (PST)
+        Mon, 9 Nov 2020 11:35:33 -0500
+Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FA30C0613CF;
+        Mon,  9 Nov 2020 08:35:33 -0800 (PST)
+Received: by mail-lj1-x243.google.com with SMTP id s9so9385396ljo.11;
+        Mon, 09 Nov 2020 08:35:33 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=tessares-net.20150623.gappssmtp.com; s=20150623;
-        h=to:cc:references:from:subject:message-id:date:user-agent
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
          :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=iJKPrJRnBan+OH1HSQyOpP2QiklKNnN8Jd0BWjeUTO4=;
-        b=RUtbwDCPnkgQ7ZuaCR+msxEkYMVxgCa/j4fLJYpk2YNcEFga84B56nvc3QAaZLQ3cG
-         bPziS89SGBuWHk6KRXrKQVrRxhSJmoXX/1alxqNBoXRMKzw5lVJTYT5Apco/Fbt2Iuhf
-         /rWolaDPKPZaJU07kBb/BxuIgxXsrASNt9/RWYnP3L7o3FdZ4C6mJMDVxzPP4lmciBhK
-         5ytxJMg7P/uWe60tDWp9u0refDdGLmNVjUywAuR/ZZPtiKlCY2JTFj00pueiR0dwQ6RR
-         5aRnlKoKdA7tL1ufVCIwiJIcRwyn5D90HJ2u7GJRPL25uzay4qyzZBYG2O2Hn9K724DP
-         OVPw==
+        bh=NGAQMa+8hqksmB/zNvbqBSA91HcWOtTXAg0YiSnfUqQ=;
+        b=c59sbleX65uS8HSvh1mLRX5ytchlZ813A83XynQTdTIUxvth/nl7Tvht+oIqCuIHFY
+         GD8NYziZTPIDjvxlGA0DArIL47SAYJMi80DaEwGe1wG9Hsb0eKvt5pF9EIrkdWqZ1uEP
+         NOQhNXSAIqqH78eAaSSlpHepXTEjdzCc7CwhK4bGCCHHwMrh2Ck//l/slxcD8OWt0k5c
+         HgS8Lu8B72l4fzHuOx/8oMwTCQKK4fxRVaDh4yXkv8bpdn/tYtrBGVACHFiGGietpvnn
+         Zw6F8pdfvkmQjE4bQJbch/LpKDcqgHK2kWc3H9zrJdaJ1O4NcCRrInSlTXXaySjxLO92
+         IvOw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=iJKPrJRnBan+OH1HSQyOpP2QiklKNnN8Jd0BWjeUTO4=;
-        b=RTZ+YzF86sclTzUBKksjoDw0lwwFuigcWNEuoL8inJafST+OXvAOfg9xVMnO0b7TAa
-         +MeBqiIXbBt2RoFudOERguz2swBYoOEmXJtICgX5lhZQ5xiI3sq0jBaypHVkLNZ7Yd8A
-         yinH9wKQV2jY3WUDdht8I7uBHJ0XKKr0KMMTjdfbtFF3Xb0oir3oZPpGrtKRxuKwPzJI
-         saf+6aXYKzZ7FIcq5ULGArUQgGm0LvOLYU3qKgZAV8NTbSkCAb8fgjec5qBlcE+oRjuE
-         S0o3BCaoMtwgsR0oLm87baGGmb8csEbSu6FMSY9SEL3jAOgDoADJB7NB10taG/8wKe+5
-         4CHw==
-X-Gm-Message-State: AOAM5311FfRkTcmDLKOf0LV452rl4H365gm6Ja+TSppXL3F6d7nkbdrI
-        zyRNWwLDuBd1NsnSNSye3HOy1d3gKZWblT3p
-X-Google-Smtp-Source: ABdhPJxbjA58+Z2QyY2zPDdDkFExrvvjGDJhy+U36RQCjrwZywkEc1Pq7Ex4J9yNTXevyg3jih2VsA==
-X-Received: by 2002:a17:906:f186:: with SMTP id gs6mr16402433ejb.171.1604939703886;
-        Mon, 09 Nov 2020 08:35:03 -0800 (PST)
-Received: from tsr-lap-08.nix.tessares.net ([2a02:578:85b0:e00:42d:4528:36bd:c4ae])
-        by smtp.gmail.com with ESMTPSA id x1sm5374735edl.82.2020.11.09.08.35.02
+        bh=NGAQMa+8hqksmB/zNvbqBSA91HcWOtTXAg0YiSnfUqQ=;
+        b=sZDTo1fYHvukCQ9HHQ6ryqaS8GcxU1EEBRgXYAELrRs9mKWSzGiKnqx0mugYcORBCJ
+         zwcbZoO+QLEnJR36HTsYJW0AQl53Rtm1usfK5kICzjzWqVW6U7qANCs7v3d7gzRJ+Fuu
+         vB8dqMxIMfLeRwhbruN9jhRi9CH8ZQHyQlEHuT4Gv6eN1WrhBk+ZEVzSNvuTK5iJ05lH
+         w+3VeKqj0Zqdc/vFVwLphX7ZPRzp5q/qR9aBcsCBNGZmCHyxmM91090M0dcvqJ7Q+IGg
+         HNmxHy+YuLZWtSMOmtnaJ4AMOQhMJJJSr6KPrScUNjjf+LblaWeqAsz47EeZpTljiVbl
+         FAzQ==
+X-Gm-Message-State: AOAM5315ty0mbN1P5KHjwspRDA5L+IDhYT7rNbnSKR0xJywqLjQcz8sL
+        u6G7oepC50VUOgmukiKwj01rdrlZ/Qs=
+X-Google-Smtp-Source: ABdhPJyaeskXs3jgEVDwdj8N3cnxOy5NvrTiFeRPa39fK0pD4VZ0gqVPrJ4wFG4EYtPeOPg83MDSfQ==
+X-Received: by 2002:a2e:9449:: with SMTP id o9mr6094920ljh.457.1604939731343;
+        Mon, 09 Nov 2020 08:35:31 -0800 (PST)
+Received: from ?IPv6:2a02:a315:5445:5300:b3d1:4882:b1cf:5e61? ([2a02:a315:5445:5300:b3d1:4882:b1cf:5e61])
+        by smtp.gmail.com with ESMTPSA id l6sm1785934lfc.8.2020.11.09.08.35.29
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 09 Nov 2020 08:35:03 -0800 (PST)
-To:     Geliang Tang <geliangtang@gmail.com>,
-        Mat Martineau <mathew.j.martineau@linux.intel.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>
-Cc:     netdev@vger.kernel.org, mptcp@lists.01.org,
-        linux-kernel@vger.kernel.org,
-        Dan Carpenter <dan.carpenter@oracle.com>
-References: <cover.1604930005.git.geliangtang@gmail.com>
- <ccf004469e02fb5bd7ec822414b9a98b0015f4a3.1604930005.git.geliangtang@gmail.com>
- <0f17d2f60c188554d093e820c45caf20fe53aab0.1604930005.git.geliangtang@gmail.com>
-From:   Matthieu Baerts <matthieu.baerts@tessares.net>
-Subject: Re: [MPTCP][PATCH net 2/2] mptcp: cleanup for
- mptcp_pm_alloc_anno_list
-Message-ID: <8b1c6862-ad2f-f639-42e3-b793aefbfd78@tessares.net>
-Date:   Mon, 9 Nov 2020 17:35:02 +0100
+        Mon, 09 Nov 2020 08:35:30 -0800 (PST)
+Subject: Re: [PATCH v2] clk: exynos7: Keep aclk_fsys1_200 enabled
+To:     Sylwester Nawrocki <snawrocki@kernel.org>
+Cc:     kgene@kernel.org, krzk@kernel.org, mturquette@baylibre.com,
+        sboyd@kernel.org, s.nawrocki@samsung.com, tomasz.figa@gmail.com,
+        cw00.choi@samsung.com, linux-samsung-soc@vger.kernel.org,
+        linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+References: <20201107121456.25562-1-pawel.mikolaj.chmiel@gmail.com>
+ <a2fdef20-9c0d-ee59-bc2f-411391f4f58b@kernel.org>
+From:   =?UTF-8?Q?Pawe=c5=82_Chmiel?= <pawel.mikolaj.chmiel@gmail.com>
+Message-ID: <0efe8698-68b6-030f-4b8b-f52dbc3d1be9@gmail.com>
+Date:   Mon, 9 Nov 2020 17:35:29 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+ Thunderbird/78.3.2
 MIME-Version: 1.0
-In-Reply-To: <0f17d2f60c188554d093e820c45caf20fe53aab0.1604930005.git.geliangtang@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
+In-Reply-To: <a2fdef20-9c0d-ee59-bc2f-411391f4f58b@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Geliang,
 
-On 09/11/2020 14:59, Geliang Tang wrote:
-> This patch added NULL pointer check for mptcp_pm_alloc_anno_list, and
-> avoided similar static checker warnings in mptcp_pm_add_timer.
+
+On 09.11.2020 13:32, Sylwester Nawrocki wrote:
+> Hi Paweł,
 > 
-> Signed-off-by: Geliang Tang <geliangtang@gmail.com>
-> Reviewed-by: Dan Carpenter <dan.carpenter@oracle.com>
-
-I think Dan reviewed the v1 of your patch -- without some modifications 
-below -- but not the v2 nor this one.
-
-> ---
->   net/mptcp/pm_netlink.c | 6 ++++--
->   1 file changed, 4 insertions(+), 2 deletions(-)
+> On 11/7/20 13:14, Paweł Chmiel wrote:
+>> This clock must be always enabled to allow access to any registers in
+>> fsys1 CMU. Until proper solution based on runtime PM is applied
+>> (similar to what was done for Exynos5433), fix this by calling
+>> clk_prepare_enable() directly from clock provider driver.
+>>
+>> It was observed on Samsung Galaxy S6 device (based on Exynos7420), where
+>> UFS module is probed before pmic used to power that device.
+>> In this case defer probe was happening and that clock was disabled by
+>> UFS driver, causing whole boot to hang on next CMU access.
+>>
+>> Signed-off-by: Paweł Chmiel <pawel.mikolaj.chmiel@gmail.com>
 > 
-> diff --git a/net/mptcp/pm_netlink.c b/net/mptcp/pm_netlink.c
-> index 03f2c28f11f5..dfc1bed4a55f 100644
-> --- a/net/mptcp/pm_netlink.c
-> +++ b/net/mptcp/pm_netlink.c
-> @@ -266,7 +266,9 @@ static bool mptcp_pm_alloc_anno_list(struct mptcp_sock *msk,
->   {
->   	struct mptcp_pm_add_entry *add_entry = NULL;
->   	struct sock *sk = (struct sock *)msk;
-> -	struct net *net = sock_net(sk);
+>> --- a/drivers/clk/samsung/clk-exynos7.c
+>> +++ b/drivers/clk/samsung/clk-exynos7.c
+> 
+>> @@ -571,6 +572,10 @@ static const struct samsung_cmu_info top1_cmu_info __initconst = {
+>>   static void __init exynos7_clk_top1_init(struct device_node *np)
+>>   {
+>>   	samsung_cmu_register_one(np, &top1_cmu_info);
+>> +	/*
+>> +	 * Keep top FSYS1 aclk enabled permanently. It's required for CMU register access.
+>> +	 */
+>> +	clk_prepare_enable(__clk_lookup("aclk_fsys1_200"));
+> 
+> Thanks for the patch. Could you rework it to avoid the __clk_lookup() call?
+> I.e. could you change it to something along the lines of:
+Hi.
+I'll send v3 version with this fixed.
+
+Thanks for review and comments
+> 
+> -------------8<----------------
+> diff --git a/drivers/clk/samsung/clk-exynos7.c b/drivers/clk/samsung/clk-exynos7.c
+> index 87ee1ba..9ecf498 100644
+> --- a/drivers/clk/samsung/clk-exynos7.c
+> +++ b/drivers/clk/samsung/clk-exynos7.c
+> @@ -570,7 +570,15 @@ static const struct samsung_cmu_info top1_cmu_info __initconst = {
+>  
+>  static void __init exynos7_clk_top1_init(struct device_node *np)
+>  {
+> -       samsung_cmu_register_one(np, &top1_cmu_info);
+> +       struct samsung_clk_provider *ctx;
+> +       struct clk_hw **hws;
 > +
-> +	if (!msk)
-> +		return false;
-
-As Dan mentioned on MPTCP ML, this check is not required: "msk" cannot 
-be NULL here.
-
-We can maybe keep the cleanup (only move sock_net() below) but I don't 
-think we need or want this in -net.
-I am not even sure we want it in net-next but why not :)
-This could also be part of other refactors.
-
-Cheers,
-Matt
--- 
-Tessares | Belgium | Hybrid Access Solutions
-www.tessares.net
+> +       ctx = samsung_cmu_register_one(np, &top1_cmu_info);
+> +       if (!ctx)
+> +               return;
+> +       hws = ctx->clk_data.hws;
+> +
+> +       clk_prepare_enable(hws[CLK_ACLK_FSYS1_200]);
+>  }
+>  
+>  CLK_OF_DECLARE(exynos7_clk_top1, "samsung,exynos7-clock-top1",
+> -------------8<----------------
+> ?
+> 
+> --
+> Regards,
+> Sylwester
+> 
+> 
