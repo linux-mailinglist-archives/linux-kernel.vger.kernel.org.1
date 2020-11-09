@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 382802ABC39
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 14:35:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EE422ABC0C
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 14:35:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732848AbgKINf3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 08:35:29 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58232 "EHLO mail.kernel.org"
+        id S1732138AbgKINdf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 08:33:35 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59254 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730841AbgKINFX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 08:05:23 -0500
+        id S1731094AbgKINGa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 08:06:30 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EE49921D46;
-        Mon,  9 Nov 2020 13:05:21 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3E4A820731;
+        Mon,  9 Nov 2020 13:06:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604927122;
-        bh=g7cJEax7/diq9EUEYCl8hDxAJmf+AW9dpnMqp/rQwOI=;
+        s=default; t=1604927189;
+        bh=Z1wDiC3HwG946bzh2U4H7Ti5P50tZ77K2E8iE2Ezgis=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qpzgnEnwrDtfXGoeKpJHz9E11BZo7ZkymBYwvQ42Ejqrv5C/3SAWAU50UuS2MM/Uu
-         WiHmG3Jx5WC0BWCSGW31C2CHhB4p+IRSAFDqiWh3hcxcKy80ciTzm1XfrjjB1jvwQT
-         NHWakCsXw8uQRs61xK1qgzM+MMHl7lRY6IbnxONY=
+        b=UHxVPbew85M5y5St8TuwYxo01ejBG8LXKvYhilafoU+0Y1tSeR9H01hDjpmhITAXA
+         er9I3AzjtpBkpq98iMW7NpvM/+SiIJJFRsjRl2X1ey3eoMYombYiHEEJqVqEhId4/k
+         oBOf7LFsuC/92p5p8WXnB0ZBdSH559u0Pa98MLbs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ferry Toth <fntoth@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
-Subject: [PATCH 4.9 087/117] device property: Dont clear secondary pointer for shared primary firmware node
+        stable@vger.kernel.org, James Jurack <james.jurack@ametek.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Claudiu Manoil <claudiu.manoil@nxp.com>
+Subject: [PATCH 4.14 04/48] gianfar: Replace skb_realloc_headroom with skb_cow_head for PTP
 Date:   Mon,  9 Nov 2020 13:55:13 +0100
-Message-Id: <20201109125029.822833733@linuxfoundation.org>
+Message-Id: <20201109125016.950173940@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201109125025.630721781@linuxfoundation.org>
-References: <20201109125025.630721781@linuxfoundation.org>
+In-Reply-To: <20201109125016.734107741@linuxfoundation.org>
+References: <20201109125016.734107741@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,50 +43,70 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+From: Claudiu Manoil <claudiu.manoil@nxp.com>
 
-commit 99aed9227073fb34ce2880cbc7063e04185a65e1 upstream.
+[ Upstream commit d145c9031325fed963a887851d9fa42516efd52b ]
 
-It appears that firmware nodes can be shared between devices. In such case
-when a (child) device is about to be deleted, its firmware node may be shared
-and ACPI_COMPANION_SET(..., NULL) call for it breaks the secondary link
-of the shared primary firmware node.
+When PTP timestamping is enabled on Tx, the controller
+inserts the Tx timestamp at the beginning of the frame
+buffer, between SFD and the L2 frame header.  This means
+that the skb provided by the stack is required to have
+enough headroom otherwise a new skb needs to be created
+by the driver to accommodate the timestamp inserted by h/w.
+Up until now the driver was relying on skb_realloc_headroom()
+to create new skbs to accommodate PTP frames.  Turns out that
+this method is not reliable in this context at least, as
+skb_realloc_headroom() for PTP frames can cause random crashes,
+mostly in subsequent skb_*() calls, when multiple concurrent
+TCP streams are run at the same time with the PTP flow
+on the same device (as seen in James' report).  I also noticed
+that when the system is loaded by sending multiple TCP streams,
+the driver receives cloned skbs in large numbers.
+skb_cow_head() instead proves to be stable in this scenario,
+and not only handles cloned skbs too but it's also more efficient
+and widely used in other drivers.
+The commit introducing skb_realloc_headroom in the driver
+goes back to 2009, commit 93c1285c5d92
+("gianfar: reallocate skb when headroom is not enough for fcb").
+For practical purposes I'm referencing a newer commit (from 2012)
+that brings the code to its current structure (and fixes the PTP
+case).
 
-In order to prevent that, check, if the device has a parent and parent's
-firmware node is shared with its child, and avoid crashing the link.
-
-Fixes: c15e1bdda436 ("device property: Fix the secondary firmware node handling in set_primary_fwnode()")
-Reported-by: Ferry Toth <fntoth@gmail.com>
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Reviewed-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
-Tested-by: Ferry Toth <fntoth@gmail.com>
-Cc: 5.9+ <stable@vger.kernel.org> # 5.9+
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Fixes: 9c4886e5e63b ("gianfar: Fix invalid TX frames returned on error queue when time stamping")
+Reported-by: James Jurack <james.jurack@ametek.com>
+Suggested-by: Jakub Kicinski <kuba@kernel.org>
+Signed-off-by: Claudiu Manoil <claudiu.manoil@nxp.com>
+Link: https://lore.kernel.org/r/20201029081057.8506-1-claudiu.manoil@nxp.com
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
 ---
- drivers/base/core.c |    4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/net/ethernet/freescale/gianfar.c |   12 ++----------
+ 1 file changed, 2 insertions(+), 10 deletions(-)
 
---- a/drivers/base/core.c
-+++ b/drivers/base/core.c
-@@ -2348,6 +2348,7 @@ static inline bool fwnode_is_primary(str
-  */
- void set_primary_fwnode(struct device *dev, struct fwnode_handle *fwnode)
- {
-+	struct device *parent = dev->parent;
- 	struct fwnode_handle *fn = dev->fwnode;
+--- a/drivers/net/ethernet/freescale/gianfar.c
++++ b/drivers/net/ethernet/freescale/gianfar.c
+@@ -2370,20 +2370,12 @@ static netdev_tx_t gfar_start_xmit(struc
+ 		fcb_len = GMAC_FCB_LEN + GMAC_TXPAL_LEN;
  
- 	if (fwnode) {
-@@ -2362,7 +2363,8 @@ void set_primary_fwnode(struct device *d
- 	} else {
- 		if (fwnode_is_primary(fn)) {
- 			dev->fwnode = fn->secondary;
--			fn->secondary = ERR_PTR(-ENODEV);
-+			if (!(parent && fn == parent->fwnode))
-+				fn->secondary = ERR_PTR(-ENODEV);
- 		} else {
- 			dev->fwnode = NULL;
+ 	/* make space for additional header when fcb is needed */
+-	if (fcb_len && unlikely(skb_headroom(skb) < fcb_len)) {
+-		struct sk_buff *skb_new;
+-
+-		skb_new = skb_realloc_headroom(skb, fcb_len);
+-		if (!skb_new) {
++	if (fcb_len) {
++		if (unlikely(skb_cow_head(skb, fcb_len))) {
+ 			dev->stats.tx_errors++;
+ 			dev_kfree_skb_any(skb);
+ 			return NETDEV_TX_OK;
  		}
+-
+-		if (skb->sk)
+-			skb_set_owner_w(skb_new, skb->sk);
+-		dev_consume_skb_any(skb);
+-		skb = skb_new;
+ 	}
+ 
+ 	/* total number of fragments in the SKB */
 
 
