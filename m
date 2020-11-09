@@ -2,141 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4346C2AB08A
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 06:12:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F3F82AB091
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 06:16:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729488AbgKIFMH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 00:12:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60776 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729479AbgKIFMG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 00:12:06 -0500
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B207C0613D4
-        for <linux-kernel@vger.kernel.org>; Sun,  8 Nov 2020 21:12:05 -0800 (PST)
-Received: by mail-pf1-x442.google.com with SMTP id z3so6981375pfb.10
-        for <linux-kernel@vger.kernel.org>; Sun, 08 Nov 2020 21:12:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to
-         :user-agent;
-        bh=9NivTOlvjK/Ba6sd1R/nO7+Ag7q8swSruWnqhahAopA=;
-        b=tp5iGDWUBJG38ehlRwddPMdGWPeEgd/9hxrOkPBXCZ+SO+iKPWOTmiDH+Cwobq6HPT
-         7vViE0zYr9ka9ct70t9K8SnqDWzqSZUNXqheS/mqDinvCmYbULlqw2fzNKKZZaDq/JNb
-         SWH5tFz0k2jHt20E9oRMK11Ae5ls9HWwjMDNYTyHI5Kbrg2pXvF7zI87YhubQ1EzyJad
-         mYObBw7x8IKnecPqF3HhzwVgvVPOJjAHFuR3lQc5Ja5UpKwpy+OW+jfM2KcYeMFpwo6k
-         xonZDBUdvpRiXtq7I+1C2kznYzCUVp0KodvX7o2vRCAs/T26JnMogAFl+HGWAbBD7yH/
-         NzTg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to:user-agent;
-        bh=9NivTOlvjK/Ba6sd1R/nO7+Ag7q8swSruWnqhahAopA=;
-        b=lkXqYBSwnC4A4g+yTuyFb1WOAFTQNETz9Um+Qh18cCll+q8oBffZx8Soge3OoWfb80
-         L2nM0PMcf6SXu2MCUjgUPL2sENAhR8B2YAIazOM1JzGpALX4ficFBCbssLeFDoUeZ/Ka
-         MJjmDXpen7IXdpEkGnGwMII2hF8D6oZoWMwMjkQ+3LJfwuohUSFnZXfeCuICxKMvsIJf
-         pT4VBe3NOf0kHulgOHnARunJRThoHl0paIzPbJTI3sALL9HGOYD5zNNmYVWmQOqbFxme
-         9ibX1zFithJsyY7bEzhGum9014VgsR0hLqQ+70qGNCE0W3Tw2zFTNHy2OShSQea+jooX
-         B5yw==
-X-Gm-Message-State: AOAM532tIPrnvw7DHLT58N5ZHXmLnqCoLvEq8eHymp6+qha6gylRC2oo
-        D1cPrguSDCkaOSe/9qoD7EnY+w==
-X-Google-Smtp-Source: ABdhPJwQdhAu2WnSRc9rOfl6s0FMnSAISb0fkEJE0pdYKUv8rT41JTM2g1xJQDNhC7f/+oC7XdSzGA==
-X-Received: by 2002:a17:90a:8086:: with SMTP id c6mr11331387pjn.147.1604898724873;
-        Sun, 08 Nov 2020 21:12:04 -0800 (PST)
-Received: from localhost ([122.172.12.172])
-        by smtp.gmail.com with ESMTPSA id v23sm9687090pfn.141.2020.11.08.21.12.03
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sun, 08 Nov 2020 21:12:04 -0800 (PST)
-Date:   Mon, 9 Nov 2020 10:42:02 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Ulf Hansson <ulf.hansson@linaro.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Peter Chen <Peter.Chen@nxp.com>,
-        Mark Brown <broonie@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Peter Geis <pgwipeout@gmail.com>,
-        Nicolas Chauvet <kwizart@gmail.com>,
-        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
-        driverdevel <devel@driverdev.osuosl.org>,
-        Linux USB List <linux-usb@vger.kernel.org>,
-        linux-pwm@vger.kernel.org,
-        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        DTML <devicetree@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        linux-tegra <linux-tegra@vger.kernel.org>
-Subject: Re: [PATCH v1 00/30] Introduce core voltage scaling for NVIDIA
- Tegra20/30 SoCs
-Message-ID: <20201109051202.e4lkosy6kk334akq@vireshk-i7>
-References: <20201104234427.26477-1-digetx@gmail.com>
- <CAPDyKFr7qTU2RPhA_ZrbCayoTTNUEno1zdmvmv+8HBe-Owrfeg@mail.gmail.com>
- <cd147ab0-1304-a491-7a56-ee6199c02d32@gmail.com>
- <2716c195-083a-112f-f1e5-2f6b7152a4b5@gmail.com>
- <20201109044354.ljd5pomhob6b7u5v@vireshk-i7>
- <713b319e-bb7b-4743-59f0-b9892c3da92d@gmail.com>
- <aba1fcac-74b8-f370-ab45-312975da66e6@gmail.com>
+        id S1729406AbgKIFQE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 00:16:04 -0500
+Received: from z5.mailgun.us ([104.130.96.5]:36314 "EHLO z5.mailgun.us"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725865AbgKIFQD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 00:16:03 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1604898963; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=uTh+L8CvHLLdJK+ls2fzca5EQ/1eBi1ZJpxQzSgROEU=;
+ b=fL8EMmuWvk0fMjPcrRmZDPgqQo67CjoEyBQi31Qz40cJnADd2nYzgjlRHn8dI1ocJONbyZRn
+ xhNhhUm3GmPsVxcFZyIVNx1/phw8HPfPmUDtIPeoks+NwkjiPa13lsv39zZkLf1FjFtDEeGL
+ txzhMmv4kHqsiGtGOuhuh9qZ2gs=
+X-Mailgun-Sending-Ip: 104.130.96.5
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n03.prod.us-east-1.postgun.com with SMTP id
+ 5fa8d074e41a481b55ac5b4f (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 09 Nov 2020 05:15:32
+ GMT
+Sender: saiprakash.ranjan=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 24548C433C9; Mon,  9 Nov 2020 05:15:32 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: saiprakash.ranjan)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id B63BCC433C8;
+        Mon,  9 Nov 2020 05:15:30 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <aba1fcac-74b8-f370-ab45-312975da66e6@gmail.com>
-User-Agent: NeoMutt/20180716-391-311a52
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Mon, 09 Nov 2020 10:45:30 +0530
+From:   Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+To:     Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Jordan Crouse <jcrouse@codeaurora.org>,
+        Rob Clark <robdclark@gmail.com>
+Cc:     iommu@lists.linux-foundation.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org,
+        Akhil P Oommen <akhilpo@codeaurora.org>,
+        freedreno@lists.freedesktop.org,
+        "Kristian H . Kristensen" <hoegsberg@google.com>,
+        dri-devel@lists.freedesktop.org
+Subject: Re: [PATCHv7 0/7] System Cache support for GPU and required SMMU
+ support
+In-Reply-To: <cover.1604048969.git.saiprakash.ranjan@codeaurora.org>
+References: <cover.1604048969.git.saiprakash.ranjan@codeaurora.org>
+Message-ID: <b4ec727f58cfffc6e5b941d1508a4212@codeaurora.org>
+X-Sender: saiprakash.ranjan@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 09-11-20, 08:10, Dmitry Osipenko wrote:
-> 09.11.2020 07:47, Dmitry Osipenko пишет:
-> > 09.11.2020 07:43, Viresh Kumar пишет:
-> >> On 08-11-20, 15:19, Dmitry Osipenko wrote:
-> >>> I took a detailed look at the GENPD and tried to implement it. Here is
-> >>> what was found:
-> >>>
-> >>> 1. GENPD framework doesn't aggregate performance requests from the
-> >>> attached devices. This means that if deviceA requests performance state
-> >>> 10 and then deviceB requests state 3, then framework will set domain's
-> >>> state to 3 instead of 10.
-> >>
-> >> It does. Look at _genpd_reeval_performance_state().
-> >>
-> > 
-> > Thanks, I probably had a bug in the quick prototype and then overlooked
-> > that function.
-> > 
+On 2020-10-30 14:53, Sai Prakash Ranjan wrote:
+> Some hardware variants contain a system cache or the last level
+> cache(llc). This cache is typically a large block which is shared
+> by multiple clients on the SOC. GPU uses the system cache to cache
+> both the GPU data buffers(like textures) as well the SMMU pagetables.
+> This helps with improved render performance as well as lower power
+> consumption by reducing the bus traffic to the system memory.
 > 
-> If a non-hardware device-tree node is okay to have for the domain, then
-> I can try again.
+> The system cache architecture allows the cache to be split into slices
+> which then be used by multiple SOC clients. This patch series is an
+> effort to enable and use two of those slices preallocated for the GPU,
+> one for the GPU data buffers and another for the GPU SMMU hardware
+> pagetables.
 > 
-> What I also haven't mentioned is that GENPD adds some extra complexity
-> to some drivers (3d, video decoder) because we will need to handle both
-> new GENPD and legacy Tegra specific pre-genpd era domains.
+> Patch 1 - Patch 5 adds system cache support in SMMU and GPU driver.
+> Patch 6 and 7 are minor cleanups for arm-smmu impl.
 > 
-> I'm also not exactly sure how the topology of domains should look like
-> because Tegra has a power-controller (PMC) which manages power rail of a
-> few hardware units. Perhaps it should be
+> Changes in v7:
+>  * Squash Jordan's patch to support MMU500 targets
+>  * Rebase on top of for-joerg/arm-smmu/updates and Jordan's short
+> series for adreno-smmu impl
 > 
->   device -> PMC domain -> CORE domain
+> Changes in v6:
+>  * Move table to arm-smmu-qcom (Robin)
 > 
-> but not exactly sure for now.
+> Changes in v5:
+>  * Drop cleanup of blank lines since it was intentional (Robin)
+>  * Rebase again on top of msm-next-pgtables as it moves pretty fast
+> 
+> Changes in v4:
+>  * Drop IOMMU_SYS_CACHE prot flag
+>  * Rebase on top of
+> https://gitlab.freedesktop.org/drm/msm/-/tree/msm-next-pgtables
+> 
+> Changes in v3:
+>  * Fix domain attribute setting to before iommu_attach_device()
+>  * Fix few code style and checkpatch warnings
+>  * Rebase on top of Jordan's latest split pagetables and per-instance
+>    pagetables support
+> 
+> Changes in v2:
+>  * Addressed review comments and rebased on top of Jordan's split
+>    pagetables series
+> 
+> Jordan Crouse (1):
+>   drm/msm/a6xx: Add support for using system cache on MMU500 based
+>     targets
+> 
+> Sai Prakash Ranjan (4):
+>   iommu/io-pgtable-arm: Add support to use system cache
+>   iommu/arm-smmu: Add domain attribute for system cache
+>   iommu: arm-smmu-impl: Use table to list QCOM implementations
+>   iommu: arm-smmu-impl: Add a space before open parenthesis
+> 
+> Sharat Masetty (2):
+>   drm/msm: rearrange the gpu_rmw() function
+>   drm/msm/a6xx: Add support for using system cache(LLC)
+> 
 
-I am also confused on if it should be a domain or regulator, but that
-is for Ulf to tell :)
+Hi,
+
+Gentle Ping!
+
+Thanks,
+Sai
 
 -- 
-viresh
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a 
+member
+of Code Aurora Forum, hosted by The Linux Foundation
