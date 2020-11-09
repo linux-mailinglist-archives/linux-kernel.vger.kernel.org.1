@@ -2,111 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EB6E2AC1EC
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 18:18:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 740CB2AC1F3
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 18:19:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730900AbgKIRSL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 12:18:11 -0500
-Received: from out30-56.freemail.mail.aliyun.com ([115.124.30.56]:38201 "EHLO
-        out30-56.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730387AbgKIRSK (ORCPT
+        id S1730635AbgKIRTt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 12:19:49 -0500
+Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:7947 "EHLO
+        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729432AbgKIRTs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 12:18:10 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R101e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04420;MF=wenan.mao@linux.alibaba.com;NM=1;PH=DS;RN=9;SR=0;TI=SMTPD_---0UEnhzAV_1604942278;
-Received: from VM20200710-3.tbsite.net(mailfrom:wenan.mao@linux.alibaba.com fp:SMTPD_---0UEnhzAV_1604942278)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Tue, 10 Nov 2020 01:18:04 +0800
-From:   Mao Wenan <wenan.mao@linux.alibaba.com>
-To:     edumazet@google.com, davem@davemloft.net, kuznet@ms2.inr.ac.ru,
-        yoshfuji@linux-ipv6.org, kuba@kernel.org
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org,
-        Mao Wenan <wenan.mao@linux.alibaba.com>
-Subject: [PATCH net v4] net: Update window_clamp if SOCK_RCVBUF is set
-Date:   Tue, 10 Nov 2020 01:17:56 +0800
-Message-Id: <1604942276-92635-1-git-send-email-wenan.mao@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <CANn89iLVWFgDvkUygK8Sh_H7=qFmuZKo1h=aoq+F57J28r4EUA@mail.gmail.com>
-References: <CANn89iLVWFgDvkUygK8Sh_H7=qFmuZKo1h=aoq+F57J28r4EUA@mail.gmail.com>
+        Mon, 9 Nov 2020 12:19:48 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5fa97a3a0001>; Mon, 09 Nov 2020 09:19:54 -0800
+Received: from HQMAIL105.nvidia.com (172.20.187.12) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 9 Nov
+ 2020 17:19:44 +0000
+Received: from vidyas-desktop.nvidia.com (10.124.1.5) by mail.nvidia.com
+ (172.20.187.12) with Microsoft SMTP Server id 15.0.1473.3 via Frontend
+ Transport; Mon, 9 Nov 2020 17:19:40 +0000
+From:   Vidya Sagar <vidyas@nvidia.com>
+To:     <lorenzo.pieralisi@arm.com>, <robh+dt@kernel.org>,
+        <bhelgaas@google.com>, <thierry.reding@gmail.com>,
+        <jonathanh@nvidia.com>, <amanharitsh123@gmail.com>,
+        <dinghao.liu@zju.edu.cn>, <kw@linux.com>
+CC:     <linux-pci@vger.kernel.org>, <linux-tegra@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <kthota@nvidia.com>,
+        <mmaddireddy@nvidia.com>, <vidyas@nvidia.com>, <sagar.tv@gmail.com>
+Subject: [PATCH V4 0/6] Enhancements to Tegra194 PCIe driver
+Date:   Mon, 9 Nov 2020 22:49:31 +0530
+Message-ID: <20201109171937.28326-1-vidyas@nvidia.com>
+X-Mailer: git-send-email 2.17.1
+X-NVConfidentiality: public
+MIME-Version: 1.0
+Content-Type: text/plain
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1604942394; bh=IvYjbG1KgA2RgVe9ud9fZCD/tmcc0soDLVo+WY2WI4k=;
+        h=From:To:CC:Subject:Date:Message-ID:X-Mailer:X-NVConfidentiality:
+         MIME-Version:Content-Type;
+        b=jGviRclDUALFaFOx+2Rj72bKpCpsVZnrFDn1P9EDeOQcW0ZMmM9+4QaWPJZFraXGx
+         1Khz8ytJucSpnOJdD5uCVPm/Fuj5MzYQM/+MJ2GJw8i4G9sHDbZtSXxToY+67qzJN5
+         Cw6wVpXK+VMfDksCUA/+DvpvbVKar/Fz9iyT/Hkn0/kebjdCLL9EugTrtQa4n0gXxb
+         k3KkONzzuqLOhJHE9CGfzzW3dWsmgMURl4uUgaRzfpBvij7OsFumG81QRXgiCylkU3
+         eY5oH5RIui4R6+vNhgxfNXnztFABQgOl3DLlrTCHz0YNCeGjppofHcQBCCJfBSQYSY
+         tq9uo9oV547cg==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When net.ipv4.tcp_syncookies=1 and syn flood is happened,
-cookie_v4_check or cookie_v6_check tries to redo what
-tcp_v4_send_synack or tcp_v6_send_synack did,
-rsk_window_clamp will be changed if SOCK_RCVBUF is set,
-which will make rcv_wscale is different, the client
-still operates with initial window scale and can overshot
-granted window, the client use the initial scale but local
-server use new scale to advertise window value, and session
-work abnormally.
+This series of patches do some enhancements and some bug fixes to the
+Tegra194 PCIe platform driver like
+- Fix Vendor-ID corruption
+- Map DBI space correctly
+- Update DWC IP version
+- Continue with uninitialization sequence even if parts fail
+- Check return value of tegra_pcie_init_controller()
 
-Fixes: e88c64f0a425 ("tcp: allow effective reduction of TCP's rcv-buffer via setsockopt")
-Signed-off-by: Mao Wenan <wenan.mao@linux.alibaba.com>
----
- v4: change fixes tag format, and delay the actual call to
- tcp_full_space().
- v3: add local variable full_space, add fixes tag.
- v2: fix for ipv6.
- net/ipv4/syncookies.c | 8 +++++++-
- net/ipv6/syncookies.c | 9 ++++++++-
- 2 files changed, 15 insertions(+), 2 deletions(-)
+V4:
+* Added a new patch to address link-up issues with some of the cards
 
-diff --git a/net/ipv4/syncookies.c b/net/ipv4/syncookies.c
-index 6ac473b..8784e1f 100644
---- a/net/ipv4/syncookies.c
-+++ b/net/ipv4/syncookies.c
-@@ -327,6 +327,7 @@ struct sock *cookie_v4_check(struct sock *sk, struct sk_buff *skb)
- 	struct inet_request_sock *ireq;
- 	struct tcp_request_sock *treq;
- 	struct tcp_sock *tp = tcp_sk(sk);
-+	int full_space;
- 	const struct tcphdr *th = tcp_hdr(skb);
- 	__u32 cookie = ntohl(th->ack_seq) - 1;
- 	struct sock *ret = sk;
-@@ -427,8 +428,13 @@ struct sock *cookie_v4_check(struct sock *sk, struct sk_buff *skb)
- 
- 	/* Try to redo what tcp_v4_send_synack did. */
- 	req->rsk_window_clamp = tp->window_clamp ? :dst_metric(&rt->dst, RTAX_WINDOW);
-+	/* limit the window selection if the user enforce a smaller rx buffer */
-+	full_space = tcp_full_space(sk);
-+	if (sk->sk_userlocks & SOCK_RCVBUF_LOCK &&
-+	    (req->rsk_window_clamp > full_space || req->rsk_window_clamp == 0))
-+		req->rsk_window_clamp = full_space;
- 
--	tcp_select_initial_window(sk, tcp_full_space(sk), req->mss,
-+	tcp_select_initial_window(sk, full_space, req->mss,
- 				  &req->rsk_rcv_wnd, &req->rsk_window_clamp,
- 				  ireq->wscale_ok, &rcv_wscale,
- 				  dst_metric(&rt->dst, RTAX_INITRWND));
-diff --git a/net/ipv6/syncookies.c b/net/ipv6/syncookies.c
-index e796a64..798ede8 100644
---- a/net/ipv6/syncookies.c
-+++ b/net/ipv6/syncookies.c
-@@ -132,6 +132,7 @@ struct sock *cookie_v6_check(struct sock *sk, struct sk_buff *skb)
- 	struct tcp_request_sock *treq;
- 	struct ipv6_pinfo *np = inet6_sk(sk);
- 	struct tcp_sock *tp = tcp_sk(sk);
-+	int full_space;
- 	const struct tcphdr *th = tcp_hdr(skb);
- 	__u32 cookie = ntohl(th->ack_seq) - 1;
- 	struct sock *ret = sk;
-@@ -241,7 +242,13 @@ struct sock *cookie_v6_check(struct sock *sk, struct sk_buff *skb)
- 	}
- 
- 	req->rsk_window_clamp = tp->window_clamp ? :dst_metric(dst, RTAX_WINDOW);
--	tcp_select_initial_window(sk, tcp_full_space(sk), req->mss,
-+	/* limit the window selection if the user enforce a smaller rx buffer */
-+	full_space = tcp_full_space(sk);
-+	if (sk->sk_userlocks & SOCK_RCVBUF_LOCK &&
-+	    (req->rsk_window_clamp > full_space || req->rsk_window_clamp == 0))
-+		req->rsk_window_clamp = full_space;
-+
-+	tcp_select_initial_window(sk, full_space, req->mss,
- 				  &req->rsk_rcv_wnd, &req->rsk_window_clamp,
- 				  ireq->wscale_ok, &rcv_wscale,
- 				  dst_metric(dst, RTAX_INITRWND));
+V3:
+* Addressed Bjorn's review comments
+* Split earlier patch-4 into two
+  - Continue with the uninitialization sequence even if some parts fail
+  - Check return value of tegra_pcie_init_controller() and exit accordingly
+
+V2:
+* Addressed Rob's comments. Changed 'Strongly Ordered' to 'nGnRnE'
+
+Vidya Sagar (6):
+  PCI: tegra: Fix ASPM-L1SS advertisement disable code
+  PCI: tegra: Map configuration space as nGnRnE
+  PCI: tegra: Set DesignWare IP version
+  PCI: tegra: Continue unconfig sequence even if parts fail
+  PCI: tegra: Check return value of tegra_pcie_init_controller()
+  PCI: tegra: Disable LTSSM during L2 entry
+
+ drivers/pci/controller/dwc/pcie-tegra194.c | 78 +++++++++++-----------
+ 1 file changed, 39 insertions(+), 39 deletions(-)
+
 -- 
-1.8.3.1
+2.17.1
 
