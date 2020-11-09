@@ -2,40 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D5A82ABB7B
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 14:28:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B46B42ABB17
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 14:28:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733279AbgKIN2s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 08:28:48 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39126 "EHLO mail.kernel.org"
+        id S2387698AbgKINYM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 08:24:12 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46676 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732891AbgKINNS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 08:13:18 -0500
+        id S2387480AbgKINTO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 08:19:14 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3374620789;
-        Mon,  9 Nov 2020 13:13:17 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 400D7206D8;
+        Mon,  9 Nov 2020 13:19:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604927597;
-        bh=58c/msi/u8d3e2Kp3wEGdUEzAsteqRLN0G+j5akGqGc=;
+        s=default; t=1604927953;
+        bh=T4yyToto1LNtWt2uFoW4AtB6C061JWC20AajmIIF5fM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Tgh9Kwhs5uhS4qeJWF5ftNF/hZZMFPobGgOYgrSv1bgGbyTkKw4g4kdgIpJuGDLL1
-         k+7LlWH9KfMsdEs4Oq/4mbocvZKaG5yyfVBHkEXTfs0Muxz91ODz0PVz2Frs24xXyn
-         j0Tn8HhKjjCSdpdJIviQbYf76yABBeSc7PRRbOUM=
+        b=KLlZ4ngFsGcX3OVEUII2c3ry2jxbntg2hgrxdMfM7hoCtlUjWozHfKIlKzbXeZ4rR
+         chnZ9ghefy/PYqQM8c2/IxSu12D6VOfrc+TW4kI182fthAPdx+vNuQ2mRFNlFcqCNU
+         T2keDnnjmYX5ZnsMrTJQnf5lR/BASDpAQ3jkAFxQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Scott K Logan <logans@cottsay.net>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Kevin Hilman <khilman@baylibre.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 43/85] arm64: dts: meson: add missing g12 rng clock
+        stable@vger.kernel.org, Pavel Begunkov <asml.silence@gmail.com>,
+        Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.9 078/133] io_uring: dont miss setting IO_WQ_WORK_CONCURRENT
 Date:   Mon,  9 Nov 2020 13:55:40 +0100
-Message-Id: <20201109125024.659176896@linuxfoundation.org>
+Message-Id: <20201109125034.475257424@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201109125022.614792961@linuxfoundation.org>
-References: <20201109125022.614792961@linuxfoundation.org>
+In-Reply-To: <20201109125030.706496283@linuxfoundation.org>
+References: <20201109125030.706496283@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,38 +42,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Scott K Logan <logans@cottsay.net>
+From: Pavel Begunkov <asml.silence@gmail.com>
 
-[ Upstream commit a1afbbb0285797e01313779c71287d936d069245 ]
+[ Upstream commit feaadc4fc2ebdbd53ffed1735077725855a2af53 ]
 
-This adds the missing perpheral clock for the RNG for Amlogic G12. As
-stated in amlogic,meson-rng.yaml, this isn't always necessary for the
-RNG to function, but is better to have in case the clock is disabled for
-some reason prior to loading.
+Set IO_WQ_WORK_CONCURRENT for all REQ_F_FORCE_ASYNC requests, do that in
+that is also looks better.
 
-Signed-off-by: Scott K Logan <logans@cottsay.net>
-Suggested-by: Neil Armstrong <narmstrong@baylibre.com>
-Reviewed-by: Neil Armstrong <narmstrong@baylibre.com>
-Signed-off-by: Kevin Hilman <khilman@baylibre.com>
-Link: https://lore.kernel.org/r/520a1a8ec7a958b3d918d89563ec7e93a4100a45.camel@cottsay.net
+Signed-off-by: Pavel Begunkov <asml.silence@gmail.com>
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/boot/dts/amlogic/meson-g12-common.dtsi | 2 ++
- 1 file changed, 2 insertions(+)
+ fs/io_uring.c | 10 +++-------
+ 1 file changed, 3 insertions(+), 7 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/amlogic/meson-g12-common.dtsi b/arch/arm64/boot/dts/amlogic/meson-g12-common.dtsi
-index 1234bc7974294..354ef2f3eac67 100644
---- a/arch/arm64/boot/dts/amlogic/meson-g12-common.dtsi
-+++ b/arch/arm64/boot/dts/amlogic/meson-g12-common.dtsi
-@@ -167,6 +167,8 @@
- 				hwrng: rng@218 {
- 					compatible = "amlogic,meson-rng";
- 					reg = <0x0 0x218 0x0 0x4>;
-+					clocks = <&clkc CLKID_RNG0>;
-+					clock-names = "core";
- 				};
- 			};
+diff --git a/fs/io_uring.c b/fs/io_uring.c
+index 64f214a3dc9dd..eba5f65493a10 100644
+--- a/fs/io_uring.c
++++ b/fs/io_uring.c
+@@ -1140,6 +1140,9 @@ static void io_prep_async_work(struct io_kiocb *req)
  
+ 	io_req_init_async(req);
+ 
++	if (req->flags & REQ_F_FORCE_ASYNC)
++		req->work.flags |= IO_WQ_WORK_CONCURRENT;
++
+ 	if (req->flags & REQ_F_ISREG) {
+ 		if (def->hash_reg_file || (req->ctx->flags & IORING_SETUP_IOPOLL))
+ 			io_wq_hash_work(&req->work, file_inode(req->file));
+@@ -6281,13 +6284,6 @@ static void io_queue_sqe(struct io_kiocb *req, const struct io_uring_sqe *sqe,
+ 			if (unlikely(ret))
+ 				goto fail_req;
+ 		}
+-
+-		/*
+-		 * Never try inline submit of IOSQE_ASYNC is set, go straight
+-		 * to async execution.
+-		 */
+-		io_req_init_async(req);
+-		req->work.flags |= IO_WQ_WORK_CONCURRENT;
+ 		io_queue_async_work(req);
+ 	} else {
+ 		__io_queue_sqe(req, sqe, cs);
 -- 
 2.27.0
 
