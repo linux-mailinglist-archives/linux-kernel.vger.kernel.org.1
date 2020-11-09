@@ -2,88 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CF992AC437
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 19:55:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B21AF2AC43F
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 19:57:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730334AbgKISyw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 13:54:52 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59132 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729451AbgKISyu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 13:54:50 -0500
-Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (c-67-180-217-166.hsd1.ca.comcast.net [67.180.217.166])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 671CF206D8;
-        Mon,  9 Nov 2020 18:54:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604948089;
-        bh=CXi+qyej1yrl+qniGQlwSacd07ZVkKzvg4C2OSmI29E=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=XBnYe+ko5N1c2hg5/TYtW+thHZf8bpoF+VYpgn3OEj5WvmFYJDV5ZKEgiNuXISj4k
-         4JulehaAUK0oaLxM08XbQ2xlmjJxC7z14W2WuVexUHvlhujXY2RmX+SAR1ZhFykP9Q
-         cZtbrYlYa3gfYyoGZFbNxu2tmR0GWcA9+8O45Ewk=
-Date:   Mon, 9 Nov 2020 10:54:48 -0800
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Jarod Wilson <jarod@redhat.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Jay Vosburgh <j.vosburgh@gmail.com>,
-        Veaceslav Falico <vfalico@gmail.com>,
-        Andy Gospodarek <andy@greyhouse.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Thomas Davis <tadavis@lbl.gov>, Netdev <netdev@vger.kernel.org>
-Subject: Re: [PATCH net-next v4 0/5] bonding: rename bond components
-Message-ID: <20201109104627.4a5af5bb@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <CAKfmpSfkmo1GVVThadDDtXma1m1yrNwPoPz87sMy5664uJbevg@mail.gmail.com>
-References: <20201106200436.943795-1-jarod@redhat.com>
-        <20201106184432.07a6ab18@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-        <CAKfmpSfkmo1GVVThadDDtXma1m1yrNwPoPz87sMy5664uJbevg@mail.gmail.com>
+        id S1730158AbgKIS5a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 13:57:30 -0500
+Received: from mail-ot1-f67.google.com ([209.85.210.67]:35826 "EHLO
+        mail-ot1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729451AbgKIS53 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 13:57:29 -0500
+Received: by mail-ot1-f67.google.com with SMTP id n11so10000353ota.2;
+        Mon, 09 Nov 2020 10:57:28 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Yp+Myu+RbCp/hhggXGpFgymnJTdUJhcL8XQ+E+Agqsg=;
+        b=uF4ICZHwbNkw+7QU963JESi95i2PMWWRg5B3jNapcoVYnUNZhyHvFCP507UwGqtAUV
+         ZN8PnOGC8FMktOUxkw9j04RYTcPKKTdHS6XQcox8mN+/o8BfxvWPjLQVBVUWTicQKMd5
+         NxVuK/dPL1ETwELkKsyQ20kand+UKcOGVVwY3znsfjO7AAku4U2CE11AiYRlEbcoZqUh
+         ROFm+nulGhwqRdzNwg5xqngAqeek5zhUqVW2A66dh7lzgV3Te6kEJ5qNkJ/0nNkxDHFl
+         3tIXRDYzK+W4cwK8/m/nvbNU9ZlvEhelrA7v8JHyqhzK+m2xTWVFrdnflT7MOT9benoz
+         SXww==
+X-Gm-Message-State: AOAM5339xECIA6+Y8hThpXO0StsvzSD3qk/Rw95Ptp3u5NHP4qSZoaVx
+        2wxQ0Z+Gjq8B7ACJZkpsgg==
+X-Google-Smtp-Source: ABdhPJwTrJM8+DV6yoj0yZkvksdAC3aJsLLLrx1WHxgB39fkbPYVnHOpW6Iq5AkW4A4fHBNfxiLHQg==
+X-Received: by 2002:a05:6830:2093:: with SMTP id y19mr10923388otq.219.1604948248350;
+        Mon, 09 Nov 2020 10:57:28 -0800 (PST)
+Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id o29sm2726530ote.7.2020.11.09.10.57.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 09 Nov 2020 10:57:27 -0800 (PST)
+Received: (nullmailer pid 1586563 invoked by uid 1000);
+        Mon, 09 Nov 2020 18:57:25 -0000
+Date:   Mon, 9 Nov 2020 12:57:25 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     devel@driverdev.osuosl.org, Ulf Hansson <ulf.hansson@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Mark Brown <broonie@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-usb@vger.kernel.org, Alan Stern <stern@rowland.harvard.edu>,
+        linux-pwm@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
+        Peter Geis <pgwipeout@gmail.com>, linux-mmc@vger.kernel.org,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        dri-devel@lists.freedesktop.org, linux-tegra@vger.kernel.org,
+        linux-media@vger.kernel.org,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Peter Chen <Peter.Chen@nxp.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Nicolas Chauvet <kwizart@gmail.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>
+Subject: Re: [PATCH v1 01/30] dt-bindings: host1x: Document OPP and voltage
+ regulator properties
+Message-ID: <20201109185725.GA1586511@bogus>
+References: <20201104234427.26477-1-digetx@gmail.com>
+ <20201104234427.26477-2-digetx@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201104234427.26477-2-digetx@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 9 Nov 2020 11:47:58 -0500 Jarod Wilson wrote:
-> On Fri, Nov 6, 2020 at 9:44 PM Jakub Kicinski <kuba@kernel.org> wrote:
-> > On Fri,  6 Nov 2020 15:04:31 -0500 Jarod Wilson wrote:  
-> > > The bonding driver's use of master and slave, while largely understood
-> > > in technical circles, poses a barrier for inclusion to some potential
-> > > members of the development and user community, due to the historical
-> > > context of masters and slaves, particularly in the United States. This
-> > > is a first full pass at replacing those phrases with more socially
-> > > inclusive ones, opting for bond to replace master and port to
-> > > replace slave, which is congruent with the bridge and team drivers.  
-> >
-> > If we decide to go ahead with this, we should probably also use it as
-> > an opportunity to clean up the more egregious checkpatch warnings, WDYT?
-> >
-> > Plan minimum - don't add new ones ;)  
+On Thu, 05 Nov 2020 02:43:58 +0300, Dmitry Osipenko wrote:
+> Document new DVFS OPP table and voltage regulator properties of the
+> Host1x bus and devices sitting on the bus.
 > 
-> Hm. I hadn't actually looked at checkpatch output until now. It's...
-> noisy here. But I'm pretty sure the vast majority of that is from
-> existing issues, simply reported now due to all the renaming.
+> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+> ---
+>  .../display/tegra/nvidia,tegra20-host1x.txt   | 56 +++++++++++++++++++
+>  1 file changed, 56 insertions(+)
+> 
 
-I don't think all of them:
-
--					tx_slave = slaves->arr[hash_index %
-+					tx_port = ports->arr[hash_index %
- 							       count];
-
-It should be relatively trivial to find incremental warnings.
-
-AFAIR checkpatch has a mode to run on a file, not on a patch, so you
-can run it before and after and diff.
-
-> I can
-> certainly take a crack at cleanups, but I'd be worried about missing
-> another merge window trying to sort all of these, when they're not
-> directly related.
-
-TBH I haven't followed the previous discussions too closely, as much 
-as I applaud the effort I'm not signing up for reviewing 3.5kLoC of
-renames, so I hope you can find someone to review this for you.
-
-Another simple confidence booster would be a confirmation that given
-patches do not change the object code.
+Reviewed-by: Rob Herring <robh@kernel.org>
