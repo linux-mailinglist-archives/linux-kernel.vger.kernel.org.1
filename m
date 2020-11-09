@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20C712ABDA9
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 14:48:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 572302ABC3F
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 14:37:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731393AbgKINry (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 08:47:54 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51180 "EHLO mail.kernel.org"
+        id S1730717AbgKINFV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 08:05:21 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56932 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729849AbgKIM4g (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 07:56:36 -0500
+        id S1729958AbgKINDr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 08:03:47 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 059B620789;
-        Mon,  9 Nov 2020 12:56:34 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B898120663;
+        Mon,  9 Nov 2020 13:03:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604926595;
-        bh=SizPhSsjXwci1aAVMMnEloIFw049wmo5l90l7Jg6dnI=;
+        s=default; t=1604927026;
+        bh=EYRumyErUTxrVqHqK8oQl1eUV8edC0J4Y1cYCFAVQIc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Rhwn3r+i50ose2FkkK6cw7FyljZ9/YR7dK8CBP4tCLRAhZApgFDw+sNamocgpJaqo
-         lCIlaquZP3bsBvJdh1eQ4NSQ+2zOFFNVumjtQmJKXIPWLuxhH/pIJdC6niwDfpFNp4
-         4SfkGnZ8YQCIzubgF2VX5BoiGhXmOhCfHG7Tv5mg=
+        b=GuQ6b3jUt9ByLnzk/90Z0VJTXz2VnzvW2//WQf6+bN1rMrzDgHzcTqfIgC2hzo3lK
+         TiQJe+cDC+e/aqIfAMfByuRgvdsKhPkWBFppubV8IcI5nUSWcQ4P5C51PaoeSAL5BK
+         vkWgYNskN9/fVoYV8aIEW/4xqXo+ROdz40O70NjQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Zhao Heming <heming.zhao@suse.com>,
-        Song Liu <songliubraving@fb.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 24/86] md/bitmap: md_bitmap_get_counter returns wrong blocks
+        stable@vger.kernel.org, KoWei Sung <winders@amazon.com>,
+        Song Liu <songliubraving@fb.com>
+Subject: [PATCH 4.9 045/117] md/raid5: fix oops during stripe resizing
 Date:   Mon,  9 Nov 2020 13:54:31 +0100
-Message-Id: <20201109125022.023292577@linuxfoundation.org>
+Message-Id: <20201109125027.802650252@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201109125020.852643676@linuxfoundation.org>
-References: <20201109125020.852643676@linuxfoundation.org>
+In-Reply-To: <20201109125025.630721781@linuxfoundation.org>
+References: <20201109125025.630721781@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,53 +42,75 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhao Heming <heming.zhao@suse.com>
+From: Song Liu <songliubraving@fb.com>
 
-[ Upstream commit d837f7277f56e70d82b3a4a037d744854e62f387 ]
+commit b44c018cdf748b96b676ba09fdbc5b34fc443ada upstream.
 
-md_bitmap_get_counter() has code:
+KoWei reported crash during raid5 reshape:
 
-```
-    if (bitmap->bp[page].hijacked ||
-        bitmap->bp[page].map == NULL)
-        csize = ((sector_t)1) << (bitmap->chunkshift +
-                      PAGE_COUNTER_SHIFT - 1);
-```
+[ 1032.252932] Oops: 0002 [#1] SMP PTI
+[...]
+[ 1032.252943] RIP: 0010:memcpy_erms+0x6/0x10
+[...]
+[ 1032.252947] RSP: 0018:ffffba1ac0c03b78 EFLAGS: 00010286
+[ 1032.252949] RAX: 0000784ac0000000 RBX: ffff91bec3d09740 RCX: 0000000000001000
+[ 1032.252951] RDX: 0000000000001000 RSI: ffff91be6781c000 RDI: 0000784ac0000000
+[ 1032.252953] RBP: ffffba1ac0c03bd8 R08: 0000000000001000 R09: ffffba1ac0c03bf8
+[ 1032.252954] R10: 0000000000000000 R11: 0000000000000000 R12: ffffba1ac0c03bf8
+[ 1032.252955] R13: 0000000000001000 R14: 0000000000000000 R15: 0000000000000000
+[ 1032.252958] FS:  0000000000000000(0000) GS:ffff91becf500000(0000) knlGS:0000000000000000
+[ 1032.252959] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[ 1032.252961] CR2: 0000784ac0000000 CR3: 000000031780a002 CR4: 00000000001606e0
+[ 1032.252962] Call Trace:
+[ 1032.252969]  ? async_memcpy+0x179/0x1000 [async_memcpy]
+[ 1032.252977]  ? raid5_release_stripe+0x8e/0x110 [raid456]
+[ 1032.252982]  handle_stripe_expansion+0x15a/0x1f0 [raid456]
+[ 1032.252988]  handle_stripe+0x592/0x1270 [raid456]
+[ 1032.252993]  handle_active_stripes.isra.0+0x3cb/0x5a0 [raid456]
+[ 1032.252999]  raid5d+0x35c/0x550 [raid456]
+[ 1032.253002]  ? schedule+0x42/0xb0
+[ 1032.253006]  ? schedule_timeout+0x10e/0x160
+[ 1032.253011]  md_thread+0x97/0x160
+[ 1032.253015]  ? wait_woken+0x80/0x80
+[ 1032.253019]  kthread+0x104/0x140
+[ 1032.253022]  ? md_start_sync+0x60/0x60
+[ 1032.253024]  ? kthread_park+0x90/0x90
+[ 1032.253027]  ret_from_fork+0x35/0x40
 
-The minus 1 is wrong, this branch should report 2048 bits of space.
-With "-1" action, this only report 1024 bit of space.
+This is because cache_size_mutex was unlocked too early in resize_stripes,
+which races with grow_one_stripe() that grow_one_stripe() allocates a
+stripe with wrong pool_size.
 
-This bug code returns wrong blocks, but it doesn't inflence bitmap logic:
-1. Most callers focus this function return value (the counter of offset),
-   not the parameter blocks.
-2. The bug is only triggered when hijacked is true or map is NULL.
-   the hijacked true condition is very rare.
-   the "map == null" only true when array is creating or resizing.
-3. Even the caller gets wrong blocks, current code makes caller just to
-   call md_bitmap_get_counter() one more time.
+Fix this issue by unlocking cache_size_mutex after updating pool_size.
 
-Signed-off-by: Zhao Heming <heming.zhao@suse.com>
+Cc: <stable@vger.kernel.org> # v4.4+
+Reported-by: KoWei Sung <winders@amazon.com>
 Signed-off-by: Song Liu <songliubraving@fb.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- drivers/md/bitmap.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/md/raid5.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/md/bitmap.c b/drivers/md/bitmap.c
-index 391090c455cea..65281f168c6fb 100644
---- a/drivers/md/bitmap.c
-+++ b/drivers/md/bitmap.c
-@@ -1332,7 +1332,7 @@ __acquires(bitmap->lock)
- 	if (bitmap->bp[page].hijacked ||
- 	    bitmap->bp[page].map == NULL)
- 		csize = ((sector_t)1) << (bitmap->chunkshift +
--					  PAGE_COUNTER_SHIFT - 1);
-+					  PAGE_COUNTER_SHIFT);
- 	else
- 		csize = ((sector_t)1) << bitmap->chunkshift;
- 	*blocks = csize - (offset & (csize - 1));
--- 
-2.27.0
-
+--- a/drivers/md/raid5.c
++++ b/drivers/md/raid5.c
+@@ -2259,8 +2259,6 @@ static int resize_stripes(struct r5conf
+ 	} else
+ 		err = -ENOMEM;
+ 
+-	mutex_unlock(&conf->cache_size_mutex);
+-
+ 	conf->slab_cache = sc;
+ 	conf->active_name = 1-conf->active_name;
+ 
+@@ -2283,6 +2281,8 @@ static int resize_stripes(struct r5conf
+ 
+ 	if (!err)
+ 		conf->pool_size = newsize;
++	mutex_unlock(&conf->cache_size_mutex);
++
+ 	return err;
+ }
+ 
 
 
