@@ -2,552 +2,206 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 834EE2AC95F
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 00:30:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 441FB2AC966
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 00:34:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729954AbgKIXaW convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 9 Nov 2020 18:30:22 -0500
-Received: from aposti.net ([89.234.176.197]:56870 "EHLO aposti.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727070AbgKIXaW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 18:30:22 -0500
-Date:   Mon, 09 Nov 2020 23:30:03 +0000
-From:   Paul Cercueil <paul@crapouillou.net>
-Subject: Re: [PATCH 1/2] MIPS: Ingenic: Add missing nodes for Ingenic SoCs and
- boards.
-To:     =?UTF-8?b?5ZGo55Cw5p2w?= <zhouyanjie@wanyeetech.com>
-Cc:     tsbogend@alpha.franken.de, robh+dt@kernel.org,
-        linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org,
-        devicetree@vger.kernel.org, nixiaoming@huawei.com,
-        paulburton@kernel.org, krzk@kernel.org, hns@goldelico.com,
-        ak@linux.intel.com, ebiederm@xmission.com,
-        dongsheng.qiu@ingenic.com, aric.pzqi@ingenic.com,
-        rick.tyliu@ingenic.com, yanfei.li@ingenic.com,
-        sernia.zhou@foxmail.com, zhenwenjin@gmail.com
-Message-Id: <3MYJJQ.CUZTUWS1VW6P1@crapouillou.net>
-In-Reply-To: <20201107115251.86182-2-zhouyanjie@wanyeetech.com>
-References: <20201107115251.86182-1-zhouyanjie@wanyeetech.com>
-        <20201107115251.86182-2-zhouyanjie@wanyeetech.com>
+        id S1730157AbgKIXeu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 18:34:50 -0500
+Received: from aserp2130.oracle.com ([141.146.126.79]:53188 "EHLO
+        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727311AbgKIXet (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 18:34:49 -0500
+Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
+        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0A9NUIbl150038;
+        Mon, 9 Nov 2020 23:32:33 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : from : to :
+ cc : references : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=FDH6vKmwAO2NQK037hjZRuPUy9YCEb1VTOoZECDQrmc=;
+ b=IgZm7EQMUyh+OeNBObS9P0PfLmf8JHwTxGFAjApC24xsJzoU1jw6XRrG7Xl+Jylyt+2v
+ RFz1P1yxHxMmq4AlZGuvoz0IEebpztZIbcw6Dus7KMgaGwtMzdtafnLw8I0XdquR++9h
+ hwMrD6OD6wTVY4MvxgeWi9WIL7SPGhIt3Q5LzKro4LJxsTVFYNMl9Br3nIU0RZOQ6oY1
+ KGUv/rk8uJMjynLQ2qFVkhVNfALQVbHkm0BJ2F3I4biQsOASqtbRaxe/NtiBzjJqDMaZ
+ amDK4fs5AbzE65/xQvNvz5L84+1ZURPgJ/292mZ2afO4j05TzYfXsxfhxZYBQjk3Casu GA== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by aserp2130.oracle.com with ESMTP id 34nh3as1y6-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 09 Nov 2020 23:32:33 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0A9NOnOn085072;
+        Mon, 9 Nov 2020 23:30:32 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by aserp3020.oracle.com with ESMTP id 34p5fyda9u-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 09 Nov 2020 23:30:32 +0000
+Received: from abhmp0009.oracle.com (abhmp0009.oracle.com [141.146.116.15])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0A9NUHbw020143;
+        Mon, 9 Nov 2020 23:30:19 GMT
+Received: from [192.168.0.193] (/69.207.174.138)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Mon, 09 Nov 2020 15:30:17 -0800
+Subject: Re: [PATCH v8 -tip 17/26] sched: Split the cookie and setup per-task
+ cookie on fork
+From:   chris hyser <chris.hyser@oracle.com>
+To:     "Joel Fernandes (Google)" <joel@joelfernandes.org>,
+        Nishanth Aravamudan <naravamudan@digitalocean.com>,
+        Julien Desfossez <jdesfossez@digitalocean.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Tim Chen <tim.c.chen@linux.intel.com>,
+        Vineeth Pillai <viremana@linux.microsoft.com>,
+        Aaron Lu <aaron.lwe@gmail.com>,
+        Aubrey Li <aubrey.intel@gmail.com>, tglx@linutronix.de,
+        linux-kernel@vger.kernel.org
+Cc:     mingo@kernel.org, torvalds@linux-foundation.org,
+        fweisbec@gmail.com, keescook@chromium.org, kerrnel@google.com,
+        Phil Auld <pauld@redhat.com>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
+        Paolo Bonzini <pbonzini@redhat.com>, vineeth@bitbyteword.org,
+        Chen Yu <yu.c.chen@intel.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Agata Gruza <agata.gruza@intel.com>,
+        Antonio Gomez Iglesias <antonio.gomez.iglesias@intel.com>,
+        graf@amazon.com, konrad.wilk@oracle.com, dfaggioli@suse.com,
+        pjt@google.com, rostedt@goodmis.org, derkling@google.com,
+        benbjiang@tencent.com,
+        Alexandre Chartre <alexandre.chartre@oracle.com>,
+        James.Bottomley@hansenpartnership.com, OWeisse@umich.edu,
+        Dhaval Giani <dhaval.giani@oracle.com>,
+        Junaid Shahid <junaids@google.com>, jsbarnes@google.com,
+        Aubrey Li <aubrey.li@linux.intel.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Tim Chen <tim.c.chen@intel.com>
+References: <20201020014336.2076526-1-joel@joelfernandes.org>
+ <20201020014336.2076526-18-joel@joelfernandes.org>
+ <e296ed5a-d473-de1e-d2ab-af37e5db856a@oracle.com>
+Message-ID: <e8565fa2-aca6-7052-d004-8cbae38387a3@oracle.com>
+Date:   Mon, 9 Nov 2020 18:30:12 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.2.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8BIT
+In-Reply-To: <e296ed5a-d473-de1e-d2ab-af37e5db856a@oracle.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9800 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 spamscore=0 malwarescore=0
+ adultscore=0 phishscore=0 bulkscore=0 mlxlogscore=999 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2011090148
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9800 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 lowpriorityscore=0 priorityscore=1501
+ clxscore=1015 malwarescore=0 mlxscore=0 spamscore=0 suspectscore=0
+ mlxlogscore=999 impostorscore=0 phishscore=0 adultscore=0 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2011090149
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Zhou,
+On 11/4/20 5:30 PM, chris hyser wrote:
+> On 10/19/20 9:43 PM, Joel Fernandes (Google) wrote:
+>> In order to prevent interference and clearly support both per-task and CGroup
+>> APIs, split the cookie into 2 and allow it to be set from either per-task, or
+>> CGroup API. The final cookie is the combined value of both and is computed when
+>> the stop-machine executes during a change of cookie.
+>>
+>> Also, for the per-task cookie, it will get weird if we use pointers of any
+>> emphemeral objects. For this reason, introduce a refcounted object who's sole
+>> purpose is to assign unique cookie value by way of the object's pointer.
+>>
+>> While at it, refactor the CGroup code a bit. Future patches will introduce more
+>> APIs and support.
+>>
+>> Tested-by: Julien Desfossez <jdesfossez@digitalocean.com>
+>> Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+>> ---
+>>   include/linux/sched.h |   2 +
+>>   kernel/sched/core.c   | 241 ++++++++++++++++++++++++++++++++++++++++--
+>>   kernel/sched/debug.c  |   4 +
+>>   3 files changed, 236 insertions(+), 11 deletions(-)
+>>
+>> diff --git a/include/linux/sched.h b/include/linux/sched.h
+>> index fe6f225bfbf9..c6034c00846a 100644
+>> --- a/include/linux/sched.h
+>> +++ b/include/linux/sched.h
+>> @@ -688,6 +688,8 @@ struct task_struct {
+>>   #ifdef CONFIG_SCHED_CORE
+>>       struct rb_node            core_node;
+>>       unsigned long            core_cookie;
+>> +    unsigned long            core_task_cookie;
+>> +    unsigned long            core_group_cookie;
+>>       unsigned int            core_occupation;
+>>   #endif
+>> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+>> index bab4ea2f5cd8..30a9e4cb5ce1 100644
+>> --- a/kernel/sched/core.c
+>> +++ b/kernel/sched/core.c
+>> @@ -346,11 +346,14 @@ void sched_core_put(void)
+>>       mutex_unlock(&sched_core_mutex);
+>>   }
+>> +static int sched_core_share_tasks(struct task_struct *t1, struct task_struct *t2);
+>> +
+>>   #else /* !CONFIG_SCHED_CORE */
+>>   static inline void sched_core_enqueue(struct rq *rq, struct task_struct *p) { }
+>>   static inline void sched_core_dequeue(struct rq *rq, struct task_struct *p) { }
+>>   static bool sched_core_enqueued(struct task_struct *task) { return false; }
+>> +static int sched_core_share_tasks(struct task_struct *t1, struct task_struct *t2) { }
+>>   #endif /* CONFIG_SCHED_CORE */
+>> @@ -3583,6 +3586,20 @@ int sched_fork(unsigned long clone_flags, struct task_struct *p)
+>>   #endif
+>>   #ifdef CONFIG_SCHED_CORE
+>>       RB_CLEAR_NODE(&p->core_node);
+>> +
+>> +    /*
+>> +     * Tag child via per-task cookie only if parent is tagged via per-task
+>> +     * cookie. This is independent of, but can be additive to the CGroup tagging.
+>> +     */
+>> +    if (current->core_task_cookie) {
+>> +
+>> +        /* If it is not CLONE_THREAD fork, assign a unique per-task tag. */
+>> +        if (!(clone_flags & CLONE_THREAD)) {
+>> +            return sched_core_share_tasks(p, p);
+>> +               }
+>> +        /* Otherwise share the parent's per-task tag. */
+>> +        return sched_core_share_tasks(p, current);
+>> +    }
+>>   #endif
+>>       return 0;
+>>   }
 
-Le sam. 7 nov. 2020 à 19:52, 周琰杰 (Zhou Yanjie) 
-<zhouyanjie@wanyeetech.com> a écrit :
-> 1.Add OTG/OTG PHY/RNG nodes for JZ4780, CGU/OTG nodes for CI20.
-> 2.Add OTG/OTG PHY/RNG/OST nodes for X1000, SSI/CGU/OST/OTG/SC16IS752
->   nodes for CU1000-Neo.
-> 3.Add OTG/OTG PHY/DTRNG/OST nodes for X1830, SSI/CGU/OST/OTG/SC16IS752
->   nodes for CU1830-Neo.
-> 
-> Tested-by: 周正 (Zhou Zheng) <sernia.zhou@foxmail.com>
-> Signed-off-by: 周琰杰 (Zhou Yanjie) <zhouyanjie@wanyeetech.com>
-> ---
->  arch/mips/boot/dts/ingenic/ci20.dts       | 16 +++++++++
->  arch/mips/boot/dts/ingenic/cu1000-neo.dts | 60 
-> +++++++++++++++++++++++++++----
->  arch/mips/boot/dts/ingenic/cu1830-neo.dts | 60 
-> +++++++++++++++++++++++++++----
->  arch/mips/boot/dts/ingenic/jz4780.dtsi    | 41 +++++++++++++++++++--
->  arch/mips/boot/dts/ingenic/x1000.dtsi     | 52 
-> ++++++++++++++++++++++++++-
->  arch/mips/boot/dts/ingenic/x1830.dtsi     | 54 
-> +++++++++++++++++++++++++++-
->  6 files changed, 267 insertions(+), 16 deletions(-)
-> 
-> diff --git a/arch/mips/boot/dts/ingenic/ci20.dts 
-> b/arch/mips/boot/dts/ingenic/ci20.dts
-> index 75f5bfbf2c37..b31054a41754 100644
-> --- a/arch/mips/boot/dts/ingenic/ci20.dts
-> +++ b/arch/mips/boot/dts/ingenic/ci20.dts
-> @@ -93,6 +93,15 @@
->  	clock-frequency = <48000000>;
->  };
-> 
-> +&cgu {
-> +	/*
-> +	 * Use the 32.768 kHz oscillator as the parent of the RTC for a 
-> higher
-> +	 * precision.
-> +	 */
-> +	assigned-clocks = <&cgu JZ4780_CLK_RTC>;
-> +	assigned-clock-parents = <&cgu JZ4780_CLK_RTCLK>;
-> +};
-> +
->  &mmc0 {
->  	status = "okay";
-> 
-> @@ -396,6 +405,13 @@
->  	status = "okay";
->  };
-> 
-> +&otg {
-> +	status = "okay";
-> +
-> +	assigned-clocks = <&cgu JZ4780_CLK_OTGPHY>;
-> +	assigned-clock-rates = <48000000>;
+sched_core_share_tasks() looks at the value of the new tasks core_task_cookie which is non-zero on a
+process or thread clone and causes underflow for both the enable flag itself and for cookie ref counts.
 
-I think you should put these two lines inside &cgu. While it will also 
-work here, the assigned-clocks / assigned-clock-rates are defined 
-Device Tree properties only for clock controller nodes, and so "make 
-dtbs_check" will complain:
+So just zero it in __sched_fork().
 
-ci20.dt.yaml: usb@13500000: 'assigned-clock-rates', 'assigned-clocks' 
-do not match any of the regexes: 'pinctrl-[0-9]+'
+-chrish
 
-Same in the Neo .dts files.
+------
 
-> +};
-> +
->  &pinctrl {
->  	pins_uart0: uart0 {
->  		function = "uart0";
-> diff --git a/arch/mips/boot/dts/ingenic/cu1000-neo.dts 
-> b/arch/mips/boot/dts/ingenic/cu1000-neo.dts
-> index 22a1066d637b..44d47d12db12 100644
-> --- a/arch/mips/boot/dts/ingenic/cu1000-neo.dts
-> +++ b/arch/mips/boot/dts/ingenic/cu1000-neo.dts
-> @@ -3,7 +3,7 @@
-> 
->  #include "x1000.dtsi"
->  #include <dt-bindings/gpio/gpio.h>
-> -#include <dt-bindings/clock/ingenic,tcu.h>
-> +#include <dt-bindings/clock/ingenic,sysost.h>
->  #include <dt-bindings/interrupt-controller/irq.h>
-> 
->  / {
-> @@ -31,6 +31,18 @@
->  		};
->  	};
-> 
-> +	ssi: spi-gpio {
-> +		compatible = "spi-gpio";
-> +		#address-cells = <1>;
-> +		#size-cells = <0>;
-> +		num-chipselects = <1>;
-> +
-> +		mosi-gpios = <&gpd 2 GPIO_ACTIVE_HIGH>;
-> +		miso-gpios = <&gpd 3 GPIO_ACTIVE_HIGH>;
-> +		sck-gpios = <&gpd 0 GPIO_ACTIVE_HIGH>;
-> +		cs-gpios = <&gpd 1 GPIO_ACTIVE_HIGH>;
-> +	};
-> +
->  	wlan_pwrseq: msc1-pwrseq {
->  		compatible = "mmc-pwrseq-simple";
-> 
-> @@ -43,13 +55,19 @@
->  	clock-frequency = <24000000>;
->  };
-> 
-> -&tcu {
-> +&cgu {
-> +	/*
-> +	 * Use the 32.768 kHz oscillator as the parent of the RTC for a 
-> higher
-> +	 * precision.
-> +	 */
-> +	assigned-clocks = <&cgu X1000_CLK_RTC>;
-> +	assigned-clock-parents = <&cgu X1000_CLK_RTCLK>;
-> +};
-> +
-> +&ost {
->  	/* 1500 kHz for the system timer and clocksource */
-> -	assigned-clocks = <&tcu TCU_CLK_TIMER0>, <&tcu TCU_CLK_TIMER2>;
-> +	assigned-clocks = <&ost OST_CLK_PERCPU_TIMER>, <&ost 
-> OST_CLK_GLOBAL_TIMER>;
->  	assigned-clock-rates = <1500000>, <1500000>;
-> -
-> -	/* Use channel #0 for the system timer channel #2 for the 
-> clocksource */
-> -	ingenic,pwm-channels-mask = <0xfa>;
->  };
-> 
->  &uart2 {
-> @@ -59,6 +77,32 @@
->  	pinctrl-0 = <&pins_uart2>;
->  };
-> 
-> +&ssi {
+sched: zero out the core scheduling cookie on clone
 
-"ssi" is defined right above, you can put the expander node and 
-properties directly there.
+As the cookie is reference counted, even if inherited, zero this and allow
+explicit sharing.
 
-Cheers,
--Paul
+Signed-off-by: Chris Hyser <chris.hyser@oracle.com>
+---
+  kernel/sched/core.c | 3 +++
+  1 file changed, 3 insertions(+)
 
-> +	status = "okay";
-> +
-> +	spi-max-frequency = <50000000>;
-> +
-> +	sc16is752: expander@0 {
-> +		compatible = "nxp,sc16is752";
-> +		reg = <0>; /* CE0 */
-> +		spi-max-frequency = <4000000>;
-> +
-> +		clocks = <&exclk_sc16is752>;
-> +
-> +		interrupt-parent = <&gpc>;
-> +		interrupts = <6 IRQ_TYPE_EDGE_FALLING>;
-> +
-> +		gpio-controller;
-> +		#gpio-cells = <2>;
-> +
-> +		exclk_sc16is752: sc16is752 {
-> +			compatible = "fixed-clock";
-> +			#clock-cells = <0>;
-> +			clock-frequency = <48000000>;
-> +		};
-> +	};
-> +};
-> +
->  &i2c0 {
->  	status = "okay";
-> 
-> @@ -135,6 +179,10 @@
->  	};
->  };
-> 
-> +&otg {
-> +	status = "okay";
-> +};
-> +
->  &pinctrl {
->  	pins_uart2: uart2 {
->  		function = "uart2";
-> diff --git a/arch/mips/boot/dts/ingenic/cu1830-neo.dts 
-> b/arch/mips/boot/dts/ingenic/cu1830-neo.dts
-> index 640f96c00d63..7a56e344e429 100644
-> --- a/arch/mips/boot/dts/ingenic/cu1830-neo.dts
-> +++ b/arch/mips/boot/dts/ingenic/cu1830-neo.dts
-> @@ -3,7 +3,7 @@
-> 
->  #include "x1830.dtsi"
->  #include <dt-bindings/gpio/gpio.h>
-> -#include <dt-bindings/clock/ingenic,tcu.h>
-> +#include <dt-bindings/clock/ingenic,sysost.h>
->  #include <dt-bindings/interrupt-controller/irq.h>
-> 
->  / {
-> @@ -31,6 +31,18 @@
->  		};
->  	};
-> 
-> +	ssi0: spi-gpio {
-> +		compatible = "spi-gpio";
-> +		#address-cells = <1>;
-> +		#size-cells = <0>;
-> +		num-chipselects = <1>;
-> +
-> +		mosi-gpios = <&gpc 12 GPIO_ACTIVE_HIGH>;
-> +		miso-gpios = <&gpc 11 GPIO_ACTIVE_HIGH>;
-> +		sck-gpios = <&gpc 15 GPIO_ACTIVE_HIGH>;
-> +		cs-gpios = <&gpc 16 GPIO_ACTIVE_HIGH>;
-> +	};
-> +
->  	wlan_pwrseq: msc1-pwrseq {
->  		compatible = "mmc-pwrseq-simple";
-> 
-> @@ -43,13 +55,19 @@
->  	clock-frequency = <24000000>;
->  };
-> 
-> -&tcu {
-> +&cgu {
-> +	/*
-> +	 * Use the 32.768 kHz oscillator as the parent of the RTC for a 
-> higher
-> +	 * precision.
-> +	 */
-> +	assigned-clocks = <&cgu X1830_CLK_RTC>;
-> +	assigned-clock-parents = <&cgu X1830_CLK_RTCLK>;
-> +};
-> +
-> +&ost {
->  	/* 1500 kHz for the system timer and clocksource */
-> -	assigned-clocks = <&tcu TCU_CLK_TIMER0>, <&tcu TCU_CLK_TIMER2>;
-> +	assigned-clocks = <&ost OST_CLK_PERCPU_TIMER>, <&ost 
-> OST_CLK_GLOBAL_TIMER>;
->  	assigned-clock-rates = <1500000>, <1500000>;
-> -
-> -	/* Use channel #0 for the system timer channel #2 for the 
-> clocksource */
-> -	ingenic,pwm-channels-mask = <0xfa>;
->  };
-> 
->  &uart1 {
-> @@ -59,6 +77,32 @@
->  	pinctrl-0 = <&pins_uart1>;
->  };
-> 
-> +&ssi0 {
-> +	status = "okay";
-> +
-> +	spi-max-frequency = <50000000>;
-> +
-> +	sc16is752: expander@0 {
-> +		compatible = "nxp,sc16is752";
-> +		reg = <0>; /* CE0 */
-> +		spi-max-frequency = <4000000>;
-> +
-> +		clocks = <&exclk_sc16is752>;
-> +
-> +		interrupt-parent = <&gpb>;
-> +		interrupts = <18 IRQ_TYPE_EDGE_FALLING>;
-> +
-> +		gpio-controller;
-> +		#gpio-cells = <2>;
-> +
-> +		exclk_sc16is752: sc16is752 {
-> +			compatible = "fixed-clock";
-> +			#clock-cells = <0>;
-> +			clock-frequency = <48000000>;
-> +		};
-> +	};
-> +};
-> +
->  &i2c0 {
->  	status = "okay";
-> 
-> @@ -135,6 +179,10 @@
->  	};
->  };
-> 
-> +&otg {
-> +	status = "okay";
-> +};
-> +
->  &pinctrl {
->  	pins_uart1: uart1 {
->  		function = "uart1";
-> diff --git a/arch/mips/boot/dts/ingenic/jz4780.dtsi 
-> b/arch/mips/boot/dts/ingenic/jz4780.dtsi
-> index dfb5a7e1bb21..8837147e5a84 100644
-> --- a/arch/mips/boot/dts/ingenic/jz4780.dtsi
-> +++ b/arch/mips/boot/dts/ingenic/jz4780.dtsi
-> @@ -61,13 +61,30 @@
->  	};
-> 
->  	cgu: jz4780-cgu@10000000 {
-> -		compatible = "ingenic,jz4780-cgu";
-> +		compatible = "ingenic,jz4780-cgu", "simple-mfd";
->  		reg = <0x10000000 0x100>;
-> +		#address-cells = <1>;
-> +		#size-cells = <1>;
-> +		ranges = <0x0 0x10000000 0x100>;
-> +
-> +		#clock-cells = <1>;
-> 
->  		clocks = <&ext>, <&rtc>;
->  		clock-names = "ext", "rtc";
-> 
-> -		#clock-cells = <1>;
-> +		otg_phy: usb-phy@3c {
-> +			compatible = "ingenic,jz4780-phy";
-> +			reg = <0x3c 0x10>;
-> +
-> +			clocks = <&cgu JZ4780_CLK_OTG1>;
-> +
-> +			#phy-cells = <0>;
-> +		};
-> +
-> +		rng: rng@d8 {
-> +			compatible = "ingenic,jz4780-rng";
-> +			reg = <0xd8 0x8>;
-> +		};
->  	};
-> 
->  	tcu: timer@10002000 {
-> @@ -494,4 +511,24 @@
-> 
->  		status = "disabled";
->  	};
-> +
-> +	otg: usb@13500000 {
-> +		compatible = "ingenic,jz4780-otg", "snps,dwc2";
-> +		reg = <0x13500000 0x40000>;
-> +
-> +		interrupt-parent = <&intc>;
-> +		interrupts = <21>;
-> +
-> +		clocks = <&cgu JZ4780_CLK_UHC>;
-> +		clock-names = "otg";
-> +
-> +		phys = <&otg_phy>;
-> +		phy-names = "usb2-phy";
-> +
-> +		g-rx-fifo-size = <768>;
-> +		g-np-tx-fifo-size = <256>;
-> +		g-tx-fifo-size = <256 256 256 256 256 256 256 512>;
-> +
-> +		status = "disabled";
-> +	};
->  };
-> diff --git a/arch/mips/boot/dts/ingenic/x1000.dtsi 
-> b/arch/mips/boot/dts/ingenic/x1000.dtsi
-> index 1f1f896dd1f7..854fac58f45e 100644
-> --- a/arch/mips/boot/dts/ingenic/x1000.dtsi
-> +++ b/arch/mips/boot/dts/ingenic/x1000.dtsi
-> @@ -52,13 +52,43 @@
->  	};
-> 
->  	cgu: x1000-cgu@10000000 {
-> -		compatible = "ingenic,x1000-cgu";
-> +		compatible = "ingenic,x1000-cgu", "simple-mfd";
->  		reg = <0x10000000 0x100>;
-> +		#address-cells = <1>;
-> +		#size-cells = <1>;
-> +		ranges = <0x0 0x10000000 0x100>;
-> 
->  		#clock-cells = <1>;
-> 
->  		clocks = <&exclk>, <&rtclk>;
->  		clock-names = "ext", "rtc";
-> +
-> +		otg_phy: usb-phy@3c {
-> +			compatible = "ingenic,x1000-phy";
-> +			reg = <0x3c 0x10>;
-> +
-> +			clocks = <&cgu X1000_CLK_OTGPHY>;
-> +
-> +			#phy-cells = <0>;
-> +		};
-> +
-> +		rng: rng@d8 {
-> +			compatible = "ingenic,x1000-rng";
-> +			reg = <0xd8 0x8>;
-> +		};
-> +	};
-> +
-> +	ost: timer@12000000 {
-> +		compatible = "ingenic,x1000-ost";
-> +		reg = <0x12000000 0x3c>;
-> +
-> +		#clock-cells = <1>;
-> +
-> +		clocks = <&cgu X1000_CLK_OST>;
-> +		clock-names = "ost";
-> +
-> +		interrupt-parent = <&cpuintc>;
-> +		interrupts = <3>;
->  	};
-> 
->  	tcu: timer@10002000 {
-> @@ -323,4 +353,24 @@
->  			status = "disabled";
->  		};
->  	};
-> +
-> +	otg: usb@13500000 {
-> +		compatible = "ingenic,x1000-otg", "snps,dwc2";
-> +		reg = <0x13500000 0x40000>;
-> +
-> +		interrupt-parent = <&intc>;
-> +		interrupts = <21>;
-> +
-> +		clocks = <&cgu X1000_CLK_OTG>;
-> +		clock-names = "otg";
-> +
-> +		phys = <&otg_phy>;
-> +		phy-names = "usb2-phy";
-> +
-> +		g-rx-fifo-size = <768>;
-> +		g-np-tx-fifo-size = <256>;
-> +		g-tx-fifo-size = <256 256 256 256 256 256 256 512>;
-> +
-> +		status = "disabled";
-> +	};
->  };
-> diff --git a/arch/mips/boot/dts/ingenic/x1830.dtsi 
-> b/arch/mips/boot/dts/ingenic/x1830.dtsi
-> index b05dac3ae308..4831350efdf2 100644
-> --- a/arch/mips/boot/dts/ingenic/x1830.dtsi
-> +++ b/arch/mips/boot/dts/ingenic/x1830.dtsi
-> @@ -52,13 +52,38 @@
->  	};
-> 
->  	cgu: x1830-cgu@10000000 {
-> -		compatible = "ingenic,x1830-cgu";
-> +		compatible = "ingenic,x1830-cgu", "simple-mfd";
->  		reg = <0x10000000 0x100>;
-> +		#address-cells = <1>;
-> +		#size-cells = <1>;
-> +		ranges = <0x0 0x10000000 0x100>;
-> 
->  		#clock-cells = <1>;
-> 
->  		clocks = <&exclk>, <&rtclk>;
->  		clock-names = "ext", "rtc";
-> +
-> +		otg_phy: usb-phy@3c {
-> +			compatible = "ingenic,x1830-phy";
-> +			reg = <0x3c 0x10>;
-> +
-> +			clocks = <&cgu X1830_CLK_OTGPHY>;
-> +
-> +			#phy-cells = <0>;
-> +		};
-> +	};
-> +
-> +	ost: timer@12000000 {
-> +		compatible = "ingenic,x1830-ost", "ingenic,x1000-ost";
-> +		reg = <0x12000000 0x3c>;
-> +
-> +		#clock-cells = <1>;
-> +
-> +		clocks = <&cgu X1830_CLK_OST>;
-> +		clock-names = "ost";
-> +
-> +		interrupt-parent = <&cpuintc>;
-> +		interrupts = <4>;
->  	};
-> 
->  	tcu: timer@10002000 {
-> @@ -236,6 +261,13 @@
->  		status = "disabled";
->  	};
-> 
-> +	dtrng: trng@10072000 {
-> +		compatible = "ingenic,x1830-dtrng";
-> +		reg = <0x10072000 0xc>;
-> +
-> +		clocks = <&cgu X1830_CLK_DTRNG>;
-> +	};
-> +
->  	pdma: dma-controller@13420000 {
->  		compatible = "ingenic,x1830-dma";
->  		reg = <0x13420000 0x400
-> @@ -311,4 +343,24 @@
->  			status = "disabled";
->  		};
->  	};
-> +
-> +	otg: usb@13500000 {
-> +		compatible = "ingenic,x1830-otg", "snps,dwc2";
-> +		reg = <0x13500000 0x40000>;
-> +
-> +		interrupt-parent = <&intc>;
-> +		interrupts = <21>;
-> +
-> +		clocks = <&cgu X1830_CLK_OTG>;
-> +		clock-names = "otg";
-> +
-> +		phys = <&otg_phy>;
-> +		phy-names = "usb2-phy";
-> +
-> +		g-rx-fifo-size = <768>;
-> +		g-np-tx-fifo-size = <256>;
-> +		g-tx-fifo-size = <256 256 256 256 256 256 256 512>;
-> +
-> +		status = "disabled";
-> +	};
->  };
-> --
-> 2.11.0
-> 
-
-
+diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+index fd3cc03..2af0ea6 100644
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -3378,6 +3378,9 @@ static void __sched_fork(unsigned long clone_flags, struct task_struct *p)
+      p->capture_control = NULL;
+  #endif
+      init_numa_balancing(clone_flags, p);
++#ifdef CONFIG_SCHED_CORE
++    p->core_task_cookie = 0;
++#endif
+  #ifdef CONFIG_SMP
+      p->wake_entry.u_flags = CSD_TYPE_TTWU;
+  #endif
