@@ -2,67 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 551402AAF5F
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 03:18:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F02552AAF71
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 03:23:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729501AbgKICSG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 8 Nov 2020 21:18:06 -0500
-Received: from m176115.mail.qiye.163.com ([59.111.176.115]:20444 "EHLO
-        m176115.mail.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729432AbgKICSF (ORCPT
+        id S1729057AbgKICXD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 8 Nov 2020 21:23:03 -0500
+Received: from mailgw02.mediatek.com ([210.61.82.184]:40475 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1727979AbgKICXD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 8 Nov 2020 21:18:05 -0500
-Received: from vivo-HP-ProDesk-680-G4-PCI-MT.vivo.xyz (unknown [58.251.74.231])
-        by m176115.mail.qiye.163.com (Hmail) with ESMTPA id 391F9660D2A;
-        Mon,  9 Nov 2020 10:18:02 +0800 (CST)
-From:   Wang Qing <wangqing@vivo.com>
-To:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Grygorii Strashko <grygorii.strashko@ti.com>,
-        Samuel Zou <zou_wei@huawei.com>,
-        Murali Karicheri <m-karicheri2@ti.com>,
-        Ivan Khoronzhuk <ivan.khoronzhuk@linaro.org>,
-        Wang Qing <wangqing@vivo.com>,
-        Kurt Kanzenbach <kurt@linutronix.de>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH V3 net] net/ethernet: Fix error return when ptp_clock is ERROR
-Date:   Mon,  9 Nov 2020 10:17:52 +0800
-Message-Id: <1604888277-20400-1-git-send-email-wangqing@vivo.com>
-X-Mailer: git-send-email 2.7.4
-X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
-        oVCBIfWUFZSkJMH05CThhPHRpDVkpNS09DQ0NJQ0lMSk5VEwETFhoSFyQUDg9ZV1kWGg8SFR0UWU
-        FZT0tIVUpKS0hKQ1VLWQY+
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6MxA6Pgw4UT8tShNONC0ePxNJ
-        F08wCwtVSlVKTUtPQ0NDSUNISEtCVTMWGhIXVQwaFRwKEhUcOw0SDRRVGBQWRVlXWRILWUFZTkNV
-        SU5KVUxPVUlISllXWQgBWUFJSklCNwY+
-X-HM-Tid: 0a75aacbc5da9373kuws391f9660d2a
+        Sun, 8 Nov 2020 21:23:03 -0500
+X-UUID: 48fb9cfabaf5400d9fa57c8c3402e5b2-20201109
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=X+emFbkKDWXUxsl/dlhhvQTCk9MsT2snLQrN+cM5D/U=;
+        b=iQOAIKDn/exKrF6hFBz12QJOxoCuzkJETAkXSAQkJbmOu4FUcv0uo7Ku84yay3jnIGtd8KzL7u3Xu2qZOEvwerncwY0h4pzTUMojuEeIBPgJbKSpB1ponePX6v12Mv2aYFibbtmZPa/wM+4zwiO9w0AA7RklNdPhZkBrHsVvzrA=;
+X-UUID: 48fb9cfabaf5400d9fa57c8c3402e5b2-20201109
+Received: from mtkcas06.mediatek.inc [(172.21.101.30)] by mailgw02.mediatek.com
+        (envelope-from <weiyi.lu@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1281214121; Mon, 09 Nov 2020 10:22:56 +0800
+Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
+ mtkmbs07n1.mediatek.inc (172.21.101.16) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Mon, 9 Nov 2020 10:22:55 +0800
+Received: from [172.21.77.4] (172.21.77.4) by MTKCAS06.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Mon, 9 Nov 2020 10:22:48 +0800
+Message-ID: <1604888568.15580.1.camel@mtksdaap41>
+Subject: Re: [PATCH 10/12] clk: mediatek: Clean up the pll_en_bit from
+ en_mask on MT8183
+From:   Weiyi Lu <weiyi.lu@mediatek.com>
+To:     Fabien Parent <fparent@baylibre.com>
+CC:     Nicolas Boichat <drinkcat@chromium.org>,
+        <srv_heupstream@mediatek.com>, Stephen Boyd <sboyd@kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        <linux-clk@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
+Date:   Mon, 9 Nov 2020 10:22:48 +0800
+In-Reply-To: <CAOwMV_xh0=D+sEDZM4AOqid6XtGCenyjdzm=Go77DBaiuwe1Lg@mail.gmail.com>
+References: <1603371365-30863-1-git-send-email-weiyi.lu@mediatek.com>
+         <1603371365-30863-11-git-send-email-weiyi.lu@mediatek.com>
+         <CAOwMV_xh0=D+sEDZM4AOqid6XtGCenyjdzm=Go77DBaiuwe1Lg@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.10.4-0ubuntu2 
+MIME-Version: 1.0
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We always have to update the value of ret, otherwise the error value
- may be the previous one. And ptp_clock_register() never return NULL
- when PTP_1588_CLOCK enable.
-
-Signed-off-by: Wang Qing <wangqing@vivo.com>
----
- drivers/net/ethernet/ti/am65-cpts.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
-
-diff --git a/drivers/net/ethernet/ti/am65-cpts.c b/drivers/net/ethernet/ti/am65-cpts.c
-index 75056c1..b319d45
---- a/drivers/net/ethernet/ti/am65-cpts.c
-+++ b/drivers/net/ethernet/ti/am65-cpts.c
-@@ -1001,8 +1001,7 @@ struct am65_cpts *am65_cpts_create(struct device *dev, void __iomem *regs,
- 	if (IS_ERR_OR_NULL(cpts->ptp_clock)) {
- 		dev_err(dev, "Failed to register ptp clk %ld\n",
- 			PTR_ERR(cpts->ptp_clock));
--		if (!cpts->ptp_clock)
--			ret = -ENODEV;
-+		ret = PTR_ERR(cpts->ptp_clock);
- 		goto refclk_disable;
- 	}
- 	cpts->phc_index = ptp_clock_index(cpts->ptp_clock);
--- 
-2.7.4
+T24gV2VkLCAyMDIwLTEwLTI4IGF0IDExOjI3ICswMTAwLCBGYWJpZW4gUGFyZW50IHdyb3RlOg0K
+PiBIaSBXZWl5aSwNCj4gDQo+IFRoZSBjbG9jayBkcml2ZXIgZm9yIE1UODE2NyBoYXMgYmVlbiBt
+ZXJnZWQgaW4gdjUuMTAtcmMxLiBDYW4geW91IGFsc28NCj4gYXBwbHkgdGhlIGNoYW5nZSB0byB0
+aGF0IGRyaXZlci4NCj4gVGhhbmsgeW91DQo+IA0KPiBGYWJpZW4NCj4gDQoNCkhpIEZhYmllbiwN
+Cg0KRG9uZS4gdXBkYXRlIGluIHYyLg0KTWFueSB0aGFua3MuDQoNCj4gT24gRnJpLCBPY3QgMjMs
+IDIwMjAgYXQgMjo0NCBBTSBXZWl5aSBMdSA8d2VpeWkubHVAbWVkaWF0ZWsuY29tPiB3cm90ZToN
+Cj4gPg0KPiA+IHJlbW92ZSBwbGxfZW5fYml0KGJpdDApIGZyb20gZW5fbWFzayB0byBtYWtlIGVu
+X21hc2sgYSBwdXJlIGVuX21hc2sNCj4gPiB0aGF0IG9ubHkgdXNlZCBmb3IgcGxsIGRpdmlkZXJz
+Lg0KPiA+DQo+ID4gU2lnbmVkLW9mZi1ieTogV2VpeWkgTHUgPHdlaXlpLmx1QG1lZGlhdGVrLmNv
+bT4NCj4gPiAtLS0NCj4gPiAgZHJpdmVycy9jbGsvbWVkaWF0ZWsvY2xrLW10ODE4My5jIHwgMjIg
+KysrKysrKysrKystLS0tLS0tLS0tLQ0KPiA+ICAxIGZpbGUgY2hhbmdlZCwgMTEgaW5zZXJ0aW9u
+cygrKSwgMTEgZGVsZXRpb25zKC0pDQo+ID4NCj4gPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9jbGsv
+bWVkaWF0ZWsvY2xrLW10ODE4My5jIGIvZHJpdmVycy9jbGsvbWVkaWF0ZWsvY2xrLW10ODE4My5j
+DQo+ID4gaW5kZXggNTA0Njg1Mi4uNjA4MTA4YyAxMDA2NDQNCj4gPiAtLS0gYS9kcml2ZXJzL2Ns
+ay9tZWRpYXRlay9jbGstbXQ4MTgzLmMNCj4gPiArKysgYi9kcml2ZXJzL2Nsay9tZWRpYXRlay9j
+bGstbXQ4MTgzLmMNCj4gPiBAQCAtMTEyMSwzNCArMTEyMSwzNCBAQA0KPiA+ICB9Ow0KPiA+DQo+
+ID4gIHN0YXRpYyBjb25zdCBzdHJ1Y3QgbXRrX3BsbF9kYXRhIHBsbHNbXSA9IHsNCj4gPiAtICAg
+ICAgIFBMTF9CKENMS19BUE1JWEVEX0FSTVBMTF9MTCwgImFybXBsbF9sbCIsIDB4MDIwMCwgMHgw
+MjBDLCAweDAwMDAwMDAxLA0KPiA+ICsgICAgICAgUExMX0IoQ0xLX0FQTUlYRURfQVJNUExMX0xM
+LCAiYXJtcGxsX2xsIiwgMHgwMjAwLCAweDAyMEMsIDAsDQo+ID4gICAgICAgICAgICAgICAgIEhB
+VkVfUlNUX0JBUiB8IFBMTF9BTywgQklUKDI0KSwgMjIsIDgsIDB4MDIwNCwgMjQsIDB4MCwgMHgw
+LCAwLA0KPiA+ICAgICAgICAgICAgICAgICAweDAyMDQsIDAsIDAsIGFybXBsbF9kaXZfdGFibGUp
+LA0KPiA+IC0gICAgICAgUExMX0IoQ0xLX0FQTUlYRURfQVJNUExMX0wsICJhcm1wbGxfbCIsIDB4
+MDIxMCwgMHgwMjFDLCAweDAwMDAwMDAxLA0KPiA+ICsgICAgICAgUExMX0IoQ0xLX0FQTUlYRURf
+QVJNUExMX0wsICJhcm1wbGxfbCIsIDB4MDIxMCwgMHgwMjFDLCAwLA0KPiA+ICAgICAgICAgICAg
+ICAgICBIQVZFX1JTVF9CQVIgfCBQTExfQU8sIEJJVCgyNCksIDIyLCA4LCAweDAyMTQsIDI0LCAw
+eDAsIDB4MCwgMCwNCj4gPiAgICAgICAgICAgICAgICAgMHgwMjE0LCAwLCAwLCBhcm1wbGxfZGl2
+X3RhYmxlKSwNCj4gPiAtICAgICAgIFBMTChDTEtfQVBNSVhFRF9DQ0lQTEwsICJjY2lwbGwiLCAw
+eDAyOTAsIDB4MDI5QywgMHgwMDAwMDAwMSwNCj4gPiArICAgICAgIFBMTChDTEtfQVBNSVhFRF9D
+Q0lQTEwsICJjY2lwbGwiLCAweDAyOTAsIDB4MDI5QywgMCwNCj4gPiAgICAgICAgICAgICAgICAg
+SEFWRV9SU1RfQkFSIHwgUExMX0FPLCBCSVQoMjQpLCAyMiwgOCwgMHgwMjk0LCAyNCwgMHgwLCAw
+eDAsIDAsDQo+ID4gICAgICAgICAgICAgICAgIDB4MDI5NCwgMCwgMCksDQo+ID4gLSAgICAgICBQ
+TEwoQ0xLX0FQTUlYRURfTUFJTlBMTCwgIm1haW5wbGwiLCAweDAyMjAsIDB4MDIyQywgMHgwMDAw
+MDAwMSwNCj4gPiArICAgICAgIFBMTChDTEtfQVBNSVhFRF9NQUlOUExMLCAibWFpbnBsbCIsIDB4
+MDIyMCwgMHgwMjJDLCAwLA0KPiA+ICAgICAgICAgICAgICAgICBIQVZFX1JTVF9CQVIsIEJJVCgy
+NCksIDIyLCA4LCAweDAyMjQsIDI0LCAweDAsIDB4MCwgMCwNCj4gPiAgICAgICAgICAgICAgICAg
+MHgwMjI0LCAwLCAwKSwNCj4gPiAtICAgICAgIFBMTChDTEtfQVBNSVhFRF9VTklWMlBMTCwgInVu
+aXYycGxsIiwgMHgwMjMwLCAweDAyM0MsIDB4MDAwMDAwMDEsDQo+ID4gKyAgICAgICBQTEwoQ0xL
+X0FQTUlYRURfVU5JVjJQTEwsICJ1bml2MnBsbCIsIDB4MDIzMCwgMHgwMjNDLCAwLA0KPiA+ICAg
+ICAgICAgICAgICAgICBIQVZFX1JTVF9CQVIsIEJJVCgyNCksIDIyLCA4LCAweDAyMzQsIDI0LCAw
+eDAsIDB4MCwgMCwNCj4gPiAgICAgICAgICAgICAgICAgMHgwMjM0LCAwLCAwKSwNCj4gPiAtICAg
+ICAgIFBMTF9CKENMS19BUE1JWEVEX01GR1BMTCwgIm1mZ3BsbCIsIDB4MDI0MCwgMHgwMjRDLCAw
+eDAwMDAwMDAxLA0KPiA+ICsgICAgICAgUExMX0IoQ0xLX0FQTUlYRURfTUZHUExMLCAibWZncGxs
+IiwgMHgwMjQwLCAweDAyNEMsIDAsDQo+ID4gICAgICAgICAgICAgICAgIDAsIDAsIDIyLCA4LCAw
+eDAyNDQsIDI0LCAweDAsIDB4MCwgMCwgMHgwMjQ0LCAwLCAwLA0KPiA+ICAgICAgICAgICAgICAg
+ICBtZmdwbGxfZGl2X3RhYmxlKSwNCj4gPiAtICAgICAgIFBMTChDTEtfQVBNSVhFRF9NU0RDUExM
+LCAibXNkY3BsbCIsIDB4MDI1MCwgMHgwMjVDLCAweDAwMDAwMDAxLA0KPiA+ICsgICAgICAgUExM
+KENMS19BUE1JWEVEX01TRENQTEwsICJtc2RjcGxsIiwgMHgwMjUwLCAweDAyNUMsIDAsDQo+ID4g
+ICAgICAgICAgICAgICAgIDAsIDAsIDIyLCA4LCAweDAyNTQsIDI0LCAweDAsIDB4MCwgMCwgMHgw
+MjU0LCAwLCAwKSwNCj4gPiAtICAgICAgIFBMTChDTEtfQVBNSVhFRF9UVkRQTEwsICJ0dmRwbGwi
+LCAweDAyNjAsIDB4MDI2QywgMHgwMDAwMDAwMSwNCj4gPiArICAgICAgIFBMTChDTEtfQVBNSVhF
+RF9UVkRQTEwsICJ0dmRwbGwiLCAweDAyNjAsIDB4MDI2QywgMCwNCj4gPiAgICAgICAgICAgICAg
+ICAgMCwgMCwgMjIsIDgsIDB4MDI2NCwgMjQsIDB4MCwgMHgwLCAwLCAweDAyNjQsIDAsIDApLA0K
+PiA+IC0gICAgICAgUExMKENMS19BUE1JWEVEX01NUExMLCAibW1wbGwiLCAweDAyNzAsIDB4MDI3
+QywgMHgwMDAwMDAwMSwNCj4gPiArICAgICAgIFBMTChDTEtfQVBNSVhFRF9NTVBMTCwgIm1tcGxs
+IiwgMHgwMjcwLCAweDAyN0MsIDAsDQo+ID4gICAgICAgICAgICAgICAgIEhBVkVfUlNUX0JBUiwg
+QklUKDIzKSwgMjIsIDgsIDB4MDI3NCwgMjQsIDB4MCwgMHgwLCAwLA0KPiA+ICAgICAgICAgICAg
+ICAgICAweDAyNzQsIDAsIDApLA0KPiA+IC0gICAgICAgUExMKENMS19BUE1JWEVEX0FQTEwxLCAi
+YXBsbDEiLCAweDAyQTAsIDB4MDJCMCwgMHgwMDAwMDAwMSwNCj4gPiArICAgICAgIFBMTChDTEtf
+QVBNSVhFRF9BUExMMSwgImFwbGwxIiwgMHgwMkEwLCAweDAyQjAsIDAsDQo+ID4gICAgICAgICAg
+ICAgICAgIDAsIDAsIDMyLCA4LCAweDAyQTAsIDEsIDB4MDJBOCwgMHgwMDE0LCAwLCAweDAyQTQs
+IDAsIDB4MDJBMCksDQo+ID4gLSAgICAgICBQTEwoQ0xLX0FQTUlYRURfQVBMTDIsICJhcGxsMiIs
+IDB4MDJiNCwgMHgwMmM0LCAweDAwMDAwMDAxLA0KPiA+ICsgICAgICAgUExMKENMS19BUE1JWEVE
+X0FQTEwyLCAiYXBsbDIiLCAweDAyYjQsIDB4MDJjNCwgMCwNCj4gPiAgICAgICAgICAgICAgICAg
+MCwgMCwgMzIsIDgsIDB4MDJCNCwgMSwgMHgwMkJDLCAweDAwMTQsIDEsIDB4MDJCOCwgMCwgMHgw
+MkI0KSwNCj4gPiAgfTsNCj4gPg0KPiA+IC0tDQo+ID4gMS44LjEuMS5kaXJ0eQ0KPiA+IF9fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fDQo+ID4gbGludXgtYXJt
+LWtlcm5lbCBtYWlsaW5nIGxpc3QNCj4gPiBsaW51eC1hcm0ta2VybmVsQGxpc3RzLmluZnJhZGVh
+ZC5vcmcNCj4gPiBodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xp
+bnV4LWFybS1rZXJuZWwNCj4gDQo+IF9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fDQo+IExpbnV4LW1lZGlhdGVrIG1haWxpbmcgbGlzdA0KPiBMaW51eC1tZWRp
+YXRla0BsaXN0cy5pbmZyYWRlYWQub3JnDQo+IGh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21h
+aWxtYW4vbGlzdGluZm8vbGludXgtbWVkaWF0ZWsNCg0K
 
