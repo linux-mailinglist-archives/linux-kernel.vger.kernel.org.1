@@ -2,40 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA7A02AB949
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 14:07:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A73482AB97B
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 14:09:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731469AbgKINHv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 08:07:51 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60684 "EHLO mail.kernel.org"
+        id S1731916AbgKINJq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 08:09:46 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34774 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731459AbgKINHr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 08:07:47 -0500
+        id S1731286AbgKINJn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 08:09:43 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D538820663;
-        Mon,  9 Nov 2020 13:07:46 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 88CFE2083B;
+        Mon,  9 Nov 2020 13:09:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604927267;
-        bh=4cSdeMJIdBMCk+T/ukej92PLJUC5IzIIMLCa+H0D05U=;
+        s=default; t=1604927382;
+        bh=M93C0WxoUZjVjd1QMB2wolPFvM6MJqaX+RFl+yae1ug=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RAqohAAbmFj9EqL8F6pnY4ZzWxjv8RLaLS8ZUgqJ4L4S8Nd0bWu6EVtI/L2rdtsMa
-         z+SW8VpWSitRqwI62j8PWvOVXbRM+OcPWEFr7STqX1fGW6WB1qmKZ0s0vQOzY0wN73
-         eid1syZA/t4O1x+/CcHTDKaEAxIGo+vITqMhuH5w=
+        b=uWFH/d/IjwzUmBvk7I7+zr9CyP8ozsgj+f9qWv3ASJ9O5YR7cO89NU0BUQjIMY7IA
+         a5nE+1jKsef8gSCQKp6j1fgfUkf8nSj1mlPahAPhnixXv20HMJEVn2D6cKVdk77pBX
+         57l5a3JI05YcZaWsEH1YeqWE6vrBOvH7ylNOvRTg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        =?UTF-8?q?Cl=C3=A9ment=20P=C3=A9ron?= <peron.clem@gmail.com>,
-        Maxime Ripard <maxime@cerno.tech>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 26/48] ARM: dts: sun4i-a10: fix cpu_alert temperature
+        "Steven Rostedt (VMware)" <rostedt@goodmis.org>
+Subject: [PATCH 4.19 41/71] ring-buffer: Fix recursion protection transitions between interrupt context
 Date:   Mon,  9 Nov 2020 13:55:35 +0100
-Message-Id: <20201109125018.044910506@linuxfoundation.org>
+Message-Id: <20201109125021.834412935@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201109125016.734107741@linuxfoundation.org>
-References: <20201109125016.734107741@linuxfoundation.org>
+In-Reply-To: <20201109125019.906191744@linuxfoundation.org>
+References: <20201109125019.906191744@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,40 +42,126 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Clément Péron <peron.clem@gmail.com>
+From: Steven Rostedt (VMware) <rostedt@goodmis.org>
 
-[ Upstream commit dea252fa41cd8ce332d148444e4799235a8a03ec ]
+commit b02414c8f045ab3b9afc816c3735bc98c5c3d262 upstream.
 
-When running dtbs_check thermal_zone warn about the
-temperature declared.
+The recursion protection of the ring buffer depends on preempt_count() to be
+correct. But it is possible that the ring buffer gets called after an
+interrupt comes in but before it updates the preempt_count(). This will
+trigger a false positive in the recursion code.
 
-thermal-zones: cpu-thermal:trips:cpu-alert0:temperature:0:0: 850000 is greater than the maximum of 200000
+Use the same trick from the ftrace function callback recursion code which
+uses a "transition" bit that gets set, to allow for a single recursion for
+to handle transitions between contexts.
 
-It's indeed wrong the real value is 85°C and not 850°C.
+Cc: stable@vger.kernel.org
+Fixes: 567cd4da54ff4 ("ring-buffer: User context bit recursion checking")
+Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-Signed-off-by: Clément Péron <peron.clem@gmail.com>
-Signed-off-by: Maxime Ripard <maxime@cerno.tech>
-Link: https://lore.kernel.org/r/20201003100332.431178-1-peron.clem@gmail.com
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/boot/dts/sun4i-a10.dtsi | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ kernel/trace/ring_buffer.c |   58 +++++++++++++++++++++++++++++++++++----------
+ 1 file changed, 46 insertions(+), 12 deletions(-)
 
-diff --git a/arch/arm/boot/dts/sun4i-a10.dtsi b/arch/arm/boot/dts/sun4i-a10.dtsi
-index 41c2579143fd6..b3a3488fdfd68 100644
---- a/arch/arm/boot/dts/sun4i-a10.dtsi
-+++ b/arch/arm/boot/dts/sun4i-a10.dtsi
-@@ -143,7 +143,7 @@
- 			trips {
- 				cpu_alert0: cpu_alert0 {
- 					/* milliCelsius */
--					temperature = <850000>;
-+					temperature = <85000>;
- 					hysteresis = <2000>;
- 					type = "passive";
- 				};
--- 
-2.27.0
-
+--- a/kernel/trace/ring_buffer.c
++++ b/kernel/trace/ring_buffer.c
+@@ -444,14 +444,16 @@ struct rb_event_info {
+ 
+ /*
+  * Used for which event context the event is in.
+- *  NMI     = 0
+- *  IRQ     = 1
+- *  SOFTIRQ = 2
+- *  NORMAL  = 3
++ *  TRANSITION = 0
++ *  NMI     = 1
++ *  IRQ     = 2
++ *  SOFTIRQ = 3
++ *  NORMAL  = 4
+  *
+  * See trace_recursive_lock() comment below for more details.
+  */
+ enum {
++	RB_CTX_TRANSITION,
+ 	RB_CTX_NMI,
+ 	RB_CTX_IRQ,
+ 	RB_CTX_SOFTIRQ,
+@@ -2620,10 +2622,10 @@ rb_wakeups(struct ring_buffer *buffer, s
+  * a bit of overhead in something as critical as function tracing,
+  * we use a bitmask trick.
+  *
+- *  bit 0 =  NMI context
+- *  bit 1 =  IRQ context
+- *  bit 2 =  SoftIRQ context
+- *  bit 3 =  normal context.
++ *  bit 1 =  NMI context
++ *  bit 2 =  IRQ context
++ *  bit 3 =  SoftIRQ context
++ *  bit 4 =  normal context.
+  *
+  * This works because this is the order of contexts that can
+  * preempt other contexts. A SoftIRQ never preempts an IRQ
+@@ -2646,6 +2648,30 @@ rb_wakeups(struct ring_buffer *buffer, s
+  * The least significant bit can be cleared this way, and it
+  * just so happens that it is the same bit corresponding to
+  * the current context.
++ *
++ * Now the TRANSITION bit breaks the above slightly. The TRANSITION bit
++ * is set when a recursion is detected at the current context, and if
++ * the TRANSITION bit is already set, it will fail the recursion.
++ * This is needed because there's a lag between the changing of
++ * interrupt context and updating the preempt count. In this case,
++ * a false positive will be found. To handle this, one extra recursion
++ * is allowed, and this is done by the TRANSITION bit. If the TRANSITION
++ * bit is already set, then it is considered a recursion and the function
++ * ends. Otherwise, the TRANSITION bit is set, and that bit is returned.
++ *
++ * On the trace_recursive_unlock(), the TRANSITION bit will be the first
++ * to be cleared. Even if it wasn't the context that set it. That is,
++ * if an interrupt comes in while NORMAL bit is set and the ring buffer
++ * is called before preempt_count() is updated, since the check will
++ * be on the NORMAL bit, the TRANSITION bit will then be set. If an
++ * NMI then comes in, it will set the NMI bit, but when the NMI code
++ * does the trace_recursive_unlock() it will clear the TRANSTION bit
++ * and leave the NMI bit set. But this is fine, because the interrupt
++ * code that set the TRANSITION bit will then clear the NMI bit when it
++ * calls trace_recursive_unlock(). If another NMI comes in, it will
++ * set the TRANSITION bit and continue.
++ *
++ * Note: The TRANSITION bit only handles a single transition between context.
+  */
+ 
+ static __always_inline int
+@@ -2661,8 +2687,16 @@ trace_recursive_lock(struct ring_buffer_
+ 		bit = pc & NMI_MASK ? RB_CTX_NMI :
+ 			pc & HARDIRQ_MASK ? RB_CTX_IRQ : RB_CTX_SOFTIRQ;
+ 
+-	if (unlikely(val & (1 << (bit + cpu_buffer->nest))))
+-		return 1;
++	if (unlikely(val & (1 << (bit + cpu_buffer->nest)))) {
++		/*
++		 * It is possible that this was called by transitioning
++		 * between interrupt context, and preempt_count() has not
++		 * been updated yet. In this case, use the TRANSITION bit.
++		 */
++		bit = RB_CTX_TRANSITION;
++		if (val & (1 << (bit + cpu_buffer->nest)))
++			return 1;
++	}
+ 
+ 	val |= (1 << (bit + cpu_buffer->nest));
+ 	cpu_buffer->current_context = val;
+@@ -2677,8 +2711,8 @@ trace_recursive_unlock(struct ring_buffe
+ 		cpu_buffer->current_context - (1 << cpu_buffer->nest);
+ }
+ 
+-/* The recursive locking above uses 4 bits */
+-#define NESTED_BITS 4
++/* The recursive locking above uses 5 bits */
++#define NESTED_BITS 5
+ 
+ /**
+  * ring_buffer_nest_start - Allow to trace while nested
 
 
