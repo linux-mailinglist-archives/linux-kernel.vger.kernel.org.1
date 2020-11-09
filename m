@@ -2,21 +2,21 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93BCF2AB02B
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 05:30:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C67B2AB02C
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 05:30:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729278AbgKIE3S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 8 Nov 2020 23:29:18 -0500
-Received: from foss.arm.com ([217.140.110.172]:33910 "EHLO foss.arm.com"
+        id S1729318AbgKIE3X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 8 Nov 2020 23:29:23 -0500
+Received: from foss.arm.com ([217.140.110.172]:33920 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728038AbgKIE3R (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 8 Nov 2020 23:29:17 -0500
+        id S1728802AbgKIE3V (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 8 Nov 2020 23:29:21 -0500
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 35DE0106F;
-        Sun,  8 Nov 2020 20:29:17 -0800 (PST)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 34227101E;
+        Sun,  8 Nov 2020 20:29:21 -0800 (PST)
 Received: from p8cg001049571a15.arm.com (unknown [10.163.78.250])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 7FA233F6CF;
-        Sun,  8 Nov 2020 20:29:13 -0800 (PST)
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id AEF313F6CF;
+        Sun,  8 Nov 2020 20:29:17 -0800 (PST)
 From:   Anshuman Khandual <anshuman.khandual@arm.com>
 To:     linux-arm-kernel@lists.infradead.org
 Cc:     gshan@redhat.com, Anshuman Khandual <anshuman.khandual@arm.com>,
@@ -26,9 +26,9 @@ Cc:     gshan@redhat.com, Anshuman Khandual <anshuman.khandual@arm.com>,
         Marc Zyngier <maz@kernel.org>,
         Steve Capper <steve.capper@arm.com>,
         Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org
-Subject: [PATCH V5 1/3] arm64/mm/hotplug: Register boot memory hot remove notifier earlier
-Date:   Mon,  9 Nov 2020 09:58:55 +0530
-Message-Id: <1604896137-16644-2-git-send-email-anshuman.khandual@arm.com>
+Subject: [PATCH V5 2/3] arm64/mm/hotplug: Enable MEM_OFFLINE event handling
+Date:   Mon,  9 Nov 2020 09:58:56 +0530
+Message-Id: <1604896137-16644-3-git-send-email-anshuman.khandual@arm.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1604896137-16644-1-git-send-email-anshuman.khandual@arm.com>
 References: <1604896137-16644-1-git-send-email-anshuman.khandual@arm.com>
@@ -36,14 +36,12 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This moves memory notifier registration earlier in the boot process from
-device_initcall() to early_initcall() which will help in guarding against
-potential early boot memory offline requests. Even though there should not
-be any actual offlinig requests till memory block devices are initialized
-with memory_dev_init() but then generic init sequence might just change in
-future. Hence an early registration for the memory event notifier would be
-helpful. While here, just skip the registration if CONFIG_MEMORY_HOTREMOVE
-is not enabled and also call out when memory notifier registration fails.
+This enables MEM_OFFLINE memory event handling. It will help intercept any
+possible error condition such as if boot memory some how still got offlined
+even after an explicit notifier failure, potentially by a future change in
+generic hot plug framework. This would help detect such scenarios and help
+debug further. While here, also call out the first section being attempted
+for offline or got offlined.
 
 Cc: Catalin Marinas <catalin.marinas@arm.com>
 Cc: Will Deacon <will@kernel.org>
@@ -54,35 +52,61 @@ Cc: Mark Brown <broonie@kernel.org>
 Cc: linux-arm-kernel@lists.infradead.org
 Cc: linux-kernel@vger.kernel.org
 Reviewed-by: Gavin Shan <gshan@redhat.com>
-Reviewed-by: Catalin Marinas <catalin.marinas@arm.com>
 Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
 ---
- arch/arm64/mm/mmu.c | 13 +++++++++++--
- 1 file changed, 11 insertions(+), 2 deletions(-)
+ arch/arm64/mm/mmu.c | 34 ++++++++++++++++++++++++++++++++--
+ 1 file changed, 32 insertions(+), 2 deletions(-)
 
 diff --git a/arch/arm64/mm/mmu.c b/arch/arm64/mm/mmu.c
-index 1c0f3e02f731..71dd9d753b8b 100644
+index 71dd9d753b8b..ca6d4952b733 100644
 --- a/arch/arm64/mm/mmu.c
 +++ b/arch/arm64/mm/mmu.c
-@@ -1510,7 +1510,16 @@ static struct notifier_block prevent_bootmem_remove_nb = {
+@@ -1493,13 +1493,43 @@ static int prevent_bootmem_remove_notifier(struct notifier_block *nb,
+ 	unsigned long end_pfn = arg->start_pfn + arg->nr_pages;
+ 	unsigned long pfn = arg->start_pfn;
  
- static int __init prevent_bootmem_remove_init(void)
- {
--	return register_memory_notifier(&prevent_bootmem_remove_nb);
-+	int ret = 0;
+-	if (action != MEM_GOING_OFFLINE)
++	if ((action != MEM_GOING_OFFLINE) && (action != MEM_OFFLINE))
+ 		return NOTIFY_OK;
+ 
+ 	for (; pfn < end_pfn; pfn += PAGES_PER_SECTION) {
++		unsigned long start = PFN_PHYS(pfn);
++		unsigned long end = start + (1UL << PA_SECTION_SHIFT);
 +
-+	if (!IS_ENABLED(CONFIG_MEMORY_HOTREMOVE))
-+		return ret;
+ 		ms = __pfn_to_section(pfn);
+-		if (early_section(ms))
++		if (!early_section(ms))
++			continue;
 +
-+	ret = register_memory_notifier(&prevent_bootmem_remove_nb);
-+	if (ret)
-+		pr_err("%s: Notifier registration failed %d\n", __func__, ret);
++		if (action == MEM_GOING_OFFLINE) {
++			/*
++			 * Boot memory removal is not supported. Prevent
++			 * it via blocking any attempted offline request
++			 * for the boot memory and just report it.
++			 */
++			pr_warn("Boot memory [%lx %lx] offlining attempted\n", start, end);
+ 			return NOTIFY_BAD;
++		} else if (action == MEM_OFFLINE) {
++			/*
++			 * This should have never happened. Boot memory
++			 * offlining should have been prevented by this
++			 * very notifier. Probably some memory removal
++			 * procedure might have changed which would then
++			 * require further debug.
++			 */
++			pr_err("Boot memory [%lx %lx] offlined\n", start, end);
 +
-+	return ret;
++			/*
++			 * Core memory hotplug does not process a return
++			 * code from the notifier for MEM_OFFLINE events.
++			 * The error condition has been reported. Return
++			 * from here as if ignored.
++			 */
++			return NOTIFY_DONE;
++		}
+ 	}
+ 	return NOTIFY_OK;
  }
--device_initcall(prevent_bootmem_remove_init);
-+early_initcall(prevent_bootmem_remove_init);
- #endif
 -- 
 2.20.1
 
