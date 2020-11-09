@@ -2,93 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C69B2AC146
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 17:50:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C53F2AC18A
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 17:57:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730757AbgKIQsf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 11:48:35 -0500
-Received: from mx2.suse.de ([195.135.220.15]:48196 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730467AbgKIQsf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 11:48:35 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 066FEAB95;
-        Mon,  9 Nov 2020 16:48:33 +0000 (UTC)
-Date:   Mon, 9 Nov 2020 17:48:29 +0100
-From:   Oscar Salvador <osalvador@suse.de>
-To:     Muchun Song <songmuchun@bytedance.com>
-Cc:     corbet@lwn.net, mike.kravetz@oracle.com, tglx@linutronix.de,
-        mingo@redhat.com, bp@alien8.de, x86@kernel.org, hpa@zytor.com,
-        dave.hansen@linux.intel.com, luto@kernel.org, peterz@infradead.org,
-        viro@zeniv.linux.org.uk, akpm@linux-foundation.org,
-        paulmck@kernel.org, mchehab+huawei@kernel.org,
-        pawan.kumar.gupta@linux.intel.com, rdunlap@infradead.org,
-        oneukum@suse.com, anshuman.khandual@arm.com, jroedel@suse.de,
-        almasrymina@google.com, rientjes@google.com, willy@infradead.org,
-        mhocko@suse.com, duanxiongchun@bytedance.com,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH v3 04/21] mm/hugetlb: Introduce nr_free_vmemmap_pages in
- the struct hstate
-Message-ID: <20201109164825.GA17356@linux>
-References: <20201108141113.65450-1-songmuchun@bytedance.com>
- <20201108141113.65450-5-songmuchun@bytedance.com>
+        id S1731165AbgKIQ5N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 11:57:13 -0500
+Received: from cloudserver094114.home.pl ([79.96.170.134]:61960 "EHLO
+        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731115AbgKIQ5L (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 11:57:11 -0500
+Received: from 89-64-87-89.dynamic.chello.pl (89.64.87.89) (HELO kreacher.localnet)
+ by serwer1319399.home.pl (79.96.170.134) with SMTP (IdeaSmtpServer 0.83.520)
+ id 0c50821bbb1939c8; Mon, 9 Nov 2020 17:57:09 +0100
+From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
+To:     Linux PM <linux-pm@vger.kernel.org>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Zhang Rui <rui.zhang@intel.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Doug Smythies <dsmythies@telus.net>
+Subject: [PATCH v2 0/4] cpufreq: intel_pstate: Handle powersave governor correctly in the passive mode with HWP
+Date:   Mon, 09 Nov 2020 17:49:49 +0100
+Message-ID: <13269660.K2JYd4sGFX@kreacher>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201108141113.65450-5-songmuchun@bytedance.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Nov 08, 2020 at 10:10:56PM +0800, Muchun Song wrote:
-> +#ifdef CONFIG_HUGETLB_PAGE_FREE_VMEMMAP
-> +/*
-> + * There are 512 struct page structs(8 pages) associated with each 2MB
-> + * hugetlb page. For tail pages, the value of compound_dtor is the same.
-I gess you meant "For tail pages, the value of compound_head ...", right?
+Hi,
 
-> + * So we can reuse first page of tail page structs. We map the virtual
-> + * addresses of the remaining 6 pages of tail page structs to the first
-> + * tail page struct, and then free these 6 pages. Therefore, we need to
-> + * reserve at least 2 pages as vmemmap areas.
-> + */
-> +#define RESERVE_VMEMMAP_NR	2U
-> +
-> +static void __init hugetlb_vmemmap_init(struct hstate *h)
-> +{
-> +	unsigned int order = huge_page_order(h);
-> +	unsigned int vmemmap_pages;
-> +
-> +	vmemmap_pages = ((1 << order) * sizeof(struct page)) >> PAGE_SHIFT;
-> +	/*
-> +	 * The head page and the first tail page not free to buddy system,
+Even after the changes made very recently, the handling of the powersave
+governor is not exactly as expected when intel_pstate operates in the
+"passive" mode with HWP enabled.
 
-"The head page and the first tail page are not to be freed to..." better?
+Namely, in that case HWP is not limited to the policy min frequency, but it
+can scale the frequency up to the policy max limit and it cannot be constrained
+currently, because there are no provisions for that in the framework.
+
+To address that, patches [1-3/4] add a new governor flag to indicate that this
+governor wants the target frequency to be set to the exact value passed to the
+driver, if possible, and change the powersave and performance governors to have
+that flag set.
+
+The last patch makes intel_pstate take that flag into account when programming
+the HWP Request MSR.
+
+Thanks!
 
 
-> +	 * the others page will map to the first tail page. So there are
-> +	 * (@vmemmap_pages - RESERVE_VMEMMAP_NR) pages can be freed.
-						      ^^^
-                                                      that
 
-> +	else
-> +		h->nr_free_vmemmap_pages = 0;
-
-I would specify that this is not expected to happen.
-(At least I could not come up with a real scenario unless the system is
-corrupted)
-So, I would drop a brief comment pointing out that it is only a safety
-net.
-
-
-Unrelated to this patch but related in general, I am not sure about Mike but
-would it be cleaner to move all the vmemmap functions to hugetlb_vmemmap.c?
-hugetlb code is quite tricky, so I am not sure about stuffing more code
-in there.
-
--- 
-Oscar Salvador
-SUSE L3
