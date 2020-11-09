@@ -2,80 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 067862AC8DA
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 23:50:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 122472AC8DC
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 23:50:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730202AbgKIWug (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 17:50:36 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60396 "EHLO mail.kernel.org"
+        id S1730769AbgKIWuw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 17:50:52 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60536 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729451AbgKIWuf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 17:50:35 -0500
-Received: from gmail.com (unknown [104.132.1.84])
+        id S1729247AbgKIWuv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 17:50:51 -0500
+Received: from kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net (unknown [163.114.132.5])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 28674206C0;
-        Mon,  9 Nov 2020 22:50:34 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id CFCB3206C0;
+        Mon,  9 Nov 2020 22:50:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604962234;
-        bh=3zCrnmiSy4pI28U8wV8PlYqpeE16yEzdnAVoONyzohs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=x/RoupRNbJK1Pi4mHAwErVHXP/WENGRJgQMMxq9le7k+nzQ6OMr3Ik9Tg6nhy36C1
-         yFvZiu/Ji96oaWBRhoIDdUt+aBI3y0PNOh3QbRN0uliX4vy/xne5YwHqkCQB5XM4I4
-         qxla2lpMXWy+XbxUgITCAREeyY8g3BQp6Zc+EBOk=
-Date:   Mon, 9 Nov 2020 14:50:32 -0800
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Daniel Rosenberg <drosen@google.com>
-Cc:     "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Chao Yu <chao@kernel.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Richard Weinberger <richard@nod.at>,
-        linux-fscrypt@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-mtd@lists.infradead.org,
-        Gabriel Krisman Bertazi <krisman@collabora.com>,
-        kernel-team@android.com
-Subject: Re: [PATCH 0/5] Add support for Encryption and Casefolding in F2FS
-Message-ID: <20201109225032.GA2652236@gmail.com>
-References: <20200923010151.69506-1-drosen@google.com>
+        s=default; t=1604962251;
+        bh=apQ2qdH9FTTvtkF02IPDqcoq8TgCgCDbRlAv5SA6baM=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=cgALtHFVZ6r93CS3CJASGpLf7pmZFnw/iB3Q0ZI0FhMDKsUG5LKF96uJqKnjdlbFe
+         /4iIeupM9h9GrTKRadp7Xz2OQoG76ItGruYuZAKOVTPuId+vAPm21b+YHg7jz5Py17
+         4rmD5yLY3feZw8qR1nTt45G30UxW/niMCwEe4LVk=
+Date:   Mon, 9 Nov 2020 14:50:49 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Sven Van Asbroeck <thesven73@gmail.com>
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        "David S. Miller" <davem@davemloft.net>,
+        netdev <netdev@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH net-next v1] net: phy: spi_ks8995: Do not overwrite SPI
+ mode flags
+Message-ID: <20201109145049.42e0abe5@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+In-Reply-To: <CAGngYiWYKsTURi0pRMxX=SjzPnx-OF0cC43dnaGc+o15kLwk_A@mail.gmail.com>
+References: <20201109193117.2017-1-TheSven73@gmail.com>
+        <20201109130900.39602186@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+        <CAGngYiUt8MBCugYfjUJMa_h0iekubnOwVwenE7gY50DnRXq5VQ@mail.gmail.com>
+        <20201109132421.720a0e13@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+        <CAGngYiXeBRBzDuUScfxnkG2NwO=oPw5dwfxzim1yDf=Lo=LZxA@mail.gmail.com>
+        <20201109140428.27b89e0e@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+        <CAGngYiWUJ=bdJVMjzXBOc54H4Ubx5vQmaFnUbAWUjhaZ8nvP3A@mail.gmail.com>
+        <20201109142322.782b9495@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+        <CAGngYiVaQ4u7-2HJ6X92vJ9D4ZuC+GZhGmr2LhSMjCKBYfbZuA@mail.gmail.com>
+        <20201109143605.0a60b2ab@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+        <CAGngYiWYKsTURi0pRMxX=SjzPnx-OF0cC43dnaGc+o15kLwk_A@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200923010151.69506-1-drosen@google.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 23, 2020 at 01:01:46AM +0000, Daniel Rosenberg wrote:
-> These patches are on top of the f2fs dev branch
-> 
-> F2FS currently supports casefolding and encryption, but not at
-> the same time. These patches aim to rectify that. In a later follow up,
-> this will be added for Ext4 as well. I've included one ext4 patch from
-> the previous set since it isn't in the f2fs branch, but is needed for the
-> fscrypt changes.
-> 
-> The f2fs-tools changes have already been applied.
-> 
-> Since both fscrypt and casefolding require their own dentry operations,
-> I've moved the responsibility of setting the dentry operations from fscrypt
-> to the filesystems and provided helper functions that should work for most
-> cases.
-> 
-> These are a follow-up to the previously sent patch set
-> "[PATCH v12 0/4] Prepare for upcoming Casefolding/Encryption patches"
-> 
-> Daniel Rosenberg (5):
->   ext4: Use generic casefolding support
->   fscrypt: Export fscrypt_d_revalidate
->   libfs: Add generic function for setting dentry_ops
->   fscrypt: Have filesystems handle their d_ops
->   f2fs: Handle casefolding with Encryption
+On Mon, 9 Nov 2020 17:39:22 -0500 Sven Van Asbroeck wrote:
+> What I already posted (as v1) should be the minimal fix.
+> Can we proceed on that basis? I'll follow up with the helper
+> after the net -> net-next merge, as you suggested.
 
-Daniel, can you resend this for 5.11, with all remaining comments addressed?
-The first two patches made 5.10, but the others didn't.
+Well, you cut off the relevant part of my email where I said:
 
-- Eric
+  But please at least repost for net and CC Mark and the SPI list 
+  for input.
+
+Maybe Mark has a different idea on how client drivers should behave.
+
+Also please obviously CC the author of the patch who introduced 
+the breakage.
