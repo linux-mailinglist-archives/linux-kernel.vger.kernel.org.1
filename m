@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 438712ABD23
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 14:44:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BD732ABC61
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 14:37:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730622AbgKINnq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 08:43:46 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53876 "EHLO mail.kernel.org"
+        id S1733171AbgKINgt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 08:36:49 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57596 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730380AbgKIM7h (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 07:59:37 -0500
+        id S1730464AbgKINEn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 08:04:43 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 39E5C20684;
-        Mon,  9 Nov 2020 12:59:36 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 96E9721D46;
+        Mon,  9 Nov 2020 13:04:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604926776;
-        bh=iLDrDM2p+upcXyAkPIFZdCqI5bYnc9t7FxVbiDcUE9I=;
+        s=default; t=1604927073;
+        bh=Ba8ejmRJaJTHm0BtxP8Zu5VIUwq0Z1XprR6TwG7e3f8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jaH4uakYX1CEaL2+SEarAbpnYcrK2F9+sd8Hgsxuez6ZDQX31RGHtaIQlk1DWyEhd
-         Ou5sIebSgsAJeP7j8dl/+KKT102YbCCze2Ze1lOLxGctOtEoNvsQLTJxtuNALz1Q05
-         J6bTwdeqlcl/U+WjEbcbdbxk6r+srGA5VuzxUMJI=
+        b=bbhHnHiKwKlLbdZREeaaxpd2zHdq/6u5QA/vXehctdizd++aLXsbJNxskz+fcsYsB
+         jyVAupyISLQ7jAXgN+i6xWDPhnenvVn7BQ4aw+4JdehALUV+jv3xoUht5HtePF5ExG
+         agEC1iHhKZGKIVnGIE84biyMEKqnA03j4ovI8IrU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Claire Chang <tientzu@chromium.org>
-Subject: [PATCH 4.4 79/86] serial: 8250_mtk: Fix uart_get_baud_rate warning
-Date:   Mon,  9 Nov 2020 13:55:26 +0100
-Message-Id: <20201109125024.586406070@linuxfoundation.org>
+        stable@vger.kernel.org, Qiujun Huang <hqjagain@gmail.com>,
+        "Steven Rostedt (VMware)" <rostedt@goodmis.org>
+Subject: [PATCH 4.9 101/117] tracing: Fix out of bounds write in get_trace_buf
+Date:   Mon,  9 Nov 2020 13:55:27 +0100
+Message-Id: <20201109125030.496019435@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201109125020.852643676@linuxfoundation.org>
-References: <20201109125020.852643676@linuxfoundation.org>
+In-Reply-To: <20201109125025.630721781@linuxfoundation.org>
+References: <20201109125025.630721781@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,38 +42,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Claire Chang <tientzu@chromium.org>
+From: Qiujun Huang <hqjagain@gmail.com>
 
-commit 912ab37c798770f21b182d656937072b58553378 upstream.
+commit c1acb4ac1a892cf08d27efcb964ad281728b0545 upstream.
 
-Mediatek 8250 port supports speed higher than uartclk / 16. If the baud
-rates in both the new and the old termios setting are higher than
-uartclk / 16, the WARN_ON in uart_get_baud_rate() will be triggered.
-Passing NULL as the old termios so uart_get_baud_rate() will use
-uartclk / 16 - 1 as the new baud rate which will be replaced by the
-original baud rate later by tty_termios_encode_baud_rate() in
-mtk8250_set_termios().
+The nesting count of trace_printk allows for 4 levels of nesting. The
+nesting counter starts at zero and is incremented before being used to
+retrieve the current context's buffer. But the index to the buffer uses the
+nesting counter after it was incremented, and not its original number,
+which in needs to do.
 
-Fixes: 551e553f0d4a ("serial: 8250_mtk: Fix high-speed baud rates clamping")
-Signed-off-by: Claire Chang <tientzu@chromium.org>
-Link: https://lore.kernel.org/r/20201102120749.374458-1-tientzu@chromium.org
-Cc: stable <stable@vger.kernel.org>
+Link: https://lkml.kernel.org/r/20201029161905.4269-1-hqjagain@gmail.com
+
+Cc: stable@vger.kernel.org
+Fixes: 3d9622c12c887 ("tracing: Add barrier to trace_printk() buffer nesting modification")
+Signed-off-by: Qiujun Huang <hqjagain@gmail.com>
+Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/tty/serial/8250/8250_mtk.c |    2 +-
+ kernel/trace/trace.c |    2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/tty/serial/8250/8250_mtk.c
-+++ b/drivers/tty/serial/8250/8250_mtk.c
-@@ -58,7 +58,7 @@ mtk8250_set_termios(struct uart_port *po
- 	 */
- 	baud = tty_termios_baud_rate(termios);
+--- a/kernel/trace/trace.c
++++ b/kernel/trace/trace.c
+@@ -2382,7 +2382,7 @@ static char *get_trace_buf(void)
  
--	serial8250_do_set_termios(port, termios, old);
-+	serial8250_do_set_termios(port, termios, NULL);
+ 	/* Interrupts must see nesting incremented before we use the buffer */
+ 	barrier();
+-	return &buffer->buffer[buffer->nesting][0];
++	return &buffer->buffer[buffer->nesting - 1][0];
+ }
  
- 	tty_termios_encode_baud_rate(termios, baud, baud);
- 
+ static void put_trace_buf(void)
 
 
