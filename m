@@ -2,109 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D9B12AC64C
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 21:50:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 048212AC651
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 21:52:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729899AbgKIUuE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 15:50:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37566 "EHLO
+        id S1730032AbgKIUwI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 15:52:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37886 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727070AbgKIUuE (ORCPT
+        with ESMTP id S1725946AbgKIUwH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 15:50:04 -0500
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33274C0613CF
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Nov 2020 12:50:03 -0800 (PST)
-Received: by mail-pg1-x542.google.com with SMTP id h6so8173758pgk.4
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Nov 2020 12:50:03 -0800 (PST)
+        Mon, 9 Nov 2020 15:52:07 -0500
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C619FC0613CF
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Nov 2020 12:52:07 -0800 (PST)
+Received: by mail-yb1-xb4a.google.com with SMTP id y11so12363504ybm.22
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Nov 2020 12:52:07 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=vKhVM4NUHmcm6H7xPx49n/ZxgPOgimRMEfPA5U/h4i0=;
-        b=CSwyQgoc35NGUreMQWvGSPoB9vNasHgboPOgk51nBJroaY9p+6x55qvuSEukwclJS3
-         XPOicRxq9oI9X8BytyWmlzQ+YpoAk2aL0xJwxbmvIgRyq0C6PeGS+xZUa0cuC+yeUkIJ
-         3n+GsIkQUsMVTBc5S8K8sfvDchWmlF3aIaKYBtTJ/XSwKfAGsyAhdWELSNwulerDkG5z
-         ZvMvK42DPhe4Q98AX6Y9hHkgIuhk/TMd3vtPXE/jW6hV2H64U3bRBKfqFlx8CTdwjMes
-         KTPAsV9ra7l/y3rIAzLLXM9KlMMzTi+rDpr64VZQjr8nhvHL5r6NYOsD9sCevoEbBnnc
-         nfXg==
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=ItIyVy5KO5WuT6gZSHv+tWX1C0qVtRdRVgajUctR89w=;
+        b=OpbZWml0IoEtfaXE5dwayDjaDOyELvWYVSInQFtIn1S1FT9sFBhOITetVwnQszxMsn
+         024yRrMs+UjL9ds3ZMEiyAduvj7NeYjhThcc2XnZY8D0FwYgVMfaTeryKxJlACA9xgYi
+         LGpaLXvqYy1Y1HLWgxGGoCvI/8CZan/03OxLwj4yLvnnVUYThEw62yPqf2haft5qAKko
+         d17+PhXCjszC728nLT3M5kwxkhaRUfKzu6N3VDxI1DB5K3+qE6Tahif3FySRoblDRaSd
+         4/bPxqUPGrbsw4Y4WfUiR9m/pGW8E+1RrzTYelQdChuNk5JUJUSyyopcukvhqNb0oQyf
+         guGA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=vKhVM4NUHmcm6H7xPx49n/ZxgPOgimRMEfPA5U/h4i0=;
-        b=EYgEsEXIDmFbsGt0aBghYYKy1hA4qQG4l1uP9rEmRCh8ek2HiSeuMgP1brHfoOXQEF
-         +JgtAwqmT5BjlQ/9gbw7fOSdEJ0RljReUhVRLFu3voqSGVkC0D5pa5FMUr5u5k5P3kO5
-         geSIphdKPLNbdazbV0y9T7z5DDIzPwBU4eqKuxAjSQmlCUycC+lqCBBSqtr3gYZ3rNxE
-         +70Eox/TMtBxKGQNdNp2d2F4KA+cFJ2FGM/qnEWSfKIJwytOC41ZRIGa+krKieE6WBkL
-         yObpoPGeCbEsnHP9+v1SKZoxzGhqD4LE7CX/hYdW2wh2wEIX1F/xZgj7578PJ+CmeRd9
-         p4Dw==
-X-Gm-Message-State: AOAM530aoRyAStZml5hv6IDDXhtMMOA/MF80vwva50T2eWFrrrYUJK2X
-        SYsXVLhf3zMHZHG5MpSJpk3idA==
-X-Google-Smtp-Source: ABdhPJzF+apqzraZ7smZ2Ggz1Ue8cGC/n+Vsd99uNMr5AkS+QmaehTdmxa47iUXKb8vFWC9KSR1bqA==
-X-Received: by 2002:aa7:8a97:0:b029:160:c0b:671a with SMTP id a23-20020aa78a970000b02901600c0b671amr15025126pfc.16.1604955002602;
-        Mon, 09 Nov 2020 12:50:02 -0800 (PST)
-Received: from xps15 (S0106002369de4dac.cg.shawcable.net. [68.147.8.254])
-        by smtp.gmail.com with ESMTPSA id c2sm11669670pfb.196.2020.11.09.12.50.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 09 Nov 2020 12:50:02 -0800 (PST)
-Date:   Mon, 9 Nov 2020 13:50:00 -0700
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-To:     Suzuki K Poulose <suzuki.poulose@arm.com>
-Cc:     linux-arm-kernel@lists.infradead.org, mike.leach@linaro.org,
-        coresight@lists.linaro.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, Rob Herring <robh@kernel.org>
-Subject: Re: [PATCH v3 26/26] dts: bindings: coresight: ETM system register
- access only units
-Message-ID: <20201109205000.GE3396611@xps15>
-References: <20201028220945.3826358-1-suzuki.poulose@arm.com>
- <20201028220945.3826358-28-suzuki.poulose@arm.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201028220945.3826358-28-suzuki.poulose@arm.com>
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=ItIyVy5KO5WuT6gZSHv+tWX1C0qVtRdRVgajUctR89w=;
+        b=Chk5xtdRrfN3cvAXgdbiQCWUAn7JBiaFirIyAtkHtFPP3Gfk/TvLZrgMF4JmdKL+mF
+         Wshz02aCqBvj/V6YxDU1G/3F72VK0lsfkYjKhBXbgz2/er75ycq6fVYlr4EyWqb6DMfe
+         Va5AZe/EJxoEE5mjAe8d/hQsTnDNZlMB3BJTKIOz2YwYDgfu0gJKZdVPoWfHNomcyfdK
+         wkAU8a5rK6wPxQqlaZ8XpxvdR6xQZbYTzB4TlLQZH5bQ+0BFXAzmOkra+QP+vKcPiKaO
+         Gjy2mRjDAYffLAj0ZT+sRel4IitABtuonvqJp9oUOKBzrIQGTEw5fh86Pb++ZGiH87DR
+         U+kw==
+X-Gm-Message-State: AOAM530Q+B2r/znmrXdd7hy/w3Zn1iBKvj3MKxOhBMMqGUcHZhnbrCec
+        T5gVOY3HrnrNcbUA3gIuSTYOieN5JSSXHAtyoIY=
+X-Google-Smtp-Source: ABdhPJwknzqYYBgKOcdvOJ/pt9vXu7LTweCfxuf2OAuzIktrFA2MFb7PvHTPce+fPn/9JvlJ/uFKTUQmu9FDcO8UCXk=
+Sender: "ndesaulniers via sendgmr" 
+        <ndesaulniers@ndesaulniers1.mtv.corp.google.com>
+X-Received: from ndesaulniers1.mtv.corp.google.com ([2620:15c:211:202:f693:9fff:fef4:4d25])
+ (user=ndesaulniers job=sendgmr) by 2002:a25:d981:: with SMTP id
+ q123mr14118805ybg.50.1604955127041; Mon, 09 Nov 2020 12:52:07 -0800 (PST)
+Date:   Mon,  9 Nov 2020 12:51:54 -0800
+Message-Id: <20201109205155.1207545-1-ndesaulniers@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.29.2.222.g5d2a92d10f8-goog
+Subject: [PATCH] ARM: decompressor: avoid ADRL pseudo-instruction
+From:   Nick Desaulniers <ndesaulniers@google.com>
+To:     Ard Biesheuvel <ardb@kernel.org>
+Cc:     Nick Desaulniers <ndesaulniers@google.com>,
+        Jian Cai <jiancai@google.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Nicolas Pitre <nico@fluxnic.net>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        clang-built-linux@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 28, 2020 at 10:09:45PM +0000, Suzuki K Poulose wrote:
-> Document the bindings for ETMs with system register accesses.
-> 
-> Cc: devicetree@vger.kernel.org
-> Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
-> Cc: Mike Leach <mike.leach@linaro.org>
-> Cc: Rob Herring <robh@kernel.org>
-> Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
-> ---
->  Documentation/devicetree/bindings/arm/coresight.txt | 5 ++++-
->  1 file changed, 4 insertions(+), 1 deletion(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/arm/coresight.txt b/Documentation/devicetree/bindings/arm/coresight.txt
-> index d711676b4a51..bff96a550102 100644
-> --- a/Documentation/devicetree/bindings/arm/coresight.txt
-> +++ b/Documentation/devicetree/bindings/arm/coresight.txt
-> @@ -34,9 +34,12 @@ its hardware characteristcs.
->  					Program Flow Trace Macrocell:
->  			"arm,coresight-etm3x", "arm,primecell";
->  
-> -		- Embedded Trace Macrocell (version 4.x):
-> +		- Embedded Trace Macrocell (version 4.x), with memory mapped access.
->  			"arm,coresight-etm4x", "arm,primecell";
->  
-> +		- Embedded Trace Macrocell with system register access only.
-> +			"arm,coresight-etm-sysreg";
+As Ard notes in
+commit 54781938ec34 ("crypto: arm/sha256-neon - avoid ADRL pseudo
+instruction")
+commit 0f5e8323777b ("crypto: arm/sha512-neon - avoid ADRL pseudo
+instruction")
 
-Please make this "arm,coresight-etm4x-sysreg".  Up to now all reference of
-"etm" without a version related to ETMv3/PTM1.1.  If we start mixing things it
-will be come insanely confusing.
+  The ADRL pseudo instruction is not an architectural construct, but a
+  convenience macro that was supported by the ARM proprietary assembler
+  and adopted by binutils GAS as well, but only when assembling in 32-bit
+  ARM mode. Therefore, it can only be used in assembler code that is known
+  to assemble in ARM mode only, but as it turns out, the Clang assembler
+  does not implement ADRL at all, and so it is better to get rid of it
+  entirely.
 
-Thanks,
-Mathieu
+  So replace the ADRL instruction with a ADR instruction that refers to
+  a nearer symbol, and apply the delta explicitly using an additional
+  instruction.
 
-> +
->  		- Coresight programmable Replicator :
->  			"arm,coresight-dynamic-replicator", "arm,primecell";
->  
-> -- 
-> 2.24.1
-> 
+We can use the same technique to generate the same offset. It looks like
+the ADRL pseudo instruction assembles to two SUB instructions in this
+case. Because the largest immediate operand that can be specified for
+this instruction is 0x400, and the distance between the reference and
+the symbol are larger than that, we need to use an intermediary symbol
+(cache_off in this case) to calculate the full range.
+
+Suggested-by: Ard Biesheuvel <ardb@kernel.org>
+Suggested-by: Jian Cai <jiancai@google.com>
+Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
+---
+ arch/arm/boot/compressed/head.S | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/arch/arm/boot/compressed/head.S b/arch/arm/boot/compressed/head.S
+index 2e04ec5b5446..b3eac6f9a709 100644
+--- a/arch/arm/boot/compressed/head.S
++++ b/arch/arm/boot/compressed/head.S
+@@ -1440,7 +1440,9 @@ ENTRY(efi_enter_kernel)
+ 		mov	r4, r0			@ preserve image base
+ 		mov	r8, r1			@ preserve DT pointer
+ 
+- ARM(		adrl	r0, call_cache_fn	)
++ ARM(		sub	r0, pc, #.L__efi_enter_kernel-cache_off	)
++ ARM(		sub	r0, r0, #cache_off-call_cache_fn	)
++.L__efi_enter_kernel:
+  THUMB(		adr	r0, call_cache_fn	)
+ 		adr	r1, 0f			@ clean the region of code we
+ 		bl	cache_clean_flush	@ may run with the MMU off
+-- 
+2.29.2.222.g5d2a92d10f8-goog
+
