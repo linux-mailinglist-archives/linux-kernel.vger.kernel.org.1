@@ -2,114 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 532BB2AC510
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 20:36:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A74A02AC514
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 20:38:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730092AbgKITfx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 14:35:53 -0500
-Received: from mga06.intel.com ([134.134.136.31]:59494 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729499AbgKITfx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 14:35:53 -0500
-IronPort-SDR: osQXlg75rveg2htfBSuBNQwMiVBTqj4f3MgOMZPR5iI/qNo9pEY3eQdaBN9pba5BzpvV9H3eYN
- PJgZllONypAA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9800"; a="231489063"
-X-IronPort-AV: E=Sophos;i="5.77,464,1596524400"; 
-   d="scan'208";a="231489063"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Nov 2020 11:35:52 -0800
-IronPort-SDR: wnUsVxu9jT7ZOAHatQU60EeWi0qqzOMYy0kYCEHHNvJehOmm9IRvMByAb5ROq+5TR/DtFuF/6h
- q1O3eR80EWHg==
-X-IronPort-AV: E=Sophos;i="5.77,464,1596524400"; 
-   d="scan'208";a="428116887"
-Received: from gberger1-mobl2.ger.corp.intel.com (HELO [10.209.33.167]) ([10.209.33.167])
-  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Nov 2020 11:35:51 -0800
-Subject: Re: [RFC][PATCH 00/24] x86/pti: Defer CR3 switch to C code
-To:     Alexandre Chartre <alexandre.chartre@oracle.com>,
-        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, hpa@zytor.com,
-        x86@kernel.org, dave.hansen@linux.intel.com, luto@kernel.org,
-        peterz@infradead.org, linux-kernel@vger.kernel.org,
-        thomas.lendacky@amd.com, jroedel@suse.de
-Cc:     konrad.wilk@oracle.com, jan.setjeeilers@oracle.com,
-        junaids@google.com, oweisse@google.com, rppt@linux.vnet.ibm.com,
-        graf@amazon.de, mgross@linux.intel.com, kuzuno@gmail.com
-References: <20201109144425.270789-1-alexandre.chartre@oracle.com>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
- z5cecg==
-Message-ID: <8d9b6f38-5d98-dc91-cecc-36c7ab829c96@intel.com>
-Date:   Mon, 9 Nov 2020 11:35:50 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1726691AbgKITic (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 14:38:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54688 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729838AbgKITib (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 14:38:31 -0500
+Received: from mail-il1-x142.google.com (mail-il1-x142.google.com [IPv6:2607:f8b0:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57AAAC0613D3
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Nov 2020 11:38:30 -0800 (PST)
+Received: by mail-il1-x142.google.com with SMTP id g15so9405372ilc.9
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Nov 2020 11:38:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=k8+EMc4+ZzXJqSUvzL7W5Ni2fcnDgXtP+EcVau6OBrM=;
+        b=QPGXaCvVRB4KlRGmWhDbpfdbGn0ZC8kDinWCv2x+JjrJI6PBwoifTda0X4VKf0rNxQ
+         G5f1FH27nqN/xBqw4zPvuraKnoNs0119PH5Heq2ppu/7EDCFk0nx0e/UQH7St5Jyp2Y+
+         HIUq6T9oY6yloWEntf74siPKEd6n/qnVKbzM0A/ZiDBKevfaRPikMMkh3VtAfnmFEr3v
+         B1M9cwtK8iHS0GXtivOLEs9X4osprzrKbe5U54/Vs4hicBCtMTmZVDx0rWX9QXher2ip
+         pM6IrJuAtFPR717tRAZeWwiPNDB8Mb2uK6IhnaEJl1n+zPiUdkYuxf5yNEiL5w5T2gkH
+         JhOQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=k8+EMc4+ZzXJqSUvzL7W5Ni2fcnDgXtP+EcVau6OBrM=;
+        b=au70rMP1qVhtC65zB4XWTz6EEn/fM+afo8sCHsLg2bk7EZEEpH6McSGHuHcFWwmaZ9
+         6ONYVkG8x1O6n790cNmjYr9JwnuwS3vVhDvLDkAaphAN5Kjnl4h8JpOdm2l5HEzlzNgj
+         d1/4d2QXf7pQB6RsXBJhYPycZyDUlf0kRawBcvY/gOeLpjq3aZ59yanrReCW+T/rJAq3
+         GxhiRhwvU1wH5n/HQhAKG/Bk9F7yxTXCla1qk82Fm4cV7bsgqkw69edxLqhI++7ILhPS
+         ngT8kIqmnta2TI07kgjbtDnHFJLS3DqsfzNGXu3CkW2uLsLKyMAcKpPWXJqX6tzzxHZs
+         ZP5Q==
+X-Gm-Message-State: AOAM5325mvEq5IEFyPSSDkh1RrkmcBSJF6HxvXR0zXT19pYmT0Yta9Xd
+        f+OQuAMudwC9W3O1I4+QRLSTp4ePfYG/6DgIT2gnsg==
+X-Google-Smtp-Source: ABdhPJw0MeG4P26hzsMF6D4SWQfdhHemZQG3avMmoyM+7Vf54D1B9HL4wVsscgX4reE8l0z4nuZgBbBlWbHxr9kgPTQ=
+X-Received: by 2002:a92:9e8b:: with SMTP id s11mr10932147ilk.61.1604950709307;
+ Mon, 09 Nov 2020 11:38:29 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20201109144425.270789-1-alexandre.chartre@oracle.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20200909062613.18604-1-lina.wang@mediatek.com>
+ <20200915073006.GR20687@gauss3.secunet.de> <CAKD1Yr1VsueZWUtCL4iMWLhnADypUOtDK=dgqM2Y2HDvXc77iw@mail.gmail.com>
+ <20201109095813.GV26422@gauss3.secunet.de>
+In-Reply-To: <20201109095813.GV26422@gauss3.secunet.de>
+From:   =?UTF-8?Q?Maciej_=C5=BBenczykowski?= <maze@google.com>
+Date:   Mon, 9 Nov 2020 11:38:16 -0800
+Message-ID: <CANP3RGfuOGoB1msF1evzsgKf5qZZbNDCHDzvgPBHRGyepDuu+g@mail.gmail.com>
+Subject: Re: [PATCH] xfrm:fragmented ipv4 tunnel packets in inner interface
+To:     Steffen Klassert <steffen.klassert@secunet.com>
+Cc:     Lorenzo Colitti <lorenzo@google.com>,
+        mtk81216 <lina.wang@mediatek.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Linux NetDev <netdev@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org,
+        Greg Kroah-Hartman <gregkh@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/9/20 6:44 AM, Alexandre Chartre wrote:
->  - map more syscall, interrupt and exception entry code into the user
->    page-table (map all noinstr code);
+On Mon, Nov 9, 2020 at 1:58 AM Steffen Klassert
+<steffen.klassert@secunet.com> wrote:
+>
+> On Thu, Nov 05, 2020 at 01:52:01PM +0900, Lorenzo Colitti wrote:
+> > On Tue, Sep 15, 2020 at 4:30 PM Steffen Klassert
+> > <steffen.klassert@secunet.com> wrote:
+> > > > In esp's tunnel mode,if inner interface is ipv4,outer is ipv4,one big
+> > > > packet which travels through tunnel will be fragmented with outer
+> > > > interface's mtu,peer server will remove tunnelled esp header and assemble
+> > > > them in big packet.After forwarding such packet to next endpoint,it will
+> > > > be dropped because of exceeding mtu or be returned ICMP(packet-too-big).
+> > >
+> > > What is the exact case where packets are dropped? Given that the packet
+> > > was fragmented (and reassembled), I'd assume the DF bit was not set. So
+> > > every router along the path is allowed to fragment again if needed.
+> >
+> > In general, isn't it just suboptimal to rely on fragmentation if the
+> > sender already knows the packet is too big? That's why we have things
+> > like path MTU discovery (RFC 1191).
+>
+> When we setup packets that are sent from a local socket, we take
+> MTU/PMTU info we have into account. So we don't create fragments in
+> that case.
+>
+> When forwarding packets it is different. The router that can not
+> TX the packet because it exceeds the MTU of the sending interface
+> is responsible to either fragment (if DF is not set), or send a
+> PMTU notification (if DF is set). So if we are able to transmit
+> the packet, we do it.
+>
+> > Fragmentation is generally
+> > expensive, increases the chance of packet loss, and has historically
+> > caused lots of security vulnerabilities. Also, in real world networks,
+> > fragments sometimes just don't work, either because intermediate
+> > routers don't fragment, or because firewalls drop the fragments due to
+> > security reasons.
+> >
+> > While it's possible in theory to ask these operators to configure
+> > their routers to fragment packets, that may not result in the network
+> > being fixed, due to hardware constraints, security policy or other
+> > reasons.
+>
+> We can not really do anything here. If a flow has no DF bit set
+> on the packets, we can not rely on PMTU information. If we have PMTU
+> info on the route, then we have it because some other flow (that has
+> DF bit set on the packets) triggered PMTU discovery. That means that
+> the PMTU information is reset when this flow (with DF set) stops
+> sending packets. So the other flow (with DF not set) will send
+> big packets again.
 
-This seems like the thing we'd want to tag explicitly rather than make
-it implicit with 'noinstr' code.  Worst-case, shouldn't this be:
+PMTU is by default ignored by forwarding - because it's spoofable.
 
-#define __entry_func	noinstr
+That said I wonder if my recent changes to honour route mtu (for ipv4)
+haven't fixed this particular issue in the presence of correctly
+configured device/route mtus...
 
-or something?
+I don't understand if the problem here is locally generated packets,
+or forwarded packets.
 
-I'd also like to see a lot more discussion about what the rules are for
-the C code and the compiler.  We can't, for instance, do a normal
-printk() in this entry functions.  Should we stick them in a special
-section and have objtool look for suspect patterns or references?
+It does seem like there is (or was) a bug somewhere... but it might
+already be fixed (see above) or might be caused by a misconfiguration
+of device mtu or routing rules.
 
-I'm most worried about things like this:
+I don't really understand the example.
 
-	if (something_weird)
-		pr_warn("this will oops the kernel\n");
+>
+> > Those operators may also be in a position to place
+> > requirements on devices that have to use their network. If the Linux
+> > stack does not work as is on these networks, then those devices will
+> > have to meet those requirements by making out-of-tree changes. It
+> > would be good to avoid that if there's a better solution (e.g., make
+> > this configurable via sysctl).
+>
+> We should not try to workaround broken configurations, there are just
+> too many possibilities to configure a broken network.
