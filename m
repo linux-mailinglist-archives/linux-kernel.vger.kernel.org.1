@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70A872ABD65
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 14:46:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 214CC2ABD7A
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 14:46:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730089AbgKIM6B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 07:58:01 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52258 "EHLO mail.kernel.org"
+        id S1730075AbgKINqY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 08:46:24 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52336 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730047AbgKIM5o (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 07:57:44 -0500
+        id S1730066AbgKIM5t (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 07:57:49 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id F054E20789;
-        Mon,  9 Nov 2020 12:57:42 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B7301207BC;
+        Mon,  9 Nov 2020 12:57:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604926663;
-        bh=lM/gOuG05V9bQ1POP6tN2hEdhodGCTto7IwcJTcfUjY=;
+        s=default; t=1604926669;
+        bh=kQ2xQycf4+6ywM2o9VAqnmuhU+9T01AC5GLShw8R3ps=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=N824oq8I0EOwFkHMyehIvSp5yFAJjB8riRkfmwwhMxMh5wIx6jekF7kwsH3eo5gmQ
-         L03wYaKd8FzvcVlJoA9LwwOk/B33ib0pvO8UGArtTzGKKxqm32Fob1eu43YRZOT1XG
-         Tlyeblj7Ra1rWf8/vV96YqcgHxOK3EYMIoNUysqg=
+        b=Z2LrZHCwZobUC0nyfnryO75Ub9Ufegdan6NY3xzvVQycn3vkO8/9ENfTBYI+/vNUJ
+         0aSraQgXOcV2Ae/fqcQzlvGMFpNFUHnJo2d+szdpyHOMgBf8TAlvnZIfwM64yXJsFZ
+         AW1/LpbRuWAvnQSYwl+o1gt8NwEVbLn2dakgJze4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Sathishkumar Muruganandam <murugana@codeaurora.org>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 17/86] ath10k: fix VHT NSS calculation when STBC is enabled
-Date:   Mon,  9 Nov 2020 13:54:24 +0100
-Message-Id: <20201109125021.695724077@linuxfoundation.org>
+        stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
+        John Ogness <john.ogness@linutronix.de>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
+        Petr Mladek <pmladek@suse.com>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.4 19/86] printk: reduce LOG_BUF_SHIFT range for H8300
+Date:   Mon,  9 Nov 2020 13:54:26 +0100
+Message-Id: <20201109125021.794326479@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201109125020.852643676@linuxfoundation.org>
 References: <20201109125020.852643676@linuxfoundation.org>
@@ -44,56 +45,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sathishkumar Muruganandam <murugana@codeaurora.org>
+From: John Ogness <john.ogness@linutronix.de>
 
-[ Upstream commit 99f41b8e43b8b4b31262adb8ac3e69088fff1289 ]
+[ Upstream commit 550c10d28d21bd82a8bb48debbb27e6ed53262f6 ]
 
-When STBC is enabled, NSTS_SU value need to be accounted for VHT NSS
-calculation for SU case.
+The .bss section for the h8300 is relatively small. A value of
+CONFIG_LOG_BUF_SHIFT that is larger than 19 will create a static
+printk ringbuffer that is too large. Limit the range appropriately
+for the H8300.
 
-Without this fix, 1SS + STBC enabled case was reported wrongly as 2SS
-in radiotap header on monitor mode capture.
-
-Tested-on: QCA9984 10.4-3.10-00047
-
-Signed-off-by: Sathishkumar Muruganandam <murugana@codeaurora.org>
-Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-Link: https://lore.kernel.org/r/1597392971-3897-1-git-send-email-murugana@codeaurora.org
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: John Ogness <john.ogness@linutronix.de>
+Reviewed-by: Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
+Acked-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+Signed-off-by: Petr Mladek <pmladek@suse.com>
+Link: https://lore.kernel.org/r/20200812073122.25412-1-john.ogness@linutronix.de
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/ath/ath10k/htt_rx.c | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+ init/Kconfig | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
-index 1c6c422dbad64..78079ce1ad5a4 100644
---- a/drivers/net/wireless/ath/ath10k/htt_rx.c
-+++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
-@@ -665,6 +665,7 @@ static void ath10k_htt_rx_h_rates(struct ath10k *ar,
- 	u8 preamble = 0;
- 	u8 group_id;
- 	u32 info1, info2, info3;
-+	u32 stbc, nsts_su;
+diff --git a/init/Kconfig b/init/Kconfig
+index f9fb621c95623..5d8ada360ca34 100644
+--- a/init/Kconfig
++++ b/init/Kconfig
+@@ -823,7 +823,8 @@ config IKCONFIG_PROC
  
- 	info1 = __le32_to_cpu(rxd->ppdu_start.info1);
- 	info2 = __le32_to_cpu(rxd->ppdu_start.info2);
-@@ -708,11 +709,16 @@ static void ath10k_htt_rx_h_rates(struct ath10k *ar,
- 		   TODO check this */
- 		bw = info2 & 3;
- 		sgi = info3 & 1;
-+		stbc = (info2 >> 3) & 1;
- 		group_id = (info2 >> 4) & 0x3F;
- 
- 		if (GROUP_ID_IS_SU_MIMO(group_id)) {
- 			mcs = (info3 >> 4) & 0x0F;
--			nss = ((info2 >> 10) & 0x07) + 1;
-+			nsts_su = ((info2 >> 10) & 0x07);
-+			if (stbc)
-+				nss = (nsts_su >> 2) + 1;
-+			else
-+				nss = (nsts_su + 1);
- 		} else {
- 			/* Hardware doesn't decode VHT-SIG-B into Rx descriptor
- 			 * so it's impossible to decode MCS. Also since
+ config LOG_BUF_SHIFT
+ 	int "Kernel log buffer size (16 => 64KB, 17 => 128KB)"
+-	range 12 25
++	range 12 25 if !H8300
++	range 12 19 if H8300
+ 	default 17
+ 	depends on PRINTK
+ 	help
 -- 
 2.27.0
 
