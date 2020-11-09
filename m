@@ -2,133 +2,306 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DBAC2ABEAE
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 15:28:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A12832ABEB2
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 15:29:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731342AbgKIO2M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 09:28:12 -0500
-Received: from mail-dm6nam12on2043.outbound.protection.outlook.com ([40.107.243.43]:39648
-        "EHLO NAM12-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1730035AbgKIO2L (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 09:28:11 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=fykPwEILDpzJRO/fTzv4Ux29lor9nOP2QPLBHK35EoxzGhh/WOxatWIabzE/PERX4kE39PwHHjKMkgSeHTEpUDI9oCJ3OeOWmB+m+MBV9zb6kP6aH6xMXUcrh+DDQyVeB3EviB8Hrp+n9XWY5pUmsQ1y3U62t6BQ3kZwfnW5C809p9esxjMjronmOzOQ0YxxYv7BrRP1Re0stCygUEngKCAHdlEpeBH/JcKtEuhmP6ri9o35547ZhTBLcLWaml9CGW1bRr/3iFmbsH1nBlDPrLpdMlzkLvukQc/R8iFDCrr9pnmoopzahEL0LnjIg2/ryP9OVFtjo00GTPo3BqTxmQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=a7Rgs8LzUh02XEulkIRAyO+q63t3pY3mKjKUx4LveBg=;
- b=gRXmPQwWUBYKNtUalD6WjoWLT0x+Y2mfyStp9nvP89uMM/JpCAisaipv/9OFccOvGRT2M6NNDS+g7YWp0icT/7s26+/Dp6k1TWIRnlbi1LxgWr+OQge1Me61R8Xy4ifZHZMMrONmAcjtgmANDmECpcY6hOuoOMEwmqEvKmt/ZMVCk3GDuKexw8dLcDjpI+PMUy7GQ8U7JGvlowGslP6inwMGU07kbuS2wyyCojIzCR+nADKO1JaJHy2RwHDkY/EyV4tlIKNjBL41Db7E+RpHNo+faSiVKBjU9DMlbFFl27+X68qyoZM6nsIjeQwRjki2AShXFbgv7p8dqDTJT3bZ+w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=a7Rgs8LzUh02XEulkIRAyO+q63t3pY3mKjKUx4LveBg=;
- b=FXQb0lfBu2Tz/kpTWnndTbTP+MBpePhlamyK9potBm12o+Xk66fw+v7kvRridIxVdkWr6BFszCRO7yVzIPmCyrdJp9F2qMLV7p97cBOmSZNPvZgycytg/EHDWjwsDEX+cn0AWW8zKIim8LGS4MNdPRMU8LEkqVDnr4oBr1LT3TE=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=amd.com;
-Received: from DM5PR12MB1355.namprd12.prod.outlook.com (2603:10b6:3:6e::7) by
- DM5PR12MB4680.namprd12.prod.outlook.com (2603:10b6:4:a6::33) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.3541.21; Mon, 9 Nov 2020 14:28:08 +0000
-Received: from DM5PR12MB1355.namprd12.prod.outlook.com
- ([fe80::e442:c052:8a2c:5fba]) by DM5PR12MB1355.namprd12.prod.outlook.com
- ([fe80::e442:c052:8a2c:5fba%6]) with mapi id 15.20.3499.032; Mon, 9 Nov 2020
- 14:28:08 +0000
-Subject: Re: Definition of PMD_FLAGS_DEC_WP in
- arch/x86/mm/mem_encrypt_identity.c
-To:     Arvind Sankar <nivedita@alum.mit.edu>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org
-References: <20201108163715.GA206902@rani.riverdale.lan>
-From:   Tom Lendacky <thomas.lendacky@amd.com>
-Message-ID: <3960752c-af6c-e7ef-1acc-c7df8f60cf48@amd.com>
-Date:   Mon, 9 Nov 2020 08:28:06 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-In-Reply-To: <20201108163715.GA206902@rani.riverdale.lan>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [165.204.77.1]
-X-ClientProxiedBy: DM3PR08CA0009.namprd08.prod.outlook.com
- (2603:10b6:0:52::19) To DM5PR12MB1355.namprd12.prod.outlook.com
- (2603:10b6:3:6e::7)
+        id S1730953AbgKIO3z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 09:29:55 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:56367 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730307AbgKIO3y (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 09:29:54 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1604932192;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=n42WBlnQROHy50cGLPzR4PY0eGgG01jFWeSWSJgDQh4=;
+        b=cTTOIBZTOuj6O+OVcMLFgXrcNHMsAQfk3tXdrv7lts8aff1aSFhz3nolmhHKjKzutYHS/D
+        inHcN1Hf6KuirnQgczlR0qf7LexGOP0Ag2ZBPnV7IxFcAEaUX2hx6x066o9E23LoxACa9r
+        U5iw5GaZgPivCfYfSwgxggD8jcU/Ga8=
+Received: from mail-pf1-f198.google.com (mail-pf1-f198.google.com
+ [209.85.210.198]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-217-SmZw_up4Mnifq5Ga83o3DQ-1; Mon, 09 Nov 2020 09:29:48 -0500
+X-MC-Unique: SmZw_up4Mnifq5Ga83o3DQ-1
+Received: by mail-pf1-f198.google.com with SMTP id m64so6683921pfm.0
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Nov 2020 06:29:48 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=n42WBlnQROHy50cGLPzR4PY0eGgG01jFWeSWSJgDQh4=;
+        b=CLLsqyTmnlzL3hf+qjw74brD9LONlJ+CkMz1Pwgcx1/JBKQrHov9KmzEBahF46dqDD
+         2jQn0JKwvTgPzxcx0I8Dlx8A5lOuTi1fPDJHe3zkPUouAZ75zW1Hawy/CxjmRsJu7IPA
+         aPbCwx/KI6MmgKWV445kbn7MU/SbVttrXuR5BJJsY4t2+5uqpo7QLK3xfuNkzKCoxIX+
+         TmJLltAh8ZltM3HAgcwqPVSuY+ANR2+9dHugbs44JzewJihTCGsHrWETm4JGS81xxPi+
+         TqtBFuz+8BFQChIPd5oeQyeOvcn4R61N2zLkZC4gS+K8PgSDb7otkeqNhlbqTNabedYz
+         ksBA==
+X-Gm-Message-State: AOAM533h0e6b7G98N3CW0aD6qwF0Igh1Wo3KNtwIb71JPPs+KlP05mrJ
+        E2yRN8cWljm31EZBxMFx3V4tSmerthbsbNWT94fynZnuTr1fPO0MijEvkZm6U83NAJaGDlqLw6N
+        s2pwyRBmqbe+QTH4wT43xGz0MDCY3en84BesJ0gtV
+X-Received: by 2002:a17:90a:3d0f:: with SMTP id h15mr13358495pjc.234.1604932187207;
+        Mon, 09 Nov 2020 06:29:47 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJwy0jUo/ZY5BuKQQiNyBfjsPhYO+WT23kOa0Ytjbt6MfQuc+B3C3RMVWuNXhi1t23Bg+wVLMAVJFgs2kLe5AxM=
+X-Received: by 2002:a17:90a:3d0f:: with SMTP id h15mr13358472pjc.234.1604932186873;
+ Mon, 09 Nov 2020 06:29:46 -0800 (PST)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [10.236.30.118] (165.204.77.1) by DM3PR08CA0009.namprd08.prod.outlook.com (2603:10b6:0:52::19) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3541.21 via Frontend Transport; Mon, 9 Nov 2020 14:28:07 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: aecfa3ce-ac9b-44ed-37dd-08d884bbad9a
-X-MS-TrafficTypeDiagnostic: DM5PR12MB4680:
-X-Microsoft-Antispam-PRVS: <DM5PR12MB4680581F0C4E685AAD55D8D1ECEA0@DM5PR12MB4680.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:5236;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: B740ydIBx+FRZJwdPneGSzi1H0fXQJ2PH/J6YK7Uq+ex81EYrGUN3oXamtMZYbr+QoVCmf04c0GaNrBo7K5gnIFZYFAxRRMbLYXc5ZiiYyJo7b7USmn1/p7Yf5328WFN4638N5LZr4LZpWtuod/SJzfFnrJh2eM/NIRigKnAdG4XMp/5t2rQP+xejdQbxmKqvfCmdnMuNVr85X7WnvNZsfy+kVAb13Zo2MJT9tnuTu+B/m0dPcE6ulB8+VPVJbMfZ+wi0bSrIVZRUB+Z+HtLWvVo3ktxIIAXq09ql2w8tXLgTFWEOeRdHPF2xhEsDjx+ZEu/ABov3BbQ1VB4Ri8jyxBgBEguHWgERk6guXqqE5ysjRwkUpLxlkgPqpegkyoP
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM5PR12MB1355.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(136003)(396003)(366004)(376002)(346002)(956004)(52116002)(31686004)(8676002)(36756003)(8936002)(86362001)(2906002)(4326008)(110136005)(316002)(66556008)(26005)(66476007)(16576012)(66946007)(478600001)(31696002)(53546011)(186003)(2616005)(16526019)(5660300002)(6486002)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: pLkxiCmo+POYSuDVUmD6Yp3jkXREt30Grcit+sZ4boQFtl71yOPrquIIg0sRBMbChxy1ufWzpYAWRa3ckHKDXVcf2mtUpyXBM9H4jbN9E7CTpodkOmmv9Wp2GIfhaWzd0LL79OBlb92S4Mw7QDIrEesBLo0LCstMjlpQHTGGNEtIWMiwzd1GsC8ucUfDaSTryCRRuqy38VrZWIfAGO4fD7x3dWq0wqdaI2bmB9lEZpp4NPsaR3Rlzz5C3wBhbRhezZVme2WUFVvRZKKKrt+gU/+04zsoQGDLm9C8nHEpGQAGt56v0U2nnUaqIuCtU1T1yicXrqX2mX8ghVzfRyaY2Ha1ZH9NKiQE0XOYgGcb9Ce6enQG+H1iKTgI93sEq5rtDzqwFPe5ryzDA9+lp/+KiH8PXXj4xxn6bojHGui6PzbWbS6sahW+UW8iVyzLB7E8ZJ0lGhrRhmSsfXNO99mOhYr7IG2h7sCA/RqsYVog+RVNgxp+AFWKL3mNZ8IgANt8eYQfILASG27uVbbk8wehyvuQMtp36apZ1rtJImhw6+L/9TpBMNijk07otA/oXOi/23aUpR3DUV3SpXxmdVaBtJEdKOidpJ5/5R1y6rjC4IYUXnF9v+ICBvEedfRerMxp3Q3gfm3/HURrQr97dRxixw==
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: aecfa3ce-ac9b-44ed-37dd-08d884bbad9a
-X-MS-Exchange-CrossTenant-AuthSource: DM5PR12MB1355.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Nov 2020 14:28:08.1440
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: hYM5gRXQEKUJD3+XYd2Dp8A7S3+TYIYIELgFEMi/C86rNeJbwTKE2iHdVHA+DLXzxdNeqFUNHuDFltwgFnmMxQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR12MB4680
+References: <20201104012929.3850691-1-dianders@chromium.org>
+ <20201103172824.v4.1.Ied4ce10d229cd7c69abf13a0361ba0b8d82eb9c4@changeid>
+ <ea8d8fa3-4e3e-3c56-cda3-c1f6b155018c@redhat.com> <CAD=FV=XLnL35Ltu0ZF2c_u262TDaJ+oZ_jiME_VUd8V+1P5Vaw@mail.gmail.com>
+ <20283437-4166-b65e-c498-a650bf53cd8e@redhat.com>
+In-Reply-To: <20283437-4166-b65e-c498-a650bf53cd8e@redhat.com>
+From:   Benjamin Tissoires <benjamin.tissoires@redhat.com>
+Date:   Mon, 9 Nov 2020 15:29:36 +0100
+Message-ID: <CAO-hwJ+C9M8zqaiiAW2CATZtng7B9QPOMBSMts6hPUHE9PmSCQ@mail.gmail.com>
+Subject: Re: [PATCH v4 1/4] HID: i2c-hid: Reorganize so ACPI and OF are subclasses
+To:     Hans de Goede <hdegoede@redhat.com>
+Cc:     Doug Anderson <dianders@chromium.org>,
+        Jiri Kosina <jkosina@suse.cz>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        "open list:HID CORE LAYER" <linux-input@vger.kernel.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Andrea Borgia <andrea@borgia.bo.it>,
+        Kai-Heng Feng <kai.heng.feng@canonical.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Aaron Ma <aaron.ma@canonical.com>,
+        Jiri Kosina <jikos@kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Pavel Balan <admin@kryma.net>,
+        Xiaofei Tan <tanxiaofei@huawei.com>,
+        You-Sheng Yang <vicamo.yang@canonical.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/8/20 10:37 AM, Arvind Sankar wrote:
-> Hi, I have a question about this definition in
-> arch/x86/mm/mem_encrypt_identity.c:
-> 
-> 	#define PMD_FLAGS_LARGE         (__PAGE_KERNEL_LARGE_EXEC & ~_PAGE_GLOBAL)
-> 
-> 	#define PMD_FLAGS_DEC           PMD_FLAGS_LARGE
-> 	#define PMD_FLAGS_DEC_WP        ((PMD_FLAGS_DEC & ~_PAGE_CACHE_MASK) | \
-> 					 (_PAGE_PAT | _PAGE_PWT))
-> 
-> _PAGE_CACHE_MASK and _PAGE_PAT are for 4k pages, not 2M pages. The
-> definition of PMD_FLAGS_DEC_WP clears the PSE bit by masking out
-> _PAGE_CACHE_MASK, and sets it again by setting _PAGE_PAT, resulting in
-> PMD_FLAGS_DEC_WP actually being write-through, not write-protected,
-> using PAT index 1.
-> 
-> Shouldn't the definition be
-> 
-> 	#define PMD_FLAGS_DEC_WP	(PMD_FLAGS_DEC | _PAGE_PAT_LARGE | _PAGE_PWT)
-> 
-> for write-protected using PAT index 5?
+Hi,
 
-Yes it should. There should probably be a _PAGE_CACHE_MASK_LARGE
-definition so that the end result is:
+sorry for the delay. I have been heavily sidetracked and have a bunch
+of internal deadlines coming in :/
 
-#define PMD_FLAGS_DEC_WP	((PMD_FLAGS_DEC & ~_PAGE_CACHE_MASK_LARGE) | \
-				(_PAGE_PAT_LARGE | _PAGE_PWT)
+On Mon, Nov 9, 2020 at 12:24 PM Hans de Goede <hdegoede@redhat.com> wrote:
+>
+> Hi,
+>
+> On 11/4/20 5:06 PM, Doug Anderson wrote:
+> > Hi,
+> >
+> > On Wed, Nov 4, 2020 at 4:07 AM Hans de Goede <hdegoede@redhat.com> wrote:
+> >>
+> >>> +#include "i2c-hid.h"
+> >>> +
+> >>> +struct i2c_hid_acpi {
+> >>> +     struct i2chid_subclass_data subclass;
+> >>
+> >> This feels a bit weird, we are the subclass so typically we would
+> >> be embedding a base_class data struct here ...
+> >>
+> >> (more remarks below, note just my 2 cents you may want to wait
+> >> for feedback from others).
+> >>
+> >>> +     struct i2c_client *client;
+> >>
+> >> You pass this to i2c_hid_core_probe which then stores it own
+> >> copy, why not just store it in the subclass (or even better
+> >> baseclass) data struct ?
+> >
+> > My goal was to avoid moving the big structure to the header file.
+> > Without doing that, I think you need something more like the setup I
+> > have.  I'll wait for Benjamin to comment on whether he'd prefer
+> > something like what I have here or if I should move the structure.
+>
+> Ok, if Benjamin decides to keep things this way, can you consider
+> renaming i2chid_subclass_data to i2chid_ops ?
+>
+> It just feels weird to have a struct with subclass in the name
+> embedded inside as a member in another struct, usualy the kobject model
+> works by having the the parent/base-class struct embedded inside
+> the subclass data struct.
+>
+> This also avoids the need for a callback_priv_data pointer to the ops,
+> as the ops get a pointer to the baseclass data struct as argument and
+> you can then use container_of to get your own subclassdata struct
+> since that encapsulates (contains) the baseclass struct.
+>
+> Note the dropping of the callback_priv_data pointer only works if you
+> do move the entire struct to the header.
 
-> 
-> I guess the difference doesn't actually matter for encrypt-in-place? But
-> mem_encrypt_boot.S takes pains to initialize PA5 to be write-protected,
-> and it looks like it won't actually be used.
+I am not sure my opinion is the best in this case. However, the one
+thing I'd like us to do is knowing which use cases we are solving, and
+this should hopefully help us finding the best approach:
 
-Given how early in the boot everything occurs and the cache flushing that
-is performed related to the operations, it works. But this should be
-fixed.
+- use case 1: fully upstream driver (like this one)
+   -> the OEM sets up the DT associated with the embedded devices
+   -> the kernel is compiled with the proper flags/configs
+  -> the device works out of the box (yay!)
 
-Are you planning on sending a patch?
+- use case 2: tinkerer in a garage
+  -> assembly of a generic SoC + Goodix v-next panel (that needs
+modifications in the driver)
+  -> use of a generic (arm?) distribution
+  -> the user compiles the new (changed) goodix driver
+  -> the DT is populated (with overloads)
+  -> the device works
+  -> do we want to keep compatibility across kernel versions (not
+recompile the custom module)
 
-Thanks,
-Tom
+- use case 3: Google fixed kernel
+  -> the kernel is built once for all platforms
+  -> OEMs can recompile a few drivers if they need, but can not touch
+the core system
+  -> DT/goodix specific drivers are embedded
+  -> device works
+  -> do we want compatibility across major versions, and how "nice" we
+want to be with OEM?
 
-> 
-> Thanks.
-> 
+I understand that use case 2 should in the end become use case 1, but
+having a possibility for casual/enthusiasts developers to fix their
+hardware is always nice.
+
+So to me, having the base struct in an external header means we are
+adding a lot of ABI and putting a lot more weight to case 1.
+
+Personally, I am not that much in favour of being too strict and I
+think we also want to help these external drivers. It is true that
+i2c-hid should be relatively stable from now on, but we can never
+predict the future, so maybe the external header is not so much a good
+thing (for me).
+
+Anyway, if we were to extract the base struct, we would need to
+provide allocators to be able to keep forward compatibility (I think).
+
+Does that help a bit?
+
+[mode bikeshedding on]
+And to go back to Hans' suggestion, I really prefer i2chid_ops. This
+whole architecture makes me think of a bus, not a subclass hierarchy.
+In the same way we have the hid bus, we could have the i2c-hid bus,
+with separate drivers in it (acpi, of, goodix).
+
+Note that I don't want the i2c-hid to be converted into an actual bus,
+but just rely on the concepts.
+[bikeshedding off]
+
+>
+>
+>
+> >
+> >
+> >>> @@ -156,10 +152,10 @@ struct i2c_hid {
+> >>>
+> >>>       wait_queue_head_t       wait;           /* For waiting the interrupt */
+> >>>
+> >>> -     struct i2c_hid_platform_data pdata;
+> >>> -
+> >>>       bool                    irq_wake_enabled;
+> >>>       struct mutex            reset_lock;
+> >>> +
+> >>> +     struct i2chid_subclass_data *subclass;
+> >>>  };
+> >>
+> >> Personally, I would do things a bit differently here:
+> >>
+> >> 1. Just add the
+> >>
+> >>         int (*power_up_device)(struct i2chid_subclass_data *subclass);
+> >>         void (*power_down_device)(struct i2chid_subclass_data *subclass);
+> >>
+> >> members which you put in the subclass struct here.
+> >>
+> >> 2. Move the declaration of this complete struct to drivers/hid/i2c-hid/i2c-hid.h
+> >> and use this as the base-class which I described before (and store the client
+> >> pointer here).
+> >>
+> >> 3. And then kzalloc both this baseclass struct + the subclass-data
+> >> (only the bool "power_fixed" in the ACPI case) in one go in the subclass code
+> >> replacing 2 kzallocs (+ error checking with one, simplifying the code and
+> >> reducing memory fragmentation (by a tiny sliver).
+> >
+> > Sure, I'll do that if Benjamin likes moving the structure to the header.
+> >
+> >
+> >> About the power_*_device callbacks, I wonder if it would not be more consistent
+> >> to also have a shutdown callback and make i2c_driver.shutdown point to
+> >> a (modified) i2c_hid_core_shutdown() function.
+> >
+> > Personally this doesn't seem cleaner to me, but I'm happy to do it if
+> > folks like it better.  Coming up with a name for the callback would be
+> > a bit awkward, which is a sign that this isn't quite ideal?  For the
+> > power_up()/power_down() those are sane concepts to abstract out.  Here
+> > we'd be abstracting out "subclass_shutdown_tail()" or something?
+> > ...and if a subclass needs something at the head of shutdown, we'd
+> > need to add a "subclass_shutdown_head()"?
+>
+> I have no real preference here either way.
+
+If we are using i2chid_ops, we could just have `shutdown_tail()`.
+Basically drop any "device" or "subclass" in the op name.
+This would lead to better code IMO: "ihid->dev_ops->shutdown()" for example
+
+Cheers,
+Benjamin
+
+>
+> >> You may also want to consider pointing that shutdown callback to the power_off
+> >> function in the of case (in a separate commit as that is a behavioral change).
+> >
+> > I don't think this is the point of shutdown, but I could be corrected.
+> > Shutdown isn't really supposed to be the same as driver remove or
+> > anything.  IIUC the main point of shutdown is to support kexec and the
+> > goal is to quiesce DMA transactions.  Turning off power has never been
+> > a requirement that I was aware of.  We don't want to jam too much
+> > stuff in shutdown or else "shutdown" becomes as slow as boot for no
+> > good reason, right?
+>
+> This sorta depends on if the regulators for the HID device are part of the
+> PMIC or not. If they are part of the PMIC then on shutdown they will
+> typically be turned off by the PMIC. But if they are separate they may
+> stay enabled on shutdown.
+>
+> Anyways I again have no real preference here...
+>
+> Regards,
+>
+> Hans
+>
+>
+>
+>
+>
+>
+> >
+> >
+> >>> diff --git a/drivers/hid/i2c-hid/i2c-hid-of.c b/drivers/hid/i2c-hid/i2c-hid-of.c
+> >>> new file mode 100644
+> >>> index 000000000000..e1838cdef0aa
+> >>> --- /dev/null
+> >>> +++ b/drivers/hid/i2c-hid/i2c-hid-of.c
+> >>> @@ -0,0 +1,149 @@
+> >>> +/*
+> >>> + * HID over I2C Open Firmware Subclass
+> >>> + *
+> >>> + * Copyright (c) 2012 Benjamin Tissoires <benjamin.tissoires@gmail.com>
+> >>> + * Copyright (c) 2012 Ecole Nationale de l'Aviation Civile, France
+> >>> + * Copyright (c) 2012 Red Hat, Inc
+> >>
+> >> <snip>
+> >>
+> >>> +MODULE_DESCRIPTION("HID over I2C OF driver");
+> >>> +MODULE_AUTHOR("Benjamin Tissoires <benjamin.tissoires@gmail.com>");
+> >>
+> >> In case Benjamin misses this during his own review: I'm not sure if he
+> >> will want to be set as AUTHOR of this, given that part of the plan is
+> >> for someone else to be the primary point of contact for the of bits.
+> >
+> > I can stick myself in as the author if needed.  I'll wait for
+> > Benjamin's feedback here.
+> >
+> >
+> > -Doug
+> >
+>
+
