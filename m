@@ -2,109 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 363052AB36D
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 10:19:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2645F2AB36F
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 10:20:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727679AbgKIJTy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 04:19:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42720 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725854AbgKIJTy (ORCPT
+        id S1728131AbgKIJU0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 04:20:26 -0500
+Received: from out30-130.freemail.mail.aliyun.com ([115.124.30.130]:43316 "EHLO
+        out30-130.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725854AbgKIJU0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 04:19:54 -0500
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAEFFC0613CF;
-        Mon,  9 Nov 2020 01:19:53 -0800 (PST)
-Received: by mail-wr1-x441.google.com with SMTP id 33so7851858wrl.7;
-        Mon, 09 Nov 2020 01:19:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=GUBLLHbst2zeH9c/A9PODgvPT5XA5rVjk1jholZ9SRQ=;
-        b=kfg4eU3VVoKvTjZjQS8sEhcZqElqp8XNyGsIdRnYkMYgri+stxfPtjWUdzVkHaLivh
-         D9cYFvEwbHvIgANjHGO/WOgF9ujbCKGKSxWQUflX22LZ/+Qftl1YaZNOE2Evr4oNHyiP
-         yogLQ29pzKUtD8YvTlYjNKKastnRKNOPq3+zSet9fzCfB9MH3rp0OpdCZ/0IOVKsEJXJ
-         PJKTafiYyLmrqqEAi3ND0NRwWxZFCJPI6urdk1xAT4qPrktxoFBBXVL/ksGvNZsbaP7S
-         i3EmWoB5kv9CvMmM9qVlSJLI03PVn9QRAL+W4Fz67yQh+JH/CKDfTy4j463pzcXSOCjO
-         xyaw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=GUBLLHbst2zeH9c/A9PODgvPT5XA5rVjk1jholZ9SRQ=;
-        b=HCbfB4QqwE+xAolvAklGve/XMmHEKM15tSf+YFx/lYy7544IvArWqkK0tU8N7Fp/vh
-         VEGHw0ZvQ8BNSorr9uYfOj6Dz7s1uOO11Hp98AcrwAMu1UKavjIvDkrd0vlFWl7mT+Jz
-         FWxw8MHmO5+AkmmxaQgcKAN0dltc8ieVN6wlIEzAHXIvFnVqJc/29SLL/+5catWQqO42
-         n2XJMM/GEDUbD78xG8y09xchrnZFvvVfecp3DKMJawctjSzoKrdHXA02+Iyjf3bYO9Ac
-         JHAco3HJZvpIPqTnREm9fn5WeeG0I/Ugb25z9tbztSAPe/0+YJ65VAhMfScx78GrnUBe
-         QMrg==
-X-Gm-Message-State: AOAM533NehUqmAYsx46DdAjeoKvkBKhRJZXHFWpfpx5HEryZkPWuQPzY
-        wFFWs7NwTAFkpVuW5DQ9ZwU=
-X-Google-Smtp-Source: ABdhPJwu3gruSVyzNdsY7JRGI+5F9eOc2RfKuCvT6dlP/5VnN22JiqZ5VBwPY1g+RHnRn+ytK29Iog==
-X-Received: by 2002:adf:f24b:: with SMTP id b11mr2099778wrp.342.1604913592343;
-        Mon, 09 Nov 2020 01:19:52 -0800 (PST)
-Received: from felia.fritz.box ([2001:16b8:2dd6:1d00:48a4:9af6:6f6a:ebcb])
-        by smtp.gmail.com with ESMTPSA id f16sm12696366wrp.66.2020.11.09.01.19.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 09 Nov 2020 01:19:51 -0800 (PST)
-From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
-To:     Pablo Neira Ayuso <pablo@netfilter.org>,
-        Jozsef Kadlecsik <kadlec@netfilter.org>,
-        Florian Westphal <fw@strlen.de>,
-        netfilter-devel@vger.kernel.org, coreteam@netfilter.org
-Cc:     Ralf Ramsauer <ralf.ramsauer@oth-regensburg.de>,
-        Pia Eichinger <pia.eichinger@st.oth-regensburg.de>,
-        Joe Perches <joe@perches.com>, kernel-janitors@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Subject: [PATCH] MAINTAINERS: rectify file patterns for NETFILTER
-Date:   Mon,  9 Nov 2020 10:19:42 +0100
-Message-Id: <20201109091942.32280-1-lukas.bulwahn@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        Mon, 9 Nov 2020 04:20:26 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R201e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04400;MF=wenan.mao@linux.alibaba.com;NM=1;PH=DS;RN=9;SR=0;TI=SMTPD_---0UEhtbfS_1604913616;
+Received: from VM20200710-3.tbsite.net(mailfrom:wenan.mao@linux.alibaba.com fp:SMTPD_---0UEhtbfS_1604913616)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Mon, 09 Nov 2020 17:20:22 +0800
+From:   Mao Wenan <wenan.mao@linux.alibaba.com>
+To:     edumazet@google.com, davem@davemloft.net, kuznet@ms2.inr.ac.ru,
+        yoshfuji@linux-ipv6.org, kuba@kernel.org
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org,
+        Mao Wenan <wenan.mao@linux.alibaba.com>
+Subject: [PATCH] net: Update window_clamp if SOCK_RCVBUF is set
+Date:   Mon,  9 Nov 2020 17:20:14 +0800
+Message-Id: <1604913614-19432-1-git-send-email-wenan.mao@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The two file patterns in the NETFILTER section:
+When net.ipv4.tcp_syncookies=1 and syn flood is happened,
+cookie_v4_check tries to redo what tcp_v4_send_synack did,
+rsk_window_clamp will be changed if SOCK_RCVBUF is set
+by user, which will make rcv_wscale is different, the client
+still operates with initial window scale and can overshot
+granted window, the client use the initial scale but local
+server use new scale to advertise window value, and session
+work abnormally.
 
-  F:      include/linux/netfilter*
-  F:      include/uapi/linux/netfilter*
-
-intended to match the directories:
-
-  ./include{/uapi}/linux/netfilter_{arp,bridge,ipv4,ipv6}
-
-A quick check with ./scripts/get_maintainer.pl --letters -f will show that
-they are not matched, though, because this pattern only matches files, but
-not directories.
-
-Rectify the patterns to match the intended directories.
-
-Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Signed-off-by: Mao Wenan <wenan.mao@linux.alibaba.com>
 ---
-applies cleanly on v5.10-rc3 and next-20201109
+ net/ipv4/syncookies.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-Pablo, Jozsef, Florian, please pick this minor non-urgent clean-up patch.
-
- MAINTAINERS | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/MAINTAINERS b/MAINTAINERS
-index cba8ddf87a08..572a064a9c95 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -12139,10 +12139,10 @@ W:	http://www.nftables.org/
- Q:	http://patchwork.ozlabs.org/project/netfilter-devel/list/
- T:	git git://git.kernel.org/pub/scm/linux/kernel/git/pablo/nf.git
- T:	git git://git.kernel.org/pub/scm/linux/kernel/git/pablo/nf-next.git
--F:	include/linux/netfilter*
-+F:	include/linux/netfilter*/
- F:	include/linux/netfilter/
- F:	include/net/netfilter/
--F:	include/uapi/linux/netfilter*
-+F:	include/uapi/linux/netfilter*/
- F:	include/uapi/linux/netfilter/
- F:	net/*/netfilter.c
- F:	net/*/netfilter/
+diff --git a/net/ipv4/syncookies.c b/net/ipv4/syncookies.c
+index 6ac473b..57ce317 100644
+--- a/net/ipv4/syncookies.c
++++ b/net/ipv4/syncookies.c
+@@ -427,6 +427,10 @@ struct sock *cookie_v4_check(struct sock *sk, struct sk_buff *skb)
+ 
+ 	/* Try to redo what tcp_v4_send_synack did. */
+ 	req->rsk_window_clamp = tp->window_clamp ? :dst_metric(&rt->dst, RTAX_WINDOW);
++	/* limit the window selection if the user enforce a smaller rx buffer */
++	if (sk->sk_userlocks & SOCK_RCVBUF_LOCK &&
++	    (req->rsk_window_clamp > tcp_full_space(sk) || req->rsk_window_clamp == 0))
++		req->rsk_window_clamp = tcp_full_space(sk);
+ 
+ 	tcp_select_initial_window(sk, tcp_full_space(sk), req->mss,
+ 				  &req->rsk_rcv_wnd, &req->rsk_window_clamp,
 -- 
-2.17.1
+1.8.3.1
 
