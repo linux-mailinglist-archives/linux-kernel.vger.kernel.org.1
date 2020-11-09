@@ -2,66 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6D4E2AC706
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 22:21:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 136EC2AC6F9
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 22:21:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731549AbgKIVUO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 16:20:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42176 "EHLO
+        id S1731465AbgKIVTh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 16:19:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42184 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731388AbgKIVTd (ORCPT
+        with ESMTP id S1731413AbgKIVTf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 16:19:33 -0500
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CA1CC0613CF
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Nov 2020 13:19:33 -0800 (PST)
-Received: by mail-wm1-x343.google.com with SMTP id s13so906679wmh.4
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Nov 2020 13:19:33 -0800 (PST)
+        Mon, 9 Nov 2020 16:19:35 -0500
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F57CC0613CF
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Nov 2020 13:19:35 -0800 (PST)
+Received: by mail-wm1-x341.google.com with SMTP id c16so918295wmd.2
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Nov 2020 13:19:35 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=e/mxdauGCfin4P1unK7sTKqBRJWd95ferwSgYprlXsM=;
-        b=b5h89XM0bSAA01H9VI7YC0WubiXdlYohWOGdakYwfbQeM0MifG/HJ7RiJjyS8bNAqv
-         Yq0xrDdJ/NdDCYnAvDV+Gz94LXJqrl3Y9rQ1xU5cQVElcN9MRBYPt7zShja/Bk9UKiY+
-         WqQGtf5m5oHpwx0PpT6vx6sx0WU+595ypt6m//MfqLkRGLEVbmlBXKkjvjc4+0QCw5SY
-         32zJqgbybJVw0CEE2G/rBftR+lVzzS50Z19Gnxv32vnSAyV0pO+I/ApDOOXfswqPnmLU
-         rAqt+Z5FRuuTuszclEWd6FGcuvBK9Rvt+6Q2ubDA7I6UNZGYzp4HdqjtuyoOZzsm2oeB
-         Q+Pg==
+        bh=mP6ncVP3tb6PBoh8PR+HhOmxf1xJDs0FPGkTnD+ivtc=;
+        b=KFykpLfCS//ZsH9E/r0koc17hviNUTM0dyZhwgahRURu3RDlD7WSTPyYvfI4R8B37N
+         ZFI3daldAmSN6II7vkZ85e3c/io1Z3RNNLihM2vj4e44wuAlM7r5dqaY2pDwC8H5SDhx
+         MVXosMn+hWDvCRWFW3ZAc6jqRmjlJQqoWzd+x45NGezmyeXfjnPyZNr4TX3GenC0Kslv
+         8jDKQGDpJUYd5tCK0MisiUthJtNJogiZomkAVQ4mIqAEpuMMcUSgIerN9BLCTgEJ9vGL
+         +NKWgQHleOmv5Wx5VeN25Eq5miaw3qZyfxGB+zMrOE+/foVnBu/M/3DohTb7/Dk+ROoN
+         7rXg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=e/mxdauGCfin4P1unK7sTKqBRJWd95ferwSgYprlXsM=;
-        b=DE2ymZeWSTcRKdvexKyuAL2k3vetQRHxiALzdKFY5/OEX19rm3pOQtxxmse2oV2WX0
-         2rJafxT23ulrLtYZUL9tAz5DlGT/Y5yZVH8seGqTgF62vCmT62SdaClqdm51wl8EkcsZ
-         pG2iT2Fhsq4zFFzoLn/p9X8TpqGN6kyXn4Hr8ldhojm8lxk5XB2rGfkVAY9UlMlxlwYo
-         uPT2lX4BWKLdAcGuO+35gM0R1UxcCyhki3MB6WKm7chmq36zQrZS8fsGanPSP1M/T2m8
-         99clH9ecEVSAHvUkW0DZapvsJaFPlwRlPsq5K9yiOqyzplzTyRDPzQ2sqJtEY5ZHJi0C
-         eIOg==
-X-Gm-Message-State: AOAM5332NZc3PNMnKX7ithp0r7iQBMiGnAr6IOgbnluFE3ovuGnZ3Qh2
-        z+x72Us3txE3WeLrgAIK0Ls9nA==
-X-Google-Smtp-Source: ABdhPJxxFY7gIh1xOMJZO9bky0lc6wrxtmYioHA4roB/Bb4hQn3EO/H57QfVq/ydFUCTODr9S7X8CA==
-X-Received: by 2002:a1c:6545:: with SMTP id z66mr1082675wmb.157.1604956772232;
-        Mon, 09 Nov 2020 13:19:32 -0800 (PST)
+        bh=mP6ncVP3tb6PBoh8PR+HhOmxf1xJDs0FPGkTnD+ivtc=;
+        b=k1M8f3XCMQS5kFvtfRV7mYITPySnKPLNdIQwAw26/co5ygN8FRtCsi7lbXUJGmduyS
+         zgSOys2X5wa0pWlMJ1pgyYhoXMvYE8VfHwGKWjBK8+VlLwNC7VVfxUBMkxd7rh7Yuam+
+         ZAGHee+6p00zKlW6qI3xHoLfXkf4khSbWugU+Drud1Qel/WwIP7D5y4mMFi15aHJkc/2
+         mU8MfaTP/+omlozpW1v6Vr8VNhMBBDP7rIn20Mn5njVSElhmfC0+xlN6c3FpPoLKcnEs
+         NFAu9YD5ElwzWGZQd4th5RIWCoihhjJ9XPyFZq955RBCC73G1kANH+7cAZ9f5wVOPglj
+         +3Xw==
+X-Gm-Message-State: AOAM530n5EkIfmMyaVHoMOJRrQ+WY0mrmuE64dnwuhyQ3PzQbXuTPwQy
+        ZmnRV2b+KxVdITP+KHs8zMEqlQ==
+X-Google-Smtp-Source: ABdhPJwMQ0THyZ4Mbc995Ryvr/CJnNf+FANW5IqZWpqhZmq6ig24FVd7CojcL67BKR9smBQwsI+Y4A==
+X-Received: by 2002:a1c:7f14:: with SMTP id a20mr1125386wmd.95.1604956773891;
+        Mon, 09 Nov 2020 13:19:33 -0800 (PST)
 Received: from dell.default ([91.110.221.139])
-        by smtp.gmail.com with ESMTPSA id 71sm15170630wrm.20.2020.11.09.13.19.30
+        by smtp.gmail.com with ESMTPSA id 71sm15170630wrm.20.2020.11.09.13.19.32
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 09 Nov 2020 13:19:31 -0800 (PST)
+        Mon, 09 Nov 2020 13:19:33 -0800 (PST)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
 Cc:     linux-kernel@vger.kernel.org,
         Alex Deucher <alexander.deucher@amd.com>,
         =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
         David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Jerome Glisse <glisse@freedesktop.org>,
-        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-media@vger.kernel.org, linaro-mm-sig@lists.linaro.org
-Subject: [PATCH 12/20] drm/radeon/radeon_cs: Fix a bunch of doc-rot issues
-Date:   Mon,  9 Nov 2020 21:18:47 +0000
-Message-Id: <20201109211855.3340030-13-lee.jones@linaro.org>
+        Daniel Vetter <daniel@ffwll.ch>, amd-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org
+Subject: [PATCH 13/20] drm/radeon/evergreen: Move 'rv770_set_clk_bypass_mode' prototype to shared location
+Date:   Mon,  9 Nov 2020 21:18:48 +0000
+Message-Id: <20201109211855.3340030-14-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20201109211855.3340030-1-lee.jones@linaro.org>
 References: <20201109211855.3340030-1-lee.jones@linaro.org>
@@ -74,72 +71,60 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Fixes the following W=1 kernel build warning(s):
 
- drivers/gpu/drm/radeon/radeon_cs.c:416: warning: Function parameter or member 'backoff' not described in 'radeon_cs_parser_fini'
- drivers/gpu/drm/radeon/radeon_cs.c:735: warning: Function parameter or member 'p' not described in 'radeon_cs_packet_parse'
- drivers/gpu/drm/radeon/radeon_cs.c:735: warning: Function parameter or member 'idx' not described in 'radeon_cs_packet_parse'
- drivers/gpu/drm/radeon/radeon_cs.c:735: warning: Excess function parameter 'parser' description in 'radeon_cs_packet_parse'
- drivers/gpu/drm/radeon/radeon_cs.c:844: warning: Function parameter or member 'p' not described in 'radeon_cs_packet_next_reloc'
- drivers/gpu/drm/radeon/radeon_cs.c:844: warning: Function parameter or member 'cs_reloc' not described in 'radeon_cs_packet_next_reloc'
- drivers/gpu/drm/radeon/radeon_cs.c:844: warning: Function parameter or member 'nomm' not described in 'radeon_cs_packet_next_reloc'
- drivers/gpu/drm/radeon/radeon_cs.c:844: warning: Excess function parameter 'parser' description in 'radeon_cs_packet_next_reloc'
- drivers/gpu/drm/radeon/radeon_cs.c:844: warning: Excess function parameter 'data' description in 'radeon_cs_packet_next_reloc'
- drivers/gpu/drm/radeon/radeon_cs.c:844: warning: Excess function parameter 'offset_start' description in 'radeon_cs_packet_next_reloc'
- drivers/gpu/drm/radeon/radeon_cs.c:844: warning: Excess function parameter 'offset_mask' description in 'radeon_cs_packet_next_reloc'
- drivers/gpu/drm/radeon/radeon_cs.c:844: warning: Excess function parameter 'reloc' description in 'radeon_cs_packet_next_reloc'
+ drivers/gpu/drm/radeon/rv770.c:1138:6: warning: no previous prototype for ‘rv770_set_clk_bypass_mode’ [-Wmissing-prototypes]
+ 1138 | void rv770_set_clk_bypass_mode(struct radeon_device *rdev)
+ | ^~~~~~~~~~~~~~~~~~~~~~~~~
 
 Cc: Alex Deucher <alexander.deucher@amd.com>
 Cc: "Christian König" <christian.koenig@amd.com>
 Cc: David Airlie <airlied@linux.ie>
 Cc: Daniel Vetter <daniel@ffwll.ch>
-Cc: Sumit Semwal <sumit.semwal@linaro.org>
-Cc: Jerome Glisse <glisse@freedesktop.org>
 Cc: amd-gfx@lists.freedesktop.org
 Cc: dri-devel@lists.freedesktop.org
-Cc: linux-media@vger.kernel.org
-Cc: linaro-mm-sig@lists.linaro.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/gpu/drm/radeon/radeon_cs.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+ drivers/gpu/drm/radeon/evergreen.c | 1 -
+ drivers/gpu/drm/radeon/r600.c      | 1 -
+ drivers/gpu/drm/radeon/radeon.h    | 2 ++
+ 3 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/gpu/drm/radeon/radeon_cs.c b/drivers/gpu/drm/radeon/radeon_cs.c
-index 21ce2f9502c09..729939df29cc5 100644
---- a/drivers/gpu/drm/radeon/radeon_cs.c
-+++ b/drivers/gpu/drm/radeon/radeon_cs.c
-@@ -408,6 +408,7 @@ static int cmp_size_smaller_first(void *priv, struct list_head *a,
-  * cs_parser_fini() - clean parser states
-  * @parser:	parser structure holding parsing context.
-  * @error:	error number
-+ * @backoff:	indicator to backoff the reservation
-  *
-  * If error is set than unvalidate buffer, otherwise just free memory
-  * used by parsing context.
-@@ -723,8 +724,9 @@ int radeon_cs_ioctl(struct drm_device *dev, void *data, struct drm_file *filp)
+diff --git a/drivers/gpu/drm/radeon/evergreen.c b/drivers/gpu/drm/radeon/evergreen.c
+index 14d90dc376e71..3541a9444be22 100644
+--- a/drivers/gpu/drm/radeon/evergreen.c
++++ b/drivers/gpu/drm/radeon/evergreen.c
+@@ -223,7 +223,6 @@ extern u32 si_get_csb_size(struct radeon_device *rdev);
+ extern void si_get_csb_buffer(struct radeon_device *rdev, volatile u32 *buffer);
+ extern u32 cik_get_csb_size(struct radeon_device *rdev);
+ extern void cik_get_csb_buffer(struct radeon_device *rdev, volatile u32 *buffer);
+-extern void rv770_set_clk_bypass_mode(struct radeon_device *rdev);
  
- /**
-  * radeon_cs_packet_parse() - parse cp packet and point ib index to next packet
-- * @parser:	parser structure holding parsing context.
-+ * @p:		parser structure holding parsing context.
-  * @pkt:	where to store packet information
-+ * @idx:	packet index
-  *
-  * Assume that chunk_ib_index is properly set. Will return -EINVAL
-  * if packet is bigger than remaining ib size. or if packets is unknown.
-@@ -829,11 +831,9 @@ void radeon_cs_dump_packet(struct radeon_cs_parser *p,
+ static const u32 evergreen_golden_registers[] =
+ {
+diff --git a/drivers/gpu/drm/radeon/r600.c b/drivers/gpu/drm/radeon/r600.c
+index 6e780b0109995..9587792503525 100644
+--- a/drivers/gpu/drm/radeon/r600.c
++++ b/drivers/gpu/drm/radeon/r600.c
+@@ -112,7 +112,6 @@ void r600_fini(struct radeon_device *rdev);
+ void r600_irq_disable(struct radeon_device *rdev);
+ static void r600_pcie_gen2_enable(struct radeon_device *rdev);
+ extern int evergreen_rlc_resume(struct radeon_device *rdev);
+-extern void rv770_set_clk_bypass_mode(struct radeon_device *rdev);
  
- /**
-  * radeon_cs_packet_next_reloc() - parse next (should be reloc) packet
-- * @parser:		parser structure holding parsing context.
-- * @data:		pointer to relocation data
-- * @offset_start:	starting offset
-- * @offset_mask:	offset mask (to align start offset on)
-- * @reloc:		reloc informations
-+ * @p:			parser structure holding parsing context.
-+ * @cs_reloc:		reloc informations
-+ * @nomm:		never actually used
-  *
-  * Check if next packet is relocation packet3, do bo validation and compute
-  * GPU offset using the provided start.
+ /*
+  * Indirect registers accessor
+diff --git a/drivers/gpu/drm/radeon/radeon.h b/drivers/gpu/drm/radeon/radeon.h
+index 421f6b26512ed..32a2c894ee3ff 100644
+--- a/drivers/gpu/drm/radeon/radeon.h
++++ b/drivers/gpu/drm/radeon/radeon.h
+@@ -280,6 +280,8 @@ struct radeon_clock {
+ 	uint32_t vco_freq;
+ };
+ 
++void rv770_set_clk_bypass_mode(struct radeon_device *rdev);
++
+ /*
+  * Power management
+  */
 -- 
 2.25.1
 
