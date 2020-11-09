@@ -2,36 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C0692AB8DF
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 13:59:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CB1E02AB8DC
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 13:58:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729751AbgKIM6p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 07:58:45 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52524 "EHLO mail.kernel.org"
+        id S1730161AbgKIM6k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 07:58:40 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52632 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730112AbgKIM6I (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 07:58:08 -0500
+        id S1730122AbgKIM6S (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 07:58:18 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D295B2083B;
-        Mon,  9 Nov 2020 12:58:05 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 58C2020867;
+        Mon,  9 Nov 2020 12:58:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604926686;
-        bh=8Bfuq0lkbN3KlU1O7blm26r0n7P2Z9bE8QIU5FgaYv4=;
+        s=default; t=1604926697;
+        bh=F7KYVWoKM0cX149P9ugGcvogZeUIF0DKMOHHXkXB/Cc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=POKZ3pO7OI3xSA9iqTNUqOgCNVutnEn1jwdbQF8OxjgYkuSm+snA1WEwf5aR7KNaB
-         nJ3Uj9lTEk5O+Iu0t9yFy4LOBIIdeXoh7p6DA9gexJhxsx18cQJm9D0NBo2zFH9W7h
-         7QiY9wZO1F5dte7P1q5K5tMm8eAtr0dpGCP1/AEo=
+        b=xoyl57S66J3pePKNnY5X/uaVwXXzekUZoI55xti/tzN71hvDhcERvVnPhJQNxbfD2
+         Rqkha5Q1NAz+yg7gPjBJ8LN10rkA6q/6tEQzvnzWTl7CoKX4PYoVZGclHUkXk3gQW1
+         meJuQNdMDNnWNRYRJcMyOQNhkllH+Oee2ZpcUV4Q=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Jisheng Zhang <Jisheng.Zhang@synaptics.com>,
-        Arnd Bergmann <arnd@arndb.de>
-Subject: [PATCH 4.4 56/86] arm64: berlin: Select DW_APB_TIMER_OF
-Date:   Mon,  9 Nov 2020 13:55:03 +0100
-Message-Id: <20201109125023.475713573@linuxfoundation.org>
+        stable@vger.kernel.org, Krzysztof Kozlowski <krzk@kernel.org>
+Subject: [PATCH 4.4 60/86] ARM: s3c24xx: fix missing system reset
+Date:   Mon,  9 Nov 2020 13:55:07 +0100
+Message-Id: <20201109125023.661445658@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201109125020.852643676@linuxfoundation.org>
 References: <20201109125020.852643676@linuxfoundation.org>
@@ -43,32 +41,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jisheng Zhang <Jisheng.Zhang@synaptics.com>
+From: Krzysztof Kozlowski <krzk@kernel.org>
 
-commit b0fc70ce1f028e14a37c186d9f7a55e51439b83a upstream.
+commit f6d7cde84f6c5551586c8b9b68d70f8e6dc9a000 upstream.
 
-Berlin SoCs always contain some DW APB timers which can be used as an
-always-on broadcast timer.
+Commit f6361c6b3880 ("ARM: S3C24XX: remove separate restart code")
+removed usage of the watchdog reset platform code in favor of the
+Samsung SoC watchdog driver.  However the latter was not selected thus
+S3C24xx platforms lost reset abilities.
 
-Link: https://lore.kernel.org/r/20201009150536.214181fb@xhacker.debian
-Cc: <stable@vger.kernel.org> # v3.14+
-Signed-off-by: Jisheng Zhang <Jisheng.Zhang@synaptics.com>
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Cc: <stable@vger.kernel.org>
+Fixes: f6361c6b3880 ("ARM: S3C24XX: remove separate restart code")
+Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- arch/arm64/Kconfig.platforms |    1 +
- 1 file changed, 1 insertion(+)
+ arch/arm/Kconfig |    2 ++
+ 1 file changed, 2 insertions(+)
 
---- a/arch/arm64/Kconfig.platforms
-+++ b/arch/arm64/Kconfig.platforms
-@@ -9,6 +9,7 @@ config ARCH_BERLIN
- 	bool "Marvell Berlin SoC Family"
- 	select ARCH_REQUIRE_GPIOLIB
- 	select DW_APB_ICTL
-+	select DW_APB_TIMER_OF
+--- a/arch/arm/Kconfig
++++ b/arch/arm/Kconfig
+@@ -676,7 +676,9 @@ config ARCH_S3C24XX
+ 	select HAVE_S3C_RTC if RTC_CLASS
+ 	select MULTI_IRQ_HANDLER
+ 	select NEED_MACH_IO_H
++	select S3C2410_WATCHDOG
+ 	select SAMSUNG_ATAGS
++	select WATCHDOG
  	help
- 	  This enables support for Marvell Berlin SoC Family
- 
+ 	  Samsung S3C2410, S3C2412, S3C2413, S3C2416, S3C2440, S3C2442, S3C2443
+ 	  and S3C2450 SoCs based systems, such as the Simtec Electronics BAST
 
 
