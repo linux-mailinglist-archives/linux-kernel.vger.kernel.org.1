@@ -2,142 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC19D2AB402
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 10:52:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A43752AB404
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 10:52:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729107AbgKIJwI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 04:52:08 -0500
-Received: from mail.loongson.cn ([114.242.206.163]:50188 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726482AbgKIJwI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 04:52:08 -0500
-Received: from [10.130.0.80] (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dx3389EalfhdsJAA--.13521S3;
-        Mon, 09 Nov 2020 17:51:58 +0800 (CST)
-Subject: Re: [PATCH] locking/lock_events: no need to check return value of
- debugfs_create functions
-To:     Peter Zijlstra <peterz@infradead.org>
-References: <1604740753-17662-1-git-send-email-yangtiezhu@loongson.cn>
- <20201109083251.GA2594@hirez.programming.kicks-ass.net>
-Cc:     Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
-        linux-kernel@vger.kernel.org, Xuefeng Li <lixuefeng@loongson.cn>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-From:   Tiezhu Yang <yangtiezhu@loongson.cn>
-Message-ID: <ef0058d3-8308-bd9c-7289-e4009fed3b4b@loongson.cn>
-Date:   Mon, 9 Nov 2020 17:51:56 +0800
-User-Agent: Mozilla/5.0 (X11; Linux mips64; rv:45.0) Gecko/20100101
- Thunderbird/45.4.0
+        id S1729116AbgKIJwr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 04:52:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47794 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727183AbgKIJwq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 04:52:46 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B3E2C0613CF
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Nov 2020 01:52:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=/kiXkiX5D7NVvwDSqhlwDi0UU90V4tHPpuN14UrYDIg=; b=SumctV0EALjb5+6tBIJn5XjlhQ
+        9aUmtw6uSjOiDijb0EzdjFUlRZQ62bd73/vryFtvlTV7RrRHNsDYCRbUCWSFi0CwxFepi1Xmlqvp2
+        A558M0MQMhQKLZPe0d2TOjipuzvOk0vsX/REimehSc7eDc+nMUu1Ai3ueuphiREW1KyoMKv0guJ9n
+        tbjDfVjv6fNw2H05lj7CF7jbPT7bCi/hNDkAZRZ2xe7ySAYGi5YsTljCltppXR4jYqvXRaA/VjKfZ
+        SFal5m5Ns1GbHGfmV371gETwFvcR9QuTRNS/kUrcRw4rz+utOEDAD0ZuqKgwSiV3iU1Mss9xzBZPV
+        Kv1LwNKg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kc3qm-0008JB-RJ; Mon, 09 Nov 2020 09:52:37 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id CDE17301324;
+        Mon,  9 Nov 2020 10:52:35 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id B29CD2B09ACF8; Mon,  9 Nov 2020 10:52:35 +0100 (CET)
+Date:   Mon, 9 Nov 2020 10:52:35 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     kan.liang@linux.intel.com
+Cc:     mingo@kernel.org, linux-kernel@vger.kernel.org,
+        namhyung@kernel.org, eranian@google.com, irogers@google.com,
+        gmx@google.com, acme@kernel.org, jolsa@redhat.com,
+        ak@linux.intel.com
+Subject: Re: [PATCH 1/3] perf/core: Flush PMU internal buffers for per-CPU
+ events
+Message-ID: <20201109095235.GC2594@hirez.programming.kicks-ass.net>
+References: <20201106212935.28943-1-kan.liang@linux.intel.com>
 MIME-Version: 1.0
-In-Reply-To: <20201109083251.GA2594@hirez.programming.kicks-ass.net>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID: AQAAf9Dx3389EalfhdsJAA--.13521S3
-X-Coremail-Antispam: 1UD129KBjvJXoWxWw4DJFW8XFykXw1DCry7trb_yoW5WFyxpw
-        s8Gry3Kr40v3yfWF9I9w1DZryI93yIkrs7CF9rCr1xAwnYvr1ayFykKr4UArySvr1fGryF
-        q3W5GF1j9FyjyFDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUvl14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-        1l84ACjcxK6xIIjxv20xvE14v26ryj6F1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4j
-        6F4UM28EF7xvwVC2z280aVAFwI0_Cr1j6rxdM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
-        Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
-        I7IYx2IY67AKxVWUGVWUXwAv7VC2z280aVAFwI0_Gr0_Cr1lOx8S6xCaFVCjc4AY6r1j6r
-        4UM4x0Y48IcVAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwCYjI0SjxkI62AI1cAE67vI
-        Y487MxkIecxEwVAFwVW8uwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8Jw
-        C20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAF
-        wI0_JF0_Jw1lIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjx
-        v20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6rWUJVWrZr1UMIIF0xvE
-        x4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvj
-        DU0xZFpf9x0JUSsjbUUUUU=
-X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201106212935.28943-1-kan.liang@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/09/2020 04:32 PM, Peter Zijlstra wrote:
-> On Sat, Nov 07, 2020 at 05:19:13PM +0800, Tiezhu Yang wrote:
->> When calling debugfs functions, there is no need to ever check the
->> return value.  The function can work or not, but the code logic should
->> never do something different based on this.
-> I strongly disagree and have told this to Greg before. Having half a
-> debug interface is weird at best, so upon failure we remove the whole
-> thing, which is consistent.
+On Fri, Nov 06, 2020 at 01:29:33PM -0800, kan.liang@linux.intel.com wrote:
+> From: Kan Liang <kan.liang@linux.intel.com>
+> 
+> Sometimes the PMU internal buffers have to be flushed for per-CPU events
+> during a context switch, e.g., large PEBS. Otherwise, the perf tool may
+> report samples in locations that do not belong to the process where the
+> samples are processed in, because PEBS does not tag samples with PID/TID.
+> 
+> The current code only flush the buffers for a per-task event. It doesn't
+> check a per-CPU event.
+> 
+> Add a new event state flag, PERF_ATTACH_SCHED_CB, to indicate that the
+> PMU internal buffers have to be flushed for this event during a context
+> switch.
+> 
+> Add sched_cb_entry and perf_sched_cb_usages back to track the PMU/cpuctx
+> which is required to be flushed.
+> 
+> Only need to invoke the sched_task() for per-CPU events in this patch.
+> The per-task events have been handled in perf_event_context_sched_in/out
+> already.
+> 
+> Fixes: 9c964efa4330 ("perf/x86/intel: Drain the PEBS buffer during context switches")
 
-Hi Peter,
+Are you sure? In part this patch looks like a revert of:
 
-Thanks for your reply.
+  44fae179ce73a26733d9e2d346da4e1a1cb94647
+  556cccad389717d6eb4f5a24b45ff41cad3aaabf
 
-I find the early discussion and see the following opinion by Greg:
 
-https://lore.kernel.org/patchwork/patch/1290162/
+> +static void perf_pmu_sched_task(struct task_struct *prev,
+> +				struct task_struct *next,
+> +				bool sched_in)
+> +{
+> +	struct perf_cpu_context *cpuctx;
+> +
+> +	if (prev == next)
+> +		return;
+> +
+> +	list_for_each_entry(cpuctx, this_cpu_ptr(&sched_cb_list), sched_cb_entry) {
+> +		/* will be handled in perf_event_context_sched_in/out */
+> +		if (cpuctx->task_ctx)
+> +			continue;
 
-[ For debugfs, this isn't an issue, what can a user do with something like
-"debugfs isn't working?  What does that mean???"
+This seems wrong; cpuctx->task_ctx merely indicates that there is a
+task-ctx for this CPU. Not that the event you're interested in is in
+fact there.
 
-And if we _really_ want warnings like this, it should go into the
-debugfs core, not require this to be done for every debugfs user, right?
+So consider the case where the event is on the CPU context, but we also
+have a task context. Then we'll not issue this call.
 
-debugfs is just there for kernel developers to help debug things, it's
-not a dependancy on any userspace functionality, so if it works or not
-should not be an issue for any user.
-
-Unless that user is a kernel developer of course :)
-
-thanks,
-
-greg k-h ]
-
-Anyway, if this patch is meaningless after discussion, please ignore it.
-
-Thanks,
-Tiezhu
-
->
->> Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
->> ---
->>   kernel/locking/lock_events.c | 19 ++++---------------
->>   1 file changed, 4 insertions(+), 15 deletions(-)
->>
->> diff --git a/kernel/locking/lock_events.c b/kernel/locking/lock_events.c
->> index fa2c2f9..bac77a1 100644
->> --- a/kernel/locking/lock_events.c
->> +++ b/kernel/locking/lock_events.c
->> @@ -146,9 +146,6 @@ static int __init init_lockevent_counts(void)
->>   	struct dentry *d_counts = debugfs_create_dir(LOCK_EVENTS_DIR, NULL);
->>   	int i;
->>   
->> -	if (!d_counts)
->> -		goto out;
->> -
->>   	/*
->>   	 * Create the debugfs files
->>   	 *
->> @@ -159,21 +156,13 @@ static int __init init_lockevent_counts(void)
->>   	for (i = 0; i < lockevent_num; i++) {
->>   		if (skip_lockevent(lockevent_names[i]))
->>   			continue;
->> -		if (!debugfs_create_file(lockevent_names[i], 0400, d_counts,
->> -					 (void *)(long)i, &fops_lockevent))
->> -			goto fail_undo;
->> +		debugfs_create_file(lockevent_names[i], 0400, d_counts,
->> +				    (void *)(long)i, &fops_lockevent);
->>   	}
->>   
->> -	if (!debugfs_create_file(lockevent_names[LOCKEVENT_reset_cnts], 0200,
->> -				 d_counts, (void *)(long)LOCKEVENT_reset_cnts,
->> -				 &fops_lockevent))
->> -		goto fail_undo;
->> +	debugfs_create_file(lockevent_names[LOCKEVENT_reset_cnts], 0200, d_counts,
->> +			    (void *)(long)LOCKEVENT_reset_cnts, &fops_lockevent);
->>   
->>   	return 0;
->> -fail_undo:
->> -	debugfs_remove_recursive(d_counts);
->> -out:
->> -	pr_warn("Could not create '%s' debugfs entries\n", LOCK_EVENTS_DIR);
->> -	return -ENOMEM;
->>   }
->>   fs_initcall(init_lockevent_counts);
->> -- 
->> 2.1.0
->>
-
+> +
+> +		__perf_pmu_sched_task(cpuctx, sched_in);
+> +	}
+> +}
