@@ -2,83 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 448E72AB86E
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 13:40:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F8472AB86A
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 13:40:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729769AbgKIMkS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 07:40:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46152 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729740AbgKIMkQ (ORCPT
+        id S1729735AbgKIMkO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 07:40:14 -0500
+Received: from youngberry.canonical.com ([91.189.89.112]:51131 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726410AbgKIMkO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 07:40:16 -0500
-Received: from smtp3-1.goneo.de (smtp3.goneo.de [IPv6:2001:1640:5::8:37])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E14D4C0613CF
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Nov 2020 04:40:15 -0800 (PST)
-Received: from localhost (localhost [127.0.0.1])
-        by smtp3.goneo.de (Postfix) with ESMTP id 4D05723F486;
-        Mon,  9 Nov 2020 13:40:12 +0100 (CET)
-X-Virus-Scanned: by goneo
-X-Spam-Flag: NO
-X-Spam-Score: -2.94
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.94 tagged_above=-999 tests=[ALL_TRUSTED=-1,
-        AWL=-0.040, BAYES_00=-1.9] autolearn=ham
-Received: from smtp3.goneo.de ([127.0.0.1])
-        by localhost (smtp3.goneo.de [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id 78zzH0vFqXDi; Mon,  9 Nov 2020 13:40:10 +0100 (CET)
-Received: from lem-wkst-02.lemonage (hq.lemonage.de [87.138.178.34])
-        by smtp3.goneo.de (Postfix) with ESMTPSA id 0EDF223F810;
-        Mon,  9 Nov 2020 13:40:09 +0100 (CET)
-Date:   Mon, 9 Nov 2020 13:40:03 +0100
-From:   Lars Poeschel <poeschel@lemonage.de>
-To:     kernel test robot <oliver.sang@intel.com>
-Cc:     Miguel Ojeda <ojeda@kernel.org>, kernel test robot <lkp@intel.com>,
-        Willy Tarreau <w@1wt.eu>, LKML <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        lkp@lists.01.org
-Subject: Re: [auxdisplay]  b26deabb1d:
- BUG:kernel_NULL_pointer_dereference,address
-Message-ID: <20201109124003.ppuzlyyy5blf3ixu@lem-wkst-02.lemonage>
-References: <20201109062934.GA7739@xsang-OptiPlex-9020>
+        Mon, 9 Nov 2020 07:40:14 -0500
+Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <colin.king@canonical.com>)
+        id 1kc6Su-0004zh-OY; Mon, 09 Nov 2020 12:40:08 +0000
+From:   Colin King <colin.king@canonical.com>
+To:     Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Kurt Kanzenbach <kurt@linutronix.de>, netdev@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH][next] net: dsa: fix unintended sign extension on a u16 left shift
+Date:   Mon,  9 Nov 2020 12:40:08 +0000
+Message-Id: <20201109124008.2079873-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201109062934.GA7739@xsang-OptiPlex-9020>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi!
+From: Colin Ian King <colin.king@canonical.com>
 
-And thanks for your report.
+The left shift of u16 variable high is promoted to the type int and
+then sign extended to a 64 bit u64 value.  If the top bit of high is
+set then the upper 32 bits of the result end up being set by the
+sign extension. Fix this by explicitly casting the value in high to
+a u64 before left shifting by 16 places.
 
-On Mon, Nov 09, 2020 at 02:29:34PM +0800, kernel test robot wrote:
+Also, remove the initialisation of variable value to 0 at the start
+of each loop iteration as the value is never read and hence the
+assignment it is redundant.
 
-> To reproduce:
-> 
->         # build kernel
-> 	cd linux
-> 	cp config-5.10.0-rc2-00008-gb26deabb1d91 .config
-> 	make HOSTCC=gcc-9 CC=gcc-9 ARCH=i386 olddefconfig prepare modules_prepare bzImage
-> 
->         git clone https://github.com/intel/lkp-tests.git
->         cd lkp-tests
->         bin/lkp qemu -k <bzImage> job-script # job-script is attached in this email
+Addresses-Coverity: ("Unintended sign extension")
+Fixes: e4b27ebc780f ("net: dsa: Add DSA driver for Hirschmann Hellcreek switches")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+---
+ drivers/net/dsa/hirschmann/hellcreek.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Trying to reproduce your issue:
+diff --git a/drivers/net/dsa/hirschmann/hellcreek.c b/drivers/net/dsa/hirschmann/hellcreek.c
+index dfa66f7260d6..d42f40c76ba5 100644
+--- a/drivers/net/dsa/hirschmann/hellcreek.c
++++ b/drivers/net/dsa/hirschmann/hellcreek.c
+@@ -308,7 +308,7 @@ static void hellcreek_get_ethtool_stats(struct dsa_switch *ds, int port,
+ 		const struct hellcreek_counter *counter = &hellcreek_counter[i];
+ 		u8 offset = counter->offset + port * 64;
+ 		u16 high, low;
+-		u64 value = 0;
++		u64 value;
+ 
+ 		mutex_lock(&hellcreek->reg_lock);
+ 
+@@ -320,7 +320,7 @@ static void hellcreek_get_ethtool_stats(struct dsa_switch *ds, int port,
+ 		 */
+ 		high  = hellcreek_read(hellcreek, HR_CRDH);
+ 		low   = hellcreek_read(hellcreek, HR_CRDL);
+-		value = (high << 16) | low;
++		value = ((u64)high << 16) | low;
+ 
+ 		hellcreek_port->counter_values[i] += value;
+ 		data[i] = hellcreek_port->counter_values[i];
+-- 
+2.28.0
 
-LANG=C bin/lkp qemu -k ~/projekte/linux-stable/arch/x86_64/boot/bzImage /tmp/job-script
-result_root: /home/larsi/.lkp//result/trinity/300s/vm-snb-i386/yocto-i386-minimal-20190520.cgz/i386-randconfig-a002-20201105/gcc-9/b26deabb1d915fe87d395081bbd3058b938dee89/6
-downloading initrds ...
-/usr/bin/wget -q --timeout=1800 --tries=1 --local-encoding=UTF-8 https://download.01.org/0day-ci/lkp-qemu/osimage/yocto/yocto-i386-minimal-20190520.cgz -N -P /home/larsi/.lkp/cache/osimage/yocto
-17916 blocks
-/usr/bin/wget -q --timeout=1800 --tries=1 --local-encoding=UTF-8 https://download.01.org/0day-ci/lkp-qemu/osimage/pkg/yocto-i386-minimal-20190520.cgz/trinity-i386.cgz -N -P /home/larsi/.lkp/cache/osimage/pkg/yocto-i386-minimal-20190520.cgz
-Failed to download osimage/pkg/yocto-i386-minimal-20190520.cgz/trinity-i386.cgz
-
-It seems, that the trinity-i386.cgz file is not downloadable. Using a
-webbrowser I can see an empty directory.
-Can you help please ?
-
-Thanks,
-Lars
