@@ -2,91 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB2562AB4E1
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 11:28:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B4EB2AB505
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 11:33:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729393AbgKIK2P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 05:28:15 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40198 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726535AbgKIK2P (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 05:28:15 -0500
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 52E5D206E3;
-        Mon,  9 Nov 2020 10:28:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604917694;
-        bh=F4DJfBvLNERc4ObqNHuoqD0PrLer0QzMxjwGTa9K7V0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=BpY/bMSz5HZFttESVRrZzFD+mpD0ZfIPSjZqbDXLh+i2AbG/nrL074Z18cO9YQW6V
-         24eT54LJ6QQjNIpG9rM9frhZ/tJLCYCCEhHXZY94w1Yu+If31ccCo2ha5y3xWBD2+R
-         ElwYQeHkuqmmgGnc9HrSznCu+t6kw8hMiJpVLLTU=
-Date:   Mon, 9 Nov 2020 11:29:14 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Vineet Gupta <Vineet.Gupta1@synopsys.com>
-Cc:     "stable@vger.kernel.org" <stable@vger.kernel.org>,
-        "linux-snps-arc@lists.infradead.org" 
-        <linux-snps-arc@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Waldemar Brodkorb <wbx@uclibc-ng.org>
-Subject: Re: [PATCH] Revert "ARC: entry: fix potential EFA clobber when
- TIF_SYSCALL_TRACE"
-Message-ID: <20201109102914.GD1238638@kroah.com>
-References: <20201020021957.1260521-1-vgupta@synopsys.com>
- <9cec26bd-6839-b90d-9bda-44936457e883@synopsys.com>
- <20201107141006.GB28983@kroah.com>
+        id S1729282AbgKIKdm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 05:33:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54202 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729050AbgKIKdl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 05:33:41 -0500
+Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60E61C0613CF;
+        Mon,  9 Nov 2020 02:33:41 -0800 (PST)
+Received: by mail-io1-xd43.google.com with SMTP id s24so9202746ioj.13;
+        Mon, 09 Nov 2020 02:33:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=wkye27w2nAyIcjrhd3hfBHl4YeysiD/X9LyxFDbBQas=;
+        b=OqRlee4MqSA7fZDWCF6CqdUSTCXoYD0diRAhsu5/Y7W/g2KuA+bJCPazJTzzu+ZzmV
+         mIovg/IuUJTtyhh+Uue6ho2Oj21wr80ltk8yGxzGlQL/NbCB+CKd7CCetJSPbVSjvAD4
+         8j+5N7HB1rpyffj20+nK7sxJE9Bqz9QhTgB9tpDlFvfUsAYlk4TgrcnW9BACfKgE3Xhi
+         2QS+Ki2TRw0wu04D3aZw2eJGaESFUNt16tiQeFXYR/Kr9EC0eQLWtGXg7rviA0XTeHdH
+         6tjed0PESdEiJTzDtD5P5Bi4mTY1QYeXlX4XTdaHJeDcr3yqwwuxQbDbBOfI5fOe4t+7
+         g5qA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=wkye27w2nAyIcjrhd3hfBHl4YeysiD/X9LyxFDbBQas=;
+        b=NX/hmMxC0yybAS3YMcZ0Kr7vJgGo44RCQEZfpvZoCxiBfrg9nGJKn0WCoOCi6FTHTi
+         31o3fzyXmP4LWFPb7kKNEE2I0VEquvcDK4HsAS9l2r+Vu7RaVbI5diKY8nCmeK2yXD7E
+         /32edaeJDXpsVs2UGLbVV9zZMU+rIzMZPNvHKjJXTxpKQKaFbF+v4kwtUo9RycCzgpgj
+         eLJ7OO1KPd5GoUcRpK7Mpfy11uiRss+DCQ+aBQH94S22nWe+fj2vb99xZy20W8XtTQ3E
+         SEI4svw0aWUEE2NTKBUJiXpuYxAfFjZG68MpYGR15NV6VLp8EmVyDQsY8JA5UlVHp8gF
+         qMnA==
+X-Gm-Message-State: AOAM5328h3ILpIEF/pXhuo52F8GKW9iwLzKHp/YkSu72IP9sg8eYYE3b
+        CaK2Wnr7peWJg/DomN53BFM=
+X-Google-Smtp-Source: ABdhPJx3u8n9iY0h3VNSOjcaxUcjatBsthD0e/jyc8IR2gl42ENShsI/H7RSJAqdzlqyjhoCkAFyAg==
+X-Received: by 2002:a6b:c047:: with SMTP id q68mr5323755iof.189.1604918020810;
+        Mon, 09 Nov 2020 02:33:40 -0800 (PST)
+Received: from localhost.localdomain ([156.146.54.75])
+        by smtp.gmail.com with ESMTPSA id l9sm6758483ilt.19.2020.11.09.02.33.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 09 Nov 2020 02:33:40 -0800 (PST)
+From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
+To:     tj@kernel.org, lizefan@huawei.com, hannes@cmpxchg.org,
+        christian@brauner.io, ast@kernel.org, daniel@iogearbox.net,
+        kafai@fb.com, songliubraving@fb.com, yhs@fb.com, andrii@kernel.org,
+        john.fastabend@gmail.com, kpsingh@chromium.org,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org
+Cc:     Bhaskar Chowdhury <unixbhaskar@gmail.com>
+Subject: [PATCH] kernel: cgroup: Mundane spelling fixes throughout the file
+Date:   Mon,  9 Nov 2020 16:01:11 +0530
+Message-Id: <20201109103111.10078-1-unixbhaskar@gmail.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201107141006.GB28983@kroah.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Nov 07, 2020 at 03:10:06PM +0100, Greg Kroah-Hartman wrote:
-> On Fri, Nov 06, 2020 at 08:27:44PM +0000, Vineet Gupta wrote:
-> > Hi Stable Team,
-> > 
-> > On 10/19/20 7:19 PM, Vineet Gupta wrote:
-> > > This reverts commit 00fdec98d9881bf5173af09aebd353ab3b9ac729.
-> > > (but only from 5.2 and prior kernels)
-> > > 
-> > > The original commit was a preventive fix based on code-review and was
-> > > auto-picked for stable back-port (for better or worse).
-> > > It was OK for v5.3+ kernels, but turned up needing an implicit change
-> > > 68e5c6f073bcf70 "(ARC: entry: EV_Trap expects r10 (vs. r9) to have
-> > >  exception cause)" merged in v5.3 which itself was not backported.
-> > > So to summarize the stable backport of this patch for v5.2 and prior
-> > > kernels is busted and it won't boot.
-> > > 
-> > > The obvious solution is backport 68e5c6f073bcf70 but that is a pain as
-> > > it doesn't revert cleanly and each of affected kernels (so far v4.19,
-> > > v4.14, v4.9, v4.4) needs a slightly different massaged varaint.
-> > > So the easier fix is to simply revert the backport from 5.2 and prior.
-> > > The issue was not a big deal as it would cause strace to sporadically
-> > > not work correctly.
-> > > 
-> > > Waldemar Brodkorb first reported this when running ARC uClibc regressions
-> > > on latest stable kernels (with offending backport). Once he bisected it,
-> > > the analysis was trivial, so thx to him for this.
-> > > 
-> > > Reported-by: Waldemar Brodkorb <wbx@uclibc-ng.org>
-> > > Bisected-by: Waldemar Brodkorb <wbx@uclibc-ng.org>
-> > > Cc: stable <stable@vger.kernel.org> # 5.2 and prior
-> > > Signed-off-by: Vineet Gupta <vgupta@synopsys.com>
-> > 
-> > Can this revert be please applied to 4.19 and older kernels for the next cycle.
-> > 
-> > Or is there is a procedural issue given this revert is not in mainline. I've
-> > described the issue in detail above so if there's a better/desirable way of
-> > reverting it from backports, please let me know.
-> 
-> THis is fine, sorry, it's just in a backlog of lots of stable patches...
-> 
-> We will get to it soon.
+Few spelling fixes throughout the file.
 
-Now queued up, thanks.
+Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+---
+ kernel/cgroup/cgroup.c | 22 +++++++++++-----------
+ 1 file changed, 11 insertions(+), 11 deletions(-)
 
-gre gk-h
+diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
+index f2eeff74d713..c4f1b7968981 100644
+--- a/kernel/cgroup/cgroup.c
++++ b/kernel/cgroup/cgroup.c
+@@ -244,7 +244,7 @@ bool cgroup_ssid_enabled(int ssid)
+  *
+  * The default hierarchy is the v2 interface of cgroup and this function
+  * can be used to test whether a cgroup is on the default hierarchy for
+- * cases where a subsystem should behave differnetly depending on the
++ * cases where a subsystem should behave differently depending on the
+  * interface version.
+  *
+  * List of changed behaviors:
+@@ -262,7 +262,7 @@ bool cgroup_ssid_enabled(int ssid)
+  *   "cgroup.procs" instead.
+  *
+  * - "cgroup.procs" is not sorted.  pids will be unique unless they got
+- *   recycled inbetween reads.
++ *   recycled in-between reads.
+  *
+  * - "release_agent" and "notify_on_release" are removed.  Replacement
+  *   notification mechanism will be implemented.
+@@ -345,7 +345,7 @@ static bool cgroup_is_mixable(struct cgroup *cgrp)
+ 	return !cgroup_parent(cgrp);
+ }
+
+-/* can @cgrp become a thread root? should always be true for a thread root */
++/* can @cgrp become a thread root? Should always be true for a thread root */
+ static bool cgroup_can_be_thread_root(struct cgroup *cgrp)
+ {
+ 	/* mixables don't care */
+@@ -530,7 +530,7 @@ static struct cgroup_subsys_state *cgroup_e_css_by_mask(struct cgroup *cgrp,
+  * the root css is returned, so this function always returns a valid css.
+  *
+  * The returned css is not guaranteed to be online, and therefore it is the
+- * callers responsiblity to tryget a reference for it.
++ * callers responsibility to try get a reference for it.
+  */
+ struct cgroup_subsys_state *cgroup_e_css(struct cgroup *cgrp,
+ 					 struct cgroup_subsys *ss)
+@@ -702,7 +702,7 @@ EXPORT_SYMBOL_GPL(of_css);
+ 			;						\
+ 		else
+
+-/* walk live descendants in preorder */
++/* walk live descendants in pre order */
+ #define cgroup_for_each_live_descendant_pre(dsct, d_css, cgrp)		\
+ 	css_for_each_descendant_pre((d_css), cgroup_css((cgrp), NULL))	\
+ 		if (({ lockdep_assert_held(&cgroup_mutex);		\
+@@ -936,7 +936,7 @@ void put_css_set_locked(struct css_set *cset)
+
+ 	WARN_ON_ONCE(!list_empty(&cset->threaded_csets));
+
+-	/* This css_set is dead. unlink it and release cgroup and css refs */
++	/* This css_set is dead. Unlink it and release cgroup and css refs */
+ 	for_each_subsys(ss, ssid) {
+ 		list_del(&cset->e_cset_node[ssid]);
+ 		css_put(cset->subsys[ssid]);
+@@ -1061,7 +1061,7 @@ static struct css_set *find_existing_css_set(struct css_set *old_cset,
+
+ 	/*
+ 	 * Build the set of subsystem state objects that we want to see in the
+-	 * new css_set. while subsystems can change globally, the entries here
++	 * new css_set. While subsystems can change globally, the entries here
+ 	 * won't change, so no need for locking.
+ 	 */
+ 	for_each_subsys(ss, i) {
+@@ -1151,7 +1151,7 @@ static void link_css_set(struct list_head *tmp_links, struct css_set *cset,
+
+ 	/*
+ 	 * Always add links to the tail of the lists so that the lists are
+-	 * in choronological order.
++	 * in chronological order.
+ 	 */
+ 	list_move_tail(&link->cset_link, &cgrp->cset_links);
+ 	list_add_tail(&link->cgrp_link, &cset->cgrp_links);
+@@ -4137,7 +4137,7 @@ struct cgroup_subsys_state *css_next_child(struct cgroup_subsys_state *pos,
+ 	 * implies that if we observe !CSS_RELEASED on @pos in this RCU
+ 	 * critical section, the one pointed to by its next pointer is
+ 	 * guaranteed to not have finished its RCU grace period even if we
+-	 * have dropped rcu_read_lock() inbetween iterations.
++	 * have dropped rcu_read_lock() in-between iterations.
+ 	 *
+ 	 * If @pos has CSS_RELEASED set, its next pointer can't be
+ 	 * dereferenced; however, as each css is given a monotonically
+@@ -4385,7 +4385,7 @@ static struct css_set *css_task_iter_next_css_set(struct css_task_iter *it)
+ }
+
+ /**
+- * css_task_iter_advance_css_set - advance a task itererator to the next css_set
++ * css_task_iter_advance_css_set - advance a task iterator to the next css_set
+  * @it: the iterator to advance
+  *
+  * Advance @it to the next css_set to walk.
+@@ -6320,7 +6320,7 @@ struct cgroup_subsys_state *css_from_id(int id, struct cgroup_subsys *ss)
+  *
+  * Find the cgroup at @path on the default hierarchy, increment its
+  * reference count and return it.  Returns pointer to the found cgroup on
+- * success, ERR_PTR(-ENOENT) if @path doens't exist and ERR_PTR(-ENOTDIR)
++ * success, ERR_PTR(-ENOENT) if @path doesn't exist and ERR_PTR(-ENOTDIR)
+  * if @path points to a non-directory.
+  */
+ struct cgroup *cgroup_get_from_path(const char *path)
+--
+2.26.2
+
