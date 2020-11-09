@@ -2,138 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87FF62AC74B
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 22:31:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 773182AC752
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 22:34:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730670AbgKIVbq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 16:31:46 -0500
-Received: from youngberry.canonical.com ([91.189.89.112]:38081 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727311AbgKIVbp (ORCPT
+        id S1729673AbgKIVeY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 16:34:24 -0500
+Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:15356 "EHLO
+        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727311AbgKIVeX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 16:31:45 -0500
-Received: from 1.general.cascardo.us.vpn ([10.172.70.58] helo=mussarela)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <cascardo@canonical.com>)
-        id 1kcElJ-0002mr-La; Mon, 09 Nov 2020 21:31:42 +0000
-Date:   Mon, 9 Nov 2020 18:31:34 -0300
-From:   Thadeu Lima de Souza Cascardo <cascardo@canonical.com>
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     Kleber Sacilotto de Souza <kleber.souza@canonical.com>,
-        Eric Dumazet <edumazet@google.com>, netdev@vger.kernel.org,
-        Gerrit Renker <gerrit@erg.abdn.ac.uk>,
-        "David S. Miller" <davem@davemloft.net>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        "Alexander A. Klimov" <grandmaster@al2klimov.de>,
-        Kees Cook <keescook@chromium.org>,
-        Alexey Kodanev <alexey.kodanev@oracle.com>,
-        dccp@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] dccp: ccid: move timers to struct dccp_sock
-Message-ID: <20201109213134.GR595944@mussarela>
-References: <20201013171849.236025-1-kleber.souza@canonical.com>
- <20201013171849.236025-2-kleber.souza@canonical.com>
- <20201016153016.04bffc1e@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <20201109114828.GP595944@mussarela>
- <20201109094938.45b230c9@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <20201109210909.GQ595944@mussarela>
- <20201109131554.5f65b2fa@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+        Mon, 9 Nov 2020 16:34:23 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5fa9b5e50001>; Mon, 09 Nov 2020 13:34:29 -0800
+Received: from rcampbell-dev.nvidia.com (10.124.1.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 9 Nov
+ 2020 21:34:17 +0000
+Subject: Re: [PATCH v3 3/6] mm: support THP migration to device private memory
+To:     Christoph Hellwig <hch@lst.de>
+CC:     <linux-mm@kvack.org>, <nouveau@lists.freedesktop.org>,
+        <linux-kselftest@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        "Jerome Glisse" <jglisse@redhat.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        "Alistair Popple" <apopple@nvidia.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Bharata B Rao <bharata@linux.ibm.com>,
+        Zi Yan <ziy@nvidia.com>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        Yang Shi <yang.shi@linux.alibaba.com>,
+        Ben Skeggs <bskeggs@redhat.com>, Shuah Khan <shuah@kernel.org>,
+        "Andrew Morton" <akpm@linux-foundation.org>
+References: <20201106005147.20113-1-rcampbell@nvidia.com>
+ <20201106005147.20113-4-rcampbell@nvidia.com> <20201106080322.GE31341@lst.de>
+ <a7b8b90c-09b7-2009-0784-908b61f61ef2@nvidia.com>
+ <20201109091415.GC28918@lst.de>
+X-Nvconfidentiality: public
+From:   Ralph Campbell <rcampbell@nvidia.com>
+Message-ID: <0ed2fbec-e855-9be5-4897-523b00391a5a@nvidia.com>
+Date:   Mon, 9 Nov 2020 13:34:17 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.2.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201109131554.5f65b2fa@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+In-Reply-To: <20201109091415.GC28918@lst.de>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL101.nvidia.com (172.20.187.10) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1604957669; bh=mGWceFZcFVepIg70odr/PpzpGbOYemVQsgtUyEDQ5DY=;
+        h=Subject:To:CC:References:X-Nvconfidentiality:From:Message-ID:Date:
+         User-Agent:MIME-Version:In-Reply-To:Content-Type:Content-Language:
+         Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy;
+        b=Pl5Tvt71udJU3v/0WCu3Asq2HX/8GyNfgumDPJG9uNsgU+MIpHqO+wOIFuKESw2q/
+         T1IEais/hXVH0hE8rKE2lCAGdDwBRi9dVnYmfyzEMdvWiU8ljU/IIx8nJzLhJrm8Im
+         Jv4q8vv55QxoNkYyA59hGqNL1W7lRcfc1Bdn9fqco9eBhY/ppa0CMphwINQ0UtvxhQ
+         fInFfJZirRP0B/gQzxgf5Pduu2ywcaiKuHbCzULx8PA9audLlpSfNnuhRwqtZUBuTt
+         lKiNnMmbqI4la7ABjlO2OTxf6CZlpSP2Ead9izuGJp43VzgyLtZxafBHsW/aJGGLqs
+         sO14lMybUWHDw==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 09, 2020 at 01:15:54PM -0800, Jakub Kicinski wrote:
-> On Mon, 9 Nov 2020 18:09:09 -0300 Thadeu Lima de Souza Cascardo wrote:
-> > On Mon, Nov 09, 2020 at 09:49:38AM -0800, Jakub Kicinski wrote:
-> > > On Mon, 9 Nov 2020 08:48:28 -0300 Thadeu Lima de Souza Cascardo wrote:  
-> > > > On Fri, Oct 16, 2020 at 03:30:16PM -0700, Jakub Kicinski wrote:  
-> > > > > On Tue, 13 Oct 2020 19:18:48 +0200 Kleber Sacilotto de Souza wrote:    
-> > > > > > From: Thadeu Lima de Souza Cascardo <cascardo@canonical.com>
-> > > > > > 
-> > > > > > When dccps_hc_tx_ccid is freed, ccid timers may still trigger. The reason
-> > > > > > del_timer_sync can't be used is because this relies on keeping a reference
-> > > > > > to struct sock. But as we keep a pointer to dccps_hc_tx_ccid and free that
-> > > > > > during disconnect, the timer should really belong to struct dccp_sock.
-> > > > > > 
-> > > > > > This addresses CVE-2020-16119.
-> > > > > > 
-> > > > > > Fixes: 839a6094140a (net: dccp: Convert timers to use timer_setup())
-> > > > > > Signed-off-by: Thadeu Lima de Souza Cascardo <cascardo@canonical.com>
-> > > > > > Signed-off-by: Kleber Sacilotto de Souza <kleber.souza@canonical.com>    
-> > > > > 
-> > > > > I've been mulling over this fix.
-> > > > > 
-> > > > > The layering violation really doesn't sit well.
-> > > > > 
-> > > > > We're reusing the timer object. What if we are really unlucky, the
-> > > > > fires and gets blocked by a cosmic ray just as it's about to try to
-> > > > > lock the socket, then user manages to reconnect, and timer starts
-> > > > > again. Potentially with a different CCID algo altogether?
-> > > > > 
-> > > > > Is disconnect ever called under the BH lock?  Maybe plumb a bool
-> > > > > argument through to ccid*_hc_tx_exit() and do a sk_stop_timer_sync()
-> > > > > when called from disconnect()?
-> > > > > 
-> > > > > Or do refcounting on ccid_priv so that the timer holds both the socket
-> > > > > and the priv?    
-> > > > 
-> > > > Sorry about too late a response. I was on vacation, then came back and spent a
-> > > > couple of days testing this further, and had to switch to other tasks.
-> > > > 
-> > > > So, while testing this, I had to resort to tricks like having a very small
-> > > > expire and enqueuing on a different CPU. Then, after some minutes, I hit a UAF.
-> > > > That's with or without the first of the second patch.
-> > > > 
-> > > > I also tried to refcount ccid instead of the socket, keeping the timer on the
-> > > > ccid, but that still hit the UAF, and that's when I had to switch tasks.  
-> > > 
-> > > Hm, not instead, as well. I think trying cancel the timer _sync from
-> > > the disconnect path would be the simplest solution, tho.
-> > 
-> > I don't think so. On other paths, we would still have the possibility that:
-> > 
-> > CPU1: timer expires and is about to run
-> > CPU2: calls stop_timer (which does not stop anything) and frees ccid
-> > CPU1: timer runs and uses freed ccid
-> > 
-> > And those paths, IIUC, may be run under a SoftIRQ on the receive path, so would
-> > not be able to call stop_timer_sync.
-> 
-> Which paths are those (my memory of this code is waning)? I thought
-> disconnect is only called from the user space side (shutdown syscall).
-> The only other way to terminate the connection is to close the socket,
-> which Eric already fixed by postponing the destruction of ccid in that
-> case.
 
-dccp_v4_do_rcv -> dccp_rcv_established -> dccp_parse_options ->
-	dccp_feat_parse_options -> dccp_feat_handle_nn_established ->
-	dccp_feat_activate -> __dccp_feat_activate -> dccp_hdlr_ccid ->
-	ccid_hc_tx_delete
+On 11/9/20 1:14 AM, Christoph Hellwig wrote:
+> On Fri, Nov 06, 2020 at 01:26:50PM -0800, Ralph Campbell wrote:
+>>
+>> On 11/6/20 12:03 AM, Christoph Hellwig wrote:
+>>> I hate the extra pin count magic here.  IMHO we really need to finish
+>>> off the series to get rid of the extra references on the ZONE_DEVICE
+>>> pages first.
+>>
+>> First, thanks for the review comments.
+>>
+>> I don't like the extra refcount either, that is why I tried to fix that up
+>> before resending this series. However, you didn't like me just fixing the
+>> refcount only for device private pages and I don't know the dax/pmem code
+>> and peer-to-peer PCIe uses of ZONE_DEVICE pages well enough to say how
+>> long it will take me to fix all the use cases.
+>> So I wanted to make progress on the THP migration code in the mean time.
+> 
+> I think P2P is pretty trivial, given that ZONE_DEVICE pages are used like
+> a normal memory allocator.  DAX is the interesting case, any specific
+> help that you need with that?
 
-> 
-> > > > Oh, and in the meantime, I found one or two other fixes that we
-> > > > should apply, will send them shortly.
-> > > > 
-> > > > But I would argue that we should apply the revert as it addresses the
-> > > > CVE, without really regressing the other UAF, as I argued. Does that
-> > > > make sense?  
-> > > 
-> > > We can - it's always a little strange to go from one bug to a different
-> > > without a fix - but the justification being that while the previous UAF
-> > > required a race condition the new one is actually worst because it can 
-> > > be triggered reliably?  
-> > 
-> > Well, I am arguing here that commit 2677d20677314101293e6da0094ede7b5526d2b1
-> > ("dccp: don't free ccid2_hc_tx_sock struct in dccp_disconnect()") doesn't
-> > really fix anything. Whenever ccid_hx_tx_delete is called, that UAF might
-> > happen, because the timer might trigger right after we free the ccid struct.
-> > 
-> > And, yes, on the other hand, we can reliably launch the DoS attack that is
-> > fixed by the revert of that commit.
-> 
-> OK.
-> 
+Thanks for the offer. I'm putting a list together... :-)
