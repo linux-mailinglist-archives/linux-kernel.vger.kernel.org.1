@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E2E92ABC2C
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 14:35:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AE7952ABD4B
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 14:45:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731153AbgKINGw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 08:06:52 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59366 "EHLO mail.kernel.org"
+        id S1732913AbgKINo5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 08:44:57 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52984 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731111AbgKINGj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 08:06:39 -0500
+        id S1730112AbgKIM6q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 07:58:46 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EA3A3206B2;
-        Mon,  9 Nov 2020 13:06:37 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id A933B20684;
+        Mon,  9 Nov 2020 12:58:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604927198;
-        bh=Y+h7QsOu55ZB97VkRuEf0hf6PppXRgG7RLw3rou4IEI=;
+        s=default; t=1604926725;
+        bh=Ddoh0zPJ0nESyfDNkjlmhetNYQNkUuxzicuDI5+jPMs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Lciy+1GTzvrD6eYVp0oCdb0RNz+gkJGLVc2w3UINwp47ICvGzi5PyOLweYsac8CVP
-         z8gJ+H01B1pTbuOwm7sSKrQCFzX7EQAMiN/4GQID5WwwEuesl76aR2SMkJmjulvfEt
-         KjBLfhFSeUtUfLojhQBzI1pv3gyTDZrE499VA28M=
+        b=Nr7tV3QfUj3BsZ7ip5yID9cj1V+GGZs7xBDfW6mNH310c/FgabxlB05iZdsoXl9CN
+         /MeqLSTmAKhmO7KO6pl1K8Wf6mq0J6whEbUGBCaqqAblTe0n5SE/e/KeMjIExICZD/
+         2BNNKPXhVa4B5OYHbZTHtAPsMUBkNle/MytO53Ls=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Petr Malat <oss@malat.biz>,
-        Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 4.14 07/48] sctp: Fix COMM_LOST/CANT_STR_ASSOC err reporting on big-endian platforms
+        stable@vger.kernel.org, "Geoffrey D. Bennett" <g@b4.vu>,
+        Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 4.4 69/86] ALSA: usb-audio: Add implicit feedback quirk for Qu-16
 Date:   Mon,  9 Nov 2020 13:55:16 +0100
-Message-Id: <20201109125017.105494941@linuxfoundation.org>
+Message-Id: <20201109125024.095376661@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201109125016.734107741@linuxfoundation.org>
-References: <20201109125016.734107741@linuxfoundation.org>
+In-Reply-To: <20201109125020.852643676@linuxfoundation.org>
+References: <20201109125020.852643676@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,44 +42,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Petr Malat <oss@malat.biz>
+From: Geoffrey D. Bennett <g@b4.vu>
 
-[ Upstream commit b6df8c81412190fbd5eaa3cec7f642142d9c16cd ]
+commit 0938ecae432e7ac8b01080c35dd81d50a1e43033 upstream.
 
-Commit 978aa0474115 ("sctp: fix some type cast warnings introduced since
-very beginning")' broke err reading from sctp_arg, because it reads the
-value as 32-bit integer, although the value is stored as 16-bit integer.
-Later this value is passed to the userspace in 16-bit variable, thus the
-user always gets 0 on big-endian platforms. Fix it by reading the __u16
-field of sctp_arg union, as reading err field would produce a sparse
-warning.
+This patch fixes audio distortion on playback for the Allen&Heath
+Qu-16.
 
-Fixes: 978aa0474115 ("sctp: fix some type cast warnings introduced since very beginning")
-Signed-off-by: Petr Malat <oss@malat.biz>
-Acked-by: Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>
-Link: https://lore.kernel.org/r/20201030132633.7045-1-oss@malat.biz
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Signed-off-by: Geoffrey D. Bennett <g@b4.vu>
+Cc: <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20201104115717.GA19046@b4.vu
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- net/sctp/sm_sideeffect.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
 
---- a/net/sctp/sm_sideeffect.c
-+++ b/net/sctp/sm_sideeffect.c
-@@ -1591,12 +1591,12 @@ static int sctp_cmd_interpreter(enum sct
- 			break;
+---
+ sound/usb/pcm.c |    1 +
+ 1 file changed, 1 insertion(+)
+
+--- a/sound/usb/pcm.c
++++ b/sound/usb/pcm.c
+@@ -332,6 +332,7 @@ static int set_sync_ep_implicit_fb_quirk
+ 	switch (subs->stream->chip->usb_id) {
+ 	case USB_ID(0x0763, 0x2030): /* M-Audio Fast Track C400 */
+ 	case USB_ID(0x0763, 0x2031): /* M-Audio Fast Track C600 */
++	case USB_ID(0x22f0, 0x0006): /* Allen&Heath Qu-16 */
+ 		ep = 0x81;
+ 		iface = usb_ifnum_to_if(dev, 3);
  
- 		case SCTP_CMD_INIT_FAILED:
--			sctp_cmd_init_failed(commands, asoc, cmd->obj.u32);
-+			sctp_cmd_init_failed(commands, asoc, cmd->obj.u16);
- 			break;
- 
- 		case SCTP_CMD_ASSOC_FAILED:
- 			sctp_cmd_assoc_failed(commands, asoc, event_type,
--					      subtype, chunk, cmd->obj.u32);
-+					      subtype, chunk, cmd->obj.u16);
- 			break;
- 
- 		case SCTP_CMD_INIT_COUNTER_INC:
 
 
