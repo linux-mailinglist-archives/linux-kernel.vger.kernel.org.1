@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42FED2ABA74
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 14:23:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 367672ABB78
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 14:28:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387755AbgKINT2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 08:19:28 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46806 "EHLO mail.kernel.org"
+        id S1731663AbgKINNe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 08:13:34 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39294 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387742AbgKINTZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 08:19:25 -0500
+        id S1731523AbgKINN1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 08:13:27 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1CE75206D8;
-        Mon,  9 Nov 2020 13:19:23 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1EE0820867;
+        Mon,  9 Nov 2020 13:13:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604927964;
+        s=default; t=1604927606;
         bh=gdMGDMwySHdmXhfimYPXmMMVR+X1bgogAYC8Oh5fkF0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VFxFOBMFtcV6B7Emm4Rg2WHDeNN30m+UU2+O2neDr2ULVRZSC7RGA/vmVVizW1U0G
-         jieOlv+X0qr16RC81DNfOhbnVGu1Qs55HyFLiIFsfJW4CAQe/J2LrZN0gWU+Xsw4QV
-         7fcG+x4rjx0deJ3ikIAaLLEwEVeLrYwEiVd5MFmo=
+        b=1eKPDb/k4yZasaHoH82SOjawrqIi4EycuhZbvHzCwAFzd/5RGU0yKnHr5ju17IZvr
+         /1b6PiRoerZJTYyMbwkIFvVfu/NHcwqvp1/H2ONNH5Pi+pImLyuwhcXstdpT/ED7Jf
+         Yzt9VeFmrH99yTj8l7G/A94l+m6EPboIGIgytVLk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Maxime Ripard <maxime@cerno.tech>,
         Jernej Skrabec <jernej.skrabec@siol.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.9 081/133] drm/sun4i: frontend: Rework a bit the phase data
+Subject: [PATCH 5.4 46/85] drm/sun4i: frontend: Rework a bit the phase data
 Date:   Mon,  9 Nov 2020 13:55:43 +0100
-Message-Id: <20201109125034.617884910@linuxfoundation.org>
+Message-Id: <20201109125024.800852106@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201109125030.706496283@linuxfoundation.org>
-References: <20201109125030.706496283@linuxfoundation.org>
+In-Reply-To: <20201109125022.614792961@linuxfoundation.org>
+References: <20201109125022.614792961@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
