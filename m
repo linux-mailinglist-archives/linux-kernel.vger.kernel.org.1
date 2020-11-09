@@ -2,57 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BAF62AB132
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 07:24:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4605C2AB135
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 07:25:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729342AbgKIGYN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 01:24:13 -0500
-Received: from mail.kernel.org ([198.145.29.99]:32886 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727077AbgKIGYM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 01:24:12 -0500
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6AD7A206CB;
-        Mon,  9 Nov 2020 06:24:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604903052;
-        bh=cHnOJKkHVIaTzHEI+bYdGP0PeODU7wFkgjyizlQIPVI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=XtcRlj+ZVRhT7Wl2ezNlbhfvLgtKIRq7mrnur2Eu1N8K3CBqnr+jjLwELgd9x/McQ
-         dVBQhvMCVd2cX7EdHjuoqbmz/td2aqpkNRrmQdrxk6blX87oN+Zscz3QftR8yEWYQ+
-         xvXsUdV5ZnnKOFhDfLrYyUsHxeeNZgWIf4mvUKto=
-Date:   Mon, 9 Nov 2020 07:24:07 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Wang Qing <wangqing@vivo.com>
-Cc:     Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Alistair Popple <alistair@popple.id.au>,
-        Jordan Niethe <jniethe5@gmail.com>,
-        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        tglx@linutronix.de
-Subject: Re: [PATCH] sched/rt, powerpc: Prepare for PREEMPT_RT
-Message-ID: <20201109062407.GA48938@kroah.com>
-References: <1604893209-18762-1-git-send-email-wangqing@vivo.com>
+        id S1729429AbgKIGZs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 01:25:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43840 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728385AbgKIGZs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 01:25:48 -0500
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4018C0613CF;
+        Sun,  8 Nov 2020 22:25:46 -0800 (PST)
+Received: by mail-pf1-x443.google.com with SMTP id y7so7131740pfq.11;
+        Sun, 08 Nov 2020 22:25:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=PJc4BdhbHd3H1fH9oOv1dKYZsgBZj67mPeN9HCvthMI=;
+        b=se6Y/va0JBgXIx+MT8uDZgHqGBUaO35x1xNQNM2QH/qsDywzo2U77AZVHyFoYrcYvV
+         CeVKpdZhItNz0onr2wV1qFnIY4iXae5HiHHFU7lClK08L6KRjTFquAdOKjdAusqQNxBO
+         48mrab7Ygg8ZR3Zc41vANfW8+qzyO4u286FR0VIsGUPrs6hKxhGZFpYRxC0cqwlyfDcG
+         2N/Y52u/0i9uTDBk9Bo6iI7vlfmNMXdcEtK+O4m1V643G+poCbJkF+f2bQaJo+P1ncEW
+         GqocwhVorV7nWi8CiWk90cnW6hQnzitI1hVreTpZoWpP9mGKgsiYdXAGpsgaNFpBJZTf
+         k7ZQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=PJc4BdhbHd3H1fH9oOv1dKYZsgBZj67mPeN9HCvthMI=;
+        b=rtnvNLMeg66Eop9wPFiNDBqnrXSmPsos8KrS/KEHztAQvuiDAx4+24AZ8ZJ8RR3IDA
+         XHRHOIas1TZgwH+HzWBVwxsGZcLXZ791/9xoQ9jMMCgeEyR7SbuGaa8xkiXmaoW3nlyN
+         gSGM3P352RfYRZ0nAItIiFs1diftC0onTSEVJ3CqnMBGOBhutaMamPBBpPAXX+EdPwwm
+         UtEkabvxto9L87wgRge0a0jebLFUPh9S/hxMGNu2sOPDOwFXrn/0uDoahPx1d3Q0IVMQ
+         H4ZdqPKFByQNpgzt1oLWKLthIKakrFYJR1vKmvEYtU6cPUtKtBAjRMs+gE2G5wtM6VgZ
+         8yaQ==
+X-Gm-Message-State: AOAM531QvHeAt7C0kcywEqvAgmyHOAfFaRNMIzCyp9tYjuQjW/7mFYee
+        Zf2N3TSbYK39SIFRDakByHI=
+X-Google-Smtp-Source: ABdhPJzXClcFI/c82s6U/c07rUiGhlV5rBAl/sf+LHSh7KSaQ3b9EGxCWCnyrpDRAlFhHxQJu0rw3g==
+X-Received: by 2002:a63:4c19:: with SMTP id z25mr11699365pga.58.1604903146412;
+        Sun, 08 Nov 2020 22:25:46 -0800 (PST)
+Received: from dtor-ws ([2620:15c:202:201:a6ae:11ff:fe11:fcc3])
+        by smtp.gmail.com with ESMTPSA id js7sm10118751pjb.46.2020.11.08.22.25.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 08 Nov 2020 22:25:45 -0800 (PST)
+Date:   Sun, 8 Nov 2020 22:25:42 -0800
+From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     linux-kernel@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        David Jander <david@protonic.nl>,
+        Phil Blundell <pb@handhelds.org>, linux-input@vger.kernel.org
+Subject: Re: [PATCH 11/20] input: keyboard: gpio_keys: Fix misnamed function
+ parameter 'dev'
+Message-ID: <20201109062542.GM1003057@dtor-ws>
+References: <20201104162427.2984742-1-lee.jones@linaro.org>
+ <20201104162427.2984742-12-lee.jones@linaro.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1604893209-18762-1-git-send-email-wangqing@vivo.com>
+In-Reply-To: <20201104162427.2984742-12-lee.jones@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 09, 2020 at 11:40:08AM +0800, Wang Qing wrote:
-> Add PREEMPT_RT output to die().
+On Wed, Nov 04, 2020 at 04:24:18PM +0000, Lee Jones wrote:
+> Fixes the following W=1 kernel build warning(s):
+> 
+>  drivers/input/keyboard/gpio_keys.c:119: warning: Function parameter or member 'dev' not described in 'get_bm_events_by_type'
+>  drivers/input/keyboard/gpio_keys.c:119: warning: Excess function parameter 'input' description in 'get_bm_events_by_type'
+> 
+> Cc: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+> Cc: "Gustavo A. R. Silva" <gustavoars@kernel.org>
+> Cc: David Jander <david@protonic.nl>
+> Cc: Phil Blundell <pb@handhelds.org>
+> Cc: linux-input@vger.kernel.org
+> Signed-off-by: Lee Jones <lee.jones@linaro.org>
 
-That says what you did, but not why you are doing this.
+Applied, thank you.
 
-Why are you doing this?  That needs to go into the changelog text.
-
-greg k-h
+-- 
+Dmitry
