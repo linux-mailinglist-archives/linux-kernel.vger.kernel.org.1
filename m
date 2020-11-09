@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FA152ABB4B
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 14:28:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C4EB2ABA12
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 14:16:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387600AbgKIN06 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 08:26:58 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42128 "EHLO mail.kernel.org"
+        id S1732540AbgKINP1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 08:15:27 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42188 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731083AbgKINPV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 08:15:21 -0500
+        id S1732902AbgKINPX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 08:15:23 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A7EF8216C4;
-        Mon,  9 Nov 2020 13:15:19 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id A111320867;
+        Mon,  9 Nov 2020 13:15:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604927720;
-        bh=YslYDa45oHKEau1PImBbICMtQ4p9PWkBeRpGnX9QEH0=;
+        s=default; t=1604927723;
+        bh=d37asfMGKYxtGpDyJ9BNnKRVpFFwKWby68pi9aJUuN8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=iWhxamJDPTJrecJHfErlnfw2t9CsfyJL3x0QGpmODJ2Mx+4CdBROVAihQczbIwjU/
-         tnWx6JEpRU4D7YyJJbA9aDO7rOAX+FhTSv1dUCd80C+lvOk6n/4ax3MeXSoNY6wjKh
-         xUD/pi3inL2lZd8tuHhL2+fVZeZptjmETTNYTelI=
+        b=ScDS+bvaSoyQcS8iQlLRtFR4qRp3CRk5Px3fi36QmIFhR9g0ljKbFVtKMWF7HIbf2
+         ZHNbtiwGDRQrh3Yk9N3kwtqD6GR7v43kvsxsufQ27fn4uL/YPaafifzUIPFEJJ7vnH
+         rI1eaTb5VNFXfGvgMgtrdLn3xZmQZI7ZBOCIRQv8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, =?UTF-8?q?kiyin ?= <kiyin@tencent.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        "Srivatsa S. Bhat" <srivatsa@csail.mit.edu>,
-        Anthony Liguori <aliguori@amazon.com>
-Subject: [PATCH 5.4 84/85] perf/core: Fix a memory leak in perf_event_parse_addr_filter()
-Date:   Mon,  9 Nov 2020 13:56:21 +0100
-Message-Id: <20201109125026.622601267@linuxfoundation.org>
+        stable@vger.kernel.org,
+        =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Andre Heider <a.heider@gmail.com>,
+        Gregory CLEMENT <gregory.clement@bootlin.com>
+Subject: [PATCH 5.4 85/85] arm64: dts: marvell: espressobin: Add ethernet switch aliases
+Date:   Mon,  9 Nov 2020 13:56:22 +0100
+Message-Id: <20201109125026.670807503@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201109125022.614792961@linuxfoundation.org>
 References: <20201109125022.614792961@linuxfoundation.org>
@@ -45,85 +45,82 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: kiyin(尹亮) <kiyin@tencent.com>
+From: Pali Rohár <pali@kernel.org>
 
-commit 7bdb157cdebbf95a1cd94ed2e01b338714075d00 upstream.
+commit b64d814257b027e29a474bcd660f6372490138c7 upstream.
 
-As shown through runtime testing, the "filename" allocation is not
-always freed in perf_event_parse_addr_filter().
+Espressobin boards have 3 ethernet ports and some of them got assigned more
+then one MAC address. MAC addresses are stored in U-Boot environment.
 
-There are three possible ways that this could happen:
+Since commit a2c7023f7075c ("net: dsa: read mac address from DT for slave
+device") kernel can use MAC addresses from DT for particular DSA port.
 
- - It could be allocated twice on subsequent iterations through the loop,
- - or leaked on the success path,
- - or on the failure path.
+Currently Espressobin DTS file contains alias just for ethernet0.
 
-Clean up the code flow to make it obvious that 'filename' is always
-freed in the reallocation path and in the two return paths as well.
+This patch defines additional ethernet aliases in Espressobin DTS files, so
+bootloader can fill correct MAC address for DSA switch ports if more MAC
+addresses were specified.
 
-We rely on the fact that kfree(NULL) is NOP and filename is initialized
-with NULL.
+DT alias ethernet1 is used for wan port, DT aliases ethernet2 and ethernet3
+are used for lan ports for both Espressobin revisions (V5 and V7).
 
-This fixes the leak. No other side effects expected.
-
-[ Dan Carpenter: cleaned up the code flow & added a changelog. ]
-[ Ingo Molnar: updated the changelog some more. ]
-
-Fixes: 375637bc5249 ("perf/core: Introduce address range filtering")
-Signed-off-by: "kiyin(尹亮)" <kiyin@tencent.com>
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Cc: "Srivatsa S. Bhat" <srivatsa@csail.mit.edu>
-Cc: Anthony Liguori <aliguori@amazon.com>
---
- kernel/events/core.c |   12 +++++-------
- 1 file changed, 5 insertions(+), 7 deletions(-)
+Fixes: 5253cb8c00a6f ("arm64: dts: marvell: espressobin: add ethernet alias")
+Cc: <stable@vger.kernel.org> # a2c7023f7075c: dsa: read mac address
+Signed-off-by: Pali Rohár <pali@kernel.org>
+Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+Reviewed-by: Andre Heider <a.heider@gmail.com>
+Signed-off-by: Gregory CLEMENT <gregory.clement@bootlin.com>
+[pali: Backported Espressobin rev V5 changes to 5.4 and 4.19 versions]
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
---- a/kernel/events/core.c
-+++ b/kernel/events/core.c
-@@ -9415,6 +9415,7 @@ perf_event_parse_addr_filter(struct perf
- 			if (token == IF_SRC_FILE || token == IF_SRC_FILEADDR) {
- 				int fpos = token == IF_SRC_FILE ? 2 : 1;
+---
+ arch/arm64/boot/dts/marvell/armada-3720-espressobin.dts |   12 ++++++++----
+ 1 file changed, 8 insertions(+), 4 deletions(-)
+
+--- a/arch/arm64/boot/dts/marvell/armada-3720-espressobin.dts
++++ b/arch/arm64/boot/dts/marvell/armada-3720-espressobin.dts
+@@ -21,6 +21,10 @@
  
-+				kfree(filename);
- 				filename = match_strdup(&args[fpos]);
- 				if (!filename) {
- 					ret = -ENOMEM;
-@@ -9461,16 +9462,13 @@ perf_event_parse_addr_filter(struct perf
- 				 */
- 				ret = -EOPNOTSUPP;
- 				if (!event->ctx->task)
--					goto fail_free_name;
-+					goto fail;
+ 	aliases {
+ 		ethernet0 = &eth0;
++		/* for dsa slave device */
++		ethernet1 = &switch0port1;
++		ethernet2 = &switch0port2;
++		ethernet3 = &switch0port3;
+ 		serial0 = &uart0;
+ 		serial1 = &uart1;
+ 	};
+@@ -147,7 +151,7 @@
+ 			#address-cells = <1>;
+ 			#size-cells = <0>;
  
- 				/* look up the path and grab its inode */
- 				ret = kern_path(filename, LOOKUP_FOLLOW,
- 						&filter->path);
- 				if (ret)
--					goto fail_free_name;
--
--				kfree(filename);
--				filename = NULL;
-+					goto fail;
+-			port@0 {
++			switch0port0: port@0 {
+ 				reg = <0>;
+ 				label = "cpu";
+ 				ethernet = <&eth0>;
+@@ -158,19 +162,19 @@
+ 				};
+ 			};
  
- 				ret = -EINVAL;
- 				if (!filter->path.dentry ||
-@@ -9490,13 +9488,13 @@ perf_event_parse_addr_filter(struct perf
- 	if (state != IF_STATE_ACTION)
- 		goto fail;
+-			port@1 {
++			switch0port1: port@1 {
+ 				reg = <1>;
+ 				label = "wan";
+ 				phy-handle = <&switch0phy0>;
+ 			};
  
-+	kfree(filename);
- 	kfree(orig);
+-			port@2 {
++			switch0port2: port@2 {
+ 				reg = <2>;
+ 				label = "lan0";
+ 				phy-handle = <&switch0phy1>;
+ 			};
  
- 	return 0;
- 
--fail_free_name:
--	kfree(filename);
- fail:
-+	kfree(filename);
- 	free_filters_list(filters);
- 	kfree(orig);
- 
+-			port@3 {
++			switch0port3: port@3 {
+ 				reg = <3>;
+ 				label = "lan1";
+ 				phy-handle = <&switch0phy2>;
 
 
