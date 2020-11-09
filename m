@@ -2,119 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BDEE2AC48E
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 20:04:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E1622AC492
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 20:05:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729973AbgKITEZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 14:04:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49440 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729302AbgKITEY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 14:04:24 -0500
-Received: from the.earth.li (the.earth.li [IPv6:2a00:1098:86:4d:c0ff:ee:15:900d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BFB7C0613CF;
-        Mon,  9 Nov 2020 11:04:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=earth.li;
-         s=the; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:Subject
-        :Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-        List-Post:List-Owner:List-Archive;
-        bh=TFKGo0xpBOEg+T74W7oI6xqQWy9esM9XTIUlQGEd/Mk=; b=wALVIypO2VnSRap5o/l6oiHbAt
-        AWYe1Cr7+RyhGemq7Gt6n3sNZczEifqAsATj0BcxYu1Ha7VMZIdEnvTtT3Tl4/nDo3HiJhgoaY9pm
-        WK6v4K0BPkNIeJn5Yp9ldU/hcCz3HPNAZ24HsMMJ7ppWj7NmuhlqE4hOuCXGjnlfzoMnPL/PpMYSW
-        dtbhiMVZ2jLxl7tQOqo/+gyunJyP92tp2me0rwINApgdyFeoegQczdTY2K8/An2UKoBcDXOKpBmah
-        L0VyEre/Wh+XvUAy54r4q7R7w/SVKjj42E3N87BoDHEvJn6WPod7+lL9qfdOciKXHMDF4E24ioclD
-        eY1N8PsQ==;
-Received: from noodles by the.earth.li with local (Exim 4.92)
-        (envelope-from <noodles@earth.li>)
-        id 1kcCSe-0002ic-8z; Mon, 09 Nov 2020 19:04:16 +0000
-Date:   Mon, 9 Nov 2020 19:04:16 +0000
-From:   Jonathan McDowell <noodles@earth.li>
-To:     Vinod Koul <vkoul@kernel.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Thomas Pedersen <twp@codeaurora.org>,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        dmaengine@vger.kernel.org
-Subject: Re: [PATCH v4] dmaengine: qcom: Add ADM driver
-Message-ID: <20201109190416.GF32650@earth.li>
-References: <20200916064326.GA13963@earth.li>
- <20200919185739.GS3411@earth.li>
- <20200920181204.GT3411@earth.li>
- <20200923194056.GY3411@earth.li>
- <20201109114121.GG3171@vkoul-mobl>
+        id S1730350AbgKITFA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 14:05:00 -0500
+Received: from mga14.intel.com ([192.55.52.115]:25167 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730189AbgKITFA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 14:05:00 -0500
+IronPort-SDR: wtWrrVuB4CivNs6cz/f+gsc/G6pYaKeAaYlDJP0yKBnClC/dJDvG40dQ/FvI296LP73k4U5/o9
+ 030g7FMSGJ7g==
+X-IronPort-AV: E=McAfee;i="6000,8403,9800"; a="169069160"
+X-IronPort-AV: E=Sophos;i="5.77,464,1596524400"; 
+   d="scan'208";a="169069160"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Nov 2020 11:04:59 -0800
+IronPort-SDR: WMvX/xGOWu1vLQ8PbWtMDH0fD+eU9y16MXP/CBJaJBNrhk40CGm9SXenlqp2A3P6ohvZ1dTifh
+ 3HBXoEVefhRw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,464,1596524400"; 
+   d="scan'208";a="327372412"
+Received: from lkp-server01.sh.intel.com (HELO d0be80f1a028) ([10.239.97.150])
+  by orsmga006.jf.intel.com with ESMTP; 09 Nov 2020 11:04:57 -0800
+Received: from kbuild by d0be80f1a028 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1kcCTJ-0000Ml-4d; Mon, 09 Nov 2020 19:04:57 +0000
+Date:   Tue, 10 Nov 2020 03:04:47 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:irq/core] BUILD SUCCESS
+ d315c627a18249930750fe4eb2b21f3fe9b32ea4
+Message-ID: <5fa992cf.wCAOcySPLGlW9NsS%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201109114121.GG3171@vkoul-mobl>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 09, 2020 at 05:11:21PM +0530, Vinod Koul wrote:
-> HI Jonathan,
-> 
-> On 23-09-20, 20:40, Jonathan McDowell wrote:
-> > Add the DMA engine driver for the QCOM Application Data Mover (ADM) DMA
-> > controller found in the MSM8x60 and IPQ/APQ8064 platforms.
-> 
-> Mostly it looks good, some nitpicks
-> 
-> > The ADM supports both memory to memory transactions and memory
-> > to/from peripheral device transactions.  The controller also provides
-> > flow control capabilities for transactions to/from peripheral devices.
-> > 
-> > The initial release of this driver supports slave transfers to/from
-> > peripherals and also incorporates CRCI (client rate control interface)
-> > flow control.
-> 
-> Can you also convert the binding from txt to yaml?
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git  irq/core
+branch HEAD: d315c627a18249930750fe4eb2b21f3fe9b32ea4  regmap: irq: Convert to use irq_domain_create_legacy()
 
-Seems like that can be a separate patch, but sure, I'll give it a whirl.
+elapsed time: 872m
 
-> > diff --git a/drivers/dma/qcom/Kconfig b/drivers/dma/qcom/Kconfig
-> > index 3bcb689162c6..0389d60d2604 100644
-> > --- a/drivers/dma/qcom/Kconfig
-> > +++ b/drivers/dma/qcom/Kconfig
-> > @@ -1,4 +1,15 @@
-> >  # SPDX-License-Identifier: GPL-2.0-only
-> > +config QCOM_ADM
-> > +	tristate "Qualcomm ADM support"
-> > +	depends on (ARCH_QCOM || COMPILE_TEST) && !PHYS_ADDR_T_64BIT
-> 
-> why !PHYS_ADDR_T_64BIT ..?
+configs tested: 92
+configs skipped: 2
 
-The hardware only supports a 32 bit physical address, so specifying
-!PHYS_ADDR_T_64BIT gives maximum COMPILE_TEST coverage without having to
-spend effort on kludging things in the code that will never actually be
-needed on real hardware.
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-> > +	select DMA_ENGINE
-> > +	select DMA_VIRTUAL_CHANNELS
-> > +	help
-> > +	  Enable support for the Qualcomm Application Data Mover (ADM) DMA
-> > +	  controller, as present on MSM8x60, APQ8064, and IPQ8064 devices.
-> > +	  This controller provides DMA capabilities for both general purpose
-> > +	  and on-chip peripheral devices.
-> 
-> > +static const struct of_device_id adm_of_match[] = {
-> > +	{ .compatible = "qcom,adm", },
-> 
-> I know we have merged the binding, but should we not have a soc specific
-> compatible?
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+powerpc                    sam440ep_defconfig
+powerpc                     pseries_defconfig
+m68k                         amcore_defconfig
+arm                         s5pv210_defconfig
+xtensa                  audio_kc705_defconfig
+arc                                 defconfig
+mips                      fuloong2e_defconfig
+sh                         microdev_defconfig
+arm                            mmp2_defconfig
+arm                          collie_defconfig
+sh                        sh7757lcr_defconfig
+m68k                        m5307c3_defconfig
+arm                             rpc_defconfig
+m68k                        m5272c3_defconfig
+c6x                              alldefconfig
+powerpc                      pmac32_defconfig
+arm                          imote2_defconfig
+parisc                           alldefconfig
+arm                        shmobile_defconfig
+arm                   milbeaut_m10v_defconfig
+powerpc                     tqm8540_defconfig
+powerpc                     skiroot_defconfig
+arm                         shannon_defconfig
+nds32                               defconfig
+arm                           corgi_defconfig
+arm                          gemini_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+c6x                              allyesconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+i386                 randconfig-a004-20201109
+i386                 randconfig-a006-20201109
+i386                 randconfig-a005-20201109
+i386                 randconfig-a001-20201109
+i386                 randconfig-a003-20201109
+i386                 randconfig-a002-20201109
+i386                 randconfig-a014-20201109
+i386                 randconfig-a015-20201109
+i386                 randconfig-a013-20201109
+i386                 randconfig-a016-20201109
+i386                 randconfig-a011-20201109
+i386                 randconfig-a012-20201109
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+x86_64                                   rhel
+x86_64                           allyesconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                                  kexec
 
-Which soc? Looking at the other QCOM DMA drivers they mostly have
-versioned compatibles and I can't find any indication there are multiple
-variants of this block out there.
+clang tested configs:
+x86_64               randconfig-a012-20201109
+x86_64               randconfig-a015-20201109
+x86_64               randconfig-a013-20201109
+x86_64               randconfig-a011-20201109
+x86_64               randconfig-a014-20201109
+x86_64               randconfig-a016-20201109
 
-J.
-
--- 
-Web [ Every program is either trivial or it contains at least one  ]
-site: https:// [                   bug.                   ]      Made by
-www.earth.li/~noodles/  [                      ]         HuggieTag 0.0.24
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
