@@ -2,554 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 584172AC67E
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 22:00:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D3ED42AC681
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 22:02:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730096AbgKIVAq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 16:00:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39230 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725946AbgKIVAq (ORCPT
+        id S1729872AbgKIVCf convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 9 Nov 2020 16:02:35 -0500
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:33314 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727070AbgKIVCf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 16:00:46 -0500
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 063DCC0613CF
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Nov 2020 13:00:46 -0800 (PST)
-Received: by mail-pg1-x542.google.com with SMTP id 62so8164847pgg.12
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Nov 2020 13:00:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=kClGZO69a1FD34GRswRtxZCB/sEtlJT1M2ktboyqFgM=;
-        b=dKxsc0vo2kN/s/f+hrWAH+9SLe1rPk26poRykbuJq0v8qISOaveCRWSem60clB0Ip1
-         BVsBig48/JVDTSkvf4mtE/HVI0wq7pdsrtusHiisQpfCBJ1M2aPUeEmQPb2h+ahpS1ET
-         YiX63hXYILHfjf77GrGUqKmKS8hphCrq8RW7CLFn5Qv5WwIsya2XMvYLLTjvPLjqRCVX
-         18fT+Cb+gTdjOodx9zPJjLlLVdb1E3jVTLcqP2RVYmNKNPWmXjysRypbVFdy0IJpox4k
-         WMaJopnBqe/vIJiio1bSphtZYtHKS4uZWLdC0n+MLtbpX8HQDqVf1xKjTijSh5x9esdX
-         pW+Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=kClGZO69a1FD34GRswRtxZCB/sEtlJT1M2ktboyqFgM=;
-        b=g6aya0BwtsfVgBCwOI97yZrfggatMbrSBz3QElmhbyh/Xw7Ntc0+so/uK8m2EFh+KC
-         dJik8ccTxXSDZyQgK8ixryPK6vuM+hqbCmiMhrSeK7PM4EC0uNwBIgtU8JW3G/nIzKEf
-         CT28iJ6qFzirub/R18KCtYDintm3vmI4vIVM0ZmKs6gZewKp/668lRsCRsS05A1cx4pA
-         db35tFVoSf3cyxpO88Fxd1Zsdu0IXLIN71b+i+p6BBSBLDaht44vFvhjOh4RrcnLbLb+
-         bzfVOwawWT93MjTNdfaxma49QAlHnt3QEX29TAp4GPchgl3MheB/Ip6rNBMGRuWWguI/
-         NcGQ==
-X-Gm-Message-State: AOAM532sjNOfpJUhOzskV7qyqA//3f+NAnVnq2NGMBPeIUlLJwHU+UOi
-        hohBUsGFm0jNHmTq7GuP+3E5kw==
-X-Google-Smtp-Source: ABdhPJzDC5tMGe5CzxYq7pd4BTjCSfz3CMRBJqXVdTsQ5Ckz8ju/1tEgjg+Gi3YP9Jkb4Tvkxa+R/A==
-X-Received: by 2002:a63:2342:: with SMTP id u2mr13980594pgm.50.1604955645387;
-        Mon, 09 Nov 2020 13:00:45 -0800 (PST)
-Received: from xps15 (S0106002369de4dac.cg.shawcable.net. [68.147.8.254])
-        by smtp.gmail.com with ESMTPSA id r3sm426087pjl.23.2020.11.09.13.00.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 09 Nov 2020 13:00:44 -0800 (PST)
-Date:   Mon, 9 Nov 2020 14:00:42 -0700
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-To:     Suzuki K Poulose <suzuki.poulose@arm.com>
-Cc:     linux-arm-kernel@lists.infradead.org, mike.leach@linaro.org,
-        coresight@lists.linaro.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 07/26] coresight: Introduce device access abstraction
-Message-ID: <20201109210042.GF3396611@xps15>
-References: <20201028220945.3826358-1-suzuki.poulose@arm.com>
- <20201028220945.3826358-9-suzuki.poulose@arm.com>
+        Mon, 9 Nov 2020 16:02:35 -0500
+Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0A9KkdIt008207
+        for <linux-kernel@vger.kernel.org>; Mon, 9 Nov 2020 13:02:34 -0800
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com with ESMTP id 34pbyeexyt-6
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Nov 2020 13:02:34 -0800
+Received: from intmgw001.08.frc2.facebook.com (2620:10d:c085:208::11) by
+ mail.thefacebook.com (2620:10d:c085:11d::6) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Mon, 9 Nov 2020 13:02:28 -0800
+Received: by devbig012.ftw2.facebook.com (Postfix, from userid 137359)
+        id DB9BE2EC924B; Mon,  9 Nov 2020 13:00:25 -0800 (PST)
+From:   Andrii Nakryiko <andrii@kernel.org>
+To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>, <ast@fb.com>,
+        <daniel@iogearbox.net>
+CC:     <kernel-team@fb.com>, <linux-kernel@vger.kernel.org>,
+        <rafael@kernel.org>, <jeyu@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: [PATCH v3 bpf-next 0/5] Integrate kernel module BTF support
+Date:   Mon, 9 Nov 2020 13:00:19 -0800
+Message-ID: <20201109210024.2024572-1-andrii@kernel.org>
+X-Mailer: git-send-email 2.24.1
+X-FB-Internal: Safe
+Content-Type: text/plain
+Content-Transfer-Encoding: 8BIT
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201028220945.3826358-9-suzuki.poulose@arm.com>
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-11-09_13:2020-11-05,2020-11-09 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 bulkscore=0
+ mlxlogscore=999 malwarescore=0 suspectscore=0 phishscore=0 adultscore=0
+ priorityscore=1501 spamscore=0 lowpriorityscore=0 clxscore=1034 mlxscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2011090138
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 28, 2020 at 10:09:26PM +0000, Suzuki K Poulose wrote:
-> We are about to introduce support for sysreg access to ETMv4.4+
-> component. Since there are generic routines that access the
-> registers (e.g, CS_LOCK/UNLOCK , claim/disclaim operations, timeout)
-> and in order to preserve the logic of these operations at a
-> single place we introduce an abstraction layer for the accesses
-> to a given device.
-> 
-> Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
-> Cc: Mike Leach <mike.leach@linaro.org>
-> Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
-> ---
->  drivers/hwtracing/coresight/coresight-catu.c  |   1 +
->  drivers/hwtracing/coresight/coresight-core.c  |  49 +++++
->  .../hwtracing/coresight/coresight-cti-core.c  |   1 +
->  drivers/hwtracing/coresight/coresight-etb10.c |   1 +
->  .../coresight/coresight-etm3x-core.c          |   1 +
->  .../coresight/coresight-etm4x-core.c          |   1 +
->  .../hwtracing/coresight/coresight-funnel.c    |   1 +
->  .../coresight/coresight-replicator.c          |   1 +
->  drivers/hwtracing/coresight/coresight-stm.c   |   1 +
->  .../hwtracing/coresight/coresight-tmc-core.c  |   1 +
->  drivers/hwtracing/coresight/coresight-tpiu.c  |   1 +
->  include/linux/coresight.h                     | 197 ++++++++++++++++++
->  12 files changed, 256 insertions(+)
-> 
-> diff --git a/drivers/hwtracing/coresight/coresight-catu.c b/drivers/hwtracing/coresight/coresight-catu.c
-> index 99430f6cf5a5..5baf29510f1b 100644
-> --- a/drivers/hwtracing/coresight/coresight-catu.c
-> +++ b/drivers/hwtracing/coresight/coresight-catu.c
-> @@ -551,6 +551,7 @@ static int catu_probe(struct amba_device *adev, const struct amba_id *id)
->  	dev->platform_data = pdata;
->  
->  	drvdata->base = base;
-> +	catu_desc.access = CSDEV_ACCESS_IOMEM(base);
->  	catu_desc.pdata = pdata;
->  	catu_desc.dev = dev;
->  	catu_desc.groups = catu_groups;
-> diff --git a/drivers/hwtracing/coresight/coresight-core.c b/drivers/hwtracing/coresight/coresight-core.c
-> index cc9e8025c533..e96deaca8cab 100644
-> --- a/drivers/hwtracing/coresight/coresight-core.c
-> +++ b/drivers/hwtracing/coresight/coresight-core.c
-> @@ -1452,6 +1452,54 @@ int coresight_timeout(void __iomem *addr, u32 offset, int position, int value)
->  }
->  EXPORT_SYMBOL_GPL(coresight_timeout);
->  
-> +u32 coresight_relaxed_read32(struct coresight_device *csdev, u32 offset)
-> +{
-> +	return csdev_access_relaxed_read32(&csdev->access, offset);
-> +}
-> +
-> +u32 coresight_read32(struct coresight_device *csdev, u32 offset)
-> +{
-> +	return csdev_access_read32(&csdev->access, offset);
-> +}
-> +
-> +void coresight_relaxed_write32(struct coresight_device *csdev,
-> +			       u32 val,
-> +			       u32 offset)
-> +{
-> +
-> +	csdev_access_relaxed_write32(&csdev->access, val, offset);
-> +}
-> +
-> +
-> +void coresight_write32(struct coresight_device *csdev, u32 val, u32 offset)
-> +{
-> +	csdev_access_write32(&csdev->access, val, offset);
-> +}
-> +
-> +u64 coresight_relaxed_read64(struct coresight_device *csdev, u32 offset)
-> +{
-> +	return csdev_access_relaxed_read64(&csdev->access, offset);
-> +}
-> +
-> +u64 coresight_read64(struct coresight_device *csdev, u32 offset)
-> +{
-> +	return csdev_access_read64(&csdev->access, offset);
-> +}
-> +
-> +void coresight_relaxed_write64(struct coresight_device *csdev,
-> +			       u64 val,
-> +			       u32 offset)
-> +{
-> +
-> +	csdev_access_relaxed_write64(&csdev->access, val, offset);
-> +}
-> +
-> +
-> +void coresight_write64(struct coresight_device *csdev, u64 val, u32 offset)
-> +{
-> +	csdev_access_write64(&csdev->access, val, offset);
-> +}
-> +
->  /*
->   * coresight_release_platform_data: Release references to the devices connected
->   * to the output port of this device.
-> @@ -1516,6 +1564,7 @@ struct coresight_device *coresight_register(struct coresight_desc *desc)
->  	csdev->type = desc->type;
->  	csdev->subtype = desc->subtype;
->  	csdev->ops = desc->ops;
-> +	csdev->access = desc->access;
->  	csdev->orphan = false;
->  
->  	csdev->dev.type = &coresight_dev_type[desc->type];
-> diff --git a/drivers/hwtracing/coresight/coresight-cti-core.c b/drivers/hwtracing/coresight/coresight-cti-core.c
-> index d28eae93e55c..3bb0de97d66e 100644
-> --- a/drivers/hwtracing/coresight/coresight-cti-core.c
-> +++ b/drivers/hwtracing/coresight/coresight-cti-core.c
-> @@ -870,6 +870,7 @@ static int cti_probe(struct amba_device *adev, const struct amba_id *id)
->  		return PTR_ERR(base);
->  
->  	drvdata->base = base;
-> +	cti_desc.access = CSDEV_ACCESS_IOMEM(base);
->  
->  	dev_set_drvdata(dev, drvdata);
->  
-> diff --git a/drivers/hwtracing/coresight/coresight-etb10.c b/drivers/hwtracing/coresight/coresight-etb10.c
-> index 248cc82c838e..b91633c6c9b4 100644
-> --- a/drivers/hwtracing/coresight/coresight-etb10.c
-> +++ b/drivers/hwtracing/coresight/coresight-etb10.c
-> @@ -755,6 +755,7 @@ static int etb_probe(struct amba_device *adev, const struct amba_id *id)
->  		return PTR_ERR(base);
->  
->  	drvdata->base = base;
-> +	desc.access = CSDEV_ACCESS_IOMEM(base);
->  
->  	spin_lock_init(&drvdata->spinlock);
->  
-> diff --git a/drivers/hwtracing/coresight/coresight-etm3x-core.c b/drivers/hwtracing/coresight/coresight-etm3x-core.c
-> index 47f610b1c2b1..36c5b0ae1b43 100644
-> --- a/drivers/hwtracing/coresight/coresight-etm3x-core.c
-> +++ b/drivers/hwtracing/coresight/coresight-etm3x-core.c
-> @@ -839,6 +839,7 @@ static int etm_probe(struct amba_device *adev, const struct amba_id *id)
->  		return PTR_ERR(base);
->  
->  	drvdata->base = base;
-> +	desc.access = CSDEV_ACCESS_IOMEM(base);
->  
->  	spin_lock_init(&drvdata->spinlock);
->  
-> diff --git a/drivers/hwtracing/coresight/coresight-etm4x-core.c b/drivers/hwtracing/coresight/coresight-etm4x-core.c
-> index 0310eac9dc16..c5cb93f1b80c 100644
-> --- a/drivers/hwtracing/coresight/coresight-etm4x-core.c
-> +++ b/drivers/hwtracing/coresight/coresight-etm4x-core.c
-> @@ -1512,6 +1512,7 @@ static int etm4_probe(struct amba_device *adev, const struct amba_id *id)
->  		return PTR_ERR(base);
->  
->  	drvdata->base = base;
-> +	desc.access = CSDEV_ACCESS_IOMEM(base);
->  
->  	spin_lock_init(&drvdata->spinlock);
->  
-> diff --git a/drivers/hwtracing/coresight/coresight-funnel.c b/drivers/hwtracing/coresight/coresight-funnel.c
-> index af40814ce560..f77466aea26f 100644
-> --- a/drivers/hwtracing/coresight/coresight-funnel.c
-> +++ b/drivers/hwtracing/coresight/coresight-funnel.c
-> @@ -242,6 +242,7 @@ static int funnel_probe(struct device *dev, struct resource *res)
->  		}
->  		drvdata->base = base;
->  		desc.groups = coresight_funnel_groups;
-> +		desc.access = CSDEV_ACCESS_IOMEM(base);
->  	}
->  
->  	dev_set_drvdata(dev, drvdata);
-> diff --git a/drivers/hwtracing/coresight/coresight-replicator.c b/drivers/hwtracing/coresight/coresight-replicator.c
-> index 62afdde0e5ea..fcf25740116c 100644
-> --- a/drivers/hwtracing/coresight/coresight-replicator.c
-> +++ b/drivers/hwtracing/coresight/coresight-replicator.c
-> @@ -254,6 +254,7 @@ static int replicator_probe(struct device *dev, struct resource *res)
->  		}
->  		drvdata->base = base;
->  		desc.groups = replicator_groups;
-> +		desc.access = CSDEV_ACCESS_IOMEM(base);
->  	}
->  
->  	if (fwnode_property_present(dev_fwnode(dev),
-> diff --git a/drivers/hwtracing/coresight/coresight-stm.c b/drivers/hwtracing/coresight/coresight-stm.c
-> index b0ad912651a9..315500b7763f 100644
-> --- a/drivers/hwtracing/coresight/coresight-stm.c
-> +++ b/drivers/hwtracing/coresight/coresight-stm.c
-> @@ -884,6 +884,7 @@ static int stm_probe(struct amba_device *adev, const struct amba_id *id)
->  	if (IS_ERR(base))
->  		return PTR_ERR(base);
->  	drvdata->base = base;
-> +	desc.access = CSDEV_ACCESS_IOMEM(base);
->  
->  	ret = stm_get_stimulus_area(dev, &ch_res);
->  	if (ret)
-> diff --git a/drivers/hwtracing/coresight/coresight-tmc-core.c b/drivers/hwtracing/coresight/coresight-tmc-core.c
-> index 5653e0945c74..8fd640d41e1b 100644
-> --- a/drivers/hwtracing/coresight/coresight-tmc-core.c
-> +++ b/drivers/hwtracing/coresight/coresight-tmc-core.c
-> @@ -456,6 +456,7 @@ static int tmc_probe(struct amba_device *adev, const struct amba_id *id)
->  	}
->  
->  	drvdata->base = base;
-> +	desc.access = CSDEV_ACCESS_IOMEM(base);
->  
->  	spin_lock_init(&drvdata->spinlock);
->  
-> diff --git a/drivers/hwtracing/coresight/coresight-tpiu.c b/drivers/hwtracing/coresight/coresight-tpiu.c
-> index 566c57e03596..dfa3b91d0281 100644
-> --- a/drivers/hwtracing/coresight/coresight-tpiu.c
-> +++ b/drivers/hwtracing/coresight/coresight-tpiu.c
-> @@ -149,6 +149,7 @@ static int tpiu_probe(struct amba_device *adev, const struct amba_id *id)
->  		return PTR_ERR(base);
->  
->  	drvdata->base = base;
-> +	desc.access = CSDEV_ACCESS_IOMEM(base);
->  
->  	/* Disable tpiu to support older devices */
->  	tpiu_disable_hw(drvdata);
-> diff --git a/include/linux/coresight.h b/include/linux/coresight.h
-> index 7d3c87e5b97c..5a34c2f2debc 100644
-> --- a/include/linux/coresight.h
-> +++ b/include/linux/coresight.h
-> @@ -7,6 +7,7 @@
->  #define _LINUX_CORESIGHT_H
->  
->  #include <linux/device.h>
-> +#include <linux/io.h>
->  #include <linux/perf_event.h>
->  #include <linux/sched.h>
->  
-> @@ -114,6 +115,38 @@ struct coresight_platform_data {
->  	struct coresight_connection *conns;
->  };
->  
-> +/**
-> + * struct csdev_access - Abstraction of a CoreSight device access.
-> + *
-> + * @io_mem	: True if the device has memory mapped I/O
-> + * @base	: When io_mem == true, base address of the component
-> + * @read	: Read from the given "offset" of the given instance.
-> + * @write	: Write "val" to the given "offset".
-> + */
-> +struct csdev_access {
-> +	bool io_mem;
-> +	union {
-> +		void __iomem *base;
-> +		struct {
-> +			u64 (*read)(struct csdev_access *csa,
-> +				    u32 offset,
-> +				    bool relaxed,
-> +				    bool _64bit);
-> +			void (*write)(struct csdev_access *csa,
-> +				      u64 val,
-> +				      u32 offset,
-> +				      bool relaxed,
-> +				      bool _64bit);
+This patch set adds BTF generation for kernel modules using a compact split
+BTF approach. Respective patches have all the details.
 
-What is the strategy behing passing a struct csdev_acces to (*read) and
-(*write)?  I kept looking for it while reviewing this set but couldn't find
-anything.
+Kernel module BTFs rely on pahole's split BTF support, which is added in [0]
+and will be available starting from v1.19. Support for it is detected
+automatically during kernel build time.
 
-Thanks
-Mathieu
+This patch set implements in-kernel support for split BTF loading and
+validation. It also extends GET_OBJ_INFO API for BTFs to return BTF's module
+name and a flag whether BTF itself is in-kernel or user-provided. vmlinux BTF
+is also exposed to user-space through the same BTF object iteration APIs.
 
-> +		};
-> +	};
-> +};
-> +
-> +#define CSDEV_ACCESS_IOMEM(_addr)		\
-> +	((struct csdev_access)	{		\
-> +		.io_mem		= true,		\
-> +		.base		= (_addr),	\
-> +	})
-> +
->  /**
->   * struct coresight_desc - description of a component required from drivers
->   * @type:	as defined by @coresight_dev_type.
-> @@ -125,6 +158,7 @@ struct coresight_platform_data {
->   * @groups:	operations specific to this component. These will end up
->   *		in the component's sysfs sub-directory.
->   * @name:	name for the coresight device, also shown under sysfs.
-> + * @access:	Describe access to the device
->   */
->  struct coresight_desc {
->  	enum coresight_dev_type type;
-> @@ -134,6 +168,7 @@ struct coresight_desc {
->  	struct device *dev;
->  	const struct attribute_group **groups;
->  	const char *name;
-> +	struct csdev_access access;
->  };
->  
->  /**
-> @@ -186,6 +221,7 @@ struct coresight_sysfs_link {
->   * @def_sink:	cached reference to default sink found for this device.
->   * @ect_dev:	Associated cross trigger device. Not part of the trace data
->   *		path or connections.
-> + * @access:	Device i/o access abstraction for this device.
->   * @nr_links:   number of sysfs links created to other components from this
->   *		device. These will appear in the "connections" group.
->   * @has_conns_grp: Have added a "connections" group for sysfs links.
-> @@ -205,6 +241,7 @@ struct coresight_device {
->  	struct coresight_device *def_sink;
->  	/* cross trigger handling */
->  	struct coresight_device *ect_dev;
-> +	struct csdev_access access;
->  	/* sysfs links between components */
->  	int nr_links;
->  	bool has_conns_grp;
-> @@ -326,6 +363,107 @@ struct coresight_ops {
->  };
->  
->  #if IS_ENABLED(CONFIG_CORESIGHT)
-> +
-> +static inline u32 csdev_access_relaxed_read32(struct csdev_access *csa,
-> +					      u32 offset)
-> +{
-> +	if (likely(csa->io_mem))
-> +		return readl_relaxed(csa->base + offset);
-> +
-> +	return csa->read(csa, offset, true, false);
-> +}
-> +
-> +static inline u32 csdev_access_read32(struct csdev_access *csa, u32 offset)
-> +{
-> +	if (likely(csa->io_mem))
-> +		return readl(csa->base + offset);
-> +
-> +	return csa->read(csa, offset, false, false);
-> +}
-> +
-> +static inline void csdev_access_relaxed_write32(struct csdev_access *csa,
-> +						u32 val,
-> +						u32 offset)
-> +{
-> +	if (likely(csa->io_mem))
-> +		writel_relaxed(val, csa->base + offset);
-> +	else
-> +		csa->write(csa, val, offset, true, false);
-> +}
-> +
-> +static inline void csdev_access_write32(struct csdev_access *csa, u32 val, u32 offset)
-> +{
-> +	if (likely(csa->io_mem))
-> +		writel(val, csa->base + offset);
-> +	else
-> +		csa->write(csa, val, offset, false, false);
-> +}
-> +
-> +#ifdef CONFIG_64BIT
-> +
-> +static inline u64 csdev_access_relaxed_read64(struct csdev_access *csa,
-> +					   u32 offset)
-> +{
-> +	if (likely(csa->io_mem))
-> +		return readq_relaxed(csa->base + offset);
-> +
-> +	return csa->read(csa, offset, true, true);
-> +}
-> +
-> +static inline u64 csdev_access_read64(struct csdev_access *csa, u32 offset)
-> +{
-> +	if (likely(csa->io_mem))
-> +		return readq(csa->base + offset);
-> +
-> +	return csa->read(csa, offset, false, true);
-> +}
-> +
-> +static inline void csdev_access_relaxed_write64(struct csdev_access *csa,
-> +						u64 val,
-> +						u32 offset)
-> +{
-> +	if (likely(csa->io_mem))
-> +		writeq_relaxed(val, csa->base + offset);
-> +	else
-> +		csa->write(csa, val, offset, true, true);
-> +}
-> +
-> +static inline void csdev_access_write64(struct csdev_access *csa, u64 val, u32 offset)
-> +{
-> +	if (likely(csa->io_mem))
-> +		writeq(val, csa->base + offset);
-> +	else
-> +		csa->write(csa, val, offset, false, true);
-> +}
-> +
-> +#else
-> +
-> +static inline u64 csdev_access_relaxed_read64(struct csdev_access *csa,
-> +					   u32 offset)
-> +{
-> +	WARN_ON(1);
-> +	return 0;
-> +}
-> +
-> +static inline u64 csdev_access_read64(struct csdev_access *csa, u32 offset)
-> +{
-> +	WARN_ON(1);
-> +	return 0;
-> +}
-> +
-> +static inline void csdev_access_relaxed_write64(struct csdev_access *csa,
-> +						u64 val,
-> +						u32 offset)
-> +{
-> +	WARN_ON(1);
-> +}
-> +
-> +static inline void csdev_access_write64(struct csdev_access *csa, u64 val, u32 offset)
-> +{
-> +	WARN_ON(1);
-> +}
-> +#endif
-> +
->  extern struct coresight_device *
->  coresight_register(struct coresight_desc *desc);
->  extern void coresight_unregister(struct coresight_device *csdev);
-> @@ -343,6 +481,20 @@ extern char *coresight_alloc_device_name(struct coresight_dev_list *devs,
->  					 struct device *dev);
->  
->  extern bool coresight_loses_context_with_cpu(struct device *dev);
-> +
-> +u32 coresight_relaxed_read32(struct coresight_device *csdev, u32 offset);
-> +u32 coresight_read32(struct coresight_device *csdev, u32 offset);
-> +void coresight_write32(struct coresight_device *csdev, u32 val, u32 offset);
-> +void coresight_relaxed_write32(struct coresight_device *csdev,
-> +			       u32 val,
-> +			       u32 offset);
-> +u64 coresight_relaxed_read64(struct coresight_device *csdev, u32 offset);
-> +u64 coresight_read64(struct coresight_device *csdev, u32 offset);
-> +void coresight_relaxed_write64(struct coresight_device *csdev,
-> +			       u64 val, u32 offset);
-> +void coresight_write64(struct coresight_device *csdev, u64 val, u32 offset);
-> +
-> +
->  #else
->  static inline struct coresight_device *
->  coresight_register(struct coresight_desc *desc) { return NULL; }
-> @@ -369,6 +521,51 @@ static inline bool coresight_loses_context_with_cpu(struct device *dev)
->  {
->  	return false;
->  }
-> +
-> +static inline u32 coresight_relaxed_read32(struct coresight_device *csdev, u32 offset)
-> +{
-> +	WARN_ON_ONCE(1);
-> +	return 0;
-> +}
-> +
-> +static inline u32 coresight_read32(struct coresight_device *csdev, u32 offset)
-> +{
-> +	WARN_ON_ONCE(1);
-> +	return 0;
-> +}
-> +
-> +static inline void coresight_write32(struct coresight_device *csdev, u32 val, u32 offset)
-> +{
-> +}
-> +
-> +static inline void coresight_relaxed_write32(struct coresight_device *csdev,
-> +					      u32 val, u32 offset);
-> +{
-> +}
-> +
-> +static inline u64 coresight_relaxed_read64(struct coresight_device *csdev,
-> +					   u32 offset)
-> +{
-> +	WARN_ON_ONCE(1);
-> +	return 0;
-> +}
-> +
-> +static inline u64 coresight_read64(struct coresight_device *csdev, u32 offset)
-> +{
-> +	WARN_ON_ONCE(1);
-> +	return 0;
-> +}
-> +
-> +static inline void coresight_relaxed_write64(struct coresight_device *csdev,
-> +					     u64 val,
-> +					     u32 offset)
-> +{
-> +}
-> +
-> +static inline void coresight_write64(struct coresight_device *csdev, u64 val, u32 offset)
-> +{
-> +}
-> +
->  #endif
->  
->  extern int coresight_get_cpu(struct device *dev);
-> -- 
-> 2.24.1
-> 
+Follow up patch set will utilize the fact that vmlinux and module BTFs now
+have associated ID to provide ability to attach BPF fentry/fexit/etc programs
+to functions defined in kernel modules.
+
+bpftool is also extended to show module/vmlinux BTF's name.
+
+  [0] https://patchwork.kernel.org/project/netdevbpf/list/?series=378699&state=*
+
+v2->v3:
+  - get rid of unnecessary gotos (Song);
+v2->v1:
+  - drop WARNs, add fewer pr_warn()'s instead (Greg);
+  - properly initialize sysfs binary attribute structure (Greg);
+  - add __maybe_unused to any_section_objs, used conditionally by module BTF;
+rfc->v1:
+  - CONFIG_DEBUG_INFO_BTF_MODULES is derived automatically (Alexei);
+  - vmlinux BTF now has explicit "vmlinux" name (Alexei);
+  - added sysfs ABI documentation for /sys/kernel/btf/<module> (Greg).
+
+Cc: Arnaldo Carvalho de Melo <acme@redhat.com>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
+Andrii Nakryiko (5):
+  bpf: add in-kernel split BTF support
+  bpf: assign ID to vmlinux BTF and return extra info for BTF in
+    GET_OBJ_INFO
+  kbuild: build kernel module BTFs if BTF is enabled and pahole supports
+    it
+  bpf: load and verify kernel module BTFs
+  tools/bpftool: add support for in-kernel and named BTF in `btf show`
+
+ Documentation/ABI/testing/sysfs-kernel-btf |   8 +
+ include/linux/bpf.h                        |   2 +
+ include/linux/module.h                     |   4 +
+ include/uapi/linux/bpf.h                   |   3 +
+ kernel/bpf/btf.c                           | 402 ++++++++++++++++++---
+ kernel/bpf/sysfs_btf.c                     |   2 +-
+ kernel/module.c                            |  32 ++
+ lib/Kconfig.debug                          |   9 +
+ scripts/Makefile.modfinal                  |  20 +-
+ tools/bpf/bpftool/btf.c                    |  28 +-
+ tools/include/uapi/linux/bpf.h             |   3 +
+ 11 files changed, 456 insertions(+), 57 deletions(-)
+
+-- 
+2.24.1
+
