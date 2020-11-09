@@ -2,105 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BE572AB81F
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 13:23:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 114072AB824
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 13:23:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729681AbgKIMXM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 07:23:12 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42688 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727774AbgKIMXL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 07:23:11 -0500
-Received: from localhost (unknown [122.171.147.34])
+        id S1729750AbgKIMXm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 07:23:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43608 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729243AbgKIMXj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 07:23:39 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADCF2C0613D3;
+        Mon,  9 Nov 2020 04:23:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=hElt3BjZoDAKcnNC0PKLQXKgb0IojHcRSCI9KVMCbJE=; b=QcGdbeqEhJuP4IMcgPzq4ULOLA
+        BcgcuzO2xpaizHtmebW/NoCpFu/f/ZroWP//nQihcnQqEeQu09TThmJM1e3RQNhdkwEcQy30GI9mc
+        ozGMfcKVC6FaZMsvEN9fl4fUrLiGmfmCBUskgxiYYWHKPdN9t/ZHr2DpGPWe1uQG1zOKfRbq/C1F0
+        KGTF5HgEyFBKX20RrmtnvLtUOEtCu5g8mO6/LbaGCrWQY87L0GojFUPoCdE8PYJjX0p65qc57X18B
+        SNV+f8Ic47P+iNDNKlfTve6WAVb2cUsy8ST+pOlgSaT4IaO1yeg1TG3Dc73qcV3UyrczlUYJ6hFEG
+        gpklj7MQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kc6Cd-0001Gf-9V; Mon, 09 Nov 2020 12:23:19 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1ECBB206CB;
-        Mon,  9 Nov 2020 12:23:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604924591;
-        bh=6QWICF9SNtMXta4oNNi5IL/+AwdM20O9Yx4KTjeGjPs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Oz7GIA73Mom5tCaB682s6aU1fn1ExwkuyBlwsaFyiYlVSDAVZIN57hqoHmcwhvLYB
-         uPTXQ/xkiGeSkWRv4Rq0wqRBieaAyP9CGOLcb1vvEgo38rQN3t+7wEwMxBLiqug2+I
-         gjVK9MG9KnpH6iUZ6rRZj+mAYipZ/oQDS3Z3xut0=
-Date:   Mon, 9 Nov 2020 17:53:06 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc:     nm@ti.com, ssantosh@kernel.org, robh+dt@kernel.org,
-        vigneshr@ti.com, dan.j.williams@intel.com, t-kristo@ti.com,
-        lokeshvutla@ti.com, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        dmaengine@vger.kernel.org
-Subject: Re: [PATCH 01/18] dmaengine: of-dma: Add support for optional router
- configuration callback
-Message-ID: <20201109122306.GO3171@vkoul-mobl>
-References: <20200930091412.8020-1-peter.ujfalusi@ti.com>
- <20200930091412.8020-2-peter.ujfalusi@ti.com>
- <20201007054404.GR2968@vkoul-mobl>
- <be615881-1eb4-f8fe-a32d-04fabb6cb27b@ti.com>
- <20201007155533.GZ2968@vkoul-mobl>
- <45adb88b-1ef8-1fbf-08c1-9afc6ea4c6f0@ti.com>
- <20201028055531.GH3550@vkoul-mobl>
- <cf3d3de0-223b-4846-bd9f-b78654ae2d08@ti.com>
- <20201109114534.GH3171@vkoul-mobl>
- <7a7cb455-dd09-b71f-6ecc-fd6108d37051@ti.com>
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id CC957306102;
+        Mon,  9 Nov 2020 13:23:17 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id B8ACC203C5334; Mon,  9 Nov 2020 13:23:17 +0100 (CET)
+Date:   Mon, 9 Nov 2020 13:23:17 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     paulmck@kernel.org
+Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@fb.com, mingo@kernel.org, jiangshanlai@gmail.com,
+        akpm@linux-foundation.org, mathieu.desnoyers@efficios.com,
+        josh@joshtriplett.org, tglx@linutronix.de, rostedt@goodmis.org,
+        dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
+        oleg@redhat.com, joel@joelfernandes.org
+Subject: Re: [PATCH tip/core/rcu 2/4] docs: Update RCU's hotplug requirements
+ with a bit about design
+Message-ID: <20201109122317.GM2594@hirez.programming.kicks-ass.net>
+References: <20201105230444.GA18574@paulmck-ThinkPad-P72>
+ <20201105230510.18660-2-paulmck@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <7a7cb455-dd09-b71f-6ecc-fd6108d37051@ti.com>
+In-Reply-To: <20201105230510.18660-2-paulmck@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-HI Peter,
+On Thu, Nov 05, 2020 at 03:05:08PM -0800, paulmck@kernel.org wrote:
+> From: "Joel Fernandes (Google)" <joel@joelfernandes.org>
+> 
+> The rcu_barrier() section of the "Hotplug CPU" section discusses
+> deadlocks, however the description of deadlocks other than those involving
+> rcu_barrier() is rather incomplete.
+> 
+> This commit therefore continues the section by describing how RCU's
+> design handles CPU hotplug in a deadlock-free way.
+> 
+> Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+> Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> ---
+>  .../RCU/Design/Requirements/Requirements.rst       | 49 +++++++++++++++++-----
+>  1 file changed, 39 insertions(+), 10 deletions(-)
+> 
+> diff --git a/Documentation/RCU/Design/Requirements/Requirements.rst b/Documentation/RCU/Design/Requirements/Requirements.rst
+> index 1ae79a1..98557fe 100644
+> --- a/Documentation/RCU/Design/Requirements/Requirements.rst
+> +++ b/Documentation/RCU/Design/Requirements/Requirements.rst
+> @@ -1929,16 +1929,45 @@ The Linux-kernel CPU-hotplug implementation has notifiers that are used
+>  to allow the various kernel subsystems (including RCU) to respond
+>  appropriately to a given CPU-hotplug operation. Most RCU operations may
+>  be invoked from CPU-hotplug notifiers, including even synchronous
+> -grace-period operations such as ``synchronize_rcu()`` and
+> -``synchronize_rcu_expedited()``.
 
-On 09-11-20, 14:09, Peter Ujfalusi wrote:
-> Hi Vinod,
-> 
-> On 09/11/2020 13.45, Vinod Koul wrote:
-> >> Without a channel number I can not do anything.
-> >> It is close to a chicken and egg problem.
-> > 
-> > We get 'channel' in xlate, so wont that help? I think I am still missing
-> > something here :(
-> 
-> Yes, we get channel in xlate, but we get the channel after
-> ofdma->of_dma_route_allocate()
-
-That is correct, so you need this info in allocate somehow..
-
-
-> of_dma_route_allocate() si the place where DMA routers create the
-> dmaspec for the DMA controller to get a channel and they up until BCDMA
-> did also the HW configuration to get the event routed.
-> 
-> For a BCDMA channel we can have three triggers:
-> Global trigger 0 for the channel
-> Global trigger 1 for the channel
-> Local trigger for the channel
-> 
-> Every BCDMA channel have these triggers and for all of them they are the
-> same (from the channel's pow).
-> bchan0 can be triggered by global trigger 0
-> bchan1 can be triggered by global trigger 0
-> 
-> But these triggers are not the same ones, the real trigger depends on
-> the router, which of it's input is converted to send out an event to
-> trigger bchan0_trigger0 or to trigger bchan1_trigger0.
-> 
-> When we got the channel with the dmaspec from the router driver then we
-> need to tell the router driver that it needs to send a given event in
-> order to trigger the channel that we got.
-> 
-> We can not have traditional binding for BCDMA either where we would tell
-> the bchan index to be used because depending on the resource allocation
-> done within sysfw that exact channel might not be even available for us.
-> 
-> - Péter
-> 
-> Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
-> Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
-
--- 
-~Vinod
+I was under the impression that this rst crap now recognises func() and
+you no longer need to make the text unreadable with "``".
