@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68F162AB8D4
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 13:58:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E893E2AB8D6
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 13:58:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730079AbgKIM55 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 07:57:57 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52234 "EHLO mail.kernel.org"
+        id S1729366AbgKIM6T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 07:58:19 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52278 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730039AbgKIM5l (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 07:57:41 -0500
+        id S1730058AbgKIM5r (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 07:57:47 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3149220684;
-        Mon,  9 Nov 2020 12:57:40 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C67572076E;
+        Mon,  9 Nov 2020 12:57:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604926660;
-        bh=OqluaAiWqEB0dDmvBXrA/URLpdo0dwYNKsLlJfcPeO4=;
+        s=default; t=1604926666;
+        bh=Q6bDaJS34z/8dLa28ozlSl9YUGCmH0TY7XAVGCgRy9Q=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=o8Ry5j7uEwAKAZBePuAm3b3hohQB1dk8CvzogtFavsgp26Mls0YLyXLslS/m4mzKJ
-         ewlaWwDu3IPu3s73iO9jWxFoToCFSTZoUJ95hKVHna5bzvdLg88/BVF09RUJ7kwT4J
-         CtB1g5be9zEyv6/nIq2q1NLP6XAXIFpitgYQLcfo=
+        b=T8u2IR/IDHRpoTH06cAxqpfPK4KFZPM16ScgzngrOedEg5JNlkLhEijNXZ79kMABj
+         tqu2mbHxXGmylthtHb1aVNzHkxLc93rcWRgCsQYzjUb3DGUTYcGojbaucd1mI9+l8C
+         lI4ITOEdMCmxbkM1zDH6v+GR25rZ8hpk+03cSTOk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Tom Rix <trix@redhat.com>,
-        Arnd Bergmann <arnd@arndb.de>, Sam Ravnborg <sam@ravnborg.org>,
+        stable@vger.kernel.org,
+        Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 16/86] video: fbdev: pvr2fb: initialize variables
-Date:   Mon,  9 Nov 2020 13:54:23 +0100
-Message-Id: <20201109125021.647651898@linuxfoundation.org>
+Subject: [PATCH 4.4 18/86] mmc: via-sdmmc: Fix data race bug
+Date:   Mon,  9 Nov 2020 13:54:25 +0100
+Message-Id: <20201109125021.747711358@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201109125020.852643676@linuxfoundation.org>
 References: <20201109125020.852643676@linuxfoundation.org>
@@ -43,47 +44,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tom Rix <trix@redhat.com>
+From: Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>
 
-[ Upstream commit 8e1ba47c60bcd325fdd097cd76054639155e5d2e ]
+[ Upstream commit 87d7ad089b318b4f319bf57f1daa64eb6d1d10ad ]
 
-clang static analysis reports this repesentative error
+via_save_pcictrlreg() should be called with host->lock held
+as it writes to pm_pcictrl_reg, otherwise there can be a race
+condition between via_sd_suspend() and via_sdc_card_detect().
+The same pattern is used in the function via_reset_pcictrl()
+as well, where via_save_pcictrlreg() is called with host->lock
+held.
 
-pvr2fb.c:1049:2: warning: 1st function call argument
-  is an uninitialized value [core.CallAndMessage]
-        if (*cable_arg)
-        ^~~~~~~~~~~~~~~
+Found by Linux Driver Verification project (linuxtesting.org).
 
-Problem is that cable_arg depends on the input loop to
-set the cable_arg[0].  If it does not, then some random
-value from the stack is used.
-
-A similar problem exists for output_arg.
-
-So initialize cable_arg and output_arg.
-
-Signed-off-by: Tom Rix <trix@redhat.com>
-Acked-by: Arnd Bergmann <arnd@arndb.de>
-Signed-off-by: Sam Ravnborg <sam@ravnborg.org>
-Link: https://patchwork.freedesktop.org/patch/msgid/20200720191845.20115-1-trix@redhat.com
+Signed-off-by: Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>
+Link: https://lore.kernel.org/r/20200822061528.7035-1-madhuparnabhowmik10@gmail.com
+Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/video/fbdev/pvr2fb.c | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/mmc/host/via-sdmmc.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/drivers/video/fbdev/pvr2fb.c b/drivers/video/fbdev/pvr2fb.c
-index 750a384bf1915..1a015a6b682e7 100644
---- a/drivers/video/fbdev/pvr2fb.c
-+++ b/drivers/video/fbdev/pvr2fb.c
-@@ -1029,6 +1029,8 @@ static int __init pvr2fb_setup(char *options)
- 	if (!options || !*options)
- 		return 0;
+diff --git a/drivers/mmc/host/via-sdmmc.c b/drivers/mmc/host/via-sdmmc.c
+index 63fac78b3d46a..b455e9cf95afc 100644
+--- a/drivers/mmc/host/via-sdmmc.c
++++ b/drivers/mmc/host/via-sdmmc.c
+@@ -1269,11 +1269,14 @@ static void via_init_sdc_pm(struct via_crdr_mmc_host *host)
+ static int via_sd_suspend(struct pci_dev *pcidev, pm_message_t state)
+ {
+ 	struct via_crdr_mmc_host *host;
++	unsigned long flags;
  
-+	cable_arg[0] = output_arg[0] = 0;
-+
- 	while ((this_opt = strsep(&options, ","))) {
- 		if (!*this_opt)
- 			continue;
+ 	host = pci_get_drvdata(pcidev);
+ 
++	spin_lock_irqsave(&host->lock, flags);
+ 	via_save_pcictrlreg(host);
+ 	via_save_sdcreg(host);
++	spin_unlock_irqrestore(&host->lock, flags);
+ 
+ 	pci_save_state(pcidev);
+ 	pci_enable_wake(pcidev, pci_choose_state(pcidev, state), 0);
 -- 
 2.27.0
 
