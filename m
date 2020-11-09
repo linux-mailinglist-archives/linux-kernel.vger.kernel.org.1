@@ -2,58 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EE9E2AB815
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 13:21:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8553F2AB817
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 13:22:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729471AbgKIMVM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 07:21:12 -0500
-Received: from smtp2207-205.mail.aliyun.com ([121.197.207.205]:44320 "EHLO
-        smtp2207-205.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729174AbgKIMVL (ORCPT
+        id S1729568AbgKIMV5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 07:21:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43342 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729174AbgKIMV4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 07:21:11 -0500
-X-Alimail-AntiSpam: AC=CONTINUE;BC=0.3084485|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_system_inform|0.0285798-0.00149932-0.969921;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047211;MF=frank@allwinnertech.com;NM=1;PH=DS;RN=8;RT=8;SR=0;TI=SMTPD_---.IuVrwCJ_1604924464;
-Received: from allwinnertech.com(mailfrom:frank@allwinnertech.com fp:SMTPD_---.IuVrwCJ_1604924464)
-          by smtp.aliyun-inc.com(10.147.43.95);
-          Mon, 09 Nov 2020 20:21:08 +0800
-From:   Frank Lee <frank@allwinnertech.com>
-To:     robh+dt@kernel.org, mripard@kernel.org, wens@csie.org
-Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, tiny.windzz@gmail.com,
-        Yangtao Li <frank@allwinnertech.com>
-Subject: [PATCH] arm64: dts: allwinner: a64: fix sid node name
-Date:   Mon,  9 Nov 2020 20:21:01 +0800
-Message-Id: <20201109122101.23302-1-frank@allwinnertech.com>
-X-Mailer: git-send-email 2.28.0
+        Mon, 9 Nov 2020 07:21:56 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98F78C0613CF;
+        Mon,  9 Nov 2020 04:21:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=lo1/YZJ60PDURw//yTKYZnX3pdE1wM16etWDAmUtFRw=; b=pjhICHrM3eR4uIrNFE4t/28ZFK
+        1j9Du9Tq+OjnCR8k4XxcUymdhlaBzmdAPspUA8GbUuGGLSdUkAB2irMJ1Km5qy/3+1/AXtxD+VRyF
+        AHeC1U7hmSElLZNKDc26GidSnfu01Y1n/qxp/PTGpadnToggGm7RpTrP/TirXts95aiSuqyFMtuFB
+        kwGkT9cIg/DTx5nE6wqSReHOIMiMBFicrpneUhZA1dd8lpBteemH8HjobgVW9+VMuoEqjv3Nya9FO
+        1+Gt0m/4RW/PBYkYh9jsQdUs8x5GDPXIeU0eyIl9xzu6dFJdAjL7S0iYuI066QdrITasayx8HmDMq
+        1r2mk3uw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kc6Ax-0001RS-Kq; Mon, 09 Nov 2020 12:21:35 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 9FAA4306099;
+        Mon,  9 Nov 2020 13:21:33 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 4D993203C5333; Mon,  9 Nov 2020 13:21:33 +0100 (CET)
+Date:   Mon, 9 Nov 2020 13:21:33 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     paulmck@kernel.org
+Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@fb.com, mingo@kernel.org, jiangshanlai@gmail.com,
+        akpm@linux-foundation.org, mathieu.desnoyers@efficios.com,
+        josh@joshtriplett.org, tglx@linutronix.de, rostedt@goodmis.org,
+        dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
+        oleg@redhat.com, joel@joelfernandes.org
+Subject: Re: [PATCH tip/core/rcu 1/4] doc: Present the role of READ_ONCE()
+Message-ID: <20201109122133.GL2594@hirez.programming.kicks-ass.net>
+References: <20201105230444.GA18574@paulmck-ThinkPad-P72>
+ <20201105230510.18660-1-paulmck@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201105230510.18660-1-paulmck@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yangtao Li <frank@allwinnertech.com>
+On Thu, Nov 05, 2020 at 03:05:07PM -0800, paulmck@kernel.org wrote:
+> From: "Paul E. McKenney" <paulmck@kernel.org>
+> 
+> This commit adds an explanation of the special cases where READ_ONCE()
+> may be used in place of a member of the rcu_dereference() family.
 
-Sid should be an efuse type device accurately. And no one
-needs sid label, so delete it.
+I am confused, there is no actual difference between rcu_dereference()
+and READ_ONCE() today. So we _may_ use READ_ONCE() at all times.
 
-Signed-off-by: Yangtao Li <frank@allwinnertech.com>
----
- arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi b/arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi
-index dc238814013c..96543df5d890 100644
---- a/arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi
-+++ b/arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi
-@@ -520,7 +520,7 @@ mmc2: mmc@1c11000 {
- 			#size-cells = <0>;
- 		};
- 
--		sid: eeprom@1c14000 {
-+		efuse@1c14000 {
- 			compatible = "allwinner,sun50i-a64-sid";
- 			reg = <0x1c14000 0x400>;
- 			#address-cells = <1>;
--- 
-2.28.0
-
+Now granted, we probably don't want that, but that does leave me
+somewhat confused vs the wording here.
