@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A78892AB945
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 14:07:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B27802ABB47
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 14:28:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731427AbgKINHo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 08:07:44 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60520 "EHLO mail.kernel.org"
+        id S2387549AbgKIN0o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 08:26:44 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42634 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731400AbgKINHl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 08:07:41 -0500
+        id S1732918AbgKINPr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 08:15:47 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5C53A2076E;
-        Mon,  9 Nov 2020 13:07:38 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 01F8620789;
+        Mon,  9 Nov 2020 13:15:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604927258;
-        bh=9lm/JU0khqt138EpXMKsbb/pihlBDG9NtWckqB7q55A=;
+        s=default; t=1604927746;
+        bh=LElm6Zafo7BTS/lgiCEqVaMi8wJy5DkDg9vX2n7H3tQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=TSh0ABGHsy4wStEoNrgljOZ78p4TOXIiqqGfNhhEX/qIM4Hoyidl4s2WDqFPgUKKC
-         clEGYRePTjPbr4dVh/L3kGvqMGEqcXHk3q4cZ/FimWCorN5EIwZMYClE6LjCSqFcgj
-         HiToQIwFhmHlS880uXPyWJHeFuhikmAU/SoO+jIM=
+        b=KCITwdcmKiYgbzbPk1i0tjExGMdbOAYTHc5JzcHB8apkEVKR5DXATq8cAROLjPEoO
+         8ZoEdlvGuz/1da0PYOR1vB6nu8m75/hkhdFzp6CtM1f9joJAXCL62BaWf2KAQw0ht3
+         2Nnu/D6uxDoP+mecLaTjem3VUfmCn4vGiGOnZjNg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Xiang Chen <chenxiang66@hisilicon.com>
-Subject: [PATCH 4.14 47/48] PM: runtime: Resume the device earlier in __device_release_driver()
-Date:   Mon,  9 Nov 2020 13:55:56 +0100
-Message-Id: <20201109125019.080861836@linuxfoundation.org>
+        stable@vger.kernel.org, Ralph Campbell <rcampbell@nvidia.com>,
+        Ben Skeggs <bskeggs@redhat.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 60/85] drm/nouveau/nouveau: fix the start/end range for migration
+Date:   Mon,  9 Nov 2020 13:55:57 +0100
+Message-Id: <20201109125025.446308429@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201109125016.734107741@linuxfoundation.org>
-References: <20201109125016.734107741@linuxfoundation.org>
+In-Reply-To: <20201109125022.614792961@linuxfoundation.org>
+References: <20201109125022.614792961@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,59 +43,73 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+From: Ralph Campbell <rcampbell@nvidia.com>
 
-commit 9226c504e364158a17a68ff1fe9d67d266922f50 upstream.
+[ Upstream commit cfa736f5a6f31ca8a05459b5720aac030247ad1b ]
 
-Since the device is resumed from runtime-suspend in
-__device_release_driver() anyway, it is better to do that before
-looking for busy managed device links from it to consumers, because
-if there are any, device_links_unbind_consumers() will be called
-and it will cause the consumer devices' drivers to unbind, so the
-consumer devices will be runtime-resumed.  In turn, resuming each
-consumer device will cause the supplier to be resumed and when the
-runtime PM references from the given consumer to it are dropped, it
-may be suspended.  Then, the runtime-resume of the next consumer
-will cause the supplier to resume again and so on.
+The user level OpenCL code shouldn't have to align start and end
+addresses to a page boundary. That is better handled in the nouveau
+driver. The npages field is also redundant since it can be computed
+from the start and end addresses.
 
-Update the code accordingly.
-
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-Fixes: 9ed9895370ae ("driver core: Functional dependencies tracking support")
-Cc: All applicable <stable@vger.kernel.org> # All applicable
-Tested-by: Xiang Chen <chenxiang66@hisilicon.com>
-Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Signed-off-by: Ralph Campbell <rcampbell@nvidia.com>
+Signed-off-by: Ben Skeggs <bskeggs@redhat.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/base/dd.c |    7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+ drivers/gpu/drm/nouveau/nouveau_svm.c | 14 +++-----------
+ 1 file changed, 3 insertions(+), 11 deletions(-)
 
---- a/drivers/base/dd.c
-+++ b/drivers/base/dd.c
-@@ -816,6 +816,8 @@ static void __device_release_driver(stru
+diff --git a/drivers/gpu/drm/nouveau/nouveau_svm.c b/drivers/gpu/drm/nouveau/nouveau_svm.c
+index 824654742a604..0be4668c780bf 100644
+--- a/drivers/gpu/drm/nouveau/nouveau_svm.c
++++ b/drivers/gpu/drm/nouveau/nouveau_svm.c
+@@ -112,11 +112,11 @@ nouveau_svmm_bind(struct drm_device *dev, void *data,
+ 	struct nouveau_cli *cli = nouveau_cli(file_priv);
+ 	struct drm_nouveau_svm_bind *args = data;
+ 	unsigned target, cmd, priority;
+-	unsigned long addr, end, size;
++	unsigned long addr, end;
+ 	struct mm_struct *mm;
  
- 	drv = dev->driver;
- 	if (drv) {
-+		pm_runtime_get_sync(dev);
-+
- 		while (device_links_busy(dev)) {
- 			device_unlock(dev);
- 			if (parent)
-@@ -831,11 +833,12 @@ static void __device_release_driver(stru
- 			 * have released the driver successfully while this one
- 			 * was waiting, so check for that.
- 			 */
--			if (dev->driver != drv)
-+			if (dev->driver != drv) {
-+				pm_runtime_put(dev);
- 				return;
-+			}
- 		}
+ 	args->va_start &= PAGE_MASK;
+-	args->va_end &= PAGE_MASK;
++	args->va_end = ALIGN(args->va_end, PAGE_SIZE);
  
--		pm_runtime_get_sync(dev);
- 		pm_runtime_clean_up_links(dev);
+ 	/* Sanity check arguments */
+ 	if (args->reserved0 || args->reserved1)
+@@ -125,8 +125,6 @@ nouveau_svmm_bind(struct drm_device *dev, void *data,
+ 		return -EINVAL;
+ 	if (args->va_start >= args->va_end)
+ 		return -EINVAL;
+-	if (!args->npages)
+-		return -EINVAL;
  
- 		driver_sysfs_remove(dev);
+ 	cmd = args->header >> NOUVEAU_SVM_BIND_COMMAND_SHIFT;
+ 	cmd &= NOUVEAU_SVM_BIND_COMMAND_MASK;
+@@ -158,12 +156,6 @@ nouveau_svmm_bind(struct drm_device *dev, void *data,
+ 	if (args->stride)
+ 		return -EINVAL;
+ 
+-	size = ((unsigned long)args->npages) << PAGE_SHIFT;
+-	if ((args->va_start + size) <= args->va_start)
+-		return -EINVAL;
+-	if ((args->va_start + size) > args->va_end)
+-		return -EINVAL;
+-
+ 	/*
+ 	 * Ok we are ask to do something sane, for now we only support migrate
+ 	 * commands but we will add things like memory policy (what to do on
+@@ -178,7 +170,7 @@ nouveau_svmm_bind(struct drm_device *dev, void *data,
+ 		return -EINVAL;
+ 	}
+ 
+-	for (addr = args->va_start, end = args->va_start + size; addr < end;) {
++	for (addr = args->va_start, end = args->va_end; addr < end;) {
+ 		struct vm_area_struct *vma;
+ 		unsigned long next;
+ 
+-- 
+2.27.0
+
 
 
