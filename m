@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 952332AB8E6
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 13:59:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1046A2AB8E7
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 14:00:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730247AbgKIM7I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 07:59:08 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52876 "EHLO mail.kernel.org"
+        id S1730281AbgKIM7L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 07:59:11 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53040 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730158AbgKIM6k (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 07:58:40 -0500
+        id S1730204AbgKIM6s (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 07:58:48 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 18C9320789;
-        Mon,  9 Nov 2020 12:58:38 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B367820789;
+        Mon,  9 Nov 2020 12:58:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604926719;
-        bh=kOandtB1ZMev2Spg8KASy1z02WsLM2ai2Cy10DWXrx0=;
+        s=default; t=1604926728;
+        bh=Ey0Nc0jburOL/RDGAUWLXgT8pEAJnG7fRuUoT90S7vI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=R6QHAwXBge6T/ti3YMExfezJlPpBcoMa/ox5BH7OaFSg4NMSMqbi3UMrokIlmhuQw
-         DTm9EeJjR9ayZpp4RDvBaETcd2aLgc9+D56udGxqZHaEWhoZOB8i9bykYDgQRlzsTy
-         jLGxUlN83GU9BStlnfcd4lpKdDrSJ7gmn7Yvv7jA=
+        b=Am/5DVAHcDxdkhnG6cYACL7JbA5oxxgAnysWGsCtYwUT2z0TZl9dMUJWspksD7py2
+         aszKEjbuPyqK2LFGVHNTrpe22tXo8Wk4Tybnf3fzt8jp81Y6w2NOPUQzZo679h3KfA
+         hwiFEniB7g1MomyV6iW7RGK3U2YuxtXkfxXkhz3I=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, James Jurack <james.jurack@ametek.com>,
-        Claudiu Manoil <claudiu.manoil@nxp.com>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 4.4 67/86] gianfar: Account for Tx PTP timestamp in the skb headroom
-Date:   Mon,  9 Nov 2020 13:55:14 +0100
-Message-Id: <20201109125023.994044097@linuxfoundation.org>
+        stable@vger.kernel.org,
+        "Steven Rostedt (VMware)" <rostedt@goodmis.org>
+Subject: [PATCH 4.4 70/86] ftrace: Fix recursion check for NMI test
+Date:   Mon,  9 Nov 2020 13:55:17 +0100
+Message-Id: <20201109125024.145854804@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201109125020.852643676@linuxfoundation.org>
 References: <20201109125020.852643676@linuxfoundation.org>
@@ -43,55 +42,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Claudiu Manoil <claudiu.manoil@nxp.com>
+From: Steven Rostedt (VMware) <rostedt@goodmis.org>
 
-[ Upstream commit d6a076d68c6b5d6a5800f3990a513facb7016dea ]
+commit ee11b93f95eabdf8198edd4668bf9102e7248270 upstream.
 
-When PTP timestamping is enabled on Tx, the controller
-inserts the Tx timestamp at the beginning of the frame
-buffer, between SFD and the L2 frame header. This means
-that the skb provided by the stack is required to have
-enough headroom otherwise a new skb needs to be created
-by the driver to accommodate the timestamp inserted by h/w.
-Up until now the driver was relying on the second option,
-using skb_realloc_headroom() to create a new skb to accommodate
-PTP frames. Turns out that this method is not reliable, as
-reallocation of skbs for PTP frames along with the required
-overhead (skb_set_owner_w, consume_skb) is causing random
-crashes in subsequent skb_*() calls, when multiple concurrent
-TCP streams are run at the same time on the same device
-(as seen in James' report).
-Note that these crashes don't occur with a single TCP stream,
-nor with multiple concurrent UDP streams, but only when multiple
-TCP streams are run concurrently with the PTP packet flow
-(doing skb reallocation).
-This patch enforces the first method, by requesting enough
-headroom from the stack to accommodate PTP frames, and so avoiding
-skb_realloc_headroom() & co, and the crashes no longer occur.
-There's no reason not to set needed_headroom to a large enough
-value to accommodate PTP frames, so in this regard this patch
-is a fix.
+The code that checks recursion will work to only do the recursion check once
+if there's nested checks. The top one will do the check, the other nested
+checks will see recursion was already checked and return zero for its "bit".
+On the return side, nothing will be done if the "bit" is zero.
 
-Reported-by: James Jurack <james.jurack@ametek.com>
-Fixes: bee9e58c9e98 ("gianfar:don't add FCB length to hard_header_len")
-Signed-off-by: Claudiu Manoil <claudiu.manoil@nxp.com>
-Link: https://lore.kernel.org/r/20201020173605.1173-1-claudiu.manoil@nxp.com
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+The problem is that zero is returned for the "good" bit when in NMI context.
+This will set the bit for NMIs making it look like *all* NMI tracing is
+recursing, and prevent tracing of anything in NMI context!
+
+The simple fix is to return "bit + 1" and subtract that bit on the end to
+get the real bit.
+
+Cc: stable@vger.kernel.org
+Fixes: edc15cafcbfa3 ("tracing: Avoid unnecessary multiple recursion checks")
+Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- drivers/net/ethernet/freescale/gianfar.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/net/ethernet/freescale/gianfar.c
-+++ b/drivers/net/ethernet/freescale/gianfar.c
-@@ -1385,7 +1385,7 @@ static int gfar_probe(struct platform_de
+---
+ kernel/trace/trace.h |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+--- a/kernel/trace/trace.h
++++ b/kernel/trace/trace.h
+@@ -529,7 +529,7 @@ static __always_inline int trace_test_an
+ 	current->trace_recursion = val;
+ 	barrier();
  
- 	if (dev->features & NETIF_F_IP_CSUM ||
- 	    priv->device_flags & FSL_GIANFAR_DEV_HAS_TIMER)
--		dev->needed_headroom = GMAC_FCB_LEN;
-+		dev->needed_headroom = GMAC_FCB_LEN + GMAC_TXPAL_LEN;
+-	return bit;
++	return bit + 1;
+ }
  
- 	/* Initializing some of the rx/tx queue level parameters */
- 	for (i = 0; i < priv->num_tx_queues; i++) {
+ static __always_inline void trace_clear_recursion(int bit)
+@@ -539,6 +539,7 @@ static __always_inline void trace_clear_
+ 	if (!bit)
+ 		return;
+ 
++	bit--;
+ 	bit = 1 << bit;
+ 	val &= ~bit;
+ 
 
 
