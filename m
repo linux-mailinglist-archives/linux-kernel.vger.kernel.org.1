@@ -2,87 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BC172AC226
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 18:25:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C612E2AC228
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 18:26:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731637AbgKIRZ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 12:25:28 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36472 "EHLO mail.kernel.org"
+        id S1731739AbgKIRZx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 12:25:53 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36638 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731448AbgKIRZ2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 12:25:28 -0500
-Received: from mail-wr1-f47.google.com (mail-wr1-f47.google.com [209.85.221.47])
+        id S1730450AbgKIRZx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 12:25:53 -0500
+Received: from mail-ot1-f48.google.com (mail-ot1-f48.google.com [209.85.210.48])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2A92F20E65
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Nov 2020 17:25:27 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0F82F20E65
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Nov 2020 17:25:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604942727;
-        bh=Scrk+dYcvyw3QvjGbYXbog4Z5UIYS746xFpf9H1AN+g=;
+        s=default; t=1604942752;
+        bh=xNe6oI2+GsLqcIEH7PXY3gTJtPh82o7VvswagmdVVV8=;
         h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=cdUx/++hwx2q11nXYmTzOPYTVidzrgNPuaZXRqHtBO45jdyUi/HMxY3sSJhO3kxlP
-         QCRsNDwlpg9u/MFz66tsqksZmm4H/8kNzvWcp7itIWm6V7upAuftq4+s5HytY40mHY
-         kpMRtiRS1/sgnFr95sRiDsC2MojeNce0RtAfYRGU=
-Received: by mail-wr1-f47.google.com with SMTP id 23so9571976wrc.8
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Nov 2020 09:25:27 -0800 (PST)
-X-Gm-Message-State: AOAM533V2KvsLH3v0Mj4jgD8kbyCm9rkl0x4fmw6nJGMWYw8dKV7gDJT
-        j6zZeqdwWdzo9gME0RoxQ9zkv86fHcEcb/dQMQM3Dw==
-X-Google-Smtp-Source: ABdhPJw0CYPVPjxWx8zph0Q4nCaIAawN4hKmHbD2IyPPTLfrfzllSPo0Y9UrcU7NlojHiUWbSfGOOf4ixMlMDFQBlcE=
-X-Received: by 2002:a5d:4991:: with SMTP id r17mr19060570wrq.70.1604942725626;
- Mon, 09 Nov 2020 09:25:25 -0800 (PST)
+        b=b0Y20zYr/D+UF0W95loXwvzpJVjddKIRGVkeJWu8G6/tWi1uiEntI2b0qKJawzaId
+         wtJSV02HcGSiY/8Sye7nivPMspDC4OWUJS3g/xYbr+H2DwjYdR/HM0Au2IGcdCnadd
+         cFP35bLjVT8qWlaJAMM84/5M3fEbjTFDfC3Jgfy8=
+Received: by mail-ot1-f48.google.com with SMTP id n15so9696302otl.8
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Nov 2020 09:25:52 -0800 (PST)
+X-Gm-Message-State: AOAM5337ITgP57eBm3voG/GR0+6VjfN7E0jx3GfOmCIncZRXuEGEi6QS
+        bywnpp7tcpeM/YDGgke9njcNQzZvRMIES7Gi/Q==
+X-Google-Smtp-Source: ABdhPJzBJ0DE0B+MNmd+guVogAYLuNk0LG1hBcIJKiBpSdsg6rrioupJDN668Q8u+3KwUHEo8QFqU1/l+dts7ZV5tWk=
+X-Received: by 2002:a05:6830:2f8:: with SMTP id r24mr11038612ote.129.1604942751273;
+ Mon, 09 Nov 2020 09:25:51 -0800 (PST)
 MIME-Version: 1.0
-References: <20201109112319.264511-1-alexandre.chartre@oracle.com> <20201109112319.264511-2-alexandre.chartre@oracle.com>
-In-Reply-To: <20201109112319.264511-2-alexandre.chartre@oracle.com>
-From:   Andy Lutomirski <luto@kernel.org>
-Date:   Mon, 9 Nov 2020 09:25:14 -0800
-X-Gmail-Original-Message-ID: <CALCETrWOK-ZjcUKarbTokRxLOd3RmjYjnDhc1mgUeXRVFdGgow@mail.gmail.com>
-Message-ID: <CALCETrWOK-ZjcUKarbTokRxLOd3RmjYjnDhc1mgUeXRVFdGgow@mail.gmail.com>
-Subject: Re: [RFC][PATCH 01/24] x86/syscall: Add wrapper for invoking syscall function
-To:     Alexandre Chartre <alexandre.chartre@oracle.com>
-Cc:     X86 ML <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
+References: <20201106150747.31273-1-broonie@kernel.org> <CAGETcx-abGAgYrHM0jm6hVkrJ5KvfhK6gCZ4Y6RY0msPJDCuQg@mail.gmail.com>
+In-Reply-To: <CAGETcx-abGAgYrHM0jm6hVkrJ5KvfhK6gCZ4Y6RY0msPJDCuQg@mail.gmail.com>
+From:   Rob Herring <robh+dt@kernel.org>
+Date:   Mon, 9 Nov 2020 11:25:39 -0600
+X-Gmail-Original-Message-ID: <CAL_JsqKfEWY8+suK3vrtbJbgWzDkCeDV_s61dh5Xwj13cHzCUQ@mail.gmail.com>
+Message-ID: <CAL_JsqKfEWY8+suK3vrtbJbgWzDkCeDV_s61dh5Xwj13cHzCUQ@mail.gmail.com>
+Subject: Re: [PATCH RFC] driver core: Ensure DT devices always have fwnode set
+To:     Saravana Kannan <saravanak@google.com>
+Cc:     Mark Brown <broonie@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Daniel Mentz <danielmentz@google.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Alexander-
-
-You appear to be infected by corporate malware that has inserted the
-string "@aserv0122.oracle.com" to the end of all the email addresses
-in your to: list.  "luto@kernel.org"@aserv0122.oracle.com, for
-example, is not me.  Can you fix this?
-
-
-On Mon, Nov 9, 2020 at 3:21 AM Alexandre Chartre
-<alexandre.chartre@oracle.com> wrote:
+On Fri, Nov 6, 2020 at 1:09 PM Saravana Kannan <saravanak@google.com> wrote:
 >
-> Add a wrapper function for invoking a syscall function.
-
-This needs some explanation of why.
-
+> +Rob and Frank
 >
-> Signed-off-by: Alexandre Chartre <alexandre.chartre@oracle.com>
-> ---
->  arch/x86/entry/common.c | 16 +++++++++++++---
->  1 file changed, 13 insertions(+), 3 deletions(-)
+> On Fri, Nov 6, 2020 at 7:09 AM Mark Brown <broonie@kernel.org> wrote:
+> >
+> > Currently the fwnode API and things that rely on it like fw_devlink will
+> > not reliably work for devices created from DT since each subsystem that
+> > creates devices must individually set dev->fwnode in addition to setting
+> > dev->of_node, currently a number of subsystems don't do so. Ensure that
+> > this can't get missed by setting fwnode from of_node if it's not
+> > previously been set by the subsystem.
+> >
+> > Reported-by: Saravana Kannan <saravanak@google.com>
+> > Signed-off-by: Mark Brown <broonie@kernel.org>
+> > ---
+> >
+> > *Very* minimally tested.
+> >
+> >  drivers/base/core.c | 4 ++++
+> >  1 file changed, 4 insertions(+)
+> >
+> > diff --git a/drivers/base/core.c b/drivers/base/core.c
+> > index d661ada1518f..658626bafd76 100644
+> > --- a/drivers/base/core.c
+> > +++ b/drivers/base/core.c
+> > @@ -2864,6 +2864,10 @@ int device_add(struct device *dev)
+> >         if (parent && (dev_to_node(dev) == NUMA_NO_NODE))
+> >                 set_dev_node(dev, dev_to_node(parent));
+> >
+> > +       /* ensure that fwnode is set up */
+> > +       if (IS_ENABLED(CONFIG_OF) && dev->of_node && !dev->fwnode)
+> > +               dev->fwnode = of_fwnode_handle(dev->of_node);
+> > +
 >
-> diff --git a/arch/x86/entry/common.c b/arch/x86/entry/common.c
-> index 870efeec8bda..d222212908ad 100644
-> --- a/arch/x86/entry/common.c
-> +++ b/arch/x86/entry/common.c
-> @@ -35,6 +35,15 @@
->  #include <asm/syscall.h>
->  #include <asm/irq_stack.h>
+> I don't think we should add more CONFIG_OF specific code in drivers/base/
+
+It's fwnode specific code because it's fwnode that needs it...
+
+> If you want to do this in "one common place", then I think the way to
+> do this is have include/linux/of.h provide something like:
+> void of_set_device_of_node(dev, of_node)
+> {
+>     dev->of_node = of_node;
+>     dev->fw_node = &of_node->fwnode;
+>    /* bunch of other housekeeping like setting OF_POPULATED and doing
+> proper of_node_get() */
+>    // Passing NULL for of_node could undo all the above for dev->of_node.
+> }
 >
-> +static __always_inline void run_syscall(sys_call_ptr_t sysfunc,
-> +                                       struct pt_regs *regs)
-> +{
-> +       if (!sysfunc)
-> +               return;
+> And all the subsystems that create their own device from an of_node
+> should use of_set_device_of_node() to set the device's of_node. That
+> way, all this is done in a consistent manner across subsystems and
+> avoid all of the of_get/put() and OF_POPULATED set/clear strewn all
+> over the subsystems.
 
-What's this for?
+Perhaps a fwnode call in device_add instead that implements the above
+and anything else needed for each type of fwnode. It might even be
+possible with that to get rid of most of
+of_platform_device_create_pdata() and of_device_add(). IIRC, those
+were pretty much copies of the core code.
 
-> +
-> +       regs->ax = sysfunc(regs);
-> +}
-> +
+That would also be less fragile than having a coccinelle script.
+
+Rob
