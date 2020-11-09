@@ -2,121 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 10D9D2AB7C9
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 13:08:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A97BB2AB7C6
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 13:08:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729683AbgKIMIe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 07:08:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41232 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729651AbgKIMId (ORCPT
+        id S1729613AbgKIMI1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 07:08:27 -0500
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:34520 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728927AbgKIMI1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 07:08:33 -0500
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29993C0613CF
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Nov 2020 04:08:32 -0800 (PST)
-Received: by mail-pf1-x442.google.com with SMTP id c20so7981493pfr.8
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Nov 2020 04:08:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=sYZlhxozQgEvlS+NNVIJ/aB7eGsfKrhfyl/qVNIo11E=;
-        b=z8cwZptV/a7LEfyiMbIZrV6S/mtNo0uR8gM9D4quJp5aa+TxpTW24tFfuZ4ALf8uE4
-         34zdgtpxrr65iQMUFNbS5VZumGtDjAnCWxNlgf9lDxTpLSxkaYGq9qndpHkj4CgyI2tp
-         enSPNx+QQ6+2bfd2xhsKAoUuNxZaXgYHtdwmSl2GXI5MiHUO0gFZKBuqE5C7MW1RjQ9k
-         b2DojHZcDSpGeYsirwQqvWLtGInlzELYvbzjHGEoa1z0yb7LadUzkWLh/HZDtfwcjs1U
-         +rKKSMYBRmSrnHaPlmZK0Lrh9zKp2vZktzk1OQ74Hq1TuX0faF0ADRJOuMCMAfUAsgfc
-         8xng==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=sYZlhxozQgEvlS+NNVIJ/aB7eGsfKrhfyl/qVNIo11E=;
-        b=OdRA5/ijdxUy99hpkJyG9JsYzMLvj5rlqZEFvFIC+O6hrfcmmAJQVRaYa7eMYMZgIU
-         bLwXaKQGL9p4q0DGYR9Ip6ushhzcEWa0hYOZoHUkcfoTydLIUcaICZ8Ge2dJPsZaMGJT
-         TMyMd5RDVR9fheT0Y5S5fBlOQjLvxEUfZvC7Hg0ueM+y/8/AZ2qRQ2C72ZT9avlQITog
-         n3b/zwYUE3CQqzBmvJz5V3YQ3LnFdjhrfVuZI7xR3WEx3mGDqshg2a3iU+nGAMHPL0Lx
-         XaKj+mR1xGiTydTtig3Wm1tCjsPx1J74hzF5fI8AFGFG9RTTZubvPSU9E2z71DQ03DV+
-         iWrQ==
-X-Gm-Message-State: AOAM5310BD/h8zLcoqI2XV1xHVKuqPVN9oFWOoaYqNkHusk1n2nQOVuC
-        zDsdeDogfTbPYPNn5x/NXLLS
-X-Google-Smtp-Source: ABdhPJxY4xS6lDh4ZRNTEFYmxOtjt5t4JTvxZ9W5QEcXk9D2n6sJ/WF5r6bPqKFetF5lKheJLMT6pg==
-X-Received: by 2002:a17:90a:8b08:: with SMTP id y8mr12438935pjn.5.1604923711702;
-        Mon, 09 Nov 2020 04:08:31 -0800 (PST)
-Received: from work ([103.59.133.81])
-        by smtp.gmail.com with ESMTPSA id a24sm11377928pfl.174.2020.11.09.04.08.29
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 09 Nov 2020 04:08:30 -0800 (PST)
-Date:   Mon, 9 Nov 2020 17:38:25 +0530
-From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To:     Bhaumik Bhatt <bbhatt@codeaurora.org>
-Cc:     linux-arm-msm@vger.kernel.org, hemantk@codeaurora.org,
-        jhugo@codeaurora.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 6/6] bus: mhi: core: Skip RDDM download for unknown
- execution environment
-Message-ID: <20201109120825.GJ24289@work>
-References: <1604684690-31065-1-git-send-email-bbhatt@codeaurora.org>
- <1604684690-31065-7-git-send-email-bbhatt@codeaurora.org>
+        Mon, 9 Nov 2020 07:08:27 -0500
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0A9C8KGF016562;
+        Mon, 9 Nov 2020 06:08:20 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1604923700;
+        bh=VvLPSZfpwiHAjS3GjsrVd0qPrDT6hWWzu3IfDCtXXms=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=pkP2c8rMzFhKqVzAynG2FpOYK+a7qBCpdIe0YYlj5r10gRe/+yqZgrrTZeULg8dYV
+         riIdbvJYa5DbekCDMRjZK8131epQtypXjzZnYM+EccDAGs8DHKzDqZHLO8CFVbXD77
+         cf1Ahi9kMjfjcb/LkjIrHClMD0JPeP45Iao//n40=
+Received: from DLEE108.ent.ti.com (dlee108.ent.ti.com [157.170.170.38])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0A9C8Kjg031614
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 9 Nov 2020 06:08:20 -0600
+Received: from DLEE115.ent.ti.com (157.170.170.26) by DLEE108.ent.ti.com
+ (157.170.170.38) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Mon, 9 Nov
+ 2020 06:08:19 -0600
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE115.ent.ti.com
+ (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Mon, 9 Nov 2020 06:08:19 -0600
+Received: from [192.168.2.6] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0A9C8Hb6012848;
+        Mon, 9 Nov 2020 06:08:17 -0600
+Subject: Re: [PATCH 01/18] dmaengine: of-dma: Add support for optional router
+ configuration callback
+To:     Vinod Koul <vkoul@kernel.org>
+CC:     <nm@ti.com>, <ssantosh@kernel.org>, <robh+dt@kernel.org>,
+        <vigneshr@ti.com>, <dan.j.williams@intel.com>, <t-kristo@ti.com>,
+        <lokeshvutla@ti.com>, <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <dmaengine@vger.kernel.org>
+References: <20200930091412.8020-1-peter.ujfalusi@ti.com>
+ <20200930091412.8020-2-peter.ujfalusi@ti.com>
+ <20201007054404.GR2968@vkoul-mobl>
+ <be615881-1eb4-f8fe-a32d-04fabb6cb27b@ti.com>
+ <20201007155533.GZ2968@vkoul-mobl>
+ <45adb88b-1ef8-1fbf-08c1-9afc6ea4c6f0@ti.com>
+ <20201028055531.GH3550@vkoul-mobl>
+ <cf3d3de0-223b-4846-bd9f-b78654ae2d08@ti.com>
+ <20201109114534.GH3171@vkoul-mobl>
+From:   Peter Ujfalusi <peter.ujfalusi@ti.com>
+Message-ID: <7a7cb455-dd09-b71f-6ecc-fd6108d37051@ti.com>
+Date:   Mon, 9 Nov 2020 14:09:03 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1604684690-31065-7-git-send-email-bbhatt@codeaurora.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20201109114534.GH3171@vkoul-mobl>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 06, 2020 at 09:44:50AM -0800, Bhaumik Bhatt wrote:
-> If MHI is unable to determine the execution environment during
-> the panic path, host must skip the RDDM download. This can happen
-> if the BHI offset read or the BHI_EXECENV register read fails
-> indicating that the underlying transport is unresponsive. Hence,
-> there is no need to trigger an RDDM using SYSERR or request an
-> SOC reset.
-> 
-> Suggested-by: Hemant Kumar <hemantk@codeaurora.org>
-> Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
+Hi Vinod,
 
-Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-
-Thanks,
-Mani
-
-> ---
->  drivers/bus/mhi/core/boot.c | 9 +++++++--
->  1 file changed, 7 insertions(+), 2 deletions(-)
+On 09/11/2020 13.45, Vinod Koul wrote:
+>> Without a channel number I can not do anything.
+>> It is close to a chicken and egg problem.
 > 
-> diff --git a/drivers/bus/mhi/core/boot.c b/drivers/bus/mhi/core/boot.c
-> index 16244cc..6f0cfb9 100644
-> --- a/drivers/bus/mhi/core/boot.c
-> +++ b/drivers/bus/mhi/core/boot.c
-> @@ -92,6 +92,9 @@ static int __mhi_download_rddm_in_panic(struct mhi_controller *mhi_cntrl)
->  	 * image download completion.
->  	 */
->  	ee = mhi_get_exec_env(mhi_cntrl);
-> +	if (ee == MHI_EE_MAX)
-> +		goto error_exit_rddm;
-> +
->  	if (ee != MHI_EE_RDDM) {
->  		dev_dbg(dev, "Trigger device into RDDM mode using SYS ERR\n");
->  		mhi_set_mhi_state(mhi_cntrl, MHI_STATE_SYS_ERR);
-> @@ -139,10 +142,12 @@ static int __mhi_download_rddm_in_panic(struct mhi_controller *mhi_cntrl)
->  	ee = mhi_get_exec_env(mhi_cntrl);
->  	ret = mhi_read_reg(mhi_cntrl, base, BHIE_RXVECSTATUS_OFFS, &rx_status);
->  
-> -	dev_err(dev, "Did not complete RDDM transfer\n");
-> -	dev_err(dev, "Current EE: %s\n", TO_MHI_EXEC_STR(ee));
->  	dev_err(dev, "RXVEC_STATUS: 0x%x\n", rx_status);
->  
-> +error_exit_rddm:
-> +	dev_err(dev, "RDDM transfer failed. Current EE: %s\n",
-> +		TO_MHI_EXEC_STR(ee));
-> +
->  	return -EIO;
->  }
->  
-> -- 
-> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-> a Linux Foundation Collaborative Project
-> 
+> We get 'channel' in xlate, so wont that help? I think I am still missing
+> something here :(
+
+Yes, we get channel in xlate, but we get the channel after
+ofdma->of_dma_route_allocate()
+
+of_dma_route_allocate() si the place where DMA routers create the
+dmaspec for the DMA controller to get a channel and they up until BCDMA
+did also the HW configuration to get the event routed.
+
+For a BCDMA channel we can have three triggers:
+Global trigger 0 for the channel
+Global trigger 1 for the channel
+Local trigger for the channel
+
+Every BCDMA channel have these triggers and for all of them they are the
+same (from the channel's pow).
+bchan0 can be triggered by global trigger 0
+bchan1 can be triggered by global trigger 0
+
+But these triggers are not the same ones, the real trigger depends on
+the router, which of it's input is converted to send out an event to
+trigger bchan0_trigger0 or to trigger bchan1_trigger0.
+
+When we got the channel with the dmaspec from the router driver then we
+need to tell the router driver that it needs to send a given event in
+order to trigger the channel that we got.
+
+We can not have traditional binding for BCDMA either where we would tell
+the bchan index to be used because depending on the resource allocation
+done within sysfw that exact channel might not be even available for us.
+
+- Péter
+
+Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
+Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
