@@ -2,140 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD5FC2AB2A6
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 09:44:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B67F2AB2B6
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 09:49:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729759AbgKIIof (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 03:44:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37320 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729730AbgKIIoe (ORCPT
+        id S1729438AbgKIItB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 03:49:01 -0500
+Received: from mx07-00178001.pphosted.com ([185.132.182.106]:60114 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726127AbgKIItA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 03:44:34 -0500
-Received: from mail.andi.de1.cc (mail.andi.de1.cc [IPv6:2a01:238:4321:8900:456f:ecd6:43e:202c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CD80C0613CF;
-        Mon,  9 Nov 2020 00:44:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=kemnade.info; s=20180802; h=Content-Transfer-Encoding:Content-Type:
-        MIME-Version:References:In-Reply-To:Message-ID:Subject:Cc:To:From:Date:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=TzAYk+oLfVC+xVZW8MM6v2hBnX5j/D5hCWL6Cocma5o=; b=Dt4afT0z6eA27cnX+8KRhbMcrn
-        29om7M2uPWubzw18vMW7SHfQwjicrvhjDvY+Ez+XvS+hyyWqy8n8jRGptzGAajg5ylxKGRw5aNIJ0
-        e/Y1Rd44uXpCKW7i6+fg/LsUwsCATVPJsbZuRcIGbVeNg170AZnX0e7jwJz0SwR+oivA=;
-Received: from p200300ccff0815001a3da2fffebfd33a.dip0.t-ipconnect.de ([2003:cc:ff08:1500:1a3d:a2ff:febf:d33a] helo=aktux)
-        by mail.andi.de1.cc with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.89)
-        (envelope-from <andreas@kemnade.info>)
-        id 1kc2mn-0008R6-8n; Mon, 09 Nov 2020 09:44:25 +0100
-Date:   Mon, 9 Nov 2020 09:44:24 +0100
-From:   Andreas Kemnade <andreas@kemnade.info>
-To:     Henrik Rydberg <rydberg@bitmath.org>
-Cc:     Brad Campbell <brad@fnarfbargle.com>,
-        Arnd Bergmann <arnd@arndb.de>, linux-hwmon@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        hns@goldelico.com, Guenter Roeck <linux@roeck-us.net>,
-        Jean Delvare <jdelvare@suse.com>
-Subject: Re: [PATCH v3] applesmc: Re-work SMC comms
-Message-ID: <20201109094424.1c10651f@aktux>
-In-Reply-To: <20201108101429.GA28460@mars.bitmath.org>
-References: <70331f82-35a1-50bd-685d-0b06061dd213@fnarfbargle.com>
-        <3c72ccc3-4de1-b5d0-423d-7b8c80991254@fnarfbargle.com>
-        <6d071547-10ee-ca92-ec8b-4b5069d04501@bitmath.org>
-        <8e117844-d62a-bcb1-398d-c59cc0d4b878@fnarfbargle.com>
-        <e5a856b1-fb1a-db5d-0fde-c86d0bcca1df@bitmath.org>
-        <aa60f673-427a-1a47-7593-54d1404c3c92@bitmath.org>
-        <9109d059-d9cb-7464-edba-3f42aa78ce92@bitmath.org>
-        <5310c0ab-0f80-1f9e-8807-066223edae13@bitmath.org>
-        <57057d07-d3a0-8713-8365-7b12ca222bae@fnarfbargle.com>
-        <41909045-9486-78d9-76c2-73b99a901b83@bitmath.org>
-        <20201108101429.GA28460@mars.bitmath.org>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        Mon, 9 Nov 2020 03:49:00 -0500
+Received: from pps.filterd (m0046037.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0A98mXkK005109;
+        Mon, 9 Nov 2020 09:48:54 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=STMicroelectronics;
+ bh=gswr127pV79PDGvq3mOE0Nu5v+9AQ5VJ4ll6tXITl8E=;
+ b=HSrBj9bPeqqEv1ps/7Nv3wVCcFbHr6JohgyxmLLqbyu3bzBwnWPPadhRhtKi/u6iwkuu
+ Np0ECpmiBcla+VhI3Tm7aC4rQldSWaHM0xtL6mhoBUwAe9vng4kBou0rCjpa4eWzU3uC
+ p58H1Pxyg48XBGjBQnFxRG3Mp2M5qQrx4qPL/W/ghqWJ6AJYSlC8B45DDtak3tm5KDjW
+ wHtIMaw2AH5LedvFtDAy8VlrXtdrgIsLev0Qwv2Nk9N2QSfKBueeEYKmwAG7cmTfr/K1
+ lQVr2BRMJY89Mwy8pkZG/oCr2y0CQzWOb2QU7kyOGcmxCSWBsa0nD/dFydZCkr686WXd 5A== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 34nj80gucj-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 09 Nov 2020 09:48:54 +0100
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 893CB100034;
+        Mon,  9 Nov 2020 09:48:53 +0100 (CET)
+Received: from Webmail-eu.st.com (sfhdag3node1.st.com [10.75.127.7])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 702A6230D43;
+        Mon,  9 Nov 2020 09:48:53 +0100 (CET)
+Received: from lmecxl0889.lme.st.com (10.75.127.50) by SFHDAG3NODE1.st.com
+ (10.75.127.7) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 9 Nov
+ 2020 09:48:37 +0100
+Subject: Re: [PATCH v5 8/8] rpmsg: Turn name service into a stand alone driver
+To:     Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
+CC:     "ohad@wizery.com" <ohad@wizery.com>,
+        "bjorn.andersson@linaro.org" <bjorn.andersson@linaro.org>,
+        "linux-remoteproc@vger.kernel.org" <linux-remoteproc@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20201105225028.3058818-1-mathieu.poirier@linaro.org>
+ <20201105225028.3058818-9-mathieu.poirier@linaro.org>
+ <20201106131545.GA10889@ubuntu> <20201106140028.GB10889@ubuntu>
+ <20201106175332.GB3203364@xps15>
+From:   Arnaud POULIQUEN <arnaud.pouliquen@st.com>
+Message-ID: <e7dedfb6-1e9c-4246-9db1-e14a2e16c68c@st.com>
+Date:   Mon, 9 Nov 2020 09:48:37 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <20201106175332.GB3203364@xps15>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Spam-Score: -1.0 (-)
+X-Originating-IP: [10.75.127.50]
+X-ClientProxiedBy: SFHDAG4NODE3.st.com (10.75.127.12) To SFHDAG3NODE1.st.com
+ (10.75.127.7)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-11-09_02:2020-11-05,2020-11-09 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 8 Nov 2020 11:14:29 +0100
-Henrik Rydberg <rydberg@bitmath.org> wrote:
+Hi Guennadi, Mathieu,
 
-> On Sun, Nov 08, 2020 at 09:35:28AM +0100, Henrik Rydberg wrote:
-> > Hi Brad,
-> > 
-> > On 2020-11-08 02:00, Brad Campbell wrote:  
-> > > G'day Henrik,
-> > > 
-> > > I noticed you'd also loosened up the requirement for SMC_STATUS_BUSY in read_smc(). I assume
-> > > that causes problems on the early Macbook. This is revised on the one sent earlier.
-> > > If you could test this on your Air1,1 it'd be appreciated.  
-> > 
-> > No, I managed to screw up the patch; you can see that I carefully added the
-> > same treatment for the read argument, being unsure if the BUSY state would
-> > remain during the AVAILABLE data phase. I can check that again, but
-> > unfortunately the patch in this email shows the same problem.
-> > 
-> > I think it may be worthwhile to rethink the behavior of wait_status() here.
-> > If one machine shows no change after a certain status bit change, then
-> > perhaps the others share that behavior, and we are waiting in vain. Just
-> > imagine how many years of cpu that is, combined. ;-)  
+On 11/6/20 6:53 PM, Mathieu Poirier wrote:
+> On Fri, Nov 06, 2020 at 03:00:28PM +0100, Guennadi Liakhovetski wrote:
+>> On Fri, Nov 06, 2020 at 02:15:45PM +0100, Guennadi Liakhovetski wrote:
+>>> Hi Mathieu, Arnaud,
+>>>
+>>> On Thu, Nov 05, 2020 at 03:50:28PM -0700, Mathieu Poirier wrote:
+>>>> From: Arnaud Pouliquen <arnaud.pouliquen@st.com>
+>>>>
+>>>> Make the RPMSG name service announcement a stand alone driver so that it
+>>>> can be reused by other subsystems.  It is also the first step in making the
+>>>> functionatlity transport independent, i.e that is not tied to virtIO.
+>>>
+>>> Sorry, I just realised that my testing was incomplete. I haven't tested 
+>>> automatic module loading and indeed it doesn't work. If rpmsg_ns is loaded 
+>>> it probes and it's working, but if it isn't loaded and instead the rpmsg 
+>>> bus driver is probed (e.g. virtio_rpmsg_bus), calling 
+>>> rpmsg_ns_register_device() to create a new rpmsg_ns device doesn't cause 
+>>> rpmsg_ns to be loaded.
+>>
+>> A simple fix for that is using MODULE_ALIAS("rpmsg:rpmsg_ns"); in rpmsg_ns.c 
+>> but that alone doesn't fix the problem completely - the module does load then 
+>> but not quickly enough, the NS announcement from the host / remote arrives 
+>> before rpmsg_ns has properly registered. I think the best solution would be 
+>> to link rpmsg_ns.c together with rpmsg_core.c. You'll probably want to keep 
+>> the module name, so you could rename them to just core.c and ns.c.
 > 
-> Here is a modification along that line.
-> 
-> Compared to your latest version, this one has wait_status() return the
-> actual status on success. Instead of waiting for BUSY, it waits for
-> the other status bits, and checks BUSY afterwards. So as not to wait
-> unneccesarily, the udelay() is placed together with the single
-> outb(). The return value of send_byte_data() is augmented with
-> -EAGAIN, which is then used in send_command() to create the resend
-> loop.
-> 
-> I reach 41 reads per second on the MBA1,1 with this version, which is
-> getting close to the performance prior to the problems.
-> 
-> From b4405457f4ba07cff7b7e4f48c47668bee176a25 Mon Sep 17 00:00:00 2001
-> From: Brad Campbell <brad@fnarfbargle.com>
-> Date: Sun, 8 Nov 2020 12:00:03 +1100
-> Subject: [PATCH] hwmon: (applesmc) Re-work SMC comms
-> 
-> Commit fff2d0f701e6 ("hwmon: (applesmc) avoid overlong udelay()")
-> introduced an issue whereby communication with the SMC became
-> unreliable with write errors like :
-> 
-> [  120.378614] applesmc: send_byte(0x00, 0x0300) fail: 0x40
-> [  120.378621] applesmc: LKSB: write data fail
-> [  120.512782] applesmc: send_byte(0x00, 0x0300) fail: 0x40
-> [  120.512787] applesmc: LKSB: write data fail
-> 
-> The original code appeared to be timing sensitive and was not reliable
-> with the timing changes in the aforementioned commit.
-> 
-> This patch re-factors the SMC communication to remove the timing
-> dependencies and restore function with the changes previously
-> committed.
-> 
-> Tested on : MacbookAir6,2 MacBookPro11,1 iMac12,2, MacBookAir1,1,
-> MacBookAir3,1
-> 
-> Fixes: fff2d0f701e6 ("hwmon: (applesmc) avoid overlong udelay()")
-> Reported-by: Andreas Kemnade <andreas@kemnade.info>
-> Tested-by: Andreas Kemnade <andreas@kemnade.info> # MacBookAir6,2
-> Acked-by: Arnd Bergmann <arnd@arndb.de>
-> Signed-off-by: Brad Campbell <brad@fnarfbargle.com>
-> Signed-off-by: Henrik Rydberg <rydberg@bitmath.org>
-> 
-> ---
-> Changelog : 
-> v1 : Inital attempt
-> v2 : Address logic and coding style
-> v3 : Removed some debug hangover. Added tested-by. Modifications for MacBookAir1,1
-> v4 : Do not expect busy state to appear without other state changes
-> 
+> I'm pretty sure it is because virtio_device_ready() in rpmsg_probe() is called
+> before the kernel has finished loading the name space driver.  There has to be
+> a way to prevent that from happening - I will investigate further.
 
-still works here (MacBookAir6,2)
+Right, no dependency is set so the rpmsg_ns driver is never probed...
+And  name service announcement messages are dropped if the service is not present.
 
-Regards,
-Andreas
+if rpmsg_virtio_bus is built-in
+-> using "select RPMSG_NS" in RPMSG_VIRTIO kconfig should ensure that rpmsg_ns is also built-in 
+if rpmsg_virtio_bus is build as module rpmsg_ns.ko should be loaded first.
+-> MODULE_SOFTDEP could be used in virtio_rpmsg_bus.c
+
+Thanks,
+Arnaud
+
+> 
+> Thanks for reporting this,
+> Mathieu
+> 
+>>
+>> Thanks
+>> Guennadi
