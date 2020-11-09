@@ -2,39 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E97E2ABA78
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 14:23:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DE3DC2AB990
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 14:10:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387804AbgKINTg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 08:19:36 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46918 "EHLO mail.kernel.org"
+        id S1732057AbgKINKX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 08:10:23 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35428 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387786AbgKINTb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 08:19:31 -0500
+        id S1729723AbgKINKP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 08:10:15 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E9C3220663;
-        Mon,  9 Nov 2020 13:19:29 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9BAB82083B;
+        Mon,  9 Nov 2020 13:10:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604927970;
-        bh=gLHIgoD2vt9hPiX3wLzXW2G/zO/wNF9ivi/BFLeyUOg=;
+        s=default; t=1604927415;
+        bh=3cwa2+oW48qbbKajQym3cjbPzZISxKfmoExe6aZKujk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=HtqpNGrooT+FO0bT53nhK3qEJ1L0i01maoWgyhF+lHP328lrn80AveNxrlIUgqgYb
-         pM7Z6rqs2eniP2jp/tkHUryOTvxz5LkovGqs4ewhTrSr+CsQwfq9HTj0WWvQY6zrRn
-         pW2hve4dV3Sfs1ydWQzRyF4V77t3HTH4xDFl+R0E=
+        b=co6E/S3A7EOxMGSPKgpep0tcpRSiG01oA8s+tr7qmP60KZJZdnP7kuCP3rYW/27rr
+         /RBXBsCLTFyV0xKRxLmiwsyECPN5dYre25XaBD8+IvrrnSZwGcwJPwLKQmVpPH3osO
+         cTb143disXsi7T/351cbKn36nnSuQmIcSv9y+Gjc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Maxime Ripard <maxime@cerno.tech>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
+        stable@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
+        "Ewan D. Milne" <emilne@redhat.com>,
+        Hannes Reinecke <hare@suse.de>,
+        Bart Van Assche <bvanassche@acm.org>,
+        Lee Duncan <lduncan@suse.com>, Ming Lei <ming.lei@redhat.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.9 083/133] drm/sun4i: frontend: Fix the scaler phase on A33
+Subject: [PATCH 4.19 51/71] scsi: core: Dont start concurrent async scan on same host
 Date:   Mon,  9 Nov 2020 13:55:45 +0100
-Message-Id: <20201109125034.712520764@linuxfoundation.org>
+Message-Id: <20201109125022.293280895@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201109125030.706496283@linuxfoundation.org>
-References: <20201109125030.706496283@linuxfoundation.org>
+In-Reply-To: <20201109125019.906191744@linuxfoundation.org>
+References: <20201109125019.906191744@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,34 +47,73 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Maxime Ripard <maxime@cerno.tech>
+From: Ming Lei <ming.lei@redhat.com>
 
-[ Upstream commit e3190b5e9462067714d267c40d8c8c1d0463dda3 ]
+[ Upstream commit 831e3405c2a344018a18fcc2665acc5a38c3a707 ]
 
-The A33 has a different phase parameter in the Allwinner BSP on the
-channel1 than the one currently applied. Fix this.
+The current scanning mechanism is supposed to fall back to a synchronous
+host scan if an asynchronous scan is in progress. However, this rule isn't
+strictly respected, scsi_prep_async_scan() doesn't hold scan_mutex when
+checking shost->async_scan. When scsi_scan_host() is called concurrently,
+two async scans on same host can be started and a hang in do_scan_async()
+is observed.
 
-Signed-off-by: Maxime Ripard <maxime@cerno.tech>
-Acked-by: Jernej Skrabec <jernej.skrabec@siol.net>
-Link: https://patchwork.freedesktop.org/patch/msgid/20201015093642.261440-3-maxime@cerno.tech
+Fixes this issue by checking & setting shost->async_scan atomically with
+shost->scan_mutex.
+
+Link: https://lore.kernel.org/r/20201010032539.426615-1-ming.lei@redhat.com
+Cc: Christoph Hellwig <hch@lst.de>
+Cc: Ewan D. Milne <emilne@redhat.com>
+Cc: Hannes Reinecke <hare@suse.de>
+Cc: Bart Van Assche <bvanassche@acm.org>
+Reviewed-by: Lee Duncan <lduncan@suse.com>
+Reviewed-by: Bart Van Assche <bvanassche@acm.org>
+Signed-off-by: Ming Lei <ming.lei@redhat.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/sun4i/sun4i_frontend.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/scsi/scsi_scan.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/gpu/drm/sun4i/sun4i_frontend.c b/drivers/gpu/drm/sun4i/sun4i_frontend.c
-index c4959d9e16391..7186ba73d8e14 100644
---- a/drivers/gpu/drm/sun4i/sun4i_frontend.c
-+++ b/drivers/gpu/drm/sun4i/sun4i_frontend.c
-@@ -694,7 +694,7 @@ static const struct sun4i_frontend_data sun4i_a10_frontend = {
- };
+diff --git a/drivers/scsi/scsi_scan.c b/drivers/scsi/scsi_scan.c
+index 9a7e3a3bd5ce8..009a5b2aa3d02 100644
+--- a/drivers/scsi/scsi_scan.c
++++ b/drivers/scsi/scsi_scan.c
+@@ -1722,15 +1722,16 @@ static void scsi_sysfs_add_devices(struct Scsi_Host *shost)
+  */
+ static struct async_scan_data *scsi_prep_async_scan(struct Scsi_Host *shost)
+ {
+-	struct async_scan_data *data;
++	struct async_scan_data *data = NULL;
+ 	unsigned long flags;
  
- static const struct sun4i_frontend_data sun8i_a33_frontend = {
--	.ch_phase		= { 0x400, 0x400 },
-+	.ch_phase		= { 0x400, 0xfc400 },
- 	.has_coef_access_ctrl	= true,
- };
+ 	if (strncmp(scsi_scan_type, "sync", 4) == 0)
+ 		return NULL;
  
++	mutex_lock(&shost->scan_mutex);
+ 	if (shost->async_scan) {
+ 		shost_printk(KERN_DEBUG, shost, "%s called twice\n", __func__);
+-		return NULL;
++		goto err;
+ 	}
+ 
+ 	data = kmalloc(sizeof(*data), GFP_KERNEL);
+@@ -1741,7 +1742,6 @@ static struct async_scan_data *scsi_prep_async_scan(struct Scsi_Host *shost)
+ 		goto err;
+ 	init_completion(&data->prev_finished);
+ 
+-	mutex_lock(&shost->scan_mutex);
+ 	spin_lock_irqsave(shost->host_lock, flags);
+ 	shost->async_scan = 1;
+ 	spin_unlock_irqrestore(shost->host_lock, flags);
+@@ -1756,6 +1756,7 @@ static struct async_scan_data *scsi_prep_async_scan(struct Scsi_Host *shost)
+ 	return data;
+ 
+  err:
++	mutex_unlock(&shost->scan_mutex);
+ 	kfree(data);
+ 	return NULL;
+ }
 -- 
 2.27.0
 
