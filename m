@@ -2,76 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F83A2AB6B3
+	by mail.lfdr.de (Postfix) with ESMTP id C00EA2AB6B4
 	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 12:25:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729522AbgKILYC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 06:24:02 -0500
-Received: from aserp2130.oracle.com ([141.146.126.79]:45840 "EHLO
+        id S1729709AbgKILYG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 06:24:06 -0500
+Received: from aserp2130.oracle.com ([141.146.126.79]:45916 "EHLO
         aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729150AbgKILYB (ORCPT
+        with ESMTP id S1727826AbgKILYE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 06:24:01 -0500
+        Mon, 9 Nov 2020 06:24:04 -0500
 Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
-        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0A9BDnNM109788;
-        Mon, 9 Nov 2020 11:23:23 GMT
+        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0A9BDx1R109890;
+        Mon, 9 Nov 2020 11:23:27 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
  subject : date : message-id : in-reply-to : references; s=corp-2020-01-29;
- bh=z79mz5KcrOqspHqDF8yaRs9hKE0J10yMlcY85TFnu+o=;
- b=zMBfV189S1/DCwTjRR9wJR/b5L4Ia6zrCv0OzTUIRfWAdZG6rbO6AIS9uH1ni/JW4Pwp
- 7EiV3C5bc/kDXO7LFYkGGHfjn3mFXTDTh+MBQa0e/aLQd2GmGbemrIuYDvnGhHpO97I1
- PbCD/JX/dU2miKIBANU0a0NXiEW7rW8dD+BWdck35bBfAjdIiXytKEtxLGB9kIvFijKD
- JksWXSkrZtCjI3wKheuj4vy0kyo4DFMWbzDqoK7Lt6F8Oay2/HgirlTXp+OyobPBDU4k
- /InlzehCiqJMkAKgcPgii6jGmUcUNPXSGVGO3Nsh/rqklIFdHgGClFtVky+6rvG2w9hj 4w== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by aserp2130.oracle.com with ESMTP id 34nh3ankuw-1
+ bh=PbBHgdGI2tKASZAHqZepge/I1MAnUFPSZXHf3r3xu0s=;
+ b=lFLvS50s7/3KgBmqIAxmgmiCznQ4GdPYu+om+41j28FbrOw3BVELbkoDn18y7bazsSed
+ otHfMj7xLgdM91n1hllECzjut+zsQDkDiMhCy+hSikG20ykYpKl9oSx6sGbHX+hUN8ns
+ aLyvaJVKZkzZ77s76f80/wQUMCuUryuDLBG4BY1y3Np0cAzVF2MdfqI0vwmW9YOq/clO
+ Ua9oK6vet41RS3SzjtCF4YkOuc8q4MuIYg1uOH+fFAfOPFfPT50mwVv1ZfcPJU2WIdMU
+ jXIPEnGKtYlEWbYgR9FO620a8BmffjvZghDDc0GUvWikRY0H6/pTQmvFKcFbRzWE9714 Vw== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by aserp2130.oracle.com with ESMTP id 34nh3ankv0-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 09 Nov 2020 11:23:23 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0A9BL0ea109337;
-        Mon, 9 Nov 2020 11:21:23 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by userp3020.oracle.com with ESMTP id 34p5bqcyqp-1
+        Mon, 09 Nov 2020 11:23:26 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0A9BKlXx147282;
+        Mon, 9 Nov 2020 11:21:26 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by aserp3020.oracle.com with ESMTP id 34p5fxjv5g-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 09 Nov 2020 11:21:22 +0000
+        Mon, 09 Nov 2020 11:21:26 +0000
 Received: from abhmp0018.oracle.com (abhmp0018.oracle.com [141.146.116.24])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0A9BLLL2021356;
-        Mon, 9 Nov 2020 11:21:21 GMT
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0A9BLP2M015623;
+        Mon, 9 Nov 2020 11:21:25 GMT
 Received: from linux.home (/92.157.91.83)
         by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 09 Nov 2020 03:21:20 -0800
+        with ESMTP ; Mon, 09 Nov 2020 03:21:25 -0800
 From:   Alexandre Chartre <alexandre.chartre@oracle.com>
-To:     "tglx@linutronix.de"@userv0122.oracle.com,
-        "mingo@redhat.com"@userv0122.oracle.com,
-        "bp@alien8.de"@userv0122.oracle.com,
-        "hpa@zytor.com"@userv0122.oracle.com,
-        "x86@kernel.org"@userv0122.oracle.com,
-        "dave.hansen@linux.intel.com"@userv0122.oracle.com,
-        "luto@kernel.org"@userv0122.oracle.com,
-        "peterz@infradead.org"@userv0122.oracle.com,
-        "linux-kernel@vger.kernel.org"@userv0122.oracle.com,
-        "thomas.lendacky@amd.com"@userv0122.oracle.com,
-        "jroedel@suse.de"@userv0122.oracle.com
-Cc:     "konrad.wilk@oracle.com"@userv0122.oracle.com,
-        "jan.setjeeilers@oracle.com"@userv0122.oracle.com,
-        "junaids@google.com"@userv0122.oracle.com,
-        "oweisse@google.com"@userv0122.oracle.com,
-        "rppt@linux.vnet.ibm.com"@userv0122.oracle.com,
-        "graf@amazon.de"@userv0122.oracle.com,
-        "mgross@linux.intel.com"@userv0122.oracle.com,
-        "kuzuno@gmail.com"@userv0122.oracle.com,
-        "alexandre.chartre@oracle.com"@userv0122.oracle.com
-Subject: [RFC][PATCH 03/24] x86/entry: Consolidate IST entry from userspace
-Date:   Mon,  9 Nov 2020 12:22:58 +0100
-Message-Id: <20201109112319.264511-4-alexandre.chartre@oracle.com>
+To:     "tglx@linutronix.de"@aserv0121.oracle.com,
+        "mingo@redhat.com"@aserv0121.oracle.com,
+        "bp@alien8.de"@aserv0121.oracle.com,
+        "hpa@zytor.com"@aserv0121.oracle.com,
+        "x86@kernel.org"@aserv0121.oracle.com,
+        "dave.hansen@linux.intel.com"@aserv0121.oracle.com,
+        "luto@kernel.org"@aserv0121.oracle.com,
+        "peterz@infradead.org"@aserv0121.oracle.com,
+        "linux-kernel@vger.kernel.org"@aserv0121.oracle.com,
+        "thomas.lendacky@amd.com"@aserv0121.oracle.com,
+        "jroedel@suse.de"@aserv0121.oracle.com
+Cc:     "konrad.wilk@oracle.com"@aserv0121.oracle.com,
+        "jan.setjeeilers@oracle.com"@aserv0121.oracle.com,
+        "junaids@google.com"@aserv0121.oracle.com,
+        "oweisse@google.com"@aserv0121.oracle.com,
+        "rppt@linux.vnet.ibm.com"@aserv0121.oracle.com,
+        "graf@amazon.de"@aserv0121.oracle.com,
+        "mgross@linux.intel.com"@aserv0121.oracle.com,
+        "kuzuno@gmail.com"@aserv0121.oracle.com,
+        "alexandre.chartre@oracle.com"@aserv0121.oracle.com
+Subject: [RFC][PATCH 04/24] x86/sev-es: Define a setup stack function for the VC idtentry
+Date:   Mon,  9 Nov 2020 12:22:59 +0100
+Message-Id: <20201109112319.264511-5-alexandre.chartre@oracle.com>
 X-Mailer: git-send-email 2.18.4
 In-Reply-To: <20201109112319.264511-1-alexandre.chartre@oracle.com>
 References: <20201109112319.264511-1-alexandre.chartre@oracle.com>
 X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9799 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 malwarescore=0
- phishscore=0 spamscore=0 mlxlogscore=999 bulkscore=0 suspectscore=0
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2011090075
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 spamscore=0 malwarescore=0
+ adultscore=0 phishscore=0 bulkscore=0 mlxlogscore=999 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2011090075
 X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9799 signatures=668682
 X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 lowpriorityscore=0 priorityscore=1501
  clxscore=1015 malwarescore=0 mlxscore=0 spamscore=0 suspectscore=0
@@ -82,226 +82,189 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Most IST entries (NMI, MCE, DEBUG, VC but not DF) handle an entry from
-userspace the same way: they switch from the IST stack to the kernel
-stack, call the handler and then return to userspace. However, NMI,
-MCE/DEBUG and VC implement this same behavior using different code paths,
-so consolidate this code into a single assembly macro.
+The #VC exception assembly entry code uses C code (vc_switch_off_ist)
+to get and configure a stack, then return to assembly to switch to
+that stack and finally invoked the C function exception handler.
+
+To pave the way for deferring CR3 switch from assembly to C code,
+define a setup stack function for the VC idtentry. This function is
+used to get and configure the stack before invoking idtentry handler.
+
+For now, the setup stack function is just a wrapper around the
+the vc_switch_off_ist() function but it will eventually also
+contain the C code to switch CR3. The vc_switch_off_ist() function
+is also refactored to just return the stack pointer, and the stack
+configuration is done in the setup stack function (so that the
+stack can be also be used to propagate CR3 switch information to
+the idtentry handler for switching CR3 back).
 
 Signed-off-by: Alexandre Chartre <alexandre.chartre@oracle.com>
 ---
- arch/x86/entry/entry_64.S | 137 +++++++++++++++++++++-----------------
- 1 file changed, 75 insertions(+), 62 deletions(-)
+ arch/x86/entry/entry_64.S       |  8 +++-----
+ arch/x86/include/asm/idtentry.h | 14 ++++++++++++++
+ arch/x86/include/asm/traps.h    |  2 +-
+ arch/x86/kernel/sev-es.c        | 34 +++++++++++++++++++++++++++++++++
+ arch/x86/kernel/traps.c         | 19 +++---------------
+ 5 files changed, 55 insertions(+), 22 deletions(-)
 
 diff --git a/arch/x86/entry/entry_64.S b/arch/x86/entry/entry_64.S
-index c42948aca0a8..51df9f1871c6 100644
+index 51df9f1871c6..274384644b5e 100644
 --- a/arch/x86/entry/entry_64.S
 +++ b/arch/x86/entry/entry_64.S
-@@ -316,6 +316,72 @@ SYM_CODE_END(ret_from_fork)
- #endif
- .endm
+@@ -546,13 +546,11 @@ SYM_CODE_START(\asmsym)
+ 	UNWIND_HINT_REGS
  
-+/*
-+ * Macro to handle an IDT entry defined with the IST mechanism. It should
-+ * be invoked at the beginning of the IDT handler with a pointer to the C
-+ * function (cfunc_user) to invoke if the IDT was entered from userspace.
+ 	/*
+-	 * Switch off the IST stack to make it free for nested exceptions. The
+-	 * vc_switch_off_ist() function will switch back to the interrupted
+-	 * stack if it is safe to do so. If not it switches to the VC fall-back
+-	 * stack.
++	 * Call the setup stack function. It configures and returns
++	 * the stack we should be using to run the exception handler.
+ 	 */
+ 	movq	%rsp, %rdi		/* pt_regs pointer */
+-	call	vc_switch_off_ist
++	call	setup_stack_\cfunc
+ 	movq	%rax, %rsp		/* Switch to new stack */
+ 
+ 	UNWIND_HINT_REGS
+diff --git a/arch/x86/include/asm/idtentry.h b/arch/x86/include/asm/idtentry.h
+index b2442eb0ac2f..4b4aca2b1420 100644
+--- a/arch/x86/include/asm/idtentry.h
++++ b/arch/x86/include/asm/idtentry.h
+@@ -318,6 +318,7 @@ static __always_inline void __##func(struct pt_regs *regs)
+  */
+ #define DECLARE_IDTENTRY_VC(vector, func)				\
+ 	DECLARE_IDTENTRY_RAW_ERRORCODE(vector, func);			\
++	__visible noinstr unsigned long setup_stack_##func(struct pt_regs *regs);	\
+ 	__visible noinstr void ist_##func(struct pt_regs *regs, unsigned long error_code);	\
+ 	__visible noinstr void safe_stack_##func(struct pt_regs *regs, unsigned long error_code)
+ 
+@@ -380,6 +381,19 @@ static __always_inline void __##func(struct pt_regs *regs)
+ #define DEFINE_IDTENTRY_VC_IST(func)				\
+ 	DEFINE_IDTENTRY_RAW_ERRORCODE(ist_##func)
+ 
++/**
++ * DEFINE_IDTENTRY_VC_SETUP_STACK - Emit code for setting up the stack to
++				    run the VMM communication handler
++ * @func:	Function name of the entry point
 + *
-+ * If the IDT was entered from userspace, the macro will switch from the
-+ * IST stack to the regular task stack, call the provided function and
-+ * return to userland.
-+ *
-+ * If IDT was entered from the kernel, the macro will just return.
++ * The stack setup code is executed before the VMM communication handler.
++ * It configures and returns the stack to switch to before running the
++ * VMM communication handler.
 + */
-+.macro ist_entry_user cfunc_user has_error_code=0
-+	UNWIND_HINT_IRET_REGS
-+	ASM_CLAC
-+
-+	/* only process entry from userspace */
-+	.if \has_error_code == 1
-+		testb	$3, CS-ORIG_RAX(%rsp)
-+		jz	.List_entry_from_kernel_\@
-+	.else
-+		testb	$3, CS-RIP(%rsp)
-+		jz	.List_entry_from_kernel_\@
-+		pushq	$-1	/* ORIG_RAX: no syscall to restart */
-+	.endif
-+
-+	/* Use %rdx as a temp variable */
-+	pushq	%rdx
-+
-+	/*
-+	 * Switch from the IST stack to the regular task stack and
-+	 * use the provided entry point.
-+	 */
-+	swapgs
-+	cld
-+	FENCE_SWAPGS_USER_ENTRY
-+	SWITCH_TO_KERNEL_CR3 scratch_reg=%rdx
-+	movq	%rsp, %rdx
-+	movq	PER_CPU_VAR(cpu_current_top_of_stack), %rsp
-+	UNWIND_HINT_IRET_REGS base=%rdx offset=8
-+	pushq	6*8(%rdx)	/* pt_regs->ss */
-+	pushq	5*8(%rdx)	/* pt_regs->rsp */
-+	pushq	4*8(%rdx)	/* pt_regs->flags */
-+	pushq	3*8(%rdx)	/* pt_regs->cs */
-+	pushq	2*8(%rdx)	/* pt_regs->rip */
-+	UNWIND_HINT_IRET_REGS
-+	pushq   1*8(%rdx)	/* pt_regs->orig_ax */
-+	PUSH_AND_CLEAR_REGS rdx=(%rdx)
-+	ENCODE_FRAME_POINTER
-+
-+	/*
-+	 * At this point we no longer need to worry about stack damage
-+	 * due to nesting -- we're on the normal thread stack and we're
-+	 * done with the IST stack.
-+	 */
-+
-+	mov	%rsp, %rdi
-+	.if \has_error_code == 1
-+		movq	ORIG_RAX(%rsp), %rsi	/* get error code into 2nd argument*/
-+		movq	$-1, ORIG_RAX(%rsp)	/* no syscall to restart */
-+	.endif
-+	call	\cfunc_user
-+	jmp	swapgs_restore_regs_and_return_to_usermode
-+
-+.List_entry_from_kernel_\@:
-+.endm
++#define DEFINE_IDTENTRY_VC_SETUP_STACK(func)			\
++	__visible noinstr					\
++	unsigned long setup_stack_##func(struct pt_regs *regs)
 +
  /**
-  * idtentry_body - Macro to emit code calling the C function
-  * @cfunc:		C function to be called
-@@ -417,18 +483,15 @@ SYM_CODE_END(\asmsym)
-  */
- .macro idtentry_mce_db vector asmsym cfunc
- SYM_CODE_START(\asmsym)
--	UNWIND_HINT_IRET_REGS
--	ASM_CLAC
--
--	pushq	$-1			/* ORIG_RAX: no syscall to restart */
--
- 	/*
- 	 * If the entry is from userspace, switch stacks and treat it as
- 	 * a normal entry.
- 	 */
--	testb	$3, CS-ORIG_RAX(%rsp)
--	jnz	.Lfrom_usermode_switch_stack_\@
-+	ist_entry_user noist_\cfunc
+  * DEFINE_IDTENTRY_VC - Emit code for VMM communication handler
+  * @func:	Function name of the entry point
+diff --git a/arch/x86/include/asm/traps.h b/arch/x86/include/asm/traps.h
+index 7f7200021bd1..cfcc9d34d2a0 100644
+--- a/arch/x86/include/asm/traps.h
++++ b/arch/x86/include/asm/traps.h
+@@ -15,7 +15,7 @@ asmlinkage __visible notrace struct pt_regs *sync_regs(struct pt_regs *eregs);
+ asmlinkage __visible notrace
+ struct bad_iret_stack *fixup_bad_iret(struct bad_iret_stack *s);
+ void __init trap_init(void);
+-asmlinkage __visible noinstr struct pt_regs *vc_switch_off_ist(struct pt_regs *eregs);
++asmlinkage __visible noinstr unsigned long vc_switch_off_ist(struct pt_regs *eregs);
+ #endif
  
-+	/* Entry from kernel */
+ #ifdef CONFIG_X86_F00F_BUG
+diff --git a/arch/x86/kernel/sev-es.c b/arch/x86/kernel/sev-es.c
+index 0bd1a0fc587e..bd977c917cd6 100644
+--- a/arch/x86/kernel/sev-es.c
++++ b/arch/x86/kernel/sev-es.c
+@@ -1349,6 +1349,40 @@ DEFINE_IDTENTRY_VC_IST(exc_vmm_communication)
+ 	instrumentation_end();
+ }
+ 
++struct exc_vc_frame {
++	/* pt_regs should be first */
++	struct pt_regs regs;
++};
 +
-+	pushq	$-1			/* ORIG_RAX: no syscall to restart */
- 	/* paranoid_entry returns GS information for paranoid_exit in EBX. */
- 	call	paranoid_entry
++DEFINE_IDTENTRY_VC_SETUP_STACK(exc_vmm_communication)
++{
++	struct exc_vc_frame *frame;
++	unsigned long sp;
++
++	/*
++	 * Switch off the IST stack to make it free for nested exceptions.
++	 * The vc_switch_off_ist() function will switch back to the
++	 * interrupted stack if it is safe to do so. If not it switches
++	 * to the VC fall-back stack.
++	 */
++	sp = vc_switch_off_ist(regs);
++
++	/*
++	 * Found a safe stack. Set it up as if the entry has happened on
++	 * that stack. This means that we need to have pt_regs at the top
++	 * of the stack.
++	 *
++	 * The effective stack switch happens in assembly code before
++	 * the #VC handler is called.
++	 */
++	sp = ALIGN_DOWN(sp, 8) - sizeof(*frame);
++
++	frame = (struct exc_vc_frame *)sp;
++	frame->regs = *regs;
++
++	return sp;
++}
++
+ DEFINE_IDTENTRY_VC(exc_vmm_communication)
+ {
+ 	if (likely(!on_vc_fallback_stack(regs)))
+diff --git a/arch/x86/kernel/traps.c b/arch/x86/kernel/traps.c
+index e19df6cde35d..09b22a611d99 100644
+--- a/arch/x86/kernel/traps.c
++++ b/arch/x86/kernel/traps.c
+@@ -675,11 +675,10 @@ asmlinkage __visible noinstr struct pt_regs *sync_regs(struct pt_regs *eregs)
+ }
  
-@@ -440,10 +503,6 @@ SYM_CODE_START(\asmsym)
+ #ifdef CONFIG_AMD_MEM_ENCRYPT
+-asmlinkage __visible noinstr struct pt_regs *vc_switch_off_ist(struct pt_regs *regs)
++asmlinkage __visible noinstr unsigned long vc_switch_off_ist(struct pt_regs *regs)
+ {
+ 	unsigned long sp, *stack;
+ 	struct stack_info info;
+-	struct pt_regs *regs_ret;
  
- 	jmp	paranoid_exit
- 
--	/* Switch to the regular task stack and use the noist entry point */
--.Lfrom_usermode_switch_stack_\@:
--	idtentry_body noist_\cfunc, has_error_code=0
--
- _ASM_NOKPROBE(\asmsym)
- SYM_CODE_END(\asmsym)
- .endm
-@@ -472,15 +531,11 @@ SYM_CODE_END(\asmsym)
-  */
- .macro idtentry_vc vector asmsym cfunc
- SYM_CODE_START(\asmsym)
--	UNWIND_HINT_IRET_REGS
--	ASM_CLAC
--
  	/*
- 	 * If the entry is from userspace, switch stacks and treat it as
- 	 * a normal entry.
+ 	 * In the SYSCALL entry path the RSP value comes from user-space - don't
+@@ -687,8 +686,7 @@ asmlinkage __visible noinstr struct pt_regs *vc_switch_off_ist(struct pt_regs *r
  	 */
--	testb	$3, CS-ORIG_RAX(%rsp)
--	jnz	.Lfrom_usermode_switch_stack_\@
-+	ist_entry_user safe_stack_\cfunc, has_error_code=1
+ 	if (regs->ip >= (unsigned long)entry_SYSCALL_64 &&
+ 	    regs->ip <  (unsigned long)entry_SYSCALL_64_safe_stack) {
+-		sp = this_cpu_read(cpu_current_top_of_stack);
+-		goto sync;
++		return this_cpu_read(cpu_current_top_of_stack);
+ 	}
  
  	/*
- 	 * paranoid_entry returns SWAPGS flag for paranoid_exit in EBX.
-@@ -517,10 +572,6 @@ SYM_CODE_START(\asmsym)
- 	 */
- 	jmp	paranoid_exit
+@@ -703,18 +701,7 @@ asmlinkage __visible noinstr struct pt_regs *vc_switch_off_ist(struct pt_regs *r
+ 	    info.type >= STACK_TYPE_EXCEPTION_LAST)
+ 		sp = __this_cpu_ist_top_va(VC2);
  
--	/* Switch to the regular task stack */
--.Lfrom_usermode_switch_stack_\@:
--	idtentry_body safe_stack_\cfunc, has_error_code=1
--
- _ASM_NOKPROBE(\asmsym)
- SYM_CODE_END(\asmsym)
- .endm
-@@ -1113,8 +1164,6 @@ SYM_CODE_END(error_return)
-  *	      when PAGE_TABLE_ISOLATION is in use.  Do not clobber.
-  */
- SYM_CODE_START(asm_exc_nmi)
--	UNWIND_HINT_IRET_REGS
--
- 	/*
- 	 * We allow breakpoints in NMIs. If a breakpoint occurs, then
- 	 * the iretq it performs will take us out of NMI context.
-@@ -1153,14 +1202,6 @@ SYM_CODE_START(asm_exc_nmi)
- 	 * other IST entries.
- 	 */
- 
--	ASM_CLAC
--
--	/* Use %rdx as our temp variable throughout */
--	pushq	%rdx
--
--	testb	$3, CS-RIP+8(%rsp)
--	jz	.Lnmi_from_kernel
--
- 	/*
- 	 * NMI from user mode.  We need to run on the thread stack, but we
- 	 * can't go through the normal entry paths: NMIs are masked, and
-@@ -1171,41 +1212,13 @@ SYM_CODE_START(asm_exc_nmi)
- 	 * We also must not push anything to the stack before switching
- 	 * stacks lest we corrupt the "NMI executing" variable.
- 	 */
-+	ist_entry_user exc_nmi
- 
--	swapgs
--	cld
--	FENCE_SWAPGS_USER_ENTRY
--	SWITCH_TO_KERNEL_CR3 scratch_reg=%rdx
--	movq	%rsp, %rdx
--	movq	PER_CPU_VAR(cpu_current_top_of_stack), %rsp
--	UNWIND_HINT_IRET_REGS base=%rdx offset=8
--	pushq	5*8(%rdx)	/* pt_regs->ss */
--	pushq	4*8(%rdx)	/* pt_regs->rsp */
--	pushq	3*8(%rdx)	/* pt_regs->flags */
--	pushq	2*8(%rdx)	/* pt_regs->cs */
--	pushq	1*8(%rdx)	/* pt_regs->rip */
--	UNWIND_HINT_IRET_REGS
--	pushq   $-1		/* pt_regs->orig_ax */
--	PUSH_AND_CLEAR_REGS rdx=(%rdx)
--	ENCODE_FRAME_POINTER
--
+-sync:
 -	/*
--	 * At this point we no longer need to worry about stack damage
--	 * due to nesting -- we're on the normal thread stack and we're
--	 * done with the NMI stack.
+-	 * Found a safe stack - switch to it as if the entry didn't happen via
+-	 * IST stack. The code below only copies pt_regs, the real switch happens
+-	 * in assembly code.
 -	 */
+-	sp = ALIGN_DOWN(sp, 8) - sizeof(*regs_ret);
 -
--	movq	%rsp, %rdi
--	movq	$-1, %rsi
--	call	exc_nmi
-+	/* NMI from kernel */
+-	regs_ret = (struct pt_regs *)sp;
+-	*regs_ret = *regs;
+-
+-	return regs_ret;
++	return sp;
+ }
+ #endif
  
--	/*
--	 * Return back to user mode.  We must *not* do the normal exit
--	 * work, because we don't want to enable interrupts.
--	 */
--	jmp	swapgs_restore_regs_and_return_to_usermode
-+	/* Use %rdx as our temp variable throughout */
-+	pushq	%rdx
- 
--.Lnmi_from_kernel:
- 	/*
- 	 * Here's what our stack frame will look like:
- 	 * +---------------------------------------------------------+
 -- 
 2.18.4
 
