@@ -2,41 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA8552ABBF3
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 14:32:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 072A62ABC26
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 14:35:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731226AbgKINHB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 08:07:01 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59572 "EHLO mail.kernel.org"
+        id S1731547AbgKINeu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 08:34:50 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58492 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731166AbgKINGy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 08:06:54 -0500
+        id S1730906AbgKINFi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 08:05:38 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8A5BA20789;
-        Mon,  9 Nov 2020 13:06:52 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id AFCBB206C0;
+        Mon,  9 Nov 2020 13:05:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604927213;
-        bh=Y6ko1wyJWPyxRON9IYngFtGYAUUZW4EoWK7n9Zwbcqs=;
+        s=default; t=1604927137;
+        bh=zI94Fjt1LxO8dQyFj8RFvyuAwoLB2+02+ybwG2pZAmw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=j+DjZTjkNysldxsDXupXlVUXgewzgDC6F4hbFQCJe8JyUKev6/81uvTYmKmIZNvoN
-         zgRjz7/VevXhENBi5+/DOPx2Jo3JbR8DkmsL+gulpyiq0SYTLQsLPg2GXuaI4GYLwC
-         zvBaGF66wEKlzwjoin7MC1/LXukIljuHmqQOFuH0=
+        b=WB6TXLhkSiQU26T/pnrjx7MQLZ9dYB+xJedUFaooKRHjCp008NSNGr8AZ3id6ph5s
+         kIjFgw0sNguL2v2SjJ7AHd8sXKMV/onBa1Nqpg53RZBRsS2IkVQtwmQTDkBrx2afih
+         L6evVERr7LLQQ7SJV1zCdSnIq+6FvOxSLFG6TRQ8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Roman Kiryanov <rkir@google.com>,
-        Jeff Vander Stoep <jeffv@google.com>,
-        James Morris <jamorris@linux.microsoft.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 32/48] vsock: use ns_capable_noaudit() on socket create
-Date:   Mon,  9 Nov 2020 13:55:41 +0100
-Message-Id: <20201109125018.344404099@linuxfoundation.org>
+        stable@vger.kernel.org, Vineet Gupta <vgupta@synopsys.com>
+Subject: [PATCH 4.9 116/117] ARC: stack unwinding: avoid indefinite looping
+Date:   Mon,  9 Nov 2020 13:55:42 +0100
+Message-Id: <20201109125031.188026182@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201109125016.734107741@linuxfoundation.org>
-References: <20201109125016.734107741@linuxfoundation.org>
+In-Reply-To: <20201109125025.630721781@linuxfoundation.org>
+References: <20201109125025.630721781@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,46 +41,72 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jeff Vander Stoep <jeffv@google.com>
+From: Vineet Gupta <vgupta@synopsys.com>
 
-[ Upstream commit af545bb5ee53f5261db631db2ac4cde54038bdaf ]
+commit 328d2168ca524d501fc4b133d6be076142bd305c upstream.
 
-During __vsock_create() CAP_NET_ADMIN is used to determine if the
-vsock_sock->trusted should be set to true. This value is used later
-for determing if a remote connection should be allowed to connect
-to a restricted VM. Unfortunately, if the caller doesn't have
-CAP_NET_ADMIN, an audit message such as an selinux denial is
-generated even if the caller does not want a trusted socket.
+Currently stack unwinder is a while(1) loop which relies on the dwarf
+unwinder to signal termination, which in turn relies on dwarf info to do
+so. This in theory could cause an infinite loop if the dwarf info was
+somehow messed up or the register contents were etc.
 
-Logging errors on success is confusing. To avoid this, switch the
-capable(CAP_NET_ADMIN) check to the noaudit version.
+This fix thus detects the excessive looping and breaks the loop.
 
-Reported-by: Roman Kiryanov <rkir@google.com>
-https://android-review.googlesource.com/c/device/generic/goldfish/+/1468545/
-Signed-off-by: Jeff Vander Stoep <jeffv@google.com>
-Reviewed-by: James Morris <jamorris@linux.microsoft.com>
-Link: https://lore.kernel.org/r/20201023143757.377574-1-jeffv@google.com
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+| Mem: 26184K used, 1009136K free, 0K shrd, 0K buff, 14416K cached
+| CPU:  0.0% usr 72.8% sys  0.0% nic 27.1% idle  0.0% io  0.0% irq  0.0% sirq
+| Load average: 4.33 2.60 1.11 2/74 139
+|   PID  PPID USER     STAT   VSZ %VSZ CPU %CPU COMMAND
+|   133     2 root     SWN      0  0.0   3 22.9 [rcu_torture_rea]
+|   132     2 root     SWN      0  0.0   0 22.0 [rcu_torture_rea]
+|   131     2 root     SWN      0  0.0   3 21.5 [rcu_torture_rea]
+|   126     2 root     RW       0  0.0   2  5.4 [rcu_torture_wri]
+|   129     2 root     SWN      0  0.0   0  0.2 [rcu_torture_fak]
+|   137     2 root     SW       0  0.0   0  0.2 [rcu_torture_cbf]
+|   127     2 root     SWN      0  0.0   0  0.1 [rcu_torture_fak]
+|   138   115 root     R     1464  0.1   2  0.1 top
+|   130     2 root     SWN      0  0.0   0  0.1 [rcu_torture_fak]
+|   128     2 root     SWN      0  0.0   0  0.1 [rcu_torture_fak]
+|   115     1 root     S     1472  0.1   1  0.0 -/bin/sh
+|   104     1 root     S     1464  0.1   0  0.0 inetd
+|     1     0 root     S     1456  0.1   2  0.0 init
+|    78     1 root     S     1456  0.1   0  0.0 syslogd -O /var/log/messages
+|   134     2 root     SW       0  0.0   2  0.0 [rcu_torture_sta]
+|    10     2 root     IW       0  0.0   1  0.0 [rcu_preempt]
+|    88     2 root     IW       0  0.0   1  0.0 [kworker/1:1-eve]
+|    66     2 root     IW       0  0.0   2  0.0 [kworker/2:2-eve]
+|    39     2 root     IW       0  0.0   2  0.0 [kworker/2:1-eve]
+| unwinder looping too long, aborting !
+
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Vineet Gupta <vgupta@synopsys.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- net/vmw_vsock/af_vsock.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/arc/kernel/stacktrace.c |    7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
-diff --git a/net/vmw_vsock/af_vsock.c b/net/vmw_vsock/af_vsock.c
-index f297a427b421b..29f7491acb354 100644
---- a/net/vmw_vsock/af_vsock.c
-+++ b/net/vmw_vsock/af_vsock.c
-@@ -636,7 +636,7 @@ struct sock *__vsock_create(struct net *net,
- 		vsk->owner = get_cred(psk->owner);
- 		vsk->connect_timeout = psk->connect_timeout;
- 	} else {
--		vsk->trusted = capable(CAP_NET_ADMIN);
-+		vsk->trusted = ns_capable_noaudit(&init_user_ns, CAP_NET_ADMIN);
- 		vsk->owner = get_current_cred();
- 		vsk->connect_timeout = VSOCK_DEFAULT_CONNECT_TIMEOUT;
+--- a/arch/arc/kernel/stacktrace.c
++++ b/arch/arc/kernel/stacktrace.c
+@@ -113,7 +113,7 @@ arc_unwind_core(struct task_struct *tsk,
+ 		int (*consumer_fn) (unsigned int, void *), void *arg)
+ {
+ #ifdef CONFIG_ARC_DW2_UNWIND
+-	int ret = 0;
++	int ret = 0, cnt = 0;
+ 	unsigned int address;
+ 	struct unwind_frame_info frame_info;
+ 
+@@ -133,6 +133,11 @@ arc_unwind_core(struct task_struct *tsk,
+ 			break;
+ 
+ 		frame_info.regs.r63 = frame_info.regs.r31;
++
++		if (cnt++ > 128) {
++			printk("unwinder looping too long, aborting !\n");
++			return 0;
++		}
  	}
--- 
-2.27.0
-
+ 
+ 	return address;		/* return the last address it saw */
 
 
