@@ -2,41 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C58822ABBA7
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 14:32:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 79F742ABB8E
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 14:32:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731538AbgKINON (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 08:14:13 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40308 "EHLO mail.kernel.org"
+        id S1732228AbgKINK6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 08:10:58 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36206 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1733058AbgKINOI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 08:14:08 -0500
+        id S1731310AbgKINKv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 08:10:51 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D787B20663;
-        Mon,  9 Nov 2020 13:14:06 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6E2FB2076E;
+        Mon,  9 Nov 2020 13:10:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604927647;
-        bh=2EPBhjUcKwhQAiBveff2wv2l0sDCS99DGzUfWWYOiLc=;
+        s=default; t=1604927450;
+        bh=qCBhtpFu4+gV/FogMxeTf9lVAgyxhtB5mP2p91d2WR8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=uqs8mu/FvXS8lb5vDjgaEwQRSlatdwdFLlI61xqy7LCU/2+4h+p/X9jjwapjAwmbJ
-         ahaFoI5Yypetv9/kopTVeYktYa0XjulyB86WNzdtspyzvuF8lxhmifWJAPKsBES/nX
-         d0iN7vsqQZOxsj8vIhs7zTmp6Ooc6Hb3TIyU3qe0=
+        b=vW+jqnk0Wcc5u6C7KSuY9paTWIcRgmBzylv+PzbQOeKHz9ouuxxJUnDfX8tH5V0GX
+         GB4m6+qiC5ttVxTtqTTAilKkbz/8ystolkQ+RW0lImu7xpFCl2Xy6Fp5hej+6l1VH7
+         e4dEGVLUo67zn/sJqPXuYYBM3r+9irrfeLYoQvdk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Zhang Qilong <zhangqilong3@huawei.com>,
-        Pankaj Gupta <pankaj.gupta.linux@gmail.com>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 58/85] ACPI: NFIT: Fix comparison to -ENXIO
-Date:   Mon,  9 Nov 2020 13:55:55 +0100
-Message-Id: <20201109125025.356474804@linuxfoundation.org>
+        stable@vger.kernel.org, Daniele Palmas <dnlplm@gmail.com>,
+        Johan Hovold <johan@kernel.org>
+Subject: [PATCH 4.19 62/71] USB: serial: option: add Telit FN980 composition 0x1055
+Date:   Mon,  9 Nov 2020 13:55:56 +0100
+Message-Id: <20201109125022.824021013@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201109125022.614792961@linuxfoundation.org>
-References: <20201109125022.614792961@linuxfoundation.org>
+In-Reply-To: <20201109125019.906191744@linuxfoundation.org>
+References: <20201109125019.906191744@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,38 +42,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhang Qilong <zhangqilong3@huawei.com>
+From: Daniele Palmas <dnlplm@gmail.com>
 
-[ Upstream commit 85f971b65a692b68181438e099b946cc06ed499b ]
+commit db0362eeb22992502764e825c79b922d7467e0eb upstream.
 
-Initial value of rc is '-ENXIO', and we should
-use the initial value to check it.
+Add the following Telit FN980 composition:
 
-Signed-off-by: Zhang Qilong <zhangqilong3@huawei.com>
-Reviewed-by: Pankaj Gupta <pankaj.gupta.linux@gmail.com>
-Reviewed-by: Vishal Verma <vishal.l.verma@intel.com>
-[ rjw: Subject edit ]
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+0x1055: tty, adb, tty, tty, tty, tty
+
+Signed-off-by: Daniele Palmas <dnlplm@gmail.com>
+Link: https://lore.kernel.org/r/20201103124425.12940-1-dnlplm@gmail.com
+Cc: stable@vger.kernel.org
+Signed-off-by: Johan Hovold <johan@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- drivers/acpi/nfit/core.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/usb/serial/option.c |    2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/acpi/nfit/core.c b/drivers/acpi/nfit/core.c
-index 12d980aafc5ff..9d78f29cf9967 100644
---- a/drivers/acpi/nfit/core.c
-+++ b/drivers/acpi/nfit/core.c
-@@ -1553,7 +1553,7 @@ static ssize_t format1_show(struct device *dev,
- 					le16_to_cpu(nfit_dcr->dcr->code));
- 			break;
- 		}
--		if (rc != ENXIO)
-+		if (rc != -ENXIO)
- 			break;
- 	}
- 	mutex_unlock(&acpi_desc->init_mutex);
--- 
-2.27.0
-
+--- a/drivers/usb/serial/option.c
++++ b/drivers/usb/serial/option.c
+@@ -1191,6 +1191,8 @@ static const struct usb_device_id option
+ 	  .driver_info = NCTRL(0) | RSVD(1) },
+ 	{ USB_DEVICE_INTERFACE_CLASS(TELIT_VENDOR_ID, 0x1054, 0xff),	/* Telit FT980-KS */
+ 	  .driver_info = NCTRL(2) | RSVD(3) },
++	{ USB_DEVICE_INTERFACE_CLASS(TELIT_VENDOR_ID, 0x1055, 0xff),	/* Telit FN980 (PCIe) */
++	  .driver_info = NCTRL(0) | RSVD(1) },
+ 	{ USB_DEVICE(TELIT_VENDOR_ID, TELIT_PRODUCT_ME910),
+ 	  .driver_info = NCTRL(0) | RSVD(1) | RSVD(3) },
+ 	{ USB_DEVICE(TELIT_VENDOR_ID, TELIT_PRODUCT_ME910_DUAL_MODEM),
 
 
