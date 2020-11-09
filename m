@@ -2,124 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 667182AC11A
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 17:43:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BD2862AC11D
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 17:43:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730376AbgKIQkL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 11:40:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55126 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730189AbgKIQkL (ORCPT
+        id S1730491AbgKIQmB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 11:42:01 -0500
+Received: from mail-ej1-f68.google.com ([209.85.218.68]:38365 "EHLO
+        mail-ej1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726410AbgKIQmA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 11:40:11 -0500
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1244C0613CF
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Nov 2020 08:40:09 -0800 (PST)
-Received: by mail-wr1-x444.google.com with SMTP id c17so9373167wrc.11
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Nov 2020 08:40:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=vFzYMDoCTE/7BuMCxuGj//okAPwk1hzD+o6O8Pb/N54=;
-        b=dd0LRhluqfhRIc5sOEgklGW7/QhdZrNm2GO5aSXtWNRBkuaWyLPKaVOW1cQduxqCOp
-         mNMNnwHgXBnaesTROkdep44nv2PxqszfcCb+7JEjKWeXGPDsq/ZB0ZfJRRRdFeo+evIF
-         aCGcLuZJm2bPqF70hviQm2EN0UAx0obDEFmy87NX8lWciOSQ8poliSMf1zxeyVbu2BXt
-         XlZ/QBDF0O0njojWJjgWSMGzCOJI+MtVU/bcGrZ0e8Ykd+9oQs7/JuU187Dw9ku6Xk+I
-         OKv3MpxHmXhjWLvGJ3gNqrtZ/KgzW3rGpF13J3zRN165/lQDETRVChL92a5TllgM3Hf4
-         QRcw==
+        Mon, 9 Nov 2020 11:42:00 -0500
+Received: by mail-ej1-f68.google.com with SMTP id za3so13201371ejb.5;
+        Mon, 09 Nov 2020 08:41:57 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=vFzYMDoCTE/7BuMCxuGj//okAPwk1hzD+o6O8Pb/N54=;
-        b=jAJ3M3y02wmEtHlgprnd+wp07SlhPJOHDjp0Pgjbzzfw59f7ozAPoTRdV6WSmz7y0i
-         4s0OcY9ge2fp8wZiMUQYNYvLeG1dlxSttjAVjAskubfzvOIqLG63tXSzxu6ljDNmiW30
-         vWEyel+sZjIqQbi0bUmcytcav/dH4WtSPhse6iXNL9AsZPSUSGaRGf3uQgla59ArR61t
-         WOd+1k0vVBknKesTLD4BwQ6jbo2K2wQ/Vu/8h9UqNKYplNI2Kq2/8jA9uloxUqn/jDss
-         UDlRSyTEqwWYi9COG8f2j+yLybDm2ubWi9PUF3IKQG97lXZzeAAlOc+KPW4s4Jip0lZR
-         loPA==
-X-Gm-Message-State: AOAM532vCvL9AaMdi9PiOJ0VtzoyTIA4QdlQxkk0AlgMMORjshPr0ieS
-        g0GtXdZ9AZi97K6B6AAfSvBHFw==
-X-Google-Smtp-Source: ABdhPJzi2iHSBIfHhM1EAq/pMbkMQftrIzRJgLBNavLLlp93wooaq4GPyuJieZUH4V9f0WvGGG8wdA==
-X-Received: by 2002:a5d:4d0d:: with SMTP id z13mr18164369wrt.23.1604940008605;
-        Mon, 09 Nov 2020 08:40:08 -0800 (PST)
-Received: from dell ([91.110.221.180])
-        by smtp.gmail.com with ESMTPSA id n14sm14137815wrt.8.2020.11.09.08.40.05
+         :mime-version:content-disposition:in-reply-to;
+        bh=ujpjlJ97w4LBR+Pnd8eyIdETkwyQryD31slWX4jQqCE=;
+        b=sBv3Cf8W03PcDtd9VrNynwA83ryxhW3ksTUSsUxTfjVswf5pdZQILWGkR2oBmkZzFA
+         OG/l09/YOpQM5KPyB/V8YRTiL7Yz+GNPBzXH+aN45CCFxlBjeGAI5beOWChK+2ypCzHU
+         Ybw5tj1fqR5DbMO138OCAgCN21t96kvtrTr/j0hYXD/K5Bf1Mez1U+l08pFgstdyMi2H
+         J2szejvX894Q/aVoKwvHmpPXSNhGmakYL2cOp4/2b/wCfeDano6ifn1pI/ALVvYzZ4bV
+         nb7e22e7zRGyGAMk2HyM5IoFn+H8/DB19LIByoNDlI85TWfL31wUC2xbykOrDVO+ujM2
+         1G/Q==
+X-Gm-Message-State: AOAM533A+GCMbbgTH5dDSH3CCoXFDmdRqqlV9YbO+ROf2C5f0y/RoUtQ
+        JMIuRdVTRo2rofwEXRq7FqE=
+X-Google-Smtp-Source: ABdhPJzcaGkJsjB9w9JlX/w2LEYFW0rptQq19FiwHB5QJnt9C2Oo2XDrCELiId89J6u4L1rC2xHweQ==
+X-Received: by 2002:a17:907:2712:: with SMTP id w18mr14881574ejk.130.1604940116998;
+        Mon, 09 Nov 2020 08:41:56 -0800 (PST)
+Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
+        by smtp.googlemail.com with ESMTPSA id d10sm9009186ejw.44.2020.11.09.08.41.55
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 09 Nov 2020 08:40:08 -0800 (PST)
-Date:   Mon, 9 Nov 2020 16:40:04 +0000
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Ville =?iso-8859-1?Q?Syrj=E4l=E4?= <ville.syrjala@linux.intel.com>
-Cc:     David Airlie <airlied@linux.ie>,
-        David Francis <David.Francis@amd.com>,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org
-Subject: Re: [PATCH 14/19] gpu: drm: selftests: test-drm_dp_mst_helper: Place
- 'struct drm_dp_sideband_msg_req_body' onto the heap
-Message-ID: <20201109164004.GZ2063125@dell>
-References: <20201105144517.1826692-1-lee.jones@linaro.org>
- <20201105144517.1826692-15-lee.jones@linaro.org>
- <20201109151937.GF6112@intel.com>
- <20201109161258.GX2063125@dell>
- <20201109162015.GH6112@intel.com>
+        Mon, 09 Nov 2020 08:41:56 -0800 (PST)
+Date:   Mon, 9 Nov 2020 17:41:54 +0100
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Yu Kuai <yukuai3@huawei.com>
+Cc:     thierry.reding@gmail.com, jonathanh@nvidia.com,
+        madalin.bucur@nxp.com, davem@davemloft.net, kuba@kernel.org,
+        mperttunen@nvidia.com, tomeu.vizoso@collabora.com,
+        linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
+        netdev@vger.kernel.org, yi.zhang@huawei.com
+Subject: Re: [PATCH V2] memory: tegra: add missing put_devcie() call in error
+ path of tegra_emc_probe()
+Message-ID: <20201109164154.GA211123@kozik-lap>
+References: <20201102185216.GB13405@kozik-lap>
+ <20201109132847.1738010-1-yukuai3@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201109162015.GH6112@intel.com>
+In-Reply-To: <20201109132847.1738010-1-yukuai3@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 09 Nov 2020, Ville Syrjälä wrote:
+On Mon, Nov 09, 2020 at 09:28:47PM +0800, Yu Kuai wrote:
+> The reference to device obtained with of_find_device_by_node() should
+> be dropped. Thus add jump target to fix the exception handling for this
+> function implementation.
 
-> On Mon, Nov 09, 2020 at 04:12:58PM +0000, Lee Jones wrote:
-> > On Mon, 09 Nov 2020, Ville Syrjälä wrote:
-> > 
-> > > On Thu, Nov 05, 2020 at 02:45:12PM +0000, Lee Jones wrote:
-> > > > The stack is too full.
-> > > > 
-> > > > Fixes the following W=1 kernel build warning(s):
-> > > > 
-> > > >  drivers/gpu/drm/selftests/test-drm_dp_mst_helper.c: In function ‘sideband_msg_req_encode_decode’:
-> > > >  drivers/gpu/drm/selftests/test-drm_dp_mst_helper.c:161:1: warning: the frame size of 1176 bytes is larger than 1024 bytes [-Wframe-larger-than=]
-> > > > 
-> > > > Cc: David Airlie <airlied@linux.ie>
-> > > > Cc: Daniel Vetter <daniel@ffwll.ch>
-> > > > Cc: Lyude Paul <lyude@redhat.com>
-> > > > Cc: David Francis <David.Francis@amd.com>
-> > > > Cc: dri-devel@lists.freedesktop.org
-> > > > Signed-off-by: Lee Jones <lee.jones@linaro.org>
-> > > > ---
-> > > >  .../drm/selftests/test-drm_dp_mst_helper.c    | 29 ++++++++++++-------
-> > > >  1 file changed, 18 insertions(+), 11 deletions(-)
-> > > > 
-> > > > diff --git a/drivers/gpu/drm/selftests/test-drm_dp_mst_helper.c b/drivers/gpu/drm/selftests/test-drm_dp_mst_helper.c
-> > > > index 1d696ec001cff..0a539456f6864 100644
-> > > > --- a/drivers/gpu/drm/selftests/test-drm_dp_mst_helper.c
-> > > > +++ b/drivers/gpu/drm/selftests/test-drm_dp_mst_helper.c
-> > > > @@ -120,44 +120,51 @@ sideband_msg_req_equal(const struct drm_dp_sideband_msg_req_body *in,
-> > > >  static bool
-> > > >  sideband_msg_req_encode_decode(struct drm_dp_sideband_msg_req_body *in)
-> > > >  {
-> > > > -	struct drm_dp_sideband_msg_req_body out = {0};
-> > > > +	struct drm_dp_sideband_msg_req_body *out;
-> > > 
-> > > How big is it? And why is it that big?
-> > 
-> > It's a struct of a union of structs.
-> > 
-> > And it's all allocated on the stack.  Bad news!
+You still need to correct the typo devcie->device in subject, as in v1.
+
 > 
-> That doesn't answer my questions.
+> Fixes: 73a7f0a90641("memory: tegra: Add EMC (external memory controller) driver")
+> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
+> ---
+>  drivers/memory/tegra/tegra124-emc.c           | 21 +++++++++++++------
+>  .../net/ethernet/freescale/fman/fman_port.c   |  3 +--
 
-It answers the second question.
+Changes in net are not related, please split... although actually I
+think the issue is already fixed by 1f1997eb44b1 ("memory: tegra: Add
+and use devm_tegra_memory_controller_get()").
 
-The answer to the first question you can `grep` for yourself. ;)
+Best regards,
+Krzysztof
 
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
