@@ -2,95 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A22832ABE32
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 15:05:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A87832ABE60
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 15:15:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730410AbgKIOFh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 09:05:37 -0500
-Received: from frasgout.his.huawei.com ([185.176.79.56]:2077 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729976AbgKIOFg (ORCPT
+        id S1731245AbgKIOPB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 09:15:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60806 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730467AbgKIOPB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 09:05:36 -0500
-Received: from fraeml707-chm.china.huawei.com (unknown [172.18.147.201])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4CVCR11MdQz67Jdf;
-        Mon,  9 Nov 2020 22:04:13 +0800 (CST)
-Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
- fraeml707-chm.china.huawei.com (10.206.15.35) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1913.5; Mon, 9 Nov 2020 15:05:34 +0100
-Received: from [10.47.0.244] (10.47.0.244) by lhreml724-chm.china.huawei.com
- (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Mon, 9 Nov 2020
- 14:05:32 +0000
-Subject: Re: [PATCH v8 17/18] scsi: megaraid_sas: Added support for shared
- host tagset for cpuhotplug
-To:     Qian Cai <cai@redhat.com>, Sumit Saxena <sumit.saxena@broadcom.com>
-CC:     Kashyap Desai <kashyap.desai@broadcom.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        <don.brace@microsemi.com>, Ming Lei <ming.lei@redhat.com>,
-        Bart Van Assche <bvanassche@acm.org>,
-        <dgilbert@interlog.com>, <paolo.valente@linaro.org>,
-        Hannes Reinecke <hare@suse.de>, Christoph Hellwig <hch@lst.de>,
-        <linux-block@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        "Linux SCSI List" <linux-scsi@vger.kernel.org>,
-        <esc.storagedev@microsemi.com>,
-        "PDL,MEGARAIDLINUX" <megaraidlinux.pdl@broadcom.com>,
-        <chenxiang66@hisilicon.com>, <luojiaxing@huawei.com>,
-        Hannes Reinecke <hare@suse.com>
-References: <1597850436-116171-1-git-send-email-john.garry@huawei.com>
- <1597850436-116171-18-git-send-email-john.garry@huawei.com>
- <fe3dff7dae4494e5a88caffbb4d877bbf472dceb.camel@redhat.com>
- <385d5408-6ba2-6bb6-52d3-b59c9aa9c5e5@huawei.com>
- <193a0440eed447209c48bda042f0e4db102355e7.camel@redhat.com>
- <519e0d58-e73e-22ce-0ddb-1be71487ba6d@huawei.com>
- <d8fd51b11d5d54e6ec7e4e9a4f7dcc83f1215cd3.camel@redhat.com>
- <d4f86cccccc3bffccc4eda39500ce1e1fee2109a.camel@redhat.com>
- <7624d3fe1613f19af5c3a77f4ae8fe55@mail.gmail.com>
- <d1040c06-74ea-7016-d259-195fa52196a9@huawei.com>
- <CAL2rwxoAAGQDud1djb3_LNvBw95YoYUGhe22FwE=hYhy7XOLSw@mail.gmail.com>
- <aaf849d38ca3cdd45151ffae9b6a99fe6f6ea280.camel@redhat.com>
- <0c75b881-3096-12cf-07cc-1119ca6a453e@huawei.com>
- <06a1a6bde51a66461d7b3135349641856315401d.camel@redhat.com>
-From:   John Garry <john.garry@huawei.com>
-Message-ID: <db92d37c-28fd-4f81-7b59-8f19e9178543@huawei.com>
-Date:   Mon, 9 Nov 2020 14:05:26 +0000
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.2
+        Mon, 9 Nov 2020 09:15:01 -0500
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F5AFC0613CF
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Nov 2020 06:15:00 -0800 (PST)
+Received: by mail-pf1-x442.google.com with SMTP id q10so8307944pfn.0
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Nov 2020 06:15:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=dW3iaMNRaK29PFwXsdN2BpW3nrFRdjVd9RZvzmco9OQ=;
+        b=mOSQ8eXb8EWF51GfkbaMjtB9cy5675N6ueGCBtvgX1tvlPheBO+5kJq9y46H20QJ1w
+         8P7Gqjb88nW0PLQwCitwLY9o6PzqZnaDq1hIgVLzyXM6FHKY9HKRHvHKsh6WpoVje5YC
+         rdXTTmZXpZyDp8YWDdvEIU4WMx22yYN0yLp6N0lGO4k7RAD2qPHnkVFVm0H7iDevOC82
+         WfL4Pnq1ebUGOxhKXCNQsMKKGv8TLGae6wYZH7kdy8amPwKQesfUl1k+ECO8SJC0wF/4
+         GIlvtjTPB6KMgxapZ6aW9u2loV4rPqvWLHL0ICsFAC3DNModFwSFPyzjellsJknxB78/
+         MWXA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=dW3iaMNRaK29PFwXsdN2BpW3nrFRdjVd9RZvzmco9OQ=;
+        b=YxMh/YxeIkkojIeiZy9YkP24oCGBuEnaNIbiepporAX9I531EZbWdAE6cdWB82p4Z4
+         vBAHB6nvS3i+SCohw2kvX862qQh9EGGonlLpq8GZGGU6MRptRAzphRf+wlFaXQylWNg5
+         2157AlqBUP6WhGXQYpD2w5RnWC2tTX9DmkYjCKWbbArXffWdv2/NPIJEMAG0QoVbEkdz
+         AUKuu6guxNJOw06ElDW9wjQIwWKaGwKz7R3sosPI/nfhlfwIqiWO0IC2m9LmN9wEOsyB
+         gMXRFgFODaKuqjYZzT/rr+URyK/9o5q64z2/Z+QPS2/zHcnyEeUOF9pcO7UkOaFh4ktR
+         tNIw==
+X-Gm-Message-State: AOAM530nKYd3AzrBJJTcrh9U+2BswzIe/Tz9zflvfc8LgO2CwZIu3VDS
+        GVsdixTRU5IKJOk0dwVxLiX8MsUFm4DT/Q==
+X-Google-Smtp-Source: ABdhPJzjnR2tsju5hVZt+y1dI1ErLnSX344xymJetu9VL8AcwF1hO7ULykTAQ+OeDx+LGGFXWHci6g==
+X-Received: by 2002:a92:ab04:: with SMTP id v4mr9184739ilh.18.1604930816707;
+        Mon, 09 Nov 2020 06:06:56 -0800 (PST)
+Received: from [192.168.1.30] ([65.144.74.34])
+        by smtp.gmail.com with ESMTPSA id c66sm7504741ilg.46.2020.11.09.06.06.55
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 09 Nov 2020 06:06:55 -0800 (PST)
+Subject: Re: linux-next: manual merge of the tip tree with the block tree
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Ingo Molnar <mingo@elte.hu>, "H. Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+References: <20201109141446.3370914b@canb.auug.org.au>
+ <871rh2k5jq.fsf@nanos.tec.linutronix.de>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <02e6aad7-dbea-6820-df01-76263080b169@kernel.dk>
+Date:   Mon, 9 Nov 2020 07:06:55 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <06a1a6bde51a66461d7b3135349641856315401d.camel@redhat.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
+In-Reply-To: <871rh2k5jq.fsf@nanos.tec.linutronix.de>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.47.0.244]
-X-ClientProxiedBy: lhreml744-chm.china.huawei.com (10.201.108.194) To
- lhreml724-chm.china.huawei.com (10.201.108.75)
-X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 09/11/2020 13:39, Qian Cai wrote:
->> I suppose I could try do this myself also, but an authentic version
->> would be nicer.
-> The closest one I have here is:
-> https://cailca.coding.net/public/linux/mm/git/files/master/arm64.config
+On 11/9/20 6:45 AM, Thomas Gleixner wrote:
+> On Mon, Nov 09 2020 at 14:14, Stephen Rothwell wrote:
+>> Today's linux-next merge of the tip tree got a conflict in:
+>>
+>>   include/linux/sched/signal.h
+>>   include/linux/tracehook.h
+>>   kernel/signal.c
+>>   kernel/task_work.c
+>>
+>> between commits:
+>>
+>>   fdb5f027ce66 ("task_work: use TIF_NOTIFY_SIGNAL if available")
+>>   bf6996650675 ("task_work: remove legacy TWA_SIGNAL path")
+>>   ceb39b7c17b7 ("kernel: remove checking for TIF_NOTIFY_SIGNAL")
+>>
+>> from the block tree and commit:
+>>
+>>   114518eb6430 ("task_work: Use TIF_NOTIFY_SIGNAL if available")
+>>   12db8b690010 ("entry: Add support for TIF_NOTIFY_SIGNAL")
+>>
+>> from the tip tree.
 > 
-> but it only selects the Thunder X2 platform and needs to manually select
-> CONFIG_MEGARAID_SAS=m to start with, but none of arm64 systems here have
-> megaraid_sas.
+> Jens, how is that supposed to work?
+> 
+> You need to merge the 'core-entry-notify-signal' tag from the tip tree
+> into your next branch to make the follow up changes actually work.
 
-Thanks, I'm confident I can fix it up to get it going on my Huawei arm64 
-D06CS.
+I just haven't rebased with that pulled in yet, will do that this
+morning.
 
-So that board has a megaraid sas card. In addition, it also has hisi_sas 
-HW, which is another storage controller which we enabled this same 
-feature which is causing the problem.
+> Ideally you send the whole arch + core cleanup muck my way once the
+> architecture people are happy.
 
-I'll report back when I can.
+Crossing fingers that I'll be able to collect all of the reviews in
+time, some of them have been picked up in arch trees though. So probably
+the easiest if we keep the setup as it is, which should work fine as
+soon as I pull in your core branch.
 
-Thanks,
-john
+-- 
+Jens Axboe
 
