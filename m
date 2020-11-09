@@ -2,41 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0754C2ABD88
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 14:47:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D5752ABC8F
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 14:39:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729927AbgKIM5C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 07:57:02 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51120 "EHLO mail.kernel.org"
+        id S1731310AbgKINic (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 08:38:32 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56402 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727826AbgKIM4n (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 07:56:43 -0500
+        id S1730551AbgKINCr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 08:02:47 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 874F52076E;
-        Mon,  9 Nov 2020 12:56:40 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C196B221FF;
+        Mon,  9 Nov 2020 13:02:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604926601;
-        bh=hDzC8cSvpzDscY6CdAyOCr4izB1A/cnLL5OmQ769Duw=;
+        s=default; t=1604926965;
+        bh=TgzlSBTYvvRTmVFdwSGJwgO8lMygGM9+F4XizitHdLU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rG7HAh5OUtekpAbrPFPF9j07SbsTphoa/xlgKvDq+mICloIWG+Urq7EoB2ra1NcFB
-         fzQn4Oi7z2Kffb7fzt3rrVtWLLHDUqEgr8azVLaoAh8UAX7wqTBS+1UMg6dwe3vWL4
-         GSDrCc72+pkuvjb92ecLEJ4DbsCLA/wR7TlJ0WsU=
+        b=xv3hK++yDQZOnXKZGyXZ0NlBQRfWuTEIlk1MQQESClae0F+iD+uDxF/AGiiUAI6AH
+         aew4iKoSLKexZVCpsEa9exKk85MPQNvrKN0XFEawEyqpnSN1DhBU6BT0cwYhv+XN+e
+         alIpTYgD/7MVcjVUL6shlAIxrr4sbpTtLAbwXmcQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        syzbot+75d51fe5bf4ebe988518@syzkaller.appspotmail.com,
-        Anant Thazhemadam <anant.thazhemadam@gmail.com>,
-        Dominique Martinet <asmadeus@codewreck.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 26/86] net: 9p: initialize sun_server.sun_path to have addrs value only when addr is valid
+        Stephane Eranian <stephane.eranian@google.com>,
+        Kim Phillips <kim.phillips@amd.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>
+Subject: [PATCH 4.9 047/117] perf/x86/amd/ibs: Fix raw sample data accumulation
 Date:   Mon,  9 Nov 2020 13:54:33 +0100
-Message-Id: <20201109125022.118107173@linuxfoundation.org>
+Message-Id: <20201109125027.899883212@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201109125020.852643676@linuxfoundation.org>
-References: <20201109125020.852643676@linuxfoundation.org>
+In-Reply-To: <20201109125025.630721781@linuxfoundation.org>
+References: <20201109125025.630721781@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,44 +44,80 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Anant Thazhemadam <anant.thazhemadam@gmail.com>
+From: Kim Phillips <kim.phillips@amd.com>
 
-[ Upstream commit 7ca1db21ef8e0e6725b4d25deed1ca196f7efb28 ]
+commit 36e1be8ada994d509538b3b1d0af8b63c351e729 upstream.
 
-In p9_fd_create_unix, checking is performed to see if the addr (passed
-as an argument) is NULL or not.
-However, no check is performed to see if addr is a valid address, i.e.,
-it doesn't entirely consist of only 0's.
-The initialization of sun_server.sun_path to be equal to this faulty
-addr value leads to an uninitialized variable, as detected by KMSAN.
-Checking for this (faulty addr) and returning a negative error number
-appropriately, resolves this issue.
+Neither IbsBrTarget nor OPDATA4 are populated in IBS Fetch mode.
+Don't accumulate them into raw sample user data in that case.
 
-Link: http://lkml.kernel.org/r/20201012042404.2508-1-anant.thazhemadam@gmail.com
-Reported-by: syzbot+75d51fe5bf4ebe988518@syzkaller.appspotmail.com
-Tested-by: syzbot+75d51fe5bf4ebe988518@syzkaller.appspotmail.com
-Signed-off-by: Anant Thazhemadam <anant.thazhemadam@gmail.com>
-Signed-off-by: Dominique Martinet <asmadeus@codewreck.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Also, in Fetch mode, add saving the IBS Fetch Control Extended MSR.
+
+Technically, there is an ABI change here with respect to the IBS raw
+sample data format, but I don't see any perf driver version information
+being included in perf.data file headers, but, existing users can detect
+whether the size of the sample record has reduced by 8 bytes to
+determine whether the IBS driver has this fix.
+
+Fixes: 904cb3677f3a ("perf/x86/amd/ibs: Update IBS MSRs and feature definitions")
+Reported-by: Stephane Eranian <stephane.eranian@google.com>
+Signed-off-by: Kim Phillips <kim.phillips@amd.com>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Cc: stable@vger.kernel.org
+Link: https://lkml.kernel.org/r/20200908214740.18097-6-kim.phillips@amd.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- net/9p/trans_fd.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/x86/events/amd/ibs.c        |   26 ++++++++++++++++----------
+ arch/x86/include/asm/msr-index.h |    1 +
+ 2 files changed, 17 insertions(+), 10 deletions(-)
 
-diff --git a/net/9p/trans_fd.c b/net/9p/trans_fd.c
-index eab058f93ec97..6f8e84844bb27 100644
---- a/net/9p/trans_fd.c
-+++ b/net/9p/trans_fd.c
-@@ -991,7 +991,7 @@ p9_fd_create_unix(struct p9_client *client, const char *addr, char *args)
+--- a/arch/x86/events/amd/ibs.c
++++ b/arch/x86/events/amd/ibs.c
+@@ -646,18 +646,24 @@ fail:
+ 				       perf_ibs->offset_max,
+ 				       offset + 1);
+ 	} while (offset < offset_max);
++	/*
++	 * Read IbsBrTarget, IbsOpData4, and IbsExtdCtl separately
++	 * depending on their availability.
++	 * Can't add to offset_max as they are staggered
++	 */
+ 	if (event->attr.sample_type & PERF_SAMPLE_RAW) {
+-		/*
+-		 * Read IbsBrTarget and IbsOpData4 separately
+-		 * depending on their availability.
+-		 * Can't add to offset_max as they are staggered
+-		 */
+-		if (ibs_caps & IBS_CAPS_BRNTRGT) {
+-			rdmsrl(MSR_AMD64_IBSBRTARGET, *buf++);
+-			size++;
++		if (perf_ibs == &perf_ibs_op) {
++			if (ibs_caps & IBS_CAPS_BRNTRGT) {
++				rdmsrl(MSR_AMD64_IBSBRTARGET, *buf++);
++				size++;
++			}
++			if (ibs_caps & IBS_CAPS_OPDATA4) {
++				rdmsrl(MSR_AMD64_IBSOPDATA4, *buf++);
++				size++;
++			}
+ 		}
+-		if (ibs_caps & IBS_CAPS_OPDATA4) {
+-			rdmsrl(MSR_AMD64_IBSOPDATA4, *buf++);
++		if (perf_ibs == &perf_ibs_fetch && (ibs_caps & IBS_CAPS_FETCHCTLEXTD)) {
++			rdmsrl(MSR_AMD64_ICIBSEXTDCTL, *buf++);
+ 			size++;
+ 		}
+ 	}
+--- a/arch/x86/include/asm/msr-index.h
++++ b/arch/x86/include/asm/msr-index.h
+@@ -356,6 +356,7 @@
+ #define MSR_AMD64_IBSOP_REG_MASK	((1UL<<MSR_AMD64_IBSOP_REG_COUNT)-1)
+ #define MSR_AMD64_IBSCTL		0xc001103a
+ #define MSR_AMD64_IBSBRTARGET		0xc001103b
++#define MSR_AMD64_ICIBSEXTDCTL		0xc001103c
+ #define MSR_AMD64_IBSOPDATA4		0xc001103d
+ #define MSR_AMD64_IBS_REG_COUNT_MAX	8 /* includes MSR_AMD64_IBSBRTARGET */
  
- 	csocket = NULL;
- 
--	if (addr == NULL)
-+	if (!addr || !strlen(addr))
- 		return -EINVAL;
- 
- 	if (strlen(addr) >= UNIX_PATH_MAX) {
--- 
-2.27.0
-
 
 
