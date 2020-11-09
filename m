@@ -2,110 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C585E2AC58C
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 20:55:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AB3222AC593
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 20:56:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730937AbgKITzH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 14:55:07 -0500
-Received: from aserp2130.oracle.com ([141.146.126.79]:51072 "EHLO
-        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729830AbgKITzH (ORCPT
+        id S1730952AbgKIT4E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 14:56:04 -0500
+Received: from asavdk3.altibox.net ([109.247.116.14]:52964 "EHLO
+        asavdk3.altibox.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729432AbgKIT4E (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 14:55:07 -0500
-Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
-        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0A9Jnodb124453;
-        Mon, 9 Nov 2020 19:54:49 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=Oj+4P5DeZIfnxmXx8aK/IInNq6W/Q8SBz+vVr/XLSmE=;
- b=cYycDKNUJtkH3N6nFsNQZ3wfB4bF2K/DmKrbF1dc4PZBjc7XFz9PeXiZeCDF3OgS6KFD
- IZ6feWySzMJwnQrDMjzOEMARNwkJqIpvSrc327EhdHbR/6TP1Q9dDUtweZHF2/SdN9ep
- VS3jkm+7jP8GJYh8uds11ISpj5DICTYMpwKHsN3Mz4jNzgF8nrqd+E+prjb1SeePjBxa
- lhPLreCr7Q2nwXgQlbHowNndye+374LkFV0sXVZAQFQ/FFd3dHYV6HU/pobanMZzULdi
- 9luTb4XoXJGgtyZ7mDoEXNDW/pV3T5lt+Bxm454UQJABZzJYJIiUCZgmdkWnvB9XBJpP rQ== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by aserp2130.oracle.com with ESMTP id 34nh3ar4b1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 09 Nov 2020 19:54:49 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0A9Jo4Tj084300;
-        Mon, 9 Nov 2020 19:52:48 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by userp3030.oracle.com with ESMTP id 34p5gvqba2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 09 Nov 2020 19:52:48 +0000
-Received: from abhmp0019.oracle.com (abhmp0019.oracle.com [141.146.116.25])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0A9JqlQk009975;
-        Mon, 9 Nov 2020 19:52:47 GMT
-Received: from linux.home (/92.157.91.83)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 09 Nov 2020 11:52:46 -0800
-Subject: Re: [RFC][PATCH 08/24] x86/entry: Add C version of SWAPGS and
- SWAPGS_UNSAFE_STACK
-To:     tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, hpa@zytor.com,
-        x86@kernel.org, dave.hansen@linux.intel.com, luto@kernel.org,
-        peterz@infradead.org, linux-kernel@vger.kernel.org,
-        thomas.lendacky@amd.com, jroedel@suse.de
-Cc:     konrad.wilk@oracle.com, jan.setjeeilers@oracle.com,
-        junaids@google.com, oweisse@google.com, rppt@linux.vnet.ibm.com,
-        graf@amazon.de, mgross@linux.intel.com, kuzuno@gmail.com
-References: <20201109144425.270789-1-alexandre.chartre@oracle.com>
- <20201109144425.270789-9-alexandre.chartre@oracle.com>
-From:   Alexandre Chartre <alexandre.chartre@oracle.com>
-Message-ID: <a0febfb8-4efb-6b27-e7c5-78ad33ae1e3d@oracle.com>
-Date:   Mon, 9 Nov 2020 20:55:02 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        Mon, 9 Nov 2020 14:56:04 -0500
+Received: from ravnborg.org (unknown [188.228.123.71])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by asavdk3.altibox.net (Postfix) with ESMTPS id 9DB822003C;
+        Mon,  9 Nov 2020 20:55:58 +0100 (CET)
+Date:   Mon, 9 Nov 2020 20:55:57 +0100
+From:   Sam Ravnborg <sam@ravnborg.org>
+To:     Alex Deucher <alexdeucher@gmail.com>
+Cc:     Lee Jones <lee.jones@linaro.org>, David Airlie <airlied@linux.ie>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Maling list - DRI developers 
+        <dri-devel@lists.freedesktop.org>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>
+Subject: Re: [PATCH 17/19] drm/radeon/radeon_kms: Fix misnaming of
+ 'radeon_info_ioctl's dev param
+Message-ID: <20201109195557.GA1940813@ravnborg.org>
+References: <20201106214949.2042120-1-lee.jones@linaro.org>
+ <20201106214949.2042120-18-lee.jones@linaro.org>
+ <CADnq5_Nys7igVo3sgzK0D4hnm=RHMrEM7Xty80jGROu_sy5svA@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20201109144425.270789-9-alexandre.chartre@oracle.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9800 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 mlxlogscore=999 mlxscore=0
- spamscore=0 phishscore=0 adultscore=0 malwarescore=0 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2011090133
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9800 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 lowpriorityscore=0 priorityscore=1501
- clxscore=1015 malwarescore=0 mlxscore=0 spamscore=0 suspectscore=0
- mlxlogscore=999 impostorscore=0 phishscore=0 adultscore=0 bulkscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2011090133
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CADnq5_Nys7igVo3sgzK0D4hnm=RHMrEM7Xty80jGROu_sy5svA@mail.gmail.com>
+X-CMAE-Score: 0
+X-CMAE-Analysis: v=2.3 cv=VbvZwmh9 c=1 sm=1 tr=0
+        a=S6zTFyMACwkrwXSdXUNehg==:117 a=S6zTFyMACwkrwXSdXUNehg==:17
+        a=8nJEP1OIZ-IA:10 a=KKAkSRfTAAAA:8 a=zd2uoN0lAAAA:8 a=e5mUnYsNAAAA:8
+        a=kWTj0bnMZsTtkSb_LzgA:9 a=wPNLvfGTeEIA:10 a=cvBusfyB2V15izCimMoJ:22
+        a=Vxmtnl_E_bksehYqCbjh:22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Alex,
+On Mon, Nov 09, 2020 at 02:50:35PM -0500, Alex Deucher wrote:
+> On Fri, Nov 6, 2020 at 4:50 PM Lee Jones <lee.jones@linaro.org> wrote:
+> >
+> > Fixes the following W=1 kernel build warning(s):
+> >
+> >  drivers/gpu/drm/radeon/radeon_kms.c:226: warning: Function parameter or member 'dev' not described in 'radeon_info_ioctl'
+> >  drivers/gpu/drm/radeon/radeon_kms.c:226: warning: Excess function parameter 'rdev' description in 'radeon_info_ioctl'
+> >
+> > Cc: Alex Deucher <alexander.deucher@amd.com>
+> > Cc: "Christian König" <christian.koenig@amd.com>
+> > Cc: David Airlie <airlied@linux.ie>
+> > Cc: Daniel Vetter <daniel@ffwll.ch>
+> > Cc: amd-gfx@lists.freedesktop.org
+> > Cc: dri-devel@lists.freedesktop.org
+> > Signed-off-by: Lee Jones <lee.jones@linaro.org>
+> > ---
+> >  drivers/gpu/drm/radeon/radeon_kms.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> >
+> > diff --git a/drivers/gpu/drm/radeon/radeon_kms.c b/drivers/gpu/drm/radeon/radeon_kms.c
+> > index 0d8fbabffcead..21c206795c364 100644
+> > --- a/drivers/gpu/drm/radeon/radeon_kms.c
+> > +++ b/drivers/gpu/drm/radeon/radeon_kms.c
+> > @@ -213,7 +213,7 @@ static void radeon_set_filp_rights(struct drm_device *dev,
+> >  /**
+> >   * radeon_info_ioctl - answer a device specific request.
+> >   *
+> > - * @rdev: radeon device pointer
+> > + * @dev: radeon device pointer
+> 
+> This should be:
+> + * @dev: drm device pointer
 
-[Copying the reply to Andy in the thread with the right email addresses]
+good spot. I am continuing the work on radeon and will post a patchset
+that contains only radeon fixes with Lee's patches and a few more by me.
+I will fix the above.
 
-On 11/9/20 6:38 PM, Andy Lutomirski wrote:
-> On Mon, Nov 9, 2020 at 3:22 AM Alexandre Chartre
-> <alexandre.chartre@oracle.com> wrote:
->>
->> SWAPGS and SWAPGS_UNSAFE_STACK are assembly macros. Add C versions
->> of these macros (swapgs() and swapgs_unsafe_stack()).
->
-> This needs a very good justification.  It also needs some kind of
-> static verification that these helpers are only used by noinstr code,
-> and they need to be __always_inline.  And I cannot fathom how C code
-> could possibly use SWAPGS_UNSAFE_STACK in a meaningful way.
->
-
-You're right, I probably need to revisit the usage of SWAPGS_UNSAFE_STACK
-in C code, that doesn't make sense. Looks like only SWAPGS is then needed.
-
-Or maybe we can just use native_swapgs() instead?
-
-I have added a C version of SWAPGS for moving paranoid_entry() to C because,
-in this function, we need to switch CR3 before doing the updating GS. But I
-really wonder if we need a paravirt swapgs here, and we can probably just use
-native_swapgs().
-
-Also, if we map the per cpu offsets (__per_cpu_offset) in the user page-table
-then we will be able to update GS before switching CR3. That way we can keep the
-GS update in assembly code, and just do the CR3 switch in C code. This would also
-avoid having to disable stack-protector (patch 21).
-
-alex.
+	Sam
