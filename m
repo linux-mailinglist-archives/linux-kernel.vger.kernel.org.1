@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EBCA12ABD13
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 14:43:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8954B2ABDBF
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 14:49:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730721AbgKINmp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 08:42:45 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54884 "EHLO mail.kernel.org"
+        id S1731806AbgKINtM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 08:49:12 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50846 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730343AbgKINAl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 08:00:41 -0500
+        id S1729648AbgKIMz6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 07:55:58 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8D51120789;
-        Mon,  9 Nov 2020 13:00:40 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 83A5F20684;
+        Mon,  9 Nov 2020 12:55:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604926841;
-        bh=RtdrrOHxuxtK9Z64h9hB+apj90RlM8+bja2u1N6Vhok=;
+        s=default; t=1604926558;
+        bh=3+iVDUeYUQtCG1b7ztjZJ6YpyRlZ9aI6xSrMEGpP3f8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ftvWP+Etj9PnDaHYiBaAUpAnbxOfKSDz6Ei7yFLhHdFIyCPWWoEQOWYkrHkATFYf+
-         fV478l+wnqr4u8tPs6L8Eh2+vO3qf6v3tAA8pz2uWO3QyxVNiRKreKM6O+eCZ6dlNe
-         VpzS7ib1HwWzWffvf8w3cmKjhpm+A7a0KjXy1b60=
+        b=EitciibXt2jEzZBt2Lzwn8muM4prALccGllBvqdDy72sHxpdXzAPV+KnyU+WwevvD
+         bCdAsK4WeFq5jFgA3zMTVXAMal3GhzNnEcJi01d+2jpHR4QFEaBEZVcI8rRWtLucKD
+         YeFhJ+hMGkBgaguBXsWr8/rr3xsgD4xoIzoFtm2E=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Tom Rix <trix@redhat.com>,
-        Arnd Bergmann <arnd@arndb.de>, Sam Ravnborg <sam@ravnborg.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 023/117] video: fbdev: pvr2fb: initialize variables
-Date:   Mon,  9 Nov 2020 13:54:09 +0100
-Message-Id: <20201109125026.754543907@linuxfoundation.org>
+        stable@vger.kernel.org, Mukesh Ojha <mukesh02@linux.vnet.ibm.com>,
+        Vasant Hegde <hegdevasant@linux.vnet.ibm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Kamal Mostafa <kamal@canonical.com>
+Subject: [PATCH 4.4 03/86] powerpc/powernv/opal-dump : Use IRQ_HANDLED instead of numbers in interrupt handler
+Date:   Mon,  9 Nov 2020 13:54:10 +0100
+Message-Id: <20201109125021.017675300@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201109125025.630721781@linuxfoundation.org>
-References: <20201109125025.630721781@linuxfoundation.org>
+In-Reply-To: <20201109125020.852643676@linuxfoundation.org>
+References: <20201109125020.852643676@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,49 +44,59 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tom Rix <trix@redhat.com>
+From: Mukesh Ojha <mukesh02@linux.vnet.ibm.com>
 
-[ Upstream commit 8e1ba47c60bcd325fdd097cd76054639155e5d2e ]
+commit b29336c0e1785a28bc40a9fd47c2321671e9792e upstream.
 
-clang static analysis reports this repesentative error
+Fixes: 8034f715f ("powernv/opal-dump: Convert to irq domain")
 
-pvr2fb.c:1049:2: warning: 1st function call argument
-  is an uninitialized value [core.CallAndMessage]
-        if (*cable_arg)
-        ^~~~~~~~~~~~~~~
+Converts all the return explicit number to a more proper IRQ_HANDLED,
+which looks proper incase of interrupt handler returning case.
 
-Problem is that cable_arg depends on the input loop to
-set the cable_arg[0].  If it does not, then some random
-value from the stack is used.
+Here, It also removes error message like "nobody cared" which was
+getting unveiled while returning -1 or 0 from handler.
 
-A similar problem exists for output_arg.
+Signed-off-by: Mukesh Ojha <mukesh02@linux.vnet.ibm.com>
+Reviewed-by: Vasant Hegde <hegdevasant@linux.vnet.ibm.com>
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Cc: Kamal Mostafa <kamal@canonical.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-So initialize cable_arg and output_arg.
-
-Signed-off-by: Tom Rix <trix@redhat.com>
-Acked-by: Arnd Bergmann <arnd@arndb.de>
-Signed-off-by: Sam Ravnborg <sam@ravnborg.org>
-Link: https://patchwork.freedesktop.org/patch/msgid/20200720191845.20115-1-trix@redhat.com
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/video/fbdev/pvr2fb.c | 2 ++
- 1 file changed, 2 insertions(+)
+ arch/powerpc/platforms/powernv/opal-dump.c |    9 +++------
+ 1 file changed, 3 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/video/fbdev/pvr2fb.c b/drivers/video/fbdev/pvr2fb.c
-index a2564ab91e62d..27478ffeeacdc 100644
---- a/drivers/video/fbdev/pvr2fb.c
-+++ b/drivers/video/fbdev/pvr2fb.c
-@@ -1029,6 +1029,8 @@ static int __init pvr2fb_setup(char *options)
- 	if (!options || !*options)
- 		return 0;
+--- a/arch/powerpc/platforms/powernv/opal-dump.c
++++ b/arch/powerpc/platforms/powernv/opal-dump.c
+@@ -385,13 +385,12 @@ static irqreturn_t process_dump(int irq,
+ {
+ 	int rc;
+ 	uint32_t dump_id, dump_size, dump_type;
+-	struct dump_obj *dump;
+ 	char name[22];
+ 	struct kobject *kobj;
  
-+	cable_arg[0] = output_arg[0] = 0;
-+
- 	while ((this_opt = strsep(&options, ","))) {
- 		if (!*this_opt)
- 			continue;
--- 
-2.27.0
-
+ 	rc = dump_read_info(&dump_id, &dump_size, &dump_type);
+ 	if (rc != OPAL_SUCCESS)
+-		return rc;
++		return IRQ_HANDLED;
+ 
+ 	sprintf(name, "0x%x-0x%x", dump_type, dump_id);
+ 
+@@ -403,12 +402,10 @@ static irqreturn_t process_dump(int irq,
+ 	if (kobj) {
+ 		/* Drop reference added by kset_find_obj() */
+ 		kobject_put(kobj);
+-		return 0;
++		return IRQ_HANDLED;
+ 	}
+ 
+-	dump = create_dump_obj(dump_id, dump_size, dump_type);
+-	if (!dump)
+-		return -1;
++	create_dump_obj(dump_id, dump_size, dump_type);
+ 
+ 	return IRQ_HANDLED;
+ }
 
 
