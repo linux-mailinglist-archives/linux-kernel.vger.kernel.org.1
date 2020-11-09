@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4E482AB9B7
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 14:12:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DA1BE2ABB33
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 14:28:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732501AbgKINL6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 08:11:58 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37426 "EHLO mail.kernel.org"
+        id S2387516AbgKINZf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 08:25:35 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45162 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732473AbgKINLz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 08:11:55 -0500
+        id S1733003AbgKINRv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 08:17:51 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 68AF420663;
-        Mon,  9 Nov 2020 13:11:52 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1BB0B20663;
+        Mon,  9 Nov 2020 13:17:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604927513;
-        bh=LeoVCcQKXchrNG2M7cnQUvR244+ia+57oS6sAyZBheQ=;
+        s=default; t=1604927870;
+        bh=Iuy4K0XUgm/j5WNMfSfsdYXcdPRUTGBYYyCs2gfIIQA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ibCjItIfHp/XYheHoTwoOMGBAoAqT8doxBZ/CB3pO9RyMQwUNF5PgVNqouABj9guV
-         AzYSW20dLy6fSkeEOf5rmfnF8jeaGiL8l4v29BiX7yftoI5nCxQW8b3hnhTTe4yOko
-         7Rdz/x2/1/rZ+OGmNXAvJfIAoUhgjWg4OIsp5ZrU=
+        b=SzoLpEp1pfXI+8kMA85G7lEEbet0w3JSdFU52IC+lebteIDLwpsDvaRXTyCg1jeG2
+         71fXUJzrMO+rIjWta3Hdr/RtThSBbdwnaVTK3rmMFdD0B3Qx6eI6CisHJJcwsotRPo
+         FeNdnDKqHXwoZoFBbp4zCgqiUJ79wv74lMTUjp+k=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, James Jurack <james.jurack@ametek.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Claudiu Manoil <claudiu.manoil@nxp.com>
-Subject: [PATCH 5.4 14/85] gianfar: Replace skb_realloc_headroom with skb_cow_head for PTP
+        stable@vger.kernel.org, Artem Lapkin <art@khadas.com>,
+        Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 5.9 049/133] ALSA: usb-audio: add usb vendor id as DSD-capable for Khadas devices
 Date:   Mon,  9 Nov 2020 13:55:11 +0100
-Message-Id: <20201109125023.265726378@linuxfoundation.org>
+Message-Id: <20201109125033.077005088@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201109125022.614792961@linuxfoundation.org>
-References: <20201109125022.614792961@linuxfoundation.org>
+In-Reply-To: <20201109125030.706496283@linuxfoundation.org>
+References: <20201109125030.706496283@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,70 +42,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Claudiu Manoil <claudiu.manoil@nxp.com>
+From: Artem Lapkin <art@khadas.com>
 
-[ Upstream commit d145c9031325fed963a887851d9fa42516efd52b ]
+commit 07815a2b3501adeaae6384a25b9c4a9c81dae59f upstream.
 
-When PTP timestamping is enabled on Tx, the controller
-inserts the Tx timestamp at the beginning of the frame
-buffer, between SFD and the L2 frame header.  This means
-that the skb provided by the stack is required to have
-enough headroom otherwise a new skb needs to be created
-by the driver to accommodate the timestamp inserted by h/w.
-Up until now the driver was relying on skb_realloc_headroom()
-to create new skbs to accommodate PTP frames.  Turns out that
-this method is not reliable in this context at least, as
-skb_realloc_headroom() for PTP frames can cause random crashes,
-mostly in subsequent skb_*() calls, when multiple concurrent
-TCP streams are run at the same time with the PTP flow
-on the same device (as seen in James' report).  I also noticed
-that when the system is loaded by sending multiple TCP streams,
-the driver receives cloned skbs in large numbers.
-skb_cow_head() instead proves to be stable in this scenario,
-and not only handles cloned skbs too but it's also more efficient
-and widely used in other drivers.
-The commit introducing skb_realloc_headroom in the driver
-goes back to 2009, commit 93c1285c5d92
-("gianfar: reallocate skb when headroom is not enough for fcb").
-For practical purposes I'm referencing a newer commit (from 2012)
-that brings the code to its current structure (and fixes the PTP
-case).
+Khadas audio devices ( USB_ID_VENDOR 0x3353 )
+have DSD-capable implementations from XMOS
+need add new usb vendor id for recognition
 
-Fixes: 9c4886e5e63b ("gianfar: Fix invalid TX frames returned on error queue when time stamping")
-Reported-by: James Jurack <james.jurack@ametek.com>
-Suggested-by: Jakub Kicinski <kuba@kernel.org>
-Signed-off-by: Claudiu Manoil <claudiu.manoil@nxp.com>
-Link: https://lore.kernel.org/r/20201029081057.8506-1-claudiu.manoil@nxp.com
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Signed-off-by: Artem Lapkin <art@khadas.com>
+Cc: <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20201103103311.5435-1-art@khadas.com
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- drivers/net/ethernet/freescale/gianfar.c |   12 ++----------
- 1 file changed, 2 insertions(+), 10 deletions(-)
 
---- a/drivers/net/ethernet/freescale/gianfar.c
-+++ b/drivers/net/ethernet/freescale/gianfar.c
-@@ -1826,20 +1826,12 @@ static netdev_tx_t gfar_start_xmit(struc
- 		fcb_len = GMAC_FCB_LEN + GMAC_TXPAL_LEN;
- 
- 	/* make space for additional header when fcb is needed */
--	if (fcb_len && unlikely(skb_headroom(skb) < fcb_len)) {
--		struct sk_buff *skb_new;
--
--		skb_new = skb_realloc_headroom(skb, fcb_len);
--		if (!skb_new) {
-+	if (fcb_len) {
-+		if (unlikely(skb_cow_head(skb, fcb_len))) {
- 			dev->stats.tx_errors++;
- 			dev_kfree_skb_any(skb);
- 			return NETDEV_TX_OK;
- 		}
--
--		if (skb->sk)
--			skb_set_owner_w(skb_new, skb->sk);
--		dev_consume_skb_any(skb);
--		skb = skb_new;
- 	}
- 
- 	/* total number of fragments in the SKB */
+---
+ sound/usb/quirks.c |    1 +
+ 1 file changed, 1 insertion(+)
+
+--- a/sound/usb/quirks.c
++++ b/sound/usb/quirks.c
+@@ -1806,6 +1806,7 @@ u64 snd_usb_interface_dsd_format_quirks(
+ 	case 0x278b:  /* Rotel? */
+ 	case 0x292b:  /* Gustard/Ess based devices */
+ 	case 0x2ab6:  /* T+A devices */
++	case 0x3353:  /* Khadas devices */
+ 	case 0x3842:  /* EVGA */
+ 	case 0xc502:  /* HiBy devices */
+ 		if (fp->dsd_raw)
 
 
