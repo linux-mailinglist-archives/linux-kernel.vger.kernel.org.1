@@ -2,155 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54CCD2AC6BB
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 22:15:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 21DC92AC6BF
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 22:15:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730493AbgKIVPe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 16:15:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41520 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729336AbgKIVPd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 16:15:33 -0500
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4548C0613CF
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Nov 2020 13:15:32 -0800 (PST)
-Received: by mail-wm1-x342.google.com with SMTP id t67so890663wmt.5
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Nov 2020 13:15:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=cPfEKs3WQgi21dRprWvl0/cuPQQi8MnROC+cTFK/Hjk=;
-        b=VK/PVkAs5xGOczSmdLeGGr1UjLAa1wNkT5KEULJPwAMYtTFospgWvQXmWweWxFrYSL
-         q6U6xZf7/8yQcSPJDC9gc29/HZUDZJQxumZl8PUVUzDZQgsTT+tLbqAImT1M6MeJXwyZ
-         oV7xNWvQnVaFCxNiqpxB+3voW1ZQ3/8BmZefBXukvEHYKHRH7eqIWIdfbW70msWZCwkK
-         JvZY5XZ8k+JRvZILBg43HeLT/GvQXGoyf2hxdUCenBQmb+mura13aVQ8f3Xswo3giyBh
-         18whO+eWLkOIZibns4Aiol1Az1LfYRH8imLmYxYgEPw2BD7hcD8kAl5lsTKjRErlRI3g
-         nKRA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=cPfEKs3WQgi21dRprWvl0/cuPQQi8MnROC+cTFK/Hjk=;
-        b=rKsVmoLdP8WSQbEjjq/jUjbzTrQ094BJH75rqZQ/IXlvl8huUSN67xgcuzf/d9uRV3
-         JR7IFhxT11SLPbcNmvWC8zdAG7B/akH43egC6G/8LuNLGRw3kpdF3EkoCPbizQ+d3qeh
-         aZ0vi8gYHMdO6cWRH2bhvSaVYuJdB3A1OGwWUCcbXP1+P9budlP3egvz0mUUIX10BABr
-         vamBPtmOw1MvkTpUXpi5KIRO0CW+9cElHT8Sup+1/4ThrC0Fn+WmMkHi7N3NEgChpYJ4
-         GNQi8uoMyk/wpASCKWrRhq8WXwqhSEHP+/Cq6eYbzW61QP85eYJtiu0g1tgxJVd2sH8+
-         YdoQ==
-X-Gm-Message-State: AOAM533SKMAoAHMjHleY+CNa5LnW7ty77D0BrBdKvJiq/gOvEBsZjDkB
-        d6yyq68+VxetlI6PESJnwltkjw==
-X-Google-Smtp-Source: ABdhPJxyV7TDW5Pt0GMSmlw9Wcknf4YsuZ7MwnLmYcynaZ+tHhjDvCCTux+hN1vU/Ah+Y0DkH8bbAw==
-X-Received: by 2002:a1c:4d03:: with SMTP id o3mr1161753wmh.150.1604956531356;
-        Mon, 09 Nov 2020 13:15:31 -0800 (PST)
-Received: from dell ([91.110.221.139])
-        by smtp.gmail.com with ESMTPSA id 35sm12713729wro.71.2020.11.09.13.15.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 09 Nov 2020 13:15:30 -0800 (PST)
-Date:   Mon, 9 Nov 2020 21:15:28 +0000
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Sam Ravnborg <sam@ravnborg.org>
-Cc:     Alex Deucher <alexdeucher@gmail.com>,
-        David Airlie <airlied@linux.ie>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>
-Subject: Re: [PATCH 17/19] drm/radeon/radeon_kms: Fix misnaming of
- 'radeon_info_ioctl's dev param
-Message-ID: <20201109211528.GD2063125@dell>
-References: <20201106214949.2042120-1-lee.jones@linaro.org>
- <20201106214949.2042120-18-lee.jones@linaro.org>
- <CADnq5_Nys7igVo3sgzK0D4hnm=RHMrEM7Xty80jGROu_sy5svA@mail.gmail.com>
- <20201109195557.GA1940813@ravnborg.org>
- <20201109201013.GC2063125@dell>
- <20201109205236.GA1952447@ravnborg.org>
+        id S1730720AbgKIVP5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 16:15:57 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38876 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729740AbgKIVP4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 16:15:56 -0500
+Received: from kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net (c-67-180-217-166.hsd1.ca.comcast.net [67.180.217.166])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 100FC2074F;
+        Mon,  9 Nov 2020 21:15:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604956555;
+        bh=zkP/tVqqO9RHgPUqzJY//LDs+Z+inkMKykj3KM4PzPc=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=Eu6rw98WYob/AgxGsfr/R9ECMUvprt3f2gKBqLjqhQ/Fhy+TgkkUkjDbaodsD2RYB
+         uyhO1XU9F+lyUy+M8LAorGC+mV5Hdk13AP7cmCp/+sJUXVbaneB27lORPmQdA1fG8I
+         R93yEB4azOrG5yviqOGVMENKlL1ZkneXLi4gwC64=
+Date:   Mon, 9 Nov 2020 13:15:54 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Thadeu Lima de Souza Cascardo <cascardo@canonical.com>
+Cc:     Kleber Sacilotto de Souza <kleber.souza@canonical.com>,
+        Eric Dumazet <edumazet@google.com>, netdev@vger.kernel.org,
+        Gerrit Renker <gerrit@erg.abdn.ac.uk>,
+        "David S. Miller" <davem@davemloft.net>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        "Alexander A. Klimov" <grandmaster@al2klimov.de>,
+        Kees Cook <keescook@chromium.org>,
+        Alexey Kodanev <alexey.kodanev@oracle.com>,
+        dccp@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] dccp: ccid: move timers to struct dccp_sock
+Message-ID: <20201109131554.5f65b2fa@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+In-Reply-To: <20201109210909.GQ595944@mussarela>
+References: <20201013171849.236025-1-kleber.souza@canonical.com>
+        <20201013171849.236025-2-kleber.souza@canonical.com>
+        <20201016153016.04bffc1e@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        <20201109114828.GP595944@mussarela>
+        <20201109094938.45b230c9@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        <20201109210909.GQ595944@mussarela>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201109205236.GA1952447@ravnborg.org>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 09 Nov 2020, Sam Ravnborg wrote:
-
-> On Mon, Nov 09, 2020 at 08:10:13PM +0000, Lee Jones wrote:
-> > On Mon, 09 Nov 2020, Sam Ravnborg wrote:
-> > 
-> > > Hi Alex,
-> > > On Mon, Nov 09, 2020 at 02:50:35PM -0500, Alex Deucher wrote:
-> > > > On Fri, Nov 6, 2020 at 4:50 PM Lee Jones <lee.jones@linaro.org> wrote:
-> > > > >
-> > > > > Fixes the following W=1 kernel build warning(s):
-> > > > >
-> > > > >  drivers/gpu/drm/radeon/radeon_kms.c:226: warning: Function parameter or member 'dev' not described in 'radeon_info_ioctl'
-> > > > >  drivers/gpu/drm/radeon/radeon_kms.c:226: warning: Excess function parameter 'rdev' description in 'radeon_info_ioctl'
-> > > > >
-> > > > > Cc: Alex Deucher <alexander.deucher@amd.com>
-> > > > > Cc: "Christian König" <christian.koenig@amd.com>
-> > > > > Cc: David Airlie <airlied@linux.ie>
-> > > > > Cc: Daniel Vetter <daniel@ffwll.ch>
-> > > > > Cc: amd-gfx@lists.freedesktop.org
-> > > > > Cc: dri-devel@lists.freedesktop.org
-> > > > > Signed-off-by: Lee Jones <lee.jones@linaro.org>
-> > > > > ---
-> > > > >  drivers/gpu/drm/radeon/radeon_kms.c | 2 +-
-> > > > >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > > > >
-> > > > > diff --git a/drivers/gpu/drm/radeon/radeon_kms.c b/drivers/gpu/drm/radeon/radeon_kms.c
-> > > > > index 0d8fbabffcead..21c206795c364 100644
-> > > > > --- a/drivers/gpu/drm/radeon/radeon_kms.c
-> > > > > +++ b/drivers/gpu/drm/radeon/radeon_kms.c
-> > > > > @@ -213,7 +213,7 @@ static void radeon_set_filp_rights(struct drm_device *dev,
-> > > > >  /**
-> > > > >   * radeon_info_ioctl - answer a device specific request.
-> > > > >   *
-> > > > > - * @rdev: radeon device pointer
-> > > > > + * @dev: radeon device pointer
+On Mon, 9 Nov 2020 18:09:09 -0300 Thadeu Lima de Souza Cascardo wrote:
+> On Mon, Nov 09, 2020 at 09:49:38AM -0800, Jakub Kicinski wrote:
+> > On Mon, 9 Nov 2020 08:48:28 -0300 Thadeu Lima de Souza Cascardo wrote:  
+> > > On Fri, Oct 16, 2020 at 03:30:16PM -0700, Jakub Kicinski wrote:  
+> > > > On Tue, 13 Oct 2020 19:18:48 +0200 Kleber Sacilotto de Souza wrote:    
+> > > > > From: Thadeu Lima de Souza Cascardo <cascardo@canonical.com>
+> > > > > 
+> > > > > When dccps_hc_tx_ccid is freed, ccid timers may still trigger. The reason
+> > > > > del_timer_sync can't be used is because this relies on keeping a reference
+> > > > > to struct sock. But as we keep a pointer to dccps_hc_tx_ccid and free that
+> > > > > during disconnect, the timer should really belong to struct dccp_sock.
+> > > > > 
+> > > > > This addresses CVE-2020-16119.
+> > > > > 
+> > > > > Fixes: 839a6094140a (net: dccp: Convert timers to use timer_setup())
+> > > > > Signed-off-by: Thadeu Lima de Souza Cascardo <cascardo@canonical.com>
+> > > > > Signed-off-by: Kleber Sacilotto de Souza <kleber.souza@canonical.com>    
 > > > > 
-> > > > This should be:
-> > > > + * @dev: drm device pointer
+> > > > I've been mulling over this fix.
+> > > > 
+> > > > The layering violation really doesn't sit well.
+> > > > 
+> > > > We're reusing the timer object. What if we are really unlucky, the
+> > > > fires and gets blocked by a cosmic ray just as it's about to try to
+> > > > lock the socket, then user manages to reconnect, and timer starts
+> > > > again. Potentially with a different CCID algo altogether?
+> > > > 
+> > > > Is disconnect ever called under the BH lock?  Maybe plumb a bool
+> > > > argument through to ccid*_hc_tx_exit() and do a sk_stop_timer_sync()
+> > > > when called from disconnect()?
+> > > > 
+> > > > Or do refcounting on ccid_priv so that the timer holds both the socket
+> > > > and the priv?    
 > > > 
-> > > good spot. I am continuing the work on radeon and will post a patchset
-> > > that contains only radeon fixes with Lee's patches and a few more by me.
-> > > I will fix the above.
+> > > Sorry about too late a response. I was on vacation, then came back and spent a
+> > > couple of days testing this further, and had to switch to other tasks.
+> > > 
+> > > So, while testing this, I had to resort to tricks like having a very small
+> > > expire and enqueuing on a different CPU. Then, after some minutes, I hit a UAF.
+> > > That's with or without the first of the second patch.
+> > > 
+> > > I also tried to refcount ccid instead of the socket, keeping the timer on the
+> > > ccid, but that still hit the UAF, and that's when I had to switch tasks.  
 > > 
-> > What do you mean by "continuing on"?
+> > Hm, not instead, as well. I think trying cancel the timer _sync from
+> > the disconnect path would be the simplest solution, tho.
+> 
+> I don't think so. On other paths, we would still have the possibility that:
+> 
+> CPU1: timer expires and is about to run
+> CPU2: calls stop_timer (which does not stop anything) and frees ccid
+> CPU1: timer runs and uses freed ccid
+> 
+> And those paths, IIUC, may be run under a SoftIRQ on the receive path, so would
+> not be able to call stop_timer_sync.
+
+Which paths are those (my memory of this code is waning)? I thought
+disconnect is only called from the user space side (shutdown syscall).
+The only other way to terminate the connection is to close the socket,
+which Eric already fixed by postponing the destruction of ccid in that
+case.
+
+> > > Oh, and in the meantime, I found one or two other fixes that we
+> > > should apply, will send them shortly.
+> > > 
+> > > But I would argue that we should apply the revert as it addresses the
+> > > CVE, without really regressing the other UAF, as I argued. Does that
+> > > make sense?  
 > > 
-> > How will you prevent your work from conflicting with my current effort?
+> > We can - it's always a little strange to go from one bug to a different
+> > without a fix - but the justification being that while the previous UAF
+> > required a race condition the new one is actually worst because it can 
+> > be triggered reliably?  
 > 
-> Quoting from previous mail in this thread:
+> Well, I am arguing here that commit 2677d20677314101293e6da0094ede7b5526d2b1
+> ("dccp: don't free ccid2_hc_tx_sock struct in dccp_disconnect()") doesn't
+> really fix anything. Whenever ccid_hx_tx_delete is called, that UAF might
+> happen, because the timer might trigger right after we free the ccid struct.
 > 
->   "
->   > > How would you like me to move forward?
->   >
->   > Fix the thousand of warnings in other places :-)
->   > I will take a look at radeon and post a new series based on your work
->   > with all W=1 warnings fixed.
-> 
->   I'll drop this patch and carry on ploughing through the rest of them.
-> "
-> 
-> Here I promised you to fix all warnings in the radeon driver.
-> And despite this being more work than anticipated a promise is a
-> promise. So therefore I started working on this.
-> 
-> If you want to do the rest of the radeon driver you are welcome and I
-> will gladly drop this again. Just let me know your preference.
+> And, yes, on the other hand, we can reliably launch the DoS attack that is
+> fixed by the revert of that commit.
 
-That was the plan.  To continue on and solve as many warnings as I can
-before I start bumping into more serious issues like the one mentioned
-above.  If you'd like to solve the radeon_init() issue right away;
-however, that would be super helpful.
+OK.
 
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
