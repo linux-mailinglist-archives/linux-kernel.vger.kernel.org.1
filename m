@@ -2,135 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 013442AB891
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 13:48:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D547C2AB88E
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 13:47:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729802AbgKIMsD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 07:48:03 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:51042 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729174AbgKIMrW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 07:47:22 -0500
-Date:   Mon, 9 Nov 2020 13:47:18 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1604926039;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=/wcUoyYHMIwEeentgdf0GLAjnZFrqAPKCQFNHSrl3lg=;
-        b=4NMbp6OpOcP0ybSkoFJb2GfnisaH2XXcNYsuC8MWz2/oNRf8JOvvr3QpsdGP2mbOWJ5GFK
-        8vrg5X2qcUvTpoNygqfSJcqMXkDnRlWsUHWIRC0Cfumr/oOWwIaaTAGpqRmS+e7hwWzisu
-        iZd1geU1m1I5ENsMUFXvjDHwV0I1U9CLUfXUx/evlks582VLqmSjeOkzq44yS3vy5DinKK
-        jp1C/ncfP3wRAa3fZnXyBo7ws0UIgMg6RXSrcTtqzMrMAWFhintp4n5+GkI7+gYiAa4Td8
-        ImM/TCUt9JhDvm+fleRNqX3R3iE9T2TVv0OEprpjxQc8Mm6Ok1pIs3a4XmUiZA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1604926039;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=/wcUoyYHMIwEeentgdf0GLAjnZFrqAPKCQFNHSrl3lg=;
-        b=m9AKLaLsrviv7UUz+nZhQ5KmsiqlIyt4DbmIBD9Gmd5W5Ehiiu4RrZq5A1/1OF9yeHUfqG
-        wf1T3JezoZbUkNBQ==
-From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To:     Daniel Wagner <wagi@monom.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-rt-users <linux-rt-users@vger.kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>
-Subject: Re: [ANNOUNCE] v5.10-rc2-rt4
-Message-ID: <20201109124718.ljf7inok4zakkjed@linutronix.de>
-References: <20201103195731.erjkgyzxzzjylhui@linutronix.de>
- <20201104103809.bhl2iorbwv6xowtw@beryllium.lan>
- <20201104104617.ueefmpdou4t3t2ce@linutronix.de>
- <20201104111948.vpykh3ptmysqhmve@beryllium.lan>
- <20201104124746.74jdsig3dffomv3k@beryllium.lan>
- <20201104130930.llx56gtqt532h7c7@linutronix.de>
- <20201104160650.b63zqof74wohgpa2@beryllium.lan>
- <20201106105447.2lasulgjrbqdhnlh@linutronix.de>
- <20201106161413.7c65uxenamy474uh@beryllium.lan>
+        id S1729574AbgKIMr0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 07:47:26 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48920 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727311AbgKIMrE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 07:47:04 -0500
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id C171D207BC;
+        Mon,  9 Nov 2020 12:47:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604926022;
+        bh=SIRMlvmwB2mNeabU8oM4DitYG6gk6nl+hbQznjihnKY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=IzfQu+yxsqxjOncONaSKv1vV7DLcRV+IXIVDsKUEsJCyv69xKzdO4EWxTJpyB7Y8u
+         DOgVPVbDN0PEncLxZgWL+WGY0mpX3b0RK/DxaI2D9lopcVZDzz4U8PGl5TgQiVmr2w
+         +QLwbg4n4OLPp/J9DHh3TIJwgW/ccx3vR7dhfol4=
+Date:   Mon, 9 Nov 2020 13:48:01 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Aisheng Dong <aisheng.dong@nxp.com>
+Cc:     Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>
+Subject: Re: [PATCH RESEND] driver core: export device_is_bound() to fix
+ build failure
+Message-ID: <20201109124801.GA1890488@kroah.com>
+References: <20201107224727.11015-1-sudipm.mukherjee@gmail.com>
+ <20201108082317.GA40741@kroah.com>
+ <CADVatmN8SbZWVGf_xe_K1g7M9ArHXF8TUhYyBgQcydBF4_zp9g@mail.gmail.com>
+ <20201109103703.GA1310551@kroah.com>
+ <AM6PR04MB4966B90C0DEC71A6C86067AA80EA0@AM6PR04MB4966.eurprd04.prod.outlook.com>
+ <20201109114125.GC1769924@kroah.com>
+ <AM6PR04MB4966F12B67C4104247E0E6A180EA0@AM6PR04MB4966.eurprd04.prod.outlook.com>
+ <20201109120512.GB1832201@kroah.com>
+ <AM6PR04MB49668F60F74B73931C2ABBFD80EA0@AM6PR04MB4966.eurprd04.prod.outlook.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201106161413.7c65uxenamy474uh@beryllium.lan>
+In-Reply-To: <AM6PR04MB49668F60F74B73931C2ABBFD80EA0@AM6PR04MB4966.eurprd04.prod.outlook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-11-06 17:14:13 [+0100], Daniel Wagner wrote:
-> On Fri, Nov 06, 2020 at 11:54:47AM +0100, Sebastian Andrzej Siewior wrote:
-> > > rpi3    signaltest      5.9.0-rc8-rt12
-> > >   813   0_signaltest         t0-max-latency      : fail     214.00
-> > > rpi3    signaltest      5.9.0-rc8-rt12
-> > >   874   0_signaltest         t0-max-latency      : fail     217.00
-> > > rpi3    signaltest      5.9.0-rt16
-> > >   963   0_signaltest         t0-max-latency      : fail     321.00
+On Mon, Nov 09, 2020 at 12:26:55PM +0000, Aisheng Dong wrote:
+> > From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> > Sent: Monday, November 9, 2020 8:05 PM
 > > 
-> > Here, rt 13,14,15 would be interesting so we could narrow down the
-> > ~100us.
-> > v5.9-rc8-rt14 got new migrate-disable but I wouldn't expect it to cause
-> > it. The other changes look also harmless (like the rtmutex redo which
-> > should be a 0 change but then it mighe behave differently in regard to
-> > workqueue in some corner cases).
-> 
-> rpi3    signaltest      5.9.0-rc8-rt13
->   1196  0_signaltest         t0-max-latency      : fail     207.00
->   1196  0_signaltest         t0-avg-latency      : pass      46.00
->   1196  0_signaltest         t0-min-latency      : pass      22.00
-> rpi3    signaltest      5.9.0-rc8-rt14
->   1197  0_signaltest         t0-max-latency      : fail     301.00
->   1197  0_signaltest         t0-avg-latency      : pass      47.00
->   1197  0_signaltest         t0-min-latency      : pass      20.00
-> rpi3    signaltest      5.9.0-rt15
->   1198  0_signaltest         t0-max-latency      : fail     323.00
->   1198  0_signaltest         t0-avg-latency      : pass      47.00
->   1198  0_signaltest         t0-min-latency      : pass      21.00
-
-So it is the new migrate-disable code? If you have stable 100us you
-should be able bisect it within the few commits between rt13 and rt14.
-
-> > > rpi3    signaltest      5.9.1-rt19
-> > >   1038  0_signaltest         t0-max-latency      : fail     341.00
-> > > rpi3    signaltest      5.9.1-rt20
-> > >   1079  0_signaltest         t0-max-latency      : fail     318.00
-> >
-> > So I have nothing to explain 20us improvement.
-> 
-> I think 20us is in the range of the standard deviation for this test. So
-> I don't think you should be concerned too much about it as long I don't
-> have proper statistical numbers.
-> 
-> One thing I also see is that the average was pretty constant at 47us for
-> 5.9-rt and for 5.10-rt series it's around 55us. So something makes the
-> whole operation slightly more expensive.
-> 
-> > > rpi3    signaltest      5.10.0-rc1-rt1
-> > >   1118  0_signaltest         t0-max-latency      : fail     415.00
-> > > rpi3    signaltest      5.10.0-rc2-rt4
-> > >   1163  0_signaltest         t0-max-latency      : fail     340.00
+> > On Mon, Nov 09, 2020 at 11:55:46AM +0000, Aisheng Dong wrote:
+> > > > From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> > > > Sent: Monday, November 9, 2020 7:41 PM
+> > > >
+> > > > On Mon, Nov 09, 2020 at 10:57:05AM +0000, Aisheng Dong wrote:
+> > > > > Hi Greg,
+> > > > >
+> > > > > > From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> > > > > > Sent: Monday, November 9, 2020 6:37 PM
+> > > > > > Subject: Re: [PATCH RESEND] driver core: export
+> > > > > > device_is_bound() to fix build failure
+> > > > > >
+> > > > > > On Mon, Nov 09, 2020 at 10:14:46AM +0000, Sudip Mukherjee wrote:
+> > > > > > > Hi Greg,
+> > > > > > >
+> > > > > > > On Sun, Nov 8, 2020 at 8:23 AM Greg Kroah-Hartman
+> > > > > > > <gregkh@linuxfoundation.org> wrote:
+> > > > > > > >
+> > > > > > > > On Sat, Nov 07, 2020 at 10:47:27PM +0000, Sudip Mukherjee wrote:
+> > > > > > > > > When CONFIG_MXC_CLK_SCU is configured as 'm' the build
+> > > > > > > > > fails as it is unable to find device_is_bound(). The error being:
+> > > > > > > > > ERROR: modpost: "device_is_bound"
+> > [drivers/clk/imx/clk-imx-scu.ko]
+> > > > > > > > >       undefined!
+> > > > > > > > >
+> > > > > > > > > Export the symbol so that the module finds it.
+> > > > > > > > >
+> > > > > > > > > Fixes: 77d8f3068c63 ("clk: imx: scu: add two cells binding
+> > > > > > > > > support")
+> > > > > > > > > Signed-off-by: Sudip Mukherjee
+> > > > > > > > > <sudipm.mukherjee@gmail.com>
+> > > > > > > > > ---
+> > > > > > > > >
+> > > > > > > > > resending with the Fixes: tag.
+> > > > > > > > >
+> > > > > > > > >  drivers/base/dd.c | 1 +
+> > > > > > > > >  1 file changed, 1 insertion(+)
+> > > > > > > > >
+> > > > > > > > > diff --git a/drivers/base/dd.c b/drivers/base/dd.c index
+> > > > > > > > > 148e81969e04..a796a57e5efb 100644
+> > > > > > > > > --- a/drivers/base/dd.c
+> > > > > > > > > +++ b/drivers/base/dd.c
+> > > > > > > > > @@ -353,6 +353,7 @@ bool device_is_bound(struct device *dev)
+> > {
+> > > > > > > > >       return dev->p &&
+> > > > > > > > > klist_node_attached(&dev->p->knode_driver);
+> > > > > > > > >  }
+> > > > > > > > > +EXPORT_SYMBOL(device_is_bound);
+> > > > > > > >
+> > > > > > > > EXPORT_SYMBOL_GPL() please, like all the other exports in this file.
+> > > > > > > >
+> > > > > > > > Also, wait, no, don't call this, are you sure you are
+> > > > > > > > calling it in a race-free way?  And what branch/tree is the above
+> > commit in?
+> > > > > > >
+> > > > > > > I have not checked fully but since it is being called from
+> > > > > > > probe() I assume the lock will be held at that time.
+> > > > > >
+> > > > > > probe() should never call this function as it makes no sense at
+> > > > > > all at that point in time.  The driver should be fixed.
+> > > > >
+> > > > > Would you suggest if any other API we can use to allow the driver
+> > > > > to know whether another device has been probed?
+> > > >
+> > > > There is none, sorry, as that just opens up way too many problems.
+> > > >
+> > > > > For imx scu driver in question, it has a special requirement that
+> > > > > it depends on scu power domain driver. However, there're a huge
+> > > > > number
+> > > > > (200+) of power domains for each device clock, we can't define
+> > > > > them all in DT
+> > > > for a single clock controller node.
+> > > > >
+> > > > > That's why we wanted to use device_is_bound() before to check if
+> > > > > scu power domain is ready or not to support defer probe.
+> > > >
+> > > > Use the device link functionality for this type of thing, that is
+> > > > what it was created for.
+> > > >
+> > >
+> > > Thanks for the suggestion. I will check it how to use.
+> > > BTW, I wonder if dev_driver_string() could be an optional solution
+> > > which seems a more simple way?
 > > 
-> > -rt2 gained new kmap code.
-> > -rt3 received an update of the above
+> > Also, how do you really know you even have a valid pointer to that other device
+> > structure?  How are you getting access to that?
+> > 
 > 
-> rpi3    signaltest      5.10.0-rc1-rt2
->   1199  0_signaltest         t0-max-latency      : fail     399.00
->   1199  0_signaltest         t0-avg-latency      : pass      55.00
->   1199  0_signaltest         t0-min-latency      : pass      25.00
-> rpi3    signaltest      5.10.0-rc2-rt3
->   1200  0_signaltest         t0-max-latency      : fail     420.00
->   1200  0_signaltest         t0-avg-latency      : pass      55.00
->   1200  0_signaltest         t0-min-latency      : pass      25.00
+> The rough idea is as follows. Not sure if those APIs are safe enough as there're
+> many users In kernel.
+> 
+> pd_np = of_find_compatible_node(NULL, NULL, "fsl,scu-pd");
+> pd_dev = of_find_device_by_node(pd_np);
+> if (!pd_dev || !dev_driver_string(&pd_dev->dev) ||
+>    strcmp(dev_driver_string(&pd_dev->dev), "imx-scu-pd")) {
+>         of_node_put(pd_np);
+>         return -EPROBE_DEFER;
+> }
 
-this looks odd. So rt1 has 415, rt2 has 399 and rt3 has 420 so lets say
-it is the same. And then rt4 should reduce it to 340. The only part that
-could have some influence is the are the highmem/kmap patches. But for
-ARM64 these are still a nop and in both cases kmap_atomic() disables
-migrate & page-fault.
+Ick, again, no, don't do that, you can not guarantee "names" of devices
+anywhere in the system, sorry.
 
-Are you sure those numbers always reproducible and not something that
-goes wrong and sometimes it is captured at 300us and sometimes 400us.
-
-I've been staring at the code of signaltest on Friday and I might need
-to stare longer to figure out what it does.
-
-Sebastian
+greg k-h
