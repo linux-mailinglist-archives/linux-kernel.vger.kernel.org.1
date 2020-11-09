@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5981E2AB9A9
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 14:11:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 045422ABA13
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 14:16:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732347AbgKINLW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 08:11:22 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36832 "EHLO mail.kernel.org"
+        id S1732575AbgKINPb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 08:15:31 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42258 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732309AbgKINLT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 08:11:19 -0500
+        id S1732913AbgKINP1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 08:15:27 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 02FA220663;
-        Mon,  9 Nov 2020 13:11:17 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B3ECB208FE;
+        Mon,  9 Nov 2020 13:15:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604927478;
-        bh=mglHCfp/UlQYcz/a9qJD1teai+Xwpt9IhvQcoqPxHFo=;
+        s=default; t=1604927726;
+        bh=eWAXtWlHbL+UEXQDDC840B9t1tX3td866nAML6WaOj4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=BsWr7wU3S9CbbOrMyhdU9vO8+VB/5fnVejVmAnmPyLZ35hdMnsLq+AudmEF4KS3Kh
-         qR5U7mlZyjREGxP1PAb0wEORe5kd9bithRjQB3+oEscHUrpEXGBa+xyJt3YvP/vePG
-         fDJ484k3vKBYu6/z/2KLeJlpawUl9Qd2QFnhA7xU=
+        b=jjA0cYZcIgDhtYB6KeB2u2eFZlxcJROQsNi2yJtCEaBO2zccDnWxCtQVqRlNIF6bt
+         1N60EeXBTXFmKLZMZcnnE13RWHql4tXI3t+utIVRG3PsXQ0O4PByuJ0CzBpQWLYEvW
+         kQpbI18911t9AHNwlALWToyKrmXXtZHyzMuqxZhY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Waldemar Brodkorb <wbx@uclibc-ng.org>,
-        Vineet Gupta <vgupta@synopsys.com>
-Subject: [PATCH 4.19 66/71] Revert "ARC: entry: fix potential EFA clobber when TIF_SYSCALL_TRACE"
+        stable@vger.kernel.org, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 63/85] Revert "coresight: Make sysfs functional on topologies with per core sink"
 Date:   Mon,  9 Nov 2020 13:56:00 +0100
-Message-Id: <20201109125023.005062845@linuxfoundation.org>
+Message-Id: <20201109125025.591630329@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201109125019.906191744@linuxfoundation.org>
-References: <20201109125019.906191744@linuxfoundation.org>
+In-Reply-To: <20201109125022.614792961@linuxfoundation.org>
+References: <20201109125022.614792961@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,86 +41,155 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vineet Gupta <Vineet.Gupta1@synopsys.com>
+This reverts commit 8fd52a21ab570e80f84f39e12affce42a5300e91.
 
-This reverts commit 00fdec98d9881bf5173af09aebd353ab3b9ac729.
-(but only from 5.2 and prior kernels)
+Guenter Roeck <linux@roeck-us.net> writes:
 
-The original commit was a preventive fix based on code-review and was
-auto-picked for stable back-port (for better or worse).
-It was OK for v5.3+ kernels, but turned up needing an implicit change
-68e5c6f073bcf70 "(ARC: entry: EV_Trap expects r10 (vs. r9) to have
- exception cause)" merged in v5.3 which itself was not backported.
-So to summarize the stable backport of this patch for v5.2 and prior
-kernels is busted and it won't boot.
+I get the following build warning in v5.4.75.
 
-The obvious solution is backport 68e5c6f073bcf70 but that is a pain as
-it doesn't revert cleanly and each of affected kernels (so far v4.19,
-v4.14, v4.9, v4.4) needs a slightly different massaged varaint.
-So the easier fix is to simply revert the backport from 5.2 and prior.
-The issue was not a big deal as it would cause strace to sporadically
-not work correctly.
+drivers/hwtracing/coresight/coresight-etm-perf.c: In function 'etm_setup_aux':
+drivers/hwtracing/coresight/coresight-etm-perf.c:226:37: warning:
+                        passing argument 1 of 'coresight_get_enabled_sink' makes pointer from integer without a cast
 
-Waldemar Brodkorb first reported this when running ARC uClibc regressions
-on latest stable kernels (with offending backport). Once he bisected it,
-the analysis was trivial, so thx to him for this.
+Actually, the warning is fatal, since the call is
+        sink = coresight_get_enabled_sink(true);
+However, the argument to coresight_get_enabled_sink() is now a pointer.
+The parameter change was introduced with commit 8fd52a21ab57
+("coresight: Make sysfs functional on topologies with per core sink").
 
-Reported-by: Waldemar Brodkorb <wbx@uclibc-ng.org>
-Bisected-by: Waldemar Brodkorb <wbx@uclibc-ng.org>
-Cc: stable <stable@vger.kernel.org> # 5.2 and prior
-Signed-off-by: Vineet Gupta <vgupta@synopsys.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+In the upstream kernel, the call is removed with commit bb1860efc817
+("coresight: etm: perf: Sink selection using sysfs is deprecated").
+That commit alone would, however, likely not solve the problem.
+It looks like at least two more commits would be needed.
+
+716f5652a131 coresight: etm: perf: Fix warning caused by etm_setup_aux failure
+8e264c52e1da coresight: core: Allow the coresight core driver to be built as a module
+39a7661dcf65 coresight: Fix uninitialised pointer bug in etm_setup_aux()
+
+Looking into the coresight code, I see several additional commits affecting
+the sysfs interface since v5.4. I have no idea what would actually be needed
+for stable code in v5.4.y, short of applying them all.
+
+With all this in mind, I would suggest to revert commit 8fd52a21ab57
+("coresight: Make sysfs functional on topologies with per core sink")
+from v5.4.y, especially since it is not marked as bug fix or for stable.
+
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arc/kernel/entry.S |   16 +++++++++++-----
- 1 file changed, 11 insertions(+), 5 deletions(-)
+ drivers/hwtracing/coresight/coresight-priv.h |  3 +-
+ drivers/hwtracing/coresight/coresight.c      | 62 +++++++++++---------
+ 2 files changed, 36 insertions(+), 29 deletions(-)
 
---- a/arch/arc/kernel/entry.S
-+++ b/arch/arc/kernel/entry.S
-@@ -156,6 +156,7 @@ END(EV_Extension)
- tracesys:
- 	; save EFA in case tracer wants the PC of traced task
- 	; using ERET won't work since next-PC has already committed
-+	lr  r12, [efa]
- 	GET_CURR_TASK_FIELD_PTR   TASK_THREAD, r11
- 	st  r12, [r11, THREAD_FAULT_ADDR]	; thread.fault_address
+diff --git a/drivers/hwtracing/coresight/coresight-priv.h b/drivers/hwtracing/coresight/coresight-priv.h
+index dfd24b85a5775..82e563cdc8794 100644
+--- a/drivers/hwtracing/coresight/coresight-priv.h
++++ b/drivers/hwtracing/coresight/coresight-priv.h
+@@ -147,8 +147,7 @@ static inline void coresight_write_reg_pair(void __iomem *addr, u64 val,
+ void coresight_disable_path(struct list_head *path);
+ int coresight_enable_path(struct list_head *path, u32 mode, void *sink_data);
+ struct coresight_device *coresight_get_sink(struct list_head *path);
+-struct coresight_device *
+-coresight_get_enabled_sink(struct coresight_device *source);
++struct coresight_device *coresight_get_enabled_sink(bool reset);
+ struct coresight_device *coresight_get_sink_by_id(u32 id);
+ struct list_head *coresight_build_path(struct coresight_device *csdev,
+ 				       struct coresight_device *sink);
+diff --git a/drivers/hwtracing/coresight/coresight.c b/drivers/hwtracing/coresight/coresight.c
+index 90ecd04a2f20b..0bbce0d291582 100644
+--- a/drivers/hwtracing/coresight/coresight.c
++++ b/drivers/hwtracing/coresight/coresight.c
+@@ -481,46 +481,50 @@ struct coresight_device *coresight_get_sink(struct list_head *path)
+ 	return csdev;
+ }
  
-@@ -198,9 +199,15 @@ tracesys_exit:
- ; Breakpoint TRAP
- ; ---------------------------------------------
- trap_with_param:
--	mov r0, r12	; EFA in case ptracer/gdb wants stop_pc
-+
-+	; stop_pc info by gdb needs this info
-+	lr  r0, [efa]
- 	mov r1, sp
+-static struct coresight_device *
+-coresight_find_enabled_sink(struct coresight_device *csdev)
++static int coresight_enabled_sink(struct device *dev, const void *data)
+ {
+-	int i;
+-	struct coresight_device *sink;
++	const bool *reset = data;
++	struct coresight_device *csdev = to_coresight_device(dev);
  
-+	; Now that we have read EFA, it is safe to do "fake" rtie
-+	;   and get out of CPU exception mode
-+	FAKE_RET_FROM_EXCPN
-+
- 	; Save callee regs in case gdb wants to have a look
- 	; SP will grow up by size of CALLEE Reg-File
- 	; NOTE: clobbers r12
-@@ -227,10 +234,6 @@ ENTRY(EV_Trap)
- 
- 	EXCEPTION_PROLOGUE
- 
--	lr  r12, [efa]
+ 	if ((csdev->type == CORESIGHT_DEV_TYPE_SINK ||
+ 	     csdev->type == CORESIGHT_DEV_TYPE_LINKSINK) &&
+-	     csdev->activated)
+-		return csdev;
 -
--	FAKE_RET_FROM_EXCPN
--
- 	;============ TRAP 1   :breakpoints
- 	; Check ECR for trap with arg (PROLOGUE ensures r9 has ECR)
- 	bmsk.f 0, r9, 7
-@@ -238,6 +241,9 @@ ENTRY(EV_Trap)
+-	/*
+-	 * Recursively explore each port found on this element.
+-	 */
+-	for (i = 0; i < csdev->pdata->nr_outport; i++) {
+-		struct coresight_device *child_dev;
++	     csdev->activated) {
++		/*
++		 * Now that we have a handle on the sink for this session,
++		 * disable the sysFS "enable_sink" flag so that possible
++		 * concurrent perf session that wish to use another sink don't
++		 * trip on it.  Doing so has no ramification for the current
++		 * session.
++		 */
++		if (*reset)
++			csdev->activated = false;
  
- 	;============ TRAP  (no param): syscall top level
+-		child_dev = csdev->pdata->conns[i].child_dev;
+-		if (child_dev)
+-			sink = coresight_find_enabled_sink(child_dev);
+-		if (sink)
+-			return sink;
++		return 1;
+ 	}
  
-+	; First return from Exception to pure K mode (Exception/IRQs renabled)
-+	FAKE_RET_FROM_EXCPN
+-	return NULL;
++	return 0;
+ }
+ 
+ /**
+- * coresight_get_enabled_sink - returns the first enabled sink using
+- * connection based search starting from the source reference
++ * coresight_get_enabled_sink - returns the first enabled sink found on the bus
++ * @deactivate:	Whether the 'enable_sink' flag should be reset
+  *
+- * @source: Coresight source device reference
++ * When operated from perf the deactivate parameter should be set to 'true'.
++ * That way the "enabled_sink" flag of the sink that was selected can be reset,
++ * allowing for other concurrent perf sessions to choose a different sink.
++ *
++ * When operated from sysFS users have full control and as such the deactivate
++ * parameter should be set to 'false', hence mandating users to explicitly
++ * clear the flag.
+  */
+-struct coresight_device *
+-coresight_get_enabled_sink(struct coresight_device *source)
++struct coresight_device *coresight_get_enabled_sink(bool deactivate)
+ {
+-	if (!source)
+-		return NULL;
++	struct device *dev = NULL;
 +
- 	; If syscall tracing ongoing, invoke pre-post-hooks
- 	GET_CURR_THR_INFO_FLAGS   r10
- 	btst r10, TIF_SYSCALL_TRACE
++	dev = bus_find_device(&coresight_bustype, NULL, &deactivate,
++			      coresight_enabled_sink);
+ 
+-	return coresight_find_enabled_sink(source);
++	return dev ? to_coresight_device(dev) : NULL;
+ }
+ 
+ static int coresight_sink_by_id(struct device *dev, const void *data)
+@@ -760,7 +764,11 @@ int coresight_enable(struct coresight_device *csdev)
+ 		goto out;
+ 	}
+ 
+-	sink = coresight_get_enabled_sink(csdev);
++	/*
++	 * Search for a valid sink for this session but don't reset the
++	 * "enable_sink" flag in sysFS.  Users get to do that explicitly.
++	 */
++	sink = coresight_get_enabled_sink(false);
+ 	if (!sink) {
+ 		ret = -EINVAL;
+ 		goto out;
+-- 
+2.27.0
+
 
 
