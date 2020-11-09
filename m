@@ -2,41 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B330B2ABA6C
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 14:19:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 592272AB919
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 14:05:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387436AbgKINTG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 08:19:06 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45498 "EHLO mail.kernel.org"
+        id S1730868AbgKINF1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 08:05:27 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57140 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387673AbgKINSG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 08:18:06 -0500
+        id S1730404AbgKIND6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 08:03:58 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D26D320731;
-        Mon,  9 Nov 2020 13:18:04 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5FBF220789;
+        Mon,  9 Nov 2020 13:03:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604927885;
-        bh=d0gPJV5WWEH+NZIHVHiJKGf1pstT/LiJ6O/8EHYy+7s=;
+        s=default; t=1604927038;
+        bh=+UAb6Q8UZdnojKcXbm3v29wGBw8dVGH9x1xn4P2U6aw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Xuv3FR9xrxMW78TKEJjCGemce5O1CVjvWzbqDkY7SsSVFQOZ6nvb84R+0gKLOCYzi
-         pv3FYGvYw17F4XuFM3PClRulDWSunJr2cqGWy7z3/JM/4aO94szmAIEn1m17dH06Kq
-         e7LcuhdFkt4mOnUCDWhd93hGSX4EaYBh1dQ99R1g=
+        b=HlJ5m1Ik9MC8TzCmt1j0+ScpTwUmogxpw1rVnpH7NNehEWUkltS62wMZ4Gv1N7pLb
+         Nk1OLEMn1/ZQqlKG1jmH/1UH++GoAy874d7mf7zv1TNS+aAn9l50YOZ8WeSen/YWx9
+         BnQHBHb/65iNvnCTgAvLlo7TQhSvlB5XeOZsfUqE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Vasily Gorbik <gor@linux.ibm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 5.9 054/133] lib/crc32test: remove extra local_irq_disable/enable
+        stable@vger.kernel.org,
+        Alexander Sverdlin <alexander.sverdlin@nokia.com>
+Subject: [PATCH 4.9 090/117] staging: octeon: repair "fixed-link" support
 Date:   Mon,  9 Nov 2020 13:55:16 +0100
-Message-Id: <20201109125033.321086464@linuxfoundation.org>
+Message-Id: <20201109125029.964154797@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201109125030.706496283@linuxfoundation.org>
-References: <20201109125030.706496283@linuxfoundation.org>
+In-Reply-To: <20201109125025.630721781@linuxfoundation.org>
+References: <20201109125025.630721781@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,78 +42,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vasily Gorbik <gor@linux.ibm.com>
+From: Alexander Sverdlin <alexander.sverdlin@nokia.com>
 
-commit aa4e460f0976351fddd2f5ac6e08b74320c277a1 upstream.
+commit 179f5dc36b0a1aa31538d7d8823deb65c39847b3 upstream.
 
-Commit 4d004099a668 ("lockdep: Fix lockdep recursion") uncovered the
-following issue in lib/crc32test reported on s390:
+The PHYs must be registered once in device probe function, not in device
+open callback because it's only possible to register them once.
 
-  BUG: using __this_cpu_read() in preemptible [00000000] code: swapper/0/1
-  caller is lockdep_hardirqs_on_prepare+0x48/0x270
-  CPU: 6 PID: 1 Comm: swapper/0 Not tainted 5.9.0-next-20201015-15164-g03d992bd2de6 #19
-  Hardware name: IBM 3906 M04 704 (LPAR)
-  Call Trace:
-    lockdep_hardirqs_on_prepare+0x48/0x270
-    trace_hardirqs_on+0x9c/0x1b8
-    crc32_test.isra.0+0x170/0x1c0
-    crc32test_init+0x1c/0x40
-    do_one_initcall+0x40/0x130
-    do_initcalls+0x126/0x150
-    kernel_init_freeable+0x1f6/0x230
-    kernel_init+0x22/0x150
-    ret_from_fork+0x24/0x2c
-  no locks held by swapper/0/1.
-
-Remove extra local_irq_disable/local_irq_enable helpers calls.
-
-Fixes: 5fb7f87408f1 ("lib: add module support to crc32 tests")
-Signed-off-by: Vasily Gorbik <gor@linux.ibm.com>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Ingo Molnar <mingo@kernel.org>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Link: https://lkml.kernel.org/r/patch.git-4369da00c06e.your-ad-here.call-01602859837-ext-1679@work.hours
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Fixes: a25e278020bf ("staging: octeon: support fixed-link phys")
+Signed-off-by: Alexander Sverdlin <alexander.sverdlin@nokia.com>
+Cc: stable <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20201016101858.11374-1-alexander.sverdlin@nokia.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- lib/crc32test.c |    4 ----
- 1 file changed, 4 deletions(-)
+ drivers/staging/octeon/ethernet-mdio.c |    6 ------
+ drivers/staging/octeon/ethernet.c      |    9 +++++++++
+ 2 files changed, 9 insertions(+), 6 deletions(-)
 
---- a/lib/crc32test.c
-+++ b/lib/crc32test.c
-@@ -683,7 +683,6 @@ static int __init crc32c_test(void)
+--- a/drivers/staging/octeon/ethernet-mdio.c
++++ b/drivers/staging/octeon/ethernet-mdio.c
+@@ -155,12 +155,6 @@ int cvm_oct_phy_setup_device(struct net_
  
- 	/* reduce OS noise */
- 	local_irq_save(flags);
--	local_irq_disable();
+ 	phy_node = of_parse_phandle(priv->of_node, "phy-handle", 0);
+ 	if (!phy_node && of_phy_is_fixed_link(priv->of_node)) {
+-		int rc;
+-
+-		rc = of_phy_register_fixed_link(priv->of_node);
+-		if (rc)
+-			return rc;
+-
+ 		phy_node = of_node_get(priv->of_node);
+ 	}
+ 	if (!phy_node)
+--- a/drivers/staging/octeon/ethernet.c
++++ b/drivers/staging/octeon/ethernet.c
+@@ -16,6 +16,7 @@
+ #include <linux/phy.h>
+ #include <linux/slab.h>
+ #include <linux/interrupt.h>
++#include <linux/of_mdio.h>
+ #include <linux/of_net.h>
+ #include <linux/if_ether.h>
+ #include <linux/if_vlan.h>
+@@ -880,6 +881,14 @@ static int cvm_oct_probe(struct platform
+ 				break;
+ 			}
  
- 	nsec = ktime_get_ns();
- 	for (i = 0; i < 100; i++) {
-@@ -694,7 +693,6 @@ static int __init crc32c_test(void)
- 	nsec = ktime_get_ns() - nsec;
- 
- 	local_irq_restore(flags);
--	local_irq_enable();
- 
- 	pr_info("crc32c: CRC_LE_BITS = %d\n", CRC_LE_BITS);
- 
-@@ -768,7 +766,6 @@ static int __init crc32_test(void)
- 
- 	/* reduce OS noise */
- 	local_irq_save(flags);
--	local_irq_disable();
- 
- 	nsec = ktime_get_ns();
- 	for (i = 0; i < 100; i++) {
-@@ -783,7 +780,6 @@ static int __init crc32_test(void)
- 	nsec = ktime_get_ns() - nsec;
- 
- 	local_irq_restore(flags);
--	local_irq_enable();
- 
- 	pr_info("crc32: CRC_LE_BITS = %d, CRC_BE BITS = %d\n",
- 		 CRC_LE_BITS, CRC_BE_BITS);
++			if (priv->of_node && of_phy_is_fixed_link(priv->of_node)) {
++				if (of_phy_register_fixed_link(priv->of_node)) {
++					netdev_err(dev, "Failed to register fixed link for interface %d, port %d\n",
++						   interface, priv->port);
++					dev->netdev_ops = NULL;
++				}
++			}
++
+ 			if (!dev->netdev_ops) {
+ 				free_netdev(dev);
+ 			} else if (register_netdev(dev) < 0) {
 
 
