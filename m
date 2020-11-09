@@ -2,123 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 48B5A2AC6A9
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 22:09:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EAAB02AC6AC
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 22:09:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730739AbgKIVJV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 16:09:21 -0500
-Received: from youngberry.canonical.com ([91.189.89.112]:37429 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725946AbgKIVJV (ORCPT
+        id S1730631AbgKIVJn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 16:09:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40624 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725946AbgKIVJn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 16:09:21 -0500
-Received: from 1.general.cascardo.us.vpn ([10.172.70.58] helo=mussarela)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <cascardo@canonical.com>)
-        id 1kcEPb-0001YJ-TT; Mon, 09 Nov 2020 21:09:16 +0000
-Date:   Mon, 9 Nov 2020 18:09:09 -0300
-From:   Thadeu Lima de Souza Cascardo <cascardo@canonical.com>
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     Kleber Sacilotto de Souza <kleber.souza@canonical.com>,
-        Eric Dumazet <edumazet@google.com>, netdev@vger.kernel.org,
-        Gerrit Renker <gerrit@erg.abdn.ac.uk>,
-        "David S. Miller" <davem@davemloft.net>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        "Alexander A. Klimov" <grandmaster@al2klimov.de>,
-        Kees Cook <keescook@chromium.org>,
-        Alexey Kodanev <alexey.kodanev@oracle.com>,
-        dccp@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] dccp: ccid: move timers to struct dccp_sock
-Message-ID: <20201109210909.GQ595944@mussarela>
-References: <20201013171849.236025-1-kleber.souza@canonical.com>
- <20201013171849.236025-2-kleber.souza@canonical.com>
- <20201016153016.04bffc1e@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <20201109114828.GP595944@mussarela>
- <20201109094938.45b230c9@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        Mon, 9 Nov 2020 16:09:43 -0500
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D3E3C0613CF
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Nov 2020 13:09:43 -0800 (PST)
+Received: by mail-pg1-x543.google.com with SMTP id f18so3726010pgi.8
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Nov 2020 13:09:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=YnjA0vExtodqKNxAfLIMx+cONW4ftsoSQk+GuIJ8C3Q=;
+        b=Mzn+lkPUKAagCrasvlj/MFdI2wxtH5U9jcoXzV73C9rLpSFg7sNLxJRw1MCX4K0APn
+         /bvXA4koxkgoUCZF7aaLF8/wjkWuIrUUdy4usvMO3HQYyj1ojCVvr3j/JYp1GEbDh88J
+         VPeftZHwG1Xfisry3+kiLECTYz6OktNlpGd8edleStz8LqLTcgXvMFCb5bdP3V8LvHBN
+         o7DTnaSQD9t0X5+1tODMc3dxoUUmDIOddYJvrvgIgv/l42/+JGt1xxf7jdZQIIpAyMBb
+         wdYdPsyRTVGM3hz9UHj7emaAvri7XTz0m8kOPe7StvlTQ2GKZ5OpdeVhUH+L3xpozID3
+         J0bA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=YnjA0vExtodqKNxAfLIMx+cONW4ftsoSQk+GuIJ8C3Q=;
+        b=dUE5pRAyDbD2mQnfRn4uMc46TnExGDdMG6P0sGksStQ9KPFCRvei5s7NlrgAsNpR4g
+         6/4+0CbPRUGOP9bSGFPzFHLw/DmV3x6PhVHWIti5N5IiNPcL3zLkbMhQ6+zzHlm9BNrx
+         tg4ezVND+mEt5UzKYIh1bTCbllDiay6Vvclh0F3/hnps/x1/zFhdmS4huILVcFDx0bfG
+         spExP6GMeq7FmrG2OY4t2D/wR7NBls97Fx3KfuDtzzggJOgWYVynIJse+cxCoaF9vqK8
+         w/bHnFxi50lmEv7A/wVUOpnxBmgbhLEhlK/RT+P3jAvwuNbXM8oZt2Ra5A9nsugZ2uy4
+         zahg==
+X-Gm-Message-State: AOAM530XO6ojnpbK30h5cxskFkk82pbnt8nmvz0c6TCF5oLCF8oerLS/
+        4G//odRl42ovjMegh2VkLwRXzghTkwc2zOJynUtkiQ==
+X-Google-Smtp-Source: ABdhPJwS3Dtj6FbqMVkJXCZDJQGzuD1lqxgTsfAoIUYREMZAmguhu0GdmXFgSGCrrr+zYXKXqGDZfHxP8ATkOptm7Ak=
+X-Received: by 2002:a17:90b:110b:: with SMTP id gi11mr1095003pjb.25.1604956182606;
+ Mon, 09 Nov 2020 13:09:42 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201109094938.45b230c9@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+References: <20201109205155.1207545-1-ndesaulniers@google.com> <CAMj1kXEoSF7UXNjJS4A6VtDVbpe7kfqxdZkMS3Sxf1Sr=PvdLA@mail.gmail.com>
+In-Reply-To: <CAMj1kXEoSF7UXNjJS4A6VtDVbpe7kfqxdZkMS3Sxf1Sr=PvdLA@mail.gmail.com>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Mon, 9 Nov 2020 13:09:31 -0800
+Message-ID: <CAKwvOdmEu+mf0fVW+4gt1q7F3SkFcLvTbgjivv1qnTo3sBAO7A@mail.gmail.com>
+Subject: Re: [PATCH] ARM: decompressor: avoid ADRL pseudo-instruction
+To:     Ard Biesheuvel <ardb@kernel.org>
+Cc:     Jian Cai <jiancai@google.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Nicolas Pitre <nico@fluxnic.net>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 09, 2020 at 09:49:38AM -0800, Jakub Kicinski wrote:
-> On Mon, 9 Nov 2020 08:48:28 -0300 Thadeu Lima de Souza Cascardo wrote:
-> > On Fri, Oct 16, 2020 at 03:30:16PM -0700, Jakub Kicinski wrote:
-> > > On Tue, 13 Oct 2020 19:18:48 +0200 Kleber Sacilotto de Souza wrote:  
-> > > > From: Thadeu Lima de Souza Cascardo <cascardo@canonical.com>
-> > > > 
-> > > > When dccps_hc_tx_ccid is freed, ccid timers may still trigger. The reason
-> > > > del_timer_sync can't be used is because this relies on keeping a reference
-> > > > to struct sock. But as we keep a pointer to dccps_hc_tx_ccid and free that
-> > > > during disconnect, the timer should really belong to struct dccp_sock.
-> > > > 
-> > > > This addresses CVE-2020-16119.
-> > > > 
-> > > > Fixes: 839a6094140a (net: dccp: Convert timers to use timer_setup())
-> > > > Signed-off-by: Thadeu Lima de Souza Cascardo <cascardo@canonical.com>
-> > > > Signed-off-by: Kleber Sacilotto de Souza <kleber.souza@canonical.com>  
-> > > 
-> > > I've been mulling over this fix.
-> > > 
-> > > The layering violation really doesn't sit well.
-> > > 
-> > > We're reusing the timer object. What if we are really unlucky, the
-> > > fires and gets blocked by a cosmic ray just as it's about to try to
-> > > lock the socket, then user manages to reconnect, and timer starts
-> > > again. Potentially with a different CCID algo altogether?
-> > > 
-> > > Is disconnect ever called under the BH lock?  Maybe plumb a bool
-> > > argument through to ccid*_hc_tx_exit() and do a sk_stop_timer_sync()
-> > > when called from disconnect()?
-> > > 
-> > > Or do refcounting on ccid_priv so that the timer holds both the socket
-> > > and the priv?  
-> > 
-> > Sorry about too late a response. I was on vacation, then came back and spent a
-> > couple of days testing this further, and had to switch to other tasks.
-> > 
-> > So, while testing this, I had to resort to tricks like having a very small
-> > expire and enqueuing on a different CPU. Then, after some minutes, I hit a UAF.
-> > That's with or without the first of the second patch.
-> > 
-> > I also tried to refcount ccid instead of the socket, keeping the timer on the
-> > ccid, but that still hit the UAF, and that's when I had to switch tasks.
-> 
-> Hm, not instead, as well. I think trying cancel the timer _sync from
-> the disconnect path would be the simplest solution, tho.
-> 
+On Mon, Nov 9, 2020 at 12:53 PM Ard Biesheuvel <ardb@kernel.org> wrote:
+>
+> On Mon, 9 Nov 2020 at 21:52, Nick Desaulniers <ndesaulniers@google.com> wrote:
+> >
+> > As Ard notes in
+> > commit 54781938ec34 ("crypto: arm/sha256-neon - avoid ADRL pseudo
+> > instruction")
+> > commit 0f5e8323777b ("crypto: arm/sha512-neon - avoid ADRL pseudo
+> > instruction")
+> >
+> >   The ADRL pseudo instruction is not an architectural construct, but a
+> >   convenience macro that was supported by the ARM proprietary assembler
+> >   and adopted by binutils GAS as well, but only when assembling in 32-bit
+> >   ARM mode. Therefore, it can only be used in assembler code that is known
+> >   to assemble in ARM mode only, but as it turns out, the Clang assembler
+> >   does not implement ADRL at all, and so it is better to get rid of it
+> >   entirely.
+> >
+> >   So replace the ADRL instruction with a ADR instruction that refers to
+> >   a nearer symbol, and apply the delta explicitly using an additional
+> >   instruction.
+> >
+> > We can use the same technique to generate the same offset. It looks like
+> > the ADRL pseudo instruction assembles to two SUB instructions in this
+> > case. Because the largest immediate operand that can be specified for
+> > this instruction is 0x400, and the distance between the reference and
+> > the symbol are larger than that, we need to use an intermediary symbol
+> > (cache_off in this case) to calculate the full range.
+> >
+> > Suggested-by: Ard Biesheuvel <ardb@kernel.org>
+> > Suggested-by: Jian Cai <jiancai@google.com>
+> > Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
+> > ---
+> >  arch/arm/boot/compressed/head.S | 4 +++-
+> >  1 file changed, 3 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/arch/arm/boot/compressed/head.S b/arch/arm/boot/compressed/head.S
+> > index 2e04ec5b5446..b3eac6f9a709 100644
+> > --- a/arch/arm/boot/compressed/head.S
+> > +++ b/arch/arm/boot/compressed/head.S
+> > @@ -1440,7 +1440,9 @@ ENTRY(efi_enter_kernel)
+> >                 mov     r4, r0                  @ preserve image base
+> >                 mov     r8, r1                  @ preserve DT pointer
+> >
+> > - ARM(          adrl    r0, call_cache_fn       )
+> > + ARM(          sub     r0, pc, #.L__efi_enter_kernel-cache_off )
+> > + ARM(          sub     r0, r0, #cache_off-call_cache_fn        )
+> > +.L__efi_enter_kernel:
+> >   THUMB(                adr     r0, call_cache_fn       )
+> >                 adr     r1, 0f                  @ clean the region of code we
+> >                 bl      cache_clean_flush       @ may run with the MMU off
+> > --
+> > 2.29.2.222.g5d2a92d10f8-goog
+> >
+>
+> This is already fixed in Russell's for-next tree.
 
-I don't think so. On other paths, we would still have the possibility that:
+Ah right, trolling through lore, there was:
+https://lore.kernel.org/linux-arm-kernel/20200914095706.3985-1-ardb@kernel.org/
 
-CPU1: timer expires and is about to run
-CPU2: calls stop_timer (which does not stop anything) and frees ccid
-CPU1: timer runs and uses freed ccid
+I didn't see anything in linux-next today, or
+https://www.armlinux.org.uk/developer/patches/ Incoming or Applied.
 
-And those paths, IIUC, may be run under a SoftIRQ on the receive path, so would
-not be able to call stop_timer_sync.
-
-> > Oh, and in the meantime, I found one or two other fixes that we
-> > should apply, will send them shortly.
-> > 
-> > But I would argue that we should apply the revert as it addresses the
-> > CVE, without really regressing the other UAF, as I argued. Does that
-> > make sense?
-> 
-> We can - it's always a little strange to go from one bug to a different
-> without a fix - but the justification being that while the previous UAF
-> required a race condition the new one is actually worst because it can 
-> be triggered reliably?
-
-Well, I am arguing here that commit 2677d20677314101293e6da0094ede7b5526d2b1
-("dccp: don't free ccid2_hc_tx_sock struct in dccp_disconnect()") doesn't
-really fix anything. Whenever ccid_hx_tx_delete is called, that UAF might
-happen, because the timer might trigger right after we free the ccid struct.
-
-And, yes, on the other hand, we can reliably launch the DoS attack that is
-fixed by the revert of that commit.
-
-Thanks.
-Cascardo.
+Did it just get merged into the for-next branch, or is for-next not
+getting pulled into linux-next?
+-- 
+Thanks,
+~Nick Desaulniers
