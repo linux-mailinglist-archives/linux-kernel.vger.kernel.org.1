@@ -2,208 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B30C32AC922
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 00:13:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 324402AC929
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 00:15:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730554AbgKIXNQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 18:13:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60078 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729452AbgKIXNP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 18:13:15 -0500
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58E9DC0613CF;
-        Mon,  9 Nov 2020 15:13:15 -0800 (PST)
-Received: by mail-wr1-x443.google.com with SMTP id l1so6235496wrb.9;
-        Mon, 09 Nov 2020 15:13:15 -0800 (PST)
+        id S1730500AbgKIXPI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 18:15:08 -0500
+Received: from mail-dm6nam10on2048.outbound.protection.outlook.com ([40.107.93.48]:8641
+        "EHLO NAM10-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1729585AbgKIXPH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 18:15:07 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=gDmVu+7JyI8U1Or+o/D4hJWd7tOuLaLcYDi4wMf4ZkUQHdu80mwYiRCcfA1mwV5UOelnKIiAYXyNd19gVKgZXD8zNhCxzaH+o8zCq0mMKL3dwmzqRXpxVRWmwGI1jizzvCF/jvyXs2l0ahka1zu5vBO90mmLHaZnrnLRU6D0Oo/yCQks7mmXnIULS+byp6qbdHK6l75XxK9//Dhy/oCb1h/uLNOc0wV9hTjZIUmjD9K80qa1daU8S9F3SKv/9UUmKhrHLLH0sznyz8MXK+Q+nky+jmn3/ZxZASdpnKYaLJzshtA/H2qhb280PzLQp0MxuHcjK9Q67R3PuYB72WajVw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ayW56KjOrbm2FtXrwE+0VQIu1WQUIarr3FwiWvZmv2k=;
+ b=Vk8y5DpjwrtLUUQyakMVL+VW9a2QtauOnmXuuQdrpYKAnO2dRDJ85FgmSAd8FZ8lkjSpKgeI7UrHNRJJ2DNbZ4ymbd87x1G3LucmcHXGLbWSJmbn0k7j4oEYxETEWO01yP1n3nihQMuU8rWEriBHkGtj1xzohB6YtH8ifZUqK0ZLiiZWsa9AODncFaxnk13anXhX/eiyXyOzmz+Nya7HM+cEhNAv+oWdNC7QiK12291IuNdBSSWc+eA/NgkcaXw2D8KH+IbORHAl4b8tn1qs4y62m/IOCekvy/Kag1oxIqvnWFoyMgzdbTIiWrNsf9yt45qODq1BihHJ0I8/iSuIHQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=SzyzIFUHACGGtEjbEi3vs8mJQQfV5+rYDswxbA8M/m4=;
-        b=Zjl3lSMlwvvESHqMfFzS+5eQN59OuHO9r0r30lNuvJpzf7i83Mm6Ss9krJTnqvrZgf
-         5Yh9988oL1MM0Vtur483IGqsb1mkCuD2645+EA1T9BCcrn08BWP9hsQCHsQu1cvw1Nbx
-         FoF6RKP2xksNAxT3yctHue3woWJ1pdsZlZgZPnAYYLLVkIS3HimuI2vNkEzxPMeHJZM0
-         lxfwM/l98Kky/qzRs2FLGkBIM3AowfWiXV8SPDJb5pRP3rTBHrblC/hdc4mkQdAyn7HY
-         GQVmWFdbtfwbprbHg/LL9IOJiKRmB/M7RR44cLsn0UwD9gGQg4xFQt/dpONb5RLt8Ngq
-         D1ig==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=SzyzIFUHACGGtEjbEi3vs8mJQQfV5+rYDswxbA8M/m4=;
-        b=LoAicK2YwKcimsid5M7yzOZfK+4uEh/aq95s/8WHiRwgKuxqyTSgGOPn1QoN72l1xw
-         w0U/ze5O8kaRXgpmqUnHBOCFL1Wpef1o9wTLJL6477X/g0GOhkFliuQ0cWWWAxMC6Set
-         EJyB7QCJ6i9WcisCZJJ1vkTPuKudR+gP3p6ChVDSLQ/QXdHO1iAUBZlpr4upc5Wudp7D
-         FigcNwyQ2D/DaYAWa+geBfJL602xjOsXQHIdmXVZmMRcZCQkwEhQ3ubZAny6OclkE4vH
-         F49rUXqsvUusNSwCvsM31GIC88igYBpGk8Zjmw70x9T2R6CBQtYd5IfexaVkqe3PVala
-         B1MA==
-X-Gm-Message-State: AOAM533XgUEAXmqyI1hI7SD5PWj7+/nwK4HnAsxAGTSCobeZe4/Qzefd
-        qtMvFwkS0gEnmQobhdIO+ylVs9DBmRYMSex3Ah4bXc4c
-X-Google-Smtp-Source: ABdhPJyT6A9cKehZWb10KrnBie1nNYFDIpBin6H4BfNw8lMRDh4wdHe62j3D8Lt/Wi97awQK5IviqbABQnlhm14zshQ=
-X-Received: by 2002:adf:a54d:: with SMTP id j13mr17227610wrb.132.1604963593350;
- Mon, 09 Nov 2020 15:13:13 -0800 (PST)
+ d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ayW56KjOrbm2FtXrwE+0VQIu1WQUIarr3FwiWvZmv2k=;
+ b=AL4xZebXocu7OfZUl0pRSXuJLtEedYbx9qqhDMy+qvD0uLCu+DR7cBbSEh0LanlJRuVTSm5TJxDHTe57IEuxfJnW1Ghlmrgp3uTDdi5kaDtP4SC1GAOi5vUIyS1zrrf4BvQFiMboqzgK/ycEUMF00Aa/zr/mJ/SKE7MpEPWQqR0=
+Authentication-Results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=amd.com;
+Received: from DM5PR12MB1355.namprd12.prod.outlook.com (2603:10b6:3:6e::7) by
+ DM5PR1201MB0219.namprd12.prod.outlook.com (2603:10b6:4:56::19) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.3541.22; Mon, 9 Nov 2020 23:15:05 +0000
+Received: from DM5PR12MB1355.namprd12.prod.outlook.com
+ ([fe80::e442:c052:8a2c:5fba]) by DM5PR12MB1355.namprd12.prod.outlook.com
+ ([fe80::e442:c052:8a2c:5fba%6]) with mapi id 15.20.3499.032; Mon, 9 Nov 2020
+ 23:15:05 +0000
+Subject: Re: [tip: x86/apic] x86/io_apic: Cleanup trigger/polarity helpers
+To:     linux-kernel@vger.kernel.org
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        David Woodhouse <dwmw@amazon.co.uk>, x86 <x86@kernel.org>
+References: <20201024213535.443185-20-dwmw2@infradead.org>
+ <160397373817.397.3191135882528008704.tip-bot2@tip-bot2>
+From:   Tom Lendacky <thomas.lendacky@amd.com>
+Message-ID: <e2e06979-cbcf-8771-0b48-c46f2d034aa8@amd.com>
+Date:   Mon, 9 Nov 2020 17:15:03 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+In-Reply-To: <160397373817.397.3191135882528008704.tip-bot2@tip-bot2>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [165.204.77.1]
+X-ClientProxiedBy: SA9PR13CA0072.namprd13.prod.outlook.com
+ (2603:10b6:806:23::17) To DM5PR12MB1355.namprd12.prod.outlook.com
+ (2603:10b6:3:6e::7)
 MIME-Version: 1.0
-References: <20201109222319.2630557-1-jcrouse@codeaurora.org> <20201109222319.2630557-3-jcrouse@codeaurora.org>
-In-Reply-To: <20201109222319.2630557-3-jcrouse@codeaurora.org>
-From:   Rob Clark <robdclark@gmail.com>
-Date:   Mon, 9 Nov 2020 15:13:01 -0800
-Message-ID: <CAF6AEGv19=+3gc1KnYrzmLBs--7P7BFhjmV1Qg_9N10299Qg2g@mail.gmail.com>
-Subject: Re: [RFC PATCH v1 2/3] drm/msm: Add an adreno-smmu-priv callback to
- get pagefault info
-To:     Jordan Crouse <jcrouse@codeaurora.org>
-Cc:     linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Rob Clark <robdclark@chromium.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        "list@263.net:IOMMU DRIVERS <iommu@lists.linux-foundation.org>, Joerg
-        Roedel <joro@8bytes.org>," <iommu@lists.linux-foundation.org>,
-        Will Deacon <will@kernel.org>,
-        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [10.236.30.118] (165.204.77.1) by SA9PR13CA0072.namprd13.prod.outlook.com (2603:10b6:806:23::17) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3564.13 via Frontend Transport; Mon, 9 Nov 2020 23:15:04 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: 0b4fb831-f8a2-48e9-e4a1-08d885054ae1
+X-MS-TrafficTypeDiagnostic: DM5PR1201MB0219:
+X-Microsoft-Antispam-PRVS: <DM5PR1201MB0219E35A96A14EDDA31276D0ECEA0@DM5PR1201MB0219.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:1013;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 7d9LrtoJu++cbk1N+MyM11Ws/B3srdLbGYTQLBBhSIRFEDUaY1+9JPjcL0Thq6V1QkZC1fd3snD55W1nM1oenMdMjGpR/pclHVLSZpoHA/5GRnxAop/h+xt3mmJQ5Q0pRo+wzB7EDH+r5CxssdpgduwbgBIR5q+u1xYawN8z2lSUkAEo/kRWC0OVt9UA1NX5zz9ESo+t25gahltgGXjJTJwddaBwRNnaUo7GwAFHJxY38jQ3o0wgEyp4lAjHg2l8rso/bsxRKGA4HHwCVh7FFDUG9xkmSdVajrA5DyCWskdYVzMgZYJjK9V9KhlSO4+s7MLJTP65Az1YQ59gSiWN2LDdfa3YVnIf68eVv29pC63io+7d8w2s6F0TH8M0S7ob0TnlE9yPqTIgqO2MYYeeoCFHTceOteBCMnVE6yNJQAwyTzV3aq1sCekubtudNP6WG9zywPiMsjQvcK2iftKB4Q==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM5PR12MB1355.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(39860400002)(396003)(346002)(136003)(366004)(8676002)(31696002)(26005)(8936002)(16526019)(2616005)(186003)(6486002)(36756003)(83380400001)(52116002)(31686004)(53546011)(86362001)(478600001)(66476007)(66556008)(66946007)(6916009)(966005)(4326008)(16576012)(54906003)(2906002)(5660300002)(956004)(316002)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: n3vY3grdJoLYREDwpysl10YXRhPR4AX3eU8CNJwGdKzHlrqiCZc66xXpd3vjEtEVeCp2oL6Fd+qYlnSC0AJqWuKzoi7hXF+JE2F8NJCbRHUNpv2PaPNqfqBrjCwETv3+QgVFkgReF5PnSGP16X+F9wi9ZbCdxhiIZxpRzFf9f7LbS7jXIUUMBhPlao06L6iY5bsmairaVkhL5lUGS63sMZhgTYPBXx5/fGkp0kQmDbbT9w85sh5YFqkvyk+9VbMtmmrHTGKfJ/nt5w3STNcnQZfgDzOvlmngz2K37qQTVxDt48hm1oytx+vhVq+tg+htonJ68cRglBeHPplyXDpS3mmHxN62B3wSj1nLTc8KNFzF7JKix26jp/dj9gLu65cqt9aOluW5/AC4pmCBT58e8t72GyKsS19BpnedfMeTWWouwPgIO0MGuCQlM5DqiOD5qbdPXKitLHG6BsEgHvU/frnde6cOyDh9u7yA0/3hd84LVGQLZABRC3kXpbtlhrzAQL4LFqkENmKMDTClxavaK2vN9H620btLA5dpFmWvFy73yP9aF3zkiusaU3amXFN0pxBvrux1fygg06gvfoGMRvf1nJoEuhIeiUOa4ebJ3TBgH7/IdgwuEQjrKhsL2I9wV6g5a7F5C/fTFmCUmuHhhQ==
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 0b4fb831-f8a2-48e9-e4a1-08d885054ae1
+X-MS-Exchange-CrossTenant-AuthSource: DM5PR12MB1355.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Nov 2020 23:15:05.2743
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: bDPL0iyxzwhtxFZHXkV46Xd7J/CuXt2j8xWHLd8x/UYC8x7cL0cIA7y3hF+vMt7b07oVrLp7JUnoH3uKm2BhXw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR1201MB0219
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 9, 2020 at 2:23 PM Jordan Crouse <jcrouse@codeaurora.org> wrote:
->
-> Add a callback in adreno-smmu-priv to read interesting SMMU
-> registers to provide an opportunity for a richer debug experience
-> in the GPU driver.
->
-> Signed-off-by: Jordan Crouse <jcrouse@codeaurora.org>
-> ---
->
->  drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c | 19 +++++++++++++
->  drivers/iommu/arm/arm-smmu/arm-smmu.h      |  2 ++
->  include/linux/adreno-smmu-priv.h           | 31 +++++++++++++++++++++-
->  3 files changed, 51 insertions(+), 1 deletion(-)
->
-> diff --git a/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c b/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
-> index d0636c803a36..367a267324a2 100644
-> --- a/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
-> +++ b/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
-> @@ -32,6 +32,24 @@ static void qcom_adreno_smmu_write_sctlr(struct arm_smmu_device *smmu, int idx,
->         arm_smmu_cb_write(smmu, idx, ARM_SMMU_CB_SCTLR, reg);
->  }
->
-> +static void qcom_adreno_smmu_get_fault_info(const void *cookie,
-> +               struct adreno_smmu_fault_info *info)
-> +{
-> +       struct arm_smmu_domain *smmu_domain = (void *)cookie;
-> +       struct arm_smmu_cfg *cfg = &smmu_domain->cfg;
-> +       struct arm_smmu_device *smmu = smmu_domain->smmu;
-> +
-> +       info->fsr = arm_smmu_cb_read(smmu, cfg->cbndx, ARM_SMMU_CB_FSR);
-> +       /* FIXME: return error here if we aren't really in a fault? */
-> +
-> +       info->fsynr0 = arm_smmu_cb_read(smmu, cfg->cbndx, ARM_SMMU_CB_FSYNR0);
-> +       info->fsynr1 = arm_smmu_cb_read(smmu, cfg->cbndx, ARM_SMMU_CB_FSYNR1);
-> +       info->far = arm_smmu_cb_readq(smmu, cfg->cbndx, ARM_SMMU_CB_FAR);
-> +       info->cbfrsynra = arm_smmu_gr1_read(smmu, ARM_SMMU_GR1_CBFRSYNRA(cfg->cbndx));
-> +       info->ttbr0 = arm_smmu_cb_read(smmu, cfg->cbndx, ARM_SMMU_CB_TTBR0);
-> +       info->contextidr = arm_smmu_cb_read(smmu, cfg->cbndx, ARM_SMMU_CB_CONTEXTIDR);
-> +}
-> +
->  #define QCOM_ADRENO_SMMU_GPU_SID 0
->
->  static bool qcom_adreno_smmu_is_gpu_device(struct device *dev)
-> @@ -156,6 +174,7 @@ static int qcom_adreno_smmu_init_context(struct arm_smmu_domain *smmu_domain,
->         priv->cookie = smmu_domain;
->         priv->get_ttbr1_cfg = qcom_adreno_smmu_get_ttbr1_cfg;
->         priv->set_ttbr0_cfg = qcom_adreno_smmu_set_ttbr0_cfg;
-> +       priv->get_fault_info = qcom_adreno_smmu_get_fault_info;
->
->         return 0;
->  }
-> diff --git a/drivers/iommu/arm/arm-smmu/arm-smmu.h b/drivers/iommu/arm/arm-smmu/arm-smmu.h
-> index 04288b6fc619..fe511540a6bf 100644
-> --- a/drivers/iommu/arm/arm-smmu/arm-smmu.h
-> +++ b/drivers/iommu/arm/arm-smmu/arm-smmu.h
-> @@ -224,6 +224,8 @@ enum arm_smmu_cbar_type {
->  #define ARM_SMMU_CB_FSYNR0             0x68
->  #define ARM_SMMU_FSYNR0_WNR            BIT(4)
->
-> +#define ARM_SMMU_CB_FSYNR1             0x6c
-> +
->  #define ARM_SMMU_CB_S1_TLBIVA          0x600
->  #define ARM_SMMU_CB_S1_TLBIASID                0x610
->  #define ARM_SMMU_CB_S1_TLBIVAL         0x620
-> diff --git a/include/linux/adreno-smmu-priv.h b/include/linux/adreno-smmu-priv.h
-> index a889f28afb42..fc2592ebb9ba 100644
-> --- a/include/linux/adreno-smmu-priv.h
-> +++ b/include/linux/adreno-smmu-priv.h
-> @@ -8,6 +8,32 @@
->
->  #include <linux/io-pgtable.h>
->
-> +/**
-> + * struct adreno_smmu_fault_info - container for key fault information
-> + *
-> + * @far: The faulting IOVA from ARM_SMMU_CB_FAR
-> + * @ttbr0: The current TTBR0 pagetable from ARM_SMMU_CB_TTBR0
-> + * @contextidr: The value of ARM_SMMU_CB_CONTEXTIDR
-> + * @fsr: The fault status from ARM_SMMU_CB_FSR
-> + * @fsynr0: The value of FSYNR0 from ARM_SMMU_CB_FSYNR0
-> + * @fsynr1: The value of FSYNR1 from ARM_SMMU_CB_FSYNR0
-> + * @cbfrsynra: The value of CBFRSYNRA from ARM_SMMU_GR1_CBFRSYNRA(idx)
-> + *
-> + * This struct passes back key page fault information to the GPU driver
-> + * through the get_fault_info function pointer.
-> + * The GPU driver can use this information to print informative
-> + * log messages and provide deeper GPU specific insight into the fault.
-> + */
-> +struct adreno_smmu_fault_info {
-> +       u64 far;
-> +       u64 ttbr0;
-> +       u32 contextidr;
-> +       u32 fsr;
-> +       u32 fsynr0;
-> +       u32 fsynr1;
-> +       u32 cbfrsynra;
-> +};
-> +
->  /**
->   * struct adreno_smmu_priv - private interface between adreno-smmu and GPU
->   *
-> @@ -17,6 +43,8 @@
->   * @set_ttbr0_cfg: Set the TTBR0 config for the GPUs context bank.  A
->   *                 NULL config disables TTBR0 translation, otherwise
->   *                 TTBR0 translation is enabled with the specified cfg
-> + * @get_fault_info: Call a helper function in the GPU driver to process a
-> + *                 pagefault
+On 10/29/20 7:15 AM, tip-bot2 for Thomas Gleixner wrote:
+> The following commit has been merged into the x86/apic branch of tip:
+> 
+> Commit-ID:     a27dca645d2c0f31abb7858aa0e10b2fa0f2f659
+> Gitweb:        https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git/commit/?id=a27dca645d2c0f31abb7858aa0e10b2fa0f2f659
+> Author:        Thomas Gleixner <tglx@linutronix.de>
+> AuthorDate:    Sat, 24 Oct 2020 22:35:19 +01:00
+> Committer:     Thomas Gleixner <tglx@linutronix.de>
+> CommitterDate: Wed, 28 Oct 2020 20:26:26 +01:00
+> 
+> x86/io_apic: Cleanup trigger/polarity helpers
+> 
+> 'trigger' and 'polarity' are used throughout the I/O-APIC code for handling
+> the trigger type (edge/level) and the active low/high configuration. While
+> there are defines for initializing these variables and struct members, they
+> are not used consequently and the meaning of 'trigger' and 'polarity' is
+> opaque and confusing at best.
+> 
+> Rename them to 'is_level' and 'active_low' and make them boolean in various
+> structs so it's entirely clear what the meaning is.
 
-This description isn't quite right, since it is call*ed* by the GPU
-driver.  (And the helper aspect is irrelivant to the adreno/smmu
-private interface).  Maybe something like:
+Running the tip tree on my second generation EPYC system I'm seeing lots
+of the following:
 
-"Called by the GPU driver fault handler to retrieve information about
-a pagefault"
+[  105.325371] hpet: Lost 9601 RTC interrupts
+[  105.485766] hpet: Lost 9600 RTC interrupts
+[  105.639182] hpet: Lost 9601 RTC interrupts
+[  105.792155] hpet: Lost 9601 RTC interrupts
+[  105.947076] hpet: Lost 9601 RTC interrupts
+[  106.100876] hpet: Lost 9600 RTC interrupts
+[  106.253444] hpet: Lost 9601 RTC interrupts
+[  106.406722] hpet: Lost 9601 RTC interrupts
 
-?
+preventing the system from booting. I bisected it to this commit.
 
-BR,
--R
+Additionally, I'm seeing warnings and error messages (which I haven't
+bisected, yet) along these lines:
 
->   *
->   * The GPU driver (drm/msm) and adreno-smmu work together for controlling
->   * the GPU's SMMU instance.  This is by necessity, as the GPU is directly
-> @@ -31,6 +59,7 @@ struct adreno_smmu_priv {
->      const void *cookie;
->      const struct io_pgtable_cfg *(*get_ttbr1_cfg)(const void *cookie);
->      int (*set_ttbr0_cfg)(const void *cookie, const struct io_pgtable_cfg *cfg);
-> +    void (*get_fault_info)(const void *cookie, struct adreno_smmu_fault_info *info);
->  };
->
-> -#endif /* __ADRENO_SMMU_PRIV_H */
-> \ No newline at end of file
-> +#endif /* __ADRENO_SMMU_PRIV_H */
-> --
-> 2.25.1
->
-> _______________________________________________
-> iommu mailing list
-> iommu@lists.linux-foundation.org
-> https://lists.linuxfoundation.org/mailman/listinfo/iommu
+[   12.790801] WARNING: CPU: 135 PID: 1 at arch/x86/kernel/apic/apic.c:2505 __irq_msi_compose_msg+0x79/0x80
+[   98.121716] irq 3: nobody cared (try booting with the "irqpoll" option)
+[  100.692087] irq 15: nobody cared (try booting with the "irqpoll" option)
+[  100.800217] irq 11: nobody cared (try booting with the "irqpoll" option)
+[  100.800407] irq 10: nobody cared (try booting with the "irqpoll" option)
+
+Thanks,
+Tom
+
