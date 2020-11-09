@@ -2,73 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E5FA2AC583
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 20:54:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 23D4F2AC585
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 20:54:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730793AbgKITyL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 14:54:11 -0500
-Received: from mail-ot1-f68.google.com ([209.85.210.68]:34694 "EHLO
-        mail-ot1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729838AbgKITyK (ORCPT
+        id S1730927AbgKITyY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 14:54:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57216 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730456AbgKITyY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 14:54:10 -0500
-Received: by mail-ot1-f68.google.com with SMTP id j14so10183911ots.1;
-        Mon, 09 Nov 2020 11:54:09 -0800 (PST)
+        Mon, 9 Nov 2020 14:54:24 -0500
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A163C0613CF;
+        Mon,  9 Nov 2020 11:54:23 -0800 (PST)
+Received: by mail-wm1-x343.google.com with SMTP id w24so674122wmi.0;
+        Mon, 09 Nov 2020 11:54:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=blMIJqfyn+uYrIFhsDadDE528X0wnbKqoGnhBSRDkeM=;
+        b=u5xWIKC81MwGnxL3ZjOcHeoE1X2iT8RKWt/1qo7ewqCC7mQzZtP4agtlhLt+Xv3ruY
+         Uqa330apvJSitaJJG0zCSGiyktUKXBfP6w/3IlF1Jo1NxBINNCIhYd1CXg1oOSeBq11R
+         kB61Te1dsOTwoa2vpAV4dNXU6uJeazJ8yZGYMSse1eS2hLj6cuwfhl2JLj/gqEQzjCio
+         1QS4DSVw0MiI08NFaL36g858sQ/n61UPXXTxQyddILRnVaNCuzmHphfscz5avJZ+zOXI
+         Ta9JOVzDO9+4V8XYpMsHhM71tpJzfa8fJatHcwX0HDHm+a32ST+bweskKKQgMYUppdBh
+         qGJw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=8O9QZwnoTH1sHNp0t6dbzN2STxMDbg5AU9z886DPekA=;
-        b=f+dn+2WT/2LoyO+ITkHip3Kd8erDC/wTqkLnt8I8L55XTgXqAapHpRSf+/nLxUgUo4
-         PfLWVSsUrl49WfnLOiY4NaCdhezuwjRjsfVMOUPEBvU8ZLUUy/83JMI43oge7m/h6d8Z
-         /BFJkiZr2DuSb7rxde3ygQ5uq8NwVMJcbVBOHjHY3uonaE7xqc8aIa4zi6OUvcaoPaJT
-         ols9yyqiuoQiY6cxthBM1kRif4G/HXeUuWLXxggZGMotd64O18Y0XyzqCPTYF76l3WSY
-         r9dPRM8NADff6d9tzDV1k6GcddwfIV9I+54kFgj5f2qXAOAhrCT7ldm2sU8I48/OqO3i
-         Pr1A==
-X-Gm-Message-State: AOAM531RuiC7SiYEhyQEV1ifr0lJaCCKxoiInMJqj8/y9q+DDQI4unem
-        15CZPhoGllt0fjTIKixW0g==
-X-Google-Smtp-Source: ABdhPJwW4Xx7EN235MfSKtSGujYm6B6CIFBr0U/I/ouhrI2oghktv6JoROsC4heVOjQ0+1X04iL8lw==
-X-Received: by 2002:a9d:6c11:: with SMTP id f17mr11626741otq.208.1604951649586;
-        Mon, 09 Nov 2020 11:54:09 -0800 (PST)
-Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id v8sm1310582ooh.6.2020.11.09.11.54.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 09 Nov 2020 11:54:08 -0800 (PST)
-Received: (nullmailer pid 1661754 invoked by uid 1000);
-        Mon, 09 Nov 2020 19:54:07 -0000
-Date:   Mon, 9 Nov 2020 13:54:07 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Cc:     mturquette@baylibre.com, linux-clk@vger.kernel.org,
-        linux-kernel@vger.kernel.org, vkoul@kernel.org,
-        bjorn.andersson@linaro.org, sboyd@kernel.org,
-        devicetree@vger.kernel.org, robh+dt@kernel.org,
-        linux-arm-msm@vger.kernel.org
-Subject: Re: [PATCH v2 1/4] dt-bindings: clock: Add SDX55 GCC clock bindings
-Message-ID: <20201109195407.GA1661703@bogus>
-References: <20201105104817.15715-1-manivannan.sadhasivam@linaro.org>
- <20201105104817.15715-2-manivannan.sadhasivam@linaro.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=blMIJqfyn+uYrIFhsDadDE528X0wnbKqoGnhBSRDkeM=;
+        b=CgC6Sm8ax5egTEf/mCSQrInHV3RW2SkpN/FcZSxksSI/BiLmHkECgQ8KSEIa1Qon0w
+         QKWgK+zJ7zGSpL05NkblT/e1glI1BNCScfij6NmCxotVGlGCKgfOVdE86EBjrbDhyyne
+         XEsAn45H0/C7o+9oHqXFOqzG5AonaBjFnjXIF/Bx2J+UEAiOlV0+lpxTdsI+h8ZE3Hub
+         l2X8+7/+8OwbjV88E2mUGv1dN22yQsDbzVVPFymZvJntu6p/w2/WrGdTVcXikmECGxw+
+         Ifexx/SOqeB16HNFYPPuxipSVi2V3PkTfdM7hZJgvdI/ddez6RyqidY08CBKomIhLhHx
+         wMHQ==
+X-Gm-Message-State: AOAM532WmwnOXlfTejmUbZEk8SLaRfLyxSid/neXFyYHqpNO3sy1se5g
+        LDzrb1wybovdcxw8iX5hAG/38EAHSQOTK+Zwz+0=
+X-Google-Smtp-Source: ABdhPJwBfuZyATovbM1IuUQM7O9GPHy39nSVLi118te05KekkpRznL9TPLcotUXqnnlLAjOq/3YWZAYPQzHgpZpgxV0=
+X-Received: by 2002:a1c:1c3:: with SMTP id 186mr820881wmb.39.1604951662293;
+ Mon, 09 Nov 2020 11:54:22 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201105104817.15715-2-manivannan.sadhasivam@linaro.org>
+References: <20201106214949.2042120-1-lee.jones@linaro.org> <20201106214949.2042120-15-lee.jones@linaro.org>
+In-Reply-To: <20201106214949.2042120-15-lee.jones@linaro.org>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Mon, 9 Nov 2020 14:54:11 -0500
+Message-ID: <CADnq5_M=9pDypu7r9R8Y3fuC0Oz6+uu68ybLpG+gog=v-8taGg@mail.gmail.com>
+Subject: Re: [PATCH 14/19] drm/amd/amdgpu/amdgpu_device: Provide documentation
+ for 'reg_addr' params
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     David Airlie <airlied@linux.ie>,
+        LKML <linux-kernel@vger.kernel.org>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
+        <linaro-mm-sig@lists.linaro.org>,
+        Maling list - DRI developers 
+        <dri-devel@lists.freedesktop.org>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        linux-media <linux-media@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 05 Nov 2020 16:18:14 +0530, Manivannan Sadhasivam wrote:
-> From: Vinod Koul <vkoul@kernel.org>
-> 
-> Add device tree bindings for global clock controller on SDX55 SoCs.
-> 
-> Signed-off-by: Vinod Koul <vkoul@kernel.org>
-> Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-> ---
->  .../bindings/clock/qcom,gcc-sdx55.yaml        |  71 +++++++++++
->  include/dt-bindings/clock/qcom,gcc-sdx55.h    | 112 ++++++++++++++++++
->  2 files changed, 183 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/clock/qcom,gcc-sdx55.yaml
->  create mode 100644 include/dt-bindings/clock/qcom,gcc-sdx55.h
-> 
+On Fri, Nov 6, 2020 at 4:50 PM Lee Jones <lee.jones@linaro.org> wrote:
+>
+> Fixes the following W=3D1 kernel build warning(s):
+>
+>  drivers/gpu/drm/amd/amdgpu/amdgpu_device.c:594: warning: Function parame=
+ter or member 'reg_addr' not described in 'amdgpu_device_indirect_rreg'
+>  drivers/gpu/drm/amd/amdgpu/amdgpu_device.c:624: warning: Function parame=
+ter or member 'reg_addr' not described in 'amdgpu_device_indirect_rreg64'
+>
+> Cc: Alex Deucher <alexander.deucher@amd.com>
+> Cc: "Christian K=C3=B6nig" <christian.koenig@amd.com>
+> Cc: David Airlie <airlied@linux.ie>
+> Cc: Daniel Vetter <daniel@ffwll.ch>
+> Cc: Sumit Semwal <sumit.semwal@linaro.org>
+> Cc: amd-gfx@lists.freedesktop.org
+> Cc: dri-devel@lists.freedesktop.org
+> Cc: linux-media@vger.kernel.org
+> Cc: linaro-mm-sig@lists.linaro.org
+> Signed-off-by: Lee Jones <lee.jones@linaro.org>
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+Applied.  Thanks!
+
+Alex
+
+> ---
+>  drivers/gpu/drm/amd/amdgpu/amdgpu_device.c | 2 ++
+>  1 file changed, 2 insertions(+)
+>
+> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c b/drivers/gpu/drm=
+/amd/amdgpu/amdgpu_device.c
+> index 300fcade4a2b1..63374d12e00fe 100644
+> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c
+> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c
+> @@ -585,6 +585,7 @@ void amdgpu_mm_wdoorbell64(struct amdgpu_device *adev=
+, u32 index, u64 v)
+>   * @adev: amdgpu_device pointer
+>   * @pcie_index: mmio register offset
+>   * @pcie_data: mmio register offset
+> + * @reg_addr: indirect register address to read from
+>   *
+>   * Returns the value of indirect register @reg_addr
+>   */
+> @@ -615,6 +616,7 @@ u32 amdgpu_device_indirect_rreg(struct amdgpu_device =
+*adev,
+>   * @adev: amdgpu_device pointer
+>   * @pcie_index: mmio register offset
+>   * @pcie_data: mmio register offset
+> + * @reg_addr: indirect register address to read from
+>   *
+>   * Returns the value of indirect register @reg_addr
+>   */
+> --
+> 2.25.1
+>
+> _______________________________________________
+> dri-devel mailing list
+> dri-devel@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/dri-devel
