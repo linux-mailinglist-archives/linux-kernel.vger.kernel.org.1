@@ -2,41 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C06932ABB20
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 14:28:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7056E2AB93E
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 14:07:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387404AbgKINYf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 08:24:35 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46222 "EHLO mail.kernel.org"
+        id S1731092AbgKINH1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 08:07:27 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60128 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732068AbgKINSx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 08:18:53 -0500
+        id S1731316AbgKINHW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 08:07:22 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6DFB120731;
-        Mon,  9 Nov 2020 13:18:51 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2A0CE20731;
+        Mon,  9 Nov 2020 13:07:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604927932;
-        bh=aft4VR6Md1hz15KwZUa5D6V3fCjPDzE7wYrBVYKRdXs=;
+        s=default; t=1604927241;
+        bh=1TPAtwwuxKFpOsLHBXmFntJ8vxoiEggKfc+Y3QDa4pw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=GA0MlbGzXq2HA/c2iNn9s9V0bnZsf++4r/obCoxIRiKwi8YHPL8aUJV00MYDY8C1L
-         YD6LxdITEA3m7pwVxScQowirQqEs7+dlxVeUQq/RWjGi+vG8Cvk8vjumQgV67Wbs3v
-         NfsQH1zrDfg0hF+DnBAQXcn/rFRdiAte12mtzmj0=
+        b=iRSIVcnPPo7d6f172XWVy+puifOC0JtTISZycOIv9Y+RFzTBQ6YoxCkfAm70KqUAF
+         K1QylztoO9wAb+jOw40nTzEo5EH7dLggn3HtiY2/Q62+ols6DREjpY7npkxbnNBOCE
+         Qx3DRbbZkpgnyjEtEwx/6e8WBp6pViKfKctt0WEk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sami Tolvanen <samitolvanen@google.com>,
-        Fangrui Song <maskray@google.com>,
-        Borislav Petkov <bp@suse.de>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Nathan Chancellor <natechancellor@gmail.com>
-Subject: [PATCH 5.9 071/133] x86/lib: Change .weak to SYM_FUNC_START_WEAK for arch/x86/lib/mem*_64.S
+        stable@vger.kernel.org, Qiujun Huang <hqjagain@gmail.com>,
+        "Steven Rostedt (VMware)" <rostedt@goodmis.org>
+Subject: [PATCH 4.14 24/48] tracing: Fix out of bounds write in get_trace_buf
 Date:   Mon,  9 Nov 2020 13:55:33 +0100
-Message-Id: <20201109125034.148823655@linuxfoundation.org>
+Message-Id: <20201109125017.946178648@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201109125030.706496283@linuxfoundation.org>
-References: <20201109125030.706496283@linuxfoundation.org>
+In-Reply-To: <20201109125016.734107741@linuxfoundation.org>
+References: <20201109125016.734107741@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,105 +42,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Fangrui Song <maskray@google.com>
+From: Qiujun Huang <hqjagain@gmail.com>
 
-commit 4d6ffa27b8e5116c0abb318790fd01d4e12d75e6 upstream.
+commit c1acb4ac1a892cf08d27efcb964ad281728b0545 upstream.
 
-Commit
+The nesting count of trace_printk allows for 4 levels of nesting. The
+nesting counter starts at zero and is incremented before being used to
+retrieve the current context's buffer. But the index to the buffer uses the
+nesting counter after it was incremented, and not its original number,
+which in needs to do.
 
-  393f203f5fd5 ("x86_64: kasan: add interceptors for memset/memmove/memcpy functions")
+Link: https://lkml.kernel.org/r/20201029161905.4269-1-hqjagain@gmail.com
 
-added .weak directives to arch/x86/lib/mem*_64.S instead of changing the
-existing ENTRY macros to WEAK. This can lead to the assembly snippet
-
-  .weak memcpy
-  ...
-  .globl memcpy
-
-which will produce a STB_WEAK memcpy with GNU as but STB_GLOBAL memcpy
-with LLVM's integrated assembler before LLVM 12. LLVM 12 (since
-https://reviews.llvm.org/D90108) will error on such an overridden symbol
-binding.
-
-Commit
-
-  ef1e03152cb0 ("x86/asm: Make some functions local")
-
-changed ENTRY in arch/x86/lib/memcpy_64.S to SYM_FUNC_START_LOCAL, which
-was ineffective due to the preceding .weak directive.
-
-Use the appropriate SYM_FUNC_START_WEAK instead.
-
-Fixes: 393f203f5fd5 ("x86_64: kasan: add interceptors for memset/memmove/memcpy functions")
-Fixes: ef1e03152cb0 ("x86/asm: Make some functions local")
-Reported-by: Sami Tolvanen <samitolvanen@google.com>
-Signed-off-by: Fangrui Song <maskray@google.com>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
-Tested-by: Nathan Chancellor <natechancellor@gmail.com>
-Tested-by: Nick Desaulniers <ndesaulniers@google.com>
-Cc: <stable@vger.kernel.org>
-Link: https://lkml.kernel.org/r/20201103012358.168682-1-maskray@google.com
+Cc: stable@vger.kernel.org
+Fixes: 3d9622c12c887 ("tracing: Add barrier to trace_printk() buffer nesting modification")
+Signed-off-by: Qiujun Huang <hqjagain@gmail.com>
+Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- arch/x86/lib/memcpy_64.S  |    4 +---
- arch/x86/lib/memmove_64.S |    4 +---
- arch/x86/lib/memset_64.S  |    4 +---
- 3 files changed, 3 insertions(+), 9 deletions(-)
+ kernel/trace/trace.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/arch/x86/lib/memcpy_64.S
-+++ b/arch/x86/lib/memcpy_64.S
-@@ -16,8 +16,6 @@
-  * to a jmp to memcpy_erms which does the REP; MOVSB mem copy.
-  */
+--- a/kernel/trace/trace.c
++++ b/kernel/trace/trace.c
+@@ -2817,7 +2817,7 @@ static char *get_trace_buf(void)
  
--.weak memcpy
--
- /*
-  * memcpy - Copy a memory block.
-  *
-@@ -30,7 +28,7 @@
-  * rax original destination
-  */
- SYM_FUNC_START_ALIAS(__memcpy)
--SYM_FUNC_START_LOCAL(memcpy)
-+SYM_FUNC_START_WEAK(memcpy)
- 	ALTERNATIVE_2 "jmp memcpy_orig", "", X86_FEATURE_REP_GOOD, \
- 		      "jmp memcpy_erms", X86_FEATURE_ERMS
+ 	/* Interrupts must see nesting incremented before we use the buffer */
+ 	barrier();
+-	return &buffer->buffer[buffer->nesting][0];
++	return &buffer->buffer[buffer->nesting - 1][0];
+ }
  
---- a/arch/x86/lib/memmove_64.S
-+++ b/arch/x86/lib/memmove_64.S
-@@ -24,9 +24,7 @@
-  * Output:
-  * rax: dest
-  */
--.weak memmove
--
--SYM_FUNC_START_ALIAS(memmove)
-+SYM_FUNC_START_WEAK(memmove)
- SYM_FUNC_START(__memmove)
- 
- 	mov %rdi, %rax
---- a/arch/x86/lib/memset_64.S
-+++ b/arch/x86/lib/memset_64.S
-@@ -6,8 +6,6 @@
- #include <asm/alternative-asm.h>
- #include <asm/export.h>
- 
--.weak memset
--
- /*
-  * ISO C memset - set a memory block to a byte value. This function uses fast
-  * string to get better performance than the original function. The code is
-@@ -19,7 +17,7 @@
-  *
-  * rax   original destination
-  */
--SYM_FUNC_START_ALIAS(memset)
-+SYM_FUNC_START_WEAK(memset)
- SYM_FUNC_START(__memset)
- 	/*
- 	 * Some CPUs support enhanced REP MOVSB/STOSB feature. It is recommended
+ static void put_trace_buf(void)
 
 
