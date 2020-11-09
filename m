@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B48D82AB8D0
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 13:57:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 552AF2AB8D1
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 13:57:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730026AbgKIM5i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 07:57:38 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51698 "EHLO mail.kernel.org"
+        id S1730053AbgKIM5o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 07:57:44 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51894 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729896AbgKIM5E (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 07:57:04 -0500
+        id S1729972AbgKIM5P (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 07:57:15 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CBDA020684;
-        Mon,  9 Nov 2020 12:57:02 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B8E0C207BC;
+        Mon,  9 Nov 2020 12:57:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604926623;
-        bh=SJfxIJl2q4MsodwaH95fqs9gynZ3yjK70+umDhNMypI=;
+        s=default; t=1604926635;
+        bh=A0dAmRkpVyT+YuCb6jBIEwCgDTvxTbMIIX17t2QM7nI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=S+JLONGYnhtypmbXOKBIA7FuRZh29ow8esMX8SsFlEaTLaxYWd11J/E7IqGdrPxM8
-         rzTVJy3cNJhnsweLC1AqifRFi3z/sZOBfkjRtOPwR4fvui5t6iS8gNmDp71h6sxdCq
-         gLjbkVa7FWyvILwI8la6DzwxWg7RGcyFv3/aqCK8=
+        b=WTK/Y6N4S3rd/4jC0GwSLS6E6TxmucFfKHIahJEaAAKGWjEPWRyApNqk0VV6s2qW9
+         vqkHwJEQh6/naMyJJuD30ddrehtZ7BKP9IgwCjcw2kcwkiBRpbcvbQMNGE9sFPv3WQ
+         th9V1QpIC6zRnnjeP9z/UHBLnpGc0o7Luv/QXmZ0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, KoWei Sung <winders@amazon.com>,
-        Song Liu <songliubraving@fb.com>
-Subject: [PATCH 4.4 33/86] md/raid5: fix oops during stripe resizing
-Date:   Mon,  9 Nov 2020 13:54:40 +0100
-Message-Id: <20201109125022.451961167@linuxfoundation.org>
+        stable@vger.kernel.org, Alex Hung <alex.hung@canonical.com>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
+Subject: [PATCH 4.4 37/86] ACPI: video: use ACPI backlight for HP 635 Notebook
+Date:   Mon,  9 Nov 2020 13:54:44 +0100
+Message-Id: <20201109125022.637113532@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201109125020.852643676@linuxfoundation.org>
 References: <20201109125020.852643676@linuxfoundation.org>
@@ -42,75 +42,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Song Liu <songliubraving@fb.com>
+From: Alex Hung <alex.hung@canonical.com>
 
-commit b44c018cdf748b96b676ba09fdbc5b34fc443ada upstream.
+commit b226faab4e7890bbbccdf794e8b94276414f9058 upstream.
 
-KoWei reported crash during raid5 reshape:
+The default backlight interface is AMD's radeon_bl0 which does not
+work on this system, so use the ACPI backlight interface on it
+instead.
 
-[ 1032.252932] Oops: 0002 [#1] SMP PTI
-[...]
-[ 1032.252943] RIP: 0010:memcpy_erms+0x6/0x10
-[...]
-[ 1032.252947] RSP: 0018:ffffba1ac0c03b78 EFLAGS: 00010286
-[ 1032.252949] RAX: 0000784ac0000000 RBX: ffff91bec3d09740 RCX: 0000000000001000
-[ 1032.252951] RDX: 0000000000001000 RSI: ffff91be6781c000 RDI: 0000784ac0000000
-[ 1032.252953] RBP: ffffba1ac0c03bd8 R08: 0000000000001000 R09: ffffba1ac0c03bf8
-[ 1032.252954] R10: 0000000000000000 R11: 0000000000000000 R12: ffffba1ac0c03bf8
-[ 1032.252955] R13: 0000000000001000 R14: 0000000000000000 R15: 0000000000000000
-[ 1032.252958] FS:  0000000000000000(0000) GS:ffff91becf500000(0000) knlGS:0000000000000000
-[ 1032.252959] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[ 1032.252961] CR2: 0000784ac0000000 CR3: 000000031780a002 CR4: 00000000001606e0
-[ 1032.252962] Call Trace:
-[ 1032.252969]  ? async_memcpy+0x179/0x1000 [async_memcpy]
-[ 1032.252977]  ? raid5_release_stripe+0x8e/0x110 [raid456]
-[ 1032.252982]  handle_stripe_expansion+0x15a/0x1f0 [raid456]
-[ 1032.252988]  handle_stripe+0x592/0x1270 [raid456]
-[ 1032.252993]  handle_active_stripes.isra.0+0x3cb/0x5a0 [raid456]
-[ 1032.252999]  raid5d+0x35c/0x550 [raid456]
-[ 1032.253002]  ? schedule+0x42/0xb0
-[ 1032.253006]  ? schedule_timeout+0x10e/0x160
-[ 1032.253011]  md_thread+0x97/0x160
-[ 1032.253015]  ? wait_woken+0x80/0x80
-[ 1032.253019]  kthread+0x104/0x140
-[ 1032.253022]  ? md_start_sync+0x60/0x60
-[ 1032.253024]  ? kthread_park+0x90/0x90
-[ 1032.253027]  ret_from_fork+0x35/0x40
-
-This is because cache_size_mutex was unlocked too early in resize_stripes,
-which races with grow_one_stripe() that grow_one_stripe() allocates a
-stripe with wrong pool_size.
-
-Fix this issue by unlocking cache_size_mutex after updating pool_size.
-
-Cc: <stable@vger.kernel.org> # v4.4+
-Reported-by: KoWei Sung <winders@amazon.com>
-Signed-off-by: Song Liu <songliubraving@fb.com>
+BugLink: https://bugs.launchpad.net/bugs/1894667
+Cc: All applicable <stable@vger.kernel.org>
+Signed-off-by: Alex Hung <alex.hung@canonical.com>
+[ rjw: Changelog edits ]
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/md/raid5.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/acpi/video_detect.c |    9 +++++++++
+ 1 file changed, 9 insertions(+)
 
---- a/drivers/md/raid5.c
-+++ b/drivers/md/raid5.c
-@@ -2238,8 +2238,6 @@ static int resize_stripes(struct r5conf
- 	} else
- 		err = -ENOMEM;
+--- a/drivers/acpi/video_detect.c
++++ b/drivers/acpi/video_detect.c
+@@ -251,6 +251,15 @@ static const struct dmi_system_id video_
+ 		DMI_MATCH(DMI_PRODUCT_NAME, "XPS L521X"),
+ 		},
+ 	},
++	/* https://bugs.launchpad.net/bugs/1894667 */
++	{
++	 .callback = video_detect_force_video,
++	 .ident = "HP 635 Notebook",
++	 .matches = {
++		DMI_MATCH(DMI_SYS_VENDOR, "Hewlett-Packard"),
++		DMI_MATCH(DMI_PRODUCT_NAME, "HP 635 Notebook PC"),
++		},
++	},
  
--	mutex_unlock(&conf->cache_size_mutex);
--
- 	conf->slab_cache = sc;
- 	conf->active_name = 1-conf->active_name;
- 
-@@ -2262,6 +2260,8 @@ static int resize_stripes(struct r5conf
- 
- 	if (!err)
- 		conf->pool_size = newsize;
-+	mutex_unlock(&conf->cache_size_mutex);
-+
- 	return err;
- }
- 
+ 	/* Non win8 machines which need native backlight nevertheless */
+ 	{
 
 
