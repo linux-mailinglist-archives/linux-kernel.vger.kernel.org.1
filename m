@@ -2,94 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4025B2AC15A
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 17:50:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 439ED2AC18C
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 17:57:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730836AbgKIQuR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 11:50:17 -0500
-Received: from ale.deltatee.com ([204.191.154.188]:33068 "EHLO
-        ale.deltatee.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730773AbgKIQuQ (ORCPT
+        id S1731233AbgKIQ5S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 11:57:18 -0500
+Received: from cloudserver094114.home.pl ([79.96.170.134]:42276 "EHLO
+        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731097AbgKIQ5J (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 11:50:16 -0500
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=deltatee.com; s=20200525; h=Subject:Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Sender:
-        Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
-        :Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
-        List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=JvTSJOBJXMYeKQM3WvNBTHeii6rtMfOVYOuXeE1KNJE=; b=ThtDTaP+0JSTSqxTpv0Wbo5rpZ
-        iRui8AXvdDo2GGy2jD+Ihq9bjJnDiDzsI2eDLeMfjQgtCqgG1tvLOdsfhRmNEUO5jfT5M0MI5pI2v
-        q2scQ0uSLY0gF95SrT5uiioU6950uU8eKRlO3IC5Z9K0t/8xAxKw/BHncD9WkCSO21vni9bfdfdjX
-        Ln7KngxHrH+R5I2NkjQEaqpyQ8667dJ8gO+usI96NSRpENPnyhncaujMAMnPoIfhN4BFg8hdAnZFw
-        mUlKnwOWo6dpdcffw7/1fMcc6qlFJ5qgEkOsQqBOUl2OSNvLl4XkpF9pd5ChHmt9ndYzbgPOuwY5t
-        OGbul4GA==;
-Received: from guinness.priv.deltatee.com ([172.16.1.162])
-        by ale.deltatee.com with esmtp (Exim 4.92)
-        (envelope-from <logang@deltatee.com>)
-        id 1kcAMk-00013k-Ea; Mon, 09 Nov 2020 09:50:03 -0700
-To:     Keith Busch <kbusch@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org,
-        linux-block@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-mm@kvack.org, iommu@lists.linux-foundation.org,
-        Stephen Bates <sbates@raithlin.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
-        Ira Weiny <iweiny@intel.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Don Dutile <ddutile@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>
-References: <20201106170036.18713-1-logang@deltatee.com>
- <20201106170036.18713-16-logang@deltatee.com>
- <20201109150326.GA2221592@dhcp-10-100-145-180.wdc.com>
-From:   Logan Gunthorpe <logang@deltatee.com>
-Message-ID: <e718b81f-9cb8-dfe8-b1a6-ebb79f302732@deltatee.com>
-Date:   Mon, 9 Nov 2020 09:50:00 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.1
+        Mon, 9 Nov 2020 11:57:09 -0500
+Received: from 89-64-87-89.dynamic.chello.pl (89.64.87.89) (HELO kreacher.localnet)
+ by serwer1319399.home.pl (79.96.170.134) with SMTP (IdeaSmtpServer 0.83.520)
+ id b29284a7e0268766; Mon, 9 Nov 2020 17:57:07 +0100
+From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
+To:     Linux PM <linux-pm@vger.kernel.org>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Zhang Rui <rui.zhang@intel.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Doug Smythies <dsmythies@telus.net>
+Subject: [PATCH v2 1/4] cpufreq: Introduce governor flags
+Date:   Mon, 09 Nov 2020 17:51:41 +0100
+Message-ID: <1876249.M1ZxxmeKtZ@kreacher>
+In-Reply-To: <13269660.K2JYd4sGFX@kreacher>
+References: <13269660.K2JYd4sGFX@kreacher>
 MIME-Version: 1.0
-In-Reply-To: <20201109150326.GA2221592@dhcp-10-100-145-180.wdc.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-CA
-Content-Transfer-Encoding: 7bit
-X-SA-Exim-Connect-IP: 172.16.1.162
-X-SA-Exim-Rcpt-To: daniel.vetter@ffwll.ch, willy@infradead.org, ddutile@redhat.com, jhubbard@nvidia.com, iweiny@intel.com, christian.koenig@amd.com, jgg@ziepe.ca, dan.j.williams@intel.com, hch@lst.de, sbates@raithlin.com, iommu@lists.linux-foundation.org, linux-mm@kvack.org, linux-pci@vger.kernel.org, linux-block@vger.kernel.org, linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org, kbusch@kernel.org
-X-SA-Exim-Mail-From: logang@deltatee.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on ale.deltatee.com
-X-Spam-Level: 
-X-Spam-Status: No, score=-6.9 required=5.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A autolearn=ham autolearn_force=no version=3.4.2
-Subject: Re: [RFC PATCH 15/15] nvme-pci: Allow mmaping the CMB in userspace
-X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
-X-SA-Exim-Scanned: Yes (on ale.deltatee.com)
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+
+A new cpufreq governor flag will be added subsequently, so replace
+the bool dynamic_switching fleid in struct cpufreq_governor with a
+flags field and introduce CPUFREQ_GOV_FLAG_DYN_SWITCH to set for
+the "dynamic switching" governors instead of it.
+
+No intentional functional impact.
+
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+---
+ drivers/cpufreq/cpufreq.c          |    2 +-
+ drivers/cpufreq/cpufreq_governor.h |    2 +-
+ include/linux/cpufreq.h            |    9 +++++++--
+ kernel/sched/cpufreq_schedutil.c   |    2 +-
+ 4 files changed, 10 insertions(+), 5 deletions(-)
+
+Index: linux-pm/drivers/cpufreq/cpufreq.c
+===================================================================
+--- linux-pm.orig/drivers/cpufreq/cpufreq.c
++++ linux-pm/drivers/cpufreq/cpufreq.c
+@@ -2254,7 +2254,7 @@ static int cpufreq_init_governor(struct
+ 		return -EINVAL;
+ 
+ 	/* Platform doesn't want dynamic frequency switching ? */
+-	if (policy->governor->dynamic_switching &&
++	if (policy->governor->flags & CPUFREQ_GOV_FLAG_DYN_SWITCH &&
+ 	    cpufreq_driver->flags & CPUFREQ_NO_AUTO_DYNAMIC_SWITCHING) {
+ 		struct cpufreq_governor *gov = cpufreq_fallback_governor();
+ 
+Index: linux-pm/drivers/cpufreq/cpufreq_governor.h
+===================================================================
+--- linux-pm.orig/drivers/cpufreq/cpufreq_governor.h
++++ linux-pm/drivers/cpufreq/cpufreq_governor.h
+@@ -156,7 +156,7 @@ void cpufreq_dbs_governor_limits(struct
+ #define CPUFREQ_DBS_GOVERNOR_INITIALIZER(_name_)			\
+ 	{								\
+ 		.name = _name_,						\
+-		.dynamic_switching = true,				\
++		.flags = CPUFREQ_GOV_FLAG_DYN_SWITCH,			\
+ 		.owner = THIS_MODULE,					\
+ 		.init = cpufreq_dbs_governor_init,			\
+ 		.exit = cpufreq_dbs_governor_exit,			\
+Index: linux-pm/include/linux/cpufreq.h
+===================================================================
+--- linux-pm.orig/include/linux/cpufreq.h
++++ linux-pm/include/linux/cpufreq.h
+@@ -565,12 +565,17 @@ struct cpufreq_governor {
+ 					 char *buf);
+ 	int	(*store_setspeed)	(struct cpufreq_policy *policy,
+ 					 unsigned int freq);
+-	/* For governors which change frequency dynamically by themselves */
+-	bool			dynamic_switching;
+ 	struct list_head	governor_list;
+ 	struct module		*owner;
++	u8			flags;
+ };
+ 
++/* Governor flags */
++
++/* For governors which change frequency dynamically by themselves */
++#define CPUFREQ_GOV_FLAG_DYN_SWITCH	BIT(0)
++
++
+ /* Pass a target to the cpufreq driver */
+ unsigned int cpufreq_driver_fast_switch(struct cpufreq_policy *policy,
+ 					unsigned int target_freq);
+Index: linux-pm/kernel/sched/cpufreq_schedutil.c
+===================================================================
+--- linux-pm.orig/kernel/sched/cpufreq_schedutil.c
++++ linux-pm/kernel/sched/cpufreq_schedutil.c
+@@ -881,7 +881,7 @@ static void sugov_limits(struct cpufreq_
+ struct cpufreq_governor schedutil_gov = {
+ 	.name			= "schedutil",
+ 	.owner			= THIS_MODULE,
+-	.dynamic_switching	= true,
++	.flags			= CPUFREQ_GOV_FLAG_DYN_SWITCH,
+ 	.init			= sugov_init,
+ 	.exit			= sugov_exit,
+ 	.start			= sugov_start,
 
 
-On 2020-11-09 8:03 a.m., Keith Busch wrote:
-> On Fri, Nov 06, 2020 at 10:00:36AM -0700, Logan Gunthorpe wrote:
->> Allow userspace to obtain CMB memory by mmaping the controller's
->> char device. The mmap call allocates and returns a hunk of CMB memory,
->> (the offset is ignored) so userspace does not have control over the
->> address within the CMB.
->>
->> A VMA allocated in this way will only be usable by drivers that set
->> FOLL_PCI_P2PDMA when calling GUP. And inter-device support will be
->> checked the first time the pages are mapped for DMA.
->>
->> Currently this is only supported by O_DIRECT to an PCI NVMe device
->> or through the NVMe passthrough IOCTL.
-> 
-> Rather than make this be specific to nvme, could pci p2pdma create an
-> mmap'able file for any resource registered with it?
 
-It's certainly possible. However, other people have been arguing that
-more of this should be specific to NVMe as some use cases do not want to
-use the genalloc inside p2pdma.
-
-Logan
