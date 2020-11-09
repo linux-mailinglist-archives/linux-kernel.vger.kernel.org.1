@@ -2,41 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D56F2AB9EC
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 14:14:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 437082AB997
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 14:10:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731903AbgKINN5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 08:13:57 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40040 "EHLO mail.kernel.org"
+        id S1732126AbgKINKh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 08:10:37 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35858 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732094AbgKINNx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 08:13:53 -0500
+        id S1732096AbgKINKd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 08:10:33 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 541422083B;
-        Mon,  9 Nov 2020 13:13:52 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2603420663;
+        Mon,  9 Nov 2020 13:10:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604927633;
-        bh=O35HR0UOKEnB2eIZHX5AGFalzroTDFfT5tIHonLKRb4=;
+        s=default; t=1604927432;
+        bh=plTQ463f7O7C7m/PyWDfj2uNECJMq4D8a4ONT6HSCr0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=WjULJi2iCLAKoHK246BKWAp6LgtfeD/aU53C8N7lorbDrjHzHXhKO0wOy3WiBr3yN
-         ui2Z5ph3+aTgAq4H+8MTUSIihtjsb0Qf8x2U68xVxjAsh9EDhvzvUIV3XyZJFRZJv9
-         N8P6Yq4nK7MygC6l0b5g+dz/vQnhkG07c5br7hiE=
+        b=1zNMfr3kOjH+Ya35zi/YLncwPB7v3HqFgE93weD4ulHBHfIblXv9YQO2G/LQZ3dW1
+         Hs000DFic3sdUkAQNbrXBnSgw32T3qTzMFdfFGhjAJdEaoUIcdX+XIqntKzgEnjBf5
+         0pKX7mjrubx7AUyMjPS0B+Lo+yyLSJyZ1wqZzjXg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Roman Kiryanov <rkir@google.com>,
-        Jeff Vander Stoep <jeffv@google.com>,
-        James Morris <jamorris@linux.microsoft.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 54/85] vsock: use ns_capable_noaudit() on socket create
+        stable@vger.kernel.org, Claire Chang <tientzu@chromium.org>
+Subject: [PATCH 4.19 57/71] serial: 8250_mtk: Fix uart_get_baud_rate warning
 Date:   Mon,  9 Nov 2020 13:55:51 +0100
-Message-Id: <20201109125025.174171988@linuxfoundation.org>
+Message-Id: <20201109125022.585161681@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201109125022.614792961@linuxfoundation.org>
-References: <20201109125022.614792961@linuxfoundation.org>
+In-Reply-To: <20201109125019.906191744@linuxfoundation.org>
+References: <20201109125019.906191744@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,46 +41,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jeff Vander Stoep <jeffv@google.com>
+From: Claire Chang <tientzu@chromium.org>
 
-[ Upstream commit af545bb5ee53f5261db631db2ac4cde54038bdaf ]
+commit 912ab37c798770f21b182d656937072b58553378 upstream.
 
-During __vsock_create() CAP_NET_ADMIN is used to determine if the
-vsock_sock->trusted should be set to true. This value is used later
-for determing if a remote connection should be allowed to connect
-to a restricted VM. Unfortunately, if the caller doesn't have
-CAP_NET_ADMIN, an audit message such as an selinux denial is
-generated even if the caller does not want a trusted socket.
+Mediatek 8250 port supports speed higher than uartclk / 16. If the baud
+rates in both the new and the old termios setting are higher than
+uartclk / 16, the WARN_ON in uart_get_baud_rate() will be triggered.
+Passing NULL as the old termios so uart_get_baud_rate() will use
+uartclk / 16 - 1 as the new baud rate which will be replaced by the
+original baud rate later by tty_termios_encode_baud_rate() in
+mtk8250_set_termios().
 
-Logging errors on success is confusing. To avoid this, switch the
-capable(CAP_NET_ADMIN) check to the noaudit version.
+Fixes: 551e553f0d4a ("serial: 8250_mtk: Fix high-speed baud rates clamping")
+Signed-off-by: Claire Chang <tientzu@chromium.org>
+Link: https://lore.kernel.org/r/20201102120749.374458-1-tientzu@chromium.org
+Cc: stable <stable@vger.kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-Reported-by: Roman Kiryanov <rkir@google.com>
-https://android-review.googlesource.com/c/device/generic/goldfish/+/1468545/
-Signed-off-by: Jeff Vander Stoep <jeffv@google.com>
-Reviewed-by: James Morris <jamorris@linux.microsoft.com>
-Link: https://lore.kernel.org/r/20201023143757.377574-1-jeffv@google.com
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/vmw_vsock/af_vsock.c | 2 +-
+ drivers/tty/serial/8250/8250_mtk.c |    2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/net/vmw_vsock/af_vsock.c b/net/vmw_vsock/af_vsock.c
-index 7bd6c8199ca67..3a074a03d3820 100644
---- a/net/vmw_vsock/af_vsock.c
-+++ b/net/vmw_vsock/af_vsock.c
-@@ -621,7 +621,7 @@ struct sock *__vsock_create(struct net *net,
- 		vsk->owner = get_cred(psk->owner);
- 		vsk->connect_timeout = psk->connect_timeout;
- 	} else {
--		vsk->trusted = capable(CAP_NET_ADMIN);
-+		vsk->trusted = ns_capable_noaudit(&init_user_ns, CAP_NET_ADMIN);
- 		vsk->owner = get_current_cred();
- 		vsk->connect_timeout = VSOCK_DEFAULT_CONNECT_TIMEOUT;
- 	}
--- 
-2.27.0
-
+--- a/drivers/tty/serial/8250/8250_mtk.c
++++ b/drivers/tty/serial/8250/8250_mtk.c
+@@ -47,7 +47,7 @@ mtk8250_set_termios(struct uart_port *po
+ 	 */
+ 	baud = tty_termios_baud_rate(termios);
+ 
+-	serial8250_do_set_termios(port, termios, old);
++	serial8250_do_set_termios(port, termios, NULL);
+ 
+ 	tty_termios_encode_baud_rate(termios, baud, baud);
+ 
 
 
