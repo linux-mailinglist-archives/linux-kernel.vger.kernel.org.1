@@ -2,39 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EE422ABC0C
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 14:35:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 37FD42ABC78
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 14:38:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732138AbgKINdf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 08:33:35 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59254 "EHLO mail.kernel.org"
+        id S1732937AbgKINh4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 08:37:56 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57050 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731094AbgKINGa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 08:06:30 -0500
+        id S1730227AbgKINDx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 08:03:53 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3E4A820731;
-        Mon,  9 Nov 2020 13:06:29 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6F50920663;
+        Mon,  9 Nov 2020 13:03:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604927189;
-        bh=Z1wDiC3HwG946bzh2U4H7Ti5P50tZ77K2E8iE2Ezgis=;
+        s=default; t=1604927032;
+        bh=hPgsxO9ZApL6kah0bzEpqu+hBXmweWunePuwqSSb7Hc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=UHxVPbew85M5y5St8TuwYxo01ejBG8LXKvYhilafoU+0Y1tSeR9H01hDjpmhITAXA
-         er9I3AzjtpBkpq98iMW7NpvM/+SiIJJFRsjRl2X1ey3eoMYombYiHEEJqVqEhId4/k
-         oBOf7LFsuC/92p5p8WXnB0ZBdSH559u0Pa98MLbs=
+        b=y4FnaBwXWq3S5Lg/kK+iIOeQamCh5Ebuw4LglwQj6b9Hdi+TFNku/4ZO7lPkgTKJ0
+         79SBKNGSYyVMgvaZuDXpR7+is4RB4YsKXXt93LHO0bhGwU88bLbypRGkrFXl2EwQxb
+         svVU20r1wHUwjsdS8iYiPRVOmOid0QhrC3QrKjII=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, James Jurack <james.jurack@ametek.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Claudiu Manoil <claudiu.manoil@nxp.com>
-Subject: [PATCH 4.14 04/48] gianfar: Replace skb_realloc_headroom with skb_cow_head for PTP
-Date:   Mon,  9 Nov 2020 13:55:13 +0100
-Message-Id: <20201109125016.950173940@linuxfoundation.org>
+        stable@vger.kernel.org, Marc Zyngier <maz@kernel.org>
+Subject: [PATCH 4.9 088/117] KVM: arm64: Fix AArch32 handling of DBGD{CCINT,SCRext} and DBGVCR
+Date:   Mon,  9 Nov 2020 13:55:14 +0100
+Message-Id: <20201109125029.868357384@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201109125016.734107741@linuxfoundation.org>
-References: <20201109125016.734107741@linuxfoundation.org>
+In-Reply-To: <20201109125025.630721781@linuxfoundation.org>
+References: <20201109125025.630721781@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,70 +41,59 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Claudiu Manoil <claudiu.manoil@nxp.com>
+From: Marc Zyngier <maz@kernel.org>
 
-[ Upstream commit d145c9031325fed963a887851d9fa42516efd52b ]
+commit 4a1c2c7f63c52ccb11770b5ae25920a6b79d3548 upstream.
 
-When PTP timestamping is enabled on Tx, the controller
-inserts the Tx timestamp at the beginning of the frame
-buffer, between SFD and the L2 frame header.  This means
-that the skb provided by the stack is required to have
-enough headroom otherwise a new skb needs to be created
-by the driver to accommodate the timestamp inserted by h/w.
-Up until now the driver was relying on skb_realloc_headroom()
-to create new skbs to accommodate PTP frames.  Turns out that
-this method is not reliable in this context at least, as
-skb_realloc_headroom() for PTP frames can cause random crashes,
-mostly in subsequent skb_*() calls, when multiple concurrent
-TCP streams are run at the same time with the PTP flow
-on the same device (as seen in James' report).  I also noticed
-that when the system is loaded by sending multiple TCP streams,
-the driver receives cloned skbs in large numbers.
-skb_cow_head() instead proves to be stable in this scenario,
-and not only handles cloned skbs too but it's also more efficient
-and widely used in other drivers.
-The commit introducing skb_realloc_headroom in the driver
-goes back to 2009, commit 93c1285c5d92
-("gianfar: reallocate skb when headroom is not enough for fcb").
-For practical purposes I'm referencing a newer commit (from 2012)
-that brings the code to its current structure (and fixes the PTP
-case).
+The DBGD{CCINT,SCRext} and DBGVCR register entries in the cp14 array
+are missing their target register, resulting in all accesses being
+targetted at the guard sysreg (indexed by __INVALID_SYSREG__).
 
-Fixes: 9c4886e5e63b ("gianfar: Fix invalid TX frames returned on error queue when time stamping")
-Reported-by: James Jurack <james.jurack@ametek.com>
-Suggested-by: Jakub Kicinski <kuba@kernel.org>
-Signed-off-by: Claudiu Manoil <claudiu.manoil@nxp.com>
-Link: https://lore.kernel.org/r/20201029081057.8506-1-claudiu.manoil@nxp.com
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Point the emulation code at the actual register entries.
+
+Fixes: bdfb4b389c8d ("arm64: KVM: add trap handlers for AArch32 debug registers")
+Signed-off-by: Marc Zyngier <maz@kernel.org>
+Cc: stable@vger.kernel.org
+Link: https://lore.kernel.org/r/20201029172409.2768336-1-maz@kernel.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- drivers/net/ethernet/freescale/gianfar.c |   12 ++----------
- 1 file changed, 2 insertions(+), 10 deletions(-)
 
---- a/drivers/net/ethernet/freescale/gianfar.c
-+++ b/drivers/net/ethernet/freescale/gianfar.c
-@@ -2370,20 +2370,12 @@ static netdev_tx_t gfar_start_xmit(struc
- 		fcb_len = GMAC_FCB_LEN + GMAC_TXPAL_LEN;
+---
+ arch/arm64/include/asm/kvm_host.h |    1 +
+ arch/arm64/kvm/sys_regs.c         |    6 +++---
+ 2 files changed, 4 insertions(+), 3 deletions(-)
+
+--- a/arch/arm64/include/asm/kvm_host.h
++++ b/arch/arm64/include/asm/kvm_host.h
+@@ -188,6 +188,7 @@ enum vcpu_sysreg {
+ #define cp14_DBGWCR0	(DBGWCR0_EL1 * 2)
+ #define cp14_DBGWVR0	(DBGWVR0_EL1 * 2)
+ #define cp14_DBGDCCINT	(MDCCINT_EL1 * 2)
++#define cp14_DBGVCR	(DBGVCR32_EL2 * 2)
  
- 	/* make space for additional header when fcb is needed */
--	if (fcb_len && unlikely(skb_headroom(skb) < fcb_len)) {
--		struct sk_buff *skb_new;
--
--		skb_new = skb_realloc_headroom(skb, fcb_len);
--		if (!skb_new) {
-+	if (fcb_len) {
-+		if (unlikely(skb_cow_head(skb, fcb_len))) {
- 			dev->stats.tx_errors++;
- 			dev_kfree_skb_any(skb);
- 			return NETDEV_TX_OK;
- 		}
--
--		if (skb->sk)
--			skb_set_owner_w(skb_new, skb->sk);
--		dev_consume_skb_any(skb);
--		skb = skb_new;
- 	}
+ #define NR_COPRO_REGS	(NR_SYS_REGS * 2)
  
- 	/* total number of fragments in the SKB */
+--- a/arch/arm64/kvm/sys_regs.c
++++ b/arch/arm64/kvm/sys_regs.c
+@@ -1207,9 +1207,9 @@ static const struct sys_reg_desc cp14_re
+ 	{ Op1( 0), CRn( 0), CRm( 1), Op2( 0), trap_raz_wi },
+ 	DBG_BCR_BVR_WCR_WVR(1),
+ 	/* DBGDCCINT */
+-	{ Op1( 0), CRn( 0), CRm( 2), Op2( 0), trap_debug32 },
++	{ Op1( 0), CRn( 0), CRm( 2), Op2( 0), trap_debug32, NULL, cp14_DBGDCCINT },
+ 	/* DBGDSCRext */
+-	{ Op1( 0), CRn( 0), CRm( 2), Op2( 2), trap_debug32 },
++	{ Op1( 0), CRn( 0), CRm( 2), Op2( 2), trap_debug32, NULL, cp14_DBGDSCRext },
+ 	DBG_BCR_BVR_WCR_WVR(2),
+ 	/* DBGDTR[RT]Xint */
+ 	{ Op1( 0), CRn( 0), CRm( 3), Op2( 0), trap_raz_wi },
+@@ -1224,7 +1224,7 @@ static const struct sys_reg_desc cp14_re
+ 	{ Op1( 0), CRn( 0), CRm( 6), Op2( 2), trap_raz_wi },
+ 	DBG_BCR_BVR_WCR_WVR(6),
+ 	/* DBGVCR */
+-	{ Op1( 0), CRn( 0), CRm( 7), Op2( 0), trap_debug32 },
++	{ Op1( 0), CRn( 0), CRm( 7), Op2( 0), trap_debug32, NULL, cp14_DBGVCR },
+ 	DBG_BCR_BVR_WCR_WVR(7),
+ 	DBG_BCR_BVR_WCR_WVR(8),
+ 	DBG_BCR_BVR_WCR_WVR(9),
 
 
