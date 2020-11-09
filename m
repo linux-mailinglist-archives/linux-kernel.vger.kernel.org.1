@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCABF2ABC62
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 14:37:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D9D92ABD25
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 14:44:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733244AbgKINgv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 08:36:51 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57602 "EHLO mail.kernel.org"
+        id S1731229AbgKINnn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 08:43:43 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54006 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730478AbgKINEn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 08:04:43 -0500
+        id S1729954AbgKIM7s (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 07:59:48 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 561CE221F1;
-        Mon,  9 Nov 2020 13:04:38 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 84BFB20684;
+        Mon,  9 Nov 2020 12:59:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604927078;
-        bh=ou48oTC5DtY++5q6fw2mIlvdI6jtnTRTnw7hAOhFVEE=;
+        s=default; t=1604926788;
+        bh=tfHgAwlbq1YrlAfjrWp/awNwn7GitDUDMmZVx5/IfdQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kqhRjSTrvi1/Z3JGz6ZzkBeh+uTzueTlNm0D4wP5juk1V/9YNkFyW7L2LB0Y63CYC
-         yyLm+mqbH/jdqWPGHuK3k3IriMv0Kp48/vXHI2ceRjedJVEz+pIEPdfwB5JwfwYfQ9
-         KmcoZ57qjOoaKIpL2m8YnsYh5h7Aew0qJnOJOkgI=
+        b=nW5oB1aehQ1l2iPdDGO2tNmzxAmxkPxW0loIAPvlVwD7yi5TxyYpLdUHkkgPX90RL
+         6aMT15YYyAmvaOkKFxS2pIhi99++iiiCFhsYGRj8OgZc/us7udLhSn7BfZ09+PD8qh
+         JzThuWvCYuiF31uO0TeytH7nDwxBEn8Kv017jLXo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Kairui Song <kasong@redhat.com>,
-        Ingo Molnar <mingo@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 103/117] x86/kexec: Use up-to-dated screen_info copy to fill boot params
-Date:   Mon,  9 Nov 2020 13:55:29 +0100
-Message-Id: <20201109125030.583805133@linuxfoundation.org>
+        stable@vger.kernel.org, Daniele Palmas <dnlplm@gmail.com>,
+        Johan Hovold <johan@kernel.org>
+Subject: [PATCH 4.4 83/86] USB: serial: option: add Telit FN980 composition 0x1055
+Date:   Mon,  9 Nov 2020 13:55:30 +0100
+Message-Id: <20201109125024.782181804@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201109125025.630721781@linuxfoundation.org>
-References: <20201109125025.630721781@linuxfoundation.org>
+In-Reply-To: <20201109125020.852643676@linuxfoundation.org>
+References: <20201109125020.852643676@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,50 +42,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kairui Song <kasong@redhat.com>
+From: Daniele Palmas <dnlplm@gmail.com>
 
-[ Upstream commit afc18069a2cb7ead5f86623a5f3d4ad6e21f940d ]
+commit db0362eeb22992502764e825c79b922d7467e0eb upstream.
 
-kexec_file_load() currently reuses the old boot_params.screen_info,
-but if drivers have change the hardware state, boot_param.screen_info
-could contain invalid info.
+Add the following Telit FN980 composition:
 
-For example, the video type might be no longer VGA, or the frame buffer
-address might be changed. If the kexec kernel keeps using the old screen_info,
-kexec'ed kernel may attempt to write to an invalid framebuffer
-memory region.
+0x1055: tty, adb, tty, tty, tty, tty
 
-There are two screen_info instances globally available, boot_params.screen_info
-and screen_info. Later one is a copy, and is updated by drivers.
+Signed-off-by: Daniele Palmas <dnlplm@gmail.com>
+Link: https://lore.kernel.org/r/20201103124425.12940-1-dnlplm@gmail.com
+Cc: stable@vger.kernel.org
+Signed-off-by: Johan Hovold <johan@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-So let kexec_file_load use the updated copy.
-
-[ mingo: Tidied up the changelog. ]
-
-Signed-off-by: Kairui Song <kasong@redhat.com>
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Link: https://lore.kernel.org/r/20201014092429.1415040-2-kasong@redhat.com
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/x86/kernel/kexec-bzimage64.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ drivers/usb/serial/option.c |    2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/arch/x86/kernel/kexec-bzimage64.c b/arch/x86/kernel/kexec-bzimage64.c
-index 167ecc270ca55..316c05b8b728b 100644
---- a/arch/x86/kernel/kexec-bzimage64.c
-+++ b/arch/x86/kernel/kexec-bzimage64.c
-@@ -211,8 +211,7 @@ setup_boot_parameters(struct kimage *image, struct boot_params *params,
- 	params->hdr.hardware_subarch = boot_params.hdr.hardware_subarch;
- 
- 	/* Copying screen_info will do? */
--	memcpy(&params->screen_info, &boot_params.screen_info,
--				sizeof(struct screen_info));
-+	memcpy(&params->screen_info, &screen_info, sizeof(struct screen_info));
- 
- 	/* Fill in memsize later */
- 	params->screen_info.ext_mem_k = 0;
--- 
-2.27.0
-
+--- a/drivers/usb/serial/option.c
++++ b/drivers/usb/serial/option.c
+@@ -1174,6 +1174,8 @@ static const struct usb_device_id option
+ 	  .driver_info = NCTRL(0) | RSVD(1) },
+ 	{ USB_DEVICE_INTERFACE_CLASS(TELIT_VENDOR_ID, 0x1054, 0xff),	/* Telit FT980-KS */
+ 	  .driver_info = NCTRL(2) | RSVD(3) },
++	{ USB_DEVICE_INTERFACE_CLASS(TELIT_VENDOR_ID, 0x1055, 0xff),	/* Telit FN980 (PCIe) */
++	  .driver_info = NCTRL(0) | RSVD(1) },
+ 	{ USB_DEVICE(TELIT_VENDOR_ID, TELIT_PRODUCT_ME910),
+ 	  .driver_info = NCTRL(0) | RSVD(1) | RSVD(3) },
+ 	{ USB_DEVICE(TELIT_VENDOR_ID, TELIT_PRODUCT_ME910_DUAL_MODEM),
 
 
