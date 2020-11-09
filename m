@@ -2,138 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9C332AB10F
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 07:04:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CD6F2AB112
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 07:04:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729513AbgKIGEd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 01:04:33 -0500
-Received: from mga18.intel.com ([134.134.136.126]:42433 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728951AbgKIGEa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 01:04:30 -0500
-IronPort-SDR: VV7xUNGl4MXHrTsIPf137Rl5i0L/PD2GL7684qKq8ooII4kxAR4pOYhhsqWX85bo8sDABbm0PC
- aNzmC6v/KAgA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9799"; a="157537415"
-X-IronPort-AV: E=Sophos;i="5.77,462,1596524400"; 
-   d="scan'208";a="157537415"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Nov 2020 22:04:29 -0800
-IronPort-SDR: CevAJtqNhn6fkNYKP/cmXcMeIvFH4HyBgizUYf5Dr4bU0x+n8oHzeOa2ZTW+cYzNVUtnwmKm/E
- fChLzqLB2oVg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,462,1596524400"; 
-   d="scan'208";a="364922360"
-Received: from cli6-desk1.ccr.corp.intel.com (HELO [10.239.161.125]) ([10.239.161.125])
-  by FMSMGA003.fm.intel.com with ESMTP; 08 Nov 2020 22:04:14 -0800
-Subject: Re: [PATCH v8 -tip 00/26] Core scheduling
-To:     Joel Fernandes <joel@joelfernandes.org>
-Cc:     "Ning, Hongyu" <hongyu.ning@linux.intel.com>,
-        Nishanth Aravamudan <naravamudan@digitalocean.com>,
-        Julien Desfossez <jdesfossez@digitalocean.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Tim Chen <tim.c.chen@linux.intel.com>,
-        Vineeth Pillai <viremana@linux.microsoft.com>,
-        Aaron Lu <aaron.lwe@gmail.com>,
-        Aubrey Li <aubrey.intel@gmail.com>, tglx@linutronix.de,
-        linux-kernel@vger.kernel.org, mingo@kernel.org,
-        torvalds@linux-foundation.org, fweisbec@gmail.com,
-        keescook@chromium.org, kerrnel@google.com,
-        Phil Auld <pauld@redhat.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
-        Paolo Bonzini <pbonzini@redhat.com>, vineeth@bitbyteword.org,
-        Chen Yu <yu.c.chen@intel.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Agata Gruza <agata.gruza@intel.com>,
-        Antonio Gomez Iglesias <antonio.gomez.iglesias@intel.com>,
-        graf@amazon.com, konrad.wilk@oracle.com, dfaggioli@suse.com,
-        pjt@google.com, rostedt@goodmis.org, derkling@google.com,
-        benbjiang@tencent.com,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
-        James.Bottomley@hansenpartnership.com, OWeisse@umich.edu,
-        Dhaval Giani <dhaval.giani@oracle.com>,
-        Junaid Shahid <junaids@google.com>, jsbarnes@google.com,
-        chris.hyser@oracle.com, Tim Chen <tim.c.chen@intel.com>
-References: <20201020014336.2076526-1-joel@joelfernandes.org>
- <f7fc588b-12cf-95a8-6142-e4d112fb1689@linux.intel.com>
- <bf2ee997-1f53-0eef-40ad-1e98274da587@linux.intel.com>
- <20201106175427.GB2845264@google.com>
-From:   "Li, Aubrey" <aubrey.li@linux.intel.com>
-Message-ID: <389de3ef-2e1f-c569-d3c8-eebb4e6b6bd1@linux.intel.com>
-Date:   Mon, 9 Nov 2020 14:04:13 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+        id S1729540AbgKIGEo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 01:04:44 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:46119 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729520AbgKIGEo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 01:04:44 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1604901882;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=UBLQUM1X/0MCddQFRLO/RxxvuYfOPaxQX5b2ahy4mRA=;
+        b=IHZE3wIphUKo7R+bQIt/DYIkexZJd4I/Xgy6fqq4qMRlh7420lEaoe5+2ReKQuaJWxmtCZ
+        dsgnIlvVbC4xBNLo6rZRC0FdpYMhXKT4KGtmdX9nmG5wF3RwxNkMd4fN//9Rr3/5lGCslp
+        5hykzW0yfl5SgmvClIZBoS23NXGZVTE=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-253-RLBubNkaMJCIgAKuA2Lw4g-1; Mon, 09 Nov 2020 01:04:38 -0500
+X-MC-Unique: RLBubNkaMJCIgAKuA2Lw4g-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B24B21882FA1;
+        Mon,  9 Nov 2020 06:04:35 +0000 (UTC)
+Received: from [10.72.12.244] (ovpn-12-244.pek2.redhat.com [10.72.12.244])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 55C325C5AF;
+        Mon,  9 Nov 2020 06:04:26 +0000 (UTC)
+Subject: Re: [PATCH virtio] virtio: virtio_console: fix DMA memory allocation
+ for rproc serial
+To:     Alexander Lobakin <alobakin@pm.me>
+Cc:     Amit Shah <amit@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Arnaud Pouliquen <arnaud.pouliquen@st.com>,
+        Suman Anna <s-anna@ti.com>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Ohad Ben-Cohen <ohad@wizery.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        virtualization@lists.linux-foundation.org,
+        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org
+References: <AOKowLclCbOCKxyiJ71WeNyuAAj2q8EUtxrXbyky5E@cp7-web-042.plabs.ch>
+ <004da56d-aad2-3b69-3428-02a14263289b@redhat.com>
+ <aXBO8lWEART2MNuWacIKln3qh6wttCtF2oUd7vthkNU@cp3-web-012.plabs.ch>
+From:   Jason Wang <jasowang@redhat.com>
+Message-ID: <b4aaeab1-4e9f-2b38-0124-e0b0ca9c287b@redhat.com>
+Date:   Mon, 9 Nov 2020 14:04:24 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20201106175427.GB2845264@google.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <aXBO8lWEART2MNuWacIKln3qh6wttCtF2oUd7vthkNU@cp3-web-012.plabs.ch>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020/11/7 1:54, Joel Fernandes wrote:
-> On Fri, Nov 06, 2020 at 10:58:58AM +0800, Li, Aubrey wrote:
-> 
+
+On 2020/11/5 下午8:22, Alexander Lobakin wrote:
+> From: Jason Wang <jasowang@redhat.com>
+> Date: Thu, 5 Nov 2020 11:10:24 +0800
+>
+> Hi Jason,
+>
+>> On 2020/11/4 下午11:31, Alexander Lobakin wrote:
+>>> Since commit 086d08725d34 ("remoteproc: create vdev subdevice with
+>>> specific dma memory pool"), every remoteproc has a DMA subdevice
+>>> ("remoteprocX#vdevYbuffer") for each virtio device, which inherits
+>>> DMA capabilities from the corresponding platform device. This allowed
+>>> to associate different DMA pools with each vdev, and required from
+>>> virtio drivers to perform DMA operations with the parent device
+>>> (vdev->dev.parent) instead of grandparent (vdev->dev.parent->parent).
 >>>
->>> 	-- workload D, new added syscall workload, performance drop in cs_on:
->>> 	+----------------------+------+-------------------------------+
->>> 	|                      | **   | will-it-scale  * 192          |
->>> 	|                      |      | (pipe based context_switch)   |
->>> 	+======================+======+===============================+
->>> 	| cgroup               | **   | cg_will-it-scale              |
->>> 	+----------------------+------+-------------------------------+
->>> 	| record_item          | **   | threads_avg                   |
->>> 	+----------------------+------+-------------------------------+
->>> 	| coresched_normalized | **   | 0.2                           |
->>> 	+----------------------+------+-------------------------------+
->>> 	| default_normalized   | **   | 1                             |
->>> 	+----------------------+------+-------------------------------+
->>> 	| smtoff_normalized    | **   | 0.89                          |
->>> 	+----------------------+------+-------------------------------+
+>>> virtio_rpmsg_bus was already changed in the same merge cycle with
+>>> commit d999b622fcfb ("rpmsg: virtio: allocate buffer from parent"),
+>>> but virtio_console did not. In fact, operations using the grandparent
+>>> worked fine while the grandparent was the platform device, but since
+>>> commit c774ad010873 ("remoteproc: Fix and restore the parenting
+>>> hierarchy for vdev") this was changed, and now the grandparent device
+>>> is the remoteproc device without any DMA capabilities.
+>>> So, starting v5.8-rc1 the following warning is observed:
+>>>
+>>> [    2.483925] ------------[ cut here ]------------
+>>> [    2.489148] WARNING: CPU: 3 PID: 101 at kernel/dma/mapping.c:427 0x80e7eee8
+>>> [    2.489152] Modules linked in: virtio_console(+)
+>>> [    2.503737]  virtio_rpmsg_bus rpmsg_core
+>>> [    2.508903]
+>>> [    2.528898] <Other modules, stack and call trace here>
+>>> [    2.913043]
+>>> [    2.914907] ---[ end trace 93ac8746beab612c ]---
+>>> [    2.920102] virtio-ports vport1p0: Error allocating inbufs
+>>>
+>>> kernel/dma/mapping.c:427 is:
+>>>
+>>> WARN_ON_ONCE(!dev->coherent_dma_mask);
+>>>
+>>> obviously because the grandparent now is remoteproc dev without any
+>>> DMA caps:
+>>>
+>>> [    3.104943] Parent: remoteproc0#vdev1buffer, grandparent: remoteproc0
+>>>
+>>> Fix this the same way as it was for virtio_rpmsg_bus, using just the
+>>> parent device (vdev->dev.parent, "remoteprocX#vdevYbuffer") for DMA
+>>> operations.
+>>> This also allows now to reserve DMA pools/buffers for rproc serial
+>>> via Device Tree.
+>>>
+>>> Fixes: c774ad010873 ("remoteproc: Fix and restore the parenting hierarchy for vdev")
+>>> Cc: stable@vger.kernel.org # 5.1+
+>>> Signed-off-by: Alexander Lobakin <alobakin@pm.me>
+>>> ---
+>>>    drivers/char/virtio_console.c | 8 ++++----
+>>>    1 file changed, 4 insertions(+), 4 deletions(-)
+>>>
+>>> diff --git a/drivers/char/virtio_console.c b/drivers/char/virtio_console.c
+>>> index a2da8f768b94..1836cc56e357 100644
+>>> --- a/drivers/char/virtio_console.c
+>>> +++ b/drivers/char/virtio_console.c
+>>> @@ -435,12 +435,12 @@ static struct port_buffer *alloc_buf(struct virtio_device *vdev, size_t buf_size
+>>>    		/*
+>>>    		 * Allocate DMA memory from ancestor. When a virtio
+>>>    		 * device is created by remoteproc, the DMA memory is
+>>> -		 * associated with the grandparent device:
+>>> -		 * vdev => rproc => platform-dev.
+>>> +		 * associated with the parent device:
+>>> +		 * virtioY => remoteprocX#vdevYbuffer.
+>>>    		 */
+>>> -		if (!vdev->dev.parent || !vdev->dev.parent->parent)
+>>> +		buf->dev = vdev->dev.parent;
+>>> +		if (!buf->dev)
+>>>    			goto free_buf;
+>>> -		buf->dev = vdev->dev.parent->parent;
 >>
->> will-it-scale may be a very extreme case. The story here is,
->> - On one sibling reader/writer gets blocked and tries to schedule another reader/writer in.
->> - The other sibling tries to wake up reader/writer.
->>
->> Both CPUs are acquiring rq->__lock,
->>
->> So when coresched off, they are two different locks, lock stat(1 second delta) below:
->>
->> class name    con-bounces    contentions   waittime-min   waittime-max waittime-total   waittime-avg    acq-bounces   acquisitions   holdtime-min   holdtime-max holdtime-total   holdtime-avg
->> &rq->__lock:          210            210           0.10           3.04         180.87           0.86            797       79165021           0.03          20.69    60650198.34           0.77
->>
->> But when coresched on, they are actually one same lock, lock stat(1 second delta) below:
->>
->> class name    con-bounces    contentions   waittime-min   waittime-max waittime-total   waittime-avg    acq-bounces   acquisitions   holdtime-min   holdtime-max holdtime-total   holdtime-avg
->> &rq->__lock:      6479459        6484857           0.05         216.46    60829776.85           9.38        8346319       15399739           0.03          95.56    81119515.38           5.27
->>
->> This nature of core scheduling may degrade the performance of similar workloads with frequent context switching.
-> 
-> When core sched is off, is SMT off as well? From the above table, it seems to
-> be. So even for core sched off, there will be a single lock per physical CPU
-> core (assuming SMT is also off) right? Or did I miss something?
-> 
+>> I wonder it could be the right time to introduce dma_dev for virtio
+>> instead of depending on something magic via parent.
+> This patch are meant to hit RC window and stable trees as a fix of
+> the bug that is present since v5.8-rc1. So any new features are out
+> of scope of this particular fix.
 
-The table includes 3 cases:
-- default:	SMT on,  coresched off
-- coresched:	SMT on,  coresched on
-- smtoff:	SMT off, coresched off
 
-I was comparing the default(coresched off & SMT on) case with (coresched
-on & SMT on) case.
+Right.
 
-If SMT off, then reader and writer on the different cores have different rq->lock,
-so the lock contention is not that serious.
 
-class name    con-bounces    contentions   waittime-min   waittime-max waittime-total   waittime-avg    acq-bounces   acquisitions   holdtime-min   holdtime-max holdtime-total   holdtime-avg
-&rq->__lock:           60             60           0.11           1.92          41.33           0.69            127       67184172           0.03          22.95    33160428.37           0.49
+>
+> The idea of DMAing through "dev->parent" is that "virtioX" itself is a
+> logical dev, not the real one, but its parent *is*. This logic is used
+> across the whole tree -- every subsystem creates its own logical device,
+> but drivers should always use the backing PCI/platform/etc. devices for
+> DMA operations, which represent the real hardware.
 
-Does this address your concern?
 
-Thanks,
--Aubrey
+Yes, so what I meant is to use different variables for DMA and 
+hierarchy. So it's the responsibility of the lower layer to pass a 
+correct "dma_dev" to the upper layer instead of depending parent.
+
+Anyway for this patch.
+
+Acked-by: Jason Wang <jasowang@redhat.com>
+
+Thanks
+
+
+>
+>> (Btw I don't even notice that there's transport specific code in virtio
+>> console, it's better to avoid it)
+>>
+>> Thanks
+> Thanks,
+> Al
+>
+>>>    		/* Increase device refcnt to avoid freeing it */
+>>>    		get_device(buf->dev);
 
