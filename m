@@ -2,75 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 976CD2AC33B
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 19:08:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F5AD2AC342
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 19:09:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730307AbgKISIq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 13:08:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40800 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729570AbgKISIq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 13:08:46 -0500
-Received: from mail-il1-x131.google.com (mail-il1-x131.google.com [IPv6:2607:f8b0:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CD6BC0613CF
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Nov 2020 10:08:46 -0800 (PST)
-Received: by mail-il1-x131.google.com with SMTP id y9so2051620ilb.0
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Nov 2020 10:08:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=j47aCS29776hDsXzBL5Yato2CFnib/+OBUg4G/BADhg=;
-        b=OaLO5QPX4GFQhPXneAkdIQLvlkZ6S/SqSMH5aC6AKlbOb8oEh23O047VONbDWDo4vm
-         7DaanMHctyjub7jt3JnIUY0m7MXYHx13U+Zj4cUn4qyMR7YBqBCBV9tsoSMMdShUFvTZ
-         UpzIPsvJjjQwsArjfnOitmP3EPzpzHZXPq2+WLzE1xJnC5OngZ0pE9LU0OXtv7ahXLxT
-         yrFq6DFO+zOj3C64NqKYprcDi9vNOS6bveANJsfX7TZETmko76lP/O/eWPHukDo+IAIA
-         PutdVIfcTKYzGdGKWN5KQJflVlB5VheL7tvr1MMWx3KM6xPK65H1+agvbjBgjm2JtP4S
-         AzXg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=j47aCS29776hDsXzBL5Yato2CFnib/+OBUg4G/BADhg=;
-        b=Yn4L+IaoEffsaTyLFj+dH1vKCijQwbgIfyvl1zmfJJc7tdqDYuuy0ZIKAP/XKHEr9B
-         kExPVatjq0fcVYJNUIR0AGv3K8n5qCAmkr7mzH5OCJ2tfekwtjKKCRihGShPEGfrDxfR
-         zEbFgIjwP4RNt9etWtCcS6dzWJlY6/Sfi4ecNIsfQqLasr7miitPVfABnwLllfq4A796
-         wgSRUKYjm7Q/HUhU9Hay+jpobOzZNurZ9L1JrO9vy+ddo9fMY1dQlwOQ5bwuNayv0+dU
-         k5nWmUeKLcsK6LCWvS8NSFwXR5YTFPsHygygNso7CFUsBUjTJzhoroXEMILHYCIJkDg7
-         h/2g==
-X-Gm-Message-State: AOAM533nRxl0tSSca62lvNma8C30nBm1xU47CVN/Tjtkod9YHPgodvzz
-        BI21JD6BO9ZZ4wIqIFkUgKb0sQ==
-X-Google-Smtp-Source: ABdhPJy5w6MmOQcsBjeteqExZt3kI6+IfQSGLHX68AfxXahU++pOfbmyfo3sEuMDpf2Vc0iZr5zK9g==
-X-Received: by 2002:a92:d3c1:: with SMTP id c1mr11449523ilh.271.1604945325477;
-        Mon, 09 Nov 2020 10:08:45 -0800 (PST)
-Received: from [192.168.1.30] ([65.144.74.34])
-        by smtp.gmail.com with ESMTPSA id a13sm4036704ilh.0.2020.11.09.10.08.44
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 09 Nov 2020 10:08:44 -0800 (PST)
-Subject: Re: KASAN: slab-out-of-bounds Read in io_uring_show_cred
-To:     syzbot <syzbot+46061b9b42fecc6e7d6d@syzkaller.appspotmail.com>,
-        io-uring@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
-        viro@zeniv.linux.org.uk
-References: <00000000000028115c05b3b06bbd@google.com>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <c3f69180-187b-6801-b74c-a22231323049@kernel.dk>
-Date:   Mon, 9 Nov 2020 11:08:44 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1729869AbgKISJQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 13:09:16 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49996 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729247AbgKISJO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 13:09:14 -0500
+Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.7])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id D92DF20678;
+        Mon,  9 Nov 2020 18:09:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604945353;
+        bh=JU34YanRQ67wdNLNcG1HyaIGvC4Hvn9BN1r19BodjUY=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=fmQaKGHZHjq7wNC0q47GooBDjXBM7yHd2ivf4TMaq4JvcqepRbx15j+7TSpVuGEiQ
+         x1fUsJrk0KtHo/jd4cbztN7OOvfkx0+AxXIE16Ig4rIYaeNm3Kz6yHJlyUz1VZ68VL
+         XyMnngEleioqfNRjZLG2RihZx0kEn+d1ZNibDNVA=
+Date:   Mon, 9 Nov 2020 10:09:11 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Po-Hsu Lin <po-hsu.lin@canonical.com>
+Cc:     netdev@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org, David Miller <davem@davemloft.net>,
+        Shuah Khan <skhan@linuxfoundation.org>
+Subject: Re: [PATCH 2/2] selftests: pmtu.sh: improve the test result
+ processing
+Message-ID: <20201109100911.28afc390@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <CAMy_GT-Hsj7GmHKBb9Ztvsisrujud1C=E+sKE1TfHDsszwpMXA@mail.gmail.com>
+References: <20201105105051.64258-1-po-hsu.lin@canonical.com>
+        <20201105105051.64258-3-po-hsu.lin@canonical.com>
+        <20201107150200.509523e3@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        <CAMy_GT-Hsj7GmHKBb9Ztvsisrujud1C=E+sKE1TfHDsszwpMXA@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <00000000000028115c05b3b06bbd@google.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-#syz dup: general protection fault in io_uring_show_cred
+On Mon, 9 Nov 2020 11:42:33 +0800 Po-Hsu Lin wrote:
+> On Sun, Nov 8, 2020 at 7:02 AM Jakub Kicinski <kuba@kernel.org> wrote:
+> >
+> > On Thu,  5 Nov 2020 18:50:51 +0800 Po-Hsu Lin wrote:  
+> > > This test will treat all non-zero return codes as failures, it will
+> > > make the pmtu.sh test script being marked as FAILED when some
+> > > sub-test got skipped.
+> > >
+> > > Improve the result processing by
+> > >   * Only mark the whole test script as SKIP when all of the
+> > >     sub-tests were skipped
+> > >   * If the sub-tests were either passed or skipped, the overall
+> > >     result will be PASS
+> > >   * If any of them has failed, the overall result will be FAIL
+> > >   * Treat other return codes (e.g. 127 for command not found) as FAIL
+> > >
+> > > Signed-off-by: Po-Hsu Lin <po-hsu.lin@canonical.com>  
+> >
+> > Patch 1 looks like a cleanup while patch 2 is more of a fix, can we
+> > separate the two and apply the former to -next and latter to 5.10?
+> > They shouldn't conflict, right?
+> >  
+> 
+> Hello Jakub,
+> 
+> Yes the first patch is just changing return code to $ksft_skip, the
+> real fix is the second one. However the second patch was based on the
+> first one, if we want to apply them separately we might need to change
+> this $ksft_skip handling part in the second patch.
 
--- 
-Jens Axboe
+Ah, I misread the situation, ksft_skip is 4, not 2, so the patch is
+more than just refactoring.
 
+> What should I do to deal with this?
+> Resend the former for -next and rebase + resend the latter (plus the
+> fix to remove case 1) for 5.10 without the former patch?
+
+Let's apply both of the patches to net-next if that's fine with you.
+Indeed detangling them is may be more effort that it's worth.
