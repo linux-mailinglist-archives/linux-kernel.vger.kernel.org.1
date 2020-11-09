@@ -2,101 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D4452AC059
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 16:59:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8459C2AC0B2
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 17:22:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729955AbgKIP7p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 10:59:45 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:52046 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726410AbgKIP7o (ORCPT
+        id S1730183AbgKIQWR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 11:22:17 -0500
+Received: from peugeot.dedicated.co.za ([197.242.155.8]:57726 "EHLO
+        server.peugeotsouthafrica.co.za" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729791AbgKIQWP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 10:59:44 -0500
-Date:   Mon, 9 Nov 2020 16:59:41 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1604937583;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-        bh=aj0ns5W/he7xOoxv13aYmUJ+aPqtqgN0U6c1kq1hcfo=;
-        b=R/pU7P2C4qc7xtXIkd3drEnWwH0vO70z8uGU8bZ5HZtTm2AMM2rjIShApNUWnUdyY7Zn8E
-        M2AtB49eWK+p4g9Q7IASV7F/gtASdLTg8Y698gE1KP51i512031Llccor5AkAOrcyydfXM
-        yQ/DpvL8rUYEFfCQD2VldbDCAy8ZVrBKBM3KXnAyOK/1rf/DwgVD3SKHg3/Nw7rTDeXsUw
-        Bq7ukRzGjO6V0hr3cifAUSGNrKLW061IPUC1Uvi4qGE0iEh7A5bUttBekdR3Dvxq6cHu6J
-        sHO/1s46IKLMey/pykhdBJIh8ZMt8MeOpNGtOmK3qwWTJpgOfd6k4VWkCuJu0g==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1604937583;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-        bh=aj0ns5W/he7xOoxv13aYmUJ+aPqtqgN0U6c1kq1hcfo=;
-        b=feGpigVAuY9keLNaMMTI0QYG6uTWpKXP8jq8Gp5x7bKshJ/vuiZ3MUeCNZRb7T7tSHV54z
-        iRg+mRlOMBVkZmCg==
-From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        linux-rt-users <linux-rt-users@vger.kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>
-Subject: [ANNOUNCE] v5.10-rc3-rt6
-Message-ID: <20201109155941.r7umomidvq7pgzsi@linutronix.de>
+        Mon, 9 Nov 2020 11:22:15 -0500
+X-Greylist: delayed 28441 seconds by postgrey-1.27 at vger.kernel.org; Mon, 09 Nov 2020 11:22:12 EST
+Received: from localhost ([127.0.0.1]:41964 helo=server.peugeotsouthafrica.co.za)
+        by server.peugeotsouthafrica.co.za with esmtpa (Exim 4.93)
+        (envelope-from <usm@helderberg.peugeotsouthafrica.co.za>)
+        id 1kc24k-0001Iv-CQ; Mon, 09 Nov 2020 09:58:54 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+Date:   Mon, 09 Nov 2020 09:58:54 +0200
+From:   Mrs Anna Cooper <usm@helderberg.peugeotsouthafrica.co.za>
+To:     undisclosed-recipients:;
+Subject: Warmest Greetings
+Reply-To: webmyprivate2019@webmail.co.za
+User-Agent: Roundcube Webmail/1.4.8
+Message-ID: <a00be8086b32514184f09d539edc4440@helderberg.peugeotsouthafrica.co.za>
+X-Sender: usm@helderberg.peugeotsouthafrica.co.za
+Organization: Mrs Anna Cooper
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - server.peugeotsouthafrica.co.za
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - helderberg.peugeotsouthafrica.co.za
+X-Get-Message-Sender-Via: server.peugeotsouthafrica.co.za: authenticated_id: usm@helderberg.peugeotsouthafrica.co.za
+X-Authenticated-Sender: server.peugeotsouthafrica.co.za: usm@helderberg.peugeotsouthafrica.co.za
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-From-Rewrite: unmodified, already matched
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear RT folks!
 
-I'm pleased to announce the v5.10-rc3-rt6 patch set. 
 
-Changes since v5.10-rc3-rt5:
+Hello Dear, (webmyprivate2019@webmail.co.za), 
+(annacooper2019@yandex.com)
 
-  - The new migrate-disable didn't release a lock in an error path.
-    Reported by Joe Korty.
+I am Mrs. Anna Cooper, from Australia, lived in South Africa for 20years 
+and currently residing in London United Kingdom, a widow to late Dr. 
+Andrew Cooper. I am 78 years old and presently suffering from Leukemia.
 
-Known issues
-     - It has been pointed out that due to changes to the printk code the
-       internal buffer representation changed. This is only an issue if tools
-       like `crash' are used to extract the printk buffer from a kernel memory
-       image.
+My health condition has gotten worse and just two weeks ago my doctor 
+informed me that my condition has reach a critical stage, and that I 
+have just 3 months left. This confirmation from my doctor was and still 
+is devastating news; it is hard to know that you have just a little time 
+left to live here.
 
-The delta patch against v5.10-rc3-rt5 is appended below and can be found here:
- 
-     https://cdn.kernel.org/pub/linux/kernel/projects/rt/5.10/incr/patch-5.10-rc3-rt5-rt6.patch.xz
+My late husband was a contractor in both South Africa and London, he 
+died in a plane crash and during the period of our marriage we could not 
+bear any child. My late husband was very wealthy and after his death, I 
+inherited all his businesses and wealth both in South Africa and 
+London-United Kingdom.
 
-You can get this release via the git tree at:
+After the doctor's medical pronunciation that I have just few months to 
+live, I decided to divide my wealth to contribute to your country and 
+Africa where my late husband as a contractor made lots of money. I want 
+to assist you with the funds to do great charity works in your country, 
+this is my last wish. I selected you after searching few websites; I 
+prayed and was led to you. I am willing to donate the sum of Four 
+Million, Six Hundred thousand United States Dollars (USD$4,600,000.00) 
+to the less privileged through you.
 
-    git://git.kernel.org/pub/scm/linux/kernel/git/rt/linux-rt-devel.git v5.10-rc3-rt6
+Please I want to transfer this money to you as I am travelling to South 
+Africa soonest to have my lawyer amend my WILL. If you can handle this 
+fund and very sure to do charity works on my behalf then I will include 
+your name in my WILL when in South Africa, and from there I will travel 
+to Australia to meet a specialist as I want to be buried alongside my 
+late husband when I passed on. Note that this fund is in the financial 
+institution and upon my instruction; I will file in an application 
+through my family attorney for the transfer of the money into your 
+account for the said purpose.
 
-The RT patch against v5.10-rc3 can be found here:
+Lastly, I honestly pray that this money when transferred will be used 
+for the said purpose even though I might be late then. I have come to 
+find out that wealth is vanity and I made a promise to God that my 
+wealth will be used to support the poor and the assist the sick. Do let 
+me know if you will be able to handle this fund and use it for the said 
+purpose so that I will inform my attorney and my bank on my decision. 
+Reply to me using (webmyprivate2019@webmail.co.za), 
+(annacooper2019@yandex.com)
 
-    https://cdn.kernel.org/pub/linux/kernel/projects/rt/5.10/older/patch-5.10-rc3-rt6.patch.xz
+God bless you
 
-The split quilt queue is available at:
-
-    https://cdn.kernel.org/pub/linux/kernel/projects/rt/5.10/older/patches-5.10-rc3-rt6.tar.xz
-
-Sebastian
-
-diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index 3fce6bbbeb5b7..1218f3ce1713a 100644
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -2281,8 +2281,10 @@ static int affine_move_task(struct rq *rq, struct task_struct *p, struct rq_flag
- 	 *
- 	 * Either way, we really should have a @pending here.
- 	 */
--	if (WARN_ON_ONCE(!pending))
-+	if (WARN_ON_ONCE(!pending)) {
-+		task_rq_unlock(rq, p, rf);
- 		return -EINVAL;
-+	}
- 
- 	if (flags & SCA_MIGRATE_ENABLE) {
- 
-diff --git a/localversion-rt b/localversion-rt
-index 0efe7ba1930e1..8fc605d806670 100644
---- a/localversion-rt
-+++ b/localversion-rt
-@@ -1 +1 @@
---rt5
-+-rt6
+Mrs. Anna Cooper
