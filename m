@@ -2,83 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CBD92AC2DC
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 18:51:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CF2042AC2E0
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 18:52:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730022AbgKIRvk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 12:51:40 -0500
-Received: from foss.arm.com ([217.140.110.172]:43808 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726410AbgKIRvk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 12:51:40 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9B46931B;
-        Mon,  9 Nov 2020 09:51:39 -0800 (PST)
-Received: from e120937-lin (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E47893F718;
-        Mon,  9 Nov 2020 09:51:38 -0800 (PST)
-Date:   Mon, 9 Nov 2020 17:51:36 +0000
-From:   Cristian Marussi <cristian.marussi@arm.com>
-To:     Qinglang Miao <miaoqinglang@huawei.com>
-Cc:     Sudeep Holla <sudeep.holla@arm.com>, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH] firmware: arm_scmi: fix missing destroy_workqueue() on
- error in scmi_notification_init
-Message-ID: <20201109175136.GB42652@e120937-lin>
-References: <20201109091517.55895-1-miaoqinglang@huawei.com>
+        id S1730028AbgKIRwn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 12:52:43 -0500
+Received: from userp2120.oracle.com ([156.151.31.85]:38564 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729493AbgKIRwn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 12:52:43 -0500
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0A9Hjq2Y076313;
+        Mon, 9 Nov 2020 17:52:39 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=YvxrNDq4sUYMOLMW+ILwJqr+WkVxbMPyXAKBEteaKZo=;
+ b=Qz2IBDDNnCWcrnkrlK/L/AuCT8Zm4y9KEhu+5UGSui5VZyYUKUDIIBQjEtlZLbDN1EZX
+ /leCS7Ec/AM1HoCFjOMqXD9J6roC8wgVxFd2lIJWVL4ZgQMHbDF4qfVx13jlQitaiDIY
+ 7R9uRSb2A2EpefCMa/W3F/9AZbsQoz9dTunQ2yrDoCLsx0Qn0Iz8ICbiSJpGf5VuvGBn
+ xUKt2wOaS/+yv9hRQc2FdOyziiHmmLOsxGEbYQvSptbklwYGtYCrnm6eladgkzIe33QS
+ nZP8ekiB6q1CfmnoAObOhaAHPQ8Vhi97hu4B59Zpd9zVJyT0nQMRMvMziO7qxbkvhEGg rw== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by userp2120.oracle.com with ESMTP id 34p72edh2d-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 09 Nov 2020 17:52:39 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0A9Himof056123;
+        Mon, 9 Nov 2020 17:50:38 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by aserp3020.oracle.com with ESMTP id 34p5fy0f7m-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 09 Nov 2020 17:50:38 +0000
+Received: from abhmp0014.oracle.com (abhmp0014.oracle.com [141.146.116.20])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0A9Hoajl017863;
+        Mon, 9 Nov 2020 17:50:37 GMT
+Received: from linux.home (/92.157.91.83)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Mon, 09 Nov 2020 09:50:36 -0800
+Subject: Re: [RFC][PATCH 13/24] x86/pti: Extend PTI user mappings
+To:     Andy Lutomirski <luto@amacapital.net>
+Cc:     X86 ML <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
+References: <20201109112319.264511-1-alexandre.chartre@oracle.com>
+ <20201109112319.264511-14-alexandre.chartre@oracle.com>
+ <CALCETrX-cN8zcSNZnmEw=0dL+mkaqkWVMdE2FkGTfUFR+Si=Bg@mail.gmail.com>
+From:   Alexandre Chartre <alexandre.chartre@oracle.com>
+Message-ID: <6a1b1267-c5bf-a1ba-4707-8cec35b1295c@oracle.com>
+Date:   Mon, 9 Nov 2020 18:52:55 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201109091517.55895-1-miaoqinglang@huawei.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <CALCETrX-cN8zcSNZnmEw=0dL+mkaqkWVMdE2FkGTfUFR+Si=Bg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9800 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 spamscore=0 malwarescore=0
+ adultscore=0 phishscore=0 bulkscore=0 mlxlogscore=999 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2011090123
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9800 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 mlxlogscore=999 mlxscore=0
+ malwarescore=0 suspectscore=0 lowpriorityscore=0 adultscore=0 phishscore=0
+ priorityscore=1501 spamscore=0 impostorscore=0 clxscore=1011
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2011090123
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 09, 2020 at 05:15:17PM +0800, Qinglang Miao wrote:
-> Add the missing destroy_workqueue() before return from
-> scmi_notification_init in the error handling case when
-> fails to do devm_kcalloc().
+
+On 11/9/20 6:28 PM, Andy Lutomirski wrote:
+> On Mon, Nov 9, 2020 at 3:22 AM Alexandre Chartre
+> <alexandre.chartre@oracle.com> wrote:
+>>
+>> Extend PTI user mappings so that more kernel entry code can be executed
+>> with the user page-table. To do so, we need to map syscall and interrupt
+>> entry code,
 > 
-> Fixes: bd31b249692e ("firmware: arm_scmi: Add notification dispatch and delivery")
-> Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
-> ---
->  drivers/firmware/arm_scmi/notify.c | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
+> Probably fine.
 > 
-> diff --git a/drivers/firmware/arm_scmi/notify.c b/drivers/firmware/arm_scmi/notify.c
-> index 2754f9d01636..3048e57d9731 100644
-> --- a/drivers/firmware/arm_scmi/notify.c
-> +++ b/drivers/firmware/arm_scmi/notify.c
-> @@ -1476,8 +1476,10 @@ int scmi_notification_init(struct scmi_handle *handle)
->  
->  	ni->registered_protocols = devm_kcalloc(handle->dev, SCMI_MAX_PROTO,
->  						sizeof(char *), GFP_KERNEL);
-> -	if (!ni->registered_protocols)
-> +	if (!ni->registered_protocols) {
-> +		destroy_workqueue(ni->notify_wq);
->  		goto err;
-> +	}
->  
-
-Good catch, looks good to me.
-
-Even better you could move the above alloc_workqueue() block down here
-so that you can avoid all together the additional destroy_workqueue() on
-the above error path.
-
-Thanks
-
-Cristian
-
-
->  	mutex_init(&ni->pending_mtx);
->  	hash_init(ni->pending_events_handlers);
-> -- 
-> 2.23.0
+>> per cpu offsets (__per_cpu_offset, which is used some in
+>> entry code),
 > 
+> This likely already leaks due to vulnerable CPUs leaking address space
+> layout info.
+
+I forgot to update the comment, I am not mapping __per_cpu_offset anymore.
+
+However, if we do map __per_cpu_offset then we don't need to enforce the
+ordering in paranoid_entry to switch CR3 before GS.
+
 > 
-> _______________________________________________
-> linux-arm-kernel mailing list
-> linux-arm-kernel@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+>> the stack canary,
+> 
+> That's going to be a very tough sell.
+> 
+
+I can get rid of this, but this will require to disable stack-protector for
+any function that we can call while using the user page-table, like already
+done in patch 21 (x86/entry: Disable stack-protector for IST entry C handlers).
+
+alex.
