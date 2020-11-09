@@ -2,102 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C49BE2ABABD
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 14:23:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E501D2ABADE
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 14:23:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388149AbgKINV5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 08:21:57 -0500
-Received: from youngberry.canonical.com ([91.189.89.112]:52287 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388128AbgKINVy (ORCPT
+        id S2387816AbgKINXX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 08:23:23 -0500
+Received: from mail-il1-f199.google.com ([209.85.166.199]:50106 "EHLO
+        mail-il1-f199.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732857AbgKINXT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 08:21:54 -0500
-Received: from 1.general.cking.uk.vpn ([10.172.193.212])
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <colin.king@canonical.com>)
-        id 1kc77H-0007n2-ML; Mon, 09 Nov 2020 13:21:51 +0000
-To:     Can Guo <cang@codeaurora.org>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Stanley Chu <stanley.chu@mediatek.com>
-From:   Colin Ian King <colin.king@canonical.com>
-Subject: re: scsi: ufs: Try to save power mode change and UIC cmd completion
- timeout
-Cc:     "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>
-Message-ID: <fa7ed8c9-8b5d-c499-a498-245364b18f63@canonical.com>
-Date:   Mon, 9 Nov 2020 13:21:51 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        Mon, 9 Nov 2020 08:23:19 -0500
+Received: by mail-il1-f199.google.com with SMTP id v29so6417314ilk.16
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Nov 2020 05:23:18 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=CO45gfakMLgnsGNC2zQCKWa4XgBYQMP+NMYJGmT003U=;
+        b=MlzldLTA9I3pJriQWWjZd9vO650uBKJ0HJFH9KIuuE+9VnsNs6t7ABU88WjKFBw69t
+         zcAHpBoQduxupT+I9xspF708DQ/ntp/CCheymHepdd7qOuJouAExkE8g0n9JpS2SFuOb
+         iZ73YB1yYfXw7T9GFWwk9BmDCw+IqNkyHTZwpv0mX7Myg5P0XSSK+NEoZCMS9SI1/GIN
+         +hFsNC9r/M5jEa5JE5bbZNXE/bt1byybUsGOcz/Ec/6BgSRMgnmg7gl3ABzRM+hhRXgq
+         PDqpjERNTMHxlI1MPIAEJsr3d54LU3uH/vf6RwDFSReTjYibvZjq2/URMsB8YHyB5TME
+         eRHg==
+X-Gm-Message-State: AOAM530S+F/rfbuXu7TSqHhLFxuvUGomEQqrWNSUotFTTK8nzzkgOBtC
+        lDzQrofTdlraf8BtEp4a7zZTfeHSesJIIBMrEF0PqsulOJa+
+X-Google-Smtp-Source: ABdhPJzXwgrjFbwFN8QQPAiQANvB6yFzbI0NeYFOZSKmEJa6uyKIHDxJZIDWoxe5J3JgIcAvs1aySuSGbfdWd7hqCstmcbbs8pKJ
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-Received: by 2002:a92:cecf:: with SMTP id z15mr9859936ilq.214.1604928198116;
+ Mon, 09 Nov 2020 05:23:18 -0800 (PST)
+Date:   Mon, 09 Nov 2020 05:23:18 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000238d9b05b3ac77c5@google.com>
+Subject: BUG: sleeping function called from invalid context in corrupted
+From:   syzbot <syzbot+b7aeb9318541a1c709f1@syzkaller.appspotmail.com>
+To:     davem@davemloft.net, johannes.berg@intel.com,
+        johannes@sipsolutions.net, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
+        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi
+Hello,
 
-Static analysis with Coverity on linux-next has detected a potential
-null pointer deference issue with commit:
+syzbot found the following issue on:
 
-commit 0f52fcb99ea2738a0a0f28e12cf4dd427069dd2a
-Author: Can Guo <cang@codeaurora.org>
-Date:   Mon Nov 2 22:24:40 2020 -0800
+HEAD commit:    bf3e7628 Merge branch 'mtd/fixes' of git://git.kernel.org/..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=16d76e2a500000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=e791ddf0875adf65
+dashboard link: https://syzkaller.appspot.com/bug?extid=b7aeb9318541a1c709f1
+compiler:       clang version 11.0.0 (https://github.com/llvm/llvm-project.git ca2dcbd030eadbf0aa9b660efe864ff08af6e18b)
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14df611a500000
 
-    scsi: ufs: Try to save power mode change and UIC cmd completion timeout
+The issue was bisected to:
+
+commit dcd479e10a0510522a5d88b29b8f79ea3467d501
+Author: Johannes Berg <johannes.berg@intel.com>
+Date:   Fri Oct 9 12:17:11 2020 +0000
+
+    mac80211: always wind down STA state
+
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=1218ff14500000
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=1118ff14500000
+console output: https://syzkaller.appspot.com/x/log.txt?x=1618ff14500000
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+b7aeb9318541a1c709f1@syzkaller.appspotmail.com
+Fixes: dcd479e10a05 ("mac80211: always wind down STA state")
+
+BUG: sleeping function called from invalid context at net/mac80211/sta_info.c:1962
+in_atomic(): 0, irqs_disabled(): 0, non_block: 0, pid: 35, name: kworker/u4:2
+4 locks held by kworker/u4:2/35:
+ #0: ffff88802af11138 ((wq_completion)phy4){+.+.}-{0:0}, at: process_one_work+0x6f4/0xfc0 kernel/workqueue.c:2245
+ #1: ffffc90000e0fd80 ((work_completion)(&sdata->work)){+.+.}-{0:0}, at: process_one_work+0x733/0xfc0 kernel/workqueue.c:2247
+ #2: ffff88802f27cd00 (&wdev->mtx){+.+.}-{3:3}, at: sdata_lock net/mac80211/ieee80211_i.h:1021 [inline]
+ #2: ffff88802f27cd00 (&wdev->mtx){+.+.}-{3:3}, at: ieee80211_ibss_work+0x4e/0x1450 net/mac80211/ibss.c:1683
 
 
-The analysis is as follows:
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-4925 static irqreturn_t ufshcd_uic_cmd_compl(struct ufs_hba *hba, u32
-intr_status)
-4926 {
-4927        irqreturn_t retval = IRQ_NONE;
-4928
-
-    1. Condition intr_status & 1024, taking true branch.
-    2. Condition hba->active_uic_cmd, taking false branch.
-    3. var_compare_op: Comparing hba->active_uic_cmd to null implies
-that hba->active_uic_cmd might be null.
-
-4929        if ((intr_status & UIC_COMMAND_COMPL) && hba->active_uic_cmd) {
-4930                hba->active_uic_cmd->argument2 |=
-4931                        ufshcd_get_uic_cmd_result(hba);
-4932                hba->active_uic_cmd->argument3 =
-4933                        ufshcd_get_dme_attr_val(hba);
-4934                if (!hba->uic_async_done)
-4935                        hba->active_uic_cmd->cmd_active = 0;
-4936                complete(&hba->active_uic_cmd->done);
-4937                retval = IRQ_HANDLED;
-4938        }
-4939
-
-    4. Condition intr_status & (112U /* (0x40 | 0x20) | 0x10 */), taking
-true branch.
-    5. Condition hba->uic_async_done, taking true branch.
-
-4940        if ((intr_status & UFSHCD_UIC_PWR_MASK) &&
-hba->uic_async_done) {
-
-Dereference after null check (FORWARD_NULL)
-    6. var_deref_op: Dereferencing null pointer hba->active_uic_cmd.
-
-4941                hba->active_uic_cmd->cmd_active = 0;
-4942                complete(hba->uic_async_done);
-4943                retval = IRQ_HANDLED;
-4944        }
-4945
-
-Line 4929 checks to see if hba->active_uic_cmd is null, so there is a
-potential it may be null.  However, on line 4941 hba->active_uic_cmd is
-being dereferenced without a null check, so Coverity has flagged this is
-a potential null pointer dereference issue.
-
-If it is null, then cmd_active shouldn't be assigned, but I'm unsure if
-this is a false positive warning and/or what the ramifications of not
-seeting cmd_active to zero is if hba->active_uic_cmd is null.
-
-Colin
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
