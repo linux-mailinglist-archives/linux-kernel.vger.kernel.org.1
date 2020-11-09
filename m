@@ -2,97 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 521892AB7F4
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 13:17:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D51572AB7F8
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 13:17:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729508AbgKIMQ5 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 9 Nov 2020 07:16:57 -0500
-Received: from coyote.holtmann.net ([212.227.132.17]:59923 "EHLO
-        mail.holtmann.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729038AbgKIMQ5 (ORCPT
+        id S1729520AbgKIMRW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 07:17:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42610 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726410AbgKIMRV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 07:16:57 -0500
-Received: from marcel-macbook.fritz.box (p4fefcf0f.dip0.t-ipconnect.de [79.239.207.15])
-        by mail.holtmann.org (Postfix) with ESMTPSA id 041BDCECC5;
-        Mon,  9 Nov 2020 13:24:02 +0100 (CET)
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.120.23.2.4\))
-Subject: Re: [Linux-kernel-mentees] [PATCH net v2] Bluetooth: Fix
- slab-out-of-bounds read in hci_le_direct_adv_report_evt()
-From:   Marcel Holtmann <marcel@holtmann.org>
-In-Reply-To: <20200909071700.1100748-1-yepeilin.cs@gmail.com>
-Date:   Mon, 9 Nov 2020 13:16:53 +0100
-Cc:     Johan Hedberg <johan.hedberg@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Bluez mailing list <linux-bluetooth@vger.kernel.org>,
-        "open list:NETWORKING [GENERAL]" <netdev@vger.kernel.org>,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-kernel@vger.kernel.org
-Content-Transfer-Encoding: 8BIT
-Message-Id: <AF20F58E-C800-45A8-A5B8-296DE4C0D906@holtmann.org>
-References: <20200805180902.684024-1-yepeilin.cs@gmail.com>
- <20200909071700.1100748-1-yepeilin.cs@gmail.com>
-To:     Peilin Ye <yepeilin.cs@gmail.com>
-X-Mailer: Apple Mail (2.3608.120.23.2.4)
+        Mon, 9 Nov 2020 07:17:21 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FF44C0613CF
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Nov 2020 04:17:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=WwdnJbabu1rULJ2+oUKlv6RRxq+QCcyVdX7jOBicrao=; b=YS0OR5KfrgoUuzSbXk6CXDosk8
+        Wbgl8v2rqB1xs7V6qXI7rhbNLMud8pyjoN4PCYGVphok5zuI8tKFh7stGoj/HZnJlNrdLkm9v+W8W
+        5Zltg7rHdspTEzMeYxt7hiKEa1wmHRcXonLjwAPdW/8T9saNCPVNfLiM+059JDMw7wgL5o+MzrPHa
+        P8/hnVkSDX8mdApSwpcB87NQ6heqdpBlxA+x/Zq30lwgjZ7Jn4KkAIejZJFXs45RmvV/nuvCJO3IX
+        xVNBPECRVUnD/Gjlc2splrpYdH7Pb2n+2GoNWKvZxIfz6S+NuatSq0yjoOXYJvy8/Xt3DqKftAIzw
+        54AvF/Lg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kc66g-00008x-II; Mon, 09 Nov 2020 12:17:10 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 508E0305C16;
+        Mon,  9 Nov 2020 13:17:08 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id DE0142BD3DF75; Mon,  9 Nov 2020 13:17:08 +0100 (CET)
+Date:   Mon, 9 Nov 2020 13:17:08 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Jiri Kosina <jikos@kernel.org>,
+        Miroslav Benes <mbenes@suse.cz>, Petr Mladek <pmladek@suse.com>
+Subject: Re: [PATCH 03/11 v3] ftrace: Optimize testing what context current
+ is in
+Message-ID: <20201109121708.GK2594@hirez.programming.kicks-ass.net>
+References: <20201106023235.367190737@goodmis.org>
+ <20201106023546.558881845@goodmis.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201106023546.558881845@goodmis.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Peilin,
-
-> `num_reports` is not being properly checked. A malformed event packet with
-> a large `num_reports` number makes hci_le_direct_adv_report_evt() read out
-> of bounds. Fix it.
+On Thu, Nov 05, 2020 at 09:32:38PM -0500, Steven Rostedt wrote:
+> From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
 > 
-> Cc: stable@vger.kernel.org
-> Fixes: 2f010b55884e ("Bluetooth: Add support for handling LE Direct Advertising Report events")
-> Reported-and-tested-by: syzbot+24ebd650e20bd263ca01@syzkaller.appspotmail.com
-> Link: https://syzkaller.appspot.com/bug?extid=24ebd650e20bd263ca01
-> Signed-off-by: Peilin Ye <yepeilin.cs@gmail.com>
+> The preempt_count() is not a simple location in memory, it could be part of
+> per_cpu code or more. Each access to preempt_count(), or one of its accessor
+> functions (like in_interrupt()) takes several cycles. By reading
+> preempt_count() once, and then doing tests to find the context against the
+> value return is slightly faster than using in_nmi() and in_interrupt().
+> 
+> Link: https://lkml.kernel.org/r/20201028115612.780796355@goodmis.org
+> 
+> Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 > ---
-> Change in v2:
->    - add "Cc: stable@" tag.
+>  include/linux/trace_recursion.h | 33 ++++++++++++++++++++-------------
+>  1 file changed, 20 insertions(+), 13 deletions(-)
 > 
-> net/bluetooth/hci_event.c | 12 +++++-------
-> 1 file changed, 5 insertions(+), 7 deletions(-)
-> 
-> diff --git a/net/bluetooth/hci_event.c b/net/bluetooth/hci_event.c
-> index 4b7fc430793c..aec43ae488d1 100644
-> --- a/net/bluetooth/hci_event.c
-> +++ b/net/bluetooth/hci_event.c
-> @@ -5863,21 +5863,19 @@ static void hci_le_direct_adv_report_evt(struct hci_dev *hdev,
-> 					 struct sk_buff *skb)
-> {
-> 	u8 num_reports = skb->data[0];
-> -	void *ptr = &skb->data[1];
-> +	struct hci_ev_le_direct_adv_info *ev = (void *)&skb->data[1];
-> 
-> -	hci_dev_lock(hdev);
-> +	if (!num_reports || skb->len < num_reports * sizeof(*ev) + 1)
-> +		return;
-> 
-> -	while (num_reports--) {
-> -		struct hci_ev_le_direct_adv_info *ev = ptr;
-> +	hci_dev_lock(hdev);
-> 
-> +	for (; num_reports; num_reports--, ev++)
-> 		process_adv_report(hdev, ev->evt_type, &ev->bdaddr,
-> 				   ev->bdaddr_type, &ev->direct_addr,
-> 				   ev->direct_addr_type, ev->rssi, NULL, 0,
-> 				   false);
-> 
-> -		ptr += sizeof(*ev);
-> -	}
+> diff --git a/include/linux/trace_recursion.h b/include/linux/trace_recursion.h
+> index f2a949dbfec7..ac3d73484cb2 100644
+> --- a/include/linux/trace_recursion.h
+> +++ b/include/linux/trace_recursion.h
+> @@ -117,22 +117,29 @@ enum {
+>  
+>  #define TRACE_CONTEXT_MASK	TRACE_LIST_MAX
+>  
+> +/*
+> + * Used for setting context
+> + *  NMI     = 0
+> + *  IRQ     = 1
+> + *  SOFTIRQ = 2
+> + *  NORMAL  = 3
+> + */
+> +enum {
+> +	TRACE_CTX_NMI,
+> +	TRACE_CTX_IRQ,
+> +	TRACE_CTX_SOFTIRQ,
+> +	TRACE_CTX_NORMAL,
+> +};
+> +
+>  static __always_inline int trace_get_context_bit(void)
+>  {
+> -	int bit;
 > -
-> 	hci_dev_unlock(hdev);
-> }
+> -	if (in_interrupt()) {
+> -		if (in_nmi())
+> -			bit = 0;
+> -
+> -		else if (in_irq())
+> -			bit = 1;
+> -		else
+> -			bit = 2;
+> -	} else
+> -		bit = 3;
+> +	unsigned long pc = preempt_count();
+>  
+> -	return bit;
+> +	if (!(pc & (NMI_MASK | HARDIRQ_MASK | SOFTIRQ_OFFSET)))
+> +		return TRACE_CTX_NORMAL;
+> +	else
+> +		return pc & NMI_MASK ? TRACE_CTX_NMI :
+> +			pc & HARDIRQ_MASK ? TRACE_CTX_IRQ : TRACE_CTX_SOFTIRQ;
+>  }
 
-patch has been applied to bluetooth-next tree.
+This patch is misleading, it doesn't optimize it nearly as much as is
+possible and actually fixes the softirq case, which isn't at all
+mentioned.
 
-Regards
-
-Marcel
-
+Let me go do that other patch.
