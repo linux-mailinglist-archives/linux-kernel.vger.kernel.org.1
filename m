@@ -2,65 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 336B12AB8C3
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 13:56:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F8CA2AB8F6
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 14:01:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728462AbgKIM42 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 07:56:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48628 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729549AbgKIMzy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 07:55:54 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8AFBEC0613CF
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Nov 2020 04:55:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=80LG2Un0XQkskYIudlhzfeVR0TmYr6k+xJT8vPMRVNo=; b=i4SulT2hvpLGIYq2AhaqVntpH8
-        DzHOGuiBk4MtztgVlWy6r+4uuXsECSdMfEc498zwdz+deQIhsamNvW8OqD7W78YlyQecb87FE+fGd
-        Rm6bnv1DXayckQwuE/o/xudxrk8oz/G43w+AqjJxggdG7iNn1WdmpbR5Rg8OIVbYs1HHfwVA/4lss
-        buzMAjNDWGD7DsQaGIKuLf2jB0MCfKV9CqQ7n1cLR0ubvCBhCQq4/vQqgWaZAjD9tOygsP05Vdy3K
-        qRCBiUGQ16lu4CStS8s+n81GM5pnFNUFxDAFsYN3M6CRhvEY9kxHwEld3d8wOtBq6cKIuD5p8XGjR
-        vCxo0gyA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kc6i1-0006K5-1J; Mon, 09 Nov 2020 12:55:45 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        id S1730494AbgKINAW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 08:00:22 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54326 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730433AbgKINAM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 08:00:12 -0500
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 2EE2C304D58;
-        Mon,  9 Nov 2020 13:55:43 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 10C5B2BDD057E; Mon,  9 Nov 2020 13:55:43 +0100 (CET)
-Date:   Mon, 9 Nov 2020 13:55:43 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Zou Wei <zou_wei@huawei.com>
-Cc:     paul.gortmaker@windriver.com, paulmck@kernel.org,
-        akpm@linux-foundation.org, abelits@marvell.com, pjt@google.com,
-        jinyuqi@huawei.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH -next] cpumask: use false and true for bool variables
-Message-ID: <20201109125543.GJ2611@hirez.programming.kicks-ass.net>
-References: <1604923190-70981-1-git-send-email-zou_wei@huawei.com>
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id F0914207BC;
+        Mon,  9 Nov 2020 13:00:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604926811;
+        bh=zZ7orDji2vb815BGMy8W7wwBHaPtZXTZ24EOyC1X92c=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=lDc0gqe73viFOZyBkro6jVyO5Llsu6209jvvEnJrbmL+BX90zv0v5r6HkyfKx9V+a
+         Y23n9GStOU4VMJqq2eT+6Si9vneafbewk69JRt7wBjmc9vvefKsKOdMtVGtOoebwei
+         Q14RJrcUdJtQG4bbkwvnFYuRaa4OA1knoSbl3Slg=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org, Julia Lawall <julia.lawall@inria.fr>,
+        Andrew Gabbasov <andrew_gabbasov@mentor.com>,
+        Sergei Shtylyov <sergei.shtylyov@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: [PATCH 4.9 005/117] ravb: Fix bit fields checking in ravb_hwtstamp_get()
+Date:   Mon,  9 Nov 2020 13:53:51 +0100
+Message-Id: <20201109125025.892293291@linuxfoundation.org>
+X-Mailer: git-send-email 2.29.2
+In-Reply-To: <20201109125025.630721781@linuxfoundation.org>
+References: <20201109125025.630721781@linuxfoundation.org>
+User-Agent: quilt/0.66
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1604923190-70981-1-git-send-email-zou_wei@huawei.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 09, 2020 at 07:59:50PM +0800, Zou Wei wrote:
-> Fix coccicheck warnings:
-> 
-> ./lib/cpumask.c:342:6-13: WARNING: Comparison of 0/1 to bool variable
-> ./lib/cpumask.c:351:33-40: WARNING: Comparison of 0/1 to bool variable
-> ./lib/cpumask.c:406:3-11: WARNING: Assignment of 0/1 to bool variable
+From: Andrew Gabbasov <andrew_gabbasov@mentor.com>
 
-None of that is a problem, please, apply:
+[ Upstream commit 68b9f0865b1ef545da180c57d54b82c94cb464a4 ]
 
-  https://lkml.kernel.org/r/20201109113912.GH2594@hirez.programming.kicks-ass.net
+In the function ravb_hwtstamp_get() in ravb_main.c with the existing
+values for RAVB_RXTSTAMP_TYPE_V2_L2_EVENT (0x2) and RAVB_RXTSTAMP_TYPE_ALL
+(0x6)
 
-and go do something useful.
+if (priv->tstamp_rx_ctrl & RAVB_RXTSTAMP_TYPE_V2_L2_EVENT)
+	config.rx_filter = HWTSTAMP_FILTER_PTP_V2_L2_EVENT;
+else if (priv->tstamp_rx_ctrl & RAVB_RXTSTAMP_TYPE_ALL)
+	config.rx_filter = HWTSTAMP_FILTER_ALL;
+
+if the test on RAVB_RXTSTAMP_TYPE_ALL should be true,
+it will never be reached.
+
+This issue can be verified with 'hwtstamp_config' testing program
+(tools/testing/selftests/net/hwtstamp_config.c). Setting filter type
+to ALL and subsequent retrieving it gives incorrect value:
+
+$ hwtstamp_config eth0 OFF ALL
+flags = 0
+tx_type = OFF
+rx_filter = ALL
+$ hwtstamp_config eth0
+flags = 0
+tx_type = OFF
+rx_filter = PTP_V2_L2_EVENT
+
+Correct this by converting if-else's to switch.
+
+Fixes: c156633f1353 ("Renesas Ethernet AVB driver proper")
+Reported-by: Julia Lawall <julia.lawall@inria.fr>
+Signed-off-by: Andrew Gabbasov <andrew_gabbasov@mentor.com>
+Reviewed-by: Sergei Shtylyov <sergei.shtylyov@gmail.com>
+Link: https://lore.kernel.org/r/20201026102130.29368-1-andrew_gabbasov@mentor.com
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+---
+ drivers/net/ethernet/renesas/ravb_main.c |   10 +++++++---
+ 1 file changed, 7 insertions(+), 3 deletions(-)
+
+--- a/drivers/net/ethernet/renesas/ravb_main.c
++++ b/drivers/net/ethernet/renesas/ravb_main.c
+@@ -1729,12 +1729,16 @@ static int ravb_hwtstamp_get(struct net_
+ 	config.flags = 0;
+ 	config.tx_type = priv->tstamp_tx_ctrl ? HWTSTAMP_TX_ON :
+ 						HWTSTAMP_TX_OFF;
+-	if (priv->tstamp_rx_ctrl & RAVB_RXTSTAMP_TYPE_V2_L2_EVENT)
++	switch (priv->tstamp_rx_ctrl & RAVB_RXTSTAMP_TYPE) {
++	case RAVB_RXTSTAMP_TYPE_V2_L2_EVENT:
+ 		config.rx_filter = HWTSTAMP_FILTER_PTP_V2_L2_EVENT;
+-	else if (priv->tstamp_rx_ctrl & RAVB_RXTSTAMP_TYPE_ALL)
++		break;
++	case RAVB_RXTSTAMP_TYPE_ALL:
+ 		config.rx_filter = HWTSTAMP_FILTER_ALL;
+-	else
++		break;
++	default:
+ 		config.rx_filter = HWTSTAMP_FILTER_NONE;
++	}
+ 
+ 	return copy_to_user(req->ifr_data, &config, sizeof(config)) ?
+ 		-EFAULT : 0;
+
+
