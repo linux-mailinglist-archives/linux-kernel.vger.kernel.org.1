@@ -2,79 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C0C72AB364
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 10:17:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 363052AB36D
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 10:19:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729288AbgKIJRp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 04:17:45 -0500
-Received: from foss.arm.com ([217.140.110.172]:35880 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726482AbgKIJRo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 04:17:44 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 425E91042;
-        Mon,  9 Nov 2020 01:17:44 -0800 (PST)
-Received: from [192.168.1.179] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 6ED713F718;
-        Mon,  9 Nov 2020 01:17:42 -0800 (PST)
-Subject: Re: [PATCH 6/7] drm/panfrost: dev_pm_opp_put_*() accepts NULL
- argument
-To:     Viresh Kumar <viresh.kumar@linaro.org>,
-        Rob Herring <robh@kernel.org>,
-        Tomeu Vizoso <tomeu.vizoso@collabora.com>,
-        Alyssa Rosenzweig <alyssa.rosenzweig@collabora.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>
-Cc:     linux-pm@vger.kernel.org,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Rafael Wysocki <rjw@rjwysocki.net>,
-        Stephen Boyd <sboyd@kernel.org>, Nishanth Menon <nm@ti.com>,
-        digetx@gmail.com, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-References: <cover.1604646059.git.viresh.kumar@linaro.org>
- <43be6d118201f9feb70fb030390fddce0852ab0b.1604646059.git.viresh.kumar@linaro.org>
-From:   Steven Price <steven.price@arm.com>
-Message-ID: <8f59b818-306e-05e2-3a0a-8351098b1bbb@arm.com>
-Date:   Mon, 9 Nov 2020 09:17:47 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <43be6d118201f9feb70fb030390fddce0852ab0b.1604646059.git.viresh.kumar@linaro.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+        id S1727679AbgKIJTy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 04:19:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42720 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725854AbgKIJTy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 04:19:54 -0500
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAEFFC0613CF;
+        Mon,  9 Nov 2020 01:19:53 -0800 (PST)
+Received: by mail-wr1-x441.google.com with SMTP id 33so7851858wrl.7;
+        Mon, 09 Nov 2020 01:19:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=GUBLLHbst2zeH9c/A9PODgvPT5XA5rVjk1jholZ9SRQ=;
+        b=kfg4eU3VVoKvTjZjQS8sEhcZqElqp8XNyGsIdRnYkMYgri+stxfPtjWUdzVkHaLivh
+         D9cYFvEwbHvIgANjHGO/WOgF9ujbCKGKSxWQUflX22LZ/+Qftl1YaZNOE2Evr4oNHyiP
+         yogLQ29pzKUtD8YvTlYjNKKastnRKNOPq3+zSet9fzCfB9MH3rp0OpdCZ/0IOVKsEJXJ
+         PJKTafiYyLmrqqEAi3ND0NRwWxZFCJPI6urdk1xAT4qPrktxoFBBXVL/ksGvNZsbaP7S
+         i3EmWoB5kv9CvMmM9qVlSJLI03PVn9QRAL+W4Fz67yQh+JH/CKDfTy4j463pzcXSOCjO
+         xyaw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=GUBLLHbst2zeH9c/A9PODgvPT5XA5rVjk1jholZ9SRQ=;
+        b=HCbfB4QqwE+xAolvAklGve/XMmHEKM15tSf+YFx/lYy7544IvArWqkK0tU8N7Fp/vh
+         VEGHw0ZvQ8BNSorr9uYfOj6Dz7s1uOO11Hp98AcrwAMu1UKavjIvDkrd0vlFWl7mT+Jz
+         FWxw8MHmO5+AkmmxaQgcKAN0dltc8ieVN6wlIEzAHXIvFnVqJc/29SLL/+5catWQqO42
+         n2XJMM/GEDUbD78xG8y09xchrnZFvvVfecp3DKMJawctjSzoKrdHXA02+Iyjf3bYO9Ac
+         JHAco3HJZvpIPqTnREm9fn5WeeG0I/Ugb25z9tbztSAPe/0+YJ65VAhMfScx78GrnUBe
+         QMrg==
+X-Gm-Message-State: AOAM533NehUqmAYsx46DdAjeoKvkBKhRJZXHFWpfpx5HEryZkPWuQPzY
+        wFFWs7NwTAFkpVuW5DQ9ZwU=
+X-Google-Smtp-Source: ABdhPJwu3gruSVyzNdsY7JRGI+5F9eOc2RfKuCvT6dlP/5VnN22JiqZ5VBwPY1g+RHnRn+ytK29Iog==
+X-Received: by 2002:adf:f24b:: with SMTP id b11mr2099778wrp.342.1604913592343;
+        Mon, 09 Nov 2020 01:19:52 -0800 (PST)
+Received: from felia.fritz.box ([2001:16b8:2dd6:1d00:48a4:9af6:6f6a:ebcb])
+        by smtp.gmail.com with ESMTPSA id f16sm12696366wrp.66.2020.11.09.01.19.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 09 Nov 2020 01:19:51 -0800 (PST)
+From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
+To:     Pablo Neira Ayuso <pablo@netfilter.org>,
+        Jozsef Kadlecsik <kadlec@netfilter.org>,
+        Florian Westphal <fw@strlen.de>,
+        netfilter-devel@vger.kernel.org, coreteam@netfilter.org
+Cc:     Ralf Ramsauer <ralf.ramsauer@oth-regensburg.de>,
+        Pia Eichinger <pia.eichinger@st.oth-regensburg.de>,
+        Joe Perches <joe@perches.com>, kernel-janitors@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Subject: [PATCH] MAINTAINERS: rectify file patterns for NETFILTER
+Date:   Mon,  9 Nov 2020 10:19:42 +0100
+Message-Id: <20201109091942.32280-1-lukas.bulwahn@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 06/11/2020 07:03, Viresh Kumar wrote:
-> The dev_pm_opp_put_*() APIs now accepts a NULL opp_table pointer and so
-> there is no need for us to carry the extra check. Drop them.
-> 
-> Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+The two file patterns in the NETFILTER section:
 
-Reviewed-by: Steven Price <steven.price@arm.com>
+  F:      include/linux/netfilter*
+  F:      include/uapi/linux/netfilter*
 
-> ---
->   drivers/gpu/drm/panfrost/panfrost_devfreq.c | 6 ++----
->   1 file changed, 2 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/panfrost/panfrost_devfreq.c b/drivers/gpu/drm/panfrost/panfrost_devfreq.c
-> index 8ab025d0035f..97b5abc7c188 100644
-> --- a/drivers/gpu/drm/panfrost/panfrost_devfreq.c
-> +++ b/drivers/gpu/drm/panfrost/panfrost_devfreq.c
-> @@ -170,10 +170,8 @@ void panfrost_devfreq_fini(struct panfrost_device *pfdev)
->   		pfdevfreq->opp_of_table_added = false;
->   	}
->   
-> -	if (pfdevfreq->regulators_opp_table) {
-> -		dev_pm_opp_put_regulators(pfdevfreq->regulators_opp_table);
-> -		pfdevfreq->regulators_opp_table = NULL;
-> -	}
-> +	dev_pm_opp_put_regulators(pfdevfreq->regulators_opp_table);
-> +	pfdevfreq->regulators_opp_table = NULL;
->   }
->   
->   void panfrost_devfreq_resume(struct panfrost_device *pfdev)
-> 
+intended to match the directories:
+
+  ./include{/uapi}/linux/netfilter_{arp,bridge,ipv4,ipv6}
+
+A quick check with ./scripts/get_maintainer.pl --letters -f will show that
+they are not matched, though, because this pattern only matches files, but
+not directories.
+
+Rectify the patterns to match the intended directories.
+
+Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+---
+applies cleanly on v5.10-rc3 and next-20201109
+
+Pablo, Jozsef, Florian, please pick this minor non-urgent clean-up patch.
+
+ MAINTAINERS | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/MAINTAINERS b/MAINTAINERS
+index cba8ddf87a08..572a064a9c95 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -12139,10 +12139,10 @@ W:	http://www.nftables.org/
+ Q:	http://patchwork.ozlabs.org/project/netfilter-devel/list/
+ T:	git git://git.kernel.org/pub/scm/linux/kernel/git/pablo/nf.git
+ T:	git git://git.kernel.org/pub/scm/linux/kernel/git/pablo/nf-next.git
+-F:	include/linux/netfilter*
++F:	include/linux/netfilter*/
+ F:	include/linux/netfilter/
+ F:	include/net/netfilter/
+-F:	include/uapi/linux/netfilter*
++F:	include/uapi/linux/netfilter*/
+ F:	include/uapi/linux/netfilter/
+ F:	net/*/netfilter.c
+ F:	net/*/netfilter/
+-- 
+2.17.1
 
