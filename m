@@ -2,233 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C5EE2AB6A9
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 12:22:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 85AE92AB6BA
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 12:25:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729623AbgKILWu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 06:22:50 -0500
-Received: from aserp2130.oracle.com ([141.146.126.79]:44752 "EHLO
-        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729585AbgKILWt (ORCPT
+        id S1729770AbgKILYe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 06:24:34 -0500
+Received: from aserp2120.oracle.com ([141.146.126.78]:59060 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729523AbgKILYd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 06:22:49 -0500
-Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
-        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0A9BDxH6109908;
-        Mon, 9 Nov 2020 11:22:11 GMT
+        Mon, 9 Nov 2020 06:24:33 -0500
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0A9BNvUG030764;
+        Mon, 9 Nov 2020 11:24:15 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
  subject : date : message-id : in-reply-to : references; s=corp-2020-01-29;
- bh=yaLERP1ZONbUoAOi2reTY/cZLxINvvkKekxAkfeDOB4=;
- b=G7QTmV43RcbvdGGhQRBw07PcnMbhjkqEjybg+/i+UHecEgo267MJEDb96yHUW4mitJZA
- ZF1OsEjQbddixgo2u7Glj/l0Sm31JqTcYF9ZrILFdbym2j/31iih4JQVwArwHXSYX/Y+
- Fx1WJd2/1LAJl1fuPiRsT4ozSWYQiC3svtriUl0mrFYT+3E0NNp/FzkaOpiCX7BQN8+j
- pdpddxxKoqHBCKtoXslXf8cRXVcSEnBLlN1ehxXYQo2+3Bt7SphYa8JSTRr/WRHaiu2o
- cBjjm+1qT1KNwXXq0Sv+Jg7+k8ZZZUGN4FM3QRUkmG7KSAWX2Eepg36XUyHgOKK6wmia Ww== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by aserp2130.oracle.com with ESMTP id 34nh3ankqq-1
+ bh=wP2gJB4OxhA1mKQ9+pr/vu739u+po6A7PjH7uf9WfEY=;
+ b=Vw6YVUPItMeoA1E8OpBGBNM6c0O57c7Reb6UEkt8vQsLs+5a7eUsN0LxBBxRPstcthrh
+ y1QH4PAsTvSx7UwMGUpzn2Cq1wvFn5VTmHkXusik/R5C/TaHPgF8Hc4VZkE7Fy2P1AGO
+ Roi1ENuyZ3F6VbAIzX5iYpY4Dom6yS4uue7ITrJoPLsv4gv+EcBeqw/vKaKSoB7b3uJt
+ ZziYIyCu5inqd23bSnDo1VHrcllNS8ztG8XtngkHgugtmQrWIvEiXpcxgWeqn10m5y99
+ iNvZr3kBGPC5R76JNlUXS2sylErqZyScFtRavI3B75+WYz/rFEIXmIq3fDJzlxF5/Fdo DA== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by aserp2120.oracle.com with ESMTP id 34nkhkndfk-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 09 Nov 2020 11:22:10 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0A9BL0iI109368;
-        Mon, 9 Nov 2020 11:22:10 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by userp3020.oracle.com with ESMTP id 34p5bqd0un-1
+        Mon, 09 Nov 2020 11:24:15 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0A9BKm2b147527;
+        Mon, 9 Nov 2020 11:22:14 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by aserp3020.oracle.com with ESMTP id 34p5fxjw57-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 09 Nov 2020 11:22:10 +0000
+        Mon, 09 Nov 2020 11:22:14 +0000
 Received: from abhmp0018.oracle.com (abhmp0018.oracle.com [141.146.116.24])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0A9BM83O021611;
-        Mon, 9 Nov 2020 11:22:08 GMT
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0A9BMCbL016085;
+        Mon, 9 Nov 2020 11:22:12 GMT
 Received: from linux.home (/92.157.91.83)
         by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 09 Nov 2020 03:22:07 -0800
+        with ESMTP ; Mon, 09 Nov 2020 03:22:12 -0800
 From:   Alexandre Chartre <alexandre.chartre@oracle.com>
-To:     "tglx@linutronix.de"@userv0122.oracle.com,
-        "mingo@redhat.com"@userv0122.oracle.com,
-        "bp@alien8.de"@userv0122.oracle.com,
-        "hpa@zytor.com"@userv0122.oracle.com,
-        "x86@kernel.org"@userv0122.oracle.com,
-        "dave.hansen@linux.intel.com"@userv0122.oracle.com,
-        "luto@kernel.org"@userv0122.oracle.com,
-        "peterz@infradead.org"@userv0122.oracle.com,
-        "linux-kernel@vger.kernel.org"@userv0122.oracle.com,
-        "thomas.lendacky@amd.com"@userv0122.oracle.com,
-        "jroedel@suse.de"@userv0122.oracle.com
-Cc:     "konrad.wilk@oracle.com"@userv0122.oracle.com,
-        "jan.setjeeilers@oracle.com"@userv0122.oracle.com,
-        "junaids@google.com"@userv0122.oracle.com,
-        "oweisse@google.com"@userv0122.oracle.com,
-        "rppt@linux.vnet.ibm.com"@userv0122.oracle.com,
-        "graf@amazon.de"@userv0122.oracle.com,
-        "mgross@linux.intel.com"@userv0122.oracle.com,
-        "kuzuno@gmail.com"@userv0122.oracle.com,
-        "alexandre.chartre@oracle.com"@userv0122.oracle.com
-Subject: [RFC][PATCH 14/24] x86/pti: Use PTI stack instead of trampoline stack
-Date:   Mon,  9 Nov 2020 12:23:09 +0100
-Message-Id: <20201109112319.264511-15-alexandre.chartre@oracle.com>
+To:     "tglx@linutronix.de"@aserv0121.oracle.com,
+        "mingo@redhat.com"@aserv0121.oracle.com,
+        "bp@alien8.de"@aserv0121.oracle.com,
+        "hpa@zytor.com"@aserv0121.oracle.com,
+        "x86@kernel.org"@aserv0121.oracle.com,
+        "dave.hansen@linux.intel.com"@aserv0121.oracle.com,
+        "luto@kernel.org"@aserv0121.oracle.com,
+        "peterz@infradead.org"@aserv0121.oracle.com,
+        "linux-kernel@vger.kernel.org"@aserv0121.oracle.com,
+        "thomas.lendacky@amd.com"@aserv0121.oracle.com,
+        "jroedel@suse.de"@aserv0121.oracle.com
+Cc:     "konrad.wilk@oracle.com"@aserv0121.oracle.com,
+        "jan.setjeeilers@oracle.com"@aserv0121.oracle.com,
+        "junaids@google.com"@aserv0121.oracle.com,
+        "oweisse@google.com"@aserv0121.oracle.com,
+        "rppt@linux.vnet.ibm.com"@aserv0121.oracle.com,
+        "graf@amazon.de"@aserv0121.oracle.com,
+        "mgross@linux.intel.com"@aserv0121.oracle.com,
+        "kuzuno@gmail.com"@aserv0121.oracle.com,
+        "alexandre.chartre@oracle.com"@aserv0121.oracle.com
+Subject: [RFC][PATCH 15/24] x86/pti: Execute syscall functions on the kernel stack
+Date:   Mon,  9 Nov 2020 12:23:10 +0100
+Message-Id: <20201109112319.264511-16-alexandre.chartre@oracle.com>
 X-Mailer: git-send-email 2.18.4
 In-Reply-To: <20201109112319.264511-1-alexandre.chartre@oracle.com>
 References: <20201109112319.264511-1-alexandre.chartre@oracle.com>
 X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9799 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 malwarescore=0
- phishscore=0 spamscore=0 mlxlogscore=999 bulkscore=0 suspectscore=0
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2011090075
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9799 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 lowpriorityscore=0 priorityscore=1501
- clxscore=1015 malwarescore=0 mlxscore=0 spamscore=0 suspectscore=0
- mlxlogscore=999 impostorscore=0 phishscore=0 adultscore=0 bulkscore=0
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 spamscore=0 malwarescore=0
+ adultscore=0 phishscore=0 bulkscore=0 mlxlogscore=999 suspectscore=0
  classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2011090074
+ definitions=main-2011090075
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9799 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 priorityscore=1501
+ mlxscore=0 suspectscore=0 mlxlogscore=999 lowpriorityscore=0 spamscore=0
+ malwarescore=0 adultscore=0 clxscore=1015 bulkscore=0 impostorscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2011090075
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When entering the kernel from userland, use the per-task PTI stack
-instead of the per-cpu trampoline stack. Like the trampoline stack,
-the PTI stack is mapped both in the kernel and in the user page-table.
-Using a per-task stack which is mapped into the kernel and the user
-page-table instead of a per-cpu stack will allow executing more code
-before switching to the kernel stack and to the kernel page-table.
-
-Additional changes will be made to later to switch to the kernel stack
-(which is only mapped in the kernel page-table).
+During a syscall, the kernel is entered and it switches the stack
+to the PTI stack which is mapped both in the kernel and in the
+user page-table. When executing the syscall function, switch to
+the kernel stack (which is mapped only in the kernel page-table)
+so that no kernel data leak to the userland through the stack.
 
 Signed-off-by: Alexandre Chartre <alexandre.chartre@oracle.com>
 ---
- arch/x86/entry/entry_64.S        | 42 +++++++++-----------------------
- arch/x86/include/asm/pti.h       |  8 ++++++
- arch/x86/include/asm/switch_to.h |  7 +++++-
- 3 files changed, 26 insertions(+), 31 deletions(-)
+ arch/x86/entry/common.c          | 11 ++++++++++-
+ arch/x86/entry/entry_64.S        |  1 +
+ arch/x86/include/asm/irq_stack.h |  3 +++
+ 3 files changed, 14 insertions(+), 1 deletion(-)
 
+diff --git a/arch/x86/entry/common.c b/arch/x86/entry/common.c
+index 54d0931801e1..ead6a4c72e6a 100644
+--- a/arch/x86/entry/common.c
++++ b/arch/x86/entry/common.c
+@@ -56,10 +56,19 @@ __visible noinstr void return_from_fork(struct pt_regs *regs,
+ static __always_inline void run_syscall(sys_call_ptr_t sysfunc,
+ 					struct pt_regs *regs)
+ {
++	unsigned long stack;
++
+ 	if (!sysfunc)
+ 		return;
+ 
+-	regs->ax = sysfunc(regs);
++	if (!pti_enabled()) {
++		regs->ax = sysfunc(regs);
++		return;
++	}
++
++	stack = (unsigned long)task_top_of_kernel_stack(current);
++	regs->ax = asm_call_syscall_on_stack((void *)(stack - 8),
++					     sysfunc, regs);
+ }
+ 
+ #ifdef CONFIG_X86_64
 diff --git a/arch/x86/entry/entry_64.S b/arch/x86/entry/entry_64.S
-index 458af12ed9a1..29beab46bedd 100644
+index 29beab46bedd..6b88a0eb8975 100644
 --- a/arch/x86/entry/entry_64.S
 +++ b/arch/x86/entry/entry_64.S
-@@ -194,19 +194,9 @@ syscall_return_via_sysret:
- 	/* rcx and r11 are already restored (see code above) */
- 	POP_REGS pop_rdi=0 skip_r11rcx=1
- 
--	/*
--	 * Now all regs are restored except RSP and RDI.
--	 * Save old stack pointer and switch to trampoline stack.
--	 */
--	movq	%rsp, %rdi
--	movq	PER_CPU_VAR(cpu_tss_rw + TSS_sp0), %rsp
--	UNWIND_HINT_EMPTY
--
--	pushq	RSP-RDI(%rdi)	/* RSP */
--	pushq	(%rdi)		/* RDI */
--
+@@ -771,6 +771,7 @@ SYM_FUNC_START(asm_call_on_stack_2)
+ SYM_FUNC_START(asm_call_on_stack_3)
+ SYM_INNER_LABEL(asm_call_sysvec_on_stack, SYM_L_GLOBAL)
+ SYM_INNER_LABEL(asm_call_irq_on_stack, SYM_L_GLOBAL)
++SYM_INNER_LABEL(asm_call_syscall_on_stack, SYM_L_GLOBAL)
  	/*
- 	 * We are on the trampoline stack.  All regs except RDI are live.
-+	 * We are on the trampoline stack.  All regs except RSP are live.
- 	 * We can do future final exit work right here.
- 	 */
- 	STACKLEAK_ERASE_NOCLOBBER
-@@ -214,7 +204,7 @@ syscall_return_via_sysret:
- 	SWITCH_TO_USER_CR3_STACK scratch_reg=%rdi
+ 	 * Save the frame pointer unconditionally. This allows the ORC
+ 	 * unwinder to handle the stack switch.
+diff --git a/arch/x86/include/asm/irq_stack.h b/arch/x86/include/asm/irq_stack.h
+index 359427216336..108d9da7c01c 100644
+--- a/arch/x86/include/asm/irq_stack.h
++++ b/arch/x86/include/asm/irq_stack.h
+@@ -5,6 +5,7 @@
+ #include <linux/ptrace.h>
  
- 	popq	%rdi
--	popq	%rsp
-+	movq	RSP-ORIG_RAX(%rsp), %rsp
- 	USERGS_SYSRET64
- SYM_CODE_END(entry_SYSCALL_64)
+ #include <asm/processor.h>
++#include <asm/syscall.h>
  
-@@ -606,24 +596,6 @@ SYM_INNER_LABEL(swapgs_restore_regs_and_return_to_usermode, SYM_L_GLOBAL)
- #endif
- 	POP_REGS pop_rdi=0
+ #ifdef CONFIG_X86_64
+ static __always_inline bool irqstack_active(void)
+@@ -25,6 +26,8 @@ void asm_call_sysvec_on_stack(void *sp, void (*func)(struct pt_regs *regs),
+ 			      struct pt_regs *regs);
+ void asm_call_irq_on_stack(void *sp, void (*func)(struct irq_desc *desc),
+ 			   struct irq_desc *desc);
++long asm_call_syscall_on_stack(void *sp, sys_call_ptr_t func,
++			       struct pt_regs *regs);
  
--	/*
--	 * The stack is now user RDI, orig_ax, RIP, CS, EFLAGS, RSP, SS.
--	 * Save old stack pointer and switch to trampoline stack.
--	 */
--	movq	%rsp, %rdi
--	movq	PER_CPU_VAR(cpu_tss_rw + TSS_sp0), %rsp
--	UNWIND_HINT_EMPTY
--
--	/* Copy the IRET frame to the trampoline stack. */
--	pushq	6*8(%rdi)	/* SS */
--	pushq	5*8(%rdi)	/* RSP */
--	pushq	4*8(%rdi)	/* EFLAGS */
--	pushq	3*8(%rdi)	/* CS */
--	pushq	2*8(%rdi)	/* RIP */
--
--	/* Push user RDI on the trampoline stack. */
--	pushq	(%rdi)
--
- 	/*
- 	 * We are on the trampoline stack.  All regs except RDI are live.
- 	 * We can do future final exit work right here.
-@@ -634,6 +606,7 @@ SYM_INNER_LABEL(swapgs_restore_regs_and_return_to_usermode, SYM_L_GLOBAL)
- 
- 	/* Restore RDI. */
- 	popq	%rdi
-+	addq	$8, %rsp	/* skip regs->orig_ax */
- 	SWAPGS
- 	INTERRUPT_RETURN
- 
-@@ -1062,6 +1035,15 @@ SYM_CODE_START_LOCAL(error_entry)
- 	SWITCH_TO_KERNEL_CR3 scratch_reg=%rax
- 
- .Lerror_entry_from_usermode_after_swapgs:
-+	/*
-+	 * We are on the trampoline stack. With PTI, the trampoline
-+	 * stack is a per-thread stack so we are all set and we can
-+	 * return.
-+	 *
-+	 * Without PTI, the trampoline stack is a per-cpu stack and
-+	 * we need to switch to the normal thread stack.
-+	 */
-+	ALTERNATIVE "", "ret", X86_FEATURE_PTI
- 	/* Put us onto the real thread stack. */
- 	popq	%r12				/* save return addr in %12 */
- 	movq	%rsp, %rdi			/* arg0 = pt_regs pointer */
-diff --git a/arch/x86/include/asm/pti.h b/arch/x86/include/asm/pti.h
-index 5484e69ff8d3..ed211fcc3a50 100644
---- a/arch/x86/include/asm/pti.h
-+++ b/arch/x86/include/asm/pti.h
-@@ -17,8 +17,16 @@ extern void pti_check_boottime_disable(void);
- extern void pti_finalize(void);
- extern void pti_clone_pgtable(struct mm_struct *mm, unsigned long start,
- 			      unsigned long end, enum pti_clone_level level);
-+static inline bool pti_enabled(void)
-+{
-+	return static_cpu_has(X86_FEATURE_PTI);
-+}
- #else
- static inline void pti_check_boottime_disable(void) { }
-+static inline bool pti_enabled(void)
-+{
-+	return false;
-+}
- #endif
- 
- #endif /* __ASSEMBLY__ */
-diff --git a/arch/x86/include/asm/switch_to.h b/arch/x86/include/asm/switch_to.h
-index 9f69cc497f4b..457458228462 100644
---- a/arch/x86/include/asm/switch_to.h
-+++ b/arch/x86/include/asm/switch_to.h
-@@ -3,6 +3,7 @@
- #define _ASM_X86_SWITCH_TO_H
- 
- #include <linux/sched/task_stack.h>
-+#include <asm/pti.h>
- 
- struct task_struct; /* one of the stranger aspects of C forward declarations */
- 
-@@ -76,8 +77,12 @@ static inline void update_task_stack(struct task_struct *task)
- 	 * doesn't work on x86-32 because sp1 and
- 	 * cpu_current_top_of_stack have different values (because of
- 	 * the non-zero stack-padding on 32bit).
-+	 *
-+	 * If PTI is enabled, sp0 points to the PTI stack (mapped in
-+	 * the kernel and user page-table) which is used when entering
-+	 * the kernel.
- 	 */
--	if (static_cpu_has(X86_FEATURE_XENPV))
-+	if (static_cpu_has(X86_FEATURE_XENPV) || pti_enabled())
- 		load_sp0(task_top_of_stack(task));
- #endif
- }
+ static __always_inline void __run_on_irqstack(void (*func)(void))
+ {
 -- 
 2.18.4
 
