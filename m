@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54E4C2ABA99
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 14:23:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DF69F2ABA00
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 14:15:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387973AbgKINUo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 08:20:44 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48246 "EHLO mail.kernel.org"
+        id S1733210AbgKINOr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 08:14:47 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41122 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732909AbgKINUh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 08:20:37 -0500
+        id S1733195AbgKINOn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 08:14:43 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DD8E520663;
-        Mon,  9 Nov 2020 13:20:35 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1A72A20663;
+        Mon,  9 Nov 2020 13:14:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604928036;
-        bh=kXFRtjBxsyYjLjWKGTA7/FcRMhr+/+nYL7ud7uUDT6E=;
+        s=default; t=1604927682;
+        bh=qCBhtpFu4+gV/FogMxeTf9lVAgyxhtB5mP2p91d2WR8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=LWd2+U/sj/yCsPFFCG2MgH+WMjZBQnGjsPWpj6Wt6TmU6MFABxHkMpBMb/oKsD9ig
-         iErToe1jDr+u51QvTcG257DaNjDXO3UE2UAssfYsy7PrSVM9+w866yrbKBZgAMWAbj
-         i7hhKCqM7vujGNelKQ53Owwe5DKvSfCCiD092Xyc=
+        b=wHesG4CnOwYm+x8U7/cAZmAGaQgxPhg255uw2dMCGogbtgEm6EP3TYOSrfNncVr/1
+         TyRkajwfOTgIIzk4Y4Bxo5c0i39xseL5ZhWpFhc3Rn7L8IaLkVav/P80qXiiIw+T6O
+         47uvTn6ahAiL9Hn0GzWHQLMyxNHt8MdtfM86cMg8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Fabio Estevam <festevam@gmail.com>,
-        Fugang Duan <fugang.duan@nxp.com>,
-        Lucas Stach <l.stach@pengutronix.de>
-Subject: [PATCH 5.9 106/133] tty: serial: imx: enable earlycon by default if IMX_SERIAL_CONSOLE is enabled
-Date:   Mon,  9 Nov 2020 13:56:08 +0100
-Message-Id: <20201109125035.789587193@linuxfoundation.org>
+        stable@vger.kernel.org, Daniele Palmas <dnlplm@gmail.com>,
+        Johan Hovold <johan@kernel.org>
+Subject: [PATCH 5.4 72/85] USB: serial: option: add Telit FN980 composition 0x1055
+Date:   Mon,  9 Nov 2020 13:56:09 +0100
+Message-Id: <20201109125026.035762967@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201109125030.706496283@linuxfoundation.org>
-References: <20201109125030.706496283@linuxfoundation.org>
+In-Reply-To: <20201109125022.614792961@linuxfoundation.org>
+References: <20201109125022.614792961@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,38 +42,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lucas Stach <l.stach@pengutronix.de>
+From: Daniele Palmas <dnlplm@gmail.com>
 
-commit 427627a23c3e86e31113f9db9bfdca41698a0ee5 upstream.
+commit db0362eeb22992502764e825c79b922d7467e0eb upstream.
 
-Since 699cc4dfd140 (tty: serial: imx: add imx earlycon driver), the earlycon
-part of imx serial is a separate driver and isn't necessarily enabled anymore
-when the console is enabled. This causes users to loose the earlycon
-functionality when upgrading their kenrel configuration via oldconfig.
+Add the following Telit FN980 composition:
 
-Enable earlycon by default when IMX_SERIAL_CONSOLE is enabled.
+0x1055: tty, adb, tty, tty, tty, tty
 
-Fixes: 699cc4dfd140 (tty: serial: imx: add imx earlycon driver)
-Reviewed-by: Fabio Estevam <festevam@gmail.com>
-Reviewed-by: Fugang Duan <fugang.duan@nxp.com>
-Signed-off-by: Lucas Stach <l.stach@pengutronix.de>
-Link: https://lore.kernel.org/r/20201105204026.1818219-1-l.stach@pengutronix.de
-Cc: stable <stable@vger.kernel.org>
+Signed-off-by: Daniele Palmas <dnlplm@gmail.com>
+Link: https://lore.kernel.org/r/20201103124425.12940-1-dnlplm@gmail.com
+Cc: stable@vger.kernel.org
+Signed-off-by: Johan Hovold <johan@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/tty/serial/Kconfig |    1 +
- 1 file changed, 1 insertion(+)
+ drivers/usb/serial/option.c |    2 ++
+ 1 file changed, 2 insertions(+)
 
---- a/drivers/tty/serial/Kconfig
-+++ b/drivers/tty/serial/Kconfig
-@@ -522,6 +522,7 @@ config SERIAL_IMX_EARLYCON
- 	depends on OF
- 	select SERIAL_EARLYCON
- 	select SERIAL_CORE_CONSOLE
-+	default y if SERIAL_IMX_CONSOLE
- 	help
- 	  If you have enabled the earlycon on the Freescale IMX
- 	  CPU you can make it the earlycon by answering Y to this option.
+--- a/drivers/usb/serial/option.c
++++ b/drivers/usb/serial/option.c
+@@ -1191,6 +1191,8 @@ static const struct usb_device_id option
+ 	  .driver_info = NCTRL(0) | RSVD(1) },
+ 	{ USB_DEVICE_INTERFACE_CLASS(TELIT_VENDOR_ID, 0x1054, 0xff),	/* Telit FT980-KS */
+ 	  .driver_info = NCTRL(2) | RSVD(3) },
++	{ USB_DEVICE_INTERFACE_CLASS(TELIT_VENDOR_ID, 0x1055, 0xff),	/* Telit FN980 (PCIe) */
++	  .driver_info = NCTRL(0) | RSVD(1) },
+ 	{ USB_DEVICE(TELIT_VENDOR_ID, TELIT_PRODUCT_ME910),
+ 	  .driver_info = NCTRL(0) | RSVD(1) | RSVD(3) },
+ 	{ USB_DEVICE(TELIT_VENDOR_ID, TELIT_PRODUCT_ME910_DUAL_MODEM),
 
 
