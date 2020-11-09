@@ -2,74 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B34A92AC427
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 19:51:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D5CE2AC42A
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 19:51:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729542AbgKISvS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 13:51:18 -0500
-Received: from jabberwock.ucw.cz ([46.255.230.98]:60300 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729292AbgKISvS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 13:51:18 -0500
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id 4C92E1C0B8B; Mon,  9 Nov 2020 19:51:16 +0100 (CET)
-Date:   Mon, 9 Nov 2020 19:51:15 +0100
-From:   Pavel Machek <pavel@denx.de>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-        stable@vger.kernel.org
-Subject: Re: [PATCH 4.4 00/86] 4.4.242-rc1 review
-Message-ID: <20201109185115.GA22399@amd>
-References: <20201109125020.852643676@linuxfoundation.org>
+        id S1729999AbgKISvo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 13:51:44 -0500
+Received: from mx2.suse.de ([195.135.220.15]:43674 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729292AbgKISvo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 13:51:44 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 9B3C3AB95;
+        Mon,  9 Nov 2020 18:51:42 +0000 (UTC)
+Date:   Mon, 9 Nov 2020 19:51:38 +0100
+From:   Oscar Salvador <osalvador@suse.de>
+To:     Muchun Song <songmuchun@bytedance.com>
+Cc:     corbet@lwn.net, mike.kravetz@oracle.com, tglx@linutronix.de,
+        mingo@redhat.com, bp@alien8.de, x86@kernel.org, hpa@zytor.com,
+        dave.hansen@linux.intel.com, luto@kernel.org, peterz@infradead.org,
+        viro@zeniv.linux.org.uk, akpm@linux-foundation.org,
+        paulmck@kernel.org, mchehab+huawei@kernel.org,
+        pawan.kumar.gupta@linux.intel.com, rdunlap@infradead.org,
+        oneukum@suse.com, anshuman.khandual@arm.com, jroedel@suse.de,
+        almasrymina@google.com, rientjes@google.com, willy@infradead.org,
+        mhocko@suse.com, duanxiongchun@bytedance.com,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH v3 09/21] mm/hugetlb: Free the vmemmap pages associated
+ with each hugetlb page
+Message-ID: <20201109185138.GD17356@linux>
+References: <20201108141113.65450-1-songmuchun@bytedance.com>
+ <20201108141113.65450-10-songmuchun@bytedance.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="J2SCkAp4GZ/dPZZf"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201109125020.852643676@linuxfoundation.org>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+In-Reply-To: <20201108141113.65450-10-songmuchun@bytedance.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sun, Nov 08, 2020 at 10:11:01PM +0800, Muchun Song wrote:
+> +static inline int freed_vmemmap_hpage(struct page *page)
+> +{
+> +	return atomic_read(&page->_mapcount) + 1;
+> +}
+> +
+> +static inline int freed_vmemmap_hpage_inc(struct page *page)
+> +{
+> +	return atomic_inc_return_relaxed(&page->_mapcount) + 1;
+> +}
+> +
+> +static inline int freed_vmemmap_hpage_dec(struct page *page)
+> +{
+> +	return atomic_dec_return_relaxed(&page->_mapcount) + 1;
+> +}
 
---J2SCkAp4GZ/dPZZf
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Are these relaxed any different that the normal ones on x86_64? 
+I got confused following the macros.
 
-Hi!
+> +static void __free_huge_page_pte_vmemmap(struct page *reuse, pte_t *ptep,
+> +					 unsigned long start,
+> +					 unsigned int nr_free,
+> +					 struct list_head *free_pages)
+> +{
+> +	/* Make the tail pages are mapped read-only. */
+> +	pgprot_t pgprot = PAGE_KERNEL_RO;
+> +	pte_t entry = mk_pte(reuse, pgprot);
+> +	unsigned long addr;
+> +	unsigned long end = start + (nr_free << PAGE_SHIFT);
 
-> This is the start of the stable review cycle for the 4.4.242 release.
-> There are 86 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+See below.
 
-No problems detected by CIP testing:
+> +static void __free_huge_page_pmd_vmemmap(struct hstate *h, pmd_t *pmd,
+> +					 unsigned long addr,
+> +					 struct list_head *free_pages)
+> +{
+> +	unsigned long next;
+> +	unsigned long start = addr + RESERVE_VMEMMAP_NR * PAGE_SIZE;
+> +	unsigned long end = addr + vmemmap_pages_size_per_hpage(h);
+> +	struct page *reuse = NULL;
+> +
+> +	addr = start;
+> +	do {
+> +		unsigned int nr_pages;
+> +		pte_t *ptep;
+> +
+> +		ptep = pte_offset_kernel(pmd, addr);
+> +		if (!reuse)
+> +			reuse = pte_page(ptep[-1]);
 
-https://gitlab.com/cip-project/cip-testing/linux-stable-rc-ci/-/tree/linux-=
-4.4.y
+Can we define a proper name for that instead of -1?
 
-Tested-by: Pavel Machek (CIP) <pavel@denx.de>
+e.g: TAIL_PAGE_REUSE or something like that. 
 
-Best regards,
-								Pavel
---=20
-DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
-HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
+> +
+> +		next = vmemmap_hpage_addr_end(addr, end);
+> +		nr_pages = (next - addr) >> PAGE_SHIFT;
+> +		__free_huge_page_pte_vmemmap(reuse, ptep, addr, nr_pages,
+> +					     free_pages);
 
---J2SCkAp4GZ/dPZZf
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+Why not passing next instead of nr_pages? I think it makes more sense.
+As a bonus we can kill the variable.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
+> +static void split_vmemmap_huge_page(struct hstate *h, struct page *head,
+> +				    pmd_t *pmd)
+> +{
+> +	pgtable_t pgtable;
+> +	unsigned long start = (unsigned long)head & VMEMMAP_HPAGE_MASK;
+> +	unsigned long addr = start;
+> +	unsigned int nr = pgtable_pages_to_prealloc_per_hpage(h);
+> +
+> +	while (nr-- && (pgtable = vmemmap_pgtable_withdraw(head))) {
 
-iEYEARECAAYFAl+pj6MACgkQMOfwapXb+vI5uwCgqQswVWZH9qwyWF9vAu0mmEBw
-IkwAnR8YGTBw/0BAPH1TLBum4Aoq39LS
-=mhiw
------END PGP SIGNATURE-----
+The same with previous patches, I would scrap "nr" and its use.
 
---J2SCkAp4GZ/dPZZf--
+> +		VM_BUG_ON(freed_vmemmap_hpage(pgtable));
+
+I guess here we want to check whether we already call free_huge_page_vmemmap
+on this range?
+For this to have happened, the locking should have failed, right?
+
+> +static void free_huge_page_vmemmap(struct hstate *h, struct page *head)
+> +{
+> +	pmd_t *pmd;
+> +	spinlock_t *ptl;
+> +	LIST_HEAD(free_pages);
+> +
+> +	if (!free_vmemmap_pages_per_hpage(h))
+> +		return;
+> +
+> +	pmd = vmemmap_to_pmd(head);
+> +	ptl = vmemmap_pmd_lock(pmd);
+> +	if (vmemmap_pmd_huge(pmd)) {
+> +		VM_BUG_ON(!pgtable_pages_to_prealloc_per_hpage(h));
+
+I think that checking for free_vmemmap_pages_per_hpage is enough.
+In the end, pgtable_pages_to_prealloc_per_hpage uses free_vmemmap_pages_per_hpage.
+
+
+-- 
+Oscar Salvador
+SUSE L3
