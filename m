@@ -2,238 +2,547 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 436602AB6B1
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 12:23:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D42E82AB6B2
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 12:23:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729691AbgKILX2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 06:23:28 -0500
-Received: from aserp2120.oracle.com ([141.146.126.78]:57596 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729336AbgKILX1 (ORCPT
+        id S1729734AbgKILXd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 06:23:33 -0500
+Received: from aserp2130.oracle.com ([141.146.126.79]:45232 "EHLO
+        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729336AbgKILXc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 06:23:27 -0500
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0A9BDjMB007848;
-        Mon, 9 Nov 2020 11:22:47 GMT
+        Mon, 9 Nov 2020 06:23:32 -0500
+Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
+        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0A9BDxd8109900;
+        Mon, 9 Nov 2020 11:22:52 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
  subject : date : message-id : in-reply-to : references; s=corp-2020-01-29;
- bh=ryvWaG1782WKgVsMLYPwWu2kVN8a7+9SPhrGbXw+dpw=;
- b=XAhZAOLoL/cWS9absXSXqvueiQap/8Q3kpTuEYTdwXJ818N/z66YEXdtRQeX6y6CRZq/
- 8CMQADErKedm3gHzEsk61oRIK3jPJjXXG7oZ/WP1xfjQ+O7F9gzkq+B3/j9bA7yjXvVL
- Koi1SgW+Q67Tgqfz5wTe0VAf89FeAN8/UqL0QZaRzKAmg1gLFmKfJBSs2lByZ8kANETX
- QblnRY4B8jBKfpevsXPRkafVKYhMdddmEhlNHXcamDHcf6366lHWHegkfjVaxNHpOZlZ
- d1wjEWbtAfnSaFQDtjMc8ccAw72f5a+v5WdH4ytdLs3ISq+KvpdkQLgCMsGbMVjrj8X5 1A== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by aserp2120.oracle.com with ESMTP id 34nkhknd63-1
+ bh=RNiFgm5wmKtt5qAPKRPYWBpa//S0liRcZ5bm9H3fkNo=;
+ b=eyjoDtHMfqL27wYGNdfnpM+pOHTdVCYYkusYF9S8yEsKAWEEh03Lv+/SJkkIiWFu66jq
+ zc4hHha3MKrZw6w8BC6ke+KPUiWn5zOp1fcvcD1Semuf89kQtEsDUZ+CuJfFsc5n40Fs
+ z0ntGkaTkaNQefmxHpAB8TsQO3KL0XRYHObcGFUz9wFg7AGMTtFMw4fAV5608YtUiQmO
+ RhkxC2Uo/GbPi5fy1sZo8okAskSRSZHXNUIKnDc/ZJTvXScO32aPFisX6xkQg1MDCHlY
+ a5JmkGbd2Q5QTha/Uc4S2bkNUxukcO9mVr11mrBdIf+S06TYBGR6nyxDNJYgm4tLLil3 9A== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by aserp2130.oracle.com with ESMTP id 34nh3anksm-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 09 Nov 2020 11:22:47 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0A9BL7uT177430;
-        Mon, 9 Nov 2020 11:22:47 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by aserp3030.oracle.com with ESMTP id 34p55ku311-1
+        Mon, 09 Nov 2020 11:22:52 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0A9BL0XD109362;
+        Mon, 9 Nov 2020 11:22:51 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by userp3020.oracle.com with ESMTP id 34p5bqd1ej-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 09 Nov 2020 11:22:47 +0000
+        Mon, 09 Nov 2020 11:22:51 +0000
 Received: from abhmp0018.oracle.com (abhmp0018.oracle.com [141.146.116.24])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0A9BMj1N022011;
-        Mon, 9 Nov 2020 11:22:45 GMT
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0A9BMnNO029331;
+        Mon, 9 Nov 2020 11:22:49 GMT
 Received: from linux.home (/92.157.91.83)
         by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 09 Nov 2020 03:22:45 -0800
+        with ESMTP ; Mon, 09 Nov 2020 03:22:49 -0800
 From:   Alexandre Chartre <alexandre.chartre@oracle.com>
-To:     "tglx@linutronix.de"@userv0122.oracle.com,
-        "mingo@redhat.com"@userv0122.oracle.com,
-        "bp@alien8.de"@userv0122.oracle.com,
-        "hpa@zytor.com"@userv0122.oracle.com,
-        "x86@kernel.org"@userv0122.oracle.com,
-        "dave.hansen@linux.intel.com"@userv0122.oracle.com,
-        "luto@kernel.org"@userv0122.oracle.com,
-        "peterz@infradead.org"@userv0122.oracle.com,
-        "linux-kernel@vger.kernel.org"@userv0122.oracle.com,
-        "thomas.lendacky@amd.com"@userv0122.oracle.com,
-        "jroedel@suse.de"@userv0122.oracle.com
-Cc:     "konrad.wilk@oracle.com"@userv0122.oracle.com,
-        "jan.setjeeilers@oracle.com"@userv0122.oracle.com,
-        "junaids@google.com"@userv0122.oracle.com,
-        "oweisse@google.com"@userv0122.oracle.com,
-        "rppt@linux.vnet.ibm.com"@userv0122.oracle.com,
-        "graf@amazon.de"@userv0122.oracle.com,
-        "mgross@linux.intel.com"@userv0122.oracle.com,
-        "kuzuno@gmail.com"@userv0122.oracle.com,
-        "alexandre.chartre@oracle.com"@userv0122.oracle.com
-Subject: [RFC][PATCH 23/24] x86/entry: Remove paranoid_entry and paranoid_exit
-Date:   Mon,  9 Nov 2020 12:23:18 +0100
-Message-Id: <20201109112319.264511-24-alexandre.chartre@oracle.com>
+To:     "tglx@linutronix.de"@userv0121.oracle.com,
+        "mingo@redhat.com"@userv0121.oracle.com,
+        "bp@alien8.de"@userv0121.oracle.com,
+        "hpa@zytor.com"@userv0121.oracle.com,
+        "x86@kernel.org"@userv0121.oracle.com,
+        "dave.hansen@linux.intel.com"@userv0121.oracle.com,
+        "luto@kernel.org"@userv0121.oracle.com,
+        "peterz@infradead.org"@userv0121.oracle.com,
+        "linux-kernel@vger.kernel.org"@userv0121.oracle.com,
+        "thomas.lendacky@amd.com"@userv0121.oracle.com,
+        "jroedel@suse.de"@userv0121.oracle.com
+Cc:     "konrad.wilk@oracle.com"@userv0121.oracle.com,
+        "jan.setjeeilers@oracle.com"@userv0121.oracle.com,
+        "junaids@google.com"@userv0121.oracle.com,
+        "oweisse@google.com"@userv0121.oracle.com,
+        "rppt@linux.vnet.ibm.com"@userv0121.oracle.com,
+        "graf@amazon.de"@userv0121.oracle.com,
+        "mgross@linux.intel.com"@userv0121.oracle.com,
+        "kuzuno@gmail.com"@userv0121.oracle.com,
+        "alexandre.chartre@oracle.com"@userv0121.oracle.com
+Subject: [RFC][PATCH 24/24] x86/pti: Defer CR3 switch to C code for non-IST and syscall entries
+Date:   Mon,  9 Nov 2020 12:23:19 +0100
+Message-Id: <20201109112319.264511-25-alexandre.chartre@oracle.com>
 X-Mailer: git-send-email 2.18.4
 In-Reply-To: <20201109112319.264511-1-alexandre.chartre@oracle.com>
 References: <20201109112319.264511-1-alexandre.chartre@oracle.com>
 X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9799 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 spamscore=0 phishscore=0
- mlxlogscore=626 mlxscore=0 malwarescore=0 bulkscore=0 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2011090075
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 malwarescore=0
+ phishscore=0 spamscore=0 mlxlogscore=999 bulkscore=0 suspectscore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2011090075
 X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9799 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 priorityscore=1501
- mlxscore=0 suspectscore=0 mlxlogscore=640 lowpriorityscore=0 spamscore=0
- malwarescore=0 adultscore=0 clxscore=1015 bulkscore=0 impostorscore=0
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 lowpriorityscore=0 priorityscore=1501
+ clxscore=1015 malwarescore=0 mlxscore=0 spamscore=0 suspectscore=0
+ mlxlogscore=999 impostorscore=0 phishscore=0 adultscore=0 bulkscore=0
  classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
  definitions=main-2011090074
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The paranoid_entry and paranoid_exit assembly functions have been
-replaced by the kernel_paranoid_entry() and kernel_paranoid_exit()
-C functions. Now paranoid_entry/exit are not used anymore and can
-be removed.
+With PTI, syscall/interrupt/exception entries switch the CR3 register
+to change the page-table in assembly code. Move the CR3 register switch
+inside the C code of syscall/interrupt/exception entry handlers.
 
 Signed-off-by: Alexandre Chartre <alexandre.chartre@oracle.com>
 ---
- arch/x86/entry/entry_64.S | 131 --------------------------------------
- 1 file changed, 131 deletions(-)
+ arch/x86/entry/common.c             | 15 ++++++++++++---
+ arch/x86/entry/entry_64.S           | 23 +++++------------------
+ arch/x86/entry/entry_64_compat.S    | 22 ----------------------
+ arch/x86/include/asm/entry-common.h | 14 ++++++++++++++
+ arch/x86/include/asm/idtentry.h     | 25 ++++++++++++++++++++-----
+ arch/x86/kernel/cpu/mce/core.c      |  2 ++
+ arch/x86/kernel/nmi.c               |  2 ++
+ arch/x86/kernel/traps.c             |  6 ++++++
+ arch/x86/mm/fault.c                 |  9 +++++++--
+ 9 files changed, 68 insertions(+), 50 deletions(-)
 
+diff --git a/arch/x86/entry/common.c b/arch/x86/entry/common.c
+index ead6a4c72e6a..3f4788dbbde7 100644
+--- a/arch/x86/entry/common.c
++++ b/arch/x86/entry/common.c
+@@ -51,6 +51,7 @@ __visible noinstr void return_from_fork(struct pt_regs *regs,
+ 		regs->ax = 0;
+ 	}
+ 	syscall_exit_to_user_mode(regs);
++	switch_to_user_cr3();
+ }
+ 
+ static __always_inline void run_syscall(sys_call_ptr_t sysfunc,
+@@ -74,6 +75,7 @@ static __always_inline void run_syscall(sys_call_ptr_t sysfunc,
+ #ifdef CONFIG_X86_64
+ __visible noinstr void do_syscall_64(unsigned long nr, struct pt_regs *regs)
+ {
++	switch_to_kernel_cr3();
+ 	nr = syscall_enter_from_user_mode(regs, nr);
+ 
+ 	instrumentation_begin();
+@@ -91,12 +93,14 @@ __visible noinstr void do_syscall_64(unsigned long nr, struct pt_regs *regs)
+ 
+ 	instrumentation_end();
+ 	syscall_exit_to_user_mode(regs);
++	switch_to_user_cr3();
+ }
+ #endif
+ 
+ #if defined(CONFIG_X86_32) || defined(CONFIG_IA32_EMULATION)
+ static __always_inline unsigned int syscall_32_enter(struct pt_regs *regs)
+ {
++	switch_to_kernel_cr3();
+ 	if (IS_ENABLED(CONFIG_IA32_EMULATION))
+ 		current_thread_info()->status |= TS_COMPAT;
+ 
+@@ -131,11 +135,11 @@ __visible noinstr void do_int80_syscall_32(struct pt_regs *regs)
+ 
+ 	do_syscall_32_irqs_on(regs, nr);
+ 	syscall_exit_to_user_mode(regs);
++	switch_to_user_cr3();
+ }
+ 
+-static noinstr bool __do_fast_syscall_32(struct pt_regs *regs)
++static noinstr bool __do_fast_syscall_32(struct pt_regs *regs, long nr)
+ {
+-	unsigned int nr = syscall_32_enter(regs);
+ 	int res;
+ 
+ 	/*
+@@ -179,6 +183,9 @@ static noinstr bool __do_fast_syscall_32(struct pt_regs *regs)
+ /* Returns 0 to return using IRET or 1 to return using SYSEXIT/SYSRETL. */
+ __visible noinstr long do_fast_syscall_32(struct pt_regs *regs)
+ {
++	unsigned int nr = syscall_32_enter(regs);
++	bool syscall_done;
++
+ 	/*
+ 	 * Called using the internal vDSO SYSENTER/SYSCALL32 calling
+ 	 * convention.  Adjust regs so it looks like we entered using int80.
+@@ -194,7 +201,9 @@ __visible noinstr long do_fast_syscall_32(struct pt_regs *regs)
+ 	regs->ip = landing_pad;
+ 
+ 	/* Invoke the syscall. If it failed, keep it simple: use IRET. */
+-	if (!__do_fast_syscall_32(regs))
++	syscall_done = __do_fast_syscall_32(regs, nr);
++	switch_to_user_cr3();
++	if (!syscall_done)
+ 		return 0;
+ 
+ #ifdef CONFIG_X86_64
 diff --git a/arch/x86/entry/entry_64.S b/arch/x86/entry/entry_64.S
-index 9ea8187d4405..797effbe65b6 100644
+index 797effbe65b6..4be15a5ffe68 100644
 --- a/arch/x86/entry/entry_64.S
 +++ b/arch/x86/entry/entry_64.S
-@@ -882,137 +882,6 @@ SYM_CODE_START(xen_failsafe_callback)
- SYM_CODE_END(xen_failsafe_callback)
- #endif /* CONFIG_XEN_PV */
+@@ -98,7 +98,6 @@ SYM_CODE_START(entry_SYSCALL_64)
+ 	swapgs
+ 	/* tss.sp2 is scratch space. */
+ 	movq	%rsp, PER_CPU_VAR(cpu_tss_rw + TSS_sp2)
+-	SWITCH_TO_KERNEL_CR3 scratch_reg=%rsp
+ 	movq	PER_CPU_VAR(cpu_current_top_of_stack), %rsp
  
--/*
-- * Save all registers in pt_regs. Return GSBASE related information
-- * in EBX depending on the availability of the FSGSBASE instructions:
-- *
-- * FSGSBASE	R/EBX
-- *     N        0 -> SWAPGS on exit
-- *              1 -> no SWAPGS on exit
-- *
-- *     Y        GSBASE value at entry, must be restored in paranoid_exit
-- */
--SYM_CODE_START_LOCAL(paranoid_entry)
--	UNWIND_HINT_FUNC
--	cld
--	PUSH_AND_CLEAR_REGS save_ret=1
--	ENCODE_FRAME_POINTER 8
+ SYM_INNER_LABEL(entry_SYSCALL_64_safe_stack, SYM_L_GLOBAL)
+@@ -192,18 +191,14 @@ SYM_INNER_LABEL(entry_SYSCALL_64_after_hwframe, SYM_L_GLOBAL)
+ 	 */
+ syscall_return_via_sysret:
+ 	/* rcx and r11 are already restored (see code above) */
+-	POP_REGS pop_rdi=0 skip_r11rcx=1
++	POP_REGS skip_r11rcx=1
+ 
+ 	/*
+-	 * We are on the trampoline stack.  All regs except RDI are live.
+ 	 * We are on the trampoline stack.  All regs except RSP are live.
+ 	 * We can do future final exit work right here.
+ 	 */
+ 	STACKLEAK_ERASE_NOCLOBBER
+ 
+-	SWITCH_TO_USER_CR3_STACK scratch_reg=%rdi
+-
+-	popq	%rdi
+ 	movq	RSP-ORIG_RAX(%rsp), %rsp
+ 	USERGS_SYSRET64
+ SYM_CODE_END(entry_SYSCALL_64)
+@@ -321,7 +316,6 @@ SYM_CODE_END(ret_from_fork)
+ 	swapgs
+ 	cld
+ 	FENCE_SWAPGS_USER_ENTRY
+-	SWITCH_TO_KERNEL_CR3 scratch_reg=%rdx
+ 	movq	%rsp, %rdx
+ 	movq	PER_CPU_VAR(cpu_current_top_of_stack), %rsp
+ 	UNWIND_HINT_IRET_REGS base=%rdx offset=8
+@@ -592,19 +586,15 @@ SYM_INNER_LABEL(swapgs_restore_regs_and_return_to_usermode, SYM_L_GLOBAL)
+ 	ud2
+ 1:
+ #endif
+-	POP_REGS pop_rdi=0
++	POP_REGS
++	addq	$8, %rsp	/* skip regs->orig_ax */
+ 
+ 	/*
+-	 * We are on the trampoline stack.  All regs except RDI are live.
++	 * We are on the trampoline stack.  All regs are live.
+ 	 * We can do future final exit work right here.
+ 	 */
+ 	STACKLEAK_ERASE_NOCLOBBER
+ 
+-	SWITCH_TO_USER_CR3_STACK scratch_reg=%rdi
+-
+-	/* Restore RDI. */
+-	popq	%rdi
+-	addq	$8, %rsp	/* skip regs->orig_ax */
+ 	SWAPGS
+ 	INTERRUPT_RETURN
+ 
+@@ -899,8 +889,6 @@ SYM_CODE_START_LOCAL(error_entry)
+ 	 */
+ 	SWAPGS
+ 	FENCE_SWAPGS_USER_ENTRY
+-	/* We have user CR3.  Change to kernel CR3. */
+-	SWITCH_TO_KERNEL_CR3 scratch_reg=%rax
+ 
+ .Lerror_entry_from_usermode_after_swapgs:
+ 	/*
+@@ -959,11 +947,10 @@ SYM_CODE_START_LOCAL(error_entry)
+ .Lerror_bad_iret:
+ 	/*
+ 	 * We came from an IRET to user mode, so we have user
+-	 * gsbase and CR3.  Switch to kernel gsbase and CR3:
++	 * gsbase and CR3.  Switch to kernel gsbase.
+ 	 */
+ 	SWAPGS
+ 	FENCE_SWAPGS_USER_ENTRY
+-	SWITCH_TO_KERNEL_CR3 scratch_reg=%rax
+ 
+ 	/*
+ 	 * Pretend that the exception came from user mode: set up pt_regs
+diff --git a/arch/x86/entry/entry_64_compat.S b/arch/x86/entry/entry_64_compat.S
+index 541fdaf64045..a6fb5807bf42 100644
+--- a/arch/x86/entry/entry_64_compat.S
++++ b/arch/x86/entry/entry_64_compat.S
+@@ -51,10 +51,6 @@ SYM_CODE_START(entry_SYSENTER_compat)
+ 	/* Interrupts are off on entry. */
+ 	SWAPGS
+ 
+-	pushq	%rax
+-	SWITCH_TO_KERNEL_CR3 scratch_reg=%rax
+-	popq	%rax
+-
+ 	movq	PER_CPU_VAR(cpu_current_top_of_stack), %rsp
+ 
+ 	/* Construct struct pt_regs on stack */
+@@ -204,9 +200,6 @@ SYM_CODE_START(entry_SYSCALL_compat)
+ 	/* Stash user ESP */
+ 	movl	%esp, %r8d
+ 
+-	/* Use %rsp as scratch reg. User ESP is stashed in r8 */
+-	SWITCH_TO_KERNEL_CR3 scratch_reg=%rsp
+-
+ 	/* Switch to the kernel stack */
+ 	movq	PER_CPU_VAR(cpu_current_top_of_stack), %rsp
+ 
+@@ -291,18 +284,6 @@ sysret32_from_system_call:
+ 	 * code.  We zero R8-R10 to avoid info leaks.
+          */
+ 	movq	RSP-ORIG_RAX(%rsp), %rsp
 -
 -	/*
--	 * Always stash CR3 in %r14.  This value will be restored,
--	 * verbatim, at exit.  Needed if paranoid_entry interrupted
--	 * another entry that already switched to the user CR3 value
--	 * but has not yet returned to userspace.
+-	 * The original userspace %rsp (RSP-ORIG_RAX(%rsp)) is stored
+-	 * on the process stack which is not mapped to userspace and
+-	 * not readable after we SWITCH_TO_USER_CR3.  Delay the CR3
+-	 * switch until after after the last reference to the process
+-	 * stack.
 -	 *
--	 * This is also why CS (stashed in the "iret frame" by the
--	 * hardware at entry) can not be used: this may be a return
--	 * to kernel code, but with a user CR3 value.
--	 *
--	 * Switching CR3 does not depend on kernel GSBASE so it can
--	 * be done before switching to the kernel GSBASE. This is
--	 * required for FSGSBASE because the kernel GSBASE has to
--	 * be retrieved from a kernel internal table.
+-	 * %r8/%r9 are zeroed before the sysret, thus safe to clobber.
 -	 */
--	SAVE_AND_SWITCH_TO_KERNEL_CR3 scratch_reg=%rax save_reg=%r14
+-	SWITCH_TO_USER_CR3_NOSTACK scratch_reg=%r8 scratch_reg2=%r9
 -
--	/*
--	 * Handling GSBASE depends on the availability of FSGSBASE.
--	 *
--	 * Without FSGSBASE the kernel enforces that negative GSBASE
--	 * values indicate kernel GSBASE. With FSGSBASE no assumptions
--	 * can be made about the GSBASE value when entering from user
--	 * space.
--	 */
--	ALTERNATIVE "jmp .Lparanoid_entry_checkgs", "", X86_FEATURE_FSGSBASE
+ 	xorl	%r8d, %r8d
+ 	xorl	%r9d, %r9d
+ 	xorl	%r10d, %r10d
+@@ -357,9 +338,6 @@ SYM_CODE_START(entry_INT80_compat)
+ 	pushq	%rax			/* pt_regs->orig_ax */
+ 	pushq	%rdi			/* pt_regs->di */
+ 
+-	/* Need to switch before accessing the thread stack. */
+-	SWITCH_TO_KERNEL_CR3 scratch_reg=%rdi
 -
--	/*
--	 * Read the current GSBASE and store it in %rbx unconditionally,
--	 * retrieve and set the current CPUs kernel GSBASE. The stored value
--	 * has to be restored in paranoid_exit unconditionally.
--	 *
--	 * The unconditional write to GS base below ensures that no subsequent
--	 * loads based on a mispredicted GS base can happen, therefore no LFENCE
--	 * is needed here.
--	 */
--	SAVE_AND_SET_GSBASE scratch_reg=%rax save_reg=%rbx
--	ret
--
--.Lparanoid_entry_checkgs:
--	/* EBX = 1 -> kernel GSBASE active, no restore required */
--	movl	$1, %ebx
--	/*
--	 * The kernel-enforced convention is a negative GSBASE indicates
--	 * a kernel value. No SWAPGS needed on entry and exit.
--	 */
--	movl	$MSR_GS_BASE, %ecx
--	rdmsr
--	testl	%edx, %edx
--	jns	.Lparanoid_entry_swapgs
--	ret
--
--.Lparanoid_entry_swapgs:
--	SWAPGS
--
--	/*
--	 * The above SAVE_AND_SWITCH_TO_KERNEL_CR3 macro doesn't do an
--	 * unconditional CR3 write, even in the PTI case.  So do an lfence
--	 * to prevent GS speculation, regardless of whether PTI is enabled.
--	 */
--	FENCE_SWAPGS_KERNEL_ENTRY
--
--	/* EBX = 0 -> SWAPGS required on exit */
--	xorl	%ebx, %ebx
--	ret
--SYM_CODE_END(paranoid_entry)
--
--/*
-- * "Paranoid" exit path from exception stack.  This is invoked
-- * only on return from non-NMI IST interrupts that came
-- * from kernel space.
-- *
-- * We may be returning to very strange contexts (e.g. very early
-- * in syscall entry), so checking for preemption here would
-- * be complicated.  Fortunately, there's no good reason to try
-- * to handle preemption here.
-- *
-- * R/EBX contains the GSBASE related information depending on the
-- * availability of the FSGSBASE instructions:
-- *
-- * FSGSBASE	R/EBX
-- *     N        0 -> SWAPGS on exit
-- *              1 -> no SWAPGS on exit
-- *
-- *     Y        User space GSBASE, must be restored unconditionally
-- */
--SYM_CODE_START_LOCAL(paranoid_exit)
--	UNWIND_HINT_REGS
--	/*
--	 * The order of operations is important. RESTORE_CR3 requires
--	 * kernel GSBASE.
--	 *
--	 * NB to anyone to try to optimize this code: this code does
--	 * not execute at all for exceptions from user mode. Those
--	 * exceptions go through error_exit instead.
--	 */
--	RESTORE_CR3	scratch_reg=%rax save_reg=%r14
--
--	/* Handle the three GSBASE cases */
--	ALTERNATIVE "jmp .Lparanoid_exit_checkgs", "", X86_FEATURE_FSGSBASE
--
--	/* With FSGSBASE enabled, unconditionally restore GSBASE */
--	wrgsbase	%rbx
--	jmp		restore_regs_and_return_to_kernel
--
--.Lparanoid_exit_checkgs:
--	/* On non-FSGSBASE systems, conditionally do SWAPGS */
--	testl		%ebx, %ebx
--	jnz		restore_regs_and_return_to_kernel
--
--	/* We are returning to a context with user GSBASE */
--	SWAPGS_UNSAFE_STACK
--	jmp		restore_regs_and_return_to_kernel
--SYM_CODE_END(paranoid_exit)
--
- /*
-  * Save all registers in pt_regs, and switch GS if needed.
-  */
+ 	/* In the Xen PV case we already run on the thread stack. */
+ 	ALTERNATIVE "", "jmp .Lint80_keep_stack", X86_FEATURE_XENPV
+ 
+diff --git a/arch/x86/include/asm/entry-common.h b/arch/x86/include/asm/entry-common.h
+index b75e9230c990..32e9f3159131 100644
+--- a/arch/x86/include/asm/entry-common.h
++++ b/arch/x86/include/asm/entry-common.h
+@@ -157,10 +157,24 @@ static __always_inline void switch_to_user_cr3(void)
+ 	native_write_cr3(cr3);
+ }
+ 
++static __always_inline void kernel_pgtable_enter(struct pt_regs *regs)
++{
++	if (user_mode(regs))
++		switch_to_kernel_cr3();
++}
++
++static __always_inline void kernel_pgtable_exit(struct pt_regs *regs)
++{
++	if (user_mode(regs))
++		switch_to_user_cr3();
++}
++
+ #else /* CONFIG_PAGE_TABLE_ISOLATION */
+ 
+ static inline void switch_to_kernel_cr3(void) {}
+ static inline void switch_to_user_cr3(void) {}
++static inline void kernel_pgtable_enter(struct pt_regs *regs) {};
++static inline void kernel_pgtable_exit(struct pt_regs *regs) {};
+ 
+ #endif /* CONFIG_PAGE_TABLE_ISOLATION */
+ 
+diff --git a/arch/x86/include/asm/idtentry.h b/arch/x86/include/asm/idtentry.h
+index 647af7ea3bf1..d8bfcd8a4db4 100644
+--- a/arch/x86/include/asm/idtentry.h
++++ b/arch/x86/include/asm/idtentry.h
+@@ -147,12 +147,15 @@ static __always_inline void __##func(struct pt_regs *regs);		\
+ 									\
+ __visible noinstr void func(struct pt_regs *regs)			\
+ {									\
+-	irqentry_state_t state = irqentry_enter(regs);			\
++	irqentry_state_t state;						\
+ 									\
++	kernel_pgtable_enter(regs);					\
++	state = irqentry_enter(regs);					\
+ 	instrumentation_begin();					\
+ 	run_idt(__##func, regs);					\
+ 	instrumentation_end();						\
+ 	irqentry_exit(regs, state);					\
++	kernel_pgtable_exit(regs);					\
+ }									\
+ 									\
+ static __always_inline void __##func(struct pt_regs *regs)
+@@ -194,12 +197,15 @@ static __always_inline void __##func(struct pt_regs *regs,		\
+ __visible noinstr void func(struct pt_regs *regs,			\
+ 			    unsigned long error_code)			\
+ {									\
+-	irqentry_state_t state = irqentry_enter(regs);			\
++	irqentry_state_t state;						\
+ 									\
++	kernel_pgtable_enter(regs);					\
++	state = irqentry_enter(regs);					\
+ 	instrumentation_begin();					\
+ 	run_idt_errcode(__##func, regs, error_code);			\
+ 	instrumentation_end();						\
+ 	irqentry_exit(regs, state);					\
++	kernel_pgtable_exit(regs);					\
+ }									\
+ 									\
+ static __always_inline void __##func(struct pt_regs *regs,		\
+@@ -290,8 +296,10 @@ static __always_inline void __##func(struct pt_regs *regs, u8 vector);	\
+ __visible noinstr void func(struct pt_regs *regs,			\
+ 			    unsigned long error_code)			\
+ {									\
+-	irqentry_state_t state = irqentry_enter(regs);			\
++	irqentry_state_t state;						\
+ 									\
++	kernel_pgtable_enter(regs);					\
++	state = irqentry_enter(regs);					\
+ 	instrumentation_begin();					\
+ 	irq_enter_rcu();						\
+ 	kvm_set_cpu_l1tf_flush_l1d();					\
+@@ -300,6 +308,7 @@ __visible noinstr void func(struct pt_regs *regs,			\
+ 	irq_exit_rcu();							\
+ 	instrumentation_end();						\
+ 	irqentry_exit(regs, state);					\
++	kernel_pgtable_exit(regs);					\
+ }									\
+ 									\
+ static __always_inline void __##func(struct pt_regs *regs, u8 vector)
+@@ -333,8 +342,10 @@ static void __##func(struct pt_regs *regs);				\
+ 									\
+ __visible noinstr void func(struct pt_regs *regs)			\
+ {									\
+-	irqentry_state_t state = irqentry_enter(regs);			\
++	irqentry_state_t state;						\
+ 									\
++	kernel_pgtable_enter(regs);					\
++	state = irqentry_enter(regs);					\
+ 	instrumentation_begin();					\
+ 	irq_enter_rcu();						\
+ 	kvm_set_cpu_l1tf_flush_l1d();					\
+@@ -342,6 +353,7 @@ __visible noinstr void func(struct pt_regs *regs)			\
+ 	irq_exit_rcu();							\
+ 	instrumentation_end();						\
+ 	irqentry_exit(regs, state);					\
++	kernel_pgtable_exit(regs);					\
+ }									\
+ 									\
+ static noinline void __##func(struct pt_regs *regs)
+@@ -362,8 +374,10 @@ static __always_inline void __##func(struct pt_regs *regs);		\
+ 									\
+ __visible noinstr void func(struct pt_regs *regs)			\
+ {									\
+-	irqentry_state_t state = irqentry_enter(regs);			\
++	irqentry_state_t state;						\
+ 									\
++	kernel_pgtable_enter(regs);					\
++	state = irqentry_enter(regs);					\
+ 	instrumentation_begin();					\
+ 	__irq_enter_raw();						\
+ 	kvm_set_cpu_l1tf_flush_l1d();					\
+@@ -371,6 +385,7 @@ __visible noinstr void func(struct pt_regs *regs)			\
+ 	__irq_exit_raw();						\
+ 	instrumentation_end();						\
+ 	irqentry_exit(regs, state);					\
++	kernel_pgtable_exit(regs);					\
+ }									\
+ 									\
+ static __always_inline void __##func(struct pt_regs *regs)
+diff --git a/arch/x86/kernel/cpu/mce/core.c b/arch/x86/kernel/cpu/mce/core.c
+index 827088f981c6..e1ae901c4925 100644
+--- a/arch/x86/kernel/cpu/mce/core.c
++++ b/arch/x86/kernel/cpu/mce/core.c
+@@ -2037,9 +2037,11 @@ DEFINE_IDTENTRY_MCE_USER(exc_machine_check)
+ {
+ 	unsigned long dr7;
+ 
++	switch_to_kernel_cr3();
+ 	dr7 = local_db_save();
+ 	run_idt(exc_machine_check_user, regs);
+ 	local_db_restore(dr7);
++	switch_to_user_cr3();
+ }
+ #else
+ /* 32bit unified entry point */
+diff --git a/arch/x86/kernel/nmi.c b/arch/x86/kernel/nmi.c
+index 23c92ffd58fe..063474f5b5fe 100644
+--- a/arch/x86/kernel/nmi.c
++++ b/arch/x86/kernel/nmi.c
+@@ -542,8 +542,10 @@ DEFINE_IDTENTRY_NMI(exc_nmi)
+ 
+ __visible noinstr void exc_nmi_user(struct pt_regs *regs)
+ {
++	switch_to_kernel_cr3();
+ 	handle_nmi(regs);
+ 	mds_user_clear_cpu_buffers();
++	switch_to_user_cr3();
+ }
+ 
+ void stop_nmi(void)
+diff --git a/arch/x86/kernel/traps.c b/arch/x86/kernel/traps.c
+index 1801791748b8..6c78eeb60d19 100644
+--- a/arch/x86/kernel/traps.c
++++ b/arch/x86/kernel/traps.c
+@@ -255,11 +255,13 @@ DEFINE_IDTENTRY_RAW(exc_invalid_op)
+ 	if (!user_mode(regs) && handle_bug(regs))
+ 		return;
+ 
++	kernel_pgtable_enter(regs);
+ 	state = irqentry_enter(regs);
+ 	instrumentation_begin();
+ 	run_idt(handle_invalid_op, regs);
+ 	instrumentation_end();
+ 	irqentry_exit(regs, state);
++	kernel_pgtable_exit(regs);
+ }
+ 
+ DEFINE_IDTENTRY(exc_coproc_segment_overrun)
+@@ -663,11 +665,13 @@ DEFINE_IDTENTRY_RAW(exc_int3)
+ 	 * including NMI.
+ 	 */
+ 	if (user_mode(regs)) {
++		switch_to_kernel_cr3();
+ 		irqentry_enter_from_user_mode(regs);
+ 		instrumentation_begin();
+ 		run_idt(do_int3_user, regs);
+ 		instrumentation_end();
+ 		irqentry_exit_to_user_mode(regs);
++		switch_to_user_cr3();
+ 	} else {
+ 		bool irq_state = idtentry_enter_nmi(regs);
+ 		instrumentation_begin();
+@@ -1001,7 +1005,9 @@ DEFINE_IDTENTRY_DEBUG(exc_debug)
+ /* User entry, runs on regular task stack */
+ DEFINE_IDTENTRY_DEBUG_USER(exc_debug)
+ {
++	switch_to_kernel_cr3();
+ 	run_idt_errcode(exc_debug_user, regs, debug_read_clear_dr6());
++	switch_to_user_cr3();
+ }
+ #else
+ /* 32 bit does not have separate entry points. */
+diff --git a/arch/x86/mm/fault.c b/arch/x86/mm/fault.c
+index b9d03603d95d..613a864840ab 100644
+--- a/arch/x86/mm/fault.c
++++ b/arch/x86/mm/fault.c
+@@ -1440,9 +1440,11 @@ handle_page_fault(struct pt_regs *regs, unsigned long error_code,
+ 
+ DEFINE_IDTENTRY_RAW_ERRORCODE(exc_page_fault)
+ {
+-	unsigned long address = read_cr2();
++	unsigned long address;
+ 	irqentry_state_t state;
+ 
++	kernel_pgtable_enter(regs);
++	address = read_cr2();
+ 	prefetchw(&current->mm->mmap_lock);
+ 
+ 	/*
+@@ -1466,8 +1468,10 @@ DEFINE_IDTENTRY_RAW_ERRORCODE(exc_page_fault)
+ 	 * The async #PF handling code takes care of idtentry handling
+ 	 * itself.
+ 	 */
+-	if (kvm_handle_async_pf(regs, (u32)address))
++	if (kvm_handle_async_pf(regs, (u32)address)) {
++		kernel_pgtable_exit(regs);
+ 		return;
++	}
+ 
+ 	/*
+ 	 * Entry handling for valid #PF from kernel mode is slightly
+@@ -1486,4 +1490,5 @@ DEFINE_IDTENTRY_RAW_ERRORCODE(exc_page_fault)
+ 	instrumentation_end();
+ 
+ 	irqentry_exit(regs, state);
++	kernel_pgtable_exit(regs);
+ }
 -- 
 2.18.4
 
