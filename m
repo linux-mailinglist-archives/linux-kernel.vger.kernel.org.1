@@ -2,148 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6AF4F2ABB1D
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 14:28:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CD1B2ABB2E
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 14:28:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387633AbgKINY3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 08:24:29 -0500
-Received: from mail-il1-f200.google.com ([209.85.166.200]:53580 "EHLO
-        mail-il1-f200.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1733206AbgKINYX (ORCPT
+        id S2387711AbgKINZS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 08:25:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53086 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732757AbgKINZG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 08:24:23 -0500
-Received: by mail-il1-f200.google.com with SMTP id c9so6397071ilu.20
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Nov 2020 05:24:22 -0800 (PST)
+        Mon, 9 Nov 2020 08:25:06 -0500
+Received: from mail-il1-x144.google.com (mail-il1-x144.google.com [IPv6:2607:f8b0:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E0EEC0613CF;
+        Mon,  9 Nov 2020 05:25:06 -0800 (PST)
+Received: by mail-il1-x144.google.com with SMTP id y17so8250140ilg.4;
+        Mon, 09 Nov 2020 05:25:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=vTFIkPLyuQgyDTeSB90HW+RN1q4pGMJR237yURKzGvY=;
+        b=vGwYDQLwU0TnedQNkBcGBO2I6U4BayCbNJ93T3kRs9AF/kq8/G6FN7/JJdl1BWdeC4
+         SJz6wRnh149A3g+Ad//i7Vnd0giVrSKayDzl4UWx0tgLnsqNm5XjVovnxWS6UTwNoozP
+         ikyg83nvKrzuktXtovLRxqIh6u8Xb0ctA8bfYP/gRHO2xyHj3b22wk+jvodrvcnBD0Nd
+         bnh25poMn/9zQSV1pFXa0jerwilrlr/8lqL+IYXVltU38Vvo2Frh+hSnvyW3pQ0678yS
+         jrFQZOyBhBA5cW/p5t/n7lbeKcxw2D6yvr8lZnDID6UXkzql26Tt0ni4EdZGzO9c2dfN
+         4E9A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=fgNK6IoDTp7K+SNgN+daalRgnaKA+Oq/DJ1GpYsB9Dc=;
-        b=QiP4711IssYpbJJpt96bCDLkhNfwQkzakZz58AedIDS1Uxr3F41cjTaQbt7//1pkTA
-         YSc37L0E76sYDA8zzAH3UeewmdvANWafPTcWM2ZwyJfpcRfn4mlnPSR2iAu09l4uM7Fo
-         s1GiTM0VSL7Hx6gNhaTIwuIlVLgGVU6qu8So0IDF94IolVufHqrJ1Q9rUG5nv6tyJzff
-         4PiuxYY0fDi421RYTBPbBUyROND/UIbXOP50i6cFNiAN+S2NInS/Xa6kVAsw3RDUZNhB
-         j40vSw3oxGpIt5fmxn8gBA3nxvcJq94LcML+zVXC4pbQ8RWpHkTBsdIOAat3sHFI3iCX
-         g1/w==
-X-Gm-Message-State: AOAM530hKQsPD3fNno2aI53x8uQGw0/SQin28PT4gPZ0hKZNtT0Jo2I+
-        z1P7PTjl+R6KE+stMcHNJ2VQKJXJCedYVOmfo0Dgami5mo7V
-X-Google-Smtp-Source: ABdhPJwRf+LLWeynIjNgtro0+TsBTph5slLzNSjXYeomUh6GB81RlI6r47zWR/i4zHM1g9FTrsGhUTOidJxVA7Mmx4DDyCNifaOZ
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=vTFIkPLyuQgyDTeSB90HW+RN1q4pGMJR237yURKzGvY=;
+        b=rdYWU8vXMQrlKirSq3uuEKclYspt6qeUBtE9fog1OpvzfWrImiX6PDpOR6JBLC7Cj5
+         d5q2VC1e1XzG0r/nlDECqFDbZgA0/c1URd2L57c0JKgbo/OsbapMK5Wpv3eEZnH50bO3
+         I9d5KVDJpOMwjAjKfbDOtJjxc+hE/sXNgC2JEn4r3nCmtE0iAWPxQwNvH2XTDWsGIcze
+         l6DnsBDWlTGPv+GEnaJ9oovea1wFc469dB7NlLX3vB04eS1740rBI/Fa8LxX9XjH0dDm
+         lRHOvS3xiQnCVmAgUKZ4zt2dxeMtm8SUi/g8pQ40x6XaHMly1yadyx1WgiKlof5wTC8g
+         tJEQ==
+X-Gm-Message-State: AOAM532Qtb4lrdUUmHAJKwgt7JurCx971bODc07eA75JvDFbqHaHf+1L
+        wFmDH9ULqnch1F2WrW1KwROUZZ6OPAzBW6dtIg13H6+uH/Q=
+X-Google-Smtp-Source: ABdhPJwOnorxLlzA7DDy3GiiWRQV3tnl/YNgbtaLZdIUzwk/Mj8wRQhXxbt/BKRpdAX+Za75d1giY0qm4Gz/wtNketo=
+X-Received: by 2002:a92:ac0e:: with SMTP id r14mr10641398ilh.197.1604928306006;
+ Mon, 09 Nov 2020 05:25:06 -0800 (PST)
 MIME-Version: 1.0
-X-Received: by 2002:a02:6a5b:: with SMTP id m27mr11336069jaf.58.1604928262165;
- Mon, 09 Nov 2020 05:24:22 -0800 (PST)
-Date:   Mon, 09 Nov 2020 05:24:22 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000f4db7805b3ac7a65@google.com>
-Subject: memory leak in anon_inode_getfile
-From:   syzbot <syzbot+05d57384ff3551e412be@syzkaller.appspotmail.com>
-To:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
+References: <6687de05226dd055ee362933d4841a12b038792d.1601655904.git.npcomplete13@gmail.com>
+ <20201104202952.783724-1-npcomplete13@gmail.com> <20201104202952.783724-3-npcomplete13@gmail.com>
+ <c0d62a2e-59e2-c811-f5bd-e7299f540ca3@gmail.com> <20201104205836.GA783888@ubuntu>
+In-Reply-To: <20201104205836.GA783888@ubuntu>
+From:   Vivek Unune <npcomplete13@gmail.com>
+Date:   Mon, 9 Nov 2020 08:24:55 -0500
+Message-ID: <CAChtp76diZQfoQXmaFw1ugfYda_rrwAacE3G1mx5j-MmHGtaEw@mail.gmail.com>
+Subject: Re: [PATCH v2 2/2] ARM: dts: BCM5301X: Linksys EA9500 make use of pinctrl
+To:     Florian Fainelli <f.fainelli@gmail.com>
+Cc:     Hauke Mehrtens <hauke@hauke-m.de>,
+        =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
+        bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Wed, Nov 4, 2020 at 3:58 PM Vivek Unune <npcomplete13@gmail.com> wrote:
+>
+> On Wed, Nov 04, 2020 at 12:37:45PM -0800, Florian Fainelli wrote:
+> >
+> >
+> > On 11/4/2020 12:29 PM, Vivek Unune wrote:
+> > > Now that we have a pin controller, use that instead of manuplating the
+> > > mdio/mdc pins directly. i.e. we no longer require the mdio-mii-mux
+> >
+> > I am a bit confused here as I thought the mux was intended to
+> > dynamically switch the pins in order to support both internal and
+> > external MDIO devices but given the register ranges that were used,
+> > these were actually the pinmux configuration for the MDC and MDIO pins.
+> >
+> > This does not break USB and/or PCIe PHY communication does it?
+>
+> Hi Florian,
+>
+> The external and internal MDIO logic is controlled by mdio-bus-mux.
+> Which controls the BIT(9) of the mdio register. This stays.
+>
+> The removal of mdio-mii-mux and it's replacement with usage of
+> pinctrl doesn't affect USB3 or PCIe. See below USB3 detection.
+>
+> [ 4295.450118] usb 1-1: new high-speed USB device number 2 using ehci-platform
+> [ 4295.690183] usb 4-1: new SuperSpeed Gen 1 USB device number 2 using xhci-hcd
+> [ 4295.721888] usb-storage 4-1:1.0: USB Mass Storage device detected
+> [ 4295.728349] scsi host0: usb-storage 4-1:1.0
+> [ 4296.811047] scsi 0:0:0:0: Direct-Access     SanDisk  Ultra Fit        1.00 PQ: 0 ANSI: 6
+> [ 4296.821159] sd 0:0:0:0: [sda] 60063744 512-byte logical blocks: (30.8 GB/28.6 GiB)
+> [ 4296.829667] sd 0:0:0:0: [sda] Write Protect is off
+> [ 4296.834502] sd 0:0:0:0: [sda] Mode Sense: 43 00 00 00
+> [ 4296.834864] sd 0:0:0:0: [sda] Write cache: disabled, read cache: enabled, doesn't support DPO or FUA
+> [ 4296.852604] GPT:Primary header thinks Alt. header is not at the end of the disk.
+> [ 4296.860079] GPT:1540387 != 60063743
+> [ 4296.863586] GPT:Alternate GPT header not at the end of the disk.
+> [ 4296.869600] GPT:1540387 != 60063743
+> [ 4296.873090] GPT: Use GNU Parted to correct GPT errors.
+> [ 4296.878266]  sda: sda1 sda2
+> [ 4296.884416] sd 0:0:0:0: [sda] Attached SCSI removable disk
+>
 
-syzbot found the following issue on:
+Hi Florian,
 
-HEAD commit:    9dbc1c03 Merge tag 'xfs-5.10-fixes-3' of git://git.kernel...
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=14554746500000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=da948f64bffc0baf
-dashboard link: https://syzkaller.appspot.com/bug?extid=05d57384ff3551e412be
-compiler:       gcc (GCC) 10.1.0-syz 20200507
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=10db2f92500000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1698d134500000
+Does this clarify your confusion?
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+05d57384ff3551e412be@syzkaller.appspotmail.com
+Thanks,
 
-BUG: memory leak
-unreferenced object 0xffff8881019e6d00 (size 256):
-  comm "syz-executor550", pid 8486, jiffies 4294950527 (age 34.300s)
-  hex dump (first 32 bytes):
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-    a0 e0 fd 40 81 88 ff ff c0 96 fc 0f 81 88 ff ff  ...@............
-  backtrace:
-    [<00000000e44e21fc>] kmem_cache_zalloc include/linux/slab.h:654 [inline]
-    [<00000000e44e21fc>] __alloc_file+0x1f/0x130 fs/file_table.c:101
-    [<00000000d4a5a020>] alloc_empty_file+0x69/0x120 fs/file_table.c:151
-    [<00000000eb40cf42>] alloc_file+0x33/0x1b0 fs/file_table.c:193
-    [<000000001c6c0501>] alloc_file_pseudo+0xb2/0x140 fs/file_table.c:233
-    [<00000000acbecb3c>] anon_inode_getfile fs/anon_inodes.c:91 [inline]
-    [<00000000acbecb3c>] anon_inode_getfile+0xaa/0x120 fs/anon_inodes.c:74
-    [<0000000047c0be97>] io_uring_get_fd fs/io_uring.c:9172 [inline]
-    [<0000000047c0be97>] io_uring_create fs/io_uring.c:9351 [inline]
-    [<0000000047c0be97>] io_uring_setup+0x1139/0x1640 fs/io_uring.c:9385
-    [<0000000079584e06>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-    [<000000009e5ef977>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-BUG: memory leak
-unreferenced object 0xffff888110e3ce58 (size 24):
-  comm "syz-executor550", pid 8486, jiffies 4294950527 (age 34.300s)
-  hex dump (first 24 bytes):
-    00 00 00 00 00 00 00 00 b0 4e 93 00 81 88 ff ff  .........N......
-    00 00 00 00 00 00 00 00                          ........
-  backtrace:
-    [<00000000c78e23d5>] kmem_cache_zalloc include/linux/slab.h:654 [inline]
-    [<00000000c78e23d5>] lsm_file_alloc security/security.c:568 [inline]
-    [<00000000c78e23d5>] security_file_alloc+0x2a/0xb0 security/security.c:1456
-    [<000000000d394d00>] __alloc_file+0x5d/0x130 fs/file_table.c:106
-    [<00000000d4a5a020>] alloc_empty_file+0x69/0x120 fs/file_table.c:151
-    [<00000000eb40cf42>] alloc_file+0x33/0x1b0 fs/file_table.c:193
-    [<000000001c6c0501>] alloc_file_pseudo+0xb2/0x140 fs/file_table.c:233
-    [<00000000acbecb3c>] anon_inode_getfile fs/anon_inodes.c:91 [inline]
-    [<00000000acbecb3c>] anon_inode_getfile+0xaa/0x120 fs/anon_inodes.c:74
-    [<0000000047c0be97>] io_uring_get_fd fs/io_uring.c:9172 [inline]
-    [<0000000047c0be97>] io_uring_create fs/io_uring.c:9351 [inline]
-    [<0000000047c0be97>] io_uring_setup+0x1139/0x1640 fs/io_uring.c:9385
-    [<0000000079584e06>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-    [<000000009e5ef977>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-BUG: memory leak
-unreferenced object 0xffff888101abb840 (size 168):
-  comm "syz-executor550", pid 8473, jiffies 4294952674 (age 12.830s)
-  hex dump (first 32 bytes):
-    01 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-  backtrace:
-    [<0000000046ab9583>] prepare_creds+0x25/0x390 kernel/cred.c:258
-    [<00000000064d32d3>] copy_creds+0x3a/0x230 kernel/cred.c:358
-    [<00000000d2f3a3f7>] copy_process+0x66f/0x2510 kernel/fork.c:1971
-    [<00000000e82686f8>] kernel_clone+0xf3/0x670 kernel/fork.c:2456
-    [<00000000bbc67aa6>] __do_sys_clone+0x76/0xa0 kernel/fork.c:2573
-    [<0000000079584e06>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-    [<000000009e5ef977>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-BUG: memory leak
-unreferenced object 0xffff888101716600 (size 256):
-  comm "syz-executor550", pid 8502, jiffies 4294952674 (age 12.830s)
-  hex dump (first 32 bytes):
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-    a0 e0 fd 40 81 88 ff ff 80 fd fd 0f 81 88 ff ff  ...@............
-  backtrace:
-    [<00000000e44e21fc>] kmem_cache_zalloc include/linux/slab.h:654 [inline]
-    [<00000000e44e21fc>] __alloc_file+0x1f/0x130 fs/file_table.c:101
-    [<00000000d4a5a020>] alloc_empty_file+0x69/0x120 fs/file_table.c:151
-    [<00000000eb40cf42>] alloc_file+0x33/0x1b0 fs/file_table.c:193
-    [<000000001c6c0501>] alloc_file_pseudo+0xb2/0x140 fs/file_table.c:233
-    [<00000000acbecb3c>] anon_inode_getfile fs/anon_inodes.c:91 [inline]
-    [<00000000acbecb3c>] anon_inode_getfile+0xaa/0x120 fs/anon_inodes.c:74
-    [<0000000047c0be97>] io_uring_get_fd fs/io_uring.c:9172 [inline]
-    [<0000000047c0be97>] io_uring_create fs/io_uring.c:9351 [inline]
-    [<0000000047c0be97>] io_uring_setup+0x1139/0x1640 fs/io_uring.c:9385
-    [<0000000079584e06>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-    [<000000009e5ef977>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+Vivek
