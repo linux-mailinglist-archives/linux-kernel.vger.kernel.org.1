@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3BD42ABAA7
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 14:23:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CE1A2ABAA8
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 14:23:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388055AbgKINVT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 08:21:19 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49040 "EHLO mail.kernel.org"
+        id S2388065AbgKINVV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 08:21:21 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49098 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388040AbgKINVO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 08:21:14 -0500
+        id S2388046AbgKINVR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 08:21:17 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8EC6C20867;
-        Mon,  9 Nov 2020 13:21:13 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6E9542076E;
+        Mon,  9 Nov 2020 13:21:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604928074;
-        bh=oIzrjqALwh4CjykziVsw6dBqKuXuoY1y0StWWD4AfAA=;
+        s=default; t=1604928077;
+        bh=gU9rQtG0oQr6ptDAImzJrPwFUA2qU4LsX4Lok2yyc9A=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=sDaENIMSRrHsnbx9rqXnO2ntamM6BNxsRLxG4fqLK2koQI+7yjyMlKMMBoNP+eBML
-         AKrG3svPZ10G9j4N/5x4+3Hw7Y2oIb7FTM901/W5cTtdgG1hSS2pC4cvI/etAOTowf
-         XaneleHj0F/HrnNOZXGIpX4zZRiQWzbw50G3gu3s=
+        b=FaEyyhYe/9liRuqfVLSmLaBL3GIQtalO6q21ttFqCv5JC1DLjNm8nqL8mn96OdQum
+         X7DtfJb6r1d2xqtyiZUu00vn16IPHXDLHgADomqjzcwCV4RxGal7kG7V1dOOkMCLkE
+         d+j/rqz/h/7HCp/D2qjopOj/ETc1alZe+nqtFQK4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ziyi Cao <kernel@septs.pw>,
+        stable@vger.kernel.org, Daniele Palmas <dnlplm@gmail.com>,
         Johan Hovold <johan@kernel.org>
-Subject: [PATCH 5.9 118/133] USB: serial: option: add Quectel EC200T module support
-Date:   Mon,  9 Nov 2020 13:56:20 +0100
-Message-Id: <20201109125036.366807948@linuxfoundation.org>
+Subject: [PATCH 5.9 119/133] USB: serial: option: add LE910Cx compositions 0x1203, 0x1230, 0x1231
+Date:   Mon,  9 Nov 2020 13:56:21 +0100
+Message-Id: <20201109125036.414431694@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201109125030.706496283@linuxfoundation.org>
 References: <20201109125030.706496283@linuxfoundation.org>
@@ -42,39 +42,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ziyi Cao <kernel@septs.pw>
+From: Daniele Palmas <dnlplm@gmail.com>
 
-commit a46b973bced1ba57420752bf38426acd9f6cbfa6 upstream.
+commit 489979b4aab490b6b917c11dc02d81b4b742784a upstream.
 
-Add usb product id of the Quectel EC200T module.
+Add following Telit LE910Cx compositions:
 
-Signed-off-by: Ziyi Cao <kernel@septs.pw>
-Link: https://lore.kernel.org/r/17f8a2a3-ce0f-4be7-8544-8fdf286907d0@www.fastmail.com
+0x1203: rndis, tty, adb, tty, tty, tty, tty
+0x1230: tty, adb, rmnet, audio, tty, tty, tty, tty
+0x1231: rndis, tty, adb, audio, tty, tty, tty, tty
+
+Signed-off-by: Daniele Palmas <dnlplm@gmail.com>
+Link: https://lore.kernel.org/r/20201031225458.10512-1-dnlplm@gmail.com
+[ johan: add comments after entries ]
 Cc: stable@vger.kernel.org
 Signed-off-by: Johan Hovold <johan@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/usb/serial/option.c |    2 ++
- 1 file changed, 2 insertions(+)
+ drivers/usb/serial/option.c |    6 ++++++
+ 1 file changed, 6 insertions(+)
 
 --- a/drivers/usb/serial/option.c
 +++ b/drivers/usb/serial/option.c
-@@ -250,6 +250,7 @@ static void option_instat_callback(struc
- #define QUECTEL_PRODUCT_EP06			0x0306
- #define QUECTEL_PRODUCT_EM12			0x0512
- #define QUECTEL_PRODUCT_RM500Q			0x0800
-+#define QUECTEL_PRODUCT_EC200T			0x6026
- 
- #define CMOTECH_VENDOR_ID			0x16d8
- #define CMOTECH_PRODUCT_6001			0x6001
-@@ -1117,6 +1118,7 @@ static const struct usb_device_id option
- 	{ USB_DEVICE_AND_INTERFACE_INFO(QUECTEL_VENDOR_ID, QUECTEL_PRODUCT_RM500Q, 0xff, 0, 0) },
- 	{ USB_DEVICE_AND_INTERFACE_INFO(QUECTEL_VENDOR_ID, QUECTEL_PRODUCT_RM500Q, 0xff, 0xff, 0x10),
- 	  .driver_info = ZLP },
-+	{ USB_DEVICE_AND_INTERFACE_INFO(QUECTEL_VENDOR_ID, QUECTEL_PRODUCT_EC200T, 0xff, 0, 0) },
- 
- 	{ USB_DEVICE(CMOTECH_VENDOR_ID, CMOTECH_PRODUCT_6001) },
- 	{ USB_DEVICE(CMOTECH_VENDOR_ID, CMOTECH_PRODUCT_CMU_300) },
+@@ -1203,6 +1203,8 @@ static const struct usb_device_id option
+ 	  .driver_info = NCTRL(0) },
+ 	{ USB_DEVICE(TELIT_VENDOR_ID, TELIT_PRODUCT_LE910),
+ 	  .driver_info = NCTRL(0) | RSVD(1) | RSVD(2) },
++	{ USB_DEVICE_INTERFACE_CLASS(TELIT_VENDOR_ID, 0x1203, 0xff),	/* Telit LE910Cx (RNDIS) */
++	  .driver_info = NCTRL(2) | RSVD(3) },
+ 	{ USB_DEVICE(TELIT_VENDOR_ID, TELIT_PRODUCT_LE910_USBCFG4),
+ 	  .driver_info = NCTRL(0) | RSVD(1) | RSVD(2) | RSVD(3) },
+ 	{ USB_DEVICE(TELIT_VENDOR_ID, TELIT_PRODUCT_LE920),
+@@ -1217,6 +1219,10 @@ static const struct usb_device_id option
+ 	{ USB_DEVICE_INTERFACE_CLASS(TELIT_VENDOR_ID, TELIT_PRODUCT_LE920A4_1213, 0xff) },
+ 	{ USB_DEVICE(TELIT_VENDOR_ID, TELIT_PRODUCT_LE920A4_1214),
+ 	  .driver_info = NCTRL(0) | RSVD(1) | RSVD(2) | RSVD(3) },
++	{ USB_DEVICE_INTERFACE_CLASS(TELIT_VENDOR_ID, 0x1230, 0xff),	/* Telit LE910Cx (rmnet) */
++	  .driver_info = NCTRL(0) | RSVD(1) | RSVD(2) },
++	{ USB_DEVICE_INTERFACE_CLASS(TELIT_VENDOR_ID, 0x1231, 0xff),	/* Telit LE910Cx (RNDIS) */
++	  .driver_info = NCTRL(2) | RSVD(3) },
+ 	{ USB_DEVICE(TELIT_VENDOR_ID, 0x1260),
+ 	  .driver_info = NCTRL(0) | RSVD(1) | RSVD(2) },
+ 	{ USB_DEVICE(TELIT_VENDOR_ID, 0x1261),
 
 
