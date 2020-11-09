@@ -2,120 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97A7A2AB3D3
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 10:43:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AE1622AB3D1
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 10:43:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729192AbgKIJnL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 04:43:11 -0500
-Received: from new2-smtp.messagingengine.com ([66.111.4.224]:33657 "EHLO
-        new2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729119AbgKIJnJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S1729164AbgKIJnJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Mon, 9 Nov 2020 04:43:09 -0500
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 1456D580195;
-        Mon,  9 Nov 2020 04:43:08 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute6.internal (MEProxy); Mon, 09 Nov 2020 04:43:08 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm1; bh=lmiqVPfBRO9HsD4eiakrDCNXKqB
-        n8TEbx/O27OWVDLI=; b=mypyW2SRGaFWVqh9eIwS+6XSviN7iSg5vBD0DujP08f
-        NTMwnLh+7qpBOyAYunecocrgYA+ZD83xDOK8186OMOoFQ+Xb0nOs2zQyXlkxhlw6
-        HPv8vT2JZq1TKs+X9DjJJUUqPy0aDbbd3pVpyIuUbMaFmpDcu9YttXA0ME5BnQU+
-        NcaufGiE2apM4uhQXjANLBhcteDxGlRwLTkXGVsU/zW13YivuK5ePcX7SSPvnSiC
-        kKmx6Y/c5qCfRB6yCY5NEzOLq4M2cUyL8aw1cmhpEM7yYILzhXH2Mca48y8YDMTT
-        EKe976E321k4CFGyXoCKSvuRwNw03gU6RZDx6NzuRbw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=lmiqVP
-        fBRO9HsD4eiakrDCNXKqBn8TEbx/O27OWVDLI=; b=H7qY1QFWL2E1stPQpyP9eg
-        AAJ4inT9BR8xe2fI1/fkS8WJi0i6ZctMYo+URIun6SRJm2+L4WN/fxQqwdjgfDPt
-        ygQ9aQNUbTllTVupPO7i8IqlrkLimVvKL4ZTPQk8aBq3f9DnNR2zi95Te3Iw+Kad
-        7hwMUljwZ6V/YSmI7p2I8dPUgAQYYjexVXkrIaXnYF6RIzR8o6iiJI//IyDqQbAW
-        zlG6aJJEq2h648P35sUz05qDSNox7LNPkaAyka7Ab/YwvSWwmrltpi1ZSwVMz76C
-        rgmGmYuvrqlNJKZEk0tutQTo7iwFqKEjmZnDm+Q7AQosE729qDxk192LxCSTf/VQ
-        ==
-X-ME-Sender: <xms:KQ-pXwe_i8dNiJZAY4tlnzKs9XbqOj8MBM7z25Mxwdov2thimc9DLg>
-    <xme:KQ-pXyO8ivi7WZ8BAwODuMeesd9QLkTkBWKTaIn0WyOYT9lYWpAF-L9znw6Jvor15
-    cieyRFDbpVwMEIUN8E>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrudduhedgtdekucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
-    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
-    htvghrnhepleekgeehhfdutdeljefgleejffehfffgieejhffgueefhfdtveetgeehieeh
-    gedunecukfhppeeltddrkeelrdeikedrjeeinecuvehluhhsthgvrhfuihiivgeptdenuc
-    frrghrrghmpehmrghilhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
-X-ME-Proxy: <xmx:KQ-pXxjlvTmOlgd9bjlnbeGUPVWLSCvcZhonXSR4YQ4KX-CI1c81Ow>
-    <xmx:KQ-pX1-HsXhn-od1yaHQFkk1IpgBnrmnLSb9H6eruasLpI3dYiJP3w>
-    <xmx:KQ-pX8vBDU1Pcsf3hAEUlTyz0uO8CENMf2hwZwyqRlIqjkqsQvmEtw>
-    <xmx:LA-pX8FUnd_DscCKNzgrRd-uO6wlsVUSe8fyyt0RSAgNhH-tifm-HA>
-Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 0230C3280065;
-        Mon,  9 Nov 2020 04:43:04 -0500 (EST)
-Date:   Mon, 9 Nov 2020 10:43:03 +0100
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Christoph Hellwig <hch@lst.de>, Hans Verkuil <hverkuil@xs4all.nl>,
-        wens@kernel.org
-Cc:     Daniel Vetter <daniel.vetter@intel.com>,
-        David Airlie <airlied@linux.ie>,
-        Paul Kocialkowski <paul.kocialkowski@bootlin.com>,
-        Yong Deng <yong.deng@magewell.com>,
-        linux-arm-kernel@lists.infradead.org,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, devel@driverdev.osuosl.org,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Robin Murphy <robin.murphy@arm.com>
-Subject: Re: [PATCH 0/7] sunxi: Remove the calls to dma_direct_set_offset
-Message-ID: <20201109094303.llqsxqoxjagiqa55@gilmour.lan>
-References: <20201106151411.321743-1-maxime@cerno.tech>
- <20201106160737.GA31913@lst.de>
+Received: from ssl.serverraum.org ([176.9.125.105]:39089 "EHLO
+        ssl.serverraum.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728802AbgKIJnG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 04:43:06 -0500
+Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ssl.serverraum.org (Postfix) with ESMTPSA id 4A7CE22F2D;
+        Mon,  9 Nov 2020 10:43:03 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
+        t=1604914983;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=TISJX/0g0eTQvbb/iznKAoeAEUeQtZ4L3gDonZPa6fg=;
+        b=HGsjjCZPzp70oOWnoVY8PrIEv7hr8tj+nm0oJ/1dojWxsXcVt6k5hCgWmYJ+/AFRjB/7ZE
+        PCfR4oD41OaBZ45/z/uJvrZVZZYgLDRIhZox1LVKW5sEmwIXNz1he47uZv/z1Uas62R8Uo
+        8Qf37A0U3oSZij/OmMi+CTJq3yDTXXQ=
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="ukr2zryovmvm4axa"
-Content-Disposition: inline
-In-Reply-To: <20201106160737.GA31913@lst.de>
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Mon, 09 Nov 2020 10:43:03 +0100
+From:   Michael Walle <michael@walle.cc>
+To:     Vladimir Oltean <vladimir.oltean@nxp.com>
+Cc:     linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>, Leo Li <leoyang.li@nxp.com>,
+        "Y.b. Lu" <yangbo.lu@nxp.com>, Xiaowei Bao <xiaowei.bao@nxp.com>,
+        Ashish Kumar <ashish.kumar@nxp.com>
+Subject: Re: [RFC PATCH v3 9/9] arm64: dts: lx2160a: fix FlexSPI clock
+In-Reply-To: <20201108212139.ht22zdk27pyxv6wc@skbuf>
+References: <20201108185113.31377-1-michael@walle.cc>
+ <20201108185113.31377-10-michael@walle.cc>
+ <20201108212139.ht22zdk27pyxv6wc@skbuf>
+User-Agent: Roundcube Webmail/1.4.9
+Message-ID: <0e165232e518c0f6c1b894311f00982a@walle.cc>
+X-Sender: michael@walle.cc
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Am 2020-11-08 22:21, schrieb Vladimir Oltean:
+> On Sun, Nov 08, 2020 at 07:51:13PM +0100, Michael Walle wrote:
+>> Now that we have a proper driver for the FlexSPI interface use it. 
+>> This
+>> will fix SCK frequency switching on Layerscape SoCs.
+>> 
+>> Signed-off-by: Michael Walle <michael@walle.cc>
+>> ---
+>> Thanks to Vladimir Oltean, this was partially tested on a LX2160A RDB. 
+>> But
+>> this patch is marked as RFC nonetheless, because there is too much
+>> difference in the clock tree between LS1028A and LX2160A. It would be 
+>> nice
+>> if someone could test it and add a Tested-by.
+> 
+> You want someone to probe the SCK frequency?
 
---ukr2zryovmvm4axa
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+No not really, just a thorough test.
 
-Hi Christoph, Chen-Yu, Hans,
+> I expect that if frequency
+> switching works on LS1028A, and the lx2160a_flexspi_divs table is
+> correct (which, based on the documentation for 
+> FlexSPICR1[FlexSPI_CLK_DIV],
+> it is), then it would work on LX2160A too?
 
-On Fri, Nov 06, 2020 at 05:07:37PM +0100, Christoph Hellwig wrote:
-> Thanks,
->=20
-> this looks good to me:
->=20
-> Reviewed-by: Christoph Hellwig <hch@lst.de>
->=20
-> Can you include this patch at the end of your series to that it gets
-> picked up with the other patches?
+The switching should work. Finding out wether it is correct can be 
+checked
+by reading the raw register value, i.e. 01E0_0900h. But the parent clock 
+is
+what is bothering me a little. Getting that wrong would lead to a wrong 
+SCK
+output frequency albeit the divider is set to a correct value.
 
-I guess the easiest to avoid bisection issues would be to merge all this
-through drm-misc, would that work for you?
+> Is there a simple test that can be made in order to trivially determine
+> whether the frequencies are correct?
 
-Maxime
+We already found out that there seems to be kind of a saturation with
+higher frequencies, i.e. octal SPI bus is capable of a much higher
+throughput but we only achieve 50MB/s. I'd have expected a much higher
+datarate (I mean it is advertised as high performance and it uses a 8 
+bit
+wide databus..). But anyway, it might make sense to go the other way, 
+i.e.
+find out the max datathroughput at lower frequencies and look if it 
+makes
+sense. Assuming no DDR, the throughput should be around your frequency. 
+For
+example, having 4 MHz should result in 4MB/s data throughput.
 
---ukr2zryovmvm4axa
-Content-Type: application/pgp-signature; name="signature.asc"
+OTOH we already saw that after linux booted - with the current device 
+tree
+which has a setting of 50MHz max SCK frequency - the programmed divider 
+by
+my driver is the same as the former setting (0x13, div-by-32); so this 
+series
+doesn't change the SCK frequency.
 
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCX6kPJwAKCRDj7w1vZxhR
-xVdNAQDHWf5opH2Wk5MBiU7aGQjw4usXGRwBxWeeBmmVLm8FsQEA8Y3/aoi85/VG
-utrIfztWYorSmqfL/yhtZhR8bdeSEwg=
-=ZXtW
------END PGP SIGNATURE-----
-
---ukr2zryovmvm4axa--
+-michael
