@@ -2,142 +2,465 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A088D2ABD6C
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 14:46:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EBD4A2ABD4A
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 14:45:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388100AbgKINpv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 08:45:51 -0500
-Received: from mail-bn8nam12on2069.outbound.protection.outlook.com ([40.107.237.69]:26688
-        "EHLO NAM12-BN8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1730096AbgKIM6G (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 07:58:06 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=SXkr2eTiF9VK3kATvnBCq+VKt74dDX2u/3+RxKwNWfdVy0bD7zaqz2LSMYa/EfoErVlKqh7kxti9XamMoTek3nz495yfCM1Nk91BFBAp1/lUb17shP5oGk3vUxGG7N6QGmRiUAb2rxgXw9MeDNJTmCXjXOQd1nNSA5DKUabd0TY605peHxNGHfUnI8cxFTBvRx2pBST1JHnT/rMH15tDx0AzYaAj+QTxWHpFd+DD4zlUfcZ74dr5bFYlr6kn+bsTaoZF/ftNRJi2f4R/Cs91FMPFYW/EObuWXWPAfomdNflVbRrPl1hPgBObgOLP1xfsqv16L/rhSrd0jeVxGwxKKQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=OCw6CO1mUtPBefCNLoiLSusUgOWlO9GMEv6OmYWU06o=;
- b=d2R65AGDgJ75fQfo7Ayz7ktGyoJiHaQcca8aWIrq6JNC0lFAwKtKXtHMfjBOAHFITdJlD1Bhjooc2eh8x9PbwABYSIT3C4srX+r+cShfzFIwyPW1JLDVJpBEY+4Jn0gRbfEDuI92TPtzrBKCnY42+V9hFyYTthT1Fbfqo1JDHmdecD9kALZ3qspOMkzqS25Ns+CP2HYcxHnSrvYLlfjmkkwgBL7L1f1mQu3cZ74mr5hzkQJU+15vrwzRC9Fz3kneAHXUFNqauhj+7fv5CReEv4D3ML7aRTBwgNATk+4gn9LAJyS3MNil81C9OuHCo0ykVIfvZwJzGHiY0CJkXkAdgg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=windriver.com; dmarc=pass action=none
- header.from=windriver.com; dkim=pass header.d=windriver.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=windriversystems.onmicrosoft.com;
- s=selector2-windriversystems-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=OCw6CO1mUtPBefCNLoiLSusUgOWlO9GMEv6OmYWU06o=;
- b=M3o82f48RG2dgWKKql90fvNoi93tqrqox//WG2J3/hHjDfXNssFj94Mx7Zv0YGBbMXDtMX3uK6jee5JGToZhvPgcJ+rolXs02PVW5QsjvbrK+ImBIW2ME+LwxR4BGc4tTXgsCV586DDSHcb1aoeS9ppel/CO45nsm9PiJYG9X1Q=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none
- header.from=windriver.com;
-Received: from DM6PR11MB4545.namprd11.prod.outlook.com (2603:10b6:5:2ae::14)
- by DM6PR11MB3769.namprd11.prod.outlook.com (2603:10b6:5:142::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3541.24; Mon, 9 Nov
- 2020 12:58:04 +0000
-Received: from DM6PR11MB4545.namprd11.prod.outlook.com
- ([fe80::4985:c74a:ffcb:6f40]) by DM6PR11MB4545.namprd11.prod.outlook.com
- ([fe80::4985:c74a:ffcb:6f40%4]) with mapi id 15.20.3541.025; Mon, 9 Nov 2020
- 12:58:04 +0000
-Subject: Re: [PATCH -next] cpumask: use false and true for bool variables
-To:     Zou Wei <zou_wei@huawei.com>, paulmck@kernel.org,
-        peterz@infradead.org, akpm@linux-foundation.org,
-        abelits@marvell.com
-Cc:     pjt@google.com, jinyuqi@huawei.com, linux-kernel@vger.kernel.org
-References: <1604923190-70981-1-git-send-email-zou_wei@huawei.com>
-From:   Paul Gortmaker <paul.gortmaker@windriver.com>
-Message-ID: <80dd8254-c762-312f-c619-e7fc79673895@windriver.com>
-Date:   Mon, 9 Nov 2020 07:58:01 -0500
+        id S1730962AbgKINoz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 08:44:55 -0500
+Received: from foss.arm.com ([217.140.110.172]:39360 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730178AbgKIM6q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 07:58:46 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id AB5FF31B;
+        Mon,  9 Nov 2020 04:58:42 -0800 (PST)
+Received: from [192.168.2.22] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D05383F719;
+        Mon,  9 Nov 2020 04:58:40 -0800 (PST)
+Subject: Re: [PATCH v7 06/22] perf arm-spe: Refactor printing string to buffer
+To:     Leo Yan <leo.yan@linaro.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Dave Martin <Dave.Martin@arm.com>,
+        James Clark <james.clark@arm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Al Grant <Al.Grant@arm.com>, Wei Li <liwei391@huawei.com>,
+        linux-kernel@vger.kernel.org
+References: <20201106014136.14103-1-leo.yan@linaro.org>
+ <20201106014136.14103-7-leo.yan@linaro.org>
+From:   =?UTF-8?Q?Andr=c3=a9_Przywara?= <andre.przywara@arm.com>
+Autocrypt: addr=andre.przywara@arm.com; prefer-encrypt=mutual; keydata=
+ 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
+ i4aIXCH3Wv6K
+Organization: ARM Ltd.
+Message-ID: <b7484681-9250-6fbc-63ab-ab19c8d1e990@arm.com>
+Date:   Mon, 9 Nov 2020 12:58:34 +0000
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-In-Reply-To: <1604923190-70981-1-git-send-email-zou_wei@huawei.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [24.212.229.210]
-X-ClientProxiedBy: YTXPR0101CA0058.CANPRD01.PROD.OUTLOOK.COM
- (2603:10b6:b00:1::35) To DM6PR11MB4545.namprd11.prod.outlook.com
- (2603:10b6:5:2ae::14)
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [172.25.35.34] (24.212.229.210) by YTXPR0101CA0058.CANPRD01.PROD.OUTLOOK.COM (2603:10b6:b00:1::35) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3541.21 via Frontend Transport; Mon, 9 Nov 2020 12:58:03 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: f700ce84-57d3-45f2-9f4b-08d884af18ee
-X-MS-TrafficTypeDiagnostic: DM6PR11MB3769:
-X-Microsoft-Antispam-PRVS: <DM6PR11MB3769FA8FDF57A13F6A7FCC1083EA0@DM6PR11MB3769.namprd11.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:4714;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: gAJ90fdiyJUFp7kjb+ExzzL2bSXCw1DEhzIfURrXd4L490qq8iWFhsQCCx1N5tvDn4l58UHBy+QvC1gGYU2UIWI/SyNZAO5c6obH8oHzw/X7jOgYdz22+WLXbXCAtNtGMfK6UI9Y569kEM5/Zi3U4eRXi/SD98fxu4k1bSjEkSaHwoGjnr9tgPYHJkSlun7EMZm7SITkU/Q0iGXSTrfjKW4vm2WehrV5TiSpUhqNRs87rb9SZ2IZDibgUkVGCDh6Pk4qyGtdq20Mi2ziQ1BAFUUl9wtUcB807RQ9ydUr+X9w5IdzaSkHzP0yyIZ2QSQl99pdG6L+IjMx+QLZIxXiZSCsk3y6Qnjs6WDYzwvD8ZrxorNK/syWiNp8Uz//P8bH
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR11MB4545.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(366004)(136003)(39850400004)(376002)(346002)(66476007)(66556008)(31686004)(26005)(16526019)(66946007)(2616005)(186003)(478600001)(956004)(5660300002)(8936002)(36756003)(44832011)(83380400001)(4326008)(53546011)(31696002)(8676002)(86362001)(16576012)(2906002)(316002)(52116002)(6486002)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: VbliTmdYd0oUsQlQ8kAS8CzB/S0Jgdbmuf/B0+lN0zhyRuMJT8kgq9ayZtOodRpN8L4ciKaz5Abt1gwU6N5Aj1aXZ6FRbIw4xpvV47ckhxqLa3+C0T24X+jqElMAkG7dCZoGD0EbcwtmCW28sJPrZ8zTOS8kGNMCO1vJVdA1NVQ+YEh6xQi2t4VGVg0MHoGAaFapfHWTvDutIBGSGCLmkZzSC1ulQxLbc8Sb4dG9nqC3XIrZgiAeatq8d5AojFCuToqlPq3mG2rWwi/ezPewbEEC4aw0M4eV9kWFNnAggIuD7ZL3XOEl/RBkZeenemYjAOYzQmTtOmlLw3DArBhbkJdB+BGS6iEHv7ebC5QhqFb0ByLqAM+yYE/hgSeOWtAJlCAXhHHvWF7E4ePiw3IwsXXlD60nLPKgqQycH8+cCUc/mXMLBsff5YrfwPmrNcuSEn4ychJwTdQdgC/iVRyWdFt9fEQ/vYwcRQcJ+pcnaOW0e/4Rm7g2k46GvFA/m8CSBgAenhIy955556IctmrBrbKp3f53RjZeF6fS6NjDXD5XG97g9ZRbAGzZc+/OcI4J734UAtzFDSJyJBOHFVy7oI9pvzt+nY2OmIEY2gHY9710O1596uSaTYlP4W4RkH+OVDzFkJ6lSdr6R6Hnl9sntw==
-X-OriginatorOrg: windriver.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: f700ce84-57d3-45f2-9f4b-08d884af18ee
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR11MB4545.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Nov 2020 12:58:04.6943
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ddb2873-a1ad-4a18-ae4e-4644631433be
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: OCqOqJWGh8vmsHQ75+PaPef3JH6jEK8SeNXuEz7DYQqDgzFkccMK/GVcn/WBhiGLwYH52TzL/PPu3q04fDpOBsY2PFGuYDg7J/5KAVQ2fwA=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR11MB3769
+In-Reply-To: <20201106014136.14103-7-leo.yan@linaro.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 2020-11-09 6:59 a.m., Zou Wei wrote:
-> Fix coccicheck warnings:
+On 06/11/2020 01:41, Leo Yan wrote:
+> When outputs strings to the decoding buffer with function snprintf(),
+> SPE decoder needs to detects if any error returns from snprintf() and if
+> so needs to directly bail out.  If snprintf() returns success, it needs
+> to update buffer pointer and reduce the buffer length so can continue to
+> output the next string into the consequent memory space.
 > 
-> ./lib/cpumask.c:342:6-13: WARNING: Comparison of 0/1 to bool variable
-> ./lib/cpumask.c:351:33-40: WARNING: Comparison of 0/1 to bool variable
-> ./lib/cpumask.c:406:3-11: WARNING: Assignment of 0/1 to bool variable
+> This complex logics are spreading in the function arm_spe_pkt_desc() so
+> there has many duplicate codes for handling error detecting, increment
+> buffer pointer and decrement buffer size.
 > 
-> Reported-by: Hulk Robot <hulkci@huawei.com>
+> To avoid the duplicate code, this patch introduces a new helper function
+> arm_spe_pkt_snprintf() which is used to wrap up the complex logics, and
+> it's used by the caller arm_spe_pkt_desc().
+> 
+> This patch also moves the variable 'blen' as the function's local
+> variable, this allows to remove the unnecessary braces and improve the
+> readability.
+> 
+> Suggested-by: Dave Martin <Dave.Martin@arm.com>
+> Signed-off-by: Leo Yan <leo.yan@linaro.org>
 
-It seems "Hulk Robot" needs an AI "tune-up".  I didn't touch any of 
-these lines of code - and I'm guessing they haven't changed in years.
+Well, I am not sure this is particularly easier to review ;-), but here
+we go:
 
-Paul.
---
+Checked - vs. + in an editor to verify the transformation.
 
-> Signed-off-by: Zou Wei <zou_wei@huawei.com>
+I also put the new printf routine into some very simple test program,
+and it seems to work as advertised: buffer overflows are detected, and
+the string never gets bigger or loses the terminating 0.
+
+So that looks alright to me:
+
+Reviewed-by: Andre Przywara <andre.przywara@arm.com>
+
+Cheers,
+Andre
+
 > ---
->   lib/cpumask.c | 6 +++---
->   1 file changed, 3 insertions(+), 3 deletions(-)
+>  .../arm-spe-decoder/arm-spe-pkt-decoder.c     | 260 +++++++++---------
+>  1 file changed, 126 insertions(+), 134 deletions(-)
 > 
-> diff --git a/lib/cpumask.c b/lib/cpumask.c
-> index 34ecb30..74d0cf1 100644
-> --- a/lib/cpumask.c
-> +++ b/lib/cpumask.c
-> @@ -339,7 +339,7 @@ static int find_nearest_node(int *node_dist, bool *used)
->   
->   	/* Choose the first unused node to compare */
->   	for (i = 0; i < nr_node_ids; i++) {
-> -		if (used[i] == 0) {
-> +		if (used[i] == false) {
->   			min_dist = node_dist[i];
->   			node_id = i;
->   			break;
-> @@ -348,7 +348,7 @@ static int find_nearest_node(int *node_dist, bool *used)
->   
->   	/* Compare and return the nearest node */
->   	for (i = 0; i < nr_node_ids; i++) {
-> -		if (node_dist[i] < min_dist && used[i] == 0) {
-> +		if (node_dist[i] < min_dist && used[i] == false) {
->   			min_dist = node_dist[i];
->   			node_id = i;
->   		}
-> @@ -403,7 +403,7 @@ unsigned int cpumask_local_spread(unsigned int i, int node)
->   							       flags);
->   					return cpu;
->   				}
-> -			used[id] = 1;
-> +			used[id] = true;
->   		}
->   		spin_unlock_irqrestore(&spread_lock, flags);
->   
+> diff --git a/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c b/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c
+> index 04fd7fd7c15f..1970686f7020 100644
+> --- a/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c
+> +++ b/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c
+> @@ -9,6 +9,7 @@
+>  #include <endian.h>
+>  #include <byteswap.h>
+>  #include <linux/bitops.h>
+> +#include <stdarg.h>
+>  
+>  #include "arm-spe-pkt-decoder.h"
+>  
+> @@ -258,192 +259,183 @@ int arm_spe_get_packet(const unsigned char *buf, size_t len,
+>  	return ret;
+>  }
+>  
+> +static int arm_spe_pkt_snprintf(int *err, char **buf_p, size_t *blen,
+> +				const char *fmt, ...)
+> +{
+> +	va_list ap;
+> +	int ret;
+> +
+> +	/* Bail out if any error occurred */
+> +	if (err && *err)
+> +		return *err;
+> +
+> +	va_start(ap, fmt);
+> +	ret = vsnprintf(*buf_p, *blen, fmt, ap);
+> +	va_end(ap);
+> +
+> +	if (ret < 0) {
+> +		if (err && !*err)
+> +			*err = ret;
+> +
+> +	/*
+> +	 * A return value of (*blen - 1) or more means that the
+> +	 * output was truncated and the buffer is overrun.
+> +	 */
+> +	} else if (ret >= ((int)*blen - 1)) {
+> +		(*buf_p)[*blen - 1] = '\0';
+> +
+> +		/*
+> +		 * Set *err to 'ret' to avoid overflow if tries to
+> +		 * fill this buffer sequentially.
+> +		 */
+> +		if (err && !*err)
+> +			*err = ret;
+> +	} else {
+> +		*buf_p += ret;
+> +		*blen -= ret;
+> +	}
+> +
+> +	return ret;
+> +}
+> +
+>  int arm_spe_pkt_desc(const struct arm_spe_pkt *packet, char *buf,
+>  		     size_t buf_len)
+>  {
+>  	int ret, ns, el, idx = packet->index;
+>  	unsigned long long payload = packet->payload;
+>  	const char *name = arm_spe_pkt_name(packet->type);
+> +	size_t blen = buf_len;
+> +	int err = 0;
+>  
+>  	switch (packet->type) {
+>  	case ARM_SPE_BAD:
+>  	case ARM_SPE_PAD:
+>  	case ARM_SPE_END:
+> -		return snprintf(buf, buf_len, "%s", name);
+> -	case ARM_SPE_EVENTS: {
+> -		size_t blen = buf_len;
+> -
+> -		ret = 0;
+> -		ret = snprintf(buf, buf_len, "EV");
+> -		buf += ret;
+> -		blen -= ret;
+> -		if (payload & 0x1) {
+> -			ret = snprintf(buf, buf_len, " EXCEPTION-GEN");
+> -			buf += ret;
+> -			blen -= ret;
+> -		}
+> -		if (payload & 0x2) {
+> -			ret = snprintf(buf, buf_len, " RETIRED");
+> -			buf += ret;
+> -			blen -= ret;
+> -		}
+> -		if (payload & 0x4) {
+> -			ret = snprintf(buf, buf_len, " L1D-ACCESS");
+> -			buf += ret;
+> -			blen -= ret;
+> -		}
+> -		if (payload & 0x8) {
+> -			ret = snprintf(buf, buf_len, " L1D-REFILL");
+> -			buf += ret;
+> -			blen -= ret;
+> -		}
+> -		if (payload & 0x10) {
+> -			ret = snprintf(buf, buf_len, " TLB-ACCESS");
+> -			buf += ret;
+> -			blen -= ret;
+> -		}
+> -		if (payload & 0x20) {
+> -			ret = snprintf(buf, buf_len, " TLB-REFILL");
+> -			buf += ret;
+> -			blen -= ret;
+> -		}
+> -		if (payload & 0x40) {
+> -			ret = snprintf(buf, buf_len, " NOT-TAKEN");
+> -			buf += ret;
+> -			blen -= ret;
+> -		}
+> -		if (payload & 0x80) {
+> -			ret = snprintf(buf, buf_len, " MISPRED");
+> -			buf += ret;
+> -			blen -= ret;
+> -		}
+> +		return arm_spe_pkt_snprintf(&err, &buf, &blen, "%s", name);
+> +	case ARM_SPE_EVENTS:
+> +		ret = arm_spe_pkt_snprintf(&err, &buf, &blen, "EV");
+> +
+> +		if (payload & 0x1)
+> +			ret = arm_spe_pkt_snprintf(&err, &buf, &blen, " EXCEPTION-GEN");
+> +		if (payload & 0x2)
+> +			ret = arm_spe_pkt_snprintf(&err, &buf, &blen, " RETIRED");
+> +		if (payload & 0x4)
+> +			ret = arm_spe_pkt_snprintf(&err, &buf, &blen, " L1D-ACCESS");
+> +		if (payload & 0x8)
+> +			ret = arm_spe_pkt_snprintf(&err, &buf, &blen, " L1D-REFILL");
+> +		if (payload & 0x10)
+> +			ret = arm_spe_pkt_snprintf(&err, &buf, &blen, " TLB-ACCESS");
+> +		if (payload & 0x20)
+> +			ret = arm_spe_pkt_snprintf(&err, &buf, &blen, " TLB-REFILL");
+> +		if (payload & 0x40)
+> +			ret = arm_spe_pkt_snprintf(&err, &buf, &blen, " NOT-TAKEN");
+> +		if (payload & 0x80)
+> +			ret = arm_spe_pkt_snprintf(&err, &buf, &blen, " MISPRED");
+>  		if (idx > 1) {
+> -			if (payload & 0x100) {
+> -				ret = snprintf(buf, buf_len, " LLC-ACCESS");
+> -				buf += ret;
+> -				blen -= ret;
+> -			}
+> -			if (payload & 0x200) {
+> -				ret = snprintf(buf, buf_len, " LLC-REFILL");
+> -				buf += ret;
+> -				blen -= ret;
+> -			}
+> -			if (payload & 0x400) {
+> -				ret = snprintf(buf, buf_len, " REMOTE-ACCESS");
+> -				buf += ret;
+> -				blen -= ret;
+> -			}
+> +			if (payload & 0x100)
+> +				ret = arm_spe_pkt_snprintf(&err, &buf, &blen, " LLC-ACCESS");
+> +			if (payload & 0x200)
+> +				ret = arm_spe_pkt_snprintf(&err, &buf, &blen, " LLC-REFILL");
+> +			if (payload & 0x400)
+> +				ret = arm_spe_pkt_snprintf(&err, &buf, &blen, " REMOTE-ACCESS");
+>  		}
+>  		if (ret < 0)
+>  			return ret;
+>  		blen -= ret;
+>  		return buf_len - blen;
+> -	}
+>  	case ARM_SPE_OP_TYPE:
+>  		switch (idx) {
+> -		case 0:	return snprintf(buf, buf_len, "%s", payload & 0x1 ?
+> -					"COND-SELECT" : "INSN-OTHER");
+> -		case 1:	{
+> -			size_t blen = buf_len;
+> +		case 0:
+> +			return arm_spe_pkt_snprintf(&err, &buf, &blen,
+> +					payload & 0x1 ? "COND-SELECT" : "INSN-OTHER");
+> +		case 1:
+> +			ret = arm_spe_pkt_snprintf(&err, &buf, &blen,
+> +						   payload & 0x1 ? "ST" : "LD");
+>  
+> -			if (payload & 0x1)
+> -				ret = snprintf(buf, buf_len, "ST");
+> -			else
+> -				ret = snprintf(buf, buf_len, "LD");
+> -			buf += ret;
+> -			blen -= ret;
+>  			if (payload & 0x2) {
+> -				if (payload & 0x4) {
+> -					ret = snprintf(buf, buf_len, " AT");
+> -					buf += ret;
+> -					blen -= ret;
+> -				}
+> -				if (payload & 0x8) {
+> -					ret = snprintf(buf, buf_len, " EXCL");
+> -					buf += ret;
+> -					blen -= ret;
+> -				}
+> -				if (payload & 0x10) {
+> -					ret = snprintf(buf, buf_len, " AR");
+> -					buf += ret;
+> -					blen -= ret;
+> -				}
+> +				if (payload & 0x4)
+> +					ret = arm_spe_pkt_snprintf(&err, &buf, &blen, " AT");
+> +				if (payload & 0x8)
+> +					ret = arm_spe_pkt_snprintf(&err, &buf, &blen, " EXCL");
+> +				if (payload & 0x10)
+> +					ret = arm_spe_pkt_snprintf(&err, &buf, &blen, " AR");
+>  			} else if (payload & 0x4) {
+> -				ret = snprintf(buf, buf_len, " SIMD-FP");
+> -				buf += ret;
+> -				blen -= ret;
+> +				ret = arm_spe_pkt_snprintf(&err, &buf, &blen, " SIMD-FP");
+>  			}
+> +
+>  			if (ret < 0)
+>  				return ret;
+>  			blen -= ret;
+>  			return buf_len - blen;
+> -		}
+> -		case 2:	{
+> -			size_t blen = buf_len;
+>  
+> -			ret = snprintf(buf, buf_len, "B");
+> -			buf += ret;
+> -			blen -= ret;
+> -			if (payload & 0x1) {
+> -				ret = snprintf(buf, buf_len, " COND");
+> -				buf += ret;
+> -				blen -= ret;
+> -			}
+> -			if (payload & 0x2) {
+> -				ret = snprintf(buf, buf_len, " IND");
+> -				buf += ret;
+> -				blen -= ret;
+> -			}
+> +		case 2:
+> +			ret = arm_spe_pkt_snprintf(&err, &buf, &blen, "B");
+> +
+> +			if (payload & 0x1)
+> +				ret = arm_spe_pkt_snprintf(&err, &buf, &blen, " COND");
+> +			if (payload & 0x2)
+> +				ret = arm_spe_pkt_snprintf(&err, &buf, &blen, " IND");
+> +
+>  			if (ret < 0)
+>  				return ret;
+>  			blen -= ret;
+>  			return buf_len - blen;
+> -			}
+> -		default: return 0;
+> +
+> +		default:
+> +			return 0;
+>  		}
+>  	case ARM_SPE_DATA_SOURCE:
+>  	case ARM_SPE_TIMESTAMP:
+> -		return snprintf(buf, buf_len, "%s %lld", name, payload);
+> +		return arm_spe_pkt_snprintf(&err, &buf, &blen, "%s %lld", name, payload);
+>  	case ARM_SPE_ADDRESS:
+>  		switch (idx) {
+>  		case 0:
+> -		case 1: ns = !!(packet->payload & NS_FLAG);
+> +		case 1:
+> +			ns = !!(packet->payload & NS_FLAG);
+>  			el = (packet->payload & EL_FLAG) >> 61;
+>  			payload &= ~(0xffULL << 56);
+> -			return snprintf(buf, buf_len, "%s 0x%llx el%d ns=%d",
+> +			return arm_spe_pkt_snprintf(&err, &buf, &blen,
+> +					"%s 0x%llx el%d ns=%d",
+>  				        (idx == 1) ? "TGT" : "PC", payload, el, ns);
+> -		case 2:	return snprintf(buf, buf_len, "VA 0x%llx", payload);
+> -		case 3:	ns = !!(packet->payload & NS_FLAG);
+> +		case 2:
+> +			return arm_spe_pkt_snprintf(&err, &buf, &blen,
+> +						    "VA 0x%llx", payload);
+> +		case 3:
+> +			ns = !!(packet->payload & NS_FLAG);
+>  			payload &= ~(0xffULL << 56);
+> -			return snprintf(buf, buf_len, "PA 0x%llx ns=%d",
+> -					payload, ns);
+> -		default: return 0;
+> +			return arm_spe_pkt_snprintf(&err, &buf, &blen,
+> +						    "PA 0x%llx ns=%d", payload, ns);
+> +		default:
+> +			return 0;
+>  		}
+>  	case ARM_SPE_CONTEXT:
+> -		return snprintf(buf, buf_len, "%s 0x%lx el%d", name,
+> -				(unsigned long)payload, idx + 1);
+> -	case ARM_SPE_COUNTER: {
+> -		size_t blen = buf_len;
+> -
+> -		ret = snprintf(buf, buf_len, "%s %d ", name,
+> -			       (unsigned short)payload);
+> -		buf += ret;
+> -		blen -= ret;
+> +		return arm_spe_pkt_snprintf(&err, &buf, &blen, "%s 0x%lx el%d",
+> +					    name, (unsigned long)payload, idx + 1);
+> +	case ARM_SPE_COUNTER:
+> +		ret = arm_spe_pkt_snprintf(&err, &buf, &blen, "%s %d ", name,
+> +					   (unsigned short)payload);
+>  		switch (idx) {
+> -		case 0:	ret = snprintf(buf, buf_len, "TOT"); break;
+> -		case 1:	ret = snprintf(buf, buf_len, "ISSUE"); break;
+> -		case 2:	ret = snprintf(buf, buf_len, "XLAT"); break;
+> -		default: ret = 0;
+> +		case 0:
+> +			ret = arm_spe_pkt_snprintf(&err, &buf, &blen, "TOT");
+> +			break;
+> +		case 1:
+> +			ret = arm_spe_pkt_snprintf(&err, &buf, &blen, "ISSUE");
+> +			break;
+> +		case 2:
+> +			ret = arm_spe_pkt_snprintf(&err, &buf, &blen, "XLAT");
+> +			break;
+> +		default:
+> +			ret = 0;
+> +			break;
+>  		}
+>  		if (ret < 0)
+>  			return ret;
+>  		blen -= ret;
+>  		return buf_len - blen;
+> -	}
+>  	default:
+>  		break;
+>  	}
+>  
+> -	return snprintf(buf, buf_len, "%s 0x%llx (%d)",
+> -			name, payload, packet->index);
+> +	return arm_spe_pkt_snprintf(&err, &buf, &blen, "%s 0x%llx (%d)",
+> +				    name, payload, packet->index);
+>  }
 > 
+
