@@ -2,39 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B07A62ABBE4
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 14:32:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 947DA2ABC48
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 14:37:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731494AbgKINH5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 08:07:57 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60812 "EHLO mail.kernel.org"
+        id S1732964AbgKINfu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 08:35:50 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58042 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731476AbgKINHy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 08:07:54 -0500
+        id S1730825AbgKINFU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 08:05:20 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C64382076E;
-        Mon,  9 Nov 2020 13:07:52 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C678E20684;
+        Mon,  9 Nov 2020 13:05:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604927273;
-        bh=8D9NkorKSRujwDMO/mXdkxxvC97lwF1pW+fc7RN5VcI=;
+        s=default; t=1604927105;
+        bh=ZoIqSowvd9AcHwa//C2hMy5BtF8+rdktiD/XC6VSwCM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=JCpykd1/3efoGHmLgBEW1J9IT1tb1QuLfAd/b8qAYEFq3zHOA8uErGF0HD+aAChJG
-         GqHEBN80DRn39htIWbMZsZO44dVi2Lid1MBz4qw9hVTNK3sHxkuc8z/PrE+dOoOKm4
-         LOgY+dCYtysvC8ZNAdBnPwGSVW1mR43RkD6+68nw=
+        b=ocdtoXJEC4lhcK8rEqUN5lxTpTbmSDmD/g0lcFJ9Cjy77ipRLAGGDjqau0yKbph4U
+         iIhrF0u++caCp2BQHf7fFbAoTVmQDbb/IptniQzDPcJJXlF9XAibJRq5+cDd+aoS82
+         rMGX597xSza8mu1Y5teAhuyY3VAqhnUSiVtujsFs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Vincent Whitchurch <vincent.whitchurch@axis.com>,
-        Rob Herring <robh@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 28/48] of: Fix reserved-memory overlap detection
+        stable@vger.kernel.org, Qinglang Miao <miaoqinglang@huawei.com>
+Subject: [PATCH 4.9 111/117] serial: txx9: add missing platform_driver_unregister() on error in serial_txx9_init
 Date:   Mon,  9 Nov 2020 13:55:37 +0100
-Message-Id: <20201109125018.145816695@linuxfoundation.org>
+Message-Id: <20201109125030.968633363@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201109125016.734107741@linuxfoundation.org>
-References: <20201109125016.734107741@linuxfoundation.org>
+In-Reply-To: <20201109125025.630721781@linuxfoundation.org>
+References: <20201109125025.630721781@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,85 +41,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vincent Whitchurch <vincent.whitchurch@axis.com>
+From: Qinglang Miao <miaoqinglang@huawei.com>
 
-[ Upstream commit ca05f33316559a04867295dd49f85aeedbfd6bfd ]
+commit 0c5fc92622ed5531ff324b20f014e9e3092f0187 upstream.
 
-The reserved-memory overlap detection code fails to detect overlaps if
-either of the regions starts at address 0x0.  The code explicitly checks
-for and ignores such regions, apparently in order to ignore dynamically
-allocated regions which have an address of 0x0 at this point.  These
-dynamically allocated regions also have a size of 0x0 at this point, so
-fix this by removing the check and sorting the dynamically allocated
-regions ahead of any static regions at address 0x0.
+Add the missing platform_driver_unregister() before return
+from serial_txx9_init in the error handling case when failed
+to register serial_txx9_pci_driver with macro ENABLE_SERIAL_TXX9_PCI
+defined.
 
-For example, there are two overlaps in this case but they are not
-currently reported:
+Fixes: ab4382d27412 ("tty: move drivers/serial/ to drivers/tty/serial/")
+Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
+Link: https://lore.kernel.org/r/20201103084942.109076-1-miaoqinglang@huawei.com
+Cc: stable <stable@vger.kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-	foo@0 {
-	        reg = <0x0 0x2000>;
-	};
-
-	bar@0 {
-	        reg = <0x0 0x1000>;
-	};
-
-	baz@1000 {
-	        reg = <0x1000 0x1000>;
-	};
-
-	quux {
-	        size = <0x1000>;
-	};
-
-but they are after this patch:
-
- OF: reserved mem: OVERLAP DETECTED!
- bar@0 (0x00000000--0x00001000) overlaps with foo@0 (0x00000000--0x00002000)
- OF: reserved mem: OVERLAP DETECTED!
- foo@0 (0x00000000--0x00002000) overlaps with baz@1000 (0x00001000--0x00002000)
-
-Signed-off-by: Vincent Whitchurch <vincent.whitchurch@axis.com>
-Link: https://lore.kernel.org/r/ded6fd6b47b58741aabdcc6967f73eca6a3f311e.1603273666.git-series.vincent.whitchurch@axis.com
-Signed-off-by: Rob Herring <robh@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/of/of_reserved_mem.c | 13 +++++++++++--
- 1 file changed, 11 insertions(+), 2 deletions(-)
+ drivers/tty/serial/serial_txx9.c |    3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/drivers/of/of_reserved_mem.c b/drivers/of/of_reserved_mem.c
-index 32771c2ced7bb..55cbafdb93aef 100644
---- a/drivers/of/of_reserved_mem.c
-+++ b/drivers/of/of_reserved_mem.c
-@@ -222,6 +222,16 @@ static int __init __rmem_cmp(const void *a, const void *b)
- 	if (ra->base > rb->base)
- 		return 1;
+--- a/drivers/tty/serial/serial_txx9.c
++++ b/drivers/tty/serial/serial_txx9.c
+@@ -1287,6 +1287,9 @@ static int __init serial_txx9_init(void)
  
-+	/*
-+	 * Put the dynamic allocations (address == 0, size == 0) before static
-+	 * allocations at address 0x0 so that overlap detection works
-+	 * correctly.
-+	 */
-+	if (ra->size < rb->size)
-+		return -1;
-+	if (ra->size > rb->size)
-+		return 1;
-+
- 	return 0;
- }
- 
-@@ -239,8 +249,7 @@ static void __init __rmem_check_for_overlap(void)
- 
- 		this = &reserved_mem[i];
- 		next = &reserved_mem[i + 1];
--		if (!(this->base && next->base))
--			continue;
-+
- 		if (this->base + this->size > next->base) {
- 			phys_addr_t this_end, next_end;
- 
--- 
-2.27.0
-
+ #ifdef ENABLE_SERIAL_TXX9_PCI
+ 	ret = pci_register_driver(&serial_txx9_pci_driver);
++	if (ret) {
++		platform_driver_unregister(&serial_txx9_plat_driver);
++	}
+ #endif
+ 	if (ret == 0)
+ 		goto out;
 
 
