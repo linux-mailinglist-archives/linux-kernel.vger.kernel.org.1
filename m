@@ -2,78 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93ADD2AB3E1
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 10:45:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DA6BE2AB3DD
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 10:44:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728814AbgKIJpW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 04:45:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46632 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726482AbgKIJpW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 04:45:22 -0500
-Received: from mail-yb1-xb42.google.com (mail-yb1-xb42.google.com [IPv6:2607:f8b0:4864:20::b42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42BE5C0613CF
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Nov 2020 01:45:22 -0800 (PST)
-Received: by mail-yb1-xb42.google.com with SMTP id s8so7590012yba.13
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Nov 2020 01:45:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=GEjfNgJ/5fIZ4OmbjlXI/Ji4fSPJ5/15fdnkqBFwBr0=;
-        b=hH79rFcnBf+MZrsctl3PVhI29Qx4iCcQK/h8HUPDpI/JnviVRSl2jFQS/modxFPZuR
-         X5E+zy1vElN6bNnUO+Hp2bfLu0/c3Kq3tow+Ggc+tz0fXnhEMH93KyioM51VfNFFk0us
-         aYyMyS5Sdakf3kjAshobcGpyShmwkNyGDIhCFi0r1vYWW0PMbyFuvzFhz4sdaeLpVuOY
-         QKlErNRS1UKFvEP+gDcZHBz1IJ3l2WcFxvkSyWRZ94TtUzliEZ2XRvQPjJDZH3wBGoQn
-         TNp8rF6pvIqd8NDhKh7CSfvJxC2mA/8vGJxZWYx5gPQwcE2MtQH9fZy7lYCHY79C2cLI
-         cB3A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=GEjfNgJ/5fIZ4OmbjlXI/Ji4fSPJ5/15fdnkqBFwBr0=;
-        b=OhaH1CgVJsZaPSX41gHepi0OBWlb3vw6ApsNG7LkRutxUSzEK2TJAvpxYnQ4Ui8vdG
-         oxVyjFF+5OLruon5S6XKxZPL5zfW2bWM1GDR5BkqYjhFbjEusRmtqbc8GKuyMzNitzCQ
-         HqMlFNa0g8i4OHcpCzBgnS1TPIgzsOiJo0sYByZC8+WR/ZqCkJvIcr4nT39vntxgNwTG
-         9hWu2BPmf0GyiP/shpY/sTcEb7eu7+49PRUSJdwF+3YxBo57U54qxvPLuPzeozrSoj9a
-         DlydrLuVXgjEbxFEK0OOV7xadnbyTGBNA9CGjY03zUkbNUquy3XOI1KMcKZHKWmImJxa
-         eakA==
-X-Gm-Message-State: AOAM532cQC1/kkoY/qjcuoU5GrsDwuZ9NxrVA/hMgs/7uAKaLfvOAtVM
-        79YTX90zsYDbCHfBYgLCFjzF3QC8zebmdTCRAouQoWTp
-X-Google-Smtp-Source: ABdhPJwqj37eo9MjAQJhOFaTidGPNP4XtSJWtxhXcOh4E+57lwNlL89hnaPzd8HlrsZ7vmVjirv1fkTVf959Rn2ujJE=
-X-Received: by 2002:a25:384c:: with SMTP id f73mr16987656yba.135.1604915121618;
- Mon, 09 Nov 2020 01:45:21 -0800 (PST)
+        id S1729181AbgKIJod (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 04:44:33 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59150 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726646AbgKIJob (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 04:44:31 -0500
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 39E2A206ED;
+        Mon,  9 Nov 2020 09:44:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604915069;
+        bh=dkQUreQkm6GVXf3wbW77146mTQTUWGCf4AZoWBluopk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=BGPDsYkU9amPsMDGQWS+t1ct1mMz47zcrP257HyLnTmPll/Ei3CD4DqSSRDQleF1h
+         a5n2sHvQqLaBX28Sdv8X7iAr1FZkHFRJxK+Dh+3D66B9bVemyNnFAz5s0SEsWmzssE
+         y6PJ5rZz5Np4wf4LExBCoGsolUlKJZ9zpwV33BAc=
+Date:   Mon, 9 Nov 2020 10:45:29 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Bernard Zhao <bernard@vivo.com>
+Cc:     Jiri Slaby <jirislaby@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, opensource.kernel@vivo.com
+Subject: Re: [PATCH 2/2] drivers/tty: delete break after goto/return
+Message-ID: <20201109094529.GA832649@kroah.com>
+References: <20201107032924.25044-1-bernard@vivo.com>
+ <20201107032924.25044-3-bernard@vivo.com>
 MIME-Version: 1.0
-References: <76f9cd1b-3ace-e8a8-aaee-8d64e0900603@infradead.org> <20201109093154.1080024-1-poeschel@lemonage.de>
-In-Reply-To: <20201109093154.1080024-1-poeschel@lemonage.de>
-From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Date:   Mon, 9 Nov 2020 10:45:10 +0100
-Message-ID: <CANiq72mskWULTsSZp2eKaXNe+VqRrjW3SXKk-4PgXFt8V6mZfw@mail.gmail.com>
-Subject: Re: [PATCH] auxdisplay: hd44780_common: Fix build error
-To:     Lars Poeschel <poeschel@lemonage.de>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Randy Dunlap <rdunlap@infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201107032924.25044-3-bernard@vivo.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 9, 2020 at 10:32 AM <poeschel@lemonage.de> wrote:
->
-> From: Lars Poeschel <poeschel@lemonage.de>
->
-> When building the hd44780_common driver without a driver that actually
-> uses it like panel or hd44780 you got a build error, because
-> hd44780_common uses charlcd, but did not select it. It's users did
-> select it.
-> This is fixed now. hd4478_common now selects charlcd in Kconfig and
-> panel and hd44780 do not. They only select hd44780_common.
->
-> Reported-by: Randy Dunlap <rdunlap@infradead.org>
-> Signed-off-by: Lars Poeschel <poeschel@lemonage.de>
+On Fri, Nov 06, 2020 at 07:29:24PM -0800, Bernard Zhao wrote:
+> Delete break after goto/return, which will never run.
+> 
+> Signed-off-by: Bernard Zhao <bernard@vivo.com>
+> ---
+>  drivers/tty/nozomi.c | 4 ----
+>  1 file changed, 4 deletions(-)
 
-Thanks Lars, I'm picking it up.
+If you look at the commits for this file:
 
-Cheers,
-Miguel
+	$ git log --oneline drivers/tty/nozomi.c | head -n 5
+	1a460c36078e tty: nozomi: remove unneeded break
+	caa47cc63947 tty: nozomi: Use scnprintf() for avoiding potential buffer overflow
+	e2c2e7987106 tty: nozomi: fix spelling mistake "reserverd" -> "reserved"
+	18b1345e60ae tty: nozomi: Use dev_get_drvdata
+	c392ed464205 tty/nozomi: use pci_iomap instead of ioremap_nocache
+
+You will notice that you should probably put the driver name in the
+subject line.  Otherwise this patch really looks like you are doing this
+action on all of drivers/tty/ right?
+
+Same for patch 1/2 as was pointed out by others.
+
+thanks,
+
+greg k-h
