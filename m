@@ -2,106 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB2C32AB848
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 13:32:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DDF552AB84A
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 13:33:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729671AbgKIMcP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 07:32:15 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44798 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727303AbgKIMcP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 07:32:15 -0500
-Received: from [192.168.0.50] (89-70-52-201.dynamic.chello.pl [89.70.52.201])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1205420659;
-        Mon,  9 Nov 2020 12:32:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604925134;
-        bh=xD1oVhpxy1NLKxoXSzadSdGS+a3oYue/kDkyBweDa6w=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=BEBCpXG/VD80TCYRYk4cS0E1mV+zyWlfdfaZoL//2/5hjvMnE07BkvQIHNxm2K0M/
-         M3dhhP4VHmm6Rkotf4pR0hK4UDm893o6GpAqzAoYj6jRGCIRhSptH3Ths8aES034lq
-         vo6+CzC13V36DnedVCEoiWlhZuIeEcO+aeU8UxYo=
-Subject: Re: [PATCH v2] clk: exynos7: Keep aclk_fsys1_200 enabled
-To:     =?UTF-8?Q?Pawe=c5=82_Chmiel?= <pawel.mikolaj.chmiel@gmail.com>
-Cc:     kgene@kernel.org, krzk@kernel.org, mturquette@baylibre.com,
-        sboyd@kernel.org, s.nawrocki@samsung.com, tomasz.figa@gmail.com,
-        cw00.choi@samsung.com, linux-samsung-soc@vger.kernel.org,
-        linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-References: <20201107121456.25562-1-pawel.mikolaj.chmiel@gmail.com>
-From:   Sylwester Nawrocki <snawrocki@kernel.org>
-Message-ID: <a2fdef20-9c0d-ee59-bc2f-411391f4f58b@kernel.org>
-Date:   Mon, 9 Nov 2020 13:32:09 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <20201107121456.25562-1-pawel.mikolaj.chmiel@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+        id S1729629AbgKIMdS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 07:33:18 -0500
+Received: from coyote.holtmann.net ([212.227.132.17]:44582 "EHLO
+        mail.holtmann.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726410AbgKIMdS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 07:33:18 -0500
+Received: from marcel-macbook.fritz.box (p4fefcf0f.dip0.t-ipconnect.de [79.239.207.15])
+        by mail.holtmann.org (Postfix) with ESMTPSA id 427FDCECC5;
+        Mon,  9 Nov 2020 13:40:25 +0100 (CET)
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.120.23.2.4\))
+Subject: Re: [PATCH] Bluetooth: Resume advertising after LE connection
+From:   Marcel Holtmann <marcel@holtmann.org>
+In-Reply-To: <20201106151937.1.I8362b4cedb0f34b7a88b8dbd3a62155085e02ea7@changeid>
+Date:   Mon, 9 Nov 2020 13:33:16 +0100
+Cc:     Bluez mailing list <linux-bluetooth@vger.kernel.org>,
+        CrosBT Upstreaming <chromeos-bluetooth-upstreaming@chromium.org>,
+        Abhishek Pandit-Subedi <abhishekpandit@chromium.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
+Content-Transfer-Encoding: 7bit
+Message-Id: <7EEBEC7D-DC35-461E-A51A-4507AC690960@holtmann.org>
+References: <20201106151937.1.I8362b4cedb0f34b7a88b8dbd3a62155085e02ea7@changeid>
+To:     Daniel Winkler <danielwinkler@google.com>
+X-Mailer: Apple Mail (2.3608.120.23.2.4)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Paweł,
+Hi Daniel,
 
-On 11/7/20 13:14, Paweł Chmiel wrote:
-> This clock must be always enabled to allow access to any registers in
-> fsys1 CMU. Until proper solution based on runtime PM is applied
-> (similar to what was done for Exynos5433), fix this by calling
-> clk_prepare_enable() directly from clock provider driver.
+> When an LE connection request is made, advertising is disabled and never
+> resumed. When a client has an active advertisement, this is disruptive.
+> This change adds resume logic for client-configured (non-directed)
+> advertisements after the connection attempt.
 > 
-> It was observed on Samsung Galaxy S6 device (based on Exynos7420), where
-> UFS module is probed before pmic used to power that device.
-> In this case defer probe was happening and that clock was disabled by
-> UFS driver, causing whole boot to hang on next CMU access.
+> The patch was tested by registering an advertisement, initiating an LE
+> connection from a remote peer, and verifying that the advertisement is
+> re-activated after the connection is established. This is performed on
+> Hatch and Kukui Chromebooks.
 > 
-> Signed-off-by: Paweł Chmiel <pawel.mikolaj.chmiel@gmail.com>
+> Reviewed-by: Abhishek Pandit-Subedi <abhishekpandit@chromium.org>
+> Signed-off-by: Daniel Winkler <danielwinkler@google.com>
 
-> --- a/drivers/clk/samsung/clk-exynos7.c
-> +++ b/drivers/clk/samsung/clk-exynos7.c
+in the future, please sure that the originator Signed-off-by comes first and
+the Reviewed-by lines after it
 
-> @@ -571,6 +572,10 @@ static const struct samsung_cmu_info top1_cmu_info __initconst = {
->   static void __init exynos7_clk_top1_init(struct device_node *np)
->   {
->   	samsung_cmu_register_one(np, &top1_cmu_info);
-> +	/*
-> +	 * Keep top FSYS1 aclk enabled permanently. It's required for CMU register access.
-> +	 */
-> +	clk_prepare_enable(__clk_lookup("aclk_fsys1_200"));
+> ---
+> 
+> net/bluetooth/hci_conn.c    | 12 ++++++++++--
+> net/bluetooth/hci_request.c | 21 ++++++++++++++++-----
+> net/bluetooth/hci_request.h |  2 ++
+> 3 files changed, 28 insertions(+), 7 deletions(-)
 
-Thanks for the patch. Could you rework it to avoid the __clk_lookup() call?
-I.e. could you change it to something along the lines of:
+Patch has been applied to bluetooth-next tree.
 
--------------8<----------------
-diff --git a/drivers/clk/samsung/clk-exynos7.c b/drivers/clk/samsung/clk-exynos7.c
-index 87ee1ba..9ecf498 100644
---- a/drivers/clk/samsung/clk-exynos7.c
-+++ b/drivers/clk/samsung/clk-exynos7.c
-@@ -570,7 +570,15 @@ static const struct samsung_cmu_info top1_cmu_info __initconst = {
- 
- static void __init exynos7_clk_top1_init(struct device_node *np)
- {
--       samsung_cmu_register_one(np, &top1_cmu_info);
-+       struct samsung_clk_provider *ctx;
-+       struct clk_hw **hws;
-+
-+       ctx = samsung_cmu_register_one(np, &top1_cmu_info);
-+       if (!ctx)
-+               return;
-+       hws = ctx->clk_data.hws;
-+
-+       clk_prepare_enable(hws[CLK_ACLK_FSYS1_200]);
- }
- 
- CLK_OF_DECLARE(exynos7_clk_top1, "samsung,exynos7-clock-top1",
--------------8<----------------
-?
+Regards
 
---
-Regards,
-Sylwester
-
+Marcel
 
