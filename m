@@ -2,44 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E501D2ABADE
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 14:23:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AF4F2ABB1D
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 14:28:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387816AbgKINXX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 08:23:23 -0500
-Received: from mail-il1-f199.google.com ([209.85.166.199]:50106 "EHLO
-        mail-il1-f199.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732857AbgKINXT (ORCPT
+        id S2387633AbgKINY3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 08:24:29 -0500
+Received: from mail-il1-f200.google.com ([209.85.166.200]:53580 "EHLO
+        mail-il1-f200.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1733206AbgKINYX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 08:23:19 -0500
-Received: by mail-il1-f199.google.com with SMTP id v29so6417314ilk.16
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Nov 2020 05:23:18 -0800 (PST)
+        Mon, 9 Nov 2020 08:24:23 -0500
+Received: by mail-il1-f200.google.com with SMTP id c9so6397071ilu.20
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Nov 2020 05:24:22 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=CO45gfakMLgnsGNC2zQCKWa4XgBYQMP+NMYJGmT003U=;
-        b=MlzldLTA9I3pJriQWWjZd9vO650uBKJ0HJFH9KIuuE+9VnsNs6t7ABU88WjKFBw69t
-         zcAHpBoQduxupT+I9xspF708DQ/ntp/CCheymHepdd7qOuJouAExkE8g0n9JpS2SFuOb
-         iZ73YB1yYfXw7T9GFWwk9BmDCw+IqNkyHTZwpv0mX7Myg5P0XSSK+NEoZCMS9SI1/GIN
-         +hFsNC9r/M5jEa5JE5bbZNXE/bt1byybUsGOcz/Ec/6BgSRMgnmg7gl3ABzRM+hhRXgq
-         PDqpjERNTMHxlI1MPIAEJsr3d54LU3uH/vf6RwDFSReTjYibvZjq2/URMsB8YHyB5TME
-         eRHg==
-X-Gm-Message-State: AOAM530S+F/rfbuXu7TSqHhLFxuvUGomEQqrWNSUotFTTK8nzzkgOBtC
-        lDzQrofTdlraf8BtEp4a7zZTfeHSesJIIBMrEF0PqsulOJa+
-X-Google-Smtp-Source: ABdhPJzXwgrjFbwFN8QQPAiQANvB6yFzbI0NeYFOZSKmEJa6uyKIHDxJZIDWoxe5J3JgIcAvs1aySuSGbfdWd7hqCstmcbbs8pKJ
+        bh=fgNK6IoDTp7K+SNgN+daalRgnaKA+Oq/DJ1GpYsB9Dc=;
+        b=QiP4711IssYpbJJpt96bCDLkhNfwQkzakZz58AedIDS1Uxr3F41cjTaQbt7//1pkTA
+         YSc37L0E76sYDA8zzAH3UeewmdvANWafPTcWM2ZwyJfpcRfn4mlnPSR2iAu09l4uM7Fo
+         s1GiTM0VSL7Hx6gNhaTIwuIlVLgGVU6qu8So0IDF94IolVufHqrJ1Q9rUG5nv6tyJzff
+         4PiuxYY0fDi421RYTBPbBUyROND/UIbXOP50i6cFNiAN+S2NInS/Xa6kVAsw3RDUZNhB
+         j40vSw3oxGpIt5fmxn8gBA3nxvcJq94LcML+zVXC4pbQ8RWpHkTBsdIOAat3sHFI3iCX
+         g1/w==
+X-Gm-Message-State: AOAM530hKQsPD3fNno2aI53x8uQGw0/SQin28PT4gPZ0hKZNtT0Jo2I+
+        z1P7PTjl+R6KE+stMcHNJ2VQKJXJCedYVOmfo0Dgami5mo7V
+X-Google-Smtp-Source: ABdhPJwRf+LLWeynIjNgtro0+TsBTph5slLzNSjXYeomUh6GB81RlI6r47zWR/i4zHM1g9FTrsGhUTOidJxVA7Mmx4DDyCNifaOZ
 MIME-Version: 1.0
-X-Received: by 2002:a92:cecf:: with SMTP id z15mr9859936ilq.214.1604928198116;
- Mon, 09 Nov 2020 05:23:18 -0800 (PST)
-Date:   Mon, 09 Nov 2020 05:23:18 -0800
+X-Received: by 2002:a02:6a5b:: with SMTP id m27mr11336069jaf.58.1604928262165;
+ Mon, 09 Nov 2020 05:24:22 -0800 (PST)
+Date:   Mon, 09 Nov 2020 05:24:22 -0800
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000238d9b05b3ac77c5@google.com>
-Subject: BUG: sleeping function called from invalid context in corrupted
-From:   syzbot <syzbot+b7aeb9318541a1c709f1@syzkaller.appspotmail.com>
-To:     davem@davemloft.net, johannes.berg@intel.com,
-        johannes@sipsolutions.net, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
-        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Message-ID: <000000000000f4db7805b3ac7a65@google.com>
+Subject: memory leak in anon_inode_getfile
+From:   syzbot <syzbot+05d57384ff3551e412be@syzkaller.appspotmail.com>
+To:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -49,37 +47,95 @@ Hello,
 
 syzbot found the following issue on:
 
-HEAD commit:    bf3e7628 Merge branch 'mtd/fixes' of git://git.kernel.org/..
+HEAD commit:    9dbc1c03 Merge tag 'xfs-5.10-fixes-3' of git://git.kernel...
 git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=16d76e2a500000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=e791ddf0875adf65
-dashboard link: https://syzkaller.appspot.com/bug?extid=b7aeb9318541a1c709f1
-compiler:       clang version 11.0.0 (https://github.com/llvm/llvm-project.git ca2dcbd030eadbf0aa9b660efe864ff08af6e18b)
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14df611a500000
-
-The issue was bisected to:
-
-commit dcd479e10a0510522a5d88b29b8f79ea3467d501
-Author: Johannes Berg <johannes.berg@intel.com>
-Date:   Fri Oct 9 12:17:11 2020 +0000
-
-    mac80211: always wind down STA state
-
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=1218ff14500000
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=1118ff14500000
-console output: https://syzkaller.appspot.com/x/log.txt?x=1618ff14500000
+console output: https://syzkaller.appspot.com/x/log.txt?x=14554746500000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=da948f64bffc0baf
+dashboard link: https://syzkaller.appspot.com/bug?extid=05d57384ff3551e412be
+compiler:       gcc (GCC) 10.1.0-syz 20200507
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=10db2f92500000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1698d134500000
 
 IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+b7aeb9318541a1c709f1@syzkaller.appspotmail.com
-Fixes: dcd479e10a05 ("mac80211: always wind down STA state")
+Reported-by: syzbot+05d57384ff3551e412be@syzkaller.appspotmail.com
 
-BUG: sleeping function called from invalid context at net/mac80211/sta_info.c:1962
-in_atomic(): 0, irqs_disabled(): 0, non_block: 0, pid: 35, name: kworker/u4:2
-4 locks held by kworker/u4:2/35:
- #0: ffff88802af11138 ((wq_completion)phy4){+.+.}-{0:0}, at: process_one_work+0x6f4/0xfc0 kernel/workqueue.c:2245
- #1: ffffc90000e0fd80 ((work_completion)(&sdata->work)){+.+.}-{0:0}, at: process_one_work+0x733/0xfc0 kernel/workqueue.c:2247
- #2: ffff88802f27cd00 (&wdev->mtx){+.+.}-{3:3}, at: sdata_lock net/mac80211/ieee80211_i.h:1021 [inline]
- #2: ffff88802f27cd00 (&wdev->mtx){+.+.}-{3:3}, at: ieee80211_ibss_work+0x4e/0x1450 net/mac80211/ibss.c:1683
+BUG: memory leak
+unreferenced object 0xffff8881019e6d00 (size 256):
+  comm "syz-executor550", pid 8486, jiffies 4294950527 (age 34.300s)
+  hex dump (first 32 bytes):
+    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+    a0 e0 fd 40 81 88 ff ff c0 96 fc 0f 81 88 ff ff  ...@............
+  backtrace:
+    [<00000000e44e21fc>] kmem_cache_zalloc include/linux/slab.h:654 [inline]
+    [<00000000e44e21fc>] __alloc_file+0x1f/0x130 fs/file_table.c:101
+    [<00000000d4a5a020>] alloc_empty_file+0x69/0x120 fs/file_table.c:151
+    [<00000000eb40cf42>] alloc_file+0x33/0x1b0 fs/file_table.c:193
+    [<000000001c6c0501>] alloc_file_pseudo+0xb2/0x140 fs/file_table.c:233
+    [<00000000acbecb3c>] anon_inode_getfile fs/anon_inodes.c:91 [inline]
+    [<00000000acbecb3c>] anon_inode_getfile+0xaa/0x120 fs/anon_inodes.c:74
+    [<0000000047c0be97>] io_uring_get_fd fs/io_uring.c:9172 [inline]
+    [<0000000047c0be97>] io_uring_create fs/io_uring.c:9351 [inline]
+    [<0000000047c0be97>] io_uring_setup+0x1139/0x1640 fs/io_uring.c:9385
+    [<0000000079584e06>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+    [<000000009e5ef977>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+BUG: memory leak
+unreferenced object 0xffff888110e3ce58 (size 24):
+  comm "syz-executor550", pid 8486, jiffies 4294950527 (age 34.300s)
+  hex dump (first 24 bytes):
+    00 00 00 00 00 00 00 00 b0 4e 93 00 81 88 ff ff  .........N......
+    00 00 00 00 00 00 00 00                          ........
+  backtrace:
+    [<00000000c78e23d5>] kmem_cache_zalloc include/linux/slab.h:654 [inline]
+    [<00000000c78e23d5>] lsm_file_alloc security/security.c:568 [inline]
+    [<00000000c78e23d5>] security_file_alloc+0x2a/0xb0 security/security.c:1456
+    [<000000000d394d00>] __alloc_file+0x5d/0x130 fs/file_table.c:106
+    [<00000000d4a5a020>] alloc_empty_file+0x69/0x120 fs/file_table.c:151
+    [<00000000eb40cf42>] alloc_file+0x33/0x1b0 fs/file_table.c:193
+    [<000000001c6c0501>] alloc_file_pseudo+0xb2/0x140 fs/file_table.c:233
+    [<00000000acbecb3c>] anon_inode_getfile fs/anon_inodes.c:91 [inline]
+    [<00000000acbecb3c>] anon_inode_getfile+0xaa/0x120 fs/anon_inodes.c:74
+    [<0000000047c0be97>] io_uring_get_fd fs/io_uring.c:9172 [inline]
+    [<0000000047c0be97>] io_uring_create fs/io_uring.c:9351 [inline]
+    [<0000000047c0be97>] io_uring_setup+0x1139/0x1640 fs/io_uring.c:9385
+    [<0000000079584e06>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+    [<000000009e5ef977>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+BUG: memory leak
+unreferenced object 0xffff888101abb840 (size 168):
+  comm "syz-executor550", pid 8473, jiffies 4294952674 (age 12.830s)
+  hex dump (first 32 bytes):
+    01 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+  backtrace:
+    [<0000000046ab9583>] prepare_creds+0x25/0x390 kernel/cred.c:258
+    [<00000000064d32d3>] copy_creds+0x3a/0x230 kernel/cred.c:358
+    [<00000000d2f3a3f7>] copy_process+0x66f/0x2510 kernel/fork.c:1971
+    [<00000000e82686f8>] kernel_clone+0xf3/0x670 kernel/fork.c:2456
+    [<00000000bbc67aa6>] __do_sys_clone+0x76/0xa0 kernel/fork.c:2573
+    [<0000000079584e06>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+    [<000000009e5ef977>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+BUG: memory leak
+unreferenced object 0xffff888101716600 (size 256):
+  comm "syz-executor550", pid 8502, jiffies 4294952674 (age 12.830s)
+  hex dump (first 32 bytes):
+    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+    a0 e0 fd 40 81 88 ff ff 80 fd fd 0f 81 88 ff ff  ...@............
+  backtrace:
+    [<00000000e44e21fc>] kmem_cache_zalloc include/linux/slab.h:654 [inline]
+    [<00000000e44e21fc>] __alloc_file+0x1f/0x130 fs/file_table.c:101
+    [<00000000d4a5a020>] alloc_empty_file+0x69/0x120 fs/file_table.c:151
+    [<00000000eb40cf42>] alloc_file+0x33/0x1b0 fs/file_table.c:193
+    [<000000001c6c0501>] alloc_file_pseudo+0xb2/0x140 fs/file_table.c:233
+    [<00000000acbecb3c>] anon_inode_getfile fs/anon_inodes.c:91 [inline]
+    [<00000000acbecb3c>] anon_inode_getfile+0xaa/0x120 fs/anon_inodes.c:74
+    [<0000000047c0be97>] io_uring_get_fd fs/io_uring.c:9172 [inline]
+    [<0000000047c0be97>] io_uring_create fs/io_uring.c:9351 [inline]
+    [<0000000047c0be97>] io_uring_setup+0x1139/0x1640 fs/io_uring.c:9385
+    [<0000000079584e06>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+    [<000000009e5ef977>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
 
 
 ---
@@ -89,6 +145,5 @@ syzbot engineers can be reached at syzkaller@googlegroups.com.
 
 syzbot will keep track of this issue. See:
 https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
 syzbot can test patches for this issue, for details see:
 https://goo.gl/tpsmEJ#testing-patches
