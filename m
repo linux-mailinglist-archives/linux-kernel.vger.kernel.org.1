@@ -2,76 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A5572AB7FE
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 13:18:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EE9E2AB815
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 13:21:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729566AbgKIMSY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 07:18:24 -0500
-Received: from out30-44.freemail.mail.aliyun.com ([115.124.30.44]:41462 "EHLO
-        out30-44.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726410AbgKIMSX (ORCPT
+        id S1729471AbgKIMVM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 07:21:12 -0500
+Received: from smtp2207-205.mail.aliyun.com ([121.197.207.205]:44320 "EHLO
+        smtp2207-205.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729174AbgKIMVL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 07:18:23 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R121e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04407;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0UEkmXrf_1604924299;
-Received: from IT-FVFX43SYHV2H.local(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0UEkmXrf_1604924299)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Mon, 09 Nov 2020 20:18:20 +0800
-Subject: Re: [REF PATCH] mm/swap: fix swapon failure
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     linmiaohe@huawei.com, akpm@linux-foundation.org,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        Hugh Dickins <hughd@google.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-References: <1604922436-16597-1-git-send-email-alex.shi@linux.alibaba.com>
- <20201109120705.GZ17076@casper.infradead.org>
-From:   Alex Shi <alex.shi@linux.alibaba.com>
-Message-ID: <88fb2ed0-cb0c-2b4b-a73e-3a64fdc0a2cd@linux.alibaba.com>
-Date:   Mon, 9 Nov 2020 20:17:58 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
- Gecko/20100101 Thunderbird/68.12.0
+        Mon, 9 Nov 2020 07:21:11 -0500
+X-Alimail-AntiSpam: AC=CONTINUE;BC=0.3084485|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_system_inform|0.0285798-0.00149932-0.969921;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047211;MF=frank@allwinnertech.com;NM=1;PH=DS;RN=8;RT=8;SR=0;TI=SMTPD_---.IuVrwCJ_1604924464;
+Received: from allwinnertech.com(mailfrom:frank@allwinnertech.com fp:SMTPD_---.IuVrwCJ_1604924464)
+          by smtp.aliyun-inc.com(10.147.43.95);
+          Mon, 09 Nov 2020 20:21:08 +0800
+From:   Frank Lee <frank@allwinnertech.com>
+To:     robh+dt@kernel.org, mripard@kernel.org, wens@csie.org
+Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, tiny.windzz@gmail.com,
+        Yangtao Li <frank@allwinnertech.com>
+Subject: [PATCH] arm64: dts: allwinner: a64: fix sid node name
+Date:   Mon,  9 Nov 2020 20:21:01 +0800
+Message-Id: <20201109122101.23302-1-frank@allwinnertech.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-In-Reply-To: <20201109120705.GZ17076@casper.infradead.org>
-Content-Type: text/plain; charset=gbk
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Yangtao Li <frank@allwinnertech.com>
 
+Sid should be an efuse type device accurately. And no one
+needs sid label, so delete it.
 
-ÔÚ 2020/11/9 ÏÂÎç8:07, Matthew Wilcox Ð´µÀ:
-> On Mon, Nov 09, 2020 at 07:47:16PM +0800, Alex Shi wrote:
->> Go through the context I found the exit_swap_address_space(p->type)
->> shouldn't be used in good result path. So just move it to error path.
-> 
-> But ... it's not used in the success path.  There's a 'goto' right
-> before it.  Does this really fix your problem?
-> 
+Signed-off-by: Yangtao Li <frank@allwinnertech.com>
+---
+ arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-The trick thing is. It do fix my problem on my centos 7 with gcc 8.3.1...
+diff --git a/arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi b/arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi
+index dc238814013c..96543df5d890 100644
+--- a/arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi
++++ b/arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi
+@@ -520,7 +520,7 @@ mmc2: mmc@1c11000 {
+ 			#size-cells = <0>;
+ 		};
+ 
+-		sid: eeprom@1c14000 {
++		efuse@1c14000 {
+ 			compatible = "allwinner,sun50i-a64-sid";
+ 			reg = <0x1c14000 0x400>;
+ 			#address-cells = <1>;
+-- 
+2.28.0
 
-I am getting headache on this problem...
-
->> @@ -3339,7 +3339,8 @@ static bool swap_discardable(struct swap_info_struct *si)
->>  	error = inode_drain_writes(inode);
->>  	if (error) {
->>  		inode->i_flags &= ~S_SWAPFILE;
->> -		goto free_swap_address_space;
->> +		exit_swap_address_space(p->type);
->> +		goto bad_swap_unlock_inode;
->>  	}
->>  
->>  	mutex_lock(&swapon_mutex);
->> @@ -3364,8 +3365,6 @@ static bool swap_discardable(struct swap_info_struct *si)
->>  
->>  	error = 0;
->>  	goto out;
->> -free_swap_address_space:
->> -	exit_swap_address_space(p->type);
->>  bad_swap_unlock_inode:
->>  	inode_unlock(inode);
->>  bad_swap:
->> -- 
->> 1.8.3.1
->>
->>
