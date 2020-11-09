@@ -2,97 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 061BD2AB63A
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 12:11:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B515D2AB637
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 12:11:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729197AbgKILLJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 06:11:09 -0500
-Received: from mx08-00178001.pphosted.com ([91.207.212.93]:22876 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727303AbgKILLJ (ORCPT
+        id S1729476AbgKILKz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 06:10:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60274 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729255AbgKILKx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 06:11:09 -0500
-Received: from pps.filterd (m0046660.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0A9B7u8n009311;
-        Mon, 9 Nov 2020 12:11:02 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=STMicroelectronics;
- bh=9bs5t6Bcs74pMRrZFN4Yti7b4GoxPP7Dgl4wugNGlh0=;
- b=ZL+uSg4JZZJSn0ynN2frvn64ELbA0PyPKRms/JkiSOL2zHu7X5wsgNr2CoeGBZA1oMjZ
- 6SZ2cfYZo2oaBf7VNEM9iBPcQsEd2qk7aXkD5MQO1GkIqc/OWXHlhGbj1aNfEA15b+Gi
- /Lna5l8SHpj5ZfrvauYda7sEnFsy9/uqn8gWQK6fUAzeNetTB2CaWe/yjW2lTczd5MpQ
- rzkXPkLHgpJJAfZhPcaBamTXdkTpPEY5sMAx6Zm8OnNbED0jHwWW8wZOlVSbqE4H5Sr9
- EJc2bkVbaqqh7s4ocM1rlFi8FLdSB3EfLsQH+pcAlVUJETH+hnR4LDJ66ORDVEA5BiqB uQ== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 34nhkcj4gv-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 09 Nov 2020 12:11:02 +0100
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 6004210002A;
-        Mon,  9 Nov 2020 12:11:02 +0100 (CET)
-Received: from Webmail-eu.st.com (sfhdag3node2.st.com [10.75.127.8])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 541D824D14B;
-        Mon,  9 Nov 2020 12:11:02 +0100 (CET)
-Received: from lmecxl0912.lme.st.com (10.75.127.44) by SFHDAG3NODE2.st.com
- (10.75.127.8) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 9 Nov
- 2020 12:11:01 +0100
-Subject: Re: [PATCH 1/1] ARM: multi_v7_defconfig: add STM32 crypto support
-To:     Lionel Debieve <lionel.debieve@st.com>,
-        Russell King <linux@armlinux.org.uk>
-CC:     <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>
-References: <20201105094730.8320-1-lionel.debieve@st.com>
-From:   Alexandre Torgue <alexandre.torgue@st.com>
-Message-ID: <ed3d0ce8-b3f2-f941-afaa-24147da282e4@st.com>
-Date:   Mon, 9 Nov 2020 12:10:19 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Mon, 9 Nov 2020 06:10:53 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51BB5C0613CF
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Nov 2020 03:10:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=FNTdaPloac3xAnTI3p38yxyfUBIIpHPtkdnpaIX+cPA=; b=oDJEAMExmpWeOpjVtmn7qfM3Cf
+        eNJJdyC4UrGgnk+p7Psn1qMR9x8GAroA3efUiawmjJpfXBrFrnEPLLoAfOMaHI+7gnu6tj1FCQhY7
+        wUhyFnP9maId/VRwXIM3BpGc6uuqSU2WaeGsvFIPot1skmQ5UoaGjSQGU3l3OHDwRKq3Twwt7Lm2B
+        RKx/KTByEwrUGQu9VzSE1HEqHvltfbungFWRBmiIzJvMN3Dd/yumtWPh4J2gNlw1cGxz4ybo1UP7n
+        8zSKNlWbQefoEQOeVe4VtPIo0K/J0dLkaaXZ3atKTShCZSTwQfcNeQkHX7cAVtwzrrLW3AQSfr2hU
+        zg8xoc7g==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kc54P-0005I6-Bj; Mon, 09 Nov 2020 11:10:45 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id BB326304D58;
+        Mon,  9 Nov 2020 12:10:43 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 4B2CD2B09AD02; Mon,  9 Nov 2020 12:10:43 +0100 (CET)
+Date:   Mon, 9 Nov 2020 12:10:43 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     linux-kernel@vger.kernel.org, Ingo Molnar <mingo@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Miroslav Benes <mbenes@suse.cz>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Masami Hiramatsu <mhiramat@kernel.org>
+Subject: Re: [PATCH 2/3 v4] ftrace/x86: Allow for arguments to be passed in
+ to ftrace_regs by default
+Message-ID: <20201109111043.GD2594@hirez.programming.kicks-ass.net>
+References: <20201106214234.618790276@goodmis.org>
+ <20201106214403.328699055@goodmis.org>
 MIME-Version: 1.0
-In-Reply-To: <20201105094730.8320-1-lionel.debieve@st.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.75.127.44]
-X-ClientProxiedBy: SFHDAG4NODE2.st.com (10.75.127.11) To SFHDAG3NODE2.st.com
- (10.75.127.8)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-11-09_02:2020-11-05,2020-11-09 signatures=0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201106214403.328699055@goodmis.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Lionel
+On Fri, Nov 06, 2020 at 04:42:36PM -0500, Steven Rostedt wrote:
+> +static __always_inline struct pt_regs *
+> +arch_ftrace_get_regs(struct ftrace_regs *fregs)
+> +{
+> +	/* Only when FL_SAVE_REGS is set, cs will be non zero */
+> +	if (!fregs->regs.cs)
+> +		return NULL;
+> +	return &fregs->regs;
+> +}
+> +#endif
+> +
+>  #endif /*  CONFIG_DYNAMIC_FTRACE */
+>  #endif /* __ASSEMBLY__ */
+>  #endif /* CONFIG_FUNCTION_TRACER */
+> diff --git a/arch/x86/kernel/ftrace_64.S b/arch/x86/kernel/ftrace_64.S
+> index ac3d5f22fe64..60e3b64f5ea6 100644
+> --- a/arch/x86/kernel/ftrace_64.S
+> +++ b/arch/x86/kernel/ftrace_64.S
+> @@ -140,12 +140,19 @@ SYM_FUNC_START(ftrace_caller)
+>  	/* save_mcount_regs fills in first two parameters */
+>  	save_mcount_regs
+>  
+> +	/* Stack - skipping return address of ftrace_caller */
+> +	leaq MCOUNT_REG_SIZE+8(%rsp), %rcx
+> +	movq %rcx, RSP(%rsp)
+> +
+>  SYM_INNER_LABEL(ftrace_caller_op_ptr, SYM_L_GLOBAL)
+>  	/* Load the ftrace_ops into the 3rd parameter */
+>  	movq function_trace_op(%rip), %rdx
+>  
+> -	/* regs go into 4th parameter (but make it NULL) */
+> -	movq $0, %rcx
+> +	/* regs go into 4th parameter */
+> +	leaq (%rsp), %rcx
+> +
+> +	/* Only ops with REGS flag set should have CS register set */
+> +	movq $0, CS(%rsp)
+>  
+>  SYM_INNER_LABEL(ftrace_call, SYM_L_GLOBAL)
+>  	call ftrace_stub
 
-On 11/5/20 10:47 AM, Lionel Debieve wrote:
-> Enable crypto controllers enabling following flags as module:
-> CONFIG_CRYPTO_DEV_STM32_CRC
-> CONFIG_CRYPTO_DEV_STM32_HASH
-> CONFIG_CRYPTO_DEV_STM32_CRYP
-> 
-> Signed-off-by: Lionel Debieve <lionel.debieve@st.com>
-> ---
->   arch/arm/configs/multi_v7_defconfig | 3 +++
->   1 file changed, 3 insertions(+)
-> 
-> diff --git a/arch/arm/configs/multi_v7_defconfig b/arch/arm/configs/multi_v7_defconfig
-> index a611b0c1e540..57eafa2d7775 100644
-> --- a/arch/arm/configs/multi_v7_defconfig
-> +++ b/arch/arm/configs/multi_v7_defconfig
-> @@ -1133,6 +1133,9 @@ CONFIG_CRYPTO_DEV_ATMEL_AES=m
->   CONFIG_CRYPTO_DEV_ATMEL_TDES=m
->   CONFIG_CRYPTO_DEV_ATMEL_SHA=m
->   CONFIG_CRYPTO_DEV_ROCKCHIP=m
-> +CONFIG_CRYPTO_DEV_STM32_CRC=m
-> +CONFIG_CRYPTO_DEV_STM32_HASH=m
-> +CONFIG_CRYPTO_DEV_STM32_CRYP=m
->   CONFIG_CMA_SIZE_MBYTES=64
->   CONFIG_PRINTK_TIME=y
->   CONFIG_MAGIC_SYSRQ=y
-> 
-
-Applied on stm32-next.
-
-Thanks.
-Alex
+You now seem to be relying on save_mcount_regs() resulting in a cleared
+CS, however, AFAICT CS is uninitialized stack garbage.
