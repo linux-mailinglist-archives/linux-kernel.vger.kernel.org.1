@@ -2,127 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B09292AB129
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 07:18:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D20812AB12B
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 07:18:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729563AbgKIGSZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 01:18:25 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:7616 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729552AbgKIGSZ (ORCPT
+        id S1729569AbgKIGSv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 01:18:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42778 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728951AbgKIGSv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 01:18:25 -0500
-Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4CV15J5S3gzLwMf;
-        Mon,  9 Nov 2020 14:18:12 +0800 (CST)
-Received: from [127.0.0.1] (10.174.178.230) by DGGEMS408-HUB.china.huawei.com
- (10.3.19.208) with Microsoft SMTP Server id 14.3.487.0; Mon, 9 Nov 2020
- 14:18:21 +0800
-Subject: Re: [PATCH v2 1/2] arm64: dts: broadcom: clear the warnings caused by
- empty dma-ranges
-From:   "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
-To:     Arnd Bergmann <arnd@kernel.org>
-CC:     Florian Fainelli <f.fainelli@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>, Ray Jui <rjui@broadcom.com>,
-        Scott Branden <sbranden@broadcom.com>,
-        bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-References: <20201016090833.1892-1-thunder.leizhen@huawei.com>
- <20201016090833.1892-2-thunder.leizhen@huawei.com>
- <CAK8P3a2TSmsNSi-XFpT6AQ3jvVxJ1AW7Uf5tAo477wtwXZwUzg@mail.gmail.com>
- <e27dc152-7aef-10df-f391-bf56e13e23df@gmail.com>
- <CAK8P3a13ywHh7igdfDSPQz9Bw8YAnKWFLKARkk2NL5u6=6yb=w@mail.gmail.com>
- <0eee3fd2-7400-7de7-27a7-7fcaa0955854@gmail.com>
- <d42745b7-ef76-e584-0da2-751ac8c1cf3a@huawei.com>
- <CAK8P3a335TT1+bdHqB=FetPanXXfGv3dC7ZCkx+w+F3j00kj5A@mail.gmail.com>
- <07ab3bdd-dcb1-5a59-d813-f82451b3f028@huawei.com>
-Message-ID: <5980552d-6e96-fd9f-c758-1b1e9f57100e@huawei.com>
-Date:   Mon, 9 Nov 2020 14:18:19 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.0
+        Mon, 9 Nov 2020 01:18:51 -0500
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F302C0613CF;
+        Sun,  8 Nov 2020 22:18:51 -0800 (PST)
+Received: by mail-pf1-x444.google.com with SMTP id w14so4517101pfd.7;
+        Sun, 08 Nov 2020 22:18:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=a5P90ef0IaWnARRxiBmNYzOLO9ZbkOvhfs0jKITfbfg=;
+        b=Ib4vgN8tQ51NaDXsbC/wAVI3mvtRUkKMGtJYY1TA2t7CifQFow2oyaffuB0Ci8hXGg
+         jQYxCRT0btxyFfBD2U15fKCvsIvxyy6I5NPnclk6cQ6zJ7OseKyXerIVXfIGqlSep/n5
+         r3AF4fF2YkvJ6QLLH0aGr41Hg78WpSsRP8Yvve3CY7SlsoR/rlgIX1x+ciV5eEaw5xp/
+         Ce6n+kYdnTRQADWNUCzSnl5SKUdgdn9XkFomZY8ZTW1Qsf39xXMQwmKPCijj0/SVl8i+
+         RbWx/1zQqvNvoxj6sv89heEqo1XQv5XpxeY8vbBzhFRaon1cNMF0d1rKPWMD7BQzM1s+
+         fbLA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=a5P90ef0IaWnARRxiBmNYzOLO9ZbkOvhfs0jKITfbfg=;
+        b=RP0kbllR8cPqwuGjPRqNRVLxPq2zqZ2zNViyHwoXXBS5O/nhzkwqnWFxjQkNX9FFGI
+         /dsGkJSUNSRd+FQ+3QYEoamOLnSmcFPHMct1i6fFM4o46MzqDcAnos+TnQXthtOFmQUA
+         ewBLQBnR/bFF4x+sGUkUXhnN2sAI0gBi63+00Xb3MZvvN2hDrbv4DvOq43n+nmKqCPTA
+         i0plebkFD680Zs/NPmY/k7461W2kpJyc4WBrww0dKRs2asWSh0+jIs8P6XVdbpSW6xrd
+         BmQVVM3jDr4saG95nwIbQlKIUwzilEwi0JhVmUsbLzDoxa39pnvwIm6Y9pCIn38k4zKv
+         r/DQ==
+X-Gm-Message-State: AOAM532WGyVEu1e2xQIkA4YTnCmheKWeaeR5SwsNTuQpns1SyvQaEd80
+        HoU64QhKyRgBMzaHwkxOGPI=
+X-Google-Smtp-Source: ABdhPJwmao/vDyZ9jAaBxaDcVfLe+idRtGk/TEHs4hp7+hqD9iJl6cr0bhyUm4bZyKStJ4Xkab8rmw==
+X-Received: by 2002:a17:90a:cb93:: with SMTP id a19mr10956222pju.99.1604902730637;
+        Sun, 08 Nov 2020 22:18:50 -0800 (PST)
+Received: from dtor-ws ([2620:15c:202:201:a6ae:11ff:fe11:fcc3])
+        by smtp.gmail.com with ESMTPSA id d10sm9220688pgk.74.2020.11.08.22.18.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 08 Nov 2020 22:18:49 -0800 (PST)
+Date:   Sun, 8 Nov 2020 22:18:47 -0800
+From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Kumar G <naveen.gaddipati@stericsson.com>,
+        Sundar Iyer <sundar.iyer@stericsson.com>,
+        linux-input@vger.kernel.org
+Subject: Re: [PATCH 19/20] input: keyboard: nomadik-ske-keypad: Provide some
+ missing struct member docs
+Message-ID: <20201109061847.GL1003057@dtor-ws>
+References: <20201104162427.2984742-1-lee.jones@linaro.org>
+ <20201104162427.2984742-20-lee.jones@linaro.org>
 MIME-Version: 1.0
-In-Reply-To: <07ab3bdd-dcb1-5a59-d813-f82451b3f028@huawei.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.178.230]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201104162427.2984742-20-lee.jones@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, everybody:
-  How do we deal with this problem? I updated the kernel to the latest and the problem still persists.
-
-  make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- -j24 dtbs 2>err.txt
-  vim err.txt
-
-arch/arm64/boot/dts/qcom/ipq6018.dtsi:185.3-14: Warning (dma_ranges_format): /soc:dma-ranges: empty "dma-ranges" property but its #address-cells (1) differs from / (2)
-arch/arm64/boot/dts/qcom/ipq6018.dtsi:185.3-14: Warning (dma_ranges_format): /soc:dma-ranges: empty "dma-ranges" property but its #size-cells (1) differs from / (2)
-arch/arm64/boot/dts/broadcom/stingray/stingray-usb.dtsi:7.3-14: Warning (dma_ranges_format): /usb:dma-ranges: empty "dma-ranges" property but its #address-cells (1) differs from / (2)
-arch/arm64/boot/dts/broadcom/stingray/stingray-usb.dtsi:7.3-14: Warning (dma_ranges_format): /usb:dma-ranges: empty "dma-ranges" property but its #size-cells (1) differs from / (2)
-arch/arm64/boot/dts/broadcom/stingray/stingray-usb.dtsi:7.3-14: Warning (dma_ranges_format): /usb:dma-ranges: empty "dma-ranges" property but its #address-cells (1) differs from / (2)
-arch/arm64/boot/dts/broadcom/stingray/stingray-usb.dtsi:7.3-14: Warning (dma_ranges_format): /usb:dma-ranges: empty "dma-ranges" property but its #size-cells (1) differs from / (2)
-arch/arm64/boot/dts/broadcom/stingray/stingray-usb.dtsi:7.3-14: Warning (dma_ranges_format): /usb:dma-ranges: empty "dma-ranges" property but its #address-cells (1) differs from / (2)
-arch/arm64/boot/dts/broadcom/stingray/stingray-usb.dtsi:7.3-14: Warning (dma_ranges_format): /usb:dma-ranges: empty "dma-ranges" property but its #size-cells (1) differs from / (2)
-
-
-
-
-On 2020/10/26 10:21, Leizhen (ThunderTown) wrote:
+On Wed, Nov 04, 2020 at 04:24:26PM +0000, Lee Jones wrote:
+> Fixes the following W=1 kernel build warning(s):
 > 
+>  drivers/input/keyboard/nomadik-ske-keypad.c:71: warning: Function parameter or member 'pclk' not described in 'ske_keypad'
+>  drivers/input/keyboard/nomadik-ske-keypad.c:71: warning: Function parameter or member 'ske_keypad_lock' not described in 'ske_keypad'
 > 
-> On 2020/10/23 15:17, Arnd Bergmann wrote:
->> On Sun, Oct 18, 2020 at 4:10 AM Leizhen (ThunderTown)
->> <thunder.leizhen@huawei.com> wrote:
->>> On 2020/10/17 3:27, Florian Fainelli wrote:
->>>> On 10/16/20 11:23 AM, Arnd Bergmann wrote:
->>>>> On Fri, Oct 16, 2020 at 6:48 PM Florian Fainelli <f.fainelli@gmail.com> wrote:
->>>>>> On 10/16/20 4:01 AM, Arnd Bergmann wrote:
->>>>>>> On Fri, Oct 16, 2020 at 11:09 AM Zhen Lei <thunder.leizhen@huawei.com> wrote:
->>>>>>>>
->>>>>>>> Suggested-by: Arnd Bergmann <arnd@arndb.de>
->>>>>>>> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
->>>>>>>
->>>>>>> Acked-by: Arnd Bergmann <arnd@arndb.de>
->>>>>>>
->>>>>>> I see that at least the 'bcd' and 'xhci' devices in fact try to
->>>>>>> use 64-bit DMA. It would be good to test this on actual
->>>>>>> hardware to ensure that it works correctly when this is enabled.
->>>>>>>
->>>>>>> Ideally avoiding the swiotlb bounce buffering should only
->>>>>>> make it faster here, but there are many chips on which
->>>>>>> 64-bit DMA is broken in some form.
->>>>>>
->>>>>> Is this change really an improvement though? This 'usb' pseudo bus node
->>>>>> could just keep being defined with #address-cells = <1> and #size-cells
->>>>>> = <1> so as to satisfy the 'reg' definition however we could just adjust
->>>>>> dma-ranges to indicate full 64-bit addressing capability. Would not that
->>>>>> work?
->>>>>
->>>>> When #address-cells is '1', you cannot specify dma-ranges that
->>>>> go beyond a 32-bit address range.
->>>>
->>>> Would not it be enough to remove the 'dma-ranges' property though? Sorry
->>>> for being slow here.
->>>
->>> Remove the 'dma-ranges' property should also work. After all, it is equivalent
->>> to the original empty dma-ranges scheme. In addition, since the IOMMU nodes are
->>> defined, it should be enabled.
->>
->> Are you sure? I was expecting the IOMMU not to get used here since
->> the devices do contain list an 'iommus' property.
-> 
-> OK，If the SMMU maybe disabled, then your proposal is necessary.
-> 
->>
->>       Arnd
->>
->> .
->>
+> Cc: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+> Cc: Kumar G <naveen.gaddipati@stericsson.com>
+> Cc: Sundar Iyer <sundar.iyer@stericsson.com>
+> Cc: linux-input@vger.kernel.org
+> Signed-off-by: Lee Jones <lee.jones@linaro.org>
 
+Applied, thank you.
+
+-- 
+Dmitry
