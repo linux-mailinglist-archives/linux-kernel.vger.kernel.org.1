@@ -2,40 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E02272AAE91
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 01:47:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C76B92AAE93
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 01:47:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728942AbgKIAqr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 8 Nov 2020 19:46:47 -0500
-Received: from mga02.intel.com ([134.134.136.20]:2448 "EHLO mga02.intel.com"
+        id S1728983AbgKIAqx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 8 Nov 2020 19:46:53 -0500
+Received: from mga18.intel.com ([134.134.136.126]:22301 "EHLO mga18.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727949AbgKIAqr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1728893AbgKIAqr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Sun, 8 Nov 2020 19:46:47 -0500
-IronPort-SDR: 2sNy42LFzaat+VIm7cJZmA6A1rISJastMk6xRfAvK9e/z5wiPpI9UiLGwIgcVEc7/H8NqDjGWP
- 31r9GlUL0crQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9799"; a="156742017"
+IronPort-SDR: 72XPB3PbTldqGPRoNmPHeCuP0eKPZjv8fa2B9/d4DKmaJ/LxCrjkQmyCyxzHpzdUoZjku3cHyH
+ U6gGeqg3Z11A==
+X-IronPort-AV: E=McAfee;i="6000,8403,9799"; a="157516742"
 X-IronPort-AV: E=Sophos;i="5.77,462,1596524400"; 
-   d="scan'208";a="156742017"
+   d="scan'208";a="157516742"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Nov 2020 16:46:46 -0800
-IronPort-SDR: N/pxHnYrYqKQUWEazeMbvwGYUF02f4xJILTZKqsmZVQhCarqMQ6TJDi8qSs34dfYI1GTknCMuE
- F/6ZgXj0gNDA==
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Nov 2020 16:46:45 -0800
+IronPort-SDR: sL83ZItePacutvhOpvsd/TpIeoj0YPM94C2cI5f1I5NgIdKkU1J7EWp6vktwQCypDQ4I4V6uS2
+ DmhsAxaAY3NA==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.77,462,1596524400"; 
-   d="scan'208";a="355450470"
+   d="scan'208";a="364859418"
 Received: from lkp-server02.sh.intel.com (HELO defa7f6e4f65) ([10.239.97.151])
-  by fmsmga004.fm.intel.com with ESMTP; 08 Nov 2020 16:46:45 -0800
+  by FMSMGA003.fm.intel.com with ESMTP; 08 Nov 2020 16:46:44 -0800
 Received: from kbuild by defa7f6e4f65 with local (Exim 4.92)
         (envelope-from <lkp@intel.com>)
-        id 1kbvKW-00001o-Lb; Mon, 09 Nov 2020 00:46:44 +0000
-Date:   Mon, 09 Nov 2020 08:45:44 +0800
+        id 1kbvKV-00001Y-UA; Mon, 09 Nov 2020 00:46:43 +0000
+Date:   Mon, 09 Nov 2020 08:46:30 +0800
 From:   kernel test robot <lkp@intel.com>
 To:     "Paul E. McKenney" <paulmck@kernel.org>
 Cc:     linux-kernel@vger.kernel.org
-Subject: [rcu:lkmm] BUILD SUCCESS 3d00d91445de18780ecfbbefd7fdc9bf4037cef7
-Message-ID: <5fa89138.6Jda4HdFM9JE/xMK%lkp@intel.com>
+Subject: [rcu:lkmm-dev] BUILD SUCCESS
+ f635ce0af277747dbe4f3d9a9f60bd212290bc1f
+Message-ID: <5fa89166.GUfR9REkilapx+cY%lkp@intel.com>
 User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -44,8 +45,8 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git  lkmm
-branch HEAD: 3d00d91445de18780ecfbbefd7fdc9bf4037cef7  tools/memory-model: Label MP tests' producers and consumers
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git  lkmm-dev
+branch HEAD: f635ce0af277747dbe4f3d9a9f60bd212290bc1f  tools/memory-model: Use "-unroll 0" to keep --hw runs finite
 
 elapsed time: 4494m
 
@@ -76,7 +77,6 @@ nios2                         3c120_defconfig
 sh                          r7780mp_defconfig
 powerpc                     ep8248e_defconfig
 powerpc                   lite5200b_defconfig
-sparc                               defconfig
 powerpc                 mpc834x_itx_defconfig
 c6x                                 defconfig
 mips                       bmips_be_defconfig
@@ -106,7 +106,6 @@ powerpc                 mpc836x_rdk_defconfig
 mips                malta_kvm_guest_defconfig
 sh                          rsk7264_defconfig
 arm                          lpd270_defconfig
-powerpc                           allnoconfig
 powerpc                 mpc837x_rdb_defconfig
 arm                         hackkit_defconfig
 arc                     haps_hs_smp_defconfig
@@ -120,6 +119,7 @@ sh                         ap325rxa_defconfig
 arm                          gemini_defconfig
 arm                            xcep_defconfig
 mips                          ath79_defconfig
+sparc                               defconfig
 arm                            hisi_defconfig
 arm                          badge4_defconfig
 xtensa                  audio_kc705_defconfig
@@ -164,6 +164,7 @@ mips                             allyesconfig
 mips                             allmodconfig
 powerpc                          allyesconfig
 powerpc                          allmodconfig
+powerpc                           allnoconfig
 i386                 randconfig-a004-20201104
 i386                 randconfig-a006-20201104
 i386                 randconfig-a005-20201104
