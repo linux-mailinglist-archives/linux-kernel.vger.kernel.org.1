@@ -2,72 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21C042AB4D8
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 11:27:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D51312AB4E3
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 11:29:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729046AbgKIK1E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 05:27:04 -0500
-Received: from mga14.intel.com ([192.55.52.115]:45583 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728465AbgKIK06 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 05:26:58 -0500
-IronPort-SDR: bWS/+40ge1U4EInJfKTfr8Hb4qMbc70usPMpFwpHtuwKcFz+hzQ+CQ6Yzi79t0tVoWA8478cJ8
- VWz+4ROGUmeA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9799"; a="168996287"
-X-IronPort-AV: E=Sophos;i="5.77,463,1596524400"; 
-   d="scan'208";a="168996287"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Nov 2020 02:26:58 -0800
-IronPort-SDR: pOgkfBk4vIVkHuHNLdaDqbbv8Vhn6v7f9hu2VbhdBv3lfrEk2KtT0rqIIGuKJFrH6phQlIS9uT
- 2TrnAG7brjcA==
-X-IronPort-AV: E=Sophos;i="5.77,463,1596524400"; 
-   d="scan'208";a="530679062"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Nov 2020 02:26:57 -0800
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1kc4P1-0059KW-M1; Mon, 09 Nov 2020 12:27:59 +0200
-Date:   Mon, 9 Nov 2020 12:27:59 +0200
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Jiri Slaby <jirislaby@kernel.org>
-Cc:     David Laight <David.Laight@aculab.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: Re: [PATCH v1 1/3] vt: keyboard, use GENMAASK()/BIT() macros instead
- of open coded variants
-Message-ID: <20201109102759.GT4077@smile.fi.intel.com>
-References: <20201106143551.43908-1-andriy.shevchenko@linux.intel.com>
- <e461a47754974c0d8d0b61981b77ae80@AcuMS.aculab.com>
- <CAHp75VfTFL_7bJ5HyyuATVk32+buD9JoNDhyf1noAfoFGqJ_OQ@mail.gmail.com>
- <56794a31-26ed-39eb-4082-75b5ec7cf28a@kernel.org>
- <CAHp75VeO6inzfRGSEBWgW0OCzjE9uT6LoXeQzHDdg4FiRemYWQ@mail.gmail.com>
+        id S1728979AbgKIK3N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 05:29:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53514 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726535AbgKIK3N (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 05:29:13 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C26F4C0613CF;
+        Mon,  9 Nov 2020 02:29:12 -0800 (PST)
+Date:   Mon, 9 Nov 2020 11:29:09 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1604917750;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=nXSfGPHblcxD6fRoSPhPSSHFsJUTblx0RZ8tFRLfhus=;
+        b=DkqJWn72jRCdyw9uxzDjB+Lsv1iGa/AL0tJGQT51XDOa5/yv0Yo0PSxn+RprFoHPXenYs4
+        7tEF4j+WmF92KO/7HTNbU3GnE/EhopTRrvoUYqZAmdY4pTMrG1JFoB/Q8vKTZN6ECiqzRL
+        L0cuipHHmQQl/cu9Cn9bMGO8MvzzCxdCx1hfzMdH+/dwYmZN4aKgPynNFgcAJVaSPxa8VX
+        TsNl8rniTpK0Fuoj94OjtxaxpNv/A0WNqIamWtanr1dVKJ6cX2e3DFTpJip73BpEz4TkoB
+        Qt1x7N/ImlN/ZlK1QVSZTZ9aqaN+j2Jp2sXMULM9PzGaKIk1BfkVtj8R7EwtpA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1604917750;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=nXSfGPHblcxD6fRoSPhPSSHFsJUTblx0RZ8tFRLfhus=;
+        b=kBMeColad+U3332dzsE7I9XTLjw2q7CtyaCiVgwtRZW/gmgaf4NNwhDqeGpOvZEl4sVt5L
+        oqT22564Yk3ngPDA==
+From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To:     Barry Song <song.bao.hua@hisilicon.com>
+Cc:     linux-mm@kvack.org, linux-crypto@vger.kernel.org,
+        akpm@linux-foundation.org, linuxarm@huawei.com,
+        fanghao11@huawei.com, linux-kernel@vger.kernel.org,
+        Vitaly Wool <vitalywool@gmail.com>,
+        "Luis Claudio R . Goncalves" <lgoncalv@redhat.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S . Miller" <davem@davemloft.net>,
+        Mahipal Challa <mahipalreddy2006@gmail.com>,
+        Seth Jennings <sjenning@redhat.com>,
+        Dan Streetman <ddstreet@ieee.org>,
+        Zhou Wang <wangzhou1@hisilicon.com>,
+        Colin Ian King <colin.king@canonical.com>
+Subject: Re: [PATCH v7] mm/zswap: move to use crypto_acomp API for hardware
+ acceleration
+Message-ID: <20201109102909.u34zzudqqng6nhg6@linutronix.de>
+References: <20201107065332.26992-1-song.bao.hua@hisilicon.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <CAHp75VeO6inzfRGSEBWgW0OCzjE9uT6LoXeQzHDdg4FiRemYWQ@mail.gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20201107065332.26992-1-song.bao.hua@hisilicon.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 09, 2020 at 12:10:27PM +0200, Andy Shevchenko wrote:
-> On Mon, Nov 9, 2020 at 11:57 AM Jiri Slaby <jirislaby@kernel.org> wrote:
-> > On 06. 11. 20, 17:06, Andy Shevchenko wrote:
+I've been looking at the patch and it looks like it should work. Having
+numbers to backup the performance in the pure-software version and with
+HW acceleration would _very_ nice to have.
 
-...
+On 2020-11-07 19:53:32 [+1300], Barry Song wrote:
+> index fbb7829..73f04de 100644
+> --- a/mm/zswap.c
+> +++ b/mm/zswap.c
+> @@ -415,30 +445,54 @@ static int zswap_dstmem_dead(unsigned int cpu)
+=E2=80=A6
+> +	acomp_ctx->req =3D req;
+> +
+> +	crypto_init_wait(&acomp_ctx->wait);
+> +	/*
+> +	 * if the backend of acomp is async zip, crypto_req_done() will wakeup
+> +	 * crypto_wait_req(); if the backend of acomp is scomp, the callback
+> +	 * won't be called, crypto_wait_req() will return without blocking.
+> +	 */
+> +	acomp_request_set_callback(req, CRYPTO_TFM_REQ_MAY_BACKLOG,
+> +				   crypto_req_done, &acomp_ctx->wait);
+> +
+> +	acomp_ctx->mutex =3D per_cpu(zswap_mutex, cpu);
+> +	acomp_ctx->dstmem =3D per_cpu(zswap_dstmem, cpu);
 
-> > sorry,
-> 
-> Consider this then as RFC.
-> What about the rest of the series?
+You added a comment here and there you never mentioned that this single
+per-CPU mutex protects the per-CPU context (which you can have more than
+one on a single CPU) and the scratch/dstmem which is one per-CPU. Of
+course if you read the code you figure it out.
+I still think that you should have a pool of memory and crypto contexts
+which you can use instead of having them strictly per-CPU. The code is
+fully preemptible and you may have multiple requests on the same CPU.
+Yes, locking works but at the same you block processing while waiting on
+a lock and the "reserved memory" on other CPUs remains unused.
 
-I got the answer, thanks!
-So, I will drop the first patch and resend the rest with your Ack.
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+Sebastian
