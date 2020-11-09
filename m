@@ -2,102 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D7BF2AB000
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 04:38:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 87E612AB001
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 04:40:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729224AbgKIDiZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 8 Nov 2020 22:38:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46390 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728038AbgKIDiZ (ORCPT
+        id S1729203AbgKIDkT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 8 Nov 2020 22:40:19 -0500
+Received: from m176115.mail.qiye.163.com ([59.111.176.115]:51690 "EHLO
+        m176115.mail.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728038AbgKIDkT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 8 Nov 2020 22:38:25 -0500
-Received: from mail-vk1-xa42.google.com (mail-vk1-xa42.google.com [IPv6:2607:f8b0:4864:20::a42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED797C0613CF;
-        Sun,  8 Nov 2020 19:38:24 -0800 (PST)
-Received: by mail-vk1-xa42.google.com with SMTP id o73so1593024vka.5;
-        Sun, 08 Nov 2020 19:38:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=EXvLdoZOLK2vkCmDQBWkezTalz+11c+8ptopOVr4sJo=;
-        b=RYltIajFnXKs/5AMCFp48j07wmtIAEgd/VwxVU65E7v1XdhKDshNGXRVLYxFNOQLUI
-         yFZj5gMaxtYPgHgzzcqjBZtmSmpyYVXixQlNZHfjTmLB9iS/sR+pWHZmwHR77S9W8fqH
-         Ifcfm7aavxZhDWDKW0TJj2ysS44h3StBIB1+R+VcmZjOz9+NRanUpLs6ALizPq66WQ3S
-         jWFUZzv70dGL1OdR5y2e2J1s3oF+D9cQl12YtmZBrfidymaenjtNeXyFuLy6q7n4od/W
-         NMcNhTQGTb5IYKUmpj5KEgPn87QFS5Y/+ApqRycR7UKW6fdNMBDY3Jut+Y4gMUhJRb5/
-         TZkw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=EXvLdoZOLK2vkCmDQBWkezTalz+11c+8ptopOVr4sJo=;
-        b=eq+lQN+QsmWdZI1pFTHxVGuVKIG/MzTRTiAD9wwyaI5R7OH8fpHvlN6QVAlPlORo7r
-         NZFH555bYbW5+HciUXw8CmQVeErf/WlH6eVXeFT8NpWnMqOGNjKiG2UeZi8QMypsG2n+
-         C0Fg3hObCVBFiXgPuQKkv89+acSp+ijCYLXdEumiyV4KpgUl0dSGGWQuX2uTDuW42U0d
-         iX76PnAZPyZcoigox+Q+6UMEWvvEJVJ839qItXzGBgYgYDABhCHyHkOxh9Ag7+snmr13
-         LTLBHKor3ZIJvDCaThYu3StoDG3CdGYIaXNceMzDNa9T6P5GxDyDiuV8HaerEcQbkFOG
-         WePg==
-X-Gm-Message-State: AOAM530npEHltdO0sy5D/B2n14I5sFMYGLv1F9IJ5VBGQbMzqIAUxQKj
-        5lCy4RUf1Y8Leoo1wpBhYfwKbhsdPqFZBJBsUjs=
-X-Google-Smtp-Source: ABdhPJwEEKUtrQCBK0PR0Qi0f0uqtamAFlHl8H1VdcMWJzPkQJ+4+C/plG4cD4dY32hnunRBo21AgvUWRjwRe5UQBMA=
-X-Received: by 2002:a1f:5c4e:: with SMTP id q75mr6010923vkb.6.1604893104103;
- Sun, 08 Nov 2020 19:38:24 -0800 (PST)
-MIME-Version: 1.0
-References: <1604737451-19082-1-git-send-email-jrdr.linux@gmail.com>
- <e5401549-8c31-2c6d-58dd-864232de17af@nvidia.com> <e6859981-bc3c-9513-99e5-a99849786156@nvidia.com>
- <5efeb909-3e02-ba14-7a86-f18562a2fe69@i-love.sakura.ne.jp>
- <8590eb4c-256b-9ab0-5291-de8ec8d75276@nvidia.com> <40bd424d-6c4d-8b03-5d97-c572ca777b77@i-love.sakura.ne.jp>
- <1174ed3e-d33c-6de9-3873-b122013b295a@nvidia.com>
-In-Reply-To: <1174ed3e-d33c-6de9-3873-b122013b295a@nvidia.com>
-From:   Souptick Joarder <jrdr.linux@gmail.com>
-Date:   Mon, 9 Nov 2020 09:08:12 +0530
-Message-ID: <CAFqt6zbC_-y8FAyGLv_QG2VMSa8HhfR+sd=W-E4eyuWfgSXnDQ@mail.gmail.com>
-Subject: Re: [PATCH 1/2] tomoyo: Convert get_user_pages*() to pin_user_pages*()
-To:     John Hubbard <jhubbard@nvidia.com>
-Cc:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-        linux-security-module <linux-security-module@vger.kernel.org>,
-        linux-kernel@vger.kernel.org, Jan Kara <jack@suse.cz>,
-        Matthew Wilcox <willy@infradead.org>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>
-Content-Type: text/plain; charset="UTF-8"
+        Sun, 8 Nov 2020 22:40:19 -0500
+Received: from vivo-HP-ProDesk-680-G4-PCI-MT.vivo.xyz (unknown [58.251.74.231])
+        by m176115.mail.qiye.163.com (Hmail) with ESMTPA id 3F816666C60;
+        Mon,  9 Nov 2020 11:40:14 +0800 (CST)
+From:   Wang Qing <wangqing@vivo.com>
+To:     Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Alistair Popple <alistair@popple.id.au>,
+        Jordan Niethe <jniethe5@gmail.com>,
+        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
+        Wang Qing <wangqing@vivo.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Cc:     tglx@linutronix.de
+Subject: [PATCH] sched/rt, powerpc: Prepare for PREEMPT_RT
+Date:   Mon,  9 Nov 2020 11:40:08 +0800
+Message-Id: <1604893209-18762-1-git-send-email-wangqing@vivo.com>
+X-Mailer: git-send-email 2.7.4
+X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
+        oVCBIfWUFZHU1ITUIaGhhDSE4ZVkpNS09DQkhJSk5CS0JVEwETFhoSFyQUDg9ZV1kWGg8SFR0UWU
+        FZT0tIVUpKS0hKQ1VLWQY+
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6NFE6EDo6TD8sPxJLOgMTTks8
+        SxAaCiJVSlVKTUtPQ0JISUpNSEpIVTMWGhIXVQwaFRwKEhUcOw0SDRRVGBQWRVlXWRILWUFZTkNV
+        SU5KVUxPVUlISllXWQgBWUFJTE1ONwY+
+X-HM-Tid: 0a75ab170c019373kuws3f816666c60
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Nov 8, 2020 at 10:30 AM John Hubbard <jhubbard@nvidia.com> wrote:
->
-> On 11/7/20 8:12 PM, Tetsuo Handa wrote:
-> > On 2020/11/08 11:17, John Hubbard wrote:
-> >>> Excuse me, but Documentation/core-api/pin_user_pages.rst says
-> >>> "CASE 5: Pinning in order to _write_ to the data within the page"
-> >>> while tomoyo_dump_page() is for "_read_ the data within the page".
-> >>> Do we want to convert to pin_user_pages_remote() or lock_page() ?
-> >>>
-> >>
-> >> Sorry, I missed the direction here, was too focused on the Case 5
-> >> aspect. Yes. Case 5 (which, again, I think we're about to re-document)
-> >> is only about *writing* to data within the page.
-> >>
-> >> So in this case, where it is just reading from the page, I think it's
-> >> already from a gup vs pup point of view.
-> >>
-> >> btw, it's not clear to me whether the current code is susceptible to any
-> >> sort of problem involving something writing to the page while it
-> >> is being dumped (I am curious). But changing from gup to pup wouldn't
-> >> fix that, if it were a problem. It a separate question from this patch.
-> >
-> > The "struct page" tomoyo_dump_page() accesses is argv/envp arguments passed
-> > to execve() syscall. Therefore, these pages are not visible from threads
-> > except current thread, and thus there is no possibility that these pages
-> > are modified by other threads while current thread is reading.
-> >
->
-> Perfect. So since I accidentally left out the word "correct" above (I meant
-> to write, "it's already correct"), let me be extra clear: Souptick, we
-> should just drop this patch.
->
+Add PREEMPT_RT output to die().
 
-Agreed. I will drop this patch.
+Signed-off-by: Wang Qing <wangqing@vivo.com>
+---
+ arch/powerpc/kernel/traps.c | 10 +++++++++-
+ 1 file changed, 9 insertions(+), 1 deletion(-)
+
+diff --git a/arch/powerpc/kernel/traps.c b/arch/powerpc/kernel/traps.c
+index 5006dcb..6dfe567
+--- a/arch/powerpc/kernel/traps.c
++++ b/arch/powerpc/kernel/traps.c
+@@ -258,6 +258,14 @@ static char *get_mmu_str(void)
+ 	return "";
+ }
+ 
++#ifdef CONFIG_PREEMPT
++#define S_PREEMPT " PREEMPT"
++#elif defined(CONFIG_PREEMPT_RT)
++#define S_PREEMPT " PREEMPT_RT"
++#else
++#define S_PREEMPT ""
++#endif
++
+ static int __die(const char *str, struct pt_regs *regs, long err)
+ {
+ 	printk("Oops: %s, sig: %ld [#%d]\n", str, err, ++die_counter);
+@@ -265,7 +273,7 @@ static int __die(const char *str, struct pt_regs *regs, long err)
+ 	printk("%s PAGE_SIZE=%luK%s%s%s%s%s%s %s\n",
+ 	       IS_ENABLED(CONFIG_CPU_LITTLE_ENDIAN) ? "LE" : "BE",
+ 	       PAGE_SIZE / 1024, get_mmu_str(),
+-	       IS_ENABLED(CONFIG_PREEMPT) ? " PREEMPT" : "",
++	       S_PREEMPT,
+ 	       IS_ENABLED(CONFIG_SMP) ? " SMP" : "",
+ 	       IS_ENABLED(CONFIG_SMP) ? (" NR_CPUS=" __stringify(NR_CPUS)) : "",
+ 	       debug_pagealloc_enabled() ? " DEBUG_PAGEALLOC" : "",
+-- 
+2.7.4
+
