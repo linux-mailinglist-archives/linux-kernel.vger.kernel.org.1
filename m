@@ -2,104 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D871E2AB025
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 05:17:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 11C172AB02A
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 05:30:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729184AbgKIERK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 8 Nov 2020 23:17:10 -0500
-Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:4001 "EHLO
-        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728038AbgKIERK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 8 Nov 2020 23:17:10 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5fa8c2c90001>; Sun, 08 Nov 2020 20:17:13 -0800
-Received: from [10.2.49.75] (10.124.1.5) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 9 Nov
- 2020 04:17:09 +0000
-Subject: Re: [PATCH 2/2] tomoyo: Fixed typo in documentation
-To:     Souptick Joarder <jrdr.linux@gmail.com>
-CC:     <takedakn@nttdata.co.jp>,
-        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        linux-security-module <linux-security-module@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-References: <1604737451-19082-1-git-send-email-jrdr.linux@gmail.com>
- <1604737451-19082-2-git-send-email-jrdr.linux@gmail.com>
- <f5ed0413-315c-d5d0-e33f-c2b247a28da2@nvidia.com>
- <CAFqt6zaRP56DPRHTGMNiY3KpdOKPB_SeeuFagUbkmQKQ6mKD2A@mail.gmail.com>
-From:   John Hubbard <jhubbard@nvidia.com>
-Message-ID: <7c60a6f5-414f-99e8-68c3-ca3b60fe89e9@nvidia.com>
-Date:   Sun, 8 Nov 2020 20:17:09 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
-MIME-Version: 1.0
-In-Reply-To: <CAFqt6zaRP56DPRHTGMNiY3KpdOKPB_SeeuFagUbkmQKQ6mKD2A@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.124.1.5]
-X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
- HQMAIL107.nvidia.com (172.20.187.13)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1604895433; bh=GyczsSIPQ2H7XyF7aw5OG6GSzZRXZ+iyOimEZqVpguI=;
-        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
-         MIME-Version:In-Reply-To:Content-Type:Content-Language:
-         Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy;
-        b=NcFwCzlIIkdM2jCJN3EMJWiVtpT610ymFCkhLJzj2vxhiHAT5isr8uX3wzPA862Fp
-         U7IFUbiMUdJxAIDzWbW677vYiaQgtcAp3ByBOrxcF31UrwGHXFqoYZXdDIxE1MvfM9
-         rWd99Y2W71EkELaRi50GU1Ns38LsaW4EykWseuyMsI4uffl2yVfzroHJXTXoMA3hMR
-         pZ28L1Ar6lGSwBcyNCCdVhyLBOSfn9iiJ7noJBz9SzWS/V7s5ce4Z0FpLDZd9C8SiQ
-         y3Qf6EzYP1APkfnN1nmBSehFD5/ElNK8Y1rcXNX/JqafBuhkEkzOr1htFIzu0VhO4G
-         h1w3idpkvjhsQ==
+        id S1729219AbgKIE3N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 8 Nov 2020 23:29:13 -0500
+Received: from foss.arm.com ([217.140.110.172]:33898 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728038AbgKIE3N (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 8 Nov 2020 23:29:13 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id EB81D101E;
+        Sun,  8 Nov 2020 20:29:12 -0800 (PST)
+Received: from p8cg001049571a15.arm.com (unknown [10.163.78.250])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 8208A3F6CF;
+        Sun,  8 Nov 2020 20:29:09 -0800 (PST)
+From:   Anshuman Khandual <anshuman.khandual@arm.com>
+To:     linux-arm-kernel@lists.infradead.org
+Cc:     gshan@redhat.com, Anshuman Khandual <anshuman.khandual@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Steve Capper <steve.capper@arm.com>,
+        Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org
+Subject: [PATCH V5 0/3] arm64/mm/hotplug: Improve memory offline event notifier
+Date:   Mon,  9 Nov 2020 09:58:54 +0530
+Message-Id: <1604896137-16644-1-git-send-email-anshuman.khandual@arm.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/8/20 7:41 PM, Souptick Joarder wrote:
-> On Sat, Nov 7, 2020 at 2:27 PM John Hubbard <jhubbard@nvidia.com> wrote:
->>
->> On 11/7/20 12:24 AM, Souptick Joarder wrote:
->>> Fixed typo s/Poiner/Pointer
->>>
->>> Fixes: 5b636857fee6 ("TOMOYO: Allow using argv[]/envp[] of execve() as conditions.")
->>> Signed-off-by: Souptick Joarder <jrdr.linux@gmail.com>
->>> Cc: John Hubbard <jhubbard@nvidia.com>
->>> ---
->>>    security/tomoyo/domain.c | 2 +-
->>>    1 file changed, 1 insertion(+), 1 deletion(-)
->>>
->>> diff --git a/security/tomoyo/domain.c b/security/tomoyo/domain.c
->>> index bd748be..7b2babe 100644
->>> --- a/security/tomoyo/domain.c
->>> +++ b/security/tomoyo/domain.c
->>> @@ -891,7 +891,7 @@ int tomoyo_find_next_domain(struct linux_binprm *bprm)
->>>     *
->>>     * @bprm: Pointer to "struct linux_binprm".
->>>     * @pos:  Location to dump.
->>> - * @dump: Poiner to "struct tomoyo_page_dump".
->>> + * @dump: Pointer to "struct tomoyo_page_dump".
->>
->> Not worth a separate patch, especially since the original comment is merely
->> copying the C sources, and as such, does not add any value.
->>
->> I'd either a) craft a new documentation line that adds some value, or b) just
->> merge this patch into the previous one, and make a note in the commit
->> description to the effect that you've included a trivial typo fix as long
->> as you're there.
->>
-> 
-> John, as patch[1/2] is dropped, can we take this patch forward with some more
-> updates in documentations ?
-> 
+This series brings three different changes to the only memory event notifier on
+arm64 platform. These changes improve it's robustness while also enhancing debug
+capabilities during potential memory offlining error conditions.
 
-That's really up to the folks who work on this code. Personally I would rarely
-post a patch *just* for this, but on the other hand it is a correction. Either
-way is fine with me of course.
+This applies on 5.10-rc3
 
+Changes in V5:
 
-thanks,
+- Added some more documentation in [PATCH 2/3]
+- Used for_each_mem_range() as for_each_memblock() has been dropped
+- validate_bootmem_online() just prints non-compliant early sections
+- validate_bootmem_online() does not prevent notifier registration
+- Folded two pr_err() statements into just a single one per Gavin
+
+Changes in V4: (https://lore.kernel.org/linux-arm-kernel/1601387687-6077-1-git-send-email-anshuman.khandual@arm.com/
+
+- Dropped additional return in prevent_bootmem_remove_init() per Gavin
+- Rearranged memory section loop in prevent_bootmem_remove_notifier() per Gavin
+- Call out boot memory ranges for attempted offline or offline events
+
+Changes in V3: (https://patchwork.kernel.org/project/linux-arm-kernel/list/?series=352717)
+
+- Split the single patch into three patch series per Catalin
+- Trigger changed from setup_arch() to early_initcall() per Catalin
+- Renamed back memory_hotremove_notifier() as prevent_bootmem_remove_init()
+- validate_bootmem_online() is now called from prevent_bootmem_remove_init() per Catalin
+- Skip registering the notifier if validate_bootmem_online() returns negative
+
+Changes in V2: (https://patchwork.kernel.org/patch/11732161/)
+
+- Dropped all generic changes wrt MEM_CANCEL_OFFLINE reasons enumeration
+- Dropped all related (processing MEM_CANCEL_OFFLINE reasons) changes on arm64
+- Added validate_boot_mem_online_state() that gets called with early_initcall()
+- Added CONFIG_MEMORY_HOTREMOVE check before registering memory notifier
+- Moved notifier registration i.e memory_hotremove_notifier into setup_arch()
+
+Changes in V1: (https://patchwork.kernel.org/project/linux-mm/list/?series=271237)
+
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: Will Deacon <will@kernel.org>
+Cc: Mark Rutland <mark.rutland@arm.com>
+Cc: Marc Zyngier <maz@kernel.org>
+Cc: Steve Capper <steve.capper@arm.com>
+Cc: Mark Brown <broonie@kernel.org>
+Cc: Gavin Shan <gshan@redhat.com>
+Cc: linux-arm-kernel@lists.infradead.org
+Cc: linux-kernel@vger.kernel.org
+
+Anshuman Khandual (3):
+  arm64/mm/hotplug: Register boot memory hot remove notifier earlier
+  arm64/mm/hotplug: Enable MEM_OFFLINE event handling
+  arm64/mm/hotplug: Ensure early memory sections are all online
+
+ arch/arm64/mm/mmu.c | 95 +++++++++++++++++++++++++++++++++++++++++++--
+ 1 file changed, 91 insertions(+), 4 deletions(-)
+
 -- 
-John Hubbard
-NVIDIA
+2.20.1
+
