@@ -2,61 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DE7A2AC3A5
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 19:22:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E0C02AC3B6
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 19:23:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730498AbgKISWk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 13:22:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43004 "EHLO
+        id S1731027AbgKISXb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 13:23:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43010 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730353AbgKISWh (ORCPT
+        with ESMTP id S1730125AbgKISWi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 13:22:37 -0500
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECBE8C0613CF
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Nov 2020 10:22:36 -0800 (PST)
-Received: by mail-wm1-x342.google.com with SMTP id w24so397485wmi.0
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Nov 2020 10:22:36 -0800 (PST)
+        Mon, 9 Nov 2020 13:22:38 -0500
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83304C0613CF
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Nov 2020 10:22:38 -0800 (PST)
+Received: by mail-wr1-x441.google.com with SMTP id r17so5894808wrw.1
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Nov 2020 10:22:38 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=nWKR6uPZUpsHw9fLiQN+tCUhIOQtuUG869jNO4i86ZY=;
-        b=pISmdvdSsAGV1QIK8I4/nXbvzV4BpyRg4zyUJt09AIUwDnQOACl7kVRWIlyZmqQFmu
-         h8mZCjA7ExEBqY7UPobPGH36uZeALUfjlSpsODuSdTwFYMaHv5sYNEOJTALE1KEutu+C
-         RgDy4EZwHHKM+WM3pVjJOo4C9KfPKSll+pNQfBMJy2sz3DSOjb8zpvjYBt2ntpWUWyVL
-         aP28CxDBuNZ2Z4vI1+SivZCt0x7e5sXUTDaoGqw+OlhpZygKYwKxsQjw2348oRFE0DWy
-         KO2TPj52VpVqlNk5H8ho0v0+f1qb2m/Leb1RXjg+uMmaNMiF9wqWvSzbQIq+phKexoxY
-         ty8w==
+        bh=93EjZ3Q1Gw8Ho51hZkZvcyMJpfj7h+RPmd54ZDyuP+E=;
+        b=FGiuz2Cst7W8YGzjuH7oR/80riR1y3ryV13ErPsnJPIku+MH0/ysQZFcPAyi6Rak30
+         A7uyeT+Pv0IY9nd1ybvTN4TTOIXRxo6WyAarJc69qAIgAVWwItf9dE2Xipuv1iDs6PrZ
+         8VTA94w7a0qq8YfA8iPwN69GCrDDKsiXEpnuvGsK2Q8x1fo6N5raOMUGb46Kdp8/akPj
+         M7cPQ0B3xEAWcsbudiOqaKsqamxeMJEKo93pm8ktcyX3KUUcKcdtzEqbVbAJ6pVplMfw
+         SGiLPCC+vSwii8OmWho/PSnPB70IwNmqiRCgM2kfdWrmSgxw2nTZHbNsJgNpO2ILGkXn
+         Wqew==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=nWKR6uPZUpsHw9fLiQN+tCUhIOQtuUG869jNO4i86ZY=;
-        b=Bh2viHej1NLdeFfYXNMX2RLaViWd6/20+NV7Odi7I8jUqzok+t4nHR4KTmW632RO9F
-         cV9WAhw7yFBUEwqc8UbP3KbbaChRu/ZNXLe0r6/WFrEH4Yy1lY709QjLBgnvlQd0PYap
-         wkbk55YlPS/MRQxp4wqZ/cFFLPjUwDON2u8k9Sd/3jke1lzI4UvEzhzy8SnrMkkRuvHb
-         OuKJmMSsOlfAuKiG2Vl9ryYdmJhUONdRrnYni6oTygjt8G55gl32EHur+oiqGdlInhyZ
-         XZAnDVEAjHzZjeTDrq/f+R0eO/Uulz/ZnxiYOm8YlVkefu6sj2SdI7YbnqQGDohFoQ+S
-         aIVw==
-X-Gm-Message-State: AOAM531amYuZG7op+TjPtA5StP1WxaNWa4asB+Z0tHXqKNyRCald0tjb
-        qmxqEZcT2DBnZJiyG1wAhSLKXQ==
-X-Google-Smtp-Source: ABdhPJzVFDmrznnhXXVDaVtytN/m1ApIQJ9IObX0ZNMZx+35FLITCYT7SzrOgTW0NRH8EaemRS2Omg==
-X-Received: by 2002:a1c:5a06:: with SMTP id o6mr433586wmb.181.1604946155646;
-        Mon, 09 Nov 2020 10:22:35 -0800 (PST)
+        bh=93EjZ3Q1Gw8Ho51hZkZvcyMJpfj7h+RPmd54ZDyuP+E=;
+        b=cQbi6eIcffgNm5Ef6lQEoTtVe2VzAv8grsG5ZC/fAbAt/5egCw+rSGeJCIcxo85gZV
+         Xe6TmmvGvMOydDzBWV3PV38CS4rco1OoKzSASDvDsHdU+uirAgKTkCIQVyZ4oICgfl6I
+         LXFfdhQJ5fXQOOqwKke1+o37n+eFam1U22kanOzzi3RZjoI0rMxcwrxwKrRpmztyFcph
+         Y8vhIpxx3RvVvq2vBmlJpRlvYS45mjlaI+C9uIZx7XK9jdlrwox6txUndvjrbQOUPiR6
+         Ct/4u6SltuVGkhtFNvKalO+RXQW5xO6bht//P609j49Sk1JtQrbdKP3Uy26waSTXy6tf
+         gufg==
+X-Gm-Message-State: AOAM530jsAg8b66fk1AfJxgyplvxoxUQjMLvy2CnR9vxZkhZBLlVqVew
+        IsR/KHDoxeOTJcDDU8XqIvgxsKTkdgwppLCA
+X-Google-Smtp-Source: ABdhPJzjA29ReDKoS8meuG3AwVUifiDdGOjuNnliZQ8OcrzScX2JdL+j0w6/+uklVrrqt8pkwQWMfw==
+X-Received: by 2002:a5d:670f:: with SMTP id o15mr2175982wru.204.1604946157299;
+        Mon, 09 Nov 2020 10:22:37 -0800 (PST)
 Received: from dell.default ([91.110.221.180])
-        by smtp.gmail.com with ESMTPSA id g186sm735365wma.1.2020.11.09.10.22.34
+        by smtp.gmail.com with ESMTPSA id g186sm735365wma.1.2020.11.09.10.22.36
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 09 Nov 2020 10:22:35 -0800 (PST)
+        Mon, 09 Nov 2020 10:22:36 -0800 (PST)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
 Cc:     linux-kernel@vger.kernel.org, Richard Weinberger <richard@nod.at>,
         Miquel Raynal <miquel.raynal@bootlin.com>,
         Vignesh Raghavendra <vigneshr@ti.com>,
         linux-mtd@lists.infradead.org
-Subject: [PATCH v3 11/23] mtd: ubi: eba: Fix a couple of misdocumentation issues
-Date:   Mon,  9 Nov 2020 18:21:54 +0000
-Message-Id: <20201109182206.3037326-12-lee.jones@linaro.org>
+Subject: [PATCH v3 12/23] mtd: ubi: wl: Fix a couple of kernel-doc issues
+Date:   Mon,  9 Nov 2020 18:21:55 +0000
+Message-Id: <20201109182206.3037326-13-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20201109182206.3037326-1-lee.jones@linaro.org>
 References: <20201109182206.3037326-1-lee.jones@linaro.org>
@@ -68,9 +68,8 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Fixes the following W=1 kernel build warning(s):
 
- drivers/mtd/ubi/eba.c:1304: warning: Function parameter or member 'vidb' not described in 'ubi_eba_copy_leb'
- drivers/mtd/ubi/eba.c:1304: warning: Excess function parameter 'vid_hdr' description in 'ubi_eba_copy_leb'
- drivers/mtd/ubi/eba.c:1483: warning: Function parameter or member 'ai' not described in 'print_rsvd_warning'
+ drivers/mtd/ubi/wl.c:584: warning: Function parameter or member 'nested' not described in 'schedule_erase'
+ drivers/mtd/ubi/wl.c:1075: warning: Excess function parameter 'shutdown' description in '__erase_worker'
 
 Cc: Richard Weinberger <richard@nod.at>
 Cc: Miquel Raynal <miquel.raynal@bootlin.com>
@@ -78,30 +77,30 @@ Cc: Vignesh Raghavendra <vigneshr@ti.com>
 Cc: linux-mtd@lists.infradead.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/mtd/ubi/eba.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/mtd/ubi/wl.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/drivers/mtd/ubi/eba.c b/drivers/mtd/ubi/eba.c
-index 0edecfdbd01f3..892494c8cb7c7 100644
---- a/drivers/mtd/ubi/eba.c
-+++ b/drivers/mtd/ubi/eba.c
-@@ -1290,7 +1290,7 @@ static int is_error_sane(int err)
-  * @ubi: UBI device description object
-  * @from: physical eraseblock number from where to copy
-  * @to: physical eraseblock number where to copy
-- * @vid_hdr: VID header of the @from physical eraseblock
-+ * @vidb: data structure from where the VID header is derived
+diff --git a/drivers/mtd/ubi/wl.c b/drivers/mtd/ubi/wl.c
+index 7847de75a74ca..8455f1d47f3c9 100644
+--- a/drivers/mtd/ubi/wl.c
++++ b/drivers/mtd/ubi/wl.c
+@@ -575,6 +575,7 @@ static int erase_worker(struct ubi_device *ubi, struct ubi_work *wl_wrk,
+  * @vol_id: the volume ID that last used this PEB
+  * @lnum: the last used logical eraseblock number for the PEB
+  * @torture: if the physical eraseblock has to be tortured
++ * @nested: denotes whether the work_sem is already held in read mode
   *
-  * This function copies logical eraseblock from physical eraseblock @from to
-  * physical eraseblock @to. The @vid_hdr buffer may be changed by this
-@@ -1463,6 +1463,7 @@ int ubi_eba_copy_leb(struct ubi_device *ubi, int from, int to,
- /**
-  * print_rsvd_warning - warn about not having enough reserved PEBs.
+  * This function returns zero in case of success and a %-ENOMEM in case of
+  * failure.
+@@ -1063,8 +1064,6 @@ static int ensure_wear_leveling(struct ubi_device *ubi, int nested)
+  * __erase_worker - physical eraseblock erase worker function.
   * @ubi: UBI device description object
-+ * @ai: UBI attach info object
+  * @wl_wrk: the work object
+- * @shutdown: non-zero if the worker has to free memory and exit
+- * because the WL sub-system is shutting down
   *
-  * This is a helper function for 'ubi_eba_init()' which is called when UBI
-  * cannot reserve enough PEBs for bad block handling. This function makes a
+  * This function erases a physical eraseblock and perform torture testing if
+  * needed. It also takes care about marking the physical eraseblock bad if
 -- 
 2.25.1
 
