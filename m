@@ -2,152 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 151392AC288
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 18:37:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9847F2AC28B
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 18:38:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732310AbgKIRhn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 12:37:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35982 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729723AbgKIRhm (ORCPT
+        id S1732348AbgKIRiO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 12:38:14 -0500
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:33430 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1731430AbgKIRiO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 12:37:42 -0500
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83BFFC0613CF;
-        Mon,  9 Nov 2020 09:37:42 -0800 (PST)
-Received: by mail-wr1-x441.google.com with SMTP id r17so5718174wrw.1;
-        Mon, 09 Nov 2020 09:37:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=2mg6hdTFKBAP/XEWuXhZe5qjYQilvjRccoHsB6cLuSo=;
-        b=gOncIsc2uSf8Y/0XgShdWgdFYAl69e+NUURJ1GklcQLgK4ILvYDkkZ7ycmRMXjSFYR
-         1TXnpIenOWfIgf+txKPO6UKcrbX+2n94O/1egkcOUzHLss3yBBEKIgwYqdrhKp2JlyxR
-         nBmhTklk3WZBMKrzTlWOrTCEi6d657r7WrBfVd2AZt+iFLRAVhp2998ZgMhXVgTdtet2
-         qtOdN1K0G+fDg5UVvQ7DgbjYZZ8GCoLnVeN94MtjVjAdca3qpIqKsxa9t2W9DN24tlQg
-         Ytf9poMmtsNrinwOyEIKzLPXjHoaI5GWFzzWbwG+yv8VRQHxkoKmUgRcfuz9nlF9y03r
-         QxMg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=2mg6hdTFKBAP/XEWuXhZe5qjYQilvjRccoHsB6cLuSo=;
-        b=RUgb+Mc22/3oRDgAkRtQvXyZFiAJdM6LCc6uDfqQBkpA61Z3FrF/QoMUXG9YYDFqFS
-         CWgLBTdY1XgXtYPdThDJ+ZjtDbWTN1kTZrEAibr7zDmvXrDtYTmZ0GS9M9Q8MluotXtx
-         7X3xxuWfMSWrpQq0K5FbA/PmB4HlJuyKvtHMtf1Uw8GAEBARpaFvWlXGgGb9jJ2CPGXY
-         1W+5d03vqL7J7zSF+bCbtrB4eirOL5g5kos1NgKxrAJmYkLDYMYKaSbV0laRdP5rk+/5
-         QEna3ogOyCQUygFScG2s6uSY3zbpqWPxzfNzxDE7XGBhpft+1b8AzsK1ZmjEGkrx9fab
-         lbKQ==
-X-Gm-Message-State: AOAM533rIkVdgBHX/r0RpD6p9HC0MaeR41LVOxCqF9QOkJEJK9Y93OVa
-        GkW6riv0DC89IzTuzrulVjrQKOrTvHk=
-X-Google-Smtp-Source: ABdhPJx+3zG93RfEPCdlXNi7AlXH+fPq6l0PQvXKjhYbn6TPAlupvvIszTAgt4jEyST2HyhOyQo5gQ==
-X-Received: by 2002:adf:f3c7:: with SMTP id g7mr20529226wrp.394.1604943460930;
-        Mon, 09 Nov 2020 09:37:40 -0800 (PST)
-Received: from [192.168.8.114] ([37.170.31.34])
-        by smtp.gmail.com with ESMTPSA id u23sm127692wmc.32.2020.11.09.09.37.39
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 09 Nov 2020 09:37:40 -0800 (PST)
-Subject: Re: [PATCH v2 net] net: udp: fix Fast/frag0 UDP GRO
-To:     Alexander Lobakin <alobakin@pm.me>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Willem de Bruijn <willemb@google.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <0eaG8xtbtKY1dEKCTKUBubGiC9QawGgB3tVZtNqVdY@cp4-web-030.plabs.ch>
-From:   Eric Dumazet <eric.dumazet@gmail.com>
-Message-ID: <d9d09931-8cd3-1eb6-673c-3ae5ebc3ee57@gmail.com>
-Date:   Mon, 9 Nov 2020 18:37:36 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.1
+        Mon, 9 Nov 2020 12:38:14 -0500
+Received: from callcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 0A9Hc9d9019854
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 9 Nov 2020 12:38:10 -0500
+Received: by callcc.thunk.org (Postfix, from userid 15806)
+        id 73309420107; Mon,  9 Nov 2020 12:38:09 -0500 (EST)
+Date:   Mon, 9 Nov 2020 12:38:09 -0500
+From:   "Theodore Y. Ts'o" <tytso@mit.edu>
+To:     torvalds@linux-foundation.org
+Cc:     linux-kernel@vger.kernel.org, linux-ext4@vger.kernel.org
+Subject: [GIT PULL] ext4 cleanups for 5.10-rc4
+Message-ID: <20201109173809.GA2916982@mit.edu>
 MIME-Version: 1.0
-In-Reply-To: <0eaG8xtbtKY1dEKCTKUBubGiC9QawGgB3tVZtNqVdY@cp4-web-030.plabs.ch>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+(Resent with missing cc's, sorry.)
 
+The following changes since commit 3cea11cd5e3b00d91caf0b4730194039b45c5891:
 
-On 11/9/20 5:56 PM, Alexander Lobakin wrote:
-> While testing UDP GSO fraglists forwarding through driver that uses
-> Fast GRO (via napi_gro_frags()), I was observing lots of out-of-order
-> iperf packets:
-> 
-> [ ID] Interval           Transfer     Bitrate         Jitter
-> [SUM]  0.0-40.0 sec  12106 datagrams received out-of-order
-> 
-> Simple switch to napi_gro_receive() any other method without frag0
-> shortcut completely resolved them.
-> 
-> I've found that UDP GRO uses udp_hdr(skb) in its .gro_receive()
-> callback. While it's probably OK for non-frag0 paths (when all
-> headers or even the entire frame are already in skb->data), this
-> inline points to junk when using Fast GRO (napi_gro_frags() or
-> napi_gro_receive() with only Ethernet header in skb->data and all
-> the rest in shinfo->frags) and breaks GRO packet compilation and
-> the packet flow itself.
-> To support both modes, skb_gro_header_fast() + skb_gro_header_slow()
-> are typically used. UDP even has an inline helper that makes use of
-> them, udp_gro_udphdr(). Use that instead of troublemaking udp_hdr()
-> to get rid of the out-of-order delivers.
-> 
-> Present since the introduction of plain UDP GRO in 5.0-rc1.
-> 
-> Since v1 [1]:
->  - added a NULL pointer check for "uh" as suggested by Willem.
-> 
-> [1] https://lore.kernel.org/netdev/YazU6GEzBdpyZMDMwJirxDX7B4sualpDG68ADZYvJI@cp4-web-034.plabs.ch
-> 
-> Fixes: e20cf8d3f1f7 ("udp: implement GRO for plain UDP sockets.")
-> Signed-off-by: Alexander Lobakin <alobakin@pm.me>
-> ---
->  net/ipv4/udp_offload.c | 7 ++++++-
->  1 file changed, 6 insertions(+), 1 deletion(-)
-> 
-> diff --git a/net/ipv4/udp_offload.c b/net/ipv4/udp_offload.c
-> index e67a66fbf27b..7f6bd221880a 100644
-> --- a/net/ipv4/udp_offload.c
-> +++ b/net/ipv4/udp_offload.c
-> @@ -366,13 +366,18 @@ static struct sk_buff *udp4_ufo_fragment(struct sk_buff *skb,
->  static struct sk_buff *udp_gro_receive_segment(struct list_head *head,
->  					       struct sk_buff *skb)
->  {
-> -	struct udphdr *uh = udp_hdr(skb);
-> +	struct udphdr *uh = udp_gro_udphdr(skb);
->  	struct sk_buff *pp = NULL;
->  	struct udphdr *uh2;
->  	struct sk_buff *p;
->  	unsigned int ulen;
->  	int ret = 0;
->  
-> +	if (unlikely(!uh)) {
+  Linux 5.10-rc2 (2020-11-01 14:43:51 -0800)
 
-How uh could be NULL here ?
+are available in the Git repository at:
 
-My understanding is that udp_gro_receive() is called
-only after udp4_gro_receive() or udp6_gro_receive()
-validated that udp_gro_udphdr(skb) was not NULL.
+  git://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git tags/ext4_for_linus_cleanups
 
+for you to fetch changes up to 05d5233df85e9621597c5838e95235107eb624a2:
 
-> +		NAPI_GRO_CB(skb)->flush = 1;
-> +		return NULL;
-> +	}
-> +
->  	/* requires non zero csum, for symmetry with GSO */
->  	if (!uh->check) {
->  		NAPI_GRO_CB(skb)->flush = 1;
-> 
+  jbd2: fix up sparse warnings in checkpoint code (2020-11-07 00:09:08 -0500)
 
-Why uh2 is left unchanged ?
+----------------------------------------------------------------
+More fixes and cleanups for the new fast_commit features, but also a
+few other miscellaneous bug fixes and a cleanup for the MAINTAINERS
+file.
 
-    uh2 = udp_hdr(p);
+----------------------------------------------------------------
+Chao Yu (1):
+      MAINTAINERS: add missing file in ext4 entry
 
-...
+Dan Carpenter (1):
+      ext4: silence an uninitialized variable warning
 
+Harshad Shirwadkar (22):
+      ext4: describe fast_commit feature flags
+      ext4: mark fc ineligible if inode gets evictied due to mem pressure
+      ext4: drop redundant calls ext4_fc_track_range
+      ext4: fixup ext4_fc_track_* functions' signature
+      jbd2: rename j_maxlen to j_total_len and add jbd2_journal_max_txn_bufs
+      ext4: clean up the JBD2 API that initializes fast commits
+      jbd2: drop jbd2_fc_init documentation
+      jbd2: don't use state lock during commit path
+      jbd2: don't pass tid to jbd2_fc_end_commit_fallback()
+      jbd2: add todo for a fast commit performance optimization
+      jbd2: don't touch buffer state until it is filled
+      jbd2: don't read journal->j_commit_sequence without taking a lock
+      ext4: dedpulicate the code to wait on inode that's being committed
+      ext4: fix code documentatioon
+      ext4: mark buf dirty before submitting fast commit buffer
+      ext4: remove unnecessary fast commit calls from ext4_file_mmap
+      ext4: fix inode dirty check in case of fast commits
+      ext4: disable fast commit with data journalling
+      ext4: issue fsdev cache flush before starting fast commit
+      ext4: make s_mount_flags modifications atomic
+      jbd2: don't start fast commit on aborted journal
+      ext4: cleanup fast commit mount options
+
+Joseph Qi (1):
+      ext4: unlock xattr_sem properly in ext4_inline_data_truncate()
+
+Kaixu Xia (1):
+      ext4: correctly report "not supported" for {usr,grp}jquota when !CONFIG_QUOTA
+
+Theodore Ts'o (2):
+      ext4: fix sparse warnings in fast_commit code
+      jbd2: fix up sparse warnings in checkpoint code
+
+ Documentation/filesystems/ext4/journal.rst |   6 ++
+ Documentation/filesystems/ext4/super.rst   |   7 +++
+ Documentation/filesystems/journalling.rst  |   6 +-
+ MAINTAINERS                                |   1 +
+ fs/ext4/ext4.h                             |  66 ++++++++++++++------
+ fs/ext4/extents.c                          |   7 +--
+ fs/ext4/fast_commit.c                      | 174 +++++++++++++++++++++++++++--------------------------
+ fs/ext4/fast_commit.h                      |   6 +-
+ fs/ext4/file.c                             |   6 +-
+ fs/ext4/fsmap.c                            |   2 +-
+ fs/ext4/fsync.c                            |   2 +-
+ fs/ext4/inline.c                           |   1 +
+ fs/ext4/inode.c                            |  19 +++---
+ fs/ext4/mballoc.c                          |   6 +-
+ fs/ext4/namei.c                            |  61 +++++++++----------
+ fs/ext4/super.c                            |  47 ++++++++-------
+ fs/jbd2/checkpoint.c                       |   2 +
+ fs/jbd2/commit.c                           |  11 +++-
+ fs/jbd2/journal.c                          | 138 +++++++++++++++++++++++-------------------
+ fs/jbd2/recovery.c                         |   6 +-
+ fs/jbd2/transaction.c                      |   4 +-
+ fs/ocfs2/journal.c                         |   2 +-
+ include/linux/jbd2.h                       |  23 ++++---
+ include/trace/events/ext4.h                |  10 +--
+ 24 files changed, 342 insertions(+), 271 deletions(-)
