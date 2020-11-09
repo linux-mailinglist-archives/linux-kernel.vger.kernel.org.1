@@ -2,41 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50A872AB935
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 14:07:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DD2A72AB98C
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 14:10:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730082AbgKINHJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 08:07:09 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59708 "EHLO mail.kernel.org"
+        id S1732014AbgKINKR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 08:10:17 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35370 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730272AbgKINHA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 08:07:00 -0500
+        id S1730637AbgKINKN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 08:10:13 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 84A0721D46;
-        Mon,  9 Nov 2020 13:06:58 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id A25E12076E;
+        Mon,  9 Nov 2020 13:10:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604927219;
-        bh=D9MdidTb1f6jW5+wfj5jVQvlNROQTt2Eti39U2kxRbo=;
+        s=default; t=1604927412;
+        bh=fNHrt/GdcOtMrdpxZLIszplS2BMx/sgK37xpgdSdbCU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jWAjKVAHfby8JKWb0ATBGSHo3LyBHo1IldiHjq/4QZ5CJD6U+6CqDB5JiUs7hLdru
-         UePr4Nfme3k2wMrQ8YsUwkcd4yc9ulgr23LDJXDrKvkYS+5OLCom01ArWkGihgrVX8
-         cBmTA2w+oWSJbnJk2BZjO2lYRk0SFwxfxiDJ+L04=
+        b=gAoR7wjomNbsu6c3e6i9hRBVa8wzVLYJQKtMgaWpqeC/bc5R5tgRX7bNNsQBrTJvT
+         smf3xWdpy9Hr5mt5h35wxlutM2hy9YJBbqo3q8Egu0KsmAgHhP5wfdIEDjctXP+6I/
+         qFX8VOCf7BXwFGROwLjlrhqex8aIAVd3RerNK4NQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Zhang Qilong <zhangqilong3@huawei.com>,
-        Pankaj Gupta <pankaj.gupta.linux@gmail.com>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 34/48] ACPI: NFIT: Fix comparison to -ENXIO
-Date:   Mon,  9 Nov 2020 13:55:43 +0100
-Message-Id: <20201109125018.444264155@linuxfoundation.org>
+        stable@vger.kernel.org, Tejun Heo <tj@kernel.org>,
+        Gabriel Krisman Bertazi <krisman@collabora.com>,
+        Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 50/71] blk-cgroup: Pre-allocate tree node on blkg_conf_prep
+Date:   Mon,  9 Nov 2020 13:55:44 +0100
+Message-Id: <20201109125022.246579367@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201109125016.734107741@linuxfoundation.org>
-References: <20201109125016.734107741@linuxfoundation.org>
+In-Reply-To: <20201109125019.906191744@linuxfoundation.org>
+References: <20201109125019.906191744@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,36 +43,80 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhang Qilong <zhangqilong3@huawei.com>
+From: Gabriel Krisman Bertazi <krisman@collabora.com>
 
-[ Upstream commit 85f971b65a692b68181438e099b946cc06ed499b ]
+[ Upstream commit f255c19b3ab46d3cad3b1b2e1036f4c926cb1d0c ]
 
-Initial value of rc is '-ENXIO', and we should
-use the initial value to check it.
+Similarly to commit 457e490f2b741 ("blkcg: allocate struct blkcg_gq
+outside request queue spinlock"), blkg_create can also trigger
+occasional -ENOMEM failures at the radix insertion because any
+allocation inside blkg_create has to be non-blocking, making it more
+likely to fail.  This causes trouble for userspace tools trying to
+configure io weights who need to deal with this condition.
 
-Signed-off-by: Zhang Qilong <zhangqilong3@huawei.com>
-Reviewed-by: Pankaj Gupta <pankaj.gupta.linux@gmail.com>
-Reviewed-by: Vishal Verma <vishal.l.verma@intel.com>
-[ rjw: Subject edit ]
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+This patch reduces the occurrence of -ENOMEMs on this path by preloading
+the radix tree element on a GFP_KERNEL context, such that we guarantee
+the later non-blocking insertion won't fail.
+
+A similar solution exists in blkcg_init_queue for the same situation.
+
+Acked-by: Tejun Heo <tj@kernel.org>
+Signed-off-by: Gabriel Krisman Bertazi <krisman@collabora.com>
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/acpi/nfit/core.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ block/blk-cgroup.c | 14 ++++++++++++--
+ 1 file changed, 12 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/acpi/nfit/core.c b/drivers/acpi/nfit/core.c
-index 68205002f561e..20fd197ef74cc 100644
---- a/drivers/acpi/nfit/core.c
-+++ b/drivers/acpi/nfit/core.c
-@@ -1273,7 +1273,7 @@ static ssize_t format1_show(struct device *dev,
- 					le16_to_cpu(nfit_dcr->dcr->code));
- 			break;
+diff --git a/block/blk-cgroup.c b/block/blk-cgroup.c
+index 51fc803c999d7..85bd46e0a745f 100644
+--- a/block/blk-cgroup.c
++++ b/block/blk-cgroup.c
+@@ -876,6 +876,12 @@ int blkg_conf_prep(struct blkcg *blkcg, const struct blkcg_policy *pol,
+ 			goto fail;
  		}
--		if (rc != ENXIO)
-+		if (rc != -ENXIO)
- 			break;
+ 
++		if (radix_tree_preload(GFP_KERNEL)) {
++			blkg_free(new_blkg);
++			ret = -ENOMEM;
++			goto fail;
++		}
++
+ 		rcu_read_lock();
+ 		spin_lock_irq(q->queue_lock);
+ 
+@@ -883,7 +889,7 @@ int blkg_conf_prep(struct blkcg *blkcg, const struct blkcg_policy *pol,
+ 		if (IS_ERR(blkg)) {
+ 			ret = PTR_ERR(blkg);
+ 			blkg_free(new_blkg);
+-			goto fail_unlock;
++			goto fail_preloaded;
+ 		}
+ 
+ 		if (blkg) {
+@@ -892,10 +898,12 @@ int blkg_conf_prep(struct blkcg *blkcg, const struct blkcg_policy *pol,
+ 			blkg = blkg_create(pos, q, new_blkg);
+ 			if (unlikely(IS_ERR(blkg))) {
+ 				ret = PTR_ERR(blkg);
+-				goto fail_unlock;
++				goto fail_preloaded;
+ 			}
+ 		}
+ 
++		radix_tree_preload_end();
++
+ 		if (pos == blkcg)
+ 			goto success;
  	}
- 	mutex_unlock(&acpi_desc->init_mutex);
+@@ -905,6 +913,8 @@ int blkg_conf_prep(struct blkcg *blkcg, const struct blkcg_policy *pol,
+ 	ctx->body = body;
+ 	return 0;
+ 
++fail_preloaded:
++	radix_tree_preload_end();
+ fail_unlock:
+ 	spin_unlock_irq(q->queue_lock);
+ 	rcu_read_unlock();
 -- 
 2.27.0
 
