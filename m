@@ -2,71 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA2F72AC94D
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 00:26:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D5812AC94F
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 00:26:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730463AbgKIXZ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 18:25:57 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40304 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727311AbgKIXZ5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 18:25:57 -0500
-Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 15471206A1;
-        Mon,  9 Nov 2020 23:25:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604964356;
-        bh=OVysUOvCr5fa7OosTb0TzgoRDvZFoVbKaYZCwm1QTRY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=w2aOvisNwjlGcG/pAQgMRKhxwbCZf46d0fOIN6SDjqsTiaBe/0z7ovwxKtsT7F2rY
-         sv7faSNqBH29uftJkCaXIqSVbpSWzoAlUd+YMG3XYt2P77UBkABhwVz0CnuCEpbKfn
-         +L/GLCjiBQsJiMeqEtQWQDjSaaqxQSuGNTWDCD8E=
-Date:   Mon, 9 Nov 2020 23:25:51 +0000
-From:   Will Deacon <will@kernel.org>
-To:     linux-arm-kernel@lists.infradead.org
-Cc:     Kees Cook <keescook@chromium.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
+        id S1731496AbgKIX0E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 18:26:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33850 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727311AbgKIX0D (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 18:26:03 -0500
+Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2EBEC0613CF
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Nov 2020 15:26:02 -0800 (PST)
+Received: by mail-io1-xd41.google.com with SMTP id r9so11673028ioo.7
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Nov 2020 15:26:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=WL7+YqDlKTcklSMUg90KwsETHJVl7wRfFGlIXBK/35M=;
+        b=fuJt+MdoiBGzQEhIy085EXvAlsYj774Vevr9MMpc/gaqe/Btd5XX3INohGx3S15JcZ
+         88qu4XNPtFPCmgNT/sXKdZ/WJ454kYQw3HyYrV6cafda9uHeauQhzAEGLaJ5+LoZcDZH
+         00dMG4+5FKrDdZ+nbH/Zl/+FZmlZArJCHlQ2M=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=WL7+YqDlKTcklSMUg90KwsETHJVl7wRfFGlIXBK/35M=;
+        b=YTOkzNFNHbF0Fw/6PAje3Geb0L14MQmED7DYLQ8JK0S/NwP3CYeqOnhtWMWcsS9B3Z
+         G0GXqEv7gi2XFN6JvoynuBwoJyQ3E284I3SM5n3YwdaEzL1oBzUSeqdxBjX7ZY6v25pB
+         zqoqN46+F1hHrvwY8kdRYoPBykjvA3dz5h19OIGpqFpeyos5dPeYkl0lCEW6kKujnNDo
+         QlXNCuQ3Z8QPJkG2Cx/2W9bIX0Ge2zhOoC2GVShPBbRE31HBa1uwcR6s/ZGB2cfY+aqQ
+         9w90dJ99ecxzOE7p/eeZWsb/unzla13HRGV9UTlZXefeA8Z3S0MgDb9oCsbn+j1LTL9f
+         UH0A==
+X-Gm-Message-State: AOAM533mttWyMNWQVma05cAP2RAHPAJjlmllodpcsoa/p2og3G48k3Y8
+        xlEOJXGxQ7aCthoVG6TBpf/TsQ==
+X-Google-Smtp-Source: ABdhPJz2ckT+ICLYlnMORo2X58V8rbLejqvFvefF/PqJclRveF/zm6Eak9IYC4Td8EFED/suCzhPqQ==
+X-Received: by 2002:a02:7112:: with SMTP id n18mr13059341jac.34.1604964362264;
+        Mon, 09 Nov 2020 15:26:02 -0800 (PST)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id t12sm6597093ios.12.2020.11.09.15.26.00
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 09 Nov 2020 15:26:01 -0800 (PST)
+Subject: Re: [PATCH 4.14 00/48] 4.14.205-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 0/4] Upgrade READ_ONCE() to RCpc acquire on arm64 with
- LTO
-Message-ID: <20201109232551.GA15385@willie-the-truck>
-References: <20201103121721.5166-1-will@kernel.org>
+Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de,
+        stable@vger.kernel.org, Shuah Khan <skhan@linuxfoundation.org>
+References: <20201109125016.734107741@linuxfoundation.org>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <49034ba4-e6b0-f382-9cd6-aa075a60f19e@linuxfoundation.org>
+Date:   Mon, 9 Nov 2020 16:26:00 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201103121721.5166-1-will@kernel.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20201109125016.734107741@linuxfoundation.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 03, 2020 at 12:17:17PM +0000, Will Deacon wrote:
-> Hi all,
+On 11/9/20 5:55 AM, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 4.14.205 release.
+> There are 48 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 > 
-> These patches were previously posted as part of a larger series enabling
-> architectures to override __READ_ONCE():
+> Responses should be made by Wed, 11 Nov 2020 12:50:04 +0000.
+> Anything received after that time might be too late.
 > 
->   v3: https://lore.kernel.org/lkml/20200710165203.31284-1-will@kernel.org/
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.14.205-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.14.y
+> and the diffstat can be found below.
 > 
-> With the bulk of that merged, the four patches here override READ_ONCE()
-> so that it gains RCpc acquire semantics on arm64 when LTO is enabled. We
-> can revisit this as and when the compiler provides a means for us to reason
-> about the result of dependency-breaking optimisations. In the meantime,
-> this unblocks LTO for arm64, which I would really like to see merged so
-> that we can focus on enabling CFI.
+> thanks,
 > 
-> I plan to queue these on their own branch in the arm64 tree for 5.11 at
-> -rc3.
+> greg k-h
+> 
 
-Now pushed to for-next/lto:
+Compiled and booted on my new AMD Ryzen 7 4700G test system. No major
+errors/warns to report. This is the baseline for this release.
 
-https://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git/log/?h=for-next/lto
+Tested-by: Shuah Khan <skhan@linuxfoundation.org>
 
-with Mark's comments addressed.
-
-Will
+thanks,
+-- Shuah
