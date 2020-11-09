@@ -2,94 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE58B2ABE6F
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 15:17:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EEC82ABE70
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 15:17:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730356AbgKIORY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 09:17:24 -0500
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:45062 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729776AbgKIORX (ORCPT
+        id S1730724AbgKIOR3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 09:17:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32946 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729776AbgKIOR2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 09:17:23 -0500
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0A9EHC3K040249;
-        Mon, 9 Nov 2020 08:17:12 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1604931432;
-        bh=Wp7QEYjwDcoEzB1kc04C4YfUw/KaMcNtD5IHNJ49+2I=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=w5IOp6b+6S2S8m33TlPJPrQZ/ldEjELgm9GAyYEsKY6rX1tC8tzR5myo/LSFJITxf
-         IvWCmEs1S8FCkLaVXFUe+ULRm0WEn5NGzRJSoID4/eiqDZoo2Uuf/bnWzgB5nUdAxs
-         DxJzI3NX66usNzWSEoBH7zw+IC3qdx4azVeSF/+c=
-Received: from DLEE104.ent.ti.com (dlee104.ent.ti.com [157.170.170.34])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0A9EHCMo025563
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 9 Nov 2020 08:17:12 -0600
-Received: from DLEE102.ent.ti.com (157.170.170.32) by DLEE104.ent.ti.com
- (157.170.170.34) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Mon, 9 Nov
- 2020 08:17:12 -0600
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE102.ent.ti.com
- (157.170.170.32) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Mon, 9 Nov 2020 08:17:12 -0600
-Received: from [10.250.213.167] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0A9EH2Ol125926;
-        Mon, 9 Nov 2020 08:17:04 -0600
-Subject: Re: [PATCH 1/8] dt-bindings: mfd: ti,j721e-system-controller.yaml:
- Document "pcie-ctrl"
-To:     Rob Herring <robh@kernel.org>
-CC:     Lee Jones <lee.jones@linaro.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Tero Kristo <t-kristo@ti.com>, Nishanth Menon <nm@ti.com>,
-        Roger Quadros <rogerq@ti.com>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-pci@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>
-References: <20201102101154.13598-1-kishon@ti.com>
- <20201102101154.13598-2-kishon@ti.com> <20201105165459.GB55814@bogus>
-From:   Kishon Vijay Abraham I <kishon@ti.com>
-Message-ID: <07d327c6-54c7-23f9-b65e-bfd3455de47f@ti.com>
-Date:   Mon, 9 Nov 2020 19:47:01 +0530
+        Mon, 9 Nov 2020 09:17:28 -0500
+Received: from mail-il1-x141.google.com (mail-il1-x141.google.com [IPv6:2607:f8b0:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63547C0613CF
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Nov 2020 06:17:27 -0800 (PST)
+Received: by mail-il1-x141.google.com with SMTP id x7so8414630ili.5
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Nov 2020 06:17:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=/BdThRd+LaDPQRGb7G8aV1wE5GDlBJVfU2h7aGrg3Io=;
+        b=OtpRfNAStK0Bp+vbRO2rr9E2o0MW/MNiLkeJNGtTikEYbW1Py8zHSpYs9y92ModzLO
+         FWYU6AS1h69Z9yAm3N1hXaSaYzGg8F3TaTyU9DDS4rG3C87A7EeGekKGt4kqAlWobA3M
+         KZKN/LrfzKseCceZHy19Ici/X/9sL/ogk8VS4REhoh2PyvLsCJBJA7NiwpeiGF/LBvm4
+         kK1tAlHGS0EkMwazy1janbshC47Rv2MIMRuocMXP4yQ8uaviN1Ic0bSPnALW0UP1DzKF
+         /fu3DuIhx15AklTgerIpQc6uNrjpiC8bPyRLuTqrkunFKrb1j9gQh1QyzKwF76thnoEo
+         oIOA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=/BdThRd+LaDPQRGb7G8aV1wE5GDlBJVfU2h7aGrg3Io=;
+        b=bPuxL5ZxKiMtiOfMzDNYRXlxwRywO341QLaaLuyyDWBm6UjlTLiFUcCLb9Dz4AE9xL
+         A4OIGzo27FaNZmIMcn1lMaslyB9mTahPBcEleLof5UPfmmIFGvr82sA0BP36ysdfvwF+
+         7MDBuZlcM/6QZ7nSHPN6P3dlCn3fG4PHGaVuJVFtG9wUCkcv7Rzwe7Q+/a7zqxyKHpTt
+         7Uk/43XtRG9GG5BN5TzhgP+23XAL1jTSR9rffY87tnuYmf9aiD+QSy+KdET/pghJFWYO
+         9m15uPt29uaZ8ZoyjACp5fNWiJ7YLB2qqquacoSZk6QQyfhSBWNW2m14MzYUAZE9yYh/
+         bkZA==
+X-Gm-Message-State: AOAM5324g52FHjOS+IuGOgsEN9XPWoYfaXwJ5xo0f6nTjh8Bo4l9bTOR
+        xSj3JdqtDwien32ft9W8JkpQ5gI6nQU4aA==
+X-Google-Smtp-Source: ABdhPJxSF5EIXIi69eK0nd3rgw9euKLC7ZG1plQe4ZIkNkor96aJQAbi02Gi1n1MKtddoOR/IdTo8A==
+X-Received: by 2002:a05:6e02:1388:: with SMTP id d8mr10145252ilo.272.1604931446357;
+        Mon, 09 Nov 2020 06:17:26 -0800 (PST)
+Received: from [192.168.1.30] ([65.144.74.34])
+        by smtp.gmail.com with ESMTPSA id 10sm1788884iou.50.2020.11.09.06.17.25
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 09 Nov 2020 06:17:25 -0800 (PST)
+Subject: Re: [PATCH] microblaze: add support for TIF_NOTIFY_SIGNAL
+To:     Michal Simek <monstr@monstr.eu>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <a2b78afc-5f60-8590-9df5-17302e356552@kernel.dk>
+ <894b3a46-4baa-f186-f6a1-4f818a5284e4@monstr.eu>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <1877a472-5fbe-5fa7-6ec4-a7bafc0790fd@kernel.dk>
+Date:   Mon, 9 Nov 2020 07:17:24 -0700
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20201105165459.GB55814@bogus>
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <894b3a46-4baa-f186-f6a1-4f818a5284e4@monstr.eu>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rob,
-
-On 05/11/20 10:24 pm, Rob Herring wrote:
-> On Mon, Nov 02, 2020 at 03:41:47PM +0530, Kishon Vijay Abraham I wrote:
->> Add binding documentation for "pcie-ctrl" which should be a subnode of
->> the system controller.
+On 11/9/20 4:19 AM, Michal Simek wrote:
+> 
+> 
+> On 29. 10. 20 17:16, Jens Axboe wrote:
+>> Wire up TIF_NOTIFY_SIGNAL handling for microblaze.
 >>
->> Signed-off-by: Kishon Vijay Abraham I <kishon@ti.com>
+>> Cc: Michal Simek <monstr@monstr.eu>
+>> Signed-off-by: Jens Axboe <axboe@kernel.dk>
 >> ---
->>  .../devicetree/bindings/mfd/ti,j721e-system-controller.yaml | 6 ++++++
->>  1 file changed, 6 insertions(+)
 >>
->> diff --git a/Documentation/devicetree/bindings/mfd/ti,j721e-system-controller.yaml b/Documentation/devicetree/bindings/mfd/ti,j721e-system-controller.yaml
->> index 19fcf59fd2fe..fd985794e419 100644
->> --- a/Documentation/devicetree/bindings/mfd/ti,j721e-system-controller.yaml
->> +++ b/Documentation/devicetree/bindings/mfd/ti,j721e-system-controller.yaml
->> @@ -50,6 +50,12 @@ patternProperties:
->>        specified in
->>        Documentation/devicetree/bindings/mux/reg-mux.txt
+>> 5.11 has support queued up for TIF_NOTIFY_SIGNAL, see this posting
+>> for details:
+>>
+>> https://lore.kernel.org/io-uring/20201026203230.386348-1-axboe@kernel.dk/
+>>
+>> As part of that work, I'm adding TIF_NOTIFY_SIGNAL support to all archs,
+>> as that will enable a set of cleanups once all of them support it. I'm
+>> happy carrying this patch if need be, or it can be funelled through the
+>> arch tree. Let me know.
+>>
+>>  arch/microblaze/include/asm/thread_info.h | 2 ++
+>>  arch/microblaze/kernel/signal.c           | 3 ++-
+>>  2 files changed, 4 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/arch/microblaze/include/asm/thread_info.h b/arch/microblaze/include/asm/thread_info.h
+>> index ad8e8fcb90d3..44f5ca331862 100644
+>> --- a/arch/microblaze/include/asm/thread_info.h
+>> +++ b/arch/microblaze/include/asm/thread_info.h
+>> @@ -107,6 +107,7 @@ static inline struct thread_info *current_thread_info(void)
+>>  #define TIF_NEED_RESCHED	3 /* rescheduling necessary */
+>>  /* restore singlestep on return to user mode */
+>>  #define TIF_SINGLESTEP		4
+>> +#define TIF_NOTIFY_SIGNAL	5	/* signal notifications exist */
+>>  #define TIF_MEMDIE		6	/* is terminating due to OOM killer */
+>>  #define TIF_SYSCALL_AUDIT	9       /* syscall auditing active */
+>>  #define TIF_SECCOMP		10      /* secure computing */
+>> @@ -119,6 +120,7 @@ static inline struct thread_info *current_thread_info(void)
+>>  #define _TIF_SIGPENDING		(1 << TIF_SIGPENDING)
+>>  #define _TIF_NEED_RESCHED	(1 << TIF_NEED_RESCHED)
+>>  #define _TIF_SINGLESTEP		(1 << TIF_SINGLESTEP)
+>> +#define _TIF_NOTIFY_SIGNAL	(1 << TIF_NOTIFY_SIGNAL)
+>>  #define _TIF_POLLING_NRFLAG	(1 << TIF_POLLING_NRFLAG)
+>>  #define _TIF_SYSCALL_AUDIT	(1 << TIF_SYSCALL_AUDIT)
+>>  #define _TIF_SECCOMP		(1 << TIF_SECCOMP)
+>> diff --git a/arch/microblaze/kernel/signal.c b/arch/microblaze/kernel/signal.c
+>> index f11a0ccccabc..5a8d173d7b75 100644
+>> --- a/arch/microblaze/kernel/signal.c
+>> +++ b/arch/microblaze/kernel/signal.c
+>> @@ -313,7 +313,8 @@ static void do_signal(struct pt_regs *regs, int in_syscall)
 >>  
->> +  "^pcie-ctrl@[0-9a-f]+$":
+>>  asmlinkage void do_notify_resume(struct pt_regs *regs, int in_syscall)
+>>  {
+>> -	if (test_thread_flag(TIF_SIGPENDING))
+>> +	if (test_thread_flag(TIF_SIGPENDING) ||
+>> +	    test_thread_flag(TIF_NOTIFY_SIGNAL))
+>>  		do_signal(regs, in_syscall);
+>>  
+>>  	if (test_thread_flag(TIF_NOTIFY_RESUME))
+>>
 > 
-> Unit address, so it should have 'reg' too?
-> 
-> You don't need a node if there aren't any properties.
+> Applied for 5.11.
 
-The subnodes are again a syscon node. I'll fix this up in the next revision.
+Would you mind if I carry this patch with an ack? I've got further fixes
+and cleanups that are enabled once all archs have added support.
 
-Thank You,
-Kishon
+-- 
+Jens Axboe
+
