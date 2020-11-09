@@ -2,64 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19A152AC3A6
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 19:22:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E5E462AC3B3
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 19:23:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730597AbgKISWr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 13:22:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43032 "EHLO
+        id S1730989AbgKISXY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 13:23:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43040 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730557AbgKISWo (ORCPT
+        with ESMTP id S1730571AbgKISWq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 13:22:44 -0500
+        Mon, 9 Nov 2020 13:22:46 -0500
 Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60581C0613D4
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Nov 2020 10:22:44 -0800 (PST)
-Received: by mail-wr1-x442.google.com with SMTP id o15so1971049wru.6
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Nov 2020 10:22:44 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FB91C0613CF
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Nov 2020 10:22:46 -0800 (PST)
+Received: by mail-wr1-x442.google.com with SMTP id p8so9004457wrx.5
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Nov 2020 10:22:46 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=BETgmjiznwAwz+PFWQvItK4BeS3oYpLH+kOS2zV1poE=;
-        b=tEK5zw7BKPfGyu8anHIQT7g5BzYN9V+7Ibfk9LUdpgcdPW8HrXOmNWrFhkwoCayZpS
-         U0HmR6dxuP5rQ98USaAzLkneRscuHkc4cndi1Qw/HRkiatfylGA3B1We/FJdPyJ5B0BH
-         cGvf91kHyzC6Zf/DCQb5H2zA460LvFgbHsVtbcYGP0qbPhEYbEaxPyGG5UdDy3WBBr8J
-         AGDJvM2PkMFLnUOb2kTq7HU5P0Up0heVthk6tDgt5plEQfH1ntCSBb/V6o5UKu6Cb98P
-         EDJTo6L8Py8CXuU0heeSDKnr3FtSPQ749jMwf0F+8bSOZ8fFZMPaDxQbF3ZCm8TiCQCy
-         ql+w==
+        bh=tkJ226wW4T/WFBWAXYAYxSOD3N/A9uUc453pKIqhWNc=;
+        b=hnIv3xHQzK4vGHqLPgeKIlXEoxGlX40FuncVJiGSRcaWOMt6IjHpgKwD0EH4POESnm
+         6mZYdUgIB4Krx0LuV3VIHbnNSdX5+/gJ5wBJc8HvoZyix/37Nusji2mRqtPKGmx/rjX6
+         E7M1WhQJT0Ei+AXyGJNPeI8WDJo8itEjTgi3KFI7vl8zNWYxwwREaS7T+Dqz209xE4yk
+         oualc01T7JcNNjacXTYXNZkakn8qfoZfdRkbLFOBrr1S5tx8sI3hnHVjxCnIvSVMNaSJ
+         yAIrr8SLVSIbBnLA6mhM5UPNkBEyz+/E9zS8ei+kHp0IHvHIdRh0SItSjLN17df7FUMG
+         J2Zg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=BETgmjiznwAwz+PFWQvItK4BeS3oYpLH+kOS2zV1poE=;
-        b=RhddxT9t6YPm5pDpP/weNdMIQB0jndvP2P/2N9kGJLITJPNr6IxWXd3Ugi5VbaTiC7
-         6avIGBupNhLXAwKTXItJSrwJfVttQp2jvFXPntjMQIIjSTBX0U0GAnu5R2ssp5SEcNI2
-         zRyBWwdkRaM4AyZu8nw7F+yxcBj3t6anjgXCh1TDlqYlTTA4WaoZmTpjqgPmHXQ3rm19
-         0/EWm74b5JT8Hq2NHnOpX4/RmJs/eAjNZgJLV6KekOg+TsPO1gLPCqkH7uEJFRj8CI/H
-         fCV581HgqFIKbtAxfjcKeHBoBPPrARnbJ2vD58uG2/BVHw6g906rTsflzIfR3pYjvR04
-         890w==
-X-Gm-Message-State: AOAM530YjraZ5BTwZMFI3/HVRHNEwkJ+mIHGzsvLQwxLekRhUx/TXBMI
-        JQLWXzWMGgC2MIDdf86UHtSebg==
-X-Google-Smtp-Source: ABdhPJxx5vbIKT+B2Vdg99H/wUCSxi32bcw/2t1h08rRTDbqIu5u1i68o66DhK3MkL44ciR3Za7SEw==
-X-Received: by 2002:a5d:46c6:: with SMTP id g6mr1576130wrs.170.1604946163113;
-        Mon, 09 Nov 2020 10:22:43 -0800 (PST)
+        bh=tkJ226wW4T/WFBWAXYAYxSOD3N/A9uUc453pKIqhWNc=;
+        b=B9zi7X9xoY1WMXXaQwwljMwyU64G5Od7OZNuSqACN/Zc1rD2lhga7tzLS3c3mVZBnG
+         frWWh+WHeJMsl3N+t8Bci+Lbdfg/aUj4jVSQUmpArH7Mc0Tsgr/VPu3q9mfUhJXuDf2U
+         6r9KyMDflNJSINwJSVqYnHfbAMFaw+WewQbIbvjiujO4Jc6Z6T5MufUINmc4xCSIS75g
+         WEMdCivYhbnGze19e10PzodIrxV97kAF5I7aYhKhCuvyu2d2jrhlCQ8PKKhjC/echCOC
+         O31UBf+4rxPMTzGUH+3yhDN1AWmnlSECGu/kxjTA9lQkGBjh6LL7edGbBP8K0QVkTBau
+         mScA==
+X-Gm-Message-State: AOAM5302wydlKpwc7QSm14iwvmMIRafwnb8ql6uzkucqGvcOeLpE0DCh
+        D7XPQ//AvZPfBDm7UKRWfpzvLA==
+X-Google-Smtp-Source: ABdhPJyeWbF4IXe3J+rChMedpclviC8/eufVt3JW57d/2S+UA46Kq8Z4Wfo6mzD+v6wBNgAyYwk7sg==
+X-Received: by 2002:a5d:56c7:: with SMTP id m7mr20826857wrw.201.1604946165213;
+        Mon, 09 Nov 2020 10:22:45 -0800 (PST)
 Received: from dell.default ([91.110.221.180])
-        by smtp.gmail.com with ESMTPSA id g186sm735365wma.1.2020.11.09.10.22.41
+        by smtp.gmail.com with ESMTPSA id g186sm735365wma.1.2020.11.09.10.22.44
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 09 Nov 2020 10:22:42 -0800 (PST)
+        Mon, 09 Nov 2020 10:22:44 -0800 (PST)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
 Cc:     linux-kernel@vger.kernel.org,
         Miquel Raynal <miquel.raynal@bootlin.com>,
         Richard Weinberger <richard@nod.at>,
         Vignesh Raghavendra <vigneshr@ti.com>,
-        Boris Brezillon <boris.brezillon@collabora.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        linux-mtd@lists.infradead.org
-Subject: [PATCH v3 16/23] mtd: rawnand: cafe_nand: Remove superfluous param doc and add another
-Date:   Mon,  9 Nov 2020 18:21:59 +0000
-Message-Id: <20201109182206.3037326-17-lee.jones@linaro.org>
+        Kukjin Kim <kgene@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Ben Dooks <ben@simtec.co.uk>, linux-mtd@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org
+Subject: [PATCH v3 17/23] mtd: rawnand: s3c2410: Add documentation for 2 missing struct members
+Date:   Mon,  9 Nov 2020 18:22:00 +0000
+Message-Id: <20201109182206.3037326-18-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20201109182206.3037326-1-lee.jones@linaro.org>
 References: <20201109182206.3037326-1-lee.jones@linaro.org>
@@ -69,38 +70,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Correct 'controller' typo while we're at it.
+
 Fixes the following W=1 kernel build warning(s):
 
- drivers/mtd/nand/raw/cafe_nand.c:372: warning: Function parameter or member 'page' not described in 'cafe_nand_read_page'
- drivers/mtd/nand/raw/cafe_nand.c:372: warning: Excess function parameter 'mtd' description in 'cafe_nand_read_page'
+ drivers/mtd/nand/raw/s3c2410.c:172: warning: Function parameter or member 'controller' not described in 's3c2410_nand_info'
+ drivers/mtd/nand/raw/s3c2410.c:172: warning: Function parameter or member 'freq_transition' not described in 's3c2410_nand_info'
 
 Cc: Miquel Raynal <miquel.raynal@bootlin.com>
 Cc: Richard Weinberger <richard@nod.at>
 Cc: Vignesh Raghavendra <vigneshr@ti.com>
-Cc: Boris Brezillon <boris.brezillon@collabora.com>
-Cc: David Woodhouse <dwmw2@infradead.org>
+Cc: Kukjin Kim <kgene@kernel.org>
+Cc: Krzysztof Kozlowski <krzk@kernel.org>
+Cc: Ben Dooks <ben@simtec.co.uk>
 Cc: linux-mtd@lists.infradead.org
+Cc: linux-samsung-soc@vger.kernel.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
+Reviewed-by: Krzysztof Kozlowski <krzk@kernel.org>
 ---
- drivers/mtd/nand/raw/cafe_nand.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/mtd/nand/raw/s3c2410.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/mtd/nand/raw/cafe_nand.c b/drivers/mtd/nand/raw/cafe_nand.c
-index 2b94f385a1a88..d0e8ffd55c224 100644
---- a/drivers/mtd/nand/raw/cafe_nand.c
-+++ b/drivers/mtd/nand/raw/cafe_nand.c
-@@ -359,10 +359,10 @@ static int cafe_nand_read_oob(struct nand_chip *chip, int page)
- }
+diff --git a/drivers/mtd/nand/raw/s3c2410.c b/drivers/mtd/nand/raw/s3c2410.c
+index cb2d1b4e278cb..f0a4535c812aa 100644
+--- a/drivers/mtd/nand/raw/s3c2410.c
++++ b/drivers/mtd/nand/raw/s3c2410.c
+@@ -133,7 +133,8 @@ enum s3c_nand_clk_state {
+ 
  /**
-  * cafe_nand_read_page_syndrome - [REPLACEABLE] hardware ecc syndrome based page read
-- * @mtd:	mtd info structure
-  * @chip:	nand chip info structure
-  * @buf:	buffer to store read data
-  * @oob_required:	caller expects OOB data read to chip->oob_poi
-+ * @page:	page number to read
-  *
-  * The hw generator calculates the error syndrome automatically. Therefore
-  * we need a special oob layout and handling.
+  * struct s3c2410_nand_info - NAND controller state.
+- * @mtds: An array of MTD instances on this controoler.
++ * @controller: Base controller structure.
++ * @mtds: An array of MTD instances on this controller.
+  * @platform: The platform data for this board.
+  * @device: The platform device we bound to.
+  * @clk: The clock resource for this controller.
+@@ -145,6 +146,7 @@ enum s3c_nand_clk_state {
+  * @clk_rate: The clock rate from @clk.
+  * @clk_state: The current clock state.
+  * @cpu_type: The exact type of this controller.
++ * @freq_transition: CPUFreq notifier block
+  */
+ struct s3c2410_nand_info {
+ 	/* mtd info */
 -- 
 2.25.1
 
