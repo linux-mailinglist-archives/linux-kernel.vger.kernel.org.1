@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC3EC2ABD19
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 14:43:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AD03D2ABC91
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 14:39:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388035AbgKINnB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 08:43:01 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54588 "EHLO mail.kernel.org"
+        id S1732699AbgKINii (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 08:38:38 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56058 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730502AbgKINA1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 08:00:27 -0500
+        id S1730628AbgKINCK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 08:02:10 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 804E720684;
-        Mon,  9 Nov 2020 13:00:25 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id CF72F20679;
+        Mon,  9 Nov 2020 13:02:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604926826;
-        bh=Jgnn8GoI7D8swA4JQ5DxH/63GCBrrC5loXSvgV+AMRY=;
+        s=default; t=1604926929;
+        bh=sWet1cjhewvRw9MNkFUUMoClxXeZSaWrtM/rSFu6yLE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Rh8aYK3JRFcTak2BogrkMSgke0g+RibXLM3atn/ZRpYmw4rbto6FssQ9ElFzx4EaQ
-         7+LAB2ET65cKQIjKH9JXy6BYqlTRJ954PTqcY3Qi17wxUsWpWl1190yFRPrMXGyNaK
-         cMEKmXZsAQO2n0tGb/r6ZOXc4TyJYEVPOb0Cpao8=
+        b=AogZnScJlq42uBAfalBEoMm3Cgnyp5cyaVxv+GcTiuG41e8YjOlmPXaQWr7iC10qZ
+         XBXZEsEk6uRnILqmhdsZR4Fn2z1Pr1tGBWNAs1PXt6G6dao9TTi+c6hsSd8jI5zqy8
+         D+BXX7PIIyrzOsgFx5cSpzKUe5saOgmoEIOW9rTc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Joe Perches <joe@perches.com>,
-        "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: [PATCH 4.9 010/117] mtd: lpddr: Fix bad logic in print_drs_error
-Date:   Mon,  9 Nov 2020 13:53:56 +0100
-Message-Id: <20201109125026.141875520@linuxfoundation.org>
+        stable@vger.kernel.org, Michael Halcrow <mhalcrow@google.com>,
+        Joe Richey <joerichey@google.com>,
+        Eric Biggers <ebiggers@google.com>
+Subject: [PATCH 4.9 012/117] fscrypt: return -EXDEV for incompatible rename or link into encrypted dir
+Date:   Mon,  9 Nov 2020 13:53:58 +0100
+Message-Id: <20201109125026.231238102@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201109125025.630721781@linuxfoundation.org>
 References: <20201109125025.630721781@linuxfoundation.org>
@@ -43,51 +43,136 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Gustavo A. R. Silva <gustavo@embeddedor.com>
+From: Eric Biggers <ebiggers@google.com>
 
-commit 1c9c02bb22684f6949d2e7ddc0a3ff364fd5a6fc upstream.
+commit f5e55e777cc93eae1416f0fa4908e8846b6d7825 upstream.
 
-Update logic for broken test. Use a more common logging style.
+Currently, trying to rename or link a regular file, directory, or
+symlink into an encrypted directory fails with EPERM when the source
+file is unencrypted or is encrypted with a different encryption policy,
+and is on the same mountpoint.  It is correct for the operation to fail,
+but the choice of EPERM breaks tools like 'mv' that know to copy rather
+than rename if they see EXDEV, but don't know what to do with EPERM.
 
-It appears the logic in this function is broken for the
-consecutive tests of
+Our original motivation for EPERM was to encourage users to securely
+handle their data.  Encrypting files by "moving" them into an encrypted
+directory can be insecure because the unencrypted data may remain in
+free space on disk, where it can later be recovered by an attacker.
+It's much better to encrypt the data from the start, or at least try to
+securely delete the source data e.g. using the 'shred' program.
 
-        if (prog_status & 0x3)
-                ...
-        else if (prog_status & 0x2)
-                ...
-        else (prog_status & 0x1)
-                ...
+However, the current behavior hasn't been effective at achieving its
+goal because users tend to be confused, hack around it, and complain;
+see e.g. https://github.com/google/fscrypt/issues/76.  And in some cases
+it's actually inconsistent or unnecessary.  For example, 'mv'-ing files
+between differently encrypted directories doesn't work even in cases
+where it can be secure, such as when in userspace the same passphrase
+protects both directories.  Yet, you *can* already 'mv' unencrypted
+files into an encrypted directory if the source files are on a different
+mountpoint, even though doing so is often insecure.
 
-Likely the first test should be
+There are probably better ways to teach users to securely handle their
+files.  For example, the 'fscrypt' userspace tool could provide a
+command that migrates unencrypted files into an encrypted directory,
+acting like 'shred' on the source files and providing appropriate
+warnings depending on the type of the source filesystem and disk.
 
-        if ((prog_status & 0x3) == 0x3)
+Receiving errors on unimportant files might also force some users to
+disable encryption, thus making the behavior counterproductive.  It's
+desirable to make encryption as unobtrusive as possible.
 
-Found by inspection of include files using printk.
+Therefore, change the error code from EPERM to EXDEV so that tools
+looking for EXDEV will fall back to a copy.
 
-Fixes: eb3db27507f7 ("[MTD] LPDDR PFOW definition")
-Cc: stable@vger.kernel.org
-Reported-by: Joe Perches <joe@perches.com>
-Signed-off-by: Gustavo A. R. Silva <gustavo@embeddedor.com>
-Acked-by: Miquel Raynal <miquel.raynal@bootlin.com>
-Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-Link: https://lore.kernel.org/linux-mtd/3fb0e29f5b601db8be2938a01d974b00c8788501.1588016644.git.gustavo@embeddedor.com
+This, of course, doesn't prevent users from still doing the right things
+to securely manage their files.  Note that this also matches the
+behavior when a file is renamed between two project quota hierarchies;
+so there's precedent for using EXDEV for things other than mountpoints.
+
+xfstests generic/398 will require an update with this change.
+
+[Rewritten from an earlier patch series by Michael Halcrow.]
+
+Cc: Michael Halcrow <mhalcrow@google.com>
+Cc: Joe Richey <joerichey@google.com>
+Signed-off-by: Eric Biggers <ebiggers@google.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- include/linux/mtd/pfow.h |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/crypto/policy.c |    3 +--
+ fs/ext4/namei.c    |    6 +++---
+ fs/f2fs/namei.c    |    6 +++---
+ 3 files changed, 7 insertions(+), 8 deletions(-)
 
---- a/include/linux/mtd/pfow.h
-+++ b/include/linux/mtd/pfow.h
-@@ -127,7 +127,7 @@ static inline void print_drs_error(unsig
+--- a/fs/crypto/policy.c
++++ b/fs/crypto/policy.c
+@@ -180,8 +180,7 @@ EXPORT_SYMBOL(fscrypt_get_policy);
+  * malicious offline violations of this constraint, while the link and rename
+  * checks are needed to prevent online violations of this constraint.
+  *
+- * Return: 1 if permitted, 0 if forbidden.  If forbidden, the caller must fail
+- * the filesystem operation with EPERM.
++ * Return: 1 if permitted, 0 if forbidden.
+  */
+ int fscrypt_has_permitted_context(struct inode *parent, struct inode *child)
+ {
+--- a/fs/ext4/namei.c
++++ b/fs/ext4/namei.c
+@@ -3259,7 +3259,7 @@ static int ext4_link(struct dentry *old_
+ 		return -EMLINK;
+ 	if (ext4_encrypted_inode(dir) &&
+ 			!fscrypt_has_permitted_context(dir, inode))
+-		return -EPERM;
++		return -EXDEV;
  
- 	if (!(dsr & DSR_AVAILABLE))
- 		printk(KERN_NOTICE"DSR.15: (0) Device not Available\n");
--	if (prog_status & 0x03)
-+	if ((prog_status & 0x03) == 0x03)
- 		printk(KERN_NOTICE"DSR.9,8: (11) Attempt to program invalid "
- 						"half with 41h command\n");
- 	else if (prog_status & 0x02)
+        if ((ext4_test_inode_flag(dir, EXT4_INODE_PROJINHERIT)) &&
+ 	   (!projid_eq(EXT4_I(dir)->i_projid,
+@@ -3597,7 +3597,7 @@ static int ext4_rename(struct inode *old
+ 	if ((old.dir != new.dir) &&
+ 	    ext4_encrypted_inode(new.dir) &&
+ 	    !fscrypt_has_permitted_context(new.dir, old.inode)) {
+-		retval = -EPERM;
++		retval = -EXDEV;
+ 		goto end_rename;
+ 	}
+ 
+@@ -3776,7 +3776,7 @@ static int ext4_cross_rename(struct inod
+ 	    (old_dir != new_dir) &&
+ 	    (!fscrypt_has_permitted_context(new_dir, old.inode) ||
+ 	     !fscrypt_has_permitted_context(old_dir, new.inode)))
+-		return -EPERM;
++		return -EXDEV;
+ 
+ 	if ((ext4_test_inode_flag(new_dir, EXT4_INODE_PROJINHERIT) &&
+ 	     !projid_eq(EXT4_I(new_dir)->i_projid,
+--- a/fs/f2fs/namei.c
++++ b/fs/f2fs/namei.c
+@@ -177,7 +177,7 @@ static int f2fs_link(struct dentry *old_
+ 
+ 	if (f2fs_encrypted_inode(dir) &&
+ 			!fscrypt_has_permitted_context(dir, inode))
+-		return -EPERM;
++		return -EXDEV;
+ 
+ 	f2fs_balance_fs(sbi, true);
+ 
+@@ -667,7 +667,7 @@ static int f2fs_rename(struct inode *old
+ 
+ 	if ((old_dir != new_dir) && f2fs_encrypted_inode(new_dir) &&
+ 			!fscrypt_has_permitted_context(new_dir, old_inode)) {
+-		err = -EPERM;
++		err = -EXDEV;
+ 		goto out;
+ 	}
+ 
+@@ -855,7 +855,7 @@ static int f2fs_cross_rename(struct inod
+ 			(old_dir != new_dir) &&
+ 			(!fscrypt_has_permitted_context(new_dir, old_inode) ||
+ 			 !fscrypt_has_permitted_context(old_dir, new_inode)))
+-		return -EPERM;
++		return -EXDEV;
+ 
+ 	old_entry = f2fs_find_entry(old_dir, &old_dentry->d_name, &old_page);
+ 	if (!old_entry) {
 
 
