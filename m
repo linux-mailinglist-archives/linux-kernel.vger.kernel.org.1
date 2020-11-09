@@ -2,41 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0D3F2AB96E
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 14:09:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AF042AB9C4
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 14:12:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731814AbgKINJN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 08:09:13 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34020 "EHLO mail.kernel.org"
+        id S1732663AbgKINMd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 08:12:33 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38106 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731581AbgKINJH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 08:09:07 -0500
+        id S1731726AbgKINM2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 08:12:28 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 83C8020731;
-        Mon,  9 Nov 2020 13:09:06 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 700A6208FE;
+        Mon,  9 Nov 2020 13:12:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604927347;
-        bh=Agw3KJ1fB10dUnm3KNx8LrB0nWhcAQChDywgBzGuqtg=;
+        s=default; t=1604927548;
+        bh=pqN5mLApKE2LD0TZgtTFudaN295BDvqaXfWFCG1oJzo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QgYvne/O2zSSnqb+tVSqLDGv7N7fZ7KzZJ4LmL+UCavZqA5j8KgS/1n45z5ydWrK+
-         GtEMcYECo4xul75ra2ghj4WLeOxutmJ3dX+zWTl1D1vY6VzE98YPXQIvNP/tbtAh9j
-         BsHK2NYkfIV8mniJzcNCFmtD1P1gEqctZ9G/n9cA=
+        b=VRjt6jnlfKIwtGUywcAMptzpslW2heVtXM5chuRJ9MEwPzzCCCmFF8ya0ORyjEfPp
+         jdX3CPkKqY6kSSPcdKikWpokxOIXlfKDlgViRiPTrkLZ2LtTJRXeG5vt6p3ElSsJ2E
+         B1X9wjb107w2llBsJuiSaX8SYayeMhDaTv9o6YLc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Yoon Jungyeon <jungyeon@gatech.edu>,
-        Nikolay Borisov <nborisov@suse.com>,
-        Johannes Thumshirn <jthumshirn@suse.de>,
-        Qu Wenruo <wqu@suse.com>, David Sterba <dsterba@suse.com>,
-        Ben Hutchings <ben.hutchings@codethink.co.uk>
-Subject: [PATCH 4.19 28/71] btrfs: tree-checker: Enhance chunk checker to validate chunk profile
+        stable@vger.kernel.org, Keith Winstein <keithw@cs.stanford.edu>,
+        Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 5.4 25/85] ALSA: usb-audio: Add implicit feedback quirk for Zoom UAC-2
 Date:   Mon,  9 Nov 2020 13:55:22 +0100
-Message-Id: <20201109125021.224099204@linuxfoundation.org>
+Message-Id: <20201109125023.790289878@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201109125019.906191744@linuxfoundation.org>
-References: <20201109125019.906191744@linuxfoundation.org>
+In-Reply-To: <20201109125022.614792961@linuxfoundation.org>
+References: <20201109125022.614792961@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,44 +42,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Qu Wenruo <wqu@suse.com>
+From: Keith Winstein <keithw@cs.stanford.edu>
 
-commit 80e46cf22ba0bcb57b39c7c3b52961ab3a0fd5f2 upstream.
+commit f15cfca818d756dd1c9492530091dfd583359db3 upstream.
 
-Btrfs-progs already have a comprehensive type checker, to ensure there
-is only 0 (SINGLE profile) or 1 (DUP/RAID0/1/5/6/10) bit set for chunk
-profile bits.
+The Zoom UAC-2 USB audio interface provides an async playback endpoint
+("1 OUT (ASYNC)") and capture endpoint ("2 IN (ASYNC)"), both with
+2-channel S32_LE in 44.1, 48, 88.2, 96, 176.4, or 192
+kilosamples/s. The device provides explicit feedback to adjust the
+host's playback rate, but the feedback appears unstable and biased
+relative to the device's capture rate.
 
-Do the same work for kernel.
+"alsaloop -t 1000" experiences playback underruns and tries to
+resample the captured audio to match the varying playback
+rate. Forcing the kernel to use implicit feedback appears to
+produce more stable results. This causes the host to transmit one
+playback sample for each capture sample received. (Zoom North America
+has been notified of this change.)
 
-Reported-by: Yoon Jungyeon <jungyeon@gatech.edu>
-Link: https://bugzilla.kernel.org/show_bug.cgi?id=202765
-Reviewed-by: Nikolay Borisov <nborisov@suse.com>
-Reviewed-by: Johannes Thumshirn <jthumshirn@suse.de>
-Signed-off-by: Qu Wenruo <wqu@suse.com>
-Reviewed-by: David Sterba <dsterba@suse.com>
-Signed-off-by: David Sterba <dsterba@suse.com>
-Signed-off-by: Ben Hutchings <ben.hutchings@codethink.co.uk>
+Signed-off-by: Keith Winstein <keithw@cs.stanford.edu>
+Tested-by: Keith Winstein <keithw@cs.stanford.edu>
+Cc: <stable@vger.kernel.org>
+BugLink: https://lore.kernel.org/r/20201027071841.GA164525@trolley.csail.mit.edu
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- fs/btrfs/tree-checker.c |    7 +++++++
- 1 file changed, 7 insertions(+)
 
---- a/fs/btrfs/tree-checker.c
-+++ b/fs/btrfs/tree-checker.c
-@@ -556,6 +556,13 @@ int btrfs_check_chunk_valid(struct btrfs
- 		return -EUCLEAN;
- 	}
- 
-+	if (!is_power_of_2(type & BTRFS_BLOCK_GROUP_PROFILE_MASK) &&
-+	    (type & BTRFS_BLOCK_GROUP_PROFILE_MASK) != 0) {
-+		chunk_err(fs_info, leaf, chunk, logical,
-+		"invalid chunk profile flag: 0x%llx, expect 0 or 1 bit set",
-+			  type & BTRFS_BLOCK_GROUP_PROFILE_MASK);
-+		return -EUCLEAN;
-+	}
- 	if ((type & BTRFS_BLOCK_GROUP_TYPE_MASK) == 0) {
- 		chunk_err(fs_info, leaf, chunk, logical,
- 	"missing chunk type flag, have 0x%llx one bit must be set in 0x%llx",
+---
+ sound/usb/pcm.c |    4 ++++
+ 1 file changed, 4 insertions(+)
+
+--- a/sound/usb/pcm.c
++++ b/sound/usb/pcm.c
+@@ -339,6 +339,10 @@ static int set_sync_ep_implicit_fb_quirk
+ 		ep = 0x81;
+ 		ifnum = 2;
+ 		goto add_sync_ep_from_ifnum;
++	case USB_ID(0x1686, 0xf029): /* Zoom UAC-2 */
++		ep = 0x82;
++		ifnum = 2;
++		goto add_sync_ep_from_ifnum;
+ 	case USB_ID(0x1397, 0x0001): /* Behringer UFX1604 */
+ 	case USB_ID(0x1397, 0x0002): /* Behringer UFX1204 */
+ 		ep = 0x81;
 
 
