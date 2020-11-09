@@ -2,117 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 313A52AC5A9
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 21:00:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C88A2AC5AA
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 21:00:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730379AbgKIUAB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 15:00:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58082 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726410AbgKIUAB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 15:00:01 -0500
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9872C0613CF
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Nov 2020 12:00:00 -0800 (PST)
-Received: by mail-wm1-x343.google.com with SMTP id d142so688890wmd.4
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Nov 2020 12:00:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=iSLk3+x7uenqlILFpaNoxyCB9G64i4wec0N4zPVtLds=;
-        b=NBO0ty9u54emHjnfEXXnFOBSllklLV+aYFoqGVp5cQ9mAb56Dl+sd3zn/rP+aUSIzf
-         DFCvXXhk001k2PTIsBSRdUzu2sUFlU6XVcNPdNhZsFvci9JTb2r6z/4FueX9Hq9e1MfU
-         lzhOt4sbxh89rgwgXrX9BXrkVBx0pbqW9jaUjGALtGIA5+q9QPjAPt5ZWJlCD671pgeA
-         bjemtpPIbR9qJ9S+0a7d+rfrgx6BcI5+GNi1mIE1yBCsZ4wudlv+S6WRhNhDnN6CH8nL
-         FC8JRh+VSLieTqgZWyqK2OBEZ0sRn95k2W9ULT0oMOvw18vmnxJ4muh6Cb6rF+ToKQIv
-         iOlw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=iSLk3+x7uenqlILFpaNoxyCB9G64i4wec0N4zPVtLds=;
-        b=ITdJOTAy/hr5W6BGjYdLdAA0Zfq1Au3Vqjg8sY4vrvtrjc6NFgqoQOGiSqiYYYtRWk
-         Zx/ozL7xJTeA9ZOzTrOnqZupwv4tvyc1pJUuLBlDWv1P7e7abGVFXuStpQKJL7HxwekM
-         hP0S88ddWZ67Cr+G33sJiNzmvbKZoVILDIv2aPh0GzZz56pEvG9umjUuZn/VirrH7+kG
-         SoAFNqFQUOoH7ZTQocuhNgvhY2D/E6MN59egoiehhZt3PI0Yflq23nKZ1wwnBPW/2MPM
-         4UzzIb8MCKVA1EwSvCbdZYlTK4osuyLnx2iofJHG8AWZOsVnX4nh5MlVhfMgN26W9tEb
-         d2pQ==
-X-Gm-Message-State: AOAM533pU3HEKrradF2neJPI6sHXxzQnGJv+8VzoBQjhQW/8TnHJB0r2
-        XvnwgnqWs9rOFpKY0Tm8/RVkkg==
-X-Google-Smtp-Source: ABdhPJwldywwbJ+oLDqj/fDJgp5SEWiJ5ZwxUHvawP8CtF53/49IYzNhHipfLfFh1313dpVLWLMYLg==
-X-Received: by 2002:a1c:61c2:: with SMTP id v185mr839625wmb.152.1604951999546;
-        Mon, 09 Nov 2020 11:59:59 -0800 (PST)
-Received: from dell ([91.110.221.139])
-        by smtp.gmail.com with ESMTPSA id f23sm463349wmb.43.2020.11.09.11.59.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 09 Nov 2020 11:59:58 -0800 (PST)
-Date:   Mon, 9 Nov 2020 19:59:57 +0000
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Alex Deucher <alexdeucher@gmail.com>
-Cc:     David Airlie <airlied@linux.ie>,
-        LKML <linux-kernel@vger.kernel.org>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>
-Subject: Re: [PATCH 17/19] drm/radeon/radeon_kms: Fix misnaming of
- 'radeon_info_ioctl's dev param
-Message-ID: <20201109195957.GB2063125@dell>
-References: <20201106214949.2042120-1-lee.jones@linaro.org>
- <20201106214949.2042120-18-lee.jones@linaro.org>
- <CADnq5_Nys7igVo3sgzK0D4hnm=RHMrEM7Xty80jGROu_sy5svA@mail.gmail.com>
+        id S1730625AbgKIUAK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 15:00:10 -0500
+Received: from mga09.intel.com ([134.134.136.24]:55326 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730072AbgKIUAK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 15:00:10 -0500
+IronPort-SDR: RQDZgjkAv8QGrAbXyy5hzGYTECJGMj/LeVxcxynjeaR51QvTn9GtRNN+UaR+QcX3wmhL5JNjn2
+ 5zFwEQmzJbTA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9800"; a="170014910"
+X-IronPort-AV: E=Sophos;i="5.77,464,1596524400"; 
+   d="scan'208";a="170014910"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Nov 2020 12:00:09 -0800
+IronPort-SDR: j6Yq4JPREaWEvwGl8XZBZoz6hf+DAXQLm/YHazmZyuiiIL/lyiTbBUv9bSsF/3xoV0D7ujnhCQ
+ 9bxiwWMEc2Zg==
+X-IronPort-AV: E=Sophos;i="5.77,464,1596524400"; 
+   d="scan'208";a="540999806"
+Received: from mostoegl-mobl1.ger.corp.intel.com (HELO linux.intel.com) ([10.252.49.251])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Nov 2020 12:00:01 -0800
+Date:   Mon, 9 Nov 2020 21:59:57 +0200
+From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+To:     Hillf Danton <hdanton@sina.com>
+Cc:     x86@kernel.org, linux-sgx@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        Jethro Beekman <jethro@fortanix.com>,
+        Jordan Hand <jorhand@linux.microsoft.com>,
+        Nathaniel McCallum <npmccallum@redhat.com>,
+        Chunyang Hui <sanqian.hcy@antfin.com>,
+        Seth Moore <sethmo@google.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        akpm@linux-foundation.org, andriy.shevchenko@linux.intel.com,
+        yaozhangx@google.com, mikko.ylinen@intel.com
+Subject: Re: [PATCH v40 21/24] x86/sgx: Add a page reclaimer
+Message-ID: <20201109195957.GA5544@linux.intel.com>
+References: <20201104145430.300542-1-jarkko.sakkinen@linux.intel.com>
+ <20201108035630.11540-1-hdanton@sina.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CADnq5_Nys7igVo3sgzK0D4hnm=RHMrEM7Xty80jGROu_sy5svA@mail.gmail.com>
+In-Reply-To: <20201108035630.11540-1-hdanton@sina.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 09 Nov 2020, Alex Deucher wrote:
-
-> On Fri, Nov 6, 2020 at 4:50 PM Lee Jones <lee.jones@linaro.org> wrote:
-> >
-> > Fixes the following W=1 kernel build warning(s):
-> >
-> >  drivers/gpu/drm/radeon/radeon_kms.c:226: warning: Function parameter or member 'dev' not described in 'radeon_info_ioctl'
-> >  drivers/gpu/drm/radeon/radeon_kms.c:226: warning: Excess function parameter 'rdev' description in 'radeon_info_ioctl'
-> >
-> > Cc: Alex Deucher <alexander.deucher@amd.com>
-> > Cc: "Christian König" <christian.koenig@amd.com>
-> > Cc: David Airlie <airlied@linux.ie>
-> > Cc: Daniel Vetter <daniel@ffwll.ch>
-> > Cc: amd-gfx@lists.freedesktop.org
-> > Cc: dri-devel@lists.freedesktop.org
-> > Signed-off-by: Lee Jones <lee.jones@linaro.org>
-> > ---
-> >  drivers/gpu/drm/radeon/radeon_kms.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> >
-> > diff --git a/drivers/gpu/drm/radeon/radeon_kms.c b/drivers/gpu/drm/radeon/radeon_kms.c
-> > index 0d8fbabffcead..21c206795c364 100644
-> > --- a/drivers/gpu/drm/radeon/radeon_kms.c
-> > +++ b/drivers/gpu/drm/radeon/radeon_kms.c
-> > @@ -213,7 +213,7 @@ static void radeon_set_filp_rights(struct drm_device *dev,
-> >  /**
-> >   * radeon_info_ioctl - answer a device specific request.
-> >   *
-> > - * @rdev: radeon device pointer
-> > + * @dev: radeon device pointer
+On Sun, Nov 08, 2020 at 11:56:30AM +0800, Hillf Danton wrote:
+> On Wed,  4 Nov 2020 16:54:27 Jarkko Sakkinen wrote:
+> [...]
+> > +/**
+> > + * sgx_alloc_epc_page() - Allocate an EPC page
+> > + * @owner:	the owner of the EPC page
+> > + * @reclaim:	reclaim pages if necessary
+> > + *
+> > + * Iterate through EPC sections and borrow a free EPC page to the caller. When a
+> > + * page is no longer needed it must be released with sgx_free_epc_page(). If
+> > + * @reclaim is set to true, directly reclaim pages when we are out of pages. No
+> > + * mm's can be locked when @reclaim is set to true.
+> > + *
+> > + * Finally, wake up ksgxswapd when the number of pages goes below the watermark
+> > + * before returning back to the caller.
+> > + *
+> > + * Return:
+> > + *   an EPC page,
+> > + *   -errno on error
+> > + */
+> > +struct sgx_epc_page *sgx_alloc_epc_page(void *owner, bool reclaim)
+> > +{
+> > +	struct sgx_epc_page *entry;
 > 
-> This should be:
-> + * @dev: drm device pointer
+> Nit: s/entry/epc_page/
+> > +
+> > +	for ( ; ; ) {
+> > +		entry = __sgx_alloc_epc_page();
+> > +		if (!IS_ERR(entry)) {
+> > +			entry->owner = owner;
+> > +			break;
+> > +		}
+> > +
+> > +		if (list_empty(&sgx_active_page_list))
+> > +			return ERR_PTR(-ENOMEM);
+> > +
+> > +		if (!reclaim) {
+> > +			entry = ERR_PTR(-EBUSY);
+> > +			break;
+> > +		}
+> > +
+> > +		if (signal_pending(current)) {
+> > +			entry = ERR_PTR(-ERESTARTSYS);
+> > +			break;
+> > +		}
+> > +
+> > +		sgx_reclaim_pages();
+> i
+> This is the direct reclaim mode with ksgxswapd that works in
+> the background ignored in the entire for loop. But we can go
+> with it in parallel, see below, if it tries as hard as it can
+> to maitain the watermark in which allocators may have no
+> interest.
 
-Makes sense.  If you don't fancy fixing this up, I'll send out a
-fix-up in a few days.
+I think this policy should be left at is and once the code in mainline
+further refined. Consider it as a baseline/initial version for
+reclaiming code.
 
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+> > +		schedule();
+> 
+> To cut allocator's latency use cond_resched();
+
+Thanks, I'll change this.
+
+> > +	}
+> > +
+> > +	if (sgx_should_reclaim(SGX_NR_LOW_PAGES))
+> > +		wake_up(&ksgxswapd_waitq);
+> 
+> Nit: s/ksgxswapd/sgxd/ as it seems to have nothing to do with swap,
+> given sgx itself is clear and good enough.
+
+Yeah, it also handling kexec() situation, i.e. has multitude of
+functions.
+
+> > +
+> > +	return entry;
+> > +}
+> 
+> struct sgx_epc_page *sgx_alloc_epc_page(void *owner, bool reclaim)
+> {
+> 	struct sgx_epc_page *epc_page;
+> 
+> 	for (;;) {
+> 		epc_page = __sgx_alloc_epc_page();
+> 
+> 		if (!IS_ERR(epc_page)) {
+> 			epc_page->owner = owner;
+> 			return epc_page;
+> 		}
+> 
+> 		if (signal_pending(current))
+> 			return ERR_PTR(-ERESTARTSYS);
+> 
+> 		if (list_empty(&sgx_active_page_list) || !reclaim)
+> 			return ERR_PTR(-ENOMEM);
+> 
+> 		wake_up(&ksgxswapd_waitq);
+> 		cond_resched();
+> 	}
+> 	return ERR_PTR(-ENOMEM);
+> }
+
+/Jarkko
