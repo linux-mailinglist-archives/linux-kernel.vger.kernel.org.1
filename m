@@ -2,129 +2,203 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 728CE2ABECE
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 15:36:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 65EE32ABECF
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 15:37:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731158AbgKIOgy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 09:36:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35940 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729976AbgKIOgx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 09:36:53 -0500
-Received: from mail-vs1-xe41.google.com (mail-vs1-xe41.google.com [IPv6:2607:f8b0:4864:20::e41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E92F5C0613CF
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Nov 2020 06:36:52 -0800 (PST)
-Received: by mail-vs1-xe41.google.com with SMTP id f7so5056004vsh.10
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Nov 2020 06:36:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=xDniQAvxFLBjIKTPYpnf40KKSY2vMSiv1LR/tBJSqcA=;
-        b=LxF1L+qGOIsxg05Lh0AzTGP5Iwb+FRJjDr/EMmjoNpyVVkoZAK0uPsRHh/wau4UHyD
-         xh2hlTuIE0nsNZz9H+gMOuMzCX6gEHNOwVtmZZOo7wMGB8sPHTGPpaY1s0Y5TJ48nRWx
-         lINJc8eu3GQFZBbrP/2MbKJgiFRoWYnrgOd0xb1B4no4COrC5vQiuj4bxlstYDKdMLkk
-         Zp/0j7JV5Bg0FEsvyCQrkL/wM+Y7As52L6u9wKkSeIPdQ+oRw6cD/CNWA8ouiqSODa4a
-         WilzHKCrQyEs4yPCINqM+NEE116rmHFQiJPxEd9pd4xyahqi+k8AnC+1He5l4QT/6tnJ
-         I6YQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=xDniQAvxFLBjIKTPYpnf40KKSY2vMSiv1LR/tBJSqcA=;
-        b=m6fh8rURQcxLfPwlkxmHAgMbKel7h5TFcns126wVIl4A9ZOjGLRQyqoMz9T8q5G049
-         +3AvHPxzmgYPVRDpWFtXAzWw0BYI7Z/ges9axV96+SJo9VJdX4F+kuDjZEn898QCRZnW
-         GG/KwH6s57+oUtCu2zJlmqxzQWnf4ZcubG7clH0d+N11aUt83ZTNnmtfjztaEsdTMdlv
-         LoX4lXf5Jl+KnadUuMOqEnuMQNrlgKvlr0GIqNwWEcI6Y1RAiTCjk8fvVvn5pMvEN8KM
-         W6P6XkrQqJQ7VPk9kK2vI8/yZkd19kF6sJ254+SVqPfwi4PQa0YJMLhBVOTADjVrb+sn
-         WWuQ==
-X-Gm-Message-State: AOAM531MiIAJYgXai3wzeYaAaOITPhMcOYkHRm5FGELR5UnILPgvuym9
-        VZGnnadXP4Ua46PVzo6m3zp7lOu8Kqk=
-X-Google-Smtp-Source: ABdhPJx456VlsGGhMLgUwIzQtCFzU+/sL1ihKEqdOyEYs3o3lB9jGdfRASBGPbYiwd7O5j54VSQZtQ==
-X-Received: by 2002:a05:6102:309a:: with SMTP id l26mr7993654vsb.4.1604932611331;
-        Mon, 09 Nov 2020 06:36:51 -0800 (PST)
-Received: from mail-ua1-f45.google.com (mail-ua1-f45.google.com. [209.85.222.45])
-        by smtp.gmail.com with ESMTPSA id k6sm1270883uaq.12.2020.11.09.06.36.50
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 09 Nov 2020 06:36:50 -0800 (PST)
-Received: by mail-ua1-f45.google.com with SMTP id q68so2835211uaq.3
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Nov 2020 06:36:50 -0800 (PST)
-X-Received: by 2002:a9f:2067:: with SMTP id 94mr6343749uam.141.1604932609475;
- Mon, 09 Nov 2020 06:36:49 -0800 (PST)
+        id S1731296AbgKIOhI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 09:37:08 -0500
+Received: from mail.monom.org ([188.138.9.77]:59508 "EHLO mail.monom.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729976AbgKIOhI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 09:37:08 -0500
+Received: from mail.monom.org (localhost [127.0.0.1])
+        by filter.mynetwork.local (Postfix) with ESMTP id 432BA500596;
+        Mon,  9 Nov 2020 15:37:04 +0100 (CET)
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on mail.monom.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.5 required=5.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=ham autolearn_force=no version=3.4.2
+Received: from localhost (unknown [94.31.100.251])
+        by mail.monom.org (Postfix) with ESMTPSA id E263E500108;
+        Mon,  9 Nov 2020 15:37:03 +0100 (CET)
+Date:   Mon, 9 Nov 2020 15:37:03 +0100
+From:   Daniel Wagner <wagi@monom.org>
+To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-rt-users <linux-rt-users@vger.kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>
+Subject: Re: [ANNOUNCE] v5.10-rc2-rt4
+Message-ID: <20201109143703.ps7gxhqrirhntilr@beryllium.lan>
+References: <20201103195731.erjkgyzxzzjylhui@linutronix.de>
+ <20201104103809.bhl2iorbwv6xowtw@beryllium.lan>
+ <20201104104617.ueefmpdou4t3t2ce@linutronix.de>
+ <20201104111948.vpykh3ptmysqhmve@beryllium.lan>
+ <20201104124746.74jdsig3dffomv3k@beryllium.lan>
+ <20201104130930.llx56gtqt532h7c7@linutronix.de>
+ <20201104160650.b63zqof74wohgpa2@beryllium.lan>
+ <20201106105447.2lasulgjrbqdhnlh@linutronix.de>
+ <20201106161413.7c65uxenamy474uh@beryllium.lan>
+ <20201109124718.ljf7inok4zakkjed@linutronix.de>
 MIME-Version: 1.0
-References: <YazU6GEzBdpyZMDMwJirxDX7B4sualpDG68ADZYvJI@cp4-web-034.plabs.ch>
-In-Reply-To: <YazU6GEzBdpyZMDMwJirxDX7B4sualpDG68ADZYvJI@cp4-web-034.plabs.ch>
-From:   Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-Date:   Mon, 9 Nov 2020 09:36:12 -0500
-X-Gmail-Original-Message-ID: <CA+FuTSfokZNJv2g2mCK284UTj7nN_-qXei42J4QWt7YniSrKog@mail.gmail.com>
-Message-ID: <CA+FuTSfokZNJv2g2mCK284UTj7nN_-qXei42J4QWt7YniSrKog@mail.gmail.com>
-Subject: Re: [PATCH net] net: udp: fix Fast/frag0 UDP GRO
-To:     Alexander Lobakin <alobakin@pm.me>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Network Development <netdev@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201109124718.ljf7inok4zakkjed@linutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Nov 7, 2020 at 8:11 PM Alexander Lobakin <alobakin@pm.me> wrote:
->
-> While testing UDP GSO fraglists forwarding through driver that uses
-> Fast GRO (via napi_gro_frags()), I was observing lots of out-of-order
-> iperf packets:
->
-> [ ID] Interval           Transfer     Bitrate         Jitter
-> [SUM]  0.0-40.0 sec  12106 datagrams received out-of-order
->
-> Simple switch to napi_gro_receive() any other method without frag0
-> shortcut completely resolved them.
->
-> I've found that UDP GRO uses udp_hdr(skb) in its .gro_receive()
-> callback. While it's probably OK for non-frag0 paths (when all
-> headers or even the entire frame are already in skb->data), this
-> inline points to junk when using Fast GRO (napi_gro_frags() or
-> napi_gro_receive() with only Ethernet header in skb->data and all
-> the rest in shinfo->frags) and breaks GRO packet compilation and
-> the packet flow itself.
-> To support both modes, skb_gro_header_fast() + skb_gro_header_slow()
-> are typically used. UDP even has an inline helper that makes use of
-> them, udp_gro_udphdr(). Use that instead of troublemaking udp_hdr()
-> to get rid of the out-of-order delivers.
->
-> Present since the introduction of plain UDP GRO in 5.0-rc1.
->
-> Fixes: e20cf8d3f1f7 ("udp: implement GRO for plain UDP sockets.")
-> Signed-off-by: Alexander Lobakin <alobakin@pm.me>
-> ---
->  net/ipv4/udp_offload.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/net/ipv4/udp_offload.c b/net/ipv4/udp_offload.c
-> index e67a66fbf27b..13740e9fe6ec 100644
-> --- a/net/ipv4/udp_offload.c
-> +++ b/net/ipv4/udp_offload.c
-> @@ -366,7 +366,7 @@ static struct sk_buff *udp4_ufo_fragment(struct sk_buff *skb,
->  static struct sk_buff *udp_gro_receive_segment(struct list_head *head,
->                                                struct sk_buff *skb)
->  {
-> -       struct udphdr *uh = udp_hdr(skb);
-> +       struct udphdr *uh = udp_gro_udphdr(skb);
->         struct sk_buff *pp = NULL;
->         struct udphdr *uh2;
->         struct sk_buff *p;
+On Mon, Nov 09, 2020 at 01:47:18PM +0100, Sebastian Andrzej Siewior wrote:
+> So it is the new migrate-disable code? If you have stable 100us you
+> should be able bisect it within the few commits between rt13 and rt14.
 
-Good catch. skb_gro_header_slow may fail and return NULL. Need to
-check that before dereferencing uh below in
+Okay, I'll start a bissect in this range.
 
-        /* requires non zero csum, for symmetry with GSO */
-        if (!uh->check) {
-                NAPI_GRO_CB(skb)->flush = 1;
-                return NULL;
-        }
+> this looks odd. So rt1 has 415, rt2 has 399 and rt3 has 420 so lets say
+> it is the same. And then rt4 should reduce it to 340. The only part that
+> could have some influence is the are the highmem/kmap patches. But for
+> ARM64 these are still a nop and in both cases kmap_atomic() disables
+> migrate & page-fault.
+> 
+> Are you sure those numbers always reproducible and not something that
+> goes wrong and sometimes it is captured at 300us and sometimes 400us.
+
+These test run only very short with hackbench as worlkload (5 minutes).
+Though I running these tests now for more than year with v4.4-rt and
+some times the newer -rt releases and I've never seen the latency
+numbers above 200us unless something was broken. Given that 5 minutes is
+not really long, I'll let those test run for longer to see if I get the
+same results when they run for one hour.
+
+> I've been staring at the code of signaltest on Friday and I might need
+> to stare longer to figure out what it does.
+
+I hear you. Anyway, I gave the current head a run with lazy preemption
+disabled as you asked for.
+
+I had to add two ifdefs to get it compiling first:
+
+diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+index 3fce6bbbeb5b..5a58ead3cf00 100644
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -1800,7 +1800,9 @@ void migrate_disable(void)
+        preempt_disable();
+        this_rq()->nr_pinned++;
+        p->migration_disabled = 1;
++#ifdef CONFIG_PREEMPT_LAZY
+        preempt_lazy_disable();
++#endif
+        preempt_enable();
+ }
+ EXPORT_SYMBOL_GPL(migrate_disable);
+@@ -1829,7 +1831,9 @@ void migrate_enable(void)
+        barrier();
+        p->migration_disabled = 0;
+        this_rq()->nr_pinned--;
++#ifdef CONFIG_PREEMPT_LAZY
+        preempt_lazy_enable();
++#endif
+        preempt_enable();
+ 
+        trace_sched_migrate_enable_tp(p);
+
+
+5.10.0-rc2-rt4 vs 5.10.0-rc2-rt4(lazy preemption disabled)
+
+  0_cyclicdeadline     t2-max-latency       pass/pass                274.00/     61.00     349.18%
+  0_cyclicdeadline     t2-avg-latency       pass/pass                217.00/     19.00    1042.11%
+  0_cyclicdeadline     t2-min-latency       pass/pass                 11.00/      1.00    1000.00%
+  0_cyclicdeadline     t1-max-latency       pass/pass                113.00/    132.00     -14.39%
+  0_cyclicdeadline     t1-avg-latency       pass/pass                 21.00/     24.00     -12.50%
+  0_cyclicdeadline     t1-min-latency       pass/pass                  1.00/      1.00       0.00%
+  0_cyclicdeadline     t0-max-latency       pass/pass                258.00/    110.00     134.55%
+  0_cyclicdeadline     t0-avg-latency       pass/pass                140.00/     19.00     636.84%
+  0_cyclicdeadline     t0-min-latency       pass/pass                  5.00/      1.00     400.00%
+  0_cyclictest         t3-max-latency       pass/pass                 90.00/    118.00     -23.73%
+  0_cyclictest         t3-avg-latency       pass/pass                 33.00/     30.00      10.00%
+  0_cyclictest         t3-min-latency       pass/pass                 11.00/     11.00       0.00%
+  0_cyclictest         t2-max-latency       pass/pass                 93.00/     96.00      -3.12%
+  0_cyclictest         t2-avg-latency       pass/pass                 28.00/     29.00      -3.45%
+  0_cyclictest         t2-min-latency       pass/pass                 11.00/     11.00       0.00%
+  0_cyclictest         t1-max-latency       pass/pass                125.00/    138.00      -9.42%
+  0_cyclictest         t1-avg-latency       pass/pass                 30.00/     29.00       3.45%
+  0_cyclictest         t1-min-latency       pass/pass                 11.00/     11.00       0.00%
+  0_cyclictest         t0-max-latency       pass/pass                 95.00/     97.00      -2.06%
+  0_cyclictest         t0-avg-latency       pass/pass                 30.00/     30.00       0.00%
+  0_cyclictest         t0-min-latency       pass/pass                 11.00/     11.00       0.00%
+  0_pi-stress          pi-stress            fail/fail                  0.00/      0.00       0.00%
+  0_pmqtest            t7-6-max-latency     pass/pass                 69.00/     76.00      -9.21%
+  0_pmqtest            t7-6-avg-latency     pass/pass                 20.00/     19.00       5.26%
+  0_pmqtest            t7-6-min-latency     pass/pass                 15.00/     14.00       7.14%
+  0_pmqtest            t5-4-max-latency     pass/pass                 90.00/     95.00      -5.26%
+  0_pmqtest            t5-4-avg-latency     pass/pass                 20.00/     19.00       5.26%
+  0_pmqtest            t5-4-min-latency     pass/pass                 15.00/     14.00       7.14%
+  0_pmqtest            t3-2-max-latency     pass/pass                 71.00/     74.00      -4.05%
+  0_pmqtest            t3-2-avg-latency     pass/pass                 20.00/     18.00      11.11%
+  0_pmqtest            t3-2-min-latency     pass/pass                 15.00/     14.00       7.14%
+  0_pmqtest            t1-0-max-latency     pass/pass                113.00/    110.00       2.73%
+  0_pmqtest            t1-0-avg-latency     pass/pass                 24.00/     22.00       9.09%
+  0_pmqtest            t1-0-min-latency     pass/pass                 16.00/     14.00      14.29%
+  0_ptsematest         t7-6-max-latency     pass/pass                 66.00/     67.00      -1.49%
+  0_ptsematest         t7-6-avg-latency     pass/pass                 15.00/     15.00       0.00%
+  0_ptsematest         t7-6-min-latency     pass/pass                 11.00/     11.00       0.00%
+  0_ptsematest         t5-4-max-latency     pass/pass                 75.00/     67.00      11.94%
+  0_ptsematest         t5-4-avg-latency     pass/pass                 15.00/     15.00       0.00%
+  0_ptsematest         t5-4-min-latency     pass/pass                 11.00/     11.00       0.00%
+  0_ptsematest         t3-2-max-latency     pass/pass                 68.00/     78.00     -12.82%
+  0_ptsematest         t3-2-avg-latency     pass/pass                 15.00/     15.00       0.00%
+  0_ptsematest         t3-2-min-latency     pass/pass                 11.00/     11.00       0.00%
+  0_ptsematest         t1-0-max-latency     pass/pass                116.00/    106.00       9.43%
+  0_ptsematest         t1-0-avg-latency     pass/pass                 17.00/     17.00       0.00%
+  0_ptsematest         t1-0-min-latency     pass/pass                 11.00/     11.00       0.00%
+  0_rt-migrate-test    t4-p55-avg           pass/pass                121.00/    127.00      -4.72%
+  0_rt-migrate-test    t4-p55-tot           pass/pass               6076.00/   6369.00      -4.60%
+  0_rt-migrate-test    t4-p55-min           pass/pass                 31.00/     28.00      10.71%
+  0_rt-migrate-test    t4-p55-max           pass/pass                234.00/    230.00       1.74%
+  0_rt-migrate-test    t3-p54-avg           pass/pass                121.00/    119.00       1.68%
+  0_rt-migrate-test    t3-p54-tot           pass/pass               6082.00/   5968.00       1.91%
+  0_rt-migrate-test    t3-p54-min           pass/pass                 33.00/     33.00       0.00%
+  0_rt-migrate-test    t3-p54-max           pass/pass                262.00/    211.00      24.17%
+  0_rt-migrate-test    t2-p53-avg           pass/pass                123.00/    126.00      -2.38%
+  0_rt-migrate-test    t2-p53-tot           pass/pass               6161.00/   6302.00      -2.24%
+  0_rt-migrate-test    t2-p53-min           pass/pass                 35.00/     34.00       2.94%
+  0_rt-migrate-test    t2-p53-max           pass/pass                228.00/    204.00      11.76%
+  0_rt-migrate-test    t1-p52-avg           pass/pass                159.00/    172.00      -7.56%
+  0_rt-migrate-test    t1-p52-tot           pass/pass               7990.00/   8636.00      -7.48%
+  0_rt-migrate-test    t1-p52-min           pass/pass                 40.00/     43.00      -6.98%
+  0_rt-migrate-test    t1-p52-max           pass/pass                253.00/    273.00      -7.33%
+  0_rt-migrate-test    t0-p51-avg           pass/pass               7374.00/   8583.00     -14.09%
+  0_rt-migrate-test    t0-p51-tot           pass/pass             368726.00/ 429192.00     -14.09%
+  0_rt-migrate-test    t0-p51-min           pass/pass                 59.00/     55.00       7.27%
+  0_rt-migrate-test    t0-p51-max           pass/pass              20208.00/  20227.00      -0.09%
+  0_signaltest         t0-max-latency       pass/pass                340.00/    385.00     -11.69%
+  0_signaltest         t0-avg-latency       pass/pass                 53.00/     55.00      -3.64%
+  0_signaltest         t0-min-latency       pass/pass                 24.00/     24.00       0.00%
+  0_sigwaittest        t7-6-max-latency     pass/pass                347.00/    322.00       7.76%
+  0_sigwaittest        t7-6-avg-latency     pass/pass                 27.00/     26.00       3.85%
+  0_sigwaittest        t7-6-min-latency     pass/pass                 17.00/     17.00       0.00%
+  0_sigwaittest        t5-4-max-latency     pass/pass                248.00/    288.00     -13.89%
+  0_sigwaittest        t5-4-avg-latency     pass/pass                 26.00/     25.00       4.00%
+  0_sigwaittest        t5-4-min-latency     pass/pass                 17.00/     17.00       0.00%
+  0_sigwaittest        t3-2-max-latency     pass/pass                197.00/    226.00     -12.83%
+  0_sigwaittest        t3-2-avg-latency     pass/pass                 25.00/     24.00       4.17%
+  0_sigwaittest        t3-2-min-latency     pass/pass                 18.00/     17.00       5.88%
+  0_sigwaittest        t1-0-max-latency     pass/pass                179.00/    213.00     -15.96%
+  0_sigwaittest        t1-0-avg-latency     pass/pass                 29.00/     28.00       3.57%
+  0_sigwaittest        t1-0-min-latency     pass/pass                 18.00/     17.00       5.88%
+  0_svsematest         t7-6-max-latency     pass/pass                 85.00/     76.00      11.84%
+  0_svsematest         t7-6-avg-latency     pass/pass                 17.00/     16.00       6.25%
+  0_svsematest         t7-6-min-latency     pass/pass                 13.00/     12.00       8.33%
+  0_svsematest         t5-4-max-latency     pass/pass                 66.00/     70.00      -5.71%
+  0_svsematest         t5-4-avg-latency     pass/pass                 17.00/     16.00       6.25%
+  0_svsematest         t5-4-min-latency     pass/pass                 13.00/     12.00       8.33%
+  0_svsematest         t3-2-max-latency     pass/pass                 99.00/     73.00      35.62%
+  0_svsematest         t3-2-avg-latency     pass/pass                 17.00/     15.00      13.33%
+  0_svsematest         t3-2-min-latency     pass/pass                 13.00/     12.00       8.33%
+  0_svsematest         t1-0-max-latency     pass/pass                121.00/    127.00      -4.72%
+  0_svsematest         t1-0-avg-latency     pass/pass                 19.00/     18.00       5.56%
+  0_svsematest         t1-0-min-latency     pass/pass                 13.00/     12.00       8.33%
+
+
+cyclicdeadline seems heavily affected by the change.
