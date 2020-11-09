@@ -2,138 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE6962AAFFA
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 04:34:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 06E912AAFFE
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 04:37:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729131AbgKIDe2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 8 Nov 2020 22:34:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45782 "EHLO
+        id S1729207AbgKIDhH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 8 Nov 2020 22:37:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46190 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728038AbgKIDe2 (ORCPT
+        with ESMTP id S1728038AbgKIDhH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 8 Nov 2020 22:34:28 -0500
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DEA8C0613CF;
-        Sun,  8 Nov 2020 19:34:28 -0800 (PST)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CTxSH5RNFz9sRK;
-        Mon,  9 Nov 2020 14:34:23 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1604892865;
-        bh=A3jAJl67D7b3qmCP7jNAWBrdVB9O+UIphEYGRHXoN8s=;
-        h=Date:From:To:Cc:Subject:From;
-        b=EFN+XQPe4uoTu9IhO/9Xe8irMLEegQSQV3YrURhkFWAVd6GYyhVvtQfC8N4KlF4eJ
-         qZqLkCfQOpM66bUv1p/QemQHkBxwxAkubE4xZDoqWs6hqLGZj47fu50+O/FZ4oN8l1
-         UD1jXc2Y1o547WAj1TodMR69eUKNNhp7D+cAyr64a8qhzbQJ3uSQAy/LpJH/KiQVJY
-         g8xR8WLEUfhjYrzq6TGVNYMdo0UY1RmDHyu+zMw6sUL/aQNSV3OPYO4lSwr+isTZh2
-         vzz9rP4pTvPykWz/WVJOZ1KEAIRlijW0z87j3TAGcmlAnrdebOO2+2UAY5zFxulv5M
-         FDt3KNGYVDvJQ==
-Date:   Mon, 9 Nov 2020 14:34:22 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@elte.hu>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Peter Zijlstra <peterz@infradead.org>
-Cc:     Jens Axboe <axboe@kernel.dk>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build failure after merge of the tip tree
-Message-ID: <20201109143422.2e7512b0@canb.auug.org.au>
+        Sun, 8 Nov 2020 22:37:07 -0500
+Received: from mail-vs1-xe43.google.com (mail-vs1-xe43.google.com [IPv6:2607:f8b0:4864:20::e43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BF06C0613CF;
+        Sun,  8 Nov 2020 19:37:07 -0800 (PST)
+Received: by mail-vs1-xe43.google.com with SMTP id t8so4204951vsr.2;
+        Sun, 08 Nov 2020 19:37:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=rMA/ceEW9wS4NZVZe5iS6l5M0I/ugt4xfY3l5BFcub8=;
+        b=cQaSW0rVF4BrsPoBDU3Oa2BOCBbIrkgaNKhzq1pLo+G6KL4XPxC1p5ClouJiYwEuVz
+         2IacpRUOGvUlw71hukSQLGsXagL/Bmvg2jRZsMDtfmxRAhFGYD8LybFk3dOFT5rXIW+N
+         HJjwLU83wtw7klTQMFJhYawndSUKAfQ9KcDURCJyKfWh+/8P377+HOmoGA6cHpZBfYTo
+         lKNw1wRmx3h6U/C1ReGwT64lpG8II5FCh7Zefu2DgfYPjhz4DOndLpFvvFzVayIZzAuV
+         CAE8nW0TYJ3HLD+o/5KTXP5k87lzIrbF1lf4pHlPt5zX98Rsft4qoqR5r4OdoU/2ZbLI
+         09Uw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=rMA/ceEW9wS4NZVZe5iS6l5M0I/ugt4xfY3l5BFcub8=;
+        b=AFsHA2QJvWl+bB1taJeXo1/X1VRFR0ww0HiiPZkhWHK66nMMVjB1vUDNWyva1EvPLA
+         ouijaiCTAr0Ob7W3QVYdpRagDwBjBAS6T3m4ERZQU7mYwRzkqK9gr6gSx1Ycaeg+8/8d
+         cVBfLAn0FtM/JeVNHToFYOQ9c+EBR4Ta/xewqzw3PqwHPuF3JpSmKoWkMLUkyCQY2SQ/
+         90Q5NkpyOENkJ5MSqg72wd6kO7Z5Bw26ubmPmL1+awzqwewHkN/QflmuQ+dVl0Npz5mr
+         MUhtV95kRUr9Lf0+9OG41xcCCNjxAv9fwfe+oyDmtakK9XESKY4eeYMx92xw71YWUQPC
+         ne+g==
+X-Gm-Message-State: AOAM531hCF/LEfQT4LZkzAe87Sks5XwlmK1odtIZVudv81qUefSV/XM8
+        +MEuuR5jXTT35+tuvvRmiE7iOSakHjIWUMz2PEs=
+X-Google-Smtp-Source: ABdhPJxGn1WBFQxM1r73wOrmLlSEG0qqY8tkfzmCripRce88taW4yrVpbVNLdmHu2PVWBd+/yfKhf5wMhoF0Z4lnPD0=
+X-Received: by 2002:a05:6102:671:: with SMTP id z17mr7021650vsf.32.1604893026248;
+ Sun, 08 Nov 2020 19:37:06 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/JushTL01GTtTH+GaBGKG6vm";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+References: <1604737451-19082-1-git-send-email-jrdr.linux@gmail.com>
+ <e5401549-8c31-2c6d-58dd-864232de17af@nvidia.com> <e6859981-bc3c-9513-99e5-a99849786156@nvidia.com>
+ <5efeb909-3e02-ba14-7a86-f18562a2fe69@i-love.sakura.ne.jp> <8590eb4c-256b-9ab0-5291-de8ec8d75276@nvidia.com>
+In-Reply-To: <8590eb4c-256b-9ab0-5291-de8ec8d75276@nvidia.com>
+From:   Souptick Joarder <jrdr.linux@gmail.com>
+Date:   Mon, 9 Nov 2020 09:06:54 +0530
+Message-ID: <CAFqt6zZkDm8Eg36Lakb6Y=ePp78pa2wkJkD+w15E=5qa9ohYQA@mail.gmail.com>
+Subject: Re: [PATCH 1/2] tomoyo: Convert get_user_pages*() to pin_user_pages*()
+To:     John Hubbard <jhubbard@nvidia.com>
+Cc:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+        linux-security-module <linux-security-module@vger.kernel.org>,
+        linux-kernel@vger.kernel.org, Jan Kara <jack@suse.cz>,
+        Matthew Wilcox <willy@infradead.org>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/JushTL01GTtTH+GaBGKG6vm
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Sun, Nov 8, 2020 at 7:47 AM John Hubbard <jhubbard@nvidia.com> wrote:
+>
+> On 11/7/20 5:13 PM, Tetsuo Handa wrote:
+> > On 2020/11/08 4:17, John Hubbard wrote:
+> >> On 11/7/20 1:04 AM, John Hubbard wrote:
+> >>> On 11/7/20 12:24 AM, Souptick Joarder wrote:
+> >>>> In 2019, we introduced pin_user_pages*() and now we are converting
+> >>>> get_user_pages*() to the new API as appropriate. [1] & [2] could
+> >>>> be referred for more information. This is case 5 as per document [1].
+> >>>
+> >>> It turns out that Case 5 can be implemented via a better pattern, as long
+> >>> as we're just dealing with a page at a time, briefly:
+> >>>
+> >>> lock_page()
+> >>> write to page's data
+> >>> unlock_page()
+> >>>
+> >>> ...which neatly synchronizes with writeback and other fs activities.
+> >>
+> >> Ahem, I left out a key step: set_page_dirty()!
+> >>
+> >> lock_page()
+> >> write to page's data
+> >> set_page_dirty()
+> >> unlock_page()
+> >>
+> >
+> > Excuse me, but Documentation/core-api/pin_user_pages.rst says
+> > "CASE 5: Pinning in order to _write_ to the data within the page"
+> > while tomoyo_dump_page() is for "_read_ the data within the page".
+> > Do we want to convert to pin_user_pages_remote() or lock_page() ?
+> >
+>
+> Sorry, I missed the direction here, was too focused on the Case 5
+> aspect. Yes. Case 5 (which, again, I think we're about to re-document)
+> is only about *writing* to data within the page.
+>
+> So in this case, where it is just reading from the page, I think it's
+> already from a gup vs pup point of view.
+>
+> btw, it's not clear to me whether the current code is susceptible to any
+> sort of problem involving something writing to the page while it
+> is being dumped (I am curious). But changing from gup to pup wouldn't
+> fix that, if it were a problem. It a separate question from this patch.
+>
+> (Souptick, if you're interested, the Case 5 documentation change and
+> callsite retrofit is all yours if you want it. Otherwise it's on
+> my list.)
 
-Hi all,
-
-After merging the tip tree, today's linux-next build (x86_64 allmodconfig)
-failed like this:
-
-In file included from include/linux/thread_info.h:38,
-                 from arch/x86/include/asm/preempt.h:7,
-                 from include/linux/preempt.h:78,
-                 from include/linux/spinlock.h:51,
-                 from include/linux/mmzone.h:8,
-                 from include/linux/gfp.h:6,
-                 from include/linux/slab.h:15,
-                 from include/linux/crypto.h:20,
-                 from arch/x86/kernel/asm-offsets.c:9:
-arch/x86/include/asm/thread_info.h:96: warning: "TIF_NOTIFY_SIGNAL" redefin=
-ed
-   96 | #define TIF_NOTIFY_SIGNAL 19 /* signal notifications exist */
-      |=20
-arch/x86/include/asm/thread_info.h:94: note: this is the location of the pr=
-evious definition
-   94 | #define TIF_NOTIFY_SIGNAL 17 /* signal notifications exist */
-      |=20
-
-Caused by commit
-
-  c8d5ed67936f ("x86: Wire up TIF_NOTIFY_SIGNAL")
-
-interacting with commit
-
-  323b0fba756d ("x86: wire up TIF_NOTIFY_SIGNAL")
-
-from the block tree.
-
-I added the following merge fix patch.
-
-Please sort out these separate versions of the series ... maybe use a
-common branch.
-
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-Date: Mon, 9 Nov 2020 14:31:50 +1100
-Subject: [PATCH] fix up conflict in "x86: wire up TIF_NOTIFY_SIGNAL" versio=
-ns
-
-Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
----
- arch/x86/include/asm/thread_info.h | 1 -
- 1 file changed, 1 deletion(-)
-
-diff --git a/arch/x86/include/asm/thread_info.h b/arch/x86/include/asm/thre=
-ad_info.h
-index ec0fcbe739ec..414895e923f5 100644
---- a/arch/x86/include/asm/thread_info.h
-+++ b/arch/x86/include/asm/thread_info.h
-@@ -93,7 +93,6 @@ struct thread_info {
- #define TIF_NOTSC		16	/* TSC is not accessible in userland */
- #define TIF_NOTIFY_SIGNAL	17	/* signal notifications exist */
- #define TIF_SLD			18	/* Restore split lock detection on context switch */
--#define TIF_NOTIFY_SIGNAL	19	/* signal notifications exist */
- #define TIF_MEMDIE		20	/* is terminating due to OOM killer */
- #define TIF_POLLING_NRFLAG	21	/* idle is polling for TIF_NEED_RESCHED */
- #define TIF_IO_BITMAP		22	/* uses I/O bitmap */
---=20
-2.28.0
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/JushTL01GTtTH+GaBGKG6vm
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl+ouL8ACgkQAVBC80lX
-0GzCHAf9E/opcf7j+sBDx/DOh2haIudIoMrBmjPNJAXxUFv0+sMaQz3607qlrnW9
-kND/AaEIjWfVHl03Hv8CKCuMv1+zeuXItmt6nHd+LWbiCD9k+aA3GOiln8lkr28y
-7tu4WVIGvry8Eok2qIOGxHFicnvLod3Uq6IbbJcyOgx9VqJtRRxs5LyD+2yJqPYi
-m33vMSPfMjY4/tO66niPBk5OJnqLY6i0ubrRwUjxhRlsgLulJJJkZ5xkrwHkenC+
-IYQk54KVTE4+xMyhjCgHWwzdGAUKSw7vLTk3DMF1koZA6eua766uu4qdKpHTWqpI
-sfZJ1WXh2+4uYCQ00kW5w+YMoF4VCg==
-=93XV
------END PGP SIGNATURE-----
-
---Sig_/JushTL01GTtTH+GaBGKG6vm--
+Sure John, I will take it.
