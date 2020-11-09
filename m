@@ -2,88 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 200202AC49C
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 20:06:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 29C282AC4A0
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 20:08:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730130AbgKITGk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 14:06:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49780 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727303AbgKITGk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 14:06:40 -0500
-Received: from mail-ua1-x941.google.com (mail-ua1-x941.google.com [IPv6:2607:f8b0:4864:20::941])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BDCBC0613CF;
-        Mon,  9 Nov 2020 11:06:38 -0800 (PST)
-Received: by mail-ua1-x941.google.com with SMTP id g3so1475231uae.7;
-        Mon, 09 Nov 2020 11:06:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=LHzkmOmPkjnd4G3j6iZOSBoju4aalKTDiO1p/8nrAtk=;
-        b=g4W/Esn0PCw1rNqZHCEy6aVXzNhdlt7xxIAfg11E/IlViUup+R6NwVIP7jvdL5c98W
-         ESNR/zWn5Hw94oynRqdEPmrI7ZlE5NR/aDzubeh52GC+kWjE5C/XhOhymskqjAqzybKV
-         cuUdvcE11NNU8rIyDobk1zW1gaw5B0ZGewl30b+r9NOAsbCVi0gOMtlZNm3weniT6Y4A
-         2AoG0lXC7hJ2I/+741o/FJvNA1YSAAWJbDhw0KyVxJ1XXQ5B1rBhVWDVMZSL5afa5Q7L
-         6DkyT+Z+wcrliguiPVPVv5BRfA/jA/Inf5bDB9lmnR92uO5p4HtFu5qsBfA3lxbIuqYG
-         G7vA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=LHzkmOmPkjnd4G3j6iZOSBoju4aalKTDiO1p/8nrAtk=;
-        b=F1fW9N0GBDsCCyxyaitc9HdM1U1ZDjarBTMxVMwbhBGz2Iep+ngNirPtQYannkKOs9
-         HbQ/16QLX5McfpK5RYCRGlF/Q9jKVfh0MnczlHd81mTd/5j5TWsiQGy3t/vUm2bltnUS
-         67R5CH1rd7ppxqET5WVJ7dsCPqakVAEAsD6H6ktWibbV57074IkhruKrxATIO+5JVXfG
-         Dwg9dtl14v0Q6z50oUfWtL1gT9cERcsUr1I6NpBA35KScMcFW7YimKSaNigStb76CGYw
-         k9zjpPxCeX712QYAJdNwVH/s3GVv80f2hbJJfdiAtHGWzZv8xy02bdYIlISYZoF2mT57
-         dyIQ==
-X-Gm-Message-State: AOAM532/DGoHc3VEUWap4aE0RDl7Fwg7X9iC9DLcRpoEaOEuQENnP5Z1
-        IB8Vt/R3Tw//5HYDeeXkiSooCF8qIswFB1jgAwo=
-X-Google-Smtp-Source: ABdhPJzlySHrx/28itCmErO7VlN5yaENjhocxUQ+TChekl0njkjToaGz2RHgjpUsiNss6rsKZK0eVpzOKBkM2mfe6Sk=
-X-Received: by 2002:ab0:549c:: with SMTP id p28mr8452414uaa.47.1604948797853;
- Mon, 09 Nov 2020 11:06:37 -0800 (PST)
+        id S1729951AbgKITIP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 14:08:15 -0500
+Received: from mga01.intel.com ([192.55.52.88]:17032 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727303AbgKITIP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 14:08:15 -0500
+IronPort-SDR: eX4uGgaAohvj65uLXrrF/hadLVKTwFtAhf3fU3QzjVC4e4aJbdc9FbdOcwwqIiod2TOoeDRtzL
+ 0e61YshCnCEw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9800"; a="187810336"
+X-IronPort-AV: E=Sophos;i="5.77,464,1596524400"; 
+   d="scan'208";a="187810336"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Nov 2020 11:08:14 -0800
+IronPort-SDR: 0r43pxb7JvqR6+RwF6HbyemFwySilAl/4aVAM920R/2Hqeo4gEHRQL0E7JSePlOMhX5Oi2o2DD
+ muw/pClS/GKg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,464,1596524400"; 
+   d="scan'208";a="365174740"
+Received: from stinkbox.fi.intel.com (HELO stinkbox) ([10.237.72.174])
+  by FMSMGA003.fm.intel.com with SMTP; 09 Nov 2020 11:08:09 -0800
+Received: by stinkbox (sSMTP sendmail emulation); Mon, 09 Nov 2020 21:08:08 +0200
+Date:   Mon, 9 Nov 2020 21:08:08 +0200
+From:   Ville =?iso-8859-1?Q?Syrj=E4l=E4?= <ville.syrjala@linux.intel.com>
+To:     Lyude Paul <lyude@redhat.com>
+Cc:     "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Dave Airlie <airlied@gmail.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Ben Skeggs <bskeggs@redhat.com>,
+        Imre Deak <imre.deak@intel.com>
+Subject: Re: [git pull] drm next pull for 5.10-rc1
+Message-ID: <20201109190808.GN6112@intel.com>
+References: <CAPM=9txyMmW1DWhS--SuYQu4qDK1GPzgHJwxbAfhHT=hUsPODA@mail.gmail.com>
+ <20201103222013.hypmzlq7uuqufe76@box>
+ <71dc852e52bfeafc8c03a6fa3cd5f3cdd4eb6609.camel@redhat.com>
+ <20201109115209.rwhoe4zttaxirx6c@box>
+ <ea2450953182320516f8e8bf857625c58a18f584.camel@redhat.com>
 MIME-Version: 1.0
-References: <20201029183526.2131776-1-aleksandrnogikh@gmail.com>
-In-Reply-To: <20201029183526.2131776-1-aleksandrnogikh@gmail.com>
-From:   Aleksandr Nogikh <aleksandrnogikh@gmail.com>
-Date:   Mon, 9 Nov 2020 22:06:27 +0300
-Message-ID: <CAFSQ=y455bVOGMpRW86Gto+WdL1idxSXM0RPifokEotyg2ccjg@mail.gmail.com>
-Subject: Re: [PATCH v3 0/2] security: add fault injection to LSM hooks
-To:     jmorris@namei.org, serge@hallyn.com, akinobu.mita@gmail.com
-Cc:     Andrey Konovalov <andreyknvl@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Marco Elver <elver@google.com>,
-        Alexander Potapenko <glider@google.com>,
-        Kees Cook <keescook@google.com>, casey@schaufler-ca.com,
-        linux-kernel@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        Aleksandr Nogikh <nogikh@google.com>, mortonm@chromium.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <ea2450953182320516f8e8bf857625c58a18f584.camel@redhat.com>
+X-Patchwork-Hint: comment
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 29 Oct 2020 at 21:35, Aleksandr Nogikh
-<aleksandrnogikh@gmail.com> wrote:
->
-> From: Aleksandr Nogikh <nogikh@google.com>
->
-> Fault injection capabilities[Documentation/fault-injection/fault-injection.rst]
-> facilitate testing of the stability of the Linux kernel by providing
-> means to force a number of kernel interfaces to return error
-> codes. This patch series proposes adding such fault injection
-> capability into LSM hooks.
->
-> The intent is to make it possible to test whether the existing kernel
-> code properly handles negative return values of LSM hooks. Syzbot
-> [https://github.com/google/syzkaller/blob/master/docs/syzbot.md] will
-> automatically do that with the aid of instrumentation tools once these
-> changes are merged.
-> [...]
+On Mon, Nov 09, 2020 at 12:50:48PM -0500, Lyude Paul wrote:
+> Looking at the patches you sent is on my TODO list for this week at least as a
+> priority, although I really would have hoped that someone from Intel would
+> have looked by now since it's a regression on their end.
 
-What tree should these changes go to?
+What regression are you talking about?
 
-Is there anyone else who is not on the recipient list but still might
-be interested in the series?
+> 
+> Gentle ping to Vsyrjala and Imre
+> 
+> On Mon, 2020-11-09 at 14:52 +0300, Kirill A. Shutemov wrote:
+> > On Wed, Nov 04, 2020 at 04:58:14PM -0500, Lyude Paul wrote:
+> > > ACK, I will send out a patch for this asap
+> > 
+> > Any update. AFAICS, v5.10-rc3 is still buggy.
+> > 
+> 
+> -- 
+> Cheers,
+>  Lyude Paul (she/her)
+>  Software Engineer at Red Hat
+
+-- 
+Ville Syrjälä
+Intel
