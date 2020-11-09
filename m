@@ -2,83 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA08F2AB1E6
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 08:52:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8506B2AB1F1
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 08:55:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729689AbgKIHw3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 02:52:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57512 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728038AbgKIHw2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 02:52:28 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91F93C0613CF
-        for <linux-kernel@vger.kernel.org>; Sun,  8 Nov 2020 23:52:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=DQp7Z8atBHTyupqZQXsiHfDtdq00mAq/dg+gPrxsabM=; b=C5Ly9d20rUqQLMssiKEQpyR9IJ
-        fXb8BUn6LRAxyvNBhc9DyVlZ6MsgkNhp6GAshCYRt8EvKY0wIdtu1Y3q1+X3xaobvizCcmlc935Pq
-        TvMCrhqPi9dIR1/p2A5fU/dDn/iCqGD1YVyV3ZFKoR1Co0QNIKrjrVCA13IsIZva4KJPmPPrr51x0
-        nMECXM46ForuD6xUcH5eZmWadnureyK9AQ6kwzfe3JlJqUoZ7hakKBWympNYpLm1tN4fC7WsIqRvW
-        66WWkv3SwHVh0/wgbCLHWM2LSbLfp2luvqb/FiUkQ61G7iPys0bDDlBXm9UZQ+/uk046rmg2BK7dH
-        o6LcYBJw==;
-Received: from [2601:1c0:6280:3f0::a1cb]
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kc1yL-00015P-BO; Mon, 09 Nov 2020 07:52:17 +0000
-Subject: Re: [PATCH v2] mm/gup_test: GUP_TEST depends on DEBUG_FS
-To:     John Hubbard <jhubbard@nvidia.com>,
-        Barry Song <song.bao.hua@hisilicon.com>,
-        akpm@linux-foundation.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Cc:     linuxarm@huawei.com, Ralph Campbell <rcampbell@nvidia.com>,
-        John Garry <john.garry@huawei.com>
-References: <20201108083732.15336-1-song.bao.hua@hisilicon.com>
- <cf1b1b35-c608-9b5e-0c1a-216431b83750@nvidia.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <071150d8-9159-91c4-118d-b19c2bd785ea@infradead.org>
-Date:   Sun, 8 Nov 2020 23:52:14 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1729712AbgKIHzD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 02:55:03 -0500
+Received: from wtarreau.pck.nerim.net ([62.212.114.60]:46949 "EHLO 1wt.eu"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728904AbgKIHzD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 02:55:03 -0500
+Received: (from willy@localhost)
+        by pcw.home.local (8.15.2/8.15.2/Submit) id 0A97sANl013929;
+        Mon, 9 Nov 2020 08:54:10 +0100
+Date:   Mon, 9 Nov 2020 08:54:10 +0100
+From:   Willy Tarreau <w@1wt.eu>
+To:     Amit Klein <aksecurity@gmail.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Eric Dumazet <edumazet@google.com>,
+        "Jason A. Donenfeld" <Jason@zx2c4.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>, tytso@mit.edu,
+        Florian Westphal <fw@strlen.de>,
+        Marc Plumb <lkml.mplumb@gmail.com>,
+        George Spelvin <lkml@sdf.org>, Sasha Levin <sashal@kernel.org>
+Subject: Re: [PATCH 5.9 639/757] random32: make prandom_u32() output
+ unpredictable
+Message-ID: <20201109075410.GA13916@1wt.eu>
+References: <20201027135450.497324313@linuxfoundation.org>
+ <20201027135520.535662993@linuxfoundation.org>
+ <CANEQ_++-8QMfvLCQtFLOy8dF1LP_+UUOkRTG2y8Jn5bteS3B8Q@mail.gmail.com>
+ <20201109062012.GA48368@kroah.com>
+ <CANEQ_+JcddE9SxzppH07A1ewvyjXHnsKUYpoYx=9Zk7gPe-Fxg@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <cf1b1b35-c608-9b5e-0c1a-216431b83750@nvidia.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CANEQ_+JcddE9SxzppH07A1ewvyjXHnsKUYpoYx=9Zk7gPe-Fxg@mail.gmail.com>
+User-Agent: Mutt/1.6.1 (2016-04-27)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/8/20 11:45 PM, John Hubbard wrote:
-> On 11/8/20 12:37 AM, Barry Song wrote:
->> Without DEBUG_FS, all the code in gup_test becomes meaningless. For sure
->> kernel provides debugfs stub while DEBUG_FS is disabled, but the point
->> here is that GUP_TEST can do nothing without DEBUG_FS.
->>
->> Cc: John Hubbard <jhubbard@nvidia.com>
->> Cc: Ralph Campbell <rcampbell@nvidia.com>
->> Cc: Randy Dunlap <rdunlap@infradead.org>
->> Suggested-by: John Garry <john.garry@huawei.com>
->> Signed-off-by: Barry Song <song.bao.hua@hisilicon.com>
->> ---
->>   -v2:
->>   add comment as a prompt to users as commented by John and Randy, thanks!
->>
->>   mm/Kconfig | 4 ++++
->>   1 file changed, 4 insertions(+)
+On Mon, Nov 09, 2020 at 08:54:13AM +0200, Amit Klein wrote:
+> Unfortunately, I'm just a security researcher, not a kernel developer...
 > 
-> Thanks for suffering through a lot of discussion about this!
-> 
-> Reviewed-by: John Hubbard <jhubbard@nvidia.com>
-> 
-> 
-> thanks,
+> Does that mean you don't plan to back-port the patch?
 
-Acked-by: Randy Dunlap <rdunlap@infradead.org>
+I could possibly have a look, but quite frankly I'm not convinced that we
+need to backport this at all. I think that what we've done is mostly to be
+future-proof and that the likelihood of practical attacks against live
+systems with the previous fix are close to zero.
 
-thanks.
-
--- 
-~Randy
+Cheers,
+Willy
