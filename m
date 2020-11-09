@@ -2,80 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D24282AB789
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 12:52:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B66D2AB792
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 12:54:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729328AbgKILwL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 06:52:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38704 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726410AbgKILwL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 06:52:11 -0500
-Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44056C0613CF
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Nov 2020 03:52:11 -0800 (PST)
-Received: by mail-lj1-x22c.google.com with SMTP id s9so8180508ljo.11
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Nov 2020 03:52:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=shutemov-name.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=gb555tBVeDZ1152wJBFs/zqQc+I15TdKsfg5+AjAFMY=;
-        b=VheQ6P+eFa43DzlthNUnMdFi3GfOfXKp3Gk0+ex0JvkJMOlv8YVeNPK6MhHY3U9TKc
-         ehqpu7eVB8sYuUuPj2VhAi3/lGh3eM4Yiw8VmO9jrfljaLl0lTKmoSzXX/HkW8+xWuTo
-         TJmr1Hm32xUoChiFhiPBpReNTzpl3hY8BQr3eDRw9mLMlJ5oaLRS3PQzKeTM+30FhbkM
-         N6rR0MHpObqwxrn1yTGh+rnc1qwtXvqIoE0VtREkQxD9za0F26/0sdfXcBSlEwbv8qO9
-         2S1EsdAHJHIbCGblmxivG7jeyfd1hoi9CilzOQiVaPBZeVTBp6qZF2DCv7JPplceUq8J
-         84zw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=gb555tBVeDZ1152wJBFs/zqQc+I15TdKsfg5+AjAFMY=;
-        b=NAiUDpzKldt+yY8g+TS6JhsBpG8Anw1tc+E3z7RPYQq+AGj0/o6D21u5gvZRCaGQkW
-         Ixztk5O0bFvwlSo+mJFIcg1Xy1bdQX5ZkhL4HBnsUMQ5Omk6feSRW/Sbmnfll4cIz04s
-         tjvZ0oS2VIL9NiPxmVh0PC/WVERA/560JnqS9iE8d25a1pE9piIKUo2uiwYk9zrsDJLu
-         FVbCR8h6/BMmBuGayz7JkRdLuneu7b9yiOn9esVXrMgIcvYMpbFXz9RTR3GHqVCmfVBL
-         5fTSvGFHrVcbJ0/ydbK3+MBCZyFjaIeMVPiKv0giM9cwVTWIafTfejAKURXK6gaYue84
-         u64A==
-X-Gm-Message-State: AOAM530EP1Vu+0W8aqnswLh9+odZNq2Yv98JLI2oYfUwcEp1L0KNiXoR
-        zgIgXpCRxG/2W6C7hOEUCxH9gtL3HPRuJg==
-X-Google-Smtp-Source: ABdhPJyRS8LuIOxeZsIQW7aTMGVRK0Ph4X5yUBJ8354EvpwmhPb6OLkvY8F7e5IU4191BSlhW9JvtA==
-X-Received: by 2002:a2e:958d:: with SMTP id w13mr5811033ljh.204.1604922728699;
-        Mon, 09 Nov 2020 03:52:08 -0800 (PST)
-Received: from box.localdomain ([86.57.175.117])
-        by smtp.gmail.com with ESMTPSA id i4sm1752128lfd.190.2020.11.09.03.52.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 09 Nov 2020 03:52:07 -0800 (PST)
-Received: by box.localdomain (Postfix, from userid 1000)
-        id 76842102840; Mon,  9 Nov 2020 14:52:09 +0300 (+03)
-Date:   Mon, 9 Nov 2020 14:52:09 +0300
-From:   "Kirill A. Shutemov" <kirill@shutemov.name>
-To:     Lyude Paul <lyude@redhat.com>
-Cc:     Dave Airlie <airlied@gmail.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Ben Skeggs <bskeggs@redhat.com>
-Subject: Re: [git pull] drm next pull for 5.10-rc1
-Message-ID: <20201109115209.rwhoe4zttaxirx6c@box>
-References: <CAPM=9txyMmW1DWhS--SuYQu4qDK1GPzgHJwxbAfhHT=hUsPODA@mail.gmail.com>
- <20201103222013.hypmzlq7uuqufe76@box>
- <71dc852e52bfeafc8c03a6fa3cd5f3cdd4eb6609.camel@redhat.com>
+        id S1729539AbgKILyV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 06:54:21 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36728 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726999AbgKILyU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 06:54:20 -0500
+Received: from localhost (unknown [122.171.147.34])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 57C1F206ED;
+        Mon,  9 Nov 2020 11:54:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604922860;
+        bh=+iw175/J1tq/P37phiK8nKg7R+loYoDsitcIgM1b1NU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=kJi+z3HkhjjKIfrIUjHaehZ2GrU6GzR3biMhOBsJrA+VjIf3RdwZbTwRfBmjmjEZ4
+         x18gf7JYc/ZG3Pr3PZjB49jNyMt1jeD8g48lcK4G1UEY1XcFp2rqM7gRwCpWslPO3y
+         LA98WOI4erzaVgnXAWAUKoYj08NP6aHa7oMy99mg=
+Date:   Mon, 9 Nov 2020 17:24:15 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Grygorii Strashko <grygorii.strashko@ti.com>
+Cc:     Peter Ujfalusi <peter.ujfalusi@ti.com>, dmaengine@vger.kernel.org,
+        Sekhar Nori <nsekhar@ti.com>, linux-kernel@vger.kernel.org,
+        Vignesh Raghavendra <vigneshr@ti.com>
+Subject: Re: [PATCH] dmaengine: ti: k3-udma-glue: move psi-l pairing in
+ channel en/dis functions
+Message-ID: <20201109115415.GM3171@vkoul-mobl>
+References: <20201030203000.4281-1-grygorii.strashko@ti.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <71dc852e52bfeafc8c03a6fa3cd5f3cdd4eb6609.camel@redhat.com>
+In-Reply-To: <20201030203000.4281-1-grygorii.strashko@ti.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 04, 2020 at 04:58:14PM -0500, Lyude Paul wrote:
-> ACK, I will send out a patch for this asap
+On 30-10-20, 22:30, Grygorii Strashko wrote:
+> The NAVSS UDMA will stuck if target IP module is disabled by PM while PSI-L
+> threads are paired UDMA<->IP and no further transfers is possible. This
+> could be the case for IPs J721E Main CPSW (cpsw9g).
+> 
+> Hence, to avoid such situation do PSI-L threads pairing only when UDMA
+> channel is going to be enabled as at this time DMA consumer module expected
+> to be active already.
 
-Any update. AFAICS, v5.10-rc3 is still buggy.
+Applied, thanks
 
 -- 
- Kirill A. Shutemov
+~Vinod
