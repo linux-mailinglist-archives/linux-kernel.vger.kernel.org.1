@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28B5E2AB8CD
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 13:57:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B48D82AB8D0
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 13:57:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729523AbgKIM50 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 07:57:26 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51598 "EHLO mail.kernel.org"
+        id S1730026AbgKIM5i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 07:57:38 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51698 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729901AbgKIM47 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 07:56:59 -0500
+        id S1729896AbgKIM5E (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 07:57:04 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id AC2F520684;
-        Mon,  9 Nov 2020 12:56:57 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id CBDA020684;
+        Mon,  9 Nov 2020 12:57:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604926618;
-        bh=ETh8yKLpHVxJebAr/OpUUF+JfshKn5sppTrUbBcaeX4=;
+        s=default; t=1604926623;
+        bh=SJfxIJl2q4MsodwaH95fqs9gynZ3yjK70+umDhNMypI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=dXcuF3h9iRzTpRioxx3jvpfszr+dv15kT4pslDxB0ogyfO3tD4JHYPZp2AVtsNzcS
-         TgPT0uaB7Xqz48QtUjCViM78y2WUHMn0vi25XD7drWP0CTrvvBdSWkBwj5ehR6cr2+
-         H9qWZPCHd3vol257vTv2bv/WOO+sBWUEVAiG9lBY=
+        b=S+JLONGYnhtypmbXOKBIA7FuRZh29ow8esMX8SsFlEaTLaxYWd11J/E7IqGdrPxM8
+         rzTVJy3cNJhnsweLC1AqifRFi3z/sZOBfkjRtOPwR4fvui5t6iS8gNmDp71h6sxdCq
+         gLjbkVa7FWyvILwI8la6DzwxWg7RGcyFv3/aqCK8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Krzysztof Kozlowski <krzk@kernel.org>,
-        Jonathan Bakker <xc-racer2@live.ca>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 31/86] ARM: dts: s5pv210: move PMU node out of clock controller
-Date:   Mon,  9 Nov 2020 13:54:38 +0100
-Message-Id: <20201109125022.354891300@linuxfoundation.org>
+        stable@vger.kernel.org, KoWei Sung <winders@amazon.com>,
+        Song Liu <songliubraving@fb.com>
+Subject: [PATCH 4.4 33/86] md/raid5: fix oops during stripe resizing
+Date:   Mon,  9 Nov 2020 13:54:40 +0100
+Message-Id: <20201109125022.451961167@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201109125020.852643676@linuxfoundation.org>
 References: <20201109125020.852643676@linuxfoundation.org>
@@ -43,57 +42,75 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Krzysztof Kozlowski <krzk@kernel.org>
+From: Song Liu <songliubraving@fb.com>
 
-[ Upstream commit bb98fff84ad1ea321823759edaba573a16fa02bd ]
+commit b44c018cdf748b96b676ba09fdbc5b34fc443ada upstream.
 
-The Power Management Unit (PMU) is a separate device which has little
-common with clock controller.  Moving it to one level up (from clock
-controller child to SoC) allows to remove fake simple-bus compatible and
-dtbs_check warnings like:
+KoWei reported crash during raid5 reshape:
 
-  clock-controller@e0100000: $nodename:0:
-    'clock-controller@e0100000' does not match '^([a-z][a-z0-9\\-]+-bus|bus|soc|axi|ahb|apb)(@[0-9a-f]+)?$'
+[ 1032.252932] Oops: 0002 [#1] SMP PTI
+[...]
+[ 1032.252943] RIP: 0010:memcpy_erms+0x6/0x10
+[...]
+[ 1032.252947] RSP: 0018:ffffba1ac0c03b78 EFLAGS: 00010286
+[ 1032.252949] RAX: 0000784ac0000000 RBX: ffff91bec3d09740 RCX: 0000000000001000
+[ 1032.252951] RDX: 0000000000001000 RSI: ffff91be6781c000 RDI: 0000784ac0000000
+[ 1032.252953] RBP: ffffba1ac0c03bd8 R08: 0000000000001000 R09: ffffba1ac0c03bf8
+[ 1032.252954] R10: 0000000000000000 R11: 0000000000000000 R12: ffffba1ac0c03bf8
+[ 1032.252955] R13: 0000000000001000 R14: 0000000000000000 R15: 0000000000000000
+[ 1032.252958] FS:  0000000000000000(0000) GS:ffff91becf500000(0000) knlGS:0000000000000000
+[ 1032.252959] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[ 1032.252961] CR2: 0000784ac0000000 CR3: 000000031780a002 CR4: 00000000001606e0
+[ 1032.252962] Call Trace:
+[ 1032.252969]  ? async_memcpy+0x179/0x1000 [async_memcpy]
+[ 1032.252977]  ? raid5_release_stripe+0x8e/0x110 [raid456]
+[ 1032.252982]  handle_stripe_expansion+0x15a/0x1f0 [raid456]
+[ 1032.252988]  handle_stripe+0x592/0x1270 [raid456]
+[ 1032.252993]  handle_active_stripes.isra.0+0x3cb/0x5a0 [raid456]
+[ 1032.252999]  raid5d+0x35c/0x550 [raid456]
+[ 1032.253002]  ? schedule+0x42/0xb0
+[ 1032.253006]  ? schedule_timeout+0x10e/0x160
+[ 1032.253011]  md_thread+0x97/0x160
+[ 1032.253015]  ? wait_woken+0x80/0x80
+[ 1032.253019]  kthread+0x104/0x140
+[ 1032.253022]  ? md_start_sync+0x60/0x60
+[ 1032.253024]  ? kthread_park+0x90/0x90
+[ 1032.253027]  ret_from_fork+0x35/0x40
 
-Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-Tested-by: Jonathan Bakker <xc-racer2@live.ca>
-Link: https://lore.kernel.org/r/20200907161141.31034-8-krzk@kernel.org
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+This is because cache_size_mutex was unlocked too early in resize_stripes,
+which races with grow_one_stripe() that grow_one_stripe() allocates a
+stripe with wrong pool_size.
+
+Fix this issue by unlocking cache_size_mutex after updating pool_size.
+
+Cc: <stable@vger.kernel.org> # v4.4+
+Reported-by: KoWei Sung <winders@amazon.com>
+Signed-off-by: Song Liu <songliubraving@fb.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- arch/arm/boot/dts/s5pv210.dtsi | 13 +++++--------
- 1 file changed, 5 insertions(+), 8 deletions(-)
+ drivers/md/raid5.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/arch/arm/boot/dts/s5pv210.dtsi b/arch/arm/boot/dts/s5pv210.dtsi
-index b03fe747b98ca..b78346d9c319e 100644
---- a/arch/arm/boot/dts/s5pv210.dtsi
-+++ b/arch/arm/boot/dts/s5pv210.dtsi
-@@ -99,19 +99,16 @@
- 		};
+--- a/drivers/md/raid5.c
++++ b/drivers/md/raid5.c
+@@ -2238,8 +2238,6 @@ static int resize_stripes(struct r5conf
+ 	} else
+ 		err = -ENOMEM;
  
- 		clocks: clock-controller@e0100000 {
--			compatible = "samsung,s5pv210-clock", "simple-bus";
-+			compatible = "samsung,s5pv210-clock";
- 			reg = <0xe0100000 0x10000>;
- 			clock-names = "xxti", "xusbxti";
- 			clocks = <&xxti>, <&xusbxti>;
- 			#clock-cells = <1>;
--			#address-cells = <1>;
--			#size-cells = <1>;
--			ranges;
-+		};
+-	mutex_unlock(&conf->cache_size_mutex);
+-
+ 	conf->slab_cache = sc;
+ 	conf->active_name = 1-conf->active_name;
  
--			pmu_syscon: syscon@e0108000 {
--				compatible = "samsung-s5pv210-pmu", "syscon";
--				reg = <0xe0108000 0x8000>;
--			};
-+		pmu_syscon: syscon@e0108000 {
-+			compatible = "samsung-s5pv210-pmu", "syscon";
-+			reg = <0xe0108000 0x8000>;
- 		};
+@@ -2262,6 +2260,8 @@ static int resize_stripes(struct r5conf
  
- 		pinctrl0: pinctrl@e0200000 {
--- 
-2.27.0
-
+ 	if (!err)
+ 		conf->pool_size = newsize;
++	mutex_unlock(&conf->cache_size_mutex);
++
+ 	return err;
+ }
+ 
 
 
