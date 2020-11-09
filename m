@@ -2,70 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8A8B2AB150
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 07:34:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 827582AB153
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 07:36:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729598AbgKIGes (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 01:34:48 -0500
-Received: from mga12.intel.com ([192.55.52.136]:27633 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729076AbgKIGer (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 01:34:47 -0500
-IronPort-SDR: Hy1ZvAHhX4b+JsYm7tbuu3s643L7rxOYF6ZHLe2vWLTgCrSXKegtiG/aK06AmAyV+rYDksBn6c
- UaYyZHKiMwgw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9799"; a="149035416"
-X-IronPort-AV: E=Sophos;i="5.77,462,1596524400"; 
-   d="scan'208";a="149035416"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Nov 2020 22:34:47 -0800
-IronPort-SDR: epgwv5nkki90oJuuM6jW+S8ec5md4ptPQZLXv9wT+rvJ5nOm4ZXwF4aBldsS9I312p4Oykmr0t
- e1Ge+n1wmpog==
-X-IronPort-AV: E=Sophos;i="5.77,462,1596524400"; 
-   d="scan'208";a="530588466"
-Received: from tassilo.jf.intel.com ([10.54.74.11])
-  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Nov 2020 22:34:47 -0800
-Date:   Sun, 8 Nov 2020 22:34:46 -0800
-From:   Andi Kleen <ak@linux.intel.com>
-To:     Like Xu <like.xu@linux.intel.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, wei.w.wang@intel.com,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Subject: Re: [PATCH v12 01/11] perf/x86: Fix variable types for LBR registers
-Message-ID: <20201109063446.GM466880@tassilo.jf.intel.com>
-References: <20200613080958.132489-1-like.xu@linux.intel.com>
- <20200613080958.132489-2-like.xu@linux.intel.com>
+        id S1729605AbgKIGgG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 01:36:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45430 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729561AbgKIGgG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 01:36:06 -0500
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60504C0613CF;
+        Sun,  8 Nov 2020 22:36:06 -0800 (PST)
+Received: by mail-pg1-x541.google.com with SMTP id e21so6264268pgr.11;
+        Sun, 08 Nov 2020 22:36:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=Yk7TZLCW/uzS8z0ePVinfk4r2Y6c8s7cwrgi26umcig=;
+        b=SiFoudmazG9T0PzBvQ99ibdovUOUcx8clR5cHGxIejDL1Di1T2QNIhcu7pO6RB0m73
+         Kylk2hc3cM9BqLCaURkgLQ5anLcnAVFCTtAI3Xc1aa/wgT9PSLmvqqJUgSBav+N9PngM
+         BAFduzYapULa3VPsHy12wztVgeC7wU4pJ5l9glkaKubTk3tiFX8jiaWxyw49geWOkFB2
+         PruWOGgzHf+9GpxXSnS0RpJs7+EpM5pb0pJ46B5dYDX8AfV++M0pNlrtPsoT66vVMBgX
+         VLFmd1hmA89p2K8L8Vt7nhRe/9p+WtBgYgeSpYTPppE8y4liBnNEXMAHsAZrprTeLXUY
+         Fx1A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=Yk7TZLCW/uzS8z0ePVinfk4r2Y6c8s7cwrgi26umcig=;
+        b=U10UI2k9p8msbDbBlK4CbnH+Gwgl+LmrAr/5ww5lSR7g7QfDIRdPEYC8ORpTwcUKzM
+         x6vgfNNkpF+PYd59TtMube3LB9ucisrT9vPJZE+4Gs0ZxCWnCVvLtfJVQCmb34SOVrl/
+         R1lhiWuYEyHHXiyf+pQvfBAmmVwFXuBhoCNwAMxpeDhO/TpY5eoPp2b7cxASgb2WwirZ
+         KN/fdPzSS1Sj/c5PucjPFPlsj7dSMaFBkqlk9uV7rmn+UR6huaAQfLrPvg5fesg8NWyM
+         GHJCZFByQDFfUXObmczxuglSxqUBbet9lZtjZ4FGO8G79+txgDZd6WxVDT/wEq0cnOIs
+         Vf/g==
+X-Gm-Message-State: AOAM532xTv1LCFvlHXb6sQWQrhmb6OQ5WQ6JLjffx0cyHNzimkveJ9YU
+        JZnni3BqJcB4nfls23dGffE=
+X-Google-Smtp-Source: ABdhPJy8BrGArNzlQ7/yIMwMMDxU+qUyxFE/6knA4FaB5bDxGT+tWvPk7AcoDD+mr3JpGM2xmmRUHQ==
+X-Received: by 2002:a65:6a55:: with SMTP id o21mr11968042pgu.141.1604903765885;
+        Sun, 08 Nov 2020 22:36:05 -0800 (PST)
+Received: from dtor-ws ([2620:15c:202:201:a6ae:11ff:fe11:fcc3])
+        by smtp.gmail.com with ESMTPSA id 26sm9188916pgu.83.2020.11.08.22.36.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 08 Nov 2020 22:36:05 -0800 (PST)
+Date:   Sun, 8 Nov 2020 22:36:03 -0800
+From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     linux-kernel@vger.kernel.org, Ferruh Yigit <fery@cypress.com>,
+        "at www.cypress.com" <ttdrivers@cypress.com>,
+        linux-input@vger.kernel.org
+Subject: Re: [PATCH 15/20] input: touchscreen: cyttsp4_core:  Move
+ 'cyttsp4_tch_abs_string' to the only file that references it
+Message-ID: <20201109063603.GS1003057@dtor-ws>
+References: <20201104162427.2984742-1-lee.jones@linaro.org>
+ <20201104162427.2984742-16-lee.jones@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20200613080958.132489-2-like.xu@linux.intel.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201104162427.2984742-16-lee.jones@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jun 13, 2020 at 04:09:46PM +0800, Like Xu wrote:
-> From: Wei Wang <wei.w.wang@intel.com>
+On Wed, Nov 04, 2020 at 04:24:22PM +0000, Lee Jones wrote:
+> Fixes the following W=1 kernel build warning(s):
 > 
-> The MSR variable type can be 'unsigned int', which uses less memory than
-> the longer 'unsigned long'. Fix 'struct x86_pmu' for that. The lbr_nr won't
-> be a negative number, so make it 'unsigned int' as well.
+> In file included from drivers/input/touchscreen/cyttsp_i2c_common.c:24:
+>  drivers/input/touchscreen/cyttsp4_core.h:236:27: warning: ‘cyttsp4_tch_abs_string’ defined but not used [-Wunused-const-variable=]
+>  236 | static const char  const cyttsp4_tch_abs_string[] = {
+>  | ^~~~~~~~~~~~~~~~~~~~~~
+>  In file included from drivers/input/touchscreen/cyttsp4_i2c.c:17:
+>  drivers/input/touchscreen/cyttsp4_core.h:236:27: warning: ‘cyttsp4_tch_abs_string’ defined but not used [-Wunused-const-variable=]
+>  236 | static const char * const cyttsp4_tch_abs_string[] = {
+>  | ^~~~~~~~~~~~~~~~~~~~~~
+>  In file included from drivers/input/touchscreen/cyttsp4_spi.c:17:
+>  drivers/input/touchscreen/cyttsp4_core.h:236:27: warning: ‘cyttsp4_tch_abs_string’ defined but not used [-Wunused-const-variable=]
+>  236 | static const char * const cyttsp4_tch_abs_string[] = {
+>  | ^~~~~~~~~~~~~~~~~~~~~~
+> 
+> Cc: Ferruh Yigit <fery@cypress.com>
+> Cc: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+> Cc: "at www.cypress.com" <ttdrivers@cypress.com>
+> Cc: linux-input@vger.kernel.org
+> Signed-off-by: Lee Jones <lee.jones@linaro.org>
 
-Hi, 
+Applied, thank you.
 
-What's the status of this patchkit? It would be quite useful to me (and
-various other people) to use LBRs in guest. I reviewed it earlier and the
-patches all looked good to me.  But i don't see it in any -next tree.
-
-Reviewed-by: Andi Kleen <ak@linux.intel.com>
-
-Could it please be merged?
-
-Thanks,
-
--Andi
+-- 
+Dmitry
