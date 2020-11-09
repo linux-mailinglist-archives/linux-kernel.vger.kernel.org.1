@@ -2,120 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F8692AB18F
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 08:07:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 41F1F2AB192
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 08:08:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729587AbgKIHHF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 02:07:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50214 "EHLO
+        id S1729638AbgKIHIB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 02:08:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50356 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728038AbgKIHHF (ORCPT
+        with ESMTP id S1729391AbgKIHIB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 02:07:05 -0500
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54403C0613CF
-        for <linux-kernel@vger.kernel.org>; Sun,  8 Nov 2020 23:07:05 -0800 (PST)
-Received: by mail-pf1-x444.google.com with SMTP id q5so4258782pfk.6
-        for <linux-kernel@vger.kernel.org>; Sun, 08 Nov 2020 23:07:05 -0800 (PST)
+        Mon, 9 Nov 2020 02:08:01 -0500
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39C50C0613CF;
+        Sun,  8 Nov 2020 23:08:01 -0800 (PST)
+Received: by mail-pl1-x641.google.com with SMTP id u2so4264317pls.10;
+        Sun, 08 Nov 2020 23:08:01 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=nPsivzFnUFcTnAHnLie1lQeFTXu73w43pTOVl9JFtLI=;
-        b=cEywt5eFMRJgl6Effy/26SzrcKAwgtX9QlDVK2B7jJeYGfx0wYO5bCAh0cKbOr4afo
-         +CUGLC805mXYilaKLAVwws14vQEGpeTvGzGMmvnX8ZCJCcKTZ7rXWpLFaAjs5pJVoNbP
-         26LIhhDH7XTnA7H2AszAdQ7cV/b9xXkU2r4gcLF5maHpd7PX3xFN0629YDViMBrtyort
-         K5MfhA1o4rWPNiLMqiJIsWDARpXVMidsl46SlyWs04Rdm0t2snUWPnYazDbZuGyI65ZE
-         d9kSenXVPRlSolbxR/+Fy9R5+GFWqBL69UZvvuPR4FTHAympdZ5BbNgFw6UmE8AFOkSy
-         YrQQ==
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=7ig88mEC01f7q0jI6xrbAOl/qIg5GjGP1YYZefcxWLo=;
+        b=mQzWXDc61IGD7Db/edr2dlha/SlcMh5SPFyhVE4wfUJbmHpDoWs2Dv8dFvQJqt4deH
+         5zvwJ+mCwaAjvb49IYEXTFCzJsNC+QFJ/r2rZhUE/Qukui8SKg90Y3r3becM8240izQt
+         Ux8WgfF/ArZSEFi0aWITJjQenOF7zNNyW0TdhmaYrM4kGc5qR5pkbTz4lB5dipcFjDpL
+         FpravKwyxGq+ZzSWwgN7CMXdUfUJflY8u4OeMh+sqItZKtEz0fCSaYk3FYi6va1HgrAL
+         0sDb0JWG4MG85zn2d+hhzhJa9FDaNNSB9L3J7AwMg8+ReuCGXQrZwvF+hjcMa4nbmGqk
+         nV0w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=nPsivzFnUFcTnAHnLie1lQeFTXu73w43pTOVl9JFtLI=;
-        b=Nf3jZK2tK2HDVbPgFO3R/32S8v+yc7I1suUrL67tdhUQbURdBR9ygjyMzNwMWr+rUf
-         5OP1WQ3ioGGvmgIK9TJ3VvvE8kXHo0Ry3hRJpqzGiZF27V1DFWq2qvRmdkxMudMqjaG2
-         qQrf+H+ARx7P1X9p8oupMDwwH42Vl8+3EH1Bkkfv3hZoAcD8u52yJS4KP7kUgU8lLHtL
-         J//ixzbMWu+AqOUmmrlWHIH4zPshOYPhoBD/dxoIAgq+2ZPTOiiX5vb2zfaYd3IWCaUs
-         V9M1IQAIJhWdNEdG7rMXldYS2F6X7bzCeTDyZN/xAloWejsJ3HiBlYsORRiGp4OXd7Fs
-         /FjA==
-X-Gm-Message-State: AOAM532ftZkSpC5f4i3WYZDtBQ+EWgKZp0I9Rlf1/qYqzSU2LdC3+G8F
-        DOifcwUxs0HtBBMC28t9vL00WQ==
-X-Google-Smtp-Source: ABdhPJzJLosN7oEZtZrOk+2/yKkKRx6+mj8gYsZaHrzCywB50PtaEci23aXJZEV4UnLfsBD7q89cSw==
-X-Received: by 2002:a17:90a:5b0a:: with SMTP id o10mr3219441pji.197.1604905624953;
-        Sun, 08 Nov 2020 23:07:04 -0800 (PST)
-Received: from localhost ([122.172.12.172])
-        by smtp.gmail.com with ESMTPSA id r2sm10216403pji.55.2020.11.08.23.07.03
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sun, 08 Nov 2020 23:07:04 -0800 (PST)
-Date:   Mon, 9 Nov 2020 12:37:02 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Ionela Voinescu <ionela.voinescu@arm.com>
-Cc:     rjw@rjwysocki.net, lenb@kernel.org, sudeep.holla@arm.com,
-        morten.rasmussen@arm.com, jeremy.linton@arm.com,
-        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 6/8] cppc_cpufreq: clarify support for coordination types
-Message-ID: <20201109070702.2hod2xh7fddobnkl@vireshk-i7>
-References: <20201105125524.4409-1-ionela.voinescu@arm.com>
- <20201105125524.4409-7-ionela.voinescu@arm.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=7ig88mEC01f7q0jI6xrbAOl/qIg5GjGP1YYZefcxWLo=;
+        b=kac7WFs7X+RDcOcw7CtLHT95qjH2472oUKa/nfQBQ1S9eozngeKqAbE7q5OScKqAAj
+         qtaE1sK7BrWp866y7KV5L+LB/ZXYjru9vZ+p7IXtaclk7/g5ZJFC6EUl3QbRZ7Gla9Bg
+         CzJIe1f3VHbzidwr4XTAt/ogKceR5XAWu82ichMnONcNS+XJbVET303Ygc46xSiW2z1N
+         2lADiSbTxHdb2zBms44gi4TcE8Jn0hthRugysU53u/iNt+kKEuEdOkrEbfTJSun73tRE
+         6BpKAniHfnkr15zACv1WSan33/AokNS7dqQLYoMJEtYrazFN9hKbqsUmqDhx2wjzvnNT
+         h2pg==
+X-Gm-Message-State: AOAM530+NaeuavBDasQdKZWmg9bX2C7ioFo62UBbuPNaHXulA8rWpc5x
+        8087GtWLieAiSX2S5OOGpg==
+X-Google-Smtp-Source: ABdhPJwnylcG9t6htJ7XwroOO2HX8dCurPznJUr4q0IvIC02GLDBBsHb/Y3k/plmswIXv69AJYvhJw==
+X-Received: by 2002:a17:902:bc81:b029:d6:ed57:b7c7 with SMTP id bb1-20020a170902bc81b02900d6ed57b7c7mr11074317plb.1.1604905680843;
+        Sun, 08 Nov 2020 23:08:00 -0800 (PST)
+Received: from [10.76.131.47] ([103.7.29.7])
+        by smtp.gmail.com with ESMTPSA id gp22sm9855025pjb.31.2020.11.08.23.07.58
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 08 Nov 2020 23:08:00 -0800 (PST)
+Subject: Re: [PATCH] net/mlx4: Assign boolean values to a bool variable
+To:     Tariq Toukan <ttoukan.linux@gmail.com>, tariqt@nvidia.com,
+        tariqt@mellanox.com
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Kaixu Xia <kaixuxia@tencent.com>
+References: <1604732038-6057-1-git-send-email-kaixuxia@tencent.com>
+ <9c8efc31-3237-ed3b-bfba-c13494b6452d@gmail.com>
+From:   kaixuxia <xiakaixu1987@gmail.com>
+Message-ID: <c6901fed-d063-91be-afd6-b6eedb2b65b6@gmail.com>
+Date:   Mon, 9 Nov 2020 15:07:52 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201105125524.4409-7-ionela.voinescu@arm.com>
-User-Agent: NeoMutt/20180716-391-311a52
+In-Reply-To: <9c8efc31-3237-ed3b-bfba-c13494b6452d@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 05-11-20, 12:55, Ionela Voinescu wrote:
-> The previous coordination type handling in the cppc_cpufreq init code
-> created some confusion: the comment mentioned "Support only SW_ANY for
-> now" while only the SW_ALL/ALL case resulted in a failure. The other
-> coordination types (HW_ALL/HW, NONE) were silently supported.
-> 
-> Clarify support for coordination types while describing in comments the
-> intended behavior.
-> 
-> Signed-off-by: Ionela Voinescu <ionela.voinescu@arm.com>
-> Cc: Rafael J. Wysocki <rjw@rjwysocki.net>
-> Cc: Viresh Kumar <viresh.kumar@linaro.org>
-> ---
->  drivers/cpufreq/cppc_cpufreq.c | 19 +++++++++++++++----
->  1 file changed, 15 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/cpufreq/cppc_cpufreq.c b/drivers/cpufreq/cppc_cpufreq.c
-> index fd2daeb59b49..60ac7f8049b5 100644
-> --- a/drivers/cpufreq/cppc_cpufreq.c
-> +++ b/drivers/cpufreq/cppc_cpufreq.c
-> @@ -363,11 +363,22 @@ static int cppc_cpufreq_cpu_init(struct cpufreq_policy *policy)
->  	policy->transition_delay_us = cppc_cpufreq_get_transition_delay_us(cpu);
->  	policy->shared_type = domain->shared_type;
->  
-> -	if (policy->shared_type == CPUFREQ_SHARED_TYPE_ANY) {
-> +	switch (policy->shared_type) {
-> +	case CPUFREQ_SHARED_TYPE_HW:
-> +	case CPUFREQ_SHARED_TYPE_NONE:
-> +		/* Nothing to be done - we'll have a policy for each CPU */
-> +		break;
-> +	case CPUFREQ_SHARED_TYPE_ANY:
-> +		/*
-> +		 * All CPUs in the domain will share a policy and all cpufreq
-> +		 * operations will use a single cppc_cpudata structure stored
-> +		 * in policy->driver_data.
-> +		 */
->  		cpumask_copy(policy->cpus, domain->shared_cpu_map);
-> -	} else if (policy->shared_type == CPUFREQ_SHARED_TYPE_ALL) {
-> -		/* Support only SW_ANY for now. */
-> -		pr_debug("Unsupported CPU co-ord type\n");
-> +		break;
-> +	default:
-> +		pr_info("Unsupported cpufreq CPU co-ord type: %d\n",
-> +			policy->shared_type);
->  		return -EFAULT;
->  	}
->  
 
-Acked-by: Viresh Kumar <viresh.kumar@linaro.org>
+
+On 2020/11/8 16:20, Tariq Toukan wrote:
+> 
+> 
+> On 11/7/2020 8:53 AM, xiakaixu1987@gmail.com wrote:
+>> From: Kaixu Xia <kaixuxia@tencent.com>
+>>
+>> Fix the following coccinelle warnings:
+>>
+> 
+> Hi Kaixu,
+> 
+> Which coccinelle version gave this warning?
+
+Hi Tariq,
+
+The version is coccinelle-1.0.7.
+
+Thanks,
+Kaixu
+> 
+> 
+>> ./drivers/net/ethernet/mellanox/mlx4/en_rx.c:687:1-17: WARNING: Assignment of 0/1 to bool variable
+>>
+>> Reported-by: Tosk Robot <tencent_os_robot@tencent.com>
+>> Signed-off-by: Kaixu Xia <kaixuxia@tencent.com>
+>> ---
+>>   drivers/net/ethernet/mellanox/mlx4/en_rx.c | 2 +-
+>>   1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/net/ethernet/mellanox/mlx4/en_rx.c b/drivers/net/ethernet/mellanox/mlx4/en_rx.c
+>> index 502d1b97855c..b0f79a5151cf 100644
+>> --- a/drivers/net/ethernet/mellanox/mlx4/en_rx.c
+>> +++ b/drivers/net/ethernet/mellanox/mlx4/en_rx.c
+>> @@ -684,7 +684,7 @@ int mlx4_en_process_rx_cq(struct net_device *dev, struct mlx4_en_cq *cq, int bud
+>>       xdp_prog = rcu_dereference(ring->xdp_prog);
+>>       xdp.rxq = &ring->xdp_rxq;
+>>       xdp.frame_sz = priv->frag_info[0].frag_stride;
+>> -    doorbell_pending = 0;
+>> +    doorbell_pending = false;
+>>         /* We assume a 1:1 mapping between CQEs and Rx descriptors, so Rx
+>>        * descriptor offset can be deduced from the CQE index instead of
+>>
+> 
 
 -- 
-viresh
+kaixuxia
