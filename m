@@ -2,89 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B82AC2AC6AD
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 22:10:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AA8192AC6A4
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 22:08:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730825AbgKIVJ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 16:09:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40662 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725946AbgKIVJ5 (ORCPT
+        id S1730448AbgKIVIc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 16:08:32 -0500
+Received: from mail105.syd.optusnet.com.au ([211.29.132.249]:55818 "EHLO
+        mail105.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725946AbgKIVIb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 16:09:57 -0500
-Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1046FC0613CF;
-        Mon,  9 Nov 2020 13:09:57 -0800 (PST)
-Received: by mail-qt1-x841.google.com with SMTP id g15so3361194qtq.13;
-        Mon, 09 Nov 2020 13:09:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=/0XocD5P4X8PutfEBTr0iQ6o7VPBilDjyKi4NGpWaVc=;
-        b=NGhqvmdqdeTsnOAPi1e5Vd1qdGimaQPD+OZZ7kiZ5p5sQGqAxeqoBFwYejrxi1j2WP
-         f9gXR9FS5Ko+gq0afQJcfyyerPqO9NQuLqIRyJOPGK/al3votarLB9dVrDkf9rfE6pzB
-         nSbwZOgoA4nrUiQpTZI6dh8NaHw9y19ug1V0x6EfqKJzIL4JaJ78FpaO1ljI8BCKNJQC
-         qL5peFy7bg0NzjWgIYZkSmWO0tcV4Nu6HgVInMnWr97rfXw71KU6qw6ADW3PZ+6a/aer
-         o4rX/XGWDDvd64WvJZto4lQdfbtjGV7/9r8jXQvDI79wWemK2m9AUTtm8RZQHj9grU8W
-         IGeg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=/0XocD5P4X8PutfEBTr0iQ6o7VPBilDjyKi4NGpWaVc=;
-        b=BMqKGXRoQDjN4CHoW1w6Uhh3W+eNOEX22689xz0TWVcf09/DKJaHxQX45e9vOwFPsW
-         g/MKk90FqwOZrVKyWEV9EMeTO20Hp+N1Avq1PKjQj5fFO+IpWduqovHg+lvfzaj95dca
-         nD6HxDFwgTnSKhOAL9+6HAZc8EkcPU9RL+2VnGv15Dda6+f7t6xpxFMgo+edQWt5xyI2
-         0PWGLdCTZC1FOlA8qrWZSKcPONaa9UsegLj2rqYX/awl1bu0JXd28ewKm/QpVH5ebo+W
-         dcbSwFriLUzGNgtxVusq4+U9upsnwZU3XH5PEhKxk8V/lzHv+80OmWQ9AC76Jv8dQamf
-         Uwig==
-X-Gm-Message-State: AOAM532TjTYb2qEhEvYB9VjrzjIuB7DzILT4LlonzYiQKxkH9YyAQLnO
-        1Lwq8DTv6lQPpeBgElN8WSw=
-X-Google-Smtp-Source: ABdhPJweV+Szh+PkEAYXoXyjTozPf81Tox2F7Dj/v1OFpc1GcHYkrXzj/rpBR38tMgQhU19OWI65SQ==
-X-Received: by 2002:ac8:5649:: with SMTP id 9mr14720827qtt.379.1604956196346;
-        Mon, 09 Nov 2020 13:09:56 -0800 (PST)
-Received: from localhost.localdomain ([156.146.36.180])
-        by smtp.gmail.com with ESMTPSA id o21sm7161000qko.9.2020.11.09.13.09.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 09 Nov 2020 13:09:55 -0800 (PST)
-From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
-To:     alexander.deucher@amd.com, christian.koenig@amd.com,
-        airlied@linux.ie, daniel@ffwll.ch, jdelvare@suse.de,
-        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        linaro-mm-sig@lists.linaro.org
-Cc:     Bhaskar Chowdhury <unixbhaskar@gmail.com>
-Subject: [PATCH] drivers: amdgpu: amdgpu_display: Fixed the spelling of falg to flag
-Date:   Tue, 10 Nov 2020 02:37:25 +0530
-Message-Id: <20201109210725.24668-1-unixbhaskar@gmail.com>
-X-Mailer: git-send-email 2.26.2
+        Mon, 9 Nov 2020 16:08:31 -0500
+Received: from dread.disaster.area (pa49-179-6-140.pa.nsw.optusnet.com.au [49.179.6.140])
+        by mail105.syd.optusnet.com.au (Postfix) with ESMTPS id 54FE93A9BEC;
+        Tue, 10 Nov 2020 08:08:25 +1100 (AEDT)
+Received: from dave by dread.disaster.area with local (Exim 4.92.3)
+        (envelope-from <david@fromorbit.com>)
+        id 1kcEOl-009S69-Nj; Tue, 10 Nov 2020 08:08:23 +1100
+Date:   Tue, 10 Nov 2020 08:08:23 +1100
+From:   Dave Chinner <david@fromorbit.com>
+To:     Michal =?iso-8859-1?Q?Such=E1nek?= <msuchanek@suse.de>
+Cc:     "Darrick J. Wong" <darrick.wong@oracle.com>,
+        linux-xfs@vger.kernel.org, linux-ext4@vger.kernel.org,
+        Theodore Ts'o <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Ira Weiny <ira.weiny@intel.com>, Jan Kara <jack@suse.cz>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] xfs: show the dax option in mount options.
+Message-ID: <20201109210823.GI7391@dread.disaster.area>
+References: <cover.1604948373.git.msuchanek@suse.de>
+ <f9f7ba25e97dacd92c09eb3ee6a4aca8b4f72b00.1604948373.git.msuchanek@suse.de>
+ <20201109192419.GC9695@magnolia>
+ <20201109202705.GZ29778@kitsune.suse.cz>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201109202705.GZ29778@kitsune.suse.cz>
+X-Optus-CM-Score: 0
+X-Optus-CM-Analysis: v=2.3 cv=YKPhNiOx c=1 sm=1 tr=0 cx=a_idp_d
+        a=uDU3YIYVKEaHT0eX+MXYOQ==:117 a=uDU3YIYVKEaHT0eX+MXYOQ==:17
+        a=8nJEP1OIZ-IA:10 a=nNwsprhYR40A:10 a=7-415B0cAAAA:8
+        a=CQYWRiYaPWfilY99f3kA:9 a=wPNLvfGTeEIA:10 a=biEYGPWJfzWAr4FL6Ov7:22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-s/falg/flag/p
+On Mon, Nov 09, 2020 at 09:27:05PM +0100, Michal Suchánek wrote:
+> On Mon, Nov 09, 2020 at 11:24:19AM -0800, Darrick J. Wong wrote:
+> > On Mon, Nov 09, 2020 at 08:10:08PM +0100, Michal Suchanek wrote:
+> > > xfs accepts both dax and dax_enum but shows only dax_enum. Show both
+> > > options.
+> > > 
+> > > Fixes: 8d6c3446ec23 ("fs/xfs: Make DAX mount option a tri-state")
+> > > Signed-off-by: Michal Suchanek <msuchanek@suse.de>
+> > > ---
+> > >  fs/xfs/xfs_super.c | 2 +-
+> > >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > > 
+> > > diff --git a/fs/xfs/xfs_super.c b/fs/xfs/xfs_super.c
+> > > index e3e229e52512..a3b00003840d 100644
+> > > --- a/fs/xfs/xfs_super.c
+> > > +++ b/fs/xfs/xfs_super.c
+> > > @@ -163,7 +163,7 @@ xfs_fs_show_options(
+> > >  		{ XFS_MOUNT_GRPID,		",grpid" },
+> > >  		{ XFS_MOUNT_DISCARD,		",discard" },
+> > >  		{ XFS_MOUNT_LARGEIO,		",largeio" },
+> > > -		{ XFS_MOUNT_DAX_ALWAYS,		",dax=always" },
+> > > +		{ XFS_MOUNT_DAX_ALWAYS,		",dax,dax=always" },
+> > 
+> > NAK, programs that require DAX semantics for files stored on XFS must
+> > call statx to detect the STATX_ATTR_DAX flag, as outlined in "Enabling
+> > DAX on xfs" in Documentation/filesystems/dax.txt.
+> statx can be used to query S_DAX.  NOTE that only regular files will
+> ever have S_DAX set and therefore statx will never indicate that S_DAX
+> is set on directories.
 
-Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
----
- drivers/gpu/drm/amd/amdgpu/amdgpu_display.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Yup, by design.
 
-diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_display.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_display.c
-index 2e8a8b57639f..9223502c1e5b 100644
---- a/drivers/gpu/drm/amd/amdgpu/amdgpu_display.c
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_display.c
-@@ -509,7 +509,7 @@ uint32_t amdgpu_display_supported_domains(struct amdgpu_device *adev,
- 	 * to avoid hang caused by placement of scanout BO in GTT on certain
- 	 * APUs. So force the BO placement to VRAM in case this architecture
- 	 * will not allow USWC mappings.
--	 * Also, don't allow GTT domain if the BO doens't have USWC falg set.
-+	 * Also, don't allow GTT domain if the BO doens't have USWC flag set.
- 	 */
- 	if ((bo_flags & AMDGPU_GEM_CREATE_CPU_GTT_USWC) &&
- 	    amdgpu_bo_support_uswc(bo_flags) &&
---
-2.26.2
+The application doesn't need to do anything complex to make this
+work. If the app wants to use DAX, then it should use
+FS_IOC_FS{GS}ETXATTR to always set the on disk per inode DAX flags
+for it's data dirs and files, and then STATX_ATTR_DAX will *always*
+tell it whether DAX is actively in use at runtime. It's pretty
+simple, really.
 
+> The filesystem may not have any files so statx cannot be used.
+
+Really?  The app or installer is about to *write to the fs* and has
+all the permissions it needs to modify the contents of the fs. It's
+pretty simple to create a tmpdir, set the DAX flag on the tmpdir,
+then create a tmpfile in the tmpdir and run STATX_ATTR_DAX on it to
+see if DAX is active or not.....
+
+However, keep in mind that from a system design perspective having
+the installer detect DAX properties to make application level
+install/config decisions is problematic from a lot of different
+angles.
+
+- DAX is property of the *block device*, not the filesystem, so the
+  filesystem can make arbitrary decisions on whether to use DAX or
+  not to access data and these can change at any time without
+  warning.
+
+- Some filesystems may not have any user visible signs they are
+  using DAX to access data except for STATX_ATTR_DAX because they
+  always use DAX and only work on DAX capable block devices. e.g
+  NVFS.
+
+- For filesystems where DAX is optional, the user can -always-
+  change the dax state of the fs (mount options) or even parts of
+  the filesystem (per inode flags) at any time after the installer
+  has run.
+
+- The application might be storing it's data on a different
+  filesystem that isn't mounted at install time, so the installer
+  has no chance of detecting that the application is going to use
+  DAX enabled storage.
+
+IOWs, the installer cannot make decisions based on DAX state on
+behalf of applications because it does not know what environment the
+application is going to be configured to run in.  DAX can only be
+deteted reliably by the application at runtime inside it's
+production execution environment.
+
+Cheers,
+
+Dave.
+-- 
+Dave Chinner
+david@fromorbit.com
