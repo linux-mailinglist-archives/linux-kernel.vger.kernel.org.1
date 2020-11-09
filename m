@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 401AF2ABD57
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 14:45:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AB1372ABBB4
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 14:32:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387649AbgKINp2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 08:45:28 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52854 "EHLO mail.kernel.org"
+        id S1729931AbgKIN3k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 08:29:40 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37534 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730148AbgKIM6i (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 07:58:38 -0500
+        id S1732507AbgKINL7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 08:11:59 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7BE90207BC;
-        Mon,  9 Nov 2020 12:58:36 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 59DF820663;
+        Mon,  9 Nov 2020 13:11:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604926717;
-        bh=+tt37svqy+fddvsPEmD3LdnwtsZuAVeM9WFhb28/sS0=;
+        s=default; t=1604927519;
+        bh=k4bdtbA0dFbR9aFZwYxBWMXTGB4kKHFu9Z/ClaWl9Ro=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=TA+pagBbtTikPKTBTYBAr8FCV4SIzAbmRUo1hIsE7gufcTvVpDgGBVJ1ISzM36HaJ
-         TH4zejvbt/5Hxr5mBScMNwcp/jnmp3LbpmQN4eHL5ruqv4UrbClxiv3+xm3cngadif
-         CRucGrfc628FnQchVGdlNflydag4xTGYjOVwNSsg=
+        b=cicXjg37GJRMSqXhYg+kpyLN6IexJu/ulytXkvagT9gnDWSRmBuAoIVkLVgWQyt6m
+         kgwn32hZFbwL/jaiKVH2L66YzrNKl8gUsrPlxVG5w/toarXB1fw6/QGxTp+0nUHXz3
+         IffDI8aeLJ25M0UnFoXiZrDyQCoCofuLrYK2ZJTk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, James Jurack <james.jurack@ametek.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Claudiu Manoil <claudiu.manoil@nxp.com>
-Subject: [PATCH 4.4 66/86] gianfar: Replace skb_realloc_headroom with skb_cow_head for PTP
+        stable@vger.kernel.org, Shannon Nelson <snelson@pensando.io>,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: [PATCH 5.4 16/85] ionic: check port ptr before use
 Date:   Mon,  9 Nov 2020 13:55:13 +0100
-Message-Id: <20201109125023.939912373@linuxfoundation.org>
+Message-Id: <20201109125023.366063108@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201109125020.852643676@linuxfoundation.org>
-References: <20201109125020.852643676@linuxfoundation.org>
+In-Reply-To: <20201109125022.614792961@linuxfoundation.org>
+References: <20201109125022.614792961@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,70 +42,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Claudiu Manoil <claudiu.manoil@nxp.com>
+From: Shannon Nelson <snelson@pensando.io>
 
-[ Upstream commit d145c9031325fed963a887851d9fa42516efd52b ]
+[ Upstream commit 2bcbf42add911ef63a6d90e92001dc2bcb053e68 ]
 
-When PTP timestamping is enabled on Tx, the controller
-inserts the Tx timestamp at the beginning of the frame
-buffer, between SFD and the L2 frame header.  This means
-that the skb provided by the stack is required to have
-enough headroom otherwise a new skb needs to be created
-by the driver to accommodate the timestamp inserted by h/w.
-Up until now the driver was relying on skb_realloc_headroom()
-to create new skbs to accommodate PTP frames.  Turns out that
-this method is not reliable in this context at least, as
-skb_realloc_headroom() for PTP frames can cause random crashes,
-mostly in subsequent skb_*() calls, when multiple concurrent
-TCP streams are run at the same time with the PTP flow
-on the same device (as seen in James' report).  I also noticed
-that when the system is loaded by sending multiple TCP streams,
-the driver receives cloned skbs in large numbers.
-skb_cow_head() instead proves to be stable in this scenario,
-and not only handles cloned skbs too but it's also more efficient
-and widely used in other drivers.
-The commit introducing skb_realloc_headroom in the driver
-goes back to 2009, commit 93c1285c5d92
-("gianfar: reallocate skb when headroom is not enough for fcb").
-For practical purposes I'm referencing a newer commit (from 2012)
-that brings the code to its current structure (and fixes the PTP
-case).
+Check for corner case of port_init failure before using
+the port_info pointer.
 
-Fixes: 9c4886e5e63b ("gianfar: Fix invalid TX frames returned on error queue when time stamping")
-Reported-by: James Jurack <james.jurack@ametek.com>
-Suggested-by: Jakub Kicinski <kuba@kernel.org>
-Signed-off-by: Claudiu Manoil <claudiu.manoil@nxp.com>
-Link: https://lore.kernel.org/r/20201029081057.8506-1-claudiu.manoil@nxp.com
+Fixes: 4d03e00a2140 ("ionic: Add initial ethtool support")
+Signed-off-by: Shannon Nelson <snelson@pensando.io>
+Link: https://lore.kernel.org/r/20201104195606.61184-1-snelson@pensando.io
 Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/freescale/gianfar.c |   12 ++----------
- 1 file changed, 2 insertions(+), 10 deletions(-)
+ drivers/net/ethernet/pensando/ionic/ionic_ethtool.c |    5 +++++
+ 1 file changed, 5 insertions(+)
 
---- a/drivers/net/ethernet/freescale/gianfar.c
-+++ b/drivers/net/ethernet/freescale/gianfar.c
-@@ -2353,20 +2353,12 @@ static int gfar_start_xmit(struct sk_buf
- 		fcb_len = GMAC_FCB_LEN + GMAC_TXPAL_LEN;
+--- a/drivers/net/ethernet/pensando/ionic/ionic_ethtool.c
++++ b/drivers/net/ethernet/pensando/ionic/ionic_ethtool.c
+@@ -125,6 +125,11 @@ static int ionic_get_link_ksettings(stru
  
- 	/* make space for additional header when fcb is needed */
--	if (fcb_len && unlikely(skb_headroom(skb) < fcb_len)) {
--		struct sk_buff *skb_new;
--
--		skb_new = skb_realloc_headroom(skb, fcb_len);
--		if (!skb_new) {
-+	if (fcb_len) {
-+		if (unlikely(skb_cow_head(skb, fcb_len))) {
- 			dev->stats.tx_errors++;
- 			dev_kfree_skb_any(skb);
- 			return NETDEV_TX_OK;
- 		}
--
--		if (skb->sk)
--			skb_set_owner_w(skb_new, skb->sk);
--		dev_consume_skb_any(skb);
--		skb = skb_new;
- 	}
+ 	ethtool_link_ksettings_zero_link_mode(ks, supported);
  
- 	/* total number of fragments in the SKB */
++	if (!idev->port_info) {
++		netdev_err(netdev, "port_info not initialized\n");
++		return -EOPNOTSUPP;
++	}
++
+ 	/* The port_info data is found in a DMA space that the NIC keeps
+ 	 * up-to-date, so there's no need to request the data from the
+ 	 * NIC, we already have it in our memory space.
 
 
