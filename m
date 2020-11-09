@@ -2,126 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 48EDB2AC5BF
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 21:10:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 37FE02AC5CE
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 21:15:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729896AbgKIUKS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 15:10:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59676 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727070AbgKIUKR (ORCPT
+        id S1729875AbgKIUPV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 15:15:21 -0500
+Received: from mail-oi1-f193.google.com ([209.85.167.193]:36136 "EHLO
+        mail-oi1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729243AbgKIUPV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 15:10:17 -0500
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88618C0613CF
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Nov 2020 12:10:17 -0800 (PST)
-Received: by mail-wr1-x443.google.com with SMTP id s8so3068621wrw.10
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Nov 2020 12:10:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=isstW/OQk5HF3Gxwa/5PQfQfcdrrAl2gRootGHnfwmg=;
-        b=b9PmNSlYDGTXgm8+ZOIIw75Zz9FayKmlZQMBFlq/6mVfAnkO2nu9FcaF8z3RttXIfL
-         RO/f2qxY0L6ynfjlbKeCZPMyVwGDZ8bPS2WmdyZemy2grq6uchKDGN2aYda4e/voohrD
-         CwWuP4BZaDa2HexXo5kLW3NptPW+USNYlfTX+IBqq56jlF/BNvsQsASxiTjyYyITR2sH
-         1wzWJzmaNN2ZFteRqeLGBMDMsXz47vel7gFor5RGXrxvikzV13MMET4OtobqCexiir7T
-         wmxgMJsGeysAgpBolAjAjB5Saukm+TsTubOenqrRUR18r7h9ZAzZ7KHLkFcCp2qOF5Qs
-         Hqvw==
+        Mon, 9 Nov 2020 15:15:21 -0500
+Received: by mail-oi1-f193.google.com with SMTP id d9so11608508oib.3;
+        Mon, 09 Nov 2020 12:15:20 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=isstW/OQk5HF3Gxwa/5PQfQfcdrrAl2gRootGHnfwmg=;
-        b=h6X/jBHl5e13QaBbzxhQAnCrzqMtpTb2HvSiqzz4vf6nj/5YDTa2UC960zVMefsSum
-         aolhyjspAPC9gO8vgAqNIAj0kEcP1gZdFBbRD6MpXhEu0gg0J0cc4zuSsNmQkhFrXIGB
-         1mpwhBFpV4XilVds763bdFsHJGc257SatvcPLdxeV/wlLHu5aoZPN4/xgt4hIh042lml
-         +efgK++LqW6EQeQgQBM5g/nENnBeHerhrz0RMVVxwjqFe++Kz/kNoOce4bWb3+h6B6UU
-         r+qRAKYLVGxogIx6cOoHwon0eIM/02cQgyOZ1ELwrv8idc/PpSINlzVRsYemg2pTfCWH
-         MmmA==
-X-Gm-Message-State: AOAM532WTrlTnzjXbfK68FO7QdtmC1UG8TG/0iICH9pafLZaeNSQkyuP
-        qNcMh+gxPK3CdIv60p9pEi702g==
-X-Google-Smtp-Source: ABdhPJwRP64JX7Dk2MtRgSE5kSbKtijqBvDcNaWUAaSen1GtFQoR1jaGfzfICezOVQkVgHguI9UVxg==
-X-Received: by 2002:a5d:474d:: with SMTP id o13mr21094236wrs.178.1604952616295;
-        Mon, 09 Nov 2020 12:10:16 -0800 (PST)
-Received: from dell ([91.110.221.139])
-        by smtp.gmail.com with ESMTPSA id v12sm15258395wro.72.2020.11.09.12.10.14
+         :mime-version:content-disposition:in-reply-to;
+        bh=F5EgBqHSsg3337J37Szr1ll+3yrL35lLTUXhCzN8XDc=;
+        b=CDQijuchdcDGnEHTfS+g3x20CUSHsk2DSxnoAJncEeNhRRVb8rewfa0h3xplElanBY
+         RmTgrnQuA42zy5A50NV7xYNlutJd/qeXZ0D2+XShlxCkKeykCQ4V//KD+oDmiZbNH2lL
+         yClVN0ma8jNNr+cMGhNsfgn3hbQGFmG4oW7yqU6teMv7aX3xt114pnqlb/4LMYIrogmp
+         vooHr8InmB3rWXwbTiwWIVdgn3ZPpFSSUdXTqI0gh7pAZR/8shB3gtFzZjfNW86KUOOG
+         x+9nRCYF0gXgUxIhXh26poFKbfZK1MHj4MvhQUZzpnirn14gkL3fmM3pjJ0oFCn4R5oe
+         /OMg==
+X-Gm-Message-State: AOAM531tgtB6FZjTV+QQu9TcrheRtIHBzCHtNyi6LJoRvesTcPJho8yO
+        8dZsIS2kKLpG12EBAlMR+g==
+X-Google-Smtp-Source: ABdhPJyelEAUCL5wGtsXAmfJvwjFakE43fqMhA/XDynov3qtXwp4ObxS4mcK4n4z6n5QjBfi/K3nUw==
+X-Received: by 2002:a05:6808:3af:: with SMTP id n15mr593805oie.65.1604952920248;
+        Mon, 09 Nov 2020 12:15:20 -0800 (PST)
+Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id 132sm2685696oid.54.2020.11.09.12.15.18
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 09 Nov 2020 12:10:15 -0800 (PST)
-Date:   Mon, 9 Nov 2020 20:10:13 +0000
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Sam Ravnborg <sam@ravnborg.org>
-Cc:     Alex Deucher <alexdeucher@gmail.com>,
-        David Airlie <airlied@linux.ie>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>
-Subject: Re: [PATCH 17/19] drm/radeon/radeon_kms: Fix misnaming of
- 'radeon_info_ioctl's dev param
-Message-ID: <20201109201013.GC2063125@dell>
-References: <20201106214949.2042120-1-lee.jones@linaro.org>
- <20201106214949.2042120-18-lee.jones@linaro.org>
- <CADnq5_Nys7igVo3sgzK0D4hnm=RHMrEM7Xty80jGROu_sy5svA@mail.gmail.com>
- <20201109195557.GA1940813@ravnborg.org>
+        Mon, 09 Nov 2020 12:15:19 -0800 (PST)
+Received: (nullmailer pid 1689983 invoked by uid 1000);
+        Mon, 09 Nov 2020 20:15:18 -0000
+Date:   Mon, 9 Nov 2020 14:15:18 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Sudeep Holla <sudeep.holla@arm.com>
+Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        Hector Yuan <hector.yuan@mediatek.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>
+Subject: Re: [PATCH] dt-bindings: dvfs: Add support for generic performance
+ domains
+Message-ID: <20201109201518.GA1679536@bogus>
+References: <20201105173539.1426301-1-sudeep.holla@arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201109195557.GA1940813@ravnborg.org>
+In-Reply-To: <20201105173539.1426301-1-sudeep.holla@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 09 Nov 2020, Sam Ravnborg wrote:
-
-> Hi Alex,
-> On Mon, Nov 09, 2020 at 02:50:35PM -0500, Alex Deucher wrote:
-> > On Fri, Nov 6, 2020 at 4:50 PM Lee Jones <lee.jones@linaro.org> wrote:
-> > >
-> > > Fixes the following W=1 kernel build warning(s):
-> > >
-> > >  drivers/gpu/drm/radeon/radeon_kms.c:226: warning: Function parameter or member 'dev' not described in 'radeon_info_ioctl'
-> > >  drivers/gpu/drm/radeon/radeon_kms.c:226: warning: Excess function parameter 'rdev' description in 'radeon_info_ioctl'
-> > >
-> > > Cc: Alex Deucher <alexander.deucher@amd.com>
-> > > Cc: "Christian König" <christian.koenig@amd.com>
-> > > Cc: David Airlie <airlied@linux.ie>
-> > > Cc: Daniel Vetter <daniel@ffwll.ch>
-> > > Cc: amd-gfx@lists.freedesktop.org
-> > > Cc: dri-devel@lists.freedesktop.org
-> > > Signed-off-by: Lee Jones <lee.jones@linaro.org>
-> > > ---
-> > >  drivers/gpu/drm/radeon/radeon_kms.c | 2 +-
-> > >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > >
-> > > diff --git a/drivers/gpu/drm/radeon/radeon_kms.c b/drivers/gpu/drm/radeon/radeon_kms.c
-> > > index 0d8fbabffcead..21c206795c364 100644
-> > > --- a/drivers/gpu/drm/radeon/radeon_kms.c
-> > > +++ b/drivers/gpu/drm/radeon/radeon_kms.c
-> > > @@ -213,7 +213,7 @@ static void radeon_set_filp_rights(struct drm_device *dev,
-> > >  /**
-> > >   * radeon_info_ioctl - answer a device specific request.
-> > >   *
-> > > - * @rdev: radeon device pointer
-> > > + * @dev: radeon device pointer
-> > 
-> > This should be:
-> > + * @dev: drm device pointer
+On Thu, Nov 05, 2020 at 05:35:39PM +0000, Sudeep Holla wrote:
+> The CLKSCREW attack [0] exposed security vulnerabilities in energy management
+> implementations where untrusted software had direct access to clock and
+> voltage hardware controls. In this attack, the malicious software was able to
+> place the platform into unsafe overclocked or undervolted configurations. Such
+> configurations then enabled the injection of predictable faults to reveal
+> secrets.
 > 
-> good spot. I am continuing the work on radeon and will post a patchset
-> that contains only radeon fixes with Lee's patches and a few more by me.
-> I will fix the above.
+> Many Arm-based systems used to or still use voltage regulator and clock
+> frameworks in the kernel. These frameworks allow callers to independently
+> manipulate frequency and voltage settings. Such implementations can render
+> systems susceptible to this form of attack.
+> 
+> Attacks such as CLKSCREW are now being mitigated by not having direct and
+> independent control of clock and voltage in the kernel and moving that
+> control to a trusted entity, such as the SCP firmware or secure world
+> firmware/software which are to perform sanity checking on the requested
+> performance levels, thereby preventing any attempted malicious programming.
+> 
+> With the advent of such an abstraction, there is a need to replace the
+> generic clock and regulator bindings used by such devices with a generic
+> performance domains bindings.
+> 
+> [0] https://www.usenix.org/conference/usenixsecurity17/technical-sessions/presentation/tang
+> 
+> Cc: Rob Herring <robh+dt@kernel.org>
+> Signed-off-by: Sudeep Holla <sudeep.holla@arm.com>
+> ---
+>  .../bindings/dvfs/performance-domain.yaml     | 67 +++++++++++++++++++
+>  1 file changed, 67 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/dvfs/performance-domain.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/dvfs/performance-domain.yaml b/Documentation/devicetree/bindings/dvfs/performance-domain.yaml
+> new file mode 100644
+> index 000000000000..fa0151f63ac9
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/dvfs/performance-domain.yaml
+> @@ -0,0 +1,67 @@
+> +# SPDX-License-Identifier: GPL-2.0
 
-What do you mean by "continuing on"?
+Dual license new bindings.
 
-How will you prevent your work from conflicting with my current effort?
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/dvfs/performance-domain.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Generic performance domains
+> +
+> +maintainers:
+> +  - Sudeep Holla <sudeep.holla@arm.com>
+> +
+> +description: |+
+> +  This binding is intended for performance management of groups of devices or
+> +  CPUs that run in the same performance domain. Performance domains must not
+> +  be confused with power domains. A performance domain is defined by a set
+> +  of devices that always have to run at the same performance level. For a given
+> +  performance domain, there is a single point of control that affects all the
+> +  devices in the domain, making it impossible to set the performance level of
+> +  an individual device in the domain independently from other devices in
+> +  that domain. For example, a set of CPUs that share a voltage domain, and
+> +  have a common frequency control, is said to be in the same performance
+> +  domain.
+> +
+> +  This device tree binding can be used to bind performance domain consumer
+> +  devices with their performance domains provided by performance domain
+> +  providers. A performance domain provider can be represented by any node in
+> +  the device tree and can provide one or more performance domains. A consumer
+> +  node can refer to the provider by a phandle and a set of phandle arguments
+> +  (so called performance domain specifiers) of length specified by the
+> +  \#performance-domain-cells property in the performance domain provider node.
 
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+select: true
+
+Otherwise, this schema is never used.
+
+> +
+> +properties:
+> +  "#performance-domain-cells":
+> +    description:
+> +      Number of cells in a performance domain specifier. Typically 0 for nodes
+> +      representing a single performance domain and 1 for nodes providing
+> +      multiple performance domains (e.g. performance controllers), but can be
+> +      any value as specified by device tree binding documentation of particular
+> +      provider.
+
+enum: [ 0, 1 ]
+
+If we need more, it can be extended.
+
+> +
+> +  performance-domains:
+
+Needs a type ref (phandle-array).
+
+> +    description:
+> +      A phandle and performance domain specifier as defined by bindings of the
+> +      performance controller/provider specified by phandle.
+> +
+> +required:
+> +  - "#performance-domain-cells"
+> +
+> +additionalProperties: true
+> +
+> +examples:
+> +  - |
+> +    performance: performance-controller@12340000 {
+> +        compatible = "foo,performance-controller";
+
+At some point in the future, this is going to generate warnings as an 
+undocumented binding. So we'll have to remove it, add a schema for it, 
+or replace with a real example. This is a standard DT design pattern, so 
+I'd lean toward removing the example.
+
+Rob
+
+> +        reg = <0x12340000 0x1000>;
+> +        #performance-domain-cells = <1>;
+> +    };
+> +
+> +    // The node above defines a performance controller that is a performance
+> +    // domain provider and expects one cell as its phandle argument.
+> +
+> +    device1: foo@56780000 {
+> +        compatible = "foo,bar-controller";
+> +        reg = <0x56780000 0x1000>;
+> +        performance-domains = <&performance 1>;
+> +    };
+> +
+> -- 
+> 2.25.1
+> 
