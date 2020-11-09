@@ -2,44 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 373AC2ABF30
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 15:49:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F6E82ABF0A
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 15:44:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731817AbgKIOtI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 09:49:08 -0500
-Received: from aserp2130.oracle.com ([141.146.126.79]:38972 "EHLO
+        id S1731938AbgKIOnq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 09:43:46 -0500
+Received: from aserp2130.oracle.com ([141.146.126.79]:34254 "EHLO
         aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731715AbgKIOtI (ORCPT
+        with ESMTP id S1731406AbgKIOnq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 09:49:08 -0500
+        Mon, 9 Nov 2020 09:43:46 -0500
 Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
-        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0A9EXnct091766;
-        Mon, 9 Nov 2020 14:43:23 GMT
+        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0A9EXoke091775;
+        Mon, 9 Nov 2020 14:43:28 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
  subject : date : message-id : in-reply-to : references; s=corp-2020-01-29;
- bh=wP2gJB4OxhA1mKQ9+pr/vu739u+po6A7PjH7uf9WfEY=;
- b=Tb3yp66PJfNRwPPlviJepFGMemwVZEQU8ldKO1G5zcow8Fj/IMCkskHEthpSDgKb44d7
- Q43A5jJg4OyJ+H9t04hcYz2wh23jZdKgyU0M4E65qoPyVNevM2/PYpT19XY2Sq+kIa4W
- U6p6js/DvYMmCnM432lNLYuHf+4q1HhHg4l/aNJqyhm7bEWCsmS19u5rhzVr10284eCm
- c/4tg+E2savRtPc4X/SvjxDNMc8ONmKvStfM+pGG8/Cse+JXfWnx8mNwUkiq66wevGBD
- wJAxzxYAMs/YwWNpEuSw3EoQQSvLWrVxuOvYhpPdvtpQurk7B3v75pQeGVPb8oYFe3Dv hg== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by aserp2130.oracle.com with ESMTP id 34nh3ape8n-1
+ bh=4ZSSgwSAfIpKVSBOl5YuRgyMV0OuLicBRbtyQsXk7rQ=;
+ b=J+pflYXkPe39ANad1hGSjYnwZPDrYdJhC2DQQ/46ACpkl5+/mOagb40FLSo4ov7mDANe
+ 5KYa/jhfaH1AExHxse/xccYs9c1PL2Ttc7d9dcGm38RszOnfKdFIVWXkugk0MEmP83kr
+ NdEF0ngGxmxJcAjdYz+gYCM5kM7YGJX+ENxGI7rUK5lgBzyeqh7uxCiHdRnuxIA8xiS0
+ GFZdxhdDfTD3X8j+e5DA6tD8BEQ1vVg71i6wZ9ThSBVK2kPiZyOwBtD0pnviAsyExivl
+ +wJOnxEPPyJcSaRLm9AYrV3Hc8N3qJD4ttDvw1yDc7ZXS6QPJFyArV7K0TH2Ujuiy7wP UA== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by aserp2130.oracle.com with ESMTP id 34nh3ape9j-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 09 Nov 2020 14:43:23 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0A9Ee6lZ155096;
-        Mon, 9 Nov 2020 14:43:23 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by userp3030.oracle.com with ESMTP id 34p5gvbbsa-1
+        Mon, 09 Nov 2020 14:43:28 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0A9Ef2W8139153;
+        Mon, 9 Nov 2020 14:43:27 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by userp3020.oracle.com with ESMTP id 34p5bqkay2-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 09 Nov 2020 14:43:23 +0000
+        Mon, 09 Nov 2020 14:43:27 +0000
 Received: from abhmp0009.oracle.com (abhmp0009.oracle.com [141.146.116.15])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0A9EhL3p013508;
-        Mon, 9 Nov 2020 14:43:21 GMT
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0A9EhP1N031827;
+        Mon, 9 Nov 2020 14:43:26 GMT
 Received: from linux.nl.oracle.com (/10.175.27.128)
         by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 09 Nov 2020 06:43:21 -0800
+        with ESMTP ; Mon, 09 Nov 2020 06:43:25 -0800
 From:   Alexandre Chartre <alexandre.chartre@oracle.com>
 To:     tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, hpa@zytor.com,
         x86@kernel.org, dave.hansen@linux.intel.com, luto@kernel.org,
@@ -49,17 +49,17 @@ Cc:     konrad.wilk@oracle.com, jan.setjeeilers@oracle.com,
         junaids@google.com, oweisse@google.com, rppt@linux.vnet.ibm.com,
         graf@amazon.de, mgross@linux.intel.com, kuzuno@gmail.com,
         alexandre.chartre@oracle.com
-Subject: [RFC][PATCH 15/24] x86/pti: Execute syscall functions on the kernel stack
-Date:   Mon,  9 Nov 2020 15:44:16 +0100
-Message-Id: <20201109144425.270789-16-alexandre.chartre@oracle.com>
+Subject: [RFC][PATCH 16/24] x86/pti: Execute IDT handlers on the kernel stack
+Date:   Mon,  9 Nov 2020 15:44:17 +0100
+Message-Id: <20201109144425.270789-17-alexandre.chartre@oracle.com>
 X-Mailer: git-send-email 2.18.4
 In-Reply-To: <20201109144425.270789-1-alexandre.chartre@oracle.com>
 References: <20201109144425.270789-1-alexandre.chartre@oracle.com>
 X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9799 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 mlxlogscore=999 mlxscore=0
- spamscore=0 phishscore=0 adultscore=0 malwarescore=0 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2011090103
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 malwarescore=0
+ phishscore=0 spamscore=0 mlxlogscore=999 bulkscore=0 suspectscore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2011090103
 X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9799 signatures=668682
 X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 lowpriorityscore=0 priorityscore=1501
  clxscore=1015 malwarescore=0 mlxscore=0 spamscore=0 suspectscore=0
@@ -70,77 +70,130 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-During a syscall, the kernel is entered and it switches the stack
-to the PTI stack which is mapped both in the kernel and in the
-user page-table. When executing the syscall function, switch to
-the kernel stack (which is mapped only in the kernel page-table)
-so that no kernel data leak to the userland through the stack.
+After an interrupt/exception in userland, the kernel is entered
+and it switches the stack to the PTI stack which is mapped both in
+the kernel and in the user page-table. When executing the interrupt
+function, switch to the kernel stack (which is mapped only in the
+kernel page-table) so that no kernel data leak to the userland
+through the stack.
+
+For now, only changes IDT handlers which have no argument other
+than the pt_regs registers.
 
 Signed-off-by: Alexandre Chartre <alexandre.chartre@oracle.com>
 ---
- arch/x86/entry/common.c          | 11 ++++++++++-
- arch/x86/entry/entry_64.S        |  1 +
- arch/x86/include/asm/irq_stack.h |  3 +++
- 3 files changed, 14 insertions(+), 1 deletion(-)
+ arch/x86/include/asm/idtentry.h | 43 +++++++++++++++++++++++++++++++--
+ arch/x86/kernel/cpu/mce/core.c  |  2 +-
+ arch/x86/kernel/traps.c         |  4 +--
+ 3 files changed, 44 insertions(+), 5 deletions(-)
 
-diff --git a/arch/x86/entry/common.c b/arch/x86/entry/common.c
-index 54d0931801e1..ead6a4c72e6a 100644
---- a/arch/x86/entry/common.c
-+++ b/arch/x86/entry/common.c
-@@ -56,10 +56,19 @@ __visible noinstr void return_from_fork(struct pt_regs *regs,
- static __always_inline void run_syscall(sys_call_ptr_t sysfunc,
- 					struct pt_regs *regs)
- {
+diff --git a/arch/x86/include/asm/idtentry.h b/arch/x86/include/asm/idtentry.h
+index 4b4aca2b1420..3595a31947b3 100644
+--- a/arch/x86/include/asm/idtentry.h
++++ b/arch/x86/include/asm/idtentry.h
+@@ -10,10 +10,49 @@
+ #include <linux/hardirq.h>
+ 
+ #include <asm/irq_stack.h>
++#include <asm/pti.h>
+ 
+ bool idtentry_enter_nmi(struct pt_regs *regs);
+ void idtentry_exit_nmi(struct pt_regs *regs, bool irq_state);
+ 
++/*
++ * The CALL_ON_STACK_* macro call the specified function either directly
++ * if no stack is provided, or on the specified stack.
++ */
++#define CALL_ON_STACK_1(stack, func, arg1)				\
++	((stack) ?							\
++	 asm_call_on_stack_1(stack,					\
++		(void (*)(void))(func), (void *)(arg1)) :		\
++	 func(arg1))
++
++/*
++ * Functions to return the top of the kernel stack if we are using the
++ * user page-table (and thus not running with the kernel stack). If we
++ * are using the kernel page-table (and so already using the kernel
++ * stack) when it returns NULL.
++ */
++static __always_inline void *pti_kernel_stack(struct pt_regs *regs)
++{
 +	unsigned long stack;
 +
- 	if (!sysfunc)
- 		return;
- 
--	regs->ax = sysfunc(regs);
-+	if (!pti_enabled()) {
-+		regs->ax = sysfunc(regs);
-+		return;
++	if (pti_enabled() && user_mode(regs)) {
++		stack = (unsigned long)task_top_of_kernel_stack(current);
++		return (void *)(stack - 8);
++	} else {
++		return NULL;
 +	}
++}
 +
-+	stack = (unsigned long)task_top_of_kernel_stack(current);
-+	regs->ax = asm_call_syscall_on_stack((void *)(stack - 8),
-+					     sysfunc, regs);
++/*
++ * Wrappers to run an IDT handler on the kernel stack if we are not
++ * already using this stack.
++ */
++static __always_inline
++void run_idt(void (*func)(struct pt_regs *), struct pt_regs *regs)
++{
++	CALL_ON_STACK_1(pti_kernel_stack(regs), func, regs);
++}
++
+ /**
+  * DECLARE_IDTENTRY - Declare functions for simple IDT entry points
+  *		      No error code pushed by hardware
+@@ -55,7 +94,7 @@ __visible noinstr void func(struct pt_regs *regs)			\
+ 	irqentry_state_t state = irqentry_enter(regs);			\
+ 									\
+ 	instrumentation_begin();					\
+-	__##func (regs);						\
++	run_idt(__##func, regs);					\
+ 	instrumentation_end();						\
+ 	irqentry_exit(regs, state);					\
+ }									\
+@@ -271,7 +310,7 @@ __visible noinstr void func(struct pt_regs *regs)			\
+ 	instrumentation_begin();					\
+ 	__irq_enter_raw();						\
+ 	kvm_set_cpu_l1tf_flush_l1d();					\
+-	__##func (regs);						\
++	run_idt(__##func, regs);					\
+ 	__irq_exit_raw();						\
+ 	instrumentation_end();						\
+ 	irqentry_exit(regs, state);					\
+diff --git a/arch/x86/kernel/cpu/mce/core.c b/arch/x86/kernel/cpu/mce/core.c
+index 4102b866e7c0..9407c3cd9355 100644
+--- a/arch/x86/kernel/cpu/mce/core.c
++++ b/arch/x86/kernel/cpu/mce/core.c
+@@ -2035,7 +2035,7 @@ DEFINE_IDTENTRY_MCE_USER(exc_machine_check)
+ 	unsigned long dr7;
+ 
+ 	dr7 = local_db_save();
+-	exc_machine_check_user(regs);
++	run_idt(exc_machine_check_user, regs);
+ 	local_db_restore(dr7);
  }
+ #else
+diff --git a/arch/x86/kernel/traps.c b/arch/x86/kernel/traps.c
+index 09b22a611d99..5161385b3670 100644
+--- a/arch/x86/kernel/traps.c
++++ b/arch/x86/kernel/traps.c
+@@ -257,7 +257,7 @@ DEFINE_IDTENTRY_RAW(exc_invalid_op)
  
- #ifdef CONFIG_X86_64
-diff --git a/arch/x86/entry/entry_64.S b/arch/x86/entry/entry_64.S
-index 29beab46bedd..6b88a0eb8975 100644
---- a/arch/x86/entry/entry_64.S
-+++ b/arch/x86/entry/entry_64.S
-@@ -771,6 +771,7 @@ SYM_FUNC_START(asm_call_on_stack_2)
- SYM_FUNC_START(asm_call_on_stack_3)
- SYM_INNER_LABEL(asm_call_sysvec_on_stack, SYM_L_GLOBAL)
- SYM_INNER_LABEL(asm_call_irq_on_stack, SYM_L_GLOBAL)
-+SYM_INNER_LABEL(asm_call_syscall_on_stack, SYM_L_GLOBAL)
- 	/*
- 	 * Save the frame pointer unconditionally. This allows the ORC
- 	 * unwinder to handle the stack switch.
-diff --git a/arch/x86/include/asm/irq_stack.h b/arch/x86/include/asm/irq_stack.h
-index 359427216336..108d9da7c01c 100644
---- a/arch/x86/include/asm/irq_stack.h
-+++ b/arch/x86/include/asm/irq_stack.h
-@@ -5,6 +5,7 @@
- #include <linux/ptrace.h>
- 
- #include <asm/processor.h>
-+#include <asm/syscall.h>
- 
- #ifdef CONFIG_X86_64
- static __always_inline bool irqstack_active(void)
-@@ -25,6 +26,8 @@ void asm_call_sysvec_on_stack(void *sp, void (*func)(struct pt_regs *regs),
- 			      struct pt_regs *regs);
- void asm_call_irq_on_stack(void *sp, void (*func)(struct irq_desc *desc),
- 			   struct irq_desc *desc);
-+long asm_call_syscall_on_stack(void *sp, sys_call_ptr_t func,
-+			       struct pt_regs *regs);
- 
- static __always_inline void __run_on_irqstack(void (*func)(void))
- {
+ 	state = irqentry_enter(regs);
+ 	instrumentation_begin();
+-	handle_invalid_op(regs);
++	run_idt(handle_invalid_op, regs);
+ 	instrumentation_end();
+ 	irqentry_exit(regs, state);
+ }
+@@ -647,7 +647,7 @@ DEFINE_IDTENTRY_RAW(exc_int3)
+ 	if (user_mode(regs)) {
+ 		irqentry_enter_from_user_mode(regs);
+ 		instrumentation_begin();
+-		do_int3_user(regs);
++		run_idt(do_int3_user, regs);
+ 		instrumentation_end();
+ 		irqentry_exit_to_user_mode(regs);
+ 	} else {
 -- 
 2.18.4
 
