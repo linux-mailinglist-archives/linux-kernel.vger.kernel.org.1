@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 276F32ABA4A
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 14:17:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C761D2AB954
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 14:09:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387604AbgKINRb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 08:17:31 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44676 "EHLO mail.kernel.org"
+        id S1731614AbgKINIR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 08:08:17 -0500
+Received: from mail.kernel.org ([198.145.29.99]:32898 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387593AbgKINR2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 08:17:28 -0500
+        id S1731538AbgKINIL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 08:08:11 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 119CD20663;
-        Mon,  9 Nov 2020 13:17:26 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8119120663;
+        Mon,  9 Nov 2020 13:08:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604927847;
-        bh=QDFkm0gxOacetAyrSz9fzEFKHw5t+Ijq/wIQJ+oKyTI=;
+        s=default; t=1604927291;
+        bh=IZkyBtnAcNPJ5eWX+c9PmAcvfpisVFgjaHiYaDNWRxs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=MMxROdqjMfGcqNjtgQECufvDYwUvOhl9NstuxU2FipP3YRAKOxVL2DtOJYna5ZJ1D
-         TT47rtv+yGiifZPHc3V/jkkMq0sXcFc5b2GIFDfJ+pL5I35mkg7QaunsIu6EdO8u4J
-         lJeLv3Z35dYZKMET8iRbgVKu4Mv+zurn8BdWeSvc=
+        b=2mEBPaCGzyrgBoKLlZJCGCND2KbXZbWxHyG8sDwO/2wW9jWpWNBV6USUZppRg/3W1
+         v2bYKkjzwVXaMVd/L52O5rzxGSOOHX3/ALFz9cipfd1dGAMjn2vsOfFuZrbq+vrtuo
+         peGKT52HJ5mgaouG7FSMVs4gHnWWCOs/cHg41DKA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Maxim Plotnikov <wgh@torlan.ru>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
+        stable@vger.kernel.org, Petr Malat <oss@malat.biz>,
+        Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
         Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 5.9 042/133] r8169: work around short packet hw bug on RTL8125
+Subject: [PATCH 4.19 10/71] sctp: Fix COMM_LOST/CANT_STR_ASSOC err reporting on big-endian platforms
 Date:   Mon,  9 Nov 2020 13:55:04 +0100
-Message-Id: <20201109125032.736665606@linuxfoundation.org>
+Message-Id: <20201109125020.399384985@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201109125030.706496283@linuxfoundation.org>
-References: <20201109125030.706496283@linuxfoundation.org>
+In-Reply-To: <20201109125019.906191744@linuxfoundation.org>
+References: <20201109125019.906191744@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,60 +43,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Heiner Kallweit <hkallweit1@gmail.com>
+From: Petr Malat <oss@malat.biz>
 
-[ Upstream commit 2aaf09a0e7842b3ac7be6e0b8fb1888b3daeb3b3 ]
+[ Upstream commit b6df8c81412190fbd5eaa3cec7f642142d9c16cd ]
 
-Network problems with RTL8125B have been reported [0] and with help
-from Realtek it turned out that this chip version has a hw problem
-with short packets (similar to RTL8168evl). Having said that activate
-the same workaround as for RTL8168evl.
-Realtek suggested to activate the workaround for RTL8125A too, even
-though they're not 100% sure yet which RTL8125 versions are affected.
+Commit 978aa0474115 ("sctp: fix some type cast warnings introduced since
+very beginning")' broke err reading from sctp_arg, because it reads the
+value as 32-bit integer, although the value is stored as 16-bit integer.
+Later this value is passed to the userspace in 16-bit variable, thus the
+user always gets 0 on big-endian platforms. Fix it by reading the __u16
+field of sctp_arg union, as reading err field would produce a sparse
+warning.
 
-[0] https://bugzilla.kernel.org/show_bug.cgi?id=209839
-
-Fixes: 0439297be951 ("r8169: add support for RTL8125B")
-Reported-by: Maxim Plotnikov <wgh@torlan.ru>
-Tested-by: Maxim Plotnikov <wgh@torlan.ru>
-Signed-off-by: Heiner Kallweit <hkallweit1@gmail.com>
-Link: https://lore.kernel.org/r/8002c31a-60b9-58f1-f0dd-8fd07239917f@gmail.com
+Fixes: 978aa0474115 ("sctp: fix some type cast warnings introduced since very beginning")
+Signed-off-by: Petr Malat <oss@malat.biz>
+Acked-by: Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>
+Link: https://lore.kernel.org/r/20201030132633.7045-1-oss@malat.biz
 Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/realtek/r8169_main.c |   14 +++++++++++---
- 1 file changed, 11 insertions(+), 3 deletions(-)
+ net/sctp/sm_sideeffect.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
---- a/drivers/net/ethernet/realtek/r8169_main.c
-+++ b/drivers/net/ethernet/realtek/r8169_main.c
-@@ -4062,9 +4062,17 @@ err_out:
- 	return -EIO;
- }
+--- a/net/sctp/sm_sideeffect.c
++++ b/net/sctp/sm_sideeffect.c
+@@ -1615,12 +1615,12 @@ static int sctp_cmd_interpreter(enum sct
+ 			break;
  
--static bool rtl_test_hw_pad_bug(struct rtl8169_private *tp, struct sk_buff *skb)
-+static bool rtl_test_hw_pad_bug(struct rtl8169_private *tp)
- {
--	return skb->len < ETH_ZLEN && tp->mac_version == RTL_GIGA_MAC_VER_34;
-+	switch (tp->mac_version) {
-+	case RTL_GIGA_MAC_VER_34:
-+	case RTL_GIGA_MAC_VER_60:
-+	case RTL_GIGA_MAC_VER_61:
-+	case RTL_GIGA_MAC_VER_63:
-+		return true;
-+	default:
-+		return false;
-+	}
- }
+ 		case SCTP_CMD_INIT_FAILED:
+-			sctp_cmd_init_failed(commands, asoc, cmd->obj.u32);
++			sctp_cmd_init_failed(commands, asoc, cmd->obj.u16);
+ 			break;
  
- static void rtl8169_tso_csum_v1(struct sk_buff *skb, u32 *opts)
-@@ -4136,7 +4144,7 @@ static bool rtl8169_tso_csum_v2(struct r
+ 		case SCTP_CMD_ASSOC_FAILED:
+ 			sctp_cmd_assoc_failed(commands, asoc, event_type,
+-					      subtype, chunk, cmd->obj.u32);
++					      subtype, chunk, cmd->obj.u16);
+ 			break;
  
- 		opts[1] |= transport_offset << TCPHO_SHIFT;
- 	} else {
--		if (unlikely(rtl_test_hw_pad_bug(tp, skb)))
-+		if (unlikely(skb->len < ETH_ZLEN && rtl_test_hw_pad_bug(tp)))
- 			return !eth_skb_pad(skb);
- 	}
- 
+ 		case SCTP_CMD_INIT_COUNTER_INC:
 
 
