@@ -2,42 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A3512AB903
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 14:03:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D51962ABA3B
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 14:17:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730707AbgKINDm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 08:03:42 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55454 "EHLO mail.kernel.org"
+        id S1733052AbgKINQ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 08:16:58 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43946 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730563AbgKINB3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 08:01:29 -0500
+        id S2387529AbgKINQt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 08:16:49 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id F1DCB20679;
-        Mon,  9 Nov 2020 13:01:27 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id BD5A520731;
+        Mon,  9 Nov 2020 13:16:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604926888;
-        bh=T4o0DXs6wtfVp+UjtIlSWtuCUVCA119VN3WbpaeLBak=;
+        s=default; t=1604927809;
+        bh=J5rFsEtFjx3tmHpPydneHua0DscrVW3wkBWKH8pwJ+E=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=lDPsocbDrZv+xzVUHgJ+MYHhBYyTr1Xu9e/ts8j647PGtAl1/syH7WNCkpYd0WTGB
-         I78pdG6n/7xVHjKZ+Hfpj6N5DbAuQ4Ofv0Ol8Wmj51oQtVKUYsXGxltclMKTHC0Zo1
-         dA8MhsZono8rQpVKWUAPDFEOXrAVriKpxBYyQzfw=
+        b=aeHjlU27M72Op9x8NBGVkef2B0bQme6TB0TtN8MRkzYam3irBVOF5ulkpqJPJxscG
+         KXWBK9bbNV0SVUi5JJMabjM8ozXJ6GWV5kAF3k0+sq/GtphCs0Rfiv3/m1Jtt8mAd1
+         eW4woJxarH9nsMkAG1JfD0lXTbE8NU+MHzABy8Q8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 038/117] drivers: watchdog: rdc321x_wdt: Fix race condition bugs
-Date:   Mon,  9 Nov 2020 13:54:24 +0100
-Message-Id: <20201109125027.460261273@linuxfoundation.org>
+        stable@vger.kernel.org, Chris Wilson <chris@chris-wilson.co.uk>,
+        Matthew Auld <matthew.auld@intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>
+Subject: [PATCH 5.9 003/133] drm/i915/gem: Avoid implicit vmap for highmem on x86-32
+Date:   Mon,  9 Nov 2020 13:54:25 +0100
+Message-Id: <20201109125030.883776719@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201109125025.630721781@linuxfoundation.org>
-References: <20201109125025.630721781@linuxfoundation.org>
+In-Reply-To: <20201109125030.706496283@linuxfoundation.org>
+References: <20201109125030.706496283@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,62 +43,68 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>
+From: Chris Wilson <chris@chris-wilson.co.uk>
 
-[ Upstream commit 4b2e7f99cdd314263c9d172bc17193b8b6bba463 ]
+commit 4caf017ee93703ba1c4504f3d73b50e6bbd4249e upstream.
 
-In rdc321x_wdt_probe(), rdc321x_wdt_device.queue is initialized
-after misc_register(), hence if ioctl is called before its
-initialization which can call rdc321x_wdt_start() function,
-it will see an uninitialized value of rdc321x_wdt_device.queue,
-hence initialize it before misc_register().
-Also, rdc321x_wdt_device.default_ticks is accessed in reset()
-function called from write callback, thus initialize it before
-misc_register().
+On 32b, highmem using a finite set of indirect PTE (i.e. vmap) to provide
+virtual mappings of the high pages.  As these are finite, map_new_virtual()
+must wait for some other kmap() to finish when it runs out. If we map a
+large number of objects, there is no method for it to tell us to release
+the mappings, and we deadlock.
 
-Found by Linux Driver Verification project (linuxtesting.org).
+However, if we make an explicit vmap of the page, that uses a larger
+vmalloc arena, and also has the ability to tell us to release unwanted
+mappings. Most importantly, it will fail and propagate an error instead
+of waiting forever.
 
-Signed-off-by: Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>
-Reviewed-by: Guenter Roeck <linux@roeck-us.net>
-Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
-Link: https://lore.kernel.org/r/20200807112902.28764-1-madhuparnabhowmik10@gmail.com
-Signed-off-by: Guenter Roeck <linux@roeck-us.net>
-Signed-off-by: Wim Van Sebroeck <wim@linux-watchdog.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: fb8621d3bee8 ("drm/i915: Avoid allocating a vmap arena for a single page") #x86-32
+Signed-off-by: Chris Wilson <chris@chris-wilson.co.uk>
+Reviewed-by: Matthew Auld <matthew.auld@intel.com>
+Cc: <stable@vger.kernel.org> # v4.7+
+Link: https://patchwork.freedesktop.org/patch/msgid/20200915091417.4086-1-chris@chris-wilson.co.uk
+(cherry picked from commit 060bb115c2d664f04db9c7613a104dfaef3fdd98)
+Signed-off-by: Rodrigo Vivi <rodrigo.vivi@intel.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- drivers/watchdog/rdc321x_wdt.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+ drivers/gpu/drm/i915/gem/i915_gem_pages.c |   26 ++++++++++++++++++++++++--
+ 1 file changed, 24 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/watchdog/rdc321x_wdt.c b/drivers/watchdog/rdc321x_wdt.c
-index 47a8f1b1087d4..4568af9a165be 100644
---- a/drivers/watchdog/rdc321x_wdt.c
-+++ b/drivers/watchdog/rdc321x_wdt.c
-@@ -244,6 +244,8 @@ static int rdc321x_wdt_probe(struct platform_device *pdev)
+--- a/drivers/gpu/drm/i915/gem/i915_gem_pages.c
++++ b/drivers/gpu/drm/i915/gem/i915_gem_pages.c
+@@ -255,8 +255,30 @@ static void *i915_gem_object_map(struct
+ 		return NULL;
  
- 	rdc321x_wdt_device.sb_pdev = pdata->sb_pdev;
- 	rdc321x_wdt_device.base_reg = r->start;
-+	rdc321x_wdt_device.queue = 0;
-+	rdc321x_wdt_device.default_ticks = ticks;
+ 	/* A single page can always be kmapped */
+-	if (n_pte == 1 && type == I915_MAP_WB)
+-		return kmap(sg_page(sgt->sgl));
++	if (n_pte == 1 && type == I915_MAP_WB) {
++		struct page *page = sg_page(sgt->sgl);
++
++		/*
++		 * On 32b, highmem using a finite set of indirect PTE (i.e.
++		 * vmap) to provide virtual mappings of the high pages.
++		 * As these are finite, map_new_virtual() must wait for some
++		 * other kmap() to finish when it runs out. If we map a large
++		 * number of objects, there is no method for it to tell us
++		 * to release the mappings, and we deadlock.
++		 *
++		 * However, if we make an explicit vmap of the page, that
++		 * uses a larger vmalloc arena, and also has the ability
++		 * to tell us to release unwanted mappings. Most importantly,
++		 * it will fail and propagate an error instead of waiting
++		 * forever.
++		 *
++		 * So if the page is beyond the 32b boundary, make an explicit
++		 * vmap. On 64b, this check will be optimised away as we can
++		 * directly kmap any page on the system.
++		 */
++		if (!PageHighMem(page))
++			return kmap(page);
++	}
  
- 	err = misc_register(&rdc321x_wdt_misc);
- 	if (err < 0) {
-@@ -258,14 +260,11 @@ static int rdc321x_wdt_probe(struct platform_device *pdev)
- 				rdc321x_wdt_device.base_reg, RDC_WDT_RST);
- 
- 	init_completion(&rdc321x_wdt_device.stop);
--	rdc321x_wdt_device.queue = 0;
- 
- 	clear_bit(0, &rdc321x_wdt_device.inuse);
- 
- 	setup_timer(&rdc321x_wdt_device.timer, rdc321x_wdt_trigger, 0);
- 
--	rdc321x_wdt_device.default_ticks = ticks;
--
- 	dev_info(&pdev->dev, "watchdog init success\n");
- 
- 	return 0;
--- 
-2.27.0
-
+ 	mem = stack;
+ 	if (n_pte > ARRAY_SIZE(stack)) {
 
 
