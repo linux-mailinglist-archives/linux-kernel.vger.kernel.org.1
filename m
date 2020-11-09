@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3809B2ABCAC
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 14:39:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8255C2ABC3E
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 14:37:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387770AbgKINjd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 08:39:33 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56220 "EHLO mail.kernel.org"
+        id S1730132AbgKINFU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 08:05:20 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56898 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730684AbgKINDl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 08:03:41 -0500
+        id S1730729AbgKINDn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 08:03:43 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2D76920684;
-        Mon,  9 Nov 2020 13:03:39 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id F08E820679;
+        Mon,  9 Nov 2020 13:03:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604927020;
-        bh=tU0xlHvyDGv6ZJxxBpqUXyPc4mGnxZ5U2rTNVUd3VGQ=;
+        s=default; t=1604927023;
+        bh=r4QytLjGM3rkp6LcG8DZrrcDTr6TfRcaoUbl/jivR3s=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=issCppcwFf7SGl1rKPGqMGnj7IApMrghjLiEA8e7Bi4giSvqhLx9mVBRwVXrVQbc6
-         klhTYncxoANKqwqjhW7i5JI3UD5Xv3uOyHDEdDrPlSIeBDD5Mp0z/T3CB/0E3GHTcM
-         +6DrU1YbAFjZs5n4jrq4e2D5MuLm+hazJypseXu8=
+        b=ctSCmk/b79x4i/7avT3xFM9PO1KG0QyENaqEa+BDY0/k6OwnMP3AgecIFGSJ2qMt4
+         j9/W1k15+Or23OkR+hNKkj6A4ZoQnMVgvn8Cc1bmgCqQcxFaG40RryUw4a/sTkCAqE
+         gVR4Y2xBi2w2U6dstB9vWLkEDyFZ3uuO5Po6cg7E=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hanjun Guo <guohanjun@huawei.com>,
-        Jamie Iles <jamie@nuviainc.com>,
+        stable@vger.kernel.org, Wei Huang <wei.huang2@amd.com>,
         "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
-Subject: [PATCH 4.9 053/117] ACPI: debug: dont allow debugging when ACPI is disabled
-Date:   Mon,  9 Nov 2020 13:54:39 +0100
-Message-Id: <20201109125028.185510562@linuxfoundation.org>
+Subject: [PATCH 4.9 054/117] acpi-cpufreq: Honor _PSD table setting on new AMD CPUs
+Date:   Mon,  9 Nov 2020 13:54:40 +0100
+Message-Id: <20201109125028.235497753@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201109125025.630721781@linuxfoundation.org>
 References: <20201109125025.630721781@linuxfoundation.org>
@@ -43,68 +42,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jamie Iles <jamie@nuviainc.com>
+From: Wei Huang <wei.huang2@amd.com>
 
-commit 0fada277147ffc6d694aa32162f51198d4f10d94 upstream.
+commit 5368512abe08a28525d9b24abbfc2a72493e8dba upstream.
 
-If ACPI is disabled then loading the acpi_dbg module will result in the
-following splat when lock debugging is enabled.
+acpi-cpufreq has a old quirk that overrides the _PSD table supplied by
+BIOS on AMD CPUs. However the _PSD table of new AMD CPUs (Family 19h+)
+now accurately reports the P-state dependency of CPU cores. Hence this
+quirk needs to be fixed in order to support new CPUs' frequency control.
 
-  DEBUG_LOCKS_WARN_ON(lock->magic != lock)
-  WARNING: CPU: 0 PID: 1 at kernel/locking/mutex.c:938 __mutex_lock+0xa10/0x1290
-  Kernel panic - not syncing: panic_on_warn set ...
-  CPU: 0 PID: 1 Comm: swapper/0 Not tainted 5.9.0-rc8+ #103
-  Hardware name: linux,dummy-virt (DT)
-  Call trace:
-   dump_backtrace+0x0/0x4d8
-   show_stack+0x34/0x48
-   dump_stack+0x174/0x1f8
-   panic+0x360/0x7a0
-   __warn+0x244/0x2ec
-   report_bug+0x240/0x398
-   bug_handler+0x50/0xc0
-   call_break_hook+0x160/0x1d8
-   brk_handler+0x30/0xc0
-   do_debug_exception+0x184/0x340
-   el1_dbg+0x48/0xb0
-   el1_sync_handler+0x170/0x1c8
-   el1_sync+0x80/0x100
-   __mutex_lock+0xa10/0x1290
-   mutex_lock_nested+0x6c/0xc0
-   acpi_register_debugger+0x40/0x88
-   acpi_aml_init+0xc4/0x114
-   do_one_initcall+0x24c/0xb10
-   kernel_init_freeable+0x690/0x728
-   kernel_init+0x20/0x1e8
-   ret_from_fork+0x10/0x18
-
-This is because acpi_debugger.lock has not been initialized as
-acpi_debugger_init() is not called when ACPI is disabled.  Fail module
-loading to avoid this and any subsequent problems that might arise by
-trying to debug AML when ACPI is disabled.
-
-Fixes: 8cfb0cdf07e2 ("ACPI / debugger: Add IO interface to access debugger functionalities")
-Reviewed-by: Hanjun Guo <guohanjun@huawei.com>
-Signed-off-by: Jamie Iles <jamie@nuviainc.com>
-Cc: 4.10+ <stable@vger.kernel.org> # 4.10+
+Fixes: acd316248205 ("acpi-cpufreq: Add quirk to disable _PSD usage on all AMD CPUs")
+Signed-off-by: Wei Huang <wei.huang2@amd.com>
+[ rjw: Subject edit ]
+Cc: 3.10+ <stable@vger.kernel.org> # 3.10+
 Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/acpi/acpi_dbg.c |    3 +++
- 1 file changed, 3 insertions(+)
+ drivers/cpufreq/acpi-cpufreq.c |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
---- a/drivers/acpi/acpi_dbg.c
-+++ b/drivers/acpi/acpi_dbg.c
-@@ -757,6 +757,9 @@ int __init acpi_aml_init(void)
- 		goto err_exit;
+--- a/drivers/cpufreq/acpi-cpufreq.c
++++ b/drivers/cpufreq/acpi-cpufreq.c
+@@ -720,7 +720,8 @@ static int acpi_cpufreq_cpu_init(struct
+ 		cpumask_copy(policy->cpus, topology_core_cpumask(cpu));
  	}
  
-+	if (acpi_disabled)
-+		return -ENODEV;
-+
- 	/* Initialize AML IO interface */
- 	mutex_init(&acpi_aml_io.lock);
- 	init_waitqueue_head(&acpi_aml_io.wait);
+-	if (check_amd_hwpstate_cpu(cpu) && !acpi_pstate_strict) {
++	if (check_amd_hwpstate_cpu(cpu) && boot_cpu_data.x86 < 0x19 &&
++	    !acpi_pstate_strict) {
+ 		cpumask_clear(policy->cpus);
+ 		cpumask_set_cpu(cpu, policy->cpus);
+ 		cpumask_copy(data->freqdomain_cpus,
 
 
