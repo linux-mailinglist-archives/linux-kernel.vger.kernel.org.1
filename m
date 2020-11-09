@@ -2,82 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AABE42AB528
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 11:41:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E5F982AB52B
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 11:42:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726176AbgKIKlg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 05:41:36 -0500
-Received: from mail-ej1-f65.google.com ([209.85.218.65]:46875 "EHLO
-        mail-ej1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727906AbgKIKlg (ORCPT
+        id S1729042AbgKIKmN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 05:42:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55546 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726423AbgKIKmM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 05:41:36 -0500
-Received: by mail-ej1-f65.google.com with SMTP id w13so11490852eju.13
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Nov 2020 02:41:34 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=iWcFzGCTmHsyXJXpqz9g/RyszlIitmDX077/Y3VFAtU=;
-        b=EYUbtUrXjIv8MByv9DsZ9r9mTryNkhV6F0pOrIahg9irPcIJczCuw2MrcRK8qDI5fP
-         KCyToOXG2O0816wOlKSp7mnJf6xCK7hGbdYP/E9UgvxqHqdx6QxBrKZ5jwZS8u7gX2Jh
-         im3DNyoo4IXQUDUuwx4GaPc01DnoWX0nDjkoqfzNCgTlNBnrTVlb7RkYygwU7Y4gmhbp
-         Kr2tuV1Xmawc5rNTAFcAcJQAJZprb317toZM26zCJA+vWfHolyTi2OZCu8oP2CMBntAi
-         01M0jYqcLJlzUrnVSWA+Ksges4uQGHu/gt1lExjRDs7h5t6+Ima+cG5W2fGg61odtEYW
-         O4yg==
-X-Gm-Message-State: AOAM531jHSrzzl0fgHcsKhnQLmPm+eNKUZBaQ+b39+keKtDdv92qr2p9
-        16+bNiy4BmiHmOSucbKotZM=
-X-Google-Smtp-Source: ABdhPJwpOa6vHmVZkJ2mpXWkuyrEP964pcD9VT7jyzhW6QaKmxA7I5U9qrfR5Hkyjlk2SvQPPaqwZQ==
-X-Received: by 2002:a17:906:7c54:: with SMTP id g20mr9462470ejp.105.1604918493399;
-        Mon, 09 Nov 2020 02:41:33 -0800 (PST)
-Received: from ?IPv6:2a0b:e7c0:0:107::49? ([2a0b:e7c0:0:107::49])
-        by smtp.gmail.com with ESMTPSA id w3sm8499016edt.84.2020.11.09.02.41.32
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 09 Nov 2020 02:41:32 -0800 (PST)
-Subject: Re: [PATCH v1 1/3] vt: keyboard, use GENMAASK()/BIT() macros instead
- of open coded variants
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     David Laight <David.Laight@aculab.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-References: <20201106143551.43908-1-andriy.shevchenko@linux.intel.com>
- <e461a47754974c0d8d0b61981b77ae80@AcuMS.aculab.com>
- <CAHp75VfTFL_7bJ5HyyuATVk32+buD9JoNDhyf1noAfoFGqJ_OQ@mail.gmail.com>
- <56794a31-26ed-39eb-4082-75b5ec7cf28a@kernel.org>
- <CAHp75VeO6inzfRGSEBWgW0OCzjE9uT6LoXeQzHDdg4FiRemYWQ@mail.gmail.com>
- <20201109102759.GT4077@smile.fi.intel.com>
-From:   Jiri Slaby <jirislaby@kernel.org>
-Message-ID: <0bbc9282-3655-26f3-468f-4dccd7ded741@kernel.org>
-Date:   Mon, 9 Nov 2020 11:41:31 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        Mon, 9 Nov 2020 05:42:12 -0500
+Received: from mout-p-102.mailbox.org (mout-p-102.mailbox.org [IPv6:2001:67c:2050::465:102])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99AB1C0613CF;
+        Mon,  9 Nov 2020 02:42:12 -0800 (PST)
+Received: from smtp2.mailbox.org (smtp2.mailbox.org [IPv6:2001:67c:2050:105:465:1:2:0])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mout-p-102.mailbox.org (Postfix) with ESMTPS id 4CV6xs6XHyzQkm5;
+        Mon,  9 Nov 2020 11:42:09 +0100 (CET)
+X-Virus-Scanned: amavisd-new at heinlein-support.de
+Received: from smtp2.mailbox.org ([80.241.60.241])
+        by gerste.heinlein-support.de (gerste.heinlein-support.de [91.198.250.173]) (amavisd-new, port 10030)
+        with ESMTP id GrIZVsje57hw; Mon,  9 Nov 2020 11:42:04 +0100 (CET)
+Date:   Mon, 9 Nov 2020 11:41:59 +0100 (CET)
+From:   Hagen Paul Pfeifer <hagen@jauu.net>
+To:     Mike Rapoport <rppt@kernel.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andy Lutomirski <luto@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christopher Lameter <cl@linux.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        David Hildenbrand <david@redhat.com>,
+        Elena Reshetova <elena.reshetova@intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Idan Yaniv <idan.yaniv@ibm.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        James Bottomley <jejb@linux.ibm.com>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Matthew Wilcox <willy@infradead.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Shuah Khan <shuah@kernel.org>, Tycho Andersen <tycho@tycho.ws>,
+        Will Deacon <will@kernel.org>, linux-api@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-nvdimm@lists.01.org, linux-riscv@lists.infradead.org,
+        x86@kernel.org
+Message-ID: <651318720.14321.1604918519928@office.mailbox.org>
+In-Reply-To: <20201104170247.GT4879@kernel.org>
+References: <20200924132904.1391-1-rppt@kernel.org>
+ <20201101110935.GA4105325@laniakea> <20201102154028.GD4879@kernel.org>
+ <1547601988.128687.1604411534845@office.mailbox.org>
+ <20201103163002.GK4879@kernel.org>
+ <1988407921.138656.1604489953944@office.mailbox.org>
+ <20201104170247.GT4879@kernel.org>
+Subject: Re: [PATCH v6 0/6] mm: introduce memfd_secret system call to create
+ "secret" memory areas
 MIME-Version: 1.0
-In-Reply-To: <20201109102759.GT4077@smile.fi.intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Priority: 3
+Importance: Normal
+X-MBO-SPAM-Probability: 
+X-Rspamd-Score: -3.01 / 15.00 / 15.00
+X-Rspamd-Queue-Id: 2C76B177D
+X-Rspamd-UID: 6438b0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 09. 11. 20, 11:27, Andy Shevchenko wrote:
-> On Mon, Nov 09, 2020 at 12:10:27PM +0200, Andy Shevchenko wrote:
->> On Mon, Nov 9, 2020 at 11:57 AM Jiri Slaby <jirislaby@kernel.org> wrote:
->>> On 06. 11. 20, 17:06, Andy Shevchenko wrote:
+> On 11/04/2020 6:02 PM Mike Rapoport <rppt@kernel.org> wrote:
 > 
-> ...
-> 
->>> sorry,
->>
->> Consider this then as RFC.
->> What about the rest of the series?
-> 
-> I got the answer, thanks!
-> So, I will drop the first patch and resend the rest with your Ack.
+> Yes, this will work. The processes that share the memfd_secret file
+> descriptor will have access to the same memory pages, pretty much like
+> with shared memory.
 
-As I wrote the BIT pieces are mostly fine too…
+Perfect!
 
--- 
-js
-suse labs
+Acked-by: Hagen Paul Pfeifer <hagen@jauu.net>
+
+Thank you for the effort Mike, if zeroize feature will also included it will
+be great! The memset-all-pages after use is just overkill, a dedicated flag for
+memfd_secret (or mmap) would be superior.
+
+Hagen
