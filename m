@@ -2,108 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A5A62AB758
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 12:41:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C0EA2AB763
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 12:43:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729544AbgKILlM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 06:41:12 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33774 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729038AbgKILlM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 06:41:12 -0500
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 21A1F206ED;
-        Mon,  9 Nov 2020 11:41:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604922071;
-        bh=DdnMt4dQZoBazp+CcQ4voHqmXOu6LUFvv01/xOPmr+8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=UuFpOwJ3KiWu5V1sgJj/SVUK/BrOrRC1WZYcczQTEWqTTDT/EWgQ5lq73kVcI7Vid
-         SMjjpP2945dgFy2GtvCM6LwPij2STkSf3vpKV4myivDKWiPrhJNtYrvjLXL1cEbEt9
-         EjeDNTJt9lJMvYdzjdccshE38LrC+uDoAvlfnX0Q=
-Date:   Mon, 9 Nov 2020 12:42:11 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-Cc:     Aisheng Dong <aisheng.dong@nxp.com>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>
-Subject: Re: [PATCH RESEND] driver core: export device_is_bound() to fix
- build failure
-Message-ID: <20201109114211.GD1769924@kroah.com>
-References: <20201107224727.11015-1-sudipm.mukherjee@gmail.com>
- <20201108082317.GA40741@kroah.com>
- <CADVatmN8SbZWVGf_xe_K1g7M9ArHXF8TUhYyBgQcydBF4_zp9g@mail.gmail.com>
- <20201109103703.GA1310551@kroah.com>
- <AM6PR04MB4966B90C0DEC71A6C86067AA80EA0@AM6PR04MB4966.eurprd04.prod.outlook.com>
- <CADVatmNmoBFipoELoyuJ4EUB=KjjO+_9ahm830+04Xi3T77jqQ@mail.gmail.com>
+        id S1729399AbgKILnT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 06:43:19 -0500
+Received: from smtp2207-205.mail.aliyun.com ([121.197.207.205]:43025 "EHLO
+        smtp2207-205.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727311AbgKILnS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 06:43:18 -0500
+X-Alimail-AntiSpam: AC=CONTINUE;BC=0.07436321|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_system_inform|0.119563-0.00233504-0.878102;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047199;MF=frank@allwinnertech.com;NM=1;PH=DS;RN=11;RT=11;SR=0;TI=SMTPD_---.IuVCLW3_1604922186;
+Received: from allwinnertech.com(mailfrom:frank@allwinnertech.com fp:SMTPD_---.IuVCLW3_1604922186)
+          by smtp.aliyun-inc.com(10.147.44.129);
+          Mon, 09 Nov 2020 19:43:12 +0800
+From:   Frank Lee <frank@allwinnertech.com>
+To:     anarsoul@gmail.com, tiny.windzz@gmail.com, rui.zhang@intel.com,
+        daniel.lezcano@linaro.org, amitk@kernel.org, mripard@kernel.org,
+        wens@csie.org
+Cc:     linux-pm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, Yangtao Li <frank@allwinnertech.com>
+Subject: [PATCH] thermal: sun8i: Use bitmap API instead of open code
+Date:   Mon,  9 Nov 2020 19:43:02 +0800
+Message-Id: <20201109114302.22740-1-frank@allwinnertech.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CADVatmNmoBFipoELoyuJ4EUB=KjjO+_9ahm830+04Xi3T77jqQ@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 09, 2020 at 11:18:56AM +0000, Sudip Mukherjee wrote:
-> Hi Aisheng,
-> 
-> On Mon, Nov 9, 2020 at 10:57 AM Aisheng Dong <aisheng.dong@nxp.com> wrote:
-> >
-> > Hi Greg,
-> >
-> > > From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> > > Sent: Monday, November 9, 2020 6:37 PM
-> > > Subject: Re: [PATCH RESEND] driver core: export device_is_bound() to fix build
-> > > failure
-> > >
-> > > On Mon, Nov 09, 2020 at 10:14:46AM +0000, Sudip Mukherjee wrote:
-> > > > Hi Greg,
-> > > >
-> > > > On Sun, Nov 8, 2020 at 8:23 AM Greg Kroah-Hartman
-> > > > <gregkh@linuxfoundation.org> wrote:
-> > > > >
-> > > > > On Sat, Nov 07, 2020 at 10:47:27PM +0000, Sudip Mukherjee wrote:
-> > > > > > When CONFIG_MXC_CLK_SCU is configured as 'm' the build fails as it
-> > > > > > is unable to find device_is_bound(). The error being:
-> > > > > > ERROR: modpost: "device_is_bound" [drivers/clk/imx/clk-imx-scu.ko]
-> > > > > >       undefined!
-> > > > > >
-> > > > > > Export the symbol so that the module finds it.
-> > > > > >
-> 
-> <snip>
-> 
-> > >
-> > > probe() should never call this function as it makes no sense at all at that point in
-> > > time.  The driver should be fixed.
-> >
-> > Would you suggest if any other API we can use to allow the driver to know whether
-> > another device has been probed?
-> >
-> > For imx scu driver in question, it has a special requirement that it depends on scu power domain
-> > driver. However, there're a huge number (200+) of power domains for each device clock, we can't define
-> > them all in DT for a single clock controller node.
-> >
-> > That's why we wanted to use device_is_bound() before to check if scu power domain is ready or not to
-> > support defer probe.
-> 
-> iiuc, you are waiting for "fsl,scu-pd" to be registered.
-> I think you might be able to use bus_for_each_dev() to check if the
-> device has registered with the bus or not. It will be on the bus only
-> after bind was successful. The bus will be "platform_bus_type".
+From: Yangtao Li <frank@allwinnertech.com>
 
-No, do not do that, again, no individual driver should ever have to do
-that.  Think about what would be involved if _every_ driver started
-doing this.
+The bitmap_* API is the standard way to access data in the bitfield.
+So convert irq_ack to return an unsigned long, and make things to use
+bitmap API.
 
-> But I am sure Greg can give you better suggestion than this. :)
+Signed-off-by: Yangtao Li <frank@allwinnertech.com>
+---
+v2:
+Make irq_ack to return an unsigned long
+---
+ drivers/thermal/sun8i_thermal.c | 33 +++++++++++++++++----------------
+ 1 file changed, 17 insertions(+), 16 deletions(-)
 
-device link :)
+diff --git a/drivers/thermal/sun8i_thermal.c b/drivers/thermal/sun8i_thermal.c
+index f8b13071a6f4..8c80bd06dd9f 100644
+--- a/drivers/thermal/sun8i_thermal.c
++++ b/drivers/thermal/sun8i_thermal.c
+@@ -8,6 +8,7 @@
+  * Based on the work of Josef Gajdusek <atx@atx.name>
+  */
+ 
++#include <linux/bitmap.h>
+ #include <linux/clk.h>
+ #include <linux/device.h>
+ #include <linux/interrupt.h>
+@@ -74,7 +75,7 @@ struct ths_thermal_chip {
+ 	int		(*calibrate)(struct ths_device *tmdev,
+ 				     u16 *caldata, int callen);
+ 	int		(*init)(struct ths_device *tmdev);
+-	int             (*irq_ack)(struct ths_device *tmdev);
++	unsigned long	(*irq_ack)(struct ths_device *tmdev);
+ 	int		(*calc_temp)(struct ths_device *tmdev,
+ 				     int id, int reg);
+ };
+@@ -146,9 +147,10 @@ static const struct regmap_config config = {
+ 	.max_register = 0xfc,
+ };
+ 
+-static int sun8i_h3_irq_ack(struct ths_device *tmdev)
++static unsigned long sun8i_h3_irq_ack(struct ths_device *tmdev)
+ {
+-	int i, state, ret = 0;
++	unsigned long irq_bitmap = 0;
++	int i, state;
+ 
+ 	regmap_read(tmdev->regmap, SUN8I_THS_IS, &state);
+ 
+@@ -156,16 +158,17 @@ static int sun8i_h3_irq_ack(struct ths_device *tmdev)
+ 		if (state & SUN8I_THS_DATA_IRQ_STS(i)) {
+ 			regmap_write(tmdev->regmap, SUN8I_THS_IS,
+ 				     SUN8I_THS_DATA_IRQ_STS(i));
+-			ret |= BIT(i);
++			bitmap_set(&irq_bitmap, i, 1);
+ 		}
+ 	}
+ 
+-	return ret;
++	return irq_bitmap;
+ }
+ 
+-static int sun50i_h6_irq_ack(struct ths_device *tmdev)
++static unsigned long sun50i_h6_irq_ack(struct ths_device *tmdev)
+ {
+-	int i, state, ret = 0;
++	unsigned long irq_bitmap = 0;
++	int i, state;
+ 
+ 	regmap_read(tmdev->regmap, SUN50I_H6_THS_DIS, &state);
+ 
+@@ -173,24 +176,22 @@ static int sun50i_h6_irq_ack(struct ths_device *tmdev)
+ 		if (state & SUN50I_H6_THS_DATA_IRQ_STS(i)) {
+ 			regmap_write(tmdev->regmap, SUN50I_H6_THS_DIS,
+ 				     SUN50I_H6_THS_DATA_IRQ_STS(i));
+-			ret |= BIT(i);
++			bitmap_set(&irq_bitmap, i, 1);
+ 		}
+ 	}
+ 
+-	return ret;
++	return irq_bitmap;
+ }
+ 
+ static irqreturn_t sun8i_irq_thread(int irq, void *data)
+ {
+ 	struct ths_device *tmdev = data;
+-	int i, state;
+-
+-	state = tmdev->chip->irq_ack(tmdev);
++	unsigned long irq_bitmap = tmdev->chip->irq_ack(tmdev);
++	int i;
+ 
+-	for (i = 0; i < tmdev->chip->sensor_num; i++) {
+-		if (state & BIT(i))
+-			thermal_zone_device_update(tmdev->sensor[i].tzd,
+-						   THERMAL_EVENT_UNSPECIFIED);
++	for_each_set_bit(i, &irq_bitmap, tmdev->chip->sensor_num) {
++		thermal_zone_device_update(tmdev->sensor[i].tzd,
++					   THERMAL_EVENT_UNSPECIFIED);
+ 	}
+ 
+ 	return IRQ_HANDLED;
+-- 
+2.28.0
 
-thanks,
-
-greg k-h
