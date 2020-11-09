@@ -2,211 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52E9C2AC8D2
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 23:47:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7763D2AC8D4
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 23:47:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730206AbgKIWrP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 17:47:15 -0500
-Received: from youngberry.canonical.com ([91.189.89.112]:39615 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729451AbgKIWrO (ORCPT
+        id S1730802AbgKIWrT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 17:47:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56060 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729451AbgKIWrS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 17:47:14 -0500
-Received: from static-50-53-41-238.bvtn.or.frontiernet.net ([50.53.41.238] helo=[192.168.192.153])
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <john.johansen@canonical.com>)
-        id 1kcFwK-00088K-3K; Mon, 09 Nov 2020 22:47:08 +0000
-Subject: Re: [PATCH v22 12/23] LSM: Specify which LSM to display
-To:     Casey Schaufler <casey@schaufler-ca.com>,
-        Greg KH <gregkh@linuxfoundation.org>
-Cc:     casey.schaufler@intel.com, jmorris@namei.org,
-        linux-security-module@vger.kernel.org, selinux@vger.kernel.org,
-        linux-audit@redhat.com, keescook@chromium.org,
-        penguin-kernel@i-love.sakura.ne.jp, paul@paul-moore.com,
-        sds@tycho.nsa.gov, linux-kernel@vger.kernel.org,
-        linux-api@vger.kernel.org
-References: <20201104234114.11346-1-casey@schaufler-ca.com>
- <20201104234114.11346-13-casey@schaufler-ca.com>
- <20201105092245.GB3439341@kroah.com>
- <31027d8e-50bc-70be-b4f2-a96a84de2bae@schaufler-ca.com>
- <20201107091529.GA23328@kroah.com>
- <04b4adf9-9313-7f5a-e7fe-6132e0c5fc4f@canonical.com>
- <496cad0c-9bca-24e9-6024-76a8b73754ed@schaufler-ca.com>
-From:   John Johansen <john.johansen@canonical.com>
-Autocrypt: addr=john.johansen@canonical.com; prefer-encrypt=mutual; keydata=
- LS0tLS1CRUdJTiBQR1AgUFVCTElDIEtFWSBCTE9DSy0tLS0tCgptUUlOQkU1bXJQb0JFQURB
- azE5UHNnVmdCS2tJbW1SMmlzUFE2bzdLSmhUVEtqSmR3VmJrV1NuTm4rbzZVcDVrCm5LUDFm
- NDlFQlFsY2VXZzF5cC9Od2JSOGFkK2VTRU8vdW1hL0srUHFXdkJwdEtDOVNXRDk3Rkc0dUI0
- L2Nhb20KTEVVOTdzTFFNdG52R1dkeHJ4VlJHTTRhbnpXWU1neno1VFptSWlWVFo0M091NVZw
- YVMxVnoxWlN4UDNoL3hLTgpaci9UY1c1V1FhaTh1M1BXVm5ia2poU1pQSHYxQmdoTjY5cXhF
- UG9tckpCbTFnbXR4M1ppVm1GWGx1d1RtVGdKCk9rcEZvbDduYkowaWxuWUhyQTdTWDNDdFIx
- dXBlVXBNYS9XSWFuVk85NldkVGpISElhNDNmYmhtUXViZTR0eFMKM0ZjUUxPSlZxUXN4NmxF
- OUI3cUFwcG05aFExMHFQV3dkZlB5LyswVzZBV3ROdTVBU2lHVkNJbld6bDJIQnFZZAovWmxs
- OTN6VXErTklvQ244c0RBTTlpSCt3dGFHRGNKeXdJR0luK2VkS050SzcyQU1nQ2hUZy9qMVpv
- V0g2WmVXClBqdVVmdWJWelp0bzFGTW9HSi9TRjRNbWRRRzFpUU50ZjRzRlpiRWdYdXk5Y0dp
- MmJvbUYwenZ5QkpTQU5weGwKS05CRFlLek42S3owOUhVQWtqbEZNTmdvbUwvY2pxZ0FCdEF4
- NTlMK2RWSVpmYUYyODFwSWNVWnp3dmg1K0pvRwplT1c1dUJTTWJFN0wzOG5zem9veWtJSjVY
- ckFjaGtKeE5mejdrK0ZuUWVLRWtOekVkMkxXYzNRRjRCUVpZUlQ2ClBISGdhM1JneWtXNSsx
- d1RNcUpJTGRtdGFQYlhyRjNGdm5WMExSUGN2NHhLeDdCM2ZHbTd5Z2Rvb3dBUkFRQUIKdEIx
- S2IyaHVJRXB2YUdGdWMyVnVJRHhxYjJodVFHcHFiWGd1Ym1WMFBva0NPZ1FUQVFvQUpBSWJB
- d1VMQ1FnSApBd1VWQ2drSUN3VVdBZ01CQUFJZUFRSVhnQVVDVG8wWVZ3SVpBUUFLQ1JBRkx6
- WndHTlhEMkx4SkQvOVRKWkNwCndsbmNUZ1llcmFFTWVEZmtXdjhjMUlzTTFqMEFtRTRWdEwr
- ZkU3ODBaVlA5Z2tqZ2tkWVN4dDdlY0VUUFRLTWEKWlNpc3JsMVJ3cVUwb29nWGRYUVNweHJH
- SDAxaWN1LzJuMGpjWVNxWUtnZ1B4eTc4QkdzMkxacTRYUGZKVFptSApaR25YR3EvZURyL21T
- bmowYWF2QkptTVo2amJpUHo2eUh0QllQWjlmZG84YnRjendQNDFZZVdvSXUyNi84SUk2CmYw
- WG0zVkM1b0FhOHY3UmQrUldaYThUTXdsaHpIRXh4ZWwzanRJN0l6ek9zbm1FOS84RG0wQVJE
- NWlUTENYd1IKMWN3SS9KOUJGL1MxWHY4UE4xaHVUM0l0Q05kYXRncDh6cW9Ka2dQVmptdnlM
- NjRRM2ZFa1liZkhPV3NhYmE5LwprQVZ0Qk56OVJURmg3SUhEZkVDVmFUb3VqQmQ3QnRQcXIr
- cUlqV0ZhZEpEM0k1ZUxDVkp2VnJyb2xyQ0FUbEZ0Ck4zWWtRczZKbjFBaUlWSVUzYkhSOEdq
- ZXZnejVMbDZTQ0dIZ1Jya3lScG5TWWFVL3VMZ24zN042QVl4aS9RQUwKK2J5M0N5RUZManpX
- QUV2eVE4YnEzSXVjbjdKRWJoUy9KLy9kVXFMb2VVZjh0c0dpMDB6bXJJVFpZZUZZQVJoUQpN
- dHNmaXpJclZEdHoxaVBmL1pNcDVnUkJuaXlqcFhuMTMxY20zTTNndjZIclFzQUdubjhBSnJ1
- OEdEaTVYSllJCmNvLzEreC9xRWlOMm5DbGFBT3BiaHpOMmVVdlBEWTVXMHEzYkEvWnAybWZH
- NTJ2YlJJK3RRMEJyMUhkL3ZzbnQKVUhPOTAzbU1aZXAyTnpOM0JaNXFFdlB2RzRyVzVacTJE
- cHliV2JRclNtOW9iaUJLYjJoaGJuTmxiaUE4YW05bwpiaTVxYjJoaGJuTmxia0JqWVc1dmJt
- bGpZV3d1WTI5dFBva0NOd1FUQVFvQUlRVUNUbzBYV2dJYkF3VUxDUWdICkF3VVZDZ2tJQ3dV
- V0FnTUJBQUllQVFJWGdBQUtDUkFGTHpad0dOWEQySXRNRC85anliYzg3ZE00dUFIazZ5Tk0K
- TjBZL0JGbW10VFdWc09CaHFPbm9iNGkzOEJyRE8yQzFoUUNQQ1FlNExMczEvNHB0ZW92UXQ4
- QjJGeXJQVmp3Zwo3alpUSE5LNzRyNmxDQ1Z4eDN5dTFCN1U5UG80VlRrY3NsVmIxL3FtV3V4
- OFhXY040eXZrVHFsTCtHeHB5Sm45CjlaWmZmWEpjNk9oNlRtT2ZiS0d2TXV1djVhclNJQTNK
- SEZMZjlhTHZadEExaXNKVXI3cFM5YXBnOXVUVUdVcDcKd2ZWMFdUNlQzZUczbXRVVTJ1cDVK
- VjQ4NTBMMDVqSFM2dVdpZS9ZK3lmSk9iaXlyeE4vNlpxVzVHb25oTEJxLwptc3pjVjV2QlQz
- QkRWZTNSdkY2WGRNOU9oUG4xK1k4MXg1NCt2UTExM044aUx3RjdHR2ExNFp5SVZBTlpEMEkw
- CkhqUnZhMmsvUnFJUlR6S3l1UEg1cGtsY0tIVlBFRk1tT3pNVCtGT294Tmp2Uys3K3dHMktN
- RFlFbUhQcjFQSkIKWlNaZUh6SzE5dGZhbFBNcHBGeGkrc3lZTGFnTjBtQjdKSFF3WTdjclV1
- T0RoeWNxNjBZVnoxdGFFeWd1M1l2MgoyL0kxRUNHSHZLSEc2d2M5MG80M0MvZWxIRUNYbkVo
- N3RLcGxEY3BJQytPQ21NeEtIaFI0NitYY1p2Z3c0RGdiCjdjYTgzZVFSM0NHODlMdlFwVzJM
- TEtFRUJEajdoWmhrTGJra1BSWm0zdzhKWTQ0YXc4VnRneFdkblNFTUNMeEwKSU9OaDZ1Wjcv
- L0RZVnRjSWFNSllrZWJhWnRHZENwMElnVVpiMjQvVmR2WkNZYk82MkhrLzNWbzFuWHdIVUVz
- Mwo2RC92MWJUMFJaRmk2OUxnc0NjT2N4NGdZTGtDRFFST1pxejZBUkFBb3F3NmtrQmhXeU0x
- ZnZnYW1BVmplWjZuCktFZm5SV2JrQzk0TDFFc0pMdXAzV2IyWDBBQk5PSFNrYlNENHBBdUMy
- dEtGL0VHQnQ1Q1A3UWRWS1JHY1F6QWQKNmIyYzFJZHk5Ukx3Nnc0Z2krbm4vZDFQbTFra1lo
- a1NpNXpXYUlnMG01UlFVaytFbDh6a2Y1dGNFLzFOMFo1TwpLMkpoandGdTViWDBhMGw0Y0ZH
- V1ZRRWNpVk1ES1J0eE1qRXRrM1N4RmFsbTZaZFEycHAyODIyY2xucTR6WjltCld1MWQyd2F4
- aXorYjVJYTR3ZURZYTduNDFVUmNCRVViSkFnbmljSmtKdENUd3lJeElXMktuVnlPcmp2a1F6
- SUIKdmFQMEZkUDJ2dlpvUE1kbENJek9sSWtQTGd4RTBJV3VlVFhlQkpoTnMwMXBiOGJMcW1U
- SU1sdTRMdkJFTEEvdgplaWFqajVzOHk1NDJIL2FIc2ZCZjRNUVVoSHhPL0JaVjdoMDZLU1Vm
- SWFZN09nQWdLdUdOQjNVaWFJVVM1K2E5CmduRU9RTER4S1J5L2E3UTF2OVMrTnZ4KzdqOGlI
- M2prUUpoeFQ2WkJoWkdSeDBna0gzVCtGMG5ORG01TmFKVXMKYXN3Z0pycUZaa1VHZDJNcm0x
- cW5Ld1hpQXQ4U0ljRU5kcTMzUjBLS0tSQzgwWGd3ajhKbjMwdlhMU0crTk8xRwpIMFVNY0F4
- TXd5L3B2azZMVTVKR2paUjczSjVVTFZoSDRNTGJEZ2dEM21QYWlHOCtmb3RUckpVUHFxaGc5
- aHlVCkVQcFlHN3NxdDc0WG43OStDRVpjakxIenlsNnZBRkUyVzBreGxMdFF0VVpVSE8zNmFm
- RnY4cUdwTzNacVB2akIKVXVhdFhGNnR2VVFDd2YzSDZYTUFFUUVBQVlrQ0h3UVlBUW9BQ1FV
- Q1RtYXMrZ0liREFBS0NSQUZMelp3R05YRAoyRC9YRC8wZGRNLzRhaTFiK1RsMWp6bkthalgz
- a0crTWVFWWVJNGY0MHZjbzNyT0xyblJHRk9jYnl5ZlZGNjlNCktlcGllNE93b0kxamNUVTBB
- RGVjbmJXbkROSHByMFNjenhCTXJvM2Juckxoc212anVuVFlJdnNzQlp0QjRhVkoKanVMSUxQ
- VWxuaEZxYTdmYlZxMFpRamJpVi9ydDJqQkVOZG05cGJKWjZHam5wWUljQWJQQ0NhL2ZmTDQv
- U1FSUwpZSFhvaEdpaVM0eTVqQlRtSzVsdGZld0xPdzAyZmtleEgrSUpGcnJHQlhEU2c2bjJT
- Z3hubisrTkYzNGZYY205CnBpYXczbUtzSUNtKzBoZE5oNGFmR1o2SVdWOFBHMnRlb29WRHA0
- ZFlpaCsreFgvWFM4ekJDYzFPOXc0bnpsUDIKZ0t6bHFTV2JoaVdwaWZSSkJGYTRXdEFlSlRk
- WFlkMzdqL0JJNFJXV2hueXc3YUFQTkdqMzN5dEdITlVmNlJvMgovanRqNHRGMXkvUUZYcWpK
- Ry93R2pwZHRSZmJ0VWpxTEhJc3ZmUE5OSnEvOTU4cDc0bmRBQ2lkbFdTSHpqK09wCjI2S3Bi
- Rm5td05PMHBzaVVzbmh2SEZ3UE8vdkFibDNSc1I1KzBSbytodnMyY0VtUXV2OXIvYkRsQ2Zw
- enAydDMKY0srcmh4VXFpc094OERaZnoxQm5rYW9DUkZidnZ2ays3TC9mb21QbnRHUGtxSmNp
- WUU4VEdIa1p3MWhPa3UrNApPb00yR0I1bkVEbGorMlRGL2pMUStFaXBYOVBrUEpZdnhmUmxD
- NmRLOFBLS2ZYOUtkZm1BSWNnSGZuVjFqU24rCjh5SDJkakJQdEtpcVcwSjY5YUlzeXg3aVYv
- MDNwYVBDakpoN1hxOXZBenlkTjVVL1VBPT0KPTZQL2IKLS0tLS1FTkQgUEdQIFBVQkxJQyBL
- RVkgQkxPQ0stLS0tLQo=
-Organization: Canonical
-Message-ID: <5402979d-dd61-e294-a3d5-6d3bb63d3bcf@canonical.com>
-Date:   Mon, 9 Nov 2020 14:47:04 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <496cad0c-9bca-24e9-6024-76a8b73754ed@schaufler-ca.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        Mon, 9 Nov 2020 17:47:18 -0500
+Received: from mail-qv1-xf49.google.com (mail-qv1-xf49.google.com [IPv6:2607:f8b0:4864:20::f49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2D94C0613CF
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Nov 2020 14:47:17 -0800 (PST)
+Received: by mail-qv1-xf49.google.com with SMTP id y8so3462706qvu.22
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Nov 2020 14:47:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=bZ4K6V7c259yMftAZeIl2XziiPdlo9z+jlCG4AliFbc=;
+        b=ZMq8x5KWu1tR8/9xaagtBGrCWE3Jxz9i5QAxSaipt1dvB9rSMujsiMBdm+SlT1n+Kt
+         e3rwO/oMIf/D4jl//OAhsCQjFOxBrHWbbC3CXEpOBWLLim8qxKpjjlT1B4lBqpVhODPa
+         sRAew8k5ht7KhXFMRJWUDi1uMxhS3Bhj5AkOwqwBPaLdr1IXLT+spDH/2U61eVGhcns0
+         TMNASfgBijcpVz/TH5PXU1V42GiBXUF9iSSxV967JmV6YYPCX9/kdTksJvrK+xIQruti
+         EGey0eanibtx03F+FmjEHojcvEgt77ZD/LaePf3FPwl675/O/tD8FUIe22mUn2UsXW2C
+         Rc6A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=bZ4K6V7c259yMftAZeIl2XziiPdlo9z+jlCG4AliFbc=;
+        b=oZ7nB2byCA90LDlxsVFR8hspsK2y/F6GX0MpvqqX4nNB4IWIfNueQEMBteoC4kMNO6
+         y6aRuCErTNwaSlnUHB9xqyNqjuiQv2v2QxcPc8UGBmYwm7JiXLCzYkZINPGYX8f3Pt4h
+         0KIINpC/duggvy642NREfV6nMPJZJxWHNGw9gIh3nk/FwaKa7PW4OYcqyWcBdO/qXVUe
+         nlENu7G8TSvFRPIWn+L3mBsRb8K36pVrg6MlrYR0GR0/3EyVlKTS6p3o++74EYgQxApQ
+         3Lx+46ZimYqmqkqd6gwuQsiLlK9dwq0TM5wLD4T/m6feCPNmqlNyObJvsunwR3k11sx/
+         cc8A==
+X-Gm-Message-State: AOAM533PWA15Ke+mwbvy47cLJjuOtfjyYTL0biZJdjtDHcjEuPbjUgMg
+        rDkOclDL0+V1oaHePqKVSiyzJXCmkqg4x9E2P44=
+X-Google-Smtp-Source: ABdhPJz5xh4YuRwgUB3Qgv2UfvK/w6QHjuGWOP0FIZflbp9L6tYxvB8vXL//SwVVRFuX6G3O9MLGZNK1ypdoLyni+Wo=
+Sender: "ndesaulniers via sendgmr" 
+        <ndesaulniers@ndesaulniers1.mtv.corp.google.com>
+X-Received: from ndesaulniers1.mtv.corp.google.com ([2620:15c:211:202:f693:9fff:fef4:4d25])
+ (user=ndesaulniers job=sendgmr) by 2002:ad4:5345:: with SMTP id
+ v5mr16851402qvs.15.1604962036983; Mon, 09 Nov 2020 14:47:16 -0800 (PST)
+Date:   Mon,  9 Nov 2020 14:47:12 -0800
+Message-Id: <20201109224713.16308-1-ndesaulniers@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.29.2.222.g5d2a92d10f8-goog
+Subject: [PATCH] ARM: Kconfig: CPU_BIG_ENDIAN depends on !LD_IS_LLD
+From:   Nick Desaulniers <ndesaulniers@google.com>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Fangrui Song <maskray@google.com>, Jian Cai <jiancai@google.com>,
+        Peter Smith <peter.smith@arm.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/9/20 2:28 PM, Casey Schaufler wrote:
-> On 11/7/2020 2:05 PM, John Johansen wrote:
->> On 11/7/20 1:15 AM, Greg KH wrote:
->>> On Fri, Nov 06, 2020 at 04:20:43PM -0800, Casey Schaufler wrote:
->>>> On 11/5/2020 1:22 AM, Greg KH wrote:
->>>>> On Wed, Nov 04, 2020 at 03:41:03PM -0800, Casey Schaufler wrote:
->>>>>> Create a new entry "display" in the procfs attr directory for
->>>>>> controlling which LSM security information is displayed for a
->>>>>> process. A process can only read or write its own display value.
->>>>>>
->>>>>> The name of an active LSM that supplies hooks for
->>>>>> human readable data may be written to "display" to set the
->>>>>> value. The name of the LSM currently in use can be read from
->>>>>> "display". At this point there can only be one LSM capable
->>>>>> of display active. A helper function lsm_task_display() is
->>>>>> provided to get the display slot for a task_struct.
->>>>>>
->>>>>> Setting the "display" requires that all security modules using
->>>>>> setprocattr hooks allow the action. Each security module is
->>>>>> responsible for defining its policy.
->>>>>>
->>>>>> AppArmor hook provided by John Johansen <john.johansen@canonical.com>
->>>>>> SELinux hook provided by Stephen Smalley <sds@tycho.nsa.gov>
->>>>>>
->>>>>> Reviewed-by: Kees Cook <keescook@chromium.org>
->>>>>> Acked-by: Stephen Smalley <sds@tycho.nsa.gov>
->>>>>> Acked-by: Paul Moore <paul@paul-moore.com>
->>>>>> Signed-off-by: Casey Schaufler <casey@schaufler-ca.com>
->>>>>> Cc: linux-api@vger.kernel.org
->>>>>> ---
->>>>>>  fs/proc/base.c                       |   1 +
->>>>>>  include/linux/lsm_hooks.h            |  17 +++
->>>>>>  security/apparmor/include/apparmor.h |   3 +-
->>>>>>  security/apparmor/lsm.c              |  32 +++++
->>>>>>  security/security.c                  | 169 ++++++++++++++++++++++++---
->>>>>>  security/selinux/hooks.c             |  11 ++
->>>>>>  security/selinux/include/classmap.h  |   2 +-
->>>>>>  security/smack/smack_lsm.c           |   7 ++
->>>>>>  8 files changed, 223 insertions(+), 19 deletions(-)
->>>>>>
->>>>>> diff --git a/fs/proc/base.c b/fs/proc/base.c
->>>>>> index 0f707003dda5..7432f24f0132 100644
->>>>>> --- a/fs/proc/base.c
->>>>>> +++ b/fs/proc/base.c
->>>>>> @@ -2806,6 +2806,7 @@ static const struct pid_entry attr_dir_stuff[] = {
->>>>>>  	ATTR(NULL, "fscreate",		0666),
->>>>>>  	ATTR(NULL, "keycreate",		0666),
->>>>>>  	ATTR(NULL, "sockcreate",	0666),
->>>>>> +	ATTR(NULL, "display",		0666),
->>>>> That's a vague name, any chance it can be more descriptive?
->>>> Sure. How about lsm_display, or display_lsm? I wouldn't say that
->>>> any of the files in /proc/*/attr have especially descriptive names,
->>>> but that's hardly an excuse.
->>> I still don't understand what "display" means in this context.  Perhaps
->> its the LSM thats context is being displayed on the shared interface,
->> ie. /proc/*/attr/*
->>
->> thinking about it more owner or even interface_owner might be a better
->> name
-> 
-> I was hoping for a single word, but I see how something more descriptive
-> might be in order. How about "lsm_of_current"? Or "lsm_of_dot_slash_current",
-> if you want to be pedantic. "format_of_current" isn't quite accurate, but
-> might be easier for some people to understand. Maybe "interface_owning_lsm".
-> 
-> /proc/*/attr/display answers the question "Which LSM is providing the data
-> I see if I look in /proc/*/attr/current, prev or exec or if that process uses
-> SO_PEERSEC".
-> 
+LLD does not yet support any big endian architectures. Make this config
+non-selectable when using LLD until LLD is fixed.
 
-lsm_of_current or interface_lsm or interface_owning_lsm all wfm
+Link: https://github.com/ClangBuiltLinux/linux/issues/965
+Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
+---
+ arch/arm/mm/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-> 
->>> documentation will help clear it up?
->>>
->> yeah this needs documented.
-> 
-> Agreed. I've noticed that nothing in /proc/*/attr seems documented
-> in an orderly (documentation/ABI) fashion. I will have to fix some of
-> that for a description of /proc/*/attr/whatever_it_ends_up_getting_called
-> to make sense. Working on it.
-> 
->>> thanks,
->>>
->>> greg k-h
->>>
-> 
+diff --git a/arch/arm/mm/Kconfig b/arch/arm/mm/Kconfig
+index 65e4482e3849..02692fbe2db5 100644
+--- a/arch/arm/mm/Kconfig
++++ b/arch/arm/mm/Kconfig
+@@ -743,6 +743,7 @@ config SWP_EMULATE
+ config CPU_BIG_ENDIAN
+ 	bool "Build big-endian kernel"
+ 	depends on ARCH_SUPPORTS_BIG_ENDIAN
++	depends on !LD_IS_LLD
+ 	help
+ 	  Say Y if you plan on running a kernel in big-endian mode.
+ 	  Note that your board must be properly built and your board
+-- 
+2.29.2.222.g5d2a92d10f8-goog
 
