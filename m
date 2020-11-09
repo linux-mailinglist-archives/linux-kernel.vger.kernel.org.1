@@ -2,141 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D71992AC6BA
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 22:15:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FCD22AC6BD
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 22:15:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730187AbgKIVPb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 16:15:31 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38640 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729336AbgKIVPb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 16:15:31 -0500
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 84563206CB;
-        Mon,  9 Nov 2020 21:15:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604956530;
-        bh=oYr2JaLR22iQHfcymOzeBfdwEdiH+YRlgs4KPxWwOTs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=aB6NCU9QwvpONEX/1Io7pQXX8zJsOMlPiu+rhJiTw7WRQ58MaJxTPiq4oxqDFkwXk
-         wR3jHAewHNE/T3mGhckgcb7r7KsFUAq+ZzEb7VdntGfAAf34MU1lqxR2C6IgGZhsWM
-         AUjTq9ON5xnHnYhNsaJ7/hCxj2m82s0NpmRzmIVc=
-Date:   Mon, 9 Nov 2020 21:15:15 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     =?iso-8859-1?Q?Cl=E9ment_P=E9ron?= <peron.clem@gmail.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Maxime Ripard <mripard@kernel.org>,
-        Jernej =?utf-8?Q?=C5=A0krabec?= <jernej.skrabec@siol.net>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Marcus Cooper <codekipper@gmail.com>,
-        Linux-ALSA <alsa-devel@alsa-project.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Samuel Holland <samuel@sholland.org>
-Subject: Re: ASoC: Question regarding device-tree multi-lane I2S for
- Allwinner SoC
-Message-ID: <20201109211515.GO6380@sirena.org.uk>
-References: <CAJiuCcfBOHhniDQOaB8ixU0pY9u0GVivkj7po-kozBV8LqmB6A@mail.gmail.com>
+        id S1730596AbgKIVPf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 16:15:35 -0500
+Received: from mail-40133.protonmail.ch ([185.70.40.133]:41199 "EHLO
+        mail-40133.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725946AbgKIVPc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 16:15:32 -0500
+Date:   Mon, 09 Nov 2020 21:15:19 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me; s=protonmail;
+        t=1604956528; bh=zTOBwWAH6JdA/Q03nXi6Nv+Ot9+RM1svymVRReyFZ/8=;
+        h=Date:To:From:Cc:Reply-To:Subject:From;
+        b=h62fmhbfhOQh29yjgA3Xy2EV/wnNK+6x2cCmxLhCpZOYToq+Wxq/DKNc4C3L7qly+
+         fhI8MT7TLwEmLfVel4vhk+bByJHsNON9hYijHc0KcPPqXATGQSLf9YoRmliXcx9YRR
+         oivPpGExOwk4+cP7XL0CqUsb79xq3JJWVNPjSh1QfpUw3VYwjGs1xHCq+yzm29xXUp
+         oYbgnAQfcN6pBO1CWZepGdKrAQLQXTBlhGAkzpNr315v/KjAOdyQHoNE2kUQ+wE2pw
+         ADlyQrF79KqzyPbtnlc7pwp+RjhGVit/JxSOSux+tEWPbD2z7QxbtkmP+kd/l6SJcw
+         Q2JPLlNI3x9og==
+To:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+From:   Alexander Lobakin <alobakin@pm.me>
+Cc:     Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Steffen Klassert <steffen.klassert@secunet.com>,
+        Alexander Lobakin <alobakin@pm.me>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Reply-To: Alexander Lobakin <alobakin@pm.me>
+Subject: [PATCH v3 net] net: udp: fix Fast/frag0 UDP GRO
+Message-ID: <MgZce9htmEtCtHg7pmWxXXfdhmQ6AHrnltXC41zOoo@cp7-web-042.plabs.ch>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="da9oBGf5DLtF9ehv"
-Content-Disposition: inline
-In-Reply-To: <CAJiuCcfBOHhniDQOaB8ixU0pY9u0GVivkj7po-kozBV8LqmB6A@mail.gmail.com>
-X-Cookie: This fortune is false.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
+        mailout.protonmail.ch
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+While testing UDP GSO fraglists forwarding through driver that uses
+Fast GRO (via napi_gro_frags()), I was observing lots of out-of-order
+iperf packets:
 
---da9oBGf5DLtF9ehv
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+[ ID] Interval           Transfer     Bitrate         Jitter
+[SUM]  0.0-40.0 sec  12106 datagrams received out-of-order
 
-On Sun, Nov 01, 2020 at 06:30:15PM +0100, Cl=E9ment P=E9ron wrote:
+Simple switch to napi_gro_receive() any other method without frag0
+shortcut completely resolved them.
 
-Sorry about the delay here.
+I've found that UDP GRO uses udp_hdr(skb) in its .gro_receive()
+callback. While it's probably OK for non-frag0 paths (when all
+headers or even the entire frame are already in skb->data), this
+inline points to junk when using Fast GRO (napi_gro_frags() or
+napi_gro_receive() with only Ethernet header in skb->data and all
+the rest in shinfo->frags) and breaks GRO packet compilation and
+the packet flow itself.
+To support both modes, skb_gro_header_fast() + skb_gro_header_slow()
+are typically used. UDP even has an inline helper that makes use of
+them, udp_gro_udphdr(). Use that instead of troublemaking udp_hdr()
+to get rid of the out-of-order delivers.
 
->     dai-tdm-slot-tx-mask-0 =3D <1 1>;
->     dai-tdm-slot-tx-mask-1 =3D <1 1>;
->     dai-tdm-slot-tx-mask-2 =3D <1 1>;
->     dai-tdm-slot-tx-mask-3 =3D <1 1>;
+Present since the introduction of plain UDP GRO in 5.0-rc1.
 
-=2E..
+Since v2 [1]:
+ - dropped redundant check introduced in v2 as it's performed right
+   before (thanks to Eric);
+ - udp_hdr() switched to data + off for skbs from list (also Eric);
+ - fixed possible malfunction of {,__}udp{4,6}_lib_lookup_skb() with
+   Fast/frag0 due to ip{,v6}_hdr() usage (Willem).
 
-> This kind of representation gives the information that 2 slots should
-> be enabled as TX per lane but don't give which slot to map.
+Since v1 [2]:
+ - added a NULL pointer check for "uh" as suggested by Willem.
 
-The way the above should be interpreted is as a bitmask of slots to use,
-I'm hoping that the above is for a system with 4 TX data wires each
-using two slots (such designs get used for things like surround sound
-amps). =20
+[1] https://lore.kernel.org/netdev/0eaG8xtbtKY1dEKCTKUBubGiC9QawGgB3tVZtNqV=
+dY@cp4-web-030.plabs.ch
+[2] https://lore.kernel.org/netdev/YazU6GEzBdpyZMDMwJirxDX7B4sualpDG68ADZYv=
+JI@cp4-web-034.plabs.ch
 
-> I was thinking about a representation per lane but maybe it's a bit
-> complicated  ?
+Fixes: e20cf8d3f1f7 ("udp: implement GRO for plain UDP sockets.")
+Signed-off-by: Alexander Lobakin <alobakin@pm.me>
+---
+ net/ipv4/udp.c         | 4 ++--
+ net/ipv4/udp_offload.c | 9 ++++++---
+ net/ipv6/udp.c         | 4 ++--
+ 3 files changed, 10 insertions(+), 7 deletions(-)
 
->     dai-format =3D "dsp_a";
->     dai-tdm-slot-width =3D <32>;
->     // Lane 0 : Output 8 channels 0-7 using TDM
->     dai-tdm-slot-tx-mask-0 =3D <1 1 1 1 1 1 1 1>;
->     dai-tdm-slot-chmap-0 =3D <0 1 2 3 4 5 6 7>;
->     // Lane 1 : Output 3 channels 5-7 using TDM
->     dai-tdm-slot-tx-mask-1 =3D <1 1 1>;
->     dai-tdm-slot-chmap-1 =3D <5 6 7>;
+diff --git a/net/ipv4/udp.c b/net/ipv4/udp.c
+index 09f0a23d1a01..948ddc9a0212 100644
+--- a/net/ipv4/udp.c
++++ b/net/ipv4/udp.c
+@@ -534,7 +534,7 @@ static inline struct sock *__udp4_lib_lookup_skb(struct=
+ sk_buff *skb,
+ =09=09=09=09=09=09 __be16 sport, __be16 dport,
+ =09=09=09=09=09=09 struct udp_table *udptable)
+ {
+-=09const struct iphdr *iph =3D ip_hdr(skb);
++=09const struct iphdr *iph =3D skb_gro_network_header(skb);
+=20
+ =09return __udp4_lib_lookup(dev_net(skb->dev), iph->saddr, sport,
+ =09=09=09=09 iph->daddr, dport, inet_iif(skb),
+@@ -544,7 +544,7 @@ static inline struct sock *__udp4_lib_lookup_skb(struct=
+ sk_buff *skb,
+ struct sock *udp4_lib_lookup_skb(struct sk_buff *skb,
+ =09=09=09=09 __be16 sport, __be16 dport)
+ {
+-=09const struct iphdr *iph =3D ip_hdr(skb);
++=09const struct iphdr *iph =3D skb_gro_network_header(skb);
+=20
+ =09return __udp4_lib_lookup(dev_net(skb->dev), iph->saddr, sport,
+ =09=09=09=09 iph->daddr, dport, inet_iif(skb),
+diff --git a/net/ipv4/udp_offload.c b/net/ipv4/udp_offload.c
+index e67a66fbf27b..dbc4d17c55e9 100644
+--- a/net/ipv4/udp_offload.c
++++ b/net/ipv4/udp_offload.c
+@@ -366,11 +366,11 @@ static struct sk_buff *udp4_ufo_fragment(struct sk_bu=
+ff *skb,
+ static struct sk_buff *udp_gro_receive_segment(struct list_head *head,
+ =09=09=09=09=09       struct sk_buff *skb)
+ {
+-=09struct udphdr *uh =3D udp_hdr(skb);
++=09struct udphdr *uh =3D udp_gro_udphdr(skb);
+ =09struct sk_buff *pp =3D NULL;
+ =09struct udphdr *uh2;
+ =09struct sk_buff *p;
+-=09unsigned int ulen;
++=09u32 ulen, off;
+ =09int ret =3D 0;
+=20
+ =09/* requires non zero csum, for symmetry with GSO */
+@@ -385,6 +385,9 @@ static struct sk_buff *udp_gro_receive_segment(struct l=
+ist_head *head,
+ =09=09NAPI_GRO_CB(skb)->flush =3D 1;
+ =09=09return NULL;
+ =09}
++
++=09off =3D skb_gro_offset(skb);
++
+ =09/* pull encapsulating udp header */
+ =09skb_gro_pull(skb, sizeof(struct udphdr));
+=20
+@@ -392,7 +395,7 @@ static struct sk_buff *udp_gro_receive_segment(struct l=
+ist_head *head,
+ =09=09if (!NAPI_GRO_CB(p)->same_flow)
+ =09=09=09continue;
+=20
+-=09=09uh2 =3D udp_hdr(p);
++=09=09uh2 =3D (void *)p->data + off;
+=20
+ =09=09/* Match ports only, as csum is always non zero */
+ =09=09if ((*(u32 *)&uh->source !=3D *(u32 *)&uh2->source)) {
+diff --git a/net/ipv6/udp.c b/net/ipv6/udp.c
+index 29d9691359b9..a256ecce76b2 100644
+--- a/net/ipv6/udp.c
++++ b/net/ipv6/udp.c
+@@ -269,7 +269,7 @@ static struct sock *__udp6_lib_lookup_skb(struct sk_buf=
+f *skb,
+ =09=09=09=09=09  __be16 sport, __be16 dport,
+ =09=09=09=09=09  struct udp_table *udptable)
+ {
+-=09const struct ipv6hdr *iph =3D ipv6_hdr(skb);
++=09const struct ipv6hdr *iph =3D skb_gro_network_header(skb);
+=20
+ =09return __udp6_lib_lookup(dev_net(skb->dev), &iph->saddr, sport,
+ =09=09=09=09 &iph->daddr, dport, inet6_iif(skb),
+@@ -279,7 +279,7 @@ static struct sock *__udp6_lib_lookup_skb(struct sk_buf=
+f *skb,
+ struct sock *udp6_lib_lookup_skb(struct sk_buff *skb,
+ =09=09=09=09 __be16 sport, __be16 dport)
+ {
+-=09const struct ipv6hdr *iph =3D ipv6_hdr(skb);
++=09const struct ipv6hdr *iph =3D skb_gro_network_header(skb);
+=20
+ =09return __udp6_lib_lookup(dev_net(skb->dev), &iph->saddr, sport,
+ =09=09=09=09 &iph->daddr, dport, inet6_iif(skb),
+--=20
+2.29.2
 
-I'd expect lane 1 to end up as
 
-     dai-tdm-slot-tx-mask-1 =3D < 0 0 0 0 0 1 1 1 >;
-
->     // Lane 0 : Output channels 0,1
->     dai-tdm-slot-tx-mask-0 =3D <1 1>;
->     dai-tdm-slot-chmap-0 =3D <0 1>;
->     // Lane 1: Output channels 2,3
->     dai-tdm-slot-tx-mask-1 =3D <1 1>;
->     dai-tdm-slot-chmap-1 =3D <2 3>;
->     // Lane 2: Output channels 4,5
->     dai-tdm-slot-tx-mask-2 =3D <1 1>;
->     dai-tdm-slot-chmap-2 =3D <4 5>;
->     // Lane 3: Output channels 6,7
->     dai-tdm-slot-tx-mask-3 =3D <1 1>;
->     dai-tdm-slot-chmap-3 =3D <6 7>;
-
-> What do you think? Do you have any remark / idea about this ?
-
-I can see the use for the chmap binding, I can see that we might have a
-system which has for example outputs labelled in some unusual order and
-we'd want to remap them.  I'm less sure about defining a channel map in
-a way that changes the meaning of the masks though, that seems like it'd
-lead to incompatibilities.  How about making chmap also an array like
-the mask is with the bits set in the mask indicating which slots in the
-chmap are valid, that way your -3 would end up as:
-
-      dai-tdm-slot-tx-mask-3 =3D <0 0 0 0 0 0 0 1 1>;
-      dai-tdm-slot-chmap-3   =3D <0 0 0 0 0 0 0 6 7>;
-
-and something that only understands the mask would at least get the
-correct channels even if in a jumbled order?
-
---da9oBGf5DLtF9ehv
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl+psWMACgkQJNaLcl1U
-h9DxiAf+LcdNMSzFM9UDPRKWBo7YMMEa3rZBYdJiTYFos60njDZu9mygoU302a4j
-1zY+3h4+36iMWuL1M6Kg3+roJuRBPBiWCIDLMsiKBcyN8rmpSKzv3Ki8na/QqpcD
-Pi6eu9MyPH/68CElJ2KYDbMhmNGXgVzPKhQ2Vmpx9f4NdTuCDE9Cs6f4ibFVzBIp
-j3V6YV/+gLNvDxpghKmfsbew/6qYtxq5ouXW/lF3zvor6W/Ez+zem1/dKFj8sqGh
-8+oWQvThKGtoz8jYjxfz3oe7C7Syvsq8ejUmPD2tlNOaYaaiXYK8wzZyDSghKdua
-UpXzlsrLN+HXuLOVpu1ShjiCPNj4wQ==
-=TwOU
------END PGP SIGNATURE-----
-
---da9oBGf5DLtF9ehv--
