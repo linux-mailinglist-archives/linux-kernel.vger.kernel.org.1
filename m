@@ -2,101 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74F9E2AB81C
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 13:23:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BE572AB81F
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 13:23:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729656AbgKIMXD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 07:23:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43508 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727774AbgKIMXC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 07:23:02 -0500
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CA85C0613CF;
-        Mon,  9 Nov 2020 04:23:02 -0800 (PST)
-Received: by mail-wm1-x343.google.com with SMTP id s13so7748009wmh.4;
-        Mon, 09 Nov 2020 04:23:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=fvrOV1Xbp2rPir897uIVRy41PUv/On9Mb5UR70E8ZN0=;
-        b=n1pkBzsb3gjrt2q7nMtXtiR++q3d1ceKq5g1jc6iARM6zIn9/5gceylshIADOqMlFZ
-         OI95Ac2KqRte1jpw5IghCigg79Fgmv8sBtexrG3Ik6zV5MxhgA1muyMjpUAtz4Ek86bT
-         G99vstDWT1cRxCERKJbc+Pms9XkDgNc04DOkTPQfm0xZKR5Blng1uxSreGGlRAQiq+mz
-         rRmBN7r0eBE93AqLuGMjaRb8AZfzUfXHNSEcEwyjIdAst2Ko0oLReBrUYDfnXsmKA3B5
-         Ffh+u0eRCHR498eUHGj4jYDGAdD3ofBcv5cfjKHGPYsN47qumpYxh71zhqgkZxw88cCC
-         3/NA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=fvrOV1Xbp2rPir897uIVRy41PUv/On9Mb5UR70E8ZN0=;
-        b=A3lklfawHsiVQrqJqX+jOeziUs7Nm3DZNkOQiaADakbyis1c057ul8hvUENc4dINit
-         sTEjFT4vr6jjV2F26k4daujfqHcUXaW0ewhu02yuh38+EwhGdFg0lWdkk4Ycc+oSLcWC
-         Ac0uNC28Tph518UG5r6ODIT8NqwYUwoBZxKttiZcMc8TEAYUQU/++Gpqat7Opuu+YOAd
-         NR+sT2QBZbZWV6GuOmMRJblb2+LHCKenLNUg5RF9zsnZEm5X4sjLtLKW6Ix2+3Q+yVL8
-         NIoRFjfqWjbwOCG8l1dyaOBDEBIvyC+ISVgEP2BxMZx86tUbMre9grYmM/OoqGIVlAld
-         PO/w==
-X-Gm-Message-State: AOAM533rL98yi/isBRYc2xYO4bMpSi7jDMsncSV/4OF7c0X6e5uRAwoo
-        bTaWPApu6CmRLAIHWLyFWPY=
-X-Google-Smtp-Source: ABdhPJx5F8ZtqrMomxcLVPqrYaU1USlQyhVoFN3qloSIV+AwYlZ02SksvPUAPwEh1/meALhBZZP3vw==
-X-Received: by 2002:a1c:98cd:: with SMTP id a196mr13735928wme.42.1604924581047;
-        Mon, 09 Nov 2020 04:23:01 -0800 (PST)
-Received: from felia.fritz.box ([2001:16b8:2dd6:1d00:b0a6:ce79:896e:ea57])
-        by smtp.gmail.com with ESMTPSA id y200sm13828404wmc.23.2020.11.09.04.23.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 09 Nov 2020 04:23:00 -0800 (PST)
-From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
-To:     Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>
-Cc:     Ralf Ramsauer <ralf.ramsauer@oth-regensburg.de>,
-        Pia Eichinger <pia.eichinger@st.oth-regensburg.de>,
-        Joe Perches <joe@perches.com>, kernel-janitors@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Subject: [PATCH] MAINTAINERS: assign ./fs/tracefs to TRACING
-Date:   Mon,  9 Nov 2020 13:22:50 +0100
-Message-Id: <20201109122250.31915-1-lukas.bulwahn@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        id S1729681AbgKIMXM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 07:23:12 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42688 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727774AbgKIMXL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 07:23:11 -0500
+Received: from localhost (unknown [122.171.147.34])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1ECBB206CB;
+        Mon,  9 Nov 2020 12:23:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604924591;
+        bh=6QWICF9SNtMXta4oNNi5IL/+AwdM20O9Yx4KTjeGjPs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Oz7GIA73Mom5tCaB682s6aU1fn1ExwkuyBlwsaFyiYlVSDAVZIN57hqoHmcwhvLYB
+         uPTXQ/xkiGeSkWRv4Rq0wqRBieaAyP9CGOLcb1vvEgo38rQN3t+7wEwMxBLiqug2+I
+         gjVK9MG9KnpH6iUZ6rRZj+mAYipZ/oQDS3Z3xut0=
+Date:   Mon, 9 Nov 2020 17:53:06 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc:     nm@ti.com, ssantosh@kernel.org, robh+dt@kernel.org,
+        vigneshr@ti.com, dan.j.williams@intel.com, t-kristo@ti.com,
+        lokeshvutla@ti.com, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        dmaengine@vger.kernel.org
+Subject: Re: [PATCH 01/18] dmaengine: of-dma: Add support for optional router
+ configuration callback
+Message-ID: <20201109122306.GO3171@vkoul-mobl>
+References: <20200930091412.8020-1-peter.ujfalusi@ti.com>
+ <20200930091412.8020-2-peter.ujfalusi@ti.com>
+ <20201007054404.GR2968@vkoul-mobl>
+ <be615881-1eb4-f8fe-a32d-04fabb6cb27b@ti.com>
+ <20201007155533.GZ2968@vkoul-mobl>
+ <45adb88b-1ef8-1fbf-08c1-9afc6ea4c6f0@ti.com>
+ <20201028055531.GH3550@vkoul-mobl>
+ <cf3d3de0-223b-4846-bd9f-b78654ae2d08@ti.com>
+ <20201109114534.GH3171@vkoul-mobl>
+ <7a7cb455-dd09-b71f-6ecc-fd6108d37051@ti.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <7a7cb455-dd09-b71f-6ecc-fd6108d37051@ti.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A check with ./scripts/get_maintainer.pl --letters -f fs/tracefs/ shows
-that the tracefs is not assigned to the TRACING section in MAINTAINERS.
+HI Peter,
 
-Add the file pattern for the TRACING section to rectify that.
+On 09-11-20, 14:09, Peter Ujfalusi wrote:
+> Hi Vinod,
+> 
+> On 09/11/2020 13.45, Vinod Koul wrote:
+> >> Without a channel number I can not do anything.
+> >> It is close to a chicken and egg problem.
+> > 
+> > We get 'channel' in xlate, so wont that help? I think I am still missing
+> > something here :(
+> 
+> Yes, we get channel in xlate, but we get the channel after
+> ofdma->of_dma_route_allocate()
 
-Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
----
-applies cleanly on v5.10-rc3 and next-20201109
-
-Steven, Ingo, please pick this minor non-urgent clean-up patch.
+That is correct, so you need this info in allocate somehow..
 
 
-By the way, I am wondering if the git tree is still up to date?
+> of_dma_route_allocate() si the place where DMA routers create the
+> dmaspec for the DMA controller to get a channel and they up until BCDMA
+> did also the HW configuration to get the event routed.
+> 
+> For a BCDMA channel we can have three triggers:
+> Global trigger 0 for the channel
+> Global trigger 1 for the channel
+> Local trigger for the channel
+> 
+> Every BCDMA channel have these triggers and for all of them they are the
+> same (from the channel's pow).
+> bchan0 can be triggered by global trigger 0
+> bchan1 can be triggered by global trigger 0
+> 
+> But these triggers are not the same ones, the real trigger depends on
+> the router, which of it's input is converted to send out an event to
+> trigger bchan0_trigger0 or to trigger bchan1_trigger0.
+> 
+> When we got the channel with the dmaspec from the router driver then we
+> need to tell the router driver that it needs to send a given event in
+> order to trigger the channel that we got.
+> 
+> We can not have traditional binding for BCDMA either where we would tell
+> the bchan index to be used because depending on the resource allocation
+> done within sysfw that exact channel might not be even available for us.
+> 
+> - Péter
+> 
+> Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
+> Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
 
-It says for TRACING:
-  git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git perf/core
-
-But I assume commits now actually travel through:
-  git://git.kernel.org/pub/scm/linux/kernel/git/rostedt/linux-trace.git
-
- MAINTAINERS | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/MAINTAINERS b/MAINTAINERS
-index cba8ddf87a08..f0ba51f2c759 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -17823,6 +17823,7 @@ T:	git git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git perf/core
- F:	Documentation/trace/ftrace.rst
- F:	arch/*/*/*/ftrace.h
- F:	arch/*/kernel/ftrace.c
-+F:	fs/tracefs/
- F:	include/*/ftrace.h
- F:	include/linux/trace*.h
- F:	include/trace/
 -- 
-2.17.1
-
+~Vinod
