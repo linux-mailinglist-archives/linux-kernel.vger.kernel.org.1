@@ -2,420 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6FB92AC686
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 22:03:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 643C62AC692
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 22:06:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730469AbgKIVDh convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 9 Nov 2020 16:03:37 -0500
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:30050 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729454AbgKIVDd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 16:03:33 -0500
-Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
-        by m0089730.ppops.net (8.16.0.42/8.16.0.42) with SMTP id 0A9Kkhbf015188
-        for <linux-kernel@vger.kernel.org>; Mon, 9 Nov 2020 13:03:31 -0800
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by m0089730.ppops.net with ESMTP id 34nqy29ydw-6
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Nov 2020 13:03:31 -0800
-Received: from intmgw004.03.ash8.facebook.com (2620:10d:c085:208::11) by
- mail.thefacebook.com (2620:10d:c085:11d::6) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Mon, 9 Nov 2020 13:03:29 -0800
-Received: by devbig012.ftw2.facebook.com (Postfix, from userid 137359)
-        id 804A92EC924F; Mon,  9 Nov 2020 13:00:34 -0800 (PST)
-From:   Andrii Nakryiko <andrii@kernel.org>
-To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>, <ast@fb.com>,
-        <daniel@iogearbox.net>
-CC:     <kernel-team@fb.com>, <linux-kernel@vger.kernel.org>,
-        <rafael@kernel.org>, <jeyu@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: [PATCH v3 bpf-next 4/5] bpf: load and verify kernel module BTFs
-Date:   Mon, 9 Nov 2020 13:00:23 -0800
-Message-ID: <20201109210024.2024572-5-andrii@kernel.org>
-X-Mailer: git-send-email 2.24.1
-In-Reply-To: <20201109210024.2024572-1-andrii@kernel.org>
-References: <20201109210024.2024572-1-andrii@kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-X-FB-Internal: Safe
+        id S1729791AbgKIVGa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 16:06:30 -0500
+Received: from mail-bn7nam10on2047.outbound.protection.outlook.com ([40.107.92.47]:56737
+        "EHLO NAM10-BN7-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1729247AbgKIVG3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 16:06:29 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=eG0zOiwj966qcYkD6du1nJIEmS2omRqR+aI7LwOXrrjlcwwKt+vZWn61hBuI6h2rg+rjRIxwRa8drBGOkOOPb5gkep9t6wB6Ve7d7EJ/viFu40yr9EKcHHz2N7uWwzl32777nSAMbLWBBjxn+DzHqY14C09jWuwva6e3GetjFRbkI0lS9YaMWNpwKh5KDo9I00YscoyfAMqS6fGcNrZuW4eFVVZxF8lyHrOYg39OW+5Ez+lu0uEPN/HYnnwVBdaUHUQysV9Ly0PV24iI2LZ/HxGqlWsKUhN1sqa6rf0H81nBdqUyHLROJJqCQbmvvzjET+10YvY3A5l3dIku3ohYqQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=eHecoD+HrKFRqmvQxRAES9h+ySFjBEM8FrOrDgcUXY8=;
+ b=YJx/VcGrnax4OJMXSZ2fz3qBde1IgJEMkm6tyLMjHJTs628sw9gqvViFSTV4VfbRWBqP+B5Li6HV+WNLAcAhv+337IEsF+7h4bLvbN/FMpl//OP41fE0fnLBDo2WebLiMmfEIYGMP4MDSezk3GKywvIS7PW85tLXvYEr1Gu5fIfvXpLZ3OnvrEwb+B/4yIcASoyjZxF1sTiA0Y71fV5+3XP+VCsxQ1fQaRVGqwMKOi2I27iX6qVlStx2uyir+yq056/4x7mOPLd1wH7Rd9ktLGbOJa4HPsB95Bm2DqbXVtZR36ABo2dHFJ4w73eSCIlleR0Zh4XxbCHfxODSumSdYQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=eHecoD+HrKFRqmvQxRAES9h+ySFjBEM8FrOrDgcUXY8=;
+ b=VbJDpZRdWtcnHQF9pJqDxW9lJ56sK+vOKTjMAZReJO9oF2FWFWh30XvXG7wnIN6a4FON1oJBS65Gnkofujo4uuBBHCs5OngTufkovU75f2G/nhduAPHTl2T197rwj/ogw45v3BtJWtDZ0gsHW0QKJa/DG5mg++4xBKEsnWMQBYs=
+Authentication-Results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=amd.com;
+Received: from BN8PR12MB3108.namprd12.prod.outlook.com (2603:10b6:408:40::20)
+ by BN8PR12MB2979.namprd12.prod.outlook.com (2603:10b6:408:66::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3541.21; Mon, 9 Nov
+ 2020 21:06:24 +0000
+Received: from BN8PR12MB3108.namprd12.prod.outlook.com
+ ([fe80::9df4:880c:f3f2:679d]) by BN8PR12MB3108.namprd12.prod.outlook.com
+ ([fe80::9df4:880c:f3f2:679d%5]) with mapi id 15.20.3541.025; Mon, 9 Nov 2020
+ 21:06:24 +0000
+From:   Yazen Ghannam <Yazen.Ghannam@amd.com>
+To:     x86@kernel.org
+Cc:     Yazen Ghannam <Yazen.Ghannam@amd.com>,
+        linux-kernel@vger.kernel.org,
+        Smita.KoralahalliChannabasappa@amd.com, linux-edac@vger.kernel.org,
+        puwen@hygon.cn, kim.phillips@amd.com, thomas.lendacky@amd.com,
+        wei.huang2@amd.com
+Subject: [PATCH 0/4] Set and use cpu_die_id on AMD-based systems
+Date:   Mon,  9 Nov 2020 21:06:55 +0000
+Message-Id: <20201109210659.754018-1-Yazen.Ghannam@amd.com>
+X-Mailer: git-send-email 2.25.1
+Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-11-09_13:2020-11-05,2020-11-09 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 priorityscore=1501
- mlxlogscore=999 phishscore=0 mlxscore=0 malwarescore=0 spamscore=0
- bulkscore=0 impostorscore=0 suspectscore=29 clxscore=1015 adultscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2011090138
-X-FB-Internal: deliver
+X-Originating-IP: [165.204.78.2]
+X-ClientProxiedBy: DM5PR12CA0064.namprd12.prod.outlook.com
+ (2603:10b6:3:103::26) To BN8PR12MB3108.namprd12.prod.outlook.com
+ (2603:10b6:408:40::20)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from yaz-ethanolx.amd.com (165.204.78.2) by DM5PR12CA0064.namprd12.prod.outlook.com (2603:10b6:3:103::26) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3541.21 via Frontend Transport; Mon, 9 Nov 2020 21:06:21 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: 0247dfa3-aaca-4b82-c1b6-08d884f3507a
+X-MS-TrafficTypeDiagnostic: BN8PR12MB2979:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BN8PR12MB29798AA016A43E51C942CAEFF8EA0@BN8PR12MB2979.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:6430;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: LvDL/wi3chpNNR7gasTKthi9r7w/1yOo277xs4PmeTe5o200wjm+Jt7brrXPfzolySWfMho6be5EwImqf3WOG+M1PdwMRgIPmv0L0TrGEiKnFMRA1QWyudu9jONMyBmZ/PV8FJWtxjfrHaqw0GG2+aQgtdhfhYRwAbr3fd1vkmjMrD2+Rlau7y/C+m0YRzFY1AtPfg8LCIhN1jLQvwtnL+Fwn4AHK3jgIT+QaEJmd6HR6qYv56CcfXb7GCvR/Rw/NUDVBRKO+ohAMI9m40rGio9iGRFl+X5GtNqgEuYqdXei9j6V/6NfGm9FZ4qa+/vti/y5RF78ZxqucfTF6PgOL5B1d1AOPPJQukACHqIFMqi5qMDWaM9DYub7kMAisyff6n2CWnxziXbr7hi4zUr3Tw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN8PR12MB3108.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(136003)(346002)(366004)(376002)(39860400002)(6486002)(26005)(66946007)(5660300002)(186003)(16526019)(4326008)(1076003)(8936002)(2906002)(83380400001)(66556008)(66476007)(6666004)(36756003)(478600001)(86362001)(316002)(6916009)(2616005)(966005)(8676002)(956004)(52116002)(7696005);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: Pov2fDXzlfyFPHYDjaX4KvHu8m/3VGXX07cmP5b1ayFhKPUTAzG05Xc3FHmPQd3XMLCcggJzZWnVLtr/B/D92Pdz7p6rjUJP7HJSrT7Q/caQzOpNmCg0Z87X3fwdCw5DyTR05pNCZiud+pMEfnLmkhZWTBw+/BSduKF8vsi57/41olWhOVj8P4BaNxn98deMPtHTev/kl60R8MdcaLMK1xVEgHtpV7LOcuBuy9t1+cOi6tr5HzakMksq37G1KbM+qL/EOehqctzRk1bXaWzuk0t42TsxMPTfFfRhofbB3YWW1xr83N2/dmyyVM/H5F+FdhIlhZbiDiVU83MUhqVYhzRKnfh6r5g39RynEGeS5oZ7Sg2Ov9cpsFbNacXJ7i2C7MVl+vfRTTbZ7qiS9NT1ypE40sxcpLcz+1hMIN9T5DfA+NvsFnz0GOTq6kCb8ERU/0WJdIq3AzBSrAN+R1wxJSsJ5qTWyCsZa4pM0IdMURwx12Kb2Wom2IeI9eacK1RrxCL6pTkfLAUF6CbWqF0pjs5nYG7/wMFM8VQIR4KMwlXEGUBrSwrUCZY/5fy0/ylUQj7U65egA/DYgiOvW/URDKpUEo9u9TpzcvNmpEClmaDV4jo61RlVPRzb8oRDQ0ORcHKL34niuXkXJHqFuvCfkQ==
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 0247dfa3-aaca-4b82-c1b6-08d884f3507a
+X-MS-Exchange-CrossTenant-AuthSource: BN8PR12MB3108.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Nov 2020 21:06:23.8514
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: fa/XDrilaDojiP2aCi1YoWEEhSicgJJBnZ2vWvDPfKmL/kYbpG+3ILx2aVDInvwXfzIPt12+YMRaiGg2JZgcaQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN8PR12MB2979
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add kernel module listener that will load/validate and unload module BTF.
-Module BTFs gets ID generated for them, which makes it possible to iterate
-them with existing BTF iteration API. They are given their respective module's
-names, which will get reported through GET_OBJ_INFO API. They are also marked
-as in-kernel BTFs for tooling to distinguish them from user-provided BTFs.
+From: Yazen Ghannam <yazen.ghannam@amd.com>
 
-Also, similarly to vmlinux BTF, kernel module BTFs are exposed through
-sysfs as /sys/kernel/btf/<module-name>. This is convenient for user-space
-tools to inspect module BTF contents and dump their types with existing tools:
+AMD-based systems currently use a "NodeId" when referencing a
+software-visible hardware structure. This may be referred to as a "Die"
+in x86 documentation, "Node" in some AMD documentation, and "Package" in
+Linux documentation.
 
-[vmuser@archvm bpf]$ ls -la /sys/kernel/btf
-total 0
-drwxr-xr-x  2 root root       0 Nov  4 19:46 .
-drwxr-xr-x 13 root root       0 Nov  4 19:46 ..
+Recently a cpu_die_id value was added to struct cpuinfo_x86. This value
+can be used on AMD-based systems rather than using an AMD-specific value
+throughout the kernel.
 
-...
+This set is based on patches 1-3 from the following set.
+https://lkml.kernel.org/r/20200903200144.310991-1-Yazen.Ghannam@amd.com
 
--r--r--r--  1 root root     888 Nov  4 19:46 irqbypass
--r--r--r--  1 root root  100225 Nov  4 19:46 kvm
--r--r--r--  1 root root   35401 Nov  4 19:46 kvm_intel
--r--r--r--  1 root root     120 Nov  4 19:46 pcspkr
--r--r--r--  1 root root     399 Nov  4 19:46 serio_raw
--r--r--r--  1 root root 4094095 Nov  4 19:46 vmlinux
+Thanks,
+Yazen
 
-Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
----
- Documentation/ABI/testing/sysfs-kernel-btf |   8 +
- include/linux/bpf.h                        |   2 +
- include/linux/module.h                     |   4 +
- kernel/bpf/btf.c                           | 194 +++++++++++++++++++++
- kernel/bpf/sysfs_btf.c                     |   2 +-
- kernel/module.c                            |  32 ++++
- 6 files changed, 241 insertions(+), 1 deletion(-)
+Yazen Ghannam (4):
+  x86/CPU/AMD: Save AMD NodeId as cpu_die_id
+  x86/CPU/AMD: Remove amd_get_nb_id()
+  EDAC/mce_amd: Use struct cpuinfo_x86.cpu_die_id for AMD NodeId
+  x86/topology: Set cpu_die_id only if DIE_TYPE found
 
-diff --git a/Documentation/ABI/testing/sysfs-kernel-btf b/Documentation/ABI/testing/sysfs-kernel-btf
-index 2c9744b2cd59..fe96efdc9b6c 100644
---- a/Documentation/ABI/testing/sysfs-kernel-btf
-+++ b/Documentation/ABI/testing/sysfs-kernel-btf
-@@ -15,3 +15,11 @@ Description:
- 		information with description of all internal kernel types. See
- 		Documentation/bpf/btf.rst for detailed description of format
- 		itself.
-+
-+What:		/sys/kernel/btf/<module-name>
-+Date:		Nov 2020
-+KernelVersion:	5.11
-+Contact:	bpf@vger.kernel.org
-+Description:
-+		Read-only binary attribute exposing kernel module's BTF type
-+		information as an add-on to the kernel's BTF (/sys/kernel/btf/vmlinux).
-diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-index 73d5381a5d5c..581b2a2e78eb 100644
---- a/include/linux/bpf.h
-+++ b/include/linux/bpf.h
-@@ -36,9 +36,11 @@ struct seq_operations;
- struct bpf_iter_aux_info;
- struct bpf_local_storage;
- struct bpf_local_storage_map;
-+struct kobject;
- 
- extern struct idr btf_idr;
- extern spinlock_t btf_idr_lock;
-+extern struct kobject *btf_kobj;
- 
- typedef int (*bpf_iter_init_seq_priv_t)(void *private_data,
- 					struct bpf_iter_aux_info *aux);
-diff --git a/include/linux/module.h b/include/linux/module.h
-index a29187f7c360..20fce258ffba 100644
---- a/include/linux/module.h
-+++ b/include/linux/module.h
-@@ -475,6 +475,10 @@ struct module {
- 	unsigned int num_bpf_raw_events;
- 	struct bpf_raw_event_map *bpf_raw_events;
- #endif
-+#ifdef CONFIG_DEBUG_INFO_BTF_MODULES
-+	unsigned int btf_data_size;
-+	void *btf_data;
-+#endif
- #ifdef CONFIG_JUMP_LABEL
- 	struct jump_entry *jump_entries;
- 	unsigned int num_jump_entries;
-diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
-index 663c3fb4e614..ad2348e95ac7 100644
---- a/kernel/bpf/btf.c
-+++ b/kernel/bpf/btf.c
-@@ -23,6 +23,8 @@
- #include <linux/perf_event.h>
- #include <linux/bsearch.h>
- #include <linux/btf_ids.h>
-+#include <linux/kobject.h>
-+#include <linux/sysfs.h>
- #include <net/sock.h>
- 
- /* BTF (BPF Type Format) is the meta data format which describes
-@@ -4477,6 +4479,75 @@ struct btf *btf_parse_vmlinux(void)
- 	return ERR_PTR(err);
- }
- 
-+static struct btf *btf_parse_module(const char *module_name, const void *data, unsigned int data_size)
-+{
-+	struct btf_verifier_env *env = NULL;
-+	struct bpf_verifier_log *log;
-+	struct btf *btf = NULL, *base_btf;
-+	int err;
-+
-+	base_btf = bpf_get_btf_vmlinux();
-+	if (IS_ERR(base_btf))
-+		return base_btf;
-+	if (!base_btf)
-+		return ERR_PTR(-EINVAL);
-+
-+	env = kzalloc(sizeof(*env), GFP_KERNEL | __GFP_NOWARN);
-+	if (!env)
-+		return ERR_PTR(-ENOMEM);
-+
-+	log = &env->log;
-+	log->level = BPF_LOG_KERNEL;
-+
-+	btf = kzalloc(sizeof(*btf), GFP_KERNEL | __GFP_NOWARN);
-+	if (!btf) {
-+		err = -ENOMEM;
-+		goto errout;
-+	}
-+	env->btf = btf;
-+
-+	btf->base_btf = base_btf;
-+	btf->start_id = base_btf->nr_types;
-+	btf->start_str_off = base_btf->hdr.str_len;
-+	btf->kernel_btf = true;
-+	snprintf(btf->name, sizeof(btf->name), "%s", module_name);
-+
-+	btf->data = kvmalloc(data_size, GFP_KERNEL | __GFP_NOWARN);
-+	if (!btf->data) {
-+		err = -ENOMEM;
-+		goto errout;
-+	}
-+	memcpy(btf->data, data, data_size);
-+	btf->data_size = data_size;
-+
-+	err = btf_parse_hdr(env);
-+	if (err)
-+		goto errout;
-+
-+	btf->nohdr_data = btf->data + btf->hdr.hdr_len;
-+
-+	err = btf_parse_str_sec(env);
-+	if (err)
-+		goto errout;
-+
-+	err = btf_check_all_metas(env);
-+	if (err)
-+		goto errout;
-+
-+	btf_verifier_env_free(env);
-+	refcount_set(&btf->refcnt, 1);
-+	return btf;
-+
-+errout:
-+	btf_verifier_env_free(env);
-+	if (btf) {
-+		kvfree(btf->data);
-+		kvfree(btf->types);
-+		kfree(btf);
-+	}
-+	return ERR_PTR(err);
-+}
-+
- struct btf *bpf_prog_get_target_btf(const struct bpf_prog *prog)
- {
- 	struct bpf_prog *tgt_prog = prog->aux->dst_prog;
-@@ -5650,3 +5721,126 @@ bool btf_id_set_contains(const struct btf_id_set *set, u32 id)
- {
- 	return bsearch(&id, set->ids, set->cnt, sizeof(u32), btf_id_cmp_func) != NULL;
- }
-+
-+#ifdef CONFIG_DEBUG_INFO_BTF_MODULES
-+struct btf_module {
-+	struct list_head list;
-+	struct module *module;
-+	struct btf *btf;
-+	struct bin_attribute *sysfs_attr;
-+};
-+
-+static LIST_HEAD(btf_modules);
-+static DEFINE_MUTEX(btf_module_mutex);
-+
-+static ssize_t
-+btf_module_read(struct file *file, struct kobject *kobj,
-+		struct bin_attribute *bin_attr,
-+		char *buf, loff_t off, size_t len)
-+{
-+	const struct btf *btf = bin_attr->private;
-+
-+	memcpy(buf, btf->data + off, len);
-+	return len;
-+}
-+
-+static int btf_module_notify(struct notifier_block *nb, unsigned long op,
-+			     void *module)
-+{
-+	struct btf_module *btf_mod, *tmp;
-+	struct module *mod = module;
-+	struct btf *btf;
-+	int err = 0;
-+
-+	if (mod->btf_data_size == 0 ||
-+	    (op != MODULE_STATE_COMING && op != MODULE_STATE_GOING))
-+		goto out;
-+
-+	switch (op) {
-+	case MODULE_STATE_COMING:
-+		btf_mod = kzalloc(sizeof(*btf_mod), GFP_KERNEL);
-+		if (!btf_mod) {
-+			err = -ENOMEM;
-+			goto out;
-+		}
-+		btf = btf_parse_module(mod->name, mod->btf_data, mod->btf_data_size);
-+		if (IS_ERR(btf)) {
-+			pr_warn("failed to validate module [%s] BTF: %ld\n",
-+				mod->name, PTR_ERR(btf));
-+			kfree(btf_mod);
-+			err = PTR_ERR(btf);
-+			goto out;
-+		}
-+		err = btf_alloc_id(btf);
-+		if (err) {
-+			btf_free(btf);
-+			kfree(btf_mod);
-+			goto out;
-+		}
-+
-+		mutex_lock(&btf_module_mutex);
-+		btf_mod->module = module;
-+		btf_mod->btf = btf;
-+		list_add(&btf_mod->list, &btf_modules);
-+		mutex_unlock(&btf_module_mutex);
-+
-+		if (IS_ENABLED(CONFIG_SYSFS)) {
-+			struct bin_attribute *attr;
-+
-+			attr = kzalloc(sizeof(*attr), GFP_KERNEL);
-+			if (!attr)
-+				goto out;
-+
-+			sysfs_bin_attr_init(attr);
-+			attr->attr.name = btf->name;
-+			attr->attr.mode = 0444;
-+			attr->size = btf->data_size;
-+			attr->private = btf;
-+			attr->read = btf_module_read;
-+
-+			err = sysfs_create_bin_file(btf_kobj, attr);
-+			if (err) {
-+				pr_warn("failed to register module [%s] BTF in sysfs: %d\n",
-+					mod->name, err);
-+				kfree(attr);
-+				err = 0;
-+				goto out;
-+			}
-+
-+			btf_mod->sysfs_attr = attr;
-+		}
-+
-+		break;
-+	case MODULE_STATE_GOING:
-+		mutex_lock(&btf_module_mutex);
-+		list_for_each_entry_safe(btf_mod, tmp, &btf_modules, list) {
-+			if (btf_mod->module != module)
-+				continue;
-+
-+			list_del(&btf_mod->list);
-+			if (btf_mod->sysfs_attr)
-+				sysfs_remove_bin_file(btf_kobj, btf_mod->sysfs_attr);
-+			btf_put(btf_mod->btf);
-+			kfree(btf_mod->sysfs_attr);
-+			kfree(btf_mod);
-+			break;
-+		}
-+		mutex_unlock(&btf_module_mutex);
-+		break;
-+	}
-+out:
-+	return notifier_from_errno(err);
-+}
-+
-+static struct notifier_block btf_module_nb = {
-+	.notifier_call = btf_module_notify,
-+};
-+
-+static int __init btf_module_init(void)
-+{
-+	register_module_notifier(&btf_module_nb);
-+	return 0;
-+}
-+
-+fs_initcall(btf_module_init);
-+#endif /* CONFIG_DEBUG_INFO_BTF_MODULES */
-diff --git a/kernel/bpf/sysfs_btf.c b/kernel/bpf/sysfs_btf.c
-index 11b3380887fa..ef6911aee3bb 100644
---- a/kernel/bpf/sysfs_btf.c
-+++ b/kernel/bpf/sysfs_btf.c
-@@ -26,7 +26,7 @@ static struct bin_attribute bin_attr_btf_vmlinux __ro_after_init = {
- 	.read = btf_vmlinux_read,
- };
- 
--static struct kobject *btf_kobj;
-+struct kobject *btf_kobj;
- 
- static int __init btf_vmlinux_init(void)
- {
-diff --git a/kernel/module.c b/kernel/module.c
-index a4fa44a652a7..f2996b02ab2e 100644
---- a/kernel/module.c
-+++ b/kernel/module.c
-@@ -380,6 +380,35 @@ static void *section_objs(const struct load_info *info,
- 	return (void *)info->sechdrs[sec].sh_addr;
- }
- 
-+/* Find a module section: 0 means not found. Ignores SHF_ALLOC flag. */
-+static unsigned int find_any_sec(const struct load_info *info, const char *name)
-+{
-+	unsigned int i;
-+
-+	for (i = 1; i < info->hdr->e_shnum; i++) {
-+		Elf_Shdr *shdr = &info->sechdrs[i];
-+		if (strcmp(info->secstrings + shdr->sh_name, name) == 0)
-+			return i;
-+	}
-+	return 0;
-+}
-+
-+/*
-+ * Find a module section, or NULL. Fill in number of "objects" in section.
-+ * Ignores SHF_ALLOC flag.
-+ */
-+static __maybe_unused void *any_section_objs(const struct load_info *info,
-+					     const char *name,
-+					     size_t object_size,
-+					     unsigned int *num)
-+{
-+	unsigned int sec = find_any_sec(info, name);
-+
-+	/* Section 0 has sh_addr 0 and sh_size 0. */
-+	*num = info->sechdrs[sec].sh_size / object_size;
-+	return (void *)info->sechdrs[sec].sh_addr;
-+}
-+
- /* Provided by the linker */
- extern const struct kernel_symbol __start___ksymtab[];
- extern const struct kernel_symbol __stop___ksymtab[];
-@@ -3250,6 +3279,9 @@ static int find_module_sections(struct module *mod, struct load_info *info)
- 					   sizeof(*mod->bpf_raw_events),
- 					   &mod->num_bpf_raw_events);
- #endif
-+#ifdef CONFIG_DEBUG_INFO_BTF_MODULES
-+	mod->btf_data = any_section_objs(info, ".BTF", 1, &mod->btf_data_size);
-+#endif
- #ifdef CONFIG_JUMP_LABEL
- 	mod->jump_entries = section_objs(info, "__jump_table",
- 					sizeof(*mod->jump_entries),
+ Documentation/x86/topology.rst   |  9 +++++++++
+ arch/x86/events/amd/core.c       |  2 +-
+ arch/x86/include/asm/cacheinfo.h |  4 ++--
+ arch/x86/include/asm/processor.h |  2 --
+ arch/x86/kernel/amd_nb.c         |  4 ++--
+ arch/x86/kernel/cpu/amd.c        | 17 +++++------------
+ arch/x86/kernel/cpu/cacheinfo.c  |  8 ++++----
+ arch/x86/kernel/cpu/hygon.c      | 11 +++++------
+ arch/x86/kernel/cpu/mce/amd.c    |  4 ++--
+ arch/x86/kernel/cpu/mce/inject.c |  4 ++--
+ arch/x86/kernel/cpu/topology.c   | 10 ++++++++--
+ drivers/edac/amd64_edac.c        |  4 ++--
+ drivers/edac/mce_amd.c           |  4 ++--
+ 13 files changed, 44 insertions(+), 39 deletions(-)
+
 -- 
-2.24.1
+2.25.1
 
