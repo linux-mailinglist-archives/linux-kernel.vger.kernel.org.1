@@ -2,122 +2,248 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D01912AB84F
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 13:34:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 100E32AB859
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 13:36:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729521AbgKIMeX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 07:34:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45252 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729243AbgKIMeW (ORCPT
+        id S1729624AbgKIMgH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 07:36:07 -0500
+Received: from coyote.holtmann.net ([212.227.132.17]:60159 "EHLO
+        mail.holtmann.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726410AbgKIMgH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 07:34:22 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB2EEC0613CF;
-        Mon,  9 Nov 2020 04:34:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=DwDvxv7WLb7DK+KemO72iTYuMK2pG/etdrz51DTPEF0=; b=QxVbTOuA/n7a37SnWclYr3N0Ug
-        yXUd1batHmKaLkwRSK2tLisODgZKHzM2nm0XtE+MMRZ3k4/tRCvQ6q2i7z9Z3WHNoVGqphsheYol/
-        hkITLN65MF8qW1cpXrbiEsjr4OJCe2eXbYkGc1UdrllsFeKi39MPaKOgpTYlV/XkC6RCy8PnEMokn
-        0/dgQN7/wk5REx8ofrLbrC7zwUpAZBnjWVJ/Y809YAjX/IAoB+fo9SsNEl5z95r3Cn+50+ZWkYNpw
-        cIrDT0h3AkDciyF23fHAF8azXMKHCGf9uhuPRfriYR7J604lKJ73pdyFrI/t5Ml2SdXboMafR7y3u
-        HxOzLJVg==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kc6NF-0003hq-Ik; Mon, 09 Nov 2020 12:34:17 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 46080301324;
-        Mon,  9 Nov 2020 13:34:16 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 2AF76203E2240; Mon,  9 Nov 2020 13:34:16 +0100 (CET)
-Date:   Mon, 9 Nov 2020 13:34:16 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     Daniel Lezcano <daniel.lezcano@linaro.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Lina Iyer <ilina@codeaurora.org>,
-        Frederic Weisbecker <frederic@kernel.org>
-Subject: Re: [PATCH 4/5] cpuidle: governor: Export the needed symbols
-Message-ID: <20201109123416.GO2594@hirez.programming.kicks-ass.net>
-References: <20201015144431.9979-1-daniel.lezcano@linaro.org>
- <20201015144431.9979-4-daniel.lezcano@linaro.org>
- <CAJZ5v0i-1eZ+j_6C83qs1-q1FSw0Yx96yQyy0KQBvDxX6KF=3w@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAJZ5v0i-1eZ+j_6C83qs1-q1FSw0Yx96yQyy0KQBvDxX6KF=3w@mail.gmail.com>
+        Mon, 9 Nov 2020 07:36:07 -0500
+Received: from marcel-macbook.fritz.box (p4fefcf0f.dip0.t-ipconnect.de [79.239.207.15])
+        by mail.holtmann.org (Postfix) with ESMTPSA id 86D12CECC5;
+        Mon,  9 Nov 2020 13:43:13 +0100 (CET)
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.120.23.2.4\))
+Subject: Re: [PATCH v3] Bluetooth: btusb: Add the more support IDs for Realtek
+ RTL8822CE
+From:   Marcel Holtmann <marcel@holtmann.org>
+In-Reply-To: <20201105105448.16025-1-max.chou@realtek.com>
+Date:   Mon, 9 Nov 2020 13:36:04 +0100
+Cc:     Johan Hedberg <johan.hedberg@gmail.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Bluez mailing list <linux-bluetooth@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org,
+        Alex Lu <alex_lu@realsil.com.cn>, hildawu@realtek.com,
+        kidman@realtek.com, abhishekpandit@chromium.org
+Content-Transfer-Encoding: 7bit
+Message-Id: <7DA2559D-C7B3-492B-882D-08AAF9298758@holtmann.org>
+References: <20201105105448.16025-1-max.chou@realtek.com>
+To:     Max Chou <max.chou@realtek.com>
+X-Mailer: Apple Mail (2.3608.120.23.2.4)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 05, 2020 at 03:04:10PM +0100, Rafael J. Wysocki wrote:
-> > diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-> > index 2d95dc3f4644..ceba61bb364d 100644
-> > --- a/kernel/sched/core.c
-> > +++ b/kernel/sched/core.c
-> > @@ -3838,6 +3838,7 @@ unsigned long nr_iowait_cpu(int cpu)
-> >  {
-> >         return atomic_read(&cpu_rq(cpu)->nr_iowait);
-> >  }
-> > +EXPORT_SYMBOL_GPL(nr_iowait_cpu);
+Hi Max,
+
+> Add the more IDs to usb_device_id table for Realtek RTL8822CE and
+> also support the wideband speech capability for all RTL8822CE devices.
 > 
-> Hmm.  See below.
-
-Did anyone read the comment above this function? It's garbage, it should
-be deleted, not made available to a wider audience.
-
-> >  /*
-> >   * IO-wait accounting, and how its mostly bollocks (on SMP).
-> > diff --git a/kernel/time/tick-sched.c b/kernel/time/tick-sched.c
-> > index f0199a4ba1ad..537716124d46 100644
-> > --- a/kernel/time/tick-sched.c
-> > +++ b/kernel/time/tick-sched.c
-> > @@ -500,12 +500,19 @@ static int __init setup_tick_nohz(char *str)
-> >
-> >  __setup("nohz=", setup_tick_nohz);
-> >
-> > +bool tick_nohz_is_enabled(void)
-> > +{
-> > +       return tick_nohz_enabled;
-> > +}
-> > +EXPORT_SYMBOL_GPL(tick_nohz_is_enabled);
-> > +
-> >  bool tick_nohz_tick_stopped(void)
-> >  {
-> >         struct tick_sched *ts = this_cpu_ptr(&tick_cpu_sched);
-> >
-> >         return ts->tick_stopped;
-> >  }
-> > +EXPORT_SYMBOL_GPL(tick_nohz_tick_stopped);
-> >
-> >  bool tick_nohz_tick_stopped_cpu(int cpu)
-> >  {
-> > @@ -1066,6 +1073,7 @@ bool tick_nohz_idle_got_tick(void)
-> >         }
-> >         return false;
-> >  }
-> > +EXPORT_SYMBOL_GPL(tick_nohz_idle_got_tick);
-> >
-> >  /**
-> >   * tick_nohz_get_next_hrtimer - return the next expiration time for the hrtimer
-> > @@ -1117,6 +1125,7 @@ ktime_t tick_nohz_get_sleep_length(ktime_t *delta_next)
-> >
-> >         return ktime_sub(next_event, now);
-> >  }
-> > +EXPORT_SYMBOL_GPL(tick_nohz_get_sleep_length);
+> -Device(04c5:161f) from /sys/kernel/debug/usb/devices
+> T:  Bus=02 Lev=02 Prnt=02 Port=05 Cnt=01 Dev#=  3 Spd=12   MxCh= 0
+> D:  Ver= 1.00 Cls=e0(wlcon) Sub=01 Prot=01 MxPS=64 #Cfgs=  1
+> P:  Vendor=04c5 ProdID=161f Rev= 0.00
+> S:  Manufacturer=Realtek
+> S:  Product=Bluetooth Radio
+> S:  SerialNumber=00e04c000001
+> C:* #Ifs= 2 Cfg#= 1 Atr=a0 MxPwr=500mA
+> I:* If#= 0 Alt= 0 #EPs= 3 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
+> E:  Ad=81(I) Atr=03(Int.) MxPS=  16 Ivl=1ms
+> E:  Ad=02(O) Atr=02(Bulk) MxPS=  64 Ivl=0ms
+> E:  Ad=82(I) Atr=02(Bulk) MxPS=  64 Ivl=0ms
+> I:* If#= 1 Alt= 0 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
+> E:  Ad=03(O) Atr=01(Isoc) MxPS=   0 Ivl=1ms
+> E:  Ad=83(I) Atr=01(Isoc) MxPS=   0 Ivl=1ms
+> I:  If#= 1 Alt= 1 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
+> E:  Ad=03(O) Atr=01(Isoc) MxPS=   9 Ivl=1ms
+> E:  Ad=83(I) Atr=01(Isoc) MxPS=   9 Ivl=1ms
+> I:  If#= 1 Alt= 2 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
+> E:  Ad=03(O) Atr=01(Isoc) MxPS=  17 Ivl=1ms
+> E:  Ad=83(I) Atr=01(Isoc) MxPS=  17 Ivl=1ms
+> I:  If#= 1 Alt= 3 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
+> E:  Ad=03(O) Atr=01(Isoc) MxPS=  25 Ivl=1ms
+> E:  Ad=83(I) Atr=01(Isoc) MxPS=  25 Ivl=1ms
+> I:  If#= 1 Alt= 4 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
+> E:  Ad=03(O) Atr=01(Isoc) MxPS=  33 Ivl=1ms
+> E:  Ad=83(I) Atr=01(Isoc) MxPS=  33 Ivl=1ms
+> I:  If#= 1 Alt= 5 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
+> E:  Ad=03(O) Atr=01(Isoc) MxPS=  49 Ivl=1ms
+> E:  Ad=83(I) Atr=01(Isoc) MxPS=  49 Ivl=1ms
 > 
-> Peter please correct me if I'm mistaken, but IMV the above are core
-> kernel internals and they should not be accessible to random modular
-> stuff.
+> -Device(0b05:18ef) from /sys/kernel/debug/usb/devices
+> T:  Bus=02 Lev=02 Prnt=02 Port=05 Cnt=01 Dev#=  4 Spd=12   MxCh= 0
+> D:  Ver= 1.00 Cls=e0(wlcon) Sub=01 Prot=01 MxPS=64 #Cfgs=  1
+> P:  Vendor=0b05 ProdID=18ef Rev= 0.00
+> S:  Manufacturer=Realtek
+> S:  Product=Bluetooth Radio
+> S:  SerialNumber=00e04c000001
+> C:* #Ifs= 2 Cfg#= 1 Atr=a0 MxPwr=500mA
+> I:* If#= 0 Alt= 0 #EPs= 3 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
+> E:  Ad=81(I) Atr=03(Int.) MxPS=  16 Ivl=1ms
+> E:  Ad=02(O) Atr=02(Bulk) MxPS=  64 Ivl=0ms
+> E:  Ad=82(I) Atr=02(Bulk) MxPS=  64 Ivl=0ms
+> I:* If#= 1 Alt= 0 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
+> E:  Ad=03(O) Atr=01(Isoc) MxPS=   0 Ivl=1ms
+> E:  Ad=83(I) Atr=01(Isoc) MxPS=   0 Ivl=1ms
+> I:  If#= 1 Alt= 1 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
+> E:  Ad=03(O) Atr=01(Isoc) MxPS=   9 Ivl=1ms
+> E:  Ad=83(I) Atr=01(Isoc) MxPS=   9 Ivl=1ms
+> I:  If#= 1 Alt= 2 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
+> E:  Ad=03(O) Atr=01(Isoc) MxPS=  17 Ivl=1ms
+> E:  Ad=83(I) Atr=01(Isoc) MxPS=  17 Ivl=1ms
+> I:  If#= 1 Alt= 3 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
+> E:  Ad=03(O) Atr=01(Isoc) MxPS=  25 Ivl=1ms
+> E:  Ad=83(I) Atr=01(Isoc) MxPS=  25 Ivl=1ms
+> I:  If#= 1 Alt= 4 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
+> E:  Ad=03(O) Atr=01(Isoc) MxPS=  33 Ivl=1ms
+> E:  Ad=83(I) Atr=01(Isoc) MxPS=  33 Ivl=1ms
+> I:  If#= 1 Alt= 5 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
+> E:  Ad=03(O) Atr=01(Isoc) MxPS=  49 Ivl=1ms
+> E:  Ad=83(I) Atr=01(Isoc) MxPS=  49 Ivl=1ms
+> 
+> -Device(13d3:3549) from /sys/kernel/debug/usb/devices
+> T:  Bus=02 Lev=02 Prnt=02 Port=05 Cnt=01 Dev#=  3 Spd=12   MxCh= 0
+> D:  Ver= 1.00 Cls=e0(wlcon) Sub=01 Prot=01 MxPS=64 #Cfgs=  1
+> P:  Vendor=13d3 ProdID=3549 Rev= 0.00
+> S:  Manufacturer=Realtek
+> S:  Product=Bluetooth Radio
+> S:  SerialNumber=00e04c000001
+> C:* #Ifs= 2 Cfg#= 1 Atr=a0 MxPwr=500mA
+> I:* If#= 0 Alt= 0 #EPs= 3 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
+> E:  Ad=81(I) Atr=03(Int.) MxPS=  16 Ivl=1ms
+> E:  Ad=02(O) Atr=02(Bulk) MxPS=  64 Ivl=0ms
+> E:  Ad=82(I) Atr=02(Bulk) MxPS=  64 Ivl=0ms
+> I:* If#= 1 Alt= 0 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
+> E:  Ad=03(O) Atr=01(Isoc) MxPS=   0 Ivl=1ms
+> E:  Ad=83(I) Atr=01(Isoc) MxPS=   0 Ivl=1ms
+> I:  If#= 1 Alt= 1 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
+> E:  Ad=03(O) Atr=01(Isoc) MxPS=   9 Ivl=1ms
+> E:  Ad=83(I) Atr=01(Isoc) MxPS=   9 Ivl=1ms
+> I:  If#= 1 Alt= 2 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
+> E:  Ad=03(O) Atr=01(Isoc) MxPS=  17 Ivl=1ms
+> E:  Ad=83(I) Atr=01(Isoc) MxPS=  17 Ivl=1ms
+> I:  If#= 1 Alt= 3 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
+> E:  Ad=03(O) Atr=01(Isoc) MxPS=  25 Ivl=1ms
+> E:  Ad=83(I) Atr=01(Isoc) MxPS=  25 Ivl=1ms
+> I:  If#= 1 Alt= 4 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
+> E:  Ad=03(O) Atr=01(Isoc) MxPS=  33 Ivl=1ms
+> E:  Ad=83(I) Atr=01(Isoc) MxPS=  33 Ivl=1ms
+> I:  If#= 1 Alt= 5 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
+> E:  Ad=03(O) Atr=01(Isoc) MxPS=  49 Ivl=1ms
+> E:  Ad=83(I) Atr=01(Isoc) MxPS=  49 Ivl=1ms
+> 
+> -Device(13d3:3553) from /sys/kernel/debug/usb/devices
+> T:  Bus=02 Lev=02 Prnt=02 Port=05 Cnt=01 Dev#=  3 Spd=12   MxCh= 0
+> D:  Ver= 1.00 Cls=e0(wlcon) Sub=01 Prot=01 MxPS=64 #Cfgs=  1
+> P:  Vendor=13d3 ProdID=3553 Rev= 0.00
+> S:  Manufacturer=Realtek
+> S:  Product=Bluetooth Radio
+> S:  SerialNumber=00e04c000001
+> C:* #Ifs= 2 Cfg#= 1 Atr=a0 MxPwr=500mA
+> I:* If#= 0 Alt= 0 #EPs= 3 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
+> E:  Ad=81(I) Atr=03(Int.) MxPS=  16 Ivl=1ms
+> E:  Ad=02(O) Atr=02(Bulk) MxPS=  64 Ivl=0ms
+> E:  Ad=82(I) Atr=02(Bulk) MxPS=  64 Ivl=0ms
+> I:* If#= 1 Alt= 0 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
+> E:  Ad=03(O) Atr=01(Isoc) MxPS=   0 Ivl=1ms
+> E:  Ad=83(I) Atr=01(Isoc) MxPS=   0 Ivl=1ms
+> I:  If#= 1 Alt= 1 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
+> E:  Ad=03(O) Atr=01(Isoc) MxPS=   9 Ivl=1ms
+> E:  Ad=83(I) Atr=01(Isoc) MxPS=   9 Ivl=1ms
+> I:  If#= 1 Alt= 2 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
+> E:  Ad=03(O) Atr=01(Isoc) MxPS=  17 Ivl=1ms
+> E:  Ad=83(I) Atr=01(Isoc) MxPS=  17 Ivl=1ms
+> I:  If#= 1 Alt= 3 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
+> E:  Ad=03(O) Atr=01(Isoc) MxPS=  25 Ivl=1ms
+> E:  Ad=83(I) Atr=01(Isoc) MxPS=  25 Ivl=1ms
+> I:  If#= 1 Alt= 4 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
+> E:  Ad=03(O) Atr=01(Isoc) MxPS=  33 Ivl=1ms
+> E:  Ad=83(I) Atr=01(Isoc) MxPS=  33 Ivl=1ms
+> I:  If#= 1 Alt= 5 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
+> E:  Ad=03(O) Atr=01(Isoc) MxPS=  49 Ivl=1ms
+> E:  Ad=83(I) Atr=01(Isoc) MxPS=  49 Ivl=1ms
+> 
+> -Device(13d3:3555) from /sys/kernel/debug/usb/devices
+> T:  Bus=02 Lev=02 Prnt=02 Port=05 Cnt=01 Dev#=  3 Spd=12   MxCh= 0
+> D:  Ver= 1.00 Cls=e0(wlcon) Sub=01 Prot=01 MxPS=64 #Cfgs=  1
+> P:  Vendor=13d3 ProdID=3555 Rev= 0.00
+> S:  Manufacturer=Realtek
+> S:  Product=Bluetooth Radio
+> S:  SerialNumber=00e04c000001
+> C:* #Ifs= 2 Cfg#= 1 Atr=a0 MxPwr=500mA
+> I:* If#= 0 Alt= 0 #EPs= 3 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
+> E:  Ad=81(I) Atr=03(Int.) MxPS=  16 Ivl=1ms
+> E:  Ad=02(O) Atr=02(Bulk) MxPS=  64 Ivl=0ms
+> E:  Ad=82(I) Atr=02(Bulk) MxPS=  64 Ivl=0ms
+> I:* If#= 1 Alt= 0 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
+> E:  Ad=03(O) Atr=01(Isoc) MxPS=   0 Ivl=1ms
+> E:  Ad=83(I) Atr=01(Isoc) MxPS=   0 Ivl=1ms
+> I:  If#= 1 Alt= 1 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
+> E:  Ad=03(O) Atr=01(Isoc) MxPS=   9 Ivl=1ms
+> E:  Ad=83(I) Atr=01(Isoc) MxPS=   9 Ivl=1ms
+> I:  If#= 1 Alt= 2 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
+> E:  Ad=03(O) Atr=01(Isoc) MxPS=  17 Ivl=1ms
+> E:  Ad=83(I) Atr=01(Isoc) MxPS=  17 Ivl=1ms
+> I:  If#= 1 Alt= 3 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
+> E:  Ad=03(O) Atr=01(Isoc) MxPS=  25 Ivl=1ms
+> E:  Ad=83(I) Atr=01(Isoc) MxPS=  25 Ivl=1ms
+> I:  If#= 1 Alt= 4 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
+> E:  Ad=03(O) Atr=01(Isoc) MxPS=  33 Ivl=1ms
+> E:  Ad=83(I) Atr=01(Isoc) MxPS=  33 Ivl=1ms
+> I:  If#= 1 Alt= 5 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
+> E:  Ad=03(O) Atr=01(Isoc) MxPS=  49 Ivl=1ms
+> E:  Ad=83(I) Atr=01(Isoc) MxPS=  49 Ivl=1ms
+> 
+> -Device(2ff8:3051) from /sys/kernel/debug/usb/devices
+> T:  Bus=02 Lev=02 Prnt=02 Port=05 Cnt=01 Dev#=  3 Spd=12   MxCh= 0
+> D:  Ver= 1.00 Cls=e0(wlcon) Sub=01 Prot=01 MxPS=64 #Cfgs=  1
+> P:  Vendor=2ff8 ProdID=3051 Rev= 0.00
+> S:  Manufacturer=Realtek
+> S:  Product=Bluetooth Radio
+> S:  SerialNumber=00e04c000001
+> C:* #Ifs= 2 Cfg#= 1 Atr=a0 MxPwr=500mA
+> I:* If#= 0 Alt= 0 #EPs= 3 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
+> E:  Ad=81(I) Atr=03(Int.) MxPS=  16 Ivl=1ms
+> E:  Ad=02(O) Atr=02(Bulk) MxPS=  64 Ivl=0ms
+> E:  Ad=82(I) Atr=02(Bulk) MxPS=  64 Ivl=0ms
+> I:* If#= 1 Alt= 0 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
+> E:  Ad=03(O) Atr=01(Isoc) MxPS=   0 Ivl=1ms
+> E:  Ad=83(I) Atr=01(Isoc) MxPS=   0 Ivl=1ms
+> I:  If#= 1 Alt= 1 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
+> E:  Ad=03(O) Atr=01(Isoc) MxPS=   9 Ivl=1ms
+> E:  Ad=83(I) Atr=01(Isoc) MxPS=   9 Ivl=1ms
+> I:  If#= 1 Alt= 2 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
+> E:  Ad=03(O) Atr=01(Isoc) MxPS=  17 Ivl=1ms
+> E:  Ad=83(I) Atr=01(Isoc) MxPS=  17 Ivl=1ms
+> I:  If#= 1 Alt= 3 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
+> E:  Ad=03(O) Atr=01(Isoc) MxPS=  25 Ivl=1ms
+> E:  Ad=83(I) Atr=01(Isoc) MxPS=  25 Ivl=1ms
+> I:  If#= 1 Alt= 4 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
+> E:  Ad=03(O) Atr=01(Isoc) MxPS=  33 Ivl=1ms
+> E:  Ad=83(I) Atr=01(Isoc) MxPS=  33 Ivl=1ms
+> I:  If#= 1 Alt= 5 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
+> E:  Ad=03(O) Atr=01(Isoc) MxPS=  49 Ivl=1ms
+> E:  Ad=83(I) Atr=01(Isoc) MxPS=  49 Ivl=1ms
+> 
+> Signed-off-by: Max Chou <max.chou@realtek.com>
+> ---
+> Changes in v2:
+> - dump "/sys/kernel/debug/usb/devices" for the additional devices
+> Changea in v3:
+> - edit the title to fix "T1 Title exceeds max length (75>72)"
+> ---
+> drivers/bluetooth/btusb.c | 18 ++++++++++++++++--
+> 1 file changed, 16 insertions(+), 2 deletions(-)
 
-Yeah,... making this available seems unfortunate. Also, I don't really
-see the point, why do we want the idle governors as modules? On the
-cpufreq side we're trying to move away from modules and multiple
-governors.
+patch has been applied to bluetooth-next tree.
+
+Regards
+
+Marcel
+
