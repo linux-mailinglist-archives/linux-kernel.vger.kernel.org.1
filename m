@@ -2,159 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BB772AC97B
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 00:43:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BDF02AC980
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 00:45:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730147AbgKIXnd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 18:43:33 -0500
-Received: from mga14.intel.com ([192.55.52.115]:47328 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729243AbgKIXnb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 18:43:31 -0500
-IronPort-SDR: 9JCRvPJ67A5TEh9WP/q6T3aWeDVdrpy4MewnYrpPUJIcE3RAQeoRbGzB/CzBDb2gDbbT/m1iqf
- zjgSBszsREtA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9800"; a="169103917"
-X-IronPort-AV: E=Sophos;i="5.77,464,1596524400"; 
-   d="scan'208";a="169103917"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Nov 2020 15:43:30 -0800
-IronPort-SDR: YNl9qV4engoW9nJC82nKfiJfg9PwACuSbVRsFGxFxyiQZqZr7Dpp60xWGOTRv9lWcicKU49gi8
- mYg1N2NzbV3Q==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,464,1596524400"; 
-   d="scan'208";a="322626790"
-Received: from lkp-server01.sh.intel.com (HELO d0be80f1a028) ([10.239.97.150])
-  by orsmga003.jf.intel.com with ESMTP; 09 Nov 2020 15:43:28 -0800
-Received: from kbuild by d0be80f1a028 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1kcGoq-0000VY-1g; Mon, 09 Nov 2020 23:43:28 +0000
-Date:   Tue, 10 Nov 2020 07:43:03 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:master] BUILD SUCCESS
- a2445441a132ee5b3e61e6a26c27a3491f4296ef
-Message-ID: <5fa9d407.ksBcW7cEmWeItwhI%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S1730549AbgKIXo6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 18:44:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36840 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729451AbgKIXo5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 18:44:57 -0500
+Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D47E0C0613D3
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Nov 2020 15:44:55 -0800 (PST)
+Received: by mail-ej1-x642.google.com with SMTP id s25so14846161ejy.6
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Nov 2020 15:44:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=NItVTPQJT2kAjNu1ETSkMiz4X0SK4Dvc9o6+cAnG4FU=;
+        b=f2s5ISiX2NTkP8UTQgo9j5/W5MEy4drOUs8Fd0oKAnhsq/V5WizwKpnN4TZmjqIcdI
+         3qMMuMlorh0hQM+hiq6WnLpx2sswTLf5TxeiDwiCLgHlEnBYcjU4wdnsDwmWiP27aEth
+         qLr0kDT9YNqUiPqwBoNwFwhDDrTO6rvDfEccb9AQbCJZuFwF6V3qle1Fv+tQkcVbgMBK
+         OaSfj/3xhixptSyiXdLPKgI75DIZqSJwrYbnsr+n/laSMPgHlUksxHs9dWs18FMoo7iB
+         BcVkz2g5FFTSqAXzkCnXMdB5CfU5ZEku9zR58FESzq2n4cZGSnuV5ANwJp+49vpU/t3p
+         hF2A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=NItVTPQJT2kAjNu1ETSkMiz4X0SK4Dvc9o6+cAnG4FU=;
+        b=H8B4/ACp+8tD7WXJ06vFHhHewq75hOKIKJKaPENvk9JHcp9+Ob5plWk7017CaoV/Py
+         BNeFkaXX3fnwsQwGuQIKGX/OJEDdgkugDzwJXFlcWDLrA89MTZ57HfZ/9vwnBV5rY+kW
+         2jUU9ldQ+OIr/55CfY5WfdNeW658/GQsOkzQC7QJln4Q2AQ2VXw2QuKtF8p6kJRS+m4Z
+         Ea+cknc7thVdzJn34Vx7g2VVaAatXw3LFUS5CAedjwbJabVo57An/CjFPumb+eRj++K6
+         /NOpc2lWuwwyRc1hNa4Y5FWgctRhdKmOwroKMGDt9efTnGIjPJ7Xy9isC/n3sI1Tw4vM
+         SJqw==
+X-Gm-Message-State: AOAM532DxvgtBaaC1egW6u4NIuauN7lhHnO2qiuh2D0FHUxJoFus1qgV
+        S9BOjkkb0lXng+FxK6XLF70eUQ==
+X-Google-Smtp-Source: ABdhPJyCQO54uVQ40RKc89lI+n8d8Bsjz2fCIwfOUcA/RQoxqdNLI/zQAkPbYYQQVMkJT+ruB/RqZw==
+X-Received: by 2002:a17:906:8319:: with SMTP id j25mr18340054ejx.68.1604965494577;
+        Mon, 09 Nov 2020 15:44:54 -0800 (PST)
+Received: from [192.168.0.4] (hst-221-20.medicom.bg. [84.238.221.20])
+        by smtp.googlemail.com with ESMTPSA id f7sm9461242ejz.23.2020.11.09.15.44.53
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 09 Nov 2020 15:44:53 -0800 (PST)
+Subject: Re: [PATCH 0/3] HDR10 static metadata
+To:     Nicolas Dufresne <nicolas.dufresne@collabora.com>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org
+Cc:     Ezequiel Garcia <ezequiel@collabora.com>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>
+References: <20201109173153.23720-1-stanimir.varbanov@linaro.org>
+ <2f907743dbb77f4c2f871675070065dd372514be.camel@collabora.com>
+From:   Stanimir Varbanov <stanimir.varbanov@linaro.org>
+Message-ID: <e0f8548b-3502-3baf-61d0-51ff2d15a1d4@linaro.org>
+Date:   Tue, 10 Nov 2020 01:44:52 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <2f907743dbb77f4c2f871675070065dd372514be.camel@collabora.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git  master
-branch HEAD: a2445441a132ee5b3e61e6a26c27a3491f4296ef  Merge branch 'linus'
 
-elapsed time: 1004m
 
-configs tested: 95
-configs skipped: 2
+On 11/9/20 9:53 PM, Nicolas Dufresne wrote:
+> Le lundi 09 novembre 2020 à 19:31 +0200, Stanimir Varbanov a écrit :
+>> Hello,
+>>
+>> This patchset adds two HDR10 HEVC v4l2 controls for Content Light Level
+>> and Mastering display colour volume plus implenmentation in Venus encoder
+>> driver.
+>>
+>> Comments are welcome!
+> 
+> It is not a formal review, but I did walked through the new API and
+> everything looks fine to me. One question though, are you aware that
+> the H.264/AVC equivalent is identical ? What is you plan for that ?
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+Thanks for the question, I haven't thought for avc, yet.
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-arc                                 defconfig
-mips                      fuloong2e_defconfig
-sh                         microdev_defconfig
-arm                            mmp2_defconfig
-arm                          collie_defconfig
-sh                        sh7757lcr_defconfig
-m68k                        m5307c3_defconfig
-arm                             rpc_defconfig
-m68k                        m5272c3_defconfig
-c6x                              alldefconfig
-powerpc                      pmac32_defconfig
-arm                          imote2_defconfig
-arm                         shannon_defconfig
-powerpc                    sam440ep_defconfig
-nds32                               defconfig
-arm                           corgi_defconfig
-arm                          gemini_defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-c6x                              allyesconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-x86_64               randconfig-a004-20201109
-x86_64               randconfig-a002-20201109
-x86_64               randconfig-a003-20201109
-x86_64               randconfig-a005-20201109
-x86_64               randconfig-a006-20201109
-x86_64               randconfig-a001-20201109
-i386                 randconfig-a004-20201109
-i386                 randconfig-a006-20201109
-i386                 randconfig-a005-20201109
-i386                 randconfig-a001-20201109
-i386                 randconfig-a003-20201109
-i386                 randconfig-a002-20201109
-i386                 randconfig-a014-20201109
-i386                 randconfig-a015-20201109
-i386                 randconfig-a013-20201109
-i386                 randconfig-a016-20201109
-i386                 randconfig-a011-20201109
-i386                 randconfig-a012-20201109
-x86_64               randconfig-a003-20201110
-x86_64               randconfig-a005-20201110
-x86_64               randconfig-a004-20201110
-x86_64               randconfig-a002-20201110
-x86_64               randconfig-a006-20201110
-x86_64               randconfig-a001-20201110
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-x86_64                                   rhel
-x86_64                           allyesconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                                  kexec
+I guess we have few options:
 
-clang tested configs:
-x86_64               randconfig-a012-20201109
-x86_64               randconfig-a015-20201109
-x86_64               randconfig-a013-20201109
-x86_64               randconfig-a011-20201109
-x86_64               randconfig-a014-20201109
-x86_64               randconfig-a016-20201109
+1. introduce hdr10-ctrls.h, common control IDs
+2. duplicate structures and control IDs in hevc/h264-ctrls.h
+3. common structures and separate control IDs for avc and hevc
+4. another option?
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+I'd prefer option 1. We could extend later option 1 with hdr10+.
+
+> 
+>>
+>> regards,
+>> Stan
+>>
+>> Stanimir Varbanov (3):
+>>   v4l: Add HDR10 HEVC static metadata controls
+>>   docs: media: Document CLL and Mastering display
+>>   venus: venc: Add support for CLL and Mastering display controls
+>>
+>>  .../media/v4l/ext-ctrls-codec.rst             | 61 +++++++++++++++++++
+>>  drivers/media/platform/qcom/venus/core.h      |  3 +
+>>  drivers/media/platform/qcom/venus/hfi_cmds.c  |  8 +++
+>>  .../media/platform/qcom/venus/hfi_helper.h    | 20 ++++++
+>>  drivers/media/platform/qcom/venus/venc.c      | 29 +++++++++
+>>  .../media/platform/qcom/venus/venc_ctrls.c    | 16 ++++-
+>>  drivers/media/v4l2-core/v4l2-ctrls.c          | 61 +++++++++++++++++++
+>>  include/media/hevc-ctrls.h                    | 41 +++++++++++++
+>>  include/media/v4l2-ctrls.h                    |  2 +
+>>  9 files changed, 240 insertions(+), 1 deletion(-)
+>>
+> 
+
+-- 
+regards,
+Stan
