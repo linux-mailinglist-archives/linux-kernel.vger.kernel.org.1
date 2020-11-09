@@ -2,156 +2,231 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03DC72AAE8A
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 01:30:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E02272AAE91
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 01:47:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728924AbgKIAad (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 8 Nov 2020 19:30:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45640 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727929AbgKIAac (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 8 Nov 2020 19:30:32 -0500
-Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0654AC0613CF;
-        Sun,  8 Nov 2020 16:30:31 -0800 (PST)
-Received: by mail-ed1-x542.google.com with SMTP id b9so6918708edu.10;
-        Sun, 08 Nov 2020 16:30:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=JurcRPrcIia1xYhtooKFGvN+DdkV7N/wIh6mdo97K14=;
-        b=IzdyZ0+fc0iUE8Se9WFcRy0WUdixo3Pc9uCXryaWjBWkGFlvXCv2Xbhfb1Ql7QuHZJ
-         hZDB179jrKUUwJ+rb5ragsDa7WK2EfvR/M++M2eEVvgV0Xt7QaS1MH8k5t25tjcscM+Z
-         olJbe18AevzZqQreK7Mp4sie2Yqda/HnE2gBgrDL3edMEuD+zrwk/rff4s4slOiC9lyD
-         Se8MhzS89KXk2MiNuUhxzMzChF/mMgeil29G5zuEu4zZ1SXoLAk0Qj8sEHbLqDmB3hpV
-         TpKcmsculWjnzXQhlEQ3uIdWhDBCIsVh49ISU+6fi5hAbjjuPrsMDXtwFEysvKAlqWgc
-         KRLg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=JurcRPrcIia1xYhtooKFGvN+DdkV7N/wIh6mdo97K14=;
-        b=NAmji1AnckHmLGxWIcbJCJk63jPVjETtmBkgBLj5BnONBcaQxQDlxAAz4rPyYLYT6X
-         ioLJaa23U+utqcJxnzsZaUDN50k5V/HARCdYSFFPs27JBbLx2m9iXBZ3EXOFuysyG+qg
-         r4jego8jKBoRXjo1wv6EGdVKhvl44GsCwNdD+y2uMXz+tWXY/DqPkZ2UQUPUrlcBlx1x
-         jxsLjyQ6p8RCdGcTNXdRCwLHiAXA8U0B84Rb2DItbYy7XQix+aLMEn2dJ9j7TYpw0fv1
-         ziqg51eKHcbTZuuJjSYy9Jg5UKJ/XT289mBZ9vJn8uNW24FJeCbExm7K9KmxPnxFQc0S
-         xtwA==
-X-Gm-Message-State: AOAM532MiyZySR7ujDi5oTtWHcdYikxIIBzyXABcy1pzjSNcMflEiL3E
-        E4xU+DnIqsIsz51hAN2DIBs=
-X-Google-Smtp-Source: ABdhPJz3uk1Z5FVc2QFPlKv4ULqqnn2X79C/vuvnthYqgPl+3KzwA+OG5g5C/HTEkLT/iQMeCuAlnw==
-X-Received: by 2002:a05:6402:181a:: with SMTP id g26mr13436504edy.8.1604881829738;
-        Sun, 08 Nov 2020 16:30:29 -0800 (PST)
-Received: from skbuf ([188.25.2.177])
-        by smtp.gmail.com with ESMTPSA id c3sm7500251edl.60.2020.11.08.16.30.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 08 Nov 2020 16:30:29 -0800 (PST)
-Date:   Mon, 9 Nov 2020 02:30:28 +0200
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     Andrew Lunn <andrew@lunn.ch>
-Cc:     DENG Qingfang <dqfext@gmail.com>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        netdev <netdev@vger.kernel.org>, linux-kernel@vger.kernel.org,
-        Tobias Waldekranz <tobias@waldekranz.com>,
-        Marek Behun <marek.behun@nic.cz>,
-        Russell King - ARM Linux admin <linux@armlinux.org.uk>
-Subject: Re: [RFC PATCH net-next 3/3] net: dsa: listen for
- SWITCHDEV_{FDB,DEL}_ADD_TO_DEVICE on foreign bridge neighbors
-Message-ID: <20201109003028.melbgstk4pilxksl@skbuf>
-References: <20201108131953.2462644-1-olteanv@gmail.com>
- <20201108131953.2462644-4-olteanv@gmail.com>
- <CALW65jb+Njb3WkY-TUhsHh1YWEzfMcXoRAXshnT8ke02wc10Uw@mail.gmail.com>
- <20201108172355.5nwsw3ek5qg6z7yx@skbuf>
- <20201108235939.GC1417181@lunn.ch>
+        id S1728942AbgKIAqr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 8 Nov 2020 19:46:47 -0500
+Received: from mga02.intel.com ([134.134.136.20]:2448 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727949AbgKIAqr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 8 Nov 2020 19:46:47 -0500
+IronPort-SDR: 2sNy42LFzaat+VIm7cJZmA6A1rISJastMk6xRfAvK9e/z5wiPpI9UiLGwIgcVEc7/H8NqDjGWP
+ 31r9GlUL0crQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9799"; a="156742017"
+X-IronPort-AV: E=Sophos;i="5.77,462,1596524400"; 
+   d="scan'208";a="156742017"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Nov 2020 16:46:46 -0800
+IronPort-SDR: N/pxHnYrYqKQUWEazeMbvwGYUF02f4xJILTZKqsmZVQhCarqMQ6TJDi8qSs34dfYI1GTknCMuE
+ F/6ZgXj0gNDA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,462,1596524400"; 
+   d="scan'208";a="355450470"
+Received: from lkp-server02.sh.intel.com (HELO defa7f6e4f65) ([10.239.97.151])
+  by fmsmga004.fm.intel.com with ESMTP; 08 Nov 2020 16:46:45 -0800
+Received: from kbuild by defa7f6e4f65 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1kbvKW-00001o-Lb; Mon, 09 Nov 2020 00:46:44 +0000
+Date:   Mon, 09 Nov 2020 08:45:44 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [rcu:lkmm] BUILD SUCCESS 3d00d91445de18780ecfbbefd7fdc9bf4037cef7
+Message-ID: <5fa89138.6Jda4HdFM9JE/xMK%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201108235939.GC1417181@lunn.ch>
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 09, 2020 at 12:59:39AM +0100, Andrew Lunn wrote:
-> On Sun, Nov 08, 2020 at 07:23:55PM +0200, Vladimir Oltean wrote:
-> > On Sun, Nov 08, 2020 at 10:09:25PM +0800, DENG Qingfang wrote:
-> > > Can it be turned off for switches that support SA learning from CPU?
-> > 
-> > Is there a good reason I would add another property per switch and not
-> > just do it unconditionally?
-> 
-> Just throwing out ideas, i've no idea if they are relevant. I wonder
-> if we can get into issues with fast ageing with a topology change?  We
-> don't have too much control over the hardware. I think some devices
-> just flush everything, or maybe just one port. So we have different
-> life times for CPU port database entries and user port database
-> entries?
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git  lkmm
+branch HEAD: 3d00d91445de18780ecfbbefd7fdc9bf4037cef7  tools/memory-model: Label MP tests' producers and consumers
 
-A quick scan for "port_fast_age" did not find any implementers who do
-not act upon the "port" argument.
+elapsed time: 4494m
 
-> We might also run into bugs with flushing removing static database
-> entries which should not be. But that would be a bug.
+configs tested: 168
+configs skipped: 3
 
-I can imagine that happening, when there are multiple bridges spanning a
-DSA switch, each bridge also contains a "foreign" interface, and the 2
-bridging domains service 2 stations that have the same MAC address. In
-that case, since the fdb_add and fdb_del are not reference-counted on
-the shared DSA CPU port, we would indeed trigger this bug.
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-I was on the fence on whether to include the reference counting patch I
-have for host MDBs, and to make these addresses refcounted as well.
-What do you think?
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+powerpc                      tqm8xx_defconfig
+sh                          rsk7269_defconfig
+sh                        sh7763rdp_defconfig
+powerpc                      cm5200_defconfig
+mips                        maltaup_defconfig
+arm                           viper_defconfig
+arm                  colibri_pxa300_defconfig
+arm                         lpc18xx_defconfig
+arm                      tct_hammer_defconfig
+powerpc                       ebony_defconfig
+powerpc                 mpc8313_rdb_defconfig
+nios2                         3c120_defconfig
+sh                          r7780mp_defconfig
+powerpc                     ep8248e_defconfig
+powerpc                   lite5200b_defconfig
+sparc                               defconfig
+powerpc                 mpc834x_itx_defconfig
+c6x                                 defconfig
+mips                       bmips_be_defconfig
+sparc                       sparc32_defconfig
+arm                            zeus_defconfig
+arm                            pleb_defconfig
+arm                     am200epdkit_defconfig
+powerpc                     stx_gp3_defconfig
+sh                           se7724_defconfig
+mips                        nlm_xlr_defconfig
+arm                  colibri_pxa270_defconfig
+mips                       lemote2f_defconfig
+s390                             allyesconfig
+s390                          debug_defconfig
+arm                        mini2440_defconfig
+arm                       versatile_defconfig
+sh                            shmin_defconfig
+powerpc                 mpc834x_mds_defconfig
+c6x                        evmc6457_defconfig
+arm                           tegra_defconfig
+mips                         rt305x_defconfig
+powerpc                     powernv_defconfig
+powerpc                     taishan_defconfig
+powerpc                mpc7448_hpc2_defconfig
+arm                       multi_v4t_defconfig
+powerpc                 mpc836x_rdk_defconfig
+mips                malta_kvm_guest_defconfig
+sh                          rsk7264_defconfig
+arm                          lpd270_defconfig
+powerpc                           allnoconfig
+powerpc                 mpc837x_rdb_defconfig
+arm                         hackkit_defconfig
+arc                     haps_hs_smp_defconfig
+riscv                            alldefconfig
+arm                         s3c2410_defconfig
+ia64                        generic_defconfig
+mips                       capcella_defconfig
+openrisc                 simple_smp_defconfig
+nds32                            alldefconfig
+sh                         ap325rxa_defconfig
+arm                          gemini_defconfig
+arm                            xcep_defconfig
+mips                          ath79_defconfig
+arm                            hisi_defconfig
+arm                          badge4_defconfig
+xtensa                  audio_kc705_defconfig
+arm                        multi_v7_defconfig
+mips                      maltaaprp_defconfig
+mips                           ip27_defconfig
+powerpc                     sequoia_defconfig
+mips                        bcm47xx_defconfig
+sh                         ecovec24_defconfig
+arm                          moxart_defconfig
+arm                      footbridge_defconfig
+powerpc                     kmeter1_defconfig
+sh                           se7722_defconfig
+mips                      malta_kvm_defconfig
+powerpc                      ppc44x_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+c6x                              allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+i386                 randconfig-a004-20201104
+i386                 randconfig-a006-20201104
+i386                 randconfig-a005-20201104
+i386                 randconfig-a001-20201104
+i386                 randconfig-a002-20201104
+i386                 randconfig-a003-20201104
+i386                 randconfig-a004-20201105
+i386                 randconfig-a006-20201105
+i386                 randconfig-a005-20201105
+i386                 randconfig-a001-20201105
+i386                 randconfig-a002-20201105
+i386                 randconfig-a003-20201105
+x86_64               randconfig-a012-20201104
+x86_64               randconfig-a015-20201104
+x86_64               randconfig-a013-20201104
+x86_64               randconfig-a011-20201104
+x86_64               randconfig-a014-20201104
+x86_64               randconfig-a016-20201104
+x86_64               randconfig-a012-20201106
+x86_64               randconfig-a011-20201106
+x86_64               randconfig-a013-20201106
+x86_64               randconfig-a014-20201106
+x86_64               randconfig-a016-20201106
+i386                 randconfig-a015-20201104
+i386                 randconfig-a013-20201104
+i386                 randconfig-a014-20201104
+i386                 randconfig-a016-20201104
+i386                 randconfig-a011-20201104
+i386                 randconfig-a012-20201104
+i386                 randconfig-a015-20201105
+i386                 randconfig-a013-20201105
+i386                 randconfig-a014-20201105
+i386                 randconfig-a016-20201105
+i386                 randconfig-a011-20201105
+i386                 randconfig-a012-20201105
+x86_64               randconfig-a004-20201105
+x86_64               randconfig-a003-20201105
+x86_64               randconfig-a005-20201105
+x86_64               randconfig-a002-20201105
+x86_64               randconfig-a006-20201105
+x86_64               randconfig-a001-20201105
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+x86_64                                   rhel
+x86_64                           allyesconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                                  kexec
 
-> Also, dumping the database might run into bugs since we have not had
-> entries for the CPU port before.
+clang tested configs:
+x86_64               randconfig-a004-20201104
+x86_64               randconfig-a003-20201104
+x86_64               randconfig-a005-20201104
+x86_64               randconfig-a002-20201104
+x86_64               randconfig-a006-20201104
+x86_64               randconfig-a001-20201104
 
-I don't see what conditions can make this happen.
-
-> We also need to make sure the static entries get removed correctly
-> when a host moves. The mv88e6xxx will not replace a static entry with
-> a dynamically learned one. It will probably rise an ATU violation
-> interrupt that frames have come in the wrong port.
-
-This is a good one. Currently every implementer of .port_fdb_add assumes
-a static entry is what we want, but that is not the case here. We want
-an entry that can expire or the switch can move it to a different port
-when there is evidence that it's wrong. Should we add more arguments to
-the API?
-
-> What about switches which do not implement port_fdb_add? Do these
-> patches at least do something sensible?
-
-dsa_slave_switchdev_event
--> dsa_slave_switchdev_event_work
-   -> dsa_port_fdb_add
-      -> dsa_port_notify(DSA_NOTIFIER_FDB_ADD)
-         -> dsa_switch_fdb_add
-            -> if (!ds->ops->port_fdb_add) return -EOPNOTSUPP;
-   -> an error is printed with dev_dbg, and
-      dsa_fdb_offload_notify(switchdev_work) is not called.
-
-On dsa_port_fdb_del error, there is also an attempt to call dev_close()
-on error, but only on user ports, which the CPU port is not.
-
-So, we do something almost sensible, but mostly by mistake it seems.
-
-I think the simplest would be to simply avoid all this nonsense right
-away in dsa_slave_switchdev_event:
-
-diff --git a/net/dsa/slave.c b/net/dsa/slave.c
---- a/net/dsa/slave.c
-+++ b/net/dsa/slave.c
-@@ -2188,6 +2188,9 @@ static int dsa_slave_switchdev_event(struct notifier_block *unused,
- 			dp = p->dp->cpu_dp;
- 		}
- 
-+		if (!dp->ds->ops->port_fdb_add || !dp->ds->ops->port_fdb_del)
-+			return NOTIFY_DONE;
-+
- 		switchdev_work = kzalloc(sizeof(*switchdev_work), GFP_ATOMIC);
- 		if (!switchdev_work)
- 			return NOTIFY_BAD;
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
