@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 437082AB997
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 14:10:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D5E8D2ABA82
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 14:23:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732126AbgKINKh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 08:10:37 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35858 "EHLO mail.kernel.org"
+        id S2387861AbgKINTy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 08:19:54 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47364 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732096AbgKINKd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 08:10:33 -0500
+        id S2387837AbgKINTw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 08:19:52 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2603420663;
-        Mon,  9 Nov 2020 13:10:31 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id AE2BD206D8;
+        Mon,  9 Nov 2020 13:19:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604927432;
-        bh=plTQ463f7O7C7m/PyWDfj2uNECJMq4D8a4ONT6HSCr0=;
+        s=default; t=1604927992;
+        bh=b0eCXXOYlWea9J1dwydjTKHXDHkvRvMGeOlAfWZn63o=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=1zNMfr3kOjH+Ya35zi/YLncwPB7v3HqFgE93weD4ulHBHfIblXv9YQO2G/LQZ3dW1
-         Hs000DFic3sdUkAQNbrXBnSgw32T3qTzMFdfFGhjAJdEaoUIcdX+XIqntKzgEnjBf5
-         0pKX7mjrubx7AUyMjPS0B+Lo+yyLSJyZ1wqZzjXg=
+        b=ByC963ZG1NjP7nUrduoQS9OV6cMJL9QvDtdAlYEUaR/2hZqQiqFJAWVK2+gLdcMq7
+         xpvuPWwhwrT5HvJveVhdTHtK5cU5U1+OrT6+DvbDSRv+DVs92A7X6Nm2u/kgswZTaF
+         DF2ZeRPzbAQuevvl9I8vfWr8WRmDTWeReL+e+02U=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Claire Chang <tientzu@chromium.org>
-Subject: [PATCH 4.19 57/71] serial: 8250_mtk: Fix uart_get_baud_rate warning
-Date:   Mon,  9 Nov 2020 13:55:51 +0100
-Message-Id: <20201109125022.585161681@linuxfoundation.org>
+        stable@vger.kernel.org, Alex Deucher <alexander.deucher@amd.com>,
+        "Tianci.Yin" <tianci.yin@amd.com>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.9 090/133] drm/amdgpu: disable DCN and VCN for navi10 blockchain SKU(v3)
+Date:   Mon,  9 Nov 2020 13:55:52 +0100
+Message-Id: <20201109125035.031882716@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201109125019.906191744@linuxfoundation.org>
-References: <20201109125019.906191744@linuxfoundation.org>
+In-Reply-To: <20201109125030.706496283@linuxfoundation.org>
+References: <20201109125030.706496283@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,38 +42,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Claire Chang <tientzu@chromium.org>
+From: Tianci.Yin <tianci.yin@amd.com>
 
-commit 912ab37c798770f21b182d656937072b58553378 upstream.
+[ Upstream commit a305e7dc5fa86ff9cf6cd2da30215a92d43c9285 ]
 
-Mediatek 8250 port supports speed higher than uartclk / 16. If the baud
-rates in both the new and the old termios setting are higher than
-uartclk / 16, the WARN_ON in uart_get_baud_rate() will be triggered.
-Passing NULL as the old termios so uart_get_baud_rate() will use
-uartclk / 16 - 1 as the new baud rate which will be replaced by the
-original baud rate later by tty_termios_encode_baud_rate() in
-mtk8250_set_termios().
+The blockchain SKU has no display and video support, remove them.
 
-Fixes: 551e553f0d4a ("serial: 8250_mtk: Fix high-speed baud rates clamping")
-Signed-off-by: Claire Chang <tientzu@chromium.org>
-Link: https://lore.kernel.org/r/20201102120749.374458-1-tientzu@chromium.org
-Cc: stable <stable@vger.kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Reviewed-by: Alex Deucher <alexander.deucher@amd.com>
+Signed-off-by: Tianci.Yin <tianci.yin@amd.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/tty/serial/8250/8250_mtk.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/gpu/drm/amd/amdgpu/nv.c | 14 ++++++++++++--
+ 1 file changed, 12 insertions(+), 2 deletions(-)
 
---- a/drivers/tty/serial/8250/8250_mtk.c
-+++ b/drivers/tty/serial/8250/8250_mtk.c
-@@ -47,7 +47,7 @@ mtk8250_set_termios(struct uart_port *po
- 	 */
- 	baud = tty_termios_baud_rate(termios);
+diff --git a/drivers/gpu/drm/amd/amdgpu/nv.c b/drivers/gpu/drm/amd/amdgpu/nv.c
+index ca11253e787ca..8254f42146890 100644
+--- a/drivers/gpu/drm/amd/amdgpu/nv.c
++++ b/drivers/gpu/drm/amd/amdgpu/nv.c
+@@ -488,6 +488,14 @@ void nv_set_virt_ops(struct amdgpu_device *adev)
+ 	adev->virt.ops = &xgpu_nv_virt_ops;
+ }
  
--	serial8250_do_set_termios(port, termios, old);
-+	serial8250_do_set_termios(port, termios, NULL);
- 
- 	tty_termios_encode_baud_rate(termios, baud, baud);
- 
++static bool nv_is_blockchain_sku(struct pci_dev *pdev)
++{
++	if (pdev->device == 0x731E &&
++	    (pdev->revision == 0xC6 || pdev->revision == 0xC7))
++		return true;
++	return false;
++}
++
+ int nv_set_ip_blocks(struct amdgpu_device *adev)
+ {
+ 	int r;
+@@ -516,7 +524,8 @@ int nv_set_ip_blocks(struct amdgpu_device *adev)
+ 		if (adev->enable_virtual_display || amdgpu_sriov_vf(adev))
+ 			amdgpu_device_ip_block_add(adev, &dce_virtual_ip_block);
+ #if defined(CONFIG_DRM_AMD_DC)
+-		else if (amdgpu_device_has_dc_support(adev))
++		else if (amdgpu_device_has_dc_support(adev) &&
++			 !nv_is_blockchain_sku(adev->pdev))
+ 			amdgpu_device_ip_block_add(adev, &dm_ip_block);
+ #endif
+ 		amdgpu_device_ip_block_add(adev, &gfx_v10_0_ip_block);
+@@ -524,7 +533,8 @@ int nv_set_ip_blocks(struct amdgpu_device *adev)
+ 		if (adev->firmware.load_type == AMDGPU_FW_LOAD_DIRECT &&
+ 		    !amdgpu_sriov_vf(adev))
+ 			amdgpu_device_ip_block_add(adev, &smu_v11_0_ip_block);
+-		amdgpu_device_ip_block_add(adev, &vcn_v2_0_ip_block);
++		if (!nv_is_blockchain_sku(adev->pdev))
++			amdgpu_device_ip_block_add(adev, &vcn_v2_0_ip_block);
+ 		amdgpu_device_ip_block_add(adev, &jpeg_v2_0_ip_block);
+ 		if (adev->enable_mes)
+ 			amdgpu_device_ip_block_add(adev, &mes_v10_1_ip_block);
+-- 
+2.27.0
+
 
 
