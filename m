@@ -2,37 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 447A12AB999
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 14:10:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D1E762ABA84
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 14:23:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732155AbgKINKn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 08:10:43 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35926 "EHLO mail.kernel.org"
+        id S2387878AbgKINUC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 08:20:02 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47500 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732110AbgKINKg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 08:10:36 -0500
+        id S2387865AbgKINT6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 08:19:58 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 033DF20789;
-        Mon,  9 Nov 2020 13:10:34 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 93C4822202;
+        Mon,  9 Nov 2020 13:19:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604927435;
-        bh=fbahKZc44o8VUHM3UKAC7qeKy2dI9PslnMJ+rRNFXN4=;
+        s=default; t=1604927998;
+        bh=QWILWw3uduJMwg1IruDSh68vr7n5hC4u0TKvvMqB1fY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ugV2EX69XPJbaqNojw91MhskOw1hbMbnfpPAB4lgOX4rvzFmoCVnH1qx8S0cWlu49
-         cpIW6yy4G5+OcepkzxaL3s5vUJWMEsuoZTtQFnf5kmRNsOffbdamI+cacijAefiJ0R
-         SQSk4bfzmrdFz+nqWEtLrlntGrqZJGTY/PxFiW08=
+        b=aQ9ldaj1xTZlPqrx2/xoeN+b/ZTTD/R/BbSDwYSfsqGoSLbfaqbSviyXWPsP7YVIf
+         FJV2DMollImUvQlpWSkOAybSYrtCUHu2lGnJvhDcpylDd5N6vMyMJEjRZlBxwgkVAv
+         qJPmvEP+qp8V+VLTBR5Ni5kPyUMg/dpqBZ6AWDgc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Qinglang Miao <miaoqinglang@huawei.com>
-Subject: [PATCH 4.19 58/71] serial: txx9: add missing platform_driver_unregister() on error in serial_txx9_init
-Date:   Mon,  9 Nov 2020 13:55:52 +0100
-Message-Id: <20201109125022.634027212@linuxfoundation.org>
+        stable@vger.kernel.org, Alex Deucher <alexander.deucher@amd.com>,
+        Guchun Chen <guchun.chen@amd.com>,
+        "Tianci.Yin" <tianci.yin@amd.com>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.9 091/133] drm/amdgpu: add DID for navi10 blockchain SKU
+Date:   Mon,  9 Nov 2020 13:55:53 +0100
+Message-Id: <20201109125035.079485033@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201109125019.906191744@linuxfoundation.org>
-References: <20201109125019.906191744@linuxfoundation.org>
+In-Reply-To: <20201109125030.706496283@linuxfoundation.org>
+References: <20201109125030.706496283@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,36 +43,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Qinglang Miao <miaoqinglang@huawei.com>
+From: Tianci.Yin <tianci.yin@amd.com>
 
-commit 0c5fc92622ed5531ff324b20f014e9e3092f0187 upstream.
+[ Upstream commit 8942881144a7365143f196f5eafed24783a424a3 ]
 
-Add the missing platform_driver_unregister() before return
-from serial_txx9_init in the error handling case when failed
-to register serial_txx9_pci_driver with macro ENABLE_SERIAL_TXX9_PCI
-defined.
-
-Fixes: ab4382d27412 ("tty: move drivers/serial/ to drivers/tty/serial/")
-Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
-Link: https://lore.kernel.org/r/20201103084942.109076-1-miaoqinglang@huawei.com
-Cc: stable <stable@vger.kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Reviewed-by: Alex Deucher <alexander.deucher@amd.com>
+Reviewed-by: Guchun Chen <guchun.chen@amd.com>
+Signed-off-by: Tianci.Yin <tianci.yin@amd.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/tty/serial/serial_txx9.c |    3 +++
- 1 file changed, 3 insertions(+)
+ drivers/gpu/drm/amd/amdgpu/amdgpu_drv.c | 1 +
+ 1 file changed, 1 insertion(+)
 
---- a/drivers/tty/serial/serial_txx9.c
-+++ b/drivers/tty/serial/serial_txx9.c
-@@ -1284,6 +1284,9 @@ static int __init serial_txx9_init(void)
- 
- #ifdef ENABLE_SERIAL_TXX9_PCI
- 	ret = pci_register_driver(&serial_txx9_pci_driver);
-+	if (ret) {
-+		platform_driver_unregister(&serial_txx9_plat_driver);
-+	}
- #endif
- 	if (ret == 0)
- 		goto out;
+diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_drv.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_drv.c
+index 321032d3a51a2..06a5b6ae1c43e 100644
+--- a/drivers/gpu/drm/amd/amdgpu/amdgpu_drv.c
++++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_drv.c
+@@ -1033,6 +1033,7 @@ static const struct pci_device_id pciidlist[] = {
+ 	{0x1002, 0x7319, PCI_ANY_ID, PCI_ANY_ID, 0, 0, CHIP_NAVI10},
+ 	{0x1002, 0x731A, PCI_ANY_ID, PCI_ANY_ID, 0, 0, CHIP_NAVI10},
+ 	{0x1002, 0x731B, PCI_ANY_ID, PCI_ANY_ID, 0, 0, CHIP_NAVI10},
++	{0x1002, 0x731E, PCI_ANY_ID, PCI_ANY_ID, 0, 0, CHIP_NAVI10},
+ 	{0x1002, 0x731F, PCI_ANY_ID, PCI_ANY_ID, 0, 0, CHIP_NAVI10},
+ 	/* Navi14 */
+ 	{0x1002, 0x7340, PCI_ANY_ID, PCI_ANY_ID, 0, 0, CHIP_NAVI14},
+-- 
+2.27.0
+
 
 
