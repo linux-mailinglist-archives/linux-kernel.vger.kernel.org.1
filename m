@@ -2,28 +2,28 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D5A32AC7CD
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 22:56:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9612C2AC7CC
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 22:56:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732018AbgKIV4O convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 9 Nov 2020 16:56:14 -0500
-Received: from us-smtp-delivery-44.mimecast.com ([207.211.30.44]:58213 "EHLO
+        id S1731873AbgKIV4N convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 9 Nov 2020 16:56:13 -0500
+Received: from us-smtp-delivery-44.mimecast.com ([207.211.30.44]:57670 "EHLO
         us-smtp-delivery-44.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1731521AbgKIVzS (ORCPT
+        by vger.kernel.org with ESMTP id S1731599AbgKIVzU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 16:55:18 -0500
+        Mon, 9 Nov 2020 16:55:20 -0500
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-289-9pZAIlKNOgy-LVFTue6x5w-1; Mon, 09 Nov 2020 16:55:11 -0500
-X-MC-Unique: 9pZAIlKNOgy-LVFTue6x5w-1
+ us-mta-185-6PxACxz3N-ymhUCDduRCGQ-1; Mon, 09 Nov 2020 16:55:15 -0500
+X-MC-Unique: 6PxACxz3N-ymhUCDduRCGQ-1
 Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id EA2421074655;
-        Mon,  9 Nov 2020 21:55:08 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7770A186DD4C;
+        Mon,  9 Nov 2020 21:55:12 +0000 (UTC)
 Received: from krava.redhat.com (unknown [10.40.192.57])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id EB7D06EF46;
-        Mon,  9 Nov 2020 21:55:05 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 7237A6EF46;
+        Mon,  9 Nov 2020 21:55:09 +0000 (UTC)
 From:   Jiri Olsa <jolsa@kernel.org>
 To:     Arnaldo Carvalho de Melo <acme@kernel.org>
 Cc:     lkml <linux-kernel@vger.kernel.org>,
@@ -39,9 +39,9 @@ Cc:     lkml <linux-kernel@vger.kernel.org>,
         Alexey Budankov <alexey.budankov@linux.intel.com>,
         Andi Kleen <ak@linux.intel.com>,
         Adrian Hunter <adrian.hunter@intel.com>
-Subject: [PATCH 13/24] perf tools: Allow mmap2 event to synthesize kernel image
-Date:   Mon,  9 Nov 2020 22:54:04 +0100
-Message-Id: <20201109215415.400153-14-jolsa@kernel.org>
+Subject: [PATCH 14/24] perf tools: Allow mmap2 event to synthesize modules
+Date:   Mon,  9 Nov 2020 22:54:05 +0100
+Message-Id: <20201109215415.400153-15-jolsa@kernel.org>
 In-Reply-To: <20201109215415.400153-1-jolsa@kernel.org>
 References: <20201109215415.400153-1-jolsa@kernel.org>
 MIME-Version: 1.0
@@ -56,8 +56,8 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Allow mmap2 event to synthesize kernel image,
-so we can synthesize kernel build id data in
+Allow mmap2 event to synthesize kernel modules,
+so we can synthesize module's build id data in
 following changes.
 
 It's enabled by new symbol_conf.buildid_mmap2
@@ -66,92 +66,86 @@ changes.
 
 Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 ---
- tools/perf/util/symbol_conf.h      |  3 ++-
- tools/perf/util/synthetic-events.c | 40 ++++++++++++++++++++----------
- 2 files changed, 29 insertions(+), 14 deletions(-)
+ tools/perf/util/synthetic-events.c | 49 +++++++++++++++++++-----------
+ 1 file changed, 32 insertions(+), 17 deletions(-)
 
-diff --git a/tools/perf/util/symbol_conf.h b/tools/perf/util/symbol_conf.h
-index b916afb95ec5..b18f9c8dbb75 100644
---- a/tools/perf/util/symbol_conf.h
-+++ b/tools/perf/util/symbol_conf.h
-@@ -42,7 +42,8 @@ struct symbol_conf {
- 			report_block,
- 			report_individual_block,
- 			inline_name,
--			disable_add2line_warn;
-+			disable_add2line_warn,
-+			buildid_mmap2;
- 	const char	*vmlinux_name,
- 			*kallsyms_name,
- 			*source_prefix,
 diff --git a/tools/perf/util/synthetic-events.c b/tools/perf/util/synthetic-events.c
-index 8a23391558cf..872df6d6dbef 100644
+index 872df6d6dbef..a18ae502d765 100644
 --- a/tools/perf/util/synthetic-events.c
 +++ b/tools/perf/util/synthetic-events.c
-@@ -988,11 +988,12 @@ static int __perf_event__synthesize_kernel_mmap(struct perf_tool *tool,
- 						perf_event__handler_t process,
- 						struct machine *machine)
- {
--	size_t size;
+@@ -593,16 +593,17 @@ int perf_event__synthesize_modules(struct perf_tool *tool, perf_event__handler_t
+ 	int rc = 0;
+ 	struct map *pos;
+ 	struct maps *maps = machine__kernel_maps(machine);
+-	union perf_event *event = zalloc((sizeof(event->mmap) +
+-					  machine->id_hdr_size));
 +	union perf_event *event;
 +	size_t size = symbol_conf.buildid_mmap2 ?
 +			sizeof(event->mmap2) : sizeof(event->mmap);
- 	struct map *map = machine__kernel_map(machine);
- 	struct kmap *kmap;
- 	int err;
--	union perf_event *event;
- 
- 	if (map == NULL)
- 		return -1;
-@@ -1006,7 +1007,7 @@ static int __perf_event__synthesize_kernel_mmap(struct perf_tool *tool,
- 	 * available use this, and after it is use this as a fallback for older
- 	 * kernels.
- 	 */
--	event = zalloc((sizeof(event->mmap) + machine->id_hdr_size));
++
 +	event = zalloc(size + machine->id_hdr_size);
  	if (event == NULL) {
  		pr_debug("Not enough memory synthesizing mmap event "
  			 "for kernel modules\n");
-@@ -1023,16 +1024,29 @@ static int __perf_event__synthesize_kernel_mmap(struct perf_tool *tool,
- 		event->header.misc = PERF_RECORD_MISC_GUEST_KERNEL;
+ 		return -1;
  	}
  
--	size = snprintf(event->mmap.filename, sizeof(event->mmap.filename),
--			"%s%s", machine->mmap_name, kmap->ref_reloc_sym->name) + 1;
--	size = PERF_ALIGN(size, sizeof(u64));
--	event->mmap.header.type = PERF_RECORD_MMAP;
--	event->mmap.header.size = (sizeof(event->mmap) -
--			(sizeof(event->mmap.filename) - size) + machine->id_hdr_size);
--	event->mmap.pgoff = kmap->ref_reloc_sym->addr;
--	event->mmap.start = map->start;
--	event->mmap.len   = map->end - event->mmap.start;
--	event->mmap.pid   = machine->pid;
-+	if (symbol_conf.buildid_mmap2) {
-+		size = snprintf(event->mmap2.filename, sizeof(event->mmap2.filename),
-+				"%s%s", machine->mmap_name, kmap->ref_reloc_sym->name) + 1;
-+		size = PERF_ALIGN(size, sizeof(u64));
-+		event->mmap2.header.type = PERF_RECORD_MMAP2;
-+		event->mmap2.header.size = (sizeof(event->mmap2) -
-+				(sizeof(event->mmap2.filename) - size) + machine->id_hdr_size);
-+		event->mmap2.pgoff = kmap->ref_reloc_sym->addr;
-+		event->mmap2.start = map->start;
-+		event->mmap2.len   = map->end - event->mmap.start;
-+		event->mmap2.pid   = machine->pid;
-+	} else {
-+		size = snprintf(event->mmap.filename, sizeof(event->mmap.filename),
-+				"%s%s", machine->mmap_name, kmap->ref_reloc_sym->name) + 1;
-+		size = PERF_ALIGN(size, sizeof(u64));
-+		event->mmap.header.type = PERF_RECORD_MMAP;
-+		event->mmap.header.size = (sizeof(event->mmap) -
-+				(sizeof(event->mmap.filename) - size) + machine->id_hdr_size);
-+		event->mmap.pgoff = kmap->ref_reloc_sym->addr;
-+		event->mmap.start = map->start;
-+		event->mmap.len   = map->end - event->mmap.start;
-+		event->mmap.pid   = machine->pid;
-+	}
+-	event->header.type = PERF_RECORD_MMAP;
+-
+ 	/*
+ 	 * kernel uses 0 for user space maps, see kernel/perf_event.c
+ 	 * __perf_event_mmap
+@@ -613,23 +614,37 @@ int perf_event__synthesize_modules(struct perf_tool *tool, perf_event__handler_t
+ 		event->header.misc = PERF_RECORD_MISC_GUEST_KERNEL;
  
- 	err = perf_tool__process_synth_event(tool, event, machine, process);
- 	free(event);
+ 	maps__for_each_entry(maps, pos) {
+-		size_t size;
+-
+ 		if (!__map__is_kmodule(pos))
+ 			continue;
+ 
+-		size = PERF_ALIGN(pos->dso->long_name_len + 1, sizeof(u64));
+-		event->mmap.header.type = PERF_RECORD_MMAP;
+-		event->mmap.header.size = (sizeof(event->mmap) -
+-				        (sizeof(event->mmap.filename) - size));
+-		memset(event->mmap.filename + size, 0, machine->id_hdr_size);
+-		event->mmap.header.size += machine->id_hdr_size;
+-		event->mmap.start = pos->start;
+-		event->mmap.len   = pos->end - pos->start;
+-		event->mmap.pid   = machine->pid;
++		if (symbol_conf.buildid_mmap2) {
++			size = PERF_ALIGN(pos->dso->long_name_len + 1, sizeof(u64));
++			event->mmap2.header.type = PERF_RECORD_MMAP2;
++			event->mmap2.header.size = (sizeof(event->mmap2) -
++						(sizeof(event->mmap2.filename) - size));
++			memset(event->mmap2.filename + size, 0, machine->id_hdr_size);
++			event->mmap2.header.size += machine->id_hdr_size;
++			event->mmap2.start = pos->start;
++			event->mmap2.len   = pos->end - pos->start;
++			event->mmap2.pid   = machine->pid;
++
++			memcpy(event->mmap2.filename, pos->dso->long_name,
++			       pos->dso->long_name_len + 1);
++		} else {
++			size = PERF_ALIGN(pos->dso->long_name_len + 1, sizeof(u64));
++			event->mmap.header.type = PERF_RECORD_MMAP;
++			event->mmap.header.size = (sizeof(event->mmap) -
++						(sizeof(event->mmap.filename) - size));
++			memset(event->mmap.filename + size, 0, machine->id_hdr_size);
++			event->mmap.header.size += machine->id_hdr_size;
++			event->mmap.start = pos->start;
++			event->mmap.len   = pos->end - pos->start;
++			event->mmap.pid   = machine->pid;
++
++			memcpy(event->mmap.filename, pos->dso->long_name,
++			       pos->dso->long_name_len + 1);
++		}
+ 
+-		memcpy(event->mmap.filename, pos->dso->long_name,
+-		       pos->dso->long_name_len + 1);
+ 		if (perf_tool__process_synth_event(tool, event, machine, process) != 0) {
+ 			rc = -1;
+ 			break;
 -- 
 2.26.2
 
