@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0327F2ABA7C
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 14:23:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 92F122AB93A
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 14:07:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387819AbgKINTn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 08:19:43 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47134 "EHLO mail.kernel.org"
+        id S1729045AbgKINHU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 08:07:20 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60012 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731904AbgKINTl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 08:19:41 -0500
+        id S1731092AbgKINHR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 08:07:17 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 17F5B20663;
-        Mon,  9 Nov 2020 13:19:39 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id CB2C820789;
+        Mon,  9 Nov 2020 13:07:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604927980;
-        bh=4cisTJvNWJTo1O3lX02DqmI2tUmhW57SyXN78g9+A/Y=;
+        s=default; t=1604927236;
+        bh=jrGi8OarGTOUBGT9yqcPIndX85MpRSQ8m+vRE2NP9lM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=MYfcryKWFmci4pREMNR6W71XaapSf9QIwZbHxXjf5rDTS/UIVo7HXOsodL1v3coxs
-         5X0lig18FIar3vXLcKBa+oVHfPQn9Ry7wMK/j1xTvB3NRZyR/F3nIjX5lSMEBkwTXH
-         UPPcuRZIkDvQL13W0UITsssX7a6WYz20i2pIS9Sw=
+        b=0m2MLuZNBihH7AiI8iGOrJLFYNK2WFMIQIm00hqbWdk6UDOzuO90hq3SV2viWmVjX
+         1QHujyFzv88PjokAGGlu2fMZ3qPa5stuAUdig6heeB8a9pXSg8uQeK6Io/SM7339I4
+         ngCx/m86RdNlTshRRNn3G4fEITrM8jgyCdjnRHYM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Tejun Heo <tj@kernel.org>,
-        Gabriel Krisman Bertazi <krisman@collabora.com>,
-        Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.9 086/133] blk-cgroup: Pre-allocate tree node on blkg_conf_prep
-Date:   Mon,  9 Nov 2020 13:55:48 +0100
-Message-Id: <20201109125034.848123972@linuxfoundation.org>
+        stable@vger.kernel.org, Ziyi Cao <kernel@septs.pw>,
+        Johan Hovold <johan@kernel.org>
+Subject: [PATCH 4.14 40/48] USB: serial: option: add Quectel EC200T module support
+Date:   Mon,  9 Nov 2020 13:55:49 +0100
+Message-Id: <20201109125018.732815311@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201109125030.706496283@linuxfoundation.org>
-References: <20201109125030.706496283@linuxfoundation.org>
+In-Reply-To: <20201109125016.734107741@linuxfoundation.org>
+References: <20201109125016.734107741@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,82 +42,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Gabriel Krisman Bertazi <krisman@collabora.com>
+From: Ziyi Cao <kernel@septs.pw>
 
-[ Upstream commit f255c19b3ab46d3cad3b1b2e1036f4c926cb1d0c ]
+commit a46b973bced1ba57420752bf38426acd9f6cbfa6 upstream.
 
-Similarly to commit 457e490f2b741 ("blkcg: allocate struct blkcg_gq
-outside request queue spinlock"), blkg_create can also trigger
-occasional -ENOMEM failures at the radix insertion because any
-allocation inside blkg_create has to be non-blocking, making it more
-likely to fail.  This causes trouble for userspace tools trying to
-configure io weights who need to deal with this condition.
+Add usb product id of the Quectel EC200T module.
 
-This patch reduces the occurrence of -ENOMEMs on this path by preloading
-the radix tree element on a GFP_KERNEL context, such that we guarantee
-the later non-blocking insertion won't fail.
+Signed-off-by: Ziyi Cao <kernel@septs.pw>
+Link: https://lore.kernel.org/r/17f8a2a3-ce0f-4be7-8544-8fdf286907d0@www.fastmail.com
+Cc: stable@vger.kernel.org
+Signed-off-by: Johan Hovold <johan@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-A similar solution exists in blkcg_init_queue for the same situation.
-
-Acked-by: Tejun Heo <tj@kernel.org>
-Signed-off-by: Gabriel Krisman Bertazi <krisman@collabora.com>
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- block/blk-cgroup.c | 14 ++++++++++++--
- 1 file changed, 12 insertions(+), 2 deletions(-)
+ drivers/usb/serial/option.c |    2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/block/blk-cgroup.c b/block/blk-cgroup.c
-index 7b2df042220d4..c85fbb666e40a 100644
---- a/block/blk-cgroup.c
-+++ b/block/blk-cgroup.c
-@@ -648,6 +648,12 @@ int blkg_conf_prep(struct blkcg *blkcg, const struct blkcg_policy *pol,
- 			goto fail;
- 		}
+--- a/drivers/usb/serial/option.c
++++ b/drivers/usb/serial/option.c
+@@ -253,6 +253,7 @@ static void option_instat_callback(struc
+ #define QUECTEL_PRODUCT_EP06			0x0306
+ #define QUECTEL_PRODUCT_EM12			0x0512
+ #define QUECTEL_PRODUCT_RM500Q			0x0800
++#define QUECTEL_PRODUCT_EC200T			0x6026
  
-+		if (radix_tree_preload(GFP_KERNEL)) {
-+			blkg_free(new_blkg);
-+			ret = -ENOMEM;
-+			goto fail;
-+		}
-+
- 		rcu_read_lock();
- 		spin_lock_irq(&q->queue_lock);
+ #define CMOTECH_VENDOR_ID			0x16d8
+ #define CMOTECH_PRODUCT_6001			0x6001
+@@ -1120,6 +1121,7 @@ static const struct usb_device_id option
+ 	{ USB_DEVICE_AND_INTERFACE_INFO(QUECTEL_VENDOR_ID, QUECTEL_PRODUCT_RM500Q, 0xff, 0, 0) },
+ 	{ USB_DEVICE_AND_INTERFACE_INFO(QUECTEL_VENDOR_ID, QUECTEL_PRODUCT_RM500Q, 0xff, 0xff, 0x10),
+ 	  .driver_info = ZLP },
++	{ USB_DEVICE_AND_INTERFACE_INFO(QUECTEL_VENDOR_ID, QUECTEL_PRODUCT_EC200T, 0xff, 0, 0) },
  
-@@ -655,7 +661,7 @@ int blkg_conf_prep(struct blkcg *blkcg, const struct blkcg_policy *pol,
- 		if (IS_ERR(blkg)) {
- 			ret = PTR_ERR(blkg);
- 			blkg_free(new_blkg);
--			goto fail_unlock;
-+			goto fail_preloaded;
- 		}
- 
- 		if (blkg) {
-@@ -664,10 +670,12 @@ int blkg_conf_prep(struct blkcg *blkcg, const struct blkcg_policy *pol,
- 			blkg = blkg_create(pos, q, new_blkg);
- 			if (IS_ERR(blkg)) {
- 				ret = PTR_ERR(blkg);
--				goto fail_unlock;
-+				goto fail_preloaded;
- 			}
- 		}
- 
-+		radix_tree_preload_end();
-+
- 		if (pos == blkcg)
- 			goto success;
- 	}
-@@ -677,6 +685,8 @@ int blkg_conf_prep(struct blkcg *blkcg, const struct blkcg_policy *pol,
- 	ctx->body = input;
- 	return 0;
- 
-+fail_preloaded:
-+	radix_tree_preload_end();
- fail_unlock:
- 	spin_unlock_irq(&q->queue_lock);
- 	rcu_read_unlock();
--- 
-2.27.0
-
+ 	{ USB_DEVICE(CMOTECH_VENDOR_ID, CMOTECH_PRODUCT_6001) },
+ 	{ USB_DEVICE(CMOTECH_VENDOR_ID, CMOTECH_PRODUCT_CMU_300) },
 
 
