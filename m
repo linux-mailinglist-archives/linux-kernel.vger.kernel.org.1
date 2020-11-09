@@ -2,194 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 687FB2AC623
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 21:47:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B8D02AC647
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 21:49:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730008AbgKIUrB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 15:47:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37096 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729452AbgKIUrA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 15:47:00 -0500
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A397DC0613CF
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Nov 2020 12:47:00 -0800 (PST)
-Received: by mail-pg1-x543.google.com with SMTP id r186so8177997pgr.0
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Nov 2020 12:47:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Iin0vDUK3sevQI2bAvaPfD3H/W4vZ+Pqy7XQDqW23fY=;
-        b=DOFz7xZ/ueIU8DDLtiktNgoKvoTu7cz/YyeBYMzuuQFVEfvPWbAm8Djo1KFovcE1gU
-         MG+zMJVNHqmMpmxbHm9g3E3Vqc3HnqQlL2YNtnbvK23DkvRKTUgGgOqFdUbDhlsZv4nf
-         Ui8fDrJIbijZ+JqXK64ym4YMLl4X4bH5i0lcRED8B+ZnGjZK0QJ0lvwD8PDEJcYY7Ptg
-         pJzjgrqN1sRaB0OZfukknG0QzBwzkK/oLsCC6M24Gh1p4+p1Ep8QKQRLa+y82/fu692e
-         pvjW2sf4FhxhfuEcDrK7QXoULZDbNDEUumn1f65Ws+2CsTdmBnyuDaEuerVk0s5J3H6Y
-         U3Rw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Iin0vDUK3sevQI2bAvaPfD3H/W4vZ+Pqy7XQDqW23fY=;
-        b=jcxwCR9ZbyuYpDKBkWm7Ycg8rW4b7naWIqepuvyYhvxjg53cpkTjLeWS8KkARR/6Y1
-         EC9PKdi5dzhhuhn1JRQaDlU8JKxBMC99gG/TDSpM9lc1NQXGWuUao7/xKl5drOWuCq7Z
-         qNF6Z0az3YgwNn4ru9NlEk0X/xEftJUao9akyPlbhE6VbhyL1siojhYGRBqC+9pUVkA5
-         inPwU/4lE4q0aOjJyFihcHksQA0ikw8DKzpw4TK/1tFDOH235AcA8Iu2nRM4zExNkrV2
-         BeYoyBOKv5yUhUjDSIAlqS/FF7CSUChRjr2GCoTpVf0MYt0pKTLUSzLJuegnJRaxT56M
-         noIw==
-X-Gm-Message-State: AOAM530hWmCLkLqWmi1BysnEZ06Z5J6PmqNwMwZ2/NITZjCm2/WYb16X
-        aMG+nbRkzo9q2X0ZJlpummVuzA==
-X-Google-Smtp-Source: ABdhPJw2aEoDsjVndg890wcwXHA9V4CYUoL2EPjvRTtNqf6adlFuky9F0/slPmytSKWL4vBupYiCyQ==
-X-Received: by 2002:a63:3202:: with SMTP id y2mr13744540pgy.97.1604954820247;
-        Mon, 09 Nov 2020 12:47:00 -0800 (PST)
-Received: from xps15 (S0106002369de4dac.cg.shawcable.net. [68.147.8.254])
-        by smtp.gmail.com with ESMTPSA id a24sm12294500pfl.174.2020.11.09.12.46.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 09 Nov 2020 12:46:59 -0800 (PST)
-Date:   Mon, 9 Nov 2020 13:46:57 -0700
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-To:     Suzuki K Poulose <suzuki.poulose@arm.com>
-Cc:     linux-arm-kernel@lists.infradead.org, mike.leach@linaro.org,
-        coresight@lists.linaro.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 25/26] coresight: etm4x: Add support for sysreg only
- devices
-Message-ID: <20201109204657.GD3396611@xps15>
-References: <20201028220945.3826358-1-suzuki.poulose@arm.com>
- <20201028220945.3826358-27-suzuki.poulose@arm.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201028220945.3826358-27-suzuki.poulose@arm.com>
+        id S1731340AbgKIUs0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 15:48:26 -0500
+Received: from m42-4.mailgun.net ([69.72.42.4]:23154 "EHLO m42-4.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730272AbgKIUrm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 15:47:42 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1604954861; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=JkILMcU5nz8DCbTYCGriQuaUh/oc76sakpvTNEKG8vc=; b=OW3ZWoTzVCbc1fmiY8Ioiwoskb05nt1rrKQKtZBEkEnZ3YA2Ty/O/caVYQMCT4Pj7Sdyh71P
+ uaukAz9TUayxJdkSDS4SoVAlTpZco3kAxwmNJjamE1kPxi+tUtfyu30esN43Q/CbioiiGOaG
+ gcyxrKKJZr1B58yc1O9d1ydZ4q4=
+X-Mailgun-Sending-Ip: 69.72.42.4
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n03.prod.us-east-1.postgun.com with SMTP id
+ 5fa9aaecf8c560b580a213ec (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 09 Nov 2020 20:47:40
+ GMT
+Sender: bbhatt=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id F3081C433FF; Mon,  9 Nov 2020 20:47:39 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from malabar-linux.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: bbhatt)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id D7CC6C433C8;
+        Mon,  9 Nov 2020 20:47:38 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org D7CC6C433C8
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=bbhatt@codeaurora.org
+From:   Bhaumik Bhatt <bbhatt@codeaurora.org>
+To:     manivannan.sadhasivam@linaro.org
+Cc:     linux-arm-msm@vger.kernel.org, hemantk@codeaurora.org,
+        jhugo@codeaurora.org, linux-kernel@vger.kernel.org,
+        Bhaumik Bhatt <bbhatt@codeaurora.org>
+Subject: [PATCH v4 00/12] Bug fixes and improvements for MHI power operations
+Date:   Mon,  9 Nov 2020 12:47:19 -0800
+Message-Id: <1604954851-23396-1-git-send-email-bbhatt@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 28, 2020 at 10:09:44PM +0000, Suzuki K Poulose wrote:
-> Add support for devices with system instruction access only.
-> They don't have a memory mapped interface and thus are not
-> AMBA devices.
-> 
-> Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
-> Cc: Mike Leach <mike.leach@linaro.org>
-> Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
-> ---
->  .../coresight/coresight-etm4x-core.c          | 50 +++++++++++++++++--
->  1 file changed, 45 insertions(+), 5 deletions(-)
-> 
-> diff --git a/drivers/hwtracing/coresight/coresight-etm4x-core.c b/drivers/hwtracing/coresight/coresight-etm4x-core.c
-> index 25fab5513604..50a574228866 100644
-> --- a/drivers/hwtracing/coresight/coresight-etm4x-core.c
-> +++ b/drivers/hwtracing/coresight/coresight-etm4x-core.c
-> @@ -26,6 +26,7 @@
->  #include <linux/seq_file.h>
->  #include <linux/uaccess.h>
->  #include <linux/perf_event.h>
-> +#include <linux/platform_device.h>
->  #include <linux/pm_runtime.h>
->  #include <linux/property.h>
->  #include <asm/sections.h>
-> @@ -1623,9 +1624,6 @@ static int etm4_probe(struct device *dev, void __iomem *base)
->  			return -ENOMEM;
->  	}
->  
-> -	if (fwnode_property_present(dev_fwnode(dev), "qcom,skip-power-up"))
-> -		drvdata->skip_power_up = true;
-> -
->  	drvdata->base = base;
->  
->  	spin_lock_init(&drvdata->spinlock);
-> @@ -1648,6 +1646,11 @@ static int etm4_probe(struct device *dev, void __iomem *base)
->  	if (!drvdata->arch)
->  		return -EINVAL;
->  
-> +	/* Skip programming TRCPDCR for system instructions. */
+Bug fixes and improvements for MHI powerup and shutdown handling.
+Firmware load function names are updated to accurately reflect their purpose.
+Closed certain design gaps where the host (MHI bus) would allow clients to
+operate after a power down or error detection.
+Move to an error state sooner based on different scenarios.
 
-It would be nice to mention that TRCPDCR is not available in system instruction
-mode.
+These patches were tested on arm64 and X86_64 architectures.
 
-> +	if (!desc.access.io_mem ||
-> +	    fwnode_property_present(dev_fwnode(dev), "qcom,skip-power-up"))
-> +		drvdata->skip_power_up = true;
-> +
->  	etm4_init_trace_id(drvdata);
->  	etm4_set_default(&drvdata->config);
->  
-> @@ -1706,6 +1709,20 @@ static int etm4_probe_amba(struct amba_device *adev, const struct amba_id *id)
->  	return ret;
->  }
->  
-> +static int etm4_probe_platform_dev(struct platform_device *pdev)
-> +{
-> +	int ret;
-> +
-> +	pm_runtime_get_noresume(&pdev->dev);
-> +	pm_runtime_set_active(&pdev->dev);
-> +	pm_runtime_enable(&pdev->dev);
-> +
-> +	ret = etm4_probe(&pdev->dev, NULL);
-> +
-> +	pm_runtime_put(&pdev->dev);
-> +	return ret;
-> +}
-> +
->  static struct amba_cs_uci_id uci_id_etm4[] = {
->  	{
->  		/*  ETMv4 UCI data */
-> @@ -1781,6 +1798,20 @@ static struct amba_driver etm4x_amba_driver = {
->  	.id_table	= etm4_ids,
->  };
->  
-> +static const struct of_device_id etm_sysreg_match[] = {
+v4:
+-Fixed up bus: mhi: core: Move to SYS_ERROR regardless of RDDM capability patch
+by removing check for EE as well since a previous guard to check if MHI pm_state
+allows event ring access is already present. Event ring access should not be
+allowed at the time and hence the check is safe to remove.
 
-s/etm_sysreg_match/etm4_sysreg_match
+v3:
+-Fixed bus: mhi: core: Remove MHI event ring IRQ handlers when powering down
+-Mistakenly placed the free_irq() calls in mhi_pm_sys_error_transition()
+-Moved it to mhi_pm_disable_transition()
 
-> +	{ .compatible	= "arm,coresight-etm-sysreg" },
+v2:
+-Addressed patches based on review comments and made improvements
+-Added bus: mhi: core: Check for IRQ availability during registration
+-Dropped bus: mhi: core: Use the IRQF_ONESHOT flag for the BHI interrupt line
+-Split bus: mhi: core: Move to an error state on any firmware load failure
+-Modified the following patches:
+-bus: mhi: core: Disable IRQs when powering down
+-bus: mhi: core: Improve shutdown handling after link down detection
+-bus: mhi: core: Mark device inactive soon after host issues a shutdown
+-bus: mhi: core: Move to SYS_ERROR regardless of RDDM capability
+-Addressed the above as follow-up patches with improvements:
+-bus: mhi: core: Prevent sending multiple RDDM entry callbacks
+-bus: mhi: core: Separate system error and power down handling
+-bus: mhi: core: Remove MHI event ring IRQ handlers when powering down
 
-See my comment in the next patch.
+Bhaumik Bhatt (12):
+  bus: mhi: core: Use appropriate names for firmware load functions
+  bus: mhi: core: Move to using high priority workqueue
+  bus: mhi: core: Skip device wake in error or shutdown states
+  bus: mhi: core: Move to SYS_ERROR regardless of RDDM capability
+  bus: mhi: core: Prevent sending multiple RDDM entry callbacks
+  bus: mhi: core: Move to an error state on any firmware load failure
+  bus: mhi: core: Use appropriate label in firmware load handler API
+  bus: mhi: core: Move to an error state on mission mode failure
+  bus: mhi: core: Check for IRQ availability during registration
+  bus: mhi: core: Separate system error and power down handling
+  bus: mhi: core: Mark and maintain device states early on after power
+    down
+  bus: mhi: core: Remove MHI event ring IRQ handlers when powering down
 
-With the above:
+ drivers/bus/mhi/core/boot.c |  60 ++++++-----
+ drivers/bus/mhi/core/init.c |  11 ++-
+ drivers/bus/mhi/core/main.c |   9 +-
+ drivers/bus/mhi/core/pm.c   | 236 ++++++++++++++++++++++++++++++++------------
+ include/linux/mhi.h         |   2 +
+ 5 files changed, 222 insertions(+), 96 deletions(-)
 
-Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
 
-> +	{}
-> +};
-> +
-> +static struct platform_driver etm4_platform_driver = {
-> +	.probe		= etm4_probe_platform_dev,
-> +	.driver			= {
-> +		.name			= "coresight-etm4x",
-> +		.of_match_table		= etm_sysreg_match,
-> +		.suppress_bind_attrs	= true,
-> +	},
-> +};
-> +
->  static int __init etm4x_init(void)
->  {
->  	int ret;
-> @@ -1793,10 +1824,19 @@ static int __init etm4x_init(void)
->  
->  	ret = amba_driver_register(&etm4x_amba_driver);
->  	if (ret) {
-> -		pr_err("Error registering etm4x driver\n");
-> -		etm4_pm_clear();
-> +		pr_err("Error registering etm4x AMBA driver\n");
-> +		goto clear_pm;
->  	}
->  
-> +	ret = platform_driver_register(&etm4_platform_driver);
-> +	if (!ret)
-> +		return 0;
-> +
-> +	pr_err("Error registering etm4x platform driver\n");
-> +	amba_driver_unregister(&etm4x_amba_driver);
-> +
-> +clear_pm:
-> +	etm4_pm_clear();
->  	return ret;
->  }
->  
-> -- 
-> 2.24.1
-> 
