@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A34612ABA88
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 14:23:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 295E02ABAC2
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 14:23:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387893AbgKINUK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 08:20:10 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47602 "EHLO mail.kernel.org"
+        id S2388162AbgKINWG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 08:22:06 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50006 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387551AbgKINUF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 08:20:05 -0500
+        id S2387839AbgKINWC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 08:22:02 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B62CE2076E;
-        Mon,  9 Nov 2020 13:20:03 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id F31E120663;
+        Mon,  9 Nov 2020 13:22:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604928004;
-        bh=c6strdFNX862Wnk98EAR6chwxrm6G0VD8w8sw8l1sco=;
+        s=default; t=1604928121;
+        bh=IAyK6rwbXaedPokaEbAQ1fGa2dVLGXqgJwZU377OoBg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=IA/NaK+H2X+sKsXojQwaN5fOkG12uqS8Q/90oyMchVIE0C0vXZb/AQ805qgsJqg7p
-         Ffp1BHAAbfgNnuI3mEp3rRJbMsU3PjYKwSJAY2Bfl7/kvq53mhMs4X8kdhENZP9Heb
-         PxF5BuC6nmCY/H6yt/jMIYGyIa1pvUVj3PoeuDIk=
+        b=sUNgKQNie+h5L5BOhIUlC2b/2zh60Vwrnl6Xhlu1q9nL33g7XZl2uuUjLLLmhGlvC
+         HJgLM47s03kjW0bL1KgMDT1FWF0xUStB6eQesdgHzr81VH3mT+/EThojoZlhOyjPhT
+         S0I2jNimNQBz1jjcaaxOsnP+E+ytmO6j4bOfvSqQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Tyrel Datwyler <tyreld@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        stable@vger.kernel.org, Martin Leung <martin.leung@amd.com>,
+        Aurabindo Pillai <aurabindo.pillai@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.9 093/133] scsi: ibmvscsi: Fix potential race after loss of transport
-Date:   Mon,  9 Nov 2020 13:55:55 +0100
-Message-Id: <20201109125035.175407730@linuxfoundation.org>
+Subject: [PATCH 5.9 094/133] drm/amd/display: adding ddc_gpio_vga_reg_list to ddc reg defns
+Date:   Mon,  9 Nov 2020 13:55:56 +0100
+Message-Id: <20201109125035.225118762@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201109125030.706496283@linuxfoundation.org>
 References: <20201109125030.706496283@linuxfoundation.org>
@@ -43,147 +44,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tyrel Datwyler <tyreld@linux.ibm.com>
+From: Martin Leung <martin.leung@amd.com>
 
-[ Upstream commit 665e0224a3d76f36da40bd9012270fa629aa42ed ]
+[ Upstream commit a1d2afc5dde29a943d32bf92eb0408c9f19541fc ]
 
-After a loss of transport due to an adapter migration or crash/disconnect
-from the host partner there is a tiny window where we can race adjusting
-the request_limit of the adapter. The request limit is atomically
-increased/decreased to track the number of inflight requests against the
-allowed limit of our VIOS partner.
+why:
+oem-related ddc read/write fails without these regs
 
-After a transport loss we set the request_limit to zero to reflect this
-state.  However, there is a window where the adapter may attempt to queue a
-command because the transport loss event hasn't been fully processed yet
-and request_limit is still greater than zero.  The hypercall to send the
-event will fail and the error path will increment the request_limit as a
-result.  If the adapter processes the transport event prior to this
-increment the request_limit becomes out of sync with the adapter state and
-can result in SCSI commands being submitted on the now reset connection
-prior to an SRP Login resulting in a protocol violation.
+how:
+copy from hw_factory_dcn20.c
 
-Fix this race by protecting request_limit with the host lock when changing
-the value via atomic_set() to indicate no transport.
-
-Link: https://lore.kernel.org/r/20201025001355.4527-1-tyreld@linux.ibm.com
-Signed-off-by: Tyrel Datwyler <tyreld@linux.ibm.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Signed-off-by: Martin Leung <martin.leung@amd.com>
+Acked-by: Aurabindo Pillai <aurabindo.pillai@amd.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/ibmvscsi/ibmvscsi.c | 36 +++++++++++++++++++++++---------
- 1 file changed, 26 insertions(+), 10 deletions(-)
+ .../drm/amd/display/dc/gpio/dcn30/hw_factory_dcn30.c | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
 
-diff --git a/drivers/scsi/ibmvscsi/ibmvscsi.c b/drivers/scsi/ibmvscsi/ibmvscsi.c
-index b1f3017b6547a..29fcc44be2d57 100644
---- a/drivers/scsi/ibmvscsi/ibmvscsi.c
-+++ b/drivers/scsi/ibmvscsi/ibmvscsi.c
-@@ -806,6 +806,22 @@ static void purge_requests(struct ibmvscsi_host_data *hostdata, int error_code)
- 	spin_unlock_irqrestore(hostdata->host->host_lock, flags);
- }
+diff --git a/drivers/gpu/drm/amd/display/dc/gpio/dcn30/hw_factory_dcn30.c b/drivers/gpu/drm/amd/display/dc/gpio/dcn30/hw_factory_dcn30.c
+index 7e7fb65721073..9d3665f88c523 100644
+--- a/drivers/gpu/drm/amd/display/dc/gpio/dcn30/hw_factory_dcn30.c
++++ b/drivers/gpu/drm/amd/display/dc/gpio/dcn30/hw_factory_dcn30.c
+@@ -117,6 +117,12 @@ static const struct ddc_registers ddc_data_regs_dcn[] = {
+ 	ddc_data_regs_dcn2(4),
+ 	ddc_data_regs_dcn2(5),
+ 	ddc_data_regs_dcn2(6),
++	{
++			DDC_GPIO_VGA_REG_LIST(DATA),
++			.ddc_setup = 0,
++			.phy_aux_cntl = 0,
++			.dc_gpio_aux_ctrl_5 = 0
++	}
+ };
  
-+/**
-+ * ibmvscsi_set_request_limit - Set the adapter request_limit in response to
-+ * an adapter failure, reset, or SRP Login. Done under host lock to prevent
-+ * race with SCSI command submission.
-+ * @hostdata:	adapter to adjust
-+ * @limit:	new request limit
-+ */
-+static void ibmvscsi_set_request_limit(struct ibmvscsi_host_data *hostdata, int limit)
-+{
-+	unsigned long flags;
-+
-+	spin_lock_irqsave(hostdata->host->host_lock, flags);
-+	atomic_set(&hostdata->request_limit, limit);
-+	spin_unlock_irqrestore(hostdata->host->host_lock, flags);
-+}
-+
- /**
-  * ibmvscsi_reset_host - Reset the connection to the server
-  * @hostdata:	struct ibmvscsi_host_data to reset
-@@ -813,7 +829,7 @@ static void purge_requests(struct ibmvscsi_host_data *hostdata, int error_code)
- static void ibmvscsi_reset_host(struct ibmvscsi_host_data *hostdata)
- {
- 	scsi_block_requests(hostdata->host);
--	atomic_set(&hostdata->request_limit, 0);
-+	ibmvscsi_set_request_limit(hostdata, 0);
+ static const struct ddc_registers ddc_clk_regs_dcn[] = {
+@@ -126,6 +132,12 @@ static const struct ddc_registers ddc_clk_regs_dcn[] = {
+ 	ddc_clk_regs_dcn2(4),
+ 	ddc_clk_regs_dcn2(5),
+ 	ddc_clk_regs_dcn2(6),
++	{
++			DDC_GPIO_VGA_REG_LIST(CLK),
++			.ddc_setup = 0,
++			.phy_aux_cntl = 0,
++			.dc_gpio_aux_ctrl_5 = 0
++	}
+ };
  
- 	purge_requests(hostdata, DID_ERROR);
- 	hostdata->action = IBMVSCSI_HOST_ACTION_RESET;
-@@ -1146,13 +1162,13 @@ static void login_rsp(struct srp_event_struct *evt_struct)
- 		dev_info(hostdata->dev, "SRP_LOGIN_REJ reason %u\n",
- 			 evt_struct->xfer_iu->srp.login_rej.reason);
- 		/* Login failed.  */
--		atomic_set(&hostdata->request_limit, -1);
-+		ibmvscsi_set_request_limit(hostdata, -1);
- 		return;
- 	default:
- 		dev_err(hostdata->dev, "Invalid login response typecode 0x%02x!\n",
- 			evt_struct->xfer_iu->srp.login_rsp.opcode);
- 		/* Login failed.  */
--		atomic_set(&hostdata->request_limit, -1);
-+		ibmvscsi_set_request_limit(hostdata, -1);
- 		return;
- 	}
- 
-@@ -1163,7 +1179,7 @@ static void login_rsp(struct srp_event_struct *evt_struct)
- 	 * This value is set rather than added to request_limit because
- 	 * request_limit could have been set to -1 by this client.
- 	 */
--	atomic_set(&hostdata->request_limit,
-+	ibmvscsi_set_request_limit(hostdata,
- 		   be32_to_cpu(evt_struct->xfer_iu->srp.login_rsp.req_lim_delta));
- 
- 	/* If we had any pending I/Os, kick them */
-@@ -1195,13 +1211,13 @@ static int send_srp_login(struct ibmvscsi_host_data *hostdata)
- 	login->req_buf_fmt = cpu_to_be16(SRP_BUF_FORMAT_DIRECT |
- 					 SRP_BUF_FORMAT_INDIRECT);
- 
--	spin_lock_irqsave(hostdata->host->host_lock, flags);
- 	/* Start out with a request limit of 0, since this is negotiated in
- 	 * the login request we are just sending and login requests always
- 	 * get sent by the driver regardless of request_limit.
- 	 */
--	atomic_set(&hostdata->request_limit, 0);
-+	ibmvscsi_set_request_limit(hostdata, 0);
- 
-+	spin_lock_irqsave(hostdata->host->host_lock, flags);
- 	rc = ibmvscsi_send_srp_event(evt_struct, hostdata, login_timeout * 2);
- 	spin_unlock_irqrestore(hostdata->host->host_lock, flags);
- 	dev_info(hostdata->dev, "sent SRP login\n");
-@@ -1781,7 +1797,7 @@ static void ibmvscsi_handle_crq(struct viosrp_crq *crq,
- 		return;
- 	case VIOSRP_CRQ_XPORT_EVENT:	/* Hypervisor telling us the connection is closed */
- 		scsi_block_requests(hostdata->host);
--		atomic_set(&hostdata->request_limit, 0);
-+		ibmvscsi_set_request_limit(hostdata, 0);
- 		if (crq->format == 0x06) {
- 			/* We need to re-setup the interpartition connection */
- 			dev_info(hostdata->dev, "Re-enabling adapter!\n");
-@@ -2137,12 +2153,12 @@ static void ibmvscsi_do_work(struct ibmvscsi_host_data *hostdata)
- 	}
- 
- 	hostdata->action = IBMVSCSI_HOST_ACTION_NONE;
-+	spin_unlock_irqrestore(hostdata->host->host_lock, flags);
- 
- 	if (rc) {
--		atomic_set(&hostdata->request_limit, -1);
-+		ibmvscsi_set_request_limit(hostdata, -1);
- 		dev_err(hostdata->dev, "error after %s\n", action);
- 	}
--	spin_unlock_irqrestore(hostdata->host->host_lock, flags);
- 
- 	scsi_unblock_requests(hostdata->host);
- }
-@@ -2226,7 +2242,7 @@ static int ibmvscsi_probe(struct vio_dev *vdev, const struct vio_device_id *id)
- 	init_waitqueue_head(&hostdata->work_wait_q);
- 	hostdata->host = host;
- 	hostdata->dev = dev;
--	atomic_set(&hostdata->request_limit, -1);
-+	ibmvscsi_set_request_limit(hostdata, -1);
- 	hostdata->host->max_sectors = IBMVSCSI_MAX_SECTORS_DEFAULT;
- 
- 	if (map_persist_bufs(hostdata)) {
+ static const struct ddc_sh_mask ddc_shift[] = {
 -- 
 2.27.0
 
