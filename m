@@ -2,106 +2,293 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF2042AC2E0
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 18:52:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BC642AC2E9
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 18:55:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730028AbgKIRwn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 12:52:43 -0500
-Received: from userp2120.oracle.com ([156.151.31.85]:38564 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729493AbgKIRwn (ORCPT
+        id S1729915AbgKIRzk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 12:55:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38730 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726410AbgKIRzj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 12:52:43 -0500
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0A9Hjq2Y076313;
-        Mon, 9 Nov 2020 17:52:39 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=YvxrNDq4sUYMOLMW+ILwJqr+WkVxbMPyXAKBEteaKZo=;
- b=Qz2IBDDNnCWcrnkrlK/L/AuCT8Zm4y9KEhu+5UGSui5VZyYUKUDIIBQjEtlZLbDN1EZX
- /leCS7Ec/AM1HoCFjOMqXD9J6roC8wgVxFd2lIJWVL4ZgQMHbDF4qfVx13jlQitaiDIY
- 7R9uRSb2A2EpefCMa/W3F/9AZbsQoz9dTunQ2yrDoCLsx0Qn0Iz8ICbiSJpGf5VuvGBn
- xUKt2wOaS/+yv9hRQc2FdOyziiHmmLOsxGEbYQvSptbklwYGtYCrnm6eladgkzIe33QS
- nZP8ekiB6q1CfmnoAObOhaAHPQ8Vhi97hu4B59Zpd9zVJyT0nQMRMvMziO7qxbkvhEGg rw== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by userp2120.oracle.com with ESMTP id 34p72edh2d-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 09 Nov 2020 17:52:39 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0A9Himof056123;
-        Mon, 9 Nov 2020 17:50:38 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by aserp3020.oracle.com with ESMTP id 34p5fy0f7m-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 09 Nov 2020 17:50:38 +0000
-Received: from abhmp0014.oracle.com (abhmp0014.oracle.com [141.146.116.20])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0A9Hoajl017863;
-        Mon, 9 Nov 2020 17:50:37 GMT
-Received: from linux.home (/92.157.91.83)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 09 Nov 2020 09:50:36 -0800
-Subject: Re: [RFC][PATCH 13/24] x86/pti: Extend PTI user mappings
-To:     Andy Lutomirski <luto@amacapital.net>
-Cc:     X86 ML <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
-References: <20201109112319.264511-1-alexandre.chartre@oracle.com>
- <20201109112319.264511-14-alexandre.chartre@oracle.com>
- <CALCETrX-cN8zcSNZnmEw=0dL+mkaqkWVMdE2FkGTfUFR+Si=Bg@mail.gmail.com>
-From:   Alexandre Chartre <alexandre.chartre@oracle.com>
-Message-ID: <6a1b1267-c5bf-a1ba-4707-8cec35b1295c@oracle.com>
-Date:   Mon, 9 Nov 2020 18:52:55 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        Mon, 9 Nov 2020 12:55:39 -0500
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85374C0613CF
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Nov 2020 09:55:39 -0800 (PST)
+Received: by mail-pg1-x542.google.com with SMTP id f38so7795475pgm.2
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Nov 2020 09:55:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=BeHtapBv7r0tY9XGFh/pizxfTl1A7qsOO1pXNTgC3HQ=;
+        b=Q2st/RnRSg+b6n2Y6CPRMeHOmfjA1VlDx5wdTajJ/gFoiHC5h7QWiAo5aFQ98NAR2Y
+         bICCdz+ncQZpG8P2RLSSxsnP5rxTgGGXLrBEvAGhio4KBTQ2iMIKj+enOC7GugzhelcE
+         il/U5BKwtxQ1yLtuviev74icM8QxVVbzdJ5JlOcYnLcyte5VYfmdT5q8r6eTU/8nyuUc
+         qhsIK60LFgWy6rqm13WPS5bAGx9/yplxUg2386bwy2S3noyWpC51iRZaMx1v7B9EXw8R
+         /vYgKksQia7SnrCQ3WnHQn720mD7d9EVO3AuKkB/brDVnSZZ4meFwa1SmRxD6kN9Zyld
+         mJxg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=BeHtapBv7r0tY9XGFh/pizxfTl1A7qsOO1pXNTgC3HQ=;
+        b=eOjI7wBSoED6rL6NaFAyQm69BIF2b0D1A8aGXtv5t7dx2dQOj5nVDD0lI7qzhO6bjm
+         gjEqWH2SC9yKxZWse7m770zbZypREnXQB04Lb4/s0ATFpnVnktjAdl+THJzEjPH/Gghi
+         Ce9a7NW+GPAIZUVrRBZ2W+HGtOtRxSghvfy1hlDgKC6DurUZUyFwRm4b1E3a0l2+746V
+         nDafe6VwrwTjI0Dk3RBmttb8gEdubHukZciI65L8TrJF+sjsZ+frjpQlR6hMy5bvTfTV
+         gcNAdwTx6y+aee4oyazTsyWTGkfKNAn5mVjzf8ukYPKtGW8ioL76thjUKYeIIpyEPmGm
+         bj/w==
+X-Gm-Message-State: AOAM531QelvgtEpv9ZNJXQnvOJGQgnsm60xeLOLWk8Zy+cPmP8ktGcPL
+        bJZBhYr3zX6jb+f0YtCIRGhPDA==
+X-Google-Smtp-Source: ABdhPJyJkTDtoc9MWlELQ22l2x8G2c1nTZyaqWDhFEVuQPlnaHyDpgLwMzsc367EK8/thV/RuIFRZw==
+X-Received: by 2002:a62:ea0c:0:b029:164:3789:547b with SMTP id t12-20020a62ea0c0000b02901643789547bmr14455546pfh.27.1604944539040;
+        Mon, 09 Nov 2020 09:55:39 -0800 (PST)
+Received: from xps15 (S0106002369de4dac.cg.shawcable.net. [68.147.8.254])
+        by smtp.gmail.com with ESMTPSA id c4sm12030407pfo.62.2020.11.09.09.55.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 09 Nov 2020 09:55:38 -0800 (PST)
+Date:   Mon, 9 Nov 2020 10:55:36 -0700
+From:   Mathieu Poirier <mathieu.poirier@linaro.org>
+To:     Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
+Cc:     Arnaud POULIQUEN <arnaud.pouliquen@st.com>,
+        "ohad@wizery.com" <ohad@wizery.com>,
+        "bjorn.andersson@linaro.org" <bjorn.andersson@linaro.org>,
+        "linux-remoteproc@vger.kernel.org" <linux-remoteproc@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v5 8/8] rpmsg: Turn name service into a stand alone driver
+Message-ID: <20201109175536.GD3395222@xps15>
+References: <20201105225028.3058818-1-mathieu.poirier@linaro.org>
+ <20201105225028.3058818-9-mathieu.poirier@linaro.org>
+ <20201106131545.GA10889@ubuntu>
+ <20201106140028.GB10889@ubuntu>
+ <20201106175332.GB3203364@xps15>
+ <e7dedfb6-1e9c-4246-9db1-e14a2e16c68c@st.com>
+ <20201109102023.GA17692@ubuntu>
 MIME-Version: 1.0
-In-Reply-To: <CALCETrX-cN8zcSNZnmEw=0dL+mkaqkWVMdE2FkGTfUFR+Si=Bg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9800 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 spamscore=0 malwarescore=0
- adultscore=0 phishscore=0 bulkscore=0 mlxlogscore=999 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2011090123
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9800 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 mlxlogscore=999 mlxscore=0
- malwarescore=0 suspectscore=0 lowpriorityscore=0 adultscore=0 phishscore=0
- priorityscore=1501 spamscore=0 impostorscore=0 clxscore=1011
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2011090123
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201109102023.GA17692@ubuntu>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 11/9/20 6:28 PM, Andy Lutomirski wrote:
-> On Mon, Nov 9, 2020 at 3:22 AM Alexandre Chartre
-> <alexandre.chartre@oracle.com> wrote:
->>
->> Extend PTI user mappings so that more kernel entry code can be executed
->> with the user page-table. To do so, we need to map syscall and interrupt
->> entry code,
+On Mon, Nov 09, 2020 at 11:20:24AM +0100, Guennadi Liakhovetski wrote:
+> Hi Arnaud,
 > 
-> Probably fine.
+> On Mon, Nov 09, 2020 at 09:48:37AM +0100, Arnaud POULIQUEN wrote:
+> > Hi Guennadi, Mathieu,
+> > 
+> > On 11/6/20 6:53 PM, Mathieu Poirier wrote:
+> > > On Fri, Nov 06, 2020 at 03:00:28PM +0100, Guennadi Liakhovetski wrote:
+> > >> On Fri, Nov 06, 2020 at 02:15:45PM +0100, Guennadi Liakhovetski wrote:
+> > >>> Hi Mathieu, Arnaud,
+> > >>>
+> > >>> On Thu, Nov 05, 2020 at 03:50:28PM -0700, Mathieu Poirier wrote:
+> > >>>> From: Arnaud Pouliquen <arnaud.pouliquen@st.com>
+> > >>>>
+> > >>>> Make the RPMSG name service announcement a stand alone driver so that it
+> > >>>> can be reused by other subsystems.  It is also the first step in making the
+> > >>>> functionatlity transport independent, i.e that is not tied to virtIO.
+> > >>>
+> > >>> Sorry, I just realised that my testing was incomplete. I haven't tested 
+> > >>> automatic module loading and indeed it doesn't work. If rpmsg_ns is loaded 
+> > >>> it probes and it's working, but if it isn't loaded and instead the rpmsg 
+> > >>> bus driver is probed (e.g. virtio_rpmsg_bus), calling 
+> > >>> rpmsg_ns_register_device() to create a new rpmsg_ns device doesn't cause 
+> > >>> rpmsg_ns to be loaded.
+> > >>
+> > >> A simple fix for that is using MODULE_ALIAS("rpmsg:rpmsg_ns"); in rpmsg_ns.c 
+> > >> but that alone doesn't fix the problem completely - the module does load then 
+> > >> but not quickly enough, the NS announcement from the host / remote arrives 
+> > >> before rpmsg_ns has properly registered. I think the best solution would be 
+> > >> to link rpmsg_ns.c together with rpmsg_core.c. You'll probably want to keep 
+> > >> the module name, so you could rename them to just core.c and ns.c.
+> > > 
+> > > I'm pretty sure it is because virtio_device_ready() in rpmsg_probe() is called
+> > > before the kernel has finished loading the name space driver.  There has to be
+> > > a way to prevent that from happening - I will investigate further.
+> > 
+> > Right, no dependency is set so the rpmsg_ns driver is never probed...
+> > And  name service announcement messages are dropped if the service is not present.
 > 
->> per cpu offsets (__per_cpu_offset, which is used some in
->> entry code),
+> The mentioned change
 > 
-> This likely already leaks due to vulnerable CPUs leaking address space
-> layout info.
+> -MODULE_ALIAS("rpmsg_ns");
+> +MODULE_ALIAS("rpmsg:rpmsg_ns");
 
-I forgot to update the comment, I am not mapping __per_cpu_offset anymore.
-
-However, if we do map __per_cpu_offset then we don't need to enforce the
-ordering in paranoid_entry to switch CR3 before GS.
+Yes, I'm good with that part.
 
 > 
->> the stack canary,
-> 
-> That's going to be a very tough sell.
+> is actually a compulsory fix, without it the driver doesn't even get loaded when 
+> a device id registered, using rpmsg_ns_register_device(). So this has to be done 
+> as a minimum *if* we keep RPNsg NS as a separate kernel module. However, that 
+> still doesn't fix the problem relyably because of timing. I've merged both the 
+> RPMsg core and NS into a single module, which fixed the issue for me. I'm 
+> appending a patch to this email, but since it's a "fixup" please, feel free to 
+> roll it into the original work. But thinking about it, even linking modules 
+> together doesn't guarantee the order. I think rpmsg_ns_register_device() should 
+> actually actively wait for NS device probing to finish - successfully or not. 
+> I can add a complete() / wait_for_completion() pair to the process if you like.
 > 
 
-I can get rid of this, but this will require to disable stack-protector for
-any function that we can call while using the user page-table, like already
-done in patch 21 (x86/entry: Disable stack-protector for IST entry C handlers).
+Working with a completion is the kind of thing I had in mind.  But I would still
+like to keep the drivers separate and that's the part I need to think about.
 
-alex.
+> Thanks
+> Guennadi
+> 
+> > if rpmsg_virtio_bus is built-in
+> > -> using "select RPMSG_NS" in RPMSG_VIRTIO kconfig should ensure that rpmsg_ns is also built-in 
+> > if rpmsg_virtio_bus is build as module rpmsg_ns.ko should be loaded first.
+> > -> MODULE_SOFTDEP could be used in virtio_rpmsg_bus.c
+> > 
+> > Thanks,
+> > Arnaud
+> 
+> From: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
+> Subject: [PATCH] fixup! rpmsg: Turn name service into a stand alone driver
+> 
+> Link ns.c with core.c together to guarantee immediate probing.
+> 
+> Signed-off-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
+> ---
+>  drivers/rpmsg/Makefile                   |  2 +-
+>  drivers/rpmsg/{rpmsg_core.c => core.c}   | 13 ++++++++++---
+>  drivers/rpmsg/{rpmsg_ns.c => ns.c}       | 13 +++----------
+>  include/linux/{rpmsg_ns.h => rpmsg/ns.h} |  6 +++++-
+>  4 files changed, 19 insertions(+), 15 deletions(-)
+>  rename drivers/rpmsg/{rpmsg_core.c => core.c} (99%)
+>  rename drivers/rpmsg/{rpmsg_ns.c => ns.c} (87%)
+>  rename include/linux/{rpmsg_ns.h => rpmsg/ns.h} (95%)
+> 
+> diff --git a/drivers/rpmsg/Makefile b/drivers/rpmsg/Makefile
+> index 8d452656f0ee..5aa79e167372 100644
+> --- a/drivers/rpmsg/Makefile
+> +++ b/drivers/rpmsg/Makefile
+> @@ -1,7 +1,7 @@
+>  # SPDX-License-Identifier: GPL-2.0
+> +rpmsg_core-objs			:= core.o ns.o
+>  obj-$(CONFIG_RPMSG)		+= rpmsg_core.o
+>  obj-$(CONFIG_RPMSG_CHAR)	+= rpmsg_char.o
+> -obj-$(CONFIG_RPMSG_NS)		+= rpmsg_ns.o
+>  obj-$(CONFIG_RPMSG_MTK_SCP)	+= mtk_rpmsg.o
+>  qcom_glink-objs			:= qcom_glink_native.o qcom_glink_ssr.o
+>  obj-$(CONFIG_RPMSG_QCOM_GLINK) += qcom_glink.o
+> diff --git a/drivers/rpmsg/rpmsg_core.c b/drivers/rpmsg/core.c
+> similarity index 99%
+> rename from drivers/rpmsg/rpmsg_core.c
+> rename to drivers/rpmsg/core.c
+> index 6381c1e00741..0c622cced804 100644
+> --- a/drivers/rpmsg/rpmsg_core.c
+> +++ b/drivers/rpmsg/core.c
+> @@ -14,6 +14,7 @@
+>  #include <linux/kernel.h>
+>  #include <linux/module.h>
+>  #include <linux/rpmsg.h>
+> +#include <linux/rpmsg/ns.h>
+>  #include <linux/of_device.h>
+>  #include <linux/pm_domain.h>
+>  #include <linux/slab.h>
+> @@ -625,21 +626,27 @@ void unregister_rpmsg_driver(struct rpmsg_driver *rpdrv)
+>  }
+>  EXPORT_SYMBOL(unregister_rpmsg_driver);
+>  
+> -
+>  static int __init rpmsg_init(void)
+>  {
+>  	int ret;
+>  
+>  	ret = bus_register(&rpmsg_bus);
+> -	if (ret)
+> +	if (ret) {
+>  		pr_err("failed to register rpmsg bus: %d\n", ret);
+> +		return ret;
+> +	}
+> +
+> +	ret = rpmsg_ns_init();
+> +	if (ret)
+> +		bus_unregister(&rpmsg_bus);
+>  
+>  	return ret;
+>  }
+>  postcore_initcall(rpmsg_init);
+>  
+> -static void __exit rpmsg_fini(void)
+> +static void rpmsg_fini(void)
+>  {
+> +	rpmsg_ns_exit();
+>  	bus_unregister(&rpmsg_bus);
+>  }
+>  module_exit(rpmsg_fini);
+> diff --git a/drivers/rpmsg/rpmsg_ns.c b/drivers/rpmsg/ns.c
+> similarity index 87%
+> rename from drivers/rpmsg/rpmsg_ns.c
+> rename to drivers/rpmsg/ns.c
+> index 8e26824ca328..859c587b8300 100644
+> --- a/drivers/rpmsg/rpmsg_ns.c
+> +++ b/drivers/rpmsg/ns.c
+> @@ -7,7 +7,7 @@
+>  #include <linux/module.h>
+>  #include <linux/slab.h>
+>  #include <linux/rpmsg.h>
+> -#include <linux/rpmsg_ns.h>
+> +#include <linux/rpmsg/ns.h>
+>  
+>  #include "rpmsg_internal.h"
+>  
+> @@ -84,7 +84,7 @@ static struct rpmsg_driver rpmsg_ns_driver = {
+>  	.probe = rpmsg_ns_probe,
+>  };
+>  
+> -static int rpmsg_ns_init(void)
+> +int rpmsg_ns_init(void)
+>  {
+>  	int ret;
+>  
+> @@ -94,15 +94,8 @@ static int rpmsg_ns_init(void)
+>  
+>  	return ret;
+>  }
+> -postcore_initcall(rpmsg_ns_init);
+>  
+> -static void rpmsg_ns_exit(void)
+> +void rpmsg_ns_exit(void)
+>  {
+>  	unregister_rpmsg_driver(&rpmsg_ns_driver);
+>  }
+> -module_exit(rpmsg_ns_exit);
+> -
+> -MODULE_DESCRIPTION("Name service announcement rpmsg Driver");
+> -MODULE_AUTHOR("Arnaud Pouliquen <arnaud.pouliquen@st.com>");
+> -MODULE_ALIAS("rpmsg_ns");
+> -MODULE_LICENSE("GPL v2");
+> diff --git a/include/linux/rpmsg_ns.h b/include/linux/rpmsg/ns.h
+> similarity index 95%
+> rename from include/linux/rpmsg_ns.h
+> rename to include/linux/rpmsg/ns.h
+> index 42786bb759b5..2838788c8448 100644
+> --- a/include/linux/rpmsg_ns.h
+> +++ b/include/linux/rpmsg/ns.h
+> @@ -4,8 +4,9 @@
+>  #define _LINUX_RPMSG_NS_H
+>  
+>  #include <linux/mod_devicetable.h>
+> -#include <linux/types.h>
+> +#include <linux/rpmsg.h>
+>  #include <linux/rpmsg_byteorder.h>
+> +#include <linux/types.h>
+>  
+>  /**
+>   * struct rpmsg_ns_msg - dynamic name service announcement message
+> @@ -56,4 +57,7 @@ static inline int rpmsg_ns_register_device(struct rpmsg_device *rpdev)
+>         return rpmsg_register_device(rpdev);
+>  }
+>  
+> +int rpmsg_ns_init(void);
+> +void rpmsg_ns_exit(void);
+> +
+>  #endif
+> -- 
+> 2.28.0
+> 
