@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EFD492ABC29
+	by mail.lfdr.de (Postfix) with ESMTP id 76A572ABC28
 	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 14:35:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730492AbgKINe5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 08:34:57 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58412 "EHLO mail.kernel.org"
+        id S1731361AbgKINev (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 08:34:51 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58470 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730899AbgKINFc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 08:05:32 -0500
+        id S1730904AbgKINFe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 08:05:34 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B334920663;
-        Mon,  9 Nov 2020 13:05:30 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B769620684;
+        Mon,  9 Nov 2020 13:05:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604927131;
-        bh=tfHgAwlbq1YrlAfjrWp/awNwn7GitDUDMmZVx5/IfdQ=;
+        s=default; t=1604927134;
+        bh=/bJcuFM1enWY4PYi3NrKmpDWGx0BDVxq1x2befaNcSg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DOap2E20Fq0DMaOgjkiHBbHZbLhIxjBT8DYkPumw+34ziIvxF0HfyVUd6lNIM3ORX
-         GFtJ599BEYkzRpETMRQ3C+BPnw++jSKSq33PdHpuK5CNK5uOgln3p9m/q5y1QVEB5a
-         1hVBLCo+Ml+oWug61Vo6sTt8CPT6CLJVPYe2Gxn4=
+        b=XC2If7qyYfRpvbGxYp84DSEnKM/1DcfLQ9R2cJdTP16js8naRdZq7YoT0jAYXuVez
+         bTBjb03z5cvFSgC7m/RP5jOQzdgMiqc+Hc6S7mmMiVkuKy4OhuBVfvTuHq6DEdMAUM
+         5ofE35HC+mbGU3GKSljFIO8xscgA9wx+SwersFhA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Daniele Palmas <dnlplm@gmail.com>,
-        Johan Hovold <johan@kernel.org>
-Subject: [PATCH 4.9 114/117] USB: serial: option: add Telit FN980 composition 0x1055
-Date:   Mon,  9 Nov 2020 13:55:40 +0100
-Message-Id: <20201109125031.101283936@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Hans de Goede <jwrdegoede@fedoraproject.org>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Julien Humbert <julroy67@gmail.com>
+Subject: [PATCH 4.9 115/117] USB: Add NO_LPM quirk for Kingston flash drive
+Date:   Mon,  9 Nov 2020 13:55:41 +0100
+Message-Id: <20201109125031.140040830@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201109125025.630721781@linuxfoundation.org>
 References: <20201109125025.630721781@linuxfoundation.org>
@@ -42,34 +44,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Daniele Palmas <dnlplm@gmail.com>
+From: Alan Stern <stern@rowland.harvard.edu>
 
-commit db0362eeb22992502764e825c79b922d7467e0eb upstream.
+commit afaa2e745a246c5ab95103a65b1ed00101e1bc63 upstream.
 
-Add the following Telit FN980 composition:
+In Bugzilla #208257, Julien Humbert reports that a 32-GB Kingston
+flash drive spontaneously disconnects and reconnects, over and over.
+Testing revealed that disabling Link Power Management for the drive
+fixed the problem.
 
-0x1055: tty, adb, tty, tty, tty, tty
+This patch adds a quirk entry for that drive to turn off LPM permanently.
 
-Signed-off-by: Daniele Palmas <dnlplm@gmail.com>
-Link: https://lore.kernel.org/r/20201103124425.12940-1-dnlplm@gmail.com
-Cc: stable@vger.kernel.org
-Signed-off-by: Johan Hovold <johan@kernel.org>
+CC: Hans de Goede <jwrdegoede@fedoraproject.org>
+CC: <stable@vger.kernel.org>
+Reported-and-tested-by: Julien Humbert <julroy67@gmail.com>
+Signed-off-by: Alan Stern <stern@rowland.harvard.edu>
+Link: https://lore.kernel.org/r/20201102145821.GA1478741@rowland.harvard.edu
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/usb/serial/option.c |    2 ++
- 1 file changed, 2 insertions(+)
+ drivers/usb/core/quirks.c |    3 +++
+ 1 file changed, 3 insertions(+)
 
---- a/drivers/usb/serial/option.c
-+++ b/drivers/usb/serial/option.c
-@@ -1174,6 +1174,8 @@ static const struct usb_device_id option
- 	  .driver_info = NCTRL(0) | RSVD(1) },
- 	{ USB_DEVICE_INTERFACE_CLASS(TELIT_VENDOR_ID, 0x1054, 0xff),	/* Telit FT980-KS */
- 	  .driver_info = NCTRL(2) | RSVD(3) },
-+	{ USB_DEVICE_INTERFACE_CLASS(TELIT_VENDOR_ID, 0x1055, 0xff),	/* Telit FN980 (PCIe) */
-+	  .driver_info = NCTRL(0) | RSVD(1) },
- 	{ USB_DEVICE(TELIT_VENDOR_ID, TELIT_PRODUCT_ME910),
- 	  .driver_info = NCTRL(0) | RSVD(1) | RSVD(3) },
- 	{ USB_DEVICE(TELIT_VENDOR_ID, TELIT_PRODUCT_ME910_DUAL_MODEM),
+--- a/drivers/usb/core/quirks.c
++++ b/drivers/usb/core/quirks.c
+@@ -217,6 +217,9 @@ static const struct usb_device_id usb_qu
+ 	{ USB_DEVICE(0x0926, 0x3333), .driver_info =
+ 			USB_QUIRK_CONFIG_INTF_STRINGS },
+ 
++	/* Kingston DataTraveler 3.0 */
++	{ USB_DEVICE(0x0951, 0x1666), .driver_info = USB_QUIRK_NO_LPM },
++
+ 	/* X-Rite/Gretag-Macbeth Eye-One Pro display colorimeter */
+ 	{ USB_DEVICE(0x0971, 0x2000), .driver_info = USB_QUIRK_NO_SET_INTF },
+ 
 
 
