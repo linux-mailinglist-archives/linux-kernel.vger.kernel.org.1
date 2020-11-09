@@ -2,459 +2,277 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97CD02AC245
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 18:30:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BE9E92AC250
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 18:31:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731911AbgKIRaL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 12:30:11 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37980 "EHLO mail.kernel.org"
+        id S1732055AbgKIRbD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 12:31:03 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38318 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730927AbgKIRaL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 12:30:11 -0500
+        id S1731491AbgKIRbC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 12:31:02 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8592D2083B;
-        Mon,  9 Nov 2020 17:30:09 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id ADF0F2083B;
+        Mon,  9 Nov 2020 17:31:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604943010;
-        bh=LIL4FDtm7Iqg2HE02JI6QqIr5NdHv+on2tIcUl9Z9Ak=;
+        s=default; t=1604943061;
+        bh=u+3BGBGLZ7qBudqUopV8+ouRomdiYDjtsYxTdZZMlGo=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=2GSeX2g8yrXbz3OksCaZU7tXLjdudABc2f07EamLFXhfDsUZSWkypPpt/l+1gadUI
-         PtDP84rC6qbmJhJ7WqkcaX2wSvmRkX+LthGtygeXjUReyqg0JdkNxiW90LJkDpp0V0
-         eM14zu59oTLcAsN/aVWW75jZ3uKwcNq8D0ME2Ddo=
-Date:   Mon, 9 Nov 2020 18:31:08 +0100
+        b=KaHlfeV3nG1ZjUWoIDSVj3aUulBvyKGSk4j1u9vHZ9XHTRjTFdWDejwUSAUtIDLGx
+         Qa8YGKNSStZZiojpbZRy/ka5DJgx/3yC1MSqKwFNmkSAYErJkokrLhINgo7N4aKasj
+         6vmcKmy7j+YJ7De8wDYdMgrBiT+WmfbKfuFvBWYA=
+Date:   Mon, 9 Nov 2020 18:32:00 +0100
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Gustavo Pimentel <Gustavo.Pimentel@synopsys.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Joao Pinto <Joao.Pinto@synopsys.com>,
-        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org
-Subject: Re: [PATCH 1/5] misc: Add Synopsys DesignWare xData IP driver
-Message-ID: <20201109173108.GA2371851@kroah.com>
-References: <cover.1603998630.git.gustavo.pimentel@synopsys.com>
- <f60c0cbb87bd1505669bf0cf62c56cbaa8d4c1d2.1603998630.git.gustavo.pimentel@synopsys.com>
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     Ivan Zaentsev <ivan.zaentsev@wirenboard.ru>,
+        Evgeniy Polyakov <zbr@ioremap.net>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Akira Shimahara <akira215corp@gmail.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Colin Ian King <colin.king@canonical.com>,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        Evgeny Boger <boger@wirenboard.com>
+Subject: Re: Adding ABI to htmldocs - Was: Re: [PATCH 2/2] w1: w1_therm: Add
+ support for GXCAS GX20MH01 device.
+Message-ID: <20201109173200.GB2371851@kroah.com>
+References: <20201006151915.77d044a4@coco.lan>
+ <1561045277.20201007103227@wirenboard.ru>
+ <20201007105702.67988846@coco.lan>
+ <20201007090619.GA613204@kroah.com>
+ <20201007130549.6ca57af0@coco.lan>
+ <20201007114359.GA2167293@kroah.com>
+ <20201007135934.4b6e598e@coco.lan>
+ <20201021182843.522dd7e7@coco.lan>
+ <20201021165819.GA1361645@kroah.com>
+ <20201029152845.6bbb39ce@coco.lan>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <f60c0cbb87bd1505669bf0cf62c56cbaa8d4c1d2.1603998630.git.gustavo.pimentel@synopsys.com>
+In-Reply-To: <20201029152845.6bbb39ce@coco.lan>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 29, 2020 at 08:13:36PM +0100, Gustavo Pimentel wrote:
-> Add Synopsys DesignWare xData IP driver. This driver enables/disables
-> the PCI traffic generator module pertain to the Synopsys DesignWare
-> prototype.
+On Thu, Oct 29, 2020 at 03:28:45PM +0100, Mauro Carvalho Chehab wrote:
+> Em Wed, 21 Oct 2020 18:58:19 +0200
+> Greg Kroah-Hartman <gregkh@linuxfoundation.org> escreveu:
 > 
-> Signed-off-by: Gustavo Pimentel <gustavo.pimentel@synopsys.com>
-> ---
->  drivers/misc/dw-xdata-pcie.c | 395 +++++++++++++++++++++++++++++++++++++++++++
->  1 file changed, 395 insertions(+)
->  create mode 100644 drivers/misc/dw-xdata-pcie.c
+> > On Wed, Oct 21, 2020 at 06:28:43PM +0200, Mauro Carvalho Chehab wrote:
+> > > Hi greg,
+> > > 
+> > > Em Wed, 7 Oct 2020 13:59:34 +0200
+> > > Mauro Carvalho Chehab <mchehab+huawei@kernel.org> escreveu:
+> > >   
+> > > > Em Wed, 7 Oct 2020 13:43:59 +0200
+> > > > Greg Kroah-Hartman <gregkh@linuxfoundation.org> escreveu:
+> > > >   
+> > > > > On Wed, Oct 07, 2020 at 01:05:49PM +0200, Mauro Carvalho Chehab wrote:    
+> > > > > > Em Wed, 7 Oct 2020 11:06:19 +0200
+> > > > > > Greg Kroah-Hartman <gregkh@linuxfoundation.org> escreveu:
+> > > > > >       
+> > > > > > > On Wed, Oct 07, 2020 at 10:57:02AM +0200, Mauro Carvalho Chehab wrote:      
+> > > > > > > > Em Wed, 7 Oct 2020 10:32:27 +0300
+> > > > > > > > Ivan Zaentsev <ivan.zaentsev@wirenboard.ru> escreveu:
+> > > > > > > >         
+> > > > > > > > > Tuesday, October 6, 2020, 4:19:15 PM, Mauro Carvalho Chehab wrote:
+> > > > > > > > >         
+> > > > > > > > > >> diff --git a/Documentation/w1/slaves/w1_therm.rst b/Documentation/w1/slaves/w1_therm.rst
+> > > > > > > > > >> index f1148181f53e..00376501a5ef 100644
+> > > > > > > > > >> --- a/Documentation/w1/slaves/w1_therm.rst
+> > > > > > > > > >> +++ b/Documentation/w1/slaves/w1_therm.rst          
+> > > > > > > > >         
+> > > > > > > > > >>  
+> > > > > > > > > >> @@ -130,4 +131,12 @@ conversion and temperature reads 85.00 (powerup value) or 127.94 (insufficient
+> > > > > > > > > >>  power), the driver returns a conversion error. Bit mask ``2`` enables poll for
+> > > > > > > > > >>  conversion completion (normal power only) by generating read cycles on the bus
+> > > > > > > > > >>  after conversion starts. In parasite power mode this feature is not available.
+> > > > > > > > > >> -Feature bit masks may be combined (OR).
+> > > > > > > > > >> +Feature bit masks may be combined (OR). See accompanying sysfs documentation:
+> > > > > > > > > >> +:ref:`Documentation/w1/slaves/w1_therm.rst <w1_therm>`
+> > > > > > > > > >> +          
+> > > > > > > > >         
+> > > > > > > > > > As warned by Sphinx, this cross-reference is broken:          
+> > > > > > > > >         
+> > > > > > > > > >         .../Documentation/w1/slaves/w1_therm.rst:125: WARNING:
+> > > > > > > > > > undefined label: w1_therm (if the link has no caption the label must precede a section header)          
+> > > > > > > > > 
+> > > > > > > > > Would this be ok?        
+> > > > > > > > 
+> > > > > > > > Yeah, sure!
+> > > > > > > >         
+> > > > > > > > > 
+> > > > > > > > > "More details in Documentation/ABI/testing/sysfs-driver-w1_therm"
+> > > > > > > > >         
+> > > > > > > > > > Not sure what you wanted to point here.          
+> > > > > > > > > 
+> > > > > > > > > A link to a driver's sysfs interface, but sysfs docs are text
+> > > > > > > > > files and seem to not be included in Sphynx Docs.        
+> > > > > > > > 
+> > > > > > > > I sent upstream sometime ago a patch series adding ABI to Sphinx, but I 
+> > > > > > > > was not merged, not sure why:
+> > > > > > > > 
+> > > > > > > > 	https://git.linuxtv.org/mchehab/experimental.git/log/?h=abi_patches_v5.6        
+> > > > > > > 
+> > > > > > > I think the raft of different patches floating around at the time made
+> > > > > > > me totally confused as to what was, and was not, the latest versions.      
+> > > > > > 
+> > > > > > Yeah, there were lots of patches floating around that time.
+> > > > > > 
+> > > > > > I also recall that someone (Jeni?) asked if the best wouldn't be to
+> > > > > > just convert the ABI files to ReST directly.
+> > > > > >       
+> > > > > > > I'll be glad to look at them again, if you want to rebase after 5.10-rc1
+> > > > > > > is out and resend them, as I think this should be showing up in the
+> > > > > > > documentation.      
+> > > > > > 
+> > > > > > Surely. I'll rebase them after 5.10-rc1 and re-submit. 
+> > > > > > 
+> > > > > > What strategy do you prefer? Keep the files with the same format as
+> > > > > > today (allowing them to optionally have ReST markups) or to convert
+> > > > > > them to .rst directly?
+> > > > > > 
+> > > > > > In the latter case, the best would be to apply it as early as possible
+> > > > > > after 5.10-rc1, as it may cause conflicts with other patches being
+> > > > > > submitted for 5.11.      
+> > > > > 
+> > > > > The existing format if at all possible, doing wholesale changes is a
+> > > > > mess and wouldn't be recommended.    
+> > > > 
+> > > > Yeah, merging it would indeed be a mess. At long term, though, it could 
+> > > > be easier to maintain.
+> > > >   
+> > > > > I think you already fixed up the entries that had problems being parsed
+> > > > > in the past, if not, we can resolve those as well.    
+> > > > 
+> > > > Yes. The series start with fixes. I suspect several of them
+> > > > (if not all) were already merged, but if anything is missing, I can fix 
+> > > > at the upcoming rebased series.  
+> > > 
+> > > Rebasing the patch series was easier than what I expected:
+> > > 
+> > > 	https://git.linuxtv.org/mchehab/experimental.git/log/?h=abi_patches_v6
+> > > 
+> > > Yet, while fixing one build issue, I noticed that there are multiple
+> > > files defining the same ABI, with different contents.
+> > > 
+> > > Right now, scripts/get_abi.pl assumes that "what" is unique. Well, sorts
+> > > of. When it finds a duplicated entry, it merges the description, 
+> > > preserving the fields from the last parsed entry.
+> > > 
+> > > I ended adding a patch to detect those ABI duplication:
+> > > 
+> > > 	https://git.linuxtv.org/mchehab/experimental.git/commit/?h=abi_patches_v6&id=6868914605cb0ebffe3fd07d344c246e1e4cd94e
+> > > 
+> > > I'm enclosing the results.
+> > > 
+> > > One such example is this one:
+> > > 
+> > > 	3 duplicated entries for /sys/class/leds/<led>/hw_pattern: on file(s) sysfs-class-led-trigger-pattern sysfs-class-led-driver-sc27xx sysfs-class-led-driver-el15203000
+> > > 
+> > > It sounds that different drivers define and use this ABI, but
+> > > each one with different meanings. 
+> > > 
+> > > There are even some cases where the same file define the same ABI twice:
+> > > 
+> > > 	2 duplicated entries for /sys/class/power_supply/<supply_name>/temp_alert_min: on file(s) sysfs-class-power
+> > > 
+> > > Not sure what's the best way to document things like that, or if
+> > > the fix would be to drop/merge those.
+> > > 
+> > > Any ideas?  
+> > 
+> > We should merge them to be the correct representation.  The
+> > driver-specific ones for LED should just be dropped to use the
+> > class-generic one.
+> > 
+> > I guess just take them one at a time :)
 > 
-> diff --git a/drivers/misc/dw-xdata-pcie.c b/drivers/misc/dw-xdata-pcie.c
-> new file mode 100644
-> index 00000000..b529dae
-> --- /dev/null
-> +++ b/drivers/misc/dw-xdata-pcie.c
-> @@ -0,0 +1,395 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * Copyright (c) 2020 Synopsys, Inc. and/or its affiliates.
-> + * Synopsys DesignWare xData driver
-> + *
-> + * Author: Gustavo Pimentel <gustavo.pimentel@synopsys.com>
-> + */
-> +
-> +#include <linux/pci-epf.h>
-> +#include <linux/kernel.h>
-> +#include <linux/module.h>
-> +#include <linux/device.h>
-> +#include <linux/delay.h>
-> +#include <linux/pci.h>
-> +
-> +#define DW_XDATA_EP_MEM_OFFSET		0x8000000
-> +
-> +static DEFINE_MUTEX(xdata_lock);
-> +
-> +struct dw_xdata_pcie_data {
-> +	/* xData registers location */
-> +	enum pci_barno			rg_bar;
-> +	off_t				rg_off;
-> +	size_t				rg_sz;
-> +};
-> +
-> +static const struct dw_xdata_pcie_data snps_edda_data = {
-> +	/* xData registers location */
-> +	.rg_bar				= BAR_0,
-> +	.rg_off				= 0x00000000,   /*   0 Kbytes */
-> +	.rg_sz				= 0x0000012c,   /* 300  bytes */
-> +};
-> +
-> +static int dw_xdata_command_set(const char *val, const struct kernel_param *kp);
-> +static const struct kernel_param_ops xdata_command_ops = {
-> +	.set = dw_xdata_command_set,
-> +};
-> +
-> +static char command;
-> +module_param_cb(command, &xdata_command_ops, &command, 0644);
-> +MODULE_PARM_DESC(command, "xData command");
+> I'm trying to address each one of the duplicated ones...
+> I'm now stuck with this one:
+> 
+> At Documentation/ABI/testing/sysfs-driver-w1_therm, it has:
+> 
+> 	What:		/sys/bus/w1/devices/.../eeprom
+> 	Date:		May 2020
+> 	Contact:	Akira Shimahara <akira215corp@gmail.com>
+> 	Description:
+> 			(WO) writing that file will either trigger a save of the
+> 			device data to its embedded EEPROM, either restore data
+> 			embedded in device EEPROM. Be aware that devices support
+> 			limited EEPROM writing cycles (typical 50k)
+> 	
+> 				* 'save': save device RAM to EEPROM
+> 				* 'restore': restore EEPROM data in device RAM
+> 
+> 	Users:		any user space application which wants to communicate with
+> 			w1_term device
+> 
+> Which defines the same ABI as this one:
+> 
+> 	What:		/sys/bus/w1/devices/.../eeprom
+> 	Date:		May 2012
+> 	Contact:	Markus Franke <franm@hrz.tu-chemnitz.de>
+> 	Description:	read/write the contents of the EEPROM memory of the DS28E04-100
+> 			see Documentation/w1/slaves/w1_ds28e04.rst for detailed information
+> 	Users:		any user space application which wants to communicate with DS28E04-100
+> 
+> Which is further described at Documentation/w1/slaves/w1_ds28e04.rst:
+> 
+>    Memory Access
+> 
+> 	A read operation on the "eeprom" file reads the given amount of bytes
+> 	from the EEPROM of the DS28E04.
+> 
+> 	A write operation on the "eeprom" file writes the given byte sequence
+> 	to the EEPROM of the DS28E04. If CRC checking mode is enabled only
+> 	fully aligned blocks of 32 bytes with valid CRC16 values (in bytes 30
+> 	and 31) are allowed to be written.
+> 
+> -
+> 
+> This specific duplication seems very evil, as if someone does:
+> 
+> 	echo restore > /sys/bus/w1/devices/.../eeprom
+> 
+> and the device is a DS28E04-100, its eeprom will be erased instead
+> of being restored!
+> 
+> Not sure how this could be solved without causing regressions.
+> 
+> As the new ABI is from May 2020, added on this commit:
+> 
+>   commit 45d457a4cf24455eefd076a01a3d86414fc2ff1e
+>   Author: Akira Shimahara <akira215corp@gmail.com>
+>   Date:   Mon May 11 22:37:25 2020 +0200
+> 
+>     w1_therm: adding eeprom sysfs entry
+>     
+>     The driver implement 2 hardware functions to access device RAM:
+>      * copy_scratchpad
+>      * recall_scratchpad
+>     They act according to device specifications.
+>     
+>     As EEPROM operations are not device dependent (all w1_therm can perform
+>     EEPROM read/write operation following the same protocol), it is removed
+>     from device families structures.
+>     
+>     Updating Documentation/ABI/testing/sysfs-driver-w1_therm accordingly.
+>     
+>     Signed-off-by: Akira Shimahara <akira215corp@gmail.com>
+>     Link: https://lore.kernel.org/r/20200511203725.410844-1-akira215corp@gmail.com
+>     Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> 
+> (probably reached Kernel 5.8):
+> 
+> 	$ git describe 45d457a4cf244
+> 	v5.7-rc5-92-g45d457a4cf24
+> 
+> I guess the solution would be to rename the new one.
 
-Please do not add new module parameters.  This is not the 1990's, we
-have better ways of getting data into a driver.
-
-> +
-> +static struct pci_dev *priv;
-
-You are only going to support one PCI device in the system at once?
-That's not needed, again, this isn't the 1990's, please use
-device-specific data and you will be fine, no "global" variables needed.
-
-> +
-> +union dw_xdata_control_reg {
-> +	u32 reg;
-> +	struct {
-> +		u32 doorbell    : 1;			/* 00 */
-> +		u32 is_write    : 1;			/* 01 */
-> +		u32 length      : 12;			/* 02..13 */
-> +		u32 is_64       : 1;			/* 14 */
-> +		u32 ep		: 1;			/* 15 */
-> +		u32 pattern_inc : 1;			/* 16 */
-> +		u32 ie		: 1;			/* 17 */
-> +		u32 no_addr_inc : 1;			/* 18 */
-> +		u32 trigger     : 1;			/* 19 */
-> +		u32 _reserved0  : 12;			/* 20..31 */
-> +	};
-> +} __packed;
-
-What is the endian-ness of these structures?  That needs to be defined
-somewhere, right?
-
-> +
-> +union dw_xdata_status_reg {
-> +	u32 reg;
-> +	struct {
-> +		u32 done	: 1;			/* 00 */
-> +		u32 _reserved0  : 15;			/* 01..15 */
-> +		u32 version     : 16;			/* 16..31 */
-> +	};
-> +} __packed;
-> +
-> +union dw_xdata_xperf_control_reg {
-> +	u32 reg;
-> +	struct {
-> +		u32 _reserved0  : 4;			/* 00..03 */
-> +		u32 reset       : 1;			/* 04 */
-> +		u32 enable      : 1;			/* 05 */
-> +		u32 _reserved1  : 26;			/* 06..31 */
-> +	};
-> +} __packed;
-> +
-> +union _addr {
-> +	u64 reg;
-> +	struct {
-> +		u32 lsb;
-> +		u32 msb;
-> +	};
-> +};
-> +
-> +struct dw_xdata_regs {
-> +	union _addr addr;				/* 0x000..0x004 */
-> +	u32 burst_cnt;					/* 0x008 */
-> +	u32 control;					/* 0x00c */
-> +	u32 pattern;					/* 0x010 */
-> +	u32 status;					/* 0x014 */
-> +	u32 RAM_addr;					/* 0x018 */
-> +	u32 RAM_port;					/* 0x01c */
-> +	u32 _reserved0[14];				/* 0x020..0x054 */
-> +	u32 perf_control;				/* 0x058 */
-> +	u32 _reserved1[41];				/* 0x05c..0x0fc */
-> +	union _addr wr_cnt;				/* 0x100..0x104 */
-> +	union _addr rd_cnt;				/* 0x108..0x10c */
-> +} __packed;
-
-Why packed?  Does this cross the user/kernel boundry?  If so, please use
-the correct data types for the (__u32 not u32).
-
-
-> +
-> +struct dw_xdata_region {
-> +	phys_addr_t paddr;				/* physical address */
-> +	void __iomem *vaddr;				/* virtual address */
-> +	size_t sz;					/* size */
-> +};
-> +
-> +struct dw_xdata {
-> +	struct dw_xdata_region rg_region;		/* registers */
-> +	size_t max_wr_len;				/* max xfer len */
-> +	size_t max_rd_len;				/* max xfer len */
-> +};
-> +
-> +static inline struct dw_xdata_regs __iomem *__dw_regs(struct dw_xdata *dw)
-> +{
-> +	return dw->rg_region.vaddr;
-> +}
-> +
-> +#define SET(dw, name, value) \
-> +	writel(value, &(__dw_regs(dw)->name))
-> +
-> +#define GET(dw, name) \
-> +	readl(&(__dw_regs(dw)->name))
-
-Just write out readl() and writel() in the driver, it makes more sense
-to anyone trying to read the code.
-
-> +
-> +#ifdef CONFIG_64BIT
-> +#define SET_64(dw, name, value) \
-> +	writel(value, &(__dw_regs(dw)->name))
-> +
-> +#define GET_64(dw, name) \
-> +	readq(&(__dw_regs(dw)->name))
-> +#endif /* CONFIG_64BIT */
-
-No need for this #ifdef, right?
-
-
-> +
-> +static void dw_xdata_stop(struct pci_dev *pdev)
-> +{
-> +	struct dw_xdata *dw = pci_get_drvdata(pdev);
-> +	u32 tmp = GET(dw, burst_cnt);
-> +
-> +	if (tmp & 0x80000000) {
-> +		tmp &= 0x7fffffff;
-> +		SET(dw, burst_cnt, tmp);
-> +	}
-> +}
-> +
-> +static void dw_xdata_start(struct pci_dev *pdev, bool write)
-> +{
-> +	struct dw_xdata *dw = pci_get_drvdata(pdev);
-> +	union dw_xdata_control_reg control;
-> +	union dw_xdata_status_reg status;
-> +
-> +	/* Stop first if xfer in progress */
-> +	dw_xdata_stop(pdev);
-> +
-> +	/* Clear status register */
-> +	SET(dw, status, 0x0);
-> +
-> +	/* Burst count register set for continuous until stopped */
-> +	SET(dw, burst_cnt, 0x80001001);
-> +
-> +	/* Pattern register */
-> +	SET(dw, pattern, 0x0);
-> +
-> +	/* Control register */
-> +	control.reg = 0x0;
-> +	control.doorbell = true;
-> +	control.is_write = write;
-> +	if (write)
-> +		control.length = dw->max_wr_len;
-> +	else
-> +		control.length = dw->max_rd_len;
-> +	control.pattern_inc = true;
-> +	control.no_addr_inc = true;
-> +	SET(dw, control, control.reg);
-> +
-> +	usleep_range(100, 150);
-> +
-> +	status.reg = GET(dw, status);
-> +	if (!status.done)
-> +		pci_info(pdev, "xData: started %s direction\n",
-> +			 write ? "write" : "read");
-
-Don't be noisy if all is well.  You have a lot of "debugging" messages
-in this driver, please drop them all down to the debug level, or just
-remove them.
-
-
-> +}
-> +
-> +static u64 dw_xdata_perf_meas(struct pci_dev *pdev, u64 *wr, u64 *rd)
-> +{
-> +	struct dw_xdata *dw = pci_get_drvdata(pdev);
-> +
-> +	#ifdef CONFIG_64BIT
-> +		*wr = GET_64(dw, wr_cnt.reg);
-> +
-> +		*rd = GET_64(dw, rd_cnt.reg);
-> +	#else /* CONFIG_64BIT */
-> +		*wr = GET(dw, wr_cnt.msb);
-> +		*wr <<= 32;
-> +		*wr |= GET(dw, wr_cnt.lsb);
-> +
-> +		*rd = GET(dw, rd_cnt.msb);
-> +		*rd <<= 32;
-> +		*rd |= GET(dw, rd_cnt.lsb);
-> +	#endif /* CONFIG_64BIT */
-> +
-> +	return jiffies;
-
-Why are you returning jiffies???
-
-
-> +}
-> +
-> +static u64 dw_xdata_perf_diff(u64 *m1, u64 *m2, u64 time)
-> +{
-> +	u64 rate;
-> +
-> +	rate = (*m1 - *m2);
-> +	rate *= (1000 * 1000 * 1000);
-> +	rate >>= 20;
-> +	rate = DIV_ROUND_CLOSEST_ULL(rate, time);
-> +
-> +	return rate;
-> +}
-> +
-> +static void dw_xdata_perf(struct pci_dev *pdev)
-> +{
-> +	struct dw_xdata *dw = pci_get_drvdata(pdev);
-> +	union dw_xdata_xperf_control_reg control;
-> +	u64 wr[2], rd[2], time[2], rate[2], diff;
-> +
-> +	/* First measurement */
-> +	control.reg = 0x0;
-> +	control.enable = false;
-> +	SET(dw, perf_control, control.reg);
-> +	time[0] = dw_xdata_perf_meas(pdev, &wr[0], &rd[0]);
-> +	control.enable = true;
-> +	SET(dw, perf_control, control.reg);
-> +
-> +	/* Delay 100ms */
-> +	mdelay(100);
-> +
-> +	/* Second measurement */
-> +	control.reg = 0x0;
-> +	control.enable = false;
-> +	SET(dw, perf_control, control.reg);
-> +	time[1] = dw_xdata_perf_meas(pdev, &wr[1], &rd[1]);
-> +	control.enable = true;
-> +	SET(dw, perf_control, control.reg);
-> +
-> +	/* Calculations */
-> +	diff = jiffies_to_nsecs(time[1] - time[0]);
-> +
-> +	/* Write performance */
-> +	rate[0] = dw_xdata_perf_diff(&wr[1], &wr[0], diff);
-> +
-> +	/* Read performance */
-> +	rate[1] = dw_xdata_perf_diff(&rd[1], &rd[0], diff);
-> +
-> +	pci_info(pdev,
-> +		 "xData: time=%llu us, write=%llu MB/s, read=%llu MB/s\n",
-> +		 diff, rate[0], rate[1]);
-
-Again, be quiet.
-
-> +}
-> +
-> +static int dw_xdata_command_set(const char *val, const struct kernel_param *kp)
-> +{
-> +	int ret = -EBUSY;
-> +
-> +	mutex_lock(&xdata_lock);
-> +	if (!priv)
-> +		goto err;
-> +
-> +	ret = param_set_charp(val, kp);
-> +	if (ret)
-> +		goto err;
-> +
-> +	switch (*val) {
-> +	case 'w':
-> +	case 'W':
-> +		pci_info(priv, "xData: requested write transfer\n");
-> +		dw_xdata_start(priv, true);
-> +		break;
-> +	case 'r':
-> +	case 'R':
-> +		pci_info(priv, "xData: requested read transfer\n");
-> +		dw_xdata_start(priv, false);
-> +		break;
-> +	case 'p':
-> +	case 'P':
-> +		pci_info(priv, "xData: requested performance analysis\n");
-> +		dw_xdata_perf(priv);
-> +		break;
-> +	default:
-> +		pci_info(priv, "xData: requested stop any transfer\n");
-> +		dw_xdata_stop(priv);
-> +		break;
-> +	}
-> +
-> +err:
-> +	mutex_unlock(&xdata_lock);
-> +
-> +	return ret;
-> +}
-> +
-> +static int dw_xdata_pcie_probe(struct pci_dev *pdev,
-> +			       const struct pci_device_id *pid)
-> +{
-> +	const struct dw_xdata_pcie_data *pdata = (void *)pid->driver_data;
-> +	struct device *dev = &pdev->dev;
-> +	struct dw_xdata *dw;
-> +	u64 addr;
-> +	int err;
-> +
-> +	priv = NULL;
-> +
-> +	/* Enable PCI device */
-> +	err = pcim_enable_device(pdev);
-> +	if (err) {
-> +		pci_err(pdev, "enabling device failed\n");
-> +		return err;
-> +	}
-> +
-> +	/* Mapping PCI BAR regions */
-> +	err = pcim_iomap_regions(pdev, BIT(pdata->rg_bar), pci_name(pdev));
-> +	if (err) {
-> +		pci_err(pdev, "xData BAR I/O remapping failed\n");
-> +		return err;
-> +	}
-> +
-> +	pci_set_master(pdev);
-> +
-> +	/* Allocate memory */
-> +	dw = devm_kzalloc(dev, sizeof(*dw), GFP_KERNEL);
-> +	if (!dw)
-> +		return -ENOMEM;
-> +
-> +	/* Data structure initialization */
-> +	dw->rg_region.vaddr = pcim_iomap_table(pdev)[pdata->rg_bar];
-> +	if (!dw->rg_region.vaddr)
-> +		return -ENOMEM;
-> +
-> +	dw->rg_region.vaddr += pdata->rg_off;
-> +	dw->rg_region.paddr = pdev->resource[pdata->rg_bar].start;
-> +	dw->rg_region.paddr += pdata->rg_off;
-> +	dw->rg_region.sz = pdata->rg_sz;
-> +
-> +	dw->max_wr_len = pcie_get_mps(pdev);
-> +	dw->max_wr_len >>= 2;
-> +
-> +	dw->max_rd_len = pcie_get_readrq(pdev);
-> +	dw->max_rd_len >>= 2;
-> +
-> +	SET(dw, RAM_addr, 0x0);
-> +	SET(dw, RAM_port, 0x0);
-> +
-> +	addr = dw->rg_region.paddr + DW_XDATA_EP_MEM_OFFSET;
-> +#ifdef CONFIG_64BIT
-> +	SET_64(dw, addr.reg, addr);
-> +#else /* CONFIG_64BIT */
-> +	SET(dw, addr.lsb, lower_32_bits(addr));
-> +	SET(dw, addr.msb, upper_32_bits(addr));
-> +#endif /* CONFIG_64BIT */
-> +	pci_info(pdev, "xData: target address = 0x%.16llx\n", addr);
-> +
-> +	pci_info(pdev, "xData: wr_len=%zu, rd_len=%zu\n",
-> +		 dw->max_wr_len * 4, dw->max_rd_len * 4);
-
-Drivers need to be quiet...
+We should rename the new one before anyone actually writes any new
+userspace code for it.
 
 thanks,
 
