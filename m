@@ -2,42 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9D132AB8C2
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 13:55:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BD252AB8C5
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 13:56:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729553AbgKIMzz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 07:55:55 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50768 "EHLO mail.kernel.org"
+        id S1729866AbgKIM4m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 07:56:42 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51114 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726410AbgKIMzx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 07:55:53 -0500
+        id S1729810AbgKIM4Z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 07:56:25 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DE76820684;
-        Mon,  9 Nov 2020 12:55:51 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 34C44207BC;
+        Mon,  9 Nov 2020 12:56:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604926552;
-        bh=zlu4+sAM+Ik0vfl+gZBPnfG9y9AwcOYi9/E+fOtqMGk=;
+        s=default; t=1604926569;
+        bh=Jgnn8GoI7D8swA4JQ5DxH/63GCBrrC5loXSvgV+AMRY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=UM0Mq057EzDl18GftDDHlAichicP2k3jZo5EuvthzLIcJ/IkE8LABv4Wn6OmOR7BO
-         T76O5tOsXv4l8kwt6ZFXyUZ7d6FZDhC6uUxjtUfBulHcT63U3WnSsFJeKvRfKQl2X/
-         5uvihhrl/dZKYv64KxpHq3mEMIcxLcZ6YSRYM3cY=
+        b=uclmT97CPFW9YY/DIc/MWqU+Sq0iZ4+PzlQFtOJzWKx4Hl9Ee4ClRzVIskLRjIyy9
+         +jW4SNgdtjf50GlkOafXNpQAagBLE2zwsSVaPEB/c8Ha7W83Eklbc0vld+xPizZKlG
+         EZYPxGSp4ZvKWrN1b5exRm4qV/nnu21b8Ve/8LxE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, NeilBrown <neilb@suse.com>,
-        Trond Myklebust <trond.myklebust@primarydata.com>,
-        Calum Mackay <calum.mackay@oracle.com>
-Subject: [PATCH 4.4 01/86] SUNRPC: ECONNREFUSED should cause a rebind.
-Date:   Mon,  9 Nov 2020 13:54:08 +0100
-Message-Id: <20201109125020.921445454@linuxfoundation.org>
+        stable@vger.kernel.org, Joe Perches <joe@perches.com>,
+        "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>
+Subject: [PATCH 4.4 07/86] mtd: lpddr: Fix bad logic in print_drs_error
+Date:   Mon,  9 Nov 2020 13:54:14 +0100
+Message-Id: <20201109125021.220071728@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201109125020.852643676@linuxfoundation.org>
 References: <20201109125020.852643676@linuxfoundation.org>
 User-Agent: quilt/0.66
-X-stable: review
-X-Patchwork-Hint: ignore
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -45,52 +43,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: NeilBrown <neilb@suse.com>
+From: Gustavo A. R. Silva <gustavo@embeddedor.com>
 
-commit fd01b2597941d9c17980222999b0721648b383b8 upstream.
+commit 1c9c02bb22684f6949d2e7ddc0a3ff364fd5a6fc upstream.
 
-If you
- - mount and NFSv3 filesystem
- - do some file locking which requires the server
-   to make a GRANT call back
- - unmount
- - mount again and do the same locking
+Update logic for broken test. Use a more common logging style.
 
-then the second attempt at locking suffers a 30 second delay.
-Unmounting and remounting causes lockd to stop and restart,
-which causes it to bind to a new port.
-The server still thinks the old port is valid and gets ECONNREFUSED
-when trying to contact it.
-ECONNREFUSED should be seen as a hard error that is not worth
-retrying.  Rebinding is the only reasonable response.
+It appears the logic in this function is broken for the
+consecutive tests of
 
-This patch forces a rebind if that makes sense.
+        if (prog_status & 0x3)
+                ...
+        else if (prog_status & 0x2)
+                ...
+        else (prog_status & 0x1)
+                ...
 
-Signed-off-by: NeilBrown <neilb@suse.com>
-Signed-off-by: Trond Myklebust <trond.myklebust@primarydata.com>
-Cc: Calum Mackay <calum.mackay@oracle.com>
+Likely the first test should be
+
+        if ((prog_status & 0x3) == 0x3)
+
+Found by inspection of include files using printk.
+
+Fixes: eb3db27507f7 ("[MTD] LPDDR PFOW definition")
+Cc: stable@vger.kernel.org
+Reported-by: Joe Perches <joe@perches.com>
+Signed-off-by: Gustavo A. R. Silva <gustavo@embeddedor.com>
+Acked-by: Miquel Raynal <miquel.raynal@bootlin.com>
+Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+Link: https://lore.kernel.org/linux-mtd/3fb0e29f5b601db8be2938a01d974b00c8788501.1588016644.git.gustavo@embeddedor.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- net/sunrpc/clnt.c |    8 ++++++++
- 1 file changed, 8 insertions(+)
+ include/linux/mtd/pfow.h |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/net/sunrpc/clnt.c
-+++ b/net/sunrpc/clnt.c
-@@ -1826,6 +1826,14 @@ call_connect_status(struct rpc_task *tas
- 	task->tk_status = 0;
- 	switch (status) {
- 	case -ECONNREFUSED:
-+		/* A positive refusal suggests a rebind is needed. */
-+		if (RPC_IS_SOFTCONN(task))
-+			break;
-+		if (clnt->cl_autobind) {
-+			rpc_force_rebind(clnt);
-+			task->tk_action = call_bind;
-+			return;
-+		}
- 	case -ECONNRESET:
- 	case -ECONNABORTED:
- 	case -ENETUNREACH:
+--- a/include/linux/mtd/pfow.h
++++ b/include/linux/mtd/pfow.h
+@@ -127,7 +127,7 @@ static inline void print_drs_error(unsig
+ 
+ 	if (!(dsr & DSR_AVAILABLE))
+ 		printk(KERN_NOTICE"DSR.15: (0) Device not Available\n");
+-	if (prog_status & 0x03)
++	if ((prog_status & 0x03) == 0x03)
+ 		printk(KERN_NOTICE"DSR.9,8: (11) Attempt to program invalid "
+ 						"half with 41h command\n");
+ 	else if (prog_status & 0x02)
 
 
