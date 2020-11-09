@@ -2,83 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8086A2AB78F
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 12:53:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F9702AB7A3
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 12:59:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729478AbgKILxc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 06:53:32 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:7065 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726999AbgKILxc (ORCPT
+        id S1729267AbgKIL74 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 06:59:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39884 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727077AbgKIL74 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 06:53:32 -0500
-Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4CV8X05vqnzhjVQ;
-        Mon,  9 Nov 2020 19:53:20 +0800 (CST)
-Received: from localhost.localdomain.localdomain (10.175.113.25) by
- DGGEMS412-HUB.china.huawei.com (10.3.19.212) with Microsoft SMTP Server id
- 14.3.487.0; Mon, 9 Nov 2020 19:53:17 +0800
-From:   Kefeng Wang <wangkefeng.wang@huawei.com>
-To:     Mark Brown <broonie@kernel.org>
-CC:     Marc Zyngier <maz@kernel.org>, <linux-kernel@vger.kernel.org>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>
-Subject: [PATCH] regmap: Properly free allocated name for regmap_config of syscon
-Date:   Mon, 9 Nov 2020 19:58:16 +0800
-Message-ID: <20201109115816.160639-1-wangkefeng.wang@huawei.com>
-X-Mailer: git-send-email 2.26.2
+        Mon, 9 Nov 2020 06:59:56 -0500
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 002D6C0613D3
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Nov 2020 03:59:55 -0800 (PST)
+Received: by mail-pg1-x541.google.com with SMTP id w4so6944622pgg.13
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Nov 2020 03:59:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=lr4Cz9thkO5BeHlwWTqxwoeU7qvgDXar1hvGAFKb8x0=;
+        b=Azjcqpp4OiWVMYTCnFEPXlDTuJoPuD+JB7fGW2oTcslLq8s3d/IGt5sXjU98vnzNRq
+         m1EiQPZ+OW/fQvONuPIUPvoyiTYsXQJ8sKPXE8671rdkFcSEFlGvmsh6VzNLg6KLz5qB
+         rOJ9QKn+YTFiBPYOn6WP/Il5ltT/HK8kAV0JMBfP8SU78SxoPbr1Gt9urGAmjgztXZ23
+         zit7NYSyz9oTZlXM8GuEL3dY8zsLkiu38kVqHueYUt/P5UlZX7Bt8XvjHvxPsp7RNrTt
+         CfrH9C3aLPgSVtBduWZWzbp/GdKeh8ml+xbfnC+FsPM38ef+QX0Liasq5jjSE3W50NCt
+         5ahA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=lr4Cz9thkO5BeHlwWTqxwoeU7qvgDXar1hvGAFKb8x0=;
+        b=fLfH0dpCHlWL3E38TiuqzJvA7lHJnR9vi1RumZ9IBTZcrCA2T2+apevOArowQlReXm
+         YKud7yeJdJcGhlnlsMvmeSetAla5ulp9vqqLjE0hzicwLmJBWKJVSQaaAUZqVMV2YM/o
+         lI6B8JU4AQ1KCkXKU7BcVqWkL16t43yJjqW/LFKcc0mgeAYFycflLHu923Fc5tHo7hsV
+         BBrS8kurs1gFEDZ7XfpdYBMMTey5uuO6Y+uK0er/2G6uxR8EQc7dyu987uvlui3PNtsV
+         aZFVVu24X72wh7aWPDlAr8oVSOwfRBsdn88PqsBoc3T33MapkHm7CwelZvajJyj3o2pc
+         WZ+g==
+X-Gm-Message-State: AOAM530z6sO1WQ91h/OBJ+36b6xtX0nkfejI96o2iPBcM+T80spbAki5
+        xuiNDDENX6o6aP2biARHuDQYQEOXatSa
+X-Google-Smtp-Source: ABdhPJzcrnwWYIb5L4wAFweAqmKGmbtjNFN3kwGCHOSAwypQDL8S2TPj/LKr+WG5y/YdWH5kSngw1g==
+X-Received: by 2002:a17:90a:d796:: with SMTP id z22mr13418546pju.2.1604923195399;
+        Mon, 09 Nov 2020 03:59:55 -0800 (PST)
+Received: from work ([103.59.133.81])
+        by smtp.gmail.com with ESMTPSA id z3sm10024582pgl.73.2020.11.09.03.59.52
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Mon, 09 Nov 2020 03:59:54 -0800 (PST)
+Date:   Mon, 9 Nov 2020 17:29:49 +0530
+From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To:     Bhaumik Bhatt <bbhatt@codeaurora.org>
+Cc:     linux-arm-msm@vger.kernel.org, hemantk@codeaurora.org,
+        jhugo@codeaurora.org, linux-kernel@vger.kernel.org,
+        skhan@linuxfoundation.org
+Subject: Re: [PATCH] bus: mhi: core: Remove double locking from
+ mhi_driver_remove()
+Message-ID: <20201109115949.GD24289@work>
+References: <1602787671-9497-1-git-send-email-bbhatt@codeaurora.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.113.25]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1602787671-9497-1-git-send-email-bbhatt@codeaurora.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syscon_config.name in of_syscon_register is allocated using kasprintf,
-which should be freed when it is not used after regmap_set_name, fix
-the following memory leak.
+On Thu, Oct 15, 2020 at 11:47:51AM -0700, Bhaumik Bhatt wrote:
+> There is double acquisition of the pm_lock from mhi_driver_remove()
+> function. Remove the read_lock_bh/read_unlock_bh calls for pm_lock
+> taken during a call to mhi_device_put() as the lock is acquired
+> within the function already. This will help avoid a potential
+> kernel panic.
+> 
+> Fixes: 189ff97cca53 ("bus: mhi: core: Add support for data transfer")
+> Reported-by: Shuah Khan <skhan@linuxfoundation.org>
+> Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
 
-unreferenced object 0xffffffe07fe8c150 (size 16):
-  comm "swapper/0", pid 1, jiffies 4294892540 (age 68.168s)
-  hex dump (first 16 bytes):
-    74 65 73 74 40 31 30 30 30 30 30 00 e0 ff ff ff  test@100000.....
-  backtrace:
-    [<0000000023d86736>] create_object+0xe8/0x348
-    [<00000000fe9d1b17>] kmemleak_alloc+0x20/0x2a
-    [<000000006bba3c96>] __kmalloc_track_caller+0x174/0x272
-    [<000000008bbb1565>] kvasprintf+0x42/0x86
-    [<000000000e566920>] kasprintf+0x34/0x50
-    [<00000000809602dd>] of_syscon_register+0x11c/0x2a8
-    [<00000000711191ee>] device_node_get_regmap+0x6a/0x98
-    [<0000000083dd951c>] syscon_node_to_regmap+0x2e/0x38
-    [<00000000cbe0596d>] syscon_regmap_lookup_by_phandle+0x1e/0x26
-    [<000000009d9c679f>] syscon_reboot_probe+0x58/0x1aa
-    [<000000007b610fab>] platform_drv_probe+0x30/0x64
-    [<0000000031597f78>] really_probe+0x9c/0x274
-    [<000000004d1de808>] driver_probe_device+0x2c/0x68
-    [<000000008a998a90>] device_driver_attach+0x4c/0x50
-    [<000000002ea43ad9>] __driver_attach+0x66/0xa0
-    [<0000000018505756>] bus_for_each_dev+0x5a/0x98
+Applied to mhi-next!
 
-Fixes: 529a1101212a ("mfd: syscon: Don't free allocated name for regmap_config")
-Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
----
- drivers/base/regmap/regmap.c | 1 +
- 1 file changed, 1 insertion(+)
+Thanks,
+Mani
 
-diff --git a/drivers/base/regmap/regmap.c b/drivers/base/regmap/regmap.c
-index 5db536ccfcd6..c1c1e53d46ac 100644
---- a/drivers/base/regmap/regmap.c
-+++ b/drivers/base/regmap/regmap.c
-@@ -601,6 +601,7 @@ static int regmap_set_name(struct regmap *map, const struct regmap_config *confi
- 		if (!name)
- 			return -ENOMEM;
- 
-+		kfree_const(config->name);
- 		kfree_const(map->name);
- 		map->name = name;
- 	}
--- 
-2.26.2
-
+> ---
+>  drivers/bus/mhi/core/init.c | 2 --
+>  1 file changed, 2 deletions(-)
+> 
+> diff --git a/drivers/bus/mhi/core/init.c b/drivers/bus/mhi/core/init.c
+> index 0ffdebd..0a09f82 100644
+> --- a/drivers/bus/mhi/core/init.c
+> +++ b/drivers/bus/mhi/core/init.c
+> @@ -1276,10 +1276,8 @@ static int mhi_driver_remove(struct device *dev)
+>  		mutex_unlock(&mhi_chan->mutex);
+>  	}
+>  
+> -	read_lock_bh(&mhi_cntrl->pm_lock);
+>  	while (mhi_dev->dev_wake)
+>  		mhi_device_put(mhi_dev);
+> -	read_unlock_bh(&mhi_cntrl->pm_lock);
+>  
+>  	return 0;
+>  }
+> -- 
+> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+> a Linux Foundation Collaborative Project
+> 
