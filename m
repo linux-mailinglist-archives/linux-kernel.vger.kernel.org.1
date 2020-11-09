@@ -2,73 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA0832AC1A1
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 18:00:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BCD802AC1A3
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 18:01:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731083AbgKIRAh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 12:00:37 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58360 "EHLO mail.kernel.org"
+        id S1730820AbgKIRBK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 12:01:10 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58542 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730513AbgKIRAh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 12:00:37 -0500
-Received: from google.com (unknown [104.132.1.66])
+        id S1730513AbgKIRBK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 12:01:10 -0500
+Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D0B2E20809;
-        Mon,  9 Nov 2020 17:00:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604941237;
-        bh=bjONPyQjSWqtb8RSe2JNSEdnNR0aM/RcazfxhnrBinQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=K0z0S+1luyaFGtlhYEbEKUj2Bc+EyUgvnD4ecLtS5bxK1+MuXnD5zHW1+fjMwzfDV
-         nFwT+nWYmkN34j7h564nR7JJrCABZH03vpLOazzrDiGHx7ZSbwK7EvRPiqWB0WpquL
-         czPXQyBfs8NSkQR5cN99AR7K1lPS+yNt0ClbEFTQ=
-Date:   Mon, 9 Nov 2020 09:00:35 -0800
-From:   Jaegeuk Kim <jaegeuk@kernel.org>
-To:     linux-kernel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, kernel-team@android.com
-Cc:     Chao Yu <yuchao0@huawei.com>
-Subject: Re: [PATCH] f2fs: avoid unneeded data copy in f2fs_ioc_move_range()
-Message-ID: <20201109170035.GA2129970@google.com>
-References: <20201109165914.2118360-1-jaegeuk@kernel.org>
+        by mail.kernel.org (Postfix) with ESMTPSA id B9BED20789;
+        Mon,  9 Nov 2020 17:01:08 +0000 (UTC)
+Date:   Mon, 9 Nov 2020 12:01:06 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc:     linux-kernel@vger.kernel.org,
+        linux-rt-users <linux-rt-users@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Carsten Emde <C.Emde@osadl.org>,
+        John Kacur <jkacur@redhat.com>, Daniel Wagner <wagi@monom.org>,
+        Tom Zanussi <zanussi@kernel.org>,
+        "Srivatsa S. Bhat" <srivatsa@csail.mit.edu>
+Subject: Re: [PATCH RT 2/6] tcp: Remove superfluous BH-disable around
+ listening_hash
+Message-ID: <20201109120106.4fe828b4@oasis.local.home>
+In-Reply-To: <20201109092231.3t2pawkvv7dxasfs@linutronix.de>
+References: <20201107020636.598338441@goodmis.org>
+        <20201107020727.806739147@goodmis.org>
+        <20201109092231.3t2pawkvv7dxasfs@linutronix.de>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201109165914.2118360-1-jaegeuk@kernel.org>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Sorry, please ignore this.
+On Mon, 9 Nov 2020 10:22:31 +0100
+Sebastian Andrzej Siewior <bigeasy@linutronix.de> wrote:
 
-On 11/09, Jaegeuk Kim wrote:
-> From: Chao Yu <yuchao0@huawei.com>
+> On 2020-11-06 21:06:38 [-0500], Steven Rostedt wrote:
+> > 5.4.74-rt42-rc1 stable review patch.
+> > If anyone has any objections, please let me know.  
 > 
-> Fields in struct f2fs_move_range won't change in f2fs_ioc_move_range(),
-> let's avoid copying this structure's data to userspace.
+> Please drop that one. Lockep complains on RT with newer softirq code.
+> Older RT and mainline does not complain here unless it observes
+> inet_listen_hashbucket::lock in serving-softirq context (which is not
+> the case).
 > 
-> Signed-off-by: Chao Yu <yuchao0@huawei.com>
-> Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
-> ---
->  fs/f2fs/file.c | 6 ------
->  1 file changed, 6 deletions(-)
-> 
-> diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
-> index 52417a2e3f4f..22ae8ae0072f 100644
-> --- a/fs/f2fs/file.c
-> +++ b/fs/f2fs/file.c
-> @@ -2898,12 +2898,6 @@ static int f2fs_ioc_move_range(struct file *filp, unsigned long arg)
->  					range.pos_out, range.len);
->  
->  	mnt_drop_write_file(filp);
-> -	if (err)
-> -		goto err_out;
-> -
-> -	if (copy_to_user((struct f2fs_move_range __user *)arg,
-> -						&range, sizeof(range)))
-> -		err = -EFAULT;
->  err_out:
->  	fdput(dst);
->  	return err;
-> -- 
-> 2.29.2.222.g5d2a92d10f8-goog
+
+Note, I took this because it mentioned:
+
+"Commit
+       9652dc2eb9e40 ("tcp: relax listening_hash operations")
+    
+    removed the need to disable bottom half while acquiring
+    listening_hash.lock. There are still two callers left which disable
+    bottom half before the lock is acquired."
+
+And that commit was added in 4.10.
+
+I will remove it and release a rc2.
+
+Thanks!
+
+-- Steve
