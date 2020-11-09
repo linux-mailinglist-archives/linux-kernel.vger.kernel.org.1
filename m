@@ -2,317 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 76C362ABE67
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 15:16:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BE58B2ABE6F
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 15:17:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730587AbgKIOQb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 09:16:31 -0500
-Received: from mx2.suse.de ([195.135.220.15]:35722 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730088AbgKIOQa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 09:16:30 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1604931388;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=HsVZbhaxkImtoEkYoepjmfxeeVJOWUETsquuxtvijr4=;
-        b=RwZiE7Qp0SaGpyfhtil5BvGWEyt6m1HfXU+0CBJgYQudE3ea9sPX41sCfdkKBNRaA8irl7
-        7xXYnp9Cc0llfwXCRx5oJIVW3toXXUVwT2DH1fGOvPQ2lohyFel16N9EvLuRJatDvVl/Pm
-        7VbZhxmLglXRksAkD0Oi6ZtEuxvgC4I=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id BE2E2ABD1;
-        Mon,  9 Nov 2020 14:16:28 +0000 (UTC)
-Date:   Mon, 9 Nov 2020 15:16:28 +0100
-From:   Petr Mladek <pmladek@suse.com>
-To:     Matteo Croce <mcroce@linux.microsoft.com>
-Cc:     linux-kernel@vger.kernel.org, Mike Rapoport <rppt@kernel.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Pavel Tatashin <pasha.tatashin@soleen.com>,
-        Kees Cook <keescook@chromium.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Tyler Hicks <tyhicks@linux.microsoft.com>
-Subject: Re: [PATCH v2] reboot: allow to specify reboot mode via sysfs
-Message-ID: <20201109141628.GL1602@alley>
-References: <20201106200704.192894-1-mcroce@linux.microsoft.com>
+        id S1730356AbgKIORY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 09:17:24 -0500
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:45062 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729776AbgKIORX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 09:17:23 -0500
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0A9EHC3K040249;
+        Mon, 9 Nov 2020 08:17:12 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1604931432;
+        bh=Wp7QEYjwDcoEzB1kc04C4YfUw/KaMcNtD5IHNJ49+2I=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=w5IOp6b+6S2S8m33TlPJPrQZ/ldEjELgm9GAyYEsKY6rX1tC8tzR5myo/LSFJITxf
+         IvWCmEs1S8FCkLaVXFUe+ULRm0WEn5NGzRJSoID4/eiqDZoo2Uuf/bnWzgB5nUdAxs
+         DxJzI3NX66usNzWSEoBH7zw+IC3qdx4azVeSF/+c=
+Received: from DLEE104.ent.ti.com (dlee104.ent.ti.com [157.170.170.34])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0A9EHCMo025563
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 9 Nov 2020 08:17:12 -0600
+Received: from DLEE102.ent.ti.com (157.170.170.32) by DLEE104.ent.ti.com
+ (157.170.170.34) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Mon, 9 Nov
+ 2020 08:17:12 -0600
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE102.ent.ti.com
+ (157.170.170.32) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Mon, 9 Nov 2020 08:17:12 -0600
+Received: from [10.250.213.167] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0A9EH2Ol125926;
+        Mon, 9 Nov 2020 08:17:04 -0600
+Subject: Re: [PATCH 1/8] dt-bindings: mfd: ti,j721e-system-controller.yaml:
+ Document "pcie-ctrl"
+To:     Rob Herring <robh@kernel.org>
+CC:     Lee Jones <lee.jones@linaro.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Tero Kristo <t-kristo@ti.com>, Nishanth Menon <nm@ti.com>,
+        Roger Quadros <rogerq@ti.com>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-pci@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>
+References: <20201102101154.13598-1-kishon@ti.com>
+ <20201102101154.13598-2-kishon@ti.com> <20201105165459.GB55814@bogus>
+From:   Kishon Vijay Abraham I <kishon@ti.com>
+Message-ID: <07d327c6-54c7-23f9-b65e-bfd3455de47f@ti.com>
+Date:   Mon, 9 Nov 2020 19:47:01 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201106200704.192894-1-mcroce@linux.microsoft.com>
+In-Reply-To: <20201105165459.GB55814@bogus>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 2020-11-06 21:07:04, Matteo Croce wrote:
-> From: Matteo Croce <mcroce@microsoft.com>
+Hi Rob,
+
+On 05/11/20 10:24 pm, Rob Herring wrote:
+> On Mon, Nov 02, 2020 at 03:41:47PM +0530, Kishon Vijay Abraham I wrote:
+>> Add binding documentation for "pcie-ctrl" which should be a subnode of
+>> the system controller.
+>>
+>> Signed-off-by: Kishon Vijay Abraham I <kishon@ti.com>
+>> ---
+>>  .../devicetree/bindings/mfd/ti,j721e-system-controller.yaml | 6 ++++++
+>>  1 file changed, 6 insertions(+)
+>>
+>> diff --git a/Documentation/devicetree/bindings/mfd/ti,j721e-system-controller.yaml b/Documentation/devicetree/bindings/mfd/ti,j721e-system-controller.yaml
+>> index 19fcf59fd2fe..fd985794e419 100644
+>> --- a/Documentation/devicetree/bindings/mfd/ti,j721e-system-controller.yaml
+>> +++ b/Documentation/devicetree/bindings/mfd/ti,j721e-system-controller.yaml
+>> @@ -50,6 +50,12 @@ patternProperties:
+>>        specified in
+>>        Documentation/devicetree/bindings/mux/reg-mux.txt
+>>  
+>> +  "^pcie-ctrl@[0-9a-f]+$":
 > 
-> The kernel cmdline reboot= option offers some sort of control
-> on how the reboot is issued.
-> Add handles in sysfs to allow setting these reboot options, so they
-> can be changed when the system is booted, other than at boot time.
+> Unit address, so it should have 'reg' too?
 > 
-> The handlers are under <sysfs>/kernel/reboot, can be read to
-> get the current configuration and written to alter it.
-> 
-> --- /dev/null
-> +++ b/Documentation/ABI/testing/sysfs-kernel-reboot
-> @@ -0,0 +1,26 @@
-> +What:		/sys/kernel/reboot
-> +Date:		October 2020
-> +KernelVersion:	5.11
-> +Contact:	Matteo Croce <mcroce@microsoft.com>
-> +Description:	Interface to set the kernel reboot mode, similarly to
-> +		what can be done via the reboot= cmdline option.
-> +		(see Documentation/admin-guide/kernel-parameters.txt)
-> +
-> +What:		/sys/kernel/reboot/mode
-> +What:		/sys/kernel/reboot/type
-> +What:		/sys/kernel/reboot/cpu
-> +What:		/sys/kernel/reboot/force
+> You don't need a node if there aren't any properties.
 
-I do not see any file where it is accumulated this way.
-It seems that each path is always described separately.
+The subnodes are again a syscon node. I'll fix this up in the next revision.
 
-I am not sure if it is really needed. But it might be needed
-when processing the API documentation.
-
-Please, split it.
-
-
-> +
-> +Date:		October 2020
-> +Contact:	Matteo Croce <mcroce@microsoft.com>
-> +Description:	Tune reboot parameters.
-> +
-> +		mode: Reboot mode. Valid values are:
-> +		cold warm hard soft gpio
-> +
-> +		type: Reboot type. Valid values are:
-> +		bios acpi kbd triple efi pci
-> +
-> +		cpu: CPU number to use to reboot.
-> +
-> +		force: Force an immediate reboot.
-> diff --git a/kernel/reboot.c b/kernel/reboot.c
-> index e7b78d5ae1ab..b9e607517ae3 100644
-> --- a/kernel/reboot.c
-> +++ b/kernel/reboot.c
-> @@ -594,3 +594,196 @@ static int __init reboot_setup(char *str)
->  	return 1;
->  }
->  __setup("reboot=", reboot_setup);
-> +
-> +#ifdef CONFIG_SYSFS
-> +
-> +#define STARTS_WITH(s, sc) (!strncmp(s, sc, sizeof(sc)-1))
-> +
-> +static ssize_t mode_show(struct kobject *kobj, struct kobj_attribute *attr, char *buf)
-> +{
-> +	const char *val;
-> +
-> +	switch (reboot_mode) {
-> +	case REBOOT_COLD:
-> +		val = "cold\n";
-
-Using "\n" everywhere is weird. Also the same strings are
-repeated in the next functions.
-
-I suggest to define them only once, e.g.
-
-#define REBOOT_COLD_STR "cold"
-#define REBOOT_WARM_STR "warm"
-
-and use here:
-
-	case REBOOT_COLD:
-		val = REBOOT_COLD_STR;
-
-and then at the end
-
-	return sprintf(buf, "%s\n", val);
-
-
-> +		break;
-> +	case REBOOT_WARM:
-> +		val = "warm\n";
-> +		break;
-> +	case REBOOT_HARD:
-> +		val = "hard\n";
-> +		break;
-> +	case REBOOT_SOFT:
-> +		val = "soft\n";
-> +		break;
-> +	case REBOOT_GPIO:
-> +		val = "gpio\n";
-> +		break;
-> +	default:
-> +		val = "undefined\n";
-> +	}
-> +
-> +	return strscpy(buf, val, 10);
-
-"undefined\n" needs 11 bytes to store also the trailing '\0'.
-Anyway, the buffer should be big enough for all variants.
-
-
-> +}
-> +static ssize_t mode_store(struct kobject *kobj, struct kobj_attribute *attr,
-> +			  const char *buf, size_t count)
-> +{
-> +	if (!capable(CAP_SYS_BOOT))
-> +		return -EPERM;
-> +
-> +	if (STARTS_WITH(buf, "cold"))
-> +		reboot_mode = REBOOT_COLD;
-
-I would prefer to open code this and use strlen(). It will be obvious
-what the code does immediately. And I am sure that compilators
-will optimize out the strlen().
-
-
-	if (strncmp(buf, REBOOT_COLD_STR, strlen(REBOOT_COLD_STR)) == 0)
-		reboot_mode = REBOOT_COLD;
-	else if (strncmp(buf, REBOOT_WARM_STR, strlen(REBOOT_WARM_STR) == 0)
-		reboot_mode = REBOOT_WARM;
-	...
-
-
-
-> +	else if (STARTS_WITH(buf, "warm"))
-> +		reboot_mode = REBOOT_WARM;
-> +	else if (STARTS_WITH(buf, "hard"))
-> +		reboot_mode = REBOOT_HARD;
-> +	else if (STARTS_WITH(buf, "soft"))
-> +		reboot_mode = REBOOT_SOFT;
-> +	else if (STARTS_WITH(buf, "gpio"))
-> +		reboot_mode = REBOOT_GPIO;
-> +	else
-> +		return -EINVAL;
-> +
-> +	return count;
-> +}
-> +static struct kobj_attribute reboot_mode_attr = __ATTR_RW(mode);
-> +
-> +static ssize_t type_show(struct kobject *kobj, struct kobj_attribute *attr, char *buf)
-> +{
-> +	const char *val;
-> +
-> +	switch (reboot_type) {
-> +	case BOOT_TRIPLE:
-> +		val = "triple\n";
-
-Same here
-
-		var = BOOT_TRIPLE_STR;
-
-> +		break;
-> +	case BOOT_KBD:
-> +		val = "kbd\n";
-> +		break;
-> +	case BOOT_BIOS:
-> +		val = "bios\n";
-> +		break;
-> +	case BOOT_ACPI:
-> +		val = "acpi\n";
-> +		break;
-> +	case BOOT_EFI:
-> +		val = "efi\n";
-> +		break;
-> +	case BOOT_CF9_FORCE:
-> +		val = "cf9_force\n";
-> +		break;
-> +	case BOOT_CF9_SAFE:
-> +		val = "cf9_safe\n";
-> +		break;
-> +	default:
-> +		val = "undefined\n";
-> +	}
-> +
-> +	return strscpy(buf, val, 10);
-> +}
-> +static ssize_t type_store(struct kobject *kobj, struct kobj_attribute *attr,
-> +			  const char *buf, size_t count)
-> +{
-> +	if (!capable(CAP_SYS_BOOT))
-> +		return -EPERM;
-> +
-> +	if (STARTS_WITH(buf, "triple"))
-> +		reboot_type = BOOT_TRIPLE;
-
-and here:
-
-	if (strncmp(buf, REBOOT_TRIPLE_STR, strlen(REBOOT_TRIPLE_STR)) == 0)
-		reboot_type = REBOOT_TRIPLE;
-
-
-> +	else if (STARTS_WITH(buf, "kbd"))
-> +		reboot_type = BOOT_KBD;
-> +	else if (STARTS_WITH(buf, "bios"))
-> +		reboot_type = BOOT_BIOS;
-> +	else if (STARTS_WITH(buf, "acpi"))
-> +		reboot_type = BOOT_ACPI;
-> +	else if (STARTS_WITH(buf, "efi"))
-> +		reboot_type = BOOT_EFI;
-> +	else if (STARTS_WITH(buf, "cf9_force"))
-> +		reboot_type = BOOT_CF9_FORCE;
-> +	else if (STARTS_WITH(buf, "cf9_safe"))
-> +		reboot_type = BOOT_CF9_SAFE;
-> +	else
-> +		return -EINVAL;
-> +
-> +	return count;
-> +}
-> +static struct kobj_attribute reboot_type_attr = __ATTR_RW(type);
-> +
-> +static ssize_t force_show(struct kobject *kobj, struct kobj_attribute *attr, char *buf)
-> +{
-> +	return sprintf(buf, "%d\n", reboot_force);
-> +}
-> +static ssize_t force_store(struct kobject *kobj, struct kobj_attribute *attr,
-> +			  const char *buf, size_t count)
-> +{
-> +	if (!capable(CAP_SYS_BOOT))
-> +		return -EPERM;
-> +
-> +	if (buf[0] != '0' && buf[0] != '1')
-> +		return -EINVAL;
-
-Please use kstrtobool() that supports also other boolean values,
-for example, 'Y', 'n'.
-
-> +	rc = kstrtouint(buf, 0, &cpunum);
-> +
-> +	reboot_force = buf[0] - '0';
-> +
-> +	return count;
-> +}
-
-> +static int __init reboot_ksysfs_init(void)
-> +{
-> +	struct kobject *reboot_kobj;
-> +	int ret;
-> +
-> +	reboot_kobj = kobject_create_and_add("reboot", kernel_kobj);
-> +	if (!reboot_kobj)
-> +		return -ENOMEM;
-> +
-> +	ret = sysfs_create_group(reboot_kobj, &reboot_attr_group);
-> +	if (ret) {
-> +		kobject_put(reboot_kobj);
-> +		return ret;
-> +	}
-> +
-> +	return 0;
-> +}
-> +core_initcall(reboot_ksysfs_init);
-
-There is no need to create the sysfs interface this early. In fact, it
-might even break because the parent "kernel" node is defined
-as core_initcall() as well. The order is not defined in this case.
-
-I would do it as sybsys_initcall() like or even late_initcall().
-
-Best Regards,
-Petr
+Thank You,
+Kishon
