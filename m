@@ -2,98 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8824B2AB4C6
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 11:24:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D4062AB4CA
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 11:26:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729019AbgKIKYm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 05:24:42 -0500
-Received: from jabberwock.ucw.cz ([46.255.230.98]:39050 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726176AbgKIKYm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 05:24:42 -0500
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id 25B7E1C0B88; Mon,  9 Nov 2020 11:24:39 +0100 (CET)
-Date:   Mon, 9 Nov 2020 11:24:37 +0100
-From:   Pavel Machek <pavel@ucw.cz>
-To:     Chris Wilson <chris@chris-wilson.co.uk>,
-        kernel list <linux-kernel@vger.kernel.org>
-Cc:     intel-gfx@lists.freedesktop.org,
-        Mika Kuoppala <mika.kuoppala@linux.intel.com>,
-        stable@vger.kernel.org
-Subject: 4.19-stable: Re: [PATCH 2/3] drm/i915: Break up error capture
- compression loops with cond_resched()
-Message-ID: <20201109102437.GA15835@amd>
-References: <20200916090059.3189-1-chris@chris-wilson.co.uk>
- <20200916090059.3189-2-chris@chris-wilson.co.uk>
+        id S1729067AbgKIK0U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 05:26:20 -0500
+Received: from mx2.suse.de ([195.135.220.15]:52342 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727311AbgKIK0T (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 05:26:19 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id F072AAF39;
+        Mon,  9 Nov 2020 10:26:17 +0000 (UTC)
+Subject: Re: [PATCH] drm/ast: Create chip AST2600
+To:     KuoHsiang Chou <kuohsiang_chou@aspeedtech.com>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Cc:     airlied@redhat.com, airlied@linux.ie, daniel@ffwll.ch,
+        jenmin_yuan@aspeedtech.com, arc_sung@aspeedtech.com,
+        tommy_huang@aspeedtech.com
+References: <20201109093812.161483-1-kuohsiang_chou@aspeedtech.com>
+From:   Thomas Zimmermann <tzimmermann@suse.de>
+Message-ID: <fd2cdee4-3eb3-facd-5398-56d74fa7cf14@suse.de>
+Date:   Mon, 9 Nov 2020 11:26:17 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="liOOAslEiF7prFVr"
-Content-Disposition: inline
-In-Reply-To: <20200916090059.3189-2-chris@chris-wilson.co.uk>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+In-Reply-To: <20201109093812.161483-1-kuohsiang_chou@aspeedtech.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi
 
---liOOAslEiF7prFVr
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Am 09.11.20 um 10:38 schrieb KuoHsiang Chou:
+> [New] Support AST2600
 
-Hi!
+A style issue: better write a nice sentence than these tags.  For the
+patch at hand, I'd preferred something like: "Only add an id for
+supporting AST2600. No functional changes are required."
 
-> As the error capture will compress user buffers as directed to by the
-> user, it can take an arbitrary amount of time and space. Break up the
-> compression loops with a call to cond_resched(), that will allow other
-> processes to schedule (avoiding the soft lockups) and also serve as a
-> warning should we try to make this loop atomic in the future.
->=20
-> Signed-off-by: Chris Wilson <chris@chris-wilson.co.uk>
-> Cc: Mika Kuoppala <mika.kuoppala@linux.intel.com>
-> Cc: stable@vger.kernel.org
-> Reviewed-by: Mika Kuoppala <mika.kuoppala@linux.intel.com>
+I assume that there areno further changes required for AST2600.
 
-This was queued for 4.19-stable, but is very likely wrong.
+> 
+> Signed-off-by: KuoHsiang Chou <kuohsiang_chou@aspeedtech.com>
 
-> @@ -397,6 +399,7 @@ static int compress_page(struct i915_vma_compress *c,
->  	if (!(wc && i915_memcpy_from_wc(ptr, src, PAGE_SIZE)))
->  		memcpy(ptr, src, PAGE_SIZE);
->  	dst->pages[dst->page_count++] =3D ptr;
-> +	cond_resched();
-> =20
->  	return 0;
->  }
+Reviewed-by: Thomas Zimmermann <tzimmermann@suse.de>
 
-4.19 compress_page begins with
+I'll add the patch to drm-misc-next. Thanks!
 
-static int compress_page(struct compress *c,
-=2E..
-        page =3D __get_free_page(GFP_ATOMIC | __GFP_NOWARN);
+Best regards
+Thomas
 
-and likely may not sleep. That changed with commit
-a42f45a2a85998453078, but that one is not present in 4.19..
+> ---
+>  drivers/gpu/drm/ast/ast_drv.h  | 1 +
+>  drivers/gpu/drm/ast/ast_main.c | 5 ++++-
+>  2 files changed, 5 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/gpu/drm/ast/ast_drv.h b/drivers/gpu/drm/ast/ast_drv.h
+> index 467049ca8430..6b9e3b94a712 100644
+> --- a/drivers/gpu/drm/ast/ast_drv.h
+> +++ b/drivers/gpu/drm/ast/ast_drv.h
+> @@ -63,6 +63,7 @@ enum ast_chip {
+>  	AST2300,
+>  	AST2400,
+>  	AST2500,
+> +	AST2600,
+>  };
+> 
+>  enum ast_tx_chip {
+> diff --git a/drivers/gpu/drm/ast/ast_main.c b/drivers/gpu/drm/ast/ast_main.c
+> index 77066bca8793..4ec6884f6c65 100644
+> --- a/drivers/gpu/drm/ast/ast_main.c
+> +++ b/drivers/gpu/drm/ast/ast_main.c
+> @@ -143,7 +143,10 @@ static int ast_detect_chip(struct drm_device *dev, bool *need_post)
+>  	ast_detect_config_mode(dev, &scu_rev);
+> 
+>  	/* Identify chipset */
+> -	if (dev->pdev->revision >= 0x40) {
+> +	if (dev->pdev->revision >= 0x50) {
+> +		ast->chip = AST2600;
+> +		drm_info(dev, "AST 2600 detected\n");
+> +	} else if (dev->pdev->revision >= 0x40) {
+>  		ast->chip = AST2500;
+>  		drm_info(dev, "AST 2500 detected\n");
+>  	} else if (dev->pdev->revision >= 0x30) {
+> --
+> 2.18.4
+> 
 
-I believe we don't need this in stable: dumping of error file will not
-take so long to trigger softlockup detectors... and if userland access
-blocked, we would be able to reschedule, anyway.
-
-Best regards,
-								Pavel
---=20
-http://www.livejournal.com/~pavelmachek
-
---liOOAslEiF7prFVr
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iEYEARECAAYFAl+pGOUACgkQMOfwapXb+vIvQgCcDwo9ICEQfTFKE7D+KQj2Ngzp
-v9sAnjFdQRjvjH8ijc41QciyP5sDpOWb
-=rh9u
------END PGP SIGNATURE-----
-
---liOOAslEiF7prFVr--
+-- 
+Thomas Zimmermann
+Graphics Driver Developer
+SUSE Software Solutions Germany GmbH
+Maxfeldstr. 5, 90409 Nürnberg, Germany
+(HRB 36809, AG Nürnberg)
+Geschäftsführer: Felix Imendörffer
