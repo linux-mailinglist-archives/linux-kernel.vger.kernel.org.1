@@ -2,222 +2,230 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25A332AC7B9
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 22:55:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BDDD12AC7C6
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 22:56:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731542AbgKIVzR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 16:55:17 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:60739 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1731521AbgKIVzQ (ORCPT
+        id S1731908AbgKIVzr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 16:55:47 -0500
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:55332 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1731769AbgKIVzp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 16:55:16 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1604958913;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=JzdO2G+arlSt6R0bcNuR7A1MaYq1ALuOCryQWcCm8k8=;
-        b=OJGSYp9J/JE3EwEm+/BElT/qoAYUNzTgRVMhB4nCnrd8UuWikB4faShYFbDgzCIjpqhnOC
-        /ZFeO67D3Y1vXGnCscIbhfM+1Lvha7iqx610QhudPAla5x6AFOouZZf0hPezAp/GFIKWn1
-        EkmFC7fvcPrx38WS79+qq6S0SAi9wQA=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-180-KwxTtFLqNnKu434UTiOgRg-1; Mon, 09 Nov 2020 16:55:09 -0500
-X-MC-Unique: KwxTtFLqNnKu434UTiOgRg-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0E92D8030BC;
-        Mon,  9 Nov 2020 21:55:08 +0000 (UTC)
-Received: from ovpn-66-145.rdu2.redhat.com (unknown [10.10.67.145])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id D856960E1C;
-        Mon,  9 Nov 2020 21:55:04 +0000 (UTC)
-Message-ID: <3f863634cd75824907e8ccf8164548c2ef036f20.camel@redhat.com>
-Subject: Re: [tip: ras/core] x86/mce: Enable additional error logging on
- certain Intel CPUs
-From:   Qian Cai <cai@redhat.com>
-To:     linux-kernel@vger.kernel.org, linux-tip-commits@vger.kernel.org,
-        Tony Luck <tony.luck@intel.com>
-Cc:     Boris Petkov <bp@alien8.de>, Borislav Petkov <bp@suse.de>,
-        x86 <x86@kernel.org>, Paolo Bonzini <pbonzini@redhat.com>,
-        kvm@vger.kernel.org
-Date:   Mon, 09 Nov 2020 16:55:04 -0500
-In-Reply-To: <160431588828.397.16468104725047768957.tip-bot2@tip-bot2>
-References: <20201030190807.GA13884@agluck-desk2.amr.corp.intel.com>
-         <160431588828.397.16468104725047768957.tip-bot2@tip-bot2>
-Content-Type: text/plain; charset="UTF-8"
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+        Mon, 9 Nov 2020 16:55:45 -0500
+Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0A9LrRlB001105;
+        Mon, 9 Nov 2020 13:55:29 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
+ subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=facebook; bh=DAg0QU4BluOab9dYza01HM7cILiHMfIxaxbBiJTspG4=;
+ b=eSxxBeiL8uNAwa2ZGBHMrJRByp1jIazMBud28txZZKwUPXqTd+RU+EGkNW0YGFaCfgmD
+ cxClT3Wg/U9Xrlkuk8//o8kpOZGSH7WMmCPw9YJdeFseJmUcKgsFJ5O3qtqrMvIrc3P9
+ QpGvQj541ZO9XNIvG2WNyhr4dTIHW/m+ox0= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com with ESMTP id 34nsyq9wey-4
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Mon, 09 Nov 2020 13:55:29 -0800
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (100.104.98.9) by
+ o365-in.thefacebook.com (100.104.94.230) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Mon, 9 Nov 2020 13:55:28 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=AFm+IOs2AqNINiHmuzJPOchGGXchH6CCUZcXS5axlxyb7ZTuXQglzlWgaNOQtxAMnSpIm0tNy9Dy/0KtrZmQBppgJ2LPLR84rYbUIJevy5FR3EF3Y3Jb2AlpVkuMH4rjMbf7s/U3EZg78Zm77p9jSFeODTb3mZ9SotGNQlhF8vkTozDZr7ojDQ3tYrvREqeoopN5rS0brcla3AxoxIIC0aunz6tGJfQ4m1ciRE5AsEqX9jWTKfWa1TOZTIv0m85ABzFmq0JAyInnnNPimJJBaXXhb0L9jodwRBCmZsDqEK4k18oRSiuzY/hYERj+rW/ij6CJPH9xFgA5/XM7m+r02w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=DAg0QU4BluOab9dYza01HM7cILiHMfIxaxbBiJTspG4=;
+ b=m5JhDs7k9Li+LLwPA0MwRU+/j/fRy/m6Sr5lnGk7VtvRxJwDLTCZKK8zAktsvUgZaveIxxniAmmRKKnQatt1IvmC1P82gyIk8No+Wk/OAtJNBDGSIPbhEPCx7SB3lr4c0JbkgCnLFzLceoZ60g4lpknFialgy1Qk6ObOXKlUf3FI0/GNI/cxQKjnIAlXrL2284URORTrw3+vQyZwTvTrrXlhUABZffG7DVRniamSfVxG/QhJE11UMapRTgmTFhh/QbrVZrIO2sEpPVCNaXUvQ5O6f/vmvQ/7asqUEygipMs8mTg2MFuwr6nKARcC+ZDK22MkRZKylmzdhzamSaki7w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector2-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=DAg0QU4BluOab9dYza01HM7cILiHMfIxaxbBiJTspG4=;
+ b=LKOQ+5429v/ORZj2dAP/2yHue+jqVV5/Jwskye96+LECOKl8dSu2zDGwskxRltXWS5Ek1gNUN18YhY1iT1dK8Y4b5I81ihB7kb6ycKtBtLDScDA/TTy8/n0dHQG1DgjSb8ODZpQ+wbY1czAw2F4+GXz7bVJDovqH5wTPpRq1DFM=
+Authentication-Results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=fb.com;
+Received: from BY5PR15MB3571.namprd15.prod.outlook.com (2603:10b6:a03:1f6::32)
+ by BYAPR15MB3189.namprd15.prod.outlook.com (2603:10b6:a03:103::27) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3541.22; Mon, 9 Nov
+ 2020 21:55:26 +0000
+Received: from BY5PR15MB3571.namprd15.prod.outlook.com
+ ([fe80::bc1d:484f:cb1f:78ee]) by BY5PR15MB3571.namprd15.prod.outlook.com
+ ([fe80::bc1d:484f:cb1f:78ee%4]) with mapi id 15.20.3541.025; Mon, 9 Nov 2020
+ 21:55:26 +0000
+Date:   Mon, 9 Nov 2020 13:55:18 -0800
+From:   Martin KaFai Lau <kafai@fb.com>
+To:     Andrii Nakryiko <andrii@kernel.org>
+CC:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>, <ast@fb.com>,
+        <daniel@iogearbox.net>, <kernel-team@fb.com>,
+        <linux-kernel@vger.kernel.org>, <rafael@kernel.org>,
+        <jeyu@kernel.org>, Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: [PATCH v3 bpf-next 2/5] bpf: assign ID to vmlinux BTF and return
+ extra info for BTF in GET_OBJ_INFO
+Message-ID: <20201109215518.jcqtsq7h7kni6w2w@kafai-mbp.dhcp.thefacebook.com>
+References: <20201109210024.2024572-1-andrii@kernel.org>
+ <20201109210024.2024572-3-andrii@kernel.org>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201109210024.2024572-3-andrii@kernel.org>
+X-Originating-IP: [2620:10d:c090:400::5:b389]
+X-ClientProxiedBy: MW2PR16CA0058.namprd16.prod.outlook.com
+ (2603:10b6:907:1::35) To BY5PR15MB3571.namprd15.prod.outlook.com
+ (2603:10b6:a03:1f6::32)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from kafai-mbp.dhcp.thefacebook.com (2620:10d:c090:400::5:b389) by MW2PR16CA0058.namprd16.prod.outlook.com (2603:10b6:907:1::35) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3541.25 via Frontend Transport; Mon, 9 Nov 2020 21:55:25 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 95192e7f-0006-47e0-2eb0-08d884fa2a70
+X-MS-TrafficTypeDiagnostic: BYAPR15MB3189:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BYAPR15MB31891FDD0C8707C20220528AD5EA0@BYAPR15MB3189.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:7219;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: vuL7gXQZSY2RJaWIV+KZTxvcBLs5n0LoaH7LPi5wuUXb7eKjWC/SbuGy+4wd4seySfnUx5lrZFQsJMBs30oSDGX2CghRBW5ryFjg+1xNGBHb+xguwMVi3pxEuVMSPZR5+LIbxa+wtUVeLc7qJ3apYnkKy+XK7qx5RvYMLQmBG1diHYxEkr4x0YyNL06IBG/K5TDngDg1fmclMHjElaizS4ze1fErJc8T5DjEo0ohMPf/mODvyOVhzAnX9xC2uBPg/ND61K9gDcQ1+kCT4E2v8QYYr1GcEGQJFVjGmWttdkqbvvmHU6kEDgkBRangZB20Mx/bdD0HD7lwCGO/ym6frw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR15MB3571.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(346002)(39860400002)(136003)(396003)(366004)(5660300002)(2906002)(66476007)(16526019)(186003)(6506007)(316002)(4326008)(66946007)(6666004)(86362001)(66556008)(54906003)(1076003)(83380400001)(6916009)(9686003)(8676002)(478600001)(8936002)(55016002)(7696005)(52116002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: o9UNaomXvem9zMMr+mKKRvXnr3yiKtQjx7RV5+YcM2E4Ykmv0j+fRzsOT7dCdkMreGzeWtauws0tM9Bs6XRN3zKKayXBuqnF6NJYRgDho3Mw67YDxb7qKO9jsJ2Th7r/VuTbXXArsNiEJl5ZAgLhAt3w+HxpLttaGe/W1Fx91fCsnS3cf5Rg5omMC9wmdqKPIM5jlYjKKekEqQecoYBVBDcUizAvIJwPTTFch1yavFXV1ssTfZ7BbolOFoIp61jka+LvIHP5dmHMYSevaznaQCJuZLlxujGv1MroyceWQu6WOgi6PW8NZaky+YfU7DJx57iiC3L2FCxmDMEnaLQew5aicyxl52iZWN4l6XiVRMNQp2SlWhyFx4M901XS4zMkV+PSi/bowHbQaEOmDA+3AW9h4bhNzQOAAXzwNn7JYRzC2PrU2xk3FzS9FGixS1zLNjDCGSmHLtY7A3VeoGCppQm0dYisK0IOYt8bAL+HJ2RtZDkWTHSMsGKVvMRxP/pLjrYCwTE/fGMLCesoucQvaDbCmKzn1D6eTOE6Lz4leQnGNh3Y59hyXgyi3Ub0ijMYOpQtyVaJkaDdlaYYINyhhrcrJr3oCVDSPgnNdwgdFtg9dTkwiA6a9wb4qfNjbAzzWiqzOumhQZtG9tReh0iTO6anis6DW3NrO/6jMmUOJgf3gOEvHEIq/0cMsEVDjlIjelzfxz3PjgHOzXto+OAtq8NwmuHJsbT2CFHng4+Kb6nq2xBjxtjK/HaksF/03knDKg/7b4SANW735o7HifNXS6Kh+zXc4KsewYI2vo7OCNRFuvheEt1va/GrL7z3KNZKzccAo6mMgUlo6DqCscFdC1HsgVcRbzfVOOBTfLuDQ9200Kc0AsyqHe2JU6Vq1+1k+eeSt7eyPr7hKXuZtGIM8R3ZC2KpMgLDfnFOy5wN4Ps=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 95192e7f-0006-47e0-2eb0-08d884fa2a70
+X-MS-Exchange-CrossTenant-AuthSource: BY5PR15MB3571.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Nov 2020 21:55:26.3879
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 0VfM+MaFu83jqgAsfsrZKUXmvoXCUOUf7Nsoj9YtDlt9kLf+5S60Ky8PqjzvS1Mq
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB3189
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-11-09_14:2020-11-05,2020-11-09 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxscore=0
+ suspectscore=34 mlxlogscore=984 malwarescore=0 spamscore=0 bulkscore=0
+ lowpriorityscore=0 phishscore=0 priorityscore=1501 adultscore=0
+ impostorscore=0 clxscore=1011 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2009150000 definitions=main-2011090139
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2020-11-02 at 11:18 +0000, tip-bot2 for Tony Luck wrote:
-> The following commit has been merged into the ras/core branch of tip:
+On Mon, Nov 09, 2020 at 01:00:21PM -0800, Andrii Nakryiko wrote:
+> Allocate ID for vmlinux BTF. This makes it visible when iterating over all BTF
+> objects in the system. To allow distinguishing vmlinux BTF (and later kernel
+> module BTF) from user-provided BTFs, expose extra kernel_btf flag, as well as
+> BTF name ("vmlinux" for vmlinux BTF, will equal to module's name for module
+> BTF).  We might want to later allow specifying BTF name for user-provided BTFs
+> as well, if that makes sense. But currently this is reserved only for
+> in-kernel BTFs.
 > 
-> Commit-ID:     68299a42f84288537ee3420c431ac0115ccb90b1
-> Gitweb:        
-> https://git.kernel.org/tip/68299a42f84288537ee3420c431ac0115ccb90b1
-> Author:        Tony Luck <tony.luck@intel.com>
-> AuthorDate:    Fri, 30 Oct 2020 12:04:00 -07:00
-> Committer:     Borislav Petkov <bp@suse.de>
-> CommitterDate: Mon, 02 Nov 2020 11:15:59 +01:00
+> Having in-kernel BTFs exposed IDs will allow to extend BPF APIs that require
+> in-kernel BTF type with ability to specify BTF types from kernel modules, not
+> just vmlinux BTF. This will be implemented in a follow up patch set for
+> fentry/fexit/fmod_ret/lsm/etc.
 > 
-> x86/mce: Enable additional error logging on certain Intel CPUs
-> 
-> The Xeon versions of Sandy Bridge, Ivy Bridge and Haswell support an
-> optional additional error logging mode which is enabled by an MSR.
-> 
-> Previously, this mode was enabled from the mcelog(8) tool via /dev/cpu,
-> but userspace should not be poking at MSRs. So move the enabling into
-> the kernel.
-> 
->  [ bp: Correct the explanation why this is done. ]
-> 
-> Suggested-by: Boris Petkov <bp@alien8.de>
-> Signed-off-by: Tony Luck <tony.luck@intel.com>
-> Signed-off-by: Borislav Petkov <bp@suse.de>
-
-Booting a simple KVM guest using today's linux-next is now generating those
-errors below inside the guest due to this patch. Are those expected?
-
-# qemu-kvm -name kata -cpu host -smp 48 -m 48g -hda rhel-8.3-x86_64-kvm.img.qcow2 -cdrom kata.iso -nic user,hostfwd=tcp::2222-:22 -nographic
-
-guest .config (if ever matters): https://cailca.coding.net/public/linux/mm/git/files/master/x86.config
-
-[    6.801741][    T0] clocksource: tsc-early: mask: 0xffffffffffffffff max_cycles: 0x1e3bca858ab, max_idle_ns: 440795282452 ns
-[    6.804371][    T0] Calibrating delay loop (skipped), value calculated using timer frequency.. 4194.90 BogoMIPS (lpj=20974530)
-[    6.806956][    T0] pid_max: default: 49152 minimum: 384
-[    6.814328][    T0] Mount-cache hash table entries: 131072 (order: 8, 1048576 bytes, linear)
-[    6.814328][    T0] Mountpoint-cache hash table entries: 131072 (order: 8, 1048576 bytes, linear)
-[    6.814328][    T0] x86/cpu: User Mode Instruction Prevention (UMIP) activated
-[    6.814328][    T0] unchecked MSR access error: RDMSR from 0x17f at rIP: 0xffffffff84483f16 (mce_intel_feature_init+0x156/0x270)
-[    6.814328][    T0] Call Trace:
-[    6.814328][    T0]  __mcheck_cpu_init_vendor+0x105/0x250
-__rdmsr at arch/x86/include/asm/msr.h:93
-(inlined by) native_read_msr at arch/x86/include/asm/msr.h:127
-(inlined by) intel_imc_init at arch/x86/kernel/cpu/mce/intel.c:524
-(inlined by) mce_intel_feature_init at arch/x86/kernel/cpu/mce/intel.c:537
-[    6.814328][    T0]  mcheck_cpu_init+0x21f/0xb00
-[    6.814328][    T0]  identify_cpu+0xfcb/0x1980
-[    6.814328][    T0]  identify_boot_cpu+0xd/0xb5
-[    6.814328][    T0]  check_bugs+0x6c/0x1606
-[    6.814328][    T0]  ? _raw_spin_unlock+0x1a/0x30
-[    6.814328][    T0]  ? poking_init+0x2b5/0x2ea
-[    6.814328][    T0]  ? l1tf_cmdline+0x11a/0x11a
-[    6.814328][    T0]  ? lockdep_init_map_waits+0x267/0x6f0
-[    6.814328][    T0]  start_kernel+0x372/0x39f
-[    6.814328][    T0]  secondary_startup_64_no_verify+0xc2/0xcb
-[    6.814328][    T0] unchecked MSR access error: WRMSR to 0x17f (tried to write 0x0000000000000002) at rIP: 0xffffffff84483f3a (mce_intel_feature_init+0x17a/0x270)
-[    6.814328][    T0] Call Trace:
-[    6.814328][    T0]  __mcheck_cpu_init_vendor+0x105/0x250
-[    6.814328][    T0]  mcheck_cpu_init+0x21f/0xb00
-[    6.814328][    T0]  identify_cpu+0xfcb/0x1980
-[    6.814328][    T0]  identify_boot_cpu+0xd/0xb5
-[    6.814328][    T0]  check_bugs+0x6c/0x1606
-[    6.814328][    T0]  ? _raw_spin_unlock+0x1a/0x30
-[    6.814328][    T0]  ? poking_init+0x2b5/0x2ea
-[    6.814328][    T0]  ? l1tf_cmdline+0x11a/0x11a
-[    6.814328][    T0]  ? lockdep_init_map_waits+0x267/0x6f0
-[    6.814328][    T0]  start_kernel+0x372/0x39f
-[    6.814328][    T0]  secondary_startup_64_no_verify+0xc2/0xcb
-[    6.814328][    T0] Last level iTLB entries: 4KB 0, 2MB 0, 4MB 0
-[    6.814328][    T0] Last level dTLB entries: 4KB 0, 2MB 0, 4MB 0, 1GB 0
-
-== host CPU ==
-# lscpu
-Architecture:        x86_64
-CPU op-mode(s):      32-bit, 64-bit
-Byte Order:          Little Endian
-CPU(s):              48
-On-line CPU(s) list: 0-47
-Thread(s) per core:  1
-Core(s) per socket:  12
-Socket(s):           4
-NUMA node(s):        4
-Vendor ID:           GenuineIntel
-CPU family:          6
-Model:               63
-Model name:          Intel(R) Xeon(R) CPU E5-4650 v3 @ 2.10GHz
-Stepping:            2
-CPU MHz:             1980.076
-BogoMIPS:            4195.25
-Virtualization:      VT-x
-L1d cache:           32K
-L1i cache:           32K
-L2 cache:            256K
-L3 cache:            30720K
-NUMA node0 CPU(s):   0-5,24-29
-NUMA node1 CPU(s):   6-11,30-35
-NUMA node2 CPU(s):   12-17,36-41
-NUMA node3 CPU(s):   18-23,42-47
-Flags:               fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca
-cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx
-pdpe1gb rdtscp lm constant_tsc arch_perfmon pebs bts rep_good nopl xtopology
-nonstop_tsc cpuid aperfmperf pni pclmulqdq dtes64 monitor ds_cpl vmx smx est tm2
-ssse3 sdbg fma cx16 xtpr pdcm pcid dca sse4_1 sse4_2 x2apic movbe popcnt
-tsc_deadline_timer aes xsave avx f16c rdrand lahf_lm abm cpuid_fault epb
-invpcid_single pti intel_ppin ssbd ibrs ibpb stibp tpr_shadow vnmi flexpriority
-ept vpid ept_ad fsgsbase tsc_adjust bmi1 avx2 smep bmi2 erms invpcid cqm
-xsaveopt cqm_llc cqm_occup_llc dtherm arat pln pts md_clear flush_l1d
-
-> Link: https://lkml.kernel.org/r/20201030190807.GA13884@agluck-desk2.amr.corp.intel.com
+> Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
 > ---
->  arch/x86/include/asm/msr-index.h |  1 +
->  arch/x86/kernel/cpu/mce/intel.c  | 20 ++++++++++++++++++++
->  2 files changed, 21 insertions(+)
+>  include/uapi/linux/bpf.h       |  3 +++
+>  kernel/bpf/btf.c               | 39 ++++++++++++++++++++++++++++++++--
+>  tools/include/uapi/linux/bpf.h |  3 +++
+>  3 files changed, 43 insertions(+), 2 deletions(-)
 > 
-> diff --git a/arch/x86/include/asm/msr-index.h b/arch/x86/include/asm/msr-
-> index.h
-> index 972a34d..b2dd264 100644
-> --- a/arch/x86/include/asm/msr-index.h
-> +++ b/arch/x86/include/asm/msr-index.h
-> @@ -139,6 +139,7 @@
->  #define MSR_IA32_MCG_CAP		0x00000179
->  #define MSR_IA32_MCG_STATUS		0x0000017a
->  #define MSR_IA32_MCG_CTL		0x0000017b
-> +#define MSR_ERROR_CONTROL		0x0000017f
->  #define MSR_IA32_MCG_EXT_CTL		0x000004d0
+> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> index 9879d6793e90..162999b12790 100644
+> --- a/include/uapi/linux/bpf.h
+> +++ b/include/uapi/linux/bpf.h
+> @@ -4466,6 +4466,9 @@ struct bpf_btf_info {
+>  	__aligned_u64 btf;
+>  	__u32 btf_size;
+>  	__u32 id;
+> +	__aligned_u64 name;
+> +	__u32 name_len;
+> +	__u32 kernel_btf;
+>  } __attribute__((aligned(8)));
 >  
->  #define MSR_OFFCORE_RSP_0		0x000001a6
-> diff --git a/arch/x86/kernel/cpu/mce/intel.c b/arch/x86/kernel/cpu/mce/intel.c
-> index abe9fe0..b47883e 100644
-> --- a/arch/x86/kernel/cpu/mce/intel.c
-> +++ b/arch/x86/kernel/cpu/mce/intel.c
-> @@ -509,12 +509,32 @@ static void intel_ppin_init(struct cpuinfo_x86 *c)
->  	}
->  }
+>  struct bpf_link_info {
+> diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
+> index 894ee33f4c84..663c3fb4e614 100644
+> --- a/kernel/bpf/btf.c
+> +++ b/kernel/bpf/btf.c
+> @@ -215,6 +215,8 @@ struct btf {
+>  	struct btf *base_btf;
+>  	u32 start_id; /* first type ID in this BTF (0 for base BTF) */
+>  	u32 start_str_off; /* first string offset (0 for base BTF) */
+> +	char name[MODULE_NAME_LEN];
+> +	bool kernel_btf;
+>  };
 >  
-> +/*
-> + * Enable additional error logs from the integrated
-> + * memory controller on processors that support this.
-> + */
-> +static void intel_imc_init(struct cpuinfo_x86 *c)
-> +{
-> +	u64 error_control;
+>  enum verifier_phase {
+> @@ -4430,6 +4432,8 @@ struct btf *btf_parse_vmlinux(void)
+>  
+>  	btf->data = __start_BTF;
+>  	btf->data_size = __stop_BTF - __start_BTF;
+> +	btf->kernel_btf = true;
+> +	snprintf(btf->name, sizeof(btf->name), "vmlinux");
+>  
+>  	err = btf_parse_hdr(env);
+>  	if (err)
+> @@ -4455,8 +4459,13 @@ struct btf *btf_parse_vmlinux(void)
+>  
+>  	bpf_struct_ops_init(btf, log);
+>  
+> -	btf_verifier_env_free(env);
+>  	refcount_set(&btf->refcnt, 1);
 > +
-> +	switch (c->x86_model) {
-> +	case INTEL_FAM6_SANDYBRIDGE_X:
-> +	case INTEL_FAM6_IVYBRIDGE_X:
-> +	case INTEL_FAM6_HASWELL_X:
-> +		rdmsrl(MSR_ERROR_CONTROL, error_control);
-> +		error_control |= 2;
-> +		wrmsrl(MSR_ERROR_CONTROL, error_control);
-> +		break;
-> +	}
-> +}
+> +	err = btf_alloc_id(btf);
+> +	if (err)
+> +		goto errout;
 > +
->  void mce_intel_feature_init(struct cpuinfo_x86 *c)
->  {
->  	intel_init_thermal(c);
->  	intel_init_cmci();
->  	intel_init_lmce();
->  	intel_ppin_init(c);
-> +	intel_imc_init(c);
->  }
+> +	btf_verifier_env_free(env);
+>  	return btf;
 >  
->  void mce_intel_feature_clear(struct cpuinfo_x86 *c)
+>  errout:
+> @@ -5554,7 +5563,8 @@ int btf_get_info_by_fd(const struct btf *btf,
+>  	struct bpf_btf_info info;
+>  	u32 info_copy, btf_copy;
+>  	void __user *ubtf;
+> -	u32 uinfo_len;
+> +	char __user *uname;
+> +	u32 uinfo_len, uname_len, name_len;
+>  
+>  	uinfo = u64_to_user_ptr(attr->info.info);
+>  	uinfo_len = attr->info.info_len;
+> @@ -5571,6 +5581,31 @@ int btf_get_info_by_fd(const struct btf *btf,
+>  		return -EFAULT;
+>  	info.btf_size = btf->data_size;
+>  
+> +	info.kernel_btf = btf->kernel_btf;
+> +
+> +	uname = u64_to_user_ptr(info.name);
+> +	uname_len = info.name_len;
+> +	if (!uname ^ !uname_len)
+> +		return -EINVAL;
+> +
+> +	name_len = strlen(btf->name);
+> +	info.name_len = name_len;
+> +
+> +	if (uname) {
+> +		if (uname_len >= name_len + 1) {
+> +			if (copy_to_user(uname, btf->name, name_len + 1))
+> +				return -EFAULT;
+> +		} else {
+> +			char zero = '\0';
+> +
+> +			if (copy_to_user(uname, btf->name, uname_len - 1))
+> +				return -EFAULT;
+> +			if (put_user(zero, uname + uname_len - 1))
+> +				return -EFAULT;
+> +			return -ENOSPC;
+It should still do copy_to_user() even it will return -ENOSPC.
 
+> +		}
+> +	}
+> +
+>  	if (copy_to_user(uinfo, &info, info_copy) ||
+>  	    put_user(info_copy, &uattr->info.info_len))
+>  		return -EFAULT;
