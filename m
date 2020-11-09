@@ -2,39 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DBDFC2AB9E4
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 14:14:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D121C2AB98E
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 14:10:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732986AbgKINNi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 08:13:38 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39496 "EHLO mail.kernel.org"
+        id S1732042AbgKINKV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 08:10:21 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35510 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731621AbgKINNg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 08:13:36 -0500
+        id S1730637AbgKINKS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 08:10:18 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E45CE20867;
-        Mon,  9 Nov 2020 13:13:34 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7B09720663;
+        Mon,  9 Nov 2020 13:10:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604927615;
-        bh=gLHIgoD2vt9hPiX3wLzXW2G/zO/wNF9ivi/BFLeyUOg=;
+        s=default; t=1604927418;
+        bh=XTmybn5wyFPtf882US9JVHzfb8JSXrqmCqIheLZ7jm0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Ll6zP0iBZ0UU6Jy69D/IueR+2DYu2cwvwDjEW868YX+8pJePk+ggScPpAJZ4i7swD
-         ajshjj98UolsOhkep9MkgKKFSO3EG1DAcJY7z77AHuogTBqvhmtfV7D7buCucOht00
-         GVTYrPH5Kkzh8tdxgiU+Y3z645HUaVK3NOaMiYgE=
+        b=b4w1WWP3eoN+oXHZxteM++Q9aPgDelWeF7H4+bfG0l6Mx+0Zmr+893vxFSANpu97T
+         gpbc4LsyJEsh/oWw1goFX282hXCtKZTrcTFIrSciYf7osle72iyvolPyhFd4HzM1fa
+         R3q1wljVKpnbw1vNf680Eqz1JQsJ3or1HXJykUs0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Maxime Ripard <maxime@cerno.tech>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
+        stable@vger.kernel.org, Roman Kiryanov <rkir@google.com>,
+        Jeff Vander Stoep <jeffv@google.com>,
+        James Morris <jamorris@linux.microsoft.com>,
+        Jakub Kicinski <kuba@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 48/85] drm/sun4i: frontend: Fix the scaler phase on A33
-Date:   Mon,  9 Nov 2020 13:55:45 +0100
-Message-Id: <20201109125024.889304102@linuxfoundation.org>
+Subject: [PATCH 4.19 52/71] vsock: use ns_capable_noaudit() on socket create
+Date:   Mon,  9 Nov 2020 13:55:46 +0100
+Message-Id: <20201109125022.340200776@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201109125022.614792961@linuxfoundation.org>
-References: <20201109125022.614792961@linuxfoundation.org>
+In-Reply-To: <20201109125019.906191744@linuxfoundation.org>
+References: <20201109125019.906191744@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,34 +45,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Maxime Ripard <maxime@cerno.tech>
+From: Jeff Vander Stoep <jeffv@google.com>
 
-[ Upstream commit e3190b5e9462067714d267c40d8c8c1d0463dda3 ]
+[ Upstream commit af545bb5ee53f5261db631db2ac4cde54038bdaf ]
 
-The A33 has a different phase parameter in the Allwinner BSP on the
-channel1 than the one currently applied. Fix this.
+During __vsock_create() CAP_NET_ADMIN is used to determine if the
+vsock_sock->trusted should be set to true. This value is used later
+for determing if a remote connection should be allowed to connect
+to a restricted VM. Unfortunately, if the caller doesn't have
+CAP_NET_ADMIN, an audit message such as an selinux denial is
+generated even if the caller does not want a trusted socket.
 
-Signed-off-by: Maxime Ripard <maxime@cerno.tech>
-Acked-by: Jernej Skrabec <jernej.skrabec@siol.net>
-Link: https://patchwork.freedesktop.org/patch/msgid/20201015093642.261440-3-maxime@cerno.tech
+Logging errors on success is confusing. To avoid this, switch the
+capable(CAP_NET_ADMIN) check to the noaudit version.
+
+Reported-by: Roman Kiryanov <rkir@google.com>
+https://android-review.googlesource.com/c/device/generic/goldfish/+/1468545/
+Signed-off-by: Jeff Vander Stoep <jeffv@google.com>
+Reviewed-by: James Morris <jamorris@linux.microsoft.com>
+Link: https://lore.kernel.org/r/20201023143757.377574-1-jeffv@google.com
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/sun4i/sun4i_frontend.c | 2 +-
+ net/vmw_vsock/af_vsock.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/sun4i/sun4i_frontend.c b/drivers/gpu/drm/sun4i/sun4i_frontend.c
-index c4959d9e16391..7186ba73d8e14 100644
---- a/drivers/gpu/drm/sun4i/sun4i_frontend.c
-+++ b/drivers/gpu/drm/sun4i/sun4i_frontend.c
-@@ -694,7 +694,7 @@ static const struct sun4i_frontend_data sun4i_a10_frontend = {
- };
- 
- static const struct sun4i_frontend_data sun8i_a33_frontend = {
--	.ch_phase		= { 0x400, 0x400 },
-+	.ch_phase		= { 0x400, 0xfc400 },
- 	.has_coef_access_ctrl	= true,
- };
- 
+diff --git a/net/vmw_vsock/af_vsock.c b/net/vmw_vsock/af_vsock.c
+index c88dc8ee3144b..02374459c4179 100644
+--- a/net/vmw_vsock/af_vsock.c
++++ b/net/vmw_vsock/af_vsock.c
+@@ -629,7 +629,7 @@ struct sock *__vsock_create(struct net *net,
+ 		vsk->owner = get_cred(psk->owner);
+ 		vsk->connect_timeout = psk->connect_timeout;
+ 	} else {
+-		vsk->trusted = capable(CAP_NET_ADMIN);
++		vsk->trusted = ns_capable_noaudit(&init_user_ns, CAP_NET_ADMIN);
+ 		vsk->owner = get_current_cred();
+ 		vsk->connect_timeout = VSOCK_DEFAULT_CONNECT_TIMEOUT;
+ 	}
 -- 
 2.27.0
 
