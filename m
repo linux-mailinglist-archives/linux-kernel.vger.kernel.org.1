@@ -2,105 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 568102AC207
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 18:20:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 14F422AC20E
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 18:21:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731410AbgKIRU1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 12:20:27 -0500
-Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:1384 "EHLO
-        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729999AbgKIRU1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 12:20:27 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5fa97a560001>; Mon, 09 Nov 2020 09:20:22 -0800
-Received: from HQMAIL105.nvidia.com (172.20.187.12) by HQMAIL111.nvidia.com
- (172.20.187.18) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 9 Nov
- 2020 17:20:22 +0000
-Received: from vidyas-desktop.nvidia.com (10.124.1.5) by mail.nvidia.com
- (172.20.187.12) with Microsoft SMTP Server id 15.0.1473.3 via Frontend
- Transport; Mon, 9 Nov 2020 17:20:18 +0000
-From:   Vidya Sagar <vidyas@nvidia.com>
-To:     <lorenzo.pieralisi@arm.com>, <robh+dt@kernel.org>,
-        <bhelgaas@google.com>, <thierry.reding@gmail.com>,
-        <jonathanh@nvidia.com>, <amanharitsh123@gmail.com>,
-        <dinghao.liu@zju.edu.cn>, <kw@linux.com>
-CC:     <linux-pci@vger.kernel.org>, <linux-tegra@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <kthota@nvidia.com>,
-        <mmaddireddy@nvidia.com>, <vidyas@nvidia.com>, <sagar.tv@gmail.com>
-Subject: [PATCH V4 6/6] PCI: tegra: Disable LTSSM during L2 entry
-Date:   Mon, 9 Nov 2020 22:49:37 +0530
-Message-ID: <20201109171937.28326-7-vidyas@nvidia.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20201109171937.28326-1-vidyas@nvidia.com>
-References: <20201109171937.28326-1-vidyas@nvidia.com>
-X-NVConfidentiality: public
+        id S1731486AbgKIRVt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 12:21:49 -0500
+Received: from mx2.suse.de ([195.135.220.15]:52812 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730706AbgKIRVt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 12:21:49 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id DEEADAD07;
+        Mon,  9 Nov 2020 17:21:47 +0000 (UTC)
+Date:   Mon, 9 Nov 2020 18:21:44 +0100
+From:   Oscar Salvador <osalvador@suse.de>
+To:     Muchun Song <songmuchun@bytedance.com>
+Cc:     corbet@lwn.net, mike.kravetz@oracle.com, tglx@linutronix.de,
+        mingo@redhat.com, bp@alien8.de, x86@kernel.org, hpa@zytor.com,
+        dave.hansen@linux.intel.com, luto@kernel.org, peterz@infradead.org,
+        viro@zeniv.linux.org.uk, akpm@linux-foundation.org,
+        paulmck@kernel.org, mchehab+huawei@kernel.org,
+        pawan.kumar.gupta@linux.intel.com, rdunlap@infradead.org,
+        oneukum@suse.com, anshuman.khandual@arm.com, jroedel@suse.de,
+        almasrymina@google.com, rientjes@google.com, willy@infradead.org,
+        mhocko@suse.com, duanxiongchun@bytedance.com,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH v3 05/21] mm/hugetlb: Introduce pgtable
+ allocation/freeing helpers
+Message-ID: <20201109172144.GB17356@linux>
+References: <20201108141113.65450-1-songmuchun@bytedance.com>
+ <20201108141113.65450-6-songmuchun@bytedance.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1604942422; bh=K99h23gugfP4Evxq0Qx1iksWffmd1YF23yjNhOHjM18=;
-        h=From:To:CC:Subject:Date:Message-ID:X-Mailer:In-Reply-To:
-         References:X-NVConfidentiality:MIME-Version:Content-Type;
-        b=XrFDO2otaP7S6Uk1pWnkv/2zx2P3DOrGFJ6BusH33HbJi8LpoorPUDIofWMyCIn25
-         ypnaJZkepwI+8wyYA+MWa195Z1CeyrLs1GJM6x7iWxp265N/DYAqO5Sh+o36+4I9Gk
-         /BvoHWYgnzr5UtNb9meiwzUTdg7LvdwDHijrVxI6sHpni0NQ00f6FbqkvZRG6JbCwE
-         C1KObnvEVUCpDajvW+/cSFAr/QeD23c/vAE7VdSjrMeH0/8V9rJ/UWKCZaDJs/rpDz
-         JFwoIHhMRnU88EQ4h0KifSs3z9Jeyqsp1v675XGbn8XHk1ZeGz22SwYgvBoC46OLOb
-         3DoNoliyC5dNw==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201108141113.65450-6-songmuchun@bytedance.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PCIe cards like Marvell SATA controller and some of the Samsung NVMe
-drives don't support taking the link to L2 state. When the link doesn't
-go to L2 state, Tegra194 requires the LTSSM to be disabled to allow PHY
-to start the next link up process cleanly during suspend/resume sequence.
-Failing to disable LTSSM results in the PCIe link not coming up in the
-next resume cycle.
+On Sun, Nov 08, 2020 at 10:10:57PM +0800, Muchun Song wrote:
+> +static inline unsigned int pgtable_pages_to_prealloc_per_hpage(struct hstate *h)
+> +{
+> +	unsigned long vmemmap_size = vmemmap_pages_size_per_hpage(h);
+> +
+> +	/*
+> +	 * No need pre-allocate page tabels when there is no vmemmap pages
+> +	 * to free.
+ s /tabels/tables/
 
-Signed-off-by: Vidya Sagar <vidyas@nvidia.com>
----
-V4:
-* New patch in this series
+> +static int vmemmap_pgtable_prealloc(struct hstate *h, struct page *page)
+> +{
+> +	int i;
+> +	pgtable_t pgtable;
+> +	unsigned int nr = pgtable_pages_to_prealloc_per_hpage(h);
+> +
+> +	if (!nr)
+> +		return 0;
+> +
+> +	vmemmap_pgtable_init(page);
+> +
+> +	for (i = 0; i < nr; i++) {
+> +		pte_t *pte_p;
+> +
+> +		pte_p = pte_alloc_one_kernel(&init_mm);
+> +		if (!pte_p)
+> +			goto out;
+> +		vmemmap_pgtable_deposit(page, virt_to_page(pte_p));
+> +	}
+> +
+> +	return 0;
+> +out:
+> +	while (i-- && (pgtable = vmemmap_pgtable_withdraw(page)))
+> +		pte_free_kernel(&init_mm, page_to_virt(pgtable));
 
- drivers/pci/controller/dwc/pcie-tegra194.c | 16 +++++++++-------
- 1 file changed, 9 insertions(+), 7 deletions(-)
+	would not be enough to:
 
-diff --git a/drivers/pci/controller/dwc/pcie-tegra194.c b/drivers/pci/controller/dwc/pcie-tegra194.c
-index 8c08998b9ce1..57ff0657bbe2 100644
---- a/drivers/pci/controller/dwc/pcie-tegra194.c
-+++ b/drivers/pci/controller/dwc/pcie-tegra194.c
-@@ -1513,6 +1513,14 @@ static void tegra_pcie_dw_pme_turnoff(struct tegra_pcie_dw *pcie)
- 		data &= ~APPL_PINMUX_PEX_RST;
- 		appl_writel(pcie, data, APPL_PINMUX);
- 
-+		/*
-+		 * Some cards do not go to detect state even after de-asserting
-+		 * PERST#. So, de-assert LTSSM to bring link to detect state.
-+		 */
-+		data = readl(pcie->appl_base + APPL_CTRL);
-+		data &= ~APPL_CTRL_LTSSM_EN;
-+		writel(data, pcie->appl_base + APPL_CTRL);
-+
- 		err = readl_poll_timeout_atomic(pcie->appl_base + APPL_DEBUG,
- 						data,
- 						((data &
-@@ -1520,14 +1528,8 @@ static void tegra_pcie_dw_pme_turnoff(struct tegra_pcie_dw *pcie)
- 						APPL_DEBUG_LTSSM_STATE_SHIFT) ==
- 						LTSSM_STATE_PRE_DETECT,
- 						1, LTSSM_TIMEOUT);
--		if (err) {
-+		if (err)
- 			dev_info(pcie->dev, "Link didn't go to detect state\n");
--		} else {
--			/* Disable LTSSM after link is in detect state */
--			data = appl_readl(pcie, APPL_CTRL);
--			data &= ~APPL_CTRL_LTSSM_EN;
--			appl_writel(pcie, data, APPL_CTRL);
--		}
- 	}
- 	/*
- 	 * DBI registers may not be accessible after this as PLL-E would be
+	while (pgtable = vmemmap_pgtable_withdrag(page))
+		pte_free_kernel(&init_mm, page_to_virt(pgtable));
+
+> +	return -ENOMEM;
+> +}
+> +
+> +static void vmemmap_pgtable_free(struct hstate *h, struct page *page)
+> +{
+> +	pgtable_t pgtable;
+> +	unsigned int nr = pgtable_pages_to_prealloc_per_hpage(h);
+> +
+> +	if (!nr)
+> +		return;
+
+We can get rid of "nr" and its check and keep only the check below, right?
+AFAICS, they go together, e.g: if page_huge_pte does not return null,
+it means that we preallocated a pagetable, and viceversa.
+
+
+> +
+> +	pgtable = page_huge_pte(page);
+> +	if (!pgtable)
+> +		return;
+> +
+> +	while (nr-- && (pgtable = vmemmap_pgtable_withdraw(page)))
+> +		pte_free_kernel(&init_mm, page_to_virt(pgtable));
+
+	Same as above, that "nr" can go?
+
 -- 
-2.17.1
-
+Oscar Salvador
+SUSE L3
