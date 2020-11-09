@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92F122AB93A
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 14:07:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CA8672ABB75
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 14:28:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729045AbgKINHU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 08:07:20 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60012 "EHLO mail.kernel.org"
+        id S1732970AbgKIN23 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 08:28:29 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39812 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731092AbgKINHR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 08:07:17 -0500
+        id S1732987AbgKINNr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 08:13:47 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CB2C820789;
-        Mon,  9 Nov 2020 13:07:15 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 63CBC216C4;
+        Mon,  9 Nov 2020 13:13:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604927236;
-        bh=jrGi8OarGTOUBGT9yqcPIndX85MpRSQ8m+vRE2NP9lM=;
+        s=default; t=1604927627;
+        bh=2j4ZU0oH9+4KcUTae6zEzhfNzufWY1o8U8CZGAAN2Bc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=0m2MLuZNBihH7AiI8iGOrJLFYNK2WFMIQIm00hqbWdk6UDOzuO90hq3SV2viWmVjX
-         1QHujyFzv88PjokAGGlu2fMZ3qPa5stuAUdig6heeB8a9pXSg8uQeK6Io/SM7339I4
-         ngCx/m86RdNlTshRRNn3G4fEITrM8jgyCdjnRHYM=
+        b=UR77vK0AlEIEdPcQBhqr3hgXKqZhqwUmeOFNPJEtr2RZ9o8MrMu/kRzd2FCY+xRNH
+         HA2J6xhzb1TZN7W3m386moLDoUKk15gDiH8TTzzbqBRw7ekWSRw3ZuRF7/q6owMPwn
+         p1Z1lQfW8RRK8yRR1hMReP69LOWujUxSjYTHBuPs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ziyi Cao <kernel@septs.pw>,
-        Johan Hovold <johan@kernel.org>
-Subject: [PATCH 4.14 40/48] USB: serial: option: add Quectel EC200T module support
+        stable@vger.kernel.org, Alex Deucher <alexander.deucher@amd.com>,
+        Guchun Chen <guchun.chen@amd.com>,
+        "Tianci.Yin" <tianci.yin@amd.com>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 52/85] drm/amdgpu: add DID for navi10 blockchain SKU
 Date:   Mon,  9 Nov 2020 13:55:49 +0100
-Message-Id: <20201109125018.732815311@linuxfoundation.org>
+Message-Id: <20201109125025.076988245@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201109125016.734107741@linuxfoundation.org>
-References: <20201109125016.734107741@linuxfoundation.org>
+In-Reply-To: <20201109125022.614792961@linuxfoundation.org>
+References: <20201109125022.614792961@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,39 +43,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ziyi Cao <kernel@septs.pw>
+From: Tianci.Yin <tianci.yin@amd.com>
 
-commit a46b973bced1ba57420752bf38426acd9f6cbfa6 upstream.
+[ Upstream commit 8942881144a7365143f196f5eafed24783a424a3 ]
 
-Add usb product id of the Quectel EC200T module.
-
-Signed-off-by: Ziyi Cao <kernel@septs.pw>
-Link: https://lore.kernel.org/r/17f8a2a3-ce0f-4be7-8544-8fdf286907d0@www.fastmail.com
-Cc: stable@vger.kernel.org
-Signed-off-by: Johan Hovold <johan@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Reviewed-by: Alex Deucher <alexander.deucher@amd.com>
+Reviewed-by: Guchun Chen <guchun.chen@amd.com>
+Signed-off-by: Tianci.Yin <tianci.yin@amd.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/serial/option.c |    2 ++
- 1 file changed, 2 insertions(+)
+ drivers/gpu/drm/amd/amdgpu/amdgpu_drv.c | 1 +
+ 1 file changed, 1 insertion(+)
 
---- a/drivers/usb/serial/option.c
-+++ b/drivers/usb/serial/option.c
-@@ -253,6 +253,7 @@ static void option_instat_callback(struc
- #define QUECTEL_PRODUCT_EP06			0x0306
- #define QUECTEL_PRODUCT_EM12			0x0512
- #define QUECTEL_PRODUCT_RM500Q			0x0800
-+#define QUECTEL_PRODUCT_EC200T			0x6026
- 
- #define CMOTECH_VENDOR_ID			0x16d8
- #define CMOTECH_PRODUCT_6001			0x6001
-@@ -1120,6 +1121,7 @@ static const struct usb_device_id option
- 	{ USB_DEVICE_AND_INTERFACE_INFO(QUECTEL_VENDOR_ID, QUECTEL_PRODUCT_RM500Q, 0xff, 0, 0) },
- 	{ USB_DEVICE_AND_INTERFACE_INFO(QUECTEL_VENDOR_ID, QUECTEL_PRODUCT_RM500Q, 0xff, 0xff, 0x10),
- 	  .driver_info = ZLP },
-+	{ USB_DEVICE_AND_INTERFACE_INFO(QUECTEL_VENDOR_ID, QUECTEL_PRODUCT_EC200T, 0xff, 0, 0) },
- 
- 	{ USB_DEVICE(CMOTECH_VENDOR_ID, CMOTECH_PRODUCT_6001) },
- 	{ USB_DEVICE(CMOTECH_VENDOR_ID, CMOTECH_PRODUCT_CMU_300) },
+diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_drv.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_drv.c
+index fa2c0f29ad4de..e8e1720104160 100644
+--- a/drivers/gpu/drm/amd/amdgpu/amdgpu_drv.c
++++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_drv.c
+@@ -1011,6 +1011,7 @@ static const struct pci_device_id pciidlist[] = {
+ 	{0x1002, 0x7319, PCI_ANY_ID, PCI_ANY_ID, 0, 0, CHIP_NAVI10},
+ 	{0x1002, 0x731A, PCI_ANY_ID, PCI_ANY_ID, 0, 0, CHIP_NAVI10},
+ 	{0x1002, 0x731B, PCI_ANY_ID, PCI_ANY_ID, 0, 0, CHIP_NAVI10},
++	{0x1002, 0x731E, PCI_ANY_ID, PCI_ANY_ID, 0, 0, CHIP_NAVI10},
+ 	{0x1002, 0x731F, PCI_ANY_ID, PCI_ANY_ID, 0, 0, CHIP_NAVI10},
+ 	/* Navi14 */
+ 	{0x1002, 0x7340, PCI_ANY_ID, PCI_ANY_ID, 0, 0, CHIP_NAVI14},
+-- 
+2.27.0
+
 
 
