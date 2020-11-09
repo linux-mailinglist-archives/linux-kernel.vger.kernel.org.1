@@ -2,135 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DD112AC1D6
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 18:09:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C9EB02AC1CE
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 18:08:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731014AbgKIRJO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 12:09:14 -0500
-Received: from mail-eopbgr760047.outbound.protection.outlook.com ([40.107.76.47]:49890
-        "EHLO NAM02-CY1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1730103AbgKIRJO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 12:09:14 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=UgWrxV7wp16UyofBVbgMBAuUiGzGRJwxFy98oQtrJJyz8LRUpiCimeUAwXZWDrh1oi53OOC8fKuINNyQr2ulf1actqahkUhlWgNV8enBWj6eAy+Fe7YInme6pGv+8UFNaDYtAV0r3eEJLFDmORKiRGXd2tOYmlyFgVXQrjcuzyw1L9Lokxkwp+RkM8p/ac26NxO99Ls4RwXJUKRClDaw6zAmqlLsg/gM2R3HfzfsfxLQBI9Hlc7Zn1SNtUeXe9EOw21ktKVTQZzrxb+ZcmNeoWroekmU/yt+x8QmZvd+I7Q3cJvqeR5wEySR07IzIDo8t7ots+ekKmctAQZ5vmnxeA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ZZiGgbV0PnxdPu5ms5amOn1OFfoJ9BsQsRMZVYWcqrU=;
- b=mFRixwCvWfH3Hc9N3bNxtPnoJYedEOcSy3O8XgVpEq/mbWtPJq+tpC+kYDlebAM41eGUKspT80CzcOjktpZl2N0FSloRGXalgAHr1gUqgyQ8XFvx+GkFH5grf+VnTfXrDhFx/i3B3dIKTbXgOkOAf487ePs0/9+bkZt+HjyhsmQ7Zk6gvoxp0R+4I/iEL7sy4fz4tcfoW+Tu/ruIddPw9PM7wTdDDROTGcDPbhAS4tEhzTwrzFZwIRbHWbIw4wLfmEaL0gC30arvO03KdFqh3DTSbXF+Rhyz+PSzt1BMFG5Aw6C0ek8CumSEUL8biSptoYb+mDL3mfUPC0uW2R4maw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
+        id S1730478AbgKIRIi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 12:08:38 -0500
+Received: from mailrelay3-2.pub.mailoutpod1-cph3.one.com ([46.30.212.2]:54663
+        "EHLO mailrelay3-2.pub.mailoutpod1-cph3.one.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730103AbgKIRIh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 12:08:37 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ZZiGgbV0PnxdPu5ms5amOn1OFfoJ9BsQsRMZVYWcqrU=;
- b=e+3h0VxuYL7Shu3iaCBah3/VbDbVDUn43rqWWvk8Ar47HsQmPPR3xLWBRO3xFgHTnj5N2dxHTnoKMLSsfGTYN1+8EtP8HpKtzyGPtue6RXZq15yyksGbKSc0QHqWGUYbQdUdHbssXOaUrtK/0b+sQCZ7CQtcCwy6cmOEsODWKRo=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=amd.com;
-Received: from BY5PR12MB4098.namprd12.prod.outlook.com (2603:10b6:a03:205::8)
- by BY5PR12MB3748.namprd12.prod.outlook.com (2603:10b6:a03:1ad::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.24; Mon, 9 Nov
- 2020 17:09:11 +0000
-Received: from BY5PR12MB4098.namprd12.prod.outlook.com
- ([fe80::e1a3:69b7:a02d:a74d]) by BY5PR12MB4098.namprd12.prod.outlook.com
- ([fe80::e1a3:69b7:a02d:a74d%6]) with mapi id 15.20.3541.025; Mon, 9 Nov 2020
- 17:08:53 +0000
-Subject: Re: [PATCH][next] SFH: fix error return check for -ERESTARTSYS
-To:     Colin King <colin.king@canonical.com>,
-        Nehal Shah <nehal-bakulchandra.shah@amd.com>,
-        Sandeep Singh <sandeep.singh@amd.com>,
-        Jiri Kosina <jikos@kernel.org>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        linux-input@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20201030143002.535531-1-colin.king@canonical.com>
-From:   "Singh, Sandeep" <ssingh1@amd.com>
-Message-ID: <9cc9cf14-4f71-c691-caee-268c9f29ac4e@amd.com>
-Date:   Mon, 9 Nov 2020 22:38:41 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.1
-In-Reply-To: <20201030143002.535531-1-colin.king@canonical.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Originating-IP: [165.204.159.242]
-X-ClientProxiedBy: BM1PR01CA0092.INDPRD01.PROD.OUTLOOK.COM
- (2603:1096:b00:1::32) To BY5PR12MB4098.namprd12.prod.outlook.com
- (2603:10b6:a03:205::8)
+        d=bitmath.org; s=20191106;
+        h=content-transfer-encoding:content-type:in-reply-to:mime-version:date:
+         message-id:from:references:cc:to:subject:from;
+        bh=8WkeL/6Obia5iGe0PEgUkq1rnWgBWM4eJz++BJCuECY=;
+        b=XBhGmXcthbsXR9ONVJpA8kLO2pdJSB512455S6J3FhUbIG8df+oxzXy3NzsThJQH+TAh7BgiTRovE
+         KqGkBOmv38dB70n9ndzGEZLspWc9qS/pBPRZUM2zfKrgFgcRBNuFigW/jtjUEByWzTT98h4XWRh+96
+         seLRbifQKLuu5hENbZaj+xA5gFhwnLNC7x3FHEbOT3pJ3z72OwR56dC6OBnv7lwI9b1S3V+buXoksb
+         7IwkkKul3mTd68RQ+xEvRl0s0wTgVsNrTWCjAog9RllpdKLDaAwPQLq2koBkKWuogyfVwHHxrK7vBs
+         vtd5SkHA9qMfLy6jammpeNMIyabIgZQ==
+X-HalOne-Cookie: 63cb47a66e693f08a3ac8867ab094fba82142490
+X-HalOne-ID: 319dc5e4-22ae-11eb-a80d-d0431ea8bb03
+Received: from [192.168.19.13] (h-155-4-128-97.na.cust.bahnhof.se [155.4.128.97])
+        by mailrelay3.pub.mailoutpod1-cph3.one.com (Halon) with ESMTPSA
+        id 319dc5e4-22ae-11eb-a80d-d0431ea8bb03;
+        Mon, 09 Nov 2020 17:08:32 +0000 (UTC)
+Subject: Re: [PATCH v3] applesmc: Re-work SMC comms
+To:     Brad Campbell <brad@fnarfbargle.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Andreas Kemnade <andreas@kemnade.info>,
+        linux-hwmon@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        hns@goldelico.com, Guenter Roeck <linux@roeck-us.net>,
+        Jean Delvare <jdelvare@suse.com>
+References: <70331f82-35a1-50bd-685d-0b06061dd213@fnarfbargle.com>
+ <3c72ccc3-4de1-b5d0-423d-7b8c80991254@fnarfbargle.com>
+ <6d071547-10ee-ca92-ec8b-4b5069d04501@bitmath.org>
+ <8e117844-d62a-bcb1-398d-c59cc0d4b878@fnarfbargle.com>
+ <e5a856b1-fb1a-db5d-0fde-c86d0bcca1df@bitmath.org>
+ <aa60f673-427a-1a47-7593-54d1404c3c92@bitmath.org>
+ <9109d059-d9cb-7464-edba-3f42aa78ce92@bitmath.org>
+ <5310c0ab-0f80-1f9e-8807-066223edae13@bitmath.org>
+ <57057d07-d3a0-8713-8365-7b12ca222bae@fnarfbargle.com>
+ <41909045-9486-78d9-76c2-73b99a901b83@bitmath.org>
+ <20201108101429.GA28460@mars.bitmath.org>
+ <bdabe861-8717-8948-80a0-ca2173c2e22a@fnarfbargle.com>
+ <af08ee3b-313d-700c-7e70-c57d20d3be5d@bitmath.org>
+ <d4e53a42-d86b-ce2b-7422-22b5ff5593e8@fnarfbargle.com>
+From:   Henrik Rydberg <rydberg@bitmath.org>
+Message-ID: <d091286d-00ac-bd96-b1ea-0e789f02fa07@bitmath.org>
+Date:   Mon, 9 Nov 2020 18:08:43 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [10.252.81.223] (165.204.159.242) by BM1PR01CA0092.INDPRD01.PROD.OUTLOOK.COM (2603:1096:b00:1::32) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3541.21 via Frontend Transport; Mon, 9 Nov 2020 17:08:49 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: 61fe7cd2-d1d0-4196-9682-08d884d22249
-X-MS-TrafficTypeDiagnostic: BY5PR12MB3748:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BY5PR12MB37483D10EB36D1219A774BF4E0EA0@BY5PR12MB3748.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:6430;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: nL5c+jEkO/qOTqZS77rovLBBaetmaCKtBXdGQsh2ebglMW7eN8YsqP5blFBxfQEPWPTP02BNrm9d5tPa3G6WP1T60dZpS5nnbtpSgXP8OhAcFR9Py4vD7CcH/4xQM3VfUvv3xeU0k09iJF3pOAalrAfLp4s/8LOvCrQCkUgxa0NLqoLvNOy6onG8wl6WFMPyRl9kzab50h55qbJn432ZTLlHKlfAbu4lTnpfaVFzXYHNyXRSH+LWU2Gk0DZYKcwHju7eD6CjRWrcT1FMXEDARzNtNce0C1uQ83QByA+Mam03c3oYt4eCRg57swxOYTYQd8QuSGMOHOLy1ZvemBMHoQ/MJUMtJGtv1LaKzP3cn2xBoNVT/tlOhWFmNAgUlI0n
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR12MB4098.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(136003)(376002)(396003)(39860400002)(366004)(16576012)(6666004)(186003)(26005)(110136005)(31686004)(316002)(956004)(4326008)(6486002)(478600001)(52116002)(2616005)(31696002)(16526019)(2906002)(66946007)(8676002)(53546011)(36756003)(5660300002)(83380400001)(8936002)(66476007)(66556008)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: M5rejV/pXT0yhxgkD9P3WWkg8c2nc7EonWlY6k9JX254ruGdKuov+ZJ0k/BGG/oIUZZnE3YejoroE9SGYLvH+hDE291dcKpxWhd+ccqxQbRFLETL4tlNvfvratrDKbVFYhI3HBIWdg+uQ9IHFlDKYDI+AKuy6M+Xgm/h9kDUb4cfAiVQuLKu6GNoQEcc+g9x+2JY/GfImN0tDcTmYlocInEENYB4UYxFS10dLXLh7a5JVXykwBb89B9KYn/6xyjVAken5eaJOD1irlQ1YdJN9g1A0pEfLqYoegcy0Z5oaaVAUReEF0trGjtz+XCcNSFeWZmtLlQ2xUHoBKZ+/TTn8IMBfCqcnmFqiUhEpWvKwpcL69Rbga3FAe3DjvSrMeQNku//2Npi9FTSPuul8QQxkgmtpvzMJ4BfoIM9++EAkmZtDl12BLiMe40n/A8D3Z3qsKPaiy0JijyyQcQfhw3xwLy+JYsOJwAGYBMc2LCQGLH5+ry4M46e2xJsVNKbw/AiiHLIzm87LhfqYX7/+WN2Kd/utf7KomF7kZ4sNCVjDGN26CjFEw+r/sC7WpL2NbLMTRF5LdNlMkXOe8YNF/L3ZKOOVXzUGiwf2GfcYQulqZWFZZ1PoOlWmFRAngZIYP2LHgnJb/LgavOsJrMEvS9T6xrhSK4dvVsSvgfWC7MryN54sfF0VkYY54wNIGfOev7QdPvLV5IKBjMc848OVTQCKJ84/2ZfP2qBuKBKaDno5fM+b2dHcH/Dl81gXnHqoFX+rElbALubvfh6H7/P4CxoTAr2RLQbYmH/XdJwnYCjJlXIDJuY7hEjmzInydJr3+5Rox40KnNti8Su3Ovby2NfdOGYd3M8r7lIUZ9tCxabhgNYpBa+Po0ozIbnyqoDQ26oyauA1hTxKDQgRVvsr6ZOuw==
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 61fe7cd2-d1d0-4196-9682-08d884d22249
-X-MS-Exchange-CrossTenant-AuthSource: BY5PR12MB4098.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Nov 2020 17:08:52.7028
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: jp5TmCHzI69Ubv0GueqtN1h0G3cipZZ07Ne9KpF7Z9TxupXh+4eD3c937lH18B5w
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR12MB3748
+In-Reply-To: <d4e53a42-d86b-ce2b-7422-22b5ff5593e8@fnarfbargle.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Brad,
 
-On 10/30/2020 8:00 PM, Colin King wrote:
-> [CAUTION: External Email]
->
-> From: Colin Ian King <colin.king@canonical.com>
->
-> Currently the check for the error return code -ERESTARTSYS is dead code
-> and never executed because a previous check for ret < 0 is catching this
-> and returning -ETIMEDOUT instead.  Fix this by checking for -ERESTARTSYS
-> before the more generic negative error code.
->
-> Addresses-Coverity: ("Logically dead code")
-> Fixes: 4b2c53d93a4b ("SFH:Transport Driver to add support of AMD Sensor Fusion Hub (SFH)")
+> Out of morbid curiosity I grabbed an older MacOS AppleSMC.kext (10.7) and ran it through the disassembler.
+> 
+> Every read/write to the SMC starts the same way with a check to make sure the SMC is in a sane state. If it's not, a read command is sent to try and kick it back into line :
+> Wait for 0x04 to clear. This is 1,000,000 iterations of "read status, check if 0x04 is set, delay 10uS".
+> If it clears, move on. If it doesn't, try and send a read command (just the command 0x10) and wait for the busy flag to clear again with the same loop.
+> 
+> So in theory if the SMC was locked up, it'd be into the weeds for 20 seconds before it pushed the error out.
+> 
+> So, lets say we've waited long enough and the busy flag dropped :
+> 
+> Each command write is :
+> Wait for 0x02 to clear. This is 1,000,000 iterations of "read status, check if 0x02 is set, delay 10uS".
+> Send command
+> 
+> Each data byte write is :
+> Wait for 0x02 to clear. This is 1,000,000 iterations of "read status, check if 0x02 is set, delay 10uS".
+> Immediate and single status read, check 0x04. If not set, abort.
+> Send data byte
+> 
+> Each data byte read is :
+> read staus, wait for 0x01 and 0x04 to be set. delay 10uS and repeat. Abort if fail.
+> 
+> Each timeout is 1,000,000 loops with a 10uS delay.
+> 
+> So aside from the startup set which occurs on *every* read or write set, status checks happen before a command or data write, and not at all after.
+> Under no circumstances are writes of any kind re-tried, but these timeouts are up to 10 seconds!
 
-Thank you for the patch ..looks good to me.
+Great findings here. But from this, it would seem we are doing almost 
+the right thing already, no? The essential difference seems to be that 
+where the kext does a read to wake up the SMC, while we retry the first 
+command until it works. If would of course be very interesting to know 
+if that makes a difference.
 
-Reviewed-by: Sandeep Singh <sandeep.singh@amd.com>
+> That would indicate that the requirement for retries on the early Mac means we're not waiting long enough somewhere. Not that I'm suggesting we do another re-work, but when I get back in front of my iMac which does 17 transactions per second with this driver, I might re-work it similar to the Apple driver and see what happens.
+> 
+> Oh, and it looks like the 0x40 flag that is on mine is the "I have an interrupt pending" flag, and the result should be able to be read from 0x31F. I'll play with that when I get time. That probably explains why IRQ9 screams until the kernel gags it on this machine as it's not being given any love.
 
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
-> ---
->   drivers/hid/amd-sfh-hid/amd_sfh_hid.c | 6 +++---
->   1 file changed, 3 insertions(+), 3 deletions(-)
->
-> diff --git a/drivers/hid/amd-sfh-hid/amd_sfh_hid.c b/drivers/hid/amd-sfh-hid/amd_sfh_hid.c
-> index a471079a3bd0..4f989483aa03 100644
-> --- a/drivers/hid/amd-sfh-hid/amd_sfh_hid.c
-> +++ b/drivers/hid/amd-sfh-hid/amd_sfh_hid.c
-> @@ -88,10 +88,10 @@ static int amdtp_wait_for_response(struct hid_device *hid)
->                  ret = wait_event_interruptible_timeout(hid_data->hid_wait,
->                                                         cli_data->request_done[i],
->                                                         msecs_to_jiffies(AMD_SFH_RESPONSE_TIMEOUT));
-> -       if (ret < 0)
-> -               return -ETIMEDOUT;
-> -       else if (ret == -ERESTARTSYS)
-> +       if (ret == -ERESTARTSYS)
->                  return -ERESTARTSYS;
-> +       else if (ret < 0)
-> +               return -ETIMEDOUT;
->          else
->                  return 0;
->   }
-> --
-> 2.27.0
->
+Sounds good, getting interrupts working would have been nice.
+
+Henrik
