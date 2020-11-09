@@ -2,114 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CBF662ABC2D
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 14:35:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 061AD2ABC64
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 14:37:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732219AbgKINfD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 08:35:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54620 "EHLO
+        id S2387471AbgKINg5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 08:36:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54890 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731145AbgKINfA (ORCPT
+        with ESMTP id S1732617AbgKINgq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 08:35:00 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BC5BC0613CF;
-        Mon,  9 Nov 2020 05:35:00 -0800 (PST)
-Date:   Mon, 09 Nov 2020 13:34:57 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1604928898;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=xIn34HVKy73OXU3upBn5Sgk+diM0sY3tJJfSyrEjPj0=;
-        b=AF0khv9slGbhWJRf3ryTKIq+/ULIqu1fMy6wj8dNBvQoVkO562WRNKfwO5+gWKoclvz23E
-        pe2xWdm2Do4ESZCk8ww5BkuZdjdW+0C6CzXEgSADygQk5IAF3XEShZjbFIwQPUg4TkHHjp
-        dFmtCIABBJVDH/1ODuyAB31OhV4YrsVEv1GjxL7vIgbrVlF8UGH+c7zmc8kM2/MTGwsQyR
-        L0bSKLIv3mTJyq8fTP4nbuQEYQyrNKeEExDWYlOAzxc1sntQnUZfRnM6clLlatXkFPt3y7
-        8YqJy2dkGKqq+zTFVaAWsaijcl/2upo1b8nVSavRDORxZfrLyk5snEclRs9WCA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1604928898;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=xIn34HVKy73OXU3upBn5Sgk+diM0sY3tJJfSyrEjPj0=;
-        b=AXtBKdDJAxNp2JBm9OXsPiSo1f+0g8UjVkLKN+PCWvchHllPkuAqIq3N3y++1e7yzhP+gZ
-        hVl0moKPpsWnxCDA==
-From:   "tip-bot2 for Dan Carpenter" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: locking/urgent] futex: Don't enable IRQs unconditionally in
- put_pi_state()
-Cc:     Dan Carpenter <dan.carpenter@oracle.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        stable@vger.kernel.org, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20201106085205.GA1159983@mwanda>
-References: <20201106085205.GA1159983@mwanda>
+        Mon, 9 Nov 2020 08:36:46 -0500
+Received: from mail-il1-x142.google.com (mail-il1-x142.google.com [IPv6:2607:f8b0:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0DAFC0613D3
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Nov 2020 05:36:45 -0800 (PST)
+Received: by mail-il1-x142.google.com with SMTP id p10so8278857ile.3
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Nov 2020 05:36:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Hfk8kyBYhxKkGRwHn7XHXw6Umn/AY2R8En7BdB9972U=;
+        b=ImIKuA5EjY+A/mCGf8NaL8bRLp5GQBqFh3g2zT6h6YPO2Y0+DNn3GHC7c/IKKSdNHB
+         +d5uFobFp1dCIDfmCETsiXWwHe59/Wcd8SKUt7BRv+PT5gf1AgLstdj+Az4/v5uyGj1j
+         P1jqU9N762ysbX8ARls8gBLlEG4YCjn0IAxf8q1pWZhlyJRYrXXG+46Mk6YFpDmTkr8f
+         c2UcbC805dDF6OXo5kVXBet/vFq08RzoPGNGFeIhdRpiJVTRDBIg5rfQwcQ2AOhJGta8
+         tzPOaAwBktRETObKK2bjoKe99CqrBiJ63pCOicpENTN6OK+WUZNt+4MWMtCSfHsr2s2a
+         l86w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Hfk8kyBYhxKkGRwHn7XHXw6Umn/AY2R8En7BdB9972U=;
+        b=OeAXsMmxDV9afFfe0TwiJ6FW0XpGPKatSxeErVYcn3PbrgaQHpn1zFxqNSmDZueM81
+         8p8DtT7xTD9LQR4pcrd75qBT5EkyrjDiGqwyXngTB8rBstVHDLwfU+3897binJQBrJDD
+         UrBqL2Y1/mp6wBvyeGvad0Ie1zejOfRTsneCZLYW/2Df977U0KLwYQXzflZ37Sd1BsM/
+         zOlI3Kd83Q9sLZZnuLaQxqX/VOXO7QLlwzAyX2l0R2np+3XpqooYBnD5O8ybHt0syYN5
+         8DtP5Sqt/RmiIRHDOqITzvdEKKM9w4eSECazNZDJGEGQuz10sPrk5rnlnZaiqCrgMR0m
+         fqIQ==
+X-Gm-Message-State: AOAM533pbM6YfvT1TARh6kSM1v7qH7v1NFiL62p4DYSguVwfC3mqhlyE
+        d++9eiwGOpYFM3mCA0UjFT1rWZqW1aiO9o3+ycoKuQ==
+X-Google-Smtp-Source: ABdhPJyjwCNqDorGY2SsoiKJYgyaM1r1ZLZlyUAvFGznUs/LPEKgmw+MSfJ9hjXYOj4uGpUwD/Plpul/I/r30FT6iC8=
+X-Received: by 2002:a92:6f11:: with SMTP id k17mr10114518ilc.69.1604929004839;
+ Mon, 09 Nov 2020 05:36:44 -0800 (PST)
 MIME-Version: 1.0
-Message-ID: <160492889756.11244.1763664400047325043.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2.linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+References: <5fa93ef0.1c69fb81.bff98.2afc@mx.google.com>
+In-Reply-To: <5fa93ef0.1c69fb81.bff98.2afc@mx.google.com>
+From:   Eric Dumazet <edumazet@google.com>
+Date:   Mon, 9 Nov 2020 14:36:33 +0100
+Message-ID: <CANn89iJNYyON8khtQYzZi2LdV1ZSopGfnXB1ev9bZ2cDUdekHw@mail.gmail.com>
+Subject: Re: [PATCH] net: tcp: ratelimit warnings in tcp_recvmsg
+To:     menglong8.dong@gmail.com
+Cc:     David Miller <davem@davemloft.net>,
+        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Menglong Dong <dong.menglong@zte.com.cn>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the locking/urgent branch of tip:
+On Mon, Nov 9, 2020 at 2:07 PM <menglong8.dong@gmail.com> wrote:
+>
+> From: Menglong Dong <dong.menglong@zte.com.cn>
+>
+> 'before(*seq, TCP_SKB_CB(skb)->seq) == true' means that one or more
+> skbs are lost somehow. Once this happen, it seems that it will
+> never recover automatically. As a result, a warning will be printed
+> and a '-EAGAIN' will be returned in non-block mode.
+>
+> As a general suituation, users call 'poll' on a socket and then receive
+> skbs with 'recv' in non-block mode. This mode will make every
+> arriving skb of the socket trigger a warning. Plenty of skbs will cause
+> high rate of kernel log.
+>
+> Besides, WARN is for indicating kernel bugs only and should not be
+> user-triggable. Replace it with 'net_warn_ratelimited' here.
+>
+> Signed-off-by: Menglong Dong <dong.menglong@zte.com.cn>
 
-Commit-ID:     1e106aa3509b86738769775969822ffc1ec21bf4
-Gitweb:        https://git.kernel.org/tip/1e106aa3509b86738769775969822ffc1ec21bf4
-Author:        Dan Carpenter <dan.carpenter@oracle.com>
-AuthorDate:    Fri, 06 Nov 2020 11:52:05 +03:00
-Committer:     Thomas Gleixner <tglx@linutronix.de>
-CommitterDate: Mon, 09 Nov 2020 14:30:30 +01:00
+I do not think this patch is useful. That is simply code churn.
 
-futex: Don't enable IRQs unconditionally in put_pi_state()
+Can you trigger the WARN() in the latest upstream version ?
+If yes this is a serious bug that needs urgent attention.
 
-The exit_pi_state_list() function calls put_pi_state() with IRQs disabled
-and is not expecting that IRQs will be enabled inside the function.
-
-Use the _irqsave() variant so that IRQs are restored to the original state
-instead of being enabled unconditionally.
-
-Fixes: 153fbd1226fb ("futex: Fix more put_pi_state() vs. exit_pi_state_list() races")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Cc: stable@vger.kernel.org
-Link: https://lore.kernel.org/r/20201106085205.GA1159983@mwanda
----
- kernel/futex.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
-
-diff --git a/kernel/futex.c b/kernel/futex.c
-index ac32887..00259c7 100644
---- a/kernel/futex.c
-+++ b/kernel/futex.c
-@@ -788,8 +788,9 @@ static void put_pi_state(struct futex_pi_state *pi_state)
- 	 */
- 	if (pi_state->owner) {
- 		struct task_struct *owner;
-+		unsigned long flags;
- 
--		raw_spin_lock_irq(&pi_state->pi_mutex.wait_lock);
-+		raw_spin_lock_irqsave(&pi_state->pi_mutex.wait_lock, flags);
- 		owner = pi_state->owner;
- 		if (owner) {
- 			raw_spin_lock(&owner->pi_lock);
-@@ -797,7 +798,7 @@ static void put_pi_state(struct futex_pi_state *pi_state)
- 			raw_spin_unlock(&owner->pi_lock);
- 		}
- 		rt_mutex_proxy_unlock(&pi_state->pi_mutex, owner);
--		raw_spin_unlock_irq(&pi_state->pi_mutex.wait_lock);
-+		raw_spin_unlock_irqrestore(&pi_state->pi_mutex.wait_lock, flags);
- 	}
- 
- 	if (current->pi_state_cache) {
+Make sure you have backported all needed fixes into your kernel, if
+you get this warning on a non pristine kernel.
