@@ -2,102 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE1F92AB3DB
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 10:44:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 93ADD2AB3E1
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 10:45:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729091AbgKIJoO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 04:44:14 -0500
-Received: from foss.arm.com ([217.140.110.172]:36358 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726646AbgKIJoN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 04:44:13 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0A6421042;
-        Mon,  9 Nov 2020 01:44:13 -0800 (PST)
-Received: from [10.57.23.123] (unknown [10.57.23.123])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 24A543F718;
-        Mon,  9 Nov 2020 01:44:11 -0800 (PST)
-Subject: Re: [PATCH v3 18/26] coresight: etm4x: Clean up exception level masks
-To:     Mathieu Poirier <mathieu.poirier@linaro.org>
-Cc:     linux-arm-kernel@lists.infradead.org, mike.leach@linaro.org,
-        coresight@lists.linaro.org, linux-kernel@vger.kernel.org
-References: <20201028220945.3826358-1-suzuki.poulose@arm.com>
- <20201028220945.3826358-20-suzuki.poulose@arm.com>
- <20201106185241.GA3299843@xps15>
-From:   Suzuki K Poulose <suzuki.poulose@arm.com>
-Message-ID: <e385a0ff-90e5-de72-78c5-bf4344a854cd@arm.com>
-Date:   Mon, 9 Nov 2020 09:44:04 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.1
+        id S1728814AbgKIJpW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 04:45:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46632 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726482AbgKIJpW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 04:45:22 -0500
+Received: from mail-yb1-xb42.google.com (mail-yb1-xb42.google.com [IPv6:2607:f8b0:4864:20::b42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42BE5C0613CF
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Nov 2020 01:45:22 -0800 (PST)
+Received: by mail-yb1-xb42.google.com with SMTP id s8so7590012yba.13
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Nov 2020 01:45:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=GEjfNgJ/5fIZ4OmbjlXI/Ji4fSPJ5/15fdnkqBFwBr0=;
+        b=hH79rFcnBf+MZrsctl3PVhI29Qx4iCcQK/h8HUPDpI/JnviVRSl2jFQS/modxFPZuR
+         X5E+zy1vElN6bNnUO+Hp2bfLu0/c3Kq3tow+Ggc+tz0fXnhEMH93KyioM51VfNFFk0us
+         aYyMyS5Sdakf3kjAshobcGpyShmwkNyGDIhCFi0r1vYWW0PMbyFuvzFhz4sdaeLpVuOY
+         QKlErNRS1UKFvEP+gDcZHBz1IJ3l2WcFxvkSyWRZ94TtUzliEZ2XRvQPjJDZH3wBGoQn
+         TNp8rF6pvIqd8NDhKh7CSfvJxC2mA/8vGJxZWYx5gPQwcE2MtQH9fZy7lYCHY79C2cLI
+         cB3A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=GEjfNgJ/5fIZ4OmbjlXI/Ji4fSPJ5/15fdnkqBFwBr0=;
+        b=OhaH1CgVJsZaPSX41gHepi0OBWlb3vw6ApsNG7LkRutxUSzEK2TJAvpxYnQ4Ui8vdG
+         oxVyjFF+5OLruon5S6XKxZPL5zfW2bWM1GDR5BkqYjhFbjEusRmtqbc8GKuyMzNitzCQ
+         HqMlFNa0g8i4OHcpCzBgnS1TPIgzsOiJo0sYByZC8+WR/ZqCkJvIcr4nT39vntxgNwTG
+         9hWu2BPmf0GyiP/shpY/sTcEb7eu7+49PRUSJdwF+3YxBo57U54qxvPLuPzeozrSoj9a
+         DlydrLuVXgjEbxFEK0OOV7xadnbyTGBNA9CGjY03zUkbNUquy3XOI1KMcKZHKWmImJxa
+         eakA==
+X-Gm-Message-State: AOAM532cQC1/kkoY/qjcuoU5GrsDwuZ9NxrVA/hMgs/7uAKaLfvOAtVM
+        79YTX90zsYDbCHfBYgLCFjzF3QC8zebmdTCRAouQoWTp
+X-Google-Smtp-Source: ABdhPJwqj37eo9MjAQJhOFaTidGPNP4XtSJWtxhXcOh4E+57lwNlL89hnaPzd8HlrsZ7vmVjirv1fkTVf959Rn2ujJE=
+X-Received: by 2002:a25:384c:: with SMTP id f73mr16987656yba.135.1604915121618;
+ Mon, 09 Nov 2020 01:45:21 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20201106185241.GA3299843@xps15>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+References: <76f9cd1b-3ace-e8a8-aaee-8d64e0900603@infradead.org> <20201109093154.1080024-1-poeschel@lemonage.de>
+In-Reply-To: <20201109093154.1080024-1-poeschel@lemonage.de>
+From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Date:   Mon, 9 Nov 2020 10:45:10 +0100
+Message-ID: <CANiq72mskWULTsSZp2eKaXNe+VqRrjW3SXKk-4PgXFt8V6mZfw@mail.gmail.com>
+Subject: Re: [PATCH] auxdisplay: hd44780_common: Fix build error
+To:     Lars Poeschel <poeschel@lemonage.de>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Randy Dunlap <rdunlap@infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/6/20 6:52 PM, Mathieu Poirier wrote:
-> Good morning,
+On Mon, Nov 9, 2020 at 10:32 AM <poeschel@lemonage.de> wrote:
+>
+> From: Lars Poeschel <poeschel@lemonage.de>
+>
+> When building the hd44780_common driver without a driver that actually
+> uses it like panel or hd44780 you got a build error, because
+> hd44780_common uses charlcd, but did not select it. It's users did
+> select it.
+> This is fixed now. hd4478_common now selects charlcd in Kconfig and
+> panel and hd44780 do not. They only select hd44780_common.
+>
+> Reported-by: Randy Dunlap <rdunlap@infradead.org>
+> Signed-off-by: Lars Poeschel <poeschel@lemonage.de>
 
-Good morning.
+Thanks Lars, I'm picking it up.
 
-> 
-> On Wed, Oct 28, 2020 at 10:09:37PM +0000, Suzuki K Poulose wrote:
->> etm4_get_access_type() calculates the exception level bits
->> for use in address comparator registers. This is also used
->> by the TRCVICTLR register by shifting to the required position.
->>
->> This patch cleans up the logic to make etm4_get_access_type()
->> calcualte a generic mask which can be used by all users by
->> shifting to their field.
->>
->> No functional changes, only code cleanups.
->>
->> Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
->> ---
->> Changes since previous version:
->>    - Fix the duplicate shift. More commentary
->> ---
-
->> -/* access level control in TRCVICTLR - same bits as TRCACATRn but shifted */
->> -#define ETM_EXLEVEL_LSHIFT_TRCVICTLR	8
->> +/*
->> + * Exception level mask for Secure and Non-Secure ELs.
->> + * ETM defines the bits for EL control (e.g, TRVICTLR, TRCACTRn).
->> + * The Secure and Non-Secure ELs are always to gether.
->> + * Non-secure EL3 is never implemented.
->> + * We use the following generic mask as they appear in different
->> + * registers and this can be shifted for the appropriate
->> + * fields.
->> + */
->> +#define ETM_EXLEVEL_S_APP		BIT(0)	/* Secure EL0		*/
->> +#define ETM_EXLEVEL_S_OS		BIT(1)	/* Secure EL1		*/
->> +#define ETM_EXLEVEL_S_HYP		BIT(2)	/* Secure EL2		*/
->> +#define ETM_EXLEVEL_S_MON		BIT(3)	/* Secure EL3/Montor	*/
-> 
-> s/Montor/Monitor
-> 
-
->> +#define ETM_EXLEVEL_NS_APP		BIT(4)	/* NonSecure EL0	*/
->> +#define ETM_EXLEVEL_NS_OS		BIT(5)	/* NonSecure EL1	*/
->> +#define ETM_EXLEVEL_NS_HYP		BIT(6)	/* NonSecure EL2	*/
->> +
->> +#define ETM_EXLEVEL_MASK		(GENMASK(6, 0))
-> 
-> Not used.
-> 
->> +#define ETM_EXLEVEL_S_MASK		(GENMASK(3, 0))
->> +#define ETM_EXLEVEL_NS_MASK		(GENMASK(6, 4))
-> 
-> This needs to be GENMASK(2, 0) in order TRCVICTLR_EXLEVEL_NS_SHIFT to be 20.
-> Otherwise the resulting mask is 4 bit off to the left.
-> 
-
-
-
-Will address the comments. Thanks for spotting the mistakes.
-
-Suzuki
-
+Cheers,
+Miguel
