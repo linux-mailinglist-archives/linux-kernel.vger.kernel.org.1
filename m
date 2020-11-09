@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D51962ABA3B
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 14:17:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BAAB02AB90C
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 14:04:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733052AbgKINQ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 08:16:58 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43946 "EHLO mail.kernel.org"
+        id S1730333AbgKIND5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 08:03:57 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55498 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387529AbgKINQt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 08:16:49 -0500
+        id S1730574AbgKINBc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 08:01:32 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BD5A520731;
-        Mon,  9 Nov 2020 13:16:48 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id DE8CD20663;
+        Mon,  9 Nov 2020 13:01:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604927809;
-        bh=J5rFsEtFjx3tmHpPydneHua0DscrVW3wkBWKH8pwJ+E=;
+        s=default; t=1604926891;
+        bh=x2BiHboh21Ky6ukpGo/gzGRBJffoE2cA9D/CqxUe4r4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=aeHjlU27M72Op9x8NBGVkef2B0bQme6TB0TtN8MRkzYam3irBVOF5ulkpqJPJxscG
-         KXWBK9bbNV0SVUi5JJMabjM8ozXJ6GWV5kAF3k0+sq/GtphCs0Rfiv3/m1Jtt8mAd1
-         eW4woJxarH9nsMkAG1JfD0lXTbE8NU+MHzABy8Q8=
+        b=2k41koqHWgkZnXuRhUDZKvIR1fDOI+lFbrtR8MaOP+Lo/8uiyB233QL1NpfWFWN37
+         2zqD/hAI3LRu2QBMVPZmoTwWX83aKY2Tlluivfne3lGeUbuZH+LTJ6wdB7qEY0dXby
+         YXrhlJPtc/Ss1qiYJEoO4fd6s2OZHWzWdyuuwJr0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Chris Wilson <chris@chris-wilson.co.uk>,
-        Matthew Auld <matthew.auld@intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>
-Subject: [PATCH 5.9 003/133] drm/i915/gem: Avoid implicit vmap for highmem on x86-32
+        stable@vger.kernel.org, Andreas Dilger <adilger@dilger.ca>,
+        Ritesh Harjani <riteshh@linux.ibm.com>,
+        Jan Kara <jack@suse.cz>, Theodore Tso <tytso@mit.edu>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.9 039/117] ext4: Detect already used quota file early
 Date:   Mon,  9 Nov 2020 13:54:25 +0100
-Message-Id: <20201109125030.883776719@linuxfoundation.org>
+Message-Id: <20201109125027.508154460@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201109125030.706496283@linuxfoundation.org>
-References: <20201109125030.706496283@linuxfoundation.org>
+In-Reply-To: <20201109125025.630721781@linuxfoundation.org>
+References: <20201109125025.630721781@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,68 +44,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chris Wilson <chris@chris-wilson.co.uk>
+From: Jan Kara <jack@suse.cz>
 
-commit 4caf017ee93703ba1c4504f3d73b50e6bbd4249e upstream.
+[ Upstream commit e0770e91424f694b461141cbc99adf6b23006b60 ]
 
-On 32b, highmem using a finite set of indirect PTE (i.e. vmap) to provide
-virtual mappings of the high pages.  As these are finite, map_new_virtual()
-must wait for some other kmap() to finish when it runs out. If we map a
-large number of objects, there is no method for it to tell us to release
-the mappings, and we deadlock.
+When we try to use file already used as a quota file again (for the same
+or different quota type), strange things can happen. At the very least
+lockdep annotations may be wrong but also inode flags may be wrongly set
+/ reset. When the file is used for two quota types at once we can even
+corrupt the file and likely crash the kernel. Catch all these cases by
+checking whether passed file is already used as quota file and bail
+early in that case.
 
-However, if we make an explicit vmap of the page, that uses a larger
-vmalloc arena, and also has the ability to tell us to release unwanted
-mappings. Most importantly, it will fail and propagate an error instead
-of waiting forever.
+This fixes occasional generic/219 failure due to lockdep complaint.
 
-Fixes: fb8621d3bee8 ("drm/i915: Avoid allocating a vmap arena for a single page") #x86-32
-Signed-off-by: Chris Wilson <chris@chris-wilson.co.uk>
-Reviewed-by: Matthew Auld <matthew.auld@intel.com>
-Cc: <stable@vger.kernel.org> # v4.7+
-Link: https://patchwork.freedesktop.org/patch/msgid/20200915091417.4086-1-chris@chris-wilson.co.uk
-(cherry picked from commit 060bb115c2d664f04db9c7613a104dfaef3fdd98)
-Signed-off-by: Rodrigo Vivi <rodrigo.vivi@intel.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Reviewed-by: Andreas Dilger <adilger@dilger.ca>
+Reported-by: Ritesh Harjani <riteshh@linux.ibm.com>
+Signed-off-by: Jan Kara <jack@suse.cz>
+Link: https://lore.kernel.org/r/20201015110330.28716-1-jack@suse.cz
+Signed-off-by: Theodore Ts'o <tytso@mit.edu>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/i915/gem/i915_gem_pages.c |   26 ++++++++++++++++++++++++--
- 1 file changed, 24 insertions(+), 2 deletions(-)
+ fs/ext4/super.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
---- a/drivers/gpu/drm/i915/gem/i915_gem_pages.c
-+++ b/drivers/gpu/drm/i915/gem/i915_gem_pages.c
-@@ -255,8 +255,30 @@ static void *i915_gem_object_map(struct
- 		return NULL;
- 
- 	/* A single page can always be kmapped */
--	if (n_pte == 1 && type == I915_MAP_WB)
--		return kmap(sg_page(sgt->sgl));
-+	if (n_pte == 1 && type == I915_MAP_WB) {
-+		struct page *page = sg_page(sgt->sgl);
+diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+index 472fa29c6f604..2527eb3049494 100644
+--- a/fs/ext4/super.c
++++ b/fs/ext4/super.c
+@@ -5412,6 +5412,11 @@ static int ext4_quota_on(struct super_block *sb, int type, int format_id,
+ 	/* Quotafile not on the same filesystem? */
+ 	if (path->dentry->d_sb != sb)
+ 		return -EXDEV;
 +
-+		/*
-+		 * On 32b, highmem using a finite set of indirect PTE (i.e.
-+		 * vmap) to provide virtual mappings of the high pages.
-+		 * As these are finite, map_new_virtual() must wait for some
-+		 * other kmap() to finish when it runs out. If we map a large
-+		 * number of objects, there is no method for it to tell us
-+		 * to release the mappings, and we deadlock.
-+		 *
-+		 * However, if we make an explicit vmap of the page, that
-+		 * uses a larger vmalloc arena, and also has the ability
-+		 * to tell us to release unwanted mappings. Most importantly,
-+		 * it will fail and propagate an error instead of waiting
-+		 * forever.
-+		 *
-+		 * So if the page is beyond the 32b boundary, make an explicit
-+		 * vmap. On 64b, this check will be optimised away as we can
-+		 * directly kmap any page on the system.
-+		 */
-+		if (!PageHighMem(page))
-+			return kmap(page);
-+	}
- 
- 	mem = stack;
- 	if (n_pte > ARRAY_SIZE(stack)) {
++	/* Quota already enabled for this file? */
++	if (IS_NOQUOTA(d_inode(path->dentry)))
++		return -EBUSY;
++
+ 	/* Journaling quota? */
+ 	if (EXT4_SB(sb)->s_qf_names[type]) {
+ 		/* Quotafile not in fs root? */
+-- 
+2.27.0
+
 
 
