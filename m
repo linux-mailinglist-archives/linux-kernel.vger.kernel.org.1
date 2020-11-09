@@ -2,43 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A209A2AB9A1
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 14:11:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 59F052ABA8E
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 14:23:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732266AbgKINLD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 08:11:03 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36384 "EHLO mail.kernel.org"
+        id S2387635AbgKINUW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 08:20:22 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47912 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731509AbgKINLA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 08:11:00 -0500
+        id S2387925AbgKINUT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 08:20:19 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 58C2B20663;
-        Mon,  9 Nov 2020 13:10:58 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6006420731;
+        Mon,  9 Nov 2020 13:20:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604927458;
-        bh=XxnATp9HULNcOgR/Wtu94Yzo15VEht3cuy99ua/fkEE=;
+        s=default; t=1604928019;
+        bh=Sg5nBRuNwWbX4eBpaGXlIk1GL/jH5nUeaGsE0BNPZKQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=C7HxFh1vS3MqU0vg7CDxSJ9l9waBdH3hvD94biX5xf9tVZMMdPyNzOiPh7s1EsuOi
-         TvXcKBA/tR1I6VM6qncAo6iKhA82PDsG6bsoFau8y3sdbCidF+3WIgEc3L+gHmvYyo
-         J6LpviyWGjcQCb2QgCUaRrz7FskOEH3cZWsVndgM=
+        b=mZk8NYjShA3Ggm5ATpoxXrbW4wPfrTBsotX110ZV2zMMJd/Z8ZkUKT0UrjGjD4+tC
+         NRdLmfkzLd8zICnsYttcdOA1D0/ZhDJD2x21cnO/vxiHzmoVQKFZ+9RRVwy8svA+1M
+         x5x/MBby6eu/GxGNXkT5h6TZKSZ/94J86afEHlKI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Shijie Luo <luoshijie1@huawei.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Oscar Salvador <osalvador@suse.de>,
-        Michal Hocko <mhocko@suse.com>,
-        Feilong Lin <linfeilong@huawei.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 4.19 36/71] mm: mempolicy: fix potential pte_unmap_unlock pte error
-Date:   Mon,  9 Nov 2020 13:55:30 +0100
-Message-Id: <20201109125021.605665170@linuxfoundation.org>
+        stable@vger.kernel.org, Qiujun Huang <hqjagain@gmail.com>,
+        "Steven Rostedt (VMware)" <rostedt@goodmis.org>
+Subject: [PATCH 5.9 069/133] tracing: Fix out of bounds write in get_trace_buf
+Date:   Mon,  9 Nov 2020 13:55:31 +0100
+Message-Id: <20201109125034.053522275@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201109125019.906191744@linuxfoundation.org>
-References: <20201109125019.906191744@linuxfoundation.org>
+In-Reply-To: <20201109125030.706496283@linuxfoundation.org>
+References: <20201109125030.706496283@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -47,68 +42,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Shijie Luo <luoshijie1@huawei.com>
+From: Qiujun Huang <hqjagain@gmail.com>
 
-commit 3f08842098e842c51e3b97d0dcdebf810b32558e upstream.
+commit c1acb4ac1a892cf08d27efcb964ad281728b0545 upstream.
 
-When flags in queue_pages_pte_range don't have MPOL_MF_MOVE or
-MPOL_MF_MOVE_ALL bits, code breaks and passing origin pte - 1 to
-pte_unmap_unlock seems like not a good idea.
+The nesting count of trace_printk allows for 4 levels of nesting. The
+nesting counter starts at zero and is incremented before being used to
+retrieve the current context's buffer. But the index to the buffer uses the
+nesting counter after it was incremented, and not its original number,
+which in needs to do.
 
-queue_pages_pte_range can run in MPOL_MF_MOVE_ALL mode which doesn't
-migrate misplaced pages but returns with EIO when encountering such a
-page.  Since commit a7f40cfe3b7a ("mm: mempolicy: make mbind() return
--EIO when MPOL_MF_STRICT is specified") and early break on the first pte
-in the range results in pte_unmap_unlock on an underflow pte.  This can
-lead to lockups later on when somebody tries to lock the pte resp.
-page_table_lock again..
+Link: https://lkml.kernel.org/r/20201029161905.4269-1-hqjagain@gmail.com
 
-Fixes: a7f40cfe3b7a ("mm: mempolicy: make mbind() return -EIO when MPOL_MF_STRICT is specified")
-Signed-off-by: Shijie Luo <luoshijie1@huawei.com>
-Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Reviewed-by: Oscar Salvador <osalvador@suse.de>
-Acked-by: Michal Hocko <mhocko@suse.com>
-Cc: Miaohe Lin <linmiaohe@huawei.com>
-Cc: Feilong Lin <linfeilong@huawei.com>
-Cc: Shijie Luo <luoshijie1@huawei.com>
-Cc: <stable@vger.kernel.org>
-Link: https://lkml.kernel.org/r/20201019074853.50856-1-luoshijie1@huawei.com
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: stable@vger.kernel.org
+Fixes: 3d9622c12c887 ("tracing: Add barrier to trace_printk() buffer nesting modification")
+Signed-off-by: Qiujun Huang <hqjagain@gmail.com>
+Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- mm/mempolicy.c |    6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ kernel/trace/trace.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/mm/mempolicy.c
-+++ b/mm/mempolicy.c
-@@ -496,7 +496,7 @@ static int queue_pages_pte_range(pmd_t *
- 	unsigned long flags = qp->flags;
- 	int ret;
- 	bool has_unmovable = false;
--	pte_t *pte;
-+	pte_t *pte, *mapped_pte;
- 	spinlock_t *ptl;
+--- a/kernel/trace/trace.c
++++ b/kernel/trace/trace.c
+@@ -3114,7 +3114,7 @@ static char *get_trace_buf(void)
  
- 	ptl = pmd_trans_huge_lock(pmd, vma);
-@@ -510,7 +510,7 @@ static int queue_pages_pte_range(pmd_t *
- 	if (pmd_trans_unstable(pmd))
- 		return 0;
+ 	/* Interrupts must see nesting incremented before we use the buffer */
+ 	barrier();
+-	return &buffer->buffer[buffer->nesting][0];
++	return &buffer->buffer[buffer->nesting - 1][0];
+ }
  
--	pte = pte_offset_map_lock(walk->mm, pmd, addr, &ptl);
-+	mapped_pte = pte = pte_offset_map_lock(walk->mm, pmd, addr, &ptl);
- 	for (; addr != end; pte++, addr += PAGE_SIZE) {
- 		if (!pte_present(*pte))
- 			continue;
-@@ -542,7 +542,7 @@ static int queue_pages_pte_range(pmd_t *
- 		} else
- 			break;
- 	}
--	pte_unmap_unlock(pte - 1, ptl);
-+	pte_unmap_unlock(mapped_pte, ptl);
- 	cond_resched();
- 
- 	if (has_unmovable)
+ static void put_trace_buf(void)
 
 
