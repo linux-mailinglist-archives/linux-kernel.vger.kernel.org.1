@@ -2,41 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C43472AB994
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 14:10:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B62C22AB9E8
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 14:14:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732080AbgKINKa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 08:10:30 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35656 "EHLO mail.kernel.org"
+        id S1733013AbgKINNs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 08:13:48 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39702 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731331AbgKINKY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 08:10:24 -0500
+        id S1731606AbgKINNo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 08:13:44 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3A0F520867;
-        Mon,  9 Nov 2020 13:10:23 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8499420663;
+        Mon,  9 Nov 2020 13:13:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604927423;
-        bh=OCysreUBOh/I7tKWLx+Ybyv5pIlteOzq4petGN+IfsA=;
+        s=default; t=1604927624;
+        bh=s6Ohnr9qvDXvw5RYnAX7G1WAuGXYpoxuoPw8bgU/29w=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=CVQUEOB82gRhZxBNMREUTLC7E8DNo9sR37+pcBBaX/wRmog/9GpY2KCUB/eQClqcy
-         i5jSm2D7InpXnHc+amp3xa+WmOjm0E1hXlcTB8qI4eiyQKOWdKmfLFIVudCmyMe6xf
-         CA3ocYa6SxX62e5/Ws66anxUm5srExgrEisK4DaY=
+        b=Ake2c7470P1SKaODnw8hX3FSKcwE+ZjupIIZjkX9Tv2/GIfVmCzmSxSppVyVsMKKw
+         gvsODnmYOguVeI3IRrgMMeIX8FfHdmCN5S0g4sdMoRyN11RI+ym1JnsEBAYsklfEx2
+         nKOXCxGyglh5Ry2zL1935340r//vMVijBZHVp1tM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Zhang Qilong <zhangqilong3@huawei.com>,
-        Pankaj Gupta <pankaj.gupta.linux@gmail.com>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        stable@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
+        "Ewan D. Milne" <emilne@redhat.com>,
+        Hannes Reinecke <hare@suse.de>,
+        Bart Van Assche <bvanassche@acm.org>,
+        Lee Duncan <lduncan@suse.com>, Ming Lei <ming.lei@redhat.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 54/71] ACPI: NFIT: Fix comparison to -ENXIO
+Subject: [PATCH 5.4 51/85] scsi: core: Dont start concurrent async scan on same host
 Date:   Mon,  9 Nov 2020 13:55:48 +0100
-Message-Id: <20201109125022.442750337@linuxfoundation.org>
+Message-Id: <20201109125025.033504601@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201109125019.906191744@linuxfoundation.org>
-References: <20201109125019.906191744@linuxfoundation.org>
+In-Reply-To: <20201109125022.614792961@linuxfoundation.org>
+References: <20201109125022.614792961@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,36 +47,73 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhang Qilong <zhangqilong3@huawei.com>
+From: Ming Lei <ming.lei@redhat.com>
 
-[ Upstream commit 85f971b65a692b68181438e099b946cc06ed499b ]
+[ Upstream commit 831e3405c2a344018a18fcc2665acc5a38c3a707 ]
 
-Initial value of rc is '-ENXIO', and we should
-use the initial value to check it.
+The current scanning mechanism is supposed to fall back to a synchronous
+host scan if an asynchronous scan is in progress. However, this rule isn't
+strictly respected, scsi_prep_async_scan() doesn't hold scan_mutex when
+checking shost->async_scan. When scsi_scan_host() is called concurrently,
+two async scans on same host can be started and a hang in do_scan_async()
+is observed.
 
-Signed-off-by: Zhang Qilong <zhangqilong3@huawei.com>
-Reviewed-by: Pankaj Gupta <pankaj.gupta.linux@gmail.com>
-Reviewed-by: Vishal Verma <vishal.l.verma@intel.com>
-[ rjw: Subject edit ]
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Fixes this issue by checking & setting shost->async_scan atomically with
+shost->scan_mutex.
+
+Link: https://lore.kernel.org/r/20201010032539.426615-1-ming.lei@redhat.com
+Cc: Christoph Hellwig <hch@lst.de>
+Cc: Ewan D. Milne <emilne@redhat.com>
+Cc: Hannes Reinecke <hare@suse.de>
+Cc: Bart Van Assche <bvanassche@acm.org>
+Reviewed-by: Lee Duncan <lduncan@suse.com>
+Reviewed-by: Bart Van Assche <bvanassche@acm.org>
+Signed-off-by: Ming Lei <ming.lei@redhat.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/acpi/nfit/core.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/scsi/scsi_scan.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/acpi/nfit/core.c b/drivers/acpi/nfit/core.c
-index dd4c7289610ec..cb88f3b43a940 100644
---- a/drivers/acpi/nfit/core.c
-+++ b/drivers/acpi/nfit/core.c
-@@ -1535,7 +1535,7 @@ static ssize_t format1_show(struct device *dev,
- 					le16_to_cpu(nfit_dcr->dcr->code));
- 			break;
- 		}
--		if (rc != ENXIO)
-+		if (rc != -ENXIO)
- 			break;
+diff --git a/drivers/scsi/scsi_scan.c b/drivers/scsi/scsi_scan.c
+index 058079f915f18..79232cef1af16 100644
+--- a/drivers/scsi/scsi_scan.c
++++ b/drivers/scsi/scsi_scan.c
+@@ -1715,15 +1715,16 @@ static void scsi_sysfs_add_devices(struct Scsi_Host *shost)
+  */
+ static struct async_scan_data *scsi_prep_async_scan(struct Scsi_Host *shost)
+ {
+-	struct async_scan_data *data;
++	struct async_scan_data *data = NULL;
+ 	unsigned long flags;
+ 
+ 	if (strncmp(scsi_scan_type, "sync", 4) == 0)
+ 		return NULL;
+ 
++	mutex_lock(&shost->scan_mutex);
+ 	if (shost->async_scan) {
+ 		shost_printk(KERN_DEBUG, shost, "%s called twice\n", __func__);
+-		return NULL;
++		goto err;
  	}
- 	mutex_unlock(&acpi_desc->init_mutex);
+ 
+ 	data = kmalloc(sizeof(*data), GFP_KERNEL);
+@@ -1734,7 +1735,6 @@ static struct async_scan_data *scsi_prep_async_scan(struct Scsi_Host *shost)
+ 		goto err;
+ 	init_completion(&data->prev_finished);
+ 
+-	mutex_lock(&shost->scan_mutex);
+ 	spin_lock_irqsave(shost->host_lock, flags);
+ 	shost->async_scan = 1;
+ 	spin_unlock_irqrestore(shost->host_lock, flags);
+@@ -1749,6 +1749,7 @@ static struct async_scan_data *scsi_prep_async_scan(struct Scsi_Host *shost)
+ 	return data;
+ 
+  err:
++	mutex_unlock(&shost->scan_mutex);
+ 	kfree(data);
+ 	return NULL;
+ }
 -- 
 2.27.0
 
