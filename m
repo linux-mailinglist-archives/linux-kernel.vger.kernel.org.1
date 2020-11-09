@@ -2,134 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B108C2AC42E
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 19:53:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E579A2AC432
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 19:54:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730156AbgKISxL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 13:53:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47716 "EHLO
+        id S1730227AbgKISyH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 13:54:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47868 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729292AbgKISxK (ORCPT
+        with ESMTP id S1729243AbgKISyG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 13:53:10 -0500
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 353F3C0613CF;
-        Mon,  9 Nov 2020 10:53:09 -0800 (PST)
-Received: by mail-pg1-x543.google.com with SMTP id i26so7921766pgl.5;
-        Mon, 09 Nov 2020 10:53:09 -0800 (PST)
+        Mon, 9 Nov 2020 13:54:06 -0500
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91CF9C0613CF;
+        Mon,  9 Nov 2020 10:54:06 -0800 (PST)
+Received: by mail-wm1-x342.google.com with SMTP id a65so477841wme.1;
+        Mon, 09 Nov 2020 10:54:06 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=R/ksnRozjHK49M+dG1bF8DYVJ1cjdA9PgQbho/O6SMM=;
-        b=JZ6aw/VlbAMrfwwELD4gRczHxAMcagzXPzIikS+yDjTy9JyUTdY74BDX1DednbB0Dm
-         1nl4N/W/xTL2NUqiQ2u/8DVWE7ErG6A4ppGREGofo6vGJlJiNQHNGnGYKKvZMHiToCLQ
-         mq5dy21+hXhdDSLr1rg0bzg8cFh/gih7ZMcG913HDreCq6lyAKl7H78AjfDAnscAKMK+
-         o5+99bcvP24Jg43EoboX1pwpNpALoZkDBYPLlunJVKYdBmWX4Xb2v7feLGBBj5ntCH2X
-         T3qo/yS47JyJjmOJtVej6bvN/5nryIc1qna6Ke4beqHN1i1IvdHNMFxOxdBL2jjyZm17
-         jS7Q==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=OvzMD659ywrxq8cwYUTmLS551BX9LjK8A0JTdHbis88=;
+        b=pD05OrEPFS2g2Xpn8cZxWSKC3h18glZBQlXzdHkY0I4OesAfy3Y1pq9u8PATIqbqf+
+         ogID5o+JuvO//f3/poA7FzcQ0IbcNPkEnjkVhsJw5bOvE0wM6f0NXTOpeGtPIaFeDWCD
+         jtejADySeQbEjJRjjgUhSVZDqLrODPO41VQWh0d4GYJCTC/GIfMWUr4CY1yJRqOrmIdd
+         lOnVNt1fw9+s3EqC2pMGBPWoI0Cyjk7hS3T2n2ulL5PIhMMNmi6dtWAgKuCj5U11mrwk
+         IJwvFSmJPW5b6/eKneBJ+jWLP+gzAIfdyDlMmTiz6RJWKCoN8eoXKtdVTpzhFd6ft0MP
+         WxBA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=R/ksnRozjHK49M+dG1bF8DYVJ1cjdA9PgQbho/O6SMM=;
-        b=EVRZSkqJXZKdy/iCfiB+S/VOAbNjO4hez6wSjXKSFzaGCO0my9yfRDvJpOdhglMdaq
-         T5uNuIC+PiF5XR4wYxZEKo+ttHOhtFFSHG200guX6qGBAqp83rCL7zkmUd2081UrlIAx
-         f+RJc2xy+jFylnaxEXib/fF6H4bXAXkUzC1unR5LTTp8MMUaUTPFYh0riX0A+L29iKOn
-         TtS1YWFPVUGYhyam+HUmwFpgM3YTQ8vvS9WR7jaPZy9abMOVy9CleXNEVNJ77I2OhqL6
-         qUQr14S5TL/Vp+JjVp3V1v3PZ7QggFH+xr4LAg7SoFUJ+L1BzGgzksEhax5Oep7MVb2P
-         WF1w==
-X-Gm-Message-State: AOAM532kqJdCYkVsiDrKzOVu3AOmRuRg2JReNCKH2tMxuMmSDh0oRDw7
-        CEs1on3PTZIwmb64I0A/D+I=
-X-Google-Smtp-Source: ABdhPJwa2KiN4rLnPKPNt8Ut1jioyw4g3vGVqobS1ccmwI7DW1M/fX2psEtEAmYkcOpNgc3LWPwOBg==
-X-Received: by 2002:a17:90a:9dcb:: with SMTP id x11mr586198pjv.132.1604947988719;
-        Mon, 09 Nov 2020 10:53:08 -0800 (PST)
-Received: from dtor-ws ([2620:15c:202:201:a6ae:11ff:fe11:fcc3])
-        by smtp.gmail.com with ESMTPSA id d18sm11846470pfo.133.2020.11.09.10.53.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 09 Nov 2020 10:53:08 -0800 (PST)
-Date:   Mon, 9 Nov 2020 10:53:05 -0800
-From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
-To:     Lukasz Stelmach <l.stelmach@samsung.com>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Ard Biesheuvel <ard.biesheuvel@linaro.org>,
-        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        platform-driver-x86@vger.kernel.org,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
-Subject: Re: [PATCH v8 3/6] software node: implement reference properties
-Message-ID: <20201109185305.GT1003057@dtor-ws>
-References: <20201109172435.GJ4077@smile.fi.intel.com>
- <CGME20201109181851eucas1p241de8938e399c0b603c764593b057c41@eucas1p2.samsung.com>
- <dleftj4klypf5u.fsf%l.stelmach@samsung.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=OvzMD659ywrxq8cwYUTmLS551BX9LjK8A0JTdHbis88=;
+        b=TDn3sujJ6sz7qQ8AyjW9HO/tDTLxH0e4Gcr3zd39tpArqBGg0tPgt30w+FpsffDh0e
+         7m3vcBrEtkpXHvxjmQBMjw2iv9bQ9ZbPZiPCOkQd3vVX4FPdzDHARjiux5wP35wMKVUp
+         VKJy4u1r3GJps/3FQS1GtDDmUamd9aG5WEXfJeI9RwLjBpi1yNuG4Ko9gvPi0lnPWBkc
+         o0kzId0zBjZHUs1KkEbNqCVsbjcRzlygu1MP762qWWmd8B8POjjeSi3vBfCKs0yPsfXS
+         176GEsuxcG54aPPqgfD2Kd9Eq55oP5jdnlvXU8XwDMTm1krfnZu0PJgPBEPSk8NRg1mc
+         1UxA==
+X-Gm-Message-State: AOAM5301VteiywC1miQl16F0+ghsfxUeFEmoFxvjOxXWrOP2zZxj4tXh
+        SxAs1psknMK5ILcb6vEkllL6xj7Hp9A=
+X-Google-Smtp-Source: ABdhPJz8Ivh1nkGhAmS7AtezO5VKur/i0+6GuwGQfnBJh6PrnLvje+F0asXnJ+QTVzzWwvzN4+QBbw==
+X-Received: by 2002:a1c:7e11:: with SMTP id z17mr608535wmc.83.1604948044891;
+        Mon, 09 Nov 2020 10:54:04 -0800 (PST)
+Received: from [192.168.8.114] ([37.170.31.34])
+        by smtp.gmail.com with ESMTPSA id p10sm14068008wre.2.2020.11.09.10.54.03
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 09 Nov 2020 10:54:04 -0800 (PST)
+Subject: Re: [PATCH v2 net] net: udp: fix Fast/frag0 UDP GRO
+To:     Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+        Eric Dumazet <eric.dumazet@gmail.com>
+Cc:     Alexander Lobakin <alobakin@pm.me>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Network Development <netdev@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+References: <0eaG8xtbtKY1dEKCTKUBubGiC9QawGgB3tVZtNqVdY@cp4-web-030.plabs.ch>
+ <d9d09931-8cd3-1eb6-673c-3ae5ebc3ee57@gmail.com>
+ <CA+FuTSc0QLM4QpinZ1XiLreRECBDVbanwoFtMhnF6caEWjXTBw@mail.gmail.com>
+From:   Eric Dumazet <eric.dumazet@gmail.com>
+Message-ID: <3729478a-77b5-aeb5-0192-49f0e0d170ac@gmail.com>
+Date:   Mon, 9 Nov 2020 19:54:02 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <dleftj4klypf5u.fsf%l.stelmach@samsung.com>
+In-Reply-To: <CA+FuTSc0QLM4QpinZ1XiLreRECBDVbanwoFtMhnF6caEWjXTBw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 09, 2020 at 07:18:37PM +0100, Lukasz Stelmach wrote:
-> It was <2020-11-09 pon 19:24>, when Andy Shevchenko wrote:
-> > On Mon, Nov 09, 2020 at 06:02:29PM +0100, Lukasz Stelmach wrote:
-> >> It was <2019-11-07 czw 20:22>, when Dmitry Torokhov wrote:
-> >> > It is possible to store references to software nodes in the same fashion as
-> >> > other static properties, so that users do not need to define separate
-> >> > structures:
-> >> >
-> >> > static const struct software_node gpio_bank_b_node = {
-> >> > 	.name = "B",
-> >> > };
-> >> >
-> >> > static const struct property_entry simone_key_enter_props[] = {
-> >> > 	PROPERTY_ENTRY_U32("linux,code", KEY_ENTER),
-> >> > 	PROPERTY_ENTRY_STRING("label", "enter"),
-> >> > 	PROPERTY_ENTRY_REF("gpios", &gpio_bank_b_node, 123, GPIO_ACTIVE_LOW),
-> >> > 	{ }
-> >> > };
-> >> >
-> >> > Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-> >> > ---
-> >> 
-> >> I am writing a piece that needs to provide a list of gpios to a
-> >> diriver. The above example looks like what I need.
-> >
-> > Nope.
-> >
-> > It mustn't be used for GPIOs or PWMs or whatever that either should come via
-> > lookup tables or corresponding firmware interface.
-> >
-> 
-> May I ask why? I've read commit descriptions for drivers/base/swnode.c
-> and the discussion on lkml and I understand software nodes as a way to
-> provide (synthesize) a description for a device that is missing a
-> description in the firmware. Another use case seems to be to replace (in
-> the long run) platform data. That is what I am trying to use it for.
-> 
-> I want my device to be configured with either DT or software_nodes
-> created at run time with configfs. My device is going to use GPIOs
-> described in the DT and it is going to be configured via configfs at run
-> time. I could use platform_data to pass structures from configfs but
-> software nodes would let me save some code in the device driver and use
-> the same paths for both static (DT) and dynamic (configfs)
-> configuration.
-> 
-> Probably I have missed something and I will be greatful, if you tell me
-> where I can find more information about software nodes. There are few
-> users in the kernel and it isn't obvious for me how to use software
-> nodes properly.
 
-Yeah, I disagree with Andy here. The lookup tables are a crutch that we
-have until GPIO and PWM a taught to support software nodes (I need to
-resurrect my patch series for GPIO, if you have time to test that would
-be awesome).
 
-Thanks.
+On 11/9/20 7:28 PM, Willem de Bruijn wrote:
+> On Mon, Nov 9, 2020 at 12:37 PM Eric Dumazet <eric.dumazet@gmail.com> wrote:
+>>
+>>
+>>
+>> On 11/9/20 5:56 PM, Alexander Lobakin wrote:
+>>> While testing UDP GSO fraglists forwarding through driver that uses
+>>> Fast GRO (via napi_gro_frags()), I was observing lots of out-of-order
+>>> iperf packets:
+>>>
+>>> [ ID] Interval           Transfer     Bitrate         Jitter
+>>> [SUM]  0.0-40.0 sec  12106 datagrams received out-of-order
+>>>
+>>> Simple switch to napi_gro_receive() any other method without frag0
+>>> shortcut completely resolved them.
+>>>
+>>> I've found that UDP GRO uses udp_hdr(skb) in its .gro_receive()
+>>> callback. While it's probably OK for non-frag0 paths (when all
+>>> headers or even the entire frame are already in skb->data), this
+>>> inline points to junk when using Fast GRO (napi_gro_frags() or
+>>> napi_gro_receive() with only Ethernet header in skb->data and all
+>>> the rest in shinfo->frags) and breaks GRO packet compilation and
+>>> the packet flow itself.
+>>> To support both modes, skb_gro_header_fast() + skb_gro_header_slow()
+>>> are typically used. UDP even has an inline helper that makes use of
+>>> them, udp_gro_udphdr(). Use that instead of troublemaking udp_hdr()
+>>> to get rid of the out-of-order delivers.
+>>>
+>>> Present since the introduction of plain UDP GRO in 5.0-rc1.
+>>>
+>>> Since v1 [1]:
+>>>  - added a NULL pointer check for "uh" as suggested by Willem.
+>>>
+>>> [1] https://lore.kernel.org/netdev/YazU6GEzBdpyZMDMwJirxDX7B4sualpDG68ADZYvJI@cp4-web-034.plabs.ch
+>>>
+>>> Fixes: e20cf8d3f1f7 ("udp: implement GRO for plain UDP sockets.")
+>>> Signed-off-by: Alexander Lobakin <alobakin@pm.me>
+>>> ---
+>>>  net/ipv4/udp_offload.c | 7 ++++++-
+>>>  1 file changed, 6 insertions(+), 1 deletion(-)
+>>>
+>>> diff --git a/net/ipv4/udp_offload.c b/net/ipv4/udp_offload.c
+>>> index e67a66fbf27b..7f6bd221880a 100644
+>>> --- a/net/ipv4/udp_offload.c
+>>> +++ b/net/ipv4/udp_offload.c
+>>> @@ -366,13 +366,18 @@ static struct sk_buff *udp4_ufo_fragment(struct sk_buff *skb,
+>>>  static struct sk_buff *udp_gro_receive_segment(struct list_head *head,
+>>>                                              struct sk_buff *skb)
+>>>  {
+>>> -     struct udphdr *uh = udp_hdr(skb);
+>>> +     struct udphdr *uh = udp_gro_udphdr(skb);
+>>>       struct sk_buff *pp = NULL;
+>>>       struct udphdr *uh2;
+>>>       struct sk_buff *p;
+>>>       unsigned int ulen;
+>>>       int ret = 0;
+>>>
+>>> +     if (unlikely(!uh)) {
+>>
+>> How uh could be NULL here ?
+>>
+>> My understanding is that udp_gro_receive() is called
+>> only after udp4_gro_receive() or udp6_gro_receive()
+>> validated that udp_gro_udphdr(skb) was not NULL.
+> 
+> Oh indeed. This has already been checked before.
+> 
+>>> +             NAPI_GRO_CB(skb)->flush = 1;
+>>> +             return NULL;
+>>> +     }
+>>> +
+>>>       /* requires non zero csum, for symmetry with GSO */
+>>>       if (!uh->check) {
+>>>               NAPI_GRO_CB(skb)->flush = 1;
+>>>
+>>
+>> Why uh2 is left unchanged ?
+>>
+>>     uh2 = udp_hdr(p);
+> 
+> Isn't that the same as th2 = tcp_hdr(p) in tcp_gro_receive? no frag0
+> optimization to worry about for packets on the list.
 
--- 
-Dmitry
+My feeling was that tcp_gro_receive() is terminal in the GRO stack.
+
+While UDP could be encapsulated in UDP :)
+
+I guess we do not support this yet.
+
+Years ago we made sure to propagate the current header offset into GRO stack
+(when we added SIT/IPIP/GRE support to GRO)
+299603e8370a93dd5d8e8d800f0dff1ce2c53d36 ("net-gro: Prepare GRO stack for the upcoming tunneling support")
+
+
+udp_hdr() is using transport header, which is unique for skb "on the list"
+
