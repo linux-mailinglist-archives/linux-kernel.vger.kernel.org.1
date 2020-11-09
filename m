@@ -2,96 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9978F2AB433
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 10:59:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 837C62AB435
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 10:59:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729154AbgKIJ64 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 04:58:56 -0500
-Received: from mail-ej1-f68.google.com ([209.85.218.68]:36262 "EHLO
-        mail-ej1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727906AbgKIJ64 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 04:58:56 -0500
-Received: by mail-ej1-f68.google.com with SMTP id o21so11362207ejb.3
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Nov 2020 01:58:55 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=DynqxE17DAgOAA4iepCmaZ4Iydubo6B4RnUwCs5M/as=;
-        b=VUc1nMMA+ggdiqp0Ij+YQLR0z+vLVHYDRV1+B4XaPbc7VAlEmOCRg/4TbOuGdu2nwH
-         BIAzYW20TE5eoykszYiKzYro6hwAU+P1B2gb/kaykbrx/ZXXAnkSbgjGCCzkAAnypQUh
-         bhkMtSvjx8mMi+HaFWe5p70tVNoPMV/151LKDrpsVKLhPbdVfARJSYnlm4n2QGHs62c7
-         ztvfoXBYhztG1FFXLEkCpIMPSZUcGX3oVH3FMQX7hanPWmGFpw/V7seZsPmcc7cqBygx
-         OZufaig7TtfvCFzHlmo/FsuFS6KyBEC7kpcWl+kZ1o2EbPI7ZkqcJ9Xj1VjDOlRlx7sx
-         044A==
-X-Gm-Message-State: AOAM531PcSd5VVQsYf7/Z+C9Z/tffTsYup7qnk1H4wSdEY59tXuf+0m5
-        +9WnS9bUVFXjdE4cq/roHxw=
-X-Google-Smtp-Source: ABdhPJxrl/OKI6ObWGBQw4tultWQuuannmSxU5881aaEgWpHNs0H0mw2wBo1hBaN3mfqas55DmUpkA==
-X-Received: by 2002:a17:907:1008:: with SMTP id ox8mr13937453ejb.189.1604915934728;
-        Mon, 09 Nov 2020 01:58:54 -0800 (PST)
-Received: from ?IPv6:2a0b:e7c0:0:107::49? ([2a0b:e7c0:0:107::49])
-        by smtp.gmail.com with ESMTPSA id a10sm8458436edn.77.2020.11.09.01.58.53
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 09 Nov 2020 01:58:54 -0800 (PST)
-Subject: Re: [PATCH v1 3/3] vt: keyboard, make use of assign_bit() API
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        linux-kernel@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-References: <20201106143551.43908-1-andriy.shevchenko@linux.intel.com>
- <20201106143551.43908-3-andriy.shevchenko@linux.intel.com>
-From:   Jiri Slaby <jirislaby@kernel.org>
-Message-ID: <5c016558-9f0c-ad4d-adaa-17bf1171ca03@kernel.org>
-Date:   Mon, 9 Nov 2020 10:58:53 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        id S1729225AbgKIJ70 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 04:59:26 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34374 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727311AbgKIJ70 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 04:59:26 -0500
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2375120789;
+        Mon,  9 Nov 2020 09:59:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604915965;
+        bh=B9q26AWijg5yv/Bj2lex5vHH5B6Fye51KEVbiswR8+4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=SbTDKWFTYmb9Qz8BS2fizsImus8lD+OuAelFASXqm8sUKqF4RRnJ/9mdlsreBCBV8
+         2KDI5XgjUN6VG1sPcQHarCmQ8Z5kz41Cz6MwaqWbrAzz0TAVM3SuHOkI94HyXz46Q4
+         QYg62GOPv5JhN8mh5trugK+Hr9EnoiRH3hxrP7cg=
+Date:   Mon, 9 Nov 2020 11:00:25 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     pizhenwei@bytedance.com, stable-commits@vger.kernel.org
+Subject: Re: Patch "nvme-rdma: handle unexpected nvme completion data length"
+ has been added to the 4.9-stable tree
+Message-ID: <20201109100025.GA1003283@kroah.com>
+References: <20201108231636.B9304206DC@mail.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20201106143551.43908-3-andriy.shevchenko@linux.intel.com>
-Content-Type: text/plain; charset=iso-8859-2; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201108231636.B9304206DC@mail.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 06. 11. 20, 15:35, Andy Shevchenko wrote:
-> We have for some time the assign_bit() API to replace open coded
+On Sun, Nov 08, 2020 at 06:16:35PM -0500, Sasha Levin wrote:
+> This is a note to let you know that I've just added the patch titled
 > 
-> 	if (foo)
-> 		set_bit(n, bar);
-> 	else
-> 		clear_bit(n, bar);
+>     nvme-rdma: handle unexpected nvme completion data length
 > 
-> Use this API in VT keyboard library code.
+> to the 4.9-stable tree which can be found at:
+>     http://www.kernel.org/git/?p=linux/kernel/git/stable/stable-queue.git;a=summary
 > 
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> The filename of the patch is:
+>      nvme-rdma-handle-unexpected-nvme-completion-data-len.patch
+> and it can be found in the queue-4.9 subdirectory.
+> 
+> If you, or anyone else, feels it should not be added to the stable tree,
+> please let <stable@vger.kernel.org> know about it.
 
-Acked-by: Jiri Slaby <jirislaby@kernel.org>
+This adds a build warning to the tree, so I've dropped it from 4.9,
+4.14, and 4.19 trees.
 
-> ---
->   drivers/tty/vt/keyboard.c | 5 +----
->   1 file changed, 1 insertion(+), 4 deletions(-)
-> 
-> diff --git a/drivers/tty/vt/keyboard.c b/drivers/tty/vt/keyboard.c
-> index 647c343f61fb..b5132191b0ad 100644
-> --- a/drivers/tty/vt/keyboard.c
-> +++ b/drivers/tty/vt/keyboard.c
-> @@ -1433,10 +1433,7 @@ static void kbd_keycode(unsigned int keycode, int down, bool hw_raw)
->   		raw_mode = true;
->   	}
->   
-> -	if (down)
-> -		set_bit(keycode, key_down);
-> -	else
-> -		clear_bit(keycode, key_down);
-> +	assign_bit(keycode, key_down, down);
->   
->   	if (rep &&
->   	    (!vc_kbd_mode(kbd, VC_REPEAT) ||
-> 
+thanks,
 
-
--- 
-js
-suse labs
+greg k-h
