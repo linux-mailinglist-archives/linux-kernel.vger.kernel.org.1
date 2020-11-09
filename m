@@ -2,49 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59C9B2AC351
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 19:11:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4210C2AC353
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 19:11:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730578AbgKISK7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 13:10:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41152 "EHLO
+        id S1730338AbgKISLD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 13:11:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41168 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730516AbgKISK5 (ORCPT
+        with ESMTP id S1730580AbgKISLA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 13:10:57 -0500
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13C2BC0613CF
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Nov 2020 10:10:56 -0800 (PST)
-Received: by mail-pf1-x444.google.com with SMTP id g7so8906188pfc.2
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Nov 2020 10:10:56 -0800 (PST)
+        Mon, 9 Nov 2020 13:11:00 -0500
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F392C0613D4
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Nov 2020 10:11:00 -0800 (PST)
+Received: by mail-pg1-x543.google.com with SMTP id f38so7831981pgm.2
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Nov 2020 10:11:00 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=amarulasolutions.com; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=Rj8A/Ech+iIHcNTsJ3NqAVJDVYSUQ5lILSrgdq6R7z8=;
-        b=Is8kLbd/+CQZy7CHNBAiqe0iDgkURgBzXfbjnFLMVgHrK6XhgMNAPdj0vAxvUOZTvg
-         e6UxpBoESYzseMPbsdepKvwN8sQNIDUajvRjRUZOt7AP3wWUCKAXWLOOuWFQj5z+Zb+2
-         6PmfBc2y63NtdshfJxsKfLLUaPzck67uicNwY=
+        bh=wjZIs3gsKOhZP3Z4DFYN/Q2HQQloeesXH2rTefzKVgk=;
+        b=XbDlzlt6WmKkQkPsiKciH+cq0Mr5brzczNjGactRkpwCTdYWbacfVrCFtQ+c/GeN7M
+         3ZXOcLGq2MVN59gjOvscRkJ+oqFdG53rvCpZLmeubK5QvCVe4jIzJoemkGfEluEFU6Z6
+         wurQNCXC+ENc0AjbQ46lb+4LtPP4xXaTlIevw=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=Rj8A/Ech+iIHcNTsJ3NqAVJDVYSUQ5lILSrgdq6R7z8=;
-        b=nrRBBun16m1Xib9u+WGkJaSsTcVLdZAy1XybscwRiKNIEUGddgJNw7jjWNoVRfCWi0
-         ZT09KgDMBHMgLx1PUetjohE+iHGE9mraPqjvQAXI5RuNeX8NyOXnNllfYvHgTNLRR/ec
-         aHL5RzNbkCWCNTfNILqZazOLnBNJo9AyaE7k0gOXy1/PFnATXpHbqIIMaBZwOiYCxO52
-         /rAxJdTseLJPvHeuxMiuuwyTvyTjYQrpA12BZRJpNpUTx6TOGFut4mXqasatzz3Lepea
-         5QeLgO2xk0m3u7QpqLR3s8w5pKtTf9DCpQugiv0aTkcTnER4y1L/SyLPW3eXamoxWpme
-         i9aQ==
-X-Gm-Message-State: AOAM532b844eZa6WdplPpb/rq1a9wt6jLBfj+A/+odtgPcSLB3d4RWp6
-        EtNqs76Z8esOQTkMvsjJnZ2L3Tqi3JgKSrUW
-X-Google-Smtp-Source: ABdhPJyKovhGH9cTuVFn5lk50zpHzaLBeeY147x36C1a3JDFMVwrVgWmpRe8GFLD/NxhaPQDpMsmLA==
-X-Received: by 2002:a17:90a:87:: with SMTP id a7mr391074pja.95.1604945455578;
-        Mon, 09 Nov 2020 10:10:55 -0800 (PST)
+        bh=wjZIs3gsKOhZP3Z4DFYN/Q2HQQloeesXH2rTefzKVgk=;
+        b=mCjVE83jSxWjqPYVIPk9IKGGpFYRD1OdVyrx45yXLTTl3nRFtnhgSI/ltmhqyJoExz
+         0WX64AHIBPwLofNFKQknjWs5pz0x3R+lE/SGIML+sp2/IIlIJt343xQuksicfyuOTvv0
+         L71MucsTk4xgQd3993XpiFxhmNdZu+nnbhxqdNIoOhhT41TIwNXXusHEIEAQ7eVWYdFt
+         O0sSSHwvG61tsiBaVpE0oYpt/MKdeLQfq+oXgVZe5ccqdSPadRDChnuMCffVYP9hrN+c
+         elmHAdrKUkrB7+yuyvbQ6aje45ARFigFHCcrHeRUO8Mys0jZFyJP9ihiEJlPigFGtTEi
+         Vclw==
+X-Gm-Message-State: AOAM5334KauitVLL1mQRZkUL8ye27lhWpPaca144bBvjwYS5VXGZu0G3
+        kwJpi7c53ZtYXzpJI0aLxILsAw==
+X-Google-Smtp-Source: ABdhPJwkWlnfvR8Ho9XK/H7l6qEQW5AvXUjbLbczYApNsFndtaEzyy6OkbglbRiV8oEEHL7M1EieoQ==
+X-Received: by 2002:a17:90a:5b0a:: with SMTP id o10mr386043pji.197.1604945459840;
+        Mon, 09 Nov 2020 10:10:59 -0800 (PST)
 Received: from localhost.localdomain ([2405:201:c809:c7a4:c0f0:b8ab:4687:594d])
-        by smtp.gmail.com with ESMTPSA id 136sm12027685pfa.132.2020.11.09.10.10.51
+        by smtp.gmail.com with ESMTPSA id 136sm12027685pfa.132.2020.11.09.10.10.55
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 09 Nov 2020 10:10:54 -0800 (PST)
+        Mon, 09 Nov 2020 10:10:59 -0800 (PST)
 From:   Jagan Teki <jagan@amarulasolutions.com>
 To:     Heiko Stuebner <heiko@sntech.de>, Rob Herring <robh+dt@kernel.org>,
         Catalin Marinas <catalin.marinas@arm.com>,
@@ -55,11 +55,10 @@ Cc:     Suniel Mahesh <sunil@amarulasolutions.com>,
         linux-rockchip@lists.infradead.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org,
         linux-amarula <linux-amarula@amarulasolutions.com>,
-        Jagan Teki <jagan@amarulasolutions.com>,
-        Rob Herring <robh@kernel.org>
-Subject: [PATCH 3/9] dt-bindings: arm: rockchip: Add Engicam PX30.Core C.TOUCH 2.0 10.1" OF
-Date:   Mon,  9 Nov 2020 23:40:11 +0530
-Message-Id: <20201109181017.206834-4-jagan@amarulasolutions.com>
+        Jagan Teki <jagan@amarulasolutions.com>
+Subject: [PATCH 4/9] arm64: dts: rockchip: Add Engicam PX30.Core C.TOUCH 2.0 10.1" OF
+Date:   Mon,  9 Nov 2020 23:40:12 +0530
+Message-Id: <20201109181017.206834-5-jagan@amarulasolutions.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20201109181017.206834-1-jagan@amarulasolutions.com>
 References: <20201109181017.206834-1-jagan@amarulasolutions.com>
@@ -68,6 +67,8 @@ Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
+
+dt-bindings: arm: rockchip: Add Engicam PX30.Core C.TOUCH 2.0 10.1" OF
 
 PX30.Core is an EDIMM SOM based on Rockchip PX30 from Engicam.
 
@@ -79,31 +80,110 @@ touch interface support.
 PX30.Core needs to mount on top of C.TOUCH 2.0 carrier with pluged
 10.1" OF for creating complete PX30.Core C.TOUCH 2.0 10.1" Open Frame.
 
-Add bindings for it.
+Add support for it.
 
-Acked-by: Rob Herring <robh@kernel.org>
 Signed-off-by: Jagan Teki <jagan@amarulasolutions.com>
 ---
- Documentation/devicetree/bindings/arm/rockchip.yaml | 6 ++++++
- 1 file changed, 6 insertions(+)
+ arch/arm64/boot/dts/rockchip/Makefile         |  1 +
+ .../px30-engicam-px30-core-ctouch2-of10.dts   | 77 +++++++++++++++++++
+ 2 files changed, 78 insertions(+)
+ create mode 100644 arch/arm64/boot/dts/rockchip/px30-engicam-px30-core-ctouch2-of10.dts
 
-diff --git a/Documentation/devicetree/bindings/arm/rockchip.yaml b/Documentation/devicetree/bindings/arm/rockchip.yaml
-index 37fd456170d2..ef4544ad6f82 100644
---- a/Documentation/devicetree/bindings/arm/rockchip.yaml
-+++ b/Documentation/devicetree/bindings/arm/rockchip.yaml
-@@ -76,6 +76,12 @@ properties:
-           - const: engicam,px30-core
-           - const: rockchip,px30
- 
-+      - description: Engicam PX30.Core C.TOUCH 2.0 10.1" Open Frame
-+        items:
-+          - const: engicam,px30-core-ctouch2-of10
-+          - const: engicam,px30-core
-+          - const: rockchip,px30
+diff --git a/arch/arm64/boot/dts/rockchip/Makefile b/arch/arm64/boot/dts/rockchip/Makefile
+index 5a53979b7057..1ab55a124a87 100644
+--- a/arch/arm64/boot/dts/rockchip/Makefile
++++ b/arch/arm64/boot/dts/rockchip/Makefile
+@@ -1,6 +1,7 @@
+ # SPDX-License-Identifier: GPL-2.0
+ dtb-$(CONFIG_ARCH_ROCKCHIP) += px30-evb.dtb
+ dtb-$(CONFIG_ARCH_ROCKCHIP) += px30-engicam-px30-core-ctouch2.dtb
++dtb-$(CONFIG_ARCH_ROCKCHIP) += px30-engicam-px30-core-ctouch2-of10.dtb
+ dtb-$(CONFIG_ARCH_ROCKCHIP) += px30-engicam-px30-core-edimm2.2.dtb
+ dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3308-evb.dtb
+ dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3308-roc-cc.dtb
+diff --git a/arch/arm64/boot/dts/rockchip/px30-engicam-px30-core-ctouch2-of10.dts b/arch/arm64/boot/dts/rockchip/px30-engicam-px30-core-ctouch2-of10.dts
+new file mode 100644
+index 000000000000..47aa30505a42
+--- /dev/null
++++ b/arch/arm64/boot/dts/rockchip/px30-engicam-px30-core-ctouch2-of10.dts
+@@ -0,0 +1,77 @@
++// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
++/*
++ * Copyright (c) 2020 Fuzhou Rockchip Electronics Co., Ltd
++ * Copyright (c) 2020 Engicam srl
++ * Copyright (c) 2020 Amarula Solutions(India)
++ */
 +
-       - description: Engicam PX30.Core EDIMM2.2 Starter Kit
-         items:
-           - const: engicam,px30-core-edimm2.2
++/dts-v1/;
++#include "px30.dtsi"
++#include "px30-engicam-ctouch2.dtsi"
++#include "px30-engicam-px30-core.dtsi"
++
++/ {
++	model = "Engicam PX30.Core C.TOUCH 2.0 10.1\" Open Frame";
++	compatible = "engicam,px30-core-ctouch2-of10", "engicam,px30-core",
++		     "rockchip,px30";
++
++	backlight: backlight {
++		compatible = "pwm-backlight";
++		pwms = <&pwm0 0 25000 0>;
++	};
++
++	chosen {
++		stdout-path = "serial2:115200n8";
++	};
++
++	panel {
++		compatible = "ampire,am-1280800n3tzqw-t00h";
++		backlight = <&backlight>;
++		power-supply = <&vcc3v3_lcd>;
++		data-mapping = "vesa-24";
++
++		port {
++			panel_in_lvds: endpoint {
++				remote-endpoint = <&lvds_out_panel>;
++			};
++		};
++	};
++};
++
++&display_subsystem {
++	status = "okay";
++};
++
++&dsi_dphy {
++	status = "okay";
++};
++
++&lvds {
++	status = "okay";
++
++	ports {
++		port@1 {
++			reg = <1>;
++
++			lvds_out_panel: endpoint {
++				remote-endpoint = <&panel_in_lvds>;
++			};
++		};
++	};
++};
++
++&vopb {
++	status = "okay";
++};
++
++&vopb_mmu {
++	status = "okay";
++};
++
++&vopl {
++	status = "okay";
++};
++
++&vopl_mmu {
++	status = "okay";
++};
 -- 
 2.25.1
 
