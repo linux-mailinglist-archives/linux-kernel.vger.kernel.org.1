@@ -2,88 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2FBD2AB77D
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 12:48:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5465D2AB780
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 12:48:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729654AbgKILsf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 06:48:35 -0500
-Received: from foss.arm.com ([217.140.110.172]:38444 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729599AbgKILse (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 06:48:34 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 35A66106F;
-        Mon,  9 Nov 2020 03:48:34 -0800 (PST)
-Received: from C02TD0UTHF1T.local (unknown [10.57.58.112])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A77F93F718;
-        Mon,  9 Nov 2020 03:48:32 -0800 (PST)
-Date:   Mon, 9 Nov 2020 11:48:25 +0000
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     Anshuman Khandual <anshuman.khandual@arm.com>
-Cc:     linux-arm-kernel@lists.infradead.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Marc Zyngier <maz@kernel.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] arm64/smp: Drop the macro S(x,s)
-Message-ID: <20201109114825.GA64518@C02TD0UTHF1T.local>
-References: <1604921916-23368-1-git-send-email-anshuman.khandual@arm.com>
+        id S1729716AbgKILsl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 06:48:41 -0500
+Received: from youngberry.canonical.com ([91.189.89.112]:49915 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726410AbgKILsj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 06:48:39 -0500
+Received: from 1.general.cascardo.us.vpn ([10.172.70.58] helo=mussarela)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <cascardo@canonical.com>)
+        id 1kc5f1-0007u3-1s; Mon, 09 Nov 2020 11:48:35 +0000
+Date:   Mon, 9 Nov 2020 08:48:28 -0300
+From:   Thadeu Lima de Souza Cascardo <cascardo@canonical.com>
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     Kleber Sacilotto de Souza <kleber.souza@canonical.com>,
+        Eric Dumazet <edumazet@google.com>, netdev@vger.kernel.org,
+        Gerrit Renker <gerrit@erg.abdn.ac.uk>,
+        "David S. Miller" <davem@davemloft.net>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        "Alexander A. Klimov" <grandmaster@al2klimov.de>,
+        Kees Cook <keescook@chromium.org>,
+        Alexey Kodanev <alexey.kodanev@oracle.com>,
+        dccp@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] dccp: ccid: move timers to struct dccp_sock
+Message-ID: <20201109114828.GP595944@mussarela>
+References: <20201013171849.236025-1-kleber.souza@canonical.com>
+ <20201013171849.236025-2-kleber.souza@canonical.com>
+ <20201016153016.04bffc1e@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1604921916-23368-1-git-send-email-anshuman.khandual@arm.com>
+In-Reply-To: <20201016153016.04bffc1e@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 09, 2020 at 05:08:36PM +0530, Anshuman Khandual wrote:
-> Mapping between IPI type index and its string is direct without requiring
-> an additional offset. Hence the existing macro S(x, s) is now redundant
-> and can just be dropped. This also makes the code clean and simple.
+On Fri, Oct 16, 2020 at 03:30:16PM -0700, Jakub Kicinski wrote:
+> On Tue, 13 Oct 2020 19:18:48 +0200 Kleber Sacilotto de Souza wrote:
+> > From: Thadeu Lima de Souza Cascardo <cascardo@canonical.com>
+> > 
+> > When dccps_hc_tx_ccid is freed, ccid timers may still trigger. The reason
+> > del_timer_sync can't be used is because this relies on keeping a reference
+> > to struct sock. But as we keep a pointer to dccps_hc_tx_ccid and free that
+> > during disconnect, the timer should really belong to struct dccp_sock.
+> > 
+> > This addresses CVE-2020-16119.
+> > 
+> > Fixes: 839a6094140a (net: dccp: Convert timers to use timer_setup())
+> > Signed-off-by: Thadeu Lima de Souza Cascardo <cascardo@canonical.com>
+> > Signed-off-by: Kleber Sacilotto de Souza <kleber.souza@canonical.com>
 > 
-> Cc: Catalin Marinas <catalin.marinas@arm.com>
-> Cc: Will Deacon <will@kernel.org>
-> Cc: Mark Rutland <mark.rutland@arm.com>
-> Cc: Marc Zyngier <maz@kernel.org>
-> Cc: linux-arm-kernel@lists.infradead.org
-> Cc: linux-kernel@vger.kernel.org
-> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
-
-Nice cleanup!
-
-Acked-by: Mark Rutland <mark.rutland@arm.com>
-
-Mark.
-
-> ---
->  arch/arm64/kernel/smp.c | 15 +++++++--------
->  1 file changed, 7 insertions(+), 8 deletions(-)
+> I've been mulling over this fix.
 > 
-> diff --git a/arch/arm64/kernel/smp.c b/arch/arm64/kernel/smp.c
-> index 09c96f57818c..65d18a618abe 100644
-> --- a/arch/arm64/kernel/smp.c
-> +++ b/arch/arm64/kernel/smp.c
-> @@ -786,14 +786,13 @@ void __init smp_prepare_cpus(unsigned int max_cpus)
->  }
->  
->  static const char *ipi_types[NR_IPI] __tracepoint_string = {
-> -#define S(x,s)	[x] = s
-> -	S(IPI_RESCHEDULE, "Rescheduling interrupts"),
-> -	S(IPI_CALL_FUNC, "Function call interrupts"),
-> -	S(IPI_CPU_STOP, "CPU stop interrupts"),
-> -	S(IPI_CPU_CRASH_STOP, "CPU stop (for crash dump) interrupts"),
-> -	S(IPI_TIMER, "Timer broadcast interrupts"),
-> -	S(IPI_IRQ_WORK, "IRQ work interrupts"),
-> -	S(IPI_WAKEUP, "CPU wake-up interrupts"),
-> +	[IPI_RESCHEDULE]	= "Rescheduling interrupts",
-> +	[IPI_CALL_FUNC]		= "Function call interrupts",
-> +	[IPI_CPU_STOP]		= "CPU stop interrupts",
-> +	[IPI_CPU_CRASH_STOP]	= "CPU stop (for crash dump) interrupts",
-> +	[IPI_TIMER]		= "Timer broadcast interrupts",
-> +	[IPI_IRQ_WORK]		= "IRQ work interrupts",
-> +	[IPI_WAKEUP]		= "CPU wake-up interrupts",
->  };
->  
->  static void smp_cross_call(const struct cpumask *target, unsigned int ipinr);
-> -- 
-> 2.20.1
+> The layering violation really doesn't sit well.
 > 
+> We're reusing the timer object. What if we are really unlucky, the
+> fires and gets blocked by a cosmic ray just as it's about to try to
+> lock the socket, then user manages to reconnect, and timer starts
+> again. Potentially with a different CCID algo altogether?
+> 
+> Is disconnect ever called under the BH lock?  Maybe plumb a bool
+> argument through to ccid*_hc_tx_exit() and do a sk_stop_timer_sync()
+> when called from disconnect()?
+> 
+> Or do refcounting on ccid_priv so that the timer holds both the socket
+> and the priv?
+
+Sorry about too late a response. I was on vacation, then came back and spent a
+couple of days testing this further, and had to switch to other tasks.
+
+So, while testing this, I had to resort to tricks like having a very small
+expire and enqueuing on a different CPU. Then, after some minutes, I hit a UAF.
+That's with or without the first of the second patch.
+
+I also tried to refcount ccid instead of the socket, keeping the timer on the
+ccid, but that still hit the UAF, and that's when I had to switch tasks. Oh,
+and in the meantime, I found one or two other fixes that we should apply, will
+send them shortly.
+
+But I would argue that we should apply the revert as it addresses the CVE,
+without really regressing the other UAF, as I argued. Does that make sense?
+
+Thank you.
+Cascardo.
