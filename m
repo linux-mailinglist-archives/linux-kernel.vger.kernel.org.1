@@ -2,28 +2,28 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 113C62AB7B2
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 13:03:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 730742AB7B3
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 13:04:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729442AbgKIMDv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 07:03:51 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39076 "EHLO mail.kernel.org"
+        id S1729530AbgKIMEP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 07:04:15 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39146 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726410AbgKIMDv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 07:03:51 -0500
+        id S1726410AbgKIMEP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 07:04:15 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0791020789;
-        Mon,  9 Nov 2020 12:03:49 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8893A20789;
+        Mon,  9 Nov 2020 12:04:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604923430;
-        bh=mRwhp1lGDfEDOJX7TAMeG0KwXSLe5pkSkrxtGgUdG8I=;
+        s=default; t=1604923453;
+        bh=NLvzFe8LX2GurxJBTWk/+gN/PMnYyodXLMzk/dJFOq4=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=e4hLwkQ3GwZ3bjHXVA0cA6kZ+9+CE3SX/9Zps5gfdalDsePxzMQNn8DOySlOXC3L9
-         lTHaYFksqzkZRgaz1KuFsyyVs8F7DURQcXcIocdcwC2Zhy0C9sUz/apfub0wcBhChl
-         vAvoLLlatix3cPpehpDvucACIimBh7DLJ48E225k=
-Date:   Mon, 9 Nov 2020 13:04:49 +0100
+        b=m0Yx8nVdJUfbIc5xXr5eyYCCHWMIj+k3v5Cv0QRODAwl6Wd7/9/tyz8wmCAq0HjwG
+         1n0y7oD2r/uIOqxveBOJvaZhN9D6T8mdypt4panNLD5zWf/o3AQiDKAH3Md5wO9gwr
+         aJRFULWTKvF6IkkjIMGoE/uf6v44LIm28eLL5Xj0=
+Date:   Mon, 9 Nov 2020 13:05:12 +0100
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     Aisheng Dong <aisheng.dong@nxp.com>
 Cc:     Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
@@ -33,7 +33,7 @@ Cc:     Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
         Stephen Boyd <sboyd@kernel.org>
 Subject: Re: [PATCH RESEND] driver core: export device_is_bound() to fix
  build failure
-Message-ID: <20201109120449.GA1832201@kroah.com>
+Message-ID: <20201109120512.GB1832201@kroah.com>
 References: <20201107224727.11015-1-sudipm.mukherjee@gmail.com>
  <20201108082317.GA40741@kroah.com>
  <CADVatmN8SbZWVGf_xe_K1g7M9ArHXF8TUhYyBgQcydBF4_zp9g@mail.gmail.com>
@@ -127,8 +127,8 @@ On Mon, Nov 09, 2020 at 11:55:46AM +0000, Aisheng Dong wrote:
 > BTW, I wonder if dev_driver_string() could be an optional solution which seems a more
 > simple way?
 
-No, that's a horrible hack, do not do that, it will not work properly.
-Fix this correctly.
+Also, how do you really know you even have a valid pointer to that other
+device structure?  How are you getting access to that?
 
 thanks,
 
