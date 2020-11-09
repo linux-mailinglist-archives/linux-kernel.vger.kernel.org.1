@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DEFEF2ABBC8
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 14:32:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D910C2ABBA5
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 14:32:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732117AbgKINam (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 08:30:42 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36070 "EHLO mail.kernel.org"
+        id S1733079AbgKINOK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 08:14:10 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40260 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732170AbgKINKo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 08:10:44 -0500
+        id S1733075AbgKINOF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 08:14:05 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9607120663;
-        Mon,  9 Nov 2020 13:10:43 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id DE61A20867;
+        Mon,  9 Nov 2020 13:14:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604927444;
-        bh=oIzrjqALwh4CjykziVsw6dBqKuXuoY1y0StWWD4AfAA=;
+        s=default; t=1604927644;
+        bh=aUzQk5vOBc+/Hfh/Vr/aJE1XyEccDnj0JJ1rxa2Jirc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=baq2G7MdUms/bPiYGKGHlYIWOdNzoCJsoF5HLrau1n6Lffrcr+vzPkqZPPv2nmm7X
-         M6SpXTeqxo7h+s433CaNg9BAqu9Mrk6GxX/8o7Ul4knl+1KNgkXHOeJ5J1yWI/n456
-         J2QdZWkUKpTYj3eaks1wnuwAv0beXjTlWavH5Ci8=
+        b=GwpMFeTEC2ue76/RUYjoyFZYAy7A0RSq58gGV51v8qoneemCFoEnxPd5NYU9ysz3U
+         aUlmI5EAL1gMvefzE/VwGeqSnh8xnM4/PxDA08WejwnvBBQ7pn4AFWO4bSqCOHgGo6
+         P45tyUIGPXv87sqS/PGUZSD1IV3ypMzfNbxFnwII=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ziyi Cao <kernel@septs.pw>,
-        Johan Hovold <johan@kernel.org>
-Subject: [PATCH 4.19 60/71] USB: serial: option: add Quectel EC200T module support
+        stable@vger.kernel.org, Hoegeun Kwon <hoegeun.kwon@samsung.com>,
+        Maxime Ripard <maxime@cerno.tech>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 57/85] drm/vc4: drv: Add error handding for bind
 Date:   Mon,  9 Nov 2020 13:55:54 +0100
-Message-Id: <20201109125022.735359786@linuxfoundation.org>
+Message-Id: <20201109125025.308973704@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201109125019.906191744@linuxfoundation.org>
-References: <20201109125019.906191744@linuxfoundation.org>
+In-Reply-To: <20201109125022.614792961@linuxfoundation.org>
+References: <20201109125022.614792961@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,39 +43,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ziyi Cao <kernel@septs.pw>
+From: Hoegeun Kwon <hoegeun.kwon@samsung.com>
 
-commit a46b973bced1ba57420752bf38426acd9f6cbfa6 upstream.
+[ Upstream commit 9ce0af3e9573fb84c4c807183d13ea2a68271e4b ]
 
-Add usb product id of the Quectel EC200T module.
+There is a problem that if vc4_drm bind fails, a memory leak occurs on
+the drm_property_create side. Add error handding for drm_mode_config.
 
-Signed-off-by: Ziyi Cao <kernel@septs.pw>
-Link: https://lore.kernel.org/r/17f8a2a3-ce0f-4be7-8544-8fdf286907d0@www.fastmail.com
-Cc: stable@vger.kernel.org
-Signed-off-by: Johan Hovold <johan@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Signed-off-by: Hoegeun Kwon <hoegeun.kwon@samsung.com>
+Signed-off-by: Maxime Ripard <maxime@cerno.tech>
+Link: https://patchwork.freedesktop.org/patch/msgid/20201027041442.30352-2-hoegeun.kwon@samsung.com
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/serial/option.c |    2 ++
- 1 file changed, 2 insertions(+)
+ drivers/gpu/drm/vc4/vc4_drv.c | 1 +
+ 1 file changed, 1 insertion(+)
 
---- a/drivers/usb/serial/option.c
-+++ b/drivers/usb/serial/option.c
-@@ -250,6 +250,7 @@ static void option_instat_callback(struc
- #define QUECTEL_PRODUCT_EP06			0x0306
- #define QUECTEL_PRODUCT_EM12			0x0512
- #define QUECTEL_PRODUCT_RM500Q			0x0800
-+#define QUECTEL_PRODUCT_EC200T			0x6026
- 
- #define CMOTECH_VENDOR_ID			0x16d8
- #define CMOTECH_PRODUCT_6001			0x6001
-@@ -1117,6 +1118,7 @@ static const struct usb_device_id option
- 	{ USB_DEVICE_AND_INTERFACE_INFO(QUECTEL_VENDOR_ID, QUECTEL_PRODUCT_RM500Q, 0xff, 0, 0) },
- 	{ USB_DEVICE_AND_INTERFACE_INFO(QUECTEL_VENDOR_ID, QUECTEL_PRODUCT_RM500Q, 0xff, 0xff, 0x10),
- 	  .driver_info = ZLP },
-+	{ USB_DEVICE_AND_INTERFACE_INFO(QUECTEL_VENDOR_ID, QUECTEL_PRODUCT_EC200T, 0xff, 0, 0) },
- 
- 	{ USB_DEVICE(CMOTECH_VENDOR_ID, CMOTECH_PRODUCT_6001) },
- 	{ USB_DEVICE(CMOTECH_VENDOR_ID, CMOTECH_PRODUCT_CMU_300) },
+diff --git a/drivers/gpu/drm/vc4/vc4_drv.c b/drivers/gpu/drm/vc4/vc4_drv.c
+index 5e6fb6c2307f0..0d78ba017a29b 100644
+--- a/drivers/gpu/drm/vc4/vc4_drv.c
++++ b/drivers/gpu/drm/vc4/vc4_drv.c
+@@ -309,6 +309,7 @@ static int vc4_drm_bind(struct device *dev)
+ 	component_unbind_all(dev, drm);
+ gem_destroy:
+ 	vc4_gem_destroy(drm);
++	drm_mode_config_cleanup(drm);
+ 	vc4_bo_cache_destroy(drm);
+ dev_put:
+ 	drm_dev_put(drm);
+-- 
+2.27.0
+
 
 
