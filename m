@@ -2,186 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C19EE2AC108
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 17:36:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C56722AC10E
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 17:37:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730612AbgKIQg3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 11:36:29 -0500
-Received: from mga01.intel.com ([192.55.52.88]:65491 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729570AbgKIQg3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 11:36:29 -0500
-IronPort-SDR: Dh+IDG0xWp9yRPoR1dGQX7RLWRsnUt4fzBIbefoNUi+2RxqDgOr+bbgS9h39+ZeiQ2GZ98qzEj
- wybUbb+rJtoQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9800"; a="187782305"
-X-IronPort-AV: E=Sophos;i="5.77,463,1596524400"; 
-   d="scan'208";a="187782305"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Nov 2020 08:36:28 -0800
-IronPort-SDR: 1UZ+bcBZD7a9QlTAScAYjXqfI3L/rEE7f/nA1fiAui6+MlGFWCzvfiNcGhOzdzXmziE/5XVZpQ
- GvvoDgMAbn6g==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,463,1596524400"; 
-   d="scan'208";a="540916115"
-Received: from lkp-server01.sh.intel.com (HELO d0be80f1a028) ([10.239.97.150])
-  by orsmga005.jf.intel.com with ESMTP; 09 Nov 2020 08:36:27 -0800
-Received: from kbuild by d0be80f1a028 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1kcA9a-0000ID-EK; Mon, 09 Nov 2020 16:36:26 +0000
-Date:   Tue, 10 Nov 2020 00:36:20 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:perf/urgent] BUILD SUCCESS
- 7bdb157cdebbf95a1cd94ed2e01b338714075d00
-Message-ID: <5fa97004./pbNNWdI8sxps2Xb%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S1730428AbgKIQhg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 11:37:36 -0500
+Received: from mail-oi1-f194.google.com ([209.85.167.194]:45874 "EHLO
+        mail-oi1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726410AbgKIQhf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 11:37:35 -0500
+Received: by mail-oi1-f194.google.com with SMTP id j7so10827724oie.12;
+        Mon, 09 Nov 2020 08:37:35 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=tq7rUzr/gw10MEoyCZnSq/EiwnB2bInd24MzCsWxH8k=;
+        b=GN/LnFw1VjgfiX7pYywruabAMSVJrL3YLT1p6aMeRofBrCG+ok96Jj9zZ3nvzf266W
+         LIGfGDx97QvoHjFAPyRLzT4nMXMTob3kuUCAh/tUpn9Db1rZCx/mAtaqsI5/LXYJQSQt
+         IzjoN5gC2+xoQTPkYG8RJP4BxGy8UyVUL4vKYvh1/996rK1/m7kHIAGwWsHauiGFtcmk
+         lf7ppM/STZLcQCb2VMTKcuKy327vsY2WB2WsrSmOmnt9KPe+vYqBlqAcxoCmATW3HYRA
+         GSjijcFreo5A2hQHCeGnVQSIlEuwlprh4OesnelUUthCHcc1eQWG7tM43j6YCz2K5A2U
+         A1QA==
+X-Gm-Message-State: AOAM53320Hs4MqEvKsKhtvEBvEQJsguoq6jVoTUFFaVV8cTBCVTtCzCC
+        UT15X8aT5GDwQidLI5fxlA==
+X-Google-Smtp-Source: ABdhPJwLqQONMstaMXV/iyNOCJ8sCnMO9TUIGoYg1lmfIEQEeF/LXCOWXsWVAAtsy+AIrYmyia3DLQ==
+X-Received: by 2002:a05:6808:b24:: with SMTP id t4mr8942748oij.93.1604939854580;
+        Mon, 09 Nov 2020 08:37:34 -0800 (PST)
+Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id e15sm1176458otj.43.2020.11.09.08.37.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 09 Nov 2020 08:37:33 -0800 (PST)
+Received: (nullmailer pid 1410944 invoked by uid 1000);
+        Mon, 09 Nov 2020 16:37:33 -0000
+Date:   Mon, 9 Nov 2020 10:37:33 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Ahmad Fatoum <a.fatoum@pengutronix.de>
+Cc:     Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        kernel@pengutronix.de, devicetree@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1] dt-bindings: arm: stm32: lxa,stm32mp157c-mc1: add
+ extra SiP compatible
+Message-ID: <20201109163733.GA1404197@bogus>
+References: <20201104113932.30702-1-a.fatoum@pengutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+In-Reply-To: <20201104113932.30702-1-a.fatoum@pengutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git  perf/urgent
-branch HEAD: 7bdb157cdebbf95a1cd94ed2e01b338714075d00  perf/core: Fix a memory leak in perf_event_parse_addr_filter()
+On Wed, Nov 04, 2020 at 12:39:31PM +0100, Ahmad Fatoum wrote:
+> The Linux Automation MC-1 is built around a SIP with CPU, RAM, PMIC,
+> Oscillator and EEPROM. Add a further compatible identifying the SiP,
+> so boot firmware can match against it to apply fixups if necessary.
+> 
+> To avoid intermittent dtbs_check breakage in the sole upstream device
+> tree that uses that SiP, patch it here as well.
+> 
+> Signed-off-by: Ahmad Fatoum <a.fatoum@pengutronix.de>
+> ---
+> I know that bindings and device tree patches should be separate. Does
+> this apply here as well? Should I split the dts change into a follow-up
+> commit? 
 
-elapsed time: 723m
+Yes.
 
-configs tested: 122
-configs skipped: 3
+> Is it ok that dtbs_check will report an intermittent breakage?
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+If the binding comes first, it won't break.
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-arc                        nsim_700_defconfig
-powerpc                       holly_defconfig
-xtensa                  audio_kc705_defconfig
-sh                           se7343_defconfig
-arm                  colibri_pxa270_defconfig
-nds32                            alldefconfig
-arm                            hisi_defconfig
-arm                         assabet_defconfig
-m68k                        m5272c3_defconfig
-arm                          pxa910_defconfig
-x86_64                           allyesconfig
-openrisc                 simple_smp_defconfig
-xtensa                  cadence_csp_defconfig
-mips                      maltaaprp_defconfig
-powerpc                    sam440ep_defconfig
-powerpc                     pseries_defconfig
-m68k                         amcore_defconfig
-arm                         s5pv210_defconfig
-mips                  cavium_octeon_defconfig
-m68k                             alldefconfig
-nios2                         10m50_defconfig
-powerpc                     tqm8548_defconfig
-c6x                        evmc6474_defconfig
-sh                          rsk7201_defconfig
-nios2                         3c120_defconfig
-powerpc                mpc7448_hpc2_defconfig
-arm                          badge4_defconfig
-arm                       multi_v4t_defconfig
-h8300                               defconfig
-arm                          collie_defconfig
-arc                                 defconfig
-mips                      fuloong2e_defconfig
-sh                         microdev_defconfig
-arm                            mmp2_defconfig
-sh                        sh7757lcr_defconfig
-arm                       omap2plus_defconfig
-mips                           ip27_defconfig
-powerpc                 mpc8560_ads_defconfig
-mips                        qi_lb60_defconfig
-powerpc                 mpc836x_mds_defconfig
-m68k                        m5307c3_defconfig
-arm                             rpc_defconfig
-c6x                              alldefconfig
-powerpc                      pmac32_defconfig
-arm                          imote2_defconfig
-arc                        vdk_hs38_defconfig
-arm                          pcm027_defconfig
-arm                        realview_defconfig
-mips                          rb532_defconfig
-mips                        nlm_xlr_defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-c6x                              allyesconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-x86_64               randconfig-a004-20201109
-x86_64               randconfig-a002-20201109
-x86_64               randconfig-a003-20201109
-x86_64               randconfig-a005-20201109
-x86_64               randconfig-a006-20201109
-x86_64               randconfig-a001-20201109
-i386                 randconfig-a004-20201109
-i386                 randconfig-a006-20201109
-i386                 randconfig-a005-20201109
-i386                 randconfig-a001-20201109
-i386                 randconfig-a003-20201109
-i386                 randconfig-a002-20201109
-i386                 randconfig-a014-20201109
-i386                 randconfig-a015-20201109
-i386                 randconfig-a013-20201109
-i386                 randconfig-a016-20201109
-i386                 randconfig-a011-20201109
-i386                 randconfig-a012-20201109
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-x86_64                                   rhel
-x86_64                    rhel-7.6-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                                  kexec
+But generally, 'dtbs_check' being warning free is not yet a requirement. 
+That will probably first have to be per platform.
 
-clang tested configs:
-x86_64               randconfig-a012-20201109
-x86_64               randconfig-a015-20201109
-x86_64               randconfig-a013-20201109
-x86_64               randconfig-a011-20201109
-x86_64               randconfig-a014-20201109
-x86_64               randconfig-a016-20201109
+> ---
+>  Documentation/devicetree/bindings/arm/stm32/stm32.yaml | 8 +++++++-
+>  arch/arm/boot/dts/stm32mp157c-lxa-mc1.dts              | 2 +-
+>  2 files changed, 8 insertions(+), 2 deletions(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/arm/stm32/stm32.yaml b/Documentation/devicetree/bindings/arm/stm32/stm32.yaml
+> index 009b424e456e..9127094f0208 100644
+> --- a/Documentation/devicetree/bindings/arm/stm32/stm32.yaml
+> +++ b/Documentation/devicetree/bindings/arm/stm32/stm32.yaml
+> @@ -40,7 +40,6 @@ properties:
+>        - items:
+>            - enum:
+>                - arrow,stm32mp157a-avenger96 # Avenger96
+> -              - lxa,stm32mp157c-mc1
+>                - shiratech,stm32mp157a-iot-box # IoT Box
+>                - shiratech,stm32mp157a-stinger96 # Stinger96
+>                - st,stm32mp157c-ed1
+> @@ -52,6 +51,13 @@ properties:
+>            - const: st,stm32mp157c-ev1
+>            - const: st,stm32mp157c-ed1
+>            - const: st,stm32mp157
+> +      - description: Octavo OSD32MP15x System-in-Package based boards
+> +        items:
+> +          - enum:
+> +              - lxa,stm32mp157c-mc1 # Linux Automation MC-1
+> +          - const: oct,stm32mp15xx-osd32
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+'oct' is not docuemnted in vendor-prefixes.yaml.
+
+> +          - enum:
+> +              - st,stm32mp157
+>        - description: Odyssey STM32MP1 SoM based Boards
+>          items:
+>            - enum:
+> diff --git a/arch/arm/boot/dts/stm32mp157c-lxa-mc1.dts b/arch/arm/boot/dts/stm32mp157c-lxa-mc1.dts
+> index 1e5333fd437f..cda8e871f999 100644
+> --- a/arch/arm/boot/dts/stm32mp157c-lxa-mc1.dts
+> +++ b/arch/arm/boot/dts/stm32mp157c-lxa-mc1.dts
+> @@ -15,7 +15,7 @@
+>  
+>  / {
+>  	model = "Linux Automation MC-1 board";
+> -	compatible = "lxa,stm32mp157c-mc1", "st,stm32mp157";
+> +	compatible = "lxa,stm32mp157c-mc1", "oct,stm32mp15xx-osd32", "st,stm32mp157";
+>  
+>  	aliases {
+>  		ethernet0 = &ethernet0;
+> -- 
+> 2.28.0
+> 
