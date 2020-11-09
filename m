@@ -2,38 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C03202ABCBF
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 14:41:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0754C2ABD88
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 14:47:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388018AbgKINkJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 08:40:09 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56084 "EHLO mail.kernel.org"
+        id S1729927AbgKIM5C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 07:57:02 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51120 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730634AbgKINCN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 08:02:13 -0500
+        id S1727826AbgKIM4n (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 07:56:43 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id AED7620684;
-        Mon,  9 Nov 2020 13:02:11 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 874F52076E;
+        Mon,  9 Nov 2020 12:56:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604926932;
-        bh=fI+5mHMrsyBSYeS0TcfDWgCZOtJe5ty/pw3ywc610SY=;
+        s=default; t=1604926601;
+        bh=hDzC8cSvpzDscY6CdAyOCr4izB1A/cnLL5OmQ769Duw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Ppjwjgzw2qXwhKMxbbG6krVDfFCCRFZ0/S8lCh+cp1W/w0WN/s0D8h9bFkPVdXSCR
-         C5CyNsxtDbign6CcI18AWjhIi0/L/5agZL+qOl52Khq6EsqDl6ubFm5zIDSu8uyiPY
-         XlxpELXBSZwoYrQMIQdd+S67rIVNRb6Kp7aV0nrw=
+        b=rG7HAh5OUtekpAbrPFPF9j07SbsTphoa/xlgKvDq+mICloIWG+Urq7EoB2ra1NcFB
+         fzQn4Oi7z2Kffb7fzt3rrVtWLLHDUqEgr8azVLaoAh8UAX7wqTBS+1UMg6dwe3vWL4
+         GSDrCc72+pkuvjb92ecLEJ4DbsCLA/wR7TlJ0WsU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Kim Phillips <kim.phillips@amd.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>
-Subject: [PATCH 4.9 046/117] perf/x86/amd/ibs: Dont include randomized bits in get_ibs_op_count()
-Date:   Mon,  9 Nov 2020 13:54:32 +0100
-Message-Id: <20201109125027.851885740@linuxfoundation.org>
+        stable@vger.kernel.org,
+        syzbot+75d51fe5bf4ebe988518@syzkaller.appspotmail.com,
+        Anant Thazhemadam <anant.thazhemadam@gmail.com>,
+        Dominique Martinet <asmadeus@codewreck.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.4 26/86] net: 9p: initialize sun_server.sun_path to have addrs value only when addr is valid
+Date:   Mon,  9 Nov 2020 13:54:33 +0100
+Message-Id: <20201109125022.118107173@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201109125025.630721781@linuxfoundation.org>
-References: <20201109125025.630721781@linuxfoundation.org>
+In-Reply-To: <20201109125020.852643676@linuxfoundation.org>
+References: <20201109125020.852643676@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,51 +45,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kim Phillips <kim.phillips@amd.com>
+From: Anant Thazhemadam <anant.thazhemadam@gmail.com>
 
-commit 680d69635005ba0e58fe3f4c52fc162b8fc743b0 upstream.
+[ Upstream commit 7ca1db21ef8e0e6725b4d25deed1ca196f7efb28 ]
 
-get_ibs_op_count() adds hardware's current count (IbsOpCurCnt) bits
-to its count regardless of hardware's valid status.
+In p9_fd_create_unix, checking is performed to see if the addr (passed
+as an argument) is NULL or not.
+However, no check is performed to see if addr is a valid address, i.e.,
+it doesn't entirely consist of only 0's.
+The initialization of sun_server.sun_path to be equal to this faulty
+addr value leads to an uninitialized variable, as detected by KMSAN.
+Checking for this (faulty addr) and returning a negative error number
+appropriately, resolves this issue.
 
-According to the PPR for AMD Family 17h Model 31h B0 55803 Rev 0.54,
-if the counter rolls over, valid status is set, and the lower 7 bits
-of IbsOpCurCnt are randomized by hardware.
-
-Don't include those bits in the driver's event count.
-
-Fixes: 8b1e13638d46 ("perf/x86-ibs: Fix usage of IBS op current count")
-Signed-off-by: Kim Phillips <kim.phillips@amd.com>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Cc: stable@vger.kernel.org
-Link: https://bugzilla.kernel.org/show_bug.cgi?id=206537
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Link: http://lkml.kernel.org/r/20201012042404.2508-1-anant.thazhemadam@gmail.com
+Reported-by: syzbot+75d51fe5bf4ebe988518@syzkaller.appspotmail.com
+Tested-by: syzbot+75d51fe5bf4ebe988518@syzkaller.appspotmail.com
+Signed-off-by: Anant Thazhemadam <anant.thazhemadam@gmail.com>
+Signed-off-by: Dominique Martinet <asmadeus@codewreck.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/x86/events/amd/ibs.c |   12 ++++++++----
- 1 file changed, 8 insertions(+), 4 deletions(-)
+ net/9p/trans_fd.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/arch/x86/events/amd/ibs.c
-+++ b/arch/x86/events/amd/ibs.c
-@@ -346,11 +346,15 @@ static u64 get_ibs_op_count(u64 config)
- {
- 	u64 count = 0;
+diff --git a/net/9p/trans_fd.c b/net/9p/trans_fd.c
+index eab058f93ec97..6f8e84844bb27 100644
+--- a/net/9p/trans_fd.c
++++ b/net/9p/trans_fd.c
+@@ -991,7 +991,7 @@ p9_fd_create_unix(struct p9_client *client, const char *addr, char *args)
  
-+	/*
-+	 * If the internal 27-bit counter rolled over, the count is MaxCnt
-+	 * and the lower 7 bits of CurCnt are randomized.
-+	 * Otherwise CurCnt has the full 27-bit current counter value.
-+	 */
- 	if (config & IBS_OP_VAL)
--		count += (config & IBS_OP_MAX_CNT) << 4; /* cnt rolled over */
--
--	if (ibs_caps & IBS_CAPS_RDWROPCNT)
--		count += (config & IBS_OP_CUR_CNT) >> 32;
-+		count = (config & IBS_OP_MAX_CNT) << 4;
-+	else if (ibs_caps & IBS_CAPS_RDWROPCNT)
-+		count = (config & IBS_OP_CUR_CNT) >> 32;
+ 	csocket = NULL;
  
- 	return count;
- }
+-	if (addr == NULL)
++	if (!addr || !strlen(addr))
+ 		return -EINVAL;
+ 
+ 	if (strlen(addr) >= UNIX_PATH_MAX) {
+-- 
+2.27.0
+
 
 
