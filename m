@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0137E2AB620
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 12:08:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 463EC2AB5E9
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 12:07:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729816AbgKILIb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 06:08:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59496 "EHLO
+        id S1729515AbgKILHJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 06:07:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59516 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729509AbgKILHC (ORCPT
+        with ESMTP id S1729491AbgKILHE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 06:07:02 -0500
+        Mon, 9 Nov 2020 06:07:04 -0500
 Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 735A8C0613D6
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Nov 2020 03:07:02 -0800 (PST)
-Received: by mail-wr1-x444.google.com with SMTP id k2so4827953wrx.2
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Nov 2020 03:07:02 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BDCDC0617A6
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Nov 2020 03:07:04 -0800 (PST)
+Received: by mail-wr1-x444.google.com with SMTP id w1so8229421wrm.4
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Nov 2020 03:07:04 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=2uLK4LNo7fJGEwA0NXfYaAQzvkTW8/WkGHuVu61FcZ4=;
-        b=SLmwWdYmA2Su0OyL+219YDZzeVXOkzpy5gortE6aVnwng+6cHrJzhAQJzNByqcPbPZ
-         isbE6V3Lb9JgstbUlm/PZvCpNxelIDnwHLTINtWIzMAUAJP+6YLk/AWf+cW33RVJOvLq
-         4EQlOOLu8zd+gVrxvr0w9485FxLsZ4uiV1jlwgDMS4E7kDkszYjvid4w0z806pFvA1dO
-         U+nHioEgRrLmfLyR8tH/H/Ge3+qH76H09ubPywZEg/u4KcGzZ6YzgnyKXZKxxyWIo1cW
-         FT3Tuwvxb43JhyG0QmKnG/8uRrjp2S/bO4jEisldpzuA8EOA5eJuEswwYg/l6KV0K70j
-         EAjQ==
+        bh=X2Rt2FzEDhfwvo5anIXOq/hUQeEl4/lxGNeKa+o6J0w=;
+        b=aox5vh8ytYutbWVc26/liVn7Z8hEPu2nlIMQId7oA48asO+6m3jeTPz78Xi5tKvZ5M
+         bwqHNNDNK70TD0NuDOZApqzQQQIxd7lpVAV+s12r5UTEgNsP0LLtTP/8WwzPWY/N5W3F
+         Npda/QnMuuCjfODUnOM6c1KUKnZ4sERDBgsxwJiNxobq6BnhL/yQBZO223GeqTICPw9m
+         vPcqcg/xsiMtQw2qzDEvFh+x8itNf6+A8g+1ljb0/aVhzJkxBCaUC9gPqB0T/1iCSeAD
+         Up5ueADAnhN5fgjIVO2va7mHiOxvK3gevDqJSukErF5i8yrzIC+ShGo5F2g2sSe+Tv4s
+         iVVA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=2uLK4LNo7fJGEwA0NXfYaAQzvkTW8/WkGHuVu61FcZ4=;
-        b=tuw/ni1bc3XJCGv+EJz9Dg9iCglQ8TpVQZDEMquEm9W8XlVyV+pyrLeS8oI2YcrhqH
-         GqJsI8vZZJz5Xt/8Ky8KO/LfUl+NnUK1vPWH73dxMV4OdAHFOlVe8ezpoeMgHFnZIete
-         brAHg1beIFLB5H/kPwf96WgGyS967zNWzYbdnIjde9eDTXgfzrStIABwrLU6j+CRZjDH
-         znxbNa1I+IN0E/tMT/BXgrogWa/k58F8WbLreBWjcQSc0LxK9gHoU36Coagc4aH5qyES
-         eYlnnObHR+iOkJEmJ8DoBwojOpoowSS/Qkl/1El3g4Dvi2vsOL9t6dx9zSWndjmKFu/V
-         Mfcg==
-X-Gm-Message-State: AOAM531bWVDBE9yd7Ita6MkkOmif5PF2iqqDi/KmsZKYQ9l4jlSXUeaL
-        lvN9JS7W5X0lyc4sPejarihoig==
-X-Google-Smtp-Source: ABdhPJwC1VmwvlzIaWje0LLMyGfNJlg7DPW07nQhl2YWyOW+KS6oIpzkSUqvI/A14QOWWdg2F+P+tA==
-X-Received: by 2002:adf:9b98:: with SMTP id d24mr16961027wrc.17.1604920021208;
-        Mon, 09 Nov 2020 03:07:01 -0800 (PST)
+        bh=X2Rt2FzEDhfwvo5anIXOq/hUQeEl4/lxGNeKa+o6J0w=;
+        b=HKpbEXntwjRDXTalWmwHOwuappLK4NcLpdepYxrZ2V9A4o75blyvJ82E/2pMIdgWW9
+         ZjPn8UDOP/+lzpxYaDXPhiJg9qfh9kMF4qXMrXqBhmRHZemHOO8ZeNDVywxf9P/IwMsF
+         H5xf8uFpWgUZ5MoAXBpFl/gT7I0BNm7HGTi7RnkrnaZL2UrGyJfzqXhQVXYaoOy8MW0w
+         hA4Tyi44WRPZYbJ/16b1/Ts/agKdXzSsUZZhj4OBTPXk1I5OIujf9p4SaYgTPuBs5Xs/
+         rRcsjb2qSP2ujqylVoTIYGM85i1q6DWdWJ0+DeRVB+egxH+332J3xs3pFwr7D9oHAnIJ
+         IdIg==
+X-Gm-Message-State: AOAM533jeVj1S8SFb1BaMdaSdrgLadtjxmntwy6Rk85JA4pqYYRRm7Im
+        mo0N6V3RDbuf6iIySyAsvo1Jog==
+X-Google-Smtp-Source: ABdhPJz9QUvKGU969idAKC9U5b3ocmwgTjZ8J0vtC/TaPYMbRMpLHkJeyp4aCBCLAgcQ+m/LRxWMMA==
+X-Received: by 2002:adf:9066:: with SMTP id h93mr18252530wrh.166.1604920022928;
+        Mon, 09 Nov 2020 03:07:02 -0800 (PST)
 Received: from localhost.localdomain (lfbn-nic-1-190-206.w2-15.abo.wanadoo.fr. [2.15.39.206])
-        by smtp.gmail.com with ESMTPSA id d3sm12815582wre.91.2020.11.09.03.06.59
+        by smtp.gmail.com with ESMTPSA id d3sm12815582wre.91.2020.11.09.03.07.01
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 09 Nov 2020 03:07:00 -0800 (PST)
+        Mon, 09 Nov 2020 03:07:02 -0800 (PST)
 From:   Bartosz Golaszewski <brgl@bgdev.pl>
 To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
         Sumit Semwal <sumit.semwal@linaro.org>,
@@ -79,10 +79,11 @@ Cc:     linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
         kvm@vger.kernel.org, virtualization@lists.linux-foundation.org,
         netdev@vger.kernel.org, linux-mm@kvack.org,
         alsa-devel@alsa-project.org,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Subject: [PATCH v3 1/9] mm: slab: clarify krealloc()'s behavior with __GFP_ZERO
-Date:   Mon,  9 Nov 2020 12:06:46 +0100
-Message-Id: <20201109110654.12547-2-brgl@bgdev.pl>
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Vlastimil Babka <vbabka@suse.cz>
+Subject: [PATCH v3 2/9] mm: slab: provide krealloc_array()
+Date:   Mon,  9 Nov 2020 12:06:47 +0100
+Message-Id: <20201109110654.12547-3-brgl@bgdev.pl>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201109110654.12547-1-brgl@bgdev.pl>
 References: <20201109110654.12547-1-brgl@bgdev.pl>
@@ -94,31 +95,67 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 
-__GFP_ZERO is ignored by krealloc() (unless we fall-back to kmalloc()
-path, in which case it's honored). Point that out in the kerneldoc.
+When allocating an array of elements, users should check for
+multiplication overflow or preferably use one of the provided helpers
+like: kmalloc_array().
+
+There's no krealloc_array() counterpart but there are many users who use
+regular krealloc() to reallocate arrays. Let's provide an actual
+krealloc_array() implementation.
+
+While at it: add some documentation regarding krealloc.
 
 Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Acked-by: Vlastimil Babka <vbabka@suse.cz>
 ---
- mm/slab_common.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ Documentation/core-api/memory-allocation.rst |  4 ++++
+ include/linux/slab.h                         | 18 ++++++++++++++++++
+ 2 files changed, 22 insertions(+)
 
-diff --git a/mm/slab_common.c b/mm/slab_common.c
-index f9ccd5dc13f3..d6df73f79204 100644
---- a/mm/slab_common.c
-+++ b/mm/slab_common.c
-@@ -1091,9 +1091,9 @@ static __always_inline void *__do_krealloc(const void *p, size_t new_size,
-  * @flags: the type of memory to allocate.
-  *
-  * The contents of the object pointed to are preserved up to the
-- * lesser of the new and old sizes.  If @p is %NULL, krealloc()
-- * behaves exactly like kmalloc().  If @new_size is 0 and @p is not a
-- * %NULL pointer, the object pointed to is freed.
-+ * lesser of the new and old sizes (__GFP_ZERO flag is effectively ignored).
-+ * If @p is %NULL, krealloc() behaves exactly like kmalloc().  If @new_size
-+ * is 0 and @p is not a %NULL pointer, the object pointed to is freed.
-  *
-  * Return: pointer to the allocated memory or %NULL in case of error
-  */
+diff --git a/Documentation/core-api/memory-allocation.rst b/Documentation/core-api/memory-allocation.rst
+index 4446a1ac36cc..5954ddf6ee13 100644
+--- a/Documentation/core-api/memory-allocation.rst
++++ b/Documentation/core-api/memory-allocation.rst
+@@ -147,6 +147,10 @@ The address of a chunk allocated with `kmalloc` is aligned to at least
+ ARCH_KMALLOC_MINALIGN bytes.  For sizes which are a power of two, the
+ alignment is also guaranteed to be at least the respective size.
+ 
++Chunks allocated with kmalloc() can be resized with krealloc(). Similarly
++to kmalloc_array(): a helper for resizing arrays is provided in the form of
++krealloc_array().
++
+ For large allocations you can use vmalloc() and vzalloc(), or directly
+ request pages from the page allocator. The memory allocated by `vmalloc`
+ and related functions is not physically contiguous.
+diff --git a/include/linux/slab.h b/include/linux/slab.h
+index dd6897f62010..be4ba5867ac5 100644
+--- a/include/linux/slab.h
++++ b/include/linux/slab.h
+@@ -592,6 +592,24 @@ static inline void *kmalloc_array(size_t n, size_t size, gfp_t flags)
+ 	return __kmalloc(bytes, flags);
+ }
+ 
++/**
++ * krealloc_array - reallocate memory for an array.
++ * @p: pointer to the memory chunk to reallocate
++ * @new_n: new number of elements to alloc
++ * @new_size: new size of a single member of the array
++ * @flags: the type of memory to allocate (see kmalloc)
++ */
++static __must_check inline void *
++krealloc_array(void *p, size_t new_n, size_t new_size, gfp_t flags)
++{
++	size_t bytes;
++
++	if (unlikely(check_mul_overflow(new_n, new_size, &bytes)))
++		return NULL;
++
++	return krealloc(p, bytes, flags);
++}
++
+ /**
+  * kcalloc - allocate memory for an array. The memory is set to zero.
+  * @n: number of elements.
 -- 
 2.29.1
 
