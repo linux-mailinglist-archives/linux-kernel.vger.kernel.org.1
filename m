@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3CDF2AB965
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 14:09:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 96CE12AB9BB
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 14:12:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731764AbgKINIu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 08:08:50 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33612 "EHLO mail.kernel.org"
+        id S1732547AbgKINML (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 08:12:11 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37704 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731734AbgKINIr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 08:08:47 -0500
+        id S1731754AbgKINMJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 08:12:09 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6D3462083B;
-        Mon,  9 Nov 2020 13:08:45 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0418B2076E;
+        Mon,  9 Nov 2020 13:12:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604927326;
-        bh=VxHwe7ui+wK5sHBVlWrGurUwJ9jlIZ2WzXkHFC1R5Ds=;
+        s=default; t=1604927527;
+        bh=82ARF8VW8Cb/tdz6bDaXzW7N5BR3Z08ejxisgk1ciMo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RGuCsisLH34sueb5PxgUkhnl7Pit9shImswExfEH3u6C6HcAHscDgdrTE9kbkpjws
-         ocgvAkxLNBvyRJqYvvKR4p+GDMmuUByHL0G95WOHICgE/NmJsaHoqwu9KOmvmN2ynD
-         5bRhXZAmiKH/tja4tc9EMqUENh0IsiEc62vJzs78=
+        b=cOuTlW4ICet5sXaUssQQ+RQALoIe3sWnBfGbyNSHcXhSPLOpJFoVA+5kYyziGa5C5
+         bZdnCBn9VyWZwHb7NlNg5PTSgM+EcqBfL9FtiXzBo+UKg2GKZ94vSJBsS7HPogvBuY
+         /N/w8upjt1+ffe4J0HGxwoLODUC4hMabBZt/heUk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Josef Bacik <josef@toxicpanda.com>,
-        Qu Wenruo <wqu@suse.com>, David Sterba <dsterba@suse.com>,
-        Ben Hutchings <ben.hutchings@codethink.co.uk>
-Subject: [PATCH 4.19 21/71] btrfs: Dont submit any btree write bio if the fs has errors
-Date:   Mon,  9 Nov 2020 13:55:15 +0100
-Message-Id: <20201109125020.896825235@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Sukadev Bhattiprolu <sukadev@linux.ibm.com>,
+        Dany Madden <drt@linux.ibm.com>,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: [PATCH 5.4 19/85] powerpc/vnic: Extend "failover pending" window
+Date:   Mon,  9 Nov 2020 13:55:16 +0100
+Message-Id: <20201109125023.510258188@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201109125019.906191744@linuxfoundation.org>
-References: <20201109125019.906191744@linuxfoundation.org>
+In-Reply-To: <20201109125022.614792961@linuxfoundation.org>
+References: <20201109125022.614792961@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,221 +44,137 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Qu Wenruo <wqu@suse.com>
+From: Sukadev Bhattiprolu <sukadev@linux.ibm.com>
 
-commit b3ff8f1d380e65dddd772542aa9bff6c86bf715a upstream.
+[ Upstream commit 1d8504937478fdc2f3ef2174a816fd3302eca882 ]
 
-[BUG]
-There is a fuzzed image which could cause KASAN report at unmount time.
+Commit 5a18e1e0c193b introduced the 'failover_pending' state to track
+the "failover pending window" - where we wait for the partner to become
+ready (after a transport event) before actually attempting to failover.
+i.e window is between following two events:
 
-  BUG: KASAN: use-after-free in btrfs_queue_work+0x2c1/0x390
-  Read of size 8 at addr ffff888067cf6848 by task umount/1922
+        a. we get a transport event due to a FAILOVER
 
-  CPU: 0 PID: 1922 Comm: umount Tainted: G        W         5.0.21 #1
-  Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.10.2-1ubuntu1 04/01/2014
-  Call Trace:
-   dump_stack+0x5b/0x8b
-   print_address_description+0x70/0x280
-   kasan_report+0x13a/0x19b
-   btrfs_queue_work+0x2c1/0x390
-   btrfs_wq_submit_bio+0x1cd/0x240
-   btree_submit_bio_hook+0x18c/0x2a0
-   submit_one_bio+0x1be/0x320
-   flush_write_bio.isra.41+0x2c/0x70
-   btree_write_cache_pages+0x3bb/0x7f0
-   do_writepages+0x5c/0x130
-   __writeback_single_inode+0xa3/0x9a0
-   writeback_single_inode+0x23d/0x390
-   write_inode_now+0x1b5/0x280
-   iput+0x2ef/0x600
-   close_ctree+0x341/0x750
-   generic_shutdown_super+0x126/0x370
-   kill_anon_super+0x31/0x50
-   btrfs_kill_super+0x36/0x2b0
-   deactivate_locked_super+0x80/0xc0
-   deactivate_super+0x13c/0x150
-   cleanup_mnt+0x9a/0x130
-   task_work_run+0x11a/0x1b0
-   exit_to_usermode_loop+0x107/0x130
-   do_syscall_64+0x1e5/0x280
-   entry_SYSCALL_64_after_hwframe+0x44/0xa9
+        b. later, we get CRQ_INITIALIZED indicating the partner is
+           ready  at which point we schedule a FAILOVER reset.
 
-[CAUSE]
-The fuzzed image has a completely screwd up extent tree:
+and ->failover_pending is true during this window.
 
-  leaf 29421568 gen 8 total ptrs 6 free space 3587 owner EXTENT_TREE
-  refs 2 lock (w:0 r:0 bw:0 br:0 sw:0 sr:0) lock_owner 0 current 5938
-          item 0 key (12587008 168 4096) itemoff 3942 itemsize 53
-                  extent refs 1 gen 9 flags 1
-                  ref#0: extent data backref root 5 objectid 259 offset 0 count 1
-          item 1 key (12591104 168 8192) itemoff 3889 itemsize 53
-                  extent refs 1 gen 9 flags 1
-                  ref#0: extent data backref root 5 objectid 271 offset 0 count 1
-          item 2 key (12599296 168 4096) itemoff 3836 itemsize 53
-                  extent refs 1 gen 9 flags 1
-                  ref#0: extent data backref root 5 objectid 259 offset 4096 count 1
-          item 3 key (29360128 169 0) itemoff 3803 itemsize 33
-                  extent refs 1 gen 9 flags 2
-                  ref#0: tree block backref root 5
-          item 4 key (29368320 169 1) itemoff 3770 itemsize 33
-                  extent refs 1 gen 9 flags 2
-                  ref#0: tree block backref root 5
-          item 5 key (29372416 169 0) itemoff 3737 itemsize 33
-                  extent refs 1 gen 9 flags 2
-                  ref#0: tree block backref root 5
+If during this window, we attempt to open (or close) a device, we pretend
+that the operation succeded and let the FAILOVER reset path complete the
+operation.
 
-Note that leaf 29421568 doesn't have its backref in the extent tree.
-Thus extent allocator can re-allocate leaf 29421568 for other trees.
+This is fine, except if the transport event ("a" above) occurs during the
+open and after open has already checked whether a failover is pending. If
+that happens, we fail the open, which can cause the boot scripts to leave
+the interface down requiring administrator to manually bring up the device.
 
-In short, the bug is caused by:
+This fix "extends" the failover pending window till we are _actually_
+ready to perform the failover reset (i.e until after we get the RTNL
+lock). Since open() holds the RTNL lock, we can be sure that we either
+finish the open or if the open() fails due to the failover pending window,
+we can again pretend that open is done and let the failover complete it.
 
-- Existing tree block gets allocated to log tree
-  This got its generation bumped.
+We could try and block the open until failover is completed but a) that
+could still timeout the application and b) Existing code "pretends" that
+failover occurred "just after" open succeeded, so marks the open successful
+and lets the failover complete the open. So, mark the open successful even
+if the transport event occurs before we actually start the open.
 
-- Log tree balance cleaned dirty bit of offending tree block
-  It will not be written back to disk, thus no WRITTEN flag.
-
-- Original owner of the tree block gets COWed
-  Since the tree block has higher transid, no WRITTEN flag, it's reused,
-  and not traced by transaction::dirty_pages.
-
-- Transaction aborted
-  Tree blocks get cleaned according to transaction::dirty_pages. But the
-  offending tree block is not recorded at all.
-
-- Filesystem unmount
-  All pages are assumed to be are clean, destroying all workqueue, then
-  call iput(btree_inode).
-  But offending tree block is still dirty, which triggers writeback, and
-  causes use-after-free bug.
-
-The detailed sequence looks like this:
-
-- Initial status
-  eb: 29421568, header=WRITTEN bflags_dirty=0, page_dirty=0, gen=8,
-      not traced by any dirty extent_iot_tree.
-
-- New tree block is allocated
-  Since there is no backref for 29421568, it's re-allocated as new tree
-  block.
-  Keep in mind that tree block 29421568 is still referred by extent
-  tree.
-
-- Tree block 29421568 is filled for log tree
-  eb: 29421568, header=0 bflags_dirty=1, page_dirty=1, gen=9 << (gen bumped)
-      traced by btrfs_root::dirty_log_pages
-
-- Some log tree operations
-  Since the fs is using node size 4096, the log tree can easily go a
-  level higher.
-
-- Log tree needs balance
-  Tree block 29421568 gets all its content pushed to right, thus now
-  it is empty, and we don't need it.
-  btrfs_clean_tree_block() from __push_leaf_right() get called.
-
-  eb: 29421568, header=0 bflags_dirty=0, page_dirty=0, gen=9
-      traced by btrfs_root::dirty_log_pages
-
-- Log tree write back
-  btree_write_cache_pages() goes through dirty pages ranges, but since
-  page of tree block 29421568 gets cleaned already, it's not written
-  back to disk. Thus it doesn't have WRITTEN bit set.
-  But ranges in dirty_log_pages are cleared.
-
-  eb: 29421568, header=0 bflags_dirty=0, page_dirty=0, gen=9
-      not traced by any dirty extent_iot_tree.
-
-- Extent tree update when committing transaction
-  Since tree block 29421568 has transid equal to running trans, and has
-  no WRITTEN bit, should_cow_block() will use it directly without adding
-  it to btrfs_transaction::dirty_pages.
-
-  eb: 29421568, header=0 bflags_dirty=1, page_dirty=1, gen=9
-      not traced by any dirty extent_iot_tree.
-
-  At this stage, we're doomed. We have a dirty eb not tracked by any
-  extent io tree.
-
-- Transaction gets aborted due to corrupted extent tree
-  Btrfs cleans up dirty pages according to transaction::dirty_pages and
-  btrfs_root::dirty_log_pages.
-  But since tree block 29421568 is not tracked by neither of them, it's
-  still dirty.
-
-  eb: 29421568, header=0 bflags_dirty=1, page_dirty=1, gen=9
-      not traced by any dirty extent_iot_tree.
-
-- Filesystem unmount
-  Since all cleanup is assumed to be done, all workqueus are destroyed.
-  Then iput(btree_inode) is called, expecting no dirty pages.
-  But tree 29421568 is still dirty, thus triggering writeback.
-  Since all workqueues are already freed, we cause use-after-free.
-
-This shows us that, log tree blocks + bad extent tree can cause wild
-dirty pages.
-
-[FIX]
-To fix the problem, don't submit any btree write bio if the filesytem
-has any error.  This is the last safe net, just in case other cleanup
-haven't caught catch it.
-
-Link: https://github.com/bobfuzzer/CVE/tree/master/CVE-2019-19377
-CC: stable@vger.kernel.org # 5.4+
-Reviewed-by: Josef Bacik <josef@toxicpanda.com>
-Signed-off-by: Qu Wenruo <wqu@suse.com>
-Reviewed-by: David Sterba <dsterba@suse.com>
-Signed-off-by: David Sterba <dsterba@suse.com>
-[bwh: Backported to 4.19: fs_info variable already exists in
- btree_write_cache_pages()]
-Signed-off-by: Ben Hutchings <ben.hutchings@codethink.co.uk>
+Fixes: 5a18e1e0c193 ("ibmvnic: Fix failover case for non-redundant configuration")
+Signed-off-by: Sukadev Bhattiprolu <sukadev@linux.ibm.com>
+Acked-by: Dany Madden <drt@linux.ibm.com>
+Link: https://lore.kernel.org/r/20201030170711.1562994-1-sukadev@linux.ibm.com
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- fs/btrfs/extent_io.c |   34 +++++++++++++++++++++++++++++++++-
- 1 file changed, 33 insertions(+), 1 deletion(-)
+ drivers/net/ethernet/ibm/ibmvnic.c |   36 ++++++++++++++++++++++++++++++++----
+ 1 file changed, 32 insertions(+), 4 deletions(-)
 
---- a/fs/btrfs/extent_io.c
-+++ b/fs/btrfs/extent_io.c
-@@ -3947,7 +3947,39 @@ retry:
- 		end_write_bio(&epd, ret);
- 		return ret;
+--- a/drivers/net/ethernet/ibm/ibmvnic.c
++++ b/drivers/net/ethernet/ibm/ibmvnic.c
+@@ -1109,18 +1109,27 @@ static int ibmvnic_open(struct net_devic
+ 	if (adapter->state != VNIC_CLOSED) {
+ 		rc = ibmvnic_login(netdev);
+ 		if (rc)
+-			return rc;
++			goto out;
+ 
+ 		rc = init_resources(adapter);
+ 		if (rc) {
+ 			netdev_err(netdev, "failed to initialize resources\n");
+ 			release_resources(adapter);
+-			return rc;
++			goto out;
+ 		}
  	}
--	ret = flush_write_bio(&epd);
+ 
+ 	rc = __ibmvnic_open(netdev);
+ 
++out:
 +	/*
-+	 * If something went wrong, don't allow any metadata write bio to be
-+	 * submitted.
-+	 *
-+	 * This would prevent use-after-free if we had dirty pages not
-+	 * cleaned up, which can still happen by fuzzed images.
-+	 *
-+	 * - Bad extent tree
-+	 *   Allowing existing tree block to be allocated for other trees.
-+	 *
-+	 * - Log tree operations
-+	 *   Exiting tree blocks get allocated to log tree, bumps its
-+	 *   generation, then get cleaned in tree re-balance.
-+	 *   Such tree block will not be written back, since it's clean,
-+	 *   thus no WRITTEN flag set.
-+	 *   And after log writes back, this tree block is not traced by
-+	 *   any dirty extent_io_tree.
-+	 *
-+	 * - Offending tree block gets re-dirtied from its original owner
-+	 *   Since it has bumped generation, no WRITTEN flag, it can be
-+	 *   reused without COWing. This tree block will not be traced
-+	 *   by btrfs_transaction::dirty_pages.
-+	 *
-+	 *   Now such dirty tree block will not be cleaned by any dirty
-+	 *   extent io tree. Thus we don't want to submit such wild eb
-+	 *   if the fs already has error.
++	 * If open fails due to a pending failover, set device state and
++	 * return. Device operation will be handled by reset routine.
 +	 */
-+	if (!test_bit(BTRFS_FS_STATE_ERROR, &fs_info->fs_state)) {
-+		ret = flush_write_bio(&epd);
-+	} else {
-+		ret = -EUCLEAN;
-+		end_write_bio(&epd, ret);
++	if (rc && adapter->failover_pending) {
++		adapter->state = VNIC_OPEN;
++		rc = 0;
 +	}
- 	return ret;
+ 	return rc;
  }
  
+@@ -1842,6 +1851,13 @@ static int do_reset(struct ibmvnic_adapt
+ 		   rwi->reset_reason);
+ 
+ 	rtnl_lock();
++	/*
++	 * Now that we have the rtnl lock, clear any pending failover.
++	 * This will ensure ibmvnic_open() has either completed or will
++	 * block until failover is complete.
++	 */
++	if (rwi->reset_reason == VNIC_RESET_FAILOVER)
++		adapter->failover_pending = false;
+ 
+ 	netif_carrier_off(netdev);
+ 	adapter->reset_reason = rwi->reset_reason;
+@@ -2112,6 +2128,13 @@ static void __ibmvnic_reset(struct work_
+ 			/* CHANGE_PARAM requestor holds rtnl_lock */
+ 			rc = do_change_param_reset(adapter, rwi, reset_state);
+ 		} else if (adapter->force_reset_recovery) {
++			/*
++			 * Since we are doing a hard reset now, clear the
++			 * failover_pending flag so we don't ignore any
++			 * future MOBILITY or other resets.
++			 */
++			adapter->failover_pending = false;
++
+ 			/* Transport event occurred during previous reset */
+ 			if (adapter->wait_for_reset) {
+ 				/* Previous was CHANGE_PARAM; caller locked */
+@@ -2176,9 +2199,15 @@ static int ibmvnic_reset(struct ibmvnic_
+ 	unsigned long flags;
+ 	int ret;
+ 
++	/*
++	 * If failover is pending don't schedule any other reset.
++	 * Instead let the failover complete. If there is already a
++	 * a failover reset scheduled, we will detect and drop the
++	 * duplicate reset when walking the ->rwi_list below.
++	 */
+ 	if (adapter->state == VNIC_REMOVING ||
+ 	    adapter->state == VNIC_REMOVED ||
+-	    adapter->failover_pending) {
++	    (adapter->failover_pending && reason != VNIC_RESET_FAILOVER)) {
+ 		ret = EBUSY;
+ 		netdev_dbg(netdev, "Adapter removing or pending failover, skipping reset\n");
+ 		goto err;
+@@ -4532,7 +4561,6 @@ static void ibmvnic_handle_crq(union ibm
+ 		case IBMVNIC_CRQ_INIT:
+ 			dev_info(dev, "Partner initialized\n");
+ 			adapter->from_passive_init = true;
+-			adapter->failover_pending = false;
+ 			if (!completion_done(&adapter->init_done)) {
+ 				complete(&adapter->init_done);
+ 				adapter->init_done_rc = -EIO;
 
 
