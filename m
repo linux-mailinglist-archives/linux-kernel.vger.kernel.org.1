@@ -2,135 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F8C62AAFB1
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 04:01:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E9FB2AAFB8
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 04:05:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729193AbgKIDBP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 8 Nov 2020 22:01:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40658 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728038AbgKIDBO (ORCPT
+        id S1728952AbgKIDFm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 8 Nov 2020 22:05:42 -0500
+Received: from szxga08-in.huawei.com ([45.249.212.255]:2302 "EHLO
+        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728038AbgKIDFl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 8 Nov 2020 22:01:14 -0500
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CF5FC0613CF;
-        Sun,  8 Nov 2020 19:01:14 -0800 (PST)
-Received: by mail-pl1-x643.google.com with SMTP id x23so3983979plr.6;
-        Sun, 08 Nov 2020 19:01:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=eergAcVwrV/Vdb1ywFVydhk3J6PWGYILWqD6MtGIY3Q=;
-        b=viGoncLBKe05fI7/d15315arj7wLwmrBflFy4yggT1WjYM52xA7NyK+qv8xSk56uNJ
-         BxxV7tMat7v21Zp9sy31bguTwcc7xjBaWvq4ArjyN481XkzMUg6UIrVkLhK3mRiafWSk
-         TWtW3EKVwK5fCuJ68PUxSVaH7/miPy3wu4ZC/JtfBlr5F6mC2eFfuOicGwQmhaGvn2p1
-         cwOoAE8cLcjK6VYyJ0IJJD+abwq54WFLs2g3gYEy+NQCZ/QwLkdzB49Pn7WSTskblboo
-         MDu3lrOOi/AcBgp6+eonXYxu1FSqX6LWVtcdJhEyGYCK87izfSL0B+ltLw5c5QpCfhO1
-         e4FA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=eergAcVwrV/Vdb1ywFVydhk3J6PWGYILWqD6MtGIY3Q=;
-        b=QhoKOlZWHhiFzbxLcir4Bk0E2OWbi80rWxgXZ3nHchfulw0Z01d8NDe6zI/1P4U4t0
-         S4zbGTZ/4IClIWIzatUvWTOP3e19Rlbp3iJ/38S25rZIRIGv2Y4X+gnxYfpqYcK7qbZs
-         CT9JW9Q7CrnYSoU7TVH28NQvwJfr/aidgAtcL5VltiUYWfq1wqxatIDsfhlNSSRT6aHj
-         iTQdXq907dC9MI875X/0MD+MLmPou1J+Y/xD4oKjkGDjfnhqE8Cs8pfCP6dPxq0Plkdv
-         esas8SNlVm1ElZLxB1OR2eOXXmVNcCYoZzwILT94rYYNkK1nMsnfgrnn4Rk+lulq7zKx
-         JgDQ==
-X-Gm-Message-State: AOAM530OFtvY62CpUnII7RZzjfE/qzzGrik4a07ViNomIk5xxNX9WuGo
-        GVkZFg/gLk15ohnHI08pS7Q=
-X-Google-Smtp-Source: ABdhPJyLMqTT6dToDAs20txqLGCqIcuL5onR+HrvyPSTjTNCZDtQ9165pUMR+gn2MLHkfGfwBIaIxQ==
-X-Received: by 2002:a17:902:7606:b029:d4:c797:a186 with SMTP id k6-20020a1709027606b02900d4c797a186mr10658530pll.38.1604890873966;
-        Sun, 08 Nov 2020 19:01:13 -0800 (PST)
-Received: from ubt.spreadtrum.com ([117.18.48.82])
-        by smtp.gmail.com with ESMTPSA id u197sm4344606pfc.127.2020.11.08.19.01.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 08 Nov 2020 19:01:13 -0800 (PST)
-From:   Chunyan Zhang <zhang.lyra@gmail.com>
-To:     Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Guenter Roeck <linux@roeck-us.net>
-Cc:     linux-watchdog@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Orson Zhai <orsonzhai@gmail.com>,
-        Chunyan Zhang <zhang.lyra@gmail.com>,
-        Chunyan Zhang <chunyan.zhang@unisoc.com>,
-        Lingling Xu <ling_ling.xu@unisoc.com>,
-        Jingchao Ye <jingchao.ye@unisoc.com>,
-        Xiaoqing Wu <xiaoqing.wu@unisoc.com>
-Subject: [PATCH v3 3/3] watchdog: sprd: change to use usleep_range() instead of busy loop
-Date:   Mon,  9 Nov 2020 11:00:55 +0800
-Message-Id: <20201109030055.27378-4-zhang.lyra@gmail.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20201109030055.27378-1-zhang.lyra@gmail.com>
-References: <20201109030055.27378-1-zhang.lyra@gmail.com>
+        Sun, 8 Nov 2020 22:05:41 -0500
+Received: from dggeme756-chm.china.huawei.com (unknown [172.30.72.57])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4CTwps2BZzz13PKq;
+        Mon,  9 Nov 2020 11:05:25 +0800 (CST)
+Received: from [10.174.177.103] (10.174.177.103) by
+ dggeme756-chm.china.huawei.com (10.3.19.102) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.1913.5; Mon, 9 Nov 2020 11:05:38 +0800
+Subject: Re: [PATCH -next] irq-chip/gic-v3-its: Fixed an issue where the ITS
+ executes the residual commands in the queue again when the ITS wakes up from
+ sleep mode.
+To:     Marc Zyngier <maz@kernel.org>
+CC:     <tglx@linutronix.de>, <linux-kernel@vger.kernel.org>,
+        <rui.xiang@huawei.com>
+References: <20201107104226.14282-1-xuqiang36@huawei.com>
+ <b278ce4baea0cf79403f793721d16a8b@kernel.org>
+From:   "xuqiang (M)" <xuqiang36@huawei.com>
+Message-ID: <32592d73-9800-f420-eb00-474d9ded6155@huawei.com>
+Date:   Mon, 9 Nov 2020 11:05:37 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.2.2
 MIME-Version: 1.0
+In-Reply-To: <b278ce4baea0cf79403f793721d16a8b@kernel.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.177.103]
+X-ClientProxiedBy: dggeme711-chm.china.huawei.com (10.1.199.107) To
+ dggeme756-chm.china.huawei.com (10.3.19.102)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chunyan Zhang <chunyan.zhang@unisoc.com>
+在 2020/11/8 0:54, Marc Zyngier 写道:
+> [dropping Jason, whose email address has been bouncing for weeks now]
+>
+> On 2020-11-07 10:42, Xu Qiang wrote:
+>> On my platform, ITS_FLAGS_SAVE_SUSPEND_STATE is not set,thus do nothing
+>
+> Which platform?
+Hisi Ascend platform
+>
+>> in its suspend and resuse function.On the other hand,firmware stores
+>> GITS_CTRL,GITS_CBASER,GITS_CWRITER and GITS_BASER<n> in the suspend,
+>> and restores these registers in the resume. As a result, the ITS 
+>> executes
+>> the residual commands in the queue.
+>
+> Which firmware are you using? I just had a look at the trusted 
+> firmware source
+> code, and while it definitely does something that *looks* like what 
+> you are
+> describing, it doesn't re-enable the ITS on resume.
+>
+> So what are you running?
 
-After changing to check busy bit for the previous loading operation instead
-of the current one, for most of cases, the busy bit is not set for the
-first time of read, so there's no need to check so frequently, so this
-patch use usleep_range() to replace cpu_relax() to avoid busy loop.
+I am using ATF. Since ITS_FLAGS_SAVE_SUSPEND_STATE is not set,ITS driver 
+of OS will
 
-Also this patch change the max times to 11 which would be enough, since
-according to the specification, the busy bit would be set after a new
-loading operation and last 2 or 3 RTC clock cycles (about 60us~92us).
+not re-enable ITS in th resume. To make ITS work properly, we changed 
+the ATF code
 
-Fixes: 477603467009 ("watchdog: Add Spreadtrum watchdog driver")
-Original-by: Lingling Xu <ling_ling.xu@unisoc.com>
-Signed-off-by: Chunyan Zhang <chunyan.zhang@unisoc.com>
-Reviewed-by: Guenter Roeck <linux@roeck-us.net>
----
- drivers/watchdog/sprd_wdt.c | 11 +++++++----
- 1 file changed, 7 insertions(+), 4 deletions(-)
+to re-enable ITS on resume.
 
-diff --git a/drivers/watchdog/sprd_wdt.c b/drivers/watchdog/sprd_wdt.c
-index b9b1daa9e2a4..4e689b6ff141 100644
---- a/drivers/watchdog/sprd_wdt.c
-+++ b/drivers/watchdog/sprd_wdt.c
-@@ -6,6 +6,7 @@
- 
- #include <linux/bitops.h>
- #include <linux/clk.h>
-+#include <linux/delay.h>
- #include <linux/device.h>
- #include <linux/err.h>
- #include <linux/interrupt.h>
-@@ -53,7 +54,7 @@
- 
- #define SPRD_WDT_CNT_HIGH_SHIFT		16
- #define SPRD_WDT_LOW_VALUE_MASK		GENMASK(15, 0)
--#define SPRD_WDT_LOAD_TIMEOUT		1000
-+#define SPRD_WDT_LOAD_TIMEOUT		11
- 
- struct sprd_wdt {
- 	void __iomem *base;
-@@ -109,15 +110,17 @@ static int sprd_wdt_load_value(struct sprd_wdt *wdt, u32 timeout,
- 	u32 prtmr_step = pretimeout * SPRD_WDT_CNT_STEP;
- 
- 	/*
--	 * Waiting the load value operation done,
--	 * it needs two or three RTC clock cycles.
-+	 * Checking busy bit to make sure the previous loading operation is
-+	 * done. According to the specification, the busy bit would be set
-+	 * after a new loading operation and last 2 or 3 RTC clock
-+	 * cycles (about 60us~92us).
- 	 */
- 	do {
- 		val = readl_relaxed(wdt->base + SPRD_WDT_INT_RAW);
- 		if (!(val & SPRD_WDT_LD_BUSY_BIT))
- 			break;
- 
--		cpu_relax();
-+		usleep_range(10, 100);
- 	} while (delay_cnt++ < SPRD_WDT_LOAD_TIMEOUT);
- 
- 	if (delay_cnt >= SPRD_WDT_LOAD_TIMEOUT)
--- 
-2.20.1
+>
+>>
+>> Memory corruption may occur in the following scenarios:
+>>
+>> The kernel sends three commands in the following sequence:
+>> 1.mapd(deviceA, ITT_addr1, valid:1)
+>> 2.mapti(deviceA):ITS write ITT_addr1 memory;
+>> 3.mapd(deviceA, ITT_addr1, valid:0) and kfree(ITT_addr1);
+>
+> The ITS doesn't 'kfree' stuff.
+ITS driver kfree ITT_addr1.
+>
+>> 4.mapd(deviceA, ITT_addr2, valid:1);
+>> 5.mapti(deviceA):ITS write ITT_addr2 memory;
+>
+> I don't think this example is relevant. The core of the problem is that
+> the ITS gets re-enabled by your firmware. What are the affected systems?
+>
+>>
+>> To solve this problem,dropping the checks for 
+>> ITS_FLAGS_SAVE_SUSPEND_STATE.
+>>
+>> Signed-off-by: Xu Qiang <xuqiang36@huawei.com>
+>> ---
+>>  drivers/irqchip/irq-gic-v3-its.c | 13 -------------
+>>  1 file changed, 13 deletions(-)
+>>
+>> diff --git a/drivers/irqchip/irq-gic-v3-its.c 
+>> b/drivers/irqchip/irq-gic-v3-its.c
+>> index 0fec31931e11..06f2c1c252b9 100644
+>> --- a/drivers/irqchip/irq-gic-v3-its.c
+>> +++ b/drivers/irqchip/irq-gic-v3-its.c
+>> @@ -42,7 +42,6 @@
+>>  #define ITS_FLAGS_CMDQ_NEEDS_FLUSHING        (1ULL << 0)
+>>  #define ITS_FLAGS_WORKAROUND_CAVIUM_22375    (1ULL << 1)
+>>  #define ITS_FLAGS_WORKAROUND_CAVIUM_23144    (1ULL << 2)
+>> -#define ITS_FLAGS_SAVE_SUSPEND_STATE        (1ULL << 3)
+>>
+>>  #define RDIST_FLAGS_PROPBASE_NEEDS_FLUSHING    (1 << 0)
+>>  #define RDIST_FLAGS_RD_TABLES_PREALLOCATED    (1 << 1)
+>> @@ -4741,9 +4740,6 @@ static int its_save_disable(void)
+>>      list_for_each_entry(its, &its_nodes, entry) {
+>>          void __iomem *base;
+>>
+>> -        if (!(its->flags & ITS_FLAGS_SAVE_SUSPEND_STATE))
+>> -            continue;
+>> -
+>>          base = its->base;
+>>          its->ctlr_save = readl_relaxed(base + GITS_CTLR);
+>>          err = its_force_quiescent(base);
+>> @@ -4762,9 +4758,6 @@ static int its_save_disable(void)
+>>          list_for_each_entry_continue_reverse(its, &its_nodes, entry) {
+>>              void __iomem *base;
+>>
+>> -            if (!(its->flags & ITS_FLAGS_SAVE_SUSPEND_STATE))
+>> -                continue;
+>> -
+>>              base = its->base;
+>>              writel_relaxed(its->ctlr_save, base + GITS_CTLR);
+>>          }
+>> @@ -4784,9 +4777,6 @@ static void its_restore_enable(void)
+>>          void __iomem *base;
+>>          int i;
+>>
+>> -        if (!(its->flags & ITS_FLAGS_SAVE_SUSPEND_STATE))
+>> -            continue;
+>> -
+>>          base = its->base;
+>>
+>>          /*
+>> @@ -5074,9 +5064,6 @@ static int __init its_probe_one(struct resource 
+>> *res,
+>>          ctlr |= GITS_CTLR_ImDe;
+>>      writel_relaxed(ctlr, its->base + GITS_CTLR);
+>>
+>> -    if (GITS_TYPER_HCC(typer))
+>> -        its->flags |= ITS_FLAGS_SAVE_SUSPEND_STATE;
+>> -
+>>      err = its_init_domain(handle, its);
+>>      if (err)
+>>          goto out_free_tables;
+>
+> I'm OK with the patch itself, but I don't want to paper over broken 
+> firmware.
+> I'll get TF-A fixed one way or another, but I want to be sure yours is 
+> too.
+> If firmware does its job correctly, we shouldn't have to do all of this.
+>
+>         M.
+
+Thanks
+
+         Xu.
 
