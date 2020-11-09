@@ -2,117 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C6C22AB68B
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 12:19:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 419EE2AB68D
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 12:20:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729255AbgKILTe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 06:19:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33456 "EHLO
+        id S1729427AbgKILUD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 06:20:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33528 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727311AbgKILTd (ORCPT
+        with ESMTP id S1726410AbgKILUD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 06:19:33 -0500
-Received: from mail-yb1-xb44.google.com (mail-yb1-xb44.google.com [IPv6:2607:f8b0:4864:20::b44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B3DBC0613CF
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Nov 2020 03:19:33 -0800 (PST)
-Received: by mail-yb1-xb44.google.com with SMTP id m188so7856739ybf.2
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Nov 2020 03:19:33 -0800 (PST)
+        Mon, 9 Nov 2020 06:20:03 -0500
+Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 353DCC0613CF
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Nov 2020 03:20:01 -0800 (PST)
+Received: by mail-ej1-x644.google.com with SMTP id f23so5043847ejk.2
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Nov 2020 03:20:01 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=kc0eZrwE84e3glq3XH8q7UFVZGb6mvovyfHQ9zc586o=;
-        b=Xkg4nzXS/Qbdsu7JGP8Xre4Wws/wijgFIP4t7SKuwnHu6oszbKhwoyFTV/vbsEVY20
-         Gf7RCSted+Omw4wMwJDOUnGSiX1vvEo/sWnoWVIyF7+kGm7VtdNJ7EGdFb8dr8/48K/a
-         dPCI9iplbV8FyuMZdvc9HmQ5PcFC7/zpcklUxJ32Afqmduw09xxsgOoUrwCPABglnL0W
-         Ao7Gs6jYm741g98IwpRn4w102P0Yu5iD8oH5mYs3ET+5rGZS4FxGf7aRl5DkJck6ctel
-         Aq1igmb+wnvJMUhZLzRlnpRHL11dzrFR/Ia6bLaj+bnDHAGYR93j7+GMc5jE/zGunmjX
-         V5zA==
+        d=monstr-eu.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=er2eQUAEHWpBLaEOsg7fH11+Tbr2OS39gTFwUEQ7HGc=;
+        b=nkp3ey59D2+7XZdZIj/P0OhqvoTL/FYjhcGmq6xxj0jUAB1AK4nEOkhQlgU9k51HYt
+         OaD6GXUDSVjWzbKKnsuz1ueFlFfAh1YBeKKG5iMw2qRi5rDD1nB5wRiQm3FMmTwpIDgb
+         ze9K3El9Ac/dTvB3oBM9lY8Kw0DpWkQIA5NyG1SrjbZqdSKrqu4tCY/AexwyUUz3oLm4
+         EBB59NAQzB5OhL5iY+ajJ+rgNe4IP7jvDSWV73eYm2qrF+KNpO/lihwejPS0W0Km8NVZ
+         BOKZ9yzXLDqAgEEb9zE9/MMeItOUWMwgCzHS2Z3oX0IIqktlv/gKTM1TWjRchh4jj/mw
+         Mwig==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=kc0eZrwE84e3glq3XH8q7UFVZGb6mvovyfHQ9zc586o=;
-        b=WAhi5fEnthAzQ56C54T5tWb0A95QDr5MATRzqXqbQshbuHH5v1SPte9ed7ap1iPqQr
-         Es5hoCzG58wAuE41BvySdEFDR1Ad+xqwXtwmRwGJSrZsoYNTQdS6KdwDILkeif1rfOSV
-         wRwe3Gz76uLCK6TZ+yaHpklPVAody0GX8b27op5GYdi19MNaUBOcQ2bPY6OVE8v4vNnG
-         rEYibrcbFEX2xMtySi7fuNys0KnOxAnDxZyGYc/bEFafanO4JZtSS9mjWXP9KRgMYydC
-         da9HDW3aoPYvPw4X3WdTw1ZYlZIyCCx1FKRPEZLVvm8p2wMOWXfGCmxYEsY1x7gQjzx+
-         vgFA==
-X-Gm-Message-State: AOAM532CgAb8K7QjsUcAA3bu7jbX+F/wTbMiDXkfW9ePKnrfVNSs8lrh
-        bYjwpC83Lp2YJo3+V7kOSrmE/bEDfLQyHeU2htw=
-X-Google-Smtp-Source: ABdhPJxxtoj/4Z4JonykkQ7UQj1JQPv61v52M+4eVT+btNDTlN8Y57buG8erq4w0kdwxCxkXeyuCz5C3ZjyJFa3exvc=
-X-Received: by 2002:a25:209:: with SMTP id 9mr2725325ybc.127.1604920772501;
- Mon, 09 Nov 2020 03:19:32 -0800 (PST)
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=er2eQUAEHWpBLaEOsg7fH11+Tbr2OS39gTFwUEQ7HGc=;
+        b=p+41GeQVWE/ZA0LHeLWlVLwpAU8Yy5TmUHXgfenMVYZPyIfDScW6mF91xRod5kUDiq
+         3xTSfwxvqZo7Um9aSRxlx+OqpjGhD30wz+BOJArQ1JnR9gn9Nl8MGNPoQoPLtTp2fdGg
+         YTyedYfH1T2V2I5zwLv+/vgLwJqcudvRQusQoep2qFPf1jbMNrinCOHXoqMbjvIwP51B
+         PDNZHN08GqhyEMnMOa1o5j7kNWR4bOx+EaTyuvvHbciidXrAD5C9+i71hRc74vg7Fkki
+         4ksruJXm7kUtw13UJjiMOAMeAK1UkBqTDa2xhlZ4ET4aSEicUQ7t5tSCueqh28X9/WLY
+         5FmQ==
+X-Gm-Message-State: AOAM530+8FMjiILh36n8Dk2rXIqJ00Djq0un69lqf79xbxSEmpAG0vHu
+        0etR2DEosSA7v4MbbN5sxd2swVOtS/Ea+B1g
+X-Google-Smtp-Source: ABdhPJxGDJD1ZviTVvkcuhDUu6WLAotPW5q5QaQp2hvj2ORrK/gJ26DY/2FJhn293EuT48k2TYlRXA==
+X-Received: by 2002:a17:906:ca93:: with SMTP id js19mr15297687ejb.537.1604920799747;
+        Mon, 09 Nov 2020 03:19:59 -0800 (PST)
+Received: from [192.168.0.105] (nat-35.starnet.cz. [178.255.168.35])
+        by smtp.gmail.com with ESMTPSA id b1sm8472430ejg.60.2020.11.09.03.19.59
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 09 Nov 2020 03:19:59 -0800 (PST)
+Subject: Re: [PATCH] microblaze: add support for TIF_NOTIFY_SIGNAL
+To:     Jens Axboe <axboe@kernel.dk>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <a2b78afc-5f60-8590-9df5-17302e356552@kernel.dk>
+From:   Michal Simek <monstr@monstr.eu>
+Message-ID: <894b3a46-4baa-f186-f6a1-4f818a5284e4@monstr.eu>
+Date:   Mon, 9 Nov 2020 12:19:58 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-References: <20201107224727.11015-1-sudipm.mukherjee@gmail.com>
- <20201108082317.GA40741@kroah.com> <CADVatmN8SbZWVGf_xe_K1g7M9ArHXF8TUhYyBgQcydBF4_zp9g@mail.gmail.com>
- <20201109103703.GA1310551@kroah.com> <AM6PR04MB4966B90C0DEC71A6C86067AA80EA0@AM6PR04MB4966.eurprd04.prod.outlook.com>
-In-Reply-To: <AM6PR04MB4966B90C0DEC71A6C86067AA80EA0@AM6PR04MB4966.eurprd04.prod.outlook.com>
-From:   Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-Date:   Mon, 9 Nov 2020 11:18:56 +0000
-Message-ID: <CADVatmNmoBFipoELoyuJ4EUB=KjjO+_9ahm830+04Xi3T77jqQ@mail.gmail.com>
-Subject: Re: [PATCH RESEND] driver core: export device_is_bound() to fix build failure
-To:     Aisheng Dong <aisheng.dong@nxp.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <a2b78afc-5f60-8590-9df5-17302e356552@kernel.dk>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Aisheng,
 
-On Mon, Nov 9, 2020 at 10:57 AM Aisheng Dong <aisheng.dong@nxp.com> wrote:
->
-> Hi Greg,
->
-> > From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> > Sent: Monday, November 9, 2020 6:37 PM
-> > Subject: Re: [PATCH RESEND] driver core: export device_is_bound() to fix build
-> > failure
-> >
-> > On Mon, Nov 09, 2020 at 10:14:46AM +0000, Sudip Mukherjee wrote:
-> > > Hi Greg,
-> > >
-> > > On Sun, Nov 8, 2020 at 8:23 AM Greg Kroah-Hartman
-> > > <gregkh@linuxfoundation.org> wrote:
-> > > >
-> > > > On Sat, Nov 07, 2020 at 10:47:27PM +0000, Sudip Mukherjee wrote:
-> > > > > When CONFIG_MXC_CLK_SCU is configured as 'm' the build fails as it
-> > > > > is unable to find device_is_bound(). The error being:
-> > > > > ERROR: modpost: "device_is_bound" [drivers/clk/imx/clk-imx-scu.ko]
-> > > > >       undefined!
-> > > > >
-> > > > > Export the symbol so that the module finds it.
-> > > > >
 
-<snip>
+On 29. 10. 20 17:16, Jens Axboe wrote:
+> Wire up TIF_NOTIFY_SIGNAL handling for microblaze.
+> 
+> Cc: Michal Simek <monstr@monstr.eu>
+> Signed-off-by: Jens Axboe <axboe@kernel.dk>
+> ---
+> 
+> 5.11 has support queued up for TIF_NOTIFY_SIGNAL, see this posting
+> for details:
+> 
+> https://lore.kernel.org/io-uring/20201026203230.386348-1-axboe@kernel.dk/
+> 
+> As part of that work, I'm adding TIF_NOTIFY_SIGNAL support to all archs,
+> as that will enable a set of cleanups once all of them support it. I'm
+> happy carrying this patch if need be, or it can be funelled through the
+> arch tree. Let me know.
+> 
+>  arch/microblaze/include/asm/thread_info.h | 2 ++
+>  arch/microblaze/kernel/signal.c           | 3 ++-
+>  2 files changed, 4 insertions(+), 1 deletion(-)
+> 
+> diff --git a/arch/microblaze/include/asm/thread_info.h b/arch/microblaze/include/asm/thread_info.h
+> index ad8e8fcb90d3..44f5ca331862 100644
+> --- a/arch/microblaze/include/asm/thread_info.h
+> +++ b/arch/microblaze/include/asm/thread_info.h
+> @@ -107,6 +107,7 @@ static inline struct thread_info *current_thread_info(void)
+>  #define TIF_NEED_RESCHED	3 /* rescheduling necessary */
+>  /* restore singlestep on return to user mode */
+>  #define TIF_SINGLESTEP		4
+> +#define TIF_NOTIFY_SIGNAL	5	/* signal notifications exist */
+>  #define TIF_MEMDIE		6	/* is terminating due to OOM killer */
+>  #define TIF_SYSCALL_AUDIT	9       /* syscall auditing active */
+>  #define TIF_SECCOMP		10      /* secure computing */
+> @@ -119,6 +120,7 @@ static inline struct thread_info *current_thread_info(void)
+>  #define _TIF_SIGPENDING		(1 << TIF_SIGPENDING)
+>  #define _TIF_NEED_RESCHED	(1 << TIF_NEED_RESCHED)
+>  #define _TIF_SINGLESTEP		(1 << TIF_SINGLESTEP)
+> +#define _TIF_NOTIFY_SIGNAL	(1 << TIF_NOTIFY_SIGNAL)
+>  #define _TIF_POLLING_NRFLAG	(1 << TIF_POLLING_NRFLAG)
+>  #define _TIF_SYSCALL_AUDIT	(1 << TIF_SYSCALL_AUDIT)
+>  #define _TIF_SECCOMP		(1 << TIF_SECCOMP)
+> diff --git a/arch/microblaze/kernel/signal.c b/arch/microblaze/kernel/signal.c
+> index f11a0ccccabc..5a8d173d7b75 100644
+> --- a/arch/microblaze/kernel/signal.c
+> +++ b/arch/microblaze/kernel/signal.c
+> @@ -313,7 +313,8 @@ static void do_signal(struct pt_regs *regs, int in_syscall)
+>  
+>  asmlinkage void do_notify_resume(struct pt_regs *regs, int in_syscall)
+>  {
+> -	if (test_thread_flag(TIF_SIGPENDING))
+> +	if (test_thread_flag(TIF_SIGPENDING) ||
+> +	    test_thread_flag(TIF_NOTIFY_SIGNAL))
+>  		do_signal(regs, in_syscall);
+>  
+>  	if (test_thread_flag(TIF_NOTIFY_RESUME))
+> 
 
-> >
-> > probe() should never call this function as it makes no sense at all at that point in
-> > time.  The driver should be fixed.
->
-> Would you suggest if any other API we can use to allow the driver to know whether
-> another device has been probed?
->
-> For imx scu driver in question, it has a special requirement that it depends on scu power domain
-> driver. However, there're a huge number (200+) of power domains for each device clock, we can't define
-> them all in DT for a single clock controller node.
->
-> That's why we wanted to use device_is_bound() before to check if scu power domain is ready or not to
-> support defer probe.
+Applied for 5.11.
 
-iiuc, you are waiting for "fsl,scu-pd" to be registered.
-I think you might be able to use bus_for_each_dev() to check if the
-device has registered with the bus or not. It will be on the bus only
-after bind was successful. The bus will be "platform_bus_type".
-But I am sure Greg can give you better suggestion than this. :)
-
+Thanks,
+Michal
 
 -- 
-Regards
-Sudip
+Michal Simek, Ing. (M.Eng), OpenPGP -> KeyID: FE3D1F91
+w: www.monstr.eu p: +42-0-721842854
+Maintainer of Linux kernel - Xilinx Microblaze
+Maintainer of Linux kernel - Xilinx Zynq ARM and ZynqMP ARM64 SoCs
+U-Boot custodian - Xilinx Microblaze/Zynq/ZynqMP/Versal SoCs
+
