@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A47672AB9D7
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 14:13:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6914E2ABA6E
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 14:22:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731973AbgKINNN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 08:13:13 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38926 "EHLO mail.kernel.org"
+        id S2387702AbgKINTK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 08:19:10 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46510 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732867AbgKINNG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 08:13:06 -0500
+        id S2387689AbgKINTF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 08:19:05 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9A5E820867;
-        Mon,  9 Nov 2020 13:13:05 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 69D88206D8;
+        Mon,  9 Nov 2020 13:19:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604927586;
-        bh=/wHBwqn5w1NOF3XMl5ZV5K9HZa/eE6X7dhUJFFY+5OY=;
+        s=default; t=1604927944;
+        bh=uueFz4NHq4UJJNizEaoVTQCqCi7fkiwkMdZ4QFb1lSs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=befigCPRfv8awpIz0BDT3slJBmskQUEnMwGG6GHXDkIT1oYo6zs+P29C+7W+7bJxu
-         KfdpwUfi2SjSUauWsNpzdl7+w+ltmLMnT9GK7K/fzyVSlAPetYxik4+meNuAJVcMqi
-         AS6MXIeN0cQa9OjVvYZR4zomk9HpKDOK79C7iBLY=
+        b=XXfD3ix/PCqWgG6/eSu9oKOwVCPjNM9pGX7scwRCMDSrjEhylRVMYuor0ThgqOLJk
+         BF1wLWndDjElRi12mdDKvEMIA06LvKfKIDRLuE1hlX1Go7MluAe6RjRQa3T3jy02ij
+         Q+udaoy0Ilo1w/hSqeyoXV3QcEGZwoZQ5wym1pU8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?Martin=20Hundeb=C3=B8ll?= <martin@geanix.com>,
-        Mark Brown <broonie@kernel.org>
-Subject: [PATCH 5.4 39/85] spi: bcm2835: fix gpio cs level inversion
-Date:   Mon,  9 Nov 2020 13:55:36 +0100
-Message-Id: <20201109125024.465850684@linuxfoundation.org>
+        stable@vger.kernel.org, Kairui Song <kasong@redhat.com>,
+        Ingo Molnar <mingo@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.9 075/133] x86/kexec: Use up-to-dated screen_info copy to fill boot params
+Date:   Mon,  9 Nov 2020 13:55:37 +0100
+Message-Id: <20201109125034.339551520@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201109125022.614792961@linuxfoundation.org>
-References: <20201109125022.614792961@linuxfoundation.org>
+In-Reply-To: <20201109125030.706496283@linuxfoundation.org>
+References: <20201109125030.706496283@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,46 +42,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Martin Hundebøll <martin@geanix.com>
+From: Kairui Song <kasong@redhat.com>
 
-commit 5e31ba0c0543a04483b53151eb5b7413efece94c upstream.
+[ Upstream commit afc18069a2cb7ead5f86623a5f3d4ad6e21f940d ]
 
-The work on improving gpio chip-select in spi core, and the following
-fixes, has caused the bcm2835 spi driver to use wrong levels. Fix this
-by simply removing level handling in the bcm2835 driver, and let the
-core do its work.
+kexec_file_load() currently reuses the old boot_params.screen_info,
+but if drivers have change the hardware state, boot_param.screen_info
+could contain invalid info.
 
-Fixes: 3e5ec1db8bfe ("spi: Fix SPI_CS_HIGH setting when using native and GPIO CS")
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Martin Hundebøll <martin@geanix.com>
-Link: https://lore.kernel.org/r/20201014090230.2706810-1-martin@geanix.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+For example, the video type might be no longer VGA, or the frame buffer
+address might be changed. If the kexec kernel keeps using the old screen_info,
+kexec'ed kernel may attempt to write to an invalid framebuffer
+memory region.
 
+There are two screen_info instances globally available, boot_params.screen_info
+and screen_info. Later one is a copy, and is updated by drivers.
+
+So let kexec_file_load use the updated copy.
+
+[ mingo: Tidied up the changelog. ]
+
+Signed-off-by: Kairui Song <kasong@redhat.com>
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
+Link: https://lore.kernel.org/r/20201014092429.1415040-2-kasong@redhat.com
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/spi/spi-bcm2835.c |   12 ------------
- 1 file changed, 12 deletions(-)
+ arch/x86/kernel/kexec-bzimage64.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
---- a/drivers/spi/spi-bcm2835.c
-+++ b/drivers/spi/spi-bcm2835.c
-@@ -1245,18 +1245,6 @@ static int bcm2835_spi_setup(struct spi_
- 	if (!chip)
- 		return 0;
+diff --git a/arch/x86/kernel/kexec-bzimage64.c b/arch/x86/kernel/kexec-bzimage64.c
+index 57c2ecf431343..ce831f9448e71 100644
+--- a/arch/x86/kernel/kexec-bzimage64.c
++++ b/arch/x86/kernel/kexec-bzimage64.c
+@@ -200,8 +200,7 @@ setup_boot_parameters(struct kimage *image, struct boot_params *params,
+ 	params->hdr.hardware_subarch = boot_params.hdr.hardware_subarch;
  
--	/*
--	 * Retrieve the corresponding GPIO line used for CS.
--	 * The inversion semantics will be handled by the GPIO core
--	 * code, so we pass GPIOS_OUT_LOW for "unasserted" and
--	 * the correct flag for inversion semantics. The SPI_CS_HIGH
--	 * on spi->mode cannot be checked for polarity in this case
--	 * as the flag use_gpio_descriptors enforces SPI_CS_HIGH.
--	 */
--	if (of_property_read_bool(spi->dev.of_node, "spi-cs-high"))
--		lflags = GPIO_ACTIVE_HIGH;
--	else
--		lflags = GPIO_ACTIVE_LOW;
- 	spi->cs_gpiod = gpiochip_request_own_desc(chip, 8 - spi->chip_select,
- 						  DRV_NAME,
- 						  lflags,
+ 	/* Copying screen_info will do? */
+-	memcpy(&params->screen_info, &boot_params.screen_info,
+-				sizeof(struct screen_info));
++	memcpy(&params->screen_info, &screen_info, sizeof(struct screen_info));
+ 
+ 	/* Fill in memsize later */
+ 	params->screen_info.ext_mem_k = 0;
+-- 
+2.27.0
+
 
 
