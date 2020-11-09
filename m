@@ -2,152 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 548422AC2F1
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 18:56:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ADD192AC2EF
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 18:56:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730109AbgKIR4x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 12:56:53 -0500
-Received: from mga06.intel.com ([134.134.136.31]:50655 "EHLO mga06.intel.com"
+        id S1730043AbgKIR4q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 12:56:46 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46522 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729658AbgKIR4x (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 12:56:53 -0500
-IronPort-SDR: ehyp7WMWajXi/2JPt8KL4mJ0EH7X0kJxsOmi6wEedkvR+3VNeOcJWJKjVXq3c0+0/Ub2S6/PFM
- O4NPTT9FPr4A==
-X-IronPort-AV: E=McAfee;i="6000,8403,9800"; a="231474113"
-X-IronPort-AV: E=Sophos;i="5.77,464,1596524400"; 
-   d="scan'208";a="231474113"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Nov 2020 09:56:51 -0800
-IronPort-SDR: FXixEf3etHeF/Ny3yEvX0rOecDgk/MxzWcYfXnjKC02xO1X8h7zywmhcUzS2wxEs/7+p44JKTj
- hjrBK5luBE5A==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,464,1596524400"; 
-   d="scan'208";a="473069220"
-Received: from lkp-server01.sh.intel.com (HELO d0be80f1a028) ([10.239.97.150])
-  by orsmga004.jf.intel.com with ESMTP; 09 Nov 2020 09:56:50 -0800
-Received: from kbuild by d0be80f1a028 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1kcBPN-0000Ky-QE; Mon, 09 Nov 2020 17:56:49 +0000
-Date:   Tue, 10 Nov 2020 01:56:17 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [rcu:rcu/next] BUILD SUCCESS
- 97c70d140047be950a6428b82f351b0497fd8117
-Message-ID: <5fa982c1.Qsa9CZ3WtgshWZs3%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S1729533AbgKIR4p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 12:56:45 -0500
+Received: from mail-ot1-f46.google.com (mail-ot1-f46.google.com [209.85.210.46])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id B0CBE2068D;
+        Mon,  9 Nov 2020 17:56:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604944604;
+        bh=d6Nc5RiBiq3XeVeUekKRvwM0AjmxizMZD3zTXBs+VC4=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=FVYQvb7fC0tGjEnXYBJQ2BU5DlA5DqfngmMFCiFhFKfAgCxqRGKVSe2p8N2HqbQjq
+         /Bnb9Po+fBPysQCXYwDJrdyHYwNF0iTLU4hNyl8lp+hbb10EMnMGCUwtGWDGPMa1tV
+         ni2mTuAYNW6rsVUITrQg8PIcWLnCqm+RlqVrjSYw=
+Received: by mail-ot1-f46.google.com with SMTP id i18so9824898ots.0;
+        Mon, 09 Nov 2020 09:56:44 -0800 (PST)
+X-Gm-Message-State: AOAM530QOW6il7fcYKdDBA5LKSrOX5TY7Y/P11NrIpY0C+FMjy9/xzZ8
+        KlJd09pE0q3kKEIGo+P6bisBkca3Z1eACnXl3hs=
+X-Google-Smtp-Source: ABdhPJzwwdrokAaOrQsqgDF/PuVm5uWw4aTF/jcoTVvzI+iPfxQKuJFv+zTFsqp2WSG5m2QtpOuWLLudtXJ7Iq25qbM=
+X-Received: by 2002:a9d:65d5:: with SMTP id z21mr10432995oth.251.1604944603895;
+ Mon, 09 Nov 2020 09:56:43 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+References: <20201016090833.1892-1-thunder.leizhen@huawei.com>
+ <20201016090833.1892-2-thunder.leizhen@huawei.com> <CAK8P3a2TSmsNSi-XFpT6AQ3jvVxJ1AW7Uf5tAo477wtwXZwUzg@mail.gmail.com>
+ <e27dc152-7aef-10df-f391-bf56e13e23df@gmail.com> <CAK8P3a13ywHh7igdfDSPQz9Bw8YAnKWFLKARkk2NL5u6=6yb=w@mail.gmail.com>
+ <0eee3fd2-7400-7de7-27a7-7fcaa0955854@gmail.com> <d42745b7-ef76-e584-0da2-751ac8c1cf3a@huawei.com>
+ <CAK8P3a335TT1+bdHqB=FetPanXXfGv3dC7ZCkx+w+F3j00kj5A@mail.gmail.com>
+ <07ab3bdd-dcb1-5a59-d813-f82451b3f028@huawei.com> <5980552d-6e96-fd9f-c758-1b1e9f57100e@huawei.com>
+ <43986e17-f493-b3b6-2829-3ba7d92f2e8c@gmail.com>
+In-Reply-To: <43986e17-f493-b3b6-2829-3ba7d92f2e8c@gmail.com>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Mon, 9 Nov 2020 18:56:26 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a374KTVR6vC4civ0pNy8S9n4o8Ni9wCrdko-JO7aRO2GQ@mail.gmail.com>
+Message-ID: <CAK8P3a374KTVR6vC4civ0pNy8S9n4o8Ni9wCrdko-JO7aRO2GQ@mail.gmail.com>
+Subject: Re: [PATCH v2 1/2] arm64: dts: broadcom: clear the warnings caused by
+ empty dma-ranges
+To:     Florian Fainelli <f.fainelli@gmail.com>
+Cc:     "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>,
+        Rob Herring <robh+dt@kernel.org>, Ray Jui <rjui@broadcom.com>,
+        Scott Branden <sbranden@broadcom.com>,
+        bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git  rcu/next
-branch HEAD: 97c70d140047be950a6428b82f351b0497fd8117  rcutorture: Use "all" and "last" in "nohz_full" and "rcu_nocbs"
+On Mon, Nov 9, 2020 at 6:30 PM Florian Fainelli <f.fainelli@gmail.com> wrote:
+>
+> On 11/8/20 10:18 PM, Leizhen (ThunderTown) wrote:
+> > Hi, everybody:
+> >   How do we deal with this problem? I updated the kernel to the latest and the problem still persists.
+> >
+> >   make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- -j24 dtbs 2>err.txt
+> >   vim err.txt
+> >
+> > arch/arm64/boot/dts/qcom/ipq6018.dtsi:185.3-14: Warning (dma_ranges_format): /soc:dma-ranges: empty "dma-ranges" property but its #address-cells (1) differs from / (2)
+> > arch/arm64/boot/dts/qcom/ipq6018.dtsi:185.3-14: Warning (dma_ranges_format): /soc:dma-ranges: empty "dma-ranges" property but its #size-cells (1) differs from / (2)
+> > arch/arm64/boot/dts/broadcom/stingray/stingray-usb.dtsi:7.3-14: Warning (dma_ranges_format): /usb:dma-ranges: empty "dma-ranges" property but its #address-cells (1) differs from / (2)
+> > arch/arm64/boot/dts/broadcom/stingray/stingray-usb.dtsi:7.3-14: Warning (dma_ranges_format): /usb:dma-ranges: empty "dma-ranges" property but its #size-cells (1) differs from / (2)
+> > arch/arm64/boot/dts/broadcom/stingray/stingray-usb.dtsi:7.3-14: Warning (dma_ranges_format): /usb:dma-ranges: empty "dma-ranges" property but its #address-cells (1) differs from / (2)
+> > arch/arm64/boot/dts/broadcom/stingray/stingray-usb.dtsi:7.3-14: Warning (dma_ranges_format): /usb:dma-ranges: empty "dma-ranges" property but its #size-cells (1) differs from / (2)
+> > arch/arm64/boot/dts/broadcom/stingray/stingray-usb.dtsi:7.3-14: Warning (dma_ranges_format): /usb:dma-ranges: empty "dma-ranges" property but its #address-cells (1) differs from / (2)
+> > arch/arm64/boot/dts/broadcom/stingray/stingray-usb.dtsi:7.3-14: Warning (dma_ranges_format): /usb:dma-ranges: empty "dma-ranges" property but its #size-cells (1) differs from / (2)
+>
+> I was hoping that Ray or Scott could give this a try, and TBH, I am
+> still not a big fan of having to mangle the 'reg' property to be
+> compatible with #address-cells = <2> and #size-cells = <2>, I would have
+> preferred omitting the 'dma-ranges' property entirely.
+>
+> We have plenty of time to get this patch applied for v5.11.
 
-elapsed time: 870m
+I would much prefer to get the warning fixed for v5.10, once we know what the
+hardware can or cannot actually do, as it is one of the warnings that shows
+up in every kernelci build.
 
-configs tested: 88
-configs skipped: 2
-
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-m68k                         amcore_defconfig
-mips                        jmr3927_defconfig
-powerpc                     stx_gp3_defconfig
-mips                 decstation_r4k_defconfig
-powerpc                     ppa8548_defconfig
-arm                  colibri_pxa300_defconfig
-arc                          axs101_defconfig
-powerpc                   bluestone_defconfig
-mips                      malta_kvm_defconfig
-powerpc                       holly_defconfig
-sparc                       sparc32_defconfig
-arc                                 defconfig
-mips                      fuloong2e_defconfig
-sh                         microdev_defconfig
-arm                            mmp2_defconfig
-arm                          collie_defconfig
-sh                        sh7757lcr_defconfig
-arm                         shannon_defconfig
-powerpc                    sam440ep_defconfig
-nds32                               defconfig
-arm                           corgi_defconfig
-arm                          gemini_defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-c6x                              allyesconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-i386                 randconfig-a004-20201109
-i386                 randconfig-a006-20201109
-i386                 randconfig-a005-20201109
-i386                 randconfig-a001-20201109
-i386                 randconfig-a003-20201109
-i386                 randconfig-a002-20201109
-i386                 randconfig-a014-20201109
-i386                 randconfig-a015-20201109
-i386                 randconfig-a013-20201109
-i386                 randconfig-a016-20201109
-i386                 randconfig-a011-20201109
-i386                 randconfig-a012-20201109
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-x86_64                                   rhel
-x86_64                           allyesconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                                  kexec
-
-clang tested configs:
-x86_64               randconfig-a012-20201109
-x86_64               randconfig-a015-20201109
-x86_64               randconfig-a013-20201109
-x86_64               randconfig-a011-20201109
-x86_64               randconfig-a014-20201109
-x86_64               randconfig-a016-20201109
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+      Arnd
