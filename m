@@ -2,119 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FF412AC097
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 17:14:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A3A92AC0A2
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 17:16:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730093AbgKIQOn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 11:14:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51158 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727774AbgKIQOn (ORCPT
+        id S1730064AbgKIQQS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 11:16:18 -0500
+Received: from mail-oo1-f68.google.com ([209.85.161.68]:36839 "EHLO
+        mail-oo1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729243AbgKIQQS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 11:14:43 -0500
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F9E9C0613CF;
-        Mon,  9 Nov 2020 08:14:41 -0800 (PST)
-Received: by mail-pg1-x542.google.com with SMTP id 62so7512459pgg.12;
-        Mon, 09 Nov 2020 08:14:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=qFLPfbMyI673S69duDZ3Cwv5aXYQyOe/K7YD64BQqTI=;
-        b=i/4wyYTktFpXofS3SmdsBNgfiy0Y51YLwbUDhUhKfaeuQ2zSRnJP6Pmx427YqdxfjA
-         r7NUlZ191eIBn9ke5NxVOcsETxgJvm2ySGr6Sldf+boO45pl3OUD9kisr+D7CgzpyQ83
-         aQzrNDOiwM8AyqCXkVeWuwgA5hS7aY/vw2BtJ470FSlTdY+ROGaKWs6QRjMuObFQOJz0
-         HyTVbPYZiN2mi3ytoW+BV35c8yIBrUwL5WJhuQSg2ssjKI4IdoB0Be+TE3aBySF4fD+L
-         RmIJZJmzgu2yGk6w+Z00Fjit4+6jb87lkiVvML5H1uBhINiGUf+iUfup7A2VVqHXYNKQ
-         bSCw==
+        Mon, 9 Nov 2020 11:16:18 -0500
+Received: by mail-oo1-f68.google.com with SMTP id l20so2330287oot.3;
+        Mon, 09 Nov 2020 08:16:17 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=qFLPfbMyI673S69duDZ3Cwv5aXYQyOe/K7YD64BQqTI=;
-        b=QkPU2ciGUdXylzZ/kJOucVo7eEyDe8U7kwKR724FP+gIjY833BeJ2BJxKyTeqIc63W
-         BMB1K7iB10x/wutbGWYaN06WNI6ODP6M85xRVtzTRvTJc90HXxtZnRHmOhVUlqTi9Gnh
-         MNBHUILQYXWler+i1FyRTELPFq1ZqyS1WPy8bJtzWrIT4LM3X4yZyzez0b2d+mzoVTOF
-         4ERBXZt5gJiPrbTK/ySkY4indo7OPkkcl96htAJiQHAgHA30w58vCvBjFwDjCZ1IOnz7
-         gctLQiYS4mEnUPPdpo8Mv/NnIyCIN5hhxsQqXPk5rHmQJhgdpe6AzsM78z1HSzEqswJE
-         p6Pg==
-X-Gm-Message-State: AOAM533dTLrmqrI/1E0ahwOCmIFQWvBxL8SzkRz49bbZgE6bdMn7nXzk
-        CqH93eKUBAWrSIIH55XQwDE9W6euOsrsFnLP1B4qco9dbAo=
-X-Google-Smtp-Source: ABdhPJxDqA5Nr0SKOAzL8y48EaUVxGFC07iEmn1XuJxzuj/RIJBFUQBbDW/4v6Mmrl7bH/A7LUIB3+owLXi1prAKJog=
-X-Received: by 2002:a17:90b:fc6:: with SMTP id gd6mr29773pjb.181.1604938481158;
- Mon, 09 Nov 2020 08:14:41 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=JPZihzKzw8vKNYCHzOG6UMTv6XgWkVVNxGjsWo2eJAI=;
+        b=Dbmh9zThRwvjv3V5dLYPJu2lKOWW7fyYvg0/oewVF+VjIWZqc4m357wkOxpCAafZ+0
+         0roiCupRJYY5ZtVwKlFzqWPW3dCZ5Euf0ZfI8Z3xEiKSjVJrIEmx2cMIsIy7S/yJ3cOf
+         w/5jJwXMjJg4O92tznpwjUAJh6TvNcMwlsEcoAOjb/KmUeQo1NbJIpPjIiyk/xxKoTMN
+         j5qmrF/6q0uUSYu6f9+gMt4dy2c8aZEMDVKKsZhWodxwUwjHjEuwoqLYuoTljlsa9Sn4
+         EIwKp7L3NNl1XprEOQTXlA/TEJkBXpqYyHaO2+ye+spcpEvU/ZEF1GC/WzyteXm6bFEH
+         VlCw==
+X-Gm-Message-State: AOAM532OR9mPm9KW+meVkFrSewThIqirn0Q0OhIZQO54gIODTbJEh8RN
+        3ZwX1msJr8Uoxt+elXJxrQDkeLsyNg==
+X-Google-Smtp-Source: ABdhPJwrCpUwA6ek5NHMV4DoV6/s3kHaBfagkm98NcQnASqVos91j6roKKdsU2nZ6ifywZm6AbJ0Rg==
+X-Received: by 2002:a4a:c68d:: with SMTP id m13mr10456818ooq.64.1604938577405;
+        Mon, 09 Nov 2020 08:16:17 -0800 (PST)
+Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id p40sm2460762ooi.23.2020.11.09.08.16.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 09 Nov 2020 08:16:16 -0800 (PST)
+Received: (nullmailer pid 1385763 invoked by uid 1000);
+        Mon, 09 Nov 2020 16:16:15 -0000
+Date:   Mon, 9 Nov 2020 10:16:15 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Paul Kocialkowski <contact@paulk.fr>
+Cc:     Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Maxime Ripard <mripard@kernel.org>,
+        Icenowy Zheng <icenowy@aosc.io>, Chen-Yu Tsai <wens@csie.org>,
+        Matteo Scordino <matteo.scordino@gmail.com>
+Subject: Re: [PATCH v2 1/6] dt-bindings: irq: sun7i-nmi: Add binding
+ documentation for the V3s NMI
+Message-ID: <20201109161615.GA1385663@bogus>
+References: <20201103205058.435207-1-contact@paulk.fr>
+ <20201103205058.435207-2-contact@paulk.fr>
 MIME-Version: 1.0
-References: <20201109132643.457932-1-lars.povlsen@microchip.com>
- <20201109132643.457932-3-lars.povlsen@microchip.com> <CAHp75Vdfm7A5=Mi-LZ1sHJS5fSngypZQ50-rGQ7A6kD2kmVFTA@mail.gmail.com>
- <20201109143237.GJ1257108@piout.net> <CAHp75Vc7eRDq5wUyUdvCZCnV_VS+afGnbJpQeDSeXVE9K_MGng@mail.gmail.com>
- <20201109152748.GA1691943@piout.net>
-In-Reply-To: <20201109152748.GA1691943@piout.net>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Mon, 9 Nov 2020 18:15:30 +0200
-Message-ID: <CAHp75VfcgyMEr3YscC2Na_RCTtd=ozCzCGq=UO6zKAa+9b4rqg@mail.gmail.com>
-Subject: Re: [PATCH v8 2/3] pinctrl: pinctrl-microchip-sgpio: Add pinctrl
- driver for Microsemi Serial GPIO
-To:     Alexandre Belloni <alexandre.belloni@bootlin.com>
-Cc:     Lars Povlsen <lars.povlsen@microchip.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
-        devicetree <devicetree@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201103205058.435207-2-contact@paulk.fr>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 9, 2020 at 5:27 PM Alexandre Belloni
-<alexandre.belloni@bootlin.com> wrote:
-> On 09/11/2020 17:16:49+0200, Andy Shevchenko wrote:
-> > On Mon, Nov 9, 2020 at 4:32 PM Alexandre Belloni
-> > <alexandre.belloni@bootlin.com> wrote:
-> > > On 09/11/2020 16:17:40+0200, Andy Shevchenko wrote:
+On Tue, 03 Nov 2020 21:50:53 +0100, Paul Kocialkowski wrote:
+> Due to a register layout that's different from any other supported
+> Allwinner SoC, the NMI interrupt controller takes a specific compatible
+> for the V3s. Add it to the device-tree bindings documentation.
+> 
+> Signed-off-by: Paul Kocialkowski <contact@paulk.fr>
+> ---
+>  .../interrupt-controller/allwinner,sun7i-a20-sc-nmi.yaml         | 1 +
+>  1 file changed, 1 insertion(+)
+> 
 
-...
-
-> > > > > +               dev_err(pctldev->dev, "Pin %d direction as %s is not possible\n",
-> > > > > +                       pin, input ? "input" : "output");
-> > > >
-> > > > Do we need this noise? Isn't user space getting a proper error code as
-> > > > per doc and can handle this?
-> > >
-> > > Why would userspace get the error code?
-> >
-> > Huh?! Why it shouldn't. How will users know if they are doing something wrong?
-> >
-> > > Userspace should never have to
-> > > handle gpios directly or you are doing something wrong.
-> >
-> > This is true, but check how error codes are propagated to the user space.
-> >
->
-> your point is to remove an error message because the error may be
-> propagated to userspace. My point is that userspace should never use
-> gpios and the kernel has to be the consumer.
-
-Tell this to plenty of users of old sysfs interface and to libgpiod ones.
-If what you are saying had been true, we would have never had the new
-ABI for GPIOs.
-
-> I don't see how your answer
-> is relevant here.
-
-I have an opposite opinion.
-
-> Did you already check all the call sites from the
-> kernel too?
-
-If you think we have to print a message on each possible error case
-(but not always the one) we will get lost in the messages disaster and
-dmesg overflow.
-It is consumer who should decide if the setting is critical or not to
-be printed to user.
-
--- 
-With Best Regards,
-Andy Shevchenko
+Acked-by: Rob Herring <robh@kernel.org>
