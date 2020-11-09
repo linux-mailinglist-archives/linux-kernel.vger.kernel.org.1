@@ -2,90 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34AFE2AB170
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 07:55:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B7082AB17B
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 07:57:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729594AbgKIGzX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 01:55:23 -0500
-Received: from mxout70.expurgate.net ([91.198.224.70]:8475 "EHLO
-        mxout70.expurgate.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727077AbgKIGzX (ORCPT
+        id S1729618AbgKIG5q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 01:57:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48762 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727077AbgKIG5p (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 01:55:23 -0500
-Received: from [127.0.0.1] (helo=localhost)
-        by relay.expurgate.net with smtp (Exim 4.92)
-        (envelope-from <ms@dev.tdt.de>)
-        id 1kc155-000Mue-VZ; Mon, 09 Nov 2020 07:55:12 +0100
-Received: from [195.243.126.94] (helo=securemail.tdt.de)
-        by relay.expurgate.net with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ms@dev.tdt.de>)
-        id 1kc154-000UAf-Eo; Mon, 09 Nov 2020 07:55:10 +0100
-Received: from securemail.tdt.de (localhost [127.0.0.1])
-        by securemail.tdt.de (Postfix) with ESMTP id 88DA824004B;
-        Mon,  9 Nov 2020 07:55:09 +0100 (CET)
-Received: from mail.dev.tdt.de (unknown [10.2.4.42])
-        by securemail.tdt.de (Postfix) with ESMTP id ED16C240049;
-        Mon,  9 Nov 2020 07:55:08 +0100 (CET)
-Received: from mschiller01.dev.tdt.de (unknown [10.2.3.20])
-        by mail.dev.tdt.de (Postfix) with ESMTPSA id 463C820484;
-        Mon,  9 Nov 2020 07:55:08 +0100 (CET)
-From:   Martin Schiller <ms@dev.tdt.de>
-To:     andrew.hendry@gmail.com, davem@davemloft.net, kuba@kernel.org,
-        edumazet@google.com, xiyuyang19@fudan.edu.cn
-Cc:     linux-x25@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Martin Schiller <ms@dev.tdt.de>
-Subject: [RESEND PATCH v2] net/x25: Fix null-ptr-deref in x25_connect
-Date:   Mon,  9 Nov 2020 07:54:49 +0100
-Message-ID: <20201109065449.9014-1-ms@dev.tdt.de>
-X-Mailer: git-send-email 2.20.1
+        Mon, 9 Nov 2020 01:57:45 -0500
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D948C0613D3
+        for <linux-kernel@vger.kernel.org>; Sun,  8 Nov 2020 22:57:45 -0800 (PST)
+Received: by mail-pl1-x643.google.com with SMTP id t18so4272832plo.0
+        for <linux-kernel@vger.kernel.org>; Sun, 08 Nov 2020 22:57:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=KF1/cMn6ow1Nl4dL4x6qzs3WxXHhYa+fonGftd0XHGk=;
+        b=zXLhGIo6SEIUKcewyE6ufIb64yJVWCABNtTkBYh7d4D4TvYXa540vr/vFWmzrxVxyb
+         wlC0XFXCqonycWbXTsMVO+x3Py2FcLnChddb3OLJ3dHSS1jUaozYWj2h74tMNky805Uw
+         lOObM4byt6gHew/oAXo1GSDjAxHmOjPTe/D30uCZl/Rji4N4RWJH1n0EHvS0LMlTTY5e
+         h6iD19z5V/2lsqIBMxCuPE3/J0o1IoJNinBcoUQtFEtYKl05r24H3x0kFQ1yWbb1jdi0
+         XyOkkwP7iOzCyo84BvoARxMew7Flcf1qG2gciFljzZc+UgbEDc3bSwkFZxCi307NPWcH
+         +zpQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=KF1/cMn6ow1Nl4dL4x6qzs3WxXHhYa+fonGftd0XHGk=;
+        b=D7E6X5AusIypcWRqhgkdcZsD+q/dlqfUyIEqgpaPHO5qmyHgHk2T2h1UbzRO3tdHbA
+         UdSks/aFO6EHtVxAyvh1QSvb7T7/G94l4vPBdnYcfIfnb5R0tz+ZCytJWrmQJ+8fzmbA
+         CgAbIPSyEgtT8xRS2PiSCY4C+SPj+fbSymfaWjukWyGfyUuQZIoH+dshOawWXL5IO8L2
+         Xa4ntEqNlz/lJEIc4faHvChBpexIUxwJuCwMEAJaTnbhSG2YeDfPs3tfH+hIifUcKC7R
+         yQUKzlyW73m7rqaLJr7iwNMXdJ6gBz7bbyxoc3ckVjfASxRo0y9+XTM1hFTXE/A95Tyy
+         B8qQ==
+X-Gm-Message-State: AOAM532HwPVgJeRtV6/ux3nIeJtMxA9KZLHZXLyscPvCcVqsyquFZdRT
+        LDubFm117IpIqoCymmeE8LWOyA==
+X-Google-Smtp-Source: ABdhPJw+XEDLwRGrEJmvpdHPokEDmxTA6uwQTvouoJ2/owTVyISLQ9AuM70t0bW5X57j8Gwmgr9IJA==
+X-Received: by 2002:a17:902:6bc8:b029:d6:d9d:f28c with SMTP id m8-20020a1709026bc8b02900d60d9df28cmr11217116plt.17.1604905065103;
+        Sun, 08 Nov 2020 22:57:45 -0800 (PST)
+Received: from localhost ([122.172.12.172])
+        by smtp.gmail.com with ESMTPSA id d9sm3157998pfn.191.2020.11.08.22.57.43
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Sun, 08 Nov 2020 22:57:43 -0800 (PST)
+Date:   Mon, 9 Nov 2020 12:27:42 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Lukasz Luba <lukasz.luba@arm.com>
+Cc:     Nicola Mazzucato <nicola.mazzucato@arm.com>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
+        sudeep.holla@arm.com, rjw@rjwysocki.net, vireshk@kernel.org,
+        robh+dt@kernel.org, sboyd@kernel.org, nm@ti.com,
+        daniel.lezcano@linaro.org, morten.rasmussen@arm.com,
+        chris.redpath@arm.com
+Subject: Re: [PATCH v3 3/3] [RFC] CPUFreq: Add support for
+ cpu-perf-dependencies
+Message-ID: <20201109065742.22czfgyjhsjmkytf@vireshk-i7>
+References: <20201102120115.29993-1-nicola.mazzucato@arm.com>
+ <20201102120115.29993-4-nicola.mazzucato@arm.com>
+ <20201106092020.za3oxg7gutzc3y2b@vireshk-i7>
+ <0a334a73-45ef-58ff-7dfd-9df6f4ff290a@arm.com>
+ <20201106105514.bhtdklyhn7goml64@vireshk-i7>
+ <7f73bcd6-0f06-4ef0-7f02-0751e6c4d94b@arm.com>
 MIME-Version: 1.0
-X-Spam-Status: No, score=-1.0 required=5.0 tests=ALL_TRUSTED,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.2
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on mail.dev.tdt.de
-Content-Transfer-Encoding: quoted-printable
-X-purgate-type: clean
-X-purgate-ID: 151534::1604904911-00014126-C9C59892/0/0
-X-purgate: clean
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <7f73bcd6-0f06-4ef0-7f02-0751e6c4d94b@arm.com>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This fixes a regression for blocking connects introduced by commit
-4becb7ee5b3d ("net/x25: Fix x25_neigh refcnt leak when x25 disconnect").
+On 06-11-20, 11:14, Lukasz Luba wrote:
+> I also had similar doubts, because if we make frequency requests
+> independently for each CPU, why not having N cooling devs, which
+> will set independently QoS max freq for them...
+> 
+> What convinced me:
+> EAS and FIE would know the 'real' frequency of the cluster, IPA
+> can use it also and have only one cooling device per cluster.
+> 
+> We would like to keep this old style 'one cooling device per cpuset'.
+> I don't have strong opinion and if it would appear that there are
+> some errors in freq estimation for cluster, then maybe it does make
+> more sense to have cdev per CPU...
 
-The x25->neighbour is already set to "NULL" by x25_disconnect() now,
-while a blocking connect is waiting in
-x25_wait_for_connection_establishment(). Therefore x25->neighbour must
-not be accessed here again and x25->state is also already set to
-X25_STATE_0 by x25_disconnect().
+Let me rephrase my question. What is it that doesn't work _correctly_
+with cdev per cpufreq policy in your case? What doesn't work well if
+the thermal stuff keeps looking at only the related_cpus thing and not
+the cpu-perf-dependencies thing?
 
-Fixes: 4becb7ee5b3d ("net/x25: Fix x25_neigh refcnt leak when x25 disconn=
-ect")
-Signed-off-by: Martin Schiller <ms@dev.tdt.de>
----
-
-Change from v1:
-also handle interrupting signals correctly
-
----
- net/x25/af_x25.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/net/x25/af_x25.c b/net/x25/af_x25.c
-index 0bbb283f23c9..046d3fee66a9 100644
---- a/net/x25/af_x25.c
-+++ b/net/x25/af_x25.c
-@@ -825,7 +825,7 @@ static int x25_connect(struct socket *sock, struct so=
-ckaddr *uaddr,
- 	sock->state =3D SS_CONNECTED;
- 	rc =3D 0;
- out_put_neigh:
--	if (rc) {
-+	if (rc && x25->neighbour) {
- 		read_lock_bh(&x25_list_lock);
- 		x25_neigh_put(x25->neighbour);
- 		x25->neighbour =3D NULL;
---=20
-2.20.1
-
+-- 
+viresh
