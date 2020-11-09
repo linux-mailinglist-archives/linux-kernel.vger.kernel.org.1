@@ -2,68 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8553F2AB817
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 13:22:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 663312AB819
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 13:22:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729568AbgKIMV5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 07:21:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43342 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729174AbgKIMV4 (ORCPT
+        id S1729647AbgKIMV7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 07:21:59 -0500
+Received: from Mailgw01.mediatek.com ([1.203.163.78]:60566 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1729507AbgKIMV5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 07:21:56 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98F78C0613CF;
-        Mon,  9 Nov 2020 04:21:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=lo1/YZJ60PDURw//yTKYZnX3pdE1wM16etWDAmUtFRw=; b=pjhICHrM3eR4uIrNFE4t/28ZFK
-        1j9Du9Tq+OjnCR8k4XxcUymdhlaBzmdAPspUA8GbUuGGLSdUkAB2irMJ1Km5qy/3+1/AXtxD+VRyF
-        AHeC1U7hmSElLZNKDc26GidSnfu01Y1n/qxp/PTGpadnToggGm7RpTrP/TirXts95aiSuqyFMtuFB
-        kwGkT9cIg/DTx5nE6wqSReHOIMiMBFicrpneUhZA1dd8lpBteemH8HjobgVW9+VMuoEqjv3Nya9FO
-        1+Gt0m/4RW/PBYkYh9jsQdUs8x5GDPXIeU0eyIl9xzu6dFJdAjL7S0iYuI066QdrITasayx8HmDMq
-        1r2mk3uw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kc6Ax-0001RS-Kq; Mon, 09 Nov 2020 12:21:35 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 9FAA4306099;
-        Mon,  9 Nov 2020 13:21:33 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 4D993203C5333; Mon,  9 Nov 2020 13:21:33 +0100 (CET)
-Date:   Mon, 9 Nov 2020 13:21:33 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     paulmck@kernel.org
-Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@fb.com, mingo@kernel.org, jiangshanlai@gmail.com,
-        akpm@linux-foundation.org, mathieu.desnoyers@efficios.com,
-        josh@joshtriplett.org, tglx@linutronix.de, rostedt@goodmis.org,
-        dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
-        oleg@redhat.com, joel@joelfernandes.org
-Subject: Re: [PATCH tip/core/rcu 1/4] doc: Present the role of READ_ONCE()
-Message-ID: <20201109122133.GL2594@hirez.programming.kicks-ass.net>
-References: <20201105230444.GA18574@paulmck-ThinkPad-P72>
- <20201105230510.18660-1-paulmck@kernel.org>
+        Mon, 9 Nov 2020 07:21:57 -0500
+X-UUID: 97514d2a01a14364a09cfa3776f5cea0-20201109
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=WJtPHpW+0YyB7rI0wRU9pvErODSR4itX2vnVqUYeC14=;
+        b=HEAANq1F196w6kg49Y5TjB/ci8z2C+s+raERdHeRnHOj0HSYGyn+E+oKvB5GC+Nb64DPvcaKJNHoq88gt/T0KnhKThqLI7balimW2rm1JXFYleBjebDeWzZZknKHuZKVGOR5JHBnogvX3P6ohEq7zSEBdmSPrh6S3uxxGMaV6Ns=;
+X-UUID: 97514d2a01a14364a09cfa3776f5cea0-20201109
+Received: from mtkcas36.mediatek.inc [(172.27.4.253)] by mailgw01.mediatek.com
+        (envelope-from <qii.wang@mediatek.com>)
+        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1650301938; Mon, 09 Nov 2020 20:21:51 +0800
+Received: from MTKCAS36.mediatek.inc (172.27.4.186) by MTKMBS31N1.mediatek.inc
+ (172.27.4.69) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 9 Nov
+ 2020 20:21:48 +0800
+Received: from [10.17.3.153] (10.17.3.153) by MTKCAS36.mediatek.inc
+ (172.27.4.170) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Mon, 9 Nov 2020 20:21:48 +0800
+Message-ID: <1604924508.25719.24.camel@mhfsdcap03>
+Subject: Re: [i2c-next,PATCH] i2c: medaitek: Move suspend and resume
+ handling to NOIRQ phase
+From:   Qii Wang <qii.wang@mediatek.com>
+To:     <wsa@the-dreams.de>
+CC:     <matthias.bgg@gmail.com>, <linux-i2c@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <srv_heupstream@mediatek.com>, <leilk.liu@mediatek.com>
+Date:   Mon, 9 Nov 2020 20:21:48 +0800
+In-Reply-To: <1604740180-14645-1-git-send-email-qii.wang@mediatek.com>
+References: <1604740180-14645-1-git-send-email-qii.wang@mediatek.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.10.4-0ubuntu2 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201105230510.18660-1-paulmck@kernel.org>
+X-TM-SNTS-SMTP: AC90FDB39BE5BB9BF4DC8700836DAB9494D29A8B859090525ABE5C95D6F179852000:8
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 05, 2020 at 03:05:07PM -0800, paulmck@kernel.org wrote:
-> From: "Paul E. McKenney" <paulmck@kernel.org>
-> 
-> This commit adds an explanation of the special cases where READ_ONCE()
-> may be used in place of a member of the rcu_dereference() family.
+SSBhbSBzb3JyeSwgdGhlcmUgaXMgYSBtaXNzcGVsbGluZyBpbiBteSBzdWJqZWN0Lg0KLW1lZGFp
+dGVrDQorbWVkaWF0ZWsNCkkgd2lsbCByZXZpc2UgaXQgd2l0aCBvdGhlciBuZXcgY29tbWVudHMg
+YW5kIHRoZW4gdXBkYXRlIHRoaXMgcGF0Y2guDQoNCk9uIFNhdCwgMjAyMC0xMS0wNyBhdCAxNzow
+OSArMDgwMCwgcWlpLndhbmdAbWVkaWF0ZWsuY29tIHdyb3RlOg0KPiBGcm9tOiBRaWkgV2FuZyA8
+cWlpLndhbmdAbWVkaWF0ZWsuY29tPg0KPiANCj4gU29tZSBpMmMgZGV2aWNlIGRyaXZlciBpbmRp
+cmVjdGx5IHVzZXMgSTJDIGRyaXZlciB3aGVuIGl0IGlzIG5vdw0KPiBiZWluZyBzdXNwZW5kZWQu
+IFRoZSBpMmMgZGV2aWNlcyBkcml2ZXIgaXMgc3VzcGVuZGVkIGR1cmluZyB0aGUNCj4gTk9JUlEg
+cGhhc2UgYW5kIHRoaXMgY2Fubm90IGJlIGNoYW5nZWQgZHVlIHRvIG90aGVyIGRlcGVuZGVuY2ll
+cy4NCj4gVGhlcmVmb3JlLCB3ZSBhbHNvIG5lZWQgdG8gbW92ZSB0aGUgc3VzcGVuZCBoYW5kbGlu
+ZyBmb3IgdGhlIEkyQw0KPiBjb250cm9sbGVyIGRyaXZlciB0byB0aGUgTk9JUlEgcGhhc2UgYXMg
+d2VsbC4NCj4gDQo+IFNpZ25lZC1vZmYtYnk6IFFpaSBXYW5nIDxxaWkud2FuZ0BtZWRpYXRlay5j
+b20+DQo+IC0tLQ0KPiAgZHJpdmVycy9pMmMvYnVzc2VzL2kyYy1tdDY1eHguYyB8IDE5ICsrKysr
+KysrKysrKysrKystLS0NCj4gIDEgZmlsZSBjaGFuZ2VkLCAxNiBpbnNlcnRpb25zKCspLCAzIGRl
+bGV0aW9ucygtKQ0KDQoNCg==
 
-I am confused, there is no actual difference between rcu_dereference()
-and READ_ONCE() today. So we _may_ use READ_ONCE() at all times.
-
-Now granted, we probably don't want that, but that does leave me
-somewhat confused vs the wording here.
