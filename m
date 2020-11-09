@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D1E02ABB5F
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 14:28:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 96B9F2ABA9E
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 14:23:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387833AbgKIN1l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 08:27:41 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41394 "EHLO mail.kernel.org"
+        id S2387999AbgKINU5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 08:20:57 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48592 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730936AbgKINOy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 08:14:54 -0500
+        id S2387994AbgKINUy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 08:20:54 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id AC71820789;
-        Mon,  9 Nov 2020 13:14:53 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 645B72083B;
+        Mon,  9 Nov 2020 13:20:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604927694;
-        bh=IKUOtr0yilLf9dxxAef+6Dslwi73ppjukWN35zDq1wU=;
+        s=default; t=1604928054;
+        bh=NCJPmrcVgmBJQ7f2/WSzdlnHvDV2Ns7gRxvl+bAEeoU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=B6uLo373puvrh0TvFGjIfmjzrJfwws1uCqbKUK1yfVSZI99T5J/bMjKBWiIQ/o4T1
-         psrzGnfsS4gCSH28epzya7JCehZRabaU05Vnq2jL/HufTWPXrnfDQn7QrEsO96kWQf
-         vc9jqWpVk3fa3fZ453XaqvbUP2vySvKQZCXudFvI=
+        b=r9d9NSrvtiNFkASIwshkW2M6yVWMXrndGPHHo7HNYEzg94crqiOnpQIjfLo5OARcD
+         Ij5CM+Q8hRZgd4FqvJmAHwRckgKlu3j8pFLeQ2bFV80EmvhnxlnJsQd2nlHyokDD8O
+         A67CClQVemncyx36QP9sqJ2q7Hu8lME30ttmz+Z0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Hans de Goede <jwrdegoede@fedoraproject.org>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Julien Humbert <julroy67@gmail.com>
-Subject: [PATCH 5.4 76/85] USB: Add NO_LPM quirk for Kingston flash drive
-Date:   Mon,  9 Nov 2020 13:56:13 +0100
-Message-Id: <20201109125026.227113509@linuxfoundation.org>
+        Alexander Egorenkov <Alexander.Egorenkov@ibm.com>,
+        Harald Freudenberger <freude@linux.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>
+Subject: [PATCH 5.9 112/133] s390/pkey: fix paes selftest failure with paes and pkey static build
+Date:   Mon,  9 Nov 2020 13:56:14 +0100
+Message-Id: <20201109125036.072282317@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201109125022.614792961@linuxfoundation.org>
-References: <20201109125022.614792961@linuxfoundation.org>
+In-Reply-To: <20201109125030.706496283@linuxfoundation.org>
+References: <20201109125030.706496283@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,39 +44,104 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alan Stern <stern@rowland.harvard.edu>
+From: Harald Freudenberger <freude@linux.ibm.com>
 
-commit afaa2e745a246c5ab95103a65b1ed00101e1bc63 upstream.
+commit 5b35047eb467c8cdd38a31beb9ac109221777843 upstream.
 
-In Bugzilla #208257, Julien Humbert reports that a 32-GB Kingston
-flash drive spontaneously disconnects and reconnects, over and over.
-Testing revealed that disabling Link Power Management for the drive
-fixed the problem.
+When both the paes and the pkey kernel module are statically build
+into the kernel, the paes cipher selftests run before the pkey
+kernel module is initialized. So a static variable set in the pkey
+init function and used in the pkey_clr2protkey function is not
+initialized when the paes cipher's selftests request to call pckmo for
+transforming a clear key value into a protected key.
 
-This patch adds a quirk entry for that drive to turn off LPM permanently.
+This patch moves the initial setup of the static variable into
+the function pck_clr2protkey. So it's possible, to use the function
+for transforming a clear to a protected key even before the pkey
+init function has been called and the paes selftests may run
+successful.
 
-CC: Hans de Goede <jwrdegoede@fedoraproject.org>
-CC: <stable@vger.kernel.org>
-Reported-and-tested-by: Julien Humbert <julroy67@gmail.com>
-Signed-off-by: Alan Stern <stern@rowland.harvard.edu>
-Link: https://lore.kernel.org/r/20201102145821.GA1478741@rowland.harvard.edu
+Reported-by: Alexander Egorenkov <Alexander.Egorenkov@ibm.com>
+Cc: <stable@vger.kernel.org> # 4.20
+Fixes: f822ad2c2c03 ("s390/pkey: move pckmo subfunction available checks away from module init")
+Signed-off-by: Harald Freudenberger <freude@linux.ibm.com>
+Signed-off-by: Heiko Carstens <hca@linux.ibm.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/usb/core/quirks.c |    3 +++
- 1 file changed, 3 insertions(+)
+ drivers/s390/crypto/pkey_api.c |   30 ++++++++++++++++--------------
+ 1 file changed, 16 insertions(+), 14 deletions(-)
 
---- a/drivers/usb/core/quirks.c
-+++ b/drivers/usb/core/quirks.c
-@@ -378,6 +378,9 @@ static const struct usb_device_id usb_qu
- 	{ USB_DEVICE(0x0926, 0x3333), .driver_info =
- 			USB_QUIRK_CONFIG_INTF_STRINGS },
+--- a/drivers/s390/crypto/pkey_api.c
++++ b/drivers/s390/crypto/pkey_api.c
+@@ -34,9 +34,6 @@ MODULE_DESCRIPTION("s390 protected key i
+ #define KEYBLOBBUFSIZE 8192  /* key buffer size used for internal processing */
+ #define MAXAPQNSINLIST 64    /* max 64 apqns within a apqn list */
  
-+	/* Kingston DataTraveler 3.0 */
-+	{ USB_DEVICE(0x0951, 0x1666), .driver_info = USB_QUIRK_NO_LPM },
+-/* mask of available pckmo subfunctions, fetched once at module init */
+-static cpacf_mask_t pckmo_functions;
+-
+ /*
+  * debug feature data and functions
+  */
+@@ -90,6 +87,9 @@ static int pkey_clr2protkey(u32 keytype,
+ 			    const struct pkey_clrkey *clrkey,
+ 			    struct pkey_protkey *protkey)
+ {
++	/* mask of available pckmo subfunctions */
++	static cpacf_mask_t pckmo_functions;
 +
- 	/* X-Rite/Gretag-Macbeth Eye-One Pro display colorimeter */
- 	{ USB_DEVICE(0x0971, 0x2000), .driver_info = USB_QUIRK_NO_SET_INTF },
+ 	long fc;
+ 	int keysize;
+ 	u8 paramblock[64];
+@@ -113,11 +113,13 @@ static int pkey_clr2protkey(u32 keytype,
+ 		return -EINVAL;
+ 	}
  
+-	/*
+-	 * Check if the needed pckmo subfunction is available.
+-	 * These subfunctions can be enabled/disabled by customers
+-	 * in the LPAR profile or may even change on the fly.
+-	 */
++	/* Did we already check for PCKMO ? */
++	if (!pckmo_functions.bytes[0]) {
++		/* no, so check now */
++		if (!cpacf_query(CPACF_PCKMO, &pckmo_functions))
++			return -ENODEV;
++	}
++	/* check for the pckmo subfunction we need now */
+ 	if (!cpacf_test_func(&pckmo_functions, fc)) {
+ 		DEBUG_ERR("%s pckmo functions not available\n", __func__);
+ 		return -ENODEV;
+@@ -1838,7 +1840,7 @@ static struct miscdevice pkey_dev = {
+  */
+ static int __init pkey_init(void)
+ {
+-	cpacf_mask_t kmc_functions;
++	cpacf_mask_t func_mask;
+ 
+ 	/*
+ 	 * The pckmo instruction should be available - even if we don't
+@@ -1846,15 +1848,15 @@ static int __init pkey_init(void)
+ 	 * is also the minimum level for the kmc instructions which
+ 	 * are able to work with protected keys.
+ 	 */
+-	if (!cpacf_query(CPACF_PCKMO, &pckmo_functions))
++	if (!cpacf_query(CPACF_PCKMO, &func_mask))
+ 		return -ENODEV;
+ 
+ 	/* check for kmc instructions available */
+-	if (!cpacf_query(CPACF_KMC, &kmc_functions))
++	if (!cpacf_query(CPACF_KMC, &func_mask))
+ 		return -ENODEV;
+-	if (!cpacf_test_func(&kmc_functions, CPACF_KMC_PAES_128) ||
+-	    !cpacf_test_func(&kmc_functions, CPACF_KMC_PAES_192) ||
+-	    !cpacf_test_func(&kmc_functions, CPACF_KMC_PAES_256))
++	if (!cpacf_test_func(&func_mask, CPACF_KMC_PAES_128) ||
++	    !cpacf_test_func(&func_mask, CPACF_KMC_PAES_192) ||
++	    !cpacf_test_func(&func_mask, CPACF_KMC_PAES_256))
+ 		return -ENODEV;
+ 
+ 	pkey_debug_init();
 
 
