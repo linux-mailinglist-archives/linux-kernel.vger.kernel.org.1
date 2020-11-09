@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B667D2ABD43
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 14:45:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BE5C2ABC6C
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 14:37:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733140AbgKINof (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 08:44:35 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53258 "EHLO mail.kernel.org"
+        id S1732571AbgKINh2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 08:37:28 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57350 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729942AbgKIM7E (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 07:59:04 -0500
+        id S1730733AbgKINEN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 08:04:13 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 42C342084C;
-        Mon,  9 Nov 2020 12:59:02 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3B26F20684;
+        Mon,  9 Nov 2020 13:04:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604926742;
-        bh=GyEvx6frgt88vBR1k0fBG/S5MKjUpJDCfLHN1tv5K4E=;
+        s=default; t=1604927052;
+        bh=kOandtB1ZMev2Spg8KASy1z02WsLM2ai2Cy10DWXrx0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=aLTUiR2kGdqFUPaOTJaHiPd8KkEAk9txGv/VtWn/JFAe3bMKgbb0Qk7oQKK/B+i4o
-         03Qv5JgFi3yrdIl5OCWqii53YMov5ZZOqjtE8wBTyH4TjGFNFlxhzvpbsvZWmq32F9
-         uc35Nb4uvytCCHrKYmP5X67GcGWXdVcvfCJgI9D0=
+        b=skx4KJokOVPTpJsrhQt1A9MlPgTAEj1auKqLzAQ5hGjqSIrKQnmEPWvGWFM/SLfar
+         L/63VS9TYsaaJ9hTTDab2mmgXbT+fzHGErFd1opc7B1tRZqK7wrF9UQuPFwZZhi8SZ
+         kdEEG/teQNjto5sLOFZ07TtP7YA/PSQtreKzx2ZQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Vincent Whitchurch <vincent.whitchurch@axis.com>,
-        Rob Herring <robh@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 74/86] of: Fix reserved-memory overlap detection
+        stable@vger.kernel.org, James Jurack <james.jurack@ametek.com>,
+        Claudiu Manoil <claudiu.manoil@nxp.com>,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: [PATCH 4.9 095/117] gianfar: Account for Tx PTP timestamp in the skb headroom
 Date:   Mon,  9 Nov 2020 13:55:21 +0100
-Message-Id: <20201109125024.341276491@linuxfoundation.org>
+Message-Id: <20201109125030.207921453@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201109125020.852643676@linuxfoundation.org>
-References: <20201109125020.852643676@linuxfoundation.org>
+In-Reply-To: <20201109125025.630721781@linuxfoundation.org>
+References: <20201109125025.630721781@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,85 +43,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vincent Whitchurch <vincent.whitchurch@axis.com>
+From: Claudiu Manoil <claudiu.manoil@nxp.com>
 
-[ Upstream commit ca05f33316559a04867295dd49f85aeedbfd6bfd ]
+[ Upstream commit d6a076d68c6b5d6a5800f3990a513facb7016dea ]
 
-The reserved-memory overlap detection code fails to detect overlaps if
-either of the regions starts at address 0x0.  The code explicitly checks
-for and ignores such regions, apparently in order to ignore dynamically
-allocated regions which have an address of 0x0 at this point.  These
-dynamically allocated regions also have a size of 0x0 at this point, so
-fix this by removing the check and sorting the dynamically allocated
-regions ahead of any static regions at address 0x0.
+When PTP timestamping is enabled on Tx, the controller
+inserts the Tx timestamp at the beginning of the frame
+buffer, between SFD and the L2 frame header. This means
+that the skb provided by the stack is required to have
+enough headroom otherwise a new skb needs to be created
+by the driver to accommodate the timestamp inserted by h/w.
+Up until now the driver was relying on the second option,
+using skb_realloc_headroom() to create a new skb to accommodate
+PTP frames. Turns out that this method is not reliable, as
+reallocation of skbs for PTP frames along with the required
+overhead (skb_set_owner_w, consume_skb) is causing random
+crashes in subsequent skb_*() calls, when multiple concurrent
+TCP streams are run at the same time on the same device
+(as seen in James' report).
+Note that these crashes don't occur with a single TCP stream,
+nor with multiple concurrent UDP streams, but only when multiple
+TCP streams are run concurrently with the PTP packet flow
+(doing skb reallocation).
+This patch enforces the first method, by requesting enough
+headroom from the stack to accommodate PTP frames, and so avoiding
+skb_realloc_headroom() & co, and the crashes no longer occur.
+There's no reason not to set needed_headroom to a large enough
+value to accommodate PTP frames, so in this regard this patch
+is a fix.
 
-For example, there are two overlaps in this case but they are not
-currently reported:
-
-	foo@0 {
-	        reg = <0x0 0x2000>;
-	};
-
-	bar@0 {
-	        reg = <0x0 0x1000>;
-	};
-
-	baz@1000 {
-	        reg = <0x1000 0x1000>;
-	};
-
-	quux {
-	        size = <0x1000>;
-	};
-
-but they are after this patch:
-
- OF: reserved mem: OVERLAP DETECTED!
- bar@0 (0x00000000--0x00001000) overlaps with foo@0 (0x00000000--0x00002000)
- OF: reserved mem: OVERLAP DETECTED!
- foo@0 (0x00000000--0x00002000) overlaps with baz@1000 (0x00001000--0x00002000)
-
-Signed-off-by: Vincent Whitchurch <vincent.whitchurch@axis.com>
-Link: https://lore.kernel.org/r/ded6fd6b47b58741aabdcc6967f73eca6a3f311e.1603273666.git-series.vincent.whitchurch@axis.com
-Signed-off-by: Rob Herring <robh@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Reported-by: James Jurack <james.jurack@ametek.com>
+Fixes: bee9e58c9e98 ("gianfar:don't add FCB length to hard_header_len")
+Signed-off-by: Claudiu Manoil <claudiu.manoil@nxp.com>
+Link: https://lore.kernel.org/r/20201020173605.1173-1-claudiu.manoil@nxp.com
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/of/of_reserved_mem.c | 13 +++++++++++--
- 1 file changed, 11 insertions(+), 2 deletions(-)
+ drivers/net/ethernet/freescale/gianfar.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/of/of_reserved_mem.c b/drivers/of/of_reserved_mem.c
-index 07dd81586c52b..7ccf077c72a05 100644
---- a/drivers/of/of_reserved_mem.c
-+++ b/drivers/of/of_reserved_mem.c
-@@ -218,6 +218,16 @@ static int __init __rmem_cmp(const void *a, const void *b)
- 	if (ra->base > rb->base)
- 		return 1;
+--- a/drivers/net/ethernet/freescale/gianfar.c
++++ b/drivers/net/ethernet/freescale/gianfar.c
+@@ -1385,7 +1385,7 @@ static int gfar_probe(struct platform_de
  
-+	/*
-+	 * Put the dynamic allocations (address == 0, size == 0) before static
-+	 * allocations at address 0x0 so that overlap detection works
-+	 * correctly.
-+	 */
-+	if (ra->size < rb->size)
-+		return -1;
-+	if (ra->size > rb->size)
-+		return 1;
-+
- 	return 0;
- }
+ 	if (dev->features & NETIF_F_IP_CSUM ||
+ 	    priv->device_flags & FSL_GIANFAR_DEV_HAS_TIMER)
+-		dev->needed_headroom = GMAC_FCB_LEN;
++		dev->needed_headroom = GMAC_FCB_LEN + GMAC_TXPAL_LEN;
  
-@@ -235,8 +245,7 @@ static void __init __rmem_check_for_overlap(void)
- 
- 		this = &reserved_mem[i];
- 		next = &reserved_mem[i + 1];
--		if (!(this->base && next->base))
--			continue;
-+
- 		if (this->base + this->size > next->base) {
- 			phys_addr_t this_end, next_end;
- 
--- 
-2.27.0
-
+ 	/* Initializing some of the rx/tx queue level parameters */
+ 	for (i = 0; i < priv->num_tx_queues; i++) {
 
 
