@@ -2,77 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D37CE2AC711
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 22:21:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B786D2AC713
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 22:21:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731703AbgKIVU7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 16:20:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42426 "EHLO
+        id S1730729AbgKIVV3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 16:21:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42512 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729451AbgKIVU6 (ORCPT
+        with ESMTP id S1729451AbgKIVV3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 16:20:58 -0500
-Received: from mail-ua1-x942.google.com (mail-ua1-x942.google.com [IPv6:2607:f8b0:4864:20::942])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB32FC0613CF;
-        Mon,  9 Nov 2020 13:20:58 -0800 (PST)
-Received: by mail-ua1-x942.google.com with SMTP id r23so3260151uak.0;
-        Mon, 09 Nov 2020 13:20:58 -0800 (PST)
+        Mon, 9 Nov 2020 16:21:29 -0500
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 178D5C0613CF;
+        Mon,  9 Nov 2020 13:21:29 -0800 (PST)
+Received: by mail-wm1-x343.google.com with SMTP id d142so946241wmd.4;
+        Mon, 09 Nov 2020 13:21:29 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=7DBQ7bhRqZ6AzXHPOPfjQrb2gmOafLUkLl/Zq//thao=;
-        b=GA363FLEmGvNcaOVPu+1Mx5y3TLNI5//6oCy5bWoo1iZiwGklBUnwb+wFwpKngn/+i
-         tJdq4DaxJBo0LVuL8qc2OTj9r4UCbUhqJKksMdwtPfwPHyOVcO+I1a4sNCfD0jC+NhwU
-         KNVJECPSTUbj2oi92PtKciyzBbQEgUoqqnX8Pvw2RFzfYjIGH584j5W0V7ZEXAjD8x3N
-         gSokH9HjyJunlX8LrDsBxJ5tu3/iloELgwSj/GqWK4Fz1Bupjuf0+jikEgWw2inrIQTm
-         CE0JsPQwWY4E4tKza34j9gxF0r4+5u8q6SVe0y+pfzYakc/NLQeuHuCXP8O1RI1SEiRy
-         4FCg==
+        bh=GDp8yb+Sw0EolRsci9v+WvLZ9nSbjiU3CL4VUAU4p3U=;
+        b=Eyj0wf9PKyzvgsvHQsyfgZxgGn5vIq16Y8gMdbnhJB78VNyMq8Mwjq0OGH9NFWYzqP
+         Jp6UuxRGSSt/WnTSuor53OoHOFjky9QEJ6mPUsUGscEyfMjbWSca3qO2SBpywYqVQzxx
+         BM493YCgTJ/d53de+QhRi2qbmgbsOr0/olWozoAeGnkl8EBuG7iZwkq5Qbvhl3u7+IL9
+         8YezRO3SLYsejT1YmFbagEQmv40oewW9JRsdViPZ6rQDcyvsRr3o+AVNMa3JTg2QMwHO
+         T6vopTIYAcQCly1h+WlGfDjczNUBTzqzsE5GrfocbjClUg5sdUd0PtV9pCrNHcQaE2+W
+         2HWg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=7DBQ7bhRqZ6AzXHPOPfjQrb2gmOafLUkLl/Zq//thao=;
-        b=e/sCQcBLUv/pMtqnL4wISGClCAeQx2pU+ycVQCBSaNbJfRLHzZmY4CYMEpBkeQLa+G
-         EHEP9OVdiF619ICM7YsQqPICg1kdy1xmJn2m7RTXV6NNoIO3UlNGCPyur5xxHBEPCo6b
-         e+jtUR5v7DP1Z9G+nT764221t+5e7tNkGDoCflOTMl0dgfANA6XPr3ERK18Ml9wUziDW
-         2LUyrhUjg0q4W9DNeGl5RtWdEk7D48cR8tHJ2tlMluaQx6l22zkAVhsE2Ks24dmN+3qd
-         16ZXZJBa0STiYHIKMsu02ww2dfD4fwI7R+IBEsHSONjQwWRjgjc8WO04+BF007+pAK2o
-         t2RA==
-X-Gm-Message-State: AOAM533wIUr8T73CiJfzPn0TwHT7d6/dUk4ROycK2nRMDJU8Au4Rthx0
-        4WnPvA7veghjuqyegVUsSWJ/l4k4aToLkT+YS9o=
-X-Google-Smtp-Source: ABdhPJwXUPIdnj6YB1V/GNwWxnUY4pO3NEM2p7J2W2vASZGEqUdFeObcdtl+nMyqYcYc8EZRDJDZ0e24xOJyYFnTksA=
-X-Received: by 2002:a9f:2c92:: with SMTP id w18mr8408184uaj.58.1604956857746;
- Mon, 09 Nov 2020 13:20:57 -0800 (PST)
+        bh=GDp8yb+Sw0EolRsci9v+WvLZ9nSbjiU3CL4VUAU4p3U=;
+        b=o0iCcHhYx3Aam+IgnEUOcNE9KzE3TTvfsPqzvQNpedE+XCK2nBZv59dCVpBNOJc7LY
+         SS5NinN/6UScvM2dwzhAE2n6bZfC3HeQKVLf0kWwDk6aT2XC3OMMnP4kL4zMCdMqtXRk
+         07bD0nalBE/OrATU3db2oyPTO5NNUkfxc4H+iaAlRu64izStcduJ7toBX2wFPONLb03I
+         BThmxYm3oLoTblXggG8a/RmZ5xpT1VWkpgzNOLMrYhWMoQjDBoHixJekdtDptKVCbwyU
+         YYOr4mhzIKyJ2pkArHWAC0faB1DRm+YM/bZgMRghDjkq1JHCME44jA/LKQyPsgSYbfrr
+         ZAjQ==
+X-Gm-Message-State: AOAM533e/gk/AtwZAztlRVL0Ycs5bmQ2piuRNRZT2fKh7DnWxhwcZ+3T
+        f54v0IWvkwzrV4uBcuFPdrntIAUReKTUj9vqGTU=
+X-Google-Smtp-Source: ABdhPJyIn9jY/EM3NsfRCWQKiTNIKSQPUd00zlTTnc7nT1mAHIfsQMOpQ0BCDXxFJdSy6q+gIIZeHW6pK4msqPWqZAo=
+X-Received: by 2002:a1c:46c6:: with SMTP id t189mr1159422wma.79.1604956887879;
+ Mon, 09 Nov 2020 13:21:27 -0800 (PST)
 MIME-Version: 1.0
-References: <20201109193117.2017-1-TheSven73@gmail.com> <20201109130900.39602186@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
-In-Reply-To: <20201109130900.39602186@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
-From:   Sven Van Asbroeck <thesven73@gmail.com>
-Date:   Mon, 9 Nov 2020 16:20:46 -0500
-Message-ID: <CAGngYiUt8MBCugYfjUJMa_h0iekubnOwVwenE7gY50DnRXq5VQ@mail.gmail.com>
-Subject: Re: [PATCH net-next v1] net: phy: spi_ks8995: Do not overwrite SPI
- mode flags
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        "David S. Miller" <davem@davemloft.net>,
-        netdev <netdev@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20201109210725.24668-1-unixbhaskar@gmail.com>
+In-Reply-To: <20201109210725.24668-1-unixbhaskar@gmail.com>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Mon, 9 Nov 2020 16:21:16 -0500
+Message-ID: <CADnq5_NOmgYM0_0fTQaYr+qn7M_Vrbo1E=mPmuoATQNjRRHTqg@mail.gmail.com>
+Subject: Re: [PATCH] drivers: amdgpu: amdgpu_display: Fixed the spelling of
+ falg to flag
+To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>
+Cc:     "Deucher, Alexander" <alexander.deucher@amd.com>,
+        Christian Koenig <christian.koenig@amd.com>,
+        Dave Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Jean Delvare <jdelvare@suse.de>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        Maling list - DRI developers 
+        <dri-devel@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-media <linux-media@vger.kernel.org>,
+        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
+        <linaro-mm-sig@lists.linaro.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 9, 2020 at 4:09 PM Jakub Kicinski <kuba@kernel.org> wrote:
+On Mon, Nov 9, 2020 at 4:16 PM Bhaskar Chowdhury <unixbhaskar@gmail.com> wrote:
 >
-> This is a fix right? You seem to be targeting net-next and there is no
-> Fixes tag but it sounds like a bug.
+> s/falg/flag/p
+>
+> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
 
-I'm not sure. The original code used to work for me, until the spi bus
-driver I'm using to communicate to this chip was changed to always
-require SPI_CS_HIGH. The current ks8995 driver will now plow over
-this flag, and spi communication breaks.
+Applied.  Thanks!
 
-Is this a bug? If so, what should its Fixes commit be? The spi commit
-upstream that enables SPI_CS_HIGH on my platform?
+Alex
+
+> ---
+>  drivers/gpu/drm/amd/amdgpu/amdgpu_display.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_display.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_display.c
+> index 2e8a8b57639f..9223502c1e5b 100644
+> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_display.c
+> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_display.c
+> @@ -509,7 +509,7 @@ uint32_t amdgpu_display_supported_domains(struct amdgpu_device *adev,
+>          * to avoid hang caused by placement of scanout BO in GTT on certain
+>          * APUs. So force the BO placement to VRAM in case this architecture
+>          * will not allow USWC mappings.
+> -        * Also, don't allow GTT domain if the BO doens't have USWC falg set.
+> +        * Also, don't allow GTT domain if the BO doens't have USWC flag set.
+>          */
+>         if ((bo_flags & AMDGPU_GEM_CREATE_CPU_GTT_USWC) &&
+>             amdgpu_bo_support_uswc(bo_flags) &&
+> --
+> 2.26.2
+>
+> _______________________________________________
+> amd-gfx mailing list
+> amd-gfx@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/amd-gfx
