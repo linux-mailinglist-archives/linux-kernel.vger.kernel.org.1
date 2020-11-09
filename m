@@ -2,156 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BB552AC08D
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 17:11:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2EBF42AC086
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 17:10:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730023AbgKIQLm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 11:11:42 -0500
-Received: from mx08-00178001.pphosted.com ([91.207.212.93]:36590 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729243AbgKIQLm (ORCPT
+        id S1729994AbgKIQK4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 11:10:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50572 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729243AbgKIQK4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 11:11:42 -0500
-Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0A9G6gYf018377;
-        Mon, 9 Nov 2020 17:11:24 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=STMicroelectronics;
- bh=aCuGZs5eFBxNDdr6XK+cc45jKE8mNbTQVuJd3YqSDyI=;
- b=SICcsM0bDwrICeXlXedAfHnciIycGgN7hgSIfXCDeMFU4Dxqz5LoPxuTTvYD9EbLIISl
- uCIJzIkU6lBcAT0jYPODRsAwwd5H9m7qGFDvDLBQMnN9VzhB2c4wpKBbg1gj8KKArOy0
- 6Jjw0GIFa0s2bT1ECTHMvN5UV3x6E8Z3CodtVxXlil4cgh/M6bXJFQMRq5DHPUe62T3s
- OWK9nxaUWm02GG9Onxc5cH5JMuVxjVdgFqoSI1dei+yQJrwLa9F8kVO4DZTKDR+yDiIU
- WTjgrheR8f0fkfYN6kOXkgHtNTOzvF/nsYdyTfmXj1tvlImSMDMIU3oyt1OaffDEz9jC +A== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 34nkbmu273-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 09 Nov 2020 17:11:23 +0100
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 0E36D100034;
-        Mon,  9 Nov 2020 17:11:23 +0100 (CET)
-Received: from Webmail-eu.st.com (sfhdag3node2.st.com [10.75.127.8])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id E79982397AB;
-        Mon,  9 Nov 2020 17:11:22 +0100 (CET)
-Received: from lmecxl0995.lme.st.com (10.75.127.44) by SFHDAG3NODE2.st.com
- (10.75.127.8) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 9 Nov
- 2020 17:10:23 +0100
-Subject: Re: [PATCH v5 1/5] dt-bindings: connector: add typec-power-opmode
- property to usb-connector
-To:     Rob Herring <robh+dt@kernel.org>
-CC:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Badhri Jagan Sridharan <badhri@google.com>,
-        Jun Li <lijun.kernel@gmail.com>, <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Linux USB List <linux-usb@vger.kernel.org>,
-        "moderated list:ARM/STM32 ARCHITECTURE" 
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Fabrice Gasnier <fabrice.gasnier@st.com>
-References: <20201106165805.31534-1-amelie.delaunay@st.com>
- <20201106165805.31534-2-amelie.delaunay@st.com>
- <CAL_Jsq+A=nixpdrT3Omq7Osat=_Egb5g6VGao=gY4CEssOe+xQ@mail.gmail.com>
- <a0e0bde1-5657-c0f9-9123-6b1dd5a1bd73@st.com>
- <CAL_JsqLcTNNWm7ChBjhFaTvfDm-kSYXrppcGU8uFTGEEuaT5Tg@mail.gmail.com>
-From:   Amelie DELAUNAY <amelie.delaunay@st.com>
-Message-ID: <5df74edf-b6f9-3397-4c85-683987dd5743@st.com>
-Date:   Mon, 9 Nov 2020 17:10:23 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Mon, 9 Nov 2020 11:10:56 -0500
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF232C0613CF
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Nov 2020 08:10:55 -0800 (PST)
+Received: by mail-wm1-x343.google.com with SMTP id h62so8428193wme.3
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Nov 2020 08:10:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=XVBP+n0VN9eN/C2Jba9mEU16D1fWrV9bkOxgoHmqowE=;
+        b=ovpCxEuW57eNQuSsfoObUTndr+bipuROJRQTcCSVncULvKVS9SyR+rzkpi5I6sUEhe
+         5TxIvy0CQg8ufCAJz0rrG5Y8c3PSTT0m3CCLztv1xrQeTd6KVVNy9RRTKj8UawzcPFuX
+         J/i8JGdCrNq+Jg6tZcOQQGSLMDaF2tYOpbtqZzfg5xLFxPl3fhqN2AIXVjYkfYJ3rQZ8
+         8YmBTSOEa8WHMlHsqKxLQh2iitZnPJuFa46+xFExDlDcNuiOx4n6iO7/yxMedduL8x9J
+         3jEo/JJbd3xiwfNiex4U6vOft6qs8o6sWN+jDI7wcYq/NYlgr/itbe2jJAMnaAAvTh8V
+         Wh5g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=XVBP+n0VN9eN/C2Jba9mEU16D1fWrV9bkOxgoHmqowE=;
+        b=b0PNy+I6k/mnbsyyiLut5xLz0U7hN1QralfmVs0Ko2oDNFFwJPM4hiw6gzJwVaUHsw
+         I4GC6o+hBN6knjzHL2ANALnQVghfNTJS6os8aqPNEtq69hEwJ0H87S15pStqrPLw2jFf
+         sAjVxTFJjJOWIwtmVLD/OmI76t2AsaTg917ZMIOQow4xKz2uKXa8af0Ud0LS12NROe0P
+         jkGVf7sP0xfpEX8sDh+9aR1OVBeZTuKzYZKlzsWf4KDYnbUpjNdWIA08TamA3zhNQtrt
+         reU2mZtuis/cH6MOtfJ2mgPGlgJiVVSsTNNFOt/y091nZJb4Syj3Z53/5BxGhH5h6Z+L
+         raFg==
+X-Gm-Message-State: AOAM530+kHCNCExf+/WrgniPO1QFZHsBNLbFTDGJaGLUoqmr2HYxhWtk
+        NKV2k2k1l+fUsgnI7PwpA1O3hA==
+X-Google-Smtp-Source: ABdhPJxQvHFpa9rWHRtMcdHxH++0UXHHx4BiJVp+45GpHvO8bsRDcBMFvyMavXb/jg3d+O1vYTmIrA==
+X-Received: by 2002:a1c:df04:: with SMTP id w4mr61037wmg.3.1604938254577;
+        Mon, 09 Nov 2020 08:10:54 -0800 (PST)
+Received: from dell ([91.110.221.180])
+        by smtp.gmail.com with ESMTPSA id b17sm13872467wru.12.2020.11.09.08.10.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 09 Nov 2020 08:10:53 -0800 (PST)
+Date:   Mon, 9 Nov 2020 16:10:50 +0000
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Sam Ravnborg <sam@ravnborg.org>
+Cc:     David Airlie <airlied@linux.ie>, linux-kernel@vger.kernel.org,
+        amd-gfx@lists.freedesktop.org,
+        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+        linaro-mm-sig@lists.linaro.org, dri-devel@lists.freedesktop.org,
+        Alex Deucher <alexander.deucher@amd.com>,
+        linux-media@vger.kernel.org
+Subject: Re: [PATCH 10/19] drm/radeon/radeon: Move prototype into shared
+ header
+Message-ID: <20201109161050.GW2063125@dell>
+References: <20201106214949.2042120-1-lee.jones@linaro.org>
+ <20201106214949.2042120-11-lee.jones@linaro.org>
+ <20201107142651.GA1014611@ravnborg.org>
+ <20201109110603.GV2063125@dell>
+ <20201109152530.GA1888045@ravnborg.org>
 MIME-Version: 1.0
-In-Reply-To: <CAL_JsqLcTNNWm7ChBjhFaTvfDm-kSYXrppcGU8uFTGEEuaT5Tg@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.75.127.44]
-X-ClientProxiedBy: SFHDAG3NODE3.st.com (10.75.127.9) To SFHDAG3NODE2.st.com
- (10.75.127.8)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-11-09_08:2020-11-05,2020-11-09 signatures=0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201109152530.GA1888045@ravnborg.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, 09 Nov 2020, Sam Ravnborg wrote:
 
-
-On 11/9/20 5:02 PM, Rob Herring wrote:
-> On Mon, Nov 9, 2020 at 9:54 AM Amelie DELAUNAY <amelie.delaunay@st.com> wrote:
->>
->> On 11/9/20 4:03 PM, Rob Herring wrote:
->>> On Fri, Nov 6, 2020 at 10:58 AM Amelie Delaunay <amelie.delaunay@st.com> wrote:
->>>>
->>>> Power operation mode may depends on hardware design, so, add the optional
->>>> property typec-power-opmode for usb-c connector to select the power
->>>> operation mode capability.
->>>>
->>>> Signed-off-by: Amelie Delaunay <amelie.delaunay@st.com>
->>>> ---
->>>> Hi Bahdri, Rob,
->>>>
->>>> I've added the exlusion with FRS property, but new FRS property name
->>>> should be use here so, be careful.
->>>>
->>>> ---
->>>>    .../bindings/connector/usb-connector.yaml     | 24 +++++++++++++++++++
->>>>    1 file changed, 24 insertions(+)
->>>>
->>>> diff --git a/Documentation/devicetree/bindings/connector/usb-connector.yaml b/Documentation/devicetree/bindings/connector/usb-connector.yaml
->>>> index 62781518aefc..a84464b3e1f2 100644
->>>> --- a/Documentation/devicetree/bindings/connector/usb-connector.yaml
->>>> +++ b/Documentation/devicetree/bindings/connector/usb-connector.yaml
->>>> @@ -93,6 +93,24 @@ properties:
->>>>          - device
->>>>          - dual
->>>>
->>>> +  typec-power-opmode:
->>>> +    description: Determines the power operation mode that the Type C connector
->>>> +      will support and will advertise through CC pins when it has no power
->>>> +      delivery support.
->>>> +      - "default" corresponds to default USB voltage and current defined by the
->>>> +        USB 2.0 and USB 3.2 specifications, 5V 500mA for USB 2.0 ports and
->>>> +        5V 900mA or 1500mA for USB 3.2 ports in single-lane or dual-lane
->>>> +        operation respectively.
->>>> +      - "1.5A" and "3.0A", 5V 1.5A and 5V 3.0A respectively, as defined in USB
->>>> +        Type-C Cable and Connector specification, when Power Delivery is not
->>>> +        supported.
->>>> +    allOf:
->>>> +      - $ref: /schemas/types.yaml#definitions/string
->>>> +    enum:
->>>> +      - default
->>>> +      - 1.5A
->>>> +      - 3.0A
->>>
->>> Use the enums here. Unless you want to define it as actual current as
->>> a numerical value.
->>
->> If I understand your point correctly, I think I should remove allOf here
->> and stick with what is done to describe power-role and data-role
->> property. Right ?
+> Hi Lee,
+> > > 
+> > > Other public functions in radeon_device.c have their prototype in
+> > > radeon.h - for example radeon_is_px()
+> > > 
+> > > Add radeon_device_is_virtual() there so we avoiid this new header.
+> > 
+> > Oh yes, I remember why this wasn't a suitable solution now:
+> > 
+> > The macro "radeon_init" in radeon.h clashes with the init function of
+> > the same name in radeon_drv.c:
+> > 
+> >   In file included from drivers/gpu/drm/radeon/radeon_drv.c:53:
+> >   drivers/gpu/drm/radeon/radeon_drv.c:620:31: error: expected identifier or ‘(’ before ‘void’
+> >   620 | static int __init radeon_init(void)
+> ...
+> > 
+> > How would you like me to move forward?
 > 
-> No, use the numerical values like FRS:
-> 
-> +      "1" refers to default USB power level as described by "Table
-> 6-14 Fixed Supply PDO - Sink".
-> +      "2" refers to 1.5A@5V.
-> +      "3" refers to 3.0A@5V.
-> +    $ref: /schemas/types.yaml#/definitions/uint32
-> +    enum: [1, 2, 3]
+> Fix the thousand of warnings in other places :-)
+> I will take a look at radeon and post a new series based on your work
+> with all W=1 warnings fixed.
 
-But it changes the type-c class philosophy. There is already an API to 
-convert string into enum, the same kind is used for data-role and 
-power-role properties.
-Moveover, FRS values doesn't fit with typec_pwr_opmode enum:
-enum typec_pwr_opmode {
-	TYPEC_PWR_MODE_USB,
-	TYPEC_PWR_MODE_1_5A,
-	TYPEC_PWR_MODE_3_0A,
-	TYPEC_PWR_MODE_PD,
-};
+I'll drop this patch and carry on ploughing through the rest of them.
 
-Regards
-Amelie
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
