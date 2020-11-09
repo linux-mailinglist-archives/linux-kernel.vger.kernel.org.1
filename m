@@ -2,145 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 483912AC039
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 16:49:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BF8072AC04A
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 16:54:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729650AbgKIPtV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 10:49:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47232 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727303AbgKIPtV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 10:49:21 -0500
-Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C372FC0613CF
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Nov 2020 07:49:20 -0800 (PST)
-Received: by mail-lf1-x144.google.com with SMTP id v144so13017417lfa.13
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Nov 2020 07:49:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=klq6Q68jdvp7j/9q9ZW+6VMrDTX3CW4pCIIJf0sl9GQ=;
-        b=XcIS5YTF30Eorn4Dftbl8kpSmUIcv4tJ2A/FvXDUWtuu66oe4GZU4SmuJaMfLJ6SPw
-         4AS2MKCkZEaMhp/v9xqTHYqLgsqF3xHNufQQSZvpQnwGAcke/u7gMIAo6PzLFubODrvo
-         kfiOUbpzwDHhtNtiT7W9rKTUKXi9sWFUoRGSUjdtM1n6TwOe5dcNKNQ1s4RsYz4sTgTX
-         8LrlsPOiWCQduQEfs8gK95pDu3EmlktOk0p2fj5Vv8K6GoHuq7mMqqBi6zoz5xzFZiiQ
-         1CnpjrxCd0GkIFC0CUqhT7I9O25nCHoZBYPeRlLrSK8uMLMXKKAVyGwZHO9IZq5D/K+z
-         GvFw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=klq6Q68jdvp7j/9q9ZW+6VMrDTX3CW4pCIIJf0sl9GQ=;
-        b=fFjjaJErzsK7Nh2DjOkvyABE+wqDiSA4eViKHtxTu5Aum1dQeo2eXckO15dRHFnEcI
-         xSFNChyqA14y8p9x3cx6BGxoc6/9J/y5U5DQdh4l3nSU+8/FAME/iJCwTuvNSkW3uLRP
-         mwl+d0mhmNaL2qnByDOkufo0WB6M3kDj+5C8HsILdPyxbgLyGLTvuLV5NgVVbd2kS3oI
-         KkrGAcXkUgw9Duu9YB0H/0qcMYtXrccETjJGplaWKFsEHFgYzAYrEdcMlpOalqr2mygb
-         AHb4s5QwE9Jyww2c91U9Izfyrsr/NwB8cBlK8C7MdVYVBnIiQ5aSwLCI5LiTRAgmugzN
-         TY/g==
-X-Gm-Message-State: AOAM533axnhvnoW07pA1WhNSH9fF7xufQHgsrCK1ymizg7qIEsuvGby3
-        2KbIJaidAm+Re6HjCd7JGlo8eZG4J7SHzl90SqHQNQ==
-X-Google-Smtp-Source: ABdhPJwhROlrP+0rBPgDIgQrMOh8CBB6dbmTOBIRUv710tcoLjSe59a/I2bia+zugeWjdqzBTvCT0xeFqN6swqwTTso=
-X-Received: by 2002:a19:c191:: with SMTP id r139mr467712lff.258.1604936959185;
- Mon, 09 Nov 2020 07:49:19 -0800 (PST)
+        id S1729964AbgKIPys convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 9 Nov 2020 10:54:48 -0500
+Received: from foss.arm.com ([217.140.110.172]:42118 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726410AbgKIPyr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 10:54:47 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D87BB1042;
+        Mon,  9 Nov 2020 07:54:45 -0800 (PST)
+Received: from e113632-lin (e113632-lin.cambridge.arm.com [10.1.194.46])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E7A633F719;
+        Mon,  9 Nov 2020 07:54:43 -0800 (PST)
+References: <20201021150335.1103231-1-aubrey.li@linux.intel.com> <jhj1rh6yygz.mognet@arm.com> <ac73a9e2-8cc0-b1fe-fc2b-14b9cb21c8bf@linux.intel.com>
+User-agent: mu4e 0.9.17; emacs 26.3
+From:   Valentin Schneider <valentin.schneider@arm.com>
+To:     "Li\, Aubrey" <aubrey.li@linux.intel.com>
+Cc:     mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+        tim.c.chen@linux.intel.com, linux-kernel@vger.kernel.org,
+        Aubrey Li <aubrey.li@intel.com>,
+        Qais Yousef <qais.yousef@arm.com>,
+        Jiang Biao <benbjiang@gmail.com>
+Subject: Re: [RFC PATCH v3] sched/fair: select idle cpu from idle cpumask for task wakeup
+In-reply-to: <ac73a9e2-8cc0-b1fe-fc2b-14b9cb21c8bf@linux.intel.com>
+Date:   Mon, 09 Nov 2020 15:54:36 +0000
+Message-ID: <jhjsg9iy18j.mognet@arm.com>
 MIME-Version: 1.0
-References: <20200714125941.4174-1-peter.puhov@linaro.org> <20201102105043.GB3371@techsingularity.net>
- <CAKfTPtB7q8DMQaC=gU+XH92XKcSiuTSBjtMuiRFS67af0gzc6g@mail.gmail.com>
- <20201102144418.GB154641@lorien.usersys.redhat.com> <20201104094205.GI3306@suse.de>
- <20201106120303.GE3371@techsingularity.net> <CAKfTPtDbyrcZtzPPsdQFOxOkreg-ejn=ABGOGqYjdVpeFPEzPw@mail.gmail.com>
- <20201106160010.GF3371@techsingularity.net> <20201109152411.GA610888@lorien.usersys.redhat.com>
- <20201109153815.GH3371@techsingularity.net>
-In-Reply-To: <20201109153815.GH3371@techsingularity.net>
-From:   Vincent Guittot <vincent.guittot@linaro.org>
-Date:   Mon, 9 Nov 2020 16:49:07 +0100
-Message-ID: <CAKfTPtAGXhmmuEV=fF1E1JiOG40RBOXcX35oTTbUXe+1nDRSOA@mail.gmail.com>
-Subject: Re: [PATCH v1] sched/fair: update_pick_idlest() Select group with
- lowest group_util when idle_cpus are equal
-To:     Mel Gorman <mgorman@techsingularity.net>
-Cc:     Phil Auld <pauld@redhat.com>, Peter Puhov <peter.puhov@linaro.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Robert Foley <robert.foley@linaro.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>,
-        Jirka Hladky <jhladky@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 9 Nov 2020 at 16:38, Mel Gorman <mgorman@techsingularity.net> wrote:
->
-> On Mon, Nov 09, 2020 at 10:24:11AM -0500, Phil Auld wrote:
-> > Hi,
-> >
-> > On Fri, Nov 06, 2020 at 04:00:10PM +0000 Mel Gorman wrote:
-> > > On Fri, Nov 06, 2020 at 02:33:56PM +0100, Vincent Guittot wrote:
-> > > > On Fri, 6 Nov 2020 at 13:03, Mel Gorman <mgorman@techsingularity.net> wrote:
-> > > > >
-> > > > > On Wed, Nov 04, 2020 at 09:42:05AM +0000, Mel Gorman wrote:
-> > > > > > While it's possible that some other factor masked the impact of the patch,
-> > > > > > the fact it's neutral for two workloads in 5.10-rc2 is suspicious as it
-> > > > > > indicates that if the patch was implemented against 5.10-rc2, it would
-> > > > > > likely not have been merged. I've queued the tests on the remaining
-> > > > > > machines to see if something more conclusive falls out.
-> > > > > >
-> > > > >
-> > > > > It's not as conclusive as I would like. fork_test generally benefits
-> > > > > across the board but I do not put much weight in that.
-> > > > >
-> > > > > Otherwise, it's workload and machine-specific.
-> > > > >
-> > > > > schbench: (wakeup latency sensitive), all machines benefitted from the
-> > > > >         revert at the low utilisation except one 2-socket haswell machine
-> > > > >         which showed higher variability when the machine was fully
-> > > > >         utilised.
-> > > >
-> > > > There is a pending patch to should improve this bench:
-> > > > https://lore.kernel.org/patchwork/patch/1330614/
-> > > >
-> > >
-> > > Ok, I've slotted this one in with a bunch of other stuff I wanted to run
-> > > over the weekend. That particular patch was on my radar anyway. It just
-> > > got bumped up the schedule a little bit.
-> > >
-> >
-> >
-> > We've run some of our perf tests against various kernels in this thread.
-> > By default RHEL configs run with the performance governor.
-> >
->
-> This aspect is somewhat critical because the patches affect CPU
-> selection. If a mostly idle CPU is used due to spreading load wider,
-> it can take longer to ramp up to the highest frequency. It can be a
-> dominating factor and may account for some of the differences.
 
-I agree but that also highlights that the problem comes from frequency
-selection more than task placement. In such a case, instead of trying
-to bias task placement to compensate for wrong freq selection, we
-should look at the freq selection itself. Not sure if it's the case
-but it's worth identifying if perf regression comes from task
-placement and data locality or from freq selection
-
+On 09/11/20 13:40, Li, Aubrey wrote:
+> On 2020/11/7 5:20, Valentin Schneider wrote:
+>>
+>> On 21/10/20 16:03, Aubrey Li wrote:
+>>> From: Aubrey Li <aubrey.li@intel.com>
+>>>
+>>> Added idle cpumask to track idle cpus in sched domain. When a CPU
+>>> enters idle, its corresponding bit in the idle cpumask will be set,
+>>> and when the CPU exits idle, its bit will be cleared.
+>>>
+>>> When a task wakes up to select an idle cpu, scanning idle cpumask
+>>> has low cost than scanning all the cpus in last level cache domain,
+>>> especially when the system is heavily loaded.
+>>>
+>>
+>> FWIW I gave this a spin on my arm64 desktop (Ampere eMAG, 32 core). I get
+>> some barely noticeable (AIUI not statistically significant for bench sched)
+>> changes for 100 iterations of:
+>>
+>> | bench                              | metric   |   mean |     std |    q90 |    q99 |
+>> |------------------------------------+----------+--------+---------+--------+--------|
+>> | hackbench --loops 5000 --groups 1  | duration | -1.07% |  -2.23% | -0.88% | -0.25% |
+>> | hackbench --loops 5000 --groups 2  | duration | -0.79% | +30.60% | -0.49% | -0.74% |
+>> | hackbench --loops 5000 --groups 4  | duration | -0.54% |  +6.99% | -0.21% | -0.12% |
+>> | perf bench sched pipe -T -l 100000 | ops/sec  | +1.05% |  -2.80% | -0.17% | +0.39% |
+>>
+>> q90 & q99 being the 90th and 99th percentile.
+>>
+>> Base was tip/sched/core at:
+>> d8fcb81f1acf ("sched/fair: Check for idle core in wake_affine")
 >
-> Generally my tests are not based on the performance governor because a)
-> it's not a universal win and b) the powersave/ondemand govenors should
-> be able to function reasonably well. For short-lived workloads it may
-> not matter but ultimately schedutil should be good enough that it can
-
-Yeah, schedutil should be able to manage this. But there is another
-place which impacts benchmark which are based on a lot of fork/exec :
-the initial value of task's PELT signal. Current implementation tries
-to accommodate both perf and embedded system but might fail to satisfy
-any of them at the end.
-
-> keep track of task utilisation after migrations and select appropriate
-> frequencies based on the tasks historical behaviour.
+> Thanks for the data, Valentin! So does the negative value mean improvement?
 >
-> --
-> Mel Gorman
-> SUSE Labs
+
+For hackbench yes (shorter is better); for perf bench sched no, since the
+metric here is ops/sec so higher is better.
+
+That said, I (use a tool that) run a 2-sample Kolmogorov–Smirnov test
+against the two sample sets (tip/sched/core vs tip/sched/core+patch), and
+the p-value for perf sched bench is quite high (~0.9) which means we can't
+reject that both sample sets come from the same distribution; long story
+short we can't say whether the patch had a noticeable impact for that
+benchmark.
+
+> If so the data looks expected to me. As we set idle cpumask every time we
+> enter idle, but only clear it at the tick frequency, so if the workload
+> is not heavy enough, there could be a lot of idle during two ticks, so idle
+> cpumask is almost equal to sched_domain_span(sd), which makes no difference.
+>
+> But if the system load is heavy enough, CPU has few/no chance to enter idle,
+> then idle cpumask can be cleared during tick, which makes the bit number in
+> sds_idle_cpus(sd->shared) far less than the bit number in sched_domain_span(sd)
+> if llc domain has large count of CPUs.
+>
+
+With hackbench -g 4 that's 160 tasks (against 32 CPUs, all under same LLC),
+although the work done by each task isn't much. I'll try bumping that a
+notch, or increasing the size of the messages.
+
+> For example, if I run 4 x overcommit uperf on a system with 192 CPUs,
+> I observed:
+> - default, the average of this_sd->avg_scan_cost is 223.12ns
+> - patch, the average of this_sd->avg_scan_cost is 63.4ns
+>
+> And select_idle_cpu is called 7670253 times per second, so for every CPU the
+> scan cost is saved (223.12 - 63.4) * 7670253 / 192 = 6.4ms. As a result, I
+> saw uperf thoughput improved by 60+%.
+>
+
+That's ~1.2s of "extra" CPU time per second, which sounds pretty cool.
+
+I don't think I've ever played with uperf. I'll give that a shot someday.
+
+> Thanks,
+> -Aubrey
+>
+>
+>
