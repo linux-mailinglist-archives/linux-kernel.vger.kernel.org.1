@@ -2,134 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA6662AC773
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 22:41:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 87FF62AC74B
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 22:31:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730331AbgKIVk6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 16:40:58 -0500
-Received: from host.euro-space.net ([87.117.239.2]:50321 "EHLO
-        host.euro-space.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729451AbgKIVk5 (ORCPT
+        id S1730670AbgKIVbq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 16:31:46 -0500
+Received: from youngberry.canonical.com ([91.189.89.112]:38081 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727311AbgKIVbp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 16:40:57 -0500
-X-Greylist: delayed 1286 seconds by postgrey-1.27 at vger.kernel.org; Mon, 09 Nov 2020 16:40:56 EST
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=birdec.com;
-         s=default; h=Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:MIME-Version
-        :Content-Type:Content-Transfer-Encoding:Content-ID:Content-Description:
-        Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-        In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-        List-Post:List-Owner:List-Archive;
-        bh=CYkwsVIaLlOhxjKhcFdBd4Owd+Ss0IqNzEdDmO2watg=; b=aS05Lz9Ugh7EwhcU6cpwgxoyO+
-        uvZRCfsKa7rs3aM2zDjLcAfOB5D8qYnGE2KHOgSifm/6dHs4T7+AaTC16+GV6l9s0KnKRGjrocGc8
-        wQTkumOW8EdLP7MJlXmUYSrc+SIuhjZruPuybI4VqxJQrtTn4J7ObqxSbrFFTY33hf7KYXN5AKmWg
-        fE+XZy1wJ1cQB2ap9ZFksXU4Fy1924ZWH3zFcMNwbHtYrSOAnwVZqBql1bfkMb+dFtEkvL2y/TObM
-        y4rUODXpkFxxvmAuqiPtLDNu1I3ozklnpaDYynjwYiSliRvybicJd8wcXVFgP8JXSsHX7jjy5fxHP
-        gAMif7kA==;
-Received: from dynamic-089-014-103-027.89.14.pool.telefonica.de ([89.14.103.27]:44520 helo=gentoo0.localdomain)
-        by host.euro-space.net with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <kmarinushkin@birdec.com>)
-        id 1kcEZS-0000xS-SE; Mon, 09 Nov 2020 21:19:26 +0000
-From:   Kirill Marinushkin <kmarinushkin@birdec.com>
-To:     Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>,
-        Liam Girdwood <lgirdwood@gmail.com>
-Cc:     Matthias Reichl <hias@horus.com>,
-        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
-        Peter Ujfalusi <peter.ujfalusi@ti.com>,
-        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-        Kirill Marinushkin <kmarinushkin@birdec.com>
-Subject: [PATCH] ASoC: pcm512x: Add support for data formats RJ and LJ
-Date:   Mon,  9 Nov 2020 22:21:33 +0100
-Message-Id: <20201109212133.25869-1-kmarinushkin@birdec.com>
-X-Mailer: git-send-email 2.13.6
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - host.euro-space.net
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - birdec.com
-X-Get-Message-Sender-Via: host.euro-space.net: authenticated_id: kmarinushkin@birdec.com
-X-Authenticated-Sender: host.euro-space.net: kmarinushkin@birdec.com
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
+        Mon, 9 Nov 2020 16:31:45 -0500
+Received: from 1.general.cascardo.us.vpn ([10.172.70.58] helo=mussarela)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <cascardo@canonical.com>)
+        id 1kcElJ-0002mr-La; Mon, 09 Nov 2020 21:31:42 +0000
+Date:   Mon, 9 Nov 2020 18:31:34 -0300
+From:   Thadeu Lima de Souza Cascardo <cascardo@canonical.com>
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     Kleber Sacilotto de Souza <kleber.souza@canonical.com>,
+        Eric Dumazet <edumazet@google.com>, netdev@vger.kernel.org,
+        Gerrit Renker <gerrit@erg.abdn.ac.uk>,
+        "David S. Miller" <davem@davemloft.net>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        "Alexander A. Klimov" <grandmaster@al2klimov.de>,
+        Kees Cook <keescook@chromium.org>,
+        Alexey Kodanev <alexey.kodanev@oracle.com>,
+        dccp@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] dccp: ccid: move timers to struct dccp_sock
+Message-ID: <20201109213134.GR595944@mussarela>
+References: <20201013171849.236025-1-kleber.souza@canonical.com>
+ <20201013171849.236025-2-kleber.souza@canonical.com>
+ <20201016153016.04bffc1e@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <20201109114828.GP595944@mussarela>
+ <20201109094938.45b230c9@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <20201109210909.GQ595944@mussarela>
+ <20201109131554.5f65b2fa@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201109131554.5f65b2fa@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently, pcm512x driver supports only I2S data format.
-This commit adds RJ and LJ as well.
+On Mon, Nov 09, 2020 at 01:15:54PM -0800, Jakub Kicinski wrote:
+> On Mon, 9 Nov 2020 18:09:09 -0300 Thadeu Lima de Souza Cascardo wrote:
+> > On Mon, Nov 09, 2020 at 09:49:38AM -0800, Jakub Kicinski wrote:
+> > > On Mon, 9 Nov 2020 08:48:28 -0300 Thadeu Lima de Souza Cascardo wrote:  
+> > > > On Fri, Oct 16, 2020 at 03:30:16PM -0700, Jakub Kicinski wrote:  
+> > > > > On Tue, 13 Oct 2020 19:18:48 +0200 Kleber Sacilotto de Souza wrote:    
+> > > > > > From: Thadeu Lima de Souza Cascardo <cascardo@canonical.com>
+> > > > > > 
+> > > > > > When dccps_hc_tx_ccid is freed, ccid timers may still trigger. The reason
+> > > > > > del_timer_sync can't be used is because this relies on keeping a reference
+> > > > > > to struct sock. But as we keep a pointer to dccps_hc_tx_ccid and free that
+> > > > > > during disconnect, the timer should really belong to struct dccp_sock.
+> > > > > > 
+> > > > > > This addresses CVE-2020-16119.
+> > > > > > 
+> > > > > > Fixes: 839a6094140a (net: dccp: Convert timers to use timer_setup())
+> > > > > > Signed-off-by: Thadeu Lima de Souza Cascardo <cascardo@canonical.com>
+> > > > > > Signed-off-by: Kleber Sacilotto de Souza <kleber.souza@canonical.com>    
+> > > > > 
+> > > > > I've been mulling over this fix.
+> > > > > 
+> > > > > The layering violation really doesn't sit well.
+> > > > > 
+> > > > > We're reusing the timer object. What if we are really unlucky, the
+> > > > > fires and gets blocked by a cosmic ray just as it's about to try to
+> > > > > lock the socket, then user manages to reconnect, and timer starts
+> > > > > again. Potentially with a different CCID algo altogether?
+> > > > > 
+> > > > > Is disconnect ever called under the BH lock?  Maybe plumb a bool
+> > > > > argument through to ccid*_hc_tx_exit() and do a sk_stop_timer_sync()
+> > > > > when called from disconnect()?
+> > > > > 
+> > > > > Or do refcounting on ccid_priv so that the timer holds both the socket
+> > > > > and the priv?    
+> > > > 
+> > > > Sorry about too late a response. I was on vacation, then came back and spent a
+> > > > couple of days testing this further, and had to switch to other tasks.
+> > > > 
+> > > > So, while testing this, I had to resort to tricks like having a very small
+> > > > expire and enqueuing on a different CPU. Then, after some minutes, I hit a UAF.
+> > > > That's with or without the first of the second patch.
+> > > > 
+> > > > I also tried to refcount ccid instead of the socket, keeping the timer on the
+> > > > ccid, but that still hit the UAF, and that's when I had to switch tasks.  
+> > > 
+> > > Hm, not instead, as well. I think trying cancel the timer _sync from
+> > > the disconnect path would be the simplest solution, tho.
+> > 
+> > I don't think so. On other paths, we would still have the possibility that:
+> > 
+> > CPU1: timer expires and is about to run
+> > CPU2: calls stop_timer (which does not stop anything) and frees ccid
+> > CPU1: timer runs and uses freed ccid
+> > 
+> > And those paths, IIUC, may be run under a SoftIRQ on the receive path, so would
+> > not be able to call stop_timer_sync.
+> 
+> Which paths are those (my memory of this code is waning)? I thought
+> disconnect is only called from the user space side (shutdown syscall).
+> The only other way to terminate the connection is to close the socket,
+> which Eric already fixed by postponing the destruction of ccid in that
+> case.
 
-I don't expect regression WRT existing sound cards, because:
+dccp_v4_do_rcv -> dccp_rcv_established -> dccp_parse_options ->
+	dccp_feat_parse_options -> dccp_feat_handle_nn_established ->
+	dccp_feat_activate -> __dccp_feat_activate -> dccp_hdlr_ccid ->
+	ccid_hc_tx_delete
 
-* default value in corresponding register of pcm512x codec is 0 ==  I2S
-* existing in-tree sound cards with pcm512x codec are configured for I2S
-* i don't see how existing off-tree sound cards with pcm512x codec could be
-  configured differently - it would not work
-* tested explicitly, that there is no regression with Raspberry Pi +
-  sound card `sound/soc/bcm/hifiberry_dacplus.c`
-
-Signed-off-by: Kirill Marinushkin <kmarinushkin@birdec.com>
-Cc: Mark Brown <broonie@kernel.org>
-Cc: Takashi Iwai <tiwai@suse.com>
-Cc: Liam Girdwood <lgirdwood@gmail.com>
-Cc: Matthias Reichl <hias@horus.com>
-Cc: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc: alsa-devel@alsa-project.org
-Cc: linux-kernel@vger.kernel.org
----
- sound/soc/codecs/pcm512x.c | 24 ++++++++++++++++++++++++
- 1 file changed, 24 insertions(+)
-
-diff --git a/sound/soc/codecs/pcm512x.c b/sound/soc/codecs/pcm512x.c
-index 8153d3d01654..c6e975fb4a43 100644
---- a/sound/soc/codecs/pcm512x.c
-+++ b/sound/soc/codecs/pcm512x.c
-@@ -1167,6 +1167,7 @@ static int pcm512x_hw_params(struct snd_pcm_substream *substream,
- 	struct snd_soc_component *component = dai->component;
- 	struct pcm512x_priv *pcm512x = snd_soc_component_get_drvdata(component);
- 	int alen;
-+	int afmt;
- 	int gpio;
- 	int clock_output;
- 	int master_mode;
-@@ -1195,6 +1196,22 @@ static int pcm512x_hw_params(struct snd_pcm_substream *substream,
- 		return -EINVAL;
- 	}
- 
-+	switch (pcm512x->fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
-+	case SND_SOC_DAIFMT_I2S:
-+		afmt = PCM512x_AFMT_I2S;
-+		break;
-+	case SND_SOC_DAIFMT_RIGHT_J:
-+		afmt = PCM512x_AFMT_RTJ;
-+		break;
-+	case SND_SOC_DAIFMT_LEFT_J:
-+		afmt = PCM512x_AFMT_LTJ;
-+		break;
-+	default:
-+		dev_err(component->dev, "unsupported DAI format: 0x%x\n",
-+			pcm512x->fmt);
-+		return -EINVAL;
-+	}
-+
- 	switch (pcm512x->fmt & SND_SOC_DAIFMT_MASTER_MASK) {
- 	case SND_SOC_DAIFMT_CBS_CFS:
- 		ret = regmap_update_bits(pcm512x->regmap,
-@@ -1236,6 +1253,13 @@ static int pcm512x_hw_params(struct snd_pcm_substream *substream,
- 		return ret;
- 	}
- 
-+	ret = regmap_update_bits(pcm512x->regmap, PCM512x_I2S_1,
-+				 PCM512x_AFMT, afmt);
-+	if (ret != 0) {
-+		dev_err(component->dev, "Failed to set data format: %d\n", ret);
-+		return ret;
-+	}
-+
- 	if (pcm512x->pll_out) {
- 		ret = regmap_write(pcm512x->regmap, PCM512x_FLEX_A, 0x11);
- 		if (ret != 0) {
--- 
-2.13.6
-
+> 
+> > > > Oh, and in the meantime, I found one or two other fixes that we
+> > > > should apply, will send them shortly.
+> > > > 
+> > > > But I would argue that we should apply the revert as it addresses the
+> > > > CVE, without really regressing the other UAF, as I argued. Does that
+> > > > make sense?  
+> > > 
+> > > We can - it's always a little strange to go from one bug to a different
+> > > without a fix - but the justification being that while the previous UAF
+> > > required a race condition the new one is actually worst because it can 
+> > > be triggered reliably?  
+> > 
+> > Well, I am arguing here that commit 2677d20677314101293e6da0094ede7b5526d2b1
+> > ("dccp: don't free ccid2_hc_tx_sock struct in dccp_disconnect()") doesn't
+> > really fix anything. Whenever ccid_hx_tx_delete is called, that UAF might
+> > happen, because the timer might trigger right after we free the ccid struct.
+> > 
+> > And, yes, on the other hand, we can reliably launch the DoS attack that is
+> > fixed by the revert of that commit.
+> 
+> OK.
+> 
