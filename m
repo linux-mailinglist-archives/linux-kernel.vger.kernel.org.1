@@ -2,42 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50D1D2ABCAA
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 14:39:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 010B12ABD8A
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 14:47:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387671AbgKINj2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 08:39:28 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56346 "EHLO mail.kernel.org"
+        id S1729945AbgKIM5F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 07:57:05 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51398 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730680AbgKINDl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 08:03:41 -0500
+        id S1729542AbgKIM4o (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 07:56:44 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BD37B2222B;
-        Mon,  9 Nov 2020 13:03:16 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7FB3220684;
+        Mon,  9 Nov 2020 12:56:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604926997;
-        bh=iGi1A/HIjlPZYD+2SeqNGeJAXliQ5RfNBdSLrnNyclk=;
+        s=default; t=1604926604;
+        bh=T4o0DXs6wtfVp+UjtIlSWtuCUVCA119VN3WbpaeLBak=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rLwkEROYtZT4OR8rHGtDBrrO/1pXa/qrrXmY3B7+/+vynfnWidfG+FU7Zn5B5Q43A
-         MCJ9wvuTJu3qYrKv8gz6G2K3VAkmgtx2FC5+TxxXcZkNFA4sYNz1l2UJ5/nmm4yCnd
-         9E9u/EPGy5EGvI+eqkL0ymmDYbAaKRezXx8hnzmY=
+        b=cSVuF5HRrNLKSwgpQwGACGKBa9Iuq+vvNc4IWLIvppyDzJoVu9b+SCG5oSM7H1kcd
+         qohld8+pz5vACJJETdpt03DpU/8LiID1+kZX3vcCQKYeanzap1ElMosbtHXzWBMTn9
+         zxUqnVnED1CsZs+Z+jSlFGxaQIz0oiprfgoXxGOA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        =?UTF-8?q?Marek=20Beh=C3=BAn?= <marek.behun@nic.cz>,
-        =?UTF-8?q?=C3=81lvaro=20Fern=C3=A1ndez=20Rojas?= 
-        <noltari@gmail.com>, Kevin Cernekee <cernekee@gmail.com>,
-        Jaedon Shin <jaedon.shin@gmail.com>,
-        Pavel Machek <pavel@ucw.cz>, stable@kernel.org
-Subject: [PATCH 4.9 048/117] leds: bcm6328, bcm6358: use devres LED registering function
+        Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.4 27/86] drivers: watchdog: rdc321x_wdt: Fix race condition bugs
 Date:   Mon,  9 Nov 2020 13:54:34 +0100
-Message-Id: <20201109125027.948402336@linuxfoundation.org>
+Message-Id: <20201109125022.165363242@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201109125025.630721781@linuxfoundation.org>
-References: <20201109125025.630721781@linuxfoundation.org>
+In-Reply-To: <20201109125020.852643676@linuxfoundation.org>
+References: <20201109125020.852643676@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,50 +46,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Marek Behún <marek.behun@nic.cz>
+From: Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>
 
-commit ff5c89d44453e7ad99502b04bf798a3fc32c758b upstream.
+[ Upstream commit 4b2e7f99cdd314263c9d172bc17193b8b6bba463 ]
 
-These two drivers do not provide remove method and use devres for
-allocation of other resources, yet they use led_classdev_register
-instead of the devres variant, devm_led_classdev_register.
+In rdc321x_wdt_probe(), rdc321x_wdt_device.queue is initialized
+after misc_register(), hence if ioctl is called before its
+initialization which can call rdc321x_wdt_start() function,
+it will see an uninitialized value of rdc321x_wdt_device.queue,
+hence initialize it before misc_register().
+Also, rdc321x_wdt_device.default_ticks is accessed in reset()
+function called from write callback, thus initialize it before
+misc_register().
 
-Fix this.
+Found by Linux Driver Verification project (linuxtesting.org).
 
-Signed-off-by: Marek Behún <marek.behun@nic.cz>
-Cc: Álvaro Fernández Rojas <noltari@gmail.com>
-Cc: Kevin Cernekee <cernekee@gmail.com>
-Cc: Jaedon Shin <jaedon.shin@gmail.com>
-Signed-off-by: Pavel Machek <pavel@ucw.cz>
-Cc: stable@kernel.org
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Signed-off-by: Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>
+Reviewed-by: Guenter Roeck <linux@roeck-us.net>
+Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
+Link: https://lore.kernel.org/r/20200807112902.28764-1-madhuparnabhowmik10@gmail.com
+Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+Signed-off-by: Wim Van Sebroeck <wim@linux-watchdog.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/leds/leds-bcm6328.c |    2 +-
- drivers/leds/leds-bcm6358.c |    2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ drivers/watchdog/rdc321x_wdt.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
---- a/drivers/leds/leds-bcm6328.c
-+++ b/drivers/leds/leds-bcm6328.c
-@@ -336,7 +336,7 @@ static int bcm6328_led(struct device *de
- 	led->cdev.brightness_set = bcm6328_led_set;
- 	led->cdev.blink_set = bcm6328_blink_set;
+diff --git a/drivers/watchdog/rdc321x_wdt.c b/drivers/watchdog/rdc321x_wdt.c
+index 47a8f1b1087d4..4568af9a165be 100644
+--- a/drivers/watchdog/rdc321x_wdt.c
++++ b/drivers/watchdog/rdc321x_wdt.c
+@@ -244,6 +244,8 @@ static int rdc321x_wdt_probe(struct platform_device *pdev)
  
--	rc = led_classdev_register(dev, &led->cdev);
-+	rc = devm_led_classdev_register(dev, &led->cdev);
- 	if (rc < 0)
- 		return rc;
+ 	rdc321x_wdt_device.sb_pdev = pdata->sb_pdev;
+ 	rdc321x_wdt_device.base_reg = r->start;
++	rdc321x_wdt_device.queue = 0;
++	rdc321x_wdt_device.default_ticks = ticks;
  
---- a/drivers/leds/leds-bcm6358.c
-+++ b/drivers/leds/leds-bcm6358.c
-@@ -141,7 +141,7 @@ static int bcm6358_led(struct device *de
+ 	err = misc_register(&rdc321x_wdt_misc);
+ 	if (err < 0) {
+@@ -258,14 +260,11 @@ static int rdc321x_wdt_probe(struct platform_device *pdev)
+ 				rdc321x_wdt_device.base_reg, RDC_WDT_RST);
  
- 	led->cdev.brightness_set = bcm6358_led_set;
+ 	init_completion(&rdc321x_wdt_device.stop);
+-	rdc321x_wdt_device.queue = 0;
  
--	rc = led_classdev_register(dev, &led->cdev);
-+	rc = devm_led_classdev_register(dev, &led->cdev);
- 	if (rc < 0)
- 		return rc;
+ 	clear_bit(0, &rdc321x_wdt_device.inuse);
  
+ 	setup_timer(&rdc321x_wdt_device.timer, rdc321x_wdt_trigger, 0);
+ 
+-	rdc321x_wdt_device.default_ticks = ticks;
+-
+ 	dev_info(&pdev->dev, "watchdog init success\n");
+ 
+ 	return 0;
+-- 
+2.27.0
+
 
 
