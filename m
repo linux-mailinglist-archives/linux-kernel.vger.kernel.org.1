@@ -2,210 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FBD82AC4F7
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 20:29:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A8F62AC4FB
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 20:30:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730601AbgKIT3K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 14:29:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53216 "EHLO
+        id S1730765AbgKIT35 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 14:29:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53344 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726691AbgKIT3J (ORCPT
+        with ESMTP id S1726691AbgKIT35 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 14:29:09 -0500
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3198C0613CF;
-        Mon,  9 Nov 2020 11:29:07 -0800 (PST)
-Received: by mail-wr1-x441.google.com with SMTP id s8so2923056wrw.10;
-        Mon, 09 Nov 2020 11:29:07 -0800 (PST)
+        Mon, 9 Nov 2020 14:29:57 -0500
+Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0671C0613CF;
+        Mon,  9 Nov 2020 11:29:55 -0800 (PST)
+Received: by mail-ej1-x62d.google.com with SMTP id o21so13968366ejb.3;
+        Mon, 09 Nov 2020 11:29:55 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=m6LxZ8aRrjGXNDFB2Tn/gXhpm/LDD8SKjkVf58nA1TY=;
-        b=B8cmZ4Yud/sp/VaPzSBFxk1DQp2ub8gpkUGRKHkTDyg5kSl3+bEvEpS0TSVDppKbPS
-         Kp3bCSt49YWyr1dJMfWfX1Fwli26Hz60oLLvb3j518q8zOHy7kiSV7dO1Tnqfl/rhW4/
-         M6vvPJ/hpZj+UmL+JtYRZi96mSft+3JfdTYNdVVl0zHP3fdy989fxI074vCzHtz2EB9w
-         Pg3e1GTwUgMx8FQmrei5MW3+2l6H6dTQFBeWclIaZjpNu0e5p8deVG6rxZGF1oPHscvS
-         rWO5RjjD6mYrXM6ZwSMZlOTUsruZSJpkY6LDvQ+n5tJ/pfr3WGu4LXRrENsjfFFsQymz
-         NwbQ==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=RY20dt3ip/OwiBMlSf/TL7DKVGCOSFyGilBoU60ly7Q=;
+        b=FTClbMvnZH9/EjC8NIbNp8jg7/wMCyEaakfGIIXFIu9BwEwZLPp9j7X72OWJMGqq5B
+         Eq6hQXHkFIVTD0XIdH/62pd1rrox8krxW3FhB8vNKj4xu5Or5zJLPa2wHeAFLcR+J1lV
+         Wr6KaCnKDX6lK/dnFvbRUoHZq5fPWzVkPW7u4nL1cNeIPDl7nG0MpN5OV3uHE+4mpOYQ
+         D/mFlGXq2uWRo9SwggwlsqI2WQDNnHIZA8z3/k4WxCbeq1dCiIj4vXcnQLXXQaxysStG
+         9QHOsNrkxsoGKoDEwX+P2Wv34py9LxCZkH4ngNGUglRFj6l47PJK4pzkhVUTxm8sFvZS
+         dzwQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=m6LxZ8aRrjGXNDFB2Tn/gXhpm/LDD8SKjkVf58nA1TY=;
-        b=pfavbwSoIqOxiIkKUV8W6+jf70HY4Oo1gdIxvaRqEdmkysSAEfAlyggqFflokIQ3Mh
-         Vk0R8700tHM8XLD+cUK5/wFbD87ZtZqRbYmfJHMi/QxGCKTV3lkq4QqBBmmvgycKCx1e
-         kBLP+Ll1THn6GIb5ca3pgrho0Zq5Shx9Hkdma1MrZ2H8Qr5bObmZHurHrkJ9pPED+BHy
-         TUb+ltaKfKomzpI6rgAW3G+pd9NshMB4TV/TTI/pb8Jp0l/RHbOVlahI7sib+uLxEIS/
-         Ji+g65hBaCBLag8H4vedjyTxAucNoPaxUwX5clB+Prh6Q9qxPsi4mJeJ7m/6cOvO0GyQ
-         k/Pw==
-X-Gm-Message-State: AOAM53380bVFLzWQuTu5IxA0DNpLPrWZkkWPnS5zlr5slHQEsS6PYZB/
-        1FP4fGgvVIqlovPOi8HIUIMqFdZlGt8=
-X-Google-Smtp-Source: ABdhPJzTwG/lHfIHnIoiZlxEJdgkQikDIZR5xabq8vsJjPZFoT+QvHLcBzfTJPiprwc5NOwpI9p9qw==
-X-Received: by 2002:adf:f085:: with SMTP id n5mr19624887wro.293.1604950146185;
-        Mon, 09 Nov 2020 11:29:06 -0800 (PST)
-Received: from [192.168.8.114] ([37.170.31.34])
-        by smtp.gmail.com with ESMTPSA id u6sm408969wmj.40.2020.11.09.11.29.04
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 09 Nov 2020 11:29:05 -0800 (PST)
-Subject: Re: [PATCH v2 net] net: udp: fix Fast/frag0 UDP GRO
-To:     Alexander Lobakin <alobakin@pm.me>,
-        Eric Dumazet <eric.dumazet@gmail.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Willem de Bruijn <willemb@google.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <0eaG8xtbtKY1dEKCTKUBubGiC9QawGgB3tVZtNqVdY@cp4-web-030.plabs.ch>
- <d9d09931-8cd3-1eb6-673c-3ae5ebc3ee57@gmail.com>
- <Nc6hn1Qaui1C7hTlHl8CdsNV00CdlHtyjQYv36ZYA@cp4-web-040.plabs.ch>
-From:   Eric Dumazet <eric.dumazet@gmail.com>
-Message-ID: <0a7af3fb-d1c4-bedf-4931-5f22f0481491@gmail.com>
-Date:   Mon, 9 Nov 2020 20:29:03 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=RY20dt3ip/OwiBMlSf/TL7DKVGCOSFyGilBoU60ly7Q=;
+        b=tugKblUTY8z2FuROoKFGZnmVeM16hgIZQvZYZhRo1QHRuLmIARAQ5sC3NVLubAw/kb
+         6bseqtwsNlvERfuj9ozK5nyQ4deO9tUH+y5NM1jj+1oRfDvebY+4OVzgL4WUhZlDTB50
+         FLBzGpPZrrqON/cfQT61qpwUuVbGP5l/punQcqJ8g5XRp1gKjSJejzU3Nee88NT4i5U+
+         MgFDOlFfFgS+8IaUF+TDgxASn4m821TxucmUr6P6KYqzdeKEck7ek2vtPQiA21u07YtA
+         aWiSS7gcfJzVDwDfRw46lycjb1PDVBxJeIe4zQAPT0x/RFWmNWlFKBzH19vbs/b7/kOq
+         fi/Q==
+X-Gm-Message-State: AOAM532PXeWnKCzhsmhQKF4pZLiIP0pbxS80Z8gUtWX3AN5pERQLmhkW
+        dAh99/2/JhVlPG6iQcrq0Ghx9xcMRR0G9h1gF+I=
+X-Google-Smtp-Source: ABdhPJwu7Wg3rXjrhZkq9jtQaZBWQKNrpmIeD+74Np/FpcVLaQhzhHd1ObqQBbneh0kMXJo+GuIKRUe3LJakVRMpjrg=
+X-Received: by 2002:a17:906:1e45:: with SMTP id i5mr16191108ejj.203.1604950194280;
+ Mon, 09 Nov 2020 11:29:54 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <Nc6hn1Qaui1C7hTlHl8CdsNV00CdlHtyjQYv36ZYA@cp4-web-040.plabs.ch>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <CAEAjamsxe9OuMVpHfox3w57HtGsE3mPXOty9bdXW-iPdx=TXMA@mail.gmail.com>
+In-Reply-To: <CAEAjamsxe9OuMVpHfox3w57HtGsE3mPXOty9bdXW-iPdx=TXMA@mail.gmail.com>
+From:   Kyungtae Kim <kt0755@gmail.com>
+Date:   Mon, 9 Nov 2020 14:29:42 -0500
+Message-ID: <CAEAjamsjFXWGSwUcCuUOeJ8s9EWGQP-Jvt40bG0Otav=xFb+5A@mail.gmail.com>
+Subject: Re: WARNING in usb_composite_setup_continue
+To:     Felipe Balbi <balbi@kernel.org>,
+        Greg KH <gregkh@linuxfoundation.org>
+Cc:     USB list <linux-usb@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        syzkaller <syzkaller@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+We report a bug (in linux-5.8.13) found by FuzzUSB (a modified version
+of syzkaller).
 
+(corrected analysis)
+This bug happens while continuing a delayed setup message in mass
+storage gadget.
+To be specific, composite_setup() sets FSG_STATE_CONFIG_CHANGE via
+fsg_set_alt() (line 1793),
+and followed by cdev->delayed_status++ (line 1798).
+Meanwile, the mass gadget tries  check cdev->delayed_status == 0
+through handle_exception() (line 2428),
+which occurs in between the two operations above.
+Such a race causes invalid operations eventually.
 
-On 11/9/20 7:26 PM, Alexander Lobakin wrote:
-> From: Eric Dumazet <eric.dumazet@gmail.com>
-> Date: Mon, 9 Nov 2020 18:37:36 +0100
-> 
->> On 11/9/20 5:56 PM, Alexander Lobakin wrote:
->>> While testing UDP GSO fraglists forwarding through driver that uses
->>> Fast GRO (via napi_gro_frags()), I was observing lots of out-of-order
->>> iperf packets:
->>>
-.
->>>
->>> Since v1 [1]:
->>>  - added a NULL pointer check for "uh" as suggested by Willem.
->>>
->>> [1] https://lore.kernel.org/netdev/YazU6GEzBdpyZMDMwJirxDX7B4sualpDG68ADZYvJI@cp4-web-034.plabs.ch
->>>
->>> Fixes: e20cf8d3f1f7 ("udp: implement GRO for plain UDP sockets.")
->>> Signed-off-by: Alexander Lobakin <alobakin@pm.me>
->>> ---
->>>  net/ipv4/udp_offload.c | 7 ++++++-
->>>  1 file changed, 6 insertions(+), 1 deletion(-)
->>>
->>> diff --git a/net/ipv4/udp_offload.c b/net/ipv4/udp_offload.c
->>> index e67a66fbf27b..7f6bd221880a 100644
->>> --- a/net/ipv4/udp_offload.c
->>> +++ b/net/ipv4/udp_offload.c
->>> @@ -366,13 +366,18 @@ static struct sk_buff *udp4_ufo_fragment(struct sk_buff *skb,
->>>  static struct sk_buff *udp_gro_receive_segment(struct list_head *head,
->>>  					       struct sk_buff *skb)
->>>  {
->>> -	struct udphdr *uh = udp_hdr(skb);
->>> +	struct udphdr *uh = udp_gro_udphdr(skb);
->>>  	struct sk_buff *pp = NULL;
->>>  	struct udphdr *uh2;
->>>  	struct sk_buff *p;
->>>  	unsigned int ulen;
->>>  	int ret = 0;
->>>
->>> +	if (unlikely(!uh)) {
->>
->> How uh could be NULL here ?
->>
->> My understanding is that udp_gro_receive() is called
->> only after udp4_gro_receive() or udp6_gro_receive()
->> validated that udp_gro_udphdr(skb) was not NULL.
-> 
-> Right, but only after udp{4,6}_lib_lookup_skb() in certain cases.
-> I don't know for sure if their logic can actually edit skb->data,
-> so it's better to check from my point of view.
+==================================================================
+usb_composite_setup_continue: Unexpected call
+WARNING: CPU: 1 PID: 1882 at drivers/usb/gadget/composite.c:2457
+usb_composite_setup_continue+0x1c7/0x220
+drivers/usb/gadget/composite.c:2457
+Kernel panic - not syncing: panic_on_warn set ...
+CPU: 1 PID: 1882 Comm: file-storage Not tainted 5.8.13 #4
+Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS Bochs 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0xa7/0xea lib/dump_stack.c:118
+ panic+0x298/0x521 kernel/panic.c:231
+ __warn.cold.12+0x25/0x32 kernel/panic.c:600
+ report_bug+0x1b2/0x260 lib/bug.c:198
+ handle_bug+0x43/0x70 arch/x86/kernel/traps.c:235
+ exc_invalid_op+0x18/0x40 arch/x86/kernel/traps.c:255
+ asm_exc_invalid_op+0x12/0x20 ./arch/x86/include/asm/idtentry.h:540
+RIP: 0010:usb_composite_setup_continue+0x1c7/0x220
+drivers/usb/gadget/composite.c:2457
+Code: 62 48 8b 7b 58 4c 89 fe e8 66 fb ff ff e9 e6 fe ff ff e8 6c 89
+87 fd 48 c7 c6 60 c9 41 86 48 c7 c7 60 c6 41 86 e8 78 0c 5c fd <0f> 0b
+e9 c7 fe ff ff e8 3d a4 ae fd e9 a3 fe ff ff e8 53 a4 ae fd
+RSP: 0000:ffff8880446dfd38 EFLAGS: 00010086
+RAX: 0000000000000000 RBX: ffff888069eee4b0 RCX: 0000000000000000
+RDX: 0000000000000027 RSI: 0000000000000004 RDI: ffffed10088dbf9d
+RBP: ffff8880446dfd60 R08: ffffed100d953fd2 R09: ffffed100d953fd2
+R10: ffff88806ca9fe8b R11: ffffed100d953fd1 R12: 0000000000000000
+R13: ffff888069eee540 R14: 0000000000000246 R15: ffff888040609310
+ handle_exception drivers/usb/gadget/function/f_mass_storage.c:2428 [inline]
+ fsg_main_thread+0x12f4/0x59f1 drivers/usb/gadget/function/f_mass_storage.c:2466
+ kthread+0x374/0x480 kernel/kthread.c:291
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:293
+Dumping ftrace buffer:
+   (ftrace buffer empty)
+Kernel Offset: disabled
+==================================================================
 
-Not really. This would send a wrong signal to readers of this code.
+Regards,
+Kyungtae Kim
 
-I do not think these functions can mess with GRO internals.
-
-This would be a nightmare, GRO is already way too complex.
-
-In fact these functions should use a const qualifier
-for their " struct sk_buff *skb" argument to prevent future bugs.
-
-I will test and submit this patch :
-
-diff --git a/include/net/ip.h b/include/net/ip.h
-index 2d6b985d11ccaa75827b3a15ac3f898d7a193242..e20874059f826eb0f9e899aed556bfbc9c9d71e8 100644
---- a/include/net/ip.h
-+++ b/include/net/ip.h
-@@ -99,7 +99,7 @@ static inline void ipcm_init_sk(struct ipcm_cookie *ipcm,
- #define PKTINFO_SKB_CB(skb) ((struct in_pktinfo *)((skb)->cb))
- 
- /* return enslaved device index if relevant */
--static inline int inet_sdif(struct sk_buff *skb)
-+static inline int inet_sdif(const struct sk_buff *skb)
- {
- #if IS_ENABLED(CONFIG_NET_L3_MASTER_DEV)
-        if (skb && ipv4_l3mdev_skb(IPCB(skb)->flags))
-diff --git a/include/net/udp.h b/include/net/udp.h
-index 295d52a73598277dc5071536f777d1a87e7df1d1..877832bed4713a011a514a2f6f522728c8c89e20 100644
---- a/include/net/udp.h
-+++ b/include/net/udp.h
-@@ -164,7 +164,7 @@ static inline void udp_csum_pull_header(struct sk_buff *skb)
-        UDP_SKB_CB(skb)->cscov -= sizeof(struct udphdr);
- }
- 
--typedef struct sock *(*udp_lookup_t)(struct sk_buff *skb, __be16 sport,
-+typedef struct sock *(*udp_lookup_t)(const struct sk_buff *skb, __be16 sport,
-                                     __be16 dport);
- 
- INDIRECT_CALLABLE_DECLARE(struct sk_buff *udp4_gro_receive(struct list_head *,
-@@ -313,7 +313,7 @@ struct sock *udp4_lib_lookup(struct net *net, __be32 saddr, __be16 sport,
- struct sock *__udp4_lib_lookup(struct net *net, __be32 saddr, __be16 sport,
-                               __be32 daddr, __be16 dport, int dif, int sdif,
-                               struct udp_table *tbl, struct sk_buff *skb);
--struct sock *udp4_lib_lookup_skb(struct sk_buff *skb,
-+struct sock *udp4_lib_lookup_skb(const struct sk_buff *skb,
-                                 __be16 sport, __be16 dport);
- struct sock *udp6_lib_lookup(struct net *net,
-                             const struct in6_addr *saddr, __be16 sport,
-@@ -324,7 +324,7 @@ struct sock *__udp6_lib_lookup(struct net *net,
-                               const struct in6_addr *daddr, __be16 dport,
-                               int dif, int sdif, struct udp_table *tbl,
-                               struct sk_buff *skb);
--struct sock *udp6_lib_lookup_skb(struct sk_buff *skb,
-+struct sock *udp6_lib_lookup_skb(const struct sk_buff *skb,
-                                 __be16 sport, __be16 dport);
- 
- /* UDP uses skb->dev_scratch to cache as much information as possible and avoid
-diff --git a/net/ipv4/udp.c b/net/ipv4/udp.c
-index 09f0a23d1a01741d335ce45f25fe70a4e00698c7..8b8dadfea6c9854e6bfaa0fabcb774db39976da3 100644
---- a/net/ipv4/udp.c
-+++ b/net/ipv4/udp.c
-@@ -541,7 +541,7 @@ static inline struct sock *__udp4_lib_lookup_skb(struct sk_buff *skb,
-                                 inet_sdif(skb), udptable, skb);
- }
- 
--struct sock *udp4_lib_lookup_skb(struct sk_buff *skb,
-+struct sock *udp4_lib_lookup_skb(const struct sk_buff *skb,
-                                 __be16 sport, __be16 dport)
- {
-        const struct iphdr *iph = ip_hdr(skb);
-diff --git a/net/ipv6/udp.c b/net/ipv6/udp.c
-index 29d9691359b9c49ccb56a11f79e3658b1a76700d..adfe9ca6f516612b5aad6d6c654c7da1dd56a50e 100644
---- a/net/ipv6/udp.c
-+++ b/net/ipv6/udp.c
-@@ -276,7 +276,7 @@ static struct sock *__udp6_lib_lookup_skb(struct sk_buff *skb,
-                                 inet6_sdif(skb), udptable, skb);
- }
- 
--struct sock *udp6_lib_lookup_skb(struct sk_buff *skb,
-+struct sock *udp6_lib_lookup_skb(const struct sk_buff *skb,
-                                 __be16 sport, __be16 dport)
- {
-        const struct ipv6hdr *iph = ipv6_hdr(skb);
+On Mon, Nov 9, 2020 at 2:08 PM Kyungtae Kim <kt0755@gmail.com> wrote:
+>
+> We report a bug (in linux-5.8.13) found by FuzzUSB (a modified version
+> of syzkaller).
+>
+> The bug happens when the freed object tty->port is accessed in
+> tty_init_dev (line 1358).
+> It seems tty->port is freed during the locking (i.e., tty_ldisc_lock)
+> ahead (line 1355).
+>
+> ==================================================================
+> usb_composite_setup_continue: Unexpected call
+> WARNING: CPU: 1 PID: 1882 at drivers/usb/gadget/composite.c:2457 usb_composite_setup_continue+0x1c7/0x220 drivers/usb/gadget/composite.c:2457
+> Kernel panic - not syncing: panic_on_warn set ...
+> CPU: 1 PID: 1882 Comm: file-storage Not tainted 5.8.13 #4
+> Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS Bochs 01/01/2011
+> Call Trace:
+>  __dump_stack lib/dump_stack.c:77 [inline]
+>  dump_stack+0xa7/0xea lib/dump_stack.c:118
+>  panic+0x298/0x521 kernel/panic.c:231
+>  __warn.cold.12+0x25/0x32 kernel/panic.c:600
+>  report_bug+0x1b2/0x260 lib/bug.c:198
+>  handle_bug+0x43/0x70 arch/x86/kernel/traps.c:235
+>  exc_invalid_op+0x18/0x40 arch/x86/kernel/traps.c:255
+>  asm_exc_invalid_op+0x12/0x20 ./arch/x86/include/asm/idtentry.h:540
+> RIP: 0010:usb_composite_setup_continue+0x1c7/0x220 drivers/usb/gadget/composite.c:2457
+> Code: 62 48 8b 7b 58 4c 89 fe e8 66 fb ff ff e9 e6 fe ff ff e8 6c 89 87 fd 48 c7 c6 60 c9 41 86 48 c7 c7 60 c6 41 86 e8 78 0c 5c fd <0f> 0b e9 c7 fe ff ff e8 3d a4 ae fd e9 a3 fe ff ff e8 53 a4 ae fd
+> RSP: 0000:ffff8880446dfd38 EFLAGS: 00010086
+> RAX: 0000000000000000 RBX: ffff888069eee4b0 RCX: 0000000000000000
+> RDX: 0000000000000027 RSI: 0000000000000004 RDI: ffffed10088dbf9d
+> RBP: ffff8880446dfd60 R08: ffffed100d953fd2 R09: ffffed100d953fd2
+> R10: ffff88806ca9fe8b R11: ffffed100d953fd1 R12: 0000000000000000
+> R13: ffff888069eee540 R14: 0000000000000246 R15: ffff888040609310
+>  handle_exception drivers/usb/gadget/function/f_mass_storage.c:2428 [inline]
+>  fsg_main_thread+0x12f4/0x59f1 drivers/usb/gadget/function/f_mass_storage.c:2466
+>  kthread+0x374/0x480 kernel/kthread.c:291
+>  ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:293
+> Dumping ftrace buffer:
+>    (ftrace buffer empty)
+> Kernel Offset: disabled
+> ==================================================================
+>
+> Regards,
+> Kyungtae Kim
