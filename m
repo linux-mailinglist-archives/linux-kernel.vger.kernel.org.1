@@ -2,168 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A61EB2AC13F
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 17:48:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 061542AC142
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 17:48:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730701AbgKIQsH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 11:48:07 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54586 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730419AbgKIQsH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 11:48:07 -0500
-Received: from kernel.org (unknown [77.125.7.142])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7C3EA2074F;
-        Mon,  9 Nov 2020 16:47:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604940486;
-        bh=6rn/Is9/mb71Cx8T5OixcswhdKR8Yw8hRoo0YqfjdsY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=2PklhGFO1GSLbrkd4w7eR0OQVXIC9bB/NRFuu0yXJ2cad3g2XWFGm5qY1CfZsxWEJ
-         hIEGvV7DG50YSNEMxKxpw57WvEfw0aU7JllVonG+2csYY0gr4DIxzUIPf5drKxbhRb
-         AQb1wGfM13MfcFzy1XYj4m6UEF/itQaci+zuEFqA=
-Date:   Mon, 9 Nov 2020 18:47:52 +0200
-From:   Mike Rapoport <rppt@kernel.org>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Albert Ou <aou@eecs.berkeley.edu>,
-        Andy Lutomirski <luto@kernel.org>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Borislav Petkov <bp@alien8.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Christoph Lameter <cl@linux.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        David Hildenbrand <david@redhat.com>,
-        David Rientjes <rientjes@google.com>,
-        "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Len Brown <len.brown@intel.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Mackerras <paulus@samba.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Pavel Machek <pavel@ucw.cz>, Pekka Enberg <penberg@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Will Deacon <will@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, linux-pm@vger.kernel.org,
-        linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, sparclinux@vger.kernel.org,
-        x86@kernel.org
-Subject: Re: [PATCH v6 0/4] arch, mm: improve robustness of direct map
- manipulation
-Message-ID: <20201109164752.GF301837@kernel.org>
-References: <20201109162415.13764-1-rppt@kernel.org>
+        id S1730742AbgKIQsP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 11:48:15 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:35249 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730558AbgKIQsN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 11:48:13 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1604940492;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=fqIq5NUwLO5XS6VOJO9c8F79ciX9FemcAwNmtAIcwRI=;
+        b=CkMV2P1js/W4GNDaJvi2ISSBI+CCIDL2N56ZES5Hqa4IwVqL0XkAGaf8oaM3Y/V2zZIaJG
+        OL7khUlH/t69828qvo6Hgw4uasvCy7Si6U3iFAMt36Htwpb2v0EvI9uhR2eWIL3WjXFcIp
+        QsP6ldG4J/3s5kxCAEUhZixVhb9qmxg=
+Received: from mail-oo1-f69.google.com (mail-oo1-f69.google.com
+ [209.85.161.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-501-4uAA5Hu9NBW9Tko3dR-OYQ-1; Mon, 09 Nov 2020 11:48:10 -0500
+X-MC-Unique: 4uAA5Hu9NBW9Tko3dR-OYQ-1
+Received: by mail-oo1-f69.google.com with SMTP id m13so1804704ooq.10
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Nov 2020 08:48:09 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=fqIq5NUwLO5XS6VOJO9c8F79ciX9FemcAwNmtAIcwRI=;
+        b=b9Q+3Fbg5neBAdKfNzJR26JN0wWSTBfNehU16j+jncYVS8FEQxqCkX/psDGNoik045
+         0qBcvpnVLG1oO665dPstabrg6Q83fZooQCrSfxxUFEY6kT/yfuzFUTHfzyyAhdUFM9bM
+         S+/PjbUy2EsXjCcofyMJrfDf+BmR2wTTTt3W8atlf5oFvROzK50a7VTbJcqc0lhAl7Ox
+         Igd6hEwo7XchD8a3+5Wthk2kn17xPoBMM74x8fk9fK1JO2Novo94Tf6k2iucST5J+q3c
+         1y/ZXFwHH7FUwXcdvGbzloDo3Aq25QLfsC0C2+XOwgzhGdVb8kEeP7Cq7R4DAwyez/AG
+         +hgA==
+X-Gm-Message-State: AOAM532UPAt6VpYSFNck8KnmUlIuEplQY4ZygDo5TY/+KUp9WsStnCpj
+        uSAnewwU860EoKe0g4wgzzZtk+Cf5c6rI8QylNidd/tD34jhKv/IZDSywlDrYkBVgjG8JnFK9Im
+        1Z654KqIkblQrweeeklDxGxNW8CGJNSZNGAr9EP33
+X-Received: by 2002:aca:4f53:: with SMTP id d80mr29988oib.120.1604940488746;
+        Mon, 09 Nov 2020 08:48:08 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJyHFiGAk0galmy0bk5raHPkH/pu4uljJlFq+eNb+KPxOugkwKoJBdOHvGL6Z37sQJd6iaPMBOkPmw04bQVv+dE=
+X-Received: by 2002:aca:4f53:: with SMTP id d80mr29973oib.120.1604940488554;
+ Mon, 09 Nov 2020 08:48:08 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201109162415.13764-1-rppt@kernel.org>
+References: <20201106200436.943795-1-jarod@redhat.com> <20201106184432.07a6ab18@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20201106184432.07a6ab18@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+From:   Jarod Wilson <jarod@redhat.com>
+Date:   Mon, 9 Nov 2020 11:47:58 -0500
+Message-ID: <CAKfmpSfkmo1GVVThadDDtXma1m1yrNwPoPz87sMy5664uJbevg@mail.gmail.com>
+Subject: Re: [PATCH net-next v4 0/5] bonding: rename bond components
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Jay Vosburgh <j.vosburgh@gmail.com>,
+        Veaceslav Falico <vfalico@gmail.com>,
+        Andy Gospodarek <andy@greyhouse.net>,
+        "David S. Miller" <davem@davemloft.net>,
+        Thomas Davis <tadavis@lbl.gov>, Netdev <netdev@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Oops, this one has some rebase errors, I'll send v7 soon.
-Sorry for the noise.
+On Fri, Nov 6, 2020 at 9:44 PM Jakub Kicinski <kuba@kernel.org> wrote:
+>
+> On Fri,  6 Nov 2020 15:04:31 -0500 Jarod Wilson wrote:
+> > The bonding driver's use of master and slave, while largely understood
+> > in technical circles, poses a barrier for inclusion to some potential
+> > members of the development and user community, due to the historical
+> > context of masters and slaves, particularly in the United States. This
+> > is a first full pass at replacing those phrases with more socially
+> > inclusive ones, opting for bond to replace master and port to
+> > replace slave, which is congruent with the bridge and team drivers.
+>
+> If we decide to go ahead with this, we should probably also use it as
+> an opportunity to clean up the more egregious checkpatch warnings, WDYT?
+>
+> Plan minimum - don't add new ones ;)
 
-On Mon, Nov 09, 2020 at 06:24:11PM +0200, Mike Rapoport wrote:
-> From: Mike Rapoport <rppt@linux.ibm.com>
-> 
-> Hi,
-> 
-> During recent discussion about KVM protected memory, David raised a concern
-> about usage of __kernel_map_pages() outside of DEBUG_PAGEALLOC scope [1].
-> 
-> Indeed, for architectures that define CONFIG_ARCH_HAS_SET_DIRECT_MAP it is
-> possible that __kernel_map_pages() would fail, but since this function is
-> void, the failure will go unnoticed.
-> 
-> Moreover, there's lack of consistency of __kernel_map_pages() semantics
-> across architectures as some guard this function with
-> #ifdef DEBUG_PAGEALLOC, some refuse to update the direct map if page
-> allocation debugging is disabled at run time and some allow modifying the
-> direct map regardless of DEBUG_PAGEALLOC settings.
-> 
-> This set straightens this out by restoring dependency of
-> __kernel_map_pages() on DEBUG_PAGEALLOC and updating the call sites
-> accordingly. 
-> 
-> Since currently the only user of __kernel_map_pages() outside
-> DEBUG_PAGEALLOC is hibernation, it is updated to make direct map accesses
-> there more explicit.
-> 
-> [1] https://lore.kernel.org/lkml/2759b4bf-e1e3-d006-7d86-78a40348269d@redhat.com
-> 
-> v6 changes:
-> * revert slab changes to avoid redundant check of static key
-> 
-> v5 changes:
-> * use pairs of _map()/_unmap() functions instead of _map(..., int enable) as
->   Vlastimil suggested
-> https://lore.kernel.org/lkml/20201108065758.1815-1-rppt@kernel.org
-> 
-> v4 changes:
-> * s/WARN_ON/pr_warn_once/ per David and Kirill
-> * rebase on v5.10-rc2
-> * add Acked/Reviewed tags
-> https://lore.kernel.org/lkml/20201103162057.22916-1-rppt@kernel.org
-> 
-> v3 changes:
-> * update arm64 changes to avoid regression, per Rick's comments
-> * fix bisectability
-> https://lore.kernel.org/lkml/20201101170815.9795-1-rppt@kernel.org
-> 
-> v2 changes:
-> * Rephrase patch 2 changelog to better describe the change intentions and
-> implications
-> * Move removal of kernel_map_pages() from patch 1 to patch 2, per David
-> https://lore.kernel.org/lkml/20201029161902.19272-1-rppt@kernel.org
-> 
-> v1:
-> https://lore.kernel.org/lkml/20201025101555.3057-1-rppt@kernel.org
-> 
-> Mike Rapoport (4):
->   mm: introduce debug_pagealloc_{map,unmap}_pages() helpers
->   PM: hibernate: make direct map manipulations more explicit
->   arch, mm: restore dependency of __kernel_map_pages() on DEBUG_PAGEALLOC
->   arch, mm: make kernel_page_present() always available
-> 
->  arch/Kconfig                        |  3 +++
->  arch/arm64/Kconfig                  |  4 +--
->  arch/arm64/include/asm/cacheflush.h |  1 +
->  arch/arm64/mm/pageattr.c            |  6 +++--
->  arch/powerpc/Kconfig                |  5 +---
->  arch/riscv/Kconfig                  |  4 +--
->  arch/riscv/include/asm/pgtable.h    |  2 --
->  arch/riscv/include/asm/set_memory.h |  1 +
->  arch/riscv/mm/pageattr.c            | 31 ++++++++++++++++++++++
->  arch/s390/Kconfig                   |  4 +--
->  arch/sparc/Kconfig                  |  4 +--
->  arch/x86/Kconfig                    |  4 +--
->  arch/x86/include/asm/set_memory.h   |  1 +
->  arch/x86/mm/pat/set_memory.c        |  4 +--
->  include/linux/mm.h                  | 40 ++++++++++++++---------------
->  include/linux/set_memory.h          |  5 ++++
->  kernel/power/snapshot.c             | 38 +++++++++++++++++++++++++--
->  mm/memory_hotplug.c                 |  3 +--
->  mm/page_alloc.c                     |  6 ++---
->  19 files changed, 113 insertions(+), 53 deletions(-)
-> 
-> -- 
-> 2.28.0
-> 
+Hm. I hadn't actually looked at checkpatch output until now. It's...
+noisy here. But I'm pretty sure the vast majority of that is from
+existing issues, simply reported now due to all the renaming. I can
+certainly take a crack at cleanups, but I'd be worried about missing
+another merge window trying to sort all of these, when they're not
+directly related.
 
 -- 
-Sincerely yours,
-Mike.
+Jarod Wilson
+jarod@redhat.com
+
