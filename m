@@ -2,129 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E28F2AC473
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 20:01:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BDEE2AC48E
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 20:04:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730557AbgKITBt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 14:01:49 -0500
-Received: from mga17.intel.com ([192.55.52.151]:32867 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727303AbgKITBr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 14:01:47 -0500
-IronPort-SDR: C5BHEpvy+eVQUntqxm3LXxBEJQyuTgInrcafQFIoRT/GSKSHlf5TEZvYwEDMStTSiBnGcQPAcz
- AUt4ukrqrzeA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9800"; a="149703977"
-X-IronPort-AV: E=Sophos;i="5.77,464,1596524400"; 
-   d="scan'208";a="149703977"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Nov 2020 11:01:46 -0800
-IronPort-SDR: mVqj0b7salhhAY1TlsagMbJd5HSsuyoA7wn9fxUgtGzkpn5v5qG+nYzSQlS1sCGAX+2AZAdtSd
- 27XxX9IojKhw==
-X-IronPort-AV: E=Sophos;i="5.77,464,1596524400"; 
-   d="scan'208";a="322550834"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Nov 2020 11:01:43 -0800
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1kcCRB-005Gnb-7p; Mon, 09 Nov 2020 21:02:45 +0200
-Date:   Mon, 9 Nov 2020 21:02:45 +0200
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Lukasz Stelmach <l.stelmach@samsung.com>
-Cc:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Ard Biesheuvel <ard.biesheuvel@linaro.org>,
-        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        platform-driver-x86@vger.kernel.org,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
-Subject: Re: [PATCH v8 3/6] software node: implement reference properties
-Message-ID: <20201109190245.GL4077@smile.fi.intel.com>
-References: <20201109172435.GJ4077@smile.fi.intel.com>
- <CGME20201109181851eucas1p241de8938e399c0b603c764593b057c41@eucas1p2.samsung.com>
- <dleftj4klypf5u.fsf%l.stelmach@samsung.com>
+        id S1729973AbgKITEZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 14:04:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49440 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729302AbgKITEY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 14:04:24 -0500
+Received: from the.earth.li (the.earth.li [IPv6:2a00:1098:86:4d:c0ff:ee:15:900d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BFB7C0613CF;
+        Mon,  9 Nov 2020 11:04:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=earth.li;
+         s=the; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:Subject
+        :Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
+        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+        List-Post:List-Owner:List-Archive;
+        bh=TFKGo0xpBOEg+T74W7oI6xqQWy9esM9XTIUlQGEd/Mk=; b=wALVIypO2VnSRap5o/l6oiHbAt
+        AWYe1Cr7+RyhGemq7Gt6n3sNZczEifqAsATj0BcxYu1Ha7VMZIdEnvTtT3Tl4/nDo3HiJhgoaY9pm
+        WK6v4K0BPkNIeJn5Yp9ldU/hcCz3HPNAZ24HsMMJ7ppWj7NmuhlqE4hOuCXGjnlfzoMnPL/PpMYSW
+        dtbhiMVZ2jLxl7tQOqo/+gyunJyP92tp2me0rwINApgdyFeoegQczdTY2K8/An2UKoBcDXOKpBmah
+        L0VyEre/Wh+XvUAy54r4q7R7w/SVKjj42E3N87BoDHEvJn6WPod7+lL9qfdOciKXHMDF4E24ioclD
+        eY1N8PsQ==;
+Received: from noodles by the.earth.li with local (Exim 4.92)
+        (envelope-from <noodles@earth.li>)
+        id 1kcCSe-0002ic-8z; Mon, 09 Nov 2020 19:04:16 +0000
+Date:   Mon, 9 Nov 2020 19:04:16 +0000
+From:   Jonathan McDowell <noodles@earth.li>
+To:     Vinod Koul <vkoul@kernel.org>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Thomas Pedersen <twp@codeaurora.org>,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        dmaengine@vger.kernel.org
+Subject: Re: [PATCH v4] dmaengine: qcom: Add ADM driver
+Message-ID: <20201109190416.GF32650@earth.li>
+References: <20200916064326.GA13963@earth.li>
+ <20200919185739.GS3411@earth.li>
+ <20200920181204.GT3411@earth.li>
+ <20200923194056.GY3411@earth.li>
+ <20201109114121.GG3171@vkoul-mobl>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <dleftj4klypf5u.fsf%l.stelmach@samsung.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <20201109114121.GG3171@vkoul-mobl>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 09, 2020 at 07:18:37PM +0100, Lukasz Stelmach wrote:
-> It was <2020-11-09 pon 19:24>, when Andy Shevchenko wrote:
-> > On Mon, Nov 09, 2020 at 06:02:29PM +0100, Lukasz Stelmach wrote:
-> >> It was <2019-11-07 czw 20:22>, when Dmitry Torokhov wrote:
-
-...
-
-> >> I am writing a piece that needs to provide a list of gpios to a
-> >> diriver. The above example looks like what I need.
-> >
-> > Nope.
-> >
-> > It mustn't be used for GPIOs or PWMs or whatever that either should come via
-> > lookup tables or corresponding firmware interface.
+On Mon, Nov 09, 2020 at 05:11:21PM +0530, Vinod Koul wrote:
+> HI Jonathan,
 > 
-> May I ask why? I've read commit descriptions for drivers/base/swnode.c
-> and the discussion on lkml and I understand software nodes as a way to
-> provide (synthesize) a description for a device that is missing a
-> description in the firmware. Another use case seems to be to replace (in
-> the long run) platform data. That is what I am trying to use it for.
-
-Yes. Both are correct. They are simply not applicable for everything
-(it's not a silver bullet).
-
-> I want my device to be configured with either DT or software_nodes
-> created at run time with configfs.
-
-Okay.
-
-> My device is going to use GPIOs
-> described in the DT and it is going to be configured via configfs at run
-> time.
-
-How is this related to swnodes?
-Create GPIO lookup table.
-
-> I could use platform_data to pass structures from configfs but
-> software nodes would let me save some code in the device driver and use
-> the same paths for both static (DT) and dynamic (configfs)
-> configuration.
+> On 23-09-20, 20:40, Jonathan McDowell wrote:
+> > Add the DMA engine driver for the QCOM Application Data Mover (ADM) DMA
+> > controller found in the MSM8x60 and IPQ/APQ8064 platforms.
 > 
-> Probably I have missed something and I will be greatful, if you tell me
-> where I can find more information about software nodes. There are few
-> users in the kernel and it isn't obvious for me how to use software
-> nodes properly.
+> Mostly it looks good, some nitpicks
+> 
+> > The ADM supports both memory to memory transactions and memory
+> > to/from peripheral device transactions.  The controller also provides
+> > flow control capabilities for transactions to/from peripheral devices.
+> > 
+> > The initial release of this driver supports slave transfers to/from
+> > peripherals and also incorporates CRCI (client rate control interface)
+> > flow control.
+> 
+> Can you also convert the binding from txt to yaml?
 
-gpiod_add_lookup_table().
+Seems like that can be a separate patch, but sure, I'll give it a whirl.
 
-> >> At the moment the driver gets the list from fwnode/of_node. The list
-> >> contain references to phandles which get resolved and and the driver
-> >> ends up with a bunch of gpio descriptors. Great.
-> >> 
-> >> This example looks nice but does the code that reads the reference from
-> >> the gpios property and returns a gpiod actually exist? If it doesn't, I
-> >> am willing to write it.
-> >> 
-> >> At first glance it makes more sense to me to pass (struct gpiod_lookup
-> >> *) instead of (struct software_node *) and make gpiolib's gpiod_find()
-> >> accept lookup tables as parameter instead of searching the
-> >> gpio_lookup_list? Or do you think such temporary table should be
-> >> assembled from the above structure and then used in gpiod_find()?
-> >> 
-> >> Any other suggestions on how to get a bunch of gpios (the description
-> >> for gpios is available in the devicetree) for a device described with a
-> >> software nodes?
+> > diff --git a/drivers/dma/qcom/Kconfig b/drivers/dma/qcom/Kconfig
+> > index 3bcb689162c6..0389d60d2604 100644
+> > --- a/drivers/dma/qcom/Kconfig
+> > +++ b/drivers/dma/qcom/Kconfig
+> > @@ -1,4 +1,15 @@
+> >  # SPDX-License-Identifier: GPL-2.0-only
+> > +config QCOM_ADM
+> > +	tristate "Qualcomm ADM support"
+> > +	depends on (ARCH_QCOM || COMPILE_TEST) && !PHYS_ADDR_T_64BIT
+> 
+> why !PHYS_ADDR_T_64BIT ..?
 
+The hardware only supports a 32 bit physical address, so specifying
+!PHYS_ADDR_T_64BIT gives maximum COMPILE_TEST coverage without having to
+spend effort on kludging things in the code that will never actually be
+needed on real hardware.
+
+> > +	select DMA_ENGINE
+> > +	select DMA_VIRTUAL_CHANNELS
+> > +	help
+> > +	  Enable support for the Qualcomm Application Data Mover (ADM) DMA
+> > +	  controller, as present on MSM8x60, APQ8064, and IPQ8064 devices.
+> > +	  This controller provides DMA capabilities for both general purpose
+> > +	  and on-chip peripheral devices.
+> 
+> > +static const struct of_device_id adm_of_match[] = {
+> > +	{ .compatible = "qcom,adm", },
+> 
+> I know we have merged the binding, but should we not have a soc specific
+> compatible?
+
+Which soc? Looking at the other QCOM DMA drivers they mostly have
+versioned compatibles and I can't find any indication there are multiple
+variants of this block out there.
+
+J.
 
 -- 
-With Best Regards,
-Andy Shevchenko
-
-
+Web [ Every program is either trivial or it contains at least one  ]
+site: https:// [                   bug.                   ]      Made by
+www.earth.li/~noodles/  [                      ]         HuggieTag 0.0.24
