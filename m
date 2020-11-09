@@ -2,133 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CEA512AB01B
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 05:00:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D871E2AB025
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 05:17:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729178AbgKIEAi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 8 Nov 2020 23:00:38 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:42353 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728038AbgKIEAh (ORCPT
+        id S1729184AbgKIERK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 8 Nov 2020 23:17:10 -0500
+Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:4001 "EHLO
+        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728038AbgKIERK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 8 Nov 2020 23:00:37 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1604894436;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc; bh=Z+cwdAAPnpskL0iuQ5kmNmib1PUdkspQ4c49HCBuxsU=;
-        b=PvJX9tOoge79yDNpt4foxNOIo/caD/UFDjxOKl5vxmfa35hI8dtpLZwLx6Vio/HZ2kxdbp
-        SDR+aNH9ulKinQzXPto10cSBBGfvrEdS+/TOoKghg422CxzTiYb2R7tjHqXjWZdapTNBhk
-        fMeWED1JIyaNlzJYib3aMspRinBxMxw=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-39-MmbR6InWP6mUQ893suAqXg-1; Sun, 08 Nov 2020 23:00:34 -0500
-X-MC-Unique: MmbR6InWP6mUQ893suAqXg-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5DE661007460;
-        Mon,  9 Nov 2020 04:00:33 +0000 (UTC)
-Received: from llong.com (ovpn-113-56.rdu2.redhat.com [10.10.113.56])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 80E7D5B4D0;
-        Mon,  9 Nov 2020 04:00:26 +0000 (UTC)
-From:   Waiman Long <longman@redhat.com>
-To:     Jan Kara <jack@suse.cz>, Amir Goldstein <amir73il@gmail.com>
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Luca BRUNO <lucab@redhat.com>, Waiman Long <longman@redhat.com>
-Subject: [PATCH v4] inotify: Increase default inotify.max_user_watches limit to 1048576
-Date:   Sun,  8 Nov 2020 22:59:31 -0500
-Message-Id: <20201109035931.4740-1-longman@redhat.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+        Sun, 8 Nov 2020 23:17:10 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5fa8c2c90001>; Sun, 08 Nov 2020 20:17:13 -0800
+Received: from [10.2.49.75] (10.124.1.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 9 Nov
+ 2020 04:17:09 +0000
+Subject: Re: [PATCH 2/2] tomoyo: Fixed typo in documentation
+To:     Souptick Joarder <jrdr.linux@gmail.com>
+CC:     <takedakn@nttdata.co.jp>,
+        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        linux-security-module <linux-security-module@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+References: <1604737451-19082-1-git-send-email-jrdr.linux@gmail.com>
+ <1604737451-19082-2-git-send-email-jrdr.linux@gmail.com>
+ <f5ed0413-315c-d5d0-e33f-c2b247a28da2@nvidia.com>
+ <CAFqt6zaRP56DPRHTGMNiY3KpdOKPB_SeeuFagUbkmQKQ6mKD2A@mail.gmail.com>
+From:   John Hubbard <jhubbard@nvidia.com>
+Message-ID: <7c60a6f5-414f-99e8-68c3-ca3b60fe89e9@nvidia.com>
+Date:   Sun, 8 Nov 2020 20:17:09 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
+MIME-Version: 1.0
+In-Reply-To: <CAFqt6zaRP56DPRHTGMNiY3KpdOKPB_SeeuFagUbkmQKQ6mKD2A@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1604895433; bh=GyczsSIPQ2H7XyF7aw5OG6GSzZRXZ+iyOimEZqVpguI=;
+        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
+         MIME-Version:In-Reply-To:Content-Type:Content-Language:
+         Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy;
+        b=NcFwCzlIIkdM2jCJN3EMJWiVtpT610ymFCkhLJzj2vxhiHAT5isr8uX3wzPA862Fp
+         U7IFUbiMUdJxAIDzWbW677vYiaQgtcAp3ByBOrxcF31UrwGHXFqoYZXdDIxE1MvfM9
+         rWd99Y2W71EkELaRi50GU1Ns38LsaW4EykWseuyMsI4uffl2yVfzroHJXTXoMA3hMR
+         pZ28L1Ar6lGSwBcyNCCdVhyLBOSfn9iiJ7noJBz9SzWS/V7s5ce4Z0FpLDZd9C8SiQ
+         y3Qf6EzYP1APkfnN1nmBSehFD5/ElNK8Y1rcXNX/JqafBuhkEkzOr1htFIzu0VhO4G
+         h1w3idpkvjhsQ==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The default value of inotify.max_user_watches sysctl parameter was set
-to 8192 since the introduction of the inotify feature in 2005 by
-commit 0eeca28300df ("[PATCH] inotify"). Today this value is just too
-small for many modern usage. As a result, users have to explicitly set
-it to a larger value to make it work.
+On 11/8/20 7:41 PM, Souptick Joarder wrote:
+> On Sat, Nov 7, 2020 at 2:27 PM John Hubbard <jhubbard@nvidia.com> wrote:
+>>
+>> On 11/7/20 12:24 AM, Souptick Joarder wrote:
+>>> Fixed typo s/Poiner/Pointer
+>>>
+>>> Fixes: 5b636857fee6 ("TOMOYO: Allow using argv[]/envp[] of execve() as conditions.")
+>>> Signed-off-by: Souptick Joarder <jrdr.linux@gmail.com>
+>>> Cc: John Hubbard <jhubbard@nvidia.com>
+>>> ---
+>>>    security/tomoyo/domain.c | 2 +-
+>>>    1 file changed, 1 insertion(+), 1 deletion(-)
+>>>
+>>> diff --git a/security/tomoyo/domain.c b/security/tomoyo/domain.c
+>>> index bd748be..7b2babe 100644
+>>> --- a/security/tomoyo/domain.c
+>>> +++ b/security/tomoyo/domain.c
+>>> @@ -891,7 +891,7 @@ int tomoyo_find_next_domain(struct linux_binprm *bprm)
+>>>     *
+>>>     * @bprm: Pointer to "struct linux_binprm".
+>>>     * @pos:  Location to dump.
+>>> - * @dump: Poiner to "struct tomoyo_page_dump".
+>>> + * @dump: Pointer to "struct tomoyo_page_dump".
+>>
+>> Not worth a separate patch, especially since the original comment is merely
+>> copying the C sources, and as such, does not add any value.
+>>
+>> I'd either a) craft a new documentation line that adds some value, or b) just
+>> merge this patch into the previous one, and make a note in the commit
+>> description to the effect that you've included a trivial typo fix as long
+>> as you're there.
+>>
+> 
+> John, as patch[1/2] is dropped, can we take this patch forward with some more
+> updates in documentations ?
+> 
 
-After some searching around the web, these are the
-inotify.max_user_watches values used by some projects:
- - vscode:  524288
- - dropbox support: 100000
- - users on stackexchange: 12228
- - lsyncd user: 2000000
- - code42 support: 1048576
- - monodevelop: 16384
- - tectonic: 524288
- - openshift origin: 65536
+That's really up to the folks who work on this code. Personally I would rarely
+post a patch *just* for this, but on the other hand it is a correction. Either
+way is fine with me of course.
 
-Each watch point adds an inotify_inode_mark structure to an inode to
-be watched. It also pins the watched inode.
 
-Modeled after the epoll.max_user_watches behavior to adjust the default
-value according to the amount of addressable memory available, make
-inotify.max_user_watches behave in a similar way to make it use no more
-than 1% of addressable memory within the range [8192, 1048576].
-
-For 64-bit archs, inotify_inode_mark plus 2 vfs inode have a size that
-is a bit over 1 kbytes (1284 bytes with my x86-64 config).  That means
-a system with 128GB or more memory will likely have the maximum value
-of 1048576 for inotify.max_user_watches. This default should be big
-enough for most use cases.
-
-[v3: increase inotify watch cost as suggested by Amir and Honza]
-
-Signed-off-by: Waiman Long <longman@redhat.com>
----
- fs/notify/inotify/inotify_user.c | 23 ++++++++++++++++++++++-
- 1 file changed, 22 insertions(+), 1 deletion(-)
-
-diff --git a/fs/notify/inotify/inotify_user.c b/fs/notify/inotify/inotify_user.c
-index 186722ba3894..24d17028375e 100644
---- a/fs/notify/inotify/inotify_user.c
-+++ b/fs/notify/inotify/inotify_user.c
-@@ -37,6 +37,15 @@
- 
- #include <asm/ioctls.h>
- 
-+/*
-+ * An inotify watch requires allocating an inotify_inode_mark structure as
-+ * well as pinning the watched inode. Doubling the size of a VFS inode
-+ * should be more than enough to cover the additional filesystem inode
-+ * size increase.
-+ */
-+#define INOTIFY_WATCH_COST	(sizeof(struct inotify_inode_mark) + \
-+				 2 * sizeof(struct inode))
-+
- /* configurable via /proc/sys/fs/inotify/ */
- static int inotify_max_queued_events __read_mostly;
- 
-@@ -801,6 +810,18 @@ SYSCALL_DEFINE2(inotify_rm_watch, int, fd, __s32, wd)
-  */
- static int __init inotify_user_setup(void)
- {
-+	unsigned long watches_max;
-+	struct sysinfo si;
-+
-+	si_meminfo(&si);
-+	/*
-+	 * Allow up to 1% of addressable memory to be allocated for inotify
-+	 * watches (per user) limited to the range [8192, 1048576].
-+	 */
-+	watches_max = (((si.totalram - si.totalhigh) / 100) << PAGE_SHIFT) /
-+			INOTIFY_WATCH_COST;
-+	watches_max = clamp(watches_max, 8192UL, 1048576UL);
-+
- 	BUILD_BUG_ON(IN_ACCESS != FS_ACCESS);
- 	BUILD_BUG_ON(IN_MODIFY != FS_MODIFY);
- 	BUILD_BUG_ON(IN_ATTRIB != FS_ATTRIB);
-@@ -827,7 +848,7 @@ static int __init inotify_user_setup(void)
- 
- 	inotify_max_queued_events = 16384;
- 	init_user_ns.ucount_max[UCOUNT_INOTIFY_INSTANCES] = 128;
--	init_user_ns.ucount_max[UCOUNT_INOTIFY_WATCHES] = 8192;
-+	init_user_ns.ucount_max[UCOUNT_INOTIFY_WATCHES] = watches_max;
- 
- 	return 0;
- }
+thanks,
 -- 
-2.18.1
-
+John Hubbard
+NVIDIA
