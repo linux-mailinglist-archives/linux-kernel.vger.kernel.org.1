@@ -2,40 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EE862ABC46
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 14:37:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 999C32ABBDB
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 14:32:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732917AbgKINfr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 08:35:47 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58066 "EHLO mail.kernel.org"
+        id S1731697AbgKINb6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 08:31:58 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33220 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730827AbgKINFU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 08:05:20 -0500
+        id S1731653AbgKINIZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 08:08:25 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6A2E0206C0;
-        Mon,  9 Nov 2020 13:05:07 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id BC4772083B;
+        Mon,  9 Nov 2020 13:08:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604927108;
-        bh=IIAOtgt89gqbo9vAelAbodztDRMXT2h/qI7NZYHRdWQ=;
+        s=default; t=1604927305;
+        bh=hewyRrPRKVDXdCUStdKPIGTlfU0j/MJx69/DskM30lM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=O3TcCIO5nuo1jh2SERTDQ0bTek/+IL7H9qM7+fSAT3KxNRfr+ho6ILBOQhiknu6gF
-         c6JAW6yNgH7yCsL/H06hNITpOFo3niqgiaPjpvhD7TOkKwfspyvYMrZbzyWtTepJNJ
-         tFpvnS8T8uM8+8IRfEt8RHKd91aY0Np0K8KJkF9w=
+        b=Ijl4oA6uBczUyOYLB4f4ir1zGqJqTdFo7ofPDZUJCmZKIgI8q8nNmvyw8PRFa3mwW
+         IiMiAP5NoxbzEXE6O77MguEwL+3TzIgi3edNFy9MdBETf2NYEHgBtdsSMmQlRv/Aeq
+         ImgH31kjgc7AvpQaCqi6bsw7vRCn+pqTUxszol4A=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        David Howells <dhowells@redhat.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 4.9 082/117] cachefiles: Handle readpage error correctly
-Date:   Mon,  9 Nov 2020 13:55:08 +0100
-Message-Id: <20201109125029.580735387@linuxfoundation.org>
+        Ben Hutchings <ben.hutchings@codethink.co.uk>
+Subject: [PATCH 4.19 15/71] Revert "btrfs: flush write bio if we loop in extent_write_cache_pages"
+Date:   Mon,  9 Nov 2020 13:55:09 +0100
+Message-Id: <20201109125020.634217572@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201109125025.630721781@linuxfoundation.org>
-References: <20201109125025.630721781@linuxfoundation.org>
+In-Reply-To: <20201109125019.906191744@linuxfoundation.org>
+References: <20201109125019.906191744@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,41 +42,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Matthew Wilcox (Oracle) <willy@infradead.org>
+From: Ben Hutchings <ben.hutchings@codethink.co.uk>
 
-commit 9480b4e75b7108ee68ecf5bc6b4bd68e8031c521 upstream.
+This reverts commit 860473714cbe7fbedcf92bfe3eb6d69fae8c74ff.  That
+has an incorrect upstream commit reference, and was modified in a way
+that conflicts with some older fixes.  We can cleanly cherry-pick the
+upstream commit *after* those fixes.
 
-If ->readpage returns an error, it has already unlocked the page.
-
-Fixes: 5e929b33c393 ("CacheFiles: Handle truncate unlocking the page we're reading")
-Cc: stable@vger.kernel.org
-Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-Signed-off-by: David Howells <dhowells@redhat.com>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Ben Hutchings <ben.hutchings@codethink.co.uk>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
 ---
- fs/cachefiles/rdwr.c |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ fs/btrfs/extent_io.c |    8 --------
+ 1 file changed, 8 deletions(-)
 
---- a/fs/cachefiles/rdwr.c
-+++ b/fs/cachefiles/rdwr.c
-@@ -125,7 +125,7 @@ static int cachefiles_read_reissue(struc
- 		_debug("reissue read");
- 		ret = bmapping->a_ops->readpage(NULL, backpage);
- 		if (ret < 0)
--			goto unlock_discard;
-+			goto discard;
+--- a/fs/btrfs/extent_io.c
++++ b/fs/btrfs/extent_io.c
+@@ -4045,14 +4045,6 @@ retry:
+ 		 */
+ 		scanned = 1;
+ 		index = 0;
+-
+-		/*
+-		 * If we're looping we could run into a page that is locked by a
+-		 * writer and that writer could be waiting on writeback for a
+-		 * page in our current bio, and thus deadlock, so flush the
+-		 * write bio here.
+-		 */
+-		flush_write_bio(epd);
+ 		goto retry;
  	}
  
- 	/* but the page may have been read before the monitor was installed, so
-@@ -142,6 +142,7 @@ static int cachefiles_read_reissue(struc
- 
- unlock_discard:
- 	unlock_page(backpage);
-+discard:
- 	spin_lock_irq(&object->work_lock);
- 	list_del(&monitor->op_link);
- 	spin_unlock_irq(&object->work_lock);
 
 
