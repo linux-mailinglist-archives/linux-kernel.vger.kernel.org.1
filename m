@@ -2,137 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D2FC2AB0CC
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 06:29:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 926E32AB0D9
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 06:34:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729354AbgKIF3y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 00:29:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35282 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725865AbgKIF3y (ORCPT
+        id S1729444AbgKIFec (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 00:34:32 -0500
+Received: from relay3.mymailcheap.com ([217.182.119.155]:40791 "EHLO
+        relay3.mymailcheap.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729391AbgKIFeb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 00:29:54 -0500
-Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93A2DC0613CF;
-        Sun,  8 Nov 2020 21:29:53 -0800 (PST)
-Received: by mail-lf1-x141.google.com with SMTP id v144so10626067lfa.13;
-        Sun, 08 Nov 2020 21:29:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=Rub6A86a0+TidKGgBoC2PFnme8lun0CVqmJ7J6T6EZQ=;
-        b=lOUMHcG5m2tMEm+526TpHbvBV9zUKuKVrYtjEntSyVPCHGP7QSox/NpzyJtSlbLYF/
-         y2l6Qngqr/slp1nSBLBsiBNl0hw8Z5oHgFvHI195tO6HGfIRiyP8PwR8m+8tND5Btk74
-         ETK390CCylvgmqHDYIbEy9tK15Qsn+bQbOCp7BAs4rsib0E18fSdaiKlVFLmhqVb/0tv
-         85sV7ulW/FA8+Uo+1tvOhb916bROcd27At9mtPawLLauDoWhBDHcxCcAFtXUi7LwhVby
-         r9wIMJQhjztQm+oJIgfwCzA0meqCl+jSQgdj9pmDLfEv1GsYIhaIUN/2VvupygqLCNLB
-         ur7w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Rub6A86a0+TidKGgBoC2PFnme8lun0CVqmJ7J6T6EZQ=;
-        b=K6oC2t56iJ8e8cDCY3VhQ93LMCDnmCdYW4vU+R1BXqY/lS0p6419HfxmlEOFARAR+8
-         94DcrPhfHdoshYII5yayG0cj0CAZTX16NmT0mh9/3dce4F9yppyfQBSw0aTKO3sXzGBC
-         feYbaWHfNoExRLtCjarctmqD3f9RqJ6QRWLypDaGUnhFT79bKcXeUZrdmev0ehzNY/oe
-         dLKR6OiqOpF1iBEF3fwEJRuvRgeDyFcZPov2iFWCtZPeuBRp6mp0px42a+QlVFyu7Uag
-         md0K4GVxPlnx6/uzJtg/9eHJlnjd328CMLzFlhGlDh2/TKFYvCDe9X1Bx4CmcFH8rI6G
-         gYTw==
-X-Gm-Message-State: AOAM533h6b7XxSIUHC2HjOCkb+1Lv568+5pd8LYTZa9TS7FoVZ646oVZ
-        aBPbo6UcdSFtx8sIPy+jTPhxULtIzO4=
-X-Google-Smtp-Source: ABdhPJyzg4zY7FpKZt6Zpyuu5gjleO0eds+qOHEpyxpD93RF8dgVewYfzmKsVjY21/Kpaq0doH/vcQ==
-X-Received: by 2002:a05:6512:31d5:: with SMTP id j21mr4525808lfe.488.1604899791728;
-        Sun, 08 Nov 2020 21:29:51 -0800 (PST)
-Received: from [192.168.2.145] (109-252-193-159.dynamic.spd-mgts.ru. [109.252.193.159])
-        by smtp.googlemail.com with ESMTPSA id r66sm835570lff.265.2020.11.08.21.29.50
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 08 Nov 2020 21:29:51 -0800 (PST)
-Subject: Re: [PATCH 2/2] opp: Don't create an OPP table from
- dev_pm_opp_get_opp_table()
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Kevin Hilman <khilman@kernel.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Len Brown <len.brown@intel.com>, Pavel Machek <pavel@ucw.cz>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Viresh Kumar <vireshk@kernel.org>, Nishanth Menon <nm@ti.com>,
-        Stephen Boyd <sboyd@kernel.org>, linux-pm@vger.kernel.org,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        linux-kernel@vger.kernel.org
-References: <684ff01900180c0a40ec307dacc673b24eab593b.1604643714.git.viresh.kumar@linaro.org>
- <1012a98950355bd5a52424668050a17c3430cbe0.1604643714.git.viresh.kumar@linaro.org>
- <ec9839dd-5d2d-0d6b-6563-b14da4af1a57@gmail.com>
- <20201109043457.xf55kufhjjz2fvct@vireshk-i7>
- <c5078503-ee14-0f84-85fd-9c6e55d2e897@gmail.com>
- <20201109045740.y5kpd6tjscoqxhi5@vireshk-i7>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <7a0a904d-8ee2-d1d6-509c-950bb408e0c5@gmail.com>
-Date:   Mon, 9 Nov 2020 08:29:50 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Mon, 9 Nov 2020 00:34:31 -0500
+X-Greylist: delayed 146424 seconds by postgrey-1.27 at vger.kernel.org; Mon, 09 Nov 2020 00:34:29 EST
+Received: from filter1.mymailcheap.com (filter1.mymailcheap.com [149.56.130.247])
+        by relay3.mymailcheap.com (Postfix) with ESMTPS id BE8963ECDF;
+        Mon,  9 Nov 2020 06:34:27 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+        by filter1.mymailcheap.com (Postfix) with ESMTP id 0DFF42A34E;
+        Mon,  9 Nov 2020 00:34:27 -0500 (EST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mymailcheap.com;
+        s=default; t=1604900067;
+        bh=kezafdLDXkw9ugbI/iH8HxtYMYAGAZ09l+KOu0Rdrf4=;
+        h=From:To:Cc:Subject:Date:From;
+        b=ZySsbN7E32/eGSN/+WvsFDWqM3wOIg91npbNVENW20Bef+pf5FzfqdMPJDxymtvrU
+         6VKX25IZ2YNQsPMqea2CwLjypAtR9ZfaQDWMbKbmQcj8owGByZZlrkEvlzm0Q+/M/X
+         +hEhVX8KyblocEl+wmSuzLx/WeKbDA9mj1h4BzxU=
+X-Virus-Scanned: Debian amavisd-new at filter1.mymailcheap.com
+Received: from filter1.mymailcheap.com ([127.0.0.1])
+        by localhost (filter1.mymailcheap.com [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id fwhZdbuYE7bk; Mon,  9 Nov 2020 00:34:26 -0500 (EST)
+Received: from mail20.mymailcheap.com (mail20.mymailcheap.com [51.83.111.147])
+        (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by filter1.mymailcheap.com (Postfix) with ESMTPS;
+        Mon,  9 Nov 2020 00:34:26 -0500 (EST)
+Received: from [213.133.102.83] (ml.mymailcheap.com [213.133.102.83])
+        by mail20.mymailcheap.com (Postfix) with ESMTP id 9718341E35;
+        Mon,  9 Nov 2020 05:34:24 +0000 (UTC)
+Authentication-Results: mail20.mymailcheap.com;
+        dkim=pass (1024-bit key; unprotected) header.d=aosc.io header.i=@aosc.io header.b="xsZga7Ng";
+        dkim-atps=neutral
+AI-Spam-Status: Not processed
+Received: from ice-e5v2.lan (unknown [59.41.163.164])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail20.mymailcheap.com (Postfix) with ESMTPSA id 0952E41E32;
+        Mon,  9 Nov 2020 05:34:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=aosc.io; s=default;
+        t=1604900053; bh=kezafdLDXkw9ugbI/iH8HxtYMYAGAZ09l+KOu0Rdrf4=;
+        h=From:To:Cc:Subject:Date:From;
+        b=xsZga7Ng8zIDYchIUW6V+U/0g5fk0/6gq+txyRU3EtqJ2Yj8uVAUUQ8bHe7K1psVs
+         qqDiM+ZRq2YdR1kd53Jqsql8+uHEqRluwIFpXOSmvvH9MdY3ew93mpOYTlLbKiuZdi
+         2505TmcnUG8RKcfjCX0qGRzdfoO0V1ysFe9nMoJA=
+From:   Icenowy Zheng <icenowy@aosc.io>
+To:     Maxime Ripard <mripard@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Ondrej Jirman <megous@megous.com>
+Cc:     linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-sunxi@googlegroups.com,
+        Icenowy Zheng <icenowy@aosc.io>
+Subject: [RFC PATCH 0/2] clk: sunxi-ng: a64: Remove CPUX mux switching
+Date:   Mon,  9 Nov 2020 13:33:56 +0800
+Message-Id: <20201109053358.54220-1-icenowy@aosc.io>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-In-Reply-To: <20201109045740.y5kpd6tjscoqxhi5@vireshk-i7>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
+X-Rspamd-Queue-Id: 9718341E35
+X-Spamd-Result: default: False [4.90 / 20.00];
+         RCVD_VIA_SMTP_AUTH(0.00)[];
+         ARC_NA(0.00)[];
+         R_DKIM_ALLOW(0.00)[aosc.io:s=default];
+         RECEIVED_SPAMHAUS_PBL(0.00)[59.41.163.164:received];
+         FROM_HAS_DN(0.00)[];
+         TO_DN_SOME(0.00)[];
+         R_MISSING_CHARSET(2.50)[];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         MIME_GOOD(-0.10)[text/plain];
+         DMARC_NA(0.00)[aosc.io];
+         BROKEN_CONTENT_TYPE(1.50)[];
+         R_SPF_SOFTFAIL(0.00)[~all];
+         ML_SERVERS(-3.10)[213.133.102.83];
+         DKIM_TRACE(0.00)[aosc.io:+];
+         RCPT_COUNT_SEVEN(0.00)[9];
+         MID_CONTAINS_FROM(1.00)[];
+         RCVD_NO_TLS_LAST(0.10)[];
+         FROM_EQ_ENVFROM(0.00)[];
+         MIME_TRACE(0.00)[0:+];
+         ASN(0.00)[asn:24940, ipnet:213.133.96.0/19, country:DE];
+         RCVD_COUNT_TWO(0.00)[2];
+         HFILTER_HELO_BAREIP(3.00)[213.133.102.83,1]
+X-Rspamd-Server: mail20.mymailcheap.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-09.11.2020 07:57, Viresh Kumar пишет:
-> On 09-11-20, 07:41, Dmitry Osipenko wrote:
->> 09.11.2020 07:34, Viresh Kumar пишет:
->>> On 06-11-20, 16:18, Dmitry Osipenko wrote:
->>>> 06.11.2020 09:24, Viresh Kumar пишет:
->>>>> It has been found that some users (like cpufreq-dt and others on LKML)
->>>>> have abused the helper dev_pm_opp_get_opp_table() to create the OPP
->>>>> table instead of just finding it, which is the wrong thing to do. This
->>>>> routine was meant for OPP core's internal working and exposed the whole
->>>>> functionality by mistake.
->>>>>
->>>>> Change the scope of dev_pm_opp_get_opp_table() to only finding the
->>>>> table. The internal helpers _opp_get_opp_table*() are thus renamed to
->>>>> _add_opp_table*(), dev_pm_opp_get_opp_table_indexed() is removed (as we
->>>>> don't need the index field for finding the OPP table) and so the only
->>>>> user, genpd, is updated.
->>>>>
->>>>> Note that the prototype of _add_opp_table() was already left in opp.h by
->>>>> mistake when it was removed earlier and so we weren't required to add it
->>>>> now.
->>>>
->>>> Hello Viresh,
->>>>
->>>> It looks like this is not an entirely correct change because previously
->>>> it was possible to get an empty opp_table in order to use it for the
->>>> dev_pm_opp_set_rate(), which would fall back to clk_set_rate if table is
->>>> empty.
->>>>
->>>> Now it's not possible to get an empty table and
->>>> dev_pm_opp_of_add_table() would error out if OPPs are missing in a
->>>> device-tree. Hence it's not possible to implement a fall back without
->>>> abusing opp_set_regulators() or opp_set_supported_hw() for getting the
->>>> empty table. Or am I missing something?
->>>
->>> For that case you were always required to call
->>> dev_pm_opp_set_clkname(), otherwise how would the OPP core know which
->>> clock to set ? And the same shall work now as well.
->>
->> Why _allocate_opp_table() grabs the first default clk of a device and
->> assigns it to the created table?
-> 
-> Right, it was there so everybody isn't required to call
-> dev_pm_opp_set_clkname() if they don't need to pass a connection id
-> while getting the clock. But for the case of supporting empty OPP
-> tables for cases where we just want dev_pm_opp_set_rate() to act as
-> clk_set_rate() (in order for the drivers to avoid supporting two
-> different ways of doing so), we do need that call to be made.
-> 
-> We need to add the OPP table explicitly and what happened with
-> dev_pm_opp_get_opp_table() was accidental and not what I wanted.
-> 
-> drivers/mmc/host/sdhci-msm.c has an example of how this is done.
-> 
+According to Ondrej Jirman, switching of the mux of CPUX clock is one of
+the sources of timer jumps on A64 (and maybe this will also lead to
+timer jump on H3).
 
-Alright, thank you for the clarification.
+This patchset tries to remove this mux by disabling the dividers in
+PLL-CPUX. Both the lack of reparent when relocking and the prevention of
+PLL-CPUX dividers are behaviors of the BSP kernel.
+
+Icenowy Zheng (2):
+  clk: sunxi-ng: a64: disable dividers in PLL-CPUX
+  clk: sunxi-ng: a64: disable mux and pll notifiers for CPUX reclocking
+
+ drivers/clk/sunxi-ng/ccu-sun50i-a64.c | 93 ++++++++++++++++++++++-----
+ 1 file changed, 78 insertions(+), 15 deletions(-)
+
+-- 
+2.28.0
