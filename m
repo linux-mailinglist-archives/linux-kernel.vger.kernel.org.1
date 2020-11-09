@@ -2,144 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 789912AC6ED
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 22:21:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D37CE2AC711
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 22:21:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731091AbgKIVTT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 16:19:19 -0500
-Received: from mga12.intel.com ([192.55.52.136]:36683 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730902AbgKIVTP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 16:19:15 -0500
-IronPort-SDR: 32BWqyAfq9NvJhEYKIgKY6JAX+ap190LxHT6a/hqF+Wj8fQhL4JF04lnd5Qdm8SQ1Cl5A5RPMG
- xliGMOkygwKQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9800"; a="149153800"
-X-IronPort-AV: E=Sophos;i="5.77,464,1596524400"; 
-   d="scan'208";a="149153800"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Nov 2020 13:19:14 -0800
-IronPort-SDR: 7ZE/xk+pL6sDX8Z7U8m1ioz1eTOhBAKlEP8/Q0D/uDPaccZv2R+03Pzx3FC4cu5oBziJKQTkhh
- DvjIbSUm3mog==
-X-IronPort-AV: E=Sophos;i="5.77,464,1596524400"; 
-   d="scan'208";a="529505748"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Nov 2020 13:19:11 -0800
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1kcEaD-005Ilt-FZ; Mon, 09 Nov 2020 23:20:13 +0200
-Date:   Mon, 9 Nov 2020 23:20:13 +0200
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Lukasz Stelmach <l.stelmach@samsung.com>
-Cc:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Ard Biesheuvel <ard.biesheuvel@linaro.org>,
-        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        platform-driver-x86@vger.kernel.org,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
-Subject: Re: [PATCH v8 3/6] software node: implement reference properties
-Message-ID: <20201109212013.GN4077@smile.fi.intel.com>
-References: <20201109190245.GL4077@smile.fi.intel.com>
- <CGME20201109194725eucas1p2cc9357486879a14b2ad2f6ef968ff4b2@eucas1p2.samsung.com>
- <dleftjv9eenwhp.fsf%l.stelmach@samsung.com>
+        id S1731703AbgKIVU7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 16:20:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42426 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729451AbgKIVU6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 16:20:58 -0500
+Received: from mail-ua1-x942.google.com (mail-ua1-x942.google.com [IPv6:2607:f8b0:4864:20::942])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB32FC0613CF;
+        Mon,  9 Nov 2020 13:20:58 -0800 (PST)
+Received: by mail-ua1-x942.google.com with SMTP id r23so3260151uak.0;
+        Mon, 09 Nov 2020 13:20:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=7DBQ7bhRqZ6AzXHPOPfjQrb2gmOafLUkLl/Zq//thao=;
+        b=GA363FLEmGvNcaOVPu+1Mx5y3TLNI5//6oCy5bWoo1iZiwGklBUnwb+wFwpKngn/+i
+         tJdq4DaxJBo0LVuL8qc2OTj9r4UCbUhqJKksMdwtPfwPHyOVcO+I1a4sNCfD0jC+NhwU
+         KNVJECPSTUbj2oi92PtKciyzBbQEgUoqqnX8Pvw2RFzfYjIGH584j5W0V7ZEXAjD8x3N
+         gSokH9HjyJunlX8LrDsBxJ5tu3/iloELgwSj/GqWK4Fz1Bupjuf0+jikEgWw2inrIQTm
+         CE0JsPQwWY4E4tKza34j9gxF0r4+5u8q6SVe0y+pfzYakc/NLQeuHuCXP8O1RI1SEiRy
+         4FCg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=7DBQ7bhRqZ6AzXHPOPfjQrb2gmOafLUkLl/Zq//thao=;
+        b=e/sCQcBLUv/pMtqnL4wISGClCAeQx2pU+ycVQCBSaNbJfRLHzZmY4CYMEpBkeQLa+G
+         EHEP9OVdiF619ICM7YsQqPICg1kdy1xmJn2m7RTXV6NNoIO3UlNGCPyur5xxHBEPCo6b
+         e+jtUR5v7DP1Z9G+nT764221t+5e7tNkGDoCflOTMl0dgfANA6XPr3ERK18Ml9wUziDW
+         2LUyrhUjg0q4W9DNeGl5RtWdEk7D48cR8tHJ2tlMluaQx6l22zkAVhsE2Ks24dmN+3qd
+         16ZXZJBa0STiYHIKMsu02ww2dfD4fwI7R+IBEsHSONjQwWRjgjc8WO04+BF007+pAK2o
+         t2RA==
+X-Gm-Message-State: AOAM533wIUr8T73CiJfzPn0TwHT7d6/dUk4ROycK2nRMDJU8Au4Rthx0
+        4WnPvA7veghjuqyegVUsSWJ/l4k4aToLkT+YS9o=
+X-Google-Smtp-Source: ABdhPJwXUPIdnj6YB1V/GNwWxnUY4pO3NEM2p7J2W2vASZGEqUdFeObcdtl+nMyqYcYc8EZRDJDZ0e24xOJyYFnTksA=
+X-Received: by 2002:a9f:2c92:: with SMTP id w18mr8408184uaj.58.1604956857746;
+ Mon, 09 Nov 2020 13:20:57 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <dleftjv9eenwhp.fsf%l.stelmach@samsung.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <20201109193117.2017-1-TheSven73@gmail.com> <20201109130900.39602186@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+In-Reply-To: <20201109130900.39602186@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+From:   Sven Van Asbroeck <thesven73@gmail.com>
+Date:   Mon, 9 Nov 2020 16:20:46 -0500
+Message-ID: <CAGngYiUt8MBCugYfjUJMa_h0iekubnOwVwenE7gY50DnRXq5VQ@mail.gmail.com>
+Subject: Re: [PATCH net-next v1] net: phy: spi_ks8995: Do not overwrite SPI
+ mode flags
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        "David S. Miller" <davem@davemloft.net>,
+        netdev <netdev@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 09, 2020 at 08:47:14PM +0100, Lukasz Stelmach wrote:
-> It was <2020-11-09 pon 21:02>, when Andy Shevchenko wrote:
-> > On Mon, Nov 09, 2020 at 07:18:37PM +0100, Lukasz Stelmach wrote:
-> >> It was <2020-11-09 pon 19:24>, when Andy Shevchenko wrote:
-> >> > On Mon, Nov 09, 2020 at 06:02:29PM +0100, Lukasz Stelmach wrote:
-> >> >> It was <2019-11-07 czw 20:22>, when Dmitry Torokhov wrote:
+On Mon, Nov 9, 2020 at 4:09 PM Jakub Kicinski <kuba@kernel.org> wrote:
+>
+> This is a fix right? You seem to be targeting net-next and there is no
+> Fixes tag but it sounds like a bug.
 
-...
+I'm not sure. The original code used to work for me, until the spi bus
+driver I'm using to communicate to this chip was changed to always
+require SPI_CS_HIGH. The current ks8995 driver will now plow over
+this flag, and spi communication breaks.
 
-> > Create GPIO lookup table.
-> >
-> >> I could use platform_data to pass structures from configfs but
-> >> software nodes would let me save some code in the device driver and use
-> >> the same paths for both static (DT) and dynamic (configfs)
-> >> configuration.
-> >> 
-> >> Probably I have missed something and I will be greatful, if you tell me
-> >> where I can find more information about software nodes. There are few
-> >> users in the kernel and it isn't obvious for me how to use software
-> >> nodes properly.
-> >
-> > gpiod_add_lookup_table().
-> >
-> 
-> Yes, that is exactly what my POC code does now. But having a lookup
-> table together with the rest of the device structures has several
-> advantages.
-> 
-> 1) The device may be hotpluggable and there is no
->    gpiod_remove_lookup_table().
-
-	% git grep -n -w gpiod_remove_lookup_table
-
-Or I did get it wrong? Did you mean that the removal is not being called?
-
-> 2) Having the lookup table allocated and managed together with the rest
->    of the device seems like a better way to go than on gpio_lookup_list.
-
-Nice, what are you going to do with the rest of lookup tables
-(PWM, regulators, etc)? If you convert, convert them all at least.
-
-> 3) As of now I've got a minor issue with device naming. I need to set
->    dev_id of the table before the device is ready and only after it is
->    ready, its name is set (in the hotpluggable use case).
-
-Hotpluggable devices are very much supported by ACPI assistance. DT I have
-heard has overlays. What's the issue?
-
-> 4) Because no other devices would use this lookup table "publishing" it
->    rather than keeping together with the device seems at least slightly
->    odd.
-> 
-> When the lookup table is attached to the devices and can be passed
-> around  the final lookup can be done with a function like
-> 
-> static struct gpio_desc *gpiod_find_from_table(struct device *dev,
->                              const char *con_id, unsigned int idx,
->                  unsigned long *flags, struct gpiod_lookup *table)
-
-Something sounds fishy about your case. Why do you need to have board code /
-platform data in the first place? Sorry, but I didn't get why you should
-reconstruct DT (or ACPI) at run-time without using proper framework / feature
-(overlays)?
-
-> >>>> At the moment the driver gets the list from fwnode/of_node. The list
-> >>>> contain references to phandles which get resolved and and the driver
-> >>>> ends up with a bunch of gpio descriptors. Great.
-> >>>> 
-> >>>> This example looks nice but does the code that reads the reference from
-> >>>> the gpios property and returns a gpiod actually exist? If it doesn't, I
-> >>>> am willing to write it.
-> >>>> 
-> >>>> At first glance it makes more sense to me to pass (struct gpiod_lookup
-> >>>> *) instead of (struct software_node *) and make gpiolib's gpiod_find()
-> >>>> accept lookup tables as parameter instead of searching the
-> >>>> gpio_lookup_list? Or do you think such temporary table should be
-> >>>> assembled from the above structure and then used in gpiod_find()?
-> >>>> 
-> >>>> Any other suggestions on how to get a bunch of gpios (the description
-> >>>> for gpios is available in the devicetree) for a device described with a
-> >>>> software nodes?
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+Is this a bug? If so, what should its Fixes commit be? The spi commit
+upstream that enables SPI_CS_HIGH on my platform?
