@@ -2,115 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3262B2AC576
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 20:51:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E5DD82AC57A
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 20:52:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729941AbgKITuu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 14:50:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56664 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729247AbgKITut (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 14:50:49 -0500
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31D5EC0613CF
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Nov 2020 11:50:48 -0800 (PST)
-Received: by mail-wr1-x443.google.com with SMTP id r17so6179479wrw.1
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Nov 2020 11:50:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=7UsYe46mocZoiCW+LF/Ym4Xr19zPlHHTun9MNgIDCa8=;
-        b=bybJ1v3lnBrzYGFpKlM8KIAAxeZO8q1Oj7X8NR+yivBgB3ixHhbgfh46GvZw5Y0dw7
-         R8ihdHrEF3VsPyVSczQs4CAjGr4WkHKZ60Pv8DXtW66G6KXcT58C2irteDqxc1Aqh/wl
-         Yol11CKM3Qe9MlcKppFvLjC7pfs38gbMYpfl+awnoULIWf33EGa7hXtfpRZFnDPWu7pj
-         C5ncll0eVyXlN4yFDmpfth2nkGZgRUMJkpmUWxVXdyADslDIR/lPs7tx+/0qTbI4sGVu
-         9kCyUxOI1uqm1Mot8d942RRhA8Kr54/1FWeghNbwxFPc3IivlhHE6lWhFgATSgYK9V2D
-         UnsA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=7UsYe46mocZoiCW+LF/Ym4Xr19zPlHHTun9MNgIDCa8=;
-        b=sFxirG++onykGZygPDR40mbyzZRlEeFRruLmLEF7aHREq3xUghkxcfBJZZGlcJ0CeU
-         vvtkPVhc2LeaYl8CiCRhW5Q4L6g8WpO8clZwGYgNdLBvBv3c9qm9cKxu+GhlWkLiEw70
-         /zecW2IR8wxhp3iOfSVUcfEDFnzwhfErmFqcsA0rXkgff7eOKHVuM6j6EdnInpSAgN2c
-         4ctx6BRM6U1K0Z1CRYaKWSq7nP4WGw89fk8CGgaH2t2BnKZVaZsrI9W8ZRAt3yvPimyZ
-         aEiG36dKfffj5xpe8+U3uOzJct4Xa91OFkwB+WCZVXVZRjP7+J+/d1fSYa+m5viRM7Nu
-         +g6Q==
-X-Gm-Message-State: AOAM5326T1NJU2WmeM2183YwCoQn7oOafA4A3NZ/WLNHK2clxPCey3Ys
-        50B9yKAKP1RVLeClwMX1tQZ3VB0abkXEcTBr8TU=
-X-Google-Smtp-Source: ABdhPJy4DoOooRT9xNcJhrIB9gh/ZyN3Y3XCDpxRFi0KiF8dwateu7LjMMrJAFMH6yt7UiqG83IN4HHaYGrXoQHc54I=
-X-Received: by 2002:adf:e9c9:: with SMTP id l9mr21010982wrn.124.1604951446950;
- Mon, 09 Nov 2020 11:50:46 -0800 (PST)
+        id S1730726AbgKITwH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 14:52:07 -0500
+Received: from mga07.intel.com ([134.134.136.100]:50692 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729935AbgKITwG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 14:52:06 -0500
+IronPort-SDR: ta/XfLNxQvwgHJJ/K8ovNsYmI0TIgWzIzTpF/JUcPQpzfYB68ohF9qLp26XZVkTNrunBfvIGWR
+ xYK2ZrXq8Tdw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9800"; a="234028378"
+X-IronPort-AV: E=Sophos;i="5.77,464,1596524400"; 
+   d="scan'208";a="234028378"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Nov 2020 11:52:06 -0800
+IronPort-SDR: zzMUeXx4/CX4g14b8qsQbgnkQY6vTPSxofBrGUehwIFtHmg8KBBhTuSmeUhu8qFCXwdmwgo7UD
+ 2EbdVgFDikzw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,464,1596524400"; 
+   d="scan'208";a="355824600"
+Received: from linux.intel.com ([10.54.29.200])
+  by fmsmga004.fm.intel.com with ESMTP; 09 Nov 2020 11:52:05 -0800
+Received: from [10.251.16.60] (kliang2-MOBL.ccr.corp.intel.com [10.251.16.60])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by linux.intel.com (Postfix) with ESMTPS id D010D580AE3;
+        Mon,  9 Nov 2020 11:52:03 -0800 (PST)
+Subject: Re: [PATCH 1/3] perf/core: Flush PMU internal buffers for per-CPU
+ events
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     mingo@kernel.org, linux-kernel@vger.kernel.org,
+        namhyung@kernel.org, eranian@google.com, irogers@google.com,
+        gmx@google.com, acme@kernel.org, jolsa@redhat.com,
+        ak@linux.intel.com
+References: <20201106212935.28943-1-kan.liang@linux.intel.com>
+ <20201109095235.GC2594@hirez.programming.kicks-ass.net>
+ <20201109110405.GN2651@hirez.programming.kicks-ass.net>
+ <0a1db246-c34a-22a3-160c-3e0c0a38119d@linux.intel.com>
+ <20201109173300.GM2611@hirez.programming.kicks-ass.net>
+From:   "Liang, Kan" <kan.liang@linux.intel.com>
+Message-ID: <464c6219-ff34-7470-d941-fe6560cb9e56@linux.intel.com>
+Date:   Mon, 9 Nov 2020 14:52:02 -0500
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.1
 MIME-Version: 1.0
-References: <20201106214949.2042120-1-lee.jones@linaro.org> <20201106214949.2042120-18-lee.jones@linaro.org>
-In-Reply-To: <20201106214949.2042120-18-lee.jones@linaro.org>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Mon, 9 Nov 2020 14:50:35 -0500
-Message-ID: <CADnq5_Nys7igVo3sgzK0D4hnm=RHMrEM7Xty80jGROu_sy5svA@mail.gmail.com>
-Subject: Re: [PATCH 17/19] drm/radeon/radeon_kms: Fix misnaming of
- 'radeon_info_ioctl's dev param
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     David Airlie <airlied@linux.ie>,
-        LKML <linux-kernel@vger.kernel.org>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20201109173300.GM2611@hirez.programming.kicks-ass.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 6, 2020 at 4:50 PM Lee Jones <lee.jones@linaro.org> wrote:
->
-> Fixes the following W=3D1 kernel build warning(s):
->
->  drivers/gpu/drm/radeon/radeon_kms.c:226: warning: Function parameter or =
-member 'dev' not described in 'radeon_info_ioctl'
->  drivers/gpu/drm/radeon/radeon_kms.c:226: warning: Excess function parame=
-ter 'rdev' description in 'radeon_info_ioctl'
->
-> Cc: Alex Deucher <alexander.deucher@amd.com>
-> Cc: "Christian K=C3=B6nig" <christian.koenig@amd.com>
-> Cc: David Airlie <airlied@linux.ie>
-> Cc: Daniel Vetter <daniel@ffwll.ch>
-> Cc: amd-gfx@lists.freedesktop.org
-> Cc: dri-devel@lists.freedesktop.org
-> Signed-off-by: Lee Jones <lee.jones@linaro.org>
-> ---
->  drivers/gpu/drm/radeon/radeon_kms.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/gpu/drm/radeon/radeon_kms.c b/drivers/gpu/drm/radeon=
-/radeon_kms.c
-> index 0d8fbabffcead..21c206795c364 100644
-> --- a/drivers/gpu/drm/radeon/radeon_kms.c
-> +++ b/drivers/gpu/drm/radeon/radeon_kms.c
-> @@ -213,7 +213,7 @@ static void radeon_set_filp_rights(struct drm_device =
-*dev,
->  /**
->   * radeon_info_ioctl - answer a device specific request.
->   *
-> - * @rdev: radeon device pointer
-> + * @dev: radeon device pointer
 
-This should be:
-+ * @dev: drm device pointer
 
-Alex
-
->   * @data: request object
->   * @filp: drm filp
->   *
-> --
-> 2.25.1
+On 11/9/2020 12:33 PM, Peter Zijlstra wrote:
+> On Mon, Nov 09, 2020 at 09:49:31AM -0500, Liang, Kan wrote:
+>>> Maybe we can frob x86_pmu_enable()...
+>>
+>> Could you please elaborate?
+> 
+> Something horrible like this. It will detect the first time we enable
+> the PMU on a new task (IOW we did a context switch) and wipe the
+> counters when user RDPMC is on...
 >
-> _______________________________________________
-> dri-devel mailing list
-> dri-devel@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+
+Oh, you mean the RDPMC patch. It should be doable, but I think 
+sched_task() may be a better place, especially with the new optimization 
+(patch 3). We can set PERF_SCHED_CB_SW_IN bit for the case, so we only 
+do the check for per-task events in sched in.
+
+It looks like the below patch has to unconditionally do the check (even 
+for the non-RDPMC cases), which should be unnecessary.
+
+Anyway, I think the RDPMC patch should depend on the implementation of 
+the sched_task(). We may have further discussion when the design of 
+sched_task() is finalized.
+
+
+Thanks,
+Kan
+
+> diff --git a/arch/x86/events/core.c b/arch/x86/events/core.c
+> index 77b963e5e70a..d862927baaef 100644
+> --- a/arch/x86/events/core.c
+> +++ b/arch/x86/events/core.c
+> @@ -1289,6 +1289,15 @@ static void x86_pmu_enable(struct pmu *pmu)
+>   		perf_events_lapic_init();
+>   	}
+>   
+> +	if (cpuc->current != current) {
+> +		struct mm_struct *mm = current->mm;
+> +
+> +		cpuc->current = current;
+> +
+> +		if (mm && atomic_read(&mm->context.perf_rdpmc_allowed))
+> +			wipe_dirty_counters();
+> +	}
+> +
+>   	cpuc->enabled = 1;
+>   	barrier();
+>   
+> diff --git a/arch/x86/events/perf_event.h b/arch/x86/events/perf_event.h
+> index 7895cf4c59a7..d16118cb3bd0 100644
+> --- a/arch/x86/events/perf_event.h
+> +++ b/arch/x86/events/perf_event.h
+> @@ -248,6 +248,8 @@ struct cpu_hw_events {
+>   	unsigned int		txn_flags;
+>   	int			is_fake;
+>   
+> +	void			*current;
+> +
+>   	/*
+>   	 * Intel DebugStore bits
+>   	 */
+> 
