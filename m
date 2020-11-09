@@ -2,133 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58A8C2ABB74
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 14:28:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 180182ABB57
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 14:28:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733144AbgKIN21 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 08:28:27 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39908 "EHLO mail.kernel.org"
+        id S2387848AbgKIN1U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 08:27:20 -0500
+Received: from smtp.asem.it ([151.1.184.197]:50633 "EHLO smtp.asem.it"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1733012AbgKINNs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 08:13:48 -0500
-Received: from mail-oi1-f178.google.com (mail-oi1-f178.google.com [209.85.167.178])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 888C5221F1;
-        Mon,  9 Nov 2020 13:13:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604927627;
-        bh=C62EO4IC0tkPHza1Z5wLuwCPmHs9dymzQ6bTKN291E0=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=lu6ZloQxCpVK9XPcQeKzDCyoPfapyzr8TmXS1ZEQ5eLaXSQuhBcR94+nOWdM77AES
-         kV44ekL3qEsJoQl40SCbzafHpHB/U5BDiFZlYsy1bDuBBjuiPNMvRlmyINyVtsgYHP
-         +CZ44kZDC+mqx34R9oQDI2jfLLxSNjX09++Ubcyg=
-Received: by mail-oi1-f178.google.com with SMTP id w188so4585167oib.1;
-        Mon, 09 Nov 2020 05:13:47 -0800 (PST)
-X-Gm-Message-State: AOAM533ghNW5C4wTcPw1BTBJ/wO7q05blkQ5kGYW8aF+6QmwHPWFBrsy
-        dUT41dKrbdJymQJI6f5pIgDgRFwIDPQfe/6m6zA=
-X-Google-Smtp-Source: ABdhPJxw91Hj0jZh5TbrSnMgwYuPfwA98iCODNQAPuLfkdT9c4QN2Zz2pIgElY5nW2+5lWSvP9BtJ7kmgCwWxxMgu9A=
-X-Received: by 2002:aca:e0d7:: with SMTP id x206mr9417239oig.67.1604927626755;
- Mon, 09 Nov 2020 05:13:46 -0800 (PST)
+        id S1731914AbgKIN1R (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 08:27:17 -0500
+X-Greylist: delayed 303 seconds by postgrey-1.27 at vger.kernel.org; Mon, 09 Nov 2020 08:27:16 EST
+Received: from webmail.asem.it
+        by asem.it (smtp.asem.it)
+        (SecurityGateway 6.5.2)
+        with ESMTP id SG000594617.MSG 
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Nov 2020 14:22:10 +0100S
+Received: from ASAS044.asem.intra (172.16.16.44) by ASAS044.asem.intra
+ (172.16.16.44) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Mon, 9 Nov
+ 2020 14:22:06 +0100
+Received: from flavio-x.asem.intra (172.16.17.208) by ASAS044.asem.intra
+ (172.16.16.44) with Microsoft SMTP Server id 15.1.1979.3 via Frontend
+ Transport; Mon, 9 Nov 2020 14:22:06 +0100
+From:   Flavio Suligoi <f.suligoi@asem.it>
+To:     Vineet Gupta <vgupta@synopsys.com>
+CC:     <linux-snps-arc@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, Flavio Suligoi <f.suligoi@asem.it>
+Subject: [PATCH] ARC: mm: fix spelling mistakes
+Date:   Mon, 9 Nov 2020 14:21:30 +0100
+Message-ID: <20201109132130.34555-1-f.suligoi@asem.it>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <cover.1603055402.git.syednwaris@gmail.com> <15a044d3ba23f00c31fd09437bdd3e5924bb91cd.1603055402.git.syednwaris@gmail.com>
- <CAK8P3a3f=fuq24QwNee3QgoMcSK5rcvLRpdTOWBZ9NJ4d-4bvA@mail.gmail.com>
- <20201101150033.GA68138@shinobu> <CAK8P3a0y7mh=ZDPefgpawY97gpYv79UXFLBzoGfu3ex2up2aDQ@mail.gmail.com>
- <20201109123411.GA19869@syed>
-In-Reply-To: <20201109123411.GA19869@syed>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Mon, 9 Nov 2020 14:13:30 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a2_1xT7Jz_q-xZstnW6dSRkRp4Q9Cqyz1t7Bo189zgfaA@mail.gmail.com>
-Message-ID: <CAK8P3a2_1xT7Jz_q-xZstnW6dSRkRp4Q9Cqyz1t7Bo189zgfaA@mail.gmail.com>
-Subject: Re: [PATCH v12 4/4] gpio: xilinx: Utilize generic bitmap_get_value
- and _set_value
-To:     Syed Nayyar Waris <syednwaris@gmail.com>
-Cc:     William Breathitt Gray <vilhelm.gray@gmail.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Michal Simek <michal.simek@xilinx.com>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-SGHeloLookup-Result: pass smtp.helo=webmail.asem.it (ip=172.16.16.44)
+X-SGSPF-Result: none (smtp.asem.it)
+X-SGOP-RefID: str=0001.0A09020B.5FA9427F.0071,ss=1,re=0.000,recu=0.000,reip=0.000,cl=1,cld=1,fgs=0 (_st=1 _vt=0 _iwf=0)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 9, 2020 at 1:34 PM Syed Nayyar Waris <syednwaris@gmail.com> wrote:
-> On Sun, Nov 01, 2020 at 09:08:29PM +0100, Arnd Bergmann wrote:
-> > > This avoids adding a costly conditional check inside bitmap_set_value()
-> > > when almost all bitmap_set_value() calls will have static arguments with
-> > > well-defined and obvious boundaries.
-> > >
-> > > Do you think this would be an acceptable solution to resolve your GCC
-> > > warnings?
-> >
-> > Unfortunately, it does not seem to make a difference, as gcc still
-> > knows that this compiles to the same result, and it produces the same
-> > warning as before (see https://godbolt.org/z/rjx34r)
-> >
-> >          Arnd
->
-> Hi Arnd,
->
-> Sharing a different version of bitmap_set_valuei() function. See below.
->
-> Let me know if the below solution looks good to you and if it resolves
-> the above compiler warning.
+Signed-off-by: Flavio Suligoi <f.suligoi@asem.it>
+---
+ arch/arc/mm/tlb.c | 24 ++++++++++++------------
+ 1 file changed, 12 insertions(+), 12 deletions(-)
 
-Thanks for the follow-up!
+diff --git a/arch/arc/mm/tlb.c b/arch/arc/mm/tlb.c
+index c340acd989a0..9bb3c24f3677 100644
+--- a/arch/arc/mm/tlb.c
++++ b/arch/arc/mm/tlb.c
+@@ -30,14 +30,14 @@
+  *  -Changes related to MMU v2 (Rel 4.8)
+  *
+  * Vineetg: Aug 29th 2008
+- *  -In TLB Flush operations (Metal Fix MMU) there is a explict command to
++ *  -In TLB Flush operations (Metal Fix MMU) there is a explicit command to
+  *    flush Micro-TLBS. If TLB Index Reg is invalid prior to TLBIVUTLB cmd,
+  *    it fails. Thus need to load it with ANY valid value before invoking
+  *    TLBIVUTLB cmd
+  *
+  * Vineetg: Aug 21th 2008:
+  *  -Reduced the duration of IRQ lockouts in TLB Flush routines
+- *  -Multiple copies of TLB erase code seperated into a "single" function
++ *  -Multiple copies of TLB erase code separated into a "single" function
+  *  -In TLB Flush routines, interrupt disabling moved UP to retrieve ASID
+  *       in interrupt-safe region.
+  *
+@@ -66,7 +66,7 @@
+  *
+  * Although J-TLB is 2 way set assoc, ARC700 caches J-TLB into uTLBS which has
+  * much higher associativity. u-D-TLB is 8 ways, u-I-TLB is 4 ways.
+- * Given this, the thrasing problem should never happen because once the 3
++ * Given this, the thrashing problem should never happen because once the 3
+  * J-TLB entries are created (even though 3rd will knock out one of the prev
+  * two), the u-D-TLB and u-I-TLB will have what is required to accomplish memcpy
+  *
+@@ -127,7 +127,7 @@ static void utlb_invalidate(void)
+ 	 * There was however an obscure hardware bug, where uTLB flush would
+ 	 * fail when a prior probe for J-TLB (both totally unrelated) would
+ 	 * return lkup err - because the entry didn't exist in MMU.
+-	 * The Workround was to set Index reg with some valid value, prior to
++	 * The Workaround was to set Index reg with some valid value, prior to
+ 	 * flush. This was fixed in MMU v3
+ 	 */
+ 	unsigned int idx;
+@@ -272,7 +272,7 @@ noinline void local_flush_tlb_all(void)
+ }
+ 
+ /*
+- * Flush the entrie MM for userland. The fastest way is to move to Next ASID
++ * Flush the entire MM for userland. The fastest way is to move to Next ASID
+  */
+ noinline void local_flush_tlb_mm(struct mm_struct *mm)
+ {
+@@ -303,7 +303,7 @@ noinline void local_flush_tlb_mm(struct mm_struct *mm)
+  * Difference between this and Kernel Range Flush is
+  *  -Here the fastest way (if range is too large) is to move to next ASID
+  *      without doing any explicit Shootdown
+- *  -In case of kernel Flush, entry has to be shot down explictly
++ *  -In case of kernel Flush, entry has to be shot down explicitly
+  */
+ void local_flush_tlb_range(struct vm_area_struct *vma, unsigned long start,
+ 			   unsigned long end)
+@@ -620,7 +620,7 @@ void update_mmu_cache(struct vm_area_struct *vma, unsigned long vaddr_unaligned,
+  * Super Page size is configurable in hardware (4K to 16M), but fixed once
+  * RTL builds.
+  *
+- * The exact THP size a Linx configuration will support is a function of:
++ * The exact THP size a Linux configuration will support is a function of:
+  *  - MMU page size (typical 8K, RTL fixed)
+  *  - software page walker address split between PGD:PTE:PFN (typical
+  *    11:8:13, but can be changed with 1 line)
+@@ -698,7 +698,7 @@ void local_flush_pmd_tlb_range(struct vm_area_struct *vma, unsigned long start,
+ 
+ #endif
+ 
+-/* Read the Cache Build Confuration Registers, Decode them and save into
++/* Read the Cache Build Configuration Registers, Decode them and save into
+  * the cpuinfo structure for later use.
+  * No Validation is done here, simply read/convert the BCRs
+  */
+@@ -803,13 +803,13 @@ void arc_mmu_init(void)
+ 	pr_info("%s", arc_mmu_mumbojumbo(0, str, sizeof(str)));
+ 
+ 	/*
+-	 * Can't be done in processor.h due to header include depenedencies
++	 * Can't be done in processor.h due to header include dependencies
+ 	 */
+ 	BUILD_BUG_ON(!IS_ALIGNED((CONFIG_ARC_KVADDR_SIZE << 20), PMD_SIZE));
+ 
+ 	/*
+ 	 * stack top size sanity check,
+-	 * Can't be done in processor.h due to header include depenedencies
++	 * Can't be done in processor.h due to header include dependencies
+ 	 */
+ 	BUILD_BUG_ON(!IS_ALIGNED(STACK_TOP, PMD_SIZE));
+ 
+@@ -881,7 +881,7 @@ void arc_mmu_init(void)
+  *      the duplicate one.
+  * -Knob to be verbose abt it.(TODO: hook them up to debugfs)
+  */
+-volatile int dup_pd_silent; /* Be slient abt it or complain (default) */
++volatile int dup_pd_silent; /* Be silent abt it or complain (default) */
+ 
+ void do_tlb_overlap_fault(unsigned long cause, unsigned long address,
+ 			  struct pt_regs *regs)
+@@ -948,7 +948,7 @@ void do_tlb_overlap_fault(unsigned long cause, unsigned long address,
+ 
+ /***********************************************************************
+  * Diagnostic Routines
+- *  -Called from Low Level TLB Hanlders if things don;t look good
++ *  -Called from Low Level TLB Handlers if things don;t look good
+  **********************************************************************/
+ 
+ #ifdef CONFIG_ARC_DBG_TLB_PARANOIA
+-- 
+2.25.1
 
-> @@ -1,5 +1,5 @@
->  static inline void bitmap_set_value(unsigned long *map,
-> -                                    unsigned long value,
-> +                                    unsigned long value, const size_t length,
->                                      unsigned long start, unsigned long nbits)
->  {
->          const size_t index = BIT_WORD(start);
-> @@ -7,6 +7,9 @@ static inline void bitmap_set_value(unsigned long *map,
->          const unsigned long ceiling = round_up(start + 1, BITS_PER_LONG);
->          const unsigned long space = ceiling - start;
->
-> +       if (index >= length)
-> +               return;
-> +
->          value &= GENMASK(nbits - 1, 0);
->
->          if (space >= nbits) {
-> @@ -15,6 +18,10 @@ static inline void bitmap_set_value(unsigned long *map,
->          } else {
->                  map[index + 0] &= ~BITMAP_FIRST_WORD_MASK(start);
->                  map[index + 0] |= value << offset;
-> +
-> +               if (index + 1 >= length)
-> +                       return;
-> +
->                  map[index + 1] &= ~BITMAP_LAST_WORD_MASK(start + nbits);
->                  map[index + 1] |= value >> space;
->          }
-
-Yes, this does address the warning: https://godbolt.org/z/3nsGzq
-
-Not sure what the best calling conventions would be though, as the function
-now has five arguments, and the one called 'nbits' appears to be what
-all other helpers in include/linux/bitmap.h use for the length of the bitmap,
-while this one uses it for the length of the value.
-
-I'd prefer passing the number of bits in the bitmap rather than the number
-of 'unsigned long' words in it, and calling that 'nbits', while renaming
-the current 'nbits' to something else, e.g.:
-
-static inline void bitmap_set_value(unsigned long *map,
-                                    unsigned long value, unsigned long start,
-                                    unsigned long clump_size, unsigned
-long nbits);
-
-Though I'm still unsure about the argument order. Having 'nbits'
-right next to 'map' would be the most logical to me as they logically
-belong together, but most other linux/bitops.h helpers seem to have
-'nbits' as the last argument.
-
-        Arnd
