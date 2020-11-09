@@ -2,278 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE9E92AC250
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 18:31:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C01BB2AC254
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 18:31:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732055AbgKIRbD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 12:31:03 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38318 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731491AbgKIRbC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 12:31:02 -0500
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id ADF0F2083B;
-        Mon,  9 Nov 2020 17:31:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604943061;
-        bh=u+3BGBGLZ7qBudqUopV8+ouRomdiYDjtsYxTdZZMlGo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=KaHlfeV3nG1ZjUWoIDSVj3aUulBvyKGSk4j1u9vHZ9XHTRjTFdWDejwUSAUtIDLGx
-         Qa8YGKNSStZZiojpbZRy/ka5DJgx/3yC1MSqKwFNmkSAYErJkokrLhINgo7N4aKasj
-         6vmcKmy7j+YJ7De8wDYdMgrBiT+WmfbKfuFvBWYA=
-Date:   Mon, 9 Nov 2020 18:32:00 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     Ivan Zaentsev <ivan.zaentsev@wirenboard.ru>,
-        Evgeniy Polyakov <zbr@ioremap.net>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Akira Shimahara <akira215corp@gmail.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Colin Ian King <colin.king@canonical.com>,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        Evgeny Boger <boger@wirenboard.com>
-Subject: Re: Adding ABI to htmldocs - Was: Re: [PATCH 2/2] w1: w1_therm: Add
- support for GXCAS GX20MH01 device.
-Message-ID: <20201109173200.GB2371851@kroah.com>
-References: <20201006151915.77d044a4@coco.lan>
- <1561045277.20201007103227@wirenboard.ru>
- <20201007105702.67988846@coco.lan>
- <20201007090619.GA613204@kroah.com>
- <20201007130549.6ca57af0@coco.lan>
- <20201007114359.GA2167293@kroah.com>
- <20201007135934.4b6e598e@coco.lan>
- <20201021182843.522dd7e7@coco.lan>
- <20201021165819.GA1361645@kroah.com>
- <20201029152845.6bbb39ce@coco.lan>
+        id S1731691AbgKIRbk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 12:31:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35008 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730315AbgKIRbk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 12:31:40 -0500
+Received: from mail-qv1-xf44.google.com (mail-qv1-xf44.google.com [IPv6:2607:f8b0:4864:20::f44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6282C0613CF;
+        Mon,  9 Nov 2020 09:31:39 -0800 (PST)
+Received: by mail-qv1-xf44.google.com with SMTP id z17so751841qvy.11;
+        Mon, 09 Nov 2020 09:31:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=HMIHtoNzchBHFVtanLTb2sQZQycOvpPNIxMNPEE2T40=;
+        b=HbF0oxxxVzU/7cNLkG4olbhmHWosI7k82XP7XqE4RfN7gzS/IsIQOILqtxuRGND1QL
+         mV/wDFH7e8arLGMfae9/asPBZskQ/E6SLmy24Vkxo9yJGTMENXNzz5TQ280s5FCCcDYt
+         LOU97Joga1nf2IheV38qi2d2/xMK/qGN+oCdL7PJT171QrYKybUS3leyNjhiOd+linur
+         FLcWlRJsFSrk1dNMKnxhVYod9GZcYYQbQ841u8wd5bDVtzbwZ6uVWSin5mQALyXl0eaG
+         urOLCtWWn/C56covg5TixPVWEHCElwDKeXieFNRtmKiTStjK+FcUEwwkdYK4h9tdZS1a
+         ThRA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=HMIHtoNzchBHFVtanLTb2sQZQycOvpPNIxMNPEE2T40=;
+        b=CDvFQlbOYmbbydYejtrXWOsLMqJVCBXlmYGbl+tVlokxMSSbFBDuRkSAzP4RsYkIGc
+         ck4yRR/l2NxFpk3x63LvZVnC+ckdyjWW/ut7WGElhgySxGiBkbzGese1qzlkaNFM2Wdn
+         2WmT/zTFWUE573XIRryLrBmrhjc805VQCpQ6l7ecpUAB4oZzYm8Rxss9f4PdPI/TPGpa
+         C1gNvJ5oEGFXZu5kGkk9jOpsoXLk/5M7p/qgFgt/NDuTNgLLgb1YCo+xfgPhKd3RQHm+
+         LIZfEhUErIHWcPraoK0lWsQrJcfgZHvF3NgCD63zzf8q28d+hxWisYz1LgPYzl2uEoYo
+         2zEg==
+X-Gm-Message-State: AOAM531RUbjX4pLfXIZuBqPqYakMJi50+hOJshhGcHEMFkZhePmBC4pN
+        gP4Oj4Ws09+Zd4ZGD6sHsk0=
+X-Google-Smtp-Source: ABdhPJzpOtrBD8nR+/5Tvg1a/rV7ki4++gxJ6sueoUVdKqES9fgDIPRi/UpOTnN6C6LItoAJFcpq7Q==
+X-Received: by 2002:a0c:fdcb:: with SMTP id g11mr15613454qvs.58.1604943099203;
+        Mon, 09 Nov 2020 09:31:39 -0800 (PST)
+Received: from shinobu (072-189-064-225.res.spectrum.com. [72.189.64.225])
+        by smtp.gmail.com with ESMTPSA id j21sm1606865qtp.10.2020.11.09.09.31.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 09 Nov 2020 09:31:38 -0800 (PST)
+Date:   Mon, 9 Nov 2020 12:31:23 -0500
+From:   William Breathitt Gray <vilhelm.gray@gmail.com>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Syed Nayyar Waris <syednwaris@gmail.com>,
+        Arnd Bergmann <arnd@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Michal Simek <michal.simek@xilinx.com>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [PATCH v12 4/4] gpio: xilinx: Utilize generic bitmap_get_value
+ and _set_value
+Message-ID: <20201109173107.GA14643@shinobu>
+References: <15a044d3ba23f00c31fd09437bdd3e5924bb91cd.1603055402.git.syednwaris@gmail.com>
+ <CAK8P3a3f=fuq24QwNee3QgoMcSK5rcvLRpdTOWBZ9NJ4d-4bvA@mail.gmail.com>
+ <20201101150033.GA68138@shinobu>
+ <CAK8P3a0y7mh=ZDPefgpawY97gpYv79UXFLBzoGfu3ex2up2aDQ@mail.gmail.com>
+ <20201109123411.GA19869@syed>
+ <20201109134128.GA5596@shinobu>
+ <CAK8P3a2FMkMc0K+hu0pnqC8wEMeapKPkZXaBm+HFYYPTes5NHA@mail.gmail.com>
+ <20201109164529.GA28710@syed.domain.name>
+ <20201109171140.GA14045@shinobu>
+ <20201109172220.GI4077@smile.fi.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="DBIVS5p969aUjpLe"
 Content-Disposition: inline
-In-Reply-To: <20201029152845.6bbb39ce@coco.lan>
+In-Reply-To: <20201109172220.GI4077@smile.fi.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 29, 2020 at 03:28:45PM +0100, Mauro Carvalho Chehab wrote:
-> Em Wed, 21 Oct 2020 18:58:19 +0200
-> Greg Kroah-Hartman <gregkh@linuxfoundation.org> escreveu:
-> 
-> > On Wed, Oct 21, 2020 at 06:28:43PM +0200, Mauro Carvalho Chehab wrote:
-> > > Hi greg,
-> > > 
-> > > Em Wed, 7 Oct 2020 13:59:34 +0200
-> > > Mauro Carvalho Chehab <mchehab+huawei@kernel.org> escreveu:
-> > >   
-> > > > Em Wed, 7 Oct 2020 13:43:59 +0200
-> > > > Greg Kroah-Hartman <gregkh@linuxfoundation.org> escreveu:
-> > > >   
-> > > > > On Wed, Oct 07, 2020 at 01:05:49PM +0200, Mauro Carvalho Chehab wrote:    
-> > > > > > Em Wed, 7 Oct 2020 11:06:19 +0200
-> > > > > > Greg Kroah-Hartman <gregkh@linuxfoundation.org> escreveu:
-> > > > > >       
-> > > > > > > On Wed, Oct 07, 2020 at 10:57:02AM +0200, Mauro Carvalho Chehab wrote:      
-> > > > > > > > Em Wed, 7 Oct 2020 10:32:27 +0300
-> > > > > > > > Ivan Zaentsev <ivan.zaentsev@wirenboard.ru> escreveu:
-> > > > > > > >         
-> > > > > > > > > Tuesday, October 6, 2020, 4:19:15 PM, Mauro Carvalho Chehab wrote:
-> > > > > > > > >         
-> > > > > > > > > >> diff --git a/Documentation/w1/slaves/w1_therm.rst b/Documentation/w1/slaves/w1_therm.rst
-> > > > > > > > > >> index f1148181f53e..00376501a5ef 100644
-> > > > > > > > > >> --- a/Documentation/w1/slaves/w1_therm.rst
-> > > > > > > > > >> +++ b/Documentation/w1/slaves/w1_therm.rst          
-> > > > > > > > >         
-> > > > > > > > > >>  
-> > > > > > > > > >> @@ -130,4 +131,12 @@ conversion and temperature reads 85.00 (powerup value) or 127.94 (insufficient
-> > > > > > > > > >>  power), the driver returns a conversion error. Bit mask ``2`` enables poll for
-> > > > > > > > > >>  conversion completion (normal power only) by generating read cycles on the bus
-> > > > > > > > > >>  after conversion starts. In parasite power mode this feature is not available.
-> > > > > > > > > >> -Feature bit masks may be combined (OR).
-> > > > > > > > > >> +Feature bit masks may be combined (OR). See accompanying sysfs documentation:
-> > > > > > > > > >> +:ref:`Documentation/w1/slaves/w1_therm.rst <w1_therm>`
-> > > > > > > > > >> +          
-> > > > > > > > >         
-> > > > > > > > > > As warned by Sphinx, this cross-reference is broken:          
-> > > > > > > > >         
-> > > > > > > > > >         .../Documentation/w1/slaves/w1_therm.rst:125: WARNING:
-> > > > > > > > > > undefined label: w1_therm (if the link has no caption the label must precede a section header)          
-> > > > > > > > > 
-> > > > > > > > > Would this be ok?        
-> > > > > > > > 
-> > > > > > > > Yeah, sure!
-> > > > > > > >         
-> > > > > > > > > 
-> > > > > > > > > "More details in Documentation/ABI/testing/sysfs-driver-w1_therm"
-> > > > > > > > >         
-> > > > > > > > > > Not sure what you wanted to point here.          
-> > > > > > > > > 
-> > > > > > > > > A link to a driver's sysfs interface, but sysfs docs are text
-> > > > > > > > > files and seem to not be included in Sphynx Docs.        
-> > > > > > > > 
-> > > > > > > > I sent upstream sometime ago a patch series adding ABI to Sphinx, but I 
-> > > > > > > > was not merged, not sure why:
-> > > > > > > > 
-> > > > > > > > 	https://git.linuxtv.org/mchehab/experimental.git/log/?h=abi_patches_v5.6        
-> > > > > > > 
-> > > > > > > I think the raft of different patches floating around at the time made
-> > > > > > > me totally confused as to what was, and was not, the latest versions.      
-> > > > > > 
-> > > > > > Yeah, there were lots of patches floating around that time.
-> > > > > > 
-> > > > > > I also recall that someone (Jeni?) asked if the best wouldn't be to
-> > > > > > just convert the ABI files to ReST directly.
-> > > > > >       
-> > > > > > > I'll be glad to look at them again, if you want to rebase after 5.10-rc1
-> > > > > > > is out and resend them, as I think this should be showing up in the
-> > > > > > > documentation.      
-> > > > > > 
-> > > > > > Surely. I'll rebase them after 5.10-rc1 and re-submit. 
-> > > > > > 
-> > > > > > What strategy do you prefer? Keep the files with the same format as
-> > > > > > today (allowing them to optionally have ReST markups) or to convert
-> > > > > > them to .rst directly?
-> > > > > > 
-> > > > > > In the latter case, the best would be to apply it as early as possible
-> > > > > > after 5.10-rc1, as it may cause conflicts with other patches being
-> > > > > > submitted for 5.11.      
-> > > > > 
-> > > > > The existing format if at all possible, doing wholesale changes is a
-> > > > > mess and wouldn't be recommended.    
-> > > > 
-> > > > Yeah, merging it would indeed be a mess. At long term, though, it could 
-> > > > be easier to maintain.
-> > > >   
-> > > > > I think you already fixed up the entries that had problems being parsed
-> > > > > in the past, if not, we can resolve those as well.    
-> > > > 
-> > > > Yes. The series start with fixes. I suspect several of them
-> > > > (if not all) were already merged, but if anything is missing, I can fix 
-> > > > at the upcoming rebased series.  
-> > > 
-> > > Rebasing the patch series was easier than what I expected:
-> > > 
-> > > 	https://git.linuxtv.org/mchehab/experimental.git/log/?h=abi_patches_v6
-> > > 
-> > > Yet, while fixing one build issue, I noticed that there are multiple
-> > > files defining the same ABI, with different contents.
-> > > 
-> > > Right now, scripts/get_abi.pl assumes that "what" is unique. Well, sorts
-> > > of. When it finds a duplicated entry, it merges the description, 
-> > > preserving the fields from the last parsed entry.
-> > > 
-> > > I ended adding a patch to detect those ABI duplication:
-> > > 
-> > > 	https://git.linuxtv.org/mchehab/experimental.git/commit/?h=abi_patches_v6&id=6868914605cb0ebffe3fd07d344c246e1e4cd94e
-> > > 
-> > > I'm enclosing the results.
-> > > 
-> > > One such example is this one:
-> > > 
-> > > 	3 duplicated entries for /sys/class/leds/<led>/hw_pattern: on file(s) sysfs-class-led-trigger-pattern sysfs-class-led-driver-sc27xx sysfs-class-led-driver-el15203000
-> > > 
-> > > It sounds that different drivers define and use this ABI, but
-> > > each one with different meanings. 
-> > > 
-> > > There are even some cases where the same file define the same ABI twice:
-> > > 
-> > > 	2 duplicated entries for /sys/class/power_supply/<supply_name>/temp_alert_min: on file(s) sysfs-class-power
-> > > 
-> > > Not sure what's the best way to document things like that, or if
-> > > the fix would be to drop/merge those.
-> > > 
-> > > Any ideas?  
-> > 
-> > We should merge them to be the correct representation.  The
-> > driver-specific ones for LED should just be dropped to use the
-> > class-generic one.
-> > 
-> > I guess just take them one at a time :)
-> 
-> I'm trying to address each one of the duplicated ones...
-> I'm now stuck with this one:
-> 
-> At Documentation/ABI/testing/sysfs-driver-w1_therm, it has:
-> 
-> 	What:		/sys/bus/w1/devices/.../eeprom
-> 	Date:		May 2020
-> 	Contact:	Akira Shimahara <akira215corp@gmail.com>
-> 	Description:
-> 			(WO) writing that file will either trigger a save of the
-> 			device data to its embedded EEPROM, either restore data
-> 			embedded in device EEPROM. Be aware that devices support
-> 			limited EEPROM writing cycles (typical 50k)
-> 	
-> 				* 'save': save device RAM to EEPROM
-> 				* 'restore': restore EEPROM data in device RAM
-> 
-> 	Users:		any user space application which wants to communicate with
-> 			w1_term device
-> 
-> Which defines the same ABI as this one:
-> 
-> 	What:		/sys/bus/w1/devices/.../eeprom
-> 	Date:		May 2012
-> 	Contact:	Markus Franke <franm@hrz.tu-chemnitz.de>
-> 	Description:	read/write the contents of the EEPROM memory of the DS28E04-100
-> 			see Documentation/w1/slaves/w1_ds28e04.rst for detailed information
-> 	Users:		any user space application which wants to communicate with DS28E04-100
-> 
-> Which is further described at Documentation/w1/slaves/w1_ds28e04.rst:
-> 
->    Memory Access
-> 
-> 	A read operation on the "eeprom" file reads the given amount of bytes
-> 	from the EEPROM of the DS28E04.
-> 
-> 	A write operation on the "eeprom" file writes the given byte sequence
-> 	to the EEPROM of the DS28E04. If CRC checking mode is enabled only
-> 	fully aligned blocks of 32 bytes with valid CRC16 values (in bytes 30
-> 	and 31) are allowed to be written.
-> 
-> -
-> 
-> This specific duplication seems very evil, as if someone does:
-> 
-> 	echo restore > /sys/bus/w1/devices/.../eeprom
-> 
-> and the device is a DS28E04-100, its eeprom will be erased instead
-> of being restored!
-> 
-> Not sure how this could be solved without causing regressions.
-> 
-> As the new ABI is from May 2020, added on this commit:
-> 
->   commit 45d457a4cf24455eefd076a01a3d86414fc2ff1e
->   Author: Akira Shimahara <akira215corp@gmail.com>
->   Date:   Mon May 11 22:37:25 2020 +0200
-> 
->     w1_therm: adding eeprom sysfs entry
->     
->     The driver implement 2 hardware functions to access device RAM:
->      * copy_scratchpad
->      * recall_scratchpad
->     They act according to device specifications.
->     
->     As EEPROM operations are not device dependent (all w1_therm can perform
->     EEPROM read/write operation following the same protocol), it is removed
->     from device families structures.
->     
->     Updating Documentation/ABI/testing/sysfs-driver-w1_therm accordingly.
->     
->     Signed-off-by: Akira Shimahara <akira215corp@gmail.com>
->     Link: https://lore.kernel.org/r/20200511203725.410844-1-akira215corp@gmail.com
->     Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> 
-> (probably reached Kernel 5.8):
-> 
-> 	$ git describe 45d457a4cf244
-> 	v5.7-rc5-92-g45d457a4cf24
-> 
-> I guess the solution would be to rename the new one.
 
-We should rename the new one before anyone actually writes any new
-userspace code for it.
+--DBIVS5p969aUjpLe
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-thanks,
+On Mon, Nov 09, 2020 at 07:22:20PM +0200, Andy Shevchenko wrote:
+> On Mon, Nov 09, 2020 at 12:11:40PM -0500, William Breathitt Gray wrote:
+> > On Mon, Nov 09, 2020 at 10:15:29PM +0530, Syed Nayyar Waris wrote:
+> > > On Mon, Nov 09, 2020 at 03:41:53PM +0100, Arnd Bergmann wrote:
+>=20
+> ...
+>=20
+> > >  static inline void bitmap_set_value(unsigned long *map,
+> > > -                                    unsigned long value,
+> > > +                                    unsigned long value, const size_=
+t length,
+> > >                                      unsigned long start, unsigned lo=
+ng nbits)
+> > >  {
+> > >          const size_t index =3D BIT_WORD(start);
+> > > @@ -15,6 +15,10 @@ static inline void bitmap_set_value(unsigned long =
+*map,
+> > >          } else {
+> > >                  map[index + 0] &=3D ~BITMAP_FIRST_WORD_MASK(start);
+> > >                  map[index + 0] |=3D value << offset;
+> > > +
+> > > +               if (index + 1 >=3D length)
+> > > +                       __builtin_unreachable();
+> > > +
+> > >                  map[index + 1] &=3D ~BITMAP_LAST_WORD_MASK(start + n=
+bits);
+> > >                  map[index + 1] |=3D value >> space;
+> > >          }
+> >=20
+> > Hi Syed,
+> >=20
+> > Let's rename 'length' to 'nbits' as Arnd suggested, and rename 'nbits'
+> > to value_width.
+>=20
+> length here is in longs. I guess this is the point of entire patch.
 
-greg k-h
+Ah yes, this should become 'const unsigned long nbits' and represent the
+length of the bitmap in bits and not longs.
+
+> But to me sounds like it would be better to have simply bitmap_set_value6=
+4() /
+> bitmap_set_value32() with proper optimization done and forget about varia=
+dic
+> ones for now.
+
+The gpio-xilinx driver can have arbitrary sizes for width[0] and
+width[1], so unfortunately that means we don't know the start position
+nor the width of the value beforehand.
+
+William Breathitt Gray
+
+--DBIVS5p969aUjpLe
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEk5I4PDJ2w1cDf/bghvpINdm7VJIFAl+pfOsACgkQhvpINdm7
+VJLclhAAqT8dGFX1/kzv3HHKcOJ3cZFrWEnRjD4yfx5iEYcagVfpZEd0Ibfx6VTc
+Ul87iiN9atP8dKh6yOEEdSwxa1wYuGYSMU5EV2ChgqRUv7HO/bAYG13b1jwoMaks
+ArOf0ZZvJ5p2XIHkTQRH+wT++e3C1VXmdYnsI/GgWrYM1NFOhUob4OU5AUrN418n
+r2/bZCiVO5iDFNLUWbpEavtyU2XJY4KL/gwyJWtSJMf3mzN39nvaB9ECE/1aEcaM
++iAyOCiP2UExTuDTOtrerCag5H6RfzHlbe+tsWWWhS84bte42cGdpCZG993NyWDc
+yGECb+8/+D1zuwfv1VMmOv5yXJPZRPnYjYxBTjztYLX28F364kJxGFAK2Mx8UhtD
+1gGebf9UJBFytquR2BV7thvWb672b2Gwkd0a+mvg7AF9X7bmtEBds0W7FUJJKpWx
+bYVS7z+2Ip4TxKrfjHvnaVgky4kwwntuz82CT51pRtPJIz/5oHP69vwJHzl2C/nv
+JRBUIQTYjG7qiNvXlaG6ENoANMQTO5A17SWfzpyWytBA0sgTlhCfoyzY/VgnxclL
+ceJi1bMaspiFQh6mtfg6qR1DXqnvKNmyXQ1L1a/DFLm9lW6vf+qGeSKhMarp4+6M
+3fPzbOmqgMCp4uV/Ws1+VoIZtCMyCDDPJLI8wMuF2V0j7d68L14=
+=n0p1
+-----END PGP SIGNATURE-----
+
+--DBIVS5p969aUjpLe--
