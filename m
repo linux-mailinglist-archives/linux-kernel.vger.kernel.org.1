@@ -2,102 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BCE522AC7D5
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 22:59:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6ECEC2AC7DF
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 22:59:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730404AbgKIV6v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 16:58:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48294 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725946AbgKIV6v (ORCPT
+        id S1731022AbgKIV7s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 16:59:48 -0500
+Received: from aserp2130.oracle.com ([141.146.126.79]:39992 "EHLO
+        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725946AbgKIV7r (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 16:58:51 -0500
-Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2796C0613CF;
-        Mon,  9 Nov 2020 13:58:50 -0800 (PST)
-Received: by mail-lf1-x143.google.com with SMTP id w142so7654718lff.8;
-        Mon, 09 Nov 2020 13:58:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=TL7a4MNPE4WuOkoIqj/tHlQbdnLK+YvkRnIoJ+IccQA=;
-        b=L6IRQqb2bMDZ7GWkj2nXB2EsOhZYUpVzUlDPmeS7ErwX31j3vhlgooushPwg7Ph148
-         9tZQBhJYu+jYlYQh/LeqV6xKSy6DlsXZM2gM29XGT58c379QPsf5Mj6RHe0qTtN1uAVA
-         mqzMAWABgHvrLZVYf7Ctl1QFraYhlsOEkmwgkRvft/zgyBFvLetu6nvqq2T7J2EdNGWO
-         +FtRrESeFzYQEF4hE2guY9MWm9SsW5GleklegZ7yjUYC+fNgPwXoUPq61iJvfACCcQcR
-         YMSWIYXpeZZZahHuqB3xMt/PnuyA58wxPYnFrrXodXQBu96b+9+bXBME/e/7XfR7X4Ru
-         bSdQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=TL7a4MNPE4WuOkoIqj/tHlQbdnLK+YvkRnIoJ+IccQA=;
-        b=WggHRKXZ6l0Ab2z1I3laRJewM41IDt2nWNKXG2GpxmVzR7WosUKO4ANu6trT5qUzCq
-         GgwRLuH3j7TfwL1tT3byWQSrZ/lYUsyHA/vcLoRCtv2BvB/X6SwlfU3eDC7pauOGIUK8
-         Vxx8gau1cHO5sbJB9OihM5JSerpPmtSHxU/yMLFrQu7Kx64V5j6/1kSnDpKwCkuG9cGl
-         UV9cu0n/OBRAiYkZa811V+fKVkejuoHtASUolfjIIHKKVfpvLNpQzgj1FlBozF/WQd2y
-         u19fqlgnzxj/u0aNgXXWFLfLNwoV53o+lKl2CJeGv71lx7vBeKUkocxvxHscfvpw6RJB
-         H5nA==
-X-Gm-Message-State: AOAM530i2GyVT4COj66wX2cT1xgxm5bFXOw6F1HJI48RFPISBDiNW80i
-        1+sFQ6pDwvMeJoTNc6UvJzmyn3RXi77xfw==
-X-Google-Smtp-Source: ABdhPJzKIT18ca+jPIcYV3XXRV9f0o4FGHoswN6vE05uYnGEHQnk33qfVZuEsZ2NbO6W38/hZHRJxA==
-X-Received: by 2002:ac2:47eb:: with SMTP id b11mr4326485lfp.512.1604959129295;
-        Mon, 09 Nov 2020 13:58:49 -0800 (PST)
-Received: from localhost.localdomain (h-155-4-221-112.NA.cust.bahnhof.se. [155.4.221.112])
-        by smtp.gmail.com with ESMTPSA id r19sm447777lfm.231.2020.11.09.13.58.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 09 Nov 2020 13:58:48 -0800 (PST)
-From:   Rikard Falkeborn <rikard.falkeborn@gmail.com>
-To:     Kishon Vijay Abraham I <kishon@ti.com>,
-        Vinod Koul <vkoul@kernel.org>
-Cc:     JC Kuo <jckuo@nvidia.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
-        Rikard Falkeborn <rikard.falkeborn@gmail.com>
-Subject: [PATCH] phy: tegra: Constify static device_type structs
-Date:   Mon,  9 Nov 2020 22:58:44 +0100
-Message-Id: <20201109215844.167954-1-rikard.falkeborn@gmail.com>
-X-Mailer: git-send-email 2.29.2
+        Mon, 9 Nov 2020 16:59:47 -0500
+Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
+        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0A9LE6TI082669;
+        Mon, 9 Nov 2020 21:59:27 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=iudd/pWhUkjLp/Fl5sIWyMMOmTzZfRPFExPcv41Jvgw=;
+ b=qWXC8FRu7L7SesUBbDQz8EvTZ4cCbyhLuaovb9eAOJYFy6TlNOz/OhUfq/72lHwgEqCt
+ Jca2rK2h/8E2vTvrV14slrUZk+Vh5uA7HbIM7se26y9UxlDNXqGYUhFQRPBPZgif0lEK
+ hegUPs/8y8x/1jndLVLicIudA+X5Di7PSJdHxOwz9tq9Un1OokWdvPJC9QmBotkYl3bi
+ FgXWmSsZc4NBefpT8aWK6SOkb6UwoGPhdzzufvD8A5F9ZHFwRV47NBlWOcjZfc2TLWug
+ XKSTn+Uk2IVAS/wTZkSJ4CziX9E3K9n2F5rZ+JvB4i7ByrP+xipFvW7iZA6dYraREs67 Lw== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by aserp2130.oracle.com with ESMTP id 34nh3arqj8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 09 Nov 2020 21:59:27 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0A9LFHn1119274;
+        Mon, 9 Nov 2020 21:59:26 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by userp3020.oracle.com with ESMTP id 34p5br4kcu-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 09 Nov 2020 21:59:26 +0000
+Received: from abhmp0018.oracle.com (abhmp0018.oracle.com [141.146.116.24])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0A9LxJ0U027159;
+        Mon, 9 Nov 2020 21:59:20 GMT
+Received: from [10.74.103.185] (/10.74.103.185)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Mon, 09 Nov 2020 13:59:19 -0800
+Subject: Re: [PATCH v2] x86/xen: don't unbind uninitialized lock_kicker_irq
+To:     =?UTF-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>,
+        Brian Masney <bmasney@redhat.com>, sstabellini@kernel.org
+Cc:     tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
+        hpa@zytor.com, xen-devel@lists.xenproject.org,
+        linux-kernel@vger.kernel.org, dustymabe@redhat.com
+References: <20201107011119.631442-1-bmasney@redhat.com>
+ <5950df5c-79d6-b2bc-4f2b-35624a3c0d1e@suse.com>
+From:   boris.ostrovsky@oracle.com
+Organization: Oracle Corporation
+Message-ID: <87d1122a-ca5a-786b-5b25-4caaaeaf386a@oracle.com>
+Date:   Mon, 9 Nov 2020 16:59:14 -0500
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.4.1
 MIME-Version: 1.0
+In-Reply-To: <5950df5c-79d6-b2bc-4f2b-35624a3c0d1e@suse.com>
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9800 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 malwarescore=0
+ phishscore=0 spamscore=0 mlxlogscore=999 bulkscore=0 suspectscore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2011090139
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9800 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 lowpriorityscore=0 priorityscore=1501
+ clxscore=1015 malwarescore=0 mlxscore=0 spamscore=0 suspectscore=0
+ mlxlogscore=999 impostorscore=0 phishscore=0 adultscore=0 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2011090139
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The only usage of tegra_xusb_pad_type and tegra_xusb_port_type is to
-assign their address to the type field in the device struct, which is a
-const pointer. Make them const to allow the compiler to put them in
-read-only memory.
 
-Signed-off-by: Rikard Falkeborn <rikard.falkeborn@gmail.com>
----
- drivers/phy/tegra/xusb.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+On 11/9/20 12:34 AM, Jürgen Groß wrote:
+> On 07.11.20 02:11, Brian Masney wrote:
+>> When booting a hyperthreaded system with the kernel parameter
+>> 'mitigations=auto,nosmt', the following warning occurs:
+>>
+>>      WARNING: CPU: 0 PID: 1 at drivers/xen/events/events_base.c:1112 unbind_from_irqhandler+0x4e/0x60
+>>      ...
+>>      Hardware name: Xen HVM domU, BIOS 4.2.amazon 08/24/2006
+>>      ...
+>>      Call Trace:
+>>       xen_uninit_lock_cpu+0x28/0x62
+>>       xen_hvm_cpu_die+0x21/0x30
+>>       takedown_cpu+0x9c/0xe0
+>>       ? trace_suspend_resume+0x60/0x60
+>>       cpuhp_invoke_callback+0x9a/0x530
+>>       _cpu_up+0x11a/0x130
+>>       cpu_up+0x7e/0xc0
+>>       bringup_nonboot_cpus+0x48/0x50
+>>       smp_init+0x26/0x79
+>>       kernel_init_freeable+0xea/0x229
+>>       ? rest_init+0xaa/0xaa
+>>       kernel_init+0xa/0x106
+>>       ret_from_fork+0x35/0x40
+>>
+>> The secondary CPUs are not activated with the nosmt mitigations and only
+>> the primary thread on each CPU core is used. In this situation,
+>> xen_hvm_smp_prepare_cpus(), and more importantly xen_init_lock_cpu(), is
+>> not called, so the lock_kicker_irq is not initialized for the secondary
+>> CPUs. Let's fix this by exiting early in xen_uninit_lock_cpu() if the
+>> irq is not set to avoid the warning from above for each secondary CPU.
+>>
+>> Signed-off-by: Brian Masney <bmasney@redhat.com>
+>
+> Reviewed-by: Juergen Gross <jgross@suse.com>
 
-diff --git a/drivers/phy/tegra/xusb.c b/drivers/phy/tegra/xusb.c
-index ad88d74c1884..70d95519d281 100644
---- a/drivers/phy/tegra/xusb.c
-+++ b/drivers/phy/tegra/xusb.c
-@@ -146,7 +146,7 @@ static void tegra_xusb_pad_release(struct device *dev)
- 	pad->soc->ops->remove(pad);
- }
- 
--static struct device_type tegra_xusb_pad_type = {
-+static const struct device_type tegra_xusb_pad_type = {
- 	.release = tegra_xusb_pad_release,
- };
- 
-@@ -513,7 +513,7 @@ static void tegra_xusb_port_release(struct device *dev)
- 		port->ops->release(port);
- }
- 
--static struct device_type tegra_xusb_port_type = {
-+static const struct device_type tegra_xusb_port_type = {
- 	.release = tegra_xusb_port_release,
- };
- 
--- 
-2.29.2
+
+
+Applied to for-linus-5.10b.
+
+
+-boris
 
