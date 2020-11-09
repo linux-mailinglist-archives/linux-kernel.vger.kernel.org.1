@@ -2,104 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26CBD2AC20C
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 18:21:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E5E362AC219
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 18:23:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731439AbgKIRVV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 12:21:21 -0500
-Received: from mga11.intel.com ([192.55.52.93]:15903 "EHLO mga11.intel.com"
+        id S1731266AbgKIRXo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 12:23:44 -0500
+Received: from mga07.intel.com ([134.134.136.100]:37194 "EHLO mga07.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730706AbgKIRVV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 12:21:21 -0500
-IronPort-SDR: ZW5IqiRoQEBW/rQ+fkBRMmWt8VniP4JJaanZ7aOI5tuz5vNfRdMXr7Ain1+XY/udlJASi6ereZ
- mvt7H1Y9SeqA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9800"; a="166329501"
+        id S1731122AbgKIRXo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 12:23:44 -0500
+IronPort-SDR: dwTvp4Phcb3FWI/JUx/9pGkiZ+XtO43ZD/HJTOoGSq/vGLl0oOfI8g4OAC4eVuvKf/2ZjyOxoI
+ cxa2RGfBXIXA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9800"; a="234004975"
 X-IronPort-AV: E=Sophos;i="5.77,463,1596524400"; 
-   d="scan'208";a="166329501"
+   d="scan'208";a="234004975"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Nov 2020 09:21:20 -0800
-IronPort-SDR: A4eSjrjqpfJfkTizVTZkSMuHaiIfk/cCuliExX/anFiyOMtQtGl5XfEkTN0CFmOznpRKuBLyqf
- JMOZ8d3gfM7A==
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Nov 2020 09:23:43 -0800
+IronPort-SDR: FoHAi7r8BRhvoMOL6dskCoYLgJV3mQ3qODpMIBxPzPTsUwkBmO917QJPpuPDbU7yiyspnlxp8Z
+ okxn89rgxSfw==
+X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.77,463,1596524400"; 
-   d="scan'208";a="530836851"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Nov 2020 09:21:18 -0800
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1kcAs0-005F7O-G2; Mon, 09 Nov 2020 19:22:20 +0200
-Date:   Mon, 9 Nov 2020 19:22:20 +0200
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     William Breathitt Gray <vilhelm.gray@gmail.com>
-Cc:     Syed Nayyar Waris <syednwaris@gmail.com>,
-        Arnd Bergmann <arnd@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Michal Simek <michal.simek@xilinx.com>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH v12 4/4] gpio: xilinx: Utilize generic bitmap_get_value
- and _set_value
-Message-ID: <20201109172220.GI4077@smile.fi.intel.com>
-References: <cover.1603055402.git.syednwaris@gmail.com>
- <15a044d3ba23f00c31fd09437bdd3e5924bb91cd.1603055402.git.syednwaris@gmail.com>
- <CAK8P3a3f=fuq24QwNee3QgoMcSK5rcvLRpdTOWBZ9NJ4d-4bvA@mail.gmail.com>
- <20201101150033.GA68138@shinobu>
- <CAK8P3a0y7mh=ZDPefgpawY97gpYv79UXFLBzoGfu3ex2up2aDQ@mail.gmail.com>
- <20201109123411.GA19869@syed>
- <20201109134128.GA5596@shinobu>
- <CAK8P3a2FMkMc0K+hu0pnqC8wEMeapKPkZXaBm+HFYYPTes5NHA@mail.gmail.com>
- <20201109164529.GA28710@syed.domain.name>
- <20201109171140.GA14045@shinobu>
+   d="scan'208";a="355767420"
+Received: from lkp-server01.sh.intel.com (HELO d0be80f1a028) ([10.239.97.150])
+  by fmsmga004.fm.intel.com with ESMTP; 09 Nov 2020 09:23:41 -0800
+Received: from kbuild by d0be80f1a028 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1kcAtI-0000Jl-RL; Mon, 09 Nov 2020 17:23:40 +0000
+Date:   Tue, 10 Nov 2020 01:22:43 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [rcu:lkmm] BUILD SUCCESS b6ff30849ca723b78306514246b98ca5645d92f5
+Message-ID: <5fa97ae3.nPG3uZhfy6fDWgYg%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201109171140.GA14045@shinobu>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 09, 2020 at 12:11:40PM -0500, William Breathitt Gray wrote:
-> On Mon, Nov 09, 2020 at 10:15:29PM +0530, Syed Nayyar Waris wrote:
-> > On Mon, Nov 09, 2020 at 03:41:53PM +0100, Arnd Bergmann wrote:
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git  lkmm
+branch HEAD: b6ff30849ca723b78306514246b98ca5645d92f5  tools/memory-model: Label MP tests' producers and consumers
 
-...
+elapsed time: 836m
 
-> >  static inline void bitmap_set_value(unsigned long *map,
-> > -                                    unsigned long value,
-> > +                                    unsigned long value, const size_t length,
-> >                                      unsigned long start, unsigned long nbits)
-> >  {
-> >          const size_t index = BIT_WORD(start);
-> > @@ -15,6 +15,10 @@ static inline void bitmap_set_value(unsigned long *map,
-> >          } else {
-> >                  map[index + 0] &= ~BITMAP_FIRST_WORD_MASK(start);
-> >                  map[index + 0] |= value << offset;
-> > +
-> > +               if (index + 1 >= length)
-> > +                       __builtin_unreachable();
-> > +
-> >                  map[index + 1] &= ~BITMAP_LAST_WORD_MASK(start + nbits);
-> >                  map[index + 1] |= value >> space;
-> >          }
-> 
-> Hi Syed,
-> 
-> Let's rename 'length' to 'nbits' as Arnd suggested, and rename 'nbits'
-> to value_width.
+configs tested: 92
+configs skipped: 2
 
-length here is in longs. I guess this is the point of entire patch.
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-But to me sounds like it would be better to have simply bitmap_set_value64() /
-bitmap_set_value32() with proper optimization done and forget about variadic
-ones for now.
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+powerpc                    sam440ep_defconfig
+powerpc                     pseries_defconfig
+m68k                         amcore_defconfig
+arm                         s5pv210_defconfig
+xtensa                  audio_kc705_defconfig
+arm                         palmz72_defconfig
+arm                        mvebu_v7_defconfig
+sh                           se7343_defconfig
+mips                      pistachio_defconfig
+mips                        bcm63xx_defconfig
+arc                                 defconfig
+mips                      fuloong2e_defconfig
+sh                         microdev_defconfig
+arm                            mmp2_defconfig
+arm                          collie_defconfig
+sh                        sh7757lcr_defconfig
+m68k                        m5307c3_defconfig
+arm                             rpc_defconfig
+m68k                        m5272c3_defconfig
+c6x                              alldefconfig
+powerpc                      pmac32_defconfig
+arm                          imote2_defconfig
+arm                         shannon_defconfig
+nds32                               defconfig
+arm                           corgi_defconfig
+arm                          gemini_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+c6x                              allyesconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+i386                 randconfig-a004-20201109
+i386                 randconfig-a006-20201109
+i386                 randconfig-a005-20201109
+i386                 randconfig-a001-20201109
+i386                 randconfig-a003-20201109
+i386                 randconfig-a002-20201109
+i386                 randconfig-a014-20201109
+i386                 randconfig-a015-20201109
+i386                 randconfig-a013-20201109
+i386                 randconfig-a016-20201109
+i386                 randconfig-a011-20201109
+i386                 randconfig-a012-20201109
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+x86_64                                   rhel
+x86_64                           allyesconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                                  kexec
 
--- 
-With Best Regards,
-Andy Shevchenko
+clang tested configs:
+x86_64               randconfig-a012-20201109
+x86_64               randconfig-a015-20201109
+x86_64               randconfig-a013-20201109
+x86_64               randconfig-a011-20201109
+x86_64               randconfig-a014-20201109
+x86_64               randconfig-a016-20201109
 
-
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
