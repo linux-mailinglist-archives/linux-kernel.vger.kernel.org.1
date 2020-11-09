@@ -2,143 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C201C2ABC04
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 14:35:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C3502ABBCD
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 14:32:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730653AbgKINc7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 08:32:59 -0500
-Received: from ns3.fnarfbargle.com ([103.4.19.87]:47282 "EHLO
-        ns3.fnarfbargle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731111AbgKINGy (ORCPT
+        id S1732183AbgKINbD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 08:31:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54000 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731958AbgKINbA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 08:06:54 -0500
-Received: from srv.home ([10.8.0.1] ident=heh32137)
-        by ns3.fnarfbargle.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.84_2)
-        (envelope-from <brad@fnarfbargle.com>)
-        id 1kc6s3-0002Mu-Q5; Mon, 09 Nov 2020 21:06:07 +0800
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=fnarfbargle.com; s=mail;
-        h=Content-Transfer-Encoding:Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject; bh=VMiyDlkWpAv2YnBIs82qS5WRSYusKaUZBc3FHs9wQbY=;
-        b=fc+ED8hEoiMcUKgJ9xC5DrfiaLF2JgD/cZn+Vwvj7LxWekZ7a8shYkcVcbNk8OuQh//UJjXMQTyE9pcNaXXVUucq6XvmZulaCTOqaP+ifViRZ65s/eoiMO30pcl8GO6BBiQlPAGsQI2HfFknQ4g2zOgpqHURIt6lAmRnf+yWBd0=;
-Subject: Re: [PATCH v3] applesmc: Re-work SMC comms
-To:     Henrik Rydberg <rydberg@bitmath.org>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Andreas Kemnade <andreas@kemnade.info>,
-        linux-hwmon@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        hns@goldelico.com, Guenter Roeck <linux@roeck-us.net>,
-        Jean Delvare <jdelvare@suse.com>
-References: <70331f82-35a1-50bd-685d-0b06061dd213@fnarfbargle.com>
- <3c72ccc3-4de1-b5d0-423d-7b8c80991254@fnarfbargle.com>
- <6d071547-10ee-ca92-ec8b-4b5069d04501@bitmath.org>
- <8e117844-d62a-bcb1-398d-c59cc0d4b878@fnarfbargle.com>
- <e5a856b1-fb1a-db5d-0fde-c86d0bcca1df@bitmath.org>
- <aa60f673-427a-1a47-7593-54d1404c3c92@bitmath.org>
- <9109d059-d9cb-7464-edba-3f42aa78ce92@bitmath.org>
- <5310c0ab-0f80-1f9e-8807-066223edae13@bitmath.org>
- <57057d07-d3a0-8713-8365-7b12ca222bae@fnarfbargle.com>
- <41909045-9486-78d9-76c2-73b99a901b83@bitmath.org>
- <20201108101429.GA28460@mars.bitmath.org>
- <bdabe861-8717-8948-80a0-ca2173c2e22a@fnarfbargle.com>
- <af08ee3b-313d-700c-7e70-c57d20d3be5d@bitmath.org>
-From:   Brad Campbell <brad@fnarfbargle.com>
-Message-ID: <d4e53a42-d86b-ce2b-7422-22b5ff5593e8@fnarfbargle.com>
-Date:   Tue, 10 Nov 2020 00:06:04 +1100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.2.2
+        Mon, 9 Nov 2020 08:31:00 -0500
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C842EC0613CF
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Nov 2020 05:30:59 -0800 (PST)
+Received: by mail-pf1-x443.google.com with SMTP id g7so8187459pfc.2
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Nov 2020 05:30:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=+sz4tbYNuwYjyVl/Ub4iOvWLg0YjxVlle9/HbtnKn3I=;
+        b=ufKvexxEIva0lg+0/eug7BwTwcoisncojILiOcOxK8iGgqzqRFN2dRTHx4+A7F2XLT
+         umwQNfUgA8siwS6Sh/fdr5nmQOZygHKzXeMkrT7BP3VSxz5Y/2PeypLDd88VkPbF8DDn
+         131MQYExWaE4kTGsRPDPPflC5mlEcUX/rWqWEskHV4Z5bdTGijJLJ9esUz/ab13E7AfQ
+         IlesHAtiqt1lykkgqd8hi+QWagdataYSti1zKtjT2+pUFLzdQWS2rnf4+Zf5eKQRUjQw
+         5oi6tSAkC+btdR+AueU52vFL9kDY77kl8u34Pg6BSziBrUOKnfSqUX6BAmgYGKVMZmgE
+         qRBg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=+sz4tbYNuwYjyVl/Ub4iOvWLg0YjxVlle9/HbtnKn3I=;
+        b=gxOj8hyLwXU6K9FYhQ9i7ogg/GqelgAvQnYgk/mAHzUwUzZwK+HFO8TQbS4bBpFFvw
+         8xlFKV2QEB6fZtvD/8u5jOQeQn033hu6YVFMBZ2cwo/Xq0jQOboVisOyTQA/n3Jr7Nhb
+         N2g9H6wZ7wntfLKxCH/7a1zm9yFH9jlVobCDH1vAhoAnjU6xzKAwEUAeJL3uydHfZWSZ
+         MY4KtkfUVmbzSrJLF9GHy306fCn+MqgfdflOzrVPXnuFqC3tOBJTQKE4wBFbst6C6rTq
+         TPoAFJ19c6cUjsKtdmA8KJxDBrL0gaLdWuVR94Nb+cGbNGt2YgX3+JBHz2uY5eGfzjhJ
+         RxCA==
+X-Gm-Message-State: AOAM532jJ3dGgi6TKU2/mlCVYkbqxi+zLgAD6yoZSYcULI3rV+9U9Jrh
+        zZ6fTaj1BjzAjdOGF0C0GJ4n
+X-Google-Smtp-Source: ABdhPJxms5ZKTWmwkdoTuf00rSaubUgSEiO8B+mlRPFp3HCt+MWWggJDnLrr8AJWBitsNFApgcP7YQ==
+X-Received: by 2002:a17:90b:3687:: with SMTP id mj7mr13252559pjb.143.1604928659159;
+        Mon, 09 Nov 2020 05:30:59 -0800 (PST)
+Received: from work ([103.59.133.81])
+        by smtp.gmail.com with ESMTPSA id p4sm7881148pjo.6.2020.11.09.05.30.56
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Mon, 09 Nov 2020 05:30:58 -0800 (PST)
+Date:   Mon, 9 Nov 2020 19:00:53 +0530
+From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To:     Bhaumik Bhatt <bbhatt@codeaurora.org>
+Cc:     linux-arm-msm@vger.kernel.org, hemantk@codeaurora.org,
+        jhugo@codeaurora.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 0/6] Minor bug fixes and clean-up for MHI host driver
+Message-ID: <20201109133053.GK24289@work>
+References: <1604684690-31065-1-git-send-email-bbhatt@codeaurora.org>
 MIME-Version: 1.0
-In-Reply-To: <af08ee3b-313d-700c-7e70-c57d20d3be5d@bitmath.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1604684690-31065-1-git-send-email-bbhatt@codeaurora.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/11/20 11:04 pm, Henrik Rydberg wrote:
-> On 2020-11-08 12:57, Brad Campbell wrote:
->> On 8/11/20 9:14 pm, Henrik Rydberg wrote:
->>> On Sun, Nov 08, 2020 at 09:35:28AM +0100, Henrik Rydberg wrote:
->>>> Hi Brad,
->>>>
->>>> On 2020-11-08 02:00, Brad Campbell wrote:
->>>>> G'day Henrik,
->>>>>
->>>>> I noticed you'd also loosened up the requirement for SMC_STATUS_BUSY in read_smc(). I assume
->>>>> that causes problems on the early Macbook. This is revised on the one sent earlier.
->>>>> If you could test this on your Air1,1 it'd be appreciated.
->>>>
->>>> No, I managed to screw up the patch; you can see that I carefully added the
->>>> same treatment for the read argument, being unsure if the BUSY state would
->>>> remain during the AVAILABLE data phase. I can check that again, but
->>>> unfortunately the patch in this email shows the same problem.
->>>>
->>>> I think it may be worthwhile to rethink the behavior of wait_status() here.
->>>> If one machine shows no change after a certain status bit change, then
->>>> perhaps the others share that behavior, and we are waiting in vain. Just
->>>> imagine how many years of cpu that is, combined. ;-)
->>>
->>> Here is a modification along that line.
->>>
->>> Compared to your latest version, this one has wait_status() return the
->>> actual status on success. Instead of waiting for BUSY, it waits for
->>> the other status bits, and checks BUSY afterwards. So as not to wait
->>> unneccesarily, the udelay() is placed together with the single
->>> outb(). The return value of send_byte_data() is augmented with
->>> -EAGAIN, which is then used in send_command() to create the resend
->>> loop.
->>>
->>> I reach 41 reads per second on the MBA1,1 with this version, which is
->>> getting close to the performance prior to the problems.
->>
->> G'day Henrik,
->>
->> I like this one. It's slower on my laptop (40 rps vs 50 on the MacbookPro11,1) and the same 17 rps on the iMac 12,2 but it's as reliable
->> and if it works for both of yours then I think it's a winner. I can't really diagnose the iMac properly as I'm 2,800KM away and have
->> nobody to reboot it if I kill it. 5.7.2 gives 20 rps, so 17 is ok for me.
->>
->> Andreas, could I ask you to test this one?
->>
->> Odd my original version worked on your Air3,1 and the other 3 machines without retry.
->> I wonder how many commands require retries, how many retires are actually required, and what we are going wrong on the Air1,1 that requires
->> one or more retries.
->>
->> I just feels like a brute force approach because there's something we're missing.
+On Fri, Nov 06, 2020 at 09:44:44AM -0800, Bhaumik Bhatt wrote:
+> This patch series serves to clean up the MHI host driver by removing an
+> unnecessary counter and an unused function. It also renames a function to make
+> it clearly worded. There is currently no user of this exported function which
+> makes it is safe to do so now.
 > 
-> I would think you are right. There should be a way to follow the status changes in realtime, so one can determine handshake and processing from that information. At least, with this change, we are making the blunt instrument a little smaller.
+> Bug fixes include adding a missing EXPORT_SYMBOL_GPL to a function, and adding
+> a return value check to bail out of RDDM download in kernel panic path.
+> 
+> An outlier among the group exports the mhi_get_exec_env() API for use by
+> controller drivers, in case they need to determine behavior on the basis of the
+> current execution environment.
+> 
+> This set of patches was tested on arm64.
 
-G'day Henrik,
+Series applied to mhi-next!
 
-Out of morbid curiosity I grabbed an older MacOS AppleSMC.kext (10.7) and ran it through the disassembler.
+Thanks,
+Mani
 
-Every read/write to the SMC starts the same way with a check to make sure the SMC is in a sane state. If it's not, a read command is sent to try and kick it back into line :
-Wait for 0x04 to clear. This is 1,000,000 iterations of "read status, check if 0x04 is set, delay 10uS".
-If it clears, move on. If it doesn't, try and send a read command (just the command 0x10) and wait for the busy flag to clear again with the same loop.
-
-So in theory if the SMC was locked up, it'd be into the weeds for 20 seconds before it pushed the error out.
-
-So, lets say we've waited long enough and the busy flag dropped :
-
-Each command write is :
-Wait for 0x02 to clear. This is 1,000,000 iterations of "read status, check if 0x02 is set, delay 10uS".
-Send command
-
-Each data byte write is :
-Wait for 0x02 to clear. This is 1,000,000 iterations of "read status, check if 0x02 is set, delay 10uS".
-Immediate and single status read, check 0x04. If not set, abort.
-Send data byte
-
-Each data byte read is :
-read staus, wait for 0x01 and 0x04 to be set. delay 10uS and repeat. Abort if fail.
-
-Each timeout is 1,000,000 loops with a 10uS delay.
-
-So aside from the startup set which occurs on *every* read or write set, status checks happen before a command or data write, and not at all after.
-Under no circumstances are writes of any kind re-tried, but these timeouts are up to 10 seconds!
-
-That would indicate that the requirement for retries on the early Mac means we're not waiting long enough somewhere. Not that I'm suggesting we do another re-work, but when I get back in front of my iMac which does 17 transactions per second with this driver, I might re-work it similar to the Apple driver and see what happens.
-
-Oh, and it looks like the 0x40 flag that is on mine is the "I have an interrupt pending" flag, and the result should be able to be read from 0x31F. I'll play with that when I get time. That probably explains why IRQ9 screams until the kernel gags it on this machine as it's not being given any love.
-
-Regards,
-Brad
+> 
+> v2:
+> -Removed the declaration for mhi_get_exec_env() from internal.h
+> -Improved on the error log message in RDDM download exit case due to unknown EE
+> 
+> Bhaumik Bhatt (6):
+>   bus: mhi: core: Remove unnecessary counter from mhi_firmware_copy()
+>   bus: mhi: core: Add missing EXPORT_SYMBOL for mhi_get_mhi_state()
+>   bus: mhi: core: Expose mhi_get_exec_env() API for controllers
+>   bus: mhi: core: Remove unused mhi_fw_load_worker() declaration
+>   bus: mhi: core: Rename RDDM download function to use proper words
+>   bus: mhi: core: Skip RDDM download for unknown execution environment
+> 
+>  drivers/bus/mhi/core/boot.c     | 15 +++++++++------
+>  drivers/bus/mhi/core/internal.h |  2 --
+>  drivers/bus/mhi/core/main.c     |  2 ++
+>  include/linux/mhi.h             | 12 +++++++++---
+>  4 files changed, 20 insertions(+), 11 deletions(-)
+> 
+> -- 
+> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+> a Linux Foundation Collaborative Project
+> 
