@@ -2,96 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F5102AC34B
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 19:11:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6872E2AC35A
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 19:11:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730421AbgKISKr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 13:10:47 -0500
-Received: from mga11.intel.com ([192.55.52.93]:20845 "EHLO mga11.intel.com"
+        id S1730768AbgKISLM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 13:11:12 -0500
+Received: from mx2.suse.de ([195.135.220.15]:48958 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729426AbgKISKo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 13:10:44 -0500
-IronPort-SDR: jliq5B+3ehTwhREM/Mn/PpRYCDSFMOkdT49LbDCg0u0rM7x5CblXbqcMaXwXKf09g0OThMdGy+
- qRJ+LiXI+NPQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9800"; a="166337354"
-X-IronPort-AV: E=Sophos;i="5.77,464,1596524400"; 
-   d="scan'208";a="166337354"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Nov 2020 10:10:41 -0800
-IronPort-SDR: tuCvzS3iY3cpdxhXWsvyXZgcwAFdYuomVJ3Zu2pC/uILoxhmsT+axEq93WFuPDPjeW0G5GEjd+
- BZOWkmWRC4Cw==
-X-IronPort-AV: E=Sophos;i="5.77,464,1596524400"; 
-   d="scan'208";a="327354691"
-Received: from otc-nc-03.jf.intel.com (HELO otc-nc-03) ([10.54.39.36])
-  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Nov 2020 10:10:41 -0800
-Date:   Mon, 9 Nov 2020 10:10:39 -0800
-From:   "Raj, Ashok" <ashok.raj@intel.com>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Jason Gunthorpe <jgg@nvidia.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        "Tian, Kevin" <kevin.tian@intel.com>,
-        "Jiang, Dave" <dave.jiang@intel.com>,
-        Bjorn Helgaas <helgaas@kernel.org>,
-        "vkoul@kernel.org" <vkoul@kernel.org>,
-        "Dey, Megha" <megha.dey@intel.com>,
-        "maz@kernel.org" <maz@kernel.org>,
-        "bhelgaas@google.com" <bhelgaas@google.com>,
-        "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
-        "Pan, Jacob jun" <jacob.jun.pan@intel.com>,
-        "Liu, Yi L" <yi.l.liu@intel.com>, "Lu, Baolu" <baolu.lu@intel.com>,
-        "Kumar, Sanjay K" <sanjay.k.kumar@intel.com>,
-        "Luck, Tony" <tony.luck@intel.com>,
-        "kwankhede@nvidia.com" <kwankhede@nvidia.com>,
-        "eric.auger@redhat.com" <eric.auger@redhat.com>,
-        "parav@mellanox.com" <parav@mellanox.com>,
-        "rafael@kernel.org" <rafael@kernel.org>,
-        "netanelg@mellanox.com" <netanelg@mellanox.com>,
-        "shahafs@mellanox.com" <shahafs@mellanox.com>,
-        "yan.y.zhao@linux.intel.com" <yan.y.zhao@linux.intel.com>,
-        "pbonzini@redhat.com" <pbonzini@redhat.com>,
-        "Ortiz, Samuel" <samuel.ortiz@intel.com>,
-        "Hossain, Mona" <mona.hossain@intel.com>,
-        "dmaengine@vger.kernel.org" <dmaengine@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        Ashok Raj <ashok.raj@intel.com>
-Subject: Re: [PATCH v4 06/17] PCI: add SIOV and IMS capability detection
-Message-ID: <20201109181039.GA15472@otc-nc-03>
-References: <draft-875z6ekcj5.fsf@nanos.tec.linutronix.de>
- <87y2jaipwu.fsf@nanos.tec.linutronix.de>
+        id S1730691AbgKISLL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 13:11:11 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 15554AD2F;
+        Mon,  9 Nov 2020 18:11:09 +0000 (UTC)
+Date:   Mon, 9 Nov 2020 19:11:04 +0100
+From:   Oscar Salvador <osalvador@suse.de>
+To:     Muchun Song <songmuchun@bytedance.com>
+Cc:     corbet@lwn.net, mike.kravetz@oracle.com, tglx@linutronix.de,
+        mingo@redhat.com, bp@alien8.de, x86@kernel.org, hpa@zytor.com,
+        dave.hansen@linux.intel.com, luto@kernel.org, peterz@infradead.org,
+        viro@zeniv.linux.org.uk, akpm@linux-foundation.org,
+        paulmck@kernel.org, mchehab+huawei@kernel.org,
+        pawan.kumar.gupta@linux.intel.com, rdunlap@infradead.org,
+        oneukum@suse.com, anshuman.khandual@arm.com, jroedel@suse.de,
+        almasrymina@google.com, rientjes@google.com, willy@infradead.org,
+        mhocko@suse.com, duanxiongchun@bytedance.com,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH v3 08/21] mm/vmemmap: Initialize page table lock for
+ vmemmap
+Message-ID: <20201109181104.GC17356@linux>
+References: <20201108141113.65450-1-songmuchun@bytedance.com>
+ <20201108141113.65450-9-songmuchun@bytedance.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <87y2jaipwu.fsf@nanos.tec.linutronix.de>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+In-Reply-To: <20201108141113.65450-9-songmuchun@bytedance.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 09, 2020 at 03:08:17PM +0100, Thomas Gleixner wrote:
-> On Mon, Nov 09 2020 at 12:14, Thomas Gleixner wrote:
-> > On Sun, Nov 08 2020 at 15:58, Ashok Raj wrote:
-> >> On Sun, Nov 08, 2020 at 07:47:24PM +0100, Thomas Gleixner wrote:
-> >> But for SIOV devices there is no PASID filtering at the remap level since
-> >> interrupt messages don't carry PASID in the TLP.
-> >
-> > Why do we need PASID for VMM integrity?
-> >
-> > If the device sends a message then the remap unit will see the requester
-> > ID of the device and if the message it sends is not 
-> 
-> That made me look at patch 4/17 which adds DEVMSI support to the
-> remap code:
-> 
-> > +       case X86_IRQ_ALLOC_TYPE_DEV_MSI:
-> > +              irte_prepare_msg(msg, index, sub_handle);
-> >                break;
-> 
-> It does not setup any requester-id filter in IRTE. How is that supposed
-> to be correct?
-> 
+On Sun, Nov 08, 2020 at 10:11:00PM +0800, Muchun Song wrote:
+> In the register_page_bootmem_memmap, the slab allocator is not ready
+> yet. So when ALLOC_SPLIT_PTLOCKS, we use init_mm.page_table_lock.
+> otherwise we use per page table lock(page->ptl). In the later patch,
+> we will use the vmemmap page table lock to guard the splitting of
+> the vmemmap huge PMD.
 
-Its missing a set_msi_sid() equivalent for the DEV_MSI type.
+I am not sure about this one.
+Grabbing init_mm's pagetable lock for specific hugetlb operations does not
+seem like a good idea, and we do not know how contented is that one.
+
+I think a better fit would be to find another hook to initialize
+page_table_lock at a later stage.
+Anyway, we do not need till we are going to perform an operation
+on the range, right?
+
+Unless I am missing something, this should be doable in hugetlb_init.
+
+hugetlb_init is part from a init_call that gets called during do_initcalls.
+At this time, slab is fully operative.
+
+start_kernel
+ kmem_cache_init_late
+ kmem_cache_init_late
+ ...
+ arch_call_rest_init
+  rest_init
+   kernel_init_freeable
+    do_basic_setup
+     do_initcalls
+      hugetlb_init
+
+-- 
+Oscar Salvador
+SUSE L3
