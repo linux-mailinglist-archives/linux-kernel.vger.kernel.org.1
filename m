@@ -2,63 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78B9B2AB37F
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 10:23:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CB5502AB353
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 10:14:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728956AbgKIJXu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 04:23:50 -0500
-Received: from comms.puri.sm ([159.203.221.185]:58080 "EHLO comms.puri.sm"
+        id S1729876AbgKIJOX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 04:14:23 -0500
+Received: from verein.lst.de ([213.95.11.211]:57688 "EHLO verein.lst.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726482AbgKIJXt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 04:23:49 -0500
-X-Greylist: delayed 537 seconds by postgrey-1.27 at vger.kernel.org; Mon, 09 Nov 2020 04:23:49 EST
-Received: from localhost (localhost [127.0.0.1])
-        by comms.puri.sm (Postfix) with ESMTP id B199EE0FD5;
-        Mon,  9 Nov 2020 01:14:21 -0800 (PST)
-Received: from comms.puri.sm ([127.0.0.1])
-        by localhost (comms.puri.sm [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id 8mQolxL0Qg_d; Mon,  9 Nov 2020 01:14:20 -0800 (PST)
-From:   Martin Kepplinger <martin.kepplinger@puri.sm>
-To:     rogerio.silva@nxp.com, slongerbeam@gmail.com,
-        p.zabel@pengutronix.de, mchehab@kernel.org, shawnguo@kernel.org,
-        festevam@gmail.com
-Cc:     iain.galloway@nxp.com, kernel@puri.sm, kernel@pengutronix.de,
-        linux-imx@nxp.com, linux-media@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Martin Kepplinger <martin.kepplinger@puri.sm>
-Subject: [PATCH] staging: media: imx: drop dependency on ipuv3
-Date:   Mon,  9 Nov 2020 10:13:40 +0100
-Message-Id: <20201109091340.7223-1-martin.kepplinger@puri.sm>
-Content-Transfer-Encoding: 8bit
+        id S1727920AbgKIJOW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 04:14:22 -0500
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id BBE6E68B05; Mon,  9 Nov 2020 10:14:20 +0100 (CET)
+Date:   Mon, 9 Nov 2020 10:14:15 +0100
+From:   Christoph Hellwig <hch@lst.de>
+To:     Ralph Campbell <rcampbell@nvidia.com>
+Cc:     Christoph Hellwig <hch@lst.de>, linux-mm@kvack.org,
+        nouveau@lists.freedesktop.org, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Jerome Glisse <jglisse@redhat.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Alistair Popple <apopple@nvidia.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Bharata B Rao <bharata@linux.ibm.com>,
+        Zi Yan <ziy@nvidia.com>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        Yang Shi <yang.shi@linux.alibaba.com>,
+        Ben Skeggs <bskeggs@redhat.com>, Shuah Khan <shuah@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [PATCH v3 3/6] mm: support THP migration to device private
+ memory
+Message-ID: <20201109091415.GC28918@lst.de>
+References: <20201106005147.20113-1-rcampbell@nvidia.com> <20201106005147.20113-4-rcampbell@nvidia.com> <20201106080322.GE31341@lst.de> <a7b8b90c-09b7-2009-0784-908b61f61ef2@nvidia.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <a7b8b90c-09b7-2009-0784-908b61f61ef2@nvidia.com>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As described in NXPs' linux tree, the imx8m SoC includes the same
-CSI bridge hardware that is part of imx7d. We should be able to
-use the "fsl,imx7-csi" driver for imx8m directly.
+On Fri, Nov 06, 2020 at 01:26:50PM -0800, Ralph Campbell wrote:
+>
+> On 11/6/20 12:03 AM, Christoph Hellwig wrote:
+>> I hate the extra pin count magic here.  IMHO we really need to finish
+>> off the series to get rid of the extra references on the ZONE_DEVICE
+>> pages first.
+>
+> First, thanks for the review comments.
+>
+> I don't like the extra refcount either, that is why I tried to fix that up
+> before resending this series. However, you didn't like me just fixing the
+> refcount only for device private pages and I don't know the dax/pmem code
+> and peer-to-peer PCIe uses of ZONE_DEVICE pages well enough to say how
+> long it will take me to fix all the use cases.
+> So I wanted to make progress on the THP migration code in the mean time.
 
-Since ipuv3 is not relevant for imx8m, drop the build dependency
-for it.
-
-Signed-off-by: Martin Kepplinger <martin.kepplinger@puri.sm>
----
- drivers/staging/media/imx/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/staging/media/imx/Kconfig b/drivers/staging/media/imx/Kconfig
-index f555aac8a9d5..98272fd92fe4 100644
---- a/drivers/staging/media/imx/Kconfig
-+++ b/drivers/staging/media/imx/Kconfig
-@@ -2,7 +2,7 @@
- config VIDEO_IMX_MEDIA
- 	tristate "i.MX5/6 V4L2 media core driver"
- 	depends on ARCH_MXC || COMPILE_TEST
--	depends on VIDEO_V4L2 && IMX_IPUV3_CORE
-+	depends on VIDEO_V4L2
- 	select MEDIA_CONTROLLER
- 	select VIDEO_V4L2_SUBDEV_API
- 	depends on HAS_DMA
--- 
-2.20.1
-
+I think P2P is pretty trivial, given that ZONE_DEVICE pages are used like
+a normal memory allocator.  DAX is the interesting case, any specific
+help that you need with that?
