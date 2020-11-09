@@ -2,165 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1F2B2AC837
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 23:23:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D42762AC842
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 23:23:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729963AbgKIWXM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 17:23:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52076 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729247AbgKIWXM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 17:23:12 -0500
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35574C0613CF;
-        Mon,  9 Nov 2020 14:23:12 -0800 (PST)
-Received: by mail-wr1-x444.google.com with SMTP id o15so2695395wru.6;
-        Mon, 09 Nov 2020 14:23:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=HIMdkonH/M8RHuv/jMDRV8k2qN0Wz0T+rWEsqMPSnwA=;
-        b=qXD2SUCfRXs2Son41xS9JrmModwUyi7zW8lHeER2+tNs+uLvRQ/DEASEaivbDeyq7N
-         te/ZdwmqkOmiQ9aSgFbKP0DbNupVOJGRVcDNvVDGdBc4a77uq+b8XCjbQm+lcc4G6BFJ
-         S4nENyYsMN/GK1oPm5ivx7auaI4cjA1Udqhuwsbk9y3meAheXjLm7NkEWRBQ6HQnBcZG
-         GMfZU8vd7THL0I7JuY22nEBwdgxHpDpCNyjlNO9Ti9opIDFNRsgahgezGCZvsof36WMw
-         L3t+67irsIWyrvKOBfVwjNd1VvRdyGEQ4Z5lgKzAqDkHy2MF0EOnsfxL11ikqj5timPT
-         iUgQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=HIMdkonH/M8RHuv/jMDRV8k2qN0Wz0T+rWEsqMPSnwA=;
-        b=KQy4C3iS1xLlQqx1XIXWmWaKG0dQvFjvjax18VofJXYl4abifWgiVkfA64CWn/1N73
-         06M2nGE1g2WKPXSbkEYB1Y8J9px6egY46svjtO0+pO/Mj4DF6ObYa+kA9VvFIshGT6li
-         Dno1Mt8fpR6V331UJ3AuEKPBBE1ecph37eiXTQ7XRnBYVgLisfcPkmKYcWldljtGckg6
-         Ml/Be5ypdjZyhRR4eO/NIwNyku68YoK+yhLCyxl7bh2+w4R8ngk4ZGV89fmeUKexwA9n
-         ZeQBk5OLQ0Ubk3Rux+gUbOGGi5v1ZYC9/qgHlOh6ChOW9qMvBDGQ5mlCDBb7N9Eu5dsE
-         BiaQ==
-X-Gm-Message-State: AOAM533cPM67yH0hsGwXRNxJzfhcSVBqVzNLrUWEMhbJz/kpyp2J/JP+
-        FO67yZrmaAB4YgQpVhXJfGzQb75cSvjYI+rXJPs=
-X-Google-Smtp-Source: ABdhPJxxQlstl0Xclg6pLXD+2YnocUBWnj82fQETra99luiqoS75TrxTds454fJh8RamwMKKq4SYChqU7lpxyUScJvs=
-X-Received: by 2002:adf:f246:: with SMTP id b6mr20074356wrp.111.1604960590933;
- Mon, 09 Nov 2020 14:23:10 -0800 (PST)
+        id S1731343AbgKIWXh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 17:23:37 -0500
+Received: from m42-4.mailgun.net ([69.72.42.4]:15807 "EHLO m42-4.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730087AbgKIWXf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 17:23:35 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1604960614; h=Content-Transfer-Encoding: MIME-Version:
+ Message-Id: Date: Subject: Cc: To: From: Sender;
+ bh=h4kLvDOrgWdJbJRz3YUB6R5KJh03EMAS6v5CqdFVeFw=; b=Q/lvwV7Mjvyj1WRkLalkXv9DJgFeWHgmLvhTg9mtFA4060SyvTqeYiondR/H96Jo+WN7V7NQ
+ eCuYrpdX9kEZms2c2PukT3IO+R5aFDorYjMGp3HeN4z35nuW+9ybugLg6T81jTbx7EWceEtu
+ Gf2mgNsiEUVHqRg3Jxr3xyzaIWQ=
+X-Mailgun-Sending-Ip: 69.72.42.4
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
+ 5fa9c16102f4ee38017b815f (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 09 Nov 2020 22:23:29
+ GMT
+Sender: jcrouse=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 3D9FBC433B2; Mon,  9 Nov 2020 22:23:28 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from jordan-laptop.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: jcrouse)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 255EBC433C6;
+        Mon,  9 Nov 2020 22:23:22 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 255EBC433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=jcrouse@codeaurora.org
+From:   Jordan Crouse <jcrouse@codeaurora.org>
+To:     linux-arm-msm@vger.kernel.org
+Cc:     Robin Murphy <robin.murphy@arm.com>, Will Deacon <will@kernel.org>,
+        iommu@lists.linux-foundation.org,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        Emil Velikov <emil.velikov@collabora.com>,
+        Eric Anholt <eric@anholt.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Joerg Roedel <joro@8bytes.org>,
+        Jonathan Marek <jonathan@marek.ca>,
+        Krishna Reddy <vdumpa@nvidia.com>,
+        Rob Clark <robdclark@chromium.org>,
+        Rob Clark <robdclark@gmail.com>,
+        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
+        Sam Ravnborg <sam@ravnborg.org>, Sean Paul <sean@poorly.run>,
+        Sharat Masetty <smasetty@codeaurora.org>,
+        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [RFC PATCH v1 0/3] iommu/arm-smmu: adreno-smmu page fault handling
+Date:   Mon,  9 Nov 2020 15:23:16 -0700
+Message-Id: <20201109222319.2630557-1-jcrouse@codeaurora.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20201109211855.3340030-1-lee.jones@linaro.org>
-In-Reply-To: <20201109211855.3340030-1-lee.jones@linaro.org>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Mon, 9 Nov 2020 17:22:59 -0500
-Message-ID: <CADnq5_N1BbXosxsGoc7L2NCY3rf3dqFB7SD84PNsFTC7rJPY6Q@mail.gmail.com>
-Subject: Re: [PATCH 00/20] [Set 3] Rid W=1 warnings from GPU
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     David Airlie <airlied@linux.ie>,
-        LKML <linux-kernel@vger.kernel.org>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        Slava Grigorev <slava.grigorev@amd.com>,
-        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
-        <linaro-mm-sig@lists.linaro.org>,
-        Jerome Glisse <glisse@freedesktop.org>,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        report to <xorg-driver-ati@lists.x.org>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        linux-media <linux-media@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 9, 2020 at 4:19 PM Lee Jones <lee.jones@linaro.org> wrote:
->
-> This set is part of a larger effort attempting to clean-up W=3D1
-> kernel builds, which are currently overwhelmingly riddled with
-> niggly little warnings.
->
-> This set takes the running (decreasing) total from 5000 before
-> [Set 1] down to 2300.
->
-> Lee Jones (20):
->   drm/radeon/radeon_ttm: Place declaration of 'rdev' in same clause as
->     its use
->   drm/radeon: Move radeon_ttm{init,fini} to shared location
->   drm/radeon/radeon_fence: Demote some non-conformant kernel-doc headers
->     and fix another
->   drm/radeon: Move 'radeon_add_legacy_encoder' prototype to shared
->     header
->   drm/radeon: Move 'radeon_add_legacy_encoder's prototype to shared
->     location
->   drm/radeon/radeon_connectors: Strip out set but unused variable 'ret'
->   drm/radeon/radeon_display: Remove unused variable 'mod'
->   drm/radeon/radeon_i2c: Remove pointless function header
->   drm/radeon/radeon_irq_kms: Demote non-conformant kernel-doc fix
->     another
->   drm/radeon/radeon_ring: Add missing function parameters 'rdev' and
->     'data'
->   drm/radeon/r600: Strip out set but unused 'tmp' variables
->   drm/radeon/radeon_cs: Fix a bunch of doc-rot issues
->   drm/radeon/evergreen: Move 'rv770_set_clk_bypass_mode' prototype to
->     shared location
->   drm/radeon: Move 'radeon_pm_acpi_event_handler' prototype into shared
->     header
->   drm/radeon/r600d: Move 'rc600_*' prototypes into shared header
->   drm/radeon/radeon_audio: Move 'dce3_2_*' prototypes to shared location
->   drm/radeon/evergreend: Move 'evergreen_*' and 'sumo_*' prototypes out
->     to shared location
->   drm/radeon/radeon_display: Fix function doc formatting and missing
->     param issues
->   drm/radeon/r600: Fix a misnamed parameter description and a formatting
->     issue
->   drm/radeon/cik: Fix a bunch of function parameter descriptions
->
->  drivers/gpu/drm/radeon/cik.c               | 10 +++----
->  drivers/gpu/drm/radeon/evergreen.c         |  1 -
->  drivers/gpu/drm/radeon/ni.c                | 16 ----------
->  drivers/gpu/drm/radeon/r600.c              | 11 +++----
->  drivers/gpu/drm/radeon/r600d.h             | 14 +++++++++
->  drivers/gpu/drm/radeon/radeon.h            | 34 ++++++++++++++++++++++
->  drivers/gpu/drm/radeon/radeon_acpi.c       |  2 --
->  drivers/gpu/drm/radeon/radeon_atombios.c   |  5 ----
->  drivers/gpu/drm/radeon/radeon_audio.c      | 23 +--------------
->  drivers/gpu/drm/radeon/radeon_audio.h      | 12 ++++++++
->  drivers/gpu/drm/radeon/radeon_combios.c    |  5 ----
->  drivers/gpu/drm/radeon/radeon_connectors.c |  4 +--
->  drivers/gpu/drm/radeon/radeon_cs.c         | 12 ++++----
->  drivers/gpu/drm/radeon/radeon_display.c    | 17 +++++------
->  drivers/gpu/drm/radeon/radeon_encoders.c   |  3 --
->  drivers/gpu/drm/radeon/radeon_fence.c      |  6 ++--
->  drivers/gpu/drm/radeon/radeon_i2c.c        |  4 ---
->  drivers/gpu/drm/radeon/radeon_irq_kms.c    |  6 ++--
->  drivers/gpu/drm/radeon/radeon_object.c     |  2 --
->  drivers/gpu/drm/radeon/radeon_ring.c       |  3 ++
->  drivers/gpu/drm/radeon/radeon_ttm.c        |  8 ++---
->  drivers/gpu/drm/radeon/si.c                |  6 ----
->  22 files changed, 96 insertions(+), 108 deletions(-)
+This is an RFC to add an Adreno GPU specific handler for pagefaults. The first
+patch starts by wiring up report_iommu_fault for arm-smmu. The next patch adds
+a adreno-smmu-priv function hook to capture a handful of important debugging
+registers such as TTBR0, CONTEXTIDR, FSYNR0 and others. This is used by the
+third patch to print more detailed information on page fault such as the TTBR0
+for the pagetable that caused the fault and the source of the fault as
+determined by a combination of the FSYNR1 register and an internal GPU
+register.
 
-Instead of just dumping everything in radeon.h, I think it would be
-cleaner to add new headers that match the .c files that define them.
-E.g., add evergreen.h and put all the stuff from evergreen.c in there.
-Add rv770.h and add all the stuff defined in rv770.c, etc.
+This code provides a solid base that we can expand on later for even more
+extensive GPU side page fault debugging capabilities.
 
-Alex
+Jordan Crouse (3):
+  iommu/arm-smmu: Add support for driver IOMMU fault handlers
+  drm/msm: Add an adreno-smmu-priv callback to get pagefault info
+  drm/msm: Improve the a6xx page fault handler
 
->
-> Cc: Alex Deucher <alexander.deucher@amd.com>
-> Cc: amd-gfx@lists.freedesktop.org
-> Cc: "Christian K=C3=B6nig" <christian.koenig@amd.com>
-> Cc: Daniel Vetter <daniel@ffwll.ch>
-> Cc: David Airlie <airlied@linux.ie>
-> Cc: dri-devel@lists.freedesktop.org
-> Cc: Jerome Glisse <glisse@freedesktop.org>
-> Cc: linaro-mm-sig@lists.linaro.org
-> Cc: linux-media@vger.kernel.org
-> Cc: report to <xorg-driver-ati@lists.x.org>
-> Cc: Slava Grigorev <slava.grigorev@amd.com>
-> Cc: Sumit Semwal <sumit.semwal@linaro.org>
-> --
-> 2.25.1
->
-> _______________________________________________
-> dri-devel mailing list
-> dri-devel@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+ drivers/gpu/drm/msm/adreno/a5xx_gpu.c      |  4 +-
+ drivers/gpu/drm/msm/adreno/a6xx_gpu.c      | 76 +++++++++++++++++++++-
+ drivers/gpu/drm/msm/msm_iommu.c            | 11 +++-
+ drivers/gpu/drm/msm/msm_mmu.h              |  4 +-
+ drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c | 19 ++++++
+ drivers/iommu/arm/arm-smmu/arm-smmu.c      | 16 ++++-
+ drivers/iommu/arm/arm-smmu/arm-smmu.h      |  2 +
+ include/linux/adreno-smmu-priv.h           | 31 ++++++++-
+ 8 files changed, 151 insertions(+), 12 deletions(-)
+
+-- 
+2.25.1
+
