@@ -2,172 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AED0C2AB05A
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 05:59:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CB8752AB063
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Nov 2020 06:00:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729394AbgKIE7G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 8 Nov 2020 23:59:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58740 "EHLO
+        id S1725860AbgKIFAQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 00:00:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58934 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728038AbgKIE7F (ORCPT
+        with ESMTP id S1729122AbgKIFAO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 8 Nov 2020 23:59:05 -0500
-Received: from mail-il1-x142.google.com (mail-il1-x142.google.com [IPv6:2607:f8b0:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F55EC0613CF;
-        Sun,  8 Nov 2020 20:59:05 -0800 (PST)
-Received: by mail-il1-x142.google.com with SMTP id y17so7142481ilg.4;
-        Sun, 08 Nov 2020 20:59:05 -0800 (PST)
+        Mon, 9 Nov 2020 00:00:14 -0500
+Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE529C0617A7
+        for <linux-kernel@vger.kernel.org>; Sun,  8 Nov 2020 21:00:14 -0800 (PST)
+Received: by mail-pl1-x644.google.com with SMTP id u2so4124665pls.10
+        for <linux-kernel@vger.kernel.org>; Sun, 08 Nov 2020 21:00:14 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=4NL1NCgbVYCQehTbE7G2xqXykgisF//g4f3RuFilZ9E=;
-        b=CtdSAF/IkW3uB7+Lr5FBSuiNxXsHnNLqurLUCkS2QA8XJm2M6ZibTJ3ZDalJ8++XVn
-         bPjIFYzcU3OZoDCek4d7mCthF8kr2qn4pcSNd3RjhP5VoD/uO5KgBXvhZe7d8t1IPrTC
-         kIL4uVi9n8WZBva6CGEv9JHRD7rbWKTVjeNzQ2eNZy1KDawAUSwvgIBenDbteDJnJ530
-         kh0HbFw4JQRuj+Lsj1n64BTpDm10ean+xsX+9ybSTYos8WFVZl0i99fzicRgu1jFrRZ/
-         9qek3j31CUQcfNg9NFiaZ4lo5YKjPm88BxtKiBCuKkJvjcArkHXbOfeOVlNbNL3j55Wt
-         DnCQ==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to
+         :user-agent;
+        bh=pqRYwsgE80dyuksaxFD472eZJVu82XkbBKetRcMgwkU=;
+        b=jEZAcCQJcoNyrqtopd159IVehbQnFdrCz6Gv6znnBL+oQ9Lbu4SwHrg2soadRKeK2K
+         tHih4WST3i/TCcj6zG3NcC99f5l/4cWK9Hfln+BVXXbkrR1PnWTasCM5zfT/TMCZDGt9
+         4y9fQy768qLLnTE3MNoBwJpSS+n1y2hy4CEdK5c9TZgDv/CsZCyWoBuiaAscEi6XOXaz
+         fFRrm9tIKwCRdg8pkO9cL1mnHke7AsuFQHSxVtVK1lOFWXAcbU0rrIszlYFyBsfjnS5J
+         5MYwsJUwjmTVqE/xB66miJ9Smg7Qnite7DZudEoTQOg9GTVBnz2CKxeWfhRk9Fxccles
+         G1MA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=4NL1NCgbVYCQehTbE7G2xqXykgisF//g4f3RuFilZ9E=;
-        b=OWhwJN2or4VXNhmz3VTRBnQqTrxmHEyebQN1LT8nhNcaZzYFYEoOEu/f524x/G0Nxv
-         n2vYidxdayV53Cnz8LvrYp/y4z3TAJGO3sz1Ty8YAqosrdGHumY8vYzJ13INXHpiEDzP
-         zJ5B5FWhuQqDRfCoOLOfLTr4y3DVhZkqM/x/Wk0qMIJ6C592JaaC2S0jLA9byoHkvloP
-         DV8ZlOrTbNjpMhe3V1WDG3bLLLJa4NeKKtfqNPLun/52+ktHtFIIhFrwJqHgC5PCzx9o
-         aWD+2Qg3c+Z/zGIOfZajHrBGm3X9lWryGBLHCBEqjS8Y9wi92433LepxCk9ydpBam9oV
-         l8Bw==
-X-Gm-Message-State: AOAM532LUnd80qcW1ZWE2Spg3flslmIjUChhsSYwGBuuITp4cVf0upD7
-        594VF85m//dhcUFM0EWXHrNdDYgUmlcaC2b6G/CpXdbsgrs=
-X-Google-Smtp-Source: ABdhPJxMhg1PLY/uPC9bIG2dDogWQfpNTx1QZi760hBRRZ4NPS5NPTBR/MUyDH91bo/JvuOeM5LBw/OOir/aKvoPXNQ=
-X-Received: by 2002:a05:6e02:e51:: with SMTP id l17mr8841831ilk.275.1604897944145;
- Sun, 08 Nov 2020 20:59:04 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to:user-agent;
+        bh=pqRYwsgE80dyuksaxFD472eZJVu82XkbBKetRcMgwkU=;
+        b=REWGIedIf7aeMUB8Qp9KHbm+9EAHSukzvL+RllzOK0kwm3ASfL/6XRo6OKYn3lYJVg
+         Q9i7aB9MY6N1yAQYvTyDTcZG09VAvszrUN/CifT8hrfB7ZECY4RSTJ2aMuPYaf7hJcAj
+         Sy0gcQR5WuINqoQGJWB7ffMkcfxv995hhdy2mhDEryd/HvHSn98I05vG/zz8EO3AHuDy
+         5gKkfm49yxw4/aimXRizeS5BMwZvEYPcJ0Ckco4cxKl5ICPr9nPFDc4nwMhiW0VTo6VY
+         g98oU7uCcQlq5wmnVleYy35UFBg2xdZHQ8rLYkQiAkODdya2LNlwCCMW+XfYJD1s/EWG
+         VT8g==
+X-Gm-Message-State: AOAM5311WmUDV8mDjo4eMbwxVTsTdzL09eP71PMnaStnTTJ0jJS3tead
+        BheB3FxEaYXTg06zTeVfwmbvlg==
+X-Google-Smtp-Source: ABdhPJxqVzbXuE7r2OTnlJIGnZcPTN9Z6rBdnUMyX2RPUkOj+pqZMZGHLq2naeoWPtp+jW/061Xf1w==
+X-Received: by 2002:a17:902:a612:b029:d6:6ae:4d47 with SMTP id u18-20020a170902a612b02900d606ae4d47mr10993684plq.50.1604898014065;
+        Sun, 08 Nov 2020 21:00:14 -0800 (PST)
+Received: from localhost ([122.172.12.172])
+        by smtp.gmail.com with ESMTPSA id gx24sm3171830pjb.38.2020.11.08.21.00.12
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Sun, 08 Nov 2020 21:00:12 -0800 (PST)
+Date:   Mon, 9 Nov 2020 10:30:10 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Frank Lee <tiny.windzz@gmail.com>
+Cc:     Dmitry Osipenko <digetx@gmail.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Peter Chen <Peter.Chen@nxp.com>,
+        Mark Brown <broonie@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Peter Geis <pgwipeout@gmail.com>,
+        Nicolas Chauvet <kwizart@gmail.com>,
+        driver-dev <devel@driverdev.osuosl.org>,
+        linux-pwm@vger.kernel.org,
+        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
+        DTML <devicetree@vger.kernel.org>, linux-usb@vger.kernel.org,
+        "open list:SECURE DIGITAL HO..." <linux-mmc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        linux-tegra@vger.kernel.org, linux-media@vger.kernel.org
+Subject: Re: [PATCH v1 17/30] mmc: sdhci-tegra: Support OPP and core voltage
+ scaling
+Message-ID: <20201109050010.g47zojh6wafvwqva@vireshk-i7>
+References: <20201104234427.26477-1-digetx@gmail.com>
+ <20201104234427.26477-18-digetx@gmail.com>
+ <CAOh2x==sy1w7_oEV8=toC6uQnSN44wyOixbP_X0BrMsnm1AUFg@mail.gmail.com>
+ <6fa54ce6-d5ae-d04f-7c77-b62c148d92b7@gmail.com>
+ <20201106061513.uyys7njcqcdlah67@vireshk-i7>
+ <a6926456-8bce-a438-bfaa-be334208f004@gmail.com>
+ <CAEExFWsp0DWw1yO84e3vzr_YZkqkd+pyPfQQR3J2W6n3wTX4Jw@mail.gmail.com>
 MIME-Version: 1.0
-References: <20201109035931.4740-1-longman@redhat.com>
-In-Reply-To: <20201109035931.4740-1-longman@redhat.com>
-From:   Amir Goldstein <amir73il@gmail.com>
-Date:   Mon, 9 Nov 2020 06:58:52 +0200
-Message-ID: <CAOQ4uxj26Pb_zyErgnpmKeMThrxnRuO5PAF=igt9mvr_80BkCQ@mail.gmail.com>
-Subject: Re: [PATCH v4] inotify: Increase default inotify.max_user_watches
- limit to 1048576
-To:     Waiman Long <longman@redhat.com>
-Cc:     Jan Kara <jack@suse.cz>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Luca BRUNO <lucab@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAEExFWsp0DWw1yO84e3vzr_YZkqkd+pyPfQQR3J2W6n3wTX4Jw@mail.gmail.com>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 9, 2020 at 6:00 AM Waiman Long <longman@redhat.com> wrote:
->
-> The default value of inotify.max_user_watches sysctl parameter was set
-> to 8192 since the introduction of the inotify feature in 2005 by
-> commit 0eeca28300df ("[PATCH] inotify"). Today this value is just too
-> small for many modern usage. As a result, users have to explicitly set
-> it to a larger value to make it work.
->
-> After some searching around the web, these are the
-> inotify.max_user_watches values used by some projects:
->  - vscode:  524288
->  - dropbox support: 100000
->  - users on stackexchange: 12228
->  - lsyncd user: 2000000
->  - code42 support: 1048576
->  - monodevelop: 16384
->  - tectonic: 524288
->  - openshift origin: 65536
->
-> Each watch point adds an inotify_inode_mark structure to an inode to
-> be watched. It also pins the watched inode.
->
-> Modeled after the epoll.max_user_watches behavior to adjust the default
-> value according to the amount of addressable memory available, make
-> inotify.max_user_watches behave in a similar way to make it use no more
-> than 1% of addressable memory within the range [8192, 1048576].
->
-> For 64-bit archs, inotify_inode_mark plus 2 vfs inode have a size that
-> is a bit over 1 kbytes (1284 bytes with my x86-64 config).
+On 06-11-20, 21:41, Frank Lee wrote:
+> On Fri, Nov 6, 2020 at 9:18 PM Dmitry Osipenko <digetx@gmail.com> wrote:
+> >
+> > 06.11.2020 09:15, Viresh Kumar пишет:
+> > > Setting regulators for count as 0 doesn't sound good to me.
+> > >
+> > > But, I understand that you don't want to have that if (have_regulator)
+> > > check, and it is a fair request. What I will instead do is, allow all
+> > > dev_pm_opp_put*() API to start accepting a NULL pointer for the OPP
+> > > table and fail silently. And so you won't be required to have this
+> > > unwanted check. But you will be required to save the pointer returned
+> > > back by dev_pm_opp_set_regulators(), which is the right thing to do
+> > > anyways.
+> >
+> > Perhaps even a better variant could be to add a devm versions of the OPP
+> > API functions, then drivers won't need to care about storing the
+> > opp_table pointer if it's unused by drivers.
+> 
+> I think so. The consumer may not be so concerned about the status of
+> these OPP tables.
+> If the driver needs to manage the release, it needs to add a pointer
+> to their driver global structure.
+> 
+> Maybe it's worth having these devm interfaces for opp.
 
-The sentence above seems out of context (where did the 2 vfs inodes
-come from?). Perhaps the comment in the patch should go here above.
+Sure if there are enough users of this, I am all for it. I was fine
+with the patches you sent, just that there were not a lot of users of
+it and so I pushed them back. If we find that we have more users of it
+now, we can surely get that back.
 
-> That means
-> a system with 128GB or more memory will likely have the maximum value
-> of 1048576 for inotify.max_user_watches. This default should be big
-> enough for most use cases.
->
-> [v3: increase inotify watch cost as suggested by Amir and Honza]
-
-That patch change log usually doesn't belong in the git commit
-because it adds little value in git log perspective.
-
-If you think that the development process is relevant to understanding
-the patch (like the discussion leading to the formula of the cost)
-then a Link: to the discussion on lore.kernel.org would serve the
-commit better.
-
->
-> Signed-off-by: Waiman Long <longman@redhat.com>
-
-Apart from this minor nits,
-Reviewed-by: Amir Goldstein <amir73il@gmail.com>
-
-> ---
->  fs/notify/inotify/inotify_user.c | 23 ++++++++++++++++++++++-
->  1 file changed, 22 insertions(+), 1 deletion(-)
->
-> diff --git a/fs/notify/inotify/inotify_user.c b/fs/notify/inotify/inotify_user.c
-> index 186722ba3894..24d17028375e 100644
-> --- a/fs/notify/inotify/inotify_user.c
-> +++ b/fs/notify/inotify/inotify_user.c
-> @@ -37,6 +37,15 @@
->
->  #include <asm/ioctls.h>
->
-> +/*
-> + * An inotify watch requires allocating an inotify_inode_mark structure as
-> + * well as pinning the watched inode. Doubling the size of a VFS inode
-> + * should be more than enough to cover the additional filesystem inode
-> + * size increase.
-> + */
-> +#define INOTIFY_WATCH_COST     (sizeof(struct inotify_inode_mark) + \
-> +                                2 * sizeof(struct inode))
-> +
->  /* configurable via /proc/sys/fs/inotify/ */
->  static int inotify_max_queued_events __read_mostly;
->
-> @@ -801,6 +810,18 @@ SYSCALL_DEFINE2(inotify_rm_watch, int, fd, __s32, wd)
->   */
->  static int __init inotify_user_setup(void)
->  {
-> +       unsigned long watches_max;
-> +       struct sysinfo si;
-> +
-> +       si_meminfo(&si);
-> +       /*
-> +        * Allow up to 1% of addressable memory to be allocated for inotify
-> +        * watches (per user) limited to the range [8192, 1048576].
-> +        */
-> +       watches_max = (((si.totalram - si.totalhigh) / 100) << PAGE_SHIFT) /
-> +                       INOTIFY_WATCH_COST;
-> +       watches_max = clamp(watches_max, 8192UL, 1048576UL);
-> +
->         BUILD_BUG_ON(IN_ACCESS != FS_ACCESS);
->         BUILD_BUG_ON(IN_MODIFY != FS_MODIFY);
->         BUILD_BUG_ON(IN_ATTRIB != FS_ATTRIB);
-> @@ -827,7 +848,7 @@ static int __init inotify_user_setup(void)
->
->         inotify_max_queued_events = 16384;
->         init_user_ns.ucount_max[UCOUNT_INOTIFY_INSTANCES] = 128;
-> -       init_user_ns.ucount_max[UCOUNT_INOTIFY_WATCHES] = 8192;
-> +       init_user_ns.ucount_max[UCOUNT_INOTIFY_WATCHES] = watches_max;
->
->         return 0;
->  }
-> --
-> 2.18.1
->
+-- 
+viresh
