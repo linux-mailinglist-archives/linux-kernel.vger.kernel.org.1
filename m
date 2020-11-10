@@ -2,61 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B5892AD0EA
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 09:11:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CC3282AD0DD
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 09:09:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731712AbgKJILG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 03:11:06 -0500
-Received: from m176150.mail.qiye.163.com ([59.111.176.150]:57238 "EHLO
-        m176150.mail.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731418AbgKJILD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 03:11:03 -0500
-Received: from vivo.com (wm-10.qy.internal [127.0.0.1])
-        by m176150.mail.qiye.163.com (Hmail) with ESMTP id 6443F1A3B86;
-        Tue, 10 Nov 2020 16:10:27 +0800 (CST)
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: base64
-Message-ID: <AI*ANACSDfnjQejyeNXUnKoQ.1.1604995827401.Hmail.bernard@vivo.com>
-To:     Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Drew Davenport <ddavenport@chromium.org>,
-        Bernard Zhao <bernard@vivo.com>,
-        Zheng Bin <zhengbin13@huawei.com>,
-        linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Cc:     opensource.kernel@vivo.com
-Subject: =?UTF-8?B?W1Jlc2VuZF1bUEFUQ0hdIGRybS9tc206IGRlbGV0ZSBjb252ZXJzaW9uIGZyb20gYm9vbCB2YWx1ZSB0byBib29sIHJldHVybg==?=
-X-Priority: 3
-X-Mailer: HMail Webmail Server V2.0 Copyright (c) 2016-163.com
-X-Originating-IP: 58.213.83.157
+        id S1729369AbgKJIJi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 03:09:38 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52688 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726467AbgKJIJh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Nov 2020 03:09:37 -0500
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8C4D020829;
+        Tue, 10 Nov 2020 08:09:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604995777;
+        bh=sy7QXvxUfH/3KiKO9Y6BbpTJBIkVN+fQSL9Hr6a0y/A=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=K06u+zu3nrS01+JWe8jentZZLcazBwFJCjZuuCpV9CCCazEU0xPJ8j9z1QmWcuYGO
+         AzHgwoesnsoHQ08Feh758/mm5qI/brMyTjUzM43H3xLpIl3mFX1wCGzHHxuyUMzmTS
+         al5Wn734Pi2E1ZqceeT9DcpMTp7YbwWTRztjOviM=
+Date:   Tue, 10 Nov 2020 09:10:34 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Wang Qing <wangqing@vivo.com>
+Cc:     Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Jordan Niethe <jniethe5@gmail.com>,
+        Alistair Popple <alistair@popple.id.au>,
+        Michael Neuling <mikey@neuling.org>,
+        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        tglx@linutronix.de
+Subject: Re: [PATCH V2] sched/rt, powerpc: Prepare for PREEMPT_RT
+Message-ID: <X6pK+oh3XuusGVFR@kroah.com>
+References: <1604995368-29649-1-git-send-email-wangqing@vivo.com>
 MIME-Version: 1.0
-Received: from bernard@vivo.com( [58.213.83.157) ] by ajax-webmail ( [127.0.0.1] ) ; Tue, 10 Nov 2020 16:10:27 +0800 (GMT+08:00)
-From:   Bernard <bernard@vivo.com>
-Date:   Tue, 10 Nov 2020 16:10:27 +0800 (GMT+08:00)
-X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
-        oVCBIfWUFZTB5JGUhOGkkdTR9LVkpNS09CQk5DSUxPQ05VEwETFhoSFyQUDg9ZV1kWGg8SFR0UWU
-        FZT0tIVUpKS0hKQ1VLWQY+
-X-HM-Sender-Digest: e1kMHhlZQQ8JDh5XWRIfHhUPWUFZRzoyUTo1OjgoPx0VESoeEQIeNSMu
-        FTAUKlVKVUpNS09CQk5DSUxCQk1VMxYaEhdVGR4JFRoJHzsNEg0UVRgUFkVZV1kSC1lBWU5DVUlK
-        SFVDSFVKTkxZV1kIAVlBSUJDTzcG
-X-HM-Tid: 0a75b134c6e093b4kuws6443f1a3b86
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1604995368-29649-1-git-send-email-wangqing@vivo.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RGVsZXRlIHRoZSBjb252ZXJzaW9uIGZyb20gYm9vbCB2YWx1ZSB0byBib29sIGZ1bmN0aW9uIHJl
-dHVybi4KClNpZ25lZC1vZmYtYnk6IEJlcm5hcmQgWmhhbyA8YmVybmFyZEB2aXZvLmNvbT4KLS0t
-CiBkcml2ZXJzL2dwdS9kcm0vbXNtL2Rpc3AvZHB1MS9kcHVfZW5jb2Rlcl9waHlzX2NtZC5jIHwg
-MiArLQogMSBmaWxlIGNoYW5nZWQsIDEgaW5zZXJ0aW9uKCspLCAxIGRlbGV0aW9uKC0pCgpkaWZm
-IC0tZ2l0IGEvZHJpdmVycy9ncHUvZHJtL21zbS9kaXNwL2RwdTEvZHB1X2VuY29kZXJfcGh5c19j
-bWQuYyBiL2RyaXZlcnMvZ3B1L2RybS9tc20vZGlzcC9kcHUxL2RwdV9lbmNvZGVyX3BoeXNfY21k
-LmMKaW5kZXggODQ5M2Q2OGFkODQxLi40MTEyMjJmNGNkNmYgMTAwNjQ0Ci0tLSBhL2RyaXZlcnMv
-Z3B1L2RybS9tc20vZGlzcC9kcHUxL2RwdV9lbmNvZGVyX3BoeXNfY21kLmMKKysrIGIvZHJpdmVy
-cy9ncHUvZHJtL21zbS9kaXNwL2RwdTEvZHB1X2VuY29kZXJfcGh5c19jbWQuYwpAQCAtMzcsNyAr
-MzcsNyBAQAogCiBzdGF0aWMgYm9vbCBkcHVfZW5jb2Rlcl9waHlzX2NtZF9pc19tYXN0ZXIoc3Ry
-dWN0IGRwdV9lbmNvZGVyX3BoeXMgKnBoeXNfZW5jKQogewotCXJldHVybiAocGh5c19lbmMtPnNw
-bGl0X3JvbGUgIT0gRU5DX1JPTEVfU0xBVkUpID8gdHJ1ZSA6IGZhbHNlOworCXJldHVybiAocGh5
-c19lbmMtPnNwbGl0X3JvbGUgIT0gRU5DX1JPTEVfU0xBVkUpOwogfQogCiBzdGF0aWMgYm9vbCBk
-cHVfZW5jb2Rlcl9waHlzX2NtZF9tb2RlX2ZpeHVwKAotLSAKMi4yOS4wCgoNCg0K
+On Tue, Nov 10, 2020 at 04:02:47PM +0800, Wang Qing wrote:
+> PREEMPT_RT is a separate preemption model, CONFIG_PRTTMPT will
+
+Minor typo on this line with your config option :(
+
