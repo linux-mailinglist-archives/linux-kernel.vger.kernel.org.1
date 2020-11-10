@@ -2,124 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E5E12AE19A
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 22:23:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C1C662AE1A0
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 22:24:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732128AbgKJVXs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 16:23:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40852 "EHLO
+        id S1732141AbgKJVX7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 16:23:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40890 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725862AbgKJVXq (ORCPT
+        with ESMTP id S1731813AbgKJVX5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 16:23:46 -0500
-Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 307FDC0613D1;
-        Tue, 10 Nov 2020 13:23:45 -0800 (PST)
-Received: by mail-lf1-x144.google.com with SMTP id j205so162194lfj.6;
-        Tue, 10 Nov 2020 13:23:45 -0800 (PST)
+        Tue, 10 Nov 2020 16:23:57 -0500
+Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9327CC0613D6
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 13:23:57 -0800 (PST)
+Received: by mail-ot1-x344.google.com with SMTP id z16so123185otq.6
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 13:23:57 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=z3y2+cM5+FqYhQiui9sx/NyVq3rbzN6lwK3hqYhLaV8=;
-        b=MW7uaSPUscsvLgXHTARFkRHWLwcumbFgh/LvDj5UKi+RX8auOx189mq2TdUmSsRTNi
-         XRn4kbwyuLHjtSYaHwe+spIMfuNWREoRSQl6/bBzCt2bgTA+kpefEAHIuAZonduQ4l+g
-         boLidEBfR0POZlIShVqthNjwQRWsm8yKic8lAIVEbN1P1xWEDJvlT8mHP1yNXcudhsTQ
-         NwLdoSYLmCTwy8iOSWENTf2hnQlDzEZVLZ0k3G26fETZVVs3Gtz6DL86Q9wj+mQAUQYw
-         dZ5ZkUU0jA7OLM1kL0DCUAatZ5ABr+OPjrZDaTqVyRlDanl6LP0kTq90IsKr6kgrNGY/
-         G3qA==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Dr4/3qS1+z62awA2yeRAPJfTGcaaGNWy1JcZr/XX9ak=;
+        b=qJB5Zpgh2DcQJip8oRxmUAIY3KCoHWN+gGyc1cjRJrqFsrRT7IZEUXIS2eTD1qiqDm
+         V4l6KPbE5UizU6/e1NKrT568+zDu1rUaeRBumZ9RvaQIcoea4qZ3Tz5U492nFn+Ox5l2
+         yVyjinHo4CG79Xi8r3Hi0PzCWQqlYV/3DamEfz1wcA80kc16BdTnBWDoMczqW5ylNG1C
+         G0TiI9VPDRPDTHpGlXgZz6tfawo/us1B9eWEXyTUrSZI8gCnROFg+xoQQym84nqx/oeq
+         Q8/G/AsgIItcP/UY7J6chaaAOMxQaaTTfbqRbahXHYt11Uxs9KO/9/ilwSUdZjrywhRi
+         DvGg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=z3y2+cM5+FqYhQiui9sx/NyVq3rbzN6lwK3hqYhLaV8=;
-        b=nxB5yLZze6XvZgyF7Xh8eBG8Ijl7ETiKYadms8g7ENwN5C6LH1lpKWHbioKvMAVM3x
-         6+PL/CWTYr7Tt2mu5zCSEcXwQgVG8kzythokKhAJ3HvIEH8iNXnt57Prpukr6jOpAQaU
-         2PhtPYwqI38+badmOzkeIPem939q4HPD8SW6qtvALJzBA1wYVbOR6vxKitSzoGDqvWah
-         8jEmpq5MfRx7cHl2S2rF5GqZk+oB6NapK6E19A+yqK4pQaiVtF9OmRekEfgh1Pwb9xCc
-         AdjVwrtm8/w9F65jVDtY7dJ2uu03NArNTZXfMdKd+dH/aM0TjUdkTxAc3j5nl1nbfD1n
-         jGnA==
-X-Gm-Message-State: AOAM531GXsy2KJ2UruY+95iKUmqEHGA94YW7xQEWSW/g8QAn4LaMzten
-        LJ6VXQtm5fsSJ8BB103LDobnDEoa1iY=
-X-Google-Smtp-Source: ABdhPJxu+BBnt3e7PE9coUJuXY67nqcK2aWRMSusUxlgbN4K8B9Bg3GI+cjuRM7DUdJ8ilqOcn0l0Q==
-X-Received: by 2002:ac2:46f3:: with SMTP id q19mr872398lfo.76.1605043423538;
-        Tue, 10 Nov 2020 13:23:43 -0800 (PST)
-Received: from [192.168.2.145] (109-252-193-159.dynamic.spd-mgts.ru. [109.252.193.159])
-        by smtp.googlemail.com with ESMTPSA id b25sm6087lfa.32.2020.11.10.13.23.41
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 10 Nov 2020 13:23:42 -0800 (PST)
-Subject: Re: [PATCH v1 11/30] drm/tegra: dc: Support OPP and SoC core voltage
- scaling
-To:     Mark Brown <broonie@kernel.org>,
-        Thierry Reding <thierry.reding@gmail.com>
-Cc:     Jonathan Hunter <jonathanh@nvidia.com>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Peter Chen <Peter.Chen@nxp.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Peter Geis <pgwipeout@gmail.com>,
-        Nicolas Chauvet <kwizart@gmail.com>,
-        linux-samsung-soc@vger.kernel.org, devel@driverdev.osuosl.org,
-        linux-usb@vger.kernel.org, linux-pwm@vger.kernel.org,
-        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-media@vger.kernel.org, linux-tegra@vger.kernel.org
-References: <20201104234427.26477-1-digetx@gmail.com>
- <20201104234427.26477-12-digetx@gmail.com> <20201110202945.GF2375022@ulmo>
- <20201110203257.GC5957@sirena.org.uk>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <72ae6462-13df-9fcb-510e-8e57eee0f035@gmail.com>
-Date:   Wed, 11 Nov 2020 00:23:41 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Dr4/3qS1+z62awA2yeRAPJfTGcaaGNWy1JcZr/XX9ak=;
+        b=aI5iCc/DskSfHJr/SpGZTR9+1YHcrvC58KXJH9nZCG3P+c+nXgAv42Vgw/LEu9Ogg+
+         as7ZCOmhwf1XsXs5/lXPfvCsOnVQ7NsF0m0CYS3ZQ80N8gam40eJ4JjE8OCLWYhp4Ylt
+         Smi8EUKbLHkEZd4wnx876G2v2Jh2RHogX1SCN0YZkzdbX2yv4rBgfSIcTuGXNHGglpJk
+         kAkfQDKi7LkskvEveEOkbQcsb1iwdjkjQOnTLPZPnURRaaWw8OfOQmDFUgGTqz/sCJjf
+         spvCNfm23LzS3PjZ41CE0zoIHIes1FPNspH0M9XQ2D+WeW3ycqD8XdsYYws8kVPqvG8y
+         /h6g==
+X-Gm-Message-State: AOAM530e+ap7cYo9YhlKxaw+friN9S36iQizEhkcWcc7ayHRwqaPOQP3
+        d7gNOoP56QvVn0bWMRjGpCi4TQ==
+X-Google-Smtp-Source: ABdhPJzJKZ16lT+yRBdEqTcDBQJwsR0BhG8D1cx/opTemZEoXfw4V6Tf/LBN/7cbuzaHSu45NrnbnQ==
+X-Received: by 2002:a9d:192d:: with SMTP id j45mr14979829ota.207.1605043436560;
+        Tue, 10 Nov 2020 13:23:56 -0800 (PST)
+Received: from yoga (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id s4sm34800oov.46.2020.11.10.13.23.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 10 Nov 2020 13:23:55 -0800 (PST)
+Date:   Tue, 10 Nov 2020 15:23:53 -0600
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Rajendra Nayak <rnayak@codeaurora.org>
+Cc:     agross@kernel.org, linus.walleij@linaro.org, robh+dt@kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-gpio@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 2/2] pinctrl: qcom: Add sc7280 pinctrl driver
+Message-ID: <20201110212353.GD807@yoga>
+References: <1604570192-15057-1-git-send-email-rnayak@codeaurora.org>
+ <1604570192-15057-2-git-send-email-rnayak@codeaurora.org>
 MIME-Version: 1.0
-In-Reply-To: <20201110203257.GC5957@sirena.org.uk>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1604570192-15057-2-git-send-email-rnayak@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-10.11.2020 23:32, Mark Brown пишет:
-> On Tue, Nov 10, 2020 at 09:29:45PM +0100, Thierry Reding wrote:
->> On Thu, Nov 05, 2020 at 02:44:08AM +0300, Dmitry Osipenko wrote:
-> 
->>> +	/*
->>> +	 * Voltage scaling is optional and trying to set voltage for a dummy
->>> +	 * regulator will error out.
->>> +	 */
->>> +	if (!device_property_present(dc->dev, "core-supply"))
->>> +		return;
-> 
->> This is a potentially heavy operation, so I think we should avoid that
->> here. How about you use devm_regulator_get_optional() in ->probe()? That
->> returns -ENODEV if no regulator was specified, in which case you can set
->> dc->core_reg = NULL and use that as the condition here.
-> 
-> Or enumerate the configurable voltages after getting the regulator and
-> handle that appropriately which would be more robust in case there's
-> missing or unusual constraints.
-> 
+On Thu 05 Nov 03:56 CST 2020, Rajendra Nayak wrote:
+> diff --git a/drivers/pinctrl/qcom/pinctrl-sc7280.c b/drivers/pinctrl/qcom/pinctrl-sc7280.c
+[..]
+> +static const struct msm_pinctrl_soc_data sc7280_pinctrl = {
+> +	.pins = sc7280_pins,
+> +	.npins = ARRAY_SIZE(sc7280_pins),
+> +	.functions = sc7280_functions,
+> +	.nfunctions = ARRAY_SIZE(sc7280_functions),
+> +	.groups = sc7280_groups,
+> +	.ngroups = ARRAY_SIZE(sc7280_groups),
+> +	.ngpios = 176,
 
-I already changed that code to use regulator_get_optional() for v2.
+I presume the wakeirq_map will come later. Nothing to hold up this patch
+for, but please help me remember to not merge the tlmm node with a
+wakeup-parent specified before that.
 
-Regarding the enumerating supported voltage.. I think this should be
-done by the OPP core, but regulator core doesn't work well if
-regulator_get() is invoked more than one time for the same device, at
-least there is a loud debugfs warning about an already existing
-directory for a regulator. It's easy to check whether the debug
-directory exists before creating it, like thermal framework does it for
-example, but then there were some other more difficult issues.. I don't
-recall what they were right now. Perhaps will be easier to simply get a
-error from regulator_set_voltage() for now because it shouldn't ever
-happen in practice, unless device-tree has wrong constraints.
+
+Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+
+Regards,
+Bjorn
