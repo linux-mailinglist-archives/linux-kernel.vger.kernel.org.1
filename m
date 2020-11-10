@@ -2,94 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CFC4D2AD26A
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 10:25:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 408992AD27E
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 10:30:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730444AbgKJJZs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 04:25:48 -0500
-Received: from mo4-p01-ob.smtp.rzone.de ([85.215.255.51]:8570 "EHLO
-        mo4-p01-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729417AbgKJJZr (ORCPT
+        id S1729851AbgKJJ36 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 04:29:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42098 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726467AbgKJJ36 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 04:25:47 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1605000345;
-        s=strato-dkim-0002; d=chronox.de;
-        h=References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
-        X-RZG-CLASS-ID:X-RZG-AUTH:From:Subject:Sender;
-        bh=Muj+NMY/EMMLy32xXtOumpx5dkBS25Z8v7DfG0sequM=;
-        b=G1L6d83hHPg8Hi49yUxT/RyknXV71nZynuEon/erBwmHMowpoAUMmtfJbBOX1sjFrm
-        3RMtHgKAri8ZIfQDQsx+Vr+JiJdoqDpZO1Iub1ktY5EZpeKglTygMjq/sCgQCcwXdTlJ
-        oFOYRDrG6zY0ErT2g2Xd+Esp9KmsQYU1f3mN7Fke1otOgqENxC6XDLy2uDS34//EK0Pe
-        dB2E/9PX2cl9ONjrkVM7W+B+9GqqXOuZuhuX50sxGex6lHd+m+4Dn23YPunMAcdv/yFP
-        fJ9OsNqVID8CPf44b3M9uw01/+HyC2did9UkA82dD+Qq1mSJP74tM2P5cA0xzqU68x+8
-        Gzcg==
-X-RZG-AUTH: ":P2ERcEykfu11Y98lp/T7+hdri+uKZK8TKWEqNyiHySGSa9k9xmwdNnzGHXPaIvSfEhGW"
-X-RZG-CLASS-ID: mo00
-Received: from tauon.chronox.de
-        by smtp.strato.de (RZmta 47.3.3 DYNA|AUTH)
-        with ESMTPSA id Y03aecwAA9PhFDG
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-        (Client did not present a certificate);
-        Tue, 10 Nov 2020 10:25:43 +0100 (CET)
-From:   Stephan Mueller <smueller@chronox.de>
-To:     Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Paul Menzel <pmenzel@molgen.mpg.de>
-Cc:     linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: jitterentropy: `jent_mod_init()` takes 17 ms
-Date:   Tue, 10 Nov 2020 10:25:42 +0100
-Message-ID: <4825077.WBkqHH8m98@tauon.chronox.de>
-In-Reply-To: <02fa159f-4f94-cfb7-1f88-bed91c6542a1@molgen.mpg.de>
-References: <02fa159f-4f94-cfb7-1f88-bed91c6542a1@molgen.mpg.de>
+        Tue, 10 Nov 2020 04:29:58 -0500
+Received: from mail.kmu-office.ch (mail.kmu-office.ch [IPv6:2a02:418:6a02::a2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE108C0613CF
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 01:29:57 -0800 (PST)
+Received: from webmail.kmu-office.ch (unknown [IPv6:2a02:418:6a02::a3])
+        by mail.kmu-office.ch (Postfix) with ESMTPSA id 951625C08E1;
+        Tue, 10 Nov 2020 10:29:54 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=agner.ch; s=dkim;
+        t=1605000594;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=8NOI0TwT6xo5ZLvM79HrQZeOfmGCdQyER0VKFIdm4jQ=;
+        b=GzU+IWNBMbtYev7hrwn1TNuh5sjF7lfZtSTfXNgAbzuyKsAXOOC01YRx7AYTKt6kxvH6hG
+        slBloYBBAFIg68pgdeP2RQST8i95aPm9xHkYGmZm8Nnnk6kQN5CCHpQuieJ4qa9b4hwUJD
+        71xeCBFffdVoOznc2qyUAdcYvZQeFoY=
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Date:   Tue, 10 Nov 2020 10:29:54 +0100
+From:   Stefan Agner <stefan@agner.ch>
+To:     Mike Rapoport <rppt@kernel.org>
+Cc:     minchan@kernel.org, ngupta@vflare.org,
+        sergey.senozhatsky.work@gmail.com, akpm@linux-foundation.org,
+        sjenning@linux.vnet.ibm.com, gregkh@linuxfoundation.org,
+        arnd@arndb.de, linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mm/zsmalloc: include sparsemem.h for MAX_PHYSMEM_BITS
+In-Reply-To: <20201108064659.GD301837@kernel.org>
+References: <bdfa44bf1c570b05d6c70898e2bbb0acf234ecdf.1604762181.git.stefan@agner.ch>
+ <20201108064659.GD301837@kernel.org>
+User-Agent: Roundcube Webmail/1.4.9
+Message-ID: <7782fb694a6b0c500e8f32ecf895b2bf@agner.ch>
+X-Sender: stefan@agner.ch
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am Montag, 9. November 2020, 20:31:02 CET schrieb Paul Menzel:
+On 2020-11-08 07:46, Mike Rapoport wrote:
+> On Sat, Nov 07, 2020 at 04:22:06PM +0100, Stefan Agner wrote:
+>> Most architectures define MAX_PHYSMEM_BITS in asm/sparsemem.h and don't
+>> include it in asm/pgtable.h. Include asm/sparsemem.h directly to get
+>> the MAX_PHYSMEM_BITS define on all architectures.
+>>
+>> This fixes a crash when accessing zram on 32-bit ARM platform with LPAE and
+>> more than 4GB of memory:
+>>   Unable to handle kernel NULL pointer dereference at virtual address 00000000
+>>   pgd = a27bd01c
+>>   [00000000] *pgd=236a0003, *pmd=1ffa64003
+>>   Internal error: Oops: 207 [#1] SMP ARM
+>>   Modules linked in: mdio_bcm_unimac(+) brcmfmac cfg80211 brcmutil raspberrypi_hwmon hci_uart crc32_arm_ce bcm2711_thermal phy_generic genet
+>>   CPU: 0 PID: 123 Comm: mkfs.ext4 Not tainted 5.9.6 #1
+>>   Hardware name: BCM2711
+>>   PC is at zs_map_object+0x94/0x338
+>>   LR is at zram_bvec_rw.constprop.0+0x330/0xa64
+>>   pc : [<c0602b38>]    lr : [<c0bda6a0>]    psr: 60000013
+>>   sp : e376bbe0  ip : 00000000  fp : c1e2921c
+>>   r10: 00000002  r9 : c1dda730  r8 : 00000000
+>>   r7 : e8ff7a00  r6 : 00000000  r5 : 02f9ffa0  r4 : e3710000
+>>   r3 : 000fdffe  r2 : c1e0ce80  r1 : ebf979a0  r0 : 00000000
+>>   Flags: nZCv  IRQs on  FIQs on  Mode SVC_32  ISA ARM  Segment user
+>>   Control: 30c5383d  Table: 235c2a80  DAC: fffffffd
+>>   Process mkfs.ext4 (pid: 123, stack limit = 0x495a22e6)
+>>   Stack: (0xe376bbe0 to 0xe376c000)
+>>   ...
+>>   [<c0602b38>] (zs_map_object) from [<c0bda6a0>] (zram_bvec_rw.constprop.0+0x330/0xa64)
+>>   [<c0bda6a0>] (zram_bvec_rw.constprop.0) from [<c0bdaf78>] (zram_submit_bio+0x1a4/0x40c)
+>>   [<c0bdaf78>] (zram_submit_bio) from [<c085806c>] (submit_bio_noacct+0xd0/0x3c8)
+>>   [<c085806c>] (submit_bio_noacct) from [<c08583b0>] (submit_bio+0x4c/0x190)
+>>   [<c08583b0>] (submit_bio) from [<c06496b4>] (submit_bh_wbc+0x188/0x1b8)
+>>   [<c06496b4>] (submit_bh_wbc) from [<c064ce98>] (__block_write_full_page+0x340/0x5e4)
+>>   [<c064ce98>] (__block_write_full_page) from [<c064d3ec>] (block_write_full_page+0x128/0x170)
+>>   [<c064d3ec>] (block_write_full_page) from [<c0591ae8>] (__writepage+0x14/0x68)
+>>   [<c0591ae8>] (__writepage) from [<c0593efc>] (write_cache_pages+0x1bc/0x494)
+>>   [<c0593efc>] (write_cache_pages) from [<c059422c>] (generic_writepages+0x58/0x8c)
+>>   [<c059422c>] (generic_writepages) from [<c0594c24>] (do_writepages+0x48/0xec)
+>>   [<c0594c24>] (do_writepages) from [<c0589330>] (__filemap_fdatawrite_range+0xf0/0x128)
+>>   [<c0589330>] (__filemap_fdatawrite_range) from [<c05894bc>] (file_write_and_wait_range+0x48/0x98)
+>>   [<c05894bc>] (file_write_and_wait_range) from [<c064f3f8>] (blkdev_fsync+0x1c/0x44)
+>>   [<c064f3f8>] (blkdev_fsync) from [<c064408c>] (do_fsync+0x3c/0x70)
+>>   [<c064408c>] (do_fsync) from [<c0400374>] (__sys_trace_return+0x0/0x2c)
+>>   Exception stack(0xe376bfa8 to 0xe376bff0)
+>>   bfa0:                   0003d2e0 b6f7b6f0 00000003 00046e40 00001000 00000000
+>>   bfc0: 0003d2e0 b6f7b6f0 00000000 00000076 00000000 00000000 befcbb20 befcbb28
+>>   bfe0: b6f4e060 befcbad8 b6f23e0c b6dc4a80
+>>   Code: e5927000 e0050391 e0871005 e5918018 (e5983000)
+>>
+>> Fixes: 61989a80fb3a ("staging: zsmalloc: zsmalloc memory allocation library")
+>> Signed-off-by: Stefan Agner <stefan@agner.ch>
+>> ---
+>>  mm/zsmalloc.c | 1 +
+>>  1 file changed, 1 insertion(+)
+>>
+>> diff --git a/mm/zsmalloc.c b/mm/zsmalloc.c
+>> index c36fdff9a371..260bd48aacd0 100644
+>> --- a/mm/zsmalloc.c
+>> +++ b/mm/zsmalloc.c
+>> @@ -40,6 +40,7 @@
+>>  #include <linux/string.h>
+>>  #include <linux/slab.h>
+>>  #include <linux/pgtable.h>
+>> +#include <asm/sparsemem.h>
+> 
+> asm/sparsemem.h is not available on some architectures.
+> It's better to use linux/mmzone.h instead.
+> 
 
-Hi Paul,
+Hm, linux/mmzone.h only includes asm/sparsemem.h when CONFIG_SPARSEMEM
+is enabled. However, on ARM at least I can have configurations without
+CONFIG_SPARSEMEM and physical address extension on (e.g.
+multi_v7_defconfig + CONFIG_LPAE + CONFIG_ZSMALLOC).
 
-> Dear Linux folks,
-> 
-> 
-> By mistake I built `XFRM_ESP` into the Linux kernel, resulting in
-> 
->      CONFIG_CRYPTO_SEQIV=y
->      CONFIG_CRYPTO_ECHAINIV=y
-> 
-> and also the Jitterentropy RNG to be built in.
-> 
->      CRYPTO_JITTERENTROPY=y
-> 
-> So, on the Asus F2A85-M PRO starting Linux 4.10-rc3 with
-> `initcall_debug`, the init method is run unconditionally, and it takes
-> 17.5 ms, which is over ten percent of the overall 900 ms the Linux
+While sparsemem seems to be a good idea with LPAE it really seems not
+required (see also https://lore.kernel.org/patchwork/patch/567589/).
 
-Hm, 17.5 / 900 = 2%, or am I missing something?
+There seem to be also other architectures which define MAX_PHYSMEM_BITS
+only when SPARSEMEM is enabled, e.g.
+arch/riscv/include/asm/sparsemem.h...
 
-> kernel needs until loading the init process.
-> 
->      [    0.300544] calling  jent_mod_init+0x0/0x2c @ 1
->      [    0.318438] initcall jent_mod_init+0x0/0x2c returned 0 after
-> 17471 usecs
-> 
-> Looking at the output of systemd-bootchart, it looks like, that this
-> indeed delayed the boot a little, as the other init methods seem to be
-> ordered after it.
-> 
-> I am now building it as a module, but am wondering if the time can be
-> reduced to below ten milliseconds.
+Not sure how to get out of this.. Maybe make ZSMALLOC dependent on
+SPARSEMEM? It feels a bit silly restricting ZSMALLOC selection only due
+to a compile time define...
 
-What you see is the test whether the Jitter RNG has a proper noise source. The 
-function jent_entropy_init() is the cause of the operation. It performs 1024 
-times a test to validate the appropriateness of the noise source. You can 
-adjust that with the TESTLOOPCOUNT in this function. But I am not sure 
-adjusting is a wise course of action.
+--
+Stefan
 
-Ciao
-Stephan
-
-
+>>  #include <asm/tlbflush.h>
+>>  #include <linux/cpumask.h>
+>>  #include <linux/cpu.h>
+>> --
+>> 2.29.1
+>>
+>>
