@@ -2,134 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6148D2ADD2F
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 18:42:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C98E2ADD33
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 18:42:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730975AbgKJRmT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 12:42:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34390 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726400AbgKJRmT (ORCPT
+        id S1730687AbgKJRm5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 12:42:57 -0500
+Received: from frasgout.his.huawei.com ([185.176.79.56]:2080 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726428AbgKJRm5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 12:42:19 -0500
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F04B2C0613CF;
-        Tue, 10 Nov 2020 09:42:18 -0800 (PST)
-Received: by mail-wm1-x342.google.com with SMTP id s13so3922607wmh.4;
-        Tue, 10 Nov 2020 09:42:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=u7PePiutY/L/sMANbIk3Ifrd0U9F0uL2w8ZKdaPSMVA=;
-        b=LD3EoWTE3jCWBub+KgOL5rdsFJCVg5oznIQk26MlvFiS0tiMkKt9PVv9q6Vs+wK7nE
-         BB2WBzukBIPhF8xdZ5iDo5GGZNnU0qxdkVuVQko1/dpmaiTLJXg+kVOSnG6rKxAbC0ua
-         pI/NE80XKis+SKnBJpTPDAc2Vib9auhwTXkSrd1EZT/mFLqHqp03aPXXGfHq6c//Pm5N
-         7z6z7nMm4v8pozeqLX/gzvh7M+lOekC9rd8QZAfn0ZQfDW69fA3qVAy4KlH4yw5R3QCG
-         3XwpxC4hfqIrdaStV0Vu1owQtXF037N3U/s0kQ66nQjSHplugDNSuTBqh0KVV1JET4rj
-         umTw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=u7PePiutY/L/sMANbIk3Ifrd0U9F0uL2w8ZKdaPSMVA=;
-        b=q6pcnKUHHp61a4PaD8V6ZoROLBcVs9aQD15A+3namnDHZnaYsHJ6xXngiQx7oGWQW7
-         57QpQBmsHR+mDfY1TfnAz5Gpg8ePFwdq4PHM6mMlO1fedcDko63WXRDi3DeAdlobVatC
-         man3O8MyXCtqpxvgomqi46pFN5Xs2F6JD56zunEEjnn555pxPQwwV66jlUSv+VrqLJk5
-         p21TsrMkY+LVix5RoDEpm3JZujp2JgNLSPwQJ3mTlScZxjic7YgTBc+z69Ztn9WeJHr3
-         zcwrUXtVe7UZ/RgRiztrwlJpeh6NeYo8CvMd524+bqozdqbD7iBokWuUQiuI8gZv+4Wh
-         LCyQ==
-X-Gm-Message-State: AOAM531SsaNphAy4qTwSHv3Jvrn1zuZ6Ipuv+ckqJmw6AJGVvHdfdYtZ
-        AbStszCIn+kgLJIGF0KykaM=
-X-Google-Smtp-Source: ABdhPJzuo8WETyEeGZyAxWnfhgSPWgU3u8ajcmBY1cEEYGoaFFyp6xLHj9rsDgmaIzPFXWaoz5ZoxA==
-X-Received: by 2002:a7b:c099:: with SMTP id r25mr178293wmh.189.1605030137748;
-        Tue, 10 Nov 2020 09:42:17 -0800 (PST)
-Received: from localhost ([217.111.27.204])
-        by smtp.gmail.com with ESMTPSA id i10sm9103887wrs.22.2020.11.10.09.42.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 10 Nov 2020 09:42:16 -0800 (PST)
-Date:   Tue, 10 Nov 2020 18:42:15 +0100
-From:   Thierry Reding <thierry.reding@gmail.com>
-To:     Peter Geis <pgwipeout@gmail.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Matt Merhar <mattmerhar@protonmail.com>,
-        Dmitry Osipenko <digetx@gmail.com>,
-        Stephen Warren <swarren@wwwdotorg.org>,
-        Bob Ham <rah@settrans.net>,
-        Leonardo Bras <leobras.c@gmail.com>,
-        Michael Brougham <jusplainmike@gmail.com>,
-        linux-tegra@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 0/3] Support NVIDIA Tegra-based Ouya game console
-Message-ID: <20201110174215.GE2297135@ulmo>
-References: <20201004133114.845230-1-pgwipeout@gmail.com>
+        Tue, 10 Nov 2020 12:42:57 -0500
+Received: from fraeml741-chm.china.huawei.com (unknown [172.18.147.201])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4CVwCC0WCXz67KVN;
+        Wed, 11 Nov 2020 01:41:27 +0800 (CST)
+Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
+ fraeml741-chm.china.huawei.com (10.206.15.222) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1913.5; Tue, 10 Nov 2020 18:42:49 +0100
+Received: from [10.47.88.91] (10.47.88.91) by lhreml724-chm.china.huawei.com
+ (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Tue, 10 Nov
+ 2020 17:42:48 +0000
+Subject: Re: [PATCH v8 17/18] scsi: megaraid_sas: Added support for shared
+ host tagset for cpuhotplug
+From:   John Garry <john.garry@huawei.com>
+To:     Qian Cai <cai@redhat.com>, Sumit Saxena <sumit.saxena@broadcom.com>
+CC:     Kashyap Desai <kashyap.desai@broadcom.com>,
+        Jens Axboe <axboe@kernel.dk>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        <don.brace@microsemi.com>, Ming Lei <ming.lei@redhat.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        <dgilbert@interlog.com>, <paolo.valente@linaro.org>,
+        Hannes Reinecke <hare@suse.de>, Christoph Hellwig <hch@lst.de>,
+        <linux-block@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        "Linux SCSI List" <linux-scsi@vger.kernel.org>,
+        <esc.storagedev@microsemi.com>,
+        "PDL,MEGARAIDLINUX" <megaraidlinux.pdl@broadcom.com>,
+        <chenxiang66@hisilicon.com>, <luojiaxing@huawei.com>,
+        Hannes Reinecke <hare@suse.com>
+References: <1597850436-116171-1-git-send-email-john.garry@huawei.com>
+ <1597850436-116171-18-git-send-email-john.garry@huawei.com>
+ <fe3dff7dae4494e5a88caffbb4d877bbf472dceb.camel@redhat.com>
+ <385d5408-6ba2-6bb6-52d3-b59c9aa9c5e5@huawei.com>
+ <193a0440eed447209c48bda042f0e4db102355e7.camel@redhat.com>
+ <519e0d58-e73e-22ce-0ddb-1be71487ba6d@huawei.com>
+ <d8fd51b11d5d54e6ec7e4e9a4f7dcc83f1215cd3.camel@redhat.com>
+ <d4f86cccccc3bffccc4eda39500ce1e1fee2109a.camel@redhat.com>
+ <7624d3fe1613f19af5c3a77f4ae8fe55@mail.gmail.com>
+ <d1040c06-74ea-7016-d259-195fa52196a9@huawei.com>
+ <CAL2rwxoAAGQDud1djb3_LNvBw95YoYUGhe22FwE=hYhy7XOLSw@mail.gmail.com>
+ <aaf849d38ca3cdd45151ffae9b6a99fe6f6ea280.camel@redhat.com>
+ <0c75b881-3096-12cf-07cc-1119ca6a453e@huawei.com>
+ <06a1a6bde51a66461d7b3135349641856315401d.camel@redhat.com>
+ <db92d37c-28fd-4f81-7b59-8f19e9178543@huawei.com>
+Message-ID: <8043d516-c041-c94b-a7d9-61bdbfef0d7e@huawei.com>
+Date:   Tue, 10 Nov 2020 17:42:40 +0000
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.2
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="BZaMRJmqxGScZ8Mx"
-Content-Disposition: inline
-In-Reply-To: <20201004133114.845230-1-pgwipeout@gmail.com>
-User-Agent: Mutt/1.14.7 (2020-08-29)
+In-Reply-To: <db92d37c-28fd-4f81-7b59-8f19e9178543@huawei.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.47.88.91]
+X-ClientProxiedBy: lhreml727-chm.china.huawei.com (10.201.108.78) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 09/11/2020 14:05, John Garry wrote:
+> On 09/11/2020 13:39, Qian Cai wrote:
+>>> I suppose I could try do this myself also, but an authentic version
+>>> would be nicer.
+>> The closest one I have here is:
+>> https://cailca.coding.net/public/linux/mm/git/files/master/arm64.config
+>>
+>> but it only selects the Thunder X2 platform and needs to manually select
+>> CONFIG_MEGARAID_SAS=m to start with, but none of arm64 systems here have
+>> megaraid_sas.
+> 
+> Thanks, I'm confident I can fix it up to get it going on my Huawei arm64 
+> D06CS.
+> 
+> So that board has a megaraid sas card. In addition, it also has hisi_sas 
+> HW, which is another storage controller which we enabled this same 
+> feature which is causing the problem.
+> 
+> I'll report back when I can.
 
---BZaMRJmqxGScZ8Mx
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+So I had to hack that arm64 config a bit to get it booting:
+https://github.com/hisilicon/kernel-dev/commits/private-topic-sas-5.10-megaraid-hang
 
-On Sun, Oct 04, 2020 at 01:31:11PM +0000, Peter Geis wrote:
-> Good Day,
->=20
-> This series introduces upstream kernel support for the Ouya game console =
-device. Please review and apply. Thank you in advance.
->=20
-> Changelog:
-> v3: - Reorder aliases per Dmitry Osipenko's review.
->     - Add sdio clocks per Dmitry Osipenko's review.
->     - Add missing ti sleep bits per Dmitry Osipenko's review.
->     - Enable lp1 sleep mode.
->     - Fix bluetooth comment and add missing power supplies.
->=20
-> v2: - Update pmic and clock handles per Rob Herring's review.
->     - Add acks from Rob Herring to patch 2 and 3.
->=20
-> Peter Geis (3):
->   ARM: tegra: Add device-tree for Ouya
->   dt-bindings: Add vendor prefix for Ouya Inc.
->   dt-bindings: ARM: tegra: Add Ouya game console
->=20
->  .../devicetree/bindings/arm/tegra.yaml        |    3 +
->  .../devicetree/bindings/vendor-prefixes.yaml  |    2 +
->  arch/arm/boot/dts/Makefile                    |    3 +-
->  arch/arm/boot/dts/tegra30-ouya.dts            | 4511 +++++++++++++++++
->  4 files changed, 4518 insertions(+), 1 deletion(-)
->  create mode 100644 arch/arm/boot/dts/tegra30-ouya.dts
+Boot is ok on my board without the megaraid sas card, but includes 
+hisi_sas HW (which enables the equivalent option which is exposing the 
+problem).
 
-Applied, thanks.
+But the board with the megaraid sas boots very slowly, specifically 
+around the megaraid sas probe:
 
-Thierry
+: ttyS0 at MMIO 0x3f00002f8 (irq = 17, base_baud = 115200) is a 16550A
+[   50.023726][    T1] printk: console [ttyS0] enabled
+[   50.412597][    T1] megasas: 07.714.04.00-rc1
+[   50.436614][    T5] megaraid_sas 0000:08:00.0: FW now in Ready state
+[   50.450079][    T5] megaraid_sas 0000:08:00.0: 63 bit DMA mask and 63 
+bit consistent mask
+[   50.467811][    T5] megaraid_sas 0000:08:00.0: firmware supports msix 
+        : (128)
+[   50.845995][    T5] megaraid_sas 0000:08:00.0: requested/available 
+msix 128/128
+[   50.861476][    T5] megaraid_sas 0000:08:00.0: current msix/online 
+cpus      : (128/128)
+[   50.877616][    T5] megaraid_sas 0000:08:00.0: RDPQ mode     : (enabled)
+[   50.891018][    T5] megaraid_sas 0000:08:00.0: Current firmware 
+supports maximum commands: 4077       LDIO threshold: 0
+[   51.262942][    T5] megaraid_sas 0000:08:00.0: Performance mode 
+:Latency (latency index = 1)
+[   51.280749][    T5] megaraid_sas 0000:08:00.0: FW supports sync cache 
+        : Yes
+[   51.295451][    T5] megaraid_sas 0000:08:00.0: 
+megasas_disable_intr_fusion is called outbound_intr_mask:0x40000009
+[   51.387474][    T5] megaraid_sas 0000:08:00.0: FW provided 
+supportMaxExtLDs: 1       max_lds: 64
+[   51.404931][    T5] megaraid_sas 0000:08:00.0: controller type 
+: MR(2048MB)
+[   51.419616][    T5] megaraid_sas 0000:08:00.0: Online Controller 
+Reset(OCR)  : Enabled
+[   51.436132][    T5] megaraid_sas 0000:08:00.0: Secure JBOD support 
+: Yes
+[   51.450265][    T5] megaraid_sas 0000:08:00.0: NVMe passthru support 
+: Yes
+[   51.464757][    T5] megaraid_sas 0000:08:00.0: FW provided TM 
+TaskAbort/Reset timeout        : 6 secs/60 secs
+[   51.484379][    T5] megaraid_sas 0000:08:00.0: JBOD sequence map 
+support     : Yes
+[   51.499607][    T5] megaraid_sas 0000:08:00.0: PCI Lane Margining 
+support    : No
+[   51.547610][    T5] megaraid_sas 0000:08:00.0: NVME page size 
+: (4096)
+[   51.608635][    T5] megaraid_sas 0000:08:00.0: 
+megasas_enable_intr_fusion is called outbound_intr_mask:0x40000000
+[   51.630285][    T5] megaraid_sas 0000:08:00.0: INIT adapter done
+[   51.649854][    T5] megaraid_sas 0000:08:00.0: pci id 
+: (0x1000)/(0x0016)/(0x19e5)/(0xd215)
+[   51.667873][    T5] megaraid_sas 0000:08:00.0: unevenspan support    : no
+[   51.681646][    T5] megaraid_sas 0000:08:00.0: firmware crash dump   : no
+[   51.695596][    T5] megaraid_sas 0000:08:00.0: JBOD sequence map 
+: enabled
+[   51.711521][    T5] megaraid_sas 0000:08:00.0: Max firmware commands: 
+4076 shared with nr_hw_queues = 127
+[   51.733056][    T5] scsi host0: Avago SAS based MegaRAID driver
+[   65.304363][    T5] scsi 0:0:0:0: Direct-Access     ATA      SAMSUNG 
+MZ7KH1T9 404Q PQ: 0 ANSI: 6
+[   65.392401][    T5] scsi 0:0:1:0: Direct-Access     ATA      SAMSUNG 
+MZ7KH1T9 404Q PQ: 0 ANSI: 6
+[   79.508307][    T5] scsi 0:0:65:0: Enclosure         HUAWEI 
+Expander 12Gx16  131  PQ: 0 ANSI: 6
+[  183.965109][   C14] random: fast init done
 
---BZaMRJmqxGScZ8Mx
-Content-Type: application/pgp-signature; name="signature.asc"
+Notice the 14 and 104 second delays.
 
------BEGIN PGP SIGNATURE-----
+But does boot fully to get to the console. I'll wait for further issues, 
+which you guys seem to experience after a while.
 
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAl+q0PYACgkQ3SOs138+
-s6HInBAArw5O4bLPyhfu+ViRVz6vcmT3JHr6FZfIpjj8kwHWj4HoUpKMiQqe2tYQ
-RtnBZCnBwxx4ahrghwET/WIcVPeDpJKdS18++i6P7S2YnmMjzQK7MKiLc3i2V5xh
-KAjI/n/pgq9i2Ca0ZnY3cYfXDTMdUBNTwWy3Y4SYUQ4MWdLiVgJ388PHfFC6kW43
-ykeq8/kpKci+Y4rX4CzL8YMNsj+k1Sxu/NekOXjF6F/8KfqkC4vgZ4zbDWpT1CFL
-X4xu0T0vmSZMTObPRZ13Ourk+CCYX8/UJwf/ShABC7j0KGDE0qlGaS3V9LeWQ0VG
-80UFgOkfxpsAPVZ0BacXuBfYgJUv7QUFDJuvzBRsUvSfbGbGaTn2X9okKHE0SvM3
-ioSw8LRUxSkhf3mJxL8ltQ8iGMh4ko581pgHMfJHIZefKhV7L0O9jyhJFMJ8F0FS
-mK82SJbBS4H59AI1M1z+0O9TkBO0t9XSzgNjp2oQNIuCfA3atCm32spwj7oiFPHV
-Tfou3KbqaYpWG4REiuUj3vJA3FQhC7arzY4gEtGElA5Ig6N9HarliXWWSosmO7Ao
-uKck4lmJHq+YmTn0VHCELwsRVsnkRJQlUg4Be0dYfaKikqiJIuD3dyTKfzB+HRN+
-HfgMvAgiHCd30G2vwXwQ34DsnF1dzq9JflEbGQ1XMdR7K/Ko/34=
-=I/ei
------END PGP SIGNATURE-----
-
---BZaMRJmqxGScZ8Mx--
+Thanks,
+John
