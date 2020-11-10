@@ -2,105 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E26E2ADE8C
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 19:41:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7637F2ADE8E
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 19:42:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731170AbgKJSlY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 13:41:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43574 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725862AbgKJSlX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 13:41:23 -0500
-Received: from mail-yb1-xb42.google.com (mail-yb1-xb42.google.com [IPv6:2607:f8b0:4864:20::b42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11414C0613D1;
-        Tue, 10 Nov 2020 10:41:22 -0800 (PST)
-Received: by mail-yb1-xb42.google.com with SMTP id t33so285041ybd.0;
-        Tue, 10 Nov 2020 10:41:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=wpJ5lPaXtgiF4jb8/8Ul562NL/AWQ6eFgS7XO9bceks=;
-        b=RUT1/dsGddDLZa8O7Lq0juEg8peHH5XcGzBzWdLs34c6F0zj0kiTRxktHDdyPhNrwa
-         BvBVz0d+vyLRXhkGNy9P9MapxdSbt26mPeIUhhkMxxL9oJDZnHep3rPkY7/aaLo1ZtWS
-         HbOVkEsxgIjjkZOvoWCf85lUzoVKe+f1zMvKTIZdA2TjbdUbKZ5Yaq7TUO/1Kziya0Gv
-         omGaOpVFUov/1t19chQRY/j3nq7b7hcjo4f3hi/IvAIK5mUmfNcwP2R+O+mZbmp5AlvO
-         wwIVGpRV6s7UvHa7LM/Y+JIMWP+VdfKoRzZmAL3+yGgo5Ng6a+MTocgRsxY+VUCFGzER
-         qAFg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=wpJ5lPaXtgiF4jb8/8Ul562NL/AWQ6eFgS7XO9bceks=;
-        b=FYq+PsNCBwLboVLqsCSQ+gWDWM+Zs3WOdC2jYUWpiEShy+3jiXjBYUKGi9uzt/sunQ
-         tNJJX4vqGLERjdqiIt/KRJmFj0aTmKWZAQLid4dzr/BDPq8Xrcr/OQWFAAdZI6HqrdFO
-         5la0QnH/JsAw8y1BY0vMhVbZuPHf0BRaEyF4c5/YS0VdcYyhaHlb3a4H7ZtJIqaRpXKy
-         CpPccQE8OxzB7c+0YS5L/+iTRxZlfX8b6NDVpJ+oSAWhhnjXZd36QV/8SxNN5xQMswLc
-         yeGZytGhRIuujZV2iOm/yoyBw/+iIg7hcrBN5foChL7MZ6qy1V9GM4B65fa1mDg6Wpfk
-         vj8g==
-X-Gm-Message-State: AOAM532xuELJ66ekKhcVrVShJ3u1km7Wt278NHd1W4WcHHu668JRpskJ
-        Rx/2fXQn19O5Tkg/Cs0oux40fmm2Pij0Msq3RnM=
-X-Google-Smtp-Source: ABdhPJwoWlvUAx5wdNafJmm9h4F7cD6LfDv7C2qg26O74l7AxqBJQo7YQf+lYNGTCiIp6A28GQtKTlUSoT8yO1uVL4k=
-X-Received: by 2002:a25:e701:: with SMTP id e1mr3977083ybh.510.1605033681253;
- Tue, 10 Nov 2020 10:41:21 -0800 (PST)
+        id S1731260AbgKJSmG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 13:42:06 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37656 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725862AbgKJSmF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Nov 2020 13:42:05 -0500
+Received: from kernel.org (unknown [77.125.7.142])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 72B27206F1;
+        Tue, 10 Nov 2020 18:42:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605033724;
+        bh=VzXs8SJ8/igjWdXAhydCqALWYiTEP6ScB1g/03HJK3M=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=sAiBxdXGC1j2G2xc9wBe/SyCI3EZ/UuP/gtvJqvuCkWnA8ZK4ykD3XxWuSL4DUOcH
+         x6GqCKDTm/HAXQ7CbwMXu8I7kTlQsALUpJNwcBCb7kFYNWtApa3opADVNg/bxIQeBO
+         BoX6uEa50pLzHLRkQkUTuaehDUzaRT5nq8fxpU1Q=
+Date:   Tue, 10 Nov 2020 20:41:57 +0200
+From:   Mike Rapoport <rppt@kernel.org>
+To:     Faiyaz Mohammed <faiyazm@codeaurora.org>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        vinmenon@codeaurora.org
+Subject: Re: [PATCH] mm: memblock: always inline memblock_alloc
+Message-ID: <20201110184157.GD4758@kernel.org>
+References: <1605010817-21065-1-git-send-email-faiyazm@codeaurora.org>
 MIME-Version: 1.0
-References: <1605009019-22310-1-git-send-email-kaixuxia@tencent.com>
-In-Reply-To: <1605009019-22310-1-git-send-email-kaixuxia@tencent.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 10 Nov 2020 10:41:10 -0800
-Message-ID: <CAEf4BzbUW+rzk1KE3---j3d2-YD_HOxKLNUPW=_AL63Qn5pHkg@mail.gmail.com>
-Subject: Re: [PATCH] bpf: Fix unsigned 'datasec_id' compared with zero in check_pseudo_btf_id
-To:     xiakaixu1987@gmail.com
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
-        Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        john fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Kaixu Xia <kaixuxia@tencent.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1605010817-21065-1-git-send-email-faiyazm@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 10, 2020 at 3:50 AM <xiakaixu1987@gmail.com> wrote:
->
-> From: Kaixu Xia <kaixuxia@tencent.com>
->
-> The unsigned variable datasec_id is assigned a return value from the call
-> to check_pseudo_btf_id(), which may return negative error code.
->
-> Fixes coccicheck warning:
->
-> ./kernel/bpf/verifier.c:9616:5-15: WARNING: Unsigned expression compared with zero: datasec_id > 0
->
-> Reported-by: Tosk Robot <tencent_os_robot@tencent.com>
-> Signed-off-by: Kaixu Xia <kaixuxia@tencent.com>
+Hi,
+
+On Tue, Nov 10, 2020 at 05:50:17PM +0530, Faiyaz Mohammed wrote:
+> Since memblock_alloc is not getting inlined, memblock_reserve owner info
+> is lost. Below information is not enough for memory accounting.
+> for example:
+> [    0.000000] memblock_alloc_try_nid: 1490 bytes align=0x40 nid=-1 from=0x0000000000000000 max_addr=0x0000000000000000 memblock_alloc+0x20/0x2c
+> [    0.000000] memblock_reserve: [0x000000023f09a3c0-0x000000023f09a991] memblock_alloc_range_nid+0xc0/0x188
+> 
+> Add "__always_inline" to make sure it get inlined and to get the exact
+> owner of the memblock_reserve.
+> After adding __always_inline:
+> [    0.000000] memblock_alloc_try_nid: 1490 bytes align=0x40 nid=-1 from=0x0000000000000000 max_addr=0x0000000000000000 start_kernel+0xa4/0x568
+> [    0.000000] memblock_reserve: [0x000000023f09a3c0-0x000000023f09a991] memblock_alloc_range_nid+0xc0/0x188
+ 
+I agree that making memblock_alloc() inline as well as other similar
+wrappers would improve the debugability.
+Still, it has nothing to do with memory accounting and owner tracking.
+Please update the patch description to better explain what it actually
+improves.
+
+> Signed-off-by: Faiyaz Mohammed <faiyazm@codeaurora.org>
 > ---
->  kernel/bpf/verifier.c | 2 +-
+>  include/linux/memblock.h | 2 +-
 >  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> index 6200519582a6..e9d8d4309bb4 100644
-> --- a/kernel/bpf/verifier.c
-> +++ b/kernel/bpf/verifier.c
-> @@ -9572,7 +9572,7 @@ static int check_pseudo_btf_id(struct bpf_verifier_env *env,
->                                struct bpf_insn *insn,
->                                struct bpf_insn_aux_data *aux)
+> 
+> diff --git a/include/linux/memblock.h b/include/linux/memblock.h
+> index ef13125..54f9544 100644
+> --- a/include/linux/memblock.h
+> +++ b/include/linux/memblock.h
+> @@ -404,7 +404,7 @@ void *memblock_alloc_try_nid(phys_addr_t size, phys_addr_t align,
+>  			     phys_addr_t min_addr, phys_addr_t max_addr,
+>  			     int nid);
+>  
+> -static inline void * __init memblock_alloc(phys_addr_t size,  phys_addr_t align)
+> +static __always_inline void * __init memblock_alloc(phys_addr_t size,  phys_addr_t align)
+
+I think simply dropping __init here will make memblock_alloc() inline.
+There are also several more convenience wrappers marked __init, do you
+mind removing the __init annotation for them as well?
+
 >  {
-> -       u32 datasec_id, type, id = insn->imm;
-> +       s32 datasec_id, type, id = insn->imm;
+>  	return memblock_alloc_try_nid(size, align, MEMBLOCK_LOW_LIMIT,
+>  				      MEMBLOCK_ALLOC_ACCESSIBLE, NUMA_NO_NODE);
 
-you are changing types for type and id variables here, so split out
-datasec_id definition into a separate line
-
->         const struct btf_var_secinfo *vsi;
->         const struct btf_type *datasec;
->         const struct btf_type *t;
-> --
-> 2.20.0
->
+-- 
+Sincerely yours,
+Mike.
