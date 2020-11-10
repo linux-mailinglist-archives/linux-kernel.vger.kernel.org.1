@@ -2,78 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B0122ADEFD
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 20:01:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9380B2ADF04
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 20:02:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731514AbgKJTBR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 14:01:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46724 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730775AbgKJTBQ (ORCPT
+        id S1731544AbgKJTCe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 14:02:34 -0500
+Received: from linux.microsoft.com ([13.77.154.182]:35100 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726179AbgKJTCd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 14:01:16 -0500
-Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1C82C0613D1
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 11:01:15 -0800 (PST)
-Received: by mail-lf1-x143.google.com with SMTP id e27so19117868lfn.7
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 11:01:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=zKnP0UjT9/41FW96welsKE4nmHYtePDjICGtIuKNYDE=;
-        b=YutSGkcINLiH87RXw6H6GyKh691g0QzbgNl7CF4HK08iAClCp9ea/n89O0RSe2aNmb
-         Ur9I2aaz3qjCQ1CVxCZrwzro/3uPHPE6hLU5TegLPUTE8LAEjX+1RA2mh0uC0hjT0Kdk
-         fTH/PUwuj5ZMwRxfryXySmYoQNPa9wkVclmN7xSW8RrTkWvPkVVkKpuA9LINs0tIxKSt
-         JKlFHkT2+IU19ecYwZqiIwautQRIPzJSwOuf75WjGxwS1MyrSoJ6T0PZBnWP5SVdxgNF
-         IIJBz79fOk2GKvBzFDx4hlJhjrYkiGpocwnWXRpSEUgRPfbXcDJU/dNbK2CVKDm296Wa
-         SjlA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=zKnP0UjT9/41FW96welsKE4nmHYtePDjICGtIuKNYDE=;
-        b=BoNwHt5yKEGiYDEt8OeyJVnv36hCV5Sxtcmd/iAt/H4DzcoJqb842zx0PYPhefNNAF
-         Jd+lZuz6hfznC571Rhf/2s+CTD1NT1dOfe+mVIfx2H3xoCWyXB74pCToUEwh2ijfvg2F
-         7FQivCD/LxJwuXSHgtFk1CpZnd9INSaXIvsCQ9/MseyeN1cbcjLl9ErBrRtNmyXY9CnT
-         g7YNwzsOeH1Rw10y/3SAbKVveHyNRjsAglyEe5pRtDRCuomxCAnEGBYRI93y1nKk+EJQ
-         Qm4bYeEJUJYm/uO45+HH+GDf3Og8M4JmRsqt6+XyfOAV3ZKgWfvyaY4P8IlXC3c+jGoP
-         srxQ==
-X-Gm-Message-State: AOAM533a23o6YEw/vBytCFmxA/o8jWn5gBEShL1QxKZmpCj5WUj6gtAa
-        UJpz2FTaByE+OP4BJSVV1pQrmg6OzcsqmeLs6Cs7kA==
-X-Google-Smtp-Source: ABdhPJyODxBXTvRgxgz8DW1RA9365vP/o33VJ8YR44Ees8mNhL+3QyMtohiO6gQ6QFgjuCrW3qonmeZ6hyDThXC14rY=
-X-Received: by 2002:a19:85c2:: with SMTP id h185mr8571397lfd.494.1605034874125;
- Tue, 10 Nov 2020 11:01:14 -0800 (PST)
-MIME-Version: 1.0
-References: <20201110184615.311974-1-guro@fb.com>
-In-Reply-To: <20201110184615.311974-1-guro@fb.com>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Tue, 10 Nov 2020 11:01:02 -0800
-Message-ID: <CALvZod4kLJ+HsciThWkYiYiVDNjx9oUVBC+7k9jYtwHM4+QV_Q@mail.gmail.com>
-Subject: Re: [PATCH] mm: memcg: fix obsolete code comments
-To:     Roman Gushchin <guro@fb.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Linux MM <linux-mm@kvack.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Kernel Team <kernel-team@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+        Tue, 10 Nov 2020 14:02:33 -0500
+Received: from localhost.localdomain (c-71-231-190-134.hsd1.wa.comcast.net [71.231.190.134])
+        by linux.microsoft.com (Postfix) with ESMTPSA id C887F20C27C5;
+        Tue, 10 Nov 2020 11:02:32 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com C887F20C27C5
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1605034953;
+        bh=0+7JgM+4vm1ixk2Q3YFgtJOVqHKLd386H8RppwZJm0M=;
+        h=From:To:Cc:Subject:Date:From;
+        b=tDMCrs93uCqojL0gwwUy4jZ1FpoVuRSAtpeX7zXx1t2RL5FH+9hL7QBL4ZBq5D7/K
+         tBPTR1UndEWHBfdFjfDGP18s3kTWTQ+EzhPMG8hAALdNRdz/PQYBwKXvwd6yq9vaoE
+         ZVcj2sE7DBqVF5GIvV7ywZIGRKavcpioSlsr6rdA=
+From:   Chris Co <chrco@linux.microsoft.com>
+To:     linux-hyperv@vger.kernel.org
+Cc:     kys@microsoft.com, haiyangz@microsoft.com, sthemmin@microsoft.com,
+        wei.liu@kernel.org, chrco@microsoft.com, mikelley@microsoft.com,
+        andrea.parri@microsoft.com, parri.andrea@gmail.com,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] Drivers: hv: vmbus: Allow cleanup of VMBUS_CONNECT_CPU if disconnected
+Date:   Tue, 10 Nov 2020 19:01:18 +0000
+Message-Id: <20201110190118.15596-1-chrco@linux.microsoft.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 10, 2020 at 10:46 AM Roman Gushchin <guro@fb.com> wrote:
->
-> This patch fixes/removes some obsolete comments in the code related
-> to the kernel memory accounting:
-> - kmem_cache->memcg_params.memcg_caches has been removed
->   by commit 9855609bde03 ("mm: memcg/slab: use a single set of
->   kmem_caches for all accounted allocations")
-> - memcg->kmemcg_id is not used as a gate for kmem accounting since
->   commit 0b8f73e10428 ("mm: memcontrol: clean up alloc, online,
->   offline, free functions")
->
-> Signed-off-by: Roman Gushchin <guro@fb.com>
+From: Chris Co <chrco@microsoft.com>
 
-Reviewed-by: Shakeel Butt <shakeelb@google.com>
+When invoking kexec() on a Linux guest running on a Hyper-V host, the
+kernel panics.
+
+    RIP: 0010:cpuhp_issue_call+0x137/0x140
+    Call Trace:
+    __cpuhp_remove_state_cpuslocked+0x99/0x100
+    __cpuhp_remove_state+0x1c/0x30
+    hv_kexec_handler+0x23/0x30 [hv_vmbus]
+    hv_machine_shutdown+0x1e/0x30
+    machine_shutdown+0x10/0x20
+    kernel_kexec+0x6d/0x96
+    __do_sys_reboot+0x1ef/0x230
+    __x64_sys_reboot+0x1d/0x20
+    do_syscall_64+0x6b/0x3d8
+    entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+This was due to hv_synic_cleanup() callback returning -EBUSY to
+cpuhp_issue_call() when tearing down the VMBUS_CONNECT_CPU, even
+if the vmbus_connection.conn_state = DISCONNECTED. hv_synic_cleanup()
+should succeed in the case where vmbus_connection.conn_state
+is DISCONNECTED.
+
+Fix is to add an extra condition to test for
+vmbus_connection.conn_state == CONNECTED on the VMBUS_CONNECT_CPU and
+only return early if true. This way the kexec() path can still shut
+everything down while preserving the initial behavior of preventing
+CPU offlining on the VMBUS_CONNECT_CPU while the VM is running.
+
+Fixes: 8a857c55420f29 ("Drivers: hv: vmbus: Always handle the VMBus messages on CPU0")
+Signed-off-by: Chris Co <chrco@microsoft.com>
+Cc: stable@vger.kernel.org
+---
+ drivers/hv/hv.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/hv/hv.c b/drivers/hv/hv.c
+index 0cde10fe0e71..f202ac7f4b3d 100644
+--- a/drivers/hv/hv.c
++++ b/drivers/hv/hv.c
+@@ -244,9 +244,13 @@ int hv_synic_cleanup(unsigned int cpu)
+ 
+ 	/*
+ 	 * Hyper-V does not provide a way to change the connect CPU once
+-	 * it is set; we must prevent the connect CPU from going offline.
++	 * it is set; we must prevent the connect CPU from going offline
++	 * while the VM is running normally. But in the panic or kexec()
++	 * path where the vmbus is already disconnected, the CPU must be
++	 * allowed to shut down.
+ 	 */
+-	if (cpu == VMBUS_CONNECT_CPU)
++	if (cpu == VMBUS_CONNECT_CPU &&
++	    vmbus_connection.conn_state == CONNECTED)
+ 		return -EBUSY;
+ 
+ 	/*
+-- 
+2.17.1
+
