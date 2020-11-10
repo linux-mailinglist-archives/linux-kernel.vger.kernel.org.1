@@ -2,105 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C0802ACB08
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 03:26:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B57332ACB06
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 03:26:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730615AbgKJC0R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 21:26:17 -0500
-Received: from ozlabs.org ([203.11.71.1]:48407 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727311AbgKJC0R (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 21:26:17 -0500
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CVWvB1NTRz9sRK;
-        Tue, 10 Nov 2020 13:26:13 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1604975175;
-        bh=RKj/coDJuwQ31FaFZSoV4bBFdJBXlGdGS/cDbXVCy8w=;
-        h=Date:From:To:Cc:Subject:From;
-        b=Nqtd4pNWXHP+8Zv2zEVRk9nDmSIG6W1B14UbpVbiFAwPVsLjp8YhTK1mqCUUycmdv
-         Px0njwFC/J7eEN9XOfaP/4QFpRmkXzIfqUR6t87+3MmMh+pvIPujtAmR+r6vxoscJb
-         k3BmKvx4qGtRwjlGzcN1B1naWbGtlnFA7k1WLvKK61iljy5FmJtgbJIYShx6rpcS3p
-         LMxR+JOqnSIYLZIrX+rwIfHsxbrJ3Kdb3NR1/h9ttPkxPM0kvNVlOIW/18ffozoXlL
-         yorkc+KGnbeM+cPScX+/D7l2TzFmguXz4Y6pVrt5xvZw2PkkLH5VqDMOFWmn375s+g
-         v+XVlc8T2GLDg==
-Date:   Tue, 10 Nov 2020 13:26:10 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Intel Graphics <intel-gfx@lists.freedesktop.org>,
-        DRI <dri-devel@lists.freedesktop.org>,
-        Dave Airlie <airlied@linux.ie>
-Cc:     Thomas Zimmermann <tzimmermann@suse.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build failure after merge of the drm-misc tree
-Message-ID: <20201110132610.34c62c71@canb.auug.org.au>
+        id S1730840AbgKJCZx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 21:25:53 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:7621 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730615AbgKJCZx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 21:25:53 -0500
+Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4CVWtX0PM7zLsPg;
+        Tue, 10 Nov 2020 10:25:40 +0800 (CST)
+Received: from localhost.localdomain (10.69.192.56) by
+ DGGEMS403-HUB.china.huawei.com (10.3.19.203) with Microsoft SMTP Server id
+ 14.3.487.0; Tue, 10 Nov 2020 10:25:48 +0800
+From:   Tian Tao <tiantao6@hisilicon.com>
+To:     <stefan@agner.ch>, <alison.wang@nxp.com>, <airlied@linux.ie>,
+        <daniel@ffwll.ch>, <dri-devel@lists.freedesktop.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH] drm/fsl-dcu: remove redundant platform_get_irq error message
+Date:   Tue, 10 Nov 2020 10:26:19 +0800
+Message-ID: <1604975179-15309-1-git-send-email-tiantao6@hisilicon.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/ujvVdjNjmCUQnYFk50_llkW";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain
+X-Originating-IP: [10.69.192.56]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/ujvVdjNjmCUQnYFk50_llkW
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Function dev_err() after platform_get_irq() is redundant because
+platform_get_irq() already prints an error.
 
-Hi all,
+Signed-off-by: Tian Tao <tiantao6@hisilicon.com>
+---
+ drivers/gpu/drm/fsl-dcu/fsl_dcu_drm_drv.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-After merging the drm-misc tree, today's linux-next build (arm
-multi_v7_defconfig) failed like this:
+diff --git a/drivers/gpu/drm/fsl-dcu/fsl_dcu_drm_drv.c b/drivers/gpu/drm/fsl-dcu/fsl_dcu_drm_drv.c
+index 7528e8a..476b196 100644
+--- a/drivers/gpu/drm/fsl-dcu/fsl_dcu_drm_drv.c
++++ b/drivers/gpu/drm/fsl-dcu/fsl_dcu_drm_drv.c
+@@ -259,7 +259,6 @@ static int fsl_dcu_drm_probe(struct platform_device *pdev)
+ 
+ 	fsl_dev->irq = platform_get_irq(pdev, 0);
+ 	if (fsl_dev->irq < 0) {
+-		dev_err(dev, "failed to get irq\n");
+ 		return fsl_dev->irq;
+ 	}
+ 
+-- 
+2.7.4
 
-drivers/gpu/drm/msm/msm_gem.c:1014:10: error: initialization of 'int (*)(st=
-ruct drm_gem_object *, struct dma_buf_map *)' from incompatible pointer typ=
-e 'void * (*)(struct drm_gem_object *)' [-Werror=3Dincompatible-pointer-typ=
-es]
- 1014 |  .vmap =3D msm_gem_prime_vmap,
-      |          ^~~~~~~~~~~~~~~~~~
-drivers/gpu/drm/msm/msm_gem.c:1014:10: note: (near initialization for 'msm_=
-gem_object_funcs.vmap')
-drivers/gpu/drm/msm/msm_gem.c:1015:12: error: initialization of 'void (*)(s=
-truct drm_gem_object *, struct dma_buf_map *)' from incompatible pointer ty=
-pe 'void (*)(struct drm_gem_object *, void *)' [-Werror=3Dincompatible-poin=
-ter-types]
- 1015 |  .vunmap =3D msm_gem_prime_vunmap,
-      |            ^~~~~~~~~~~~~~~~~~~~
-
-Caused by commit
-
-  49a3f51dfeee ("drm/gem: Use struct dma_buf_map in GEM vmap ops and conver=
-t GEM backends")
-
-interacting with commit
-
-  3c9edd9c85f5 ("drm/msm: Introduce GEM object funcs")
-
-from the drm tree.
-
-I tried reverting commit 3c9edd9c85f5 (as 49a3f51dfeee does not revert
-cleanly) but that just produced more errors, so I have disabled
-CONFIG_DRM_MSM for now.
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/ujvVdjNjmCUQnYFk50_llkW
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl+p+kIACgkQAVBC80lX
-0Gzp9gf/aviNGqsALWirx49+xmIeJeVMas00GpXoDiNhqf6Ez7by0VNmzvfJP0Ig
-pUY6mVC38d/IGuHAYQoMHRqlDtf2ty42cc8WftZeaX0NBZOY4aWglqYYmb2J9bdn
-Vuy1oy83kXREYqKk6IGjDcwmB79Cgehbh0LvpFd9kAIs5uy5HDugzGQxMFybonwv
-5L8v8R4lMmWl6JidgnOSIKmB4V5cEtdA8xhdWFV8lfDldV/ew1GmeesQFUIwF0Fg
-H8ALm1E+DioCXXbBLU8OhLAUEkG0j76jPy81qh/9P2BJ2TxPLdNgipu/HaJEndrK
-iKeFZ24DobLoNx8m+7OruS+Rb9AbVA==
-=bsR8
------END PGP SIGNATURE-----
-
---Sig_/ujvVdjNjmCUQnYFk50_llkW--
