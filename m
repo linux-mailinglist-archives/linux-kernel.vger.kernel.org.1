@@ -2,107 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E24E22ADE17
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 19:19:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3125F2ADE22
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 19:21:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731371AbgKJSTf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 13:19:35 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60348 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730618AbgKJSTc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 13:19:32 -0500
-Received: from quaco.ghostprotocols.net (unknown [179.97.37.151])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C63C920797;
-        Tue, 10 Nov 2020 18:19:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605032372;
-        bh=XCPLaolMQI6N9k9I1q0k4/0i3VqmFIS19Tg4sdymaF8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Zrh/MWjsBAwQHzVas5+2aIvrPaUpaaRV9kj5ArhfSab9Vt49T+/ziWFXZjI+6IGRT
-         UBMdc22xDbwguVG5wLeSm0OpSUxgUjJArsh8qBXH5kqYTdyISebBkwiMZUmYmmlwvp
-         ypvT8mQ9/0avj/I2uv7zJ3D89uXmxtSwOrK0yXps=
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 25E81411D1; Tue, 10 Nov 2020 15:19:29 -0300 (-03)
-Date:   Tue, 10 Nov 2020 15:19:29 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Mathieu Poirier <mathieu.poirier@linaro.org>
-Cc:     Leo Yan <leo.yan@linaro.org>,
-        Suzuki Poulouse <suzuki.poulose@arm.com>,
-        Mike Leach <mike.leach@linaro.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Jin Yao <yao.jin@linux.intel.com>,
-        linux-kernel@vger.kernel.org,
-        Coresight ML <coresight@lists.linaro.org>
-Subject: Re: [PATCH RESEND 2/2] perf test: Update branch sample parttern for
- cs-etm
-Message-ID: <20201110181929.GA355344@kernel.org>
-References: <20201110063417.14467-1-leo.yan@linaro.org>
- <20201110063417.14467-2-leo.yan@linaro.org>
- <20201110180829.GF3429138@xps15>
+        id S1730983AbgKJSVt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 13:21:49 -0500
+Received: from mail-ej1-f66.google.com ([209.85.218.66]:41952 "EHLO
+        mail-ej1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725862AbgKJSVs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Nov 2020 13:21:48 -0500
+Received: by mail-ej1-f66.google.com with SMTP id cw8so19001104ejb.8;
+        Tue, 10 Nov 2020 10:21:47 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=l9G1H7d6H8DN8me8HewkSUvFhp7esQeOJ1hEf3/Bq68=;
+        b=p7aKavWiiFJFu5Eeo09kTp5eU7pkPehDc31CP/VCJ8mX2fcfVZsYL5WEJQXCChL0yE
+         ydGK85hRnzXmwxjKZK19HBN0ib4nBrsxafpsexVC/fZ0WR0oibcdH8+JIL7vmu349r/K
+         AkpZNoOO9NTdbmYOrl//HXXstqabesACOmZ2mLp2G3bp/KUkQ1zSGKix5mH5+jMsCHMm
+         EzkV+xT8dThzus/3OhH9+9dfOmIF+XvnHeqnAT+Yzmo14GILVfP7VFnVeRfbNM5kn+n1
+         0dU9oDhuO7s3As2HSrU9VIa1Bg+uDB+T5efSmbZtxRcfvbPDz5FePQJk7TRzbA8BzDpv
+         k13A==
+X-Gm-Message-State: AOAM532yTRIHDG/xIvtNM+aRMect+dO4ccLjW1woFJvsjcueByzB53eY
+        m8ifMIIukfG39uPSu4y2GtzSHcc6L+o=
+X-Google-Smtp-Source: ABdhPJw8e8YV2zvKY2C/DC1nvB4CpPz2usZQyE7wCNeNbMFrD89t/14vgLrbzkuQFpB456SmQNDhAA==
+X-Received: by 2002:a17:906:ae52:: with SMTP id lf18mr22583160ejb.9.1605032506577;
+        Tue, 10 Nov 2020 10:21:46 -0800 (PST)
+Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
+        by smtp.googlemail.com with ESMTPSA id n11sm1979144eds.3.2020.11.10.10.21.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 10 Nov 2020 10:21:45 -0800 (PST)
+Date:   Tue, 10 Nov 2020 19:21:44 +0100
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/6] ARM: dts: exynos: use hyphens in Exynos3250 node
+ names
+Message-ID: <20201110182144.GA24131@kozik-lap>
+References: <20201105184506.215648-1-krzk@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20201110180829.GF3429138@xps15>
-X-Url:  http://acmel.wordpress.com
+In-Reply-To: <20201105184506.215648-1-krzk@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Tue, Nov 10, 2020 at 11:08:29AM -0700, Mathieu Poirier escreveu:
-> On Tue, Nov 10, 2020 at 02:34:17PM +0800, Leo Yan wrote:
-> > Since the commit 943b69ac1884 ("perf parse-events: Set exclude_guest=1
-> > for user-space counting"), 'exclude_guest=1' is set for user-space
-> > counting; and the branch sample's modifier has been altered, the sample
-> > event name has been changed from "branches:u:" to "branches:uH:", which
-> > gives out info for "user-space and host counting".
-> > 
-> > But the cs-etm testing's regular expression cannot match the updated
-> > branch sample event and leads to test failure.
-> > 
-> > This patch updates the branch sample parttern by using a more flexible
+On Thu, Nov 05, 2020 at 07:45:01PM +0100, Krzysztof Kozlowski wrote:
+> Use hyphens instead of underscores in the Exynos3250 node names which is
+> expected by naming convention, multiple dtschema files and pointed out
+> by dtc W=2 builds.  Use also generic "ppmu" node name for PPMU nodes to
+> match Devicetree specification.
 > 
-> s/parttern/pattern
+> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+> ---
+>  arch/arm/boot/dts/exynos3250.dtsi | 48 +++++++++++++++----------------
+>  1 file changed, 24 insertions(+), 24 deletions(-)
 
-I'll fix it and add stable@ to the CC list, thanks
- 
-> > expression '.*' to match branch sample's modifiers, so that allows the
-> > testing to work as expected.
-> > 
-> > Fixes: 943b69ac1884 ("perf parse-events: Set exclude_guest=1 for user-space counting")
-> > Signed-off-by: Leo Yan <leo.yan@linaro.org>
-> > ---
-> >  tools/perf/tests/shell/test_arm_coresight.sh | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> Here too I would CC stable.  With the above:
-> 
-> Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
-> 
-> > 
-> > diff --git a/tools/perf/tests/shell/test_arm_coresight.sh b/tools/perf/tests/shell/test_arm_coresight.sh
-> > index 59d847d4981d..18fde2f179cd 100755
-> > --- a/tools/perf/tests/shell/test_arm_coresight.sh
-> > +++ b/tools/perf/tests/shell/test_arm_coresight.sh
-> > @@ -44,7 +44,7 @@ perf_script_branch_samples() {
-> >  	#   touch  6512          1         branches:u:      ffffb22082e0 strcmp+0xa0 (/lib/aarch64-linux-gnu/ld-2.27.so)
-> >  	#   touch  6512          1         branches:u:      ffffb2208320 strcmp+0xe0 (/lib/aarch64-linux-gnu/ld-2.27.so)
-> >  	perf script -F,-time -i ${perfdata} | \
-> > -		egrep " +$1 +[0-9]+ .* +branches:([u|k]:)? +"
-> > +		egrep " +$1 +[0-9]+ .* +branches:(.*:)? +"
-> >  }
-> >  
-> >  perf_report_branch_samples() {
-> > -- 
-> > 2.17.1
-> > 
+Applied entire set.
 
--- 
-
-- Arnaldo
+Best regards,
+Krzysztof
