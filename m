@@ -2,26 +2,26 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E4D672ADAA4
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 16:41:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 52DAE2ADA9F
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 16:40:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732741AbgKJPkx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 10:40:53 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36416 "EHLO mail.kernel.org"
+        id S1732486AbgKJPke (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 10:40:34 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36450 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731067AbgKJPk1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1731068AbgKJPk1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 10 Nov 2020 10:40:27 -0500
 Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DD899207E8;
-        Tue, 10 Nov 2020 15:40:26 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 13B2520867;
+        Tue, 10 Nov 2020 15:40:27 +0000 (UTC)
 Received: from rostedt by gandalf.local.home with local (Exim 4.94)
         (envelope-from <rostedt@goodmis.org>)
-        id 1kcVkv-008eEE-Fa; Tue, 10 Nov 2020 10:40:25 -0500
-Message-ID: <20201110154025.328193929@goodmis.org>
+        id 1kcVkv-008eEi-Ky; Tue, 10 Nov 2020 10:40:25 -0500
+Message-ID: <20201110154025.501654745@goodmis.org>
 User-Agent: quilt/0.66
-Date:   Tue, 10 Nov 2020 10:38:56 -0500
+Date:   Tue, 10 Nov 2020 10:38:57 -0500
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     linux-kernel@vger.kernel.org,
         linux-rt-users <linux-rt-users@vger.kernel.org>
@@ -31,9 +31,8 @@ Cc:     Thomas Gleixner <tglx@linutronix.de>,
         John Kacur <jkacur@redhat.com>, Daniel Wagner <wagi@monom.org>,
         Tom Zanussi <zanussi@kernel.org>,
         "Srivatsa S. Bhat" <srivatsa@csail.mit.edu>,
-        "Luis Claudio R. Goncalves" <lgoncalv@redhat.com>,
-        Oleg Nesterov <oleg@redhat.com>, stable-rt@vger.kernel.org
-Subject: [PATCH RT 3/5] ptrace: fix ptrace_unfreeze_traced() race with rt-lock
+        Mike Galbraith <efault@gmx.de>, stable-rt@vger.kernel.org
+Subject: [PATCH RT 4/5] timers: Dont block on ->expiry_lock for TIMER_IRQSAFE
 References: <20201110153853.463368981@goodmis.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=ISO-8859-15
@@ -46,63 +45,58 @@ If anyone has any objections, please let me know.
 
 ------------------
 
-From: Oleg Nesterov <oleg@redhat.com>
+From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 
-The patch "ptrace: fix ptrace vs tasklist_lock race" changed
-ptrace_freeze_traced() to take task->saved_state into account, but
-ptrace_unfreeze_traced() has the same problem and needs a similar fix:
-it should check/update both ->state and ->saved_state.
+PREEMPT_RT does not spin and wait until a running timer completes its
+callback but instead it blocks on a sleeping lock to prevent a deadlock.
 
-Reported-by: Luis Claudio R. Goncalves <lgoncalv@redhat.com>
-Fixes: "ptrace: fix ptrace vs tasklist_lock race"
-Signed-off-by: Oleg Nesterov <oleg@redhat.com>
+This blocking can not be done for workqueue's IRQ_SAFE timer which will
+be canceled in an IRQ-off region. It has to happen to in IRQ-off region
+because changing the PENDING bit and clearing the timer must not be
+interrupted to avoid a busy-loop.
+
+The callback invocation of IRQSAFE timer is not preempted on PREEMPT_RT
+so there is no need to synchronize on timer_base::expiry_lock.
+
+Don't acquire the timer_base::expiry_lock for TIMER_IRQSAFE flagged
+timer.
+Add a lockdep annotation to ensure that this function is always invoked
+in preemptible context on PREEMPT_RT.
+
+Reported-by: Mike Galbraith <efault@gmx.de>
 Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 Cc: stable-rt@vger.kernel.org
 Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 ---
- kernel/ptrace.c | 23 +++++++++++++++--------
- 1 file changed, 15 insertions(+), 8 deletions(-)
+ kernel/time/timer.c | 9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
 
-diff --git a/kernel/ptrace.c b/kernel/ptrace.c
-index 3075006d720e..3f7156f06b6c 100644
---- a/kernel/ptrace.c
-+++ b/kernel/ptrace.c
-@@ -197,8 +197,8 @@ static bool ptrace_freeze_traced(struct task_struct *task)
+diff --git a/kernel/time/timer.c b/kernel/time/timer.c
+index 89078fd848b9..3e9d7f227a5c 100644
+--- a/kernel/time/timer.c
++++ b/kernel/time/timer.c
+@@ -1289,7 +1289,7 @@ static void del_timer_wait_running(struct timer_list *timer)
+ 	u32 tf;
  
- static void ptrace_unfreeze_traced(struct task_struct *task)
- {
--	if (task->state != __TASK_TRACED)
--		return;
-+	unsigned long flags;
-+	bool frozen = true;
+ 	tf = READ_ONCE(timer->flags);
+-	if (!(tf & TIMER_MIGRATING)) {
++	if (!(tf & (TIMER_MIGRATING | TIMER_IRQSAFE))) {
+ 		struct timer_base *base = get_timer_base(tf);
  
- 	WARN_ON(!task->ptrace || task->parent != current);
- 
-@@ -207,12 +207,19 @@ static void ptrace_unfreeze_traced(struct task_struct *task)
- 	 * Recheck state under the lock to close this race.
+ 		/*
+@@ -1373,6 +1373,13 @@ int del_timer_sync(struct timer_list *timer)
  	 */
- 	spin_lock_irq(&task->sighand->siglock);
--	if (task->state == __TASK_TRACED) {
--		if (__fatal_signal_pending(task))
--			wake_up_state(task, __TASK_TRACED);
--		else
--			task->state = TASK_TRACED;
--	}
+ 	WARN_ON(in_irq() && !(timer->flags & TIMER_IRQSAFE));
+ 
++	/*
++	 * Must be able to sleep on PREEMPT_RT because of the slowpath in
++	 * del_timer_wait_running().
++	 */
++	if (IS_ENABLED(CONFIG_PREEMPT_RT) && !(timer->flags & TIMER_IRQSAFE))
++		might_sleep();
 +
-+	raw_spin_lock_irqsave(&task->pi_lock, flags);
-+	if (task->state == __TASK_TRACED)
-+		task->state = TASK_TRACED;
-+	else if (task->saved_state == __TASK_TRACED)
-+		task->saved_state = TASK_TRACED;
-+	else
-+		frozen = false;
-+	raw_spin_unlock_irqrestore(&task->pi_lock, flags);
-+
-+	if (frozen && __fatal_signal_pending(task))
-+		wake_up_state(task, __TASK_TRACED);
-+
- 	spin_unlock_irq(&task->sighand->siglock);
- }
+ 	do {
+ 		ret = try_to_del_timer_sync(timer);
  
 -- 
 2.28.0
