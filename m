@@ -2,91 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EBC892AD400
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 11:43:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 84E1F2AD40A
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 11:47:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728212AbgKJKno (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 05:43:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53622 "EHLO
+        id S1727325AbgKJKrs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 05:47:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54246 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726219AbgKJKno (ORCPT
+        with ESMTP id S1726219AbgKJKrq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 05:43:44 -0500
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87FAAC0613CF
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 02:43:42 -0800 (PST)
-Received: by mail-pf1-x442.google.com with SMTP id w14so8437927pfd.7
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 02:43:42 -0800 (PST)
+        Tue, 10 Nov 2020 05:47:46 -0500
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2951CC0613D1
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 02:47:45 -0800 (PST)
+Received: by mail-pg1-x544.google.com with SMTP id f27so6412929pgl.1
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 02:47:45 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=sJcQmaD585nvGEEKsRqlrTZmfOresK0VYOAgqhGxmiY=;
-        b=snACxGuvSW5Azjd9ARYJ7GaRRMD1bcWSJ2kPcyqILs5/UtuUTEj+J2wTgL360w/3gv
-         X9z6/Pt4bHftRPNhMCrLLGSdbTclranV23QugeBTmgtdJ8KzCMVU3oa0qfcTXnv+a8t0
-         t1YbxhHE9Cu68MeISkecbB/6Mf90BtstS2EgvBfYgMo+jcHEU//FYnwhThbHCCYOWMZt
-         B421eZLnoXLV1kKhJIzftU3aHyNr35QszWFRNJ0FArU6i2wn4EXP47uV4qZHBaDC/l7z
-         4Lo1JHGVND+RJRshiIO21RUbskNv2zBwTdNnPs/pTEwNjNJimQ2g+FSgE7xDI44k1Ixf
-         9pxQ==
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Toc/1e3XZP6E3Q/GS14/EKWrJmH5Dil0O7B9AgVB8fQ=;
+        b=xIqtmtgc4HMmDQO5cYNvT9oenNFNyBm4de07RNrCAmKL8NA+vkKWnUbTECqmYwJPbj
+         /5FguZIa4jebLRz+my6Vov85DE2kLM8TIvUACojHoUCrNs636FkjcUejZtgkY2NxCcxN
+         zC2RNDRLhy6ZAsouPM4Pq7Fk4HBxloDh1pkE/9uKEj6B6O/6if/W77dKY+mqAaffupRk
+         M+lqp3qgD2QoMasQUEhfk/x2Hw7Qk+i2eKwrYFP+FEIetLn5CyGbAsM3+fxQPmEYKz/n
+         qtUCNwd1JruN3PvyiKRJ9dJD89ldVlGc7dFWOvJd1GBJsyNJ5e5Si1fkw3+s3A0Ncm9G
+         jqaQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=sJcQmaD585nvGEEKsRqlrTZmfOresK0VYOAgqhGxmiY=;
-        b=oczil3n1wZVF8+IGxWdj5AmMAWG815DV6ivjnn/jDHHuvr3Tlx7LZEEe8dTcax+Kvs
-         GQCGmiszTEIHJuGfZbtGE0j1BRfC0ehtxiwyWDYTns7Fj8kplvmbTs09AAl9hL17m4Nx
-         g78seCAuSfvw7gXrnBR71ypvBYiK+LPtfElFTuxUbmbsi50hJzRkMTVUW0JRzBllWnwv
-         AaKZNakW3RmeXMKXgXGAy7vzjewQGVbEiKH3Y1HRauMnmGkpiwG1QB286PIj8fHECaz5
-         s4+c7z9YBrb7ILcbpUds0V7CPZpo17kqh3B1dTtQoDv3aixhakzcWM1z4Udnho3rdQBJ
-         iNJQ==
-X-Gm-Message-State: AOAM533GznbqD4xm1wrrhy2egASz0lQUwIuZ6nRPh+D1zMCZcayGC5/v
-        nsF2+yo8/CKBCLcPMzHODRvjeg==
-X-Google-Smtp-Source: ABdhPJwCa1ixceXALYAZn6qUfAqcAJog/vO1fFgdIO4eD9owfj+ZQUFyHb21KiyyQqUnq6yAriELXg==
-X-Received: by 2002:a17:90b:3594:: with SMTP id mm20mr4363010pjb.90.1605005021999;
-        Tue, 10 Nov 2020 02:43:41 -0800 (PST)
-Received: from localhost ([122.172.12.172])
-        by smtp.gmail.com with ESMTPSA id c4sm14085616pfo.62.2020.11.10.02.43.40
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 10 Nov 2020 02:43:41 -0800 (PST)
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Zhang Rui <rui.zhang@intel.com>
-Cc:     Viresh Kumar <viresh.kumar@linaro.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Amit Kucheria <amitk@kernel.org>, corbet@lwn.net,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] docs: thermal: time_in_state is displayed in msec and not usertime
-Date:   Tue, 10 Nov 2020 16:13:37 +0530
-Message-Id: <d5461bdf9ab6b6fee7f28f538582edbb426aa077.1605004905.git.viresh.kumar@linaro.org>
-X-Mailer: git-send-email 2.25.0.rc1.19.g042ed3e048af
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Toc/1e3XZP6E3Q/GS14/EKWrJmH5Dil0O7B9AgVB8fQ=;
+        b=lULnKiUGdBQ5UPV59B3hdxrq8kOf0ChLrRfTPQymh8WbMEojbsTztVD9TeCTgest3O
+         PhxUPXjzUj7RT3LOzlH7FjTxgmLPCQkhyZv3MdqnshwjPdfKj+i2jqy94NHVzu6d7a0/
+         G9Adil8nEvJCP+8xYZArgW4xdfofTk7X0dax9GZHyCg2OEY/DWB9wMbbw0xwLlLpUaHu
+         vvE/dwhRn7xKn0yCVGp7cIjMVj2mt1wXW2Y21AftyI9w5J9ol5euyjK6M8EQpS/KNLPK
+         Fj5Qq8Z1nWJU5tkcYJrUVKmWdWwD6fDFF79Rwj1mz7iA9dbudyy9zcms6FJUj7sPPR98
+         LuLw==
+X-Gm-Message-State: AOAM533ADRGdMDQJETfjKZzFylHYS0ZYJ0BcERL/ctJiVRgJM/8vo/jg
+        2oBp1bz/jqrjtjvPQZU6ldYCObqzT6gwpg+rv+/ZHg==
+X-Google-Smtp-Source: ABdhPJx9kEy0Q3xDZ+PnVrlGbMTy6IdowDw+7yOHeSag6XbBXToDQ8IysFZVAeKrB0UhrKWsZW0NnmBu0qOPbrRJtN8=
+X-Received: by 2002:a63:7408:: with SMTP id p8mr16100765pgc.273.1605005264696;
+ Tue, 10 Nov 2020 02:47:44 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20201108141113.65450-1-songmuchun@bytedance.com>
+ <20201108141113.65450-10-songmuchun@bytedance.com> <20201109185138.GD17356@linux>
+ <CAMZfGtXpXoQ+zVi2Us__7ghSu_3U7+T3tx-EL+zfa=1Obn=55g@mail.gmail.com> <20201110094830.GA25373@linux>
+In-Reply-To: <20201110094830.GA25373@linux>
+From:   Muchun Song <songmuchun@bytedance.com>
+Date:   Tue, 10 Nov 2020 18:47:08 +0800
+Message-ID: <CAMZfGtW0nwhdgwUwwq5SXgEAk3+6cyDfM5n28UerVuAxatwj4g@mail.gmail.com>
+Subject: Re: [External] Re: [PATCH v3 09/21] mm/hugetlb: Free the vmemmap
+ pages associated with each hugetlb page
+To:     Oscar Salvador <osalvador@suse.de>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Thomas Gleixner <tglx@linutronix.de>, mingo@redhat.com,
+        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
+        dave.hansen@linux.intel.com, luto@kernel.org,
+        Peter Zijlstra <peterz@infradead.org>, viro@zeniv.linux.org.uk,
+        Andrew Morton <akpm@linux-foundation.org>, paulmck@kernel.org,
+        mchehab+huawei@kernel.org, pawan.kumar.gupta@linux.intel.com,
+        Randy Dunlap <rdunlap@infradead.org>, oneukum@suse.com,
+        anshuman.khandual@arm.com, jroedel@suse.de,
+        Mina Almasry <almasrymina@google.com>,
+        David Rientjes <rientjes@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Xiongchun duan <duanxiongchun@bytedance.com>,
+        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The sysfs stats for cooling devices shows the time_in_state in msec,
-remove the unwanted usertime comment.
+On Tue, Nov 10, 2020 at 5:48 PM Oscar Salvador <osalvador@suse.de> wrote:
+>
+> On Tue, Nov 10, 2020 at 02:40:54PM +0800, Muchun Song wrote:
+> > Only the first HugeTLB page should split the PMD to PTE. The other 63
+> > HugeTLB pages
+> > do not need to split. Here I want to make sure we are the first.
+>
+> I think terminology is loosing me here.
+>
+> Say you allocate a 2MB HugeTLB page at ffffea0004100000.
+>
+> The vmemmap range that the represents this is ffffea0004000000 - ffffea0004200000.
+> That is a 2MB chunk PMD-mapped.
+> So, in order to free some of those vmemmap pages, we need to break down
+> that area, remapping it to PTE-based.
+> I know what you mean, but we are not really splitting hugetlg pages, but
+> the memmap range they are represented with.
 
-Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
----
- Documentation/driver-api/thermal/sysfs-api.rst | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+Yeah, you are right. We are splitting the vmemmap instead of hugetlb.
+Sorry for the confusion.
 
-diff --git a/Documentation/driver-api/thermal/sysfs-api.rst b/Documentation/driver-api/thermal/sysfs-api.rst
-index b40b1f839148..e7520cb439ac 100644
---- a/Documentation/driver-api/thermal/sysfs-api.rst
-+++ b/Documentation/driver-api/thermal/sysfs-api.rst
-@@ -654,8 +654,7 @@ stats/reset
- 	The amount of time spent by the cooling device in various cooling
- 	states. The output will have "<state> <time>" pair in each line, which
- 	will mean this cooling device spent <time> msec of time at <state>.
--	Output will have one line for each of the supported states.  usertime
--	units here is 10mS (similar to other time exported in /proc).
-+	Output will have one line for each of the supported states.
- 	RO, Required
- 
- 
+>
+> About:
+>
+> "Only the first HugeTLB page should split the PMD to PTE. The other 63
+> HugeTLB pages
+> do not need to split. Here I want to make sure we are the first."
+>
+> That only refers to gigantic pages, right?
+
+Yeah, now it only refers to gigantic pages. Originally, I also wanted to merge
+vmemmap PTE to PMD for normal 2MB HugeTLB pages. So I introduced
+those macros(e.g. freed_vmemmap_hpage). For 2MB HugeTLB pages, I
+haven't found an elegant solution. Hopefully, when you or someone have
+read all of the patch series, we can come up with an elegant solution to
+merge PTE.
+
+Thanks.
+
+>
+> > > > +static void free_huge_page_vmemmap(struct hstate *h, struct page *head)
+> > > > +{
+> > > > +     pmd_t *pmd;
+> > > > +     spinlock_t *ptl;
+> > > > +     LIST_HEAD(free_pages);
+> > > > +
+> > > > +     if (!free_vmemmap_pages_per_hpage(h))
+> > > > +             return;
+> > > > +
+> > > > +     pmd = vmemmap_to_pmd(head);
+> > > > +     ptl = vmemmap_pmd_lock(pmd);
+> > > > +     if (vmemmap_pmd_huge(pmd)) {
+> > > > +             VM_BUG_ON(!pgtable_pages_to_prealloc_per_hpage(h));
+> > >
+> > > I think that checking for free_vmemmap_pages_per_hpage is enough.
+> > > In the end, pgtable_pages_to_prealloc_per_hpage uses free_vmemmap_pages_per_hpage.
+> >
+> > The free_vmemmap_pages_per_hpage is not enough. See the comments above.
+>
+> My comment was about the VM_BUG_ON.
+
+Sorry, yeah, we can drop it. Thanks.
+
+>
+>
+> --
+> Oscar Salvador
+> SUSE L3
+
+
+
 -- 
-2.25.0.rc1.19.g042ed3e048af
-
+Yours,
+Muchun
