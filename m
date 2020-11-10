@@ -2,135 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D50F2ACB60
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 03:57:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9AAB32ACB66
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 03:58:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730702AbgKJC5z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 21:57:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38144 "EHLO
+        id S1731157AbgKJC6a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 21:58:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38244 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727311AbgKJC5y (ORCPT
+        with ESMTP id S1729454AbgKJC6a (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 21:57:54 -0500
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C78EC0613CF
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Nov 2020 18:57:53 -0800 (PST)
-Received: by mail-pg1-x542.google.com with SMTP id i7so8887509pgh.6
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Nov 2020 18:57:53 -0800 (PST)
+        Mon, 9 Nov 2020 21:58:30 -0500
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71147C0613CF;
+        Mon,  9 Nov 2020 18:58:30 -0800 (PST)
+Received: by mail-pf1-x441.google.com with SMTP id g7so10074277pfc.2;
+        Mon, 09 Nov 2020 18:58:30 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=I5rP8g6hbwpalFY9R3djgaCnvHELnDvXyVufjhRMTp4=;
-        b=SajSFgVHD3t008BCAfms7vYRMyHVUNzVRoA9PWFZhXui2O65vHkM6DHm76/JFdYwd0
-         Ao1jHwv2xVK7DR+x9csXBc4CgxDrYzZa3pmQThaX6k5GCMWtjXcEfOclD/YCPx+bD/V/
-         8GoKyIpwouyJ9qZhDEjPxCEFAdDiQ2Vi/wZJD0Y3y5sOG0ILsxFZo2b90YigtXRCw514
-         3UxAGOMfv4mUYklolS4667iUrk8HLWMrCIwuv091M1pJA+PeL/L9qb+WVvEsF//ZW1DK
-         86t/cwgS059JrMj9k5kPJaS7bn/qeTnp9LTbRi+rZ7LvPPy/tw1ShgVSm5jsl49b0DvM
-         1dqQ==
+        d=gmail.com; s=20161025;
+        h=message-id:from:to:cc:subject:date;
+        bh=F5cpULf6JD3oKvDpY2w/0ouhpNWX4sd6An/RceLKtro=;
+        b=oaye5O1fOjAr+od+4iS+Skg4xCD54XCKP19+IoKi3aYSU9p7OrAte1sHSARiW9Bg4H
+         B4vM89jX7fT0BULSGhpW2AotbWQmgRT4RY5WZOdyhVnvg0YG5M5+niJQdi8/i+XD2O+H
+         +iSo9iA9Og22IBGJMZ0+2WCwZAEGmEYbhoj+7Xrf1PpsrRcCXvIk0QBxfSNyhMCOwZLZ
+         AIC49LkPUelrD92Dtn36jEu9hSOmCfAV99HoXSQmBO1YkY3ZJF4A0quuPra3ezjB3nhg
+         zLgrwyQk3ah45PL92IkZyMCS8w5nv4tEy09NSVE9oHdxF8n4m6CaW2pryYiTu4CZqiTj
+         zKdw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=I5rP8g6hbwpalFY9R3djgaCnvHELnDvXyVufjhRMTp4=;
-        b=KF2YIT51rInsnr+swHqreN5ePXsMHck3H6azL0130MGI1pEgd1HEB6YLemaFefQsGq
-         vLV5IyTWWx3/N7lweRJC1lIIZsm7psXmCbDyQHlJKiqwWDDpgwce79Ge/eKhkpaD2J6S
-         eyDxSiPCJ+anAXoA/N5P9yMMMA/UjM++PbGQQEPEzpcLWTPvKiSpdKaB/E0xrNKOhUsl
-         qt1WqPFwMmhSkoe+2cqUbN2evdldEr4bofW6lH5rPRGxlrcb5/veI/rtyrSBRs8JSgBm
-         fLbaQ4Za1aabn1xsS/njEl9txOeyGKNhXBu5/Hc7hYAes0u27cnmiFsNH4074o+PSvE2
-         Sd6w==
-X-Gm-Message-State: AOAM530Qnvbz6Xmq6MIH8d0Q/CynZJmYdydHy0OmqCgbasACWrIZZ+Dv
-        ATu/a1wM9ywlunsvyY20+Yz/mCumdD8kBqJ0IshK7A==
-X-Google-Smtp-Source: ABdhPJxdBbEXq4Wwv7KcDH91L5LSKHsQCubNvPyNBN2i9pd3XRGWN3xcgrQbQ3hk95uYjRIE42rpxP0qtBtjfj6pixo=
-X-Received: by 2002:a17:90a:8086:: with SMTP id c6mr2517944pjn.147.1604977072730;
- Mon, 09 Nov 2020 18:57:52 -0800 (PST)
-MIME-Version: 1.0
-References: <20201027080256.76497-1-songmuchun@bytedance.com>
- <20201027080256.76497-5-songmuchun@bytedance.com> <20201027184835.GB827280@carbon.dhcp.thefacebook.com>
- <CAMZfGtU1aViokYk1hkHbYEiqW5QNi49UTd-QTrkycLqj6Q+-8g@mail.gmail.com>
- <20201029001408.GF827280@carbon.dhcp.thefacebook.com> <CAMZfGtW9wa=S7+OQw_R+4LU5VzcN0H0OUPw-2XfTAJFniQN3TA@mail.gmail.com>
- <20201110013236.GB2612097@carbon.dhcp.thefacebook.com>
-In-Reply-To: <20201110013236.GB2612097@carbon.dhcp.thefacebook.com>
-From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Tue, 10 Nov 2020 10:57:16 +0800
-Message-ID: <CAMZfGtUC63W3PYE8QwoNgxCvuyHBnvuzL3i8--873AYKmncAfg@mail.gmail.com>
-Subject: Re: [External] Re: [PATCH 4/5] mm: memcg/slab: Fix root memcg vmstats
-To:     Roman Gushchin <guro@fb.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Yafang Shao <laoar.shao@gmail.com>,
-        Chris Down <chris@chrisdown.name>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Thomas Gleixner <tglx@linutronix.de>, esyr@redhat.com,
-        Suren Baghdasaryan <surenb@google.com>, areber@redhat.com,
-        Marco Elver <elver@google.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Cgroups <cgroups@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:message-id:from:to:cc:subject:date;
+        bh=F5cpULf6JD3oKvDpY2w/0ouhpNWX4sd6An/RceLKtro=;
+        b=Uj/7ptKjZcz9cLjL1mdsDlr0RVGpRnf9kUZBPF2w+zcWKZf62TqH5nZ3IZH1PyVdh+
+         6vm9/wQZir3KcfBc1QfuoJV+qhz4CnPriIOwCKCnzlBalBbK5qC5CfMNBgW+oUwhaok1
+         cLSjTOu1/XXfUG6czxiiaK3QY/81LUoLMjkmFt6oIGjhET9Q8m7md0nqWvmSWjiAdnkw
+         bQr66Xxz8Lc2KPFKLrTTWPpmIwBd9GVhygI278Qlz4xLcc2vQKwzot8mvTf/Ky9kdzLt
+         1/K9qrXU42cLUgbK7fvBmMdc44nMaXHuG9Q5cHoeHwiWSMmaqDHXH0nwn5LV2b18vK2G
+         V0tg==
+X-Gm-Message-State: AOAM533YpMeAOibEwrCtjLgaTK1FOrcV8CAF+Vr1vL/LYT1sySVI6ayh
+        8uga6T1IoCmOcv/VaGEwKkw=
+X-Google-Smtp-Source: ABdhPJx3u3hI0C+4er+TyT6S2SzeSYu6L1B4IUQSUoAiUL9u6PxChbflJcm+zdbCvTRUfZDHgOwkfg==
+X-Received: by 2002:a63:6243:: with SMTP id w64mr14967793pgb.430.1604977110109;
+        Mon, 09 Nov 2020 18:58:30 -0800 (PST)
+Received: from localhost.localdomain ([154.93.3.113])
+        by smtp.gmail.com with ESMTPSA id j184sm12899665pfg.207.2020.11.09.18.58.28
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 09 Nov 2020 18:58:29 -0800 (PST)
+Message-ID: <5faa01d5.1c69fb81.8451c.cb5b@mx.google.com>
+X-Google-Original-Message-ID: <1604977078-10422-1-git-send-email---global>
+From:   menglong8.dong@gmail.com
+X-Google-Original-From: --global
+To:     kuba@kernel.org
+Cc:     davem@davemloft.net, kuznet@ms2.inr.ac.ru, yoshfuji@linux-ipv6.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Menglong Dong <dong.menglong@zte.com.cn>
+Subject: [PATCH v2 net-next] net: udp: remove redundant initialization in udp_gro_complete
+Date:   Mon,  9 Nov 2020 21:57:58 -0500
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 10, 2020 at 9:33 AM Roman Gushchin <guro@fb.com> wrote:
->
-> On Thu, Oct 29, 2020 at 02:15:43PM +0800, Muchun Song wrote:
-> > On Thu, Oct 29, 2020 at 8:14 AM Roman Gushchin <guro@fb.com> wrote:
-> > >
-> > > On Wed, Oct 28, 2020 at 10:56:20AM +0800, Muchun Song wrote:
-> > > > On Wed, Oct 28, 2020 at 2:48 AM Roman Gushchin <guro@fb.com> wrote:
-> > > > >
-> > > > > On Tue, Oct 27, 2020 at 04:02:55PM +0800, Muchun Song wrote:
-> > > > > > If we reparent the slab objects to the root memcg, when we free
-> > > > > > the slab object, we need to update the per-memcg vmstats to keep
-> > > > > > it correct for the root memcg. Now this at least affects the vmstat
-> > > > > > of NR_KERNEL_STACK_KB for !CONFIG_VMAP_STACK when the thread stack
-> > > > > > size is smaller than the PAGE_SIZE.
-> > > > > >
-> > > > > > Fixes: ec9f02384f60 ("mm: workingset: fix vmstat counters for shadow nodes")
-> > > > > > Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-> > > > >
-> > > > > Can you, please, drop this patch for now?
-> > > > >
-> > > > > I'm working on a bigger cleanup related to the handling of the root memory
-> > > > > cgroup (I sent a link earlier in this thread), which already does a similar change.
-> > > > > There are several issues like this one, so it will be nice to fix them all at once.
-> > > >
-> > > > I have read the patch of https://lkml.org/lkml/2020/10/14/869. You
-> > > > mean this patch
-> > > > fixes this issue? It chooses to uncharge the root memcg. But here we may need to
-> > > > uncharge the root memcg to keep root vmstats correct. If we do not do
-> > > > this, we can
-> > > > see the wrong vmstats via root memory.stat(e.g. NR_KERNEL_STACK_KB).
-> > >
-> > > I pointed at a different patch in the same thread (it looks like you read the first one):
-> > > https://lkml.org/lkml/2020/10/21/612
->
-> Hi Muchun!
->
-> Can you please, resend your patch? The planned cleanup of the root memory cgroup
-> is more complex than expected, so I think it makes sense to merge your patch without
-> waiting for it. I'm sorry for delaying it initially.
+From: Menglong Dong <dong.menglong@zte.com.cn>
 
-OK, I will do that. Thanks.
+The initialization for 'err' with '-ENOSYS' is redundant and
+can be removed, as it is updated soon and not used.
 
->
-> Please, feel free to add
-> Acked-by: Roman Gushchin <guro@fb.com>
->
-> Thank you!
->
-> Roman
+Changes since v1:
+- Move the err declaration below struct sock *sk
 
+Signed-off-by: Menglong Dong <dong.menglong@zte.com.cn>
+---
+ net/ipv4/udp_offload.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-
+diff --git a/net/ipv4/udp_offload.c b/net/ipv4/udp_offload.c
+index b8b1fde..54c9533 100644
+--- a/net/ipv4/udp_offload.c
++++ b/net/ipv4/udp_offload.c
+@@ -554,8 +554,8 @@ int udp_gro_complete(struct sk_buff *skb, int nhoff,
+ {
+ 	__be16 newlen = htons(skb->len - nhoff);
+ 	struct udphdr *uh = (struct udphdr *)(skb->data + nhoff);
+-	int err = -ENOSYS;
+ 	struct sock *sk;
++	int err;
+ 
+ 	uh->len = newlen;
+ 
 -- 
-Yours,
-Muchun
+2.7.4
+
