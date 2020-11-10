@@ -2,95 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53F5A2AE1C7
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 22:30:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E8BF2AE1C3
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 22:30:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731871AbgKJVar (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 16:30:47 -0500
-Received: from ozlabs.org ([203.11.71.1]:60323 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726462AbgKJVar (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 16:30:47 -0500
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CW1Hj6KSpz9s1l;
-        Wed, 11 Nov 2020 08:30:41 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1605043844;
-        bh=TJeJa2tzl/LdHql1YVlaGWX2j/CQDqQ6INQTnj8ggfs=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=ZbUzZQG5JxqA4YV2SZahiUdI30dQMP46KvpEnPXtnZuHo7c3Wmkj9UxrqV+O0dnT7
-         cQ0+a8HzLl4dfnEszsH88S5ZHS/K+rLjiHLq123sZjNSopUXTKkabrwhVwPh9ds+fS
-         BnRBnR/KVURwzmnZuGyDARkPM+ayvTsijevOQtdZ2lZVT03DHZ7biZbQb5mHTbUqvm
-         LPAitB4Q3+UaTUW/xAbbsGuGcR2MrXOEoePekFqZ+ZxBdDsdRZl9k/5KG+X6ljgbqv
-         SwrUhJeusEjFAWaMUcltq019Izb3B3eRgg+5EjJvqmn+WUI7rQpnbnzu7b36BFO4RG
-         ZYMJxwcwP6L6A==
-Date:   Wed, 11 Nov 2020 08:30:41 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <len.brown@intel.com>, Pavel Machek <pavel@ucw.cz>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        Taniya Das <tdas@codeaurora.org>,
-        Linux-Next Mailing List <linux-next@vger.kernel.org>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [PATCH -next v2] clk: pm_clock: provide stubs for
- pm_clk_runtime_suspend/_resume
-Message-ID: <20201111083041.698a561c@canb.auug.org.au>
-In-Reply-To: <CAJZ5v0jhJcL6uJw_Cm02SeUMff_s1L-mKzX3haAyejcCkKihNg@mail.gmail.com>
-References: <20201109032115.10610-1-rdunlap@infradead.org>
-        <CAJZ5v0jhJcL6uJw_Cm02SeUMff_s1L-mKzX3haAyejcCkKihNg@mail.gmail.com>
+        id S1731807AbgKJVaM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 16:30:12 -0500
+Received: from aserp2120.oracle.com ([141.146.126.78]:49112 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726462AbgKJVaM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Nov 2020 16:30:12 -0500
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AALNqu0133383;
+        Tue, 10 Nov 2020 21:30:10 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to :
+ subject : message-id : mime-version : content-type; s=corp-2020-01-29;
+ bh=lER9kZ6gtiFR/ZbdtUi5Fs5safSxUNLDEPkk5yWRhOk=;
+ b=i4YXiZOM/kZNiNeGIJ1heNpquOyTiCZe/5RyC9+Zu79371vzPB9Dw9VZI+QgrHqc1vpo
+ musQoQTPO9FfjpqRKFf7sv1V4pi0tFAJNxQNyqnYSEOhlyTZXkG7JJGBkCjYLcDX2kU6
+ SiwI5CITbgzYuvJX9YZEwXQ8RKSg+5q5raroX4UDtLS0uz8xQMZNI2Qmpc42011F4TEF
+ Yagmy3UZPHSJhpHFmmMRnEyLZqFhhhOgxeBYOghQ6QpoNEok4TVXNOSPJqom4QYFe1GZ
+ +Ael1Y3YfHrZdi2Sbh3vrfMojBsmdNcIm+2OrJXn+Z3qACKeFimCZ1OWSyt0nDoDbbTA 0A== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by aserp2120.oracle.com with ESMTP id 34nkhkx1u5-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 10 Nov 2020 21:30:10 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AALOq0p194794;
+        Tue, 10 Nov 2020 21:30:09 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by aserp3020.oracle.com with ESMTP id 34p5g0wape-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 10 Nov 2020 21:30:09 +0000
+Received: from abhmp0007.oracle.com (abhmp0007.oracle.com [141.146.116.13])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0AALU9ql023478;
+        Tue, 10 Nov 2020 21:30:09 GMT
+Received: from char.us.oracle.com (/10.152.32.25)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Tue, 10 Nov 2020 13:30:09 -0800
+Received: by char.us.oracle.com (Postfix, from userid 1000)
+        id 01E9B6A0109; Tue, 10 Nov 2020 16:31:57 -0500 (EST)
+Date:   Tue, 10 Nov 2020 16:31:57 -0500
+From:   Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-kernel@vger.kernel.org
+Subject: [GIT PULL] (swiotlb) stable/for-linus-5.10-rc2
+Message-ID: <20201110213157.GB16458@char.us.oracle.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/NNkr73WnZd2Rjkw1MfDcr59";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.9.1 (2017-09-22)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9801 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 spamscore=0 malwarescore=0
+ adultscore=0 phishscore=0 bulkscore=0 mlxlogscore=999 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2011100146
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9801 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 priorityscore=1501
+ mlxscore=0 suspectscore=0 mlxlogscore=999 lowpriorityscore=0 spamscore=0
+ malwarescore=0 adultscore=0 clxscore=1015 bulkscore=0 impostorscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2011100146
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/NNkr73WnZd2Rjkw1MfDcr59
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Dear Linus,
 
-Hi Rafael,
+Please git pull the following branch:
 
-On Tue, 10 Nov 2020 18:43:04 +0100 "Rafael J. Wysocki" <rafael@kernel.org> =
-wrote:
->
-> > Fixes: 15d09e830bbc ("clk: qcom: camcc: Add camera clock controller dri=
-ver for SC7180")
->
-> Applied to the PM tree as 5.10-rc material, thanks!
+ git pull git://git.kernel.org/pub/scm/linux/kernel/git/konrad/swiotlb.git stable/for-linus-5.10-rc2
 
-The problem is that the commit that this one fixes is in the clk tree
-not the pm tree, so this patch needs to (also) be in the clk tree to
-reduced bisect problems.
 
---=20
-Cheers,
-Stephen Rothwell
+which has two tiny fixes that make drivers under Xen unhappy under certain conditions.
 
---Sig_/NNkr73WnZd2Rjkw1MfDcr59
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+Thank you!
 
------BEGIN PGP SIGNATURE-----
+Christoph Hellwig (1):
+      swiotlb: remove the tbl_dma_addr argument to swiotlb_tbl_map_single
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl+rBoEACgkQAVBC80lX
-0GwywQf9EPeARXiMnQ41GV1QHYfOW3ZwJizOxCI/b26sjpnk/cfkaeiA5TXMezh/
-zkM/7hdYitLquso9XO4M+ODlgSuiHEwSOwmw+yVb5RlFwezkg07J1xbSnm5kyNyz
-bm/72cvGjhP3R3GWTV7a7OI+i92efj7Hlpcml9Qu91tMxQNEkM++ABPlDa5eP2uF
-BatuzT6k0dSj5VmwH+HmPSZTPK+TEVFs9hKC2oq70Yk0CO5G8YGwlpdnnZ/urd1o
-8UpRQOjggfx6WjJ/5oZtV2kXf5GiPB0/Zdwvgrfvd124xWZbxgufCK0oc0BRfHqn
-Gm/tC8bKMwzRprhfWiteI2/3OdkvSw==
-=2ZHS
------END PGP SIGNATURE-----
+Stefano Stabellini (1):
+      swiotlb: fix "x86: Don't panic if can not alloc buffer for swiotlb"
 
---Sig_/NNkr73WnZd2Rjkw1MfDcr59--
+ drivers/iommu/intel/iommu.c |  5 ++---
+ drivers/xen/swiotlb-xen.c   |  3 +--
+ include/linux/swiotlb.h     | 10 +++-------
+ kernel/dma/swiotlb.c        | 22 +++++++++++-----------
+ 4 files changed, 17 insertions(+), 23 deletions(-)
