@@ -2,123 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A272F2AE146
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 22:02:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EA8A52AE148
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 22:02:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730979AbgKJVCR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 16:02:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37464 "EHLO
+        id S1731710AbgKJVC2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 16:02:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37494 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725862AbgKJVCR (ORCPT
+        with ESMTP id S1725862AbgKJVC2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 16:02:17 -0500
-Received: from mail-il1-x144.google.com (mail-il1-x144.google.com [IPv6:2607:f8b0:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCC34C0613D1
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 13:02:16 -0800 (PST)
-Received: by mail-il1-x144.google.com with SMTP id a20so13519767ilk.13
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 13:02:16 -0800 (PST)
+        Tue, 10 Nov 2020 16:02:28 -0500
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00262C0613D1
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 13:02:27 -0800 (PST)
+Received: by mail-wm1-x344.google.com with SMTP id 19so3053721wmf.1
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 13:02:27 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=hTEZuc82d1g5VvucdImgjg3ULND3nOsOgigDk2DI/+8=;
-        b=T9D/WIcsClZwpGKErlJuHTFALDz6vsuxGxC1d23FpoAq5emQMX6ZPFB58AHesKL4Np
-         tcU2ntQUFGsV5Fmvtxy12aE51gFg/hgx6zBLjtyGmAoHaAFYlV6HWA1e1dPXHWbBGFq0
-         jKWHhyDfPV6q/pCSOGvu4Zn12BRot5pZCwKDs=
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=/4ivGjpOSzxr0bVTtrL/2oAHyb/02RtqaNu/H/vaQ4I=;
+        b=Hm+BKMpx9UbZ/qHsQxtcxkqgo5nuU8Qd7EQLcSjhtJuBqKRh6U8HWodSY29Lle6X/L
+         EcB03W8Lp1W4LPCk3xp8QA4mDbeCUxLbnpzwvBznApIH+zwGEdgJuFc16smVv0oe6frp
+         s33ebO3415h5vzDyDvEoVXIJlwpAtHpNmuZ5cHq5vTVIoLMexGgEfe+oPtubX2SGnDEg
+         rDYMm2aoMUiEEjbXPVU+1GRvbVbsigoeLlJ9zdb740gGgLEtR/EwbUJz2vDXi32iI0cd
+         TXbBTpg65bQhHAiLKIvkCw9HfWiXOlNizbLnxhtD3cV4ZwzmJoyctBjHBHnpFRUVOWCi
+         T7vw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=hTEZuc82d1g5VvucdImgjg3ULND3nOsOgigDk2DI/+8=;
-        b=HUFtrMKdftHsp/ylQA1RCiDLbcwDOx9i8YGtag9vZX5FVX3Spta8Vww2JPYqVAS4Gd
-         VJ0HY6NoSO1ciTk2SCnEuVY8lC5naN8ReMFITbQFI9zEor7VcvIF3HfMwJj8BWUQ3nC0
-         oMeKPY+J8pBbR0xGXQGGSd427SXiaP0qEtFju2bvyeMzm4SAd0Cj/FRJpwqLdCUlkpA4
-         TZscONy8SyaAWRam/HnRSDnkwhJj/akQr3lB1gm18r/DT7aKuSDgz8+a7QAf9Hex5RMw
-         PMPScdyAF/2dZJU7znSrzC8PTCtNYhWabIkSspCPVUGYDvRTNFuy7Z8nMyFvMR84Tt78
-         vhug==
-X-Gm-Message-State: AOAM530o0nzHBEeM2O2txEsuohC7efTfIQT+3ATvRa8MDQFkg0LZgL9V
-        Ho8THlntjZjuORHZ2HNuMcbGug==
-X-Google-Smtp-Source: ABdhPJwy0XBegJgfxBv38odl1jCZvoE6acuK2Tr9mU3ARqr4mDAA0qHwmB6d9Byriqqy6+c1VLzreA==
-X-Received: by 2002:a92:85cd:: with SMTP id f196mr14652639ilh.92.1605042136242;
-        Tue, 10 Nov 2020 13:02:16 -0800 (PST)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id x14sm58031ior.7.2020.11.10.13.02.15
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 10 Nov 2020 13:02:15 -0800 (PST)
-Subject: Re: [PATCH 12/13] drivers/staging/unisys/visorhba: convert stats to
- use seqnum_ops
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     david.kershner@unisys.com, keescook@chromium.org,
-        peterz@infradead.org, devel@driverdev.osuosl.org,
-        linux-kernel@vger.kernel.org,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <cover.1605027593.git.skhan@linuxfoundation.org>
- <6fb679d23de785bbd1be6a528127e29f8ee6abd7.1605027593.git.skhan@linuxfoundation.org>
- <X6r7LVcXBBvRIbd8@kroah.com>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <82a5ad26-a633-bf76-0591-14f803133666@linuxfoundation.org>
-Date:   Tue, 10 Nov 2020 14:02:14 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.2
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=/4ivGjpOSzxr0bVTtrL/2oAHyb/02RtqaNu/H/vaQ4I=;
+        b=c6L00kfamYa0SweC2OmJYs/L1IQxJzWYcgYMr2h4uCD4dxMsKbR6LohYA4nl09gsXP
+         aB76ph9EfQIXt5sGAYWoeW5O2h+TJConBeFxntl7LhWSh18JHsETfrKnMMFABPoE22kK
+         pfpmKDcsVMORyMp23mY7s/z/HtRzQM3gp18QeTCGeG4qFyfMdAsxJh+6BLWjpSUht6BO
+         re5ixYGrWHbWGDCECza8dAO6fvZV5VFKhXwM4BGe4spi00lGlPYEefp9BO8+fsztsQep
+         6v4SirqZlPQf2fKdanqcs6BBN8WpVvoXyAGkYJRy/yHeVrWriDECY1OjFDHNNIfyj4B0
+         Wjeg==
+X-Gm-Message-State: AOAM533V/iNaWGdiFoY9kHiIvldxQRDGIvyssxGtjZCa1c3BFuXFsrip
+        WbiOGx2T8FRDwWTETt2Stg6pHQ==
+X-Google-Smtp-Source: ABdhPJy+bbCKjuEncDG1+ba9fnm9l07+jxcwHagMasg+krtBAelC9qSpYEiV3tnmoNKjXce+XpYKaw==
+X-Received: by 2002:a1c:4144:: with SMTP id o65mr1125571wma.39.1605042146708;
+        Tue, 10 Nov 2020 13:02:26 -0800 (PST)
+Received: from dell ([91.110.221.159])
+        by smtp.gmail.com with ESMTPSA id 18sm61004wmo.3.2020.11.10.13.02.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 10 Nov 2020 13:02:26 -0800 (PST)
+Date:   Tue, 10 Nov 2020 21:02:24 +0000
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Alex Deucher <alexdeucher@gmail.com>
+Cc:     Sam Ravnborg <sam@ravnborg.org>, David Airlie <airlied@linux.ie>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Maling list - DRI developers 
+        <dri-devel@lists.freedesktop.org>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>
+Subject: Re: [PATCH 15/20] drm/radeon/r600d: Move 'rc600_*' prototypes into
+ shared header
+Message-ID: <20201110210224.GJ2063125@dell>
+References: <20201109211855.3340030-1-lee.jones@linaro.org>
+ <20201109211855.3340030-16-lee.jones@linaro.org>
+ <CADnq5_NvitEQWH3Z+5EgOH3zJn=P5YTqwHQo4LLQLi0Hj0Dpww@mail.gmail.com>
+ <20201110072242.GF2063125@dell>
+ <20201110090247.GB2027451@ravnborg.org>
+ <20201110094111.GG2063125@dell>
+ <CADnq5_PYERS0xHJGQrpokDD7q3GgidSYqSrOoskza7gST4bbmQ@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <X6r7LVcXBBvRIbd8@kroah.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CADnq5_PYERS0xHJGQrpokDD7q3GgidSYqSrOoskza7gST4bbmQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/10/20 1:42 PM, Greg KH wrote:
-> On Tue, Nov 10, 2020 at 12:53:38PM -0700, Shuah Khan wrote:
->> seqnum_ops api is introduced to be used when a variable is used as
->> a sequence/stat counter and doesn't guard object lifetimes. This
->> clearly differentiates atomic_t usages that guard object lifetimes.
->>
->> seqnum32 variables wrap around to INT_MIN when it overflows and
->> should not be used to guard resource lifetimes, device usage and
->> open counts that control state changes, and pm states.
->>
->> atomic_t variables used for error_count and ios_threshold are atomic
->> counters and guarded by max. values. No change to the behavior with
->> this change.
->>
->> Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
->> ---
->>   .../staging/unisys/visorhba/visorhba_main.c   | 37 ++++++++++---------
->>   1 file changed, 19 insertions(+), 18 deletions(-)
->>
->> diff --git a/drivers/staging/unisys/visorhba/visorhba_main.c b/drivers/staging/unisys/visorhba/visorhba_main.c
->> index 7ae5306b92fe..3209958b8aaa 100644
->> --- a/drivers/staging/unisys/visorhba/visorhba_main.c
->> +++ b/drivers/staging/unisys/visorhba/visorhba_main.c
->> @@ -10,6 +10,7 @@
->>   #include <linux/module.h>
->>   #include <linux/seq_file.h>
->>   #include <linux/visorbus.h>
->> +#include <linux/seqnum_ops.h>
->>   #include <scsi/scsi.h>
->>   #include <scsi/scsi_host.h>
->>   #include <scsi/scsi_cmnd.h>
->> @@ -41,8 +42,8 @@ MODULE_ALIAS("visorbus:" VISOR_VHBA_CHANNEL_GUID_STR);
->>   struct visordisk_info {
->>   	struct scsi_device *sdev;
->>   	u32 valid;
->> -	atomic_t ios_threshold;
->> -	atomic_t error_count;
->> +	struct seqnum32 ios_threshold;
->> +	struct seqnum32 error_count;
+On Tue, 10 Nov 2020, Alex Deucher wrote:
+
+> On Tue, Nov 10, 2020 at 4:41 AM Lee Jones <lee.jones@linaro.org> wrote:
+> >
+> > On Tue, 10 Nov 2020, Sam Ravnborg wrote:
+> >
+> > > Hi Lee,
+> > >
+> > > > > the *d.h headers are supposed to just be hardware definitions.  I'd
+> > > > > prefer to keep driver stuff out of them.
+> > > >
+> > > > That's fine (I did wonder if that were the case).
+> > > >
+> > > > I need an answer from you and Sam whether I can create new headers.
+> > > >
+> > > > For me, it is the right thing to do.
+> > >
+> > > Please follow the advice of Alex for the radeon driver.
+> >
+> > Great.  Thanks for resolving this Sam.
+> >
+> > Will fix all occurrences.
 > 
-> Are you sure the threshold variable is a sequence number >
-> It goes up and down, not just up and up and up.
+> I'm not really following these patch sets you are sending out.  They
+> all seem completely independent.  I was expecting updated versions
+> with feedback integrated, but they seem to be just different fixes.
+> Are you planning to send out updated versions based on feedback from
+> these series?  Also, some of the patches have subtle errors in them
+> (e.g., wrong descriptions of variables, wrong copyright headers on new
+> files, etc.), do you mind if I fix them up locally when applying or
+> would you rather I point out the changes and you can integrate them
+> and resend?
 
-Right. I does go down. Turns out this is the only place seqnum32_dec()
-is used. :)
+Apologies for any confusion.  Let me try to shed some light.
 
-I will fix. I noticed you made a comment about _dec() interfaces on
-1/13. I can drop those as well. This way seqnum_ops can be just used
-for up counters.
+All 4 sets sent thus far have been independent.  There are 5000 issues
+to solve in drivers/gpu - I'm trying my best to whittle them down.
+We're down to 2200 right now, so it seems to be going well.
 
-thanks,
--- Shuah
+I'm aware that some of the patches have been accepted already, so the
+plan is to wait a few days, let them settle into -next, then start;
+rebasing sets, applying fix-ups and sending out v2s.
+
+FYI: There are also outstanding rebases due for; wireless, net, input
+and SCSI, as well as the 4 DRM sets.  I'm getting to all of them.
+
+With regards to how you deal with incorrectness, that's entirely up to
+you.  Feel free to either fix-up any issues you see or to provide
+review comments and let me deal with it.  Whatever works for you.
+
+A note on copyrights on new files; the new files are copied directly
+from old, previously accepted/currently residing ones in order to keep
+in-line with what's expected of the subsystem.  If the format has been
+updated and/or you would like them modernised, please either fix them
+up at your leisure or let me know what's required and I'll rework and
+resubmit them.
+
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
