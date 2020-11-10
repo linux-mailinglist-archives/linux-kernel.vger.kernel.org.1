@@ -2,112 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C1222ADE6A
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 19:33:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B04402ADE6D
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 19:35:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731437AbgKJSdp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 13:33:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42384 "EHLO
+        id S1729183AbgKJSfO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 13:35:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42614 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725862AbgKJSdp (ORCPT
+        with ESMTP id S1725862AbgKJSfO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 13:33:45 -0500
-Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECB4DC0613D3
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 10:33:44 -0800 (PST)
-Received: by mail-lf1-x142.google.com with SMTP id r9so5276862lfn.11
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 10:33:44 -0800 (PST)
+        Tue, 10 Nov 2020 13:35:14 -0500
+Received: from mail-il1-x141.google.com (mail-il1-x141.google.com [IPv6:2607:f8b0:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59953C0613D3
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 10:35:14 -0800 (PST)
+Received: by mail-il1-x141.google.com with SMTP id k1so13126055ilc.10
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 10:35:14 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=MVvD+a8T0Lc81M2SgYvZ+Yt+89POCdnsUJ507OhxC5s=;
-        b=kOH5xt2Mltc6vGl49BTAuQAfoJubwB2S+N/Jh7NzC5GRY7we9YV9QWrMvwOcAnfTqb
-         OQjP0XCFkzFqbQqsniChW+kM56nIrGOtD9eA0MRdO3aesrFDcp+qUOeLehh9fzaycD46
-         qddyF+XUzCCTf3xqwSXPiwjk9OAjMxU6gnRLlY1AltRdtX/8EcG061Q93uhxP76Z8jbo
-         pmrDwmgYvr9TgTFTawzJFuR/0yOUgboDKYb8kwCqZ73znfIxjFaQebAfV/yJn3tyc6o/
-         yQdAUVjpGeKBUpEcORKHyFZOEG3W2GlDH5i99fpcNkQO8xiTmFRtjxYyeePrPL1R0cEm
-         REXQ==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=EcW7DGdRYPQre9d0rCuZTVN2xdKVZeP/11KAhpcdeGQ=;
+        b=Bb7eV6Ffk30/lADN/CtBQNkUYKmIlGDuP5HgNdb7lko796qK+rPQAotrkNWYHqh5li
+         76lujpo108QS9f8ZA53B/idZGNhYqH00HMORfhYexedWrdx5jeraYbXN85UdToL1n61m
+         IXglx2VBB8XZji5DYomCSjDtBhqN1MWHhxeV45Vcu9otTPkCVMr1FltZPW9xNky0VTxe
+         eidiazNZla3CPfk22mus83C/TSQMvzGRSvriokLQ2ZvS7v32J3z3Ya8r+ie53hSa28FI
+         8fZZe6y7gGahOslzrH1tnScTCa70j4VkRQXPfrdq0iSAJpfxAKuXo/t9AkMgD2bWLkOH
+         15Cw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=MVvD+a8T0Lc81M2SgYvZ+Yt+89POCdnsUJ507OhxC5s=;
-        b=qCB4wKITj0jVo+apEV+Vqz08D5ao+yUaRxj6RrH9uhuLt6cI1jO8X8i3Glp+WCtf7M
-         tp/45H9Q/qmxjNdVVH4+4Yfasgl0NlS52SLG8R5P0Xthhkn/Y2ExL9ty/KGMC+6Jf8d/
-         jQ340K//CtTBfnTW9sZybsGvfe6hxA82jYyDVBMv6+yifDZraI4mn0c7kWlIKrPOELgO
-         bZV19ks+IA6QLjt5jRbCBfek5HaTPoUJMmJMAI0nvpAGHkzvDZ1q+VSrZHJCKIsedVNH
-         Zf2Tg21ifZpHHUYAJrzxknOfUAwCd5QvtimYeXAPuH2R15w1O+TSWaetQYQynWl7QrqP
-         qlKg==
-X-Gm-Message-State: AOAM532sM3RdPZ7gickoYuMII8HQ2Wo7NW6+vWB9uVUWMGBhM9lSpz2a
-        wL4l7ZqHojXB0Xj6DM7XP5QBfKz5sgYVvuSD
-X-Google-Smtp-Source: ABdhPJwcf56QLxLhbLGE/FcV9D4tJZdBfGrN8jRXtcg2lVeImXvKRXBuuLc1a4DdPxa/DsHTuWtkbg==
-X-Received: by 2002:a19:418e:: with SMTP id o136mr47635lfa.80.1605033223385;
-        Tue, 10 Nov 2020 10:33:43 -0800 (PST)
-Received: from mobilestation ([95.79.141.114])
-        by smtp.gmail.com with ESMTPSA id 133sm2699139ljf.90.2020.11.10.10.33.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 10 Nov 2020 10:33:42 -0800 (PST)
-Date:   Tue, 10 Nov 2020 21:33:40 +0300
-From:   Serge Semin <fancer.lancer@gmail.com>
-To:     Wang Qing <wangqing@vivo.com>
-Cc:     Jon Mason <jdmason@kudzu.us>, Dave Jiang <dave.jiang@intel.com>,
-        Allen Hubbe <allenbh@gmail.com>, linux-ntb@googlegroups.com,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] ntb: idt: fix error check in ntb_hw_idt.c
-Message-ID: <20201110183340.77xcobfsnz43vsa2@mobilestation>
-References: <1604655811-31933-1-git-send-email-wangqing@vivo.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=EcW7DGdRYPQre9d0rCuZTVN2xdKVZeP/11KAhpcdeGQ=;
+        b=Umm0dGOQbq87mzL+Df/P4jV/IJHS+PfpOI62ABpEz73d2WqSPV3we1dolEm0Gt97ed
+         xxnlkY8gPURqaR2FWPDCMBtiDigLwA1s1rRD3FMMi6ckfEdYsrclI8QxL+GYtP+T4zld
+         cbrYoBeZ3tS7S/OnmF+N+fxZaalOGrkiIRxN2Ne89ZhWim5q9Tt8nr0WLTRhGvCdItUD
+         9Ry/rNuCiKnpeLhq0GEJK7d1tbevaLkjVUBgfHPXXs13N64EBvNxSi38MsvOOJOsxJv0
+         bTeon8QuCPfgmLeaXt6O5iIi2mzMENW+x1Cq1in8yXIlQrxmBDjrHw0bKqbTyfyP+3+y
+         BNcA==
+X-Gm-Message-State: AOAM533R3cdZTf+BB337P1LgZSfVgvRulHSHsZt/cUCQtMuL3QWbjqFo
+        Lv5JH6/duMyPkCK1D9LpmSLMpAB74NFEVu0KRG+9/Q==
+X-Google-Smtp-Source: ABdhPJwW0NyVtuugVDLRW5lkeqwxCPGA/28xMTg1/Ar0AmTrISyPlZ7xPsV/9rqOwGigTwHHYFH+KXQJDnsmstuQC0o=
+X-Received: by 2002:a92:6504:: with SMTP id z4mr14758818ilb.282.1605033313560;
+ Tue, 10 Nov 2020 10:35:13 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1604655811-31933-1-git-send-email-wangqing@vivo.com>
+References: <20201029183526.2131776-1-aleksandrnogikh@gmail.com>
+ <20201029183526.2131776-2-aleksandrnogikh@gmail.com> <04d8c32a-06cd-d71a-43d9-47b1de6c7684@i-love.sakura.ne.jp>
+In-Reply-To: <04d8c32a-06cd-d71a-43d9-47b1de6c7684@i-love.sakura.ne.jp>
+From:   Aleksandr Nogikh <nogikh@google.com>
+Date:   Tue, 10 Nov 2020 21:35:02 +0300
+Message-ID: <CANp29Y5USTozWhFjaBBCwEQJf8Ape2ivNK1zSpySJW_PT1H7Bg@mail.gmail.com>
+Subject: Re: [PATCH v3 1/2] security: add fault injection capability
+To:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+Cc:     Aleksandr Nogikh <aleksandrnogikh@gmail.com>, jmorris@namei.org,
+        serge@hallyn.com, Akinobu Mita <akinobu.mita@gmail.com>,
+        Andrey Konovalov <andreyknvl@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Marco Elver <elver@google.com>,
+        Alexander Potapenko <glider@google.com>,
+        Kees Cook <keescook@google.com>,
+        Casey Schaufler <casey@schaufler-ca.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-security-module@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Wang
+On Tue, Nov 10, 2020 at 7:43 AM Tetsuo Handa
+<penguin-kernel@i-love.sakura.ne.jp> wrote:
+>
+[...]
+>
+> By the way, fail_lsm_hooks.retval is "signed int" but debugfs_create_u32() handles "unsigned int".
+> Do we want to allow lsm_hooks_inject_fail() to inject arbitrary !IS_ERR_VALUE() values?
 
-On Fri, Nov 06, 2020 at 05:43:31PM +0800, Wang Qing wrote:
-> idt_create_dev never return NULL and fix smatch warning.
+Thanks for pointing it out. Technically, now it's possible to set a
+negative value - internally, the kernel
+will process negative integers anyway, and after casting the unsigned
+value to a signed one, retval
+will contain exactly what the user provided. However, if the user
+retrieves the attribute value, they won't
+get the exact value that was set (if it was negative).
 
-Thanks for submitting this. For the both changes
-Acked-by: Serge Semin <fancer.lancer@gmail.com>
-
-They are mostly unrelated though. If they weren't trivial I'd have
-suggested to split them up into the dedicated patches. Since they
-aren't I suppose leaving the patch 'as is' is ok, unless the subsystem
-maintainer thinks differently.
-
--Sergey
-
-> 
-> Signed-off-by: Wang Qing <wangqing@vivo.com>
-> ---
->  drivers/ntb/hw/idt/ntb_hw_idt.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/ntb/hw/idt/ntb_hw_idt.c b/drivers/ntb/hw/idt/ntb_hw_idt.c
-> index d54261f..e7a4c2a
-> --- a/drivers/ntb/hw/idt/ntb_hw_idt.c
-> +++ b/drivers/ntb/hw/idt/ntb_hw_idt.c
-> @@ -2511,7 +2511,7 @@ static int idt_init_dbgfs(struct idt_ntb_dev *ndev)
->  	/* If the top directory is not created then do nothing */
->  	if (IS_ERR_OR_NULL(dbgfs_topdir)) {
->  		dev_info(&ndev->ntb.pdev->dev, "Top DebugFS directory absent");
-> -		return PTR_ERR(dbgfs_topdir);
-> +		return PTR_ERR_OR_ZERO(dbgfs_topdir);
->  	}
->  
->  	/* Create the info file node */
-> @@ -2756,7 +2756,7 @@ static int idt_pci_probe(struct pci_dev *pdev,
->  
->  	/* Allocate the memory for IDT NTB device data */
->  	ndev = idt_create_dev(pdev, id);
-> -	if (IS_ERR_OR_NULL(ndev))
-> +	if (IS_ERR(ndev))
->  		return PTR_ERR(ndev);
->  
->  	/* Initialize the basic PCI subsystem of the device */
-> -- 
-> 2.7.4
-> 
+I'll change debugfs_create_u32 to something else in v4, so that it'll
+be more explicit and so that it'll be
+possible to read negative values normally.
