@@ -2,304 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC5CC2ADFA8
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 20:33:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 91DB92ADFB9
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 20:34:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732839AbgKJTdR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 14:33:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51812 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731813AbgKJTdO (ORCPT
+        id S1732941AbgKJTeD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 14:34:03 -0500
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:58846 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1731652AbgKJTeA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 14:33:14 -0500
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C856C0613D1;
-        Tue, 10 Nov 2020 11:33:14 -0800 (PST)
-Received: by mail-wm1-x341.google.com with SMTP id a65so4316063wme.1;
-        Tue, 10 Nov 2020 11:33:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=5mMVQMlAu/av9/BrtsRhGFbb3lLOqH9OnWPD2qStzFE=;
-        b=bG8rarOe+fIadMkmq88JbIQRCyaAQwg/ZL4t/ZmDMnvQcARZdR/PLrPaxmgUmRaq3N
-         tYdIwoOgsX3edTExlQdUzUi7OZz++ePMJXY3HBnIp1N/cyy/HgVkuUzIpGcRwQ/ROM5P
-         OrAvxwG729nxrXk7oaBkISLjbz3RwufurLsuTF5qJ3K2hVHf5KuYcSZ91bHufCFV0f4R
-         kNbez7y0WhYVO2b/5J3w1yCNyukUiB4DbpqAY2WSVgi7fbMhx5h82wpvoU0JvwZG6C77
-         5CqAKIbS71SmPkfrtXxhcWVuu4bKxkftjrzrLxkPxRLzDiwAjsrk9HcFxqwDMvSlUu2Z
-         PZPg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=5mMVQMlAu/av9/BrtsRhGFbb3lLOqH9OnWPD2qStzFE=;
-        b=PDiKssPHZEeDdS/EP51gpLxcb9Na60V75y2w5vtxJWtNxfNwVN1G3EczbDzCOvDHKW
-         5x8DB8A4x93gfyxypmyvCRv7oDgd7NNUA2QDqYTb+/AFxEyHQ092eavQnPCNgzypk2zg
-         YUHi0ZF9QwCfQdRKHCSmIbQTzGn8NZXjnwwDAkeBJGqQYrCLo8k15ZNG0qQwE1kXUexR
-         gqMO6BGaP3p28DWCeEqwGiWtnLFI4sRu5J/CN5jUh0yhyc3lIH2pUBJMn01uHEzH8+ME
-         jFKYWW3uFpVuR+FC756QXNk8SiF8fKabCT10ZArlOEm1vWeKQTafLjOj1+3NSlC8v4+K
-         oOtg==
-X-Gm-Message-State: AOAM531BaHGOvxRBVV5PxOpiJbhZHqRbolHltzU3XdpnWzPAEI4Q2KHZ
-        beDyKyGE/B8Qn5t+3L1XtWk=
-X-Google-Smtp-Source: ABdhPJw8jRGgBClN8UTnXmSnwJiFZ4TrYZIrC9+vZDi0VZDkM9In93jw/P2bqEsSvo0aLZsQfEb4HA==
-X-Received: by 2002:a1c:ed0b:: with SMTP id l11mr746440wmh.46.1605036792714;
-        Tue, 10 Nov 2020 11:33:12 -0800 (PST)
-Received: from localhost ([217.111.27.204])
-        by smtp.gmail.com with ESMTPSA id s13sm417213wrv.43.2020.11.10.11.33.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 10 Nov 2020 11:33:11 -0800 (PST)
-Date:   Tue, 10 Nov 2020 20:33:09 +0100
-From:   Thierry Reding <thierry.reding@gmail.com>
-To:     Rob Herring <robh@kernel.org>
-Cc:     Robin Murphy <robin.murphy@arm.com>, devicetree@vger.kernel.org,
-        Frank Rowand <frowand.list@gmail.com>,
-        linux-kernel@vger.kernel.org, iommu@lists.linux-foundation.org,
-        Will Deacon <will@kernel.org>
-Subject: Re: [PATCH v2 1/4] dt-bindings: reserved-memory: Document "active"
- property
-Message-ID: <20201110193309.GB2303484@ulmo>
-References: <20200904130000.691933-1-thierry.reding@gmail.com>
- <20200914220829.GA330122@bogus>
- <20200915123648.GA3496938@ulmo>
- <20200924112725.GA2486709@ulmo>
- <20201105164312.GD485884@ulmo>
- <483cd043-980e-81fb-cccb-385206a699df@arm.com>
- <20201106152548.GA767203@ulmo>
+        Tue, 10 Nov 2020 14:34:00 -0500
+Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0AAJXKKS000538;
+        Tue, 10 Nov 2020 11:33:38 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : references : in-reply-to : content-type : content-id
+ : content-transfer-encoding : mime-version; s=facebook;
+ bh=uaz/mtuB5YSDLnqFNh6dwah52s15dsUA8sqtw61ALsI=;
+ b=mmdfZw8yiCBAmSQbZu0SXNO8L4bSxmDGWPakGJKcyRdylzf0tiilhXuazNblmm8pGVuU
+ aMFlQTArfUUW79GPgEpHjMb//eiiEYz++GNDtWuvgK6MH8+4OqV68EEtTXW5rbR6Stc3
+ Ykq6acKltiMhILTa5014tn1td7ybwF2cu7U= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 34pcqscpfy-12
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Tue, 10 Nov 2020 11:33:38 -0800
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (100.104.31.183)
+ by o365-in.thefacebook.com (100.104.36.103) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Tue, 10 Nov 2020 11:33:35 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=bEn3Oz20vQ0H56JmOVuVt+Q7bSRBc5c2It+azXX1Qo0noVMLXD8diQbvTI3ty1eACwBLPaRvNxVZOp7zdRkQXPllJa7r94fIdVRAetd6qhvDGO62swEvA/kmHi0dSbYKaFdCNzqPXXOFn+bmcc+LMj1aVu3mplvzTNBcpwfDly6hhBNr+iev+VLO0205u/FOFG1ui2woBpLoo40gGn9bYaT3nxKMouDjmm8tJrPYR+GW47lGF8OddSTpCEo8vJTyjsd98Cati3gdTQMmwyQNm2vyR5kzzMACwlLWJm7lkPF8IxHsxsqs1mq0a7sJemAEIYe85eNcMY+zyV67S9xArA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=uaz/mtuB5YSDLnqFNh6dwah52s15dsUA8sqtw61ALsI=;
+ b=Vg1DLvVcNAELhigrPQ3CrQ1K0SWG6xytmg8O7KpO0CH7BoIX2tif/XtqwpEmhANzzuSAR5MALnWMg+OBSv5gxMCv+yjahzmAr1Z+UDztAZTkqPJjs9h1M1uK7Bow3Pvh63v8gggi6vNVAPHWmCgmi+fIZdQtG/o0kwtlaMXNWBkWJVZL9dTaZxlN45xl8j9ZwIW5EbRtT7YH4AAaYplvcjRibRj5G9waLU1gAUd7qhXXrTwEOQiAFnwOErkV4xFcXPMASao5dZXfu2Abce00cTbOq+YCkQpz02X9v6GdHunkXGw7USpTrFNN7rUt6IoLtrBe8SG+TiByZBm2yIq2dA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector2-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=uaz/mtuB5YSDLnqFNh6dwah52s15dsUA8sqtw61ALsI=;
+ b=c1a0iZ0nkkRDGOVGlyNj117Y3+KJlnJH0ZK82WIdGC+NckGRetwMde9F/9to6d4ilsYXaggiM/FclbOVXNLSTNxCeEaYZ/ep7fskoIIeA8utUNyvAg1yppRJPy0N6FKxopOxiOhGlxmnxzOmoQjh4GeTsHeNBTvMX2fei5nrHdw=
+Received: from BY5PR15MB3667.namprd15.prod.outlook.com (2603:10b6:a03:1f9::18)
+ by BYAPR15MB2374.namprd15.prod.outlook.com (2603:10b6:a02:8b::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3541.25; Tue, 10 Nov
+ 2020 19:33:30 +0000
+Received: from BY5PR15MB3667.namprd15.prod.outlook.com
+ ([fe80::17e:aa61:eb50:290c]) by BY5PR15MB3667.namprd15.prod.outlook.com
+ ([fe80::17e:aa61:eb50:290c%7]) with mapi id 15.20.3541.025; Tue, 10 Nov 2020
+ 19:33:30 +0000
+From:   Nick Terrell <terrelln@fb.com>
+To:     "dsterba@suse.cz" <dsterba@suse.cz>
+CC:     Chris Mason <clm@fb.com>, Christoph Hellwig <hch@infradead.org>,
+        "Nick Terrell" <nickrterrell@gmail.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
+        "squashfs-devel@lists.sourceforge.net" 
+        <squashfs-devel@lists.sourceforge.net>,
+        "linux-f2fs-devel@lists.sourceforge.net" 
+        <linux-f2fs-devel@lists.sourceforge.net>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Kernel Team <Kernel-team@fb.com>, Petr Malat <oss@malat.biz>,
+        Johannes Weiner <jweiner@fb.com>,
+        Niket Agarwal <niketa@fb.com>, Yann Collet <cyan@fb.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: [PATCH v5 1/9] lib: zstd: Add zstd compatibility wrapper
+Thread-Topic: [PATCH v5 1/9] lib: zstd: Add zstd compatibility wrapper
+Thread-Index: AQHWsabb1Jdg9cQzfUKQ7VkOPnEyX6m7dNAAgAS9ZoCAAVX7gIAARTyA
+Date:   Tue, 10 Nov 2020 19:33:30 +0000
+Message-ID: <B1AF526E-A34C-4CA1-B4CA-2DC5C5934C15@fb.com>
+References: <20201103060535.8460-1-nickrterrell@gmail.com>
+ <20201103060535.8460-2-nickrterrell@gmail.com>
+ <20201106183846.GA28005@infradead.org>
+ <D9338FE4-1518-4C7B-8C23-DBDC542DAC35@fb.com>
+ <20201110152541.GK6756@twin.jikos.cz>
+In-Reply-To: <20201110152541.GK6756@twin.jikos.cz>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: suse.cz; dkim=none (message not signed)
+ header.d=none;suse.cz; dmarc=none action=none header.from=fb.com;
+x-originating-ip: [98.33.101.203]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: d94bc3da-4844-48d3-e603-08d885af8125
+x-ms-traffictypediagnostic: BYAPR15MB2374:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <BYAPR15MB2374DE9C7E48372D9E9D6B76ABE90@BYAPR15MB2374.namprd15.prod.outlook.com>
+x-fb-source: Internal
+x-ms-oob-tlc-oobclassifiers: OLM:6108;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: v4rMlba/pi7SFURWle8e4fnG7zAW30Om58QIZFUVlr5jyIyUj/kFve3AXyQqu6L1Yg7FBjNNMMTO9e5ZmfBLuFIdGUaISZ4HEcbhWH/2IR1Skv1TKhzz8lsXas96uBRytAERlg9Z0lSLDetf/rlGbBUZLXdMS304GIKRICPIKpm3dAFhlR+RUSR/1ldoif14n1yKX8g+ewewclMd56wwEMW1wDnWdKCDbRfZ8BhTS2b+3FgrW+Z3FD1IEni+65LIu7FfNOaGhq1SUOX+Sjn4rZa3kkp8UiaPSHdjxMEEzRtSboEC/zz0ZKQ5/zKt6X7DtKKH/oMm2xA8jTcSrLhN9FUCB++xILy5X37QAoKxnI9+ZRx47W2Xe+/Q/G/Oq9Yr
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR15MB3667.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(366004)(376002)(396003)(39860400002)(346002)(53546011)(66556008)(6506007)(8676002)(36756003)(54906003)(4326008)(86362001)(6512007)(6486002)(7416002)(5660300002)(316002)(2616005)(8936002)(478600001)(26005)(83380400001)(76116006)(33656002)(66946007)(66476007)(66446008)(6916009)(64756008)(186003)(2906002)(71200400001)(60764002);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: wlre+IIG0yzCjIG5VyRD9ihvXxLG2vBfqObWiDPScuphAgKepLzMDhg2fj6ZlUtzltxDZRMQ2Z9ZxHSSlJ/Tv5EkRd7Z6LCQJZFEGYpiTkE7GHlyLM8XTPIpVAcdJmtXPr7EadedAQi8NsBm4l8jw6alMOIJTmrVgrXv6l0QEOj1n7mS9kMKOuSTFOedFvAiUVrx7UWh3ZmjerEdN8AUI9hmtxbqblDe/lDPhUF/ihc6eaqskKlPY/t4VWbdZDXBg1EMIJtuCGDMdIeriFG/7SsovOYDFdGvEv0B3skdSgGt1GxIBa4jw8Nz4apxHKHdTAsgbj6ooKKA/N4PFgHsHs0XRi1EVhfF6XPr8XEwhvpMxjzlXYCbzqEgRBiLJeqOKVT8o1TKaFE3yQ82UIz2j1s4J2u/m6PUswMZ/Slx7ONt7f+ss5lNmBnjcFQlQIjplx9jZaKfeGTdah0O9gQqzctcaGISgOTs0xyuWxaKGwOSsQ0yeWkctXH/jgHuBcwV5kXbXJx6f2OgM7ZZSB/JLmzXZIl8C68wHUZROV5ebFHnqBf/eFvX0qBwqhrkzFqEFRJty+Lnr6ToOQKFBILAAnBc6OSU0GB+B/ZNGf+Uq38JwusUKodTOK5RbmMWIQ8gZXMg+H6SKpz9/b5H2z21SA==
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <81E1BFD4B0B77341822F96D8C91515F6@namprd15.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="1UWUbFP1cBYEclgG"
-Content-Disposition: inline
-In-Reply-To: <20201106152548.GA767203@ulmo>
-User-Agent: Mutt/1.14.7 (2020-08-29)
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BY5PR15MB3667.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: d94bc3da-4844-48d3-e603-08d885af8125
+X-MS-Exchange-CrossTenant-originalarrivaltime: 10 Nov 2020 19:33:30.4021
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: vpV0yqLB7JWT2Dr/uAbMDVS6emHHnPO/6dG+6Eom8uLlTV+Th2atdCaULDdzwqKV
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB2374
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-11-10_07:2020-11-10,2020-11-10 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 bulkscore=0 mlxscore=0
+ spamscore=0 lowpriorityscore=0 phishscore=0 clxscore=1011 impostorscore=0
+ priorityscore=1501 mlxlogscore=999 suspectscore=0 malwarescore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2011100134
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
---1UWUbFP1cBYEclgG
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Fri, Nov 06, 2020 at 04:25:48PM +0100, Thierry Reding wrote:
-> On Thu, Nov 05, 2020 at 05:47:21PM +0000, Robin Murphy wrote:
-> > On 2020-11-05 16:43, Thierry Reding wrote:
-> > > On Thu, Sep 24, 2020 at 01:27:25PM +0200, Thierry Reding wrote:
-> > > > On Tue, Sep 15, 2020 at 02:36:48PM +0200, Thierry Reding wrote:
-> > > > > On Mon, Sep 14, 2020 at 04:08:29PM -0600, Rob Herring wrote:
-> > > > > > On Fri, Sep 04, 2020 at 02:59:57PM +0200, Thierry Reding wrote:
-> > > > > > > From: Thierry Reding <treding@nvidia.com>
-> > > > > > >=20
-> > > > > > > Reserved memory regions can be marked as "active" if hardware=
- is
-> > > > > > > expected to access the regions during boot and before the ope=
-rating
-> > > > > > > system can take control. One example where this is useful is =
-for the
-> > > > > > > operating system to infer whether the region needs to be iden=
-tity-
-> > > > > > > mapped through an IOMMU.
-> > > > > >=20
-> > > > > > I like simple solutions, but this hardly seems adequate to solv=
-e the
-> > > > > > problem of passing IOMMU setup from bootloader/firmware to the =
-OS. Like
-> > > > > > what is the IOVA that's supposed to be used if identity mapping=
- is not
-> > > > > > used?
-> > > > >=20
-> > > > > The assumption here is that if the region is not active there is =
-no need
-> > > > > for the IOVA to be specified because the kernel will allocate mem=
-ory and
-> > > > > assign any IOVA of its choosing.
-> > > > >=20
-> > > > > Also, note that this is not meant as a way of passing IOMMU setup=
- from
-> > > > > the bootloader or firmware to the OS. The purpose of this is to s=
-pecify
-> > > > > that some region of memory is actively being accessed during boot=
-=2E The
-> > > > > particular case that I'm looking at is where the bootloader set u=
-p a
-> > > > > splash screen and keeps it on during boot. The bootloader has not=
- set up
-> > > > > an IOMMU mapping and the identity mapping serves as a way of keep=
-ing the
-> > > > > accesses by the display hardware working during the transitional =
-period
-> > > > > after the IOMMU translations have been enabled by the kernel but =
-before
-> > > > > the kernel display driver has had a chance to set up its own IOMMU
-> > > > > mappings.
-> > > > >=20
-> > > > > > If you know enough about the regions to assume identity mapping=
-, then
-> > > > > > can't you know if active or not?
-> > > > >=20
-> > > > > We could alternatively add some property that describes the regio=
-n as
-> > > > > requiring an identity mapping. But note that we can't make any
-> > > > > assumptions here about the usage of these regions because the IOM=
-MU
-> > > > > driver simply has no way of knowing what they are being used for.
-> > > > >=20
-> > > > > Some additional information is required in device tree for the IO=
-MMU
-> > > > > driver to be able to make that decision.
-> > > >=20
-> > > > Rob, can you provide any hints on exactly how you want to move this
-> > > > forward? I don't know in what direction you'd like to proceed.
-> > >=20
-> > > Hi Rob,
-> > >=20
-> > > do you have any suggestions on how to proceed with this? I'd like to =
-get
-> > > this moving again because it's something that's been nagging me for s=
-ome
-> > > months now. It also requires changes across two levels in the bootloa=
-der
-> > > stack as well as Linux and it takes quite a bit of work to make all t=
-he
-> > > changes, so before I go and rewrite everything I'd like to get the DT
-> > > bindings sorted out first.
-> > >=20
-> > > So just to summarize why I think this simple solution is good enough:=
- it
-> > > tries to solve a very narrow and simple problem. This is not an attem=
-pt
-> > > at describing the firmware's full IOMMU setup to the kernel. In fact,=
- it
-> > > is primarily targetted at cases where the firmware hasn't setup an IO=
-MMU
-> > > at all, and we just want to make sure that when the kernel takes over
-> > > and does want to enable the IOMMU, that all the regions that are
-> > > actively being accessed by non-quiesced hardware (the most typical
-> > > example would be a framebuffer scanning out a splat screen or animati=
-on,
-> > > but it could equally well be some sort of welcoming tone or music bei=
-ng
-> > > played back) are described in device tree.
-> > >=20
-> > > In other words, and this is perhaps better answering your second
-> > > question: in addition to describing reserved memory regions, we want =
-to
-> > > add a bit of information here about the usage of these memory regions.
-> > > Some memory regions may contain information that the kernel may want =
-to
-> > > use (such an external memory frequency scaling tables) and those I wo=
-uld
-> > > describe as "inactive" memory because it isn't being accessed by
-> > > hardware. The framebuffer in this case is the opposite and it is being
-> > > actively accessed (hence it is marked "active") by hardware while the
-> > > kernel is busy setting everything up so that it can reconfigure that
-> > > hardware and take over with its own framebuffer (for the console, for
-> > > example). It's also not so much that we know enough about the region =
-to
-> > > assume it needs identity mapping. We don't really care about that from
-> > > the DT point of view. In fact, depending on the rest of the system
-> > > configuration, we may not need identity mapping (i.e. if none of the
-> > > users of the reserved memory region are behind an IOMMU). But the poi=
-nt
-> > > here is that the IOMMU drivers can use this "active" property to
-> > > determine that if a device is using an "active" region and it is behi=
-nd
-> > > an IOMMU, then it must identity map that region in order for the
-> > > hardware, which is not under the kernel's control yet, to be able to
-> > > continue to access that memory through an IOMMU mapping.
-> >=20
-> > Hmm, "active" is not a property of the memory itself, though, it's real=
-ly a
-> > property of the device accessing it. If several distinct devices share a
-> > carveout region, and for simplicity the bootloader marks it as active
-> > because one of those devices happens to be using some part of it at boo=
-t, we
-> > don't really want to have to do all the reserved region setup for all t=
-he
-> > other devices unnecessarily, when all that matters is not disrupting on=
-e of
-> > them when resetting the IOMMU.
-> >=20
-> > That leads to another possible hiccup - some bindings already have a de=
-fined
-> > meaning for a "memory-region" property. If we use that to point to some
-> > small region for a temporary low-resolution bootsplash screen for visib=
-ility
-> > to an IOMMU driver, the device's own driver might also interpret it as a
-> > private carveout from which it is expected to allocate everything, and =
-thus
-> > could end up failing to work well or at all.
-> >=20
-> > I agree that we should only need a relatively simple binding, and that
-> > piggybacking off reserved-memory nodes seems like an ideal way of getti=
-ng
-> > address range descriptions without too much extra complexity; the tricky
-> > part is how best to associate those with the other information needed, =
-which
-> > is really the "iommus" property of the relevant device, and how to make=
- it
-> > as generically discoverable as possible. Perhaps it might be workable to
-> > follow almost the same approach but with a dedicated property (e.g.
-> > "active-memory-region") that the IOMMU code can simply scan the DT for =
-to
-> > determine relevant device nodes. Otherwise properties on the IOMMU node
-> > itself would seem the next most practical option.
->=20
-> We did recently introduce a "memory-region-names" property that's used
-> to add context for cases where multiple memory regions are used. Perhaps
-> the simplest to address the above would be to describe the region as
-> active by naming it "active". That has the disadvantage of restricting
-> the number of active regions to 1, though I suspect that may even be
-> enough for the vast majority of cases where we need this. This would be
-> similar to how we use the "dma-mem" string in the "interconnect-names"
-> property to specify the "DMA parent" of a device node.
->=20
-> Alternatively, we could perhaps support multiple occurrences of "active"
-> in the "memory-region-names" property. Or we could add a bit of
-> flexibility by considering all memory regions whose names have an
-> "active-" prefix as being active.
->=20
-> > We've also finally got things going on the IORT RMR side[1], which help=
-s add
-> > a bit more shape to things too; beyond the actual firmware parsing, DT =
-and
-> > ACPI systems should definitely be converging on the same internal
-> > implementation in the IOMMU layer.
->=20
-> Yeah, from a quick look at that series, this actually sounds really
-> close to what I'm trying to achieve here.
->=20
-> The patch set that I have would nicely complement the code added to
-> iommu_dma_get_resv_regions() for RMR regions. It's not exactly the same
-> code, but it's basically the DT equivalent of
-> iort_dev_rmr_get_resv_regions().
-
-Hi Rob,
-
-what's your preference here for DT bindings? Do you want me to reuse the
-existing memory-region/memory-region-names properties, or do you want
-something completely separate?
-
-Thierry
-
---1UWUbFP1cBYEclgG
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAl+q6vMACgkQ3SOs138+
-s6HFwA//RvTsH3Razxq0jUpBglouVngfodC8jjeEUJ5gHRLh6ln8d+vkh5Qifz4L
-acZrCXFUyPuhnKSg+jzkmvufYkiJ1Z16mGzjnKtV420hoBrLZLFS3SBQORU0MSHj
-C1bV32HkFSJAIcECA+p2O71ns0bdmhzh2oIUNwtpCSCL612trtm8gzekvuDW3P5C
-WBaRoLQMB9CBfs9r2Xt8xhL9nthQKqr5x8Rj2RMWxYbVJ5BK/Co9ZCd4bVSTO6wi
-t0edy969cP3ShmKF5vsGufahoVFrsDh/XkvFvCw9fc+KDK7BK855c/E1jIn2DDlE
-ZCPvRQfRImVvWr6uj3CMBaZ4aQAFB+aO8f13fXQ+0fdNLT2X7S8hcjFyNlu3GBKr
-bKWOhdeDQ8LCvbLwzqndqz3yfR/3dNmTPLhs4Ebw7oiw7cUehnRoqow8uLlXqyD3
-/iQJ88P/gutRxgRyin2By+jztGMcxHbvhxmmKM7IJTwDZELSW23jTw9bxIgD57hz
-VoEPH5XwHWHWrhKteF0UsgaS1KwKWQ7SsYex/VNEpFQuu094ZwmjRthP3dvG01V/
-sbre0QUgmiE+zZ0SusAds+f4dcrB+6nS4GUAuf0jQL6EQEpP8ypSWPJY8+PQgMCC
-uC/lqN1gIaornGLd1SAG3fXL4f7l4WFH3cGsTQbDEMPioW6vrNY=
-=Jnjt
------END PGP SIGNATURE-----
-
---1UWUbFP1cBYEclgG--
+PiBPbiBOb3YgMTAsIDIwMjAsIGF0IDc6MjUgQU0sIERhdmlkIFN0ZXJiYSA8ZHN0ZXJiYUBzdXNl
+LmN6PiB3cm90ZToNCj4gDQo+IE9uIE1vbiwgTm92IDA5LCAyMDIwIGF0IDAyOjAxOjQxUE0gLTA1
+MDAsIENocmlzIE1hc29uIHdyb3RlOg0KPj4gT24gNiBOb3YgMjAyMCwgYXQgMTM6MzgsIENocmlz
+dG9waCBIZWxsd2lnIHdyb3RlOg0KPj4+IFlvdSBqdXN0IGtlZXAgcmVzZWRuaW5nIHRoaXMgY3Jh
+cCwgZG9uJ3QgeW91PyAgSGF2ZW4ndCB5b3UgYmVlbiB0b2xkDQo+Pj4gbXVsdGlwbGUgdGltZXMg
+dG8gcHJvdmlkZSBhIHByb3BlciBrZXJuZWwgQVBJIGJ5IG5vdz8NCj4+IA0KPj4gWW91IGRvIGNv
+bnNpc3RlbnRseSBhc2sgZm9yIGEgc2hpbSBsYXllciwgYnV0IHlvdSBoYXZlbuKAmXQgZXhwbGFp
+bmVkIA0KPj4gd2hhdCB3ZSBnYWluIGJ5IGRpdmVyZ2luZyBmcm9tIHRoZSBkb2N1bWVudGVkIGFu
+ZCB0ZXN0ZWQgQVBJIG9mIHRoZSANCj4+IHVwc3RyZWFtIHpzdGQgcHJvamVjdC4gIEl04oCZcyBh
+biBpbXBvcnRhbnQgZGlzY3Vzc2lvbiBnaXZlbiB0aGF0IHdlIA0KPj4gaG9wZSB0byByZWd1bGFy
+bHkgdXBkYXRlIHRoZSBrZXJuZWwgc2lkZSBhcyB0aGV5IG1ha2UgaW1wcm92ZW1lbnRzIGluIA0K
+Pj4genN0ZC4NCj4+IA0KPj4gVGhlIG9ubHkgYmVuZWZpdCBkZXNjcmliZWQgc28gZmFyIHNlZW1z
+IHRvIGJlIGNhbWVsY2FzZSByZWxhdGVkLCBidXQgaWYgDQo+PiB0aGVyZSBhcmUgcHJvYmxlbXMg
+aW4gdGhlIEFQSSBiZXlvbmQgdGhhdCwgSSBoYXZlbuKAmXQgc2VlbiB5b3UgZGVzY3JpYmUgDQo+
+PiB0aGVtLiAgSSBkb27igJl0IHRoaW5rIHRoZSBjYW1lbGNhc2UgYWxvbmUganVzdGlmaWVzIHRo
+ZSBhZGRlZCBjb3N0cyBvZiANCj4+IHRoZSBzaGltLg0KPiANCj4gVGhlIEFQSSBjaGFuZ2UgaW4g
+dGhpcyBwYXRjaHNldCBpcyBhZGRpbmcgY2h1cm4gdGhhdCB3b3VsZG4ndCBiZQ0KPiBuZWNlc3Nh
+cnkgaWYgdGhlcmUgd2VyZSBhbiB1cHN0cmVhbTwtPmtlcm5lbCBBUEkgZnJvbSB0aGUgYmVnaW5u
+aW5nLg0KPiANCj4gVGhlIHBhdGNoIDUvOSBpcyBhbG1vc3QgZW50aXJlbHkgcmVuYW1pbmcganVz
+dCBzb21lIGludGVybmFsIGlkZW50aWZpZXJzDQo+IA0KPiAtCQkJICAgICAgWlNURF9DU3RyZWFt
+V29ya3NwYWNlQm91bmQocGFyYW1zLmNQYXJhbXMpLA0KPiAtCQkJICAgICAgWlNURF9EU3RyZWFt
+V29ya3NwYWNlQm91bmQoWlNURF9CVFJGU19NQVhfSU5QVVQpKTsNCj4gKwkJCSAgICAgIFpTVERf
+ZXN0aW1hdGVDU3RyZWFtU2l6ZV91c2luZ0NQYXJhbXMocGFyYW1zLmNQYXJhbXMpLA0KPiArCQkJ
+ICAgICAgWlNURF9lc3RpbWF0ZURTdHJlYW1TaXplKFpTVERfQlRSRlNfTUFYX0lOUFVUKSk7DQo+
+IA0KPiBwbHVzIHVwZGF0aW5nIHRoZSBuYW1lcyBpbiB0aGUgZXJyb3Igc3RyaW5ncy4gVGhlIGNv
+bXByZXNzaW9uIEFQSSB0aGF0DQo+IGZpbGVzeXN0ZW1zIG5lZWQgaXMgc2ltcGxlOg0KPiANCj4g
+LSBzZXQgdXAgd29ya3NwYWNlIGFuZCBwYXJhbWV0ZXJzDQo+IC0gY29tcHJlc3MgYnVmZmVyDQo+
+IC0gZGVjb21wcmVzcyBidWZmZXINCj4gDQo+IFdlIHJlYWxseSBzaG91bGQgbm90IGNhcmUgaWYg
+dXBzdHJlYW0gaGFzIDMgZnVuY3Rpb25zIGZvciBpbml0aWFsaXppbmcNCj4gc3RyZWFtIChaU1RE
+X2luaXRDU3RyZWFtL1pTVERfaW5pdFN0YXRpY0NTdHJlYW0vWlNURF9pbml0Q1N0cmVhbV9hZHZh
+bmNlZCksDQo+IG9yIGlmIHRoZSBuYW1lIGNoYW5nZXMgYWdhaW4gaW4gdGhlIGZ1dHVyZS4NCg0K
+VXBzdHJlYW0gd2lsbCBub3QgY2hhbmdlIHRoZXNlIGZ1bmN0aW9uIG5hbWVzLiBXZSBndWFyYW50
+ZWUgdGhlIHN0YWJsZQ0KcG9ydGlvbiBvZiBvdXIgQVBJIGhhcyBhIGZpeGVkIEFCSS4gVGhlIHVu
+c3RhYmxlIHBvcnRpb24gZG9lc27igJl0IG1ha2UgdGhpcw0KZ3VhcmFudGVlLCBidXQgd2UgZ3Vh
+cmFudGVlIG5ldmVyIHRvIGNoYW5nZSBmdW5jdGlvbiBzZW1hbnRpY3MgaW4gYW4NCmluY29tcGF0
+aWJsZSB3YXksIGFuZCB0byBwcm92aWRlIGxvbmcgZGVwcmVjYXRpb24gcGVyaW9kcyAoeWVhcnMp
+IHdoZW4gd2UNCmRlbGV0ZSBmdW5jdGlvbnMuDQoNCkZvciByZWZlcmVuY2UsIHRoZSBvbmx5IGZ1
+bmN0aW9ucyB3ZeKAmXZlIGRlbGV0ZWQvbW9kaWZpZWQgc2luY2UgdjEuMC4wIHdoZW4gd2UNCnN0
+YWJpbGl6ZWQgdGhlIHpzdGQgZm9ybWF0IDQgeWVhcnMgYWdvIGFyZSBhbiBvbGQgc3RyZWFtaW5n
+IEFQSSB0aGF0IHdhcw0KZGVwcmVjYXRlZCBiZWZvcmUgdjEuMC4wLiBXZeKAmXZlIGFkZGVkIG5l
+dyBmdW5jdGlvbnMsIGFuZCBwcm92aWRlZCBuZXcNCnJlY29tbWVuZGVkIHdheXMgdG8gdXNlIG91
+ciBBUEkgdGhhdCB3ZSB0aGluayBhcmUgYmV0dGVyLiBCdXQsIHdlIGhpZ2hseQ0KdmFsdWUgbm90
+IGJyZWFraW5nIG91ciB1c2VycyBjb2RlLCBzbyBhbGwgdGhlIG9sZGVyIEFQSXMgYXJlIHN0aWxs
+IHN1cHBvcnRlZC4NCg0KVGhpcyBjaHVybiBpcyBjYXVzZWQgYmVjYXVzZSB0aGUgY3VycmVudCB2
+ZXJzaW9uIG9mIHpzdGQgaW5zaWRlIHRoZSBrZXJuZWwgaXMNCm5vdCB1cHN0cmVhbSB6c3RkLiBB
+dCB0aGUgdGltZSBvZiBpbnRlZ3JhdGlvbiB1cHN0cmVhbSB6c3RkIHdhc27igJl0IHJlYWR5IHRv
+DQpiZSB1c2VkIGFzLWlzIGluIHRoZSBrZXJuZWwuIFdoZW4gSSBpbnRlZ3JhdGVkIHpzdGQgaW50
+byB0aGUga2VybmVsLCBJIHNob3VsZOKAmXZlDQpkb25lIG1vcmUgd29yayB0byB1c2UgdXBzdHJl
+YW0gYXMtaXMuIEl0IHdhcyBhIG1pc3Rha2UgdGhhdCBJIHdvdWxkIGxpa2UgdG8NCmNvcnJlY3Qs
+IHNvIHRoZSBrZXJuZWwgY2FuIGJlbmVmaXQgZnJvbSB0aGUgc2lnbmlmaWNhbnQgcGVyZm9ybWFu
+Y2UNCmltcHJvdmVtZW50cyB0aGF0IHVwc3RyZWFtIGhhcyBtYWRlIGluIHRoZSBsYXN0IGZldyB5
+ZWFycy4NCg0KPiBUaGlzIHNob3VsZCBub3QgcmVxdWlyZSBleHBsaWNpdCBleHBsYW5hdGlvbiwg
+dGhpcyBzaG91bGQgYmUgYSBuYXR1cmFsDQo+IHJlcXVpcmVtZW50IGVzcGVjaWFsbHkgZm9yIHNl
+cGFyYXRlIHByb2plY3RzIHRoYXQgZG9uJ3Qgc2hhcmUgdGhlIHNhbWUNCj4gY29kaW5nIHN0eWxl
+IGJ1dCBoYXZlIHRvIGJlIGludGVncmF0ZWQgaW4gc29tZSB3YXkuDQoNCknigJltIG5vdCBjb21w
+bGV0ZWx5IGFnYWluc3QgcHJvdmlkaW5nIGEga2VybmVsIHNoaW0uIFBlcnNvbmFsbHksIEkgZG9u
+4oCZdCBiZWxpZXZlDQppdCBwcm92aWRlcyBtdWNoIGJlbmVmaXQuIEJ1dCBpZiB0aGUgY29uc2Vu
+c3VzIG9mIGtlcm5lbCBkZXZlbG9wZXJzIGlzIHRoYXQgYQ0Kc2hpbSBwcm92aWRlcyBhIGJldHRl
+ciBBUEksIHRoZW4gSeKAmW0gaGFwcHkgdG8gcHJvdmlkZSBpdC4gU28gZmFyLCBJIGhhdmVu4oCZ
+dCBzZWVuDQphIGNsZWFyIGNvbnNlbnN1cyBlaXRoZXIgd2F5LiBUaGF0IGxlYXZlcyBtZSBraW5k
+IG9mIHN0dWNrLg0KDQpCZXN0LA0KTmljaw0KDQo=
