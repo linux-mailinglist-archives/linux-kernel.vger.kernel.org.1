@@ -2,168 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BC9B2ADB57
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 17:11:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 19ECD2ADB5E
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 17:11:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731118AbgKJQLV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 11:11:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48444 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729909AbgKJQLU (ORCPT
+        id S1731482AbgKJQLu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 11:11:50 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:52855 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729909AbgKJQLs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 11:11:20 -0500
-Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75538C0613CF
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 08:11:20 -0800 (PST)
-Received: by mail-ot1-x343.google.com with SMTP id n15so13011327otl.8
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 08:11:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=UuzecMPiWHXkf94K0SIlRxDoM0PbVpqc+F+ydaNq/ww=;
-        b=V/IP+86djm7AQ4cdhH6j+nw8qb2AxzIswx12wldOeH+EdWxBXeYLMYuDhceLbsLC2p
-         LwKWDEFfkgdzH5vV4ebm71uiWgfVBT3fKSWejtNIYJN7zSheF+5JvuN09lqZL6b7KqZA
-         QMopFW4CB48jS3tXyZkofbBOBZyiDGZ0XdK2K7bFjEOfa89VteobpLbDcWyb9ymp/OaW
-         rnrMiX054pMKSTcBLRipHXx8aNbSLS64loJ3nZZsfSYIjTPEc02Fyxq5gNmrnAqoaoRv
-         4QO+VCd9Ws1u+gSzFNffDvMiW6xoDujMHhDmpveEnc4+cGC6We+6+Mh0DkD1AegdHXHI
-         Ktvg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to:user-agent;
-        bh=UuzecMPiWHXkf94K0SIlRxDoM0PbVpqc+F+ydaNq/ww=;
-        b=ZIv13hj4I9bn4Bd7GFuudaAc8Az9idKV3CtdwBGpao6frUKibUNZwbaq0e1MRdEOeJ
-         vUECGMch2cZoDThwgQw99565PjKIPdrm3wQISvUnEktqw1DquMTJLobFyAhxkug6Gp/Z
-         xEJ81OIFegiKFYjPkfD4WQHVxOPhg/3OapL/y7w0t4roXY0eEUpf3P8bSWhhP9XizHFw
-         fc4np3Mok5WFfSnGjU9J+5KPW/2dZLbS0LmKQDF8x7wDePzwOkUjwT1Qqyhn/ULg3Xta
-         eVC6c0FB5osWQVOvIFeJjd2Lyo1QJq37WJj/EQbPe8TRe+cTO5FqE4YijOc1jQeEM6ip
-         uuYw==
-X-Gm-Message-State: AOAM530PC8fG6OjsNAsQ78pmvVV0XfzvYx5iGoRQkTGw5AZARSmfwsd9
-        paY091HTY1WZgoQbFUS2rEk=
-X-Google-Smtp-Source: ABdhPJxGwwdvtNrQf8wYZcddW0zO+OytP2PlqNt3V6lLbbh+cvahJldCx/aq9+rXlz6XxDfwm1yKGA==
-X-Received: by 2002:a05:6830:8f:: with SMTP id a15mr13818229oto.362.1605024679912;
-        Tue, 10 Nov 2020 08:11:19 -0800 (PST)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id a21sm1238024otr.36.2020.11.10.08.11.19
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 10 Nov 2020 08:11:19 -0800 (PST)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Tue, 10 Nov 2020 08:11:18 -0800
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Michael Brunner <Michael.Brunner@kontron.com>
-Cc:     "lee.jones@linaro.org" <lee.jones@linaro.org>,
-        "sameo@linux.intel.com" <sameo@linux.intel.com>,
-        "mibru@gmx.de" <mibru@gmx.de>,
-        "vkrasnov@dev.rtsoft.ru" <vkrasnov@dev.rtsoft.ru>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "mvanyulin@dev.rtsoft.ru" <mvanyulin@dev.rtsoft.ru>
-Subject: Re: [PATCH v2] mfd: kempld-core: Check for DMI definition before ACPI
-Message-ID: <20201110161118.GE17288@roeck-us.net>
-References: <981276386ec1b496b423b7605b7ac912884b7172.camel@kontron.com>
- <bf70506e5aeb87889b298e342f96bae0e2187102.camel@kontron.com>
+        Tue, 10 Nov 2020 11:11:48 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1605024706;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Jp+HmPlYtR2IGGTGzYIzvrsfgydKFOm7mlacIEpnzOM=;
+        b=ZAlCen6nBxHdvB++lXI9iB2wUc2fR7S1sn8a4M7aStoSiWD61XLeZlkFKBJm2qCKaL9c1n
+        jgzZQ1CjNuQ5h6tktn3PxLjqNQyuPR+ydGJYTBs9u3RYaHmDokPnhzLAi/0v9ufTLA68YW
+        bWCtGS5HDV+q2NdO1yrdq0ovrv6cEeU=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-217-5kzcWzDFO8i3LtgKf7nZng-1; Tue, 10 Nov 2020 11:11:43 -0500
+X-MC-Unique: 5kzcWzDFO8i3LtgKf7nZng-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 48EDA1084D61;
+        Tue, 10 Nov 2020 16:11:40 +0000 (UTC)
+Received: from treble (ovpn-120-104.rdu2.redhat.com [10.10.120.104])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id EDA1C5C1D0;
+        Tue, 10 Nov 2020 16:11:30 +0000 (UTC)
+Date:   Tue, 10 Nov 2020 10:11:24 -0600
+From:   Josh Poimboeuf <jpoimboe@redhat.com>
+To:     Sami Tolvanen <samitolvanen@google.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Jann Horn <jannh@google.com>,
+        the arch/x86 maintainers <x86@kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Will Deacon <will@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Kernel Hardening <kernel-hardening@lists.openwall.com>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-kbuild <linux-kbuild@vger.kernel.org>,
+        kernel list <linux-kernel@vger.kernel.org>,
+        linux-pci@vger.kernel.org
+Subject: Re: [PATCH v6 22/25] x86/asm: annotate indirect jumps
+Message-ID: <20201110161124.lztfgffqh2qrlwwv@treble>
+References: <20201015203942.f3kwcohcwwa6lagd@treble>
+ <CABCJKufDLmBCwmgGnfLcBw_B_4U8VY-R-dSNNp86TFfuMobPMw@mail.gmail.com>
+ <20201020185217.ilg6w5l7ujau2246@treble>
+ <CABCJKucVjFtrOsw58kn4OnW5kdkUh8G7Zs4s6QU9s6O7soRiAA@mail.gmail.com>
+ <20201021085606.GZ2628@hirez.programming.kicks-ass.net>
+ <CABCJKufL6=FiaeD8T0P+mK4JeR9J80hhjvJ6Z9S-m9UnCESxVA@mail.gmail.com>
+ <20201023173617.GA3021099@google.com>
+ <CABCJKuee7hUQSiksdRMYNNx05bW7pWaDm4fQ__znGQ99z9-dEw@mail.gmail.com>
+ <20201110022924.tekltjo25wtrao7z@treble>
+ <CABCJKuc_-Sxj8HLajx4pKuBpU3AUdBtPv4uzQfMWqVHWwHS1iQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <bf70506e5aeb87889b298e342f96bae0e2187102.camel@kontron.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <CABCJKuc_-Sxj8HLajx4pKuBpU3AUdBtPv4uzQfMWqVHWwHS1iQ@mail.gmail.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 10, 2020 at 03:23:21PM +0000, Michael Brunner wrote:
-> Change the detection order to priorize DMI table entries over available
-> ACPI entries.
+On Mon, Nov 09, 2020 at 08:48:01PM -0800, Sami Tolvanen wrote:
+> On Mon, Nov 9, 2020 at 6:29 PM Josh Poimboeuf <jpoimboe@redhat.com> wrote:
+> > How would I recreate all these warnings?
 > 
-> This makes it more easy for product developers to patch product specific
-> handling into the driver.
-> Furthermore it allows to simplify the implementation a bit and
-> especially to remove the need to force synchronous probing.
+> You can reproduce all of these using a normal gcc build without any of
+> the LTO patches by running objtool check -arfld vmlinux.o. However,
+> with gcc you'll see even more warnings due to duplicate symbol names,
+> as Peter pointed out elsewhere in the thread, so I looked at only the
+> warnings that objtool also prints with LTO.
 > 
-> Based on the following commit introduced with v5.10-rc1:
-> commit e8299c7313af ("mfd: Add ACPI support to Kontron PLD driver")
+> Note that the LTO series contains a patch to split noinstr validation
+> from --vmlinux, as we need to run objtool here even if
+> CONFIG_VMLINUX_VALIDATION isn't selected, so I have not looked at the
+> noinstr warnings. The latest LTO tree is available here:
 > 
-> v2: Fixed coding style as suggested by Guenther Roeck
+> https://github.com/samitolvanen/linux/commits/clang-lto
 > 
+> > Here's the patch for hopefully making the warnings more helpful:
+> 
+> Thanks, I'll give it a try.
 
-Nit: change logs should be after '---'.
+Here's the version without the nonsensical debug warning :-)
 
-Other than that,
+diff --git a/tools/objtool/elf.c b/tools/objtool/elf.c
+index 4e1d7460574b..ced7e4754cba 100644
+--- a/tools/objtool/elf.c
++++ b/tools/objtool/elf.c
+@@ -217,6 +217,21 @@ struct symbol *find_func_containing(struct section *sec, unsigned long offset)
+ 	return NULL;
+ }
+ 
++struct symbol *find_symbol_preceding(struct section *sec, unsigned long offset)
++{
++	struct symbol *sym;
++
++	/*
++	 * This is slow, but used for warning messages.
++	 */
++	while (1) {
++		sym = find_symbol_by_offset(sec, offset);
++		if (sym || !offset)
++			return sym;
++		offset--;
++	}
++}
++
+ struct symbol *find_symbol_by_name(const struct elf *elf, const char *name)
+ {
+ 	struct symbol *sym;
+diff --git a/tools/objtool/elf.h b/tools/objtool/elf.h
+index 807f8c670097..841902ed381e 100644
+--- a/tools/objtool/elf.h
++++ b/tools/objtool/elf.h
+@@ -136,10 +136,11 @@ struct symbol *find_func_by_offset(struct section *sec, unsigned long offset);
+ struct symbol *find_symbol_by_offset(struct section *sec, unsigned long offset);
+ struct symbol *find_symbol_by_name(const struct elf *elf, const char *name);
+ struct symbol *find_symbol_containing(const struct section *sec, unsigned long offset);
++struct symbol *find_func_containing(struct section *sec, unsigned long offset);
++struct symbol *find_symbol_preceding(struct section *sec, unsigned long offset);
+ struct reloc *find_reloc_by_dest(const struct elf *elf, struct section *sec, unsigned long offset);
+ struct reloc *find_reloc_by_dest_range(const struct elf *elf, struct section *sec,
+ 				     unsigned long offset, unsigned int len);
+-struct symbol *find_func_containing(struct section *sec, unsigned long offset);
+ int elf_rebuild_reloc_section(struct elf *elf, struct section *sec);
+ 
+ #define for_each_sec(file, sec)						\
+diff --git a/tools/objtool/warn.h b/tools/objtool/warn.h
+index 7799f60de80a..33da0f2ed9d5 100644
+--- a/tools/objtool/warn.h
++++ b/tools/objtool/warn.h
+@@ -22,6 +22,8 @@ static inline char *offstr(struct section *sec, unsigned long offset)
+ 	unsigned long name_off;
+ 
+ 	func = find_func_containing(sec, offset);
++	if (!func)
++		func = find_symbol_preceding(sec, offset);
+ 	if (func) {
+ 		name = func->name;
+ 		name_off = offset - func->offset;
 
-Reviewed-by: Guenter Roeck <linux@roeck-us.net>
-
-Guenter
-
-> Signed-off-by: Michael Brunner <michael.brunner@kontron.com>
-> ---
->  drivers/mfd/kempld-core.c | 24 +++---------------------
->  1 file changed, 3 insertions(+), 21 deletions(-)
-> 
-> diff --git a/drivers/mfd/kempld-core.c b/drivers/mfd/kempld-core.c
-> index 2c9295953c11..ecd26271b9a4 100644
-> --- a/drivers/mfd/kempld-core.c
-> +++ b/drivers/mfd/kempld-core.c
-> @@ -125,7 +125,6 @@ static const struct kempld_platform_data kempld_platform_data_generic = {
->  };
->  
->  static struct platform_device *kempld_pdev;
-> -static bool kempld_acpi_mode;
->  
->  static int kempld_create_platform_device(const struct dmi_system_id *id)
->  {
-> @@ -501,8 +500,6 @@ static int kempld_probe(struct platform_device *pdev)
->  		ret = kempld_get_acpi_data(pdev);
->  		if (ret)
->  			return ret;
-> -
-> -		kempld_acpi_mode = true;
->  	} else if (kempld_pdev != pdev) {
->  		/*
->  		 * The platform device we are probing is not the one we
-> @@ -565,7 +562,6 @@ static struct platform_driver kempld_driver = {
->  	.driver		= {
->  		.name	= "kempld",
->  		.acpi_match_table = ACPI_PTR(kempld_acpi_table),
-> -		.probe_type = PROBE_FORCE_SYNCHRONOUS,
->  	},
->  	.probe		= kempld_probe,
->  	.remove		= kempld_remove,
-> @@ -884,7 +880,6 @@ MODULE_DEVICE_TABLE(dmi, kempld_dmi_table);
->  static int __init kempld_init(void)
->  {
->  	const struct dmi_system_id *id;
-> -	int ret;
->  
->  	if (force_device_id[0]) {
->  		for (id = kempld_dmi_table;
-> @@ -894,24 +889,11 @@ static int __init kempld_init(void)
->  					break;
->  		if (id->matches[0].slot == DMI_NONE)
->  			return -ENODEV;
-> -	}
-> -
-> -	ret = platform_driver_register(&kempld_driver);
-> -	if (ret)
-> -		return ret;
-> -
-> -	/*
-> -	 * With synchronous probing the device should already be probed now.
-> -	 * If no device id is forced and also no ACPI definition for the
-> -	 * device was found, scan DMI table as fallback.
-> -	 *
-> -	 * If drivers_autoprobing is disabled and the device is found here,
-> -	 * only that device can be bound manually later.
-> -	 */
-> -	if (!kempld_pdev && !kempld_acpi_mode)
-> +	} else {
->  		dmi_check_system(kempld_dmi_table);
-> +	}
->  
-> -	return 0;
-> +	return platform_driver_register(&kempld_driver);
->  }
->  
->  static void __exit kempld_exit(void)
-> -- 
-> 2.25.1
-> 
