@@ -2,86 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 215752ADAAB
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 16:43:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F16E02ADAB3
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 16:43:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730785AbgKJPnH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 10:43:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44028 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730865AbgKJPnG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 10:43:06 -0500
-Received: from michel.telenet-ops.be (michel.telenet-ops.be [IPv6:2a02:1800:110:4::f00:18])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3692BC0613D3
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 07:43:06 -0800 (PST)
-Received: from ramsan.of.borg ([84.195.186.194])
-        by michel.telenet-ops.be with bizsmtp
-        id qfj12300h4C55Sk06fj1jf; Tue, 10 Nov 2020 16:43:04 +0100
-Received: from rox.of.borg ([192.168.97.57])
-        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1kcVnR-001DKN-Kw; Tue, 10 Nov 2020 16:43:01 +0100
-Received: from geert by rox.of.borg with local (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1kcVnR-00DmYZ-3j; Tue, 10 Nov 2020 16:43:01 +0100
-From:   Geert Uytterhoeven <geert+renesas@glider.be>
-To:     "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Jiri Kosina <trivial@kernel.org>
-Cc:     Marcel Holtmann <marcel@holtmann.org>,
-        Brian Norris <briannorris@chromium.org>,
-        Rajat Jain <rajatja@google.com>, netdev@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Rob Herring <robh@kernel.org>
-Subject: [PATCH trivial v5] dt-bindings: net: btusb: DT fix s/interrupt-name/interrupt-names/
-Date:   Tue, 10 Nov 2020 16:43:00 +0100
-Message-Id: <20201110154300.3284871-1-geert+renesas@glider.be>
-X-Mailer: git-send-email 2.25.1
+        id S1731568AbgKJPnw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 10:43:52 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38076 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730681AbgKJPnw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Nov 2020 10:43:52 -0500
+Received: from mail-oi1-f170.google.com (mail-oi1-f170.google.com [209.85.167.170])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 57F61206A1;
+        Tue, 10 Nov 2020 15:43:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605023031;
+        bh=uCEkPHk3i5H3QXvOGo5NpwKxkLBk3zQGpI0v+bfF5kk=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=vUsSLgCMmvi6fyrJsiFhX0ycHitwB47PBU2zHPa48AAmdWRMzeIavY86JaHFAvNK8
+         aYO36n4BJpbmE/lPeIFn+Eo2PgG76k/66cOCtuXftWioei4K1lhTZDanH941yK0Fn8
+         Hz9A8MHSbJNac8nEC5XTJ3k2iDtzAfM6mlXjFNDw=
+Received: by mail-oi1-f170.google.com with SMTP id m17so14823694oie.4;
+        Tue, 10 Nov 2020 07:43:51 -0800 (PST)
+X-Gm-Message-State: AOAM531EfV4XAZGm4NQIRD3K70Ya++Zi+rot9sIdrDE7NWkVaJ/C1LC4
+        mud6MeCDDjXAMJCxChm4SoIra4clXgUmT0HHwA==
+X-Google-Smtp-Source: ABdhPJz7STEfC4g7LX/bvaOov8G9BfxKI6JR4ciSxAAsm7c9wXNQJwAZ0wJLz2CcbRHNKUNUCVcrce9bIoJy3ifnc6M=
+X-Received: by 2002:aca:fdd4:: with SMTP id b203mr3219209oii.152.1605023030597;
+ Tue, 10 Nov 2020 07:43:50 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20201022075218.11880-1-o.rempel@pengutronix.de> <20201022075218.11880-3-o.rempel@pengutronix.de>
+In-Reply-To: <20201022075218.11880-3-o.rempel@pengutronix.de>
+From:   Rob Herring <robh+dt@kernel.org>
+Date:   Tue, 10 Nov 2020 09:43:39 -0600
+X-Gmail-Original-Message-ID: <CAL_JsqKSdGAY03HK1SBGec-j4S0cmm-mntJ8e0ujHVX4E3dnMw@mail.gmail.com>
+Message-ID: <CAL_JsqKSdGAY03HK1SBGec-j4S0cmm-mntJ8e0ujHVX4E3dnMw@mail.gmail.com>
+Subject: Re: [PATCH v3 2/2] dt-bindings: can: flexcan: convert fsl,*flexcan
+ bindings to yaml
+To:     Oleksij Rempel <o.rempel@pengutronix.de>,
+        Marc Kleine-Budde <mkl@pengutronix.de>
+Cc:     Wolfgang Grandegger <wg@grandegger.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Sascha Hauer <kernel@pengutronix.de>,
+        linux-can@vger.kernel.org, netdev <netdev@vger.kernel.org>,
+        devicetree@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Joakim Zhang <qiangqing.zhang@nxp.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The standard DT property name is "interrupt-names".
+On Thu, Oct 22, 2020 at 2:52 AM Oleksij Rempel <o.rempel@pengutronix.de> wrote:
+>
+> In order to automate the verification of DT nodes convert
+> fsl-flexcan.txt to fsl,flexcan.yaml
+>
+> Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
+> Link: https://lore.kernel.org/r/20201016073315.16232-3-o.rempel@pengutronix.de
+> Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+> ---
+>  .../bindings/net/can/fsl,flexcan.yaml         | 135 ++++++++++++++++++
+>  .../bindings/net/can/fsl-flexcan.txt          |  57 --------
+>  2 files changed, 135 insertions(+), 57 deletions(-)
+>  create mode 100644 Documentation/devicetree/bindings/net/can/fsl,flexcan.yaml
+>  delete mode 100644 Documentation/devicetree/bindings/net/can/fsl-flexcan.txt
 
-Fixes: fd913ef7ce619467 ("Bluetooth: btusb: Add out-of-band wakeup support")
-Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
-Acked-by: Rob Herring <robh@kernel.org>
-Reviewed-by: Brian Norris <briannorris@chromium.org>
-Acked-by: Rajat Jain <rajatja@google.com>
----
-Who takes this patch, before it celebrates its 4th birthday?
+Why did this go into v5.10-rc3? It's not a fix and now a fix is needed:
 
-v5:
-  - Add Reviewed-by, Acked-by,
-
-v4:
-  - Add Acked-by,
-
-v3:
-  - New.
----
- Documentation/devicetree/bindings/net/btusb.txt | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/Documentation/devicetree/bindings/net/btusb.txt b/Documentation/devicetree/bindings/net/btusb.txt
-index b1ad6ee68e909318..c51dd99dc0d3cb73 100644
---- a/Documentation/devicetree/bindings/net/btusb.txt
-+++ b/Documentation/devicetree/bindings/net/btusb.txt
-@@ -38,7 +38,7 @@ Following example uses irq pin number 3 of gpio0 for out of band wake-on-bt:
- 	compatible = "usb1286,204e";
- 	reg = <1>;
- 	interrupt-parent = <&gpio0>;
--	interrupt-name = "wakeup";
-+	interrupt-names = "wakeup";
- 	interrupts = <3 IRQ_TYPE_LEVEL_LOW>;
-     };
- };
--- 
-2.25.1
-
+/builds/robherring/linux-dt-bindings/Documentation/devicetree/bindings/clock/imx5-clock.example.dt.yaml:
+can@53fc8000: compatible: 'oneOf' conditional failed, one must be
+fixed:
+ ['fsl,imx53-flexcan', 'fsl,p1010-flexcan'] is too long
+ Additional items are not allowed ('fsl,p1010-flexcan' was unexpected)
+ 'fsl,imx53-flexcan' is not one of ['fsl,imx7d-flexcan',
+'fsl,imx6ul-flexcan', 'fsl,imx6sx-flexcan']
+ 'fsl,imx53-flexcan' is not one of ['fsl,ls1028ar1-flexcan']
+ 'fsl,imx6q-flexcan' was expected
+ 'fsl,lx2160ar1-flexcan' was expected
+ From schema: /builds/robherring/linux-dt-bindings/Documentation/devicetree/bindings/net/can/fsl,flexcan.yaml
+/builds/robherring/linux-dt-bindings/Documentation/devicetree/bindings/net/can/fsl,flexcan.example.dt.yaml:
+can@2090000: fsl,stop-mode: [[4294967295, 52, 28]] is too short
+ From schema: /builds/robherring/linux-dt-bindings/Documentation/devicetree/bindings/net/can/fsl,flexcan.yaml
