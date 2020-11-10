@@ -2,65 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C1F82AD73F
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 14:14:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F0B4B2AD742
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 14:15:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731671AbgKJNOh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 08:14:37 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:58414 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726721AbgKJNOg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 08:14:36 -0500
-From:   John Ogness <john.ogness@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1605014074;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=IW9cOAgIqp2aiZ7VDlWPW2DwmFJzPVsCmee9IuyxOJQ=;
-        b=OXe6LqMA4M1Rlo3SZSZBlNkrB1dVwsyK1vc/xE320zd/uhGgyTLoK/BMX8Zt45iBfa5S/C
-        uuoYMxjfzxPLZYoFIEVbpNfyd/HeXs6rzLRwclmSiZDZbeLumafme4RRIepxWSMYwATsQJ
-        VWDKFhOuvxiVOC4NPDVk5CQw8iRUUL1cD9FfJ0IBzsvB+Y/bzqUfXGHtVYJ6fKC9O/+Yxs
-        0mno/2P4nFDzyVH65BWhTl9ce8DzwQtiWTloQGdmKk3D83+aJpnryfS5gr8aun6jEe7IfY
-        qjPLMQA4g1WU/spJmM0xTKshNSjPKpyPKVWA23OBMCuSuvfEyQvWRNc9Dno6jg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1605014074;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=IW9cOAgIqp2aiZ7VDlWPW2DwmFJzPVsCmee9IuyxOJQ=;
-        b=lASBIaA5znIIjR1seuwRzjiGEgUnP2Gz3AVIC2iETXI3DHaXBR60cVRNiw2IvMcRxKggOi
-        /e6zSUUQ3bc7hkCw==
-To:     Nikolay Borisov <nborisov@suse.com>, pmladek@suse.com,
-        sergey.senozhatsky@gmail.com
-Cc:     linux-kernel@vger.kernel.org, rostedt@goodmis.org,
-        Nikolay Borisov <nborisov@suse.com>
-Subject: Re: [PATCH] printk: ringbuffer: Convert function argument to local variable
-In-Reply-To: <20201110125012.353456-1-nborisov@suse.com>
-References: <20201110125012.353456-1-nborisov@suse.com>
-Date:   Tue, 10 Nov 2020 14:20:34 +0106
-Message-ID: <87v9edqrph.fsf@jogness.linutronix.de>
+        id S1730427AbgKJNPe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 08:15:34 -0500
+Received: from muru.com ([72.249.23.125]:47882 "EHLO muru.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726721AbgKJNPe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Nov 2020 08:15:34 -0500
+Received: from atomide.com (localhost [127.0.0.1])
+        by muru.com (Postfix) with ESMTPS id 1554180BA;
+        Tue, 10 Nov 2020 13:15:38 +0000 (UTC)
+Date:   Tue, 10 Nov 2020 15:15:29 +0200
+From:   Tony Lindgren <tony@atomide.com>
+To:     "H. Nikolaus Schaller" <hns@goldelico.com>
+Cc:     =?utf-8?Q?Beno=C3=AEt?= Cousson <bcousson@baylibre.com>,
+        Rob Herring <robh+dt@kernel.org>, linux-omap@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        letux-kernel@openphoenux.org, kernel@pyra-handheld.com
+Subject: Re: [PATCH 0/2] AMR: DTS: fix and extension for Pandaboard ES
+Message-ID: <20201110131529.GH26857@atomide.com>
+References: <cover.1601734200.git.hns@goldelico.com>
+ <0EB41455-D489-4F38-A8F7-C264BAE8D903@goldelico.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <0EB41455-D489-4F38-A8F7-C264BAE8D903@goldelico.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-11-10, Nikolay Borisov <nborisov@suse.com> wrote:
-> data_alloc's 2nd argument is always rb::text_data_ring and that functino
-> always takes a struct printk_ringbuffer. Instead of passing the data
-> ring buffer as an argument simply make it a local variable.
+* H. Nikolaus Schaller <hns@goldelico.com> [201030 09:09]:
+> ping
+> 
+> > Am 03.10.2020 um 16:09 schrieb H. Nikolaus Schaller <hns@goldelico.com>:
+> > 
+> > * fix wrong pinmux offset preventing the user button from working
+> > * add uart connection for bluetooth wl1271 hci
+> > 
+> > H. Nikolaus Schaller (2):
+> >  ARM: dts: pandaboard: fix pinmux for gpio user button of Pandaboard ES
+> >  ARM: dts: pandaboard es: add bluetooth uart for HCI
 
-This is a relic of when we had a second data ring (for
-dictionaries). The patch is a nice cleanup, but there are actually
-several functions that could use this exact same cleanup:
+Thanks applying both into omap-for-v5.11/dt.
 
-- data_make_reusable()
-- data_push_tail()
-- data_alloc()
-- data_realloc()
-
-Perhaps we should fix them all in a single patch?
-
-John Ogness
+Tony
