@@ -2,114 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 46A8B2AD09A
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 08:45:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E2712AD09C
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 08:45:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729078AbgKJHpV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 02:45:21 -0500
-Received: from mail-io1-f69.google.com ([209.85.166.69]:42588 "EHLO
-        mail-io1-f69.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728636AbgKJHpU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 02:45:20 -0500
-Received: by mail-io1-f69.google.com with SMTP id p67so7656552iod.9
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Nov 2020 23:45:19 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=01nyrfr+gYRmZlH1jpzWRTGtxsWtm9M28tH9DfqpTiE=;
-        b=JrcwitazPZyeNKnk1Z5hLODeNh8PNXG03ROJC+2oOkz128x5inRVICZFigQNCmIjAY
-         RRP1ppVtM/uXFysHWiioW2JMQSWla2AoVEciO5OuWJ1wFG+g9Exr0u7GcnI68zS0ZW6T
-         yzopN4d2SFIn2hGgO1pq3ePVBZb5IkYSCoLrA3VsZ7MjfqrTtVWL9toGnPopZFs1pOIg
-         SAOFDIfmODHpQqLn3bq6/gDbYGIkjyDYF6baPc5lk262/tqIrNC8+hgepgpKPnqQLeUB
-         SIh1+G00VxrEk1lxCksjIq9pwf2Ho1fs7tWTK0g4NwDYPlMddgmB/aJU9BrkT04yQTFY
-         U7WA==
-X-Gm-Message-State: AOAM5335mlcYMRYGXD9DbDQsrFB2GNEC1poSU7/WTbcZPscYkYTZOBKD
-        unPDsan+MaoXFsMAOepQ/P49/dFFKuTATuog0zBPHBlqLzRG
-X-Google-Smtp-Source: ABdhPJz1G8AGhIojkS8oFUQMfpYkVRRnj14Gmr8TTV0jDZrkCP58ghRiqM945hGMSm039UAr2OE5qIBwDQIdkNQJmzCE0WhDhVrp
+        id S1729336AbgKJHpo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 02:45:44 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48644 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728478AbgKJHpn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Nov 2020 02:45:43 -0500
+Received: from mail-oi1-f181.google.com (mail-oi1-f181.google.com [209.85.167.181])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id B8B3B2080A
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 07:45:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604994342;
+        bh=V5seme1Dc/72WBLamjIKlKO0QKIx50V3ebIunpvCVQU=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=rHy97eW38Z307C23x5Y7jUZmd52+ejdw/IUkAraq+5VjwJXxzMMnAw7e3l/ghaH2C
+         IVMBWRp04J2zPQfbXfJPj7akqwoO6n0ZkXWjjD7Yk7ZjHB9+Sge/79N9ZIUWxzsGx3
+         fiNKzwkA2BVQUdCRlPdBEBtIsU7J/fWHrVN+1SiY=
+Received: by mail-oi1-f181.google.com with SMTP id w188so7767451oib.1
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Nov 2020 23:45:42 -0800 (PST)
+X-Gm-Message-State: AOAM530pAQ3NFusKHt0IxJw/5K6owI5yDxPS31WdNPRgqNxTk7DI0lM1
+        T5hBtZyOfGeH65RXoqFeTAhhcNb0HNflHvQFYEc=
+X-Google-Smtp-Source: ABdhPJzYx3n703PuIcGq3u41GROj2BCAhY5Xzd+yYsYj2RS0msD9GYnhwvLnd36uN9mqAOh8rAybFHzrkc1h1Dlcj2E=
+X-Received: by 2002:aca:d583:: with SMTP id m125mr1848352oig.47.1604994341968;
+ Mon, 09 Nov 2020 23:45:41 -0800 (PST)
 MIME-Version: 1.0
-X-Received: by 2002:a5e:a613:: with SMTP id q19mr12847062ioi.110.1604994319534;
- Mon, 09 Nov 2020 23:45:19 -0800 (PST)
-Date:   Mon, 09 Nov 2020 23:45:19 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000484e4b05b3bbdcf4@google.com>
-Subject: WARNING in put_i2c_dev
-From:   syzbot <syzbot+0a05df8ed151f2ed3a05@syzkaller.appspotmail.com>
-To:     gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
-        rafael@kernel.org, syzkaller-bugs@googlegroups.com
+References: <202010211637.7CFD8435@keescook> <773fbdb0-5fc4-ab39-e72d-89845faa4c6d@gmail.com>
+ <202010212028.32E8A5EF9B@keescook> <CAMj1kXHXN56xmuwVG3P93Jjwd+NxXTYHtfibPWg5TUADucOdWg@mail.gmail.com>
+ <1d2e2b5d-3035-238c-d2ca-14c0c209a6a1@gmail.com> <CAMj1kXERX_Bv1MdfafOVmdmDXPio6Uj897ZZZ7qRERbCXYw_iQ@mail.gmail.com>
+ <20201022161118.GP1551@shell.armlinux.org.uk> <CAMj1kXGExnUrTuosMpX2NN3=j0HF-8_s1SzLaTyBvq4_LQNT-w@mail.gmail.com>
+ <20201022162334.GQ1551@shell.armlinux.org.uk> <CAMj1kXF+2kJrUaDyA-Xw4rz2bsuEipX3P4JyPrY1bim76LQvoA@mail.gmail.com>
+ <20201022174826.GS1551@shell.armlinux.org.uk> <CAMj1kXHpPbwS8zjsr8S65EMj9XOwPxWiQ5WN_ok8ZAFZg9kSAg@mail.gmail.com>
+ <CAMj1kXGok50R+2FZ=LqRAx5N3otC3AvC26=+NUqNC6kSvY2-Lg@mail.gmail.com>
+ <CAMj1kXF6EdrJWASQQp57L=3gni6R_pLvZfCaFxCoH=rMRzK_6A@mail.gmail.com>
+ <CAMj1kXFMiTSakUGnopb8eWRHTM9-0XM0kDaJvTXWDhRPJ3Vsow@mail.gmail.com>
+ <f4b4f5ca-2c0c-c1f0-9329-a95967b99bd0@gmail.com> <CAMj1kXEJL31KOMs7h_XzxFKXgqi2jOXCmLaxfKwW=wgo2so_RA@mail.gmail.com>
+ <a438f99d-26a4-a1b5-9fc3-5abd2e76edb3@gmail.com>
+In-Reply-To: <a438f99d-26a4-a1b5-9fc3-5abd2e76edb3@gmail.com>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Tue, 10 Nov 2020 08:45:30 +0100
+X-Gmail-Original-Message-ID: <CAMj1kXG53RH0vJZnWJWi8KSQ6aA0uxi_uhYnffeO5+85ZTYZnA@mail.gmail.com>
+Message-ID: <CAMj1kXG53RH0vJZnWJWi8KSQ6aA0uxi_uhYnffeO5+85ZTYZnA@mail.gmail.com>
+Subject: Re: [PATCH v1] ARM: vfp: Use long jump to fix THUMB2 kernel
+ compilation error
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Russell King - ARM Linux admin <linux@armlinux.org.uk>,
+        Kees Cook <keescook@chromium.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Tue, 10 Nov 2020 at 08:44, Dmitry Osipenko <digetx@gmail.com> wrote:
+>
+> 09.11.2020 10:25, Ard Biesheuvel =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
+> ...
+> >>> So the options are
+> >>>
+> >>> a) merge my patch that adds 2 bytes of opcode to the Thumb2 build
+> >>> b) merge Dmitry's patch that adds an unconditional literal load to al=
+l builds
+> >>> c) remove kernel mode handling from vfp_support_entry() [my other pat=
+ch]
+> >>> d) move sections around so that vfp_kmode_exception is guaranteed to
+> >>> be in range.
+> >>> e) do nothing
+> ...
+> >> The performance argument is questionable to me, to be honest. In
+> >> practice the performance difference should be absolutely negligible fo=
+r
+> >> either of the proposed options, it should stay in a noise even if
+> >> somebody thoroughly counting cycles, IMO.
+> >>
+> >> I'm still thinking that the best option will be to apply a).
+> >>
+> >
+> > Can we take that as an acked-by?
+>
+> Are you asking me for the ack?
 
-syzbot found the following issue on:
+Yes.
 
-HEAD commit:    521b619a Merge tag 'linux-kselftest-kunit-fixes-5.10-rc3' ..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=10760a34500000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=61033507391c77ff
-dashboard link: https://syzkaller.appspot.com/bug?extid=0a05df8ed151f2ed3a05
-compiler:       gcc (GCC) 10.1.0-syz 20200507
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1672e7a8500000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=15f6b4b2500000
+> I think this is a more appropriate
+> question to Russel. I'm not arm/ maintainer, but could give r-b and t-b.
+>
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+0a05df8ed151f2ed3a05@syzkaller.appspotmail.com
+R-b and acked-by are basically the same thing.
 
-pvrusb2: Attached sub-driver cx25840
-pvrusb2: ***WARNING*** pvrusb2 device hardware appears to be jammed and I can't clear it.
-pvrusb2: You might need to power cycle the pvrusb2 device in order to recover.
-------------[ cut here ]------------
-sysfs group 'power' not found for kobject 'i2c-1'
-WARNING: CPU: 1 PID: 4041 at fs/sysfs/group.c:279 sysfs_remove_group+0x126/0x170 fs/sysfs/group.c:279
-Modules linked in:
-CPU: 1 PID: 4041 Comm: pvrusb2-context Not tainted 5.10.0-rc2-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:sysfs_remove_group+0x126/0x170 fs/sysfs/group.c:279
-Code: 48 89 d9 49 8b 14 24 48 b8 00 00 00 00 00 fc ff df 48 c1 e9 03 80 3c 01 00 75 37 48 8b 33 48 c7 c7 60 72 5b 89 e8 81 52 c4 06 <0f> 0b eb 98 e8 11 7e ca ff e9 01 ff ff ff 48 89 df e8 04 7e ca ff
-RSP: 0018:ffffc9000367fa38 EFLAGS: 00010286
-RAX: 0000000000000000 RBX: ffffffff89b53740 RCX: 0000000000000000
-RDX: ffff88801d0d8000 RSI: ffffffff8158d055 RDI: fffff520006cff39
-RBP: 0000000000000000 R08: 0000000000000001 R09: ffff8880b9f309e7
-R10: 0000000000000000 R11: 0000000000000000 R12: ffff888143e19018
-R13: ffffffff89b53ce0 R14: ffff888143e1e000 R15: ffffffff8c2c7d20
-FS:  0000000000000000(0000) GS:ffff8880b9f00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007fc516e9a020 CR3: 0000000020556000 CR4: 00000000001506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- dpm_sysfs_remove+0x97/0xb0 drivers/base/power/sysfs.c:837
- device_del+0x20c/0xec0 drivers/base/core.c:3092
- cdev_device_del+0x19/0x100 fs/char_dev.c:573
- put_i2c_dev+0x160/0x1b0 drivers/i2c/i2c-dev.c:93
- i2cdev_detach_adapter.part.0+0x10f/0x1a0 drivers/i2c/i2c-dev.c:689
- i2cdev_detach_adapter drivers/i2c/i2c-dev.c:647 [inline]
- i2cdev_notifier_call+0xad/0xc0 drivers/i2c/i2c-dev.c:704
- notifier_call_chain+0xb5/0x200 kernel/notifier.c:83
- blocking_notifier_call_chain kernel/notifier.c:337 [inline]
- blocking_notifier_call_chain+0x67/0x90 kernel/notifier.c:325
- device_del+0x1ff/0xec0 drivers/base/core.c:3089
- device_unregister+0x22/0xc0 drivers/base/core.c:3148
- i2c_del_adapter+0x4d6/0x680 drivers/i2c/i2c-core-base.c:1690
- pvr2_i2c_core_done+0x69/0xc0 drivers/media/usb/pvrusb2/pvrusb2-i2c-core.c:652
- pvr2_hdw_destroy+0x179/0x3b0 drivers/media/usb/pvrusb2/pvrusb2-hdw.c:2679
- pvr2_context_destroy+0x84/0x230 drivers/media/usb/pvrusb2/pvrusb2-context.c:70
- pvr2_context_check drivers/media/usb/pvrusb2/pvrusb2-context.c:137 [inline]
- pvr2_context_thread_func+0x641/0x850 drivers/media/usb/pvrusb2/pvrusb2-context.c:158
- kthread+0x3af/0x4a0 kernel/kthread.c:292
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
+> If you're going to follow approach that I'm suggesting with a) + d),
+> then could you please resend the two patches in a single series? The
+> first one-line patch-fix should contain the fixes tag.
 
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+Ok
