@@ -2,93 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 231922ADDCE
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 19:08:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BA8702ADDDD
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 19:12:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730819AbgKJSIX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 13:08:23 -0500
-Received: from wout1-smtp.messagingengine.com ([64.147.123.24]:44729 "EHLO
-        wout1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726400AbgKJSIX (ORCPT
+        id S1730669AbgKJSMB convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 10 Nov 2020 13:12:01 -0500
+Received: from mail-ed1-f66.google.com ([209.85.208.66]:42432 "EHLO
+        mail-ed1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726179AbgKJSMA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 13:08:23 -0500
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailout.west.internal (Postfix) with ESMTP id 72B5A4C8;
-        Tue, 10 Nov 2020 13:08:22 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute4.internal (MEProxy); Tue, 10 Nov 2020 13:08:22 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm2; bh=9457oUm/XwqLd+xICXzQKpwpzVt
-        0qdLN8gjUGCAdAQA=; b=OMUtlD3uUhFgbKhEmuPIwoHK6zecOpMBRgAMsfb06Ik
-        NSeFJQNHgzycd5qGLN1ECXP++ruqe2NttqZiV9GcAbBFCx3aXIEx94aGIVW6NRWN
-        x3exGPj8LsN8YoJETEB4GQI1/T7JyCWuqHji70dSrfyRUJBfYxsybnhC2ASli1qX
-        5rsOqzWWa2+fkosEhAJESlxM8vLHvMN4inazcCt3jDZ9jbjmxhYPBRhrvtkIDrzm
-        fIML3iSsdDxbCqDq7C28vs74LPwPvmdI/rvVYyORp6VpMinJc+nEdGRbK6dBTQmt
-        emiyQi+E62Fzxc1OVdy+zuNOtAjpikf0YhQFxtw2lSg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=9457oU
-        m/XwqLd+xICXzQKpwpzVt0qdLN8gjUGCAdAQA=; b=RmTdhs1Vm90RlkgqxFEiCr
-        MlhU/V9AOreuj7eyXp1erQLG0dt0eoj8CrL/bjq8dIZrNhRvtTSYervwa0n/xX9Q
-        XNnqWNuLgPLwksR7a2pSCawAzLyckDtnecXzPaH3mEyUAWrOzAB8zbjG1qUVqK+1
-        D1TSRHfl/3a7yelpA9OrhB6W9f5PTa8OBOEfllhsYmxAq+grJ77koC2bDyZgdM7T
-        LcqqTyOhij19ZlneGWb8UDbpfsx6cC3X2l70YZE8lekmps2jw2p4Pq3f52vG3MT1
-        nmi/lZbnh4RwXCcciTRWqnrVmt45fqZ7HxkEuQrxUdBG/V/+uxAJ10QKb0bkrE9Q
-        ==
-X-ME-Sender: <xms:FdeqXxcZwqGWfSg2HDG8dhPgvzTJnxMixsSsFm-rIos9bzOTmtDQXQ>
-    <xme:FdeqX_N0WZ3dnCMqRY_lX_zVi-7-EoicfcdqhIafOwKRyZvgobGQ1w8V0E_NbvLuI
-    3KlvbeHvCkgMg>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedruddujedguddtlecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecunecujfgurhepfffhvffukfhfgggtuggjsehttd
-    ertddttddvnecuhfhrohhmpefirhgvghcumffjuceoghhrvghgsehkrhhorghhrdgtohhm
-    qeenucggtffrrghtthgvrhhnpeeuleeltdehkeeltefhleduuddvhfffuedvffduveeghe
-    ekgeeiffevheegfeetgfenucffohhmrghinhepkhgvrhhnvghlrdhorhhgnecukfhppeek
-    fedrkeeirdejgedrieegnecuvehluhhsthgvrhfuihiivgepudenucfrrghrrghmpehmrg
-    hilhhfrhhomhepghhrvghgsehkrhhorghhrdgtohhm
-X-ME-Proxy: <xmx:FdeqX6h1jd8sCbovTYlfIbxNVI4hkZEmrWNGhnjGKskrHhzU6xouDg>
-    <xmx:FdeqX690s7LGDHSItftK1LA3JdAP_N9K1JqsaYA3sJ92t5qlj5jCRA>
-    <xmx:FdeqX9us1eDg_HWThp1nHe4tzI0GJ4eTA818N1pUy49_aSumPGAnOQ>
-    <xmx:FteqX72f5C6B7UwUqe0-gXmhiILo9NS4bDDgaHd7J-meo3gEq1Siew>
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 87D323280059;
-        Tue, 10 Nov 2020 13:08:21 -0500 (EST)
-Date:   Tue, 10 Nov 2020 19:09:25 +0100
-From:   Greg KH <greg@kroah.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     snitzer@redhat.com, stable-commits@vger.kernel.org
-Subject: Re: Patch "dm raid: fix discard limits for raid1 and raid10" has
- been added to the 5.9-stable tree
-Message-ID: <X6rXVTC9lOoRM9IH@kroah.com>
-References: <20201110150632.BEE662076E@mail.kernel.org>
+        Tue, 10 Nov 2020 13:12:00 -0500
+Received: by mail-ed1-f66.google.com with SMTP id v22so3419705edt.9;
+        Tue, 10 Nov 2020 10:11:59 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=ObZ+uatBT5aV3E0Ee3Zvvp2n0wcTHU9I6h5xLp1wh8Y=;
+        b=n/WTFtmykjcIqILh0ycRB9SG0w5VY1LQx9tbAWOoKWLL6B6WSam5zWuX6GBb0vlk+4
+         vcxKNHWA0hEasYzMDX0Vafjs4Xe4CBpIwHQEihFEn82qzlIrAY2CDP4d5nVf3gU661ub
+         J6E43rS57TqnD0sbTf1ObnZPOaElLyAdjdrECgYRTXithU8kXLbCYL6pztzRyjFB5Qfa
+         3dXss+fTfLI/KTP6Asu9Pj2CuIA/j8qYktnwh2Jhd2l3UIcy1YK9dwvCv+OQsdihcc3T
+         hhE8Oxb1yIa5GpsyQi39VfOlhlkY6cPwLNncoTc6LQok4+FQFGssi1YVZsMUGLq+oGFQ
+         8gjg==
+X-Gm-Message-State: AOAM531jzq/8G6h9EWsZLv2zqXAHk3bTM/IQeGO+yS5rYMu1zDwuV7zE
+        L+zUOlqnoKUlJaB09OJ/d9vqqZLrst8=
+X-Google-Smtp-Source: ABdhPJwH9rjo7WFDRce3ZY6Wa0VD4LphG89cjoxx/d+KTfqVHXT4euGN+saA+HjI7WjxqocCsmFDRA==
+X-Received: by 2002:aa7:c546:: with SMTP id s6mr609076edr.114.1605031918334;
+        Tue, 10 Nov 2020 10:11:58 -0800 (PST)
+Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
+        by smtp.googlemail.com with ESMTPSA id rn28sm11065161ejb.22.2020.11.10.10.11.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 10 Nov 2020 10:11:57 -0800 (PST)
+Date:   Tue, 10 Nov 2020 19:11:55 +0100
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Sylwester Nawrocki <s.nawrocki@samsung.com>
+Cc:     georgi.djakov@linaro.org, cw00.choi@samsung.com,
+        devicetree@vger.kernel.org, robh+dt@kernel.org,
+        a.swigon@samsung.com, myungjoo.ham@samsung.com,
+        inki.dae@samsung.com, sw0312.kim@samsung.com,
+        b.zolnierkie@samsung.com, m.szyprowski@samsung.com,
+        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-samsung-soc@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v8 5/7] ARM: dts: exynos: Add interconnect properties to
+ Exynos4412 bus nodes
+Message-ID: <20201110181155.GA18447@kozik-lap>
+References: <20201104103657.18007-1-s.nawrocki@samsung.com>
+ <CGME20201104103726eucas1p248b51b25f5ee42898bf03e9cb2229c5d@eucas1p2.samsung.com>
+ <20201104103657.18007-6-s.nawrocki@samsung.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20201110150632.BEE662076E@mail.kernel.org>
+Content-Transfer-Encoding: 8BIT
+In-Reply-To: <20201104103657.18007-6-s.nawrocki@samsung.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 10, 2020 at 10:06:31AM -0500, Sasha Levin wrote:
-> This is a note to let you know that I've just added the patch titled
+On Wed, Nov 04, 2020 at 11:36:55AM +0100, Sylwester Nawrocki wrote:
+> This patch adds the following properties for Exynos4412 interconnect
+> bus nodes:
+>  - interconnects: to declare connections between nodes in order to
+>    guarantee PM QoS requirements between nodes,
+>  - #interconnect-cells: required by the interconnect framework,
+>  - samsung,data-clk-ratio: which allows to specify minimum data clock
+>    frequency corresponding to requested bandwidth for each bus.
 > 
->     dm raid: fix discard limits for raid1 and raid10
+> Note that #interconnect-cells is always zero and node IDs are not
+> hardcoded anywhere.
 > 
-> to the 5.9-stable tree which can be found at:
->     http://www.kernel.org/git/?p=linux/kernel/git/stable/stable-queue.git;a=summary
+> Signed-off-by: Artur Świgoń <a.swigon@samsung.com>
+> Signed-off-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
+> ---
+> Changes for v8:
+>  - none.
 > 
-> The filename of the patch is:
->      dm-raid-fix-discard-limits-for-raid1-and-raid10.patch
-> and it can be found in the queue-5.9 subdirectory.
+> Changes for v7:
+>  - adjusted to the DT property changes: "interconnects" instead
+>    of "samsung,interconnect-parent", "samsung,data-clk-ratio"
+>    instead of "bus-width".
 > 
-> If you, or anyone else, feels it should not be added to the stable tree,
-> please let <stable@vger.kernel.org> know about it.
+> Changes for v6:
+>  - added bus-width property in bus_dmc node.
+> 
+> Changes for v5:
+>  - adjust to renamed exynos,interconnect-parent-node property,
+>  - add properties in common exynos4412.dtsi file rather than
+>    in Odroid specific odroid4412-odroid-common.dtsi.
+> ---
+>  arch/arm/boot/dts/exynos4412.dtsi | 6 ++++++
 
-Was backported with odd build warnings, so now dropping it from
-everywhere.
+Thanks, applied with Chanwoo's tags.
 
-thanks,
+Best regards,
+Krzysztof
 
-greg k-h
