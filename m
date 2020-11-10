@@ -2,115 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E52152AE00F
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 20:46:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 485CE2AE017
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 20:51:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731731AbgKJTqx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 14:46:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53926 "EHLO
+        id S1731499AbgKJTu5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 14:50:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54544 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725862AbgKJTqx (ORCPT
+        with ESMTP id S1725862AbgKJTu4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 14:46:53 -0500
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62B9AC0613D1;
-        Tue, 10 Nov 2020 11:46:51 -0800 (PST)
-Received: by mail-wm1-x342.google.com with SMTP id s13so4344660wmh.4;
-        Tue, 10 Nov 2020 11:46:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=WTBG2ZdbukfpbLAFWod/tzgmxRQ21477bkwpPdT+kkA=;
-        b=ejYAtvp/QgXqcSWt5piAvD3gUGUypce+ToGLgTBeYb3kQrDx4QDdJ7n/kfuJU1oUEm
-         46DqkyD5bGBhqsidJejsK6VOq1ivrdI2kAQiiLkIeclJVpQVw7dV3Xj3VN+YRw35KN9+
-         dXF9S1MrC9XtShsceO7GRVzdsxadFv1UBqO5ugjjTDAdmn3L0xqKI6xX3xwYHeDlTIcU
-         ohz9uwjsIJyUjuq2hecrjlFf+NW+KwYtZsY3K5IYOL7h0Hk+sKiVQJdCo22RfW0YJ17L
-         wZgU5XWNDL5RWRRDxzpYnQkjqW0AtUHDNc6MR8CuTSE+i2mB+4FIqRKT8/fYh9Xnzji8
-         8OjQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=WTBG2ZdbukfpbLAFWod/tzgmxRQ21477bkwpPdT+kkA=;
-        b=DcpcgjjIEUe7AOKadknm7Hb0sRyvvBiufuZHD6EMCx5IEJv8oy1xyeZyWa+99JPb15
-         sFFBYy7tC2rEF7HF4GtMTZWtczYOTkrG59kcXAZ6q9hFOTTyjhOzQFq7YrHmCSuCDQdd
-         kNGbvSAfXeYuO71yQHkxE5EE4L8NDIFL+CsIiqfzPkhmDHp1qMAVZraOxxECHsQkXYiX
-         qZ4M3ub/omk6c7P2joS4115Q0tZ68z4rHZ3RTY6lQWRBhv2fqS6gWZ0wcx2UMhF9wJ4a
-         ww/SFIBHTjRPVPOHhWNb80L/SxfiUHKFu+98TmHRiUiG9PBxHlmkllnDrLJEOjD8vJ3Y
-         vwmg==
-X-Gm-Message-State: AOAM532RMweNM8WMknzeK6ZBkviu3gLlk3c19D3FrgMSaCl8XWQEl6B1
-        dw+niz0AiDqQURncfDKF6cs=
-X-Google-Smtp-Source: ABdhPJz6ClNJXWYzdMmkrWoo+e61xxaZ26dNP24KcXtgegEXwhKlheKjzqMYIiu7+SgEJctp/Kjixw==
-X-Received: by 2002:a1c:6654:: with SMTP id a81mr851164wmc.104.1605037610202;
-        Tue, 10 Nov 2020 11:46:50 -0800 (PST)
-Received: from localhost ([217.111.27.204])
-        by smtp.gmail.com with ESMTPSA id f2sm19470517wre.63.2020.11.10.11.46.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 10 Nov 2020 11:46:49 -0800 (PST)
-Date:   Tue, 10 Nov 2020 20:46:47 +0100
-From:   Thierry Reding <thierry.reding@gmail.com>
-To:     Sameer Pujar <spujar@nvidia.com>
-Cc:     robh+dt@kernel.org, devicetree@vger.kernel.org,
-        jonathanh@nvidia.com, vkoul@kernel.org, tglx@linutronix.de,
-        jason@lakedaemon.net, maz@kernel.org, linux-tegra@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dmaengine@vger.kernel.org
-Subject: Re: [PATCH v2 2/4] dt-bindings: dma: Convert ADMA doc to json-schema
-Message-ID: <20201110194647.GD2375022@ulmo>
-References: <1604677413-20411-1-git-send-email-spujar@nvidia.com>
- <1604677413-20411-3-git-send-email-spujar@nvidia.com>
+        Tue, 10 Nov 2020 14:50:56 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1867C0613D1;
+        Tue, 10 Nov 2020 11:50:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=SqhC/cvrpcIdhfC4C7TE3FfX7urzbmqhGyrHEJ3KSz8=; b=B+0xZ4I+0CWqwbY5/9QtASiyMb
+        dI/Qz/zeclSvhBV+TRepHHxfSYX/SI/LWizB4lmJjqsmifSWofyfms/AIb0dabiBe2/yDl1qvKuwv
+        6ojv+z5Z5I/CQPVpzGb181ShkkroDqLJW95u8cBWOnuG0KN9n/er87OgMhRt5Wo3BMjszk1NiO7fB
+        TPFkQKoIPrOyslRlfJVA3u0iIQ9pacD+CUdlXq2EhAzMLWiH00ryVbCeMdPTv96w9zvuTwZBKgTHi
+        oGYR5I+TpaLwcQ9MfmveoutWhtlxsCemrX2nSry6j3FL0lxfIdAHJiH9/Z8JsqJhlM62RJEX/m/z1
+        xmuVTS7g==;
+Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kcZer-0007MT-SQ; Tue, 10 Nov 2020 19:50:25 +0000
+Date:   Tue, 10 Nov 2020 19:50:25 +0000
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Mike Kravetz <mike.kravetz@oracle.com>
+Cc:     Oscar Salvador <osalvador@suse.de>,
+        Muchun Song <songmuchun@bytedance.com>, corbet@lwn.net,
+        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
+        hpa@zytor.com, dave.hansen@linux.intel.com, luto@kernel.org,
+        peterz@infradead.org, viro@zeniv.linux.org.uk,
+        akpm@linux-foundation.org, paulmck@kernel.org,
+        mchehab+huawei@kernel.org, pawan.kumar.gupta@linux.intel.com,
+        rdunlap@infradead.org, oneukum@suse.com, anshuman.khandual@arm.com,
+        jroedel@suse.de, almasrymina@google.com, rientjes@google.com,
+        mhocko@suse.com, duanxiongchun@bytedance.com,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH v3 03/21] mm/hugetlb: Introduce a new config
+ HUGETLB_PAGE_FREE_VMEMMAP
+Message-ID: <20201110195025.GN17076@casper.infradead.org>
+References: <20201108141113.65450-1-songmuchun@bytedance.com>
+ <20201108141113.65450-4-songmuchun@bytedance.com>
+ <20201109135215.GA4778@localhost.localdomain>
+ <ef564084-ea73-d579-9251-ec0440df2b48@oracle.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="6Nae48J/T25AfBN4"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1604677413-20411-3-git-send-email-spujar@nvidia.com>
-User-Agent: Mutt/1.14.7 (2020-08-29)
+In-Reply-To: <ef564084-ea73-d579-9251-ec0440df2b48@oracle.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Nov 10, 2020 at 11:31:31AM -0800, Mike Kravetz wrote:
+> On 11/9/20 5:52 AM, Oscar Salvador wrote:
+> > On Sun, Nov 08, 2020 at 10:10:55PM +0800, Muchun Song wrote:
+> >> The purpose of introducing HUGETLB_PAGE_FREE_VMEMMAP is to configure
+> >> whether to enable the feature of freeing unused vmemmap associated
+> >> with HugeTLB pages. Now only support x86.
+> >>
+> >> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+> >> ---
+> >>  arch/x86/mm/init_64.c |  2 +-
+> >>  fs/Kconfig            | 16 ++++++++++++++++
+> >>  mm/bootmem_info.c     |  3 +--
+> >>  3 files changed, 18 insertions(+), 3 deletions(-)
+> >>
+> >> diff --git a/arch/x86/mm/init_64.c b/arch/x86/mm/init_64.c
+> >> index 0a45f062826e..0435bee2e172 100644
+> >> --- a/arch/x86/mm/init_64.c
+> >> +++ b/arch/x86/mm/init_64.c
+> >> @@ -1225,7 +1225,7 @@ static struct kcore_list kcore_vsyscall;
+> >>  
+> >>  static void __init register_page_bootmem_info(void)
+> >>  {
+> >> -#ifdef CONFIG_NUMA
+> >> +#if defined(CONFIG_NUMA) || defined(CONFIG_HUGETLB_PAGE_FREE_VMEMMAP)
+> >>  	int i;
+> >>  
+> >>  	for_each_online_node(i)
+> >> diff --git a/fs/Kconfig b/fs/Kconfig
+> >> index 976e8b9033c4..21b8d39a9715 100644
+> >> --- a/fs/Kconfig
+> >> +++ b/fs/Kconfig
+> >> @@ -245,6 +245,22 @@ config HUGETLBFS
+> >>  config HUGETLB_PAGE
+> >>  	def_bool HUGETLBFS
+> >>  
+> >> +config HUGETLB_PAGE_FREE_VMEMMAP
+> >> +	bool "Free unused vmemmap associated with HugeTLB pages"
+> >> +	default y
+> >> +	depends on X86
+> >> +	depends on HUGETLB_PAGE
+> >> +	depends on SPARSEMEM_VMEMMAP
+> >> +	depends on HAVE_BOOTMEM_INFO_NODE
+> >> +	help
+> >> +	  There are many struct page structures associated with each HugeTLB
+> >> +	  page. But we only use a few struct page structures. In this case,
+> >> +	  it wastes some memory. It is better to free the unused struct page
+> >> +	  structures to buddy system which can save some memory. For
+> >> +	  architectures that support it, say Y here.
+> >> +
+> >> +	  If unsure, say N.
+> > 
+> > I am not sure the above is useful for someone who needs to decide
+> > whether he needs/wants to enable this or not.
+> > I think the above fits better in a Documentation part.
+> > 
+> > I suck at this, but what about the following, or something along those
+> > lines? 
+> > 
+> > "
+> > When using SPARSEMEM_VMEMMAP, the system can save up some memory
+> > from pre-allocated HugeTLB pages when they are not used.
+> > 6 pages per 2MB HugeTLB page and 4095 per 1GB HugeTLB page.
+> > When the pages are going to be used or freed up, the vmemmap
+> > array representing that range needs to be remapped again and
+> > the pages we discarded earlier need to be rellocated again.
+> > Therefore, this is a trade-off between saving memory and
+> > increasing time in allocation/free path.
+> > "
+> > 
+> > It would be also great to point out that this might be a
+> > trade-off between saving up memory and increasing the cost
+> > of certain operations on allocation/free path.
+> > That is why I mentioned it there.
+> 
+> Yes, this is somewhat a trade-off.
+> 
+> As a config option, this is something that would likely be decided by
+> distros.  I almost hate to suggest this, but is it something that an
+> end user would want to decide?  Is this something that perhaps should
+> be a boot/kernel command line option?
 
---6Nae48J/T25AfBN4
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+I don't like config options.  I like boot options even less.  I don't
+know how to describe to an end-user whether they should select this
+or not.  Is there a way to make this not a tradeoff?  Or make the
+tradeoff so minimal as to be not worth describing?  (do we have numbers
+for the worst possible situation when enabling this option?)
 
-On Fri, Nov 06, 2020 at 09:13:31PM +0530, Sameer Pujar wrote:
-> Move ADMA documentation to YAML format.
->=20
-> Signed-off-by: Sameer Pujar <spujar@nvidia.com>
-> ---
->  .../bindings/dma/nvidia,tegra210-adma.txt          | 56 ------------
->  .../bindings/dma/nvidia,tegra210-adma.yaml         | 99 ++++++++++++++++=
-++++++
->  2 files changed, 99 insertions(+), 56 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/dma/nvidia,tegra210=
--adma.txt
->  create mode 100644 Documentation/devicetree/bindings/dma/nvidia,tegra210=
--adma.yaml
-
-Applied, thanks.
-
-Thierry
-
---6Nae48J/T25AfBN4
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAl+q7icACgkQ3SOs138+
-s6HywQ/6A5vikJVE4mHLrHgH7Qk0o+iL7yHxSHaWvUyeQn31pqBxV/kvmX4OecwF
-DMiWmtIX4pGOKsMYZwZVrSrwBcpeOSFHQJDogLN74dnWjUGTnUhZub9bsiU3M8d1
-fMJryvFCJoG7MGUU0bLYEZTZkU5IjQMCA5hWA5/zNLPmlxhxDFtd/hKinYjdGkvu
-2ChX3XL0ySIu3ZhzA6bMOizpxvKwgXN4Z80+KwY7uA7Jahp48X1a711pKUSXCAVU
-89tyOmvgAcjnFsoXcHJ9bhAX1FEbP1QhOtMBtGHKKrY0NCdLdh53tdWf0yJZK8iY
-mY2acuGUoJZzUoEqlN7rGTLWJw/TyOZ1qCgRdQT7cfgpE0s1ioHDFjOXtdA2mjhY
-E6b5ySHmwmCqqrFLAo2rcwWuAkeygNcpG7TMkhRSySV+AYrgwlYYkIKEFiy4E4nI
-09SQmNap12K6hO0KVm34DFO00FSx7kx/uyTZ/aMQTBiUHFJZ4XXqCHrOcVTaqg+/
-cLAd3+/wq2ZySYOM5ezS1sEbUNxivuQqdltWIA6gqhs1iNpxLDBIgAp8eMk0jZtV
-na2ZkK5n20/pKe0HsmP0wvXNke7KY8dnk/1ybFLlsXmN4v3IVOyvvDLck4OK9eC6
-+X3ju5PCWiEhttC85ohdBRdZdKNggQYrghEzkQTuCf8/8EAs4Ps=
-=rKPV
------END PGP SIGNATURE-----
-
---6Nae48J/T25AfBN4--
+I haven't read through these patches in detail, so maybe we do this
+already, but when we free the pages to the buddy allocator, do we retain
+the third page to use for the PTEs (and free pages 3-7), or do we allocate
+a separate page for the PTES and free pages 2-7?
