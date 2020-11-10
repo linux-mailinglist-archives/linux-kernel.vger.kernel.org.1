@@ -2,1086 +2,264 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BEE5F2AD068
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 08:25:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E2F32AD06E
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 08:27:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728827AbgKJHY5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 02:24:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51068 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726467AbgKJHY4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 02:24:56 -0500
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A076DC0613CF;
-        Mon,  9 Nov 2020 23:24:56 -0800 (PST)
-Received: by mail-pf1-x441.google.com with SMTP id 10so10610243pfp.5;
-        Mon, 09 Nov 2020 23:24:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=TZHKc1z9bIJKWtDQfb49ypGPDlhOLGgFEtACkXb6xgE=;
-        b=jXikaazWh8k3Jko+AzyVVqiuBHEkyCbHmScyO8rQLt8kAEIOMhFa0N+0t9KWeUAi7C
-         DqKtrngEn6IzjjEiKf7fAx7clxd5fLr5auhPaULagGi/fx8HtPpmWGnR2HEqErKVZFwE
-         NS9xe2/Eq7YCc5BUAYHIpcS/owcqYqOZxCuhYEK+qIslA/vcd1GSGpLFcU2UfQwJ9T6O
-         ooOxOhhGvCoKx5vzCWrInx1y4Sfk/3JBHe2I1vpOmRlTOMPsj6T05nRB5AHjrK9ktlqN
-         tzk+J4drawWbzK9o/3gWQH7rjZGsoPKIPLayKxqH1r7EX7v2VwaLgClyK/QO2w5V8hsn
-         WYIQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=TZHKc1z9bIJKWtDQfb49ypGPDlhOLGgFEtACkXb6xgE=;
-        b=L6PUOcgKsWEh9p+etmxim1iRRIF6VKq4yHQXBvnn4sF6+iDFYBQj2vMLMZNoLO1yGv
-         EjSYPOF9p2VFASN2Vd7rfpmxeTJBTlzvSH2+k5oeu0MxlZlVBqfsTvEqVEIrEpm1c6rz
-         xc0tFYp7P6mwdujAJKb8VczYKTA59nuHVvwaXf+IycXRZGis3qOMiSJRzrfF9THedpjP
-         MJc0AyN0wregcohQ+p6zbZ9xKYUYHL2sk7R34RE19BgKdmenk0teGDi+5y7MbHuzwxA3
-         AMz83JRbWpHpCSV109omCoF0JAsfL9I1oMNfMVTYgB1XvAEhSxg/nCMhbFfIN03tHt3f
-         82Wg==
-X-Gm-Message-State: AOAM530Ch4A0YY6nv3wL9StBwN/wl9lZ+B1Wh9FBjvQl3e1MMd0JpCBZ
-        EhCNnKCet2KR9jshMGxPXCw=
-X-Google-Smtp-Source: ABdhPJwPHA599Vvcf6uC4iq07QtldsKEsvvBbdNTvl2IToo7fE6mFk3ut/9h4qOcX6ir1VOqxGoITA==
-X-Received: by 2002:a17:90a:f292:: with SMTP id fs18mr3541653pjb.222.1604993095923;
-        Mon, 09 Nov 2020 23:24:55 -0800 (PST)
-Received: from taoren-ubuntu-R90MNF91.thefacebook.com (c-73-252-146-110.hsd1.ca.comcast.net. [73.252.146.110])
-        by smtp.gmail.com with ESMTPSA id y5sm13876542pfc.165.2020.11.09.23.24.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 09 Nov 2020 23:24:55 -0800 (PST)
-From:   rentao.bupt@gmail.com
-To:     Rob Herring <robh+dt@kernel.org>, Joel Stanley <joel@jms.id.au>,
-        Andrew Jeffery <andrew@aj.id.au>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        openbmc@lists.ozlabs.org, taoren@fb.com
-Cc:     Tao Ren <rentao.bupt@gmail.com>
-Subject: [PATCH] ARM: dts: aspeed: minipack: Fixup I2C tree
-Date:   Mon,  9 Nov 2020 23:24:46 -0800
-Message-Id: <20201110072446.8218-1-rentao.bupt@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        id S1728679AbgKJH1X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 02:27:23 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46026 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726213AbgKJH1W (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Nov 2020 02:27:22 -0500
+Received: from coco.lan (ip5f5ad5a8.dynamic.kabel-deutschland.de [95.90.213.168])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id DB0E3206E3;
+        Tue, 10 Nov 2020 07:27:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604993241;
+        bh=S1o4qj80GoZoWAAm6f5WIdZgKYNgEyeuOMYKs01dOuI=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=TUH5+tNazhJ/XJzAl/Wd+cQEsRpNMchPxEmOCv92clZjPMpMMVpFOqsyNGQ8qQlVK
+         vt54VFkbwQr8J7ito6H7c5ALBnYlEng06bYHpBTDo7H35Y6tiYwfUYlrrC4pXGTnLL
+         ZqjZgHifCGhcsQ6FCeSyPXsZrR60Wop4+ME3S5hM=
+Date:   Tue, 10 Nov 2020 08:26:58 +0100
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Jonathan Cameron <jic23@kernel.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Fabrice Gasnier <fabrice.gasnier@st.com>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        "Gautham R. Shenoy" <ego@linux.vnet.ibm.com>,
+        "Jason A. Donenfeld" <Jason@zx2c4.com>,
+        Javier =?UTF-8?B?R29uesOhbGV6?= <javier@javigon.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        Andrew Donnellan <ajd@linux.ibm.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Baolin Wang <baolin.wang7@gmail.com>,
+        Benson Leung <bleung@chromium.org>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Bruno Meneguele <bmeneg@redhat.com>,
+        Chunyan Zhang <zhang.lyra@gmail.com>,
+        Dan Murphy <dmurphy@ti.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Felipe Balbi <balbi@kernel.org>,
+        Frederic Barrat <fbarrat@linux.ibm.com>,
+        Guenter Roeck <groeck@chromium.org>,
+        Hanjun Guo <guohanjun@huawei.com>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Jens Axboe <axboe@kernel.dk>,
+        Johannes Thumshirn <johannes.thumshirn@wdc.com>,
+        Juergen Gross <jgross@suse.com>,
+        Konstantin Khlebnikov <koct9i@gmail.com>,
+        Kranthi Kuntala <kranthi.kuntala@intel.com>,
+        Lakshmi Ramasubramanian <nramas@linux.microsoft.com>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Len Brown <lenb@kernel.org>,
+        Leonid Maksymchuk <leonmaxx@gmail.com>,
+        Ludovic Desroches <ludovic.desroches@microchip.com>,
+        Mario Limonciello <mario.limonciello@dell.com>,
+        Mark Gross <mgross@linux.intel.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        Nayna Jain <nayna@linux.ibm.com>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Niklas Cassel <niklas.cassel@wdc.com>,
+        Oded Gabbay <oded.gabbay@gmail.com>,
+        Oleh Kravchenko <oleg@kaa.org.ua>,
+        Orson Zhai <orsonzhai@gmail.com>, Pavel Machek <pavel@ucw.cz>,
+        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        Peter Rosin <peda@axentia.se>, Petr Mladek <pmladek@suse.com>,
+        Philippe Bergheaud <felix@linux.ibm.com>,
+        Richard Cochran <richardcochran@gmail.com>,
+        Sebastian Reichel <sre@kernel.org>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Tom Rix <trix@redhat.com>,
+        Vaibhav Jain <vaibhav@linux.ibm.com>,
+        Vineela Tummalapalli <vineela.tummalapalli@intel.com>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        linux-acpi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, linux-pm@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-usb@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        netdev@vger.kernel.org, xen-devel@lists.xenproject.org,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Subject: Duplicated ABI entries - Was: Re: [PATCH v2 20/39] docs: ABI:
+ testing: make the files compatible with ReST output
+Message-ID: <20201110082658.2edc1ab5@coco.lan>
+In-Reply-To: <20201108165621.4d0da3f4@archlinux>
+References: <cover.1604042072.git.mchehab+huawei@kernel.org>
+        <58cf3c2d611e0197fb215652719ebd82ca2658db.1604042072.git.mchehab+huawei@kernel.org>
+        <5326488b-4185-9d67-fc09-79b911fbb3b8@st.com>
+        <20201030110925.3e09d59e@coco.lan>
+        <cb586ea3-b6e6-4e48-2344-2bd641e5323f@st.com>
+        <20201102124641.GA881895@kroah.com>
+        <20201102154250.45bee17f@coco.lan>
+        <20201108165621.4d0da3f4@archlinux>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tao Ren <rentao.bupt@gmail.com>
+Hi Jonathan,
 
-Create all the i2c switches in device tree and use aliases to assign
-child channels with consistent bus numbers.
+Em Sun, 8 Nov 2020 16:56:21 +0000
+Jonathan Cameron <jic23@kernel.org> escreveu:
 
-Besides, "i2c-mux-idle-disconnect" is set for all the i2c switches to
-avoid potential conflicts when multiple devices (beind the switches) use
-the same device address.
+> > PS.: the IIO subsystem is the one that currently has more duplicated
+> > ABI entries:  
+> > $ ./scripts/get_abi.pl validate 2>&1|grep iio
+> > Warning: /sys/bus/iio/devices/iio:deviceX/in_accel_x_calibbias is defined 2 times:  Documentation/ABI/testing/sysfs-bus-iio-icm42600:0  Documentation/ABI/testing/sysfs-bus-iio:394
+> > Warning: /sys/bus/iio/devices/iio:deviceX/in_accel_y_calibbias is defined 2 times:  Documentation/ABI/testing/sysfs-bus-iio-icm42600:1  Documentation/ABI/testing/sysfs-bus-iio:395
+> > Warning: /sys/bus/iio/devices/iio:deviceX/in_accel_z_calibbias is defined 2 times:  Documentation/ABI/testing/sysfs-bus-iio-icm42600:2  Documentation/ABI/testing/sysfs-bus-iio:396
+> > Warning: /sys/bus/iio/devices/iio:deviceX/in_anglvel_x_calibbias is defined 2 times:  Documentation/ABI/testing/sysfs-bus-iio-icm42600:3  Documentation/ABI/testing/sysfs-bus-iio:397
+> > Warning: /sys/bus/iio/devices/iio:deviceX/in_anglvel_y_calibbias is defined 2 times:  Documentation/ABI/testing/sysfs-bus-iio-icm42600:4  Documentation/ABI/testing/sysfs-bus-iio:398
+> > Warning: /sys/bus/iio/devices/iio:deviceX/in_anglvel_z_calibbias is defined 2 times:  Documentation/ABI/testing/sysfs-bus-iio-icm42600:5  Documentation/ABI/testing/sysfs-bus-iio:399
+> > Warning: /sys/bus/iio/devices/iio:deviceX/in_count0_preset is defined 2 times:  Documentation/ABI/testing/sysfs-bus-iio-timer-stm32:100  Documentation/ABI/testing/sysfs-bus-iio-lptimer-stm32:0
+> > Warning: /sys/bus/iio/devices/iio:deviceX/in_count0_quadrature_mode is defined 2 times:  Documentation/ABI/testing/sysfs-bus-iio-timer-stm32:117  Documentation/ABI/testing/sysfs-bus-iio-lptimer-stm32:14
+> > Warning: /sys/bus/iio/devices/iio:deviceX/in_count_quadrature_mode_available is defined 3 times:  Documentation/ABI/testing/sysfs-bus-iio-counter-104-quad-8:2  Documentation/ABI/testing/sysfs-bus-iio-timer-stm32:111  Documentation/ABI/testing/sysfs-bus-iio-lptimer-stm32:8
+> > Warning: /sys/bus/iio/devices/iio:deviceX/out_altvoltageY_frequency is defined 2 times:  Documentation/ABI/testing/sysfs-bus-iio-frequency-adf4371:0  Documentation/ABI/testing/sysfs-bus-iio:599
+> > Warning: /sys/bus/iio/devices/iio:deviceX/out_altvoltageY_powerdown is defined 2 times:  Documentation/ABI/testing/sysfs-bus-iio-frequency-adf4371:36  Documentation/ABI/testing/sysfs-bus-iio:588
+> > Warning: /sys/bus/iio/devices/iio:deviceX/out_currentY_raw is defined 2 times:  Documentation/ABI/testing/sysfs-bus-iio-light-lm3533-als:43  Documentation/ABI/testing/sysfs-bus-iio-health-afe440x:38
+> > Warning: /sys/bus/iio/devices/iio:deviceX/out_current_heater_raw is defined 2 times:  Documentation/ABI/testing/sysfs-bus-iio-humidity-hdc2010:0  Documentation/ABI/testing/sysfs-bus-iio-humidity-hdc100x:0
+> > Warning: /sys/bus/iio/devices/iio:deviceX/out_current_heater_raw_available is defined 2 times:  Documentation/ABI/testing/sysfs-bus-iio-humidity-hdc2010:1  Documentation/ABI/testing/sysfs-bus-iio-humidity-hdc100x:1
+> > Warning: /sys/bus/iio/devices/iio:deviceX/sensor_sensitivity is defined 2 times:  Documentation/ABI/testing/sysfs-bus-iio-distance-srf08:0  Documentation/ABI/testing/sysfs-bus-iio-proximity-as3935:8
+> > Warning: /sys/bus/iio/devices/triggerX/sampling_frequency is defined 2 times:  Documentation/ABI/testing/sysfs-bus-iio-timer-stm32:92  Documentation/ABI/testing/sysfs-bus-iio:45  
 
-Signed-off-by: Tao Ren <rentao.bupt@gmail.com>
----
- .../boot/dts/aspeed-bmc-facebook-minipack.dts | 888 ++++++++++++++++++
- 1 file changed, 888 insertions(+)
+> 
+> That was intentional.  Often these provide more information on the
+> ABI for a particular device than is present in the base ABI doc.
 
-diff --git a/arch/arm/boot/dts/aspeed-bmc-facebook-minipack.dts b/arch/arm/boot/dts/aspeed-bmc-facebook-minipack.dts
-index c34741dbd268..9eb23e874f19 100644
---- a/arch/arm/boot/dts/aspeed-bmc-facebook-minipack.dts
-+++ b/arch/arm/boot/dts/aspeed-bmc-facebook-minipack.dts
-@@ -70,6 +70,162 @@
- 		i2c45 = &imux45;
- 		i2c46 = &imux46;
- 		i2c47 = &imux47;
-+
-+		/*
-+		 * I2C Switch 24-0071 (channel #0 of 8-0070): 8 channels for
-+		 * connecting to left PDB (Power Distribution Board).
-+		 */
-+		i2c48 = &imux48;
-+		i2c49 = &imux49;
-+		i2c50 = &imux50;
-+		i2c51 = &imux51;
-+		i2c52 = &imux52;
-+		i2c53 = &imux53;
-+		i2c54 = &imux54;
-+		i2c55 = &imux55;
-+
-+		/*
-+		 * I2C Switch 25-0072 (channel #1 of 8-0070): 8 channels for
-+		 * connecting to right PDB (Power Distribution Board).
-+		 */
-+		i2c56 = &imux56;
-+		i2c57 = &imux57;
-+		i2c58 = &imux58;
-+		i2c59 = &imux59;
-+		i2c60 = &imux60;
-+		i2c61 = &imux61;
-+		i2c62 = &imux62;
-+		i2c63 = &imux63;
-+
-+		/*
-+		 * I2C Switch 26-0076 (channel #2 of 8-0070): 8 channels for
-+		 * connecting to top FCM (Fan Control Module).
-+		 */
-+		i2c64 = &imux64;
-+		i2c65 = &imux65;
-+		i2c66 = &imux66;
-+		i2c67 = &imux67;
-+		i2c68 = &imux68;
-+		i2c69 = &imux69;
-+		i2c70 = &imux70;
-+		i2c71 = &imux71;
-+
-+		/*
-+		 * I2C Switch 27-0076 (channel #3 of 8-0070): 8 channels for
-+		 * connecting to bottom FCM (Fan Control Module).
-+		 */
-+		i2c72 = &imux72;
-+		i2c73 = &imux73;
-+		i2c74 = &imux74;
-+		i2c75 = &imux75;
-+		i2c76 = &imux76;
-+		i2c77 = &imux77;
-+		i2c78 = &imux78;
-+		i2c79 = &imux79;
-+
-+		/*
-+		 * I2C Switch 40-0073 (channel #0 of 11-0070): connecting
-+		 * to PIM (Port Interface Module) #1 (1-based).
-+		 */
-+		i2c80 = &imux80;
-+		i2c81 = &imux81;
-+		i2c82 = &imux82;
-+		i2c83 = &imux83;
-+		i2c84 = &imux84;
-+		i2c85 = &imux85;
-+		i2c86 = &imux86;
-+		i2c87 = &imux87;
-+
-+		/*
-+		 * I2C Switch 41-0073 (channel #1 of 11-0070): connecting
-+		 * to PIM (Port Interface Module) #2 (1-based).
-+		 */
-+		i2c88 = &imux88;
-+		i2c89 = &imux89;
-+		i2c90 = &imux90;
-+		i2c91 = &imux91;
-+		i2c92 = &imux92;
-+		i2c93 = &imux93;
-+		i2c94 = &imux94;
-+		i2c95 = &imux95;
-+
-+		/*
-+		 * I2C Switch 42-0073 (channel #2 of 11-0070): connecting
-+		 * to PIM (Port Interface Module) #3 (1-based).
-+		 */
-+		i2c96 = &imux96;
-+		i2c97 = &imux97;
-+		i2c98 = &imux98;
-+		i2c99 = &imux99;
-+		i2c100 = &imux100;
-+		i2c101 = &imux101;
-+		i2c102 = &imux102;
-+		i2c103 = &imux103;
-+
-+		/*
-+		 * I2C Switch 43-0073 (channel #3 of 11-0070): connecting
-+		 * to PIM (Port Interface Module) #4 (1-based).
-+		 */
-+		i2c104 = &imux104;
-+		i2c105 = &imux105;
-+		i2c106 = &imux106;
-+		i2c107 = &imux107;
-+		i2c108 = &imux108;
-+		i2c109 = &imux109;
-+		i2c110 = &imux110;
-+		i2c111 = &imux111;
-+
-+		/*
-+		 * I2C Switch 44-0073 (channel #4 of 11-0070): connecting
-+		 * to PIM (Port Interface Module) #5 (1-based).
-+		 */
-+		i2c112 = &imux112;
-+		i2c113 = &imux113;
-+		i2c114 = &imux114;
-+		i2c115 = &imux115;
-+		i2c116 = &imux116;
-+		i2c117 = &imux117;
-+		i2c118 = &imux118;
-+		i2c119 = &imux119;
-+
-+		/*
-+		 * I2C Switch 45-0073 (channel #5 of 11-0070): connecting
-+		 * to PIM (Port Interface Module) #6 (1-based).
-+		 */
-+		i2c120 = &imux120;
-+		i2c121 = &imux121;
-+		i2c122 = &imux122;
-+		i2c123 = &imux123;
-+		i2c124 = &imux124;
-+		i2c125 = &imux125;
-+		i2c126 = &imux126;
-+		i2c127 = &imux127;
-+
-+		/*
-+		 * I2C Switch 46-0073 (channel #6 of 11-0070): connecting
-+		 * to PIM (Port Interface Module) #7 (1-based).
-+		 */
-+		i2c128 = &imux128;
-+		i2c129 = &imux129;
-+		i2c130 = &imux130;
-+		i2c131 = &imux131;
-+		i2c132 = &imux132;
-+		i2c133 = &imux133;
-+		i2c134 = &imux134;
-+		i2c135 = &imux135;
-+
-+		/*
-+		 * I2C Switch 47-0073 (channel #7 of 11-0070): connecting
-+		 * to PIM (Port Interface Module) #8 (1-based).
-+		 */
-+		i2c136 = &imux136;
-+		i2c137 = &imux137;
-+		i2c138 = &imux138;
-+		i2c139 = &imux139;
-+		i2c140 = &imux140;
-+		i2c141 = &imux141;
-+		i2c142 = &imux142;
-+		i2c143 = &imux143;
- 	};
- 
- 	chosen {
-@@ -184,11 +340,16 @@
- &i2c2 {
- 	status = "okay";
- 
-+	/*
-+	 * I2C Switch 2-0070 is connecting to SCM (System Controller
-+	 * Module).
-+	 */
- 	i2c-switch@70 {
- 		compatible = "nxp,pca9548";
- 		#address-cells = <1>;
- 		#size-cells = <0>;
- 		reg = <0x70>;
-+		i2c-mux-idle-disconnect;
- 
- 		imux16: i2c@0 {
- 			#address-cells = <1>;
-@@ -269,29 +430,270 @@
- 		#address-cells = <1>;
- 		#size-cells = <0>;
- 		reg = <0x70>;
-+		i2c-mux-idle-disconnect;
- 
-+		/*
-+		 * I2C Switch 8-0070 channel #0: connecting to left PDB
-+		 * (Power Distribution Board).
-+		 */
- 		imux24: i2c@0 {
- 			#address-cells = <1>;
- 			#size-cells = <0>;
- 			reg = <0>;
-+
-+			i2c-switch@71 {
-+				compatible = "nxp,pca9548";
-+				#address-cells = <1>;
-+				#size-cells = <0>;
-+				reg = <0x71>;
-+				i2c-mux-idle-disconnect;
-+
-+				imux48: i2c@0 {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+					reg = <0>;
-+				};
-+
-+				imux49: i2c@1 {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+					reg = <1>;
-+				};
-+
-+				imux50: i2c@2 {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+					reg = <2>;
-+				};
-+
-+				imux51: i2c@3 {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+					reg = <3>;
-+				};
-+
-+				imux52: i2c@4 {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+					reg = <4>;
-+				};
-+
-+				imux53: i2c@5 {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+					reg = <5>;
-+				};
-+
-+				imux54: i2c@6 {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+					reg = <6>;
-+				};
-+
-+				imux55: i2c@7 {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+					reg = <7>;
-+				};
-+			};
- 		};
- 
-+		/*
-+		 * I2C Switch 8-0070 channel #1: connecting to right PDB
-+		 * (Power Distribution Board).
-+		 */
- 		imux25: i2c@1 {
- 			#address-cells = <1>;
- 			#size-cells = <0>;
- 			reg = <1>;
-+
-+			i2c-switch@72 {
-+				compatible = "nxp,pca9548";
-+				#address-cells = <1>;
-+				#size-cells = <0>;
-+				reg = <0x72>;
-+				i2c-mux-idle-disconnect;
-+
-+				imux56: i2c@0 {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+					reg = <0>;
-+				};
-+
-+				imux57: i2c@1 {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+					reg = <1>;
-+				};
-+
-+				imux58: i2c@2 {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+					reg = <2>;
-+				};
-+
-+				imux59: i2c@3 {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+					reg = <3>;
-+				};
-+
-+				imux60: i2c@4 {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+					reg = <4>;
-+				};
-+
-+				imux61: i2c@5 {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+					reg = <5>;
-+				};
-+
-+				imux62: i2c@6 {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+					reg = <6>;
-+				};
-+
-+				imux63: i2c@7 {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+					reg = <7>;
-+				};
-+			};
- 		};
- 
-+		/*
-+		 * I2C Switch 8-0070 channel #2: connecting to top FCM
-+		 * (Fan Control Module).
-+		 */
- 		imux26: i2c@2 {
- 			#address-cells = <1>;
- 			#size-cells = <0>;
- 			reg = <2>;
-+
-+			i2c-switch@76 {
-+				compatible = "nxp,pca9548";
-+				#address-cells = <1>;
-+				#size-cells = <0>;
-+				reg = <0x76>;
-+				i2c-mux-idle-disconnect;
-+
-+				imux64: i2c@0 {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+					reg = <0>;
-+				};
-+
-+				imux65: i2c@1 {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+					reg = <1>;
-+				};
-+
-+				imux66: i2c@2 {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+					reg = <2>;
-+				};
-+
-+				imux67: i2c@3 {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+					reg = <3>;
-+				};
-+
-+				imux68: i2c@4 {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+					reg = <4>;
-+				};
-+
-+				imux69: i2c@5 {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+					reg = <5>;
-+				};
-+
-+				imux70: i2c@6 {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+					reg = <6>;
-+				};
-+
-+				imux71: i2c@7 {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+					reg = <7>;
-+				};
-+			};
- 		};
- 
-+		/*
-+		 * I2C Switch 8-0070 channel #3: connecting to bottom
-+		 * FCM (Fan Control Module).
-+		 */
- 		imux27: i2c@3 {
- 			#address-cells = <1>;
- 			#size-cells = <0>;
- 			reg = <3>;
-+
-+			i2c-switch@76 {
-+				compatible = "nxp,pca9548";
-+				#address-cells = <1>;
-+				#size-cells = <0>;
-+				reg = <0x76>;
-+				i2c-mux-idle-disconnect;
-+
-+				imux72: i2c@0 {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+					reg = <0>;
-+				};
-+
-+				imux73: i2c@1 {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+					reg = <1>;
-+				};
-+
-+				imux74: i2c@2 {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+					reg = <2>;
-+				};
-+
-+				imux75: i2c@3 {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+					reg = <3>;
-+				};
-+
-+				imux76: i2c@4 {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+					reg = <4>;
-+				};
-+
-+				imux77: i2c@5 {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+					reg = <5>;
-+				};
-+
-+				imux78: i2c@6 {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+					reg = <6>;
-+				};
-+
-+				imux79: i2c@7 {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+					reg = <7>;
-+				};
-+			};
- 		};
- 
- 		imux28: i2c@4 {
-@@ -323,11 +725,16 @@
- &i2c9 {
- 	status = "okay";
- 
-+	/*
-+	 * I2C Switch 9-0070 is connecting to MAC/PHY EEPROMs on SMB
-+	 * (Switch Main Board).
-+	 */
- 	i2c-switch@70 {
- 		compatible = "nxp,pca9548";
- 		#address-cells = <1>;
- 		#size-cells = <0>;
- 		reg = <0x70>;
-+		i2c-mux-idle-disconnect;
- 
- 		imux32: i2c@0 {
- 			#address-cells = <1>;
-@@ -391,53 +798,534 @@
- 		#address-cells = <1>;
- 		#size-cells = <0>;
- 		reg = <0x70>;
-+		i2c-mux-idle-disconnect;
- 
-+		/*
-+		 * I2C Switch 11-0070 channel #0: connecting to PIM
-+		 * (Port Interface Module) #1 (1-based).
-+		 */
- 		imux40: i2c@0 {
- 			#address-cells = <1>;
- 			#size-cells = <0>;
- 			reg = <0>;
-+
-+			i2c-switch@73 {
-+				compatible = "nxp,pca9548";
-+				#address-cells = <1>;
-+				#size-cells = <0>;
-+				reg = <0x73>;
-+				i2c-mux-idle-disconnect;
-+
-+				imux80: i2c@0 {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+					reg = <0>;
-+				};
-+
-+				imux81: i2c@1 {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+					reg = <1>;
-+				};
-+
-+				imux82: i2c@2 {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+					reg = <2>;
-+				};
-+
-+				imux83: i2c@3 {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+					reg = <3>;
-+				};
-+
-+				imux84: i2c@4 {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+					reg = <4>;
-+				};
-+
-+				imux85: i2c@5 {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+					reg = <5>;
-+				};
-+
-+				imux86: i2c@6 {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+					reg = <6>;
-+				};
-+
-+				imux87: i2c@7 {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+					reg = <7>;
-+				};
-+			};
- 		};
- 
-+		/*
-+		 * I2C Switch 11-0070 channel #1: connecting to PIM
-+		 * (Port Interface Module) #2 (1-based).
-+		 */
- 		imux41: i2c@1 {
- 			#address-cells = <1>;
- 			#size-cells = <0>;
- 			reg = <1>;
-+
-+			i2c-switch@73 {
-+				compatible = "nxp,pca9548";
-+				#address-cells = <1>;
-+				#size-cells = <0>;
-+				reg = <0x73>;
-+				i2c-mux-idle-disconnect;
-+
-+				imux88: i2c@0 {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+					reg = <0>;
-+				};
-+
-+				imux89: i2c@1 {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+					reg = <1>;
-+				};
-+
-+				imux90: i2c@2 {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+					reg = <2>;
-+				};
-+
-+				imux91: i2c@3 {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+					reg = <3>;
-+				};
-+
-+				imux92: i2c@4 {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+					reg = <4>;
-+				};
-+
-+				imux93: i2c@5 {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+					reg = <5>;
-+				};
-+
-+				imux94: i2c@6 {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+					reg = <6>;
-+				};
-+
-+				imux95: i2c@7 {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+					reg = <7>;
-+				};
-+			};
- 		};
- 
-+		/*
-+		 * I2C Switch 11-0070 channel #2: connecting to PIM
-+		 * (Port Interface Module) #3 (1-based).
-+		 */
- 		imux42: i2c@2 {
- 			#address-cells = <1>;
- 			#size-cells = <0>;
- 			reg = <2>;
-+
-+			i2c-switch@73 {
-+				compatible = "nxp,pca9548";
-+				#address-cells = <1>;
-+				#size-cells = <0>;
-+				reg = <0x73>;
-+				i2c-mux-idle-disconnect;
-+
-+				imux96: i2c@0 {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+					reg = <0>;
-+				};
-+
-+				imux97: i2c@1 {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+					reg = <1>;
-+				};
-+
-+				imux98: i2c@2 {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+					reg = <2>;
-+				};
-+
-+				imux99: i2c@3 {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+					reg = <3>;
-+				};
-+
-+				imux100: i2c@4 {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+					reg = <4>;
-+				};
-+
-+				imux101: i2c@5 {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+					reg = <5>;
-+				};
-+
-+				imux102: i2c@6 {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+					reg = <6>;
-+				};
-+
-+				imux103: i2c@7 {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+					reg = <7>;
-+				};
-+			};
- 		};
- 
-+		/*
-+		 * I2C Switch 11-0070 channel #3: connecting to PIM
-+		 * (Port Interface Module) #4 (1-based).
-+		 */
- 		imux43: i2c@3 {
- 			#address-cells = <1>;
- 			#size-cells = <0>;
- 			reg = <3>;
-+
-+			i2c-switch@73 {
-+				compatible = "nxp,pca9548";
-+				#address-cells = <1>;
-+				#size-cells = <0>;
-+				reg = <0x73>;
-+				i2c-mux-idle-disconnect;
-+
-+				imux104: i2c@0 {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+					reg = <0>;
-+				};
-+
-+				imux105: i2c@1 {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+					reg = <1>;
-+				};
-+
-+				imux106: i2c@2 {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+					reg = <2>;
-+				};
-+
-+				imux107: i2c@3 {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+					reg = <3>;
-+				};
-+
-+				imux108: i2c@4 {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+					reg = <4>;
-+				};
-+
-+				imux109: i2c@5 {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+					reg = <5>;
-+				};
-+
-+				imux110: i2c@6 {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+					reg = <6>;
-+				};
-+
-+				imux111: i2c@7 {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+					reg = <7>;
-+				};
-+			};
- 		};
- 
-+		/*
-+		 * I2C Switch 11-0070 channel #4: connecting to PIM
-+		 * (Port Interface Module) #5 (1-based).
-+		 */
- 		imux44: i2c@4 {
- 			#address-cells = <1>;
- 			#size-cells = <0>;
- 			reg = <4>;
-+
-+			i2c-switch@73 {
-+				compatible = "nxp,pca9548";
-+				#address-cells = <1>;
-+				#size-cells = <0>;
-+				reg = <0x73>;
-+				i2c-mux-idle-disconnect;
-+
-+				imux112: i2c@0 {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+					reg = <0>;
-+				};
-+
-+				imux113: i2c@1 {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+					reg = <1>;
-+				};
-+
-+				imux114: i2c@2 {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+					reg = <2>;
-+				};
-+
-+				imux115: i2c@3 {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+					reg = <3>;
-+				};
-+
-+				imux116: i2c@4 {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+					reg = <4>;
-+				};
-+
-+				imux117: i2c@5 {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+					reg = <5>;
-+				};
-+
-+				imux118: i2c@6 {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+					reg = <6>;
-+				};
-+
-+				imux119: i2c@7 {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+					reg = <7>;
-+				};
-+			};
- 		};
- 
-+		/*
-+		 * I2C Switch 11-0070 channel #5: connecting to PIM
-+		 * (Port Interface Module) #6 (1-based).
-+		 */
- 		imux45: i2c@5 {
- 			#address-cells = <1>;
- 			#size-cells = <0>;
- 			reg = <5>;
-+
-+			i2c-switch@73 {
-+				compatible = "nxp,pca9548";
-+				#address-cells = <1>;
-+				#size-cells = <0>;
-+				reg = <0x73>;
-+				i2c-mux-idle-disconnect;
-+
-+				imux120: i2c@0 {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+					reg = <0>;
-+				};
-+
-+				imux121: i2c@1 {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+					reg = <1>;
-+				};
-+
-+				imux122: i2c@2 {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+					reg = <2>;
-+				};
-+
-+				imux123: i2c@3 {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+					reg = <3>;
-+				};
-+
-+				imux124: i2c@4 {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+					reg = <4>;
-+				};
-+
-+				imux125: i2c@5 {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+					reg = <5>;
-+				};
-+
-+				imux126: i2c@6 {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+					reg = <6>;
-+				};
-+
-+				imux127: i2c@7 {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+					reg = <7>;
-+				};
-+			};
- 		};
- 
-+		/*
-+		 * I2C Switch 11-0070 channel #6: connecting to PIM
-+		 * (Port Interface Module) #7 (1-based).
-+		 */
- 		imux46: i2c@6 {
- 			#address-cells = <1>;
- 			#size-cells = <0>;
- 			reg = <6>;
-+
-+			i2c-switch@73 {
-+				compatible = "nxp,pca9548";
-+				#address-cells = <1>;
-+				#size-cells = <0>;
-+				reg = <0x73>;
-+				i2c-mux-idle-disconnect;
-+
-+				imux128: i2c@0 {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+					reg = <0>;
-+				};
-+
-+				imux129: i2c@1 {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+					reg = <1>;
-+				};
-+
-+				imux130: i2c@2 {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+					reg = <2>;
-+				};
-+
-+				imux131: i2c@3 {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+					reg = <3>;
-+				};
-+
-+				imux132: i2c@4 {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+					reg = <4>;
-+				};
-+
-+				imux133: i2c@5 {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+					reg = <5>;
-+				};
-+
-+				imux134: i2c@6 {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+					reg = <6>;
-+				};
-+
-+				imux135: i2c@7 {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+					reg = <7>;
-+				};
-+			};
- 		};
- 
-+		/*
-+		 * I2C Switch 11-0070 channel #7: connecting to PIM
-+		 * (Port Interface Module) #8 (1-based).
-+		 */
- 		imux47: i2c@7 {
- 			#address-cells = <1>;
- 			#size-cells = <0>;
- 			reg = <7>;
-+
-+			i2c-switch@73 {
-+				compatible = "nxp,pca9548";
-+				#address-cells = <1>;
-+				#size-cells = <0>;
-+				reg = <0x73>;
-+				i2c-mux-idle-disconnect;
-+
-+				imux136: i2c@0 {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+					reg = <0>;
-+				};
-+
-+				imux137: i2c@1 {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+					reg = <1>;
-+				};
-+
-+				imux138: i2c@2 {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+					reg = <2>;
-+				};
-+
-+				imux139: i2c@3 {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+					reg = <3>;
-+				};
-+
-+				imux140: i2c@4 {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+					reg = <4>;
-+				};
-+
-+				imux141: i2c@5 {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+					reg = <5>;
-+				};
-+
-+				imux142: i2c@6 {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+					reg = <6>;
-+				};
-+
-+				imux143: i2c@7 {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+					reg = <7>;
-+				};
-+			};
- 		};
- 	};
- };
--- 
-2.17.1
+FYI, right now, there are 20 duplicated entries, being 16 of them
+from IIO, on those files:
 
+	$ ./scripts/get_abi.pl validate 2>&1|perl -ne 'if (m,(Documentation/\S+)\:,g) { print "$1\n" }'|sort|uniq
+	Documentation/ABI/stable/sysfs-driver-w1_ds28e04
+	Documentation/ABI/testing/sysfs-bus-iio-counter-104-quad-8
+	Documentation/ABI/testing/sysfs-bus-iio-distance-srf08
+	Documentation/ABI/testing/sysfs-bus-iio-frequency-adf4371
+	Documentation/ABI/testing/sysfs-bus-iio-humidity-hdc2010
+	Documentation/ABI/testing/sysfs-bus-iio-icm42600
+	Documentation/ABI/testing/sysfs-bus-iio-light-lm3533-als
+	Documentation/ABI/testing/sysfs-bus-iio-timer-stm32
+	Documentation/ABI/testing/sysfs-class-backlight-adp8860
+	Documentation/ABI/testing/sysfs-class-led-trigger-pattern
+	Documentation/ABI/testing/sysfs-kernel-iommu_groups
+
+> 
+> A bit like when we have additional description for dt binding properties
+> for a particular device, even though they are standard properties.
+> 
+> Often a standard property allows for more values than the specific
+> one for a particular device.  There can also be obscuring coupling
+> between sysfs attributes due to hardware restrictions that we would
+> like to provide some explanatory info on.
+> 
+> I suppose we could add all this information to the parent doc but
+> that is pretty ugly and will make that doc very nasty to read.
+
+I understand what you meant to do, but right now, it is is actually
+a lot uglier than merging into a single entry ;-)
+
+Let's view ABI from the PoV of a system admin that doesn't know
+yet about a certain ABI symbol.
+
+He'll try to seek for the symbol, more likely using the HTML 
+documentation. Only very senior system admins might try to take
+a look at the Kernel.
+
+This is what happens when one would seek for a duplicated symbol
+via command line:
+
+	$ ./scripts/get_abi.pl search /sys/bus/iio/devices/iio:deviceX/out_altvoltageY_frequency$
+	
+	/sys/bus/iio/devices/iio:deviceX/out_altvoltageY_frequency
+	----------------------------------------------------------
+	
+	Kernel version:		3.4.0
+	Contact:		linux-iio@vger.kernel.org
+	Defined on file(s):	Documentation/ABI/testing/sysfs-bus-iio-frequency-adf4371 Documentation/ABI/testing/sysfs-bus-iio
+	
+	Description:
+	
+	Stores the PLL frequency in Hz for channel Y.
+	Reading returns the actual frequency in Hz.
+	The ADF4371 has an integrated VCO with fundamendal output
+	frequency ranging from 4000000000 Hz 8000000000 Hz.
+	
+	out_altvoltage0_frequency:
+	        A divide by 1, 2, 4, 8, 16, 32 or circuit generates
+	        frequencies from 62500000 Hz to 8000000000 Hz.
+	out_altvoltage1_frequency:
+	        This channel duplicates the channel 0 frequency
+	out_altvoltage2_frequency:
+	        A frequency doubler generates frequencies from
+	        8000000000 Hz to 16000000000 Hz.
+	out_altvoltage3_frequency:
+	        A frequency quadrupler generates frequencies from
+	        16000000000 Hz to 32000000000 Hz.
+	
+	Note: writes to one of the channels will affect the frequency of
+	all the other channels, since it involves changing the VCO
+	fundamental output frequency.
+	
+	Output frequency for channel Y in Hz. The number must always be
+	specified and unique if the output corresponds to a single
+	channel.
+
+As the "What:" field is identical on both sysfs-bus-iio-frequency-adf4371
+and sysfs-bus-iio, those entries are merged, which produces an ABI
+documentation mixing both the generic one and the board specific one
+into a single output.
+
+Worse than that, the "generic" content is at the end.
+
+The same happens when generating the HTML output.
+
+See, entries at the HTML output are ordered by the What: field,
+which is considered within the script as an unique key, as it is
+unique (except for IIO and a couple of other cases).
+
+-
+
+As I commented on an e-mail I sent to Greg, I see a few ways
+to solve it.
+
+The most trivial one (which I used to solve a few conflicts on
+other places), is to place driver-specific details on a separate
+file under Documentation/driver-api, and mention it at the
+generic entries. The docs building system will generate cross
+references for Documentation/.../foo.rst files, so, everything
+should be OK.
+
+The second alternative that I also used on a couple of places
+is to modify the generic entry for it to contain the generic
+definition first, followed by per-device details.
+
+There is a third possible alternative: add a new optional field
+(something like Scope:) which would be part of the unique key,
+if present. Implementing support for it could be tricky, as the
+produced output would likely need to create cross-references
+between the generic field (if present) and the per-device details.
+
+Thanks,
+Mauro
+
+PS.: I'm taking a few days of PTO during this week. So, it
+could take a while for me to reply again to this thread.
