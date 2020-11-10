@@ -2,108 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BA5E2AD023
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 07:59:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 313EC2AD02A
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 08:00:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731293AbgKJG73 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 01:59:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47158 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726213AbgKJG72 (ORCPT
+        id S1731640AbgKJHAY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 02:00:24 -0500
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:60368 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726467AbgKJHAX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 01:59:28 -0500
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54D54C0613CF
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Nov 2020 22:59:27 -0800 (PST)
-Received: by mail-pl1-x642.google.com with SMTP id u2so5993967pls.10
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Nov 2020 22:59:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=MXqpL7kItByjfCSnMkzD7Azj3R3aec/Bbt2Um6yjyL8=;
-        b=lunxwpImh4iSxSNdZAcaUqPfXhBiFtvV22uWD+IH/Yr3mD3NG9ZSavMNTEo+nxyrVh
-         RCUjEnbZUYn41bGLljBXjl9ubbyAhvVWE2o8nb+MG46IBwmb499sdNkhl0Amrs792EUP
-         XiRShQYGpZZ0D29Zxw8lZZbW6Yb3LypDptmRnfOHd7J3CfteekrmeuWuCrcimeQapAdf
-         jzW6cj6/3yY2VRSuzjrLi+S4aPuY0UrbyHqWPLVzSzowy/frqmAVUJhEoxrMwbDGQ544
-         JdYJOIwP7anomOyrkgXzxnBsJIDpF6L1vXufqGHjcLHOucV6gjoC+R2LktXt4UMJEVPd
-         gd9A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=MXqpL7kItByjfCSnMkzD7Azj3R3aec/Bbt2Um6yjyL8=;
-        b=a22AtmGrHGNBIBEf77xgIzVrbu8TXfOpY6Ra6u1QMukxAk3c9FAb8NoAR18iJNYweI
-         NnCMiYjsIXaIDrzXc8LcvgHT/gQp2l6+Zkt8iRpElBFiZCEkRmTPHddZOu+rY4mYBDjz
-         m8Wxz+r7SccTBWUaaqQtv+qhvRA1W1wlJGPoDTVzBPtvCBA/hjyUCKmyXGuocji6gesb
-         g+3eOjD16aG+246mVAoLXnLZVpCVsudoj6uLlErS6tEUO7d9hxiGqiBC/AfQeH5anp8z
-         Y+qVPRASPmpo6wqcqKP3odzOMzw711rgyOPYp4Dx2SS2zDooGjbE4DBMObJKOTj7d11N
-         iE6w==
-X-Gm-Message-State: AOAM5339dWJLu2cbMFe2S8cBixEnyAJaNhgEd5pKMDjVWKvV+igyJj/N
-        SrlPqnr66iUzQu9PbW2LIakAHw==
-X-Google-Smtp-Source: ABdhPJyY6gTC9hdSkAu2frHpC+c3TkWW47Fyekm1R7C0WmrViI1qNIx1Aaltqo5Dufuvdq//24tECQ==
-X-Received: by 2002:a17:902:70cb:b029:d7:e6da:9ad4 with SMTP id l11-20020a17090270cbb02900d7e6da9ad4mr6171070plt.48.1604991566783;
-        Mon, 09 Nov 2020 22:59:26 -0800 (PST)
-Received: from localhost ([122.172.12.172])
-        by smtp.gmail.com with ESMTPSA id q12sm13619474pfc.84.2020.11.09.22.59.25
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 09 Nov 2020 22:59:26 -0800 (PST)
-Date:   Tue, 10 Nov 2020 12:29:23 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Marek Szyprowski <m.szyprowski@samsung.com>
-Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>, linux-pm@vger.kernel.org,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Stephen Boyd <sboyd@kernel.org>, Nishanth Menon <nm@ti.com>,
-        digetx@gmail.com, Stephan Gerhold <stephan@gerhold.net>,
-        linux-kernel@vger.kernel.org,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
-Subject: Re: [PATCH 1/2] cpufreq: dt: Don't (ab)use
- dev_pm_opp_get_opp_table() to create OPP table
-Message-ID: <20201110065923.lb53to2tjpubltkb@vireshk-i7>
-References: <684ff01900180c0a40ec307dacc673b24eab593b.1604643714.git.viresh.kumar@linaro.org>
- <CGME20201109124218eucas1p1b8948a9bf2cf107b17b500b1603905e8@eucas1p1.samsung.com>
- <2924bddd-d237-aa57-abb1-a67723770e97@samsung.com>
- <20201110060011.7unghpidbzobqhq7@vireshk-i7>
- <525e0552-0faf-44c0-9f74-c651a70bebb6@samsung.com>
+        Tue, 10 Nov 2020 02:00:23 -0500
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0AA6x5ec053594;
+        Tue, 10 Nov 2020 00:59:05 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1604991545;
+        bh=lcxk2NIGPVfaoYb1YXbCG/kCN5Buyca2t0w8RiClbbw=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=oYs4nMC2I0J3x7H3Rkd40cmrnWlhhWnFxApMrg3gyPseiqJAoGNzi+GJbxQUd89Q5
+         ZgTgcGY904AOVvZMgbekYHO27HmnmqRACD1y+zFtTikfyb56g2AVqSyymmoQEFehAZ
+         Cj/D5kX433AwKEPrvadI8woJveYrhli37/Dv/ldM=
+Received: from DLEE105.ent.ti.com (dlee105.ent.ti.com [157.170.170.35])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0AA6x5iR040123
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 10 Nov 2020 00:59:05 -0600
+Received: from DLEE107.ent.ti.com (157.170.170.37) by DLEE105.ent.ti.com
+ (157.170.170.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 10
+ Nov 2020 00:59:04 -0600
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE107.ent.ti.com
+ (157.170.170.37) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Tue, 10 Nov 2020 00:59:05 -0600
+Received: from [192.168.2.6] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0AA6x2vA122096;
+        Tue, 10 Nov 2020 00:59:03 -0600
+Subject: Re: [PATCH] ASoC: pcm512x: Add support for data formats RJ and LJ
+To:     Kirill Marinushkin <kmarinushkin@birdec.com>,
+        Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>,
+        Liam Girdwood <lgirdwood@gmail.com>
+CC:     Matthias Reichl <hias@horus.com>,
+        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+        <alsa-devel@alsa-project.org>, <linux-kernel@vger.kernel.org>
+References: <20201109212133.25869-1-kmarinushkin@birdec.com>
+From:   Peter Ujfalusi <peter.ujfalusi@ti.com>
+Message-ID: <690508c7-7029-6781-a1a2-0609e37cb9e6@ti.com>
+Date:   Tue, 10 Nov 2020 08:59:50 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <525e0552-0faf-44c0-9f74-c651a70bebb6@samsung.com>
-User-Agent: NeoMutt/20180716-391-311a52
+In-Reply-To: <20201109212133.25869-1-kmarinushkin@birdec.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10-11-20, 07:57, Marek Szyprowski wrote:
-> Hi Viresh,
-> 
-> On 10.11.2020 07:00, Viresh Kumar wrote:
-> > On 09-11-20, 13:42, Marek Szyprowski wrote:
-> >> This patch landed in linux next-20201109 as commit e8f7703f8fe5
-> >> ("cpufreq: dt: Don't (ab)use dev_pm_opp_get_opp_table() to create OPP
-> >> table"). Sadly it causes regression on some Samsung Exynos based boards:
-> >>
-> >> 8<--- cut here ---
-> >> Unable to handle kernel paging request at virtual address ffffff37
-> >> pgd = (ptrval)
-> >> [ffffff37] *pgd=4ffff841, *pte=00000000, *ppte=00000000
-> >> Internal error: Oops: 27 [#1] PREEMPT SMP ARM
-> >> Modules linked in:
-> >> usb 3-1: New USB device strings: Mfr=1, Product=2, SerialNumber=3
-> >> CPU: 3 PID: 1 Comm: swapper/0 Not tainted 5.10.0-rc1-00007-ge8f7703f8fe5
-> >> #1908
-> >> Hardware name: Samsung Exynos (Flattened Device Tree)
-> >> PC is at dev_pm_opp_put_regulators+0x8/0xf0
-> >> LR is at dt_cpufreq_probe+0x19c/0x3fc
-> > Does this fix it for you ?
-> 
-> Yes, thanks!
-> 
-> Reported-by: Marek Szyprowski <m.szyprowski@samsung.com>
-> 
-> Tested-by: Marek Szyprowski <m.szyprowski@samsung.com>
 
-Thanks. I have fixed the original patch itself and pushed for linux-next.
 
--- 
-viresh
+On 09/11/2020 23.21, Kirill Marinushkin wrote:
+> Currently, pcm512x driver supports only I2S data format.
+> This commit adds RJ and LJ as well.
+> 
+> I don't expect regression WRT existing sound cards, because:
+> 
+> * default value in corresponding register of pcm512x codec is 0 ==  I2S
+> * existing in-tree sound cards with pcm512x codec are configured for I2S
+> * i don't see how existing off-tree sound cards with pcm512x codec could be
+>   configured differently - it would not work
+> * tested explicitly, that there is no regression with Raspberry Pi +
+>   sound card `sound/soc/bcm/hifiberry_dacplus.c`
+> 
+> Signed-off-by: Kirill Marinushkin <kmarinushkin@birdec.com>
+> Cc: Mark Brown <broonie@kernel.org>
+> Cc: Takashi Iwai <tiwai@suse.com>
+> Cc: Liam Girdwood <lgirdwood@gmail.com>
+> Cc: Matthias Reichl <hias@horus.com>
+> Cc: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+> Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>
+> Cc: alsa-devel@alsa-project.org
+> Cc: linux-kernel@vger.kernel.org
+> ---
+>  sound/soc/codecs/pcm512x.c | 24 ++++++++++++++++++++++++
+>  1 file changed, 24 insertions(+)
+> 
+> diff --git a/sound/soc/codecs/pcm512x.c b/sound/soc/codecs/pcm512x.c
+> index 8153d3d01654..c6e975fb4a43 100644
+> --- a/sound/soc/codecs/pcm512x.c
+> +++ b/sound/soc/codecs/pcm512x.c
+> @@ -1167,6 +1167,7 @@ static int pcm512x_hw_params(struct snd_pcm_substream *substream,
+>  	struct snd_soc_component *component = dai->component;
+>  	struct pcm512x_priv *pcm512x = snd_soc_component_get_drvdata(component);
+>  	int alen;
+> +	int afmt;
+>  	int gpio;
+>  	int clock_output;
+>  	int master_mode;
+> @@ -1195,6 +1196,22 @@ static int pcm512x_hw_params(struct snd_pcm_substream *substream,
+>  		return -EINVAL;
+>  	}
+>  
+> +	switch (pcm512x->fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
+> +	case SND_SOC_DAIFMT_I2S:
+> +		afmt = PCM512x_AFMT_I2S;
+> +		break;
+> +	case SND_SOC_DAIFMT_RIGHT_J:
+> +		afmt = PCM512x_AFMT_RTJ;
+> +		break;
+> +	case SND_SOC_DAIFMT_LEFT_J:
+> +		afmt = PCM512x_AFMT_LTJ;
+> +		break;
+> +	default:
+> +		dev_err(component->dev, "unsupported DAI format: 0x%x\n",
+> +			pcm512x->fmt);
+> +		return -EINVAL;
+> +	}
+> +
+
+The bus format and
+
+>  	switch (pcm512x->fmt & SND_SOC_DAIFMT_MASTER_MASK) {
+
+>  	case SND_SOC_DAIFMT_CBS_CFS:
+>  		ret = regmap_update_bits(pcm512x->regmap,
+
+the clock generation role should be set in pcm512x_set_fmt(), in that
+way you can deny specific setups earlier.
+
+I would also add DSP_A and DSP_B modes at the same time, DSP_A would
+need a write of 1 to register 41 (PCM512x_I2S_2, offset = 1), other
+formats should set the offset to 0.
+
+> @@ -1236,6 +1253,13 @@ static int pcm512x_hw_params(struct snd_pcm_substream *substream,
+>  		return ret;
+>  	}
+>  
+> +	ret = regmap_update_bits(pcm512x->regmap, PCM512x_I2S_1,
+> +				 PCM512x_AFMT, afmt);
+> +	if (ret != 0) {
+> +		dev_err(component->dev, "Failed to set data format: %d\n", ret);
+> +		return ret;
+> +	}
+> +
+>  	if (pcm512x->pll_out) {
+>  		ret = regmap_write(pcm512x->regmap, PCM512x_FLEX_A, 0x11);
+>  		if (ret != 0) {
+> 
+
+- Péter
+
+Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
+Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
