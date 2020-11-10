@@ -2,94 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 949EB2AD8E6
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 15:36:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5ED182AD8EB
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 15:37:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730744AbgKJOgw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 09:36:52 -0500
-Received: from mx08-00178001.pphosted.com ([91.207.212.93]:11278 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726721AbgKJOgv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 09:36:51 -0500
-Received: from pps.filterd (m0046660.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0AAEVoEM024503;
-        Tue, 10 Nov 2020 15:36:42 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-type; s=STMicroelectronics;
- bh=mFr7Ui8Iql0dktouHacp+cT97Cl9za3NdjBtbhITl9k=;
- b=swFcLPEoP8AaLoTC2Q1cgfZOMyv4PETC6uds+noRNSpqPofafKvIxnEcZa3F40xZFWmc
- cDXF1gciTncG1/vfY41gkcsrOTfsGmFOfAj4J/42cf4OqE7ZIEwuEQE3TkAu8YX47ITI
- nTxFhv0WBp6ZSNRhcCECQQeS543f/3+rZRCr0rP1LCB07k1kk192Ho7tV0wNX/6JpMlo
- 04zo3IC30E726aJA3yuYqyS1+KJy/xC3v6cLiTnum6SQa3eADZFFDAxxZUZJ6+0SUbhl
- 0Dmgop4YMLLvDEKOZUM8xAPNxZjf98lcmtw2hACeR+lJQTxkooCvlDOSvgf5ujqi7KeS Pw== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 34nhkcs7s7-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 10 Nov 2020 15:36:42 +0100
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 4DA93100034;
-        Tue, 10 Nov 2020 15:36:42 +0100 (CET)
-Received: from Webmail-eu.st.com (sfhdag3node2.st.com [10.75.127.8])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 404022BA2D3;
-        Tue, 10 Nov 2020 15:36:42 +0100 (CET)
-Received: from localhost (10.75.127.45) by SFHDAG3NODE2.st.com (10.75.127.8)
- with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 10 Nov 2020 15:36:41
- +0100
-From:   Amelie Delaunay <amelie.delaunay@st.com>
-To:     Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        Rob Herring <robh+dt@kernel.org>
-CC:     <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Amelie Delaunay <amelie.delaunay@st.com>
-Subject: [PATCH 1/1] ARM: dts: stm32: fix mdma1 clients channel priority level on stm32mp151
-Date:   Tue, 10 Nov 2020 15:36:41 +0100
-Message-ID: <20201110143641.13879-1-amelie.delaunay@st.com>
-X-Mailer: git-send-email 2.17.1
+        id S1730934AbgKJOhb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 09:37:31 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43758 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730594AbgKJOha (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Nov 2020 09:37:30 -0500
+Received: from paulmck-ThinkPad-P72.home (50-39-104-11.bvtn.or.frontiernet.net [50.39.104.11])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id B2168206B2;
+        Tue, 10 Nov 2020 14:37:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605019049;
+        bh=AOP9lTxPHAyFrCQbwYTUxZWpdnj8IR4PPqa80NlF/eM=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=MM9U9nKeveO7j1lqwP4xHH68BIRc95nRdj24caHy4Rnp+258eV/f1a4QFCvKY1J87
+         mkEW/t9FnGH2lqYAPy3dvHWD8dzBExIvcbiQv2uvvxnFtc7IC+6u8fu5l2yWc2BrdA
+         vMPPs0iRg1OUBxcK9xXHf+asllnIaGZpQOrgY8NI=
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id 550DD35225E5; Tue, 10 Nov 2020 06:37:29 -0800 (PST)
+Date:   Tue, 10 Nov 2020 06:37:29 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@fb.com, mingo@kernel.org, jiangshanlai@gmail.com,
+        akpm@linux-foundation.org, mathieu.desnoyers@efficios.com,
+        josh@joshtriplett.org, tglx@linutronix.de, rostedt@goodmis.org,
+        dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
+        oleg@redhat.com, joel@joelfernandes.org, Hui Su <sh_def@163.com>
+Subject: Re: [PATCH tip/core/rcu 4/4] docs/rcu: Update the call_rcu() API
+Message-ID: <20201110143729.GQ3249@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <20201105230444.GA18574@paulmck-ThinkPad-P72>
+ <20201105230510.18660-4-paulmck@kernel.org>
+ <20201109122424.GN2594@hirez.programming.kicks-ass.net>
+ <20201110012032.GN3249@paulmck-ThinkPad-P72>
+ <20201110092505.GY2594@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.75.127.45]
-X-ClientProxiedBy: SFHDAG1NODE1.st.com (10.75.127.1) To SFHDAG3NODE2.st.com
- (10.75.127.8)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-11-10_05:2020-11-10,2020-11-10 signatures=0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201110092505.GY2594@hirez.programming.kicks-ass.net>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Update mdma1 clients channel priority level following stm32-mdma bindings.
+On Tue, Nov 10, 2020 at 10:25:05AM +0100, Peter Zijlstra wrote:
+> On Mon, Nov 09, 2020 at 05:20:32PM -0800, Paul E. McKenney wrote:
+> > On Mon, Nov 09, 2020 at 01:24:24PM +0100, Peter Zijlstra wrote:
+> > > On Thu, Nov 05, 2020 at 03:05:10PM -0800, paulmck@kernel.org wrote:
+> > > > From: Hui Su <sh_def@163.com>
+> > > > 
+> > > > This commit updates the documented API of call_rcu() to use the
+> > > > rcu_callback_t typedef instead of the open-coded function definition.
+> > > > 
+> > > > Signed-off-by: Hui Su <sh_def@163.com>
+> > > > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> > > > ---
+> > > >  Documentation/RCU/whatisRCU.rst | 3 +--
+> > > >  1 file changed, 1 insertion(+), 2 deletions(-)
+> > > > 
+> > > > diff --git a/Documentation/RCU/whatisRCU.rst b/Documentation/RCU/whatisRCU.rst
+> > > > index fb3ff76..1a4723f 100644
+> > > > --- a/Documentation/RCU/whatisRCU.rst
+> > > > +++ b/Documentation/RCU/whatisRCU.rst
+> > > > @@ -497,8 +497,7 @@ long -- there might be other high-priority work to be done.
+> > > >  In such cases, one uses call_rcu() rather than synchronize_rcu().
+> > > >  The call_rcu() API is as follows::
+> > > >  
+> > > > -	void call_rcu(struct rcu_head * head,
+> > > > -		      void (*func)(struct rcu_head *head));
+> > > > +	void call_rcu(struct rcu_head *head, rcu_callback_t func);
+> > > 
+> > > Personally I much prefer the old form, because now I have to go look up
+> > > rcu_callback_t to figure out wtf kind of signature is actually required.
+> > 
+> > How about if this part of the documentation read as follows:
+> > 
+> > 	typedef void (*rcu_callback_t)(struct rcu_head *head);
+> > 	void call_rcu(struct rcu_head *head, rcu_callback_t func);
+> > 
+> > Wold that help?
+> 
+> Sure; but now it's more verbose than it was ;-)
 
-Signed-off-by: Amelie Delaunay <amelie.delaunay@st.com>
----
- arch/arm/boot/dts/stm32mp151.dtsi | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+Tradeoffs, tradeoffs...  ;-)
 
-diff --git a/arch/arm/boot/dts/stm32mp151.dtsi b/arch/arm/boot/dts/stm32mp151.dtsi
-index 719a4276a348..b95c46c82223 100644
---- a/arch/arm/boot/dts/stm32mp151.dtsi
-+++ b/arch/arm/boot/dts/stm32mp151.dtsi
-@@ -1294,7 +1294,7 @@
- 			interrupts = <GIC_SPI 80 IRQ_TYPE_LEVEL_HIGH>;
- 			clocks = <&rcc HASH1>;
- 			resets = <&rcc HASH1_R>;
--			dmas = <&mdma1 31 0x10 0x1000A02 0x0 0x0>;
-+			dmas = <&mdma1 31 0x2 0x1000A02 0x0 0x0>;
- 			dma-names = "in";
- 			dma-maxburst = <2>;
- 			status = "disabled";
-@@ -1358,8 +1358,8 @@
- 			reg = <0x58003000 0x1000>, <0x70000000 0x10000000>;
- 			reg-names = "qspi", "qspi_mm";
- 			interrupts = <GIC_SPI 92 IRQ_TYPE_LEVEL_HIGH>;
--			dmas = <&mdma1 22 0x10 0x100002 0x0 0x0>,
--			       <&mdma1 22 0x10 0x100008 0x0 0x0>;
-+			dmas = <&mdma1 22 0x2 0x100002 0x0 0x0>,
-+			       <&mdma1 22 0x2 0x100008 0x0 0x0>;
- 			dma-names = "tx", "rx";
- 			clocks = <&rcc QSPI_K>;
- 			resets = <&rcc QSPI_R>;
--- 
-2.17.1
-
+							Thanx, Paul
