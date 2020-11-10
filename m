@@ -2,57 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D85742AE343
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 23:21:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 76F6E2AE344
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 23:21:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732851AbgKJWVX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 17:21:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49978 "EHLO
+        id S1732862AbgKJWVZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 17:21:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49986 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732759AbgKJWVS (ORCPT
+        with ESMTP id S1732764AbgKJWVS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 10 Nov 2020 17:21:18 -0500
-Received: from mail-wr1-x449.google.com (mail-wr1-x449.google.com [IPv6:2a00:1450:4864:20::449])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E294AC0613D1
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 14:21:16 -0800 (PST)
-Received: by mail-wr1-x449.google.com with SMTP id 67so6236671wra.2
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 14:21:16 -0800 (PST)
+Received: from mail-qk1-x749.google.com (mail-qk1-x749.google.com [IPv6:2607:f8b0:4864:20::749])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9929BC0613D3
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 14:21:18 -0800 (PST)
+Received: by mail-qk1-x749.google.com with SMTP id v134so191513qka.19
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 14:21:18 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=sender:date:in-reply-to:message-id:mime-version:references:subject
          :from:to:cc;
-        bh=NSEnP5/Ymw2+CzfuUjUL3yzFjWGlVw3jfopzq6nBhYw=;
-        b=MvPjJraTvvciMCrmEVBHJf7JZffHC8y5WsKXsz7dKaBKOd+ahVD8jotAMioOOY+Zy8
-         +oIjs5zBxjMN13SJYSVufJUR8ZSJRp8wcFRg6ysEbVOpnOQ5vU6igGKyRCAtUMHR205f
-         7QyvhDr6wwOcsOkI4zxzz6jcwQtJl0AqqctzgvATGiNPeP/sVqQ+6ox1fbYOYABAYPvk
-         7DaxX13UIIfsr9P6vPscgt+nvmJbOlQRSXO/sZhZ6Ht3GxlE3kgYYtamuzZF9LJ/Pvpz
-         BQVuFuMfR8gf1A4I0Rij0OHDKjK8tIBD4Mhw3LvAXhWqwcwJRbF96SPZigccwisHP0Br
-         nfyw==
+        bh=hhAVeCS4JTcfsOdyr55ktLnnnel/q5W+4IYGph2ifVQ=;
+        b=NtqZsgjsLakRDBLENq4QMY0X9HIgXySW03WWmgVqGyEYFqKXkjIr1dEai5KtjCKEW3
+         7K2btai6v2nhe+5GvDMjBlpzdb+L+gFrW0dsbOE3XONOKvcmOP84oxhz669e/Xv9pema
+         AuFjujh/ijtNIT6DJ/yWdkkj6fZlw+UOPnNyLXJ48oiP2FBrAyyAJepdIaIb7X23kmcQ
+         gGiLq8nwuid0DGkV9GC3ezMJdnVkK/gKzPZYVCyvbc7Uxuj45Uwy46M3IAVTYdpb/GQo
+         RpYViBibwA69YuCVWHp62UdWt3CgA5Eym+yKlD5Ar4VDr7xMgH1UOG4msMzpsOHEPAHV
+         n9nw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=NSEnP5/Ymw2+CzfuUjUL3yzFjWGlVw3jfopzq6nBhYw=;
-        b=EF+F6AyS2iCQf1krjHMgWMabUcR/WUgVAJewJjNVUUaeGHFCNx0omXPefIBGzKaPUH
-         kcT+rh8X9sONIcvXOqW/khyZAQ1LxGczjtz7u7EVyZj82TwYM8vdgrCvbfax3ahbTl7I
-         H7HT6hdMXcgJofoutHriUyMoYKYK+MIVnWJBK35cItXW/PzQP0mBhYFyqWX4y9afg3pn
-         2vb0jTFEiVrqE1WvikslDrAHZ97jUsZLbpW79FDVMSjIGh5I4uxGfMnAdz6TlAQlHG1S
-         5YuqgWL/V7j861khmIhu5SecyWGjjjSQcHv0BqBoB2WUmuitveUsavwwTIodVMSl1zrR
-         qGYA==
-X-Gm-Message-State: AOAM533F854B05vM41+dpKZBTlhq5Saig6TMxj7vRoPjrAu1kEBWiKgV
-        YXbO7UMEBv5rl9AtIjdoUjsJHqbIpbZJVo1T
-X-Google-Smtp-Source: ABdhPJx5R9Lwi7vyMEdhZoBWGFA+5/tY8OWnRDBKQTuXeI+HTirxH7sptEemR57Y7sCa/FhiaUQSY6Jezq4w1pp+
+        bh=hhAVeCS4JTcfsOdyr55ktLnnnel/q5W+4IYGph2ifVQ=;
+        b=PpF/1CNU9txs0TwAd/D13uAMA6v/zR+aRHpaoz1e5OEY37lHjtTmUCQRVP0fEHasZ5
+         a9zalxGnKSQD0t3I6pdG4sB0fPOQT67NxXbnWzp1hYKloZPoQ2WL/+q15C/r2y6L/JT9
+         QPPykdq8lp5HnXFyhY4jDkIX4T2KA6wpEFKapOWGJxClYR0c8TeCHdoWirgYzH1qXPtH
+         RB1PEsVMSsWf7HFMshFYcqjdW3nAHtBpKx/LQixK4ZKIt2Pc6uVRIlcXV5PGws1ikXcW
+         kP2PS7dGvQ1SLLnGcYwtOWLa30y2BC0i2LwiqcyU9i2ekQZQ+mdtQo1qPys6p8lCq1LW
+         pWuw==
+X-Gm-Message-State: AOAM533AxTaaM2nMOa6oBQsmbMcGIgiRtNj3NAQw5ZcJJUu88R4/Ni1b
+        1P2xfHvIqdy++6sR78ZqtUh/hBI+v2B4spjJ
+X-Google-Smtp-Source: ABdhPJxdW7ElRQssXr8ri/yytQPlY79pRGXXiR3orScqYpcHOLCE1EbY/q0D4TfAlEFaD8Q8q9+owBaUWU1bDOJV
 Sender: "andreyknvl via sendgmr" <andreyknvl@andreyknvl3.muc.corp.google.com>
 X-Received: from andreyknvl3.muc.corp.google.com ([2a00:79e0:15:13:7220:84ff:fe09:7e9d])
- (user=andreyknvl job=sendgmr) by 2002:a7b:c772:: with SMTP id
- x18mr262720wmk.185.1605046875625; Tue, 10 Nov 2020 14:21:15 -0800 (PST)
-Date:   Tue, 10 Nov 2020 23:20:23 +0100
+ (user=andreyknvl job=sendgmr) by 2002:ad4:4673:: with SMTP id
+ z19mr9694086qvv.60.1605046877787; Tue, 10 Nov 2020 14:21:17 -0800 (PST)
+Date:   Tue, 10 Nov 2020 23:20:24 +0100
 In-Reply-To: <cover.1605046662.git.andreyknvl@google.com>
-Message-Id: <936c0c198145b663e031527c49a6895bd21ac3a0.1605046662.git.andreyknvl@google.com>
+Message-Id: <6103d1aaacea96a94ca4632f78bcd801e4fbc9c4.1605046662.git.andreyknvl@google.com>
 Mime-Version: 1.0
 References: <cover.1605046662.git.andreyknvl@google.com>
 X-Mailer: git-send-email 2.29.2.222.g5d2a92d10f8-goog
-Subject: [PATCH v2 19/20] kasan, mm: allow cache merging with no metadata
+Subject: [PATCH v2 20/20] kasan: update documentation
 From:   Andrey Konovalov <andreyknvl@google.com>
 To:     Dmitry Vyukov <dvyukov@google.com>,
         Alexander Potapenko <glider@google.com>,
@@ -73,147 +73,295 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The reason cache merging is disabled with KASAN is because KASAN puts its
-metadata right after the allocated object. When the merged caches have
-slightly different sizes, the metadata ends up in different places, which
-KASAN doesn't support.
-
-It might be possible to adjust the metadata allocation algorithm and make
-it friendly to the cache merging code. Instead this change takes a simpler
-approach and allows merging caches when no metadata is present. Which is
-the case for hardware tag-based KASAN with kasan.mode=prod.
+This change updates KASAN documentation to reflect the addition of boot
+parameters and also reworks and clarifies some of the existing sections,
+in particular: defines what a memory granule is, mentions quarantine,
+makes Kunit section more readable.
 
 Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
-Link: https://linux-review.googlesource.com/id/Ia114847dfb2244f297d2cb82d592bf6a07455dba
 ---
- include/linux/kasan.h | 26 ++++++++++++++++++++++++--
- mm/kasan/common.c     | 11 +++++++++++
- mm/slab_common.c      | 11 ++++++++---
- 3 files changed, 43 insertions(+), 5 deletions(-)
+ Documentation/dev-tools/kasan.rst | 180 +++++++++++++++++++-----------
+ 1 file changed, 113 insertions(+), 67 deletions(-)
 
-diff --git a/include/linux/kasan.h b/include/linux/kasan.h
-index 534ab3e2935a..c754eca356f7 100644
---- a/include/linux/kasan.h
-+++ b/include/linux/kasan.h
-@@ -81,17 +81,35 @@ struct kasan_cache {
- };
+diff --git a/Documentation/dev-tools/kasan.rst b/Documentation/dev-tools/kasan.rst
+index 422f8ee1bb17..f2da2b09e5c7 100644
+--- a/Documentation/dev-tools/kasan.rst
++++ b/Documentation/dev-tools/kasan.rst
+@@ -6,6 +6,7 @@ Overview
  
- #ifdef CONFIG_KASAN_HW_TAGS
+ KernelAddressSANitizer (KASAN) is a dynamic memory error detector designed to
+ find out-of-bound and use-after-free bugs. KASAN has three modes:
 +
- DECLARE_STATIC_KEY_FALSE(kasan_flag_enabled);
-+
- static inline kasan_enabled(void)
- {
- 	return static_branch_likely(&kasan_flag_enabled);
- }
--#else
-+
-+slab_flags_t __kasan_never_merge(slab_flags_t flags);
-+static inline slab_flags_t kasan_never_merge(slab_flags_t flags)
-+{
-+	if (kasan_enabled())
-+		return __kasan_never_merge(flags);
-+	return flags;
-+}
-+
-+#else /* CONFIG_KASAN_HW_TAGS */
-+
- static inline kasan_enabled(void)
- {
- 	return true;
- }
--#endif
-+
-+static inline slab_flags_t kasan_never_merge(slab_flags_t flags)
-+{
-+	return flags;
-+}
-+
-+#endif /* CONFIG_KASAN_HW_TAGS */
+ 1. generic KASAN (similar to userspace ASan),
+ 2. software tag-based KASAN (similar to userspace HWASan),
+ 3. hardware tag-based KASAN (based on hardware memory tagging).
+@@ -39,23 +40,13 @@ CONFIG_KASAN_INLINE. Outline and inline are compiler instrumentation types.
+ The former produces smaller binary while the latter is 1.1 - 2 times faster.
  
- void __kasan_alloc_pages(struct page *page, unsigned int order);
- static inline void kasan_alloc_pages(struct page *page, unsigned int order)
-@@ -240,6 +258,10 @@ static inline kasan_enabled(void)
- {
- 	return false;
- }
-+static inline slab_flags_t kasan_never_merge(slab_flags_t flags)
-+{
-+	return flags;
-+}
- static inline void kasan_alloc_pages(struct page *page, unsigned int order) {}
- static inline void kasan_free_pages(struct page *page, unsigned int order) {}
- static inline void kasan_cache_create(struct kmem_cache *cache,
-diff --git a/mm/kasan/common.c b/mm/kasan/common.c
-index 940b42231069..25b18c145b06 100644
---- a/mm/kasan/common.c
-+++ b/mm/kasan/common.c
-@@ -81,6 +81,17 @@ asmlinkage void kasan_unpoison_task_stack_below(const void *watermark)
- }
- #endif /* CONFIG_KASAN_STACK */
- 
-+/*
-+ * Only allow cache merging when stack collection is disabled and no metadata
-+ * is present.
-+ */
-+slab_flags_t __kasan_never_merge(slab_flags_t flags)
-+{
-+	if (kasan_stack_collection_enabled())
-+		return flags;
-+	return flags & ~SLAB_KASAN;
-+}
+ Both software KASAN modes work with both SLUB and SLAB memory allocators,
+-hardware tag-based KASAN currently only support SLUB.
+-For better bug detection and nicer reporting, enable CONFIG_STACKTRACE.
++while the hardware tag-based KASAN currently only support SLUB.
 +
- void __kasan_alloc_pages(struct page *page, unsigned int order)
- {
- 	u8 tag;
-diff --git a/mm/slab_common.c b/mm/slab_common.c
-index f1b0c4a22f08..3042ee8ea9ce 100644
---- a/mm/slab_common.c
-+++ b/mm/slab_common.c
-@@ -18,6 +18,7 @@
- #include <linux/seq_file.h>
- #include <linux/proc_fs.h>
- #include <linux/debugfs.h>
-+#include <linux/kasan.h>
- #include <asm/cacheflush.h>
- #include <asm/tlbflush.h>
- #include <asm/page.h>
-@@ -49,12 +50,16 @@ static DECLARE_WORK(slab_caches_to_rcu_destroy_work,
- 		    slab_caches_to_rcu_destroy_workfn);
++For better error reports that include stack traces, enable CONFIG_STACKTRACE.
  
- /*
-- * Set of flags that will prevent slab merging
-+ * Set of flags that will prevent slab merging.
-+ * Use slab_never_merge() instead.
-  */
- #define SLAB_NEVER_MERGE (SLAB_RED_ZONE | SLAB_POISON | SLAB_STORE_USER | \
- 		SLAB_TRACE | SLAB_TYPESAFE_BY_RCU | SLAB_NOLEAKTRACE | \
- 		SLAB_FAILSLAB | SLAB_KASAN)
+ To augment reports with last allocation and freeing stack of the physical page,
+ it is recommended to enable also CONFIG_PAGE_OWNER and boot with page_owner=on.
  
-+/* KASAN allows merging in some configurations and will remove SLAB_KASAN. */
-+#define slab_never_merge() (kasan_never_merge(SLAB_NEVER_MERGE))
+-To disable instrumentation for specific files or directories, add a line
+-similar to the following to the respective kernel Makefile:
+-
+-- For a single file (e.g. main.o)::
+-
+-    KASAN_SANITIZE_main.o := n
+-
+-- For all files in one directory::
+-
+-    KASAN_SANITIZE := n
+-
+ Error reports
+ ~~~~~~~~~~~~~
+ 
+@@ -140,16 +131,20 @@ freed (in case of a use-after-free bug report). Next comes a description of
+ the accessed slab object and information about the accessed memory page.
+ 
+ In the last section the report shows memory state around the accessed address.
+-Reading this part requires some understanding of how KASAN works.
+-
+-The state of each 8 aligned bytes of memory is encoded in one shadow byte.
+-Those 8 bytes can be accessible, partially accessible, freed or be a redzone.
+-We use the following encoding for each shadow byte: 0 means that all 8 bytes
+-of the corresponding memory region are accessible; number N (1 <= N <= 7) means
+-that the first N bytes are accessible, and other (8 - N) bytes are not;
+-any negative value indicates that the entire 8-byte word is inaccessible.
+-We use different negative values to distinguish between different kinds of
+-inaccessible memory like redzones or freed memory (see mm/kasan/kasan.h).
++Internally KASAN tracks memory state separately for each memory granule, which
++is either 8 or 16 aligned bytes depending on KASAN mode. Each number in the
++memory state section of the report shows the state of one of the memory
++granules that surround the accessed address.
 +
- #define SLAB_MERGE_SAME (SLAB_RECLAIM_ACCOUNT | SLAB_CACHE_DMA | \
- 			 SLAB_CACHE_DMA32 | SLAB_ACCOUNT)
++For generic KASAN the size of each memory granule is 8. The state of each
++granule is encoded in one shadow byte. Those 8 bytes can be accessible,
++partially accessible, freed or be a part of a redzone. KASAN uses the following
++encoding for each shadow byte: 0 means that all 8 bytes of the corresponding
++memory region are accessible; number N (1 <= N <= 7) means that the first N
++bytes are accessible, and other (8 - N) bytes are not; any negative value
++indicates that the entire 8-byte word is inaccessible. KASAN uses different
++negative values to distinguish between different kinds of inaccessible memory
++like redzones or freed memory (see mm/kasan/kasan.h).
  
-@@ -164,7 +169,7 @@ static unsigned int calculate_alignment(slab_flags_t flags,
-  */
- int slab_unmergeable(struct kmem_cache *s)
- {
--	if (slab_nomerge || (s->flags & SLAB_NEVER_MERGE))
-+	if (slab_nomerge || (s->flags & slab_never_merge()))
- 		return 1;
+ In the report above the arrows point to the shadow byte 03, which means that
+ the accessed address is partially accessible.
+@@ -157,6 +152,55 @@ the accessed address is partially accessible.
+ For tag-based KASAN this last report section shows the memory tags around the
+ accessed address (see Implementation details section).
  
- 	if (s->ctor)
-@@ -198,7 +203,7 @@ struct kmem_cache *find_mergeable(unsigned int size, unsigned int align,
- 	size = ALIGN(size, align);
- 	flags = kmem_cache_flags(size, flags, name, NULL);
++Boot parameters
++~~~~~~~~~~~~~~~
++
++Hardware tag-based KASAN mode (see the section about different mode below) is
++intended for use in production as a security mitigation. Therefore it supports
++boot parameters that allow to disable KASAN competely or otherwise control
++particular KASAN features.
++
++The things that can be controlled are:
++
++1. Whether KASAN is enabled at all.
++2. Whether KASAN collects and saves alloc/free stacks.
++3. Whether KASAN panics on a detected bug or not.
++
++The ``kasam.mode`` boot parameter allows to choose one of three main modes:
++
++- ``kasan.mode=off`` - KASAN is disabled, no tag checks are performed
++- ``kasan.mode=prod`` - only essential production features are enabled
++- ``kasan.mode=full`` - all KASAN features are enabled
++
++The chosen mode provides default control values for the features mentioned
++above. However it's also possible to override the default values by providing:
++
++- ``kasan.stacktrace=off`` or ``=on`` - enable alloc/free stack collection
++                                        (default: ``on`` for ``mode=full``,
++                                         otherwise ``off``)
++- ``kasan.fault=report`` or ``=panic`` - only print KASAN report or also panic
++			                 (default: ``report``)
++
++If ``kasan.mode parameter`` is not provided, it defaults to ``full`` when
++``CONFIG_DEBUG_KERNEL`` is enabled, and to ``prod`` otherwise.
++
++For developers
++~~~~~~~~~~~~~~
++
++Software KASAN modes use compiler instrumentation to insert validity checks.
++Such instrumentation might be incompatible with some part of the kernel, and
++therefore needs to be disabled. To disable instrumentation for specific files
++or directories, add a line similar to the following to the respective kernel
++Makefile:
++
++- For a single file (e.g. main.o)::
++
++    KASAN_SANITIZE_main.o := n
++
++- For all files in one directory::
++
++    KASAN_SANITIZE := n
++
  
--	if (flags & SLAB_NEVER_MERGE)
-+	if (flags & slab_never_merge())
- 		return NULL;
+ Implementation details
+ ----------------------
+@@ -164,10 +208,10 @@ Implementation details
+ Generic KASAN
+ ~~~~~~~~~~~~~
  
- 	list_for_each_entry_reverse(s, &slab_caches, list) {
+-From a high level, our approach to memory error detection is similar to that
+-of kmemcheck: use shadow memory to record whether each byte of memory is safe
+-to access, and use compile-time instrumentation to insert checks of shadow
+-memory on each memory access.
++From a high level perspective, KASAN's approach to memory error detection is
++similar to that of kmemcheck: use shadow memory to record whether each byte of
++memory is safe to access, and use compile-time instrumentation to insert checks
++of shadow memory on each memory access.
+ 
+ Generic KASAN dedicates 1/8th of kernel memory to its shadow memory (e.g. 16TB
+ to cover 128TB on x86_64) and uses direct mapping with a scale and offset to
+@@ -194,7 +238,10 @@ function calls GCC directly inserts the code to check the shadow memory.
+ This option significantly enlarges kernel but it gives x1.1-x2 performance
+ boost over outline instrumented kernel.
+ 
+-Generic KASAN prints up to 2 call_rcu() call stacks in reports, the last one
++Generic KASAN is the only mode that delays the reuse of freed object via
++quarantine (see mm/kasan/quarantine.c for implementation).
++
++Generic KASAN prints up to two call_rcu() call stacks in reports, the last one
+ and the second to last.
+ 
+ Software tag-based KASAN
+@@ -302,15 +349,15 @@ therefore be wasteful. Furthermore, to ensure that different mappings
+ use different shadow pages, mappings would have to be aligned to
+ ``KASAN_GRANULE_SIZE * PAGE_SIZE``.
+ 
+-Instead, we share backing space across multiple mappings. We allocate
++Instead, KASAN shares backing space across multiple mappings. It allocates
+ a backing page when a mapping in vmalloc space uses a particular page
+ of the shadow region. This page can be shared by other vmalloc
+ mappings later on.
+ 
+-We hook in to the vmap infrastructure to lazily clean up unused shadow
++KASAN hooks in to the vmap infrastructure to lazily clean up unused shadow
+ memory.
+ 
+-To avoid the difficulties around swapping mappings around, we expect
++To avoid the difficulties around swapping mappings around, KASAN expects
+ that the part of the shadow region that covers the vmalloc space will
+ not be covered by the early shadow page, but will be left
+ unmapped. This will require changes in arch-specific code.
+@@ -321,24 +368,31 @@ architectures that do not have a fixed module region.
+ CONFIG_KASAN_KUNIT_TEST & CONFIG_TEST_KASAN_MODULE
+ --------------------------------------------------
+ 
+-``CONFIG_KASAN_KUNIT_TEST`` utilizes the KUnit Test Framework for testing.
+-This means each test focuses on a small unit of functionality and
+-there are a few ways these tests can be run.
++KASAN tests consist on two parts:
++
++1. Tests that are integrated with the KUnit Test Framework. Enabled with
++``CONFIG_KASAN_KUNIT_TEST``. These tests can be run and partially verified
++automatically in a few different ways, see the instructions below.
+ 
+-Each test will print the KASAN report if an error is detected and then
+-print the number of the test and the status of the test:
++2. Tests that are currently incompatible with Kunit. Enabled with
++``CONFIG_TEST_KASAN_MODULE`` and can only be run as a module. These tests can
++only be verified manually, by loading the kernel module and inspecting the
++kernel log for KASAN reports.
+ 
+-pass::
++Each KUNIT-compatible KASAN test prints a KASAN report if an error is detected.
++Then the test prints its number and status.
++
++When a test passes::
+ 
+         ok 28 - kmalloc_double_kzfree
+ 
+-or, if kmalloc failed::
++When a test fails due to a failed ``kmalloc``::
+ 
+         # kmalloc_large_oob_right: ASSERTION FAILED at lib/test_kasan.c:163
+         Expected ptr is not null, but is
+         not ok 4 - kmalloc_large_oob_right
+ 
+-or, if a KASAN report was expected, but not found::
++When a test fails due to a missing KASAN report::
+ 
+         # kmalloc_double_kzfree: EXPECTATION FAILED at lib/test_kasan.c:629
+         Expected kasan_data->report_expected == kasan_data->report_found, but
+@@ -346,46 +400,38 @@ or, if a KASAN report was expected, but not found::
+         kasan_data->report_found == 0
+         not ok 28 - kmalloc_double_kzfree
+ 
+-All test statuses are tracked as they run and an overall status will
+-be printed at the end::
++At the end the cumulative status of all KASAN tests is printed. On success::
+ 
+         ok 1 - kasan
+ 
+-or::
++Or, if one of the tests failed::
+ 
+         not ok 1 - kasan
+ 
+-(1) Loadable Module
+-~~~~~~~~~~~~~~~~~~~~
++
++There are a few ways to run Kunit-compatible KASAN tests.
++
++1. Loadable module
++~~~~~~~~~~~~~~~~~~
+ 
+ With ``CONFIG_KUNIT`` enabled, ``CONFIG_KASAN_KUNIT_TEST`` can be built as
+-a loadable module and run on any architecture that supports KASAN
+-using something like insmod or modprobe. The module is called ``test_kasan``.
++a loadable module and run on any architecture that supports KASAN by loading
++the module with insmod or modprobe. The module is called ``test_kasan``.
+ 
+-(2) Built-In
+-~~~~~~~~~~~~~
++2. Built-In
++~~~~~~~~~~~
+ 
+ With ``CONFIG_KUNIT`` built-in, ``CONFIG_KASAN_KUNIT_TEST`` can be built-in
+-on any architecure that supports KASAN. These and any other KUnit
+-tests enabled will run and print the results at boot as a late-init
+-call.
++on any architecure that supports KASAN. These and any other KUnit tests enabled
++will run and print the results at boot as a late-init call.
+ 
+-(3) Using kunit_tool
+-~~~~~~~~~~~~~~~~~~~~~
++3. Using kunit_tool
++~~~~~~~~~~~~~~~~~~~
+ 
+-With ``CONFIG_KUNIT`` and ``CONFIG_KASAN_KUNIT_TEST`` built-in, we can also
+-use kunit_tool to see the results of these along with other KUnit
+-tests in a more readable way. This will not print the KASAN reports
+-of tests that passed. Use `KUnit documentation <https://www.kernel.org/doc/html/latest/dev-tools/kunit/index.html>`_ for more up-to-date
+-information on kunit_tool.
++With ``CONFIG_KUNIT`` and ``CONFIG_KASAN_KUNIT_TEST`` built-in, it's also
++possible use ``kunit_tool`` to see the results of these and other KUnit tests
++in a more readable way. This will not print the KASAN reports of the tests that
++passed. Use `KUnit documentation <https://www.kernel.org/doc/html/latest/dev-tools/kunit/index.html>`_
++for more up-to-date information on ``kunit_tool``.
+ 
+ .. _KUnit: https://www.kernel.org/doc/html/latest/dev-tools/kunit/index.html
+-
+-``CONFIG_TEST_KASAN_MODULE`` is a set of KASAN tests that could not be
+-converted to KUnit. These tests can be run only as a module with
+-``CONFIG_TEST_KASAN_MODULE`` built as a loadable module and
+-``CONFIG_KASAN`` built-in. The type of error expected and the
+-function being run is printed before the expression expected to give
+-an error. Then the error is printed, if found, and that test
+-should be interpretted to pass only if the error was the one expected
+-by the test.
 -- 
 2.29.2.222.g5d2a92d10f8-goog
 
