@@ -2,126 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD9402AE23B
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 22:55:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 131592AE240
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 22:56:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731949AbgKJVzi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 16:55:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45808 "EHLO
+        id S1731862AbgKJV40 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 16:56:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45940 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726467AbgKJVzg (ORCPT
+        with ESMTP id S1726737AbgKJV4Z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 16:55:36 -0500
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88CD2C0613D1
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 13:55:36 -0800 (PST)
-Received: by mail-wr1-x442.google.com with SMTP id p8so13561082wrx.5
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 13:55:36 -0800 (PST)
+        Tue, 10 Nov 2020 16:56:25 -0500
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F167C0613D1
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 13:56:25 -0800 (PST)
+Received: by mail-pf1-x443.google.com with SMTP id 10so109602pfp.5
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 13:56:25 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=u5GBjym3rJCQnWuSZFpqf2iaAs/Z53sDeT3dHdMb+hg=;
-        b=a+rlA+7yejDdiDJ1N41A0WeGf5WFRpRtpLmadnxbsb1EgT0Xgo5qSDYl7J0upXNIY4
-         2Zpm7kJdm8DO97O2FYVJiA2ovCEYpNbpmseJxXqQPXZKTeD5Id0OuEHeIULgH0iic2GR
-         13QAgZ1VgmF4g6xoXAa10zDM/B3Oa7rTU7Za47YkTVJQXtjUA34UXNbcAZhBdB2COi6G
-         gD96lDc2wpbJFINDGeeldbUTgXS/DtB9tFfFDOa03E3qTavhD3XovJnfsmC3cqODi0B1
-         dlyeQdpTOz3io+9Xxxw4foS8XIYrIjO91ILrQZGANqJl3y2d8bFcW8Rr7LEJ+wqDKht1
-         wyzw==
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id;
+        bh=ixwwp1tp0QJ1czDiV+Ee/USu0gGUVFj7T0q8Sqh5cbY=;
+        b=x2MLkGt2Kwxwa/HHIMbv11SZFn90oPX7JoStsS2efox7c3/KZbj2Ao/6N6ij4UdCCj
+         q6KUmDWvn6uVsIs3NR/2/+FtTKtU/sdZ0s4inpDiewYBuunv7Mn9cLoyNqE6mjqgtp+J
+         it9nzw/HAqCFP83xqB/MldOvypoYuS1zR5lG8DdZjKKDxTLwn1OCC42rnLMrPgcSa797
+         9I2YJh918SdJMEtnoGa3SuHGw+UJQVwn0P9W2huMmMcNCcc3PO6OcxtTJhR2gLw1TtWP
+         P74uE8tF1ZrfVoBYhwM1+pZsn51iCB2H5XD6FqwWB7xka6d06Q2hENyckPNSepCHE991
+         7EKw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=u5GBjym3rJCQnWuSZFpqf2iaAs/Z53sDeT3dHdMb+hg=;
-        b=t7hxPprxQV8hyFddGmN+23OzibgOfezcraQLYqAaw3k+/rM4Aakw+dYtwEOHrnESzy
-         yxMwURYXdyVBHdFsxxIKEQ5y919hIKcgR+K+velVxvOpYRp+BepCPeX07PpXXET3KJ/F
-         uUufhNmh+q5i/xbAjmvqFhc3xjIFiDAMXjh8MtKETRduyR0CZX9KSZ/qayRbrMr2GNkP
-         DmDrMDeNOJI8vI/hQdVFtZ3brvw4pR862v6ap/hFCsmo5WnELZtrx5Oy2gFDxSg0h4nv
-         +FtqWRg6UozqH3oXfRSljZCW4w1uC/JuxTsGzoNtdFFEXd/wuXxalFQ+P/iW4hxY87/x
-         cvxg==
-X-Gm-Message-State: AOAM533Zdcmn8uSeZPGSOqeNjwws7DuBPsO2UePMfbZOhR7GoykPRga6
-        qFvOfzwzmWXED/cs5uZExfHBpJQIMmNCS9cowQs=
-X-Google-Smtp-Source: ABdhPJwePm6TFap7im1Q+lSU6k6M6ANru3aJxBPToXCnRsuNls8yQIItyzhUJCqEhxkEbMddFz5085Z0/KT51cBCPkI=
-X-Received: by 2002:adf:e350:: with SMTP id n16mr26986533wrj.419.1605045335345;
- Tue, 10 Nov 2020 13:55:35 -0800 (PST)
-MIME-Version: 1.0
-References: <20201106214949.2042120-1-lee.jones@linaro.org> <20201106214949.2042120-8-lee.jones@linaro.org>
-In-Reply-To: <20201106214949.2042120-8-lee.jones@linaro.org>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Tue, 10 Nov 2020 16:55:24 -0500
-Message-ID: <CADnq5_NrnBHFJGVzO-dbMCJrquaUOAYyCiN2zQVXJwe74xEj5w@mail.gmail.com>
-Subject: Re: [PATCH 07/19] drm/radeon/radeon_kms: Include header containing
- our own prototypes
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     David Airlie <airlied@linux.ie>,
-        LKML <linux-kernel@vger.kernel.org>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=ixwwp1tp0QJ1czDiV+Ee/USu0gGUVFj7T0q8Sqh5cbY=;
+        b=WZtmnpbnDxr+52l69DVv2LaqBlsJZ0TOhyodydwhoB/Q9e7C5yJClKF8CMd4lvb8iL
+         Qy8V99HtFc0xaVdY+fI+fCymc83RV55RUFKwd1LXzwL3nUOSp5eB9weCLXAQnMZedQJG
+         jJiMUpQ651/KI9f8Y0Z4RHv566QYRZxrO3AmyJ15JB9bKDapFa+aVoErcpJo7UF0r2UB
+         IOweMR8E0dLAdd0P9glF/qZI4iQ+mOn+I8gzlkDlv99yd8HTjt3n6sX+YKozS4AQjln0
+         4BXDRtMIedNDps/3ArL893ePJGwvQfJruxciGhYjvU2hn8pXqnZEVBTioc9HpapnL9nw
+         iUeQ==
+X-Gm-Message-State: AOAM532ALxrmufOq0OZ7qPxX9LoOYiI+hjzVvOWorH0zRQ9A6/pZdeMJ
+        QtbNpUv5TUMNU/foKpgmqMwunYPste7RZw==
+X-Google-Smtp-Source: ABdhPJzx1zz5qx84FHMuwtUBJos+r15YzAWmoHyEyJtRcgfi/PqG9NhmRDy7ODxu0ONbm8LI+4F6gw==
+X-Received: by 2002:a17:90b:1741:: with SMTP id jf1mr232895pjb.144.1605045384898;
+        Tue, 10 Nov 2020 13:56:24 -0800 (PST)
+Received: from localhost.localdomain ([2601:1c2:680:1319:692:26ff:feda:3a81])
+        by smtp.gmail.com with ESMTPSA id n1sm14414390pgl.31.2020.11.10.13.56.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 10 Nov 2020 13:56:24 -0800 (PST)
+From:   John Stultz <john.stultz@linaro.org>
+To:     lkml <linux-kernel@vger.kernel.org>
+Cc:     John Stultz <john.stultz@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        Prasad Sodagudi <psodagud@codeaurora.org>,
+        Vladimir Lypak <junak.pub@gmail.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-arm-msm@vger.kernel.org, linux-gpio@vger.kernel.org
+Subject: [PATCH v2] pinctrl: qcom: Fix msm8953 Kconfig entry to depend on, not select PINCTRL_MSM
+Date:   Tue, 10 Nov 2020 21:56:19 +0000
+Message-Id: <20201110215619.86076-1-john.stultz@linaro.org>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 6, 2020 at 4:50 PM Lee Jones <lee.jones@linaro.org> wrote:
->
-> Fixes the following W=3D1 kernel build warning(s):
->
->  drivers/gpu/drm/radeon/radeon_kms.c:61:6: warning: no previous prototype=
- for =E2=80=98radeon_driver_unload_kms=E2=80=99 [-Wmissing-prototypes]
->  drivers/gpu/drm/radeon/radeon_kms.c:104:5: warning: no previous prototyp=
-e for =E2=80=98radeon_driver_load_kms=E2=80=99 [-Wmissing-prototypes]
->  drivers/gpu/drm/radeon/radeon_kms.c:618:6: warning: no previous prototyp=
-e for =E2=80=98radeon_driver_lastclose_kms=E2=80=99 [-Wmissing-prototypes]
->  drivers/gpu/drm/radeon/radeon_kms.c:633:5: warning: no previous prototyp=
-e for =E2=80=98radeon_driver_open_kms=E2=80=99 [-Wmissing-prototypes]
->  drivers/gpu/drm/radeon/radeon_kms.c:704:6: warning: no previous prototyp=
-e for =E2=80=98radeon_driver_postclose_kms=E2=80=99 [-Wmissing-prototypes]
->  drivers/gpu/drm/radeon/radeon_kms.c:755:5: warning: no previous prototyp=
-e for =E2=80=98radeon_get_vblank_counter_kms=E2=80=99 [-Wmissing-prototypes=
-]
->  drivers/gpu/drm/radeon/radeon_kms.c:825:5: warning: no previous prototyp=
-e for =E2=80=98radeon_enable_vblank_kms=E2=80=99 [-Wmissing-prototypes]
->  drivers/gpu/drm/radeon/radeon_kms.c:852:6: warning: no previous prototyp=
-e for =E2=80=98radeon_disable_vblank_kms=E2=80=99 [-Wmissing-prototypes]
->
-> Cc: Alex Deucher <alexander.deucher@amd.com>
-> Cc: "Christian K=C3=B6nig" <christian.koenig@amd.com>
-> Cc: David Airlie <airlied@linux.ie>
-> Cc: Daniel Vetter <daniel@ffwll.ch>
-> Cc: amd-gfx@lists.freedesktop.org
-> Cc: dri-devel@lists.freedesktop.org
-> Signed-off-by: Lee Jones <lee.jones@linaro.org>
+One fixup following my patch commit be117ca32261 ("pinctrl:
+qcom: Kconfig: Rework PINCTRL_MSM to be a depenency rather then
+a selected config") being queued in LinusW's tree, as a new
+config entry was added for the msm8953 that also needs the
+change.
 
-Applied.  Thanks!
+Applies to LinusW's pinctrl devel tree.
 
-Alex
+Cc: Andy Gross <agross@kernel.org>
+Cc: Prasad Sodagudi <psodagud@codeaurora.org>
+Cc: Vladimir Lypak <junak.pub@gmail.com>
+Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc: Linus Walleij <linus.walleij@linaro.org>
+Cc: linux-arm-msm@vger.kernel.org
+Cc: linux-gpio@vger.kernel.org
+Signed-off-by: John Stultz <john.stultz@linaro.org>
+Change-Id: I9e8e83b1ea57aff338074be9174fce53cef29eff
+---
+v2:
+* Fix flipped numbers in the soc name, pointed out by
+  Jeffrey Hugo
+---
+ drivers/pinctrl/qcom/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
+diff --git a/drivers/pinctrl/qcom/Kconfig b/drivers/pinctrl/qcom/Kconfig
+index 8bdf878fe970c..cf56e029cd9c7 100644
+--- a/drivers/pinctrl/qcom/Kconfig
++++ b/drivers/pinctrl/qcom/Kconfig
+@@ -115,7 +115,7 @@ config PINCTRL_MSM8916
+ config PINCTRL_MSM8953
+ 	tristate "Qualcomm 8953 pin controller driver"
+ 	depends on GPIOLIB && OF
+-	select PINCTRL_MSM
++	depends on PINCTRL_MSM
+ 	help
+ 	  This is the pinctrl, pinmux, pinconf and gpiolib driver for the
+ 	  Qualcomm TLMM block found on the Qualcomm MSM8953 platform.
+-- 
+2.17.1
 
-> ---
->  drivers/gpu/drm/radeon/radeon_kms.c | 1 +
->  1 file changed, 1 insertion(+)
->
-> diff --git a/drivers/gpu/drm/radeon/radeon_kms.c b/drivers/gpu/drm/radeon=
-/radeon_kms.c
-> index 99ee60f8b604d..0d8fbabffcead 100644
-> --- a/drivers/gpu/drm/radeon/radeon_kms.c
-> +++ b/drivers/gpu/drm/radeon/radeon_kms.c
-> @@ -40,6 +40,7 @@
->
->  #include "radeon.h"
->  #include "radeon_asic.h"
-> +#include "radeon_drv.h"
->
->  #if defined(CONFIG_VGA_SWITCHEROO)
->  bool radeon_has_atpx(void);
-> --
-> 2.25.1
->
-> _______________________________________________
-> dri-devel mailing list
-> dri-devel@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/dri-devel
