@@ -2,138 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 584912ADEA2
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 19:44:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5730F2ADE9D
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 19:43:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731006AbgKJSoo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 13:44:44 -0500
-Received: from foss.arm.com ([217.140.110.172]:59942 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725862AbgKJSon (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 13:44:43 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id BB8D61063;
-        Tue, 10 Nov 2020 10:44:42 -0800 (PST)
-Received: from e113632-lin.cambridge.arm.com (e113632-lin.cambridge.arm.com [10.1.194.46])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 629383F7BB;
-        Tue, 10 Nov 2020 10:44:41 -0800 (PST)
-From:   Valentin Schneider <valentin.schneider@arm.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Morten Rasmussen <morten.rasmussen@arm.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Rik van Riel <riel@surriel.com>,
-        Barry Song <song.bao.hua@hisilicon.com>
-Subject: [PATCH] sched/topology: Warn when NUMA diameter > 2
-Date:   Tue, 10 Nov 2020 18:43:00 +0000
-Message-Id: <20201110184300.15673-1-valentin.schneider@arm.com>
-X-Mailer: git-send-email 2.27.0
+        id S1731490AbgKJSni (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 13:43:38 -0500
+Received: from mail-ot1-f65.google.com ([209.85.210.65]:41793 "EHLO
+        mail-ot1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725862AbgKJSnh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Nov 2020 13:43:37 -0500
+Received: by mail-ot1-f65.google.com with SMTP id n15so13537047otl.8;
+        Tue, 10 Nov 2020 10:43:36 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=qfF817wJaKnDcwT0IKwc1uZghn3u6l9Ye68zq2YepQ4=;
+        b=dbG98dFfBLRxD8drxvR28faKe9i2vy5hpxiQZhN39Wc13ZqCcXGyLy6/OoWAzHKIis
+         Fazp8LmxfhUJJsyzOSUgasZUE+HT8AABly7KG0S8YPbggVO5XpgTbD+kESUR08TfXhUb
+         c3crBVq2pwV20viGjCBxpOj2d1ADD9m/MHOWO70LXjRV/FL0aYhkK0f3iz+gw0XNeKiU
+         0/o78U+4fjL7jEURVBBb2Q1mtOtWz4Ul+7E5oH6p13TsVYzRw9NuOsKPYYYigtexj35S
+         v6GGEOa2CB/4kouqlEcy+o/Nn6Hy1CiyrrTKR6bzRdRXeby50xTeDumBzKhkPmc6ruoh
+         4hbA==
+X-Gm-Message-State: AOAM532mHVvZVFWRzFOhGgAq+B0mvv6vzIN+HB4ICXKbn51RaOLT+Z1f
+        UlycBmPj+sYXxt7+mHs/CucRuCTlGRltvPQBCqt7g/6Q
+X-Google-Smtp-Source: ABdhPJxq07j93VE1nFV7eLHotemy6m3UOXzm0GmXLearoWZTy6R/eBXSo/yppKxoZoU7GHPZ1KVHeua4k9bodvTGS7Y=
+X-Received: by 2002:a9d:171a:: with SMTP id i26mr15722847ota.260.1605033816601;
+ Tue, 10 Nov 2020 10:43:36 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20201023110254.26360-1-yu.c.chen@intel.com>
+In-Reply-To: <20201023110254.26360-1-yu.c.chen@intel.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Tue, 10 Nov 2020 19:43:25 +0100
+Message-ID: <CAJZ5v0jxAwOHbUwpqibvjW-LbZmhOPwaPrekZ6JRcQVGKb+AjQ@mail.gmail.com>
+Subject: Re: [PATCH] PM / suspend: Print the driver flags of device during
+ suspend resume
+To:     Chen Yu <yu.c.chen@intel.com>
+Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <len.brown@intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-NUMA topologies where the shortest path between some two nodes requires
-three or more hops (i.e. diameter > 2) end up being misrepresented in the
-scheduler topology structures.
+On Fri, Oct 23, 2020 at 1:02 PM Chen Yu <yu.c.chen@intel.com> wrote:
+>
+> Currently there are 4 driver flags to control system suspend/resume
+> behavior: DPM_FLAG_NO_DIRECT_COMPLETE, DPM_FLAG_SMART_PREPARE,
+> DPM_FLAG_SMART_SUSPEND and DPM_FLAG_MAY_SKIP_RESUME. Print these flags
+> during suspend resume so as to get a brief understanding of the
+> expected behavior of each device, and to facilitate suspend/resume
+> debugging/tuning.
+>
+> To enable this tracing:
+> echo 'file drivers/base/power/main.c +p' >
+> /sys/kernel/debug/dynamic_debug/control
+>
+> Signed-off-by: Chen Yu <yu.c.chen@intel.com>
+> ---
+>  drivers/base/power/main.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/drivers/base/power/main.c b/drivers/base/power/main.c
+> index 205a06752ca9..be6744bdfc93 100644
+> --- a/drivers/base/power/main.c
+> +++ b/drivers/base/power/main.c
+> @@ -442,9 +442,9 @@ static pm_callback_t pm_noirq_op(const struct dev_pm_ops *ops, pm_message_t stat
+>
+>  static void pm_dev_dbg(struct device *dev, pm_message_t state, const char *info)
+>  {
+> -       dev_dbg(dev, "%s%s%s\n", info, pm_verb(state.event),
+> +       dev_dbg(dev, "%s%s%s driver flags: %x\n", info, pm_verb(state.event),
+>                 ((state.event & PM_EVENT_SLEEP) && device_may_wakeup(dev)) ?
+> -               ", may wakeup" : "");
+> +               ", may wakeup" : "", dev->power.driver_flags);
+>  }
+>
+>  static void pm_dev_err(struct device *dev, pm_message_t state, const char *info,
+> --
 
-This is currently detected when booting a kernel with CONFIG_SCHED_DEBUG=y
-+ sched_debug on the cmdline, although this will only yield a warning about
-sched_group spans not matching sched_domain spans:
-
-  ERROR: groups don't span domain->span
-
-Add an explicit warning for that case, triggered regardless of
-CONFIG_SCHED_DEBUG, and decorate it with an appropriate comment.
-
-The topology described in the comment can be booted up on QEMU by appending
-the following to your usual QEMU incantation:
-
-    -smp cores=4 \
-    -numa node,cpus=0,nodeid=0 -numa node,cpus=1,nodeid=1, \
-    -numa node,cpus=2,nodeid=2, -numa node,cpus=3,nodeid=3, \
-    -numa dist,src=0,dst=1,val=20, -numa dist,src=0,dst=2,val=30, \
-    -numa dist,src=0,dst=3,val=40, -numa dist,src=1,dst=2,val=20, \
-    -numa dist,src=1,dst=3,val=30, -numa dist,src=2,dst=3,val=20
-
-A somewhat more realistic topology (6-node mesh) with the same affliction
-can be conjured with:
-
-    -smp cores=6 \
-    -numa node,cpus=0,nodeid=0 -numa node,cpus=1,nodeid=1, \
-    -numa node,cpus=2,nodeid=2, -numa node,cpus=3,nodeid=3, \
-    -numa node,cpus=4,nodeid=4, -numa node,cpus=5,nodeid=5, \
-    -numa dist,src=0,dst=1,val=20, -numa dist,src=0,dst=2,val=30, \
-    -numa dist,src=0,dst=3,val=40, -numa dist,src=0,dst=4,val=30, \
-    -numa dist,src=0,dst=5,val=20, \
-    -numa dist,src=1,dst=2,val=20, -numa dist,src=1,dst=3,val=30, \
-    -numa dist,src=1,dst=4,val=20, -numa dist,src=1,dst=5,val=30, \
-    -numa dist,src=2,dst=3,val=20, -numa dist,src=2,dst=4,val=30, \
-    -numa dist,src=2,dst=5,val=40, \
-    -numa dist,src=3,dst=4,val=20, -numa dist,src=3,dst=5,val=30, \
-    -numa dist,src=4,dst=5,val=20
-
-Link: https://lore.kernel.org/lkml/jhjtux5edo2.mognet@arm.com
-Signed-off-by: Valentin Schneider <valentin.schneider@arm.com>
----
- kernel/sched/topology.c | 33 +++++++++++++++++++++++++++++++++
- 1 file changed, 33 insertions(+)
-
-diff --git a/kernel/sched/topology.c b/kernel/sched/topology.c
-index 90f3e5558fa2..b296c1c6b961 100644
---- a/kernel/sched/topology.c
-+++ b/kernel/sched/topology.c
-@@ -675,6 +675,7 @@ cpu_attach_domain(struct sched_domain *sd, struct root_domain *rd, int cpu)
- {
- 	struct rq *rq = cpu_rq(cpu);
- 	struct sched_domain *tmp;
-+	int numa_distance = 0;
- 
- 	/* Remove the sched domains which do not contribute to scheduling. */
- 	for (tmp = sd; tmp; ) {
-@@ -706,6 +707,38 @@ cpu_attach_domain(struct sched_domain *sd, struct root_domain *rd, int cpu)
- 			sd->child = NULL;
- 	}
- 
-+	for (tmp = sd; tmp; tmp = tmp->parent)
-+		numa_distance += !!(tmp->flags & SD_NUMA);
-+
-+	/*
-+	 * FIXME: Diameter >=3 is misrepresented.
-+	 *
-+	 * Smallest diameter=3 topology is:
-+	 *
-+	 *   node   0   1   2   3
-+	 *     0:  10  20  30  40
-+	 *     1:  20  10  20  30
-+	 *     2:  30  20  10  20
-+	 *     3:  40  30  20  10
-+	 *
-+	 *   0 --- 1 --- 2 --- 3
-+	 *
-+	 * NUMA-3	0-3		N/A		N/A		0-3
-+	 *  groups:	{0-2},{1-3}					{1-3},{0-2}
-+	 *
-+	 * NUMA-2	0-2		0-3		0-3		1-3
-+	 *  groups:	{0-1},{1-3}	{0-2},{2-3}	{1-3},{0-1}	{2-3},{0-2}
-+	 *
-+	 * NUMA-1	0-1		0-2		1-3		2-3
-+	 *  groups:	{0},{1}		{1},{2},{0}	{2},{3},{1}	{3},{2}
-+	 *
-+	 * NUMA-0	0		1		2		3
-+	 *
-+	 * The NUMA-2 groups for nodes 0 and 3 are obviously buggered, as the
-+	 * group span isn't a subset of the domain span.
-+	 */
-+	WARN_ONCE(numa_distance > 2, "Shortest NUMA path spans too many nodes\n");
-+
- 	sched_domain_debug(sd, cpu);
- 
- 	rq_attach_root(rq, rd);
--- 
-2.27.0
-
+Applied (with some edits in the subject and changelog) as 5.11 material, thanks!
