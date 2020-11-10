@@ -2,169 +2,279 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D75E2AD33D
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 11:13:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EFA72AD339
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 11:13:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729518AbgKJKNQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 05:13:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48836 "EHLO
+        id S1727003AbgKJKNN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 05:13:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48828 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727651AbgKJKNO (ORCPT
+        with ESMTP id S1726344AbgKJKNN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 05:13:14 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1AA7BC0613CF
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 02:13:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=Nz6aJuGegJProF9XLT/RGIExULTP252ycSJBYreRDHs=; b=PqaCh7I0KNstuxHUkYz6+8G3lP
-        k94XHLdZq3HGLAgIE1rNi+MyzdnbZT/8VtzGPXgPLCWFpctYvgoxCXIB1/3nEnYlyaeXD8s7zhjPo
-        2XQfTNu7ItJ8o7Qw2r6wNXZ7kmnxMBVzH0q0Jpsoku7/MjG/E1ecZ9FL0WDq1Eqf9eAYOJKesdXXO
-        MzpVc2S9CBps1aon/zh+4Z900vgGyq96XqjtfDZeKdm5ldKXNUtRGgNLqAoQPs75op84/aEU999uY
-        uSNEhUU+8qGtMKbVzemJDqcDn4bHwdAEiCqyt79+voFKt7BA5qgli73C3pUr9hR25Pl18oG1fM4U0
-        jIYAf/gg==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kcQeC-0004sk-5P; Tue, 10 Nov 2020 10:13:08 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 931153006E0;
-        Tue, 10 Nov 2020 11:13:07 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 80C00203E11E5; Tue, 10 Nov 2020 11:13:07 +0100 (CET)
-Date:   Tue, 10 Nov 2020 11:13:07 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Frederic Weisbecker <frederic@kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>, Mel Gorman <mgorman@suse.de>,
-        Michal Hocko <mhocko@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>, Michal Hocko <mhocko@suse.com>
-Subject: Re: [RFC PATCH 1/7] static_call/x86: Add __static_call_returnl0()
-Message-ID: <20201110101307.GO2651@hirez.programming.kicks-ass.net>
-References: <20201110005609.40989-1-frederic@kernel.org>
- <20201110005609.40989-2-frederic@kernel.org>
- <20201110095515.GA2594@hirez.programming.kicks-ass.net>
+        Tue, 10 Nov 2020 05:13:13 -0500
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CCAFC0613CF
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 02:13:12 -0800 (PST)
+Received: by mail-wm1-x344.google.com with SMTP id w24so2444980wmi.0
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 02:13:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=81I9lvfrdyPbV0Zv1LF5At7fH+qtvyCe4iN6MGiOylA=;
+        b=hl8b31BC5nqy/25RShPeBz1hnO+VADpNVy3T2GuMawHYaOeuvEYi5KLWfF1su1WU4A
+         C7kWLrMDXugBUE/oIFdGkj8BUlxCEuFFz9bWEZwbhQXOHw/q1uS+zIlDlKdSxdBHa9x6
+         ySvU9UURMoZ9yrIGgKt8vyDKWCGkptDqBGppy2bAyPEfZKplxU8VT4mC0VJkhwJD1vPy
+         Zii8jj8br4cL5rBcK1YG4I+Lzh9ZSb6ICdpE44SHnulK95xVaqjBcB6LjL381Q/qke6/
+         HMGd91IH3lytKdXZ4rS4EspG8zHOcMCmsAohE32QYE/jtetI6+n16jrxdGWJl0SfW9e4
+         7Now==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=81I9lvfrdyPbV0Zv1LF5At7fH+qtvyCe4iN6MGiOylA=;
+        b=Dr5x7uMxJPZ3kPCjLlo5g/K5m3B7jdQ7E9dZ7xXxpzxeP6H6Z18ir0mQ2PDtUVHGvv
+         2JCEbLyH1TI+//bAMsK5tw665fZZhxPwGHIRZPDw3br3AwOkbP1oHTrHkUzLa88CAAsX
+         NvgZ4SDyEP4AU8MssKIyeyVuglyd1+0ipPNKDaQ2y7Zsoc3DqIjNE3FlQerJQrC742aV
+         AIJGcWAfJmsNpOSHjWeBcHhKZy43oF5BTbWM2WuM/y3JTT1PIJlwXMTMAHzpRb6mCBYw
+         shZ2/oFLTLun7ZFCtSt4+2JXTPIM+YukIAzdELYAhTGJ6MkaSuOLV+D1dBuXXix03GdG
+         caMg==
+X-Gm-Message-State: AOAM530K41UJKTbXYIcu913fbE2hh4GxqgjAAnUHL8ngCe4yY6nYVSj5
+        PncftZ1wB6+NKYGaaj7mi27XSuoESrV7MnN2
+X-Google-Smtp-Source: ABdhPJxsb+fbImcS3cdrZSPiEPaZpjgLAXdCK2tJL/itsfTsc70k9Kq2nYXZhHhswKD8mFUpjpe4ng==
+X-Received: by 2002:a7b:c8c5:: with SMTP id f5mr3841043wml.174.1605003191052;
+        Tue, 10 Nov 2020 02:13:11 -0800 (PST)
+Received: from [192.168.0.4] (hst-221-71.medicom.bg. [84.238.221.71])
+        by smtp.googlemail.com with ESMTPSA id g138sm2377956wme.39.2020.11.10.02.13.09
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 10 Nov 2020 02:13:10 -0800 (PST)
+Subject: Re: [PATCH 1/3] v4l: Add HDR10 HEVC static metadata controls
+To:     Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org
+Cc:     Nicolas Dufresne <nicolas.dufresne@collabora.com>,
+        Ezequiel Garcia <ezequiel@collabora.com>
+References: <20201109173153.23720-1-stanimir.varbanov@linaro.org>
+ <20201109173153.23720-2-stanimir.varbanov@linaro.org>
+ <dc70bc75-62af-1bdb-1feb-bb58e6f1ff8c@xs4all.nl>
+From:   Stanimir Varbanov <stanimir.varbanov@linaro.org>
+Message-ID: <ba370fa4-37ab-32c4-dfcc-c56a4be0cb3a@linaro.org>
+Date:   Tue, 10 Nov 2020 12:13:09 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201110095515.GA2594@hirez.programming.kicks-ass.net>
+In-Reply-To: <dc70bc75-62af-1bdb-1feb-bb58e6f1ff8c@xs4all.nl>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 10, 2020 at 10:55:15AM +0100, Peter Zijlstra wrote:
-> On Tue, Nov 10, 2020 at 01:56:03AM +0100, Frederic Weisbecker wrote:
+
+
+On 11/10/20 11:43 AM, Hans Verkuil wrote:
+> On 09/11/2020 18:31, Stanimir Varbanov wrote:
+>> Add Content light level and Mastering display colour volume v4l2
+>> compounf controls, relevant payload structures and validation.
 > 
-> > [fweisbec: s/disp16/data16, integrate into text_get_insn(), elaborate
-> >  comment on the resulting insn, emulate on int3 trap, provide validation,
-> >  uninline __static_call_return0() for HAVE_STATIC_CALL]
-
-> Why did you add full emulation of this? The patch I send to you used the
-> text_poke_bp(.emulate) argument to have it emulate an actual call to the
-> out-of-line version of that function.
+> Typo: compounf -> compound
 > 
-> That should work fine and is a lot less code.
+>>
+>> Signed-off-by: Stanimir Varbanov <stanimir.varbanov@linaro.org>
+>> ---
+>>  drivers/media/v4l2-core/v4l2-ctrls.c | 61 ++++++++++++++++++++++++++++
+>>  include/media/hevc-ctrls.h           | 41 +++++++++++++++++++
+>>  include/media/v4l2-ctrls.h           |  2 +
+>>  3 files changed, 104 insertions(+)
+>>
+>> diff --git a/drivers/media/v4l2-core/v4l2-ctrls.c b/drivers/media/v4l2-core/v4l2-ctrls.c
+>> index bd7f330c941c..f70eaa6a46df 100644
+>> --- a/drivers/media/v4l2-core/v4l2-ctrls.c
+>> +++ b/drivers/media/v4l2-core/v4l2-ctrls.c
+>> @@ -1023,6 +1023,8 @@ const char *v4l2_ctrl_get_name(u32 id)
+>>  	case V4L2_CID_MPEG_VIDEO_HEVC_SLICE_PARAMS:		return "HEVC Slice Parameters";
+>>  	case V4L2_CID_MPEG_VIDEO_HEVC_DECODE_MODE:		return "HEVC Decode Mode";
+>>  	case V4L2_CID_MPEG_VIDEO_HEVC_START_CODE:		return "HEVC Start Code";
+>> +	case V4L2_CID_MPEG_VIDEO_HEVC_CLL_INFO:			return "HEVC Content Light Info";
+>> +	case V4L2_CID_MPEG_VIDEO_HEVC_MASTERING_DISPLAY:	return "HEVC Mastering Display";
+> 
+> Why is this split up in two controls? Can you have one, but not the other?
+> 
+> From what I can tell they are always combined (see CTA-861-G, SMPTE 2086).
 
-For reference; the below is what I send you. Actually doing the
-__static_call_return0() call while we poke the magic XOR instruction is
-much simpler.
+I split to two control IDs because in ITU-T Rec. H265 CLL and Mastering
+Display colour volume are different SEI messages. I guessed that they
+could exist in the bitstream independently, though I'm not sure about that.
 
----
-Subject: static_call/x86: Add __static_call_return0
-From: Peter Zijlstra <peterz@infradead.org>
-Date: Mon Oct 12 11:43:32 CEST 2020
+I think, if we decide that hdr10-ctrls.h will be better place for these
+controls we can combine CLL and Mastering display in one control -
+V4L2_CID_MPEG_HDR10_STATIC_METADATA.
+And later we could introduce V4L2_CID_MPEG_HDR10_DYNAMIC_METADATA for
+hdr10+ (2094-40).
 
-Provide a stub function that return 0 and wire up the static call site
-patching to replace the CALL with a single 5 byte instruction that
-clears %RAX, the return value register.
+> 
+> Regards,
+> 
+> 	Hans
+> 
+>>  
+>>  	/* CAMERA controls */
+>>  	/* Keep the order of the 'case's the same as in v4l2-controls.h! */
+>> @@ -1461,6 +1463,12 @@ void v4l2_ctrl_fill(u32 id, const char **name, enum v4l2_ctrl_type *type,
+>>  	case V4L2_CID_MPEG_VIDEO_HEVC_SLICE_PARAMS:
+>>  		*type = V4L2_CTRL_TYPE_HEVC_SLICE_PARAMS;
+>>  		break;
+>> +	case V4L2_CID_MPEG_VIDEO_HEVC_CLL_INFO:
+>> +		*type = V4L2_CTRL_TYPE_HEVC_CLL_INFO;
+>> +		break;
+>> +	case V4L2_CID_MPEG_VIDEO_HEVC_MASTERING_DISPLAY:
+>> +		*type = V4L2_CTRL_TYPE_HEVC_MASTERING_DISPLAY;
+>> +		break;
+>>  	case V4L2_CID_UNIT_CELL_SIZE:
+>>  		*type = V4L2_CTRL_TYPE_AREA;
+>>  		*flags |= V4L2_CTRL_FLAG_READ_ONLY;
+>> @@ -1775,6 +1783,7 @@ static int std_validate_compound(const struct v4l2_ctrl *ctrl, u32 idx,
+>>  	struct v4l2_ctrl_hevc_sps *p_hevc_sps;
+>>  	struct v4l2_ctrl_hevc_pps *p_hevc_pps;
+>>  	struct v4l2_ctrl_hevc_slice_params *p_hevc_slice_params;
+>> +	struct v4l2_ctrl_hevc_mastering_display *p_hevc_mastering;
+>>  	struct v4l2_area *area;
+>>  	void *p = ptr.p + idx * ctrl->elem_size;
+>>  	unsigned int i;
+>> @@ -1934,6 +1943,52 @@ static int std_validate_compound(const struct v4l2_ctrl *ctrl, u32 idx,
+>>  		zero_padding(*p_hevc_slice_params);
+>>  		break;
+>>  
+>> +	case V4L2_CTRL_TYPE_HEVC_CLL_INFO:
+>> +		break;
+>> +
+>> +	case V4L2_CTRL_TYPE_HEVC_MASTERING_DISPLAY:
+>> +		p_hevc_mastering = p;
+>> +
+>> +		for (i = 0; i < 3; ++i) {
+>> +			if (p_hevc_mastering->display_primaries_x[i] <
+>> +				V4L2_HEVC_MASTERING_PRIMARIES_X_LOW ||
+>> +			    p_hevc_mastering->display_primaries_x[i] >
+>> +				V4L2_HEVC_MASTERING_PRIMARIES_X_HIGH ||
+>> +			    p_hevc_mastering->display_primaries_y[i] <
+>> +				V4L2_HEVC_MASTERING_PRIMARIES_Y_LOW ||
+>> +			    p_hevc_mastering->display_primaries_y[i] >
+>> +				V4L2_HEVC_MASTERING_PRIMARIES_Y_HIGH)
+>> +				return -EINVAL;
+>> +		}
+>> +
+>> +		if (p_hevc_mastering->white_point_x <
+>> +			V4L2_HEVC_MASTERING_WHITE_POINT_X_LOW ||
+>> +		    p_hevc_mastering->white_point_x >
+>> +			V4L2_HEVC_MASTERING_WHITE_POINT_X_HIGH ||
+>> +		    p_hevc_mastering->white_point_y <
+>> +			V4L2_HEVC_MASTERING_WHITE_POINT_Y_LOW ||
+>> +		    p_hevc_mastering->white_point_y >
+>> +			V4L2_HEVC_MASTERING_WHITE_POINT_Y_HIGH)
+>> +			return -EINVAL;
+>> +
+>> +		if (p_hevc_mastering->max_luminance <
+>> +			V4L2_HEVC_MASTERING_MAX_LUMA_LOW ||
+>> +		    p_hevc_mastering->max_luminance >
+>> +			V4L2_HEVC_MASTERING_MAX_LUMA_HIGH ||
+>> +		    p_hevc_mastering->min_luminance <
+>> +			V4L2_HEVC_MASTERING_MIN_LUMA_LOW ||
+>> +		    p_hevc_mastering->min_luminance >
+>> +			V4L2_HEVC_MASTERING_MIN_LUMA_HIGH)
+>> +			return -EINVAL;
+>> +
+>> +		if (p_hevc_mastering->max_luminance ==
+>> +			V4L2_HEVC_MASTERING_MAX_LUMA_LOW &&
+>> +		    p_hevc_mastering->min_luminance ==
+>> +			V4L2_HEVC_MASTERING_MIN_LUMA_HIGH)
+>> +			return -EINVAL;
+>> +
+>> +		break;
+>> +
+>>  	case V4L2_CTRL_TYPE_AREA:
+>>  		area = p;
+>>  		if (!area->width || !area->height)
+>> @@ -2626,6 +2681,12 @@ static struct v4l2_ctrl *v4l2_ctrl_new(struct v4l2_ctrl_handler *hdl,
+>>  	case V4L2_CTRL_TYPE_HEVC_SLICE_PARAMS:
+>>  		elem_size = sizeof(struct v4l2_ctrl_hevc_slice_params);
+>>  		break;
+>> +	case V4L2_CTRL_TYPE_HEVC_CLL_INFO:
+>> +		elem_size = sizeof(struct v4l2_ctrl_hevc_cll_info);
+>> +		break;
+>> +	case V4L2_CTRL_TYPE_HEVC_MASTERING_DISPLAY:
+>> +		elem_size = sizeof(struct v4l2_ctrl_hevc_mastering_display);
+>> +		break;
+>>  	case V4L2_CTRL_TYPE_AREA:
+>>  		elem_size = sizeof(struct v4l2_area);
+>>  		break;
+>> diff --git a/include/media/hevc-ctrls.h b/include/media/hevc-ctrls.h
+>> index 1009cf0891cc..d254457d2846 100644
+>> --- a/include/media/hevc-ctrls.h
+>> +++ b/include/media/hevc-ctrls.h
+>> @@ -209,4 +209,45 @@ struct v4l2_ctrl_hevc_slice_params {
+>>  	__u64	flags;
+>>  };
+>>  
+>> +/*
+>> + * Content light level information.
+>> + * Source Rec. ITU-T H.265 v7 (11/2019) HEVC; D.2.35
+>> + */
+>> +#define V4L2_CID_MPEG_VIDEO_HEVC_CLL_INFO	(V4L2_CID_MPEG_BASE + 1017)
+>> +#define V4L2_CTRL_TYPE_HEVC_CLL_INFO		0x0123
+>> +
+>> +struct v4l2_ctrl_hevc_cll_info {
+>> +	__u16 max_content_light_level;
+>> +	__u16 max_pic_average_light_level;
+>> +};
+>> +
+>> +/*
+>> + * Mastering display colour volume.
+>> + * Source Rec. ITU-T H.265 v7 (11/2019) HEVC; D.2.28
+>> + */
+>> +#define V4L2_CID_MPEG_VIDEO_HEVC_MASTERING_DISPLAY (V4L2_CID_MPEG_BASE + 1018)
+>> +#define V4L2_CTRL_TYPE_HEVC_MASTERING_DISPLAY	0x0124
+>> +
+>> +#define V4L2_HEVC_MASTERING_PRIMARIES_X_LOW	5
+>> +#define V4L2_HEVC_MASTERING_PRIMARIES_X_HIGH	37000
+>> +#define V4L2_HEVC_MASTERING_PRIMARIES_Y_LOW	5
+>> +#define V4L2_HEVC_MASTERING_PRIMARIES_Y_HIGH	42000
+>> +#define V4L2_HEVC_MASTERING_WHITE_POINT_X_LOW	5
+>> +#define V4L2_HEVC_MASTERING_WHITE_POINT_X_HIGH	37000
+>> +#define V4L2_HEVC_MASTERING_WHITE_POINT_Y_LOW	5
+>> +#define V4L2_HEVC_MASTERING_WHITE_POINT_Y_HIGH	42000
+>> +#define V4L2_HEVC_MASTERING_MAX_LUMA_LOW	50000
+>> +#define V4L2_HEVC_MASTERING_MAX_LUMA_HIGH	100000000
+>> +#define V4L2_HEVC_MASTERING_MIN_LUMA_LOW	1
+>> +#define V4L2_HEVC_MASTERING_MIN_LUMA_HIGH	50000
+>> +
+>> +struct v4l2_ctrl_hevc_mastering_display {
+>> +	__u16 display_primaries_x[3];
+>> +	__u16 display_primaries_y[3];
+>> +	__u16 white_point_x;
+>> +	__u16 white_point_y;
+>> +	__u32 max_luminance;
+>> +	__u32 min_luminance;
+>> +};
+>> +
+>>  #endif
+>> diff --git a/include/media/v4l2-ctrls.h b/include/media/v4l2-ctrls.h
+>> index cb25f345e9ad..6120e29945e1 100644
+>> --- a/include/media/v4l2-ctrls.h
+>> +++ b/include/media/v4l2-ctrls.h
+>> @@ -80,6 +80,8 @@ union v4l2_ctrl_ptr {
+>>  	struct v4l2_ctrl_hevc_sps *p_hevc_sps;
+>>  	struct v4l2_ctrl_hevc_pps *p_hevc_pps;
+>>  	struct v4l2_ctrl_hevc_slice_params *p_hevc_slice_params;
+>> +	struct v4l2_ctrl_hevc_cll_info *p_hevc_cll;
+>> +	struct v4l2_ctrl_hevc_mastering_display *p_hevc_mastering;
+>>  	struct v4l2_area *p_area;
+>>  	void *p;
+>>  	const void *p_const;
+>>
+> 
 
-The function can be cast to any function pointer type that has a
-single %RAX return (including pointers).
-
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
----
- arch/x86/kernel/static_call.c |   11 ++++++++++-
- include/linux/static_call.h   |    6 ++++++
- kernel/static_call.c          |    5 +++++
- 3 files changed, 21 insertions(+), 1 deletion(-)
-
---- a/arch/x86/kernel/static_call.c
-+++ b/arch/x86/kernel/static_call.c
-@@ -13,12 +13,21 @@ enum insn_type {
- 
- static void __ref __static_call_transform(void *insn, enum insn_type type, void *func)
- {
-+	/*
-+	 * disp16 disp16 xorq %rax, %rax - a single 5 byte instruction that clears %rax
-+	 */
-+	static const u8 ret0[5] = { 0x66, 0x66, 0x48, 0x31, 0xc0 };
- 	int size = CALL_INSN_SIZE;
-+	const void *emulate = NULL;
- 	const void *code;
- 
- 	switch (type) {
- 	case CALL:
- 		code = text_gen_insn(CALL_INSN_OPCODE, insn, func);
-+		if (func == &__static_call_return0) {
-+			emulate = code;
-+			code = ret0;
-+		}
- 		break;
- 
- 	case NOP:
-@@ -41,7 +50,7 @@ static void __ref __static_call_transfor
- 	if (unlikely(system_state == SYSTEM_BOOTING))
- 		return text_poke_early(insn, code, size);
- 
--	text_poke_bp(insn, code, size, NULL);
-+	text_poke_bp(insn, code, size, emulate);
- }
- 
- static void __static_call_validate(void *insn, bool tail)
---- a/include/linux/static_call.h
-+++ b/include/linux/static_call.h
-@@ -136,6 +136,8 @@ extern void arch_static_call_transform(v
- 
- #ifdef CONFIG_HAVE_STATIC_CALL_INLINE
- 
-+extern long __static_call_return0(void);
-+
- extern int __init static_call_init(void);
- 
- struct static_call_mod {
-@@ -187,6 +189,8 @@ extern int static_call_text_reserved(voi
- 
- #elif defined(CONFIG_HAVE_STATIC_CALL)
- 
-+static inline long __static_call_return0(void) { return 0; }
-+
- static inline int static_call_init(void) { return 0; }
- 
- struct static_call_key {
-@@ -234,6 +238,8 @@ static inline int static_call_text_reser
- 
- #else /* Generic implementation */
- 
-+static inline long __static_call_return0(void) { return 0; }
-+
- static inline int static_call_init(void) { return 0; }
- 
- struct static_call_key {
---- a/kernel/static_call.c
-+++ b/kernel/static_call.c
-@@ -438,6 +438,11 @@ int __init static_call_init(void)
- }
- early_initcall(static_call_init);
- 
-+long __static_call_return0(void)
-+{
-+	return 0;
-+}
-+
- #ifdef CONFIG_STATIC_CALL_SELFTEST
- 
- static int func_a(int x)
+-- 
+regards,
+Stan
