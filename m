@@ -2,29 +2,29 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52A222AD6AD
+	by mail.lfdr.de (Postfix) with ESMTP id C00722AD6AE
 	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 13:46:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732276AbgKJMqI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 07:46:08 -0500
-Received: from foss.arm.com ([217.140.110.172]:55114 "EHLO foss.arm.com"
+        id S1732315AbgKJMqJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 07:46:09 -0500
+Received: from foss.arm.com ([217.140.110.172]:55126 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732195AbgKJMqF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 07:46:05 -0500
+        id S1732261AbgKJMqH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Nov 2020 07:46:07 -0500
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3C1BC1396;
-        Tue, 10 Nov 2020 04:46:04 -0800 (PST)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0A5BD12FC;
+        Tue, 10 Nov 2020 04:46:07 -0800 (PST)
 Received: from p8cg001049571a15.blr.arm.com (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id ECC573F6CF;
-        Tue, 10 Nov 2020 04:46:01 -0800 (PST)
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id B8FD03F6CF;
+        Tue, 10 Nov 2020 04:46:04 -0800 (PST)
 From:   Anshuman Khandual <anshuman.khandual@arm.com>
 To:     linux-arm-kernel@lists.infradead.org, coresight@lists.linaro.org
 Cc:     linux-kernel@vger.kernel.org, suzuki.poulose@arm.com,
         mathieu.poirier@linaro.org, mike.leach@linaro.org,
         Anshuman Khandual <anshuman.khandual@arm.com>
-Subject: [RFC 04/11] coresight: etm4x: Add support for PE OS lock
-Date:   Tue, 10 Nov 2020 18:15:02 +0530
-Message-Id: <1605012309-24812-5-git-send-email-anshuman.khandual@arm.com>
+Subject: [RFC 05/11] coresight: ete: Add support for sysreg support
+Date:   Tue, 10 Nov 2020 18:15:03 +0530
+Message-Id: <1605012309-24812-6-git-send-email-anshuman.khandual@arm.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1605012309-24812-1-git-send-email-anshuman.khandual@arm.com>
 References: <1605012309-24812-1-git-send-email-anshuman.khandual@arm.com>
@@ -34,134 +34,161 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Suzuki K Poulose <suzuki.poulose@arm.com>
 
-ETE may not implement the OS lock and instead could rely on
-the PE OS Lock for the trace unit access. This is indicated
-by the TRCOLSR.OSM == 0b100. Add support for handling the
-PE OS lock
+This adds sysreg support for ETE.
 
 Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
 Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
 ---
- drivers/hwtracing/coresight/coresight-etm4x-core.c | 50 ++++++++++++++++++----
- drivers/hwtracing/coresight/coresight-etm4x.h      | 15 +++++++
- 2 files changed, 56 insertions(+), 9 deletions(-)
+ drivers/hwtracing/coresight/coresight-etm4x-core.c | 39 ++++++++++++++++++++
+ drivers/hwtracing/coresight/coresight-etm4x.h      | 42 +++++++++++++++++-----
+ 2 files changed, 72 insertions(+), 9 deletions(-)
 
 diff --git a/drivers/hwtracing/coresight/coresight-etm4x-core.c b/drivers/hwtracing/coresight/coresight-etm4x-core.c
-index fd945c1..0269b4c 100644
+index 0269b4c..15b6e94 100644
 --- a/drivers/hwtracing/coresight/coresight-etm4x-core.c
 +++ b/drivers/hwtracing/coresight/coresight-etm4x-core.c
-@@ -101,30 +101,59 @@ void etm4x_sysreg_write(struct csdev_access *csa,
+@@ -101,6 +101,45 @@ void etm4x_sysreg_write(struct csdev_access *csa,
  	}
  }
  
--static void etm4_os_unlock_csa(struct etmv4_drvdata *drvdata, struct csdev_access *csa)
-+static void etm_detect_os_lock(struct etmv4_drvdata *drvdata,
-+			       struct csdev_access *csa)
- {
--	/* Writing 0 to TRCOSLAR unlocks the trace registers */
--	etm4x_relaxed_write32(csa, 0x0, TRCOSLAR);
--	drvdata->os_unlock = true;
-+	u32 oslsr = etm4x_relaxed_read32(csa, TRCOSLSR);
-+
-+	drvdata->os_lock_model = ETM_OSLSR_OSLM(oslsr);
-+}
-+
-+static void etm_write_os_lock(struct etmv4_drvdata *drvdata,
-+			      struct csdev_access *csa, u32 val)
++u64 ete_sysreg_read(struct csdev_access *csa,
++		      u32 offset,
++		      bool _relaxed,
++		      bool _64bit)
 +{
-+	val = !!val;
++	u64 res = 0;
 +
-+	switch (drvdata->os_lock_model) {
-+	case ETM_OSLOCK_PRESENT:
-+		etm4x_relaxed_write32(csa, val, TRCOSLAR);
-+		break;
-+	case ETM_OSLOCK_PE:
-+		write_sysreg_s(val, SYS_OSLAR_EL1);
-+		break;
-+	default:
-+		pr_warn_once("CPU%d: Unsupported Trace OSLock model: %x\n",
-+			     smp_processor_id(), drvdata->os_lock_model);
-+		fallthrough;
-+	case ETM_OSLOCK_NI:
-+		return;
++	switch (offset) {
++	ETE_READ_CASES(res)
++	default :
++		WARN_ONCE(1, "ete: trying to read unsupported register @%x\n",
++			 offset);
 +	}
- 	isb();
- }
- 
-+static inline void etm4_os_unlock_csa(struct etmv4_drvdata *drvdata,
-+				      struct csdev_access *csa)
-+{
-+	WARN_ON(drvdata->cpu != smp_processor_id());
 +
-+	/* Writing 0 to OS Lock unlocks the trace unit registers */
-+	etm_write_os_lock(drvdata, csa, 0x0);
-+	drvdata->os_unlock = true;
++	if (!_relaxed)
++		__iormb(res);	/* Imitate the !relaxed I/O helpers */
++
++	return res;
 +}
 +
- static void etm4_os_unlock(struct etmv4_drvdata *drvdata)
- {
- 	if (!WARN_ON(!drvdata->csdev))
- 		etm4_os_unlock_csa(drvdata, &drvdata->csdev->access);
--
- }
- 
- static void etm4_os_lock(struct etmv4_drvdata *drvdata)
- {
- 	if (WARN_ON(!drvdata->csdev))
- 		return;
--
--	/* Writing 0x1 to TRCOSLAR locks the trace registers */
--	etm4x_relaxed_write32(&drvdata->csdev->access, 0x1, TRCOSLAR);
-+	/* Writing 0x1 to OS Lock locks the trace registers */
-+	etm_write_os_lock(drvdata, &drvdata->csdev->access, 0x1);
- 	drvdata->os_unlock = false;
--	isb();
- }
- 
- static void etm4_cs_lock(struct etmv4_drvdata *drvdata,
-@@ -794,6 +823,9 @@ static void etm4_init_arch_data(void *info)
- 	if (!etm_init_csdev_access(drvdata, csa))
- 		return;
- 
-+	/* Detect the support for OS Lock before we actuall use it */
-+	etm_detect_os_lock(drvdata, csa);
++void ete_sysreg_write(struct csdev_access *csa,
++			u64 val,
++			u32 offset,
++			bool _relaxed,
++			bool _64bit)
++{
++	if (!_relaxed)
++		__iowmb();	/* Imitate the !relaxed I/O helpers */
++	if (!_64bit)
++		val &= GENMASK(31, 0);
 +
- 	/* Make sure all registers are accessible */
- 	etm4_os_unlock_csa(drvdata, csa);
- 	etm4_cs_unlock(drvdata, csa);
++	switch (offset) {
++	ETE_WRITE_CASES(val)
++	default :
++		WARN_ONCE(1, "ete: trying to write to unsupported register @%x\n",
++			offset);
++	}
++}
++
+ static void etm_detect_os_lock(struct etmv4_drvdata *drvdata,
+ 			       struct csdev_access *csa)
+ {
 diff --git a/drivers/hwtracing/coresight/coresight-etm4x.h b/drivers/hwtracing/coresight/coresight-etm4x.h
-index fe71072..4b1bfc2 100644
+index 4b1bfc2..00c0367 100644
 --- a/drivers/hwtracing/coresight/coresight-etm4x.h
 +++ b/drivers/hwtracing/coresight/coresight-etm4x.h
-@@ -497,6 +497,20 @@
- 					 ETM_MODE_EXCL_USER)
+@@ -28,6 +28,7 @@
+ #define TRCAUXCTLR			0x018
+ #define TRCEVENTCTL0R			0x020
+ #define TRCEVENTCTL1R			0x024
++#define TRCRSR				0x028
+ #define TRCSTALLCTLR			0x02C
+ #define TRCTSCTLR			0x030
+ #define TRCSYNCPR			0x034
+@@ -48,6 +49,7 @@
+ #define TRCSEQRSTEVR			0x118
+ #define TRCSEQSTR			0x11C
+ #define TRCEXTINSELR			0x120
++#define TRCEXTINSELRn(n)		(0x120 + (n * 4)) /* n = 0-3 */
+ #define TRCCNTRLDVRn(n)			(0x140 + (n * 4)) /* n = 0-3 */
+ #define TRCCNTCTLRn(n)			(0x150 + (n * 4)) /* n = 0-3 */
+ #define TRCCNTVRn(n)			(0x160 + (n * 4)) /* n = 0-3 */
+@@ -156,9 +158,22 @@
+ #define CASE_WRITE(val, x)					\
+ 	case (x): { write_etm4x_sysreg_const_offset((val), (x)); break; }
  
- /*
-+ * TRCOSLSR.OSLM advertises the OS Lock model.
-+ * OSLM[2:0] = TRCOSLSR[4:3,0]
-+ *
-+ *	0b000 - Trace OS Lock is not implemented.
-+ *	0b010 - Trace OS Lock is implemented.
-+ *	0b100 - Trace OS Lock is not implemented, unit is controlled by PE OS Lock.
-+ */
-+#define ETM_OSLOCK_NI		0b000
-+#define ETM_OSLOCK_PRESENT	0b010
-+#define ETM_OSLOCK_PE		0b100
+-#define CASE_LIST(op, val)			\
+-	CASE_##op((val), TRCPRGCTLR)		\
++#define ETE_ONLY_LIST(op, val)			\
++	CASE_##op((val), TRCRSR)		\
++	CASE_##op((val), TRCEXTINSELRn(1))	\
++	CASE_##op((val), TRCEXTINSELRn(2))	\
++	CASE_##op((val), TRCEXTINSELRn(3))
 +
-+#define ETM_OSLSR_OSLM(oslsr)	((((oslsr) & GENMASK(4, 3)) >> 2) | (oslsr & 0x1))
++#define ETM_ONLY_LIST(op, val)			\
+ 	CASE_##op((val), TRCPROCSELR)		\
++	CASE_##op((val), TRCVDCTLR)		\
++	CASE_##op((val), TRCVDSACCTLR)		\
++	CASE_##op((val), TRCVDARCCTLR)		\
++	CASE_##op((val), TRCITCTRL)		\
++	CASE_##op((val), TRCOSLAR)
 +
-+/*
-  * TRCDEVARCH Bit field definitions
-  * Bits[31:21]	- ARCHITECT = Always Arm Ltd.
-  *                * Bits[31:28] = 0x4
-@@ -879,6 +893,7 @@ struct etmv4_drvdata {
- 	u8				s_ex_level;
- 	u8				ns_ex_level;
- 	u8				q_support;
-+	u8				os_lock_model;
- 	bool				sticky_enable;
- 	bool				boot_enable;
- 	bool				os_unlock;
++#define COMMON_LIST(op, val)		\
++	CASE_##op((val), TRCPRGCTLR)		\
+ 	CASE_##op((val), TRCSTATR)		\
+ 	CASE_##op((val), TRCCONFIGR)		\
+ 	CASE_##op((val), TRCAUXCTLR)		\
+@@ -175,9 +190,6 @@
+ 	CASE_##op((val), TRCVIIECTLR)		\
+ 	CASE_##op((val), TRCVISSCTLR)		\
+ 	CASE_##op((val), TRCVIPCSSCTLR)		\
+-	CASE_##op((val), TRCVDCTLR)		\
+-	CASE_##op((val), TRCVDSACCTLR)		\
+-	CASE_##op((val), TRCVDARCCTLR)		\
+ 	CASE_##op((val), TRCSEQEVRn(0))		\
+ 	CASE_##op((val), TRCSEQEVRn(1))		\
+ 	CASE_##op((val), TRCSEQEVRn(2))		\
+@@ -272,7 +284,6 @@
+ 	CASE_##op((val), TRCSSPCICRn(5))	\
+ 	CASE_##op((val), TRCSSPCICRn(6))	\
+ 	CASE_##op((val), TRCSSPCICRn(7))	\
+-	CASE_##op((val), TRCOSLAR)		\
+ 	CASE_##op((val), TRCOSLSR)		\
+ 	CASE_##op((val), TRCPDCR)		\
+ 	CASE_##op((val), TRCPDSR)		\
+@@ -344,7 +355,6 @@
+ 	CASE_##op((val), TRCCIDCCTLR1)		\
+ 	CASE_##op((val), TRCVMIDCCTLR0)		\
+ 	CASE_##op((val), TRCVMIDCCTLR1)		\
+-	CASE_##op((val), TRCITCTRL)		\
+ 	CASE_##op((val), TRCCLAIMSET)		\
+ 	CASE_##op((val), TRCCLAIMCLR)		\
+ 	CASE_##op((val), TRCDEVAFF0)		\
+@@ -364,8 +374,22 @@
+ 	CASE_##op((val), TRCPIDR2)		\
+ 	CASE_##op((val), TRCPIDR3)
+ 
+-#define ETM4x_READ_CASES(res)	CASE_LIST(READ, (res))
+-#define ETM4x_WRITE_CASES(val)	CASE_LIST(WRITE, (val))
++#define ETM4x_READ_CASES(res)			\
++	COMMON_LIST(READ, (res))		\
++	ETM_ONLY_LIST(READ, (res))
++
++#define ETM4x_WRITE_CASES(res)			\
++	COMMON_LIST(WRITE, (res))		\
++	ETM_ONLY_LIST(WRITE, (res))
++
++#define ETE_READ_CASES(res)			\
++	COMMON_LIST(READ, (res))		\
++	ETE_ONLY_LIST(READ, (res))
++
++#define ETE_WRITE_CASES(res)			\
++	COMMON_LIST(WRITE, (res))		\
++	ETE_ONLY_LIST(WRITE, (res))
++
+ 
+ #define read_etm4x_sysreg_offset(csa, offset, _64bit)				\
+ 	({									\
 -- 
 2.7.4
 
