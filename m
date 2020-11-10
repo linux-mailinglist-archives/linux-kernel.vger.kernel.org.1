@@ -2,55 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB8022ADF29
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 20:18:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 728402ADF2B
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 20:18:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731417AbgKJTSC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 14:18:02 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56704 "EHLO mail.kernel.org"
+        id S1731524AbgKJTSo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 14:18:44 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56916 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726307AbgKJTSB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 14:18:01 -0500
-Received: from localhost.localdomain (unknown [2.26.170.190])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S1726307AbgKJTSn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Nov 2020 14:18:43 -0500
+Received: from localhost.localdomain (c-73-231-172-41.hsd1.ca.comcast.net [73.231.172.41])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id AFCA220809;
-        Tue, 10 Nov 2020 19:17:59 +0000 (UTC)
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Anshuman Khandual <anshuman.khandual@arm.com>,
-        linux-arm-kernel@lists.infradead.org,
-        Mark Rutland <mark.rutland@arm.com>
-Cc:     Will Deacon <will@kernel.org>, Marc Zyngier <maz@kernel.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] arm64: consistently use reserved_pg_dir
-Date:   Tue, 10 Nov 2020 19:17:56 +0000
-Message-Id: <160503567612.1015740.6410821724474192857.b4-ty@arm.com>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201103102229.8542-1-mark.rutland@arm.com>
-References: <20201103102229.8542-1-mark.rutland@arm.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        by mail.kernel.org (Postfix) with ESMTPSA id D3D512054F;
+        Tue, 10 Nov 2020 19:18:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605035923;
+        bh=QyaQj8nTAcAePgBxv8GT7EUTzLqnjFIqlPDgD7W/gko=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=SXutxCxmOb4O7uW0nfSaG1esxskxJHgmpeYeSOOdlK9bujKeiUkijwgWvglSsfH0h
+         0UwJokCJsFTeHzDyS9tjtVxZEGXnYqzVLL2tQiOYsSse7EbDhsIVYigP4j4vK0GN2u
+         7zR074kr/3rwJbZkU/7M7V3lLz8Fw8aV1K2BKEj4=
+Date:   Tue, 10 Nov 2020 11:18:42 -0800
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     Yicong Yang <yangyicong@hisilicon.com>
+Cc:     <viro@zeniv.linux.org.uk>, <linux-fsdevel@vger.kernel.org>,
+        <akinobu.mita@gmail.com>, <linux-kernel@vger.kernel.org>,
+        <linuxarm@huawei.com>, <prime.zeng@huawei.com>
+Subject: Re: [RESEND PATCH] libfs: fix error cast of negative value in
+ simple_attr_write()
+Message-Id: <20201110111842.1bc76e9def94279d4453ff67@linux-foundation.org>
+In-Reply-To: <1605000324-7428-1-git-send-email-yangyicong@hisilicon.com>
+References: <1605000324-7428-1-git-send-email-yangyicong@hisilicon.com>
+X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 3 Nov 2020 10:22:29 +0000, Mark Rutland wrote:
-> Depending on configuration options and specific code paths, we either
-> use the empty_zero_page or the configuration-dependent reserved_ttbr0
-> as a reserved value for TTBR{0,1}_EL1.
+On Tue, 10 Nov 2020 17:25:24 +0800 Yicong Yang <yangyicong@hisilicon.com> wrote:
+
+> The attr->set() receive a value of u64, but simple_strtoll() is used
+> for doing the conversion. It will lead to the error cast if user inputs
+> a negative value.
 > 
-> To simplify this code, let's always allocate and use the same
-> reserved_pg_dir, replacing reserved_ttbr0. Note that this is allocated
-> (and hence pre-zeroed), and is also marked as read-only in the kernel
-> Image mapping.
+> Use kstrtoull() instead of simple_strtoll() to convert a string got
+> from the user to an unsigned value. The former will return '-EINVAL' if
+> it gets a negetive value, but the latter can't handle the situation
+> correctly.
 > 
-> [...]
+> ...
+>
+> --- a/fs/libfs.c
+> +++ b/fs/libfs.c
+> @@ -977,7 +977,9 @@ ssize_t simple_attr_write(struct file *file, const char __user *buf,
+>  		goto out;
+>  
+>  	attr->set_buf[size] = '\0';
+> -	val = simple_strtoll(attr->set_buf, NULL, 0);
+> +	ret = kstrtoull(attr->set_buf, 0, &val);
+> +	if (ret)
+> +		goto out;
+>  	ret = attr->set(attr->data, val);
+>  	if (ret == 0)
+>  		ret = len; /* on success, claim we got the whole input */
 
-Applied to arm64 (for-next/misc), thanks!
+kstrtoull() takes an `unsigned long long *', but `val' is a u64.
 
-[1/1] arm64: consistently use reserved_pg_dir
-      https://git.kernel.org/arm64/c/833be850f1ca
-
--- 
-Catalin
+I think this probably works OK on all architectures (ie, no 64-bit
+architectures are using `unsigned long' for u64).  But perhaps `val'
+should have type `unsigned long long'?
 
