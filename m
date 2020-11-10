@@ -2,227 +2,365 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D5A32ACE85
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 05:24:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C6352ACE84
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 05:24:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731692AbgKJEX6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 23:23:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51592 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731400AbgKJEX5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S1731474AbgKJEX5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Mon, 9 Nov 2020 23:23:57 -0500
-Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 888D8C0613CF
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Nov 2020 20:23:56 -0800 (PST)
-Received: by mail-lf1-x142.google.com with SMTP id l2so15651843lfk.0
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Nov 2020 20:23:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=z/fsyWPbY03wZJ3A/BbF8ha4DatLv2QBLhJDrPA0RNE=;
-        b=iCh4cTNRnbFIE1GZaQLfDr4TGyM6CeVBaR3Lu9cxvNxQRm6wF9dG3hHazEKBZbkksV
-         PDCniJzGzi+QdBNb2e1hwJbTjbF4aCpTeLyHKWkaAldTQca80ykJDmHq8Ty+R1ZD04/6
-         bclUb/vXUqXDjXKQcSfgAQQs6gtYpEBkT77ZY=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=z/fsyWPbY03wZJ3A/BbF8ha4DatLv2QBLhJDrPA0RNE=;
-        b=mlQonQSek6VCJ1EJa1V08okbZkf2ICtwkAJnsAro7iO3+kOCCEVP6hakiBsKY3pl4o
-         PZuvZoDnOBGwu7LNhncP8ETlcG6kRb7KwZtsYJGicmldwpk/+SX0QESQm5/wTwLMggr/
-         WMMyLsPncJzSjAoOWdQEi9C6Iw4uRNp9t3/Vm8phmr33NKDIPlznQhI5F4JU2WmwBFay
-         EDgU8qSKSxS/gBBiHTCMMCjjtH7XXFNJvMXz9Ncb+/2PkqoVWVb5aI+BsZwj5VGjpkzJ
-         8sBqGfAKLSD/OZOcvBJPAUZIEL39QZaXu6D46mn9rXVzkZV/X1oL4qlIJK6aZWCObEoY
-         eSRQ==
-X-Gm-Message-State: AOAM531V4opZQITxTXiCD9icVHwJfO+OH4Dw2DEgG3WpvXSHa1V2sAId
-        OIA2Z6hRlRGjcbJxi10WsjjzGVYBOOVf4j6Uwyipag==
-X-Google-Smtp-Source: ABdhPJwi5ELQ5QO+b3S4fCInqX1T5uwDQQv03C2RtO4vkjmLA202chT/DVVUQfxWRtzjHn5+vG1iU1UeE09Bj3++auE=
-X-Received: by 2002:a19:4f47:: with SMTP id a7mr7360366lfk.245.1604982234320;
- Mon, 09 Nov 2020 20:23:54 -0800 (PST)
+Received: from mail.kernel.org ([198.145.29.99]:48962 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729454AbgKJEX4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 23:23:56 -0500
+Received: from google.com (unknown [104.132.1.66])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6885E2068D;
+        Tue, 10 Nov 2020 04:23:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604982235;
+        bh=glio37ldLzoa1aZIW4luE98uGWUJz3opTtSALzng72Q=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=UyXBvaV+x/wyv5JrhJ2oEWVSHVgZtJaoI59l8kdZx4ghgBcqgHGREafO2WLBKT4G6
+         cDrLXKJgfMr38FwB9ooxkvjOxF4pNmz6n/Nr51rLfKfJ6eGFC9P/c2cVidIk7ZGY3l
+         RbAe0IKslWNKS+gUtI8CI5Rc1yIVGtdY8Bqb3jQU=
+Date:   Mon, 9 Nov 2020 20:23:53 -0800
+From:   Jaegeuk Kim <jaegeuk@kernel.org>
+To:     Chao Yu <yuchao0@huawei.com>
+Cc:     linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net
+Subject: Re: [f2fs-dev] [PATCH] f2fs: compress: support chksum
+Message-ID: <20201110042353.GB1598246@google.com>
+References: <20201102122333.76667-1-yuchao0@huawei.com>
+ <20201102163123.GD529594@google.com>
+ <756e482c-b638-1c09-3868-ae45d33ed2c2@huawei.com>
+ <6b5bce0e-c967-b9cf-3544-a8e65595059c@huawei.com>
+ <20201106211247.GA1474936@google.com>
+ <908682bb-486c-222f-bea7-43fc961ef1b0@huawei.com>
+ <20201109170625.GB2129970@google.com>
+ <3417aea5-ace8-74be-ec26-f491dddea676@huawei.com>
 MIME-Version: 1.0
-References: <CAHO=5PGAMvRAyrBF3_ubbgciqHV3hAbmt4B7Rb3hdibMbgs6ZQ@mail.gmail.com>
- <1604684486-16272-1-git-send-email-dphadke@linux.microsoft.com>
-In-Reply-To: <1604684486-16272-1-git-send-email-dphadke@linux.microsoft.com>
-From:   Rayagonda Kokatanur <rayagonda.kokatanur@broadcom.com>
-Date:   Tue, 10 Nov 2020 09:53:41 +0530
-Message-ID: <CAHO=5PEJZ35O2Kwtinw5Kon+fXvciZHJDn9wCp6LKp8wtvVF=Q@mail.gmail.com>
-Subject: Re: [PATCH v3 5/6] i2c: iproc: handle master read request
-To:     Ray Jui <ray.jui@broadcom.com>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        BCM Kernel Feedback <bcm-kernel-feedback-list@broadcom.com>,
-        Brendan Higgins <brendanhiggins@google.com>,
-        Dhananjay Phadke <dphadke@linux.microsoft.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
-        linux-i2c <linux-i2c@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Lori Hikichi <lori.hikichi@broadcom.com>,
-        Ray Jui <rjui@broadcom.com>,
-        Scott Branden <sbranden@broadcom.com>,
-        Wolfram Sang <wsa@kernel.org>
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="000000000000fb6d4505b3b90b6e"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <3417aea5-ace8-74be-ec26-f491dddea676@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---000000000000fb6d4505b3b90b6e
-Content-Type: text/plain; charset="UTF-8"
+On 11/10, Chao Yu wrote:
+> On 2020/11/10 1:06, Jaegeuk Kim wrote:
+> > On 11/09, Chao Yu wrote:
+> > > On 2020/11/7 5:12, Jaegeuk Kim wrote:
+> > > > On 11/03, Chao Yu wrote:
+> > > > > On 2020/11/3 10:02, Chao Yu wrote:
+> > > > > > On 2020/11/3 0:31, Jaegeuk Kim wrote:
+> > > > > > > On 11/02, Chao Yu wrote:
+> > > > > > > > This patch supports to store chksum value with compressed
+> > > > > > > > data, and verify the integrality of compressed data while
+> > > > > > > > reading the data.
+> > > > > > > > 
+> > > > > > > > The feature can be enabled through specifying mount option
+> > > > > > > > 'compress_chksum'.
+> > > > > > > > 
+> > > > > > > > Signed-off-by: Chao Yu <yuchao0@huawei.com>
+> > > > > > > > ---
+> > > > > > > >      Documentation/filesystems/f2fs.rst |  1 +
+> > > > > > > >      fs/f2fs/compress.c                 | 20 ++++++++++++++++++++
+> > > > > > > >      fs/f2fs/f2fs.h                     | 13 ++++++++++++-
+> > > > > > > >      fs/f2fs/inode.c                    |  3 +++
+> > > > > > > >      fs/f2fs/super.c                    |  9 +++++++++
+> > > > > > > >      include/linux/f2fs_fs.h            |  2 +-
+> > > > > > > >      6 files changed, 46 insertions(+), 2 deletions(-)
+> > > > > > > > 
+> > > > > > > > diff --git a/Documentation/filesystems/f2fs.rst b/Documentation/filesystems/f2fs.rst
+> > > > > > > > index b8ee761c9922..985ae7d35066 100644
+> > > > > > > > --- a/Documentation/filesystems/f2fs.rst
+> > > > > > > > +++ b/Documentation/filesystems/f2fs.rst
+> > > > > > > > @@ -260,6 +260,7 @@ compress_extension=%s	 Support adding specified extension, so that f2fs can enab
+> > > > > > > >      			 For other files, we can still enable compression via ioctl.
+> > > > > > > >      			 Note that, there is one reserved special extension '*', it
+> > > > > > > >      			 can be set to enable compression for all files.
+> > > > > > > > +compress_chksum		 Support verifying chksum of raw data in compressed cluster.
+> > > > > > > >      inlinecrypt		 When possible, encrypt/decrypt the contents of encrypted
+> > > > > > > >      			 files using the blk-crypto framework rather than
+> > > > > > > >      			 filesystem-layer encryption. This allows the use of
+> > > > > > > > diff --git a/fs/f2fs/compress.c b/fs/f2fs/compress.c
+> > > > > > > > index 14262e0f1cd6..a4e0d2c745b6 100644
+> > > > > > > > --- a/fs/f2fs/compress.c
+> > > > > > > > +++ b/fs/f2fs/compress.c
+> > > > > > > > @@ -602,6 +602,7 @@ static int f2fs_compress_pages(struct compress_ctx *cc)
+> > > > > > > >      				f2fs_cops[fi->i_compress_algorithm];
+> > > > > > > >      	unsigned int max_len, new_nr_cpages;
+> > > > > > > >      	struct page **new_cpages;
+> > > > > > > > +	u32 chksum = 0;
+> > > > > > > >      	int i, ret;
+> > > > > > > >      	trace_f2fs_compress_pages_start(cc->inode, cc->cluster_idx,
+> > > > > > > > @@ -655,6 +656,11 @@ static int f2fs_compress_pages(struct compress_ctx *cc)
+> > > > > > > >      	cc->cbuf->clen = cpu_to_le32(cc->clen);
+> > > > > > > > +	if (fi->i_compress_flag & 1 << COMPRESS_CHKSUM)
+> > > > > > > > +		chksum = f2fs_crc32(F2FS_I_SB(cc->inode),
+> > > > > > > > +					cc->cbuf->cdata, cc->clen);
+> > > > > > > > +	cc->cbuf->chksum = cpu_to_le32(chksum);
+> > > > > > > > +
+> > > > > > > >      	for (i = 0; i < COMPRESS_DATA_RESERVED_SIZE; i++)
+> > > > > > > >      		cc->cbuf->reserved[i] = cpu_to_le32(0);
+> > > > > > > > @@ -721,6 +727,7 @@ void f2fs_decompress_pages(struct bio *bio, struct page *page, bool verity)
+> > > > > > > >      			(struct decompress_io_ctx *)page_private(page);
+> > > > > > > >      	struct f2fs_sb_info *sbi = F2FS_I_SB(dic->inode);
+> > > > > > > >      	struct f2fs_inode_info *fi= F2FS_I(dic->inode);
+> > > > > > > > +	struct f2fs_sb_info *sbi = F2FS_I_SB(dic->inode);
+> > > > > > > >      	const struct f2fs_compress_ops *cops =
+> > > > > > > >      			f2fs_cops[fi->i_compress_algorithm];
+> > > > > > > >      	int ret;
+> > > > > > > > @@ -790,6 +797,19 @@ void f2fs_decompress_pages(struct bio *bio, struct page *page, bool verity)
+> > > > > > > >      	ret = cops->decompress_pages(dic);
+> > > > > > > > +	if (!ret && fi->i_compress_flag & 1 << COMPRESS_CHKSUM) {
+> > > > > > > > +		u32 provided = le32_to_cpu(dic->cbuf->chksum);
+> > > > > > > > +		u32 calculated = f2fs_crc32(sbi, dic->cbuf->cdata, dic->clen);
+> > > > > > > > +
+> > > > > > > > +		if (provided != calculated) {
+> > > > > > > > +			printk_ratelimited(
+> > > > > > > > +				"%sF2FS-fs (%s): checksum invalid, nid = %lu, %x vs %x",
+> > > > > > > > +				KERN_INFO, sbi->sb->s_id, dic->inode->i_ino,
+> > > > > > > > +				provided, calculated);
+> > > > > > > > +			ret = -EFSCORRUPTED;
+> > > > > > > 
+> > > > > > > Do we need to change fsck.f2fs to recover this?
+> > > > > 
+> > > > > However, we don't know which one is correct, compressed data or chksum value?
+> > > > > if compressed data was corrupted, repairing chksum value doesn't help.
+> > > > > 
+> > > > > Or how about adding chksum values for both raw data and compressed data.
+> > > > > 
+> > > > > #define COMPRESS_DATA_RESERVED_SIZE	3
+> > > > > struct compress_data {
+> > > > > 	__le32 clen;			/* compressed data size */
+> > > > > +	__le32 raw_chksum;		/* raw data chksum */
+> > > > > +	__le32 compress_chksum;		/* compressed data chksum */
+> > > > > 	__le32 reserved[COMPRESS_DATA_RESERVED_SIZE];	/* reserved */
+> > > > > 	u8 cdata[];			/* compressed data */
+> > > > > };
+> > > > > 
+> > > > > 	raw_chksum	compress_chksum
+> > > > > 	match		match			-> data is verified, pass
+> > > > > 	not match	match			-> repair raw_chksum
+> > > > > 	matcth		not match		-> repair compress_chksum
+> > > > 
+> > > > I think only compress_chksum would be enough. BTW, can we give WARN_ON and
+> > > > marking a FSCK flag without returning EFSCORRUPTED, since we don't really
+> > > > know who was corrupted. If data was corrupted, we should be able to see app
+> > > > corruption. In that case, we can check the kernel log. If checksum was simply
+> > > 
+> > > I don't think that app will always corrupt once data was corrupted, I doubt its
+> > > behavior could be slightly abnormal in some cases, e.g. it can just cause apps to
+> > > show wrong number in interaction interface.
+> > 
+> > I didn't say we can always get it. But, it's likely to happen with something
+> > like that.
+> > 
+> > > 
+> > > In this case, if we fix chksum in fsck, the wrong data will never be found due to
+> > > data's chksum matches data itself after repair.
+> > 
+> > At least, we should see that log as a hint.
+> > 
+> > > 
+> > > IMO, the chksum and data was a whole dataset, once they are mismatch, we can
+> > > not trust either of them, fsck should do nothing on them unless we store parity
+> > > bits or replica.
+> > 
+> > Yeah, the point is those are not written as a transaction. Three concerns to me:
+> 
+> Just to confirm:
+> 
+> > 1) agreed to see compressed data corruption by checksum
+> 
+> return EFSBADCRC always like we did as inode chksum feature.
 
-Hi Ray,
+inode chksum is a bit different, since 4KB write is atomic. If chksum is
+corrupted, inode should be broken.
 
-Could you please check Dhananjay comments and update your thoughts.
+> 
+> 2) I don't want to see the error messages all the time
+> 
+> Something like below?
+> 
+> if (provided != calculated) {
+> 	if (!is_inode_flag_set(,FI_DATA_CORRUPTED)) {
+> 		printk_ratelimited();
+> 		WARN_ON()
+> 		set_inode_flag(, FI_DATA_CORRUPTED);
+> 	}
+> 	return EFSBADCRC;
 
-On Fri, Nov 6, 2020 at 11:11 PM Dhananjay Phadke
-<dphadke@linux.microsoft.com> wrote:
->
-> On Thu, 5 Nov 2020 15:13:04 +0530, Rayagonda Kokatanur wrote:
-> >> So the suggestion was to set HW threshold for rx fifo interrupt, not
-> >> really a SW property. By setting it in DT, makes it easier to
-> >> customize for target system, module param needs or ioctl makes it
-> >> dependent on userpsace to configure it.
-> >>
-> >> The need for tasklet seems to arise from the fact that many bytes are
-> >> left in the fifo. If there's a common problem here, such tasklet would be
-> >> needed in i2c subsys rather than controller specific tweak, akin to
-> >> how networking uses NAPI or adding block transactions to the interface?
-> >>
-> >> For master write-read event, it seems both IS_S_RD_EVENT_SHIFT and
-> >> IS_S_RX_EVENT_SHIFT are detected, which implies that core is late to
-> >> drain rx fifo i.e. write is complete and the read has started on the bus?
-> >
-> >Yes it's true that for master write-read events both
-> >IS_S_RD_EVENT_SHIFT and IS_S_RX_EVENT_SHIFT  are coming together.
-> >So before the slave starts transmitting data to the master, it should
-> >first read all data from rx-fifo i.e. complete master write and then
-> >process master read.
-> >
-> >To minimise interrupt overhead, we are batching 64bytes.
-> >To keep isr running for less time, we are using a tasklet.
-> >Again to keep the tasklet not running for more than 20u, we have set
-> >max of 10 bytes data read from rx-fifo per tasklet run.
-> >
-> >If we start processing everything in isr and using rx threshold
-> >interrupt, then isr will run for a longer time and this may hog the
-> >system.
-> >For example, to process 10 bytes it takes 20us, to process 30 bytes it
-> >takes 60us and so on.
-> >So is it okay to run isr for so long ?
-> >
-> >Keeping all this in mind we thought a tasklet would be a good option
-> >and kept max of 10 bytes read per tasklet.
-> >
-> >Please let me know if you still feel we should not use a tasklet and
-> >don't batch 64 bytes.
->
-> Deferring to tasklet is OK, could use a kernel thread (i.e. threaded_irq)
-> as i2c rate is quite low.
->
-> But do enable rx_threshold and read out early. This will avoid fifo full
-> or master write-read situation where lot of bytes must be drained from rx
-> fifo before serving tx fifo (avoid tx underrun).
->
-> Best would have been setting up DMA into mem (some controllers seem capable).
-> In absence of that, it's a trade off: if rx intr threshold is low,
-> there will be more interrupts, but less time spent in each. Default could
-> still be 64B or no-thresh (allow override in dtb).
->
-> Few other comments -
->
-> >+              /* schedule tasklet to read data later */
-> >+              tasklet_schedule(&iproc_i2c->slave_rx_tasklet);
-> >+
-> >+              /* clear only IS_S_RX_EVENT_SHIFT interrupt */
-> >+              iproc_i2c_wr_reg(iproc_i2c, IS_OFFSET,
-> >+                               BIT(IS_S_RX_EVENT_SHIFT));
-> >+      }
->
-> Why clearing one rx interrupt bit here after scheduling tasklet? Should all that
-> be done by tasklet? Also should just return after scheduling tasklet?
->
+No, what if only checksum was wrong? I mean giving WARN_ON() and setting
+FSCK_FLAG to stop endless WARN_ON().
+
+> }
+> 
+> 3) don't touch the data, even if it was corrupted, since there's no way to fix it.
+> 
+> It seems that we don't need to change fsck.f2fs finally...
+> 
 > Thanks,
-> Dhananjay
-
---000000000000fb6d4505b3b90b6e
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
-
-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
-xVUYGnc0GLrYeHC2X4wJbUsgi+UFM/rVW0RKe5Sg4xmLXWc/rBhXDBVPeFVdN2dYsk5MyDRM/fXj
-cAA+xTX+SQGoND8CAwEAAaOCAdcwggHTMA4GA1UdDwEB/wQEAwIFoDCBngYIKwYBBQUHAQEEgZEw
-gY4wTQYIKwYBBQUHMAKGQWh0dHA6Ly9zZWN1cmUuZ2xvYmFsc2lnbi5jb20vY2FjZXJ0L2dzcGVy
-c29uYWxzaWduMnNoYTJnM29jc3AuY3J0MD0GCCsGAQUFBzABhjFodHRwOi8vb2NzcDIuZ2xvYmFs
-c2lnbi5jb20vZ3NwZXJzb25hbHNpZ24yc2hhMmczME0GA1UdIARGMEQwQgYKKwYBBAGgMgEoCjA0
-MDIGCCsGAQUFBwIBFiZodHRwczovL3d3dy5nbG9iYWxzaWduLmNvbS9yZXBvc2l0b3J5LzAJBgNV
-HRMEAjAAMEQGA1UdHwQ9MDswOaA3oDWGM2h0dHA6Ly9jcmwuZ2xvYmFsc2lnbi5jb20vZ3NwZXJz
-b25hbHNpZ24yc2hhMmczLmNybDArBgNVHREEJDAigSByYXlhZ29uZGEua29rYXRhbnVyQGJyb2Fk
-Y29tLmNvbTATBgNVHSUEDDAKBggrBgEFBQcDBDAfBgNVHSMEGDAWgBRpcoJiMWeVRIV3kYDEBDZJ
-nXsLYTAdBgNVHQ4EFgQU1rE7oQJ7FiSTADFOqokePoGwIq4wDQYJKoZIhvcNAQELBQADggEBAD8I
-VcITGu1E61LQLR1zygqFw8ByKPgiiprMuQB74Viskl7pAZigzYJB8H3Mpd2ljve+GRo8yvbBC76r
-Gi5WdS06XI5vuImDJ2g6QUt754rj7xEYftM5Gy9ZMslKNvSiPPh1/ACx5w7ecD1ZK0YLMKGATeBD
-XybduRFIEPZBAjgJ5LOYT2ax3ZesfAkan1XJ97yLA93edgTTO2cbUAADTIMFWm4lI/e14wdGmK0I
-FtqJWw6DATg5ePiAAn+S0JoIL1xqKsZi2ioNqm02QMFb7RbB3yEGb/7ZLAGcPW666o5GSLsUnPPq
-YOfL/3X6tVfGeoi3IgfI+z76/lXk8vOQzQQxggJvMIICawIBATBtMF0xCzAJBgNVBAYTAkJFMRkw
-FwYDVQQKExBHbG9iYWxTaWduIG52LXNhMTMwMQYDVQQDEypHbG9iYWxTaWduIFBlcnNvbmFsU2ln
-biAyIENBIC0gU0hBMjU2IC0gRzMCDDw+ri+StHzo6PJZ/DANBglghkgBZQMEAgEFAKCB1DAvBgkq
-hkiG9w0BCQQxIgQgzdzylOZ00558hEz3E5iTS4XcbaZocjIPgSDR7sFdzZowGAYJKoZIhvcNAQkD
-MQsGCSqGSIb3DQEHATAcBgkqhkiG9w0BCQUxDxcNMjAxMTEwMDQyMzU0WjBpBgkqhkiG9w0BCQ8x
-XDBaMAsGCWCGSAFlAwQBKjALBglghkgBZQMEARYwCwYJYIZIAWUDBAECMAoGCCqGSIb3DQMHMAsG
-CSqGSIb3DQEBCjALBgkqhkiG9w0BAQcwCwYJYIZIAWUDBAIBMA0GCSqGSIb3DQEBAQUABIIBAEH0
-tAF/3I2UkyeK2AesPgympEjXy8noFEmApzb99+Q4c+A3dKlmjEtYieY49xCJBPFFeDTX2Rano22N
-7aorULxLf+U7hd/h4lshOv4A9qvtay5/gIjJrI8fY9k8+e8YMgqM+RBIGsIVJjm9MW4BkrEzXAz6
-NGr2ivYqj3cMQ0fqWvP+eBXD/mCiY2Y287MdjgvyzkIdGxozgyU+YbAXFlg273uWYHIh2X+aijuF
-f+77uTXHs3A0MwrSqCykzxV0CjoaUlNCWmXkYtUX9n8cpV8zOyzE8ZnssSq0/GyPgaICWSkGbTqV
-oJJSPLiwXhXmNZn3pRUYjzBsb9bVthcpn2A=
---000000000000fb6d4505b3b90b6e--
+> 
+> > 
+> > > 
+> > > Thanks,
+> > > 
+> > > > corrupted, next fsck will fix the checksum. So, in general, I hope to keep
+> > > > the data as is and raise a flag by the checksum.
+> > > > 
+> > > > > 	not match	not match		-> corrupted, can not repair
+> > > > > 
+> > > > > Thanks,
+> > > > > 
+> > > > > > 
+> > > > > > Yes, prepared to update inode layout in fsck.f2fs w/ kernel side change. >
+> > > > > > Thanks,
+> > > > > > 
+> > > > > > > 
+> > > > > > > > +		}
+> > > > > > > > +	}
+> > > > > > > > +
+> > > > > > > >      out_vunmap_cbuf:
+> > > > > > > >      	vm_unmap_ram(dic->cbuf, dic->nr_cpages);
+> > > > > > > >      out_vunmap_rbuf:
+> > > > > > > > diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
+> > > > > > > > index 99bcf4b44a9c..2ae254ab7b7d 100644
+> > > > > > > > --- a/fs/f2fs/f2fs.h
+> > > > > > > > +++ b/fs/f2fs/f2fs.h
+> > > > > > > > @@ -147,7 +147,8 @@ struct f2fs_mount_info {
+> > > > > > > >      	/* For compression */
+> > > > > > > >      	unsigned char compress_algorithm;	/* algorithm type */
+> > > > > > > > -	unsigned compress_log_size;		/* cluster log size */
+> > > > > > > > +	unsigned char compress_log_size;	/* cluster log size */
+> > > > > > > > +	bool compress_chksum;			/* compressed data chksum */
+> > > > > > > >      	unsigned char compress_ext_cnt;		/* extension count */
+> > > > > > > >      	unsigned char extensions[COMPRESS_EXT_NUM][F2FS_EXTENSION_LEN];	/* extensions */
+> > > > > > > >      };
+> > > > > > > > @@ -731,6 +732,7 @@ struct f2fs_inode_info {
+> > > > > > > >      	atomic_t i_compr_blocks;		/* # of compressed blocks */
+> > > > > > > >      	unsigned char i_compress_algorithm;	/* algorithm type */
+> > > > > > > >      	unsigned char i_log_cluster_size;	/* log of cluster size */
+> > > > > > > > +	unsigned short i_compress_flag;		/* compress flag */
+> > > > > > > >      	unsigned int i_cluster_size;		/* cluster size */
+> > > > > > > >      };
+> > > > > > > > @@ -1270,9 +1272,15 @@ enum compress_algorithm_type {
+> > > > > > > >      	COMPRESS_MAX,
+> > > > > > > >      };
+> > > > > > > > +enum compress_flag {
+> > > > > > > > +	COMPRESS_CHKSUM,
+> > > > > > > > +	COMPRESS_MAX_FLAG,
+> > > > > > > > +};
+> > > > > > > > +
+> > > > > > > >      #define COMPRESS_DATA_RESERVED_SIZE		5
+> > > > > > > >      struct compress_data {
+> > > > > > > >      	__le32 clen;			/* compressed data size */
+> > > > > > > > +	__le32 chksum;			/* compressed data chksum */
+> > > > > > > >      	__le32 reserved[COMPRESS_DATA_RESERVED_SIZE];	/* reserved */
+> > > > > > > >      	u8 cdata[];			/* compressed data */
+> > > > > > > >      };
+> > > > > > > > @@ -3882,6 +3890,9 @@ static inline void set_compress_context(struct inode *inode)
+> > > > > > > >      			F2FS_OPTION(sbi).compress_algorithm;
+> > > > > > > >      	F2FS_I(inode)->i_log_cluster_size =
+> > > > > > > >      			F2FS_OPTION(sbi).compress_log_size;
+> > > > > > > > +	F2FS_I(inode)->i_compress_flag =
+> > > > > > > > +			F2FS_OPTION(sbi).compress_chksum ?
+> > > > > > > > +				1 << COMPRESS_CHKSUM : 0;
+> > > > > > > >      	F2FS_I(inode)->i_cluster_size =
+> > > > > > > >      			1 << F2FS_I(inode)->i_log_cluster_size;
+> > > > > > > >      	F2FS_I(inode)->i_flags |= F2FS_COMPR_FL;
+> > > > > > > > diff --git a/fs/f2fs/inode.c b/fs/f2fs/inode.c
+> > > > > > > > index 657db2fb6739..de8f7fc89efa 100644
+> > > > > > > > --- a/fs/f2fs/inode.c
+> > > > > > > > +++ b/fs/f2fs/inode.c
+> > > > > > > > @@ -456,6 +456,7 @@ static int do_read_inode(struct inode *inode)
+> > > > > > > >      					le64_to_cpu(ri->i_compr_blocks));
+> > > > > > > >      			fi->i_compress_algorithm = ri->i_compress_algorithm;
+> > > > > > > >      			fi->i_log_cluster_size = ri->i_log_cluster_size;
+> > > > > > > > +			fi->i_compress_flag = ri->i_compress_flag;
+> > > > > > > >      			fi->i_cluster_size = 1 << fi->i_log_cluster_size;
+> > > > > > > >      			set_inode_flag(inode, FI_COMPRESSED_FILE);
+> > > > > > > >      		}
+> > > > > > > > @@ -634,6 +635,8 @@ void f2fs_update_inode(struct inode *inode, struct page *node_page)
+> > > > > > > >      					&F2FS_I(inode)->i_compr_blocks));
+> > > > > > > >      			ri->i_compress_algorithm =
+> > > > > > > >      				F2FS_I(inode)->i_compress_algorithm;
+> > > > > > > > +			ri->i_compress_flag =
+> > > > > > > > +				cpu_to_le16(F2FS_I(inode)->i_compress_flag);
+> > > > > > > >      			ri->i_log_cluster_size =
+> > > > > > > >      				F2FS_I(inode)->i_log_cluster_size;
+> > > > > > > >      		}
+> > > > > > > > diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
+> > > > > > > > index 00eff2f51807..f8de4d83a5be 100644
+> > > > > > > > --- a/fs/f2fs/super.c
+> > > > > > > > +++ b/fs/f2fs/super.c
+> > > > > > > > @@ -146,6 +146,7 @@ enum {
+> > > > > > > >      	Opt_compress_algorithm,
+> > > > > > > >      	Opt_compress_log_size,
+> > > > > > > >      	Opt_compress_extension,
+> > > > > > > > +	Opt_compress_chksum,
+> > > > > > > >      	Opt_atgc,
+> > > > > > > >      	Opt_err,
+> > > > > > > >      };
+> > > > > > > > @@ -214,6 +215,7 @@ static match_table_t f2fs_tokens = {
+> > > > > > > >      	{Opt_compress_algorithm, "compress_algorithm=%s"},
+> > > > > > > >      	{Opt_compress_log_size, "compress_log_size=%u"},
+> > > > > > > >      	{Opt_compress_extension, "compress_extension=%s"},
+> > > > > > > > +	{Opt_compress_chksum, "compress_chksum"},
+> > > > > > > >      	{Opt_atgc, "atgc"},
+> > > > > > > >      	{Opt_err, NULL},
+> > > > > > > >      };
+> > > > > > > > @@ -934,10 +936,14 @@ static int parse_options(struct super_block *sb, char *options, bool is_remount)
+> > > > > > > >      			F2FS_OPTION(sbi).compress_ext_cnt++;
+> > > > > > > >      			kfree(name);
+> > > > > > > >      			break;
+> > > > > > > > +		case Opt_compress_chksum:
+> > > > > > > > +			F2FS_OPTION(sbi).compress_chksum = true;
+> > > > > > > > +			break;
+> > > > > > > >      #else
+> > > > > > > >      		case Opt_compress_algorithm:
+> > > > > > > >      		case Opt_compress_log_size:
+> > > > > > > >      		case Opt_compress_extension:
+> > > > > > > > +		case Opt_compress_chksum:
+> > > > > > > >      			f2fs_info(sbi, "compression options not supported");
+> > > > > > > >      			break;
+> > > > > > > >      #endif
+> > > > > > > > @@ -1523,6 +1529,9 @@ static inline void f2fs_show_compress_options(struct seq_file *seq,
+> > > > > > > >      		seq_printf(seq, ",compress_extension=%s",
+> > > > > > > >      			F2FS_OPTION(sbi).extensions[i]);
+> > > > > > > >      	}
+> > > > > > > > +
+> > > > > > > > +	if (F2FS_OPTION(sbi).compress_chksum)
+> > > > > > > > +		seq_puts(seq, ",compress_chksum");
+> > > > > > > >      }
+> > > > > > > >      static int f2fs_show_options(struct seq_file *seq, struct dentry *root)
+> > > > > > > > diff --git a/include/linux/f2fs_fs.h b/include/linux/f2fs_fs.h
+> > > > > > > > index a5dbb57a687f..7dc2a06cf19a 100644
+> > > > > > > > --- a/include/linux/f2fs_fs.h
+> > > > > > > > +++ b/include/linux/f2fs_fs.h
+> > > > > > > > @@ -273,7 +273,7 @@ struct f2fs_inode {
+> > > > > > > >      			__le64 i_compr_blocks;	/* # of compressed blocks */
+> > > > > > > >      			__u8 i_compress_algorithm;	/* compress algorithm */
+> > > > > > > >      			__u8 i_log_cluster_size;	/* log of cluster size */
+> > > > > > > > -			__le16 i_padding;		/* padding */
+> > > > > > > > +			__le16 i_compress_flag;		/* compress flag */
+> > > > > > > >      			__le32 i_extra_end[0];	/* for attribute size calculation */
+> > > > > > > >      		} __packed;
+> > > > > > > >      		__le32 i_addr[DEF_ADDRS_PER_INODE];	/* Pointers to data blocks */
+> > > > > > > > -- 
+> > > > > > > > 2.26.2
+> > > > > > > .
+> > > > > > > 
+> > > > > > 
+> > > > > > 
+> > > > > > _______________________________________________
+> > > > > > Linux-f2fs-devel mailing list
+> > > > > > Linux-f2fs-devel@lists.sourceforge.net
+> > > > > > https://lists.sourceforge.net/lists/listinfo/linux-f2fs-devel
+> > > > > > .
+> > > > > > 
+> > > > .
+> > > > 
+> > .
+> > 
