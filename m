@@ -2,107 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DA3C2AD300
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 11:02:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9579A2AD306
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 11:02:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729087AbgKJKCI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 05:02:08 -0500
-Received: from out4-smtp.messagingengine.com ([66.111.4.28]:44887 "EHLO
-        out4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726690AbgKJKCG (ORCPT
+        id S1729779AbgKJKCk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 05:02:40 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:37507 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726944AbgKJKCk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 05:02:06 -0500
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailout.nyi.internal (Postfix) with ESMTP id DAA195C0198;
-        Tue, 10 Nov 2020 05:02:04 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute6.internal (MEProxy); Tue, 10 Nov 2020 05:02:04 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm1; bh=Z0eryG8U/sz/7obT3nA7LwAZm2e
-        WTP8JBDoovnYQktI=; b=o31zzj3SjHOJsZjxpDT8HqKTVLVSIm/PqgTvG2cR5hO
-        AFlZgsIZABTvzlGJ6RLDVkyjc2Xjx5gi6nRVDPj0pF3QUCckDWEI7anOkSaUoX22
-        K6sGhJiTFHq4u9P0lD1N5q4WAUurCXpeFMT+c+fnNBfjXCSyrDwzl7yCd84Zrxo3
-        exfx1D0miphj96pkGjFgD2lKaway/Zh9zZXmm4F9tA3yJZdWS8jMe4r0TmCKpM4y
-        TKuhQf+8AuJ30AMilwPoznNIubylS0EI5Y3KFx7/uqnHXNWVj1O53iE85S7uRkRk
-        k4nb0JdWl8Zw2Sdb+TxNO7dZNYNBBg31wvnuYHJvNwQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=Z0eryG
-        8U/sz/7obT3nA7LwAZm2eWTP8JBDoovnYQktI=; b=jE8/FHK+u0ob8XL0REunmT
-        UG2ZVFNQwI8ib7PaLC0zjpybDuQKJdn05jy7vt9r61yuvghcbA3Icbu9e0h3J7uV
-        clU+EDW3lONsKMzWGbxleyVfoUw8485i+TgtnWEJ34rl2YIodFnvumsbuhuZVBHj
-        A411lHuvohMN5yiMYZf35xBtuhGZH2G/VKfmiT2iBNOC1KJ2mBg15CAgT9SxKrZJ
-        BpXEcnRZDADgvcKcd/Oo91Cm5pyoNLVopcqO/aYxvr8ZQ3XKePCNNwDlj7t9u9Qw
-        XJfe/EZn5wYChS4+9vu4ecE7mp4Ed4hlc1BljmYRdA49jUkT1lHdF0VnUhABwEag
-        ==
-X-ME-Sender: <xms:G2WqX7l82ZdsLMny_owT2J0IV2P6VBdy1f72a_bTlKZWoWAn59hYow>
-    <xme:G2WqX-1sKr5b_nTxoYf0lpaJuAfBUpeUkLhrD_E1G9Nn3ox7GqzjoFIidSWWoUVFe
-    Rr84MjC0YGvwjtvmvo>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedruddujedgudduucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
-    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
-    htvghrnhepleekgeehhfdutdeljefgleejffehfffgieejhffgueefhfdtveetgeehieeh
-    gedunecukfhppeeltddrkeelrdeikedrjeeinecuvehluhhsthgvrhfuihiivgeptdenuc
-    frrghrrghmpehmrghilhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
-X-ME-Proxy: <xmx:HGWqXxqnyf3eBjzs3FNZjL_cxR8K2mSLYtVcfsubbDwHDeCkOzqttA>
-    <xmx:HGWqXznu2Bfh-rmf3cHQ8Pvl8PgZhnmU-8XE4LLSs_GG9kJHW19Nsg>
-    <xmx:HGWqX51oNFRSWa_AzHGt843kCQT-K9y9APouzLyCz8OOOz-vON8Y1g>
-    <xmx:HGWqXx9aI2C9gRssPDCzILN-JA-Q8wNGscghuPseDPJG77bYhO1N6A>
-Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
-        by mail.messagingengine.com (Postfix) with ESMTPA id B28303280064;
-        Tue, 10 Nov 2020 05:02:03 -0500 (EST)
-Date:   Tue, 10 Nov 2020 11:02:02 +0100
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Frank Lee <frank@allwinnertech.com>
-Cc:     vkoul@kernel.org, wens@csie.org, krzk@kernel.org,
-        colin.king@canonical.com, tiny.windzz@gmail.com,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH 3/3] phy: sun4i-usb: Use power efficient workqueue for
- debounce and poll
-Message-ID: <20201110100202.wscduggy76jtlts3@gilmour.lan>
-References: <20201109121214.19012-1-frank@allwinnertech.com>
+        Tue, 10 Nov 2020 05:02:40 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1605002559;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=yDregu+IjBgmVX/QBgcALAud6U3Yyo4UVoHSI5mURRk=;
+        b=QFu0L5IQlJC4/TOvLbZwncMWuAYLW6kYXxamNXbKk2bUVkNcyrpTbWDz0xDcMi390NwdIO
+        dtt+B9eV9nHZPMsyXhyEc6LpKzMYi59GUB6CozUUQdpCHzXVZCl/s3kduVfLRHzqqtMcQJ
+        gE7OW1FlPAwrjjIWZ0tVABvI6HjK1Ss=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-457-hfNa44UoMDa7ZaTnX3vi-g-1; Tue, 10 Nov 2020 05:02:35 -0500
+X-MC-Unique: hfNa44UoMDa7ZaTnX3vi-g-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A5BF1186DD47;
+        Tue, 10 Nov 2020 10:02:29 +0000 (UTC)
+Received: from [10.36.114.232] (ovpn-114-232.ams2.redhat.com [10.36.114.232])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 0A77F5C1C4;
+        Tue, 10 Nov 2020 10:02:19 +0000 (UTC)
+Subject: Re: [PATCH v7 4/4] arch, mm: make kernel_page_present() always
+ available
+To:     Mike Rapoport <rppt@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     Albert Ou <aou@eecs.berkeley.edu>,
+        Andy Lutomirski <luto@kernel.org>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Borislav Petkov <bp@alien8.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Christoph Lameter <cl@linux.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        David Rientjes <rientjes@google.com>,
+        "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Len Brown <len.brown@intel.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Mackerras <paulus@samba.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Pavel Machek <pavel@ucw.cz>, Pekka Enberg <penberg@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Will Deacon <will@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, linux-pm@vger.kernel.org,
+        linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, sparclinux@vger.kernel.org,
+        x86@kernel.org
+References: <20201109192128.960-1-rppt@kernel.org>
+ <20201109192128.960-5-rppt@kernel.org>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat GmbH
+Message-ID: <01b18dfb-2650-f70a-8e0a-a062d96e1849@redhat.com>
+Date:   Tue, 10 Nov 2020 11:02:18 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="u7272awyvqgkjwck"
-Content-Disposition: inline
-In-Reply-To: <20201109121214.19012-1-frank@allwinnertech.com>
+In-Reply-To: <20201109192128.960-5-rppt@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 09.11.20 20:21, Mike Rapoport wrote:
+> From: Mike Rapoport <rppt@linux.ibm.com>
+> 
+> For architectures that enable ARCH_HAS_SET_MEMORY having the ability to
+> verify that a page is mapped in the kernel direct map can be useful
+> regardless of hibernation.
+> 
+> Add RISC-V implementation of kernel_page_present(), update its forward
+> declarations and stubs to be a part of set_memory API and remove ugly
+> ifdefery in inlcude/linux/mm.h around current declarations of
+> kernel_page_present().
+> 
+> Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
+> Acked-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
 
---u7272awyvqgkjwck
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Mon, Nov 09, 2020 at 08:12:14PM +0800, Frank Lee wrote:
-> From: Yangtao Li <frank@allwinnertech.com>
->=20
-> The debounce and poll time is generally quite long and the work not
-> performance critical so allow the scheduler to run the work anywhere
-> rather than in the normal per-CPU workqueue.
->=20
-> Signed-off-by: Yangtao Li <frank@allwinnertech.com>
+Acked-by: David Hildenbrand <david@redhat.com>
 
-Acked-by: Maxime Ripard <mripard@kernel.org>
+-- 
+Thanks,
 
-Thanks!
-Maxime
+David / dhildenb
 
---u7272awyvqgkjwck
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCX6plGgAKCRDj7w1vZxhR
-xevsAP0dQNe6uUscvhtHfqIMrBPK4OoJDYJ76adIKQPo8x8h8gEAwIlemE55HXvX
-bH7pdRN0bDRonTgEPf68yDS+TxwKygI=
-=K9kr
------END PGP SIGNATURE-----
-
---u7272awyvqgkjwck--
