@@ -2,103 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1F362AC99B
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 01:16:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D3B72AC99C
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 01:16:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729697AbgKJAPz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 19:15:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41540 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729243AbgKJAPz (ORCPT
+        id S1730178AbgKJAQn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 19:16:43 -0500
+Received: from out30-56.freemail.mail.aliyun.com ([115.124.30.56]:36305 "EHLO
+        out30-56.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729243AbgKJAQn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 19:15:55 -0500
-Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11C37C0613CF
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Nov 2020 16:15:55 -0800 (PST)
-Received: by mail-lj1-x243.google.com with SMTP id 11so12625886ljf.2
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Nov 2020 16:15:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=CJv0+NP1zw8VzJL3PKHO+qX/+1LnctrRFA8Fvvr1FOc=;
-        b=MfT+4p4dezjt9OFQyTVf2a4eVfbfN8g8QHFYnZW7RXsbl8+WpvewDEF395+hietKgz
-         WIGAZ3a2eiXwlVryYMWrO/u+4vgG1DlI2fSVPmv0Q6JI7Yx7DSAgEOTwu0/bCsxP1tHn
-         XO1OsCipfH6MUQRL483uGEozrPyvd8DPvM7Ao0SC+MauGWfLJ1nb0gDoDi6tVECRYJUY
-         +Ku64+9CAXE4mxZ8CmFzLj4yuQUUWpB+MrDbS/UTPDQMBYus58LkPoS0e6s2b3JqQSZ3
-         RB/HnGVCCcIA11F1rjImWTQrSHyFd73LTktyPCnZ/WsMVFeRAYKjdk+lPu2wTOBRl3e4
-         9Kjw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=CJv0+NP1zw8VzJL3PKHO+qX/+1LnctrRFA8Fvvr1FOc=;
-        b=DkY/28g+KpPJgb7BKmq4ZQZqJ+YSyrCk0AHAsK9y8Ctriqa4uDl+xCT4H5sBvL5YDM
-         HLLuOXGpS9qQMrRihRTaY765kfvL5CyeFJklWinMbC5EU5Z02uBLpkf6ea08/JhK7tJ2
-         OH+G3Bhq2lTCSc1AxWyXJxFH2gKRV/d9QX0ID2rFr3cvVc9qx8jU/0Cz16qctDucNhSG
-         CDFcoCwxsBcUS6gfZBhI291kUfMKKw9OQ3oidfET2WsRXAwEIXiNGwoNuCwrxBzSsSAX
-         P9rzpToByJSj69caZiAat3g13nAfN+ZKS2k4nPdBZ8VDwaSlQgTB4kGkMM/Jv/mdrMDR
-         OIFg==
-X-Gm-Message-State: AOAM5316+ubd3alqHVguVTT4LsfLO4JY0JiXdXkyJwhDd4a7Emmvbi9i
-        Dthwk/6pXnfJNJPcma1HFN6lj2AXk/aLDfa318c=
-X-Google-Smtp-Source: ABdhPJwVkHSeuhxB796y95XVlmrORp/3Zw5XT11jtpnaclujK2gL/9W4FyjiS/3FGH8kfJ4NwLbfEkTfs+Y5uiCsKoA=
-X-Received: by 2002:a05:651c:1205:: with SMTP id i5mr7716319lja.283.1604967353417;
- Mon, 09 Nov 2020 16:15:53 -0800 (PST)
-MIME-Version: 1.0
-References: <20201109215415.400153-1-jolsa@kernel.org> <20201109215415.400153-3-jolsa@kernel.org>
-In-Reply-To: <20201109215415.400153-3-jolsa@kernel.org>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Mon, 9 Nov 2020 16:15:42 -0800
-Message-ID: <CAADnVQLdXRFv1MYQu8k9QrECQxe3LFAfuyU244-9LfRT5snoqA@mail.gmail.com>
-Subject: Re: [PATCH 02/24] bpf: Add build_id_parse_size function
-To:     Jiri Olsa <jolsa@kernel.org>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Song Liu <songliubraving@fb.com>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Ingo Molnar <mingo@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Michael Petlan <mpetlan@redhat.com>,
-        Ian Rogers <irogers@google.com>,
-        Stephane Eranian <eranian@google.com>,
-        Alexey Budankov <alexey.budankov@linux.intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Adrian Hunter <adrian.hunter@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+        Mon, 9 Nov 2020 19:16:43 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R311e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04400;MF=wenan.mao@linux.alibaba.com;NM=1;PH=DS;RN=9;SR=0;TI=SMTPD_---0UEpA7Z3_1604967392;
+Received: from VM20200710-3.tbsite.net(mailfrom:wenan.mao@linux.alibaba.com fp:SMTPD_---0UEpA7Z3_1604967392)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Tue, 10 Nov 2020 08:16:39 +0800
+From:   Mao Wenan <wenan.mao@linux.alibaba.com>
+To:     edumazet@google.com, davem@davemloft.net, kuznet@ms2.inr.ac.ru,
+        yoshfuji@linux-ipv6.org, kuba@kernel.org
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org,
+        Mao Wenan <wenan.mao@linux.alibaba.com>
+Subject: [PATCH net v5] net: Update window_clamp if SOCK_RCVBUF is set
+Date:   Tue, 10 Nov 2020 08:16:31 +0800
+Message-Id: <1604967391-123737-1-git-send-email-wenan.mao@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
+In-Reply-To: <CANn89i+ABLMJTEKat=9=qujNwe0BFavphzqYc1CQGtrdkwUnXg@mail.gmail.com>
+References: <CANn89i+ABLMJTEKat=9=qujNwe0BFavphzqYc1CQGtrdkwUnXg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 9, 2020 at 1:54 PM Jiri Olsa <jolsa@kernel.org> wrote:
->
-> It's possible to have other build id types (other than default
-> SHA1). Currently there's also ld support for MD5 build id.
->
-> Adding build_id_parse_size function, that returns also size of
-> the parsed build id, so we can recognize the build id type.
->
-> Cc: Alexei Starovoitov <ast@kernel.org>
-> Cc: Song Liu <songliubraving@fb.com>
-> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> ---
->  include/linux/buildid.h |  2 ++
->  lib/buildid.c           | 31 ++++++++++++++++++++++++-------
->  2 files changed, 26 insertions(+), 7 deletions(-)
->
-> diff --git a/include/linux/buildid.h b/include/linux/buildid.h
-> index 3be5b49719f1..edba89834b4c 100644
-> --- a/include/linux/buildid.h
-> +++ b/include/linux/buildid.h
-> @@ -7,5 +7,7 @@
->  #define BUILD_ID_SIZE 20
->
->  int build_id_parse(struct vm_area_struct *vma, unsigned char *build_id);
-> +int build_id_parse_size(struct vm_area_struct *vma, unsigned char *build_id,
-> +                       __u32 *size);
+When net.ipv4.tcp_syncookies=1 and syn flood is happened,
+cookie_v4_check or cookie_v6_check tries to redo what
+tcp_v4_send_synack or tcp_v6_send_synack did,
+rsk_window_clamp will be changed if SOCK_RCVBUF is set,
+which will make rcv_wscale is different, the client
+still operates with initial window scale and can overshot
+granted window, the client use the initial scale but local
+server use new scale to advertise window value, and session
+work abnormally.
 
-I think it's too many choices for such trivial api.
-Just keep one build_id_parse() with two outputs
-and fix the callers.
+Fixes: e88c64f0a425 ("tcp: allow effective reduction of TCP's rcv-buffer via setsockopt")
+Signed-off-by: Mao Wenan <wenan.mao@linux.alibaba.com>
+---
+ v5: fix variable to adapat to Christmas tree format.
+ v4: change fixes tag format, and delay the actual call to
+     tcp_full_space().
+ v3: add local variable full_space, add fixes tag.
+ v2: fix for ipv6.
+ net/ipv4/syncookies.c |  9 +++++++--
+ net/ipv6/syncookies.c | 10 ++++++++--
+ 2 files changed, 15 insertions(+), 4 deletions(-)
+
+diff --git a/net/ipv4/syncookies.c b/net/ipv4/syncookies.c
+index 6ac473b..00dc3f9 100644
+--- a/net/ipv4/syncookies.c
++++ b/net/ipv4/syncookies.c
+@@ -331,7 +331,7 @@ struct sock *cookie_v4_check(struct sock *sk, struct sk_buff *skb)
+ 	__u32 cookie = ntohl(th->ack_seq) - 1;
+ 	struct sock *ret = sk;
+ 	struct request_sock *req;
+-	int mss;
++	int full_space, mss;
+ 	struct rtable *rt;
+ 	__u8 rcv_wscale;
+ 	struct flowi4 fl4;
+@@ -427,8 +427,13 @@ struct sock *cookie_v4_check(struct sock *sk, struct sk_buff *skb)
+ 
+ 	/* Try to redo what tcp_v4_send_synack did. */
+ 	req->rsk_window_clamp = tp->window_clamp ? :dst_metric(&rt->dst, RTAX_WINDOW);
++	/* limit the window selection if the user enforce a smaller rx buffer */
++	full_space = tcp_full_space(sk);
++	if (sk->sk_userlocks & SOCK_RCVBUF_LOCK &&
++	    (req->rsk_window_clamp > full_space || req->rsk_window_clamp == 0))
++		req->rsk_window_clamp = full_space;
+ 
+-	tcp_select_initial_window(sk, tcp_full_space(sk), req->mss,
++	tcp_select_initial_window(sk, full_space, req->mss,
+ 				  &req->rsk_rcv_wnd, &req->rsk_window_clamp,
+ 				  ireq->wscale_ok, &rcv_wscale,
+ 				  dst_metric(&rt->dst, RTAX_INITRWND));
+diff --git a/net/ipv6/syncookies.c b/net/ipv6/syncookies.c
+index e796a64..9b6cae1 100644
+--- a/net/ipv6/syncookies.c
++++ b/net/ipv6/syncookies.c
+@@ -136,7 +136,7 @@ struct sock *cookie_v6_check(struct sock *sk, struct sk_buff *skb)
+ 	__u32 cookie = ntohl(th->ack_seq) - 1;
+ 	struct sock *ret = sk;
+ 	struct request_sock *req;
+-	int mss;
++	int full_space, mss;
+ 	struct dst_entry *dst;
+ 	__u8 rcv_wscale;
+ 	u32 tsoff = 0;
+@@ -241,7 +241,13 @@ struct sock *cookie_v6_check(struct sock *sk, struct sk_buff *skb)
+ 	}
+ 
+ 	req->rsk_window_clamp = tp->window_clamp ? :dst_metric(dst, RTAX_WINDOW);
+-	tcp_select_initial_window(sk, tcp_full_space(sk), req->mss,
++	/* limit the window selection if the user enforce a smaller rx buffer */
++	full_space = tcp_full_space(sk);
++	if (sk->sk_userlocks & SOCK_RCVBUF_LOCK &&
++	    (req->rsk_window_clamp > full_space || req->rsk_window_clamp == 0))
++		req->rsk_window_clamp = full_space;
++
++	tcp_select_initial_window(sk, full_space, req->mss,
+ 				  &req->rsk_rcv_wnd, &req->rsk_window_clamp,
+ 				  ireq->wscale_ok, &rcv_wscale,
+ 				  dst_metric(dst, RTAX_INITRWND));
+-- 
+1.8.3.1
+
