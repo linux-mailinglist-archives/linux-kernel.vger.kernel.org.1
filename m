@@ -2,66 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3605D2ACA91
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 02:38:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3090B2ACA8F
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 02:38:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731448AbgKJBis (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 20:38:48 -0500
-Received: from mailgw02.mediatek.com ([210.61.82.184]:58472 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1731151AbgKJBir (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 20:38:47 -0500
-X-UUID: ab346585b6d447eebda9f4e3fe62f05a-20201110
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=YjSSNPs9DIKiggA5+V9fbL6MfaunwhMceWHthl8AyvQ=;
-        b=nO8dGzUIDG+QXsinumgcurz/T7wPsQvr1oPc1A7nF2uGE/ORDVrKMr2cPaXTjHVcwXG+f0QJzH/z4yRyz3kSnOATU5ipjC41YTEp5qhOTcaDXEMhpNWle2fifa5iqlrB8JIuxFI+6nZB366Js0YYH18fbyORUb0kY9ga/Rg25VI=;
-X-UUID: ab346585b6d447eebda9f4e3fe62f05a-20201110
-Received: from mtkcas08.mediatek.inc [(172.21.101.126)] by mailgw02.mediatek.com
-        (envelope-from <weiyi.lu@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 362126511; Tue, 10 Nov 2020 09:38:42 +0800
-Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
- mtkmbs07n2.mediatek.inc (172.21.101.141) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Tue, 10 Nov 2020 09:38:41 +0800
-Received: from [172.21.77.4] (172.21.77.4) by MTKCAS06.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Tue, 10 Nov 2020 09:38:40 +0800
-Message-ID: <1604972321.16474.9.camel@mtksdaap41>
-Subject: Re: [PATCH] clk: mediatek: fix mtk_clk_register_mux() as static
- function
-From:   Weiyi Lu <weiyi.lu@mediatek.com>
-To:     Greg KH <gregkh@linuxfoundation.org>
-CC:     Matthias Brugger <matthias.bgg@gmail.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-mediatek@lists.infradead.org>, <linux-clk@vger.kernel.org>,
-        <srv_heupstream@mediatek.com>, <stable@vger.kernel.org>,
-        Owen Chen <owen.chen@mediatek.com>
-Date:   Tue, 10 Nov 2020 09:38:41 +0800
-In-Reply-To: <20201109102035.GA1238638@kroah.com>
-References: <1604914627-9203-1-git-send-email-weiyi.lu@mediatek.com>
-         <20201109102035.GA1238638@kroah.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.10.4-0ubuntu2 
+        id S1730839AbgKJBin (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 20:38:43 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33810 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729452AbgKJBin (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 20:38:43 -0500
+Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.5])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 19E1D206ED;
+        Tue, 10 Nov 2020 01:38:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604972322;
+        bh=dfKd/j0VCoBroXtl93f4KHc1QvsBLFFkNGXwoMcE9Z0=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=A5pEFmmH8Zo5QCFhE+7Fz9cuZ/nA2nqJAZgNUqI7mGYXyYfgjnM1tRAx8gJ+frr+9
+         eynbxpYUm+WGRrQofXu67Xp4FeLlfEdBC9ZFD2XvtJuwXyc94doUDabeaTceftO+N9
+         Wp+2t7IXyA5tJD/GF8UxH5Ve1E68IzY3ve+V8QNA=
+Date:   Mon, 9 Nov 2020 17:38:41 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Tariq Toukan <ttoukan.linux@gmail.com>
+Cc:     kaixuxia <xiakaixu1987@gmail.com>, tariqt@nvidia.com,
+        tariqt@mellanox.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Kaixu Xia <kaixuxia@tencent.com>
+Subject: Re: [PATCH] net/mlx4: Assign boolean values to a bool variable
+Message-ID: <20201109173841.566189f9@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <a1cd492d-80bc-80e0-d864-21fa2a770ddb@gmail.com>
+References: <1604732038-6057-1-git-send-email-kaixuxia@tencent.com>
+        <9c8efc31-3237-ed3b-bfba-c13494b6452d@gmail.com>
+        <c6901fed-d063-91be-afd6-b6eedb2b65b6@gmail.com>
+        <a1cd492d-80bc-80e0-d864-21fa2a770ddb@gmail.com>
 MIME-Version: 1.0
-X-MTK:  N
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gTW9uLCAyMDIwLTExLTA5IGF0IDExOjIwICswMTAwLCBHcmVnIEtIIHdyb3RlOg0KPiBPbiBN
-b24sIE5vdiAwOSwgMjAyMCBhdCAwNTozNzowN1BNICswODAwLCBXZWl5aSBMdSB3cm90ZToNCj4g
-PiBtdGtfY2xrX3JlZ2lzdGVyX211eCgpIHNob3VsZCBiZSBhIHN0YXRpYyBmdW5jdGlvbg0KPiA+
-IA0KPiA+IEZpeGVzOiBhM2FlNTQ5OTE3ZjE2ICgiY2xrOiBtZWRpYXRlazogQWRkIG5ldyBjbGtt
-dXggcmVnaXN0ZXIgQVBJIikNCj4gPiBDYzogPHN0YWJsZUB2Z2VyLmtlcm5lbC5vcmc+DQo+IA0K
-PiBXaHkgaXMgdGhpcyBmb3Igc3RhYmxlIHRyZWVzPw0KDQpIaSBHcmVnLA0KDQpNeSBNaXN0YWtl
-LiBJbmRlZWQsIHRoaXMgaXMgbm90IGEgYnVnIGZpeCBmb3Igc3RhYmxlIHRyZWUuDQpBbmQgdGhl
-cmUgYXJlIHNpbXBsZSBxdWVzdGlvbnMuDQpXaWxsIEkgYmUgYWxsb3dlZCB0byBrZWVwIHRoZSBm
-aXhlcyB0YWcgaW4gdGhpcyBwYXRjaCB0byBpbmRpY2F0ZSB0aGUNCm1pc3Rha2VzIHdlIG1hZGUg
-aW4gcHJldmlvdXMgY29tbWl0IGlmIGl0J3Mgbm90IGEgYnVnIGZpeCBmb3Igc3RhYmxlDQp0cmVl
-Pw0KQW5kIGFsbCBJIG5lZWQgdG8gZG8gbm93IGlzIHRvIHJlbW92ZSBzdGFibGUgdHJlZSBmcm9t
-IGNjIGxpc3QuIElzIGl0DQpjb3JyZWN0Pw0KDQpNYW55IHRoYW5rcy4NCg0KPiANCg0K
+On Mon, 9 Nov 2020 11:33:17 +0200 Tariq Toukan wrote:
+> >>> ./drivers/net/ethernet/mellanox/mlx4/en_rx.c:687:1-17: WARNING: Assignment of 0/1 to bool variable
+> >>>
+> >>> Reported-by: Tosk Robot <tencent_os_robot@tencent.com>
+> >>> Signed-off-by: Kaixu Xia <kaixuxia@tencent.com>  
+> 
+> Reviewed-by: Tariq Toukan <tariqt@nvidia.com>
 
+Applied, thanks.
