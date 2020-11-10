@@ -2,114 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DD992AD759
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 14:19:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 269F12AD75C
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 14:20:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730665AbgKJNTt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 08:19:49 -0500
-Received: from mx2.suse.de ([195.135.220.15]:42354 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726721AbgKJNTs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 08:19:48 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1605014387;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=LAzXXj5GzuNVLy3Jg/kbnWMBu8+OLVtQu9zEu1Xuv0Q=;
-        b=Q1rdmZvcaLqFXIBUR1QjPvPsgVJNFcCZ/zMk4x0EWSWIUZhgWr2QinUFPHXO8PZuOLPhDA
-        TkHft6fj/+d8Nh+V6+TKcPmdDFEmJwtlfmWVW1MAUTM2HXfC7GAjlVeI5EEddhnohSvhAn
-        KOLM1bne0OU8+CWZqX5P2pCyNnNOljY=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 05182ACB6;
-        Tue, 10 Nov 2020 13:19:47 +0000 (UTC)
-Subject: Re: [PATCH] printk: ringbuffer: Convert function argument to local
- variable
-To:     John Ogness <john.ogness@linutronix.de>, pmladek@suse.com,
-        sergey.senozhatsky@gmail.com
-Cc:     linux-kernel@vger.kernel.org, rostedt@goodmis.org
-References: <20201110125012.353456-1-nborisov@suse.com>
- <87v9edqrph.fsf@jogness.linutronix.de>
-From:   Nikolay Borisov <nborisov@suse.com>
-Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
- mQINBFiKBz4BEADNHZmqwhuN6EAzXj9SpPpH/nSSP8YgfwoOqwrP+JR4pIqRK0AWWeWCSwmZ
- T7g+RbfPFlmQp+EwFWOtABXlKC54zgSf+uulGwx5JAUFVUIRBmnHOYi/lUiE0yhpnb1KCA7f
- u/W+DkwGerXqhhe9TvQoGwgCKNfzFPZoM+gZrm+kWv03QLUCr210n4cwaCPJ0Nr9Z3c582xc
- bCUVbsjt7BN0CFa2BByulrx5xD9sDAYIqfLCcZetAqsTRGxM7LD0kh5WlKzOeAXj5r8DOrU2
- GdZS33uKZI/kZJZVytSmZpswDsKhnGzRN1BANGP8sC+WD4eRXajOmNh2HL4P+meO1TlM3GLl
- EQd2shHFY0qjEo7wxKZI1RyZZ5AgJnSmehrPCyuIyVY210CbMaIKHUIsTqRgY5GaNME24w7h
- TyyVCy2qAM8fLJ4Vw5bycM/u5xfWm7gyTb9V1TkZ3o1MTrEsrcqFiRrBY94Rs0oQkZvunqia
- c+NprYSaOG1Cta14o94eMH271Kka/reEwSZkC7T+o9hZ4zi2CcLcY0DXj0qdId7vUKSJjEep
- c++s8ncFekh1MPhkOgNj8pk17OAESanmDwksmzh1j12lgA5lTFPrJeRNu6/isC2zyZhTwMWs
- k3LkcTa8ZXxh0RfWAqgx/ogKPk4ZxOXQEZetkEyTFghbRH2BIwARAQABtCNOaWtvbGF5IEJv
- cmlzb3YgPG5ib3Jpc292QHN1c2UuY29tPokCOAQTAQIAIgUCWIo48QIbAwYLCQgHAwIGFQgC
- CQoLBBYCAwECHgECF4AACgkQcb6CRuU/KFc0eg/9GLD3wTQz9iZHMFbjiqTCitD7B6dTLV1C
- ddZVlC8Hm/TophPts1bWZORAmYIihHHI1EIF19+bfIr46pvfTu0yFrJDLOADMDH+Ufzsfy2v
- HSqqWV/nOSWGXzh8bgg/ncLwrIdEwBQBN9SDS6aqsglagvwFD91UCg/TshLlRxD5BOnuzfzI
- Leyx2c6YmH7Oa1R4MX9Jo79SaKwdHt2yRN3SochVtxCyafDlZsE/efp21pMiaK1HoCOZTBp5
- VzrIP85GATh18pN7YR9CuPxxN0V6IzT7IlhS4Jgj0NXh6vi1DlmKspr+FOevu4RVXqqcNTSS
- E2rycB2v6cttH21UUdu/0FtMBKh+rv8+yD49FxMYnTi1jwVzr208vDdRU2v7Ij/TxYt/v4O8
- V+jNRKy5Fevca/1xroQBICXsNoFLr10X5IjmhAhqIH8Atpz/89ItS3+HWuE4BHB6RRLM0gy8
- T7rN6ja+KegOGikp/VTwBlszhvfLhyoyjXI44Tf3oLSFM+8+qG3B7MNBHOt60CQlMkq0fGXd
- mm4xENl/SSeHsiomdveeq7cNGpHi6i6ntZK33XJLwvyf00PD7tip/GUj0Dic/ZUsoPSTF/mG
- EpuQiUZs8X2xjK/AS/l3wa4Kz2tlcOKSKpIpna7V1+CMNkNzaCOlbv7QwprAerKYywPCoOSC
- 7P25Ag0EWIoHPgEQAMiUqvRBZNvPvki34O/dcTodvLSyOmK/MMBDrzN8Cnk302XfnGlW/YAQ
- csMWISKKSpStc6tmD+2Y0z9WjyRqFr3EGfH1RXSv9Z1vmfPzU42jsdZn667UxrRcVQXUgoKg
- QYx055Q2FdUeaZSaivoIBD9WtJq/66UPXRRr4H/+Y5FaUZx+gWNGmBT6a0S/GQnHb9g3nonD
- jmDKGw+YO4P6aEMxyy3k9PstaoiyBXnzQASzdOi39BgWQuZfIQjN0aW+Dm8kOAfT5i/yk59h
- VV6v3NLHBjHVw9kHli3jwvsizIX9X2W8tb1SefaVxqvqO1132AO8V9CbE1DcVT8fzICvGi42
- FoV/k0QOGwq+LmLf0t04Q0csEl+h69ZcqeBSQcIMm/Ir+NorfCr6HjrB6lW7giBkQl6hhomn
- l1mtDP6MTdbyYzEiBFcwQD4terc7S/8ELRRybWQHQp7sxQM/Lnuhs77MgY/e6c5AVWnMKd/z
- MKm4ru7A8+8gdHeydrRQSWDaVbfy3Hup0Ia76J9FaolnjB8YLUOJPdhI2vbvNCQ2ipxw3Y3c
- KhVIpGYqwdvFIiz0Fej7wnJICIrpJs/+XLQHyqcmERn3s/iWwBpeogrx2Lf8AGezqnv9woq7
- OSoWlwXDJiUdaqPEB/HmGfqoRRN20jx+OOvuaBMPAPb+aKJyle8zABEBAAGJAh8EGAECAAkF
- AliKBz4CGwwACgkQcb6CRuU/KFdacg/+M3V3Ti9JYZEiIyVhqs+yHb6NMI1R0kkAmzsGQ1jU
- zSQUz9AVMR6T7v2fIETTT/f5Oout0+Hi9cY8uLpk8CWno9V9eR/B7Ifs2pAA8lh2nW43FFwp
- IDiSuDbH6oTLmiGCB206IvSuaQCp1fed8U6yuqGFcnf0ZpJm/sILG2ECdFK9RYnMIaeqlNQm
- iZicBY2lmlYFBEaMXHoy+K7nbOuizPWdUKoKHq+tmZ3iA+qL5s6Qlm4trH28/fPpFuOmgP8P
- K+7LpYLNSl1oQUr+WlqilPAuLcCo5Vdl7M7VFLMq4xxY/dY99aZx0ZJQYFx0w/6UkbDdFLzN
- upT7NIN68lZRucImffiWyN7CjH23X3Tni8bS9ubo7OON68NbPz1YIaYaHmnVQCjDyDXkQoKC
- R82Vf9mf5slj0Vlpf+/Wpsv/TH8X32ajva37oEQTkWNMsDxyw3aPSps6MaMafcN7k60y2Wk/
- TCiLsRHFfMHFY6/lq/c0ZdOsGjgpIK0G0z6et9YU6MaPuKwNY4kBdjPNBwHreucrQVUdqRRm
- RcxmGC6ohvpqVGfhT48ZPZKZEWM+tZky0mO7bhZYxMXyVjBn4EoNTsXy1et9Y1dU3HVJ8fod
- 5UqrNrzIQFbdeM0/JqSLrtlTcXKJ7cYFa9ZM2AP7UIN9n1UWxq+OPY9YMOewVfYtL8M=
-Message-ID: <e6c7fcaa-2a65-7586-d82a-450996986770@suse.com>
-Date:   Tue, 10 Nov 2020 15:19:46 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1730535AbgKJNUF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 08:20:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49574 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726721AbgKJNUE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Nov 2020 08:20:04 -0500
+Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48949C0613CF
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 05:20:04 -0800 (PST)
+Received: by mail-lf1-x143.google.com with SMTP id 74so17464501lfo.5
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 05:20:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=jUc4FROYQtgj3f48EMA2Q35Aoeo6A9Bg4v3Z3azlYbc=;
+        b=LKt4KC1Go1Oj5oFXT7AoL8a0nJJznQOtDGScKZujsj5OVIh3fowX7tMSGQHrxnbSUd
+         WXh3jubqa5756OKJWf22Psf+4OBUSn3C+75Lh8mhGsHFpri0DHyNwbmpQyOelpARznUL
+         z232JG/w47Fy8BxqUKJjlH6796bjpyJwm4a44unW5XPEdLO3Y+0LyIeMazu1bYzh0voK
+         oQtCHeRdZ8pLSqErf6QS//DnrCdlkB9YXROmZIj9xS4pQGYUGosiiAiVN1OIeWdTBgH5
+         bK5JUz4BvJOx8Ygoen9/YVoc7S9fG0sGxlvuYB+ADxUmRP6/qc2Fn0vbZyQD2QgJqtpc
+         AlXQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=jUc4FROYQtgj3f48EMA2Q35Aoeo6A9Bg4v3Z3azlYbc=;
+        b=D4p7Izk9rrbfQC941zlHF/civNiNnFmZV8QBlXMchkJA5rVex4s25U/GRvN2DjSHt0
+         LLlnNFduHCaT1bHHCJXnJem0ZJOVTrPg8/W2Yombm/3ZzHlu66RpWEnT977dv403IBEf
+         PtWdLQ9nSCzPphb0KJG+iS/WvwzTB9q9EpfG7b43eTEqquqkWOoD93Ehbour9/0PmT/m
+         dOlSo2jrI+6RyBsvVAwwCpjvYZbmTY30upPR+gwItGP9WYP4spV+qFRul+Y7zQC3fqMP
+         dXDlT61C2SWACQSTdXRDVWrLNEyjS9eyfv0pCq0z9KAzZeengfbUfj2OhWeHcQhtI+j6
+         gdow==
+X-Gm-Message-State: AOAM530x1ln6tk9kN+blz9AJL0fxSTqy6QIfDdLMlH0zHxQkJTB2oCBw
+        KPpvtIGN9syYIKCXi+GdRZzLk03ISInQTEGeMfvhVg==
+X-Google-Smtp-Source: ABdhPJxpyPHQTFP6VP4fU3ofkUDZvR/pdH5VIYTxgPIqiFsFP+wncHwniiJUcsuE+hGmM5FmhF4yAu1OFJ20oB1R8W4=
+X-Received: by 2002:a19:f00b:: with SMTP id p11mr7179710lfc.585.1605014402796;
+ Tue, 10 Nov 2020 05:20:02 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <87v9edqrph.fsf@jogness.linutronix.de>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20201105231912.69527-1-coiby.xu@gmail.com> <20201105231912.69527-3-coiby.xu@gmail.com>
+In-Reply-To: <20201105231912.69527-3-coiby.xu@gmail.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Tue, 10 Nov 2020 14:19:52 +0100
+Message-ID: <CACRpkdZRwkhk_Bh0ua7sbq0emRRjTRkHwJWE8EMk9JwdPB8kUg@mail.gmail.com>
+Subject: Re: [PATCH v3 2/4] pinctrl: amd: use higher precision for 512 RtcClk
+To:     Coiby Xu <coiby.xu@gmail.com>
+Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Hans de Goede <hdegoede@redhat.com>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Nov 6, 2020 at 12:19 AM Coiby Xu <coiby.xu@gmail.com> wrote:
 
+> RTC is 32.768kHz thus 512 RtcClk equals 15625 usec. The documentation
+> likely has dropped precision and that's why the driver mistakenly took
+> the slightly deviated value.
+>
+> Reported-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+> Suggested-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+> Suggested-by: Hans de Goede <hdegoede@redhat.com>
+> Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+> Link: https://lore.kernel.org/linux-gpio/2f4706a1-502f-75f0-9596-cc25b4933b6c@redhat.com/
+> Signed-off-by: Coiby Xu <coiby.xu@gmail.com>
 
-On 10.11.20 г. 15:14 ч., John Ogness wrote:
-> On 2020-11-10, Nikolay Borisov <nborisov@suse.com> wrote:
->> data_alloc's 2nd argument is always rb::text_data_ring and that functino
->> always takes a struct printk_ringbuffer. Instead of passing the data
->> ring buffer as an argument simply make it a local variable.
-> 
-> This is a relic of when we had a second data ring (for
-> dictionaries). The patch is a nice cleanup, but there are actually
-> several functions that could use this exact same cleanup:
-> 
-> - data_make_reusable()
-> - data_push_tail()
-> - data_alloc()
-> - data_realloc()
-> 
-> Perhaps we should fix them all in a single patch?
+This patch applied for fixes and tagged for stable.
 
-I observed that right after sending this patch, so I have authored the
-necessary changes I can squash them and send them.
-
-> 
-> John Ogness
-> 
+Yours,
+Linus Walleij
