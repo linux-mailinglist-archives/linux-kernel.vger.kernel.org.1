@@ -2,128 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A2AA2ACB9C
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 04:20:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 49A052ACB9A
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 04:20:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731332AbgKJDUX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 22:20:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41624 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729243AbgKJDUX (ORCPT
+        id S1731252AbgKJDUH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 22:20:07 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:47323 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729243AbgKJDUH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 22:20:23 -0500
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE775C0613CF
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Nov 2020 19:20:22 -0800 (PST)
-Received: by mail-pg1-x541.google.com with SMTP id m13so780923pgl.7
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Nov 2020 19:20:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=RmZMs4GZmfJF8Fdhkv3dMimRPyWWITH+SYPWeKRj3iE=;
-        b=V/8PpzAY+tj3MaT3pbJokjVFCPodRWTiKBOOsxnc5JOelQuZm4fKIz3aMJU/9mRavo
-         6sqeUvW5CF7aOdRtY24WWtf2pnqJpF6d8QJqegvaLZWlSk/lE5qKa8f9bUj7N5h1IQH/
-         itrE++Uoz4EefemYNYYiOcGrNoUn2daqWgwXx9XFCXw7jGEwXXw/A/mnlNz10/GU4On0
-         UIRYmMjY3KcKBgYFoGlwvJGK9vaTuP87RBUE8AxVQ8BegKaXClTX48zscvECI+cAzrC8
-         /hw44C1Mv1tGKJ4OEgTd0Cs5LFv7Mdj6tIPvPQt2S9UL1uhUyTDGWkF49IJYJTIM7OCB
-         X3EQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=RmZMs4GZmfJF8Fdhkv3dMimRPyWWITH+SYPWeKRj3iE=;
-        b=I0V9MTje2wfFyPhBqwDFsaEdqWKkincXYxpEPf2KnJZuR9dNZZXC5CSCoOjfI8ayiy
-         K3/ApFMfnURrTxLycjhB/8/w+O4CPqlmUIqOfL3URNhOtkPhZeB3WDQZjwHfyDMtt/S9
-         Tt0npNY7u03jrNFurJqdrREEdJZ+3NSZsOqMMgd+CxGhJtCqNjjCnaaXHoIppdfAAkkU
-         mcbAXPPcOUKMMmD9ObO/jn8Gjmo37MUhlHElz9dp4gym87vD3rhdrFrcrA2II0x8wsp0
-         cuUIOvEe3zJSzpQjdgy4YNsV49T+AwPc1bUJ7VeAAPvKiNZkWMWT+Ivvf/Y+c/RzfuUl
-         iUUQ==
-X-Gm-Message-State: AOAM531U68s6M2odFBKSihvOYwE987j/WRykA5je66XYi2zIpPEp9b9S
-        LIVGzqSMrjO3/0Y0wUwSzBFMx3kSh5oA3D9QXPP+Cg==
-X-Google-Smtp-Source: ABdhPJy4bpxnsO5pklMkzSdiRHsoNta+GW29EFNBoBI7DxyYuC5HlF/QzQP409Ri9BAAjtrnI8ByVVoN0Qb7Sm3Jyr4=
-X-Received: by 2002:a63:7408:: with SMTP id p8mr14936096pgc.273.1604978422039;
- Mon, 09 Nov 2020 19:20:22 -0800 (PST)
+        Mon, 9 Nov 2020 22:20:07 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1604978405;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=fComietV2Xy04Op2oaFnL4e3cxl53kC87DE99e9O/4M=;
+        b=a7quuinmZcV9svrRM6V1yxx7Z46DtQ3TYO6nmvFAuSmvoWD5XiJzb3lHxCvXEc1XLIL9/f
+        a+LmWKkgIFjO8QdFIef17J3O9TkFXnuRPijJUkD7/RP5UWCx9ArvC2sj+vJ/9MDylqTjgU
+        zz5HPO5Z10XL5IoNrTNyR4d8PrvAFUI=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-47-ir4H9PqMNWuGzwx5fvkkjg-1; Mon, 09 Nov 2020 22:20:00 -0500
+X-MC-Unique: ir4H9PqMNWuGzwx5fvkkjg-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 92897809DD6;
+        Tue, 10 Nov 2020 03:19:59 +0000 (UTC)
+Received: from treble (ovpn-112-15.rdu2.redhat.com [10.10.112.15])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 515525C1D0;
+        Tue, 10 Nov 2020 03:19:58 +0000 (UTC)
+Date:   Mon, 9 Nov 2020 21:19:55 -0600
+From:   Josh Poimboeuf <jpoimboe@redhat.com>
+To:     Shinichiro Kawasaki <shinichiro.kawasaki@wdc.com>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Damien Le Moal <Damien.LeMoal@wdc.com>
+Subject: Re: WARNING: can't access registers at asm_common_interrupt
+Message-ID: <20201110031955.flxf7iq5yoxjzmsg@treble>
+References: <20201106060414.edtcb7nrbzm4a32t@shindev.dhcp.fujisawa.hgst.com>
+ <20201106180628.r4emdw3yoxfzryzu@treble>
+ <20201109091037.6upb63tclk4nhvl7@shindev.dhcp.fujisawa.hgst.com>
 MIME-Version: 1.0
-References: <20201028035013.99711-1-songmuchun@bytedance.com> <20201028035013.99711-2-songmuchun@bytedance.com>
-In-Reply-To: <20201028035013.99711-2-songmuchun@bytedance.com>
-From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Tue, 10 Nov 2020 11:19:46 +0800
-Message-ID: <CAMZfGtVgtJ0BdL_tXzgC3qh5Bn+0GpJJNHyE5RzEm=B3GO5q2w@mail.gmail.com>
-Subject: Re: [PATCH v2] mm: memcg/slab: Fix use after free in obj_cgroup_charge
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Michal Hocko <mhocko@kernel.org>, Roman Gushchin <guro@fb.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Yafang Shao <laoar.shao@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Chris Down <chris@chrisdown.name>,
-        Cgroups <cgroups@vger.kernel.org>, esyr@redhat.com,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Marco Elver <elver@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Kees Cook <keescook@chromium.org>, areber@redhat.com,
-        Suren Baghdasaryan <surenb@google.com>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20201109091037.6upb63tclk4nhvl7@shindev.dhcp.fujisawa.hgst.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 28, 2020 at 11:50 AM Muchun Song <songmuchun@bytedance.com> wrote:
->
-> The rcu_read_lock/unlock only can guarantee that the memcg will
-> not be freed, but it cannot guarantee the success of css_get to
-> memcg.
->
-> If the whole process of a cgroup offlining is completed between
-> reading a objcg->memcg pointer and bumping the css reference on
-> another CPU, and there are exactly 0 external references to this
-> memory cgroup (how we get to the obj_cgroup_charge() then?),
-> css_get() can change the ref counter from 0 back to 1.
->
-> Fixes: bf4f059954dc ("mm: memcg/slab: obj_cgroup API")
-> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-> Acked-by: Roman Gushchin <guro@fb.com>
+On Mon, Nov 09, 2020 at 09:10:38AM +0000, Shinichiro Kawasaki wrote:
+> On Nov 06, 2020 / 12:06, Josh Poimboeuf wrote:
+> > On Fri, Nov 06, 2020 at 06:04:15AM +0000, Shinichiro Kawasaki wrote:
+> > > Greetings,
+> > > 
+> > > I observe "WARNING: can't access registers at asm_common_interrupt+0x1e/0x40"
+> > > in my kernel test system repeatedly, which is printed by unwind_next_frame() in
+> > > "arch/x86/kernel/unwind_orc.c". Syzbot already reported that [1]. Similar
+> > > warning was reported and discussed [2], but I suppose the cause is not yet
+> > > clarified.
+> > > 
+> > > The warning was observed with v5.10-rc2 and older tags. I bisected and found
+> > > that the commit 044d0d6de9f5 ("lockdep: Only trace IRQ edges") in v5.9-rc3
+> > > triggered the warning. Reverting that from 5.10-rc2, the warning disappeared.
+> > > May I ask comment by expertise on CC how this commit can relate to the warning?
+> > > 
+> > > The test condition to reproduce the warning is rather unique (blktests,
+> > > dm-linear and ZNS device emulation by QEMU). If any action is suggested for
+> > > further analysis, I'm willing to take it with my test system.
+> > 
+> > Hi,
+> > 
+> > Thanks for reporting this issue.  This might be a different issue from
+> > [2].
+> > 
+> > Can you send me the arch/x86/entry/entry_64.o file from your build?
+> 
+> Hi Josh, thank you for your response. As a separated e-mail, I have sent the
+> entry_64.o only to your address, since I hesitate to send around the 76kb
+> attachment file to LKML. In case it does not reach to you, please let me know.
 
-Hi Andrew,
+Got it, thanks.  Unfortunately I'm still confused.
 
-Maybe you forgot to add this to the queue for the merge window?
+Can you test with the following patch, and boot with 'unwind_debug'?
+That should hopefully dump a lot of useful data along with the warning.
 
-Thanks.
+From: Josh Poimboeuf <jpoimboe@redhat.com>
+Subject: [PATCH] x86/unwind/orc: Add 'unwind_debug' cmdline option
 
-> ---
->  changelog in v2:
->  1. Add unlikely and update the commit log suggested by Roman.
->
->  mm/memcontrol.c | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
->
-> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> index 8c8b4c3ed5a0..d9cdf899c6fc 100644
-> --- a/mm/memcontrol.c
-> +++ b/mm/memcontrol.c
-> @@ -3221,8 +3221,10 @@ int obj_cgroup_charge(struct obj_cgroup *objcg, gfp_t gfp, size_t size)
->          * independently later.
->          */
->         rcu_read_lock();
-> +retry:
->         memcg = obj_cgroup_memcg(objcg);
-> -       css_get(&memcg->css);
-> +       if (unlikely(!css_tryget(&memcg->css)))
-> +               goto retry;
->         rcu_read_unlock();
->
->         nr_pages = size >> PAGE_SHIFT;
-> --
-> 2.20.1
->
+Sometimes the one-line ORC unwinder warnings aren't very helpful.  Add a
+new 'unwind_debug' cmdline option which will dump the full stack
+contents of the current task when an error condition is encountered.
 
+Signed-off-by: Josh Poimboeuf <jpoimboe@redhat.com>
+Reviewed-by: Miroslav Benes <mbenes@suse.cz>
+---
+ .../admin-guide/kernel-parameters.txt         |  6 +++
+ arch/x86/kernel/unwind_orc.c                  | 48 ++++++++++++++++++-
+ 2 files changed, 53 insertions(+), 1 deletion(-)
 
---
-Yours,
-Muchun
+diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+index 526d65d8573a..4bed92c51723 100644
+--- a/Documentation/admin-guide/kernel-parameters.txt
++++ b/Documentation/admin-guide/kernel-parameters.txt
+@@ -5512,6 +5512,12 @@
+ 	unknown_nmi_panic
+ 			[X86] Cause panic on unknown NMI.
+ 
++	unwind_debug	[X86-64]
++			Enable unwinder debug output.  This can be
++			useful for debugging certain unwinder error
++			conditions, including corrupt stacks and
++			bad/missing unwinder metadata.
++
+ 	usbcore.authorized_default=
+ 			[USB] Default USB device authorization:
+ 			(default -1 = authorized except for wireless USB,
+diff --git a/arch/x86/kernel/unwind_orc.c b/arch/x86/kernel/unwind_orc.c
+index 73f800100066..44bae03f9bfc 100644
+--- a/arch/x86/kernel/unwind_orc.c
++++ b/arch/x86/kernel/unwind_orc.c
+@@ -13,8 +13,13 @@
+ 
+ #define orc_warn_current(args...)					\
+ ({									\
+-	if (state->task == current)					\
++	static bool dumped_before;					\
++	if (state->task == current) {					\
+ 		orc_warn(args);						\
++		if (unwind_debug && !dumped_before)			\
++			unwind_dump(state);				\
++		dumped_before = true;					\
++	}								\
+ })
+ 
+ extern int __start_orc_unwind_ip[];
+@@ -23,8 +28,49 @@ extern struct orc_entry __start_orc_unwind[];
+ extern struct orc_entry __stop_orc_unwind[];
+ 
+ static bool orc_init __ro_after_init;
++static bool unwind_debug __ro_after_init;
+ static unsigned int lookup_num_blocks __ro_after_init;
+ 
++static int __init unwind_debug_cmdline(char *str)
++{
++	unwind_debug = true;
++
++	return 0;
++}
++early_param("unwind_debug", unwind_debug_cmdline);
++
++static void unwind_dump(struct unwind_state *state)
++{
++	static bool dumped_before;
++	unsigned long word, *sp;
++	struct stack_info stack_info = {0};
++	unsigned long visit_mask = 0;
++
++	if (dumped_before)
++		return;
++
++	dumped_before = true;
++
++	printk_deferred("unwind stack type:%d next_sp:%p mask:0x%lx graph_idx:%d\n",
++			state->stack_info.type, state->stack_info.next_sp,
++			state->stack_mask, state->graph_idx);
++
++	for (sp = __builtin_frame_address(0); sp;
++	     sp = PTR_ALIGN(stack_info.next_sp, sizeof(long))) {
++		if (get_stack_info(sp, state->task, &stack_info, &visit_mask))
++			break;
++
++		for (; sp < stack_info.end; sp++) {
++
++			word = READ_ONCE_NOCHECK(*sp);
++
++			printk_deferred("%0*lx: %0*lx (%pB)\n", BITS_PER_LONG/4,
++					(unsigned long)sp, BITS_PER_LONG/4,
++					word, (void *)word);
++		}
++	}
++}
++
+ static inline unsigned long orc_ip(const int *ip)
+ {
+ 	return (unsigned long)ip + *ip;
+-- 
+2.25.4
+
