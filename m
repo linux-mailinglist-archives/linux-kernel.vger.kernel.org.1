@@ -2,162 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB5102AE366
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 23:37:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D56912AE36C
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 23:39:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732169AbgKJWhN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 17:37:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52444 "EHLO
+        id S1732221AbgKJWja (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 17:39:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52792 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726688AbgKJWhN (ORCPT
+        with ESMTP id S1726688AbgKJWja (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 17:37:13 -0500
-Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E781EC0613D1;
-        Tue, 10 Nov 2020 14:37:12 -0800 (PST)
-Received: by mail-ej1-x642.google.com with SMTP id cw8so15942ejb.8;
-        Tue, 10 Nov 2020 14:37:12 -0800 (PST)
+        Tue, 10 Nov 2020 17:39:30 -0500
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F300AC0613D1
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 14:39:29 -0800 (PST)
+Received: by mail-pf1-x441.google.com with SMTP id w6so228590pfu.1
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 14:39:29 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=p7/DVWJXM3Y0l3Wn3I9BigYCth6XPlOyjvs+pJAWiAc=;
-        b=oTU4KW0NIj1Gcr9fhmtUD7bMDrRQ3hiFp2lVi1vOs4ZThWjwmXuyh0FQwfJ4NcTx7s
-         ZkbZpPe9CgzWdgd3XSNEWjjn1IMH6xQ8ZqkQfBLt3S0MuqBvjWkcVRgIgC+o7vh3N5cC
-         +NnyCDYstJgBRxTzcPfcuroB7gtjsQeTJEcbSjiVCO1Sy/073/qKB7Kms63llNvwBfWy
-         Ow6W1hXmD51m/lZF4CXZtmhOXFJ0YLzsmTL4mgKklIJoXQFSVJJN1A/TCkKUSrQByGbe
-         59WK2G9Z/2YE9kMh1nQ9e3v36pq1mhTIMXyESFbZMHdNkJfjldxlf2qIKRloh23E2zTf
-         hL8A==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=x01X3oGlO2FWJs/nEcm6l2z8oosZN74c8doXPDQlDH8=;
+        b=PDaTbORqaF9OsJWeMMH4Nn/m77MsSx7JGQ/5Al2acvW7WJTSQmPK3mh3ELUjd6Vb3O
+         COx/cSxK8sSFQEjj8eJdTDTraM3x7kC0wnksp7FH4z8sGeSInaOToS5W40xZjDNswPMQ
+         aq6LJPf9mi1OMxThfF+hbQhV3gPzMy8KXUL2tWi12Wgwzra44xaM+h2Cg+XQCaWJe7TL
+         SLPqFbTN+dbWZLGzkzl9VBpUHNs5t2n4WzAw/GHIsfFQZgkQzrvppdraQKnQaPG4CptH
+         gb6KrzCG9ZG1o4IXqt8y5Ir5fz/NiHEoOohnOQVBh05jJb9airObpKVQSubg0FeEKg/V
+         yWkg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=p7/DVWJXM3Y0l3Wn3I9BigYCth6XPlOyjvs+pJAWiAc=;
-        b=CxWu1MEiR52b1QYQqaGqZkT5tglX+0+IHDCBsLWvnebk6NbDH1zYD73BQsiPu9ToGa
-         ve7NhkAFx2XWsORXJ0AJ2X0yZ6LlMVOZIyeUg+Q9hqNMMMHd1ZYb50etTpQqvwsqJteE
-         uvBS8rxg74CZji2CSzt2icf2DhnG14WYa7idzNwSXNXBzghsL+eiXAwsafzdpeks1eLH
-         3PFbmsxss/x22bGcajJIro5UiCy8Ga5eTTLXivCN+8hKwyfiD/eb9rjRTB1eK2URzOTG
-         Szodc3U7ZlZer+25Uj0TJV/26yjQUJ+vQ90BlCYPCHA9n8hugcb3XxmU7M+tFlhqJvNV
-         GBqw==
-X-Gm-Message-State: AOAM531adDms1b4wDU7YLjWOB38PJHNpdxb2mkry139slchCCG6UmdWG
-        xrVm+bUw9K9xiE3g0kVyFdc=
-X-Google-Smtp-Source: ABdhPJzzw/2ZXL0N52GYFiDvsV6F6t+RJvNY7RGOGb0I5zNdyadnQGa0N5VFcPB++q+tti0CSgFS3w==
-X-Received: by 2002:a17:906:a14c:: with SMTP id bu12mr22892989ejb.444.1605047831591;
-        Tue, 10 Nov 2020 14:37:11 -0800 (PST)
-Received: from skbuf ([188.25.2.177])
-        by smtp.gmail.com with ESMTPSA id k11sm23320edh.72.2020.11.10.14.37.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 10 Nov 2020 14:37:11 -0800 (PST)
-Date:   Wed, 11 Nov 2020 00:37:09 +0200
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     Florian Fainelli <f.fainelli@gmail.com>
-Cc:     netdev@vger.kernel.org, Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>, Ray Jui <rjui@broadcom.com>,
-        Scott Branden <sbranden@broadcom.com>,
-        "maintainer:BROADCOM IPROC ARM ARCHITECTURE" 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        Hauke Mehrtens <hauke@hauke-m.de>,
-        =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "moderated list:BROADCOM IPROC ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        Kurt Kanzenbach <kurt@kmk-computers.de>
-Subject: Re: [PATCH 08/10] ARM: dts: NSP: Add a default compatible for switch
- node
-Message-ID: <20201110223709.vca534wynwgfkz77@skbuf>
-References: <20201110033113.31090-1-f.fainelli@gmail.com>
- <20201110033113.31090-9-f.fainelli@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=x01X3oGlO2FWJs/nEcm6l2z8oosZN74c8doXPDQlDH8=;
+        b=HuFu11NV/OeJgDs76Seago5heEdS0EawDD1GNyfZH/xwVdiax/zu/SbTCh19jdugVv
+         y7kw7rMv7d0d/kAe/K3gHMvYNje2w3JGoYRDC7mTESnfipDQYNTdQfaUvDNgjRpYhY+h
+         XCEihSav6XSduXaF/MBLQXNkDXLu8AcOBlV4gckQNwtFq7YsggoQ2YbIK0gy1HclKux8
+         RmHKk9Ri7xkI1rymYGdBS8kQrz+sbZD05HHNpNrkmHzzpisD/njKj0ggR16L/ifaZdxu
+         3zuMNfonKoGDgXqSpVn2VNAdmlzQIym5ywG1OnadSPqOAwedmP5qk/FhpU8ONa4OOZgl
+         hyCg==
+X-Gm-Message-State: AOAM533GsRNJyRjbfn0uYnyRxL+k4ZKREq+XT1YOuo/0HM53+OAKDH+L
+        8xKtLavx/RBtPWlD6zmrsYa9o239futt6hVVISAVyg==
+X-Google-Smtp-Source: ABdhPJwwavQAaG6gZxGaph8iG/csCdfimrEfLAaBTdf9DdMp4nGAeUNSNTHWttFdmhqHqubBstUPbM+0uY6iiNHdBu8=
+X-Received: by 2002:a62:5e06:0:b029:164:a9ca:b07e with SMTP id
+ s6-20020a625e060000b0290164a9cab07emr14974079pfb.36.1605047969331; Tue, 10
+ Nov 2020 14:39:29 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201110033113.31090-9-f.fainelli@gmail.com>
+References: <20201106051436.2384842-1-adrian.ratiu@collabora.com>
+ <20201106051436.2384842-3-adrian.ratiu@collabora.com> <20201106101419.GB3811063@ubuntu-m3-large-x86>
+ <87wnyyvh56.fsf@collabora.com> <CAKwvOdkodob0M0r_AK_4nG3atLGMyNENMd6qVAHSPa92Zh7UZA@mail.gmail.com>
+ <871rh2i9xg.fsf@iwork.i-did-not-set--mail-host-address--so-tickle-me>
+ <CAKwvOdkm3u83TQDBB-fC0TwKZCFXGh5sAfahKXxA+mnzgDid_w@mail.gmail.com>
+ <20201110221511.GA1373528@rani.riverdale.lan> <CAKwvOd=NQ==umC+N_Sgji5HCCFTRARh4jWiB3DaBfV6jDd5cRg@mail.gmail.com>
+In-Reply-To: <CAKwvOd=NQ==umC+N_Sgji5HCCFTRARh4jWiB3DaBfV6jDd5cRg@mail.gmail.com>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Tue, 10 Nov 2020 14:39:18 -0800
+Message-ID: <CAKwvOdmsCY8Hb6t8t9jW5DKCZKbja27bGufO=tw3+-UuTTFBOQ@mail.gmail.com>
+Subject: Re: [PATCH 2/2] arm: lib: xor-neon: disable clang vectorization
+To:     Arvind Sankar <nivedita@alum.mit.edu>
+Cc:     Adrian Ratiu <adrian.ratiu@collabora.com>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Russell King <linux@armlinux.org.uk>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Collabora Kernel ML <kernel@collabora.com>,
+        Ard Biesheuvel <ardb@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 09, 2020 at 07:31:11PM -0800, Florian Fainelli wrote:
-> Provide a default compatible string which is based on the 58522 SRAB
-> compatible, this allows us to have sane defaults and silences the
-> following warnings:
+On Tue, Nov 10, 2020 at 2:36 PM Nick Desaulniers
+<ndesaulniers@google.com> wrote:
 >
->  arch/arm/boot/dts/bcm958522er.dt.yaml:
->     ethernet-switch@36000: compatible: 'oneOf' conditional failed,
-> one
->     must be fixed:
->             ['brcm,bcm5301x-srab'] is too short
->             'brcm,bcm5325' was expected
->             'brcm,bcm53115' was expected
->             'brcm,bcm53125' was expected
->             'brcm,bcm53128' was expected
->             'brcm,bcm5365' was expected
->             'brcm,bcm5395' was expected
->             'brcm,bcm5389' was expected
->             'brcm,bcm5397' was expected
->             'brcm,bcm5398' was expected
->             'brcm,bcm11360-srab' was expected
->             'brcm,bcm5301x-srab' is not one of ['brcm,bcm53010-srab',
->     'brcm,bcm53011-srab', 'brcm,bcm53012-srab', 'brcm,bcm53018-srab',
->     'brcm,bcm53019-srab']
->             'brcm,bcm5301x-srab' is not one of ['brcm,bcm11404-srab',
->     'brcm,bcm11407-srab', 'brcm,bcm11409-srab', 'brcm,bcm58310-srab',
->     'brcm,bcm58311-srab', 'brcm,bcm58313-srab']
->             'brcm,bcm5301x-srab' is not one of ['brcm,bcm58522-srab',
->     'brcm,bcm58523-srab', 'brcm,bcm58525-srab', 'brcm,bcm58622-srab',
->     'brcm,bcm58623-srab', 'brcm,bcm58625-srab', 'brcm,bcm88312-srab']
->             'brcm,bcm5301x-srab' is not one of ['brcm,bcm3384-switch',
->     'brcm,bcm6328-switch', 'brcm,bcm6368-switch']
->             From schema:
->     Documentation/devicetree/bindings/net/dsa/b53.yaml
+> On Tue, Nov 10, 2020 at 2:15 PM Arvind Sankar <nivedita@alum.mit.edu> wrote:
+> >
+> > On Tue, Nov 10, 2020 at 01:41:17PM -0800, Nick Desaulniers wrote:
+> > > On Mon, Nov 9, 2020 at 11:51 AM Adrian Ratiu <adrian.ratiu@collabora.com> wrote:
+> > > >
+> > > > On Fri, 06 Nov 2020, Nick Desaulniers <ndesaulniers@google.com>
+> > > > wrote:
+> > > > > +#pragma clang loop vectorize(enable)
+> > > > >         do {
+> > > > >                 p1[0] ^= p2[0] ^ p3[0] ^ p4[0] ^ p5[0]; p1[1] ^=
+> > > > >                 p2[1] ^ p3[1] ^ p4[1] ^ p5[1];
+> > > > > ``` seems to generate the vectorized code.
+> > > > >
+> > > > > Why don't we find a way to make those pragma's more toolchain
+> > > > > portable, rather than open coding them like I have above rather
+> > > > > than this series?
+> > > >
+> > > > Hi again Nick,
+> > > >
+> > > > How did you verify the above pragmas generate correct vectorized
+> > > > code?  Have you tested this specific use case?
+> > >
+> > > I read the disassembly before and after my suggested use of pragmas;
+> > > look for vld/vstr.  You can also add -Rpass-missed=loop-vectorize to
+> > > CFLAGS_xor-neon.o in arch/arm/lib/Makefile and rebuild
+> > > arch/arm/lib/xor-neon.o with CONFIG_BTRFS enabled.
+> > >
+> >
+> > https://godbolt.org/z/1oo9M6
+> >
+> > With the __restrict__ keywords added, clang seems to vectorize the loop,
+> > but still reports that vectorization wasn't beneficial -- any idea
+> > what's going on?
+
+Anyways, it's not safe to make that change in the kernel unless you
+can guarantee that callers of these routines do not alias or overlap.
+
 >
-> Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
-> ---
->  arch/arm/boot/dts/bcm-nsp.dtsi | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> I suspect that loop-vectorize is a higher level pass that relies on
+> slp-vectorizer for the transform.
 >
-> diff --git a/arch/arm/boot/dts/bcm-nsp.dtsi b/arch/arm/boot/dts/bcm-nsp.dtsi
-> index 09fd7e55c069..8453865d1439 100644
-> --- a/arch/arm/boot/dts/bcm-nsp.dtsi
-> +++ b/arch/arm/boot/dts/bcm-nsp.dtsi
-> @@ -386,7 +386,7 @@ ccbtimer1: timer@35000 {
->  		};
+> $ clang -O2 --target=arm-linux-gnueabi -S -o - foo.c -mfpu=neon -mllvm
+> -print-after-all
+> ...
+> *** IR Dump After SLP Vectorizer ***
+> (bunch of <4 x i32> types)
 >
->  		srab: ethernet-switch@36000 {
-> -			compatible = "brcm,nsp-srab";
-> +			compatible = "brcm,bcm58522-srab", "brcm,nsp-srab";
->  			reg = <0x36000 0x1000>,
->  			      <0x3f308 0x8>,
->  			      <0x3f410 0xc>;
+> If you add -Rpass-missed=slp-vectorizer, observe that the existing
+> warnings from -Rpass-missed=loop-vectorize disappear; I suspect
+> loop-vectorize will print a "remark" if passes it calls did not, but
+> returned some for of error code.
+>
+> -Rpass=slp-vectorizer shows that it vectorizes two sequences of the
+> loop, and warns that some third portion (that's
+> non-immediately-obvious to me) was non beneficial.
+>
 > --
-> 2.25.1
->
-
-I am not getting this.
-The line:
-#include "bcm-nsp.dtsi"
-
-can be found in:
-
-arch/arm/boot/dts/bcm988312hr.dts
-arch/arm/boot/dts/bcm958625hr.dts
-arch/arm/boot/dts/bcm958622hr.dts
-arch/arm/boot/dts/bcm958625k.dts
-arch/arm/boot/dts/bcm958522er.dts
-arch/arm/boot/dts/bcm958525er.dts
-arch/arm/boot/dts/bcm958623hr.dts
-arch/arm/boot/dts/bcm958525xmc.dts
+> Thanks,
+> ~Nick Desaulniers
 
 
-The pattern for the other DTS files that include this seems to be to
-overwrite the compatible locally in bcm958522er.dts, like this:
 
-&srab {
-	compatible = "brcm,bcm58522-srab", "brcm,nsp-srab";
-};
-
-Is there a reason why you are choosing to put an SoC specific compatible
-in the common bcm-nsp.dtsi?
+-- 
+Thanks,
+~Nick Desaulniers
