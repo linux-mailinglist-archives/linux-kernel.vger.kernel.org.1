@@ -2,359 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85B2B2AE3E6
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 00:15:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 73E552AE3E9
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 00:16:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732175AbgKJXM7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 18:12:59 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60812 "EHLO mail.kernel.org"
+        id S1731759AbgKJXQI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 18:16:08 -0500
+Received: from foss.arm.com ([217.140.110.172]:36140 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726737AbgKJXM6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 18:12:58 -0500
-Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.7])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7781720781;
-        Tue, 10 Nov 2020 23:12:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605049977;
-        bh=r1XIHDLnVVppsNVdPm6iiEsiEcANo/69NHDTb/ORlHU=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=czftW3jppBUq/W8daxxIyhaRcc7SXtqcmlPLIH2PrvuRfXPTJB8ZGo5SZyOplip/L
-         6ny3b4PwiQcDsK52cr2kOtgtMK5oPdUAEXTcYIffyoZJZHlfHAuNW/DnCBUdDnXMBs
-         kxOmEUaJrmnaS/7HqNEpROY75G0jru0HmN1IlNKs=
-Date:   Tue, 10 Nov 2020 15:12:55 -0800
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Andrea Mayer <andrea.mayer@uniroma2.it>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        David Ahern <dsahern@kernel.org>,
-        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Shrijeet Mukherjee <shrijeet@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        Stefano Salsano <stefano.salsano@uniroma2.it>,
-        Paolo Lungaroni <paolo.lungaroni@cnit.it>,
-        Ahmed Abdelsalam <ahabdels.dev@gmail.com>
-Subject: Re: [net-next,v2,4/5] seg6: add support for the SRv6 End.DT4
- behavior
-Message-ID: <20201110151255.3a86afcc@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20201107153139.3552-5-andrea.mayer@uniroma2.it>
-References: <20201107153139.3552-1-andrea.mayer@uniroma2.it>
-        <20201107153139.3552-5-andrea.mayer@uniroma2.it>
+        id S1726688AbgKJXQI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Nov 2020 18:16:08 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id BE14C1396;
+        Tue, 10 Nov 2020 15:16:07 -0800 (PST)
+Received: from [10.57.23.123] (unknown [10.57.23.123])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 9687B3F718;
+        Tue, 10 Nov 2020 15:16:06 -0800 (PST)
+Subject: Re: [PATCH v3 18/26] coresight: etm4x: Clean up exception level masks
+To:     Mathieu Poirier <mathieu.poirier@linaro.org>
+Cc:     linux-arm-kernel@lists.infradead.org, mike.leach@linaro.org,
+        coresight@lists.linaro.org, linux-kernel@vger.kernel.org
+References: <20201028220945.3826358-1-suzuki.poulose@arm.com>
+ <20201028220945.3826358-20-suzuki.poulose@arm.com>
+ <20201106185241.GA3299843@xps15>
+From:   Suzuki K Poulose <suzuki.poulose@arm.com>
+Message-ID: <80b0933d-ef0a-2937-bf47-daf9fefebf3f@arm.com>
+Date:   Tue, 10 Nov 2020 23:15:59 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <20201106185241.GA3299843@xps15>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat,  7 Nov 2020 16:31:38 +0100 Andrea Mayer wrote:
-> SRv6 End.DT4 is defined in the SRv6 Network Programming [1].
+On 11/6/20 6:52 PM, Mathieu Poirier wrote:
+> Good morning,
 > 
-> The SRv6 End.DT4 is used to implement IPv4 L3VPN use-cases in
-> multi-tenants environments. It decapsulates the received packets and it
-> performs IPv4 routing lookup in the routing table of the tenant.
+> On Wed, Oct 28, 2020 at 10:09:37PM +0000, Suzuki K Poulose wrote:
+>> etm4_get_access_type() calculates the exception level bits
+>> for use in address comparator registers. This is also used
+>> by the TRCVICTLR register by shifting to the required position.
+>>
+>> This patch cleans up the logic to make etm4_get_access_type()
+>> calcualte a generic mask which can be used by all users by
+>> shifting to their field.
+>>
+>> No functional changes, only code cleanups.
+>>
+>> Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
+>> ---
+>> Changes since previous version:
+>>    - Fix the duplicate shift. More commentary
+>> ---
+
+
+>> diff --git a/drivers/hwtracing/coresight/coresight-etm4x.h b/drivers/hwtracing/coresight/coresight-etm4x.h
+>> index 2ac4ecb0af61..f1251ddf1984 100644
+>> --- a/drivers/hwtracing/coresight/coresight-etm4x.h
+>> +++ b/drivers/hwtracing/coresight/coresight-etm4x.h
+>> @@ -548,24 +548,38 @@
+>>   
+>>   #define TRCACATR_EXLEVEL_SHIFT		8
+>>   
+>> -/* secure state access levels - TRCACATRn */
+>> -#define ETM_EXLEVEL_S_APP		BIT(8)
+>> -#define ETM_EXLEVEL_S_OS		BIT(9)
+>> -#define ETM_EXLEVEL_S_HYP		BIT(10)
+>> -#define ETM_EXLEVEL_S_MON		BIT(11)
+>> -/* non-secure state access levels - TRCACATRn */
+>> -#define ETM_EXLEVEL_NS_APP		BIT(12)
+>> -#define ETM_EXLEVEL_NS_OS		BIT(13)
+>> -#define ETM_EXLEVEL_NS_HYP		BIT(14)
+>> -#define ETM_EXLEVEL_NS_NA		BIT(15)
+>> -
+>> -/* access level control in TRCVICTLR - same bits as TRCACATRn but shifted */
+>> -#define ETM_EXLEVEL_LSHIFT_TRCVICTLR	8
+>> +/*
+>> + * Exception level mask for Secure and Non-Secure ELs.
+>> + * ETM defines the bits for EL control (e.g, TRVICTLR, TRCACTRn).
+>> + * The Secure and Non-Secure ELs are always to gether.
+>> + * Non-secure EL3 is never implemented.
+>> + * We use the following generic mask as they appear in different
+>> + * registers and this can be shifted for the appropriate
+>> + * fields.
+>> + */
+>> +#define ETM_EXLEVEL_S_APP		BIT(0)	/* Secure EL0		*/
+>> +#define ETM_EXLEVEL_S_OS		BIT(1)	/* Secure EL1		*/
+>> +#define ETM_EXLEVEL_S_HYP		BIT(2)	/* Secure EL2		*/
+>> +#define ETM_EXLEVEL_S_MON		BIT(3)	/* Secure EL3/Montor	*/
 > 
-> The SRv6 End.DT4 Linux implementation leverages a VRF device in order to
-> force the routing lookup into the associated routing table.
-
-How does the behavior of DT4 compare to DT6?
-
-The implementation looks quite different.
-
-> To make the End.DT4 work properly, it must be guaranteed that the routing
-> table used for routing lookup operations is bound to one and only one
-> VRF during the tunnel creation. Such constraint has to be enforced by
-> enabling the VRF strict_mode sysctl parameter, i.e:
->  $ sysctl -wq net.vrf.strict_mode=1.
+> s/Montor/Monitor
 > 
-> At JANOG44, LINE corporation presented their multi-tenant DC architecture
-> using SRv6 [2]. In the slides, they reported that the Linux kernel is
-> missing the support of SRv6 End.DT4 behavior.
+>> +#define ETM_EXLEVEL_NS_APP		BIT(4)	/* NonSecure EL0	*/
+>> +#define ETM_EXLEVEL_NS_OS		BIT(5)	/* NonSecure EL1	*/
+>> +#define ETM_EXLEVEL_NS_HYP		BIT(6)	/* NonSecure EL2	*/
+>> +
+>> +#define ETM_EXLEVEL_MASK		(GENMASK(6, 0))
 > 
-> The iproute2 counterpart required for configuring the SRv6 End.DT4
-> behavior is already implemented along with the other supported SRv6
-> behaviors [3].
+> Not used.
 > 
-> [1] https://tools.ietf.org/html/draft-ietf-spring-srv6-network-programming
-> [2] https://speakerdeck.com/line_developers/line-data-center-networking-with-srv6
-> [3] https://patchwork.ozlabs.org/patch/799837/
+
+I have updated the patch to use this for creating the TRCVICTLR_EXLEVEL_MASK
+(see below), which is used to clear all the EXLEVEL bits from TRCVICTLR.
+
+>> +#define ETM_EXLEVEL_S_MASK		(GENMASK(3, 0))
+>> +#define ETM_EXLEVEL_NS_MASK		(GENMASK(6, 4))
 > 
-> Signed-off-by: Andrea Mayer <andrea.mayer@uniroma2.it>
-> ---
->  net/ipv6/seg6_local.c | 205 ++++++++++++++++++++++++++++++++++++++++++
->  1 file changed, 205 insertions(+)
+> This needs to be GENMASK(2, 0) in order TRCVICTLR_EXLEVEL_NS_SHIFT to be 20.
+> Otherwise the resulting mask is 4 bit off to the left.
+
+I have retained the ETM_EXLEVEL_NS_MASK as it is above, to keep the defintions
+above consistent. I have fixed the problem by using TRCVICTLR_EXLEVEL_SHIFT whenever
+we use ETM_EXLEVEL_*_MASK.
+
+And TRCVICTLR_EXLEVEL_*_SHIFT is used when we set a given value from the sysfs, respectively.
+e.g :
+
+@@ -795,10 +795,10 @@ static ssize_t ns_exlevel_vinst_store(struct device *dev,
+
+         spin_lock(&drvdata->spinlock);
+         /* clear EXLEVEL_NS bits  */
+-       config->vinst_ctrl &= ~(ETM_EXLEVEL_NS_VICTLR_MASK);
++       config->vinst_ctrl &= ~(TRCVICTLR_EXLEVEL_NS_MASK);
+         /* enable instruction tracing for corresponding exception level */
+         val &= drvdata->ns_ex_level;
+-       config->vinst_ctrl |= (val << 20);
++       config->vinst_ctrl |= (val << TRCVICTLR_EXLEVEL_NS_SHIFT);
+         spin_unlock(&drvdata->spinlock);
+         return size;
+  }
+
 > 
-> diff --git a/net/ipv6/seg6_local.c b/net/ipv6/seg6_local.c
-> index 4b0f155d641d..a41074acd43e 100644
-> --- a/net/ipv6/seg6_local.c
-> +++ b/net/ipv6/seg6_local.c
-> @@ -57,6 +57,14 @@ struct bpf_lwt_prog {
->  	char *name;
->  };
->  
-> +struct seg6_end_dt4_info {
-> +	struct net *net;
-> +	/* VRF device associated to the routing table used by the SRv6 End.DT4
-> +	 * behavior for routing IPv4 packets.
-> +	 */
-> +	int vrf_ifindex;
-> +};
-> +
->  struct seg6_local_lwt {
->  	int action;
->  	struct ipv6_sr_hdr *srh;
-> @@ -66,6 +74,7 @@ struct seg6_local_lwt {
->  	int iif;
->  	int oif;
->  	struct bpf_lwt_prog bpf;
-> +	struct seg6_end_dt4_info dt4_info;
->  
->  	int headroom;
->  	struct seg6_action_desc *desc;
-> @@ -413,6 +422,194 @@ static int input_action_end_dx4(struct sk_buff *skb,
->  	return -EINVAL;
->  }
->  
-> +#ifdef CONFIG_NET_L3_MASTER_DEV
-> +
+>> +
+>> +/* access level controls in TRCACATRn */
+>> +#define TRCACATR_EXLEVEL_SHIFT		8
+>> +
+>> +/* access level control in TRCVICTLR */
+>> +#define TRCVICTLR_EXLEVEL_SHIFT		16
+>> +#define TRCVICTLR_EXLEVEL_S_SHIFT	16
+>> +#define TRCVICTLR_EXLEVEL_NS_SHIFT	20
+>>   
+>>   /* secure / non secure masks - TRCVICTLR, IDR3 */
+>> -#define ETM_EXLEVEL_S_VICTLR_MASK	GENMASK(19, 16)
+>> -/* NS MON (EL3) mode never implemented */
+>> -#define ETM_EXLEVEL_NS_VICTLR_MASK	GENMASK(22, 20)
+>> +#define TRCVICTLR_EXLEVEL_S_MASK	(ETM_EXLEVEL_S_MASK << TRCVICTLR_EXLEVEL_S_SHIFT)
+>> +#define TRCVICTLR_EXLEVEL_NS_MASK	(ETM_EXLEVEL_NS_MASK << TRCVICTLR_EXLEVEL_NS_SHIFT)
 
-no need for this empty line.
+And the above has been updated to :
 
-> +static struct net *fib6_config_get_net(const struct fib6_config *fib6_cfg)
-> +{
-> +	const struct nl_info *nli = &fib6_cfg->fc_nlinfo;
-> +
-> +	return nli->nl_net;
-> +}
-> +
-> +static int seg6_end_dt4_build(struct seg6_local_lwt *slwt, const void *cfg,
-> +			      struct netlink_ext_ack *extack)
-> +{
-> +	struct seg6_end_dt4_info *info = &slwt->dt4_info;
-> +	int vrf_ifindex;
-> +	struct net *net;
-> +
-> +	net = fib6_config_get_net(cfg);
-> +
-> +	vrf_ifindex = l3mdev_ifindex_lookup_by_table_id(L3MDEV_TYPE_VRF, net,
-> +							slwt->table);
-> +	if (vrf_ifindex < 0) {
-> +		if (vrf_ifindex == -EPERM) {
-> +			NL_SET_ERR_MSG(extack,
-> +				       "Strict mode for VRF is disabled");
-> +		} else if (vrf_ifindex == -ENODEV) {
-> +			NL_SET_ERR_MSG(extack, "No such device");
++#define TRCVICTLR_EXLEVEL_MASK         (ETM_EXLEVEL_MASK << TRCVICTLR_EXLEVEL_SHIFT)
++#define TRCVICTLR_EXLEVEL_S_MASK       (ETM_EXLEVEL_S_MASK << TRCVICTLR_EXLEVEL_SHIFT)
++#define TRCVICTLR_EXLEVEL_NS_MASK      (ETM_EXLEVEL_NS_MASK << TRCVICTLR_EXLEVEL_SHIFT)
 
-That's what -ENODEV already says.
-
-> +		} else {
-> +			NL_SET_ERR_MSG(extack, "Unknown error");
-
-Useless error.
-
-> +			pr_debug("seg6local: SRv6 End.DT4 creation error=%d\n",
-> +				 vrf_ifindex);
-> +		}
-> +
-> +		return vrf_ifindex;
-> +	}
-> +
-> +	info->net = net;
-> +	info->vrf_ifindex = vrf_ifindex;
-> +
-> +	return 0;
-> +}
-> +
-> +/* The SRv6 End.DT4 behavior extracts the inner (IPv4) packet and routes the
-> + * IPv4 packet by looking at the configured routing table.
-> + *
-> + * In the SRv6 End.DT4 use case, we can receive traffic (IPv6+Segment Routing
-> + * Header packets) from several interfaces and the IPv6 destination address (DA)
-> + * is used for retrieving the specific instance of the End.DT4 behavior that
-> + * should process the packets.
-> + *
-> + * However, the inner IPv4 packet is not really bound to any receiving
-> + * interface and thus the End.DT4 sets the VRF (associated with the
-> + * corresponding routing table) as the *receiving* interface.
-> + * In other words, the End.DT4 processes a packet as if it has been received
-> + * directly by the VRF (and not by one of its slave devices, if any).
-> + * In this way, the VRF interface is used for routing the IPv4 packet in
-> + * according to the routing table configured by the End.DT4 instance.
-> + *
-> + * This design allows you to get some interesting features like:
-> + *  1) the statistics on rx packets;
-> + *  2) the possibility to install a packet sniffer on the receiving interface
-> + *     (the VRF one) for looking at the incoming packets;
-> + *  3) the possibility to leverage the netfilter prerouting hook for the inner
-> + *     IPv4 packet.
-> + *
-> + * This function returns:
-> + *  - the sk_buff* when the VRF rcv handler has processed the packet correctly;
-> + *  - NULL when the skb is consumed by the VRF rcv handler;
-> + *  - a pointer which encodes a negative error number in case of error.
-> + *    Note that in this case, the function takes care of freeing the skb.
-> + */
-> +static struct sk_buff *end_dt4_vrf_rcv(struct sk_buff *skb,
-> +				       struct net_device *dev)
-> +{
-> +	/* based on l3mdev_ip_rcv; we are only interested in the master */
-> +	if (unlikely(!netif_is_l3_master(dev) && !netif_has_l3_rx_handler(dev)))
-> +		goto drop;
-> +
-> +	if (unlikely(!dev->l3mdev_ops->l3mdev_l3_rcv))
-> +		goto drop;
-> +
-> +	/* the decap packet (IPv4) does not come with any mac header info.
-> +	 * We must unset the mac header to allow the VRF device to rebuild it,
-> +	 * just in case there is a sniffer attached on the device.
-> +	 */
-> +	skb_unset_mac_header(skb);
-> +
-> +	skb = dev->l3mdev_ops->l3mdev_l3_rcv(dev, skb, AF_INET);
-> +	if (!skb)
-> +		/* the skb buffer was consumed by the handler */
-> +		return NULL;
-> +
-> +	/* when a packet is received by a VRF or by one of its slaves, the
-> +	 * master device reference is set into the skb.
-> +	 */
-> +	if (unlikely(skb->dev != dev || skb->skb_iif != dev->ifindex))
-> +		goto drop;
-> +
-> +	return skb;
-> +
-> +drop:
-> +	kfree_skb(skb);
-> +	return ERR_PTR(-EINVAL);
-> +}
-> +
-> +static struct net_device *end_dt4_get_vrf_rcu(struct sk_buff *skb,
-> +					      struct seg6_end_dt4_info *info)
-> +{
-> +	int vrf_ifindex = info->vrf_ifindex;
-> +	struct net *net = info->net;
-> +
-> +	if (unlikely(vrf_ifindex < 0))
-> +		goto error;
-> +
-> +	if (unlikely(!net_eq(dev_net(skb->dev), net)))
-> +		goto error;
-> +
-> +	return dev_get_by_index_rcu(net, vrf_ifindex);
-> +
-> +error:
-> +	return NULL;
-> +}
-> +
-> +static int input_action_end_dt4(struct sk_buff *skb,
-> +				struct seg6_local_lwt *slwt)
-> +{
-> +	struct net_device *vrf;
-> +	struct iphdr *iph;
-> +	int err;
-> +
-> +	if (!decap_and_validate(skb, IPPROTO_IPIP))
-> +		goto drop;
-> +
-> +	if (!pskb_may_pull(skb, sizeof(struct iphdr)))
-> +		goto drop;
-> +
-> +	vrf = end_dt4_get_vrf_rcu(skb, &slwt->dt4_info);
-> +	if (unlikely(!vrf))
-> +		goto drop;
-> +
-> +	skb->protocol = htons(ETH_P_IP);
-> +
-> +	skb_dst_drop(skb);
-> +
-> +	skb_set_transport_header(skb, sizeof(struct iphdr));
-> +
-> +	skb = end_dt4_vrf_rcv(skb, vrf);
-> +	if (!skb)
-> +		/* packet has been processed and consumed by the VRF */
-> +		return 0;
-> +
-> +	if (IS_ERR(skb)) {
-> +		err = PTR_ERR(skb);
-> +		return err;
-
-return PTR_ERR(skb)
-
-> +	}
-> +
-> +	iph = ip_hdr(skb);
-> +
-> +	err = ip_route_input(skb, iph->daddr, iph->saddr, 0, skb->dev);
-> +	if (err)
-> +		goto drop;
-> +
-> +	return dst_input(skb);
-> +
-> +drop:
-> +	kfree_skb(skb);
-> +	return -EINVAL;
-> +}
-> +
-> +#else
-> +
-
-new line not needed
-
-> +static int seg6_end_dt4_build(struct seg6_local_lwt *slwt, const void *cfg,
-> +			      struct netlink_ext_ack *extack)
-> +{
-> +	NL_SET_ERR_MSG(extack, "Operation is not supported");
-
-This extack message probably could be more helpful. As it stands it's
-basically 
-
-> +
-> +	return -EOPNOTSUPP;
-> +}
-> +
-> +static int input_action_end_dt4(struct sk_buff *skb,
-> +				struct seg6_local_lwt *slwt)
-
-Maybe just ifdef out the part of the action table instead of creating
-those stubs?
-
-> +{
-> +	kfree_skb(skb);
-> +	return -EOPNOTSUPP;
-> +}
-> +
-> +#endif
-> +
->  static int input_action_end_dt6(struct sk_buff *skb,
->  				struct seg6_local_lwt *slwt)
->  {
-> @@ -601,6 +798,14 @@ static struct seg6_action_desc seg6_action_table[] = {
-
-BTW any idea why the action table is not marked as const?
-
-Would you mind sending a patch to fix that?
-
->  		.attrs		= (1 << SEG6_LOCAL_NH4),
->  		.input		= input_action_end_dx4,
->  	},
-> +	{
-> +		.action		= SEG6_LOCAL_ACTION_END_DT4,
-> +		.attrs		= (1 << SEG6_LOCAL_TABLE),
-> +		.input		= input_action_end_dt4,
-> +		.slwt_ops	= {
-> +					.build_state = seg6_end_dt4_build,
-> +				  },
-> +	},
->  	{
->  		.action		= SEG6_LOCAL_ACTION_END_DT6,
->  		.attrs		= (1 << SEG6_LOCAL_TABLE),
-
+Suzuki
