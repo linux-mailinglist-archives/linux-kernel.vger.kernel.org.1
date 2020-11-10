@@ -2,90 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BBFB2AD497
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 12:19:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A88132AD498
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 12:19:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729345AbgKJLTh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 06:19:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59222 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726219AbgKJLTg (ORCPT
+        id S1729962AbgKJLTn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 06:19:43 -0500
+Received: from youngberry.canonical.com ([91.189.89.112]:60589 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729484AbgKJLTn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 06:19:36 -0500
-Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CC97C0613CF
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 03:19:36 -0800 (PST)
-Received: by mail-pl1-x644.google.com with SMTP id cp9so2878926plb.1
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 03:19:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=X4dag7xcL4vnMx5NVKJB+5vVrgE6HapSQew213si/Dw=;
-        b=SNfNLhZ/dpxXrMy4/FK9AWMcOQdw9k1kOpHCwRyMv2hM6sYX8QjWLwUCV9HLXiSs++
-         GzibrEaqkpoMEgwqdu5Dq5S5Ii3qhaZxmsALEQm6+0GtcPf6H1n1DazRzzvyiQdPQ8dD
-         /lpLwXQWAUXch6mzTUfFXNJLuDO1A+ej5zdvWteJ0tqmUsNjlZa9/i+9IxH/WTnTa8aN
-         bbYO8NiBxEDs2CEsj9s+3s4IrYjWGWSaCh3mffIompyLQFiSr0PsclBbak+tP2WWFE7K
-         M6iU8cKDzeZp70OyVeaJ0pu+hHm5pY+dnzjCF8o3FIWCvdHDgcva1P3WNa+94NdEqF9b
-         NB8Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=X4dag7xcL4vnMx5NVKJB+5vVrgE6HapSQew213si/Dw=;
-        b=hcsB0ztTaOBgYLIk61FSlJdNZ2ZNyCfCTVijASFeKgzhaSoojWY12xA0HE9WtBYwgK
-         gcOaKzET1YTX+1EbycL2GbZiDVMFICvJc1+4etwVbSFeN7eqbyoKFrIclMD97cRggY7r
-         UgGj46W/Wn/qSaDLch67PsBHMEfmBABtJrKcMF+0puhYPqic84u7ppcmlqggFkfN+LA8
-         K87DEyL/uE+Asny4ijsphta4SysHzP+oIVkprpWWGzl2GTCfI+RcKHu8MypNp3b88fhB
-         OXmvGTQHlT+tAgIKNysGJNb84URdaKKyB8/ceddOUY628pqUGyxFXr4Ptv59pAIXaWbH
-         z5Aw==
-X-Gm-Message-State: AOAM533G/twGYX04w4odswdlTsLnjW0WcaHKeu4h2XdDz9VnvYi1R+Hg
-        ILNcur1C8ZkpA4H353XAgzQH8OPDo55x
-X-Google-Smtp-Source: ABdhPJyiAwT7goe3svaAUM2ZncwpSApH4A+jbOGzmSqdTK1fW3Iex6KPIHHdoE2c8DF2NZx0tD5CYQ==
-X-Received: by 2002:a17:902:c154:b029:d6:efa5:4ce7 with SMTP id 20-20020a170902c154b02900d6efa54ce7mr16096487plj.73.1605007176212;
-        Tue, 10 Nov 2020 03:19:36 -0800 (PST)
-Received: from he-cluster.localdomain (67.216.221.250.16clouds.com. [67.216.221.250])
-        by smtp.gmail.com with ESMTPSA id s145sm14224197pfs.187.2020.11.10.03.19.34
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 10 Nov 2020 03:19:35 -0800 (PST)
-From:   xiakaixu1987@gmail.com
-X-Google-Original-From: kaixuxia@tencent.com
-To:     fbarrat@linux.ibm.com, ajd@linux.ibm.com, mpe@ellerman.id.au,
-        benh@kernel.crashing.org, paulus@samba.org
-Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        Kaixu Xia <kaixuxia@tencent.com>
-Subject: [PATCH] powerpc/powernv/sriov: fix unsigned int win compared to less than zero
-Date:   Tue, 10 Nov 2020 19:19:30 +0800
-Message-Id: <1605007170-22171-1-git-send-email-kaixuxia@tencent.com>
-X-Mailer: git-send-email 1.8.3.1
+        Tue, 10 Nov 2020 06:19:43 -0500
+Received: from 1.general.cascardo.us.vpn ([10.172.70.58] helo=mussarela)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <cascardo@canonical.com>)
+        id 1kcRgY-0003QB-Ox; Tue, 10 Nov 2020 11:19:39 +0000
+Date:   Tue, 10 Nov 2020 08:19:32 -0300
+From:   Thadeu Lima de Souza Cascardo <cascardo@canonical.com>
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     Kleber Sacilotto de Souza <kleber.souza@canonical.com>,
+        Eric Dumazet <edumazet@google.com>, netdev@vger.kernel.org,
+        Gerrit Renker <gerrit@erg.abdn.ac.uk>,
+        "David S. Miller" <davem@davemloft.net>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        "Alexander A. Klimov" <grandmaster@al2klimov.de>,
+        Kees Cook <keescook@chromium.org>,
+        Alexey Kodanev <alexey.kodanev@oracle.com>,
+        dccp@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] dccp: ccid: move timers to struct dccp_sock
+Message-ID: <20201110111932.GS595944@mussarela>
+References: <20201013171849.236025-1-kleber.souza@canonical.com>
+ <20201013171849.236025-2-kleber.souza@canonical.com>
+ <20201016153016.04bffc1e@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <20201109114828.GP595944@mussarela>
+ <20201109094938.45b230c9@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <20201109210909.GQ595944@mussarela>
+ <20201109131554.5f65b2fa@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+ <20201109213134.GR595944@mussarela>
+ <20201109141553.30e9d502@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201109141553.30e9d502@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kaixu Xia <kaixuxia@tencent.com>
+On Mon, Nov 09, 2020 at 02:15:53PM -0800, Jakub Kicinski wrote:
+> On Mon, 9 Nov 2020 18:31:34 -0300 Thadeu Lima de Souza Cascardo wrote:
+> > > Which paths are those (my memory of this code is waning)? I thought
+> > > disconnect is only called from the user space side (shutdown syscall).
+> > > The only other way to terminate the connection is to close the socket,
+> > > which Eric already fixed by postponing the destruction of ccid in that
+> > > case.  
+> > 
+> > dccp_v4_do_rcv -> dccp_rcv_established -> dccp_parse_options ->
+> > 	dccp_feat_parse_options -> dccp_feat_handle_nn_established ->
+> > 	dccp_feat_activate -> __dccp_feat_activate -> dccp_hdlr_ccid ->
+> > 	ccid_hc_tx_delete
+> 
+> Well, that's not a disconnect path.
+> 
+> There should be no CCID on a disconnected socket, tho, right? Otherwise
+> if we can switch from one active CCID to another then reusing a single
+> timer in struct dccp_sock for both is definitely not safe as I
+> explained in my initial email.
 
-Fix coccicheck warning:
+Yeah, I agree with your initial email. The patch I submitted for that fix needs
+rework, which is what I tried and failed so far. I need to get back to some
+testing of my latest fix and find out what needs fixing there.
 
-./arch/powerpc/platforms/powernv/pci-sriov.c:443:7-10: WARNING: Unsigned expression compared with zero: win < 0
-./arch/powerpc/platforms/powernv/pci-sriov.c:462:7-10: WARNING: Unsigned expression compared with zero: win < 0
+But I am also saying that simply doing a del_timer_sync on disconnect paths
+won't do, because there are non-disconnect paths where there is a CCID that we
+will remove and replace and that will still trigger a timer UAF.
 
-Reported-by: Tosk Robot <tencent_os_robot@tencent.com>
-Signed-off-by: Kaixu Xia <kaixuxia@tencent.com>
----
- arch/powerpc/platforms/powernv/pci-sriov.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+So I have been working on a fix that involves a refcnt on ccid itself. But I
+want to test that it really fixes the problem and I have spent most of the time
+finding out a way to trigger the timer in a race with the disconnect path.
 
-diff --git a/arch/powerpc/platforms/powernv/pci-sriov.c b/arch/powerpc/platforms/powernv/pci-sriov.c
-index c4434f20f42f..92fc861c528f 100644
---- a/arch/powerpc/platforms/powernv/pci-sriov.c
-+++ b/arch/powerpc/platforms/powernv/pci-sriov.c
-@@ -422,7 +422,7 @@ static int pnv_pci_vf_assign_m64(struct pci_dev *pdev, u16 num_vfs)
- {
- 	struct pnv_iov_data   *iov;
- 	struct pnv_phb        *phb;
--	unsigned int           win;
-+	int		       win;
- 	struct resource       *res;
- 	int                    i, j;
- 	int64_t                rc;
--- 
-2.20.0
+And that same test has showed me that this timer UAF will happen regardless of
+commit 2677d20677314101293e6da0094ede7b5526d2b1, which led me into stating that
+reverting it should be done in any case.
 
+I think I can find some time this week to work a little further on the fix for
+the time UAF.
+
+Thanks.
+Cascardo.
