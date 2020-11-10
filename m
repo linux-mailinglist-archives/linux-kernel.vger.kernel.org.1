@@ -2,95 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D40F2AE479
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 00:55:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F3F4A2AE47E
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 00:56:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732390AbgKJXzp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 18:55:45 -0500
-Received: from ale.deltatee.com ([204.191.154.188]:47818 "EHLO
-        ale.deltatee.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726737AbgKJXzo (ORCPT
+        id S1732400AbgKJX4c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 18:56:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36552 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732120AbgKJX4c (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 18:55:44 -0500
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=deltatee.com; s=20200525; h=Subject:Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Sender:
-        Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
-        :Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
-        List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=CemXXlpsOMiyxV9KdJOMOb00+hwTcrKC8bryO5FGpJQ=; b=qWwyU5J1VNmv3RUV8GoilaFpTi
-        QuaGEq0gvt+UwTKG1hH9guguo7cit8ihhBZS02oRsG8JOsidQ5iy7SKKvxQau+GpFOG0w1hmrYvPP
-        Bh9mJNGCDs7+q9LU5KQNWHCDOVH+8iAm+32vreXEjdgrZ+I/MeprJN8vXSVbADvdUxWHAAx0fJ9qB
-        n70UNf7p2qt6x0SyIOmBWlidwkiSxNMaYqH52bAWe+rE0PkGtNhukyn3gQxqWHkr1GUJ0mbmLb3ax
-        vIvNOnVZRR2nlQ3JF2EAX9V+LtlVU4Hp4XGIstGIHa8V1e39ZJQUgReLmXTbQoHvgDHmr7M+/iCYV
-        Yd0eJDCg==;
-Received: from guinness.priv.deltatee.com ([172.16.1.162])
-        by ale.deltatee.com with esmtp (Exim 4.92)
-        (envelope-from <logang@deltatee.com>)
-        id 1kcdUE-0000tZ-31; Tue, 10 Nov 2020 16:55:43 -0700
-To:     Colin King <colin.king@canonical.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Stephen Bates <sbates@raithlin.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
-        linux-pci@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20201110221048.3411288-1-colin.king@canonical.com>
-From:   Logan Gunthorpe <logang@deltatee.com>
-Message-ID: <aaa8ae87-170b-ada0-0465-9727967594cb@deltatee.com>
-Date:   Tue, 10 Nov 2020 16:55:41 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        Tue, 10 Nov 2020 18:56:32 -0500
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D64EDC0613D1;
+        Tue, 10 Nov 2020 15:56:31 -0800 (PST)
+Received: by mail-wr1-x442.google.com with SMTP id j7so424274wrp.3;
+        Tue, 10 Nov 2020 15:56:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=WfB5Zmw3Ux9CKhPt9P+tELn8R3tbn83JjmD6s3cqA8Y=;
+        b=c9GbbbX262i+//lwyN4ABDp41NxBzHGtWZq7nQyCdbooeI+usENJXE6Nz+cVyC05Cs
+         qUC5+HAW2VUn6TxyQfhXa0ZdFtY4b8eyUTH2yDFGy/kqrNAZe2MXG6pg0c6viy7mmQDh
+         x+ma6hb3dQyFRN6LiNBRorma69lXljTii322GH8cdgf9dKJF2ZKdV6j5Hfd5gkDSgiBs
+         Y1vcKeqBk4NCoqK7jgjv/kF4MPoNsL3z7st3PabSApeMZKCAiM8Sr1TW3N7BQroGP3wn
+         zUay39jqPsc2IglPSulSPBVHRrRpig9t0kNsshJh/WrxnxI4soTjwoKewH1GCjZRst3Z
+         5jqQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=WfB5Zmw3Ux9CKhPt9P+tELn8R3tbn83JjmD6s3cqA8Y=;
+        b=mvpH4cglvRvqt3A1eK3Yxx9Af2tY8nRk5bVKoahln5NIxTCqF9Nj7jD4CSv18cD5EL
+         cTn6c3NZhqvXWLMsn8C9vwKJCt4IoU8xBLSc7eHpHC1IXQGGBJ5ivL0pquEVjCBj21qn
+         w9QKxyF3NZ01eC2FbxaF8U07QF1JXQ0SSoKmQM8rCWTA/8GQmh40gqG+IE+7IffsZhNx
+         stpgO/mm7lyVmplGLVZRkBFWf7AuC1SgKgD2OQ3ejtJd1XSZxjhdlqaq9thMI0OnH1NU
+         B9767FTd7RjOI0FpU38Wd9dxEqbbYBiUJT0u8V9QJF5ruH7e2gA7DOPgymAv6tsnhbSZ
+         QVYw==
+X-Gm-Message-State: AOAM532g7rbNWPSTNXtkBDcl8sDLnuUqGHy507od41LVItgDLxsWeN6r
+        2n9fdn0jNfNtx4wI80l1+TVZWzPwBvbFTMKKNHg=
+X-Google-Smtp-Source: ABdhPJwsnW0y/kx7DL1j2p8r9N9uPNtVRi5fDJKmOzzqoro5WBcd2tHjiHixkDcYOyQM+BTSPEn2FX4iUDM/izxfwkM=
+X-Received: by 2002:adf:f246:: with SMTP id b6mr26221425wrp.111.1605052590670;
+ Tue, 10 Nov 2020 15:56:30 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20201110221048.3411288-1-colin.king@canonical.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-CA
-Content-Transfer-Encoding: 7bit
-X-SA-Exim-Connect-IP: 172.16.1.162
-X-SA-Exim-Rcpt-To: linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org, linux-pci@vger.kernel.org, christian.koenig@amd.com, alex.williamson@redhat.com, sbates@raithlin.com, bhelgaas@google.com, colin.king@canonical.com
-X-SA-Exim-Mail-From: logang@deltatee.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on ale.deltatee.com
-X-Spam-Level: 
-X-Spam-Status: No, score=-8.9 required=5.0 tests=ALL_TRUSTED,BAYES_00,
-        GREYLIST_ISWHITE,NICE_REPLY_A,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.2
-Subject: Re: [PATCH][V2] PCI: Fix a potential uninitentional integer overflow
- issue
-X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
-X-SA-Exim-Scanned: Yes (on ale.deltatee.com)
+References: <20201110193112.988999-1-lee.jones@linaro.org> <20201110193112.988999-16-lee.jones@linaro.org>
+In-Reply-To: <20201110193112.988999-16-lee.jones@linaro.org>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Tue, 10 Nov 2020 18:56:19 -0500
+Message-ID: <CADnq5_Pq7ODBSwnjRQy8Hu1mTP+t9d8ofcO9KD0_89d9GpWpUQ@mail.gmail.com>
+Subject: Re: [PATCH 15/30] drm/radeon/cik_sdma: Demote vague attempt at kernel-doc
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     David Airlie <airlied@linux.ie>,
+        LKML <linux-kernel@vger.kernel.org>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
+        <linaro-mm-sig@lists.linaro.org>,
+        Maling list - DRI developers 
+        <dri-devel@lists.freedesktop.org>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        linux-media <linux-media@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Nov 10, 2020 at 2:31 PM Lee Jones <lee.jones@linaro.org> wrote:
+>
+> Fixes the following W=3D1 kernel build warning(s):
+>
+>  drivers/gpu/drm/radeon/cik_sdma.c:949: warning: Function parameter or me=
+mber 'ring' not described in 'cik_dma_vm_flush'
+>  drivers/gpu/drm/radeon/cik_sdma.c:949: warning: Function parameter or me=
+mber 'vm_id' not described in 'cik_dma_vm_flush'
+>  drivers/gpu/drm/radeon/cik_sdma.c:949: warning: Function parameter or me=
+mber 'pd_addr' not described in 'cik_dma_vm_flush'
+>
+> Cc: Alex Deucher <alexander.deucher@amd.com>
+> Cc: "Christian K=C3=B6nig" <christian.koenig@amd.com>
+> Cc: David Airlie <airlied@linux.ie>
+> Cc: Daniel Vetter <daniel@ffwll.ch>
+> Cc: Sumit Semwal <sumit.semwal@linaro.org>
+> Cc: amd-gfx@lists.freedesktop.org
+> Cc: dri-devel@lists.freedesktop.org
+> Cc: linux-media@vger.kernel.org
+> Cc: linaro-mm-sig@lists.linaro.org
+> Signed-off-by: Lee Jones <lee.jones@linaro.org>
 
+Applied.  Thanks!
 
-On 2020-11-10 3:10 p.m., Colin King wrote:
-> From: Colin Ian King <colin.king@canonical.com>
-> 
-> The shift of 1 by align_order is evaluated using 32 bit arithmetic
-> and the result is assigned to a resource_size_t type variable that
-> is a 64 bit unsigned integer on 64 bit platforms. Fix an overflow
-> before widening issue by making the 1 a ULL.
-> 
-> Addresses-Coverity: ("Unintentional integer overflow")
-> Fixes: 07d8d7e57c28 ("PCI: Make specifying PCI devices in kernel parameters reusable")
+Alex
 
-I think this should probably be
-
-Fixes: 32a9a682bef2 ("PCI: allow assignment of memory resources with a
-specified alignment")
-
-That is the commit where the original bug was introduced. 644a544fd9bcd
-then extends the code a little bit and 07d8d7e57c28 only refactors it
-into a reusable function. If we want this in older stable kernels then
-we will probably need to make different patches for the other two vintages.
-
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
-
-Besides that, the change makes sense to me.
-
-Reviewed-by: Logan Gunthorpe <logang@deltatee.com>
-
-Thanks,
-
-Logan
+> ---
+>  drivers/gpu/drm/radeon/cik_sdma.c | 4 +---
+>  1 file changed, 1 insertion(+), 3 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/radeon/cik_sdma.c b/drivers/gpu/drm/radeon/c=
+ik_sdma.c
+> index 68403e77756d3..3c709ebe8d1ab 100644
+> --- a/drivers/gpu/drm/radeon/cik_sdma.c
+> +++ b/drivers/gpu/drm/radeon/cik_sdma.c
+> @@ -936,11 +936,9 @@ void cik_sdma_vm_pad_ib(struct radeon_ib *ib)
+>                 ib->ptr[ib->length_dw++] =3D SDMA_PACKET(SDMA_OPCODE_NOP,=
+ 0, 0);
+>  }
+>
+> -/**
+> +/*
+>   * cik_dma_vm_flush - cik vm flush using sDMA
+>   *
+> - * @rdev: radeon_device pointer
+> - *
+>   * Update the page table base and flush the VM TLB
+>   * using sDMA (CIK).
+>   */
+> --
+> 2.25.1
+>
+> _______________________________________________
+> dri-devel mailing list
+> dri-devel@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/dri-devel
