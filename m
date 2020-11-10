@@ -2,78 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 647A52AD18C
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 09:43:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E52592AD192
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 09:46:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729858AbgKJInv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 03:43:51 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34914 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726827AbgKJInu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 03:43:50 -0500
-Received: from mail-ej1-f49.google.com (mail-ej1-f49.google.com [209.85.218.49])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 33D9021741;
-        Tue, 10 Nov 2020 08:43:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604997829;
-        bh=yaWVdXd6nLPOSk+0s2hrEtVFAxLiuqNEZ8pX8casxSQ=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=X5o36w5ETEuwAzCMsQjNa+s5A0W9fO6Y3GTlhrTEcY9pxxjaW9bg2nWcvbkQn7PWI
-         iOupPoRDZM5tZP9RXfs2rD5zHVY86YfvzLq6r+ixm3m0Vwp/6lk6LJw4JOXOkiO+21
-         eq3dvzGjorqFd+KU4pTgywXtDO4ghjJrGl3ELMAA=
-Received: by mail-ej1-f49.google.com with SMTP id i19so16301482ejx.9;
-        Tue, 10 Nov 2020 00:43:49 -0800 (PST)
-X-Gm-Message-State: AOAM530Chr36X9X8MnRVLNj+JbrEJn1J84nlTU+SnknO9i9W0dHXd/y5
-        YAATue+HYflgWHOds0qUh98eGNveYP/QzDkvaiE=
-X-Google-Smtp-Source: ABdhPJxTmGEeLjxqKr3BhSdK+jRebEFMA7yi5bPu8JW67PaPhe8uq4h+C7/0J+rMmIR0IwUAXAYYAv3O0pr2PkP7ZFc=
-X-Received: by 2002:a17:906:5618:: with SMTP id f24mr18656980ejq.381.1604997827541;
- Tue, 10 Nov 2020 00:43:47 -0800 (PST)
+        id S1727923AbgKJIqA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 03:46:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35280 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726462AbgKJIp7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Nov 2020 03:45:59 -0500
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1B8CC0613CF
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 00:45:59 -0800 (PST)
+Received: by mail-pg1-x544.google.com with SMTP id e21so9552624pgr.11
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 00:45:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:subject:to:cc:references:in-reply-to:mime-version
+         :message-id:content-transfer-encoding;
+        bh=G12SAfGo9zxDhW2sfOaoLT7Ktw6spyrLizVoU+CQKHg=;
+        b=gSn+R8PvB0P75cPhWXK+AsCwd1kW9Tg0e7bVX8Adq5UK5mqsZ/vFjOW+uF4KBrQuTa
+         zC3NG8kF2qe106t3HxD3K+16SQ41jWl2CcbDYzg2g64RRjTNKDpATn4oEexEuWLnNiZB
+         wCoZdjyFdjKvKEqxx7z+MgDSO763uFB305vnamPJ1Wm1mZZzcwpMf+faPFMtRIMWJHkW
+         0V1g4n0bpfbW6BHapxmZFJZfz1Qo8zxafu0RbuS+yD8xLX+ZfKpOqQZDTUoI9vvufVjW
+         LePiITZ5+cPkb0/mVZ9QLJr6afGgijF0L8M52WvfTTz1IwZvzZlv1Mmg9cEsgNaG7Eak
+         kiFA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:subject:to:cc:references:in-reply-to
+         :mime-version:message-id:content-transfer-encoding;
+        bh=G12SAfGo9zxDhW2sfOaoLT7Ktw6spyrLizVoU+CQKHg=;
+        b=c/0pZaD44/s5wkcGLDJGWvQQfyBNrDpw1mzJE1b27bb9x5sNw8gLF9s9KUTe+UK5l7
+         tO2eRpsyUEDleM4AlKrRmF7kJAxbTfBWrZ8N1E1jPLH9SXiaUTEdWC8JhVoP9jL4VP+/
+         Jc5bnH3GFBAjla8ZD/EfUde21l3ORWTtt1hE6gcpg8FzG5gTOUCaVMt0QY+l+Dk5fHAU
+         ib1YJJpfBSbkpUWLVonXYuDv1iW/cf6+WM2yRtzqvYVVgCHC1Va8l1l//1tLOksbsvrd
+         qVpM5IR3rq0crda/KxY200UXAhK+Hk63wiypGnDCO5B/bibGCQ7ad4Pe263b5UM707Bz
+         cWmg==
+X-Gm-Message-State: AOAM530T7VZp8qlsAB0yUzngOg15yOx+Yj922TheTr65dJIEHblosg6N
+        LxqVQ/YDbeh2qcwiKRA9uCE=
+X-Google-Smtp-Source: ABdhPJx3np16kym1rMkDTZ30+yq2VJ/D3E5goHBnPjVIZz1lnC6ahLzpM+leXGVqEKHqMwYhBOGxrQ==
+X-Received: by 2002:a17:90b:b12:: with SMTP id bf18mr3642616pjb.205.1604997959304;
+        Tue, 10 Nov 2020 00:45:59 -0800 (PST)
+Received: from localhost (27-32-36-31.tpgi.com.au. [27.32.36.31])
+        by smtp.gmail.com with ESMTPSA id c9sm13577108pfc.197.2020.11.10.00.45.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 10 Nov 2020 00:45:58 -0800 (PST)
+Date:   Tue, 10 Nov 2020 18:45:53 +1000
+From:   Nicholas Piggin <npiggin@gmail.com>
+Subject: Re: [PATCH v2 1/3] powerpc/64s: Replace RFI by RFI_TO_KERNEL and
+ remove RFI
+To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Paul Mackerras <paulus@samba.org>
+Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+References: <7719261b0a0d2787772339484c33eb809723bca7.1604854583.git.christophe.leroy@csgroup.eu>
+In-Reply-To: <7719261b0a0d2787772339484c33eb809723bca7.1604854583.git.christophe.leroy@csgroup.eu>
 MIME-Version: 1.0
-References: <20201110040553.1381-1-frank@allwinnertech.com> <CAEExFWsc4Rx2U+BVuqTJkL0wj-gdNcF=emJRcStQ2Uq=FQEx1g@mail.gmail.com>
-In-Reply-To: <CAEExFWsc4Rx2U+BVuqTJkL0wj-gdNcF=emJRcStQ2Uq=FQEx1g@mail.gmail.com>
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-Date:   Tue, 10 Nov 2020 09:43:35 +0100
-X-Gmail-Original-Message-ID: <CAJKOXPf4ARNnSnvDpn7vVC0kGNd+m_dkfgKkmH_bca2AZ_Osyg@mail.gmail.com>
-Message-ID: <CAJKOXPf4ARNnSnvDpn7vVC0kGNd+m_dkfgKkmH_bca2AZ_Osyg@mail.gmail.com>
-Subject: Re: [PATCH 00/19] Second step support for A100
-To:     Frank Lee <tiny.windzz@gmail.com>
-Cc:     Frank Lee <frank@allwinnertech.com>, vkoul@kernel.org,
-        Rob Herring <robh+dt@kernel.org>,
-        Maxime Ripard <mripard@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>, kishon@ti.com,
-        wim@linux-watchdog.org, Guenter Roeck <linux@roeck-us.net>,
-        dan.j.williams@intel.com, Linus Walleij <linus.walleij@linaro.org>,
-        wsa+renesas@sang-engineering.com, dianders@chromium.org,
-        marex@denx.de, Colin King <colin.king@canonical.com>,
-        rdunlap@infradead.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        =?UTF-8?Q?Ond=C5=99ej_Jirman?= <megous@megous.com>,
-        rikard.falkeborn@gmail.com, dmaengine@vger.kernel.org,
-        devicetree <devicetree@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:SECURE DIGITAL HO..." <linux-mmc@vger.kernel.org>,
-        linux-watchdog@vger.kernel.org,
-        linux-gpio <linux-gpio@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Message-Id: <1604997906.z9qht3tf9f.astroid@bobo.none>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 10 Nov 2020 at 07:00, Frank Lee <tiny.windzz@gmail.com> wrote:
->
-> It seems that sending too many e-mails at one time will cause some
-> emails to fail to be sent out. I will try again.
+Excerpts from Christophe Leroy's message of November 9, 2020 2:57 am:
+> In head_64.S, we have two places using RFI to return to
+> kernel. Use RFI_TO_KERNEL instead.
+>=20
+> They are the two only places using RFI on book3s/64, so
+> the RFI macro can go away.
 
-Hi,
+Looks good to me.
 
-Instead please reduce the address list to relevant people, as pointed
-out by scripts/get_maintainer.pl. Don't Cc irrelevant developers
-unless a file is abandoned and you need to get as much audience as
-possible... but sunxi is not abandoned.
+Acked-by: Nicholas Piggin <npiggin@gmail.com>
 
-Best regards,
-Krzysztof
+>=20
+> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+> ---
+>  arch/powerpc/include/asm/ppc_asm.h | 1 -
+>  arch/powerpc/kernel/head_64.S      | 9 +++++++--
+>  2 files changed, 7 insertions(+), 3 deletions(-)
+>=20
+> diff --git a/arch/powerpc/include/asm/ppc_asm.h b/arch/powerpc/include/as=
+m/ppc_asm.h
+> index 511786f0e40d..bedf3eb52ebc 100644
+> --- a/arch/powerpc/include/asm/ppc_asm.h
+> +++ b/arch/powerpc/include/asm/ppc_asm.h
+> @@ -495,7 +495,6 @@ END_FTR_SECTION_NESTED(CPU_FTR_CELL_TB_BUG, CPU_FTR_C=
+ELL_TB_BUG, 96)
+>  #endif
+> =20
+>  #ifdef CONFIG_PPC_BOOK3S_64
+> -#define RFI		rfid
+>  #define MTMSRD(r)	mtmsrd	r
+>  #define MTMSR_EERI(reg)	mtmsrd	reg,1
+>  #else
+> diff --git a/arch/powerpc/kernel/head_64.S b/arch/powerpc/kernel/head_64.=
+S
+> index 1510b2a56669..ecf9a88988ff 100644
+> --- a/arch/powerpc/kernel/head_64.S
+> +++ b/arch/powerpc/kernel/head_64.S
+> @@ -41,6 +41,11 @@
+>  #include <asm/ppc-opcode.h>
+>  #include <asm/export.h>
+>  #include <asm/feature-fixups.h>
+> +#ifdef CONFIG_PPC_BOOK3S
+> +#include <asm/exception-64s.h>
+> +#else
+> +#include <asm/exception-64e.h>
+> +#endif
+> =20
+>  /* The physical memory is laid out such that the secondary processor
+>   * spin code sits at 0x0000...0x00ff. On server, the vectors follow
+> @@ -829,7 +834,7 @@ __secondary_start:
+> =20
+>  	mtspr	SPRN_SRR0,r3
+>  	mtspr	SPRN_SRR1,r4
+> -	RFI
+> +	RFI_TO_KERNEL
+>  	b	.	/* prevent speculative execution */
+> =20
+>  /*=20
+> @@ -966,7 +971,7 @@ start_here_multiplatform:
+>  	ld	r4,PACAKMSR(r13)
+>  	mtspr	SPRN_SRR0,r3
+>  	mtspr	SPRN_SRR1,r4
+> -	RFI
+> +	RFI_TO_KERNEL
+>  	b	.	/* prevent speculative execution */
+> =20
+>  	/* This is where all platforms converge execution */
+> --=20
+> 2.25.0
+>=20
+>=20
