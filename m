@@ -2,124 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B768F2AD1C7
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 09:51:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BE7A22AD1BE
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 09:49:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730719AbgKJIuv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 03:50:51 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:30707 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726825AbgKJIut (ORCPT
+        id S1728784AbgKJIt4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 03:49:56 -0500
+Received: from new4-smtp.messagingengine.com ([66.111.4.230]:33291 "EHLO
+        new4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726213AbgKJIt4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 03:50:49 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1604998248;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=CUPbC36bNhgEeHhTK8bYaDtKD7TRWDMLJYdSByDYhoQ=;
-        b=fFjVyqMOC6pNwjvvDVFsRiRpDZ9G+6NZnT01Ng9kqppSgBA6zBPu8v/gFENhvVltQgD8/K
-        kRj7dtlndkHAJeQHpfts/pnBlmz/tAlUh1D4L0OnAS23xC7Xgb1ajtx5e2g2wlU/XPzjG1
-        Q1NUT/5xaZhrt2XtFimlYkfFOVabIok=
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
- [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-201-SqNKZq_AOjqiZZrb0HlRwg-1; Tue, 10 Nov 2020 03:50:46 -0500
-X-MC-Unique: SqNKZq_AOjqiZZrb0HlRwg-1
-Received: by mail-ed1-f70.google.com with SMTP id b13so3900477edy.8
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 00:50:45 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=CUPbC36bNhgEeHhTK8bYaDtKD7TRWDMLJYdSByDYhoQ=;
-        b=f7CoWz+UvaiV62okzHJbv7AiQi9DOJJ+5tEegAUY/tcLlT4MOpROjrXldrSf4eWFEo
-         YVSF6yGfEKE1OOgFGRBWOgx+NKNvUR2jq/lPDG1GdcaidkZaDkn2CPbDhjcLPZkaQ8Fi
-         YaRPnX8XTiXx2eiXtpMt6Koe80ql2/TqpmdR7FdiBhZ2O/hVuyR3uZSWTpaiw+j7lw+e
-         C5DCrNcA43rxV7rplMGRZRewR7PlAJpJkQzsL/NX84o3CfEIMpSyaaAbPrw4hOnMB/4H
-         Tj/R47z8chW5VFOD5euGu7EPLX7DKXOzRPrxz62ZDZThQYU9Zcjr3kQsHuMPgmtB0p9V
-         pHpA==
-X-Gm-Message-State: AOAM530ttBkOUEgzBaKx9VKiALM2kiHksYF9NElbrDHR6cOg1mCbseA2
-        /wwT6kt6Nd6Vrh/11KKVJUhWfsyG8BpLJiKvQs+vLK6xdkptRrbc0yTnJEIqvKF86Z0Cslwli5H
-        F6XLM5S3Zm0352BsKGzLAkSqo
-X-Received: by 2002:aa7:cd56:: with SMTP id v22mr20488896edw.245.1604998244811;
-        Tue, 10 Nov 2020 00:50:44 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJx35WhhYs7bXw5tdmtzhwGt5fe7Pcd7wc3tI61z+hFz90lglH4wBeVtEpkrFYUbjVb7L9Qv8w==
-X-Received: by 2002:aa7:cd56:: with SMTP id v22mr20488883edw.245.1604998244638;
-        Tue, 10 Nov 2020 00:50:44 -0800 (PST)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id l20sm10105014eja.40.2020.11.10.00.50.43
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 10 Nov 2020 00:50:43 -0800 (PST)
-To:     Borislav Petkov <bp@alien8.de>, "Luck, Tony" <tony.luck@intel.com>
-Cc:     Jim Mattson <jmattson@google.com>, Qian Cai <cai@redhat.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-tip-commits@vger.kernel.org" 
-        <linux-tip-commits@vger.kernel.org>, x86 <x86@kernel.org>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>
-References: <20201030190807.GA13884@agluck-desk2.amr.corp.intel.com>
- <160431588828.397.16468104725047768957.tip-bot2@tip-bot2>
- <3f863634cd75824907e8ccf8164548c2ef036f20.camel@redhat.com>
- <bfc274fc27724ea39ecac1e7ac834ed8@intel.com>
- <CALMp9eTFaiYkTnVe8xKzg40E4nZ3rAOii0O06bTy0+oLNjyKhA@mail.gmail.com>
- <a22b5468e1c94906b72c4d8bc83c0f64@intel.com>
- <20201109232402.GA25492@agluck-desk2.amr.corp.intel.com>
- <20201110063151.GB7290@nazgul.tnic>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Subject: Re: [PATCH] x86/mce: Check for hypervisor before enabling additional
- error logging
-Message-ID: <094c2395-b1b3-d908-657c-9bd4144e40ac@redhat.com>
-Date:   Tue, 10 Nov 2020 09:50:43 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        Tue, 10 Nov 2020 03:49:56 -0500
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 2E8685803CF;
+        Tue, 10 Nov 2020 03:49:55 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute4.internal (MEProxy); Tue, 10 Nov 2020 03:49:55 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm2; bh=9s3HXA62aXEwuhDqThUDrB2tZR/
+        QFmCSXDsh87Vt2VQ=; b=sTP4mDFQaTuABEN3HT4ghPaXmUs+3q36wIKNgmenbJC
+        Thrv4yv9IBEmZSJ/GO1JXJ721q6Jq0Uhh63X151o/t7sulK4RmbrAs2jebzvHr96
+        zwn0wuYRNIbkh8MLkJIpfLRs8P05bz7vGmNNp1fvqV7OjZvo8ecStqAPSCYWC6Kf
+        4rkw1/5Y36NTJyoDeaurHSl7P2Lw3npS9zeuvAJ3j7NaXTfSdcIaQ9F0+rwrn9k6
+        UGDZlUJ6j/fEN5663LqKqKLGQPP8Q3JkRlIv9s/YmxnrYzsanyCnj0F0ZMGcXs/n
+        0y2wBAYvaAHD9AdUsHqVZ+7wWR88TScAiggD78Dvp6A==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=9s3HXA
+        62aXEwuhDqThUDrB2tZR/QFmCSXDsh87Vt2VQ=; b=iD9hVFzRap+aS8KMlgoNbq
+        6YTx0nZBuZ3vn7lC+1uOzxq2tEweH8CUoBkGFiMNJsI4LmLeE/FmcEsPnkcYXNZj
+        wCcjGT8TSWrVBQbbYwYblOAQiPDUzy3ZvL9LOu7GNXrWNhDyLhP5WQPF56ne6G8J
+        S0qA/8mM2A0JPpg7ZM/QVqSpyOxnJzGXbiZR6SDhUZIAWrOwRI9QGjuYZQses3y2
+        VoforsK0qqCFYAno3aRB1FxGrXQYdonw6GqHVUGSCgZxSXG1xD1s3DKX6q1SajC6
+        Tt2xDT/LuEwm8zE3oOEGGEfoO+mcfZ91NIlc3pGdZroBa7rvWGao+K8ANKo32rzg
+        ==
+X-ME-Sender: <xms:MVSqX1XaQGH6eE-Mp7CA-6tXEILG5jMedm8iQ-RkxrSr6LYgwMb5Gg>
+    <xme:MVSqX1lwF_FyIBlwBTjkQO4Q93lBSdRh1r2ux7pxJbAk1Gz0kTKuV7XOLT6v0tunl
+    cHWMtiNXyvkLg>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrudduiedguddviecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpeffhffvuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepifhrvghg
+    ucfmjfcuoehgrhgvgheskhhrohgrhhdrtghomheqnecuggftrfgrthhtvghrnhephfduhe
+    ffteefjeekvdffffevveelfeehhfeutedtgfeigeetvdfhvedvfefhjeeknecuffhomhgr
+    ihhnpegthhgvtghkphgrthgthhdrphhlnecukfhppeekfedrkeeirdejgedrieegnecuve
+    hluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepghhrvghgsehk
+    rhhorghhrdgtohhm
+X-ME-Proxy: <xmx:MVSqXxYkV21P3H_SEpIh6oy7Bcz5rLphVsz76W69qlEDIiToY0R-1g>
+    <xmx:MVSqX4WNsXWWrDiwvgISWbyXvuCU-s-D1wIzEalQcKjTEaCAa-dflg>
+    <xmx:MVSqX_mDnqpPPnY_2u9RKSRaHPJG40wMtWmBaoA_hUrlAxZcPTDRtw>
+    <xmx:M1SqXx0OiBo8aUsWe5OqJZDqDQIuum2sW_gtC_Tszc5CO-BDkMuycA>
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 7CD553063081;
+        Tue, 10 Nov 2020 03:49:53 -0500 (EST)
+Date:   Tue, 10 Nov 2020 09:50:49 +0100
+From:   Greg KH <greg@kroah.com>
+To:     Macpaul Lin <macpaul.lin@mediatek.com>
+Cc:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Alexander Tsoy <alexander@tsoy.me>,
+        Nicola Lunghi <nick83ola@gmail.com>,
+        Christopher Swenson <swenson@swenson.io>,
+        Nick Kossifidis <mickflemm@gmail.com>,
+        alsa-devel@alsa-project.org, Ainge Hsu <ainge.hsu@mediatek.com>,
+        Eddie Hung <eddie.hung@mediatek.com>,
+        Chunfeng Yun <chunfeng.yun@mediatek.com>,
+        Mediatek WSD Upstream <wsd_upstream@mediatek.com>,
+        Macpaul Lin <macpaul@gmail.com>, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-usb@vger.kernel.org,
+        linux-mediatek@lists.infradead.org, stable@vger.kernel.org
+Subject: Re: [PATCH v2] ALSA: usb-audio: disable 96khz support for HUAWEI
+ USB-C HEADSET
+Message-ID: <X6pUaatZ7aML4sKq@kroah.com>
+References: <1604995443-30453-1-git-send-email-macpaul.lin@mediatek.com>
+ <1604997774-13593-1-git-send-email-macpaul.lin@mediatek.com>
 MIME-Version: 1.0
-In-Reply-To: <20201110063151.GB7290@nazgul.tnic>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1604997774-13593-1-git-send-email-macpaul.lin@mediatek.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/11/20 07:31, Borislav Petkov wrote:
->>   
->> +	if (boot_cpu_has(X86_FEATURE_HYPERVISOR))
->> +		return;
->> +
-> Frankly, I'm tired of wagging the dog because the tail can't. If
-> qemu/kvm can't emulate a CPU model fully then it should ignore those
-> unknown MSR accesses by default, i.e., that "ignore_msrs" functionality
-> should be on by default I'd say...
+On Tue, Nov 10, 2020 at 04:42:54PM +0800, Macpaul Lin wrote:
+> The HUAWEI USB-C headset (VID:0x12d1, PID:0x3a07) reported it supports
+> 96khz. However there will be some random issue under 96khz.
+> Not sure if there is any alternate setting could be applied.
+> Hence 48khz is suggested to be applied at this moment.
 > 
-> We certainly can't be sprinkling this check everytime the kernel tries
-> to do something as basic as read an MSR.
+> Signed-off-by: Macpaul Lin <macpaul.lin@mediatek.com>
+> Signed-off-by: Eddie Hung <eddie.hung@mediatek.com>
+> Cc: stable@vger.kernel.org
+> ---
+> Changes for v2:
+>   - Fix build error.
+>   - Add Cc: stable@vger.kernel.org
+> 
+>  sound/usb/format.c |    6 ++++++
+>  1 file changed, 6 insertions(+)
+> 
+> diff --git a/sound/usb/format.c b/sound/usb/format.c
+> index 1b28d01..7a4837b 100644
+> --- a/sound/usb/format.c
+> +++ b/sound/usb/format.c
+> @@ -202,6 +202,7 @@ static int parse_audio_format_rates_v1(struct snd_usb_audio *chip, struct audiof
+>  		fp->rate_min = fp->rate_max = 0;
+>  		for (r = 0, idx = offset + 1; r < nr_rates; r++, idx += 3) {
+>  			unsigned int rate = combine_triple(&fmt[idx]);
+> +			struct usb_device *udev = chip->dev;
+>  			if (!rate)
+>  				continue;
+>  			/* C-Media CM6501 mislabels its 96 kHz altsetting */
 
-You don't have to, also because it's wrong.  Fortunately it's much 
-simpler than that:
-
-1) ignore_msrs _cannot_ be on by default.  You cannot know in advance 
-that for all non-architectural MSRs it's okay for them to read as zero 
-and eat writes.  For some non-architectural MSR which never reads as 
-zero on real hardware, who knows that there isn't some code using the 
-contents of the MSR as a divisor, and causing a division by zero 
-exception with ignore_msrs=1?
-
-2) it's not just KVM.  _Any_ hypervisor is bound to have this issue for 
-some non-architectural MSRs.  KVM just gets the flak because Linux CI 
-environments (for obvious reasons) use it more than they use Hyper-V or 
-ESXi or VirtualBox.
-
-3) because of (1) and (2), the solution is very simple.  If the MSR is 
-architectural, its absence is a KVM bug and we'll fix it in all stable 
-versions.  If the MSR is not architectural (and 17Fh isn't; not only 
-it's not mentioned in the SDM, even Google is failing me), never ever 
-assume that the CPUID family/model/stepping implies a given MSR is 
-there, and just use rdmsr_safe/wrmsr_safe.
-
-So, for this patch,
-
-Nacked-by: Paolo Bonzini <pbonzini@redhat.com>
-
-Paolo
+Did you run this patch through checkpatch.pl?
 
