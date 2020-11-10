@@ -2,84 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E3CBF2AD8DB
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 15:34:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 003232AD8EA
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 15:37:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730445AbgKJOef (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 09:34:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33180 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726721AbgKJOef (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 09:34:35 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E3F8C0613CF
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 06:34:35 -0800 (PST)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1605018873;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=xRIypW99dydWxym9olIbQVS6DGC1I29UdjlZ6dRFIRg=;
-        b=lYfMzHlMG/WWVDXKfMCn2LvyjX+G8obWVeM6tdD9Aa552o6/w1BVvEOKWPzEuDUgowBIsN
-        QF+ClfmH5IzvWUD7EKMVVGcyeIfQw4ZlL3Ll9au9GjdChx+D/pN1a0g4p8dvJCDvXROsqA
-        VmTro+v54UJg9xlauCiW+91mDYmI59tJNe4Eqz2NZ31fJ2a/hZpknu3nwi06lig5pMTAMN
-        YYk1hQXUkPWpja9CIZe3uPF/W2N1KoUiZW+V3cce8a9LG3PPuvF/zmpBGMxE3LVQ2Wn22H
-        +WKJUzXVw8sup+q4yZDTny4l/B5vASkrML53HmR5BxxmiAWyO2UC3lUWiCXr6w==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1605018873;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=xRIypW99dydWxym9olIbQVS6DGC1I29UdjlZ6dRFIRg=;
-        b=dTZmQVWhnTcXky6bOTYSOcs4vrYT+9XIHQ1oHaLh1bR+rKos1SeIp7rCt7Q+xZOJYJPTV2
-        AJ/BYxtEednlJQCg==
-To:     Borislav Petkov <bp@alien8.de>,
-        Tom Lendacky <thomas.lendacky@amd.com>
-Cc:     linux-kernel@vger.kernel.org, David Woodhouse <dwmw@amazon.co.uk>,
-        x86 <x86@kernel.org>, Qian Cai <cai@redhat.com>
-Subject: Re: [tip: x86/apic] x86/io_apic: Cleanup trigger/polarity helpers
-In-Reply-To: <20201110061046.GA7290@nazgul.tnic>
-References: <20201024213535.443185-20-dwmw2@infradead.org> <160397373817.397.3191135882528008704.tip-bot2@tip-bot2> <e2e06979-cbcf-8771-0b48-c46f2d034aa8@amd.com> <20201110061046.GA7290@nazgul.tnic>
-Date:   Tue, 10 Nov 2020 15:34:32 +0100
-Message-ID: <87d00lgu13.fsf@nanos.tec.linutronix.de>
+        id S1730818AbgKJOh1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 09:37:27 -0500
+Received: from mailout05.rmx.de ([94.199.90.90]:36085 "EHLO mailout05.rmx.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726721AbgKJOh0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Nov 2020 09:37:26 -0500
+Received: from kdin01.retarus.com (kdin01.dmz1.retloc [172.19.17.48])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mailout05.rmx.de (Postfix) with ESMTPS id 4CVr6p1WvBz9tQx;
+        Tue, 10 Nov 2020 15:37:22 +0100 (CET)
+Received: from mta.arri.de (unknown [217.111.95.66])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by kdin01.retarus.com (Postfix) with ESMTPS id 4CVr6Y3mW3z2xbQ;
+        Tue, 10 Nov 2020 15:37:09 +0100 (CET)
+Received: from n95hx1g2.localnet (192.168.54.16) by mta.arri.de
+ (192.168.100.104) with Microsoft SMTP Server (TLS) id 14.3.487.0; Tue, 10 Nov
+ 2020 15:36:03 +0100
+From:   Christian Eggers <ceggers@arri.de>
+To:     Vladimir Oltean <olteanv@gmail.com>
+CC:     Richard Cochran <richardcochran@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Helmut Grohne <helmut.grohne@intenta.de>,
+        Paul Barker <pbarker@konsulko.com>,
+        Codrin Ciubotariu <codrin.ciubotariu@microchip.com>,
+        George McCollister <george.mccollister@gmail.com>,
+        Marek Vasut <marex@denx.de>,
+        Tristram Ha <Tristram.Ha@microchip.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Woojung Huh <woojung.huh@microchip.com>,
+        "Microchip Linux Driver Support" <UNGLinuxDriver@microchip.com>,
+        <netdev@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [RFC PATCH net-next 7/9] net: dsa: microchip: ksz9477: add hardware time stamping support
+Date:   Tue, 10 Nov 2020 15:36:02 +0100
+Message-ID: <1909178.Ky26jPeFT0@n95hx1g2>
+Organization: Arnold & Richter Cine Technik GmbH & Co. Betriebs KG
+In-Reply-To: <20201110014234.b3qdmc2e74poawpz@skbuf>
+References: <20201019172435.4416-1-ceggers@arri.de> <5844018.3araiXeC39@n95hx1g2> <20201110014234.b3qdmc2e74poawpz@skbuf>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
+X-Originating-IP: [192.168.54.16]
+X-RMX-ID: 20201110-153709-4CVr6Y3mW3z2xbQ-0@kdin01
+X-RMX-SOURCE: 217.111.95.66
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 10 2020 at 07:10, Borislav Petkov wrote:
+On Tuesday, 10 November 2020, 02:42:34 CET, Vladimir Oltean wrote:
+> Sorry for getting back late to you. It did not compute when I read your
+> email the first time around, then I let it sit for a while.
+> 
+> On Thu, Nov 05, 2020 at 09:18:04PM +0100, Christian Eggers wrote:
+> > unfortunately I made a mistake when testing. Actually the timestamp *must*
+> > be moved from the correction field (negative) to the egress tail tag.
+> That doesn't sound very good at all.
+I think that is no drawback. It is implemented and works.
 
-> On Mon, Nov 09, 2020 at 05:15:03PM -0600, Tom Lendacky wrote:
->> [  105.325371] hpet: Lost 9601 RTC interrupts
->> [  105.485766] hpet: Lost 9600 RTC interrupts
->> [  105.639182] hpet: Lost 9601 RTC interrupts
->> [  105.792155] hpet: Lost 9601 RTC interrupts
->> [  105.947076] hpet: Lost 9601 RTC interrupts
->> [  106.100876] hpet: Lost 9600 RTC interrupts
->> [  106.253444] hpet: Lost 9601 RTC interrupts
->> [  106.406722] hpet: Lost 9601 RTC interrupts
->> 
->> preventing the system from booting. I bisected it to this commit.
->
-> I bisected it to the exact same thing too, on an AMD laptop, after seeing what
-> you're seeing.
+> I have a simple question. Can your driver, when operating as a PTP
+> master clock, distribute a time in 2020 into your network? (you can
+> check with "phc_ctl /dev/ptp0 get")
+# phc_ctl /dev/ptp2 get
+phc_ctl[2141.093]: clock time is 1605018671.788481458 or Tue Nov 10 14:31:11 2020
 
-Bah. I'm a moron.
+The KSZ PTP clock has 32 bit seconds (and 30 bit nanoseconds).
 
---- a/arch/x86/kernel/apic/io_apic.c
-+++ b/arch/x86/kernel/apic/io_apic.c
-@@ -809,9 +809,9 @@ static bool irq_is_level(int idx)
- 	case MP_IRQTRIG_DEFAULT:
- 		/*
- 		 * Conforms to spec, ie. bus-type dependent trigger
--		 * mode. PCI defaults to egde, ISA to level.
-+		 * mode. PCI defaults to level, ISA to edge.
- 		 */
--		level = test_bit(bus, mp_bus_not_pci);
-+		level = !test_bit(bus, mp_bus_not_pci);
- 		/* Take EISA into account */
- 		return eisa_irq_is_level(idx, bus, level);
- 	case MP_IRQTRIG_EDGE:
+I hope I can send the new series tonight. Had today no 5 minutes without the telephone ringing...
+
+
+
