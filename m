@@ -2,90 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D4CFA2ADA5F
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 16:25:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DD472ADA61
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 16:26:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731360AbgKJPZu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 10:25:50 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33166 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730231AbgKJPZu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 10:25:50 -0500
-Received: from quaco.ghostprotocols.net (unknown [179.97.37.151])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3004120797;
-        Tue, 10 Nov 2020 15:25:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605021949;
-        bh=+6ef0br250e/7DhBKSu+ZFyLg4W13gH4UJV+liaN8Uk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=EytIZ8/qiHJlrUph/VtRiZHWCsj88RS+ImuquAn2pwlJpqwRJin565tlDdqnH0mM7
-         erpduzI7BOKqZXx5yA0LJ6jIDCOwext4xH/zVyDNvLRts1Fpl+7j5lsnInsy76cagA
-         r+hmout4KPoDyf5KQWjIxrSpaCFIMKKtmPalOLAM=
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id C2560411D1; Tue, 10 Nov 2020 12:25:46 -0300 (-03)
-Date:   Tue, 10 Nov 2020 12:25:46 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Jiri Olsa <jolsa@kernel.org>, lkml <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Michael Petlan <mpetlan@redhat.com>,
-        Song Liu <songliubraving@fb.com>,
-        Ian Rogers <irogers@google.com>,
-        Stephane Eranian <eranian@google.com>,
-        Alexey Budankov <alexey.budankov@linux.intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Adrian Hunter <adrian.hunter@intel.com>
-Subject: Re: [PATCH 03/24] perf: Add build id data in mmap2 event
-Message-ID: <20201110152546.GB348806@kernel.org>
-References: <20201109215415.400153-1-jolsa@kernel.org>
- <20201109215415.400153-4-jolsa@kernel.org>
- <20201110080716.GU2594@hirez.programming.kicks-ass.net>
- <20201110115426.GA348806@kernel.org>
- <20201110122232.GH2594@hirez.programming.kicks-ass.net>
+        id S1731307AbgKJP0h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 10:26:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41422 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730231AbgKJP0g (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Nov 2020 10:26:36 -0500
+Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AE34C0613CF
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 07:26:36 -0800 (PST)
+Received: by mail-lj1-x230.google.com with SMTP id v18so15172347ljc.3
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 07:26:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Hrb6YP9kE4AwvLFEXLY+N294/vTm6VCcAtZUMc+ytIw=;
+        b=arCTA79lo8o4TuvmmtQEBn9mUMplCTkzre1af+8j0uuLIOJHU+Ny/vE0jpjcswWXrg
+         /W9cNQxZ10DZ+ZqvmyzLtZPN6otk2IBJ0zioWFvmO5AQDf8cCY0zO4XibUFV6Nt4lTSK
+         jYt+FEwhkGaq4L4pjRqpg+aYg+yJb2SNNqczMlvYRlx0GJeGb6Tb4decRX2dzwyD0xpf
+         fGXogdInnO2xL03YrBs8nf2mBMKY5Qq717DWtG8wIzYZdA42Vsqlrvqnd54LdRXLNorC
+         lbUdSBSXCVNAe2GmFCOc6kPOEsxRiONWXzIUFaF8atKf3eec9aLoohfz09FvJBak7RdG
+         XD/A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Hrb6YP9kE4AwvLFEXLY+N294/vTm6VCcAtZUMc+ytIw=;
+        b=mzArOweF/iCbEQejsYDa62l7PrUWpdg91OVkW2eAEdQIMQZSbTwNw83s/mfCbjZLcH
+         4PM7gp7tLvxngKjzTB6+iQ9LNY5tHxHZy5TnQbGPU4kCs38waC6Ylkk0KsQpwC7FVmLx
+         K0IPZhpSDoZihBnqOqnc6LOKrybzbgojfcsLxodNhBUpZUMgy0xht8FhaozLfWecqT6T
+         gyt9vWQxxc2o+n+sXr+5elxFKCjPBsxALSMAhDeuzDlF8HzUGolwPDzonmA17D/QNeW0
+         nMB7CzIISszcUyGAtdUk6a3N8JcNzkY4yAjNyXm9YPaehC/5rxwfGvjnmGS2s7LRt6yP
+         CrVA==
+X-Gm-Message-State: AOAM531jtRfCTT0kGiTFmtsyXSeioxBWL5MEJ4LQtTkvDkgBkfyIR1EO
+        9KSnNJrlgrB5BxnBAJKJTM9aKA==
+X-Google-Smtp-Source: ABdhPJyzfSidqot4CTeXhhTaEjeRNR84mOeeF0U0Cf56XjgSm2EbaVMKCg7nAWobdrsuBHxliu0eug==
+X-Received: by 2002:a2e:b8d4:: with SMTP id s20mr57502ljp.226.1605021994870;
+        Tue, 10 Nov 2020 07:26:34 -0800 (PST)
+Received: from localhost (c-9b28e555.07-21-73746f28.bbcust.telenor.se. [85.229.40.155])
+        by smtp.gmail.com with ESMTPSA id j11sm2127665lfg.69.2020.11.10.07.26.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 10 Nov 2020 07:26:34 -0800 (PST)
+From:   Anders Roxell <anders.roxell@linaro.org>
+To:     robh+dt@kernel.org, shawnguo@kernel.org, s.hauer@pengutronix.de
+Cc:     linux-arm-kernel@lists.infradead.org, krzk@kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Anders Roxell <anders.roxell@linaro.org>
+Subject: [PATCHv2] arm64: dts: freescale: fix typo Makefile
+Date:   Tue, 10 Nov 2020 16:26:31 +0100
+Message-Id: <20201110152631.3007779-1-anders.roxell@linaro.org>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201110122232.GH2594@hirez.programming.kicks-ass.net>
-X-Url:  http://acmel.wordpress.com
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Tue, Nov 10, 2020 at 01:22:32PM +0100, Peter Zijlstra escreveu:
-> On Tue, Nov 10, 2020 at 08:54:26AM -0300, Arnaldo Carvalho de Melo wrote:
-> > Em Tue, Nov 10, 2020 at 09:07:16AM +0100, Peter Zijlstra escreveu:
-> > > On Mon, Nov 09, 2020 at 10:53:54PM +0100, Jiri Olsa wrote:
-> > > > Adding support to carry build id data in mmap2 event.
+While trying to do 'make dtbs_install' the following error shows up
 
-> > > > The build id data replaces maj/min/ino/ino_generation
-> > > > fields, whichc are also used to identify map's binary,
-> > > > so it's ok to replace them with build id data:
+make[3]: *** No rule to make target
+  '/tmp/out/obj-dir/dtbinstallfreescale/imx8mm-kontron-n801x-s.dts', needed by '__dtbs_install'.
 
-> > > >   union {
-> > > >           struct {
-> > > >                   u32       maj;
-> > > >                   u32       min;
-> > > >                   u64       ino;
-> > > >                   u64       ino_generation;
-> > > >           };
-> > > >           struct {
-> > > >                   u8        build_id[20];
-> > > >                   u8        build_id_size;
+Fix typo in imx8mm-kontron-n801x-s.dts change file ending to *.dtb
 
-> > > What's the purpose of a size field for a fixed size array? Also, I'd
-> > > flip the order of these fields, first have the size and then the array.
+Fixes: 8668d8b2e67f ("arm64: dts: Add the Kontron i.MX8M Mini SoMs and baseboards")
+Signed-off-by: Anders Roxell <anders.roxell@linaro.org>
+---
+ arch/arm64/boot/dts/freescale/Makefile | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> > There can be different types of build-ids, with different sizes,
-> > flipping the order of the fields is indeed sensible, as we could then
-> > support even larger build_ids if the need arises :)
+diff --git a/arch/arm64/boot/dts/freescale/Makefile b/arch/arm64/boot/dts/freescale/Makefile
+index 876bf484bbe6..6f0777ee6cd6 100644
+--- a/arch/arm64/boot/dts/freescale/Makefile
++++ b/arch/arm64/boot/dts/freescale/Makefile
+@@ -32,7 +32,7 @@ dtb-$(CONFIG_ARCH_LAYERSCAPE) += fsl-lx2162a-qds.dtb
+ dtb-$(CONFIG_ARCH_MXC) += imx8mm-beacon-kit.dtb
+ dtb-$(CONFIG_ARCH_MXC) += imx8mm-evk.dtb
+ dtb-$(CONFIG_ARCH_MXC) += imx8mm-ddr4-evk.dtb
+-dtb-$(CONFIG_ARCH_MXC) += imx8mm-kontron-n801x-s.dts
++dtb-$(CONFIG_ARCH_MXC) += imx8mm-kontron-n801x-s.dtb
+ dtb-$(CONFIG_ARCH_MXC) += imx8mm-var-som-symphony.dtb
+ dtb-$(CONFIG_ARCH_MXC) += imx8mn-evk.dtb
+ dtb-$(CONFIG_ARCH_MXC) += imx8mn-ddr4-evk.dtb
+-- 
+2.28.0
 
-> 3 whole bytes.. whooo!
-
-Hey, I agreed with you, flip the order of the fields, right? :-)
-
-- Arnaldo
