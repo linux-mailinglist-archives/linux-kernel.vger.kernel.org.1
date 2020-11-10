@@ -2,70 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 866A62AD164
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 09:38:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B20B2AD16B
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 09:40:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727013AbgKJIik convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 10 Nov 2020 03:38:40 -0500
-Received: from aposti.net ([89.234.176.197]:60570 "EHLO aposti.net"
+        id S1729141AbgKJIju (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 03:39:50 -0500
+Received: from mx2.suse.de ([195.135.220.15]:48512 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726462AbgKJIik (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 03:38:40 -0500
-Date:   Tue, 10 Nov 2020 08:38:24 +0000
-From:   Paul Cercueil <paul@crapouillou.net>
-Subject: Re: [PATCH] mtd: rawnand: ingenic: remove redundant get_device() in
- ingenic_ecc_get()
-To:     Yu Kuai <yukuai3@huawei.com>
-Cc:     harveyhuntnexus@gmail.com, miquel.raynal@bootlin.com,
-        vigneshr@ti.com, linux-mtd@lists.infradead.org,
-        linux-kernel@vger.kernel.org, yi.zhang@huawei.com
-Message-Id: <00OKJQ.IYM95XDRFCZI3@crapouillou.net>
-In-Reply-To: <20201031105439.2304211-1-yukuai3@huawei.com>
-References: <20201031105439.2304211-1-yukuai3@huawei.com>
+        id S1727483AbgKJIjt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Nov 2020 03:39:49 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 93DC0AE12;
+        Tue, 10 Nov 2020 08:39:47 +0000 (UTC)
+From:   Giovanni Gherdovich <ggherdovich@suse.cz>
+To:     Borislav Petkov <bp@alien8.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Len Brown <lenb@kernel.org>,
+        "Rafael J . Wysocki" <rjw@rjwysocki.net>
+Cc:     Jon Grimm <Jon.Grimm@amd.com>,
+        Nathan Fontenot <Nathan.Fontenot@amd.com>,
+        Yazen Ghannam <Yazen.Ghannam@amd.com>,
+        Thomas Lendacky <Thomas.Lendacky@amd.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Pu Wen <puwen@hygon.cn>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Doug Smythies <dsmythies@telus.net>, x86@kernel.org,
+        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-acpi@vger.kernel.org,
+        Giovanni Gherdovich <ggherdovich@suse.cz>
+Subject: [PATCH 0/3] Add support for frequency invariance to AMD EPYC Zen2
+Date:   Tue, 10 Nov 2020 09:39:33 +0100
+Message-Id: <20201110083936.31994-1-ggherdovich@suse.cz>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1; format=flowed
-Content-Transfer-Encoding: 8BIT
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+This series adds support for frequency invariant accounting on AMD EPYC Zen2
+(aka "Rome"). The first patch by Nathan lays out the foundation by querying
+ACPI infrastructure for the max boost frequency of the system. Specifically,
+this value is available via the CPPC machinery; the previous EPYC generation,
+namely Zen aka "Naples", doesn't implement that and frequency invariance won't
+be supported.
 
-Le sam. 31 oct. 2020 à 18:54, Yu Kuai <yukuai3@huawei.com> a écrit :
-> of_find_device_by_node() already takes a reference to the device, and
-> ingenic_ecc_release() will drop the reference. So, the get_device() in
-> ingenic_ecc_get() is redundand.
-> 
-> Fixes: 15de8c6efd0e("mtd: rawnand: ingenic: Separate top-level and 
-> SoC specific code")
-> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
+The second patch sets the estimate for freq_max to be the midpoint between
+max_boost and max_P, as that works slightly better in practice.
 
-Acked-by: Paul Cercueil <paul@crapouillou.net>
+A side effect of this series is to provide, with the invariant schedutil
+governor, a suitable baseline to evaluate a (still work-in-progress)
+CPPC-based cpufreq driver for the AMD platform (see
+https://lore.kernel.org/lkml/cover.1562781484.git.Janakarajan.Natarajan@amd.com
+if/when it will resubmitted.
 
-Thanks,
--Paul
+Giovanni Gherdovich (2):
+  x86, sched: Use midpoint of max_boost and max_P for frequency
+    invariance on AMD EPYC
+  x86: Print ratio freq_max/freq_base used in frequency invariance
+    calculations
 
-> ---
->  drivers/mtd/nand/raw/ingenic/ingenic_ecc.c | 2 --
->  1 file changed, 2 deletions(-)
-> 
-> diff --git a/drivers/mtd/nand/raw/ingenic/ingenic_ecc.c 
-> b/drivers/mtd/nand/raw/ingenic/ingenic_ecc.c
-> index 8e22cd6ec71f..efe0ffe4f1ab 100644
-> --- a/drivers/mtd/nand/raw/ingenic/ingenic_ecc.c
-> +++ b/drivers/mtd/nand/raw/ingenic/ingenic_ecc.c
-> @@ -71,8 +71,6 @@ static struct ingenic_ecc *ingenic_ecc_get(struct 
-> device_node *np)
->  	if (!pdev || !platform_get_drvdata(pdev))
->  		return ERR_PTR(-EPROBE_DEFER);
-> 
-> -	get_device(&pdev->dev);
-> -
->  	ecc = platform_get_drvdata(pdev);
->  	clk_prepare_enable(ecc->clk);
-> 
-> --
-> 2.25.4
-> 
+Nathan Fontenot (1):
+  x86, sched: Calculate frequency invariance for AMD systems
 
+ arch/x86/include/asm/topology.h |  8 ++++
+ arch/x86/kernel/smpboot.c       | 79 +++++++++++++++++++++++++++++----
+ drivers/acpi/cppc_acpi.c        |  5 +++
+ 3 files changed, 84 insertions(+), 8 deletions(-)
+
+-- 
+2.26.2
 
