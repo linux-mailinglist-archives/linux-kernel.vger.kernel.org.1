@@ -2,142 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A1C3F2AE24E
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 22:59:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D0EE2AE259
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 23:00:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732114AbgKJV7o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 16:59:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46444 "EHLO
+        id S1732207AbgKJWAF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 17:00:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46530 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732024AbgKJV7e (ORCPT
+        with ESMTP id S1732199AbgKJWAD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 16:59:34 -0500
-Received: from mail-il1-x142.google.com (mail-il1-x142.google.com [IPv6:2607:f8b0:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06DD0C0613D3
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 13:59:34 -0800 (PST)
-Received: by mail-il1-x142.google.com with SMTP id l12so61837ilo.1
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 13:59:33 -0800 (PST)
+        Tue, 10 Nov 2020 17:00:03 -0500
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D195FC0613D1;
+        Tue, 10 Nov 2020 14:00:02 -0800 (PST)
+Received: by mail-wm1-x343.google.com with SMTP id 10so4713027wml.2;
+        Tue, 10 Nov 2020 14:00:02 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=wjZ1oTD8iKXhE2RbV6xdsXrZWc/uPcQH/bhvuWmn4Bs=;
-        b=oN5mzZTtgvS6864ekD34d8yMOrLpTp5KEFSayYokBIZOT+tMm7BOK6S9F4hzazd9ES
-         JfU6NBWOMhC6bSFi8zYWcBx2/9lKg6xV1DFq2Leju7quv9xfr+9hspgElAwe51Sz6taF
-         LIhcsE8Xaj7IAoelycDkkQSUvwFKQuMwzAqVQNtQXfk4pwSmlD8naLUfxr/loOkdarhp
-         9OuiKx3AspP24HOFAIyzxOsyzY7KkOe4MkbXLmbAIEAcPgm9VxTRGEABjgnKX79M7LqG
-         G3uosXkTYV/PgX3Tr2RD92+IgiIxM7KVNC5tsk1PHBcFhHGpIZTw0D9riznC07wRC3Zg
-         CAsw==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=kQXXRFyXwxRS/I2RgZpEGIowDOXzMpZPv5s9Y3k7QhI=;
+        b=j2cdkNt2/4bsAh1RBkbd/u0wSdArQ78T4xxdeBsW+/M6f6LD/81+RHepLgSU8jEJ9c
+         f9WemXa2FyA/zxrsTylztAKXuq0YJuj9cxdDPXcF7kjC/E/wnutNAoTNsa9/fRwyPiWc
+         +78MWhXNIm57moM4vMRvWf1DcGUnsFSno5zHoldcv7YKQV4FGO0ZtFk2dcIByjtQAluG
+         A1AXBA7Dw8JTOoDYGL3iJ5mulzzCccTJTlyU+yBela+/iTpOeOh4bAXiakRfdECIEnLG
+         1LS6PeRzptHzcsSiTkg+tTBbKxjaYaB3ughnn3vmOkXcH4rq3iY2DLIXN3VvS84y2WHj
+         K6PQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=wjZ1oTD8iKXhE2RbV6xdsXrZWc/uPcQH/bhvuWmn4Bs=;
-        b=uQivR4J8zrZGNWW+6QpfMKJw0EDXNzpU7Pi4u6WBzRldZwEc+EjafAMgamLi4/I3Dt
-         rQSLoFRc6eME9hM3MXD6Ly9gUSWtv18K2IpV4X5iefUiynz8639vVEu+hoHSMsaP+oWw
-         A8CvmV0D1jsIh4TpGxMUeKimDlP5D/6NtKIc7wJjN8P71R6D7AqoJsu7ZPkEtmxb5NZy
-         GB6d3OdWNYjMcdmolO9VvNOVNwO5CXEehjdBIA5sZIjakJrvFO76d0LWwRvXJireIMBb
-         p6e1cKB9A04E952d1P6TQm+++d+rAPt0YUxAr6+3T00sr5PeC4CuPZrDrQ7cb0ZUNZdY
-         QJhg==
-X-Gm-Message-State: AOAM531kMYHOdNCZfJ3JS0XzFA/hus/pdrWENy4gGtYrX8848DNEIM1W
-        DINllubxVyLpmTczueCNUDuDUw==
-X-Google-Smtp-Source: ABdhPJzmCfoLuVDhhhGt0vMwZhExO0r2p4oCvwsn9v0LISK8kimU1Q5wPGSZijJwA33ORMtmdoHQUQ==
-X-Received: by 2002:a92:1801:: with SMTP id 1mr2951369ily.142.1605045573426;
-        Tue, 10 Nov 2020 13:59:33 -0800 (PST)
-Received: from beast.localdomain (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
-        by smtp.gmail.com with ESMTPSA id d142sm102010iof.43.2020.11.10.13.59.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 10 Nov 2020 13:59:32 -0800 (PST)
-From:   Alex Elder <elder@linaro.org>
-To:     davem@davemloft.net, kuba@kernel.org
-Cc:     evgreen@chromium.org, subashab@codeaurora.org,
-        cpratapa@codeaurora.org, bjorn.andersson@linaro.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH net-next 6/6] net: ipa: use enumerated types for GSI field values
-Date:   Tue, 10 Nov 2020 15:59:22 -0600
-Message-Id: <20201110215922.23514-7-elder@linaro.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20201110215922.23514-1-elder@linaro.org>
-References: <20201110215922.23514-1-elder@linaro.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=kQXXRFyXwxRS/I2RgZpEGIowDOXzMpZPv5s9Y3k7QhI=;
+        b=X1Bh8GyxLUyYypWMtHSgJYlKd8HGsPB753k0yBgG4iKo3YIU2uPRPg5ehZYGovTx17
+         nQIdJJAq63aF8eXNiQ1tk4+cVbTpxDLMUSgpbKtj5X4G0GYKa9TL10vT+wu7BV/W4VD7
+         Qicywt36K0waTQzkKzP6Rg8YvSQk1V7THpnoKTsurtoXNmT6ceLarcGOVA72b0bypD8l
+         qTEDPKzNT9oSllMqHBoZZsGmm8Zb4hMK/PLoEOAjg2vqeByKKJQc3GHU1dnXcwIws7bT
+         7vsxtucJ1MTCtHDWNQFyKOolOlDvEFENKEplkxBjwcegbI9Oz1nFvsgxpV1Grw+PDosm
+         ozVA==
+X-Gm-Message-State: AOAM530kU0CKxEaosbXFkPAQ95LHDy6u4Dh2MPrSZZ1aiDZAhwXg/hLM
+        AeNRxljl7cQkqnBIrk3sPGBbLlF+0aJO3lg+0Yw=
+X-Google-Smtp-Source: ABdhPJyA6KMQLGspxDQuMB3AJjwy1n4N6vTF1NTBv7oDFWmt8buswnwQw/m1E/kYfC65a/uWB9XotDCuHrLZ3DbVAI0=
+X-Received: by 2002:a1c:46c6:: with SMTP id t189mr192270wma.79.1605045601646;
+ Tue, 10 Nov 2020 14:00:01 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20201106214949.2042120-1-lee.jones@linaro.org> <20201106214949.2042120-16-lee.jones@linaro.org>
+In-Reply-To: <20201106214949.2042120-16-lee.jones@linaro.org>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Tue, 10 Nov 2020 16:59:50 -0500
+Message-ID: <CADnq5_MYU0FMVm-ALPRAeF1O29TnZc83xpY+W-=iiSJY2AX2LQ@mail.gmail.com>
+Subject: Re: [PATCH 15/19] drm/radeon: Move prototypes to shared header
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     David Airlie <airlied@linux.ie>,
+        LKML <linux-kernel@vger.kernel.org>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
+        <linaro-mm-sig@lists.linaro.org>,
+        Maling list - DRI developers 
+        <dri-devel@lists.freedesktop.org>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        linux-media <linux-media@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Replace constants defined with an "_FVAL" suffix with values defined
-in enumerated types, to be consistent with other usage in the driver.
+On Fri, Nov 6, 2020 at 4:50 PM Lee Jones <lee.jones@linaro.org> wrote:
+>
+> Fixes the following W=3D1 kernel build warning(s):
+>
+>  drivers/gpu/drm/radeon/radeon_kms.c:756:5: warning: no previous prototyp=
+e for =E2=80=98radeon_get_vblank_counter_kms=E2=80=99 [-Wmissing-prototypes=
+]
+>  756 | u32 radeon_get_vblank_counter_kms(struct drm_crtc *crtc)
+>  | ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>  drivers/gpu/drm/radeon/radeon_kms.c:826:5: warning: no previous prototyp=
+e for =E2=80=98radeon_enable_vblank_kms=E2=80=99 [-Wmissing-prototypes]
+>  826 | int radeon_enable_vblank_kms(struct drm_crtc *crtc)
+>  | ^~~~~~~~~~~~~~~~~~~~~~~~
+>  drivers/gpu/drm/radeon/radeon_kms.c:853:6: warning: no previous prototyp=
+e for =E2=80=98radeon_disable_vblank_kms=E2=80=99 [-Wmissing-prototypes]
+>  853 | void radeon_disable_vblank_kms(struct drm_crtc *crtc)
+>  | ^~~~~~~~~~~~~~~~~~~~~~~~~
+>
+> Cc: Alex Deucher <alexander.deucher@amd.com>
+> Cc: "Christian K=C3=B6nig" <christian.koenig@amd.com>
+> Cc: David Airlie <airlied@linux.ie>
+> Cc: Daniel Vetter <daniel@ffwll.ch>
+> Cc: Sumit Semwal <sumit.semwal@linaro.org>
+> Cc: amd-gfx@lists.freedesktop.org
+> Cc: dri-devel@lists.freedesktop.org
+> Cc: linux-media@vger.kernel.org
+> Cc: linaro-mm-sig@lists.linaro.org
+> Signed-off-by: Lee Jones <lee.jones@linaro.org>
 
-Signed-off-by: Alex Elder <elder@linaro.org>
----
- drivers/net/ipa/gsi.c     |  2 +-
- drivers/net/ipa/gsi_reg.h | 26 +++++++++++++++++---------
- 2 files changed, 18 insertions(+), 10 deletions(-)
+Applied.  Thanks!
 
-diff --git a/drivers/net/ipa/gsi.c b/drivers/net/ipa/gsi.c
-index c6803231bf5db..efa40c6e8281e 100644
---- a/drivers/net/ipa/gsi.c
-+++ b/drivers/net/ipa/gsi.c
-@@ -1077,7 +1077,7 @@ static void gsi_isr_gp_int1(struct gsi *gsi)
- 
- 	val = ioread32(gsi->virt + GSI_CNTXT_SCRATCH_0_OFFSET);
- 	result = u32_get_bits(val, GENERIC_EE_RESULT_FMASK);
--	if (result != GENERIC_EE_SUCCESS_FVAL)
-+	if (result != GENERIC_EE_SUCCESS)
- 		dev_err(gsi->dev, "global INT1 generic result %u\n", result);
- 
- 	complete(&gsi->completion);
-diff --git a/drivers/net/ipa/gsi_reg.h b/drivers/net/ipa/gsi_reg.h
-index de3d87d278a98..8e3a7ffd19479 100644
---- a/drivers/net/ipa/gsi_reg.h
-+++ b/drivers/net/ipa/gsi_reg.h
-@@ -263,11 +263,6 @@ enum gsi_generic_cmd_opcode {
- #define GSI_EE_N_GSI_HW_PARAM_2_OFFSET(ee) \
- 			(0x0001f040 + 0x4000 * (ee))
- #define IRAM_SIZE_FMASK			GENMASK(2, 0)
--#define IRAM_SIZE_ONE_KB_FVAL			0
--#define IRAM_SIZE_TWO_KB_FVAL			1
--/* The next two values are available for IPA v4.0 and above */
--#define IRAM_SIZE_TWO_N_HALF_KB_FVAL		2
--#define IRAM_SIZE_THREE_KB_FVAL			3
- #define NUM_CH_PER_EE_FMASK		GENMASK(7, 3)
- #define NUM_EV_PER_EE_FMASK		GENMASK(12, 8)
- #define GSI_CH_PEND_TRANSLATE_FMASK	GENMASK(13, 13)
-@@ -280,6 +275,14 @@ enum gsi_generic_cmd_opcode {
- /* Fields below are present for IPA v4.2 and above */
- #define GSI_USE_RD_WR_ENG_FMASK		GENMASK(30, 30)
- #define GSI_USE_INTER_EE_FMASK		GENMASK(31, 31)
-+/** enum gsi_iram_size - IRAM_SIZE field values in HW_PARAM_2 */
-+enum gsi_iram_size {
-+	IRAM_SIZE_ONE_KB			= 0x0,
-+	IRAM_SIZE_TWO_KB			= 0x1,
-+/* The next two values are available for IPA v4.0 and above */
-+	IRAM_SIZE_TWO_N_HALF_KB			= 0x2,
-+	IRAM_SIZE_THREE_KB			= 0x3,
-+};
- 
- /* IRQ condition for each type is cleared by writing type-specific register */
- #define GSI_CNTXT_TYPE_IRQ_OFFSET \
-@@ -432,10 +435,15 @@ enum gsi_err_type {
- 			(0x0001f400 + 0x4000 * (ee))
- #define INTER_EE_RESULT_FMASK		GENMASK(2, 0)
- #define GENERIC_EE_RESULT_FMASK		GENMASK(7, 5)
--#define GENERIC_EE_SUCCESS_FVAL			1
--#define GENERIC_EE_INCORRECT_DIRECTION_FVAL	3
--#define GENERIC_EE_INCORRECT_CHANNEL_FVAL	5
--#define GENERIC_EE_NO_RESOURCES_FVAL		7
-+enum gsi_generic_ee_result {
-+	GENERIC_EE_SUCCESS			= 0x1,
-+	GENERIC_EE_CHANNEL_NOT_RUNNING		= 0x2,
-+	GENERIC_EE_INCORRECT_DIRECTION		= 0x3,
-+	GENERIC_EE_INCORRECT_CHANNEL_TYPE	= 0x4,
-+	GENERIC_EE_INCORRECT_CHANNEL		= 0x5,
-+	GENERIC_EE_RETRY			= 0x6,
-+	GENERIC_EE_NO_RESOURCES			= 0x7,
-+};
- #define USB_MAX_PACKET_FMASK		GENMASK(15, 15)	/* 0: HS; 1: SS */
- #define MHI_BASE_CHANNEL_FMASK		GENMASK(31, 24)
- 
--- 
-2.20.1
+Alex
 
+
+> ---
+>  drivers/gpu/drm/radeon/radeon.h         | 6 ++++++
+>  drivers/gpu/drm/radeon/radeon_display.c | 4 ----
+>  2 files changed, 6 insertions(+), 4 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/radeon/radeon.h b/drivers/gpu/drm/radeon/rad=
+eon.h
+> index e1132d86d2507..961a31b8805c2 100644
+> --- a/drivers/gpu/drm/radeon/radeon.h
+> +++ b/drivers/gpu/drm/radeon/radeon.h
+> @@ -2832,6 +2832,12 @@ extern void radeon_program_register_sequence(struc=
+t radeon_device *rdev,
+>                                              const u32 array_size);
+>  struct radeon_device *radeon_get_rdev(struct ttm_bo_device *bdev);
+>
+> +/* KMS */
+> +
+> +u32 radeon_get_vblank_counter_kms(struct drm_crtc *crtc);
+> +int radeon_enable_vblank_kms(struct drm_crtc *crtc);
+> +void radeon_disable_vblank_kms(struct drm_crtc *crtc);
+> +
+>  /*
+>   * vm
+>   */
+> diff --git a/drivers/gpu/drm/radeon/radeon_display.c b/drivers/gpu/drm/ra=
+deon/radeon_display.c
+> index b79686cf8bdbd..bd60f16fd0d78 100644
+> --- a/drivers/gpu/drm/radeon/radeon_display.c
+> +++ b/drivers/gpu/drm/radeon/radeon_display.c
+> @@ -45,10 +45,6 @@
+>  #include "atom.h"
+>  #include "radeon.h"
+>
+> -u32 radeon_get_vblank_counter_kms(struct drm_crtc *crtc);
+> -int radeon_enable_vblank_kms(struct drm_crtc *crtc);
+> -void radeon_disable_vblank_kms(struct drm_crtc *crtc);
+> -
+>  static void avivo_crtc_load_lut(struct drm_crtc *crtc)
+>  {
+>         struct radeon_crtc *radeon_crtc =3D to_radeon_crtc(crtc);
+> --
+> 2.25.1
+>
+> _______________________________________________
+> dri-devel mailing list
+> dri-devel@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/dri-devel
