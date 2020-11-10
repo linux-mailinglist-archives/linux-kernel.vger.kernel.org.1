@@ -2,82 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CFB12ADEC0
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 19:50:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E5C8C2ADEBA
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 19:50:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731546AbgKJSup (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 13:50:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45010 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731417AbgKJSul (ORCPT
+        id S1730786AbgKJSud (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 13:50:33 -0500
+Received: from aserp2130.oracle.com ([141.146.126.79]:35120 "EHLO
+        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726428AbgKJSuc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 13:50:41 -0500
-Received: from mail-qv1-xf42.google.com (mail-qv1-xf42.google.com [IPv6:2607:f8b0:4864:20::f42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 853E5C0613D1
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 10:50:39 -0800 (PST)
-Received: by mail-qv1-xf42.google.com with SMTP id 13so6370130qvr.5
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 10:50:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Ao4gO8dckdnbUrVLtqZDO6K8/CHWVv04osrwbe3s3CE=;
-        b=aD1YSSjm5h1E5fKJUFCbr7un4ITDFwPpH6MF9varMrqIuVbGJBuFVykbxLg6VBTlR2
-         tUkpEBkPpR8DPcUIo0qFS6gFiGku7QOoKoQBtjKBKDNpokJOdt4IStbsoWjphGGuEIe3
-         rsI4GBvWMkch7slymkedYAaZbD+xCPLbfIZ6GnBCRmIMgFA/3XwHS4WrRB+h21kNDxEv
-         yOCKKNCwlspZuRBiQvvK9EdTbTaHZ+3cJcK3xZLEcFIWMSEjzeJQGDQ+wlOIpFQISCyd
-         rss3dJMftolMW5jlmv73BOiORadddv7rPLT2D1Ncc6b1S+mG7UF7n7uZBlthn8zRh769
-         2Paw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Ao4gO8dckdnbUrVLtqZDO6K8/CHWVv04osrwbe3s3CE=;
-        b=tS3hG1gyqTFLJcU/Y6snoBO86Ok6ndU5vTasOI7kK8f56DQTb+BCvfhJJkLBFB7ffr
-         vTuwaYxEzXhqaMNVQhw3O60ipPsuD1IfWBNAI4L8GZHC9JU4baldBGCdOWo1eJp3/4P3
-         bM8r7ait0bSvjEuKh6b2+Zqrj/tpitzdiiP/gxjc4FSwQ2xhdyPBt+1yBKo42cCAil8R
-         fiXowIeCo+nDe7kF0si2Orcqr8LSPObgx+UAKlO3nuhhiKA2RGZ5aWyuNlVthn5XhTAz
-         3XngjXvwLxV4ZJLhrOaPPdBOcAkC0WMSy2fgcryKWklFJGSly0CqWfM3HFZRk/MsKB0u
-         EmRw==
-X-Gm-Message-State: AOAM532Bbw+BqGpAEgUQThhNRHMiGTHeSMUq/zdc+oo3xCOXnBqzTLt9
-        hBajWb1oJLc5UnceHLtzwppZSA==
-X-Google-Smtp-Source: ABdhPJzzxCdfp78n0ASzjgdakdyVzAJCxf5dldOeoZdGScdsYAQ1wKF4N8gSu4becV/R64CgioXQlQ==
-X-Received: by 2002:ad4:4943:: with SMTP id o3mr20168428qvy.9.1605034238663;
-        Tue, 10 Nov 2020 10:50:38 -0800 (PST)
-Received: from localhost ([2620:10d:c091:480::1:64f7])
-        by smtp.gmail.com with ESMTPSA id c76sm9398105qkb.20.2020.11.10.10.50.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 10 Nov 2020 10:50:37 -0800 (PST)
-Date:   Tue, 10 Nov 2020 13:48:50 -0500
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     Roman Gushchin <guro@fb.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        Shakeel Butt <shakeelb@google.com>,
-        Michal Hocko <mhocko@kernel.org>, linux-kernel@vger.kernel.org,
-        kernel-team@fb.com
-Subject: Re: [PATCH] mm: memcg: fix obsolete code comments
-Message-ID: <20201110184850.GA850433@cmpxchg.org>
-References: <20201110184615.311974-1-guro@fb.com>
+        Tue, 10 Nov 2020 13:50:32 -0500
+Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
+        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AAIhtQS121445;
+        Tue, 10 Nov 2020 18:49:28 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=wC2jbd2NkDz1nAFghaaz9PjGpzDIDHVMI1YpVUVpkYY=;
+ b=mDk3bgC77SfyTsIQJmoA4JjlK+ELV0wEf+2ALlkHf8NY161gdBZxGBHOYExrMjvufFeo
+ OopSm1adJ8Aesyn8ejvl+87ql2LgllSnVHTXjmYP8GNn63AYB4x8fKdDOCYsHs5joHiX
+ qzPixFaNPY9xtTFmDz8NCUvr1fD21rPU953PcFmPi5czUZAU0IP7f3ANi85nkvSEeDWT
+ qM+f3rjlv72E5qJZ+3J+8G9hBM7Pdjzno6nUG4jR80eC3UZLzxRgLWqUFXLiCOGYgqbo
+ QqwuiYoTzAHt8QkyZTOEOTKYKX1s2wTQlkhsEEgl4PGpJTU8kTKTuGf0EM4EseGZWe5n IA== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by aserp2130.oracle.com with ESMTP id 34nh3awgb5-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 10 Nov 2020 18:49:28 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AAIjCpC145314;
+        Tue, 10 Nov 2020 18:49:28 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by aserp3030.oracle.com with ESMTP id 34p55p04dn-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 10 Nov 2020 18:49:27 +0000
+Received: from abhmp0019.oracle.com (abhmp0019.oracle.com [141.146.116.25])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0AAInIFC014602;
+        Tue, 10 Nov 2020 18:49:19 GMT
+Received: from kadam (/41.57.98.10)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Tue, 10 Nov 2020 10:49:18 -0800
+Date:   Tue, 10 Nov 2020 21:49:03 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>, rafael@kernel.org,
+        Will Deacon <will@kernel.org>, linux-kselftest@vger.kernel.org,
+        joel@joelfernandes.org, rric@kernel.org, shuah@kernel.org,
+        devel@driverdev.osuosl.org, minyard@acm.org, corbet@lwn.net,
+        surenb@google.com, linux-doc@vger.kernel.org,
+        linux-acpi@vger.kernel.org, lenb@kernel.org, tkjos@android.com,
+        arnd@arndb.de, bp@alien8.de,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        openipmi-developer@lists.sourceforge.net, mchehab@kernel.org,
+        maco@android.com, christian@brauner.io, linux-edac@vger.kernel.org,
+        tony.luck@intel.com, gregkh@linuxfoundation.org,
+        linux-kernel@vger.kernel.org, arve@android.com,
+        james.morse@arm.com, hridya@google.com, johannes@sipsolutions.net
+Subject: Re: [PATCH v3 00/11] Introduce Simple atomic counters
+Message-ID: <20201110184903.GG29398@kadam>
+References: <cover.1602209970.git.skhan@linuxfoundation.org>
+ <20201009193746.GA1073957@hirez.programming.kicks-ass.net>
+ <202010091255.246395A6@keescook>
+ <20201010110920.GQ2628@hirez.programming.kicks-ass.net>
+ <6e1dd408-653e-817e-b659-23649259a929@linuxfoundation.org>
+ <20201014091720.GC2628@hirez.programming.kicks-ass.net>
+ <202010141611.70B7A38@keescook>
+ <20201016105313.GJ2611@hirez.programming.kicks-ass.net>
+ <202010161541.6DD2D1E@keescook>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201110184615.311974-1-guro@fb.com>
+In-Reply-To: <202010161541.6DD2D1E@keescook>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9801 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 spamscore=0 phishscore=0
+ mlxlogscore=999 mlxscore=0 malwarescore=0 bulkscore=0 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2011100129
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9801 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 lowpriorityscore=0 priorityscore=1501
+ clxscore=1011 malwarescore=0 mlxscore=0 spamscore=0 suspectscore=0
+ mlxlogscore=999 impostorscore=0 phishscore=0 adultscore=0 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2011100129
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 10, 2020 at 10:46:15AM -0800, Roman Gushchin wrote:
-> This patch fixes/removes some obsolete comments in the code related
-> to the kernel memory accounting:
-> - kmem_cache->memcg_params.memcg_caches has been removed
->   by commit 9855609bde03 ("mm: memcg/slab: use a single set of
->   kmem_caches for all accounted allocations")
-> - memcg->kmemcg_id is not used as a gate for kmem accounting since
->   commit 0b8f73e10428 ("mm: memcontrol: clean up alloc, online,
->   offline, free functions")
+On Fri, Oct 16, 2020 at 03:51:25PM -0700, Kees Cook wrote:
+> On Fri, Oct 16, 2020 at 12:53:13PM +0200, Peter Zijlstra wrote:
+> > That's like saying: "I'm too lazy to track what I've looked at already".
+> > You're basically proposing to graffiti "Kees was here -- 16/10/2020" all
+> > over the kernel. Just so you can see where you still need to go.
+> > 
+> > It says the code was (assuming your audit was correct) good at that
+> > date, but has no guarantees for any moment after that.
 > 
-> Signed-off-by: Roman Gushchin <guro@fb.com>
+> That kind of bit-rot marking is exactly what I would like to avoid: just
+> putting a comment in is pointless. Making the expectations of the usage
+> become _enforced_ is the goal. And having it enforced by the _compiler_
+> is key. Just adding a meaningless attribute that a static checker
+> will notice some time and hope people fix them doesn't scale either
+> (just look at how many sparse warnings there are).
 
-Acked-by: Johannes Weiner <hannes@cmpxchg.org>
+Most Sparse warnings are false positives.  People do actually fix the
+ones which matter.
 
-Thanks Roman
+I think this patchset could be useful.  I'm working on a refcounting
+check for Smatch.  I want to warn about when we forget to drop a
+reference on an error path.  Right now I just assume that anything with
+"error", "drop" or "->stats->" in the name is just a counter.
+
+regards,
+dan carpenter
+
