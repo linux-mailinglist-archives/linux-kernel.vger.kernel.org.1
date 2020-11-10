@@ -2,79 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 269F12AD75C
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 14:20:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 585BB2AD762
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 14:21:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730535AbgKJNUF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 08:20:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49574 "EHLO
+        id S1730830AbgKJNVG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 08:21:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49734 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726721AbgKJNUE (ORCPT
+        with ESMTP id S1729898AbgKJNVE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 08:20:04 -0500
-Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48949C0613CF
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 05:20:04 -0800 (PST)
-Received: by mail-lf1-x143.google.com with SMTP id 74so17464501lfo.5
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 05:20:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=jUc4FROYQtgj3f48EMA2Q35Aoeo6A9Bg4v3Z3azlYbc=;
-        b=LKt4KC1Go1Oj5oFXT7AoL8a0nJJznQOtDGScKZujsj5OVIh3fowX7tMSGQHrxnbSUd
-         WXh3jubqa5756OKJWf22Psf+4OBUSn3C+75Lh8mhGsHFpri0DHyNwbmpQyOelpARznUL
-         z232JG/w47Fy8BxqUKJjlH6796bjpyJwm4a44unW5XPEdLO3Y+0LyIeMazu1bYzh0voK
-         oQtCHeRdZ8pLSqErf6QS//DnrCdlkB9YXROmZIj9xS4pQGYUGosiiAiVN1OIeWdTBgH5
-         bK5JUz4BvJOx8Ygoen9/YVoc7S9fG0sGxlvuYB+ADxUmRP6/qc2Fn0vbZyQD2QgJqtpc
-         AlXQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=jUc4FROYQtgj3f48EMA2Q35Aoeo6A9Bg4v3Z3azlYbc=;
-        b=D4p7Izk9rrbfQC941zlHF/civNiNnFmZV8QBlXMchkJA5rVex4s25U/GRvN2DjSHt0
-         LLlnNFduHCaT1bHHCJXnJem0ZJOVTrPg8/W2Yombm/3ZzHlu66RpWEnT977dv403IBEf
-         PtWdLQ9nSCzPphb0KJG+iS/WvwzTB9q9EpfG7b43eTEqquqkWOoD93Ehbour9/0PmT/m
-         dOlSo2jrI+6RyBsvVAwwCpjvYZbmTY30upPR+gwItGP9WYP4spV+qFRul+Y7zQC3fqMP
-         dXDlT61C2SWACQSTdXRDVWrLNEyjS9eyfv0pCq0z9KAzZeengfbUfj2OhWeHcQhtI+j6
-         gdow==
-X-Gm-Message-State: AOAM530x1ln6tk9kN+blz9AJL0fxSTqy6QIfDdLMlH0zHxQkJTB2oCBw
-        KPpvtIGN9syYIKCXi+GdRZzLk03ISInQTEGeMfvhVg==
-X-Google-Smtp-Source: ABdhPJxpyPHQTFP6VP4fU3ofkUDZvR/pdH5VIYTxgPIqiFsFP+wncHwniiJUcsuE+hGmM5FmhF4yAu1OFJ20oB1R8W4=
-X-Received: by 2002:a19:f00b:: with SMTP id p11mr7179710lfc.585.1605014402796;
- Tue, 10 Nov 2020 05:20:02 -0800 (PST)
+        Tue, 10 Nov 2020 08:21:04 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C536C0613CF;
+        Tue, 10 Nov 2020 05:21:04 -0800 (PST)
+From:   Kurt Kanzenbach <kurt.kanzenbach@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1605014462;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=AzMhSL6JfZYLoAxLQNqOinsWfodG6w3sgRNE+je62BU=;
+        b=iNMXQPuDLaAAymCV8YNdZjYIfSNJ9dV3mI3KTjBFmGTy4lF2j74igpHBSibhkxwDRGf9CX
+        eG2eRV+hbF5GW//fUgx4HgvZHd5Lp7Bs8YR2qRBuKgRgjOD92qNdT46fqVrh7BrkwQKERO
+        jUdkTNGBxbtjqpQ2rAcOamnCqi0acF2da7QMuP3lD7/tj0iVol8K1uGNPLzut4quKGgLRX
+        O9G279PsNkfe6IZJ0DrwYYwVoUdXjSArBFrmkVZOc+gbT/WmX3RrCJV+rixpoqtNCzjZnI
+        dx02872vu64JOHz7YGp228x44FVX0bNuAq3RBRfB5NMyrB4hdLTckC3tuRvsCQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1605014462;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=AzMhSL6JfZYLoAxLQNqOinsWfodG6w3sgRNE+je62BU=;
+        b=5EStyjC2JN90PchQKFpE0zsLVrZxmq5m2ghA9RKQoPUfACMG6TqzaKsW8CEqikYZP7iKfd
+        cClD7ShI6ogSV2CA==
+To:     Florian Fainelli <f.fainelli@gmail.com>, netdev@vger.kernel.org
+Cc:     Kurt Kanzenbach <kurt@kmk-computers.de>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>, Ray Jui <rjui@broadcom.com>,
+        Scott Branden <sbranden@broadcom.com>,
+        "maintainer\:BROADCOM IPROC ARM ARCHITECTURE" 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        Hauke Mehrtens <hauke@hauke-m.de>,
+        =?utf-8?Q?Rafa=C5=82_Mi=C5=82ecki?= <zajec5@gmail.com>,
+        "open list\:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "moderated list\:BROADCOM IPROC ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [PATCH 10/10] dt-bindings: net: dsa: b53: Add YAML bindings
+In-Reply-To: <20201110033113.31090-11-f.fainelli@gmail.com>
+References: <20201110033113.31090-1-f.fainelli@gmail.com> <20201110033113.31090-11-f.fainelli@gmail.com>
+Date:   Tue, 10 Nov 2020 14:21:01 +0100
+Message-ID: <871rh18i0y.fsf@kurt>
 MIME-Version: 1.0
-References: <20201105231912.69527-1-coiby.xu@gmail.com> <20201105231912.69527-3-coiby.xu@gmail.com>
-In-Reply-To: <20201105231912.69527-3-coiby.xu@gmail.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Tue, 10 Nov 2020 14:19:52 +0100
-Message-ID: <CACRpkdZRwkhk_Bh0ua7sbq0emRRjTRkHwJWE8EMk9JwdPB8kUg@mail.gmail.com>
-Subject: Re: [PATCH v3 2/4] pinctrl: amd: use higher precision for 512 RtcClk
-To:     Coiby Xu <coiby.xu@gmail.com>
-Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Hans de Goede <hdegoede@redhat.com>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; boundary="=-=-=";
+        micalg=pgp-sha512; protocol="application/pgp-signature"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 6, 2020 at 12:19 AM Coiby Xu <coiby.xu@gmail.com> wrote:
+--=-=-=
+Content-Type: text/plain
 
-> RTC is 32.768kHz thus 512 RtcClk equals 15625 usec. The documentation
-> likely has dropped precision and that's why the driver mistakenly took
-> the slightly deviated value.
+On Mon Nov 09 2020, Florian Fainelli wrote:
+> From: Kurt Kanzenbach <kurt@kmk-computers.de>
 >
-> Reported-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-> Suggested-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-> Suggested-by: Hans de Goede <hdegoede@redhat.com>
-> Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-> Link: https://lore.kernel.org/linux-gpio/2f4706a1-502f-75f0-9596-cc25b4933b6c@redhat.com/
-> Signed-off-by: Coiby Xu <coiby.xu@gmail.com>
+> Convert the b53 DSA device tree bindings to YAML in order to allow
+> for automatic checking and such.
+>
+> Suggested-by: Florian Fainelli <f.fainelli@gmail.com>
+> Signed-off-by: Kurt Kanzenbach <kurt@kmk-computers.de>
+> ---
+>  .../devicetree/bindings/net/dsa/b53.txt       | 149 -----------
+>  .../devicetree/bindings/net/dsa/b53.yaml      | 249 ++++++++++++++++++
 
-This patch applied for fixes and tagged for stable.
+Maybe it should be renamed to brcm,b53.yaml to be consistent with the
+ksz and hellcreek bindings.
 
-Yours,
-Linus Walleij
+Thanks,
+Kurt
+
+--=-=-=
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCgAdFiEEooWgvezyxHPhdEojeSpbgcuY8KYFAl+qk70ACgkQeSpbgcuY
+8KaoAg/+KXo2Fr8lqgfG4Ih8O7QQ5lBso9BL80dO6Iavyio2ueysGXAs5RtGxSWW
+BQCVARWEWevf7xVkyRTkvz5GNEnL+KMCkZqjfUHuhnHEuISDm2idGk2iD5U1V+op
+GZrK7dH8A9HsA8z/vGxuuOnMGQibSHC4R55XBYZKXuHGQGlqGlYaoCtXlBChxMIl
+rsOjWMRCuY6Deg6UmJYmaREDNJLZRdzGIfj8hiVFswRXSwA/+Nku4HRRegxoPqKE
+UYFtiY6ljH1eXxq78SlJu6zslB5OsfV1wFWUG1IM0bB7utauT4NdTkSj91asCUCK
+atnNIuXIBlGS41dUljCcSN/UdNDCWSuA2cyBItY8frgk7HNbtdH1rvvMn1uio9T6
+CZd9Y/mKK3XOT5KZI9FS1hzZIBiuHvw2nvpPUoEZDeIZRPYCDed1nNsKQI/armU2
+bc6kaIqv427yXAT99AaCWdsunkNAhMo7gHC+y0/6Hp/ySS51G3uDLUI18+R/iRxf
+trPJRca7pAsrXHuRMhDWRLp8o8FYAo2tTa113ZSATrUsHwq2IQ0H7MXxKVdOhOAV
+7R/utQ4EZ65vjqZN0tOcyk4MkiE5it3LVDVjw3OH1hkTBp2aUrR8JCPObFmNfCaX
+FO9kS/riUlTMUDCbl5WUt0dO+X2cOZKtpZLgzrO5bB5u2PZtK2k=
+=xhiF
+-----END PGP SIGNATURE-----
+--=-=-=--
