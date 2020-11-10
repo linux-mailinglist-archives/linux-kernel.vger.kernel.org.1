@@ -2,102 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 698E52ADCBD
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 18:19:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 136F72ADCC2
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 18:20:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729110AbgKJRTd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 12:19:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59082 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726344AbgKJRTc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 12:19:32 -0500
-Received: from mail-il1-x142.google.com (mail-il1-x142.google.com [IPv6:2607:f8b0:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E707FC0613D1
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 09:19:31 -0800 (PST)
-Received: by mail-il1-x142.google.com with SMTP id g15so12887010ilc.9
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 09:19:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=m76wOL9hJIJoG0AO/e/uP7Uo91cnrGUskfUQcXSEJaw=;
-        b=aUpZC7ktAb3pkvosG5hyA2UaagJt7W8t8r+Klze5728P06woK0Hop3/1nyOuBXNZMK
-         y255tazkuEH7++moKa2Q01NtPlRzKa0QbEjbWF/KTGg5+ny4XajqUNJOdAoSRDEnjLKX
-         EATzsf/HUdwPrLsULwfVG+iP7zQh6d28EH00g=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=m76wOL9hJIJoG0AO/e/uP7Uo91cnrGUskfUQcXSEJaw=;
-        b=ll3d24SH6j0LqdRCRl2jFiRzGfQX6H2AMLdoES2MsPOBl1pCG5EE0Sfh5wlAEbBtWZ
-         3xuhjAHow2iX8pMyRKkLJDKSIrbziRuCY2HxyIBFy/czHQ4wkT8lxsXu0MO5XFA/s5Vs
-         5TBSU53QdqZ7wwXmtNw2RsDXJfljjLch0zuM/bUFZgiQK++Bs2s9DxssvKvt/pz9uTKU
-         eVcrQsZLwgwc3Gl3ZzWcxaJSH7oEw2ETWe1BnPFJj8EQ+3snUyQ3i50wkLWT+DT0SBnl
-         X+yJBGP3VUh0XcLNhztaG5GV+5KKz0/BjVA130tuRnvVIDzoX717zlXRJO3QC8QHF5vo
-         ijIQ==
-X-Gm-Message-State: AOAM531xdlBEpLMu2bG27JgOORM3JrU3Vt58tIrGvWNVmqDt43K8HvlQ
-        YteynycBIf6U+YIOMvm8IXUvLg1xZWMNk+YNtE/2XA==
-X-Google-Smtp-Source: ABdhPJyOZv4c/23PoTtO1kXkANOtS7NNt3q+8JYWMPUQzsFB4WGg2bwqjXqsXfBkXcGeHkODJ5NajYAYvE6PE8gBJ/c=
-X-Received: by 2002:a92:d60f:: with SMTP id w15mr15072739ilm.235.1605028771245;
- Tue, 10 Nov 2020 09:19:31 -0800 (PST)
+        id S1730232AbgKJRU3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 12:20:29 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43600 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726179AbgKJRU2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Nov 2020 12:20:28 -0500
+Received: from trantor (unknown [2.26.170.190])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 89055206F1;
+        Tue, 10 Nov 2020 17:20:25 +0000 (UTC)
+Date:   Tue, 10 Nov 2020 17:20:23 +0000
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Ionela Voinescu <ionela.voinescu@arm.com>
+Cc:     mingo@redhat.com, peterz@infradead.org, vincent.guittot@linaro.org,
+        will@kernel.org, rjw@rjwysocki.net, viresh.kumar@linaro.org,
+        dietmar.eggemann@arm.com, qperret@google.com,
+        valentin.schneider@arm.com, linux-pm@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH RESEND v2 2/3] arm64: rebuild sched domains on invariance
+ status changes
+Message-ID: <X6rL1zv/JuqOVBQu@trantor>
+References: <20201027180713.7642-1-ionela.voinescu@arm.com>
+ <20201027180713.7642-3-ionela.voinescu@arm.com>
 MIME-Version: 1.0
-References: <20201020000506.1.Ifbc28707942179f1cefc7491e995814564495270@changeid>
- <20201106071107.D7CE3C433C6@smtp.codeaurora.org>
-In-Reply-To: <20201106071107.D7CE3C433C6@smtp.codeaurora.org>
-From:   Abhishek Kumar <kuabhs@chromium.org>
-Date:   Tue, 10 Nov 2020 09:19:20 -0800
-Message-ID: <CACTWRwtjvQYUvbWHrajNRkK_sDZRv1hr0kp+o1=6504qv64qKQ@mail.gmail.com>
-Subject: Re: [PATCH] ath10k: add option for chip-id based BDF selection
-To:     Kalle Valo <kvalo@codeaurora.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        Brian Norris <briannorris@chromium.org>,
-        Rakesh Pillai <pillair@codeaurora.org>
-Cc:     ath10k <ath10k@lists.infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-wireless <linux-wireless@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201027180713.7642-3-ionela.voinescu@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Apologies for the delay, was busy so could not work on V2 . I have
-started working on V2 patch. Will upload by today/tomorrow.
+On Tue, Oct 27, 2020 at 06:07:12PM +0000, Ionela Voinescu wrote:
+> Task scheduler behavior depends on frequency invariance (FI) support and
+> the resulting invariant load tracking signals. For example, in order to
+> make accurate predictions across CPUs for all performance states, Energy
+> Aware Scheduling (EAS) needs frequency-invariant load tracking signals
+> and therefore it has a direct dependency on FI. This dependency is known,
+> but EAS enablement is not yet conditioned on the presence of FI during
+> the built of the scheduling domain hierarchy.
+> 
+> Before this is done, the following must be considered: while
+> arch_scale_freq_invariant() will see changes in FI support and could
+> be used to condition the use of EAS, it could return different values
+> during system initialisation.
+> 
+> For arm64, such a scenario will happen for a system that does not support
+> cpufreq driven FI, but does support counter-driven FI. For such a system,
+> arch_scale_freq_invariant() will return false if called before counter
+> based FI initialisation, but change its status to true after it.
+> If EAS becomes explicitly dependent on FI this would affect the task
+> scheduler behavior which builds its scheduling domain hierarchy well
+> before the late counter-based FI init. During that process, EAS would be
+> disabled due to its dependency on FI.
+> 
+> Two points of future early calls to arch_scale_freq_invariant() which
+> would determine EAS enablement are:
+>  - (1) drivers/base/arch_topology.c:126 <<update_topology_flags_workfn>>
+> 		rebuild_sched_domains();
+>        This will happen after CPU capacity initialisation.
+>  - (2) kernel/sched/cpufreq_schedutil.c:917 <<rebuild_sd_workfn>>
+> 		rebuild_sched_domains_energy();
+> 		-->rebuild_sched_domains();
+>        This will happen during sched_cpufreq_governor_change() for the
+>        schedutil cpufreq governor.
+> 
+> Therefore, before enforcing the presence of FI support for the use of EAS,
+> ensure the following: if there is a change in FI support status after
+> counter init, use the existing rebuild_sched_domains_energy() function to
+> trigger a rebuild of the scheduling and performance domains that in turn
+> will determine the enablement of EAS.
+> 
+> Signed-off-by: Ionela Voinescu <ionela.voinescu@arm.com>
+> Cc: Catalin Marinas <catalin.marinas@arm.com>
+> Cc: Will Deacon <will@kernel.org>
 
-Abhishek
-
-
-On Thu, Nov 5, 2020 at 11:11 PM Kalle Valo <kvalo@codeaurora.org> wrote:
->
-> Abhishek Kumar <kuabhs@chromium.org> wrote:
->
-> > In some devices difference in chip-id should be enough to pick
-> > the right BDF. Add another support for chip-id based BDF selection.
-> > With this new option, ath10k supports 2 fallback options.
-> >
-> > The board name with chip-id as option looks as follows
-> > board name 'bus=snoc,qmi-board-id=ff,qmi-chip-id=320'
-> >
-> > Signed-off-by: Abhishek Kumar <kuabhs@chromium.org>
-> > Reviewed-by: Douglas Anderson <dianders@chromium.org>
-> > Tested-by: Douglas Anderson <dianders@chromium.org>
-> > Tested-by: Abhishek Kumar <kuabhs@chromium.org>
->
-> There were few checkpatch warnings which I fixed:
->
-> $ ath10k-check
-> drivers/net/wireless/ath/ath10k/core.c:1501: Alignment should match open parenthesis
-> drivers/net/wireless/ath/ath10k/core.c:1512: line length of 92 exceeds 90 columns
-> drivers/net/wireless/ath/ath10k/core.c:1521: line length of 92 exceeds 90 columns
->
-> The first one was also what Doug commented. I also added Tested-on tags,
-> thanks for those. The updated patch is in pending branch (soon).
->
-> But is this patch ok to take now? I didn't quite get the conclusion of the
-> discussion.
->
-> --
-> https://patchwork.kernel.org/project/linux-wireless/patch/20201020000506.1.Ifbc28707942179f1cefc7491e995814564495270@changeid/
->
-> https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
->
+Acked-by: Catalin Marinas <catalin.marinas@arm.com>
