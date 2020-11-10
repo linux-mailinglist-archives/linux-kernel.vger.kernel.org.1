@@ -2,70 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 796C22AC9AE
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 01:26:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D789F2AC996
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 01:09:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729935AbgKJA0u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 19:26:50 -0500
-Received: from magadh-nkn1.iitp.ac.in ([14.139.194.30]:53522 "HELO
-        sophos1.iitp.ac.in" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with SMTP id S1727311AbgKJA0u (ORCPT
+        id S1729785AbgKJAJd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 19:09:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40570 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727311AbgKJAJc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 19:26:50 -0500
-X-Greylist: delayed 2309 seconds by postgrey-1.27 at vger.kernel.org; Mon, 09 Nov 2020 19:26:39 EST
-Received: from sophos1.iitp.ac.in (localhost.localdomain [127.0.0.1])
-        by localhost (Email Security Appliance) with SMTP id 8554D2CC7B41_FA9ACF6B;
-        Mon,  9 Nov 2020 20:56:22 +0000 (GMT)
-Received: from mail.iitp.ac.in (mail.iitp.ac.in [172.16.1.222])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by sophos1.iitp.ac.in (Sophos Email Appliance) with ESMTPS id 1B7852D13F44_FA9ACF5F;
-        Mon,  9 Nov 2020 20:56:21 +0000 (GMT)
-Received: from localhost (localhost [127.0.0.1])
-        by mail.iitp.ac.in (Postfix) with ESMTP id D1981500201577;
-        Tue, 10 Nov 2020 02:25:26 +0530 (IST)
-Received: from mail.iitp.ac.in ([127.0.0.1])
-        by localhost (mail.iitp.ac.in [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id UUK9IZTr2ZGK; Tue, 10 Nov 2020 02:25:26 +0530 (IST)
-Received: from localhost (localhost [127.0.0.1])
-        by mail.iitp.ac.in (Postfix) with ESMTP id 15290500201579;
-        Tue, 10 Nov 2020 02:25:26 +0530 (IST)
-DKIM-Filter: OpenDKIM Filter v2.10.3 mail.iitp.ac.in 15290500201579
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=iitp.ac.in;
-        s=B531B44E-CE12-11E8-8B4F-ED399D893B6A; t=1604955326;
-        bh=pHM5lCS+Q3c3g9FzkI1Gq3ehxhoZ652CHQhGuTNqNxM=;
-        h=MIME-Version:To:From:Date:Message-Id;
-        b=Y0E7e0SG8/KtcZ+7UiEx/cQRDgdBpdj6a0OIkK2DANLcQOc5cw5Qgc9X1eXPSASmE
-         1GzhgKT2Pe0rL90pF7Et+C48fewYhgRrZ76JKL9wD9gEK9GpEfl9Gf0iIB3l+4sCG7
-         GWYr6IFQL5vtRin1tbdcsZTNbdGih5MF+zQbfpEVXvDAJHlbwuSfoxD1ypmKTlyxeM
-         H5el8iOMjC7ylczVFjmDE+t360TUttQ21cDyBmV4yRbSUShjjsFz7cVCJbodcpv4Aw
-         1U/L138IbzPvUiBZvsE17oW5D64m0yRBLm9WPWsdVUyXUenk+NqH068+1kuHXYAQv9
-         lSQ+/qNCoxxOg==
-X-Virus-Scanned: amavisd-new at mail.iitp.ac.in
-Received: from mail.iitp.ac.in ([127.0.0.1])
-        by localhost (mail.iitp.ac.in [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id QjT-siJnkP54; Tue, 10 Nov 2020 02:25:25 +0530 (IST)
-Received: from [10.111.164.104] (unknown [105.12.0.249])
-        by mail.iitp.ac.in (Postfix) with ESMTPSA id 2BF485000C0A55;
-        Tue, 10 Nov 2020 02:25:07 +0530 (IST)
-Content-Type: text/plain; charset="iso-8859-1"
+        Mon, 9 Nov 2020 19:09:32 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63E77C0613CF;
+        Mon,  9 Nov 2020 16:09:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=rzp6w6LtmUWYCvcLAbZq+3lrgpo1QeVmRmbMbPfRlA4=; b=PeY6e3zOfq5yS87w5dYJX/bGHU
+        0REP48EkwsDG5m7klT2SuoL4SXj5mtINLieWT2kOXu6cJloGAgN8NfBRdfXPfJqI5on3Z93hqhNLG
+        XoP6pB92jSfHtSjTjpPb76VEkGhBctEK9wofFyjmKDJnCHfNagS3jkiK1fwvrZZ8wGNG6t0QsaTDA
+        KqLwapDqkD41gHfNybnPHfi+o+7N+deUWW6Chv5AtCJWsLeNvmhYgiGwo85CsY+y70Gc8ZLGGpqjs
+        MQhX9+BMCIWGJVFDn7WLAyysztTMmp4xiRl47fTxGBLkvqUJc+WwFvh5xHcgA05u0wQsR/RLk1xY0
+        vs2Wj6Qw==;
+Received: from [2601:1c0:6280:3f0::662d]
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kcHDy-0000jO-Ae; Tue, 10 Nov 2020 00:09:26 +0000
+Subject: Re: [PATCH v2 7/8] Documentation: Add documentation for the Brute LSM
+To:     John Wood <john.wood@gmx.com>, Kees Cook <keescook@chromium.org>,
+        Jann Horn <jannh@google.com>
+Cc:     Jonathan Corbet <corbet@lwn.net>, James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        kernel-hardening@lists.openwall.com
+References: <20201025134540.3770-1-john.wood@gmx.com>
+ <20201025134540.3770-8-john.wood@gmx.com>
+ <2ab35578-832a-6b92-ca9b-2f7d42bc0792@infradead.org>
+ <20201109182348.GA3110@ubuntu>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <e6e04af7-5445-bda9-6665-b52c72735b63@infradead.org>
+Date:   Mon, 9 Nov 2020 16:09:21 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Description: Mail message body
-Subject: Spende
-To:     Recipients <snp1@iitp.ac.in>
-From:   '' <snp1@iitp.ac.in>
-Date:   Mon, 09 Nov 2020 22:00:35 +0100
-Reply-To: billlawrencedonationorg@gmail.com
-Message-Id: <20201109205508.2BF485000C0A55@mail.iitp.ac.in>
-X-SASI-RCODE: 200
+In-Reply-To: <20201109182348.GA3110@ubuntu>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Ich bin Bill Lawrence, ein =E4lterer B=FCrger aus Kalifornien, USA. Ich hab=
-e einen Jackpot von 150 Millionen US-Dollar gewonnen. Im Namen meiner Famil=
-ie und aus gutem Willen spenden wir Ihnen und Ihrer Familie den Betrag von =
-(2.000.000,00 EUR). Ich brauche Ihre uneingeschr=E4nkte Mitarbeit bei diese=
-r Spende. Bitte kontaktieren Sie mich hier unter meiner privaten E-Mail-Adr=
-esse: billlawrencedonationorg@gmail.com
+On 11/9/20 10:23 AM, John Wood wrote:
+> Hi,
+> Thanks for the typos corrections. Will be corrected in the next patch
+> version.
+> 
+> On Sun, Nov 08, 2020 at 08:31:13PM -0800, Randy Dunlap wrote:
+>>
+>> So an app could read crash_period_threshold and just do a new fork every
+>> threshold + 1 time units, right? and not be caught?
+> 
+> Yes, you are right. But we must set a crash_period_threshold that does not
+> make an attack feasible. For example, with the default value of 30000 ms,
+> an attacker can break the app only once every 30 seconds. So, to guess
+> canaries or break ASLR, the attack needs a big amount of time. But it is
+> possible.
+> 
+> So, I think that to avoid this scenario we can add a maximum number of
+> faults per fork hierarchy. Then, the mitigation will be triggered if the
+> application crash period falls under the period threshold or if the number
+> of faults exceed the maximum commented.
+> 
+> This way, if an attack is of long duration, it will also be detected and
+> mitigated.
+> 
+> What do you think?
+
+Hi,
+That sounds reasonable to me.
+
+thanks.
+-- 
+~Randy
+
