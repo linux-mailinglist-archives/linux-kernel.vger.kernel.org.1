@@ -2,82 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B72A62ACB4F
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 03:52:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 11D372ACB58
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 03:55:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730450AbgKJCwT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 21:52:19 -0500
-Received: from smtprelay0242.hostedemail.com ([216.40.44.242]:52914 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727311AbgKJCwS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 21:52:18 -0500
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay02.hostedemail.com (Postfix) with ESMTP id F008012CB;
-        Tue, 10 Nov 2020 02:52:13 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:973:982:988:989:1260:1261:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1540:1593:1594:1711:1730:1747:1777:1792:2194:2199:2393:2559:2562:2693:2828:3138:3139:3140:3141:3142:3352:3622:3865:3866:3867:3870:4321:4605:5007:6117:6119:6742:6743:7652:7875:7903:8660:10004:10400:10848:11232:11658:11783:11914:12043:12048:12297:12679:12740:12895:13019:13069:13148:13230:13311:13357:13439:13894:14181:14659:14721:21080:21451:21627:21939:30054:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: ink22_1714ef1272f1
-X-Filterd-Recvd-Size: 2439
-Received: from [192.168.0.160] (cpe-72-134-80-165.natsow.res.rr.com [72.134.80.165])
-        (Authenticated sender: joe@perches.com)
-        by omf07.hostedemail.com (Postfix) with ESMTPA;
-        Tue, 10 Nov 2020 02:52:09 +0000 (UTC)
-Message-ID: <3c39c363690d0b46069afddc3ad09213011e5cd4.camel@perches.com>
-Subject: Re: Subject: [RFC] clang tooling cleanups
-From:   Joe Perches <joe@perches.com>
-To:     trix@redhat.com, linux-kernel@vger.kernel.org,
-        clang-built-linux@googlegroups.com, cocci <cocci@systeme.lip6.fr>
-Cc:     linux-pm@vger.kernel.org, linux-crypto@vger.kernel.org,
-        qat-linux@intel.com, amd-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, linux-iio@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linux-mmc@vger.kernel.org,
-        netdev@vger.kernel.org, linux-mediatek@lists.infradead.org,
-        linux-amlogic@lists.infradead.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-rtc@vger.kernel.org, linux-scsi@vger.kernel.org,
-        linux-aspeed@lists.ozlabs.org, linux-samsung-soc@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, linux-nfs@vger.kernel.org,
-        tipc-discussion@lists.sourceforge.net, alsa-devel@alsa-project.org,
-        linux-rpi-kernel@lists.infradead.org, linux-tegra@vger.kernel.org
-Date:   Mon, 09 Nov 2020 18:52:08 -0800
-In-Reply-To: <20201027164255.1573301-1-trix@redhat.com>
-References: <20201027164255.1573301-1-trix@redhat.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.38.1-1 
+        id S1729874AbgKJCzu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 21:55:50 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42742 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727311AbgKJCzu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 21:55:50 -0500
+Received: from dragon (80.251.214.228.16clouds.com [80.251.214.228])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id DA40C206ED;
+        Tue, 10 Nov 2020 02:55:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604976949;
+        bh=4ZuOgP2PG3VtfYqTVc8LgcKtv1OdmBmrbgi2dZj79jI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=qek1Hxz34FDbIUzMp9wSQwHhGBs3V7/YKnsygSRqe/4/dwsDTIDam1PMrVpT5L1LR
+         PUR2uA83yHow7v/2dzLqiXhQIBLgmS64z6D0kZkHza0UsrIVSmVEiJVg0VnWf5m9W+
+         cQ5H+tRqDOHakQc8axVqTeVDTWmp6gNMEU5dfGa0=
+Date:   Tue, 10 Nov 2020 10:55:42 +0800
+From:   Shawn Guo <shawnguo@kernel.org>
+To:     Adam Ford <aford173@gmail.com>
+Cc:     linux-arm-kernel@lists.infradead.org, aford@beaconembedded.com,
+        krzk@kernel.org, Rob Herring <robh+dt@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Li Yang <leoyang.li@nxp.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH V4 1/3] dt-bindings: arm: fsl: Add
+ beacon,imx8mn-beacon-kit
+Message-ID: <20201110025542.GX31601@dragon>
+References: <20201107144811.1977108-1-aford173@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201107144811.1977108-1-aford173@gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2020-10-27 at 09:42 -0700, trix@redhat.com wrote:
-> This rfc will describe
-> An upcoming treewide cleanup.
-> How clang tooling was used to programatically do the clean up.
-> Solicit opinions on how to generally use clang tooling.
+On Sat, Nov 07, 2020 at 08:48:08AM -0600, Adam Ford wrote:
+> Add beacon,imx8mn-beacon-kit to list of compatible options.
 > 
-> The clang warning -Wextra-semi-stmt produces about 10k warnings.
-> Reviewing these, a subset of semicolon after a switch looks safe to
-> fix all the time.  An example problem
-> 
-> void foo(int a) {
->      switch(a) {
->      	       case 1:
-> 	       ...
->      }; <--- extra semicolon
-> }
-> 
-> Treewide, there are about 100 problems in 50 files for x86_64 allyesconfig.
-> These fixes will be the upcoming cleanup.
+> Signed-off-by: Adam Ford <aford173@gmail.com>
+> Reviewed-by: Krzysztof Kozlowski <krzk@kernel.org>
 
-coccinelle already does some of these.
-
-For instance: scripts/coccinelle/misc/semicolon.cocci
-
-Perhaps some tool coordination can be done here as
-coccinelle/checkpatch/clang/Lindent call all be used
-to do some facet or another of these cleanup issues.
-
-
-
+Applied all, thanks.
