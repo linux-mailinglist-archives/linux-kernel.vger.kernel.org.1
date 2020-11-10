@@ -2,365 +2,203 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C6352ACE84
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 05:24:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 90DAA2ACE93
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 05:38:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731474AbgKJEX5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 23:23:57 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48962 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729454AbgKJEX4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 23:23:56 -0500
-Received: from google.com (unknown [104.132.1.66])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6885E2068D;
-        Tue, 10 Nov 2020 04:23:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604982235;
-        bh=glio37ldLzoa1aZIW4luE98uGWUJz3opTtSALzng72Q=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=UyXBvaV+x/wyv5JrhJ2oEWVSHVgZtJaoI59l8kdZx4ghgBcqgHGREafO2WLBKT4G6
-         cDrLXKJgfMr38FwB9ooxkvjOxF4pNmz6n/Nr51rLfKfJ6eGFC9P/c2cVidIk7ZGY3l
-         RbAe0IKslWNKS+gUtI8CI5Rc1yIVGtdY8Bqb3jQU=
-Date:   Mon, 9 Nov 2020 20:23:53 -0800
-From:   Jaegeuk Kim <jaegeuk@kernel.org>
-To:     Chao Yu <yuchao0@huawei.com>
-Cc:     linux-kernel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net
-Subject: Re: [f2fs-dev] [PATCH] f2fs: compress: support chksum
-Message-ID: <20201110042353.GB1598246@google.com>
-References: <20201102122333.76667-1-yuchao0@huawei.com>
- <20201102163123.GD529594@google.com>
- <756e482c-b638-1c09-3868-ae45d33ed2c2@huawei.com>
- <6b5bce0e-c967-b9cf-3544-a8e65595059c@huawei.com>
- <20201106211247.GA1474936@google.com>
- <908682bb-486c-222f-bea7-43fc961ef1b0@huawei.com>
- <20201109170625.GB2129970@google.com>
- <3417aea5-ace8-74be-ec26-f491dddea676@huawei.com>
+        id S1731366AbgKJEip (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 23:38:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53838 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728403AbgKJEip (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 23:38:45 -0500
+X-Greylist: delayed 3672 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 09 Nov 2020 20:38:45 PST
+Received: from elastic.org (elastic.org [IPv6:2600:3c03::f03c:91ff:fe50:73f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A9E9C0613CF
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Nov 2020 20:38:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=elastic.org
+        ; s=default2; h=Content-Transfer-Encoding:Content-Type:MIME-Version:
+        Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:Content-ID:
+        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+        :Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=fXOYkOMo4y/NtxCAzrvn6mJQrwSi0IlwJJUDchbfqe4=; b=HbQbE0ZdVJtYbvJRtoGXq0QRyf
+        aFAWJc33pgamTICovlVhcZwXnETvXLdBIvmjijhx2LdMgVzeEadGLN016kI+M6x3lKlTi/W1acr0J
+        IX3gWkuRUMDk/tcCua8TJSOAhbzChjpfMOt9KLdZNQ2ukk4AkRfgz9BRcSYKlOyIKyFcg/FDrM2VC
+        YSxpEw7WkO6UKSSPNFdkB/spDFlcjDXemwruxJj9gbJOqTGY5W4144SyWIdBxIXGK9uGqjQA/LQJX
+        4TdXsmf5IuaNY9yVmOC1nuqzN0Djk/nuXx8Sm52WB/Tq6C1XuBi8pDfo08Ls2Bz+IvDllG8VK56rS
+        YfUEFTeQ==;
+Received: from vpn-home.elastic.org ([10.0.0.2] helo=elastic.org)
+        by elastic.org with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94)
+        (envelope-from <fche@elastic.org>)
+        id 1kcKTL-0000Wq-Fc; Tue, 10 Nov 2020 03:37:31 +0000
+Received: from fche by elastic.org with local (Exim 4.94)
+        (envelope-from <fche@elastic.org>)
+        id 1kcKTK-0000gM-QH; Mon, 09 Nov 2020 22:37:30 -0500
+Date:   Mon, 9 Nov 2020 22:37:30 -0500
+From:   "Frank Ch. Eigler" <fche@elastic.org>
+To:     systemtap@sourceware.org
+Cc:     linux-kernel@vger.kernel.org, lwn@lwn.net
+Subject: systemtap release 4.4
+Message-ID: <20201110033730.GB87630@elastic.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <3417aea5-ace8-74be-ec26-f491dddea676@huawei.com>
+Content-Transfer-Encoding: 8bit
+X-Sender-Verification: ""
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/10, Chao Yu wrote:
-> On 2020/11/10 1:06, Jaegeuk Kim wrote:
-> > On 11/09, Chao Yu wrote:
-> > > On 2020/11/7 5:12, Jaegeuk Kim wrote:
-> > > > On 11/03, Chao Yu wrote:
-> > > > > On 2020/11/3 10:02, Chao Yu wrote:
-> > > > > > On 2020/11/3 0:31, Jaegeuk Kim wrote:
-> > > > > > > On 11/02, Chao Yu wrote:
-> > > > > > > > This patch supports to store chksum value with compressed
-> > > > > > > > data, and verify the integrality of compressed data while
-> > > > > > > > reading the data.
-> > > > > > > > 
-> > > > > > > > The feature can be enabled through specifying mount option
-> > > > > > > > 'compress_chksum'.
-> > > > > > > > 
-> > > > > > > > Signed-off-by: Chao Yu <yuchao0@huawei.com>
-> > > > > > > > ---
-> > > > > > > >      Documentation/filesystems/f2fs.rst |  1 +
-> > > > > > > >      fs/f2fs/compress.c                 | 20 ++++++++++++++++++++
-> > > > > > > >      fs/f2fs/f2fs.h                     | 13 ++++++++++++-
-> > > > > > > >      fs/f2fs/inode.c                    |  3 +++
-> > > > > > > >      fs/f2fs/super.c                    |  9 +++++++++
-> > > > > > > >      include/linux/f2fs_fs.h            |  2 +-
-> > > > > > > >      6 files changed, 46 insertions(+), 2 deletions(-)
-> > > > > > > > 
-> > > > > > > > diff --git a/Documentation/filesystems/f2fs.rst b/Documentation/filesystems/f2fs.rst
-> > > > > > > > index b8ee761c9922..985ae7d35066 100644
-> > > > > > > > --- a/Documentation/filesystems/f2fs.rst
-> > > > > > > > +++ b/Documentation/filesystems/f2fs.rst
-> > > > > > > > @@ -260,6 +260,7 @@ compress_extension=%s	 Support adding specified extension, so that f2fs can enab
-> > > > > > > >      			 For other files, we can still enable compression via ioctl.
-> > > > > > > >      			 Note that, there is one reserved special extension '*', it
-> > > > > > > >      			 can be set to enable compression for all files.
-> > > > > > > > +compress_chksum		 Support verifying chksum of raw data in compressed cluster.
-> > > > > > > >      inlinecrypt		 When possible, encrypt/decrypt the contents of encrypted
-> > > > > > > >      			 files using the blk-crypto framework rather than
-> > > > > > > >      			 filesystem-layer encryption. This allows the use of
-> > > > > > > > diff --git a/fs/f2fs/compress.c b/fs/f2fs/compress.c
-> > > > > > > > index 14262e0f1cd6..a4e0d2c745b6 100644
-> > > > > > > > --- a/fs/f2fs/compress.c
-> > > > > > > > +++ b/fs/f2fs/compress.c
-> > > > > > > > @@ -602,6 +602,7 @@ static int f2fs_compress_pages(struct compress_ctx *cc)
-> > > > > > > >      				f2fs_cops[fi->i_compress_algorithm];
-> > > > > > > >      	unsigned int max_len, new_nr_cpages;
-> > > > > > > >      	struct page **new_cpages;
-> > > > > > > > +	u32 chksum = 0;
-> > > > > > > >      	int i, ret;
-> > > > > > > >      	trace_f2fs_compress_pages_start(cc->inode, cc->cluster_idx,
-> > > > > > > > @@ -655,6 +656,11 @@ static int f2fs_compress_pages(struct compress_ctx *cc)
-> > > > > > > >      	cc->cbuf->clen = cpu_to_le32(cc->clen);
-> > > > > > > > +	if (fi->i_compress_flag & 1 << COMPRESS_CHKSUM)
-> > > > > > > > +		chksum = f2fs_crc32(F2FS_I_SB(cc->inode),
-> > > > > > > > +					cc->cbuf->cdata, cc->clen);
-> > > > > > > > +	cc->cbuf->chksum = cpu_to_le32(chksum);
-> > > > > > > > +
-> > > > > > > >      	for (i = 0; i < COMPRESS_DATA_RESERVED_SIZE; i++)
-> > > > > > > >      		cc->cbuf->reserved[i] = cpu_to_le32(0);
-> > > > > > > > @@ -721,6 +727,7 @@ void f2fs_decompress_pages(struct bio *bio, struct page *page, bool verity)
-> > > > > > > >      			(struct decompress_io_ctx *)page_private(page);
-> > > > > > > >      	struct f2fs_sb_info *sbi = F2FS_I_SB(dic->inode);
-> > > > > > > >      	struct f2fs_inode_info *fi= F2FS_I(dic->inode);
-> > > > > > > > +	struct f2fs_sb_info *sbi = F2FS_I_SB(dic->inode);
-> > > > > > > >      	const struct f2fs_compress_ops *cops =
-> > > > > > > >      			f2fs_cops[fi->i_compress_algorithm];
-> > > > > > > >      	int ret;
-> > > > > > > > @@ -790,6 +797,19 @@ void f2fs_decompress_pages(struct bio *bio, struct page *page, bool verity)
-> > > > > > > >      	ret = cops->decompress_pages(dic);
-> > > > > > > > +	if (!ret && fi->i_compress_flag & 1 << COMPRESS_CHKSUM) {
-> > > > > > > > +		u32 provided = le32_to_cpu(dic->cbuf->chksum);
-> > > > > > > > +		u32 calculated = f2fs_crc32(sbi, dic->cbuf->cdata, dic->clen);
-> > > > > > > > +
-> > > > > > > > +		if (provided != calculated) {
-> > > > > > > > +			printk_ratelimited(
-> > > > > > > > +				"%sF2FS-fs (%s): checksum invalid, nid = %lu, %x vs %x",
-> > > > > > > > +				KERN_INFO, sbi->sb->s_id, dic->inode->i_ino,
-> > > > > > > > +				provided, calculated);
-> > > > > > > > +			ret = -EFSCORRUPTED;
-> > > > > > > 
-> > > > > > > Do we need to change fsck.f2fs to recover this?
-> > > > > 
-> > > > > However, we don't know which one is correct, compressed data or chksum value?
-> > > > > if compressed data was corrupted, repairing chksum value doesn't help.
-> > > > > 
-> > > > > Or how about adding chksum values for both raw data and compressed data.
-> > > > > 
-> > > > > #define COMPRESS_DATA_RESERVED_SIZE	3
-> > > > > struct compress_data {
-> > > > > 	__le32 clen;			/* compressed data size */
-> > > > > +	__le32 raw_chksum;		/* raw data chksum */
-> > > > > +	__le32 compress_chksum;		/* compressed data chksum */
-> > > > > 	__le32 reserved[COMPRESS_DATA_RESERVED_SIZE];	/* reserved */
-> > > > > 	u8 cdata[];			/* compressed data */
-> > > > > };
-> > > > > 
-> > > > > 	raw_chksum	compress_chksum
-> > > > > 	match		match			-> data is verified, pass
-> > > > > 	not match	match			-> repair raw_chksum
-> > > > > 	matcth		not match		-> repair compress_chksum
-> > > > 
-> > > > I think only compress_chksum would be enough. BTW, can we give WARN_ON and
-> > > > marking a FSCK flag without returning EFSCORRUPTED, since we don't really
-> > > > know who was corrupted. If data was corrupted, we should be able to see app
-> > > > corruption. In that case, we can check the kernel log. If checksum was simply
-> > > 
-> > > I don't think that app will always corrupt once data was corrupted, I doubt its
-> > > behavior could be slightly abnormal in some cases, e.g. it can just cause apps to
-> > > show wrong number in interaction interface.
-> > 
-> > I didn't say we can always get it. But, it's likely to happen with something
-> > like that.
-> > 
-> > > 
-> > > In this case, if we fix chksum in fsck, the wrong data will never be found due to
-> > > data's chksum matches data itself after repair.
-> > 
-> > At least, we should see that log as a hint.
-> > 
-> > > 
-> > > IMO, the chksum and data was a whole dataset, once they are mismatch, we can
-> > > not trust either of them, fsck should do nothing on them unless we store parity
-> > > bits or replica.
-> > 
-> > Yeah, the point is those are not written as a transaction. Three concerns to me:
-> 
-> Just to confirm:
-> 
-> > 1) agreed to see compressed data corruption by checksum
-> 
-> return EFSBADCRC always like we did as inode chksum feature.
+The SystemTap team announces release 4.4
 
-inode chksum is a bit different, since 4KB write is atomic. If chksum is
-corrupted, inode should be broken.
+Enhancements to this release include: significant performance and
+stability improvements to user-space probing, implicit thread-local
+storage variables can now be accessed on x86_64, ppc and s390, support
+for processing floating point values, significantly improved
+concurrency for scripts using global variables via shortened critical
+sections, new syntax for defining aliases with both a prologue and
+epilogue, new @probewrite predicate and syscall arguments are writable
+again
 
-> 
-> 2) I don't want to see the error messages all the time
-> 
-> Something like below?
-> 
-> if (provided != calculated) {
-> 	if (!is_inode_flag_set(,FI_DATA_CORRUPTED)) {
-> 		printk_ratelimited();
-> 		WARN_ON()
-> 		set_inode_flag(, FI_DATA_CORRUPTED);
-> 	}
-> 	return EFSBADCRC;
+= Where to get it
 
-No, what if only checksum was wrong? I mean giving WARN_ON() and setting
-FSCK_FLAG to stop endless WARN_ON().
+  https://sourceware.org/systemtap/ - our project page
+  https://sourceware.org/systemtap/ftp/releases/
+  https://koji.fedoraproject.org/koji/packageinfo?packageID=615
+  git tag release-4.4 (commit 988f439af39a)
 
-> }
-> 
-> 3) don't touch the data, even if it was corrupted, since there's no way to fix it.
-> 
-> It seems that we don't need to change fsck.f2fs finally...
-> 
-> Thanks,
-> 
-> > 
-> > > 
-> > > Thanks,
-> > > 
-> > > > corrupted, next fsck will fix the checksum. So, in general, I hope to keep
-> > > > the data as is and raise a flag by the checksum.
-> > > > 
-> > > > > 	not match	not match		-> corrupted, can not repair
-> > > > > 
-> > > > > Thanks,
-> > > > > 
-> > > > > > 
-> > > > > > Yes, prepared to update inode layout in fsck.f2fs w/ kernel side change. >
-> > > > > > Thanks,
-> > > > > > 
-> > > > > > > 
-> > > > > > > > +		}
-> > > > > > > > +	}
-> > > > > > > > +
-> > > > > > > >      out_vunmap_cbuf:
-> > > > > > > >      	vm_unmap_ram(dic->cbuf, dic->nr_cpages);
-> > > > > > > >      out_vunmap_rbuf:
-> > > > > > > > diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
-> > > > > > > > index 99bcf4b44a9c..2ae254ab7b7d 100644
-> > > > > > > > --- a/fs/f2fs/f2fs.h
-> > > > > > > > +++ b/fs/f2fs/f2fs.h
-> > > > > > > > @@ -147,7 +147,8 @@ struct f2fs_mount_info {
-> > > > > > > >      	/* For compression */
-> > > > > > > >      	unsigned char compress_algorithm;	/* algorithm type */
-> > > > > > > > -	unsigned compress_log_size;		/* cluster log size */
-> > > > > > > > +	unsigned char compress_log_size;	/* cluster log size */
-> > > > > > > > +	bool compress_chksum;			/* compressed data chksum */
-> > > > > > > >      	unsigned char compress_ext_cnt;		/* extension count */
-> > > > > > > >      	unsigned char extensions[COMPRESS_EXT_NUM][F2FS_EXTENSION_LEN];	/* extensions */
-> > > > > > > >      };
-> > > > > > > > @@ -731,6 +732,7 @@ struct f2fs_inode_info {
-> > > > > > > >      	atomic_t i_compr_blocks;		/* # of compressed blocks */
-> > > > > > > >      	unsigned char i_compress_algorithm;	/* algorithm type */
-> > > > > > > >      	unsigned char i_log_cluster_size;	/* log of cluster size */
-> > > > > > > > +	unsigned short i_compress_flag;		/* compress flag */
-> > > > > > > >      	unsigned int i_cluster_size;		/* cluster size */
-> > > > > > > >      };
-> > > > > > > > @@ -1270,9 +1272,15 @@ enum compress_algorithm_type {
-> > > > > > > >      	COMPRESS_MAX,
-> > > > > > > >      };
-> > > > > > > > +enum compress_flag {
-> > > > > > > > +	COMPRESS_CHKSUM,
-> > > > > > > > +	COMPRESS_MAX_FLAG,
-> > > > > > > > +};
-> > > > > > > > +
-> > > > > > > >      #define COMPRESS_DATA_RESERVED_SIZE		5
-> > > > > > > >      struct compress_data {
-> > > > > > > >      	__le32 clen;			/* compressed data size */
-> > > > > > > > +	__le32 chksum;			/* compressed data chksum */
-> > > > > > > >      	__le32 reserved[COMPRESS_DATA_RESERVED_SIZE];	/* reserved */
-> > > > > > > >      	u8 cdata[];			/* compressed data */
-> > > > > > > >      };
-> > > > > > > > @@ -3882,6 +3890,9 @@ static inline void set_compress_context(struct inode *inode)
-> > > > > > > >      			F2FS_OPTION(sbi).compress_algorithm;
-> > > > > > > >      	F2FS_I(inode)->i_log_cluster_size =
-> > > > > > > >      			F2FS_OPTION(sbi).compress_log_size;
-> > > > > > > > +	F2FS_I(inode)->i_compress_flag =
-> > > > > > > > +			F2FS_OPTION(sbi).compress_chksum ?
-> > > > > > > > +				1 << COMPRESS_CHKSUM : 0;
-> > > > > > > >      	F2FS_I(inode)->i_cluster_size =
-> > > > > > > >      			1 << F2FS_I(inode)->i_log_cluster_size;
-> > > > > > > >      	F2FS_I(inode)->i_flags |= F2FS_COMPR_FL;
-> > > > > > > > diff --git a/fs/f2fs/inode.c b/fs/f2fs/inode.c
-> > > > > > > > index 657db2fb6739..de8f7fc89efa 100644
-> > > > > > > > --- a/fs/f2fs/inode.c
-> > > > > > > > +++ b/fs/f2fs/inode.c
-> > > > > > > > @@ -456,6 +456,7 @@ static int do_read_inode(struct inode *inode)
-> > > > > > > >      					le64_to_cpu(ri->i_compr_blocks));
-> > > > > > > >      			fi->i_compress_algorithm = ri->i_compress_algorithm;
-> > > > > > > >      			fi->i_log_cluster_size = ri->i_log_cluster_size;
-> > > > > > > > +			fi->i_compress_flag = ri->i_compress_flag;
-> > > > > > > >      			fi->i_cluster_size = 1 << fi->i_log_cluster_size;
-> > > > > > > >      			set_inode_flag(inode, FI_COMPRESSED_FILE);
-> > > > > > > >      		}
-> > > > > > > > @@ -634,6 +635,8 @@ void f2fs_update_inode(struct inode *inode, struct page *node_page)
-> > > > > > > >      					&F2FS_I(inode)->i_compr_blocks));
-> > > > > > > >      			ri->i_compress_algorithm =
-> > > > > > > >      				F2FS_I(inode)->i_compress_algorithm;
-> > > > > > > > +			ri->i_compress_flag =
-> > > > > > > > +				cpu_to_le16(F2FS_I(inode)->i_compress_flag);
-> > > > > > > >      			ri->i_log_cluster_size =
-> > > > > > > >      				F2FS_I(inode)->i_log_cluster_size;
-> > > > > > > >      		}
-> > > > > > > > diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
-> > > > > > > > index 00eff2f51807..f8de4d83a5be 100644
-> > > > > > > > --- a/fs/f2fs/super.c
-> > > > > > > > +++ b/fs/f2fs/super.c
-> > > > > > > > @@ -146,6 +146,7 @@ enum {
-> > > > > > > >      	Opt_compress_algorithm,
-> > > > > > > >      	Opt_compress_log_size,
-> > > > > > > >      	Opt_compress_extension,
-> > > > > > > > +	Opt_compress_chksum,
-> > > > > > > >      	Opt_atgc,
-> > > > > > > >      	Opt_err,
-> > > > > > > >      };
-> > > > > > > > @@ -214,6 +215,7 @@ static match_table_t f2fs_tokens = {
-> > > > > > > >      	{Opt_compress_algorithm, "compress_algorithm=%s"},
-> > > > > > > >      	{Opt_compress_log_size, "compress_log_size=%u"},
-> > > > > > > >      	{Opt_compress_extension, "compress_extension=%s"},
-> > > > > > > > +	{Opt_compress_chksum, "compress_chksum"},
-> > > > > > > >      	{Opt_atgc, "atgc"},
-> > > > > > > >      	{Opt_err, NULL},
-> > > > > > > >      };
-> > > > > > > > @@ -934,10 +936,14 @@ static int parse_options(struct super_block *sb, char *options, bool is_remount)
-> > > > > > > >      			F2FS_OPTION(sbi).compress_ext_cnt++;
-> > > > > > > >      			kfree(name);
-> > > > > > > >      			break;
-> > > > > > > > +		case Opt_compress_chksum:
-> > > > > > > > +			F2FS_OPTION(sbi).compress_chksum = true;
-> > > > > > > > +			break;
-> > > > > > > >      #else
-> > > > > > > >      		case Opt_compress_algorithm:
-> > > > > > > >      		case Opt_compress_log_size:
-> > > > > > > >      		case Opt_compress_extension:
-> > > > > > > > +		case Opt_compress_chksum:
-> > > > > > > >      			f2fs_info(sbi, "compression options not supported");
-> > > > > > > >      			break;
-> > > > > > > >      #endif
-> > > > > > > > @@ -1523,6 +1529,9 @@ static inline void f2fs_show_compress_options(struct seq_file *seq,
-> > > > > > > >      		seq_printf(seq, ",compress_extension=%s",
-> > > > > > > >      			F2FS_OPTION(sbi).extensions[i]);
-> > > > > > > >      	}
-> > > > > > > > +
-> > > > > > > > +	if (F2FS_OPTION(sbi).compress_chksum)
-> > > > > > > > +		seq_puts(seq, ",compress_chksum");
-> > > > > > > >      }
-> > > > > > > >      static int f2fs_show_options(struct seq_file *seq, struct dentry *root)
-> > > > > > > > diff --git a/include/linux/f2fs_fs.h b/include/linux/f2fs_fs.h
-> > > > > > > > index a5dbb57a687f..7dc2a06cf19a 100644
-> > > > > > > > --- a/include/linux/f2fs_fs.h
-> > > > > > > > +++ b/include/linux/f2fs_fs.h
-> > > > > > > > @@ -273,7 +273,7 @@ struct f2fs_inode {
-> > > > > > > >      			__le64 i_compr_blocks;	/* # of compressed blocks */
-> > > > > > > >      			__u8 i_compress_algorithm;	/* compress algorithm */
-> > > > > > > >      			__u8 i_log_cluster_size;	/* log of cluster size */
-> > > > > > > > -			__le16 i_padding;		/* padding */
-> > > > > > > > +			__le16 i_compress_flag;		/* compress flag */
-> > > > > > > >      			__le32 i_extra_end[0];	/* for attribute size calculation */
-> > > > > > > >      		} __packed;
-> > > > > > > >      		__le32 i_addr[DEF_ADDRS_PER_INODE];	/* Pointers to data blocks */
-> > > > > > > > -- 
-> > > > > > > > 2.26.2
-> > > > > > > .
-> > > > > > > 
-> > > > > > 
-> > > > > > 
-> > > > > > _______________________________________________
-> > > > > > Linux-f2fs-devel mailing list
-> > > > > > Linux-f2fs-devel@lists.sourceforge.net
-> > > > > > https://lists.sourceforge.net/lists/listinfo/linux-f2fs-devel
-> > > > > > .
-> > > > > > 
-> > > > .
-> > > > 
-> > .
-> > 
+  There have been over 135 commits since the last release.
+  There have been 25+ bugs fixed / features added since the last release.
+
+= SystemTap frontend (stap) changes
+
+- New syntax for defining aliases with both a prologue and an epilogue:
+  'probe ALIAS = PROBE { <prologue> }, { <epilogue> }' 
+
+- New @probewrite predicate. @probewrite(var) returns 1 if var has been 
+  written to in the probe handler body and 0 otherwise. The check can
+  only be used with probes that have an epilogue or prologue.
+
+- Implicit thread local storage variables can now be accessed on
+  x86_64, ppc, and s390.
+
+= SystemTap backend changes
+
+- Various performance and stability improvements to user-space probing.
+  This includes replacing spinlocks with RCU locks in vma map and utrace
+  task's hash table lookups which reduces CPU time a lot when there are
+  a lot of target processes and vma tracker or task finder is enabled.
+  Also increased the default hash table sizes to reduce hash conflicts.
+  Special thanks to Yichun Zhang and Sultan Alsawaf for these contributions.
+
+- The locks required to protect concurrent access to global variables
+  has been optimized with a "pushdown" algorithm, so that they span 
+  the smallest possible critical region.  Formerly, and with 
+  --compatible=4.3, locks always spanned the entire probe handler.
+  Lock pushdown means much greater potential concurrency between
+  probes running on different CPUs.
+                                     
+- Systemtap now supports kernel-lockdown configurations that disable
+  debugfs, by instead using procfs to carry relayfs transport files.
+
+= SystemTap tapset changes
+
+- Systemtap now supports extracting 64-bit floating point and stored
+  in long type.  Also basic floating point arithmetic and comparison
+  functions are provided in a tapset.  More automated syntax coming
+  soon.  e.g.:
+    probe process.function("foo") {
+        fp = user_long(& $fp_variable)
+        println (fp_to_string (fp_add (string_to_fp("3.14"), fp)))
+    }
+
+- Make syscall arguments writable again in non-DWARF probes on kernels
+  that use syscall wrappers to pass arguments via pt_regs (currently
+  x86_64 4.17+ and aarch64 4.19+). For example, the following probe
+  adds rwx user permissions to any directory made by the process
+  specified by stap -c:
+  
+    probe nd_syscall.mkdir {
+      if (pid() == target())
+        mode |= 0700
+    }
+
+= SystemTap sample scripts
+
+- All 180+ examples can be found at https://sourceware.org/systemtap/examples/
+
+- New sample scripts:
+
+  floatingpoint.stp	Extract a floating point value from a process and
+			print the results of various simple floating point
+			operations
+
+- The following sample scripts have been enabled to run on the stapbpf backend:
+
+  general/sizeof.stp
+  memory/overcommit.stp
+
+= Examples of tested kernel versions 
+
+  2.6.32 (RHEL6 x86_64)
+  3.10.0 (RHEL7 x86_64)
+  4.15.0 (Ubuntu 18.04 x86_64)
+  4.18.0 (RHEL8 x86_64, aarch64, ppc64le, s390x)
+  5.3.8  (Fedora 30 i686)
+  5.8.16 (Fedora 32 x86_64)
+  5.8.18 (Fedora 33 x86_64)
+  5.9.0-rc7   (Fedora rawhide x86_64)
+  5.10.0-rc1  (Fedora rawhide x86_64)
+
+= Known issues with this release
+
+- There are known issues on kernel 5.10+ after adapting to set_fs()
+  removal, with some memory accesses that previously returned valid data
+  instead returning -EFAULT (see PR26811).
+
+- An sdt probe cannot parse a parameter that uses a segment register.
+  (PR13429)
+
+- The presence of a line such as
+      *CFLAGS += $(call cc-option, -fno-var-tracking-assignments)
+  in the linux kernel Makefile unnecessarily reduces debuginfo quality,
+  consider removing that line if you build kernels.
+
+= Contributors for this release
+
+Aaron Merey, Alice Zhang, Craig Ringer, Frank Ch. Eigler, Martin Cermak,
+Sagar Patel, Sergei Trofimovich*, Serhei Makarov, Stan Cox, Sultan Alsawaf*,
+Thorsten Glaser*, William Cohen, Yichun Zhang (agentzh)
+
+Special thanks to new contributors, marked with '*' above.
+Special thanks to Aaron Merey for drafting these notes.
+
+= Bugs fixed for this release <https://sourceware.org/PR#####>
+
+10013 Support ENABLED sdt probe macro
+12663 statement probes on inlined-function-call sites: search .debug_line PLUS .debug_info
+13838 floating point $var support
+14013 Access to user space thread local variables (errno)
+14765 jvm crashes when specifying --runtime=dyninst
+24954 stapdyn on ppc/aarch64 do not support full register set
+25549 Systemtap unable to find many probe points available in code compiled with LTO enable
+26015 make syscall arguments symbol-writeable again
+26123 Use of VMA tracker would leak kernel slab memory for modern kernels without CONFIG_UTRACE
+26131 Relay flushing results in garbled output data being read by staprun
+26142 Kernel module compilation fails for the latest Fedora Rawhide x64
+26181 tapset/linux/nfs_proc.stp needs update
+26249 uconversions format error: format ‘%lx’ expects argument of type ‘long unsigned int’, but argument 5 has type ‘void *’ 
+26296 delay script-global locking until required
+26307 kernel commit ed66f991bb19 breaks module initialization
+26379 stap -p4 systemtap.examples/network/nfsd-trace.stp fails
+26392 The optimizer would generate inefficient code which always evaluate dwarf ops eagerly
+26511 PR18115 + PR11353 + PR26296 = build error
+26567 systemtap-mode uses obsolete common lisp emulation
+26658 restore onboot capability via /usr/bin/kernel-install
+26660 probe kernel.statement(HEX).absolute incorrectly requires kernel debuginfo
+26665 secureboot stap-server matching breaks if non-stap MOK is already enrolled
+26673 The kernel backtrace dumper should not use stack array which may lead to compilation errors
+26697 NULL pointer dereference might happen in get_utrace_lock()
+26846 task_finder2: kernel panics by due to unreliable in_atomic() usage
