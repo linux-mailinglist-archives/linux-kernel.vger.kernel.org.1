@@ -2,64 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A48C72ACFC1
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 07:32:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 96BF42ACFC5
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 07:33:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731551AbgKJGch (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 01:32:37 -0500
-Received: from smtp2207-205.mail.aliyun.com ([121.197.207.205]:33371 "EHLO
-        smtp2207-205.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726462AbgKJGcg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 01:32:36 -0500
-X-Alimail-AntiSpam: AC=CONTINUE;BC=0.4007003|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_system_inform|0.0424186-0.00157801-0.956003;FP=10697710607874107063|1|1|17|0|-1|-1|-1;HT=ay29a033018047204;MF=frank@allwinnertech.com;NM=1;PH=DS;RN=10;RT=10;SR=0;TI=SMTPD_---.Iuod9cs_1604989949;
-Received: from allwinnertech.com(mailfrom:frank@allwinnertech.com fp:SMTPD_---.Iuod9cs_1604989949)
-          by smtp.aliyun-inc.com(10.147.41.187);
-          Tue, 10 Nov 2020 14:32:33 +0800
-From:   Frank Lee <frank@allwinnertech.com>
-To:     tiny.windzz@gmail.com
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Yangtao Li <frank@allwinnertech.com>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Maxime Ripard <mripard@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Colin Ian King <colin.king@canonical.com>
-Subject: [RESEND PATCH 08/19] phy: sun4i-usb: remove enable_pmu_unk1 from sun50i_h6_cfg
-Date:   Tue, 10 Nov 2020 14:32:21 +0800
-Message-Id: <dc8cbb7b3cd59902a6719f207d18a232903fac8a.1604988979.git.frank@allwinnertech.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <cover.1604988979.git.frank@allwinnertech.com>
-References: <cover.1604988979.git.frank@allwinnertech.com>
+        id S1730533AbgKJGdb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 01:33:31 -0500
+Received: from mx2.suse.de ([195.135.220.15]:53490 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726010AbgKJGda (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Nov 2020 01:33:30 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 6E1EEABCC;
+        Tue, 10 Nov 2020 06:33:29 +0000 (UTC)
+Date:   Tue, 10 Nov 2020 07:33:25 +0100
+From:   Oscar Salvador <osalvador@suse.de>
+To:     Muchun Song <songmuchun@bytedance.com>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Thomas Gleixner <tglx@linutronix.de>, mingo@redhat.com,
+        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
+        dave.hansen@linux.intel.com, luto@kernel.org,
+        Peter Zijlstra <peterz@infradead.org>, viro@zeniv.linux.org.uk,
+        Andrew Morton <akpm@linux-foundation.org>, paulmck@kernel.org,
+        mchehab+huawei@kernel.org, pawan.kumar.gupta@linux.intel.com,
+        Randy Dunlap <rdunlap@infradead.org>, oneukum@suse.com,
+        anshuman.khandual@arm.com, jroedel@suse.de,
+        Mina Almasry <almasrymina@google.com>,
+        David Rientjes <rientjes@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Xiongchun duan <duanxiongchun@bytedance.com>,
+        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>
+Subject: Re: [External] Re: [PATCH v3 05/21] mm/hugetlb: Introduce pgtable
+ allocation/freeing helpers
+Message-ID: <20201110063325.GA4286@localhost.localdomain>
+References: <CAMZfGtVm9buFPscDVn5F5nUE=Yq+y4NoL0ci74=hUyjaLAPQQg@mail.gmail.com>
+ <20201110054250.GA2906@localhost.localdomain>
+ <CAMZfGtWbGETq=3b5i0aentemXkZn2J2DNWu05mBs=4L8bJm1jg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAMZfGtWbGETq=3b5i0aentemXkZn2J2DNWu05mBs=4L8bJm1jg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yangtao Li <frank@allwinnertech.com>
+On Tue, Nov 10, 2020 at 02:08:46PM +0800, Muchun Song wrote:
+> The check should be added here.
+> 
+>            if (!pgtable)
+>                    return NULL;
+> 
+> Just like my previous v2 patch does. In this case, we can drop those
+> checks. What do you think?
 
-For the current code, enable_pmu_unk1 only works in non-a83t and non-h6
-types. So let's delete it from the sun50i_h6_cfg.
+It is too early for me, so bear with me.
 
-Signed-off-by: Yangtao Li <frank@allwinnertech.com>
----
- drivers/phy/allwinner/phy-sun4i-usb.c | 1 -
- 1 file changed, 1 deletion(-)
+page_huge_pte will only return NULL in case we did not get to preallocate
+any pgtable right?
 
-diff --git a/drivers/phy/allwinner/phy-sun4i-usb.c b/drivers/phy/allwinner/phy-sun4i-usb.c
-index 651d5e2a25ce..0f1888b55dbd 100644
---- a/drivers/phy/allwinner/phy-sun4i-usb.c
-+++ b/drivers/phy/allwinner/phy-sun4i-usb.c
-@@ -969,7 +969,6 @@ static const struct sun4i_usb_phy_cfg sun50i_h6_cfg = {
- 	.disc_thresh = 3,
- 	.phyctl_offset = REG_PHYCTL_A33,
- 	.dedicated_clocks = true,
--	.enable_pmu_unk1 = true,
- 	.phy0_dual_route = true,
- 	.missing_phys = BIT(1) | BIT(2),
- };
+What I was talimg about is that 
+> 
+> >         page_huge_pte(page) = list_first_entry_or_null(&pgtable->lru,
+> >                                                        struct page, lru);
+
+here we will get the either a pgtable entry or NULL in case we already consumed
+all entries from the list.
+If that is the case, we can return NULL and let the caller known that we
+are done.
+
+Am I missing anything?
+
+
 -- 
-2.28.0
-
+Oscar Salvador
+SUSE L3
