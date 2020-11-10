@@ -2,97 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 71A7D2ACAEB
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 03:12:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 215952ACAEC
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 03:15:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730134AbgKJCMa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 21:12:30 -0500
-Received: from out30-56.freemail.mail.aliyun.com ([115.124.30.56]:54457 "EHLO
-        out30-56.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727311AbgKJCMa (ORCPT
+        id S1730171AbgKJCPv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 21:15:51 -0500
+Received: from szxga04-in.huawei.com ([45.249.212.190]:7164 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725889AbgKJCPu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 21:12:30 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R151e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04426;MF=rocking@linux.alibaba.com;NM=1;PH=DS;RN=9;SR=0;TI=SMTPD_---0UEpi23S_1604974339;
-Received: from localhost(mailfrom:rocking@linux.alibaba.com fp:SMTPD_---0UEpi23S_1604974339)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Tue, 10 Nov 2020 10:12:28 +0800
-From:   Peng Wang <rocking@linux.alibaba.com>
-To:     mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, bristot@redhat.com
-Cc:     linux-kernel@vger.kernel.org
-Subject: [PATCH] sched/fair: Reorder throttle_cfs_rq() path
-Date:   Tue, 10 Nov 2020 10:11:59 +0800
-Message-Id: <f11dd2e3ab35cc538e2eb57bf0c99b6eaffce127.1604973978.git.rocking@linux.alibaba.com>
-X-Mailer: git-send-email 2.9.5
+        Mon, 9 Nov 2020 21:15:50 -0500
+Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4CVWfz4ypBz15KWt;
+        Tue, 10 Nov 2020 10:15:39 +0800 (CST)
+Received: from [10.136.114.67] (10.136.114.67) by smtp.huawei.com
+ (10.3.19.208) with Microsoft SMTP Server (TLS) id 14.3.487.0; Tue, 10 Nov
+ 2020 10:15:43 +0800
+Subject: Re: [f2fs-dev] [PATCH] f2fs: avoid race condition for shinker count
+To:     Jaegeuk Kim <jaegeuk@kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-f2fs-devel@lists.sourceforge.net>, <kernel-team@android.com>
+CC:     Light Hsieh <Light.Hsieh@mediatek.com>
+References: <20201109170012.2129411-1-jaegeuk@kernel.org>
+From:   Chao Yu <yuchao0@huawei.com>
+Message-ID: <f195a4f0-34af-1594-f443-be8ba3058707@huawei.com>
+Date:   Tue, 10 Nov 2020 10:15:43 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.9.1
+MIME-Version: 1.0
+In-Reply-To: <20201109170012.2129411-1-jaegeuk@kernel.org>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.136.114.67]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As commit 39f23ce07b93 ("sched/fair: Fix unthrottle_cfs_rq() for
-leaf_cfs_rq list") does in unthrottle_cfs_rq(), throttle_cfs_rq()
-can also use the same pattern as dequeue_task_fair().
+On 2020/11/10 1:00, Jaegeuk Kim wrote:
+> Light reported sometimes shinker gets nat_cnt < dirty_nat_cnt resulting in
 
-There is no functional changes.
+I didn't get the problem clearly, did you mean __count_nat_entries() will
+give the wrong shrink count due to race condition? should there be a lock
+while reading these two variables?
 
-Signed-off-by: Peng Wang <rocking@linux.alibaba.com>
----
- kernel/sched/fair.c | 34 +++++++++++++++++++++++-----------
- 1 file changed, 23 insertions(+), 11 deletions(-)
+> wrong do_shinker work. Basically the two counts should not happen like that.
+> 
+> So, I suspect this race condtion where:
+> - f2fs_try_to_free_nats            __flush_nat_entry_set
+>   nat_cnt=2, dirty_nat_cnt=2
+>                                     __clear_nat_cache_dirty
+>                                      spin_lock(nat_list_lock)
+>                                      list_move()
+>                                      spin_unlock(nat_list_lock)
+>   spin_lock(nat_list_lock)
+>   list_del()
+>   spin_unlock(nat_list_lock)
+>   nat_cnt=1, dirty_nat_cnt=2
+>                                     nat_cnt=1, dirty_nat_cnt=1
 
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 290f9e3..27a69af 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -4779,25 +4779,37 @@ static bool throttle_cfs_rq(struct cfs_rq *cfs_rq)
- 		struct cfs_rq *qcfs_rq = cfs_rq_of(se);
- 		/* throttled entity or throttle-on-deactivate */
- 		if (!se->on_rq)
--			break;
-+			goto done;
- 
--		if (dequeue) {
--			dequeue_entity(qcfs_rq, se, DEQUEUE_SLEEP);
--		} else {
--			update_load_avg(qcfs_rq, se, 0);
--			se_update_runnable(se);
--		}
-+		dequeue_entity(qcfs_rq, se, DEQUEUE_SLEEP);
- 
- 		qcfs_rq->h_nr_running -= task_delta;
- 		qcfs_rq->idle_h_nr_running -= idle_task_delta;
- 
--		if (qcfs_rq->load.weight)
--			dequeue = 0;
-+		if (qcfs_rq->load.weight) {
-+			/* Avoid re-evaluating load for this entity: */
-+			se = parent_entity(se);
-+			break;
-+		}
- 	}
- 
--	if (!se)
--		sub_nr_running(rq, task_delta);
-+	for_each_sched_entity(se) {
-+		struct cfs_rq *qcfs_rq = cfs_rq_of(se);
-+		/* throttled entity or throttle-on-deactivate */
-+		if (!se->on_rq)
-+			goto done;
-+
-+		update_load_avg(qcfs_rq, se, 0);
-+		se_update_runnable(se);
- 
-+		qcfs_rq->h_nr_running -= task_delta;
-+		qcfs_rq->idle_h_nr_running -= idle_task_delta;
-+	}
-+
-+	/* At this point se is NULL and we are at root level*/
-+	sub_nr_running(rq, task_delta);
-+
-+done:
- 	/*
- 	 * Note: distribution will already see us throttled via the
- 	 * throttled-list.  rq->lock protects completion.
--- 
-2.9.5
+nm_i->nat_cnt and nm_i->dirty_nat_cnt were protected by
+nm_i->nat_tree_lock, I didn't see why expanding nat_list_lock range
+will help... since there are still places nat_list_lock() didn't
+cover these two reference counts.
 
+Thanks,
+
+> 
+> Reported-by: Light Hsieh <Light.Hsieh@mediatek.com>
+> Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
+> ---
+>   fs/f2fs/node.c | 3 +--
+>   1 file changed, 1 insertion(+), 2 deletions(-)
+> 
+> diff --git a/fs/f2fs/node.c b/fs/f2fs/node.c
+> index 42394de6c7eb..e8ec65e40f06 100644
+> --- a/fs/f2fs/node.c
+> +++ b/fs/f2fs/node.c
+> @@ -269,11 +269,10 @@ static void __clear_nat_cache_dirty(struct f2fs_nm_info *nm_i,
+>   {
+>   	spin_lock(&nm_i->nat_list_lock);
+>   	list_move_tail(&ne->list, &nm_i->nat_entries);
+> -	spin_unlock(&nm_i->nat_list_lock);
+> -
+>   	set_nat_flag(ne, IS_DIRTY, false);
+>   	set->entry_cnt--;
+>   	nm_i->dirty_nat_cnt--;
+> +	spin_unlock(&nm_i->nat_list_lock);
+>   }
+>   
+>   static unsigned int __gang_lookup_nat_set(struct f2fs_nm_info *nm_i,
+> 
