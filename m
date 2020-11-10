@@ -2,105 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CFA2D2AE1EC
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 22:40:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E43992AE1F0
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 22:40:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731837AbgKJVg6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 16:36:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42906 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726467AbgKJVg6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 16:36:58 -0500
-Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A565C0613D3
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 13:36:58 -0800 (PST)
-Received: by mail-il1-x143.google.com with SMTP id y17so13648107ilg.4
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 13:36:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=7BM4+zzNWaE6TirCtLLYoQ9tppsE0QS4r3dvLHZsJ2Y=;
-        b=TIJINkyMPlkffs9/+dOX6vGvoGglpDShCvG8w3RFc3lqyqbJ3NE9/t6GzJZHx3L6AT
-         TUAbpyBqZ19xWo3q9M8uYllRuoQCEQyk1dwTRYUmQxltCH9oVKluHxyJpaGSulClCUfK
-         w3Pu9Z8gjBZnbAL5eLXZrnejOMK0oxzqKND9c=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=7BM4+zzNWaE6TirCtLLYoQ9tppsE0QS4r3dvLHZsJ2Y=;
-        b=BRu6NiqkqlaHGsTWFl5ZNONiZ2vslpiO1Zx5EMIQSwk9oOQe+Gq8c34h5eQ2GtSuIw
-         TPejmzMXHlqPs8jL991l5+SrWfmixeACe7/l6itJBBofqxYexUAK4mDgYnyZKPxkhi8S
-         PtrG9xsDYR3IQE+f04G3hQZ10VVRi28UML1kQNo8TUUVy3mXNxv4qDtBvC+Pr2fwN/8v
-         9aCM5OIGG2xEZOYrqsIEQXKqyVddworvVPdTvtukkqDAlgr8dbMTReQFFcSq3pkUNaxT
-         Eu521t1DA1qoG0PxdGDHZMtbV9nrE/vQpaw85ft2IR1fb500yQgRcVeTGx4yRJK0yTE3
-         eqJg==
-X-Gm-Message-State: AOAM532swZHQbjFGABQ5I79WAolnvpZoIBSq5V0R+mL9cq6sYZl3ZrG4
-        4oj+mwnJpxZMb+XE/KDTFtRG+g==
-X-Google-Smtp-Source: ABdhPJyqj8WvPEO1P5u7sS0mUX+V0R+C3ezUg05U2S8qWDrIq/NQa1vuEKLQOS+Srmek8japJaQj/A==
-X-Received: by 2002:a92:5204:: with SMTP id g4mr15477146ilb.91.1605044217564;
-        Tue, 10 Nov 2020 13:36:57 -0800 (PST)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id c80sm10181792ill.20.2020.11.10.13.36.56
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 10 Nov 2020 13:36:57 -0800 (PST)
-Subject: Re: [PATCH] selftests/seccomp: Update kernel config
-To:     =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@digikod.net>,
-        Kees Cook <keescook@chromium.org>,
-        Shuah Khan <shuah@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        Tycho Andersen <tycho@tycho.pizza>,
-        =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@linux.microsoft.com>,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <20201030121819.764395-1-mic@digikod.net>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <d4723ea9-d561-fc0c-c4c5-24c6fd454064@linuxfoundation.org>
-Date:   Tue, 10 Nov 2020 14:36:56 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.2
+        id S1731912AbgKJVjH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 16:39:07 -0500
+Received: from cmta16.telus.net ([209.171.16.89]:51068 "EHLO cmta16.telus.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731919AbgKJVhH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Nov 2020 16:37:07 -0500
+Received: from dougxps ([173.180.45.3])
+        by cmsmtp with SMTP
+        id cbK1kTpijRYCLcbK2kWwMz; Tue, 10 Nov 2020 14:37:04 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=telus.net; s=neo;
+        t=1605044224; bh=6RjS39imp4A53kCw78FIMCvUMdoDh1IXVgnkUAf3UMg=;
+        h=From:To:Cc:References:In-Reply-To:Subject:Date;
+        b=T1z9fXpqwau1NgKWRAOiyB6Jic4n6eTuEhjfajeNFNnsNIpSL6z8jdS8TWAffHbo0
+         X2nMsgeAOKfnyXU2Ewy49CcCiNWCY4qyA49zxNbGFfXRfR5w6nseFSYISaZXPzAzVr
+         LKblQPFZ3ikvoVhAjX9Qif3Nrh/ewGIUHEzm1ltFkpCqpXcmXrGcpWglDuY5IidxI8
+         eiS8YbNtnRe74M7cE9sR1A3/DyKOjygZuc7lUTSTgSIB0TYpkfn+3xPQIoBo3gb8M/
+         /tlCBuFRZ7EiGtAFpMd2DMcQQAcpOqpbAqiMZ0OQARDTpUa/lTBjphzbjlmZbzVm6g
+         4r7EgtmuEkfeQ==
+X-Telus-Authed: none
+X-Authority-Analysis: v=2.4 cv=ReVVt3hv c=1 sm=1 tr=0 ts=5fab0800
+ a=ZeVyObKPoMU90SgYCeSZ1g==:117 a=ZeVyObKPoMU90SgYCeSZ1g==:17
+ a=Pyq9K9CWowscuQLKlpiwfMBGOR0=:19 a=kj9zAlcOel0A:10 a=acWEPiQgkH2VWHeUEa0A:9
+ a=CjuIK1q_8ugA:10
+From:   "Doug Smythies" <dsmythies@telus.net>
+To:     "'Rafael J. Wysocki'" <rjw@rjwysocki.net>
+Cc:     "'Rafael J. Wysocki'" <rafael@kernel.org>,
+        "'Viresh Kumar'" <viresh.kumar@linaro.org>,
+        "'Srinivas Pandruvada'" <srinivas.pandruvada@linux.intel.com>,
+        "'Zhang Rui'" <rui.zhang@intel.com>,
+        "'LKML'" <linux-kernel@vger.kernel.org>,
+        "'Linux PM'" <linux-pm@vger.kernel.org>
+References: <13269660.K2JYd4sGFX@kreacher> <11312387.r5AVKgp8zO@kreacher>
+In-Reply-To: <11312387.r5AVKgp8zO@kreacher>
+Subject: RE: [PATCH v3 0/4] cpufreq: intel_pstate: Handle powersave governor correctly in the passive mode with HWP
+Date:   Tue, 10 Nov 2020 13:37:00 -0800
+Message-ID: <000d01d6b7a9$a1abdf80$e5039e80$@net>
 MIME-Version: 1.0
-In-Reply-To: <20201030121819.764395-1-mic@digikod.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain;
+        charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+X-Mailer: Microsoft Office Outlook 12.0
+Content-Language: en-ca
+Thread-Index: Ada3huWgkL5djedHQomhtWyn688yUAAH3TGw
+X-CMAE-Envelope: MS4xfLVijRtsDugUe7KJYTX4tlRXrQiAD2LZuGJtWUE4edhXcSDDU8MwGOxBF9r2xHeamcjZQEm5oq7cEedqNVNzzq9nKj3Q9BoVkia2PU1DiFKS51N9eWUz
+ dZnlpkCCMVUAisZO8mAIyf3VcZ7hUdXVy/RXJVzjkoK5yOrMLHaxA1PTnP8KaVLmKFDN2WMGlKsO5U69GbV+spCJYnfYRxqNti5+HreC3GsNfe3ut3icCEjy
+ MIDCC1G3xg7OBwETGleeAJYfNGss/A/v0r3G6RiIHqZWSeI5AffnVQDI2weh40yhl9wzLXxrrsmNJh79xZvSQ/P5fQ73lY5FxfggjFAArSpUrjrsNlz4uAa7
+ K9cDJMJWfZan+ac35aQWelmglUJyDYzAWvbIuIs1rP3IFn3vbEw=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/30/20 6:18 AM, Mickaël Salaün wrote:
-> seccomp_bpf.c uses unshare(CLONE_NEWPID), which requires CONFIG_PID_NS
-> to be set.
+On 2020.11.10 09:22 Rafael J. Wysocki wrote:
+> On Monday, November 9, 2020 5:49:49 PM CET Rafael J. Wysocki wrote:
+>>
+>> Even after the changes made very recently, the handling of the powersave
+>> governor is not exactly as expected when intel_pstate operates in the
+>> "passive" mode with HWP enabled.
+>>
+>> Namely, in that case HWP is not limited to the policy min frequency, but it
+>> can scale the frequency up to the policy max limit and it cannot be constrained
+>> currently, because there are no provisions for that in the framework.
+>>
+>> To address that, patches [1-3/4] add a new governor flag to indicate that this
+>> governor wants the target frequency to be set to the exact value passed to the
+>> driver, if possible, and change the powersave and performance governors to have
+>> that flag set.
+>>
+>> The last patch makes intel_pstate take that flag into account when programming
+>> the HWP Request MSR.
 > 
-> Cc: Kees Cook <keescook@chromium.org>
-> Cc: Shuah Khan <shuah@kernel.org>
-> Cc: Tycho Andersen <tycho@tycho.pizza>
-> Fixes: 6a21cc50f0c7 ("seccomp: add a return code to trap to userspace")
-> Signed-off-by: Mickaël Salaün <mic@linux.microsoft.com>
-> ---
->   tools/testing/selftests/seccomp/config | 1 +
->   1 file changed, 1 insertion(+)
-> 
-> diff --git a/tools/testing/selftests/seccomp/config b/tools/testing/selftests/seccomp/config
-> index 64c19d8eba79..ad431a5178fb 100644
-> --- a/tools/testing/selftests/seccomp/config
-> +++ b/tools/testing/selftests/seccomp/config
-> @@ -1,3 +1,4 @@
-> +CONFIG_PID_NS=y
->   CONFIG_SECCOMP=y
->   CONFIG_SECCOMP_FILTER=y
->   CONFIG_USER_NS=y
-> 
-> base-commit: 3650b228f83adda7e5ee532e2b90429c03f7b9ec
-> 
+> The v3 simply uses different names for the new governor flags.
 
-Your from and Signed-off-by don't match. Please send the patch
-from your igned-off-by address.
+Thank you.
 
-WARNING: From:/Signed-off-by: email address mismatch: 'From: "Mickaël 
-Salaün" <mic@digikod.net>' != 'Signed-off-by: Mickaël Salaün 
-<mic@linux.microsoft.com>'
+I tested v2, with positive results, as reported for v1. I do not have time to
+re-test v3.
 
-thanks,
--- Shuah
+My input is to also default this flag to be set for the userspace and ondemand governors.
+
+userspace: I tested with and without this flag set, and the flag is needed if
+the user expects the scaling_setspeed to be enforced.
+Disclaimer: I don't normally actually use the userspace governor.
+
+ondemand: from my tests, the ondemand response more closely mimics acpi-ondemand with the flag set.
+Power consumption has been better for the limited testing done.
+However, it is also a function of work/sleep frequency for periodic workflows and a function of
+INTEL_CPUFREQ_TRANSITION_DELAY_HWP. I am saying that my ability to support the suggestion to default
+to setting the flag is a little weak.
+
+... Doug
+
+
