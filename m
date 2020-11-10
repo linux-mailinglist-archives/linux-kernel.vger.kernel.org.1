@@ -2,94 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73DA72AD8A5
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 15:21:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 05EBA2AD8A9
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 15:23:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732362AbgKJOVg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 09:21:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59398 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726721AbgKJOVf (ORCPT
+        id S1730534AbgKJOXy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 09:23:54 -0500
+Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:14706 "EHLO
+        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730059AbgKJOXx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 09:21:35 -0500
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B331C0613CF;
-        Tue, 10 Nov 2020 06:21:35 -0800 (PST)
-Received: by mail-pl1-x643.google.com with SMTP id t18so6557471plo.0;
-        Tue, 10 Nov 2020 06:21:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=mHzmMaAp5/arsxlv9YourskeSIsJ2uw/Y2sk7NfH8wc=;
-        b=f+5Eq+JmQGA7kTV4M39Lj5CndnYx6Ldzw8FLdt4hoRdqc07ILJ7b9d6KqginHU/5J2
-         QcKWIlyjJCMIPxYnQnkxfnfby/xnyrBiVlKp35i82OmqAPcbHaCwPQJpAIPZ+F5P/64/
-         2oBGWjU4K3NG4unVRy4nnxPJvsTiyMAiG/KwjRm545Ly4mmkrPJKiNpIFDr90e6p+y9S
-         7DKf8AN2mmXU8+b2KR4FAqqiJ2NzK4CUhdGHg8C19RCI0TB51JPbC3hRCoWCZaPYjVBm
-         ZAK/lCAgAESDqjxdvkhW99kBjG5USSMF1xBTRA0zgyDbFJ8EXKwLv9BZRPIy2NB56VTr
-         pFEQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=mHzmMaAp5/arsxlv9YourskeSIsJ2uw/Y2sk7NfH8wc=;
-        b=QgweInex20bgwRo/fIzrWdjfpj6uaGVgR3tX+6iikrKA11wcQffX/1+4UF91bctx8Z
-         70CC5WhegMAJFKUtfnDm0qz2nuLVHJ7e0tnQmMlNy/9Xv8sfdmc4FTLjEJctPsq838cC
-         CDxA7H7XBE69xBzMlORRwDsxDbwLivy7/usUZ7TUsMhM0vIy3ghFLI2ql51gnHoxEIML
-         3tPgipft6ZoGYcNNRJfaVy//FVhsKbg1SdFv+Zmnh4EURI4J1gttE4/viS0Y1hrbnygC
-         3fU0T3yIl+t8QXzBvIUirXMU/hJT6hmG3ELfBwL91YVc+yNyApbXm5EEGH93P6yiZedr
-         3mYg==
-X-Gm-Message-State: AOAM5310fUcz5dAdZxWbkRZeHJCs0T53UQZubv3Ez9ZD15okY9mp+QW1
-        JlAc4vZO++7CqWL41MJsJJEvPw9zO4CDNqY+xyE=
-X-Google-Smtp-Source: ABdhPJxClzU0bPRCnh9Nrj9s4VAfadOYVsDnMtWLkBzAzpfP8vAEaQ4C5u8fgAs7W97ITY1LscClmA==
-X-Received: by 2002:a17:902:b410:b029:d6:b42c:7af9 with SMTP id x16-20020a170902b410b02900d6b42c7af9mr16629970plr.21.1605018094746;
-        Tue, 10 Nov 2020 06:21:34 -0800 (PST)
-Received: from centos-7.shared.localdomain ([39.182.2.118])
-        by smtp.gmail.com with ESMTPSA id c24sm13551218pgk.34.2020.11.10.06.21.28
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 10 Nov 2020 06:21:33 -0800 (PST)
-From:   Yang Mingzhe <cainiao666999@gmail.com>
-To:     tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, hpa@zytor.com,
-        corbet@lwn.net
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, Yang Mingzhe <cainiao666999@gmail.com>
-Subject: [PATCH] Documentation: x86: fix thread_info's position
-Date:   Tue, 10 Nov 2020 22:21:00 +0800
-Message-Id: <1605018060-11571-1-git-send-email-cainiao666999@gmail.com>
-X-Mailer: git-send-email 1.8.3.1
+        Tue, 10 Nov 2020 09:23:53 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5faaa27f0000>; Tue, 10 Nov 2020 06:23:59 -0800
+Received: from HQMAIL111.nvidia.com (172.20.187.18) by HQMAIL109.nvidia.com
+ (172.20.187.15) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 10 Nov
+ 2020 14:23:48 +0000
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (104.47.58.100)
+ by HQMAIL111.nvidia.com (172.20.187.18) with Microsoft SMTP Server (TLS) id
+ 15.0.1473.3 via Frontend Transport; Tue, 10 Nov 2020 14:23:48 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=KZJlzSCm0+TJUEqTqwbY3rnW+XQNRsIOu5f6lvTe7Oyf2HCSdN6h5lgV7QLpTWr3RByGYZr1Hf0Uo3+a+1JiHkuabjjT6YHbLU0IfKCpKwrGf43I73J0qXGFN6Q8i9ZW4IXiftxA+pxM+uFaCDASHBKpesYQF9AKmc5BFsor+6BH+M1u98ASQEovCEwjJ1pl5tZsAvxVLXsK5BN+SzNoukXYTfD83bqUQVVAPO8abbptlzhqc86fYxFML6Ix5Oj17Hnem3/qGgDbwifSEaoLLWfB8u8ZHBqw3tlQRyVb4oVm6/q8fccGflDqrRn1TcT2c445Ovfymm/LmmWSydPo+g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=5qEV/0XBn12mhJm5c4zAZGjhSfWLL9TPDZ1T+H9lCEY=;
+ b=kvtm1n8ktHXVBZHOUgk+GHj5j2e5AOs4OWS+gIpSiyPPIa7ucn/6QgFGf8/yVngbXWkAxzUw6x8idB9Al+0hD4+daDGw6wBmRqkpOqLsk2zAHQAvpTkt20vHd3LVpMb1WvkEFJ/n+7YvhbFWMr8w+tTxGx9w/c3WdSYEBr4HVD9qbmz2BAVXWq385QhgcgL1Vy69jIXZ/OyQEkvWUB6DLx5wANSRoCtRpkXXWD8xQvCKGH0BEOi4T8uQpKmaHbBkVS0HbjxsHm8Oz+4S8iNzFTAL3YoIlgpxp0jRcri8+HCp/I0udTQNJN9Vi2I6cBSNuZUTiMOzyJDWUXHmhCaRzg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
+ by DM5PR12MB1753.namprd12.prod.outlook.com (2603:10b6:3:10d::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3541.21; Tue, 10 Nov
+ 2020 14:23:41 +0000
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::cdbe:f274:ad65:9a78]) by DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::cdbe:f274:ad65:9a78%7]) with mapi id 15.20.3499.032; Tue, 10 Nov 2020
+ 14:23:41 +0000
+Date:   Tue, 10 Nov 2020 10:23:40 -0400
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     "Raj, Ashok" <ashok.raj@intel.com>
+CC:     Thomas Gleixner <tglx@linutronix.de>,
+        Dan Williams <dan.j.williams@intel.com>,
+        "Tian, Kevin" <kevin.tian@intel.com>,
+        "Jiang, Dave" <dave.jiang@intel.com>,
+        Bjorn Helgaas <helgaas@kernel.org>,
+        "vkoul@kernel.org" <vkoul@kernel.org>,
+        "Dey, Megha" <megha.dey@intel.com>,
+        "maz@kernel.org" <maz@kernel.org>,
+        "bhelgaas@google.com" <bhelgaas@google.com>,
+        "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
+        "Pan, Jacob jun" <jacob.jun.pan@intel.com>,
+        "Liu, Yi L" <yi.l.liu@intel.com>, "Lu, Baolu" <baolu.lu@intel.com>,
+        "Kumar, Sanjay K" <sanjay.k.kumar@intel.com>,
+        "Luck, Tony" <tony.luck@intel.com>,
+        "kwankhede@nvidia.com" <kwankhede@nvidia.com>,
+        "eric.auger@redhat.com" <eric.auger@redhat.com>,
+        "parav@mellanox.com" <parav@mellanox.com>,
+        "rafael@kernel.org" <rafael@kernel.org>,
+        "netanelg@mellanox.com" <netanelg@mellanox.com>,
+        "shahafs@mellanox.com" <shahafs@mellanox.com>,
+        "yan.y.zhao@linux.intel.com" <yan.y.zhao@linux.intel.com>,
+        "pbonzini@redhat.com" <pbonzini@redhat.com>,
+        "Ortiz, Samuel" <samuel.ortiz@intel.com>,
+        "Hossain, Mona" <mona.hossain@intel.com>,
+        "dmaengine@vger.kernel.org" <dmaengine@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>
+Subject: Re: [PATCH v4 06/17] PCI: add SIOV and IMS capability detection
+Message-ID: <20201110142340.GP2620339@nvidia.com>
+References: <CAPcyv4iYHA1acfo=+fTk+U_TrLbSWJjA6v4oeTXgVYDTrnCoGw@mail.gmail.com>
+ <20201107001207.GA2620339@nvidia.com>
+ <87pn4nk7nn.fsf@nanos.tec.linutronix.de>
+ <20201108235852.GC32074@araj-mobl1.jf.intel.com>
+ <874klykc7h.fsf@nanos.tec.linutronix.de>
+ <20201109173034.GG2620339@nvidia.com>
+ <87pn4mi23u.fsf@nanos.tec.linutronix.de> <20201110051412.GA20147@otc-nc-03>
+ <875z6dik1a.fsf@nanos.tec.linutronix.de> <20201110141323.GB22336@otc-nc-03>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20201110141323.GB22336@otc-nc-03>
+X-ClientProxiedBy: MN2PR08CA0027.namprd08.prod.outlook.com
+ (2603:10b6:208:239::32) To DM6PR12MB3834.namprd12.prod.outlook.com
+ (2603:10b6:5:14a::12)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (156.34.48.30) by MN2PR08CA0027.namprd08.prod.outlook.com (2603:10b6:208:239::32) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3541.21 via Frontend Transport; Tue, 10 Nov 2020 14:23:41 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1kcUYe-002Qs2-Ag; Tue, 10 Nov 2020 10:23:40 -0400
+X-LD-Processed: 43083d15-7273-40c1-b7db-39efd9ccc17a,ExtAddr
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1605018239; bh=5qEV/0XBn12mhJm5c4zAZGjhSfWLL9TPDZ1T+H9lCEY=;
+        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
+         From:To:CC:Subject:Message-ID:References:Content-Type:
+         Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
+         X-MS-Exchange-MessageSentRepresentingType:X-LD-Processed;
+        b=R/yLrdp123XabZQ3mY+IEk7tfYLVlJiMwKzFEdHLLWNMUS583A2Mu4v1XcDultkpF
+         STVJemWJ1/lAP/Wtyvf3ykuRl9hlZEO1qO+zgAP1HX7ezgZR++Z6+cPihPKcXbdrMe
+         D6Pef9hMDNVojWpRQjUypON5uuDIv7oTM7nPUrVrIpgf25PBMnRkp7rYDGNnkwL2Zw
+         vmTZyuIX4saWJ+ijxZ5MlP5LuRs0PBny60kLkxVSQshqW0RgGOZ7nG5LxV5Bw46TDu
+         4EYrEFeGP11owJMU4hE/GcB3RF1EApYIPb/V+CsfruKwB9UYb2PDtB9O/txFRifrtt
+         Ku852y/pikJdg==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The bottom of the stack is where the first item was added to the stack,
-usually at the zero offset. Actually, the thread_info structure at the
-end of the stack.
+On Tue, Nov 10, 2020 at 06:13:23AM -0800, Raj, Ashok wrote:
 
-Please see attached picture:
-https://github.com/Mutated1994/kernel-beginner/blob/master/kernel-stack.md
+> This isn't just for idxd, as I mentioned earlier, there are vendors other
+> than Intel already working on this. In all cases the need for guest direct
+> manipulation of interrupt store hasn't come up. From the discussion, it
+> seems like there are devices today or in future that will require direct
+> manipulation of interrupt store in the guest. This needs additional work
+> in both the device hardware providing the right plumbing and OS work to
+> comprehend those.
 
-See commits c65eacb ("sched/core: Allow putting thread_info into
-task_struct"), 15f4eae ("x86: Move thread_info into task_struct")
-and 883d50f ("scripts/gdb: fix get_thread_info").
+We'd want to see SRIOV's assigned to guests to be able to use
+IMS. This allows a SRIOV instance in a guest to spawn SIOV's which is
+useful.
 
-Signed-off-by: Yang Mingzhe <cainiao666999@gmail.com>
----
- Documentation/x86/kernel-stacks.rst | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+SIOV's assigned to guests could use IMS, but the use cases we see in
+the short term can be handled by using SRIOV instead.
 
-diff --git a/Documentation/x86/kernel-stacks.rst b/Documentation/x86/kernel-stacks.rst
-index 6b0bcf0..b88b9e12 100644
---- a/Documentation/x86/kernel-stacks.rst
-+++ b/Documentation/x86/kernel-stacks.rst
-@@ -15,7 +15,9 @@ Like all other architectures, x86_64 has a kernel stack for every
- active thread.  These thread stacks are THREAD_SIZE (2*PAGE_SIZE) big.
- These stacks contain useful data as long as a thread is alive or a
- zombie. While the thread is in user space the kernel stack is empty
--except for the thread_info structure at the bottom.
-+except for the thread_info structure at the end (since kernel 4.9, the
-+thread_info has been moved into task_struct, no longer locates at the
-+end of kernel stack).
- 
- In addition to the per thread stacks, there are specialized stacks
- associated with each CPU.  These stacks are only used while the kernel
--- 
-1.8.3.1
+I would expect in general for SIOV to use MSI-X emulation to expose
+interrupts - it would be really weird for a SIOV emulator to do
+something else and we should probably discourage that.
 
+Jason
