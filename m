@@ -2,99 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9633C2AE222
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 22:50:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D86D02AE22D
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 22:51:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731698AbgKJVun (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 16:50:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45048 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726688AbgKJVum (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 16:50:42 -0500
-Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56985C0613D1;
-        Tue, 10 Nov 2020 13:50:42 -0800 (PST)
-Received: by mail-lj1-x243.google.com with SMTP id v18so16546150ljc.3;
-        Tue, 10 Nov 2020 13:50:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=QumWPjldyhkIYYrKZybLDjf0NEcp9tE/cFj+ALYFR9A=;
-        b=JajzXzj+taW37LHKKk1rBUu2Z4ElUMNSSHS0K95OnI5UImwAIF74Qu+QTmiVzypvAS
-         gAQiDrdU4a2B6Z9A/XX/OOpJu3zamPLYGVpiOdVUDJw7ZsRpBauLkm/3QQp5PvJ2UM4A
-         LlfneuREhApeooZpB9lnnAX6U7j1XdRX88sCUzdxugTvIG1jP5PTHJPC3/8IUgW/bc/i
-         LWgLoXa7caMAbqITehUnmz/UH2tBulw/gQUU8Cd3shJtQ+zvYfoUG1N8jDZq2ZIllOe/
-         aCD81lT6Dj2NRU8sGRrZHHc26lsCxBQnWNgpAjWLB1z+6WE0AmdSq+A5dXHYbs0KDWUd
-         P/Cw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=QumWPjldyhkIYYrKZybLDjf0NEcp9tE/cFj+ALYFR9A=;
-        b=KtRbblHfKi1Ay5PEaAn1KZJFAZ3msWs02D6BzwC7cpXqRlnOnvOsDkoWebzQgSmqRn
-         D0/46SSJdZtmRc8TYtLDSTqBcdmtD/q0X84oyL6u/lKoxtv+nppRHfvWEano4m6qmEmi
-         rXQQvksoL6RzOfdbBrJHfSycz4On2/LJmHdR2XfZTqHuG++IzKFo82z+nNIQWQIJJ+gC
-         z54/p8NqoA0PQEl1qM9KDrr6k3p55B55fy5vJteEuIRfeWw9c+VaI4mYgd82bPDT/auF
-         QrpRkldWJXDRAM45Qad3pyoo7E/xRG8TWtB25rXPHZpkOFrL4IPkA2bBj06S5X6rNR1s
-         bjyg==
-X-Gm-Message-State: AOAM532fAQDNrGzkhk75e2G6DC7w9w8rVE8dImJHRYvrpFlR5L1Yu6V0
-        q6s7cZc8D4FtniHhyZAm0VzFtSlyNKo=
-X-Google-Smtp-Source: ABdhPJxca3fiSpZnzLwSSmf1STAmFU4WFUoLoBVs2ZCeEEkdDu9neVJtNB2ucZnGCMuP/Af+mNHRXw==
-X-Received: by 2002:a2e:9583:: with SMTP id w3mr9542353ljh.25.1605045040627;
-        Tue, 10 Nov 2020 13:50:40 -0800 (PST)
-Received: from [192.168.2.145] (109-252-193-159.dynamic.spd-mgts.ru. [109.252.193.159])
-        by smtp.googlemail.com with ESMTPSA id x9sm12074lfg.93.2020.11.10.13.50.39
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 10 Nov 2020 13:50:39 -0800 (PST)
-Subject: Re: [PATCH v1 11/30] drm/tegra: dc: Support OPP and SoC core voltage
- scaling
-To:     Thierry Reding <thierry.reding@gmail.com>
-Cc:     Jonathan Hunter <jonathanh@nvidia.com>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Peter Chen <Peter.Chen@nxp.com>,
-        Mark Brown <broonie@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Peter Geis <pgwipeout@gmail.com>,
-        Nicolas Chauvet <kwizart@gmail.com>,
-        linux-samsung-soc@vger.kernel.org, devel@driverdev.osuosl.org,
-        linux-usb@vger.kernel.org, linux-pwm@vger.kernel.org,
-        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-media@vger.kernel.org, linux-tegra@vger.kernel.org
-References: <20201104234427.26477-1-digetx@gmail.com>
- <20201104234427.26477-12-digetx@gmail.com> <20201110202945.GF2375022@ulmo>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <7b0052e1-0ea7-b28f-ae46-52e669a980ac@gmail.com>
-Date:   Wed, 11 Nov 2020 00:50:38 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <20201110202945.GF2375022@ulmo>
-Content-Type: text/plain; charset=utf-8
+        id S1731959AbgKJVvX convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 10 Nov 2020 16:51:23 -0500
+Received: from mga18.intel.com ([134.134.136.126]:41660 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731759AbgKJVvX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Nov 2020 16:51:23 -0500
+IronPort-SDR: zeE6BVXe3ONJZveYVeEVHCK+Ei2N3dpiPEKKQedFaijlVnqPD/ib5zYHF4FFf/U1K2pCDRcaQ0
+ eb+lDguyGz1g==
+X-IronPort-AV: E=McAfee;i="6000,8403,9801"; a="157834602"
+X-IronPort-AV: E=Sophos;i="5.77,467,1596524400"; 
+   d="scan'208";a="157834602"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Nov 2020 13:51:22 -0800
+IronPort-SDR: hgbN+aSzxJUobyUNKP5Ey77nbpJmKsz6Z24SAOBjXf3jZ9TvwqUnPs7qo1oXmiuMrhUSTQkJ18
+ sdNR9d9fhRGA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,467,1596524400"; 
+   d="scan'208";a="366009589"
+Received: from orsmsx602.amr.corp.intel.com ([10.22.229.15])
+  by orsmga007.jf.intel.com with ESMTP; 10 Nov 2020 13:51:22 -0800
+Received: from orsmsx611.amr.corp.intel.com (10.22.229.24) by
+ ORSMSX602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Tue, 10 Nov 2020 13:51:22 -0800
+Received: from orsmsx611.amr.corp.intel.com (10.22.229.24) by
+ ORSMSX611.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Tue, 10 Nov 2020 13:51:21 -0800
+Received: from orsmsx611.amr.corp.intel.com ([10.22.229.24]) by
+ ORSMSX611.amr.corp.intel.com ([10.22.229.24]) with mapi id 15.01.1713.004;
+ Tue, 10 Nov 2020 13:51:21 -0800
+From:   "Yu, Fenghua" <fenghua.yu@intel.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+CC:     Borislav Petkov <bp@alien8.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        "Luck, Tony" <tony.luck@intel.com>,
+        "Randy Dunlap" <rdunlap@infradead.org>,
+        "Li, Xiaoyao" <xiaoyao.li@intel.com>,
+        "Shankar, Ravi V" <ravi.v.shankar@intel.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>, x86 <x86@kernel.org>
+Subject: RE: [PATCH 2/4] x86/bus_lock: Handle warn and fatal in #DB for bus
+ lock
+Thread-Topic: [PATCH 2/4] x86/bus_lock: Handle warn and fatal in #DB for bus
+ lock
+Thread-Index: AQHWtYfF4TjZwnZuxk2663g267Awp6nAABEAgAHrMjA=
+Date:   Tue, 10 Nov 2020 21:51:21 +0000
+Message-ID: <52f0c74cb1714a78bc84e158d26e7c38@intel.com>
+References: <20201108042918.1011889-1-fenghua.yu@intel.com>
+ <20201108042918.1011889-3-fenghua.yu@intel.com>
+ <20201109082958.GZ2594@hirez.programming.kicks-ass.net>
+In-Reply-To: <20201109082958.GZ2594@hirez.programming.kicks-ass.net>
+Accept-Language: en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-product: dlpe-windows
+dlp-reaction: no-action
+dlp-version: 11.5.1.3
+x-originating-ip: [10.1.200.100]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
+MIME-Version: 1.0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-10.11.2020 23:29, Thierry Reding пишет:
->> +	/* legacy device-trees don't have OPP table */
->> +	if (!device_property_present(dc->dev, "operating-points-v2"))
->> +		return 0;
-> "Legacy" is a bit confusing here. For one, no device trees currently
-> have these tables and secondly, for newer SoCs we may never need them.
-> 
+Hi, Peter,
 
-I had the same thought and already improved such comments a day ago.
+> On Sun, Nov 08, 2020 at 04:29:16AM +0000, Fenghua Yu wrote:
+> > split_lock_detect=
+> > 		#AC for split lock		#DB for bus lock
+> >
+> > off		Do nothing			Do nothing
+> >
+> > warn		Kernel OOPs			Warn once per task and
+> > 		Warn once per task and		and continues to run.
+> > 		disable future checking 	When both features are
+> > 						supported, warn in #DB
+> >
+> > fatal		Kernel OOPs			Send SIGBUS to user
+> > 		Send SIGBUS to user
+> > 		When both features are
+> > 		supported, fatal in #AC.
+> 
+> > +void handle_bus_lock(struct pt_regs *regs) {
+> > +	if (!bld)
+> > +		return;
+> > +
+> > +	pr_warn_ratelimited("#DB: %s/%d took a bus_lock trap at address:
+> 0x%lx\n",
+> > +			    current->comm, current->pid, regs->ip); }
+> 
+> So the Changelog above, and the state_show() below, seem to suggest there
+> should be SIGBUS code in #DB, but I'm having trouble spotting it.
+
+You are right. The SIGBUS is missing here. Somehow my tests didn't capture the issue.
+
+I will add:
++		force_sig_fault(SIGBUS, BUS_ADRALN, NULL);
+to send SIGBUS in fatal case for #DB bus lock.
+
+Thank you very much for your review!
+
+-Fenghua
+
