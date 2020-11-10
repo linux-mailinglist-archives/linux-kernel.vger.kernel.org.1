@@ -2,238 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A0692AD363
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 11:19:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 461E52AD39A
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 11:23:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731643AbgKJKTG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 05:19:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49760 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731327AbgKJKTB (ORCPT
+        id S1727001AbgKJKX0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 05:23:26 -0500
+Received: from mo4-p02-ob.smtp.rzone.de ([85.215.255.84]:25161 "EHLO
+        mo4-p02-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726219AbgKJKX0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 05:19:01 -0500
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11FECC0613D4
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 02:19:00 -0800 (PST)
-Received: by mail-yb1-xb49.google.com with SMTP id u37so3238621ybi.15
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 02:19:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:in-reply-to:message-id:mime-version:references:subject
-         :from:to:cc;
-        bh=GN8duI31chQ1bxBnYxf4NQzB6UWYScGH+zOiMgby5XM=;
-        b=d+/+T+UA1iYmwJ7LyNmjzYEhudeZ2vW3UijONpAGdFjak/B9tUqlmuJfulxCF0aiRK
-         m0GRw+vaiY4D4HY1LrWvgeonUCXR2QhJ0jPfzxvNMgWJP0y2xBDx2PEOxkF/VUm/gniQ
-         gBAapHP+YLETblR5V4dMQPg9iwscaDIs/h8ipka4sMQJ8yb0Q/EJYW29cqsg5huBeM4U
-         dBu70RZE0OV+zEVFp/q4WRFMt+6mHXBY0TROmPL8dEbAKpAwOQT+BDI4mNWwMC3e0HLs
-         LUyQE4Vs3HZ2ScLLpjSMcL09KgRIRzxVir6DSg3IVD1I5wdzhf7wSTD8jUxqogt8Y59L
-         2vvQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=GN8duI31chQ1bxBnYxf4NQzB6UWYScGH+zOiMgby5XM=;
-        b=Eo0JDkC3IOLrzmSDRh7o8FenwnbrzU4dYUV6fqOXaQj7xtR63f/9PvgY7bAZ59awJa
-         xfRiLIuVFt3lSMIZJWD3y303K1jBLEDJIVXw+XMxBanevcmAka+zZjHlFEO2Zf0equyT
-         jI7tY0Kze9iNN+eK6ih1kiS3NJD+LJCAEQ87LIbaiHWLCavRpVY5jOOeT2MsefLdlbMP
-         ozFv0EBugBbo0VgFXpMm5ZJZNFulWKSo17+TtjxHNMgwVwOigi/rnzLVbXOioF/ukVE+
-         bFnYoh0CwlytR3S8OqfXzBaa7dTH1AnIZOxQrKczhVOqzi2J0Zr7dpvKtoN2HqinHMii
-         yynw==
-X-Gm-Message-State: AOAM533L+WoMg0E57IcwFK3JLCj2iQ792/gBqsX450AONL9e+ajzJ+L5
-        cbc/euynuOnSdqo2zSDkdJTMvBQMSe1fbHSRQw==
-X-Google-Smtp-Source: ABdhPJxUTO+249GbDIdp4AaS+LTJ5qbxJWru183uxxHnt6vvkwombHaHWM/oYGE8DUoc6Qv2z155+LESreHNNxk9iA==
-Sender: "howardchung via sendgmr" 
-        <howardchung@howardchung-p920.tpe.corp.google.com>
-X-Received: from howardchung-p920.tpe.corp.google.com ([2401:fa00:1:10:f693:9fff:fef4:4e45])
- (user=howardchung job=sendgmr) by 2002:a25:6601:: with SMTP id
- a1mr12491343ybc.458.1605003539266; Tue, 10 Nov 2020 02:18:59 -0800 (PST)
-Date:   Tue, 10 Nov 2020 18:17:55 +0800
-In-Reply-To: <20201110181740.v8.1.I55fa38874edc240d726c1de6e82b2ce57b64f5eb@changeid>
-Message-Id: <20201110181740.v8.6.I756c1fecc03bcc0cd94400b4992cd7e743f4b3e2@changeid>
-Mime-Version: 1.0
-References: <20201110181740.v8.1.I55fa38874edc240d726c1de6e82b2ce57b64f5eb@changeid>
-X-Mailer: git-send-email 2.29.2.222.g5d2a92d10f8-goog
-Subject: [PATCH v8 6/6] Bluetooth: Add toggle to switch off interleave scan
-From:   Howard Chung <howardchung@google.com>
-To:     linux-bluetooth@vger.kernel.org, marcel@holtmann.org,
-        luiz.dentz@gmail.com
-Cc:     mmandlik@chromium.org, mcchou@chromium.org, alainm@chromium.org,
-        Howard Chung <howardchung@google.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        Tue, 10 Nov 2020 05:23:26 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1605003804;
+        s=strato-dkim-0002; d=chronox.de;
+        h=References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
+        X-RZG-CLASS-ID:X-RZG-AUTH:From:Subject:Sender;
+        bh=zByrFVmJDlSOfKWmXEqO4kvjtQhPeNiZ8Q12Fayu59Q=;
+        b=rL6VescSpmv+jc4hOnS8bLCIeDuEMCvIt3oKv460DhJ8plalDPzMC3QP50aKxu1orA
+        /cO9wByXrCXHvK0i2wmheFVm2r91k5y1+wOX7JlIt/pwQ+yoll7WkmUK9WyHmNQigiSZ
+        pnXtrkgV3k0SytTipSFa6oQoZ4hTJtGjUXVcfhHLS9U2w2svW75Zek1p1lNoXB9F12Sr
+        +AhJXv7CaaOjA5Z4bIj13BX9zmp0P/Ut8DodZ0dPB2uzV/y8Pm3+3n0DMkflTxGhm4CV
+        agkLddF48zg/l1MUlvZo1H7V3e/dANQ2q/CrXi3dFTYXyh2hO7DVKHCW3oIxtWaqAKd0
+        FIow==
+X-RZG-AUTH: ":P2ERcEykfu11Y98lp/T7+hdri+uKZK8TKWEqNyiHySGSa9k9xmwdNnzGHXPaIvSfEhGW"
+X-RZG-CLASS-ID: mo00
+Received: from tauon.chronox.de
+        by smtp.strato.de (RZmta 47.3.3 DYNA|AUTH)
+        with ESMTPSA id Y03aecwAAAMFFdn
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+        (Client did not present a certificate);
+        Tue, 10 Nov 2020 11:22:15 +0100 (CET)
+From:   Stephan Mueller <smueller@chronox.de>
+To:     Torsten Duwe <duwe@lst.de>
+Cc:     Willy Tarreau <w@1wt.eu>, "Theodore Y. Ts'o" <tytso@mit.edu>,
+        linux-crypto@vger.kernel.org, Nicolai Stange <nstange@suse.de>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        "Alexander E. Patrakov" <patrakov@gmail.com>,
+        "Ahmed S. Darwish" <darwish.07@gmail.com>,
+        Matthew Garrett <mjg59@srcf.ucam.org>,
+        Vito Caputo <vcaputo@pengaru.com>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Jan Kara <jack@suse.cz>, Ray Strode <rstrode@redhat.com>,
+        William Jon McCann <mccann@jhu.edu>,
+        zhangjs <zachary@baishancloud.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Florian Weimer <fweimer@redhat.com>,
+        Lennart Poettering <mzxreary@0pointer.de>,
+        Peter Matthias <matthias.peter@bsi.bund.de>,
+        Marcelo Henrique Cerri <marcelo.cerri@canonical.com>,
+        Neil Horman <nhorman@redhat.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Julia Lawall <julia.lawall@inria.fr>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Andy Lavr <andy.lavr@gmail.com>,
+        Eric Biggers <ebiggers@kernel.org>,
+        "Jason A. Donenfeld" <Jason@zx2c4.com>,
+        Petr Tesarik <ptesarik@suse.cz>
+Subject: Re: [PATCH v36 00/13] /dev/random - a new approach
+Date:   Tue, 10 Nov 2020 11:22:14 +0100
+Message-ID: <34318060.ATrlOLLGV9@tauon.chronox.de>
+In-Reply-To: <3073852.aeNJFYEL58@positron.chronox.de>
+References: <20200921075857.4424-1-nstange@suse.de> <20201016172619.GA18410@lst.de> <3073852.aeNJFYEL58@positron.chronox.de>
+MIME-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="iso-8859-1"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch add a configurable parameter to switch off the interleave
-scan feature.
+Am Montag, 19. Oktober 2020, 21:28:50 CET schrieb Stephan M=FCller:
 
-Reviewed-by: Alain Michaud <alainm@chromium.org>
-Signed-off-by: Howard Chung <howardchung@google.com>
----
+Hi,
+>=20
+> * Performance
+>=20
+>  - Faster by up to 75% in the critical code path of the interrupt handler
+>    depending on data collection size configurable at kernel compile time -
+>    the default is about equal in performance with existing /dev/random as
+>    outlined in [2] section 4.2.
 
-(no changes since v6)
+By streamlining the implementation a bit, the LRNG interrupt handler now=20
+operates about 130% faster than the existing /dev/random (average of 97 cyc=
+les=20
+of the existing /dev/random code vs. an average of 42 cycles of the LRNG).=
+=20
+This fast operation is the default now due to patch [2]. The conceptual dat=
+a=20
+handling outlined in [3] section 2.2 remains unchanged.
 
-Changes in v6:
-- Set EnableAdvMonInterleaveScan to 1 byte long
+Even the addition of health tests applied to the noise source data would st=
+ill=20
+result in a faster interrupt handling code (average of 97 cycles of the=20
+existing /dev/random code vs on average 78 cycles of the LRNG).
 
-Changes in v4:
-- Set EnableAdvMonInterleaveScan default to Disable
-- Fix 80 chars limit in mgmt_config.c
+[1] https://github.com/smuellerDD/lrng/commit/
+10b74b242950371273e38df78060e258d9d3ea40
 
- include/net/bluetooth/hci_core.h |  1 +
- net/bluetooth/hci_core.c         |  1 +
- net/bluetooth/hci_request.c      |  3 ++-
- net/bluetooth/mgmt_config.c      | 41 +++++++++++++++++++++++++-------
- 4 files changed, 37 insertions(+), 9 deletions(-)
+[2] https://github.com/smuellerDD/lrng/commit/
+383b087653c21cf20984f5508befa57e96f685ba
 
-diff --git a/include/net/bluetooth/hci_core.h b/include/net/bluetooth/hci_core.h
-index cfede18709d8f..63c6d656564a1 100644
---- a/include/net/bluetooth/hci_core.h
-+++ b/include/net/bluetooth/hci_core.h
-@@ -363,6 +363,7 @@ struct hci_dev {
- 	__u32		clock;
- 	__u16		advmon_allowlist_duration;
- 	__u16		advmon_no_filter_duration;
-+	__u8		enable_advmon_interleave_scan;
- 
- 	__u16		devid_source;
- 	__u16		devid_vendor;
-diff --git a/net/bluetooth/hci_core.c b/net/bluetooth/hci_core.c
-index 65b7b74baba4c..b7cb7bfe250bd 100644
---- a/net/bluetooth/hci_core.c
-+++ b/net/bluetooth/hci_core.c
-@@ -3595,6 +3595,7 @@ struct hci_dev *hci_alloc_dev(void)
- 	/* The default values will be chosen in the future */
- 	hdev->advmon_allowlist_duration = 300;
- 	hdev->advmon_no_filter_duration = 500;
-+	hdev->enable_advmon_interleave_scan = 0x00;	/* Default to disable */
- 
- 	hdev->sniff_max_interval = 800;
- 	hdev->sniff_min_interval = 80;
-diff --git a/net/bluetooth/hci_request.c b/net/bluetooth/hci_request.c
-index 172ccbf4f0cd2..28520c4d2d229 100644
---- a/net/bluetooth/hci_request.c
-+++ b/net/bluetooth/hci_request.c
-@@ -1057,7 +1057,8 @@ void hci_req_add_le_passive_scan(struct hci_request *req)
- 				      &own_addr_type))
- 		return;
- 
--	if (__hci_update_interleaved_scan(hdev))
-+	if (hdev->enable_advmon_interleave_scan &&
-+	    __hci_update_interleaved_scan(hdev))
- 		return;
- 
- 	bt_dev_dbg(hdev, "interleave state %d", hdev->interleave_scan_state);
-diff --git a/net/bluetooth/mgmt_config.c b/net/bluetooth/mgmt_config.c
-index 282fbf82f3192..3cdcb66ccac38 100644
---- a/net/bluetooth/mgmt_config.c
-+++ b/net/bluetooth/mgmt_config.c
-@@ -17,12 +17,24 @@
- 		__le16 value; \
- 	} __packed _param_name_
- 
-+#define HDEV_PARAM_U8(_param_name_) \
-+	struct {\
-+		struct mgmt_tlv entry; \
-+		__u8 value; \
-+	} __packed _param_name_
-+
- #define TLV_SET_U16(_param_code_, _param_name_) \
- 	{ \
- 		{ cpu_to_le16(_param_code_), sizeof(__u16) }, \
- 		cpu_to_le16(hdev->_param_name_) \
- 	}
- 
-+#define TLV_SET_U8(_param_code_, _param_name_) \
-+	{ \
-+		{ cpu_to_le16(_param_code_), sizeof(__u8) }, \
-+		hdev->_param_name_ \
-+	}
-+
- #define TLV_SET_U16_JIFFIES_TO_MSECS(_param_code_, _param_name_) \
- 	{ \
- 		{ cpu_to_le16(_param_code_), sizeof(__u16) }, \
-@@ -65,6 +77,7 @@ int read_def_system_config(struct sock *sk, struct hci_dev *hdev, void *data,
- 		HDEV_PARAM_U16(def_le_autoconnect_timeout);
- 		HDEV_PARAM_U16(advmon_allowlist_duration);
- 		HDEV_PARAM_U16(advmon_no_filter_duration);
-+		HDEV_PARAM_U8(enable_advmon_interleave_scan);
- 	} __packed rp = {
- 		TLV_SET_U16(0x0000, def_page_scan_type),
- 		TLV_SET_U16(0x0001, def_page_scan_int),
-@@ -97,6 +110,7 @@ int read_def_system_config(struct sock *sk, struct hci_dev *hdev, void *data,
- 					     def_le_autoconnect_timeout),
- 		TLV_SET_U16(0x001d, advmon_allowlist_duration),
- 		TLV_SET_U16(0x001e, advmon_no_filter_duration),
-+		TLV_SET_U8(0x001f, enable_advmon_interleave_scan),
- 	};
- 
- 	bt_dev_dbg(hdev, "sock %p", sk);
-@@ -109,6 +123,7 @@ int read_def_system_config(struct sock *sk, struct hci_dev *hdev, void *data,
- 
- #define TO_TLV(x)		((struct mgmt_tlv *)(x))
- #define TLV_GET_LE16(tlv)	le16_to_cpu(*((__le16 *)(TO_TLV(tlv)->value)))
-+#define TLV_GET_LE8(tlv)	le16_to_cpu(*((__u8 *)(TO_TLV(tlv)->value)))
- 
- int set_def_system_config(struct sock *sk, struct hci_dev *hdev, void *data,
- 			  u16 data_len)
-@@ -125,6 +140,7 @@ int set_def_system_config(struct sock *sk, struct hci_dev *hdev, void *data,
- 	/* First pass to validate the tlv */
- 	while (buffer_left >= sizeof(struct mgmt_tlv)) {
- 		const u8 len = TO_TLV(buffer)->length;
-+		u8 exp_type_len;
- 		const u16 exp_len = sizeof(struct mgmt_tlv) +
- 				    len;
- 		const u16 type = le16_to_cpu(TO_TLV(buffer)->type);
-@@ -170,20 +186,26 @@ int set_def_system_config(struct sock *sk, struct hci_dev *hdev, void *data,
- 		case 0x001b:
- 		case 0x001d:
- 		case 0x001e:
--			if (len != sizeof(u16)) {
--				bt_dev_warn(hdev, "invalid length %d, exp %zu for type %d",
--					    len, sizeof(u16), type);
--
--				return mgmt_cmd_status(sk, hdev->id,
--					MGMT_OP_SET_DEF_SYSTEM_CONFIG,
--					MGMT_STATUS_INVALID_PARAMS);
--			}
-+			exp_type_len = sizeof(u16);
-+			break;
-+		case 0x001f:
-+			exp_type_len = sizeof(u8);
- 			break;
- 		default:
-+			exp_type_len = 0;
- 			bt_dev_warn(hdev, "unsupported parameter %u", type);
- 			break;
- 		}
- 
-+		if (exp_type_len && len != exp_type_len) {
-+			bt_dev_warn(hdev, "invalid length %d, exp %zu for type %d",
-+				    len, exp_type_len, type);
-+
-+			return mgmt_cmd_status(sk, hdev->id,
-+				MGMT_OP_SET_DEF_SYSTEM_CONFIG,
-+				MGMT_STATUS_INVALID_PARAMS);
-+		}
-+
- 		buffer_left -= exp_len;
- 		buffer += exp_len;
- 	}
-@@ -289,6 +311,9 @@ int set_def_system_config(struct sock *sk, struct hci_dev *hdev, void *data,
- 		case 0x0001e:
- 			hdev->advmon_no_filter_duration = TLV_GET_LE16(buffer);
- 			break;
-+		case 0x0001f:
-+			hdev->enable_advmon_interleave_scan = TLV_GET_LE8(buffer);
-+			break;
- 		default:
- 			bt_dev_warn(hdev, "unsupported parameter %u", type);
- 			break;
--- 
-2.29.2.222.g5d2a92d10f8-goog
+[3] https://chronox.de/lrng/doc/lrng.pdf
+
+Ciao
+Stephan
+
 
