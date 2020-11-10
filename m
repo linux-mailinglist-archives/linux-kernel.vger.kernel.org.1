@@ -2,170 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C98E2ADD33
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 18:42:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F5C12ADD39
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 18:43:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730687AbgKJRm5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 12:42:57 -0500
-Received: from frasgout.his.huawei.com ([185.176.79.56]:2080 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726428AbgKJRm5 (ORCPT
+        id S1731120AbgKJRnR convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 10 Nov 2020 12:43:17 -0500
+Received: from mail-ot1-f67.google.com ([209.85.210.67]:43826 "EHLO
+        mail-ot1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729361AbgKJRnQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 12:42:57 -0500
-Received: from fraeml741-chm.china.huawei.com (unknown [172.18.147.201])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4CVwCC0WCXz67KVN;
-        Wed, 11 Nov 2020 01:41:27 +0800 (CST)
-Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
- fraeml741-chm.china.huawei.com (10.206.15.222) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1913.5; Tue, 10 Nov 2020 18:42:49 +0100
-Received: from [10.47.88.91] (10.47.88.91) by lhreml724-chm.china.huawei.com
- (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Tue, 10 Nov
- 2020 17:42:48 +0000
-Subject: Re: [PATCH v8 17/18] scsi: megaraid_sas: Added support for shared
- host tagset for cpuhotplug
-From:   John Garry <john.garry@huawei.com>
-To:     Qian Cai <cai@redhat.com>, Sumit Saxena <sumit.saxena@broadcom.com>
-CC:     Kashyap Desai <kashyap.desai@broadcom.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        <don.brace@microsemi.com>, Ming Lei <ming.lei@redhat.com>,
-        Bart Van Assche <bvanassche@acm.org>,
-        <dgilbert@interlog.com>, <paolo.valente@linaro.org>,
-        Hannes Reinecke <hare@suse.de>, Christoph Hellwig <hch@lst.de>,
-        <linux-block@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        "Linux SCSI List" <linux-scsi@vger.kernel.org>,
-        <esc.storagedev@microsemi.com>,
-        "PDL,MEGARAIDLINUX" <megaraidlinux.pdl@broadcom.com>,
-        <chenxiang66@hisilicon.com>, <luojiaxing@huawei.com>,
-        Hannes Reinecke <hare@suse.com>
-References: <1597850436-116171-1-git-send-email-john.garry@huawei.com>
- <1597850436-116171-18-git-send-email-john.garry@huawei.com>
- <fe3dff7dae4494e5a88caffbb4d877bbf472dceb.camel@redhat.com>
- <385d5408-6ba2-6bb6-52d3-b59c9aa9c5e5@huawei.com>
- <193a0440eed447209c48bda042f0e4db102355e7.camel@redhat.com>
- <519e0d58-e73e-22ce-0ddb-1be71487ba6d@huawei.com>
- <d8fd51b11d5d54e6ec7e4e9a4f7dcc83f1215cd3.camel@redhat.com>
- <d4f86cccccc3bffccc4eda39500ce1e1fee2109a.camel@redhat.com>
- <7624d3fe1613f19af5c3a77f4ae8fe55@mail.gmail.com>
- <d1040c06-74ea-7016-d259-195fa52196a9@huawei.com>
- <CAL2rwxoAAGQDud1djb3_LNvBw95YoYUGhe22FwE=hYhy7XOLSw@mail.gmail.com>
- <aaf849d38ca3cdd45151ffae9b6a99fe6f6ea280.camel@redhat.com>
- <0c75b881-3096-12cf-07cc-1119ca6a453e@huawei.com>
- <06a1a6bde51a66461d7b3135349641856315401d.camel@redhat.com>
- <db92d37c-28fd-4f81-7b59-8f19e9178543@huawei.com>
-Message-ID: <8043d516-c041-c94b-a7d9-61bdbfef0d7e@huawei.com>
-Date:   Tue, 10 Nov 2020 17:42:40 +0000
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.2
+        Tue, 10 Nov 2020 12:43:16 -0500
+Received: by mail-ot1-f67.google.com with SMTP id y22so13346553oti.10;
+        Tue, 10 Nov 2020 09:43:16 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=qnu8/T5bkd8G/CkLl66BCso+ilsoRzzCeunrKwYoy0s=;
+        b=OxxgmXKy3ao6hU2bPI2pP6F0MJWba3rvc9x31DgSVKcd3uol5QmgUFpGEvqmhcxw5A
+         EzvgPuLt7edrSu8qCabcANW7Yi2NEMyofRFHy+8vBvSQ9fQ4FWoqhczT+pgoeVOcMlDs
+         IdDlQicNlVIHXhtZHVn7iGW8VNPFw9vtv6sBKu+dWppAWYLIb5onT2UXBqjx6LdiX+G4
+         o3N70odwh3h02FQCSyLu0Bw4jKTcazuReo7G/BAPA8Us19uvtJOtimPZ5J8K6O/dLdG0
+         btbKnUDg4GGoV67Dt2/h58122vMx024UFIwpi1zLNLyYrP71lbD5ZXczk6ZzrYQgbCLZ
+         aLCQ==
+X-Gm-Message-State: AOAM530e1JtUM2Syo702RJiejnrtVFQtGMtDAVfVcLrBcZkj/p9Hmwka
+        s3boH7LGjJNiv7vyqM4djXrvFNDuMkXpaQmCimA=
+X-Google-Smtp-Source: ABdhPJzhrI7Y5KT3PFprtayKCcFjz+Fd5GTbsEZgmHb3dAz64E2uWYqzLe57EfTHryh28FKL9QkOfxa9w2O0JDT9sCk=
+X-Received: by 2002:a9d:222f:: with SMTP id o44mr15180360ota.321.1605030195675;
+ Tue, 10 Nov 2020 09:43:15 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <db92d37c-28fd-4f81-7b59-8f19e9178543@huawei.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.47.88.91]
-X-ClientProxiedBy: lhreml727-chm.china.huawei.com (10.201.108.78) To
- lhreml724-chm.china.huawei.com (10.201.108.75)
-X-CFilter-Loop: Reflected
+References: <20201109032115.10610-1-rdunlap@infradead.org>
+In-Reply-To: <20201109032115.10610-1-rdunlap@infradead.org>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Tue, 10 Nov 2020 18:43:04 +0100
+Message-ID: <CAJZ5v0jhJcL6uJw_Cm02SeUMff_s1L-mKzX3haAyejcCkKihNg@mail.gmail.com>
+Subject: Re: [PATCH -next v2] clk: pm_clock: provide stubs for pm_clk_runtime_suspend/_resume
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <len.brown@intel.com>, Pavel Machek <pavel@ucw.cz>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        Taniya Das <tdas@codeaurora.org>,
+        Linux-Next Mailing List <linux-next@vger.kernel.org>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 09/11/2020 14:05, John Garry wrote:
-> On 09/11/2020 13:39, Qian Cai wrote:
->>> I suppose I could try do this myself also, but an authentic version
->>> would be nicer.
->> The closest one I have here is:
->> https://cailca.coding.net/public/linux/mm/git/files/master/arm64.config
->>
->> but it only selects the Thunder X2 platform and needs to manually select
->> CONFIG_MEGARAID_SAS=m to start with, but none of arm64 systems here have
->> megaraid_sas.
-> 
-> Thanks, I'm confident I can fix it up to get it going on my Huawei arm64 
-> D06CS.
-> 
-> So that board has a megaraid sas card. In addition, it also has hisi_sas 
-> HW, which is another storage controller which we enabled this same 
-> feature which is causing the problem.
-> 
-> I'll report back when I can.
+On Mon, Nov 9, 2020 at 4:21 AM Randy Dunlap <rdunlap@infradead.org> wrote:
+>
+> Add stubs for pm_clk_runtime_suspend() and pm_clk_runtime_resume()
+> to fix build errors when CONFIG_PM and CONFIG_PM_CLK are not enabled.
+>
+> Fixes these build errors:
+>
+> ../drivers/clk/qcom/camcc-sc7180.c: In function ‘cam_cc_sc7180_probe’:
+> ../drivers/clk/qcom/camcc-sc7180.c:1672:8: error: implicit declaration of function ‘pm_clk_runtime_resume’; did you mean ‘pm_runtime_resume’? [-Werror=implicit-function-declaration]
+>   ret = pm_clk_runtime_resume(&pdev->dev);
+>         ^~~~~~~~~~~~~~~~~~~~~
+> ../drivers/clk/qcom/camcc-sc7180.c:1681:3: error: implicit declaration of function ‘pm_clk_runtime_suspend’; did you mean ‘pm_runtime_suspend’? [-Werror=implicit-function-declaration]
+>    pm_clk_runtime_suspend(&pdev->dev);
+>    ^~~~~~~~~~~~~~~~~~~~~~
+>
+> Fixes: 15d09e830bbc ("clk: qcom: camcc: Add camera clock controller driver for SC7180")
+> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+> Cc: "Rafael J. Wysocki" <rjw@rjwysocki.net>
+> Cc: Len Brown <len.brown@intel.com>
+> Cc: Pavel Machek <pavel@ucw.cz>
+> Cc: linux-pm@vger.kernel.org
+> Cc: Michael Turquette <mturquette@baylibre.com>
+> Cc: Stephen Boyd <sboyd@kernel.org>
+> Cc: linux-clk@vger.kernel.org
+> Cc: Taniya Das <tdas@codeaurora.org>
+> Cc: linux-next@vger.kernel.org
+> Cc: Nathan Chancellor <natechancellor@gmail.com>
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> ---
+> v2: move the function stubs to be inside the #else (for !CONFIG_PM)
+>     as suggested by Nathan to fix another build error
+>
+>  include/linux/pm_clock.h |    8 ++++++++
+>  1 file changed, 8 insertions(+)
+>
+> --- linux-next-20201106.orig/include/linux/pm_clock.h
+> +++ linux-next-20201106/include/linux/pm_clock.h
+> @@ -27,6 +27,14 @@ extern int pm_clk_runtime_resume(struct
+>         .runtime_resume = pm_clk_runtime_resume,
+>  #else
+>  #define USE_PM_CLK_RUNTIME_OPS
+> +static inline int pm_clk_runtime_suspend(struct device *dev)
+> +{
+> +       return 0;
+> +}
+> +static inline int pm_clk_runtime_resume(struct device *dev)
+> +{
+> +       return 0;
+> +}
+>  #endif
+>
+>  #ifdef CONFIG_PM_CLK
 
-So I had to hack that arm64 config a bit to get it booting:
-https://github.com/hisilicon/kernel-dev/commits/private-topic-sas-5.10-megaraid-hang
-
-Boot is ok on my board without the megaraid sas card, but includes 
-hisi_sas HW (which enables the equivalent option which is exposing the 
-problem).
-
-But the board with the megaraid sas boots very slowly, specifically 
-around the megaraid sas probe:
-
-: ttyS0 at MMIO 0x3f00002f8 (irq = 17, base_baud = 115200) is a 16550A
-[   50.023726][    T1] printk: console [ttyS0] enabled
-[   50.412597][    T1] megasas: 07.714.04.00-rc1
-[   50.436614][    T5] megaraid_sas 0000:08:00.0: FW now in Ready state
-[   50.450079][    T5] megaraid_sas 0000:08:00.0: 63 bit DMA mask and 63 
-bit consistent mask
-[   50.467811][    T5] megaraid_sas 0000:08:00.0: firmware supports msix 
-        : (128)
-[   50.845995][    T5] megaraid_sas 0000:08:00.0: requested/available 
-msix 128/128
-[   50.861476][    T5] megaraid_sas 0000:08:00.0: current msix/online 
-cpus      : (128/128)
-[   50.877616][    T5] megaraid_sas 0000:08:00.0: RDPQ mode     : (enabled)
-[   50.891018][    T5] megaraid_sas 0000:08:00.0: Current firmware 
-supports maximum commands: 4077       LDIO threshold: 0
-[   51.262942][    T5] megaraid_sas 0000:08:00.0: Performance mode 
-:Latency (latency index = 1)
-[   51.280749][    T5] megaraid_sas 0000:08:00.0: FW supports sync cache 
-        : Yes
-[   51.295451][    T5] megaraid_sas 0000:08:00.0: 
-megasas_disable_intr_fusion is called outbound_intr_mask:0x40000009
-[   51.387474][    T5] megaraid_sas 0000:08:00.0: FW provided 
-supportMaxExtLDs: 1       max_lds: 64
-[   51.404931][    T5] megaraid_sas 0000:08:00.0: controller type 
-: MR(2048MB)
-[   51.419616][    T5] megaraid_sas 0000:08:00.0: Online Controller 
-Reset(OCR)  : Enabled
-[   51.436132][    T5] megaraid_sas 0000:08:00.0: Secure JBOD support 
-: Yes
-[   51.450265][    T5] megaraid_sas 0000:08:00.0: NVMe passthru support 
-: Yes
-[   51.464757][    T5] megaraid_sas 0000:08:00.0: FW provided TM 
-TaskAbort/Reset timeout        : 6 secs/60 secs
-[   51.484379][    T5] megaraid_sas 0000:08:00.0: JBOD sequence map 
-support     : Yes
-[   51.499607][    T5] megaraid_sas 0000:08:00.0: PCI Lane Margining 
-support    : No
-[   51.547610][    T5] megaraid_sas 0000:08:00.0: NVME page size 
-: (4096)
-[   51.608635][    T5] megaraid_sas 0000:08:00.0: 
-megasas_enable_intr_fusion is called outbound_intr_mask:0x40000000
-[   51.630285][    T5] megaraid_sas 0000:08:00.0: INIT adapter done
-[   51.649854][    T5] megaraid_sas 0000:08:00.0: pci id 
-: (0x1000)/(0x0016)/(0x19e5)/(0xd215)
-[   51.667873][    T5] megaraid_sas 0000:08:00.0: unevenspan support    : no
-[   51.681646][    T5] megaraid_sas 0000:08:00.0: firmware crash dump   : no
-[   51.695596][    T5] megaraid_sas 0000:08:00.0: JBOD sequence map 
-: enabled
-[   51.711521][    T5] megaraid_sas 0000:08:00.0: Max firmware commands: 
-4076 shared with nr_hw_queues = 127
-[   51.733056][    T5] scsi host0: Avago SAS based MegaRAID driver
-[   65.304363][    T5] scsi 0:0:0:0: Direct-Access     ATA      SAMSUNG 
-MZ7KH1T9 404Q PQ: 0 ANSI: 6
-[   65.392401][    T5] scsi 0:0:1:0: Direct-Access     ATA      SAMSUNG 
-MZ7KH1T9 404Q PQ: 0 ANSI: 6
-[   79.508307][    T5] scsi 0:0:65:0: Enclosure         HUAWEI 
-Expander 12Gx16  131  PQ: 0 ANSI: 6
-[  183.965109][   C14] random: fast init done
-
-Notice the 14 and 104 second delays.
-
-But does boot fully to get to the console. I'll wait for further issues, 
-which you guys seem to experience after a while.
-
-Thanks,
-John
+Applied to the PM tree as 5.10-rc material, thanks!
