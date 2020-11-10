@@ -2,194 +2,198 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 176372ADD36
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 18:43:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C49452ADD31
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 18:42:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731016AbgKJRnI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 12:43:08 -0500
-Received: from mail-mw2nam12on2050.outbound.protection.outlook.com ([40.107.244.50]:44000
-        "EHLO NAM12-MW2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1730299AbgKJRnH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 12:43:07 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=bADIW7hc0gSwhV49f9fG0HXwL+xBt2Mm++BJ09q7Vi80BT+eWXw35iNcov2Na4Hax82InWEuOokL2JXOMeoGFkrHbv61mHY6buH5a2QFt+NW02fGM1xW74Ik3PFc/PidP+fDEqOLA72IanTCKnj51GfJjDnvb3TPXjpOiAXm4COMPlyrfWQQMBaXJ31lKNt7fh25q5TNw6PNnZ/33jX3aCNLeLxFC62wtlto4oUCPGDcWgfTqNWAJtZ2kejdPFnHGT9Gw1pHp1vXPjhXQheVQm5fqxRulUpB/Rr3NiGEQIv1idiSft9ykAT6Ic8PXNwNWX7YdIvt0bvIxyuIOrFFCA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=+6Wg/8Fvpw5tqql03mUCPBW8TxgNTGoMVnFKQnNqpuY=;
- b=fT+FRPJefy7pSjrOD8IKu4WbOO5xRIXUHy7NbTRvBpZVH4kRhs0df36AGuNW/jJs4bq/85pvWnWMf/Wy1juJoOIEB0317xaKf0eRqW88MEbQtK+s3TwNTlqL+sf3mGtke82qERD2hox2dF2xBV44urd81uWx/lA8fj77A32xO38TWVb8VQDpWBsu5WH1pdKZF7cpxl/nRUxf6z2dB8mo6x2sUEpFV7ybCUmtSxV3QvIpkctrWvri8svQweZzAteaX1a5QPCVC8QAFicIlCSP3jughIY130Pt0UrYC2rJRJZS3mQiBMiWAKl/7TGfZSOTSloP+v5NGusKF45keCnF3Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 149.199.62.198) smtp.rcpttodomain=intel.com smtp.mailfrom=xilinx.com;
- dmarc=bestguesspass action=none header.from=xilinx.com; dkim=none (message
- not signed); arc=none
+        id S1730999AbgKJRmZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 12:42:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34402 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726400AbgKJRmX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Nov 2020 12:42:23 -0500
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95A64C0613CF
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 09:42:23 -0800 (PST)
+Received: by mail-pf1-x443.google.com with SMTP id q5so9107256pfk.6
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 09:42:23 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=+6Wg/8Fvpw5tqql03mUCPBW8TxgNTGoMVnFKQnNqpuY=;
- b=SHi6JQHf5PlfeNDLXvQpoB/J7xiR3h5ur4gZ0/kgdSbE15V1aOMpRZCmoyFLUB6RKwZ7qPJGaieCDGnfqErI69Qz4Mvm6oJvwNDTpPwJOjT+3j83jKxqFjIbvt84KkOS41hl8vNr68eL+cx/6H1d9aGgtpI9AuTy0OfLkPb5kP0=
-Received: from SA9PR13CA0209.namprd13.prod.outlook.com (2603:10b6:806:26::34)
- by DM6PR02MB6058.namprd02.prod.outlook.com (2603:10b6:5:1d6::29) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3541.22; Tue, 10 Nov
- 2020 17:43:05 +0000
-Received: from SN1NAM02FT031.eop-nam02.prod.protection.outlook.com
- (2603:10b6:806:26:cafe::45) by SA9PR13CA0209.outlook.office365.com
- (2603:10b6:806:26::34) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3564.21 via Frontend
- Transport; Tue, 10 Nov 2020 17:43:05 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 149.199.62.198)
- smtp.mailfrom=xilinx.com; intel.com; dkim=none (message not signed)
- header.d=none;intel.com; dmarc=bestguesspass action=none
- header.from=xilinx.com;
-Received-SPF: Pass (protection.outlook.com: domain of xilinx.com designates
- 149.199.62.198 as permitted sender) receiver=protection.outlook.com;
- client-ip=149.199.62.198; helo=xsj-pvapexch01.xlnx.xilinx.com;
-Received: from xsj-pvapexch01.xlnx.xilinx.com (149.199.62.198) by
- SN1NAM02FT031.mail.protection.outlook.com (10.152.72.116) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.3541.17 via Frontend Transport; Tue, 10 Nov 2020 17:43:02 +0000
-Received: from xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) by
- xsj-pvapexch01.xlnx.xilinx.com (172.19.86.40) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1913.5; Tue, 10 Nov 2020 09:42:08 -0800
-Received: from smtp.xilinx.com (172.19.127.96) by
- xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) with Microsoft SMTP Server id
- 15.1.1913.5 via Frontend Transport; Tue, 10 Nov 2020 09:42:08 -0800
-Envelope-to: git@xilinx.com,
- michal.simek@xilinx.com,
- adrian.hunter@intel.com,
- ulf.hansson@linaro.org,
- linux-arm-kernel@lists.infradead.org,
- linux-kernel@vger.kernel.org,
- linux-mmc@vger.kernel.org
-Received: from [172.23.64.106] (port=50955 helo=xhdvnc125.xilinx.com)
-        by smtp.xilinx.com with esmtp (Exim 4.90)
-        (envelope-from <manish.narani@xilinx.com>)
-        id 1kcXeh-0005fk-Ch; Tue, 10 Nov 2020 09:42:07 -0800
-Received: by xhdvnc125.xilinx.com (Postfix, from userid 16987)
-        id 87D4A121188; Tue, 10 Nov 2020 23:12:06 +0530 (IST)
-From:   Manish Narani <manish.narani@xilinx.com>
-To:     <michal.simek@xilinx.com>, <adrian.hunter@intel.com>,
-        <ulf.hansson@linaro.org>
-CC:     <linux-arm-kernel@lists.infradead.org>,
-        <linux-mmc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <git@xilinx.com>, Manish Narani <manish.narani@xilinx.com>,
-        Sai Krishna Potthuri <lakshmi.sai.krishna.potthuri@xilinx.com>
-Subject: [PATCH] mmc: sdhci-of-arasan: Allow configuring zero tap values
-Date:   Tue, 10 Nov 2020 23:12:02 +0530
-Message-ID: <1605030122-52196-1-git-send-email-manish.narani@xilinx.com>
-X-Mailer: git-send-email 2.1.1
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=xF9/tbw9kOE7P0FAYcDx8ImhRA3RlHzojbtxK6nR5qQ=;
+        b=Zh3PDYrAEV+1C0mncbeDX7SS6s2UY5CwYoWMUaL9sFqBdYheZMRcsKmg7v8y1s1cuv
+         Yf4iIwxQ3jrQRk6U/dT5TAi21MtJDvfzx1yAMA2IgRuHcweM/YSocmMpwwvfIdxZmO9U
+         5ABXvV0Vc+llYKajBKq6i2CXQW6ZoLhMNHGgwMLfooBOZp9ANdx8tP2bq4HtUR/2t3Xk
+         MvgX1KAPi+RsI/l4zPszmlypBRHLbApduuI+ejk2dRinY1qtXNOVW2Ju0efaLfSNZ9Qi
+         QrkLAjG1Cyf1VUttFW55xVYGA9Lee2nrr+onFSPr0+NvE4k6w/Saq3KBarsiOHxRGog2
+         vC3g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=xF9/tbw9kOE7P0FAYcDx8ImhRA3RlHzojbtxK6nR5qQ=;
+        b=DN47F7V18SDJ6OHeOP9GJ511v27/kyiuIeEPbDQHFq1zjrpzTGYlWHAJxm9Thy4op7
+         jsV/wybtPfq/Ma5MnVgudyl9QPcw5Tf0xdcoBLklXMMUWa45k0miAWNwwm8n996+hh9v
+         SRj4muaY2RKtIAs8TymcyQMEduTT8DKzqedn+h/veVpUo2i7CuFvW/s8f6p3TJxrHJm3
+         2wbzT7umphKOVnQZJ3cNg73KJdGcIJrge4pAq/xr0gGuZRV+dTp0uN4Fo9y4oOR8bFnx
+         roASUB8RiLYvl2j0JGHthaXrW0oplcw6Taift6j8Dk5sOqMI1WlBO5OZt4vZo0Gw8mgN
+         rxPw==
+X-Gm-Message-State: AOAM530tC6bWL/+qA7Pgu6OMkKJYVEUzv9/Qv9uT6sH/vGlm1mhiDLuZ
+        opfE/Yj+Ox4r3g6GpebIbKCSQ9/UhOTtU1KiCqguXw==
+X-Google-Smtp-Source: ABdhPJwdsVEbgjYrXxYPWkuixoMrNxfDNyPLQWf0eIjCwDeKr7Z/gL08l2Zaq4MZJZ9hkhkACznYuIg//9t9ZV0QZ+c=
+X-Received: by 2002:a63:1f53:: with SMTP id q19mr18270115pgm.286.1605030142984;
+ Tue, 10 Nov 2020 09:42:22 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-EOPAttributedMessage: 0
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: d679d331-d71a-4087-a57a-08d885a0128a
-X-MS-TrafficTypeDiagnostic: DM6PR02MB6058:
-X-Microsoft-Antispam-PRVS: <DM6PR02MB6058C74F438DB8A685BF50C2C1E90@DM6PR02MB6058.namprd02.prod.outlook.com>
-X-Auto-Response-Suppress: DR, RN, NRN, OOF, AutoReply
-X-MS-Oob-TLC-OOBClassifiers: OLM:6430;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: vpZV4Cd2DteRTuUEonzQqSrQ+xfsqrdHl57FEMFy5DpnDEXOqQ8/QM4SUZPqHgl5jmCAqkEL8P7uJsB4rMFdfz1csoCM01WQVEfebYJnMqWFwLaNcPiRruCC1cxSPYWwO0BPhzrBab6f9nAjCkgM9PmmGcOLVUbwiyuyoFUt1ddQP6q9eusca7VuE4TUtDXMhXsoq4ZtqCaUTURWUtKnI5dzB955GZo9XakBAtg308hYjFc+CMzxaRJ39nNmTlUHrPF2tj1k97mkgCkxTos/7QgkwxPab8pHKPem1Gyg01cTc9TARruYNc5QZgNqyaqr/i9L10zHdYg3kgbdDoZMR4+KSUuO6PsA9Sq8gg/wmSIQnjwkYGYLxvFrJPxi3imBMaCMGNB9RwpHurQi5HZDsEBHqdnpbt7/iBytv2zyAh8=
-X-Forefront-Antispam-Report: CIP:149.199.62.198;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:xsj-pvapexch01.xlnx.xilinx.com;PTR:unknown-62-198.xilinx.com;CAT:NONE;SFS:(4636009)(39860400002)(136003)(376002)(346002)(396003)(46966005)(44832011)(426003)(4326008)(2906002)(8676002)(42186006)(82310400003)(5660300002)(36906005)(36756003)(186003)(54906003)(316002)(83380400001)(110136005)(6266002)(107886003)(82740400003)(47076004)(26005)(6666004)(356005)(2616005)(70206006)(336012)(7636003)(8936002)(70586007)(478600001)(102446001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: xilinx.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Nov 2020 17:43:02.3204
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: d679d331-d71a-4087-a57a-08d885a0128a
-X-MS-Exchange-CrossTenant-Id: 657af505-d5df-48d0-8300-c31994686c5c
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=657af505-d5df-48d0-8300-c31994686c5c;Ip=[149.199.62.198];Helo=[xsj-pvapexch01.xlnx.xilinx.com]
-X-MS-Exchange-CrossTenant-AuthSource: SN1NAM02FT031.eop-nam02.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR02MB6058
+References: <20201029183526.2131776-1-aleksandrnogikh@gmail.com> <20201029183526.2131776-2-aleksandrnogikh@gmail.com>
+In-Reply-To: <20201029183526.2131776-2-aleksandrnogikh@gmail.com>
+From:   Andrey Konovalov <andreyknvl@google.com>
+Date:   Tue, 10 Nov 2020 18:42:12 +0100
+Message-ID: <CAAeHK+yqS09Aodtvo-G=V26-HUXQV7KayG_oHgSNivexsm2BUQ@mail.gmail.com>
+Subject: Re: [PATCH v3 1/2] security: add fault injection capability
+To:     Aleksandr Nogikh <aleksandrnogikh@gmail.com>
+Cc:     James Morris <jmorris@namei.org>, serge@hallyn.com,
+        akinobu.mita@gmail.com, Dmitry Vyukov <dvyukov@google.com>,
+        Marco Elver <elver@google.com>,
+        Alexander Potapenko <glider@google.com>,
+        Kees Cook <keescook@google.com>, casey@schaufler-ca.com,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-security-module@vger.kernel.org,
+        Aleksandr Nogikh <nogikh@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Allow configuring the Output and Input tap values with zero to avoid
-failures in some cases (one of them is SD boot mode) where the output
-and input tap values may be already set to non-zero.
+On Thu, Oct 29, 2020 at 7:35 PM Aleksandr Nogikh
+<aleksandrnogikh@gmail.com> wrote:
+>
+> From: Aleksandr Nogikh <nogikh@google.com>
+>
+> Add a fault injection capability to call_int_hook macro. This will
+> facilitate testing of fault tolerance of the code that invokes
+> security hooks as well as the fault tolerance of the LSM
+> implementations themselves.
+>
+> Add a KConfig option (CONFIG_FAIL_LSM_HOOKS) that controls whether the
+> capability is enabled. In order to enable configuration from the user
+> space, add the standard debugfs entries for fault injection (if
+> CONFIG_FAULT_INJECTION_DEBUG_FS is enabled).
+>
+> Signed-off-by: Aleksandr Nogikh <nogikh@google.com>
 
-Signed-off-by: Sai Krishna Potthuri <lakshmi.sai.krishna.potthuri@xilinx.com>
-Signed-off-by: Manish Narani <manish.narani@xilinx.com>
----
- drivers/mmc/host/sdhci-of-arasan.c | 40 ++++++------------------------
- 1 file changed, 8 insertions(+), 32 deletions(-)
+Reviewed-by: Andrey Konovalov <andreyknvl@google.com>
 
-diff --git a/drivers/mmc/host/sdhci-of-arasan.c b/drivers/mmc/host/sdhci-of-arasan.c
-index 829ccef87426..100621e55427 100644
---- a/drivers/mmc/host/sdhci-of-arasan.c
-+++ b/drivers/mmc/host/sdhci-of-arasan.c
-@@ -600,14 +600,8 @@ static int sdhci_zynqmp_sdcardclk_set_phase(struct clk_hw *hw, int degrees)
- 	u8 tap_delay, tap_max = 0;
- 	int ret;
- 
--	/*
--	 * This is applicable for SDHCI_SPEC_300 and above
--	 * ZynqMP does not set phase for <=25MHz clock.
--	 * If degrees is zero, no need to do anything.
--	 */
--	if (host->version < SDHCI_SPEC_300 ||
--	    host->timing == MMC_TIMING_LEGACY ||
--	    host->timing == MMC_TIMING_UHS_SDR12 || !degrees)
-+	/* This is applicable for SDHCI_SPEC_300 and above */
-+	if (host->version < SDHCI_SPEC_300)
- 		return 0;
- 
- 	switch (host->timing) {
-@@ -668,14 +662,8 @@ static int sdhci_zynqmp_sampleclk_set_phase(struct clk_hw *hw, int degrees)
- 	u8 tap_delay, tap_max = 0;
- 	int ret;
- 
--	/*
--	 * This is applicable for SDHCI_SPEC_300 and above
--	 * ZynqMP does not set phase for <=25MHz clock.
--	 * If degrees is zero, no need to do anything.
--	 */
--	if (host->version < SDHCI_SPEC_300 ||
--	    host->timing == MMC_TIMING_LEGACY ||
--	    host->timing == MMC_TIMING_UHS_SDR12 || !degrees)
-+	/* This is applicable for SDHCI_SPEC_300 and above */
-+	if (host->version < SDHCI_SPEC_300)
- 		return 0;
- 
- 	switch (host->timing) {
-@@ -733,14 +721,8 @@ static int sdhci_versal_sdcardclk_set_phase(struct clk_hw *hw, int degrees)
- 	struct sdhci_host *host = sdhci_arasan->host;
- 	u8 tap_delay, tap_max = 0;
- 
--	/*
--	 * This is applicable for SDHCI_SPEC_300 and above
--	 * Versal does not set phase for <=25MHz clock.
--	 * If degrees is zero, no need to do anything.
--	 */
--	if (host->version < SDHCI_SPEC_300 ||
--	    host->timing == MMC_TIMING_LEGACY ||
--	    host->timing == MMC_TIMING_UHS_SDR12 || !degrees)
-+	/* This is applicable for SDHCI_SPEC_300 and above */
-+	if (host->version < SDHCI_SPEC_300)
- 		return 0;
- 
- 	switch (host->timing) {
-@@ -804,14 +786,8 @@ static int sdhci_versal_sampleclk_set_phase(struct clk_hw *hw, int degrees)
- 	struct sdhci_host *host = sdhci_arasan->host;
- 	u8 tap_delay, tap_max = 0;
- 
--	/*
--	 * This is applicable for SDHCI_SPEC_300 and above
--	 * Versal does not set phase for <=25MHz clock.
--	 * If degrees is zero, no need to do anything.
--	 */
--	if (host->version < SDHCI_SPEC_300 ||
--	    host->timing == MMC_TIMING_LEGACY ||
--	    host->timing == MMC_TIMING_UHS_SDR12 || !degrees)
-+	/* This is applicable for SDHCI_SPEC_300 and above */
-+	if (host->version < SDHCI_SPEC_300)
- 		return 0;
- 
- 	switch (host->timing) {
--- 
-2.17.1
-
+> ---
+> v2:
+> * Renamed should_fail_lsm_hook() to lsm_hooks_inject_fail().
+> ---
+>  lib/Kconfig.debug   |  6 +++++
+>  security/security.c | 53 ++++++++++++++++++++++++++++++++++++++++++---
+>  2 files changed, 56 insertions(+), 3 deletions(-)
+>
+> diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
+> index 537cf3c2937d..80d289591e29 100644
+> --- a/lib/Kconfig.debug
+> +++ b/lib/Kconfig.debug
+> @@ -1803,6 +1803,12 @@ config FAIL_MAKE_REQUEST
+>         help
+>           Provide fault-injection capability for disk IO.
+>
+> +config FAIL_LSM_HOOKS
+> +       bool "Fault-injection capability for LSM hooks"
+> +       depends on FAULT_INJECTION
+> +       help
+> +         Provide fault-injection capability for LSM hooks.
+> +
+>  config FAIL_IO_TIMEOUT
+>         bool "Fault-injection capability for faking disk interrupts"
+>         depends on FAULT_INJECTION && BLOCK
+> diff --git a/security/security.c b/security/security.c
+> index 69ff6e2e2cd4..1105ad0f6891 100644
+> --- a/security/security.c
+> +++ b/security/security.c
+> @@ -28,6 +28,7 @@
+>  #include <linux/backing-dev.h>
+>  #include <linux/string.h>
+>  #include <linux/msg.h>
+> +#include <linux/fault-inject.h>
+>  #include <net/flow.h>
+>
+>  #define MAX_LSM_EVM_XATTR      2
+> @@ -669,6 +670,51 @@ static void __init lsm_early_task(struct task_struct *task)
+>                 panic("%s: Early task alloc failed.\n", __func__);
+>  }
+>
+> +
+> +#ifdef CONFIG_FAIL_LSM_HOOKS
+> +
+> +static struct {
+> +       struct fault_attr attr;
+> +       int retval;
+> +} fail_lsm_hooks = {
+> +       .attr = FAULT_ATTR_INITIALIZER,
+> +       .retval = -EACCES
+> +};
+> +
+> +static int __init setup_fail_lsm_hooks(char *str)
+> +{
+> +       return setup_fault_attr(&fail_lsm_hooks.attr, str);
+> +}
+> +__setup("fail_lsm_hooks=", setup_fail_lsm_hooks);
+> +
+> +static int lsm_hooks_inject_fail(void)
+> +{
+> +       return should_fail(&fail_lsm_hooks.attr, 1) ? fail_lsm_hooks.retval : 0;
+> +}
+> +
+> +#ifdef CONFIG_FAULT_INJECTION_DEBUG_FS
+> +
+> +static int __init fail_lsm_hooks_debugfs(void)
+> +{
+> +       umode_t mode = S_IFREG | 0600;
+> +       struct dentry *dir;
+> +
+> +       dir = fault_create_debugfs_attr("fail_lsm_hooks", NULL,
+> +                                       &fail_lsm_hooks.attr);
+> +       debugfs_create_u32("retval", mode, dir, &fail_lsm_hooks.retval);
+> +       return 0;
+> +}
+> +
+> +late_initcall(fail_lsm_hooks_debugfs);
+> +
+> +#endif /* CONFIG_FAULT_INJECTION_DEBUG_FS */
+> +
+> +#else
+> +
+> +static inline int lsm_hooks_inject_fail(void) { return 0; }
+> +
+> +#endif /* CONFIG_FAIL_LSM_HOOKS */
+> +
+>  /*
+>   * The default value of the LSM hook is defined in linux/lsm_hook_defs.h and
+>   * can be accessed with:
+> @@ -707,16 +753,17 @@ static void __init lsm_early_task(struct task_struct *task)
+>         } while (0)
+>
+>  #define call_int_hook(FUNC, IRC, ...) ({                       \
+> -       int RC = IRC;                                           \
+> -       do {                                                    \
+> +       int RC = lsm_hooks_inject_fail();                       \
+> +       if (RC == 0) {                                                          \
+>                 struct security_hook_list *P;                   \
+> +               RC = IRC;                                                               \
+>                                                                 \
+>                 hlist_for_each_entry(P, &security_hook_heads.FUNC, list) { \
+>                         RC = P->hook.FUNC(__VA_ARGS__);         \
+>                         if (RC != 0)                            \
+>                                 break;                          \
+>                 }                                               \
+> -       } while (0);                                            \
+> +       }                                                       \
+>         RC;                                                     \
+>  })
+>
+> --
+> 2.29.1.341.ge80a0c044ae-goog
+>
