@@ -2,96 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED2BD2ACFC0
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 07:32:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A48C72ACFC1
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 07:32:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731513AbgKJGcB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 01:32:01 -0500
-Received: from mail.skyhub.de ([5.9.137.197]:33612 "EHLO mail.skyhub.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730520AbgKJGcA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 01:32:00 -0500
-Received: from nazgul.tnic (unknown [78.130.214.198])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 1884B1EC036E;
-        Tue, 10 Nov 2020 07:31:59 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1604989919;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=DbPzFD8ocADSeV0o8zIHgtkE0g19VhGWZQrcUWattEg=;
-        b=NF7Hb8OOJrdOKerg7Qh7vYnZk0Yhj5SSyahwpktISeLTD33gEccKEuaoh26lnk6cBRcDWl
-        qFqM7Zy8363qpSYHk64rOlcre49J0n4nGdKIxH4Qk82DQv4s9izB8+WuigLDA1d2W258gM
-        ibxzwfEm+hPuO5+euAZ335R3wucO/dQ=
-Date:   Tue, 10 Nov 2020 07:31:51 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     "Luck, Tony" <tony.luck@intel.com>
-Cc:     Jim Mattson <jmattson@google.com>, Qian Cai <cai@redhat.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-tip-commits@vger.kernel.org" 
-        <linux-tip-commits@vger.kernel.org>, x86 <x86@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>
-Subject: Re: [PATCH] x86/mce: Check for hypervisor before enabling additional
- error logging
-Message-ID: <20201110063151.GB7290@nazgul.tnic>
-References: <20201030190807.GA13884@agluck-desk2.amr.corp.intel.com>
- <160431588828.397.16468104725047768957.tip-bot2@tip-bot2>
- <3f863634cd75824907e8ccf8164548c2ef036f20.camel@redhat.com>
- <bfc274fc27724ea39ecac1e7ac834ed8@intel.com>
- <CALMp9eTFaiYkTnVe8xKzg40E4nZ3rAOii0O06bTy0+oLNjyKhA@mail.gmail.com>
- <a22b5468e1c94906b72c4d8bc83c0f64@intel.com>
- <20201109232402.GA25492@agluck-desk2.amr.corp.intel.com>
+        id S1731551AbgKJGch (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 01:32:37 -0500
+Received: from smtp2207-205.mail.aliyun.com ([121.197.207.205]:33371 "EHLO
+        smtp2207-205.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726462AbgKJGcg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Nov 2020 01:32:36 -0500
+X-Alimail-AntiSpam: AC=CONTINUE;BC=0.4007003|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_system_inform|0.0424186-0.00157801-0.956003;FP=10697710607874107063|1|1|17|0|-1|-1|-1;HT=ay29a033018047204;MF=frank@allwinnertech.com;NM=1;PH=DS;RN=10;RT=10;SR=0;TI=SMTPD_---.Iuod9cs_1604989949;
+Received: from allwinnertech.com(mailfrom:frank@allwinnertech.com fp:SMTPD_---.Iuod9cs_1604989949)
+          by smtp.aliyun-inc.com(10.147.41.187);
+          Tue, 10 Nov 2020 14:32:33 +0800
+From:   Frank Lee <frank@allwinnertech.com>
+To:     tiny.windzz@gmail.com
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Yangtao Li <frank@allwinnertech.com>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Maxime Ripard <mripard@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Colin Ian King <colin.king@canonical.com>
+Subject: [RESEND PATCH 08/19] phy: sun4i-usb: remove enable_pmu_unk1 from sun50i_h6_cfg
+Date:   Tue, 10 Nov 2020 14:32:21 +0800
+Message-Id: <dc8cbb7b3cd59902a6719f207d18a232903fac8a.1604988979.git.frank@allwinnertech.com>
+X-Mailer: git-send-email 2.28.0
+In-Reply-To: <cover.1604988979.git.frank@allwinnertech.com>
+References: <cover.1604988979.git.frank@allwinnertech.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20201109232402.GA25492@agluck-desk2.amr.corp.intel.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 09, 2020 at 03:24:02PM -0800, Luck, Tony wrote:
-> Booting as a guest under KVM results in error messages about
-> unchecked MSR access:
-> 
-> [    6.814328][    T0] unchecked MSR access error: RDMSR from 0x17f at rIP: 0xffffffff84483f16 (mce_intel_feature_init+0x156/0x270)
-> 
-> because KVM doesn't provide emulation for random model specific registers.
-> 
-> Check for X86_FEATURE_HYPERVISOR and skip trying to enable the mode (a
-> guest shouldn't be concerned with corrected errors anyway).
-> 
-> Reported-by: Qian Cai <cai@redhat.com>
-> Fixes: 68299a42f842 ("x86/mce: Enable additional error logging on certain Intel CPUs")
-> Signed-off-by: Tony Luck <tony.luck@intel.com>
-> ---
->  arch/x86/kernel/cpu/mce/intel.c | 3 +++
->  1 file changed, 3 insertions(+)
-> 
-> diff --git a/arch/x86/kernel/cpu/mce/intel.c b/arch/x86/kernel/cpu/mce/intel.c
-> index b47883e364b4..7f7d863400b7 100644
-> --- a/arch/x86/kernel/cpu/mce/intel.c
-> +++ b/arch/x86/kernel/cpu/mce/intel.c
-> @@ -517,6 +517,9 @@ static void intel_imc_init(struct cpuinfo_x86 *c)
->  {
->  	u64 error_control;
->  
-> +	if (boot_cpu_has(X86_FEATURE_HYPERVISOR))
-> +		return;
-> +
+From: Yangtao Li <frank@allwinnertech.com>
 
-Frankly, I'm tired of wagging the dog because the tail can't. If
-qemu/kvm can't emulate a CPU model fully then it should ignore those
-unknown MSR accesses by default, i.e., that "ignore_msrs" functionality
-should be on by default I'd say...
+For the current code, enable_pmu_unk1 only works in non-a83t and non-h6
+types. So let's delete it from the sun50i_h6_cfg.
 
-We certainly can't be sprinkling this check everytime the kernel tries
-to do something as basic as read an MSR.
+Signed-off-by: Yangtao Li <frank@allwinnertech.com>
+---
+ drivers/phy/allwinner/phy-sun4i-usb.c | 1 -
+ 1 file changed, 1 deletion(-)
 
+diff --git a/drivers/phy/allwinner/phy-sun4i-usb.c b/drivers/phy/allwinner/phy-sun4i-usb.c
+index 651d5e2a25ce..0f1888b55dbd 100644
+--- a/drivers/phy/allwinner/phy-sun4i-usb.c
++++ b/drivers/phy/allwinner/phy-sun4i-usb.c
+@@ -969,7 +969,6 @@ static const struct sun4i_usb_phy_cfg sun50i_h6_cfg = {
+ 	.disc_thresh = 3,
+ 	.phyctl_offset = REG_PHYCTL_A33,
+ 	.dedicated_clocks = true,
+-	.enable_pmu_unk1 = true,
+ 	.phy0_dual_route = true,
+ 	.missing_phys = BIT(1) | BIT(2),
+ };
 -- 
-Regards/Gruss,
-    Boris.
+2.28.0
 
-https://people.kernel.org/tglx/notes-about-netiquette
