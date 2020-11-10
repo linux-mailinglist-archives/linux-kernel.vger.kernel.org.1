@@ -2,75 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 106E12AD3B0
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 11:26:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 094F62AD3AD
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 11:26:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730648AbgKJK0O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 05:26:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50900 "EHLO
+        id S1729386AbgKJK0F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 05:26:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50878 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730196AbgKJK0J (ORCPT
+        with ESMTP id S1726779AbgKJK0D (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 05:26:09 -0500
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D75FEC0613D1
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 02:26:08 -0800 (PST)
-Received: from dude.hi.pengutronix.de ([2001:67c:670:100:1d::7])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        Tue, 10 Nov 2020 05:26:03 -0500
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4C05C0613CF;
+        Tue, 10 Nov 2020 02:26:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=nCQVGn4tgfLDgNzQCS32tBXcK/X7ubEDqdXouPvVcJQ=; b=SfZRnN4p1ttAS8Ghlm9p0xu6h
+        vOansbt/QrOwwa2epSnjVphHCTBz2m2ii+gO4lHwL8icwhH8RjS2rEtcNSjLgsFj1hLwoj9O9EcoN
+        E4Q1bU4G26fSx6Qaz//mMWSeP8wwsy32S4ixki0ubfQHm54pu86DKaCL+DqMAglMlv0wcz5U/Incd
+        2Q9HvuJjz5Paka+4JIQTK2277apFwyUkPbIbeCkq1ZaGCBeuDuN9RuHJhgxjZJpdPiZEQX462Hwbs
+        zzK6AJunlQEl4KpNFWY8Iy2mslIfXXwwrcEmNp0B9J4EXL9lyKMzG4Qx5PBhcIp3heKSjbyzHpkuj
+        E60Hv1iMw==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:57904)
+        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
-        (envelope-from <afa@pengutronix.de>)
-        id 1kcQqZ-0008HS-KB; Tue, 10 Nov 2020 11:25:55 +0100
-Received: from afa by dude.hi.pengutronix.de with local (Exim 4.92)
-        (envelope-from <afa@pengutronix.de>)
-        id 1kcQqZ-00029s-5d; Tue, 10 Nov 2020 11:25:55 +0100
-From:   Ahmad Fatoum <a.fatoum@pengutronix.de>
-To:     Rob Herring <robh+dt@kernel.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@st.com>
-Cc:     kernel@pengutronix.de, Ahmad Fatoum <a.fatoum@pengutronix.de>,
-        devicetree@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 3/3] ARM: dts: stm32: lxa-mc1: add OSD32MP15x to list of compatibles
-Date:   Tue, 10 Nov 2020 11:25:51 +0100
-Message-Id: <20201110102552.7270-3-a.fatoum@pengutronix.de>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201110102552.7270-1-a.fatoum@pengutronix.de>
-References: <20201110102552.7270-1-a.fatoum@pengutronix.de>
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1kcQqY-0000uh-SW; Tue, 10 Nov 2020 10:25:54 +0000
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1kcQqX-0001ND-70; Tue, 10 Nov 2020 10:25:53 +0000
+Date:   Tue, 10 Nov 2020 10:25:53 +0000
+From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
+To:     Bjarni Jonasson <bjarni.jonasson@microchip.com>
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        UNGLinuxDriver <UNGLinuxDriver@microchip.com>
+Subject: Re: [PATCH] phy: phylink: Fix CuSFP issue in phylink
+Message-ID: <20201110102552.GZ1551@shell.armlinux.org.uk>
+References: <20201110100642.2153-1-bjarni.jonasson@microchip.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::7
-X-SA-Exim-Mail-From: afa@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201110100642.2153-1-bjarni.jonasson@microchip.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Sender: Russell King - ARM Linux admin <linux@armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Earlier commit modified the binding, so the SiP is to be specified
-as well. Adjust the device tree accordingly.
+On Tue, Nov 10, 2020 at 11:06:42AM +0100, Bjarni Jonasson wrote:
+> There is an issue with the current phylink driver and CuSFPs which
+> results in a callback to the phylink validate function without any
+> advertisement capabilities.  The workaround (in this changeset)
+> is to assign capabilities if a 1000baseT SFP is identified.
 
-Signed-off-by: Ahmad Fatoum <a.fatoum@pengutronix.de>
----
-v1 -> v2:
-  - split up binding and device tree change
----
- arch/arm/boot/dts/stm32mp157c-lxa-mc1.dts | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+How does this happen?  Which PHY is being used?
 
-diff --git a/arch/arm/boot/dts/stm32mp157c-lxa-mc1.dts b/arch/arm/boot/dts/stm32mp157c-lxa-mc1.dts
-index 1e5333fd437f..cda8e871f999 100644
---- a/arch/arm/boot/dts/stm32mp157c-lxa-mc1.dts
-+++ b/arch/arm/boot/dts/stm32mp157c-lxa-mc1.dts
-@@ -15,7 +15,7 @@
- 
- / {
- 	model = "Linux Automation MC-1 board";
--	compatible = "lxa,stm32mp157c-mc1", "st,stm32mp157";
-+	compatible = "lxa,stm32mp157c-mc1", "oct,stm32mp15xx-osd32", "st,stm32mp157";
- 
- 	aliases {
- 		ethernet0 = &ethernet0;
 -- 
-2.28.0
-
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
