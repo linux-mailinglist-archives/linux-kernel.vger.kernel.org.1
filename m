@@ -2,112 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DD232AE0C9
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 21:37:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DF7B42AE0CD
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 21:38:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730468AbgKJUhl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 15:37:41 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:24579 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726179AbgKJUhk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 15:37:40 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1605040659;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=86E1PiwpTATAQtderrQWGZYhJziSfrLmfv7s2P36MyY=;
-        b=EatpexV/NwS2/g4QcIp62FdQTYoYh+2mXkQrBnPDlRGJkGM4tG3RhJJ/UMfHWYcKI8k6rs
-        uzwqRzATJ7CigCcIK1YuqzQUptg1NKQ4DKkSH+ib4nyedePQ8iFmZjIkl4vv0tikCrSo63
-        z016iJnGvQZ9l2qygKMNoGVTLer8KVY=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-85-l5q6OnrpN7OlAOAAlhBjmg-1; Tue, 10 Nov 2020 15:37:38 -0500
-X-MC-Unique: l5q6OnrpN7OlAOAAlhBjmg-1
-Received: by mail-wr1-f71.google.com with SMTP id f4so3081588wru.21
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 12:37:37 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=86E1PiwpTATAQtderrQWGZYhJziSfrLmfv7s2P36MyY=;
-        b=EECOYYxHcXSPyT0oxPX2yxLMHLrB7QJBTs3HSk2IoDenN3aS2m99Scac3FfEb8/PJk
-         mWVr7+ZGS8MI76oFzin1eR8+hnQsADI4ag3P1pp4dbzOyIyXa1BG0kAJMxB4LhvyAx0p
-         0degrbOiD9kAdEU2A3SZi/RSNkkQFbvTJ2u+H1C3Z8edY+NUamuqp4ybInwoUj8VMGUm
-         BVn3ZFChU0hj6JbQgJCq1sXrgxtBm3SS5KReyswt3cK3PNKWnoK1etgERwl2xV8t8ME4
-         3C5nkqD4YAn3Jtj+UYT/kzfFWGlts1uICDgGehBekEdFlsJQEsgbVbwYsomORTm3HM7a
-         T1BQ==
-X-Gm-Message-State: AOAM533FzrxKOeh8CWTAKe8R3noXvQ/YJyIeg9iYj2He5pNnqxAOj0Fx
-        gevHnvkh+VWhMZVqW53bh2gISF9M/yX8tU7uw2T2AMTUelaxpo4E1TKT9ICa3RGNnKtIUD6qjqB
-        I8SMVuStqbQaBjNTXvwox/gsY
-X-Received: by 2002:a5d:6744:: with SMTP id l4mr24886220wrw.378.1605040656862;
-        Tue, 10 Nov 2020 12:37:36 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJw1TcLE86QgwB8CSzyVPHmo0gyCUPTPLnWMfxW3NiNpbb9kz55y3L1GCvdcftAsFMgZJiLBMg==
-X-Received: by 2002:a5d:6744:: with SMTP id l4mr24886197wrw.378.1605040656635;
-        Tue, 10 Nov 2020 12:37:36 -0800 (PST)
-Received: from ?IPv6:2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e? ([2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e])
-        by smtp.gmail.com with ESMTPSA id g131sm4181864wma.35.2020.11.10.12.37.35
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 10 Nov 2020 12:37:35 -0800 (PST)
-To:     "Luck, Tony" <tony.luck@intel.com>, Borislav Petkov <bp@alien8.de>
-Cc:     Jim Mattson <jmattson@google.com>, Qian Cai <cai@redhat.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-tip-commits@vger.kernel.org" 
-        <linux-tip-commits@vger.kernel.org>, x86 <x86@kernel.org>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>
-References: <160431588828.397.16468104725047768957.tip-bot2@tip-bot2>
- <3f863634cd75824907e8ccf8164548c2ef036f20.camel@redhat.com>
- <bfc274fc27724ea39ecac1e7ac834ed8@intel.com>
- <CALMp9eTFaiYkTnVe8xKzg40E4nZ3rAOii0O06bTy0+oLNjyKhA@mail.gmail.com>
- <a22b5468e1c94906b72c4d8bc83c0f64@intel.com>
- <20201109232402.GA25492@agluck-desk2.amr.corp.intel.com>
- <20201110063151.GB7290@nazgul.tnic>
- <094c2395-b1b3-d908-657c-9bd4144e40ac@redhat.com>
- <20201110095615.GB9450@nazgul.tnic>
- <b8de7f7b-7aa1-d98b-74be-62d7c055542b@redhat.com>
- <20201110155013.GE9857@nazgul.tnic>
- <1b587b45-a5a8-2147-ae53-06d1b284ea11@redhat.com>
- <cacd1cd272e94213a0c82c9871086cf5@intel.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Subject: Re: [PATCH] x86/mce: Check for hypervisor before enabling additional
- error logging
-Message-ID: <7bd98718-f800-02ef-037a-4dfc5a7d1a54@redhat.com>
-Date:   Tue, 10 Nov 2020 21:37:34 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        id S1731373AbgKJUiU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 15:38:20 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53892 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727275AbgKJUiT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Nov 2020 15:38:19 -0500
+Received: from mail-ot1-f50.google.com (mail-ot1-f50.google.com [209.85.210.50])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6A4452063A
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 20:38:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605040698;
+        bh=dC2cst0+NehiX2IqKyhIGqMDMr6AVk93A52+2YUUDYA=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=ydR4/EiraONC/eDzv3t+v7EPeyfeQc1mmt2M/m+lKadnm8O1QU9H71rzaLzkKUiN8
+         zYyCdDCpN8vphm6svn66M1VfMUesY8cq2Fb7w8puJlZg6lEpH/BuH+pHwMosQ9/MxZ
+         V72En7fsMYWUBX52drVvNfBuPlUjB6Obe4auUmho=
+Received: by mail-ot1-f50.google.com with SMTP id l36so6136ota.4
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 12:38:18 -0800 (PST)
+X-Gm-Message-State: AOAM5318EezkBzgoA/tfEJagFmn2AIHRAK/hYpkB0ULRB2fSDaTz2kkg
+        DHYWzlDQNDRfnDRZZwBrBMG3L4FZRbBM7GsLFsU=
+X-Google-Smtp-Source: ABdhPJxWsltJYzyOIUKf+sHvuw0kAUSXKj+mqDZv0jEhae06t2cIBzZfqPoE0IenaIXO6cMdDs5B/+1apE8QpJAq2GQ=
+X-Received: by 2002:a05:6830:22d2:: with SMTP id q18mr13918918otc.305.1605040697642;
+ Tue, 10 Nov 2020 12:38:17 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <cacd1cd272e94213a0c82c9871086cf5@intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20200409232728.231527-1-caij2003@gmail.com> <20201107001056.225807-1-jiancai@google.com>
+ <CAMj1kXG+qb267Hig6zoO=y6_BVsKsqHikvbJ83YsBD8SBaZ1xw@mail.gmail.com>
+ <CAKwvOd=pHgT3LsjYH10eXQjLPtiOKDj-8nJwjQ=NMSFLTG1xAg@mail.gmail.com>
+ <CAMj1kXHDzj3Q-sCv1szseUC7g2bWRFeVP6WME-sMqDf+0wyU8Q@mail.gmail.com>
+ <CAKwvOdkXz5wOwKQDsi5jt21ov3xETSByAqxGLQ=7U6Gsp46zcQ@mail.gmail.com>
+ <CA+SOCLJSSR62VfWhKx9R1cxT-CHXD7RN08eJBYxUH8zzyWos9Q@mail.gmail.com> <CAKwvOdkpHdQF9Ko8FbP_SN=QfDiMq8ra5TSj_KHGRCbJdyYm6w@mail.gmail.com>
+In-Reply-To: <CAKwvOdkpHdQF9Ko8FbP_SN=QfDiMq8ra5TSj_KHGRCbJdyYm6w@mail.gmail.com>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Tue, 10 Nov 2020 21:38:01 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a1tU8g4HfsoYH4qa6C4Kv8QE3nv=UPSyH7824GXCYwUDQ@mail.gmail.com>
+Message-ID: <CAK8P3a1tU8g4HfsoYH4qa6C4Kv8QE3nv=UPSyH7824GXCYwUDQ@mail.gmail.com>
+Subject: Re: [PATCH v2] Make iwmmxt.S support Clang's integrated assembler
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Jian Cai <jiancai@google.com>, Ard Biesheuvel <ardb@kernel.org>,
+        Manoj Gupta <manojgupta@google.com>,
+        Luis Lozano <llozano@google.com>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/11/20 18:52, Luck, Tony wrote:
-> Look at what it is trying to do ... change the behavior of the platform w.r.t. logging
-> of memory errors.  How does that make any sense for a guest ...
+On Tue, Nov 10, 2020 at 9:11 PM 'Nick Desaulniers' via Clang Built
+Linux <clang-built-linux@googlegroups.com> wrote:
+>
+> On Tue, Nov 10, 2020 at 12:10 PM Jian Cai <jiancai@google.com> wrote:
+> >
+> > I tried to verify with ixp4xx_defconfig, and I noticed it also used CONFIG_CPU_BIG_ENDIAN=y to enable big endianness as follows,
+> >
+> > linux$ grep ENDIAN arch/arm/configs/ixp4xx_defconfig
+> > CONFIG_CPU_BIG_ENDIAN=y
+> >
+> > Also it appeared arch/arm/kernel/iwmmxt.o was not built with ixp4xx_defconfig. The commands I used
+> >
+> > linux$ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- make CC=clang ixp4xx_defconfig
+> > linux$ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- make -j32 CC=clang
+> > linux$ ls arch/arm/kernel/iwmmxt.o
+> > ls: cannot access 'arch/arm/kernel/iwmmxt.o': No such file or directory
+> >
+> > Did I miss any steps?
+>
+> Yes, you need to manually enable CONFIG_IWMMXT in menuconfig or via
+> `scripts/configs -e`.
 
-Logging of memory errors certainly makes sense for a guest, KVM already 
-does MCE forwarding as you probably know.
+To clarify: ixp4xx and pxa3xx were two platforms based on the XScale core.
+ixp4xx was commonly used in big-endian mode but lacked iWMMXt. pxa3xx
+had iWMMXt but doesn't allow enabling big-endian mode because of a Kconfig
+dependency, meaning that nobody has ever tried it, and it's likely broken.
 
-The exact set of information that MSR_ERROR_CONTROL[1] adds may not make 
-much sense in the case of KVM, but it may make sense for other 
-hypervisors that do nothing but partition the host.  (Difficult for me 
-to say since the relevant part of the SDM might as well be written in 
-Klingon :)).
+Later 'mvebu' parts (Armada 510) do have iWMMXt and allow big-endian
+mode, but those are BE8, with non-reversed byteorder for the instructions.
 
-In any case, checking HYPERVISOR is not enough because having it clear 
-is a valid configuration.  So you would still have to switch to 
-{rd,wr}msrl_safe, and then checking HYPERVISOR is pointless.
+So none of this matters in practice, but it's very satifiying to know
+it is finally
+all working with the integrated assembler in all those combinations, at
+least in theory!
 
-Paolo
-
-> that doesn't even
-> know what memory is present on the platform. Or have guarantees that what it sees
-> as memory address 0x12345678 maps to the same set of cells in a DRAM from one
-> second to the next?
-
+      Arnd
