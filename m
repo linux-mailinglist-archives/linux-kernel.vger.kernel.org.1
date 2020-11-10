@@ -2,134 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 426CB2AE278
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 23:05:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 02B042AE286
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 23:07:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732017AbgKJWFX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 17:05:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47378 "EHLO
+        id S1732136AbgKJWHF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 17:07:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47620 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726467AbgKJWFW (ORCPT
+        with ESMTP id S1726688AbgKJWG5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 17:05:22 -0500
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A0CEC0613D1
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 14:05:21 -0800 (PST)
-Received: by mail-wm1-x344.google.com with SMTP id a65so4694751wme.1
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 14:05:21 -0800 (PST)
+        Tue, 10 Nov 2020 17:06:57 -0500
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 796CDC0613D1
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 14:06:57 -0800 (PST)
+Received: by mail-pg1-x544.google.com with SMTP id z24so11477841pgk.3
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 14:06:57 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=qZToJzWvZIM70EuRiQ7NoVEKN6DZ5AQGlu/l0sYJbdo=;
-        b=XjyOicW3O9YNxvhwetYYen8NIUXx6DtxhfHeM3eeS7dRqHQTVCI2YXrvlAXna8ubw4
-         91hNbvU5rvEipK0xYxRb+aAFeCVhGN3sXSmKvT9uMnvyRjKZK0MVQZsLsUW0y1NuThB+
-         qpIQUWf4Q0V6cxCuoEiAk5gvoYEqve6tboDkF4bzKsMEEGMaDqknFVAuHon1tPSxft88
-         V067xL1LNtenmB1IGjhefnjnAd+OSJwQqSxSxYntaqlXt+tfZN5Xbu9/CPyqNV+M53Nd
-         jgI1xhFvjcpsQuqb3xpH/SxHFKAFKgfzkzozf2vYODBsdHbjTBxXZ59zgeTdlvW9/9y6
-         K9+Q==
+         :cc;
+        bh=qPQ341XlioetJkwvUmegnpo5yieLqIlhYMF1JNCPQv8=;
+        b=v+5eq4VYAXz/UfcP/wGSntYsg1su3KfQmSwgHMV9Q0fCSbYVVLnOFQhD/nLYWBBZWj
+         VMStzDGMizpFtL1V9NSxj3ObtqvQsSH4aOtVKT1ZbgbrHIlQyV1D6dhVO7CwXiUUypSi
+         mOXCxsmyn6s3zKnFtO72FSp8s1DDlDu+mTMdahSatCAwi32RA0o7/pYKGrIBBSwJeiYM
+         ltqz7cA3Azqt2C8Lzfd82JgQ5BAUtonbiD8ElnNQxQdJt/zhPUFHNRS98keIXLA5ZEdl
+         6sCAQ9+9gZArl37nnSPGbCLclc6YpHtCyA6nXsBLOg+DQEoSSw+kQIqdt2alYJ25E1ku
+         A1Vw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=qZToJzWvZIM70EuRiQ7NoVEKN6DZ5AQGlu/l0sYJbdo=;
-        b=R8EcXZZ+VcWfGzSu8TVMNm2DO/q8VOPLDOdIaMX7ZXj43T13iItQXniQVN9tWZc9ah
-         FIDv4xLf1t0NOHNt9HFYOKjQqXScLA2BK+yBEUjPV5sRGKOyukxdw45n2U3DE+ChdswQ
-         AgBeSsHyDRyEuDxXAb4iHAL7UuIuWz8iR2SWCAi8FFZfbVYS7NE96YR509DUCW+LuQyL
-         J3vFxzL5M72IXg0kPyub7uTlRQJn0XYFtDClUap80JHnVHdXOsa17jtqKXmBJcvXjRqG
-         nq++Pe9K2X6b8MOvFId3ZiEZ5qCXhr5HlszOv0gAVCZNhCInQTEQj2BNoyzCkPclrzPb
-         E76g==
-X-Gm-Message-State: AOAM532F/0PS656odAkgVxJ0Uiy3LHqam8eGQ0B5pfd2lls98P8sIMzK
-        eCcD3cLYkRa0unjqi+Gy8nQcChrVAwr/3mWwc2Y=
-X-Google-Smtp-Source: ABdhPJwWqoDTPUmRVpXmlstCWEAP5RO5KfmAgKzuWQagXCBAiZ6FokJKfpjc7Kx5J2AQT9MwV7S2Guk+ZWnb/gt8JoM=
-X-Received: by 2002:a7b:c157:: with SMTP id z23mr246689wmi.70.1605045920104;
- Tue, 10 Nov 2020 14:05:20 -0800 (PST)
+         :message-id:subject:to:cc;
+        bh=qPQ341XlioetJkwvUmegnpo5yieLqIlhYMF1JNCPQv8=;
+        b=tIZfuTsXsy/MUklmXkf9++lm9Q3/NeB8nRbleg7/MO2tblsgU/j2DZPK73EME2Xn1g
+         hNw+cAgeN6pErfa/Sl2hbrzFtxU3beibzQpWoww6Yg5QEDADDMz9dyYoZAcN7PQO+NXt
+         8zbj6d+aMvwhVxZrQMqx1yEPv5uc8CfOsg6vptrygPL+fsBN3XM9FcpMzlk8wQHfSSKP
+         13mHiAS09oqNSvCUcz0tZkFcRSZCNc5l96ENNQ2rF2IFckA/hkM8AoPDTSMhrBUoIIR/
+         VqpDrvM3Nv41mknvqQses3kVAgmeE94IfEuy9Zq0VfJ5yhkmfTkB5mIcD5TsJleNWv2w
+         8lcg==
+X-Gm-Message-State: AOAM531OLlaN/TxmUMvk0VrrL9ITDTNuGIbeRNs5tlotPyjV79nCt+zO
+        qgzvLcnwIEKo2laR2+TiZekSzUv7Sn9vicxiiV7UGA==
+X-Google-Smtp-Source: ABdhPJxp+2Xlwg1fWGZr/1Vant6rBWaWS0JhbrDM+RUjGv2zuz2AR8kD5o4UH+G5f3lDUNAwWer/gu6XsYJX4r8uyRw=
+X-Received: by 2002:a62:870c:0:b029:18b:d345:70f3 with SMTP id
+ i12-20020a62870c0000b029018bd34570f3mr16322041pfe.30.1605046016802; Tue, 10
+ Nov 2020 14:06:56 -0800 (PST)
 MIME-Version: 1.0
-References: <20201109211855.3340030-1-lee.jones@linaro.org> <20201109211855.3340030-2-lee.jones@linaro.org>
-In-Reply-To: <20201109211855.3340030-2-lee.jones@linaro.org>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Tue, 10 Nov 2020 17:05:07 -0500
-Message-ID: <CADnq5_O2w0D3WcZjWUajYJyGfDXrt90z2PYrxuUcxGwsuwEVqw@mail.gmail.com>
-Subject: Re: [PATCH 01/20] drm/radeon/radeon_ttm: Place declaration of 'rdev'
- in same clause as its use
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     David Airlie <airlied@linux.ie>,
+References: <20201107075550.2244055-1-ndesaulniers@google.com>
+ <4910042649a4f3ab22fac93191b8c1fa0a2e17c3.camel@perches.com>
+ <CAKwvOdn50VP4h7tidMnnFeMA1M-FevykP+Y0ozieisS7Nn4yoQ@mail.gmail.com> <26052c5a0a098aa7d9c0c8a1d39cc4a8f7915dd2.camel@perches.com>
+In-Reply-To: <26052c5a0a098aa7d9c0c8a1d39cc4a8f7915dd2.camel@perches.com>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Tue, 10 Nov 2020 14:06:45 -0800
+Message-ID: <CAKwvOdku3o0nHhPppPOJzFXa3j1j_4r5ix3kbkduxY3YSpj9wg@mail.gmail.com>
+Subject: Re: [PATCH] netfilter: conntrack: fix -Wformat
+To:     Joe Perches <joe@perches.com>
+Cc:     Pablo Neira Ayuso <pablo@netfilter.org>,
+        Jozsef Kadlecsik <kadlec@netfilter.org>,
+        Florian Westphal <fw@strlen.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
+        Network Development <netdev@vger.kernel.org>,
         LKML <linux-kernel@vger.kernel.org>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        Jerome Glisse <glisse@freedesktop.org>,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
+        clang-built-linux <clang-built-linux@googlegroups.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 9, 2020 at 4:19 PM Lee Jones <lee.jones@linaro.org> wrote:
+On Tue, Nov 10, 2020 at 2:04 PM Joe Perches <joe@perches.com> wrote:
 >
-> Fixes the following W=3D1 kernel build warning(s):
+> On Tue, 2020-11-10 at 14:00 -0800, Nick Desaulniers wrote:
 >
->  drivers/gpu/drm/radeon/radeon_ttm.c: In function =E2=80=98radeon_ttm_tt_=
-create=E2=80=99:
->  drivers/gpu/drm/radeon/radeon_ttm.c:611:24: warning: variable =E2=80=98r=
-dev=E2=80=99 set but not used [-Wunused-but-set-variable]
+> > Yeah, we could go through and remove %h and %hh to solve this, too, right?
 >
-> Cc: Alex Deucher <alexander.deucher@amd.com>
-> Cc: "Christian K=C3=B6nig" <christian.koenig@amd.com>
-> Cc: David Airlie <airlied@linux.ie>
-> Cc: Daniel Vetter <daniel@ffwll.ch>
-> Cc: Jerome Glisse <glisse@freedesktop.org>
-> Cc: amd-gfx@lists.freedesktop.org
-> Cc: dri-devel@lists.freedesktop.org
-> Signed-off-by: Lee Jones <lee.jones@linaro.org>
+> Yup.
+>
+> I think one of the checkpatch improvement mentees is adding
+> some suggestion and I hope an automated fix mechanism for that.
+>
+> https://lore.kernel.org/lkml/5e3265c241602bb54286fbaae9222070daa4768e.camel@perches.com/
 
-Applied.  Thanks!
-
-Alex
-
-
-> ---
->  drivers/gpu/drm/radeon/radeon_ttm.c | 8 ++++----
->  1 file changed, 4 insertions(+), 4 deletions(-)
->
-> diff --git a/drivers/gpu/drm/radeon/radeon_ttm.c b/drivers/gpu/drm/radeon=
-/radeon_ttm.c
-> index 95038ac3382e2..a8c915920070f 100644
-> --- a/drivers/gpu/drm/radeon/radeon_ttm.c
-> +++ b/drivers/gpu/drm/radeon/radeon_ttm.c
-> @@ -608,21 +608,21 @@ static void radeon_ttm_backend_destroy(struct ttm_b=
-o_device *bdev, struct ttm_tt
->  static struct ttm_tt *radeon_ttm_tt_create(struct ttm_buffer_object *bo,
->                                            uint32_t page_flags)
->  {
-> -       struct radeon_device *rdev;
->         struct radeon_ttm_tt *gtt;
->         enum ttm_caching caching;
->         struct radeon_bo *rbo;
-> -
-> -       rbo =3D container_of(bo, struct radeon_bo, tbo);
-> +#if IS_ENABLED(CONFIG_AGP)
-> +       struct radeon_device *rdev;
->
->         rdev =3D radeon_get_rdev(bo->bdev);
-> -#if IS_ENABLED(CONFIG_AGP)
->         if (rdev->flags & RADEON_IS_AGP) {
->                 return ttm_agp_tt_create(bo, rdev->ddev->agp->bridge,
->                                          page_flags);
->         }
->  #endif
->
-> +       rbo =3D container_of(bo, struct radeon_bo, tbo);
-> +
->         gtt =3D kzalloc(sizeof(struct radeon_ttm_tt), GFP_KERNEL);
->         if (gtt =3D=3D NULL) {
->                 return NULL;
-> --
-> 2.25.1
->
-> _______________________________________________
-> dri-devel mailing list
-> dri-devel@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+SGTM, please try to remember to CC me (or CBL) if you do any such
+treewide change so that I can remove -Wno-format from
+scripts/Makefile.extrawarn for Clang afterwards, and maybe help review
+it, too.
+-- 
+Thanks,
+~Nick Desaulniers
