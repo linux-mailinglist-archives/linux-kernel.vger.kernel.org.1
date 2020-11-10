@@ -2,99 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 476442ADC00
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 17:25:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 403A72ADC24
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 17:26:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732978AbgKJQZT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 11:25:19 -0500
-Received: from mga12.intel.com ([192.55.52.136]:63840 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732846AbgKJQZF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 11:25:05 -0500
-IronPort-SDR: /ca1pm2oZCL8+serTvMRXr+mi0+88vuvFVsO1LEkHCOtjZxaLKLlqNgVkp/MSaNJwWvISzNGgZ
- Zr3Pb3j5FyPg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9801"; a="149278337"
-X-IronPort-AV: E=Sophos;i="5.77,466,1596524400"; 
-   d="scan'208";a="149278337"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Nov 2020 08:25:03 -0800
-IronPort-SDR: qHV/U4Lb4CASpMWrx0huDEwLDLRb692e8DpXN/2mSFRBM4nsmJyDdFweR29W1yI7MtWfxYbQAl
- tICo+kVw3YIQ==
-X-IronPort-AV: E=Sophos;i="5.77,466,1596524400"; 
-   d="scan'208";a="308469060"
-Received: from yyu32-desk.sc.intel.com ([143.183.136.146])
-  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Nov 2020 08:25:03 -0800
-From:   Yu-cheng Yu <yu-cheng.yu@intel.com>
-To:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-mm@kvack.org,
-        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Balbir Singh <bsingharora@gmail.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Eugene Syromiatnikov <esyr@redhat.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Weijiang Yang <weijiang.yang@intel.com>,
-        Pengfei Xu <pengfei.xu@intel.com>
-Cc:     Yu-cheng Yu <yu-cheng.yu@intel.com>
-Subject: [PATCH v15 7/7] x86/vdso: Insert endbr32/endbr64 to vDSO
-Date:   Tue, 10 Nov 2020 08:24:48 -0800
-Message-Id: <20201110162448.9846-8-yu-cheng.yu@intel.com>
-X-Mailer: git-send-email 2.21.0
-In-Reply-To: <20201110162448.9846-1-yu-cheng.yu@intel.com>
-References: <20201110162448.9846-1-yu-cheng.yu@intel.com>
+        id S1730430AbgKJQ00 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 11:26:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50772 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726152AbgKJQ0Z (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Nov 2020 11:26:25 -0500
+Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD2A3C0613CF;
+        Tue, 10 Nov 2020 08:26:24 -0800 (PST)
+Received: by mail-ed1-x544.google.com with SMTP id o20so13393439eds.3;
+        Tue, 10 Nov 2020 08:26:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=2NcAsVTPsYA/NoTEYktfl6/AwcvS1dbUOsrpH4IcvMo=;
+        b=m4+3CV7fPBedSyDJNc3NrHQ+qEZyL//4m+o1MBQ1SyAd3as1QYsZ0A+sxlrZs+uIBn
+         yXNI4cZL68ADq/I0ZyxXYVCK2gb0McEZkv4gKqsjCydl8dU+mlJMWRyABu/nd9KTCdBZ
+         MUJt5PGaJYpyiCWdjnuVMpGp7qDIAF0RZrA2F6eKU+V1OeeEIYStcp3tyWmrRKr85gdk
+         4eOEFGPkX9HCdfDO/lKXjvgNb+rVCYlwxq5GL7cXg6/gANObk+NZkUbEiTZcAFAfd0aT
+         L5myAHFx41BljRl6tWYRQiiiACg9WQWHFlN/yHaxOStPSDwV/KZzcIUQM6MzVt0Tc+SR
+         RXKQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:subject:to:cc:references:from:message-id
+         :date:user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=2NcAsVTPsYA/NoTEYktfl6/AwcvS1dbUOsrpH4IcvMo=;
+        b=se4zvmiXDtaJ3UVuPRWqnW4Nx15o4wN3QmuZjWGpKNf2SBAQ3DX8aCfcUJ2BxkWvIY
+         4fipuCJyjCzrnhqC+2Y2PJVTgvJv/uBOByN2eEyYsxs+u5IKQRdvMca2kEdXgKoLNTZJ
+         HU1rHPdDnUL6wIOZZ200dGgz0tCO6yoP0gyLSotStgbi+rKtHU7PiKUpAb58ZwnOlI1e
+         MtaAyRIFfX+bolN1DsUrcrR9dkcBZMTObXForN7zW7f917JuN+RUHTFaVDuLqkk7h9X0
+         I6DjjRyO0zEjIKLY1XVe9Lzd8kcjvTEBz4lxBXM8GmUZhjqRQQYFjYYIrC9bhYLYUg+p
+         ZhyA==
+X-Gm-Message-State: AOAM531cF+3uD6n5pBbc1inp825Ufyl561Ow2y0h+It8C16nAo8AT+CA
+        CatwoG0wWnGtXSCNw7255O6O8dWOUy8=
+X-Google-Smtp-Source: ABdhPJwuSP6VnkfK3b2egRw4V5auLe2FLUmM5/5ZMiBr4Avs7VrFlqlnVw0CmhEpsMDOWn3cUuiyhw==
+X-Received: by 2002:aa7:c704:: with SMTP id i4mr93729edq.51.1605025583211;
+        Tue, 10 Nov 2020 08:26:23 -0800 (PST)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.googlemail.com with ESMTPSA id q15sm11048192edt.95.2020.11.10.08.26.22
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 10 Nov 2020 08:26:22 -0800 (PST)
+Sender: Paolo Bonzini <paolo.bonzini@gmail.com>
+Subject: Re: [PATCH v3 19/35] x86/io_apic: Cleanup trigger/polarity helpers
+To:     David Woodhouse <dwmw2@infradead.org>, Qian Cai <cai@redhat.com>,
+        x86@kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Tom Murphy <murphyt7@tcd.ie>
+Cc:     kvm <kvm@vger.kernel.org>, iommu@lists.linux-foundation.org,
+        joro@8bytes.org, linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-hyperv@vger.kernel.org, maz@misterjones.org,
+        Dexuan Cui <decui@microsoft.com>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+References: <e6601ff691afb3266e365a91e8b221179daf22c2.camel@infradead.org>
+ <20201024213535.443185-1-dwmw2@infradead.org>
+ <20201024213535.443185-20-dwmw2@infradead.org>
+ <085029af45f045dcf5b7fb2173d560421b00b44d.camel@redhat.com>
+ <23e0a29faad5a9cc43582ba7d40a3073f2fb8c87.camel@infradead.org>
+From:   Paolo Bonzini <bonzini@gnu.org>
+Message-ID: <e213d85f-b29b-e663-29db-10d987feb8d7@gnu.org>
+Date:   Tue, 10 Nov 2020 17:26:21 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <23e0a29faad5a9cc43582ba7d40a3073f2fb8c87.camel@infradead.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "H.J. Lu" <hjl.tools@gmail.com>
+On 10/11/20 09:59, David Woodhouse wrote:
+> Hm, attempting to reproduce this shows something else. Ever since
+> commit be62dbf554c5 ("iommu/amd: Convert AMD iommu driver to the dma-
+> iommu api") in 5.5 the following stops working for me:
+> 
+> $ qemu-system-x86_64 -serial mon:stdio -kernel bzImage  -machine q35,accel=kvm,kernel-irqchip=split -m 2G -device amd-iommu,intremap=off -append "console=ttyS0 apic=verbose debug" -display none
+> 
+> It hasn't got a hard drive but I can watch the SATA interrupts fail as
+> it probes the CD-ROM:
+> 
+> [    7.403327] ata3.00: qc timeout (cmd 0xa1)
+> [    7.405980] ata3.00: failed to IDENTIFY (I/O error, err_mask=0x4)
+> 
+> Adding 'iommu=off' to the kernel command line makes it work again, in
+> that it correctly panics at the lack of a root file system, quickly.
 
-When Indirect Branch Tracking (IBT) is enabled, vDSO functions may be
-called indirectly, and must have ENDBR32 or ENDBR64 as the first
-instruction.  The compiler must support -fcf-protection=branch so that it
-can be used to compile vDSO.
+That might well be a QEMU bug though, AMD emulation is kinda experimental.
 
-Signed-off-by: H.J. Lu <hjl.tools@gmail.com>
-Signed-off-by: Yu-cheng Yu <yu-cheng.yu@intel.com>
-Acked-by: Andy Lutomirski <luto@kernel.org>
----
- arch/x86/entry/vdso/Makefile | 4 ++++
- 1 file changed, 4 insertions(+)
-
-diff --git a/arch/x86/entry/vdso/Makefile b/arch/x86/entry/vdso/Makefile
-index 21243747965d..a87e993bb2fe 100644
---- a/arch/x86/entry/vdso/Makefile
-+++ b/arch/x86/entry/vdso/Makefile
-@@ -92,6 +92,10 @@ endif
- 
- $(vobjs): KBUILD_CFLAGS := $(filter-out $(GCC_PLUGINS_CFLAGS) $(RETPOLINE_CFLAGS),$(KBUILD_CFLAGS)) $(CFL)
- 
-+ifdef CONFIG_X86_BRANCH_TRACKING_USER
-+$(vobjs) $(vobjs32): KBUILD_CFLAGS += -fcf-protection=branch
-+endif
-+
- #
- # vDSO code runs in userspace and -pg doesn't help with profiling anyway.
- #
--- 
-2.21.0
-
+Paolo
