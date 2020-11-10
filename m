@@ -2,72 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A637B2AD9A3
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 16:04:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 19A3B2AD99F
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 16:03:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731164AbgKJPEi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 10:04:38 -0500
-Received: from foss.arm.com ([217.140.110.172]:57230 "EHLO foss.arm.com"
+        id S1731117AbgKJPD4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 10:03:56 -0500
+Received: from mga17.intel.com ([192.55.52.151]:32055 "EHLO mga17.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726721AbgKJPEh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 10:04:37 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 49EE412FC;
-        Tue, 10 Nov 2020 07:04:37 -0800 (PST)
-Received: from [10.57.21.178] (unknown [10.57.21.178])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 3A1FE3F718;
-        Tue, 10 Nov 2020 07:04:35 -0800 (PST)
-Subject: Re: [PATCH 3/4] powercap/drivers/dtpm: Add API for dynamic thermal
- power management
-To:     Daniel Lezcano <daniel.lezcano@linaro.org>
-Cc:     rafael@kernel.org, srinivas.pandruvada@linux.intel.com,
-        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
-        rui.zhang@intel.com, "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Arnd Bergmann <arnd@arndb.de>,
-        "open list:GENERIC INCLUDE/ASM HEADER FILES" 
-        <linux-arch@vger.kernel.org>
-References: <20201006122024.14539-1-daniel.lezcano@linaro.org>
- <20201006122024.14539-4-daniel.lezcano@linaro.org>
- <8fea0109-30d4-7d67-ffeb-8e588a4dadc3@arm.com>
- <313a92c5-3c45-616f-1fe8-9837721f9889@arm.com>
- <2495f9b8-327d-bf92-a159-ac3202d30ee0@linaro.org>
-From:   Lukasz Luba <lukasz.luba@arm.com>
-Message-ID: <f002fb7b-b66f-fca5-06ea-e9ead319cdcc@arm.com>
-Date:   Tue, 10 Nov 2020 15:04:33 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        id S1730070AbgKJPDz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Nov 2020 10:03:55 -0500
+IronPort-SDR: N6IaCDI6l/LE+xY/tDc2XXT06qidxv9n0VUcf8bZj1NJZfRqTif4UhvQ5WyhWQBrspRCUINX94
+ AnTxsjOU7DpQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9801"; a="149834997"
+X-IronPort-AV: E=Sophos;i="5.77,466,1596524400"; 
+   d="scan'208";a="149834997"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Nov 2020 07:03:47 -0800
+IronPort-SDR: VtbmLZyuJi9EZhCKNVLenExelxhc/iqjz98xbD9qIWA/ep5GV4/h65e6kCQ4WYJ4LlBZMCFPRR
+ G9aKfaeNA35g==
+X-IronPort-AV: E=Sophos;i="5.77,466,1596524400"; 
+   d="scan'208";a="531236636"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Nov 2020 07:03:45 -0800
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1kcVCR-005VPO-5F; Tue, 10 Nov 2020 17:04:47 +0200
+Date:   Tue, 10 Nov 2020 17:04:47 +0200
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Bartosz Golaszewski <brgl@bgdev.pl>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Jan Kiszka <jan.kiszka@siemens.com>,
+        David Laight <David.Laight@aculab.com>,
+        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Subject: Re: [PATCH v4 6/7] gpio: exar: switch to using regmap
+Message-ID: <20201110150447.GW4077@smile.fi.intel.com>
+References: <20201110145552.23024-1-brgl@bgdev.pl>
+ <20201110145552.23024-7-brgl@bgdev.pl>
 MIME-Version: 1.0
-In-Reply-To: <2495f9b8-327d-bf92-a159-ac3202d30ee0@linaro.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201110145552.23024-7-brgl@bgdev.pl>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Nov 10, 2020 at 03:55:51PM +0100, Bartosz Golaszewski wrote:
+> From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+> 
+> We can simplify the code in gpio-exar by using regmap. This allows us to
+> drop the mutex (regmap provides its own locking) and we can also reuse
+> regmap's bit operations instead of implementing our own update function.
+
+...
+
+> +static const struct regmap_config exar_regmap_config = {
+> +	.name		= "exar-gpio",
+> +	.reg_bits	= 16,
+
+As per previous version comment.
+
+Hold on, the registers are 16-bit wide, but their halves are sparsed!
+So, I guess 8 and 8 with helpers to get hi and lo parts are essential.
 
 
-On 11/10/20 2:59 PM, Daniel Lezcano wrote:
-> On 10/11/2020 12:05, Lukasz Luba wrote:
->>
->> Actually I've found one issue when I have been trying to clean
->> my testing branch with modified scmi-cpufreq.c.
-> 
-> IMO, those errors are not the dtpm framework fault but the scmi-cpufreq.
+TABLE 5: DEVICE CONFIGURATION REGISTERS SHOWN IN BYTE ALIGNMENT
 
-True, I have added this proposed macro directly into driver, but it's
-not strictly the framework.
+> +	.val_bits	= 8,
+> +};
 
-> 
-> You should add a component in the drivers/powercap which does the glue
-> between the scmi-cpufreq and the dtpm. No stub will be needed in this
-> case as the component will depend on CONFIG_DTPM.
-> 
-> 
-> 
-> 
+This is basically represents two banks out of 6 8-bit registers each.
 
-Make sense, the glue stick should take care in this scenario.
 
-In this case, please keep the Reviewed-by and Tested-by and ignore
-the previous email.
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
