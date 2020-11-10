@@ -2,127 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C6152AE085
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 21:12:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ABB672AE08D
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 21:14:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731608AbgKJUMG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 15:12:06 -0500
-Received: from mail-bn8nam11on2115.outbound.protection.outlook.com ([40.107.236.115]:34785
-        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726400AbgKJUMF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 15:12:05 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ahaZomfyWv25eYKMGhG2fmzqsmK9jOhuYYYEqp+jxUcFouQODRdLK15uF5n59kR/nfYimxkSchU1YwTeQLHOXxlTOchTrtLQW/AnY4RyhyIaKwRNShckL1rwLnwSPxL+16WAU56dsj3pJbL+PLXrMNVJgtpRJlp1Aj28eFbc3AferbFsUAYv2v+eNlGVZWv/PGl+8bXcaYicbcV712Njty+sEkz7PcTAg+Tk4tsZROk2OfuaL9w0d+9Vd2zTCaeEWIUZagmmEpUtzKg3Kje/FhL64PgcAnQVLKm9A8E7oUOUgbGUli0c8yqIgopgGt9cAn2Cls14oDv/g644oh6DwQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=xTBEgqEcRGDqVXlDGVelub0G/ygtKhqGcbkxufaoJRc=;
- b=bs1haGf2Ei0an+wz1c2W+10gCIvUeYSMoPSkATzIpnfcrpJEVqxrCMq53LWEmKRL91Uf5AgPTDMGXuThcZZfK9AXjT0vWkyywFsjygFoks/1XDbgeUZKy1HI1Lz92TsOpPzhAqNJKToIspJ27V9n4Pxz1A7oGCkNntqhQXnp9PTyA1VxgtSUFv2dEFdEhXKs1MDa7WvKSbYUX7Cl00F/f6wfwQl3ckO8QAvRnIX5ddSVcKErUBC4/OOefnTLt7aceq9SZU+gcPWZJetxdkd79E2jwazGbSuRw0twV9zii8pzGFOaPBEgjEd+4XWLkj0UcMirps/65fw9w6u1RAfSHQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=hammerspace.com; dmarc=pass action=none
- header.from=hammerspace.com; dkim=pass header.d=hammerspace.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hammerspace.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=xTBEgqEcRGDqVXlDGVelub0G/ygtKhqGcbkxufaoJRc=;
- b=IovmiRjCWewkok8hLgeBVeVXs6UKXeYuuaFWFz0J3vXzznWH/mgawWxakVDlQV01nn+DIL575sq9l28FM0aAEWJ+Jarfqrr/Bntvihu2jhBE5yZEwIXPpqUXpKXkklEZvJB4BlgWLmrxu3newFX/WgWZdg1BYkFPsZAOytgm+U8=
-Received: from MN2PR13MB3957.namprd13.prod.outlook.com (2603:10b6:208:263::11)
- by MN2PR13MB3133.namprd13.prod.outlook.com (2603:10b6:208:137::28) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3564.13; Tue, 10 Nov
- 2020 20:12:02 +0000
-Received: from MN2PR13MB3957.namprd13.prod.outlook.com
- ([fe80::e989:f666:131a:e210]) by MN2PR13MB3957.namprd13.prod.outlook.com
- ([fe80::e989:f666:131a:e210%9]) with mapi id 15.20.3541.018; Tue, 10 Nov 2020
- 20:12:01 +0000
-From:   Trond Myklebust <trondmy@hammerspace.com>
-To:     "alban.crequy@gmail.com" <alban.crequy@gmail.com>,
-        "sargun@sargun.me" <sargun@sargun.me>
-CC:     "mauricio@kinvolk.io" <mauricio@kinvolk.io>,
-        "smayhew@redhat.com" <smayhew@redhat.com>,
-        "dhowells@redhat.com" <dhowells@redhat.com>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "chuck.lever@oracle.com" <chuck.lever@oracle.com>,
-        "schumaker.anna@gmail.com" <schumaker.anna@gmail.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "bfields@fieldses.org" <bfields@fieldses.org>,
-        "linux-nfs@vger.kernel.org" <linux-nfs@vger.kernel.org>,
-        "anna.schumaker@netapp.com" <anna.schumaker@netapp.com>
-Subject: Re: [PATCH v4 0/2] NFS: Fix interaction between fs_context and user
- namespaces
-Thread-Topic: [PATCH v4 0/2] NFS: Fix interaction between fs_context and user
- namespaces
-Thread-Index: AQHWsUBG7BgYV56FhkmlUyrWpPNGJ6nBns0AgAA6MAA=
-Date:   Tue, 10 Nov 2020 20:12:01 +0000
-Message-ID: <f6d86006ccd19d4d101097de309eb21bbbf96e43.camel@hammerspace.com>
-References: <20201102174737.2740-1-sargun@sargun.me>
-         <CAMXgnP5cVoLKTGPOAO+aLEAGLpkjACy1e4iLBKkfp8Gv1U77xA@mail.gmail.com>
-In-Reply-To: <CAMXgnP5cVoLKTGPOAO+aLEAGLpkjACy1e4iLBKkfp8Gv1U77xA@mail.gmail.com>
-Accept-Language: en-US, en-GB
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=hammerspace.com;
-x-originating-ip: [68.36.133.222]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 0ddcfa0a-338b-4e5f-9513-08d885b4e2dd
-x-ms-traffictypediagnostic: MN2PR13MB3133:
-x-microsoft-antispam-prvs: <MN2PR13MB3133A49959F70AF3DBCC2AB0B8E90@MN2PR13MB3133.namprd13.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:9508;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: pcbJHu9NP2WcVIKUUB0tfWLfd8Kw15DJL8doDUVhu2t+i2VQue8IsxSgZevaLXgc5LTgRFC5KnXAR6KUkjZKhSBB3Th99utNGZf3pbeRb2F9Iu1o+SLmpBxy1oHE1DI/WBgD4h0qbgrHnVEtJucE4bWe6HeDHAtYyUy0HPqzjYkVn4QkECjYHMIirQjIxmocgK++cbenOAtv9LycM/34aE+XhdADJfPHcL3nu5oPtmFx3HBcJrsNtX5MkQpRqr/293p+pH9cznSr2pZwC26HJaGqpb/M3KT8wrDiKC7WGFJkxd/PWCqMX9GnlsW2kDGy
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR13MB3957.namprd13.prod.outlook.com;PTR:;CAT:NONE;SFS:(39830400003)(376002)(136003)(346002)(396003)(366004)(4001150100001)(71200400001)(186003)(26005)(6506007)(5660300002)(316002)(83380400001)(110136005)(2616005)(54906003)(8676002)(8936002)(7416002)(76116006)(6486002)(36756003)(86362001)(91956017)(66556008)(66476007)(66946007)(66446008)(64756008)(478600001)(6512007)(4326008)(2906002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: hTiMKIA0OUmWtjwpvPrBmFOgm6d44XJRcEHiMyvCK4FX6gshWa2a+Y2KpcLQk8QXxqps8FBQnDg2Qz1QhHTYzvWrhI90wokK/Mr0TG0ofpHKh9ny1ZpME5w6iEEbwusX1hWQ6YqUo+fPOEBsZsYp7ghyrkGArBqjtkPGzNxIo481o/KzRamMhfXaJfWyYGoPIaL6CFKHlr/o9pF8WmacDCD+zq++8jR7C86cp4p1uKX/z/IdRYBSh1QBlJzrpJ7ROl1VZwx0rIReeJF5YLuDB5GL1qJABu84Ls/E4N4wkksv9I2OpwJT6oYtPfcBdC4obhFYaDa+jYG0DDrztnSdDD1zmRd5mRrUEFLkBpErx2POaEJGGTY5dq3UFCjjbKZcuSZF/fCqGNI92Cv9g67OS1kQ894Z25zqDYnmjmBhW+baDKSVnsnx17uVdE6HArMcWYjOmRYEBnzs8iYIj3v+ZqBgYbCXXr20WRq7pXuoAU1iOFE7hx2vXB92/7lseW16B3g3ac7Y4XjnPq2S/6m54yEXuYWL6G9gQxt0aANUKsZ62pSjWESsmjCmBGw4QYmqKA8TfmZ4T8m7FgJFAC+GSks4uPcIGzXOJbdlJIixzFk4e3jZLnRYIiN6U+DLYToCDRm9MCouxM2T/spFQreU+g==
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <0978FA741844F5479AB72F7DEB21B473@namprd13.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        id S1731481AbgKJUOr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 15:14:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58348 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728320AbgKJUOq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Nov 2020 15:14:46 -0500
+Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41C66C0613D6
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 12:14:46 -0800 (PST)
+Received: by mail-io1-xd43.google.com with SMTP id n129so15668560iod.5
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 12:14:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=sartura-hr.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=LcGHI5HLTTMixiAoo4DwvdYmU5XWNIEPWiELjO+QW7Y=;
+        b=UMpcvPcjlLhh/kl5mvTfd50lcLioF3hMJ3jOu6/aMUZXHLGcTwvS1+TMHy/M2b1+BO
+         w4AoJQVRln8SBbIHpkfDVh6JBlDmSNWhlRKyzGsSny9MdOp63eo/6RAm6nk2cq55ek6p
+         MsHNuJ0MRZyB5CMbcPDhlooJFaHaAaVcYMwHzJ7Nx3k/G3PRvNlCmrM+DLbhi66Fspml
+         fPktd6wG14MGC5gS7CbKnKGw6sEEwWFaHi7CivlT2av+mmJVYAGOaQjf149Rt5FxZqz/
+         8aysjOEOvnul07C0FBmTv1JXjy5PWuEDVfyB6GS3SrqaXcKSIkmEJyFZgrGML3wesK7m
+         c3Qg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=LcGHI5HLTTMixiAoo4DwvdYmU5XWNIEPWiELjO+QW7Y=;
+        b=pUcnzxsKZgQR9vBsdaKlx/vkuqP7+CqgLhuFaB8SZsI/xhZBGSgfEVT9Bt2RS1E0QN
+         Y5vW2Et9nGA91ZkG/ICQpuraRSO371TmKgtR3Yr0WVHcCc/9qQM4p1TyvQ9Nuhyd1XqR
+         Odd49S4APyb3vTQliEN9IxLtZy2irwnpp3Fmw5pSYdGjbAT/N+oSrBZMdSd/kVuenQlW
+         Nbp8rEvImMskznGxsdS6dtwpth5fMAwBLFFJGkFNVJ0h1bnpGes7xZf/Lc3EHgSKU4n0
+         MwNfaE/0HSp3BwcXmv4amsAToOw0YqZ6gqoH3doJ+diIVSgeQiJNckIRI4cf2J7M6g8D
+         GzNQ==
+X-Gm-Message-State: AOAM5324OMlK1CwtJjzmqo/KcyuUnh4TXgpsX9NVkatimOE2BP6GvRj+
+        LNah89pCBhbiFA7umkl51NNB6PTJg9tOEGPZ0yOA6A==
+X-Google-Smtp-Source: ABdhPJxJ5nCLlaslCGZ7rFMK8sVF6fRf6ubFOx1K9c+PBlOt2+l8gZJm22j48T4dN13f9n/gOQ/tqr7wSsDzhgVdI+I=
+X-Received: by 2002:a02:c64f:: with SMTP id k15mr17291198jan.75.1605039285501;
+ Tue, 10 Nov 2020 12:14:45 -0800 (PST)
 MIME-Version: 1.0
-X-OriginatorOrg: hammerspace.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: MN2PR13MB3957.namprd13.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0ddcfa0a-338b-4e5f-9513-08d885b4e2dd
-X-MS-Exchange-CrossTenant-originalarrivaltime: 10 Nov 2020 20:12:01.8480
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 0d4fed5c-3a70-46fe-9430-ece41741f59e
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: OzRWMylFOYj3Pi2OBcOhJLFqrT1i7iDXexe78++dfGyxJsyxVZESiucrTcfzmGKqtG1QjAgKywzzwyyIHgpdcQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR13MB3133
+References: <20201019221859.56680-3-luka.kovacic@sartura.hr>
+ <202010201049.3V7m9mtx-lkp@intel.com> <20201104152227.GM4488@dell>
+In-Reply-To: <20201104152227.GM4488@dell>
+From:   Luka Kovacic <luka.kovacic@sartura.hr>
+Date:   Tue, 10 Nov 2020 21:14:34 +0100
+Message-ID: <CADZsf3ZW2kvqoq=fnuYajRHtSOZzjL7O-Ycmif6d_Jucd3nFJQ@mail.gmail.com>
+Subject: Re: [PATCH v6 2/6] drivers: mfd: Add a driver for iEi WT61P803 PUZZLE MCU
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     kernel test robot <lkp@intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-hwmon@vger.kernel.org,
+        Linux LED Subsystem <linux-leds@vger.kernel.org>,
+        devicetree <devicetree@vger.kernel.org>, kbuild-all@lists.01.org,
+        Pavel Machek <pavel@ucw.cz>, Dan Murphy <dmurphy@ti.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Jean Delvare <jdelvare@suse.com>,
+        Guenter Roeck <linux@roeck-us.net>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gVHVlLCAyMDIwLTExLTEwIGF0IDE3OjQzICswMTAwLCBBbGJhbiBDcmVxdXkgd3JvdGU6DQo+
-IEhpLA0KPiANCj4gSSB0ZXN0ZWQgdGhlIHBhdGNoZXMgb24gdG9wIG9mIDUuMTAuMC1yYzMrIGFu
-ZCBJIGNvdWxkIG1vdW50IGFuIE5GUw0KPiBzaGFyZSB3aXRoIGEgZGlmZmVyZW50IHVzZXIgbmFt
-ZXNwYWNlLiBmc29wZW4oKSBpcyBkb25lIGluIHRoZQ0KPiBjb250YWluZXIgbmFtZXNwYWNlcyAo
-dXNlciwgbW50IGFuZCBuZXQgbmFtZXNwYWNlcykgd2hpbGUgZnNjb25maWcoKSwNCj4gZnNtb3Vu
-dCgpIGFuZCBtb3ZlX21vdW50KCkgYXJlIGRvbmUgb24gdGhlIGhvc3QgbmFtZXNwYWNlcy4gVGhl
-IG1vdW50DQo+IG9uIHRoZSBob3N0IGlzIGF2YWlsYWJsZSBpbiB0aGUgY29udGFpbmVyIHZpYSBt
-b3VudCBwcm9wYWdhdGlvbiBmcm9tDQo+IHRoZSBob3N0IG1vdW50Lg0KPiANCj4gV2l0aCB0aGlz
-LCB0aGUgZmlsZXMgb24gdGhlIE5GUyBzZXJ2ZXIgd2l0aCB1aWQgMCBhcmUgYXZhaWxhYmxlIGlu
-DQo+IHRoZQ0KPiBjb250YWluZXIgd2l0aCB1aWQgMC4gT24gdGhlIGhvc3QsIHRoZXkgYXJlIGF2
-YWlsYWJsZSB3aXRoIHVpZA0KPiA0Mjk0OTY3Mjk0IChtYWtlX2t1aWQoJmluaXRfdXNlcl9ucywg
-LTIpKS4NCj4gDQoNCkNhbiBzb21lb25lIHBsZWFzZSB0ZWxsIG1lIHdoYXQgaXMgYnJva2VuIHdp
-dGggdGhlIF9jdXJyZW50XyBkZXNpZ24NCmJlZm9yZSB3ZSBzdGFydCB0cnlpbmcgdG8gcHVzaCAi
-Zml4ZXMiIHRoYXQgY2xlYXJseSBicmVhayBpdD8NCg0KVGhlIGN1cnJlbnQgZGVzaWduIGFzc3Vt
-ZXMgdGhhdCB0aGUgdXNlciBuYW1lc3BhY2UgYmVpbmcgdXNlZCBpcyB0aGUNCm9uZSB3aGVyZSB0
-aGUgbW91bnQgaXRzZWxmIGlzIHBlcmZvcm1lZC4gVGhhdCBtZWFucyB0aGF0IHRoZSB1aWRzIGFu
-ZA0KZ2lkcyBvciB1c2VybmFtZXMgYW5kIGdyb3VwbmFtZXMgdGhhdCBnbyBvbiB0aGUgd2lyZSBt
-YXRjaCB0aGUgdWlkcyBhbmQNCmdpZHMgb2YgdGhlIGNvbnRhaW5lciBpbiB3aGljaCB0aGUgbW91
-bnQgb2NjdXJyZWQuDQoNClRoZSBhc3N1bXB0aW9uIGlzIHRoYXQgdGhlIHNlcnZlciBoYXMgYXV0
-aGVudGljYXRlZCB0aGF0IGNsaWVudCBhcw0KYmVsb25naW5nIHRvIGEgZG9tYWluIHRoYXQgaXQg
-cmVjb2duaXNlcyAoZWl0aGVyIHRocm91Z2ggc3Ryb25nDQpSUENTRUNfR1NTL2tyYjUgYXV0aGVu
-dGljYXRpb24sIG9yIHRocm91Z2ggd2Vha2VyIG1hdGNoaW5nIG9mIElQDQphZGRyZXNzZXMgdG8g
-YSBsaXN0IG9mIGFjY2VwdGFibGUgY2xpZW50cykuDQoNCklmIHlvdSBnbyBhaGVhZCBhbmQgY2hh
-bmdlIHRoZSB1c2VyIG5hbWVzcGFjZSBvbiB0aGUgY2xpZW50IHdpdGhvdXQNCmdvaW5nIHRocm91
-Z2ggdGhlIG1vdW50IHByb2Nlc3MgYWdhaW4gdG8gbW91bnQgYSBkaWZmZXJlbnQgc3VwZXIgYmxv
-Y2sNCndpdGggYSBkaWZmZXJlbnQgdXNlciBuYW1lc3BhY2UsIHRoZW4geW91IHdpbGwgbm93IGdl
-dCB0aGUgZXhhY3Qgc2FtZQ0KYmVoYXZpb3VyIGFzIGlmIHlvdSBkbyB0aGF0IHdpdGggYW55IG90
-aGVyIGZpbGVzeXN0ZW0uDQoNCi0tIA0KVHJvbmQgTXlrbGVidXN0DQpMaW51eCBORlMgY2xpZW50
-IG1haW50YWluZXIsIEhhbW1lcnNwYWNlDQp0cm9uZC5teWtsZWJ1c3RAaGFtbWVyc3BhY2UuY29t
-DQoNCg0K
+Hello,
+
+On Wed, Nov 4, 2020 at 4:22 PM Lee Jones <lee.jones@linaro.org> wrote:
+>
+> On Tue, 20 Oct 2020, kernel test robot wrote:
+>
+> > Hi Luka,
+> >
+> > Thank you for the patch! Perhaps something to improve:
+> >
+> > [auto build test WARNING on hwmon/hwmon-next]
+> > [also build test WARNING on v5.9]
+> > [cannot apply to pavel-linux-leds/for-next lee-mfd/for-mfd-next next-20=
+201016]
+> > [If your patch is applied to the wrong git tree, kindly drop us a note.
+> > And when submitting patch, we suggest to use '--base' as documented in
+> > https://git-scm.com/docs/git-format-patch]
+> >
+> > url:    https://github.com/0day-ci/linux/commits/Luka-Kovacic/Add-suppo=
+rt-for-the-iEi-WT61P803-PUZZLE-MCU/20201020-062048
+> > base:   https://git.kernel.org/pub/scm/linux/kernel/git/groeck/linux-st=
+aging.git hwmon-next
+> > config: ia64-randconfig-r002-20201020 (attached as .config)
+> > compiler: ia64-linux-gcc (GCC) 9.3.0
+> > reproduce (this is a W=3D1 build):
+> >         wget https://raw.githubusercontent.com/intel/lkp-tests/master/s=
+bin/make.cross -O ~/bin/make.cross
+> >         chmod +x ~/bin/make.cross
+> >         # https://github.com/0day-ci/linux/commit/855e7cca9db335136d095=
+55f9983d7245fca1f4b
+> >         git remote add linux-review https://github.com/0day-ci/linux
+> >         git fetch --no-tags linux-review Luka-Kovacic/Add-support-for-t=
+he-iEi-WT61P803-PUZZLE-MCU/20201020-062048
+> >         git checkout 855e7cca9db335136d09555f9983d7245fca1f4b
+> >         # save the attached .config to linux build tree
+> >         COMPILER_INSTALL_PATH=3D$HOME/0day COMPILER=3Dgcc-9.3.0 make.cr=
+oss ARCH=3Dia64
+> >
+> > If you fix the issue, kindly add following tag as appropriate
+> > Reported-by: kernel test robot <lkp@intel.com>
+> >
+> > All warnings (new ones prefixed by >>):
+> >
+> > >> drivers/mfd/iei-wt61p803-puzzle.c:311:5: warning: no previous protot=
+ype for 'iei_wt61p803_puzzle_buzzer' [-Wmissing-prototypes]
+> >      311 | int iei_wt61p803_puzzle_buzzer(struct iei_wt61p803_puzzle *m=
+cu, bool long_beep)
+> >          |     ^~~~~~~~~~~~~~~~~~~~~~~~~~
+>
+> This bot has been complaining about this patch since at least v3.
+>
+> Are you going to fix the issue?  Or is it moot?
+
+Yes, I'll fix the issue in the next patchset.
+
+>
+> --
+> Lee Jones [=E6=9D=8E=E7=90=BC=E6=96=AF]
+> Senior Technical Lead - Developer Services
+> Linaro.org =E2=94=82 Open source software for Arm SoCs
+> Follow Linaro: Facebook | Twitter | Blog
+
+Kind regards,
+Luka
