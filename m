@@ -2,111 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E44862ADB4B
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 17:08:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E50332ADB52
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 17:10:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731264AbgKJQIi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 11:08:38 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:33075 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730182AbgKJQIi (ORCPT
+        id S1731434AbgKJQKO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 11:10:14 -0500
+Received: from youngberry.canonical.com ([91.189.89.112]:45725 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731220AbgKJQKN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 11:08:38 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1605024516;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=J2Sf12kgoaoMwSO7zVui+rmBiPrlupwBdcBqb7pEUrA=;
-        b=CBYvAhNPhmxne0KvUleygGt0iFEn9tmgZB9rOfWctx2V6RzvCc1nnErQRvuIUByviV24It
-        yITxTIjq/DlC8sveeP3WDOOWX1rDEZ/eSb2rxT7PowvhQuSntr9jOUj4O/x3hptcDCSdYO
-        77m2TfcRsTbYUnFHiaeKwdH3s/FDE9s=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-592-4Uci3FkhOcm_IsOUxPjHcQ-1; Tue, 10 Nov 2020 11:08:35 -0500
-X-MC-Unique: 4Uci3FkhOcm_IsOUxPjHcQ-1
-Received: by mail-wm1-f72.google.com with SMTP id 14so982225wmg.1
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 08:08:34 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=J2Sf12kgoaoMwSO7zVui+rmBiPrlupwBdcBqb7pEUrA=;
-        b=lLZay74pGXrkENT56ze3bhJLjoX5J7LbqDH4YbmB33J/Hi+/5HafpC+MZMh9grwuwa
-         NORaRQMLSEJ5UdfhZVmPNaMEF8W3rkptXlrtFEJr0+Co5N/NOtXM+0+6xYi7qxkj6Fsw
-         s40AjiwGRD2o7znCepe9zV5v8CwHNM+wPfYamWHdag+GZTJlX/iPHZzXhgWRPefVJruD
-         HL9wZQ5ef0N+FFHGrf3T6ziw0dD77W+VZ1sboGmssKP9F9gsOpajCPR7FxsN6RoGJoHJ
-         GF5CvCiXxEzU+Im8R3HfFrouMRDay91+BA9sUgDhoOIClb5KU9Gbi8Sr378e1ecnMVre
-         9HMg==
-X-Gm-Message-State: AOAM5317qlRs7nQJ9TOLMufvnFfDv6CEZQzNqa94SDrepl1Vv5lPwjdb
-        /vmI1XenbNwpeg6cRa0GWLE4WV+K5LIyi18ygGjGdQxWSB1z+Xn6yRpnqOS6xonFfSmWM9E6wNG
-        fB9n71ek2qUhMJA6HcnB5lyaY
-X-Received: by 2002:a1c:7418:: with SMTP id p24mr459764wmc.36.1605024513691;
-        Tue, 10 Nov 2020 08:08:33 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJwX2bp8EAQvFHBwQTJhwBcQNIfAJv7DP1ceAp2mu/MJcNBhBYQdzSeyQiIFxUbOK4ZpE66t/Q==
-X-Received: by 2002:a1c:7418:: with SMTP id p24mr459735wmc.36.1605024513477;
-        Tue, 10 Nov 2020 08:08:33 -0800 (PST)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id h128sm3524684wme.38.2020.11.10.08.08.32
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 10 Nov 2020 08:08:32 -0800 (PST)
-Subject: Re: [PATCH] x86/mce: Check for hypervisor before enabling additional
- error logging
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     "Luck, Tony" <tony.luck@intel.com>,
-        Jim Mattson <jmattson@google.com>, Qian Cai <cai@redhat.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-tip-commits@vger.kernel.org" 
-        <linux-tip-commits@vger.kernel.org>, x86 <x86@kernel.org>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>
-References: <160431588828.397.16468104725047768957.tip-bot2@tip-bot2>
- <3f863634cd75824907e8ccf8164548c2ef036f20.camel@redhat.com>
- <bfc274fc27724ea39ecac1e7ac834ed8@intel.com>
- <CALMp9eTFaiYkTnVe8xKzg40E4nZ3rAOii0O06bTy0+oLNjyKhA@mail.gmail.com>
- <a22b5468e1c94906b72c4d8bc83c0f64@intel.com>
- <20201109232402.GA25492@agluck-desk2.amr.corp.intel.com>
- <20201110063151.GB7290@nazgul.tnic>
- <094c2395-b1b3-d908-657c-9bd4144e40ac@redhat.com>
- <20201110095615.GB9450@nazgul.tnic>
- <b8de7f7b-7aa1-d98b-74be-62d7c055542b@redhat.com>
- <20201110155013.GE9857@nazgul.tnic>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <1b587b45-a5a8-2147-ae53-06d1b284ea11@redhat.com>
-Date:   Tue, 10 Nov 2020 17:08:31 +0100
+        Tue, 10 Nov 2020 11:10:13 -0500
+Received: from 1.general.cking.uk.vpn ([10.172.193.212])
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <colin.king@canonical.com>)
+        id 1kcWDT-00082u-L6; Tue, 10 Nov 2020 16:09:55 +0000
+Subject: Re: [PATCH v2 0/4] support for global CPU list abbreviations
+To:     paulmck@kernel.org, Paul Gortmaker <paul.gortmaker@windriver.com>
+Cc:     linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+        rdunlap@infradead.org, Frederic Weisbecker <fweisbec@gmail.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@kernel.org>, Li Zefan <lizefan@huawei.com>
+References: <20201110040725.1478297-1-paul.gortmaker@windriver.com>
+ <20201110153211.GU3249@paulmck-ThinkPad-P72>
+From:   Colin Ian King <colin.king@canonical.com>
+Message-ID: <6d3f4fbf-3d40-20a4-5c14-145906bf6c0f@canonical.com>
+Date:   Tue, 10 Nov 2020 16:09:55 +0000
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+ Thunderbird/78.4.1
 MIME-Version: 1.0
-In-Reply-To: <20201110155013.GE9857@nazgul.tnic>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <20201110153211.GU3249@paulmck-ThinkPad-P72>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/11/20 16:50, Borislav Petkov wrote:
-> I was thinking of
-> having a mapping between f/m/s and a list of MSRs which those models
-> have - even non-architectural ones - but that's a waste of energy. Why?
-> Because using the *msr_safe() variants will give you the same thing
+On 10/11/2020 15:32, Paul E. McKenney wrote:
+> On Mon, Nov 09, 2020 at 11:07:21PM -0500, Paul Gortmaker wrote:
+>> RFC/v1 ---> v2:
+>>
+>> commit #1:
+>>    leave one line stub behind for !SMP solving build failures.
+>>    Reported by Randy Dunlap and various build bots.
+>>
+>> commit #4
+>>    manage to remember '\0' char in strlen from one line to the next.
+>>    Reported by Colin King.
 
-Yes, pretty much.
+shouldn't that be "Reported and fixed by Colin King"? ;-)
 
->> If it makes sense to emulate certain non-architectural MSRs we can add them.
-> See above - probably not worth the effort.
-
-When we do, certain Microsoft OSes are usually involved. :)
-
-> I'll take a look at how ugly it would become to make the majority of MSR
-> accesses safe.
-
-I think most of them already are, especially the non-architectural ones, 
-because I remember going through a similar discussion a few years ago 
-and Andy said basically "screw it, let's just use *_safe anywhere" as 
-well.  I don't see any need to do anything but add it to your review 
-checklist if you have it (and do it now for MSR_ERROR_CONTROL).
-
-Paolo
+>>
+>> Original description from v1/RFC below remains unchanged...
+> 
+> Queued and this time kicking off testing that actually includes your
+> patches!  ;-)
+> 
+> 							Thanx, Paul
+> 
+>>  ---
+>>
+>> The basic objective here was to add support for "nohz_full=8-last" and/or
+>> "rcu_nocbs="4-last" -- essentially introduce "last" as a portable
+>> reference evaluated at boot/runtime for anything using a CPU list.
+>>
+>> The thinking behind this, is that people carve off a few early CPUs to
+>> support housekeeping tasks, and perhaps dedicate one to a busy I/O
+>> peripheral, and then the remaining pool of CPUs out to the end are a
+>> part of a commonly configured pool used for the real work the user
+>> cares about.
+>>
+>> Extend that logic out to a fleet of machines - some new, and some
+>> nearing EOL, and you've probably got a wide range of core counts to
+>> contend with - even though the early number of cores dedicated to the
+>> system overhead probably doesn't vary.
+>>
+>> This change would enable sysadmins to have a common bootarg across all
+>> such systems, and would also avoid any off-by-one fencepost errors that
+>> happen for users who might briefly forget that core counts start at
+>> zero.
+>>
+>> Looking around before starting, I noticed RCU already had a short-form
+>> abbreviation "all" -- but if we want to treat CPU lists in a uniform
+>> matter, then tokens shouldn't be implemented at a subsystem level and
+>> hence be subsystem specific; each with their own variations.
+>>
+>> So I moved "all" to global use - for boot args, and for cgroups.  Then
+>> I added the inverse "none" and finally, the one I wanted -- "last".
+>>
+>> The use of "last" isn't a standalone word like "all" or "none".  It will
+>> be a part of a complete range specification, possibly with CSV separate
+>> ranges, and possibly specified multiple times.  So I had to be a bit
+>> more careful with string matching - and hence un-inlined the parse
+>> function as commit #1 in this series.
+>>
+>> But it really is a generic support for "replace token ABC with known at
+>> boot value XYZ" - for example, it would be trivial to extend support to
+>> add "half" as a dynamic token to be replaced with 1/2 the core count,
+>> even though I wouldn't suggest that has a use case like "last" does.
+>>
+>> I tested the string matching with a bunch of intentionally badly crafted
+>> strings in a user-space harness, and tested bootarg use with nohz_full
+>> and rcu_nocbs, and also the post-boot cgroup use case as per below:
+>>
+>>    root@hackbox:/sys/fs/cgroup/cpuset# mkdir foo
+>>    root@hackbox:/sys/fs/cgroup/cpuset# cd foo
+>>    root@hackbox:/sys/fs/cgroup/cpuset/foo# cat cpuset.cpus
+>>    
+>>    root@hackbox:/sys/fs/cgroup/cpuset/foo# /bin/echo 10-last > cpuset.cpus
+>>    root@hackbox:/sys/fs/cgroup/cpuset/foo# cat cpuset.cpus
+>>    10-15
+>>    root@hackbox:/sys/fs/cgroup/cpuset/foo# /bin/echo all > cpuset.cpus
+>>    root@hackbox:/sys/fs/cgroup/cpuset/foo# cat cpuset.cpus
+>>    0-15
+>>    root@hackbox:/sys/fs/cgroup/cpuset/foo# /bin/echo none > cpuset.cpus
+>>    root@hackbox:/sys/fs/cgroup/cpuset/foo# cat cpuset.cpus
+>>    
+>>    root@hackbox:/sys/fs/cgroup/cpuset/foo#
+>>
+>> This was on a 16 core machine with CONFIG_NR_CPUS=16 in .config file.
+>>
+>> Note that the two use cases (boot and runtime) are why you see "early"
+>> parameter in the code - I entertained just sticking the string copy on
+>> the stack vs. the early alloc dance, but this felt more correct/robust.
+>> The cgroup and modular code using cpulist_parse() are runtime cases.
+>>
+>> ---
+>>
+>> Cc: Frederic Weisbecker <fweisbec@gmail.com>
+>> Cc: "Paul E. McKenney" <paulmck@kernel.org>
+>> Cc: Josh Triplett <josh@joshtriplett.org>
+>> Cc: Thomas Gleixner <tglx@linutronix.de>
+>> Cc: Ingo Molnar <mingo@kernel.org>
+>> Cc: Li Zefan <lizefan@huawei.com>
+>>
+>> Paul Gortmaker (4):
+>>   cpumask: un-inline cpulist_parse for SMP; prepare for ascii helpers
+>>   cpumask: make "all" alias global and not just RCU
+>>   cpumask: add a "none" alias to complement "all"
+>>   cpumask: add "last" alias for cpu list specifications
+>>
+>>  .../admin-guide/kernel-parameters.rst         |  20 +++
+>>  .../admin-guide/kernel-parameters.txt         |   4 +-
+>>  include/linux/cpumask.h                       |   8 ++
+>>  kernel/rcu/tree_plugin.h                      |  13 +-
+>>  lib/cpumask.c                                 | 132 ++++++++++++++++++
+>>  5 files changed, 165 insertions(+), 12 deletions(-)
+>>
+>> -- 
+>> 2.25.1
+>>
 
