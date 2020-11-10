@@ -2,107 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 632EC2AD2E6
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 10:55:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 643952AD2EC
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 10:56:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730179AbgKJJze (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 04:55:34 -0500
-Received: from out4-smtp.messagingengine.com ([66.111.4.28]:59477 "EHLO
-        out4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726467AbgKJJze (ORCPT
+        id S1730302AbgKJJ4Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 04:56:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46198 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726219AbgKJJ4Y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 04:55:34 -0500
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailout.nyi.internal (Postfix) with ESMTP id 36AFD5C022C;
-        Tue, 10 Nov 2020 04:55:33 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute6.internal (MEProxy); Tue, 10 Nov 2020 04:55:33 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm1; bh=pHiBX4Kik4d9Y0A9fn/Izssf5DO
-        CvwXScDBk9KIrtXE=; b=NUqcrtsLGfV3SKVznwvfbUZgzyW+Q+hImDS50AS2t5y
-        ctrS2poIeQtqpBweVbXYRQzYN9ARWeexJ0DV22IrTr9ypQcGtdWUfF+jzxna+9Ss
-        m0YuA+/rmFbr3o+f3njmVZSzQZYf1Lzj/dQiXTKU29rpvgibr+597vi39HTpJzj/
-        i4/DiBAXK3IYk3e2gBcBolJMg55+ezu7juQGJPjYFb2oxK9IOtX+N0VL66ETFz8T
-        jRYXWWAUFrLlhcnPg00xm3rvgsZrFbsdRzu/BOAqFkYT0lrHAX1jIBXAFxFG0A0g
-        ufwIT9t/BUedvLiByRU6b6O38dd0bF26dXwDZ/Jh09w==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=pHiBX4
-        Kik4d9Y0A9fn/Izssf5DOCvwXScDBk9KIrtXE=; b=OIMT2B3boyg+gr4nleWgG6
-        2gDZyYA0nwBzFKXpLYRGt7Oi9RQGUqBrQJ6nhUO00nXx16noTN2jQkeo97zyfFRb
-        vtpqykJvyzW+yD+/YhYB0//wSk/W2df2vwI4MVOvhD/IuHWHqdMuFoaRMMmWM/PL
-        hKWrOJT1q+8r0MIA11lF/UmGE1Ps7m7zUndrL5YxZlEAEjeS9zLNlYDzzoH/PuEv
-        ks2MgjBAusBpdz8SZvy++eMZFiJlooSBiPyJ6ahqvyfBnLDLEX5LnBcaNY9Ic/CI
-        pmW0urKiWvdFwqEkLEX1hxlnYAiwLh2QoCiMoKKHO/Nm7WxQM4a17fpkROlHjINQ
-        ==
-X-ME-Sender: <xms:lGOqX4xaE0JjflLgFyAJIvFd6NtFmUgUlBw1aGtp2pWkO4gp4uPEgA>
-    <xme:lGOqX8Rxna5_43uYuzW6OBi6ZOA4VhIxBlJqV0fcmJFxCJ2zZGyA_EEDLFe9BcUbe
-    tFwBCqO7neQ8lUoFNQ>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedruddujedguddtucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
-    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
-    htvghrnhepleekgeehhfdutdeljefgleejffehfffgieejhffgueefhfdtveetgeehieeh
-    gedunecukfhppeeltddrkeelrdeikedrjeeinecuvehluhhsthgvrhfuihiivgeptdenuc
-    frrghrrghmpehmrghilhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
-X-ME-Proxy: <xmx:lGOqX6XgT529fWl_NkwBRHiuS9cEaQps5DsCaY_k7zfSrGz1mm3Eaw>
-    <xmx:lGOqX2hQ1jHRpI91e1Cjoelv-5eYUhTLACCyLC0kTIi1lDCZEKJbVw>
-    <xmx:lGOqX6BwoVADx34YvYVxBUrCfUuVWHixofDkxNWVf6ghJbLTW2xqIw>
-    <xmx:lWOqXwD1FpD-nnDGtqEnvxIu4-6wWXc0AXITiaj7AVOQLV4Qj0jVQQ>
-Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
-        by mail.messagingengine.com (Postfix) with ESMTPA id EDD243280060;
-        Tue, 10 Nov 2020 04:55:31 -0500 (EST)
-Date:   Tue, 10 Nov 2020 10:55:29 +0100
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Frank Lee <frank@allwinnertech.com>
-Cc:     anarsoul@gmail.com, tiny.windzz@gmail.com, rui.zhang@intel.com,
-        daniel.lezcano@linaro.org, amitk@kernel.org, wens@csie.org,
-        linux-pm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] thermal: sun8i: Use bitmap API instead of open code
-Message-ID: <20201110095529.4cytycdnmot5nrqa@gilmour.lan>
-References: <20201109114624.23035-1-frank@allwinnertech.com>
+        Tue, 10 Nov 2020 04:56:24 -0500
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C81AC0613CF;
+        Tue, 10 Nov 2020 01:56:24 -0800 (PST)
+Received: from nazgul.tnic (unknown [78.130.214.198])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 7DC091EC036C;
+        Tue, 10 Nov 2020 10:56:21 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1605002181;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=O9Bf9QLEbMBCh3z4FMbn5eGBAmMtLb75UrKmj7Nq7SI=;
+        b=m+RDHKP/Ex24UiFTamOj49F4H2/hL8AXpVG75G8sd3WsutOCUJ0Mx2NvCwySCSJjS4Gbv+
+        jF6ih5lAXSJYigPn7StVpu05cXsuuNplokLLvLoheG2aKh6nLn655620aoSzj7rr4LSXcU
+        hiCX2L5O7hP3q1FNM53MDHKW5G440tM=
+Date:   Tue, 10 Nov 2020 10:56:15 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     "Luck, Tony" <tony.luck@intel.com>,
+        Jim Mattson <jmattson@google.com>, Qian Cai <cai@redhat.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-tip-commits@vger.kernel.org" 
+        <linux-tip-commits@vger.kernel.org>, x86 <x86@kernel.org>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>
+Subject: Re: [PATCH] x86/mce: Check for hypervisor before enabling additional
+ error logging
+Message-ID: <20201110095615.GB9450@nazgul.tnic>
+References: <20201030190807.GA13884@agluck-desk2.amr.corp.intel.com>
+ <160431588828.397.16468104725047768957.tip-bot2@tip-bot2>
+ <3f863634cd75824907e8ccf8164548c2ef036f20.camel@redhat.com>
+ <bfc274fc27724ea39ecac1e7ac834ed8@intel.com>
+ <CALMp9eTFaiYkTnVe8xKzg40E4nZ3rAOii0O06bTy0+oLNjyKhA@mail.gmail.com>
+ <a22b5468e1c94906b72c4d8bc83c0f64@intel.com>
+ <20201109232402.GA25492@agluck-desk2.amr.corp.intel.com>
+ <20201110063151.GB7290@nazgul.tnic>
+ <094c2395-b1b3-d908-657c-9bd4144e40ac@redhat.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="3iveov6p2mot6krw"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20201109114624.23035-1-frank@allwinnertech.com>
+In-Reply-To: <094c2395-b1b3-d908-657c-9bd4144e40ac@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Nov 10, 2020 at 09:50:43AM +0100, Paolo Bonzini wrote:
+> 1) ignore_msrs _cannot_ be on by default.  You cannot know in advance that
+> for all non-architectural MSRs it's okay for them to read as zero and eat
+> writes.  For some non-architectural MSR which never reads as zero on real
+> hardware, who knows that there isn't some code using the contents of the MSR
+> as a divisor, and causing a division by zero exception with ignore_msrs=1?
 
---3iveov6p2mot6krw
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+So if you're emulating a certain type of hardware - say a certain CPU
+model - then what are you saying? That you're emulating it but not
+really all of it, just some bits?
 
-On Mon, Nov 09, 2020 at 07:46:24PM +0800, Frank Lee wrote:
-> From: Yangtao Li <frank@allwinnertech.com>
->=20
-> The bitmap_* API is the standard way to access data in the bitfield.
-> So convert irq_ack to return an unsigned long, and make things to use
-> bitmap API.
->=20
-> Signed-off-by: Yangtao Li <frank@allwinnertech.com>
+Because this is what happens - the kernel checks that it runs on a
+certain CPU type and this tells it that those MSRs are there. But then
+comes virt and throws all assumptions out.
 
-Acked-by: Maxime Ripard <mripard@kernel.org>
+So if it emulates a CPU model and the kernel tries to access those MSRs,
+then the HV should ignore those MSR accesses if it doesn't know about
+them. Why should the kernel change everytime some tool or virtualization
+has shortcomings?
 
-Thanks!
-Maxime
+> 2) it's not just KVM.  _Any_ hypervisor is bound to have this issue for some
+> non-architectural MSRs.  KVM just gets the flak because Linux CI
+> environments (for obvious reasons) use it more than they use Hyper-V or ESXi
+> or VirtualBox.
 
---3iveov6p2mot6krw
-Content-Type: application/pgp-signature; name="signature.asc"
+It's not flak - I'm trying to find a solution which is workable for
+both. The kernel is not at fault here.
 
------BEGIN PGP SIGNATURE-----
+> 3) because of (1) and (2), the solution is very simple.  If the MSR is
+> architectural, its absence is a KVM bug and we'll fix it in all stable
+> versions.  If the MSR is not architectural (and 17Fh isn't; not only it's
+> not mentioned in the SDM,
 
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCX6pjkQAKCRDj7w1vZxhR
-xbwQAQDv52GWPWVj92U0PmN1VvHzhNVme4nMj7siFLiUAK0JeQEAm52+AOn/eXCj
-2qNqQuk9zHkqj5g0nzIvGtSrrROgYgQ=
-=BUnU
------END PGP SIGNATURE-----
+It is mentioned in the SDM.
 
---3iveov6p2mot6krw--
+> even Google is failing me), never ever assume that the CPUID
+> family/model/stepping implies a given MSR is there, and just use
+> rdmsr_safe/wrmsr_safe.
+
+Yes, we don't have a choice, as always. ;-\
+
+But maybe we should have a choice and maybe qemu/kvm should have a way
+to ignore certain MSRs for certain CPU types, regardless of them being
+architectural or not.
+
+Thx.
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
