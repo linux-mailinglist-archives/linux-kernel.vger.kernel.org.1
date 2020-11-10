@@ -2,84 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE9CC2ACB0D
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 03:28:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 369D92ACB10
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 03:28:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729847AbgKJC2P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 21:28:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33586 "EHLO
+        id S1730151AbgKJC2r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 21:28:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33666 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727311AbgKJC2P (ORCPT
+        with ESMTP id S1729648AbgKJC2r (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 21:28:15 -0500
-Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 841F5C0613CF;
-        Mon,  9 Nov 2020 18:28:15 -0800 (PST)
-Received: by mail-io1-xd44.google.com with SMTP id n129so12074659iod.5;
-        Mon, 09 Nov 2020 18:28:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to:cc
-         :content-transfer-encoding;
-        bh=keYF4CkgxzM1pesky08YWn1U5fRMi55bwI9myTqfa/U=;
-        b=A1HUlEtAojTRba+JWBSh6M5Xdhez3Q1OvSMAOSpYW3rjeKA70euFOGo/ncD2l69gPJ
-         a5nHSD3s9GgjnXKmijeWT1YdOh2NiDod7oBqRiSPb+ykJM7RNK1EAxc2tzRfzC8R2SFA
-         /L4YlOoE3zb9lBTg/hYUY3xCCIw4iQ7S2VvDY0nQLaHiR5eGqyYQ1NbgeDJRpigpLVXz
-         Ux2FWSv8yYa+KVwKmaVxf4je9mDJyBCnDY8F2qIxDkqnMQ+5dObw7TXqhBIDqGH2PcB9
-         /DKOTj6vasZ5f1D5mkqCduukNOfo4zSFwIPcb4NYM3n8GGUyeMkzWjc9+ML8aMTiewhz
-         ojGQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc
-         :content-transfer-encoding;
-        bh=keYF4CkgxzM1pesky08YWn1U5fRMi55bwI9myTqfa/U=;
-        b=LR1wpUVzNPxEDuOR0/+XLD4hrY9oR84SRZmjEcShdfUicDUW/yCClST+d63n9Cm/i8
-         qNNE5oNocnlJGrjVMUcdm8823tg//Tk+oVp2JCxF2OWbpToZsYZTriMsRojx2QDgW1zw
-         6PH+lmTp4rBX7pOfZJ5nMxQF4iRRh0LhpjTFKh+38EhURcYS8J6g1Frx12IPE5zI8Eg0
-         +9VJ6PHe+G8WEizOQHwPSaHc0dkq8su+Q5yr5/4cG+JJ61ec0WR9N/eEfycIE/h1djUG
-         LfFItXxCflNxxrVCv5qZb8ll2/u8Am0ZG8j637R0OtUsjA3xs7ruvjvi2XsJBAUcwJ/8
-         b7Mg==
-X-Gm-Message-State: AOAM530OcbmLLGr/Zo0Cua8HujJPkLHoLWYwlKenqzJCL+4VuZfrQh1j
-        gzMAVb5fUSpSBj7k6QD2RNjiJ9dTC2+inB/1q6liRrhDrdFN+Y/K
-X-Google-Smtp-Source: ABdhPJxDwrptMszZuKk2HnOQoODlBjgh6e630cLHfANreTNmB2DtR2JbwwGbwINv7gukrkuDGa/4uKyWHpXngx6bsiY=
-X-Received: by 2002:a5d:9842:: with SMTP id p2mr12619519ios.113.1604975295009;
- Mon, 09 Nov 2020 18:28:15 -0800 (PST)
+        Mon, 9 Nov 2020 21:28:47 -0500
+Received: from gate2.alliedtelesis.co.nz (gate2.alliedtelesis.co.nz [IPv6:2001:df5:b000:5::4])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48F43C0613D3
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Nov 2020 18:28:47 -0800 (PST)
+Received: from mmarshal3.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id 367C8806A8;
+        Tue, 10 Nov 2020 15:28:41 +1300 (NZDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
+        s=mail181024; t=1604975321;
+        bh=9OXKaBwvy5is2HXhWcidySRSEFy37h51UJenVysVcpA=;
+        h=From:To:Cc:Subject:Date;
+        b=jQFFvHqCfXrfNV0djYhlRoM0F92yCmv0jOzXPJBGWvMVg0ZSFd+xgws8LA0mSmk3C
+         vm5rLOu9nyf41dkTtq4BqGmw0dKOA6ZyWLlwjs/FEcfeQPCnMCvGnOJobyI8aBE1Yq
+         yKoLj0otz5aUV/JC4gmcb7M5VX5SS2IxsSgLMfgOabN//peb3fi9AWrgqj3vN42Br8
+         3zx9jrYqelqYh1fk+VeJlWiM7IwhJeANg97VGen3254mkVAhCWrUn+ceHjRlRoWZUS
+         +SnYHwG5XybOCzXz8A4vroROuW5ECa7mNCtd8aIMxP00enjNebz+t04V717gJhTQOf
+         kBqC6K+iSIBjw==
+Received: from smtp (Not Verified[10.32.16.33]) by mmarshal3.atlnz.lc with Trustwave SEG (v7,5,8,10121)
+        id <B5fa9fad60000>; Tue, 10 Nov 2020 15:28:39 +1300
+Received: from evann-dl.ws.atlnz.lc (evann-dl.ws.atlnz.lc [10.33.23.31])
+        by smtp (Postfix) with ESMTP id C61B513EE9C;
+        Tue, 10 Nov 2020 15:28:38 +1300 (NZDT)
+Received: by evann-dl.ws.atlnz.lc (Postfix, from userid 1780)
+        id 048B61A4EA2; Tue, 10 Nov 2020 15:28:39 +1300 (NZDT)
+From:   Evan Nimmo <evan.nimmo@alliedtelesis.co.nz>
+To:     frowand.list@gmail.com, robh+dt@kernel.org
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Evan Nimmo <evan.nimmo@alliedtelesis.co.nz>
+Subject: [PATCH] of/address: Fix of_node memory leak in of_dma_is_coherent
+Date:   Tue, 10 Nov 2020 15:28:25 +1300
+Message-Id: <20201110022825.30895-1-evan.nimmo@alliedtelesis.co.nz>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-From:   app l <lipc198702@gmail.com>
-Date:   Tue, 10 Nov 2020 10:28:04 +0800
-Message-ID: <CAGaOi3Z5ezAiBB4-YxUa+so1s=PnVzVsfw9rAs3CGKExJHD-ow@mail.gmail.com>
-Subject: Question: gadget: How to realize uvc and uac composite function?
-To:     balbi@kernel.org
-Cc:     gregkh@linuxfoundation.org, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
+x-atlnz-ls: pat
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-Version: 4.9 and uac1 driver is V5.9. I tested it based on 4.9 with
-backported dwc3 driver frome v5.9.
-1. According to configfs-usb-gadget-uvc, PC(Windows 10) can get ISO
-data normally;
-2. According to configfs-usb-gadget-uac1, PC(Windows 10) can  install
-audio driver normally(AC Interface,/Captue Input terminal/Speaker);
-3=E3=80=81uvc+uac1 composite device, PC(Windows 10) can get ISO data normal=
-ly,
-but PC shows that the uac1 driver installation failed(AC
-Interface/Capture Inactive/Playback Inactive). AC Interface/Capture
-Inactive/Playback Inactive all show the device cannot start code 10,
-The settings of the I/O device are incorrect or the configuration
-parameters of the driver are incorrect. Through the USB analyzer to
-capture the packet, I found that the Index value seems to be wrong
-when PC host to get the descriptor. The acquisition is Playback
-Inactive and Capture Inactive, and the PC did not send the command
-packet about uac1. It is difficult to debug it.
-I suspect that some parts of the uac1 descriptor need to be modified,
-but I don=E2=80=99t know which one to modify.
-I sincerely hope that everyone can give some suggestions or related
-patches to help me. Thanks very much!
+Commit dabf6b36b83a ("of: Add OF_DMA_DEFAULT_COHERENT & select it on
+powerpc") added a check to of_dma_is_coherent which returns early
+if OF_DMA_DEFAULT_COHERENT is enabled. This results in the of_node_put()
+being skipped causing a memory leak. Moved the of_node_get() below this
+check so we now we only get the node if OF_DMA_DEFAULT_COHERENT is not
+enabled.
 
-Regards,
-pengcheng
+Fixes: dabf6b36b83a ("of: Add OF_DMA_DEFAULT_COHERENT & select it on
+powerpc")
+
+Signed-off-by: Evan Nimmo <evan.nimmo@alliedtelesis.co.nz>
+---
+ drivers/of/address.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/of/address.c b/drivers/of/address.c
+index eb9ab4f1e80b..1c3257a2d4e3 100644
+--- a/drivers/of/address.c
++++ b/drivers/of/address.c
+@@ -1034,11 +1034,13 @@ int of_dma_get_range(struct device_node *np, cons=
+t struct bus_dma_region **map)
+  */
+ bool of_dma_is_coherent(struct device_node *np)
+ {
+-	struct device_node *node =3D of_node_get(np);
++	struct device_node *node;
+=20
+ 	if (IS_ENABLED(CONFIG_OF_DMA_DEFAULT_COHERENT))
+ 		return true;
+=20
++	node =3D of_node_get(np);
++
+ 	while (node) {
+ 		if (of_property_read_bool(node, "dma-coherent")) {
+ 			of_node_put(node);
+--=20
+2.27.0
+
