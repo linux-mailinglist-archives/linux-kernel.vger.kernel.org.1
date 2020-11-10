@@ -2,88 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 98E7B2AD8C5
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 15:27:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 671662AD8BE
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 15:26:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731576AbgKJO1w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 09:27:52 -0500
-Received: from mx08-00178001.pphosted.com ([91.207.212.93]:55116 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1730059AbgKJO1u (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 09:27:50 -0500
-Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0AAEQmCD031683;
-        Tue, 10 Nov 2020 15:27:42 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-type; s=STMicroelectronics;
- bh=4Ty83/TowSR8YVPhqDC5ICQjWJPGZm9kuRNoKkYMLlU=;
- b=LMeeg88hMbk9n8RMA90/GLscZQaGtjXgKLFaedYMoqWZ5G9R4Fyu8lXo7wpBcLYkqDIJ
- c8lxM2DF5D2vCKy83SPGcs5Mw4BJgRhUOC7DhN8NKpWRNHxs642+xu6jK+ruUrIM4+1M
- AdZew5giFo8ugbdaVUOw7HXI3O82sJ/Lv/XJWRqVPHOO1T8UnHXvQmr3v0t7FDB+K86w
- yYeh7nMzkscoKMa1Yas2PcW6taljbbKbJob2Apkbt7veLtFUDXzGBhWJRlQdb5QZyv2+
- hhjfKvVRpWpnAAlHXLj4q5BA9/XAWJqMAfDOGUYwNGTK7boukkXhdwfYjIH1lNG88H4W IQ== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 34nkbn0r2a-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 10 Nov 2020 15:27:42 +0100
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 8453310002A;
-        Tue, 10 Nov 2020 15:27:41 +0100 (CET)
-Received: from Webmail-eu.st.com (sfhdag3node2.st.com [10.75.127.8])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 76E292BA2A5;
-        Tue, 10 Nov 2020 15:27:41 +0100 (CET)
-Received: from localhost (10.75.127.45) by SFHDAG3NODE2.st.com (10.75.127.8)
- with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 10 Nov 2020 15:27:40
- +0100
-From:   Amelie Delaunay <amelie.delaunay@st.com>
-To:     Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        Rob Herring <robh+dt@kernel.org>
-CC:     <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Amelie Delaunay <amelie.delaunay@st.com>
-Subject: [PATCH 2/2] ARM: dts: stm32: fix dmamux reg property on stm32h743
-Date:   Tue, 10 Nov 2020 15:27:37 +0100
-Message-ID: <20201110142737.13106-2-amelie.delaunay@st.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20201110142737.13106-1-amelie.delaunay@st.com>
-References: <20201110142737.13106-1-amelie.delaunay@st.com>
+        id S1731076AbgKJO0v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 09:26:51 -0500
+Received: from mga17.intel.com ([192.55.52.151]:27997 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730059AbgKJO0v (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Nov 2020 09:26:51 -0500
+IronPort-SDR: 2UpuuUnYgUkZJm1lIdtDtQI6Nc9VMCgtPWEGL+taI65/AbhHnx5hg+EpDkToZ63U1KJHeQIBrn
+ 9VV2ZpRlRWKg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9800"; a="149828648"
+X-IronPort-AV: E=Sophos;i="5.77,466,1596524400"; 
+   d="scan'208";a="149828648"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Nov 2020 06:26:51 -0800
+IronPort-SDR: lxYSFEGxy4Km5kAA/xUqloobFP4zJ/MpiwZQwkbSbDDKz//CYOgtcl5OCQVvtX6NgEGVR/nGzO
+ b/oc46MGYCbQ==
+X-IronPort-AV: E=Sophos;i="5.77,466,1596524400"; 
+   d="scan'208";a="531224571"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Nov 2020 06:26:48 -0800
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1kcUcg-005UvP-VG; Tue, 10 Nov 2020 16:27:50 +0200
+Date:   Tue, 10 Nov 2020 16:27:50 +0200
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Bartosz Golaszewski <brgl@bgdev.pl>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Jan Kiszka <jan.kiszka@siemens.com>,
+        David Laight <David.Laight@aculab.com>,
+        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Subject: Re: [PATCH v3 6/7] gpio: exar: switch to using regmap
+Message-ID: <20201110142750.GU4077@smile.fi.intel.com>
+References: <20201110123406.3261-1-brgl@bgdev.pl>
+ <20201110123406.3261-7-brgl@bgdev.pl>
+ <20201110142624.GT4077@smile.fi.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.75.127.45]
-X-ClientProxiedBy: SFHDAG1NODE3.st.com (10.75.127.3) To SFHDAG3NODE2.st.com
- (10.75.127.8)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-11-10_05:2020-11-10,2020-11-10 signatures=0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201110142624.GT4077@smile.fi.intel.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Reg property length should cover all DMAMUX_CxCR registers.
-DMAMUX_CxCR Address offset: 0x000 + 0x04 * x (x = 0 to 15), so latest
-offset is at 0x3c, so length should be 0x40.
+On Tue, Nov 10, 2020 at 04:26:24PM +0200, Andy Shevchenko wrote:
+> On Tue, Nov 10, 2020 at 01:34:05PM +0100, Bartosz Golaszewski wrote:
+> > From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+> > 
+> > We can simplify the code in gpio-exar by using regmap. This allows us to
+> > drop the mutex (regmap provides its own locking) and we can also reuse
+> > regmap's bit operations instead of implementing our own update function.
+> 
+> ...
+> 
+> > +	/*
+> > +	 * We don't need to check the return values of mmio regmap operations (unless
+> > +	 * the regmap has a clock attached which is not the case here).
+> > +	 */
+> > +	exar_gpio->regs = devm_regmap_init_mmio(dev, p, &exar_regmap_config);
+> > +	if (IS_ERR(exar_gpio->regs))
+> > +		return PTR_ERR(exar_gpio->regs);
+> >  
+> >  	index = ida_alloc(&ida_index, GFP_KERNEL);
+> > -	if (index < 0) {
+> > -		ret = index;
+> > -		goto err_mutex_destroy;
+> > -	}
+> > +	if (index < 0)
+> > +		return index;
+> 
+> And below you effectively use p as regmap!
+> That's what renaming of variable regs -> regmap or map can easily reveal.
+> 
+> 	exar_gpio->regs = p;
 
-Signed-off-by: Amelie Delaunay <amelie.delaunay@st.com>
----
- arch/arm/boot/dts/stm32h743.dtsi | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Jan, if you remove this line, does it help?
 
-diff --git a/arch/arm/boot/dts/stm32h743.dtsi b/arch/arm/boot/dts/stm32h743.dtsi
-index 7febe19e780d..b083afd0ebd6 100644
---- a/arch/arm/boot/dts/stm32h743.dtsi
-+++ b/arch/arm/boot/dts/stm32h743.dtsi
-@@ -274,7 +274,7 @@
- 
- 		dmamux1: dma-router@40020800 {
- 			compatible = "st,stm32h7-dmamux";
--			reg = <0x40020800 0x1c>;
-+			reg = <0x40020800 0x40>;
- 			#dma-cells = <3>;
- 			dma-channels = <16>;
- 			dma-requests = <128>;
 -- 
-2.17.1
+With Best Regards,
+Andy Shevchenko
+
 
