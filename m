@@ -2,97 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 231F12AD989
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 15:59:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 229542AD995
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 16:00:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730099AbgKJO7U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 09:59:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37160 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730070AbgKJO7U (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 09:59:20 -0500
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA095C0613D1
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 06:59:19 -0800 (PST)
-Received: by mail-wm1-x341.google.com with SMTP id p22so3278255wmg.3
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 06:59:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=IdLgaRbW4nEaCIcc+Kl+IljF0AKQ9c4kOuJIqFJ4XQQ=;
-        b=zE6BW1MXgSBPi6HFNs/bFM9mV0opihuPEMpa9blC8mLW9qOpazn6K8JS6h6SKf5yGf
-         3Yj98J4V2XWwhBvmIMaKmSna1vqKdzE2M9Qi6xn2YCI9p40INPY6PCi9OB/zwvAxyccj
-         YmvQwGTzk/Y4PQ25QOHWw3o8bWOAWv/3DY7XTW8j/yfIt1dUdzOUIGJ5j5YAj8yr+YD4
-         /sm6TJACtN5T1Qd67KPUbFoanilicnmzf4ZoS8Olc0OFazxEjAXXvbDji5FRHJmygO5v
-         8poTXkB8Eej+YMMI1ufXUdvN/J+iYDadMpcjnsqHbeN83gIZuym17+K5VYtJgQA2PwVF
-         RGTA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=IdLgaRbW4nEaCIcc+Kl+IljF0AKQ9c4kOuJIqFJ4XQQ=;
-        b=MHz92RUzGhHS9Wgad++jwYGXyxfBU2V+1e4VftowopqNXXGzSiy9qHyaCgLDy5WXYF
-         kvC1sg17fudsU4BBK/tNO3S5Oe5AjUxHOjibplDoLd6pacb2YnbA1ztdq/KTcQouucXL
-         kBHWBYpanSvAzOfoBhru6VjArnIqQnb7YJHzYmCJzTcpHLpXMXWWIuPKzUfwWQKkh1v+
-         KvxhcAG/ZxqdHS7D52p14WUmbhYFs1mxFrevE4yA0Bk3FcTttpUgNVaGVBp5D0x61Os7
-         d2AC6KbVdp7bdocPLcLk1cB9dZV/1tc6BDkb6p0J6XpT/Q8o+XVMVzgxH0Ia826H6R1C
-         +4SQ==
-X-Gm-Message-State: AOAM5330KKmO1tlhckCWTy+oU6hhc3T06G3BZyIFbdL6C05OKwwquuVH
-        CsqeYeHNbgTEJ1uBe/ggtOWJtA==
-X-Google-Smtp-Source: ABdhPJxMjHi9px4ve94r4lzwF0KBkof3AuKcVHvqTov0sVXZfIVWNNeQSwqEOMtZQc+y6NiObyT9uA==
-X-Received: by 2002:a1c:dc43:: with SMTP id t64mr37525wmg.93.1605020358599;
-        Tue, 10 Nov 2020 06:59:18 -0800 (PST)
-Received: from ?IPv6:2a01:e34:ed2f:f020:1087:e960:613c:926b? ([2a01:e34:ed2f:f020:1087:e960:613c:926b])
-        by smtp.googlemail.com with ESMTPSA id v67sm3381795wma.17.2020.11.10.06.59.17
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 10 Nov 2020 06:59:17 -0800 (PST)
-Subject: Re: [PATCH 3/4] powercap/drivers/dtpm: Add API for dynamic thermal
- power management
-To:     Lukasz Luba <lukasz.luba@arm.com>
-Cc:     rafael@kernel.org, srinivas.pandruvada@linux.intel.com,
-        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
-        rui.zhang@intel.com, "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Arnd Bergmann <arnd@arndb.de>,
-        "open list:GENERIC INCLUDE/ASM HEADER FILES" 
-        <linux-arch@vger.kernel.org>
-References: <20201006122024.14539-1-daniel.lezcano@linaro.org>
- <20201006122024.14539-4-daniel.lezcano@linaro.org>
- <8fea0109-30d4-7d67-ffeb-8e588a4dadc3@arm.com>
- <313a92c5-3c45-616f-1fe8-9837721f9889@arm.com>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-Message-ID: <2495f9b8-327d-bf92-a159-ac3202d30ee0@linaro.org>
-Date:   Tue, 10 Nov 2020 15:59:16 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1731123AbgKJPAw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 10:00:52 -0500
+Received: from mga02.intel.com ([134.134.136.20]:16060 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731054AbgKJPAv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Nov 2020 10:00:51 -0500
+IronPort-SDR: KUJF6RES29JEwO8GNmj0G3+9RfsOV0WNV9XzypfBcjDD+C+xfqusOdCN4r2Pq1Yl57dkLfaRiU
+ rRK4SL1RhWmg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9801"; a="156990559"
+X-IronPort-AV: E=Sophos;i="5.77,466,1596524400"; 
+   d="scan'208";a="156990559"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Nov 2020 07:00:43 -0800
+IronPort-SDR: 0m+sLG7EaSBtlxIOGydFu1MSzxEGYua1iyjNhe/OIQVXozS4eZ8mzpYzjSPOymLLaXQJCkdVFl
+ oPvRg773uhNA==
+X-IronPort-AV: E=Sophos;i="5.77,466,1596524400"; 
+   d="scan'208";a="327706939"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Nov 2020 07:00:41 -0800
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1kcV9T-005VNY-0j; Tue, 10 Nov 2020 17:01:43 +0200
+Date:   Tue, 10 Nov 2020 17:01:43 +0200
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Cc:     Jan Kiszka <jan.kiszka@siemens.com>,
+        Bartosz Golaszewski <brgl@bgdev.pl>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        David Laight <David.Laight@aculab.com>,
+        linux-gpio <linux-gpio@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v3 6/7] gpio: exar: switch to using regmap
+Message-ID: <20201110150143.GV4077@smile.fi.intel.com>
+References: <20201110123406.3261-1-brgl@bgdev.pl>
+ <20201110123406.3261-7-brgl@bgdev.pl>
+ <20201110142624.GT4077@smile.fi.intel.com>
+ <20201110142750.GU4077@smile.fi.intel.com>
+ <CAMpxmJUQ3t02q-Chd-WE+pYRAsOOEnbQ0jB+G_uAGv+sJBK1tg@mail.gmail.com>
+ <a5b0fcd0-eb62-79b3-3f27-6595b9bdb91c@siemens.com>
+ <CAMpxmJW1j9+KAj12OKs3njUWy+UA5B993Pyd=xmo4k8LM-8GUw@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <313a92c5-3c45-616f-1fe8-9837721f9889@arm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAMpxmJW1j9+KAj12OKs3njUWy+UA5B993Pyd=xmo4k8LM-8GUw@mail.gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/11/2020 12:05, Lukasz Luba wrote:
+On Tue, Nov 10, 2020 at 03:52:00PM +0100, Bartosz Golaszewski wrote:
+> On Tue, Nov 10, 2020 at 3:50 PM Jan Kiszka <jan.kiszka@siemens.com> wrote:
+> > On 10.11.20 15:30, Bartosz Golaszewski wrote:
+
+...
+
+> > Removing the line that Andy found made things work here. And switching
+> > to 16 for reg_bits didn't make things worse again.
+> >
+> > Jan
 > 
-> Actually I've found one issue when I have been trying to clean
-> my testing branch with modified scmi-cpufreq.c.
+> Alright! I'll send a v4 with these things fixed then.
 
-IMO, those errors are not the dtpm framework fault but the scmi-cpufreq.
-
-You should add a component in the drivers/powercap which does the glue
-between the scmi-cpufreq and the dtpm. No stub will be needed in this
-case as the component will depend on CONFIG_DTPM.
-
-
+Hold on, the registers are 16-bit wide, but their halves are sparsed!
+So, I guess 8 and 8 with helpers to get hi and lo parts are essential.
 
 
 -- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+With Best Regards,
+Andy Shevchenko
 
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
+
