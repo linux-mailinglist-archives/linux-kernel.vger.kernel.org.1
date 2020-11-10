@@ -2,81 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D6272AD21E
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 10:08:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 41E3A2AD220
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 10:09:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730585AbgKJJIu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 04:08:50 -0500
-Received: from esa5.microchip.iphmx.com ([216.71.150.166]:44648 "EHLO
-        esa5.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726467AbgKJJIt (ORCPT
+        id S1731819AbgKJJJF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 04:09:05 -0500
+Received: from szxga01-in.huawei.com ([45.249.212.187]:3659 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726467AbgKJJJD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 04:08:49 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1604999329; x=1636535329;
-  h=from:subject:to:cc:references:message-id:date:
-   mime-version:in-reply-to:content-transfer-encoding;
-  bh=Vi4oSqcaW147X+OPEnvBxt8RzY3S5hCwov5jmSawii8=;
-  b=mUHoIG1P08MPwoeLeHkJKeAYMWowLg05qi6TFoS/NkV3u0MFk9f89cb6
-   vn+sLILhd3giK1cYbAeTK1ujbKS322Cl/7SuYCgdLbNToiE/nmed6/Pyk
-   d0a4BJIeAZbdN8ZcLV9cix0ijlz0eGcVn5xeGygXOKblufL5ymSopxyXP
-   KHiiCjS2mmjHBlN8PCIofEtyh4KNGFVZYfsZNpFowoUzrV+mgQKv7bERn
-   +nVL8hNeLa5AgQgzQXl/cpY3eCUHFYeXANigyriuw/6f79FDY7+FIRtwg
-   Lh+EcY0pwrPs6VyNeTLZ/PFIpfkLRBDfcwficFpfIUEhoYTRIgXNSZnn+
-   Q==;
-IronPort-SDR: 4H767wXXUELlw/fV+Fmj0fcuEu+wPa2y5RdL6QrwC+8kRdPH4Hb02T8vOLnBiir3XCCYFQ9oYp
- oAkfZ//2Mjr9Z8kSwDwJ34i1iLhi4yo5wNnAoObobnKenhuQrOvCsvcU29L8OpTnTS3P21dpM+
- wjeL3uggoDZiphSxyEWmnoSJmcTB+G2KoYE6N7ji53t7KgsB66vcvX3q1r+7QZru2xb8z7r/mF
- CJbUhBDanBNd2XQpjWz5Tqi6kmb2xri52+B6VNCbALdmq6fecvZDAwISbXqACkLeJYQBvCv8KB
- vBk=
-X-IronPort-AV: E=Sophos;i="5.77,466,1596524400"; 
-   d="scan'208";a="97839074"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa5.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 10 Nov 2020 02:08:49 -0700
-Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Tue, 10 Nov 2020 02:08:48 -0700
-Received: from [10.171.246.109] (10.10.115.15) by chn-vm-ex01.mchp-main.com
- (10.10.85.143) with Microsoft SMTP Server id 15.1.1979.3 via Frontend
- Transport; Tue, 10 Nov 2020 02:08:45 -0700
-From:   Nicolas Ferre <nicolas.ferre@microchip.com>
-Subject: Re: [PATCH] pinctrl: pinctrl-at91-pio4: Set irq handler and data in
- one go
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Martin Kaiser <martin@kaiser.cx>,
-        Ludovic Desroches <ludovic.desroches@microchip.com>
-CC:     Linus Walleij <linus.walleij@linaro.org>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <20201108180144.28594-1-martin@kaiser.cx>
- <CAHp75VeVPUJ_a4L+Lj-zR6Wm3Woq6F0uHzmtx3NCRO=TVopvrw@mail.gmail.com>
-Organization: microchip
-Message-ID: <fc6a99af-7cee-b0ae-c4b1-cc7249e22b6c@microchip.com>
-Date:   Tue, 10 Nov 2020 10:08:44 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Tue, 10 Nov 2020 04:09:03 -0500
+Received: from dggeme756-chm.china.huawei.com (unknown [172.30.72.53])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4CVhqq2HC0zXlLy;
+        Tue, 10 Nov 2020 17:08:55 +0800 (CST)
+Received: from [10.174.177.103] (10.174.177.103) by
+ dggeme756-chm.china.huawei.com (10.3.19.102) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.1913.5; Tue, 10 Nov 2020 17:09:01 +0800
+Subject: Re: [PATCH -next] irq-chip/gic-v3-its: Fixed an issue where the ITS
+ executes the residual commands in the queue again when the ITS wakes up from
+ sleep mode.
+To:     Marc Zyngier <maz@kernel.org>
+CC:     <tglx@linutronix.de>, <linux-kernel@vger.kernel.org>,
+        <rui.xiang@huawei.com>
+References: <20201107104226.14282-1-xuqiang36@huawei.com>
+ <b278ce4baea0cf79403f793721d16a8b@kernel.org>
+ <32592d73-9800-f420-eb00-474d9ded6155@huawei.com>
+ <338d65dfeac0cc026c74d9e78ec6f0c1@kernel.org>
+From:   "xuqiang (M)" <xuqiang36@huawei.com>
+Message-ID: <96243568-01ad-31c2-e927-6b85738c9bc3@huawei.com>
+Date:   Tue, 10 Nov 2020 17:09:00 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.2.2
 MIME-Version: 1.0
-In-Reply-To: <CAHp75VeVPUJ_a4L+Lj-zR6Wm3Woq6F0uHzmtx3NCRO=TVopvrw@mail.gmail.com>
+In-Reply-To: <338d65dfeac0cc026c74d9e78ec6f0c1@kernel.org>
 Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.177.103]
+X-ClientProxiedBy: dggeme712-chm.china.huawei.com (10.1.199.108) To
+ dggeme756-chm.china.huawei.com (10.3.19.102)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 09/11/2020 at 12:26, Andy Shevchenko wrote:
-> On Sun, Nov 8, 2020 at 8:05 PM Martin Kaiser <martin@kaiser.cx> wrote:
+
+在 2020/11/9 18:43, Marc Zyngier 写道:
+> On 2020-11-09 03:05, xuqiang (M) wrote:
+>> 在 2020/11/8 0:54, Marc Zyngier 写道:
+>>> [dropping Jason, whose email address has been bouncing for weeks now]
+>>>
+>>> On 2020-11-07 10:42, Xu Qiang wrote:
+>>>> On my platform, ITS_FLAGS_SAVE_SUSPEND_STATE is not set,thus do 
+>>>> nothing
+>>>
+>>> Which platform?
+>> Hisi Ascend platform
+>>>
+>>>> in its suspend and resuse function.On the other hand,firmware stores
+>>>> GITS_CTRL,GITS_CBASER,GITS_CWRITER and GITS_BASER<n> in the suspend,
+>>>> and restores these registers in the resume. As a result, the ITS 
+>>>> executes
+>>>> the residual commands in the queue.
+>>>
+>>> Which firmware are you using? I just had a look at the trusted 
+>>> firmware source
+>>> code, and while it definitely does something that *looks* like what 
+>>> you are
+>>> describing, it doesn't re-enable the ITS on resume.
+>>>
+>>> So what are you running?
 >>
->> Replace the two separate calls for setting the irq handler and data with a
->> single irq_set_chained_handler_and_data() call.
-> 
-> Can it be rewritten to use the GPIO core facility of instantiating IRQ chip?
+>> I am using ATF. Since ITS_FLAGS_SAVE_SUSPEND_STATE is not set,ITS
+>> driver of OS will
+>>
+>> not re-enable ITS in th resume. To make ITS work properly, we changed
+>> the ATF code
+>>
+>> to re-enable ITS on resume.
+>
+> I don't think the words "work properly" apply here.
+>
+> The kernel didn't do what you wanted, so instead of fixing the kernel, 
+> you
+> introduced a bug that results in memory corruption from the firmware.
+>
+> What are you plans to fix your firmware? Because from an upstream ATF
+> compatibility PoV, all there is to do is to fixup the command queue and
+> enable the ITS.
+>
+>         M.
 
-I have the feeling it's out of scope for this (tiny) patch.
 
-Regards,
--- 
-Nicolas Ferre
+I'm sorry I didn't make it clear how to do this. I'm going to reset commit
+
+which re-enable ITS  on the ATF, and drop the checks for 
+ITS_FLAGS_SAVE_SUSPEND_STATE
+
+in the OS.
+
+In other words, the ATF does not re-enable ITS, and OS itself re-enables 
+ITS when it resumes.
+
+To do this, I have to remove the check of ITS_FLAGS_SAVE_SUSPEND_STATE 
+because it is not set.
+
+
+Thanks
+
+         Xu.
+
