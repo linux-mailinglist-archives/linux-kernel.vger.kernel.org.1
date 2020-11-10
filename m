@@ -2,154 +2,344 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A0502AE0E7
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 21:45:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F7DE2AE0F1
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 21:47:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731287AbgKJUpa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 15:45:30 -0500
-Received: from mx0b-00154904.pphosted.com ([148.163.137.20]:17952 "EHLO
-        mx0b-00154904.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726307AbgKJUp3 (ORCPT
+        id S1731613AbgKJUrg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 15:47:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35146 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726179AbgKJUrd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 15:45:29 -0500
-Received: from pps.filterd (m0170396.ppops.net [127.0.0.1])
-        by mx0b-00154904.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0AAKdYQd028107;
-        Tue, 10 Nov 2020 15:45:19 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dell.com; h=from : to : cc :
- subject : date : message-id : references : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=smtpout1;
- bh=34EP+UBHJHvxbmZeHIfA+9Yw2YzW/peWO/nvuIJWrwE=;
- b=bsHSzj3fwe5idukvSWjmIzTplbVlqkvA9g66DQl4rT8dx+eeeEg4oEMiIJIjJ+i1UIi7
- PX7zX+VM70vaM4JAHBDIaHzR4dwG2rQ8HDC4O+/EIBuXljMHBecrMghOw7uxZEYXZwfO
- FkbRwDWasyHp51cg5BImqr8NcVLLtvLfeEI+yRs/ijxd7MszeLzmvnDXOVhL9HtZrxvC
- Hlrtpq+X7aMXnYTPklDtZXHZwyQEpF8NcjHLFkt18f6R7xRzOA53RoDbvCl8kiQ42lpG
- wkBNO2L7pg8WHC3ur0wVBZ3JWPCfanQtvZYho72cwRcvrG38jqXP2JRG9QPhT9gEVdl9 TQ== 
-Received: from mx0a-00154901.pphosted.com (mx0a-00154901.pphosted.com [67.231.149.39])
-        by mx0b-00154904.pphosted.com with ESMTP id 34nra28ygc-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 10 Nov 2020 15:45:19 -0500
-Received: from pps.filterd (m0090351.ppops.net [127.0.0.1])
-        by mx0b-00154901.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0AAKgbT3161640;
-        Tue, 10 Nov 2020 15:45:18 -0500
-Received: from nam10-mw2-obe.outbound.protection.outlook.com (mail-mw2nam10lp2106.outbound.protection.outlook.com [104.47.55.106])
-        by mx0b-00154901.pphosted.com with ESMTP id 34qndnx4fw-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 10 Nov 2020 15:45:18 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ghDtd5C/JQYU0kgh/OZKAVmpwxHe2UQTPMoOxQrf0GGCHBPbigio3WXrG1TOO2IswimtgyrKgwJMC4X8N2w6vUQQSlKgsxGJN5ubf6jB1krpZQMFFUbbZvZn/QfDZgIdPVYecluAlpL/i7cY3vHunLY2NDituNF1pUNspPVw8orlPXpywvifEq3dFhupMQwUCcmdFXGZ1aquLPnB7yJW2sKF0oWOyQ5PGIcHCH87Totq9ttWbn/6n/c50b7JXF2V9EpACVgdsB0bbmb6O2UvTmgo6pfHPDDVLZAkutzowCq+NyA6kzcQl1qY7m690xjtH67W9AfJKpYry/9rIl6mJw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=34EP+UBHJHvxbmZeHIfA+9Yw2YzW/peWO/nvuIJWrwE=;
- b=Ay9Wg7hUMJbgQm7B04v7S5VNRpnZxIVasuA2nDU81gOWSCCv7goaExcYmxgXljqTKWSGA6C+BdIJFSf/M7e3bUHmZqJguGL1h1CNnbUArRgTkv3DR2DtxcIElk/ZL39tQ1z6WshL423ZCeWMH6QY8wBGxEZRQAarcduPM3Lm5fZjrQ0EvyFHOCjT/wlIL53ujhhvMStpQfVJehV2eFhvvkM0xfXGmaJbLD0LXxrfNjmkByuODnks9fL3Mu57Q7AX3AL8SKQgDVL2o/pYptRg5s8Cn7MF2yzr8f9rpfImYZpj49wiQxwvoQQLTwiBu456w2TihNv9kyBbHGehmrXC8A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=dell.com; dmarc=pass action=none header.from=dell.com;
- dkim=pass header.d=dell.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Dell.onmicrosoft.com;
- s=selector1-Dell-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=34EP+UBHJHvxbmZeHIfA+9Yw2YzW/peWO/nvuIJWrwE=;
- b=C7MOaAZPjgZ7sYuIPeliWQo9VdoTfSI/MjfItLjIZ+6CC8Ba8M5mG/Mt1tr8uG8Q5dwaCXJaUeTxAVNxY0XCTGHd2NUcwH3aCoMXqdgafEhUfaL2Ivhzsk+gkWLZO2+ohJ9FkV/Y+fOEOQHql4tPxCdTXYH7JfnKT8rE6znI9iQ=
-Received: from DM6PR19MB2636.namprd19.prod.outlook.com (2603:10b6:5:15f::15)
- by DM5PR19MB1578.namprd19.prod.outlook.com (2603:10b6:3:150::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3541.21; Tue, 10 Nov
- 2020 20:45:17 +0000
-Received: from DM6PR19MB2636.namprd19.prod.outlook.com
- ([fe80::a8ff:e803:ee80:e59a]) by DM6PR19MB2636.namprd19.prod.outlook.com
- ([fe80::a8ff:e803:ee80:e59a%3]) with mapi id 15.20.3499.032; Tue, 10 Nov 2020
- 20:45:16 +0000
-From:   "Limonciello, Mario" <Mario.Limonciello@dell.com>
-To:     "Theodore Y. Ts'o" <tytso@mit.edu>
-CC:     Greg KH <gregkh@linuxfoundation.org>,
-        Bastien Nocera <hadess@hadess.net>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "linux-input@vger.kernel.org" <linux-input@vger.kernel.org>,
-        Hans de Goede <hdegoede@redhat.com>
-Subject: RE: How to enable auto-suspend by default
-Thread-Topic: How to enable auto-suspend by default
-Thread-Index: AQHWt1BE6l+LjsERUU+/FRV4X0h3ganBPDeAgABA9KCAAB8fAIAABiwwgAAFvoCAAAA7cIAAH9kAgAANhEA=
-Date:   Tue, 10 Nov 2020 20:45:16 +0000
-Message-ID: <DM6PR19MB26360A123E3BFA4741853AF5FAE90@DM6PR19MB2636.namprd19.prod.outlook.com>
-References: <fe8ab4cab3740afd261fa902f14ecae002a1122d.camel@hadess.net>
- <X6p6ubTOoMPUPPXi@kroah.com>
- <DM6PR19MB2636C94B56D5FBC0BD98A1B0FAE90@DM6PR19MB2636.namprd19.prod.outlook.com>
- <X6rLUDuG0N98jz18@kroah.com>
- <DM6PR19MB2636460E97BD5E47957BB43AFAE90@DM6PR19MB2636.namprd19.prod.outlook.com>
- <X6rVT6IXHYQpqjic@kroah.com>
- <DM6PR19MB263696FE5FA50F344B559488FAE90@DM6PR19MB2636.namprd19.prod.outlook.com>
- <20201110195536.GD2951190@mit.edu>
-In-Reply-To: <20201110195536.GD2951190@mit.edu>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-msip_labels: MSIP_Label_17cb76b2-10b8-4fe1-93d4-2202842406cd_Enabled=True;
- MSIP_Label_17cb76b2-10b8-4fe1-93d4-2202842406cd_SiteId=945c199a-83a2-4e80-9f8c-5a91be5752dd;
- MSIP_Label_17cb76b2-10b8-4fe1-93d4-2202842406cd_Owner=Mario_Limonciello@Dell.com;
- MSIP_Label_17cb76b2-10b8-4fe1-93d4-2202842406cd_SetDate=2020-11-10T20:44:42.7665611Z;
- MSIP_Label_17cb76b2-10b8-4fe1-93d4-2202842406cd_Name=External Public;
- MSIP_Label_17cb76b2-10b8-4fe1-93d4-2202842406cd_Application=Microsoft Azure
- Information Protection;
- MSIP_Label_17cb76b2-10b8-4fe1-93d4-2202842406cd_ActionId=cbca08b8-6d4a-4b3b-a0a0-2f9a33f79bbb;
- MSIP_Label_17cb76b2-10b8-4fe1-93d4-2202842406cd_Extended_MSFT_Method=Manual
-authentication-results: mit.edu; dkim=none (message not signed)
- header.d=none;mit.edu; dmarc=none action=none header.from=Dell.com;
-x-originating-ip: [76.251.167.31]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 8a35f0a3-2a45-4d01-17bd-08d885b987de
-x-ms-traffictypediagnostic: DM5PR19MB1578:
-x-microsoft-antispam-prvs: <DM5PR19MB1578CD8A25049C1B0D2A46D7FAE90@DM5PR19MB1578.namprd19.prod.outlook.com>
-x-exotenant: 2khUwGVqB6N9v58KS13ncyUmMJd8q4
-x-ms-oob-tlc-oobclassifiers: OLM:9508;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 3PC4odck1C2OiL3ZWik7ZAPA07cVn53us4ek0WnAYBAHXuogaE+UFdbS0MLLQKtsBV1upHFNVP2ohiLUw4qWDbUjfBpCPruvnv7mCddwzWagXdBH8lXVup2H6raMiUK+/hb0u0qw9tjSxU4z6LM4kCVFBcJo7Fgq81ou+Py1XFlgrTs0pv2OChRVpW1iM4L96IxSh56dhijDTmRJIZHegP7vCA040sQ8x+dXuAngVLCLouda8ScrF6+E/Qn9zshXw09esNnGZ7QJQOh/3kQvTbfyVmCNftxPuOrp0vnAhDLOj/+bodcKBh/+Q9uRQfKUceX3pzlzGHFeT6KcBvHFIw==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR19MB2636.namprd19.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(39860400002)(136003)(366004)(396003)(376002)(2906002)(26005)(8936002)(6506007)(5660300002)(186003)(76116006)(7696005)(83380400001)(4744005)(86362001)(6916009)(71200400001)(8676002)(54906003)(66446008)(33656002)(9686003)(66476007)(55016002)(64756008)(316002)(66556008)(786003)(52536014)(66946007)(4326008)(478600001);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: pGK/TphZR1GejyUts1jBDETPvaooxhH5wlaAqtXRiD3ey7gdiC2hBsQPVDCtwFQd7Jv+uw98Kq2QKzsPivvDiOVytDBTF3uKOe8tWN0ic0Qe5iifQPHoRbc4y5QhGVk48zdsgxwWYTI+1O0WJMrlRZptdr/IO7jJ0ZOVdFT7HkAmjDN18rsBFxmbRV6mEWNQ5ULKK4NtpUeFYYYx1VJ0qRnWlHev0iMoQjaN/Ve+eRP3LLv83CkoPRxma2Ny1H0grtfvtP1zGKEYgMv6MGE5D+RgKfB5OjYyszjyd3wEwc1dIO7KVyz/U7nQcRCA/GG0ck5Aw81dJaMNafL/utAM9CFFkjGQA9PCxLU2uEBZWcwbA9kwEBPgsQ3qo62EEVuZQkRteyQ/HhehUPZa/ftrkqmdghwrmdpbMEgOlt5LkRUzSbYPK4DBXsuD5BeRveJlQzKrRZj03HhFVLtOuAM22LrbLmU7ouYY2BZh2IKZbpNSK6IY98jgsbtHPR7hfswyWuuic1u2nyMAmYccLz9IDcRB6jL6Jg3S2wowZsDV8DUGbR93ZbdJYvkb8AsQuauJs5dEWXXBc3M8qNRKcEZL2vTNnFLQv6cbdHsIqnCFmgfDFSPPR7H7Jvmp1zUtg404FbDAasXsZSqqxDuJedEiAw==
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        Tue, 10 Nov 2020 15:47:33 -0500
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB329C0613D1;
+        Tue, 10 Nov 2020 12:47:31 -0800 (PST)
+Received: by mail-wm1-x344.google.com with SMTP id w24so4545597wmi.0;
+        Tue, 10 Nov 2020 12:47:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=JKOlzvpbWFsw2iYUxRdGhDaWwqhcm/XwpcwUseGbR74=;
+        b=BfwOe253mIIwyuY9vhdchEEJQznuJuf8hgScBzwQXYqtOaWL2thJUGjBjxHsW4ciuW
+         hsCBqPkfl0FEaHdmn9kHXW5Oll4hJH7gQltVRSnpowkkCOQOdI7mZfiE8OxFD3eAgdTn
+         nhsMQRSvI65+IdSdXPHUpTgOL3AYOzq8HzvuxO2xLdFjZRskbr1F4do0f1RcFiXdN71z
+         IOqjoFpRGHKbkk8UF9MBrBFB4HqsXeyiCYx/lrKvthDCNRoXo/DIBHj4RbiF13dGUTcA
+         cZqO/z22HSS63vf3/Fdnx9ZJSvhgTSdeKLjSXmnDLt6m9U/oJ0dOH47CYuMxCuHbvS/E
+         qhTg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=JKOlzvpbWFsw2iYUxRdGhDaWwqhcm/XwpcwUseGbR74=;
+        b=ihvLsY3jvHc8tVz/Tvna1Rdm4DANAn3iODYA0JKBgnYNP9OBiGz09SKQWTlhOGMcUa
+         +b4mC1kMDamFCnZ4lFZTuuRwNfDInQHEFeD//InqrYADLr8YM2jT/vvsDL7vDB1UBgMU
+         fzfk2Xc1qJLBGtaOfmG0x1GWKY2OsA7eWDofNdcdh64qIpLaeegOyJaHigTw+OxO734W
+         2rgDCA6/ONbmSzFB+wm2CRFSHAQdFud/ZfQ7rDzwcRovXr6wUGiL7WFwhXo6VPWzkMkA
+         uxncAekeI43ArEV05L/6yJ+AKGcZ2wQrJURCkQWRQO2+ZTKYql4meiNxhDhuOwuPztd0
+         tSKw==
+X-Gm-Message-State: AOAM530Jv6FZEmI8bZxWJQ0tvbMzxJ7z93qugAwht6TWcE1e/XVU9fHL
+        JPhUESqlqmfVwQrHRLbbHzk=
+X-Google-Smtp-Source: ABdhPJy49c1lUX+wu+3W3Zy5IcL9JRUtvkaxAgpOAl1TJEHa60imDaQR8PoYxaPbPv19myRFV1n2IQ==
+X-Received: by 2002:a7b:c4c3:: with SMTP id g3mr969948wmk.127.1605041250538;
+        Tue, 10 Nov 2020 12:47:30 -0800 (PST)
+Received: from localhost ([217.111.27.204])
+        by smtp.gmail.com with ESMTPSA id f4sm18998572wrq.54.2020.11.10.12.47.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 10 Nov 2020 12:47:29 -0800 (PST)
+Date:   Tue, 10 Nov 2020 21:47:27 +0100
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Jonathan Hunter <jonathanh@nvidia.com>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Peter Chen <Peter.Chen@nxp.com>,
+        Mark Brown <broonie@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Peter Geis <pgwipeout@gmail.com>,
+        Nicolas Chauvet <kwizart@gmail.com>,
+        linux-samsung-soc@vger.kernel.org, devel@driverdev.osuosl.org,
+        linux-usb@vger.kernel.org, linux-pwm@vger.kernel.org,
+        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-media@vger.kernel.org, linux-tegra@vger.kernel.org
+Subject: Re: [PATCH v1 07/30] soc/tegra: Add sync state API
+Message-ID: <20201110204727.GG2375022@ulmo>
+References: <20201104234427.26477-1-digetx@gmail.com>
+ <20201104234427.26477-8-digetx@gmail.com>
 MIME-Version: 1.0
-X-OriginatorOrg: Dell.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR19MB2636.namprd19.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 8a35f0a3-2a45-4d01-17bd-08d885b987de
-X-MS-Exchange-CrossTenant-originalarrivaltime: 10 Nov 2020 20:45:16.6828
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 945c199a-83a2-4e80-9f8c-5a91be5752dd
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: NFuCTxce6BtDDuoRbO5gjnbTwPOWjdNESXq//VfMiAHUUIbhK9Me21TNkHrwCda/DXfd9a/d2f559sDp8bYTdswivJXe6VhS1orabzcKZQI=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR19MB1578
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-11-10_07:2020-11-10,2020-11-10 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0
- priorityscore=1501 suspectscore=0 phishscore=0 mlxlogscore=776 bulkscore=0
- spamscore=0 lowpriorityscore=0 impostorscore=0 malwarescore=0
- clxscore=1011 mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2011100139
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 adultscore=0 suspectscore=0
- mlxscore=0 malwarescore=0 phishscore=0 mlxlogscore=892 bulkscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2011100139
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="NY6JkbSqL3W9mApi"
+Content-Disposition: inline
+In-Reply-To: <20201104234427.26477-8-digetx@gmail.com>
+User-Agent: Mutt/1.14.7 (2020-08-29)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-> One note...  I'll double check, but on my XPS 13 9380, as I recall, I
-> have to manually disable autosuspend on all of the XHCI controllers
-> and internal hubs after running "powertop --auto-tune", or else any
-> external mouse attached to said USB device will be dead to the world
-> for 2-3 seconds if the autosuspend timeout has kicked in, which was
-> ***super*** annoying.
->=20
-> 						- Ted
+--NY6JkbSqL3W9mApi
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Perhaps this was not XHCI controller in the system, but maybe external
-one provided by ASMedia?  I've not heard anything similar for host system
-yet.
+On Thu, Nov 05, 2020 at 02:44:04AM +0300, Dmitry Osipenko wrote:
+> Introduce sync state API that will be used by Tegra device drivers. This
+> new API is primarily needed for syncing state of SoC devices that are left
+> ON after bootloader or permanently enabled. All these devices belong to a
+> shared CORE voltage domain, and thus, we needed to bring all the devices
+> into expected state before the voltage scaling could be performed.
+>=20
+> All drivers of DVFS-critical devices shall sync theirs the state before
+> Tegra's voltage regulator coupler will be allowed to perform a system-wide
+> voltage scaling.
+>=20
+> Tested-by: Peter Geis <pgwipeout@gmail.com>
+> Tested-by: Nicolas Chauvet <kwizart@gmail.com>
+> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+> ---
+>  drivers/soc/tegra/common.c | 152 ++++++++++++++++++++++++++++++++++++-
+>  include/soc/tegra/common.h |  22 ++++++
+>  2 files changed, 170 insertions(+), 4 deletions(-)
+>=20
+> diff --git a/drivers/soc/tegra/common.c b/drivers/soc/tegra/common.c
+> index 3dc54f59cafe..f9b2b6f57887 100644
+> --- a/drivers/soc/tegra/common.c
+> +++ b/drivers/soc/tegra/common.c
+> @@ -3,13 +3,52 @@
+>   * Copyright (C) 2014 NVIDIA CORPORATION.  All rights reserved.
+>   */
+> =20
+> +#define dev_fmt(fmt)	"%s: " fmt, __func__
+> +#define pr_fmt(fmt)	"%s: " fmt, __func__
+> +
+> +#include <linux/export.h>
+> +#include <linux/init.h>
+> +#include <linux/mutex.h>
+>  #include <linux/of.h>
+> +#include <linux/of_device.h>
+> =20
+>  #include <soc/tegra/common.h>
+> =20
+> +#define terga_soc_for_each_device(__dev) \
+
+tegra_soc_for_each_device
+
+> +	for ((__dev) =3D tegra_soc_devices; (__dev) && (__dev)->compatible; \
+> +	     (__dev)++)
+> +
+> +struct tegra_soc_device {
+> +	const char *compatible;
+> +	const bool dvfs_critical;
+> +	unsigned int sync_count;
+> +};
+> +
+> +static DEFINE_MUTEX(tegra_soc_lock);
+> +static struct tegra_soc_device *tegra_soc_devices;
+> +
+> +/*
+> + * DVFS-critical devices are either active at a boot time or permanently
+> + * active, like EMC for example.  System-wide DVFS should be deferred un=
+til
+> + * drivers of the critical devices synced theirs state.
+> + */
+> +
+> +static struct tegra_soc_device tegra20_soc_devices[] =3D {
+> +	{ .compatible =3D "nvidia,tegra20-dc", .dvfs_critical =3D true, },
+> +	{ .compatible =3D "nvidia,tegra20-emc", .dvfs_critical =3D true, },
+> +	{ }
+> +};
+> +
+> +static struct tegra_soc_device tegra30_soc_devices[] =3D {
+> +	{ .compatible =3D "nvidia,tegra30-dc", .dvfs_critical =3D true, },
+> +	{ .compatible =3D "nvidia,tegra30-emc", .dvfs_critical =3D true, },
+> +	{ .compatible =3D "nvidia,tegra30-pwm", .dvfs_critical =3D true, },
+> +	{ }
+> +};
+> +
+>  static const struct of_device_id tegra_machine_match[] =3D {
+> -	{ .compatible =3D "nvidia,tegra20", },
+> -	{ .compatible =3D "nvidia,tegra30", },
+> +	{ .compatible =3D "nvidia,tegra20", .data =3D tegra20_soc_devices, },
+> +	{ .compatible =3D "nvidia,tegra30", .data =3D tegra30_soc_devices, },
+>  	{ .compatible =3D "nvidia,tegra114", },
+>  	{ .compatible =3D "nvidia,tegra124", },
+>  	{ .compatible =3D "nvidia,tegra132", },
+> @@ -17,7 +56,7 @@ static const struct of_device_id tegra_machine_match[] =
+=3D {
+>  	{ }
+>  };
+> =20
+> -bool soc_is_tegra(void)
+> +static const struct of_device_id *tegra_soc_of_match(void)
+>  {
+>  	const struct of_device_id *match;
+>  	struct device_node *root;
+> @@ -29,5 +68,110 @@ bool soc_is_tegra(void)
+>  	match =3D of_match_node(tegra_machine_match, root);
+>  	of_node_put(root);
+> =20
+> -	return match !=3D NULL;
+> +	return match;
+> +}
+> +
+> +bool soc_is_tegra(void)
+> +{
+> +	return tegra_soc_of_match() !=3D NULL;
+> +}
+> +
+> +void tegra_soc_device_sync_state(struct device *dev)
+> +{
+> +	struct tegra_soc_device *soc_dev;
+> +
+> +	mutex_lock(&tegra_soc_lock);
+> +	terga_soc_for_each_device(soc_dev) {
+
+tegra_soc_for_each_device
+
+> +		if (!of_device_is_compatible(dev->of_node, soc_dev->compatible))
+> +			continue;
+> +
+> +		if (!soc_dev->sync_count) {
+> +			dev_err(dev, "already synced\n");
+> +			break;
+> +		}
+> +
+> +		/*
+> +		 * All DVFS-capable devices should have the CORE regulator
+> +		 * phandle.  Older device-trees don't have it, hence state
+> +		 * won't be synced for the older DTBs, allowing them to work
+> +		 * properly.
+> +		 */
+> +		if (soc_dev->dvfs_critical &&
+> +		    !device_property_present(dev, "core-supply")) {
+> +			dev_dbg(dev, "doesn't have core supply\n");
+> +			break;
+> +		}
+> +
+> +		soc_dev->sync_count--;
+> +		dev_dbg(dev, "sync_count=3D%u\n", soc_dev->sync_count);
+> +		break;
+> +	}
+> +	mutex_unlock(&tegra_soc_lock);
+> +}
+> +EXPORT_SYMBOL_GPL(tegra_soc_device_sync_state);
+> +
+> +bool tegra_soc_dvfs_state_synced(void)
+> +{
+> +	struct tegra_soc_device *soc_dev;
+> +	bool synced_state =3D true;
+> +
+> +	/*
+> +	 * CORE voltage scaling is limited until drivers of the critical
+> +	 * devices synced theirs state.
+> +	 */
+> +	mutex_lock(&tegra_soc_lock);
+> +	terga_soc_for_each_device(soc_dev) {
+
+tegra_soc_for_each_device
+
+I wonder if you copy/pasted this or if you got really lucky to mistype
+this all three times.
+
+> +		if (!soc_dev->sync_count || !soc_dev->dvfs_critical)
+> +			continue;
+> +
+> +		pr_debug_ratelimited("%s: sync_count=3D%u\n",
+> +				     soc_dev->compatible, soc_dev->sync_count);
+> +
+> +		synced_state =3D false;
+> +		break;
+> +	}
+> +	mutex_unlock(&tegra_soc_lock);
+> +
+> +	return synced_state;
+> +}
+> +
+> +static int __init tegra_soc_devices_init(void)
+> +{
+> +	struct device_node *np, *prev_np =3D NULL;
+> +	struct tegra_soc_device *soc_dev;
+> +	const struct of_device_id *match;
+> +
+> +	if (!soc_is_tegra())
+> +		return 0;
+> +
+> +	match =3D tegra_soc_of_match();
+> +	tegra_soc_devices =3D (void *)match->data;
+> +
+> +	/*
+> +	 * If device node is disabled in a device-tree, then we shouldn't
+> +	 * care about this device. Even if device is active during boot,
+> +	 * its clock will be disabled by CCF as unused.
+> +	 */
+> +	terga_soc_for_each_device(soc_dev) {
+> +		do {
+> +			/*
+> +			 * Devices like display controller have multiple
+> +			 * instances with the same compatible. Hence we need
+> +			 * to walk up the whole tree in order to account those
+> +			 * multiple instances.
+> +			 */
+> +			np =3D of_find_compatible_node(prev_np, NULL,
+> +						     soc_dev->compatible);
+> +			of_node_put(prev_np);
+> +			prev_np =3D np;
+> +
+> +			if (of_device_is_available(np)) {
+> +				pr_debug("added %s\n", soc_dev->compatible);
+> +				soc_dev->sync_count++;
+> +			}
+> +		} while (np);
+
+Maybe use for_each_compatible_node() for that inside loop?
+
+> +	}
+> +
+> +	return 0;
+>  }
+> +postcore_initcall_sync(tegra_soc_devices_init);
+
+This is unfortunate. I recall having this discussion multiple times and
+one idea that has been floating around for a while was to let a driver
+bind against the top-level "bus" node. That has the advantage that it
+both anchors the code somewhere, so we don't have to play this game of
+checking for the SoC with soc_is_tegra(), and it properly orders this
+with respect to the child devices, so we wouldn't have to make this a
+postcore_initcall.
+
+Might be worth looking at that again, but for now this seems okay.
+
+Thierry
+
+--NY6JkbSqL3W9mApi
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAl+q/F0ACgkQ3SOs138+
+s6Ffhg//ZzNuVrroPGuv4tZqVJ5AXAx//1JvKJJ/APDlLKqIvIYw77b6jIxkHb/t
+Ay3psh0eNC+cr8tegl6spNx7S66HX1FEbKezsbGO0XqgebaZPtvHx4mtU7L1nBxw
+ysDX2sRKNa//bxU8YyLrhm/2jlrGBBOFQvxmYu62fE6vgN5tQqECAcmscFy+BsgA
+74wHiJRnj0PJXFoQZ6T2lkFfWkfhexPGIq988VELclUjQTfn6kQiXHfHwEPNcni0
+haS3AuFGLsTZqb6c9aI0DKcOS0y+gFEUx+WYWV3z33I6rUS3f1mfJXpIyTTAlU1j
+ENciW+rTnKilsQlE9WqY7B5gmH4f8hZnq35JK2HRDFXQj8g/03C02XjPp2aoDczm
+/3Nv2feu//pkYpMMTZaqeUu7AJVUnfavOMCBlwhyEuaieiVFE31X1BRdLcJ+mpyF
+JbKlY/+i+UCb14jP6sGMKvnxG5dxkm3pYs90XcVHMIAsXsrPNIL0r04Eh1QszqOJ
+uxGf7bpt7L09Yl7CyxahtA+AO+Ntd5dGuDHlRAOSUaMF4BaXHe3LgoNfWhEnF/Qa
+BRIZ3zewRwMVSNCted4nf5x9hymxF743g3kj6AxTmQqbEs5gmR9BxG+I4oEU/jjb
+d6Q/+Zk40xAgCn9dyBkNIqKbUTcQCvcDxSNGYsmkzduZ3tqiieU=
+=CsZi
+-----END PGP SIGNATURE-----
+
+--NY6JkbSqL3W9mApi--
