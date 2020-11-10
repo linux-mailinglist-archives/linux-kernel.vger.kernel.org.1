@@ -2,108 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 526F62AD07D
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 08:29:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C96E2AD082
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 08:33:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728387AbgKJH3l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 02:29:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51806 "EHLO
+        id S1729266AbgKJHdG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 02:33:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52326 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726690AbgKJH3l (ORCPT
+        with ESMTP id S1726849AbgKJHdE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 02:29:41 -0500
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E79EAC0613D3
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Nov 2020 23:29:40 -0800 (PST)
-Received: by mail-yb1-xb49.google.com with SMTP id h6so14097525ybk.4
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Nov 2020 23:29:40 -0800 (PST)
+        Tue, 10 Nov 2020 02:33:04 -0500
+Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B57A9C0613D4
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Nov 2020 23:33:04 -0800 (PST)
+Received: by mail-io1-xd44.google.com with SMTP id n12so12811780ioc.2
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Nov 2020 23:33:04 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=sender:date:message-id:mime-version:subject:from:to:cc;
-        bh=RZgsjIDnKB7xNbDoCh6k0wt84803ONPo3Yw+qTs38F8=;
-        b=QgFUkXA2SAS1RT3zLRUZQIxgkv6sINiHkdp0k26B9TEPGFujos3tfIMuq162pDwcHb
-         25WYHtRA6LVX/3I13vzASjNpOFPYbI/P8NjqJqs1fF/sjHlI0hi7Y0CHLHGQOiuVBHhI
-         7eBRhQyZJMHUxZO7OP5cTQ82Ls4RWxR43TyD1BiF8ItQNd5skmmnV7As/j/r5OBO4RZv
-         0tBYbHHHiI3zrd9kycipvmoZff6JqikpfixK7kxkbyoMIVWR6tDqB63EcB8EOJQL3hom
-         dMusd4FjQw3D3BSTA8wMJV4I4FUn17tRgJQn0xD9JfUYSeJUDl+RENDI04VrkyeX0jT3
-         SJgg==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=o42yGNfUzOTdDPMZ3l6k7Cu/Tlmyay1zu48jmpASnXo=;
+        b=Bab2g9wnlFOdi/TfY6YIOWflmuIFwIHWvW+UQ8g9wuKqnu2gokJkIVhoGPs/zuFUWR
+         jIDj+cDiTAaPP46Y+p15eLHbDUHvcZvnAEQu0v41Xn4IOg/pP94cY6JHYbhopGRLuv9Q
+         90c6vd+0UbBZ+YWv38kcIcwIM/6/LYUazCgbDgD+VYBNpxw57TC6yhhkI+jhcN2Oi4ax
+         JAZjyMajGAMJIOwfeP0FaFBjw+HcggDQNt05ajNW1wcryUsp1dVQ1n1ROGiZ48SthM1W
+         jge5/bI+y2K+BwPs6YfVs+MTULHNdBnZ5lLI8HTnm81Q6mdSWqd1mi2DHVMgwaDEj59z
+         5shg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
-         :to:cc;
-        bh=RZgsjIDnKB7xNbDoCh6k0wt84803ONPo3Yw+qTs38F8=;
-        b=Q1UMK6iIXkjo2I/WGjSboriqLYqyh9iixCn/NW98Va8bDJrhxjbXhJbO9kX2+bP3qN
-         VErV0LyhsPFDo4yuniBxSXkNsjwDIIZbd70//hsY8z4vgxrVocqTLBf7xk5VoFrqq3nW
-         2M1BYeseQKgQzF8p2JFF//eXiKcpB1uKVPRjJSBtsvoBcPyZoyubEjRlkPZEDohhLj5x
-         1mYYeZh4jb2Qz8NHZQ6VoIGz9+HanPVtXKWWk4iDFNaUg4vSqo0ILjZCVoIFqpqv5Jh3
-         3PVSb/adzIHWga22tPc+RjE5UblSo4ocVRyQ3y5uNg3Cl9ASXj1Jpq2trAlnI7djYz+/
-         E78Q==
-X-Gm-Message-State: AOAM5300XRDp7O9X3FVln8lI08GHkMyawIHfKrTyZ4QJXn0KoT5OzOka
-        vXh2La2g0xz99oIwuT0K+CxclvYD2/9meg==
-X-Google-Smtp-Source: ABdhPJxKQOR4nA/qXmKTAe5ixBzOeDD/8asYGVAer2CGp+BDwg1r9TEkwAhaQlwUIGcXoZMDnAjGgDEz2EXEtA==
-Sender: "davidgow via sendgmr" <davidgow@spirogrip.svl.corp.google.com>
-X-Received: from spirogrip.svl.corp.google.com ([2620:15c:2cb:201:42a8:f0ff:fe4d:3548])
- (user=davidgow job=sendgmr) by 2002:a25:42c6:: with SMTP id
- p189mr11273929yba.255.1604993380137; Mon, 09 Nov 2020 23:29:40 -0800 (PST)
-Date:   Mon,  9 Nov 2020 23:29:36 -0800
-Message-Id: <20201110072936.1380718-1-davidgow@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.29.2.222.g5d2a92d10f8-goog
-Subject: [PATCH] kunit: kunit_tool: Correctly parse diagnostic messages
-From:   David Gow <davidgow@google.com>
-To:     brendanhiggins@google.com, Shuah Khan <skhan@linuxfoundation.org>,
-        Arpitha Raghunandan <98.arpi@gmail.com>,
-        Marco Elver <elver@google.com>
-Cc:     KUnit Development <kunit-dev@googlegroups.com>,
-        linux-kselftest@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        David Gow <davidgow@google.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=o42yGNfUzOTdDPMZ3l6k7Cu/Tlmyay1zu48jmpASnXo=;
+        b=lsaZpj9NnASE7G8ZG+HNtkglwh0LewY80s0mew5i2A56lE5PVuZkfKEaGNIXlK34x9
+         mCDv2lFf1d/OUwDcpfEkby3xHBLtZBuez5Kemx6SNVwhksbgtCYBf7M+yMnnuT4k7/v5
+         UcQI0TafTGqk/c9pZhRQpjMSz/KQZiIz/POA8470W7vFKtNpC0qwCh2X485fH+S5x3RE
+         m2wTF+Cxjxlau/YWuVJ7v2RVVM24Dgs752jZPyHlH0IzaOsFKv7FOqkJJG1w3uU1CIii
+         x8qaQNCNlaQZDLaz+pL5ANR3ZVUQQQ862MnBpJ8Qv2Jay0+1VQo/CCvhDxAVHDxilRjJ
+         +L4Q==
+X-Gm-Message-State: AOAM53205+yK4bkE4Rnf2sivk8/gXHeFuqcpT6QPF7TM++G804EfUe3P
+        uIsj6PrtUV6jXNWUV2FRMxgBbgBphL/nxcDZUSO7hw==
+X-Google-Smtp-Source: ABdhPJyCBy+StTa8YbefPs//qaLrA521z8TjMcBYMBBGBGWOOM43GVtYy+eGtrbbiJr3uDykhgeeYY66LGg9YDDIxiY=
+X-Received: by 2002:a5e:980e:: with SMTP id s14mr13190769ioj.195.1604993583691;
+ Mon, 09 Nov 2020 23:33:03 -0800 (PST)
+MIME-Version: 1.0
+References: <CANn89i+ABLMJTEKat=9=qujNwe0BFavphzqYc1CQGtrdkwUnXg@mail.gmail.com>
+ <1604967391-123737-1-git-send-email-wenan.mao@linux.alibaba.com>
+In-Reply-To: <1604967391-123737-1-git-send-email-wenan.mao@linux.alibaba.com>
+From:   Eric Dumazet <edumazet@google.com>
+Date:   Tue, 10 Nov 2020 08:32:52 +0100
+Message-ID: <CANn89iL6UW9mG6hW7f3Yv+32Pe_i9F-5cQhfo2uV68wdcgSuZA@mail.gmail.com>
+Subject: Re: [PATCH net v5] net: Update window_clamp if SOCK_RCVBUF is set
+To:     Mao Wenan <wenan.mao@linux.alibaba.com>
+Cc:     David Miller <davem@davemloft.net>,
+        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        kernel-janitors@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently, kunit_tool expects all diagnostic lines in test results to
-contain ": " somewhere, as both the subtest header and the crash report
-do. Fix this to accept any line starting with (minus indent) "# " as
-being a valid diagnostic line.
+On Tue, Nov 10, 2020 at 1:16 AM Mao Wenan <wenan.mao@linux.alibaba.com> wrote:
+>
+> When net.ipv4.tcp_syncookies=1 and syn flood is happened,
+> cookie_v4_check or cookie_v6_check tries to redo what
+> tcp_v4_send_synack or tcp_v6_send_synack did,
+> rsk_window_clamp will be changed if SOCK_RCVBUF is set,
+> which will make rcv_wscale is different, the client
+> still operates with initial window scale and can overshot
+> granted window, the client use the initial scale but local
+> server use new scale to advertise window value, and session
+> work abnormally.
+>
+> Fixes: e88c64f0a425 ("tcp: allow effective reduction of TCP's rcv-buffer via setsockopt")
+> Signed-off-by: Mao Wenan <wenan.mao@linux.alibaba.com>
 
-This matches what the TAP spec[1] and the draft KTAP spec[2] are
-expecting.
+Signed-off-by: Eric Dumazet <edumazet@google.com>
 
-[1]: http://testanything.org/tap-specification.html
-[2]: https://lore.kernel.org/linux-kselftest/CY4PR13MB1175B804E31E502221BC8163FD830@CY4PR13MB1175.namprd13.prod.outlook.com/T/
-
-Signed-off-by: David Gow <davidgow@google.com>
----
- tools/testing/kunit/kunit_parser.py | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
-
-diff --git a/tools/testing/kunit/kunit_parser.py b/tools/testing/kunit/kunit_parser.py
-index 84a1af2581f5..dab4cfa05b74 100644
---- a/tools/testing/kunit/kunit_parser.py
-+++ b/tools/testing/kunit/kunit_parser.py
-@@ -134,8 +134,8 @@ def parse_ok_not_ok_test_case(lines: List[str], test_case: TestCase) -> bool:
- 	else:
- 		return False
- 
--SUBTEST_DIAGNOSTIC = re.compile(r'^[\s]+# .*?: (.*)$')
--DIAGNOSTIC_CRASH_MESSAGE = 'kunit test case crashed!'
-+SUBTEST_DIAGNOSTIC = re.compile(r'^[\s]+# (.*)$')
-+DIAGNOSTIC_CRASH_MESSAGE = re.compile(r'^[\s]+# .*?: kunit test case crashed!$')
- 
- def parse_diagnostic(lines: List[str], test_case: TestCase) -> bool:
- 	save_non_diagnositic(lines, test_case)
-@@ -145,7 +145,8 @@ def parse_diagnostic(lines: List[str], test_case: TestCase) -> bool:
- 	match = SUBTEST_DIAGNOSTIC.match(line)
- 	if match:
- 		test_case.log.append(lines.pop(0))
--		if match.group(1) == DIAGNOSTIC_CRASH_MESSAGE:
-+		crash_match = DIAGNOSTIC_CRASH_MESSAGE.match(line)
-+		if crash_match:
- 			test_case.status = TestStatus.TEST_CRASHED
- 		return True
- 	else:
--- 
-2.29.2.222.g5d2a92d10f8-goog
-
+Thanks !
