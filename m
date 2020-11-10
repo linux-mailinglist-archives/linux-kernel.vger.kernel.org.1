@@ -2,173 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B180B2AD574
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 12:39:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C617E2AD56D
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 12:38:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730133AbgKJLjl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 06:39:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34020 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731707AbgKJLjZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 06:39:25 -0500
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF9E3C0613CF
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 03:39:24 -0800 (PST)
-Received: by mail-wr1-x443.google.com with SMTP id r17so8395452wrw.1
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 03:39:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=nuviainc-com.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=cxwsKAS7f0ShqVjeBwSt/htKkV68dkqRsu7im58l3Po=;
-        b=d/67jq+OobHpQoRDIk+13Pq/a3N2zGHrz03c8CBQNHfxLX/FS4lfxl1Lf31Oa0IcmH
-         3orlTYtfeu2ULBDLT8rMcNmZlSVbeLwAtPUfv8nMEJXAd+pINIKT8Hw4JmyfUAA8bUqn
-         Kjg47txxhhtYrFAu4+eM5vM9yH/QjyHD/SkW96kNfQ3IlYjlz79a8cDbXfX7gCHX1PDJ
-         gD3ZM+j+iea7A4QWpDxR2wbURPMMt5gSqCI0WkBXEH8yE9mb59zzXey8oMrnT+8RYMfT
-         Cru3fLOPat5ZWyjTOsSOz8l25FdMegi5wnrGYKgPYKc9npqbb3vZbqJ/tFep7RLmxpNk
-         gtWQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=cxwsKAS7f0ShqVjeBwSt/htKkV68dkqRsu7im58l3Po=;
-        b=OELnJYpX1cljBqimX6E8+n5/K3fWPfphkJeX/Gj+AAFa65sMDtVzusqFh5UP1UkpyO
-         vMTL77wW5POPLEhFOs5fi9bcf3je6aZ7z5IaRSXhHIcEUexPlSzrLNgyU/MIZooFDcvQ
-         DCV7wWg/OWk4/3raS+cDkCfHEXxOz5RN4+VpUlni/AdPnBwPJf0UwFCbqOQz4PqeFh1i
-         VkCJfpBQpX1bwOHodL6rIAlhbopdovFRNYJaoiz48k/NDMajg63xmKa5SY5MEGPpv61u
-         MGSC/GhmvXM2SpOVAgeMnHN5++thLqawlbvh57aarLEp3Yg7fkecSv0QAMtRC7MVFWBM
-         Nlxw==
-X-Gm-Message-State: AOAM53015Gm1n4EieEdz3tlwo3zUYnW03tXbgWrNirMko05CmM0MnyZh
-        4Vr8jovRDKNwfvxQ4voqrXi92w==
-X-Google-Smtp-Source: ABdhPJwUoSY+QbRHzXs+BScMDnFxyyzVu+Vq6KWbSmQSF/skWxaeOYsSEXAD2UMTH6dD0pv59Ztoig==
-X-Received: by 2002:adf:82cc:: with SMTP id 70mr22865837wrc.74.1605008363482;
-        Tue, 10 Nov 2020 03:39:23 -0800 (PST)
-Received: from localhost ([82.44.17.50])
-        by smtp.gmail.com with ESMTPSA id b1sm2755521wmd.43.2020.11.10.03.39.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 10 Nov 2020 03:39:22 -0800 (PST)
-Date:   Tue, 10 Nov 2020 11:39:22 +0000
-From:   Jamie Iles <jamie@nuviainc.com>
-To:     James Morse <james.morse@arm.com>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Reinette Chatre <reinette.chatre@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        shameerali.kolothum.thodi@huawei.com,
-        Jamie Iles <jamie@nuviainc.com>,
-        D Scott Phillips OS <scott@os.amperecomputing.com>
-Subject: Re: [PATCH 10/24] x86/resctrl: Move the schema names into struct
- resctrl_schema
-Message-ID: <20201110113922.GA94467@poplar>
-References: <20201030161120.227225-1-james.morse@arm.com>
- <20201030161120.227225-11-james.morse@arm.com>
+        id S1730399AbgKJLiq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 06:38:46 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50740 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730061AbgKJLin (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Nov 2020 06:38:43 -0500
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9CB4520659;
+        Tue, 10 Nov 2020 11:38:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605008323;
+        bh=qG//VPoZy9c9brd/95xrCB78I00JrSjZNxCU8gagNVc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=EYescbww2rIt69r/e9MdSaA4naI0vpV2iBwa2YCcOlnxF+AUVJjZfh0wAlEGhyC/c
+         J5ZoC77bNkH2RDODmY9nW4lxS6I3azAtRk2CACLEaT5PDyk/hFPXxz2czPXDRDnpOb
+         EbT5+aXk4p8CdxJDOTXqlIZw4gcc0Wej2BeX+tMg=
+Date:   Tue, 10 Nov 2020 12:39:38 +0100
+From:   "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
+To:     Peter Chen <peter.chen@nxp.com>
+Cc:     Pawel Laszczak <pawell@cadence.com>,
+        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "balbi@kernel.org" <balbi@kernel.org>,
+        "colin.king@canonical.com" <colin.king@canonical.com>,
+        "rogerq@ti.com" <rogerq@ti.com>, Rahul Kumar <kurahul@cadence.com>,
+        "nsekhar@ti.com" <nsekhar@ti.com>
+Subject: Re: [PATCH v2 03/10] usb: cdns3: Moves reusable code to separate
+ module
+Message-ID: <X6p7+nXa/H4uqj0+@kroah.com>
+References: <20201106114300.1245-1-pawell@cadence.com>
+ <20201106114300.1245-4-pawell@cadence.com>
+ <20201110090854.GB22481@b29397-desktop>
+ <DM6PR07MB55294E87F6D76BA3C04E510ADDE90@DM6PR07MB5529.namprd07.prod.outlook.com>
+ <20201110112054.GC22481@b29397-desktop>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201030161120.227225-11-james.morse@arm.com>
+In-Reply-To: <20201110112054.GC22481@b29397-desktop>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi James,
-
-On Fri, Oct 30, 2020 at 04:11:06PM +0000, James Morse wrote:
-> Move the names used for the schemata file out of the resource and
-> into struct resctrl_schema. This allows one resource to have two
-> different names, based on the other schema properties.
+On Tue, Nov 10, 2020 at 11:21:22AM +0000, Peter Chen wrote:
+> On 20-11-10 09:20:54, Pawel Laszczak wrote:
+> > Hi,
+> > 
+> > >>
+> > >>  int cdns3_hw_role_switch(struct cdns3 *cdns);
+> > >> -int cdns3_init(struct cdns3 *cdns);
+> > >> -int cdns3_remove(struct cdns3 *cdns);
+> > >> +extern int cdns3_init(struct cdns3 *cdns);
+> > >> +extern int cdns3_remove(struct cdns3 *cdns);
+> > >
+> > >Why add "extern" here and below?
+> > >
+> > 
+> > These functions are the API between cdnsp and cdns3 modules.
+> > It's looks like a common approach in kernel.
+> > Many or even most of API function in kernel has "extern". 
+> > 
 > 
-> This patch copies the names, eventually resctrl will generate them.
-> 
-> Remove the arch code's max_name_width, this is now resctrl's
-> problem.
-> 
-> Signed-off-by: James Morse <james.morse@arm.com>
-> ---
->  arch/x86/kernel/cpu/resctrl/core.c        |  9 ++-------
->  arch/x86/kernel/cpu/resctrl/ctrlmondata.c | 10 +++-------
->  arch/x86/kernel/cpu/resctrl/internal.h    |  2 +-
->  arch/x86/kernel/cpu/resctrl/rdtgroup.c    | 17 ++++++++++++-----
->  include/linux/resctrl.h                   |  7 +++++++
->  5 files changed, 25 insertions(+), 20 deletions(-)
-...
-> diff --git a/arch/x86/kernel/cpu/resctrl/internal.h b/arch/x86/kernel/cpu/resctrl/internal.h
-> index 27671a654f8b..5294ae0c3ed9 100644
-> --- a/arch/x86/kernel/cpu/resctrl/internal.h
-> +++ b/arch/x86/kernel/cpu/resctrl/internal.h
-> @@ -248,7 +248,7 @@ struct rdtgroup {
->  /* List of all resource groups */
->  extern struct list_head rdt_all_groups;
->  
-> -extern int max_name_width, max_data_width;
-> +extern int max_data_width;
->  
->  int __init rdtgroup_init(void);
->  void __exit rdtgroup_exit(void);
-> diff --git a/arch/x86/kernel/cpu/resctrl/rdtgroup.c b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
-> index 311a3890bc53..48f4d6783647 100644
-> --- a/arch/x86/kernel/cpu/resctrl/rdtgroup.c
-> +++ b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
-> @@ -1440,8 +1440,8 @@ static int rdtgroup_size_show(struct kernfs_open_file *of,
->  			rdt_last_cmd_puts("Cache domain offline\n");
->  			ret = -ENODEV;
->  		} else {
-> -			seq_printf(s, "%*s:", max_name_width,
-> -				   rdtgrp->plr->s->res->name);
-> +			seq_printf(s, "%*s:", RESCTRL_NAME_LEN,
-> +				   rdtgrp->plr->s->name);
->  			size = rdtgroup_cbm_to_size(rdtgrp->plr->s->res,
->  						    rdtgrp->plr->d,
->  						    rdtgrp->plr->cbm);
-> @@ -1454,7 +1454,7 @@ static int rdtgroup_size_show(struct kernfs_open_file *of,
->  		r = schema->res;
->  
->  		sep = false;
-> -		seq_printf(s, "%*s:", max_name_width, r->name);
-> +		seq_printf(s, "%*s:", RESCTRL_NAME_LEN, schema->name);
->  		list_for_each_entry(d, &r->domains, list) {
->  			hw_dom = resctrl_to_arch_dom(d);
->  			if (sep)
-> @@ -1827,7 +1827,7 @@ static int rdtgroup_create_info_dir(struct kernfs_node *parent_kn)
->  	list_for_each_entry(s, &resctrl_all_schema, list) {
->  		r = s->res;
->  		fflags =  r->fflags | RF_CTRL_INFO;
-> -		ret = rdtgroup_mkdir_info_resdir(s, r->name, fflags);
-> +		ret = rdtgroup_mkdir_info_resdir(s, s->name, fflags);
->  		if (ret)
->  			goto out_destroy;
->  	}
-> @@ -2140,6 +2140,7 @@ static int create_schemata_list(void)
->  {
->  	struct resctrl_schema *s;
->  	struct rdt_resource *r;
-> +	int ret;
->  
->  	for_each_alloc_enabled_rdt_resource(r) {
->  		s = kzalloc(sizeof(*s), GFP_KERNEL);
-> @@ -2150,6 +2151,12 @@ static int create_schemata_list(void)
->  		s->num_closid = resctrl_arch_get_num_closid(r);
->  		s->conf_type = resctrl_to_arch_res(r)->conf_type;
->  
-> +		ret = snprintf(s->name, sizeof(s->name), r->name);
-> +		if (ret >= sizeof(s->name)) {
-> +			kfree(s);
-> +			return -EINVAL;
-> +		}
-> +
+> Even you have not written "extern" keyword, the "extern" is
+> added implicitly by compiler. Usually, we use "extern" for variable
+> or the function is defined at assembly. You could see some
+> "extern" keyword use cases at include/linux/device.h.
 
-How about:
+We are moving away from using this keyword for functions now, if at all
+possible please.  Only use it for variables, I think checkpatch now
+catches it as well.
 
-+		ret = strscpy(s->name, r->name, sizeof(s->name));
-+		if (ret < 0)) {
-+			kfree(s);
-+			return -EINVAL;
-+		}
+thanks,
 
-So that there isn't a non-constant format specifier that'll trip 
-Coverity+friends up later?
-
-Thanks,
-
-Jamie
+greg k-h
