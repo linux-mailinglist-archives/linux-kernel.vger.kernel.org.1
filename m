@@ -2,68 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 877AA2ADC70
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 17:51:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 422612ADC74
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 17:52:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730488AbgKJQvk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 11:51:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54742 "EHLO
+        id S1730589AbgKJQwj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 11:52:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54894 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728999AbgKJQvk (ORCPT
+        with ESMTP id S1726467AbgKJQwj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 11:51:40 -0500
-Received: from xavier.telenet-ops.be (xavier.telenet-ops.be [IPv6:2a02:1800:120:4::f00:14])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D557CC0613D1
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 08:51:39 -0800 (PST)
-Received: from ramsan.of.borg ([84.195.186.194])
-        by xavier.telenet-ops.be with bizsmtp
-        id qgre230064C55Sk01greXK; Tue, 10 Nov 2020 17:51:38 +0100
-Received: from rox.of.borg ([192.168.97.57])
-        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1kcWrp-001ET1-TL; Tue, 10 Nov 2020 17:51:37 +0100
-Received: from geert by rox.of.borg with local (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1kcWrp-00EJMx-61; Tue, 10 Nov 2020 17:51:37 +0100
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-To:     "James E . J . Bottomley" <James.Bottomley@HansenPartnership.com>,
-        Helge Deller <deller@gmx.de>
-Cc:     linux-parisc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH] parisc/uapi: Use Kbuild logic to provide <asm/types.h>
-Date:   Tue, 10 Nov 2020 17:51:36 +0100
-Message-Id: <20201110165136.3411004-1-geert@linux-m68k.org>
-X-Mailer: git-send-email 2.25.1
+        Tue, 10 Nov 2020 11:52:39 -0500
+Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8299C0613CF
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 08:52:37 -0800 (PST)
+Received: by mail-io1-xd43.google.com with SMTP id p7so14910447ioo.6
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 08:52:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=h8aV1fRyAQr4lu0BWRM7KfIjU599lmTXpnXF/29ou/8=;
+        b=LeDCrYseEV54t+QJ/c0KmtoQtibA3j/TYcLG1Qxs+L/v7kGAEXBpKq76n16mjKfakN
+         uPACa6ThhNs+bRAll5Wpidpm5moKVd+ag49pJSn+YruLoszoM98vZy3SXShtzbsG1G6C
+         t6z8RbDo+VKrrNDQMbCcU/r9ZXT8JPzDVCoVJlU476xTYyuEVY90UCsdJRwThxo+i5gm
+         RTf1kLlV9gz4wbygu2LxYeoklDT2Mu4lUnlTJ8YuneQsjG0zIGGYbZtKnCgJ3irYRPtn
+         Q3mqedE0I4FUjIjSO+Z+VMChANMFrJJpo3LKBvgMnZ02+Tmrt/SuibBv3GEzs24l6cTX
+         rITA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=h8aV1fRyAQr4lu0BWRM7KfIjU599lmTXpnXF/29ou/8=;
+        b=p7AcxP92hKY0LxBOmSTrdWEPn4YiBJtqGdUb3gTtLAP8tVRW6di1IGawQxQft1gh+w
+         txyAdaf1rkHsKOeugOoZTpiDU4wca3AsWhvdc2XhBuOX+F9hGNXuNd2WvwEnkbz+yzNQ
+         UDVOr5zpqaF9fjP6xWjCLuOnRptDO/5toGM3UYSgLXJNXBflc8WqetrcEbygh9FjMIiz
+         m0H7bDtUxa60O0C+OsDWieBMrfmUCOLuQVMUlYhG/b0Ws6nZmGJwcJEFy3HAqW2O2COE
+         U/QMR4eWxGuVSRmVoIPDZ2tQWqyAS1noqHMRcbIcBYwXcCnrYDY7+ofCqXUegqBgez3E
+         byfw==
+X-Gm-Message-State: AOAM533vtHIOo5xQ8ye5GRSUiWn8r1cyvMYx4tJM8ouLsFMGPrqiRxML
+        vqmkGB+J1zm4whKWRDXZW6NyCfPwYqiF+nkdYMRhmA==
+X-Google-Smtp-Source: ABdhPJyJOUuveGDhCdaEOJ/9X23r3GKk4VSIPGKbrm4siQ5YBwGU1B0PfgtDNymxvOfGEe+aqVPErTFYcBfMDF1BYEU=
+X-Received: by 2002:a02:65cf:: with SMTP id u198mr15677478jab.24.1605027157271;
+ Tue, 10 Nov 2020 08:52:37 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20201110145552.23024-1-brgl@bgdev.pl> <20201110145552.23024-7-brgl@bgdev.pl>
+ <20201110150447.GW4077@smile.fi.intel.com> <20201110151022.GY4077@smile.fi.intel.com>
+ <CAMRc=MfsLc_DKuCaOwq-xDjT0V8yk3rGt8buJ9qgbGNj25youA@mail.gmail.com>
+ <20201110161225.GZ4077@smile.fi.intel.com> <CAMpxmJV4hsV34YS0Ez9_GsnBakXGgr3NTu8oBd+3Apg+921aRQ@mail.gmail.com>
+ <CAHp75VcBp4HLBf1EVxkHYW-=wtJpFPx_14L2xZfBfB9yx5GM7w@mail.gmail.com>
+In-Reply-To: <CAHp75VcBp4HLBf1EVxkHYW-=wtJpFPx_14L2xZfBfB9yx5GM7w@mail.gmail.com>
+From:   Bartosz Golaszewski <brgl@bgdev.pl>
+Date:   Tue, 10 Nov 2020 17:52:26 +0100
+Message-ID: <CAMRc=McyHfti_9ner8vyF=J=srzWJXsa7GRmwKF1TJ=ksGQM5g@mail.gmail.com>
+Subject: Re: [PATCH v4 6/7] gpio: exar: switch to using regmap
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Jan Kiszka <jan.kiszka@siemens.com>,
+        David Laight <David.Laight@aculab.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Uapi <asm-generic/types.h> just includes <asm-generic/int-ll64.h>
+On Tue, Nov 10, 2020 at 5:43 PM Andy Shevchenko
+<andy.shevchenko@gmail.com> wrote:
+>
+> On Tue, Nov 10, 2020 at 6:37 PM Bartosz Golaszewski
+> <bgolaszewski@baylibre.com> wrote:
+> > On Tue, Nov 10, 2020 at 5:17 PM Andy Shevchenko
+> > <andriy.shevchenko@linux.intel.com> wrote:
+>
+> ...
+>
+> > > > > > > +static const struct regmap_config exar_regmap_config = {
+> > > > > > > +   .name           = "exar-gpio",
+> > > > > > > +   .reg_bits       = 16,
+> > > > > >
+> > > > > > As per previous version comment.
+> > > > > >
+> > > > > > Hold on, the registers are 16-bit wide, but their halves are sparsed!
+> > > > > > So, I guess 8 and 8 with helpers to get hi and lo parts are essential.
+> > > > > >
+> > > > > >
+> > > > > > TABLE 5: DEVICE CONFIGURATION REGISTERS SHOWN IN BYTE ALIGNMENT
+> > > > > >
+> > > > > > > +   .val_bits       = 8,
+> > > > > > > +};
+> > > > > >
+> > > > > > This is basically represents two banks out of 6 8-bit registers each.
+> > > > >
+> > > > > ...which makes me wonder if gpio-regmap can be utilized here...
+> > > > >
+> > > >
+> > > > But the address width won't affect the actuall accessing of 8 bits
+> > > > registers in an mmio regmap. Internally the mmio regmap does pretty
+> > > > much the same thing the previous driver did: call readb()/writeb() on
+> > > > 8-bit "chunks" of the banks.
+> > >
+> > > It will affect reg dump in debugfs. I would really narrow down the register
+> > > address space in the config, otherwise that debugfs facility will screw up a
+> > > lot of things.
+> > >
+> > > So, and to be on pedantic side...
+> > >
+> > > "The Device Configuration Registers and the two individual UART Configuration
+> > > Registers of the XR17V352 occupy 2K of PCI bus memory address space."
+> > >
+> > > 11 seems the correct value for the address width.
+> >
+> > I take it as a typo and assume you meant 16. So the patch should be
+> > correct and your review tag is good to go?
+>
+> It's not a typo. But thinking again. This is basically done in regmap
+> to support serial buses. Here we have MMIO pretty much with 32-bit or
+> 64-bit address accesses. I didn't dig into regmap implementation to
+> understand the consequences of changing this to the different values
+> (it seems like rather offset, and in this case 11 is a correct one,
+> not a typo, and regmap is okay with that).
+> But I would rather ask Jan to actually mount debugfs and dump
+> registers and see if it screws up the UART (because it may go all over
+> important registers), that's why I think this configuration is still
+> missing some strict rules about what addresses (offsets) driver may or
+> may not access.
 
-Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
----
-This is a resend of a very old patch from 2013, which is still valid.
+Ok now I get it. Yes 11 seems to be right in this case for the max
+address. We can implement the readable/writable callbacks to be very
+strict about the register accesses but isn't it overkill? This driver
+is very small and only accesses a couple registers. I don't see such
+strict checking very often except for very complicated modules (like
+pca953x you mentioned).
 
- arch/parisc/include/uapi/asm/types.h | 7 -------
- 1 file changed, 7 deletions(-)
- delete mode 100644 arch/parisc/include/uapi/asm/types.h
-
-diff --git a/arch/parisc/include/uapi/asm/types.h b/arch/parisc/include/uapi/asm/types.h
-deleted file mode 100644
-index 28c7d7453b10f9b1..0000000000000000
---- a/arch/parisc/include/uapi/asm/types.h
-+++ /dev/null
-@@ -1,7 +0,0 @@
--/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
--#ifndef _PARISC_TYPES_H
--#define _PARISC_TYPES_H
--
--#include <asm-generic/int-ll64.h>
--
--#endif
--- 
-2.25.1
-
+Bartosz
