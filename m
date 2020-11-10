@@ -2,168 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE47D2ADEEB
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 19:58:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AE8282ADEF3
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 20:00:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726690AbgKJS6t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 13:58:49 -0500
-Received: from m42-4.mailgun.net ([69.72.42.4]:38046 "EHLO m42-4.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731311AbgKJS6s (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 13:58:48 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1605034728; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=03vIhO1DD9MMUbmvKZXZHZRt0toBn4/mIUEAO6EdjbY=;
- b=e9GuA2Yl5yc34ZyKAo3qi2U5G2BvJdBXxGbVkNSNfMTpza7EekXZ9zYEw/0hUOnnOi3jmFeH
- bh6ktiBBTw3klBpVd+xUf9PLRB5NosTswGYpUFbmxprpr0T068G5AVMUsXB9JZU0Fj7ptctj
- Yt+c4fsWhGMeAJKBeh81ijaq6mg=
-X-Mailgun-Sending-Ip: 69.72.42.4
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-west-2.postgun.com with SMTP id
- 5faae2dd40d44461257a237f (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 10 Nov 2020 18:58:37
- GMT
-Sender: sibis=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id DB930C433C9; Tue, 10 Nov 2020 18:58:37 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: sibis)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 0886AC433C8;
-        Tue, 10 Nov 2020 18:58:36 +0000 (UTC)
+        id S1731272AbgKJTAK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 14:00:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46540 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730770AbgKJTAJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Nov 2020 14:00:09 -0500
+Received: from mail-vs1-xe41.google.com (mail-vs1-xe41.google.com [IPv6:2607:f8b0:4864:20::e41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66889C0613D6
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 11:00:08 -0800 (PST)
+Received: by mail-vs1-xe41.google.com with SMTP id r14so7684770vsa.13
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 11:00:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=HQMWJ4qrTrrDaVP4fR8AYbnLL+HhbqUgRWbw+YSQ1PU=;
+        b=UAf9RqBB0qr82AsqOtHV2sesZ3cFzDvVPrFOFo9wUuuHJXryVnBngDsIrGvKaE6X19
+         0SqjoI+qK8F47wcovy/kBeCPJ4lIKLolgnCYTTAinI6LM/5ys2dh6HlhdigZSrVkC/rn
+         ShAlUOfI+vdr9rptwftYPxBYiTijHNtuYVGc3mYzd/3mrO/nNNPGBPmWtes0yy3EJX3R
+         sHQB4adTCc34sogEGEr66NVJxa45ZnJ2DpryOQ0DhgNiqen71LLeDBvfUdLT3d4QP0EK
+         CCvE4ObR4otzBFPgR6yeCqhZTLFHqyDs2Tr4Y5R18i3xk72lbdkEjxSGufRjUQd0yCL8
+         Ojbw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=HQMWJ4qrTrrDaVP4fR8AYbnLL+HhbqUgRWbw+YSQ1PU=;
+        b=sMWjLxtBm/jd0ablxkwsWcRpWPhOJQKgoUJrly8pdtjfwBN7n3JXXQWrF9j1ZgMgL+
+         ZTsTZFmXgNQncLcUWvRIlkQIdcxT6woYZjS39xdpcF5GxcmEO19tZou1o3vX2UxFntDv
+         1I6UaeTUIyMgVmeoKaN34saFCnUkMtVSC4RvbvZIzJeKkyZcZ612HWIxCaQJV22nDp45
+         0FFuy0TDXfRqocbh7U5nGlsxmwelTZiZpSJotaXnINE3dPIucx+r3w1iehTn5BnSgems
+         FJPEzgsWPXUlpc+yjj8EULycPnCRbUZ9bUE4bEDRksp2AdrVWIVlwE5fonejSORzRlFB
+         BuwQ==
+X-Gm-Message-State: AOAM533WUdzdqCNxnnoeJmxGKiQweOGKEVeg867bgSDukcsRsnrSlqbe
+        gc+OKGR+MJJy5k7G/3rzYwRZxKdmgB7WD9tB19wlCQ==
+X-Google-Smtp-Source: ABdhPJw/xQbpb4nm+Nf8IkeXZp9mvPOXpptK1b90vfr96ZwBHQ1ynLFLCpnmKb8sXq4PoJSCYGgPJD2CoGITJLPmHok=
+X-Received: by 2002:a67:ee93:: with SMTP id n19mr12787183vsp.36.1605034807022;
+ Tue, 10 Nov 2020 11:00:07 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Wed, 11 Nov 2020 00:28:36 +0530
-From:   Sibi Sankar <sibis@codeaurora.org>
-To:     Doug Anderson <dianders@chromium.org>
-Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Matthias Kaehlcke <mka@chromium.org>,
-        Andy Gross <agross@kernel.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        Evan Green <evgreen@chromium.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Stephen Boyd <swboyd@chromium.org>
-Subject: Re: [PATCH 1/2] arm64: dts: qcom: sc7180-lite: Tweak DDR/L3 scaling
- on SC7180-lite
-In-Reply-To: <CAD=FV=XFgS-d8L5Q3SEXYYtBszmjdMbBLRWRTHX7rQ5i6Hb=4g@mail.gmail.com>
-References: <1602783939-7177-1-git-send-email-sibis@codeaurora.org>
- <CAD=FV=XFgS-d8L5Q3SEXYYtBszmjdMbBLRWRTHX7rQ5i6Hb=4g@mail.gmail.com>
-Message-ID: <9f4ae806ba3d283caaab37f0f2aa7ea0@codeaurora.org>
-X-Sender: sibis@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+References: <20201015102216.GB2611@hirez.programming.kicks-ass.net>
+ <20201015203942.f3kwcohcwwa6lagd@treble> <CABCJKufDLmBCwmgGnfLcBw_B_4U8VY-R-dSNNp86TFfuMobPMw@mail.gmail.com>
+ <20201020185217.ilg6w5l7ujau2246@treble> <CABCJKucVjFtrOsw58kn4OnW5kdkUh8G7Zs4s6QU9s6O7soRiAA@mail.gmail.com>
+ <20201021085606.GZ2628@hirez.programming.kicks-ass.net> <CABCJKufL6=FiaeD8T0P+mK4JeR9J80hhjvJ6Z9S-m9UnCESxVA@mail.gmail.com>
+ <20201023173617.GA3021099@google.com> <CABCJKuee7hUQSiksdRMYNNx05bW7pWaDm4fQ__znGQ99z9-dEw@mail.gmail.com>
+ <20201110022924.tekltjo25wtrao7z@treble> <20201110174606.mp5m33lgqksks4mt@treble>
+In-Reply-To: <20201110174606.mp5m33lgqksks4mt@treble>
+From:   Sami Tolvanen <samitolvanen@google.com>
+Date:   Tue, 10 Nov 2020 10:59:55 -0800
+Message-ID: <CABCJKuf+Ev=hpCUfDpCFR_wBACr-539opJsSFrDcpDA9Ctp7rg@mail.gmail.com>
+Subject: Re: [PATCH v6 22/25] x86/asm: annotate indirect jumps
+To:     Josh Poimboeuf <jpoimboe@redhat.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Jann Horn <jannh@google.com>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Will Deacon <will@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Kernel Hardening <kernel-hardening@lists.openwall.com>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-kbuild <linux-kbuild@vger.kernel.org>,
+        kernel list <linux-kernel@vger.kernel.org>,
+        linux-pci@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-10-17 04:29, Doug Anderson wrote:
-> Hi,
-> 
-> On Thu, Oct 15, 2020 at 10:53 AM Sibi Sankar <sibis@codeaurora.org> 
-> wrote:
->> 
->> Tweak the DDR/L3 bandwidth votes on the lite variant of the SC7180 SoC
->> since the gold cores only support frequencies upto 2.1 GHz.
->> 
->> Signed-off-by: Sibi Sankar <sibis@codeaurora.org>
->> ---
->>  arch/arm64/boot/dts/qcom/sc7180-lite.dtsi | 14 ++++++++++++++
->>  1 file changed, 14 insertions(+)
->>  create mode 100644 arch/arm64/boot/dts/qcom/sc7180-lite.dtsi
->> 
->> diff --git a/arch/arm64/boot/dts/qcom/sc7180-lite.dtsi 
->> b/arch/arm64/boot/dts/qcom/sc7180-lite.dtsi
->> new file mode 100644
->> index 000000000000..cff50275cfe1
->> --- /dev/null
->> +++ b/arch/arm64/boot/dts/qcom/sc7180-lite.dtsi
->> @@ -0,0 +1,14 @@
->> +// SPDX-License-Identifier: BSD-3-Clause
->> +/*
->> + * SC7180 lite device tree source
->> + *
->> + * Copyright (c) 2020, The Linux Foundation. All rights reserved.
->> + */
->> +
->> +&cpu6_opp11 {
->> +       opp-peak-kBps = <8532000 22425600>;
->> +};
->> +
->> +&cpu6_opp12 {
->> +       opp-peak-kBps = <8532000 23347200>;
->> +};
-> 
-> I guess this is OK, but something about it smells just a little
-> strange...  I guess:
-> 
-> a) There's suddenly a big jump from opp10 to opp11.  You don't use
-> 7216000 at all anymore.
-> 
-> b) The fact that we need to do this at all feels like a sign that
-> somehow this wasn't designed quite right.
-> 
-> Just brainstorming a bit: If the higher memory rate wasn't useful for
-> OPP11/12 on the non-lite version of the chip, why are they useful for
-> that OPP on the lite version?  I guess you're just trying to eek out
-> the last little bits of performance once the cpufreq is maxed out?  It
+On Tue, Nov 10, 2020 at 9:46 AM Josh Poimboeuf <jpoimboe@redhat.com> wrote:
+>
+> On Mon, Nov 09, 2020 at 08:29:24PM -0600, Josh Poimboeuf wrote:
+> > On Mon, Nov 09, 2020 at 03:11:41PM -0800, Sami Tolvanen wrote:
+> > > CONFIG_XEN
+> > >
+> > > __switch_to_asm()+0x0: undefined stack state
+> > >   xen_hypercall_set_trap_table()+0x0: <=== (sym)
+>
+> With your branch + GCC 9 I can recreate all the warnings except this
+> one.
 
-Doug,
+In a gcc build this warning is replaced with a different one:
 
-Really sorry about the delayed response,
-running power tests and getting some fuse
-info took longer than expected. Yes the
-mapping table as expected is a trade off
-between power/perf and it has been determined
-that lite version would meet the power
-numbers even with the high memory votes
-at lower freqs.
+vmlinux.o: warning: objtool: __startup_secondary_64()+0x7: return with
+modified stack frame
 
-1900800000 --> opp-peak-kBps = <7216000 22425600>;
-1996800000 --> opp-peak-kBps = <7216000 22425600>;
-2112000000 --> opp-peak-kBps = <8532000 23347200>;
+This just seems to depend on which function is placed right after the
+code in xen-head.S. With gcc, the disassembly looks like this:
 
-^^ is the new recommendation from the perf/power
-QC teams for lite and is expected to have better
-power numbers with similar perf.
+0000000000000000 <asm_cpu_bringup_and_idle>:
+       0:       e8 00 00 00 00          callq  5 <asm_cpu_bringup_and_idle+0x5>
+                        1: R_X86_64_PLT32       cpu_bringup_and_idle-0x4
+       5:       e9 f6 0f 00 00          jmpq   1000
+<xen_hypercall_set_trap_table>
+...
+0000000000001000 <xen_hypercall_set_trap_table>:
+        ...
+...
+0000000000002000 <__startup_secondary_64>:
 
-> almost feels like a better way to do this (though it wouldn't be
-> monotonically increasing anymore so it wouldn't actually work) would
-> be to have a few "OPP" points at the top where the cpufreq stops
-> increasing and all you do is increase the memory frequency.
-> 
-> c) In theory we're supposed to be able to probe whether we're on the
-> normal, lite, or pro version, right?  Anyway we could tweak this in
-> code so we don't have to know to include the right dtsi file?
+With Clang+LTO, we end up with __switch_to_asm here instead of
+__startup_secondary_64.
 
-Yes we can determine f_max by reading speed_bin
-efuse values or by OSM table traversal (though
-latter looks more like a hack) and use that
-along with opp-supported-hw to identity supported
-opps.
+> Will do some digging on the others...
 
-I would prefer If we can avoid doing ^^ if
-we can get away with overloading the votes
-in dt but I don't have any strong opinions
-on this. So let me know how you want it done
-and I'll fix it up accordingly in the next
-re-spin.
+Thanks!
 
-> 
-> 
-> -Doug
-
--- 
-Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
-a Linux Foundation Collaborative Project.
+Sami
