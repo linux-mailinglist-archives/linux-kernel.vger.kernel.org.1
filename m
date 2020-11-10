@@ -2,90 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 980082AE1A8
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 22:24:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CBE82AE1BD
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 22:28:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731874AbgKJVYv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 16:24:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41036 "EHLO
+        id S1731750AbgKJV2T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 16:28:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41552 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726428AbgKJVYv (ORCPT
+        with ESMTP id S1730254AbgKJV2S (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 16:24:51 -0500
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A77CC0613D1;
-        Tue, 10 Nov 2020 13:24:51 -0800 (PST)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CW18w3PWZz9s1l;
-        Wed, 11 Nov 2020 08:24:48 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1605043489;
-        bh=+yPgWrdHMKiH/LUBVn7e+WTr8eTOlDMV/cf4j5hmyHA=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=M4BKIf+BSI6il165qGcbzuQIa3WAUvepJ1zupfuCei1/FTfIVQrzFG6nWew4yc9g2
-         VJ+Cnbvogj2zx8LhRWl1VyKc1O2ojvxVvxD6WwaoApyatik8pZpwbJ1wU5DeiP5QvG
-         OUUdrfPz7PKvwuLZc2r1VcCfhQ2DkSJ9Lsg0nRORHbe9OZ8xfmYy3WPUAAg22H8Lnl
-         5/xX1K/M022u3LK+IMgG7plsfhL8mrSBOaVbL6P40FOpHUOPxyUomfICdk8zygJyRF
-         z7LYneRLsLsBahNWHOCkCtL16asl4X1NKZZ2oZ0v+lXXyNdSfEiJuHvHPbdl9/Reak
-         T/U4sNtyeIdvg==
-Date:   Wed, 11 Nov 2020 08:24:47 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Al Viro <viro@zeniv.linux.org.uk>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: build failure after merge of the vfs tree
-Message-ID: <20201111082447.4ef81587@canb.auug.org.au>
-In-Reply-To: <20201110190036.GT3576660@ZenIV.linux.org.uk>
-References: <20201027151414.2018d5fd@canb.auug.org.au>
-        <20201027045912.GG3576660@ZenIV.linux.org.uk>
-        <20201110190036.GT3576660@ZenIV.linux.org.uk>
+        Tue, 10 Nov 2020 16:28:18 -0500
+Received: from mail-oi1-x241.google.com (mail-oi1-x241.google.com [IPv6:2607:f8b0:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72021C0613D1
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 13:28:16 -0800 (PST)
+Received: by mail-oi1-x241.google.com with SMTP id j7so16113648oie.12
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 13:28:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=WdCTcUp3dt98pd8N/bAI9BPR8MUfMdcKBreEIwkfCWE=;
+        b=cKDjQtDDjB5Lky6jr2FC81N8duXbbH+cdB+mUYl9ikTUJ7j9GcojAmJEG5BVI3wyfT
+         EYNwGSw2Q9kY2uRubIVw62LI2LDhWwN1uEmD4wY2AITz56OHuw3gL1tjz9HMqlKwx+nz
+         pA8JHfW05ZyNKM6CDX9Td5f8KN6q7GdIBBbdz0gwo6rMGugKLA4yaEey8lf9HdGhKbpc
+         Ln9/mz15nnvKxS1xeoR5Rn4tNV+0xPqNzUbEFFw+n7J9lchvyBjpYbPWC8U42W0da+/C
+         Cc8wDMJtb+YwfnH1uoSNx2viMYTLeo09VUOauM7XIlRzZJRbn6Ccoqb8a4/CStzG6bcx
+         XU7g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=WdCTcUp3dt98pd8N/bAI9BPR8MUfMdcKBreEIwkfCWE=;
+        b=nlinEdt9UAWDXEzjvgLuoyjYAtj/NUjp3jb1xL6LdFizKlNMOAe9NjYS5sBAJpjfe2
+         V3I1b04xXOyWxJVKoF6CW32o8HJygRBXcUqUYr6sghx6K/FZxOEJFAMIyDXTkqxR2bDB
+         qohRASQxAa5FCfgU1jG09iMO+9esM9nDASf+bZ7yzuc+90JiUA6dFjNPk8bw9t2wKIWV
+         49QzGdtw7LDdkEJyX9dYTwUOSvwvnFY3wXHBiap9XTW4AEX9AyX0Teuv1uJ59+jLUTDU
+         /j8Ka+zg5aWu8vA9lptX9q5qyLe7faexqKUjAo1gojXYzf6yICqXmzSoLfKyYy6o1xLa
+         ACXw==
+X-Gm-Message-State: AOAM533YOfNtNpnePjaFwO5flpPp9eh6GJ9d3OD3BXU3m13tFyiDLvIm
+        RWeBgHSj1RUmLqJjHkH+6qUhaQ==
+X-Google-Smtp-Source: ABdhPJyGV9vepmOEKrlYJxQpWVjB8O0kCfQ9th8PqSMEhyIIM/MxzoaDwll65t2fKnc7Vlu3jyk7kw==
+X-Received: by 2002:aca:b588:: with SMTP id e130mr92461oif.56.1605043695752;
+        Tue, 10 Nov 2020 13:28:15 -0800 (PST)
+Received: from yoga (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id g3sm3422228oif.26.2020.11.10.13.28.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 10 Nov 2020 13:28:15 -0800 (PST)
+Date:   Tue, 10 Nov 2020 15:28:13 -0600
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     Maulik Shah <mkshah@codeaurora.org>,
+        Andy Gross <agross@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        MSM <linux-arm-msm@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM <linux-gpio@vger.kernel.org>, Andy Gross
+        <agross@kernel.org>, Thomas Gleixner <tglx@linutronix.de>, Jason Cooper
+        <jason@lakedaemon.net>, Doug Anderson <dianders@chromium.org>, Rajendra
+        Nayak <rnayak@codeaurora.org>, Lina Iyer <ilina@codeaurora.org>," 
+        <dianders@chromium.org>, Stephen Boyd <swboyd@chromium.org>,
+        Evan Green <evgreen@chromium.org>,
+        Matthias Kaehlcke <mka@chromium.org>,
+        Rajendra Nayak <rnayak@codeaurora.org>,
+        Lina Iyer <ilina@codeaurora.org>,
+        "open list:GPIO SUBSYSTEM <linux-gpio@vger.kernel.org>, Andy Gross
+        <agross@kernel.org>, Thomas Gleixner <tglx@linutronix.de>, Jason Cooper
+        <jason@lakedaemon.net>, Doug Anderson <dianders@chromium.org>, Rajendra
+        Nayak <rnayak@codeaurora.org>, Lina Iyer <ilina@codeaurora.org>," 
+        <lsrao@codeaurora.org>
+Subject: Re: [PATCH] pinctrl: qcom: Move clearing pending IRQ to
+ .irq_request_resources callback
+Message-ID: <20201110212813.GF807@yoga>
+References: <1604561884-10166-1-git-send-email-mkshah@codeaurora.org>
+ <CACRpkdZJ6yrisNKFG8MJEOhzAV7HRtUTniXpnFVd9fpVy75ruw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/n6uGA+wBV._.2uX+xD0eJ8w";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CACRpkdZJ6yrisNKFG8MJEOhzAV7HRtUTniXpnFVd9fpVy75ruw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/n6uGA+wBV._.2uX+xD0eJ8w
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Tue 10 Nov 07:31 CST 2020, Linus Walleij wrote:
 
-Hi Al,
+> On Thu, Nov 5, 2020 at 8:38 AM Maulik Shah <mkshah@codeaurora.org> wrote:
+> 
+> > When GPIOs that are routed to PDC are used as output they can still latch
+> > the IRQ pending at GIC. As a result the spurious IRQ was handled when the
+> > client driver change the direction to input to starts using it as IRQ.
+> >
+> > Currently such erroneous latched IRQ are cleared with .irq_enable callback
+> > however if the driver continue to use GPIO as interrupt and invokes
+> > disable_irq() followed by enable_irq() then everytime during enable_irq()
+> > previously latched interrupt gets cleared.
+> >
+> > This can make edge IRQs not seen after enable_irq() if they had arrived
+> > after the driver has invoked disable_irq() and were pending at GIC.
+> >
+> > Move clearing erroneous IRQ to .irq_request_resources callback as this is
+> > the place where GPIO direction is changed as input and its locked as IRQ.
+> >
+> > While at this add a missing check to invoke msm_gpio_irq_clear_unmask()
+> > from .irq_enable callback only when GPIO is not routed to PDC.
+> >
+> > Fixes: e35a6ae0eb3a ("pinctrl/msm: Setup GPIO chip in hierarchy")
+> > Signed-off-by: Maulik Shah <mkshah@codeaurora.org>
+> 
+> This looks critical so I applied it for fixes so we get some
+> rotation in linux-next.
+> 
+> If Bjorn has other opinions he will tell us :)
+> 
 
-On Tue, 10 Nov 2020 19:00:36 +0000 Al Viro <viro@zeniv.linux.org.uk> wrote:
->
-> On Tue, Oct 27, 2020 at 04:59:12AM +0000, Al Viro wrote:
->=20
-> > I'll rebase that branch on top of sparc tree tomorrow (and eventually I=
-'d like
-> > it to go through the sparc tree anyway). =20
->=20
-> Done - sorry for disappearing ;-/
+No objections, the patch looks reasonable to me.
 
-No worries and thanks.
+Acked-by: Bjorn Andersson <bjorn.andersson@linaro.org>
 
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/n6uGA+wBV._.2uX+xD0eJ8w
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl+rBR8ACgkQAVBC80lX
-0Gw8jgf+Lm40WQW541yS9kdAMGibeqxu/EVgZKDIXhWF2pvjaQOBJIK5K67y/Saq
-qvwmaCzgfA5B+fQgovbQ6fepzLOeHYzuv4WKISikjTPHrvTwvmi9hOsujAHTzIaP
-nvvm3Udjkr9bbm618Dds30+nEiOeXQsTwzduFd75Me4JEo+xSplAT+hXf6bEt9RS
-mNvK/U+volDvTSKpiqIsMs0Nazh4WEK3O/v5rcHnPmSXR85QiJQ5usiHAcFGAuhC
-42IRpPaCuQojIcgzNUe6CHuFHbA0Hwm40WFBNSX2zH50M5R/xvFA5Cv9rqCgAsab
-26E/NeFYnY3eLOPn7ziMiXwqbo6hSg==
-=gyNW
------END PGP SIGNATURE-----
-
---Sig_/n6uGA+wBV._.2uX+xD0eJ8w--
+Regards,
+Bjorn
