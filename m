@@ -2,196 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E5482ADAA5
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 16:41:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 300B82ADAA9
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 16:42:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731090AbgKJPlw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 10:41:52 -0500
-Received: from mail-eopbgr140113.outbound.protection.outlook.com ([40.107.14.113]:19940
-        "EHLO EUR01-VE1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1730299AbgKJPlw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 10:41:52 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Ncy0CwDHseszSL78E42KATUhY/3pnHNIhgmTWzKDDk2Bn/sSXsS9cJne/RNmC8tVl+7w9bJ01s5zOPLyTCngTZl3UssIR7+lZCOnpbLJ3NhEA38UTP1MGApe97jEQBTFIYcZyto7hMszC+GAkuF8IaT42Fva4tkqquHIhNfHal6/7hthI6N8AcZlwBzEFGqW1pKiqHXJWwpsQNtNPx4YxnQViZBNXTP0W5miKKcxhkBbhQrxPxNIwtG5WCnWpV62bXyn2oroQwXOo35U0fMTg7kUfu9pvOI6RlQ83OMWQuXvqfkyJnOLF1Bs6tOZyK3zRR/CP/PStAt4l8DMdGZLYQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=hQ0MX6UgezRoWXJuWm6yiQv9khSgu58Cw9Miof30pT4=;
- b=JyypttK8hWmz3qD5mIRQL8wF4yrPhMwfzrQ6C7+CrzLAaUbdPWbpGFGyr0tHn28lpuepEPCcr5NvOmfWRWLM/kNN8sMsQUUW1Z2gGnxzWKBGZow47pDW05H6Va85o9AghyB9pvzzXcCuejCpU3yYbVUFVlkJLNGLZoZT56ilTOgZzU+YsrHhoV1RYf1Kc0/jJhZaNHg0/KKVLowJTLCIpUmM/gx36p5rtFY5eONemqLVOr4ulZqfwmUxCNPUi0ceG5UGy/flUaiBv3T36tTuGzS0elTB/Ks/9nmGufVB+QAucCyAxaC5EgLg6MZyS+oqyheDnxZsH1xDBkbOccY48g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=kontron.com; dmarc=pass action=none header.from=kontron.com;
- dkim=pass header.d=kontron.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mysnt.onmicrosoft.com;
- s=selector2-mysnt-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=hQ0MX6UgezRoWXJuWm6yiQv9khSgu58Cw9Miof30pT4=;
- b=oSpxTNQmz/2VFrf0cxZIX2qTyF1CqvNpMz2WXXkuG6+Jqa1/pVMUBs7MN1eKgG1CHdenv1h+xAnE7qaoEwihPC3Z8IITy+8CzbQKm/Y7F6YAPL3NMrnN7ELZuukz72Ead9MqKNDLP1FZfS3tSp+BpWWDjDemd5Eu3OhvPbZYSB0=
-Received: from AM0PR10MB2098.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:208:4a::29)
- by AM9PR10MB4466.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:20b:271::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3541.21; Tue, 10 Nov
- 2020 15:41:47 +0000
-Received: from AM0PR10MB2098.EURPRD10.PROD.OUTLOOK.COM
- ([fe80::593f:e14c:7db4:1887]) by AM0PR10MB2098.EURPRD10.PROD.OUTLOOK.COM
- ([fe80::593f:e14c:7db4:1887%6]) with mapi id 15.20.3541.022; Tue, 10 Nov 2020
- 15:41:47 +0000
-From:   Michael Brunner <Michael.Brunner@kontron.com>
-To:     "linux@roeck-us.net" <linux@roeck-us.net>,
-        "lee.jones@linaro.org" <lee.jones@linaro.org>
-CC:     "sameo@linux.intel.com" <sameo@linux.intel.com>,
-        "mibru@gmx.de" <mibru@gmx.de>,
-        "vkrasnov@dev.rtsoft.ru" <vkrasnov@dev.rtsoft.ru>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "mvanyulin@dev.rtsoft.ru" <mvanyulin@dev.rtsoft.ru>
-Subject: Re: [PATCH] mfd: kempld-core: Check for DMI definition before ACPI
-Thread-Topic: [PATCH] mfd: kempld-core: Check for DMI definition before ACPI
-Thread-Index: AQHWtzWk3mu/iHMWGUeZlaHx0+OPBKnBcDgAgAARWgA=
-Date:   Tue, 10 Nov 2020 15:41:47 +0000
-Message-ID: <b9a01e2c8b54fbadfaff8d3a5888802ce4859ed4.camel@kontron.com>
-References: <981276386ec1b496b423b7605b7ac912884b7172.camel@kontron.com>
-         <28a160ac-df8c-0fcb-8814-03125d753be3@roeck-us.net>
-In-Reply-To: <28a160ac-df8c-0fcb-8814-03125d753be3@roeck-us.net>
-Accept-Language: de-DE, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Evolution 3.36.4-0ubuntu1 
-authentication-results: roeck-us.net; dkim=none (message not signed)
- header.d=none;roeck-us.net; dmarc=none action=none header.from=kontron.com;
-x-originating-ip: [195.243.149.94]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: b3d72ce3-67a7-4cea-96f1-08d8858f2278
-x-ms-traffictypediagnostic: AM9PR10MB4466:
-x-microsoft-antispam-prvs: <AM9PR10MB446634778480BC4B47670A30E3E90@AM9PR10MB4466.EURPRD10.PROD.OUTLOOK.COM>
-x-ms-oob-tlc-oobclassifiers: OLM:3173;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: CvUwVfDEBEvHysvB2oXe0INP/+bpoqkHwe4DwrXtydR9XD0yCv0GzXDCGim4yMOEA5Gt5McnIIKrt5JJSowi4jGeL38VDkkpe8+1FnkGNYqTwbxPZkyMYzKddQJ6IZQ3H3GXHh9g7QOvTKx0AIb3s6jAnBk/x0p5qYaGyW0+KzHlsUkGXNofxp2AY8IAoY+rlHNDyedQQsfnUismxSHtZiCLBtM653SP2Z8G8pKquXffbgExrB5nny9GfGXgtBGLdVQTm/erM9y4NWvAlPLmsrb4F0bZARBLCcbAJN2nzD9aJziOqKMw5jKuiluviCiW1nCMEPKzswrST3m+f0kGzw==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR10MB2098.EURPRD10.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(4636009)(136003)(366004)(346002)(396003)(376002)(39850400004)(2906002)(6486002)(2616005)(86362001)(26005)(66946007)(54906003)(110136005)(5660300002)(8676002)(76116006)(91956017)(66556008)(66446008)(64756008)(66476007)(4001150100001)(478600001)(316002)(186003)(8936002)(53546011)(6506007)(4326008)(6512007)(83380400001)(36756003)(71200400001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: WzlL64TGSAW5tq1jrGyfkq4gs7OKT1ps0/RKC0Zy2FtFtysHF0Pvfm8f38cOVIPOYJX02PqQl8CT2ELRHqJWLZk9G0fDkGg9Jx4zTGf3UutOZq6NCkd2ogCS0kGsw8izvr8P0t4qGT1haNl9EAqTKnh3pLR8YAnRqfuYrzSn6q4NRwFYNMUC8thesLLTcvLGfZEF5FiO+dY9MrgSqB/7FIXgNp+0uDK9tZs6mHRYquXtsLgrs0H6B7MJN2UPXq8gDfdgobzjfq9s/nLBjTMecPrI3aylSNdusPmOOgixH503SjxPOrewL3zHzPkNV2OzaJceaUoh0REeHN8HFW42Mf7YcyKfwu7ZCk9pUi9pVPCHOgXMWFxH4lmzOPrhFn+xAwwbMk9WqAmCQM7z02v0AahAxkPLT74gzlod7MwZLIlyySCsB9pAVqcESgt0FjPqXMCQWDdetivBhuEs5apRqbsrZtyEWrQOtLFNRGQsPVbFJiHdgeuZigh43QE2x8Q1ciWv3AYMZLkaj5gIjF5Eg2yBJnUJ8ZjQ8Uj7FfMqgqBGE+eJvhIqHF5G2NPqUsEhudLsW8ieOPg1LFXJ9QhnvfvjHrkQTC8PQBr/CO6wNExuov1OMxHPwI2yRtB+9hWSJLPHcAWH3JIixdvhaB1sKuXBOgbJCwmmUf3PrlnEbSwkUxOisUirWzTeHrqv4GQsHU67EBFZDrpyr3zwbjp6iFLZQK00uqtob5SPiiY7ZlIkodTb3OYIS3+yCxIA/hcN6IgynyoDbJzBjwMuOnvQy+VDnPT92y4wo8LJnke95lXdONvZ8hn5TrfVH1uxxmUc86Cr4X0uhb+QxbSMcFJf+MbWLPqw5m2N/5JIS1ldTP7p/FVA964KWUIeQ9XPYlGrytlcl3CwN8moR7suRei/Ag==
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="iso-8859-15"
-Content-ID: <6A8C155602C73B4F999E119DD10EFAEB@EURPRD10.PROD.OUTLOOK.COM>
-Content-Transfer-Encoding: quoted-printable
+        id S1731121AbgKJPmb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 10:42:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43922 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726721AbgKJPma (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Nov 2020 10:42:30 -0500
+Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F072CC0613CF
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 07:42:29 -0800 (PST)
+Received: by mail-lj1-x241.google.com with SMTP id p12so637178ljc.9
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 07:42:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=s9ExljYeg+Je8eJyQiw6/bhoA2kXa/1CVIlNuBjBeNk=;
+        b=K2scR20ql8aGn1eLk2exuEqUWWxST/t3AmlOs8IP16g7svdqVLGQer6Da+pA9s5me3
+         NYn42hE7ul/NbS1yoff25CN+d0IzkbvrSIRJ0SM429UFQ1n4byzYNGI37CJwlmptl6fl
+         HzMHQZ937Be2B8LvqUaFl4VgjxxuJZq4jhuxxerHkYx1Pwv2+oxPOsnnw1u6efgvXhPl
+         9B2XqFsJyJH/9Efvft2+V+uKSqzVOJZVuSlOE36NWO6C90QLOHBBoBpo11/Aaeo8Ran9
+         Tm9Z2yvzie/PYfFtY8EydyUvvmE+kk6gOoyhl5/1hfSLBK9DzfGh3BP+UF2dVEx98dCb
+         Nu7w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=s9ExljYeg+Je8eJyQiw6/bhoA2kXa/1CVIlNuBjBeNk=;
+        b=eOsKYkiJQqnZD1lF+7Bj5uegEgH2vSx3DtT4PrFTKA4HEL368b2MI3FPLqs2AbTzXw
+         6pnNz90l/yORwnljpGzepRoroBkn37bhNF6ePYIejyg1bj+2JJqAyW5cKtChRrqJtqwG
+         kxCl/opYVKkf4U1dt4fexXEz/isK9oY+PplHOxuSH3BhhG81VWQ7daAAFtfJAGs8INN2
+         bpFYEjVT9B9j6O/scRb/cV5QqPH/EsHo8as9SFhPeJgz4HvajfmSKwWpd1jj5PHLPf4J
+         YbNqA44mY+DfyzklI1uiEgr2mpk82+1hSBKIaTfTQe4FOPQeLn6bO1ZFm6mZ4j9TMDu/
+         IbuA==
+X-Gm-Message-State: AOAM531b/Lqh0hTTf8s7C15HLJDufDKHbeRqGCa5P9PL3padDx9rUMG0
+        lbfDdYVJiaNjFWOEYQPmO9il1+tQkhGHXjL+2v4Eeg==
+X-Google-Smtp-Source: ABdhPJz/mG/9L3xxaQgvEENFLkCyHbsfxVcfmZ3wx2kBXfqxl9RzJu/xher88YHifqqgJDTGfR8r9XLcnJYIwc7OYrI=
+X-Received: by 2002:a2e:165c:: with SMTP id 28mr8053279ljw.355.1605022948451;
+ Tue, 10 Nov 2020 07:42:28 -0800 (PST)
 MIME-Version: 1.0
-X-OriginatorOrg: kontron.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: AM0PR10MB2098.EURPRD10.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-Network-Message-Id: b3d72ce3-67a7-4cea-96f1-08d8858f2278
-X-MS-Exchange-CrossTenant-originalarrivaltime: 10 Nov 2020 15:41:47.7071
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 8c9d3c97-3fd9-41c8-a2b1-646f3942daf1
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: PkZ88Q9RyZE3OBn6sL9LZKkQ9MafJ2wHRvyU0fjwmYWmKuTiKWBJrfRgy0HXNWVgAz0bGn3+YtTtbegAMwADRRi599556Y+zPtNdY103Pgs=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM9PR10MB4466
+References: <20201105170604.6588a06e@canb.auug.org.au> <CADYN=9J0DQhizAGB0-jz4HOBBh+05kMBXb4c0cXMS7Qi5NAJiw@mail.gmail.com>
+ <CACT4Y+ZA5tv4siG7JsXqmrk2J5WOQOtW51g0DPNMPSGHKkixDw@mail.gmail.com>
+ <CADYN=9K4MY+zfB-0acmOQMyiqFnnt+CqiwZJK=-7ZvvztxdetA@mail.gmail.com>
+ <CACT4Y+bR_oU7nSCTq1WgOMYFWHkmYW+jPuxhPkGO1YZEnHdyow@mail.gmail.com> <CANpmjNNaTUiK=j7tL2=WAHEG4pbXv6mS6Bf6jBwAwtVa4XbxeA@mail.gmail.com>
+In-Reply-To: <CANpmjNNaTUiK=j7tL2=WAHEG4pbXv6mS6Bf6jBwAwtVa4XbxeA@mail.gmail.com>
+From:   Anders Roxell <anders.roxell@linaro.org>
+Date:   Tue, 10 Nov 2020 16:42:17 +0100
+Message-ID: <CADYN=9JEi_w3k93YxZy3O-DeJVX8NoNZXzLy1Fh0zWcEGYLqHA@mail.gmail.com>
+Subject: Re: linux-next: Tree for Nov 5
+To:     Marco Elver <elver@google.com>
+Cc:     Dmitry Vyukov <dvyukov@google.com>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Alexander Potapenko <glider@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jann Horn <jannh@google.com>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Guenter,
+On Tue, 10 Nov 2020 at 14:54, Marco Elver <elver@google.com> wrote:
+>
+> On Tue, 10 Nov 2020 at 10:36, Dmitry Vyukov <dvyukov@google.com> wrote:
+> [...]
+> > > > On Tue, Nov 10, 2020 at 8:50 AM Anders Roxell <anders.roxell@linaro.org> wrote:
+> [...]
+> > > > > When building an arm64 allmodconfig and booting up that in qemu I see
+> > > > >
+> > > > > [10011.092394][   T28] task:kworker/0:2     state:D stack:26896 pid:
+> > > > > 1840 ppid:     2 flags:0x00000428
+> > > > > [10022.368093][   T28] Workqueue: events toggle_allocation_gate
+> > > > > [10024.827549][   T28] Call trace:
+> > > > > [10027.152494][   T28]  __switch_to+0x1cc/0x1e0
+> > > > > [10031.378073][   T28]  __schedule+0x730/0x800
+> > > > > [10032.164468][   T28]  schedule+0xd8/0x160
+> > > > > [10033.886807][   T28]  toggle_allocation_gate+0x16c/0x220
+> > > > > [10038.477987][   T28]  process_one_work+0x5c0/0x980
+> > > > > [10039.900075][   T28]  worker_thread+0x428/0x720
+> > > > > [10042.782911][   T28]  kthread+0x23c/0x260
+> > > > > [10043.171725][   T28]  ret_from_fork+0x10/0x18
+> > > > > [10046.227741][   T28] INFO: lockdep is turned off.
+> > > > > [10047.732220][   T28] Kernel panic - not syncing: hung_task: blocked tasks
+> > > > > [10047.741785][   T28] CPU: 0 PID: 28 Comm: khungtaskd Tainted: G
+> > > > >   W         5.10.0-rc2-next-20201105-00006-g7af110e4d8ed #1
+> > > > > [10047.755348][   T28] Hardware name: linux,dummy-virt (DT)
+> > > > > [10047.763476][   T28] Call trace:
+> > > > > [10047.769802][   T28]  dump_backtrace+0x0/0x420
+> > > > > [10047.777104][   T28]  show_stack+0x38/0xa0
+> > > > > [10047.784177][   T28]  dump_stack+0x1d4/0x278
+> > > > > [10047.791362][   T28]  panic+0x304/0x5d8
+> > > > > [10047.798202][   T28]  check_hung_uninterruptible_tasks+0x5e4/0x640
+> > > > > [10047.807056][   T28]  watchdog+0x138/0x160
+> > > > > [10047.814140][   T28]  kthread+0x23c/0x260
+> > > > > [10047.821130][   T28]  ret_from_fork+0x10/0x18
+> > > > > [10047.829181][   T28] Kernel Offset: disabled
+> > > > > [10047.836274][   T28] CPU features: 0x0240002,20002004
+> > > > > [10047.844070][   T28] Memory Limit: none
+> > > > > [10047.853599][   T28] ---[ end Kernel panic - not syncing: hung_task:
+> > > > > blocked tasks ]---
+> > > > >
+> > > > > if I build with KFENCE=n it boots up eventually, here's my .config file [2].
+> > > > >
+> > > > > Any idea what may happen?
+> > > > >
+> > > > > it happens on next-20201109 also, but it takes longer until we get the
+> > > > > "Call trace:".
+> > > > >
+> > > > > Cheers,
+> > > > > Anders
+> > > > > [1] http://ix.io/2Ddv
+> > > > > [2] https://people.linaro.org/~anders.roxell/allmodconfig-next-20201105.config
+> [...]
+> > > oh I missed to say that this is the full boot log with the kernel
+> > > panic http://ix.io/2Ddv
+> >
+> > Thanks!
+> > The last messages before the hang are:
+> >
+> > [ 1367.791522][    T1] Running tests on all trace events:
+> > [ 1367.815307][    T1] Testing all events:
+> >
+> > I can imagine tracing somehow interferes with kfence.
+>
+> The reason is simply that that config on qemu is so slow (enabling
+> lockdep helped), and the test that is running doesn't result in
+> allocations for an extended time. Because of that our wait_event()
+> just stalls, as there are no allocations coming in. My guess is that
+> this scenario is unique to early boot, where we are not yet running
+> user space, paired with running a selftest that results in no
+> allocations for some time.
+>
+> Try and give that a spin:
+> https://lkml.kernel.org/r/20201110135320.3309507-1-elver@google.com
 
-thank you for the feedback! checkpatch didn't catch this.
-I sent v2 of the patch.
+Thank you Marco.
+I'll give it a spin and reply to that thread if it works or not.
 
-Best regards,
-  Michael
-
-On Tue, 2020-11-10 at 06:39 -0800, Guenter Roeck wrote:
-> On 11/9/20 11:46 PM, Michael Brunner wrote:
-> > Change the detection order to priorize DMI table entries over
-> > available
-> > ACPI entries.
-> >=20
-> > This makes it more easy for product developers to patch product
-> > specific
-> > handling into the driver.
-> > Furthermore it allows to simplify the implementation a bit and
-> > especially to remove the need to force synchronous probing.
-> >=20
-> > Based on the following commit introduced with v5.10-rc1:
-> > commit e8299c7313af ("mfd: Add ACPI support to Kontron PLD driver")
-> >=20
-> > Signed-off-by: Michael Brunner <michael.brunner@kontron.com>
-> > ---
-> >  drivers/mfd/kempld-core.c | 23 ++---------------------
-> >  1 file changed, 2 insertions(+), 21 deletions(-)
-> >=20
-> > diff --git a/drivers/mfd/kempld-core.c b/drivers/mfd/kempld-core.c
-> > index 2c9295953c11..aa7f386646a1 100644
-> > --- a/drivers/mfd/kempld-core.c
-> > +++ b/drivers/mfd/kempld-core.c
-> > @@ -125,7 +125,6 @@ static const struct kempld_platform_data
-> > kempld_platform_data_generic =3D {
-> >  };
-> > =20
-> >  static struct platform_device *kempld_pdev;
-> > -static bool kempld_acpi_mode;
-> > =20
-> >  static int kempld_create_platform_device(const struct
-> > dmi_system_id *id)
-> >  {
-> > @@ -501,8 +500,6 @@ static int kempld_probe(struct platform_device
-> > *pdev)
-> >  		ret =3D kempld_get_acpi_data(pdev);
-> >  		if (ret)
-> >  			return ret;
-> > -
-> > -		kempld_acpi_mode =3D true;
-> >  	} else if (kempld_pdev !=3D pdev) {
-> >  		/*
-> >  		 * The platform device we are probing is not the one we
-> > @@ -565,7 +562,6 @@ static struct platform_driver kempld_driver =3D {
-> >  	.driver		=3D {
-> >  		.name	=3D "kempld",
-> >  		.acpi_match_table =3D ACPI_PTR(kempld_acpi_table),
-> > -		.probe_type =3D PROBE_FORCE_SYNCHRONOUS,
-> >  	},
-> >  	.probe		=3D kempld_probe,
-> >  	.remove		=3D kempld_remove,
-> > @@ -884,7 +880,6 @@ MODULE_DEVICE_TABLE(dmi, kempld_dmi_table);
-> >  static int __init kempld_init(void)
-> >  {
-> >  	const struct dmi_system_id *id;
-> > -	int ret;
-> > =20
-> >  	if (force_device_id[0]) {
-> >  		for (id =3D kempld_dmi_table;
-> > @@ -894,24 +889,10 @@ static int __init kempld_init(void)
-> >  					break;
-> >  		if (id->matches[0].slot =3D=3D DMI_NONE)
-> >  			return -ENODEV;
-> > -	}
-> > -
-> > -	ret =3D platform_driver_register(&kempld_driver);
-> > -	if (ret)
-> > -		return ret;
-> > -
-> > -	/*
-> > -	 * With synchronous probing the device should already be probed
-> > now.
-> > -	 * If no device id is forced and also no ACPI definition for
-> > the
-> > -	 * device was found, scan DMI table as fallback.
-> > -	 *
-> > -	 * If drivers_autoprobing is disabled and the device is found
-> > here,
-> > -	 * only that device can be bound manually later.
-> > -	 */
-> > -	if (!kempld_pdev && !kempld_acpi_mode)
-> > +	} else
->=20
-> 	} else {
-> >  		dmi_check_system(kempld_dmi_table);
-> 	}
->=20
-> Guenter
->=20
-> > =20
-> > -	return 0;
-> > +	return platform_driver_register(&kempld_driver);
-> >  }
-> > =20
-> >  static void __exit kempld_exit(void)
-> >=20
+Cheers,
+Anders
