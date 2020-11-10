@@ -2,57 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA1E22AE2DA
+	by mail.lfdr.de (Postfix) with ESMTP id 38DA42AE2D8
 	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 23:12:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732823AbgKJWMQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 17:12:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48484 "EHLO
+        id S1732773AbgKJWMN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 17:12:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48492 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732720AbgKJWMK (ORCPT
+        with ESMTP id S1732722AbgKJWMK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 10 Nov 2020 17:12:10 -0500
-Received: from mail-wm1-x34a.google.com (mail-wm1-x34a.google.com [IPv6:2a00:1450:4864:20::34a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DEE4C0613D3
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 14:12:08 -0800 (PST)
-Received: by mail-wm1-x34a.google.com with SMTP id z62so1668524wmb.1
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 14:12:08 -0800 (PST)
+Received: from mail-qk1-x74a.google.com (mail-qk1-x74a.google.com [IPv6:2607:f8b0:4864:20::74a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 145C9C0613D4
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 14:12:10 -0800 (PST)
+Received: by mail-qk1-x74a.google.com with SMTP id 202so194991qkl.9
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 14:12:10 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=sender:date:in-reply-to:message-id:mime-version:references:subject
          :from:to:cc;
-        bh=b+EvmbcrIzXMPo/m/7VxFCc4Xq4JWsmqnUpW/yxxI4A=;
-        b=UOKpUFeF+RKfDxdKeAuqH9Ep38E/IibnknrTVPrxW/xuGNx4sl82/JZzPEnLv1hzqy
-         G9yy7gxZ/ZrOB7KxawXhoQPEIwatw+uhVfwNQWVUbmRBFgRo7kV+lwQ3BN+f6ivtYrMZ
-         LKHrk4gliZQ+k+BejsDXu5LK90ppf/Ith+jVDKO/6ZGZHlDLz9vl1VyRJ6JSTcGDpF+1
-         5PzQZyELkg3sW2GepOg/s3VN/CtDNSQqwAPocz/FnHX0B0W0S72qyqFdt3aXH0099yKm
-         xUouqMd/NMiJVSE2QLOwpwcfVsCv0A2+3aTh7+ZE1UnAJPqHdTzHvjKsgouegj7kgDlS
-         OPjA==
+        bh=d0luRNisG3KRkUWIJpA+kozZ7VZYZZ7aV9TEVeCXzwc=;
+        b=HzxJDWjpBYBTx2nnzeaKR40IhBDGNp8//Q5g3+Yp8d8qaNxWMXc3C+4pVR31Fqn3xG
+         fCKVwStNYBwd5N5fYGv0zlaIwWPFu+TBlPtIWMsEP6uSKlc0RDdsgWMDzgaDnld5lYPC
+         hNvbDCdbNwFY5UNDA9qOkIQHMLKr+eaDpVgknzFtlhGsHay1WkNrzs5ZypWi9lsuJWKh
+         omZpvEkEYE9CoCPW0+jFNFzoLp+kNp5DPHpUt7hzn9l3BjrggNZFNATTGFBlUXC3imBa
+         tZo2pRjwpXd7khtzo/kg6/TokptyVi5r4cwYn2oxhHbLbXjTGtQZRkf62np7og6rShje
+         jMCA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=b+EvmbcrIzXMPo/m/7VxFCc4Xq4JWsmqnUpW/yxxI4A=;
-        b=klAdHXOJeXOLUT1tFoVDyt1mP7131x6diahh9hA0/fSbMgwNqBauehJH/83Vyo72kt
-         +kEpTGQR9QcCZ3sQ5r9SxDBOrihjNlJOniGW7pB4J7EJwGwg4UkbvlNeYXnE6z0PT2fM
-         329LWSRSrFi0I4KTmXsFfOrzSpF4chdSxZ58p6PKth3GoFPghSePgX+oJGXEbaFLA+bP
-         aLrlEH9VQgwBtCiuh58wAiKwaUDpdSesqK/zpAijl2/QVAvbM6Hgga4+qqHVdAGjDuBu
-         mgPhxzvfWdKaYSk99ztwfKt86WP+PX6JdFn0IBfsLsUqPq6MGsbkKW/yJfKQHNNtR/OE
-         Mbxw==
-X-Gm-Message-State: AOAM5304idu4Rkc/YLfnhz6er7lsSttkbudYmO660j72ktg4LFuyI4x0
-        RCDdZUovBpKub1FJgVg3YlJG7Io+MeQQ9ONj
-X-Google-Smtp-Source: ABdhPJyv/1EGGeUZviATC/5X9dTB0m7XMbtCtTViI9SEPTGVaeOF1dXVHorUMP/w+/Tkg+7Cb62gZVmjl0n7ugkb
+        bh=d0luRNisG3KRkUWIJpA+kozZ7VZYZZ7aV9TEVeCXzwc=;
+        b=tng955/4l44HU262rtrs39WTqKueV2bVmCEHzV46H5FN5cGspRLPHpgZjfRjZ4mvNn
+         RYDi+mhWU4sKkKswg++FnqhyDvmVzmBvwf2FEPdRY58twfCqX47RwFKeWaq8rIUbjnNF
+         Fjj5b6L26P7eAAdulCqhVvYGZT6U70gkXQ4E2Vh5m7ucvaBnguuE9gKO3d0C/Qxthcf/
+         nT5zH75Hvyh5laRFuM79AucRB6wneSvsiV5QJVLhJYv0qzVwIcVEG3aXM5SXVuvtv/oX
+         XAgniZI2/9XZ13R5scjHRt/zr9zX2R/nFzM3/p5qK5vBkwAnalfHf/6hR9u6Hm6hZt9H
+         Z+aQ==
+X-Gm-Message-State: AOAM530/ondjwruJqvpjuUHBQLzWrLkXZYIDacxVPL9vkBRSB7Y7HIsz
+        4dPXHN3BUjK8y4htPnBWI/3mIsuna5VLYUQZ
+X-Google-Smtp-Source: ABdhPJwpJeDUnREbb6gHaUPPYAcEUOobtengpR9kJKiWVhPyIavQao1BN6Cj2oA+Dzr1a/WdAfsYGMhCOnSInOLT
 Sender: "andreyknvl via sendgmr" <andreyknvl@andreyknvl3.muc.corp.google.com>
 X-Received: from andreyknvl3.muc.corp.google.com ([2a00:79e0:15:13:7220:84ff:fe09:7e9d])
- (user=andreyknvl job=sendgmr) by 2002:a7b:cf1a:: with SMTP id
- l26mr287557wmg.18.1605046327072; Tue, 10 Nov 2020 14:12:07 -0800 (PST)
-Date:   Tue, 10 Nov 2020 23:10:22 +0100
+ (user=andreyknvl job=sendgmr) by 2002:a0c:90e4:: with SMTP id
+ p91mr20380986qvp.61.1605046329251; Tue, 10 Nov 2020 14:12:09 -0800 (PST)
+Date:   Tue, 10 Nov 2020 23:10:23 +0100
 In-Reply-To: <cover.1605046192.git.andreyknvl@google.com>
-Message-Id: <55d90be0a5815917f0e1bd468ea0a257f72e7e46.1605046192.git.andreyknvl@google.com>
+Message-Id: <e7f69b87c86266c3671ec137f56e7740890155d3.1605046192.git.andreyknvl@google.com>
 Mime-Version: 1.0
 References: <cover.1605046192.git.andreyknvl@google.com>
 X-Mailer: git-send-email 2.29.2.222.g5d2a92d10f8-goog
-Subject: [PATCH v9 25/44] kasan: introduce CONFIG_KASAN_HW_TAGS
+Subject: [PATCH v9 26/44] arm64: Enable armv8.5-a asm-arch option
 From:   Andrey Konovalov <andreyknvl@google.com>
 To:     Catalin Marinas <catalin.marinas@arm.com>
 Cc:     Will Deacon <will.deacon@arm.com>,
@@ -73,149 +73,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch adds a configuration option for a new KASAN mode called
-hardware tag-based KASAN. This mode uses the memory tagging approach
-like the software tag-based mode, but relies on arm64 Memory Tagging
-Extension feature for tag management and access checking.
+From: Vincenzo Frascino <vincenzo.frascino@arm.com>
 
-Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
-Co-developed-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
+Hardware tag-based KASAN relies on Memory Tagging Extension (MTE) which
+is an armv8.5-a architecture extension.
+
+Enable the correct asm option when the compiler supports it in order to
+allow the usage of ALTERNATIVE()s with MTE instructions.
+
 Signed-off-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
-Reviewed-by: Marco Elver <elver@google.com>
+Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
+Reviewed-by: Catalin Marinas <catalin.marinas@arm.com>
 ---
-Change-Id: I246c2def9fffa6563278db1bddfbe742ca7bdefe
+Change-Id: I172e15e4c189f073e4c14a10276b276092e76536
 ---
- lib/Kconfig.kasan | 58 +++++++++++++++++++++++++++++++++--------------
- 1 file changed, 41 insertions(+), 17 deletions(-)
+ arch/arm64/Kconfig  | 4 ++++
+ arch/arm64/Makefile | 5 +++++
+ 2 files changed, 9 insertions(+)
 
-diff --git a/lib/Kconfig.kasan b/lib/Kconfig.kasan
-index ec59a0e26d09..e5f27ec8b254 100644
---- a/lib/Kconfig.kasan
-+++ b/lib/Kconfig.kasan
-@@ -6,7 +6,10 @@ config HAVE_ARCH_KASAN
- config HAVE_ARCH_KASAN_SW_TAGS
- 	bool
+diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
+index 25ead11074bf..c84a0e6b4650 100644
+--- a/arch/arm64/Kconfig
++++ b/arch/arm64/Kconfig
+@@ -1591,6 +1591,9 @@ endmenu
  
--config	HAVE_ARCH_KASAN_VMALLOC
-+config HAVE_ARCH_KASAN_HW_TAGS
-+	bool
+ menu "ARMv8.5 architectural features"
+ 
++config AS_HAS_ARMV8_5
++	def_bool $(cc-option,-Wa$(comma)-march=armv8.5-a)
 +
-+config HAVE_ARCH_KASAN_VMALLOC
- 	bool
- 
- config CC_HAS_KASAN_GENERIC
-@@ -20,11 +23,11 @@ config CC_HAS_WORKING_NOSANITIZE_ADDRESS
- 
- menuconfig KASAN
- 	bool "KASAN: runtime memory debugger"
--	depends on (HAVE_ARCH_KASAN && CC_HAS_KASAN_GENERIC) || \
--		   (HAVE_ARCH_KASAN_SW_TAGS && CC_HAS_KASAN_SW_TAGS)
-+	depends on (((HAVE_ARCH_KASAN && CC_HAS_KASAN_GENERIC) || \
-+		     (HAVE_ARCH_KASAN_SW_TAGS && CC_HAS_KASAN_SW_TAGS)) && \
-+		    CC_HAS_WORKING_NOSANITIZE_ADDRESS) || \
-+		   HAVE_ARCH_KASAN_HW_TAGS
- 	depends on (SLUB && SYSFS) || (SLAB && !DEBUG_SLAB)
--	depends on CC_HAS_WORKING_NOSANITIZE_ADDRESS
--	select CONSTRUCTORS
- 	select STACKDEPOT
+ config ARM64_BTI
+ 	bool "Branch Target Identification support"
+ 	default y
+@@ -1665,6 +1668,7 @@ config ARM64_MTE
+ 	bool "Memory Tagging Extension support"
+ 	default y
+ 	depends on ARM64_AS_HAS_MTE && ARM64_TAGGED_ADDR_ABI
++	depends on AS_HAS_ARMV8_5
+ 	select ARCH_USES_HIGH_VMA_FLAGS
  	help
- 	  Enables KASAN (KernelAddressSANitizer) - runtime memory debugger,
-@@ -37,18 +40,24 @@ choice
- 	prompt "KASAN mode"
- 	default KASAN_GENERIC
- 	help
--	  KASAN has two modes: generic KASAN (similar to userspace ASan,
--	  x86_64/arm64/xtensa, enabled with CONFIG_KASAN_GENERIC) and
--	  software tag-based KASAN (a version based on software memory
--	  tagging, arm64 only, similar to userspace HWASan, enabled with
--	  CONFIG_KASAN_SW_TAGS).
-+	  KASAN has three modes:
-+	  1. generic KASAN (similar to userspace ASan,
-+	     x86_64/arm64/xtensa, enabled with CONFIG_KASAN_GENERIC),
-+	  2. software tag-based KASAN (arm64 only, based on software
-+	     memory tagging (similar to userspace HWASan), enabled with
-+	     CONFIG_KASAN_SW_TAGS), and
-+	  3. hardware tag-based KASAN (arm64 only, based on hardware
-+	     memory tagging, enabled with CONFIG_KASAN_HW_TAGS).
+ 	  Memory Tagging (part of the ARMv8.5 Extensions) provides
+diff --git a/arch/arm64/Makefile b/arch/arm64/Makefile
+index 5789c2d18d43..50ad9cbccb51 100644
+--- a/arch/arm64/Makefile
++++ b/arch/arm64/Makefile
+@@ -100,6 +100,11 @@ ifeq ($(CONFIG_AS_HAS_ARMV8_4), y)
+ asm-arch := armv8.4-a
+ endif
+ 
++ifeq ($(CONFIG_AS_HAS_ARMV8_5), y)
++# make sure to pass the newest target architecture to -march.
++asm-arch := armv8.5-a
++endif
 +
-+	  All KASAN modes are strictly debugging features.
- 
--	  Both generic and tag-based KASAN are strictly debugging features.
-+	  For better error reports enable CONFIG_STACKTRACE.
- 
- config KASAN_GENERIC
- 	bool "Generic mode"
- 	depends on HAVE_ARCH_KASAN && CC_HAS_KASAN_GENERIC
- 	select SLUB_DEBUG if SLUB
-+	select CONSTRUCTORS
- 	help
- 	  Enables generic KASAN mode.
- 
-@@ -61,8 +70,6 @@ config KASAN_GENERIC
- 	  and introduces an overhead of ~x1.5 for the rest of the allocations.
- 	  The performance slowdown is ~x3.
- 
--	  For better error detection enable CONFIG_STACKTRACE.
--
- 	  Currently CONFIG_KASAN_GENERIC doesn't work with CONFIG_DEBUG_SLAB
- 	  (the resulting kernel does not boot).
- 
-@@ -70,11 +77,15 @@ config KASAN_SW_TAGS
- 	bool "Software tag-based mode"
- 	depends on HAVE_ARCH_KASAN_SW_TAGS && CC_HAS_KASAN_SW_TAGS
- 	select SLUB_DEBUG if SLUB
-+	select CONSTRUCTORS
- 	help
- 	  Enables software tag-based KASAN mode.
- 
--	  This mode requires Top Byte Ignore support by the CPU and therefore
--	  is only supported for arm64. This mode requires Clang.
-+	  This mode require software memory tagging support in the form of
-+	  HWASan-like compiler instrumentation.
-+
-+	  Currently this mode is only implemented for arm64 CPUs and relies on
-+	  Top Byte Ignore. This mode requires Clang.
- 
- 	  This mode consumes about 1/16th of available memory at kernel start
- 	  and introduces an overhead of ~20% for the rest of the allocations.
-@@ -82,15 +93,27 @@ config KASAN_SW_TAGS
- 	  casting and comparison, as it embeds tags into the top byte of each
- 	  pointer.
- 
--	  For better error detection enable CONFIG_STACKTRACE.
--
- 	  Currently CONFIG_KASAN_SW_TAGS doesn't work with CONFIG_DEBUG_SLAB
- 	  (the resulting kernel does not boot).
- 
-+config KASAN_HW_TAGS
-+	bool "Hardware tag-based mode"
-+	depends on HAVE_ARCH_KASAN_HW_TAGS
-+	depends on SLUB
-+	help
-+	  Enables hardware tag-based KASAN mode.
-+
-+	  This mode requires hardware memory tagging support, and can be used
-+	  by any architecture that provides it.
-+
-+	  Currently this mode is only implemented for arm64 CPUs starting from
-+	  ARMv8.5 and relies on Memory Tagging Extension and Top Byte Ignore.
-+
- endchoice
- 
- choice
- 	prompt "Instrumentation type"
-+	depends on KASAN_GENERIC || KASAN_SW_TAGS
- 	default KASAN_OUTLINE
- 
- config KASAN_OUTLINE
-@@ -114,6 +137,7 @@ endchoice
- 
- config KASAN_STACK_ENABLE
- 	bool "Enable stack instrumentation (unsafe)" if CC_IS_CLANG && !COMPILE_TEST
-+	depends on KASAN_GENERIC || KASAN_SW_TAGS
- 	help
- 	  The LLVM stack address sanitizer has a know problem that
- 	  causes excessive stack usage in a lot of functions, see
+ ifdef asm-arch
+ KBUILD_CFLAGS	+= -Wa,-march=$(asm-arch) \
+ 		   -DARM64_ASM_ARCH='"$(asm-arch)"'
 -- 
 2.29.2.222.g5d2a92d10f8-goog
 
