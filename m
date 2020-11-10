@@ -2,173 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19F582AD3BD
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 11:27:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D79B2AD3C1
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 11:28:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731169AbgKJK1v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 05:27:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51166 "EHLO
+        id S1731501AbgKJK2A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 05:28:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51198 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730505AbgKJK1u (ORCPT
+        with ESMTP id S1730164AbgKJK17 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 05:27:50 -0500
-Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60676C0613CF
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 02:27:50 -0800 (PST)
-Received: by mail-ed1-x542.google.com with SMTP id ay21so12110503edb.2
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 02:27:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=JBsUXq+aOpg3CDCyNVK2yMK4/COQDEd01UsYZ8vI250=;
-        b=t7Y6a7CDXPYB6n7yM3M+TFh6SIhtVKkcmzH6Kss/QQrVQav6yac7ibHOB8SnlbrRTH
-         2VfPY41mKd9b58QxWeDkZXlMo8K+67610LZZEK4/TcSAqMze4xjD8SP9IElhc3W/Cp3q
-         nNMTjWZb+80H88YrYqTGfkyu5W+fSsOMQ1F4Jvq7Xadkmb5XSdjHIFvJouY3DET8ptBA
-         LaffICEgfjL7PDkcRJBPBNiBvwBOeZvQ+TCBdzWWxOBmPoBlfQOd8OhFOIghtxH5ov9H
-         Jzts62LRfA8OkBsFBzIDv0Z6rM8sFoI7IZrEgNkHPUo1G7dGyMXJYEebzHyse4QOyNP2
-         tSbA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=JBsUXq+aOpg3CDCyNVK2yMK4/COQDEd01UsYZ8vI250=;
-        b=B5pAzsrRqvR4bpSCEAz0Bfw09KafFjEq4zAOeK98Lg2coOpDn8HKjjrisg9ug9+Mbj
-         Gn5BTtgwBTL2g+g75UGcRyRAKOykjNnryGKcw9hfgysM+y3TrysN2MQQ8rVXlIZosnOO
-         Kxw59v6VAH0cTXbUusNWQovKk9oOadW5dixkaELKzTOeu+xcqZfoqEhxP/sTycGW6V7c
-         BdtmfYseyKjxgWck5UAIR1z/1yzdEGWhdkYPbILPWC2MGn6FeF5RRMNheDUYQaI7BREz
-         LjcNBhvITYpyHDurnHHAqEXFLUWyH7HJlRgqmGqDm7Uq7r/qutp52DWxjZzk5hkKzq9r
-         yk2g==
-X-Gm-Message-State: AOAM533buv/V/ll5xI79ZE7asR6drhduNxmmd6aUVy9qgVES+HwWXgNg
-        hR6dYZ5dfS4J15FTyKFCNhgxChxaEKdgsdhEBy1Lsw==
-X-Google-Smtp-Source: ABdhPJxuqK0WV8ZzW2llCSqO8MgbvNVxmgLcMcdoE1pXemGfzVwLeIKk/u64ev1OCbNE4gDvRoNLp37lPsw9YQk9Cuo=
-X-Received: by 2002:aa7:d54f:: with SMTP id u15mr20235652edr.239.1605004068939;
- Tue, 10 Nov 2020 02:27:48 -0800 (PST)
+        Tue, 10 Nov 2020 05:27:59 -0500
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 625DDC0613CF
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 02:27:59 -0800 (PST)
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=[IPv6:::1])
+        by metis.ext.pengutronix.de with esmtp (Exim 4.92)
+        (envelope-from <a.fatoum@pengutronix.de>)
+        id 1kcQsX-0000Gu-S8; Tue, 10 Nov 2020 11:27:57 +0100
+Subject: Re: [PATCH v2 1/2] dt-bindings: arm: stm32: add simple-mfd compatible
+ for tamp node
+To:     Alexandre Torgue <alexandre.torgue@st.com>
+Cc:     Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        Christophe Roullier <christophe.roullier@st.com>,
+        Sascha Hauer <kernel@pengutronix.de>,
+        Arnaud Pouliquen <arnaud.pouliquen@st.com>,
+        devicetree@vger.kernel.org,
+        "moderated list:ARM/STM32 ARCHITECTURE" 
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Rob Herring <robh@kernel.org>
+References: <20201021102855.18026-1-a.fatoum@pengutronix.de>
+ <20201026143656.GA118160@bogus>
+ <23e423ba-25f2-c3ed-ea65-2c2d86ae9522@pengutronix.de>
+ <CAL_JsqL8sjw1o6PzCSRM9FtRx7XLDQg2bWXxo4Yw5t6fnroudw@mail.gmail.com>
+From:   Ahmad Fatoum <a.fatoum@pengutronix.de>
+Message-ID: <20d5ccf8-c98f-fe3c-767b-1ad99be9dd19@pengutronix.de>
+Date:   Tue, 10 Nov 2020 11:27:57 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.1
 MIME-Version: 1.0
-References: <20201109125025.630721781@linuxfoundation.org>
-In-Reply-To: <20201109125025.630721781@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Tue, 10 Nov 2020 15:57:37 +0530
-Message-ID: <CA+G9fYuha4Kv-FB7K6Ge16Ub0y5LnRzuOP326M9VoMK1zKg=Mg@mail.gmail.com>
-Subject: Re: [PATCH 4.9 000/117] 4.9.242-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de,
-        linux- stable <stable@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <CAL_JsqL8sjw1o6PzCSRM9FtRx7XLDQg2bWXxo4Yw5t6fnroudw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: a.fatoum@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 9 Nov 2020 at 18:30, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 4.9.242 release.
-> There are 117 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Wed, 11 Nov 2020 12:50:04 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-=
-4.9.242-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-4.9.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
->
+Hello Alex,
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
+On 10/27/20 1:15 PM, Rob Herring wrote:
+> On Mon, Oct 26, 2020 at 4:30 PM Ahmad Fatoum <a.fatoum@pengutronix.de> wrote:
+>>
+>> Hello Rob,
+>>
+>> On 10/26/20 3:36 PM, Rob Herring wrote:
+>>> On Wed, Oct 21, 2020 at 12:28:55PM +0200, Ahmad Fatoum wrote:
+>>>> The stm32mp1 TAMP (Tamper and backup registers) does tamper detection
+>>>> and features 32 backup registers that, being in the RTC domain, may
+>>>> survive even with Vdd switched off.
+>>>>
+>>>> This makes it suitable for use to communicate a reboot mode from OS
+>>>> to bootloader via the syscon-reboot-mode binding. Add a "simple-mfd"
+>>>> to support probing such a child node. The actual reboot mode
+>>>> node could then be defined in a board.dts or fixed up by the bootloader.
+>>>
+>>> 'simple-mfd' implies there is no dependency on the parent node for the
+>>> child (such as the regmap perhaps). Is that the case here?
+>>
+>> No, there's a dependency and the Linux driver does syscon_node_to_regmap
+>> on the device tree node's parent but that's how the syscon-reboot-mode binding
+>> is documented:
+>>
+>>   The SYSCON mapped register is retrieved from the
+>>   parental dt-node plus the offset. So the SYSCON reboot-mode node
+>>   should be represented as a sub-node of a "syscon", "simple-mfd" node.
+>>
+>> How would you prefer this being done instead?
+> 
+> Well, probably the syscon driver could just probe any children, but
+> I'm not sure if that would break anyone. So I guess fine as-is.
+> 
+> Reviewed-by: Rob Herring <robh@kernel.org>
 
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+Gentle ping.
 
-Summary
-------------------------------------------------------------------------
+> 
+> Rob
+> 
 
-kernel: 4.9.242-rc1
-git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
-le-rc.git
-git branch: linux-4.9.y
-git commit: 8c35ccda0e15d9e502046f5a33f6a1e0fdea56d5
-git describe: v4.9.241-118-g8c35ccda0e15
-Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-4.9.=
-y/build/v4.9.241-118-g8c35ccda0e15
-
-No regressions (compared to build v4.9.241)
-
-No fixes (compared to build v4.9.241)
-
-Ran 29032 total tests in the following environments and test suites.
-
-Environments
---------------
-- dragonboard-410c - arm64
-- hi6220-hikey - arm64
-- i386
-- juno-r2 - arm64
-- juno-r2-compat
-- juno-r2-kasan
-- qemu-arm64-kasan
-- qemu-x86_64-kasan
-- qemu_arm
-- qemu_arm64
-- qemu_arm64-compat
-- qemu_i386
-- qemu_x86_64
-- qemu_x86_64-compat
-- x15 - arm
-- x86_64
-- x86-kasan
-
-Test Suites
------------
-* build
-* install-android-platform-tools-r2600
-* libhugetlbfs
-* linux-log-parser
-* ltp-cap_bounds-tests
-* ltp-commands-tests
-* ltp-containers-tests
-* ltp-controllers-tests
-* ltp-cpuhotplug-tests
-* ltp-crypto-tests
-* ltp-dio-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-hugetlb-tests
-* ltp-io-tests
-* ltp-ipc-tests
-* ltp-math-tests
-* ltp-mm-tests
-* ltp-nptl-tests
-* ltp-pty-tests
-* ltp-sched-tests
-* ltp-securebits-tests
-* perf
-* ltp-cve-tests
-* network-basic-tests
-* v4l2-compliance
-* ltp-open-posix-tests
-* ltp-syscalls-tests
-* ltp-tracing-tests
-* kvm-unit-tests
-
---=20
-Linaro LKFT
-https://lkft.linaro.org
+-- 
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
