@@ -2,71 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B65B2ACB8D
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 04:15:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F5CC2ACB95
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 04:19:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730066AbgKJDPR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 22:15:17 -0500
-Received: from namei.org ([65.99.196.166]:39792 "EHLO namei.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729243AbgKJDPR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 22:15:17 -0500
-Received: from localhost (localhost [127.0.0.1])
-        by namei.org (8.14.4/8.14.4) with ESMTP id 0AA3Et8b032521;
-        Tue, 10 Nov 2020 03:14:55 GMT
-Date:   Tue, 10 Nov 2020 14:14:55 +1100 (AEDT)
-From:   James Morris <jmorris@namei.org>
-To:     Aleksandr Nogikh <aleksandrnogikh@gmail.com>
-cc:     serge@hallyn.com, akinobu.mita@gmail.com,
-        Andrey Konovalov <andreyknvl@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Marco Elver <elver@google.com>,
-        Alexander Potapenko <glider@google.com>,
-        Kees Cook <keescook@google.com>, casey@schaufler-ca.com,
-        linux-kernel@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        Aleksandr Nogikh <nogikh@google.com>, mortonm@chromium.org
-Subject: Re: [PATCH v3 0/2] security: add fault injection to LSM hooks
-In-Reply-To: <CAFSQ=y455bVOGMpRW86Gto+WdL1idxSXM0RPifokEotyg2ccjg@mail.gmail.com>
-Message-ID: <alpine.LRH.2.21.2011101414330.30138@namei.org>
-References: <20201029183526.2131776-1-aleksandrnogikh@gmail.com> <CAFSQ=y455bVOGMpRW86Gto+WdL1idxSXM0RPifokEotyg2ccjg@mail.gmail.com>
-User-Agent: Alpine 2.21 (LRH 202 2017-01-01)
+        id S1730954AbgKJDTH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 22:19:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41422 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729661AbgKJDTG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 22:19:06 -0500
+Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 439B8C0613D3
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Nov 2020 19:19:06 -0800 (PST)
+Received: by mail-pg1-x536.google.com with SMTP id e21so8922806pgr.11
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Nov 2020 19:19:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=27ykW6WMBpdjPMmYk+TEkpv4ofG2LVLk39veK8STtAM=;
+        b=XsFFeqcHcwErTDab8bcJJxnRZmdrfwAAmAxnX+0//0jp/RkNoXCmKM8hfyW7U5g8YY
+         wehgfKm1eruNJkdwnQxX/6RNlrNe6CP3uC9uMuIcChKg7gmdAwILZVQXBK3QxQME/vGY
+         n9bBZbqKsp3rUj7gjL3n2idnQJIzZFT2jQDMtCEsHtuxaEBlgAGdozKhGraOM+DNtPKU
+         1TYIu8MdisQa5tafuex26ZLInGgdddCQESLcztFd9caJZ9PszasLRkfq4/Txf1N1n6Z0
+         s8KzSi9dTkyd/sKQMAPCsqQUdj936ITZXkP6f+AREgqbuvxOMRr0Qudq4LaTJaYBzxn8
+         l8Rg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=27ykW6WMBpdjPMmYk+TEkpv4ofG2LVLk39veK8STtAM=;
+        b=NzO+jgKeVmbicol1EmLyY6YLqpsstkrB5Xh3mPLE/wmEtwwslMjH2nkqIxFQyTdh37
+         fFxOVnVrAJDy8hwUxsRIU9PVh/3PYoogvRFbrXMe4VE5KkrSmwxg1qOnJAfTilgHhjtb
+         Oy50rm4MCqMHXcwHIOjVqmwSD9yg6FWBwhjuxlXNc/+7C1FdJeK6gITZiN8TsmxGop2W
+         vTg92sRK1JFcrNPQZxHJApaek/jZbrJJBMYGWOMSW1gWiiDiTma7r1py24Q13pBj2E9U
+         ty2/pZUidIiE9OCxuxtt6tVyM99tDczTdmtXO3o86zRamdPHig25Pew5oWzyAg3tMQRO
+         WJPQ==
+X-Gm-Message-State: AOAM530qFXZW97VV+SUE0v8rJT8vYtgnhbjb6qLt+djoGFjBBiqgfulD
+        FleCSQO1eV3S//DVSm3lc4mhMJPXcdXjqchld84BQA==
+X-Google-Smtp-Source: ABdhPJw1gHS3sV2n+GuuNrA63YxT/QiulRGIL8Dn09J7EAZtkgIEcv7I2sFS4tI7OV3X2dr4+8t654iME8/HuHneKZ4=
+X-Received: by 2002:a17:90a:4881:: with SMTP id b1mr2684359pjh.32.1604978345526;
+ Mon, 09 Nov 2020 19:19:05 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+References: <CAG48ez2baAvKDA0wfYLKy-KnM_1CdOwjU873VJGDM=CErjsv_A@mail.gmail.com>
+ <20201015102216.GB2611@hirez.programming.kicks-ass.net> <20201015203942.f3kwcohcwwa6lagd@treble>
+ <CABCJKufDLmBCwmgGnfLcBw_B_4U8VY-R-dSNNp86TFfuMobPMw@mail.gmail.com>
+ <20201020185217.ilg6w5l7ujau2246@treble> <CABCJKucVjFtrOsw58kn4OnW5kdkUh8G7Zs4s6QU9s6O7soRiAA@mail.gmail.com>
+ <20201021085606.GZ2628@hirez.programming.kicks-ass.net> <CABCJKufL6=FiaeD8T0P+mK4JeR9J80hhjvJ6Z9S-m9UnCESxVA@mail.gmail.com>
+ <20201023173617.GA3021099@google.com> <CABCJKuee7hUQSiksdRMYNNx05bW7pWaDm4fQ__znGQ99z9-dEw@mail.gmail.com>
+ <20201110022924.tekltjo25wtrao7z@treble>
+In-Reply-To: <20201110022924.tekltjo25wtrao7z@treble>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Mon, 9 Nov 2020 19:18:54 -0800
+Message-ID: <CAKwvOdnO2tZRcB69yJ+FTj+qGpzCasxecCPQ0c5G9Wwn6Wd12w@mail.gmail.com>
+Subject: Re: [PATCH v6 22/25] x86/asm: annotate indirect jumps
+To:     Josh Poimboeuf <jpoimboe@redhat.com>
+Cc:     Sami Tolvanen <samitolvanen@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Jann Horn <jannh@google.com>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Will Deacon <will@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Kernel Hardening <kernel-hardening@lists.openwall.com>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-kbuild <linux-kbuild@vger.kernel.org>,
+        kernel list <linux-kernel@vger.kernel.org>,
+        linux-pci@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 9 Nov 2020, Aleksandr Nogikh wrote:
+On Mon, Nov 9, 2020 at 6:29 PM Josh Poimboeuf <jpoimboe@redhat.com> wrote:
+>
+> Also, any details on how to build clang would be appreciated, it's been
+> a while since I tried.
 
-> On Thu, 29 Oct 2020 at 21:35, Aleksandr Nogikh
-> <aleksandrnogikh@gmail.com> wrote:
-> >
-> > From: Aleksandr Nogikh <nogikh@google.com>
-> >
-> > Fault injection capabilities[Documentation/fault-injection/fault-injection.rst]
-> > facilitate testing of the stability of the Linux kernel by providing
-> > means to force a number of kernel interfaces to return error
-> > codes. This patch series proposes adding such fault injection
-> > capability into LSM hooks.
-> >
-> > The intent is to make it possible to test whether the existing kernel
-> > code properly handles negative return values of LSM hooks. Syzbot
-> > [https://github.com/google/syzkaller/blob/master/docs/syzbot.md] will
-> > automatically do that with the aid of instrumentation tools once these
-> > changes are merged.
-> > [...]
-> 
-> What tree should these changes go to?
-> 
-
-Mine, but more signoffs/acks are required.
-
-> Is there anyone else who is not on the recipient list but still might
-> be interested in the series?
-> 
-
+$ git clone https://github.com/llvm/llvm-project.git --depth 1
+$ mkdir llvm-project/llvm/build
+$ cd !$
+$ cmake .. -DCMAKE_BUILD_TYPE=Release -G Ninja
+-DLLVM_ENABLE_PROJECTS="clang;lld;compiler-rt"
+$ ninja
+$ export PATH=$(pwd)/bin:$PATH
+$ clang --version
 -- 
-James Morris
-<jmorris@namei.org>
-
+Thanks,
+~Nick Desaulniers
