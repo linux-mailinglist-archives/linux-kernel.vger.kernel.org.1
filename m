@@ -2,60 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED7EF2ACB2C
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 03:35:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 215242ACB35
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 03:41:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730571AbgKJCfR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 21:35:17 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40254 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729874AbgKJCfP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 21:35:15 -0500
-Received: from dragon (80.251.214.228.16clouds.com [80.251.214.228])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7FB18205ED;
-        Tue, 10 Nov 2020 02:35:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604975714;
-        bh=Wh8bi6WR/6zd6VZ+8g3BsZ2KyPfC4ojmzhyoO2W82Hc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=gca15YNJYzsMmQp3Y7S0OnlOVPdii+EFcEqXckOVi+zRr2iHjDZgZbFmp/kDDkAzc
-         nsFDEc2DUy+SgfLr7rheCmsf/fRK3/9IZDLJBxx1f2MCyLZoeTEuUu5P51cpcJWyQs
-         2LfVTub/mwn3P+t8PdUhOTHMuoj4nmidMwYEPckk=
-Date:   Tue, 10 Nov 2020 10:35:09 +0800
-From:   Shawn Guo <shawnguo@kernel.org>
-To:     Jonathan =?iso-8859-1?Q?Neusch=E4fer?= <j.neuschaefer@gmx.net>
-Cc:     linux-input@vger.kernel.org,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH 3/3] ARM: dts: imx50-kobo-aura: Enable eKTF2132
- touchscreen
-Message-ID: <20201110023508.GV31601@dragon>
-References: <20201106112412.390724-1-j.neuschaefer@gmx.net>
- <20201106112412.390724-4-j.neuschaefer@gmx.net>
+        id S1730480AbgKJCl3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 21:41:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35608 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730066AbgKJCl3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 21:41:29 -0500
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DC54C0613CF
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Nov 2020 18:41:29 -0800 (PST)
+Received: by mail-pg1-x544.google.com with SMTP id m13so702770pgl.7
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Nov 2020 18:41:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=WCOY4IMrlHpe9VU35gF/zByAnrSLbBEzV7qQu2kBJd4=;
+        b=Lxn/uhOBDwxB83RBFnsrqtlFnW8KbcVFAhrlo9WKhTF4Sz2XTBcjv+xruokz1nKSUy
+         A+2QWxXhhSLiMp19Civc3VZy3sfm8KHGlPaSGa+6+LDgNO8rysirWdgZstnsg1SBQo25
+         MWk10hJ998bf7gSKgxG9FgmbqsM+xCVH4XVY4ftdG8EAoXZutNwuqct1O2jVtt49g5Op
+         ynnEKVB9sEGGazuHz6UzmGTqwT3wezsKNuAfYY3yCB2VdcN9XGrp3BBdnEdjddnHGi2G
+         JfWpOXIKcvfs2v37vgoYTLg/HUZ0pQM60fiWzHQPezsc64CnNXHRCEAcrYC4kQS65Gd2
+         A7Wg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=WCOY4IMrlHpe9VU35gF/zByAnrSLbBEzV7qQu2kBJd4=;
+        b=aEd/G7OTrD1zwzY/4kwQZrxUeIVY/MjBdvxqmg4Q1cvc2KwxCNnGEUuz1V/WLGKa40
+         qkN8fu+4n9boEa18VWx49Nq4ceWBoVt+XraMu0x1ryAac4dseWzaV9lvf5ToRxP5UL7+
+         aCYAkp9AlagTHYxQTaD/IyTPRhHwP3b72wHV6mBWFlM2o8jnsgb26Zo8oGfCKX4fun3W
+         ZSy6jMzHmHXh5euhSBBkx1zq00u4TaSoQfV7wI+xoKGgPPmezNWah/fSM5GlTy7qSm5U
+         MtVt2D+qYR057JR59fMJx02AwpN83+QjzHOxGolYESLkPXxmDi82n4ld7i9gTGdZWykE
+         koiA==
+X-Gm-Message-State: AOAM532gK6wFSDKJFvq/L0kEQ2pxElaN4AfrEdzJ0785NEIzEJfd91Z1
+        wX0FyDYvRpzhrNW5a721bp+gqA==
+X-Google-Smtp-Source: ABdhPJwhYtOsJXeV0/ou8PbpvaNkFfROJ+N4JJ2Gdt/Jt7Y68WXn6m32bIjMNzk/cSYTrZ/nGz9lQQ==
+X-Received: by 2002:a65:50c8:: with SMTP id s8mr8683055pgp.197.1604976089181;
+        Mon, 09 Nov 2020 18:41:29 -0800 (PST)
+Received: from localhost ([122.172.12.172])
+        by smtp.gmail.com with ESMTPSA id z22sm903214pje.16.2020.11.09.18.41.27
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 09 Nov 2020 18:41:28 -0800 (PST)
+Date:   Tue, 10 Nov 2020 08:11:26 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>
+Cc:     Linux PM <linux-pm@vger.kernel.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Zhang Rui <rui.zhang@intel.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Doug Smythies <dsmythies@telus.net>
+Subject: Re: [PATCH v2 1/4] cpufreq: Introduce governor flags
+Message-ID: <20201110024126.v4yxai5hpguj5p5b@vireshk-i7>
+References: <13269660.K2JYd4sGFX@kreacher>
+ <1876249.M1ZxxmeKtZ@kreacher>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201106112412.390724-4-j.neuschaefer@gmx.net>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <1876249.M1ZxxmeKtZ@kreacher>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 06, 2020 at 12:24:12PM +0100, Jonathan Neuschäfer wrote:
-> The Kobo Aura has an eKTF2132 touchscreen controller.
+On 09-11-20, 17:51, Rafael J. Wysocki wrote:
+> From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 > 
-> Although the vendor kernel toggles a reset pin (GPIO5-12) during the
-> startup sequence, the touchscreen works without it.
+> A new cpufreq governor flag will be added subsequently, so replace
+> the bool dynamic_switching fleid in struct cpufreq_governor with a
+> flags field and introduce CPUFREQ_GOV_FLAG_DYN_SWITCH to set for
+> the "dynamic switching" governors instead of it.
 > 
-> Signed-off-by: Jonathan Neuschäfer <j.neuschaefer@gmx.net>
+> No intentional functional impact.
+> 
+> Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> ---
+>  drivers/cpufreq/cpufreq.c          |    2 +-
+>  drivers/cpufreq/cpufreq_governor.h |    2 +-
+>  include/linux/cpufreq.h            |    9 +++++++--
+>  kernel/sched/cpufreq_schedutil.c   |    2 +-
+>  4 files changed, 10 insertions(+), 5 deletions(-)
+> 
+> Index: linux-pm/drivers/cpufreq/cpufreq.c
+> ===================================================================
+> --- linux-pm.orig/drivers/cpufreq/cpufreq.c
+> +++ linux-pm/drivers/cpufreq/cpufreq.c
+> @@ -2254,7 +2254,7 @@ static int cpufreq_init_governor(struct
+>  		return -EINVAL;
+>  
+>  	/* Platform doesn't want dynamic frequency switching ? */
+> -	if (policy->governor->dynamic_switching &&
 
-Applied, thanks.
+I completely forgot that we had something like this :)
+
+> +	if (policy->governor->flags & CPUFREQ_GOV_FLAG_DYN_SWITCH &&
+>  	    cpufreq_driver->flags & CPUFREQ_NO_AUTO_DYNAMIC_SWITCHING) {
+>  		struct cpufreq_governor *gov = cpufreq_fallback_governor();
+>  
+> Index: linux-pm/drivers/cpufreq/cpufreq_governor.h
+> ===================================================================
+> --- linux-pm.orig/drivers/cpufreq/cpufreq_governor.h
+> +++ linux-pm/drivers/cpufreq/cpufreq_governor.h
+> @@ -156,7 +156,7 @@ void cpufreq_dbs_governor_limits(struct
+>  #define CPUFREQ_DBS_GOVERNOR_INITIALIZER(_name_)			\
+>  	{								\
+>  		.name = _name_,						\
+> -		.dynamic_switching = true,				\
+> +		.flags = CPUFREQ_GOV_FLAG_DYN_SWITCH,			\
+>  		.owner = THIS_MODULE,					\
+>  		.init = cpufreq_dbs_governor_init,			\
+>  		.exit = cpufreq_dbs_governor_exit,			\
+> Index: linux-pm/include/linux/cpufreq.h
+> ===================================================================
+> --- linux-pm.orig/include/linux/cpufreq.h
+> +++ linux-pm/include/linux/cpufreq.h
+> @@ -565,12 +565,17 @@ struct cpufreq_governor {
+>  					 char *buf);
+>  	int	(*store_setspeed)	(struct cpufreq_policy *policy,
+>  					 unsigned int freq);
+> -	/* For governors which change frequency dynamically by themselves */
+> -	bool			dynamic_switching;
+>  	struct list_head	governor_list;
+>  	struct module		*owner;
+> +	u8			flags;
+>  };
+>  
+> +/* Governor flags */
+> +
+> +/* For governors which change frequency dynamically by themselves */
+> +#define CPUFREQ_GOV_FLAG_DYN_SWITCH	BIT(0)
+
+Maybe just drop the FLAG_ part as we don't use it for other cpufreq related
+flags as well. That will also give us space to write DYN as DYNAMIC (it may be
+better as we use the full name in CPUFREQ_NO_AUTO_DYNAMIC_SWITCHING).
+
+Acked-by: Viresh Kumar <viresh.kumar@linaro.org>
+
+-- 
+viresh
