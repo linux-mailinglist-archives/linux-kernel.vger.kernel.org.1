@@ -2,90 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 549DE2AD12E
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 09:20:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B46DE2AD131
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 09:20:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731634AbgKJIUA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 03:20:00 -0500
-Received: from coyote.holtmann.net ([212.227.132.17]:56364 "EHLO
-        mail.holtmann.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726462AbgKJIT7 (ORCPT
+        id S1731783AbgKJIUH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 03:20:07 -0500
+Received: from mail-lf1-f68.google.com ([209.85.167.68]:40302 "EHLO
+        mail-lf1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727691AbgKJIUG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 03:19:59 -0500
-Received: from marcel-macbook.holtmann.net (unknown [37.83.201.106])
-        by mail.holtmann.org (Postfix) with ESMTPSA id EBEC9CECDB;
-        Tue, 10 Nov 2020 09:27:06 +0100 (CET)
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.120.23.2.4\))
-Subject: Re: [PATCH v2] Bluetooth: btusb: Add support for 13d3:3560 MediaTek
- MT7615E device
-From:   Marcel Holtmann <marcel@holtmann.org>
-In-Reply-To: <20201110034010.11088-1-chiu@endlessos.org>
-Date:   Tue, 10 Nov 2020 09:19:57 +0100
-Cc:     Johan Hedberg <johan.hedberg@gmail.com>,
-        linux-bluetooth <linux-bluetooth@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>, linux@endlessos.org
-Content-Transfer-Encoding: 7bit
-Message-Id: <F0E95C4C-927D-44CC-8AC1-E4B3C900FE62@holtmann.org>
-References: <20201110034010.11088-1-chiu@endlessos.org>
-To:     Chris Chiu <chiu@endlessos.org>
-X-Mailer: Apple Mail (2.3608.120.23.2.4)
+        Tue, 10 Nov 2020 03:20:06 -0500
+Received: by mail-lf1-f68.google.com with SMTP id e27so16270982lfn.7;
+        Tue, 10 Nov 2020 00:20:05 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=XF58E9LpuHgK3bgwONg+IQpq5rvQT2eMBFliurRDMBY=;
+        b=aShRON+7KoBsyzXH9B7efaCm4FyisRwR7+kbdHMOiqWHtjI0eCcBBqFlVsOTrRtul6
+         lbLWpJcKafx8iDpzEUP8NwIo7ssuf4HnviNHvGRi9/+/0DGinDIbckL7MTrUcuKOuAs4
+         zSBj75EvKpJadSiwQ3TLUXLM1DCdaO80GjpCEyOdx51h+Fo7jnjzN6FeAlIP2h6buQRS
+         73mLSC5YBFUttILG3wlZ3NgPGSqXkwX8mOZ1I6u+pMhcd5DPeAgKADj5Jvey00+R/KBe
+         FONoSAqQYTz6wZ6Tm7PcJ34Pjm1QeaKwwMCNm+CY2377sUy0JiBiWLk/AKUJD5rC87L8
+         GaKw==
+X-Gm-Message-State: AOAM531TBgq2WOGWaGvzb4V473fvXlfZaFrAiJU/IMtE0DquSfo3dOc/
+        U0GYDlkUWaguv6ZY6gV6tjk=
+X-Google-Smtp-Source: ABdhPJyf4K3+aAt5coTznoNgU/gTR8hnm4VuYD1DgzBnkXfHgNc/7+RunSM3v5Zk3oisPAUKbzNe5A==
+X-Received: by 2002:a19:8982:: with SMTP id l124mr3050431lfd.368.1604996404361;
+        Tue, 10 Nov 2020 00:20:04 -0800 (PST)
+Received: from localhost.localdomain (62-78-225-252.bb.dnainternet.fi. [62.78.225.252])
+        by smtp.gmail.com with ESMTPSA id j127sm1438603lfd.34.2020.11.10.00.20.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 10 Nov 2020 00:20:03 -0800 (PST)
+Date:   Tue, 10 Nov 2020 10:19:58 +0200
+From:   Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+To:     mazziesaccount@gmail.com, matti.vaittinen@gmail.com
+Cc:     Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-power@fi.rohmeurope.com
+Subject: [RFC PATCH 2/3] dt-bindings: regulator: BD71847 support commonly
+ used feedback connection
+Message-ID: <9b6b3d8233071d478f7d1e93b498f5a2141941e6.1604994184.git.matti.vaittinen@fi.rohmeurope.com>
+References: <cover.1604994184.git.matti.vaittinen@fi.rohmeurope.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cover.1604994184.git.matti.vaittinen@fi.rohmeurope.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Chris,
+The BD71847 buck output voltages are in a few cases scaled using external
+connection which adds a pull-up to regulator feedback pin. This connection
+will adjust output voltage from regulator in a deterministic way.
 
-> The ASUS X532EQ laptop contains AzureWave AW-CB434NF WiFi/BT combo
-> module with an associated MT7615E BT chip using a USB ID of 13d3:3560.
-> 
-> T:  Bus=03 Lev=01 Prnt=01 Port=09 Cnt=02 Dev#=  3 Spd=480  MxCh= 0
-> D:  Ver= 2.10 Cls=ef(misc ) Sub=02 Prot=01 MxPS=64 #Cfgs=  1
-> P:  Vendor=13d3 ProdID=3560 Rev= 1.00
-> S:  Manufacturer=MediaTek Inc.
-> S:  Product=Wireless_Device
-> S:  SerialNumber=000000000
-> C:* #Ifs= 2 Cfg#= 1 Atr=e0 MxPwr=100mA
-> A:  FirstIf#= 0 IfCount= 2 Cls=e0(wlcon) Sub=01 Prot=01
-> I:* If#= 0 Alt= 0 #EPs= 3 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
-> E:  Ad=81(I) Atr=03(Int.) MxPS=  16 Ivl=125us
-> E:  Ad=82(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-> E:  Ad=02(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-> I:* If#= 1 Alt= 0 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
-> E:  Ad=83(I) Atr=01(Isoc) MxPS=   0 Ivl=1ms
-> E:  Ad=03(O) Atr=01(Isoc) MxPS=   0 Ivl=1ms
-> I:  If#= 1 Alt= 1 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
-> E:  Ad=83(I) Atr=01(Isoc) MxPS=   9 Ivl=1ms
-> E:  Ad=03(O) Atr=01(Isoc) MxPS=   9 Ivl=1ms
-> I:  If#= 1 Alt= 2 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
-> E:  Ad=83(I) Atr=01(Isoc) MxPS=  17 Ivl=1ms
-> E:  Ad=03(O) Atr=01(Isoc) MxPS=  17 Ivl=1ms
-> I:  If#= 1 Alt= 3 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
-> E:  Ad=83(I) Atr=01(Isoc) MxPS=  25 Ivl=1ms
-> E:  Ad=03(O) Atr=01(Isoc) MxPS=  25 Ivl=1ms
-> I:  If#= 1 Alt= 4 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
-> E:  Ad=83(I) Atr=01(Isoc) MxPS=  33 Ivl=1ms
-> E:  Ad=03(O) Atr=01(Isoc) MxPS=  33 Ivl=1ms
-> I:  If#= 1 Alt= 5 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
-> E:  Ad=83(I) Atr=01(Isoc) MxPS=  49 Ivl=1ms
-> E:  Ad=03(O) Atr=01(Isoc) MxPS=  49 Ivl=1ms
-> I:  If#= 1 Alt= 6 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
-> E:  Ad=83(I) Atr=01(Isoc) MxPS=  63 Ivl=1ms
-> E:  Ad=03(O) Atr=01(Isoc) MxPS=  63 Ivl=1ms
-> 
-> Signed-off-by: Chris Chiu <chiu@endlessos.org>
-> ---
-> 
-> v2:
->  - Add comment for the MT7615E BT device.
-> 
-> drivers/bluetooth/btusb.c | 3 +++
-> 1 file changed, 3 insertions(+)
+Add support for describing this HW connection so that driver can adjust
+voltage ranges accordingly.
 
-patch has been applied to bluetooth-next tree.
+Signed-off-by: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+---
+ .../regulator/rohm,bd71847-regulator.yaml     | 49 +++++++++++++++++++
+ 1 file changed, 49 insertions(+)
 
-Regards
+diff --git a/Documentation/devicetree/bindings/regulator/rohm,bd71847-regulator.yaml b/Documentation/devicetree/bindings/regulator/rohm,bd71847-regulator.yaml
+index eeac32cd15d6..a1b806373853 100644
+--- a/Documentation/devicetree/bindings/regulator/rohm,bd71847-regulator.yaml
++++ b/Documentation/devicetree/bindings/regulator/rohm,bd71847-regulator.yaml
+@@ -99,6 +99,55 @@ patternProperties:
+           Enable/Disable control of this regulator must be left to the
+           PMIC hardware state machine.
+         type: boolean
++
++      # Setups where regulator (especially the buck8) output voltage is scaled
++      # by adding external connection where some other regulator output is
++      # connected to feedback-pin (over suitable resistors) is getting popular
++      # amongst users of BD71837. (This allows for example scaling down the
++      # buck8 voltages to suit lover GPU voltages for projects where buck8 is
++      # (ab)used to supply power for GPU.
++      #
++      # So we allow describing this external connection from DT and scale the
++      # voltages accordingly. This is what the connection should look like:
++      #
++      # |---------------|
++      # |       buck 8  |-------+----->Vout
++      # |               |       |
++      # |---------------|       |
++      #        |                |
++      #        |                |
++      #        +-------+--R2----+
++      #                |
++      #                R1
++      #                |
++      #        V FB-pull-up
++      #
++      # Here the buck output is sifted according to formula:
++      #
++      # Vout_o = Vo - (Vpu - Vo)*R2/R1
++      # Linear_step = step_orig*(R1+R2)/R1
++      #
++      # where:
++      # Vout_o is adjusted voltage output at vsel reg value 0
++      # Vo is original voltage output at vsel reg value 0
++      # Vpu is the pull-up voltage V FB-pull-up in the picture
++      # R1 and R2 are resistor values.
++
++      rohm,fb-pull-up-microvolt:
++        description:
++          Feedback-pin has pull-up connection to adjust voltage range. This is
++          the used pull-up voltage before R1.
++
++      rohm,feedback-pull-up-r1-ohms:
++        description:
++          Feedback-pin has pull-up connection to adjust voltage range. This is
++          the used R1 resistor.
++
++      rohm,feedback-pull-up-r2-ohms:
++        description:
++          Feedback-pin has pull-up connection to adjust voltage range. This is
++          the used R2 resistor.
++
+     required:
+       - regulator-name
+ 
+-- 
+2.21.3
 
-Marcel
 
+-- 
+Matti Vaittinen, Linux device drivers
+ROHM Semiconductors, Finland SWDC
+Kiviharjunlenkki 1E
+90220 OULU
+FINLAND
+
+~~~ "I don't think so," said Rene Descartes. Just then he vanished ~~~
+Simon says - in Latin please.
+~~~ "non cogito me" dixit Rene Descarte, deinde evanescavit ~~~
+Thanks to Simon Glass for the translation =] 
