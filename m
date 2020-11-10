@@ -2,90 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A88132AD498
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 12:19:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 188B42AD49E
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 12:20:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729962AbgKJLTn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 06:19:43 -0500
-Received: from youngberry.canonical.com ([91.189.89.112]:60589 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729484AbgKJLTn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 06:19:43 -0500
-Received: from 1.general.cascardo.us.vpn ([10.172.70.58] helo=mussarela)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <cascardo@canonical.com>)
-        id 1kcRgY-0003QB-Ox; Tue, 10 Nov 2020 11:19:39 +0000
-Date:   Tue, 10 Nov 2020 08:19:32 -0300
-From:   Thadeu Lima de Souza Cascardo <cascardo@canonical.com>
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     Kleber Sacilotto de Souza <kleber.souza@canonical.com>,
-        Eric Dumazet <edumazet@google.com>, netdev@vger.kernel.org,
-        Gerrit Renker <gerrit@erg.abdn.ac.uk>,
-        "David S. Miller" <davem@davemloft.net>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        "Alexander A. Klimov" <grandmaster@al2klimov.de>,
-        Kees Cook <keescook@chromium.org>,
-        Alexey Kodanev <alexey.kodanev@oracle.com>,
-        dccp@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] dccp: ccid: move timers to struct dccp_sock
-Message-ID: <20201110111932.GS595944@mussarela>
-References: <20201013171849.236025-1-kleber.souza@canonical.com>
- <20201013171849.236025-2-kleber.souza@canonical.com>
- <20201016153016.04bffc1e@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <20201109114828.GP595944@mussarela>
- <20201109094938.45b230c9@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <20201109210909.GQ595944@mussarela>
- <20201109131554.5f65b2fa@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
- <20201109213134.GR595944@mussarela>
- <20201109141553.30e9d502@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+        id S1730016AbgKJLUt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 06:20:49 -0500
+Received: from muru.com ([72.249.23.125]:47654 "EHLO muru.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726219AbgKJLUt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Nov 2020 06:20:49 -0500
+Received: from hillo.muru.com (localhost [127.0.0.1])
+        by muru.com (Postfix) with ESMTP id D546681A8;
+        Tue, 10 Nov 2020 11:20:51 +0000 (UTC)
+From:   Tony Lindgren <tony@atomide.com>
+To:     linux-omap@vger.kernel.org
+Cc:     Dave Gerlach <d-gerlach@ti.com>, Faiz Abbas <faiz_abbas@ti.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Grygorii Strashko <grygorii.strashko@ti.com>,
+        Keerthy <j-keerthy@ti.com>, Nishanth Menon <nm@ti.com>,
+        Peter Ujfalusi <peter.ujfalusi@ti.com>,
+        Roger Quadros <rogerq@ti.com>, Suman Anna <s-anna@ti.com>,
+        Tero Kristo <t-kristo@ti.com>, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Santosh Shilimkar <ssantosh@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>, linux-clk@vger.kernel.org,
+        linux-remoteproc@vger.kernel.org
+Subject: [PATCHv2 0/9] Genpd related code changes to drop am335x pdata
+Date:   Tue, 10 Nov 2020 13:20:33 +0200
+Message-Id: <20201110112042.65489-1-tony@atomide.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201109141553.30e9d502@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 09, 2020 at 02:15:53PM -0800, Jakub Kicinski wrote:
-> On Mon, 9 Nov 2020 18:31:34 -0300 Thadeu Lima de Souza Cascardo wrote:
-> > > Which paths are those (my memory of this code is waning)? I thought
-> > > disconnect is only called from the user space side (shutdown syscall).
-> > > The only other way to terminate the connection is to close the socket,
-> > > which Eric already fixed by postponing the destruction of ccid in that
-> > > case.  
-> > 
-> > dccp_v4_do_rcv -> dccp_rcv_established -> dccp_parse_options ->
-> > 	dccp_feat_parse_options -> dccp_feat_handle_nn_established ->
-> > 	dccp_feat_activate -> __dccp_feat_activate -> dccp_hdlr_ccid ->
-> > 	ccid_hc_tx_delete
-> 
-> Well, that's not a disconnect path.
-> 
-> There should be no CCID on a disconnected socket, tho, right? Otherwise
-> if we can switch from one active CCID to another then reusing a single
-> timer in struct dccp_sock for both is definitely not safe as I
-> explained in my initial email.
+Hi all,
 
-Yeah, I agree with your initial email. The patch I submitted for that fix needs
-rework, which is what I tried and failed so far. I need to get back to some
-testing of my latest fix and find out what needs fixing there.
+Here's v2 set of changes for v5.11 merge window to drop the remaining
+am335x platform data.
 
-But I am also saying that simply doing a del_timer_sync on disconnect paths
-won't do, because there are non-disconnect paths where there is a CCID that we
-will remove and replace and that will still trigger a timer UAF.
+Changes since v1:
+- Simplify wkup_m3_rproc.c changes as suggested by Philipp Zabel
+- Do not configure pm_clk for omap_prm.c except for simple-pm-bus
 
-So I have been working on a fix that involves a refcnt on ccid itself. But I
-want to test that it really fixes the problem and I have spent most of the time
-finding out a way to trigger the timer in a race with the disconnect path.
+These patches depend on:
 
-And that same test has showed me that this timer UAF will happen regardless of
-commit 2677d20677314101293e6da0094ede7b5526d2b1, which led me into stating that
-reverting it should be done in any case.
+[PATCH 2/4] ARM: OMAP2+: Fix missing select PM_GENERIC_DOMAINS_OF
 
-I think I can find some time this week to work a little further on the fix for
-the time UAF.
+And the related device tree changes have been posted as:
 
-Thanks.
-Cascardo.
+[PATCH 00/18] Drop remaining pdata for am335x and use genpd
+
+Regards,
+
+Tony
+
+
+Tero Kristo (1):
+  soc: ti: omap-prm: am3: add genpd support for remaining PRM instances
+
+Tony Lindgren (8):
+  ARM: OMAP2+: Check for inited flag
+  ARM: OMAP2+: Probe PRCM first to probe l4_wkup with simple-pm-bus
+  clk: ti: am33xx: Keep am3 l3 main clock always on for genpd
+  bus: ti-sysc: Support modules without control registers
+  bus: ti-sysc: Implement GPMC debug quirk to drop platform data
+  soc: ti: omap-prm: Add pm_clk for genpd
+  soc: ti: pm33xx: Enable basic PM runtime support for genpd
+  remoteproc/wkup_m3: Use reset control driver if available
+
+ arch/arm/mach-omap2/omap_hwmod.c      |  6 ++
+ arch/arm/mach-omap2/pdata-quirks.c    | 11 ++++
+ drivers/bus/ti-sysc.c                 | 17 ++++++
+ drivers/clk/ti/clk-33xx.c             |  2 +
+ drivers/remoteproc/wkup_m3_rproc.c    | 41 +++++++++-----
+ drivers/soc/ti/omap_prm.c             | 80 ++++++++++++++++++++++++++-
+ drivers/soc/ti/pm33xx.c               | 17 +++++-
+ include/linux/platform_data/ti-sysc.h |  1 +
+ 8 files changed, 157 insertions(+), 18 deletions(-)
+
+-- 
+2.29.2
