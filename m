@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CFD52ACDA5
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 05:04:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 269632ACDBC
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 05:05:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732735AbgKJDyd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 22:54:33 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55198 "EHLO mail.kernel.org"
+        id S1733185AbgKJEEo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 23:04:44 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55234 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732614AbgKJDyW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 22:54:22 -0500
+        id S1732628AbgKJDyX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 22:54:23 -0500
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BEF24208FE;
-        Tue, 10 Nov 2020 03:54:20 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1F4A22080A;
+        Tue, 10 Nov 2020 03:54:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604980461;
-        bh=OV1Xj4kU+L5m17C1NCp+og64eDu56RBqonvNHnMDj3A=;
+        s=default; t=1604980463;
+        bh=L9hys1Giri6V/FU+HlVhSRrLuGhgm3iyfg9ETMDZEj0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=wUbs0zK4ermQIX8/5AA3bw+sH19fRGZ6O5YR8i1tWZR9bl0PoS5qOE5eovV25avIZ
-         ytPKJzBaqdrO8JSVP5xXKnQN72b5WMqG0wC6P9mtWxRR5W/zQTqYfg0rhHr9oqLemj
-         0Z/jGV9GVcjXTrGmXbOinTIWcOQXhaYydTbux234=
+        b=ICLUn1MghNRns9G3b1KYdITIzhQPl64YzZ9wkd76T7pJvkVGVga2u1fBFNEpVy/qM
+         Q3h44tKd8RxO+R+UbCpbiSr6JbIaJCG/0LZig6IAiTGqj3+OKojVhKIS7FEwBke70d
+         8rMg/4+dH/CD4L657xQIEkachNMbBrTmcIfhIdOI=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 5.9 44/55] kprobes: Tell lockdep about kprobe nesting
-Date:   Mon,  9 Nov 2020 22:53:07 -0500
-Message-Id: <20201110035318.423757-44-sashal@kernel.org>
+Cc:     Brian Foster <bfoster@redhat.com>,
+        "Darrick J . Wong" <darrick.wong@oracle.com>,
+        Sasha Levin <sashal@kernel.org>, linux-xfs@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.9 45/55] iomap: clean up writeback state logic on writepage error
+Date:   Mon,  9 Nov 2020 22:53:08 -0500
+Message-Id: <20201110035318.423757-45-sashal@kernel.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20201110035318.423757-1-sashal@kernel.org>
 References: <20201110035318.423757-1-sashal@kernel.org>
@@ -43,84 +43,93 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
+From: Brian Foster <bfoster@redhat.com>
 
-[ Upstream commit 645f224e7ba2f4200bf163153d384ceb0de5462e ]
+[ Upstream commit 50e7d6c7a5210063b9a6f0d8799d9d1440907fcf ]
 
-Since the kprobe handlers have protection that prohibits other handlers from
-executing in other contexts (like if an NMI comes in while processing a
-kprobe, and executes the same kprobe, it will get fail with a "busy"
-return). Lockdep is unaware of this protection. Use lockdep's nesting api to
-differentiate between locks taken in INT3 context and other context to
-suppress the false warnings.
+The iomap writepage error handling logic is a mash of old and
+slightly broken XFS writepage logic. When keepwrite writeback state
+tracking was introduced in XFS in commit 0d085a529b42 ("xfs: ensure
+WB_SYNC_ALL writeback handles partial pages correctly"), XFS had an
+additional cluster writeback context that scanned ahead of
+->writepage() to process dirty pages over the current ->writepage()
+extent mapping. This context expected a dirty page and required
+retention of the TOWRITE tag on partial page processing so the
+higher level writeback context would revisit the page (in contrast
+to ->writepage(), which passes a page with the dirty bit already
+cleared).
 
-Link: https://lore.kernel.org/r/20201102160234.fa0ae70915ad9e2b21c08b85@kernel.org
+The cluster writeback mechanism was eventually removed and some of
+the error handling logic folded into the primary writeback path in
+commit 150d5be09ce4 ("xfs: remove xfs_cancel_ioend"). This patch
+accidentally conflated the two contexts by using the keepwrite logic
+in ->writepage() without accounting for the fact that the page is
+not dirty. Further, the keepwrite logic has no practical effect on
+the core ->writepage() caller (write_cache_pages()) because it never
+revisits a page in the current function invocation.
 
-Cc: Peter Zijlstra <peterz@infradead.org>
-Acked-by: Masami Hiramatsu <mhiramat@kernel.org>
-Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+Technically, the page should be redirtied for the keepwrite logic to
+have any effect. Otherwise, write_cache_pages() may find the tagged
+page but will skip it since it is clean. Even if the page was
+redirtied, however, there is still no practical effect to keepwrite
+since write_cache_pages() does not wrap around within a single
+invocation of the function. Therefore, the dirty page would simply
+end up retagged on the next writeback sequence over the associated
+range.
+
+All that being said, none of this really matters because redirtying
+a partially processed page introduces a potential infinite redirty
+-> writeback failure loop that deviates from the current design
+principle of clearing the dirty state on writepage failure to avoid
+building up too much dirty, unreclaimable memory on the system.
+Therefore, drop the spurious keepwrite usage and dirty state
+clearing logic from iomap_writepage_map(), treat the partially
+processed page the same as a fully processed page, and let the
+imminent ioend failure clean up the writeback state.
+
+Signed-off-by: Brian Foster <bfoster@redhat.com>
+Reviewed-by: Darrick J. Wong <darrick.wong@oracle.com>
+Signed-off-by: Darrick J. Wong <darrick.wong@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/kprobes.c | 25 +++++++++++++++++++++----
- 1 file changed, 21 insertions(+), 4 deletions(-)
+ fs/iomap/buffered-io.c | 15 ++-------------
+ 1 file changed, 2 insertions(+), 13 deletions(-)
 
-diff --git a/kernel/kprobes.c b/kernel/kprobes.c
-index e995541d277d4..5cfe6c26d6ea7 100644
---- a/kernel/kprobes.c
-+++ b/kernel/kprobes.c
-@@ -1250,7 +1250,13 @@ __acquires(hlist_lock)
+diff --git a/fs/iomap/buffered-io.c b/fs/iomap/buffered-io.c
+index b115e7d47fcec..238613443bec2 100644
+--- a/fs/iomap/buffered-io.c
++++ b/fs/iomap/buffered-io.c
+@@ -1395,6 +1395,7 @@ iomap_writepage_map(struct iomap_writepage_ctx *wpc,
+ 	WARN_ON_ONCE(!wpc->ioend && !list_empty(&submit_list));
+ 	WARN_ON_ONCE(!PageLocked(page));
+ 	WARN_ON_ONCE(PageWriteback(page));
++	WARN_ON_ONCE(PageDirty(page));
  
- 	*head = &kretprobe_inst_table[hash];
- 	hlist_lock = kretprobe_table_lock_ptr(hash);
--	raw_spin_lock_irqsave(hlist_lock, *flags);
-+	/*
-+	 * Nested is a workaround that will soon not be needed.
-+	 * There's other protections that make sure the same lock
-+	 * is not taken on the same CPU that lockdep is unaware of.
-+	 * Differentiate when it is taken in NMI context.
-+	 */
-+	raw_spin_lock_irqsave_nested(hlist_lock, *flags, !!in_nmi());
- }
- NOKPROBE_SYMBOL(kretprobe_hash_lock);
+ 	/*
+ 	 * We cannot cancel the ioend directly here on error.  We may have
+@@ -1415,21 +1416,9 @@ iomap_writepage_map(struct iomap_writepage_ctx *wpc,
+ 			unlock_page(page);
+ 			goto done;
+ 		}
+-
+-		/*
+-		 * If the page was not fully cleaned, we need to ensure that the
+-		 * higher layers come back to it correctly.  That means we need
+-		 * to keep the page dirty, and for WB_SYNC_ALL writeback we need
+-		 * to ensure the PAGECACHE_TAG_TOWRITE index mark is not removed
+-		 * so another attempt to write this page in this writeback sweep
+-		 * will be made.
+-		 */
+-		set_page_writeback_keepwrite(page);
+-	} else {
+-		clear_page_dirty_for_io(page);
+-		set_page_writeback(page);
+ 	}
  
-@@ -1259,7 +1265,13 @@ static void kretprobe_table_lock(unsigned long hash,
- __acquires(hlist_lock)
- {
- 	raw_spinlock_t *hlist_lock = kretprobe_table_lock_ptr(hash);
--	raw_spin_lock_irqsave(hlist_lock, *flags);
-+	/*
-+	 * Nested is a workaround that will soon not be needed.
-+	 * There's other protections that make sure the same lock
-+	 * is not taken on the same CPU that lockdep is unaware of.
-+	 * Differentiate when it is taken in NMI context.
-+	 */
-+	raw_spin_lock_irqsave_nested(hlist_lock, *flags, !!in_nmi());
- }
- NOKPROBE_SYMBOL(kretprobe_table_lock);
++	set_page_writeback(page);
+ 	unlock_page(page);
  
-@@ -1950,7 +1962,12 @@ static int pre_handler_kretprobe(struct kprobe *p, struct pt_regs *regs)
- 
- 	/* TODO: consider to only swap the RA after the last pre_handler fired */
- 	hash = hash_ptr(current, KPROBE_HASH_BITS);
--	raw_spin_lock_irqsave(&rp->lock, flags);
-+	/*
-+	 * Nested is a workaround that will soon not be needed.
-+	 * There's other protections that make sure the same lock
-+	 * is not taken on the same CPU that lockdep is unaware of.
-+	 */
-+	raw_spin_lock_irqsave_nested(&rp->lock, flags, 1);
- 	if (!hlist_empty(&rp->free_instances)) {
- 		ri = hlist_entry(rp->free_instances.first,
- 				struct kretprobe_instance, hlist);
-@@ -1961,7 +1978,7 @@ static int pre_handler_kretprobe(struct kprobe *p, struct pt_regs *regs)
- 		ri->task = current;
- 
- 		if (rp->entry_handler && rp->entry_handler(ri, regs)) {
--			raw_spin_lock_irqsave(&rp->lock, flags);
-+			raw_spin_lock_irqsave_nested(&rp->lock, flags, 1);
- 			hlist_add_head(&ri->hlist, &rp->free_instances);
- 			raw_spin_unlock_irqrestore(&rp->lock, flags);
- 			return 0;
+ 	/*
 -- 
 2.27.0
 
