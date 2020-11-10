@@ -2,154 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65CA72AE246
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 22:58:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C08F2AE249
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 22:59:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731587AbgKJV6i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 16:58:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46272 "EHLO
+        id S1731867AbgKJV71 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 16:59:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46402 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726688AbgKJV6g (ORCPT
+        with ESMTP id S1726688AbgKJV71 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 16:58:36 -0500
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37B27C0613D1
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 13:58:36 -0800 (PST)
-Received: by mail-wr1-x441.google.com with SMTP id c17so14360801wrc.11
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 13:58:36 -0800 (PST)
+        Tue, 10 Nov 2020 16:59:27 -0500
+Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B1FFC0613D1
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 13:59:27 -0800 (PST)
+Received: by mail-il1-x143.google.com with SMTP id l12so61585ilo.1
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 13:59:27 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=7PYKfcZgEbSn6FtgZH86ueoYk1FKRtzcitJv9QurNbU=;
-        b=W05ZH9i7vYFC31OC7WJRYdfHRuE+Yz42XdxO/WY/O2SxZFD2q+cDt1PZZeBtYrSUi+
-         UaBWZJdoxSrGVrXisDIygPG9gcsw12yg14d6vaSbqkVCTtevEozHzXw1RLTOhz6Ix3OR
-         rA5vcp5pgw8YPSypwisP7rcpmTksmx7/5oXcS8eSBmebtaKrOARpkVv/64iFladQSEih
-         ogi9lJ/CNWppmnHvpYLDJjwUgapdxKAZneii3pPxptW46yUU9ZyrgY8ZCqsNSozcjGyZ
-         ifdvcUNNE3MumaMlPSEE9oxtCDR+Y5nVvP+T7j4VGP5V/lX0VChFbZnUH0lT197qPeuL
-         yLvA==
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=34u/FsKjU5JEH21Mbeeqb1FNSVhPfOUCDpBOlpNDehc=;
+        b=QSH8GEAkf83/tL0jZ9bgHJVnBUW/8KF0qTiX/oMhQ7Ta4RRwLsp7FWr2ASOBbbvMW8
+         9rGLOCCIdI4Q6kapvVWuqwP8Ic3QAL25Vf2dkMH+/wJAICUjUc0HFY+l9ekvDVY2UKAe
+         xCjMRDeYWv9okRZ6p8nsOHMJ+qf95Dr1eLHEA6kIqsm64lk9vpqZT3qIgB24GmSZYJn0
+         qhzNjR1cx6ZXw9gPhfbPVNaxaRenMn7FKQBKcZ9bVfdQDuoSCpDrDDR73vWRwlqZ+q5+
+         i/ihpPE1IaKTrCsjqxJ7kumDNuXqhpzwPrI/Ey/6DdxmHHOaksGhQtoSHEEeK8k87Co4
+         0RHA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=7PYKfcZgEbSn6FtgZH86ueoYk1FKRtzcitJv9QurNbU=;
-        b=QHmIiXH5NPIeS71+2Dp1Q/wpCAthYGsNfv3mcPskyaoxaCvfh3mWE+gTQIBwQX/QYs
-         WZCvRDhns68DUUIXG8G2IseFuHDliDcC/II8gxlGrKgleppiVC5+UtoErH5OM6mSDNmu
-         kQtu+dgdaU7cnXP8H8n2vQMZnGrAj3vKU4zevK9GY1oOQMsQ0SQZofSDq2b0vE4DXDfY
-         cDViSDXKlwDI8UF/s46rqsSzM6k63rVyIrGmr/jRXMfXf21NW9NTL12Gbhs48NVVBmOC
-         ASTgYNIlg3o/m/ci2OOrSpm9PBnB2mNHG+RCgAmXw20lhORt2ig5hrDSMMF65ov58WpU
-         ff6g==
-X-Gm-Message-State: AOAM531NJi3KtDrYlKWWKxxLUlIZf+Ar3xMsS27Ath4lmbeRel52Nzl5
-        foTEWEhDjBY8qNioqcN1FAzCabyAl0EV7xt8TeQ=
-X-Google-Smtp-Source: ABdhPJyoUDdn74KYisXTYC5nt7/YXLArSt/XMm5JQrl4xBlBvEuYS+aw97T/HcUfmwAapu3UwWQBkwDWlgpHGHS+MWI=
-X-Received: by 2002:adf:f246:: with SMTP id b6mr25828792wrp.111.1605045514996;
- Tue, 10 Nov 2020 13:58:34 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=34u/FsKjU5JEH21Mbeeqb1FNSVhPfOUCDpBOlpNDehc=;
+        b=GXsmtnFEbZBK26NZzpMc/IomBMRtBvqppz5bLnR9yZtOXwgbaBgAUsfbGd3GzILzL5
+         BkpSaBSsFHGH3lR3GyHdLjAAGTLzePh8RVLViiCB2hGlLkuqJfWDU/vE1MyxHjCGiVWb
+         uWgR4ND8elHnwMkk7vpTBUxcTkrRU1Ic26hLDQALEZa7op4bpf8ItyJKiVXsnpkKMhyX
+         +3vb+oscEUR/SZDzkiNot8h1dVToPgMqYQV7P+XqcPkmlSEeActnQuWXD7I7ECwEkpiR
+         XbbeGojwn/cRhHHU2qG5Ht3mIeJqzsUi0BHhyhmwC/6HQEJJQg8TT+grMaXcyPEzmqyy
+         9phQ==
+X-Gm-Message-State: AOAM530bbofwZ7iBKibWZiWBaaJHbCcHI9ZVKps0RsNaWbVu3xniEfdZ
+        N+iVmS2tUH83KjcHmJVJylxFUw==
+X-Google-Smtp-Source: ABdhPJzhsZ+ENqTCiV4KCRGDhG8JZJ7lEftSNWX0XUsfw4V+fx3xTndq+mto2M62r+HsJZC890cKRw==
+X-Received: by 2002:a92:9f0c:: with SMTP id u12mr17100337ili.113.1605045566474;
+        Tue, 10 Nov 2020 13:59:26 -0800 (PST)
+Received: from beast.localdomain (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
+        by smtp.gmail.com with ESMTPSA id d142sm102010iof.43.2020.11.10.13.59.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 10 Nov 2020 13:59:25 -0800 (PST)
+From:   Alex Elder <elder@linaro.org>
+To:     davem@davemloft.net, kuba@kernel.org
+Cc:     evgreen@chromium.org, subashab@codeaurora.org,
+        cpratapa@codeaurora.org, bjorn.andersson@linaro.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH net-next 0/6] net: ipa: GSI register consolidation
+Date:   Tue, 10 Nov 2020 15:59:16 -0600
+Message-Id: <20201110215922.23514-1-elder@linaro.org>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-References: <20201106214949.2042120-1-lee.jones@linaro.org> <20201106214949.2042120-14-lee.jones@linaro.org>
-In-Reply-To: <20201106214949.2042120-14-lee.jones@linaro.org>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Tue, 10 Nov 2020 16:58:23 -0500
-Message-ID: <CADnq5_MxhG6gYSWCo_xmwSu5AB1xoVtTS-hpR7d+FY=bUi0phA@mail.gmail.com>
-Subject: Re: [PATCH 13/19] drm/radeon/radeon_drv: Move prototypes to a shared headerfile
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     David Airlie <airlied@linux.ie>,
-        LKML <linux-kernel@vger.kernel.org>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Gareth Hughes <gareth@valinux.com>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 6, 2020 at 4:50 PM Lee Jones <lee.jones@linaro.org> wrote:
->
-> Fixes the following W=3D1 kernel build warning(s):
->
->  62 | void radeon_driver_unload_kms(struct drm_device *dev)
->  | ^~~~~~~~~~~~~~~~~~~~~~~~
->  drivers/gpu/drm/radeon/radeon_kms.c:105:5: warning: no previous prototyp=
-e for =E2=80=98radeon_driver_load_kms=E2=80=99 [-Wmissing-prototypes]
->  105 | int radeon_driver_load_kms(struct drm_device *dev, unsigned long f=
-lags)
->  | ^~~~~~~~~~~~~~~~~~~~~~
->  drivers/gpu/drm/radeon/radeon_kms.c:619:6: warning: no previous prototyp=
-e for =E2=80=98radeon_driver_lastclose_kms=E2=80=99 [-Wmissing-prototypes]
->  619 | void radeon_driver_lastclose_kms(struct drm_device *dev)
->  | ^~~~~~~~~~~~~~~~~~~~~~~~~~~
->  drivers/gpu/drm/radeon/radeon_kms.c:634:5: warning: no previous prototyp=
-e for =E2=80=98radeon_driver_open_kms=E2=80=99 [-Wmissing-prototypes]
->  634 | int radeon_driver_open_kms(struct drm_device *dev, struct drm_file=
- *file_priv)
->  | ^~~~~~~~~~~~~~~~~~~~~~
->  drivers/gpu/drm/radeon/radeon_kms.c:705:6: warning: no previous prototyp=
-e for =E2=80=98radeon_driver_postclose_kms=E2=80=99 [-Wmissing-prototypes]
->  705 | void radeon_driver_postclose_kms(struct drm_device *dev,
->  | ^~~~~~~~~~~~~~~~~~~~~~~~~~~
->
-> Cc: Alex Deucher <alexander.deucher@amd.com>
-> Cc: "Christian K=C3=B6nig" <christian.koenig@amd.com>
-> Cc: David Airlie <airlied@linux.ie>
-> Cc: Daniel Vetter <daniel@ffwll.ch>
-> Cc: Gareth Hughes <gareth@valinux.com>
-> Cc: amd-gfx@lists.freedesktop.org
-> Cc: dri-devel@lists.freedesktop.org
-> Signed-off-by: Lee Jones <lee.jones@linaro.org>
+This series rearranges and consolidates some GSI register
+definitions.  Its general aim is to make things more
+consistent, by:
+  - Using enumerated types to define the values held in GSI register
+    fields
+  - Defining field values in "gsi_reg.h", together with the
+    definition of the register (and field) that holds them
+  - Format enumerated type members consistently, with hexidecimal
+    numeric values, and assignments aligned on the same column
 
-Applied.  Thanks!
+There is one checkpatch "CHECK" warning requesting a blank line; I
+ignored that because my intention was to group certain definitions.
 
-Alex
+					-Alex
 
-> ---
->  drivers/gpu/drm/radeon/radeon_drv.c | 6 ------
->  drivers/gpu/drm/radeon/radeon_drv.h | 7 +++++++
->  2 files changed, 7 insertions(+), 6 deletions(-)
->
-> diff --git a/drivers/gpu/drm/radeon/radeon_drv.c b/drivers/gpu/drm/radeon=
-/radeon_drv.c
-> index bb7b33e535f81..e0d664e9e2feb 100644
-> --- a/drivers/gpu/drm/radeon/radeon_drv.c
-> +++ b/drivers/gpu/drm/radeon/radeon_drv.c
-> @@ -112,12 +112,6 @@
->  #define KMS_DRIVER_MAJOR       2
->  #define KMS_DRIVER_MINOR       50
->  #define KMS_DRIVER_PATCHLEVEL  0
-> -int radeon_driver_load_kms(struct drm_device *dev, unsigned long flags);
-> -void radeon_driver_unload_kms(struct drm_device *dev);
-> -void radeon_driver_lastclose_kms(struct drm_device *dev);
-> -int radeon_driver_open_kms(struct drm_device *dev, struct drm_file *file=
-_priv);
-> -void radeon_driver_postclose_kms(struct drm_device *dev,
-> -                                struct drm_file *file_priv);
->  int radeon_suspend_kms(struct drm_device *dev, bool suspend,
->                        bool fbcon, bool freeze);
->  int radeon_resume_kms(struct drm_device *dev, bool resume, bool fbcon);
-> diff --git a/drivers/gpu/drm/radeon/radeon_drv.h b/drivers/gpu/drm/radeon=
-/radeon_drv.h
-> index 173deb4634146..ac7970919c4d3 100644
-> --- a/drivers/gpu/drm/radeon/radeon_drv.h
-> +++ b/drivers/gpu/drm/radeon/radeon_drv.h
-> @@ -118,4 +118,11 @@
->  long radeon_drm_ioctl(struct file *filp,
->                       unsigned int cmd, unsigned long arg);
->
-> +int radeon_driver_load_kms(struct drm_device *dev, unsigned long flags);
-> +void radeon_driver_unload_kms(struct drm_device *dev);
-> +void radeon_driver_lastclose_kms(struct drm_device *dev);
-> +int radeon_driver_open_kms(struct drm_device *dev, struct drm_file *file=
-_priv);
-> +void radeon_driver_postclose_kms(struct drm_device *dev,
-> +                                struct drm_file *file_priv);
-> +
->  #endif                         /* __RADEON_DRV_H__ */
-> --
-> 2.25.1
->
-> _______________________________________________
-> dri-devel mailing list
-> dri-devel@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+Alex Elder (6):
+  net: ipa: define GSI interrupt types with enums
+  net: ipa: use common value for channel type and protocol
+  net: ipa: move channel type values into "gsi_reg.h"
+  net: ipa: move GSI error values into "gsi_reg.h"
+  net: ipa: move GSI command opcode values into "gsi_reg.h"
+  net: ipa: use enumerated types for GSI field values
+
+ drivers/net/ipa/gsi.c     | 89 +++++++-----------------------------
+ drivers/net/ipa/gsi_reg.h | 95 +++++++++++++++++++++++++++++++--------
+ 2 files changed, 93 insertions(+), 91 deletions(-)
+
+-- 
+2.20.1
+
