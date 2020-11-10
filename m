@@ -2,64 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42F632AD679
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 13:39:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A0B592AD680
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 13:39:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730061AbgKJMjT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 07:39:19 -0500
-Received: from youngberry.canonical.com ([91.189.89.112]:34266 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726462AbgKJMjT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 07:39:19 -0500
-Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <colin.king@canonical.com>)
-        id 1kcSvb-0003U0-N4; Tue, 10 Nov 2020 12:39:15 +0000
-From:   Colin King <colin.king@canonical.com>
-To:     Marcel Holtmann <marcel@holtmann.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        Kai-Heng Feng <kai.heng.feng@canonical.com>,
-        linux-bluetooth@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH][next] Bluetooth: btrtl: fix incorrect skb allocation failure check
-Date:   Tue, 10 Nov 2020 12:39:15 +0000
-Message-Id: <20201110123915.3356601-1-colin.king@canonical.com>
-X-Mailer: git-send-email 2.28.0
+        id S1730378AbgKJMjp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 07:39:45 -0500
+Received: from mga02.intel.com ([134.134.136.20]:2937 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726462AbgKJMjp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Nov 2020 07:39:45 -0500
+IronPort-SDR: PiNzRcTCKGDvj2PsPbyzguueLndRW9Ui3Kymt4TmpXk3HjLYsk3JNb2CPH/vtCaStic9rtIjuC
+ aq/1Lwpl+4Hg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9800"; a="156971136"
+X-IronPort-AV: E=Sophos;i="5.77,466,1596524400"; 
+   d="scan'208";a="156971136"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Nov 2020 04:39:43 -0800
+IronPort-SDR: CofVXQfwb/b6mTBj+zXm2G4HmzdnMKV8inpcbu1rp3tPvcyJlRu7vcUNwsUYs8kw6OESowXPLt
+ cw62KKLX+NYQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,466,1596524400"; 
+   d="scan'208";a="428353901"
+Received: from kuha.fi.intel.com ([10.237.72.162])
+  by fmsmga001.fm.intel.com with SMTP; 10 Nov 2020 04:39:39 -0800
+Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Tue, 10 Nov 2020 14:39:39 +0200
+Date:   Tue, 10 Nov 2020 14:39:39 +0200
+From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Lukasz Stelmach <l.stelmach@samsung.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Ard Biesheuvel <ard.biesheuvel@linaro.org>,
+        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        platform-driver-x86@vger.kernel.org,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
+Subject: Re: [PATCH v8 3/6] software node: implement reference properties
+Message-ID: <20201110123939.GN1224435@kuha.fi.intel.com>
+References: <20201109172435.GJ4077@smile.fi.intel.com>
+ <CGME20201109181851eucas1p241de8938e399c0b603c764593b057c41@eucas1p2.samsung.com>
+ <dleftj4klypf5u.fsf%l.stelmach@samsung.com>
+ <20201109185305.GT1003057@dtor-ws>
+ <20201109190551.GM4077@smile.fi.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201109190551.GM4077@smile.fi.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+On Mon, Nov 09, 2020 at 09:05:51PM +0200, Andy Shevchenko wrote:
+> On Mon, Nov 09, 2020 at 10:53:05AM -0800, Dmitry Torokhov wrote:
+> > On Mon, Nov 09, 2020 at 07:18:37PM +0100, Lukasz Stelmach wrote:
+> > > It was <2020-11-09 pon 19:24>, when Andy Shevchenko wrote:
+> 
+> ...
+> 
+> > > Probably I have missed something and I will be greatful, if you tell me
+> > > where I can find more information about software nodes. There are few
+> > > users in the kernel and it isn't obvious for me how to use software
+> > > nodes properly.
+> > 
+> > Yeah, I disagree with Andy here. The lookup tables are a crutch that we
+> > have until GPIO and PWM a taught to support software nodes (I need to
+> > resurrect my patch series for GPIO, if you have time to test that would
+> > be awesome).
+> 
+> We don't have support for list of fwnodes, this will probably break things
+> where swnode is already exist.
+> 
+> I think Heikki may send a documentation patch to clarify when swnodes can and
+> can't be used. Maybe I'm mistaken and above is a good use case by design.
 
-Currently the check for a failed bt_skb_alloc allocation is incorrectly
-checking using IS_ERR and this can lead to a null pointer dereference. Fix
-this by checking for a null pointer return using the !skb idiom.
+Yeah, the problem is that I'm not sure that we can limit the swnodes
+for any specific purpose, or dictate very strictly how they are used
+with other possible fwnodes.
 
-Addresses-Coverity: ("Dereference null return")
-Fixes: 1996d9cad6ad ("Bluetooth: btrtl: Ask 8821C to drop old firmware")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
- drivers/bluetooth/btrtl.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Right now I'm thinking we should simply not talk about the
+relationship a software node should have or can have with other
+fwnodes (regardless of their type) in the swnode documentation.
 
-diff --git a/drivers/bluetooth/btrtl.c b/drivers/bluetooth/btrtl.c
-index 0ac0f8874ef7..12099c40f8d6 100644
---- a/drivers/bluetooth/btrtl.c
-+++ b/drivers/bluetooth/btrtl.c
-@@ -572,7 +572,7 @@ struct btrtl_device_info *btrtl_initialize(struct hci_dev *hdev,
- 		cmd[1] = opcode >> 8;
- 
- 		skb = bt_skb_alloc(sizeof(cmd), GFP_KERNEL);
--		if (IS_ERR(skb))
-+		if (!skb)
- 			goto out_free;
- 
- 		skb_put_data(skb, cmd, sizeof(cmd));
+Br,
+
 -- 
-2.28.0
-
+heikki
