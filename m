@@ -2,103 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EFAEF2ACA86
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 02:34:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F1BCF2ACA87
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 02:35:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730437AbgKJBeX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 20:34:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53544 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730035AbgKJBeW (ORCPT
+        id S1730605AbgKJBfV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 20:35:21 -0500
+Received: from szxga04-in.huawei.com ([45.249.212.190]:7162 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725889AbgKJBfV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 20:34:22 -0500
-Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87779C0613CF
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Nov 2020 17:34:22 -0800 (PST)
-Received: by mail-qk1-x742.google.com with SMTP id d28so4938087qka.11
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Nov 2020 17:34:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=10Hl6Ts9GS4xnp8YyN8GkEdT4icF3hx2dzGGYENprl0=;
-        b=OCA2WaDJIem7cTicNyloGzI8+NoNA+QNIXuzrg2q54Wwa1foQajmlrejv7+PfkNlni
-         pJQW2sNszmbPTuXZo2qDBKr/54+D4TJ/E49qNpSHIXeHN5FdD95mwR9KbL5ulGTNMEnq
-         80ffbQ8Ns3MjskdNJPXAWptUoKEq/kyE8trvk2SE5vqeprzVL5moLCxEULpjs7pxndIm
-         APLJRmE7IEMBh4wb5iZoxbxWjHH2tr40TCp7yUbPstFttheBEt8t/1dIKhsazbC8iZGj
-         Ut2osPWuDCUXDzaDkscgM7An4y3RdOgni1uIaQ31I88peotx2PdyXdjYaOBiH04DAUsS
-         puAg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=10Hl6Ts9GS4xnp8YyN8GkEdT4icF3hx2dzGGYENprl0=;
-        b=qy2cPUgsLe2QjYy6DHP4sbnAcpSyQgEXePJkMBRXOFcjmyKmACBJS9jeYHaMTk/rSX
-         tVxHU0iu2zoFY9zQBnQfETk9IcrcP8jgjQ5v65c8ch2tDrIOvdubgHnHqoHhksHv5xoP
-         2yh17hqgXpBfiLCET9aX73eKOna+39z1580f43xqSOd6bqhNDWTDVYS6sq9zlMka4T9V
-         1WUaabAQhjR+5ZaV64XxZsTz7MRhrqucXCgnCjqkeNrSjYK5qbmXmRbPfTEb23gdIbgD
-         gMHgdYt7Bialpc7yxbXFxs5w/Ex49573NyAqDpXF3TP/ygMudCTJi4J+dlflNGX3b5cB
-         RT+Q==
-X-Gm-Message-State: AOAM530HQpYhjAf+4+0WX0ackneewkgB5Hgdc6RWMc3NGvIvPhc8afN+
-        e8kaFqyWW6pAAs3FwhoEGgI=
-X-Google-Smtp-Source: ABdhPJzUNkFITAFNxhcLgQQS9Ml9daL9QjGCaeyUlX39XuMJYBan90w/ldLzLrSRssb57sLtcE51bg==
-X-Received: by 2002:a05:620a:22d4:: with SMTP id o20mr16383285qki.151.1604972061776;
-        Mon, 09 Nov 2020 17:34:21 -0800 (PST)
-Received: from ubuntu-m3-large-x86 ([2604:1380:45f1:1d00::1])
-        by smtp.gmail.com with ESMTPSA id v78sm4864976qkb.128.2020.11.09.17.34.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 09 Nov 2020 17:34:21 -0800 (PST)
-Date:   Mon, 9 Nov 2020 18:34:19 -0700
-From:   Nathan Chancellor <natechancellor@gmail.com>
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Arnd Bergmann <arnd@kernel.org>, Fangrui Song <maskray@google.com>,
-        Jian Cai <jiancai@google.com>,
-        Peter Smith <peter.smith@arm.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        clang-built-linux@googlegroups.com
-Subject: Re: [PATCH] ARM: Kconfig: CPU_BIG_ENDIAN depends on !LD_IS_LLD
-Message-ID: <20201110013419.GA2443932@ubuntu-m3-large-x86>
-References: <20201109224713.16308-1-ndesaulniers@google.com>
+        Mon, 9 Nov 2020 20:35:21 -0500
+Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4CVVmH08qpz15TlP;
+        Tue, 10 Nov 2020 09:35:11 +0800 (CST)
+Received: from [10.174.177.244] (10.174.177.244) by
+ DGGEMS401-HUB.china.huawei.com (10.3.19.201) with Microsoft SMTP Server id
+ 14.3.487.0; Tue, 10 Nov 2020 09:35:08 +0800
+Subject: Re: [PATCH] regmap: Properly free allocated name for regmap_config of
+ syscon
+To:     Mark Brown <broonie@kernel.org>
+CC:     Marc Zyngier <maz@kernel.org>, <linux-kernel@vger.kernel.org>,
+        <wangkefeng.wang@huawei.com>
+References: <20201109115816.160639-1-wangkefeng.wang@huawei.com>
+ <20201109172331.GJ6380@sirena.org.uk>
+From:   Kefeng Wang <wangkefeng.wang@huawei.com>
+Message-ID: <18a3857d-3250-e136-7d80-abdab902367c@huawei.com>
+Date:   Tue, 10 Nov 2020 09:35:08 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201109224713.16308-1-ndesaulniers@google.com>
+In-Reply-To: <20201109172331.GJ6380@sirena.org.uk>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Originating-IP: [10.174.177.244]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 09, 2020 at 02:47:12PM -0800, Nick Desaulniers wrote:
-> LLD does not yet support any big endian architectures. Make this config
-> non-selectable when using LLD until LLD is fixed.
-> 
-> Link: https://github.com/ClangBuiltLinux/linux/issues/965
-> Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
 
-I tested allyesconfig, allmodconfig, and about ten to fifteen
-randconfigs and never saw CONFIG_CPU_BIG_ENDIAN appear.
+On 2020/11/10 1:23, Mark Brown wrote:
+> On Mon, Nov 09, 2020 at 07:58:16PM +0800, Kefeng Wang wrote:
+>
+>> syscon_config.name in of_syscon_register is allocated using kasprintf,
+>> which should be freed when it is not used after regmap_set_name, fix
+>> the following memory leak.
+>> unreferenced object 0xffffffe07fe8c150 (size 16):
+>>    comm "swapper/0", pid 1, jiffies 4294892540 (age 68.168s)
+>>    hex dump (first 16 bytes):
+>>      74 65 73 74 40 31 30 30 30 30 30 00 e0 ff ff ff  test@100000.....
+>>    backtrace:
+>>      [<0000000023d86736>] create_object+0xe8/0x348
+>>      [<00000000fe9d1b17>] kmemleak_alloc+0x20/0x2a
+> Please think hard before including complete backtraces in upstream
+> reports, they are very large and contain almost no useful information
+> relative to their size so often obscure the relevant content in your
+> message. If part of the backtrace is usefully illustrative (it often is
+> for search engines if nothing else) then it's usually better to pull out
+> the relevant sections.
 
-Reviewed-by: Nathan Chancellor <natechancellor@gmail.com>
-Tested-by: Nathan Chancellor <natechancellor@gmail.com>
+2899872b627e   "regmap: debugfs: Fix memory leak in regmap_debugfs_init" 
+add a similar
 
-> ---
->  arch/arm/mm/Kconfig | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/arch/arm/mm/Kconfig b/arch/arm/mm/Kconfig
-> index 65e4482e3849..02692fbe2db5 100644
-> --- a/arch/arm/mm/Kconfig
-> +++ b/arch/arm/mm/Kconfig
-> @@ -743,6 +743,7 @@ config SWP_EMULATE
->  config CPU_BIG_ENDIAN
->  	bool "Build big-endian kernel"
->  	depends on ARCH_SUPPORTS_BIG_ENDIAN
-> +	depends on !LD_IS_LLD
->  	help
->  	  Say Y if you plan on running a kernel in big-endian mode.
->  	  Note that your board must be properly built and your board
-> -- 
-> 2.29.2.222.g5d2a92d10f8-goog
-> 
+backtrack, but the address of the trace is useless, will be careful next 
+time.
+
+>> @@ -601,6 +601,7 @@ static int regmap_set_name(struct regmap *map, const struct regmap_config *confi
+>>   		if (!name)
+>>   			return -ENOMEM;
+>>   
+>> +		kfree_const(config->name);
+>>   		kfree_const(map->name);
+>>   		map->name = name;
+>>   	}
+> Why would we free the passed in name here?  The name wes passed in from
+> outside regmap in a const configuration struct, we've no idea within
+> regmap if it was dynamically allocted or not and it seems very
+> surprising that we'd go off and free it.  The whole reason we're
+> duplicating it in regmap_set_name() is that we don't know how long it's
+> going to be around so we don't want to reference it after having
+> returned to the caller.  If the caller has dynamically allocated it then
+> the caller should deal with freeing it.
+
+Yes, after check it again, this patch is wrong.
+
+Hi Marc,  the regmap debugfs will duplicate a name in regmap_set_name(), 
+and
+
+syscon_config.name won't be used in syscon,  so your following patch 
+doesn't seem
+
+to be necessary,  right ? Please correct me if I'm wrong, thanks.
+
+
+commit 529a1101212a785c5df92c314b0e718287150c3b
+Author: Marc Zyngier <maz@kernel.org>
+Date:   Thu Sep 3 17:02:37 2020 +0100
+
+     mfd: syscon: Don't free allocated name for regmap_config
+
+     The name allocated for the regmap_config structure is freed
+     pretty early, right after the registration of the MMIO region.
+
+     Unfortunately, that doesn't follow the life cycle that debugfs
+     expects, as it can access the name field long after the free
+     has occurred.
+
+     Move the free on the error path, and keep it forever otherwise.
+
+
