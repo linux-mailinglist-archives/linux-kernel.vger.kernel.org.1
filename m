@@ -2,133 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 855122AE311
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 23:16:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CA0212AE313
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 23:16:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732316AbgKJWQK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 17:16:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49154 "EHLO
+        id S1732492AbgKJWQ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 17:16:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49206 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731997AbgKJWQJ (ORCPT
+        with ESMTP id S1731709AbgKJWQ2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 17:16:09 -0500
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB5A0C0613D1
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 14:16:08 -0800 (PST)
-Received: by mail-wr1-x443.google.com with SMTP id p1so14391105wrf.12
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 14:16:08 -0800 (PST)
+        Tue, 10 Nov 2020 17:16:28 -0500
+Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BA6EC0613D1;
+        Tue, 10 Nov 2020 14:16:28 -0800 (PST)
+Received: by mail-ed1-x543.google.com with SMTP id b9so110944edu.10;
+        Tue, 10 Nov 2020 14:16:28 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=s7IU/PTOdi89iBvGbejecIifI0IrKP2ZeG1FWaivUjE=;
-        b=GQ7Nx0TJM3+CwUm96Tq9Mf7jdPXglVP71dIaXGBqOYowxNU094z6er72cR4Yylxyyz
-         gR+lg84u5J9T9utPWKI9BNe0Y9tAExmoa5DO4PpiXVYZFJyOyL+wqewAIGDWquj+EmKU
-         RcgNEQ8V+o7A3dwd9ATwj661d+kXHoryyX379p9lvhLdbqP7+Cj3LWHFT6eKsSxFgV1I
-         xAwOMVsauNWW4CpcPfIrjANq/h5AMzS4JN8A4OmeRtj1bQMaqZxrY6H5qDdy6efeKI88
-         u7e6fK1J0QSMK3oQYSPYBEp4s7sglx50E+e48x26nG8zqwa+j4QwoHOCQrn2VlGm0t9w
-         5tvA==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=v6CRPmglpMlSJ75sQnTKtdS5nqeOdDA0Y1YvrDC2da4=;
+        b=gH0IZdzgQhsqaFGF8ZZb9QoK4FE3+FZKe+BtbDubggQQdqKrh7ZhVb247f30azIZlq
+         V+YnionkOfi3vP5JB5URskoox0o/S6veRihgpd00/8J/bCXs3DpjimbHiRoFfheNq9++
+         gl1RF/UvaQm//IA0TuqBl4Yw9D9aXVqRm0qr0QFHCAL19+VU6a3QaBe6fADUBZe9lTMs
+         FgA6vfRGF69eM7llD9MywtJ+W+Th+sGQYn0Uk/9c4jGKop8bRsg5R6Ne3AXsHQPpciEc
+         dyrUCiddNb+/sLy3TQ7aAs8iHprgQlzFa8VDPdLLK7BbNhogzBIs3RNPpEqL7nhfVPhy
+         ONFg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=s7IU/PTOdi89iBvGbejecIifI0IrKP2ZeG1FWaivUjE=;
-        b=TvZYzeEUwkH/Z/P+ingkbjTB1oMlxNa/YFu2tppGl1WdC8fCqn/UISMp9yBAMqOup4
-         RhgCARfAi4zBozt7Qm5nyZNlIBwdiHAifVxnhyXHHIUt7BL9MRw6rrLUAr7ISeQM71e9
-         8GGk1rdWSebvbHzPwHN0BsHHsC8aR/BnoMyN48aoo3EYMBAWh6shGWTMI3LfzAsQ+Ziy
-         a2lkzABTh6S0rsgLzC0SE1zLVI/lN46rDS6/6/RKk2/0xzU4h6lHZtO9/Wfk6dhhp1M4
-         AyHxn/cPMZosFW6mfhzvZjfBv+07vu073nYhuCDgK4sknny9cdmWF7znUsy2LL1BX+OB
-         su5g==
-X-Gm-Message-State: AOAM533F3o1BdnF2mM4SqADJrHQQNLspftdRUqaAQ31c4ahq2t8Jle/h
-        3pCi2Z4bx52VsPH3Obr5FgvxIA1Bm3MQYqVNjCOzIq9Z
-X-Google-Smtp-Source: ABdhPJyl54Wn0vogOWFtSLhB/Y7116uoi8lK0+5pQQ2q1rWelOzlqE/JqiJcgGTRG7deHLDB4tFGPn5cZJ4d30zkmaM=
-X-Received: by 2002:adf:e350:: with SMTP id n16mr27062549wrj.419.1605046567611;
- Tue, 10 Nov 2020 14:16:07 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=v6CRPmglpMlSJ75sQnTKtdS5nqeOdDA0Y1YvrDC2da4=;
+        b=tLaCBRGruJLb4qnJsrtCMzWgb6T40kruvYNZ3+bX8kKrnFAvJA/Bkj3EodMBpDnor3
+         RQtbeHIu4RAemMW0ktR/KBStmL84R+ITXP+zq32Dw9Qka/hsUEnIeWhFKv5WIDDlCPaU
+         gmKcvoLlbNzmRjH4w4BHn+UXKXj0aJFdeXWc0WvQ/43my0FfHfJ96NYN422z147Ht7ut
+         jSHDv3wwyCQ9XEi/0vElOaa70iDsM/ay+aaKe7J+svdd3zS2UPg9wNTsG6S8hMypbqfq
+         OhPt1ytHiGEleX04c01uw1Q1LiBZmMkledcHRhsT/nd+3M+omhjnqA/UIZSETzFeW+qQ
+         WkeQ==
+X-Gm-Message-State: AOAM532XuyuUHnVq6i6FlvZQf3axPgF0tuFAmZeoT4EnTc4exMpqzbNV
+        xq2BBTQTneLgdc52ejzGXJUfDrWkssk=
+X-Google-Smtp-Source: ABdhPJyg9VSS3mI3bi3KGq/VLVTotOHKfvclO2y+Lb0exsYvmdRhjn+hWCHlyWRQ0J7mhAevGxHX8g==
+X-Received: by 2002:a50:8b65:: with SMTP id l92mr1679462edl.132.1605046586949;
+        Tue, 10 Nov 2020 14:16:26 -0800 (PST)
+Received: from skbuf ([188.25.2.177])
+        by smtp.gmail.com with ESMTPSA id h24sm60762ejg.15.2020.11.10.14.16.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 10 Nov 2020 14:16:26 -0800 (PST)
+Date:   Wed, 11 Nov 2020 00:16:24 +0200
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     Florian Fainelli <f.fainelli@gmail.com>
+Cc:     netdev@vger.kernel.org, Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>, Ray Jui <rjui@broadcom.com>,
+        Scott Branden <sbranden@broadcom.com>,
+        "maintainer:BROADCOM IPROC ARM ARCHITECTURE" 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        Hauke Mehrtens <hauke@hauke-m.de>,
+        =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "moderated list:BROADCOM IPROC ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        Kurt Kanzenbach <kurt@kmk-computers.de>
+Subject: Re: [PATCH 06/10] ARM: dts: NSP: Update ethernet switch node name
+Message-ID: <20201110221624.ekrvzj7bgeiurzs7@skbuf>
+References: <20201110033113.31090-1-f.fainelli@gmail.com>
+ <20201110033113.31090-7-f.fainelli@gmail.com>
 MIME-Version: 1.0
-References: <20201109211855.3340030-1-lee.jones@linaro.org> <20201109211855.3340030-11-lee.jones@linaro.org>
-In-Reply-To: <20201109211855.3340030-11-lee.jones@linaro.org>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Tue, 10 Nov 2020 17:15:56 -0500
-Message-ID: <CADnq5_MNfZZTOky5HV6MLC4d6g69AxNo85snpTRjPY_g=MPzyg@mail.gmail.com>
-Subject: Re: [PATCH 10/20] drm/radeon/radeon_ring: Add missing function
- parameters 'rdev' and 'data'
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     David Airlie <airlied@linux.ie>,
-        LKML <linux-kernel@vger.kernel.org>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201110033113.31090-7-f.fainelli@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 9, 2020 at 4:19 PM Lee Jones <lee.jones@linaro.org> wrote:
->
-> Fixes the following W=3D1 kernel build warning(s):
->
->  drivers/gpu/drm/radeon/radeon_ring.c:226: warning: Function parameter or=
- member 'rdev' not described in 'radeon_ring_unlock_undo'
->  drivers/gpu/drm/radeon/radeon_ring.c:240: warning: Function parameter or=
- member 'rdev' not described in 'radeon_ring_lockup_update'
->  drivers/gpu/drm/radeon/radeon_ring.c:283: warning: Function parameter or=
- member 'data' not described in 'radeon_ring_backup'
->
-> Cc: Alex Deucher <alexander.deucher@amd.com>
-> Cc: "Christian K=C3=B6nig" <christian.koenig@amd.com>
-> Cc: David Airlie <airlied@linux.ie>
-> Cc: Daniel Vetter <daniel@ffwll.ch>
-> Cc: amd-gfx@lists.freedesktop.org
-> Cc: dri-devel@lists.freedesktop.org
-> Signed-off-by: Lee Jones <lee.jones@linaro.org>
-
-Applied.  Thanks!
-
-Alex
-
+On Mon, Nov 09, 2020 at 07:31:09PM -0800, Florian Fainelli wrote:
+> Update the switch unit name from srab to ethernet-switch, allowing us
+> to fix warnings such as:
+> 
+>      CHECK   arch/arm/boot/dts/bcm4708-buffalo-wzr-1750dhp.dt.yaml
+>     arch/arm/boot/dts/bcm4708-buffalo-wzr-1750dhp.dt.yaml:
+>     srab@18007000: $nodename:0: 'srab@18007000' does not match
+>     '^(ethernet-)?switch(@.*)?$'
+>             From schema:
+>     Documentation/devicetree/bindings/net/dsa/b53.yaml
+> 
+> Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
 > ---
->  drivers/gpu/drm/radeon/radeon_ring.c | 3 +++
->  1 file changed, 3 insertions(+)
->
-> diff --git a/drivers/gpu/drm/radeon/radeon_ring.c b/drivers/gpu/drm/radeo=
-n/radeon_ring.c
-> index 37093cea24c59..c3304c977a0a5 100644
-> --- a/drivers/gpu/drm/radeon/radeon_ring.c
-> +++ b/drivers/gpu/drm/radeon/radeon_ring.c
-> @@ -218,6 +218,7 @@ void radeon_ring_undo(struct radeon_ring *ring)
->  /**
->   * radeon_ring_unlock_undo - reset the wptr and unlock the ring
->   *
-> + * @rdev:       radeon device structure
->   * @ring: radeon_ring structure holding ring information
->   *
->   * Call radeon_ring_undo() then unlock the ring (all asics).
-> @@ -231,6 +232,7 @@ void radeon_ring_unlock_undo(struct radeon_device *rd=
-ev, struct radeon_ring *rin
->  /**
->   * radeon_ring_lockup_update - update lockup variables
->   *
-> + * @rdev:       radeon device structure
->   * @ring: radeon_ring structure holding ring information
->   *
->   * Update the last rptr value and timestamp (all asics).
-> @@ -275,6 +277,7 @@ bool radeon_ring_test_lockup(struct radeon_device *rd=
-ev, struct radeon_ring *rin
->   *
->   * @rdev: radeon_device pointer
->   * @ring: the ring we want to back up
-> + * @data: placeholder for returned commit data
->   *
->   * Saves all unprocessed commits from a ring, returns the number of dwor=
-ds saved.
->   */
-> --
+
+Reviewed-by: Vladimir Oltean <olteanv@gmail.com>
+
+>  arch/arm/boot/dts/bcm-nsp.dtsi | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/arch/arm/boot/dts/bcm-nsp.dtsi b/arch/arm/boot/dts/bcm-nsp.dtsi
+> index e895f7cb8c9f..e7d08959d5fe 100644
+> --- a/arch/arm/boot/dts/bcm-nsp.dtsi
+> +++ b/arch/arm/boot/dts/bcm-nsp.dtsi
+> @@ -385,7 +385,7 @@ ccbtimer1: timer@35000 {
+>  			clock-names = "apb_pclk";
+>  		};
+>  
+> -		srab: srab@36000 {
+> +		srab: ethernet-switch@36000 {
+>  			compatible = "brcm,nsp-srab";
+>  			reg = <0x36000 0x1000>,
+>  			      <0x3f308 0x8>,
+> -- 
 > 2.25.1
->
-> _______________________________________________
-> dri-devel mailing list
-> dri-devel@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+> 
