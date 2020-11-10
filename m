@@ -2,57 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 815D62AE2BF
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 23:11:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F7CF2AE2C4
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 23:11:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732405AbgKJWLj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 17:11:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48360 "EHLO
+        id S1732484AbgKJWLp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 17:11:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48372 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732253AbgKJWLc (ORCPT
+        with ESMTP id S1732368AbgKJWLe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 17:11:32 -0500
-Received: from mail-qk1-x749.google.com (mail-qk1-x749.google.com [IPv6:2607:f8b0:4864:20::749])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE087C0613D3
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 14:11:30 -0800 (PST)
-Received: by mail-qk1-x749.google.com with SMTP id f9so185227qkg.13
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 14:11:30 -0800 (PST)
+        Tue, 10 Nov 2020 17:11:34 -0500
+Received: from mail-wm1-x349.google.com (mail-wm1-x349.google.com [IPv6:2a00:1450:4864:20::349])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01150C0613D3
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 14:11:34 -0800 (PST)
+Received: by mail-wm1-x349.google.com with SMTP id s3so1853328wmj.6
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 14:11:33 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=sender:date:in-reply-to:message-id:mime-version:references:subject
          :from:to:cc;
-        bh=ku1ALkNUvDBR4qencFY/mbgiU7WPy6T95MRyq/FIMxg=;
-        b=SBjXenKgaF0/vO5e2Kd0m5S+aRB5B9YK7fZ5L1lS7hLCn/V1tX4KZEa9dFzE8O7B/M
-         my0RwMTZgEggcPYxAsWhsNle7sePuuq0OS2Iy805eM5tiBtjRaJ3a84IvGoz5VUYx9rd
-         b1VBB68RQIsrz/BhQt//I1mA1l5VbR14Mbxo3FXPkCKRpnB0e30SMGTf3bGR5AHVXJKp
-         jk44yJi5BdFTMnKgnSG8FHytycRzGUXZUgLcbn8+QO3qix2TU4dbW4VnRO0JsvBPDx60
-         5vXcpxMjODNfmmnA5GE3C+iXofl48Nf+yYjWMl1jTSpoxCxqRvloGgj/TQ+0837h/NfW
-         4y4g==
+        bh=MhFr117w58FsSht0PRNFWn6K/+nJJro/ruUDoZHnt9k=;
+        b=F2II+MEbMMT40MyZ365YjPq1vBkHV58d7npMjbXPDBpFa/BdvLfnISuTUvNUKn8+Ca
+         omo0FY9cpSM+fcS4jyf9dLkZ+tP5GQDHSLCEbP20GzorqGSgOUEFk3/0GbjMul8i7Ug9
+         E6h+G5wNaYCximyFhoy4gPfS/4y0JcZ/MldDJ9GFUYbdRfMRxeKl8o0NvPOYbuyhDalM
+         MBmJ3SOR+PnqTTRqZXvJWVLGEnNt7OC7svDggoUGyb3GEsNoYha9ER0nYr6Txjbm7tiA
+         U6HcQJtnWZAXKqanBATQ3i15SVwNMq4iSzogMPIwAQnaAa94YsRJuCIlyXTQdZ0Velwg
+         AMsw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=ku1ALkNUvDBR4qencFY/mbgiU7WPy6T95MRyq/FIMxg=;
-        b=ReuBzty7oyLXpmyI4zhwas6TIcWywlRbOfjreXnaVZPQ2irpkFaps0GR++IdKiGh5Q
-         NBZ7R/oAlOIchiyOKpkbF3bOXiZil7083JjJcyeOHeIt3qAuMyvaRMt0GpH/QMFtamev
-         6MA0EojuQ2FlSau2oAX0cX5cxzPOP3LE6Z6sqBEoPrdtKFLJjpJnA0OApz3IF9BXUeDf
-         zsnwvEsNlxj2ChwIGff2IVv3YzHdEMJQ9YsgX50kYDIE9KjdvZGjfSxF6msKDqcofQJv
-         AHG1NXT/kGaFlV6pMagbrAQRjKx7fA9RN1CPqq6+O9C57uZ0TYy+/x3NhX5ys+bPuAgL
-         AIGA==
-X-Gm-Message-State: AOAM5326VeMbhOYCOCemZ9shMOWscHeKOH80w+Ky5Uzyzo6maO86IMW5
-        gArE661yGDKPPLeJQaPZlm3rPqE/3FJh09UV
-X-Google-Smtp-Source: ABdhPJyzW+qSOT8eZ2xH6+egen3C/J9A2i75tgpqQOqPZmnnClHZadzNjlQ5QFZonRar8JQEWhvDBFOvaBul6wNq
+        bh=MhFr117w58FsSht0PRNFWn6K/+nJJro/ruUDoZHnt9k=;
+        b=PFC0FQQBDNMHZBhFnDSkC416fLcL3dvkuXBdD+2lqO3/RlFfZnUVdwyyxtgoe91lLE
+         q0+QiD0n+VcHGHGbg3p8jzbCSFv0UhUu7/3mAkSykLMXIbGcyaMEcLM8de2GOrDfNprX
+         +SWOO/OanXf2PuT2NbX4D5f33985c9JCPZnEc2MszASPYNTgcVmhHand7yJDrR4ojLms
+         tkeCRlp13HfVnQHUvGF6/UjOIU+bPcGaUkgLVn0GWItVjIBgewroa96rcka1qo9KvSw7
+         9tAYJGKdHSaobb6SLQeTDhZaAPsDhpEkOzIk9TrsQtAYpfdZ+uw1U8K9qJAo2+c9Ghe9
+         mAqg==
+X-Gm-Message-State: AOAM530e+HbBoz9YXvCdDCvGMbvgLRYaDkEPqB74Vfakf/03m/Yo2bC/
+        80DW24EJlvx8qfRjnC9WwEn3ydYHYmkRuUqp
+X-Google-Smtp-Source: ABdhPJyNMIEnx6dmwk8ODubRVbyjYJaHcfbshugMCVAo6cHSHILZpTp0/wI4ovdBdYQej96NOtCpuvTRFX77ZVCx
 Sender: "andreyknvl via sendgmr" <andreyknvl@andreyknvl3.muc.corp.google.com>
 X-Received: from andreyknvl3.muc.corp.google.com ([2a00:79e0:15:13:7220:84ff:fe09:7e9d])
- (user=andreyknvl job=sendgmr) by 2002:a05:6214:10c4:: with SMTP id
- r4mr21419097qvs.62.1605046290015; Tue, 10 Nov 2020 14:11:30 -0800 (PST)
-Date:   Tue, 10 Nov 2020 23:10:07 +0100
+ (user=andreyknvl job=sendgmr) by 2002:a1c:6484:: with SMTP id
+ y126mr211278wmb.141.1605046292476; Tue, 10 Nov 2020 14:11:32 -0800 (PST)
+Date:   Tue, 10 Nov 2020 23:10:08 +0100
 In-Reply-To: <cover.1605046192.git.andreyknvl@google.com>
-Message-Id: <85aba371903b749412fac34e44e54c89e5ddae30.1605046192.git.andreyknvl@google.com>
+Message-Id: <37a9648ffa16572583a7513323cc9be88a726eb1.1605046192.git.andreyknvl@google.com>
 Mime-Version: 1.0
 References: <cover.1605046192.git.andreyknvl@google.com>
 X-Mailer: git-send-email 2.29.2.222.g5d2a92d10f8-goog
-Subject: [PATCH v9 10/44] kasan: define KASAN_GRANULE_PAGE
+Subject: [PATCH v9 11/44] kasan: rename report and tags files
 From:   Andrey Konovalov <andreyknvl@google.com>
 To:     Catalin Marinas <catalin.marinas@arm.com>
 Cc:     Will Deacon <will.deacon@arm.com>,
@@ -73,103 +73,94 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Define KASAN_GRANULE_PAGE as (KASAN_GRANULE_SIZE << PAGE_SHIFT), which is
-the same as (KASAN_GRANULE_SIZE * PAGE_SIZE), and use it across KASAN code
-to simplify it.
+Rename generic_report.c to report_generic.c and tags_report.c to
+report_sw_tags.c, as their content is more relevant to report.c file.
+Also rename tags.c to sw_tags.c to better reflect that this file contains
+code for software tag-based mode.
+
+No functional changes.
 
 Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
 Signed-off-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
 Reviewed-by: Marco Elver <elver@google.com>
 ---
-Change-Id: I0b627b24187d06c8b9bb2f1d04d94b3d06945e73
+Change-Id: If77d21f655d52ef3e58c4c37fd6621a07f505f18
 ---
- mm/kasan/init.c   | 10 ++++------
- mm/kasan/kasan.h  |  1 +
- mm/kasan/shadow.c | 16 +++++++---------
- 3 files changed, 12 insertions(+), 15 deletions(-)
+ mm/kasan/Makefile                               | 16 ++++++++--------
+ mm/kasan/report.c                               |  2 +-
+ mm/kasan/{generic_report.c => report_generic.c} |  0
+ mm/kasan/{tags_report.c => report_sw_tags.c}    |  0
+ mm/kasan/{tags.c => sw_tags.c}                  |  0
+ 5 files changed, 9 insertions(+), 9 deletions(-)
+ rename mm/kasan/{generic_report.c => report_generic.c} (100%)
+ rename mm/kasan/{tags_report.c => report_sw_tags.c} (100%)
+ rename mm/kasan/{tags.c => sw_tags.c} (100%)
 
-diff --git a/mm/kasan/init.c b/mm/kasan/init.c
-index 1a71eaa8c5f9..26b2663b3a42 100644
---- a/mm/kasan/init.c
-+++ b/mm/kasan/init.c
-@@ -441,9 +441,8 @@ void kasan_remove_zero_shadow(void *start, unsigned long size)
- 	addr = (unsigned long)kasan_mem_to_shadow(start);
- 	end = addr + (size >> KASAN_SHADOW_SCALE_SHIFT);
+diff --git a/mm/kasan/Makefile b/mm/kasan/Makefile
+index 7cc1031e1ef8..f1d68a34f3c9 100644
+--- a/mm/kasan/Makefile
++++ b/mm/kasan/Makefile
+@@ -6,13 +6,13 @@ KCOV_INSTRUMENT := n
+ # Disable ftrace to avoid recursion.
+ CFLAGS_REMOVE_common.o = $(CC_FLAGS_FTRACE)
+ CFLAGS_REMOVE_generic.o = $(CC_FLAGS_FTRACE)
+-CFLAGS_REMOVE_generic_report.o = $(CC_FLAGS_FTRACE)
+ CFLAGS_REMOVE_init.o = $(CC_FLAGS_FTRACE)
+ CFLAGS_REMOVE_quarantine.o = $(CC_FLAGS_FTRACE)
+ CFLAGS_REMOVE_report.o = $(CC_FLAGS_FTRACE)
++CFLAGS_REMOVE_report_generic.o = $(CC_FLAGS_FTRACE)
++CFLAGS_REMOVE_report_sw_tags.o = $(CC_FLAGS_FTRACE)
+ CFLAGS_REMOVE_shadow.o = $(CC_FLAGS_FTRACE)
+-CFLAGS_REMOVE_tags.o = $(CC_FLAGS_FTRACE)
+-CFLAGS_REMOVE_tags_report.o = $(CC_FLAGS_FTRACE)
++CFLAGS_REMOVE_sw_tags.o = $(CC_FLAGS_FTRACE)
  
--	if (WARN_ON((unsigned long)start %
--			(KASAN_GRANULE_SIZE * PAGE_SIZE)) ||
--	    WARN_ON(size % (KASAN_GRANULE_SIZE * PAGE_SIZE)))
-+	if (WARN_ON((unsigned long)start % KASAN_GRANULE_PAGE) ||
-+	    WARN_ON(size % KASAN_GRANULE_PAGE))
- 		return;
+ # Function splitter causes unnecessary splits in __asan_load1/__asan_store1
+ # see: https://gcc.gnu.org/bugzilla/show_bug.cgi?id=63533
+@@ -23,14 +23,14 @@ CC_FLAGS_KASAN_RUNTIME += -DDISABLE_BRANCH_PROFILING
  
- 	for (; addr < end; addr = next) {
-@@ -476,9 +475,8 @@ int kasan_add_zero_shadow(void *start, unsigned long size)
- 	shadow_start = kasan_mem_to_shadow(start);
- 	shadow_end = shadow_start + (size >> KASAN_SHADOW_SCALE_SHIFT);
+ CFLAGS_common.o := $(CC_FLAGS_KASAN_RUNTIME)
+ CFLAGS_generic.o := $(CC_FLAGS_KASAN_RUNTIME)
+-CFLAGS_generic_report.o := $(CC_FLAGS_KASAN_RUNTIME)
+ CFLAGS_init.o := $(CC_FLAGS_KASAN_RUNTIME)
+ CFLAGS_quarantine.o := $(CC_FLAGS_KASAN_RUNTIME)
+ CFLAGS_report.o := $(CC_FLAGS_KASAN_RUNTIME)
++CFLAGS_report_generic.o := $(CC_FLAGS_KASAN_RUNTIME)
++CFLAGS_report_sw_tags.o := $(CC_FLAGS_KASAN_RUNTIME)
+ CFLAGS_shadow.o := $(CC_FLAGS_KASAN_RUNTIME)
+-CFLAGS_tags.o := $(CC_FLAGS_KASAN_RUNTIME)
+-CFLAGS_tags_report.o := $(CC_FLAGS_KASAN_RUNTIME)
++CFLAGS_sw_tags.o := $(CC_FLAGS_KASAN_RUNTIME)
  
--	if (WARN_ON((unsigned long)start %
--			(KASAN_GRANULE_SIZE * PAGE_SIZE)) ||
--	    WARN_ON(size % (KASAN_GRANULE_SIZE * PAGE_SIZE)))
-+	if (WARN_ON((unsigned long)start % KASAN_GRANULE_PAGE) ||
-+	    WARN_ON(size % KASAN_GRANULE_PAGE))
- 		return -EINVAL;
- 
- 	ret = kasan_populate_early_shadow(shadow_start, shadow_end);
-diff --git a/mm/kasan/kasan.h b/mm/kasan/kasan.h
-index c31e2c739301..1865bb92d47a 100644
---- a/mm/kasan/kasan.h
-+++ b/mm/kasan/kasan.h
-@@ -7,6 +7,7 @@
- 
- #define KASAN_GRANULE_SIZE	(1UL << KASAN_SHADOW_SCALE_SHIFT)
- #define KASAN_GRANULE_MASK	(KASAN_GRANULE_SIZE - 1)
-+#define KASAN_GRANULE_PAGE	(KASAN_GRANULE_SIZE << PAGE_SHIFT)
- 
- #define KASAN_TAG_KERNEL	0xFF /* native kernel pointers tag */
- #define KASAN_TAG_INVALID	0xFE /* inaccessible memory tag */
-diff --git a/mm/kasan/shadow.c b/mm/kasan/shadow.c
-index ca0cc4c31454..1fadd4930d54 100644
---- a/mm/kasan/shadow.c
-+++ b/mm/kasan/shadow.c
-@@ -161,7 +161,7 @@ static int __meminit kasan_mem_notifier(struct notifier_block *nb,
- 	shadow_end = shadow_start + shadow_size;
- 
- 	if (WARN_ON(mem_data->nr_pages % KASAN_GRANULE_SIZE) ||
--		WARN_ON(start_kaddr % (KASAN_GRANULE_SIZE << PAGE_SHIFT)))
-+		WARN_ON(start_kaddr % KASAN_GRANULE_PAGE))
- 		return NOTIFY_BAD;
- 
- 	switch (action) {
-@@ -432,22 +432,20 @@ void kasan_release_vmalloc(unsigned long start, unsigned long end,
- 	unsigned long region_start, region_end;
- 	unsigned long size;
- 
--	region_start = ALIGN(start, PAGE_SIZE * KASAN_GRANULE_SIZE);
--	region_end = ALIGN_DOWN(end, PAGE_SIZE * KASAN_GRANULE_SIZE);
-+	region_start = ALIGN(start, KASAN_GRANULE_PAGE);
-+	region_end = ALIGN_DOWN(end, KASAN_GRANULE_PAGE);
- 
--	free_region_start = ALIGN(free_region_start,
--				  PAGE_SIZE * KASAN_GRANULE_SIZE);
-+	free_region_start = ALIGN(free_region_start, KASAN_GRANULE_PAGE);
- 
- 	if (start != region_start &&
- 	    free_region_start < region_start)
--		region_start -= PAGE_SIZE * KASAN_GRANULE_SIZE;
-+		region_start -= KASAN_GRANULE_PAGE;
- 
--	free_region_end = ALIGN_DOWN(free_region_end,
--				     PAGE_SIZE * KASAN_GRANULE_SIZE);
-+	free_region_end = ALIGN_DOWN(free_region_end, KASAN_GRANULE_PAGE);
- 
- 	if (end != region_end &&
- 	    free_region_end > region_end)
--		region_end += PAGE_SIZE * KASAN_GRANULE_SIZE;
-+		region_end += KASAN_GRANULE_PAGE;
- 
- 	shadow_start = kasan_mem_to_shadow((void *)region_start);
- 	shadow_end = kasan_mem_to_shadow((void *)region_end);
+ obj-$(CONFIG_KASAN) := common.o report.o
+-obj-$(CONFIG_KASAN_GENERIC) += init.o generic.o generic_report.o shadow.o quarantine.o
+-obj-$(CONFIG_KASAN_SW_TAGS) += init.o shadow.o tags.o tags_report.o
++obj-$(CONFIG_KASAN_GENERIC) += init.o generic.o report_generic.o shadow.o quarantine.o
++obj-$(CONFIG_KASAN_SW_TAGS) += init.o report_sw_tags.o shadow.o sw_tags.o
+diff --git a/mm/kasan/report.c b/mm/kasan/report.c
+index 7b8dcb799a78..fff0c7befbfe 100644
+--- a/mm/kasan/report.c
++++ b/mm/kasan/report.c
+@@ -1,6 +1,6 @@
+ // SPDX-License-Identifier: GPL-2.0
+ /*
+- * This file contains common generic and tag-based KASAN error reporting code.
++ * This file contains common KASAN error reporting code.
+  *
+  * Copyright (c) 2014 Samsung Electronics Co., Ltd.
+  * Author: Andrey Ryabinin <ryabinin.a.a@gmail.com>
+diff --git a/mm/kasan/generic_report.c b/mm/kasan/report_generic.c
+similarity index 100%
+rename from mm/kasan/generic_report.c
+rename to mm/kasan/report_generic.c
+diff --git a/mm/kasan/tags_report.c b/mm/kasan/report_sw_tags.c
+similarity index 100%
+rename from mm/kasan/tags_report.c
+rename to mm/kasan/report_sw_tags.c
+diff --git a/mm/kasan/tags.c b/mm/kasan/sw_tags.c
+similarity index 100%
+rename from mm/kasan/tags.c
+rename to mm/kasan/sw_tags.c
 -- 
 2.29.2.222.g5d2a92d10f8-goog
 
