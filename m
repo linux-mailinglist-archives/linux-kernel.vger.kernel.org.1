@@ -2,85 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 333612AD92C
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 15:47:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 44E982AD92E
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 15:48:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731033AbgKJOrZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 09:47:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35240 "EHLO
+        id S1731041AbgKJOso (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 09:48:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35466 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730594AbgKJOrV (ORCPT
+        with ESMTP id S1730432AbgKJOsn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 09:47:21 -0500
-Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5052DC0613D3
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 06:47:21 -0800 (PST)
-Received: by mail-lf1-x142.google.com with SMTP id a25so9044233lfb.2
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 06:47:21 -0800 (PST)
+        Tue, 10 Nov 2020 09:48:43 -0500
+Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79882C0617A6
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 06:48:43 -0800 (PST)
+Received: by mail-lf1-x143.google.com with SMTP id r9so4195667lfn.11
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 06:48:43 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=kiWbHwM/Lr8KmmLC2XpYaczHAMgXswVwBOFL89IZblY=;
-        b=XZOD1vKezmecxMgGB2KrnL99f6D1FfXpEp38edLi+v6XX+/2DwlTq8GQNRMPlUGcas
-         WTmTOsZdFoW/F53Xc4MjByycnOx3skWg7Lw0au4+WC+y+fbxiT1FbuIA2K3TF1ZkM6hX
-         sfaq/f+id1NXynG39rkmv2VNdGaoFkt6cx7J2wfOatok+ZvBVD2Ytc3SsqTyLkNOvHBk
-         i0no7VAoh9Ty6snnjOyibxmv6PpiNg40TvV5mMylXUrkJUsOY9LRTDcyHLJqT04KgZqN
-         Kny7Cje9XUnNHbZ+6YjaD7VdtuKilcGIYHrsqOnNwLspmNYbT1W4Ns+IzTmDKpThPqlR
-         YhFQ==
+        bh=TRtX8baRaCtbeDJjWA3IRYfdgtIW44Wdj4Sdz3HfZMA=;
+        b=An/Ddk0HLR+91xPRpInCFnfZ9o+5szjLSy+NtnyMq7UJRY1S3pi1mcTpeSPq8yWGO7
+         +hYo5dzW6PHxmv0YE0x63sDphTthBePQ7rc/OdTTaSn1XaXPVNTS2Qj572/59VtqdnSE
+         ADq1kQeLGgCPetyHlz4LQ8E+f4lA+tewwA3JqwJikM3iaVmfqn+lcqYRQW/wE7ooEhJ+
+         bUglFTYdPjIL+R6utnbfqDb4IhOZ5rx4bucFlRBZmrj8DrD8Mjij9VzBx0YIKOoIC2Nb
+         AA/x0kRUOLLFfqW7r0bkOIMPkR+YoHRBgD+4KlQ2b15e9/I5sO+IMBiDslv4L69nF3h/
+         5YMg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=kiWbHwM/Lr8KmmLC2XpYaczHAMgXswVwBOFL89IZblY=;
-        b=VoILSn8TGSXzqD6ddjO6TJ2P71nLKjQFcgqWngl3GxyXSGhVT0Gw1RjcjzcTwCj+Aw
-         rPcZYE8Fr+3nk1BhNe2b1VFUfmYgOUhpR44b1CY8oDKVCxbE4VT27YzeU378L4eVLfyF
-         ecF+wuOJUFeycFCnClwD/WhiCcAmF3h5nJAQs+vd9xrWgZGGAZ2l73sX2IK7VOge6GmU
-         0Zy4NBxN/sIQuf5G/g/eui1s7TbnQWq6r4rU+QtJOxGwcZFaczVXIyuCwLuiXluwkKRS
-         Pb89ox2n6vHSpFYWHSOFdRf6/ksvCw62IOFRkx9c05hDUYZ0LsAHU6hZNThRXlL+wJdG
-         FPog==
-X-Gm-Message-State: AOAM532U25d0pNREnpQLkNitKkxsHof+qrnStiQcYdEUvWV6hPWhGMvm
-        4JSndaukQKnv40MTPgSWXXqxkUk//LBNuOdbc3r2nw==
-X-Google-Smtp-Source: ABdhPJyi74cMCtvgB2LhCZiGshSdj4vtK9CzMPI7ALGe90BKtPZD+3vJoENQBsDaxfuy/JxgoF7vPVs3eoY3U4dEbmw=
-X-Received: by 2002:ac2:50c1:: with SMTP id h1mr7305358lfm.333.1605019639735;
- Tue, 10 Nov 2020 06:47:19 -0800 (PST)
+        bh=TRtX8baRaCtbeDJjWA3IRYfdgtIW44Wdj4Sdz3HfZMA=;
+        b=XM/MMdzNQvURg3699/6Jxh+5HkgD1uTZP2qyizD382Fb0QkgiJRRG+3ITuoqMgYAsP
+         zq7jPIoaZR/XTXboEFfgpIJbCaBJ9fNBm7VqOe3Clshuoob7NuMeyeX3yhG9SHNfWfs/
+         EIRPD41zpxa8np1x0XTU5AlKwy372qcgniKI+hTtor1rDUlBN8ABU/7ljuyw6j5+7dTW
+         tMAkqIKJVLzixXL7hyfjDqNjvokhJxr3UMzVMb9GyFTxRlRCkT562C3uf2Nj3PWhCeNb
+         3cc85WO7aMPQctlp2WMgny/Z0uMg3shJ2nATgtQfkaXDXs8CTynotn2oUS+0hOKnaaVr
+         gHag==
+X-Gm-Message-State: AOAM532zp0+cM0ZqYocdZRj87yKjjzbzUsG+2RyM7cTAtwuz5NVPeDEm
+        n5uLy01H3Drcdq+Y37531m6637q8k+jL9ITYFQE2LQ==
+X-Google-Smtp-Source: ABdhPJw46ud/uUkcZJ6tSOXJvAqor8Mj5zSR0l7JClGYT9/b+K2wIXlkgMzo8k4v5SokXVFThmMVRoGjQRQOqS4C810=
+X-Received: by 2002:ac2:4ac7:: with SMTP id m7mr5517480lfp.572.1605019721579;
+ Tue, 10 Nov 2020 06:48:41 -0800 (PST)
 MIME-Version: 1.0
-References: <20201109062620.14566-1-vkoul@kernel.org>
-In-Reply-To: <20201109062620.14566-1-vkoul@kernel.org>
+References: <20201109110654.12547-1-brgl@bgdev.pl> <20201109110654.12547-6-brgl@bgdev.pl>
+In-Reply-To: <20201109110654.12547-6-brgl@bgdev.pl>
 From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Tue, 10 Nov 2020 15:47:08 +0100
-Message-ID: <CACRpkdY=g4omnvgTzsBP6qwg7s8VYaFwChgAsJciQFS7SJ67jQ@mail.gmail.com>
-Subject: Re: [PATCH v3 0/2] pinctrl: qcom: Add binding and driver for SDX55 pincontrol
-To:     Vinod Koul <vkoul@kernel.org>, John Stultz <john.stultz@linaro.org>
-Cc:     MSM <linux-arm-msm@vger.kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+Date:   Tue, 10 Nov 2020 15:48:30 +0100
+Message-ID: <CACRpkdZ9tRHFS51pnQg_TgKGed3pD_hRE_rGP_9tiFNcGrb1bQ@mail.gmail.com>
+Subject: Re: [PATCH v3 5/9] pinctrl: use krealloc_array()
+To:     Bartosz Golaszewski <brgl@bgdev.pl>
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Gustavo Padovan <gustavo@padovan.org>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Borislav Petkov <bp@alien8.de>,
+        Tony Luck <tony.luck@intel.com>,
+        James Morse <james.morse@arm.com>,
+        Robert Richter <rric@kernel.org>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        "Michael S . Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        "open list:DRM PANEL DRIVERS" <dri-devel@lists.freedesktop.org>,
+        linaro-mm-sig@lists.linaro.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        linux-edac@vger.kernel.org,
         "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+        kvm@vger.kernel.org, virtualization@lists.linux-foundation.org,
+        netdev <netdev@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..." 
+        <alsa-devel@alsa-project.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 9, 2020 at 7:26 AM Vinod Koul <vkoul@kernel.org> wrote:
+On Mon, Nov 9, 2020 at 12:07 PM Bartosz Golaszewski <brgl@bgdev.pl> wrote:
 
-> This series add device tree binding documentation and driver for SDX55 SOC
-> pincontroller.
+> From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 >
-> Changes in v3:
->  - Add ack by Bjorn
->  - Fix dt_binding_check errors
->  - Add gpio ranges in binding
+> Use the helper that checks for overflows internally instead of manually
+> calculating the size of the new array.
+>
+> Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+> Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-Excellent, patches applied for v5.11.
-
-I also just applied John Stultz patches for modularizing the Qualcomm
-drivers so there might be some need to patch up so this driver can
-also modularize, check the result!
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
 
 Yours,
 Linus Walleij
