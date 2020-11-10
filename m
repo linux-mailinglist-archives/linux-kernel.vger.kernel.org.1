@@ -2,113 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4866E2AE034
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 20:54:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 249042AE05B
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 20:55:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731187AbgKJTyE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 14:54:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55042 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725862AbgKJTyD (ORCPT
+        id S1732038AbgKJTzs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 14:55:48 -0500
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:57211 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1730618AbgKJTzs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 14:54:03 -0500
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DAEFCC0613D1;
-        Tue, 10 Nov 2020 11:54:01 -0800 (PST)
-Received: by mail-wr1-x442.google.com with SMTP id p8so13264707wrx.5;
-        Tue, 10 Nov 2020 11:54:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=NsjQ2bxKep09VtBbYdsrhQsOr13lbc9Doa193zsbYv8=;
-        b=EILuuoycOFbcm8lGc1d+bSvKMCtr0XnpgbcXre2zNgbj7EwEhktxbSKYgev1VCf4WH
-         P0t+jZnVWRXur39ydLnJlY73UGET12+Z6hT+BwoNVg42Eg0iXjCKFnCd1guKOPDXdD+M
-         1FgLcAcaGKomwRmEoi0vswxU1VXpO4liwoMw2Id1nCFqY4XazT4M2Eu2C4SOem5MWQP3
-         ln7rvMmRdbyVe/S/+GoNmUqL8mxBjUIxpM1+iMpNHrAuw4oLZYEt0cDjGh0y9EFuRPqt
-         fM4tE7dzYWqXTodY5lhKzbhrvDhGFew7dOC/OIK5wK8+SmELURzef21rqZoC5FSHiRWJ
-         zU+Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=NsjQ2bxKep09VtBbYdsrhQsOr13lbc9Doa193zsbYv8=;
-        b=ULLQNDliaCXgFrpFK4qCir3LMALgQWFquD9JnXa57aXgMXA7i2y75KmhCHnib2X0Tv
-         TY51ljQgnb0LMXaQXJ5etSV+nAC0wGKlE7hBZEvIem6vrQ6ZRdp0zsPLNHA+jDL4b5Ko
-         KlfkmdKccIABjX9pSp1/F243Ght1K2VKffbuPaXMw70ZF2f4Jq43mNGtmhMsoK13/bP1
-         WJR1GyLnczR4O90ugQ2Ru8yo64Qcex2+mTwJjMnDcFxSVZovvR9B7IMl3yHgl+jd0XSH
-         FnxrjtOyBXroc1JeM/izHfQf7pcog+5vKNcJEt9ltr57M17FhSAKoJTQlqPkd8dj6aij
-         B6zw==
-X-Gm-Message-State: AOAM530okBCJHbBQqGSpMqPG0EHxI2PLWX3bQd+eyd8+bexwfiI7WHA/
-        IwulgR4F7BvZuLEZ8vHOZv6ZiUFEk0w=
-X-Google-Smtp-Source: ABdhPJxsskSfxC1zZ7ByjZlL8tFFRGikXfTIX0JDoKXekBFXlSxwZn3Fp+XlBSWVD7VdBxZ2GPd9zQ==
-X-Received: by 2002:adf:efc2:: with SMTP id i2mr3484665wrp.383.1605038040688;
-        Tue, 10 Nov 2020 11:54:00 -0800 (PST)
-Received: from localhost ([217.111.27.204])
-        by smtp.gmail.com with ESMTPSA id n9sm4028867wmd.4.2020.11.10.11.53.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 10 Nov 2020 11:53:59 -0800 (PST)
-Date:   Tue, 10 Nov 2020 20:53:58 +0100
-From:   Thierry Reding <thierry.reding@gmail.com>
-To:     Deepak R Varma <mh12gx2825@gmail.com>
-Cc:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        dri-devel@lists.freedesktop.org, linux-tegra@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] drm/tegra: replace idr_init() by idr_init_base()
-Message-ID: <20201110195358.GE2375022@ulmo>
-References: <20201105175928.GA42488@localhost>
+        Tue, 10 Nov 2020 14:55:48 -0500
+Received: from callcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 0AAJtbdJ011310
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 10 Nov 2020 14:55:37 -0500
+Received: by callcc.thunk.org (Postfix, from userid 15806)
+        id D5FA3420107; Tue, 10 Nov 2020 14:55:36 -0500 (EST)
+Date:   Tue, 10 Nov 2020 14:55:36 -0500
+From:   "Theodore Y. Ts'o" <tytso@mit.edu>
+To:     "Limonciello, Mario" <Mario.Limonciello@dell.com>
+Cc:     Greg KH <gregkh@linuxfoundation.org>,
+        Bastien Nocera <hadess@hadess.net>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "linux-input@vger.kernel.org" <linux-input@vger.kernel.org>,
+        Hans de Goede <hdegoede@redhat.com>
+Subject: Re: How to enable auto-suspend by default
+Message-ID: <20201110195536.GD2951190@mit.edu>
+References: <fe8ab4cab3740afd261fa902f14ecae002a1122d.camel@hadess.net>
+ <X6p6ubTOoMPUPPXi@kroah.com>
+ <DM6PR19MB2636C94B56D5FBC0BD98A1B0FAE90@DM6PR19MB2636.namprd19.prod.outlook.com>
+ <X6rLUDuG0N98jz18@kroah.com>
+ <DM6PR19MB2636460E97BD5E47957BB43AFAE90@DM6PR19MB2636.namprd19.prod.outlook.com>
+ <X6rVT6IXHYQpqjic@kroah.com>
+ <DM6PR19MB263696FE5FA50F344B559488FAE90@DM6PR19MB2636.namprd19.prod.outlook.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="J4XPiPrVK1ev6Sgr"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201105175928.GA42488@localhost>
-User-Agent: Mutt/1.14.7 (2020-08-29)
+In-Reply-To: <DM6PR19MB263696FE5FA50F344B559488FAE90@DM6PR19MB2636.namprd19.prod.outlook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+One note...  I'll double check, but on my XPS 13 9380, as I recall, I
+have to manually disable autosuspend on all of the XHCI controllers
+and internal hubs after running "powertop --auto-tune", or else any
+external mouse attached to said USB device will be dead to the world
+for 2-3 seconds if the autosuspend timeout has kicked in, which was
+***super*** annoying.
 
---J4XPiPrVK1ev6Sgr
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Thu, Nov 05, 2020 at 11:29:28PM +0530, Deepak R Varma wrote:
-> idr_init() uses base 0 which is an invalid identifier for this driver.
-> The new function idr_init_base allows IDR to set the ID lookup from
-> base 1. This avoids all lookups that otherwise starts from 0 since
-> 0 is always unused.
->=20
-> References: commit 6ce711f27500 ("idr: Make 1-based IDRs more efficient")
->=20
-> Signed-off-by: Deepak R Varma <mh12gx2825@gmail.com>
-> ---
->  drivers/gpu/drm/tegra/drm.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-
-Applied, thanks.
-
-Thierry
-
---J4XPiPrVK1ev6Sgr
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAl+q79UACgkQ3SOs138+
-s6FSeA/+Iw7B6giIoQpubSiCFapmJ2adHGvhiUk8Z1Bvsk4I60f7TceVbVKJaGBO
-rovc1peM2Ct9yZ1Rsp975wI73jzP3DFotX95CP/fkN89xtEj6NEwIsxc9icPDz5W
-tpoz1azIGh16XPiEbPuNTLSGDcRrpBA8Kc80A/iEGyoQcjEqxHHCCd8BCW+zR60p
-OZnS4kuqVZD64vVKoYWgmYYgMW2Dqq4t6ZShNr5+yZaeObxgbYnO10tyD67d9iCf
-GZH6ieKkI1GOziI6GykGpmACRfVozI/YpSwSOzq1+nB+KuNJYP5puL1kY6/HGRYW
-GLxhbS/iykwMq26gBOQnIIc3zvpyYaIIupFVm9lND1PH+nRZtzrnrLEFQd83mSoG
-q5a+c5Qj5ka13B7sw3MjfUdOcLJqYg9trvinzW7qgyUlWMI8f+wtkKS8BKacPPBT
-/vcTvQgDAdb6qE9VhQFJmULpnQ2Wzp4PGr8vdHg9msoeYWpZNbDEllpEJQAdnaCg
-IP/i+TiWqnorL/s2gsN21VsV4G1mlOdD3WVG/U01+GwvkQSiBS4gfIn/mz82WE7z
-8ZsQfpb36ogBtKiwvXhvl9CGYoFdzeMzKcSRqCqwNgooAtvD6tMo2gV055B2qf1F
-BqR1VxxKVrn9hbQioixzn9E/zhX3ZbINEQHotsdRLPVsByVVbIQ=
-=OhfJ
------END PGP SIGNATURE-----
-
---J4XPiPrVK1ev6Sgr--
+						- Ted
