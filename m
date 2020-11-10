@@ -2,59 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CFEFA2AD5CB
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 13:01:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 335882AD5CD
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 13:01:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729893AbgKJMBn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 07:01:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37440 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726690AbgKJMBn (ORCPT
+        id S1730114AbgKJMBx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 07:01:53 -0500
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:39840 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730059AbgKJMBw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 07:01:43 -0500
-Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [IPv6:2a01:488:42:1000:50ed:8234::])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0EFCC0613CF;
-        Tue, 10 Nov 2020 04:01:41 -0800 (PST)
-Received: from ip4d145e30.dynamic.kabel-deutschland.de ([77.20.94.48] helo=[192.168.66.101]); authenticated
-        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        id 1kcSLC-0003mo-2t; Tue, 10 Nov 2020 13:01:38 +0100
-To:     Jonathan Corbet <corbet@lwn.net>
-Cc:     Randy Dunlap <rdunlap@infradead.org>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <cover.1601541165.git.linux@leemhuis.info>
- <7910cf25-4aa9-e33d-704c-33ab91ab713b@leemhuis.info>
- <20201109112136.0634a356@lwn.net>
-From:   Thorsten Leemhuis <linux@leemhuis.info>
-Subject: Re: [RFC PATCH v1 00/26] Make reporting-bugs easier to grasp and yet
- more detailed
-Message-ID: <88e01ec7-7a29-3f17-7a76-590d9e3b5543@leemhuis.info>
-Date:   Tue, 10 Nov 2020 13:01:36 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        Tue, 10 Nov 2020 07:01:52 -0500
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0AAC1maK031739;
+        Tue, 10 Nov 2020 06:01:48 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1605009708;
+        bh=wCRTJJjnhbgI5KP8iM2EISON2IZQ8Ci3jNba4ttYH7U=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=hI/7kiTJ27/GEsOKXfXA/48MDnO53qTcyDIkn5FAIPk5uXXoTQ4yWj7BCFcMx1rqI
+         fqBt7uA/mE/zZ9JSWU+27UMuIx2fr7XUUNEpZb0oY5uwcP2xM3LGdz4cVPgNt0qM83
+         Vgu07tuymKFdexNxmyKU/p7dEGqZEnpWzOPfrwyo=
+Received: from DFLE103.ent.ti.com (dfle103.ent.ti.com [10.64.6.24])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0AAC1m08086548
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 10 Nov 2020 06:01:48 -0600
+Received: from DFLE100.ent.ti.com (10.64.6.21) by DFLE103.ent.ti.com
+ (10.64.6.24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 10
+ Nov 2020 06:01:47 -0600
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE100.ent.ti.com
+ (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Tue, 10 Nov 2020 06:01:47 -0600
+Received: from [192.168.2.6] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0AAC1jul051383;
+        Tue, 10 Nov 2020 06:01:45 -0600
+Subject: Re: [PATCH 08/19] drm/omapdrm/omap_gem: Fix misnamed and missing
+ parameter descriptions
+To:     Lee Jones <lee.jones@linaro.org>
+CC:     <linux-kernel@vger.kernel.org>, David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
+        Rob Clark <rob.clark@linaro.org>,
+        <dri-devel@lists.freedesktop.org>, <linux-media@vger.kernel.org>,
+        <linaro-mm-sig@lists.linaro.org>
+References: <20201106214949.2042120-1-lee.jones@linaro.org>
+ <20201106214949.2042120-9-lee.jones@linaro.org>
+From:   Tomi Valkeinen <tomi.valkeinen@ti.com>
+Message-ID: <3d5dc164-d26a-5999-1e7f-9cabfdd84c36@ti.com>
+Date:   Tue, 10 Nov 2020 14:01:44 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20201109112136.0634a356@lwn.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <20201106214949.2042120-9-lee.jones@linaro.org>
+Content-Type: text/plain; charset="utf-8"
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-bounce-key: webpack.hosteurope.de;linux@leemhuis.info;1605009702;8e0bf6c5;
-X-HE-SMSGID: 1kcSLC-0003mo-2t
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 09.11.20 um 19:21 schrieb Jonathan Corbet:
-> On Mon, 9 Nov 2020 12:01:56 +0100
-> Thorsten Leemhuis <linux@leemhuis.info> wrote:
+On 06/11/2020 23:49, Lee Jones wrote:
+> Fixes the following W=1 kernel build warning(s):
 > 
->> @Jon: I'd be really appreciate to hear your thoughts on this.
+>  drivers/gpu/drm/omapdrm/omap_gem.c:593: warning: Function parameter or member 'file' not described in 'omap_gem_dumb_create'
+>  drivers/gpu/drm/omapdrm/omap_gem.c:593: warning: Excess function parameter 'drm_file' description in 'omap_gem_dumb_create'
+>  drivers/gpu/drm/omapdrm/omap_gem.c:619: warning: Function parameter or member 'offset' not described in 'omap_gem_dumb_map_offset'
 > 
-> Seems like it's time to post a new version with all of your feedback so
-> far reflected, and we'll go from there?
+> Cc: Tomi Valkeinen <tomi.valkeinen@ti.com>
+> Cc: David Airlie <airlied@linux.ie>
+> Cc: Daniel Vetter <daniel@ffwll.ch>
+> Cc: Sumit Semwal <sumit.semwal@linaro.org>
+> Cc: "Christian König" <christian.koenig@amd.com>
+> Cc: Rob Clark <rob.clark@linaro.org>
+> Cc: dri-devel@lists.freedesktop.org
+> Cc: linux-media@vger.kernel.org
+> Cc: linaro-mm-sig@lists.linaro.org
+> Signed-off-by: Lee Jones <lee.jones@linaro.org>
+> ---
+>  drivers/gpu/drm/omapdrm/omap_gem.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
 
-Will do, just give me a day to two.
+Thanks! I'll pick this one and the next to drm-misc-next.
 
-Ciao, Thorsten
+ Tomi
 
-P.S.: BTW, @Randy, thx for yesterdays clarification in another mail of 
-this subthread!
-
+-- 
+Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
+Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
