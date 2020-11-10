@@ -2,57 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 741E62AE2F1
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 23:13:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A564D2AE2ED
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 23:12:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733083AbgKJWNI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 17:13:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48606 "EHLO
+        id S1733035AbgKJWMt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 17:12:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48614 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1733008AbgKJWMq (ORCPT
+        with ESMTP id S1733015AbgKJWMq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 10 Nov 2020 17:12:46 -0500
-Received: from mail-wr1-x449.google.com (mail-wr1-x449.google.com [IPv6:2a00:1450:4864:20::449])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FB10C0613D1
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 14:12:44 -0800 (PST)
-Received: by mail-wr1-x449.google.com with SMTP id z13so240797wrm.19
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 14:12:44 -0800 (PST)
+Received: from mail-wm1-x34a.google.com (mail-wm1-x34a.google.com [IPv6:2a00:1450:4864:20::34a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73534C0613D3
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 14:12:46 -0800 (PST)
+Received: by mail-wm1-x34a.google.com with SMTP id 3so1850829wms.9
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 14:12:46 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=sender:date:in-reply-to:message-id:mime-version:references:subject
          :from:to:cc;
-        bh=/sxzdyvi8KkfW5gspThP8KvseoTY7ROsnu5nrXDzCag=;
-        b=Y/jR1dsz3MoDl81vp14eGReV4TFu4RPTWCiE9VTJYP+0EekPQ8C5H9S7rFJJO/fXaO
-         kOEoYEtNVzGjZJ4o6dPnzIdEY9RHhVrMNRMZ8WclGzjHjFziL+WhwREtWD5faj2mztzV
-         X2AYk88MyNLjRHStKHJ1brWfHeQVj36mZeXFNHZ3Cq0LnArt1MkCynqe9pXOSy1/VH3y
-         dBPasok/sdJerOrwJ/8YpnPoeknOs1o6yh9zC/hc5bpWNoNbxC+FBZ7y4J8+WWeCId1h
-         CNPgzY93DllUdq5tiTBubK5vlT9b4hHaVAW8RooWas7C7NM4PwE6e3mm3K8sD8Vck1mc
-         vwsw==
+        bh=0igi5mwDUPYOEUY4z2Y7rTzwQQPhibQBSH9sfTyI6b4=;
+        b=UWk6LAWeGFkQTbLeu5MF3njEi+IsR3rs3PtQ8Nz6cwJd1GrW2/HwnrxkbVw9AAgBM6
+         53g0sddrYjm+FLNVYr7C2Azf1xQwcTUOTnSNaJs/etzDEmT5M2usLzz8ZHKPwdiDFkN6
+         Mf7WTS3kLX348CvFVwBXvVeANYPbedt4XMXy78wmQppw/mzGIat4P5Em1dB8S1P+cLNU
+         OxsTcCm/oMEXX/+tYTObnu32qyh9VOGh+gpfL1eAS9BTc02uX2Hp5zm8+St5ITczpCdj
+         raesKjD67M8N5eUGqMe3XGZkmU39iwwmigL6/VAp2c0azReWaDkzMK7oVN6FdJMUbxqD
+         8yfg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=/sxzdyvi8KkfW5gspThP8KvseoTY7ROsnu5nrXDzCag=;
-        b=j4Sj/eiPJ+YAfvxbDMpVBSGeyAHKpsZ2NKezk3C7o5bo+wH0RNcUqMnkHJ9Xda8DhU
-         xXF9dX1y2FEoE9l3boKtK1mcL0AQm/uMvCduGrBFsFVwPcJLH/iOnUe1kvnlQYNQSYPD
-         gNIoAhst3U7mMbFE0IzNbXiID+Q6qK2DoXHh5u4hZvUIxiMhNSHRU7wvSNRfq7FgDB55
-         oeh4qxckCjL3RO9pmZ5ZClAc44J11XFfxm3LxNwoLCwIg3isPdGP2lNrCU6r7kX9XqGd
-         S2ZIO/pdMbehe7bpNV37r5szCanAv/M0WHEGoAbc2X8XECc40TiKQhWLvlKSnD9j5+/F
-         TW7w==
-X-Gm-Message-State: AOAM531w22Qzp4BZ8NDLvjSFIGWCBeWSjDkImNShBSOn+bQqVmJaQWq0
-        4f36F2XaMmwhZwSHHymg64nXr3zA8ua6BSUa
-X-Google-Smtp-Source: ABdhPJwjLitPJuje4TriI9elVnHCZf9lAYnOrAzCOl08HXbRqejuwd4uq00Z5f6BYQz4oYR+we+b5AqvJh7lXdOX
+        bh=0igi5mwDUPYOEUY4z2Y7rTzwQQPhibQBSH9sfTyI6b4=;
+        b=I6dgFFAHIn8B60LBdUCLwMuUdPBnn0n/rIVzSgHwWB6/6LpccQwtfUtqrImHsRShRo
+         PKgRMeDSKdH2zkR+hY3EGJ63RWms7cWcn9NOQZR6s8rrDWrTLeq3kuHeU5WwM8V5nLfB
+         o8uDBQ0YOSnaQ9RBiwtTcWE+OURf21ZNibBmCnPcO4Z3adUMHnz0AQXWh7lYet0LuYqn
+         0zFkfsQKp6YVCOgGYnBJnz0P1Fp1FCcIDOlgnc6LM2tC2pbVxlzyJDW/Z41GA+TRNgif
+         q/XZiQeF5jvh+VeyHFJJVLlKgT5EtPzaJ3y3GFsS6R0cY/1mTSye0ZaYaFLGPDQ/Lh++
+         9qEQ==
+X-Gm-Message-State: AOAM533HMwD9Or0uD0CZh5oiJ/IoOx67VRaw/njiN1QYYQyTWQvyoy4F
+        AK6Cis+cGsOfbTz02Ei0CkxkTy0EkRl8Dq9Q
+X-Google-Smtp-Source: ABdhPJxRy2qXjxufM465oFhU9+AJi7NlRTRxw5pAbiIeW9xR3AKWLa+qScwb6QKX+DGZNM8/OjbTVfbpqdzPm9cI
 Sender: "andreyknvl via sendgmr" <andreyknvl@andreyknvl3.muc.corp.google.com>
 X-Received: from andreyknvl3.muc.corp.google.com ([2a00:79e0:15:13:7220:84ff:fe09:7e9d])
- (user=andreyknvl job=sendgmr) by 2002:a05:6000:109:: with SMTP id
- o9mr25232534wrx.240.1605046362785; Tue, 10 Nov 2020 14:12:42 -0800 (PST)
-Date:   Tue, 10 Nov 2020 23:10:37 +0100
+ (user=andreyknvl job=sendgmr) by 2002:a1c:8095:: with SMTP id
+ b143mr230260wmd.147.1605046365189; Tue, 10 Nov 2020 14:12:45 -0800 (PST)
+Date:   Tue, 10 Nov 2020 23:10:38 +0100
 In-Reply-To: <cover.1605046192.git.andreyknvl@google.com>
-Message-Id: <fe78d723ba64456d68754a944fa93fe4a25c730f.1605046192.git.andreyknvl@google.com>
+Message-Id: <d0060171a76ace31b26fef1f2713da209099fb99.1605046192.git.andreyknvl@google.com>
 Mime-Version: 1.0
 References: <cover.1605046192.git.andreyknvl@google.com>
 X-Mailer: git-send-email 2.29.2.222.g5d2a92d10f8-goog
-Subject: [PATCH v9 40/44] kasan, arm64: print report from tag fault handler
+Subject: [PATCH v9 41/44] kasan, mm: reset tags when accessing metadata
 From:   Andrey Konovalov <andreyknvl@google.com>
 To:     Catalin Marinas <catalin.marinas@arm.com>
 Cc:     Will Deacon <will.deacon@arm.com>,
@@ -73,82 +73,182 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add error reporting for hardware tag-based KASAN. When CONFIG_KASAN_HW_TAGS
-is enabled, print KASAN report from the arm64 tag fault handler.
+Kernel allocator code accesses metadata for slab objects, that may lie
+out-of-bounds of the object itself, or be accessed when an object is freed.
+Such accesses trigger tag faults and lead to false-positive reports with
+hardware tag-based KASAN.
 
-SAS bits aren't set in ESR for all faults reported in EL1, so it's
-impossible to find out the size of the access the caused the fault.
-Adapt KASAN reporting code to handle this case.
+Software KASAN modes disable instrumentation for allocator code via
+KASAN_SANITIZE Makefile macro, and rely on kasan_enable/disable_current()
+annotations which are used to ignore KASAN reports.
+
+With hardware tag-based KASAN neither of those options are available, as
+it doesn't use compiler instrumetation, no tag faults are ignored, and MTE
+is disabled after the first one.
+
+Instead, reset tags when accessing metadata (currently only for SLUB).
 
 Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
-Co-developed-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
 Signed-off-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
-Reviewed-by: Catalin Marinas <catalin.marinas@arm.com>
+Acked-by: Marco Elver <elver@google.com>
 ---
-Change-Id: I3780fe7db6e075dff2937d3d8508f55c9322b095
+Change-Id: I39f3c4d4f29299d4fbbda039bedf230db1c746fb
 ---
- arch/arm64/mm/fault.c | 14 ++++++++++++++
- mm/kasan/report.c     | 11 ++++++++---
- 2 files changed, 22 insertions(+), 3 deletions(-)
+ mm/page_alloc.c  |  4 +++-
+ mm/page_poison.c |  2 +-
+ mm/slub.c        | 29 ++++++++++++++++-------------
+ 3 files changed, 20 insertions(+), 15 deletions(-)
 
-diff --git a/arch/arm64/mm/fault.c b/arch/arm64/mm/fault.c
-index fbceb14d93b1..7370e822e588 100644
---- a/arch/arm64/mm/fault.c
-+++ b/arch/arm64/mm/fault.c
-@@ -14,6 +14,7 @@
- #include <linux/mm.h>
- #include <linux/hardirq.h>
- #include <linux/init.h>
-+#include <linux/kasan.h>
- #include <linux/kprobes.h>
- #include <linux/uaccess.h>
- #include <linux/page-flags.h>
-@@ -297,10 +298,23 @@ static void die_kernel_fault(const char *msg, unsigned long addr,
- 	do_exit(SIGKILL);
+diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+index 24b45261e2bd..f1648aee8d88 100644
+--- a/mm/page_alloc.c
++++ b/mm/page_alloc.c
+@@ -1195,8 +1195,10 @@ static void kernel_init_free_pages(struct page *page, int numpages)
+ 
+ 	/* s390's use of memset() could override KASAN redzones. */
+ 	kasan_disable_current();
+-	for (i = 0; i < numpages; i++)
++	for (i = 0; i < numpages; i++) {
++		page_kasan_tag_reset(page + i);
+ 		clear_highpage(page + i);
++	}
+ 	kasan_enable_current();
  }
  
-+#ifdef CONFIG_KASAN_HW_TAGS
- static void report_tag_fault(unsigned long addr, unsigned int esr,
- 			     struct pt_regs *regs)
+diff --git a/mm/page_poison.c b/mm/page_poison.c
+index ae0482cded87..e6c994af7518 100644
+--- a/mm/page_poison.c
++++ b/mm/page_poison.c
+@@ -53,7 +53,7 @@ static void poison_page(struct page *page)
+ 
+ 	/* KASAN still think the page is in-use, so skip it. */
+ 	kasan_disable_current();
+-	memset(addr, PAGE_POISON, PAGE_SIZE);
++	memset(kasan_reset_tag(addr), PAGE_POISON, PAGE_SIZE);
+ 	kasan_enable_current();
+ 	kunmap_atomic(addr);
+ }
+diff --git a/mm/slub.c b/mm/slub.c
+index b30be2385d1c..df2fd5b57df1 100644
+--- a/mm/slub.c
++++ b/mm/slub.c
+@@ -249,7 +249,7 @@ static inline void *freelist_ptr(const struct kmem_cache *s, void *ptr,
  {
-+	bool is_write  = ((esr & ESR_ELx_WNR) >> ESR_ELx_WNR_SHIFT) != 0;
-+
-+	/*
-+	 * SAS bits aren't set for all faults reported in EL1, so we can't
-+	 * find out access size.
-+	 */
-+	kasan_report(addr, 0, is_write, regs->pc);
- }
-+#else
-+/* Tag faults aren't enabled without CONFIG_KASAN_HW_TAGS. */
-+static inline void report_tag_fault(unsigned long addr, unsigned int esr,
-+				    struct pt_regs *regs) { }
-+#endif
+ #ifdef CONFIG_SLAB_FREELIST_HARDENED
+ 	/*
+-	 * When CONFIG_KASAN_SW_TAGS is enabled, ptr_addr might be tagged.
++	 * When CONFIG_KASAN_SW/HW_TAGS is enabled, ptr_addr might be tagged.
+ 	 * Normally, this doesn't cause any issues, as both set_freepointer()
+ 	 * and get_freepointer() are called with a pointer with the same tag.
+ 	 * However, there are some issues with CONFIG_SLUB_DEBUG code. For
+@@ -275,6 +275,7 @@ static inline void *freelist_dereference(const struct kmem_cache *s,
  
- static void do_tag_recovery(unsigned long addr, unsigned int esr,
- 			   struct pt_regs *regs)
-diff --git a/mm/kasan/report.c b/mm/kasan/report.c
-index 8afc1a6ab202..ce06005d4052 100644
---- a/mm/kasan/report.c
-+++ b/mm/kasan/report.c
-@@ -62,9 +62,14 @@ static void print_error_description(struct kasan_access_info *info)
+ static inline void *get_freepointer(struct kmem_cache *s, void *object)
  {
- 	pr_err("BUG: KASAN: %s in %pS\n",
- 		get_bug_type(info), (void *)info->ip);
--	pr_err("%s of size %zu at addr %px by task %s/%d\n",
--		info->is_write ? "Write" : "Read", info->access_size,
--		info->access_addr, current->comm, task_pid_nr(current));
-+	if (info->access_size)
-+		pr_err("%s of size %zu at addr %px by task %s/%d\n",
-+			info->is_write ? "Write" : "Read", info->access_size,
-+			info->access_addr, current->comm, task_pid_nr(current));
-+	else
-+		pr_err("%s at addr %px by task %s/%d\n",
-+			info->is_write ? "Write" : "Read",
-+			info->access_addr, current->comm, task_pid_nr(current));
++	object = kasan_reset_tag(object);
+ 	return freelist_dereference(s, object + s->offset);
  }
  
- static DEFINE_SPINLOCK(report_lock);
+@@ -304,6 +305,7 @@ static inline void set_freepointer(struct kmem_cache *s, void *object, void *fp)
+ 	BUG_ON(object == fp); /* naive detection of double free or corruption */
+ #endif
+ 
++	freeptr_addr = (unsigned long)kasan_reset_tag((void *)freeptr_addr);
+ 	*(void **)freeptr_addr = freelist_ptr(s, fp, freeptr_addr);
+ }
+ 
+@@ -538,8 +540,8 @@ static void print_section(char *level, char *text, u8 *addr,
+ 			  unsigned int length)
+ {
+ 	metadata_access_enable();
+-	print_hex_dump(level, text, DUMP_PREFIX_ADDRESS, 16, 1, addr,
+-			length, 1);
++	print_hex_dump(level, kasan_reset_tag(text), DUMP_PREFIX_ADDRESS,
++			16, 1, addr, length, 1);
+ 	metadata_access_disable();
+ }
+ 
+@@ -570,7 +572,7 @@ static struct track *get_track(struct kmem_cache *s, void *object,
+ 
+ 	p = object + get_info_end(s);
+ 
+-	return p + alloc;
++	return kasan_reset_tag(p + alloc);
+ }
+ 
+ static void set_track(struct kmem_cache *s, void *object,
+@@ -583,7 +585,8 @@ static void set_track(struct kmem_cache *s, void *object,
+ 		unsigned int nr_entries;
+ 
+ 		metadata_access_enable();
+-		nr_entries = stack_trace_save(p->addrs, TRACK_ADDRS_COUNT, 3);
++		nr_entries = stack_trace_save(kasan_reset_tag(p->addrs),
++					      TRACK_ADDRS_COUNT, 3);
+ 		metadata_access_disable();
+ 
+ 		if (nr_entries < TRACK_ADDRS_COUNT)
+@@ -747,7 +750,7 @@ static __printf(3, 4) void slab_err(struct kmem_cache *s, struct page *page,
+ 
+ static void init_object(struct kmem_cache *s, void *object, u8 val)
+ {
+-	u8 *p = object;
++	u8 *p = kasan_reset_tag(object);
+ 
+ 	if (s->flags & SLAB_RED_ZONE)
+ 		memset(p - s->red_left_pad, val, s->red_left_pad);
+@@ -777,7 +780,7 @@ static int check_bytes_and_report(struct kmem_cache *s, struct page *page,
+ 	u8 *addr = page_address(page);
+ 
+ 	metadata_access_enable();
+-	fault = memchr_inv(start, value, bytes);
++	fault = memchr_inv(kasan_reset_tag(start), value, bytes);
+ 	metadata_access_disable();
+ 	if (!fault)
+ 		return 1;
+@@ -873,7 +876,7 @@ static int slab_pad_check(struct kmem_cache *s, struct page *page)
+ 
+ 	pad = end - remainder;
+ 	metadata_access_enable();
+-	fault = memchr_inv(pad, POISON_INUSE, remainder);
++	fault = memchr_inv(kasan_reset_tag(pad), POISON_INUSE, remainder);
+ 	metadata_access_disable();
+ 	if (!fault)
+ 		return 1;
+@@ -1118,7 +1121,7 @@ void setup_page_debug(struct kmem_cache *s, struct page *page, void *addr)
+ 		return;
+ 
+ 	metadata_access_enable();
+-	memset(addr, POISON_INUSE, page_size(page));
++	memset(kasan_reset_tag(addr), POISON_INUSE, page_size(page));
+ 	metadata_access_disable();
+ }
+ 
+@@ -1566,10 +1569,10 @@ static inline bool slab_free_freelist_hook(struct kmem_cache *s,
+ 			 * Clear the object and the metadata, but don't touch
+ 			 * the redzone.
+ 			 */
+-			memset(object, 0, s->object_size);
++			memset(kasan_reset_tag(object), 0, s->object_size);
+ 			rsize = (s->flags & SLAB_RED_ZONE) ? s->red_left_pad
+ 							   : 0;
+-			memset((char *)object + s->inuse, 0,
++			memset((char *)kasan_reset_tag(object) + s->inuse, 0,
+ 			       s->size - s->inuse - rsize);
+ 
+ 		}
+@@ -2883,10 +2886,10 @@ static __always_inline void *slab_alloc_node(struct kmem_cache *s,
+ 		stat(s, ALLOC_FASTPATH);
+ 	}
+ 
+-	maybe_wipe_obj_freeptr(s, object);
++	maybe_wipe_obj_freeptr(s, kasan_reset_tag(object));
+ 
+ 	if (unlikely(slab_want_init_on_alloc(gfpflags, s)) && object)
+-		memset(object, 0, s->object_size);
++		memset(kasan_reset_tag(object), 0, s->object_size);
+ 
+ 	slab_post_alloc_hook(s, objcg, gfpflags, 1, &object);
+ 
 -- 
 2.29.2.222.g5d2a92d10f8-goog
 
