@@ -2,163 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8271C2AD01B
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 07:57:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 006542AD01E
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 07:58:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731267AbgKJG5Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 01:57:24 -0500
-Received: from mailout2.w1.samsung.com ([210.118.77.12]:35751 "EHLO
-        mailout2.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726010AbgKJG5X (ORCPT
+        id S1731412AbgKJG6m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 01:58:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47038 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726462AbgKJG6l (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 01:57:23 -0500
-Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
-        by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20201110065710euoutp02a3d66e0cc04ddb2bc2b64a4f50619357~GEzPu_KIE2377223772euoutp021
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 06:57:10 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20201110065710euoutp02a3d66e0cc04ddb2bc2b64a4f50619357~GEzPu_KIE2377223772euoutp021
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1604991431;
-        bh=GuXoIHxsCa9fwMsSr0iq1ozcYJ8sP/0sWgu6bH/hBlM=;
-        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
-        b=bYTxPt/HnsNFVM7/1A0vu7+Co9O2iu36Cw9lzPUn57bnCVf5xYqbLlViZuixI3Seb
-         gUJC8nSFF5uaF90+S6pibdkejNercRqvrkVs4fS1cnzGF6zbr2AwgyGkCH4zUkiCev
-         kxJom3L/uiAPa9E6snifdXCT1Y43w3ApTcp1LAwo=
-Received: from eusmges2new.samsung.com (unknown [203.254.199.244]) by
-        eucas1p2.samsung.com (KnoxPortal) with ESMTP id
-        20201110065702eucas1p246444066d57e704bf6eed9d5c1fc6794~GEzIGaeLg1532415324eucas1p2T;
-        Tue, 10 Nov 2020 06:57:02 +0000 (GMT)
-Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
-        eusmges2new.samsung.com (EUCPMTA) with SMTP id C2.5E.05997.EB93AAF5; Tue, 10
-        Nov 2020 06:57:02 +0000 (GMT)
-Received: from eusmtrp2.samsung.com (unknown [182.198.249.139]) by
-        eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
-        20201110065702eucas1p2712c2d2220b4ea622468b616d4440349~GEzHuFndT2242822428eucas1p2u;
-        Tue, 10 Nov 2020 06:57:02 +0000 (GMT)
-Received: from eusmgms1.samsung.com (unknown [182.198.249.179]) by
-        eusmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20201110065702eusmtrp23adf7e87f514e2c93c2755ccfa8bf7cb~GEzHtWojB1720717207eusmtrp2U;
-        Tue, 10 Nov 2020 06:57:02 +0000 (GMT)
-X-AuditID: cbfec7f4-65dff7000000176d-6f-5faa39bec96e
-Received: from eusmtip2.samsung.com ( [203.254.199.222]) by
-        eusmgms1.samsung.com (EUCPMTA) with SMTP id 1D.A1.06314.EB93AAF5; Tue, 10
-        Nov 2020 06:57:02 +0000 (GMT)
-Received: from [106.210.88.143] (unknown [106.210.88.143]) by
-        eusmtip2.samsung.com (KnoxPortal) with ESMTPA id
-        20201110065701eusmtip24ae5154da5ca3dcd9c458bdd4e8b5c2e~GEzHHaE1x1016110161eusmtip2T;
-        Tue, 10 Nov 2020 06:57:01 +0000 (GMT)
-Subject: Re: [PATCH 1/2] cpufreq: dt: Don't (ab)use
- dev_pm_opp_get_opp_table() to create OPP table
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>, linux-pm@vger.kernel.org,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Stephen Boyd <sboyd@kernel.org>, Nishanth Menon <nm@ti.com>,
-        digetx@gmail.com, Stephan Gerhold <stephan@gerhold.net>,
-        linux-kernel@vger.kernel.org,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
-From:   Marek Szyprowski <m.szyprowski@samsung.com>
-Message-ID: <525e0552-0faf-44c0-9f74-c651a70bebb6@samsung.com>
-Date:   Tue, 10 Nov 2020 07:57:01 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0)
-        Gecko/20100101 Thunderbird/78.4.0
-MIME-Version: 1.0
-In-Reply-To: <20201110060011.7unghpidbzobqhq7@vireshk-i7>
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Brightmail-Tracker: H4sIAAAAAAAAA02SfyyUcRzH973n7rnH6fR1mE/Sj90qY4vIH48yySrP5h//WJutdHiGcsfu
-        QdFqUkN+xGoWFzlsamfC7SI/Soku+c2YjD8sazFmfhN3cp6U/16f9+f9+X4+7+1LEbIOkRMV
-        o0pg1SpFrJyUCOu/bPSd/uCjCztjeuBO1xXWiOiqhR+IHmoqJuml3HZEz673COjurkERbR6p
-        E9KjJd50ZvsqQdetMP4SJl17gWnUTIgZve4xyYyPtJCMYThDyDwx6BBjHG0QMEv6o8FUqMQ3
-        ko2NSWLVHn43JNFljc9QfA6+8yLfJEpFK9ZZyIoC7A09uRqxhWX4NQLzmm8WkuzwMoLFijaC
-        L5YQ6OoeEXsT77cnSb7xCkHXglnAF/MIhvOmkMVlhyOhOS91hynKHrvB9HfWIhO4QwDZAy4W
-        JrEnZM1lkRaWYj+obd3cPUOIT8LnzW2hhR1wOJiWtgjeYwudRVO7uhX2Af2vCTH/5jFomCsm
-        eHaEsanS3XsAj4khtbz679WXwNj9UsSzHcwYDWKenWG7cW/gIYLJ3moxX+QgGEorRLzrPIz3
-        /iYtaQjsCjVNHrx8EaZXq3dlwDYwOmfLH2EDT+ufE7wshcx0Ge8+BRrjm39rP/UPEvlIrtkX
-        TbMvjmZfHM3/vVok1CFHNpFTRrGcl4q97c4plFyiKso9Ik6pRzufq8tsXH6HmrbC2xCmkPyA
-        9ONWZZhMpEjikpVtCChCbi8N6Om6LpNGKpJTWHVcmDoxluXa0GFKKHeUni2fvibDUYoE9hbL
-        xrPqva6AsnJKRc71UwX+05Gcq0MwLtUuurmsua3cH5AFHOkpbi37OSP+WjVMZtRGHDx+ZaPQ
-        SlkgJ0L7gwYGTUiqbb5rDj8eN6YtKTqUcdU6qml+dJ3zcOhT6WorskPeLtwLaTnRaQix39K3
-        VKhsVr6V+c8G3gyoH24s9QqKuFwZnHIu0JQWZpALuWiFpxuh5hR/AGK99o1YAwAA
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrBIsWRmVeSWpSXmKPExsVy+t/xe7r7LFfFG6y4KGyxccZ6VovVHx8z
-        WlzeNYfN4nPvEUaLNz/OMlmcOX2J1eLftY0sFjfmmlh0HPnGbLHxq4cDl0fbAnuPnbPusnts
-        WtXJ5nHn2h42jy1X21k8+rasYvQ4fmM7k8fnTXIBHFF6NkX5pSWpChn5xSW2StGGFkZ6hpYW
-        ekYmlnqGxuaxVkamSvp2NimpOZllqUX6dgl6GQt3TmYs6BGomD3hL2sD41fuLkZODgkBE4m9
-        /x+ydTFycQgJLGWU+HnxKQtEQkbi5LQGVghbWOLPtS42EFtI4C2jxP3WTBBbWCBF4sHTs0D1
-        HBwiAloSL2+mgsxhFjjKJPFkz1ImiKFTmSQWfr8JNohNwFCi6y3EIF4BO4kN+3+zg9gsAqoS
-        h3//B1ssKpAk8fLCVCaIGkGJkzOfgMU5BSwlNr24C1bPLGAmMW/zQ2YIW15i+9s5ULa4xK0n
-        85kmMArNQtI+C0nLLCQts5C0LGBkWcUoklpanJueW2yoV5yYW1yal66XnJ+7iREYq9uO/dy8
-        g/HSxuBDjAIcjEo8vAf+LIsXYk0sK67MPcQowcGsJMLrdPZ0nBBvSmJlVWpRfnxRaU5q8SFG
-        U6DnJjJLiSbnA9NIXkm8oamhuYWlobmxubGZhZI4b4fAwRghgfTEktTs1NSC1CKYPiYOTqkG
-        Ri/HDTc4zzpOvBbGsUzN9NUku4bJocFNLFNerF5ak8MTFhF78yvjvCl5DVtzki/EVUoLnfGd
-        Zdu0RCcg4OF7m/y+H09Yjy8qj/xdOVNklu2Okx+4lsUEP8sTfa1W5PpMSdZZ8c9vcW1xfr2n
-        9+Idnra6lT19ZjTR1u2lFvfD4pAJ4gWSn3vPK7EUZyQaajEXFScCALue99rrAgAA
-X-CMS-MailID: 20201110065702eucas1p2712c2d2220b4ea622468b616d4440349
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-RootMTR: 20201109124218eucas1p1b8948a9bf2cf107b17b500b1603905e8
-X-EPHeader: CA
-CMS-TYPE: 201P
-X-CMS-RootMailID: 20201109124218eucas1p1b8948a9bf2cf107b17b500b1603905e8
-References: <684ff01900180c0a40ec307dacc673b24eab593b.1604643714.git.viresh.kumar@linaro.org>
-        <CGME20201109124218eucas1p1b8948a9bf2cf107b17b500b1603905e8@eucas1p1.samsung.com>
-        <2924bddd-d237-aa57-abb1-a67723770e97@samsung.com>
-        <20201110060011.7unghpidbzobqhq7@vireshk-i7>
+        Tue, 10 Nov 2020 01:58:41 -0500
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 927D0C0613CF;
+        Mon,  9 Nov 2020 22:58:41 -0800 (PST)
+Received: by mail-pf1-x443.google.com with SMTP id q10so10553173pfn.0;
+        Mon, 09 Nov 2020 22:58:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=wUCfwIoXBFGejjJ2NoMgucXoGDnUKh4CIguDii/DOwo=;
+        b=LIvsDhiZwv0uSPqZ0yDGzO53SUiTfj1EnRcKWVTu2DKxgcGENqMJkWld41+w7TteTo
+         ZsnfoBJuA+7CcktOa0mgZvEoo9yi2DA0j3URNwqvGy5hfM68cSWBYMUANZoH3p8JEalX
+         I98vYx/6KPXEfq+yHb+Nk0Q66HIEYQrofB7FCe0T679UXUq2BRZaHyWJt4OvyCg126Tp
+         wWd4B5M3E/kQTxsuGfSMRjsAwT/fpCZttFwby1xtvDRNNWcFakO5KyjgWZfVroqVIBlJ
+         dtX8k0rXj9VOZsaj6zGFgDaCOonxJ/eIdhw1kjQv7bZKHIE5pqkBreVbklV9hg13o9q8
+         5HdQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=wUCfwIoXBFGejjJ2NoMgucXoGDnUKh4CIguDii/DOwo=;
+        b=h0XnDv9IFXnLXU7YMJGMXzxwC2ibsy4958/3016diIm9uExXw2jjE5L0CI3wskQXza
+         GmkdNe/Hx8XNRDKG+/yZD4pYFd8r7tNfNoiu2TLPYigAS6tzer80z9/6HerTxqOogG8L
+         j1HYlZDIZm6MOBCbyJncBFFI5F5mjXF9JClqY2fpZipvRun69bpXgRhGsmKk1oxl4lGJ
+         Q2mqLDgWfHNFo4J2YfmKVfVEAPMWPf40ofuozmjlySZdtGqcqPW2TvKftx9qdW7zzMrO
+         diRk5+NiA7/WjdfIB1NllBmHgESYH+Ml0+eYBGH0UZMETP+Jc2EewWM/ceMFVnlR2RLK
+         iZUQ==
+X-Gm-Message-State: AOAM533yY2F0z2C52nK4RAyVSn781BKSatnps8JcjPHcnk6JH+5F/2x1
+        5+ief2RocYdU1jz2FqfD8Vw=
+X-Google-Smtp-Source: ABdhPJzMEuN6t9GU4SFeXAdFAFpKB2AHbRzG6mv151g64L7zZIhUJU9TJ5/78eIAI/V8VyBo9VLGRA==
+X-Received: by 2002:aa7:8ed0:0:b029:18a:e177:7bce with SMTP id b16-20020aa78ed00000b029018ae1777bcemr17683806pfr.0.1604991518130;
+        Mon, 09 Nov 2020 22:58:38 -0800 (PST)
+Received: from localhost.localdomain ([8.210.202.142])
+        by smtp.gmail.com with ESMTPSA id q23sm13328624pfg.192.2020.11.09.22.58.32
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 09 Nov 2020 22:58:37 -0800 (PST)
+From:   Yejune Deng <yejune.deng@gmail.com>
+To:     pizza@shaftnet.org, kvalo@codeaurora.org, davem@davemloft.net,
+        kuba@kernel.org
+Cc:     linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, yejune.deng@gmail.com
+Subject: [PATCH] Replace a set of atomic_add()
+Date:   Tue, 10 Nov 2020 14:58:11 +0800
+Message-Id: <1604991491-27908-1-git-send-email-yejune.deng@gmail.com>
+X-Mailer: git-send-email 1.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Viresh,
+a set of atomic_inc() looks more readable
 
-On 10.11.2020 07:00, Viresh Kumar wrote:
-> On 09-11-20, 13:42, Marek Szyprowski wrote:
->> This patch landed in linux next-20201109 as commit e8f7703f8fe5
->> ("cpufreq: dt: Don't (ab)use dev_pm_opp_get_opp_table() to create OPP
->> table"). Sadly it causes regression on some Samsung Exynos based boards:
->>
->> 8<--- cut here ---
->> Unable to handle kernel paging request at virtual address ffffff37
->> pgd = (ptrval)
->> [ffffff37] *pgd=4ffff841, *pte=00000000, *ppte=00000000
->> Internal error: Oops: 27 [#1] PREEMPT SMP ARM
->> Modules linked in:
->> usb 3-1: New USB device strings: Mfr=1, Product=2, SerialNumber=3
->> CPU: 3 PID: 1 Comm: swapper/0 Not tainted 5.10.0-rc1-00007-ge8f7703f8fe5
->> #1908
->> Hardware name: Samsung Exynos (Flattened Device Tree)
->> PC is at dev_pm_opp_put_regulators+0x8/0xf0
->> LR is at dt_cpufreq_probe+0x19c/0x3fc
-> Does this fix it for you ?
+Signed-off-by: Yejune Deng <yejune.deng@gmail.com>
+---
+ drivers/net/wireless/st/cw1200/bh.c  | 10 +++++-----
+ drivers/net/wireless/st/cw1200/wsm.c |  8 ++++----
+ 2 files changed, 9 insertions(+), 9 deletions(-)
 
-Yes, thanks!
-
-Reported-by: Marek Szyprowski <m.szyprowski@samsung.com>
-
-Tested-by: Marek Szyprowski <m.szyprowski@samsung.com>
-
-> diff --git a/drivers/cpufreq/cpufreq-dt.c b/drivers/cpufreq/cpufreq-dt.c
-> index 66b3db5efb53..5aa3d4e3140d 100644
-> --- a/drivers/cpufreq/cpufreq-dt.c
-> +++ b/drivers/cpufreq/cpufreq-dt.c
-> @@ -228,7 +228,7 @@ static int dt_cpufreq_early_init(struct device *dev, int cpu)
->                          if (ret != -EPROBE_DEFER)
->                                  dev_err(cpu_dev, "failed to set regulators: %d\n",
->                                          ret);
-> -                       goto out;
-> +                       goto free_cpumask;
->                  }
->          }
->   
-> @@ -293,6 +293,7 @@ static int dt_cpufreq_early_init(struct device *dev, int cpu)
->                  dev_pm_opp_of_cpumask_remove_table(priv->cpus);
->          if (priv->opp_table)
->                  dev_pm_opp_put_regulators(priv->opp_table);
-> +free_cpumask:
->          free_cpumask_var(priv->cpus);
->          return ret;
->   }
->
->
-Best regards
+diff --git a/drivers/net/wireless/st/cw1200/bh.c b/drivers/net/wireless/st/cw1200/bh.c
+index 02efe84..c364a39 100644
+--- a/drivers/net/wireless/st/cw1200/bh.c
++++ b/drivers/net/wireless/st/cw1200/bh.c
+@@ -85,7 +85,7 @@ int cw1200_register_bh(struct cw1200_common *priv)
+ 
+ void cw1200_unregister_bh(struct cw1200_common *priv)
+ {
+-	atomic_add(1, &priv->bh_term);
++	atomic_inc(&priv->bh_term);
+ 	wake_up(&priv->bh_wq);
+ 
+ 	flush_workqueue(priv->bh_workqueue);
+@@ -107,7 +107,7 @@ void cw1200_irq_handler(struct cw1200_common *priv)
+ 	if (/* WARN_ON */(priv->bh_error))
+ 		return;
+ 
+-	if (atomic_add_return(1, &priv->bh_rx) == 1)
++	if (atomic_inc_return(&priv->bh_rx) == 1)
+ 		wake_up(&priv->bh_wq);
+ }
+ EXPORT_SYMBOL_GPL(cw1200_irq_handler);
+@@ -120,7 +120,7 @@ void cw1200_bh_wakeup(struct cw1200_common *priv)
+ 		return;
+ 	}
+ 
+-	if (atomic_add_return(1, &priv->bh_tx) == 1)
++	if (atomic_inc_return(&priv->bh_tx) == 1)
+ 		wake_up(&priv->bh_wq);
+ }
+ 
+@@ -382,7 +382,7 @@ static int cw1200_bh_tx_helper(struct cw1200_common *priv,
+ 	BUG_ON(tx_len < sizeof(*wsm));
+ 	BUG_ON(__le16_to_cpu(wsm->len) != tx_len);
+ 
+-	atomic_add(1, &priv->bh_tx);
++	atomic_inc(&priv->bh_tx);
+ 
+ 	tx_len = priv->hwbus_ops->align_size(
+ 		priv->hwbus_priv, tx_len);
+@@ -537,7 +537,7 @@ static int cw1200_bh(void *arg)
+ 			pr_debug("[BH] Device resume.\n");
+ 			atomic_set(&priv->bh_suspend, CW1200_BH_RESUMED);
+ 			wake_up(&priv->bh_evt_wq);
+-			atomic_add(1, &priv->bh_rx);
++			atomic_inc(&priv->bh_rx);
+ 			goto done;
+ 		}
+ 
+diff --git a/drivers/net/wireless/st/cw1200/wsm.c b/drivers/net/wireless/st/cw1200/wsm.c
+index d9b6147..99624dd 100644
+--- a/drivers/net/wireless/st/cw1200/wsm.c
++++ b/drivers/net/wireless/st/cw1200/wsm.c
+@@ -1139,7 +1139,7 @@ static int wsm_cmd_send(struct cw1200_common *priv,
+ 			pr_err("Outstanding outgoing frames:  %d\n", priv->hw_bufs_used);
+ 
+ 			/* Kill BH thread to report the error to the top layer. */
+-			atomic_add(1, &priv->bh_term);
++			atomic_inc(&priv->bh_term);
+ 			wake_up(&priv->bh_wq);
+ 			ret = -ETIMEDOUT;
+ 		}
+@@ -1160,7 +1160,7 @@ static int wsm_cmd_send(struct cw1200_common *priv,
+ void wsm_lock_tx(struct cw1200_common *priv)
+ {
+ 	wsm_cmd_lock(priv);
+-	if (atomic_add_return(1, &priv->tx_lock) == 1) {
++	if (atomic_inc_return(&priv->tx_lock) == 1) {
+ 		if (wsm_flush_tx(priv))
+ 			pr_debug("[WSM] TX is locked.\n");
+ 	}
+@@ -1169,7 +1169,7 @@ void wsm_lock_tx(struct cw1200_common *priv)
+ 
+ void wsm_lock_tx_async(struct cw1200_common *priv)
+ {
+-	if (atomic_add_return(1, &priv->tx_lock) == 1)
++	if (atomic_inc_return(&priv->tx_lock) == 1)
+ 		pr_debug("[WSM] TX is locked (async).\n");
+ }
+ 
+@@ -1223,7 +1223,7 @@ bool wsm_flush_tx(struct cw1200_common *priv)
+ void wsm_unlock_tx(struct cw1200_common *priv)
+ {
+ 	int tx_lock;
+-	tx_lock = atomic_sub_return(1, &priv->tx_lock);
++	tx_lock = atomic_dec_return(&priv->tx_lock);
+ 	BUG_ON(tx_lock < 0);
+ 
+ 	if (tx_lock == 0) {
 -- 
-Marek Szyprowski, PhD
-Samsung R&D Institute Poland
+1.9.1
 
