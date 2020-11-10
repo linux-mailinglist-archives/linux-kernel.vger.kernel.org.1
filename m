@@ -2,113 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1BCF2ACA87
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 02:35:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A1D182ACA89
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 02:37:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730605AbgKJBfV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 20:35:21 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:7162 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725889AbgKJBfV (ORCPT
+        id S1730843AbgKJBhJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 20:37:09 -0500
+Received: from youngberry.canonical.com ([91.189.89.112]:42579 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727311AbgKJBhJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 20:35:21 -0500
-Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4CVVmH08qpz15TlP;
-        Tue, 10 Nov 2020 09:35:11 +0800 (CST)
-Received: from [10.174.177.244] (10.174.177.244) by
- DGGEMS401-HUB.china.huawei.com (10.3.19.201) with Microsoft SMTP Server id
- 14.3.487.0; Tue, 10 Nov 2020 09:35:08 +0800
-Subject: Re: [PATCH] regmap: Properly free allocated name for regmap_config of
- syscon
-To:     Mark Brown <broonie@kernel.org>
-CC:     Marc Zyngier <maz@kernel.org>, <linux-kernel@vger.kernel.org>,
-        <wangkefeng.wang@huawei.com>
-References: <20201109115816.160639-1-wangkefeng.wang@huawei.com>
- <20201109172331.GJ6380@sirena.org.uk>
-From:   Kefeng Wang <wangkefeng.wang@huawei.com>
-Message-ID: <18a3857d-3250-e136-7d80-abdab902367c@huawei.com>
-Date:   Tue, 10 Nov 2020 09:35:08 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.0
+        Mon, 9 Nov 2020 20:37:09 -0500
+Received: from mail-lf1-f72.google.com ([209.85.167.72])
+        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <po-hsu.lin@canonical.com>)
+        id 1kcIao-0000r0-Lm
+        for linux-kernel@vger.kernel.org; Tue, 10 Nov 2020 01:37:07 +0000
+Received: by mail-lf1-f72.google.com with SMTP id s10so1830993lfi.15
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Nov 2020 17:37:06 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=xygyfviZhrqldJoh55lqm86ZBffK6xSKZWicSP9XRLw=;
+        b=bHM/eUUO0a6xmRyFT40LXR9j/MmaR+WP45DmJBl31Tkwcue9uxwiOXnOkoqoL+MZdd
+         Nq6k1XgB6H2zlzqJLIrnrsCG8zuHrtive57WoMXmu/YwPGz8LgAZ0CsRuZNme88xamI5
+         BFfDfXIz1PLlAsP5P2Mt3YV9XV8cfjjL6E+2LtR5qwMy8pUiDmyo4p6Rwg1DDOvmXdH1
+         sKMhXMzV9uhTMN1hbAH8l+bHtbhXNPE/4YypkgA3XbfZg4FfsTFT6/qUsfFwPtNQ7fdP
+         Di1fqURb/uzsBuTeRxE8SnYi2XT27Gj5hcoJvv4x5MGN3qivP4YZe7mPABgngVF5MSa3
+         YCpg==
+X-Gm-Message-State: AOAM530Jytm8yq38IfOny0kE8+BMR3SbNWpXk56yyIyUIhn/lPD8yfiS
+        ecZ1ZzFAs3g+/ZaeeUbFCgNmmreqhBbAS8kJnyT/yah7tVrT/N3g4syyBk4EUJw0DliAV8PIWi4
+        /TY+fZK5PtaY+FKBAlDk/d8rCYOThMrFiW3Aw6l/NrJd+c9iewSAWJMzk
+X-Received: by 2002:a2e:8346:: with SMTP id l6mr6581917ljh.132.1604972225989;
+        Mon, 09 Nov 2020 17:37:05 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJwD7ul4nbZVQiVfaxChsuU9NpBuXQIKlLhwaoMNAWMub6P1uHlGOMMx0ima4z8Y3LMt9V7R+6TVWgDs82IrhIo=
+X-Received: by 2002:a2e:8346:: with SMTP id l6mr6581908ljh.132.1604972225691;
+ Mon, 09 Nov 2020 17:37:05 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20201109172331.GJ6380@sirena.org.uk>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Originating-IP: [10.174.177.244]
-X-CFilter-Loop: Reflected
+References: <20201105105051.64258-1-po-hsu.lin@canonical.com>
+ <20201105105051.64258-3-po-hsu.lin@canonical.com> <20201107150200.509523e3@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <CAMy_GT-Hsj7GmHKBb9Ztvsisrujud1C=E+sKE1TfHDsszwpMXA@mail.gmail.com> <20201109100911.28afc390@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20201109100911.28afc390@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+From:   Po-Hsu Lin <po-hsu.lin@canonical.com>
+Date:   Tue, 10 Nov 2020 09:36:54 +0800
+Message-ID: <CAMy_GT_FQrXObfebdzipkhzSuAGE7VbGiRuE3e87uH9YcjBrAA@mail.gmail.com>
+Subject: Re: [PATCH 2/2] selftests: pmtu.sh: improve the test result processing
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     netdev@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org, David Miller <davem@davemloft.net>,
+        Shuah Khan <skhan@linuxfoundation.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 2020/11/10 1:23, Mark Brown wrote:
-> On Mon, Nov 09, 2020 at 07:58:16PM +0800, Kefeng Wang wrote:
+On Tue, Nov 10, 2020 at 2:09 AM Jakub Kicinski <kuba@kernel.org> wrote:
 >
->> syscon_config.name in of_syscon_register is allocated using kasprintf,
->> which should be freed when it is not used after regmap_set_name, fix
->> the following memory leak.
->> unreferenced object 0xffffffe07fe8c150 (size 16):
->>    comm "swapper/0", pid 1, jiffies 4294892540 (age 68.168s)
->>    hex dump (first 16 bytes):
->>      74 65 73 74 40 31 30 30 30 30 30 00 e0 ff ff ff  test@100000.....
->>    backtrace:
->>      [<0000000023d86736>] create_object+0xe8/0x348
->>      [<00000000fe9d1b17>] kmemleak_alloc+0x20/0x2a
-> Please think hard before including complete backtraces in upstream
-> reports, they are very large and contain almost no useful information
-> relative to their size so often obscure the relevant content in your
-> message. If part of the backtrace is usefully illustrative (it often is
-> for search engines if nothing else) then it's usually better to pull out
-> the relevant sections.
+> On Mon, 9 Nov 2020 11:42:33 +0800 Po-Hsu Lin wrote:
+> > On Sun, Nov 8, 2020 at 7:02 AM Jakub Kicinski <kuba@kernel.org> wrote:
+> > >
+> > > On Thu,  5 Nov 2020 18:50:51 +0800 Po-Hsu Lin wrote:
+> > > > This test will treat all non-zero return codes as failures, it will
+> > > > make the pmtu.sh test script being marked as FAILED when some
+> > > > sub-test got skipped.
+> > > >
+> > > > Improve the result processing by
+> > > >   * Only mark the whole test script as SKIP when all of the
+> > > >     sub-tests were skipped
+> > > >   * If the sub-tests were either passed or skipped, the overall
+> > > >     result will be PASS
+> > > >   * If any of them has failed, the overall result will be FAIL
+> > > >   * Treat other return codes (e.g. 127 for command not found) as FAIL
+> > > >
+> > > > Signed-off-by: Po-Hsu Lin <po-hsu.lin@canonical.com>
+> > >
+> > > Patch 1 looks like a cleanup while patch 2 is more of a fix, can we
+> > > separate the two and apply the former to -next and latter to 5.10?
+> > > They shouldn't conflict, right?
+> > >
+> >
+> > Hello Jakub,
+> >
+> > Yes the first patch is just changing return code to $ksft_skip, the
+> > real fix is the second one. However the second patch was based on the
+> > first one, if we want to apply them separately we might need to change
+> > this $ksft_skip handling part in the second patch.
+>
+> Ah, I misread the situation, ksft_skip is 4, not 2, so the patch is
+> more than just refactoring.
+>
+> > What should I do to deal with this?
+> > Resend the former for -next and rebase + resend the latter (plus the
+> > fix to remove case 1) for 5.10 without the former patch?
+>
+> Let's apply both of the patches to net-next if that's fine with you.
+> Indeed detangling them is may be more effort that it's worth.
 
-2899872b627e   "regmap: debugfs: Fix memory leak in regmap_debugfs_init" 
-add a similar
-
-backtrack, but the address of the trace is useless, will be careful next 
-time.
-
->> @@ -601,6 +601,7 @@ static int regmap_set_name(struct regmap *map, const struct regmap_config *confi
->>   		if (!name)
->>   			return -ENOMEM;
->>   
->> +		kfree_const(config->name);
->>   		kfree_const(map->name);
->>   		map->name = name;
->>   	}
-> Why would we free the passed in name here?  The name wes passed in from
-> outside regmap in a const configuration struct, we've no idea within
-> regmap if it was dynamically allocted or not and it seems very
-> surprising that we'd go off and free it.  The whole reason we're
-> duplicating it in regmap_set_name() is that we don't know how long it's
-> going to be around so we don't want to reference it after having
-> returned to the caller.  If the caller has dynamically allocated it then
-> the caller should deal with freeing it.
-
-Yes, after check it again, this patch is wrong.
-
-Hi Marc,  the regmap debugfs will duplicate a name in regmap_set_name(), 
-and
-
-syscon_config.name won't be used in syscon,  so your following patch 
-doesn't seem
-
-to be necessary,  right ? Please correct me if I'm wrong, thanks.
-
-
-commit 529a1101212a785c5df92c314b0e718287150c3b
-Author: Marc Zyngier <maz@kernel.org>
-Date:   Thu Sep 3 17:02:37 2020 +0100
-
-     mfd: syscon: Don't free allocated name for regmap_config
-
-     The name allocated for the regmap_config structure is freed
-     pretty early, right after the registration of the MMIO region.
-
-     Unfortunately, that doesn't follow the life cycle that debugfs
-     expects, as it can access the name field long after the free
-     has occurred.
-
-     Move the free on the error path, and keep it forever otherwise.
-
-
+That would be great, but allow me to resend V2 to get rid of case 1 first.
+Thanks!
