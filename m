@@ -2,93 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 335882AD5CD
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 13:01:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 07CF02AD5D5
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 13:04:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730114AbgKJMBx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 07:01:53 -0500
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:39840 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730059AbgKJMBw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 07:01:52 -0500
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0AAC1maK031739;
-        Tue, 10 Nov 2020 06:01:48 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1605009708;
-        bh=wCRTJJjnhbgI5KP8iM2EISON2IZQ8Ci3jNba4ttYH7U=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=hI/7kiTJ27/GEsOKXfXA/48MDnO53qTcyDIkn5FAIPk5uXXoTQ4yWj7BCFcMx1rqI
-         fqBt7uA/mE/zZ9JSWU+27UMuIx2fr7XUUNEpZb0oY5uwcP2xM3LGdz4cVPgNt0qM83
-         Vgu07tuymKFdexNxmyKU/p7dEGqZEnpWzOPfrwyo=
-Received: from DFLE103.ent.ti.com (dfle103.ent.ti.com [10.64.6.24])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0AAC1m08086548
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 10 Nov 2020 06:01:48 -0600
-Received: from DFLE100.ent.ti.com (10.64.6.21) by DFLE103.ent.ti.com
- (10.64.6.24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 10
- Nov 2020 06:01:47 -0600
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE100.ent.ti.com
- (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Tue, 10 Nov 2020 06:01:47 -0600
-Received: from [192.168.2.6] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0AAC1jul051383;
-        Tue, 10 Nov 2020 06:01:45 -0600
-Subject: Re: [PATCH 08/19] drm/omapdrm/omap_gem: Fix misnamed and missing
- parameter descriptions
-To:     Lee Jones <lee.jones@linaro.org>
-CC:     <linux-kernel@vger.kernel.org>, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
-        Rob Clark <rob.clark@linaro.org>,
-        <dri-devel@lists.freedesktop.org>, <linux-media@vger.kernel.org>,
-        <linaro-mm-sig@lists.linaro.org>
-References: <20201106214949.2042120-1-lee.jones@linaro.org>
- <20201106214949.2042120-9-lee.jones@linaro.org>
-From:   Tomi Valkeinen <tomi.valkeinen@ti.com>
-Message-ID: <3d5dc164-d26a-5999-1e7f-9cabfdd84c36@ti.com>
-Date:   Tue, 10 Nov 2020 14:01:44 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1729827AbgKJME2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 07:04:28 -0500
+Received: from muru.com ([72.249.23.125]:47844 "EHLO muru.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726462AbgKJME2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Nov 2020 07:04:28 -0500
+Received: from atomide.com (localhost [127.0.0.1])
+        by muru.com (Postfix) with ESMTPS id 59D5280BA;
+        Tue, 10 Nov 2020 12:04:31 +0000 (UTC)
+Date:   Tue, 10 Nov 2020 14:04:22 +0200
+From:   Tony Lindgren <tony@atomide.com>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Russell King - ARM Linux admin <linux@armlinux.org.uk>,
+        v.narang@samsung.com, a.sahrawat@samsung.com,
+        Marc Zyngier <maz@kernel.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Vincent Whitchurch <vincent.whitchurch@axis.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Nathan Huckleberry <nhuck@google.com>,
+        Jian Cai <caij2003@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Dmitry Safonov <0x7f454c46@gmail.com>,
+        Maninder Singh <maninder1.s@samsung.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Will Deacon <will@kernel.org>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [PATCH 2/3] arm: introduce IRQ stacks
+Message-ID: <20201110120422.GE26857@atomide.com>
+References: <1602141333-17822-3-git-send-email-maninder1.s@samsung.com>
+ <CAK8P3a2RYeNiTy9QmwFVKtFifXxWc9XfAT6ThPoSH9wGYsKGpA@mail.gmail.com>
+ <CAK8P3a3eZjBVSuhv=Cx4aYC+E9tex+BbJH1b6YyMMief-mO7kQ@mail.gmail.com>
+ <20201021124542.GL1551@shell.armlinux.org.uk>
+ <20201021125740.GM1551@shell.armlinux.org.uk>
+ <CAK8P3a3s9JJpeBpH38utw9aA1VaEkcBqKEGtwcmoP1zS6xDj5Q@mail.gmail.com>
+ <20201109144549.GA26857@atomide.com>
+ <CAK8P3a2tM1Gzy7Y98tiYGoNcLye77je_UCtTUQYcP2UuRNRKwQ@mail.gmail.com>
+ <20201110091904.GC26857@atomide.com>
+ <CAK8P3a3dZMnEV-Sg_ep6_dQ3XEf73fEpCF0T03255KxMrJZH8g@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20201106214949.2042120-9-lee.jones@linaro.org>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAK8P3a3dZMnEV-Sg_ep6_dQ3XEf73fEpCF0T03255KxMrJZH8g@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 06/11/2020 23:49, Lee Jones wrote:
-> Fixes the following W=1 kernel build warning(s):
+* Arnd Bergmann <arnd@kernel.org> [201110 10:04]:
+> On Tue, Nov 10, 2020 at 10:19 AM Tony Lindgren <tony@atomide.com> wrote:
+> > * Arnd Bergmann <arnd@kernel.org> [201109 19:10]:
+> > > On Mon, Nov 9, 2020 at 3:45 PM Tony Lindgren <tony@atomide.com> wrote:
+> > >
+> > > I know it works, my point was that I'm not sure anyone cares
+> > > any more ;-)
+> >
+> > Well for example whatever Linux running ARMv6 LTE modems out there might
+> > need to be supported for quite some time. Not sure how many of them are
+> > able to update kernels though. Certainly network security related issues
+> > would be a good reason to update the kernels.
 > 
->  drivers/gpu/drm/omapdrm/omap_gem.c:593: warning: Function parameter or member 'file' not described in 'omap_gem_dumb_create'
->  drivers/gpu/drm/omapdrm/omap_gem.c:593: warning: Excess function parameter 'drm_file' description in 'omap_gem_dumb_create'
->  drivers/gpu/drm/omapdrm/omap_gem.c:619: warning: Function parameter or member 'offset' not described in 'omap_gem_dumb_map_offset'
-> 
-> Cc: Tomi Valkeinen <tomi.valkeinen@ti.com>
-> Cc: David Airlie <airlied@linux.ie>
-> Cc: Daniel Vetter <daniel@ffwll.ch>
-> Cc: Sumit Semwal <sumit.semwal@linaro.org>
-> Cc: "Christian König" <christian.koenig@amd.com>
-> Cc: Rob Clark <rob.clark@linaro.org>
-> Cc: dri-devel@lists.freedesktop.org
-> Cc: linux-media@vger.kernel.org
-> Cc: linaro-mm-sig@lists.linaro.org
-> Signed-off-by: Lee Jones <lee.jones@linaro.org>
-> ---
->  drivers/gpu/drm/omapdrm/omap_gem.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
+> While I agree they should update their kernels, I suspect none of those
+> modems do. I am however certain that none of them are running an
+> SMP-enabled multiplatform kernel on an ARM1136r0!
 
-Thanks! I'll pick this one and the next to drm-misc-next.
+Nope, AFAIK all the SMP parts are ARMv6K :)
 
- Tomi
+> Are these actually ARMv6? Most ARM11 cores you'd come across
+> in practice are ARMv6K (ARM1136r1, ARM1167, ARM11MPCore),
+> in particular every SoC that has any mainline support except for
+> the ARM1136r0 based OMAP2 and i.MX3.
 
--- 
-Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
-Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
+I've been only using smp_on_up for the ARMv6 ARM1136r0 variants
+for omap2, no SMP on those.
+
+Regards,
+
+Tony
