@@ -2,202 +2,231 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51C612ADC31
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 17:32:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CA66F2ADC36
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 17:33:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729674AbgKJQcT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 11:32:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51686 "EHLO
+        id S1729909AbgKJQdu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 11:33:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51916 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726152AbgKJQcS (ORCPT
+        with ESMTP id S1726152AbgKJQdt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 11:32:18 -0500
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDFB4C0613CF;
-        Tue, 10 Nov 2020 08:32:18 -0800 (PST)
-Received: by mail-pg1-x544.google.com with SMTP id i13so5848685pgm.9;
-        Tue, 10 Nov 2020 08:32:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=skC9HMwoANjiJgrhHyjN46EO+eh+8Q1iVSgyl/kti+k=;
-        b=lrXVThl9cRE9BR1zbfCFCVBXzNcgtpqP0fWsxNF9/osGeBHmpvLB0qjimR9XJ9IRD6
-         V8SYwDrU0JA0FW0kkwPIy3JgMf2+Em+0+Ukx6MjLfbzzSO75M2EZuU8/SwWhfmGJECuF
-         +fU5ROBokGQbKDq36AzvqAedsLcqKBla4/VvE2Cq+2wXVLEkdjmSW9ni8ypHJE1b8sfc
-         kXySNtF5++9oE/Q6fR9KlKh18quLXDZWkCXiEZ04wbdwRybSAeGkycDusQ7tQMFFvBnF
-         HRd/iH4vk6HOIL/jWURwJYb0Is9zybv8v/Ce1kWFUZ9JmuMzIj5fbCiiVv6ic4LOq315
-         aQOQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=skC9HMwoANjiJgrhHyjN46EO+eh+8Q1iVSgyl/kti+k=;
-        b=QqJ1PlZ+J8UJdhDdD0CDGCLDYr9Iwhz8d8fsAvqjUREvnqKyoEtZ+ximVyb47oAvs9
-         2EBnlMFB1rGdRSt7Q+Xj13CEZplm7cIBWBxhSfJLj4/PGCi+/CsPzIrfxzZMq4jQoyHY
-         V7IVqiTIWAd8fgyZkM/J4yCbCx8/RIfW5Iv2iFBuF46xwEdowCafyx6C0IkCPff1MgyS
-         UG9xrHrN/O49NklnZSBqU3IlQq1gdSpCOJwehulF4yTh302N6fUPIREGY4Ctl8UU8vF3
-         f6jqH4RDF3pR6fp+exBsrE9LEfgSYuvfTu0LJiCtniCS2sjEiJfzKxm+IdhY3HnpBo+D
-         NbDQ==
-X-Gm-Message-State: AOAM530N8MNkBrTUnWS5FvTXSLPJwgdeiDMW3WHWBvJpCF7frYxLlAMI
-        H8rzVQD22CTYMkZrzG2UU76E1aaf8QmP/Q==
-X-Google-Smtp-Source: ABdhPJxjvLLvMJoo+tOGpKTDLmpwuk/X5/wwzVMh6tm20hmVtdcs5c9gZSEdbnkOhjx/bhgNzVXI+A==
-X-Received: by 2002:a63:f74c:: with SMTP id f12mr17306186pgk.434.1605025937811;
-        Tue, 10 Nov 2020 08:32:17 -0800 (PST)
-Received: from [192.168.86.81] ([106.51.240.240])
-        by smtp.gmail.com with ESMTPSA id l22sm15029777pff.27.2020.11.10.08.32.13
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 10 Nov 2020 08:32:17 -0800 (PST)
-Subject: Re: [PATCH v6 1/2] kunit: Support for Parameterized Testing
-To:     Marco Elver <elver@google.com>, David Gow <davidgow@google.com>
-Cc:     Brendan Higgins <brendanhiggins@google.com>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Iurii Zaikin <yzaikin@google.com>,
-        Theodore Ts'o <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        KUnit Development <kunit-dev@googlegroups.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-ext4@vger.kernel.org
-References: <20201106192154.51514-1-98.arpi@gmail.com>
- <CABVgOSkQ6+y7OGw2494cJa2b60EkSjncLNAgc9cJDbS=X9J3WA@mail.gmail.com>
- <CANpmjNNp2RUCE_ypp2R4MznikTYRYeCDuF7VMp+Hbh=55KWa3A@mail.gmail.com>
- <47a05c5a-485d-026b-c1c3-476ed1a97856@gmail.com>
- <CABVgOSkZ9k6bHPp=LVATWfokMSrEuD87jOfE5MiVYAEbZMmaQQ@mail.gmail.com>
- <CANpmjNMzNauQVNKK_ToWDKrwT1LKY7Tb+ApG8drX8wtBkBbWQQ@mail.gmail.com>
-From:   Arpitha Raghunandan <98.arpi@gmail.com>
-Message-ID: <06106c1a-7e1b-c317-91f2-7f9c64072794@gmail.com>
-Date:   Tue, 10 Nov 2020 22:02:11 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <CANpmjNMzNauQVNKK_ToWDKrwT1LKY7Tb+ApG8drX8wtBkBbWQQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+        Tue, 10 Nov 2020 11:33:49 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 576CEC0613CF
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 08:33:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Mime-Version:Content-Type:References:
+        In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=0zxz06M8TxmHTYmaGV5iXvdCpz2X9FwtZMxMPX/v0Ns=; b=gb0iYEFvkQ6w0L7Ks02SxNMspI
+        P8UxMx0LhLUz8NLybdZ1spXq1+B+t2NsOu2HeuQ4ceJOeFiM2jxnEyBEJV9uobv5Hs6H4dbVBqot+
+        5dfjcnaODz4HHYq5zGqcfLP5WjNO0NYFdsojCKltrAjWS+PijiQyJ1wiu/0ySxPXwS+J3wQzUacvc
+        YUlvnecvu71bSMOfHVl5ELnedaO8/MSh7bXaU0Q8CPkbsAsPjZzIxDpaHKHtd23na3tXl+X/yydHb
+        fa6bwMdTj3Q00T4CAQtDMn0NYpgV/Scma3I5dyFsUUs+MmIT+U+cTdbz/v53/ou/sSkzN7LZA03Vw
+        Qnj5sSiw==;
+Received: from [54.239.6.187] (helo=freeip.amazon.com)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kcWaV-0007M9-Vd; Tue, 10 Nov 2020 16:33:44 +0000
+Message-ID: <78be575e10034e546cc349d65fac2fcfc6f486b2.camel@infradead.org>
+Subject: Re: [EXTERNAL] [tip: x86/apic] x86/io_apic: Cleanup
+ trigger/polarity helpers
+From:   David Woodhouse <dwmw2@infradead.org>
+To:     Tom Lendacky <thomas.lendacky@amd.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>
+Cc:     linux-kernel@vger.kernel.org, x86 <x86@kernel.org>,
+        Qian Cai <cai@redhat.com>, Joerg Roedel <joro@8bytes.org>
+Date:   Tue, 10 Nov 2020 16:33:41 +0000
+In-Reply-To: <82d54a74-af90-39a4-e483-b3cd73e2ef03@amd.com>
+References: <20201024213535.443185-20-dwmw2@infradead.org>
+         <160397373817.397.3191135882528008704.tip-bot2@tip-bot2>
+         <e2e06979-cbcf-8771-0b48-c46f2d034aa8@amd.com>
+         <20201110061046.GA7290@nazgul.tnic>
+         <87d00lgu13.fsf@nanos.tec.linutronix.de>
+         <9a003c2f-f59a-43ab-bbd5-861b14436d29@amd.com>
+         <87a6vpgqbt.fsf@nanos.tec.linutronix.de>
+         <82d54a74-af90-39a4-e483-b3cd73e2ef03@amd.com>
+Content-Type: multipart/signed; micalg="sha-256";
+        protocol="application/x-pkcs7-signature";
+        boundary="=-r5kpOCWbrWroK4IL27wT"
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+Mime-Version: 1.0
+X-SRS-Rewrite: SMTP reverse-path rewritten from <dwmw2@infradead.org> by merlin.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/11/20 4:05 pm, Marco Elver wrote:
-> On Tue, 10 Nov 2020 at 08:21, David Gow <davidgow@google.com> wrote:
-> [...]
->>>>
->>>> The previous attempt [1] at something similar failed because it seems
->>>> we'd need to teach kunit-tool new tricks [2], too.
->>>> [1] https://lkml.kernel.org/r/20201105195503.GA2399621@elver.google.com
->>>> [2] https://lkml.kernel.org/r/20201106123433.GA3563235@elver.google.com
->>>>
->>>> So if we go with a different format, we might need a patch before this
->>>> one to make kunit-tool compatible with that type of diagnostic.
->>>>
->>>> Currently I think we have the following proposals for a format:
->>>>
->>>> 1. The current "# [test_case->name]: param-[index] [ok|not ok]" --
->>>> this works well, because no changes to kunit-tool are required, and it
->>>> also picks up the diagnostic context for the case and displays that on
->>>> test failure.
->>>>
->>>> 2. Your proposed "# [ok|not ok] - [test_case->name]:param-[index]".
->>>> As-is, this needs a patch for kunit-tool as well. I just checked, and
->>>> if we change it to "# [ok|not ok] - [test_case->name]: param-[index]"
->>>> (note the space after ':') it works without changing kunit-tool. ;-)
->>>>
->>>> 3. Something like "# [ok|not ok] param-[index] - [test_case->name]",
->>>> which I had played with earlier but kunit-tool is definitely not yet
->>>> happy with.
->>>>
->>>> So my current preference is (2) with the extra space (no change to
->>>> kunit-tool required). WDYT?
->>>>
->>
->> Hmm… that failure in kunit_tool is definitely a bug: we shouldn't care
->> what comes after the comment character except if it's an explicit
->> subtest declaration or a crash. I'll try to put a patch together to
->> fix it, but I'd rather not delay this just for that.
->>
->> In any thought about this a bit more, It turns out that the proposed
->> KTAP spec[1] discourages the use of ':', except as part of a subtest
->> declaration, or perhaps an as-yet-unspecified fully-qualified test
->> name. The latter is what I was going for, but if it's actively
->> breaking kunit_tool, we might want to hold off on it.
->>
->> If we were to try to treat these as subtests in accordance with that
->> spec, the way we'd want to use one of these options:
->> A) "[ok|not ok] [index] - param-[index]" -- This doesn't mention the
->> test case name, but otherwise treats things exactly the same way we
->> treat existing subtests.
->>
->> B) "[ok|not ok] [index] - [test_case->name]" -- This doesn't name the
->> "subtest", just gives repeated results with the same name.
->>
->> C) "[ok|not ok] [index] - [test_case->name][separator]param-[index]"
->> -- This is equivalent to my suggestion with a separator of ":", or 2
->> above with a separator of ": ". The in-progress spec doesn't yet
->> specify how these fully-qualified names would work, other than that
->> they'd use a colon somewhere, and if we comment it out, ": " is
->> required.
->>
->>>
->>> Which format do we finally go with?
->>>
->>
->> I'm actually going to make another wild suggestion for this, which is
->> a combination of (1) and (A):
->> "# [test_case->name]: [ok|not ok] [index] - param-[index]"
->>
->> This gives us a KTAP-compliant result line, except prepended with "#
->> [test_case->name]: ", which makes it formally a diagnostic line,
->> rather than an actual subtest. Putting the test name at the start
->> matches what kunit_tool is expecting at the moment. If we then want to
->> turn it into a proper subtest, we can just get rid of that prefix (and
->> add the appropriate counts elsewhere).
->>
->> Does that sound good?
-> 
-> Sounds reasonable to me!  The repetition of [index] seems unnecessary
-> for now, but I think if we at some point have a way to get a string
-> representation of a param, we can substitute param-[index] with a
-> string that represents the param.
-> 
 
-So, with this the inode-test.c will have the following output, right?
+--=-r5kpOCWbrWroK4IL27wT
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-TAP version 14
-1..7
-    # Subtest: ext4_inode_test
-    1..1
-    # inode_test_xtimestamp_decoding: ok 0 - param-0
-    # inode_test_xtimestamp_decoding: ok 1 - param-1
-    # inode_test_xtimestamp_decoding: ok 2 - param-2
-    # inode_test_xtimestamp_decoding: ok 3 - param-3
-    # inode_test_xtimestamp_decoding: ok 4 - param-4
-    # inode_test_xtimestamp_decoding: ok 5 - param-5
-    # inode_test_xtimestamp_decoding: ok 6 - param-6
-    # inode_test_xtimestamp_decoding: ok 7 - param-7
-    # inode_test_xtimestamp_decoding: ok 8 - param-8
-    # inode_test_xtimestamp_decoding: ok 9 - param-9
-    # inode_test_xtimestamp_decoding: ok 10 - param-10
-    # inode_test_xtimestamp_decoding: ok 11 - param-11
-    # inode_test_xtimestamp_decoding: ok 12 - param-12
-    # inode_test_xtimestamp_decoding: ok 13 - param-13
-    # inode_test_xtimestamp_decoding: ok 14 - param-14
-    # inode_test_xtimestamp_decoding: ok 15 - param-15
-    ok 1 - inode_test_xtimestamp_decoding
-ok 1 - ext4_inode_test
+On Tue, 2020-11-10 at 10:17 -0600, Tom Lendacky wrote:
+> Yep. The warning started triggering with:
+> 47bea873cf80 ("x86/msi: Only use high bits of MSI address for DMAR unit")
+>=20
+> Here's the backtrace:
+>=20
+> [   15.611109] ------------[ cut here ]------------
+> [   15.616274] WARNING: CPU: 184 PID: 1 at arch/x86/kernel/apic/apic.c:25=
+05 __irq_msi_compose_msg+0x79/0x80
+> [   15.626855] Modules linked in:
+> [   15.630263] CPU: 184 PID: 1 Comm: swapper/0 Not tainted 5.10.0-rc1-sos=
+-custom #1
+> [   15.638516] Hardware name: AMD Corporation ETHANOL_X/ETHANOL_X, BIOS R=
+EX1006G 01/25/2020
+> [   15.647549] RIP: 0010:__irq_msi_compose_msg+0x79/0x80
+> [   15.653188] Code: 0f f0 ff 09 d0 89 06 8b 47 04 c7 46 04 00 00 00 00 8=
+8 46 08 45 84 c0 74 08 8b 07 30 c0 89 46 04 c3 81 3f ff 00 00 00 77 01 c3 <=
+0f> 0b c3 0f 1f 40 00 0f 1f 44 00 00 8b 05 81 f9 04 02 85 c0 75 16
+> [   15.674140] RSP: 0018:ffffc900000c7c30 EFLAGS: 00010212
+> [   15.679971] RAX: 0000000000000021 RBX: ffff888143789028 RCX: 000000000=
+0000000
+> [   15.687936] RDX: 0000000000000000 RSI: ffffc900000c7c40 RDI: ffff88814=
+47dd1c0
+> [   15.695899] RBP: ffff888143789028 R08: 0000000000000000 R09: 000000000=
+0000005
+> [   15.703861] R10: 0000000000000002 R11: 0000000000000004 R12: ffff88900=
+e7b80c0
+> [   15.711825] R13: 0000000000000000 R14: ffff88907646ba80 R15: 000000000=
+0000000
+> [   15.719789] FS:  0000000000000000(0000) GS:ffff88900f000000(0000) knlG=
+S:0000000000000000
+> [   15.728821] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> [   15.735234] CR2: 0000000000000000 CR3: 000000114d40a000 CR4: 000000000=
+0350ee0
+> [   15.743197] Call Trace:
+> [   15.745929]  irq_chip_compose_msi_msg+0x2e/0x40
+> [   15.750984]  msi_domain_activate+0x4b/0x90
+> [   15.755556]  __irq_domain_activate_irq+0x53/0x80
+> [   15.760707]  ? irq_set_msi_desc_off+0x5a/0x90
+> [   15.765568]  irq_domain_activate_irq+0x25/0x40
+> [   15.770525]  __msi_domain_alloc_irqs+0x16a/0x310
+> [   15.775680]  __pci_enable_msi_range+0x182/0x2b0
+> [   15.780738]  ? e820__memblock_setup+0x7d/0x7d
+> [   15.785597]  pci_enable_msi+0x16/0x30
+> [   15.789685]  iommu_init_msi+0x30/0x190
+> [   15.793860]  state_next+0x39d/0x665
+> [   15.797754]  ? e820__memblock_setup+0x7d/0x7d
+> [   15.802615]  iommu_go_to_state+0x24/0x28
+> [   15.806993]  amd_iommu_init+0x11/0x46
+> [   15.811076]  pci_iommu_init+0x16/0x3f
 
-I will send another patch with this change.
-Thanks!
+Oh joy.
 
-> Note that once we want to make it a real subtest, we'd need to run the
-> generator twice, once to get the number of params and then to run the
-> tests. If we require that param generators are deterministic in the
-> number of params generated, this is not a problem.
-> 
-> Thanks,
-> -- Marco
-> 
+It's asking the core code to generate a PCI MSI message for it and
+actually program that to the PCI device (since the IOMMU itself is a
+PCI device).
+
+That isn't actually used for generating MSI, but is instead interpreted
+to write the intcapxt registers which *do* generate the interrupts.
+
+That wants fixing, preferably not to go via MSI format at all, or maybe
+just to use the 'dmar' flag to __irq_msi_compose_msg(). Either way by
+having an irqdomain of its own like the Intel IOMMU does.
+
+If I could get post-5.5 kernels to boot at all with the AMD IOMMU
+enabled, I'd have a go at throwing that together now...
+
+
+--=-r5kpOCWbrWroK4IL27wT
+Content-Type: application/x-pkcs7-signature; name="smime.p7s"
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Transfer-Encoding: base64
+
+MIAGCSqGSIb3DQEHAqCAMIACAQExDzANBglghkgBZQMEAgEFADCABgkqhkiG9w0BBwEAAKCCECow
+ggUcMIIEBKADAgECAhEA4rtJSHkq7AnpxKUY8ZlYZjANBgkqhkiG9w0BAQsFADCBlzELMAkGA1UE
+BhMCR0IxGzAZBgNVBAgTEkdyZWF0ZXIgTWFuY2hlc3RlcjEQMA4GA1UEBxMHU2FsZm9yZDEaMBgG
+A1UEChMRQ09NT0RPIENBIExpbWl0ZWQxPTA7BgNVBAMTNENPTU9ETyBSU0EgQ2xpZW50IEF1dGhl
+bnRpY2F0aW9uIGFuZCBTZWN1cmUgRW1haWwgQ0EwHhcNMTkwMTAyMDAwMDAwWhcNMjIwMTAxMjM1
+OTU5WjAkMSIwIAYJKoZIhvcNAQkBFhNkd213MkBpbmZyYWRlYWQub3JnMIIBIjANBgkqhkiG9w0B
+AQEFAAOCAQ8AMIIBCgKCAQEAsv3wObLTCbUA7GJqKj9vHGf+Fa+tpkO+ZRVve9EpNsMsfXhvFpb8
+RgL8vD+L133wK6csYoDU7zKiAo92FMUWaY1Hy6HqvVr9oevfTV3xhB5rQO1RHJoAfkvhy+wpjo7Q
+cXuzkOpibq2YurVStHAiGqAOMGMXhcVGqPuGhcVcVzVUjsvEzAV9Po9K2rpZ52FE4rDkpDK1pBK+
+uOAyOkgIg/cD8Kugav5tyapydeWMZRJQH1vMQ6OVT24CyAn2yXm2NgTQMS1mpzStP2ioPtTnszIQ
+Ih7ASVzhV6csHb8Yrkx8mgllOyrt9Y2kWRRJFm/FPRNEurOeNV6lnYAXOymVJwIDAQABo4IB0zCC
+Ac8wHwYDVR0jBBgwFoAUgq9sjPjF/pZhfOgfPStxSF7Ei8AwHQYDVR0OBBYEFLfuNf820LvaT4AK
+xrGK3EKx1DE7MA4GA1UdDwEB/wQEAwIFoDAMBgNVHRMBAf8EAjAAMB0GA1UdJQQWMBQGCCsGAQUF
+BwMEBggrBgEFBQcDAjBGBgNVHSAEPzA9MDsGDCsGAQQBsjEBAgEDBTArMCkGCCsGAQUFBwIBFh1o
+dHRwczovL3NlY3VyZS5jb21vZG8ubmV0L0NQUzBaBgNVHR8EUzBRME+gTaBLhklodHRwOi8vY3Js
+LmNvbW9kb2NhLmNvbS9DT01PRE9SU0FDbGllbnRBdXRoZW50aWNhdGlvbmFuZFNlY3VyZUVtYWls
+Q0EuY3JsMIGLBggrBgEFBQcBAQR/MH0wVQYIKwYBBQUHMAKGSWh0dHA6Ly9jcnQuY29tb2RvY2Eu
+Y29tL0NPTU9ET1JTQUNsaWVudEF1dGhlbnRpY2F0aW9uYW5kU2VjdXJlRW1haWxDQS5jcnQwJAYI
+KwYBBQUHMAGGGGh0dHA6Ly9vY3NwLmNvbW9kb2NhLmNvbTAeBgNVHREEFzAVgRNkd213MkBpbmZy
+YWRlYWQub3JnMA0GCSqGSIb3DQEBCwUAA4IBAQALbSykFusvvVkSIWttcEeifOGGKs7Wx2f5f45b
+nv2ghcxK5URjUvCnJhg+soxOMoQLG6+nbhzzb2rLTdRVGbvjZH0fOOzq0LShq0EXsqnJbbuwJhK+
+PnBtqX5O23PMHutP1l88AtVN+Rb72oSvnD+dK6708JqqUx2MAFLMevrhJRXLjKb2Mm+/8XBpEw+B
+7DisN4TMlLB/d55WnT9UPNHmQ+3KFL7QrTO8hYExkU849g58Dn3Nw3oCbMUgny81ocrLlB2Z5fFG
+Qu1AdNiBA+kg/UxzyJZpFbKfCITd5yX49bOriL692aMVDyqUvh8fP+T99PqorH4cIJP6OxSTdxKM
+MIIFHDCCBASgAwIBAgIRAOK7SUh5KuwJ6cSlGPGZWGYwDQYJKoZIhvcNAQELBQAwgZcxCzAJBgNV
+BAYTAkdCMRswGQYDVQQIExJHcmVhdGVyIE1hbmNoZXN0ZXIxEDAOBgNVBAcTB1NhbGZvcmQxGjAY
+BgNVBAoTEUNPTU9ETyBDQSBMaW1pdGVkMT0wOwYDVQQDEzRDT01PRE8gUlNBIENsaWVudCBBdXRo
+ZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBMB4XDTE5MDEwMjAwMDAwMFoXDTIyMDEwMTIz
+NTk1OVowJDEiMCAGCSqGSIb3DQEJARYTZHdtdzJAaW5mcmFkZWFkLm9yZzCCASIwDQYJKoZIhvcN
+AQEBBQADggEPADCCAQoCggEBALL98Dmy0wm1AOxiaio/bxxn/hWvraZDvmUVb3vRKTbDLH14bxaW
+/EYC/Lw/i9d98CunLGKA1O8yogKPdhTFFmmNR8uh6r1a/aHr301d8YQea0DtURyaAH5L4cvsKY6O
+0HF7s5DqYm6tmLq1UrRwIhqgDjBjF4XFRqj7hoXFXFc1VI7LxMwFfT6PStq6WedhROKw5KQytaQS
+vrjgMjpICIP3A/CroGr+bcmqcnXljGUSUB9bzEOjlU9uAsgJ9sl5tjYE0DEtZqc0rT9oqD7U57My
+ECIewElc4VenLB2/GK5MfJoJZTsq7fWNpFkUSRZvxT0TRLqznjVepZ2AFzsplScCAwEAAaOCAdMw
+ggHPMB8GA1UdIwQYMBaAFIKvbIz4xf6WYXzoHz0rcUhexIvAMB0GA1UdDgQWBBS37jX/NtC72k+A
+CsaxitxCsdQxOzAOBgNVHQ8BAf8EBAMCBaAwDAYDVR0TAQH/BAIwADAdBgNVHSUEFjAUBggrBgEF
+BQcDBAYIKwYBBQUHAwIwRgYDVR0gBD8wPTA7BgwrBgEEAbIxAQIBAwUwKzApBggrBgEFBQcCARYd
+aHR0cHM6Ly9zZWN1cmUuY29tb2RvLm5ldC9DUFMwWgYDVR0fBFMwUTBPoE2gS4ZJaHR0cDovL2Ny
+bC5jb21vZG9jYS5jb20vQ09NT0RPUlNBQ2xpZW50QXV0aGVudGljYXRpb25hbmRTZWN1cmVFbWFp
+bENBLmNybDCBiwYIKwYBBQUHAQEEfzB9MFUGCCsGAQUFBzAChklodHRwOi8vY3J0LmNvbW9kb2Nh
+LmNvbS9DT01PRE9SU0FDbGllbnRBdXRoZW50aWNhdGlvbmFuZFNlY3VyZUVtYWlsQ0EuY3J0MCQG
+CCsGAQUFBzABhhhodHRwOi8vb2NzcC5jb21vZG9jYS5jb20wHgYDVR0RBBcwFYETZHdtdzJAaW5m
+cmFkZWFkLm9yZzANBgkqhkiG9w0BAQsFAAOCAQEAC20spBbrL71ZEiFrbXBHonzhhirO1sdn+X+O
+W579oIXMSuVEY1LwpyYYPrKMTjKECxuvp24c829qy03UVRm742R9Hzjs6tC0oatBF7KpyW27sCYS
+vj5wbal+TttzzB7rT9ZfPALVTfkW+9qEr5w/nSuu9PCaqlMdjABSzHr64SUVy4ym9jJvv/FwaRMP
+gew4rDeEzJSwf3eeVp0/VDzR5kPtyhS+0K0zvIWBMZFPOPYOfA59zcN6AmzFIJ8vNaHKy5QdmeXx
+RkLtQHTYgQPpIP1Mc8iWaRWynwiE3ecl+PWzq4i+vdmjFQ8qlL4fHz/k/fT6qKx+HCCT+jsUk3cS
+jDCCBeYwggPOoAMCAQICEGqb4Tg7/ytrnwHV2binUlYwDQYJKoZIhvcNAQEMBQAwgYUxCzAJBgNV
+BAYTAkdCMRswGQYDVQQIExJHcmVhdGVyIE1hbmNoZXN0ZXIxEDAOBgNVBAcTB1NhbGZvcmQxGjAY
+BgNVBAoTEUNPTU9ETyBDQSBMaW1pdGVkMSswKQYDVQQDEyJDT01PRE8gUlNBIENlcnRpZmljYXRp
+b24gQXV0aG9yaXR5MB4XDTEzMDExMDAwMDAwMFoXDTI4MDEwOTIzNTk1OVowgZcxCzAJBgNVBAYT
+AkdCMRswGQYDVQQIExJHcmVhdGVyIE1hbmNoZXN0ZXIxEDAOBgNVBAcTB1NhbGZvcmQxGjAYBgNV
+BAoTEUNPTU9ETyBDQSBMaW1pdGVkMT0wOwYDVQQDEzRDT01PRE8gUlNBIENsaWVudCBBdXRoZW50
+aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKC
+AQEAvrOeV6wodnVAFsc4A5jTxhh2IVDzJXkLTLWg0X06WD6cpzEup/Y0dtmEatrQPTRI5Or1u6zf
++bGBSyD9aH95dDSmeny1nxdlYCeXIoymMv6pQHJGNcIDpFDIMypVpVSRsivlJTRENf+RKwrB6vcf
+WlP8dSsE3Rfywq09N0ZfxcBa39V0wsGtkGWC+eQKiz4pBZYKjrc5NOpG9qrxpZxyb4o4yNNwTqza
+aPpGRqXB7IMjtf7tTmU2jqPMLxFNe1VXj9XB1rHvbRikw8lBoNoSWY66nJN/VCJv5ym6Q0mdCbDK
+CMPybTjoNCQuelc0IAaO4nLUXk0BOSxSxt8kCvsUtQIDAQABo4IBPDCCATgwHwYDVR0jBBgwFoAU
+u69+Aj36pvE8hI6t7jiY7NkyMtQwHQYDVR0OBBYEFIKvbIz4xf6WYXzoHz0rcUhexIvAMA4GA1Ud
+DwEB/wQEAwIBhjASBgNVHRMBAf8ECDAGAQH/AgEAMBEGA1UdIAQKMAgwBgYEVR0gADBMBgNVHR8E
+RTBDMEGgP6A9hjtodHRwOi8vY3JsLmNvbW9kb2NhLmNvbS9DT01PRE9SU0FDZXJ0aWZpY2F0aW9u
+QXV0aG9yaXR5LmNybDBxBggrBgEFBQcBAQRlMGMwOwYIKwYBBQUHMAKGL2h0dHA6Ly9jcnQuY29t
+b2RvY2EuY29tL0NPTU9ET1JTQUFkZFRydXN0Q0EuY3J0MCQGCCsGAQUFBzABhhhodHRwOi8vb2Nz
+cC5jb21vZG9jYS5jb20wDQYJKoZIhvcNAQEMBQADggIBAHhcsoEoNE887l9Wzp+XVuyPomsX9vP2
+SQgG1NgvNc3fQP7TcePo7EIMERoh42awGGsma65u/ITse2hKZHzT0CBxhuhb6txM1n/y78e/4ZOs
+0j8CGpfb+SJA3GaBQ+394k+z3ZByWPQedXLL1OdK8aRINTsjk/H5Ns77zwbjOKkDamxlpZ4TKSDM
+KVmU/PUWNMKSTvtlenlxBhh7ETrN543j/Q6qqgCWgWuMAXijnRglp9fyadqGOncjZjaaSOGTTFB+
+E2pvOUtY+hPebuPtTbq7vODqzCM6ryEhNhzf+enm0zlpXK7q332nXttNtjv7VFNYG+I31gnMrwfH
+M5tdhYF/8v5UY5g2xANPECTQdu9vWPoqNSGDt87b3gXb1AiGGaI06vzgkejL580ul+9hz9D0S0U4
+jkhJiA7EuTecP/CFtR72uYRBcunwwH3fciPjviDDAI9SnC/2aPY8ydehzuZutLbZdRJ5PDEJM/1t
+yZR2niOYihZ+FCbtf3D9mB12D4ln9icgc7CwaxpNSCPt8i/GqK2HsOgkL3VYnwtx7cJUmpvVdZ4o
+gnzgXtgtdk3ShrtOS1iAN2ZBXFiRmjVzmehoMof06r1xub+85hFQzVxZx5/bRaTKTlL8YXLI8nAb
+R9HWdFqzcOoB/hxfEyIQpx9/s81rgzdEZOofSlZHynoSMYIDyjCCA8YCAQEwga0wgZcxCzAJBgNV
+BAYTAkdCMRswGQYDVQQIExJHcmVhdGVyIE1hbmNoZXN0ZXIxEDAOBgNVBAcTB1NhbGZvcmQxGjAY
+BgNVBAoTEUNPTU9ETyBDQSBMaW1pdGVkMT0wOwYDVQQDEzRDT01PRE8gUlNBIENsaWVudCBBdXRo
+ZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBAhEA4rtJSHkq7AnpxKUY8ZlYZjANBglghkgB
+ZQMEAgEFAKCCAe0wGAYJKoZIhvcNAQkDMQsGCSqGSIb3DQEHATAcBgkqhkiG9w0BCQUxDxcNMjAx
+MTEwMTYzMzQxWjAvBgkqhkiG9w0BCQQxIgQgSkYDp5NuXblkUvLQODMdKxDbLVRsCWgkOliAMKEO
+TRIwgb4GCSsGAQQBgjcQBDGBsDCBrTCBlzELMAkGA1UEBhMCR0IxGzAZBgNVBAgTEkdyZWF0ZXIg
+TWFuY2hlc3RlcjEQMA4GA1UEBxMHU2FsZm9yZDEaMBgGA1UEChMRQ09NT0RPIENBIExpbWl0ZWQx
+PTA7BgNVBAMTNENPTU9ETyBSU0EgQ2xpZW50IEF1dGhlbnRpY2F0aW9uIGFuZCBTZWN1cmUgRW1h
+aWwgQ0ECEQDiu0lIeSrsCenEpRjxmVhmMIHABgsqhkiG9w0BCRACCzGBsKCBrTCBlzELMAkGA1UE
+BhMCR0IxGzAZBgNVBAgTEkdyZWF0ZXIgTWFuY2hlc3RlcjEQMA4GA1UEBxMHU2FsZm9yZDEaMBgG
+A1UEChMRQ09NT0RPIENBIExpbWl0ZWQxPTA7BgNVBAMTNENPTU9ETyBSU0EgQ2xpZW50IEF1dGhl
+bnRpY2F0aW9uIGFuZCBTZWN1cmUgRW1haWwgQ0ECEQDiu0lIeSrsCenEpRjxmVhmMA0GCSqGSIb3
+DQEBAQUABIIBAGy9zes3LWL/C8bxQW7e6wA3AYgNlX/28dMLFnThDOwo6RxzboBEH1oHRL5B8B7N
+hz+NzF6tXL5NINI6ujDOSp4OpLM7NuxNg3lRenET4f9U9G4WwXPt53qCXX+mnfq1eygS0tRAmUnd
+jLe5sEyYnw8ZIgC3bjF6CcbVj67Xgc6TfeZf2R2gJwMld0JEuHwQIbi60mBOG4VRe/i7zTCOg37M
+5rJPWFip24Jzu72B7ev42gK7kat5qB6BGUIY7Umn90GQwvIsnKtheLIxxtqjQlRxIzSWDLYP8Zj6
+ZJ4k0cstlgqytyrSrThhSojMFRivspU/a92VCHAGMZOgcsirxucAAAAAAAA=
+
+
+--=-r5kpOCWbrWroK4IL27wT--
 
