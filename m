@@ -2,112 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12D642ADFEB
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 20:41:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C73DB2ADFE6
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 20:39:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731453AbgKJTlO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 14:41:14 -0500
-Received: from aserp2120.oracle.com ([141.146.126.78]:40256 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727275AbgKJTlN (ORCPT
+        id S1731561AbgKJTjU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 14:39:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52754 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726307AbgKJTjU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 14:41:13 -0500
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AAJdr5l115875;
-        Tue, 10 Nov 2020 19:40:44 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=9B6dG5PJmz4EQQkDr5Dh7n2gEWp/DBIVSw1s14fCJVU=;
- b=OlyTE7Om0d0VNz3I0ukpe//2qZClROzGZwZCra5xUP//qOlqKCfittNeQ6mhcqNM8AK3
- jpETHFilEFxcaTWWblHtv8USZeUNuSMVTpGUi4YVaslCWBNu6+Dhl9b8vud45A7iQLiD
- G++yb9f1m3QW036sQQ9m4kZkFje6y7Jce0fN5A1d8yzz4z0w1P0+q+1BaowMuMV/qFxe
- tvkyDaZbDcEEeIcEpC17/LWNXLlgvetZx5KDzPXqXPtxHI+Fow0b66cIhFtCmuTsCIqv
- hJNOFsux3fIKHNZwGfagU1zvvQdpD/tbZSQjzZwxBwcXcA9dBBoK+Rws/6gxX23kk9Ye xQ== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by aserp2120.oracle.com with ESMTP id 34nkhkwgbh-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 10 Nov 2020 19:40:44 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AAJZ6RW047872;
-        Tue, 10 Nov 2020 19:38:43 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by userp3020.oracle.com with ESMTP id 34qgp7agsf-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 10 Nov 2020 19:38:43 +0000
-Received: from abhmp0017.oracle.com (abhmp0017.oracle.com [141.146.116.23])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0AAJceZ3016558;
-        Tue, 10 Nov 2020 19:38:40 GMT
-Received: from [192.168.2.112] (/50.38.35.18)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 10 Nov 2020 11:38:39 -0800
-Subject: Re: [External] Re: [PATCH v3 04/21] mm/hugetlb: Introduce
- nr_free_vmemmap_pages in the struct hstate
-To:     Muchun Song <songmuchun@bytedance.com>,
-        Oscar Salvador <osalvador@suse.de>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Thomas Gleixner <tglx@linutronix.de>, mingo@redhat.com,
-        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
-        dave.hansen@linux.intel.com, luto@kernel.org,
-        Peter Zijlstra <peterz@infradead.org>, viro@zeniv.linux.org.uk,
-        Andrew Morton <akpm@linux-foundation.org>, paulmck@kernel.org,
-        mchehab+huawei@kernel.org, pawan.kumar.gupta@linux.intel.com,
-        Randy Dunlap <rdunlap@infradead.org>, oneukum@suse.com,
-        anshuman.khandual@arm.com, jroedel@suse.de,
-        Mina Almasry <almasrymina@google.com>,
-        David Rientjes <rientjes@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Xiongchun duan <duanxiongchun@bytedance.com>,
-        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>
-References: <20201108141113.65450-1-songmuchun@bytedance.com>
- <20201108141113.65450-5-songmuchun@bytedance.com>
- <20201109164825.GA17356@linux>
- <CAMZfGtWxNV874j9io_xcsVm+C6_shrZCw=W9ugJzxrnBpXb_Mw@mail.gmail.com>
-From:   Mike Kravetz <mike.kravetz@oracle.com>
-Message-ID: <877a4620-fa5c-c5b5-8a42-fdd67a869a38@oracle.com>
-Date:   Tue, 10 Nov 2020 11:38:36 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.1
+        Tue, 10 Nov 2020 14:39:20 -0500
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2669C0613D1;
+        Tue, 10 Nov 2020 11:39:19 -0800 (PST)
+Received: by mail-wr1-x444.google.com with SMTP id p8so13225985wrx.5;
+        Tue, 10 Nov 2020 11:39:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=5J5uwu3m7GcHarRgVyJ/Oom4GJKz9eUsOShnoN96sOA=;
+        b=Ws9vEe1pav/1QAaDxARWbnFxJb4bkcQ6VixB2a1JX3NhYf3y2/BOJxTwZkip9cbUln
+         yiQAi8PrtjC3eKW0dxms1L319RYr/Fv1u3v0TLGfetPGSj8XfU/WbtUGN55OUtFMIZwN
+         doIGJAzNEPdhCx485szJseRMRiCOc+fs0SKN7iqpzn0TrLKVBVDBbixeXMVlH3NA6+bb
+         5xYufwR2aAfzPySItgb732M+uNwoSfFF6f9Yx47jdyWrrMOfgSCIGmujnUPAzWs83VGI
+         P5n6lco7+RkMMlNY4JOWf35UiwmeYhbblB7OECSX0sBRVHfte86tQ6XX32+8Nyb5hy6l
+         VNpQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=5J5uwu3m7GcHarRgVyJ/Oom4GJKz9eUsOShnoN96sOA=;
+        b=SqObCSSh2YBeKv4QJsMCGiPsYQKlaOxBLVflMWpvhWXcg+dZPUqhIqafbnK1rnvJvK
+         fB/JXczTGuqf+oZlodAsaCy/LLWS5DHW80H5mvUDWSRunhwKG0AX4hMcN7kdls6rNF59
+         sd4OJrL10PQngqWtMn4iuIjYejO+CHHFOLiELdu++ggRPLyKGMjF8XZ+ygYz1HhOdacs
+         OOfxM7Bc+v4dUtPVAL6U4aYZmoeaoW3VDHm7dz9YADNYp5A3UqnMM0MjT15iPaX7MDHR
+         KI+jpE8qeN8gaZu6/JpHtZ/orTAERFiJ5iBR+bnRLECK+eogkxDM1k2jJEmRr1ceLgrA
+         n8lQ==
+X-Gm-Message-State: AOAM531U7NKuOEoD+yqk+M/q2MzT7+riTLlOMcjq/xKV2OTFWhisO90n
+        AinJ7Kfr8LKH204A+rMiIS8=
+X-Google-Smtp-Source: ABdhPJxi9RfDjVoCqexR48y0z3UEQn7ohhiDzBSL1Zo4eBf0BeryLvHjraIWu1JFlKOJZcamnV27+Q==
+X-Received: by 2002:a5d:50d1:: with SMTP id f17mr22801048wrt.264.1605037158703;
+        Tue, 10 Nov 2020 11:39:18 -0800 (PST)
+Received: from localhost ([217.111.27.204])
+        by smtp.gmail.com with ESMTPSA id g17sm18260050wrw.37.2020.11.10.11.39.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 10 Nov 2020 11:39:17 -0800 (PST)
+Date:   Tue, 10 Nov 2020 20:39:16 +0100
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        linux-tegra@vger.kernel.org
+Subject: Re: [PATCH 13/25] soc: tegra: fuse: speedo-tegra124: Remove some set
+ but unused variables
+Message-ID: <20201110193916.GA2375022@ulmo>
+References: <20201103152838.1290217-1-lee.jones@linaro.org>
+ <20201103152838.1290217-14-lee.jones@linaro.org>
 MIME-Version: 1.0
-In-Reply-To: <CAMZfGtWxNV874j9io_xcsVm+C6_shrZCw=W9ugJzxrnBpXb_Mw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9801 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 mlxlogscore=999
- adultscore=0 mlxscore=0 malwarescore=0 suspectscore=0 phishscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2011100134
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9801 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 priorityscore=1501
- mlxscore=0 suspectscore=0 mlxlogscore=999 lowpriorityscore=0 spamscore=0
- malwarescore=0 adultscore=0 clxscore=1015 bulkscore=0 impostorscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2011100134
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="tKW2IUtsqtDRztdT"
+Content-Disposition: inline
+In-Reply-To: <20201103152838.1290217-14-lee.jones@linaro.org>
+User-Agent: Mutt/1.14.7 (2020-08-29)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/9/20 6:42 PM, Muchun Song wrote:
-> On Tue, Nov 10, 2020 at 12:48 AM Oscar Salvador <osalvador@suse.de> wrote:
->>
->> On Sun, Nov 08, 2020 at 10:10:56PM +0800, Muchun Song wrote:
->>
->> Unrelated to this patch but related in general, I am not sure about Mike but
->> would it be cleaner to move all the vmemmap functions to hugetlb_vmemmap.c?
->> hugetlb code is quite tricky, so I am not sure about stuffing more code
->> in there.
->>
-> 
-> I also think that you are right, moving all the vmemmap functions to
-> hugetlb_vmemmap.c may make the code cleaner.
-> 
-> Hi Mike, what's your opinion?
 
-I would be happy to see this in a separate file.  As Oscar mentions, the
-hugetlb.c file/code is already somethat difficult to read and understand.
--- 
-Mike Kravetz
+--tKW2IUtsqtDRztdT
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Tue, Nov 03, 2020 at 03:28:26PM +0000, Lee Jones wrote:
+> Fixes the following W=3D1 kernel build warning(s):
+>=20
+>  drivers/soc/tegra/fuse/speedo-tegra124.c: In function =E2=80=98tegra124_=
+init_speedo_data=E2=80=99:
+>  drivers/soc/tegra/fuse/speedo-tegra124.c:105:38: warning: variable =E2=
+=80=98soc_iddq_value=E2=80=99 set but not used [-Wunused-but-set-variable]
+>  drivers/soc/tegra/fuse/speedo-tegra124.c:105:22: warning: variable =E2=
+=80=98gpu_iddq_value=E2=80=99 set but not used [-Wunused-but-set-variable]
+>  drivers/soc/tegra/fuse/speedo-tegra124.c:105:6: warning: variable =E2=80=
+=98cpu_iddq_value=E2=80=99 set but not used [-Wunused-but-set-variable]
+>=20
+> Cc: Thierry Reding <thierry.reding@gmail.com>
+> Cc: Jonathan Hunter <jonathanh@nvidia.com>
+> Cc: linux-tegra@vger.kernel.org
+> Signed-off-by: Lee Jones <lee.jones@linaro.org>
+> ---
+>  drivers/soc/tegra/fuse/speedo-tegra124.c | 7 +++----
+>  1 file changed, 3 insertions(+), 4 deletions(-)
+
+Applied and cleaned up a bit more since moste of these register reads
+are completely unnecessary.
+
+Thanks,
+Thierry
+
+--tKW2IUtsqtDRztdT
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAl+q7GQACgkQ3SOs138+
+s6GtJA//WSsmtdFCLCKnbOCIv0/CXzBrCr6hjeBx1h68CH1/QPPmJ0crgMxSMTfd
+gnQpeENCI/p1CB0o4Y4HFhtm55QEIuHwAFJENzCGLLJEeB4gpxGo+MRxgt606h7N
+3C1jRI1n6eFl+f/P9i3oxDViQNjgGo4bN+OPltQgTPRmXEhZe9BocWHpoYFnMnAB
+sual83j6HzerZJaDnV2WMRoM1L5f3L0BdxTKDJvO4k1Z94fLoPtU6qD3J98Wf/Ie
+BX3WOxnDqa9cwikOUFcgrMxxfo2kOWbxrIdrnzjFTlUIUjAxjyCz2sGdTxfsxBqW
+AYpl9kZyPqdnqz8ZOPxCaEc+mBBClGe6XhHv5FIIC/v9UDeaP/y8G6rOZCPdO/wy
+j61VksBRIL9xgFNeSPPBTnkLTTRvVn5ns5Bm9OjrauUVa9QwN7J/gAmcoG4cBETv
+ngFaTZhAOaNY2ATmvTpub1DOOI/BcEr0HaugMPG3kvFwDqLJtVnA/5kJ/CZlicwT
+sH2A5lCdM45spnIoUqQRq52PYtYYIqI6B2+9EZ/7AkNSNRq/ehdykEgnJ/m4zhiv
+3aS9vCfRG5dnw5cEX8p4CkqVlNmUBHgWXaMWtebUyhUpqAgScf1nlZ1+IFzia90g
+PKUdJFvRSPi9qrIH6714IAH/HH3UC5Lb/pIVxrRpzFDjrNYhdpE=
+=05XB
+-----END PGP SIGNATURE-----
+
+--tKW2IUtsqtDRztdT--
