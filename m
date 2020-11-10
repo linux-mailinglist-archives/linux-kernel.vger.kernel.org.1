@@ -2,121 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05B1F2AE0BD
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 21:33:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 066FA2AE0C3
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 21:35:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727376AbgKJUde (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 15:33:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33010 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725862AbgKJUde (ORCPT
+        id S1730865AbgKJUfY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 15:35:24 -0500
+Received: from aserp2120.oracle.com ([141.146.126.78]:55044 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725862AbgKJUfX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 15:33:34 -0500
-Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF52FC0613D1
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 12:33:33 -0800 (PST)
-Received: by mail-qk1-x742.google.com with SMTP id t191so11671123qka.4
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 12:33:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=FGyjU1VFt03gTjbteYJEMdl1u0ziLYUtvD1NXemfJhs=;
-        b=iD6NGpE1mnBrvgAsnOHd2EJKsUjVra3puLElxMvH9dayS1Y4J7BdSu8POnN/3tqDx3
-         TgHnN0b9/e1BZjEEPF6k89aK9eODBtg9FhzicC8MxgUwuuYE6jpsRMLLdzG7uOltOsdL
-         1PhqdXX9Hkj8XMvsBrOwwoxUBOqdW8hTx7df4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=FGyjU1VFt03gTjbteYJEMdl1u0ziLYUtvD1NXemfJhs=;
-        b=ithJr4oyYsYe0f58sBkqZZCvSdhlmRMMNwzQ8/LeX0qT3NF+oyaBfCItaL5SjvS1AL
-         1A77/x/0iqcNs8Z+V3sVrOQfj7gTzMchPoVjFg69isadiB+dowYjRLSbC5PYDXlRaXv+
-         i1th/3IsBCD1NWmvA3mZCGP/1HUec2SupVS17aIF9Pi8xJaTmt8Va0CEabvd3aK+Zaff
-         zoRXl2SmXw66NCEARejbMS7EWSGlSfc4QV91MNWV0Ns9cu8y8Nu3RBIL/dBBpmz/NyfW
-         Iwc1nRrg6UpaD8XGo9cizdLTXPxNtIsGRhp3+5ihMrL9aGzYCW8tnvZDQY/T222+B1pw
-         l13A==
-X-Gm-Message-State: AOAM532y4DEXkrIa9n9mMrVSXdsFgiCgnCXdXncMpA3ZJHPheY+MezcM
-        v6w5ITngsrQ3gmVC2h81VWDdbUzDyKB5Bg==
-X-Google-Smtp-Source: ABdhPJxa69TxULwtqWM4g1jhzML48igFEJTuMp1hchP6B5ueOhZOEsls5SPVIjL0X2Uw3UmSQ1ZAfw==
-X-Received: by 2002:a37:86c4:: with SMTP id i187mr21508004qkd.371.1605040409776;
-        Tue, 10 Nov 2020 12:33:29 -0800 (PST)
-Received: from localhost ([2620:15c:6:411:cad3:ffff:feb3:bd59])
-        by smtp.gmail.com with ESMTPSA id b4sm5591796qti.64.2020.11.10.12.33.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 10 Nov 2020 12:33:29 -0800 (PST)
-Date:   Tue, 10 Nov 2020 15:33:28 -0500
-From:   Joel Fernandes <joel@joelfernandes.org>
+        Tue, 10 Nov 2020 15:35:23 -0500
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AAKXlN0034528;
+        Tue, 10 Nov 2020 20:35:05 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : in-reply-to : references : date : message-id : mime-version :
+ content-type; s=corp-2020-01-29;
+ bh=s4nyry0mSPgh1FrvXm8VEB2bCAXmh9/aI1iL5kwnE7o=;
+ b=MF+5WKq4vr3MUTA6g7wFb5dE9tfejt9KvBDxWLBe5SyR4tn+KB8wIBonc5JTNB7hJwB/
+ qrP6eeCzoy7nqQvQ2EcvbNw5p1jd2fBAY36U3SA9WjAPqqnjclHo+NnObpxPLwg9ZUcK
+ rBWZSV2ZoV3SRFk8V1O4V8nU6hYuEtDkz9qrBY6u0t/ojtHmhUfYlnojLtc+xUUV28Xc
+ feumLPaql28r4xrEnnokxLa5xfFznLWZ9aDVbTLXPL1fm2Kj1MQVPIE7ImtDabENM+ZO
+ 9FZZNYcRlJyzo2OYOpzyqCoH+NFiAzkORBr36nz6dXSXxL0H/lCxO8FXawwILEN6rq6n gw== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by aserp2120.oracle.com with ESMTP id 34nkhkwqss-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 10 Nov 2020 20:35:05 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AAKKBw6104737;
+        Tue, 10 Nov 2020 20:35:05 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by userp3030.oracle.com with ESMTP id 34p5gxfwve-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 10 Nov 2020 20:35:04 +0000
+Received: from abhmp0019.oracle.com (abhmp0019.oracle.com [141.146.116.25])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0AAKZ1Zm022008;
+        Tue, 10 Nov 2020 20:35:01 GMT
+Received: from parnassus (/98.229.125.203)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Tue, 10 Nov 2020 12:35:00 -0800
+From:   Daniel Jordan <daniel.m.jordan@oracle.com>
 To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     "Paul E. McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
-        jiangshanlai@gmail.com, akpm@linux-foundation.org,
-        mathieu.desnoyers@efficios.com, josh@joshtriplett.org,
-        tglx@linutronix.de, rostedt@goodmis.org, dhowells@redhat.com,
-        edumazet@google.com, fweisbec@gmail.com, oleg@redhat.com
-Subject: Re: [PATCH tip/core/rcu 2/4] docs: Update RCU's hotplug requirements
- with a bit about design
-Message-ID: <20201110203328.GA694269@google.com>
-References: <20201105230444.GA18574@paulmck-ThinkPad-P72>
- <20201105230510.18660-2-paulmck@kernel.org>
- <20201109122317.GM2594@hirez.programming.kicks-ass.net>
- <20201109162452.GK3249@paulmck-ThinkPad-P72>
- <20201109171433.GL2611@hirez.programming.kicks-ass.net>
+Cc:     Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>,
+        Li Zefan <lizefan@huawei.com>,
+        Prateek Sood <prsood@codeaurora.org>,
+        Waiman Long <longman@redhat.com>, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] cpuset: fix race between hotplug work and later CPU
+ offline
+In-Reply-To: <20201110164504.GL2594@hirez.programming.kicks-ass.net>
+References: <20201029181845.415517-1-daniel.m.jordan@oracle.com>
+ <20201110164504.GL2594@hirez.programming.kicks-ass.net>
+Date:   Tue, 10 Nov 2020 15:34:31 -0500
+Message-ID: <87zh3pt0h4.fsf@mr.pineapple.says.hi.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201109171433.GL2611@hirez.programming.kicks-ass.net>
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9801 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 mlxlogscore=999 mlxscore=0
+ spamscore=0 phishscore=0 adultscore=0 malwarescore=0 suspectscore=1
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2011100138
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9801 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 priorityscore=1501
+ mlxscore=0 suspectscore=1 mlxlogscore=999 lowpriorityscore=0 spamscore=0
+ malwarescore=0 adultscore=0 clxscore=1015 bulkscore=0 impostorscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2011100139
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 09, 2020 at 06:14:33PM +0100, Peter Zijlstra wrote:
-> On Mon, Nov 09, 2020 at 08:24:52AM -0800, Paul E. McKenney wrote:
-> > On Mon, Nov 09, 2020 at 01:23:17PM +0100, Peter Zijlstra wrote:
-> > > On Thu, Nov 05, 2020 at 03:05:08PM -0800, paulmck@kernel.org wrote:
-> > > > From: "Joel Fernandes (Google)" <joel@joelfernandes.org>
-> > > > 
-> > > > The rcu_barrier() section of the "Hotplug CPU" section discusses
-> > > > deadlocks, however the description of deadlocks other than those involving
-> > > > rcu_barrier() is rather incomplete.
-> > > > 
-> > > > This commit therefore continues the section by describing how RCU's
-> > > > design handles CPU hotplug in a deadlock-free way.
-> > > > 
-> > > > Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-> > > > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> > > > ---
-> > > >  .../RCU/Design/Requirements/Requirements.rst       | 49 +++++++++++++++++-----
-> > > >  1 file changed, 39 insertions(+), 10 deletions(-)
-> > > > 
-> > > > diff --git a/Documentation/RCU/Design/Requirements/Requirements.rst b/Documentation/RCU/Design/Requirements/Requirements.rst
-> > > > index 1ae79a1..98557fe 100644
-> > > > --- a/Documentation/RCU/Design/Requirements/Requirements.rst
-> > > > +++ b/Documentation/RCU/Design/Requirements/Requirements.rst
-> > > > @@ -1929,16 +1929,45 @@ The Linux-kernel CPU-hotplug implementation has notifiers that are used
-> > > >  to allow the various kernel subsystems (including RCU) to respond
-> > > >  appropriately to a given CPU-hotplug operation. Most RCU operations may
-> > > >  be invoked from CPU-hotplug notifiers, including even synchronous
-> > > > -grace-period operations such as ``synchronize_rcu()`` and
-> > > > -``synchronize_rcu_expedited()``.
-> > > 
-> > > I was under the impression that this rst crap now recognises func() and
-> > > you no longer need to make the text unreadable with "``".
-> > 
-> > It was there to start with, but good point.  How about the commit
-> > below?
-> 
-> Much appreciated, thanks!
+Peter Zijlstra <peterz@infradead.org> writes:
+> On Thu, Oct 29, 2020 at 02:18:45PM -0400, Daniel Jordan wrote:
+>> rebuild_sched_domains_locked() prevented the race during the cgroup2
+>> cpuset series up until the Fixes commit changed its check.  Make the
+>> check more robust so that it can detect an offline CPU in any exclusive
+>> cpuset's effective mask, not just the top one.
+>
+> *groan*, what a mess...
 
-Thanks for making the change, I built it and it looks good in my web browser
-;-).
+Ah, the joys of cpu hotplug!
 
-BTW, these APIs are obsolete due to consolidation. Paul could you remove them
-from the document?:
- synchronize_rcu_bh(), synchronize_rcu_bh_expedited(), call_rcu_bh(),
- rcu_barrier_bh().
+>> I think the right thing to do long-term is make the hotplug work
+>> synchronous, fixing the lockdep splats of past attempts, and then take
+>> these checks out of rebuild_sched_domains_locked, but this fixes the
+>> immediate issue and is small enough for stable.  Open to suggestions.
+>> 
+>> Prateek, are you planning on picking up your patches again?
+>
+> Yeah, that might help, but those deadlocks were nasty iirc :/
 
-thanks!
+It might end up being too invasive to be worth it, but I'm being
+optimistic for now.
 
--Joel
+>> diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
+>> index 57b5b5d0a5fd..ac3124010b2a 100644
+>> --- a/kernel/cgroup/cpuset.c
+>> +++ b/kernel/cgroup/cpuset.c
+>> @@ -983,8 +983,10 @@ partition_and_rebuild_sched_domains(int ndoms_new, cpumask_var_t doms_new[],
+>>   */
+>>  static void rebuild_sched_domains_locked(void)
+>>  {
+>> +	struct cgroup_subsys_state *pos_css;
+>>  	struct sched_domain_attr *attr;
+>>  	cpumask_var_t *doms;
+>> +	struct cpuset *cs;
+>>  	int ndoms;
+>>  
+>>  	lockdep_assert_cpus_held();
+>> @@ -999,9 +1001,21 @@ static void rebuild_sched_domains_locked(void)
+>>  	    !cpumask_equal(top_cpuset.effective_cpus, cpu_active_mask))
+>>  		return;
+>
+> So you argued above that effective_cpus was stale, I suppose the above
+> one works because its an equality test instead of a subset?
 
+Yep, fortunately enough.
+
+> Does that wants a comment?
+
+Ok, I'll change the comments to this absent other ideas.
+
+	/*
+	 * If we have raced with CPU hotplug, return early to avoid
+	 * passing doms with offlined cpu to partition_sched_domains().
+	 * Anyways, cpuset_hotplug_workfn() will rebuild sched domains.
+	 *
+	 * With no CPUs in any subpartitions, top_cpuset's effective CPUs
+	 * should be the same as the active CPUs, so checking only top_cpuset
+	 * is enough to detect racing CPU offlines.
+	 */
+	if (!top_cpuset.nr_subparts_cpus &&
+	    !cpumask_equal(top_cpuset.effective_cpus, cpu_active_mask))
+		return;
+
+	/*
+	 * With subpartition CPUs, however, the effective CPUs of a partition
+	 * root should be only a subset of the active CPUs.  Since a CPU in any
+	 * partition root could be offlined, all must be checked.
+	 */
+	if (top_cpuset.nr_subparts_cpus) {
+		rcu_read_lock();
+        ...
+
+
+Thanks for looking.
