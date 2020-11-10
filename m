@@ -2,269 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 835672AD470
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 12:07:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 98A6E2AD473
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 12:08:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730239AbgKJLHo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 06:07:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57404 "EHLO
+        id S1730162AbgKJLIk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 06:08:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57550 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727536AbgKJLHn (ORCPT
+        with ESMTP id S1726462AbgKJLIk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 06:07:43 -0500
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D45EC0613D3
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 03:07:43 -0800 (PST)
-Received: by mail-pg1-x542.google.com with SMTP id f27so6455697pgl.1
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 03:07:43 -0800 (PST)
+        Tue, 10 Nov 2020 06:08:40 -0500
+Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C014C0613D1
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 03:08:38 -0800 (PST)
+Received: by mail-ed1-x542.google.com with SMTP id ay21so12248525edb.2
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 03:08:38 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=dxnc/wj2TvGDBxmyx5Nf+xxtQWZ4ImyGwOdGSdt4B2U=;
-        b=eTzewguEpa+CGdbUOfXmyzQCrTmpUuGJbRjlbYm85CVMLnUnbQ4bw9Pp22L8ZEMlD3
-         gt4Fo6Db47692OZi6grP2eicQfyl1TXeRBCa0UxOSX7FmDOmGvQfdtiG7rHfuQ/9W6Nx
-         BQhLqDyNa/Zmyad5BXXGGZN/T932PHp2Yi4y9/yTlTsR4kVxpKXmfrSk8IWCjhcPAGug
-         d+ESQJswqC9bsLIoZOqENQrC4kApXFRUT512haWhNFkt26d3RGQ3gorEBxOCCNClH395
-         p+ayBJDde87H3jszRWCat+eO71rYbqHJ1BbCoKseEKdu7rgbFzYGiuA2CNEJdIe4v22I
-         fJuA==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=DHp9Qr/oN/1M5mUr34BLzHSuue5OEsKuWWvTqbOdF+A=;
+        b=hWytcaBG2v1uaXdRkR+Qbx2dTeyCzTCzrlK3iu0q5LOdGJx7wPMrvmcG4ERH4k6ndP
+         NsPLXgzLIRNIUE3f1PJTZVfqHrJlNOLrpa5VFIwKC8KwQkNnoQ5v3J76gNsPyKK7GUc2
+         puf0eXfePu+WpmcKjBHiddRadqi9YyXIDRRsdQETepaGRD/Ul3r0Iv+aa5WyB+DUpLlc
+         u+ZvSFqisy/oZiMKB42EQqZs+MI3ub5kexSKth0bFdTfMSm8rN3B/KVb9FsgVm1PNRz2
+         V271vXALPZtlXZFAnQ2Za6kbuen8whu7sgd0I+Dz7gIHG/WnrPvMPqM5z+c4SfRkkOvh
+         IOAw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=dxnc/wj2TvGDBxmyx5Nf+xxtQWZ4ImyGwOdGSdt4B2U=;
-        b=G/bxfua6kJ8tCtpweZ0YVUwjzblfOfv8X4kHMdQcfXA6XkMlQsTQ7m9OI5hQl/LBpz
-         HoowRSwaVxYP+yXbYnuiPF819gcEbj1H5sdoJCrHmabC98xjiav0UeyZT48/QC2zTdVm
-         /wLpwnWGGkLfEjoKSpAOQocCB/rG5ZX6enDv28LBrM/6lcfS2XRuBUgfXbqOiC8B1TS3
-         dXsrkNX4+Vfu44LUHkeCqZv0d8+t8G291qTr4e3hBMnxtADxbGpP/AQ21V2KkFOZNOyl
-         IxFFirqR/rZi4VhoNFobtbgPON7ckkA08U/+4vVYTk+W2MWyZfLZLNK+gmNh3sOKHwg/
-         ZMNw==
-X-Gm-Message-State: AOAM530CfybGD3dWghN9U3sYHUs38JCYeOOuqwYrMjXO0lkVNRhQEclE
-        +7Tqy3ekT9NRMGmjgoWqCuxTt7TdupWXig==
-X-Google-Smtp-Source: ABdhPJzZXVRi0OA3SRAxu13+f8iFR1G3KJDXK02qXXuKDDHpx7t0ifqak6cH99ZQmwKGtkW6fKY5ww==
-X-Received: by 2002:a17:90a:d590:: with SMTP id v16mr4517353pju.88.1605006462913;
-        Tue, 10 Nov 2020 03:07:42 -0800 (PST)
-Received: from localhost ([122.172.12.172])
-        by smtp.gmail.com with ESMTPSA id b67sm14296322pfa.151.2020.11.10.03.07.41
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 10 Nov 2020 03:07:41 -0800 (PST)
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Rafael Wysocki <rjw@rjwysocki.net>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Jonathan Corbet <corbet@lwn.net>
-Cc:     linux-pm@vger.kernel.org,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Thomas Renninger <trenn@suse.com>,
-        Shuah Khan <shuah@kernel.org>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] cpufreq: stats: Switch to ktime and msec instead of jiffies and usertime
-Date:   Tue, 10 Nov 2020 16:37:37 +0530
-Message-Id: <0e0fb542b6f6b26944cb2cf356041348aeac95f6.1605006378.git.viresh.kumar@linaro.org>
-X-Mailer: git-send-email 2.25.0.rc1.19.g042ed3e048af
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=DHp9Qr/oN/1M5mUr34BLzHSuue5OEsKuWWvTqbOdF+A=;
+        b=cTMZXYLOkerkSDm8+0plbra9s0zgnz/pDYRdYjQ+9YdYf92K2KxmyP/u9ef3UpZfL9
+         yXxWi/MH6Rc4fsKcGz2cvWCi6fRaLQSMINyTBxJcYBcB1+dMUYKKSbWViDkRALHRXAfQ
+         z0JwOgNu4+2yjp7LWDnxyeRsCGm1gsyPv9iWa6qY0vNRpRTLX6vo/HZyfWYyk8eUyEKx
+         GrbSRA0p4MSpkD6sEM0+f1PdzF0lzSaSl2iMsm9oO2kfoQk4EsjXkw07/cs47dCFNjxG
+         sWhUA4Y8NfEPBiMCEity40GTzwTYvmTImAlphU+9JGZF7La35qXI7OFUvbddXKIqdFrg
+         svDg==
+X-Gm-Message-State: AOAM532g+eYDVrAKNT4mBAAV3JLwh9dM/LWSoMBeS5Wj0KJDx4gCvoeP
+        O+mMdyTuz9DuqcRCW2HsZxGv7QQyjD55fTGG2KbXoA==
+X-Google-Smtp-Source: ABdhPJx9xh/Q6tTtlIQ7UiBqsLq/6qQsw+vRlYyudqQnEjfVha5qM+4pNhvjGz8Ar3Qm3iH7QIyxFtGcNNS80o7Xvpo=
+X-Received: by 2002:a05:6402:8cc:: with SMTP id d12mr20476369edz.134.1605006516989;
+ Tue, 10 Nov 2020 03:08:36 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <1604961850-27671-1-git-send-email-bbhatt@codeaurora.org> <1604961850-27671-4-git-send-email-bbhatt@codeaurora.org>
+In-Reply-To: <1604961850-27671-4-git-send-email-bbhatt@codeaurora.org>
+From:   Loic Poulain <loic.poulain@linaro.org>
+Date:   Tue, 10 Nov 2020 12:14:27 +0100
+Message-ID: <CAMZdPi_dwT+hj26sxJdMS1v-X-MNd1ys34QD=Bf_O+dvmjOD2Q@mail.gmail.com>
+Subject: Re: [PATCH v1 3/4] bus: mhi: core: Add support to pause or resume
+ channel data transfers
+To:     Bhaumik Bhatt <bbhatt@codeaurora.org>
+Cc:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Hemant Kumar <hemantk@codeaurora.org>,
+        Jeffrey Hugo <jhugo@codeaurora.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The cpufreq and thermal core, both provide sysfs statistics to help
-userspace learn about the behavior of frequencies and cooling states.
+Hi Bhaumik,
 
-This is how they look:
+On Mon, 9 Nov 2020 at 23:44, Bhaumik Bhatt <bbhatt@codeaurora.org> wrote:
+>
+> Some MHI clients may want to request for pausing or resuming of the
+> data transfers for their channels. Enable them to do so using the new
+> APIs provided for the same.
+>
+> Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
+> ---
+>  drivers/bus/mhi/core/main.c | 41 +++++++++++++++++++++++++++++++++++++++++
+>  include/linux/mhi.h         | 16 ++++++++++++++++
+>  2 files changed, 57 insertions(+)
+>
+> diff --git a/drivers/bus/mhi/core/main.c b/drivers/bus/mhi/core/main.c
+> index 1226933..01845c6 100644
+> --- a/drivers/bus/mhi/core/main.c
+> +++ b/drivers/bus/mhi/core/main.c
+> @@ -1560,6 +1560,47 @@ void mhi_unprepare_from_transfer(struct mhi_device *mhi_dev)
+>  }
+>  EXPORT_SYMBOL_GPL(mhi_unprepare_from_transfer);
+>
+> +static int mhi_update_transfer_state(struct mhi_device *mhi_dev,
+> +                                    enum mhi_ch_state_type to_state)
+> +{
+> +       struct mhi_controller *mhi_cntrl = mhi_dev->mhi_cntrl;
+> +       struct mhi_chan *mhi_chan;
+> +       int dir, ret;
+> +
+> +       for (dir = 0; dir < 2; dir++) {
+> +               mhi_chan = dir ? mhi_dev->ul_chan : mhi_dev->dl_chan;
+> +
+> +               if (!mhi_chan)
+> +                       continue;
+> +
+> +               /*
+> +                * Bail out if one of the channels fail as client will reset
+> +                * both upon failure
+> +                */
+> +               mutex_lock(&mhi_chan->mutex);
+> +               ret = mhi_update_channel_state(mhi_cntrl, mhi_chan, to_state);
+> +               if (ret) {
+> +                       mutex_unlock(&mhi_chan->mutex);
+> +                       return ret;
+> +               }
+> +               mutex_unlock(&mhi_chan->mutex);
+> +       }
+> +
+> +       return 0;
+> +}
+> +
+> +int mhi_pause_transfer(struct mhi_device *mhi_dev)
+> +{
+> +       return mhi_update_transfer_state(mhi_dev, MHI_CH_STATE_TYPE_STOP);
+> +}
+> +EXPORT_SYMBOL_GPL(mhi_pause_transfer);
+> +
+> +int mhi_resume_transfer(struct mhi_device *mhi_dev)
+> +{
+> +       return mhi_update_transfer_state(mhi_dev, MHI_CH_STATE_TYPE_START);
+> +}
+> +EXPORT_SYMBOL_GPL(mhi_resume_transfer);
 
-/sys/devices/system/cpu/cpufreq/policy0/stats/time_in_state:208000 11
-/sys/devices/system/cpu/cpufreq/policy0/stats/time_in_state:432000 147
-/sys/devices/system/cpu/cpufreq/policy0/stats/time_in_state:729000 1600
-/sys/devices/system/cpu/cpufreq/policy0/stats/time_in_state:960000 879
-/sys/devices/system/cpu/cpufreq/policy0/stats/time_in_state:1200000 399
+Look like it is stop and start, not pause and resume?
 
-/sys/class/thermal/cooling_device0/stats/time_in_state_ms:state0 4097
-/sys/class/thermal/cooling_device0/stats/time_in_state_ms:state1 8932
-/sys/class/thermal/cooling_device0/stats/time_in_state_ms:state2 15868
-/sys/class/thermal/cooling_device0/stats/time_in_state_ms:state3 1384
-/sys/class/thermal/cooling_device0/stats/time_in_state_ms:state4 103
+TBH maybe we should rework/clarify MHI core and having well-defined
+states, maybe something like that:
 
-Here, state0 of thermal corresponds to the highest frequency of the CPU,
-i.e. 1200000 and state4 to the lowest one.
+1. When MHI core detects device for a driver, MHI core resets and
+initializes the channel(s), then call client driver probe function
+    => channel UNKNOWN->DISABLED state
+    => channel DISABLED->ENABLED state
+2. When driver is ready for sending data, drivers calls mhi_start_transfer
+    => Channel is ENABLED->RUNNING state
+3. Driver performs normal data transfers
+4. The driver can suspend/resume transfer, it stops (suspend) the channel, can
+    => Channel is RUNNING->STOP
+    => Channel is STOP->RUNNING
+   ...
+5. When device is removed, MHI core reset the channel
+    => channel is (RUNNING|STOP) -> DISABLED
 
-While both of these try to show similar kind of data (which can still be
-very much different from each other), the values looked different (by a
-factor of 10, i.e. thermal's time_in_state is almost 10 times that of
-cpufreq time_in_state).
+Today mhi_prepare_for_transfer performs both ENABLE and RUNNING
+transition, the idea would be to keep channel enabling/disabling in
+the MHI core (before/after driver probe/remove) and channel start/stop
+managed by the client driver.
 
-This comes from the fact that cpufreq core displays the time in usertime
-units (10 ms).
-
-It would be better if both the frameworks displayed times in the same
-unit as the users may need to correlate between them and different
-scales just make it awkward. And the choice of thermal core for that
-(msec) seems to be a better choice as it is easier to read.
-
-The thermal core also does the stats calculations using ktime, which is
-much more accurate as compared to jiffies used by cpufreq core.
-
-This patch updates the cpufreq core to use ktime for the internal
-calculations and changes the units of time_in_state to msec.
-
-The results look like this after this commit:
-
-/sys/devices/system/cpu/cpufreq/policy0/stats/time_in_state:208000 13
-/sys/devices/system/cpu/cpufreq/policy0/stats/time_in_state:432000 790
-/sys/devices/system/cpu/cpufreq/policy0/stats/time_in_state:729000 12492
-/sys/devices/system/cpu/cpufreq/policy0/stats/time_in_state:960000 13259
-/sys/devices/system/cpu/cpufreq/policy0/stats/time_in_state:1200000 3830
-
-/sys/class/thermal/cooling_device0/stats/time_in_state_ms:state0 3888
-/sys/class/thermal/cooling_device0/stats/time_in_state_ms:state1 13432
-/sys/class/thermal/cooling_device0/stats/time_in_state_ms:state2 12336
-/sys/class/thermal/cooling_device0/stats/time_in_state_ms:state3 740
-/sys/class/thermal/cooling_device0/stats/time_in_state_ms:state4 0
-
-FWIW, tools/power/cpupower/ does consume the time_in_state values from
-the sysfs files but it is independent of the unit of the time and didn't
-require an update.
-
-Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
----
- Documentation/cpu-freq/cpufreq-stats.rst |  5 +--
- drivers/cpufreq/cpufreq_stats.c          | 47 +++++++++++++-----------
- 2 files changed, 28 insertions(+), 24 deletions(-)
-
-diff --git a/Documentation/cpu-freq/cpufreq-stats.rst b/Documentation/cpu-freq/cpufreq-stats.rst
-index 9ad695b1c7db..9f94012a882f 100644
---- a/Documentation/cpu-freq/cpufreq-stats.rst
-+++ b/Documentation/cpu-freq/cpufreq-stats.rst
-@@ -64,9 +64,8 @@ need for a reboot.
- 
- This gives the amount of time spent in each of the frequencies supported by
- this CPU. The cat output will have "<frequency> <time>" pair in each line, which
--will mean this CPU spent <time> usertime units of time at <frequency>. Output
--will have one line for each of the supported frequencies. usertime units here
--is 10mS (similar to other time exported in /proc).
-+will mean this CPU spent <time> msec of time at <frequency>. Output will have
-+one line for each of the supported frequencies.
- 
- ::
- 
-diff --git a/drivers/cpufreq/cpufreq_stats.c b/drivers/cpufreq/cpufreq_stats.c
-index 6cd5c8ab5d49..e054ada291e7 100644
---- a/drivers/cpufreq/cpufreq_stats.c
-+++ b/drivers/cpufreq/cpufreq_stats.c
-@@ -14,35 +14,38 @@
- 
- struct cpufreq_stats {
- 	unsigned int total_trans;
--	unsigned long long last_time;
-+	ktime_t last_time;
- 	unsigned int max_state;
- 	unsigned int state_num;
- 	unsigned int last_index;
--	u64 *time_in_state;
-+	ktime_t *time_in_state;
- 	unsigned int *freq_table;
- 	unsigned int *trans_table;
- 
- 	/* Deferred reset */
- 	unsigned int reset_pending;
--	unsigned long long reset_time;
-+	ktime_t reset_time;
- };
- 
--static void cpufreq_stats_update(struct cpufreq_stats *stats,
--				 unsigned long long time)
-+static void cpufreq_stats_update(struct cpufreq_stats *stats, ktime_t time)
- {
--	unsigned long long cur_time = get_jiffies_64();
-+	ktime_t cur_time = ktime_get(), delta;
- 
--	stats->time_in_state[stats->last_index] += cur_time - time;
-+	delta = ktime_sub(cur_time, time);
-+	stats->time_in_state[stats->last_index] =
-+		ktime_add(stats->time_in_state[stats->last_index], delta);
- 	stats->last_time = cur_time;
- }
- 
- static void cpufreq_stats_reset_table(struct cpufreq_stats *stats)
- {
--	unsigned int count = stats->max_state;
-+	unsigned int count = stats->max_state, i;
-+
-+	for (i = 0; i < count; i++)
-+		stats->time_in_state[i] = ktime_set(0, 0);
- 
--	memset(stats->time_in_state, 0, count * sizeof(u64));
- 	memset(stats->trans_table, 0, count * count * sizeof(int));
--	stats->last_time = get_jiffies_64();
-+	stats->last_time = ktime_get();
- 	stats->total_trans = 0;
- 
- 	/* Adjust for the time elapsed since reset was requested */
-@@ -70,7 +73,7 @@ static ssize_t show_time_in_state(struct cpufreq_policy *policy, char *buf)
- {
- 	struct cpufreq_stats *stats = policy->stats;
- 	bool pending = READ_ONCE(stats->reset_pending);
--	unsigned long long time;
-+	ktime_t time, now = ktime_get(), delta;
- 	ssize_t len = 0;
- 	int i;
- 
-@@ -82,18 +85,20 @@ static ssize_t show_time_in_state(struct cpufreq_policy *policy, char *buf)
- 				 * before the reset_pending read above.
- 				 */
- 				smp_rmb();
--				time = get_jiffies_64() - READ_ONCE(stats->reset_time);
-+				time = ktime_sub(now, READ_ONCE(stats->reset_time));
- 			} else {
--				time = 0;
-+				time = ktime_set(0, 0);;
- 			}
- 		} else {
- 			time = stats->time_in_state[i];
--			if (i == stats->last_index)
--				time += get_jiffies_64() - stats->last_time;
-+			if (i == stats->last_index) {
-+				delta = ktime_sub(now, stats->last_time);
-+				time = ktime_add(delta, time);
-+			}
- 		}
- 
- 		len += sprintf(buf + len, "%u %llu\n", stats->freq_table[i],
--			       jiffies_64_to_clock_t(time));
-+			       ktime_to_ms(time));
- 	}
- 	return len;
- }
-@@ -109,7 +114,7 @@ static ssize_t store_reset(struct cpufreq_policy *policy, const char *buf,
- 	 * Defer resetting of stats to cpufreq_stats_record_transition() to
- 	 * avoid races.
- 	 */
--	WRITE_ONCE(stats->reset_time, get_jiffies_64());
-+	WRITE_ONCE(stats->reset_time, ktime_get());
- 	/*
- 	 * The memory barrier below is to prevent the readers of reset_time from
- 	 * seeing a stale or partially updated value.
-@@ -228,9 +233,9 @@ void cpufreq_stats_create_table(struct cpufreq_policy *policy)
- 	if (!stats)
- 		return;
- 
--	alloc_size = count * sizeof(int) + count * sizeof(u64);
--
--	alloc_size += count * count * sizeof(int);
-+	alloc_size = count * sizeof(*stats->time_in_state);
-+	alloc_size += count * sizeof(*stats->freq_table);
-+	alloc_size += count * count * sizeof(*stats->trans_table);
- 
- 	/* Allocate memory for time_in_state/freq_table/trans_table in one go */
- 	stats->time_in_state = kzalloc(alloc_size, GFP_KERNEL);
-@@ -249,7 +254,7 @@ void cpufreq_stats_create_table(struct cpufreq_policy *policy)
- 			stats->freq_table[i++] = pos->frequency;
- 
- 	stats->state_num = i;
--	stats->last_time = get_jiffies_64();
-+	stats->last_time = ktime_get();
- 	stats->last_index = freq_table_get_index(stats, policy->cur);
- 
- 	policy->stats = stats;
--- 
-2.25.0.rc1.19.g042ed3e048af
-
+Regards,
+Loic
