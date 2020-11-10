@@ -2,75 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 110E12AC9D1
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 01:40:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C1E22AC9D6
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 01:43:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731130AbgKJAke (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 19:40:34 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51288 "EHLO mail.kernel.org"
+        id S1729923AbgKJAnO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 19:43:14 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52128 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729454AbgKJAkd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 19:40:33 -0500
-Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.5])
+        id S1727311AbgKJAnO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 19:43:14 -0500
+Received: from dragon (80.251.214.228.16clouds.com [80.251.214.228])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8E738206D8;
-        Tue, 10 Nov 2020 00:40:32 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5C560206B2;
+        Tue, 10 Nov 2020 00:43:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604968833;
-        bh=jmTx3DJMRcveLNZUk4PbliJncItS0hILMz0WGG7pkgU=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=wwkDIoq95V5OTOZI+OdPhmoxGHJEDSdKrhS3IBTLLMqljPqEZwiEkYrABm9Dsn4qj
-         hEKwFxKKQ+/MZS2tyDi+6aOi6HSya7Gjl8OYsOPi4ciz/CQp5iwN/CNxFuQ55nS/5w
-         iTinCHbuJx40zjeSgYGQhRGr2AgR3zKlnA5MBQhk=
-Date:   Mon, 9 Nov 2020 16:40:31 -0800
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     menglong8.dong@gmail.com
-Cc:     kuznet@ms2.inr.ac.ru, yoshfuji@linux-ipv6.org, davem@davemloft.net,
-        ycheng@google.com, ncardwell@google.com, priyarjha@google.com,
-        edumazet@google.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, willemb@google.com,
-        pabeni@redhat.com, Menglong Dong <dong.menglong@zte.com.cn>
-Subject: Re: [PATCH v2 net-next] net: udp: introduce UDP_MIB_MEMERRORS for
- udp_mem
-Message-ID: <20201109164031.5f4fc0ab@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <1604627354-43207-1-git-send-email-dong.menglong@zte.com.cn>
-References: <1604627354-43207-1-git-send-email-dong.menglong@zte.com.cn>
+        s=default; t=1604968993;
+        bh=XzHqem6m80AX6MllQ3e0gvbk8NrE3OGIHym50PRLyUQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Rap6hVqxoaZI0xxcxRw2jKeRqpIvEo7WML0wGwryOSKcZQ32KQJU9ngA259feEESX
+         2g8FegSQycZ/7GcOPxgeBYBcYqbFFcpLBFbEYXfVOs3N+iirFeLFTyihRkn/gRLctu
+         596couw/vJiVkUSh1ZKNUX3vzBmrhwo7A5p7DCZw=
+Date:   Tue, 10 Nov 2020 08:43:08 +0800
+From:   Shawn Guo <shawnguo@kernel.org>
+To:     Oleksij Rempel <o.rempel@pengutronix.de>
+Cc:     Mark Rutland <mark.rutland@arm.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        devicetree@vger.kernel.org, Fabio Estevam <festevam@gmail.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        David Jander <david@protonic.nl>
+Subject: Re: [PATCH v2 0/3] mainline add Altesco I6P board
+Message-ID: <20201110004307.GG31601@dragon>
+References: <20201030140029.22329-1-o.rempel@pengutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201030140029.22329-1-o.rempel@pengutronix.de>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu,  5 Nov 2020 20:49:14 -0500 menglong8.dong@gmail.com wrote:
-> From: Menglong Dong <dong.menglong@zte.com.cn>
+On Fri, Oct 30, 2020 at 03:00:26PM +0100, Oleksij Rempel wrote:
+> changes v2:
+> - rebase against
+>   git.kernel.org/pub/scm/linux/kernel/git/shawnguo/linux.git for-next
+> - remove spaces
+> - use Co-developed-by instead of Co-Developed-by 
 > 
-> When udp_memory_allocated is at the limit, __udp_enqueue_schedule_skb
-> will return a -ENOBUFS, and skb will be dropped in __udp_queue_rcv_skb
-> without any counters being done. It's hard to find out what happened
-> once this happen.
-> 
-> So we introduce a UDP_MIB_MEMERRORS to do this job. Well, this change
-> looks friendly to the existing users, such as netstat:
-> 
-> $ netstat -u -s
-> Udp:
->     0 packets received
->     639 packets to unknown port received.
->     158689 packet receive errors
->     180022 packets sent
->     RcvbufErrors: 20930
->     MemErrors: 137759
-> UdpLite:
-> IpExt:
->     InOctets: 257426235
->     OutOctets: 257460598
->     InNoECTPkts: 181177
-> 
-> v2:
-> - Fix some alignment problems
-> 
-> Signed-off-by: Menglong Dong <dong.menglong@zte.com.cn>
+> Oleksij Rempel (3):
+>   dt-bindings: vendor-prefixes: Add an entry for Altus-Escon-Company
+>   dt-bindings: arm: fsl: add Altesco I6P board
+>   ARM: dts: add Altesco I6P board
 
-Applied, thanks!
+Applied all, thanks.
