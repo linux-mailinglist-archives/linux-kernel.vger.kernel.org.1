@@ -2,140 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 865BA2ADF13
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 20:07:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 673D02ADF1E
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 20:12:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731105AbgKJTHm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 14:07:42 -0500
-Received: from youngberry.canonical.com ([91.189.89.112]:51538 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726400AbgKJTHl (ORCPT
+        id S1729887AbgKJTMX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 14:12:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48438 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726179AbgKJTMX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 14:07:41 -0500
-Received: from 1.general.cking.uk.vpn ([10.172.193.212])
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <colin.king@canonical.com>)
-        id 1kcYzR-0002fO-Lu; Tue, 10 Nov 2020 19:07:37 +0000
-Subject: Re: [PATCH][next] cpumask: allocate enough space for string and
- trailing '\0' char
-To:     paulmck@kernel.org
-Cc:     Paul Gortmaker <paul.gortmaker@windriver.com>,
-        Qian Cai <cai@redhat.com>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-References: <20201109130447.2080491-1-colin.king@canonical.com>
- <737d5be9eb5af55b1a61bd8bfb49b1829a3ff916.camel@redhat.com>
- <e0458a3f-7635-bc80-9496-731bdfceed0d@windriver.com>
- <20201110152437.GS3249@paulmck-ThinkPad-P72>
- <6050d075-52cc-d1b8-51c4-4d0dac62a42e@canonical.com>
- <20201110183826.GV3249@paulmck-ThinkPad-P72>
-From:   Colin Ian King <colin.king@canonical.com>
-Message-ID: <431c72da-1f85-ed4f-1023-08c844d572ac@canonical.com>
-Date:   Tue, 10 Nov 2020 19:07:37 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.1
+        Tue, 10 Nov 2020 14:12:23 -0500
+Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA7F0C0613D1
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 11:12:21 -0800 (PST)
+Received: by mail-pg1-x535.google.com with SMTP id i26so11073893pgl.5
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 11:12:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=mariadb.com; s=google;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
+         :organisation:user-agent;
+        bh=7uvN+JUhe0Ly83KsJpNf32fXXbxwaleyLczJ8RRKDnA=;
+        b=E0aSgu+Kal2uzsw3M+46aGrpFPmhimyWmCqfITI3h8c3QYItYUP+SNSAobDHwZdEwC
+         QcdXuhRaZoGkHfUS0p+LPnzWeoe82XO1ZWj8g76+nZwWwYlOY3f5fdRDSVWTfPB4f14w
+         phLYzEpolT0nk2+0Z/33jRZACT4EIbnNK9ne8=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition:organisation:user-agent;
+        bh=7uvN+JUhe0Ly83KsJpNf32fXXbxwaleyLczJ8RRKDnA=;
+        b=G6YuEaeb6ag4U/D0HzvuuORs04d/d7QhMl/bZlPQ+MpviRl43y/rT6W/VkEGiLN7Ot
+         E0eOBPTKF8HulUIEg4tefZSP+ROJLRRZ+zgP4QwcGCXXeAYAAeTqyK5AEh/Uktx4qhqP
+         L8plodhiGWzHV7OqYSjJg4y+hffTU0576zBMEQeM1Kc7DMR3ATuPxM5ep9fJRQhKvy+v
+         8YSUtALfuPGAKWWRxXq/FU8YRf0aiMqGE3eWyvZ0r/niXzneKr1oDrJxztnAyANfYU5S
+         NJMszeOrUi1nl0+8Qyk3lNRB4+NXYsMqk3Pu4R7ZVJUZi5KIREkmRs22EhrqQZLtOBNa
+         256g==
+X-Gm-Message-State: AOAM532Z7H8JOvlgrfPfLaQJA1A7cdQCS6pSkR7AmNM5FoE7bv0BXJ4c
+        8ETeAySEYIZxD67OSZy1U5MoXyxQepaE2w==
+X-Google-Smtp-Source: ABdhPJyxYd/LmfpgckDuUMTPYuXw8xeQz8UVAbHDmPmMvSbm9UVAaPYp1BSNR9jLGYGh3GF0vZgtQQ==
+X-Received: by 2002:a17:90b:3789:: with SMTP id mz9mr596067pjb.123.1605035541339;
+        Tue, 10 Nov 2020 11:12:21 -0800 (PST)
+Received: from mariadb.com (173-160-235-21-Washington.hfc.comcastbusiness.net. [173.160.235.21])
+        by smtp.gmail.com with ESMTPSA id h13sm2995101pjj.30.2020.11.10.11.12.20
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 10 Nov 2020 11:12:20 -0800 (PST)
+Date:   Tue, 10 Nov 2020 11:12:18 -0800
+From:   Sidney Cammeresi <sac@mariadb.com>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [PATCH 0/1] fix incorrect comment in kernel/sched/rt.c
+Message-ID: <cover.1605034896.git.sac@cheesecake.org>
 MIME-Version: 1.0
-In-Reply-To: <20201110183826.GV3249@paulmck-ThinkPad-P72>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Organisation: MariaDB Corporation Ab
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/11/2020 18:38, Paul E. McKenney wrote:
-> On Tue, Nov 10, 2020 at 03:34:05PM +0000, Colin Ian King wrote:
->> On 10/11/2020 15:24, Paul E. McKenney wrote:
->>> On Mon, Nov 09, 2020 at 11:57:15PM -0500, Paul Gortmaker wrote:
->>>>
->>>>
->>>> On 2020-11-09 8:07 p.m., Qian Cai wrote:
->>>>> On Mon, 2020-11-09 at 13:04 +0000, Colin King wrote:
->>>>>> From: Colin Ian King <colin.king@canonical.com>
->>>>>>
->>>>>> Currently the allocation of cpulist is based on the length of buf but does
->>>>>> not include the addition end of string '\0' terminator. Static analysis is
->>>>>> reporting this as a potential out-of-bounds access on cpulist. Fix this by
->>>>>> allocating enough space for the additional '\0' terminator.
->>>>>>
->>>>>> Addresses-Coverity: ("Out-of-bounds access")
->>>>>> Fixes: 65987e67f7ff ("cpumask: add "last" alias for cpu list specifications")
->>>>>
->>>>> Yeah, this bad commit also introduced KASAN errors everywhere and then will
->>>>> disable lockdep that makes our linux-next CI miserable. Confirmed that this
->>>>> patch will fix it.
->>>>
->>>> I appreciate the reports reminding me why I hate touching string handling.
->>>>
->>>> But let us not lose sight of why linux-next exists.  We want to
->>>> encourage code to appear there as a sounding board before it goes
->>>> mainline, so we can fix things and not pollute mainline git history
->>>> with those trivialities.
->>>>
->>>> If you've decided to internalize linux-next as part of your CI, then
->>>> great, but do note that does not elevate linux-next to some pristine
->>>> status for the world at large.  That only means you have to watch more
->>>> closely what is going on.
->>>>
->>>> If you want to declare linux-next unbreakable -- well that would scare
->>>> away others to get the multi-arch or multi-config coverage that they may
->>>> not be able to do themselves.  We are not going to do that.
->>>>
->>>> I have (hopefully) fixed the "bad commit" in v2 -- as part of the
->>>> implicit linux-next rule "you broke it, you better fix it ASAP".
->>>>
->>>> But "bad" and "miserable" can be things that might scare people off of
->>>> making use of linux-next for what it is meant to be for.  And I am not
->>>> OK with that.
->>>
->>> They would need to use much stronger language to scare me off.  That said,
->>> what on earth is the point of running tests if they do not from time to
->>> time find bugs?  ;-)
->>
->> For me, part of the QA process is statically analyzing linux-next to
->> catch bugs before they land in linux. I think other testing is equally
->> worth while as catching bugs early saves time and money.
-> 
-> All kidding aside, the fact that this appeared in -next was due to a
-> mistake on my part, namely failing to push the changes before starting
-> the test.  Please accept my apologies, and I will continue to do my
-> best to avoid this sort of thing.
-> 
-> 							Thanx, Paul
+I was reading rt.c and was looking at the code pertaining to allowing a
+non-migratable task to preempt a migratable task of the same priority.
+It appears to me that one of the comments describing when this will
+happen is wrong.
 
-No problem. I'm glad we have tools to catch issues like this.
+It appears that preemption will only happen when the task is *not* about
+to be otherwise preempted.  The comment appears to describe an older
+version of the code, in which preemption would happen when the task *was*
+about to be preempted, the opposite condition.
 
-Colin
+Sidney Cammeresi (1):
+  sched/rt: fix incorrect comment about non-migratable tasks' priority
 
-> 
->> Colin
->>
->>>
->>>> Thanks,
->>>> Paul.
->>>> --
->>>>
->>>>>
->>>>>> Signed-off-by: Colin Ian King <colin.king@canonical.com>
->>>>>> ---
->>>>>>   lib/cpumask.c | 2 +-
->>>>>>   1 file changed, 1 insertion(+), 1 deletion(-)
->>>>>>
->>>>>> diff --git a/lib/cpumask.c b/lib/cpumask.c
->>>>>> index 34ecb3005941..cb8a3ef0e73e 100644
->>>>>> --- a/lib/cpumask.c
->>>>>> +++ b/lib/cpumask.c
->>>>>> @@ -185,7 +185,7 @@ int __ref cpulist_parse(const char *buf, struct cpumask
->>>>>> *dstp)
->>>>>>   {
->>>>>>   	int r;
->>>>>>   	char *cpulist, last_cpu[5];	/* NR_CPUS <= 9999 */
->>>>>> -	size_t len = strlen(buf);
->>>>>> +	size_t len = strlen(buf) + 1;
->>>>>>   	bool early = !slab_is_available();
->>>>>>   	if (!strcmp(buf, "all")) {
->>>>>
->>
+ kernel/sched/rt.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
+-- 
+2.7.4
+
+
+-- 
+Sidney Cammeresi
+Staff Software Engineer, MariaDB Corporation Ab
