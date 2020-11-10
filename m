@@ -2,173 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DED8C2AD6EB
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 13:55:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EDF92AD6ED
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 13:56:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730489AbgKJMzw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 07:55:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45824 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730368AbgKJMzw (ORCPT
+        id S1730543AbgKJM4T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 07:56:19 -0500
+Received: from relmlor1.renesas.com ([210.160.252.171]:59092 "EHLO
+        relmlie5.idc.renesas.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1729787AbgKJM4T (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 07:55:52 -0500
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4275C0613D1
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 04:55:50 -0800 (PST)
-Received: by mail-wm1-x343.google.com with SMTP id h2so2906584wmm.0
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 04:55:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=Nv2Iddcxs1d2PfbeIZnN3SiLsasGHglATCG+tB07IsI=;
-        b=WIVjv45X5toRFfkJ1lSrT0YVSLDS40EsO3c19JdIRRJXhJJiPh5wHBhSzMa0sZkU3M
-         NN3kAzPgxlBGxobUZP1kN8kVJw6Kq/GqGFXT6CIjCr99S4nB1qziNbvIDZakx/CwB+Gv
-         OMeqbOntEMQl0liun1n0Du7Hbbkt5pZKZkmo5Y+y7YIY1iAOvJ7lCNhPJ4nEt+UJwSJ9
-         XbiHr8IRj+oCHJurlLL4waYuCZt9Nsada1DDlNpOPgb4VcwW9jbVnR/y6WgtiENSNww/
-         ZzQQ1OW6gOXj0eUbkT3YnQa82ilMVNzOCOkvQD0dKszIoVYqsVn4IFo9qPk29tkCWGHZ
-         ruhg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Nv2Iddcxs1d2PfbeIZnN3SiLsasGHglATCG+tB07IsI=;
-        b=kfXonqfMwhPapYpmigaxmJhBOkr7OwTiJYNZyn4TtizgiN8Cm4yG9C1wTi2mbOTrZ8
-         IIyksuUlapf1Mq+brq7dJey8rlLU5Xmxsx/3PhLru1K+Nl2KK7FTrl9mlv3wjreb57nu
-         NUzRNIxDym/jZssLithtX2B4v3VD8Dk6PjkIJZOwLw4DX3H/pV4FZtsFVSs+gQ0Zc40j
-         nmNwd6MZwFdMsTz8nkCT9LBhWtr1AmNRBHen/ikZ0vUjrl7iyyFKgpDrvm0qk08AogfC
-         E87/sO4XW/tcL3jMak4D60e7JNsrgPFljRTg4XfGNbrQcMQr39c7IPRHbNQIcQYcqoSw
-         VHYQ==
-X-Gm-Message-State: AOAM533d+KhXamMBNWLZeBQd0dm0+XMQcpS1U+sqDEGoU7KsreZx0iLD
-        btF5riA1IxqFv4BDCMEJdoTIR5qKswAItg==
-X-Google-Smtp-Source: ABdhPJwO00jWObsmAMNaE0hP33ILrN87kQ+KfLYdT2MJbty3Uht3B979tZpO1RurYxLHmQeuwnJKQw==
-X-Received: by 2002:a1c:9d02:: with SMTP id g2mr4804119wme.110.1605012949305;
-        Tue, 10 Nov 2020 04:55:49 -0800 (PST)
-Received: from ?IPv6:2a01:e34:ed2f:f020:1087:e960:613c:926b? ([2a01:e34:ed2f:f020:1087:e960:613c:926b])
-        by smtp.googlemail.com with ESMTPSA id k20sm977440wmi.15.2020.11.10.04.55.47
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 10 Nov 2020 04:55:48 -0800 (PST)
-Subject: Re: [PATCH 3/4] powercap/drivers/dtpm: Add API for dynamic thermal
- power management
-To:     Lukasz Luba <lukasz.luba@arm.com>
-Cc:     rafael@kernel.org, srinivas.pandruvada@linux.intel.com,
-        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
-        rui.zhang@intel.com, "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Arnd Bergmann <arnd@arndb.de>,
-        "open list:GENERIC INCLUDE/ASM HEADER FILES" 
-        <linux-arch@vger.kernel.org>
-References: <20201006122024.14539-1-daniel.lezcano@linaro.org>
- <20201006122024.14539-4-daniel.lezcano@linaro.org>
- <8fea0109-30d4-7d67-ffeb-8e588a4dadc3@arm.com>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-Message-ID: <6c018f8e-41b9-55bc-4d47-d2104cabfb86@linaro.org>
-Date:   Tue, 10 Nov 2020 13:55:47 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <8fea0109-30d4-7d67-ffeb-8e588a4dadc3@arm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+        Tue, 10 Nov 2020 07:56:19 -0500
+X-IronPort-AV: E=Sophos;i="5.77,466,1596466800"; 
+   d="scan'208";a="62244176"
+Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
+  by relmlie5.idc.renesas.com with ESMTP; 10 Nov 2020 21:56:17 +0900
+Received: from localhost.localdomain (unknown [10.226.36.204])
+        by relmlir5.idc.renesas.com (Postfix) with ESMTP id A74DA4007F41;
+        Tue, 10 Nov 2020 21:56:15 +0900 (JST)
+From:   Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+To:     Geert Uytterhoeven <geert+renesas@glider.be>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        linux-renesas-soc@vger.kernel.org, linux-clk@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org,
+        Biju Das <biju.das.jz@bp.renesas.com>,
+        Prabhakar <prabhakar.csengg@gmail.com>,
+        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Subject: [PATCH v3] clk: renesas: r8a774c0: Add RPC clocks
+Date:   Tue, 10 Nov 2020 12:56:09 +0000
+Message-Id: <20201110125609.30246-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Describe the RPCSRC internal clock and the RPC[D2] clocks derived from it,
+as well as the RPC-IF module clock, in the RZ/G2E (R8A774C0) CPG/MSSR
+driver.
 
-Hi Lukasz,
+Add new clk type CLK_TYPE_GEN3E3_RPCSRC to register rpcsrc as a fixed
+clock on R-Car Gen3 E3 (and also RZ/G2E which is identical to E3 SoC),
+parent and the divider is set based on the register value CPG_RPCCKCR[4:3]
+(parent is cross verified against MD[4:1] pins) which has been set prior
+to booting the kernel.
 
-thanks for the review
+MD[4] MD[3] MD[2] MD[1]
+  0     0     0    1     -> RPCSRC CLK source is PLL1
+  0     0     1    1     -> RPCSRC CLK source is PLL1
+  0     1     0    0     -> RPCSRC CLK source is PLL1
+  1     0     1    1     -> RPCSRC CLK source is PLL1
+  x     x     x    x     -> For any other values RPCSRC CLK source is PLL0
 
-On 10/11/2020 10:59, Lukasz Luba wrote:
+Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
+---
+v2->v3
+* Implemented as a fixed clock
 
-[ ... ]
+v1->v2
+* Fixed divider table depending on the clk source
+* Introduced CLK_TYPE_GEN3E3_RPCSRC for E3/G2E.
 
->> +/* Init section thermal table */
->> +extern struct dtpm_descr *__dtpm_table[];
->> +extern struct dtpm_descr *__dtpm_table_end[];
->> +
->> +#define DTPM_TABLE_ENTRY(name)            \
->> +    static typeof(name) *__dtpm_table_entry_##name    \
->> +    __used __section(__dtpm_table) = &name
-> 
-> I had to change the section name to string, to pass compilation:
-> __used __section("__dtpm_table") = &name
-> I don't know if it's my compiler or configuration.
+v1: https://lkml.org/lkml/2020/10/16/474
+---
+ drivers/clk/renesas/r8a774c0-cpg-mssr.c |  9 +++++
+ drivers/clk/renesas/rcar-gen3-cpg.c     | 49 +++++++++++++++++++++++++
+ drivers/clk/renesas/rcar-gen3-cpg.h     |  4 ++
+ 3 files changed, 62 insertions(+)
 
-Actually, it is:
-
-commit 33def8498fdde180023444b08e12b72a9efed41d
-Author: Joe Perches <joe@perches.com>
-Date:   Wed Oct 21 19:36:07 2020 -0700
-
-    treewide: Convert macro and uses of __section(foo) to __section("foo")
-
-Your change is correct, I've noticed it a few days ago when rebasing the
-series.
-
-> I've tried to register this DTPM in scmi-cpufreq.c with macro
-> proposed in patch 4/4 commit message, but I might missed some
-> important includes there...
-> 
->> +
->> +#define DTPM_DECLARE(name)    DTPM_TABLE_ENTRY(name)
->> +
->> +#define for_each_dtpm_table(__dtpm)    \
->> +    for (__dtpm = __dtpm_table;    \
->> +         __dtpm < __dtpm_table_end;    \
->> +         __dtpm++)
->> +
->> +static inline struct dtpm *to_dtpm(struct powercap_zone *zone)
->> +{
->> +    return container_of(zone, struct dtpm, zone);
->> +}
->> +
->> +int dtpm_update_power(struct dtpm *dtpm, u64 power_min, u64 power_max);
->> +
->> +int dtpm_release_zone(struct powercap_zone *pcz);
->> +
->> +struct dtpm *dtpm_alloc(void);
->> +
->> +void dtpm_unregister(struct dtpm *dtpm);
->> +
->> +int dtpm_register_parent(const char *name, struct dtpm *dtpm,
->> +             struct dtpm *parent);
->> +
->> +int dtpm_register(const char *name, struct dtpm *dtpm, struct dtpm
->> *parent,
->> +          struct powercap_zone_ops *ops, int nr_constraints,
->> +          struct powercap_zone_constraint_ops *const_ops);
->> +#endif
->>
-> 
-> Minor comment. This new framework deserves more debug prints, especially
-> in registration/unregistration paths. I had to put some, to test it.
-> But it can be done later as well, after it gets into mainline.
-
-Ok, I will add some debug traces.
-
-> I have also run different hotplug stress tests to check this tree
-> locking. The userspace process constantly reading these values, while
-> the last CPU in the cluster was going on/off and node was detaching.
-> I haven't seen any problems, but the tree wasn't so deep.
-> Everything was calculated properly, no error, null pointers, etc.
-
-Great! thank you very much for this test
-
-> Apart from the spelling minor issues and the long constraint name, LGTM
-> 
-> Reviewed-by: Lukasz Luba <lukasz.luba@arm.com>
-> Tested-by: Lukasz Luba <lukasz.luba@arm.com>
-
-Thanks for the review
-
-  -- Daniel
-
-
+diff --git a/drivers/clk/renesas/r8a774c0-cpg-mssr.c b/drivers/clk/renesas/r8a774c0-cpg-mssr.c
+index 9fc9fa9e531a..ed3a2cf0e0bb 100644
+--- a/drivers/clk/renesas/r8a774c0-cpg-mssr.c
++++ b/drivers/clk/renesas/r8a774c0-cpg-mssr.c
+@@ -44,6 +44,7 @@ enum clk_ids {
+ 	CLK_S2,
+ 	CLK_S3,
+ 	CLK_SDSRC,
++	CLK_RPCSRC,
+ 	CLK_RINT,
+ 	CLK_OCO,
+ 
+@@ -74,6 +75,13 @@ static const struct cpg_core_clk r8a774c0_core_clks[] __initconst = {
+ 	DEF_FIXED(".s3",       CLK_S3,             CLK_PLL1,       6, 1),
+ 	DEF_FIXED(".sdsrc",    CLK_SDSRC,          CLK_PLL1,       2, 1),
+ 
++	DEF_FIXED_RPCSRC_E3(".rpcsrc", CLK_RPCSRC, CLK_PLL0, CLK_PLL1),
++
++	DEF_BASE("rpc",		R8A774C0_CLK_RPC, CLK_TYPE_GEN3_RPC,
++		 CLK_RPCSRC),
++	DEF_BASE("rpcd2",	R8A774C0_CLK_RPCD2, CLK_TYPE_GEN3_RPCD2,
++		 R8A774C0_CLK_RPC),
++
+ 	DEF_DIV6_RO(".r",      CLK_RINT,           CLK_EXTAL, CPG_RCKCR, 32),
+ 
+ 	DEF_RATE(".oco",       CLK_OCO,            8 * 1000 * 1000),
+@@ -199,6 +207,7 @@ static const struct mssr_mod_clk r8a774c0_mod_clks[] __initconst = {
+ 	DEF_MOD("can-fd",		 914,	R8A774C0_CLK_S3D2),
+ 	DEF_MOD("can-if1",		 915,	R8A774C0_CLK_S3D4),
+ 	DEF_MOD("can-if0",		 916,	R8A774C0_CLK_S3D4),
++	DEF_MOD("rpc-if",		 917,	R8A774C0_CLK_RPCD2),
+ 	DEF_MOD("i2c6",			 918,	R8A774C0_CLK_S3D2),
+ 	DEF_MOD("i2c5",			 919,	R8A774C0_CLK_S3D2),
+ 	DEF_MOD("i2c-dvfs",		 926,	R8A774C0_CLK_CP),
+diff --git a/drivers/clk/renesas/rcar-gen3-cpg.c b/drivers/clk/renesas/rcar-gen3-cpg.c
+index 488f8b3980c5..00c3d5570274 100644
+--- a/drivers/clk/renesas/rcar-gen3-cpg.c
++++ b/drivers/clk/renesas/rcar-gen3-cpg.c
+@@ -427,6 +427,19 @@ static struct clk * __init cpg_sd_clk_register(const char *name,
+ 	return clk;
+ }
+ 
++static bool __init cpg_rpcsrc_e3_parent_is_pll0(u32 mode)
++{
++	unsigned int e3_rpcsrc = (mode & GENMASK(4, 1)) >> 1;
++	unsigned int pll1[] = { 0x1, 0x3, 0x4, 0xb, };
++	int i;
++
++	for (i = 0; i < ARRAY_SIZE(pll1); i++)
++		if (e3_rpcsrc == pll1[i])
++			return false;
++
++	return true;
++}
++
+ struct rpc_clock {
+ 	struct clk_divider div;
+ 	struct clk_gate gate;
+@@ -696,6 +709,42 @@ struct clk * __init rcar_gen3_cpg_clk_register(struct device *dev,
+ 						  cpg_rpcsrc_div_table,
+ 						  &cpg_lock);
+ 
++	case CLK_TYPE_GEN3E3_RPCSRC:
++		/*
++		 * Register RPCSRC as fixed factor clock based on the
++		 * MD[4:1] pins and CPG_RPCCKCR[4:3] register value for
++		 * which has been set prior to booting the kernel.
++		 */
++
++		value = (readl(base + CPG_RPCCKCR) & GENMASK(4, 3)) >> 3;
++		if (cpg_rpcsrc_e3_parent_is_pll0(cpg_mode)) {
++			if (value != 2)
++				return ERR_PTR(-EINVAL);
++		} else {
++			if (value == 2)
++				return ERR_PTR(-EINVAL);
++		}
++
++		switch (value) {
++		case 0:
++			div = 5;
++			break;
++		case 1:
++			div = 3;
++			break;
++		case 2:
++			parent = clks[core->parent >> 16];
++			if (IS_ERR(parent))
++				return ERR_CAST(parent);
++			div = 8;
++			break;
++		case 3:
++		default:
++			div = 2;
++			break;
++		}
++		break;
++
+ 	case CLK_TYPE_GEN3_RPC:
+ 		return cpg_rpc_clk_register(core->name, base,
+ 					    __clk_get_name(parent), notifiers);
+diff --git a/drivers/clk/renesas/rcar-gen3-cpg.h b/drivers/clk/renesas/rcar-gen3-cpg.h
+index c4ac80cac6a0..4d20b2a8bd9f 100644
+--- a/drivers/clk/renesas/rcar-gen3-cpg.h
++++ b/drivers/clk/renesas/rcar-gen3-cpg.h
+@@ -24,6 +24,7 @@ enum rcar_gen3_clk_types {
+ 	CLK_TYPE_GEN3_OSC,	/* OSC EXTAL predivider and fixed divider */
+ 	CLK_TYPE_GEN3_RCKSEL,	/* Select parent/divider using RCKCR.CKSEL */
+ 	CLK_TYPE_GEN3_RPCSRC,
++	CLK_TYPE_GEN3E3_RPCSRC,
+ 	CLK_TYPE_GEN3_RPC,
+ 	CLK_TYPE_GEN3_RPCD2,
+ 
+@@ -54,6 +55,9 @@ enum rcar_gen3_clk_types {
+ #define DEF_GEN3_Z(_name, _id, _type, _parent, _div, _offset)	\
+ 	DEF_BASE(_name, _id, _type, _parent, .div = _div, .offset = _offset)
+ 
++#define DEF_FIXED_RPCSRC_E3(_name, _id, _parent0, _parent1)	\
++	DEF_BASE(_name, _id, CLK_TYPE_GEN3E3_RPCSRC, (_parent0) << 16 | (_parent1))
++
+ struct rcar_gen3_cpg_pll_config {
+ 	u8 extal_div;
+ 	u8 pll1_mult;
 -- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+2.17.1
 
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
