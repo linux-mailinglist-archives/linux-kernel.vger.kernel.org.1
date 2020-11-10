@@ -2,208 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA5AE2AE3C6
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 23:57:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 118432AE3C9
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 23:58:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732676AbgKJW5B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 17:57:01 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54512 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732616AbgKJW46 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 17:56:58 -0500
-Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.7])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B660120781;
-        Tue, 10 Nov 2020 22:56:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605049017;
-        bh=hryNSK2/6xmZBxdvSLB8GfNxXE7Ss5UN9UXZVORpsMc=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=nj5wGq7nWKU4nzFYf/8Mutk/iyQ5IAEpAbkFwPxc+pdMFWjEj0Sgw/UK/LTk5y5aq
-         3bICJ+IgUA+vKyrm33cXgnruTcXFhWCBmpA2t8yqLlwBz/sUjFZIvO5Ix/PF9I4oWc
-         f9Ilt9GCPCWqh2UPII0dSuCKN0abkX2SXx2FaMs4=
-Date:   Tue, 10 Nov 2020 14:56:55 -0800
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Andrea Mayer <andrea.mayer@uniroma2.it>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        David Ahern <dsahern@kernel.org>,
-        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Shrijeet Mukherjee <shrijeet@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        Stefano Salsano <stefano.salsano@uniroma2.it>,
-        Paolo Lungaroni <paolo.lungaroni@cnit.it>,
-        Ahmed Abdelsalam <ahabdels.dev@gmail.com>
-Subject: Re: [net-next,v2,3/5] seg6: add callbacks for customizing the
- creation/destruction of a behavior
-Message-ID: <20201110145655.513eab48@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20201107153139.3552-4-andrea.mayer@uniroma2.it>
-References: <20201107153139.3552-1-andrea.mayer@uniroma2.it>
-        <20201107153139.3552-4-andrea.mayer@uniroma2.it>
+        id S1732144AbgKJW6v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 17:58:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55858 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731805AbgKJW6u (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Nov 2020 17:58:50 -0500
+Received: from mail-il1-x141.google.com (mail-il1-x141.google.com [IPv6:2607:f8b0:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD6C9C0613D3
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 14:58:49 -0800 (PST)
+Received: by mail-il1-x141.google.com with SMTP id q1so169406ilt.6
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 14:58:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=Jmb/o79cv2bZ/x6XX14phanTrgenPgbAo9xKj20lQ+M=;
+        b=WJi5tW8uGgd7ZtOqMWIb+RZ9EfkEd1Zbdp7Z3xhmkUmUTVidlzjWOOXiUqTOSHSb9N
+         AX21ua0H4EF2nyiyLh7k3V2K3zyvM2dN/6ef5oNLLddJ6lE9E6YWC1KV0AzLMC3a+Ykp
+         LiOmdYO0nsWMhWvc8oPpY8K1H08d3g93XoZwM=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Jmb/o79cv2bZ/x6XX14phanTrgenPgbAo9xKj20lQ+M=;
+        b=JLKDWZlmNb72Te52wpNzeiuooBsB5oJHFNIx5t+VggQ2x04OV0oLWxxhae0AZdV8yi
+         aMlC7D0J5XtdQWW9v+kR2L9WE6jeLaBEmSwYDnWVAdMvJez0xi1ui3HUkO0Bhf6cDQLH
+         S9/GPXH0OJCGSPiRutu6XAGUkVnbxAuLGmq0DjeNDAs57liMTW9pWL/+b59CRqGrHvmu
+         3DKtHg2bv14PusdzRLmgm7Odg9e/5yaq/cFSko0dPq2D8AdJKRbwaGWw7ZwhHTpQpcEu
+         UIRgs7LRdvQpvToOglJJ4XJ1t+a33OIX5II7zqVc1wmsxoRRIC3UKEArysUah3fW5h1Z
+         lqmA==
+X-Gm-Message-State: AOAM532K7KxrE2W1PylfsZIxqjsIUWMbxFKJ3wUt1PEmxanwN/Z44LA+
+        aKoKqVwXtNP3FiOmkw72CcuH2g==
+X-Google-Smtp-Source: ABdhPJz3wyTzSRzlVMZdQL8h4QSqHft28+nWbmp40Gv09GnNJNX+OL/bryYFrDSADelWkwq/sWDCjQ==
+X-Received: by 2002:a05:6e02:ce:: with SMTP id r14mr16715967ilq.240.1605049129210;
+        Tue, 10 Nov 2020 14:58:49 -0800 (PST)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id g1sm52338ilk.84.2020.11.10.14.58.48
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 10 Nov 2020 14:58:48 -0800 (PST)
+Subject: Re: [PATCH 01/13] seqnum_ops: Introduce Sequence Number Ops
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     corbet@lwn.net, keescook@chromium.org, gregkh@linuxfoundation.org,
+        peterz@infradead.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Shuah Khan <skhan@linuxfoundation.org>
+References: <cover.1605027593.git.skhan@linuxfoundation.org>
+ <d265685c901ea81c83c18e218a29710317ab7670.1605027593.git.skhan@linuxfoundation.org>
+ <20201110210316.GO17076@casper.infradead.org>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <11b5153f-e092-d1c9-deb1-e81a171bb866@linuxfoundation.org>
+Date:   Tue, 10 Nov 2020 15:58:48 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <20201110210316.GO17076@casper.infradead.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat,  7 Nov 2020 16:31:37 +0100 Andrea Mayer wrote:
-> We introduce two callbacks used for customizing the creation/destruction of
-> a SRv6 behavior. Such callbacks are defined in the new struct
-> seg6_local_lwtunnel_ops and hereafter we provide a brief description of
-> them:
+On 11/10/20 2:03 PM, Matthew Wilcox wrote:
+> On Tue, Nov 10, 2020 at 12:53:27PM -0700, Shuah Khan wrote:
+>> Sequence Numbers wrap around to INT_MIN when it overflows and should not
 > 
->  - build_state(...): used for calling the custom constructor of the
->    behavior during its initialization phase and after all the attributes
->    have been parsed successfully;
+> Why would sequence numbers be signed?  I know they're built on top of
+> atomic_t, which is signed, but conceptually a sequence number is unsigned.
+
+Yes we have some instances where unsigned is being used. I considered
+going to unsigned. Changing the API to unsigned has other ramifications
+and cascading changes to current atomic_t usages that are up counters.
+
+git grep -E '\((unsigned|unsigned int|u32)\).*\batomic.*(read)' | wc -l
+53
+
+A total of 53 out of 6080 atomic_read() usages force return type to
+unsigned.
+
+git grep -E '\((unsigned|unsigned int|u32)\).*\batomic.*(inc_return)' | 
+wc -l
+11
+
+A total of 11 out of 620 atomic_inc_return() usages force return type
+to unsigned.
+
+Changing the API to unsigned has other ramifications and cascading
+changes to current atomic_t usages that are up counters.
+
+We could add unsigned to seqnum_ops though.
+
 > 
->  - destroy_state(...): used for calling the custom destructor of the
->    behavior before it is completely destroyed.
+>> +++ b/Documentation/core-api/seqnum_ops.rst
+>> @@ -0,0 +1,117 @@
+>> +.. SPDX-License-Identifier: GPL-2.0
+>> +
+>> +.. include:: <isonum.txt>
+>> +
+>> +.. _seqnum_ops:
+>> +
+>> +==========================
+>> +Sequence Number Operations
+>> +==========================
+>> +
+>> +:Author: Shuah Khan
+>> +:Copyright: |copy| 2020, The Linux Foundation
+>> +:Copyright: |copy| 2020, Shuah Khan <skhan@linuxfoundation.org>
+>> +
+>> +There are a number of atomic_t usages in the kernel where atomic_t api
+>> +is used strictly for counting sequence numbers and other statistical
+>> +counters and not for managing object lifetime.
 > 
-> Signed-off-by: Andrea Mayer <andrea.mayer@uniroma2.it>
+> You start by describing why this was introduced.  I think rather, you
+> should start by describing what this is.  You can compare and contrast
+> it with atomic_t later.  Also, I don't think it's necessary to describe
+> its implementation in this document.  This document should explain to
+> someone why they want to use this.
+> 
+>> +Read interface
+>> +--------------
+>> +
+>> +Reads and returns the current value. ::
+>> +
+>> +        seqnum32_read() --> atomic_read()
+>> +        seqnum64_read() --> atomic64_read()
+>> +
+>> +Increment interface
+>> +-------------------
+>> +
+>> +Increments sequence number and doesn't return the new value. ::
+>> +
+>> +        seqnum32_inc() --> atomic_inc()
+>> +        seqnum64_inc() --> atomic64_inc()
+> 
+> That seems odd to me.  For many things, I want to know what the
+> sequence number was incremented to.  Obviously seqnum_inc(); followed
+> by seqnum_read(); is racy.
+> 
+> Do we really want to be explicit about seqnum32 being 32-bit?
+> I'd be inclined to have seqnum/seqnum64 instead of seqnum32/seqnum64.
+> 
+>> +static inline int seqnum32_read(const struct seqnum32 *seq)
+>> +{
+>> +	return atomic_read(&seq->seqnum);
+>> +}
+>> +
+>> +/*
+>> + * seqnum32_set() - set seqnum value
+>> + * @seq: struct seqnum32 pointer
+>> + * @val: new value to set
+>> + *
+>> + */
+>> +static inline void
+>> +seqnum32_set(struct seqnum32 *seq, int val)
+>  > You have some odd formatting like the above line split.
+> 
+>> +static inline void seqnum64_dec(
+>> +				struct seqnum64 *seq)
+> 
+> That one is particularly weird.
+> 
 
-Looks good, minor nits.
+Thanks for catching these. This code needed cleanup after the
+rename from a looong names from previous version.
 
-> diff --git a/net/ipv6/seg6_local.c b/net/ipv6/seg6_local.c
-> index 63a82e2fdea9..4b0f155d641d 100644
-> --- a/net/ipv6/seg6_local.c
-> +++ b/net/ipv6/seg6_local.c
-> @@ -33,11 +33,23 @@
->  
->  struct seg6_local_lwt;
->  
-> +typedef int (*slwt_build_state_t)(struct seg6_local_lwt *slwt, const void *cfg,
-> +				  struct netlink_ext_ack *extack);
-> +typedef void (*slwt_destroy_state_t)(struct seg6_local_lwt *slwt);
-
-Let's avoid the typedefs. Instead of taking a pointer to the op take a
-pointer to the ops struct in seg6_local_lwtunnel_build_state() etc.
-
-> +/* callbacks used for customizing the creation and destruction of a behavior */
-> +struct seg6_local_lwtunnel_ops {
-> +	slwt_build_state_t build_state;
-> +	slwt_destroy_state_t destroy_state;
-> +};
-> +
->  struct seg6_action_desc {
->  	int action;
->  	unsigned long attrs;
->  	int (*input)(struct sk_buff *skb, struct seg6_local_lwt *slwt);
->  	int static_headroom;
-> +
-> +	struct seg6_local_lwtunnel_ops slwt_ops;
->  };
->  
->  struct bpf_lwt_prog {
-> @@ -1015,6 +1027,45 @@ static void destroy_attrs(struct seg6_local_lwt *slwt)
->  	__destroy_attrs(attrs, 0, SEG6_LOCAL_MAX + 1, slwt);
->  }
->  
-> +/* call the custom constructor of the behavior during its initialization phase
-> + * and after that all its attributes have been parsed successfully.
-> + */
-> +static int
-> +seg6_local_lwtunnel_build_state(struct seg6_local_lwt *slwt, const void *cfg,
-> +				struct netlink_ext_ack *extack)
-> +{
-> +	slwt_build_state_t build_func;
-> +	struct seg6_action_desc *desc;
-> +	int err = 0;
-> +
-> +	desc = slwt->desc;
-> +	if (!desc)
-> +		return -EINVAL;
-
-This is impossible, right?
-
-> +
-> +	build_func = desc->slwt_ops.build_state;
-> +	if (build_func)
-> +		err = build_func(slwt, cfg, extack);
-> +
-> +	return err;
-
-no need for err, just use return directly.
-
-	if (!ops->build_state)
-		return 0;
-	return ops->build_state(...);
-
-> +}
-> +
-> +/* call the custom destructor of the behavior which is invoked before the
-> + * tunnel is going to be destroyed.
-> + */
-> +static void seg6_local_lwtunnel_destroy_state(struct seg6_local_lwt *slwt)
-> +{
-> +	slwt_destroy_state_t destroy_func;
-> +	struct seg6_action_desc *desc;
-> +
-> +	desc = slwt->desc;
-> +	if (!desc)
-> +		return;
-> +
-> +	destroy_func = desc->slwt_ops.destroy_state;
-> +	if (destroy_func)
-> +		destroy_func(slwt);
-> +}
-> +
->  static int parse_nla_action(struct nlattr **attrs, struct seg6_local_lwt *slwt)
->  {
->  	struct seg6_action_param *param;
-> @@ -1090,8 +1141,16 @@ static int seg6_local_build_state(struct net *net, struct nlattr *nla,
->  
->  	err = parse_nla_action(tb, slwt);
->  	if (err < 0)
-> +		/* In case of error, the parse_nla_action() takes care of
-> +		 * releasing resources which have been acquired during the
-> +		 * processing of attributes.
-> +		 */
-
-that's the normal behavior for a kernel function, comment is
-unnecessary IMO
-
->  		goto out_free;
->  
-> +	err = seg6_local_lwtunnel_build_state(slwt, cfg, extack);
-> +	if (err < 0)
-> +		goto free_attrs;
-
-The function is called destroy_attrs, call the label out_destroy_attrs,
-or err_destroy_attrs.
-
->  	newts->type = LWTUNNEL_ENCAP_SEG6_LOCAL;
->  	newts->flags = LWTUNNEL_STATE_INPUT_REDIRECT;
->  	newts->headroom = slwt->headroom;
-> @@ -1100,6 +1159,9 @@ static int seg6_local_build_state(struct net *net, struct nlattr *nla,
->  
->  	return 0;
->  
-> +free_attrs:
-> +	destroy_attrs(slwt);
-> +
-
-no need for empty lines on error paths
-
->  out_free:
->  	kfree(newts);
->  	return err;
-> @@ -1109,6 +1171,8 @@ static void seg6_local_destroy_state(struct lwtunnel_state *lwt)
->  {
->  	struct seg6_local_lwt *slwt = seg6_local_lwtunnel(lwt);
->  
-> +	seg6_local_lwtunnel_destroy_state(slwt);
-> +
->  	destroy_attrs(slwt);
->  
->  	return;
-
+thanks,
+-- Shuah
