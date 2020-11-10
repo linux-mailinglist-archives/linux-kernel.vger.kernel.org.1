@@ -2,74 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 179E22ACFAE
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 07:29:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 17CB22ACFB2
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 07:30:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730050AbgKJG3p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 01:29:45 -0500
-Received: from smtp2207-205.mail.aliyun.com ([121.197.207.205]:41286 "EHLO
-        smtp2207-205.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726307AbgKJG3p (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 01:29:45 -0500
-X-Alimail-AntiSpam: AC=CONTINUE;BC=0.137492|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_system_inform|0.0231434-0.00763199-0.969225;FP=4947591482161697186|1|1|17|0|-1|-1|-1;HT=ay29a033018047211;MF=frank@allwinnertech.com;NM=1;PH=DS;RN=8;RT=8;SR=0;TI=SMTPD_---.Iuo67q-_1604989774;
-Received: from allwinnertech.com(mailfrom:frank@allwinnertech.com fp:SMTPD_---.Iuo67q-_1604989774)
-          by smtp.aliyun-inc.com(10.147.41.137);
-          Tue, 10 Nov 2020 14:29:41 +0800
-From:   Frank Lee <frank@allwinnertech.com>
-To:     tiny.windzz@gmail.com
-Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, Yangtao Li <frank@allwinnertech.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Maxime Ripard <mripard@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>
-Subject: [RESEND PATCH 06/19] arm64: allwinner: a100: Add device node for DMA controller
-Date:   Tue, 10 Nov 2020 14:29:32 +0800
-Message-Id: <1b15266045edbcfff2fc3791c88a5390d7bb3185.1604988979.git.frank@allwinnertech.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <cover.1604988979.git.frank@allwinnertech.com>
-References: <cover.1604988979.git.frank@allwinnertech.com>
+        id S1730482AbgKJGas (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 01:30:48 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37338 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726307AbgKJGas (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Nov 2020 01:30:48 -0500
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id CF62D2065D;
+        Tue, 10 Nov 2020 06:30:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604989847;
+        bh=mcptvCebsSCjDgKOVGkf81jFMFKnLnqj4ODmHnBc//E=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=2USH059Sa2/Hm2sqAgOKMxWJpQGEg4mOqGSbq8GP8KatYwy/TYUD23P1PJj62N8m0
+         lMMcbwSh25O4ndsQzbYOa45JhQKysidCTWtojPGddE4nKb91vFUCiY+s93L0ZbQV3r
+         DHdSMb8hzNUUi2c5i3vB2gWZw7cjnsd2NQ2f8h+k=
+Date:   Tue, 10 Nov 2020 07:30:43 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Sasha Levin <sashal@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Christoph Hellwig <hch@lst.de>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH AUTOSEL 5.9 53/55] seq_file: add seq_read_iter
+Message-ID: <X6ozk98QAeZZ41Fm@kroah.com>
+References: <20201110035318.423757-1-sashal@kernel.org>
+ <20201110035318.423757-53-sashal@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201110035318.423757-53-sashal@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yangtao Li <frank@allwinnertech.com>
+On Mon, Nov 09, 2020 at 10:53:16PM -0500, Sasha Levin wrote:
+> From: Christoph Hellwig <hch@lst.de>
+> 
+> [ Upstream commit d4d50710a8b46082224376ef119a4dbb75b25c56 ]
+> 
+> iov_iter based variant for reading a seq_file.  seq_read is
+> reimplemented on top of the iter variant.
+> 
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
+> Tested-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+> Signed-off-by: Sasha Levin <sashal@kernel.org>
+> ---
+>  fs/seq_file.c            | 45 ++++++++++++++++++++++++++++------------
+>  include/linux/seq_file.h |  1 +
+>  2 files changed, 33 insertions(+), 13 deletions(-)
 
-The A100 SoC has a DMA controller that supports 8 DMA channels
-to and from various peripherals.
+This is not needed for anything older than 5.10, please drop.
 
-Add a device node for it.
+thanks,
 
-Signed-off-by: Yangtao Li <frank@allwinnertech.com>
----
- arch/arm64/boot/dts/allwinner/sun50i-a100.dtsi | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
-
-diff --git a/arch/arm64/boot/dts/allwinner/sun50i-a100.dtsi b/arch/arm64/boot/dts/allwinner/sun50i-a100.dtsi
-index cc321c04f121..c34ed8045363 100644
---- a/arch/arm64/boot/dts/allwinner/sun50i-a100.dtsi
-+++ b/arch/arm64/boot/dts/allwinner/sun50i-a100.dtsi
-@@ -101,6 +101,18 @@ ccu: clock@3001000 {
- 			#reset-cells = <1>;
- 		};
- 
-+		dma: dma-controller@3002000 {
-+			compatible = "allwinner,sun50i-a100-dma";
-+			reg = <0x03002000 0x1000>;
-+			interrupts = <GIC_SPI 45 IRQ_TYPE_LEVEL_HIGH>;
-+			clocks = <&ccu CLK_BUS_DMA>, <&ccu CLK_MBUS_DMA>;
-+			clock-names = "bus", "mbus";
-+			dma-channels = <8>;
-+			dma-requests = <51>;
-+			resets = <&ccu RST_BUS_DMA>;
-+			#dma-cells = <1>;
-+		};
-+
- 		gic: interrupt-controller@3021000 {
- 			compatible = "arm,gic-400";
- 			reg = <0x03021000 0x1000>, <0x03022000 0x2000>,
--- 
-2.28.0
-
+greg k-h
