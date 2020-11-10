@@ -2,198 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C49452ADD31
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 18:42:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6148D2ADD2F
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 18:42:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730999AbgKJRmZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 12:42:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34402 "EHLO
+        id S1730975AbgKJRmT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 12:42:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34390 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726400AbgKJRmX (ORCPT
+        with ESMTP id S1726400AbgKJRmT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 12:42:23 -0500
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95A64C0613CF
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 09:42:23 -0800 (PST)
-Received: by mail-pf1-x443.google.com with SMTP id q5so9107256pfk.6
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 09:42:23 -0800 (PST)
+        Tue, 10 Nov 2020 12:42:19 -0500
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F04B2C0613CF;
+        Tue, 10 Nov 2020 09:42:18 -0800 (PST)
+Received: by mail-wm1-x342.google.com with SMTP id s13so3922607wmh.4;
+        Tue, 10 Nov 2020 09:42:18 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=xF9/tbw9kOE7P0FAYcDx8ImhRA3RlHzojbtxK6nR5qQ=;
-        b=Zh3PDYrAEV+1C0mncbeDX7SS6s2UY5CwYoWMUaL9sFqBdYheZMRcsKmg7v8y1s1cuv
-         Yf4iIwxQ3jrQRk6U/dT5TAi21MtJDvfzx1yAMA2IgRuHcweM/YSocmMpwwvfIdxZmO9U
-         5ABXvV0Vc+llYKajBKq6i2CXQW6ZoLhMNHGgwMLfooBOZp9ANdx8tP2bq4HtUR/2t3Xk
-         MvgX1KAPi+RsI/l4zPszmlypBRHLbApduuI+ejk2dRinY1qtXNOVW2Ju0efaLfSNZ9Qi
-         QrkLAjG1Cyf1VUttFW55xVYGA9Lee2nrr+onFSPr0+NvE4k6w/Saq3KBarsiOHxRGog2
-         vC3g==
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=u7PePiutY/L/sMANbIk3Ifrd0U9F0uL2w8ZKdaPSMVA=;
+        b=LD3EoWTE3jCWBub+KgOL5rdsFJCVg5oznIQk26MlvFiS0tiMkKt9PVv9q6Vs+wK7nE
+         BB2WBzukBIPhF8xdZ5iDo5GGZNnU0qxdkVuVQko1/dpmaiTLJXg+kVOSnG6rKxAbC0ua
+         pI/NE80XKis+SKnBJpTPDAc2Vib9auhwTXkSrd1EZT/mFLqHqp03aPXXGfHq6c//Pm5N
+         7z6z7nMm4v8pozeqLX/gzvh7M+lOekC9rd8QZAfn0ZQfDW69fA3qVAy4KlH4yw5R3QCG
+         3XwpxC4hfqIrdaStV0Vu1owQtXF037N3U/s0kQ66nQjSHplugDNSuTBqh0KVV1JET4rj
+         umTw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=xF9/tbw9kOE7P0FAYcDx8ImhRA3RlHzojbtxK6nR5qQ=;
-        b=DN47F7V18SDJ6OHeOP9GJ511v27/kyiuIeEPbDQHFq1zjrpzTGYlWHAJxm9Thy4op7
-         jsV/wybtPfq/Ma5MnVgudyl9QPcw5Tf0xdcoBLklXMMUWa45k0miAWNwwm8n996+hh9v
-         SRj4muaY2RKtIAs8TymcyQMEduTT8DKzqedn+h/veVpUo2i7CuFvW/s8f6p3TJxrHJm3
-         2wbzT7umphKOVnQZJ3cNg73KJdGcIJrge4pAq/xr0gGuZRV+dTp0uN4Fo9y4oOR8bFnx
-         roASUB8RiLYvl2j0JGHthaXrW0oplcw6Taift6j8Dk5sOqMI1WlBO5OZt4vZo0Gw8mgN
-         rxPw==
-X-Gm-Message-State: AOAM530tC6bWL/+qA7Pgu6OMkKJYVEUzv9/Qv9uT6sH/vGlm1mhiDLuZ
-        opfE/Yj+Ox4r3g6GpebIbKCSQ9/UhOTtU1KiCqguXw==
-X-Google-Smtp-Source: ABdhPJwdsVEbgjYrXxYPWkuixoMrNxfDNyPLQWf0eIjCwDeKr7Z/gL08l2Zaq4MZJZ9hkhkACznYuIg//9t9ZV0QZ+c=
-X-Received: by 2002:a63:1f53:: with SMTP id q19mr18270115pgm.286.1605030142984;
- Tue, 10 Nov 2020 09:42:22 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=u7PePiutY/L/sMANbIk3Ifrd0U9F0uL2w8ZKdaPSMVA=;
+        b=q6pcnKUHHp61a4PaD8V6ZoROLBcVs9aQD15A+3namnDHZnaYsHJ6xXngiQx7oGWQW7
+         57QpQBmsHR+mDfY1TfnAz5Gpg8ePFwdq4PHM6mMlO1fedcDko63WXRDi3DeAdlobVatC
+         man3O8MyXCtqpxvgomqi46pFN5Xs2F6JD56zunEEjnn555pxPQwwV66jlUSv+VrqLJk5
+         p21TsrMkY+LVix5RoDEpm3JZujp2JgNLSPwQJ3mTlScZxjic7YgTBc+z69Ztn9WeJHr3
+         zcwrUXtVe7UZ/RgRiztrwlJpeh6NeYo8CvMd524+bqozdqbD7iBokWuUQiuI8gZv+4Wh
+         LCyQ==
+X-Gm-Message-State: AOAM531SsaNphAy4qTwSHv3Jvrn1zuZ6Ipuv+ckqJmw6AJGVvHdfdYtZ
+        AbStszCIn+kgLJIGF0KykaM=
+X-Google-Smtp-Source: ABdhPJzuo8WETyEeGZyAxWnfhgSPWgU3u8ajcmBY1cEEYGoaFFyp6xLHj9rsDgmaIzPFXWaoz5ZoxA==
+X-Received: by 2002:a7b:c099:: with SMTP id r25mr178293wmh.189.1605030137748;
+        Tue, 10 Nov 2020 09:42:17 -0800 (PST)
+Received: from localhost ([217.111.27.204])
+        by smtp.gmail.com with ESMTPSA id i10sm9103887wrs.22.2020.11.10.09.42.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 10 Nov 2020 09:42:16 -0800 (PST)
+Date:   Tue, 10 Nov 2020 18:42:15 +0100
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     Peter Geis <pgwipeout@gmail.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Matt Merhar <mattmerhar@protonmail.com>,
+        Dmitry Osipenko <digetx@gmail.com>,
+        Stephen Warren <swarren@wwwdotorg.org>,
+        Bob Ham <rah@settrans.net>,
+        Leonardo Bras <leobras.c@gmail.com>,
+        Michael Brougham <jusplainmike@gmail.com>,
+        linux-tegra@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 0/3] Support NVIDIA Tegra-based Ouya game console
+Message-ID: <20201110174215.GE2297135@ulmo>
+References: <20201004133114.845230-1-pgwipeout@gmail.com>
 MIME-Version: 1.0
-References: <20201029183526.2131776-1-aleksandrnogikh@gmail.com> <20201029183526.2131776-2-aleksandrnogikh@gmail.com>
-In-Reply-To: <20201029183526.2131776-2-aleksandrnogikh@gmail.com>
-From:   Andrey Konovalov <andreyknvl@google.com>
-Date:   Tue, 10 Nov 2020 18:42:12 +0100
-Message-ID: <CAAeHK+yqS09Aodtvo-G=V26-HUXQV7KayG_oHgSNivexsm2BUQ@mail.gmail.com>
-Subject: Re: [PATCH v3 1/2] security: add fault injection capability
-To:     Aleksandr Nogikh <aleksandrnogikh@gmail.com>
-Cc:     James Morris <jmorris@namei.org>, serge@hallyn.com,
-        akinobu.mita@gmail.com, Dmitry Vyukov <dvyukov@google.com>,
-        Marco Elver <elver@google.com>,
-        Alexander Potapenko <glider@google.com>,
-        Kees Cook <keescook@google.com>, casey@schaufler-ca.com,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-security-module@vger.kernel.org,
-        Aleksandr Nogikh <nogikh@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="BZaMRJmqxGScZ8Mx"
+Content-Disposition: inline
+In-Reply-To: <20201004133114.845230-1-pgwipeout@gmail.com>
+User-Agent: Mutt/1.14.7 (2020-08-29)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 29, 2020 at 7:35 PM Aleksandr Nogikh
-<aleksandrnogikh@gmail.com> wrote:
->
-> From: Aleksandr Nogikh <nogikh@google.com>
->
-> Add a fault injection capability to call_int_hook macro. This will
-> facilitate testing of fault tolerance of the code that invokes
-> security hooks as well as the fault tolerance of the LSM
-> implementations themselves.
->
-> Add a KConfig option (CONFIG_FAIL_LSM_HOOKS) that controls whether the
-> capability is enabled. In order to enable configuration from the user
-> space, add the standard debugfs entries for fault injection (if
-> CONFIG_FAULT_INJECTION_DEBUG_FS is enabled).
->
-> Signed-off-by: Aleksandr Nogikh <nogikh@google.com>
 
-Reviewed-by: Andrey Konovalov <andreyknvl@google.com>
+--BZaMRJmqxGScZ8Mx
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> ---
-> v2:
-> * Renamed should_fail_lsm_hook() to lsm_hooks_inject_fail().
-> ---
->  lib/Kconfig.debug   |  6 +++++
->  security/security.c | 53 ++++++++++++++++++++++++++++++++++++++++++---
->  2 files changed, 56 insertions(+), 3 deletions(-)
->
-> diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
-> index 537cf3c2937d..80d289591e29 100644
-> --- a/lib/Kconfig.debug
-> +++ b/lib/Kconfig.debug
-> @@ -1803,6 +1803,12 @@ config FAIL_MAKE_REQUEST
->         help
->           Provide fault-injection capability for disk IO.
->
-> +config FAIL_LSM_HOOKS
-> +       bool "Fault-injection capability for LSM hooks"
-> +       depends on FAULT_INJECTION
-> +       help
-> +         Provide fault-injection capability for LSM hooks.
-> +
->  config FAIL_IO_TIMEOUT
->         bool "Fault-injection capability for faking disk interrupts"
->         depends on FAULT_INJECTION && BLOCK
-> diff --git a/security/security.c b/security/security.c
-> index 69ff6e2e2cd4..1105ad0f6891 100644
-> --- a/security/security.c
-> +++ b/security/security.c
-> @@ -28,6 +28,7 @@
->  #include <linux/backing-dev.h>
->  #include <linux/string.h>
->  #include <linux/msg.h>
-> +#include <linux/fault-inject.h>
->  #include <net/flow.h>
->
->  #define MAX_LSM_EVM_XATTR      2
-> @@ -669,6 +670,51 @@ static void __init lsm_early_task(struct task_struct *task)
->                 panic("%s: Early task alloc failed.\n", __func__);
->  }
->
-> +
-> +#ifdef CONFIG_FAIL_LSM_HOOKS
-> +
-> +static struct {
-> +       struct fault_attr attr;
-> +       int retval;
-> +} fail_lsm_hooks = {
-> +       .attr = FAULT_ATTR_INITIALIZER,
-> +       .retval = -EACCES
-> +};
-> +
-> +static int __init setup_fail_lsm_hooks(char *str)
-> +{
-> +       return setup_fault_attr(&fail_lsm_hooks.attr, str);
-> +}
-> +__setup("fail_lsm_hooks=", setup_fail_lsm_hooks);
-> +
-> +static int lsm_hooks_inject_fail(void)
-> +{
-> +       return should_fail(&fail_lsm_hooks.attr, 1) ? fail_lsm_hooks.retval : 0;
-> +}
-> +
-> +#ifdef CONFIG_FAULT_INJECTION_DEBUG_FS
-> +
-> +static int __init fail_lsm_hooks_debugfs(void)
-> +{
-> +       umode_t mode = S_IFREG | 0600;
-> +       struct dentry *dir;
-> +
-> +       dir = fault_create_debugfs_attr("fail_lsm_hooks", NULL,
-> +                                       &fail_lsm_hooks.attr);
-> +       debugfs_create_u32("retval", mode, dir, &fail_lsm_hooks.retval);
-> +       return 0;
-> +}
-> +
-> +late_initcall(fail_lsm_hooks_debugfs);
-> +
-> +#endif /* CONFIG_FAULT_INJECTION_DEBUG_FS */
-> +
-> +#else
-> +
-> +static inline int lsm_hooks_inject_fail(void) { return 0; }
-> +
-> +#endif /* CONFIG_FAIL_LSM_HOOKS */
-> +
->  /*
->   * The default value of the LSM hook is defined in linux/lsm_hook_defs.h and
->   * can be accessed with:
-> @@ -707,16 +753,17 @@ static void __init lsm_early_task(struct task_struct *task)
->         } while (0)
->
->  #define call_int_hook(FUNC, IRC, ...) ({                       \
-> -       int RC = IRC;                                           \
-> -       do {                                                    \
-> +       int RC = lsm_hooks_inject_fail();                       \
-> +       if (RC == 0) {                                                          \
->                 struct security_hook_list *P;                   \
-> +               RC = IRC;                                                               \
->                                                                 \
->                 hlist_for_each_entry(P, &security_hook_heads.FUNC, list) { \
->                         RC = P->hook.FUNC(__VA_ARGS__);         \
->                         if (RC != 0)                            \
->                                 break;                          \
->                 }                                               \
-> -       } while (0);                                            \
-> +       }                                                       \
->         RC;                                                     \
->  })
->
-> --
-> 2.29.1.341.ge80a0c044ae-goog
->
+On Sun, Oct 04, 2020 at 01:31:11PM +0000, Peter Geis wrote:
+> Good Day,
+>=20
+> This series introduces upstream kernel support for the Ouya game console =
+device. Please review and apply. Thank you in advance.
+>=20
+> Changelog:
+> v3: - Reorder aliases per Dmitry Osipenko's review.
+>     - Add sdio clocks per Dmitry Osipenko's review.
+>     - Add missing ti sleep bits per Dmitry Osipenko's review.
+>     - Enable lp1 sleep mode.
+>     - Fix bluetooth comment and add missing power supplies.
+>=20
+> v2: - Update pmic and clock handles per Rob Herring's review.
+>     - Add acks from Rob Herring to patch 2 and 3.
+>=20
+> Peter Geis (3):
+>   ARM: tegra: Add device-tree for Ouya
+>   dt-bindings: Add vendor prefix for Ouya Inc.
+>   dt-bindings: ARM: tegra: Add Ouya game console
+>=20
+>  .../devicetree/bindings/arm/tegra.yaml        |    3 +
+>  .../devicetree/bindings/vendor-prefixes.yaml  |    2 +
+>  arch/arm/boot/dts/Makefile                    |    3 +-
+>  arch/arm/boot/dts/tegra30-ouya.dts            | 4511 +++++++++++++++++
+>  4 files changed, 4518 insertions(+), 1 deletion(-)
+>  create mode 100644 arch/arm/boot/dts/tegra30-ouya.dts
+
+Applied, thanks.
+
+Thierry
+
+--BZaMRJmqxGScZ8Mx
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAl+q0PYACgkQ3SOs138+
+s6HInBAArw5O4bLPyhfu+ViRVz6vcmT3JHr6FZfIpjj8kwHWj4HoUpKMiQqe2tYQ
+RtnBZCnBwxx4ahrghwET/WIcVPeDpJKdS18++i6P7S2YnmMjzQK7MKiLc3i2V5xh
+KAjI/n/pgq9i2Ca0ZnY3cYfXDTMdUBNTwWy3Y4SYUQ4MWdLiVgJ388PHfFC6kW43
+ykeq8/kpKci+Y4rX4CzL8YMNsj+k1Sxu/NekOXjF6F/8KfqkC4vgZ4zbDWpT1CFL
+X4xu0T0vmSZMTObPRZ13Ourk+CCYX8/UJwf/ShABC7j0KGDE0qlGaS3V9LeWQ0VG
+80UFgOkfxpsAPVZ0BacXuBfYgJUv7QUFDJuvzBRsUvSfbGbGaTn2X9okKHE0SvM3
+ioSw8LRUxSkhf3mJxL8ltQ8iGMh4ko581pgHMfJHIZefKhV7L0O9jyhJFMJ8F0FS
+mK82SJbBS4H59AI1M1z+0O9TkBO0t9XSzgNjp2oQNIuCfA3atCm32spwj7oiFPHV
+Tfou3KbqaYpWG4REiuUj3vJA3FQhC7arzY4gEtGElA5Ig6N9HarliXWWSosmO7Ao
+uKck4lmJHq+YmTn0VHCELwsRVsnkRJQlUg4Be0dYfaKikqiJIuD3dyTKfzB+HRN+
+HfgMvAgiHCd30G2vwXwQ34DsnF1dzq9JflEbGQ1XMdR7K/Ko/34=
+=I/ei
+-----END PGP SIGNATURE-----
+
+--BZaMRJmqxGScZ8Mx--
