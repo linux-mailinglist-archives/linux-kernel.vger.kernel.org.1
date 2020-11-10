@@ -2,116 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F23B2ADE9A
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 19:43:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 584912ADEA2
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 19:44:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731458AbgKJSnI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 13:43:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43844 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725862AbgKJSnE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 13:43:04 -0500
-Received: from mail-yb1-xb41.google.com (mail-yb1-xb41.google.com [IPv6:2607:f8b0:4864:20::b41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7007FC0613D1;
-        Tue, 10 Nov 2020 10:43:04 -0800 (PST)
-Received: by mail-yb1-xb41.google.com with SMTP id s8so12576563yba.13;
-        Tue, 10 Nov 2020 10:43:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=oOeFUNM4jhGqbawcUIauzPQF7fQF7Oz58AeNbXhLGQQ=;
-        b=Akbtt04ubbIMlw8fPNnZFiGcd4HWgJ85/0qMrauXJB+xPCHlzIzo/DMDO63ktPEWG3
-         T0YZYD8KL589ofpUbK+liXUChLeA1fd/XDiK0Sra29yQlrJ6JANNalpXv5i0woB6M4lL
-         Bb5pOL/VypPyQiwO5MbjWHMyWlbz7n6gGIi+8fI+yYWQrBuEAReL+cYGQK77O8u8T4mS
-         Ca7KGRYQs5/1+cj5iwrizjM6iGkXJ5t9yrQDqyVbQvFmYDdinYhGAJOGudc6dfJFa846
-         RxnRZWxZ0C2mvxlo78l1DPU2mBTNvYGJ1SW0e2sLGXArEgfSQxo48zAfRzkTYuCVfJUm
-         Kb6g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=oOeFUNM4jhGqbawcUIauzPQF7fQF7Oz58AeNbXhLGQQ=;
-        b=fALw/d3X2FiUEPUT6cbasbWeh9Q7QVI34s+CBLCWCD3BrF0BrsuUxCUGsJClMhpToV
-         Fowzj46fRtaY/kObZ+IRWQCcbnGAaceheFzU681E1L5X+XPmDDCJ44AR74rg9ei14F/6
-         Zr4anCKwuRVK9HzASFVYHcIU0tcmm5SG5LvXaM6C6G68cAFfpz4/au32nRd2WasCuBDJ
-         huRZz5wcdn+1m409XhNkz/uD3XGXcH41ljrlckgmRooYs20btmT23xP1X7yqrKcL7o4l
-         96Kx1wuMUNj8HM06Wr4Xx7tyob9hf3wWIBVxZdJpyyJUcUwtKyKIjEeq/2nNuIT7mn8z
-         dWGg==
-X-Gm-Message-State: AOAM5337+It4BJ69wqp9Kt3p0ucHRG9ulRtX3VYIi70fTWOoij1jiq+H
-        JdLHouwoWyjdmWuPNHYWCTEXtybnx1don9bGQJc=
-X-Google-Smtp-Source: ABdhPJzVPiwV63wNDRTuUhDdqwq6L62tcBKnJWGqscHiR4DI4J2xPusXe22uaLSMlP+Ju2baNL7nJkYUAelv0p1I5W4=
-X-Received: by 2002:a25:585:: with SMTP id 127mr17284941ybf.425.1605033783761;
- Tue, 10 Nov 2020 10:43:03 -0800 (PST)
+        id S1731006AbgKJSoo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 13:44:44 -0500
+Received: from foss.arm.com ([217.140.110.172]:59942 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725862AbgKJSon (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Nov 2020 13:44:43 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id BB8D61063;
+        Tue, 10 Nov 2020 10:44:42 -0800 (PST)
+Received: from e113632-lin.cambridge.arm.com (e113632-lin.cambridge.arm.com [10.1.194.46])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 629383F7BB;
+        Tue, 10 Nov 2020 10:44:41 -0800 (PST)
+From:   Valentin Schneider <valentin.schneider@arm.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Morten Rasmussen <morten.rasmussen@arm.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Rik van Riel <riel@surriel.com>,
+        Barry Song <song.bao.hua@hisilicon.com>
+Subject: [PATCH] sched/topology: Warn when NUMA diameter > 2
+Date:   Tue, 10 Nov 2020 18:43:00 +0000
+Message-Id: <20201110184300.15673-1-valentin.schneider@arm.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-References: <1605009019-22310-1-git-send-email-kaixuxia@tencent.com> <CAOJe8K2tL5x-dESsV+PFq1Gii-yB=fJh7i-=E-FbrJeioo6pqA@mail.gmail.com>
-In-Reply-To: <CAOJe8K2tL5x-dESsV+PFq1Gii-yB=fJh7i-=E-FbrJeioo6pqA@mail.gmail.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 10 Nov 2020 10:42:53 -0800
-Message-ID: <CAEf4BzaSXd4FSM7v+HMobCSkuvATB5mZRZ6ZPzG4PzQ959jv4w@mail.gmail.com>
-Subject: Re: [PATCH] bpf: Fix unsigned 'datasec_id' compared with zero in check_pseudo_btf_id
-To:     Denis Kirjanov <kda@linux-powerpc.org>
-Cc:     xiakaixu1987@gmail.com, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
-        Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        john fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Kaixu Xia <kaixuxia@tencent.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 10, 2020 at 5:02 AM Denis Kirjanov <kda@linux-powerpc.org> wrote:
->
-> On 11/10/20, xiakaixu1987@gmail.com <xiakaixu1987@gmail.com> wrote:
-> > From: Kaixu Xia <kaixuxia@tencent.com>
-> >
-> > The unsigned variable datasec_id is assigned a return value from the call
-> > to check_pseudo_btf_id(), which may return negative error code.
-> >
-> > Fixes coccicheck warning:
-> >
-> > ./kernel/bpf/verifier.c:9616:5-15: WARNING: Unsigned expression compared
-> > with zero: datasec_id > 0
-> >
-> > Reported-by: Tosk Robot <tencent_os_robot@tencent.com>
-> > Signed-off-by: Kaixu Xia <kaixuxia@tencent.com>
-> > ---
-> >  kernel/bpf/verifier.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> >
-> > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> > index 6200519582a6..e9d8d4309bb4 100644
-> > --- a/kernel/bpf/verifier.c
-> > +++ b/kernel/bpf/verifier.c
-> > @@ -9572,7 +9572,7 @@ static int check_pseudo_btf_id(struct bpf_verifier_env
-> > *env,
-> >                              struct bpf_insn *insn,
-> >                              struct bpf_insn_aux_data *aux)
-> >  {
-> > -     u32 datasec_id, type, id = insn->imm;
-> > +     s32 datasec_id, type, id = insn->imm;
->
-> but the value is passed as u32 to btf_type_by_id()...
->
-> btf_find_by_name_kind() returns s32
+NUMA topologies where the shortest path between some two nodes requires
+three or more hops (i.e. diameter > 2) end up being misrepresented in the
+scheduler topology structures.
 
-Right, valid range of BTF type IDs are >= 0 and (significantly) less
-than INT_MAX. So s32 is used to signal valid BTF ID or negative error,
-but all the APIs accepting BTF ID accept it as just u32.
+This is currently detected when booting a kernel with CONFIG_SCHED_DEBUG=y
++ sched_debug on the cmdline, although this will only yield a warning about
+sched_group spans not matching sched_domain spans:
 
->
->
-> >       const struct btf_var_secinfo *vsi;
-> >       const struct btf_type *datasec;
-> >       const struct btf_type *t;
-> > --
-> > 2.20.0
-> >
-> >
+  ERROR: groups don't span domain->span
+
+Add an explicit warning for that case, triggered regardless of
+CONFIG_SCHED_DEBUG, and decorate it with an appropriate comment.
+
+The topology described in the comment can be booted up on QEMU by appending
+the following to your usual QEMU incantation:
+
+    -smp cores=4 \
+    -numa node,cpus=0,nodeid=0 -numa node,cpus=1,nodeid=1, \
+    -numa node,cpus=2,nodeid=2, -numa node,cpus=3,nodeid=3, \
+    -numa dist,src=0,dst=1,val=20, -numa dist,src=0,dst=2,val=30, \
+    -numa dist,src=0,dst=3,val=40, -numa dist,src=1,dst=2,val=20, \
+    -numa dist,src=1,dst=3,val=30, -numa dist,src=2,dst=3,val=20
+
+A somewhat more realistic topology (6-node mesh) with the same affliction
+can be conjured with:
+
+    -smp cores=6 \
+    -numa node,cpus=0,nodeid=0 -numa node,cpus=1,nodeid=1, \
+    -numa node,cpus=2,nodeid=2, -numa node,cpus=3,nodeid=3, \
+    -numa node,cpus=4,nodeid=4, -numa node,cpus=5,nodeid=5, \
+    -numa dist,src=0,dst=1,val=20, -numa dist,src=0,dst=2,val=30, \
+    -numa dist,src=0,dst=3,val=40, -numa dist,src=0,dst=4,val=30, \
+    -numa dist,src=0,dst=5,val=20, \
+    -numa dist,src=1,dst=2,val=20, -numa dist,src=1,dst=3,val=30, \
+    -numa dist,src=1,dst=4,val=20, -numa dist,src=1,dst=5,val=30, \
+    -numa dist,src=2,dst=3,val=20, -numa dist,src=2,dst=4,val=30, \
+    -numa dist,src=2,dst=5,val=40, \
+    -numa dist,src=3,dst=4,val=20, -numa dist,src=3,dst=5,val=30, \
+    -numa dist,src=4,dst=5,val=20
+
+Link: https://lore.kernel.org/lkml/jhjtux5edo2.mognet@arm.com
+Signed-off-by: Valentin Schneider <valentin.schneider@arm.com>
+---
+ kernel/sched/topology.c | 33 +++++++++++++++++++++++++++++++++
+ 1 file changed, 33 insertions(+)
+
+diff --git a/kernel/sched/topology.c b/kernel/sched/topology.c
+index 90f3e5558fa2..b296c1c6b961 100644
+--- a/kernel/sched/topology.c
++++ b/kernel/sched/topology.c
+@@ -675,6 +675,7 @@ cpu_attach_domain(struct sched_domain *sd, struct root_domain *rd, int cpu)
+ {
+ 	struct rq *rq = cpu_rq(cpu);
+ 	struct sched_domain *tmp;
++	int numa_distance = 0;
+ 
+ 	/* Remove the sched domains which do not contribute to scheduling. */
+ 	for (tmp = sd; tmp; ) {
+@@ -706,6 +707,38 @@ cpu_attach_domain(struct sched_domain *sd, struct root_domain *rd, int cpu)
+ 			sd->child = NULL;
+ 	}
+ 
++	for (tmp = sd; tmp; tmp = tmp->parent)
++		numa_distance += !!(tmp->flags & SD_NUMA);
++
++	/*
++	 * FIXME: Diameter >=3 is misrepresented.
++	 *
++	 * Smallest diameter=3 topology is:
++	 *
++	 *   node   0   1   2   3
++	 *     0:  10  20  30  40
++	 *     1:  20  10  20  30
++	 *     2:  30  20  10  20
++	 *     3:  40  30  20  10
++	 *
++	 *   0 --- 1 --- 2 --- 3
++	 *
++	 * NUMA-3	0-3		N/A		N/A		0-3
++	 *  groups:	{0-2},{1-3}					{1-3},{0-2}
++	 *
++	 * NUMA-2	0-2		0-3		0-3		1-3
++	 *  groups:	{0-1},{1-3}	{0-2},{2-3}	{1-3},{0-1}	{2-3},{0-2}
++	 *
++	 * NUMA-1	0-1		0-2		1-3		2-3
++	 *  groups:	{0},{1}		{1},{2},{0}	{2},{3},{1}	{3},{2}
++	 *
++	 * NUMA-0	0		1		2		3
++	 *
++	 * The NUMA-2 groups for nodes 0 and 3 are obviously buggered, as the
++	 * group span isn't a subset of the domain span.
++	 */
++	WARN_ONCE(numa_distance > 2, "Shortest NUMA path spans too many nodes\n");
++
+ 	sched_domain_debug(sd, cpu);
+ 
+ 	rq_attach_root(rq, rd);
+-- 
+2.27.0
+
