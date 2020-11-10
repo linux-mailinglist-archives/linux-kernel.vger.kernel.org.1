@@ -2,91 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B95EF2ADDF1
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 19:15:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FDB12ADDF9
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 19:16:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731354AbgKJSP0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 13:15:26 -0500
-Received: from m42-4.mailgun.net ([69.72.42.4]:42368 "EHLO m42-4.mailgun.net"
+        id S1731424AbgKJSQk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 13:16:40 -0500
+Received: from david.siemens.de ([192.35.17.14]:58909 "EHLO david.siemens.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731281AbgKJSPY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 13:15:24 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1605032124; h=Date: Message-Id: Cc: To: References:
- In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
- Content-Type: Sender; bh=oEg0Hd7/VY7sCFTeZI17MEe01h8PywuxZEYKAWEFsZE=;
- b=kt2DKkzMF8xvMZn0FvRFwsTriVEi34phycheYIHXan1i+01uUJ3J0SbyuCFVcY5EiH9KmWez
- NomR87a1EfSDGRGkAILVy/AxRUSDQAjOixYIrb3ZDPsSuBAnzKSd6vqrdf5Vdyi7N26vLif8
- 9+dur6dRBGV6VRqMmeaLB+xTJOM=
-X-Mailgun-Sending-Ip: 69.72.42.4
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n05.prod.us-east-1.postgun.com with SMTP id
- 5faad8a6cecc309dcb142b70 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 10 Nov 2020 18:15:02
- GMT
-Sender: kvalo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 0890CC433C8; Tue, 10 Nov 2020 18:15:02 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        MISSING_DATE,MISSING_MID,SPF_FAIL,URIBL_BLOCKED autolearn=no
-        autolearn_force=no version=3.4.0
-Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 1CE34C433C9;
-        Tue, 10 Nov 2020 18:14:56 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 1CE34C433C9
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
-Content-Type: text/plain; charset="utf-8"
+        id S1726400AbgKJSQh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Nov 2020 13:16:37 -0500
+Received: from mail1.siemens.de (mail1.siemens.de [139.23.33.14])
+        by david.siemens.de (8.15.2/8.15.2) with ESMTPS id 0AAIGLNN019030
+        (version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 10 Nov 2020 19:16:21 +0100
+Received: from dev.vm7.ccp.siemens.com ([167.87.14.175])
+        by mail1.siemens.de (8.15.2/8.15.2) with ESMTP id 0AAIGKKn021055;
+        Tue, 10 Nov 2020 19:16:20 +0100
+Received: from mail3.siemens.de (localhost [127.0.0.1])
+        by dev.vm7.ccp.siemens.com (Postfix) with ESMTP id 741DA70BAB5;
+        Tue, 10 Nov 2020 19:16:20 +0100 (CET)
+From:   Andrej Valek <andrej.valek@siemens.com>
+To:     robh@kernel.org, nick@shmanahar.org, hadess@hadess.net,
+        dmitry.torokhov@gmail.com
+Cc:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, Andrej Valek <andrej.valek@siemens.com>
+Subject: [PATCH v4 0/4] Firmware loading option
+Date:   Tue, 10 Nov 2020 19:15:46 +0100
+Message-Id: <20201110181550.23853-1-andrej.valek@siemens.com>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20201029170313.25529-1-andrej.valek@siemens.com>
+References: <20201029170313.25529-1-andrej.valek@siemens.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Subject: Re: [PATCH 2/2] ath11k: Handle errors if peer creation fails
-From:   Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <20201004100218.311653-1-alex.dewar90@gmail.com>
-References: <20201004100218.311653-1-alex.dewar90@gmail.com>
-To:     Alex Dewar <alex.dewar90@gmail.com>
-Cc:     unlisted-recipients:; (no To-header on input)
-        Alex Dewar <alex.dewar90@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Carl Huang <cjhuang@codeaurora.org>,
-        ath11k@lists.infradead.org, linux-wireless@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Illegal-Object: Syntax error in Cc: address found on vger.kernel.org:
-        Cc:     unlisted-recipients:; (no To-header on input)Alex Dewar <alex.dewar90@gmail.com>
-                                                                     ^-missing end of address
-User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.5.2
-Message-Id: <20201110181502.0890CC433C8@smtp.codeaurora.org>
-Date:   Tue, 10 Nov 2020 18:15:02 +0000 (UTC)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Alex Dewar <alex.dewar90@gmail.com> wrote:
+Add option to prevent firmware/configuration loading during each boot.
 
-> ath11k_peer_create() is called without its return value being checked,
-> meaning errors will be unhandled. Add missing check and, as the mutex is
-> unconditionally unlocked on leaving this function, simplify the exit
-> path.
-> 
-> Addresses-Coverity-ID: 1497531 ("Code maintainability issues")
-> Fixes: 701e48a43e15 ("ath11k: add packet log support for QCA6390")
-> Signed-off-by: Alex Dewar <alex.dewar90@gmail.com>
-> Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+Andrej Valek (4):
+  Input: goodix - add option to disable firmware loading
+  dt-bindings: touchscreen: goodix: add info about disabling FW loading
+  Input: atmel_mxt_ts - add option to disable firmware loading
+  Input: st1232 - add support resolution reading
 
-Patch applied to ath-next branch of ath.git, thanks.
-
-c134d1f8c436 ath11k: Handle errors if peer creation fails
+ .../bindings/input/touchscreen/goodix.yaml    |  4 ++
+ drivers/input/touchscreen/atmel_mxt_ts.c      | 17 ++++--
+ drivers/input/touchscreen/goodix.c            |  4 +-
+ drivers/input/touchscreen/st1232.c            | 52 +++++++++++++------
+ 4 files changed, 57 insertions(+), 20 deletions(-)
 
 -- 
-https://patchwork.kernel.org/project/linux-wireless/patch/20201004100218.311653-1-alex.dewar90@gmail.com/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+2.20.1
 
