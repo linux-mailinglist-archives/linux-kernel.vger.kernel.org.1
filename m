@@ -2,67 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D2342AE166
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 22:13:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E6D82AE16A
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 22:14:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731696AbgKJVNx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 16:13:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39244 "EHLO
+        id S1731718AbgKJVOx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 16:14:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39400 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726179AbgKJVNw (ORCPT
+        with ESMTP id S1726428AbgKJVOw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 16:13:52 -0500
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3C9EC0613D1;
-        Tue, 10 Nov 2020 13:13:51 -0800 (PST)
-Received: by mail-wm1-x343.google.com with SMTP id d142so4614033wmd.4;
-        Tue, 10 Nov 2020 13:13:51 -0800 (PST)
+        Tue, 10 Nov 2020 16:14:52 -0500
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73A71C0613D1
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 13:14:51 -0800 (PST)
+Received: by mail-wm1-x341.google.com with SMTP id c16so4592746wmd.2
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 13:14:51 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc:content-transfer-encoding;
-        bh=EvrNTGyzPLrpMkOqbiu0tJDut5rWtaLyxK55CmagbKo=;
-        b=XJPgOv25JZ76wIWvv1r7+oeadXAOemvtCAKknFD8PbF8CojgPH/YzIY5iCoKqSjEww
-         AO4kIyk9jonsdRnRubyCundPh31KWp8SLxnwL3rfWk50qXDRSStPoQSRVPaJt3VjTtAc
-         RkmwIFwDI9S67f0iHFRZZez9aACymlUzkEQq9kGB+nLZNpw+AWrNpkTwlqgOdIfUgpSK
-         gkGo+sSBHdlxsL3xNPa5qubtI2kjE+HQOYmjEJE0Uyz1t3XP5XvvWLPRyY4GDrSIGuK4
-         4Sun/7yYBZAs7vXGGfTTwTHS8r5GIaltZ0gA/fYx/LkrwB0vi0f1lwnRiAtGhYQDckl2
-         ITjw==
+        bh=pxsubSKIzvYm5GX7ose/r3DE5/fWORy3pWS1sa1asC8=;
+        b=J3d3ZNCfN7YF6oUQxAhPbQLbYF5ssw9fUrPsw1Erny85gCHm5ArDSOhL8e6GrzkF2V
+         9JeD4AQJWYCoRQfs2V0FFymScYHBw5H8r3Zwld1znfWyDbdjBkJ1JYvaE/IAWtjpmqxD
+         3kLPY/UcL0idZzX1FwDcHdkC51aE8IFPiVuf/2tJHadsYhY+lyNDXUFIvrIi6nXXksHY
+         bQfC5VlGLRnrJdSFlWP7BklZeiN/yF34YfdTy/Ce/MiqXSmNfNUfrj70okVFqetyYhAZ
+         y60GsdcKDpfcBi2vOBro24XjrNSyje7VF0xYxIZW++18Pp3lqsmkA1CJiayKcQwbUYvh
+         Wo4w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc:content-transfer-encoding;
-        bh=EvrNTGyzPLrpMkOqbiu0tJDut5rWtaLyxK55CmagbKo=;
-        b=byuPBnzhfug5G14ymLQg9N24QG0WELoeznmpUchQZ0QZjkOshP+8C751AoPgxNwjQR
-         oznA+OrbQVWGVgVQbU9PYNblOy+YHB5j+84z9cLGt8Bv4p9/8N2V7cMzm4ADsHS5FZzS
-         mIonZOSPraWdwWao7zFP+etRe+iUMXDgny5OIlIJ72DcyGPJwvBFTyeuIzBNkUPlavGv
-         h/Eb8g2/sPcqmSltsGjOqJ1UScFGgSTLx3wQkDcEg5wrwCR2iT3FnfBdrYs9xo8EgbgO
-         q72QGoa1BiOSUewv13RfrRqmoGr1BQkcH0E9S6lNmkacH8pODMjNikMTPc/RaNUINxt3
-         39yw==
-X-Gm-Message-State: AOAM532ZOba0+kOmZ2OTfaPtzGTfv6DpvWU8EiL+X9qs8Sf5vvCK0qUq
-        PqYuY5x6/kMoPbsZNoW5ibUcjB0qgkW1O86h+iw=
-X-Google-Smtp-Source: ABdhPJyHC8vHXsJYCh3vrnV2nELM9iSabVZOSi99vn/Wo7V70lIbQoE1qv+uHNKxSVF66X7FRUYqQDwa+xjr5OZdkGI=
-X-Received: by 2002:a1c:80cb:: with SMTP id b194mr27049wmd.73.1605042830518;
- Tue, 10 Nov 2020 13:13:50 -0800 (PST)
+        bh=pxsubSKIzvYm5GX7ose/r3DE5/fWORy3pWS1sa1asC8=;
+        b=qjQCY/DxFYqiLgabILKyJTGOU927tuxTwOCGStBKPj6xhnYTk9buDNYIRFZjHNAct4
+         11L1eenEgTQFeYalGl7KWgZnILmq5RzD64nyHKN8WDpCuULWY6r1ENNR40kj0RSSgG5B
+         v2khCIxdr0spgc6NneJm5Q8Cy5JJ+64qn8x1jMNGk4JpQpnIXg/b8fPKWvtmorNicZ0S
+         oTvrpUnk7WycfKeKLHxw6d7xzyCu3i7hKSwnt3jc4mWBcKJHKsHBvR2F98Al4Eu75/Mw
+         xFG63Yrj5dHjoQirOhtPkNbXNYJJP1E8YPxw1LNlZdMAMoxaJup9568GoR8Ody8bQjPQ
+         l/tg==
+X-Gm-Message-State: AOAM531ztqAOZTR4LM0daQw47Ert9HeKxazZ0kUuNM+XrLTrd/lzqYe2
+        efWv68xuV+ENJYV/ctuHVhLzUoVmaoBiQ10JXVk=
+X-Google-Smtp-Source: ABdhPJwZx/rH071+rhpAeh4rIejVLAxwyHRrjLJsRtxyfqR7h/IbMSnb9CF4BixMsn8ypO3Rs314hHkuf5bB7aQf9Eo=
+X-Received: by 2002:a1c:46c6:: with SMTP id t189mr28956wma.79.1605042890238;
+ Tue, 10 Nov 2020 13:14:50 -0800 (PST)
 MIME-Version: 1.0
-References: <20201105144517.1826692-1-lee.jones@linaro.org> <20201105144517.1826692-8-lee.jones@linaro.org>
-In-Reply-To: <20201105144517.1826692-8-lee.jones@linaro.org>
+References: <20201105144517.1826692-1-lee.jones@linaro.org> <20201105144517.1826692-16-lee.jones@linaro.org>
+In-Reply-To: <20201105144517.1826692-16-lee.jones@linaro.org>
 From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Tue, 10 Nov 2020 16:13:39 -0500
-Message-ID: <CADnq5_MGxcgXN-bbXVi4BidW7oa+qW8g9fOPuH2-1gSNWOW5jw@mail.gmail.com>
-Subject: Re: [PATCH 07/19] gpu: drm: scheduler: sched_entity: Demote
- non-conformant kernel-doc headers
+Date:   Tue, 10 Nov 2020 16:14:38 -0500
+Message-ID: <CADnq5_PZRM0wmrcJAGfdyFqnR68gbVQK76TrHSbJJRK1t8cT8g@mail.gmail.com>
+Subject: Re: [PATCH 15/19] gpu: drm: radeon: radeon_drv: Remove unused
+ variable 'ret'
 To:     Lee Jones <lee.jones@linaro.org>
 Cc:     David Airlie <airlied@linux.ie>,
         LKML <linux-kernel@vger.kernel.org>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
         Maling list - DRI developers 
         <dri-devel@lists.freedesktop.org>,
-        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
-        <linaro-mm-sig@lists.linaro.org>,
         Alex Deucher <alexander.deucher@amd.com>,
-        linux-media <linux-media@vger.kernel.org>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        Nirmoy Das <nirmoy.aiemd@gmail.com>
+        Gareth Hughes <gareth@valinux.com>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
@@ -73,24 +71,18 @@ On Thu, Nov 5, 2020 at 9:52 AM Lee Jones <lee.jones@linaro.org> wrote:
 >
 > Fixes the following W=3D1 kernel build warning(s):
 >
->  drivers/gpu/drm/scheduler/sched_entity.c:316: warning: Function paramete=
-r or member 'f' not described in 'drm_sched_entity_clear_dep'
->  drivers/gpu/drm/scheduler/sched_entity.c:316: warning: Function paramete=
-r or member 'cb' not described in 'drm_sched_entity_clear_dep'
->  drivers/gpu/drm/scheduler/sched_entity.c:330: warning: Function paramete=
-r or member 'f' not described in 'drm_sched_entity_wakeup'
->  drivers/gpu/drm/scheduler/sched_entity.c:330: warning: Function paramete=
-r or member 'cb' not described in 'drm_sched_entity_wakeup'
+>  drivers/gpu/drm/radeon/radeon_drv.c: In function =E2=80=98radeon_pmops_r=
+untime_suspend=E2=80=99:
+>  drivers/gpu/drm/radeon/radeon_drv.c:455:6: warning: variable =E2=80=98re=
+t=E2=80=99 set but not used [-Wunused-but-set-variable]
 >
+> Cc: Alex Deucher <alexander.deucher@amd.com>
+> Cc: "Christian K=C3=B6nig" <christian.koenig@amd.com>
 > Cc: David Airlie <airlied@linux.ie>
 > Cc: Daniel Vetter <daniel@ffwll.ch>
-> Cc: Sumit Semwal <sumit.semwal@linaro.org>
-> Cc: "Christian K=C3=B6nig" <christian.koenig@amd.com>
-> Cc: Alex Deucher <alexander.deucher@amd.com>
-> Cc: Nirmoy Das <nirmoy.aiemd@gmail.com>
+> Cc: Gareth Hughes <gareth@valinux.com>
+> Cc: amd-gfx@lists.freedesktop.org
 > Cc: dri-devel@lists.freedesktop.org
-> Cc: linux-media@vger.kernel.org
-> Cc: linaro-mm-sig@lists.linaro.org
 > Signed-off-by: Lee Jones <lee.jones@linaro.org>
 
 Applied.  Thanks!
@@ -98,36 +90,33 @@ Applied.  Thanks!
 Alex
 
 > ---
->  drivers/gpu/drm/scheduler/sched_entity.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
+>  drivers/gpu/drm/radeon/radeon_drv.c | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
 >
-> diff --git a/drivers/gpu/drm/scheduler/sched_entity.c b/drivers/gpu/drm/s=
-cheduler/sched_entity.c
-> index f8ec277a6aa85..c1ac3e4003c6f 100644
-> --- a/drivers/gpu/drm/scheduler/sched_entity.c
-> +++ b/drivers/gpu/drm/scheduler/sched_entity.c
-> @@ -308,7 +308,7 @@ void drm_sched_entity_destroy(struct drm_sched_entity=
- *entity)
->  }
->  EXPORT_SYMBOL(drm_sched_entity_destroy);
+> diff --git a/drivers/gpu/drm/radeon/radeon_drv.c b/drivers/gpu/drm/radeon=
+/radeon_drv.c
+> index 65061c949aeea..f5f1cb700d873 100644
+> --- a/drivers/gpu/drm/radeon/radeon_drv.c
+> +++ b/drivers/gpu/drm/radeon/radeon_drv.c
+> @@ -452,7 +452,6 @@ static int radeon_pmops_runtime_suspend(struct device=
+ *dev)
+>  {
+>         struct pci_dev *pdev =3D to_pci_dev(dev);
+>         struct drm_device *drm_dev =3D pci_get_drvdata(pdev);
+> -       int ret;
 >
-> -/**
-> +/*
->   * drm_sched_entity_clear_dep - callback to clear the entities dependenc=
-y
->   */
->  static void drm_sched_entity_clear_dep(struct dma_fence *f,
-> @@ -321,7 +321,7 @@ static void drm_sched_entity_clear_dep(struct dma_fen=
-ce *f,
->         dma_fence_put(f);
->  }
+>         if (!radeon_is_px(drm_dev)) {
+>                 pm_runtime_forbid(dev);
+> @@ -462,7 +461,7 @@ static int radeon_pmops_runtime_suspend(struct device=
+ *dev)
+>         drm_dev->switch_power_state =3D DRM_SWITCH_POWER_CHANGING;
+>         drm_kms_helper_poll_disable(drm_dev);
 >
-> -/**
-> +/*
->   * drm_sched_entity_clear_dep - callback to clear the entities dependenc=
-y and
->   * wake up scheduler
->   */
+> -       ret =3D radeon_suspend_kms(drm_dev, false, false, false);
+> +       radeon_suspend_kms(drm_dev, false, false, false);
+>         pci_save_state(pdev);
+>         pci_disable_device(pdev);
+>         pci_ignore_hotplug(pdev);
 > --
 > 2.25.1
 >
