@@ -2,148 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 066FA2AE0C3
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 21:35:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DD232AE0C9
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 21:37:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730865AbgKJUfY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 15:35:24 -0500
-Received: from aserp2120.oracle.com ([141.146.126.78]:55044 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725862AbgKJUfX (ORCPT
+        id S1730468AbgKJUhl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 15:37:41 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:24579 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726179AbgKJUhk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 15:35:23 -0500
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AAKXlN0034528;
-        Tue, 10 Nov 2020 20:35:05 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : in-reply-to : references : date : message-id : mime-version :
- content-type; s=corp-2020-01-29;
- bh=s4nyry0mSPgh1FrvXm8VEB2bCAXmh9/aI1iL5kwnE7o=;
- b=MF+5WKq4vr3MUTA6g7wFb5dE9tfejt9KvBDxWLBe5SyR4tn+KB8wIBonc5JTNB7hJwB/
- qrP6eeCzoy7nqQvQ2EcvbNw5p1jd2fBAY36U3SA9WjAPqqnjclHo+NnObpxPLwg9ZUcK
- rBWZSV2ZoV3SRFk8V1O4V8nU6hYuEtDkz9qrBY6u0t/ojtHmhUfYlnojLtc+xUUV28Xc
- feumLPaql28r4xrEnnokxLa5xfFznLWZ9aDVbTLXPL1fm2Kj1MQVPIE7ImtDabENM+ZO
- 9FZZNYcRlJyzo2OYOpzyqCoH+NFiAzkORBr36nz6dXSXxL0H/lCxO8FXawwILEN6rq6n gw== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by aserp2120.oracle.com with ESMTP id 34nkhkwqss-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 10 Nov 2020 20:35:05 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AAKKBw6104737;
-        Tue, 10 Nov 2020 20:35:05 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by userp3030.oracle.com with ESMTP id 34p5gxfwve-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 10 Nov 2020 20:35:04 +0000
-Received: from abhmp0019.oracle.com (abhmp0019.oracle.com [141.146.116.25])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0AAKZ1Zm022008;
-        Tue, 10 Nov 2020 20:35:01 GMT
-Received: from parnassus (/98.229.125.203)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 10 Nov 2020 12:35:00 -0800
-From:   Daniel Jordan <daniel.m.jordan@oracle.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>,
-        Li Zefan <lizefan@huawei.com>,
-        Prateek Sood <prsood@codeaurora.org>,
-        Waiman Long <longman@redhat.com>, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] cpuset: fix race between hotplug work and later CPU
- offline
-In-Reply-To: <20201110164504.GL2594@hirez.programming.kicks-ass.net>
-References: <20201029181845.415517-1-daniel.m.jordan@oracle.com>
- <20201110164504.GL2594@hirez.programming.kicks-ass.net>
-Date:   Tue, 10 Nov 2020 15:34:31 -0500
-Message-ID: <87zh3pt0h4.fsf@mr.pineapple.says.hi.net>
+        Tue, 10 Nov 2020 15:37:40 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1605040659;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=86E1PiwpTATAQtderrQWGZYhJziSfrLmfv7s2P36MyY=;
+        b=EatpexV/NwS2/g4QcIp62FdQTYoYh+2mXkQrBnPDlRGJkGM4tG3RhJJ/UMfHWYcKI8k6rs
+        uzwqRzATJ7CigCcIK1YuqzQUptg1NKQ4DKkSH+ib4nyedePQ8iFmZjIkl4vv0tikCrSo63
+        z016iJnGvQZ9l2qygKMNoGVTLer8KVY=
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
+ [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-85-l5q6OnrpN7OlAOAAlhBjmg-1; Tue, 10 Nov 2020 15:37:38 -0500
+X-MC-Unique: l5q6OnrpN7OlAOAAlhBjmg-1
+Received: by mail-wr1-f71.google.com with SMTP id f4so3081588wru.21
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 12:37:37 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=86E1PiwpTATAQtderrQWGZYhJziSfrLmfv7s2P36MyY=;
+        b=EECOYYxHcXSPyT0oxPX2yxLMHLrB7QJBTs3HSk2IoDenN3aS2m99Scac3FfEb8/PJk
+         mWVr7+ZGS8MI76oFzin1eR8+hnQsADI4ag3P1pp4dbzOyIyXa1BG0kAJMxB4LhvyAx0p
+         0degrbOiD9kAdEU2A3SZi/RSNkkQFbvTJ2u+H1C3Z8edY+NUamuqp4ybInwoUj8VMGUm
+         BVn3ZFChU0hj6JbQgJCq1sXrgxtBm3SS5KReyswt3cK3PNKWnoK1etgERwl2xV8t8ME4
+         3C5nkqD4YAn3Jtj+UYT/kzfFWGlts1uICDgGehBekEdFlsJQEsgbVbwYsomORTm3HM7a
+         T1BQ==
+X-Gm-Message-State: AOAM533FzrxKOeh8CWTAKe8R3noXvQ/YJyIeg9iYj2He5pNnqxAOj0Fx
+        gevHnvkh+VWhMZVqW53bh2gISF9M/yX8tU7uw2T2AMTUelaxpo4E1TKT9ICa3RGNnKtIUD6qjqB
+        I8SMVuStqbQaBjNTXvwox/gsY
+X-Received: by 2002:a5d:6744:: with SMTP id l4mr24886220wrw.378.1605040656862;
+        Tue, 10 Nov 2020 12:37:36 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJw1TcLE86QgwB8CSzyVPHmo0gyCUPTPLnWMfxW3NiNpbb9kz55y3L1GCvdcftAsFMgZJiLBMg==
+X-Received: by 2002:a5d:6744:: with SMTP id l4mr24886197wrw.378.1605040656635;
+        Tue, 10 Nov 2020 12:37:36 -0800 (PST)
+Received: from ?IPv6:2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e? ([2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e])
+        by smtp.gmail.com with ESMTPSA id g131sm4181864wma.35.2020.11.10.12.37.35
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 10 Nov 2020 12:37:35 -0800 (PST)
+To:     "Luck, Tony" <tony.luck@intel.com>, Borislav Petkov <bp@alien8.de>
+Cc:     Jim Mattson <jmattson@google.com>, Qian Cai <cai@redhat.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-tip-commits@vger.kernel.org" 
+        <linux-tip-commits@vger.kernel.org>, x86 <x86@kernel.org>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>
+References: <160431588828.397.16468104725047768957.tip-bot2@tip-bot2>
+ <3f863634cd75824907e8ccf8164548c2ef036f20.camel@redhat.com>
+ <bfc274fc27724ea39ecac1e7ac834ed8@intel.com>
+ <CALMp9eTFaiYkTnVe8xKzg40E4nZ3rAOii0O06bTy0+oLNjyKhA@mail.gmail.com>
+ <a22b5468e1c94906b72c4d8bc83c0f64@intel.com>
+ <20201109232402.GA25492@agluck-desk2.amr.corp.intel.com>
+ <20201110063151.GB7290@nazgul.tnic>
+ <094c2395-b1b3-d908-657c-9bd4144e40ac@redhat.com>
+ <20201110095615.GB9450@nazgul.tnic>
+ <b8de7f7b-7aa1-d98b-74be-62d7c055542b@redhat.com>
+ <20201110155013.GE9857@nazgul.tnic>
+ <1b587b45-a5a8-2147-ae53-06d1b284ea11@redhat.com>
+ <cacd1cd272e94213a0c82c9871086cf5@intel.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Subject: Re: [PATCH] x86/mce: Check for hypervisor before enabling additional
+ error logging
+Message-ID: <7bd98718-f800-02ef-037a-4dfc5a7d1a54@redhat.com>
+Date:   Tue, 10 Nov 2020 21:37:34 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9801 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 mlxlogscore=999 mlxscore=0
- spamscore=0 phishscore=0 adultscore=0 malwarescore=0 suspectscore=1
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2011100138
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9801 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 priorityscore=1501
- mlxscore=0 suspectscore=1 mlxlogscore=999 lowpriorityscore=0 spamscore=0
- malwarescore=0 adultscore=0 clxscore=1015 bulkscore=0 impostorscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2011100139
+In-Reply-To: <cacd1cd272e94213a0c82c9871086cf5@intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Peter Zijlstra <peterz@infradead.org> writes:
-> On Thu, Oct 29, 2020 at 02:18:45PM -0400, Daniel Jordan wrote:
->> rebuild_sched_domains_locked() prevented the race during the cgroup2
->> cpuset series up until the Fixes commit changed its check.  Make the
->> check more robust so that it can detect an offline CPU in any exclusive
->> cpuset's effective mask, not just the top one.
->
-> *groan*, what a mess...
+On 10/11/20 18:52, Luck, Tony wrote:
+> Look at what it is trying to do ... change the behavior of the platform w.r.t. logging
+> of memory errors.  How does that make any sense for a guest ...
 
-Ah, the joys of cpu hotplug!
+Logging of memory errors certainly makes sense for a guest, KVM already 
+does MCE forwarding as you probably know.
 
->> I think the right thing to do long-term is make the hotplug work
->> synchronous, fixing the lockdep splats of past attempts, and then take
->> these checks out of rebuild_sched_domains_locked, but this fixes the
->> immediate issue and is small enough for stable.  Open to suggestions.
->> 
->> Prateek, are you planning on picking up your patches again?
->
-> Yeah, that might help, but those deadlocks were nasty iirc :/
+The exact set of information that MSR_ERROR_CONTROL[1] adds may not make 
+much sense in the case of KVM, but it may make sense for other 
+hypervisors that do nothing but partition the host.  (Difficult for me 
+to say since the relevant part of the SDM might as well be written in 
+Klingon :)).
 
-It might end up being too invasive to be worth it, but I'm being
-optimistic for now.
+In any case, checking HYPERVISOR is not enough because having it clear 
+is a valid configuration.  So you would still have to switch to 
+{rd,wr}msrl_safe, and then checking HYPERVISOR is pointless.
 
->> diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
->> index 57b5b5d0a5fd..ac3124010b2a 100644
->> --- a/kernel/cgroup/cpuset.c
->> +++ b/kernel/cgroup/cpuset.c
->> @@ -983,8 +983,10 @@ partition_and_rebuild_sched_domains(int ndoms_new, cpumask_var_t doms_new[],
->>   */
->>  static void rebuild_sched_domains_locked(void)
->>  {
->> +	struct cgroup_subsys_state *pos_css;
->>  	struct sched_domain_attr *attr;
->>  	cpumask_var_t *doms;
->> +	struct cpuset *cs;
->>  	int ndoms;
->>  
->>  	lockdep_assert_cpus_held();
->> @@ -999,9 +1001,21 @@ static void rebuild_sched_domains_locked(void)
->>  	    !cpumask_equal(top_cpuset.effective_cpus, cpu_active_mask))
->>  		return;
->
-> So you argued above that effective_cpus was stale, I suppose the above
-> one works because its an equality test instead of a subset?
+Paolo
 
-Yep, fortunately enough.
+> that doesn't even
+> know what memory is present on the platform. Or have guarantees that what it sees
+> as memory address 0x12345678 maps to the same set of cells in a DRAM from one
+> second to the next?
 
-> Does that wants a comment?
-
-Ok, I'll change the comments to this absent other ideas.
-
-	/*
-	 * If we have raced with CPU hotplug, return early to avoid
-	 * passing doms with offlined cpu to partition_sched_domains().
-	 * Anyways, cpuset_hotplug_workfn() will rebuild sched domains.
-	 *
-	 * With no CPUs in any subpartitions, top_cpuset's effective CPUs
-	 * should be the same as the active CPUs, so checking only top_cpuset
-	 * is enough to detect racing CPU offlines.
-	 */
-	if (!top_cpuset.nr_subparts_cpus &&
-	    !cpumask_equal(top_cpuset.effective_cpus, cpu_active_mask))
-		return;
-
-	/*
-	 * With subpartition CPUs, however, the effective CPUs of a partition
-	 * root should be only a subset of the active CPUs.  Since a CPU in any
-	 * partition root could be offlined, all must be checked.
-	 */
-	if (top_cpuset.nr_subparts_cpus) {
-		rcu_read_lock();
-        ...
-
-
-Thanks for looking.
