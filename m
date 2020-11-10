@@ -2,83 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 683FE2AD608
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 13:19:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C46E72AD60B
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 13:19:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730321AbgKJMS7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 07:18:59 -0500
-Received: from mga17.intel.com ([192.55.52.151]:17087 "EHLO mga17.intel.com"
+        id S1730409AbgKJMTE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 07:19:04 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34540 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730061AbgKJMS7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 07:18:59 -0500
-IronPort-SDR: JAFMt5qzjAOV63RxTlQX5KRhVZsohx/BgqjirFtaAFrc59YF23ETWV9y7nPeAOl/tJfh1D782J
- 9deW64f2G1YQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9800"; a="149811710"
-X-IronPort-AV: E=Sophos;i="5.77,466,1596524400"; 
-   d="scan'208";a="149811710"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Nov 2020 04:18:59 -0800
-IronPort-SDR: aJJZ6EHpkk+5H7rRmxBdiFExHuOxWNKFlsASCSD9FoDwnHTjlTahuTyNALmSXvvmeoL/G7PzSp
- Zu+06B6kRpDw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,466,1596524400"; 
-   d="scan'208";a="428348430"
-Received: from kuha.fi.intel.com ([10.237.72.162])
-  by fmsmga001.fm.intel.com with SMTP; 10 Nov 2020 04:18:56 -0800
-Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Tue, 10 Nov 2020 14:18:55 +0200
-Date:   Tue, 10 Nov 2020 14:18:55 +0200
-From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
-To:     Utkarsh Patel <utkarsh.h.patel@intel.com>
-Cc:     linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
-        pmalani@chromium.org, enric.balletbo@collabora.com,
-        rajmohan.mani@intel.com, azhar.shaikh@intel.com
-Subject: Re: [PATCH 2/8] platform/chrome: cros_ec_typec: Correct the
- Thunderbolt rounded/non-rounded cable support
-Message-ID: <20201110121855.GL1224435@kuha.fi.intel.com>
-References: <20201110003716.5164-1-utkarsh.h.patel@intel.com>
- <20201110003716.5164-3-utkarsh.h.patel@intel.com>
+        id S1730061AbgKJMTD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Nov 2020 07:19:03 -0500
+Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 02DA820665;
+        Tue, 10 Nov 2020 12:18:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605010742;
+        bh=BWpWOxjo3ugo55ThRY5WPAalknlbV0RrMHib3OTIbeM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=DQCx3oM2JIIWIma00vDs477AjVO2VRJwU5Tqbi7R9+CdGhHxaNQCLbxqatPdqcVJQ
+         OGSLx/l5gvJT9r8erNNMFfrH9ORo471Hfw9dE/Fsl5QoKNWbjNa1bWZTotE+4O5Vpt
+         3bn1qmKyMCzzUhA3JfczF58H6uSR9hm2UBGkJ/IE=
+Date:   Tue, 10 Nov 2020 12:18:56 +0000
+From:   Will Deacon <will@kernel.org>
+To:     Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+Cc:     Robin Murphy <robin.murphy@arm.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Jordan Crouse <jcrouse@codeaurora.org>,
+        Rob Clark <robdclark@gmail.com>,
+        iommu@lists.linux-foundation.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org,
+        Akhil P Oommen <akhilpo@codeaurora.org>,
+        freedreno@lists.freedesktop.org,
+        "Kristian H . Kristensen" <hoegsberg@google.com>,
+        dri-devel@lists.freedesktop.org
+Subject: Re: [PATCHv7 1/7] iommu/io-pgtable-arm: Add support to use system
+ cache
+Message-ID: <20201110121855.GD16239@willie-the-truck>
+References: <cover.1604048969.git.saiprakash.ranjan@codeaurora.org>
+ <1d4979c0dcf649c5717605c598067b4b225ab9de.1604048969.git.saiprakash.ranjan@codeaurora.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201110003716.5164-3-utkarsh.h.patel@intel.com>
+In-Reply-To: <1d4979c0dcf649c5717605c598067b4b225ab9de.1604048969.git.saiprakash.ranjan@codeaurora.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 09, 2020 at 04:37:10PM -0800, Utkarsh Patel wrote:
-> Thunderbolt rounded/non-rounded cable support is two bits value. Correcting
-> it as per the Thunderbolt 3 cable discover mode VDO changes done in the
-> Thunderbolt 3 alternate mode header.
+On Fri, Oct 30, 2020 at 02:53:08PM +0530, Sai Prakash Ranjan wrote:
+> Add a quirk IO_PGTABLE_QUIRK_SYS_CACHE to override the
+> attributes set in TCR for the page table walker when
+> using system cache.
 > 
-> Fixes: 5b30bd35aab4 ("platform/chrome: cros_ec_typec: Add TBT compat support")
-
-Again the fix tag?
-
-> Signed-off-by: Utkarsh Patel <utkarsh.h.patel@intel.com>
+> Signed-off-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
 > ---
->  drivers/platform/chrome/cros_ec_typec.c | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
+>  drivers/iommu/io-pgtable-arm.c | 7 ++++++-
+>  include/linux/io-pgtable.h     | 4 ++++
+>  2 files changed, 10 insertions(+), 1 deletion(-)
 > 
-> diff --git a/drivers/platform/chrome/cros_ec_typec.c b/drivers/platform/chrome/cros_ec_typec.c
-> index 31be31161350..8111ed1fc574 100644
-> --- a/drivers/platform/chrome/cros_ec_typec.c
-> +++ b/drivers/platform/chrome/cros_ec_typec.c
-> @@ -438,8 +438,7 @@ static int cros_typec_enable_tbt(struct cros_typec_data *typec,
->  	if (pd_ctrl->control_flags & USB_PD_CTRL_ACTIVE_LINK_UNIDIR)
->  		data.cable_mode |= TBT_CABLE_LINK_TRAINING;
+> diff --git a/drivers/iommu/io-pgtable-arm.c b/drivers/iommu/io-pgtable-arm.c
+> index a7a9bc08dcd1..a356caf1683a 100644
+> --- a/drivers/iommu/io-pgtable-arm.c
+> +++ b/drivers/iommu/io-pgtable-arm.c
+> @@ -761,7 +761,8 @@ arm_64_lpae_alloc_pgtable_s1(struct io_pgtable_cfg *cfg, void *cookie)
 >  
-> -	if (pd_ctrl->cable_gen)
-> -		data.cable_mode |= TBT_CABLE_ROUNDED;
-> +	data.cable_mode |= TBT_SET_CABLE_ROUNDED(pd_ctrl->cable_gen);
+>  	if (cfg->quirks & ~(IO_PGTABLE_QUIRK_ARM_NS |
+>  			    IO_PGTABLE_QUIRK_NON_STRICT |
+> -			    IO_PGTABLE_QUIRK_ARM_TTBR1))
+> +			    IO_PGTABLE_QUIRK_ARM_TTBR1 |
+> +			    IO_PGTABLE_QUIRK_SYS_CACHE))
+>  		return NULL;
 >  
->  	/* Enter Mode VDO */
->  	data.enter_vdo = TBT_SET_CABLE_SPEED(pd_ctrl->cable_speed);
-> -- 
-> 2.17.1
+>  	data = arm_lpae_alloc_pgtable(cfg);
+> @@ -773,6 +774,10 @@ arm_64_lpae_alloc_pgtable_s1(struct io_pgtable_cfg *cfg, void *cookie)
+>  		tcr->sh = ARM_LPAE_TCR_SH_IS;
+>  		tcr->irgn = ARM_LPAE_TCR_RGN_WBWA;
+>  		tcr->orgn = ARM_LPAE_TCR_RGN_WBWA;
+> +	} else if (cfg->quirks & IO_PGTABLE_QUIRK_SYS_CACHE) {
+> +		tcr->sh = ARM_LPAE_TCR_SH_OS;
+> +		tcr->irgn = ARM_LPAE_TCR_RGN_NC;
+> +		tcr->orgn = ARM_LPAE_TCR_RGN_WBWA;
 
-thanks,
+Given that this only applies in the case where then page-table walker is
+non-coherent, I think we'd be better off renaming the quirk to something
+like IO_PGTABLE_QUIRK_ARM_OUTER_WBWA and then rejecting it in the
+non-coherent case.
 
--- 
-heikki
+>  	} else {
+>  		tcr->sh = ARM_LPAE_TCR_SH_OS;
+>  		tcr->irgn = ARM_LPAE_TCR_RGN_NC;
+> diff --git a/include/linux/io-pgtable.h b/include/linux/io-pgtable.h
+> index 4cde111e425b..86631f711e05 100644
+> --- a/include/linux/io-pgtable.h
+> +++ b/include/linux/io-pgtable.h
+> @@ -86,6 +86,9 @@ struct io_pgtable_cfg {
+>  	 *
+>  	 * IO_PGTABLE_QUIRK_ARM_TTBR1: (ARM LPAE format) Configure the table
+>  	 *	for use in the upper half of a split address space.
+> +	 *
+> +	 * IO_PGTABLE_QUIRK_SYS_CACHE: Override the attributes set in TCR for
+> +	 *	the page table walker when using system cache.
+
+and then update this accordingly.
+
+Will
