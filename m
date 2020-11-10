@@ -2,36 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 082972ACC58
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 04:54:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 717972ACC5B
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 04:54:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732840AbgKJDyq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 22:54:46 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55694 "EHLO mail.kernel.org"
+        id S1732875AbgKJDyt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 22:54:49 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55798 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732823AbgKJDyn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 22:54:43 -0500
+        id S1732823AbgKJDyr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 22:54:47 -0500
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0CA8E20870;
-        Tue, 10 Nov 2020 03:54:41 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0588F208FE;
+        Tue, 10 Nov 2020 03:54:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604980482;
-        bh=FMWQJ4lahrISE8QnBwTCGxGSH1tt32tcmINfITuIt2U=;
-        h=From:To:Cc:Subject:Date:From;
-        b=tLjVUw2O+c1BI1bVuCukj8TwdYg6rS5w1EEQs8e2FXveb/gLjTHHazvrywdyTi33d
-         eAqTQRHMHm1XypJF+g+vFZQWcTzjxCGD6moPMoIGwjnYsl+ylBhoXhDFOp5O7CdFip
-         /8ohMMaN+hZXCKbFVrII1eW9OmKpYA4O5O171aNM=
+        s=default; t=1604980486;
+        bh=YfigFUwLDE86NFgJVQhKTDRJqq/XbrY0D+5UH8FsDhE=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=bQoQGfX5fO4v65EF8MfqNiZ0WaZucGQ+U1Un1b0AN4+SpRqu8rH03Ukqf7HtobShk
+         umhq1VVXY4VOPBDc1y5dFORuGA5eVx7KEi8gpA+AV/SWgME16OfIPYhMPCdYViExzv
+         h1a9odRsnlR4uVDTUIjyZ30THNc4Z5fiNX92e158=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        Mark Brown <broonie@kernel.org>,
-        Sasha Levin <sashal@kernel.org>, alsa-devel@alsa-project.org
-Subject: [PATCH AUTOSEL 5.4 01/42] ASoC: qcom: sdm845: set driver name correctly
-Date:   Mon,  9 Nov 2020 22:53:59 -0500
-Message-Id: <20201110035440.424258-1-sashal@kernel.org>
+Cc:     Viresh Kumar <viresh.kumar@linaro.org>,
+        Rob Clark <robdclark@gmail.com>,
+        Dmitry Osipenko <digetx@gmail.com>,
+        Sasha Levin <sashal@kernel.org>, linux-pm@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.4 04/42] opp: Reduce the size of critical section in _opp_table_kref_release()
+Date:   Mon,  9 Nov 2020 22:54:02 -0500
+Message-Id: <20201110035440.424258-4-sashal@kernel.org>
 X-Mailer: git-send-email 2.27.0
+In-Reply-To: <20201110035440.424258-1-sashal@kernel.org>
+References: <20201110035440.424258-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -40,73 +43,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+From: Viresh Kumar <viresh.kumar@linaro.org>
 
-[ Upstream commit 3f48b6eba15ea342ef4cb420b580f5ed6605669f ]
+[ Upstream commit e0df59de670b48a923246fae1f972317b84b2764 ]
 
-With the current state of code, we would endup with something like
-below in /proc/asound/cards for 2 machines based on this driver.
+There is a lot of stuff here which can be done outside of the big
+opp_table_lock, do that. This helps avoiding few circular dependency
+lockdeps around debugfs and interconnects.
 
-Machine 1:
- 0 [DB845c            ]: DB845c - DB845c
-                       DB845c
-Machine 2:
- 0 [LenovoYOGAC6301]: Lenovo-YOGA-C63 - Lenovo-YOGA-C630-13Q50
-                     LENOVO-81JL-LenovoYOGAC630_13Q50-LNVNB161216
-
-This is not very UCM friendly both w.r.t to common up configs and
-card identification, and UCM2 became totally not usefull with just
-one ucm sdm845.conf for two machines which have different setups
-w.r.t HDMI and other dais.
-
-Reasons for such thing is partly because Qualcomm machine drivers never
-cared to set driver_name.
-
-This patch sets up driver name for the this driver to sort out the
-UCM integration issues!
-
-after this patch contents of /proc/asound/cards:
-
-Machine 1:
- 0 [DB845c         ]: sdm845 - DB845c
-                      DB845c
-Machine 2:
- 0 [LenovoYOGAC6301]: sdm845 - Lenovo-YOGA-C630-13Q50
-                     LENOVO-81JL-LenovoYOGAC630_13Q50-LNVNB161216
-
-with this its possible to align with what UCM2 expects and we can have
-sdm845/DB845.conf
-sdm845/LENOVO-81JL-LenovoYOGAC630_13Q50-LNVNB161216.conf
-... for board variants. This should scale much better!
-
-Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Link: https://lore.kernel.org/r/20201023095849.22894-1-srinivas.kandagatla@linaro.org
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Reported-by: Rob Clark <robdclark@gmail.com>
+Reported-by: Dmitry Osipenko <digetx@gmail.com>
+Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/qcom/sdm845.c | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/opp/core.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/qcom/sdm845.c b/sound/soc/qcom/sdm845.c
-index 7e6c41e63d8e1..23e1de61e92e4 100644
---- a/sound/soc/qcom/sdm845.c
-+++ b/sound/soc/qcom/sdm845.c
-@@ -16,6 +16,7 @@
- #include "qdsp6/q6afe.h"
- #include "../codecs/rt5663.h"
+diff --git a/drivers/opp/core.c b/drivers/opp/core.c
+index 8867bab72e171..088c93dc0085c 100644
+--- a/drivers/opp/core.c
++++ b/drivers/opp/core.c
+@@ -1046,6 +1046,10 @@ static void _opp_table_kref_release(struct kref *kref)
+ 	struct opp_table *opp_table = container_of(kref, struct opp_table, kref);
+ 	struct opp_device *opp_dev, *temp;
  
-+#define DRIVER_NAME	"sdm845"
- #define DEFAULT_SAMPLE_RATE_48K		48000
- #define DEFAULT_MCLK_RATE		24576000
- #define TDM_BCLK_RATE		6144000
-@@ -407,6 +408,7 @@ static int sdm845_snd_platform_probe(struct platform_device *pdev)
- 		goto data_alloc_fail;
- 	}
++	/* Drop the lock as soon as we can */
++	list_del(&opp_table->node);
++	mutex_unlock(&opp_table_lock);
++
+ 	_of_clear_opp_table(opp_table);
  
-+	card->driver_name = DRIVER_NAME;
- 	card->dapm_widgets = sdm845_snd_widgets;
- 	card->num_dapm_widgets = ARRAY_SIZE(sdm845_snd_widgets);
- 	card->dev = dev;
+ 	/* Release clk */
+@@ -1067,10 +1071,7 @@ static void _opp_table_kref_release(struct kref *kref)
+ 
+ 	mutex_destroy(&opp_table->genpd_virt_dev_lock);
+ 	mutex_destroy(&opp_table->lock);
+-	list_del(&opp_table->node);
+ 	kfree(opp_table);
+-
+-	mutex_unlock(&opp_table_lock);
+ }
+ 
+ void dev_pm_opp_put_opp_table(struct opp_table *opp_table)
 -- 
 2.27.0
 
