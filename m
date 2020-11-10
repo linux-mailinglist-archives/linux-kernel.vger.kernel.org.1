@@ -2,57 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37E642AE04C
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 20:55:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FB462AE049
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 20:55:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732004AbgKJTzB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 14:55:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55218 "EHLO
+        id S1731990AbgKJTy4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 14:54:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55224 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731711AbgKJTyv (ORCPT
+        with ESMTP id S1731955AbgKJTyw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 14:54:51 -0500
-Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0772C0613D4
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 11:54:50 -0800 (PST)
-Received: by mail-io1-xd42.google.com with SMTP id r12so15598695iot.4
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 11:54:50 -0800 (PST)
+        Tue, 10 Nov 2020 14:54:52 -0500
+Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58C2DC0617A6
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 11:54:52 -0800 (PST)
+Received: by mail-io1-xd43.google.com with SMTP id r12so15598771iot.4
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 11:54:52 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linuxfoundation.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=xTKuC7gZQNS77KmJ7VNzzgNSnao5Q0E26RN9NxbyMxw=;
-        b=VOwVQkMaw/lCmPWCMsWEI6ZADPL6i01TnjtIRlgEZzx94jwj6jsMZOqnw4YuaYilYV
-         W31FCYWWgBXL5uMHmEeVzoMckg2AqgGx4qu6aRt5EtBuX/1LWCH0vQyZCiAk1FK0qX1u
-         HLt4VyYFTvaGMtrPbtGHqTavsa97UOISZXAHE=
+        bh=gsdnGlbr0lhPE8SmZBaqR38QYeMCLW6DuvC/cOgRs/4=;
+        b=WyGxkfyjaXlDiuURVfEAzg2/B37i0KaIjIOmRp2sLG3t4BIP5WDrztqce5d88zI7e/
+         okoRLtZWM+nDZMhlyAtaaQtJ0ObabN3Ddm96ECDpJ1ezzal9/AwWAjEWIiU1GTC2EIWL
+         E8SFomEE6CcZ4oKv5+z79UhA0NIcRN41dhG9o=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=xTKuC7gZQNS77KmJ7VNzzgNSnao5Q0E26RN9NxbyMxw=;
-        b=ejyHjq1zr0OusJkNQYanZE+Lg8fBEitdKFEC3EWKITSPlUUQ+I8ktzAJT2LvvRT+F0
-         aEIrrAjTbFEMRQ4EwZZekYV0yJ/wNikNnVY50X/dDNol781JujJ/prr5zM3cB8D6IECZ
-         Rg1Ymfs+HSO9ZmA6Px54IfUnfLmQI6wc8G1JL5YcQakF9XBHM7HL0CvvBXutBobcOj41
-         kaJigC7PNoWHaEbRMiVOyJcUWVKW/j2878znsX9ZFwJVqeQ2FeMQCljZmuhvCugsKrrR
-         5QKb5fHvN0H96uL7DA4chqnV12AHUf+XLtW2I678B/2gH3qKx1/v8nqNWjSXY2OqnCVc
-         8p9g==
-X-Gm-Message-State: AOAM531uOxKqtbpck3I2W2wSCp+yh9v/wMhkWQKe6iC1cWZ4S0kwTZWL
-        /RW3EarCTPnob3WSvE6v22fXfw==
-X-Google-Smtp-Source: ABdhPJyHNOyow41LnhkXLPULiUgFR9/L/j0V6ZPdNQdqQYkX2JvaR4O3pMIt00+dq2tAHnFxgvU8EQ==
-X-Received: by 2002:a6b:7947:: with SMTP id j7mr15464767iop.143.1605038090309;
-        Tue, 10 Nov 2020 11:54:50 -0800 (PST)
+        bh=gsdnGlbr0lhPE8SmZBaqR38QYeMCLW6DuvC/cOgRs/4=;
+        b=HOEb4L6XrEcjecvcqhZVkkhcuUD6uYD/YxiXNZK46WFJ27BWsuZpzKelleaZQ4jJrM
+         7IczRCBHIc+lCk8hiK39Gx1yl70awlRTbnBDlmhBbg0PkXbqoHhsW8JmhvMKUA98oOAD
+         ZcRZ5CUIJ2+BGrLkg0ovT+viOj7QnqH+oGIPwS/RH7j9Rphz7P1vLtWulMNMyt7rp8ef
+         J0Bb3krHfjwFKdv3JZaIcCRpLwznWpoGdmQWa8pH9InQwS78rnm0v7fne/WoOOB4IAVo
+         aCKO+1qhdycjMgLMlIwTzlKSJ+yWeGoaZC0mHooO/sbgSNgq25ksGE+kN2VfY8cRYCEZ
+         jJdQ==
+X-Gm-Message-State: AOAM531UWWL4M3MeO97H4A/dfOwRZY6UXwm6zwDnPWqQOrTCZTBUp5Wt
+        oYIBz56FO1k7ITTtI3/pufx97btL9xyMEw==
+X-Google-Smtp-Source: ABdhPJwE3cmu+WVZjNO1l/Yc6cqVUBLsboZpdk8T7Qvt+1Ev96zCzn549KZrMkNryg9QLHOcwWJACw==
+X-Received: by 2002:a02:3b67:: with SMTP id i39mr6318143jaf.7.1605038091724;
+        Tue, 10 Nov 2020 11:54:51 -0800 (PST)
 Received: from shuah-t480s.internal (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id o14sm123971ilg.71.2020.11.10.11.54.49
+        by smtp.gmail.com with ESMTPSA id o14sm123971ilg.71.2020.11.10.11.54.50
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 10 Nov 2020 11:54:49 -0800 (PST)
+        Tue, 10 Nov 2020 11:54:51 -0800 (PST)
 From:   Shuah Khan <skhan@linuxfoundation.org>
-To:     david.kershner@unisys.com, gregkh@linuxfoundation.org,
+To:     zohar@linux.ibm.com, dmitry.kasatkin@gmail.com, jmorris@namei.org,
+        serge@hallyn.com, gregkh@linuxfoundation.org,
         keescook@chromium.org, peterz@infradead.org
-Cc:     Shuah Khan <skhan@linuxfoundation.org>, devel@driverdev.osuosl.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 12/13] drivers/staging/unisys/visorhba: convert stats to use seqnum_ops
-Date:   Tue, 10 Nov 2020 12:53:38 -0700
-Message-Id: <6fb679d23de785bbd1be6a528127e29f8ee6abd7.1605027593.git.skhan@linuxfoundation.org>
+Cc:     Shuah Khan <skhan@linuxfoundation.org>,
+        linux-security-module@vger.kernel.org,
+        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 13/13] security/integrity/ima: converts stats to seqnum_ops
+Date:   Tue, 10 Nov 2020 12:53:39 -0700
+Message-Id: <cbc346bbeb306db3effefac0d27c93e143ac0442.1605027593.git.skhan@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <cover.1605027593.git.skhan@linuxfoundation.org>
 References: <cover.1605027593.git.skhan@linuxfoundation.org>
@@ -70,108 +72,106 @@ seqnum32 variables wrap around to INT_MIN when it overflows and
 should not be used to guard resource lifetimes, device usage and
 open counts that control state changes, and pm states.
 
-atomic_t variables used for error_count and ios_threshold are atomic
-counters and guarded by max. values. No change to the behavior with
-this change.
+atomic_t variables used for eima_htable.violations and number of stored
+measurements and ios_threshold are atomic counters, and violations is
+only an idicator and can overflow. No chane to the behavior with this
+change.
 
 Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
 ---
- .../staging/unisys/visorhba/visorhba_main.c   | 37 ++++++++++---------
- 1 file changed, 19 insertions(+), 18 deletions(-)
+ security/integrity/ima/ima.h       | 5 +++--
+ security/integrity/ima/ima_api.c   | 2 +-
+ security/integrity/ima/ima_fs.c    | 4 ++--
+ security/integrity/ima/ima_queue.c | 7 ++++---
+ 4 files changed, 10 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/staging/unisys/visorhba/visorhba_main.c b/drivers/staging/unisys/visorhba/visorhba_main.c
-index 7ae5306b92fe..3209958b8aaa 100644
---- a/drivers/staging/unisys/visorhba/visorhba_main.c
-+++ b/drivers/staging/unisys/visorhba/visorhba_main.c
-@@ -10,6 +10,7 @@
- #include <linux/module.h>
- #include <linux/seq_file.h>
- #include <linux/visorbus.h>
+diff --git a/security/integrity/ima/ima.h b/security/integrity/ima/ima.h
+index 6ebefec616e4..55fe1d14c67a 100644
+--- a/security/integrity/ima/ima.h
++++ b/security/integrity/ima/ima.h
+@@ -21,6 +21,7 @@
+ #include <linux/tpm.h>
+ #include <linux/audit.h>
+ #include <crypto/hash_info.h>
 +#include <linux/seqnum_ops.h>
- #include <scsi/scsi.h>
- #include <scsi/scsi_host.h>
- #include <scsi/scsi_cmnd.h>
-@@ -41,8 +42,8 @@ MODULE_ALIAS("visorbus:" VISOR_VHBA_CHANNEL_GUID_STR);
- struct visordisk_info {
- 	struct scsi_device *sdev;
- 	u32 valid;
--	atomic_t ios_threshold;
--	atomic_t error_count;
-+	struct seqnum32 ios_threshold;
-+	struct seqnum32 error_count;
- 	struct visordisk_info *next;
+ 
+ #include "../integrity.h"
+ 
+@@ -174,8 +175,8 @@ int ima_lsm_policy_change(struct notifier_block *nb, unsigned long event,
+ extern spinlock_t ima_queue_lock;
+ 
+ struct ima_h_table {
+-	atomic_long_t len;	/* number of stored measurements in the list */
+-	atomic_long_t violations;
++	struct seqnum64 len;	/* number of stored measurements in the list */
++	struct seqnum64 violations;
+ 	struct hlist_head queue[IMA_MEASURE_HTABLE_SIZE];
+ };
+ extern struct ima_h_table ima_htable;
+diff --git a/security/integrity/ima/ima_api.c b/security/integrity/ima/ima_api.c
+index 4f39fb93f278..b1a203435698 100644
+--- a/security/integrity/ima/ima_api.c
++++ b/security/integrity/ima/ima_api.c
+@@ -144,7 +144,7 @@ void ima_add_violation(struct file *file, const unsigned char *filename,
+ 	int result;
+ 
+ 	/* can overflow, only indicator */
+-	atomic_long_inc(&ima_htable.violations);
++	seqnum64_inc(&ima_htable.violations);
+ 
+ 	result = ima_alloc_init_template(&event_data, &entry, NULL);
+ 	if (result < 0) {
+diff --git a/security/integrity/ima/ima_fs.c b/security/integrity/ima/ima_fs.c
+index ea8ff8a07b36..03a78b445052 100644
+--- a/security/integrity/ima/ima_fs.c
++++ b/security/integrity/ima/ima_fs.c
+@@ -39,12 +39,12 @@ __setup("ima_canonical_fmt", default_canonical_fmt_setup);
+ static int valid_policy = 1;
+ 
+ static ssize_t ima_show_htable_value(char __user *buf, size_t count,
+-				     loff_t *ppos, atomic_long_t *val)
++				     loff_t *ppos, struct seqnum64 *val)
+ {
+ 	char tmpbuf[32];	/* greater than largest 'long' string value */
+ 	ssize_t len;
+ 
+-	len = scnprintf(tmpbuf, sizeof(tmpbuf), "%li\n", atomic_long_read(val));
++	len = scnprintf(tmpbuf, sizeof(tmpbuf), "%lli\n", seqnum64_read(val));
+ 	return simple_read_from_buffer(buf, count, ppos, tmpbuf, len);
+ }
+ 
+diff --git a/security/integrity/ima/ima_queue.c b/security/integrity/ima/ima_queue.c
+index c096ef8945c7..87db50dd1721 100644
+--- a/security/integrity/ima/ima_queue.c
++++ b/security/integrity/ima/ima_queue.c
+@@ -17,6 +17,7 @@
+ 
+ #include <linux/rculist.h>
+ #include <linux/slab.h>
++#include <linux/seqnum_ops.h>
+ #include "ima.h"
+ 
+ #define AUDIT_CAUSE_LEN_MAX 32
+@@ -33,8 +34,8 @@ static unsigned long binary_runtime_size = ULONG_MAX;
+ 
+ /* key: inode (before secure-hashing a file) */
+ struct ima_h_table ima_htable = {
+-	.len = ATOMIC_LONG_INIT(0),
+-	.violations = ATOMIC_LONG_INIT(0),
++	.len = SEQNUM_INIT(0),
++	.violations = SEQNUM_INIT(0),
+ 	.queue[0 ... IMA_MEASURE_HTABLE_SIZE - 1] = HLIST_HEAD_INIT
  };
  
-@@ -374,10 +375,10 @@ static int visorhba_abort_handler(struct scsi_cmnd *scsicmd)
+@@ -106,7 +107,7 @@ static int ima_add_digest_entry(struct ima_template_entry *entry,
+ 	INIT_LIST_HEAD(&qe->later);
+ 	list_add_tail_rcu(&qe->later, &ima_measurements);
  
- 	scsidev = scsicmd->device;
- 	vdisk = scsidev->hostdata;
--	if (atomic_read(&vdisk->error_count) < VISORHBA_ERROR_COUNT)
--		atomic_inc(&vdisk->error_count);
-+	if (seqnum32_read(&vdisk->error_count) < VISORHBA_ERROR_COUNT)
-+		seqnum32_inc(&vdisk->error_count);
- 	else
--		atomic_set(&vdisk->ios_threshold, IOS_ERROR_THRESHOLD);
-+		seqnum32_set(&vdisk->ios_threshold, IOS_ERROR_THRESHOLD);
- 	rtn = forward_taskmgmt_command(TASK_MGMT_ABORT_TASK, scsidev);
- 	if (rtn == SUCCESS) {
- 		scsicmd->result = DID_ABORT << 16;
-@@ -401,10 +402,10 @@ static int visorhba_device_reset_handler(struct scsi_cmnd *scsicmd)
- 
- 	scsidev = scsicmd->device;
- 	vdisk = scsidev->hostdata;
--	if (atomic_read(&vdisk->error_count) < VISORHBA_ERROR_COUNT)
--		atomic_inc(&vdisk->error_count);
-+	if (seqnum32_read(&vdisk->error_count) < VISORHBA_ERROR_COUNT)
-+		seqnum32_inc(&vdisk->error_count);
- 	else
--		atomic_set(&vdisk->ios_threshold, IOS_ERROR_THRESHOLD);
-+		seqnum32_set(&vdisk->ios_threshold, IOS_ERROR_THRESHOLD);
- 	rtn = forward_taskmgmt_command(TASK_MGMT_LUN_RESET, scsidev);
- 	if (rtn == SUCCESS) {
- 		scsicmd->result = DID_RESET << 16;
-@@ -429,10 +430,10 @@ static int visorhba_bus_reset_handler(struct scsi_cmnd *scsicmd)
- 	scsidev = scsicmd->device;
- 	shost_for_each_device(scsidev, scsidev->host) {
- 		vdisk = scsidev->hostdata;
--		if (atomic_read(&vdisk->error_count) < VISORHBA_ERROR_COUNT)
--			atomic_inc(&vdisk->error_count);
-+		if (seqnum32_read(&vdisk->error_count) < VISORHBA_ERROR_COUNT)
-+			seqnum32_inc(&vdisk->error_count);
- 		else
--			atomic_set(&vdisk->ios_threshold, IOS_ERROR_THRESHOLD);
-+			seqnum32_set(&vdisk->ios_threshold, IOS_ERROR_THRESHOLD);
- 	}
- 	rtn = forward_taskmgmt_command(TASK_MGMT_BUS_RESET, scsidev);
- 	if (rtn == SUCCESS) {
-@@ -803,9 +804,9 @@ static void do_scsi_linuxstat(struct uiscmdrsp *cmdrsp,
- 		return;
- 	/* Okay see what our error_count is here.... */
- 	vdisk = scsidev->hostdata;
--	if (atomic_read(&vdisk->error_count) < VISORHBA_ERROR_COUNT) {
--		atomic_inc(&vdisk->error_count);
--		atomic_set(&vdisk->ios_threshold, IOS_ERROR_THRESHOLD);
-+	if (seqnum32_read(&vdisk->error_count) < VISORHBA_ERROR_COUNT) {
-+		seqnum32_inc(&vdisk->error_count);
-+		seqnum32_set(&vdisk->ios_threshold, IOS_ERROR_THRESHOLD);
- 	}
- }
- 
-@@ -881,10 +882,10 @@ static void do_scsi_nolinuxstat(struct uiscmdrsp *cmdrsp,
- 		kfree(buf);
- 	} else {
- 		vdisk = scsidev->hostdata;
--		if (atomic_read(&vdisk->ios_threshold) > 0) {
--			atomic_dec(&vdisk->ios_threshold);
--			if (atomic_read(&vdisk->ios_threshold) == 0)
--				atomic_set(&vdisk->error_count, 0);
-+		if (seqnum32_read(&vdisk->ios_threshold) > 0) {
-+			seqnum32_dec(&vdisk->ios_threshold);
-+			if (seqnum32_read(&vdisk->ios_threshold) == 0)
-+				seqnum32_set(&vdisk->error_count, 0);
- 		}
- 	}
- }
+-	atomic_long_inc(&ima_htable.len);
++	seqnum64_inc(&ima_htable.len);
+ 	if (update_htable) {
+ 		key = ima_hash_key(entry->digests[ima_hash_algo_idx].digest);
+ 		hlist_add_head_rcu(&qe->hnext, &ima_htable.queue[key]);
 -- 
 2.27.0
 
