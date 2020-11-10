@@ -2,129 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BEAC2ADEBD
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 19:50:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 288132ADEC2
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 19:50:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731259AbgKJSug (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 13:50:36 -0500
-Received: from m42-4.mailgun.net ([69.72.42.4]:53230 "EHLO m42-4.mailgun.net"
+        id S1731579AbgKJSuu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 13:50:50 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41552 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725862AbgKJSud (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 13:50:33 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1605034232; h=Date: Message-Id: Cc: To: References:
- In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
- Content-Type: Sender; bh=TLsCNsopTYgMfYxQI+Rv7Ueci5CyMDHLKfaVFZJXCjQ=;
- b=D5i4hbbzPJ5IE4/5J9filhNfTuSGJgqcyYlYpZb/JKcj+B1Q0cS9Q1JlZSRNtVGa27MKmWqu
- ot3ZcwM2ishUKZ1sxhS+NZ4fb7hE1LZCxAUpXSRAzQCUkImyfXNFogaIU8QGp/05d40ggYop
- kBDOjpwRGHSftETfiosr6D77ZnI=
-X-Mailgun-Sending-Ip: 69.72.42.4
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n05.prod.us-east-1.postgun.com with SMTP id
- 5faae0e60d87d63775d6849f (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 10 Nov 2020 18:50:14
- GMT
-Sender: kvalo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 36A35C433FE; Tue, 10 Nov 2020 18:50:13 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        MISSING_DATE,MISSING_MID,SPF_FAIL autolearn=no autolearn_force=no
-        version=3.4.0
-Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1731517AbgKJSuo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Nov 2020 13:50:44 -0500
+Received: from localhost.localdomain (adsl-84-226-167-205.adslplus.ch [84.226.167.205])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 71609C433C8;
-        Tue, 10 Nov 2020 18:50:09 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 71609C433C8
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
-Content-Type: text/plain; charset="utf-8"
+        by mail.kernel.org (Postfix) with ESMTPSA id 015722151B;
+        Tue, 10 Nov 2020 18:50:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605034244;
+        bh=stpmKJ6Ghannbzs0w4nBwfvNxGGzjoMNtrfzVEYhqAA=;
+        h=From:To:Cc:Subject:Date:From;
+        b=NPXaaC7E3I4frwEtLwR7TOxIjhI/XsGFmhZyOHLwV7hBmqoOjBF8GhNqriuwwR1LF
+         XBx7grwOvQBRQJ9EImWLYnC5ovEIUUr5Dq7StsCSMxNUe3A6c50uVFdaXdmD0SIDBy
+         /c2YWADtgwdiXwAlQLk0I11E1nmpxJ3UC10563CM=
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Rob Herring <robh+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Anson Huang <Anson.Huang@nxp.com>,
+        Li Yang <leoyang.li@nxp.com>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Cc:     Krzysztof Kozlowski <krzk@kernel.org>,
+        Rob Herring <robh@kernel.org>
+Subject: [PATCH v2 1/2] dt-bindings: arm: fsl: document i.MX7S boards
+Date:   Tue, 10 Nov 2020 19:50:33 +0100
+Message-Id: <20201110185034.37315-1-krzk@kernel.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Subject: Re: [1/2] mwifiex: fix mwifiex_shutdown_sw() causing sw reset failure
-From:   Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <20201028142110.18144-2-kitakar@gmail.com>
-References: <20201028142110.18144-2-kitakar@gmail.com>
-To:     Tsuchiya Yuto <kitakar@gmail.com>
-Cc:     Amitkumar Karwar <amitkarwar@gmail.com>,
-        Ganapathi Bhat <ganapathi.bhat@nxp.com>,
-        Xinming Hu <huxinming820@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Maximilian Luz <luzmaximilian@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@intel.com>, verdre@v0yd.nl,
-        Tsuchiya Yuto <kitakar@gmail.com>
-User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.5.2
-Message-Id: <20201110185013.36A35C433FE@smtp.codeaurora.org>
-Date:   Tue, 10 Nov 2020 18:50:13 +0000 (UTC)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Tsuchiya Yuto <kitakar@gmail.com> wrote:
+Document and adjust the compatibles for i.MX7S based boards.
+The Toradex boards use multiple compatibles.
 
-> When a PCIe function level reset (FLR) is performed but without fw reset for
-> some reasons (e.g., on Microsoft Surface devices, fw reset requires other
-> quirks), it fails to reset wifi properly. You can trigger the issue on such
-> devices via debugfs entry for reset:
-> 
->     $ echo 1 | sudo tee /sys/kernel/debug/mwifiex/mlan0/reset
-> 
-> and the resulting dmesg log:
-> 
->     [   45.740508] mwifiex_pcie 0000:03:00.0: Resetting per request
->     [   45.742937] mwifiex_pcie 0000:03:00.0: info: successfully disconnected from [BSSID]: reason code 3
->     [   45.744666] mwifiex_pcie 0000:03:00.0: info: shutdown mwifiex...
->     [   45.751530] mwifiex_pcie 0000:03:00.0: PREP_CMD: card is removed
->     [   45.751539] mwifiex_pcie 0000:03:00.0: PREP_CMD: card is removed
->     [   45.771691] mwifiex_pcie 0000:03:00.0: PREP_CMD: card is removed
->     [   45.771695] mwifiex_pcie 0000:03:00.0: deleting the crypto keys
->     [   45.771697] mwifiex_pcie 0000:03:00.0: PREP_CMD: card is removed
->     [   45.771698] mwifiex_pcie 0000:03:00.0: deleting the crypto keys
->     [   45.771699] mwifiex_pcie 0000:03:00.0: PREP_CMD: card is removed
->     [   45.771701] mwifiex_pcie 0000:03:00.0: deleting the crypto keys
->     [   45.771702] mwifiex_pcie 0000:03:00.0: PREP_CMD: card is removed
->     [   45.771703] mwifiex_pcie 0000:03:00.0: deleting the crypto keys
->     [   45.771704] mwifiex_pcie 0000:03:00.0: PREP_CMD: card is removed
->     [   45.771705] mwifiex_pcie 0000:03:00.0: deleting the crypto keys
->     [   45.771707] mwifiex_pcie 0000:03:00.0: PREP_CMD: card is removed
->     [   45.771708] mwifiex_pcie 0000:03:00.0: deleting the crypto keys
->     [   53.099343] mwifiex_pcie 0000:03:00.0: info: trying to associate to '[SSID]' bssid [BSSID]
->     [   53.241870] mwifiex_pcie 0000:03:00.0: info: associated to bssid [BSSID] successfully
->     [   75.377942] mwifiex_pcie 0000:03:00.0: cmd_wait_q terminated: -110
->     [   85.385491] mwifiex_pcie 0000:03:00.0: info: successfully disconnected from [BSSID]: reason code 15
->     [   87.539408] mwifiex_pcie 0000:03:00.0: cmd_wait_q terminated: -110
->     [   87.539412] mwifiex_pcie 0000:03:00.0: deleting the crypto keys
->     [   99.699917] mwifiex_pcie 0000:03:00.0: cmd_wait_q terminated: -110
->     [   99.699925] mwifiex_pcie 0000:03:00.0: deleting the crypto keys
->     [  111.859802] mwifiex_pcie 0000:03:00.0: cmd_wait_q terminated: -110
->     [  111.859808] mwifiex_pcie 0000:03:00.0: deleting the crypto keys
->     [...]
-> 
-> When comparing mwifiex_shutdown_sw() with mwifiex_pcie_remove(), it
-> lacks mwifiex_init_shutdown_fw().
-> 
-> This commit fixes mwifiex_shutdown_sw() by adding the missing
-> mwifiex_init_shutdown_fw().
-> 
-> Fixes: 4c5dae59d2e9 ("mwifiex: add PCIe function level reset support")
-> Signed-off-by: Tsuchiya Yuto <kitakar@gmail.com>
+Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+Reviewed-by: Rob Herring <robh@kernel.org>
 
-2 patches applied to wireless-drivers-next.git, thanks.
+---
 
-fa74cb1dc0f4 mwifiex: fix mwifiex_shutdown_sw() causing sw reset failure
-566b4cb9587e mwifiex: update comment for shutdown_sw()/reinit_sw() to reflect current state
+Changes since v1:
+1. Rebase,
+2. Add Rob's review.
+---
+ Documentation/devicetree/bindings/arm/fsl.yaml | 12 +++++++++---
+ 1 file changed, 9 insertions(+), 3 deletions(-)
 
+diff --git a/Documentation/devicetree/bindings/arm/fsl.yaml b/Documentation/devicetree/bindings/arm/fsl.yaml
+index e4db0f9ed664..1977a23c2c53 100644
+--- a/Documentation/devicetree/bindings/arm/fsl.yaml
++++ b/Documentation/devicetree/bindings/arm/fsl.yaml
+@@ -579,9 +579,15 @@ properties:
+       - description: i.MX7S based Boards
+         items:
+           - enum:
+-              - toradex,colibri-imx7s           # Colibri iMX7 Solo Module
+-              - toradex,colibri-imx7s-aster     # Colibri iMX7 Solo Module on Aster Carrier Board
+-              - toradex,colibri-imx7s-eval-v3   # Colibri iMX7 Solo Module on Colibri Evaluation Board V3
++              - element14,imx7s-warp      # Element14 Warp i.MX7 Board
++          - const: fsl,imx7s
++
++      - description: i.MX7S Boards with Toradex Colibri iMX7S Module
++        items:
++          - enum:
++              - toradex,colibri-imx7s-aster     # Module on Aster Carrier Board
++              - toradex,colibri-imx7s-eval-v3   # Module on Colibri Evaluation Board V3
++          - const: toradex,colibri-imx7s
+           - const: fsl,imx7s
+ 
+       - description: TQ-Systems TQMa7S SoM on MBa7x board
 -- 
-https://patchwork.kernel.org/project/linux-wireless/patch/20201028142110.18144-2-kitakar@gmail.com/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+2.25.1
 
