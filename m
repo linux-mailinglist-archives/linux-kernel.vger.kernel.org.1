@@ -2,99 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4670B2ADE82
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 19:38:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D46FE2ADE85
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 19:38:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731391AbgKJSig (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 13:38:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43146 "EHLO
+        id S1731432AbgKJSik (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 13:38:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43160 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726557AbgKJSie (ORCPT
+        with ESMTP id S1726557AbgKJSii (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 13:38:34 -0500
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79F98C0613D3
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 10:38:34 -0800 (PST)
-Received: by mail-pg1-x541.google.com with SMTP id r186so11003808pgr.0
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 10:38:34 -0800 (PST)
+        Tue, 10 Nov 2020 13:38:38 -0500
+Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACEB5C0613D1
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 10:38:38 -0800 (PST)
+Received: by mail-pl1-x644.google.com with SMTP id z1so6902356plo.12
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 10:38:38 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=broadcom.com; s=google;
-        h=from:to:cc:subject:date:message-id;
-        bh=kkBRc/n0dRQEwJSLA1GFqTSFz3YYDliGVzo6+72DO90=;
-        b=a2T29/AFHWubnnOypujkSAVEcRjdkDUT4p8CFwNuTwJatiQWbbFWBh3txZ7ivQ33Qc
-         xlsLULo6HFoUSBrrIZyoDkAqcn66Gbo7V+0vy5BI5NbrP/RJ87vVmbqYtS5KBBfnk73V
-         8KTq9hy7Txm5QcL6Mpg6jmhJUhUpyvl7J5wqI=
+        h=from:to:cc:subject:date:message-id:in-reply-to:references;
+        bh=JNtxpvgTzc5bWZyw6T79iLEmXOORaSxkxOXcRqjSA+I=;
+        b=V/VVmTtXtVXUoX0xiC+htY7zcW6cDZ/uZrpw8Vv1p0KSrc0jY/U0wHOTlxdsBmT/q7
+         r1rhVY+SkgJ1qsiCGrF+qclgswNfzxWRCqsuC2mBzmszQtmT1K/25f/9OQ/Zl+h1ju5B
+         acjLvA149zV09j/yr6EjiTxyC4XNguiMmUTSQ=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=kkBRc/n0dRQEwJSLA1GFqTSFz3YYDliGVzo6+72DO90=;
-        b=cfS/ViGqt8ZSp/oOx2NLEB0eArH+/w3fXCWpnXlaPhACCvc3eXiZBQt/VXsk3z7gK0
-         udqgAw9ZobtmZSO7SyUuA6/n9XNjskjO+TyflbvmVF8Xbyz3sZ3/tQY0utpUu/0kzDtY
-         /IyE0NtofJEHUvAlfIkDMMz8UGbIdEwX2O6Ht5J3anxjuo1xEF7OEPKb+wnwA4t7I29C
-         /HsXuu9hd9jlD4RXXJKrjd42qzX5jKSMgk5mrgMIgC33WWkY4NCSiMTMJ9IxPoVftBK+
-         NcDiTYA3afBm4b/VKqXDbJiUE1itj9laxI+N4ZMIySMwbNdvUvpZNPyPh4k5xCWii75R
-         wXig==
-X-Gm-Message-State: AOAM531c0CWJwmqSye3QwGXTClXJpodPYg8z0z1SkTPdCKrWyT4jiMM/
-        ZpDIaQrILhNyzvhlodM8Hr6u8A==
-X-Google-Smtp-Source: ABdhPJyDR3hKTxRpvz3324qWgO4F9Hamwr7Zo3ygOm90DTbBAvv2FuEpIPSSR37iLeBGysZrTqYohQ==
-X-Received: by 2002:a63:6bc7:: with SMTP id g190mr17694395pgc.250.1605033513876;
-        Tue, 10 Nov 2020 10:38:33 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references;
+        bh=JNtxpvgTzc5bWZyw6T79iLEmXOORaSxkxOXcRqjSA+I=;
+        b=jxEYk9H8GMZpJ62/8trolCn7ueu+NlTtfn3MUyOZpMEtQ1SYlPT+4ZuBEXeeHlCN8/
+         2Snf6GjXmaEhGibB4ySS+J7ESu3DY9aYnV0E4/+faOZkiwG87Yd2sVNebh7HC99UDrA6
+         txP2fp3hIXIOD6HTSZMijsLNY22EDNTwjdm7CpUgraLFXoAUHMm/enJGdp4uhZvYI4tz
+         lfYocvxFx/S8JTe4+LhsC70J2xabsY7K8+nWYDAeBwADfLnHFxqZXsI3NAUWB3wR+zCa
+         zjU8ap3Peq6IneEQC6tv5ykVH7nJJPdfkwHycKCdgYQP/sDXvHH1rHVAjxPG6SEYmlbx
+         3+3A==
+X-Gm-Message-State: AOAM532ixwes7MJX3bFPpXNbBm5dCXu4rtbHhbTeSQkNUNxGCeEmvBfO
+        f5KjderVZ1aYv6uq04vEB3LSFQ==
+X-Google-Smtp-Source: ABdhPJwZst0MZyXR65rSaIlrFNRU9vo5YsOT+aFXxCustmHvFtkJ62MJjWSkSdoywaMu8jqj5N2CpQ==
+X-Received: by 2002:a17:902:d211:b029:d7:cd5e:2857 with SMTP id t17-20020a170902d211b02900d7cd5e2857mr14664521ply.45.1605033518156;
+        Tue, 10 Nov 2020 10:38:38 -0800 (PST)
 Received: from stbsrv-and-01.and.broadcom.net ([192.19.231.250])
-        by smtp.gmail.com with ESMTPSA id x18sm9187988pfi.206.2020.11.10.10.38.32
+        by smtp.gmail.com with ESMTPSA id x18sm9187988pfi.206.2020.11.10.10.38.36
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 10 Nov 2020 10:38:33 -0800 (PST)
+        Tue, 10 Nov 2020 10:38:37 -0800 (PST)
 From:   Jim Quinlan <james.quinlan@broadcom.com>
 To:     Sudeep Holla <sudeep.holla@arm.com>,
         bcm-kernel-feedback-list@broadcom.com, james.quinlan@broadcom.com
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        devicetree@vger.kernel.org (open list:OPEN FIRMWARE AND FLATTENED
-        DEVICE TREE BINDINGS), linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH v1 1/2] dt-bindings: arm: Add optional interrupt to smc/hvc SCMI transport
-Date:   Tue, 10 Nov 2020 13:38:18 -0500
-Message-Id: <20201110183827.19731-1-james.quinlan@broadcom.com>
+Cc:     linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH v1 2/2] firmware: arm_scmi: Augment SMC/HVC to allow optional interrupt
+Date:   Tue, 10 Nov 2020 13:38:19 -0500
+Message-Id: <20201110183827.19731-2-james.quinlan@broadcom.com>
 X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20201110183827.19731-1-james.quinlan@broadcom.com>
+References: <20201110183827.19731-1-james.quinlan@broadcom.com>
 Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="00000000000078d25405b3c4fccb"
+        boundary="000000000000b8ec7405b3c4fca6"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---00000000000078d25405b3c4fccb
+--000000000000b8ec7405b3c4fca6
 
-This change allows the SCMI "platform" to use the smc/hvc transport and to
-optionally indicate the completion of an SCMI message with an interrupt.
-This is in contrast to the nominal case where the return of the SMC call
-indicates message completion.
+The SMC/HVC SCMI transport is modified to allow the completion of an SCMI
+message to be indicated by an interrupt rather than the return of the smc
+call.  This accommodates the existing behavior of the BrcmSTB SCMI
+"platform" whose SW is already out in the field and cannot be changed.
 
 Signed-off-by: Jim Quinlan <james.quinlan@broadcom.com>
 ---
- Documentation/devicetree/bindings/arm/arm,scmi.txt | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ drivers/firmware/arm_scmi/smc.c | 31 +++++++++++++++++++++++++++++++
+ 1 file changed, 31 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/arm/arm,scmi.txt b/Documentation/devicetree/bindings/arm/arm,scmi.txt
-index 55deb68230eb..d3b0c9f387fe 100644
---- a/Documentation/devicetree/bindings/arm/arm,scmi.txt
-+++ b/Documentation/devicetree/bindings/arm/arm,scmi.txt
-@@ -31,6 +31,14 @@ Optional properties:
+diff --git a/drivers/firmware/arm_scmi/smc.c b/drivers/firmware/arm_scmi/smc.c
+index 82a82a5dc86a..3bf935dbd00e 100644
+--- a/drivers/firmware/arm_scmi/smc.c
++++ b/drivers/firmware/arm_scmi/smc.c
+@@ -9,9 +9,11 @@
+ #include <linux/arm-smccc.h>
+ #include <linux/device.h>
+ #include <linux/err.h>
++#include <linux/interrupt.h>
+ #include <linux/mutex.h>
+ #include <linux/of.h>
+ #include <linux/of_address.h>
++#include <linux/of_irq.h>
+ #include <linux/slab.h>
  
- - mbox-names: shall be "tx" or "rx" depending on mboxes entries.
+ #include "common.h"
+@@ -23,6 +25,8 @@
+  * @shmem: Transmit/Receive shared memory area
+  * @shmem_lock: Lock to protect access to Tx/Rx shared memory area
+  * @func_id: smc/hvc call function id
++ * @irq: Optional; employed when platforms indicates msg completion by intr.
++ * @tx_complete: Optional, employed only when irq is valid.
+  */
  
-+- interrupts : when using smc or hvc transports, this optional
-+	 property indicates that msg completion by the platform is indicated
-+	 by an interrupt rather than by the return of the smc call. This
-+	 should not be used except when the platform requires such behavior.
-+
-+- interrupt-names : the name must be "msg-serviced".
-+
-+
- See Documentation/devicetree/bindings/mailbox/mailbox.txt for more details
- about the generic mailbox controller and client driver bindings.
+ struct scmi_smc {
+@@ -30,8 +34,19 @@ struct scmi_smc {
+ 	struct scmi_shared_mem __iomem *shmem;
+ 	struct mutex shmem_lock;
+ 	u32 func_id;
++	int irq;
++	struct completion tx_complete;
+ };
  
++static irqreturn_t smc_msg_done_isr(int irq, void *data)
++{
++	struct scmi_smc *scmi_info = data;
++
++	complete(&scmi_info->tx_complete);
++
++	return IRQ_HANDLED;
++}
++
+ static bool smc_chan_available(struct device *dev, int idx)
+ {
+ 	struct device_node *np = of_parse_phandle(dev->of_node, "shmem", 0);
+@@ -79,6 +94,20 @@ static int smc_chan_setup(struct scmi_chan_info *cinfo, struct device *dev,
+ 	if (ret < 0)
+ 		return ret;
+ 
++	/* Optional feature -- signal message completion using an interrupt */
++	ret = of_irq_get_byname(cdev->of_node, "msg-serviced");
++	if (ret > 0) {
++		scmi_info->irq = ret;
++		ret = devm_request_irq(dev, ret, smc_msg_done_isr,
++				       IRQF_NO_SUSPEND,
++				       dev_name(dev),
++				       scmi_info);
++		if (ret) {
++			dev_err(dev, "failed to setup SCMI smc irq\n");
++			return ret;
++		}
++		init_completion(&scmi_info->tx_complete);
++	}
+ 	scmi_info->func_id = func_id;
+ 	scmi_info->cinfo = cinfo;
+ 	mutex_init(&scmi_info->shmem_lock);
+@@ -111,6 +140,8 @@ static int smc_send_message(struct scmi_chan_info *cinfo,
+ 	shmem_tx_prepare(scmi_info->shmem, xfer);
+ 
+ 	arm_smccc_1_1_invoke(scmi_info->func_id, 0, 0, 0, 0, 0, 0, 0, &res);
++	if (scmi_info->irq)
++		wait_for_completion(&scmi_info->tx_complete);
+ 	scmi_rx_callback(scmi_info->cinfo, shmem_read_header(scmi_info->shmem));
+ 
+ 	mutex_unlock(&scmi_info->shmem_lock);
 -- 
 2.17.1
 
 
---00000000000078d25405b3c4fccb
+--000000000000b8ec7405b3c4fca6
 Content-Type: application/pkcs7-signature; name="smime.p7s"
 Content-Transfer-Encoding: base64
 Content-Disposition: attachment; filename="smime.p7s"
@@ -164,14 +221,14 @@ V6GuAMmRknrzeTlxPy40UhUcRKk6Nm8mxl3Jh4KB68z7NFVpIx8G5w5I7S5ar1mLGNRjtFZ0RE4O
 lcCwKVGUXRaZMgQGrIhxGVelVgrcBh2vjpndlv733VI2VKE/TvV5MxMGU18RnogYSm66AEFA/Zb+
 5ztz1AtIMYICbzCCAmsCAQEwbTBdMQswCQYDVQQGEwJCRTEZMBcGA1UEChMQR2xvYmFsU2lnbiBu
 di1zYTEzMDEGA1UEAxMqR2xvYmFsU2lnbiBQZXJzb25hbFNpZ24gMiBDQSAtIFNIQTI1NiAtIEcz
-AgwTv2xmtR4KOmK4QvMwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIGMtb8HpoA+8
-sZoWWIfiKZacZsiCFUO63fwtSBO6EXWAMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZI
-hvcNAQkFMQ8XDTIwMTExMDE4MzgzNFowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJ
+AgwTv2xmtR4KOmK4QvMwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEILOK0EYoMJAv
+rfpR3GoZwFZmMcfOoHfc6RiqaamhlBOSMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZI
+hvcNAQkFMQ8XDTIwMTExMDE4MzgzOFowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJ
 YIZIAWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcN
-AQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQCi/AKie4uTOcSDLst4LSaiYpkcGQBp
-gL2QJgJJvCYHaH0uewi4WAyKi/mbbD3yNoUFFMFogH/10+8OiaMK14H1DXPgeKb1Pxq1ee5kpm4g
-DxuaAeeZL7Z3oIHkE2aHRbEjj9aZNZeZDifK3b1wIfmAHsvpCj7WJ//CXs8NbT3fpn424D0HKmos
-b0yAE44tR5+8noJ6vJ7tHAN77SNcRcTQP2tSaSa3iT8aoZ7uFkZ4fMOtHfsRIrE8CXB34Qq/0/8l
-tpt7ZqZbKocLdW+53fIQAitA4CxAVnQYdSsMqHcuxlCS9BdKjFGgCA0KjZvurO9JkGp8CvgoHoyl
-tNe59Ulq
---00000000000078d25405b3c4fccb--
+AQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQDOFrlSiBpKI3AJC36yLWH35XpqZoSX
+z4SFEWLgofD0F7rN0eVb47NONaddtX9/U97jRZGMRInwFTlXW3KRk7Gl5SA/7+iqJSNgsTCvicfP
+VgobBgHFn5r/4ixVq9Z+D93wLCQnJ5UYITmngwGIweQM6yRmNNi8aKTmBcZMZUOjBSaY6h8G89Uz
+cXLUCAAurUNJNzIr+E7NCcFicdrZpeoYiIkE6qUZrhIo7pnFx2d/JtNTV92/hxtaIjwEySNFH4D7
+0bu/lD9BZMAMymZlkLakJJ/S9HKiQiXtUUeZzQt3ShvcSx2gv4irFPtmQwCOYBHlgGuooLKz/HHM
+lVEfZyrS
+--000000000000b8ec7405b3c4fca6--
