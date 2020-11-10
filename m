@@ -2,140 +2,237 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 371282ADED8
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 19:55:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 797E32ADEDF
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 19:56:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731443AbgKJSzU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 13:55:20 -0500
-Received: from mail-io1-f70.google.com ([209.85.166.70]:53734 "EHLO
-        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730382AbgKJSzT (ORCPT
+        id S1731563AbgKJS4Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 13:56:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45912 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730618AbgKJS4Y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 13:55:19 -0500
-Received: by mail-io1-f70.google.com with SMTP id c17so9109697iom.20
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 10:55:18 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=UBBVE26iMIwjToKruwBtc4rwDCIqTbom0jdq+SEqTcQ=;
-        b=XMIBSBnPQq3jNIbFsmwPvCz2uV4hyj7ZciDKtidzvZJGfwhGvCD5iZebT7/1Z739SH
-         LSVKuu+mKNF/FCqPUPH+a7+IRxmluCnKzs+e0MkxRs7BCAbRWOm2ERGyNrSHC1D/PNGM
-         wQpvnsQ6lP1/SOjgrcQckyNuvYmubIquAXYu6vuPqrNH3FCoBXnwDoJp4yUtEo1S+O9W
-         b3FFitjLFAYlU5n6+nfUJDfpctlQmtTLQ3RN94tp0e13EYUIpOlkg/KuSIYIK+PnonBY
-         aSdstAe/JFQ1LGITWqoOykmJa4f5RFYlhtajIdOQhP/Aht8rlQXgExBPFVHdNmGMNfmr
-         HIEQ==
-X-Gm-Message-State: AOAM533TqRjFldQ7ZUZoXgXmT17DwCZWU13AVe1yVnVSYxxukNSTUpAb
-        clBCUBOXskII2l4TK2tDj2akNiX2q5VoHkqswwLsBxGQoGk4
-X-Google-Smtp-Source: ABdhPJx2yvRathBvneil1m9OlLm3IiET5QFJeZrZz196892H5xm1bMGH/MwY7oueVpKu8iIjoWIAv5qByTCTXftdXAL+MrzLRyYt
+        Tue, 10 Nov 2020 13:56:24 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96CCFC0613D1
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 10:56:24 -0800 (PST)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1605034582;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=0Fs+hjsBc7Jwnmz1UBfxUAkpy4yQiVvI/+W8vU/Acgw=;
+        b=K6gTXqJF1s68l8lf4dXCdU7SeYmb0/zzGTfoa+lGjgMnV7BqIp3yw84TTSKQgdd26CYN+U
+        E/eo2kllTkJDdVqbrUgG0ZNjnkXPIf4kJ8mDhwP6egDEofzlR46B2lSgRKHmjKEbgXttHj
+        OK1wwI/e6nf1I4CeJORSLbK/hiUOO/kD3C9Om/zCjLLflnD5/IPpb+SbkJop1Fbdjv8WL3
+        b5/AhLrnL2pBCn6tC5KPY5TnYEHsp7XLlsxTfNb8+la+Yp3dC/MeBiu17g7kbjyRDPB2Eu
+        4s34rOOQHTx9t2GSq5xgKaeQzWmXZeH7Tz/myLl+Gwpl0AndypoyURMEXA5z1w==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1605034582;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=0Fs+hjsBc7Jwnmz1UBfxUAkpy4yQiVvI/+W8vU/Acgw=;
+        b=z6d0qerviQ3c1zB0rPxU9TzfUbWGsUMVC4UKkkjqPy0nVQlqa6PJdKjfvCZhllh2ryvXs4
+        9U7UjlaQnCio3rAA==
+To:     David Woodhouse <dwmw2@infradead.org>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Borislav Petkov <bp@alien8.de>
+Cc:     linux-kernel@vger.kernel.org, x86 <x86@kernel.org>,
+        Qian Cai <cai@redhat.com>, Joerg Roedel <joro@8bytes.org>
+Subject: Re: [EXTERNAL] [tip: x86/apic] x86/io_apic: Cleanup trigger/polarity helpers
+In-Reply-To: <877dqtgkzb.fsf@nanos.tec.linutronix.de>
+References: <20201024213535.443185-20-dwmw2@infradead.org> <160397373817.397.3191135882528008704.tip-bot2@tip-bot2> <e2e06979-cbcf-8771-0b48-c46f2d034aa8@amd.com> <20201110061046.GA7290@nazgul.tnic> <87d00lgu13.fsf@nanos.tec.linutronix.de> <9a003c2f-f59a-43ab-bbd5-861b14436d29@amd.com> <87a6vpgqbt.fsf@nanos.tec.linutronix.de> <82d54a74-af90-39a4-e483-b3cd73e2ef03@amd.com> <78be575e10034e546cc349d65fac2fcfc6f486b2.camel@infradead.org> <877dqtgkzb.fsf@nanos.tec.linutronix.de>
+Date:   Tue, 10 Nov 2020 19:56:17 +0100
+Message-ID: <874klxghwu.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-X-Received: by 2002:a02:6948:: with SMTP id e69mr16775986jac.6.1605034518502;
- Tue, 10 Nov 2020 10:55:18 -0800 (PST)
-Date:   Tue, 10 Nov 2020 10:55:18 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000053e36405b3c538fc@google.com>
-Subject: KASAN: null-ptr-deref Write in start_transaction
-From:   syzbot <syzbot+6700bca07dff187809c4@syzkaller.appspotmail.com>
-To:     clm@fb.com, dsterba@suse.com, josef@toxicpanda.com,
-        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        mingo@kernel.org, mingo@redhat.com, peterz@infradead.org,
-        rostedt@goodmis.org, syzkaller-bugs@googlegroups.com,
-        will@kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Tue, Nov 10 2020 at 18:50, Thomas Gleixner wrote:
+> On Tue, Nov 10 2020 at 16:33, David Woodhouse wrote:
+>> If I could get post-5.5 kernels to boot at all with the AMD IOMMU
+>> enabled, I'd have a go at throwing that together now...
+>
+> It can share the dmar domain code. Let me frob something.
 
-syzbot found the following issue on:
+Not much to share there and I can't access my AMD machine at the
+moment. Something like the untested below should work.
 
-HEAD commit:    521b619a Merge tag 'linux-kselftest-kunit-fixes-5.10-rc3' ..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=173b8fb6500000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=61033507391c77ff
-dashboard link: https://syzkaller.appspot.com/bug?extid=6700bca07dff187809c4
-compiler:       gcc (GCC) 10.1.0-syz 20200507
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14a07ab2500000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=10fe69c6500000
+Thanks,
 
-The issue was bisected to:
-
-commit 4d004099a668c41522242aa146a38cc4eb59cb1e
-Author: Peter Zijlstra <peterz@infradead.org>
-Date:   Fri Oct 2 09:04:21 2020 +0000
-
-    lockdep: Fix lockdep recursion
-
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=100c0532500000
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=120c0532500000
-console output: https://syzkaller.appspot.com/x/log.txt?x=140c0532500000
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+6700bca07dff187809c4@syzkaller.appspotmail.com
-Fixes: 4d004099a668 ("lockdep: Fix lockdep recursion")
-
-==================================================================
-BUG: KASAN: null-ptr-deref in instrument_atomic_read_write include/linux/instrumented.h:101 [inline]
-BUG: KASAN: null-ptr-deref in atomic_fetch_add_relaxed include/asm-generic/atomic-instrumented.h:142 [inline]
-BUG: KASAN: null-ptr-deref in __refcount_add include/linux/refcount.h:193 [inline]
-BUG: KASAN: null-ptr-deref in __refcount_inc include/linux/refcount.h:250 [inline]
-BUG: KASAN: null-ptr-deref in refcount_inc include/linux/refcount.h:267 [inline]
-BUG: KASAN: null-ptr-deref in start_transaction+0x158/0x1170 fs/btrfs/transaction.c:541
-Write of size 4 at addr 000000000000003a by task syz-executor154/8513
-
-CPU: 1 PID: 8513 Comm: syz-executor154 Not tainted 5.10.0-rc2-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0x107/0x163 lib/dump_stack.c:118
- __kasan_report mm/kasan/report.c:549 [inline]
- kasan_report.cold+0x5/0x37 mm/kasan/report.c:562
- check_memory_region_inline mm/kasan/generic.c:186 [inline]
- check_memory_region+0x13d/0x180 mm/kasan/generic.c:192
- instrument_atomic_read_write include/linux/instrumented.h:101 [inline]
- atomic_fetch_add_relaxed include/asm-generic/atomic-instrumented.h:142 [inline]
- __refcount_add include/linux/refcount.h:193 [inline]
- __refcount_inc include/linux/refcount.h:250 [inline]
- refcount_inc include/linux/refcount.h:267 [inline]
- start_transaction+0x158/0x1170 fs/btrfs/transaction.c:541
- flush_space+0x1c0/0xf60 fs/btrfs/space-info.c:685
- priority_reclaim_metadata_space fs/btrfs/space-info.c:1154 [inline]
- handle_reserve_ticket fs/btrfs/space-info.c:1238 [inline]
- __reserve_bytes+0xd2c/0x1480 fs/btrfs/space-info.c:1403
- btrfs_reserve_metadata_bytes+0x75/0x260 fs/btrfs/space-info.c:1429
- btrfs_delalloc_reserve_metadata+0x261/0xb90 fs/btrfs/delalloc-space.c:332
- btrfs_buffered_write.isra.0+0x445/0xf10 fs/btrfs/file.c:1703
- __btrfs_direct_write fs/btrfs/file.c:1874 [inline]
- btrfs_file_write_iter+0xda6/0x16d0 fs/btrfs/file.c:2046
- call_write_iter include/linux/fs.h:1887 [inline]
- do_iter_readv_writev+0x46f/0x740 fs/read_write.c:740
- do_iter_write+0x188/0x670 fs/read_write.c:866
- vfs_writev+0x1aa/0x2e0 fs/read_write.c:939
- do_pwritev fs/read_write.c:1036 [inline]
- __do_sys_pwritev fs/read_write.c:1083 [inline]
- __se_sys_pwritev fs/read_write.c:1078 [inline]
- __x64_sys_pwritev+0x231/0x310 fs/read_write.c:1078
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x44d959
-Code: 7d cb fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 4b cb fb ff c3 66 2e 0f 1f 84 00 00 00 00
-RSP: 002b:00007f78b0d8bce8 EFLAGS: 00000246 ORIG_RAX: 0000000000000128
-RAX: ffffffffffffffda RBX: 00000000006e1c28 RCX: 000000000044d959
-RDX: 0000000000000001 RSI: 00000000200014c0 RDI: 0000000000000003
-RBP: 00000000006e1c20 R08: 0000000000000020 R09: 0000000000000000
-R10: 0000000000000002 R11: 0000000000000246 R12: 00000000006e1c2c
-R13: 00007ffefe638f4f R14: 00007f78b0d8c9c0 R15: 20c49ba5e353f7cf
-==================================================================
-
-
+        tglx
 ---
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+--- a/arch/x86/include/asm/apic.h
++++ b/arch/x86/include/asm/apic.h
+@@ -523,7 +523,7 @@ struct msi_msg;
+ struct irq_cfg;
+ 
+ extern void __irq_msi_compose_msg(struct irq_cfg *cfg, struct msi_msg *msg,
+-				  bool dmar);
++				  bool iommu);
+ 
+ extern void ioapic_zap_locks(void);
+ 
+--- a/arch/x86/include/asm/irqdomain.h
++++ b/arch/x86/include/asm/irqdomain.h
+@@ -63,4 +63,6 @@ static inline void x86_create_pci_msi_do
+ #define x86_pci_msi_default_domain	NULL
+ #endif
+ 
++struct irq_domain *x86_create_iommu_msi_domain(void);
++
+ #endif
+--- a/arch/x86/kernel/apic/apic.c
++++ b/arch/x86/kernel/apic/apic.c
+@@ -2498,7 +2498,7 @@ int hard_smp_processor_id(void)
+ }
+ 
+ void __irq_msi_compose_msg(struct irq_cfg *cfg, struct msi_msg *msg,
+-			   bool dmar)
++			   bool iommu)
+ {
+ 	memset(msg, 0, sizeof(*msg));
+ 
+@@ -2519,7 +2519,7 @@ void __irq_msi_compose_msg(struct irq_cf
+ 	 * some hypervisors allow the extended destination ID field in bits
+ 	 * 5-11 to be used, giving support for 15 bits of APIC IDs in total.
+ 	 */
+-	if (dmar)
++	if (iommu)
+ 		msg->arch_addr_hi.destid_8_31 = cfg->dest_apicid >> 8;
+ 	else if (virt_ext_dest_id && cfg->dest_apicid < 0x8000)
+ 		msg->arch_addr_lo.virt_destid_8_14 = cfg->dest_apicid >> 8;
+--- a/arch/x86/kernel/apic/msi.c
++++ b/arch/x86/kernel/apic/msi.c
+@@ -184,7 +184,8 @@ static struct msi_domain_info pci_msi_do
+ 	.handler_name	= "edge",
+ };
+ 
+-struct irq_domain * __init native_create_pci_msi_domain(void)
++static struct irq_domain *__init
++__create_pci_msi_domain(struct msi_domain_info *info, const char *name)
+ {
+ 	struct fwnode_handle *fn;
+ 	struct irq_domain *d;
+@@ -192,21 +193,25 @@ struct irq_domain * __init native_create
+ 	if (disable_apic)
+ 		return NULL;
+ 
+-	fn = irq_domain_alloc_named_fwnode("PCI-MSI");
++	fn = irq_domain_alloc_named_fwnode(name);
+ 	if (!fn)
+ 		return NULL;
+ 
+-	d = pci_msi_create_irq_domain(fn, &pci_msi_domain_info,
+-				      x86_vector_domain);
++	d = pci_msi_create_irq_domain(fn, info, x86_vector_domain);
+ 	if (!d) {
+ 		irq_domain_free_fwnode(fn);
+-		pr_warn("Failed to initialize PCI-MSI irqdomain.\n");
++		pr_warn("Failed to initialize %s irqdomain.\n", name);
+ 	} else {
+ 		d->flags |= IRQ_DOMAIN_MSI_NOMASK_QUIRK;
+ 	}
+ 	return d;
+ }
+ 
++struct irq_domain * __init native_create_pci_msi_domain(void)
++{
++	return __create_pci_msi_domain(&pci_msi_domain_info, "PCI-MSI");
++}
++
+ void __init x86_create_pci_msi_domain(void)
+ {
+ 	x86_pci_msi_default_domain = x86_init.irqs.create_pci_msi_domain();
+@@ -247,6 +252,43 @@ struct irq_domain *arch_create_remap_msi
+ }
+ #endif
+ 
++static void __maybe_unused iommu_msi_compose_msg(struct irq_data *data,
++						 struct msi_msg *msg)
++{
++	__irq_msi_compose_msg(irqd_cfg(data), msg, true);
++}
++
++#ifdef CONFIG_AMD_IOMMU
++/*
++ * Similar to the Intel IOMMU abuse below. The resulting irq domain is
++ * associated to the IOMMU pci device, so that pci_enable_msi() works.
++ */
++static struct irq_chip iommu_msi_controller = {
++	.name			= "IOMMU-MSI",
++	.irq_unmask		= pci_msi_unmask_irq,
++	.irq_mask		= pci_msi_mask_irq,
++	.irq_ack		= irq_chip_ack_parent,
++	.irq_retrigger		= irq_chip_retrigger_hierarchy,
++	.irq_set_affinity	= msi_set_affinity,
++	.irq_compose_msi_msg	= iommu_msi_compose_msg,
++	.flags			= IRQCHIP_SKIP_SET_WAKE,
++};
++
++static struct msi_domain_info iommu_msi_domain_info = {
++	.flags		= MSI_FLAG_USE_DEF_DOM_OPS | MSI_FLAG_USE_DEF_CHIP_OPS |
++			  MSI_FLAG_PCI_MSIX,
++	.ops		= &pci_msi_domain_ops,
++	.chip		= &iommu_msi_controller,
++	.handler	= handle_edge_irq,
++	.handler_name	= "edge",
++};
++
++struct irq_domain __init *x86_create_iommu_msi_domain(void)
++{
++	return __create_pci_msi_domain(&iommu_msi_domain_info, "IOMMU-MSI");
++}
++#endif
++
+ #ifdef CONFIG_DMAR_TABLE
+ /*
+  * The Intel IOMMU (ab)uses the high bits of the MSI address to contain the
+@@ -254,11 +296,6 @@ struct irq_domain *arch_create_remap_msi
+  * case for MSIs as it would be targeting real memory above 4GiB not the
+  * APIC.
+  */
+-static void dmar_msi_compose_msg(struct irq_data *data, struct msi_msg *msg)
+-{
+-	__irq_msi_compose_msg(irqd_cfg(data), msg, true);
+-}
+-
+ static void dmar_msi_write_msg(struct irq_data *data, struct msi_msg *msg)
+ {
+ 	dmar_msi_write(data->irq, msg);
+@@ -271,7 +308,7 @@ static struct irq_chip dmar_msi_controll
+ 	.irq_ack		= irq_chip_ack_parent,
+ 	.irq_set_affinity	= msi_domain_set_affinity,
+ 	.irq_retrigger		= irq_chip_retrigger_hierarchy,
+-	.irq_compose_msi_msg	= dmar_msi_compose_msg,
++	.irq_compose_msi_msg	= iommu_msi_compose_msg,
+ 	.irq_write_msi_msg	= dmar_msi_write_msg,
+ 	.flags			= IRQCHIP_SKIP_SET_WAKE,
+ };
+--- a/drivers/iommu/amd/init.c
++++ b/drivers/iommu/amd/init.c
+@@ -1759,6 +1759,7 @@ static const struct attribute_group *amd
+ 
+ static int __init iommu_init_pci(struct amd_iommu *iommu)
+ {
++	static struct irq_domain *msidom;
+ 	int cap_ptr = iommu->cap_ptr;
+ 	int ret;
+ 
+@@ -1767,6 +1768,13 @@ static int __init iommu_init_pci(struct
+ 	if (!iommu->dev)
+ 		return -ENODEV;
+ 
++	if (!msidom) {
++		msidom = x86_create_iommu_msi_domain();
++		if (!msidom)
++			return -ENODEV;
++	}
++	dev_set_msi_domain(&iommu->dev->dev, msidom);
++
+ 	/* Prevent binding other PCI device drivers to IOMMU devices */
+ 	iommu->dev->match_driver = false;
+ 
