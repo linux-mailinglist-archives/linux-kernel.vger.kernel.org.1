@@ -2,133 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B67C2AE3ED
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 00:20:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BE8E2AE3F1
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 00:22:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732053AbgKJXUk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 18:20:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59226 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726737AbgKJXUk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 18:20:40 -0500
-Received: from ZenIV.linux.org.uk (zeniv.linux.org.uk [IPv6:2002:c35c:fd02::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3009C0613D1;
-        Tue, 10 Nov 2020 15:20:38 -0800 (PST)
-Received: from viro by ZenIV.linux.org.uk with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kccw8-0037gG-Nt; Tue, 10 Nov 2020 23:20:28 +0000
-Date:   Tue, 10 Nov 2020 23:20:28 +0000
-From:   Al Viro <viro@zeniv.linux.org.uk>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Greg KH <gregkh@linuxfoundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/6] seq_file: add seq_read_iter
-Message-ID: <20201110232028.GX3576660@ZenIV.linux.org.uk>
-References: <20201104082738.1054792-1-hch@lst.de>
- <20201104082738.1054792-2-hch@lst.de>
- <20201110213253.GV3576660@ZenIV.linux.org.uk>
- <20201110213511.GW3576660@ZenIV.linux.org.uk>
+        id S1732168AbgKJXWp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 18:22:45 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36762 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726737AbgKJXWp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Nov 2020 18:22:45 -0500
+Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.7])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7B22A20781;
+        Tue, 10 Nov 2020 23:22:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605050564;
+        bh=I1wn0YndI3i2ALunGF24vwSx7K48sLYI8X+7ki52hJs=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=a6Un3f/p+oud5In+RMmjOVQyT8bjdWQxjQy//+TQsbVw07HKJzfACETs3FEltGCsu
+         bF5jAtheUaDq21uZ9fc3Ly+vqLxn81r/HyfvLalN59DIKLMr9FSEXF7y2va+Ms26jt
+         92v20Rx85UEdGxfNrVFHw7n++r/fMynZ4H0xz1WM=
+Date:   Tue, 10 Nov 2020 15:22:43 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Menglong Dong <menglong8.dong@gmail.com>
+Cc:     davem@davemloft.net, kuznet@ms2.inr.ac.ru, yoshfuji@linux-ipv6.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Menglong Dong <dong.menglong@zte.com.cn>
+Subject: Re: [PATCH v2] net: ipv4: remove redundant initialization in
+ inet_rtm_deladdr
+Message-ID: <20201110152243.6b7f2b86@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20201108010541.12432-1-dong.menglong@zte.com.cn>
+References: <20201108010541.12432-1-dong.menglong@zte.com.cn>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201110213511.GW3576660@ZenIV.linux.org.uk>
-Sender: Al Viro <viro@ftp.linux.org.uk>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 10, 2020 at 09:35:11PM +0000, Al Viro wrote:
-> On Tue, Nov 10, 2020 at 09:32:53PM +0000, Al Viro wrote:
+On Sun,  8 Nov 2020 09:05:41 +0800 Menglong Dong wrote:
+> The initialization for 'err' with '-EINVAL' is redundant and
+> can be removed, as it is updated soon.
 > 
-> > AFAICS, not all callers want that semantics, but I think it's worth
-> > a new primitive.  I'm not saying it should be a prereq for your
-> > series, but either that or an explicit iov_iter_revert() is needed.
+> Changes since v1:
+> - Remove redundant empty line
 > 
-> Seeing that it already went into mainline, it needs a followup fix.
-> And since it's not -stable fodder (AFAICS), I'd rather go with
-> adding a new primitive...
+> Signed-off-by: Menglong Dong <dong.menglong@zte.com.cn>
 
-Any objections to the following?
-
-Fix seq_read_iter() behaviour on full pipe
-
-generic_file_splice_read() will purge what we'd left in pipe in case
-of error; it will *not* do so in case of short write, so we must make
-sure that reported amount of data stored by ->read_iter() matches the
-reality.
-
-It's not a rare situation (and we already have it open-coded in at least
-one place), so let's introduce a new primitive - copy_to_iter_full().
-Similar to copy_from_iter_full(), it returns true if we had been able
-to copy everything we'd been asked to and false otherwise.  Iterator
-is advanced only on success.
-
-Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
----
-diff --git a/fs/seq_file.c b/fs/seq_file.c
-index 3b20e21604e7..233d790ea301 100644
---- a/fs/seq_file.c
-+++ b/fs/seq_file.c
-@@ -209,7 +209,7 @@ ssize_t seq_read_iter(struct kiocb *iocb, struct iov_iter *iter)
- 	/* if not empty - flush it first */
- 	if (m->count) {
- 		n = min(m->count, size);
--		if (copy_to_iter(m->buf + m->from, n, iter) != n)
-+		if (!copy_to_iter_full(m->buf + m->from, n, iter))
- 			goto Efault;
- 		m->count -= n;
- 		m->from += n;
-@@ -274,7 +274,7 @@ ssize_t seq_read_iter(struct kiocb *iocb, struct iov_iter *iter)
- 	}
- 	m->op->stop(m, p);
- 	n = min(m->count, size);
--	if (copy_to_iter(m->buf, n, iter) != n)
-+	if (!copy_to_iter_full(m->buf, n, iter))
- 		goto Efault;
- 	copied += n;
- 	m->count -= n;
-diff --git a/include/linux/uio.h b/include/linux/uio.h
-index 72d88566694e..388c05e371ad 100644
---- a/include/linux/uio.h
-+++ b/include/linux/uio.h
-@@ -138,6 +138,18 @@ size_t copy_to_iter(const void *addr, size_t bytes, struct iov_iter *i)
- }
- 
- static __always_inline __must_check
-+bool copy_to_iter_full(const void *addr, size_t bytes, struct iov_iter *i)
-+{
-+	if (likely(check_copy_size(addr, bytes, true))) {
-+		size_t n = _copy_to_iter(addr, bytes, i);
-+		if (likely(n == bytes))
-+			return true;
-+		iov_iter_revert(i, n);
-+	}
-+	return false;
-+}
-+
-+static __always_inline __must_check
- size_t copy_from_iter(void *addr, size_t bytes, struct iov_iter *i)
- {
- 	if (unlikely(!check_copy_size(addr, bytes, false)))
-diff --git a/include/net/udp.h b/include/net/udp.h
-index 295d52a73598..91d1a2998a2d 100644
---- a/include/net/udp.h
-+++ b/include/net/udp.h
-@@ -390,14 +390,7 @@ static inline bool udp_skb_is_linear(struct sk_buff *skb)
- static inline int copy_linear_skb(struct sk_buff *skb, int len, int off,
- 				  struct iov_iter *to)
- {
--	int n;
--
--	n = copy_to_iter(skb->data + off, len, to);
--	if (n == len)
--		return 0;
--
--	iov_iter_revert(to, n);
--	return -EFAULT;
-+	return copy_to_iter_full(skb->data + off, len, to) ? 0 : -EFAULT;
- }
- 
- /*
+Applied, thanks.
