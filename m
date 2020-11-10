@@ -2,135 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6033D2ADEAF
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 19:46:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CFB12ADEC0
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 19:50:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731347AbgKJSqq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 13:46:46 -0500
-Received: from z5.mailgun.us ([104.130.96.5]:42272 "EHLO z5.mailgun.us"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726307AbgKJSqp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 13:46:45 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1605034005; h=In-Reply-To: Content-Type: MIME-Version:
- References: Message-ID: Subject: Cc: To: From: Date: Sender;
- bh=YLcdxeCasqNEXg1KAsdy2Xe/sm4z0ubzkMfFT7hdJBs=; b=F2m+UicLOaTwaRFIW/qsPig2oK3vQwuMC5MhU3iDY0mku4Hn9bk/14A/7Yf5MEHyG5+6wW8P
- Vf/ruu5qjT99pf/wnSHYHynKwBvy2kubWIdCyE2ESFpYAjYmzAKZeSnofNb/CfaHyzMZQSXN
- zJ8n1xCRCjd1M5p7I3STHL8C86Q=
-X-Mailgun-Sending-Ip: 104.130.96.5
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n03.prod.us-east-1.postgun.com with SMTP id
- 5faae006b8c6a84a5c6b4c19 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 10 Nov 2020 18:46:30
- GMT
-Sender: jcrouse=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id CE5B5C43385; Tue, 10 Nov 2020 18:46:29 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from jcrouse1-lnx.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: jcrouse)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id B80D2C433C8;
-        Tue, 10 Nov 2020 18:46:27 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org B80D2C433C8
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=jcrouse@codeaurora.org
-Date:   Tue, 10 Nov 2020 11:46:24 -0700
-From:   Jordan Crouse <jcrouse@codeaurora.org>
-To:     Rob Clark <robdclark@gmail.com>
-Cc:     dri-devel@lists.freedesktop.org,
-        Rob Clark <robdclark@chromium.org>,
-        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        "Kristian H. Kristensen" <hoegsberg@google.com>,
-        Eric Anholt <eric@anholt.net>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Emil Velikov <emil.velikov@collabora.com>,
-        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
-        <linux-arm-msm@vger.kernel.org>,
-        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
-        <freedreno@lists.freedesktop.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 2/2] drm/msm/a5xx: Clear shadow on suspend
-Message-ID: <20201110184624.GB2661@jcrouse1-lnx.qualcomm.com>
-Mail-Followup-To: Rob Clark <robdclark@gmail.com>,
-        dri-devel@lists.freedesktop.org, Rob Clark <robdclark@chromium.org>,
-        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        "Kristian H. Kristensen" <hoegsberg@google.com>,
-        Eric Anholt <eric@anholt.net>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Emil Velikov <emil.velikov@collabora.com>,
-        "open list:DRM DRIVER FOR MSM ADRENO GPU" <linux-arm-msm@vger.kernel.org>,
-        "open list:DRM DRIVER FOR MSM ADRENO GPU" <freedreno@lists.freedesktop.org>,
-        open list <linux-kernel@vger.kernel.org>
-References: <20201110184401.282982-1-robdclark@gmail.com>
- <20201110184401.282982-2-robdclark@gmail.com>
+        id S1731546AbgKJSup (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 13:50:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45010 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731417AbgKJSul (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Nov 2020 13:50:41 -0500
+Received: from mail-qv1-xf42.google.com (mail-qv1-xf42.google.com [IPv6:2607:f8b0:4864:20::f42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 853E5C0613D1
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 10:50:39 -0800 (PST)
+Received: by mail-qv1-xf42.google.com with SMTP id 13so6370130qvr.5
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 10:50:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Ao4gO8dckdnbUrVLtqZDO6K8/CHWVv04osrwbe3s3CE=;
+        b=aD1YSSjm5h1E5fKJUFCbr7un4ITDFwPpH6MF9varMrqIuVbGJBuFVykbxLg6VBTlR2
+         tUkpEBkPpR8DPcUIo0qFS6gFiGku7QOoKoQBtjKBKDNpokJOdt4IStbsoWjphGGuEIe3
+         rsI4GBvWMkch7slymkedYAaZbD+xCPLbfIZ6GnBCRmIMgFA/3XwHS4WrRB+h21kNDxEv
+         yOCKKNCwlspZuRBiQvvK9EdTbTaHZ+3cJcK3xZLEcFIWMSEjzeJQGDQ+wlOIpFQISCyd
+         rss3dJMftolMW5jlmv73BOiORadddv7rPLT2D1Ncc6b1S+mG7UF7n7uZBlthn8zRh769
+         2Paw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Ao4gO8dckdnbUrVLtqZDO6K8/CHWVv04osrwbe3s3CE=;
+        b=tS3hG1gyqTFLJcU/Y6snoBO86Ok6ndU5vTasOI7kK8f56DQTb+BCvfhJJkLBFB7ffr
+         vTuwaYxEzXhqaMNVQhw3O60ipPsuD1IfWBNAI4L8GZHC9JU4baldBGCdOWo1eJp3/4P3
+         bM8r7ait0bSvjEuKh6b2+Zqrj/tpitzdiiP/gxjc4FSwQ2xhdyPBt+1yBKo42cCAil8R
+         fiXowIeCo+nDe7kF0si2Orcqr8LSPObgx+UAKlO3nuhhiKA2RGZ5aWyuNlVthn5XhTAz
+         3XngjXvwLxV4ZJLhrOaPPdBOcAkC0WMSy2fgcryKWklFJGSly0CqWfM3HFZRk/MsKB0u
+         EmRw==
+X-Gm-Message-State: AOAM532Bbw+BqGpAEgUQThhNRHMiGTHeSMUq/zdc+oo3xCOXnBqzTLt9
+        hBajWb1oJLc5UnceHLtzwppZSA==
+X-Google-Smtp-Source: ABdhPJzzxCdfp78n0ASzjgdakdyVzAJCxf5dldOeoZdGScdsYAQ1wKF4N8gSu4becV/R64CgioXQlQ==
+X-Received: by 2002:ad4:4943:: with SMTP id o3mr20168428qvy.9.1605034238663;
+        Tue, 10 Nov 2020 10:50:38 -0800 (PST)
+Received: from localhost ([2620:10d:c091:480::1:64f7])
+        by smtp.gmail.com with ESMTPSA id c76sm9398105qkb.20.2020.11.10.10.50.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 10 Nov 2020 10:50:37 -0800 (PST)
+Date:   Tue, 10 Nov 2020 13:48:50 -0500
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Roman Gushchin <guro@fb.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        Shakeel Butt <shakeelb@google.com>,
+        Michal Hocko <mhocko@kernel.org>, linux-kernel@vger.kernel.org,
+        kernel-team@fb.com
+Subject: Re: [PATCH] mm: memcg: fix obsolete code comments
+Message-ID: <20201110184850.GA850433@cmpxchg.org>
+References: <20201110184615.311974-1-guro@fb.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201110184401.282982-2-robdclark@gmail.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+In-Reply-To: <20201110184615.311974-1-guro@fb.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 10, 2020 at 10:44:00AM -0800, Rob Clark wrote:
-> From: Rob Clark <robdclark@chromium.org>
+On Tue, Nov 10, 2020 at 10:46:15AM -0800, Roman Gushchin wrote:
+> This patch fixes/removes some obsolete comments in the code related
+> to the kernel memory accounting:
+> - kmem_cache->memcg_params.memcg_caches has been removed
+>   by commit 9855609bde03 ("mm: memcg/slab: use a single set of
+>   kmem_caches for all accounted allocations")
+> - memcg->kmemcg_id is not used as a gate for kmem accounting since
+>   commit 0b8f73e10428 ("mm: memcontrol: clean up alloc, online,
+>   offline, free functions")
 > 
-> Similar to the previous patch, clear shadow on suspend to avoid timeouts
-> waiting for ringbuffer space.
-> 
-> Fixes: 8907afb476ac ("drm/msm: Allow a5xx to mark the RPTR shadow as privileged")
-> Signed-off-by: Rob Clark <robdclark@chromium.org>
+> Signed-off-by: Roman Gushchin <guro@fb.com>
 
-Reviewed-by: Jordan Crouse <jcrouse@codeaurora.org>
-> ---
->  drivers/gpu/drm/msm/adreno/a5xx_gpu.c | 12 +++++++++++-
->  1 file changed, 11 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/gpu/drm/msm/adreno/a5xx_gpu.c b/drivers/gpu/drm/msm/adreno/a5xx_gpu.c
-> index b0005ccd81c6..8fa5c917d017 100644
-> --- a/drivers/gpu/drm/msm/adreno/a5xx_gpu.c
-> +++ b/drivers/gpu/drm/msm/adreno/a5xx_gpu.c
-> @@ -1206,7 +1206,9 @@ static int a5xx_pm_resume(struct msm_gpu *gpu)
->  static int a5xx_pm_suspend(struct msm_gpu *gpu)
->  {
->  	struct adreno_gpu *adreno_gpu = to_adreno_gpu(gpu);
-> +	struct a5xx_gpu *a5xx_gpu = to_a5xx_gpu(adreno_gpu);
->  	u32 mask = 0xf;
-> +	int i, ret;
->  
->  	/* A510 has 3 XIN ports in VBIF */
->  	if (adreno_is_a510(adreno_gpu))
-> @@ -1226,7 +1228,15 @@ static int a5xx_pm_suspend(struct msm_gpu *gpu)
->  	gpu_write(gpu, REG_A5XX_RBBM_BLOCK_SW_RESET_CMD, 0x003C0000);
->  	gpu_write(gpu, REG_A5XX_RBBM_BLOCK_SW_RESET_CMD, 0x00000000);
->  
-> -	return msm_gpu_pm_suspend(gpu);
-> +	ret = msm_gpu_pm_suspend(gpu);
-> +	if (ret)
-> +		return ret;
-> +
-> +	if (a5xx_gpu->has_whereami)
-> +		for (i = 0; i < gpu->nr_rings; i++)
-> +			a5xx_gpu->shadow[i] = 0;
-> +
-> +	return 0;
->  }
->  
->  static int a5xx_get_timestamp(struct msm_gpu *gpu, uint64_t *value)
-> -- 
-> 2.28.0
-> 
+Acked-by: Johannes Weiner <hannes@cmpxchg.org>
 
--- 
-The Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
-a Linux Foundation Collaborative Project
+Thanks Roman
