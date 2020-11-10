@@ -2,40 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB9EB2ADB24
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 17:03:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 67A112ADB29
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 17:03:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732443AbgKJQC7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 11:02:59 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44796 "EHLO mail.kernel.org"
+        id S1732661AbgKJQDI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 11:03:08 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44902 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731147AbgKJQC6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 11:02:58 -0500
+        id S1732582AbgKJQDE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Nov 2020 11:03:04 -0500
 Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 42076206E3;
-        Tue, 10 Nov 2020 16:02:57 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0DCED20829;
+        Tue, 10 Nov 2020 16:03:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605024177;
-        bh=WJXkq/qLfyFh+DckIEnAcIep+CU9DCKkiyIv2h4DaAQ=;
+        s=default; t=1605024183;
+        bh=arSU7iObv5TKvnOj6naRt5mQLdMTSeyl4JneYSecfts=;
         h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
-        b=ztGWDagnj0CVj5lK0DWRoyRfrfi34z17w/bnM1KqBFCDhDMXCDVLyrEQH/sjEJW0C
-         6etHtbnkrQPb+OXt7ADwznVBjbDH+iUZj8riUog3l+4y3wzBg6n4Cxm0npMIuIFXml
-         mltGcr0THDT1vpNd3OC2LgRWPFHg0e2styF5GdaQ=
-Date:   Tue, 10 Nov 2020 16:02:43 +0000
+        b=aoUlOLUo8fWOL4ebcQd9XF/ZfKTW4mTZ+5YkQb53YE2DJ76QTKZq09jrZtxsyfrtb
+         Gne4/wjoyQfVjF7BwPMw+KFcqJr/dcs0xtV/rF8gsIEHK828Vir2rfMTmq4ViQw1pr
+         CYm2jTOzaUiPEaOC2rll/wqA2TovOvW+4C3aB9ZY=
+Date:   Tue, 10 Nov 2020 16:02:49 +0000
 From:   Mark Brown <broonie@kernel.org>
-To:     Liam Girdwood <lgirdwood@gmail.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
+To:     linux-kernel@vger.kernel.org, Ajye Huang <ajye.huang@gmail.com>
+Cc:     Liam Girdwood <lgirdwood@gmail.com>,
+        Andy Gross <agross@kernel.org>, linux-arm-msm@vger.kernel.org,
+        Ajye Huang <ajye_huang@compal.corp-partner.google.com>,
         Rob Herring <robh+dt@kernel.org>,
-        Shane Chien <shane.chien@mediatek.com>
-Cc:     linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
-        wsd_upstream@mediatek.com, jiaxin.yu@mediatek.com,
-        devicetree@vger.kernel.org, chipeng.chang@mediatek.com
-In-Reply-To: <1604975492-6142-1-git-send-email-shane.chien@mediatek.com>
-References: <1604975492-6142-1-git-send-email-shane.chien@mediatek.com>
-Subject: Re: [PATCH v3 0/2] Fix vaud18 power leakage of mt6359
-Message-Id: <160502414080.45830.9030480275474005075.b4-ty@kernel.org>
+        Srinivasa Rao Mandadapu <srivasam@codeaurora.org>,
+        alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org,
+        cychiang@chromium.org, devicetree@vger.kernel.org,
+        Banajit Goswami <bgoswami@codeaurora.org>,
+        Patrick Lai <plai@codeaurora.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rohit kumar <rohitkr@codeaurora.org>, tzungbi@chromium.org,
+        dianders@chromium.org
+In-Reply-To: <20200928063744.525700-1-ajye_huang@compal.corp-partner.google.com>
+References: <20200928063744.525700-1-ajye_huang@compal.corp-partner.google.com>
+Subject: Re: [PATCH v1 0/2] Modify documentation and machine driver for SC7180 sound card
+Message-Id: <160502414078.45830.11309600092998215198.b4-ty@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -43,16 +49,16 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 10 Nov 2020 10:31:30 +0800, Shane Chien wrote:
-> This series of patches is to fix vaud18 power leakage problem.
-> vaud18 will be enable only when mt6359 audio path is turned on.
-> 
-> Change since v2:
->  - fix dt-binnding syntex error
-> 
-> Change since v1:
->  - use dapm regulator supply widget for vaud18 control.
->  - add vaud18 regulator property in mt6359 dt-binding.
+On Mon, 28 Sep 2020 14:37:42 +0800, Ajye Huang wrote:
+> Note:
+> - This patch depends on this patch series
+>  ASoC: qcom: dt-bindings: Add sc7180 machine bindings
+>  https://patchwork.kernel.org/patch/11773221/
+>  ASoC: qcom: sc7180: Add machine driver for sound card registration
+>  https://patchwork.kernel.org/patch/11773223/
+> - The patch is made by the collaboration of
+>  Ajye Huang <ajye_huang@compal.corp-partner.google.com>
+>  Cheng-Yi Chiang <cychiang@chromium.org>
 > 
 > [...]
 
@@ -62,10 +68,10 @@ Applied to
 
 Thanks!
 
-[1/2] ASoC: Fix vaud18 power leakage of mt6359
-      commit: 64a70744b77898a15d7a5b2b4dc0fa9523a75cde
-[2/2] dt-bindings: mediatek: mt6359: Add new property for mt6359
-      commit: 08651373808e16b01d3b12207f52504c17b6774c
+[1/2] ASoC: qcom: dt-bindings: Modify sc7180 machine bindings
+      (no commit info)
+[2/2] ASoC: qcom: sc7180: Modify machine driver for 2mic
+      commit: 3cfbf07c6d2779d24a6f5b999a91f400256b1d4e
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
