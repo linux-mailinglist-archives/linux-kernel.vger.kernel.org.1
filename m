@@ -2,91 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02B042AE286
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 23:07:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B71172AE283
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 23:07:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732136AbgKJWHF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 17:07:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47620 "EHLO
+        id S1732106AbgKJWHA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 17:07:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47632 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726688AbgKJWG5 (ORCPT
+        with ESMTP id S1732031AbgKJWG6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 17:06:57 -0500
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 796CDC0613D1
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 14:06:57 -0800 (PST)
-Received: by mail-pg1-x544.google.com with SMTP id z24so11477841pgk.3
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 14:06:57 -0800 (PST)
+        Tue, 10 Nov 2020 17:06:58 -0500
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E06DC0613D1;
+        Tue, 10 Nov 2020 14:06:58 -0800 (PST)
+Received: by mail-wr1-x443.google.com with SMTP id j7so7132813wrp.3;
+        Tue, 10 Nov 2020 14:06:58 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=qPQ341XlioetJkwvUmegnpo5yieLqIlhYMF1JNCPQv8=;
-        b=v+5eq4VYAXz/UfcP/wGSntYsg1su3KfQmSwgHMV9Q0fCSbYVVLnOFQhD/nLYWBBZWj
-         VMStzDGMizpFtL1V9NSxj3ObtqvQsSH4aOtVKT1ZbgbrHIlQyV1D6dhVO7CwXiUUypSi
-         mOXCxsmyn6s3zKnFtO72FSp8s1DDlDu+mTMdahSatCAwi32RA0o7/pYKGrIBBSwJeiYM
-         ltqz7cA3Azqt2C8Lzfd82JgQ5BAUtonbiD8ElnNQxQdJt/zhPUFHNRS98keIXLA5ZEdl
-         6sCAQ9+9gZArl37nnSPGbCLclc6YpHtCyA6nXsBLOg+DQEoSSw+kQIqdt2alYJ25E1ku
-         A1Vw==
+         :cc:content-transfer-encoding;
+        bh=fOBPjcNpz91mCMYtlgOYiEJnJpHJJ7wowgArIUAKBpQ=;
+        b=pyUOxBordCoypUr4bkRWCoKGbKwBgSPl6xu5gaWatHcfXzWftuuua4v/W9oleoPJhQ
+         4MXaC16vrhJBLJ7T4IZzFCJ1IGPjPuMRNqs6xDLgteZX5CG1j+f1DEirGD0pXlMcsabd
+         vwq5iIii4TIM3rvxsptUlZAz5zNCBh5d86aUfJZqwKnwZlQoA9kglclN/XM0xKL+aqyi
+         Qbn4vqwjpSoD2Hp6dGoz4J0V5GQzuBlfon0gxyGUXV92KmuwrGgSM16n3dXCKS8AtVZP
+         Qw3uk8KGo2CW9YQvNwQDppHcr5MKdvJx06ReeSEF8hIQHar8+aRjAvE79UqoqV00jAZ9
+         EpdQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=qPQ341XlioetJkwvUmegnpo5yieLqIlhYMF1JNCPQv8=;
-        b=tIZfuTsXsy/MUklmXkf9++lm9Q3/NeB8nRbleg7/MO2tblsgU/j2DZPK73EME2Xn1g
-         hNw+cAgeN6pErfa/Sl2hbrzFtxU3beibzQpWoww6Yg5QEDADDMz9dyYoZAcN7PQO+NXt
-         8zbj6d+aMvwhVxZrQMqx1yEPv5uc8CfOsg6vptrygPL+fsBN3XM9FcpMzlk8wQHfSSKP
-         13mHiAS09oqNSvCUcz0tZkFcRSZCNc5l96ENNQ2rF2IFckA/hkM8AoPDTSMhrBUoIIR/
-         VqpDrvM3Nv41mknvqQses3kVAgmeE94IfEuy9Zq0VfJ5yhkmfTkB5mIcD5TsJleNWv2w
-         8lcg==
-X-Gm-Message-State: AOAM531OLlaN/TxmUMvk0VrrL9ITDTNuGIbeRNs5tlotPyjV79nCt+zO
-        qgzvLcnwIEKo2laR2+TiZekSzUv7Sn9vicxiiV7UGA==
-X-Google-Smtp-Source: ABdhPJxp+2Xlwg1fWGZr/1Vant6rBWaWS0JhbrDM+RUjGv2zuz2AR8kD5o4UH+G5f3lDUNAwWer/gu6XsYJX4r8uyRw=
-X-Received: by 2002:a62:870c:0:b029:18b:d345:70f3 with SMTP id
- i12-20020a62870c0000b029018bd34570f3mr16322041pfe.30.1605046016802; Tue, 10
- Nov 2020 14:06:56 -0800 (PST)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=fOBPjcNpz91mCMYtlgOYiEJnJpHJJ7wowgArIUAKBpQ=;
+        b=Uxmar6jq/y9k7mAgIvcPIafICzxeZhjR3CjVo1Sp1qr60x2/Rf6JQxcPis3y5WbJ/W
+         tsBtv/rBfqomxrvWq2/nfzzev4ckIDPwKB9nXgYUyh6vO7kJMjMY7iCFyxl80o+7u/bX
+         PfaKL5YAZ4O8YBe8gLnMRI/IO8hUtpsTFyEq8bplFbu6JmDve6j5OaBIBnL1pahfFeIC
+         /0kxxZrVPP2bJpaskvrAFkLVGSkdS/GLOGjUE92lTLtlXqTsfZbS5H8Lieh8ioyKA6T9
+         ZhviI7XhRalrGehIXgsQp6yZEVw00u7zFrvZnZS1akrDZRdiR+A5mlEG0XpHWbt4Ct2W
+         y50Q==
+X-Gm-Message-State: AOAM533GZTK2rrL+HjAv8lZ61XAgBIYigUrzbd3vygASRTRvgyV9jXGo
+        kXP67pA/Ackg5laHzYXJeejC6ZVQAnDcHbpt8iY=
+X-Google-Smtp-Source: ABdhPJwp3lXAPU50agZOEqw4doQ3R4tIdinA9SliisR1tkW2IKPNfSZxOF5yGat2GbhQxN0UAuZdd3elAtRyCEiVtJY=
+X-Received: by 2002:adf:f246:: with SMTP id b6mr25860054wrp.111.1605046017139;
+ Tue, 10 Nov 2020 14:06:57 -0800 (PST)
 MIME-Version: 1.0
-References: <20201107075550.2244055-1-ndesaulniers@google.com>
- <4910042649a4f3ab22fac93191b8c1fa0a2e17c3.camel@perches.com>
- <CAKwvOdn50VP4h7tidMnnFeMA1M-FevykP+Y0ozieisS7Nn4yoQ@mail.gmail.com> <26052c5a0a098aa7d9c0c8a1d39cc4a8f7915dd2.camel@perches.com>
-In-Reply-To: <26052c5a0a098aa7d9c0c8a1d39cc4a8f7915dd2.camel@perches.com>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Tue, 10 Nov 2020 14:06:45 -0800
-Message-ID: <CAKwvOdku3o0nHhPppPOJzFXa3j1j_4r5ix3kbkduxY3YSpj9wg@mail.gmail.com>
-Subject: Re: [PATCH] netfilter: conntrack: fix -Wformat
-To:     Joe Perches <joe@perches.com>
-Cc:     Pablo Neira Ayuso <pablo@netfilter.org>,
-        Jozsef Kadlecsik <kadlec@netfilter.org>,
-        Florian Westphal <fw@strlen.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
-        Network Development <netdev@vger.kernel.org>,
+References: <20201109211855.3340030-1-lee.jones@linaro.org> <20201109211855.3340030-4-lee.jones@linaro.org>
+In-Reply-To: <20201109211855.3340030-4-lee.jones@linaro.org>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Tue, 10 Nov 2020 17:06:46 -0500
+Message-ID: <CADnq5_PC1=sxZP2wT-jfeBwObHCRBHOdW4ceEt-2=8PaA3aYzQ@mail.gmail.com>
+Subject: Re: [PATCH 03/20] drm/radeon/radeon_fence: Demote some non-conformant
+ kernel-doc headers and fix another
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     David Airlie <airlied@linux.ie>,
         LKML <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
+        <linaro-mm-sig@lists.linaro.org>,
+        Jerome Glisse <glisse@freedesktop.org>,
+        Maling list - DRI developers 
+        <dri-devel@lists.freedesktop.org>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        linux-media <linux-media@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 10, 2020 at 2:04 PM Joe Perches <joe@perches.com> wrote:
+On Mon, Nov 9, 2020 at 4:19 PM Lee Jones <lee.jones@linaro.org> wrote:
 >
-> On Tue, 2020-11-10 at 14:00 -0800, Nick Desaulniers wrote:
+> Fixes the following W=3D1 kernel build warning(s):
 >
-> > Yeah, we could go through and remove %h and %hh to solve this, too, right?
+>  drivers/gpu/drm/radeon/radeon_fence.c:168: warning: Function parameter o=
+r member 'wait' not described in 'radeon_fence_check_signaled'
+>  drivers/gpu/drm/radeon/radeon_fence.c:168: warning: Function parameter o=
+r member 'mode' not described in 'radeon_fence_check_signaled'
+>  drivers/gpu/drm/radeon/radeon_fence.c:168: warning: Function parameter o=
+r member 'flags' not described in 'radeon_fence_check_signaled'
+>  drivers/gpu/drm/radeon/radeon_fence.c:168: warning: Function parameter o=
+r member 'key' not described in 'radeon_fence_check_signaled'
+>  drivers/gpu/drm/radeon/radeon_fence.c:393: warning: Function parameter o=
+r member 'f' not described in 'radeon_fence_enable_signaling'
+>  drivers/gpu/drm/radeon/radeon_fence.c:393: warning: Excess function para=
+meter 'fence' description in 'radeon_fence_enable_signaling'
+>  drivers/gpu/drm/radeon/radeon_fence.c:1010: warning: Function parameter =
+or member 'm' not described in 'radeon_debugfs_gpu_reset'
+>  drivers/gpu/drm/radeon/radeon_fence.c:1010: warning: Function parameter =
+or member 'data' not described in 'radeon_debugfs_gpu_reset'
 >
-> Yup.
->
-> I think one of the checkpatch improvement mentees is adding
-> some suggestion and I hope an automated fix mechanism for that.
->
-> https://lore.kernel.org/lkml/5e3265c241602bb54286fbaae9222070daa4768e.camel@perches.com/
+> Cc: Alex Deucher <alexander.deucher@amd.com>
+> Cc: "Christian K=C3=B6nig" <christian.koenig@amd.com>
+> Cc: David Airlie <airlied@linux.ie>
+> Cc: Daniel Vetter <daniel@ffwll.ch>
+> Cc: Sumit Semwal <sumit.semwal@linaro.org>
+> Cc: Jerome Glisse <glisse@freedesktop.org>
+> Cc: amd-gfx@lists.freedesktop.org
+> Cc: dri-devel@lists.freedesktop.org
+> Cc: linux-media@vger.kernel.org
+> Cc: linaro-mm-sig@lists.linaro.org
+> Signed-off-by: Lee Jones <lee.jones@linaro.org>
 
-SGTM, please try to remember to CC me (or CBL) if you do any such
-treewide change so that I can remove -Wno-format from
-scripts/Makefile.extrawarn for Clang afterwards, and maybe help review
-it, too.
--- 
-Thanks,
-~Nick Desaulniers
+Applied.  Thanks.
+
+Alex
+
+> ---
+>  drivers/gpu/drm/radeon/radeon_fence.c | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/radeon/radeon_fence.c b/drivers/gpu/drm/rade=
+on/radeon_fence.c
+> index 8735bf2bb8b5c..9ee6e599ef83b 100644
+> --- a/drivers/gpu/drm/radeon/radeon_fence.c
+> +++ b/drivers/gpu/drm/radeon/radeon_fence.c
+> @@ -157,7 +157,7 @@ int radeon_fence_emit(struct radeon_device *rdev,
+>         return 0;
+>  }
+>
+> -/**
+> +/*
+>   * radeon_fence_check_signaled - callback from fence_queue
+>   *
+>   * this function is called with fence_queue lock held, which is also use=
+d
+> @@ -383,7 +383,7 @@ static bool radeon_fence_is_signaled(struct dma_fence=
+ *f)
+>
+>  /**
+>   * radeon_fence_enable_signaling - enable signalling on fence
+> - * @fence: fence
+> + * @f: fence
+>   *
+>   * This function is called with fence_queue lock held, and adds a callba=
+ck
+>   * to fence_queue that checks if this fence is signaled, and if so it
+> @@ -1001,7 +1001,7 @@ static int radeon_debugfs_fence_info(struct seq_fil=
+e *m, void *data)
+>         return 0;
+>  }
+>
+> -/**
+> +/*
+>   * radeon_debugfs_gpu_reset - manually trigger a gpu reset
+>   *
+>   * Manually trigger a gpu reset at the next fence wait.
+> --
+> 2.25.1
+>
+> _______________________________________________
+> dri-devel mailing list
+> dri-devel@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/dri-devel
