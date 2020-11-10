@@ -2,39 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 391202ACC7B
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 04:55:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A7242ACC7F
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 04:55:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733203AbgKJDzc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 22:55:32 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56812 "EHLO mail.kernel.org"
+        id S1731653AbgKJDzn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 22:55:43 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56976 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731402AbgKJDz0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 22:55:26 -0500
+        id S1733208AbgKJDze (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 22:55:34 -0500
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 90A1C21534;
-        Tue, 10 Nov 2020 03:55:24 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id CB0E6208FE;
+        Tue, 10 Nov 2020 03:55:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604980525;
-        bh=imKwv/Fb3tX8Sf2PNoVY7wcaiXIi4oQ+RdrROR2vnxo=;
+        s=default; t=1604980533;
+        bh=6Zp+YV6Z2BWDD9deiTge0AlKV+A0u0z1bSS6kiV9ATg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=aBHjt5PlamRb8rPRQ9/KPWGfBK76H/luNgBDTBk+vEw3DSZRgvlAN1rL0SkhTIRUw
-         6hIEMsEY9oESsyM4BPwRAbkAbcg5qk/CAFPn3DiB5j+2fZaHbmLViLg1STujofD0Lw
-         t86RkI8XEj2uE/IuY7FxFahyT6P4H/z4M3wUWOWU=
+        b=bulcRriKLPTx4JXDrNiwQkvc2olFTsok4NHbYvM+wrdOn7mCRgJc5rDzBTfE0quHN
+         dQKZ5NgMYNE+qcyOHRAjlrGJkge92oLyiFA8VdPv4tcnnNgBr2uXx+yrB1xT1V77NC
+         JNJvW2wIxpYG+WpWzaeGDdp/wTS5tniVUGP+Gg0g=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Fred Gao <fred.gao@intel.com>,
-        Zhenyu Wang <zhenyuw@linux.intel.com>,
-        Xiong Zhang <xiong.y.zhang@intel.com>,
-        Hang Yuan <hang.yuan@linux.intel.com>,
-        Stuart Summers <stuart.summers@intel.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Sasha Levin <sashal@kernel.org>, kvm@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 32/42] vfio/pci: Bypass IGD init in case of -ENODEV
-Date:   Mon,  9 Nov 2020 22:54:30 -0500
-Message-Id: <20201110035440.424258-32-sashal@kernel.org>
+Cc:     Sean Anderson <seanga2@gmail.com>,
+        Palmer Dabbelt <palmerdabbelt@google.com>,
+        Sasha Levin <sashal@kernel.org>,
+        linux-riscv@lists.infradead.org
+Subject: [PATCH AUTOSEL 5.4 38/42] riscv: Set text_offset correctly for M-Mode
+Date:   Mon,  9 Nov 2020 22:54:36 -0500
+Message-Id: <20201110035440.424258-38-sashal@kernel.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20201110035440.424258-1-sashal@kernel.org>
 References: <20201110035440.424258-1-sashal@kernel.org>
@@ -46,43 +43,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Fred Gao <fred.gao@intel.com>
+From: Sean Anderson <seanga2@gmail.com>
 
-[ Upstream commit e4eccb853664de7bcf9518fb658f35e748bf1f68 ]
+[ Upstream commit 79605f1394261995c2b955c906a5a20fb27cdc84 ]
 
-Bypass the IGD initialization when -ENODEV returns,
-that should be the case if opregion is not available for IGD
-or within discrete graphics device's option ROM,
-or host/lpc bridge is not found.
+M-Mode Linux is loaded at the start of RAM, not 2MB later. Perhaps this
+should be calculated based on PAGE_OFFSET somehow? Even better would be to
+deprecate text_offset and instead introduce something absolute.
 
-Then use of -ENODEV here means no special device resources found
-which needs special care for VFIO, but we still allow other normal
-device resource access.
-
-Cc: Zhenyu Wang <zhenyuw@linux.intel.com>
-Cc: Xiong Zhang <xiong.y.zhang@intel.com>
-Cc: Hang Yuan <hang.yuan@linux.intel.com>
-Cc: Stuart Summers <stuart.summers@intel.com>
-Signed-off-by: Fred Gao <fred.gao@intel.com>
-Signed-off-by: Alex Williamson <alex.williamson@redhat.com>
+Signed-off-by: Sean Anderson <seanga2@gmail.com>
+Signed-off-by: Palmer Dabbelt <palmerdabbelt@google.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/vfio/pci/vfio_pci.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/riscv/kernel/head.S | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/drivers/vfio/pci/vfio_pci.c b/drivers/vfio/pci/vfio_pci.c
-index a72fd5309b09f..443a35dde7f52 100644
---- a/drivers/vfio/pci/vfio_pci.c
-+++ b/drivers/vfio/pci/vfio_pci.c
-@@ -334,7 +334,7 @@ static int vfio_pci_enable(struct vfio_pci_device *vdev)
- 	    pdev->vendor == PCI_VENDOR_ID_INTEL &&
- 	    IS_ENABLED(CONFIG_VFIO_PCI_IGD)) {
- 		ret = vfio_pci_igd_init(vdev);
--		if (ret) {
-+		if (ret && ret != -ENODEV) {
- 			pci_warn(pdev, "Failed to setup Intel IGD regions\n");
- 			goto disable_exit;
- 		}
+diff --git a/arch/riscv/kernel/head.S b/arch/riscv/kernel/head.S
+index 72f89b7590dd6..344793159b97d 100644
+--- a/arch/riscv/kernel/head.S
++++ b/arch/riscv/kernel/head.S
+@@ -26,12 +26,17 @@ ENTRY(_start)
+ 	/* reserved */
+ 	.word 0
+ 	.balign 8
++#ifdef CONFIG_RISCV_M_MODE
++	/* Image load offset (0MB) from start of RAM for M-mode */
++	.dword 0
++#else
+ #if __riscv_xlen == 64
+ 	/* Image load offset(2MB) from start of RAM */
+ 	.dword 0x200000
+ #else
+ 	/* Image load offset(4MB) from start of RAM */
+ 	.dword 0x400000
++#endif
+ #endif
+ 	/* Effective size of kernel image */
+ 	.dword _end - _start
 -- 
 2.27.0
 
