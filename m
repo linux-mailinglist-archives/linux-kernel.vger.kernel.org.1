@@ -2,70 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A58B2ADE87
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 19:40:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E26E2ADE8C
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 19:41:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730959AbgKJSj7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 13:39:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43364 "EHLO
+        id S1731170AbgKJSlY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 13:41:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43574 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726179AbgKJSj7 (ORCPT
+        with ESMTP id S1725862AbgKJSlX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 13:39:59 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44C0EC0613D1;
-        Tue, 10 Nov 2020 10:39:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=79SE+AKjlqgBbqilhiLeZ8j33rMROxnpjj18eGnMGAA=; b=C7gMd9SPM+bIdOdwPgkWo9RDoB
-        6ZF3yngMrEjxVNvOcaTcQyUm3aCrbUU9x+EALS8F1IjHfoa+o4Bq6uMxBjbSaZtgfSl0pY/4hjbvY
-        2/IxXVA3IqblqosgM8IlDlPBBI3Yzh//Tjg6dzXGk5pS2OSp5/9t9rHSy9ZsoSEn9F31iQbfHZ750
-        lb5ioAP6tStztsmGYbr6Rf07Bhs4I3P30WpcJPT6h/sdUNxb2hNnkvJ5cUUhds4gP+tyHx0f0e1Kl
-        xu2XqNFcm/G2iD0odGhWtuXGTmb+yn+FIxXQMQD/73xyXkYo3AebaX70Iqfvaxm1ZpZh3yQgQXxfk
-        x24Igmxw==;
-Received: from hch by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kcYYb-0002os-Hv; Tue, 10 Nov 2020 18:39:53 +0000
-Date:   Tue, 10 Nov 2020 18:39:53 +0000
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Chris Mason <clm@fb.com>
-Cc:     Christoph Hellwig <hch@infradead.org>,
-        Nick Terrell <nickrterrell@gmail.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        linux-crypto@vger.kernel.org, linux-btrfs@vger.kernel.org,
-        squashfs-devel@lists.sourceforge.net,
-        linux-f2fs-devel@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org, Kernel Team <Kernel-team@fb.com>,
-        Nick Terrell <terrelln@fb.com>, Petr Malat <oss@malat.biz>,
-        Johannes Weiner <jweiner@fb.com>,
-        Niket Agarwal <niketa@fb.com>, Yann Collet <cyan@fb.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: Re: [PATCH v5 1/9] lib: zstd: Add zstd compatibility wrapper
-Message-ID: <20201110183953.GA10656@infradead.org>
-References: <20201103060535.8460-1-nickrterrell@gmail.com>
- <20201103060535.8460-2-nickrterrell@gmail.com>
- <20201106183846.GA28005@infradead.org>
- <D9338FE4-1518-4C7B-8C23-DBDC542DAC35@fb.com>
+        Tue, 10 Nov 2020 13:41:23 -0500
+Received: from mail-yb1-xb42.google.com (mail-yb1-xb42.google.com [IPv6:2607:f8b0:4864:20::b42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11414C0613D1;
+        Tue, 10 Nov 2020 10:41:22 -0800 (PST)
+Received: by mail-yb1-xb42.google.com with SMTP id t33so285041ybd.0;
+        Tue, 10 Nov 2020 10:41:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=wpJ5lPaXtgiF4jb8/8Ul562NL/AWQ6eFgS7XO9bceks=;
+        b=RUT1/dsGddDLZa8O7Lq0juEg8peHH5XcGzBzWdLs34c6F0zj0kiTRxktHDdyPhNrwa
+         BvBVz0d+vyLRXhkGNy9P9MapxdSbt26mPeIUhhkMxxL9oJDZnHep3rPkY7/aaLo1ZtWS
+         HbOVkEsxgIjjkZOvoWCf85lUzoVKe+f1zMvKTIZdA2TjbdUbKZ5Yaq7TUO/1Kziya0Gv
+         omGaOpVFUov/1t19chQRY/j3nq7b7hcjo4f3hi/IvAIK5mUmfNcwP2R+O+mZbmp5AlvO
+         wwIVGpRV6s7UvHa7LM/Y+JIMWP+VdfKoRzZmAL3+yGgo5Ng6a+MTocgRsxY+VUCFGzER
+         qAFg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=wpJ5lPaXtgiF4jb8/8Ul562NL/AWQ6eFgS7XO9bceks=;
+        b=FYq+PsNCBwLboVLqsCSQ+gWDWM+Zs3WOdC2jYUWpiEShy+3jiXjBYUKGi9uzt/sunQ
+         tNJJX4vqGLERjdqiIt/KRJmFj0aTmKWZAQLid4dzr/BDPq8Xrcr/OQWFAAdZI6HqrdFO
+         5la0QnH/JsAw8y1BY0vMhVbZuPHf0BRaEyF4c5/YS0VdcYyhaHlb3a4H7ZtJIqaRpXKy
+         CpPccQE8OxzB7c+0YS5L/+iTRxZlfX8b6NDVpJ+oSAWhhnjXZd36QV/8SxNN5xQMswLc
+         yeGZytGhRIuujZV2iOm/yoyBw/+iIg7hcrBN5foChL7MZ6qy1V9GM4B65fa1mDg6Wpfk
+         vj8g==
+X-Gm-Message-State: AOAM532xuELJ66ekKhcVrVShJ3u1km7Wt278NHd1W4WcHHu668JRpskJ
+        Rx/2fXQn19O5Tkg/Cs0oux40fmm2Pij0Msq3RnM=
+X-Google-Smtp-Source: ABdhPJwoWlvUAx5wdNafJmm9h4F7cD6LfDv7C2qg26O74l7AxqBJQo7YQf+lYNGTCiIp6A28GQtKTlUSoT8yO1uVL4k=
+X-Received: by 2002:a25:e701:: with SMTP id e1mr3977083ybh.510.1605033681253;
+ Tue, 10 Nov 2020 10:41:21 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <D9338FE4-1518-4C7B-8C23-DBDC542DAC35@fb.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+References: <1605009019-22310-1-git-send-email-kaixuxia@tencent.com>
+In-Reply-To: <1605009019-22310-1-git-send-email-kaixuxia@tencent.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Tue, 10 Nov 2020 10:41:10 -0800
+Message-ID: <CAEf4BzbUW+rzk1KE3---j3d2-YD_HOxKLNUPW=_AL63Qn5pHkg@mail.gmail.com>
+Subject: Re: [PATCH] bpf: Fix unsigned 'datasec_id' compared with zero in check_pseudo_btf_id
+To:     xiakaixu1987@gmail.com
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
+        Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        john fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Kaixu Xia <kaixuxia@tencent.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 09, 2020 at 02:01:41PM -0500, Chris Mason wrote:
-> You do consistently ask for a shim layer, but you haven???t explained what
-> we gain by diverging from the documented and tested API of the upstream zstd
-> project.  It???s an important discussion given that we hope to regularly
-> update the kernel side as they make improvements in zstd.
+On Tue, Nov 10, 2020 at 3:50 AM <xiakaixu1987@gmail.com> wrote:
+>
+> From: Kaixu Xia <kaixuxia@tencent.com>
+>
+> The unsigned variable datasec_id is assigned a return value from the call
+> to check_pseudo_btf_id(), which may return negative error code.
+>
+> Fixes coccicheck warning:
+>
+> ./kernel/bpf/verifier.c:9616:5-15: WARNING: Unsigned expression compared with zero: datasec_id > 0
+>
+> Reported-by: Tosk Robot <tencent_os_robot@tencent.com>
+> Signed-off-by: Kaixu Xia <kaixuxia@tencent.com>
+> ---
+>  kernel/bpf/verifier.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index 6200519582a6..e9d8d4309bb4 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -9572,7 +9572,7 @@ static int check_pseudo_btf_id(struct bpf_verifier_env *env,
+>                                struct bpf_insn *insn,
+>                                struct bpf_insn_aux_data *aux)
+>  {
+> -       u32 datasec_id, type, id = insn->imm;
+> +       s32 datasec_id, type, id = insn->imm;
 
-An API that looks like every other kernel API, and doesn't cause endless
-amount of churn because someone decided they need a new API flavor of
-the day.  Btw, I'm not asking for a shim layer - that was the compromise
-we ended up with.
+you are changing types for type and id variables here, so split out
+datasec_id definition into a separate line
 
-If zstd folks can't maintain a sane code base maybe we should just drop
-this childish churning code base from the tree.
+>         const struct btf_var_secinfo *vsi;
+>         const struct btf_type *datasec;
+>         const struct btf_type *t;
+> --
+> 2.20.0
+>
