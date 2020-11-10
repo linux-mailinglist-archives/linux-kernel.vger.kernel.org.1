@@ -2,197 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 630E02ADF40
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 20:25:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B60C62ADF46
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 20:26:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731618AbgKJTZG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 14:25:06 -0500
-Received: from sonic312-24.consmr.mail.gq1.yahoo.com ([98.137.69.205]:44312
-        "EHLO sonic312-24.consmr.mail.gq1.yahoo.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727275AbgKJTZB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 14:25:01 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1605036299; bh=+NtoQW1CA1OwOGFCu/Bw7TOZf/nOJCcvjsTo2An6Pf4=; h=Date:From:Reply-To:Subject:References:From:Subject; b=Dg/IVcxsugpKJPhNUp3dVBLWFPzZ/PG9HRBusmgyEKQRUZFVEYRb0js0IMSP3C6q+lLYTLm8YF6JWjm7NNH9u0HxraxDHE0X2NkVY7EulyWky1XlBTzdAtL1OY6jhKiMQrdYuD5ethDsGhTBpgMw8ZYHOJgxWMc7R5+H1qHVVeY8GHFVZfvWa1+c0ST8DqoantPRtbLb0EGP0Fpq19qcJfVYpaS2bRXoFZl9ldipDeE4uM5oLSfmYFAPt4jXqswBCQAd2uVx5lRoYgXxwnEv5/Ki5s5L4BCZfNvCjqfSyVm2A87dPN0QqGqpfjcnY6ilBo6lJKZPgRZ96h6VXUr2ig==
-X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1605036299; bh=qE1B8whFjZP0JJzZV0igUIlLW2JYL16lOqFHrqjBuCQ=; h=Date:From:Subject:From:Subject; b=hAwm/NV4PhYshKu2AErSysuJEDf4dqUkXXtouh+9Y3wYep7G9wg68k204tPnJW/pkwn1WgCFje05X08RMbQCQcjDvvglVL8aJHimkMq/N7euQj1Z5VKvK4SI54pR9DXF2Utjp7xL0Q67mJV+aso85XnxVhGs40byL6z9qSXNqwc+PX/cxLtsoSDACoVbePh4qzolvesxG4YJkR+sSbF06lxiP1cc9Fwrce9pPUMAVQP892OA0VAbjuKE8fmvFSyAobdbV8VhAdvM1CPnCgO4gAFJWtZ1On51bhkUGuFqtegOn0HxKo22KAiByXOJayqyb4GxOgTZL31b2HCXezkYeQ==
-X-YMail-OSG: hAAt6w0VM1kJRkkDctyxh.U9Y260vGLJRozVnVV2a7NE.GrXEQEpV3lYGw5qmg0
- BPJmKXuVhc0AVE7y47v0yobhMmxZJUOq951l1klsHpz5gVajC.5x57f9e1YP7VelqiLbwOLmGZlh
- 9_xVeqrHcvlJapHSqfvRZdzzWwUJQiqOgH1kNpC4FTsNn2QweDW3Y9Vkil7z3QwK0m4UJmHrXHRg
- 2rdIyCuewhbYODr8N9MYMkJpm_sBeEb4hPQvR6iJCdYWdOBxF3luCWXe..X6jG2mkRn6Phjd5oBe
- fOcbrGdVNPEvy0CtY01gly3WwWNrMirCVB3_3Cv7ZFkiYe..ja.Y7P6n8oMfs1FjAdVjjRN5CCwN
- 5BINblnj9YEUTDQu9YWndv3HcL96_INovZtErQC9AvISgPIhQVrIokMVcwnj0jgaIrFlP5uGRmFH
- GJx7USUl4BX8CWQKH5us0GBszfq6sxDvGjFKyUwNvGzdGKSkiSpIHBaiGYE7PxTg8DJyCHm20xLE
- GCsHI55fu8r200wtqRIflY7b19YM6sPE0WWa4UVKLUHfKCX_fXCiJCP6Zq9xjxN5GKdlYEykb8US
- MBKEIKQM_3mXQWgjOdcEcDRFCXW.A6yEXLFDTuaLV5ZTyNWYzxwNJ10.v2ED6tpzvsyJjlHuKHtT
- ksZfU_RaJjR7ZopXLp03Ckb.5ePeiSok9SpGuSKuNQLKqieM3Rq7QUYGyZ32eURZExHkSVupkrnc
- tQ97XmBnnUPjDNvL4vgR4DuiQGJumyWAErMz1aYkcH1JnkFAPqw9X_DC9hpiZ.hhDVQRwUP3APh3
- nXzCAec8DX5wGvRhWKXMZK9UVb__DzNADB6n9EUa.jHMA1YJVO9qWsW8fYXJKsJXYYOH7UtOjKPb
- pF38zBRGQYyI4rj3SPyyORIZ1dDJzxkOcVncb8FOnp3r5cwDc1U8uRwmYwnMLBUOTS.G_7_aKeem
- 8QTtcAsOZlIdvyb_KeUQmaN4nYHAsqcHkE67dpSG5lIRicQZhg34BtA6xRfmwcKUdOOMV3yI41WU
- BJgSuZ8nrh63LHiQZ0kDUVby9omr2VY8D7Dm21Cwh8qbfN9IH7kddlOkLF7AY_BGysgpuIYjX8tY
- h0N9IaEsC1slWq0bOf1QDuoUp_aEjJbvurtVbtY1shOdTKhR62haOBFu0OFa_NPLr8EFHOsnuNT4
- JITu.YMxRDBcZNdIUhDCtOVFReqP86a0edEx.Qaknnoos6HYqI4VxKliSPIhkdmv6e2yVZO.NX.n
- SUDRLVSZXnwr38K7Z4fNilUoVOJT4wgpdMLWVhfI4RxyT6wiGg4Bk0D1XYbrMG3CNKsCKa8UxiBi
- HVZJSZgrD9.FeduIi9HRm9bHSV.D8tyD9bDbLzbTl5ZtBEBUsui5zyH3Ho9pwwv53xdLzHg9uXEr
- 6.blxSuoWoFrSitZrFCxVuQ1uYW9Rn3jCDLTao9YBQcAP9r2AmS6wPIDtgPT4GSfCHEbJi7mIAyF
- 9FgUEFoUhR8aM2M7x4_PwLcdqzeyax7NNP9y05rpgwY1RKhg.dydskA7AvA.hCoC4xgtg692xETw
- dcZmV05_yi0tnDvNrraPs6k0ofG2GGA3a3HXfkGlsEC.NFHsNZRaQC0Ui22GIGGC7nw1_.Hsw7o3
- 9IMHKbZMA9IwI.9T3Mvn.0BH5s5H_Q7fQGBrGH6kIeFTXnY6kV4yXdHQmC0DlWfdzv_nYor8NzZ.
- cotRoERxGBZMNVnuwRHOQX8UDB5ngjv4Z6utnNnWtd.YezP7Onr9_0VATl67x30He7uQKqDmQoh3
- pcaAbKGcHK2P0FQkmimPL7D99zroB0vezELl3FP5M6ZxjjYb8TJDik6QebGa9_MlXgou40K6LaaS
- pi31CyM5NT3pL5KiNrhr9gRpKMfvOJPhy3bA5JQ1yfoySk3anoOaoPkxhzyqwEx9VFjw1n9IVHb2
- 1IQ89VgO42fPhMk_KXc58niTP23rIPmMQlKDMlj4HGUD8dWXGXij9JzeNDjFeNlBZLfZyGtuny7a
- kLqMcHMe7GvujKkuGM0czAozxS_kosTtDFlufv4ldn_KR9h0s6yDKcBmIJOAF6kFXo2OtjifadQP
- KkDaHtsmtBtIeRuJ39IFUvDEsjJMwf5rJWr.OpHF80Ic7Gmop3iOshl64iHq67SLpRwaxVklNcWe
- 54uiLwWa4IOj5ezn_AuD0osqxSgfWUYpjFkQ_yAUqxyZBv_gQBaXhW3SezFPatpZSuxCXcL0Ddnx
- 0qboKPkr0GTqK3URhKTByZ46zabKpzGbv8tg0xu2nukwxSUuKSaHvO8Xo_rFApeMlMP0K6PsMguz
- 0JciohUIyDkOgmeGo0nf8nVrzaSYFbXFV6.dxbKizyWFtWuRQzjCt6lFADfj7hnl01j8mNxFd98e
- c2Mx8.k7M_9elIG36Th9X1j06EeZgkm.elufYkZx9QVcope.u8Yt7zIc5Qof56YBD1nhZgAmF6w.
- DQ0oW9FNiprF9bVFlVywv7UEFLT8WPCs_Lm39hIFjMTlV0Q66_QBZVcXyWTAZvjm9i35NXIR4InW
- I7p.ODQK2QTmQUDk_UdKXMN_0dTnwcFoymNbrVSnq_wmHpG59u2joppbiKfkgM81Rf7AH.jNNDX1
- m0M8bydhpPpq5jS2JLNDGZJJeZzDA.8XAj0CjtWcmyLYMFkdiMVz2c5p1c7PNo7CKVjovKe9CBOQ
- 5_48Xd0WM2pHp_hm7ozdbZD6UHZr9CeJVeMJWnUcyEQEhzy39g5UuAYdsRT34QsdoUFaHPvpNsUq
- KKwRqamrnNQPTvoClfoW.61lPL2RGVwrksrIcv2WF74FjDsu5LUSacEV_BpakrtpRY4lawG_TPgY
- f2qvx2IdRxbDA303eBw9w2nCdR82GKFYcAv05Pkt8ymJR4IDd99SOu2NiMZZP1gY0rf35s1AQvMj
- Eao.hqYGNWvEe8.Kt0FTyGIkYqi3JS4Yx8sN8KtJxxibKMxaIgZA9._S4xh5zXBHJ5LYapetcqwE
- T3sG4Z2VL53yfk1isx8zTNoFiRuBiTz3WMoVjRPNvd_iAz9GIGR51K_AkWcaEq3gBDeH3.k.ivfs
- zhY21UBtOg0ZEjHNdVUzUlM5xaxm9wxXYmsBAm_a2ZKJ94anVUf3nyTDaguWMKIbbdIIXJrgq0Pa
- Wpbyhn.r8TOb.a7EW5_9S3wHM4x5DzPe8s651_K0fgj9A6UIHBeW7uJRcBd7dE5Sgn_owgBp_iRK
- KORNR4p6cw2EOLMzZBiSTgRDZ08npSDYDuxRB4gHg8kijqH4CRshi3deMxOux9OJhfDC6JVX10c7
- iOUifZhBgG9tluyBshIgSFjjfSboxYe1JAkR9bBiDhfOMJ6JKIQPr0j5s_dQpH1CMxYkVOFXRHTZ
- 65hjm3P69rUv3bkS9EODeXlSTp.CUaEEbNyg0Wh7OoJBJEjofdRho0NkCTka.7DEPWD2CnVb0wmS
- MqTbrGZHC7b5IsXq0rgE2.xpMYgHKssHmH3ygQiLRJCyh6iNitOjDc.IeuQpEGXTw_G9rc2oizWM
- uCXJqH9f3g8yDPgZMlcxqwknr0yGPYGuTOVH7g1jmHpvalZ6FqDFOqWSB0xfEiAsfdrrlUich8dB
- xW4Dbox41jTWcgQ2iqpDLR6zkJHzFVOVB6UMKpn5Sd6opchGnaQWpsb3cqMZluZaGUbRHaqnOQ6V
- Jd9y.gh9Lof0cS5_XgKNOXmCofzmLaHkUyAEXG3DFOHc0Bbz18_6BQPjLMA_uUoEN3CFyEIqzhGP
- z0bxU3JaBgwqfZvopjJBsK82t8kR8NLo1GfMn4Ml7pUpQxsOy3zmeIv8BRMKRavvS4HFxI8XFTaW
- IYlXL05RHjYYO69beZcRriC2xHqAq8b7YkubwJaK8u840plGO8Ifrs.FQ6jKl2gV9i9Z0D85Y9y4
- 331nZ3f2LERFNkMXv5RYWKpMF13K_v9lvH8uxYPxYdjoCXA9EE.QDl7gxHrb3CNVjxopXsMDp8Ul
- CgjiiQhy8OliX2kpQ_lRxpyHkU8wPYrkr8TlmPDIgJH.VM7iONSJuCUxwsX3Ej8lXU1CUlzX_DM0
- 6nd_gKlbmTA9noT_dEJQHcf8umhMT3zsLhNkcuVtiXKa9HMm9Lja4YT0VYki1HogK4I.0sKnonRn
- 5mYYhk.k9LPDdCmEgR8pMmjHXpsJz5Vfx1rfRhxDMmqZd3SJnEp8ZvkjqpDcSwcY6kUxPT57one5
- dCbRCDEmICryv3ytvFYz5nzTZBsDm45afqhObLYx9zHaDoQZOrqWKVxdBpuC42NyGD_oV1q8rT1U
- 76NRvdQqc9zM3d508ldZDtXIsgxPehHP_sEYxFSy2BAtfzUq9ulE5r649HcrbsNbxrHVCT7CIbih
- vjrvdE15HJ9atYxlg2eXJd6fcg3JHvowzMueY5TQsCeT50wJ_K7FxfZWWrQLffGIFFctdwy2b_Gw
- 4WjJNbGkeFfGzI8jDUQMo6j0GK6OPoN96b10mNGJyKD0GXs7OJMAWkkuBdLKBUe820Faz1FghPnr
- Qx8wBJ4k.PB44xg3WK4cid_Z_wPEIye3gTfiERyHe6rpZKkUQF3gfeeJRU0RI8rS5BPLxZRZTCbW
- ymXLKCFMQtYf5GMaCzebanKsAiWuG_T4GfLTPlT2gFtcGr9RubZBNpwAhRXoTCJNzXz.euVek4kE
- EvQmB33qrqJ2SACzY3cPlZFu1v3dNumOM9ml_C05nFAb0PBhPB7sVi1xHFtwx0bv4U_ydNdOqsxe
- t7FwM3jBNsXpMf2kpqR3dZ_hTARtXg1nqE8derJU9VdlTK9OqISdPjG0urHsm2WMOgvAQnA4fPE2
- _vrTXx5V9UkFJd1nVR_5PYH843WhJRhpXAvTsbrK1BdtK7vrTmRLYTQERZ_Fcy6R4hFlL3vFeM18
- hEIU9WBFLPcjd_iSFSAsbagaHKHWbRYgZgjQh.WzMb.VzcWbl82yppH0KbgK.5o4dlLrszhdvpra
- UFgOvSu4bGgaoaJgy0P3ksK2WnaA38U8hC_FOUnT7oyCGryBBV_AsCaJwHZcx2mJvmLXjKDu7jz_
- 5iOgsaxodBQkot5U_OFtL059tZuZGYWGHRqEsMBnLYmEjwwNPf9CL8J4cy0KopurdXGaJ5Y3hY6P
- .UmWLBd3gFze_Y8Ft6l894K67_kcl8jGhgqa8Zfna5Nbi_M9Xy5UZlAPbGZ0fGQ9Ea9.vs5VOsec
- efUVoB3QNn1pYySp8gEr.pwYD6NIvFMOgIkglvGzCNZuXnsv0xc_sp__itOVKCHA6eoL8IXoWFp6
- 8pskbMq6AJmxpiSX7LSN8dE8qF8pH.HHHCUA3Hh85wfBUOj8dOYRZ5UFLoMucuWto01m2JogzTde
- _g56qmVSJQNIQ_iWjaGaxhXa0jO.5IxRmPz3N4c4kFN58kGV3peI5wD3Qb24NvHDeNf1tH7XGZjp
- EWKqZtYHEIoNbANtSOShotpe95tntBIsQYIPLwaHiiDCz3Q6FWSm08wKlHcc7vyouqrbgNX1hJOy
- DyVgqEmmI39bY2eAGAoaQVfCiJrQBQa0d8nfMkg9cfT_mSdCtOB7dlZk3syB4mhMHGv2NA3SAmQH
- S0Q2Hv9mnNX4__TlOOsV.HxMx075.WoE1AB0ue6W_3eQAV2xmdYKq3dqaQSpq4K2Lc.qn6yY_mi5
- NO9bDtIS070ZpGkJlEf5g0hYxJ.ScuamG8gSzSzafxxl99QOhFJgyYoGL_K_wLqnfpeoA3Tj1YI_
- uVElgYvhNYQnMx96ghsSCs4Z_L.u2rmBMctaazu_uKZzRqifsJff2_ebn9XCF9TlHzSBZQdbMpn7
- Pzgl.kNK6j_T9MBhPubXC1AVwhGJFMXTrVixa_qnhOi3Wt4feUQqoCfS5OPsSapmpBBGNOP33WSM
- t467eCF2D5fF6YsHd5D9677s8Lb1cL2Rnemz7SR61AfNlptEWBa_RvJWfpaOUW66Gs2kWWjLxyLr
- 7BJ6qaqRYdg82aaBKp_G7Yl8phHV1c0JMu66WO8EesEPmaBqPw1qS2lNh3dOy6n52GIP.H8HR0Ek
- 4mHiY0ac7rKQQ5i1df.E6vBvkFuwpbzZEQgIyrF9g9qJZsQ3YjIIK_Dl_a4s7KLEn1_S3YeSEYRu
- B3RiCen3tmuu3oQfzhSry5dxp03Tx7FJSPsG5QfHap_CIXKxHr2OJJahm_igdfVm.n4ook2_jKcN
- FVvy_C9yImv_RJbb8C0jcb0P.kUiwxjdWhPzQmU48nwgcrYc98FgkFinncWvZgM6ZVI3GedzpwN0
- IYGGm2xUL181WzTvRSbvJJ7_yR9c3g7fJwtGwi1vozEK44ENUuvJdDZLysWRkV5RDCWtzlx.15UU
- .DsOh_2kXpaaeNTcLYO5rQ3KdVUGtYR1BOab7xfMEVv.vxaG_tD1Pt2h8iT7_0q._qFM_qrnFHha
- wJKrFagKrFG_A5NS45jmudUhg8SVd.IZ3OIB0NjEDXpq87306IJHBWt8ChfTBWcg5rFTJ3l1wo5l
- NfPfqf74pnE775LuFVshP_Q76YTkMA.jhvshlsxcv8cIG3DZ7TV4qfuoKsF.5lvxO_Wwvfros8Cm
- jOy2oyxxP2m2MGv1G_5rr1qKn3en0CI9tZjyUv3Or5GRSCjektiAUkyMrBrF2ShTq1p7tzroJDIK
- 6piyfSCtj0B6EyNnu_5LwvouegAIWAqtpwatgpMHDsO6TFxve5EDOq74rnOxyueg_umlbMk4Imlq
- 11NeLR3qgqF8bU4IhVkTsQKCuyi_nJiJTlz4kGbciJp4AGUkTHkhz8KGV0Yu5ELwJxT2a6fvR5hW
- cqETEu3pJH_k_vT0iqMLxh1W5mfJdr5rCATMgbUky2nkC.cbpqM2YmZ53AaARgz1m.YxQ0oZmSB6
- QZT1CGc8HweomxdE2CQiFdUcz_kHwHd5X_tzm47Ng.Vy.DD1DvAZvgHuqCq6v0FT_vhfV9buwtF6
- i27PsaBkbL10MiK55hcjAa.kvH3IKmtjPDxhOdsZLdw0lBx7UhNJmKrETz7YmQVZH5nMbYMpIosf
- n5uNT7ii_k8B6O4siW7bJtFRmtB66CuNgZ.4mEksrmKLiSUa.6O765ZaZDZQiLecIQPKOT_YMdhE
- Tnr4gZIjBw4Dz46uW1Cn9319KbGVV7ZNiJFtugqg6A6cE02to82O2OpK13RnCgxCW2GviXT8RFAZ
- OLRvbYqNR4ngQXutBiUyrxKK7EJcUdpBeY7Lw7JpE7.ms9KNBZyj.Tku2brVLjxvPLin7SY52wHd
- skWNeTVjyyA5tH8dBTMICHVV5mix2kUOYdd3x_7fn2ddg.xJDuyXNLTPP85.eTzGiHYMhyNpx_4X
- gqkmCSmTi83crTc.YMb2lO7OzLi_iIaYnu55rbBOHuNe0D.OK0P.ZVxpy5trcu8.agOFhX4WIOgb
- sygbKhIjr0Je8O20cdJay8DUcXiDNf5Fb8BDoKkZs2UZ4wGMU9_GDUesHpwV5fgAWU.MNXRkWCDy
- C4zrn_k_Myc.LXRlyiJ.TGuBNrvtBMe4UJJ7fm0UqfP1LoEHgTS94xHnXPWsWoJ1M0n4tcK9YN4y
- PUskWk7YUaJrIeMpHThNTnFofGmv3EhgxXRHcFgwOBMcYGAXrsKYJbC5xFsYnyMEG8JDvAuPcjFR
- vNbUhZVADCsWu_rOgmIer6L5n3naJBGas11pYzSCcYV6lm.3hMnW0T8nx7lySz1fQa71amTvmylu
- I_TR4G8wK95b.b4Ze7qTtugLyPSKfXu5BMTfC5zNa6vrONJZLfY0YWspBSkZuJ.xkgq2PYxrOMo_
- oTWL6UJj4pzqA4.e0IndnE1RGstrXT4ylcYgURfaX25nrp1iJH0Jy.84xjdqtpe5Nh9MijRNfxh9
- FaT6yDIGux3W9ZYiIEhnmuzC432zoaWswf2eX4L59ql07gRAwscA90Vbg.E3uk4vtffXFQnvAvCU
- b5AoZbt_yZ40rFNJwjvXKFP_C1btT9QL4jMZwP.FZxd6tklUexWuefMc9RXJG5si3p8qYw..Fv08
- zV7cPKqquNV0rrhIvAmQcm5C3E5AExfhBmy4j5SvqpVvR3Enqmm4rsDFPZf4aLpDxPcQ6Z_4TQJl
- Mb8ffP_5a6PrsZUWzRCRqGlEzfFK0haB3GzjcRb2.u0RBX9vxwcoY9OvXtoz2I44rwLDoSsnEXLu
- kxjvvFUmV0uNQkC2Pk67C.VlY2eNivUyOZwgoAiX80Dcxo5fiMC8ieAX5hQVxo82yShB8t1ukjna
- r2caXL70a3LgLmPwbxg.A_9B3wqheZ_ul..p9emMMfZrZVlmCOUjUWnUAzlO9Y8WM6dg6gpm50sw
- 5F2UNvdmM_xNFZGI8mahSl4WNjHi0GlVdVbsZHV4dzXiRAdI4dTbms5gw7kCExFW1NpNPt5zZaNW
- rgQn4gb0TzyowVVebipo6oXMOhmK56OQw.2Q190ytJzDQGSHbvOvJUBzSWKvSPJcdzQnLT5CByAa
- Az8cwm2jVnAkz6agHgFpTTF1vtDPcsMnIz18lR8XMazMB.wJPgRSzYBSGUgyr.3Tdy70w9zaBLj1
- usuhkCqpngjxOdWRXCmRe_mibljZc2b2_ln3RHyaRo91kGsrhE94VurAtWx4_ubp2TkXRFAAl2sD
- 3p66G5qW3BZ9rfSdO3F1IWObwQ5zKFAO3NEq4OrrCcwWOhwE5tJluk1mF.sA2QVycIfX2ZFWSfzL
- bcwUu_vy8tt2Rm6bo8x2kJN.AIzz3ntsOZ8s.Sfn1RzzP0QWJ3OmeOvjb1P1t7EV9t1t5fJV9SiE
- LNGh8qelIca31.xrOi_d5lv90rGF29weWzdWK92Sap7oa9E3BOBzdkTGQCZov2zIWKgrwpqNn1lO
- EfgUPJRaYhP5rEmaq8q670h9T4Xr3xFOyqhUU_NUrszxIqg4uPISXy8e36OHCpknnE5wc.1LaVTB
- NBRNFGsti4D.fkd.7q.100JX9.nR3S6v56wK0MmzoiOWPpOfl04Z.HU5Z3bFrBpcuEWxl43iES9p
- 1zh4fvB1vCvQfJfMg0aiUJI69LjfQ2XXwhLEoBn732SN1nCIl9QwzK6z5aWE6CFsTVky124_FVCw
- 3YBSB1S7gH132e4c2itwcQ2r8VTZWeByRgqNAoOY4kZfL3Qa6kGp.IkMcI5MLnc_azsBt4JMa3eg
- 0yHHviC93Fm.u01es4_yVBoxjGHJZsMkmDUhs6MOdf1QqAQPiWQfgsRy_N8IDMCycca19w6b8Ve7
- rgZeXRvpGexiodedbx9.yU1UvCLWEWw2mGL5sUOIjUCrO2PaJ7KFG4TbFy9_FqFfJRULgAvIsqmI
- 0u6.WwQ7LovdkEJJJjDXfjyNqv6qAefSDjs2u4iCa7wVebEKa1jp2SYjIo.jbbZNi1OegcfYz.Md
- TVWKQse.5aC4bY_ahEsnQWdvxI2VbHFv_5iCs6ZMPakP4dFOnts6cfUgFOJEL_W6UmbAF_TRUBzu
- .zMVHjrIuEiq6up8StXO3wR58fbynl2vOpclYoOO9H2buriPeER73FWkx.g2DLRrWrsdHsDHPIdI
- JeW6x0gwDJXN.uVAgegVTeqdLLBqTDt9.3KXDh_xM1Z0NL1H1pwkJ0Xe4..o3gM9X0KEP40mkxMs
- sRtsut46GIUgd_uR0pqr7AGiOwF0drbg2iod4Y28d8HHL3PXuvDProIQ0y8MvULyfkJ.AwEe_MFQ
- hwhwEnDjoRQtUiegYfK3GR7K16StkfwlSgiKabadiwDhlgwPO1OVfNkpW_radIcuQe3oGZopeCdc
- 6fw3053dwnKQTLdY9SFZgjU4nHfvHFMyunuLGlFnfR_oJ4cZtAuxGuG0FOnBpivtg6p_3wA448vp
- xxHDawYqZ6AYyQ0IKXe4XWd2bMBwVJBZlGljmbT0aRI5o_ysiVui0mdt.1MlXVRY9YxWnn2fHX7j
- TXSNI9ZX6i4ejaDdTSdd8lf4Hrxu2f0DtXd97lD8Rc5Op45iiPYCiZUYqz4yfACSbYqXVezxGBWP
- RKwz3gvbs3RESwfJ1Jn5jDc1P2qPBcMj1CT3fHpb.iXIW43o6c1YN1Kzdec69KxQP50Yf6oVL_Im
- .S.chJ726XpFK9CGaJ5zf0QrSWU1p_alfGAOuR3gfwiP7CDKldM7l2ZBB3sGwd5Q60GRRVaj9naw
- XYXt.Zd246qZrz0o5vU0WY8z3_i14KryRNfRfh5gG4E_10tx3B_7Z68rEiEBzrP8rSYr0ZCfBz1G
- qNWXaV_xx1LL9iPwu.Z2CsDGz.jJkQmM2NR2CWqj6PaQ6oRLgLKV1G6QkDq_5LR76zHYwcO5BDI7
- UTJxd99SwycPA5lZZvcczesRK9dv3Kl.Doa6W_9tYsgPYJJWE5NnTFafuhGg.DBVSwKpYPVn6uKY
- 4eDaKTJALpe92m2YBFrgSnXtE8fBn05XU7SNQ2v73Lc16RJcR5c5vcusBn6N8uPoedSzxabedHcX
- UNN.1YnbcPy1RbaLlCHgre6aUpjenGrn5zJp5zf.h_sGTpSlf90h68fbmppHamCkIUd7rYINsCFy
- 40XywZAfUlmMTM8TuK62KMMEzyXKeiEbmcWHI.mwiu16bIMOVEK7.0j3qKQVezCeKCHGpQYqqCwq
- xl8XFmhAr0WTXpUEHTl31Ui4mzvoDjzXetJKk7WY3tx8pk_xPVOues0W1hVh.YhEqjC7v1MqPZ9k
- SEozoZJq59e9fkLm2VDtTbTh44FRtXWOp4Win3NAWJgHblaz5Iav81.1mrpPvCFDILvG7FxRIVdQ
- FHx5efg--
-Received: from sonic.gate.mail.ne1.yahoo.com by sonic312.consmr.mail.gq1.yahoo.com with HTTP; Tue, 10 Nov 2020 19:24:59 +0000
-Date:   Tue, 10 Nov 2020 19:24:54 +0000 (UTC)
-From:   Celine Marchand <official0178987@uymail.com>
-Reply-To: celine88492@yandex.ru
-Message-ID: <207896964.4193866.1605036294972@mail.yahoo.com>
-Subject: 
+        id S1731669AbgKJT0l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 14:26:41 -0500
+Received: from namei.org ([65.99.196.166]:52328 "EHLO namei.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726307AbgKJT0k (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Nov 2020 14:26:40 -0500
+Received: from localhost (localhost [127.0.0.1])
+        by namei.org (8.14.4/8.14.4) with ESMTP id 0AAJQCLt001815;
+        Tue, 10 Nov 2020 19:26:12 GMT
+Date:   Wed, 11 Nov 2020 06:26:12 +1100 (AEDT)
+From:   James Morris <jmorris@namei.org>
+To:     Pablo Neira Ayuso <pablo@netfilter.org>
+cc:     Casey Schaufler <casey@schaufler-ca.com>,
+        casey.schaufler@intel.com, linux-security-module@vger.kernel.org,
+        selinux@vger.kernel.org, linux-audit@redhat.com,
+        keescook@chromium.org, john.johansen@canonical.com,
+        penguin-kernel@i-love.sakura.ne.jp, paul@paul-moore.com,
+        sds@tycho.nsa.gov, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, netfilter-devel@vger.kernel.org
+Subject: Re: [PATCH v22 16/23] LSM: security_secid_to_secctx in netlink
+ netfilter
+In-Reply-To: <20201110133715.GA1890@salvia>
+Message-ID: <alpine.LRH.2.21.2011110626050.32313@namei.org>
+References: <20201105004924.11651-1-casey@schaufler-ca.com> <20201105004924.11651-17-casey@schaufler-ca.com> <20201110133715.GA1890@salvia>
+User-Agent: Alpine 2.21 (LRH 202 2017-01-01)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-References: <207896964.4193866.1605036294972.ref@mail.yahoo.com>
-X-Mailer: WebService/1.1.16944 YMailNodin Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.183 Safari/537.36
-To:     unlisted-recipients:; (no To-header on input)
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, 10 Nov 2020, Pablo Neira Ayuso wrote:
 
+> Hi Casey,
+> 
+> On Wed, Nov 04, 2020 at 04:49:17PM -0800, Casey Schaufler wrote:
+> > Change netlink netfilter interfaces to use lsmcontext
+> > pointers, and remove scaffolding.
+> > 
+> > Reviewed-by: Kees Cook <keescook@chromium.org>
+> > Reviewed-by: John Johansen <john.johansen@canonical.com>
+> > Acked-by: Stephen Smalley <sds@tycho.nsa.gov>
+> > Signed-off-by: Casey Schaufler <casey@schaufler-ca.com>
+> > Cc: netdev@vger.kernel.org
+> > Cc: netfilter-devel@vger.kernel.org
+> 
+> You can carry this tag in your follow up patches.
+> 
+> Acked-by: Pablo Neira Ayuso <pablo@netfilter.org>
 
-For your urgent attention please
+Thanks for the review!
 
-Dearest, how are you? i hope this message finds you in good health and spir=
-it. My name is Mrs. Celine Marchand. Your email address was revealed to me =
-after much prayer and supplication by the almighty God. Therefore, my conta=
-ct with you is divine with utmost trust and confidence.
+> 
+> Thanks.
+> 
+> > ---
+> >  net/netfilter/nfnetlink_queue.c | 37 +++++++++++++--------------------
+> >  1 file changed, 14 insertions(+), 23 deletions(-)
+> > 
+> > diff --git a/net/netfilter/nfnetlink_queue.c b/net/netfilter/nfnetlink_queue.c
+> > index 84be5a49a157..0d8b83d84422 100644
+> > --- a/net/netfilter/nfnetlink_queue.c
+> > +++ b/net/netfilter/nfnetlink_queue.c
+> > @@ -301,15 +301,13 @@ static int nfqnl_put_sk_uidgid(struct sk_buff *skb, struct sock *sk)
+> >  	return -1;
+> >  }
+> >  
+> > -static u32 nfqnl_get_sk_secctx(struct sk_buff *skb, char **secdata)
+> > +static void nfqnl_get_sk_secctx(struct sk_buff *skb, struct lsmcontext *context)
+> >  {
+> > -	u32 seclen = 0;
+> >  #if IS_ENABLED(CONFIG_NETWORK_SECMARK)
+> >  	struct lsmblob blob;
+> > -	struct lsmcontext context = { };
+> >  
+> >  	if (!skb || !sk_fullsock(skb->sk))
+> > -		return 0;
+> > +		return;
+> >  
+> >  	read_lock_bh(&skb->sk->sk_callback_lock);
+> >  
+> > @@ -318,14 +316,12 @@ static u32 nfqnl_get_sk_secctx(struct sk_buff *skb, char **secdata)
+> >  		 * blob. security_secid_to_secctx() will know which security
+> >  		 * module to use to create the secctx.  */
+> >  		lsmblob_init(&blob, skb->secmark);
+> > -		security_secid_to_secctx(&blob, &context);
+> > -		*secdata = context.context;
+> > +		security_secid_to_secctx(&blob, context);
+> >  	}
+> >  
+> >  	read_unlock_bh(&skb->sk->sk_callback_lock);
+> > -	seclen = context.len;
+> >  #endif
+> > -	return seclen;
+> > +	return;
+> >  }
+> >  
+> >  static u32 nfqnl_get_bridge_size(struct nf_queue_entry *entry)
+> > @@ -398,12 +394,10 @@ nfqnl_build_packet_message(struct net *net, struct nfqnl_instance *queue,
+> >  	struct net_device *indev;
+> >  	struct net_device *outdev;
+> >  	struct nf_conn *ct = NULL;
+> > +	struct lsmcontext context = { };
+> >  	enum ip_conntrack_info ctinfo;
+> >  	struct nfnl_ct_hook *nfnl_ct;
+> >  	bool csum_verify;
+> > -	struct lsmcontext scaff; /* scaffolding */
+> > -	char *secdata = NULL;
+> > -	u32 seclen = 0;
+> >  
+> >  	size = nlmsg_total_size(sizeof(struct nfgenmsg))
+> >  		+ nla_total_size(sizeof(struct nfqnl_msg_packet_hdr))
+> > @@ -469,9 +463,9 @@ nfqnl_build_packet_message(struct net *net, struct nfqnl_instance *queue,
+> >  	}
+> >  
+> >  	if ((queue->flags & NFQA_CFG_F_SECCTX) && entskb->sk) {
+> > -		seclen = nfqnl_get_sk_secctx(entskb, &secdata);
+> > -		if (seclen)
+> > -			size += nla_total_size(seclen);
+> > +		nfqnl_get_sk_secctx(entskb, &context);
+> > +		if (context.len)
+> > +			size += nla_total_size(context.len);
+> >  	}
+> >  
+> >  	skb = alloc_skb(size, GFP_ATOMIC);
+> > @@ -604,7 +598,8 @@ nfqnl_build_packet_message(struct net *net, struct nfqnl_instance *queue,
+> >  	    nfqnl_put_sk_uidgid(skb, entskb->sk) < 0)
+> >  		goto nla_put_failure;
+> >  
+> > -	if (seclen && nla_put(skb, NFQA_SECCTX, seclen, secdata))
+> > +	if (context.len &&
+> > +	    nla_put(skb, NFQA_SECCTX, context.len, context.context))
+> >  		goto nla_put_failure;
+> >  
+> >  	if (ct && nfnl_ct->build(skb, ct, ctinfo, NFQA_CT, NFQA_CT_INFO) < 0)
+> > @@ -632,10 +627,8 @@ nfqnl_build_packet_message(struct net *net, struct nfqnl_instance *queue,
+> >  	}
+> >  
+> >  	nlh->nlmsg_len = skb->len;
+> > -	if (seclen) {
+> > -		lsmcontext_init(&scaff, secdata, seclen, 0);
+> > -		security_release_secctx(&scaff);
+> > -	}
+> > +	if (context.len)
+> > +		security_release_secctx(&context);
+> >  	return skb;
+> >  
+> >  nla_put_failure:
+> > @@ -643,10 +636,8 @@ nfqnl_build_packet_message(struct net *net, struct nfqnl_instance *queue,
+> >  	kfree_skb(skb);
+> >  	net_err_ratelimited("nf_queue: error creating packet message\n");
+> >  nlmsg_failure:
+> > -	if (seclen) {
+> > -		lsmcontext_init(&scaff, secdata, seclen, 0);
+> > -		security_release_secctx(&scaff);
+> > -	}
+> > +	if (context.len)
+> > +		security_release_secctx(&context);
+> >  	return NULL;
+> >  }
+> >  
+> > -- 
+> > 2.24.1
+> > 
+> 
 
-This is my second message to you as my first mail remains unanswered. Does =
-it mean you did not receive it or what? You should understand that my conta=
-ct to you is by the special grace of God. I am in urgent need of a reliable=
- and reputable person and i believe you are a person of fine repute, hence =
-the revelation of your email to me because i believe that the almighty God =
-will never direct me to a wrong person.
+-- 
+James Morris
+<jmorris@namei.org>
 
-I need your collaboration to execute some projects worth =E2=82=AC 2.800.00=
-0 Euro and it is very urgent as i'm presently in extremely critical conditi=
-on. Please reply through this email address ( celine88492@gmail.com ) with =
-your contact details.
-
-Thank you in advance and waiting for your immediate response.
-Mrs. Celine Marchand
