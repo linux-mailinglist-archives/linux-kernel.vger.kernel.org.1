@@ -2,84 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E50012AD00E
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 07:54:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3221E2AD013
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 07:56:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731072AbgKJGy5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 01:54:57 -0500
-Received: from bilbo.ozlabs.org ([203.11.71.1]:37769 "EHLO ozlabs.org"
+        id S1731545AbgKJG4e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 01:56:34 -0500
+Received: from namei.org ([65.99.196.166]:39896 "EHLO namei.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726467AbgKJGy4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 01:54:56 -0500
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CVds96QQRz9s1l;
-        Tue, 10 Nov 2020 17:54:53 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1604991294;
-        bh=HQBaI6PLLJahyjskam4381TETPs4ZFMKJ7CPwhjWjTQ=;
-        h=Date:From:To:Cc:Subject:From;
-        b=uQqzoNaQI91wt76YQD+15jkyZkp70yp+UfXmp2YKy/WZ8E9qKqUcJe1cAGTut6gbJ
-         jrvmOU1U1bKphuzMqwPzuOYlH/iqi3b/7tW/l3i34B5CtWrE5hctWFeZV5BsMu9VYq
-         3+Dh+Ea+d9UxhvbDlf7jmKyH7/o6v43C+/5IZaLmuKQKIQIWcfFZpiwT53Jdh7gssD
-         LVISc8rGZzcUlRyogibGF89ioRNnNYEtf36INeMjq3pHKUl27AsN6mGC/q5Jfi9tfp
-         Cokeq273oGNTDmezQnuhLo3vATgo8GsG6rS7dRs3yTu4uTCObjUP90UEG2F9lpju8n
-         Wf+H+qpubFujg==
-Date:   Tue, 10 Nov 2020 17:54:52 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>
-Cc:     Ard Biesheuvel <ardb@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build warnings after merge of the arm64 tree
-Message-ID: <20201110175452.3dc0e1bb@canb.auug.org.au>
+        id S1726849AbgKJG4e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Nov 2020 01:56:34 -0500
+Received: from localhost (localhost [127.0.0.1])
+        by namei.org (8.14.4/8.14.4) with ESMTP id 0AA6uHwv009615;
+        Tue, 10 Nov 2020 06:56:17 GMT
+Date:   Tue, 10 Nov 2020 17:56:17 +1100 (AEDT)
+From:   James Morris <jmorris@namei.org>
+To:     Casey Schaufler <casey@schaufler-ca.com>,
+        Florian Westphal <fw@strlen.de>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        Jozsef Kadlecsik <kadlec@netfilter.org>,
+        Paul Moore <paul@paul-moore.com>
+cc:     casey.schaufler@intel.com, linux-security-module@vger.kernel.org,
+        selinux@vger.kernel.org, Audit-ML <linux-audit@redhat.com>,
+        Kees Cook <keescook@chromium.org>,
+        John Johansen <john.johansen@canonical.com>,
+        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+        Paul Moore <paul@paul-moore.com>,
+        Stephen Smalley <sds@tycho.nsa.gov>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        netfilter-devel@vger.kernel.org
+Subject: Re: [PATCH v22 06/23] LSM: Use lsmblob in security_secid_to_secctx
+In-Reply-To: <20201105004924.11651-7-casey@schaufler-ca.com>
+Message-ID: <alpine.LRH.2.21.2011101753520.9130@namei.org>
+References: <20201105004924.11651-1-casey@schaufler-ca.com> <20201105004924.11651-7-casey@schaufler-ca.com>
+User-Agent: Alpine 2.21 (LRH 202 2017-01-01)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/9rfDwdjRY9b72Wz9jZlfuBb";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/9rfDwdjRY9b72Wz9jZlfuBb
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Wed, 4 Nov 2020, Casey Schaufler wrote:
 
-Hi all,
+> Change security_secid_to_secctx() to take a lsmblob as input
+> instead of a u32 secid. It will then call the LSM hooks
+> using the lsmblob element allocated for that module. The
+> callers have been updated as well. This allows for the
+> possibility that more than one module may be called upon
+> to translate a secid to a string, as can occur in the
+> audit code.
+> 
+> Signed-off-by: Casey Schaufler <casey@schaufler-ca.com>
+> Cc: netdev@vger.kernel.org
+> Cc: linux-audit@redhat.com
 
-After merging the arm64 tree, today's linux-next build (htmldocs)
-produced these warnings:
+Ditto with this, + audit. Also, you should put primary maintainers on the 
+To: line or they may miss the email.
 
-Documentation/arm64/memory.rst:35: WARNING: Literal block ends without a bl=
-ank line; unexpected unindent.
-Documentation/arm64/memory.rst:53: WARNING: Literal block ends without a bl=
-ank line; unexpected unindent.
+-- 
+James Morris
+<jmorris@namei.org>
 
-Introduced by commit
-
-  f4693c2716b3 ("arm64: mm: extend linear region for 52-bit VA configuratio=
-ns")
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/9rfDwdjRY9b72Wz9jZlfuBb
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl+qOTwACgkQAVBC80lX
-0GyRiwf+OfQAuKmEr3LIuXBxzDLi7235U6eiQTYfUXyX0oqp9sMu/jjs/qD1GHEb
-iV7cARxal6rk9V5852H7eJhctDoO0TkMpcOOvi84gg4jCrwYHEb2UDCqb+1iNbaw
-9CWIDH/JOf77yPMWbkkp5Lm4FusKifjhLaWRR5RVcFbxvOBg7m9yIqochyrQeJya
-LpaursVkstpCiTUO0f2t+8tRH4RTB+DZIvQ8yFaZiYBmZrZlhHsvqd409Aoy4zzB
-QIEG21btB5rUnNEDaqWadjrI7nE7ZWz+3+IJk9R3KqORi2DOGoPrPtNXUwxqTvPk
-0eXWaabF4XLR0V0SjGTnHFliTnxuEA==
-=NKmr
------END PGP SIGNATURE-----
-
---Sig_/9rfDwdjRY9b72Wz9jZlfuBb--
