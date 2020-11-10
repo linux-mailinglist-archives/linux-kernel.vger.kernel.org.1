@@ -2,118 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE7A22AD1BE
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 09:49:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 096E82AD1D2
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 09:51:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728784AbgKJIt4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 03:49:56 -0500
-Received: from new4-smtp.messagingengine.com ([66.111.4.230]:33291 "EHLO
-        new4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726213AbgKJIt4 (ORCPT
+        id S1730878AbgKJIvW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 03:51:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36154 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726690AbgKJIvV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 03:49:56 -0500
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 2E8685803CF;
-        Tue, 10 Nov 2020 03:49:55 -0500 (EST)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute4.internal (MEProxy); Tue, 10 Nov 2020 03:49:55 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm2; bh=9s3HXA62aXEwuhDqThUDrB2tZR/
-        QFmCSXDsh87Vt2VQ=; b=sTP4mDFQaTuABEN3HT4ghPaXmUs+3q36wIKNgmenbJC
-        Thrv4yv9IBEmZSJ/GO1JXJ721q6Jq0Uhh63X151o/t7sulK4RmbrAs2jebzvHr96
-        zwn0wuYRNIbkh8MLkJIpfLRs8P05bz7vGmNNp1fvqV7OjZvo8ecStqAPSCYWC6Kf
-        4rkw1/5Y36NTJyoDeaurHSl7P2Lw3npS9zeuvAJ3j7NaXTfSdcIaQ9F0+rwrn9k6
-        UGDZlUJ6j/fEN5663LqKqKLGQPP8Q3JkRlIv9s/YmxnrYzsanyCnj0F0ZMGcXs/n
-        0y2wBAYvaAHD9AdUsHqVZ+7wWR88TScAiggD78Dvp6A==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=9s3HXA
-        62aXEwuhDqThUDrB2tZR/QFmCSXDsh87Vt2VQ=; b=iD9hVFzRap+aS8KMlgoNbq
-        6YTx0nZBuZ3vn7lC+1uOzxq2tEweH8CUoBkGFiMNJsI4LmLeE/FmcEsPnkcYXNZj
-        wCcjGT8TSWrVBQbbYwYblOAQiPDUzy3ZvL9LOu7GNXrWNhDyLhP5WQPF56ne6G8J
-        S0qA/8mM2A0JPpg7ZM/QVqSpyOxnJzGXbiZR6SDhUZIAWrOwRI9QGjuYZQses3y2
-        VoforsK0qqCFYAno3aRB1FxGrXQYdonw6GqHVUGSCgZxSXG1xD1s3DKX6q1SajC6
-        Tt2xDT/LuEwm8zE3oOEGGEfoO+mcfZ91NIlc3pGdZroBa7rvWGao+K8ANKo32rzg
-        ==
-X-ME-Sender: <xms:MVSqX1XaQGH6eE-Mp7CA-6tXEILG5jMedm8iQ-RkxrSr6LYgwMb5Gg>
-    <xme:MVSqX1lwF_FyIBlwBTjkQO4Q93lBSdRh1r2ux7pxJbAk1Gz0kTKuV7XOLT6v0tunl
-    cHWMtiNXyvkLg>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrudduiedguddviecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpeffhffvuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepifhrvghg
-    ucfmjfcuoehgrhgvgheskhhrohgrhhdrtghomheqnecuggftrfgrthhtvghrnhephfduhe
-    ffteefjeekvdffffevveelfeehhfeutedtgfeigeetvdfhvedvfefhjeeknecuffhomhgr
-    ihhnpegthhgvtghkphgrthgthhdrphhlnecukfhppeekfedrkeeirdejgedrieegnecuve
-    hluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepghhrvghgsehk
-    rhhorghhrdgtohhm
-X-ME-Proxy: <xmx:MVSqXxYkV21P3H_SEpIh6oy7Bcz5rLphVsz76W69qlEDIiToY0R-1g>
-    <xmx:MVSqX4WNsXWWrDiwvgISWbyXvuCU-s-D1wIzEalQcKjTEaCAa-dflg>
-    <xmx:MVSqX_mDnqpPPnY_2u9RKSRaHPJG40wMtWmBaoA_hUrlAxZcPTDRtw>
-    <xmx:M1SqXx0OiBo8aUsWe5OqJZDqDQIuum2sW_gtC_Tszc5CO-BDkMuycA>
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 7CD553063081;
-        Tue, 10 Nov 2020 03:49:53 -0500 (EST)
-Date:   Tue, 10 Nov 2020 09:50:49 +0100
-From:   Greg KH <greg@kroah.com>
-To:     Macpaul Lin <macpaul.lin@mediatek.com>
-Cc:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Alexander Tsoy <alexander@tsoy.me>,
-        Nicola Lunghi <nick83ola@gmail.com>,
-        Christopher Swenson <swenson@swenson.io>,
-        Nick Kossifidis <mickflemm@gmail.com>,
-        alsa-devel@alsa-project.org, Ainge Hsu <ainge.hsu@mediatek.com>,
-        Eddie Hung <eddie.hung@mediatek.com>,
-        Chunfeng Yun <chunfeng.yun@mediatek.com>,
-        Mediatek WSD Upstream <wsd_upstream@mediatek.com>,
-        Macpaul Lin <macpaul@gmail.com>, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-usb@vger.kernel.org,
-        linux-mediatek@lists.infradead.org, stable@vger.kernel.org
-Subject: Re: [PATCH v2] ALSA: usb-audio: disable 96khz support for HUAWEI
- USB-C HEADSET
-Message-ID: <X6pUaatZ7aML4sKq@kroah.com>
-References: <1604995443-30453-1-git-send-email-macpaul.lin@mediatek.com>
- <1604997774-13593-1-git-send-email-macpaul.lin@mediatek.com>
+        Tue, 10 Nov 2020 03:51:21 -0500
+Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43D78C0613CF;
+        Tue, 10 Nov 2020 00:51:21 -0800 (PST)
+Received: by mail-ej1-x641.google.com with SMTP id 7so16354765ejm.0;
+        Tue, 10 Nov 2020 00:51:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=TlTxhcApcg62vqX1M9f+2W2ckUK1QJqanSSJQGwPcCo=;
+        b=V3v1WsO3FDfA8JB8roAezvpRaz97QWsjdUjXFjXUWaxLZH0neXUTx39sL7DJTU8RwA
+         CoDwJ4Vprq0pitDQ3ea1B+R6KT5Xos+5qQmjDPlKyOZQR5/NtgcW2nFixSPppZmhfkEc
+         v2j+SCc8kFWyU2hKLTUsd9jx5MWRbBCBLhL9KDijN4SDasX5c0ezFg/bSbl3uwgHvL5w
+         Olehg5zZlLcn3GI2T6TmeHFxQYnHCXizKi795FDH30spBpE66Y5oiQJNI3t6Lrc2pF7u
+         inZ8IiZWFy7xmVMsvdNxjNgZojc4HJrZQGhovwtXpX6JbH1DDsB2d/nu6aHWWfPxpryq
+         HmjA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=TlTxhcApcg62vqX1M9f+2W2ckUK1QJqanSSJQGwPcCo=;
+        b=Mt5HOoyVwTbiD4OwwFeZFMPGY7sDFwSpfijjl5KjSK+VBZnI73il60w4QA8STFw8d3
+         /tqdxxZ7U/q6ou1E7z2aeDIsBgx/Ojg3A7wPluoX1KilSNp/1zTo2zs/s/H1DCkY1Yqi
+         +oMB3EiTbZWEF0LWhdLTrBJuS741iX6HxNLeXNssU4EZP0m/GOOqxv5Dej2DAZON4YmH
+         vO5PggUdDhsVTtKAFXhuc52qumgsdE1PimLM+QsWUbR9MbtDlPyQ51TqlBPfNaHyaKVr
+         PnoM1XYkiqcm/9jusO6Pz9FcMXG4pMOXH3PtrtqNSoPaUznVmL8W77DqnIMSRjoVNS+j
+         LZfQ==
+X-Gm-Message-State: AOAM531FMKVPV2PZj8WXY6bkyu+1IUO3n5Y0k89BfUWyzmadFYt6RYwf
+        Ye2pRFVGf5MM+w7gnHDDHLJBsaj/98EvkolhNbQ=
+X-Google-Smtp-Source: ABdhPJyivmb3ngYrw4gtkNWPfiNQYExGOC3o066XQXDnsrHRenMS2oz3iAAHjo6Ogz8WiiePxqU6Aj0qnt+2EiVRZCs=
+X-Received: by 2002:a17:906:c18c:: with SMTP id g12mr18851005ejz.334.1604998279995;
+ Tue, 10 Nov 2020 00:51:19 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1604997774-13593-1-git-send-email-macpaul.lin@mediatek.com>
+References: <20201110040553.1381-1-frank@allwinnertech.com>
+ <CAEExFWsc4Rx2U+BVuqTJkL0wj-gdNcF=emJRcStQ2Uq=FQEx1g@mail.gmail.com> <CAJKOXPf4ARNnSnvDpn7vVC0kGNd+m_dkfgKkmH_bca2AZ_Osyg@mail.gmail.com>
+In-Reply-To: <CAJKOXPf4ARNnSnvDpn7vVC0kGNd+m_dkfgKkmH_bca2AZ_Osyg@mail.gmail.com>
+From:   Frank Lee <tiny.windzz@gmail.com>
+Date:   Tue, 10 Nov 2020 16:51:08 +0800
+Message-ID: <CAEExFWv2o9aTfUVM5NzZz10kAO_Ya8VJvJrmyjh55=U_5G8RJw@mail.gmail.com>
+Subject: Re: [PATCH 00/19] Second step support for A100
+To:     Krzysztof Kozlowski <krzk@kernel.org>
+Cc:     Frank Lee <frank@allwinnertech.com>, vkoul@kernel.org,
+        Rob Herring <robh+dt@kernel.org>,
+        Maxime Ripard <mripard@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>, kishon@ti.com,
+        wim@linux-watchdog.org, Guenter Roeck <linux@roeck-us.net>,
+        dan.j.williams@intel.com, Linus Walleij <linus.walleij@linaro.org>,
+        wsa+renesas@sang-engineering.com, dianders@chromium.org,
+        marex@denx.de, Colin King <colin.king@canonical.com>,
+        rdunlap@infradead.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        =?UTF-8?Q?Ond=C5=99ej_Jirman?= <megous@megous.com>,
+        rikard.falkeborn@gmail.com, dmaengine@vger.kernel.org,
+        devicetree <devicetree@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:SECURE DIGITAL HO..." <linux-mmc@vger.kernel.org>,
+        linux-watchdog@vger.kernel.org,
+        linux-gpio <linux-gpio@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 10, 2020 at 04:42:54PM +0800, Macpaul Lin wrote:
-> The HUAWEI USB-C headset (VID:0x12d1, PID:0x3a07) reported it supports
-> 96khz. However there will be some random issue under 96khz.
-> Not sure if there is any alternate setting could be applied.
-> Hence 48khz is suggested to be applied at this moment.
-> 
-> Signed-off-by: Macpaul Lin <macpaul.lin@mediatek.com>
-> Signed-off-by: Eddie Hung <eddie.hung@mediatek.com>
-> Cc: stable@vger.kernel.org
-> ---
-> Changes for v2:
->   - Fix build error.
->   - Add Cc: stable@vger.kernel.org
-> 
->  sound/usb/format.c |    6 ++++++
->  1 file changed, 6 insertions(+)
-> 
-> diff --git a/sound/usb/format.c b/sound/usb/format.c
-> index 1b28d01..7a4837b 100644
-> --- a/sound/usb/format.c
-> +++ b/sound/usb/format.c
-> @@ -202,6 +202,7 @@ static int parse_audio_format_rates_v1(struct snd_usb_audio *chip, struct audiof
->  		fp->rate_min = fp->rate_max = 0;
->  		for (r = 0, idx = offset + 1; r < nr_rates; r++, idx += 3) {
->  			unsigned int rate = combine_triple(&fmt[idx]);
-> +			struct usb_device *udev = chip->dev;
->  			if (!rate)
->  				continue;
->  			/* C-Media CM6501 mislabels its 96 kHz altsetting */
+On Tue, Nov 10, 2020 at 4:43 PM Krzysztof Kozlowski <krzk@kernel.org> wrote:
+>
+> On Tue, 10 Nov 2020 at 07:00, Frank Lee <tiny.windzz@gmail.com> wrote:
+> >
+> > It seems that sending too many e-mails at one time will cause some
+> > emails to fail to be sent out. I will try again.
+>
+> Hi,
+>
+> Instead please reduce the address list to relevant people, as pointed
+> out by scripts/get_maintainer.pl. Don't Cc irrelevant developers
+> unless a file is abandoned and you need to get as much audience as
+> possible... but sunxi is not abandoned.
 
-Did you run this patch through checkpatch.pl?
+Thank you for the reminder. I resend the version in the afternoon,
+only CC the relevant people. I'm not sure. Should the cover be copied
+to everyone?
 
+Yangtao
