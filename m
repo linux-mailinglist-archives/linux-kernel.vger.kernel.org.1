@@ -2,64 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CDA02AE483
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 00:57:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 23C6E2AE487
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 00:58:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732054AbgKJX50 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 18:57:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36674 "EHLO
+        id S1732237AbgKJX6J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 18:58:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36798 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727275AbgKJX5S (ORCPT
+        with ESMTP id S1727275AbgKJX6J (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 18:57:18 -0500
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68D7CC0613D1
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 15:57:18 -0800 (PST)
-Received: by mail-wr1-x441.google.com with SMTP id b8so441042wrn.0
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 15:57:18 -0800 (PST)
+        Tue, 10 Nov 2020 18:58:09 -0500
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB4D7C0613D1;
+        Tue, 10 Nov 2020 15:58:07 -0800 (PST)
+Received: by mail-wm1-x341.google.com with SMTP id 19so208275wmf.1;
+        Tue, 10 Nov 2020 15:58:07 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc:content-transfer-encoding;
-        bh=LE0afzOkIj/zw0NBe6e0ObJGwDPaqDvyeJKttoSBeoM=;
-        b=WtSIs1xD+MaXeb4ffhufvVlCIwYGYGl3mt6GnySmJpVCXy5bBDmq+7ZXsWg3iG8Rp/
-         gdEDCYi+ni0pe3NodHC0IZ0pKlWwiuA/Htn995ZPkOosIEVz9Sj/Ui8N4XZ+9nLKw1/e
-         OqSmVIUrZvbNsiCqB4t2kV/o183c6ZRCPVV8TQOYYKdeSk/oamorEmFGsNLnr5YVnAjG
-         qWVpvtldJORI1nYMNUu6Ih15+efFTYnqy+YX8Ly0nC5Ahb0bvnEur4AJIFtlmdLaKJBW
-         /7q4rf8oVpVbr0YdzAkbr6dnCpGlMUlY6NvCWZL+bFaEk2ah9aCqamm2zRH8+FPUyZmH
-         S34g==
+        bh=sVHw44prgkhLl+wZoJDl9y1Sv84cjPWTxQBG3axW3YI=;
+        b=Fgj/gQYKkyen7e5H6J7aIP6pfShNXewwImkCyWp5IXS9p6js8HtD5W/sdec1EctQ00
+         5WN5HYbtFQqBafMliHQcbEaJ5G66ajncFFRYTrverGRb9lI763sgcJatSONy2h0alv/o
+         DYAZ6dqOdCUYl7iyaxpVFHrV2EVAm6hc4QAplBckBzTV5ZFHYO7maZeikWJCNlB9Y/EY
+         6BgucQPZOdHYc7N29acSZMaYUbOR6qMNBNTv7ZJskbiB8AmOmQUDcvORYf4PKv2b4Kmm
+         PTDx56GqMRaiwmZnPs5P7/bNw7fKYjDdNq+D1QAXUTIAJkKU+Dhyn5BxtsamN+cgl1jH
+         QeDg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc:content-transfer-encoding;
-        bh=LE0afzOkIj/zw0NBe6e0ObJGwDPaqDvyeJKttoSBeoM=;
-        b=Z7aMpUah+WHB3VU5eF5CcGER9RYYkBsYhSf7l+wwLBh6GKpWVEph9rzaKIVd9K2J/j
-         pOyx3vPqOPxE0iBZ/KomhftUIjOwfhMxqdRyqwTPYe9BT+tgqJD8T7OsuxqcozJRo9sb
-         /J2RDUQlUyUte+gfQ4fwwxM2YvTzAgLxcphOgsO/aWy2Kh4QeFRQx7PKxppImkM4AEo/
-         7eHJg1SZWGyYvIf5dXd8C4aYE3xWvTj3to0GNVMtAI1kf1bdNjTjpaf7WZRHX/CcVKkS
-         HAroe+FJxHla2ndEGE4TsDYZy/0sviQD1CBNn9AQ0LRg5Ld3N43e5J1B+ek1HuDU97ga
-         fvtg==
-X-Gm-Message-State: AOAM533tPG+jhU8SRnlpimD8cxi4Kdy7DT8ysktU78LkoD4A7upWJYUO
-        gN89TAKVbpA1sSYUM83lFFi88kmyVoSX+UURKm/AQG7w
-X-Google-Smtp-Source: ABdhPJx3T38wEbSDtMYgkoopvqAG8NVHXxX+0Z2QyanoquRAnGIg4EhxIojZyJp498+74haST3uNYCspixYe2oDURp8=
-X-Received: by 2002:adf:e551:: with SMTP id z17mr27350227wrm.374.1605052637210;
- Tue, 10 Nov 2020 15:57:17 -0800 (PST)
+        bh=sVHw44prgkhLl+wZoJDl9y1Sv84cjPWTxQBG3axW3YI=;
+        b=kbVqWHdODY+X7DxW1yDZrAR63Vm8mLnkKbFP2IYD5BXo02soSU1z0YCYMX7JhA6s59
+         g9QNXs8KX+BOW6kOFqUoqaGWLpQl2UECpjD0EdAqiQq4/4icDHsAWWq0es7zG2/dcGG6
+         jbSbqgVF6T3uX0Mm1iYVSvqjnF6fco8HNfrFEJ/pMxEJR6HPbSXrS7ur/8Fpcz9bBqWB
+         fOGU60DIDAuT6fCflRV57Wn4WD4QWJKxDP7INTrAEKurbYj1zy13z8AGJLu0iols4DC1
+         ZCHHNBfoBhQrxYcGG0GdpD1IIL+InQmWr0nxWkYBG2DKy+qHWcpqfHpdsMf3f81cSUkf
+         6Mlw==
+X-Gm-Message-State: AOAM531IC3S89Wj6PDu3s8Gfa37uk48Qsq+kn/6wR8IeDWzgK9xJ8ELt
+        JscFBb+OkDJMk2yOwNxoBZb6k56h5qMUC3K2Cpk=
+X-Google-Smtp-Source: ABdhPJwGVm8zxKOpbuvLzIOHTQhYo2DrNr+mXrvd1xPnYkBEHOZz9oYFfEfo+lAFTQEnLFs0aW5uGXu88lIbYUyf+QQ=
+X-Received: by 2002:a7b:c157:: with SMTP id z23mr639254wmi.70.1605052686774;
+ Tue, 10 Nov 2020 15:58:06 -0800 (PST)
 MIME-Version: 1.0
-References: <20201110193112.988999-1-lee.jones@linaro.org> <20201110193112.988999-19-lee.jones@linaro.org>
-In-Reply-To: <20201110193112.988999-19-lee.jones@linaro.org>
+References: <20201110193112.988999-1-lee.jones@linaro.org> <20201110193112.988999-15-lee.jones@linaro.org>
+In-Reply-To: <20201110193112.988999-15-lee.jones@linaro.org>
 From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Tue, 10 Nov 2020 18:57:05 -0500
-Message-ID: <CADnq5_OH9n+7gVUhUXJ5gHPtAMpimDLY8QmjNyDS0S+h=Q3xRw@mail.gmail.com>
-Subject: Re: [PATCH 18/30] drm/radeon/evergreen_cs: Fix misnaming issues
- surrounding 'p' param
+Date:   Tue, 10 Nov 2020 18:57:55 -0500
+Message-ID: <CADnq5_M28RPCQR27JXOiugvPPfHh2CnCedVFmBfkMb3kZ8RzzA@mail.gmail.com>
+Subject: Re: [PATCH 14/30] drm/radeon/evergreen_dma: Fix doc-rot of function
+ parameter 'resv'
 To:     Lee Jones <lee.jones@linaro.org>
 Cc:     David Airlie <airlied@linux.ie>,
         LKML <linux-kernel@vger.kernel.org>,
         amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
+        <linaro-mm-sig@lists.linaro.org>,
         Maling list - DRI developers 
         <dri-devel@lists.freedesktop.org>,
         Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
+        linux-media <linux-media@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
@@ -70,25 +73,20 @@ On Tue, Nov 10, 2020 at 2:31 PM Lee Jones <lee.jones@linaro.org> wrote:
 >
 > Fixes the following W=3D1 kernel build warning(s):
 >
->  drivers/gpu/drm/radeon/evergreen_cs.c:1026: warning: Function parameter =
-or member 'p' not described in 'evergreen_cs_packet_parse_vline'
->  drivers/gpu/drm/radeon/evergreen_cs.c:1026: warning: Excess function par=
-ameter 'parser' description in 'evergreen_cs_packet_parse_vline'
->  drivers/gpu/drm/radeon/evergreen_cs.c:1095: warning: Function parameter =
-or member 'p' not described in 'evergreen_cs_handle_reg'
->  drivers/gpu/drm/radeon/evergreen_cs.c:1095: warning: Excess function par=
-ameter 'parser' description in 'evergreen_cs_handle_reg'
->  drivers/gpu/drm/radeon/evergreen_cs.c:1757: warning: Function parameter =
-or member 'p' not described in 'evergreen_is_safe_reg'
->  drivers/gpu/drm/radeon/evergreen_cs.c:1757: warning: Excess function par=
-ameter 'parser' description in 'evergreen_is_safe_reg'
+>  drivers/gpu/drm/radeon/evergreen_dma.c:112: warning: Function parameter =
+or member 'resv' not described in 'evergreen_copy_dma'
+>  drivers/gpu/drm/radeon/evergreen_dma.c:112: warning: Excess function par=
+ameter 'fence' description in 'evergreen_copy_dma'
 >
 > Cc: Alex Deucher <alexander.deucher@amd.com>
 > Cc: "Christian K=C3=B6nig" <christian.koenig@amd.com>
 > Cc: David Airlie <airlied@linux.ie>
 > Cc: Daniel Vetter <daniel@ffwll.ch>
+> Cc: Sumit Semwal <sumit.semwal@linaro.org>
 > Cc: amd-gfx@lists.freedesktop.org
 > Cc: dri-devel@lists.freedesktop.org
+> Cc: linux-media@vger.kernel.org
+> Cc: linaro-mm-sig@lists.linaro.org
 > Signed-off-by: Lee Jones <lee.jones@linaro.org>
 
 Applied.  Thanks!
@@ -96,45 +94,24 @@ Applied.  Thanks!
 Alex
 
 > ---
->  drivers/gpu/drm/radeon/evergreen_cs.c | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
+>  drivers/gpu/drm/radeon/evergreen_dma.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 >
-> diff --git a/drivers/gpu/drm/radeon/evergreen_cs.c b/drivers/gpu/drm/rade=
-on/evergreen_cs.c
-> index c410cad28f19f..53b75cf201958 100644
-> --- a/drivers/gpu/drm/radeon/evergreen_cs.c
-> +++ b/drivers/gpu/drm/radeon/evergreen_cs.c
-> @@ -1015,7 +1015,7 @@ static int evergreen_cs_track_check(struct radeon_c=
-s_parser *p)
->
->  /**
->   * evergreen_cs_packet_parse_vline() - parse userspace VLINE packet
-> - * @parser:            parser structure holding parsing context.
-> + * @p:         parser structure holding parsing context.
+> diff --git a/drivers/gpu/drm/radeon/evergreen_dma.c b/drivers/gpu/drm/rad=
+eon/evergreen_dma.c
+> index a46ee6c2099dd..767857d4a8c5c 100644
+> --- a/drivers/gpu/drm/radeon/evergreen_dma.c
+> +++ b/drivers/gpu/drm/radeon/evergreen_dma.c
+> @@ -98,7 +98,7 @@ void evergreen_dma_ring_ib_execute(struct radeon_device=
+ *rdev,
+>   * @src_offset: src GPU address
+>   * @dst_offset: dst GPU address
+>   * @num_gpu_pages: number of GPU pages to xfer
+> - * @fence: radeon fence object
+> + * @resv: reservation object with embedded fence
 >   *
->   * This is an Evergreen(+)-specific function for parsing VLINE packets.
->   * Real work is done by r600_cs_common_vline_parse function.
-> @@ -1087,7 +1087,7 @@ static int evergreen_cs_parse_packet0(struct radeon=
-_cs_parser *p,
->
->  /**
->   * evergreen_cs_handle_reg() - process registers that need special handl=
-ing.
-> - * @parser: parser structure holding parsing context
-> + * @p: parser structure holding parsing context
->   * @reg: register we are testing
->   * @idx: index into the cs buffer
->   */
-> @@ -1747,7 +1747,7 @@ static int evergreen_cs_handle_reg(struct radeon_cs=
-_parser *p, u32 reg, u32 idx)
->
->  /**
->   * evergreen_is_safe_reg() - check if register is authorized or not
-> - * @parser: parser structure holding parsing context
-> + * @p: parser structure holding parsing context
->   * @reg: register we are testing
->   *
->   * This function will test against reg_safe_bm and return true
+>   * Copy GPU paging using the DMA engine (evergreen-cayman).
+>   * Used by the radeon ttm implementation to move pages if
 > --
 > 2.25.1
 >
