@@ -2,141 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD1552AD816
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 14:55:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4954B2AD818
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 14:55:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732006AbgKJNy4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 08:54:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55100 "EHLO
+        id S1732110AbgKJNzQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 08:55:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55146 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730445AbgKJNy4 (ORCPT
+        with ESMTP id S1730070AbgKJNzQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 08:54:56 -0500
-Received: from mail-ot1-x341.google.com (mail-ot1-x341.google.com [IPv6:2607:f8b0:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43E87C0613D1
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 05:54:56 -0800 (PST)
-Received: by mail-ot1-x341.google.com with SMTP id 79so12515159otc.7
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 05:54:56 -0800 (PST)
+        Tue, 10 Nov 2020 08:55:16 -0500
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD8F1C0613CF;
+        Tue, 10 Nov 2020 05:55:14 -0800 (PST)
+Received: by mail-pf1-x444.google.com with SMTP id y7so11476730pfq.11;
+        Tue, 10 Nov 2020 05:55:14 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=lLfVBmh9MkTxoDFzoqNUDE/MZDm83UROmkhtqwZ64zY=;
-        b=at1jbtm+wrtqId5N9vtULTpT0fd5s7g2BGC8hYHVtWlLPYZpQi9ZFNKWoV4S0oyLPT
-         OxOqi+ZcGWTEfldLmYYJ+Ayyhx9X0a3VCYWC2mUAcrRKOyADJwa9OKSLcWNjVu3V8Oie
-         wMEM2anWzp5f7rkbrm/E2RBKs04g/tjhY06RQFRxpBWBMHJ4AgIqxnHkkSvv0oF96IZt
-         T58/FBhslp212iC97lIFK8dIx/7w9yel9ZK6/UiNS69AkE2sA5D5AZEyEv/4JElzfD8p
-         VuUOKRvmiUMtHw4/5/8WcD2Ba3yB4wCE/hZs5K4qg1XOLFzFIaGg3puVu0OyJdOM93CZ
-         dFEw==
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=tuDMy+iN/NZ/U/XMn7m7h6ztvG8bpQuonUkFjpduYg0=;
+        b=fk7RE+5W4RtH2sfW6GeeGC+y9ug+te2P5xp7Rr544DQQQ6Mhd1qHY/aiGRbieXrFfQ
+         m0/Y0PWifOgTfmdIUFdQRg0lwg4zP94tJDS7108rRZTFfWecofHxI2Zj7ei8iYiGf9Ys
+         bTgmxZjOyzFiTGf2mN3bylUXs6d7BVgs2iHSaejw4PNAbjVss1mfQlOdN3yLqISPSW/6
+         G4gNUcea4RgUBuT7fsk59DwBdyAUWkcUmKkmA4fjLgdGEc/3a6PYdyERmcPF2a9m2gp2
+         toNlPWXx4pikIumD3cK/ZmW07kGCWoeOgTvAf6Z0iYRY/qTwY2P308K46QfhUB7CkZvE
+         qxaw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=lLfVBmh9MkTxoDFzoqNUDE/MZDm83UROmkhtqwZ64zY=;
-        b=KWkbBIsRmeYfEYidFLT2yYq5uWsgdpnFb+zHsFFZXfJ+LKLTO5WQnJlo9GIz86WLU2
-         KnZCuX1RfvDnfloyYnNsJs4xdznoyEw8AV/VQFMHX2MmjTcBOOhrR32mlif3xW1CLt6c
-         XeEoGQd37oFRPzHhoJhq9yPdTADG5KDJipmZYMADrnUW8EcKkfBjghIGjfeW/Na+oJzb
-         SKrRWvbi8g1Nr89Guk4ad7fSPLPeFLP1NwqwtO8QIsCcpFVF8ov1WcVTCmhO5SsHCSal
-         PKxacLBeW0mxJ1CRi7h17/HYmarYv2nG3FcN2S1zfW6caBcqe5oY5sWMaaBcCwXqcLOh
-         Xv7g==
-X-Gm-Message-State: AOAM5320IMRNEGBPyG0hNDEfXcklFYBg1/o6l4Tw1eQ9ytudtqib+5CS
-        H9LE3im1oEzllKGMG6pYaVpJKxdkxkCKPV+ETW9fCg==
-X-Google-Smtp-Source: ABdhPJxUU/epXdIimiw7Zx9ONQPApe+a/nTH78NUVGUOOq7N4PcnzbGf3Fl7WmvOM5kVFHqwG9rbAnr9eEZsQP2WZs8=
-X-Received: by 2002:a9d:f44:: with SMTP id 62mr14944693ott.17.1605016495304;
- Tue, 10 Nov 2020 05:54:55 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=tuDMy+iN/NZ/U/XMn7m7h6ztvG8bpQuonUkFjpduYg0=;
+        b=C8zMCQwe+O/sbdilyuHY0KM3/2JPcOYlAJnics6+/GWQ4hsa5oDA+GaGvsBwh6CJJG
+         0fDjxydviIaPDdZQmHK4keCdagvfb654FflSGXfXQL+MsxVXT5vmL4uUM5AcFgEjwGuv
+         Xf88d4soeSz4kDoJaoT63sAK2+wWOB0/OMN0Ia07F3a1m5EmiWoFhngPBQ7XfmHGE8Tq
+         z8PPLd7QQllMOaUW6NweexUaWNTztgQfdyl3CqcDDGNYGLK14v46LUaGGYXsfyB0LJfz
+         zxvVByUdiKr3h1T/aYr4HiHZTendxRiNv1GWS0SzEIhxOTt41ivdYf93g5UnjwF5h/41
+         yvDw==
+X-Gm-Message-State: AOAM530glx9vOcJkISYLiO2FtRClzGZlW0IYVIIlN0T2RwHOw01Qln/U
+        rmilqALTb78RYAzBh+rxWOUbOZ4ecIR8e8U=
+X-Google-Smtp-Source: ABdhPJxpknnDPzLcIlfsAZoWTOzvr0K2yQz18ucWIcJsbGk6GKdy/ZWv6XiDw/O3mgX9wBTKkZMaDA==
+X-Received: by 2002:a63:3346:: with SMTP id z67mr17193856pgz.111.1605016514261;
+        Tue, 10 Nov 2020 05:55:14 -0800 (PST)
+Received: from PWN (59-125-13-244.HINET-IP.hinet.net. [59.125.13.244])
+        by smtp.gmail.com with ESMTPSA id j11sm14221319pfe.80.2020.11.10.05.55.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 10 Nov 2020 05:55:13 -0800 (PST)
+Date:   Tue, 10 Nov 2020 08:55:00 -0500
+From:   Peilin Ye <yepeilin.cs@gmail.com>
+To:     Daniel Vetter <daniel@ffwll.ch>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Thomas Winischhofer <thomas@winischhofer.net>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Nicolas Pitre <nico@fluxnic.net>,
+        "Gustavo A . R . Silva" <gustavoars@kernel.org>,
+        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+        George Kennedy <george.kennedy@oracle.com>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Peter Rosin <peda@axentia.se>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        USB list <linux-usb@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Linux Fbdev development list <linux-fbdev@vger.kernel.org>
+Subject: Re: [PATCH 1/2] console: Remove dummy con_font_op() callback
+ implementations
+Message-ID: <20201110135500.GA2484495@PWN>
+References: <c5563eeea36aae7bd72ea2e985bc610d585ece40.1604128639.git.yepeilin.cs@gmail.com>
+ <20201106105058.GA2801856@kroah.com>
+ <20201110124946.GF401619@phenom.ffwll.local>
+ <20201110132445.GA2483842@PWN>
+ <CAKMK7uFiCTu9bz1uJqmCvwBSUK4XmuVyRf2C-U=zoArZMb0Pgg@mail.gmail.com>
 MIME-Version: 1.0
-References: <20201105170604.6588a06e@canb.auug.org.au> <CADYN=9J0DQhizAGB0-jz4HOBBh+05kMBXb4c0cXMS7Qi5NAJiw@mail.gmail.com>
- <CACT4Y+ZA5tv4siG7JsXqmrk2J5WOQOtW51g0DPNMPSGHKkixDw@mail.gmail.com>
- <CADYN=9K4MY+zfB-0acmOQMyiqFnnt+CqiwZJK=-7ZvvztxdetA@mail.gmail.com> <CACT4Y+bR_oU7nSCTq1WgOMYFWHkmYW+jPuxhPkGO1YZEnHdyow@mail.gmail.com>
-In-Reply-To: <CACT4Y+bR_oU7nSCTq1WgOMYFWHkmYW+jPuxhPkGO1YZEnHdyow@mail.gmail.com>
-From:   Marco Elver <elver@google.com>
-Date:   Tue, 10 Nov 2020 14:54:43 +0100
-Message-ID: <CANpmjNNaTUiK=j7tL2=WAHEG4pbXv6mS6Bf6jBwAwtVa4XbxeA@mail.gmail.com>
-Subject: Re: linux-next: Tree for Nov 5
-To:     Dmitry Vyukov <dvyukov@google.com>
-Cc:     Anders Roxell <anders.roxell@linaro.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Alexander Potapenko <glider@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jann Horn <jannh@google.com>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAKMK7uFiCTu9bz1uJqmCvwBSUK4XmuVyRf2C-U=zoArZMb0Pgg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 10 Nov 2020 at 10:36, Dmitry Vyukov <dvyukov@google.com> wrote:
-[...]
-> > > On Tue, Nov 10, 2020 at 8:50 AM Anders Roxell <anders.roxell@linaro.org> wrote:
-[...]
-> > > > When building an arm64 allmodconfig and booting up that in qemu I see
-> > > >
-> > > > [10011.092394][   T28] task:kworker/0:2     state:D stack:26896 pid:
-> > > > 1840 ppid:     2 flags:0x00000428
-> > > > [10022.368093][   T28] Workqueue: events toggle_allocation_gate
-> > > > [10024.827549][   T28] Call trace:
-> > > > [10027.152494][   T28]  __switch_to+0x1cc/0x1e0
-> > > > [10031.378073][   T28]  __schedule+0x730/0x800
-> > > > [10032.164468][   T28]  schedule+0xd8/0x160
-> > > > [10033.886807][   T28]  toggle_allocation_gate+0x16c/0x220
-> > > > [10038.477987][   T28]  process_one_work+0x5c0/0x980
-> > > > [10039.900075][   T28]  worker_thread+0x428/0x720
-> > > > [10042.782911][   T28]  kthread+0x23c/0x260
-> > > > [10043.171725][   T28]  ret_from_fork+0x10/0x18
-> > > > [10046.227741][   T28] INFO: lockdep is turned off.
-> > > > [10047.732220][   T28] Kernel panic - not syncing: hung_task: blocked tasks
-> > > > [10047.741785][   T28] CPU: 0 PID: 28 Comm: khungtaskd Tainted: G
-> > > >   W         5.10.0-rc2-next-20201105-00006-g7af110e4d8ed #1
-> > > > [10047.755348][   T28] Hardware name: linux,dummy-virt (DT)
-> > > > [10047.763476][   T28] Call trace:
-> > > > [10047.769802][   T28]  dump_backtrace+0x0/0x420
-> > > > [10047.777104][   T28]  show_stack+0x38/0xa0
-> > > > [10047.784177][   T28]  dump_stack+0x1d4/0x278
-> > > > [10047.791362][   T28]  panic+0x304/0x5d8
-> > > > [10047.798202][   T28]  check_hung_uninterruptible_tasks+0x5e4/0x640
-> > > > [10047.807056][   T28]  watchdog+0x138/0x160
-> > > > [10047.814140][   T28]  kthread+0x23c/0x260
-> > > > [10047.821130][   T28]  ret_from_fork+0x10/0x18
-> > > > [10047.829181][   T28] Kernel Offset: disabled
-> > > > [10047.836274][   T28] CPU features: 0x0240002,20002004
-> > > > [10047.844070][   T28] Memory Limit: none
-> > > > [10047.853599][   T28] ---[ end Kernel panic - not syncing: hung_task:
-> > > > blocked tasks ]---
-> > > >
-> > > > if I build with KFENCE=n it boots up eventually, here's my .config file [2].
-> > > >
-> > > > Any idea what may happen?
-> > > >
-> > > > it happens on next-20201109 also, but it takes longer until we get the
-> > > > "Call trace:".
-> > > >
-> > > > Cheers,
-> > > > Anders
-> > > > [1] http://ix.io/2Ddv
-> > > > [2] https://people.linaro.org/~anders.roxell/allmodconfig-next-20201105.config
-[...]
-> > oh I missed to say that this is the full boot log with the kernel
-> > panic http://ix.io/2Ddv
->
-> Thanks!
-> The last messages before the hang are:
->
-> [ 1367.791522][    T1] Running tests on all trace events:
-> [ 1367.815307][    T1] Testing all events:
->
-> I can imagine tracing somehow interferes with kfence.
+On Tue, Nov 10, 2020 at 02:46:20PM +0100, Daniel Vetter wrote:
+> On Tue, Nov 10, 2020 at 2:24 PM Peilin Ye <yepeilin.cs@gmail.com> wrote:
+> > Oh, are we doing an -rc3 backmerge soon? At the moment I can base these
+> > patches on neither drm-misc (due to the font_copy removal), nor mainline
+> > (due to the signedness issue in font_desc we've talked about), so I'm
+> > waiting for a backmerge to rebase everything properly. Sorry that I
+> > didn't mention earlier.
+> 
+> linux-next has all the trees, so you can always use that. And yes I'm
+> pushing the backmerge through, so in a few days at most I can pull in
+> all your patches. Meanwhile you can base your work of linux-next.
+> 
+> > > Greg, ok if I just pull these in through drm-misc-next? It's a pretty bad
+> > > hairball anyway and that avoids the tree coordination issues. Only thing
+> > > that might get in the way is the vt font_copy removal, but that's in -rc3
+> > > so easy to backmerge.
+> >
+> > I will rebase and send everything (including the font_copy
+> > garbage-collecting) in a v3 series after the backmerge. Thanks,
+> 
+> No need to be blocked on a backmerge, this is only needed for merging
+> the patches. Development should not be blocked like this.
 
-The reason is simply that that config on qemu is so slow (enabling
-lockdep helped), and the test that is running doesn't result in
-allocations for an extended time. Because of that our wait_event()
-just stalls, as there are no allocations coming in. My guess is that
-this scenario is unique to early boot, where we are not yet running
-user space, paired with running a selftest that results in no
-allocations for some time.
+I see. Thanks!
 
-Try and give that a spin:
-https://lkml.kernel.org/r/20201110135320.3309507-1-elver@google.com
+Peilin Ye
 
-Thanks,
--- Marco
