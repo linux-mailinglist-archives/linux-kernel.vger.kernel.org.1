@@ -2,121 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 769672AE1D7
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 22:33:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 790E52AE1D9
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 22:34:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731986AbgKJVc7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 16:32:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42290 "EHLO
+        id S1731735AbgKJVea (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 16:34:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42526 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731795AbgKJVc7 (ORCPT
+        with ESMTP id S1726688AbgKJVea (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 16:32:59 -0500
-Received: from ZenIV.linux.org.uk (zeniv.linux.org.uk [IPv6:2002:c35c:fd02::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A687C0613D1;
-        Tue, 10 Nov 2020 13:32:59 -0800 (PST)
-Received: from viro by ZenIV.linux.org.uk with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kcbG1-00347a-E4; Tue, 10 Nov 2020 21:32:53 +0000
-Date:   Tue, 10 Nov 2020 21:32:53 +0000
-From:   Al Viro <viro@zeniv.linux.org.uk>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Greg KH <gregkh@linuxfoundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/6] seq_file: add seq_read_iter
-Message-ID: <20201110213253.GV3576660@ZenIV.linux.org.uk>
-References: <20201104082738.1054792-1-hch@lst.de>
- <20201104082738.1054792-2-hch@lst.de>
+        Tue, 10 Nov 2020 16:34:30 -0500
+Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05BB9C0613D1
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 13:34:30 -0800 (PST)
+Received: by mail-qt1-x841.google.com with SMTP id t5so9754933qtp.2
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 13:34:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=RqrVhYzb8a0/eQL0bLvdA9MvG4msw3Tt+QSyvoYvYys=;
+        b=MiFdfXn0y34YBmXHg29ocMSB24QyE5LxOqXrRnao2l/bMMVUraEQC36Kb57Fb3Kq0I
+         4rEzwiiLDnBrrXg9i0DtUQvxVLgzXongPU1fNmFslvjHlrHN56HSWLVaSdl8Jcl1yyLW
+         FjARNDvwLCr6B3H++aFKANlfDgZOD2HYp0Vm8N7UDXDM0gVgxYn7Bu3PXA6mismny9jf
+         qHa+Jm6+ANdpLM9YPIqZHEOq6x4fOFbe4TtQuWEXwoCF93NFnSacwLfdsv7AiZfoFMni
+         g0Ft2G72dnA0mjWWywlg93Fkh054ZDV9/4DZeg+rSJ4rjAN+9e+N8mYmIMYwvZ7igwtd
+         qn2w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=RqrVhYzb8a0/eQL0bLvdA9MvG4msw3Tt+QSyvoYvYys=;
+        b=QyJfLJgPN/DMbfFFjKGdTlOtzrGQsHSvGuYwPftfudK/ZZHtPZAoA24KF2ffkvbQdJ
+         pta89DunOjB6dYdJGwT6SiSTfkB1VaHUQlNTe8x9Ty9dQGV1mWhPQIig4BFP3qjYCNQi
+         v9nDDECIBkPgxRiyZlcnGV8oOz+/Tx/gaD02yBPkBaXlwQqUpc3TcAA6zlVsPcw5wn7K
+         bFCNTX88MhW93GwDY7W5TCbQISwcElZinp073EZ//HZpxppSXtjWA30YsGCWfOZDLkrm
+         Ylb2ZEmyLZVcyE/swuwuypBpRE/Y1YtQDUTbsre128xNrh+q8IDVe3cEd806/wq6/DEG
+         77zQ==
+X-Gm-Message-State: AOAM530fwpooLSIOM7oy2fKFyH++nVs353AHAQr1Lm84a3JNpo+SQhfi
+        h+15M/2Z4/sm54zxWg+CdTV3WO9odRkXFd1RoTI=
+X-Google-Smtp-Source: ABdhPJxpaib4kGaPCwdyKN3MVlhJeEjrVro3/yy/4EKui/MjSKZ2G+EZXgpLlSCYjQBCs8FDM+i6HwHYbwueIVd0RNA=
+X-Received: by 2002:ac8:2956:: with SMTP id z22mr18964042qtz.170.1605044069321;
+ Tue, 10 Nov 2020 13:34:29 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201104082738.1054792-2-hch@lst.de>
-Sender: Al Viro <viro@ftp.linux.org.uk>
+References: <20201014065443.18512-1-lizhe67@huawei.com>
+In-Reply-To: <20201014065443.18512-1-lizhe67@huawei.com>
+From:   Richard Weinberger <richard.weinberger@gmail.com>
+Date:   Tue, 10 Nov 2020 22:34:17 +0100
+Message-ID: <CAFLxGvwO_i31AF350i+9w-7wg25NToyVFFBcG2oHXW3m9sS+MQ@mail.gmail.com>
+Subject: Re: [PATCH 1/2] jffs2: fix ignoring mounting options problem during remounting
+To:     Zhe Li <lizhe67@huawei.com>
+Cc:     David Woodhouse <dwmw2@infradead.org>,
+        Richard Weinberger <richard@nod.at>, wangfangpeng1@huawei.com,
+        zhongjubin@huawei.com, LKML <linux-kernel@vger.kernel.org>,
+        linux-mtd@lists.infradead.org, qiuxi1@huawei.com,
+        chenjie6@huawei.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 04, 2020 at 09:27:33AM +0100, Christoph Hellwig wrote:
+On Wed, Oct 14, 2020 at 9:01 AM Zhe Li <lizhe67@huawei.com> wrote:
+>
+> From: lizhe <lizhe67@huawei.com>
+>
+> The jffs2 mount options will be ignored when remounting jffs2.
+> It can be easily reproduced with the steps listed below.
+> 1. mount -t jffs2 -o compr=none /dev/mtdblockx /mnt
+> 2. mount -o remount compr=zlib /mnt
+>
+> Since ec10a24f10c8, the option parsing happens before fill_super and
+> then pass fc, which contains the options parsing results, to function
+> jffs2_reconfigure during remounting. But function jffs2_reconfigure do
+> not update c->mount_opts.
+>
+> This patch add a function jffs2_update_mount_opts to fix this problem.
 
->  ssize_t seq_read(struct file *file, char __user *buf, size_t size, loff_t *ppos)
->  {
-> -	struct seq_file *m = file->private_data;
-> +	struct iovec iov = { .iov_base = buf, .iov_len = size};
-> +	struct kiocb kiocb;
-> +	struct iov_iter iter;
-> +	ssize_t ret;
-> +
-> +	init_sync_kiocb(&kiocb, file);
-> +	iov_iter_init(&iter, READ, &iov, 1, size);
-> +
-> +	kiocb.ki_pos = *ppos;
-> +	ret = seq_read_iter(&kiocb, &iter);
-> +	*ppos = kiocb.ki_pos;
-> +	return ret;
-> +}
-> +EXPORT_SYMBOL(seq_read);
+Oh, a regression. Thanks for fixing.
 
-This is basically an open-coded copy of new_sync_read()...
+> By the way, I notice that tmpfs use the same way to update remounting
+> options. If it is necessary to unify them?
 
->  	if (m->count) {
->  		n = min(m->count, size);
-> -		err = copy_to_user(buf, m->buf + m->from, n);
-> -		if (err)
-> +		if (copy_to_iter(m->buf + m->from, n, iter) != n)
->  			goto Efault;
->  		m->count -= n;
->  		m->from += n;
->  		size -= n;
-> -		buf += n;
->  		copied += n;
->  		if (!size)
->  			goto Done;
+If possible, sure. Maybe you can find a way to put the logic into fs/libfs.c
 
->  	n = min(m->count, size);
-> -	err = copy_to_user(buf, m->buf, n);
-> -	if (err)
-> +	if (copy_to_iter(m->buf, n, iter) != n)
->  		goto Efault;
-
-This is actually broken from generic_file_splice_read() POV; if you've
-already emitted something, you will end up with more data spewed into
-pipe than you report to caller.  You want something similar to
-copy_to_iter_full() here, with iterator _not_ advanced in case of
-failure.  The first call is not an issue (you have no data copied
-yet, so you'll end up with -EFAULT, aka "discard everything you've
-put there and return -EAGAIN"), but the second really is a problem.
-
-BTW, other ->read_iter() instances might need to be careful with that
-pattern as well; drivers/gpu/drm/drm_dp_aux_dev.c:auxdev_read_iter()
-would appear to have the same problem.
-
-<greps some more>
-                if (unlikely(iov_iter_is_pipe(iter))) {
-                        void *addr = kmap_atomic(page);
-
-                        written = copy_to_iter(addr, copy, iter);
-                        kunmap_atomic(addr);   
-                } else
-in fs/cifs/file.c looks... interesting, considering the fact that
-copy_to_iter() for pipe destination might very well have to do
-allocations.  With GFP_USER.  Under kmap_atomic()...
-
-Note that we have this:
-static inline int copy_linear_skb(struct sk_buff *skb, int len, int off,
-                                  struct iov_iter *to)
-{
-        int n;
-
-        n = copy_to_iter(skb->data + off, len, to);
-        if (n == len)
-                return 0;
-
-        iov_iter_revert(to, n);
-        return -EFAULT;
-}
-i.e. the same "do not advance on short copy" kind of thing.
-
-AFAICS, not all callers want that semantics, but I think it's worth
-a new primitive.  I'm not saying it should be a prereq for your
-series, but either that or an explicit iov_iter_revert() is needed.
+-- 
+Thanks,
+//richard
