@@ -2,200 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DFA2A2AD3C4
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 11:28:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 634CD2AD3D0
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 11:30:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731485AbgKJK2L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 05:28:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51230 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726690AbgKJK2K (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 05:28:10 -0500
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A33EC0613CF
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 02:28:10 -0800 (PST)
-Received: by mail-wr1-x444.google.com with SMTP id p8so11267226wrx.5
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 02:28:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=pqIDM/rZ/Y9RAfg0dyKOEzplrtUBtkplsmTM06tMDJQ=;
-        b=BcAb/EpoDs9F+v8Ugn793tbnYiNlQmUpjuGyNpNKzX4yjbKBv/0r7MEILs5WCoPzhD
-         fNMs2XkoRS+mJ/NFjN4OBygs4qBsWWlb1VSmQAiCKO/AIajH1dTD3Lygh6OEZvM5MUga
-         oFF7nX3RpsXyXYrwW7YlAWso8AvoMlJlN0P1lpckrYoAbjrjbAuxzW3s4MvJt51WQatU
-         cexAGXQXxSUBTpyGm/8+TR5w1+5/E9s1T2EwBL0xRVW9SAcegjg6esqn/6m3r5YfhrX7
-         lFv+3/HjjjiGyeQilK12WlaseZIcOBf8Tn7qqIxzU+l/HtjVN/GNk4iEPTznIQg1YMJs
-         IaxA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=pqIDM/rZ/Y9RAfg0dyKOEzplrtUBtkplsmTM06tMDJQ=;
-        b=SfVCnqlj+svLDtGoJxLoQgXXVEm0N0dKrbWFm76Uf9sOMEtsNVXKQbgs2VIQqtdr+U
-         joREbZ/2gdBBkixWY5LxdIk9oOvkXVDUzu1s0VDcHB/JqMvzB87KEitcKfqyd37kTQmY
-         xJrbyWukp2DTkKc1ksdgZQ5OsxXAYzdoicONprAk5b+TzQI5Vaq0PcTvZFVLcfPBn8O6
-         O2Eq2IJyXd7K8eod5DMc24Hgq8h6aTfYY/w6utHK9bGM4n3ErYOwlE8rsfy2rLIOtSE9
-         /RsQ6td59quWCGmzP+3epJMMAkeBVhbLVTrKmjRmsGYoTm4AJk8ub8kCFLmecqftcAmL
-         dzVQ==
-X-Gm-Message-State: AOAM533bjJOSOU3R9Rn+DThRpOqZIZqnRz1IrqykTuSB0iiGShd26oiA
-        /bFEnW3+L96tLKUkBfMvRx6H/g==
-X-Google-Smtp-Source: ABdhPJwxQlud3/H/xV2Dbfu6P6pYfPXGlRqele+HoGoUBj0HGH9j/JHGsKTEVZU7XxN2PY+0LDQPYQ==
-X-Received: by 2002:a5d:5342:: with SMTP id t2mr21947899wrv.243.1605004089054;
-        Tue, 10 Nov 2020 02:28:09 -0800 (PST)
-Received: from [192.168.0.4] (hst-208-208.medicom.bg. [84.238.208.208])
-        by smtp.googlemail.com with ESMTPSA id w11sm2639462wmg.36.2020.11.10.02.28.07
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 10 Nov 2020 02:28:08 -0800 (PST)
-Subject: Re: [PATCH 2/3] docs: media: Document CLL and Mastering display
-To:     Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org
-Cc:     Nicolas Dufresne <nicolas.dufresne@collabora.com>,
-        Ezequiel Garcia <ezequiel@collabora.com>
-References: <20201109173153.23720-1-stanimir.varbanov@linaro.org>
- <20201109173153.23720-3-stanimir.varbanov@linaro.org>
- <c907b185-a272-bef5-1aa0-313c7789b07d@xs4all.nl>
-From:   Stanimir Varbanov <stanimir.varbanov@linaro.org>
-Message-ID: <58fda2db-4c2a-0fde-91ce-39af4fbccf99@linaro.org>
-Date:   Tue, 10 Nov 2020 12:28:07 +0200
+        id S1727379AbgKJKay (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 05:30:54 -0500
+Received: from mail-eopbgr10139.outbound.protection.outlook.com ([40.107.1.139]:40385
+        "EHLO EUR02-HE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726690AbgKJKax (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Nov 2020 05:30:53 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=B16f5G//vKC7hhc9ZOQk+obRlsO7QfzZPmVX5yFAQJjJ8JNy5l2WefhG4gB54GT9Bs/soAQGVqx0SvERJrBJS2OMhdYF0Wd3BqkAOp1trkRGMMuIzk6UIrWUgTQ7DOnKHMyuGuosBTqxR+NWIFFCl7zBtrqJcuLFfcGb6KIES3rBzKwsK7dLE+w4bhd3KKU7qiFCc5q+3+5b8VOeb0jhyR7+NAEEv3ctyoQ/vdzxRXPu3ifYBxwD8y+jCIq/HEEhcI8ufOZDWFwCEUoRZhBsW4QRAPJHAYdW20DuxZV0f/elh1b0JhfmMDrm1xuLBRCJtDt5lhkOqUJ946XwkLme9A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=TV4R7XflGxnu7hzXQe9xiwN6gBdgYgA8u4CDLHGNy0U=;
+ b=GRyQvLfuVx5vB9KPSL+0Y1THmrPheHt/hz+nrz4h3jwOaklWYkrN7wURilPUhQ4cGDTJTb0Z3k8F+NaPRuIHy6dq4wpZ29sNz3szyBv1ySAey+AR0OvKOuPtudL0IietYHr2WhKV4GVoxymeBnPXbpT5M8zgJc4nLymWEPZZ0b+EumgoFW7WN3jEb2A+v4S79w6pWugWHpoMcH0E3Q8OVtLjd28k5ZAnsfcMhZfgnHqr6RIa13Dp+jsre5UsfsA4fq6yDqC19z4xD4sr3LIw511+aHeRuZOVsjx3wmTqWkKPTmB461kx13r+M7+FKpSRdv/i3SQipj0klCy/2suhzQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nokia.com; dmarc=pass action=none header.from=nokia.com;
+ dkim=pass header.d=nokia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nokia.onmicrosoft.com;
+ s=selector1-nokia-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=TV4R7XflGxnu7hzXQe9xiwN6gBdgYgA8u4CDLHGNy0U=;
+ b=PufXMx+5GRnq18Kn/0ZYK4F/q8mqbLwNB/o+TPscUl/MqQ0DbwoFbiLYTIPHpIivijJBSJcDt1WovtQTsO99qfajJxEcOot1Es3tbA9kwVSIg2hrJVVKrEj7GYS+Q+gfB1KFbF6pY55ENLs9nVKwxB02s7WFl5i3XfpLnEfSd/Q=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=nokia.com;
+Received: from AM0PR07MB4531.eurprd07.prod.outlook.com (2603:10a6:208:6e::15)
+ by AM9PR07MB7331.eurprd07.prod.outlook.com (2603:10a6:20b:2c1::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3564.14; Tue, 10 Nov
+ 2020 10:30:46 +0000
+Received: from AM0PR07MB4531.eurprd07.prod.outlook.com
+ ([fe80::d527:e75b:546c:a85b]) by AM0PR07MB4531.eurprd07.prod.outlook.com
+ ([fe80::d527:e75b:546c:a85b%6]) with mapi id 15.20.3564.021; Tue, 10 Nov 2020
+ 10:30:46 +0000
+Subject: Re: [PATCH] MIPS: reserve the memblock right after the kernel
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc:     Jiaxun Yang <jiaxun.yang@flygoat.com>, linux-mips@vger.kernel.org,
+        Paul Burton <paulburton@kernel.org>,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org
+References: <20201106141001.57637-1-alexander.sverdlin@nokia.com>
+ <20201107094028.GA4918@alpha.franken.de>
+ <1d6a424e-944e-7f21-1f30-989fb61018a8@nokia.com>
+ <20201110095503.GA10357@alpha.franken.de>
+From:   Alexander Sverdlin <alexander.sverdlin@nokia.com>
+Message-ID: <c435b3df-4e82-7c10-366a-5a3d1543c73f@nokia.com>
+Date:   Tue, 10 Nov 2020 11:29:50 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <c907b185-a272-bef5-1aa0-313c7789b07d@xs4all.nl>
+ Thunderbird/68.12.0
+In-Reply-To: <20201110095503.GA10357@alpha.franken.de>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-Originating-IP: [131.228.32.167]
+X-ClientProxiedBy: AM8P192CA0006.EURP192.PROD.OUTLOOK.COM
+ (2603:10a6:20b:21b::11) To AM0PR07MB4531.eurprd07.prod.outlook.com
+ (2603:10a6:208:6e::15)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from ulegcpsvhp1.emea.nsn-net.net (131.228.32.167) by AM8P192CA0006.EURP192.PROD.OUTLOOK.COM (2603:10a6:20b:21b::11) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3541.21 via Frontend Transport; Tue, 10 Nov 2020 10:29:51 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: c0a1726e-66db-450f-023d-08d885638f2c
+X-MS-TrafficTypeDiagnostic: AM9PR07MB7331:
+X-Microsoft-Antispam-PRVS: <AM9PR07MB7331B460D94A5E86C5BECAA888E90@AM9PR07MB7331.eurprd07.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: tfIhtpiiDRC/d72PK/Z9CTF8Zajp6Y3ukHYjFAZf6ESsA9XACR0cvL6UCkjI/o4O4uR8/brhKHrJ2rwPBfgYPGXz8URt1K1VjlSg9eK26iAp13973kMsBpua7ZNDjJqUD6T67k+8DJRTwfpsdO5Jl07t9gaK25lJzZJVWDfuCW3ucUKsoS75SJmcgrcrx7SLI/FvaKZpBr4PfxurDgpUk6T/dvscKnxp9bcRDqXRcjqLb+w7UshzJurfUh9xbvtzCN4fpF9OFkJ3LlEmc3ewCdJ6LctKnwPIPmG0cAnPYx5HRzy0YHXgUAc0/5fHC8T2OUnqoZ1BazWTVoYI6iomOT516KRmTKtysjSFhxCQ78r6cwn9Yp0BCORvJfBQsa8Q
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR07MB4531.eurprd07.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(366004)(39860400002)(346002)(136003)(376002)(4326008)(2906002)(86362001)(2616005)(6486002)(31696002)(956004)(66946007)(66476007)(31686004)(44832011)(83380400001)(6512007)(52116002)(6916009)(54906003)(16526019)(478600001)(8676002)(36756003)(66556008)(316002)(186003)(6506007)(53546011)(26005)(5660300002)(8936002)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: K1zsaJemikhFuklT3C48ZVmW8NqolWPmjzFWrkdv0dg1+J51UXX7eMYLixDlkIr8F7elMqwT7+D0WrTfOtKlkpdj2u99sTq93o495y0+tlHYskHs3mqO18dZjl7CqsmHMzdaNoVOodZAYKYdtKX3hb5sN0DUXhhXvdajCTejbAoq2zs/s5th57WBxpLl/WXwPUJVqb/WgOZATjKLqPxYkKrnJ5c84OwsFF864pUwxZrWNDNLfAcKlfn3Dcnt1oLf7C8wkvpOVSnHrrBtutnfWUJdgqAIf30vRbzzsLKslZPFB8ib0qlzIoOIRSSaE/GXGiqCOMZttuYHccvM7HKufYDJVS4u3wHosDxsHenlALJ28qLsNnEX6gOtrUh4+9kaRIz2MYnTM1ZxoQ3SpH027JRDlxeGgNulHCh+/0qZSjBPNX2HOGOXsemRS9mfEGHbo+UKHM4r8G9WUCKoTzinBdWUdEtUe5NNLIo4Q+LPlkBSNc10B4s9RFWEKPn9bPYW4d/ZaFn6+1ML13BE70TdTG2rJ6ZKCH52hTHXc0c6fSm4Vt7QejuorGo9RxaovoqbVCXfOr6G7EJ0Uii77gjb2V/YcW3TtKgHIvv8f/Qg+GSFgOvoYJpmcKXo9cesg01xu4Qj7fX/38Iw8NM8ra2hz4VAoUZY7HmIEp3nql0h5Ixh9b31bmAq0gjjmixopyWeJcd/4kLs8jmSOXObVIsxFIXgNI8kQ7f3f1KWCEIF2Y3GXNYZBrvc/aTnhZbUqP+474Lj2Pxe4q0lO0LMwNXDZee2LraX66SaTVIIS60OQls2gGwveiSulNPgaMWWg724ew9fNZcT1CUB2V81U7tDEw1usMdfG2BQzppIUeBKM5yKJFU6OnuP9C5lQDT756ofuh2k1ba7twMBIldbqV9RVA==
+X-OriginatorOrg: nokia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: c0a1726e-66db-450f-023d-08d885638f2c
+X-MS-Exchange-CrossTenant-AuthSource: AM0PR07MB4531.eurprd07.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Nov 2020 10:29:52.4515
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 5d471751-9675-428d-917b-70f44f9630b0
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: mxb2rDnRshTe/RoMX1u1H9Exdh9b8rVbvkWbHJJIaMKZHGd60dQ7kZ669/sWmvElD2Euj3V20MUVAo4wrv1fjyDegT9cbwEyDcgRMreAnXM=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM9PR07MB7331
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hello Thomas,
 
+On 10/11/2020 10:55, Thomas Bogendoerfer wrote:
+>>>> Linux doesn't own the memory immediately after the kernel image. On Octeon
+>>>> bootloader places a shared structure right close after the kernel _end,
+>>>> refer to "struct cvmx_bootinfo *octeon_bootinfo" in cavium-octeon/setup.c.
+>>>>
+>>>> If check_kernel_sections_mem() rounds the PFNs up, first memblock_alloc()
+>>>> inside early_init_dt_alloc_memory_arch() <= device_tree_init() returns
+>>>> memory block overlapping with the above octeon_bootinfo structure, which
+>>>> is being overwritten afterwards.
+>>> as this special for Octeon how about added the memblock_reserve
+>>> in octen specific code ?
+>> while the shared structure which is being corrupted is indeed Octeon-specific,
+>> the wrong assumption that the memory right after the kernel can be allocated by memblock
+>> allocator and re-used somewhere in Linux is in MIPS-generic check_kernel_sections_mem().
+> ok, I see your point. IMHO this whole check_kernel_sections_mem() should
+> be removed. IMHO memory adding should only be done my memory detection code.
+> 
+> Could you send a patch, which removes check_kernel_section_mem completly ?
 
-On 11/10/20 11:50 AM, Hans Verkuil wrote:
-> On 09/11/2020 18:31, Stanimir Varbanov wrote:
->> Document Content light level and Mastering display colour volume.
->>
->> Signed-off-by: Stanimir Varbanov <stanimir.varbanov@linaro.org>
->> ---
->>  .../media/v4l/ext-ctrls-codec.rst             | 61 +++++++++++++++++++
->>  1 file changed, 61 insertions(+)
->>
->> diff --git a/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst b/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
->> index ce728c757eaf..39d0aab5ca3d 100644
->> --- a/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
->> +++ b/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
->> @@ -4382,3 +4382,64 @@ enum v4l2_mpeg_video_hevc_size_of_length_field -
->>        - Selecting this value specifies that HEVC slices are expected
->>          to be prefixed by Annex B start codes. According to :ref:`hevc`
->>          valid start codes can be 3-bytes 0x000001 or 4-bytes 0x00000001.
->> +
->> +``V4L2_CID_MPEG_VIDEO_HEVC_CLL_INFO (struct)``
->> +    The Content Light Level defines upper bounds for the nominal target
->> +    brightness light level of the pictures.
->> +
->> +.. c:type:: v4l2_ctrl_hevc_cll_info
->> +
->> +.. cssclass:: longtable
->> +
->> +.. flat-table:: struct v4l2_ctrl_hevc_cll_info
->> +    :header-rows:  0
->> +    :stub-columns: 0
->> +    :widths:       1 1 2
->> +
->> +    * - __u16
->> +      - ``max_content_light_level``
->> +      - An upper bound on the maximum light level among all individual
->> +        samples for the pictures of coded video sequence, cd/m2.
->> +    * - __u16
->> +      - ``max_pic_average_light_level``
->> +      - An upper bound on the maximum average light level among the
->> +        samples for any idividual picture of coded video sequence, cd/m2.
-> 
-> idividual -> individual
-> 
-> In the CTA-861-G spec value 0 is used to indicate that this information is
-> not present. How is that handled here? Can it be 0 as well in an HEVC stream?
+this will expose one issue:
+platforms usually do it in a sane way, like it was done last 15 years, namely
+add kernel image without non-complete pages on the boundaries.
+This will lead to the situation, that request_resource() will fail at least
+for .bss section of the kernel and it will not be properly displayed under
+/proc/iomem (and probably same problem will appear, which initially motivated
+the creation of check_kernel_section_mem()).
 
-ITU-T Rec. H265 says: When equal to 0, no such upper bound is indicated
-by max_content_light_level.
-
-So, the meaning is the same as in CTA-861-G.
-
-> 
-> Same for the next control.
-> 
->> +
->> +``V4L2_CID_MPEG_VIDEO_HEVC_MASTERING_DISPLAY (struct)``
->> +    The mastering display defines the colour volume (the colour primaries,
->> +    white point and luminance range) of a display considered to be the
->> +    mastering display for current video content.
->> +
->> +.. c:type:: v4l2_ctrl_hevc_mastering_display
->> +
->> +.. cssclass:: longtable
->> +
->> +.. flat-table:: struct v4l2_ctrl_hevc_mastering_display
->> +    :header-rows:  0
->> +    :stub-columns: 0
->> +    :widths:       1 1 2
->> +
->> +    * - __u16
->> +      - ``display_primaries_x[3]``
->> +      - Specifies the normalized x chromaticity coordinate of the colour
->> +        primary component of the mastering display.
-> 
-> CTA-861-G defines this as: "coded as unsigned 16-bit values in units
-> of 0.00002, where 0x0000 represents zero and 0xC350 represents 1.0000."
-> 
-> Is that true here as well? If so, then this should be documented because
-> "normalized x chromaticity coordinate" doesn't say anything meaningful.
-
-Yes, it is the same. Will document that in next version.
-
-> 
->> +    * - __u16
->> +      - ``display_primaries_y[3]``
->> +      - Specifies the normalized y chromaticity coordinate of the colour
->> +        primary component of the mastering display.
->> +    * - __u16
->> +      - ``white_point_x``
->> +      - Specifies the normalized x chromaticity coordinate of the white
->> +        point of the mastering display.
->> +    * - __u16
->> +      - ``white_point_y``
->> +      - Specifies the normalized y chromaticity coordinate of the white
->> +        point of the mastering display.
->> +    * - __u32
->> +      - ``max_luminance``
->> +      - Specifies the nominal maximum display luminance of the mastering
->> +        display.
-> 
-> In CTA-861-G this is in 1 cd/m^2 units.
-
-In Rec. H265 max_luminance is in the range of 50 000 to 100 000 000 and
-units of 0.0001 cd/m2.
-
-> 
->> +    * - __u32
->> +      - ``min_luminance``
->> +      - specifies the nominal minimum display luminance of the mastering
->> +        display.
-> 
-> And this in units of 0.0001 cd/m^2.
-
-min_luminance - range of 1 to 50 000 and units of 0.0001 cd/m2.
-
-I will update all these in next patchset version.
-
-> 
-> Regards,
-> 
-> 	Hans
-> 
+As I understood, the issue is that memblock API operates internally on the
+page granularity (at least there are many ROUND_DOWN() inside for the size
+or upper boundary), so for request_resource() to success one has to claim
+the rest of the .bss last page. And with current memblock API
+memblock_reserve() must appear somewhere, being this ARCH or platform code.
 
 -- 
-regards,
-Stan
+Best regards,
+Alexander Sverdlin.
