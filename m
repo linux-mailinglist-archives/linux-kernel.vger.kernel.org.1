@@ -2,94 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C5282ADF4C
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 20:26:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 839052ADF50
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 20:29:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731683AbgKJT0r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 14:26:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50736 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726307AbgKJT0o (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 14:26:44 -0500
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B7C6C0613D1
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 11:26:44 -0800 (PST)
-Received: by mail-pg1-x544.google.com with SMTP id f27so7707875pgl.1
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 11:26:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=QBBuJtpHwASeAFOGSL1xcof2983thgwJRPuFxxMD4fA=;
-        b=DUzhdqYm3KhlGOfDDfdWNAq31h0cV3GKAi2xP1cxlXyasR45DGVVyNY2ikd+sFOnCC
-         UcEgk8PNi1GfqnrvPyftyBhyoH7fLVePjOhpZYvTwcLJe3JL/E7cTGQ3g5Co86AC9THK
-         ZkK2t2FpZu06cOSY4mos4n//bjGjcZgA+g4NYcgmyfjFBNc2KuU6KyoRJR7wkssKFIs/
-         boHgRBDBOgK7E8ypVPTdtEO1pXmN9XdlPc60xonKmfSZv1AQuPla8R4Vj+iPFOtpFHJw
-         GYzX12WEReynbv168ZYu9knYhNEI/iZxZdm07x6I2Kmi3QjAX9mYOGgHC7iI+P/dZtCS
-         nfvQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=QBBuJtpHwASeAFOGSL1xcof2983thgwJRPuFxxMD4fA=;
-        b=VthemGAphPUgF6e66GtRyfq+D822zN3dBBF0qQHyccCYASiUpDvyhVbMsUUN5OFmHc
-         lHOpifvDSH7KHoxIxrKWFxInWncmAS5XmiakzT6SZBi/5VBoh/ZBbx4I5NOdwtLgbub/
-         NMnE96mbEkjTW/Yo/W+odcA9/JgLLOcu5XNBcUxmS02W8PUNrAv7Iw1pRxahN9fUkjUa
-         UsCYurqiJZ4c68visZRrj3bjsySZ4Eg3DAmYIOb9gUWkc7MX44SuyRo0EiqgAgCA6VtM
-         5VJtW6+sXCW6emddHW6Zn/1oEd/fjK/1Zi0twMD+sW/VW78gr1ua9a0xH1TznIH/b+F/
-         nxhg==
-X-Gm-Message-State: AOAM5319oRoRym6fQvWcXZYIBz1xUjhsEcsQ2vtbTD2a2JHvzamC+YK6
-        V3a7j/C2VSaSZG/aYJDqNIW8/xeIqfO3BTzS5q6NIQ==
-X-Google-Smtp-Source: ABdhPJznziVNXzwfwGEBwZjvtT8HADT4wcyMRySH+iyCi/S0L0hHj+O/J1edGm1ynfYqDAW21FR1vZnOsQ+O2bHEWIY=
-X-Received: by 2002:a17:90a:6b04:: with SMTP id v4mr671795pjj.101.1605036404049;
- Tue, 10 Nov 2020 11:26:44 -0800 (PST)
+        id S1731281AbgKJT3E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 14:29:04 -0500
+Received: from m42-4.mailgun.net ([69.72.42.4]:62920 "EHLO m42-4.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726307AbgKJT3D (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Nov 2020 14:29:03 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1605036542; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=0VxEoZEjoD8/bkzrSGDJ5C9RtI1ekM+Z0OiDWMyF/eE=; b=jz3UjH9CsyDVMDMM63qygAX0mMZI3NWB9AeoD/OZ6LIrdtOISQY1ZqoP3FU8JCDIgICV8w6b
+ TYGaOyhJZjMJBAb8vRwI0aBmnW8mX0rBTNnkwey+N2YttuZt3xF7y6dNxnRo4pG0MIld29Kh
+ fRSzwfhj9UwqQRKqX2dhJBsJN78=
+X-Mailgun-Sending-Ip: 69.72.42.4
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n01.prod.us-east-1.postgun.com with SMTP id
+ 5faae9fececc309dcb51edea (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 10 Nov 2020 19:29:02
+ GMT
+Sender: jhugo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id B2C1AC433C9; Tue, 10 Nov 2020 19:29:01 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.0
+Received: from [10.226.59.216] (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: jhugo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 1D8D5C433C6;
+        Tue, 10 Nov 2020 19:28:59 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 1D8D5C433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=jhugo@codeaurora.org
+Subject: Re: [PATCH] pinctrl: qcom: Fix msm9853 Kconfig entry to depend on,
+ not select PINCTRL_MSM
+To:     John Stultz <john.stultz@linaro.org>,
+        lkml <linux-kernel@vger.kernel.org>
+Cc:     Andy Gross <agross@kernel.org>,
+        Prasad Sodagudi <psodagud@codeaurora.org>,
+        Vladimir Lypak <junak.pub@gmail.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-arm-msm@vger.kernel.org, linux-gpio@vger.kernel.org
+References: <20201110190054.20517-1-john.stultz@linaro.org>
+From:   Jeffrey Hugo <jhugo@codeaurora.org>
+Message-ID: <19b7b301-3460-7ece-21d3-59cd7490c8ed@codeaurora.org>
+Date:   Tue, 10 Nov 2020 12:28:59 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.3
 MIME-Version: 1.0
-References: <20200409232728.231527-1-caij2003@gmail.com> <20201107001056.225807-1-jiancai@google.com>
- <CAMj1kXG+qb267Hig6zoO=y6_BVsKsqHikvbJ83YsBD8SBaZ1xw@mail.gmail.com>
- <CAKwvOd=pHgT3LsjYH10eXQjLPtiOKDj-8nJwjQ=NMSFLTG1xAg@mail.gmail.com> <CAMj1kXHDzj3Q-sCv1szseUC7g2bWRFeVP6WME-sMqDf+0wyU8Q@mail.gmail.com>
-In-Reply-To: <CAMj1kXHDzj3Q-sCv1szseUC7g2bWRFeVP6WME-sMqDf+0wyU8Q@mail.gmail.com>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Tue, 10 Nov 2020 11:26:32 -0800
-Message-ID: <CAKwvOdkXz5wOwKQDsi5jt21ov3xETSByAqxGLQ=7U6Gsp46zcQ@mail.gmail.com>
-Subject: Re: [PATCH v2] Make iwmmxt.S support Clang's integrated assembler
-To:     Ard Biesheuvel <ardb@kernel.org>
-Cc:     Jian Cai <jiancai@google.com>, Manoj Gupta <manojgupta@google.com>,
-        Luis Lozano <llozano@google.com>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20201110190054.20517-1-john.stultz@linaro.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 9, 2020 at 11:36 PM Ard Biesheuvel <ardb@kernel.org> wrote:
->
-> BE32 != BE8
+On 11/10/2020 12:00 PM, John Stultz wrote:
+> One fixup following my patch commit be117ca32261 ("pinctrl:
+> qcom: Kconfig: Rework PINCTRL_MSM to be a depenency rather then
+> a selected config") being queued in LinusW's tree, as a new
+> config entry was added for the msm9853 that also needs the
+> change.
+> 
+> Applies to LinusW's pinctrl devel tree.
+> 
+> Cc: Andy Gross <agross@kernel.org>
+> Cc: Prasad Sodagudi <psodagud@codeaurora.org>
+> Cc: Vladimir Lypak <junak.pub@gmail.com>
+> Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
+> Cc: Linus Walleij <linus.walleij@linaro.org>
+> Cc: linux-arm-msm@vger.kernel.org
+> Cc: linux-gpio@vger.kernel.org
+> Signed-off-by: John Stultz <john.stultz@linaro.org>
+> ---
+>   drivers/pinctrl/qcom/Kconfig | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/pinctrl/qcom/Kconfig b/drivers/pinctrl/qcom/Kconfig
+> index 8bdf878fe970c..cf56e029cd9c7 100644
+> --- a/drivers/pinctrl/qcom/Kconfig
+> +++ b/drivers/pinctrl/qcom/Kconfig
+> @@ -115,7 +115,7 @@ config PINCTRL_MSM8916
+>   config PINCTRL_MSM8953
+>   	tristate "Qualcomm 8953 pin controller driver"
+>   	depends on GPIOLIB && OF
+> -	select PINCTRL_MSM
+> +	depends on PINCTRL_MSM
+>   	help
+>   	  This is the pinctrl, pinmux, pinconf and gpiolib driver for the
+>   	  Qualcomm TLMM block found on the Qualcomm MSM8953 platform.
+> 
 
-Oh? Sorry, what does BE8 stand for?  arch/arm/mm/Kconfig says:
+Subject should indicate msm8953, no?
 
-CONFIG_CPU_ENDIAN_BE8
-Support for the BE-8 (big-endian) mode on ARMv6 and ARMv7 processors.
-
-vs:
-CPU_ENDIAN_BE32
-Support for the BE-32 (big-endian) mode on pre-ARMv6 processors.
-
-So BE8 seems newer?  It looks like in my tests, enabling
-CPU_BIG_ENDIAN via menuconfig enabled CPU_ENDIAN_BE8.
-
->
-> Please use, e.g., ixp4xx_defconfig with IWMMXT and BE enabled. It
-> seems like .inst does the right thing here, i.e., the assembler knows
-> that it should emit BE for BE32 and LE for BE8, but it needs to be
-> confirmed.
-
-Ah and ixp4xx_defconfig selects CPU_ENDIAN_BE32.  Yep, and the
-disassemblies of those match, too.
 -- 
-Thanks,
-~Nick Desaulniers
+Jeffrey Hugo
+Qualcomm Technologies, Inc. is a member of the
+Code Aurora Forum, a Linux Foundation Collaborative Project.
