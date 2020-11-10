@@ -2,160 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1E712ADF9A
+	by mail.lfdr.de (Postfix) with ESMTP id 4F9512ADF99
 	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 20:33:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732752AbgKJTdA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 14:33:00 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:31275 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1732722AbgKJTc4 (ORCPT
+        id S1732728AbgKJTcz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 14:32:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51738 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732004AbgKJTct (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 14:32:56 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1605036774;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=m4Ph1suYX4ben8sinoTI3mwXxIcZAzftReDT/Kw+gqs=;
-        b=dusbLTy0RMeVriT7gRaDs4QgWXsFDDwj1Bp3CaTYhLR5neHZWRmSb65PC8+BYy9YoTRBJ7
-        tNsgRhyQg4J1SKY9P5rCUtpxqvG3Tuoxh3PLeakouZpBnYSd1qMpMVKYaCNf6UYZKGaB3D
-        wjJCl8XCgp7kc1qW/ZfkriVrdKXGNWY=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-200-SDgoVi_HO3GfYuNGMHgeGg-1; Tue, 10 Nov 2020 14:32:50 -0500
-X-MC-Unique: SDgoVi_HO3GfYuNGMHgeGg-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A9DA310082E0;
-        Tue, 10 Nov 2020 19:32:48 +0000 (UTC)
-Received: from t480s.redhat.com (ovpn-114-232.ams2.redhat.com [10.36.114.232])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id A86255B4A0;
-        Tue, 10 Nov 2020 19:32:41 +0000 (UTC)
-From:   David Hildenbrand <david@redhat.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     linux-mm@kvack.org, David Hildenbrand <david@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Potapenko <glider@google.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        Kees Cook <keescook@chromium.org>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Subject: [PATCH v1] mm/page_alloc: clear pages in alloc_contig_pages() with init_on_alloc=1 or __GFP_ZERO
-Date:   Tue, 10 Nov 2020 20:32:40 +0100
-Message-Id: <20201110193240.25401-1-david@redhat.com>
+        Tue, 10 Nov 2020 14:32:49 -0500
+Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3D0AC0613D1;
+        Tue, 10 Nov 2020 11:32:48 -0800 (PST)
+Received: by mail-ed1-x542.google.com with SMTP id v22so3690425edt.9;
+        Tue, 10 Nov 2020 11:32:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=VM/5N1Cfxe/m3bRipJoTI2B3zhN3N0f0sMhjH2eyUBU=;
+        b=KdkNh6b3qKXeJvvlcUmKWOeRgPT/zxH3+orznfb65IsHrz7oKYGtiIZacKV/w9g3rP
+         1BHn9xyNAFCM66rdtplI01RPdvPFOhsOu163eyvaJLtISgPqleiayYU9t6U4RjyMe3No
+         +mzIGAocaRP9G5AkadyXwHz+zNt8x9QJDIdy0HTZpuZlHMc1/OI0/xezTXDREFrQms2i
+         CUEcAK5uInTPaSRJ4HXPty6DGW3/+Vcrh+2MCjiwZxlF/ox1llqaLProMD4XFRytgNSV
+         PxUs4yxgM1oAdMEDdAHaSHKLOaf+TytLPyUjA4Q3B5QYCdQzPF3kDW7yEspTneFO3QSm
+         zy6A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=VM/5N1Cfxe/m3bRipJoTI2B3zhN3N0f0sMhjH2eyUBU=;
+        b=ENOBqh3VG0VERa0mWgXi2agTqnYrN4hKdOezr4kNnpf3HHwNVvPlejA+tAdsaEfonh
+         +SDCk0xC9Fajoaqo6yLyqDHp9mlZqkbb6N1sQbXe2xLDXPVBrmfoBB28ZTCoi4hlzXSv
+         ig++tckd+qAN8fGi29rUIs7klm3AOuI5TCwDVJfag5dhOU86UAHQO1n3VMRXFelU5bIs
+         KnYMX2p6o4J0J1GMKRhG3UJkLV19YRoxNWC2+cAut9VPdI6+6mvxHYV4VbRnNy+GnEUG
+         e6+4cg6yQVBtuxGW4kJ4NpcLGEAEHRwwOAYIvN9ZrR1X0C9MWVqg2yALVCHzjuf5l/sm
+         XlSg==
+X-Gm-Message-State: AOAM530OogVPeCQBbtLYv0ilzeG6JiYss6JavJR06Z0RQvLFFTux9cgm
+        PwjxtLqA7Rj+/ggJ7OZGvxo=
+X-Google-Smtp-Source: ABdhPJxCG5xnShiAvBFmxb7Da3biTlYt98r8QqBxKW8iMTt6wpgkAlO2l83uFJaTB/QDYZpHzQp04g==
+X-Received: by 2002:a05:6402:234a:: with SMTP id r10mr992643eda.311.1605036767418;
+        Tue, 10 Nov 2020 11:32:47 -0800 (PST)
+Received: from skbuf ([188.25.2.177])
+        by smtp.gmail.com with ESMTPSA id cz14sm1918012edb.46.2020.11.10.11.32.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 10 Nov 2020 11:32:46 -0800 (PST)
+Date:   Tue, 10 Nov 2020 21:32:45 +0200
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     Christian Eggers <ceggers@arri.de>
+Cc:     Richard Cochran <richardcochran@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Helmut Grohne <helmut.grohne@intenta.de>,
+        Paul Barker <pbarker@konsulko.com>,
+        Codrin Ciubotariu <codrin.ciubotariu@microchip.com>,
+        George McCollister <george.mccollister@gmail.com>,
+        Marek Vasut <marex@denx.de>,
+        Tristram Ha <Tristram.Ha@microchip.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Woojung Huh <woojung.huh@microchip.com>,
+        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
+        netdev@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH net-next 7/9] net: dsa: microchip: ksz9477: add
+ hardware time stamping support
+Message-ID: <20201110193245.uwsmrqzio5hco7fb@skbuf>
+References: <20201019172435.4416-1-ceggers@arri.de>
+ <5844018.3araiXeC39@n95hx1g2>
+ <20201110014234.b3qdmc2e74poawpz@skbuf>
+ <1909178.Ky26jPeFT0@n95hx1g2>
+ <20201110164045.jqdwvmz5lq4hg54l@skbuf>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201110164045.jqdwvmz5lq4hg54l@skbuf>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-commit 6471384af2a6 ("mm: security: introduce init_on_alloc=1 and
-init_on_free=1 boot options") resulted with init_on_alloc=1 in all pages
-leaving the buddy via alloc_pages() and friends to be
-initialized/cleared/zeroed on allocation.
+On Tue, Nov 10, 2020 at 06:40:45PM +0200, Vladimir Oltean wrote:
+> I am fairly confident that this is how your hardware works, because
+> that's also how peer delay wants to be timestamped, it seems.
 
-However, the same logic is currently not applied to
-alloc_contig_pages(): allocated pages leaving the buddy aren't cleared
-with init_on_alloc=1 and init_on_free=0. Let's also properly clear
-pages on that allocation path and add support for __GFP_ZERO.
+So I was confident and also wrong, it appears. My KSZ9477 datasheet
+says:
 
-With this change, we will see double clearing of pages in some
-cases. One example are gigantic pages (either allocated via CMA, or
-allocated dynamically via alloc_contig_pages()) - which is the right
-thing to do (and to be optimized outside of the buddy in the callers) as
-discussed in:
-  https://lkml.kernel.org/r/20201019182853.7467-1-gpiccoli@canonical.com
+In the host-to-switch direction, the 4-byte timestamp field is always
+present when PTP is enabled, as shown in Figure 4-6. This is true for
+all packets sent by the host, including IBA packets. The host uses this
+field to insert the receive timestamp from PTP Pdelay_Req messages into
+the Pdelay_Resp messages. For all other traffic and PTP message types,
+the host should populate the timestamp field with zeros.
 
-This change implies that with init_on_alloc=1
-- All CMA allocations will be cleared
-- Gigantic pages allocated via alloc_contig_pages() will be cleared
-- virtio-mem memory to be unplugged will be cleared. While this is
-  suboptimal, it's similar to memory balloon drivers handling, where
-  all pages to be inflated will get cleared as well.
+Hm. Does that mean that the switch updates the originTimestamp field of
+the Sync frames by itself? Ok... Very interesting that they decided to
+introduce a field in the tail tag for a single type of PTP message.
 
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: Alexander Potapenko <glider@google.com>
-Cc: Michal Hocko <mhocko@suse.com>
-Cc: Mike Kravetz <mike.kravetz@oracle.com>
-Cc: Vlastimil Babka <vbabka@suse.cz>
-Cc: Mike Rapoport <rppt@linux.ibm.com>
-Cc: Oscar Salvador <osalvador@suse.de>
-Cc: Kees Cook <keescook@chromium.org>
-Cc: Michael Ellerman <mpe@ellerman.id.au>
-Signed-off-by: David Hildenbrand <david@redhat.com>
----
- mm/page_alloc.c | 24 +++++++++++++++++++++---
- 1 file changed, 21 insertions(+), 3 deletions(-)
+But something is still wrong if you need to special-case the negative
+correctionField, it looks like the arithmetic is not done on the correct
+number of bits, either by the driver or by the hardware.
 
-diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index eed4f4075b3c..0361b119b74e 100644
---- a/mm/page_alloc.c
-+++ b/mm/page_alloc.c
-@@ -8453,6 +8453,19 @@ static int __alloc_contig_migrate_range(struct compact_control *cc,
- 	return 0;
- }
- 
-+static void __alloc_contig_clear_range(unsigned long start_pfn,
-+				       unsigned long end_pfn)
-+{
-+	unsigned long pfn;
-+
-+	for (pfn = start_pfn; pfn < end_pfn; pfn += MAX_ORDER_NR_PAGES) {
-+		cond_resched();
-+		kernel_init_free_pages(pfn_to_page(pfn),
-+				       min_t(unsigned long, end_pfn - pfn,
-+					     MAX_ORDER_NR_PAGES));
-+	}
-+}
-+
- /**
-  * alloc_contig_range() -- tries to allocate given range of pages
-  * @start:	start PFN to allocate
-@@ -8461,7 +8474,8 @@ static int __alloc_contig_migrate_range(struct compact_control *cc,
-  *			#MIGRATE_MOVABLE or #MIGRATE_CMA).  All pageblocks
-  *			in range must have the same migratetype and it must
-  *			be either of the two.
-- * @gfp_mask:	GFP mask to use during compaction
-+ * @gfp_mask:	GFP mask to use during compaction. __GFP_ZERO clears allocated
-+ *		pages.
-  *
-  * The PFN range does not have to be pageblock or MAX_ORDER_NR_PAGES
-  * aligned.  The PFN range must belong to a single zone.
-@@ -8488,7 +8502,7 @@ int alloc_contig_range(unsigned long start, unsigned long end,
- 		.mode = MIGRATE_SYNC,
- 		.ignore_skip_hint = true,
- 		.no_set_skip_hint = true,
--		.gfp_mask = current_gfp_context(gfp_mask),
-+		.gfp_mask = current_gfp_context(gfp_mask & ~__GFP_ZERO),
- 		.alloc_contig = true,
- 	};
- 	INIT_LIST_HEAD(&cc.migratepages);
-@@ -8600,6 +8614,9 @@ int alloc_contig_range(unsigned long start, unsigned long end,
- 	if (end != outer_end)
- 		free_contig_range(end, outer_end - end);
- 
-+	if (!want_init_on_free() && want_init_on_alloc(gfp_mask))
-+		__alloc_contig_clear_range(start, end);
-+
- done:
- 	undo_isolate_page_range(pfn_max_align_down(start),
- 				pfn_max_align_up(end), migratetype);
-@@ -8653,7 +8670,8 @@ static bool zone_spans_last_pfn(const struct zone *zone,
- /**
-  * alloc_contig_pages() -- tries to find and allocate contiguous range of pages
-  * @nr_pages:	Number of contiguous pages to allocate
-- * @gfp_mask:	GFP mask to limit search and used during compaction
-+ * @gfp_mask:	GFP mask to limit search and used during compaction. __GFP_ZERO
-+ *		clears allocated pages.
-  * @nid:	Target node
-  * @nodemask:	Mask for other possible nodes
-  *
--- 
-2.26.2
-
+And zeroing out the correctionField of the Pdelay_Resp on transmission,
+to put that value into t_Tail_Tag? How can you squeeze a 48-bit value
+into a 32-bit value without truncation?
