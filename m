@@ -2,42 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3095B2ACC54
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 04:54:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A29702ACC55
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 04:54:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732702AbgKJDy2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 22:54:28 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55106 "EHLO mail.kernel.org"
+        id S1732751AbgKJDyf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 22:54:35 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55346 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732556AbgKJDyT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 22:54:19 -0500
+        id S1732671AbgKJDy1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 22:54:27 -0500
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C26D720E65;
-        Tue, 10 Nov 2020 03:54:17 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5A6642080A;
+        Tue, 10 Nov 2020 03:54:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604980458;
-        bh=sX1OLJXS9ta8INkTCr4BJk6fAhJHo5vF6+Zg12zOWNY=;
+        s=default; t=1604980467;
+        bh=KTYLfaT/c110WMmN+/ylv59n2v7cA2zK8bH4TV2ouIU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=JzNwRXjcrfsAq+/VxhJM9oGpG8JbLsNfLNKh4cq/huTMiHc3cyWWeOY7HNvhiYzO8
-         JigC0zV1I8TT94w0ZA1ByOPEueAqANxPIMgT/kMUiXzw4DfXS5mE2GSzgLyZR7y6kG
-         A9dk+ww6FRsV0eA63VLIrCVK0NjmXTdwE1Wn8L6Y=
+        b=kXj0o+6V9oO4h2YeOXZqrMGBJS6Zs/mR0xhdXVTqwF9djDYt0SYnRseyL34JhSuIJ
+         llHtdZpgQFkK/39mFw8eoIPbtt3+STUPMv+WX3JEz95gS4IDkLfog6Gqz0d6IgzPs8
+         UUAb/j8DyP+bVra8FNXjrakxV19aDIn4XPcGey7Q=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Daniele Palmas <dnlplm@gmail.com>,
-        =?UTF-8?q?Bj=C3=B8rn=20Mork?= <bjorn@mork.no>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org,
-        linux-usb@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.9 42/55] net: usb: qmi_wwan: add Telit LE910Cx 0x1230 composition
-Date:   Mon,  9 Nov 2020 22:53:05 -0500
-Message-Id: <20201110035318.423757-42-sashal@kernel.org>
+Cc:     Sean Anderson <seanga2@gmail.com>,
+        Palmer Dabbelt <palmerdabbelt@google.com>,
+        Sasha Levin <sashal@kernel.org>,
+        linux-riscv@lists.infradead.org
+Subject: [PATCH AUTOSEL 5.9 48/55] riscv: Set text_offset correctly for M-Mode
+Date:   Mon,  9 Nov 2020 22:53:11 -0500
+Message-Id: <20201110035318.423757-48-sashal@kernel.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20201110035318.423757-1-sashal@kernel.org>
 References: <20201110035318.423757-1-sashal@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
@@ -45,35 +43,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Daniele Palmas <dnlplm@gmail.com>
+From: Sean Anderson <seanga2@gmail.com>
 
-[ Upstream commit 5fd8477ed8ca77e64b93d44a6dae4aa70c191396 ]
+[ Upstream commit 79605f1394261995c2b955c906a5a20fb27cdc84 ]
 
-Add support for Telit LE910Cx 0x1230 composition:
+M-Mode Linux is loaded at the start of RAM, not 2MB later. Perhaps this
+should be calculated based on PAGE_OFFSET somehow? Even better would be to
+deprecate text_offset and instead introduce something absolute.
 
-0x1230: tty, adb, rmnet, audio, tty, tty, tty, tty
-
-Signed-off-by: Daniele Palmas <dnlplm@gmail.com>
-Acked-by: Bjørn Mork <bjorn@mork.no>
-Link: https://lore.kernel.org/r/20201102110108.17244-1-dnlplm@gmail.com
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Signed-off-by: Sean Anderson <seanga2@gmail.com>
+Signed-off-by: Palmer Dabbelt <palmerdabbelt@google.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/usb/qmi_wwan.c | 1 +
- 1 file changed, 1 insertion(+)
+ arch/riscv/kernel/head.S | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/drivers/net/usb/qmi_wwan.c b/drivers/net/usb/qmi_wwan.c
-index 5ca1356b8656f..3db5b5d104798 100644
---- a/drivers/net/usb/qmi_wwan.c
-+++ b/drivers/net/usb/qmi_wwan.c
-@@ -1331,6 +1331,7 @@ static const struct usb_device_id products[] = {
- 	{QMI_FIXED_INTF(0x1bc7, 0x1101, 3)},	/* Telit ME910 dual modem */
- 	{QMI_FIXED_INTF(0x1bc7, 0x1200, 5)},	/* Telit LE920 */
- 	{QMI_QUIRK_SET_DTR(0x1bc7, 0x1201, 2)},	/* Telit LE920, LE920A4 */
-+	{QMI_QUIRK_SET_DTR(0x1bc7, 0x1230, 2)},	/* Telit LE910Cx */
- 	{QMI_QUIRK_SET_DTR(0x1bc7, 0x1260, 2)},	/* Telit LE910Cx */
- 	{QMI_QUIRK_SET_DTR(0x1bc7, 0x1261, 2)},	/* Telit LE910Cx */
- 	{QMI_QUIRK_SET_DTR(0x1bc7, 0x1900, 1)},	/* Telit LN940 series */
+diff --git a/arch/riscv/kernel/head.S b/arch/riscv/kernel/head.S
+index 0a4e81b8dc795..5a0ae2eaf5e2f 100644
+--- a/arch/riscv/kernel/head.S
++++ b/arch/riscv/kernel/head.S
+@@ -27,12 +27,17 @@ ENTRY(_start)
+ 	/* reserved */
+ 	.word 0
+ 	.balign 8
++#ifdef CONFIG_RISCV_M_MODE
++	/* Image load offset (0MB) from start of RAM for M-mode */
++	.dword 0
++#else
+ #if __riscv_xlen == 64
+ 	/* Image load offset(2MB) from start of RAM */
+ 	.dword 0x200000
+ #else
+ 	/* Image load offset(4MB) from start of RAM */
+ 	.dword 0x400000
++#endif
+ #endif
+ 	/* Effective size of kernel image */
+ 	.dword _end - _start
 -- 
 2.27.0
 
