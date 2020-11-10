@@ -2,73 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93E342ACA45
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 02:18:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B8BDE2ACA47
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 02:19:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730122AbgKJBSg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 20:18:36 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58170 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727311AbgKJBSg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 20:18:36 -0500
-Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.5])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 81690206ED;
-        Tue, 10 Nov 2020 01:18:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604971115;
-        bh=mFmQP6MVnu8HNriG/I7mYUuPLO04iLDlS9GjAN4ePwo=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=w3nE8N2N6wHemOlUVXAuOv0BWy2YpmP466JNYcr7ObFaRtq+ZWWsWJ1h3t5GW2OXi
-         yRffNMjoWJtEbwsSzgOgvlHdkHIe8WgCXY20aRxXuySQJno0rwh13yFwZV60y25iVU
-         Ex6akSEGJ7YEirjhM+knsTaxcG4z4npSuCMburWY=
-Date:   Mon, 9 Nov 2020 17:18:34 -0800
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Michal Kubecek <mkubecek@suse.cz>
-Cc:     Alexander Lobakin <alobakin@pm.me>,
-        "David S. Miller" <davem@davemloft.net>,
-        Maxim Mikityanskiy <maximmi@mellanox.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 net] ethtool: netlink: add missing
- netdev_features_change() call
-Message-ID: <20201109171834.2a66c56d@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20201109140002.g45cbbroshyjotdh@lion.mk-sys.cz>
-References: <ahA2YWXYICz5rbUSQqNG4roJ8OlJzzYQX7PTiG80@cp4-web-028.plabs.ch>
-        <20201109140002.g45cbbroshyjotdh@lion.mk-sys.cz>
+        id S1730556AbgKJBTW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 20:19:22 -0500
+Received: from szxga06-in.huawei.com ([45.249.212.32]:7473 "EHLO
+        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727311AbgKJBTW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 20:19:22 -0500
+Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4CVVPv3CvRzhjt7;
+        Tue, 10 Nov 2020 09:19:15 +0800 (CST)
+Received: from [10.174.177.149] (10.174.177.149) by
+ DGGEMS401-HUB.china.huawei.com (10.3.19.201) with Microsoft SMTP Server id
+ 14.3.487.0; Tue, 10 Nov 2020 09:19:18 +0800
+Subject: Re: [PATCH] scsi: ufshcd: fix missing destroy_workqueue() on error in
+ ufshcd_init
+To:     Avri Altman <Avri.Altman@wdc.com>,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>
+CC:     "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20201109091522.55989-1-miaoqinglang@huawei.com>
+ <DM6PR04MB6575DEC0E343A01B1A4D275AFCEA0@DM6PR04MB6575.namprd04.prod.outlook.com>
+From:   Qinglang Miao <miaoqinglang@huawei.com>
+Message-ID: <c6b7a6a2-3327-cc50-d593-abaaa58c0da2@huawei.com>
+Date:   Tue, 10 Nov 2020 09:19:18 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <DM6PR04MB6575DEC0E343A01B1A4D275AFCEA0@DM6PR04MB6575.namprd04.prod.outlook.com>
+Content-Type: text/plain; charset="gbk"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.177.149]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 9 Nov 2020 15:00:02 +0100 Michal Kubecek wrote:
-> On Sun, Nov 08, 2020 at 12:46:15AM +0000, Alexander Lobakin wrote:
-> > After updating userspace Ethtool from 5.7 to 5.9, I noticed that
-> > NETDEV_FEAT_CHANGE is no more raised when changing netdev features
-> > through Ethtool.
-> > That's because the old Ethtool ioctl interface always calls
-> > netdev_features_change() at the end of user request processing to
-> > inform the kernel that our netdevice has some features changed, but
-> > the new Netlink interface does not. Instead, it just notifies itself
-> > with ETHTOOL_MSG_FEATURES_NTF.
-> > Replace this ethtool_notify() call with netdev_features_change(), so
-> > the kernel will be aware of any features changes, just like in case
-> > with the ioctl interface. This does not omit Ethtool notifications,
-> > as Ethtool itself listens to NETDEV_FEAT_CHANGE and drops
-> > ETHTOOL_MSG_FEATURES_NTF on it
-> > (net/ethtool/netlink.c:ethnl_netdev_event()).
-> > 
-> > From v1 [1]:
-> > - dropped extra new line as advised by Jakub;
-> > - no functional changes.
-> > 
-> > [1] https://lore.kernel.org/netdev/AlZXQ2o5uuTVHCfNGOiGgJ8vJ3KgO5YIWAnQjH0cDE@cp3-web-009.plabs.ch
-> > 
-> > Fixes: 0980bfcd6954 ("ethtool: set netdev features with FEATURES_SET request")
-> > Signed-off-by: Alexander Lobakin <alobakin@pm.me>  
-> 
-> Reviewed-by: Michal Kubecek <mkubecek@suse.cz>
 
-Applied, thanks!
+
+ÔÚ 2020/11/9 17:40, Avri Altman Ð´µÀ:
+>>
+>> Add the missing destroy_workqueue() before return from
+>> ufshcd_init in the error handling case. It seems that
+>> exit_gating is an appropriate place.
+>>
+>> Fixes: 4db7a2360597 ("scsi: ufs: Fix concurrency of error handler and other
+>> error recovery paths")
+>> Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
+>> ---
+>>   drivers/scsi/ufs/ufshcd.c | 1 +
+>>   1 file changed, 1 insertion(+)
+>>
+>> diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
+>> index b8f573a02713..9eaa0eaca374 100644
+>> --- a/drivers/scsi/ufs/ufshcd.c
+>> +++ b/drivers/scsi/ufs/ufshcd.c
+>> @@ -9206,6 +9206,7 @@ int ufshcd_init(struct ufs_hba *hba, void __iomem
+>> *mmio_base, unsigned int irq)
+>>   exit_gating:
+>>          ufshcd_exit_clk_scaling(hba);
+>>          ufshcd_exit_clk_gating(hba);
+>> +       destroy_workqueue(hba->eh_wq);
+> Maybe also in ufshcd_remove?
+> .
+You're right Avri, thanks!
+
+I'm gonna send a v2 on this patch to cover ufshcd_remove.
+> 
