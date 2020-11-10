@@ -2,76 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B80F02AD755
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 14:18:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DD992AD759
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 14:19:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730948AbgKJNSo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 08:18:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49362 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726721AbgKJNSn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 08:18:43 -0500
-Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED2BAC0613CF
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 05:18:42 -0800 (PST)
-Received: by mail-lf1-x143.google.com with SMTP id 74so17458412lfo.5
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 05:18:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=PbtNRUPuQPl2iPHtHsFzIyJlFka3u6ABmz9AweEvBgw=;
-        b=JEU+FpCQ4IbiXRB7mCcxfDQmNhCAL3Z7wxJyaND/4hv2laT+z8uY+XF51xWMjgOz3Q
-         V71ntAa1mko7FwZr9u6SMprNPIilW9Xj46sh19ntel+CGfwXPxr1UFGpbrXshCAuCrd5
-         j75+beOtbw68yN4Y43uvCvvBHyazspeJT0TLMENviP9R2KMTUvJHI12ZB5cLst7m6JEv
-         bIS1TR0x1opMRhe1+qgas7wlC4pgz93XK6HBdTZXvydtlhIK5UD6sfgPs8TcE4H6wSeS
-         1YAiXStukw9jxytvk7+1oX6P9WPseaZmSrxSAsZHB4osdR+VxBthaIA9sRykzh7eqeXw
-         PJsA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=PbtNRUPuQPl2iPHtHsFzIyJlFka3u6ABmz9AweEvBgw=;
-        b=ZT8zz14cslA1u6VZJS8PRG0ChXnWgLmaGc4QufYggCVcvxHl5jKjLj30es83m3LuaE
-         fmIKmF45EVmFvOYKaIPed+Opx2UDVypocz5QuFJ2H5FchQDiJxnZ0YmR8ZafDVO1/1jv
-         PGEmKOv/gm+W9e4mHbAelXtVk22NlU/uJZb5X6K4Oj8Al96sod+A2fU3h/D5dkVcyLFk
-         CsmBdghnblfKRVwSDg9GJfEu3oH4uwznPS6AUzCUp2BYsRnMRFme6IUmE6/4N3zd10BM
-         O7uBTI+Fb4ZswEGBZ2otb740vO20EBYjkCVzQAtJG6jPBS28t7mRUaQMGiK8UkEm3fX9
-         kvyw==
-X-Gm-Message-State: AOAM531WcmnosxPAONlLk1FCJwnXD9ipG0fgej4WaE8iqOWY48FpE3lS
-        ABbUdpDw2cdPajNBeg+iYtpTTneB9/627MittEwepDuYEn/N7Q==
-X-Google-Smtp-Source: ABdhPJxbENFIcFdIy0BtvMJE7at99ADDRfiC2tMAFYrsLb/EWwJPTu+QbDj7QZ2jlNXlZKOAZtK0ok5mUjQbr18UzpA=
-X-Received: by 2002:ac2:50c1:: with SMTP id h1mr7151465lfm.333.1605014321429;
- Tue, 10 Nov 2020 05:18:41 -0800 (PST)
+        id S1730665AbgKJNTt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 08:19:49 -0500
+Received: from mx2.suse.de ([195.135.220.15]:42354 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726721AbgKJNTs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Nov 2020 08:19:48 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1605014387;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+        bh=LAzXXj5GzuNVLy3Jg/kbnWMBu8+OLVtQu9zEu1Xuv0Q=;
+        b=Q1rdmZvcaLqFXIBUR1QjPvPsgVJNFcCZ/zMk4x0EWSWIUZhgWr2QinUFPHXO8PZuOLPhDA
+        TkHft6fj/+d8Nh+V6+TKcPmdDFEmJwtlfmWVW1MAUTM2HXfC7GAjlVeI5EEddhnohSvhAn
+        KOLM1bne0OU8+CWZqX5P2pCyNnNOljY=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 05182ACB6;
+        Tue, 10 Nov 2020 13:19:47 +0000 (UTC)
+Subject: Re: [PATCH] printk: ringbuffer: Convert function argument to local
+ variable
+To:     John Ogness <john.ogness@linutronix.de>, pmladek@suse.com,
+        sergey.senozhatsky@gmail.com
+Cc:     linux-kernel@vger.kernel.org, rostedt@goodmis.org
+References: <20201110125012.353456-1-nborisov@suse.com>
+ <87v9edqrph.fsf@jogness.linutronix.de>
+From:   Nikolay Borisov <nborisov@suse.com>
+Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
+ 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
+Message-ID: <e6c7fcaa-2a65-7586-d82a-450996986770@suse.com>
+Date:   Tue, 10 Nov 2020 15:19:46 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20201105231912.69527-1-coiby.xu@gmail.com> <20201105231912.69527-2-coiby.xu@gmail.com>
-In-Reply-To: <20201105231912.69527-2-coiby.xu@gmail.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Tue, 10 Nov 2020 14:18:30 +0100
-Message-ID: <CACRpkdb51B-bx3SPHZOeFG=+Qu5Ev-Sv9=wsFqXs3d-ykzcJ2A@mail.gmail.com>
-Subject: Re: [PATCH v3 1/4] pinctrl: amd: fix incorrect way to disable
- debounce filter
-To:     Coiby Xu <coiby.xu@gmail.com>
-Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Hans de Goede <hdegoede@redhat.com>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <87v9edqrph.fsf@jogness.linutronix.de>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 6, 2020 at 12:19 AM Coiby Xu <coiby.xu@gmail.com> wrote:
 
-> The correct way to disable debounce filter is to clear bit 5 and 6
-> of the register.
->
-> Cc: Hans de Goede <hdegoede@redhat.com>
-> Link: https://lore.kernel.org/linux-gpio/df2c008b-e7b5-4fdd-42ea-4d1c62b52139@redhat.com/
-> Signed-off-by: Coiby Xu <coiby.xu@gmail.com>
 
-This patch applied for fixes and tagged for stable.
+On 10.11.20 г. 15:14 ч., John Ogness wrote:
+> On 2020-11-10, Nikolay Borisov <nborisov@suse.com> wrote:
+>> data_alloc's 2nd argument is always rb::text_data_ring and that functino
+>> always takes a struct printk_ringbuffer. Instead of passing the data
+>> ring buffer as an argument simply make it a local variable.
+> 
+> This is a relic of when we had a second data ring (for
+> dictionaries). The patch is a nice cleanup, but there are actually
+> several functions that could use this exact same cleanup:
+> 
+> - data_make_reusable()
+> - data_push_tail()
+> - data_alloc()
+> - data_realloc()
+> 
+> Perhaps we should fix them all in a single patch?
 
-Yours,
-Linus Walleij
+I observed that right after sending this patch, so I have authored the
+necessary changes I can squash them and send them.
+
+> 
+> John Ogness
+> 
