@@ -2,100 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B9AD52ADEF8
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 20:01:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B0122ADEFD
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 20:01:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731403AbgKJTBA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 14:01:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46684 "EHLO
+        id S1731514AbgKJTBR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 14:01:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46724 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726400AbgKJTBA (ORCPT
+        with ESMTP id S1730775AbgKJTBQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 14:01:00 -0500
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76F00C0613D4
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 11:01:00 -0800 (PST)
-Received: by mail-pl1-x643.google.com with SMTP id d3so493502plo.4
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 11:01:00 -0800 (PST)
+        Tue, 10 Nov 2020 14:01:16 -0500
+Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1C82C0613D1
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 11:01:15 -0800 (PST)
+Received: by mail-lf1-x143.google.com with SMTP id e27so19117868lfn.7
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 11:01:15 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id;
-        bh=MVoBrAjhEFC0PezMoFr9xs7sKqAwAIK39BN64pdwyhI=;
-        b=yRy9BZRpLEUKgVbF4FtdJHEyaNyO44dEbAR5KNlxRYDB5EjVnL5I2uT3nADt6XvMI8
-         v+yF9fVVrwOgpVm67P+x+Z+7MvPowXHQjiuRXYOgd+YGwonRkYX3kyNIPfAvopmQaknX
-         Dm8f+VOITLpVW9BU0s/AE22svDmDn7XdhMT/HEatYUmmUR9xxoPzarfr/caXGJGq+Wps
-         Fh0gmUVFZB9ve2nFwT2MU0U/6Z6lHaE84G2qDy6xh5u7EJW06qDmRSNuTnB1qh82sEYh
-         KVfc3z5+HpxWQXmufs58xAOUub+tuDPzAN6F6QRcYCsj+F56MXtgsKYAIp4UaZD+evJY
-         oFLA==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=zKnP0UjT9/41FW96welsKE4nmHYtePDjICGtIuKNYDE=;
+        b=YutSGkcINLiH87RXw6H6GyKh691g0QzbgNl7CF4HK08iAClCp9ea/n89O0RSe2aNmb
+         Ur9I2aaz3qjCQ1CVxCZrwzro/3uPHPE6hLU5TegLPUTE8LAEjX+1RA2mh0uC0hjT0Kdk
+         fTH/PUwuj5ZMwRxfryXySmYoQNPa9wkVclmN7xSW8RrTkWvPkVVkKpuA9LINs0tIxKSt
+         JKlFHkT2+IU19ecYwZqiIwautQRIPzJSwOuf75WjGxwS1MyrSoJ6T0PZBnWP5SVdxgNF
+         IIJBz79fOk2GKvBzFDx4hlJhjrYkiGpocwnWXRpSEUgRPfbXcDJU/dNbK2CVKDm296Wa
+         SjlA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=MVoBrAjhEFC0PezMoFr9xs7sKqAwAIK39BN64pdwyhI=;
-        b=pz/HtDpXBGC112acymBbjOURNUOGv9bahgIPLY7p8XHv2nqv5B526hYSpvBWe/aZWR
-         6JS5VVIVnnPoiB3LeGTshWLjgqLsamghKzYQEHL9PpF8jNeIJP4DjVUpMC+6LAyeBlOU
-         9UlfEQgsbftVAUr0W1UiFXAamepIkfHJ32dCWY8uvs92xvrGkJLATN9Y0HoP5gPgd8cv
-         xDIdq5Q4eOnfp+PUVMQE03xf2rKQM9/bYCmFAnKYeNDW65sqyHEYPiXK+JdUaSgiJ417
-         DW8NYKdCPpmxSPs9xqjnTgskj4YLo3azrLqn1ulcdonY4CIXmIl6EL//1REZMt0QQrss
-         TisA==
-X-Gm-Message-State: AOAM531CXJbZfoSEv0/tRGwHlK7afQ8FASfmC9kkMa4PxXb34ulqO8br
-        pJ/pPDlKO/dxepnuV7ZIvp2qf/a2KmTfOA==
-X-Google-Smtp-Source: ABdhPJy39usNgzc0ELAbsZ1o2b74F4mwRDVHWgQ4MQB9rjXVDvOgTuMkkyOqkdzBTaUA5kpGKQ3SvQ==
-X-Received: by 2002:a17:902:a404:b029:d6:ebe0:6e57 with SMTP id p4-20020a170902a404b02900d6ebe06e57mr18000738plq.12.1605034859388;
-        Tue, 10 Nov 2020 11:00:59 -0800 (PST)
-Received: from localhost.localdomain ([2601:1c2:680:1319:692:26ff:feda:3a81])
-        by smtp.gmail.com with ESMTPSA id n1sm524660pfu.211.2020.11.10.11.00.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 10 Nov 2020 11:00:58 -0800 (PST)
-From:   John Stultz <john.stultz@linaro.org>
-To:     lkml <linux-kernel@vger.kernel.org>
-Cc:     John Stultz <john.stultz@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        Prasad Sodagudi <psodagud@codeaurora.org>,
-        Vladimir Lypak <junak.pub@gmail.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-arm-msm@vger.kernel.org, linux-gpio@vger.kernel.org
-Subject: [PATCH] pinctrl: qcom: Fix msm9853 Kconfig entry to depend on, not select PINCTRL_MSM
-Date:   Tue, 10 Nov 2020 19:00:54 +0000
-Message-Id: <20201110190054.20517-1-john.stultz@linaro.org>
-X-Mailer: git-send-email 2.17.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=zKnP0UjT9/41FW96welsKE4nmHYtePDjICGtIuKNYDE=;
+        b=BoNwHt5yKEGiYDEt8OeyJVnv36hCV5Sxtcmd/iAt/H4DzcoJqb842zx0PYPhefNNAF
+         Jd+lZuz6hfznC571Rhf/2s+CTD1NT1dOfe+mVIfx2H3xoCWyXB74pCToUEwh2ijfvg2F
+         7FQivCD/LxJwuXSHgtFk1CpZnd9INSaXIvsCQ9/MseyeN1cbcjLl9ErBrRtNmyXY9CnT
+         g7YNwzsOeH1Rw10y/3SAbKVveHyNRjsAglyEe5pRtDRCuomxCAnEGBYRI93y1nKk+EJQ
+         Qm4bYeEJUJYm/uO45+HH+GDf3Og8M4JmRsqt6+XyfOAV3ZKgWfvyaY4P8IlXC3c+jGoP
+         srxQ==
+X-Gm-Message-State: AOAM533a23o6YEw/vBytCFmxA/o8jWn5gBEShL1QxKZmpCj5WUj6gtAa
+        UJpz2FTaByE+OP4BJSVV1pQrmg6OzcsqmeLs6Cs7kA==
+X-Google-Smtp-Source: ABdhPJyODxBXTvRgxgz8DW1RA9365vP/o33VJ8YR44Ees8mNhL+3QyMtohiO6gQ6QFgjuCrW3qonmeZ6hyDThXC14rY=
+X-Received: by 2002:a19:85c2:: with SMTP id h185mr8571397lfd.494.1605034874125;
+ Tue, 10 Nov 2020 11:01:14 -0800 (PST)
+MIME-Version: 1.0
+References: <20201110184615.311974-1-guro@fb.com>
+In-Reply-To: <20201110184615.311974-1-guro@fb.com>
+From:   Shakeel Butt <shakeelb@google.com>
+Date:   Tue, 10 Nov 2020 11:01:02 -0800
+Message-ID: <CALvZod4kLJ+HsciThWkYiYiVDNjx9oUVBC+7k9jYtwHM4+QV_Q@mail.gmail.com>
+Subject: Re: [PATCH] mm: memcg: fix obsolete code comments
+To:     Roman Gushchin <guro@fb.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Linux MM <linux-mm@kvack.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Kernel Team <kernel-team@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-One fixup following my patch commit be117ca32261 ("pinctrl:
-qcom: Kconfig: Rework PINCTRL_MSM to be a depenency rather then
-a selected config") being queued in LinusW's tree, as a new
-config entry was added for the msm9853 that also needs the
-change.
+On Tue, Nov 10, 2020 at 10:46 AM Roman Gushchin <guro@fb.com> wrote:
+>
+> This patch fixes/removes some obsolete comments in the code related
+> to the kernel memory accounting:
+> - kmem_cache->memcg_params.memcg_caches has been removed
+>   by commit 9855609bde03 ("mm: memcg/slab: use a single set of
+>   kmem_caches for all accounted allocations")
+> - memcg->kmemcg_id is not used as a gate for kmem accounting since
+>   commit 0b8f73e10428 ("mm: memcontrol: clean up alloc, online,
+>   offline, free functions")
+>
+> Signed-off-by: Roman Gushchin <guro@fb.com>
 
-Applies to LinusW's pinctrl devel tree.
-
-Cc: Andy Gross <agross@kernel.org>
-Cc: Prasad Sodagudi <psodagud@codeaurora.org>
-Cc: Vladimir Lypak <junak.pub@gmail.com>
-Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc: Linus Walleij <linus.walleij@linaro.org>
-Cc: linux-arm-msm@vger.kernel.org
-Cc: linux-gpio@vger.kernel.org
-Signed-off-by: John Stultz <john.stultz@linaro.org>
----
- drivers/pinctrl/qcom/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/pinctrl/qcom/Kconfig b/drivers/pinctrl/qcom/Kconfig
-index 8bdf878fe970c..cf56e029cd9c7 100644
---- a/drivers/pinctrl/qcom/Kconfig
-+++ b/drivers/pinctrl/qcom/Kconfig
-@@ -115,7 +115,7 @@ config PINCTRL_MSM8916
- config PINCTRL_MSM8953
- 	tristate "Qualcomm 8953 pin controller driver"
- 	depends on GPIOLIB && OF
--	select PINCTRL_MSM
-+	depends on PINCTRL_MSM
- 	help
- 	  This is the pinctrl, pinmux, pinconf and gpiolib driver for the
- 	  Qualcomm TLMM block found on the Qualcomm MSM8953 platform.
--- 
-2.17.1
-
+Reviewed-by: Shakeel Butt <shakeelb@google.com>
