@@ -2,105 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B8492AE432
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 00:40:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B65CE2AE437
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 00:40:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732354AbgKJXkB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 18:40:01 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45064 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726706AbgKJXj6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 18:39:58 -0500
-Received: from mail-wm1-f42.google.com (mail-wm1-f42.google.com [209.85.128.42])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 771E7216C4
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 23:39:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605051597;
-        bh=vP9Wu8elj1EjHmdlev8FX3SwEeYPqgcrwW7YJdbph/8=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=X1mKbI858L3Ju6cKsCrDVUrisca1p76TX0NeubgFVdJaVdL1bG8munaGwvbkb7P8m
-         eUCyIB0xowCjZcBVAJEOncV3IwRXqglxX6u/GEo6CDjW+ak+S4H/Q0ESp2vBbb9vQ8
-         zFR1prT3OcqCFIEhd5pvP02Q1cH/XwjHuaBW83ok=
-Received: by mail-wm1-f42.google.com with SMTP id a3so107653wmb.5
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 15:39:57 -0800 (PST)
-X-Gm-Message-State: AOAM531speReVyKu6/e8FUWiQMqXOTQ3uYZMVhy9CDQgpUof7T2RyHQh
-        zArha68IwgOhzKr1m1Oo1IufBTN8c4yoWB0pKZShvw==
-X-Google-Smtp-Source: ABdhPJzMJpBqXvd1Aj5j+2KijkHX6sy0yoQ0Ob4MWCtBPKp//N72JCAjlig7pXZKfR8/lyjkczLnnS4hDe290OUkXn0=
-X-Received: by 2002:a1c:9c56:: with SMTP id f83mr576089wme.49.1605051595859;
- Tue, 10 Nov 2020 15:39:55 -0800 (PST)
+        id S1732384AbgKJXkj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 18:40:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34070 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730254AbgKJXkg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Nov 2020 18:40:36 -0500
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4086C0613D1;
+        Tue, 10 Nov 2020 15:40:35 -0800 (PST)
+Received: by mail-wr1-x442.google.com with SMTP id l1so338735wrb.9;
+        Tue, 10 Nov 2020 15:40:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=7Kkc+sXRhJ1ZOnG2Idz2D/eyp50AaUEzxdbosWJCnfc=;
+        b=sndifEs6IPBU1QcqULomDdKJbRO0B8RfN0xu255024by7JZYRljU0bAuVxa50FiNo6
+         VowBpIAUU00RN8KYVwQHrt1gRpaAB+hBE5o5SM7p4Hs5shaY1jVHUtNXdSa59bi8V8kY
+         KTq2thkxI4vpjMeDBz+m/lElBZhdALaGN2b2as/1SJ1zlFnVvmcWZ/cwGhWmk4nDg1lV
+         omhGykiS/GkbbyTSIPLlYMVuLsQtq4S/4L1y/Y+kl3VhXuvoJDRo4vfJhgdbJ0zhmmdp
+         3Eqtvo9bhVnNsfgz7XGwb2t982PyUj1M5sdmryLurJSSQsMM6TZy17jP37ZZ8aDLxp2Y
+         gXEg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=7Kkc+sXRhJ1ZOnG2Idz2D/eyp50AaUEzxdbosWJCnfc=;
+        b=XKIy28cWRATBsR5pOFBgq+Ks5nA/ImP2ZOFDiAtgrQcWn3cLABRPI6rTMDcu6M8LIA
+         iN2M7eMGrXDG+NWhxy+LaRlWnwZsH4j8lU36pgVCoBEKP2L6D0cOrnI8oDgHXIOmNs7W
+         a4lIAErGlRP+sQlLDQLhMCxaUuPXQF2X7bmiL4dLjy/n9nDr/QJHU6eX3gsdvhnbhCNw
+         5cGjJkAhkf1+EQguycpdNCzIXz3QJZ8heBJgRH6OK4rhe2sgz6HSHnXLsmY/LFZ/MBUt
+         tpU7sBsBOZr8zF7PRqiBlgdUx8E1qp+0hzgFt+OEqfjSPYh3/q4qaSG9rv3HF0K9hWI8
+         rDbQ==
+X-Gm-Message-State: AOAM531nr67INBJ1Rvuh0sbqwV1qTETT2T0OW14yfItJzN4wksklNr/L
+        jQ6UdfxZID4YXcPumD+mibqXypKG+9gqTFRLALA=
+X-Google-Smtp-Source: ABdhPJwDpXAdtq2BWrkbbFcS4rEJ6TQP6GK4YglRDW4qrqj+0WgIyXJz/2t5rDQl8yv8FHy71t/uUQ6HD/bc1bwV47o=
+X-Received: by 2002:adf:f246:: with SMTP id b6mr26172437wrp.111.1605051634647;
+ Tue, 10 Nov 2020 15:40:34 -0800 (PST)
 MIME-Version: 1.0
-References: <20201109144425.270789-1-alexandre.chartre@oracle.com>
- <20201109144425.270789-14-alexandre.chartre@oracle.com> <bb5b370b-5091-f3ca-9967-5a5d91287788@oracle.com>
-In-Reply-To: <bb5b370b-5091-f3ca-9967-5a5d91287788@oracle.com>
-From:   Andy Lutomirski <luto@kernel.org>
-Date:   Tue, 10 Nov 2020 15:39:43 -0800
-X-Gmail-Original-Message-ID: <CALCETrUcyHtoZOjkoivDfMZHo0Z-gum_eHP8ca4gPLcTLWu5Xg@mail.gmail.com>
-Message-ID: <CALCETrUcyHtoZOjkoivDfMZHo0Z-gum_eHP8ca4gPLcTLWu5Xg@mail.gmail.com>
-Subject: Re: [RFC][PATCH 13/24] x86/pti: Extend PTI user mappings
-To:     Alexandre Chartre <alexandre.chartre@oracle.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, X86 ML <x86@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Andrew Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
+References: <20201110193112.988999-1-lee.jones@linaro.org> <20201110193112.988999-11-lee.jones@linaro.org>
+In-Reply-To: <20201110193112.988999-11-lee.jones@linaro.org>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Tue, 10 Nov 2020 18:40:20 -0500
+Message-ID: <CADnq5_NRMtfiuVtORwQC0_3wwXG9N9Hx7BrmO-atOfAOM1qwwA@mail.gmail.com>
+Subject: Re: [PATCH 10/30] drm/radeon/radeon_sync: Add description for
+ function param 'rdev'
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     David Airlie <airlied@linux.ie>,
         LKML <linux-kernel@vger.kernel.org>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Joerg Roedel <jroedel@suse.de>,
-        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-        jan.setjeeilers@oracle.com, Junaid Shahid <junaids@google.com>,
-        oweisse@google.com, Mike Rapoport <rppt@linux.vnet.ibm.com>,
-        Alexander Graf <graf@amazon.de>, mgross@linux.intel.com,
-        kuzuno@gmail.com
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
+        <linaro-mm-sig@lists.linaro.org>,
+        Maling list - DRI developers 
+        <dri-devel@lists.freedesktop.org>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        linux-media <linux-media@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 9, 2020 at 11:54 AM Alexandre Chartre
-<alexandre.chartre@oracle.com> wrote:
+On Tue, Nov 10, 2020 at 2:31 PM Lee Jones <lee.jones@linaro.org> wrote:
 >
+> Fixes the following W=3D1 kernel build warning(s):
 >
-> [Copying the reply to Andy in the thread with the right email addresses]
+>  drivers/gpu/drm/radeon/radeon_sync.c:92: warning: Function parameter or =
+member 'rdev' not described in 'radeon_sync_resv'
 >
-> On 11/9/20 6:28 PM, Andy Lutomirski wrote:
-> > On Mon, Nov 9, 2020 at 3:22 AM Alexandre Chartre
-> > <alexandre.chartre@oracle.com> wrote:
-> >>
-> >> Extend PTI user mappings so that more kernel entry code can be executed
-> >> with the user page-table. To do so, we need to map syscall and interrupt
-> >> entry code,
-> >
-> > Probably fine.
-> >
-> >> per cpu offsets (__per_cpu_offset, which is used some in
-> >> entry code),
-> >
-> > This likely already leaks due to vulnerable CPUs leaking address space
-> > layout info.
->
-> I forgot to update the comment, I am not mapping __per_cpu_offset anymore.
->
-> However, if we do map __per_cpu_offset then we don't need to enforce the
-> ordering in paranoid_entry to switch CR3 before GS.
+> Cc: Alex Deucher <alexander.deucher@amd.com>
+> Cc: "Christian K=C3=B6nig" <christian.koenig@amd.com>
+> Cc: David Airlie <airlied@linux.ie>
+> Cc: Daniel Vetter <daniel@ffwll.ch>
+> Cc: Sumit Semwal <sumit.semwal@linaro.org>
+> Cc: amd-gfx@lists.freedesktop.org
+> Cc: dri-devel@lists.freedesktop.org
+> Cc: linux-media@vger.kernel.org
+> Cc: linaro-mm-sig@lists.linaro.org
+> Signed-off-by: Lee Jones <lee.jones@linaro.org>
 
-I'm okay with mapping __per_cpu_offset.
+Applied.  Thanks!
 
->
-> >
-> >> the stack canary,
-> >
-> > That's going to be a very tough sell.
-> >
->
-> I can get rid of this, but this will require to disable stack-protector for
-> any function that we can call while using the user page-table, like already
-> done in patch 21 (x86/entry: Disable stack-protector for IST entry C handlers).
->
+Alex
 
-You could probably get away with using a different stack protector
-canary before and after the CR3 switch as long as you are careful to
-have the canary restored when you return from whatever function is
-involved.
+> ---
+>  drivers/gpu/drm/radeon/radeon_sync.c | 1 +
+>  1 file changed, 1 insertion(+)
+>
+> diff --git a/drivers/gpu/drm/radeon/radeon_sync.c b/drivers/gpu/drm/radeo=
+n/radeon_sync.c
+> index 55cc77a73c7b7..5d3302945076b 100644
+> --- a/drivers/gpu/drm/radeon/radeon_sync.c
+> +++ b/drivers/gpu/drm/radeon/radeon_sync.c
+> @@ -79,6 +79,7 @@ void radeon_sync_fence(struct radeon_sync *sync,
+>  /**
+>   * radeon_sync_resv - use the semaphores to sync to a reservation object
+>   *
+> + * @rdev: radeon_device pointer
+>   * @sync: sync object to add fences from reservation object to
+>   * @resv: reservation object with embedded fence
+>   * @shared: true if we should only sync to the exclusive fence
+> --
+> 2.25.1
+>
+> _______________________________________________
+> dri-devel mailing list
+> dri-devel@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/dri-devel
