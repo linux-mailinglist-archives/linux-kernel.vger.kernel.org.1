@@ -2,89 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DEBCD2AD7E5
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 14:43:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 188412AD7EC
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 14:45:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731929AbgKJNno (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 08:43:44 -0500
-Received: from mail-oi1-f194.google.com ([209.85.167.194]:34858 "EHLO
-        mail-oi1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730099AbgKJNno (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 08:43:44 -0500
-Received: by mail-oi1-f194.google.com with SMTP id c80so14350735oib.2;
-        Tue, 10 Nov 2020 05:43:43 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=WpFVE6ofl5+PZ7ETLOM4YJeMuugBjXN/ryVQoNcTj3w=;
-        b=iiwbustvPPGhdGy0jQt5BjOUWl/JCSLciOZAIiraoAC7xC2ohe8H1i4OeKTK/NbZ4I
-         QMorKb0wOApDEZSnZYwes1Xp42Ls6jmd/W08MAasDycHQcXseppaFIRaqZJeFYD2XfVo
-         IZrsqFxcVXSAfJ6bRPl5w7MQiY6FqZHsrPNjyEPEkCD15WBhsaA6Ba9AfITas7tuLBwu
-         N5LIWgDMhTtsF2GpjTNHZHddfkoAf1TQkcnlgpxWPIovmm7ARzjdGpOIt1tUCIzAoRaT
-         cipMI3P+TDGHJvdkT6VZAD38pxuiniN09njqwmp0bCV/Zx/6QmFICDJJNysLh0+bgBd6
-         lOrg==
-X-Gm-Message-State: AOAM531fPU8HCIZxpK1oTD1iXKpYR/A9LX7oTu2cc1r3lZiV8CbBcCLj
-        afgZppNCePnAt4OxO3WRCHUJHK3aHw==
-X-Google-Smtp-Source: ABdhPJxLq0HuK77T+P1JhbEOUFMIPB7pENYAAjIDpcPFoqU5pJqnjH9fqPQkwQ4DHmeCnkrjJ4qD0A==
-X-Received: by 2002:aca:4387:: with SMTP id q129mr2827367oia.108.1605015822787;
-        Tue, 10 Nov 2020 05:43:42 -0800 (PST)
-Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id a23sm3117370oot.33.2020.11.10.05.43.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 10 Nov 2020 05:43:42 -0800 (PST)
-Received: (nullmailer pid 3068702 invoked by uid 1000);
-        Tue, 10 Nov 2020 13:43:40 -0000
-Date:   Tue, 10 Nov 2020 07:43:40 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Andrej Valek <andrej.valek@siemens.com>
-Cc:     dmitry.torokhov@gmail.com, nick@shmanahar.org, hadess@hadess.net,
-        linux-kernel@vger.kernel.org, linux-input@vger.kernel.org,
-        devicetree@vger.kernel.org
-Subject: Re: [PATCH v3 2/4] dt-bindings: touchscreen: goodix: add info about
- disabling FW loading
-Message-ID: <20201110134340.GA3068076@bogus>
-References: <20201029170313.25529-1-andrej.valek@siemens.com>
- <20201110090720.6650-3-andrej.valek@siemens.com>
+        id S1730244AbgKJNpG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 08:45:06 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52442 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726462AbgKJNpG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Nov 2020 08:45:06 -0500
+Received: from localhost (unknown [176.177.120.14])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 671FB20731;
+        Tue, 10 Nov 2020 13:45:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605015906;
+        bh=oPXeABMP7i9R4jHhuiCy07IHgieCSj28tnLN/HIYQXo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=rET6opyncGZnHbHWGBVBr6LRixrJw5ioCcNsFz5GfvM4g/o9U6/ixmEKSrVom36xD
+         uLvj1aOqGlAaAb/Qa37GjTqME6qv3IWZBYuf8ZTDdJeH+hPyQ3OIFbd3DEhLDN7TH0
+         Yq26VYeYkafvCuFx/0nkeI0SkmE+9Q9O5l7xzq4k=
+Date:   Tue, 10 Nov 2020 14:45:03 +0100
+From:   Frederic Weisbecker <frederic@kernel.org>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>, Mel Gorman <mgorman@suse.de>,
+        Michal Hocko <mhocko@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>, Michal Hocko <mhocko@suse.com>
+Subject: Re: [RFC PATCH 6/7] preempt/dynamic: Provide
+ irqentry_exit_cond_resched() static call
+Message-ID: <20201110134503.GC48886@lothringen>
+References: <20201110005609.40989-1-frederic@kernel.org>
+ <20201110005609.40989-7-frederic@kernel.org>
+ <20201110103221.GC2594@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201110090720.6650-3-andrej.valek@siemens.com>
+In-Reply-To: <20201110103221.GC2594@hirez.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 10 Nov 2020 10:07:18 +0100, Andrej Valek wrote:
-> Add information about option how to disable FW loading for each boot.
+On Tue, Nov 10, 2020 at 11:32:21AM +0100, Peter Zijlstra wrote:
+> On Tue, Nov 10, 2020 at 01:56:08AM +0100, Frederic Weisbecker wrote:
+> > [convert from static key to static call, only define static call when
+> > PREEMPT_DYNAMIC]
 > 
-> Signed-off-by: Andrej Valek <andrej.valek@siemens.com>
-> ---
->  Documentation/devicetree/bindings/input/touchscreen/goodix.yaml | 1 +
->  1 file changed, 1 insertion(+)
+> >  noinstr void irqentry_exit(struct pt_regs *regs, irqentry_state_t state)
+> >  {
+> > @@ -383,8 +386,13 @@ noinstr void irqentry_exit(struct pt_regs *regs, irqentry_state_t state)
+> >  		}
+> >  
+> >  		instrumentation_begin();
+> > -		if (IS_ENABLED(CONFIG_PREEMPTION))
+> > +		if (IS_ENABLED(CONFIG_PREEMPTION)) {
+> > +#ifdef CONFIG_PREEMT_DYNAMIC
+> > +			static_call(irqentry_exit_cond_resched)();
+> > +#else
+> >  			irqentry_exit_cond_resched();
+> > +#endif
+> > +		}
+> >  		/* Covers both tracing and lockdep */
+> >  		trace_hardirqs_on();
+> >  		instrumentation_end();
 > 
+> The reason I had this a static_branch() is that because if you look at
+> the code-gen of this function, you'll find it will inline the call.
+> 
+> Not sure it matters much, but it avoids a CALL+RET.
 
+I wouldn't mind turning it to a static key but that adds one more
+requirement for the architectures that want this, namely proper
+support for static key. Now probably architectures supporting
+static call inline (for now only x86) will have proper static
+key support as well. So this probably doesn't matter after all.
 
-My bot found errors running 'make dt_binding_check' on your patch:
-
-yamllint warnings/errors:
-
-dtschema/dtc warnings/errors:
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/input/touchscreen/goodix.yaml: properties:goodix,do-not-load-fw: False is not of type 'object'
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/input/touchscreen/goodix.yaml: ignoring, error in schema: properties: goodix,do-not-load-fw
-warning: no schema found in file: ./Documentation/devicetree/bindings/input/touchscreen/goodix.yaml
-
-
-See https://patchwork.ozlabs.org/patch/1397438
-
-The base for the patch is generally the last rc1. Any dependencies
-should be noted.
-
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
-
-pip3 install dtschema --upgrade
-
-Please check and re-submit.
-
+Thanks.
