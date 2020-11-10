@@ -2,90 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EF882AD98E
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 15:59:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 231F12AD989
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 15:59:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731038AbgKJO7b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 09:59:31 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49562 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730917AbgKJO72 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 09:59:28 -0500
-Received: from mail-ot1-f53.google.com (mail-ot1-f53.google.com [209.85.210.53])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 768D7216C4;
-        Tue, 10 Nov 2020 14:59:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605020367;
-        bh=qvUn9qNX1M1Qx2QeznJUHEO4kgcTe0+DelhXJxEE0dw=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=O/3QTe6UPGl4+UBnrvNNeMglzQW4NaG0atUAknJXGKmiKlQ3jFAg466x/NwQrKu8/
-         gBOWhF2e4nqsUJikfZBNK85TbHjpqqfBqGUI/fPV3Q4vo0VU27Kg9mYaa1UZ+CPmR7
-         m6tDvxeghc9snLMuu1GE+vc1t3kZ5zdJ+r04K2GU=
-Received: by mail-ot1-f53.google.com with SMTP id f16so12745658otl.11;
-        Tue, 10 Nov 2020 06:59:27 -0800 (PST)
-X-Gm-Message-State: AOAM530/6H67dDL5PAJL3KAeHijbr+1XU2zLAQyWMFDyoERLp8rObvxD
-        Spis/dV5AB9DWng0pGXDXiFUAN1Kt1LNhA2hImg=
-X-Google-Smtp-Source: ABdhPJxoTX+rWXC9j2qbuOi17pSMpsm+frJ8yNOwZPIBGWBUEPxRNPsSN2Sgb5QTmR2TPMukZYJ0UGj/XW9Ewao913I=
-X-Received: by 2002:a9d:23a6:: with SMTP id t35mr13613677otb.210.1605020366593;
- Tue, 10 Nov 2020 06:59:26 -0800 (PST)
+        id S1730099AbgKJO7U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 09:59:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37160 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730070AbgKJO7U (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Nov 2020 09:59:20 -0500
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA095C0613D1
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 06:59:19 -0800 (PST)
+Received: by mail-wm1-x341.google.com with SMTP id p22so3278255wmg.3
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 06:59:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=IdLgaRbW4nEaCIcc+Kl+IljF0AKQ9c4kOuJIqFJ4XQQ=;
+        b=zE6BW1MXgSBPi6HFNs/bFM9mV0opihuPEMpa9blC8mLW9qOpazn6K8JS6h6SKf5yGf
+         3Yj98J4V2XWwhBvmIMaKmSna1vqKdzE2M9Qi6xn2YCI9p40INPY6PCi9OB/zwvAxyccj
+         YmvQwGTzk/Y4PQ25QOHWw3o8bWOAWv/3DY7XTW8j/yfIt1dUdzOUIGJ5j5YAj8yr+YD4
+         /sm6TJACtN5T1Qd67KPUbFoanilicnmzf4ZoS8Olc0OFazxEjAXXvbDji5FRHJmygO5v
+         8poTXkB8Eej+YMMI1ufXUdvN/J+iYDadMpcjnsqHbeN83gIZuym17+K5VYtJgQA2PwVF
+         RGTA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=IdLgaRbW4nEaCIcc+Kl+IljF0AKQ9c4kOuJIqFJ4XQQ=;
+        b=MHz92RUzGhHS9Wgad++jwYGXyxfBU2V+1e4VftowopqNXXGzSiy9qHyaCgLDy5WXYF
+         kvC1sg17fudsU4BBK/tNO3S5Oe5AjUxHOjibplDoLd6pacb2YnbA1ztdq/KTcQouucXL
+         kBHWBYpanSvAzOfoBhru6VjArnIqQnb7YJHzYmCJzTcpHLpXMXWWIuPKzUfwWQKkh1v+
+         KvxhcAG/ZxqdHS7D52p14WUmbhYFs1mxFrevE4yA0Bk3FcTttpUgNVaGVBp5D0x61Os7
+         d2AC6KbVdp7bdocPLcLk1cB9dZV/1tc6BDkb6p0J6XpT/Q8o+XVMVzgxH0Ia826H6R1C
+         +4SQ==
+X-Gm-Message-State: AOAM5330KKmO1tlhckCWTy+oU6hhc3T06G3BZyIFbdL6C05OKwwquuVH
+        CsqeYeHNbgTEJ1uBe/ggtOWJtA==
+X-Google-Smtp-Source: ABdhPJxMjHi9px4ve94r4lzwF0KBkof3AuKcVHvqTov0sVXZfIVWNNeQSwqEOMtZQc+y6NiObyT9uA==
+X-Received: by 2002:a1c:dc43:: with SMTP id t64mr37525wmg.93.1605020358599;
+        Tue, 10 Nov 2020 06:59:18 -0800 (PST)
+Received: from ?IPv6:2a01:e34:ed2f:f020:1087:e960:613c:926b? ([2a01:e34:ed2f:f020:1087:e960:613c:926b])
+        by smtp.googlemail.com with ESMTPSA id v67sm3381795wma.17.2020.11.10.06.59.17
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 10 Nov 2020 06:59:17 -0800 (PST)
+Subject: Re: [PATCH 3/4] powercap/drivers/dtpm: Add API for dynamic thermal
+ power management
+To:     Lukasz Luba <lukasz.luba@arm.com>
+Cc:     rafael@kernel.org, srinivas.pandruvada@linux.intel.com,
+        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        rui.zhang@intel.com, "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Arnd Bergmann <arnd@arndb.de>,
+        "open list:GENERIC INCLUDE/ASM HEADER FILES" 
+        <linux-arch@vger.kernel.org>
+References: <20201006122024.14539-1-daniel.lezcano@linaro.org>
+ <20201006122024.14539-4-daniel.lezcano@linaro.org>
+ <8fea0109-30d4-7d67-ffeb-8e588a4dadc3@arm.com>
+ <313a92c5-3c45-616f-1fe8-9837721f9889@arm.com>
+From:   Daniel Lezcano <daniel.lezcano@linaro.org>
+Message-ID: <2495f9b8-327d-bf92-a159-ac3202d30ee0@linaro.org>
+Date:   Tue, 10 Nov 2020 15:59:16 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20200930153519.7282-16-kishon@ti.com> <VI1PR04MB496061EAB6F249F1C394F01092EA0@VI1PR04MB4960.eurprd04.prod.outlook.com>
- <d6d27475-3464-6772-2122-cc194b8ae022@ti.com> <VI1PR04MB49602D24F65E11FF1F14294F92E90@VI1PR04MB4960.eurprd04.prod.outlook.com>
- <30c8f7a1-baa5-1eb4-d2c2-9a13be896f0f@ti.com>
-In-Reply-To: <30c8f7a1-baa5-1eb4-d2c2-9a13be896f0f@ti.com>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Tue, 10 Nov 2020 15:59:08 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a38vBXbAWE09H+TSoZUTkFdYDcQmXX97foT4qXQc8t5ZQ@mail.gmail.com>
-Message-ID: <CAK8P3a38vBXbAWE09H+TSoZUTkFdYDcQmXX97foT4qXQc8t5ZQ@mail.gmail.com>
-Subject: Re: [PATCH v7 15/18] NTB: Add support for EPF PCI-Express
- Non-Transparent Bridge
-To:     Kishon Vijay Abraham I <kishon@ti.com>
-Cc:     Sherry Sun <sherry.sun@nxp.com>,
-        "bhelgaas@google.com" <bhelgaas@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        "lorenzo.pieralisi@arm.com" <lorenzo.pieralisi@arm.com>,
-        "arnd@arndb.de" <arnd@arndb.de>,
-        "jdmason@kudzu.us" <jdmason@kudzu.us>,
-        "dave.jiang@intel.com" <dave.jiang@intel.com>,
-        "allenbh@gmail.com" <allenbh@gmail.com>,
-        "tjoseph@cadence.com" <tjoseph@cadence.com>,
-        Rob Herring <robh@kernel.org>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-ntb@googlegroups.com" <linux-ntb@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <313a92c5-3c45-616f-1fe8-9837721f9889@arm.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 10, 2020 at 3:20 PM Kishon Vijay Abraham I <kishon@ti.com> wrote:
-> On 10/11/20 7:55 am, Sherry Sun wrote:
+On 10/11/2020 12:05, Lukasz Luba wrote:
+> 
+> Actually I've found one issue when I have been trying to clean
+> my testing branch with modified scmi-cpufreq.c.
 
-> > But for VOP, only two boards are needed(one board as host and one board as card) to realize the
-> > communication between the two systems, so my question is what are the advantages of using NTB?
->
-> NTB is a bridge that facilitates communication between two different
-> systems. So it by itself will not be source or sink of any data unlike a
-> normal EP to RP system (or the VOP) which will be source or sink of data.
->
-> > Because I think the architecture of NTB seems more complicated. Many thanks!
->
-> yeah, I think it enables a different use case all together. Consider you
-> have two x86 HOST PCs (having RP) and they have to be communicate using
-> PCIe. NTB can be used in such cases for the two x86 PCs to communicate
-> with each other over PCIe, which wouldn't be possible without NTB.
+IMO, those errors are not the dtpm framework fault but the scmi-cpufreq.
 
-I think for VOP, we should have an abstraction that can work on either NTB
-or directly on the endpoint framework but provide an interface that then
-lets you create logical devices the same way.
+You should add a component in the drivers/powercap which does the glue
+between the scmi-cpufreq and the dtpm. No stub will be needed in this
+case as the component will depend on CONFIG_DTPM.
 
-Doing VOP based on NTB plus the new NTB_EPF driver would also
-work and just move the abstraction somewhere else, but I guess it
-would complicate setting it up for those users that only care about the
-simpler endpoint case.
 
-      Arnd
+
+
+-- 
+<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog
