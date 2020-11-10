@@ -2,92 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FE2F2AE3A6
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 23:50:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D24512AE3A9
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 23:50:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732375AbgKJWt4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 17:49:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54472 "EHLO
+        id S1732391AbgKJWuQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 17:50:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54528 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731982AbgKJWt4 (ORCPT
+        with ESMTP id S1731981AbgKJWuQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 17:49:56 -0500
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E3A2C0613D1
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 14:49:55 -0800 (PST)
-Received: by mail-pl1-x641.google.com with SMTP id cp9so3796916plb.1
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 14:49:55 -0800 (PST)
+        Tue, 10 Nov 2020 17:50:16 -0500
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D19F0C0613D1
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 14:50:15 -0800 (PST)
+Received: by mail-wm1-x342.google.com with SMTP id w24so4858043wmi.0
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 14:50:15 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=oTLSsibufzWzMwpo8qkoqYzphbDo9oHVLv73BEVjMRw=;
-        b=hve4HvrQq9EsNI1QYuz6/oOdzvECxuqSP0+b1p6EfXlOOXhazaB1Z25028V96c/x0i
-         WN/LSNq9cPZNHJfr2ViI6fEgekAeA8l538rRWv4m/UyM/Uz6PBnOHf7Qhvy5QL0qhUUC
-         PQevEI+qUeaKWHSPge3oKEqgx9XBtwZVbm8Xc=
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=BddpXWM57oMSeuVH0GiCGkmNr8YUMWASKDEXAi/F4Ik=;
+        b=L5zynW/A8fxFU6d77a5ySvH/zy/gQQ03BiPxTKVFS0BkRGdTjlZU1ny3qgCTVODHrk
+         Tc3pEvR9O+kugkYPplUoNDeeefZR3hPV4lcG4Jwx8o1akwlC7c6oIWH+bZptJcecyu1l
+         Fjq8w3jC8ModVcuglp4i103Ic56YXgcHSZAMzV5arGidxapkUSYBeCRGICkB1Xgf0B+b
+         J1CN5MXVwquoolNXwAhW8Cbx+3vLwXnchxkai6yYY0W2cb+MgfBbUhzgKNhs+0+sK6c/
+         6Fs2P/PGRXjUZCR5IbJzw9L3QgtUQxmTg5KHsRMKthXM548Wv16tUUc1TUBw28NLaQbP
+         k22g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=oTLSsibufzWzMwpo8qkoqYzphbDo9oHVLv73BEVjMRw=;
-        b=b+j24RvRR46rs/jLVoHZs7g8bPGHDfVEpL8+chffzMjA95mNpMP1mViF1kiSoHkq+b
-         TrclJgYQTTMrehsdyekMFSrcniO0ALI4zOl5hTTPxb/72mLxmtzQbN/ebHn8X9e+Zica
-         mk9CLCHEOK4zfeVwGImfvWmxCT7Mp9RY7q+c2FqT746WIy67/3T4vJXt78sHKaj4IP0A
-         1CSuQp1mIyeD3VdIAN7R/EUvQVUPZvzvOZH6qMKaFN6Ru6WRF6xyjQNobVr41IDuaVHw
-         eYE2CCEbhggc9om+HGq3R7KsOe27czrgubW/sThlAthR/UznWRDItQNtBRGOpFkYTQ9i
-         WmzA==
-X-Gm-Message-State: AOAM531Tab/r+mxqN1/9IgsJMaChbbK8ZdftzhFuSI1As9bR8V6uhCZu
-        wDbxo4WQu6wJJ2fHriTR9RDAgw==
-X-Google-Smtp-Source: ABdhPJwfhNHYZjFRje1wP4WQws5EGleZth9p2I30TlxBONK6+npBRQ16AFvbx3VYftASE6iJ5bOJng==
-X-Received: by 2002:a17:902:fe8a:b029:d7:e629:9551 with SMTP id x10-20020a170902fe8ab02900d7e6299551mr9160621plm.79.1605048594925;
-        Tue, 10 Nov 2020 14:49:54 -0800 (PST)
-Received: from evgreen-glaptop.cheshire.ch ([2601:646:c780:1404:250:b6ff:fee1:7d4c])
-        by smtp.gmail.com with ESMTPSA id i7sm34066pjj.20.2020.11.10.14.49.53
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-SHA bits=128/128);
-        Tue, 10 Nov 2020 14:49:54 -0800 (PST)
-From:   Evan Green <evgreen@chromium.org>
-To:     Andy Shevchenko <andy@kernel.org>
-Cc:     Evan Green <evgreen@chromium.org>, stable@vger.kernel.org,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] pinctrl: intel: Fix Jasperlake hostown offset
-Date:   Tue, 10 Nov 2020 14:49:49 -0800
-Message-Id: <20201110144932.1.I54a30ec0a7eb1f1b791dc9d08d5e8416a1e8e1ef@changeid>
-X-Mailer: git-send-email 2.26.2
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=BddpXWM57oMSeuVH0GiCGkmNr8YUMWASKDEXAi/F4Ik=;
+        b=jyaqPEVcxxDh1pyemqi6A7eKtaqQ6Udr8Gc8KowlEcDioAL/z8f16uWEviPCR9OlVi
+         A4d64EOEpmeswWlMaFQe+FFSPUupZB/2tv3ttuHp69MTdCPXoxis8UYNYHOHU2NCXlao
+         xQ5TA+UtAHXiXjLl0oqVSx2eIOB+srPE/shDE9tqRD2k+kaa2kfAbJ2UHhZ7TK4hh5N6
+         YaPrfKtG2KeKt5S/iFr8iZn5JJ2E41XDlml+8X0jSFpc51+4okMATxts/h4pHhxAA1pv
+         HGvc37/kAMj8aYHpQt/r3YS5bu7OC9Y1rYXtgncnT4W3+O+S7kf6LvGB9YC3pK0uxLWB
+         GMzQ==
+X-Gm-Message-State: AOAM53046WI98SoYTsUjWf2nfKVMZstHrHPO0c2Urf4tZhbMaFkEOQ7n
+        pvLsHsxzEL2pZVsJBOSs95k+DJg5oWNUxx7JAeY=
+X-Google-Smtp-Source: ABdhPJxo+X4jxV+bBVFzVi6yl51daBDZgI3j6cR4TkxJYsINm8BjEk0lHQgnEei9W0LNO6y946QRic5xwYgIBRaf4gs=
+X-Received: by 2002:a1c:80cb:: with SMTP id b194mr368273wmd.73.1605048614642;
+ Tue, 10 Nov 2020 14:50:14 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20201110193112.988999-1-lee.jones@linaro.org> <20201110193112.988999-3-lee.jones@linaro.org>
+In-Reply-To: <20201110193112.988999-3-lee.jones@linaro.org>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Tue, 10 Nov 2020 17:50:03 -0500
+Message-ID: <CADnq5_MOF00Fy0yALwrb+G77+Bxfa27Bzg5M6SEPzgqzJP=cnA@mail.gmail.com>
+Subject: Re: [PATCH 02/30] drm/radeon/evergreen: Remove set but unused
+ variable 'mc_shared_chmap'
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     David Airlie <airlied@linux.ie>,
+        LKML <linux-kernel@vger.kernel.org>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        Maling list - DRI developers 
+        <dri-devel@lists.freedesktop.org>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-GPIOs that attempt to use interrupts get thwarted with a message like:
-"pin 161 cannot be used as IRQ" (for instance with SD_CD). This is because
-the JSL_HOSTSW_OWN offset is incorrect, so every GPIO looks like it's
-owned by ACPI.
+On Tue, Nov 10, 2020 at 2:31 PM Lee Jones <lee.jones@linaro.org> wrote:
+>
+> Fixes the following W=3D1 kernel build warning(s):
+>
+>  drivers/gpu/drm/radeon/evergreen.c: In function =E2=80=98evergreen_gpu_i=
+nit=E2=80=99:
+>  drivers/gpu/drm/radeon/evergreen.c:3135:6: warning: variable =E2=80=98mc=
+_shared_chmap=E2=80=99 set but not used [-Wunused-but-set-variable]
+>
+> Cc: Alex Deucher <alexander.deucher@amd.com>
+> Cc: "Christian K=C3=B6nig" <christian.koenig@amd.com>
+> Cc: David Airlie <airlied@linux.ie>
+> Cc: Daniel Vetter <daniel@ffwll.ch>
+> Cc: amd-gfx@lists.freedesktop.org
+> Cc: dri-devel@lists.freedesktop.org
+> Signed-off-by: Lee Jones <lee.jones@linaro.org>
 
-Signed-off-by: Evan Green <evgreen@chromium.org>
-Fixes: e278dcb7048b1 ("pinctrl: intel: Add Intel Jasper Lake pin
-controller support")
-Cc: stable@vger.kernel.org
----
+Applied.  Thanks!
 
- drivers/pinctrl/intel/pinctrl-jasperlake.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Alex
 
-diff --git a/drivers/pinctrl/intel/pinctrl-jasperlake.c b/drivers/pinctrl/intel/pinctrl-jasperlake.c
-index 9bd0e8e6310c3..283698cf0dc7d 100644
---- a/drivers/pinctrl/intel/pinctrl-jasperlake.c
-+++ b/drivers/pinctrl/intel/pinctrl-jasperlake.c
-@@ -16,7 +16,7 @@
- 
- #define JSL_PAD_OWN	0x020
- #define JSL_PADCFGLOCK	0x080
--#define JSL_HOSTSW_OWN	0x0b0
-+#define JSL_HOSTSW_OWN	0x0c0
- #define JSL_GPI_IS	0x100
- #define JSL_GPI_IE	0x120
- 
--- 
-2.26.2
 
+> ---
+>  drivers/gpu/drm/radeon/evergreen.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/radeon/evergreen.c b/drivers/gpu/drm/radeon/=
+evergreen.c
+> index c9a9a87959f9e..efb19c445e48f 100644
+> --- a/drivers/gpu/drm/radeon/evergreen.c
+> +++ b/drivers/gpu/drm/radeon/evergreen.c
+> @@ -3135,7 +3135,7 @@ static int evergreen_cp_resume(struct radeon_device=
+ *rdev)
+>  static void evergreen_gpu_init(struct radeon_device *rdev)
+>  {
+>         u32 gb_addr_config;
+> -       u32 mc_shared_chmap, mc_arb_ramcfg;
+> +       u32 mc_arb_ramcfg;
+>         u32 sx_debug_1;
+>         u32 smx_dc_ctl0;
+>         u32 sq_config;
+> @@ -3399,7 +3399,7 @@ static void evergreen_gpu_init(struct radeon_device=
+ *rdev)
+>
+>         evergreen_fix_pci_max_read_req_size(rdev);
+>
+> -       mc_shared_chmap =3D RREG32(MC_SHARED_CHMAP);
+> +       RREG32(MC_SHARED_CHMAP);
+>         if ((rdev->family =3D=3D CHIP_PALM) ||
+>             (rdev->family =3D=3D CHIP_SUMO) ||
+>             (rdev->family =3D=3D CHIP_SUMO2))
+> --
+> 2.25.1
+>
+> _______________________________________________
+> dri-devel mailing list
+> dri-devel@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/dri-devel
