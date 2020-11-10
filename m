@@ -2,155 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19ECD2ADB5E
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 17:11:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CC512ADB58
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 17:11:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731482AbgKJQLu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 11:11:50 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:52855 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729909AbgKJQLs (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 11:11:48 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1605024706;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Jp+HmPlYtR2IGGTGzYIzvrsfgydKFOm7mlacIEpnzOM=;
-        b=ZAlCen6nBxHdvB++lXI9iB2wUc2fR7S1sn8a4M7aStoSiWD61XLeZlkFKBJm2qCKaL9c1n
-        jgzZQ1CjNuQ5h6tktn3PxLjqNQyuPR+ydGJYTBs9u3RYaHmDokPnhzLAi/0v9ufTLA68YW
-        bWCtGS5HDV+q2NdO1yrdq0ovrv6cEeU=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-217-5kzcWzDFO8i3LtgKf7nZng-1; Tue, 10 Nov 2020 11:11:43 -0500
-X-MC-Unique: 5kzcWzDFO8i3LtgKf7nZng-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 48EDA1084D61;
-        Tue, 10 Nov 2020 16:11:40 +0000 (UTC)
-Received: from treble (ovpn-120-104.rdu2.redhat.com [10.10.120.104])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id EDA1C5C1D0;
-        Tue, 10 Nov 2020 16:11:30 +0000 (UTC)
-Date:   Tue, 10 Nov 2020 10:11:24 -0600
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     Sami Tolvanen <samitolvanen@google.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Jann Horn <jannh@google.com>,
-        the arch/x86 maintainers <x86@kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Will Deacon <will@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Kernel Hardening <kernel-hardening@lists.openwall.com>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-kbuild <linux-kbuild@vger.kernel.org>,
-        kernel list <linux-kernel@vger.kernel.org>,
-        linux-pci@vger.kernel.org
-Subject: Re: [PATCH v6 22/25] x86/asm: annotate indirect jumps
-Message-ID: <20201110161124.lztfgffqh2qrlwwv@treble>
-References: <20201015203942.f3kwcohcwwa6lagd@treble>
- <CABCJKufDLmBCwmgGnfLcBw_B_4U8VY-R-dSNNp86TFfuMobPMw@mail.gmail.com>
- <20201020185217.ilg6w5l7ujau2246@treble>
- <CABCJKucVjFtrOsw58kn4OnW5kdkUh8G7Zs4s6QU9s6O7soRiAA@mail.gmail.com>
- <20201021085606.GZ2628@hirez.programming.kicks-ass.net>
- <CABCJKufL6=FiaeD8T0P+mK4JeR9J80hhjvJ6Z9S-m9UnCESxVA@mail.gmail.com>
- <20201023173617.GA3021099@google.com>
- <CABCJKuee7hUQSiksdRMYNNx05bW7pWaDm4fQ__znGQ99z9-dEw@mail.gmail.com>
- <20201110022924.tekltjo25wtrao7z@treble>
- <CABCJKuc_-Sxj8HLajx4pKuBpU3AUdBtPv4uzQfMWqVHWwHS1iQ@mail.gmail.com>
+        id S1731395AbgKJQLd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 11:11:33 -0500
+Received: from mga02.intel.com ([134.134.136.20]:24495 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729909AbgKJQLd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Nov 2020 11:11:33 -0500
+IronPort-SDR: yqYhsCwq5+HVBXsvatkYtE2uN9oeNsP83ay4KWM5urUMdtT9t/WdAXuvU4TrsrHst7dNNFSs6Y
+ G5Nt6QqIHrXw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9801"; a="157006055"
+X-IronPort-AV: E=Sophos;i="5.77,466,1596524400"; 
+   d="scan'208";a="157006055"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Nov 2020 08:11:26 -0800
+IronPort-SDR: 4f5UwOTPqlOXN9XV1HjKqugNQhhq8QLBa1BAq/DN26sSYgEhNn+QmlCJ4RL5s1GZ/lU6SOOGKD
+ nntiptJNX6tQ==
+X-IronPort-AV: E=Sophos;i="5.77,466,1596524400"; 
+   d="scan'208";a="473480795"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Nov 2020 08:11:24 -0800
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1kcWFu-005WH1-05; Tue, 10 Nov 2020 18:12:26 +0200
+Date:   Tue, 10 Nov 2020 18:12:25 +0200
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Bartosz Golaszewski <brgl@bgdev.pl>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Jan Kiszka <jan.kiszka@siemens.com>,
+        David Laight <David.Laight@aculab.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Subject: Re: [PATCH v4 6/7] gpio: exar: switch to using regmap
+Message-ID: <20201110161225.GZ4077@smile.fi.intel.com>
+References: <20201110145552.23024-1-brgl@bgdev.pl>
+ <20201110145552.23024-7-brgl@bgdev.pl>
+ <20201110150447.GW4077@smile.fi.intel.com>
+ <20201110151022.GY4077@smile.fi.intel.com>
+ <CAMRc=MfsLc_DKuCaOwq-xDjT0V8yk3rGt8buJ9qgbGNj25youA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CABCJKuc_-Sxj8HLajx4pKuBpU3AUdBtPv4uzQfMWqVHWwHS1iQ@mail.gmail.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+In-Reply-To: <CAMRc=MfsLc_DKuCaOwq-xDjT0V8yk3rGt8buJ9qgbGNj25youA@mail.gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 09, 2020 at 08:48:01PM -0800, Sami Tolvanen wrote:
-> On Mon, Nov 9, 2020 at 6:29 PM Josh Poimboeuf <jpoimboe@redhat.com> wrote:
-> > How would I recreate all these warnings?
+On Tue, Nov 10, 2020 at 04:12:38PM +0100, Bartosz Golaszewski wrote:
+> On Tue, Nov 10, 2020 at 4:09 PM Andy Shevchenko
+> <andriy.shevchenko@linux.intel.com> wrote:
+> >
+> > On Tue, Nov 10, 2020 at 05:04:47PM +0200, Andy Shevchenko wrote:
+> > > On Tue, Nov 10, 2020 at 03:55:51PM +0100, Bartosz Golaszewski wrote:
+> > > > From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+> > > >
+> > > > We can simplify the code in gpio-exar by using regmap. This allows us to
+> > > > drop the mutex (regmap provides its own locking) and we can also reuse
+> > > > regmap's bit operations instead of implementing our own update function.
+> > >
+> > > ...
+> > >
+> > > > +static const struct regmap_config exar_regmap_config = {
+> > > > +   .name           = "exar-gpio",
+> > > > +   .reg_bits       = 16,
+> > >
+> > > As per previous version comment.
+> > >
+> > > Hold on, the registers are 16-bit wide, but their halves are sparsed!
+> > > So, I guess 8 and 8 with helpers to get hi and lo parts are essential.
+> > >
+> > >
+> > > TABLE 5: DEVICE CONFIGURATION REGISTERS SHOWN IN BYTE ALIGNMENT
+> > >
+> > > > +   .val_bits       = 8,
+> > > > +};
+> > >
+> > > This is basically represents two banks out of 6 8-bit registers each.
+> >
+> > ...which makes me wonder if gpio-regmap can be utilized here...
+> >
 > 
-> You can reproduce all of these using a normal gcc build without any of
-> the LTO patches by running objtool check -arfld vmlinux.o. However,
-> with gcc you'll see even more warnings due to duplicate symbol names,
-> as Peter pointed out elsewhere in the thread, so I looked at only the
-> warnings that objtool also prints with LTO.
-> 
-> Note that the LTO series contains a patch to split noinstr validation
-> from --vmlinux, as we need to run objtool here even if
-> CONFIG_VMLINUX_VALIDATION isn't selected, so I have not looked at the
-> noinstr warnings. The latest LTO tree is available here:
-> 
-> https://github.com/samitolvanen/linux/commits/clang-lto
-> 
-> > Here's the patch for hopefully making the warnings more helpful:
-> 
-> Thanks, I'll give it a try.
+> But the address width won't affect the actuall accessing of 8 bits
+> registers in an mmio regmap. Internally the mmio regmap does pretty
+> much the same thing the previous driver did: call readb()/writeb() on
+> 8-bit "chunks" of the banks.
 
-Here's the version without the nonsensical debug warning :-)
+It will affect reg dump in debugfs. I would really narrow down the register
+address space in the config, otherwise that debugfs facility will screw up a
+lot of things.
 
-diff --git a/tools/objtool/elf.c b/tools/objtool/elf.c
-index 4e1d7460574b..ced7e4754cba 100644
---- a/tools/objtool/elf.c
-+++ b/tools/objtool/elf.c
-@@ -217,6 +217,21 @@ struct symbol *find_func_containing(struct section *sec, unsigned long offset)
- 	return NULL;
- }
- 
-+struct symbol *find_symbol_preceding(struct section *sec, unsigned long offset)
-+{
-+	struct symbol *sym;
-+
-+	/*
-+	 * This is slow, but used for warning messages.
-+	 */
-+	while (1) {
-+		sym = find_symbol_by_offset(sec, offset);
-+		if (sym || !offset)
-+			return sym;
-+		offset--;
-+	}
-+}
-+
- struct symbol *find_symbol_by_name(const struct elf *elf, const char *name)
- {
- 	struct symbol *sym;
-diff --git a/tools/objtool/elf.h b/tools/objtool/elf.h
-index 807f8c670097..841902ed381e 100644
---- a/tools/objtool/elf.h
-+++ b/tools/objtool/elf.h
-@@ -136,10 +136,11 @@ struct symbol *find_func_by_offset(struct section *sec, unsigned long offset);
- struct symbol *find_symbol_by_offset(struct section *sec, unsigned long offset);
- struct symbol *find_symbol_by_name(const struct elf *elf, const char *name);
- struct symbol *find_symbol_containing(const struct section *sec, unsigned long offset);
-+struct symbol *find_func_containing(struct section *sec, unsigned long offset);
-+struct symbol *find_symbol_preceding(struct section *sec, unsigned long offset);
- struct reloc *find_reloc_by_dest(const struct elf *elf, struct section *sec, unsigned long offset);
- struct reloc *find_reloc_by_dest_range(const struct elf *elf, struct section *sec,
- 				     unsigned long offset, unsigned int len);
--struct symbol *find_func_containing(struct section *sec, unsigned long offset);
- int elf_rebuild_reloc_section(struct elf *elf, struct section *sec);
- 
- #define for_each_sec(file, sec)						\
-diff --git a/tools/objtool/warn.h b/tools/objtool/warn.h
-index 7799f60de80a..33da0f2ed9d5 100644
---- a/tools/objtool/warn.h
-+++ b/tools/objtool/warn.h
-@@ -22,6 +22,8 @@ static inline char *offstr(struct section *sec, unsigned long offset)
- 	unsigned long name_off;
- 
- 	func = find_func_containing(sec, offset);
-+	if (!func)
-+		func = find_symbol_preceding(sec, offset);
- 	if (func) {
- 		name = func->name;
- 		name_off = offset - func->offset;
+So, and to be on pedantic side...
+
+"The Device Configuration Registers and the two individual UART Configuration
+Registers of the XR17V352 occupy 2K of PCI bus memory address space."
+
+11 seems the correct value for the address width.
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
 
