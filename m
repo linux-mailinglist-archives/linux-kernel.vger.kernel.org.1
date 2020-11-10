@@ -2,82 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F11CD2ADD92
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 18:59:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 05BB22ADDAB
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 19:02:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730958AbgKJR7q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 12:59:46 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53370 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726152AbgKJR7p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 12:59:45 -0500
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4E11920781;
-        Tue, 10 Nov 2020 17:59:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605031184;
-        bh=jwu8PRKrsHfDgpGZ+z6S9+0XZR1/nw57zMqpHjt+PXg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ZFAucTu5ZAAAQH7vf4p2SqwNLuAMx/4OkNrFgjqL4U6YGOyt4kMCbn5AYamDKyYA6
-         t6ra/iIzcSxLYWVmgwgUO89Sub+nQNeIKWwCVQXJx0fh2PV0/7SV0elcpVzJM6R9Us
-         gh+vaxgFKASCyEWCDrCE1hI/uA6SGTi+4SfeFq1g=
-Date:   Tue, 10 Nov 2020 19:00:47 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     "Limonciello, Mario" <Mario.Limonciello@dell.com>
-Cc:     Bastien Nocera <hadess@hadess.net>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "linux-input@vger.kernel.org" <linux-input@vger.kernel.org>,
-        Hans de Goede <hdegoede@redhat.com>
-Subject: Re: How to enable auto-suspend by default
-Message-ID: <X6rVT6IXHYQpqjic@kroah.com>
-References: <fe8ab4cab3740afd261fa902f14ecae002a1122d.camel@hadess.net>
- <X6p6ubTOoMPUPPXi@kroah.com>
- <DM6PR19MB2636C94B56D5FBC0BD98A1B0FAE90@DM6PR19MB2636.namprd19.prod.outlook.com>
- <X6rLUDuG0N98jz18@kroah.com>
- <DM6PR19MB2636460E97BD5E47957BB43AFAE90@DM6PR19MB2636.namprd19.prod.outlook.com>
+        id S1730898AbgKJSCa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 13:02:30 -0500
+Received: from mail-oo1-f68.google.com ([209.85.161.68]:37772 "EHLO
+        mail-oo1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730760AbgKJSCa (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Nov 2020 13:02:30 -0500
+Received: by mail-oo1-f68.google.com with SMTP id t10so86889oon.4;
+        Tue, 10 Nov 2020 10:02:29 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=a7bBakPnEgsRSxQE7/dsfPHRj6TDBLQdRIFwKNFk3Lg=;
+        b=ri5ZIRe7CCRJIOvgYfI9zJmzTkswKVBpI+20HWinp9edeKxDCBauvT7SGBCVok9jSI
+         9x/Vnu/ps7beTW5GFo0PI6jxGVanIlUJ/bEoeoMZvnWid3dFY3XhOni6eb3gwvnyEVdC
+         Ox41D2b3/d1Ob8vvkyCvVJMhuPEmEPoO9SfZRZuJOi16inqcXQl+IyDXTot+Lz+yVHDM
+         rqkB6Gi7HlNvY9wXldJ8z/PDtpg8Q45rgCKvvWTinte7CYRuI7ibU3J14RoVsKpAaVcM
+         E2K5hhg5+UUdg+lSb6fNgBcXDOHldMGhbWSFA1V6XfrmUz14q3d9cOoCAQn32UVAOBGb
+         4euA==
+X-Gm-Message-State: AOAM531dISEkiI4h/5tnHRv0FLwmGS20J7FIQt9oy87yw9xeO4xGi3yj
+        VDshsfUgfFCoM8mrqnVhRupbC4DZXS08EKu8T0Sso2Uf
+X-Google-Smtp-Source: ABdhPJw1pxewSH2J2VBZP6s08/qov1XlMFKLLcj9YKwKQ/HM8kQ8zCNYrq5ldX3l3DDWNQWpL1X3qmNtqih2c2iwZto=
+X-Received: by 2002:a4a:e80b:: with SMTP id b11mr14320057oob.1.1605031349208;
+ Tue, 10 Nov 2020 10:02:29 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <DM6PR19MB2636460E97BD5E47957BB43AFAE90@DM6PR19MB2636.namprd19.prod.outlook.com>
+References: <20201030070659.16948-1-kai.heng.feng@canonical.com>
+In-Reply-To: <20201030070659.16948-1-kai.heng.feng@canonical.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Tue, 10 Nov 2020 19:02:18 +0100
+Message-ID: <CAJZ5v0j_bv1t5krP98_-epm+z9usW3ZmteaTGwtyjo+wBFu6Kw@mail.gmail.com>
+Subject: Re: [PATCH] PM / reboot: Use S5 for reboot
+To:     Kai-Heng Feng <kai.heng.feng@canonical.com>
+Cc:     Rafael Wysocki <rafael.j.wysocki@intel.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Petr Mladek <pmladek@suse.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Pavel Tatashin <pasha.tatashin@soleen.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Kees Cook <keescook@chromium.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 10, 2020 at 05:45:43PM +0000, Limonciello, Mario wrote:
-> > > I guess what Bastien is getting at is for newer devices supported by class
-> > > drivers rather than having to store an allowlist in udev rules, can we set
-> > > the allowlist in the kernel instead.  Then distributions that either don't
-> > > use systemd or don't regularly update udev rules from systemd can take
-> > > advantage of better defaults on modern hardware.
-> > 
-> > That's what the "hardware ids" database is supposed to be handling.
-> > It's easier to manage this in userspace than in the kernel.
-> > 
-> > I just love systems where people feel it is safer to update the kernel
-> > than it is to update a hardware database file :)
-> > 
-> > > The one item that stood out to me in that rules file was 8086:a0ed.
-> > > It's listed as "Volteer XHCI", but that same device ID is actually present
-> > > in an XPS 9310 in front of me as well and used by the xhci-pci kernel
-> > module.
-> > 
-> > That's an Intel PCI device id.  If someone else is abusing that number,
-> > I'm sure Intel would want to know about it and would be glad to go after
-> > them.
-> 
-> Sorry I wasn't intending to insinuate an abuse of the number, but rather that
-> the PCI device in the "Volteer" product and that in XPS 9310 appear are the
-> same so they are possibly using the same hardware for this device.
+On Fri, Oct 30, 2020 at 8:07 AM Kai-Heng Feng
+<kai.heng.feng@canonical.com> wrote:
+>
+> After reboot, it's not possible to use hotkeys to enter BIOS setup and
+> boot menu on some HP laptops.
+>
+> BIOS folks identified the root cause is the missing _PTS call, and BIOS
+> is expecting _PTS to do proper reset.
+>
+> Using S5 for reboot is default behavior under Windows, "A full shutdown
+> (S5) occurs when a system restart is requested" [1], so let's do the
+> same here.
+>
+> [1] https://docs.microsoft.com/en-us/windows/win32/power/system-power-states
+>
+> Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+> ---
+>  kernel/reboot.c | 2 ++
+>  1 file changed, 2 insertions(+)
+>
+> diff --git a/kernel/reboot.c b/kernel/reboot.c
+> index e7b78d5ae1ab..7e5aa1f78693 100644
+> --- a/kernel/reboot.c
+> +++ b/kernel/reboot.c
+> @@ -244,6 +244,8 @@ void migrate_to_reboot_cpu(void)
+>  void kernel_restart(char *cmd)
+>  {
+>         kernel_restart_prepare(cmd);
+> +       if (pm_power_off_prepare)
+> +               pm_power_off_prepare();
+>         migrate_to_reboot_cpu();
+>         syscore_shutdown();
+>         if (!cmd)
+> --
 
-Ok, but again, given that the device might be on different transports,
-the ability for the device to properly autosuspend might be different,
-right?
-
-thanks,
-
-greg k-h
+Applied as 5.11 material with a minor edit in the subject, thanks!
