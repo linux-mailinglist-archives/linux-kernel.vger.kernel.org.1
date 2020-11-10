@@ -2,30 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D54E2ACF9B
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 07:24:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DFF5B2ACFA1
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 07:27:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730946AbgKJGYu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 01:24:50 -0500
-Received: from smtp2207-205.mail.aliyun.com ([121.197.207.205]:52591 "EHLO
+        id S1730522AbgKJG1U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 01:27:20 -0500
+Received: from smtp2207-205.mail.aliyun.com ([121.197.207.205]:41113 "EHLO
         smtp2207-205.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726006AbgKJGYt (ORCPT
+        by vger.kernel.org with ESMTP id S1726467AbgKJG1T (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 01:24:49 -0500
-X-Alimail-AntiSpam: AC=CONTINUE;BC=0.272725|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_regular_dialog|0.00377925-0.00159347-0.994627;FP=11852684747916124327|1|1|17|0|-1|-1|-1;HT=ay29a033018047208;MF=frank@allwinnertech.com;NM=1;PH=DS;RN=9;RT=9;SR=0;TI=SMTPD_---.Iunhutb_1604989482;
-Received: from allwinnertech.com(mailfrom:frank@allwinnertech.com fp:SMTPD_---.Iunhutb_1604989482)
-          by smtp.aliyun-inc.com(10.147.44.118);
-          Tue, 10 Nov 2020 14:24:46 +0800
+        Tue, 10 Nov 2020 01:27:19 -0500
+X-Alimail-AntiSpam: AC=SUSPECT;BC=0.61374|-1;BR=01201311R441b1;CH=blue;DM=|SUSPECT|false|;DS=CONTINUE|ham_system_inform|0.0102791-0.00112627-0.988595;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047204;MF=frank@allwinnertech.com;NM=1;PH=DS;RN=10;RT=10;SR=0;TI=SMTPD_---.Iuo2KNX_1604989628;
+Received: from allwinnertech.com(mailfrom:frank@allwinnertech.com fp:SMTPD_---.Iuo2KNX_1604989628)
+          by smtp.aliyun-inc.com(10.147.42.198);
+          Tue, 10 Nov 2020 14:27:12 +0800
 From:   Frank Lee <frank@allwinnertech.com>
 To:     tiny.windzz@gmail.com
-Cc:     linux-gpio@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, Yangtao Li <frank@allwinnertech.com>,
-        stable@vger.kernel.org, Linus Walleij <linus.walleij@linaro.org>,
+Cc:     devicetree@vger.kernel.org, dmaengine@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Yangtao Li <frank@allwinnertech.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
         Maxime Ripard <mripard@kernel.org>,
         Chen-Yu Tsai <wens@csie.org>
-Subject: [RESEND PATCH 03/19] pinctrl: sunxi: Always call chained_irq_{enter, exit} in sunxi_pinctrl_irq_handler
-Date:   Tue, 10 Nov 2020 14:24:40 +0800
-Message-Id: <85263ce8b058e80cea25c6ad6383eb256ce96cc8.1604988979.git.frank@allwinnertech.com>
+Subject: [RESEND PATCH 04/19] dt-bindings: dma: allwinner,sun50i-a64-dma: Add A100 compatible
+Date:   Tue, 10 Nov 2020 14:26:38 +0800
+Message-Id: <f15a18e9b8868e8853db1b5a3d1e411b0ac1c63a.1604988979.git.frank@allwinnertech.com>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <cover.1604988979.git.frank@allwinnertech.com>
 References: <cover.1604988979.git.frank@allwinnertech.com>
@@ -37,48 +39,36 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Yangtao Li <frank@allwinnertech.com>
 
-It is found on many allwinner soc that there is a low probability that
-the interrupt status cannot be read in sunxi_pinctrl_irq_handler. This
-will cause the interrupt status of a gpio bank to always be active on
-gic, preventing gic from responding to other spi interrupts correctly.
+Add a binding for A100's dma controller.
 
-So we should call the chained_irq_* each time enter sunxi_pinctrl_irq_handler().
-
-Cc: stable@vger.kernel.org
 Signed-off-by: Yangtao Li <frank@allwinnertech.com>
 ---
- drivers/pinctrl/sunxi/pinctrl-sunxi.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ .../devicetree/bindings/dma/allwinner,sun50i-a64-dma.yaml    | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/pinctrl/sunxi/pinctrl-sunxi.c b/drivers/pinctrl/sunxi/pinctrl-sunxi.c
-index 9d8b59dafa4b..dc8d39ae045b 100644
---- a/drivers/pinctrl/sunxi/pinctrl-sunxi.c
-+++ b/drivers/pinctrl/sunxi/pinctrl-sunxi.c
-@@ -1141,20 +1141,22 @@ static void sunxi_pinctrl_irq_handler(struct irq_desc *desc)
+diff --git a/Documentation/devicetree/bindings/dma/allwinner,sun50i-a64-dma.yaml b/Documentation/devicetree/bindings/dma/allwinner,sun50i-a64-dma.yaml
+index 372679dbd216..b6e1ebfaf366 100644
+--- a/Documentation/devicetree/bindings/dma/allwinner,sun50i-a64-dma.yaml
++++ b/Documentation/devicetree/bindings/dma/allwinner,sun50i-a64-dma.yaml
+@@ -21,6 +21,7 @@ properties:
+   compatible:
+     oneOf:
+       - const: allwinner,sun50i-a64-dma
++      - const: allwinner,sun50i-a100-dma
+       - const: allwinner,sun50i-h6-dma
+       - items:
+           - const: allwinner,sun8i-r40-dma
+@@ -56,7 +57,9 @@ required:
+ if:
+   properties:
+     compatible:
+-      const: allwinner,sun50i-h6-dma
++      enum:
++        - allwinner,sun50i-a100-dma
++        - allwinner,sun50i-h6-dma
  
- 	WARN_ON(bank == pctl->desc->irq_banks);
- 
-+	chained_irq_enter(chip, desc);
-+
- 	reg = sunxi_irq_status_reg_from_bank(pctl->desc, bank);
- 	val = readl(pctl->membase + reg);
- 
- 	if (val) {
- 		int irqoffset;
- 
--		chained_irq_enter(chip, desc);
- 		for_each_set_bit(irqoffset, &val, IRQ_PER_BANK) {
- 			int pin_irq = irq_find_mapping(pctl->domain,
- 						       bank * IRQ_PER_BANK + irqoffset);
- 			generic_handle_irq(pin_irq);
- 		}
--		chained_irq_exit(chip, desc);
- 	}
-+
-+	chained_irq_exit(chip, desc);
- }
- 
- static int sunxi_pinctrl_add_function(struct sunxi_pinctrl *pctl,
+ then:
+   properties:
 -- 
 2.28.0
 
