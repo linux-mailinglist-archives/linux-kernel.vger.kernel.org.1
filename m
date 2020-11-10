@@ -2,74 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 496122AD0AB
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 08:53:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B2802AD0B7
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 08:57:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728234AbgKJHxB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 02:53:01 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49334 "EHLO mail.kernel.org"
+        id S1728351AbgKJH5B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 02:57:01 -0500
+Received: from mga04.intel.com ([192.55.52.120]:56319 "EHLO mga04.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727991AbgKJHxB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 02:53:01 -0500
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C19E62080A;
-        Tue, 10 Nov 2020 07:52:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604994779;
-        bh=rPLB8ZW/O1Mj3+XTff6lRKz9cmVYDe0J3AJ40wKKQxA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=HMe3YjF5V2OslRPGitMsrZ3TCNE3c5wYzIsguxSwogATB1Gg98yUx3r7PicqtKdPx
-         vAYy5A8SDsOPNsmVtxaSOYqQHwjx1CjpLyfw3tVW7wZCnaUVDhymoOKBQLhuOg9q1d
-         f6OimbkMNhUO/e0tWeaoLR4Je9fBV/EPH+ogVJiI=
-Date:   Tue, 10 Nov 2020 08:53:56 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Frankie Chang <Frankie.Chang@mediatek.com>
-Cc:     Todd Kjos <tkjos@google.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Martijn Coenen <maco@android.com>,
-        Arve =?iso-8859-1?B?SGr4bm5lduVn?= <arve@android.com>,
-        Christian Brauner <christian@brauner.io>,
-        linux-kernel@vger.kernel.org, wsd_upstream@mediatek.com,
-        Jian-Min Liu <Jian-Min.Liu@mediatek.com>
-Subject: Re: binder: add transaction latency tracer
-Message-ID: <X6pHFAqmH0je0n3I@kroah.com>
-References: <1602781377-4278-1-git-send-email-Frankie.Chang@mediatek.com>
- <1603987737-2763-1-git-send-email-Frankie.Chang@mediatek.com>
- <20201109174605.GA2426739@kroah.com>
- <1604993580.14886.5.camel@mtkswgap22>
- <X6pGqcXk3VMgUwu0@kroah.com>
+        id S1726213AbgKJH5B (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Nov 2020 02:57:01 -0500
+IronPort-SDR: Wrlrkqg4GUVGRM3Q9kM/Z/6az0bpIG2f/eBFPiJeeYl1NaHi2u7agAWlgRQBfGyDvWZV15Xw8l
+ LAFoUmZnuULQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9800"; a="167350852"
+X-IronPort-AV: E=Sophos;i="5.77,465,1596524400"; 
+   d="scan'208";a="167350852"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Nov 2020 23:57:01 -0800
+IronPort-SDR: YYnBome3Gk9WqKqU4lSePP2E8UeOnXynJV4Tz5Fw2sN4UItsk23jrEtFcynRZFH7kcPKhT2obw
+ QhZ+vAB43ypg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,465,1596524400"; 
+   d="scan'208";a="307957961"
+Received: from lkp-server02.sh.intel.com (HELO c6c5fbb3488a) ([10.239.97.151])
+  by fmsmga008.fm.intel.com with ESMTP; 09 Nov 2020 23:56:59 -0800
+Received: from kbuild by c6c5fbb3488a with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1kcOWR-00006h-BZ; Tue, 10 Nov 2020 07:56:59 +0000
+Date:   Tue, 10 Nov 2020 15:56:34 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [rcu:dev.2020.11.06a] BUILD REGRESSION
+ 5cec02881428f10c4a1632c3aebb666b12888958
+Message-ID: <5faa47b2.vPqa1IkRNFrHHqZM%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <X6pGqcXk3VMgUwu0@kroah.com>
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 10, 2020 at 08:52:09AM +0100, Greg Kroah-Hartman wrote:
-> On Tue, Nov 10, 2020 at 03:33:00PM +0800, Frankie Chang wrote:
-> > On Mon, 2020-11-09 at 18:46 +0100, Greg Kroah-Hartman wrote:
-> > > On Fri, Oct 30, 2020 at 12:08:54AM +0800, Frankie Chang wrote:
-> > > > Change from v11:
-> > > >   - rebase.
-> > > 
-> > > This whole patch set is sent with DOS line-ends, which makes git really
-> > > unhappy when it tries to apply it, as rightfully, it doesn't know how to
-> > > convert things.
-> > > 
-> > Hmm.., actually I can use 'git apply' PATCH v11 from the message
-> > directly.
-> 
-> Ok, let me see if I can figure this out on my end, let me try using `b4`
-> on this to see if that helps...
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git  dev.2020.11.06a
+branch HEAD: 5cec02881428f10c4a1632c3aebb666b12888958  docs: Remove redundant "``" from Requirements.rst
 
-Nope, there's still some merge conflicts here.  b4 fixed the line-end
-issues, but can you please rebase on top of my char-misc-next branch in
-the char.git tree on git.kernel.org and resend?  I think some changes by
-others are conflicting with this patchset somehow.
+Error/Warning reports:
 
-thanks,
+https://lore.kernel.org/lkml/202011100859.GaVtzgeJ-lkp@intel.com
 
-greg k-h
+Error/Warning in current branch:
+
+rdtgroup.c:(.text+0xad8a): undefined reference to `cpulist_parse'
+
+Error/Warning ids grouped by kconfigs:
+
+gcc_recent_errors
+`-- x86_64-randconfig-m001-20201109
+    `-- rdtgroup.c:(.text):undefined-reference-to-cpulist_parse
+
+elapsed time: 722m
+
+configs tested: 99
+configs skipped: 2
+
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+sh                          urquell_defconfig
+mips                      malta_kvm_defconfig
+powerpc                    gamecube_defconfig
+mips                      maltaaprp_defconfig
+xtensa                  nommu_kc705_defconfig
+powerpc                      tqm8xx_defconfig
+sh                             espt_defconfig
+arc                        nsim_700_defconfig
+i386                                defconfig
+powerpc                 mpc8315_rdb_defconfig
+powerpc                       maple_defconfig
+sh                               alldefconfig
+sh                ecovec24-romimage_defconfig
+m68k                         amcore_defconfig
+powerpc                      katmai_defconfig
+sh                   sh7770_generic_defconfig
+arm                       omap2plus_defconfig
+riscv                            alldefconfig
+arm                        realview_defconfig
+xtensa                  audio_kc705_defconfig
+xtensa                              defconfig
+sh                          rsk7203_defconfig
+arm                       cns3420vb_defconfig
+arm                           omap1_defconfig
+c6x                        evmc6472_defconfig
+arm                          ixp4xx_defconfig
+ia64                                defconfig
+ia64                             allmodconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+c6x                              allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+x86_64               randconfig-a003-20201110
+x86_64               randconfig-a005-20201110
+x86_64               randconfig-a004-20201110
+x86_64               randconfig-a002-20201110
+x86_64               randconfig-a006-20201110
+x86_64               randconfig-a001-20201110
+i386                 randconfig-a004-20201109
+i386                 randconfig-a006-20201109
+i386                 randconfig-a005-20201109
+i386                 randconfig-a001-20201109
+i386                 randconfig-a003-20201109
+i386                 randconfig-a002-20201109
+i386                 randconfig-a012-20201110
+i386                 randconfig-a014-20201110
+i386                 randconfig-a016-20201110
+i386                 randconfig-a011-20201110
+i386                 randconfig-a015-20201110
+i386                 randconfig-a013-20201110
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+x86_64                                   rhel
+x86_64                           allyesconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                                  kexec
+
+clang tested configs:
+x86_64               randconfig-a015-20201110
+x86_64               randconfig-a011-20201110
+x86_64               randconfig-a014-20201110
+x86_64               randconfig-a013-20201110
+x86_64               randconfig-a016-20201110
+x86_64               randconfig-a012-20201110
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
