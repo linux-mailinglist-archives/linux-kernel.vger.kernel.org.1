@@ -2,132 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52EF42AE396
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 23:45:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EB5382AE391
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 23:45:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732458AbgKJWpa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 17:45:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53756 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730254AbgKJWp3 (ORCPT
+        id S1729862AbgKJWpV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 17:45:21 -0500
+Received: from mail-io1-f72.google.com ([209.85.166.72]:41705 "EHLO
+        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730254AbgKJWpU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 17:45:29 -0500
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37477C0613D1;
-        Tue, 10 Nov 2020 14:45:29 -0800 (PST)
-Received: by mail-wm1-x341.google.com with SMTP id h62so4813402wme.3;
-        Tue, 10 Nov 2020 14:45:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=gIHRk4WzqhkavwE/53+xiX6vw4oD1nHmuhdAmxZjOMI=;
-        b=FUh6dQ1m/msnRtj5Hmd4z78dOenOvzNyZCMgZ87kFDWUSaqVwnSMneS0y79HDL51kz
-         0Y5ci7JUQo5VSLO51iKKiSbZAkg8OzhczCHm2G4HLv3l6zoX4o9osvtBS2dxPdtqiUim
-         zzPsVCSkQlY4fmJlY37/Fhuvo4TRPgzZwqbmlNtbwvG23NbhiVxdDGjs0jV8B4aROXne
-         cPLygauqmTh4RugAOdZQ8Q4Nx6AjrNoLc4Cpm48Wy+P+Cr6QGI3duY/6Ym6PvdmtGeyx
-         J1b/Z81yno7IWe5J6+Kd5erT39/XfyNktvkENc+T7LPvkxBvPmDaIbeSknvTS0qgOefg
-         4wBA==
+        Tue, 10 Nov 2020 17:45:20 -0500
+Received: by mail-io1-f72.google.com with SMTP id y2so74635ioy.8
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 14:45:19 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=gIHRk4WzqhkavwE/53+xiX6vw4oD1nHmuhdAmxZjOMI=;
-        b=IZ7vzYWN39+TiLS86GTWLrnk/ATCf0r4QNhGVhc2OHNAgxB9aA4iU5Y2kMEviMNfpN
-         FeQGRm5IiNIJe+kGSsQ3sibJdO5E+v4SlUjvTB77pcXIXe58wZKrmaBtwBJTLOgIvc9o
-         tiVZKbXa+c75rwtvQJTEW+Flk2lGJG27mkz8G5jLTwdyKnTqUlWHrPyWfOmmVBSj/90l
-         vaT+3QtTJO8OGKzTj7Xp2kMJBwOqd1y8ZTThAO8y5Mw4s6jdjMz8HKwbixvGb2ERu9y3
-         9VAYmx1gYWVtMKJ9Wu8sBv0XjzD4IuLONeg6S0RA3+XsWikqXEzzLmKB76dHcSMbPJ+3
-         UCOA==
-X-Gm-Message-State: AOAM533LtcyOFcTX+k6A4u60gJg6mxuirnRGnQ6PE5fjxyTg0AS7owjs
-        xUb0H3VaImd8P0wbcaOp4BH4emkXcp9Pj6rZsHM=
-X-Google-Smtp-Source: ABdhPJxUXQ0LQsJ3DS6nEHKwM8BdhNoRjD1JrShK9j9JF1Ufc4A68mOk7Y0eDhjSIaz329/nrmZXg4qr7Em4AoxHBIM=
-X-Received: by 2002:a1c:6302:: with SMTP id x2mr405139wmb.56.1605048327960;
- Tue, 10 Nov 2020 14:45:27 -0800 (PST)
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=mbcIJdSZt08Q33JkjthQGdgmAAE0tTHvd4eCRjpw37g=;
+        b=rgLUi1/vqBWStxIwjrujS6Ho9Bd6SjTfMN6BKC2IUDXi9pi7jBT9GunxoQgPVO61Lw
+         /EY31jQlVJS8Z3dmyQBrTa/XOpqv8JxRyAF5J/jrX6ZluRM9m4qoNJVMB2v99T9ZjOBe
+         UoLv98adSQRaSNB+u68Cq1uhmJIZQ4H8qNyz+BfwmlFTrqHXgaSbf7XaX7UR0sFQR5LC
+         TFDdwiqGTGqEPutktY/kwD0BMaZbDqihBH1zpWjYBayuSvE7hwTkB6Gx9varfKqhScSD
+         M4VOkqew7Gqit9VNRMEB55i8QyRqxMPU1iFmKRLUIoB1149Oz36jm07K2kw8q2UfAYjm
+         1w8Q==
+X-Gm-Message-State: AOAM531REmBroa9JXUXbsXlCNrdgmf6HjnmvBVerT9GHfWfSmipIOI4M
+        L1wJ2bo0+WmJa03mkMgxSiPC+JlH5MUHhxkLL5NAKtM+3HVL
+X-Google-Smtp-Source: ABdhPJwvOUKEWMo23XOMRl093MoBcK5b6E7pz2AuGMblnZ+uRHSQEURw8DfYIanDIKEhuR+PWxcI8Lm+IZRg5CnQ1aKEViMuYLwY
 MIME-Version: 1.0
-References: <20201109211855.3340030-1-lee.jones@linaro.org> <20201109211855.3340030-20-lee.jones@linaro.org>
-In-Reply-To: <20201109211855.3340030-20-lee.jones@linaro.org>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Tue, 10 Nov 2020 17:45:16 -0500
-Message-ID: <CADnq5_OU0RmQit_WOEQEAUX1=m1EHz9CLufSD8zyTMbzJoDtug@mail.gmail.com>
-Subject: Re: [PATCH 19/20] drm/radeon/r600: Fix a misnamed parameter
- description and a formatting issue
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     David Airlie <airlied@linux.ie>,
-        LKML <linux-kernel@vger.kernel.org>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
-        <linaro-mm-sig@lists.linaro.org>,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        linux-media <linux-media@vger.kernel.org>
+X-Received: by 2002:a05:6e02:11a4:: with SMTP id 4mr12443717ilj.141.1605048319069;
+ Tue, 10 Nov 2020 14:45:19 -0800 (PST)
+Date:   Tue, 10 Nov 2020 14:45:19 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000e7d5a605b3c86e1e@google.com>
+Subject: upstream test error: BUG: sleeping function called from invalid
+ context in sta_info_move_state
+From:   syzbot <syzbot+32c6c38c4812d22f2f0b@syzkaller.appspotmail.com>
+To:     davem@davemloft.net, johannes@sipsolutions.net, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
+        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 9, 2020 at 4:19 PM Lee Jones <lee.jones@linaro.org> wrote:
->
-> Fixes the following W=3D1 kernel build warning(s):
->
->  drivers/gpu/drm/radeon/r600.c:2965: warning: Function parameter or membe=
-r 'resv' not described in 'r600_copy_cpdma'
->  drivers/gpu/drm/radeon/r600.c:2965: warning: Excess function parameter '=
-fence' description in 'r600_copy_cpdma'
->  drivers/gpu/drm/radeon/r600.c:4382: warning: Function parameter or membe=
-r 'rdev' not described in 'r600_mmio_hdp_flush'
->
-> Cc: Alex Deucher <alexander.deucher@amd.com>
-> Cc: "Christian K=C3=B6nig" <christian.koenig@amd.com>
-> Cc: David Airlie <airlied@linux.ie>
-> Cc: Daniel Vetter <daniel@ffwll.ch>
-> Cc: Sumit Semwal <sumit.semwal@linaro.org>
-> Cc: amd-gfx@lists.freedesktop.org
-> Cc: dri-devel@lists.freedesktop.org
-> Cc: linux-media@vger.kernel.org
-> Cc: linaro-mm-sig@lists.linaro.org
-> Signed-off-by: Lee Jones <lee.jones@linaro.org>
+Hello,
 
-Applied.  Thanks!
+syzbot found the following issue on:
 
-Alex
+HEAD commit:    eccc8767 Merge branch 'fixes' of git://git.kernel.org/pub/..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=1743eadc500000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=86ae89f992df998f
+dashboard link: https://syzkaller.appspot.com/bug?extid=32c6c38c4812d22f2f0b
+compiler:       gcc (GCC) 10.1.0-syz 20200507
 
-> ---
->  drivers/gpu/drm/radeon/r600.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
->
-> diff --git a/drivers/gpu/drm/radeon/r600.c b/drivers/gpu/drm/radeon/r600.=
-c
-> index 9587792503525..0a085b85f559d 100644
-> --- a/drivers/gpu/drm/radeon/r600.c
-> +++ b/drivers/gpu/drm/radeon/r600.c
-> @@ -2952,7 +2952,7 @@ bool r600_semaphore_ring_emit(struct radeon_device =
-*rdev,
->   * @src_offset: src GPU address
->   * @dst_offset: dst GPU address
->   * @num_gpu_pages: number of GPU pages to xfer
-> - * @fence: radeon fence object
-> + * @resv: DMA reservation object to manage fences
->   *
->   * Copy GPU paging using the CP DMA engine (r6xx+).
->   * Used by the radeon ttm implementation to move pages if
-> @@ -4371,7 +4371,7 @@ int r600_debugfs_mc_info_init(struct radeon_device =
-*rdev)
->
->  /**
->   * r600_mmio_hdp_flush - flush Host Data Path cache via MMIO
-> - * rdev: radeon device structure
-> + * @rdev: radeon device structure
->   *
->   * Some R6XX/R7XX don't seem to take into account HDP flushes performed
->   * through the ring buffer. This leads to corruption in rendering, see
-> --
-> 2.25.1
->
-> _______________________________________________
-> dri-devel mailing list
-> dri-devel@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+32c6c38c4812d22f2f0b@syzkaller.appspotmail.com
+
+BUG: sleeping function called from invalid context at net/mac80211/sta_info.c:1962
+in_atomic(): 0, irqs_disabled(): 0, non_block: 0, pid: 9705, name: kworker/u16:2
+4 locks held by kworker/u16:2/9705:
+ #0: ffff88801fc6c938 ((wq_completion)phy3){+.+.}-{0:0}, at: arch_atomic64_set arch/x86/include/asm/atomic64_64.h:34 [inline]
+ #0: ffff88801fc6c938 ((wq_completion)phy3){+.+.}-{0:0}, at: atomic64_set include/asm-generic/atomic-instrumented.h:856 [inline]
+ #0: ffff88801fc6c938 ((wq_completion)phy3){+.+.}-{0:0}, at: atomic_long_set include/asm-generic/atomic-long.h:41 [inline]
+ #0: ffff88801fc6c938 ((wq_completion)phy3){+.+.}-{0:0}, at: set_work_data kernel/workqueue.c:616 [inline]
+ #0: ffff88801fc6c938 ((wq_completion)phy3){+.+.}-{0:0}, at: set_work_pool_and_clear_pending kernel/workqueue.c:643 [inline]
+ #0: ffff88801fc6c938 ((wq_completion)phy3){+.+.}-{0:0}, at: process_one_work+0x821/0x15a0 kernel/workqueue.c:2243
+ #1: ffffc900017e7da8 ((work_completion)(&sdata->work)){+.+.}-{0:0}, at: process_one_work+0x854/0x15a0 kernel/workqueue.c:2247
+ #2: ffff88802c020d00 (&wdev->mtx){+.+.}-{3:3}, at: sdata_lock net/mac80211/ieee80211_i.h:1021 [inline]
+ #2: ffff88802c020d00 (&wdev->mtx){+.+.}-{3:3}, at: ieee80211_ibss_work+0x93/0xe80 net/mac80211/ibss.c:1683
+ #3: ffffffff8b337060 (rcu_read_lock){....}-{1:2}, at: sta_info_insert_finish net/mac80211/sta_info.c:644 [inline]
+ #3: ffffffff8b337060 (rcu_read_lock){....}-{1:2}, at: sta_info_insert_rcu+0x680/0x2ba0 net/mac80211/sta_info.c:732
+Preemption disabled at:
+[<ffffffff88e7264f>] __mutex_lock_common kernel/locking/mutex.c:955 [inline]
+[<ffffffff88e7264f>] __mutex_lock+0x10f/0x10e0 kernel/locking/mutex.c:1103
+CPU: 3 PID: 9705 Comm: kworker/u16:2 Not tainted 5.10.0-rc3-syzkaller #0
+Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.12.0-59-gc9ba5276e321-prebuilt.qemu.org 04/01/2014
+Workqueue: phy3 ieee80211_iface_work
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:118
+ ___might_sleep.cold+0x1e8/0x22e kernel/sched/core.c:7298
+ sta_info_move_state+0x32/0x8d0 net/mac80211/sta_info.c:1962
+ sta_info_free+0x65/0x3b0 net/mac80211/sta_info.c:274
+ sta_info_insert_rcu+0x303/0x2ba0 net/mac80211/sta_info.c:738
+ ieee80211_ibss_finish_sta+0x212/0x390 net/mac80211/ibss.c:592
+ ieee80211_ibss_work+0x2c7/0xe80 net/mac80211/ibss.c:1700
+ ieee80211_iface_work+0x82e/0x970 net/mac80211/iface.c:1476
+ process_one_work+0x933/0x15a0 kernel/workqueue.c:2272
+ worker_thread+0x64c/0x1120 kernel/workqueue.c:2418
+ kthread+0x3af/0x4a0 kernel/kthread.c:292
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
+
+=============================
+[ BUG: Invalid wait context ]
+5.10.0-rc3-syzkaller #0 Tainted: G        W        
+-----------------------------
+kworker/u16:2/9705 is trying to lock:
+ffff88802bfe29d0 (&local->chanctx_mtx){+.+.}-{3:3}, at: ieee80211_recalc_min_chandef+0x49/0x140 net/mac80211/util.c:2740
+other info that might help us debug this:
+context-{4:4}
+4 locks held by kworker/u16:2/9705:
+ #0: ffff88801fc6c938 ((wq_completion)phy3){+.+.}-{0:0}, at: arch_atomic64_set arch/x86/include/asm/atomic64_64.h:34 [inline]
+ #0: ffff88801fc6c938 ((wq_completion)phy3){+.+.}-{0:0}, at: atomic64_set include/asm-generic/atomic-instrumented.h:856 [inline]
+ #0: ffff88801fc6c938 ((wq_completion)phy3){+.+.}-{0:0}, at: atomic_long_set include/asm-generic/atomic-long.h:41 [inline]
+ #0: ffff88801fc6c938 ((wq_completion)phy3){+.+.}-{0:0}, at: set_work_data kernel/workqueue.c:616 [inline]
+ #0: ffff88801fc6c938 ((wq_completion)phy3){+.+.}-{0:0}, at: set_work_pool_and_clear_pending kernel/workqueue.c:643 [inline]
+ #0: ffff88801fc6c938 ((wq_completion)phy3){+.+.}-{0:0}, at: process_one_work+0x821/0x15a0 kernel/workqueue.c:2243
+ #1: ffffc900017e7da8 ((work_completion)(&sdata->work)){+.+.}-{0:0}, at: process_one_work+0x854/0x15a0 kernel/workqueue.c:2247
+ #2: ffff88802c020d00 (&wdev->mtx){+.+.}-{3:3}, at: sdata_lock net/mac80211/ieee80211_i.h:1021 [inline]
+ #2: ffff88802c020d00 (&wdev->mtx){+.+.}-{3:3}, at: ieee80211_ibss_work+0x93/0xe80 net/mac80211/ibss.c:1683
+ #3: ffffffff8b337060 (rcu_read_lock){....}-{1:2}, at: sta_info_insert_finish net/mac80211/sta_info.c:644 [inline]
+ #3: ffffffff8b337060 (rcu_read_lock){....}-{1:2}, at: sta_info_insert_rcu+0x680/0x2ba0 net/mac80211/sta_info.c:732
+stack backtrace:
+CPU: 0 PID: 9705 Comm: kworker/u16:2 Tainted: G        W         5.10.0-rc3-syzkaller #0
+Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.12.0-59-gc9ba5276e321-prebuilt.qemu.org 04/01/2014
+Workqueue: phy3 ieee80211_iface_work
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:118
+ print_lock_invalid_wait_context kernel/locking/lockdep.c:4483 [inline]
+ check_wait_context kernel/locking/lockdep.c:4544 [inline]
+ __lock_acquire.cold+0x310/0x3a2 kernel/locking/lockdep.c:4781
+ lock_acquire kernel/locking/lockdep.c:5436 [inline]
+ lock_acquire+0x2a3/0x8c0 kernel/locking/lockdep.c:5401
+ __mutex_lock_common kernel/locking/mutex.c:956 [inline]
+ __mutex_lock+0x134/0x10e0 kernel/locking/mutex.c:1103
+ ieee80211_recalc_min_chandef+0x49/0x140 net/mac80211/util.c:2740
+ sta_info_move_state+0x3cf/0x8d0 net/mac80211/sta_info.c:2019
+ sta_info_free+0x65/0x3b0 net/mac80211/sta_info.c:274
+ sta_info_insert_rcu+0x303/0x2ba0 net/mac80211/sta_info.c:738
+ ieee80211_ibss_finish_sta+0x212/0x390 net/mac80211/ibss.c:592
+ ieee80211_ibss_work+0x2c7/0xe80 net/mac80211/ibss.c:1700
+ ieee80211_iface_work+0x82e/0x970 net/mac80211/iface.c:1476
+ process_one_work+0x933/0x15a0 kernel/workqueue.c:2272
+ worker_thread+0x64c/0x1120 kernel/workqueue.c:2418
+ kthread+0x3af/0x4a0 kernel/kthread.c:292
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
+BUG: sleeping function called from invalid context at net/mac80211/sta_info.c:1962
+in_atomic(): 0, irqs_disabled(): 0, non_block: 0, pid: 9705, name: kworker/u16:2
+INFO: lockdep is turned off.
+Preemption disabled at:
+[<ffffffff8100457d>] preempt_schedule_thunk+0x16/0x18 arch/x86/entry/thunk_64.S:40
+CPU: 0 PID: 9705 Comm: kworker/u16:2 Tainted: G        W         5.10.0-rc3-syzkaller #0
+Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.12.0-59-gc9ba5276e321-prebuilt.qemu.org 04/01/2014
+Workqueue: phy3 ieee80211_iface_work
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:118
+ ___might_sleep.cold+0x1e8/0x22e kernel/sched/core.c:7298
+ sta_info_move_state+0x32/0x8d0 net/mac80211/sta_info.c:1962
+ sta_info_free+0x65/0x3b0 net/mac80211/sta_info.c:274
+ sta_info_insert_rcu+0x303/0x2ba0 net/mac80211/sta_info.c:738
+ ieee80211_ibss_finish_sta+0x212/0x390 net/mac80211/ibss.c:592
+ ieee80211_ibss_work+0x2c7/0xe80 net/mac80211/ibss.c:1700
+ ieee80211_iface_work+0x82e/0x970 net/mac80211/iface.c:1476
+ process_one_work+0x933/0x15a0 kernel/workqueue.c:2272
+ worker_thread+0x64c/0x1120 kernel/workqueue.c:2418
+ kthread+0x3af/0x4a0 kernel/kthread.c:292
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
