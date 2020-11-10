@@ -2,98 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E3C752ADAD1
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 16:50:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E02042ADAD6
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 16:50:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731288AbgKJPuY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 10:50:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45180 "EHLO
+        id S1731525AbgKJPud (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 10:50:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45214 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730850AbgKJPuX (ORCPT
+        with ESMTP id S1731320AbgKJPud (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 10:50:23 -0500
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94910C0613CF;
-        Tue, 10 Nov 2020 07:50:23 -0800 (PST)
-Received: from nazgul.tnic (unknown [78.130.214.198])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 2C1BE1EC04CB;
-        Tue, 10 Nov 2020 16:50:21 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1605023421;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=cI7RO02QCOkBjAuvhcFoxA8dBO+HwAVNuJFq7/77EFY=;
-        b=ZO2hbKvA/zIGi7eG/eEnoOQoiKSUo1uyGUVvGKFRtG6ArDoEJkJIdpqrk/zav+DOyauYac
-        X1sJwXDJcN5WoVfOj75cVaBMpPIPvO3g5dns+kL5qDPZv2pt6Bh5zJQ+cg9nPBnfbieWxt
-        a0GYnX3lr/LDn8rc8tBRD84P+CkRvi4=
-Date:   Tue, 10 Nov 2020 16:50:13 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     "Luck, Tony" <tony.luck@intel.com>,
-        Jim Mattson <jmattson@google.com>, Qian Cai <cai@redhat.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-tip-commits@vger.kernel.org" 
-        <linux-tip-commits@vger.kernel.org>, x86 <x86@kernel.org>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>
-Subject: Re: [PATCH] x86/mce: Check for hypervisor before enabling additional
- error logging
-Message-ID: <20201110155013.GE9857@nazgul.tnic>
-References: <160431588828.397.16468104725047768957.tip-bot2@tip-bot2>
- <3f863634cd75824907e8ccf8164548c2ef036f20.camel@redhat.com>
- <bfc274fc27724ea39ecac1e7ac834ed8@intel.com>
- <CALMp9eTFaiYkTnVe8xKzg40E4nZ3rAOii0O06bTy0+oLNjyKhA@mail.gmail.com>
- <a22b5468e1c94906b72c4d8bc83c0f64@intel.com>
- <20201109232402.GA25492@agluck-desk2.amr.corp.intel.com>
- <20201110063151.GB7290@nazgul.tnic>
- <094c2395-b1b3-d908-657c-9bd4144e40ac@redhat.com>
- <20201110095615.GB9450@nazgul.tnic>
- <b8de7f7b-7aa1-d98b-74be-62d7c055542b@redhat.com>
+        Tue, 10 Nov 2020 10:50:33 -0500
+Received: from albert.telenet-ops.be (albert.telenet-ops.be [IPv6:2a02:1800:110:4::f00:1a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2857C0613D3
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 07:50:32 -0800 (PST)
+Received: from ramsan.of.borg ([84.195.186.194])
+        by albert.telenet-ops.be with bizsmtp
+        id qfqW2300K4C55Sk06fqWle; Tue, 10 Nov 2020 16:50:31 +0100
+Received: from rox.of.borg ([192.168.97.57])
+        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1kcVug-001DQJ-ME; Tue, 10 Nov 2020 16:50:30 +0100
+Received: from geert by rox.of.borg with local (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1kcVug-00DmsD-A2; Tue, 10 Nov 2020 16:50:30 +0100
+From:   Geert Uytterhoeven <geert+renesas@glider.be>
+To:     Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Rich Felker <dalias@libc.org>
+Cc:     linux-sh@vger.kernel.org, linux-clk@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Stephen Boyd <sboyd@kernel.org>
+Subject: [PATCH resend v2] sh: boards: Replace <linux/clk-provider.h> by <linux/of_clk.h>
+Date:   Tue, 10 Nov 2020 16:50:29 +0100
+Message-Id: <20201110155029.3286090-1-geert+renesas@glider.be>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <b8de7f7b-7aa1-d98b-74be-62d7c055542b@redhat.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 10, 2020 at 11:40:34AM +0100, Paolo Bonzini wrote:
-> However, f/m/s mean nothing when running virtualized.  First, trying to
-> derive any non-architectural property from the f/m/s is going to fail.
-> Second, even the host can be anything as long as it's newer than the f/m/s
-> that the VM reports (i.e. you can get a Sandy Bridge model and model name
-> even if running on Skylake).
+The SuperH/J2 DT platform code is not a clock provider, and just needs
+to call of_clk_init().
 
-Yah, that's why I said "then comes virt and throws all assumptions out."
+Hence it can include <linux/of_clk.h> instead of <linux/clk-provider.h>.
 
-> See above: how can the hypervisor know a safe value for all MSRs, possibly
-> including the undocumented ones?
+Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Reviewed-by: Stephen Boyd <sboyd@kernel.org>
+---
+v2:
+  - Add Reviewed-by.
+---
+ arch/sh/boards/of-generic.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Not all - just the ones which belong to a model. I was thinking of
-having a mapping between f/m/s and a list of MSRs which those models
-have - even non-architectural ones - but that's a waste of energy. Why?
-Because using the *msr_safe() variants will give you the same thing
-without doing any of the MSR lists in KVM and any of that jumping thru
-hoops.
-
-Which means, the kernel MSR accessors should be doing _safe(), i.e.,
-exception handling, by default. And the non-safe ones - rdmsrl, wrmsrl,
-etc, should all be used only in very seldom cases. Hmm, yeah, that would
-probably solve this class of problems once and for all.
-
-> If it makes sense to emulate certain non-architectural MSRs we can add them.
-
-See above - probably not worth the effort.
-
-I'll take a look at how ugly it would become to make the majority of MSR
-accesses safe.
-
-Thx.
-
+diff --git a/arch/sh/boards/of-generic.c b/arch/sh/boards/of-generic.c
+index bffbe69b2236a1ee..921d76fc33583f78 100644
+--- a/arch/sh/boards/of-generic.c
++++ b/arch/sh/boards/of-generic.c
+@@ -6,10 +6,10 @@
+  */
+ 
+ #include <linux/of.h>
++#include <linux/of_clk.h>
+ #include <linux/of_fdt.h>
+ #include <linux/clocksource.h>
+ #include <linux/irqchip.h>
+-#include <linux/clk-provider.h>
+ #include <asm/machvec.h>
+ #include <asm/rtc.h>
+ 
 -- 
-Regards/Gruss,
-    Boris.
+2.25.1
 
-https://people.kernel.org/tglx/notes-about-netiquette
