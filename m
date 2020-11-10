@@ -2,136 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DE862ADDC1
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 19:07:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 952332ADDCF
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 19:08:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730853AbgKJSHA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 13:07:00 -0500
-Received: from mga07.intel.com ([134.134.136.100]:56468 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726428AbgKJSHA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 13:07:00 -0500
-IronPort-SDR: 0zA6zNcxjRvIP9M/4krLs9m7neNw04/+fTgIKdBKSaXViF9b+dMJqsxOPiGTbERfAf0vWlOzEc
- 6lR0o25MobfQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9801"; a="234189632"
-X-IronPort-AV: E=Sophos;i="5.77,467,1596524400"; 
-   d="scan'208";a="234189632"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Nov 2020 10:06:53 -0800
-IronPort-SDR: /nfePAnqjQMI6cF0FnQ+JBblmL1nP/m91B+IUFee3M202qcuN6NkaC3M+Qu5UeYCMuh2ZRuiBn
- qeJw7PPWPwCQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,467,1596524400"; 
-   d="scan'208";a="356252584"
-Received: from linux.intel.com ([10.54.29.200])
-  by fmsmga004.fm.intel.com with ESMTP; 10 Nov 2020 10:06:53 -0800
-Received: from debox1-desk1.jf.intel.com (debox1-desk1.jf.intel.com [10.7.201.137])
-        by linux.intel.com (Postfix) with ESMTP id 86B9F58088D;
-        Tue, 10 Nov 2020 10:06:53 -0800 (PST)
-Message-ID: <c8b880d6ff609c79b18afd3d0b5a317b6d36f05f.camel@linux.intel.com>
-Subject: Re: [PATCH V8 2/5] mfd: Intel Platform Monitoring Technology support
-From:   "David E. Box" <david.e.box@linux.intel.com>
-Reply-To: david.e.box@linux.intel.com
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Lee Jones <lee.jones@linaro.org>,
-        Darren Hart <dvhart@infradead.org>, andy@infradead.org,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        alexey.budankov@linux.intel.com,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        platform-driver-x86@vger.kernel.org,
-        linux-pci <linux-pci@vger.kernel.org>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Tue, 10 Nov 2020 10:06:53 -0800
-In-Reply-To: <CAMuHMdXPMNGtnvZKRVofQ7KhuveTadfp+V0Q73YOWkdTgr0aZQ@mail.gmail.com>
-References: <20201003013123.20269-1-david.e.box@linux.intel.com>
-         <20201003013123.20269-3-david.e.box@linux.intel.com>
-         <CAMuHMdXPMNGtnvZKRVofQ7KhuveTadfp+V0Q73YOWkdTgr0aZQ@mail.gmail.com>
-Organization: David E. Box
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.34.4 (3.34.4-1.fc31) 
+        id S1731255AbgKJSIe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 13:08:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38420 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731212AbgKJSId (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Nov 2020 13:08:33 -0500
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3B05C0613CF
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 10:08:32 -0800 (PST)
+Received: by mail-pf1-x441.google.com with SMTP id x13so12132385pfa.9
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 10:08:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=wB3QqkiVD+VrdFXWFJqguAObuEzlRQZR81UlesXyjjs=;
+        b=JrUBp/O6Jh67wN3ajz0XAini/nxQAsb7xaZPqxVYDKCnrol6kQ3HOy4tTai7u9YNnR
+         +/rBckmt8xICvZe5P0BnwMPN/4nloFFFhUCEH+Ds75V7Hwc6dzDaRKhb9c8Yc4j3vs8C
+         HC3fxF9H5VKssxeMgLA13JBGdnei4ISEcvVHoM5SbUUmjdw1mYrRun58Wvo7XJ6zZzFS
+         NoWr6XIao3RfjgOWteQtka2FYzMaPJSLPempBEQdNZA/gR1/rBbVwZI/PY4w1LgdH5D3
+         U5ScoTM6i9oX6uZGDB31Fn0klrZYXx4tO28dl+xJtk5dHxYyokSXGuyRi6hKF8NYCn0q
+         9amw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=wB3QqkiVD+VrdFXWFJqguAObuEzlRQZR81UlesXyjjs=;
+        b=PhLWxRq0lYFxpqsXzaB/4VilKkiCFJS0sWEDFkT75Cws9mOSyOTNPyj2C/2Pa18tQa
+         hnV2Gu8becd+P/cXtKtKiSo/XSuLLdjR1ZIP3aA+7PCNebBAuaMhC82iWn3ieRknmOhh
+         jWYYeV3s17A5nf4yFz1MtUjxmYBNlV9sWL9DKFSTztaINaTZe0ySTMXli+izABQDxbSx
+         EhLRRHxrNRjxwLjW8vvg5+jVfAiBhaSHKFQUTkYoJ5VSb/eoWFbnnXFxnvv5aOB3xgbE
+         m52icAj7e0/xLbgT/mlhd14rLtj+WDvJuGvvgtC9G3h9/fj36jfdsYwyCNUML1MH/Dg6
+         6FpQ==
+X-Gm-Message-State: AOAM532YNCYcE+lDqixHdOTi5vv1Lm88R4+qu29bEI0xwieKSWaCuqjI
+        SmUOOAN257JatXSdIkW2CtZo2g==
+X-Google-Smtp-Source: ABdhPJwNEB1MhEIicFaQFFjChiHHuMLuV94gIY8uBr9K2uKjBiZd0VDFXD7vcL71WN8t1UEV4ZXVqg==
+X-Received: by 2002:a17:90a:880c:: with SMTP id s12mr311690pjn.159.1605031712527;
+        Tue, 10 Nov 2020 10:08:32 -0800 (PST)
+Received: from xps15 (S0106002369de4dac.cg.shawcable.net. [68.147.8.254])
+        by smtp.gmail.com with ESMTPSA id y8sm14872305pfe.33.2020.11.10.10.08.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 10 Nov 2020 10:08:31 -0800 (PST)
+Date:   Tue, 10 Nov 2020 11:08:29 -0700
+From:   Mathieu Poirier <mathieu.poirier@linaro.org>
+To:     Leo Yan <leo.yan@linaro.org>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Suzuki Poulouse <suzuki.poulose@arm.com>,
+        Mike Leach <mike.leach@linaro.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Jin Yao <yao.jin@linux.intel.com>,
+        linux-kernel@vger.kernel.org,
+        Coresight ML <coresight@lists.linaro.org>
+Subject: Re: [PATCH RESEND 2/2] perf test: Update branch sample parttern for
+ cs-etm
+Message-ID: <20201110180829.GF3429138@xps15>
+References: <20201110063417.14467-1-leo.yan@linaro.org>
+ <20201110063417.14467-2-leo.yan@linaro.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201110063417.14467-2-leo.yan@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Geert,
+On Tue, Nov 10, 2020 at 02:34:17PM +0800, Leo Yan wrote:
+> Since the commit 943b69ac1884 ("perf parse-events: Set exclude_guest=1
+> for user-space counting"), 'exclude_guest=1' is set for user-space
+> counting; and the branch sample's modifier has been altered, the sample
+> event name has been changed from "branches:u:" to "branches:uH:", which
+> gives out info for "user-space and host counting".
+> 
+> But the cs-etm testing's regular expression cannot match the updated
+> branch sample event and leads to test failure.
+> 
+> This patch updates the branch sample parttern by using a more flexible
 
-On Tue, 2020-11-10 at 11:39 +0100, Geert Uytterhoeven wrote:
-> Hi David,
-> 
-> On Sat, Oct 3, 2020 at 3:32 AM David E. Box <
-> david.e.box@linux.intel.com> wrote:
-> > Intel Platform Monitoring Technology (PMT) is an architecture for
-> > enumerating and accessing hardware monitoring facilities. PMT
-> > supports
-> > multiple types of monitoring capabilities. This driver creates
-> > platform
-> > devices for each type so that they may be managed by capability
-> > specific
-> > drivers (to be introduced). Capabilities are discovered using PCIe
-> > DVSEC
-> > ids. Support is included for the 3 current capability types,
-> > Telemetry,
-> > Watcher, and Crashlog. The features are available on new Intel
-> > platforms
-> > starting from Tiger Lake for which support is added. This patch
-> > adds
-> > support for Tiger Lake (TGL), Alder Lake (ADL), and Out-of-Band
-> > Management
-> > Services Module (OOBMSM).
-> > 
-> > Also add a quirk mechanism for several early hardware differences
-> > and bugs.
-> > For Tiger Lake and Alder Lake, do not support Watcher and Crashlog
-> > capabilities since they will not be compatible with future product.
-> > Also,
-> > fix use a quirk to fix the discovery table offset.
-> > 
-> > Co-developed-by: Alexander Duyck <alexander.h.duyck@linux.intel.com
-> > >
-> > Signed-off-by: Alexander Duyck <alexander.h.duyck@linux.intel.com>
-> > Signed-off-by: David E. Box <david.e.box@linux.intel.com>
-> > Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-> 
-> Thanks for your patch, which is now commit 4f8217d5b0ca8ace ("mfd:
-> Intel
-> Platform Monitoring Technology support") in the mfd/for-mfd-next.
-> 
-> > --- a/drivers/mfd/Kconfig
-> > +++ b/drivers/mfd/Kconfig
-> > @@ -670,6 +670,16 @@ config MFD_INTEL_PMC_BXT
-> >           Register and P-unit access. In addition this creates
-> > devices
-> >           for iTCO watchdog and telemetry that are part of the PMC.
-> > 
-> > +config MFD_INTEL_PMT
-> > +       tristate "Intel Platform Monitoring Technology (PMT)
-> > support"
-> > +       depends on PCI
-> 
-> Does this need a "depend on X86 || COMPILE_TEST", to prevent the
-> question from showing up on platforms where the PMT cannot be
-> present?
+s/parttern/pattern
 
-Though not currently available on non X86 hardware it is not
-restricted. The use of PCIE Designated Vendor Specific Capability
-(DVSEC) was to specifically allow use of this IP by other vendors.
+> expression '.*' to match branch sample's modifiers, so that allows the
+> testing to work as expected.
+> 
+> Fixes: 943b69ac1884 ("perf parse-events: Set exclude_guest=1 for user-space counting")
+> Signed-off-by: Leo Yan <leo.yan@linaro.org>
+> ---
+>  tools/perf/tests/shell/test_arm_coresight.sh | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+
+Here too I would CC stable.  With the above:
+
+Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
 
 > 
-> I see the TGL and ADL PCI IDs are also referenced from
-> drivers/platform/x86/intel_pmt_telemetry.c, which suggests this is
-> X86-only.
-> Perhaps the OOBMSM is a PCI device that can be used on non-X86
-> platforms?
-
-TGL and AGL are only referenced in this driver because they require
-quirks.
-
-Thanks
-
-David
-
+> diff --git a/tools/perf/tests/shell/test_arm_coresight.sh b/tools/perf/tests/shell/test_arm_coresight.sh
+> index 59d847d4981d..18fde2f179cd 100755
+> --- a/tools/perf/tests/shell/test_arm_coresight.sh
+> +++ b/tools/perf/tests/shell/test_arm_coresight.sh
+> @@ -44,7 +44,7 @@ perf_script_branch_samples() {
+>  	#   touch  6512          1         branches:u:      ffffb22082e0 strcmp+0xa0 (/lib/aarch64-linux-gnu/ld-2.27.so)
+>  	#   touch  6512          1         branches:u:      ffffb2208320 strcmp+0xe0 (/lib/aarch64-linux-gnu/ld-2.27.so)
+>  	perf script -F,-time -i ${perfdata} | \
+> -		egrep " +$1 +[0-9]+ .* +branches:([u|k]:)? +"
+> +		egrep " +$1 +[0-9]+ .* +branches:(.*:)? +"
+>  }
+>  
+>  perf_report_branch_samples() {
+> -- 
+> 2.17.1
+> 
