@@ -2,58 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8555A2AE052
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 20:55:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E6F462AE051
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 20:55:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732019AbgKJTzV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 14:55:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55176 "EHLO
+        id S1732016AbgKJTzR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 14:55:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55184 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731770AbgKJTyl (ORCPT
+        with ESMTP id S1731799AbgKJTym (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 14:54:41 -0500
+        Tue, 10 Nov 2020 14:54:42 -0500
 Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBE5FC0613D1
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 11:54:40 -0800 (PST)
-Received: by mail-io1-xd43.google.com with SMTP id j12so15617741iow.0
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 11:54:40 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B872C0613D4
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 11:54:42 -0800 (PST)
+Received: by mail-io1-xd43.google.com with SMTP id t8so11076046iov.8
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 11:54:42 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linuxfoundation.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=tTh8wJz4qmx3CYWsrkecuCGXFUxr3+6Ltanw9weKYx4=;
-        b=Uf1RujPLXXPVFLp5wjwLg1WsL++/OzJMdj3PLvk8+XchtewL/soIC/HUA+f8hedI/7
-         45+te7QQ58VHov/x+NknT9Bbwb2CWiJqvMZ4olXEFH5FqPpvv0OXGPgwA/OspTJdRlcu
-         ipfoLJiypyFlMt815A7OsVrc12fUOe2vp1Jog=
+        bh=xWxbIjIf+vWKJo79DR0sywcSwRmgT7ZEf6uLSBEfNR0=;
+        b=flV6IdZGFhQPLx7ZwnwS7uioxSxosm+o02QJQzMYIRIOd3L/HEbKJhIg4eskEe2KZQ
+         hdXsuzLFGPpQqhP8Fn6fVE8mdgGRgoBfBHcfCgeNz1qdEj6G1bz82tNvfPK377Wgksyo
+         xYkWpbFuekomYgRPo+XmX6B0xcNKwomwlw+lc=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=tTh8wJz4qmx3CYWsrkecuCGXFUxr3+6Ltanw9weKYx4=;
-        b=oKfCF2NTeEgx4uzGJL7DLTME6XjOE2LWP9sgeyiOtd+CKTB+d/05psAllLD/ETIaqq
-         JF7TfNandAajQlUGPwlb7joIBB0slXYZa5XjF/0m/EufaRZAIC5LXczcgT+CCuMeQ1M9
-         hYNFabRw9P9eWD8ipnPSW7BEi8wDsQ8B92+LSmurNm1Bfj4+Mcve9+VY9P5afcyXgWYG
-         cHxrVF53CQsDYvvpr0IqMGl/Z349o048fFER09wesufgkPslpHDTpTKYzqXyrFAIC1MX
-         yPAzdKOhmCGAUS7arfO7aBUEHqIHbBRQQndGX0V1gfSnB8OFfzAB43Iq0NZRwA/JQXty
-         qLfg==
-X-Gm-Message-State: AOAM531BLaoIu6J1EObjQOSTxhzVPJ8xPX+v6YVej/MUn6XvXZml2S8S
-        UnQfALmdkbajyC4ZPsdylFuMJw==
-X-Google-Smtp-Source: ABdhPJwuhFy0zz6nJFugRrggDyBt4Yjp6uHFMgJd5Ho5vS6eDVq0OrbTu+MvHqiM1PWDFbsk9dHxQQ==
-X-Received: by 2002:a05:6638:618:: with SMTP id g24mr17102192jar.53.1605038080314;
-        Tue, 10 Nov 2020 11:54:40 -0800 (PST)
+        bh=xWxbIjIf+vWKJo79DR0sywcSwRmgT7ZEf6uLSBEfNR0=;
+        b=Q6iKsEjihp7itOYDp/gAyGgaqlpQlMHs5GXNsjPYpFl2++F7bqnFUkZSVPUmkqbLsL
+         4zKNWiYQaXH1U65oS2lSxtaje7ypyvHMYS9i/LQoto4hDjyL21ARGwlKa7f0u922tgoI
+         iK6B3B/hoio/9P2AnM8KwUnpYEkUFYSYxfmAFISXayje/OLG/wNIzCnA6c/bjoCLhhK1
+         +wgFIeq5GUw950YHNE6EjLA6lp/wesJyX1gPx4mpptVe037pQlPoMjjxMFy6l/hCGOVq
+         GV/JhlIoC6uGH+9biV97La9iPcseEuy3OiuH3+m47p2MN1eq22+7VaVV0kgt6XbxZqzE
+         65Vg==
+X-Gm-Message-State: AOAM530fV4gAxga1F7Pm5DXEAc8S6Fqa/AEmvjji5avlnGTtQ2yW+cnq
+        Pz89CAkvdaPIb3dLPR+eZWhZc+vB0/eEHA==
+X-Google-Smtp-Source: ABdhPJy5fAdT9pZhgE3p9mue05R+UCcS/j9Sl3yD1PHrqSbJ9zD7VYHobfbBG7GUvO/yoscgh1G8XQ==
+X-Received: by 2002:a6b:3c10:: with SMTP id k16mr16048505iob.209.1605038081698;
+        Tue, 10 Nov 2020 11:54:41 -0800 (PST)
 Received: from shuah-t480s.internal (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id o14sm123971ilg.71.2020.11.10.11.54.39
+        by smtp.gmail.com with ESMTPSA id o14sm123971ilg.71.2020.11.10.11.54.40
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 10 Nov 2020 11:54:39 -0800 (PST)
+        Tue, 10 Nov 2020 11:54:41 -0800 (PST)
 From:   Shuah Khan <skhan@linuxfoundation.org>
-To:     minyard@acm.org, arnd@arndb.de, gregkh@linuxfoundation.org,
+To:     bp@alien8.de, mchehab@kernel.org, tony.luck@intel.com,
+        james.morse@arm.com, rric@kernel.org, gregkh@linuxfoundation.org,
         keescook@chromium.org, peterz@infradead.org
-Cc:     Shuah Khan <skhan@linuxfoundation.org>,
-        openipmi-developer@lists.sourceforge.net,
+Cc:     Shuah Khan <skhan@linuxfoundation.org>, linux-edac@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH 06/13] drivers/char/ipmi: convert stats to use seqnum_ops
-Date:   Tue, 10 Nov 2020 12:53:32 -0700
-Message-Id: <e383f5e0b72ecd524e65b5d4931f85db2b374ea0.1605027593.git.skhan@linuxfoundation.org>
+Subject: [PATCH 07/13] drivers/edac: convert pci counters to seqnum_ops
+Date:   Tue, 10 Nov 2020 12:53:33 -0700
+Message-Id: <cec4b823fba8a9ad5fab89d3fe8dee6cdb2d5a49.1605027593.git.skhan@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <cover.1605027593.git.skhan@linuxfoundation.org>
 References: <cover.1605027593.git.skhan@linuxfoundation.org>
@@ -71,140 +71,159 @@ seqnum32 variables wrap around to INT_MIN when it overflows and
 should not be used to guard resource lifetimes, device usage and
 open counts that control state changes, and pm states.
 
-atomic_t variables used for stats are atomic counters. Overflow will
-wrap around and reset the stats and no change with the conversion.
+atomic_t variables used for pci counters keep track of pci parity and
+non-parity errors. Convert them to use seqnum_ops.
 
-Convert them to use seqnum_ops.
+Overflow will wrap around and reset the counts as was the case prior to
+the conversion.
 
 Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
 ---
- drivers/char/ipmi/ipmi_msghandler.c | 9 +++++----
- drivers/char/ipmi/ipmi_si_intf.c    | 9 +++++----
- drivers/char/ipmi/ipmi_ssif.c       | 9 +++++----
- 3 files changed, 15 insertions(+), 12 deletions(-)
+ drivers/edac/edac_pci.h       |  5 +++--
+ drivers/edac/edac_pci_sysfs.c | 28 ++++++++++++++--------------
+ 2 files changed, 17 insertions(+), 16 deletions(-)
 
-diff --git a/drivers/char/ipmi/ipmi_msghandler.c b/drivers/char/ipmi/ipmi_msghandler.c
-index 8774a3b8ff95..a8f03b4dade9 100644
---- a/drivers/char/ipmi/ipmi_msghandler.c
-+++ b/drivers/char/ipmi/ipmi_msghandler.c
-@@ -35,6 +35,7 @@
- #include <linux/nospec.h>
- #include <linux/vmalloc.h>
- #include <linux/delay.h>
+diff --git a/drivers/edac/edac_pci.h b/drivers/edac/edac_pci.h
+index 5175f5724cfa..33b33e62c37f 100644
+--- a/drivers/edac/edac_pci.h
++++ b/drivers/edac/edac_pci.h
+@@ -30,12 +30,13 @@
+ #include <linux/pci.h>
+ #include <linux/types.h>
+ #include <linux/workqueue.h>
 +#include <linux/seqnum_ops.h>
  
- #define IPMI_DRIVER_VERSION "39.2"
+ #ifdef CONFIG_PCI
  
-@@ -587,7 +588,7 @@ struct ipmi_smi {
- 	struct ipmi_my_addrinfo addrinfo[IPMI_MAX_CHANNELS];
- 	bool channels_ready;
- 
--	atomic_t stats[IPMI_NUM_STATS];
-+	struct seqnum32 stats[IPMI_NUM_STATS];
- 
- 	/*
- 	 * run_to_completion duplicate of smb_info, smi_info
-@@ -633,9 +634,9 @@ static LIST_HEAD(smi_watchers);
- static DEFINE_MUTEX(smi_watchers_mutex);
- 
- #define ipmi_inc_stat(intf, stat) \
--	atomic_inc(&(intf)->stats[IPMI_STAT_ ## stat])
-+	seqnum32_inc(&(intf)->stats[IPMI_STAT_ ## stat])
- #define ipmi_get_stat(intf, stat) \
--	((unsigned int) atomic_read(&(intf)->stats[IPMI_STAT_ ## stat]))
-+	((unsigned int) seqnum32_read(&(intf)->stats[IPMI_STAT_ ## stat]))
- 
- static const char * const addr_src_to_str[] = {
- 	"invalid", "hotmod", "hardcoded", "SPMI", "ACPI", "SMBIOS", "PCI",
-@@ -3468,7 +3469,7 @@ int ipmi_add_smi(struct module         *owner,
- 	INIT_LIST_HEAD(&intf->cmd_rcvrs);
- 	init_waitqueue_head(&intf->waitq);
- 	for (i = 0; i < IPMI_NUM_STATS; i++)
--		atomic_set(&intf->stats[i], 0);
-+		seqnum32_set(&intf->stats[i], 0);
- 
- 	mutex_lock(&ipmi_interfaces_mutex);
- 	/* Look for a hole in the numbers. */
-diff --git a/drivers/char/ipmi/ipmi_si_intf.c b/drivers/char/ipmi/ipmi_si_intf.c
-index 5eac94cf4ff8..e1354076a58a 100644
---- a/drivers/char/ipmi/ipmi_si_intf.c
-+++ b/drivers/char/ipmi/ipmi_si_intf.c
-@@ -43,6 +43,7 @@
- #include "ipmi_si_sm.h"
- #include <linux/string.h>
- #include <linux/ctype.h>
-+#include <linux/seqnum_ops.h>
- 
- /* Measure times between events in the driver. */
- #undef DEBUG_TIMING
-@@ -237,7 +238,7 @@ struct smi_info {
- 	bool dev_group_added;
- 
- 	/* Counters and things for the proc filesystem. */
--	atomic_t stats[SI_NUM_STATS];
-+	struct seqnum32 stats[SI_NUM_STATS];
- 
- 	struct task_struct *thread;
- 
-@@ -245,9 +246,9 @@ struct smi_info {
+ struct edac_pci_counter {
+-	atomic_t pe_count;
+-	atomic_t npe_count;
++	struct seqnum32 pe_count;
++	struct seqnum32 npe_count;
  };
  
- #define smi_inc_stat(smi, stat) \
--	atomic_inc(&(smi)->stats[SI_STAT_ ## stat])
-+	seqnum32_inc(&(smi)->stats[SI_STAT_ ## stat])
- #define smi_get_stat(smi, stat) \
--	((unsigned int) atomic_read(&(smi)->stats[SI_STAT_ ## stat]))
-+	((unsigned int) seqnum32_read(&(smi)->stats[SI_STAT_ ## stat]))
+ /*
+diff --git a/drivers/edac/edac_pci_sysfs.c b/drivers/edac/edac_pci_sysfs.c
+index 53042af7262e..96f950fb39b0 100644
+--- a/drivers/edac/edac_pci_sysfs.c
++++ b/drivers/edac/edac_pci_sysfs.c
+@@ -23,8 +23,8 @@ static int edac_pci_log_pe = 1;		/* log PCI parity errors */
+ static int edac_pci_log_npe = 1;	/* log PCI non-parity error errors */
+ static int edac_pci_poll_msec = 1000;	/* one second workq period */
  
- #define IPMI_MAX_INTFS 4
- static int force_kipmid[IPMI_MAX_INTFS];
-@@ -2030,7 +2031,7 @@ static int try_smi_init(struct smi_info *new_smi)
- 	atomic_set(&new_smi->req_events, 0);
- 	new_smi->run_to_completion = false;
- 	for (i = 0; i < SI_NUM_STATS; i++)
--		atomic_set(&new_smi->stats[i], 0);
-+		seqnum32_set(&new_smi->stats[i], 0);
+-static atomic_t pci_parity_count = ATOMIC_INIT(0);
+-static atomic_t pci_nonparity_count = ATOMIC_INIT(0);
++static struct seqnum32 pci_parity_count = SEQNUM_INIT(0);
++static struct seqnum32 pci_nonparity_count = SEQNUM_INIT(0);
  
- 	new_smi->interrupt_disabled = true;
- 	atomic_set(&new_smi->need_watch, 0);
-diff --git a/drivers/char/ipmi/ipmi_ssif.c b/drivers/char/ipmi/ipmi_ssif.c
-index 0416b9c9d410..0e61e072b213 100644
---- a/drivers/char/ipmi/ipmi_ssif.c
-+++ b/drivers/char/ipmi/ipmi_ssif.c
-@@ -47,6 +47,7 @@
- #include <linux/acpi.h>
- #include <linux/ctype.h>
- #include <linux/time64.h>
-+#include <linux/seqnum_ops.h>
- #include "ipmi_dmi.h"
+ static struct kobject *edac_pci_top_main_kobj;
+ static atomic_t edac_pci_sysfs_refcount = ATOMIC_INIT(0);
+@@ -58,13 +58,13 @@ int edac_pci_get_poll_msec(void)
+ /**************************** EDAC PCI sysfs instance *******************/
+ static ssize_t instance_pe_count_show(struct edac_pci_ctl_info *pci, char *data)
+ {
+-	return sprintf(data, "%u\n", atomic_read(&pci->counters.pe_count));
++	return sprintf(data, "%u\n", seqnum32_read(&pci->counters.pe_count));
+ }
  
- #define DEVICE_NAME "ipmi_ssif"
-@@ -286,13 +287,13 @@ struct ssif_info {
- 	unsigned int  multi_len;
- 	unsigned int  multi_pos;
+ static ssize_t instance_npe_count_show(struct edac_pci_ctl_info *pci,
+ 				char *data)
+ {
+-	return sprintf(data, "%u\n", atomic_read(&pci->counters.npe_count));
++	return sprintf(data, "%u\n", seqnum32_read(&pci->counters.npe_count));
+ }
  
--	atomic_t stats[SSIF_NUM_STATS];
-+	struct seqnum32 stats[SSIF_NUM_STATS];
- };
+ #define to_instance(k) container_of(k, struct edac_pci_ctl_info, kobj)
+@@ -553,7 +553,7 @@ static void edac_pci_dev_parity_test(struct pci_dev *dev)
+ 			edac_printk(KERN_CRIT, EDAC_PCI,
+ 				"Signaled System Error on %s\n",
+ 				pci_name(dev));
+-			atomic_inc(&pci_nonparity_count);
++			seqnum32_inc(&pci_nonparity_count);
+ 		}
  
- #define ssif_inc_stat(ssif, stat) \
--	atomic_inc(&(ssif)->stats[SSIF_STAT_ ## stat])
-+	seqnum32_inc(&(ssif)->stats[SSIF_STAT_ ## stat])
- #define ssif_get_stat(ssif, stat) \
--	((unsigned int) atomic_read(&(ssif)->stats[SSIF_STAT_ ## stat]))
-+	((unsigned int) seqnum32_read(&(ssif)->stats[SSIF_STAT_ ## stat]))
+ 		if (status & (PCI_STATUS_PARITY)) {
+@@ -561,7 +561,7 @@ static void edac_pci_dev_parity_test(struct pci_dev *dev)
+ 				"Master Data Parity Error on %s\n",
+ 				pci_name(dev));
  
- static bool initialized;
- static bool platform_registered;
-@@ -1864,7 +1865,7 @@ static int ssif_probe(struct i2c_client *client, const struct i2c_device_id *id)
- 	timer_setup(&ssif_info->watch_timer, watch_timeout, 0);
+-			atomic_inc(&pci_parity_count);
++			seqnum32_inc(&pci_parity_count);
+ 		}
  
- 	for (i = 0; i < SSIF_NUM_STATS; i++)
--		atomic_set(&ssif_info->stats[i], 0);
-+		seqnum32_set(&ssif_info->stats[i], 0);
+ 		if (status & (PCI_STATUS_DETECTED_PARITY)) {
+@@ -569,7 +569,7 @@ static void edac_pci_dev_parity_test(struct pci_dev *dev)
+ 				"Detected Parity Error on %s\n",
+ 				pci_name(dev));
  
- 	if (ssif_info->supports_pec)
- 		ssif_info->client->flags |= I2C_CLIENT_PEC;
+-			atomic_inc(&pci_parity_count);
++			seqnum32_inc(&pci_parity_count);
+ 		}
+ 	}
+ 
+@@ -592,7 +592,7 @@ static void edac_pci_dev_parity_test(struct pci_dev *dev)
+ 				edac_printk(KERN_CRIT, EDAC_PCI, "Bridge "
+ 					"Signaled System Error on %s\n",
+ 					pci_name(dev));
+-				atomic_inc(&pci_nonparity_count);
++				seqnum32_inc(&pci_nonparity_count);
+ 			}
+ 
+ 			if (status & (PCI_STATUS_PARITY)) {
+@@ -600,7 +600,7 @@ static void edac_pci_dev_parity_test(struct pci_dev *dev)
+ 					"Master Data Parity Error on "
+ 					"%s\n", pci_name(dev));
+ 
+-				atomic_inc(&pci_parity_count);
++				seqnum32_inc(&pci_parity_count);
+ 			}
+ 
+ 			if (status & (PCI_STATUS_DETECTED_PARITY)) {
+@@ -608,7 +608,7 @@ static void edac_pci_dev_parity_test(struct pci_dev *dev)
+ 					"Detected Parity Error on %s\n",
+ 					pci_name(dev));
+ 
+-				atomic_inc(&pci_parity_count);
++				seqnum32_inc(&pci_parity_count);
+ 			}
+ 		}
+ 	}
+@@ -646,7 +646,7 @@ void edac_pci_do_parity_check(void)
+ 	if (!check_pci_errors)
+ 		return;
+ 
+-	before_count = atomic_read(&pci_parity_count);
++	before_count = seqnum32_read(&pci_parity_count);
+ 
+ 	/* scan all PCI devices looking for a Parity Error on devices and
+ 	 * bridges.
+@@ -658,7 +658,7 @@ void edac_pci_do_parity_check(void)
+ 	/* Only if operator has selected panic on PCI Error */
+ 	if (edac_pci_get_panic_on_pe()) {
+ 		/* If the count is different 'after' from 'before' */
+-		if (before_count != atomic_read(&pci_parity_count))
++		if (before_count != seqnum32_read(&pci_parity_count))
+ 			panic("EDAC: PCI Parity Error");
+ 	}
+ }
+@@ -686,7 +686,7 @@ void edac_pci_handle_pe(struct edac_pci_ctl_info *pci, const char *msg)
+ {
+ 
+ 	/* global PE counter incremented by edac_pci_do_parity_check() */
+-	atomic_inc(&pci->counters.pe_count);
++	seqnum32_inc(&pci->counters.pe_count);
+ 
+ 	if (edac_pci_get_log_pe())
+ 		edac_pci_printk(pci, KERN_WARNING,
+@@ -711,7 +711,7 @@ void edac_pci_handle_npe(struct edac_pci_ctl_info *pci, const char *msg)
+ {
+ 
+ 	/* global NPE counter incremented by edac_pci_do_parity_check() */
+-	atomic_inc(&pci->counters.npe_count);
++	seqnum32_inc(&pci->counters.npe_count);
+ 
+ 	if (edac_pci_get_log_npe())
+ 		edac_pci_printk(pci, KERN_WARNING,
 -- 
 2.27.0
 
