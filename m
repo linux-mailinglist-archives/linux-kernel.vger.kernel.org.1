@@ -2,85 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C8E22AD7F9
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 14:46:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E2AD62AD7FF
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 14:48:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730939AbgKJNqu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 08:46:50 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53008 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730524AbgKJNqu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 08:46:50 -0500
-Received: from localhost.localdomain (236.31.169.217.in-addr.arpa [217.169.31.236])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id AD4C22076E;
-        Tue, 10 Nov 2020 13:46:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605016009;
-        bh=P7FNUoUlbSY2GKi42YVDRwQnkOib6vtn54EtBPOLiDQ=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hYDBbp0DdpYpcHeeOBptc7EzMimHnzDqfHH9zPh4g/fqp3K97yvx/BjCLQYQqw/Bo
-         hm5eVhisSud5otCjw5SndxHvIiSqDHPiXzMJ6baSTsO+5Okx52I/sEFrisL1N/SI1j
-         l25I0lRJXC0UMHi7FqyVZDoJuf3v9Z41LMEfMTH0=
-From:   Will Deacon <will@kernel.org>
-To:     Jordan Crouse <jcrouse@codeaurora.org>,
-        linux-arm-msm@vger.kernel.org
-Cc:     catalin.marinas@arm.com, kernel-team@android.com,
-        Will Deacon <will@kernel.org>, Andy Gross <agross@kernel.org>,
-        linux-kernel@vger.kernel.org,
-        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
-        Thierry Reding <treding@nvidia.com>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Rob Herring <robh+dt@kernel.org>,
-        Hanna Hawa <hannah@marvell.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Sibi Sankar <sibis@codeaurora.org>,
-        Rob Clark <robdclark@chromium.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        iommu@lists.linux-foundation.org
-Subject: Re: [PATCH v19 0/4] iommu/arm-smmu: Add adreno-smmu implementation and bindings
-Date:   Tue, 10 Nov 2020 13:46:40 +0000
-Message-Id: <160501115071.4000419.14530620296550155623.b4-ty@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20201109184728.2463097-1-jcrouse@codeaurora.org>
-References: <20201109184728.2463097-1-jcrouse@codeaurora.org>
+        id S1730496AbgKJNsx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 08:48:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54150 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730059AbgKJNsx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Nov 2020 08:48:53 -0500
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80875C0613D1
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 05:48:51 -0800 (PST)
+Received: by mail-wm1-x344.google.com with SMTP id p22so3055941wmg.3
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 05:48:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=/irRG2xVyB+MrXYW7pn63MGWNmHDLhOpvYFveUA+VF0=;
+        b=mECjFv5eJoRSLGitl8gIrq4dhiY5HFhzfcKBY95IZntzwaQyfs79wbrmIoBE2V4UET
+         A1oN4JoOixHHf+DG4Woj/WyU2UKFPq1XbUrOGJXAfeIzUWIQlegiZbaGph635Zax1k/F
+         A7rXqblEt4ZK/hO4bkBvkRWbyI/o2HNfm36ZRwXGDjXNEUDaO9eEFP/IpUdYog5I3+UC
+         TjqMaD+yyEYNd2VAkQar2YpmUwmtmeAoOR/PBuMs6zfQg+WcYmRr3Pe2LRQIMR7szvmW
+         FJfjYg3neAvUiN2IBBjPexGH3g4+jhhfaBA94nZAH/ro/z1rYfOeaVAWE/ngSq0Lj/Yf
+         V9zw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=/irRG2xVyB+MrXYW7pn63MGWNmHDLhOpvYFveUA+VF0=;
+        b=HwWciWO2TWQkuWHY/sCqJ3U82k1iyM6DG5y/oO0X4sv9dG2Wf5VmjfMfab649DdiEJ
+         NgGZH8yL7YGL+PbZsnsOBqK0uWFZZAcRLztcnf41VNbDZLcUuU0st06qShKfWbIl0kjM
+         7tKv9Z/Bagyj8y5F6WPY0sFjpHla7uN+TM5r2HXZi+y7uLmOcEMhL8xzcNZonDEh3ISG
+         ijvS1yTaQsFuAsRN/7eSgPzraBR/NRt+UX7uLnJ356VGkQE7atWprF955vIueHe4/0Zm
+         +KyitAL2JsPAakN60CWV/z9Jm4Whn6J7DMF+pZyMqGyVmK1yHOO8B4bLxRXSfnx3r77J
+         qsPw==
+X-Gm-Message-State: AOAM531ZQaB/UF5rNYTnyGcrGn/HgW5UsvKCV/4fK5uL1S8RN4wtdfv4
+        pm67+KOOLShV3dzJg3ogPlAaVg==
+X-Google-Smtp-Source: ABdhPJy2WHqNyjwgYOcyRGR8cFbNeeCtWzoyqpsu+IJ1FSAn1ZC5vDcy1JNl9nz+wz2T3D0KPNDRzQ==
+X-Received: by 2002:a1c:b0c8:: with SMTP id z191mr4685731wme.99.1605016130163;
+        Tue, 10 Nov 2020 05:48:50 -0800 (PST)
+Received: from dell ([91.110.221.139])
+        by smtp.gmail.com with ESMTPSA id o11sm18265222wre.39.2020.11.10.05.48.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 10 Nov 2020 05:48:49 -0800 (PST)
+Date:   Tue, 10 Nov 2020 13:48:47 +0000
+From:   Lee Jones <lee.jones@linaro.org>
+To:     =?utf-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Tony Lindgren <tony@atomide.com>, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-omap@vger.kernel.org
+Subject: Re: [PATCH 1/5] gpio: tps65910: use regmap accessors
+Message-ID: <20201110134847.GI2063125@dell>
+References: <cover.1601164493.git.mirq-linux@rere.qmqm.pl>
+ <e3a3979657babf716e5f4072e373637ce86ad7ff.1601164493.git.mirq-linux@rere.qmqm.pl>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <e3a3979657babf716e5f4072e373637ce86ad7ff.1601164493.git.mirq-linux@rere.qmqm.pl>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 9 Nov 2020 11:47:24 -0700, Jordan Crouse wrote:
-> This short series adds support for the adreno-smmu implementation of the
-> arm-smmu driver and the device-tree bindings to turn on the implementation
-> for the sm845 and sc7180 GPUs. These changes are the last ones needed to enable
-> per-instance pagetables in the drm/msm driver.
+On Sun, 27 Sep 2020, Michał Mirosław wrote:
+
+> Use regmap accessors directly for register manipulation - removing one
+> layer of abstraction.
 > 
-> v19: Rebase to kernel/git/will/linux.git for-joerg/arm-smmu/updates to pick up
->      system cache patches and devm_realloc() updates. Use a function hook to
->      modify / write sctlr
-> v18: No deltas in this patchset since the last go-around for 5.10 [1].
-> 
-> [...]
+> Signed-off-by: Michał Mirosław <mirq-linux@rere.qmqm.pl>
+> ---
+>  drivers/gpio/gpio-tps65910.c | 12 ++++++------
+>  1 file changed, 6 insertions(+), 6 deletions(-)
 
-Applied patches 1-3 to will (for-joerg/arm-smmu/updates), thanks!
+Applied, thanks.
 
-[1/4] iommu/arm-smmu-qcom: Add implementation for the adreno GPU SMMU
-      https://git.kernel.org/will/c/5c7469c66f95
-[2/4] iommu/arm-smmu: Add a way for implementations to influence SCTLR
-      https://git.kernel.org/will/c/bffb2eaf0ba2
-[3/4] dt-bindings: arm-smmu: Add compatible string for Adreno GPU SMMU
-      https://git.kernel.org/will/c/a29bbb0861f4
-
-I assume the .dts change will be routed separately so as to avoid conflicts.
-
-Cheers,
 -- 
-Will
-
-https://fixes.arm64.dev
-https://next.arm64.dev
-https://will.arm64.dev
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
