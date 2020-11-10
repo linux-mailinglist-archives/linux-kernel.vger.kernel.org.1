@@ -2,57 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E2CD2ADAC6
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 16:49:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6154B2ADACB
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 16:49:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731073AbgKJPtL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 10:49:11 -0500
-Received: from foss.arm.com ([217.140.110.172]:57818 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730231AbgKJPtL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 10:49:11 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5DBE31396;
-        Tue, 10 Nov 2020 07:49:10 -0800 (PST)
-Received: from e113632-lin (e113632-lin.cambridge.arm.com [10.1.194.46])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 3FA2A3F718;
-        Tue, 10 Nov 2020 07:49:09 -0800 (PST)
-References: <20201101131430.257038-1-maz@kernel.org> <jhjsg9syrs5.mognet@arm.com> <20201110130348.GK2594@hirez.programming.kicks-ass.net> <19286daf276f46aa@fake-msgid>
-User-agent: mu4e 0.9.17; emacs 26.3
-From:   Valentin Schneider <valentin.schneider@arm.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Marc Zyngier <maz@kernel.org>,
-        LAK <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Will Deacon <will@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Android Kernel Team <kernel-team@android.com>
-Subject: Re: [PATCH 0/2] arm64: Allow the rescheduling IPI to bypass irq_enter/exit
-Message-ID: <jhjpn4lxlel.mognet@arm.com>
-In-reply-to: <19286daf276f46aa@fake-msgid>
-Date:   Tue, 10 Nov 2020 15:48:58 +0000
+        id S1731218AbgKJPtn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 10:49:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45070 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730231AbgKJPtn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Nov 2020 10:49:43 -0500
+Received: from michel.telenet-ops.be (michel.telenet-ops.be [IPv6:2a02:1800:110:4::f00:18])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 361BFC0613CF
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 07:49:43 -0800 (PST)
+Received: from ramsan.of.borg ([84.195.186.194])
+        by michel.telenet-ops.be with bizsmtp
+        id qfph2300U4C55Sk06fphKK; Tue, 10 Nov 2020 16:49:41 +0100
+Received: from rox.of.borg ([192.168.97.57])
+        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1kcVtt-001DQ1-6b; Tue, 10 Nov 2020 16:49:41 +0100
+Received: from geert by rox.of.borg with local (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1kcVts-00Dmpb-PM; Tue, 10 Nov 2020 16:49:40 +0100
+From:   Geert Uytterhoeven <geert+renesas@glider.be>
+To:     Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Rich Felker <dalias@libc.org>
+Cc:     linux-sh@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Geert Uytterhoeven <geert+renesas@glider.be>
+Subject: [PATCH resend2] sh/intc: Restore devm_ioremap() alignment
+Date:   Tue, 10 Nov 2020 16:49:39 +0100
+Message-Id: <20201110154939.3285928-1-geert+renesas@glider.be>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Restore alignment of the continuation of the devm_ioremap() call in
+register_intc_controller().
 
-On 01/01/70 01:00, Valentin Schneider wrote:
-> On 10/11/20 13:03, Peter Zijlstra wrote:
->> On Mon, Nov 02, 2020 at 10:30:50AM +0000, Valentin Schneider wrote:
->>
->>> Now, I'd like to pen exactly why we think it's okay to forgo irq_{enter,
->>> exit}() for that one IRQ and not any other.
->>
->> Thomas already said a few words on this, but basically scheduler_ipi()
->> is a NOP (*almost*), the IPI has no body. All it does is tickle the
->> return-from-interrupt path. So any setup and tear-down done for the
->> non-existing body is a waste of time.
+Fixes: 4bdc0d676a643140 ("remove ioremap_nocache and devm_ioremap_nocache")
+Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+---
+ drivers/sh/intc/core.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Gotcha.
+diff --git a/drivers/sh/intc/core.c b/drivers/sh/intc/core.c
+index f8e070d67fa3266d..a14684ffe4c1a8ef 100644
+--- a/drivers/sh/intc/core.c
++++ b/drivers/sh/intc/core.c
+@@ -214,7 +214,7 @@ int __init register_intc_controller(struct intc_desc *desc)
+ 			d->window[k].phys = res->start;
+ 			d->window[k].size = resource_size(res);
+ 			d->window[k].virt = ioremap(res->start,
+-							 resource_size(res));
++						    resource_size(res));
+ 			if (!d->window[k].virt)
+ 				goto err2;
+ 		}
+-- 
+2.25.1
 
-The pedant in me thinks this makes it more of a handler property than an
-IRQ one, but I don't see a nice way to e.g. have this as a flag passed to
-__request_percpu_irq() and not have it usable by random modules.
