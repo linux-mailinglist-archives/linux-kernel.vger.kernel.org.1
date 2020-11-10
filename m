@@ -2,103 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E914C2AD76B
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 14:23:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BBE32AD76C
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 14:24:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730342AbgKJNXs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 08:23:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50168 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726721AbgKJNXr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 08:23:47 -0500
-Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83602C0613CF
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 05:23:47 -0800 (PST)
-Received: by mail-lf1-x141.google.com with SMTP id w142so10517724lff.8
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 05:23:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=anY0fDmqZf06M51XMjl+y1hfzhD8VdxufKL6ec1avkQ=;
-        b=uRDAAQZ2yXEIso6pDZnJjZa23Cttl92TlkscjI2ix8+hgHrYZat15DgQpmmpTVUsBr
-         SFmLlTr/CtssX+80JnqUfLqR+sdk+wENKWUyexD+s0Nz56QFXg7JejhEMZGpQo+a68iw
-         RdQy/4lENdser8H3Hq/aJobT2wZ1Z9e8RrvQ9+uOhUPDsDQ0v0GqzzzNBiFYmS7mOX0J
-         RGKYsw0+lnwai0vohBsBDy1h9mpYcXfYwYtAzkyYxXwvZle4GadAE6T/A9YDbjRmWE8e
-         3KwX91ri0vN0bALT+3+jkG2vlVk4g2Yg2YYcoVK9o+cpS5VjDhagbzIMc1DqojWm/DHn
-         HI4A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=anY0fDmqZf06M51XMjl+y1hfzhD8VdxufKL6ec1avkQ=;
-        b=RIiAgcczKMob3T81GuEi360hbxB7+Uy0j2nOaNsHrHK7AvPErvF7+O624eoYx+8XpI
-         rKBvc1P1Pu5sJLE/C69wOtF2ub0kTJhCWhpj8h1yBp/U9pi6cKIqCN9GrwN9FWaiMC+q
-         nyQvw+e6Ah+2PqfDucFrMZIX3QtFcRo9kU/lkDZTOO5cOLQF0CQFgZgQjSEabMedYj1+
-         VMmtU3y/fNdL9PNuTZJQbAOcwcVeIN0a70NsxF4hhLGStHgzFlzx4jBsqORasmH+vH3o
-         ss7JoHannY8GiGx9N1AFLe2+QgpzK8ciSPBHxTlrb9vQ5rrQIB9L5OwthDUk6JpfgNoX
-         KcZA==
-X-Gm-Message-State: AOAM531jm7zurp2j1fAW8QQGT/wbaPqHbEcZ0qw6iKG/Bu8TQ9dhjlll
-        Xz37heQ9nKbEEC0PIYFCucc2NkkG2MxdAVsXntVlwQ==
-X-Google-Smtp-Source: ABdhPJxjroiQ9eW/8CTijDlNPTQGqbxPragcT+vzN69RiXln2dVGzasUsN/OXpEtnpfBivHVFhkzHt/1o9oRa2P6G20=
-X-Received: by 2002:a19:7b06:: with SMTP id w6mr8180050lfc.260.1605014625078;
- Tue, 10 Nov 2020 05:23:45 -0800 (PST)
+        id S1730515AbgKJNYT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 08:24:19 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45614 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726721AbgKJNYS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Nov 2020 08:24:18 -0500
+Received: from localhost (unknown [176.177.120.14])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id E93AA20797;
+        Tue, 10 Nov 2020 13:24:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605014658;
+        bh=gcfDuMLqnk+kPa9XW0OypoQjSOdA8fkR3oPqBpY7KeQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=lp83RlRrI9hmTOfR3UqbmcYxPs0ggPwfSFt5K4naQJLWhHjSbZT2hBxMN5jZ1y7vU
+         CKrB4GDkjTw3Aan7apKyBfTJhhN96F4KOvgCvYbcCfymnaJwIKMvkAwvj2coYu0+2D
+         F++WyxLPP/ecnswO5m+FCJunmImz3W2wTotnl+/E=
+Date:   Tue, 10 Nov 2020 14:24:15 +0100
+From:   Frederic Weisbecker <frederic@kernel.org>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>, Mel Gorman <mgorman@suse.de>,
+        Michal Hocko <mhocko@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>, Michal Hocko <mhocko@suse.com>
+Subject: Re: [RFC PATCH 1/7] static_call/x86: Add __static_call_returnl0()
+Message-ID: <20201110132415.GA48886@lothringen>
+References: <20201110005609.40989-1-frederic@kernel.org>
+ <20201110005609.40989-2-frederic@kernel.org>
+ <20201110095515.GA2594@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-References: <20201105231912.69527-1-coiby.xu@gmail.com> <20201105231912.69527-5-coiby.xu@gmail.com>
-In-Reply-To: <20201105231912.69527-5-coiby.xu@gmail.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Tue, 10 Nov 2020 14:23:34 +0100
-Message-ID: <CACRpkdbNDQrZYx=B7fuc34j-5Mb0=h8VnFROQYHD5DzX9Orb=A@mail.gmail.com>
-Subject: Re: [PATCH v3 4/4] pinctrl: amd: remove debounce filter setting in
- IRQ type setting
-To:     Coiby Xu <coiby.xu@gmail.com>
-Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        stable <stable@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201110095515.GA2594@hirez.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 6, 2020 at 12:19 AM Coiby Xu <coiby.xu@gmail.com> wrote:
+On Tue, Nov 10, 2020 at 10:55:15AM +0100, Peter Zijlstra wrote:
+> On Tue, Nov 10, 2020 at 01:56:03AM +0100, Frederic Weisbecker wrote:
+> > diff --git a/arch/x86/kernel/alternative.c b/arch/x86/kernel/alternative.c
+> > index 2400ad62f330..37592f576a10 100644
+> > --- a/arch/x86/kernel/alternative.c
+> > +++ b/arch/x86/kernel/alternative.c
+> > @@ -1125,6 +1125,10 @@ noinstr int poke_int3_handler(struct pt_regs *regs)
+> >  		int3_emulate_jmp(regs, (long)ip + tp->rel32);
+> >  		break;
+> >  
+> > +	case XOR5RAX_INSN_OPCODE:
+> > +		int3_emulate_xor5rax(regs);
+> > +		break;
+> > +
+> >  	default:
+> >  		BUG();
+> >  	}
+> > @@ -1291,6 +1295,7 @@ static void text_poke_loc_init(struct text_poke_loc *tp, void *addr,
+> >  	switch (tp->opcode) {
+> >  	case INT3_INSN_OPCODE:
+> >  	case RET_INSN_OPCODE:
+> > +	case XOR5RAX_INSN_OPCODE:
+> >  		break;
+> >  
+> >  	case CALL_INSN_OPCODE:
+> 
+> Why did you add full emulation of this? The patch I send to you used the
+> text_poke_bp(.emulate) argument to have it emulate an actual call to the
+> out-of-line version of that function.
+> 
+> That should work fine and is a lot less code.
 
-> Debounce filter setting should be independent from IRQ type setting
-> because according to the ACPI specs, there are separate arguments for
-> specifying debounce timeout and IRQ type in GpioIo() and GpioInt().
->
-> This will fix broken touchpads for laptops whose BIOS set the debounce
-> timeout to a relatively large value. For example, the BIOS of Lenovo
-> Legion-5 AMD gaming laptops including 15ARH05 (R7000) and R7000P set
-> the debounce timeout to 124.8ms. This led to the kernel receiving only
-> ~7 HID reports per second from the Synaptics touchpad
-> (MSFT0001:00 06CB:7F28). Existing touchpads like [1][2] are not troubled
-> by this bug because the debounce timeout has been set to 0 by the BIOS
-> before enabling the debounce filter in setting IRQ type.
->
-> [1] https://github.com/Syniurge/i2c-amd-mp2/issues/11#issuecomment-721331582
-> [2] https://forum.manjaro.org/t/random-short-touchpad-freezes/30832/28
->
-> Cc: Hans de Goede <hdegoede@redhat.com>
-> Cc: Andy Shevchenko <andy.shevchenko@gmail.com>
-> Cc: Benjamin Tissoires <benjamin.tissoires@redhat.com>
-> Cc: stable@vger.kernel.org
-> Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-> BugLink: https://bugs.launchpad.net/ubuntu/+source/linux/+bug/1887190
-> Link: https://lore.kernel.org/linux-gpio/CAHp75VcwiGREBUJ0A06EEw-SyabqYsp%2Bdqs2DpSrhaY-2GVdAA%40mail.gmail.com/
-> Signed-off-by: Coiby Xu <coiby.xu@gmail.com>
+Perhaps I pushed the cleanup a bit too far indeed. I wanted to standardize
+it just like any flavour of text patching. And also I thought that emulate
+thing was on the way to be deprecated.
 
-As I have applied patches 1-3 we only have this one to land.
+Anyway, I'll restore the old version.
 
-If Andy or someone else needs to take it through the ACPI
-tree you can add my:
-Acked-by: Linus Walleij <linus.walleij@linaro.org>
-
-If I should apply it or if Andy sends me a pull request, just
-ping me and tell me what to do :)
-
-Yours,
-Linus Walleij
+Thanks.
