@@ -2,157 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E64A92ACBFC
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 04:39:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DB9952ACBFE
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 04:39:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731581AbgKJDjH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 22:39:07 -0500
-Received: from rtits2.realtek.com ([211.75.126.72]:42966 "EHLO
-        rtits2.realtek.com.tw" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729452AbgKJDjG (ORCPT
+        id S1731599AbgKJDjW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 22:39:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44632 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729452AbgKJDjW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 22:39:06 -0500
-Authenticated-By: 
-X-SpamFilter-By: ArmorX SpamTrap 5.73 with qID 0AA3cgXV3008619, This message is accepted by code: ctloc85258
-Received: from mail.realtek.com (rtexmb03.realtek.com.tw[172.21.6.96])
-        by rtits2.realtek.com.tw (8.15.2/2.70/5.88) with ESMTPS id 0AA3cgXV3008619
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Tue, 10 Nov 2020 11:38:42 +0800
-Received: from RTEXMBS03.realtek.com.tw (172.21.6.34) by
- RTEXMB03.realtek.com.tw (172.21.6.96) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2044.4; Tue, 10 Nov 2020 11:38:42 +0800
-Received: from localhost.localdomain (172.21.132.186) by
- RTEXMBS03.realtek.com.tw (172.21.6.34) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Tue, 10 Nov 2020 11:38:42 +0800
-From:   <max.chou@realtek.com>
-To:     <marcel@holtmann.org>, <johan.hedberg@gmail.com>,
-        <matthias.bgg@gmail.com>, <linux-bluetooth@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>, <alex_lu@realsil.com.cn>,
-        <hildawu@realtek.com>, <kidman@realtek.com>
-CC:     <max.chou@realtek.com>
-Subject: [PATCH] Bluetooth: btusb: btrtl: Add support for RTL8852A
-Date:   Tue, 10 Nov 2020 11:38:37 +0800
-Message-ID: <20201110033837.19373-1-max.chou@realtek.com>
-X-Mailer: git-send-email 2.17.1
-MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [172.21.132.186]
-X-ClientProxiedBy: RTEXMB03.realtek.com.tw (172.21.6.96) To
- RTEXMBS03.realtek.com.tw (172.21.6.34)
+        Mon, 9 Nov 2020 22:39:22 -0500
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DFF5C0613CF
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Nov 2020 19:39:22 -0800 (PST)
+Received: by mail-pf1-x443.google.com with SMTP id w6so4634844pfu.1
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Nov 2020 19:39:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=5l+aTVwgSsK2O96++5nt0utffEQmGVX4LPCwmYVddCw=;
+        b=tIbfwY96mQDbmX4I6d+ydhVx5jO2Eb5JxWv5EXAbTmfuSTaYRFnsw0Q3SJJWXivoqf
+         7F0nRutTNIInz12E+SE0vdsTrxDpAgwaQ2kTh9LroZFWBP6dxrLCAdf0aXa8/4qg+XLK
+         Izq9EusyNaZfOmT43GCPD3JDU4xT11D8ShssdqkV8ypg65Kbd5bVXNTv/CgAsF2UDyf1
+         xW5BC3FH4Mbwv5sLGYan0BwkRn0Svhe/VwxMF43BLBFJp1A27T/ewUV5zvX9jlpxBl7h
+         xQMHpaVw4IgK7sMT+aCBe3ltBVbXMZxjfyv+IO9a49QXeZSek52I/5TeO7W3+v32Lw+6
+         PnZA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=5l+aTVwgSsK2O96++5nt0utffEQmGVX4LPCwmYVddCw=;
+        b=a66BRkhu93ukhYI56FweKT4oeH2RfDejNdVa83y5H7CUS+72lG2ZXfBX1sZSWqMwtK
+         yFWe20xttDJWiHUJqykkVseqMYJZp+wrZsVCbuavfmoJHgnJiHNZTDOBdzZyfv0FsitE
+         v6G67z5cFz4mQTtYd7nydsAsazPvslPNZfbwDkXQsJajF6OFmzRmHNjP4us/jY7cfoaV
+         9KInystP4NXjsAZWSsDeZY29cpU5l9g4NsilfCNeZK66U6fcZVTJQmkBYXOTEWdYEOfN
+         NUNgjxcbMR2OYA/00aNzhuGfaEFGv2eqmym4DR7KRWzD7EOgoZNNoP/URd9oeKrpx4d5
+         zQEA==
+X-Gm-Message-State: AOAM533K7V9JuchSC7qZXYapTOr9C8NKd25tbZKYBqKhJDRETnjVVpSo
+        bXO1bUjfX4SFa6xOI0nTaxUO7xVYy4n0
+X-Google-Smtp-Source: ABdhPJwudf7YkzrzJBdo1+dwCzTTS7e1ImPFgTbwm06lU379OuYUEn1v/0WX3nqqmGTEIhSR/b1RMA==
+X-Received: by 2002:a17:90a:d182:: with SMTP id fu2mr2744446pjb.145.1604979562020;
+        Mon, 09 Nov 2020 19:39:22 -0800 (PST)
+Received: from he-cluster.localdomain (67.216.221.250.16clouds.com. [67.216.221.250])
+        by smtp.gmail.com with ESMTPSA id e23sm1060735pja.25.2020.11.09.19.39.20
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 09 Nov 2020 19:39:21 -0800 (PST)
+From:   xiakaixu1987@gmail.com
+X-Google-Original-From: kaixuxia@tencent.com
+To:     mathieu.poirier@linaro.org, suzuki.poulose@arm.com,
+        mike.leach@linaro.org
+Cc:     coresight@lists.linaro.org, linux-kernel@vger.kernel.org,
+        Kaixu Xia <kaixuxia@tencent.com>
+Subject: [PATCH v2] coresight: tmc-etr: Assign boolean values to a bool variable
+Date:   Tue, 10 Nov 2020 11:39:15 +0800
+Message-Id: <1604979555-20619-1-git-send-email-kaixuxia@tencent.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Max Chou <max.chou@realtek.com>
+From: Kaixu Xia <kaixuxia@tencent.com>
 
-Add the support for RTL8852A BT controller on USB interface.
-The necessary firmware will be submitted to linux-firmware project.
+Fix the following coccinelle warnings:
 
-The device info from /sys/kernel/debug/usb/devices as below.
+./drivers/hwtracing/coresight/coresight-tmc-etr.c:957:2-15: WARNING: Assignment of 0/1 to bool variable
 
-T:  Bus=02 Lev=02 Prnt=02 Port=05 Cnt=01 Dev#= 10 Spd=12   MxCh= 0
-D:  Ver= 1.00 Cls=e0(wlcon) Sub=01 Prot=01 MxPS=64 #Cfgs=  1
-P:  Vendor=0bda ProdID=c852 Rev= 0.00
-S:  Manufacturer=Realtek
-S:  Product=Bluetooth Radio
-S:  SerialNumber=00e04c000001
-C:* #Ifs= 2 Cfg#= 1 Atr=e0 MxPwr=500mA
-I:* If#= 0 Alt= 0 #EPs= 3 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
-E:  Ad=81(I) Atr=03(Int.) MxPS=  16 Ivl=1ms
-E:  Ad=02(O) Atr=02(Bulk) MxPS=  64 Ivl=0ms
-E:  Ad=82(I) Atr=02(Bulk) MxPS=  64 Ivl=0ms
-I:* If#= 1 Alt= 0 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
-E:  Ad=03(O) Atr=01(Isoc) MxPS=   0 Ivl=1ms
-E:  Ad=83(I) Atr=01(Isoc) MxPS=   0 Ivl=1ms
-I:  If#= 1 Alt= 1 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
-E:  Ad=03(O) Atr=01(Isoc) MxPS=   9 Ivl=1ms
-E:  Ad=83(I) Atr=01(Isoc) MxPS=   9 Ivl=1ms
-I:  If#= 1 Alt= 2 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
-E:  Ad=03(O) Atr=01(Isoc) MxPS=  17 Ivl=1ms
-E:  Ad=83(I) Atr=01(Isoc) MxPS=  17 Ivl=1ms
-I:  If#= 1 Alt= 3 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
-E:  Ad=03(O) Atr=01(Isoc) MxPS=  25 Ivl=1ms
-E:  Ad=83(I) Atr=01(Isoc) MxPS=  25 Ivl=1ms
-I:  If#= 1 Alt= 4 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
-E:  Ad=03(O) Atr=01(Isoc) MxPS=  33 Ivl=1ms
-E:  Ad=83(I) Atr=01(Isoc) MxPS=  33 Ivl=1ms
-I:  If#= 1 Alt= 5 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
-E:  Ad=03(O) Atr=01(Isoc) MxPS=  49 Ivl=1ms
-E:  Ad=83(I) Atr=01(Isoc) MxPS=  49 Ivl=1ms
+Fix them by assigning boolean values.
 
-Signed-off-by: Max Chou <max.chou@realtek.com>
+Reported-by: Tosk Robot <tencent_os_robot@tencent.com>
+Signed-off-by: Kaixu Xia <kaixuxia@tencent.com>
 ---
- drivers/bluetooth/btrtl.c | 12 ++++++++++++
- drivers/bluetooth/btusb.c |  4 ++++
- 2 files changed, 16 insertions(+)
+ drivers/hwtracing/coresight/coresight-tmc-etr.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/bluetooth/btrtl.c b/drivers/bluetooth/btrtl.c
-index 0ac0f8874ef7..e47736a12f77 100644
---- a/drivers/bluetooth/btrtl.c
-+++ b/drivers/bluetooth/btrtl.c
-@@ -23,6 +23,7 @@
- #define RTL_ROM_LMP_8821A	0x8821
- #define RTL_ROM_LMP_8761A	0x8761
- #define RTL_ROM_LMP_8822B	0x8822
-+#define RTL_ROM_LMP_8852A	0x8852
- #define RTL_CONFIG_MAGIC	0x8723ab55
+diff --git a/drivers/hwtracing/coresight/coresight-tmc-etr.c b/drivers/hwtracing/coresight/coresight-tmc-etr.c
+index 714f9e867e5f..525f0ecc129c 100644
+--- a/drivers/hwtracing/coresight/coresight-tmc-etr.c
++++ b/drivers/hwtracing/coresight/coresight-tmc-etr.c
+@@ -954,11 +954,11 @@ static void tmc_sync_etr_buf(struct tmc_drvdata *drvdata)
+ 		dev_dbg(&drvdata->csdev->dev,
+ 			"tmc memory error detected, truncating buffer\n");
+ 		etr_buf->len = 0;
+-		etr_buf->full = 0;
++		etr_buf->full = false;
+ 		return;
+ 	}
  
- #define IC_MATCH_FL_LMPSUBV	(1 << 0)
-@@ -143,6 +144,13 @@ static const struct id_table ic_id_table[] = {
- 	  .has_rom_version = true,
- 	  .fw_name  = "rtl_bt/rtl8822b_fw.bin",
- 	  .cfg_name = "rtl_bt/rtl8822b_config" },
-+
-+	/* 8852A */
-+	{ IC_INFO(RTL_ROM_LMP_8852A, 0xa, 0xb, HCI_USB),
-+	  .config_needed = false,
-+	  .has_rom_version = true,
-+	  .fw_name  = "rtl_bt/rtl8852au_fw.bin",
-+	  .cfg_name = "rtl_bt/rtl8852au_config" },
- 	};
+-	etr_buf->full = status & TMC_STS_FULL;
++	etr_buf->full = !!(status & TMC_STS_FULL);
  
- static const struct id_table *btrtl_match_ic(u16 lmp_subver, u16 hci_rev,
-@@ -250,6 +258,7 @@ static int rtlbt_parse_firmware(struct hci_dev *hdev,
- 		{ RTL_ROM_LMP_8821A, 10 },	/* 8821C */
- 		{ RTL_ROM_LMP_8822B, 13 },	/* 8822C */
- 		{ RTL_ROM_LMP_8761A, 14 },	/* 8761B */
-+		{ RTL_ROM_LMP_8852A, 18 },	/* 8852A */
- 	};
+ 	WARN_ON(!etr_buf->ops || !etr_buf->ops->sync);
  
- 	min_size = sizeof(struct rtl_epatch_header) + sizeof(extension_sig) + 3;
-@@ -679,6 +688,7 @@ int btrtl_download_firmware(struct hci_dev *hdev,
- 	case RTL_ROM_LMP_8821A:
- 	case RTL_ROM_LMP_8761A:
- 	case RTL_ROM_LMP_8822B:
-+	case RTL_ROM_LMP_8852A:
- 		return btrtl_setup_rtl8723b(hdev, btrtl_dev);
- 	default:
- 		rtl_dev_info(hdev, "assuming no firmware upload needed");
-@@ -854,3 +864,5 @@ MODULE_FIRMWARE("rtl_bt/rtl8821a_fw.bin");
- MODULE_FIRMWARE("rtl_bt/rtl8821a_config.bin");
- MODULE_FIRMWARE("rtl_bt/rtl8822b_fw.bin");
- MODULE_FIRMWARE("rtl_bt/rtl8822b_config.bin");
-+MODULE_FIRMWARE("rtl_bt/rtl8852au_fw.bin");
-+MODULE_FIRMWARE("rtl_bt/rtl8852au_config.bin");
-diff --git a/drivers/bluetooth/btusb.c b/drivers/bluetooth/btusb.c
-index 4a1f877616d6..1ff9e2840b89 100644
---- a/drivers/bluetooth/btusb.c
-+++ b/drivers/bluetooth/btusb.c
-@@ -386,6 +386,10 @@ static const struct usb_device_id blacklist_table[] = {
- 	{ USB_DEVICE(0x0bda, 0xb00c), .driver_info = BTUSB_REALTEK |
- 						     BTUSB_WIDEBAND_SPEECH },
- 
-+	/* Realtek 8852AE Bluetooth devices */
-+	{ USB_DEVICE(0x0bda, 0xc852), .driver_info = BTUSB_REALTEK |
-+						     BTUSB_WIDEBAND_SPEECH },
-+
- 	/* Realtek Bluetooth devices */
- 	{ USB_VENDOR_AND_INTERFACE_INFO(0x0bda, 0xe0, 0x01, 0x01),
- 	  .driver_info = BTUSB_REALTEK },
 -- 
-2.17.1
+2.20.0
 
