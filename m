@@ -2,139 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C287B2AD2D5
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 10:51:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 207B22AD2E2
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 10:54:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731754AbgKJJux (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 04:50:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45324 "EHLO
+        id S1727991AbgKJJyx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 04:54:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45960 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731306AbgKJJur (ORCPT
+        with ESMTP id S1726721AbgKJJyw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 04:50:47 -0500
-Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A30D9C0613CF
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 01:50:46 -0800 (PST)
-Received: by mail-ed1-x543.google.com with SMTP id v22so1633092edt.9
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 01:50:46 -0800 (PST)
+        Tue, 10 Nov 2020 04:54:52 -0500
+Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A082C0613CF
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 01:54:52 -0800 (PST)
+Received: by mail-ed1-x541.google.com with SMTP id ay21so12002765edb.2
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 01:54:52 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=/xvo1QegjGszfBVPbZfwcJiTRf9LyLsH4tfXgS3DTXk=;
-        b=XBZqy3t9IZQRFydJbi3EOQsbNKSoGIh1pco/g0+bITyoIUkri4wfPjhNf10PvUjdHM
-         oiUisGj+v2Bm78WVce9YT8uqvFdrkdOzLCpu67P/MAJzNpCqHb4m8FThormd6bSjouLr
-         54cSY+5h7nBsSNX31MZu8MmYatBGeKY3cH/a8=
+        bh=X9uDWTdZOrL/c6ma/pF1vPxtR5z6xN7pII6X5JCa+BI=;
+        b=oVKCUZ34X+b8Vmlc53bk/IFG3ItOaJatAlXIIVBsv97h3zNQ4zafGREBZFqDbhQ+bs
+         4NYSulvgxTAfwDXqR1/KqAtCIy0CDJFXq/8KtyT7DXJNa+DLhECZa7vaSzXKB/qrWSbJ
+         AU8We24/+LvI+KIX4cPCT2BphmuzFzhmzkITHx9sXFAnZv6zuLoTNXBkWYIlaFI//PKZ
+         3HtVqPqnZegI1/DInmVP8M6uvK/3L8A5O/hJhZ6Pc1m16RCk7XkRAQelpLCErBWHPpg6
+         gqkiwMTqCxo2Q1PLEtP69XTvOM43AAGUkhL27cTWmI00V5G7fc5L424pCIilMgw0GVb1
+         YPVg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=/xvo1QegjGszfBVPbZfwcJiTRf9LyLsH4tfXgS3DTXk=;
-        b=lgL/K5xogVvfW7PfZRx88XYw79bk0lSfQs80rJIRTWnf0wOQDCDX5QKG+bW5MSj9y4
-         Rtl2wJHIKY0w7kpnRHwCvF6juOLC2KV5Zx/yT3CZTH22GC/T/m+0MjMPqmN/fLynGX8d
-         gei0hdHCyXTGbwVvtqZYm9JPE9zMBnh/+kE5o0PO0FQQpvFmkmko/fPzKCkW7J83B2Hc
-         u9U6ongLDnwTGIDhBJdcMKehqsCgbDoGsR1cStjO/AVdduGj5/6tOduZiR2Yj1VW8tCP
-         AjWwRZBoenfFoA1bVOKiYomYbLwQaCRcws/z9nNevbGkutaBNatQutvinMDsJP4g2sdf
-         Upkw==
-X-Gm-Message-State: AOAM533fQxfLOyEMoVqSKdjPcyvFgmyGkJQSiozctBgtzIzWhm9G+hBi
-        E7iRPJDZQsvGcVqFdngrx0fATdLLsa+q0Q==
-X-Google-Smtp-Source: ABdhPJyXjI+8PyYH/3s00GGAS3znWXH0HVdQJ9h4cyjt1DVps8G70bIQwdN6BHMVyFiid3Yg8269Wg==
-X-Received: by 2002:aa7:d408:: with SMTP id z8mr19492495edq.166.1605001845137;
-        Tue, 10 Nov 2020 01:50:45 -0800 (PST)
-Received: from mail-wr1-f53.google.com (mail-wr1-f53.google.com. [209.85.221.53])
-        by smtp.gmail.com with ESMTPSA id e2sm10193440edu.93.2020.11.10.01.50.44
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 10 Nov 2020 01:50:44 -0800 (PST)
-Received: by mail-wr1-f53.google.com with SMTP id s8so4851364wrw.10
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 01:50:44 -0800 (PST)
-X-Received: by 2002:adf:ed11:: with SMTP id a17mr8193482wro.197.1605001843595;
- Tue, 10 Nov 2020 01:50:43 -0800 (PST)
+        bh=X9uDWTdZOrL/c6ma/pF1vPxtR5z6xN7pII6X5JCa+BI=;
+        b=ObTwCQ6isMT4lLd4/RCUZtMyD2xx08oD5KXp7aN8IpQPNa5ajP7ZZj65WyWtAQ2kTU
+         2BQK7lPOxyzNQ35bc9wM2f+r/KFMxA8S525HQxNzViHCXPMjGMuVMl3ldajBL99/28dR
+         fSlp17ZDrR1f54HELXUtw7WN7vWnnjlQYpqgl8L5y1b44Flq/rYSTi4PkCNGE3h3V7zV
+         DrKq2FSIGtXKlcpLxifad0s/9mPxrWeQ5wDi1lJM1qIG0GpqkfBwZrufRaD1UPPZEj07
+         MMI5Jrs2vx8MYA6w6ny7bbDeiCZrP3/MYbgW81RZnfMvhPpuibo5QmkNtUrr4u7V9h45
+         LsvA==
+X-Gm-Message-State: AOAM532BQXwEcmNlrb5mXI37DkGEU0j34ghz6iIy9eYoRZqOfvJTQVjB
+        UwlzK1hHrxmqsAfzRirq5OkK8azN6AzSjwPnjsXJpQ==
+X-Google-Smtp-Source: ABdhPJyE43bcMhWGPbK4rkErcAG8hr3o31St165QQHyGuiorFfmTFuAjP+8F3lp4KYIDGr2TcJsnX6YJG2hvAGzShIk=
+X-Received: by 2002:a50:9e0b:: with SMTP id z11mr20703060ede.341.1605002090873;
+ Tue, 10 Nov 2020 01:54:50 -0800 (PST)
 MIME-Version: 1.0
-References: <20200930160917.1234225-1-hch@lst.de> <20200930160917.1234225-9-hch@lst.de>
- <CAAFQd5CttttqMXb=iDPb+Z0WGUa2g=W6JwXJ-5HbhmrDyxP+cQ@mail.gmail.com>
- <CANiDSCtefXKw-xC3bskyggW-BzCmVPj6GGLvO=cCPZHbS1oTDA@mail.gmail.com>
- <20201110092506.GA24469@lst.de> <CANiDSCsBUBV1WA2To9x26Uhc5SU-4xuh3m4wUwXBcGwA6n8now@mail.gmail.com>
-In-Reply-To: <CANiDSCsBUBV1WA2To9x26Uhc5SU-4xuh3m4wUwXBcGwA6n8now@mail.gmail.com>
-From:   Tomasz Figa <tfiga@chromium.org>
-Date:   Tue, 10 Nov 2020 18:50:32 +0900
-X-Gmail-Original-Message-ID: <CAAFQd5CCOrp0OA_n_SHNO5RAhV-MQ2KuQJA+oWHQ76h_So=M2Q@mail.gmail.com>
-Message-ID: <CAAFQd5CCOrp0OA_n_SHNO5RAhV-MQ2KuQJA+oWHQ76h_So=M2Q@mail.gmail.com>
-Subject: Re: [PATCH 8/8] WIP: add a dma_alloc_contiguous API
-To:     Ricardo Ribalda <ribalda@chromium.org>,
-        Christoph Hellwig <hch@lst.de>,
-        Kieran Bingham <kieran.bingham@ideasonboard.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        "list@263.net:IOMMU DRIVERS <iommu@lists.linux-foundation.org>, Joerg
-        Roedel <joro@8bytes.org>," <iommu@lists.linux-foundation.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>
+References: <20201109075702.21370-1-greentime.hu@sifive.com>
+In-Reply-To: <20201109075702.21370-1-greentime.hu@sifive.com>
+From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Date:   Tue, 10 Nov 2020 10:54:40 +0100
+Message-ID: <CAMpxmJXx_qjpAxsQ4fCN9PfyZ5ANys2vGxrWKJWhNTOiEzM48g@mail.gmail.com>
+Subject: Re: [PATCH] gpio: sifive: To get gpio irq offset from device tree data
+To:     Greentime Hu <greentime.hu@sifive.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-gpio <linux-gpio@vger.kernel.org>,
+        linux-riscv@lists.infradead.org,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Yash Shah <yash.shah@sifive.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 10, 2020 at 6:33 PM Ricardo Ribalda <ribalda@chromium.org> wrote:
+On Mon, Nov 9, 2020 at 8:57 AM Greentime Hu <greentime.hu@sifive.com> wrote:
 >
-> Hi Christoph
+> We can get hwirq number of the gpio by its irq_data->hwirq so that we don't
+> need to add more macros for different platforms. This patch is tested in
+> SiFive Unleashed board and SiFive Unmatched board.
 >
-> On Tue, Nov 10, 2020 at 10:25 AM Christoph Hellwig <hch@lst.de> wrote:
-> >
-> > On Mon, Nov 09, 2020 at 03:53:55PM +0100, Ricardo Ribalda wrote:
-> > > Hi Christoph
-> > >
-> > > I have started now to give a try to your patchset. Sorry for the delay.
-> > >
-> > > For uvc I have prepared this patch:
-> > > https://github.com/ribalda/linux/commit/9094fe223fe38f8c8ff21366d893b43cbbdf0113
-> > >
-> > > I have tested successfully in a x86_64 noteboot..., yes I know there
-> > > is no change for that platform :).
-> > > I am trying to get hold of an arm device that can run the latest
-> > > kernel from upstream.
-> > >
-> > > On the meanwhile if you could take a look to the patch to verify that
-> > > this the way that you expect the drivers to use your api I would
-> > > appreciate it
-> >
-> > This looks pretty reaosnable.
-> >
+> Signed-off-by: Greentime Hu <greentime.hu@sifive.com>
+> ---
+>  drivers/gpio/gpio-sifive.c | 12 ++++++++----
+>  1 file changed, 8 insertions(+), 4 deletions(-)
 >
-> Great
+> diff --git a/drivers/gpio/gpio-sifive.c b/drivers/gpio/gpio-sifive.c
+> index c54dd08f2cbf..bfb915bf5d78 100644
+> --- a/drivers/gpio/gpio-sifive.c
+> +++ b/drivers/gpio/gpio-sifive.c
+> @@ -29,7 +29,6 @@
+>  #define SIFIVE_GPIO_OUTPUT_XOR 0x40
+>
+>  #define SIFIVE_GPIO_MAX                32
+> -#define SIFIVE_GPIO_IRQ_OFFSET 7
+>
+>  struct sifive_gpio {
+>         void __iomem            *base;
+> @@ -37,7 +36,7 @@ struct sifive_gpio {
+>         struct regmap           *regs;
+>         unsigned long           irq_state;
+>         unsigned int            trigger[SIFIVE_GPIO_MAX];
+> -       unsigned int            irq_parent[SIFIVE_GPIO_MAX];
+> +       unsigned int            irq_number[SIFIVE_GPIO_MAX];
+>  };
+>
+>  static void sifive_gpio_set_ie(struct sifive_gpio *chip, unsigned int offset)
+> @@ -144,8 +143,10 @@ static int sifive_gpio_child_to_parent_hwirq(struct gpio_chip *gc,
+>                                              unsigned int *parent,
+>                                              unsigned int *parent_type)
+>  {
+> +       struct sifive_gpio *chip = gpiochip_get_data(gc);
+> +       struct irq_data *d = irq_get_irq_data(chip->irq_number[child]);
+
+Please add a newline here.
+
+> +       *parent = irqd_to_hwirq(d);
+>         *parent_type = IRQ_TYPE_NONE;
+> -       *parent = child + SIFIVE_GPIO_IRQ_OFFSET;
+
+And here while you're at it.
+
+>         return 0;
+>  }
+>
+> @@ -165,7 +166,7 @@ static int sifive_gpio_probe(struct platform_device *pdev)
+>         struct irq_domain *parent;
+>         struct gpio_irq_chip *girq;
+>         struct sifive_gpio *chip;
+> -       int ret, ngpio;
+> +       int ret, ngpio, i;
+>
+>         chip = devm_kzalloc(dev, sizeof(*chip), GFP_KERNEL);
+>         if (!chip)
+> @@ -200,6 +201,9 @@ static int sifive_gpio_probe(struct platform_device *pdev)
+>                 return -ENODEV;
+>         }
+>
+> +       for (i = 0; i < ngpio; i++)
+> +               chip->irq_number[i] = platform_get_irq(pdev, i);
+> +
+>         ret = bgpio_init(&chip->gc, dev, 4,
+>                          chip->base + SIFIVE_GPIO_INPUT_VAL,
+>                          chip->base + SIFIVE_GPIO_OUTPUT_VAL,
+> --
+> 2.29.2
 >
 
-Thanks Christoph for taking a look quickly.
-
-> Also FYI, I managed to boot an ARM device with that tree. But I could
-> not test the uvc driver (it was a remote device with no usb device
-> attached)
->
-> Hopefully I will be able to test it for real this week.
->
-> Any suggestions for how to measure performance difference?
-
-Back in time Kieran (+CC) shared a patch to add extra statistics for
-packet processing and payload assembly, with results of various
-approaches summarized in a spreadsheet:
-https://docs.google.com/spreadsheets/d/1uPdbdVcebO9OQ0LQ8hR2LGIEySWgSnGwwhzv7LPXAlU/edit#gid=0
-
-That and just simple CPU usage comparison would be enough.
-
->
-> Thanks!
->
-> > Note that ifdef  CONFIG_DMA_NONCOHERENT in the old code doesn't actually
-> > work, as that option is an internal thing just for mips and sh..
-
-In what terms it doesn't actually work? Last time I checked some
-platforms actually defined CONFIG_DMA_NONCOHERENT, so those would
-instead use the kmalloc() + dma_map() path. I don't have any
-background on why that was added and whether it needs to be preserved,
-though. Kieran, Laurent, do you have any insight?
-
-Best regards,
-Tomasz
+Bartosz
