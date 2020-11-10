@@ -2,120 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1FCD2AD7A0
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 14:35:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 411092AD7A3
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 14:35:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731705AbgKJNfZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 08:35:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51992 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730097AbgKJNfY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 08:35:24 -0500
-Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8ACD6C0613D1
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 05:35:24 -0800 (PST)
-Received: by mail-lj1-x242.google.com with SMTP id v20so6154363ljk.8
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 05:35:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=TwpBqZ9wlj7+aBjYzX3QdgPnoVhWXfegb/AHhFFvol8=;
-        b=Cu4E3yWJ7MzfCcz1Z/f26Tyr8WutTCFXbfM0UR249wRJakMTDIUbLlBL84QdcbeuHF
-         hxLx7t4IVjBj9F21rR+xXYKQ2yQTP25xJGR3vsSvG7hNUgdJ6K2xv7h2AQJobyrHjiTt
-         iBCCE8JugddN0iqqsX2rppLtwGBIFie1v8wKAHYQivVxdsqflXEWeGMDRkBR111EJ6EQ
-         Sg+gtibz03ieM1v4GlmM5xmEVi5ulmIWru4CkRGrK7l8MXJzHw6nWWTzzhYNmOh6v1Aj
-         YmhSxZiX4bYIwl2uIkkTnqntFODGSr8io9hYFZ44SBDIjCzIDylSqo9+Nxjpb0sOQok7
-         dQfg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=TwpBqZ9wlj7+aBjYzX3QdgPnoVhWXfegb/AHhFFvol8=;
-        b=C4WvSMX0o6/hvbT4xAZFXKErYziTSDpDisnjNjrjdjildp3YkyC0UscM7jZhXgi3vO
-         jkbn3IstoQyW6I2x/acZFBLwkQIkrqH5mfGX5VYaSKLDZYo0snfWNeqxbDm11sbK8Q/g
-         8sDiO+G+OPWmMhtQPBC7j74XyqVkfZxfjvVo2KLuz5CvWsUD36HAahkygqmVd8x7ochw
-         RQ+ZWndBtgf7fQzGhYwv9SJ3ZUDc9qq5Otg+mH0zRAgEATqMSaPLnhdBbbyG4KouJsHV
-         3QULMGHTVKIZbLjBAlq9tNjCP8nvjvzA4kcmGCQ7aRrcTSYwTPtANVULZf3hxSVXlXNz
-         tKaA==
-X-Gm-Message-State: AOAM532DDW4Vs5Z6bhbjlzOoBwdymJiShh2aslbDfB5ho4LICOHdVtOw
-        3AyDh5uwudj7Uy4inSQrk3xaSGWmxY8PLqhDX8qPsbq1E94jaw==
-X-Google-Smtp-Source: ABdhPJwGVBWeBazu2okiJzWVPEutrrd1hrLuJ+fP/VIU2W3kUAdBSK6UGspEDbJXOApbyIq5kqIDpPZ7r0IoZSyMALc=
-X-Received: by 2002:a05:651c:1205:: with SMTP id i5mr8918344lja.283.1605015323045;
- Tue, 10 Nov 2020 05:35:23 -0800 (PST)
+        id S1730766AbgKJNfg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 08:35:36 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48780 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730097AbgKJNfg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Nov 2020 08:35:36 -0500
+Received: from mail-ot1-f51.google.com (mail-ot1-f51.google.com [209.85.210.51])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3EB0720825
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 13:35:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605015335;
+        bh=UdSLbo7EDDIsFl49OPtUX28MCUCIQOcedfBVOANR+0E=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=ZHVnw8uwtjbaSJBRQmdI+w7yxo5rOJlCeEg1YgJ/X+NaIBeexlVTYyhJuOPwPRz5q
+         dPLoAaencKIgEJV0FA38zl49gMR2o/cicZd+Rr+w+SkBCf7SODATM3X6dDVXXM7kju
+         Ajr76tKHAhlRpIxls7XcEP+ExJ4HUoS5U9aK9mVk=
+Received: by mail-ot1-f51.google.com with SMTP id k3so12459927otp.12
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 05:35:35 -0800 (PST)
+X-Gm-Message-State: AOAM5334Y+qUF1VEQNKX0kIhbOfnEfy1/S+/j0jUoXcMAZVs9Ht9264x
+        dvrtKzsxwGPCPGd3JNRQXpbTbwdRCDBZ8fYP22I=
+X-Google-Smtp-Source: ABdhPJzrNzZjooAFpqKeVuxuB7hk2bHjyXqWaVV07LjZM++y42H2QXGO9GH+FlAwRKv5VU23fGqpasu68px2f/vJfZE=
+X-Received: by 2002:a05:6830:22d2:: with SMTP id q18mr12737619otc.305.1605015334402;
+ Tue, 10 Nov 2020 05:35:34 -0800 (PST)
 MIME-Version: 1.0
-References: <20201106042710.55979-1-john.stultz@linaro.org> <20201106042710.55979-3-john.stultz@linaro.org>
-In-Reply-To: <20201106042710.55979-3-john.stultz@linaro.org>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Tue, 10 Nov 2020 14:35:12 +0100
-Message-ID: <CACRpkdYhfjRBz8GwMyCrOTzjd-Y6-G16xPjH6xhwSHcnaJfuXA@mail.gmail.com>
-Subject: Re: [PATCH v6 3/3] firmware: QCOM_SCM: Allow qcom_scm driver to be
- loadable as a permenent module
-To:     John Stultz <john.stultz@linaro.org>
-Cc:     lkml <linux-kernel@vger.kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Joerg Roedel <joro@8bytes.org>,
+References: <1602141333-17822-3-git-send-email-maninder1.s@samsung.com>
+ <CAK8P3a2RYeNiTy9QmwFVKtFifXxWc9XfAT6ThPoSH9wGYsKGpA@mail.gmail.com>
+ <CAK8P3a3eZjBVSuhv=Cx4aYC+E9tex+BbJH1b6YyMMief-mO7kQ@mail.gmail.com>
+ <20201021124542.GL1551@shell.armlinux.org.uk> <20201021125740.GM1551@shell.armlinux.org.uk>
+ <CAK8P3a3s9JJpeBpH38utw9aA1VaEkcBqKEGtwcmoP1zS6xDj5Q@mail.gmail.com>
+ <20201109144549.GA26857@atomide.com> <CAK8P3a2tM1Gzy7Y98tiYGoNcLye77je_UCtTUQYcP2UuRNRKwQ@mail.gmail.com>
+ <20201110091904.GC26857@atomide.com> <CAK8P3a3dZMnEV-Sg_ep6_dQ3XEf73fEpCF0T03255KxMrJZH8g@mail.gmail.com>
+ <20201110120422.GE26857@atomide.com>
+In-Reply-To: <20201110120422.GE26857@atomide.com>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Tue, 10 Nov 2020 14:35:17 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a2Hh=-VtvCiztNDZvW=ssx5zbvbccYcLXSNUt=xF6mwwQ@mail.gmail.com>
+Message-ID: <CAK8P3a2Hh=-VtvCiztNDZvW=ssx5zbvbccYcLXSNUt=xF6mwwQ@mail.gmail.com>
+Subject: Re: [PATCH 2/3] arm: introduce IRQ stacks
+To:     Tony Lindgren <tony@atomide.com>
+Cc:     Russell King - ARM Linux admin <linux@armlinux.org.uk>,
+        v.narang@samsung.com, a.sahrawat@samsung.com,
+        Marc Zyngier <maz@kernel.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Vincent Whitchurch <vincent.whitchurch@axis.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Nathan Huckleberry <nhuck@google.com>,
+        Jian Cai <caij2003@gmail.com>,
         Thomas Gleixner <tglx@linutronix.de>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Marc Zyngier <maz@kernel.org>, Vinod Koul <vkoul@kernel.org>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        Maulik Shah <mkshah@codeaurora.org>,
-        Lina Iyer <ilina@codeaurora.org>,
-        Saravana Kannan <saravanak@google.com>,
-        Todd Kjos <tkjos@google.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        MSM <linux-arm-msm@vger.kernel.org>,
-        "list@263.net:IOMMU DRIVERS <iommu@lists.linux-foundation.org>, Joerg
-        Roedel <joro@8bytes.org>," <iommu@lists.linux-foundation.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>
+        Dmitry Safonov <0x7f454c46@gmail.com>,
+        Maninder Singh <maninder1.s@samsung.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Will Deacon <will@kernel.org>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 6, 2020 at 5:27 AM John Stultz <john.stultz@linaro.org> wrote:
+On Tue, Nov 10, 2020 at 1:06 PM Tony Lindgren <tony@atomide.com> wrote:
 
-> Allow the qcom_scm driver to be loadable as a permenent module.
+> > Are these actually ARMv6? Most ARM11 cores you'd come across
+> > in practice are ARMv6K (ARM1136r1, ARM1167, ARM11MPCore),
+> > in particular every SoC that has any mainline support except for
+> > the ARM1136r0 based OMAP2 and i.MX3.
 >
-> This still uses the "depends on QCOM_SCM || !QCOM_SCM" bit to
-> ensure that drivers that call into the qcom_scm driver are
-> also built as modules. While not ideal in some cases its the
-> only safe way I can find to avoid build errors without having
-> those drivers select QCOM_SCM and have to force it on (as
-> QCOM_SCM=n can be valid for those drivers).
->
-> Cc: Catalin Marinas <catalin.marinas@arm.com>
-> Cc: Will Deacon <will@kernel.org>
-> Cc: Andy Gross <agross@kernel.org>
-> Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
-> Cc: Joerg Roedel <joro@8bytes.org>
-> Cc: Thomas Gleixner <tglx@linutronix.de>
-> Cc: Jason Cooper <jason@lakedaemon.net>
-> Cc: Marc Zyngier <maz@kernel.org>
-> Cc: Linus Walleij <linus.walleij@linaro.org>
-> Cc: Vinod Koul <vkoul@kernel.org>
-> Cc: Kalle Valo <kvalo@codeaurora.org>
-> Cc: Maulik Shah <mkshah@codeaurora.org>
-> Cc: Lina Iyer <ilina@codeaurora.org>
-> Cc: Saravana Kannan <saravanak@google.com>
-> Cc: Todd Kjos <tkjos@google.com>
-> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Cc: linux-arm-msm@vger.kernel.org
-> Cc: iommu@lists.linux-foundation.org
-> Cc: linux-gpio@vger.kernel.org
-> Acked-by: Kalle Valo <kvalo@codeaurora.org>
-> Acked-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-> Signed-off-by: John Stultz <john.stultz@linaro.org>
+> I've been only using smp_on_up for the ARMv6 ARM1136r0 variants
+> for omap2, no SMP on those.
 
-I applied this patch to the pinctrl tree as well, I suppose
-that was the intention. If someone gets upset I can always
-pull it out.
+Obviously all SMP hardware is ARMv6K, the only question I raised
+in point "c)" is what we would lose by making ARMv6 (ARM1136r0)
+support and SMP mutually exclusive in a kernel configuration, and
+I suppose the answer remains "testing".
 
-Thanks for your perseverance in driving this John.
-
-Yours,
-Linus Walleij
+      Arnd
