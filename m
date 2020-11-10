@@ -2,84 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6330C2ADEE0
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 19:57:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BE542ADEE6
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 19:57:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731591AbgKJS5E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 13:57:04 -0500
-Received: from z5.mailgun.us ([104.130.96.5]:27992 "EHLO z5.mailgun.us"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728523AbgKJS5E (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 13:57:04 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1605034624; h=Date: Message-Id: Cc: To: References:
- In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
- Content-Type: Sender; bh=vDq62T/03iDGRK+aP4t5YbSfr7W0BoTtgT+qO9wVCOY=;
- b=bxrryI2258aMOuw/fS6qqxOsLpHhSPLADpga8nvNnfbJv6JszOizH26muyXNcyNE2RDblfBM
- arfLr68EAtFddyyI6vZ8qmfSM/PaOQDMHxSUOSrhxDsQhyjkg82lIJaDLzNb9dEYYICqLCan
- p3nmynu4+z9BsvaBcjQrYTWj0/Q=
-X-Mailgun-Sending-Ip: 104.130.96.5
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n07.prod.us-west-2.postgun.com with SMTP id
- 5faae27b40d4446125790e85 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 10 Nov 2020 18:56:59
- GMT
-Sender: kvalo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id B4E7EC43382; Tue, 10 Nov 2020 18:56:58 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        MISSING_DATE,MISSING_MID,SPF_FAIL,URIBL_BLOCKED autolearn=no
-        autolearn_force=no version=3.4.0
-Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 4C130C433C6;
-        Tue, 10 Nov 2020 18:56:55 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 4C130C433C6
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
-Content-Type: text/plain; charset="utf-8"
+        id S1731668AbgKJS51 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 13:57:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46078 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731648AbgKJS50 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Nov 2020 13:57:26 -0500
+Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D0FEC0613D1
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 10:57:26 -0800 (PST)
+Received: by mail-pl1-x642.google.com with SMTP id s2so707840plr.9
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 10:57:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:in-reply-to:message-id:references
+         :user-agent:mime-version;
+        bh=/kb37eWBLDbjDnXmFWfjVVLRM7gSVNXEojlTedCdvIo=;
+        b=JqIkwI7mdvEOLGgaIkz1ad0WiIuxYzgH0Yc+w9hHs29ATydarbNS09YbvxzgGRTA+P
+         4v2AYugE3z7Q2QIeD3OhEndw3WYxeW2qZ16+ck2tb5l8QvEnSQ3AF/yxD9OfnJXgSvfU
+         0kUI2sAyChygWhOdSkQLeY4rXbW4trVTu5JZ6TAtI7Nl4yewa5HMXRcieo9By2J0Sv/1
+         FZfrBAyhW2vT5RjBkJAMyeqeBzWN1CfhkwhjlYL1MDOnm0kZmD51aUsf2d8saiztrvEk
+         sgMVef5QM8EDIEN1uklngMw5xuO1SAjFMC28c0Fo0sTiedCuw73rPx2KgT5Ctj3UEx+K
+         9MNw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
+         :references:user-agent:mime-version;
+        bh=/kb37eWBLDbjDnXmFWfjVVLRM7gSVNXEojlTedCdvIo=;
+        b=A2yRDnS3tmNUhqLH9V9tLFkLxeofHynbCkZm5u7unHTeFNiQaXcx1kIDU+/i4hrdKg
+         kFEUpqTENuBoeUUGb5piMv4EoOV6DZDNcSkn4AL+ufuQhsBeEniv3tuZ/7UUdNa1bcq9
+         jOuNqXEE3nNGGd1HJDZkeqn0Px/8tITL8g8cR+OevJRTbKx0uv1OaarkgzQcabmKei4h
+         N4W+MPkj3AQ/1HMhE/Mqi36AFwJpfgL+WDLZ0laYfh68HytcUKjiJjo+Qs4h6h18w0nI
+         KKWWJKvY3tSWV3yktZUqs46JEGR+/GNS0FO2010IX2yAQlZezgTuxqQTj26n2ZuQnfrx
+         FHeA==
+X-Gm-Message-State: AOAM530rtAbdqyNXy3WMfzFhMSwXbcQwUQS82SHWQQoZ1z4JfqPFzigo
+        79slbKHWDpGn+K1uKpdQfF1vyA==
+X-Google-Smtp-Source: ABdhPJyLZxTXoySuldNuf+7kK21QLpddc/YRss2vggm6jrq66wCxAHCGe8DKoULcFL0dOTVlNbHSEQ==
+X-Received: by 2002:a17:902:e9c4:b029:d6:d5d6:c288 with SMTP id 4-20020a170902e9c4b02900d6d5d6c288mr18061556plk.22.1605034645751;
+        Tue, 10 Nov 2020 10:57:25 -0800 (PST)
+Received: from [2620:15c:17:3:4a0f:cfff:fe51:6667] ([2620:15c:17:3:4a0f:cfff:fe51:6667])
+        by smtp.gmail.com with ESMTPSA id s6sm13826565pgo.8.2020.11.10.10.57.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 10 Nov 2020 10:57:24 -0800 (PST)
+Date:   Tue, 10 Nov 2020 10:57:23 -0800 (PST)
+From:   David Rientjes <rientjes@google.com>
+X-X-Sender: rientjes@chino.kir.corp.google.com
+To:     Muchun Song <songmuchun@bytedance.com>
+cc:     hannes@cmpxchg.org, mhocko@kernel.org, vdavydov.dev@gmail.com,
+        Andrew Morton <akpm@linux-foundation.org>, cl@linux.com,
+        penberg@kernel.org, iamjoonsoo.kim@lge.com, shakeelb@google.com,
+        guro@fb.com, Vlastimil Babka <vbabka@suse.cz>,
+        laoar.shao@gmail.com, chris@chrisdown.name,
+        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+        linux-mm@kvack.org
+Subject: Re: [PATCH v2] mm: memcg/slab: Fix root memcg vmstats
+In-Reply-To: <20201110031015.15715-1-songmuchun@bytedance.com>
+Message-ID: <alpine.DEB.2.23.453.2011101054350.1685210@chino.kir.corp.google.com>
+References: <20201110031015.15715-1-songmuchun@bytedance.com>
+User-Agent: Alpine 2.23 (DEB 453 2020-06-18)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Subject: Re: rtlwifi: fix spelling typo of workaround
-From:   Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <1604738439-24794-1-git-send-email-wangqing@vivo.com>
-References: <1604738439-24794-1-git-send-email-wangqing@vivo.com>
-To:     Wang Qing <wangqing@vivo.com>
-Cc:     Ping-Ke Shih <pkshih@realtek.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Larry Finger <Larry.Finger@lwfinger.net>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Joe Perches <joe@perches.com>,
-        Zheng Bin <zhengbin13@huawei.com>,
-        Wang Qing <wangqing@vivo.com>, linux-wireless@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.5.2
-Message-Id: <20201110185658.B4E7EC43382@smtp.codeaurora.org>
-Date:   Tue, 10 Nov 2020 18:56:58 +0000 (UTC)
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Wang Qing <wangqing@vivo.com> wrote:
+On Tue, 10 Nov 2020, Muchun Song wrote:
 
-> workarould -> workaround
+> If we reparent the slab objects to the root memcg, when we free
+> the slab object, we need to update the per-memcg vmstats to keep
+> it correct for the root memcg. Now this at least affects the vmstat
+> of NR_KERNEL_STACK_KB for !CONFIG_VMAP_STACK when the thread stack
+> size is smaller than the PAGE_SIZE.
 > 
-> Signed-off-by: Wang Qing <wangqing@vivo.com>
+> Fixes: ec9f02384f60 ("mm: workingset: fix vmstat counters for shadow nodes")
+> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+> Acked-by: Roman Gushchin <guro@fb.com>
 
-Patch applied to wireless-drivers-next.git, thanks.
+Acked-by: David Rientjes <rientjes@google.com>
 
-dd90fc4630d2 rtlwifi: fix spelling typo of workaround
+I assume that without this fix that the root memcg's vmstat would always 
+be inflated if we reparented?  If that's accurate, perhaps this is 
+deserving of a
 
--- 
-https://patchwork.kernel.org/project/linux-wireless/patch/1604738439-24794-1-git-send-email-wangqing@vivo.com/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
-
+Cc: stable@vger.kernel.org # 5.3+
