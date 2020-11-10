@@ -2,76 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BC602AD549
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 12:33:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 503FB2AD551
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 12:34:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730176AbgKJLdX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 06:33:23 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47092 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726900AbgKJLdX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 06:33:23 -0500
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 48F4F20637;
-        Tue, 10 Nov 2020 11:33:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605008002;
-        bh=XmyBF4mbE1OM1mEytauF8JvdxrN6jCorir7u0p0LO70=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=sgGscdrbRU0K1s1G+QBTQ0vVhF5oyvOiueyELT/dbMibG0ZuHTIJ15oVUOEfUs5yh
-         sr/qyAIc1nMcbSEZoFfwGELnMKx0p3Brv/d+H6RCA7GewmCCBkKkB8NORc8ra+cxZc
-         nQ0I6QrQXF5i0zASkVEKGnhen3KYoc72T9XFQ8D0=
-Date:   Tue, 10 Nov 2020 12:34:17 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Bastien Nocera <hadess@hadess.net>
-Cc:     Linux PM <linux-pm@vger.kernel.org>, linux-usb@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "linux-input@vger.kernel.org" <linux-input@vger.kernel.org>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Mario Limonciello <mario.limonciello@dell.com>
-Subject: Re: How to enable auto-suspend by default
-Message-ID: <X6p6ubTOoMPUPPXi@kroah.com>
-References: <fe8ab4cab3740afd261fa902f14ecae002a1122d.camel@hadess.net>
+        id S1729943AbgKJLek (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 06:34:40 -0500
+Received: from szxga04-in.huawei.com ([45.249.212.190]:7201 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726152AbgKJLek (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Nov 2020 06:34:40 -0500
+Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4CVm3f60yCzkhsd;
+        Tue, 10 Nov 2020 19:34:22 +0800 (CST)
+Received: from localhost.localdomain (10.69.192.56) by
+ DGGEMS414-HUB.china.huawei.com (10.3.19.214) with Microsoft SMTP Server id
+ 14.3.487.0; Tue, 10 Nov 2020 19:34:28 +0800
+From:   Tian Tao <tiantao6@hisilicon.com>
+To:     <evan.quan@amd.com>, <alexander.deucher@amd.com>,
+        <christian.koenig@amd.com>, <airlied@linux.ie>, <daniel@ffwll.ch>,
+        <alex.dewar90@gmail.com>, <nirmoy.das@amd.com>,
+        <amd-gfx@lists.freedesktop.org>, <dri-devel@lists.freedesktop.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH] drm/amd/pm: Use kmemdup instead of kmalloc and memcpy
+Date:   Tue, 10 Nov 2020 19:34:58 +0800
+Message-ID: <1605008098-33391-1-git-send-email-tiantao6@hisilicon.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <fe8ab4cab3740afd261fa902f14ecae002a1122d.camel@hadess.net>
+Content-Type: text/plain
+X-Originating-IP: [10.69.192.56]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 10, 2020 at 11:57:07AM +0100, Bastien Nocera wrote:
-> Hey,
-> 
-> systemd has been shipping this script to enable auto-suspend on a
-> number of USB and PCI devices:
-> https://github.com/systemd/systemd/blob/master/tools/chromiumos/gen_autosuspend_rules.py
-> 
-> The problem here is twofold. First, the list of devices is updated from
-> ChromeOS, and the original list obviously won't be updated by ChromeOS
-> developers unless a device listed exists in a ChromeBook computer,
-> which means a number of devices that do support autosuspend aren't
-> listed.
-> 
-> The other problem is that this list needs to exist at all, and that it
-> doesn't seem possible for device driver developers (at various levels
-> of the stack) to opt-in to auto-suspend when all the variants of the
-> device (or at least detectable ones) support auto-suspend.
+Fixes coccicheck warning:
+drivers/gpu/drm/amd/pm/powerplay/hwmgr/vega12_processpptables.c:255:
+36-43: WARNING opportunity for kmemdup
 
-A driver can say they support autosuspend today, but I think you are
-concerned about the devices that are controlled by class-compliant
-drivers, right?  And for those, no, we can't do this in the kernel as
-there are just too many broken devices out there.
+Signed-off-by: Tian Tao <tiantao6@hisilicon.com>
+---
+ drivers/gpu/drm/amd/pm/powerplay/hwmgr/vega12_processpptables.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-As proof of this, look at other operating systems.  They had to
-implement the same type of "allowed devices" list that we do.  In fact,
-we did this for Linux because they did this, which means that when
-hardware manufacturers test their device, they only test with other
-operating systems and not Linux and so, we need to match what those
-other OSes do as well.
+diff --git a/drivers/gpu/drm/amd/pm/powerplay/hwmgr/vega12_processpptables.c b/drivers/gpu/drm/amd/pm/powerplay/hwmgr/vega12_processpptables.c
+index 740e2fc..1e79baa 100644
+--- a/drivers/gpu/drm/amd/pm/powerplay/hwmgr/vega12_processpptables.c
++++ b/drivers/gpu/drm/amd/pm/powerplay/hwmgr/vega12_processpptables.c
+@@ -252,12 +252,11 @@ static int init_powerplay_table_information(
+ 	phm_copy_clock_limits_array(hwmgr, &pptable_information->power_saving_clock_max, powerplay_table->PowerSavingClockMax, ATOM_VEGA12_PPCLOCK_COUNT);
+ 	phm_copy_clock_limits_array(hwmgr, &pptable_information->power_saving_clock_min, powerplay_table->PowerSavingClockMin, ATOM_VEGA12_PPCLOCK_COUNT);
+ 
+-	pptable_information->smc_pptable = kmalloc(sizeof(PPTable_t), GFP_KERNEL);
++	pptable_information->smc_pptable = kmemdup(&(powerplay_table->smcPPTable),
++						   sizeof(PPTable_t), GFP_KERNEL);
+ 	if (pptable_information->smc_pptable == NULL)
+ 		return -ENOMEM;
+ 
+-	memcpy(pptable_information->smc_pptable, &(powerplay_table->smcPPTable), sizeof(PPTable_t));
+-
+ 	result = append_vbios_pptable(hwmgr, (pptable_information->smc_pptable));
+ 
+ 	return result;
+-- 
+2.7.4
 
-Sorry,
-
-greg k-h
