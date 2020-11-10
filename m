@@ -2,115 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C75802ADB63
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 17:13:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C33D2ADB66
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 17:15:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726698AbgKJQNq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 11:13:46 -0500
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:56170 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726307AbgKJQNq (ORCPT
+        id S1727698AbgKJQP3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 11:15:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49076 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726307AbgKJQP2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 11:13:46 -0500
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: eballetbo)
-        with ESMTPSA id 0C8141F44CE8
-From:   Enric Balletbo i Serra <enric.balletbo@collabora.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Collabora Kernel ML <kernel@collabora.com>,
-        Nicolas Boichat <drinkcat@chromium.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>, Lee Jones <lee.jones@linaro.org>
-Subject: [PATCH v2] mfd: syscon: Add syscon_regmap_lookup_by_phandle_optional() function.
-Date:   Tue, 10 Nov 2020 17:13:37 +0100
-Message-Id: <20201110161338.18198-1-enric.balletbo@collabora.com>
-X-Mailer: git-send-email 2.28.0
+        Tue, 10 Nov 2020 11:15:28 -0500
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66294C0613CF
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 08:15:28 -0800 (PST)
+Received: by mail-wm1-x343.google.com with SMTP id 10so3599475wml.2
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 08:15:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=7CGWOWW/W5NZPaOpqTfKKcrmTlDUB36jZ3I9AkmIH6I=;
+        b=Oyb2FmYMYcgg5GEthU7jt9bPL3ouAxvWpva7pbs8v91NGyhpUCqh7bYu4tkpyT0ALU
+         x4A/AOa1lWZB0RDjFVBwRe6INqMWSkMViRHDSXCBUBaZoq73SLM1M4v1iJyCtmmTVKDH
+         6/2eIt4EyxEhLJNA5JflypvukRIdCSQYuaqFo=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to;
+        bh=7CGWOWW/W5NZPaOpqTfKKcrmTlDUB36jZ3I9AkmIH6I=;
+        b=Lgxi9QU5LPi5JYmtosOtAfqaj747pqvG7HtXuBEsimWvBnyEff5Dn454pUMbVGWeDf
+         vQ0kSLIWcGrunnxjQKkWLXaWXQKq/nqty9PanpSV82QQdlank2r/cron4kLBgqW7Vlw0
+         lgy6z+GWzjA/pEkuMxWWB8wyM6IVcLyhRwRSePMikfcqnvoklwFN7enP+grViiMOPG7H
+         Xllb1GSDFNw+PQsfoZNu3j73fa7xOrgL4iXPSLhNC3nW6p6rWKAPkRbqy2Q/lW9QDIgi
+         X33AO+Bqd26jfWp9VXnssJEc95gjJmzCOkgnsjDslld9k8A6xzyHB2c29amxzsYF7fZp
+         2c1Q==
+X-Gm-Message-State: AOAM530GqdNt9S2p27cxfMC8E0QvWsv0pywldrBnv8TSFyS8J74CtYWW
+        69OBD0uCyC9ecRtRHC9oJ+/Gog==
+X-Google-Smtp-Source: ABdhPJwhsIWxla7qG5MoctbGmInEVIF8xoR14d/2DvWqNkUzSlrZ+dLToTW7q8cmJUQcQpt1J4zGTw==
+X-Received: by 2002:a1c:7213:: with SMTP id n19mr492446wmc.36.1605024927076;
+        Tue, 10 Nov 2020 08:15:27 -0800 (PST)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id q17sm2660356wro.36.2020.11.10.08.15.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 10 Nov 2020 08:15:26 -0800 (PST)
+Date:   Tue, 10 Nov 2020 17:15:23 +0100
+From:   Daniel Vetter <daniel@ffwll.ch>
+To:     Geert Uytterhoeven <geert+renesas@glider.be>
+Cc:     Anitha Chrisanthus <anitha.chrisanthus@intel.com>,
+        Edmund Dea <edmund.j.dea@intel.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        dri-devel@lists.freedesktop.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] drm: DRM_KMB_DISPLAY should depend on ARCH_KEEMBAY
+Message-ID: <20201110161523.GN401619@phenom.ffwll.local>
+Mail-Followup-To: Geert Uytterhoeven <geert+renesas@glider.be>,
+        Anitha Chrisanthus <anitha.chrisanthus@intel.com>,
+        Edmund Dea <edmund.j.dea@intel.com>,
+        David Airlie <airlied@linux.ie>, Sam Ravnborg <sam@ravnborg.org>,
+        dri-devel@lists.freedesktop.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20201110144350.3279147-1-geert+renesas@glider.be>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201110144350.3279147-1-geert+renesas@glider.be>
+X-Operating-System: Linux phenom 5.7.0-1-amd64 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This adds syscon_regmap_lookup_by_phandle_optional() function to get an
-optional regmap.
+On Tue, Nov 10, 2020 at 03:43:50PM +0100, Geert Uytterhoeven wrote:
+> The Intel Keem Bay display controller is only present on Intel Keem Bay
+> SoCs.  Hence add a dependency on ARCH_KEEMBAY, to prevent asking the
+> user about this driver when configuring a kernel without Intel Keem Bay
+> platform support.
+> 
+> Note that:
+>   1. The dependency on ARM is dropped, as Keem Bay SoCs are only
+>      supported in arm64 kernel builds,
+>   2. The dependencies on OF and COMMON_CLK can be dropped for
+>      compile-testing, as the driver builds fine regardless.
+> 
+> Fixes: ed794057b052b52a ("drm/kmb: Build files for KeemBay Display driver")
+> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
 
-It behaves the same as syscon_regmap_lookup_by_phandle() except where
-there is no regmap phandle. In this case, instead of returning -ENODEV,
-the function returns NULL. This makes error checking simpler when the
-regmap phandle is optional.
+Both drm/kmb fixes applied to drm-misc-next, thanks a lot!
+-Daniel
 
-Suggested-by: Nicolas Boichat <drinkcat@chromium.org>
-Signed-off-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
-Reviewed-by: Matthias Brugger <matthias.bgg@gmail.com>
----
+> ---
+>  drivers/gpu/drm/kmb/Kconfig | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/kmb/Kconfig b/drivers/gpu/drm/kmb/Kconfig
+> index 022ef3e3f05635be..3921c57ac511e2fb 100644
+> --- a/drivers/gpu/drm/kmb/Kconfig
+> +++ b/drivers/gpu/drm/kmb/Kconfig
+> @@ -1,7 +1,7 @@
+>  config DRM_KMB_DISPLAY
+>  	tristate "INTEL KEEMBAY DISPLAY"
+> -	depends on DRM && OF && (ARM || ARM64)
+> -	depends on COMMON_CLK
+> +	depends on DRM
+> +	depends on ARCH_KEEMBAY || COMPILE_TEST
+>  	select DRM_KMS_HELPER
+>  	select DRM_KMS_CMA_HELPER
+>  	select DRM_GEM_CMA_HELPER
+> -- 
+> 2.25.1
+> 
 
-Changes in v2:
-- Add Matthias r-b tag.
-- Add the explanation from the patch description to the code.
-- Return NULL instead of -ENOTSUPP when regmap helpers are not enabled.
-
- drivers/mfd/syscon.c       | 18 ++++++++++++++++++
- include/linux/mfd/syscon.h | 11 +++++++++++
- 2 files changed, 29 insertions(+)
-
-diff --git a/drivers/mfd/syscon.c b/drivers/mfd/syscon.c
-index ca465794ea9c..c6f139b2e0c0 100644
---- a/drivers/mfd/syscon.c
-+++ b/drivers/mfd/syscon.c
-@@ -255,6 +255,24 @@ struct regmap *syscon_regmap_lookup_by_phandle_args(struct device_node *np,
- }
- EXPORT_SYMBOL_GPL(syscon_regmap_lookup_by_phandle_args);
- 
-+/*
-+ * It behaves the same as syscon_regmap_lookup_by_phandle() except where
-+ * there is no regmap phandle. In this case, instead of returning -ENODEV,
-+ * the function returns NULL.
-+ */
-+struct regmap *syscon_regmap_lookup_by_phandle_optional(struct device_node *np,
-+					const char *property)
-+{
-+	struct regmap *regmap;
-+
-+	regmap = syscon_regmap_lookup_by_phandle(np, property);
-+	if (IS_ERR(regmap) && PTR_ERR(regmap) == -ENODEV)
-+		return NULL;
-+
-+	return regmap;
-+}
-+EXPORT_SYMBOL_GPL(syscon_regmap_lookup_by_phandle_optional);
-+
- static int syscon_probe(struct platform_device *pdev)
- {
- 	struct device *dev = &pdev->dev;
-diff --git a/include/linux/mfd/syscon.h b/include/linux/mfd/syscon.h
-index 7f20e9b502a5..fecc2fa2a364 100644
---- a/include/linux/mfd/syscon.h
-+++ b/include/linux/mfd/syscon.h
-@@ -28,6 +28,9 @@ extern struct regmap *syscon_regmap_lookup_by_phandle_args(
- 					const char *property,
- 					int arg_count,
- 					unsigned int *out_args);
-+extern struct regmap *syscon_regmap_lookup_by_phandle_optional(
-+					struct device_node *np,
-+					const char *property);
- #else
- static inline struct regmap *device_node_to_regmap(struct device_node *np)
- {
-@@ -59,6 +62,14 @@ static inline struct regmap *syscon_regmap_lookup_by_phandle_args(
- {
- 	return ERR_PTR(-ENOTSUPP);
- }
-+
-+static inline struct regmap *syscon_regmap_lookup_by_phandle_optional(
-+					struct device_node *np,
-+					const char *property)
-+{
-+	return NULL;
-+}
-+
- #endif
- 
- #endif /* __LINUX_MFD_SYSCON_H__ */
 -- 
-2.28.0
-
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
