@@ -2,91 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63AA22AE015
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 20:50:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4202F2AE037
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 20:54:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730542AbgKJTuj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 14:50:39 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38180 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725862AbgKJTuj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 14:50:39 -0500
-Received: from localhost.localdomain (c-73-231-172-41.hsd1.ca.comcast.net [73.231.172.41])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EE66E206B6;
-        Tue, 10 Nov 2020 19:50:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605037838;
-        bh=mRi18aUbpZTnjTjgUWsVLKGyzEbgOtyXxgU2zSLUAgg=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=AQUw2JPSs7pvi6d1s9zJvtKDAW393r6WnAA88ULaAfy5/A3n3o9vJyx7F51DMgz6q
-         qWeNZq8TDRIvitIK/UbeFzQUZgu8PgCQ2SVLYJdNa2KmEi4LspoWOB90fjWLVNucdF
-         Xw3tJjLJEl2gtwYzFP2RMBgdoxQ469C4rFUeB6hg=
-Date:   Tue, 10 Nov 2020 11:50:37 -0800
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Souptick Joarder <jrdr.linux@gmail.com>
-Cc:     Alex Shi <alex.shi@linux.alibaba.com>,
-        Linux-MM <linux-mm@kvack.org>, linux-kernel@vger.kernel.org,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Josef Bacik <josef@toxicpanda.com>
-Subject: Re: [PATCH] mm/filemap: add static for function
- __add_to_page_cache_locked
-Message-Id: <20201110115037.f6a53faec8d65782ab65d8b4@linux-foundation.org>
-In-Reply-To: <CAFqt6zZU76NOF6uD_c1vRPmEHwOzLp9wEWAmSX2ficpQb0zf6g@mail.gmail.com>
-References: <1604661895-5495-1-git-send-email-alex.shi@linux.alibaba.com>
-        <CAFqt6zZU76NOF6uD_c1vRPmEHwOzLp9wEWAmSX2ficpQb0zf6g@mail.gmail.com>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+        id S1731603AbgKJTyb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 14:54:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55114 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726400AbgKJTya (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Nov 2020 14:54:30 -0500
+Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11741C0613D1
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 11:54:30 -0800 (PST)
+Received: by mail-io1-xd44.google.com with SMTP id n129so15593169iod.5
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 11:54:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Vdba1It8LuruBRXATlGs5ogDOu37tb0jUQlcsfQ+i94=;
+        b=erhpGeuR4YZoPxfbaOj6VRTo5qEDTaMnmy8kz3XZUQlHcvUC5PAMnd4vRUgcWhnCY4
+         HmjHbSPgIj5umTnUKC8XvX1IvbsCFZxMBGUdUE7TrHhyO2iCd6OhgwKqfD97WQg1umxw
+         JFTX/vqjOOD2aZVjcPXZOK3wm7m2rMYTBiYoY=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Vdba1It8LuruBRXATlGs5ogDOu37tb0jUQlcsfQ+i94=;
+        b=QTJTgssjOzPzpu24Vcpm+6XD5txYUFwfqeosY26cg7YbGI7XjnCQittSstZ99mZnny
+         wJM8vbqxxmMEwiYH+RsXuXwxgNEWwXEEzlc+YjV64PN1uK3SUqWtYEUpFYWUo7qNNWCA
+         z9YtZgzUzHYtjjg8T6Pp0fxNwU9c8DVY0X8wPxOLXTiXrVAvv5Q2m27CWjrPHMAsMwch
+         PpzIJRxAKGxkJspjHMM5qp/KiWGmXZn5EjzxlV+2rSt8Azcc+lR/7+JP8aXDcWmX3EQM
+         i1iX9WPOJn8W9MJeP4LXMxWj+4bfBKp1j3hYHC1uKi10YUX7L2w/uBjEk6ocBkLK1trz
+         PsrA==
+X-Gm-Message-State: AOAM532RqJPr+ayQVW7bfCz7aNGIRbxgr8Lmw7nwYvLNrh5Rut6VbtAp
+        eLruqZy5+T+je/R+9A7MCUIrLQ==
+X-Google-Smtp-Source: ABdhPJzSoGm8gSgvRaSBerc+sxmFJLhfNH27ldXelE/5n3b7bzL48Ie7m56QLtjKLU/yXqTHWYQj8w==
+X-Received: by 2002:a6b:b30b:: with SMTP id c11mr15269551iof.175.1605038069386;
+        Tue, 10 Nov 2020 11:54:29 -0800 (PST)
+Received: from shuah-t480s.internal (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id o14sm123971ilg.71.2020.11.10.11.54.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 10 Nov 2020 11:54:28 -0800 (PST)
+From:   Shuah Khan <skhan@linuxfoundation.org>
+To:     corbet@lwn.net, keescook@chromium.org, gregkh@linuxfoundation.org,
+        peterz@infradead.org, rafael@kernel.org, lenb@kernel.org,
+        james.morse@arm.com, tony.luck@intel.com, bp@alien8.de,
+        minyard@acm.org, arnd@arndb.de, mchehab@kernel.org,
+        rric@kernel.org, valentina.manea.m@gmail.com, shuah@kernel.org,
+        zohar@linux.ibm.com, dmitry.kasatkin@gmail.com, jmorris@namei.org,
+        serge@hallyn.com
+Cc:     Shuah Khan <skhan@linuxfoundation.org>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-acpi@vger.kernel.org,
+        openipmi-developer@lists.sourceforge.net,
+        linux-edac@vger.kernel.org, linux-usb@vger.kernel.org,
+        linux-integrity@vger.kernel.org,
+        linux-security-module@vger.kernel.org
+Subject: [PATCH 00/13] Introduce seqnum_ops 
+Date:   Tue, 10 Nov 2020 12:53:26 -0700
+Message-Id: <cover.1605027593.git.skhan@linuxfoundation.org>
+X-Mailer: git-send-email 2.27.0
+MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 10 Nov 2020 08:39:24 +0530 Souptick Joarder <jrdr.linux@gmail.com> wrote:
+There are a number of atomic_t usages in the kernel where atomic_t api
+is used strictly for counting sequence numbers and other statistical
+counters and not for managing object lifetime.
 
-> On Fri, Nov 6, 2020 at 4:55 PM Alex Shi <alex.shi@linux.alibaba.com> wrote:
-> >
-> > Otherwise it cause gcc warning:
-> >           ^~~~~~~~~~~~~~~
-> > ../mm/filemap.c:830:14: warning: no previous prototype for
-> > ‘__add_to_page_cache_locked’ [-Wmissing-prototypes]
-> >  noinline int __add_to_page_cache_locked(struct page *page,
-> >               ^~~~~~~~~~~~~~~~~~~~~~~~~~
-> 
-> Is CONFIG_DEBUG_INFO_BTF enabled in your .config ?
+The purpose of these Sequence Number Ops is to clearly differentiate
+atomic_t counter usages from atomic_t usages that guard object lifetimes,
+hence prone to overflow and underflow errors.
 
-hm, yes.
+The atomic_t api provides a wide range of atomic operations as a base
+api to implement atomic counters, bitops, spinlock interfaces. The usages
+also evolved into being used for resource lifetimes and state management.
+The refcount_t api was introduced to address resource lifetime problems
+related to atomic_t wrapping. There is a large overlap between the
+atomic_t api used for resource lifetimes and just counters, stats, and
+sequence numbers. It has become difficult to differentiate between the
+atomic_t usages that should be converted to refcount_t and the ones that
+can be left alone. Introducing seqnum_ops to wrap the usages that are
+stats, counters, sequence numbers makes it easier for tools that scan
+for underflow and overflow on atomic_t usages to detect overflow and
+underflows to scan just the cases that are prone to errors.
 
-> >
-> > Signed-off-by: Alex Shi <alex.shi@linux.alibaba.com>
-> > Cc: Andrew Morton <akpm@linux-foundation.org>
-> > Cc: linux-mm@kvack.org
-> > Cc: linux-kernel@vger.kernel.org
-> > ---
-> >  mm/filemap.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> >
-> > diff --git a/mm/filemap.c b/mm/filemap.c
-> > index d90614f501da..249cf489f5df 100644
-> > --- a/mm/filemap.c
-> > +++ b/mm/filemap.c
-> > @@ -827,7 +827,7 @@ int replace_page_cache_page(struct page *old, struct page *new, gfp_t gfp_mask)
-> >  }
-> >  EXPORT_SYMBOL_GPL(replace_page_cache_page);
-> >
-> > -noinline int __add_to_page_cache_locked(struct page *page,
-> > +static noinline int __add_to_page_cache_locked(struct page *page,
-> >                                         struct address_space *mapping,
-> >                                         pgoff_t offset, gfp_t gfp,
-> >                                         void **shadowp)
+Sequence Number api provides interfaces for simple atomic_t counter usages
+that just count, and don't guard resource lifetimes. The seqnum_ops are
+built on top of atomic_t api, providing a smaller subset of atomic_t
+interfaces necessary to support atomic_t usages as simple counters.
+This api has init/set/inc/dec/read and doesn't support any other atomic_t
+ops with the intent to restrict the use of these interfaces as simple
+counting usages.
 
-It's unclear to me whether BTF_ID() requires that the target symbol be
-non-static.  It doesn't actually reference the symbol:
+Sequence Numbers wrap around to INT_MIN when it overflows and should not
+be used to guard resource lifetimes, device usage and open counts that
+control state changes, and pm states. Overflowing to INT_MIN is consistent
+with the atomic_t api, which it is built on top of.
 
-#define BTF_ID(prefix, name) \
-        __BTF_ID(__ID(__BTF_ID__##prefix##__##name##__))
+Using seqnum to guard lifetimes could lead to use-after free when it
+overflows and undefined behavior when used to manage state changes and
+device usage/open states.
 
-Alexei, can you please comment?
+In addition this patch series converts a few drivers to use the new api.
+The following criteria is used for select variables for conversion:
+
+1. Variable doesn't guard object lifetimes, manage state changes e.g:
+   device usage counts, device open counts, and pm states.
+2. Variable is used for stats and counters.
+3. The conversion doesn't change the overflow behavior.
+4. Note: inc_return() usages are changed to _inc() followed by _read()
+   Patches: 03/13, 04/13, 09/13, 10/13, 11/13
+5. drivers/acpi and drivers/acpi/apei patches have been reviewed
+   before the rename, however in addition to rename, inc_return()
+   usages are changed to _inc() followed by _read()
+6. test_async_driver_probe, char/ipmi, and edac patches have been
+   reviewed and no changes other than the rename to seqnum_ops.
+7. security/integrity/ima: Okay to depend on CONFIG_64BIT? 
+
+The work for this is a follow-on to the discussion and review of
+Introduce Simple atomic counters patch series:
+
+//lore.kernel.org/lkml/cover.1602209970.git.skhan@linuxfoundation.org/
+
+Based on the feedback to restrict and limit the scope:
+- dropped inc_return()
+- renamed interfaces to match the intent and also shorten the
+  interface names.
+
+Shuah Khan (13):
+  seqnum_ops: Introduce Sequence Number Ops
+  selftests: lib:test_seqnum_ops: add new test for seqnum_ops
+  drivers/acpi: convert seqno seqnum_ops
+  drivers/acpi/apei: convert seqno to seqnum_ops
+  drivers/base/test/test_async_driver_probe: convert to use seqnum_ops
+  drivers/char/ipmi: convert stats to use seqnum_ops
+  drivers/edac: convert pci counters to seqnum_ops
+  drivers/oprofile: convert stats to use seqnum_ops
+  drivers/staging/rtl8723bs: convert stats to use seqnum_ops
+  usb: usbip/vhci: convert seqno to seqnum_ops
+  drivers/staging/rtl8188eu: convert stats to use seqnum_ops
+  drivers/staging/unisys/visorhba: convert stats to use seqnum_ops
+  security/integrity/ima: converts stats to seqnum_ops
+
+ Documentation/core-api/atomic_ops.rst         |   4 +
+ Documentation/core-api/index.rst              |   1 +
+ Documentation/core-api/seqnum_ops.rst         | 126 ++++++++++++++
+ MAINTAINERS                                   |   8 +
+ drivers/acpi/acpi_extlog.c                    |   6 +-
+ drivers/acpi/apei/ghes.c                      |   6 +-
+ drivers/base/test/test_async_driver_probe.c   |  26 +--
+ drivers/char/ipmi/ipmi_msghandler.c           |   9 +-
+ drivers/char/ipmi/ipmi_si_intf.c              |   9 +-
+ drivers/char/ipmi/ipmi_ssif.c                 |   9 +-
+ drivers/edac/edac_pci.h                       |   5 +-
+ drivers/edac/edac_pci_sysfs.c                 |  28 ++--
+ drivers/oprofile/buffer_sync.c                |   9 +-
+ drivers/oprofile/event_buffer.c               |   3 +-
+ drivers/oprofile/oprof.c                      |   3 +-
+ drivers/oprofile/oprofile_stats.c             |  11 +-
+ drivers/oprofile/oprofile_stats.h             |  11 +-
+ drivers/oprofile/oprofilefs.c                 |   3 +-
+ drivers/staging/rtl8188eu/core/rtw_mlme_ext.c |  23 ++-
+ .../staging/rtl8188eu/include/rtw_mlme_ext.h  |   3 +-
+ drivers/staging/rtl8723bs/core/rtw_cmd.c      |   3 +-
+ drivers/staging/rtl8723bs/core/rtw_mlme_ext.c |  33 ++--
+ drivers/staging/rtl8723bs/include/rtw_cmd.h   |   3 +-
+ .../staging/rtl8723bs/include/rtw_mlme_ext.h  |   3 +-
+ .../staging/unisys/visorhba/visorhba_main.c   |  37 +++--
+ drivers/usb/usbip/vhci.h                      |   3 +-
+ drivers/usb/usbip/vhci_hcd.c                  |   9 +-
+ drivers/usb/usbip/vhci_rx.c                   |   3 +-
+ include/linux/oprofile.h                      |   3 +-
+ include/linux/seqnum_ops.h                    | 154 ++++++++++++++++++
+ lib/Kconfig                                   |   9 +
+ lib/Makefile                                  |   1 +
+ lib/test_seqnum_ops.c                         | 154 ++++++++++++++++++
+ security/integrity/ima/ima.h                  |   5 +-
+ security/integrity/ima/ima_api.c              |   2 +-
+ security/integrity/ima/ima_fs.c               |   4 +-
+ security/integrity/ima/ima_queue.c            |   7 +-
+ tools/testing/selftests/lib/Makefile          |   1 +
+ tools/testing/selftests/lib/config            |   1 +
+ .../testing/selftests/lib/test_seqnum_ops.sh  |  10 ++
+ 40 files changed, 637 insertions(+), 111 deletions(-)
+ create mode 100644 Documentation/core-api/seqnum_ops.rst
+ create mode 100644 include/linux/seqnum_ops.h
+ create mode 100644 lib/test_seqnum_ops.c
+ create mode 100755 tools/testing/selftests/lib/test_seqnum_ops.sh
+
+-- 
+2.27.0
+
