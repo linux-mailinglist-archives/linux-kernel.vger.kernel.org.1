@@ -2,119 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DDF142ACFF3
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 07:46:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9652F2ACFF6
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 07:47:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730877AbgKJGqn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 01:46:43 -0500
-Received: from smtp2207-205.mail.aliyun.com ([121.197.207.205]:53195 "EHLO
-        smtp2207-205.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726010AbgKJGqm (ORCPT
+        id S1731223AbgKJGrN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 01:47:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45284 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727089AbgKJGrN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 01:46:42 -0500
-X-Alimail-AntiSpam: AC=CONTINUE;BC=0.09124708|-1;CH=blue;DM=|OVERLOAD|false|;DS=CONTINUE|ham_system_inform|0.0186312-0.000150051-0.981219;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047201;MF=frank@allwinnertech.com;NM=1;PH=DS;RN=12;RT=12;SR=0;TI=SMTPD_---.IuoOt.3_1604990794;
-Received: from allwinnertech.com(mailfrom:frank@allwinnertech.com fp:SMTPD_---.IuoOt.3_1604990794)
-          by smtp.aliyun-inc.com(10.147.40.7);
-          Tue, 10 Nov 2020 14:46:38 +0800
-From:   Frank Lee <frank@allwinnertech.com>
-To:     tiny.windzz@gmail.com
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-mmc@vger.kernel.org, Yangtao Li <frank@allwinnertech.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Maxime Ripard <mripard@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>, Marek Vasut <marex@denx.de>,
-        Rui Miguel Silva <rmfrfs@gmail.com>,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Douglas Anderson <dianders@chromium.org>
-Subject: [RESEND PATCH 17/19] mmc: sunxi: add support for A100 mmc controller
-Date:   Tue, 10 Nov 2020 14:46:31 +0800
-Message-Id: <de4c37ee3a0f1734c4ae035c37b8a2c34b9641ca.1604988979.git.frank@allwinnertech.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <cover.1604988979.git.frank@allwinnertech.com>
-References: <cover.1604988979.git.frank@allwinnertech.com>
+        Tue, 10 Nov 2020 01:47:13 -0500
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DC3BC0613CF
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Nov 2020 22:47:11 -0800 (PST)
+Received: by mail-pl1-x643.google.com with SMTP id k7so6000660plk.3
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Nov 2020 22:47:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=NBj9yf7JPcv+mdaInvqgT7nlmv+A5z96ii6RNMo5eKU=;
+        b=lfYx8QpXLXcwlJ1H8XZjzDwW0T3mFB53p5B/Zc17ROZ0luPZ+mT82fy2CZRLx3dIRv
+         vLGSanK4yH6gmhCA6VPSb1rc9cppbOncGbBLbSLydZvtGVVx0gv9ICgJpYD9+2Yj2dk5
+         WJ/rdBShm/6F4qUakXEhX8FwLF9/W9Hnv/vXc=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=NBj9yf7JPcv+mdaInvqgT7nlmv+A5z96ii6RNMo5eKU=;
+        b=atLZYlV1vx8W0WlzB+UUR/WtzoZRAJBUu+t2N+9WcttyrKVi0nZqK1QuHl1XwabCY9
+         vHl2TG8Uh7OGINoTddSxnFP1G5Y/wopxMETty9DLQAuFuESXEKm9OW1e887XPgiJFDa9
+         slC2DawbRaaB46JlVeB0zF/VcKDSSWzSnt69zuaEkXejkEaBSBqZ4ZRErQTkcKEtEbrJ
+         ryVxJC1jedECGMld+KkyoEV+yFi+8hyxuzLDvhn7TtuOYRXwDl8t4dcRGhc/y3whTPJH
+         836hGTUMQIuFvKe7C1/ENVGKQCPtgXM1vQOZJWn4ihUn0Z5LjP93sHyHfNad+60KM4+0
+         tgvw==
+X-Gm-Message-State: AOAM531W7T9bBGk7LM4hMftu7nDRC73jZuvPV1/sysN+DFtKM4Hid+fo
+        +cosm7A1RoPLrCznuQnxGlmIvg==
+X-Google-Smtp-Source: ABdhPJxAV8xlVUXDOjuCDg61rTnmp43csAwczfv+fRz1YfWn5EI6YR5cr1871riLOy72oesLUEnoyQ==
+X-Received: by 2002:a17:902:c20c:b029:d7:d13f:4172 with SMTP id 12-20020a170902c20cb02900d7d13f4172mr11454245pll.21.1604990831112;
+        Mon, 09 Nov 2020 22:47:11 -0800 (PST)
+Received: from localhost (56.72.82.34.bc.googleusercontent.com. [34.82.72.56])
+        by smtp.gmail.com with ESMTPSA id z11sm13496771pfk.52.2020.11.09.22.47.10
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 09 Nov 2020 22:47:10 -0800 (PST)
+From:   Fritz Koenig <frkoenig@chromium.org>
+To:     linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, stanimir.varbanov@linaro.org,
+        vgarodia@codeaurora.org, dikshita@codeaurora.org,
+        acourbot@chromium.org, tfiga@chromium.org
+Cc:     Fritz Koenig <frkoenig@chromium.org>
+Subject: [PATCH] venus: guard load_scale
+Date:   Tue, 10 Nov 2020 06:46:51 +0000
+Message-Id: <20201110064650.143800-1-frkoenig@chromium.org>
+X-Mailer: git-send-email 2.29.2.299.gdc1121823c-goog
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yangtao Li <frank@allwinnertech.com>
+load_scale can only be safely called after
+the encoder has been initialized.
 
-This patch adds support for A100 MMC controller, which use word address
-for internal dma.
-
-Signed-off-by: Yangtao Li <frank@allwinnertech.com>
+Signed-off-by: Fritz Koenig <frkoenig@chromium.org>
 ---
- drivers/mmc/host/sunxi-mmc.c | 28 +++++++++++++++++++++++++---
- 1 file changed, 25 insertions(+), 3 deletions(-)
+ drivers/media/platform/qcom/venus/pm_helpers.h | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/drivers/mmc/host/sunxi-mmc.c b/drivers/mmc/host/sunxi-mmc.c
-index fc62773602ec..1518b64112b7 100644
---- a/drivers/mmc/host/sunxi-mmc.c
-+++ b/drivers/mmc/host/sunxi-mmc.c
-@@ -244,6 +244,7 @@ struct sunxi_idma_des {
+diff --git a/drivers/media/platform/qcom/venus/pm_helpers.h b/drivers/media/platform/qcom/venus/pm_helpers.h
+index aa2f6afa23544..32e27db1fa740 100644
+--- a/drivers/media/platform/qcom/venus/pm_helpers.h
++++ b/drivers/media/platform/qcom/venus/pm_helpers.h
+@@ -35,6 +35,10 @@ static inline int venus_pm_load_scale(struct venus_inst *inst)
+ 	if (!core->pm_ops || !core->pm_ops->load_scale)
+ 		return 0;
  
- struct sunxi_mmc_cfg {
- 	u32 idma_des_size_bits;
-+	u32 idma_des_shift;
- 	const struct sunxi_mmc_clk_delay *clk_delays;
- 
- 	/* does the IP block support autocalibration? */
-@@ -343,7 +344,7 @@ static int sunxi_mmc_init_host(struct sunxi_mmc_host *host)
- 	/* Enable CEATA support */
- 	mmc_writel(host, REG_FUNS, SDXC_CEATA_ON);
- 	/* Set DMA descriptor list base address */
--	mmc_writel(host, REG_DLBA, host->sg_dma);
-+	mmc_writel(host, REG_DLBA, host->sg_dma >> host->cfg->idma_des_shift);
- 
- 	rval = mmc_readl(host, REG_GCTRL);
- 	rval |= SDXC_INTERRUPT_ENABLE_BIT;
-@@ -373,8 +374,10 @@ static void sunxi_mmc_init_idma_des(struct sunxi_mmc_host *host,
- 
- 		next_desc += sizeof(struct sunxi_idma_des);
- 		pdes[i].buf_addr_ptr1 =
--			cpu_to_le32(sg_dma_address(&data->sg[i]));
--		pdes[i].buf_addr_ptr2 = cpu_to_le32((u32)next_desc);
-+			cpu_to_le32(sg_dma_address(&data->sg[i]) >>
-+				    host->cfg->idma_des_shift);
-+		pdes[i].buf_addr_ptr2 = cpu_to_le32((u32)next_desc >>
-+						    host->cfg->idma_des_shift);
- 	}
- 
- 	pdes[0].config |= cpu_to_le32(SDXC_IDMAC_DES0_FD);
-@@ -1178,6 +1181,23 @@ static const struct sunxi_mmc_cfg sun50i_a64_emmc_cfg = {
- 	.needs_new_timings = true,
- };
- 
-+static const struct sunxi_mmc_cfg sun50i_a100_cfg = {
-+	.idma_des_size_bits = 16,
-+	.idma_des_shift = 2,
-+	.clk_delays = NULL,
-+	.can_calibrate = true,
-+	.mask_data0 = true,
-+	.needs_new_timings = true,
-+};
++	if (inst->session_type == VIDC_SESSION_TYPE_ENC &&
++	    inst->enc_state == VENUS_ENC_STATE_INIT)
++		return 0;
 +
-+static const struct sunxi_mmc_cfg sun50i_a100_emmc_cfg = {
-+	.idma_des_size_bits = 13,
-+	.idma_des_shift = 2,
-+	.clk_delays = NULL,
-+	.can_calibrate = true,
-+	.needs_new_timings = true,
-+};
-+
- static const struct of_device_id sunxi_mmc_of_match[] = {
- 	{ .compatible = "allwinner,sun4i-a10-mmc", .data = &sun4i_a10_cfg },
- 	{ .compatible = "allwinner,sun5i-a13-mmc", .data = &sun5i_a13_cfg },
-@@ -1186,6 +1206,8 @@ static const struct of_device_id sunxi_mmc_of_match[] = {
- 	{ .compatible = "allwinner,sun9i-a80-mmc", .data = &sun9i_a80_cfg },
- 	{ .compatible = "allwinner,sun50i-a64-mmc", .data = &sun50i_a64_cfg },
- 	{ .compatible = "allwinner,sun50i-a64-emmc", .data = &sun50i_a64_emmc_cfg },
-+	{ .compatible = "allwinner,sun50i-a100-mmc", .data = &sun50i_a100_cfg },
-+	{ .compatible = "allwinner,sun50i-a100-emmc", .data = &sun50i_a100_emmc_cfg },
- 	{ /* sentinel */ }
- };
- MODULE_DEVICE_TABLE(of, sunxi_mmc_of_match);
+ 	return core->pm_ops->load_scale(inst);
+ }
+ 
 -- 
-2.28.0
+2.29.2.299.gdc1121823c-goog
 
