@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B0192ACC0F
+	by mail.lfdr.de (Postfix) with ESMTP id A06BC2ACC10
 	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 04:49:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731695AbgKJDtw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 22:49:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46242 "EHLO
+        id S1731730AbgKJDtz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 22:49:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46250 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731400AbgKJDtq (ORCPT
+        with ESMTP id S1730921AbgKJDtr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 22:49:46 -0500
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0985C0613D3
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Nov 2020 19:49:45 -0800 (PST)
-Received: by mail-pg1-x542.google.com with SMTP id r186so9012534pgr.0
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Nov 2020 19:49:45 -0800 (PST)
+        Mon, 9 Nov 2020 22:49:47 -0500
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DE0AC0613D3
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Nov 2020 19:49:47 -0800 (PST)
+Received: by mail-pf1-x442.google.com with SMTP id c66so4450257pfa.4
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Nov 2020 19:49:47 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=nNmqdzWYoDvSeHb8QCenr/dmp78MUbTXse3pLbyKbEo=;
-        b=jIqzNEC11+sopjAKQET00KYR1iTaKU9/kPZSwUeDTZHaLjz0H5aA77Mh/w6mguH+OU
-         Wor6jU+8uvYMQnAsZTcaAndJ8vHX7MgHHzjbKHYxprOmSSEjATS2Ve1UVZQ3hj4uDU4p
-         dU7n7yntdKoCdeHIoHyE6v+oJqYDzKbGZjqU1TQDGKNAoKZ3WMlA8xwFtlHzGpO2ry69
-         hZnuotZKZZorm+gcgm5+ftl6G6vmWj6mLcUTN+UI7lgISmSI2y0Wszpbk+kTLlNNJ6/+
-         u0LUItRXy0p8QuvkUmHxQ2e4J6NRwZXMJKk8QTb0ggOY7P/DvTB0vBYBVnH42zOfFbsF
-         ZFpA==
+        bh=P68wKVWfyCPNBm8l+XiI7Y585elPVzN5iuk0IO/H+/E=;
+        b=ufp302/IxJQeNPSAn/oG0B7slHsqXLhIaqrxmacDetxK4DKaSaXiaobRRXokmFt6qm
+         qVBiUCq58nepS2WX6lx6AMUPPLdPRlE2cNrSjCWFYvv2bj+5PPwPdcJh4X2ARgdmdmtS
+         uB+tiGJJjTHY0lghPGMJNNEQx61kN+m4u8NAcC56BhD8qV3KJGIHmuMhMwY+mXT/A5eD
+         zZy41bECU/98xAKE8mzxpQGAqcK3y6nn7i55dYt12X38Jd4KsuckJ5VDvGHYGiwqp+vb
+         TbPk9/DtMWP8D/E5FIwOvq9LyZX+SG/oVSVIwNtOV9bOTQrK7X4jY7Htq/DpEjxjCKPh
+         TYJQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=nNmqdzWYoDvSeHb8QCenr/dmp78MUbTXse3pLbyKbEo=;
-        b=NT0GNEd7zyB1Qx4+PAzVkD9+5/qCqKyqF8UnAR+nNX57r4LBpxI2aKsXqIfqTfCJ0j
-         qaqnsyCnfpMSBvEcex6NvhFhSd5qtWX+9HUss+qtirbUv5HazSdG0T0NgMAsWdBZ9zoI
-         OTQARZDaOf5tdFnuyQUb/qn2/dtHf58phv6p0+i9jzHWslp0trxZSOxh2KqCDtqnXYyE
-         wsj4p1hxCWK66tdYEcQUSkjOH57MByQeh9BAyb6DjD1NCQUprlf4MX1GKSTKTBfIIb3w
-         q4xSpejwg9k8e6BBIl9tgI9NYPBJVqlF2cqT1g6ASUkIYzmZgScZN1a2HAMpZ2xgI0Kw
-         k3Lg==
-X-Gm-Message-State: AOAM532eHNI70tFN6Ode/4Pp//oG0OKPGzK/820LPUARhi12krEYoFBK
-        1SJr/1S9t71k5gWk4SNvL0j9tvgo9IrM0g==
-X-Google-Smtp-Source: ABdhPJx5GNFfSduF3OA1PRsG1wKaRHVkKkJW+m9bd5i+0UUC0FlKv72ozwWbAk/HTlTE7XGuu2QVpw==
-X-Received: by 2002:a17:90b:4383:: with SMTP id in3mr2705741pjb.112.1604980185304;
-        Mon, 09 Nov 2020 19:49:45 -0800 (PST)
+        bh=P68wKVWfyCPNBm8l+XiI7Y585elPVzN5iuk0IO/H+/E=;
+        b=ZnJ66k4wR1LpAA7MLxxv198C/vc5OYpDQFxL3padkpzU5C6EmTmGa9F3eIQxHFXOXq
+         HGALbyP4s9CJXK7pFs3H7Goq2OG56zRqDKnHYp5cFrzbl7tzGEi3l5RX2al3ftVAYdjA
+         wKsWInQEjlhLlaTgzGd9ywlIvcobRL9fMADq1D5sk5o7+/ta6N2zyFXbeJRVf69fQLC+
+         6sMwJFS6m8f5Dvq3xg0CKZ57uI47Z9Ph1byFzJQLngDtT4Dz0W7O3PbcuKZ6I4T2JLyL
+         i9U7cm4nOaVukK/vMunr6SkGckFuGHmT5n8vc857V7bN7hBZuQDaHlHipjJUyWPLDq7L
+         bTkQ==
+X-Gm-Message-State: AOAM533PYBFd6KSQJCAzGcBcmIjMnZOmi+SfRwvoe5YTvQFcEnwG5P63
+        YWY+qZHYHLwhEJykJZjhIWh5Ud944sO94A==
+X-Google-Smtp-Source: ABdhPJy3C6z8WgvKfa3+iIExPXU/G5Au0PlnF8H64NrwiW6423OfMKUtvdYTjtKk3kZruKsUbgxHxw==
+X-Received: by 2002:a17:90a:fe07:: with SMTP id ck7mr2868620pjb.212.1604980186664;
+        Mon, 09 Nov 2020 19:49:46 -0800 (PST)
 Received: from localhost.localdomain ([2601:1c2:680:1319:692:26ff:feda:3a81])
-        by smtp.gmail.com with ESMTPSA id b4sm12380693pfi.208.2020.11.09.19.49.44
+        by smtp.gmail.com with ESMTPSA id b4sm12380693pfi.208.2020.11.09.19.49.45
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 09 Nov 2020 19:49:44 -0800 (PST)
+        Mon, 09 Nov 2020 19:49:45 -0800 (PST)
 From:   John Stultz <john.stultz@linaro.org>
 To:     lkml <linux-kernel@vger.kernel.org>
 Cc:     John Stultz <john.stultz@linaro.org>,
@@ -66,9 +66,9 @@ Cc:     John Stultz <john.stultz@linaro.org>,
         Simon Ser <contact@emersion.fr>,
         James Jones <jajones@nvidia.com>, linux-media@vger.kernel.org,
         dri-devel@lists.freedesktop.org
-Subject: [PATCH v5 5/7] dma-buf: system_heap: Allocate higher order pages if available
-Date:   Tue, 10 Nov 2020 03:49:32 +0000
-Message-Id: <20201110034934.70898-6-john.stultz@linaro.org>
+Subject: [PATCH v5 6/7] dma-buf: dma-heap: Keep track of the heap device struct
+Date:   Tue, 10 Nov 2020 03:49:33 +0000
+Message-Id: <20201110034934.70898-7-john.stultz@linaro.org>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20201110034934.70898-1-john.stultz@linaro.org>
 References: <20201110034934.70898-1-john.stultz@linaro.org>
@@ -79,11 +79,10 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-While the system heap can return non-contiguous pages,
-try to allocate larger order pages if possible.
+Keep track of the heap device struct.
 
-This will allow slight performance gains and make implementing
-page pooling easier.
+This will be useful for special DMA allocations
+and actions.
 
 Cc: Sumit Semwal <sumit.semwal@linaro.org>
 Cc: Liam Mark <lmark@codeaurora.org>
@@ -101,168 +100,103 @@ Cc: Simon Ser <contact@emersion.fr>
 Cc: James Jones <jajones@nvidia.com>
 Cc: linux-media@vger.kernel.org
 Cc: dri-devel@lists.freedesktop.org
-Reviewed-by: Brian Starkey <brian.starkey@arm.com>
 Signed-off-by: John Stultz <john.stultz@linaro.org>
 ---
-v3:
-* Use page_size() rather then opencoding it
-v5:
-* Add comment explaining order size rational
----
- drivers/dma-buf/heaps/system_heap.c | 89 +++++++++++++++++++++++------
- 1 file changed, 71 insertions(+), 18 deletions(-)
+ drivers/dma-buf/dma-heap.c | 33 +++++++++++++++++++++++++--------
+ include/linux/dma-heap.h   |  9 +++++++++
+ 2 files changed, 34 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/dma-buf/heaps/system_heap.c b/drivers/dma-buf/heaps/system_heap.c
-index 15b36bc862b1..55367266a47b 100644
---- a/drivers/dma-buf/heaps/system_heap.c
-+++ b/drivers/dma-buf/heaps/system_heap.c
-@@ -40,6 +40,20 @@ struct dma_heap_attachment {
- 	bool mapped;
+diff --git a/drivers/dma-buf/dma-heap.c b/drivers/dma-buf/dma-heap.c
+index afd22c9dbdcf..72c746755d89 100644
+--- a/drivers/dma-buf/dma-heap.c
++++ b/drivers/dma-buf/dma-heap.c
+@@ -30,6 +30,7 @@
+  * @heap_devt		heap device node
+  * @list		list head connecting to list of heaps
+  * @heap_cdev		heap char device
++ * @heap_dev		heap device struct
+  *
+  * Represents a heap of memory from which buffers can be made.
+  */
+@@ -40,6 +41,7 @@ struct dma_heap {
+ 	dev_t heap_devt;
+ 	struct list_head list;
+ 	struct cdev heap_cdev;
++	struct device *heap_dev;
  };
  
-+#define HIGH_ORDER_GFP  (((GFP_HIGHUSER | __GFP_ZERO | __GFP_NOWARN \
-+				| __GFP_NORETRY) & ~__GFP_RECLAIM) \
-+				| __GFP_COMP)
-+#define LOW_ORDER_GFP (GFP_HIGHUSER | __GFP_ZERO | __GFP_COMP)
-+static gfp_t order_flags[] = {HIGH_ORDER_GFP, LOW_ORDER_GFP, LOW_ORDER_GFP};
-+/*
-+ * The selection of the orders used for allocation (1MB, 64K, 4K) is designed
-+ * to match with the sizes often found in IOMMUs. Using order 4 pages instead
-+ * of order 0 pages can significantly improve the performance of many IOMMUs
-+ * by reducing TLB pressure and time spent updating page tables.
-+ */
-+static const unsigned int orders[] = {8, 4, 0};
-+#define NUM_ORDERS ARRAY_SIZE(orders)
-+
- static struct sg_table *dup_sg_table(struct sg_table *table)
- {
- 	struct sg_table *new_table;
-@@ -270,8 +284,11 @@ static void system_heap_dma_buf_release(struct dma_buf *dmabuf)
- 	int i;
- 
- 	table = &buffer->sg_table;
--	for_each_sgtable_sg(table, sg, i)
--		__free_page(sg_page(sg));
-+	for_each_sg(table->sgl, sg, table->nents, i) {
-+		struct page *page = sg_page(sg);
-+
-+		__free_pages(page, compound_order(page));
-+	}
- 	sg_free_table(table);
- 	kfree(buffer);
+ static LIST_HEAD(heap_list);
+@@ -190,10 +192,21 @@ void *dma_heap_get_drvdata(struct dma_heap *heap)
+ 	return heap->priv;
  }
-@@ -289,6 +306,26 @@ static const struct dma_buf_ops system_heap_buf_ops = {
- 	.release = system_heap_dma_buf_release,
- };
  
-+static struct page *alloc_largest_available(unsigned long size,
-+					    unsigned int max_order)
++/**
++ * dma_heap_get_dev() - get device struct for the heap
++ * @heap: DMA-Heap to retrieve device struct from
++ *
++ * Returns:
++ * The device struct for the heap.
++ */
++struct device *dma_heap_get_dev(struct dma_heap *heap)
 +{
-+	struct page *page;
-+	int i;
-+
-+	for (i = 0; i < NUM_ORDERS; i++) {
-+		if (size <  (PAGE_SIZE << orders[i]))
-+			continue;
-+		if (max_order < orders[i])
-+			continue;
-+
-+		page = alloc_pages(order_flags[i], orders[i]);
-+		if (!page)
-+			continue;
-+		return page;
-+	}
-+	return NULL;
++	return heap->heap_dev;
 +}
 +
- static int system_heap_allocate(struct dma_heap *heap,
- 				unsigned long len,
- 				unsigned long fd_flags,
-@@ -296,11 +333,13 @@ static int system_heap_allocate(struct dma_heap *heap,
+ struct dma_heap *dma_heap_add(const struct dma_heap_export_info *exp_info)
  {
- 	struct system_heap_buffer *buffer;
- 	DEFINE_DMA_BUF_EXPORT_INFO(exp_info);
-+	unsigned long size_remaining = len;
-+	unsigned int max_order = orders[0];
- 	struct dma_buf *dmabuf;
- 	struct sg_table *table;
- 	struct scatterlist *sg;
--	pgoff_t pagecount;
--	pgoff_t pg;
-+	struct list_head pages;
-+	struct page *page, *tmp_page;
- 	int i, ret = -ENOMEM;
+ 	struct dma_heap *heap, *h, *err_ret;
+-	struct device *dev_ret;
+ 	unsigned int minor;
+ 	int ret;
  
- 	buffer = kzalloc(sizeof(*buffer), GFP_KERNEL);
-@@ -312,25 +351,35 @@ static int system_heap_allocate(struct dma_heap *heap,
- 	buffer->heap = heap;
- 	buffer->len = len;
- 
--	table = &buffer->sg_table;
--	pagecount = len / PAGE_SIZE;
--	if (sg_alloc_table(table, pagecount, GFP_KERNEL))
--		goto free_buffer;
--
--	sg = table->sgl;
--	for (pg = 0; pg < pagecount; pg++) {
--		struct page *page;
-+	INIT_LIST_HEAD(&pages);
-+	i = 0;
-+	while (size_remaining > 0) {
- 		/*
- 		 * Avoid trying to allocate memory if the process
- 		 * has been killed by SIGKILL
- 		 */
- 		if (fatal_signal_pending(current))
--			goto free_pages;
--		page = alloc_page(GFP_KERNEL | __GFP_ZERO);
-+			goto free_buffer;
-+
-+		page = alloc_largest_available(size_remaining, max_order);
- 		if (!page)
--			goto free_pages;
-+			goto free_buffer;
-+
-+		list_add_tail(&page->lru, &pages);
-+		size_remaining -= page_size(page);
-+		max_order = compound_order(page);
-+		i++;
-+	}
-+
-+	table = &buffer->sg_table;
-+	if (sg_alloc_table(table, i, GFP_KERNEL))
-+		goto free_buffer;
-+
-+	sg = table->sgl;
-+	list_for_each_entry_safe(page, tmp_page, &pages, lru) {
- 		sg_set_page(sg, page, page_size(page), 0);
- 		sg = sg_next(sg);
-+		list_del(&page->lru);
+@@ -247,16 +260,20 @@ struct dma_heap *dma_heap_add(const struct dma_heap_export_info *exp_info)
+ 		goto err1;
  	}
  
- 	/* create the dmabuf */
-@@ -350,14 +399,18 @@ static int system_heap_allocate(struct dma_heap *heap,
- 		/* just return, as put will call release and that will free */
- 		return ret;
+-	dev_ret = device_create(dma_heap_class,
+-				NULL,
+-				heap->heap_devt,
+-				NULL,
+-				heap->name);
+-	if (IS_ERR(dev_ret)) {
++	heap->heap_dev = device_create(dma_heap_class,
++				       NULL,
++				       heap->heap_devt,
++				       NULL,
++				       heap->name);
++	if (IS_ERR(heap->heap_dev)) {
+ 		pr_err("dma_heap: Unable to create device\n");
+-		err_ret = ERR_CAST(dev_ret);
++		err_ret = ERR_CAST(heap->heap_dev);
+ 		goto err2;
  	}
--
- 	return ret;
- 
- free_pages:
--	for_each_sgtable_sg(table, sg, i)
--		__free_page(sg_page(sg));
-+	for_each_sgtable_sg(table, sg, i) {
-+		struct page *p = sg_page(sg);
 +
-+		__free_pages(p, compound_order(p));
-+	}
- 	sg_free_table(table);
- free_buffer:
-+	list_for_each_entry_safe(page, tmp_page, &pages, lru)
-+		__free_pages(page, compound_order(page));
- 	kfree(buffer);
++	/* Make sure it doesn't disappear on us */
++	heap->heap_dev = get_device(heap->heap_dev);
++
+ 	/* Add heap to the list */
+ 	mutex_lock(&heap_list_lock);
+ 	list_add(&heap->list, &heap_list);
+diff --git a/include/linux/dma-heap.h b/include/linux/dma-heap.h
+index 454e354d1ffb..82857e096910 100644
+--- a/include/linux/dma-heap.h
++++ b/include/linux/dma-heap.h
+@@ -50,6 +50,15 @@ struct dma_heap_export_info {
+  */
+ void *dma_heap_get_drvdata(struct dma_heap *heap);
  
- 	return ret;
++/**
++ * dma_heap_get_dev() - get device struct for the heap
++ * @heap: DMA-Heap to retrieve device struct from
++ *
++ * Returns:
++ * The device struct for the heap.
++ */
++struct device *dma_heap_get_dev(struct dma_heap *heap);
++
+ /**
+  * dma_heap_add - adds a heap to dmabuf heaps
+  * @exp_info:		information needed to register this heap
 -- 
 2.17.1
 
