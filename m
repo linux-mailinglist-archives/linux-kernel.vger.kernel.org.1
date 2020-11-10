@@ -2,68 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D2372ADB2C
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 17:03:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AA7482ADB40
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 17:07:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732689AbgKJQD2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 11:03:28 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45252 "EHLO mail.kernel.org"
+        id S1731108AbgKJQHh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 11:07:37 -0500
+Received: from mx2.suse.de ([195.135.220.15]:50786 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730681AbgKJQD1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 11:03:27 -0500
-Received: from mail-oi1-f181.google.com (mail-oi1-f181.google.com [209.85.167.181])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0C79320809;
-        Tue, 10 Nov 2020 16:03:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605024206;
-        bh=Q4tizdLmjkzMbfpePr+avvWWNz2g0MJUKN8eJ2xoJc8=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=A6KVxoRVUh7MGpM78oa3naUGFo1EcjhPmNuJoaAofEbM4A1BSeiqKQPmq7g7OEDvo
-         /7P91TM9kqQ1O2kq4xIYur9mfdDywNu6VkjsrLrpX12sVUWDACrjbTm3U+JGiGfz29
-         h/Y6nTdFSFQhx/+ikQUBprsBbdi1sI/l/h6O1vRo=
-Received: by mail-oi1-f181.google.com with SMTP id t143so14862315oif.10;
-        Tue, 10 Nov 2020 08:03:26 -0800 (PST)
-X-Gm-Message-State: AOAM5328HCNvpQ7YqYYbFCoYVSSJNKJPKVynhQAqrCqNc5/NsyBHdbAS
-        6ktSNQozU0JkPoRaKrScUwb5sziTa2w566uUQA==
-X-Google-Smtp-Source: ABdhPJxffCMld8zxb9GQXqc30p3WWWPLcHwsDvjVqY4ZjnX3Xq/4kK3Jyc+SH7Uma8dDisNt6kO4m/SmAfDDh4PMeBw=
-X-Received: by 2002:aca:fdd4:: with SMTP id b203mr3276663oii.152.1605024205264;
- Tue, 10 Nov 2020 08:03:25 -0800 (PST)
+        id S1729909AbgKJQHh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Nov 2020 11:07:37 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1605024455;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=3e+3nDrdHe42lYq8N47pjMvAbKv/DdnTrRGXCyH/IA4=;
+        b=RNOSyfWLDNXg5vBsPWFJ9M5iAXYU/iCqniUlT4fkteLZQh3Dx/yTSNzFD0bfkE1ZZjavX5
+        j0rF87uhDN0lZPsd2ygQbFwQyipey16vzuQmiTgunc6RyhNQKkflKKw9VLlXWM6A5i6sUH
+        qBXmp5gH9JV0Zb5Se/RVMpyiiq6alVM=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id D2B69ABCC;
+        Tue, 10 Nov 2020 16:07:35 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 7719EDA7D7; Tue, 10 Nov 2020 17:05:54 +0100 (CET)
+From:   David Sterba <dsterba@suse.com>
+To:     torvalds@linux-foundation.org
+Cc:     David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [GIT PULL] Btrfs updates for v5.10-rc4
+Date:   Tue, 10 Nov 2020 17:05:52 +0100
+Message-Id: <cover.1605023716.git.dsterba@suse.com>
+X-Mailer: git-send-email 2.25.0
 MIME-Version: 1.0
-References: <1604887429-29445-1-git-send-email-weiyi.lu@mediatek.com> <1604887429-29445-7-git-send-email-weiyi.lu@mediatek.com>
-In-Reply-To: <1604887429-29445-7-git-send-email-weiyi.lu@mediatek.com>
-From:   Rob Herring <robh@kernel.org>
-Date:   Tue, 10 Nov 2020 10:03:14 -0600
-X-Gmail-Original-Message-ID: <CAL_JsqKj3Mr6fT_R8JLCK4Ciyt-NyEbUbXXrxnbCBzo2TsLFZg@mail.gmail.com>
-Message-ID: <CAL_JsqKj3Mr6fT_R8JLCK4Ciyt-NyEbUbXXrxnbCBzo2TsLFZg@mail.gmail.com>
-Subject: Re: [PATCH v5 06/24] clk: mediatek: Add dt-bindings of MT8192 clocks
-To:     Weiyi Lu <weiyi.lu@mediatek.com>, Stephen Boyd <sboyd@kernel.org>
-Cc:     Matthias Brugger <matthias.bgg@gmail.com>,
-        Nicolas Boichat <drinkcat@chromium.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        srv_heupstream <srv_heupstream@mediatek.com>,
-        Yingjoe Chen <yingjoe.chen@mediatek.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Nov 8, 2020 at 8:03 PM Weiyi Lu <weiyi.lu@mediatek.com> wrote:
->
-> Add MT8192 clock dt-bindings, include topckgen, apmixedsys,
-> infracfg, pericfg and subsystem clocks.
->
-> Signed-off-by: Weiyi Lu <weiyi.lu@mediatek.com>
-> ---
->  include/dt-bindings/clock/mt8192-clk.h | 592 +++++++++++++++++++++++++++++++++
->  1 file changed, 592 insertions(+)
->  create mode 100644 include/dt-bindings/clock/mt8192-clk.h
+Hi,
 
-linux-next binding checks are broken until this is applied.
+a handful of minor fixes and updates:
 
-Rob
+- handle missing device replace item on mount (syzbot report)
+
+- fix space reservation calculation when finishing relocation
+
+- fix memory leak on error path in ref-verify (debugging feature)
+
+- fix potential overflow during defrag on 32bit arches
+
+- minor code update to silence smatch warning
+
+- minor error message updates
+
+Please pull, thanks.
+
+----------------------------------------------------------------
+The following changes since commit d5c8238849e7bae6063dfc16c08ed62cee7ee688:
+
+  btrfs: convert data_seqcount to seqcount_mutex_t (2020-10-27 15:11:51 +0100)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-5.10-rc3-tag
+
+for you to fetch changes up to 468600c6ec28613b756193c5f780aac062f1acdf:
+
+  btrfs: ref-verify: fix memory leak in btrfs_ref_tree_mod (2020-11-05 13:03:39 +0100)
+
+----------------------------------------------------------------
+Anand Jain (1):
+      btrfs: dev-replace: fail mount if we don't have replace item with target device
+
+Dan Carpenter (1):
+      btrfs: clean up NULL checks in qgroup_unreserve_range()
+
+David Sterba (1):
+      btrfs: scrub: update message regarding read-only status
+
+Dinghao Liu (1):
+      btrfs: ref-verify: fix memory leak in btrfs_ref_tree_mod
+
+Josef Bacik (2):
+      btrfs: print the block rsv type when we fail our reservation
+      btrfs: fix min reserved size calculation in merge_reloc_root
+
+Matthew Wilcox (Oracle) (1):
+      btrfs: fix potential overflow in cluster_pages_for_defrag on 32bit arch
+
+ fs/btrfs/block-rsv.c   |  3 ++-
+ fs/btrfs/dev-replace.c | 26 ++++++++++++++++++++++++--
+ fs/btrfs/ioctl.c       | 10 ++++------
+ fs/btrfs/qgroup.c      | 12 ++++--------
+ fs/btrfs/ref-verify.c  |  1 +
+ fs/btrfs/relocation.c  |  4 +++-
+ fs/btrfs/scrub.c       |  5 +++--
+ fs/btrfs/volumes.c     | 26 +++++++-------------------
+ 8 files changed, 48 insertions(+), 39 deletions(-)
