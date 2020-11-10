@@ -2,111 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F9072ACF83
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 07:16:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E57772ACF86
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 07:18:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730576AbgKJGQE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 01:16:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40520 "EHLO
+        id S1730442AbgKJGSG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 01:18:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40840 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729885AbgKJGQA (ORCPT
+        with ESMTP id S1728045AbgKJGSF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 01:16:00 -0500
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B63FC0613D3
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Nov 2020 22:15:59 -0800 (PST)
-Received: by mail-pf1-x441.google.com with SMTP id w14so7822173pfd.7
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Nov 2020 22:15:59 -0800 (PST)
+        Tue, 10 Nov 2020 01:18:05 -0500
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 635DFC0613CF
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Nov 2020 22:18:05 -0800 (PST)
+Received: by mail-pg1-x542.google.com with SMTP id r10so9253731pgb.10
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Nov 2020 22:18:05 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=ishEzNNk71XyJfj/YS8Ah7LiakzS8LRvxFS16PhxjMY=;
-        b=X6pktCSUMDWxfDkhCFCTXugNsW6qfeqofV7+vvb+fvWaMp4XCRc/aOpVtsB8AWTcst
-         4NO5zKNASuIyCzCcqBZCse3wrwSmEcJY6SiZ3LKfHW3OlS/hui4yq/Lx1fXbj5D3n6bO
-         Bkbpn0YBUU+EaJEdqToxbV/+iG1FL/nI3M0/E=
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ccUarTYp6bUjAfShVkr+xLVHhptW5cuMEyNTixMpJuY=;
+        b=SbXU6V+16z1iwH4UtdwUHiRG/7uWh5yyAbymm3bCo7PQ2IdiomfpnwueWB1+QwT1li
+         ZbDFISb/BiPX+J/2JpSJ78KtlhwdyOapfpUOpjAdJ5m1eTyKZKU+Kpm3me3KJr51RAp+
+         JIMm9fJE+oCIcD2uoCvcdT+S7F0Cc2I+xxkKr8YGpIDIHbrQ7141rJZEYO4CZgTSBbhK
+         NA823OjWgwKQSgU3xnU3jc7vd89AxYPBQTwdzzlY0NS9xAgPe8wBKVs8SCxsFaz/Nk/w
+         ihHiwRbtHb/UiUIH5LYVd0VmYLSG57GfvAyWTttq6g2crkjL6wT+l+g4tZwSsBFGs31F
+         20hA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=ishEzNNk71XyJfj/YS8Ah7LiakzS8LRvxFS16PhxjMY=;
-        b=rdsHI5RWnU3WppdPgFm0lv5w7NPBgwPGx3tEB+rVYThZEQyQ0TG7InlLSCy3T1I/N7
-         Q/zvQ1v5Wl+ZBNt1qyfiLisaNkThYVYDF84e48RbaKocnezXS8Ckf4lXVxG+G6VxEQvJ
-         TY6vHarfnIEpuX8N9vmtFmag9QjuFPLGs0ww4CPbw3ZWzLp0MMEB8ejvthLBMDxk6kNo
-         bIaYkzI3vUq2Jg6BsLqg9112URUReJQiU+ukH/MzvbiKA09ejLOSeyT0KpQO6qwrUu/S
-         VBVUet+M4RchCcv/SIbjEBS245y4l+6Q0oHEOX/5O1jIX5ZvfyrfI78NkzsW9NozL/mA
-         xaXw==
-X-Gm-Message-State: AOAM531b2JGbsQZ/5w+age+VCgAQh1ZXKX2e+fP9icaNrj0wonoq9of5
-        XI+KsHo+pOPt1wbVjFbewGB414rigdxUow==
-X-Google-Smtp-Source: ABdhPJytDIP/l8mvqGh+OKLWODfRdY34xLMN1KtDbXdXLEhLnVxMIyFY+c5F3ny9df8uxNtqxWA3Rg==
-X-Received: by 2002:a17:90b:395:: with SMTP id ga21mr3254794pjb.219.1604988958540;
-        Mon, 09 Nov 2020 22:15:58 -0800 (PST)
-Received: from pmalani2.mtv.corp.google.com ([2620:15c:202:201:a28c:fdff:fef0:49dd])
-        by smtp.gmail.com with ESMTPSA id gw10sm1499932pjb.24.2020.11.09.22.15.57
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ccUarTYp6bUjAfShVkr+xLVHhptW5cuMEyNTixMpJuY=;
+        b=dlsWxyZ4P443h+EZXVQwvEbqG7XrUtbegAkVLUr4EASjqMI8g93h/cZtqFoT/GENmu
+         gAb5frUr+Qf7nAp0eLIjE8pkVrrZ3j0WnWR1oAhaxN2AI/tuw8FHEvwrnNvmS+OkMK6F
+         8jW94KoyWOtNQVYodWAemKVkpNdqHlz0/rW7hPkB8BVQgKfD2Gf/UVNsdemhjvytlrDG
+         oNbez0bZVELVbmScuAR/XcUXTcclFyEs2fkRQcTr5HzUSvUlB+V0/FaU5ZDqV6w7ODGy
+         BX3d0AOX1C0c5ZnhCQCWJLcmN8H8ZqJyapxSN28qvkcs82q8JJrOpOj81kxJNCvwRyl7
+         mxlA==
+X-Gm-Message-State: AOAM531YnxeVWxrZoZAqLX+kXzGCPRf4YzM2Oq9aI+ZbxLC8b8TBDaql
+        RjGsOhAFDkyki7G0MCcQHro=
+X-Google-Smtp-Source: ABdhPJyEGK0PaB/3/W8nZHe1MfN+X3vhEkH+DUfJMHVEGBW7QiQZHtb8W5P9wSS7U6r+f+sdjFNrYQ==
+X-Received: by 2002:a17:90a:ec04:: with SMTP id l4mr3352700pjy.131.1604989084764;
+        Mon, 09 Nov 2020 22:18:04 -0800 (PST)
+Received: from dmans-PC.localdomain (122-151-241-1.sta.wbroadband.net.au. [122.151.241.1])
+        by smtp.googlemail.com with ESMTPSA id w63sm13273224pfc.120.2020.11.09.22.17.59
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 09 Nov 2020 22:15:57 -0800 (PST)
-From:   Prashant Malani <pmalani@chromium.org>
-To:     linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
-        gregkh@linuxfoundation.org
-Cc:     Prashant Malani <pmalani@chromium.org>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Benson Leung <bleung@chromium.org>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        Guenter Roeck <groeck@chromium.org>
-Subject: [PATCH v2 2/2] platform/chrome: cros_ec_typec: Set partner num_altmodes
-Date:   Mon,  9 Nov 2020 22:15:36 -0800
-Message-Id: <20201110061535.2163599-2-pmalani@chromium.org>
-X-Mailer: git-send-email 2.29.2.222.g5d2a92d10f8-goog
-In-Reply-To: <20201110061535.2163599-1-pmalani@chromium.org>
-References: <20201110061535.2163599-1-pmalani@chromium.org>
+        Mon, 09 Nov 2020 22:18:04 -0800 (PST)
+From:   Daniel <dmanlfc@gmail.com>
+Cc:     dmanlfc@gmail.com, Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Hector Martin <marcan@marcan.st>,
+        Alexander Tsoy <alexander@tsoy.me>,
+        Kai-Heng Feng <kai.heng.feng@canonical.com>,
+        =?UTF-8?q?Franti=C5=A1ek=20Ku=C4=8Dera?= <franta-linux@frantovo.cz>,
+        Dmitry Panchenko <dmitry@d-systems.ee>,
+        Gregor Pintar <grpintar@gmail.com>,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] ALSA: usb-audio : Add support for the Pioneer DJ DDJ-RR controller.
+Date:   Tue, 10 Nov 2020 16:17:40 +1000
+Message-Id: <20201110061742.78033-1-dmanlfc@gmail.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Set the number of altmodes available for a registered partner using the
-Type C connector class framework routine.
-
-Cc: Heikki Krogerus <heikki.krogerus@linux.intel.com>
-Signed-off-by: Prashant Malani <pmalani@chromium.org>
 ---
+ sound/usb/quirks-table.h | 56 +++++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 55 insertions(+), 1 deletion(-)
 
-Changes in v2:
-- Patch introduced for the first time in v2.
-
- drivers/platform/chrome/cros_ec_typec.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
-
-diff --git a/drivers/platform/chrome/cros_ec_typec.c b/drivers/platform/chrome/cros_ec_typec.c
-index ce031a10eb1b..743a28426f98 100644
---- a/drivers/platform/chrome/cros_ec_typec.c
-+++ b/drivers/platform/chrome/cros_ec_typec.c
-@@ -621,6 +621,7 @@ static int cros_typec_register_altmodes(struct cros_typec_data *typec, int port_
- 	struct cros_typec_altmode_node *node;
- 	struct typec_altmode_desc desc;
- 	struct typec_altmode *amode;
-+	int num_altmodes = 0;
- 	int ret = 0;
- 	int i, j;
- 
-@@ -647,9 +648,16 @@ static int cros_typec_register_altmodes(struct cros_typec_data *typec, int port_
- 
- 			node->amode = amode;
- 			list_add_tail(&node->list, &port->partner_mode_list);
-+			num_altmodes++;
+diff --git a/sound/usb/quirks-table.h b/sound/usb/quirks-table.h
+index 3c1697f6b60c..a39233cb4d72 100644
+--- a/sound/usb/quirks-table.h
++++ b/sound/usb/quirks-table.h
+@@ -3530,7 +3530,61 @@ AU0828_DEVICE(0x2040, 0x7270, "Hauppauge", "HVR-950Q"),
  		}
  	}
- 
-+	ret = typec_partner_set_num_altmodes(port->partner, num_altmodes);
-+	if (ret < 0) {
-+		dev_err(typec->dev, "Unable to set partner num_altmodes for port: %d\n", port_num);
-+		goto err_cleanup;
+ },
+-
++{
++	/*
++	 * PIONEER DJ DDJ-RR
++     * PCM is 6 channels out & 4 channels in @ 44.1 fixed
++	 */
++	USB_DEVICE_VENDOR_SPEC(0x2b73, 0x000d),
++	.driver_info = (unsigned long) &(const struct snd_usb_audio_quirk) {
++		.ifnum = QUIRK_ANY_INTERFACE,
++		.type = QUIRK_COMPOSITE,
++		.data = (const struct snd_usb_audio_quirk[]) {
++			{
++				.ifnum = 0,
++				.type = QUIRK_AUDIO_FIXED_ENDPOINT,
++				.data = &(const struct audioformat) {
++					.formats = SNDRV_PCM_FMTBIT_S24_3LE,
++					.channels = 6, //Master, Headphones & Booth
++					.iface = 0,
++					.altsetting = 1,
++					.altset_idx = 1,
++					.endpoint = 0x01,
++					.ep_attr = USB_ENDPOINT_XFER_ISOC|
++						   USB_ENDPOINT_SYNC_ASYNC,
++					.rates = SNDRV_PCM_RATE_44100,
++					.rate_min = 44100,
++					.rate_max = 44100,
++					.nr_rates = 1,
++					.rate_table = (unsigned int[]) { 44100 }
++				}
++			},
++			{
++				.ifnum = 0,
++				.type = QUIRK_AUDIO_FIXED_ENDPOINT,
++				.data = &(const struct audioformat) {
++					.formats = SNDRV_PCM_FMTBIT_S24_3LE,
++					.channels = 4, //2x RCA inputs (CH1 & CH2)
++					.iface = 0,
++					.altsetting = 1,
++					.altset_idx = 1,
++					.endpoint = 0x82,
++					.ep_attr = USB_ENDPOINT_XFER_ISOC|
++						 USB_ENDPOINT_SYNC_ASYNC|
++						 USB_ENDPOINT_USAGE_IMPLICIT_FB,
++					.rates = SNDRV_PCM_RATE_44100,
++					.rate_min = 44100,
++					.rate_max = 44100,
++					.nr_rates = 1,
++					.rate_table = (unsigned int[]) { 44100 }
++				}
++			},
++			{
++				.ifnum = -1
++			}
++		}
 +	}
-+
- 	return 0;
- 
- err_cleanup:
++},
+ {
+ 	/*
+ 	 * Pioneer DJ DJM-900NXS2
 -- 
-2.29.2.222.g5d2a92d10f8-goog
+2.29.2
 
