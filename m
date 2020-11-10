@@ -2,132 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B8192AD30D
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 11:03:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BA682AD30E
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 11:04:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729991AbgKJKDj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 05:03:39 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:25837 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726467AbgKJKDj (ORCPT
+        id S1730340AbgKJKD7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 05:03:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47364 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726467AbgKJKD6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 05:03:39 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1605002617;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=x5v2eIsxN4Hq0YzpQxHhzvDLBoDO1wsqtaSQHydAams=;
-        b=dJiAoMMs1KX2eiTVsdY7N7/hSRphmTdHiZwLzI9beBKMqA68JydsKXeN8s1OPC5tA9B5j2
-        839RdKvPMVP0mC8+cojy+WDQmyWzcHTxrn/AcdMbLDRmQwVQ286DlzcM+BInUjfuflx4fJ
-        uT2FHE08u3etLpjGvdvk+CBy9zWqGKY=
-Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
- [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-183-gwI_x4uQNxGzyUHiSVFyjw-1; Tue, 10 Nov 2020 05:03:35 -0500
-X-MC-Unique: gwI_x4uQNxGzyUHiSVFyjw-1
-Received: by mail-ed1-f72.google.com with SMTP id o2so4020456edw.1
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 02:03:35 -0800 (PST)
+        Tue, 10 Nov 2020 05:03:58 -0500
+Received: from mail-qk1-x74a.google.com (mail-qk1-x74a.google.com [IPv6:2607:f8b0:4864:20::74a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C84AC0613CF
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 02:03:57 -0800 (PST)
+Received: by mail-qk1-x74a.google.com with SMTP id s128so8313538qke.0
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 02:03:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=9+Z5Azrmhj3misriF6374XK8m6z58w8n3ugZjk4JaN4=;
+        b=V0fmKmvdi1nl1i8calDh77i6i2t9GssMH+4a/5GfKwU6Ws+P7b6OaxTUH1UadV1ZWa
+         jQqEKPrxcGijkoJy+1CW+h/aEBO0zXVJF0VFoAhR3DKWjrE9YaYnLGjTaY5MMtng3h+b
+         wYWSayKXnRImU5qE5ineV9AYTAdSGn94X5jwTeohA7MzM/cGZZ9wQ5rJMZJFPaMYV857
+         tXFt0VGCdjLX6HN3yqJYjruKSz6UocUTuVwSNFRtxJ4ou/5AWIZQk/09q3EfeoNZcIQR
+         9yy+MSeUc19KQ/N8dYxbS8E1UlXhX30sjX6prp5G4uUNI0x8OuTO4TshA1s51+0TbB2f
+         29tQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=x5v2eIsxN4Hq0YzpQxHhzvDLBoDO1wsqtaSQHydAams=;
-        b=TevtBQW2khEXk2ARIKNTPGeMNN2YYq3Aajk+n+qGYCa/0Rkpy4hxxXbWO526vOBohS
-         iFUfCZGdvXpTsdl99hqae1KRViRSDpuQe7v3jQfXE+PkmQDVOSsBTya57EcCKBIoQw0X
-         PVP6IWspBTqfznWX3syJswvx92Hlv/KoM374eikCpkJqS0u75zGmWnidmvJJFNaoJX4Y
-         7a1OeyZev7E/fkOSxq/F552nDOPbluZPHwyCj1O3GKH5GibWO0km8yeKrOJEBdGDHcvU
-         +V7J7eHyMndL2rN/lCneEgfUHH90Zxm3xNZLKpmbl4+ABiROfekRi7Squn+rjUfETX09
-         +YBQ==
-X-Gm-Message-State: AOAM530HKH0lyB1d3bvbXWLWUC1cGf+QO5aCHzW30a7pS+rCrMQpc1YB
-        oFnl8B/61Oa7HPkNACfJE18yRaSBtuxwYBfGK8aPEGpWA0QOLloGodz/AVuejLfEQFfeeu7jO61
-        2TKu54O51QU38RxskCg2+1PsbupyR+v9P5xyD/ofNcWq65ow88S1b/bAAvdUnO7jjSA8Rz95h4J
-        VT
-X-Received: by 2002:a17:906:5fd0:: with SMTP id k16mr19926563ejv.133.1605002614419;
-        Tue, 10 Nov 2020 02:03:34 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJwHZvItd1F1W85TYQU6gDoci3i+YMPyw05C5APpazQNYseSKGDmKGoDxgRNxTor+d9rP0t7BA==
-X-Received: by 2002:a17:906:5fd0:: with SMTP id k16mr19926539ejv.133.1605002614097;
-        Tue, 10 Nov 2020 02:03:34 -0800 (PST)
-Received: from x1.localdomain (2001-1c00-0c0c-fe00-6c10-fbf3-14c4-884c.cable.dynamic.v6.ziggo.nl. [2001:1c00:c0c:fe00:6c10:fbf3:14c4:884c])
-        by smtp.gmail.com with ESMTPSA id h22sm5770975ejt.21.2020.11.10.02.03.33
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 10 Nov 2020 02:03:33 -0800 (PST)
-Subject: Re: [PATCH] platform/x86: acer-wmi: add automatic keyboard background
- light toggle key as KEY_LIGHTS_TOGGLE
-To:     Timo Witte <timo.witte@gmail.com>
-Cc:     jlee@suse.com, Darren Hart <dvhart@infradead.org>,
-        Andy Shevchenko <andy@infradead.org>,
-        "open list:ACER WMI LAPTOP EXTRAS" 
-        <platform-driver-x86@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-References: <20200804001423.36778-1-timo.witte@gmail.com>
-From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <097353a1-c4d6-7cba-92fc-dd8652fbaf9f@redhat.com>
-Date:   Tue, 10 Nov 2020 11:03:32 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.1
-MIME-Version: 1.0
-In-Reply-To: <20200804001423.36778-1-timo.witte@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=9+Z5Azrmhj3misriF6374XK8m6z58w8n3ugZjk4JaN4=;
+        b=egO0gHh4dqPfP2rgERQTLMDi4R5Kl8a4JWzPCT/s4xXTCj8fkCjKpOp1e2sEZWR9/X
+         03uYfDYHErJgDIO3xZ8TC1XdXgEXIkr7mr3Onj6PXf+pQNHbppbd/HOzP5hIZfj5lCvi
+         4w68YxbA0SMUoDYnAq+f3LQXRn5ZQoaoNj7GHcaERdD52TIOpl2nIuknjjGSVLR4HBEw
+         taWZdyuapJwUrLIPCYfiwfl1hqEB2MlzB9h0+gf0APy4LNiyiZYxKUeifgKAiI1LpyaO
+         7L0YMMtA+OWostDlKTrZ13DLPgTI72xa3D8bgO/5hImHf+UgaY7S5Ys0N4t7l+OT/lRa
+         KqZw==
+X-Gm-Message-State: AOAM530tdWbLV5WT3cgAr3DlOkUNtxR1KjVnwZuMiuoILjprNDbp8uNB
+        15PP/AF72iImBIByMuUifMRv+Omv4OK4
+X-Google-Smtp-Source: ABdhPJwRbo1RuEFty2F1Vzz5WibkDWFZrL4QhRKz/wrhWoDpmtO/59xyKJF37CeOzp4xxjla6h2FYe785j2s
+Sender: "irogers via sendgmr" <irogers@irogers.svl.corp.google.com>
+X-Received: from irogers.svl.corp.google.com ([2620:15c:2cd:2:f693:9fff:fef4:4583])
+ (user=irogers job=sendgmr) by 2002:a0c:8f09:: with SMTP id
+ z9mr12954541qvd.3.1605002636233; Tue, 10 Nov 2020 02:03:56 -0800 (PST)
+Date:   Tue, 10 Nov 2020 02:03:34 -0800
+Message-Id: <20201110100346.2527031-1-irogers@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.29.2.222.g5d2a92d10f8-goog
+Subject: [RFC PATCH 00/12] Topdown parser
+From:   Ian Rogers <irogers@google.com>
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        linux-kernel@vger.kernel.org, Andi Kleen <ak@linux.intel.com>,
+        Jin Yao <yao.jin@linux.intel.com>,
+        John Garry <john.garry@huawei.com>,
+        Paul Clarke <pc@us.ibm.com>, kajoljain <kjain@linux.ibm.com>
+Cc:     Stephane Eranian <eranian@google.com>,
+        Sandeep Dasgupta <sdasgup@google.com>,
+        linux-perf-users@vger.kernel.org, Ian Rogers <irogers@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+This RFC is for a new tool that reads TMA_Metrics.csv as found on
+download.01.org/perfmon and generates metrics and metric groups from
+it. To show the functionality the TMA_Metrics.csv is downloaded, but
+an accepted change would most likely include a copy of this file from
+Intel. With this tool rather than just level 1 topdown metrics, a full
+set of topdown metrics to level 4 are generated.
 
-Quick self intro: I have take over drivers/platform/x86
-maintainership from Andy; and I'm working my way through
-the backlog of old patches in patchwork:
-https://patchwork.kernel.org/project/platform-driver-x86/list/
+This change was:
+Suggested-by: Stephane Eranian <eranian@google.com>
 
-On 8/4/20 2:14 AM, Timo Witte wrote:
-> Got a dmesg message on my AMD Renoir based Acer laptop:
-> "acer_wmi: Unknown key number - 0x84" when toggling keyboard
-> background light
-> 
-> Signed-off-by: Timo Witte <timo.witte@gmail.com>
-> Reviewed-by: "Lee, Chun-Yi" <jlee@suse.com>
+Sandeep Dasgupta (12):
+  perf topdown-parser: Add a simple logging API.
+  perf topdown-parser: Add utility functions.
+  perf topdown-paser: Add a CSV file reader.
+  perf topdown-parser: Add a json file reader.
+  perf topdown-parser: Add a configuration.
+  perf topdown-parser: Interface for TMA_Metrics.csv.
+  perf topdown-parser: Metric expression parser.
+  perf topdown-parser: Add event interface.
+  perf topdown-paser: Add code generation API.
+  perf topdown-parser: Add json metric code generation.
+  perf topdown-parser: Main driver.
+  perf pmu-events: Topdown parser tool
 
-Thank you for your patch, I've applied this patch to my review-hans 
-branch:
-https://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86.git/log/?h=review-hans
+ tools/perf/Makefile.perf                      |  13 +-
+ tools/perf/pmu-events/Build                   |  50 +-
+ tools/perf/pmu-events/topdown-parser/README   |   5 +
+ .../topdown-parser/code_gen_target.cpp        |  51 +
+ .../topdown-parser/code_gen_target.h          |  77 ++
+ .../code_gen_target_perf_json.cpp             | 546 ++++++++++
+ .../code_gen_target_perf_json.h               |  25 +
+ .../topdown-parser/configuration.cpp          | 198 ++++
+ .../pmu-events/topdown-parser/configuration.h | 181 ++++
+ .../topdown-parser/configuration.json         |  72 ++
+ .../pmu-events/topdown-parser/csvreader.cpp   |  49 +
+ .../pmu-events/topdown-parser/csvreader.h     |  51 +
+ .../topdown-parser/dependence_dag_utils.cpp   | 984 ++++++++++++++++++
+ .../topdown-parser/dependence_dag_utils.h     | 178 ++++
+ .../pmu-events/topdown-parser/event_info.cpp  | 443 ++++++++
+ .../pmu-events/topdown-parser/event_info.h    | 114 ++
+ .../pmu-events/topdown-parser/expr_parser.y   | 224 ++++
+ .../topdown-parser/general_utils.cpp          | 173 +++
+ .../pmu-events/topdown-parser/general_utils.h | 131 +++
+ .../pmu-events/topdown-parser/jsmn_extras.cpp | 199 ++++
+ .../pmu-events/topdown-parser/jsmn_extras.h   |  42 +
+ .../perf/pmu-events/topdown-parser/logging.h  |  25 +
+ .../topdown-parser/topdown_parser_main.cpp    | 155 +++
+ 23 files changed, 3981 insertions(+), 5 deletions(-)
+ create mode 100644 tools/perf/pmu-events/topdown-parser/README
+ create mode 100644 tools/perf/pmu-events/topdown-parser/code_gen_target.cpp
+ create mode 100644 tools/perf/pmu-events/topdown-parser/code_gen_target.h
+ create mode 100644 tools/perf/pmu-events/topdown-parser/code_gen_target_perf_json.cpp
+ create mode 100644 tools/perf/pmu-events/topdown-parser/code_gen_target_perf_json.h
+ create mode 100644 tools/perf/pmu-events/topdown-parser/configuration.cpp
+ create mode 100644 tools/perf/pmu-events/topdown-parser/configuration.h
+ create mode 100644 tools/perf/pmu-events/topdown-parser/configuration.json
+ create mode 100644 tools/perf/pmu-events/topdown-parser/csvreader.cpp
+ create mode 100644 tools/perf/pmu-events/topdown-parser/csvreader.h
+ create mode 100644 tools/perf/pmu-events/topdown-parser/dependence_dag_utils.cpp
+ create mode 100644 tools/perf/pmu-events/topdown-parser/dependence_dag_utils.h
+ create mode 100644 tools/perf/pmu-events/topdown-parser/event_info.cpp
+ create mode 100644 tools/perf/pmu-events/topdown-parser/event_info.h
+ create mode 100644 tools/perf/pmu-events/topdown-parser/expr_parser.y
+ create mode 100644 tools/perf/pmu-events/topdown-parser/general_utils.cpp
+ create mode 100644 tools/perf/pmu-events/topdown-parser/general_utils.h
+ create mode 100644 tools/perf/pmu-events/topdown-parser/jsmn_extras.cpp
+ create mode 100644 tools/perf/pmu-events/topdown-parser/jsmn_extras.h
+ create mode 100644 tools/perf/pmu-events/topdown-parser/logging.h
+ create mode 100644 tools/perf/pmu-events/topdown-parser/topdown_parser_main.cpp
 
-I've made one small change I've replaced the (ignored)
-KEY_LIGHTS_TOGGLE key-code with KEY_KBDILLUMTOGGLE as that is
-the correct code to use for toggling the kbd backlight on/off.
-As the comment in input-event-codes.h says KEY_LIGHTS_TOGGLE
-is for "/* Reading light on or off */".
-
-Note this will show up in my review-hans branch once I've pushed my
-local branch there, which might take a while.
-
-Once I've run some tests on this branch the patches there will be
-added to the platform-drivers-x86/for-next branch and eventually
-will be included in the pdx86 pull-request to Linus for the next
-merge-window.
-
-Regards,
-
-Hans
-
-> ---
->  drivers/platform/x86/acer-wmi.c | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/drivers/platform/x86/acer-wmi.c b/drivers/platform/x86/acer-wmi.c
-> index 60c18f21588d..87797f785d6a 100644
-> --- a/drivers/platform/x86/acer-wmi.c
-> +++ b/drivers/platform/x86/acer-wmi.c
-> @@ -111,6 +111,7 @@ static const struct key_entry acer_wmi_keymap[] __initconst = {
->  	{KE_KEY, 0x64, {KEY_SWITCHVIDEOMODE} },	/* Display Switch */
->  	{KE_IGNORE, 0x81, {KEY_SLEEP} },
->  	{KE_KEY, 0x82, {KEY_TOUCHPAD_TOGGLE} },	/* Touch Pad Toggle */
-> +	{KE_IGNORE, 0x84, {KEY_LIGHTS_TOGGLE} }, /* Automatic Keyboard background light toggle */
->  	{KE_KEY, KEY_TOUCHPAD_ON, {KEY_TOUCHPAD_ON} },
->  	{KE_KEY, KEY_TOUCHPAD_OFF, {KEY_TOUCHPAD_OFF} },
->  	{KE_IGNORE, 0x83, {KEY_TOUCHPAD_TOGGLE} },
-> 
+-- 
+2.29.2.222.g5d2a92d10f8-goog
 
