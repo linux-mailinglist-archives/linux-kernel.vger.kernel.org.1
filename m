@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 064DD2AD985
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 15:57:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 19B8C2AD983
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 15:57:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732602AbgKJO5h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 09:57:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36664 "EHLO
+        id S1732714AbgKJO52 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 09:57:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36674 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731348AbgKJO4M (ORCPT
+        with ESMTP id S1731390AbgKJO4M (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 10 Nov 2020 09:56:12 -0500
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFDC1C0613CF
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 06:56:10 -0800 (PST)
-Received: by mail-wm1-x343.google.com with SMTP id h62so3275682wme.3
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 06:56:10 -0800 (PST)
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15154C0613D4
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 06:56:12 -0800 (PST)
+Received: by mail-wm1-x341.google.com with SMTP id 19so1738387wmf.1
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 06:56:12 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=PfaggvFtdrOq7HMZ8nUir6KiglSCvEmyQ3kUEaGT+6M=;
-        b=oH8PSeyxv2g2mkm6KifL0XdKT+rnspnOhbMzDwnzQm+pMPh1hvK7EOwAMzac79SqZK
-         02bezL3Z26b5Y1QQInMat2eNtle5JTjAlMPuOmYYL9tIDPn8i/wV0kU/a76NDy1hQkYb
-         i8OAz2nc+GlPheoFPrE3frOE7yBA/OWej0UIrmeftDJdeDPE6z5ldKOHMS319H2Xcp4S
-         6Vrzkze/jhidKVPQpXUgmzS6ZAsFrfPzEHRLnVuBLTm/sR9bFvw9bxLF+imueoV1cy6i
-         azs3f+c6EFu7MuIdUFVfMfdCndE6lYwqZdGE5oIg89LV8RIst4wl68eLeWZYMrvZzTkx
-         nImA==
+        bh=SyfsPFMi1Ol5bHDdeg25EiAHS6gH8P7QyAg8QmJ1Sho=;
+        b=zDD20QVMC5IWBHog2KuNoZ8pGkgPX7Zgy2+KbJMYTZd7PKhDV4IOzOKifhW8EuzDVK
+         D0U/twFCuXZ3WEeYgaxiAHj5xg5Sab2cVpforIiTC+gHdaOo4vIxiq6Ck47ijCy+UjZ6
+         amPapieoKB19FzEe7XAlat3NXSfFVxI5Zieabreptqz//W5hT1Fy8o+6mi2LiTpAIrQg
+         U7gawmdly0dGU8m5G8tglRiier3RXnuLCy6oRDMNKXgbVNnDTWtzeXFfn4KE+4HKc3OG
+         fVejE3kUK5B71SR2eBjKFiiKInsZ0q1k3XN4h9j3i6IiqiteJ7VC757UDUZc1fiWNU3V
+         6gvA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=PfaggvFtdrOq7HMZ8nUir6KiglSCvEmyQ3kUEaGT+6M=;
-        b=lPIwoq7HYYKEAsXyFdxR9tLqn6G8TAiFtp88l1gRiCmoouOcftzS0iPn7rMB82oWnN
-         BO8KGP3UJ61+L7kVnvfKSyCSUAnW8Hj/6F2Mqh/mJDtnpLApEmGK/5IEpr3QX8xMURC5
-         pXg1170Pk+jA5QM8IdSP2yVE6oVyXkHivgSizl5rG8ww/E9tfWGYpgPl94Y6BTGKCm9S
-         j5uu6fY9B29ZZK0Q+F+ZdIr3Qc1f09qAkvkcypibS68m8cWr2yNHKU+Hez6hu51WSZvQ
-         e2ZJvrEX5dIlqKiTFOuj8T8wY994uKwW4Q16FKRA1l8Nax99d/f5j15GbrxN3m2iY/JK
-         ++kQ==
-X-Gm-Message-State: AOAM533kXTWBe5yFMWQZqId+nEdecDH1H9e5CEsLlaOvtPfPYG504WLd
-        BbHfL6PO0Ae8hDSZw7fIIRo/iA==
-X-Google-Smtp-Source: ABdhPJw59JjHRG83+v/lXqJnyd7wHgrv1ByRW6rnrf5bN06bCOwu6mtyTnRWQB6aq876+beC9tOOPQ==
-X-Received: by 2002:a1c:87:: with SMTP id 129mr87959wma.34.1605020169728;
-        Tue, 10 Nov 2020 06:56:09 -0800 (PST)
+        bh=SyfsPFMi1Ol5bHDdeg25EiAHS6gH8P7QyAg8QmJ1Sho=;
+        b=XdhcUwoOPXyHashIBPmWWCDpqyfK6YGPCHKITrMUa6gxswJLXfJX3WXH/Gu0TGrWWB
+         FT1Bo7YT9c2tSl1/gW6c94zFgpRc9zk4N4R/zcOrIA6UtLsuSjAiYMgPldo2JagfPkjq
+         lA89VlR0w85BUQkBzAYFrXYvQkfmSGR9GbTiomhPH37cF/hB5bfYMeLZW3lEIcG/1CYT
+         xhescZ7jr5lMS2k8OuegD9n+SWU06lUiVVXbGPuM/NmOfBwrL8CGLC+9mNM/JsLmgoAR
+         F47c9oUMukLTmEBlqLY+pnMHFVJPUwI47OXl8WnoWsHi9S0jNzn6oyk8Foo9I7YORTPv
+         Ukiw==
+X-Gm-Message-State: AOAM533B5XX+B2vPZOE5bRhsAHcc60b9ZYUQ8IXzBtaEYvExEXOIUj/7
+        PIjn37h1XOHTqe9AuFzIug8k9ap7Rk9Z9w==
+X-Google-Smtp-Source: ABdhPJzaDMq9yF/90PfbDtmjMrDDyU6nQWF5HcfMvUY6Hf+4iouCXqUCX+g+a816+uzUAvJbyXGhyA==
+X-Received: by 2002:a1c:3d54:: with SMTP id k81mr60297wma.144.1605020170860;
+        Tue, 10 Nov 2020 06:56:10 -0800 (PST)
 Received: from debian-brgl.home (amarseille-656-1-4-167.w90-8.abo.wanadoo.fr. [90.8.158.167])
-        by smtp.gmail.com with ESMTPSA id f17sm3261827wmf.41.2020.11.10.06.56.08
+        by smtp.gmail.com with ESMTPSA id f17sm3261827wmf.41.2020.11.10.06.56.09
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 10 Nov 2020 06:56:09 -0800 (PST)
+        Tue, 10 Nov 2020 06:56:10 -0800 (PST)
 From:   Bartosz Golaszewski <brgl@bgdev.pl>
 To:     Linus Walleij <linus.walleij@linaro.org>,
         Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
@@ -55,9 +55,9 @@ To:     Linus Walleij <linus.walleij@linaro.org>,
         David Laight <David.Laight@aculab.com>
 Cc:     linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
         Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Subject: [PATCH v4 4/7] gpio: exar: use a helper variable for &pdev->dev
-Date:   Tue, 10 Nov 2020 15:55:49 +0100
-Message-Id: <20201110145552.23024-5-brgl@bgdev.pl>
+Subject: [PATCH v4 5/7] gpio: exar: unduplicate address and offset computation
+Date:   Tue, 10 Nov 2020 15:55:50 +0100
+Message-Id: <20201110145552.23024-6-brgl@bgdev.pl>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201110145552.23024-1-brgl@bgdev.pl>
 References: <20201110145552.23024-1-brgl@bgdev.pl>
@@ -69,68 +69,93 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 
-It's more elegant to use a helper local variable to store the address
-of the underlying struct device than to dereference pdev everywhere. It
-also has the benefit of avoiding unnecessary line breaks.
+Provide and use helpers for calculating the register address and bit
+offset instead of hand coding it in every function.
 
 Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 ---
- drivers/gpio/gpio-exar.c | 15 +++++++--------
- 1 file changed, 7 insertions(+), 8 deletions(-)
+ drivers/gpio/gpio-exar.c | 40 ++++++++++++++++++++++++++++------------
+ 1 file changed, 28 insertions(+), 12 deletions(-)
 
 diff --git a/drivers/gpio/gpio-exar.c b/drivers/gpio/gpio-exar.c
-index 752e8437ff80..db366d85b6b4 100644
+index db366d85b6b4..28b0b4b5fa35 100644
 --- a/drivers/gpio/gpio-exar.c
 +++ b/drivers/gpio/gpio-exar.c
-@@ -120,7 +120,8 @@ static int exar_direction_input(struct gpio_chip *chip, unsigned int offset)
+@@ -33,6 +33,26 @@ struct exar_gpio_chip {
+ 	unsigned int first_pin;
+ };
  
- static int gpio_exar_probe(struct platform_device *pdev)
++static unsigned int
++exar_offset_to_sel_addr(struct exar_gpio_chip *exar_gpio, unsigned int offset)
++{
++	return (offset + exar_gpio->first_pin) / 8 ? EXAR_OFFSET_MPIOSEL_HI
++						   : EXAR_OFFSET_MPIOSEL_LO;
++}
++
++static unsigned int
++exar_offset_to_lvl_addr(struct exar_gpio_chip *exar_gpio, unsigned int offset)
++{
++	return (offset + exar_gpio->first_pin) / 8 ? EXAR_OFFSET_MPIOLVL_HI
++						   : EXAR_OFFSET_MPIOLVL_LO;
++}
++
++static unsigned int
++exar_offset_to_bit(struct exar_gpio_chip *exar_gpio, unsigned int offset)
++{
++	return (offset + exar_gpio->first_pin) % 8;
++}
++
+ static void exar_update(struct gpio_chip *chip, unsigned int reg, int val,
+ 			unsigned int offset)
  {
--	struct pci_dev *pcidev = to_pci_dev(pdev->dev.parent);
-+	struct device *dev = &pdev->dev;
-+	struct pci_dev *pcidev = to_pci_dev(dev->parent);
- 	struct exar_gpio_chip *exar_gpio;
- 	u32 first_pin, ngpios;
- 	void __iomem *p;
-@@ -134,16 +135,15 @@ static int gpio_exar_probe(struct platform_device *pdev)
- 	if (!p)
- 		return -ENOMEM;
+@@ -52,9 +72,8 @@ static int exar_set_direction(struct gpio_chip *chip, int direction,
+ 			      unsigned int offset)
+ {
+ 	struct exar_gpio_chip *exar_gpio = gpiochip_get_data(chip);
+-	unsigned int addr = (offset + exar_gpio->first_pin) / 8 ?
+-		EXAR_OFFSET_MPIOSEL_HI : EXAR_OFFSET_MPIOSEL_LO;
+-	unsigned int bit  = (offset + exar_gpio->first_pin) % 8;
++	unsigned int addr = exar_offset_to_sel_addr(exar_gpio, offset);
++	unsigned int bit = exar_offset_to_bit(exar_gpio, offset);
  
--	ret = device_property_read_u32(&pdev->dev, "exar,first-pin",
--				       &first_pin);
-+	ret = device_property_read_u32(dev, "exar,first-pin", &first_pin);
- 	if (ret)
- 		return ret;
+ 	exar_update(chip, addr, direction, bit);
+ 	return 0;
+@@ -75,9 +94,8 @@ static int exar_get(struct gpio_chip *chip, unsigned int reg)
+ static int exar_get_direction(struct gpio_chip *chip, unsigned int offset)
+ {
+ 	struct exar_gpio_chip *exar_gpio = gpiochip_get_data(chip);
+-	unsigned int addr = (offset + exar_gpio->first_pin) / 8 ?
+-		EXAR_OFFSET_MPIOSEL_HI : EXAR_OFFSET_MPIOSEL_LO;
+-	unsigned int bit  = (offset + exar_gpio->first_pin) % 8;
++	unsigned int addr = exar_offset_to_sel_addr(exar_gpio, offset);
++	unsigned int bit = exar_offset_to_bit(exar_gpio, offset);
  
--	ret = device_property_read_u32(&pdev->dev, "ngpios", &ngpios);
-+	ret = device_property_read_u32(dev, "ngpios", &ngpios);
- 	if (ret)
- 		return ret;
+ 	if (exar_get(chip, addr) & BIT(bit))
+ 		return GPIO_LINE_DIRECTION_IN;
+@@ -88,9 +106,8 @@ static int exar_get_direction(struct gpio_chip *chip, unsigned int offset)
+ static int exar_get_value(struct gpio_chip *chip, unsigned int offset)
+ {
+ 	struct exar_gpio_chip *exar_gpio = gpiochip_get_data(chip);
+-	unsigned int addr = (offset + exar_gpio->first_pin) / 8 ?
+-		EXAR_OFFSET_MPIOLVL_HI : EXAR_OFFSET_MPIOLVL_LO;
+-	unsigned int bit  = (offset + exar_gpio->first_pin) % 8;
++	unsigned int addr = exar_offset_to_lvl_addr(exar_gpio, offset);
++	unsigned int bit = exar_offset_to_bit(exar_gpio, offset);
  
--	exar_gpio = devm_kzalloc(&pdev->dev, sizeof(*exar_gpio), GFP_KERNEL);
-+	exar_gpio = devm_kzalloc(dev, sizeof(*exar_gpio), GFP_KERNEL);
- 	if (!exar_gpio)
- 		return -ENOMEM;
+ 	return !!(exar_get(chip, addr) & BIT(bit));
+ }
+@@ -99,9 +116,8 @@ static void exar_set_value(struct gpio_chip *chip, unsigned int offset,
+ 			   int value)
+ {
+ 	struct exar_gpio_chip *exar_gpio = gpiochip_get_data(chip);
+-	unsigned int addr = (offset + exar_gpio->first_pin) / 8 ?
+-		EXAR_OFFSET_MPIOLVL_HI : EXAR_OFFSET_MPIOLVL_LO;
+-	unsigned int bit  = (offset + exar_gpio->first_pin) % 8;
++	unsigned int addr = exar_offset_to_lvl_addr(exar_gpio, offset);
++	unsigned int bit = exar_offset_to_bit(exar_gpio, offset);
  
-@@ -157,7 +157,7 @@ static int gpio_exar_probe(struct platform_device *pdev)
- 
- 	sprintf(exar_gpio->name, "exar_gpio%d", index);
- 	exar_gpio->gpio_chip.label = exar_gpio->name;
--	exar_gpio->gpio_chip.parent = &pdev->dev;
-+	exar_gpio->gpio_chip.parent = dev;
- 	exar_gpio->gpio_chip.direction_output = exar_direction_output;
- 	exar_gpio->gpio_chip.direction_input = exar_direction_input;
- 	exar_gpio->gpio_chip.get_direction = exar_get_direction;
-@@ -169,8 +169,7 @@ static int gpio_exar_probe(struct platform_device *pdev)
- 	exar_gpio->index = index;
- 	exar_gpio->first_pin = first_pin;
- 
--	ret = devm_gpiochip_add_data(&pdev->dev,
--				     &exar_gpio->gpio_chip, exar_gpio);
-+	ret = devm_gpiochip_add_data(dev, &exar_gpio->gpio_chip, exar_gpio);
- 	if (ret)
- 		goto err_destroy;
- 
+ 	exar_update(chip, addr, value, bit);
+ }
 -- 
 2.29.1
 
