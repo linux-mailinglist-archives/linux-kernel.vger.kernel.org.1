@@ -2,172 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2FE92AD224
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 10:10:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FE152AD233
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 10:17:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731131AbgKJJKL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 04:10:11 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:52713 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726462AbgKJJKK (ORCPT
+        id S1728741AbgKJJR0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 04:17:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40144 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726690AbgKJJRZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 04:10:10 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1604999408;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=+55BzpmQdaW+9dk/S8pTQyoYyuBDmPULs813Spez7Dk=;
-        b=XUeVj7IfzBr19menUFsrOPtWYvDSceJjwH9xMbHK36kQ2NfeuikBypuL/cD+f0nW3Ptop+
-        RdrqqJtY7sHdXYPP+W4QUD23+hDsou8ih5yUW3lj2QSQq3J/zrijemaeP3yxCdyeL6FAWO
-        kQAn75nPJ1ueU8VO18gYH4hLpCnZb3A=
-Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
- [209.85.218.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-399-DTtzPiZnNuaIujGoRqpLXg-1; Tue, 10 Nov 2020 04:10:07 -0500
-X-MC-Unique: DTtzPiZnNuaIujGoRqpLXg-1
-Received: by mail-ej1-f71.google.com with SMTP id 2so4514735ejv.4
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 01:10:06 -0800 (PST)
+        Tue, 10 Nov 2020 04:17:25 -0500
+Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED9ACC0613D1
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 01:17:24 -0800 (PST)
+Received: by mail-qt1-x841.google.com with SMTP id n63so8070904qte.4
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 01:17:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=wDmlq2ZmFmrcMspv1qiuBMfuHr/Sktvs0hAtfkHD0LY=;
+        b=iTW4ZbWNBpoHnEsqQfp66yY8Wk3OqDZ3DLsPkt9Od1ntHX1rhO89WtD+jKn6ZQZbVl
+         oU+oQkZDLzh9w0VMZoK/zR7Q8ArT5pQh7DDsoh8eBM2z0VrkWZZ5NrHdO5nq+nEXdSp9
+         W8RrlIFllrY8Q70izmrzltK5Z5mswuv6DlPJj9A6/8/LABe9tFbtVQHx742oKI8p+CzM
+         +mMIv23ZA4qimmAcgikTnCYDv5mwhtwMMmjs/E6GNP1SDzDGtLwue44c+TjZ6iuhFal1
+         MecnP9uc7rQt8NJQPfNCVUcz11z1A3hOiAdrNlI8/XwsTOIYIHEJ5ngbLCoLufoeHSRh
+         cubA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=+55BzpmQdaW+9dk/S8pTQyoYyuBDmPULs813Spez7Dk=;
-        b=hPNNQIUE1t8x8dT4ceVrznhV2aQ5JceKBqSiZxVR+5aYTRIFuJ0GrxNrtObwRk7nIN
-         /nCc7nXRrhF1fxMAv/l4CvByVZTD82y7p3u83vG7oaCR3Ymi8v86bVDsmGgB8z+Acef6
-         js7jP4Nmm5op4ZsH89EiuV5080X6My3R4+ei3JvVbwIA2VyNfJdBeVnG0G1cKwmTUE61
-         rrrWCGVGWIfxNW3roibfWjXXakWA6ac7xY+bK8ZsSWPD3VhZIZbn026kZz0g3ht0Pamw
-         dCTDcajR0RKT3QHYt0ZtMYphXgKnPHSR+Xi9JWromG3QZsGWhzFPvI2Hp32f7S0LL3V5
-         ++Lg==
-X-Gm-Message-State: AOAM5327wWhzNW25unMSuypxb95AUcg1wThjIfSo72p4zNwG/KrWY3Pa
-        K0TgOLhedY/3m/4T0wdZT6tjeieMTm+pKoOeeYp+nY+0K4Fwt1qqlE4Xwoi4dScHB6Ad35mrVNF
-        7LwwkfBBvRW/gCYTSbB9c6qq7
-X-Received: by 2002:a17:906:4145:: with SMTP id l5mr18623722ejk.317.1604999405758;
-        Tue, 10 Nov 2020 01:10:05 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJx/+w8n2wbjnx32/4llcLMexaLP6alYitnqhFSTv2Dgca7bmGE28PeBxrSq2lRzJ92id0/3Sw==
-X-Received: by 2002:a17:906:4145:: with SMTP id l5mr18623695ejk.317.1604999405498;
-        Tue, 10 Nov 2020 01:10:05 -0800 (PST)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id g25sm9998041ejh.61.2020.11.10.01.10.04
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 10 Nov 2020 01:10:04 -0800 (PST)
-To:     "Luck, Tony" <tony.luck@intel.com>,
-        Jim Mattson <jmattson@google.com>
-Cc:     Qian Cai <cai@redhat.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-tip-commits@vger.kernel.org" 
-        <linux-tip-commits@vger.kernel.org>, Boris Petkov <bp@alien8.de>,
-        Borislav Petkov <bp@suse.de>, x86 <x86@kernel.org>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>
-References: <20201030190807.GA13884@agluck-desk2.amr.corp.intel.com>
- <160431588828.397.16468104725047768957.tip-bot2@tip-bot2>
- <3f863634cd75824907e8ccf8164548c2ef036f20.camel@redhat.com>
- <bfc274fc27724ea39ecac1e7ac834ed8@intel.com>
- <CALMp9eTFaiYkTnVe8xKzg40E4nZ3rAOii0O06bTy0+oLNjyKhA@mail.gmail.com>
- <a22b5468e1c94906b72c4d8bc83c0f64@intel.com>
- <CALMp9eS+SYmPP3OzdK0-Bs1wSBJ4MU_POZe3i5fi3Fd+FTshYw@mail.gmail.com>
- <bece344ae6944368bf5a9a60e9145bd4@intel.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Subject: Re: [tip: ras/core] x86/mce: Enable additional error logging on
- certain Intel CPUs
-Message-ID: <03cfc157-efac-ac4a-2924-d455f29e6ecd@redhat.com>
-Date:   Tue, 10 Nov 2020 10:10:03 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=wDmlq2ZmFmrcMspv1qiuBMfuHr/Sktvs0hAtfkHD0LY=;
+        b=T21chxdNtSKFTzzK5KJn0C72nWYbjk0FO8S1HhngubxJq1Ta9+6/m2moWJawpvUJAW
+         MhMvPDETEYYNgfxIWv1KVThAMkE3tDpK9Nn4OshJDoNSeW8ZMXPy7VPhg07ehnyeS+kq
+         F0sUb3nblk6O2GRO1RRFILesOz4AjNyFb4itIm23euUXJiPDVsP7gJCcYpxOXjWvslZY
+         4zs0B7t+XbNOIB0Dc4TjWpMjEHi+RF+XL4VUKyhkbIutpg1fmGhqCc4aHvtIaJZzNXda
+         KRPA+ywmBzs0LLj+jRstGBw6nJloRry/WYlJm+APwhLvIi5Fj0/o/HZaQMKJ4dxscHhW
+         QhCg==
+X-Gm-Message-State: AOAM532xUVG3Og/PwGYi7yM/CZxNn4iUX2TpoSp6b43CGKWxAuCPjgwI
+        V2dqgZD+eEQaKvos2Ire/8TOHLnGLAyi0DAARE11xw==
+X-Google-Smtp-Source: ABdhPJyExBztpyo8xX+/isqdY1Fe42Ob6WPUCA5L9WSBGWPDPUoJ4GGE7lLSweTl2Hjg/0tBSHLUle6aFOD1t1+S+KY=
+X-Received: by 2002:aed:2b47:: with SMTP id p65mr16215898qtd.337.1604999843314;
+ Tue, 10 Nov 2020 01:17:23 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <bece344ae6944368bf5a9a60e9145bd4@intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20201105170604.6588a06e@canb.auug.org.au> <CADYN=9J0DQhizAGB0-jz4HOBBh+05kMBXb4c0cXMS7Qi5NAJiw@mail.gmail.com>
+In-Reply-To: <CADYN=9J0DQhizAGB0-jz4HOBBh+05kMBXb4c0cXMS7Qi5NAJiw@mail.gmail.com>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Tue, 10 Nov 2020 10:17:11 +0100
+Message-ID: <CACT4Y+ZA5tv4siG7JsXqmrk2J5WOQOtW51g0DPNMPSGHKkixDw@mail.gmail.com>
+Subject: Re: linux-next: Tree for Nov 5
+To:     Anders Roxell <anders.roxell@linaro.org>
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Alexander Potapenko <glider@google.com>,
+        Marco Elver <elver@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jann Horn <jannh@google.com>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> Maybe no contract ... but a bunch of places (many of them in Intel
-> specific code) that check for it
+On Tue, Nov 10, 2020 at 8:50 AM Anders Roxell <anders.roxell@linaro.org> wrote:
+>
+> On Thu, 5 Nov 2020 at 07:06, Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+> >
+> > Hi all,
+> >
+> > Changes since 20201104:
+>
+> When building an arm64 allmodconfig and booting up that in qemu I see
+>
+> [10011.092394][   T28] task:kworker/0:2     state:D stack:26896 pid:
+> 1840 ppid:     2 flags:0x00000428
+> [10022.368093][   T28] Workqueue: events toggle_allocation_gate
+> [10024.827549][   T28] Call trace:
+> [10027.152494][   T28]  __switch_to+0x1cc/0x1e0
+> [10031.378073][   T28]  __schedule+0x730/0x800
+> [10032.164468][   T28]  schedule+0xd8/0x160
+> [10033.886807][   T28]  toggle_allocation_gate+0x16c/0x220
+> [10038.477987][   T28]  process_one_work+0x5c0/0x980
+> [10039.900075][   T28]  worker_thread+0x428/0x720
+> [10042.782911][   T28]  kthread+0x23c/0x260
+> [10043.171725][   T28]  ret_from_fork+0x10/0x18
+> [10046.227741][   T28] INFO: lockdep is turned off.
+> [10047.732220][   T28] Kernel panic - not syncing: hung_task: blocked tasks
+> [10047.741785][   T28] CPU: 0 PID: 28 Comm: khungtaskd Tainted: G
+>   W         5.10.0-rc2-next-20201105-00006-g7af110e4d8ed #1
+> [10047.755348][   T28] Hardware name: linux,dummy-virt (DT)
+> [10047.763476][   T28] Call trace:
+> [10047.769802][   T28]  dump_backtrace+0x0/0x420
+> [10047.777104][   T28]  show_stack+0x38/0xa0
+> [10047.784177][   T28]  dump_stack+0x1d4/0x278
+> [10047.791362][   T28]  panic+0x304/0x5d8
+> [10047.798202][   T28]  check_hung_uninterruptible_tasks+0x5e4/0x640
+> [10047.807056][   T28]  watchdog+0x138/0x160
+> [10047.814140][   T28]  kthread+0x23c/0x260
+> [10047.821130][   T28]  ret_from_fork+0x10/0x18
+> [10047.829181][   T28] Kernel Offset: disabled
+> [10047.836274][   T28] CPU features: 0x0240002,20002004
+> [10047.844070][   T28] Memory Limit: none
+> [10047.853599][   T28] ---[ end Kernel panic - not syncing: hung_task:
+> blocked tasks ]---
+>
+> if I build with KFENCE=n it boots up eventually, here's my .config file [2].
+>
+> Any idea what may happen?
+>
+> it happens on next-20201109 also, but it takes longer until we get the
+> "Call trace:".
+>
+> Cheers,
+> Anders
+> [1] http://ix.io/2Ddv
+> [2] https://people.linaro.org/~anders.roxell/allmodconfig-next-20201105.config
 
-Interestingly, quite a few of them are actually checking for HYPERVISOR 
-not because of missing hypervisor features, but rather because 
-hypervisors don't have to work around certain errata. :)
+Hi Anders,
 
-Full analysis after my sig, but tl;dr: the only case of using HYPERVISOR 
-before using MSRs are in arch/x86/events/intel/cstate.c and 
-arch/x86/events/intel/uncore.c.  There are some workarounds in 
-drivers/gpu that might fall into a similar bucket.  But as far as MSRs 
-go, the way to go  overwhelmingly seems to be {rd,wr}msrl_safe.
-
-Thanks,
-
-Paolo
-
-On 10/11/20 00:36, Luck, Tony wrote:
-> arch/x86/events/core.c: if (boot_cpu_has(X86_FEATURE_HYPERVISOR)) {
-
-Print a slightly less frightening warning.
-
-> arch/x86/events/intel/core.c:   if (!boot_cpu_has(X86_FEATURE_HYPERVISOR))
-
-Working around KVM's ignore_msrs=1 option (and quite ugly; shows that 
-the option shouldn't be enabled by default).
-
-> arch/x86/events/intel/core.c:           int assume = 3 * !boot_cpu_has(X86_FEATURE_HYPERVISOR);
-
-Seems unnecessary.
-
-> arch/x86/events/intel/cstate.c: if (boot_cpu_has(X86_FEATURE_HYPERVISOR))
-> arch/x86/events/intel/uncore.c: if (boot_cpu_has(X86_FEATURE_HYPERVISOR))
-
-Too complicated. :)
-
-> arch/x86/kernel/apic/apic.c:    if (boot_cpu_has(X86_FEATURE_HYPERVISOR))
-
-Hypervisors don't have errata.
-
-> arch/x86/kernel/cpu/bugs.c:     if (boot_cpu_has(X86_FEATURE_HYPERVISOR))
-> arch/x86/kernel/cpu/bugs.c:     else if (boot_cpu_has(X86_FEATURE_HYPERVISOR))
-> arch/x86/kernel/cpu/bugs.c:     if (boot_cpu_has(X86_FEATURE_HYPERVISOR)) {
-> arch/x86/kernel/cpu/bugs.c:     if (boot_cpu_has(X86_FEATURE_HYPERVISOR)) {
-> arch/x86/kernel/cpu/intel.c:    if (boot_cpu_has(X86_FEATURE_HYPERVISOR))
-
-Print different vulnerability status in sysfs.
-
-> arch/x86/kernel/cpu/mshyperv.c: if (!boot_cpu_has(X86_FEATURE_HYPERVISOR))
-> arch/x86/kernel/cpu/vmware.c: * If !boot_cpu_has(X86_FEATURE_HYPERVISOR), vmware_hypercall_mode
-> arch/x86/kernel/cpu/vmware.c:   if (boot_cpu_has(X86_FEATURE_HYPERVISOR)) {
-> arch/x86/kernel/jailhouse.c:        !boot_cpu_has(X86_FEATURE_HYPERVISOR))
-> arch/x86/kernel/kvm.c:  if (boot_cpu_has(X86_FEATURE_HYPERVISOR))
-> arch/x86/kernel/paravirt.c:     if (!boot_cpu_has(X86_FEATURE_HYPERVISOR))
-
-Obviously needed before using paravirt features of the hypervisor.
-
-> arch/x86/kernel/tsc.c:  if (boot_cpu_has(X86_FEATURE_HYPERVISOR) ||
-
-Disables ART in VMs.  Probably the idea is that ART does not have an 
-offset field similar to the TSC's, but it's not necessary.  Looking at 
-the hypervisor-provided CPUID should be enough.
-
-> arch/x86/mm/init_64.c:  if (!boot_cpu_has(X86_FEATURE_HYPERVISOR)) {
-
-Tweaks hotplug heuristics, no MSRs involved.
-
-> drivers/acpi/processor_idle.c:  if (boot_cpu_has(X86_FEATURE_HYPERVISOR))
-
-Avoids pointless hypervisor exit on idle (i.e. just an optimization).
-
-> drivers/gpu/drm/amd/amdgpu/amdgpu_virt.h:       return boot_cpu_has(X86_FEATURE_HYPERVISOR);
-
-Work around SR-IOV bugs.
-
-> drivers/gpu/drm/i915/i915_memcpy.c:         !boot_cpu_has(X86_FEATURE_HYPERVISOR))
-
-Work around KVM deficiency.
-
-> drivers/gpu/drm/radeon/radeon_device.c: return boot_cpu_has(X86_FEATURE_HYPERVISOR);
-
-Work around SR-IOV bugs.
-
-> drivers/visorbus/visorchipset.c:        if (boot_cpu_has(X86_FEATURE_HYPERVISOR)) {
-
-Needed before using paravirt features of the hypervisor.
-
+Does it happen during boot or afterwards?
+10047 are seconds after boot, right? So this is like 3 hours after boot, no?
+Also, is there anything useful before that part of the log? It seems
+that at least the bug type header is stripped.
