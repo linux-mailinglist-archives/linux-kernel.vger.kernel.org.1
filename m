@@ -2,75 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8BDE2ACA47
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 02:19:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AD8692ACA51
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 02:21:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730556AbgKJBTW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 20:19:22 -0500
-Received: from szxga06-in.huawei.com ([45.249.212.32]:7473 "EHLO
-        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727311AbgKJBTW (ORCPT
+        id S1731454AbgKJBVi convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 9 Nov 2020 20:21:38 -0500
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:21438 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1731358AbgKJBVi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 20:19:22 -0500
-Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4CVVPv3CvRzhjt7;
-        Tue, 10 Nov 2020 09:19:15 +0800 (CST)
-Received: from [10.174.177.149] (10.174.177.149) by
- DGGEMS401-HUB.china.huawei.com (10.3.19.201) with Microsoft SMTP Server id
- 14.3.487.0; Tue, 10 Nov 2020 09:19:18 +0800
-Subject: Re: [PATCH] scsi: ufshcd: fix missing destroy_workqueue() on error in
- ufshcd_init
-To:     Avri Altman <Avri.Altman@wdc.com>,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>
-CC:     "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <20201109091522.55989-1-miaoqinglang@huawei.com>
- <DM6PR04MB6575DEC0E343A01B1A4D275AFCEA0@DM6PR04MB6575.namprd04.prod.outlook.com>
-From:   Qinglang Miao <miaoqinglang@huawei.com>
-Message-ID: <c6b7a6a2-3327-cc50-d593-abaaa58c0da2@huawei.com>
-Date:   Tue, 10 Nov 2020 09:19:18 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        Mon, 9 Nov 2020 20:21:38 -0500
+Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0AA1KlaW017171
+        for <linux-kernel@vger.kernel.org>; Mon, 9 Nov 2020 17:21:37 -0800
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com with ESMTP id 34pbyeg47d-3
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Nov 2020 17:21:37 -0800
+Received: from intmgw001.08.frc2.facebook.com (2620:10d:c085:208::f) by
+ mail.thefacebook.com (2620:10d:c085:11d::4) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Mon, 9 Nov 2020 17:21:36 -0800
+Received: by devbig012.ftw2.facebook.com (Postfix, from userid 137359)
+        id 0C5192EC923D; Mon,  9 Nov 2020 17:19:34 -0800 (PST)
+From:   Andrii Nakryiko <andrii@kernel.org>
+To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>, <ast@fb.com>,
+        <daniel@iogearbox.net>
+CC:     <kernel-team@fb.com>, <linux-kernel@vger.kernel.org>,
+        <rafael@kernel.org>, <jeyu@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: [PATCH v4 bpf-next 0/5] Integrate kernel module BTF support
+Date:   Mon, 9 Nov 2020 17:19:27 -0800
+Message-ID: <20201110011932.3201430-1-andrii@kernel.org>
+X-Mailer: git-send-email 2.24.1
+X-FB-Internal: Safe
+Content-Type: text/plain
+Content-Transfer-Encoding: 8BIT
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-In-Reply-To: <DM6PR04MB6575DEC0E343A01B1A4D275AFCEA0@DM6PR04MB6575.namprd04.prod.outlook.com>
-Content-Type: text/plain; charset="gbk"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.177.149]
-X-CFilter-Loop: Reflected
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-11-09_15:2020-11-05,2020-11-09 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 bulkscore=0
+ mlxlogscore=999 malwarescore=0 suspectscore=0 phishscore=0 adultscore=0
+ priorityscore=1501 spamscore=0 lowpriorityscore=0 clxscore=1015 mlxscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2011100008
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This patch set adds BTF generation for kernel modules using a compact split
+BTF approach. Respective patches have all the details.
 
+Kernel module BTFs rely on pahole's split BTF support, which is added in [0]
+and will be available starting from v1.19. Support for it is detected
+automatically during kernel build time.
 
-ÔÚ 2020/11/9 17:40, Avri Altman Ð´µÀ:
->>
->> Add the missing destroy_workqueue() before return from
->> ufshcd_init in the error handling case. It seems that
->> exit_gating is an appropriate place.
->>
->> Fixes: 4db7a2360597 ("scsi: ufs: Fix concurrency of error handler and other
->> error recovery paths")
->> Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
->> ---
->>   drivers/scsi/ufs/ufshcd.c | 1 +
->>   1 file changed, 1 insertion(+)
->>
->> diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
->> index b8f573a02713..9eaa0eaca374 100644
->> --- a/drivers/scsi/ufs/ufshcd.c
->> +++ b/drivers/scsi/ufs/ufshcd.c
->> @@ -9206,6 +9206,7 @@ int ufshcd_init(struct ufs_hba *hba, void __iomem
->> *mmio_base, unsigned int irq)
->>   exit_gating:
->>          ufshcd_exit_clk_scaling(hba);
->>          ufshcd_exit_clk_gating(hba);
->> +       destroy_workqueue(hba->eh_wq);
-> Maybe also in ufshcd_remove?
-> .
-You're right Avri, thanks!
+This patch set implements in-kernel support for split BTF loading and
+validation. It also extends GET_OBJ_INFO API for BTFs to return BTF's module
+name and a flag whether BTF itself is in-kernel or user-provided. vmlinux BTF
+is also exposed to user-space through the same BTF object iteration APIs.
 
-I'm gonna send a v2 on this patch to cover ufshcd_remove.
-> 
+Follow up patch set will utilize the fact that vmlinux and module BTFs now
+have associated ID to provide ability to attach BPF fentry/fexit/etc programs
+to functions defined in kernel modules.
+
+bpftool is also extended to show module/vmlinux BTF's name.
+
+  [0] https://patchwork.kernel.org/project/netdevbpf/list/?series=378699&state=*
+
+v3->v4:
+  - copy_to_user() on ENOSPC in btf_get_info_by_fd() (Martin);
+v2->v3:
+  - get rid of unnecessary gotos (Song);
+v2->v1:
+  - drop WARNs, add fewer pr_warn()'s instead (Greg);
+  - properly initialize sysfs binary attribute structure (Greg);
+  - add __maybe_unused to any_section_objs, used conditionally by module BTF;
+rfc->v1:
+  - CONFIG_DEBUG_INFO_BTF_MODULES is derived automatically (Alexei);
+  - vmlinux BTF now has explicit "vmlinux" name (Alexei);
+  - added sysfs ABI documentation for /sys/kernel/btf/<module> (Greg).
+
+Cc: Arnaldo Carvalho de Melo <acme@redhat.com>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
+Andrii Nakryiko (5):
+  bpf: add in-kernel split BTF support
+  bpf: assign ID to vmlinux BTF and return extra info for BTF in
+    GET_OBJ_INFO
+  kbuild: build kernel module BTFs if BTF is enabled and pahole supports
+    it
+  bpf: load and verify kernel module BTFs
+  tools/bpftool: add support for in-kernel and named BTF in `btf show`
+
+ Documentation/ABI/testing/sysfs-kernel-btf |   8 +
+ include/linux/bpf.h                        |   2 +
+ include/linux/module.h                     |   4 +
+ include/uapi/linux/bpf.h                   |   3 +
+ kernel/bpf/btf.c                           | 406 ++++++++++++++++++---
+ kernel/bpf/sysfs_btf.c                     |   2 +-
+ kernel/module.c                            |  32 ++
+ lib/Kconfig.debug                          |   9 +
+ scripts/Makefile.modfinal                  |  20 +-
+ tools/bpf/bpftool/btf.c                    |  28 +-
+ tools/include/uapi/linux/bpf.h             |   3 +
+ 11 files changed, 459 insertions(+), 58 deletions(-)
+
+-- 
+2.24.1
+
