@@ -2,85 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 238C22AD7BE
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 14:37:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D0BBF2AD7C2
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 14:37:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732242AbgKJNhT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 08:37:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52340 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731905AbgKJNhT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 08:37:19 -0500
-Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5FDFC0613D1
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 05:37:18 -0800 (PST)
-Received: by mail-lj1-x243.google.com with SMTP id o24so8000309ljj.6
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 05:37:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=JT82WeGHfGatJUyqqRhZrje7scJf6cQaFnAsRXpysnI=;
-        b=XAxWAMfhILndj8wuVUvV3hrKS1T62bZdRtD8DTLN4ATV1ytFGsLohz3aOeAJVUT3yA
-         OvAFqqcLi/EP+HOHDzPcA6Y8ocf+lQkPzDlPCZh4NXEr7gRFuysSFc0/pEtOEhOVD2GZ
-         PgswvtvteoKGnFMahPr1gpa8fMRjpSUz/x54yS2scyfyYrI2ysUt+HZ6xoZrEn5Wyklx
-         /SaUWS4WF2B3Kw1InGSDdZroYznro7N+BJHHTYWor3tsrPpofAEL31au+V2E12+tqYOc
-         acdsJu2gZuzjvOGne3FIRIVWf/LBOvaJRT2VCtbSWEB0tH/g1Dfy4ekVPoyjqYBBRJz+
-         n3vw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=JT82WeGHfGatJUyqqRhZrje7scJf6cQaFnAsRXpysnI=;
-        b=Fh4mlKrQQLYb8CqTbFBPCCzPFyFACHxhRAyTz7BTQS8wVkH30ruy7wcwXB4umDc/KM
-         Z+2mvZqh8XNBq6pPQjzPiXNoIRyZQoW0e9Mw36ExhKpPoDZomcSWralk8uorqPaaDS/b
-         PtM/sqB8BibEOUgTNNy4PMmYrQGvcuzq2aVu99HOAupni/WU60axXaIyjxwVOPDXXLix
-         h87Qx11gVf02gt80Y5pd0QvfkkSUmh0FKQynd2MSKB4bZH+1MmdADHqFxecATHP4zP1i
-         W8gtIfSdlXH6kHaPrGYhTbUbmWsqwA7ULC2Ivy5vvZNF+NBBJAqrr6yaju7bUCn6GuHS
-         PumQ==
-X-Gm-Message-State: AOAM531Qz5kRMdxroum5TLRtX8v1DI7j5YWoMsbuPGRd5xs8tdbc0rU3
-        ZBqNhq+0irBBzXUYkeXAncL2zu39HUTniTg5f0T85Q==
-X-Google-Smtp-Source: ABdhPJz464oXj+ZDGivb3FQgYwVKw3a2uFn3tEHTqlzudXDC+NmI/1Sa0La/LSpGBh8lBY/+GrWhtvb20nqSr2W9rag=
-X-Received: by 2002:a2e:80d2:: with SMTP id r18mr8965171ljg.286.1605015437329;
- Tue, 10 Nov 2020 05:37:17 -0800 (PST)
+        id S1732371AbgKJNhZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 08:37:25 -0500
+Received: from correo.us.es ([193.147.175.20]:36768 "EHLO mail.us.es"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730432AbgKJNhU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Nov 2020 08:37:20 -0500
+Received: from antivirus1-rhel7.int (unknown [192.168.2.11])
+        by mail.us.es (Postfix) with ESMTP id 6FABE396274
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 14:37:18 +0100 (CET)
+Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
+        by antivirus1-rhel7.int (Postfix) with ESMTP id 53218DA859
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 14:37:18 +0100 (CET)
+Received: by antivirus1-rhel7.int (Postfix, from userid 99)
+        id 45691DA84F; Tue, 10 Nov 2020 14:37:18 +0100 (CET)
+X-Spam-Checker-Version: SpamAssassin 3.4.1 (2015-04-28) on antivirus1-rhel7.int
+X-Spam-Level: 
+X-Spam-Status: No, score=-108.2 required=7.5 tests=ALL_TRUSTED,BAYES_50,
+        SMTPAUTH_US2,URIBL_BLOCKED,USER_IN_WELCOMELIST,USER_IN_WHITELIST
+        autolearn=disabled version=3.4.1
+Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
+        by antivirus1-rhel7.int (Postfix) with ESMTP id ADF1ADA789;
+        Tue, 10 Nov 2020 14:37:15 +0100 (CET)
+Received: from 192.168.1.97 (192.168.1.97)
+ by antivirus1-rhel7.int (F-Secure/fsigk_smtp/550/antivirus1-rhel7.int);
+ Tue, 10 Nov 2020 14:37:15 +0100 (CET)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/antivirus1-rhel7.int)
+Received: from us.es (unknown [90.77.255.23])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: 1984lsi)
+        by entrada.int (Postfix) with ESMTPSA id 7CCF642EF9E0;
+        Tue, 10 Nov 2020 14:37:15 +0100 (CET)
+Date:   Tue, 10 Nov 2020 14:37:15 +0100
+X-SMTPAUTHUS: auth mail.us.es
+From:   Pablo Neira Ayuso <pablo@netfilter.org>
+To:     Casey Schaufler <casey@schaufler-ca.com>
+Cc:     casey.schaufler@intel.com, jmorris@namei.org,
+        linux-security-module@vger.kernel.org, selinux@vger.kernel.org,
+        linux-audit@redhat.com, keescook@chromium.org,
+        john.johansen@canonical.com, penguin-kernel@i-love.sakura.ne.jp,
+        paul@paul-moore.com, sds@tycho.nsa.gov,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        netfilter-devel@vger.kernel.org
+Subject: Re: [PATCH v22 16/23] LSM: security_secid_to_secctx in netlink
+ netfilter
+Message-ID: <20201110133715.GA1890@salvia>
+References: <20201105004924.11651-1-casey@schaufler-ca.com>
+ <20201105004924.11651-17-casey@schaufler-ca.com>
 MIME-Version: 1.0
-References: <cover.1601164493.git.mirq-linux@rere.qmqm.pl> <e3a3979657babf716e5f4072e373637ce86ad7ff.1601164493.git.mirq-linux@rere.qmqm.pl>
- <CACRpkdaMHH35C1LqUROFBte3T00Lz0zApHy3hdZ83Z8EZR04hw@mail.gmail.com>
- <20201001090104.GM6148@dell> <20201104144331.GG4488@dell> <20201105014728.GC17266@qmqm.qmqm.pl>
- <20201105081314.GT4488@dell>
-In-Reply-To: <20201105081314.GT4488@dell>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Tue, 10 Nov 2020 14:37:06 +0100
-Message-ID: <CACRpkdagF-jYon5sTtwOYqHqweb-dZoai8s=WmH4FqcHOP5MoQ@mail.gmail.com>
-Subject: Re: [PATCH 1/5] gpio: tps65910: use regmap accessors
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Tony Lindgren <tony@atomide.com>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Linux-OMAP <linux-omap@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20201105004924.11651-17-casey@schaufler-ca.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Virus-Scanned: ClamAV using ClamSMTP
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 5, 2020 at 9:13 AM Lee Jones <lee.jones@linaro.org> wrote:
+Hi Casey,
 
-> > The patch 4 assumes all previous patches are applied (or there will be
-> > build breakage).
->
-> Okay, no problem.
->
-> Linus, do you want a PR?
+On Wed, Nov 04, 2020 at 04:49:17PM -0800, Casey Schaufler wrote:
+> Change netlink netfilter interfaces to use lsmcontext
+> pointers, and remove scaffolding.
+> 
+> Reviewed-by: Kees Cook <keescook@chromium.org>
+> Reviewed-by: John Johansen <john.johansen@canonical.com>
+> Acked-by: Stephen Smalley <sds@tycho.nsa.gov>
+> Signed-off-by: Casey Schaufler <casey@schaufler-ca.com>
+> Cc: netdev@vger.kernel.org
+> Cc: netfilter-devel@vger.kernel.org
 
-Nah let's optimistically assume it's not needed. I don't see a lot
-of changes around here this merge window.
+You can carry this tag in your follow up patches.
 
-Thanks for sorting out this merge!
+Acked-by: Pablo Neira Ayuso <pablo@netfilter.org>
 
-Yours,
-Linus Walleij
+Thanks.
+
+> ---
+>  net/netfilter/nfnetlink_queue.c | 37 +++++++++++++--------------------
+>  1 file changed, 14 insertions(+), 23 deletions(-)
+> 
+> diff --git a/net/netfilter/nfnetlink_queue.c b/net/netfilter/nfnetlink_queue.c
+> index 84be5a49a157..0d8b83d84422 100644
+> --- a/net/netfilter/nfnetlink_queue.c
+> +++ b/net/netfilter/nfnetlink_queue.c
+> @@ -301,15 +301,13 @@ static int nfqnl_put_sk_uidgid(struct sk_buff *skb, struct sock *sk)
+>  	return -1;
+>  }
+>  
+> -static u32 nfqnl_get_sk_secctx(struct sk_buff *skb, char **secdata)
+> +static void nfqnl_get_sk_secctx(struct sk_buff *skb, struct lsmcontext *context)
+>  {
+> -	u32 seclen = 0;
+>  #if IS_ENABLED(CONFIG_NETWORK_SECMARK)
+>  	struct lsmblob blob;
+> -	struct lsmcontext context = { };
+>  
+>  	if (!skb || !sk_fullsock(skb->sk))
+> -		return 0;
+> +		return;
+>  
+>  	read_lock_bh(&skb->sk->sk_callback_lock);
+>  
+> @@ -318,14 +316,12 @@ static u32 nfqnl_get_sk_secctx(struct sk_buff *skb, char **secdata)
+>  		 * blob. security_secid_to_secctx() will know which security
+>  		 * module to use to create the secctx.  */
+>  		lsmblob_init(&blob, skb->secmark);
+> -		security_secid_to_secctx(&blob, &context);
+> -		*secdata = context.context;
+> +		security_secid_to_secctx(&blob, context);
+>  	}
+>  
+>  	read_unlock_bh(&skb->sk->sk_callback_lock);
+> -	seclen = context.len;
+>  #endif
+> -	return seclen;
+> +	return;
+>  }
+>  
+>  static u32 nfqnl_get_bridge_size(struct nf_queue_entry *entry)
+> @@ -398,12 +394,10 @@ nfqnl_build_packet_message(struct net *net, struct nfqnl_instance *queue,
+>  	struct net_device *indev;
+>  	struct net_device *outdev;
+>  	struct nf_conn *ct = NULL;
+> +	struct lsmcontext context = { };
+>  	enum ip_conntrack_info ctinfo;
+>  	struct nfnl_ct_hook *nfnl_ct;
+>  	bool csum_verify;
+> -	struct lsmcontext scaff; /* scaffolding */
+> -	char *secdata = NULL;
+> -	u32 seclen = 0;
+>  
+>  	size = nlmsg_total_size(sizeof(struct nfgenmsg))
+>  		+ nla_total_size(sizeof(struct nfqnl_msg_packet_hdr))
+> @@ -469,9 +463,9 @@ nfqnl_build_packet_message(struct net *net, struct nfqnl_instance *queue,
+>  	}
+>  
+>  	if ((queue->flags & NFQA_CFG_F_SECCTX) && entskb->sk) {
+> -		seclen = nfqnl_get_sk_secctx(entskb, &secdata);
+> -		if (seclen)
+> -			size += nla_total_size(seclen);
+> +		nfqnl_get_sk_secctx(entskb, &context);
+> +		if (context.len)
+> +			size += nla_total_size(context.len);
+>  	}
+>  
+>  	skb = alloc_skb(size, GFP_ATOMIC);
+> @@ -604,7 +598,8 @@ nfqnl_build_packet_message(struct net *net, struct nfqnl_instance *queue,
+>  	    nfqnl_put_sk_uidgid(skb, entskb->sk) < 0)
+>  		goto nla_put_failure;
+>  
+> -	if (seclen && nla_put(skb, NFQA_SECCTX, seclen, secdata))
+> +	if (context.len &&
+> +	    nla_put(skb, NFQA_SECCTX, context.len, context.context))
+>  		goto nla_put_failure;
+>  
+>  	if (ct && nfnl_ct->build(skb, ct, ctinfo, NFQA_CT, NFQA_CT_INFO) < 0)
+> @@ -632,10 +627,8 @@ nfqnl_build_packet_message(struct net *net, struct nfqnl_instance *queue,
+>  	}
+>  
+>  	nlh->nlmsg_len = skb->len;
+> -	if (seclen) {
+> -		lsmcontext_init(&scaff, secdata, seclen, 0);
+> -		security_release_secctx(&scaff);
+> -	}
+> +	if (context.len)
+> +		security_release_secctx(&context);
+>  	return skb;
+>  
+>  nla_put_failure:
+> @@ -643,10 +636,8 @@ nfqnl_build_packet_message(struct net *net, struct nfqnl_instance *queue,
+>  	kfree_skb(skb);
+>  	net_err_ratelimited("nf_queue: error creating packet message\n");
+>  nlmsg_failure:
+> -	if (seclen) {
+> -		lsmcontext_init(&scaff, secdata, seclen, 0);
+> -		security_release_secctx(&scaff);
+> -	}
+> +	if (context.len)
+> +		security_release_secctx(&context);
+>  	return NULL;
+>  }
+>  
+> -- 
+> 2.24.1
+> 
