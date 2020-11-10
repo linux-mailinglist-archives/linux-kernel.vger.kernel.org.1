@@ -2,209 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 660A32AE263
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 23:00:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DF412AE260
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 23:00:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732258AbgKJWAX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 17:00:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46590 "EHLO
+        id S1732256AbgKJWAT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 17:00:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46578 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732257AbgKJWAU (ORCPT
+        with ESMTP id S1732115AbgKJWAR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 17:00:20 -0500
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 714CFC0613D1;
-        Tue, 10 Nov 2020 14:00:20 -0800 (PST)
-Received: by mail-pg1-x542.google.com with SMTP id r10so11431592pgb.10;
-        Tue, 10 Nov 2020 14:00:20 -0800 (PST)
+        Tue, 10 Nov 2020 17:00:17 -0500
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6F59C0613D1
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 14:00:17 -0800 (PST)
+Received: by mail-pf1-x442.google.com with SMTP id e7so84890pfn.12
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 14:00:17 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=ZkeNKItXvG55Kf84CvoIRBs6Edwo+I3OqlGP+dGuXqE=;
-        b=qeXZe4BA9SCO4hDnfzJwhsIzRf2xqQGyKDWlcBpxlE1NdOLxQSaZqpKkCNvM4WNMbb
-         q8mVqYA49vkoPIXmtClIbZ5pvNY+uaE2KmgG7wIXLfJHc4Q1oC2t59wYKxLak79GSYe6
-         swqejvNBa/nf2LCcfidaEsfX0eBJ9OdvyFv438HXth5WhrO/QH9Q2rdsc+pvlD18V8IM
-         LA1whs8OttevAb6pZF75y4D8FTfqTXAMznR4aKWcF41UCz6OHUkIwe1FGXrUNmRlrrXI
-         6FfnKKudv+hMtCamAHhxZmZRn/A2NAOGojYnR2uQOT8vbr6jZlPx8hU0FTh6kILDj4jl
-         oDRQ==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=nU4xdx0PhV/+PUHMgjylz0is+Ov2vSZjSeguacOwknk=;
+        b=oeJ7kH7OF0jjmTVKpjRBEAH5AVOrmtiz2xZOLgUwCYhw5j7Ba6O1L9IItIZa6fRHG6
+         JonKpQOL7Ctn5Iggjtqg3LuQwPPi2wXNEa6zeJRtQCiKnmdoPtMu+PZ5YytitkwWoT+n
+         Dew1CA4VFyk7xRiibxh3K4fYs/1C5JwqmJomaXnJFN9FJcz8LpVlNeRM+X1lkuZsBSUx
+         V3U4Irj5I2vEfkAzMC5ibCf5+8QHF8A6GGBagdadgIEF1jQSP65jUirThJ9OhQ8G/uvo
+         xuhknOh/qSku7JDp8/8AipVHV5wWuiceOvcQrYEZRDv7mGYTlkFExucbcwFFOXdTRG7v
+         AKUA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=ZkeNKItXvG55Kf84CvoIRBs6Edwo+I3OqlGP+dGuXqE=;
-        b=MjBs1WEMkdabCKf7wpWKM41agP1VdwqsYS0ty5zL7b448rmF1IQgK52/v49qd/oeo0
-         0KDrRIalfTLYfgXES2ZsCC3g/mHftrt6x/3B38oqsbg/2+937vvZhd14q3omNQrI21Fk
-         Dvb4EPoj3hOD3dz5DQUYFLIjmGvS7J6YCwLWKd2XmGbwgssF1zTZtbefpGRiF96xCr+C
-         77Kc4VII3x93B8TpvkJKvYK8hKXGnvM5b/TO8reaCD6JnD+6PpOWAgvJjoI3/hiH3QJO
-         S3p5n3rqHbpL1NO+2GUcqrcyAjU358imCfBtQAnjLHlFRNRztE6g/Vu6Kb0bR1DRcfnq
-         69pA==
-X-Gm-Message-State: AOAM533KrZJ++SFx7Hndw+u8Sqn9qRSZt3gdQasxABcxcSz4ZkuIfAB6
-        +Ybr2+4dXs9vufbqd5GBjYE=
-X-Google-Smtp-Source: ABdhPJzo+VhB1ql5vArn/z1a28Riu0xD0JYc/jpIkO899WCTKEu0UtJ+gQb0z0Rgyh795jEXYojMfQ==
-X-Received: by 2002:a62:84d2:0:b029:18a:f574:fded with SMTP id k201-20020a6284d20000b029018af574fdedmr20647846pfd.31.1605045619959;
-        Tue, 10 Nov 2020 14:00:19 -0800 (PST)
-Received: from syed ([223.225.0.141])
-        by smtp.gmail.com with ESMTPSA id w65sm113758pfw.145.2020.11.10.14.00.15
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 10 Nov 2020 14:00:19 -0800 (PST)
-Date:   Wed, 11 Nov 2020 03:30:04 +0530
-From:   Syed Nayyar Waris <syednwaris@gmail.com>
-To:     arnd@kernel.org, vilhelm.gray@gmail.com
-Cc:     Michal Simek <michal.simek@xilinx.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Arnd Bergmann <arnd@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH v12 4/4] gpio: xilinx: Utilize generic bitmap_get_value
- and _set_value
-Message-ID: <20201110220004.GA25801@syed>
-References: <20201109134128.GA5596@shinobu>
- <CAK8P3a2FMkMc0K+hu0pnqC8wEMeapKPkZXaBm+HFYYPTes5NHA@mail.gmail.com>
- <20201109164529.GA28710@syed.domain.name>
- <20201109171140.GA14045@shinobu>
- <20201109172220.GI4077@smile.fi.intel.com>
- <20201109173107.GA14643@shinobu>
- <fe1cfe4c-e4d7-f9fb-1218-7a1d48e6f68a@xilinx.com>
- <20201110123538.GA3193@shinobu>
- <CACG_h5p84sKjDnK5xYRNjGnRzwsbjZ-76P-cC13LKx=7x=4KqQ@mail.gmail.com>
- <20201110174316.GA12192@shinobu>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=nU4xdx0PhV/+PUHMgjylz0is+Ov2vSZjSeguacOwknk=;
+        b=S1ndteQhlX/D0mZZ+hMBKtDdfHV4/18YdoF/XifVObs9kl5eDv1pBq7UYhf7YKfAlB
+         j7PFkM/iZ9NPed5RHKUPwQQr86RLBj5zxO9KfxBmzYWlOruZomyhDyZXlhE4qTjOmdth
+         g3HJWjETFYPSlX3lllSaF2zzxG+9ny0q4hNW7v9bUPQhdRz1HyXHhARlV9vmDWsSIHqE
+         2OrnsICvNjJPl1XG1yPF9hywDZgUPW8OaHmtlhUNEGvh6LXn4Xx7tRzxaMHUB6g++jFI
+         eOoYKwp15b8tGigNmB435nqXem/Gs8QmEuAK4Z++WVsQO1HU0PkjINpY/JpfeyFIBB77
+         iZ6A==
+X-Gm-Message-State: AOAM531LTvmSoBlxeQPcg7sqT/Fz6hRVou0+8RJztWCpV7WKafFr2xPe
+        6LnPu2ahSHrMy+MoQ5Qf4cOGPZoHnso6GKHTWUqzfTn8X5OKCA==
+X-Google-Smtp-Source: ABdhPJxRbIXmjboGU6ktCqQNzoBKt+np2VFvQVLTANiLZV5o9uu7KBTidzS01s26V4sTl8fbu4m3S4mzAFhLxakwk48=
+X-Received: by 2002:a62:5e06:0:b029:164:a9ca:b07e with SMTP id
+ s6-20020a625e060000b0290164a9cab07emr14857161pfb.36.1605045616991; Tue, 10
+ Nov 2020 14:00:16 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201110174316.GA12192@shinobu>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+References: <20201107075550.2244055-1-ndesaulniers@google.com> <4910042649a4f3ab22fac93191b8c1fa0a2e17c3.camel@perches.com>
+In-Reply-To: <4910042649a4f3ab22fac93191b8c1fa0a2e17c3.camel@perches.com>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Tue, 10 Nov 2020 14:00:05 -0800
+Message-ID: <CAKwvOdn50VP4h7tidMnnFeMA1M-FevykP+Y0ozieisS7Nn4yoQ@mail.gmail.com>
+Subject: Re: [PATCH] netfilter: conntrack: fix -Wformat
+To:     Joe Perches <joe@perches.com>
+Cc:     Pablo Neira Ayuso <pablo@netfilter.org>,
+        Jozsef Kadlecsik <kadlec@netfilter.org>,
+        Florian Westphal <fw@strlen.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
+        Network Development <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 10, 2020 at 12:43:16PM -0500, William Breathitt Gray wrote:
-> On Tue, Nov 10, 2020 at 10:52:42PM +0530, Syed Nayyar Waris wrote:
-> > On Tue, Nov 10, 2020 at 6:05 PM William Breathitt Gray
-> > <vilhelm.gray@gmail.com> wrote:
-> > >
-> > > On Tue, Nov 10, 2020 at 11:02:43AM +0100, Michal Simek wrote:
-> > > >
-> > > >
-> > > > On 09. 11. 20 18:31, William Breathitt Gray wrote:
-> > > > > On Mon, Nov 09, 2020 at 07:22:20PM +0200, Andy Shevchenko wrote:
-> > > > >> On Mon, Nov 09, 2020 at 12:11:40PM -0500, William Breathitt Gray wrote:
-> > > > >>> On Mon, Nov 09, 2020 at 10:15:29PM +0530, Syed Nayyar Waris wrote:
-> > > > >>>> On Mon, Nov 09, 2020 at 03:41:53PM +0100, Arnd Bergmann wrote:
-> > > > >>
-> > > > >> ...
-> > > > >>
-> > > > >>>>  static inline void bitmap_set_value(unsigned long *map,
-> > > > >>>> -                                    unsigned long value,
-> > > > >>>> +                                    unsigned long value, const size_t length,
-> > > > >>>>                                      unsigned long start, unsigned long nbits)
-> > > > >>>>  {
-> > > > >>>>          const size_t index = BIT_WORD(start);
-> > > > >>>> @@ -15,6 +15,10 @@ static inline void bitmap_set_value(unsigned long *map,
-> > > > >>>>          } else {
-> > > > >>>>                  map[index + 0] &= ~BITMAP_FIRST_WORD_MASK(start);
-> > > > >>>>                  map[index + 0] |= value << offset;
-> > > > >>>> +
-> > > > >>>> +               if (index + 1 >= length)
-> > > > >>>> +                       __builtin_unreachable();
-> > > > >>>> +
-> > > > >>>>                  map[index + 1] &= ~BITMAP_LAST_WORD_MASK(start + nbits);
-> > > > >>>>                  map[index + 1] |= value >> space;
-> > > > >>>>          }
-> > > > >>>
-> > > > >>> Hi Syed,
-> > > > >>>
-> > > > >>> Let's rename 'length' to 'nbits' as Arnd suggested, and rename 'nbits'
-> > > > >>> to value_width.
-> > > > >>
-> > > > >> length here is in longs. I guess this is the point of entire patch.
-> > > > >
-> > > > > Ah yes, this should become 'const unsigned long nbits' and represent the
-> > > > > length of the bitmap in bits and not longs.
-> > 
-> > Hi William, Andy and All,
-> > 
-> > Thank You for reviewing. I was looking into the review comments and I
-> > have a question on the above.
-> > 
-> > Actually, in bitmap_set_value(), the intended comparison is to be made
-> > between 'index + 1' and 'length' (which is now renamed as 'nbits').
-> > That is, the comparison would look-like as follows:
-> > if (index + 1 >= nbits)
-> > 
-> > The 'index' is getting populated with BIT_WORD(start).
-> > The 'index' variable in above is the actual index of the bitmap array,
-> > while in previous mail it is suggested to use 'nbits' which represent
-> > the length of the bitmap in bits and not longs.
-> > 
-> > Isn't it comparing two different things? index of array (not the
-> > bit-wise-length) on left hand side and nbits (bit-wise-length) on
-> > right hand side?
-> > 
-> > Have I misunderstood something? If yes, request to clarify.
-> > 
-> > Or do I have to first divide 'nbits' by BITS_PER_LONG and then compare
-> > it with 'index + 1'? Something like this?
-> > 
-> > Regards
-> > Syed Nayyar Waris
-> 
-> The array elements of the bitmap memory region are abstracted away for
-> the covenience of the users of the bitmap_* functions; the driver
-> authors are able to treat their bitmaps as just a set of contiguous bits
-> and not worry about where the division between array elements happen.
-> 
-> So to match the interface of the other bitmap_* functions, you should
-> take in nbits and figure out the actual array length by dividing by
-> BITS_PER_LONG inside bitmap_set_value(). Then you can use your
-> conditional check (index + 1 >= length) like you have been doing so far.
-> 
-> William Breathitt Gray
+On Sat, Nov 7, 2020 at 2:33 AM Joe Perches <joe@perches.com> wrote:
+>
+> On Fri, 2020-11-06 at 23:55 -0800, Nick Desaulniers wrote:
+> > Clang is more aggressive about -Wformat warnings when the format flag
+> > specifies a type smaller than the parameter. Fixes 8 instances of:
+> >
+> > warning: format specifies type 'unsigned short' but the argument has
+> > type 'int' [-Wformat]
+>
+> Likely clang's -Wformat message is still bogus.
+> Wasn't that going to be fixed?
+>
+> Integer promotions are already done on these types to int anyway.
+> Didn't we have this discussion last year?
+>
+> https://lore.kernel.org/lkml/CAKwvOd=mqzj2pAZEUsW-M_62xn4pijpCJmP=B1h_-wEb0NeZsA@mail.gmail.com/
+> https://lore.kernel.org/lkml/CAHk-=wgoxnmsj8GEVFJSvTwdnWm8wVJthefNk2n6+4TC=20e0Q@mail.gmail.com/
+> https://lore.kernel.org/lkml/a68114afb134b8633905f5a25ae7c4e6799ce8f1.camel@perches.com/
 
-Hi Arnd,
+Now I'll have to page in some old context...
 
-Sharing a new version of bitmap_set_value(). Let me know if it looks
-good and whether it suppresses the compiler warning.
+The case we addressed last year was printing char with a wider format
+string like %hd: https://reviews.llvm.org/rL369791,
+https://bugs.llvm.org/show_bug.cgi?id=41467 and
+https://gcc.gnu.org/bugzilla/show_bug.cgi?id=95588 have a little more
+info but not much.  Which is the case that Linus commented on.  Let's
+say we're printing a "wider format than intended." Those have been
+fixed in Clang.  These cases are printing a "narrower format than
+intended."  Two distinct cases.
 
-The below patch is created against the v12 version of bitmap_set_value().
+>
+> Look at commit cbacb5ab0aa0 ("docs: printk-formats: Stop encouraging use
+> of unnecessary %h[xudi] and %hh[xudi]")
+>
+> The "h" and "hh" things should never be used. The only reason for them
+> being used if if you have an "int", but you want to print it out as a
+> "char" (and honestly, that is a really bad reason, you'd be better off
+> just using a proper cast to make the code more obvious).
+>
+> So if what you have a "char" (or unsigned char) you should always just
+> print it out as an "int", knowing that the compiler already did the
+> proper type conversion.
 
--static inline void bitmap_set_value(unsigned long *map,
--                                    unsigned long value,
--                                    unsigned long start, unsigned long nbits)
-+static inline void bitmap_set_value(unsigned long *map, unsigned long nbits,
-+                                   unsigned long value, unsigned long value_width,
-+                                   unsigned long start)
- {
--        const size_t index = BIT_WORD(start);
-+        const unsigned long index = BIT_WORD(start);
-+        const unsigned long length = BIT_WORD(nbits);
-         const unsigned long offset = start % BITS_PER_LONG;
-         const unsigned long ceiling = round_up(start + 1, BITS_PER_LONG);
-         const unsigned long space = ceiling - start;
- 
--        value &= GENMASK(nbits - 1, 0);
-+        value &= GENMASK(value_width - 1, 0);
- 
--        if (space >= nbits) {
--                map[index] &= ~(GENMASK(nbits - 1, 0) << offset);
-+        if (space >= value_width) {
-+                map[index] &= ~(GENMASK(value_width - 1, 0) << offset);
-                 map[index] |= value << offset;
-         } else {
-                 map[index + 0] &= ~BITMAP_FIRST_WORD_MASK(start);
-                 map[index + 0] |= value << offset;
--                map[index + 1] &= ~BITMAP_LAST_WORD_MASK(start + nbits);
-+
-+               if (index + 1 >= length)
-+                       __builtin_unreachable();
-+
-+                map[index + 1] &= ~BITMAP_LAST_WORD_MASK(start + value_width);
-                 map[index + 1] |= value >> space;
-         }
- }
-
-
+Yeah, we could go through and remove %h and %hh to solve this, too, right?
+-- 
+Thanks,
+~Nick Desaulniers
