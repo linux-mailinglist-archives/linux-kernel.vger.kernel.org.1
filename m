@@ -2,139 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 861E02AD3E7
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 11:39:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C90D32AD3EA
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 11:39:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727651AbgKJKjR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 05:39:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52936 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726219AbgKJKjR (ORCPT
+        id S1729417AbgKJKj3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 05:39:29 -0500
+Received: from out5-smtp.messagingengine.com ([66.111.4.29]:49603 "EHLO
+        out5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726219AbgKJKj3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 05:39:17 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EEB2CC0613CF
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 02:39:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=fktQnF2Ye8FTc+pSwtVrS46H0tV0qfWWmnoMgSrzU6U=; b=n6+gPId/vuLBb46e8ul2kC9M/D
-        12isZBomW4xUtsRC6+VGFKLK0XVkiCMb8YlH/vnVEjf9TO3+08BTbqe6Vn5rW5CbG7+GTyA4gHYC3
-        CFM8VlsUi3Y//JvuYK41CVnbe/I7z22b9MdI0ZTSu4qShZWVFUgoa88F09K/5Q7PsBZpp+jVgGMr8
-        +utkFqrcN6JTok16Jv1DBl1/4x3YAV1KgiBBVMZ9JfzLjuOdqkEgBUB/aRPSaw0iyM4PM5xTMCb6b
-        wiMgRAiVlU392QJ34l6fmTfRTfAH30oxfuPXW50E71Yze0tV0NxkdBZVaV0NOhnAKsVU8eHjTnJ9u
-        r+nLygAw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kcR3O-0005Tr-Rs; Tue, 10 Nov 2020 10:39:11 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 8B5E9300455;
-        Tue, 10 Nov 2020 11:39:09 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 76E4F2C09A81C; Tue, 10 Nov 2020 11:39:09 +0100 (CET)
-Date:   Tue, 10 Nov 2020 11:39:09 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Frederic Weisbecker <frederic@kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>, Mel Gorman <mgorman@suse.de>,
-        Michal Hocko <mhocko@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>, Michal Hocko <mhocko@suse.com>
-Subject: Re: [RFC PATCH 4/7] preempt/dynamic: Provide cond_resched() and
- might_resched() static calls
-Message-ID: <20201110103909.GD2594@hirez.programming.kicks-ass.net>
-References: <20201110005609.40989-1-frederic@kernel.org>
- <20201110005609.40989-5-frederic@kernel.org>
+        Tue, 10 Nov 2020 05:39:29 -0500
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailout.nyi.internal (Postfix) with ESMTP id 0D7A45C0281;
+        Tue, 10 Nov 2020 05:39:28 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute6.internal (MEProxy); Tue, 10 Nov 2020 05:39:28 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm1; bh=qqTmEswesQaUa1Ejdzm843JqNc5
+        QZvhJ/SFzOnyIPnQ=; b=oaufrWieGntS+q2L4ekr7pmu+Z5M1uCZ+ubJO/aCjRD
+        RVWkPdDVoQTeK5zw9Eb9R5lOCfl5qGrCLjLJEDwjrEiJkktXXTM0WKKWpG0dhagi
+        6MqwNcmRMvGqVi/B8ZAC4hMrmwjFBPwgjLUFX2J98cTJL8VC1QpoAANL2OoyGnAB
+        O20jU7RmjO9b+oLUEu1tEN4sDHOeRBuWnbFKDWRhIB5ikRfPIVZFFW8o/GO8kXQ5
+        q//7HAjMATPoNlEprpR1zbS3iso+ndZklKA5vDRPSuF20HW+6Py7j7IDDnuyuP0A
+        jWwZZIowQuIfehm1cKceaFI4MzIvLIq4QAqxRaJT+Dg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=qqTmEs
+        wesQaUa1Ejdzm843JqNc5QZvhJ/SFzOnyIPnQ=; b=o++pQlK2ErBuwNlIOP+JQE
+        9VOp/nN2/ZaCy9n7aMp/zmO63A8OTIWXqEzT9gIEoYg7+N5EVetiQrQlAx3J9c/f
+        1PWDBZziJHjdrk6qsh/1bUijfLfUUXsIQruZscDlfb6bnWkig/CnnVP2UftRBxra
+        GHmqRvSTtAVZOZtmsGR1xFdBXak6EzL1k1Yj+P15OjDujilYiui6BryJu8vqtxHJ
+        iZ04U+B46Vsr5AN5k26GgDK7LKEfEMt+OMJWaYzYlUu5kxAgvwoUE1WaPfxfGur1
+        5rSsRUb3NGolMuMhcrWwL75yNxQnAZ3XavIvVDjGf9CzSN08ZKOeX0NCEGP3yYpQ
+        ==
+X-ME-Sender: <xms:322qX0C--ycVGAmQ3M6BIQWLNMLiEn82MKmWwxmm01-Hbs-74-Ui_g>
+    <xme:322qX2idE149gHMX4LBCc3LJ9Kt4kCBqwU8unz83w_1dW84L1CU30JvDlggWZW_bE
+    Ir_ms5XuRYDIM8RR1U>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedruddujedgudekucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
+    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
+    htvghrnhepleekgeehhfdutdeljefgleejffehfffgieejhffgueefhfdtveetgeehieeh
+    gedunecukfhppeeltddrkeelrdeikedrjeeinecuvehluhhsthgvrhfuihiivgeptdenuc
+    frrghrrghmpehmrghilhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
+X-ME-Proxy: <xmx:322qX3nNBfFTPigBSx4w9dUGlGRbPkO-wSfIc47DGJkQpdwb6RkL_w>
+    <xmx:322qX6yegnT9mogVhOJJ0sSe6xXd5UVsBZgxwY50DYAJtXsC7nkBBQ>
+    <xmx:322qX5Tb_6CWm7GRu7N9RPV_1xQ8aye1dSZ9T_j7x13miwB84M_JIQ>
+    <xmx:322qXyKQI73NZnB3L4BEMw5GyhazinNDCrz1PfcMUScf-D2FktcBXQ>
+Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 008D53280060;
+        Tue, 10 Nov 2020 05:39:26 -0500 (EST)
+Date:   Tue, 10 Nov 2020 11:39:25 +0100
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Icenowy Zheng <icenowy@aosc.io>
+Cc:     Rob Herring <robh+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-sunxi@googlegroups.com
+Subject: Re: [PATCH 3/3] arm64: allwinner: dts: a64: add DT for PineTab
+ developer sample
+Message-ID: <20201110103925.rbej5ueo2fefbmlp@gilmour.lan>
+References: <20201107124958.2222253-1-icenowy@aosc.io>
+ <20201107125332.2223197-1-icenowy@aosc.io>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="tw2akg5odesxcwje"
 Content-Disposition: inline
-In-Reply-To: <20201110005609.40989-5-frederic@kernel.org>
+In-Reply-To: <20201107125332.2223197-1-icenowy@aosc.io>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 10, 2020 at 01:56:06AM +0100, Frederic Weisbecker wrote:
 
-> +#ifdef CONFIG_PREEMPT_DYNAMIC
-> +DEFINE_STATIC_CALL(cond_resched, __static_call_return0);
-> +EXPORT_STATIC_CALL(cond_resched);
+--tw2akg5odesxcwje
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Sat, Nov 07, 2020 at 08:53:32PM +0800, Icenowy Zheng wrote:
+> Some developers received PineTab samples that used an old LCD panel.
+>=20
+> Add device tree for these samples.
+>=20
+> Signed-off-by: Icenowy Zheng <icenowy@aosc.io>
+> ---
+>  arch/arm64/boot/dts/allwinner/Makefile        |  1 +
+>  .../dts/allwinner/sun50i-a64-pinetab-dev.dts  | 28 +++++++++++++++++++
+>  2 files changed, 29 insertions(+)
+>  create mode 100644 arch/arm64/boot/dts/allwinner/sun50i-a64-pinetab-dev.=
+dts
+>=20
+> diff --git a/arch/arm64/boot/dts/allwinner/Makefile b/arch/arm64/boot/dts=
+/allwinner/Makefile
+> index 211d1e9d4701..a221dcebfad4 100644
+> --- a/arch/arm64/boot/dts/allwinner/Makefile
+> +++ b/arch/arm64/boot/dts/allwinner/Makefile
+> @@ -13,6 +13,7 @@ dtb-$(CONFIG_ARCH_SUNXI) +=3D sun50i-a64-pinephone-1.0.=
+dtb
+>  dtb-$(CONFIG_ARCH_SUNXI) +=3D sun50i-a64-pinephone-1.1.dtb
+>  dtb-$(CONFIG_ARCH_SUNXI) +=3D sun50i-a64-pinephone-1.2.dtb
+>  dtb-$(CONFIG_ARCH_SUNXI) +=3D sun50i-a64-pinetab.dtb
+> +dtb-$(CONFIG_ARCH_SUNXI) +=3D sun50i-a64-pinetab-dev.dtb
+>  dtb-$(CONFIG_ARCH_SUNXI) +=3D sun50i-a64-sopine-baseboard.dtb
+>  dtb-$(CONFIG_ARCH_SUNXI) +=3D sun50i-a64-teres-i.dtb
+>  dtb-$(CONFIG_ARCH_SUNXI) +=3D sun50i-a100-allwinner-perf1.dtb
+> diff --git a/arch/arm64/boot/dts/allwinner/sun50i-a64-pinetab-dev.dts b/a=
+rch/arm64/boot/dts/allwinner/sun50i-a64-pinetab-dev.dts
+> new file mode 100644
+> index 000000000000..3a4153890f3e
+> --- /dev/null
+> +++ b/arch/arm64/boot/dts/allwinner/sun50i-a64-pinetab-dev.dts
+> @@ -0,0 +1,28 @@
+> +// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
+> +/*
+> + * Copyright (C) 2020 Icenowy Zheng <icenowy@aosc.io>
+> + *
+> + */
 > +
-> +DEFINE_STATIC_CALL(might_resched, __static_call_return0);
-> +EXPORT_STATIC_CALL(might_resched);
->  #endif
+> +/dts-v1/;
+> +
+> +#include "sun50i-a64-pinetab.dts"
+> +
+> +/ {
+> +	model =3D "PineTab Developer Sample";
+> +	compatible =3D "pine64,pinetab-dev", "allwinner,sun50i-a64";
+> +};
 
-I suppose we want the below and change the above to use
-EXPORT_STATIC_CALL_TRAMP().
+Changing the DT and the compatible half-way through it isn't ok. Please
+add a new DT with the newer revision like we did for the pinephone
 
----
-Subject: static_call: EXPORT_STATIC_CALL_TRAMP()
-From: Peter Zijlstra <peterz@infradead.org>
-Date: Tue Nov 10 11:37:48 CET 2020
+Maxime
 
-For when we want to allow modules to call the static_call() but not
-change it.
+--tw2akg5odesxcwje
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
----
- include/linux/static_call.h |   23 +++++++++++++++++++----
- 1 file changed, 19 insertions(+), 4 deletions(-)
+-----BEGIN PGP SIGNATURE-----
 
---- a/include/linux/static_call.h
-+++ b/include/linux/static_call.h
-@@ -160,13 +160,19 @@ extern int static_call_text_reserved(voi
- 
- #define static_call_cond(name)	(void)__static_call(name)
- 
-+#define EXPORT_STATIC_CALL_TRAMP(name)					\
-+	EXPORT_SYMBOL(STATIC_CALL_TRAMP(name))
-+
- #define EXPORT_STATIC_CALL(name)					\
- 	EXPORT_SYMBOL(STATIC_CALL_KEY(name));				\
--	EXPORT_SYMBOL(STATIC_CALL_TRAMP(name))
-+	EXPORT_STATIC_CALL_TRAMP(name)
-+
-+#define EXPORT_STATIC_CALL_TRAMP_GPL(name)				\
-+	EXPORT_SYMBOL_GPL(STATIC_CALL_TRAMP(name))
- 
- #define EXPORT_STATIC_CALL_GPL(name)					\
- 	EXPORT_SYMBOL_GPL(STATIC_CALL_KEY(name));			\
--	EXPORT_SYMBOL_GPL(STATIC_CALL_TRAMP(name))
-+	EXPORT_STATIC_CALL_TRAMP_GPL(name)
- 
- #elif defined(CONFIG_HAVE_STATIC_CALL)
- 
-@@ -206,13 +212,19 @@ static inline int static_call_text_reser
- 	return 0;
- }
- 
-+#define EXPORT_STATIC_CALL_TRAMP(name)					\
-+	EXPORT_SYMBOL(STATIC_CALL_TRAMP(name))
-+
- #define EXPORT_STATIC_CALL(name)					\
- 	EXPORT_SYMBOL(STATIC_CALL_KEY(name));				\
--	EXPORT_SYMBOL(STATIC_CALL_TRAMP(name))
-+	EXPORT_STATIC_CALL_TRAMP(name)
-+
-+#define EXPORT_STATIC_CALL_TRAMP_GPL(name)				\
-+	EXPORT_SYMBOL_GPL(STATIC_CALL_TRAMP(name))
- 
- #define EXPORT_STATIC_CALL_GPL(name)					\
- 	EXPORT_SYMBOL_GPL(STATIC_CALL_KEY(name));			\
--	EXPORT_SYMBOL_GPL(STATIC_CALL_TRAMP(name))
-+	EXPORT_STATIC_CALL_TRAMP_GPL(name)
- 
- #else /* Generic implementation */
- 
-@@ -269,6 +281,9 @@ static inline int static_call_text_reser
- 	return 0;
- }
- 
-+#define EXPORT_STATIC_CALL_TRAMP(name)
-+#define EXPORT_STATIC_CALL_TRAMP_GPL(name)
-+
- #define EXPORT_STATIC_CALL(name)	EXPORT_SYMBOL(STATIC_CALL_KEY(name))
- #define EXPORT_STATIC_CALL_GPL(name)	EXPORT_SYMBOL_GPL(STATIC_CALL_KEY(name))
- 
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCX6pt3QAKCRDj7w1vZxhR
+xTCTAQDCOG/0gK+OrCoQt4SNvxx+XWYRAcc5e9VkpT85FmJ7mgEAjxG3P7JwlMDi
+FXlbUKjptAzkKVdllmfbAHGIlUO/JAk=
+=fiYB
+-----END PGP SIGNATURE-----
+
+--tw2akg5odesxcwje--
