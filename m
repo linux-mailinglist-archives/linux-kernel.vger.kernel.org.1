@@ -2,285 +2,478 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EF342ACE51
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 05:09:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 235472ACE5D
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 05:10:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733006AbgKJEIr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 23:08:47 -0500
-Received: from mail-dm6nam10on2044.outbound.protection.outlook.com ([40.107.93.44]:57757
-        "EHLO NAM10-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1732494AbgKJEIg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 23:08:36 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=FFZbPjaw87bdvTn6VcURYxLJYf0XB4ZjBumoqo4XnKr10w60d/0dOoAll59WNfSJ+SLaB+f4ZGwoSOf1JhhHtxdgit5cQObCFjRHegQlmm7Bi0xbQfbj4rfrruaZvxY2GtW1W+UKXlfnUYOmZOPRFqL6kq3yPiMS4sIxKRo4tdJsV/bJHJgrnadyPY6dpcxoDlKLvKbbkbmZBGIWjwQRWqO0Q59Fp8Hg71XJ/BUoGozt0AMB/hvhQ7JeTGtJ2x9+Hqtd6ZqWnT1XLuzfFXDbRqGr0tay3Ij59ZRCB84SHEZMjdX5tFAUdbo0q45SXBLiZKL9zFkfnYUbMqjKqk31nw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=6zFtvUKYzBo1LRdjZVqEx1fqA9SOVULU4a8jZZziy74=;
- b=L8ssjjuf+zZNvfaBkOsngKDeKpmiEQwt4v+eW4jA9OkHc9fDnBVMdpC6erRY7fK928kjhrFoh3tMxyPXivoeB5fcRWbTxHBPT5ZmWCYj/Ckwv5bHffx/meVXQCJm4Fb7eguBFpMt81Pj7WYTRKTlhjtCHZC8W6dWl5zp9l0n90gXjZl/B3RHqQTj6viGLjPWtWYHK73Aexck6bWCeje/ckgyjuUqqAktwbiZqXLPtgwyCuwzj7pUc+TZjYg97IJw3EyGO65zToEKnISlEmLZo6BoNmNI+kIZtmM1kry/EgaDAR5wy5iW/KXsItQfuQ17mt5TyIRVhElMmue5j/0f2w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=windriver.com; dmarc=pass action=none
- header.from=windriver.com; dkim=pass header.d=windriver.com; arc=none
+        id S1731619AbgKJEKV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 23:10:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49490 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731265AbgKJEKV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 23:10:21 -0500
+Received: from mail-il1-x130.google.com (mail-il1-x130.google.com [IPv6:2607:f8b0:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5D6BC0613CF
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Nov 2020 20:10:20 -0800 (PST)
+Received: by mail-il1-x130.google.com with SMTP id n5so10503040ile.7
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Nov 2020 20:10:20 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=windriversystems.onmicrosoft.com;
- s=selector2-windriversystems-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=6zFtvUKYzBo1LRdjZVqEx1fqA9SOVULU4a8jZZziy74=;
- b=TmGkZ+YUoTyOjwcIStvIko0xUUqPnPhrSu7/rrIJAHEuewtiR4VQZNqH8LW7Fb1gLI8xlKLEdaeJbzTP9gfB1ijw+BMru71BRBmkyvkvX2RTOlHJqLrUg8oHEcpKnB6WvNxcZ+NoylRT0NXXHRhJyXPHtydNFBb2Hqnf6OP0DwI=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none
- header.from=windriver.com;
-Received: from DM6PR11MB4545.namprd11.prod.outlook.com (2603:10b6:5:2ae::14)
- by DM6PR11MB4489.namprd11.prod.outlook.com (2603:10b6:5:203::29) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3541.25; Tue, 10 Nov
- 2020 04:07:57 +0000
-Received: from DM6PR11MB4545.namprd11.prod.outlook.com
- ([fe80::4985:c74a:ffcb:6f40]) by DM6PR11MB4545.namprd11.prod.outlook.com
- ([fe80::4985:c74a:ffcb:6f40%4]) with mapi id 15.20.3541.025; Tue, 10 Nov 2020
- 04:07:57 +0000
-From:   Paul Gortmaker <paul.gortmaker@windriver.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     cgroups@vger.kernel.org, rdunlap@infradead.org,
-        colin.king@canonical.com,
-        Paul Gortmaker <paul.gortmaker@windriver.com>
-Subject: [PATCH 4/4] cpumask: add "last" alias for cpu list specifications
-Date:   Mon,  9 Nov 2020 23:07:25 -0500
-Message-Id: <20201110040725.1478297-5-paul.gortmaker@windriver.com>
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=YUgBpryE8mXr1avSfc+OhxEDaGIENzQ0m9sBnl6u+u4=;
+        b=dIxIm6St1QaJQ2hU/8Px83T4gi5c8nHXnbpdehHBUqEnJrsJxWdC2XdH4ItJ4Y5V9J
+         kL9klV/94dEfyw5DFHuVvT81GSgIh4dvrGP+lR8vieiRCBWWcktC7zeowPJghpQoHcC6
+         Q8k0ZIoCDsF9YHCFukIilVhKEwc5PUs8rG6MjLnD2wXRhBa+cF8tVphLpqq6CXJXq2yq
+         zt+LyFZ2qImdlBSAMCs3ObYDsvbGNVsiR+bOmjg4vSnIykkoG+VZnHkxgdItqb8QpbnV
+         gIRTHTt68skdfdMvOznmQ/HMyxvekl7Qifi4/T4uCpIUP8eEcYfFyGZdu4ePncM1s/Ju
+         xmgw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=YUgBpryE8mXr1avSfc+OhxEDaGIENzQ0m9sBnl6u+u4=;
+        b=Ve4Uh/o/qWwRBzVkZ4BbqBQ6lg7aaDgShmYd4da3wCh4LHrI6Stthlw2ilV+3a5DoJ
+         IT+FGCzz2Ge/2ARI8oULTKE+Hpj6sMvUmbKRDG2FjZt0bXx8ypZbpJIeeVk+hKlJ37tL
+         dKwPksqN2ln469kUtkh1LdogKhnBUSIo8PjpoYtc/fOnvMWqoFi9PhAsUsNGlPc9zbgP
+         dPJDlT8lzof+vr8E8B/St487xJVMpw4PAJ3cjvlc8Kr6ontBz3q8b4fDNlgoWyEZnpuK
+         NVwLJdURHphfmNdQEgCjaEcRqHH3zZEdL21cceSvUOW03Vxs/XNlVK4XwgOABKZbVJbH
+         WfBw==
+X-Gm-Message-State: AOAM531GinWfRdYNtDvOlcGAuTdGKAH8/tmqXlWp5lx6vuLFs8FqCw1i
+        lQ3k3v3XO3/H0aGOKw3l3Y4=
+X-Google-Smtp-Source: ABdhPJyOwqNJtT4nQYvJe58ZJ/OBeU34Ic4eJYdOjSEYL8zkb60lVqZ1veUtMH1U9HRB5U6cW2LCxQ==
+X-Received: by 2002:a92:35c7:: with SMTP id c68mr13078270ilf.251.1604981420053;
+        Mon, 09 Nov 2020 20:10:20 -0800 (PST)
+Received: from localhost.localdomain (c-73-242-81-227.hsd1.mn.comcast.net. [73.242.81.227])
+        by smtp.gmail.com with ESMTPSA id e21sm6658842ioc.0.2020.11.09.20.10.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 09 Nov 2020 20:10:19 -0800 (PST)
+From:   Ross Schmidt <ross.schm.dev@gmail.com>
+To:     gregkh@linuxfoundation.org
+Cc:     devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
+        Ross Schmidt <ross.schm.dev@gmail.com>
+Subject: [PATCH 01/10] staging: rtl8723bs: clean up line spacing
+Date:   Mon,  9 Nov 2020 22:09:59 -0600
+Message-Id: <20201110041008.15847-1-ross.schm.dev@gmail.com>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20201110040725.1478297-1-paul.gortmaker@windriver.com>
-References: <20201110040725.1478297-1-paul.gortmaker@windriver.com>
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [128.224.252.2]
-X-ClientProxiedBy: YT1PR01CA0136.CANPRD01.PROD.OUTLOOK.COM
- (2603:10b6:b01:2f::15) To DM6PR11MB4545.namprd11.prod.outlook.com
- (2603:10b6:5:2ae::14)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from t5610.wrs.com (128.224.252.2) by YT1PR01CA0136.CANPRD01.PROD.OUTLOOK.COM (2603:10b6:b01:2f::15) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3541.21 via Frontend Transport; Tue, 10 Nov 2020 04:07:57 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: ec6accbb-6f18-4a60-c173-08d8852e34f9
-X-MS-TrafficTypeDiagnostic: DM6PR11MB4489:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <DM6PR11MB4489F4F69ED6376BC1DC9DED83E90@DM6PR11MB4489.namprd11.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 2UtIWmRKYP9E3Q+qX0SfDOqaEcZFRwEl5G2hxdI+GQqo7C0HlmJUMP8zhca7wtUoNRuA5npe8pno5UTaPD6c6WTQizRWjt9IdmiYaWhVKZR9ZP+FE85ccDHKYm5EqDEMAYCyZyC2TG1ESD7kChmEg79y2M5Mfrdt7tdoLJcIQBiTqMs58ACW/JaNofJnSqAYnBe6A6VBhgLQnJ4S4CcCdDQSHErpFxWafu8EoZVZiYSXFx6Z4etDzaied5UBU0peIGaXg1E8P1OwABsmoEktbmtn8yFmbf4Dq4ULFPZExuow5vRx8W9aZ0tmK/FmsxViv/DStw4W/GvySq9dCDOPaw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR11MB4545.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39850400004)(396003)(346002)(376002)(366004)(136003)(2616005)(1076003)(956004)(107886003)(26005)(6506007)(16526019)(186003)(52116002)(6666004)(4326008)(6486002)(83380400001)(5660300002)(66556008)(66946007)(66476007)(8936002)(2906002)(6512007)(8676002)(36756003)(6916009)(316002)(86362001)(478600001)(44832011);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: r9Eqogh7SFXFF5lmmz/yNMZ7l/wv0WggAlsVcexpODr2oqFAucR5GM3SNqRmweSD+h0QomHCYPmx7m8mTJIpiyNgy20i1y1iuwhiwoIXZ0dDjAkIw5hInJOpJX6q9jZ1zv5uoANUcQwOdiL/vjIII9An5PSK6of+Dz3ekbjz2yPkZ6AOJtGUuVuK13VkqUsgY9MUFW4FURgacPiuop8l1eCUx+f7f3AOsM4YHqlmPzQ/m4UThSBlXh4q0eU/M6mVZhjYhyFeFXS+LUEkP+2RTQykPwTsMV9dUnhO+Z9pXOGXJP6fchyBbqelKP9AdakOYIQZEFZaIVy62V4zrIX+uwSgjBeavgws2P5/07psk31EchJJd1jJlszzEPg7qrod3Y/L4K4dlHkedZJEgE/qq0SZZdewqI/Tp5AidHDsLck5tTB+5JbVJlzCIwzbDAro38vl8aey/v++AJ8mrEE/dMdZ+6VpXJYnzjBVHsh69Mt3tASgn5iFK8GlqufKfSsZOy2xohjERfeqHMkGvgZePI41JbldLUYWXrtTgCv7weAtFInVepVd1L+6Uc9zHheu2R06B/tr/CqibkO+KVmKoJY5UpUWnl2UFXmx8l57M7wp2BT9EBd5hHJdOOarJewGa91mU0+ZEqQLHv+Fdv+Xow==
-X-OriginatorOrg: windriver.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: ec6accbb-6f18-4a60-c173-08d8852e34f9
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR11MB4545.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Nov 2020 04:07:57.8331
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ddb2873-a1ad-4a18-ae4e-4644631433be
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: WKPvyOwUY6bBDHcuqs6bWsmfsK/IvRdSdLGFhykmrMyGnMHPzyZX9XZMcC+H0C3M2y0z7WioU7ZvslvHHN9PgwVR5GIhNfZNZSKGEW6kcPQ=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR11MB4489
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It seems that a common configuration is to use the 1st couple cores
-for housekeeping tasks, and or driving a busy peripheral that generates
-a lot of interrupts, or something similar.
+Add or remove lines to fix coding style issues and clear checkpatch.
 
-This tends to leave the remaining ones to form a pool of similarly
-configured cores to take on the real workload of interest to the user.
+WARNING: Missing a blank line after declarations
+CHECK: Please use a blank line after function/struct/union/enum declarations
+CHECK: Please don't use multiple blank lines
 
-So on machine A - with 32 cores, it could be 0-3 for "system" and then
-4-31 being used in boot args like nohz_full=, or rcu_nocbs= as part of
-setting up the worker pool of CPUs.
-
-But then newer machine B is added, and it has 48 cores, and so while
-the 0-3 part remains unchanged, the pool setup cpu list becomes 4-47.
-
-Deployment would be easier if we could just simply replace 31 and 47
-with "last" and let the system substitute in the actual number at boot;
-a number that it knows better than we do.
-
-No need to have custom boot args per node, no need to do a trial boot
-in order to snoop /proc/cpuinfo and/or /sys/devices/system/cpu - no
-more fencepost errors of using 32 and 48 instead of 31 and 47.
-
-A generic token replacement is used to substitute "last" with the
-number of CPUs present before handing off to bitmap processing.  But
-it could just as easily be used to replace any placeholder token with
-any other token or value only known at/after boot.
-
-Signed-off-by: Paul Gortmaker <paul.gortmaker@windriver.com>
+Signed-off-by: Ross Schmidt <ross.schm.dev@gmail.com>
 ---
- .../admin-guide/kernel-parameters.rst         |   7 ++
- lib/cpumask.c                                 | 112 +++++++++++++++++-
- 2 files changed, 117 insertions(+), 2 deletions(-)
+ drivers/staging/rtl8723bs/core/rtw_security.c | 29 ++++---------------
+ drivers/staging/rtl8723bs/core/rtw_sta_mgt.c  |  7 +----
+ .../staging/rtl8723bs/core/rtw_wlan_util.c    | 12 +++++++-
+ drivers/staging/rtl8723bs/core/rtw_xmit.c     |  3 ++
+ 4 files changed, 20 insertions(+), 31 deletions(-)
 
-diff --git a/Documentation/admin-guide/kernel-parameters.rst b/Documentation/admin-guide/kernel-parameters.rst
-index 9e1c4522e1f0..362dea55034e 100644
---- a/Documentation/admin-guide/kernel-parameters.rst
-+++ b/Documentation/admin-guide/kernel-parameters.rst
-@@ -83,6 +83,13 @@ will provide an empty/cleared cpu mask for the associated boot argument.
- Note that "all" and "none" are not necessarily valid/sensible input values
- for each available parameter expecting a CPU list.
- 
-+        foo_cpus=1,3,5,16-last
-+
-+will at runtime, replace "last" with the number of the last (highest number)
-+present CPU on the system.  Thus a common deployment can be used on multiple
-+systems with different total number of cores present, without needing to
-+evaluate the total core count in advance on each system.
-+
- This document may not be entirely up to date and comprehensive. The command
- "modinfo -p ${modulename}" shows a current list of all parameters of a loadable
- module. Loadable modules, after being loaded into the running kernel, also
-diff --git a/lib/cpumask.c b/lib/cpumask.c
-index eb8b1c92501e..fa56d622c1d8 100644
---- a/lib/cpumask.c
-+++ b/lib/cpumask.c
-@@ -3,6 +3,7 @@
- #include <linux/kernel.h>
- #include <linux/bitops.h>
- #include <linux/string.h>
-+#include <linux/ctype.h>
- #include <linux/cpumask.h>
- #include <linux/export.h>
- #include <linux/memblock.h>
-@@ -96,15 +97,97 @@ int cpumask_next_wrap(int n, const struct cpumask *mask, int start, bool wrap)
+diff --git a/drivers/staging/rtl8723bs/core/rtw_security.c b/drivers/staging/rtl8723bs/core/rtw_security.c
+index 81c15895f646..894e7beae96f 100644
+--- a/drivers/staging/rtl8723bs/core/rtw_security.c
++++ b/drivers/staging/rtl8723bs/core/rtw_security.c
+@@ -1008,7 +1008,6 @@ static void shift_row(u8 *in, u8 *out)
+ 		out[15] = in[11];
  }
- EXPORT_SYMBOL(cpumask_next_wrap);
  
-+/*
-+ * Basically strstr() but given "foo", ignore "foobar", "myfoo", "foofoo"
-+ * and "foo2bar" -- i.e. any case where the token is a word fragment.
-+ */
-+static char *cpumask_find_token(const char *str, const char *token)
-+{
-+	char *here = strstr(str, token);
-+	size_t tlen = strlen(token);
-+
-+	if (!here)
-+		return NULL;
-+
-+	while (here) {
-+		size_t offset = here - str;
-+		char prev, next = str[offset + tlen];
-+
-+		if (offset)
-+			prev = str[offset - 1];
-+		else
-+			prev = '\0';
-+
-+		if (!(isalnum(prev) || isalnum(next)))
-+			break;
-+
-+		here = strstr(here + tlen, token);
-+	}
-+
-+	return here;
-+}
-+
-+/*
-+ * replace old token with new token: Given a convenience or placeholder
-+ * token "last" and an associated value not known until boot, of say 1234,
-+ * replace instances of "last" with "1234".
-+ *
-+ * For example src = "1,3,last,7-last,9,lastly,last-2047\0"  results in a
-+ *            dest = "1,3,1234,7-1234,9,lastly,1234-2047\0"
-+ *
-+ * The destination string may be shorter than, equal to, or longer than
-+ * the source string -- based on whether the new token strlen is shorter
-+ * than, equal to, or longer than the old token strlen.
-+ * The caller must allocate dest space accordingly with that in mind.
-+ */
-+
-+static void cpulist_replace_token(char *dest, const char *src,
-+			   const char *old_token, const char *new_token)
-+{
-+	const char *src_start = src;
-+	char *dest_start = dest, *here;
-+	const size_t olen = strlen(old_token);
-+	const size_t nlen = strlen(new_token);
-+
-+	here = cpumask_find_token(src_start, old_token);
-+	if (!here) {
-+		strcpy(dest, src);
-+		return;
-+	}
-+
-+	while (here) {
-+		size_t offset = here - src_start;
-+
-+		strncpy(dest_start, src_start, offset);
-+		dest_start += offset;
-+		src_start += offset;
-+
-+		strcpy(dest_start, new_token);
-+		dest_start += nlen;
-+		src_start += olen;
-+
-+		strcpy(dest_start, src_start);	/* remainder of string */
-+		here = cpumask_find_token(src_start, old_token);
-+	}
-+}
-+
- /**
-  * cpulist_parse - extract a cpumask from a user string of ranges
-  * @buf: the buffer to extract from
-  * @dstp: the cpumask to set.
-  *
-  * Returns -errno, or 0 for success.
-+ *
-+ * Marked __ref because memblock_*() are __meminit and we use them for
-+ * any early calls before slab is available.
-  */
--int cpulist_parse(const char *buf, struct cpumask *dstp)
-+int __ref cpulist_parse(const char *buf, struct cpumask *dstp)
+-
+ static void mix_column(u8 *in, u8 *out)
  {
-+	int r;
-+	char *cpulist, last_cpu[5];	/* NR_CPUS <= 9999 */
-+	size_t len = strlen(buf) + 1;	/* don't forget '\0' */
-+	bool early = !slab_is_available();
-+
- 	if (!strcmp(buf, "all")) {
- 		cpumask_setall(dstp);
- 		return 0;
-@@ -115,7 +198,32 @@ int cpulist_parse(const char *buf, struct cpumask *dstp)
- 		return 0;
- 	}
- 
--	return bitmap_parselist(buf, cpumask_bits(dstp), nr_cpumask_bits);
-+	/*
-+	 * strlen("last") means "len" is OK up to NR_CPUS <= 9999.
-+	 */
-+	if (early)
-+		cpulist = memblock_alloc(len, SMP_CACHE_BYTES);
-+	else
-+		cpulist = kzalloc(len, GFP_KERNEL);
-+
-+	if (cpulist == NULL)
-+		return -ENOMEM;
-+
-+	/*
-+	 * bitmap_parselist has no concept of "last" CPU, so we have to
-+	 * replace "last" with a real number in dest copy of the string.
-+	 */
-+	sprintf(last_cpu, "%d", cpumask_last(cpu_present_mask));
-+	cpulist_replace_token(cpulist, buf, "last", last_cpu);
-+
-+	r = bitmap_parselist(cpulist, cpumask_bits(dstp), nr_cpumask_bits);
-+
-+	if (early)
-+		memblock_free((phys_addr_t)cpulist, len);
-+	else
-+		kfree(cpulist);
-+
-+	return r;
+ 		sint i;
+@@ -1098,7 +1097,6 @@ static void aes128k128d(u8 *key, u8 *data, u8 *ciphertext)
+ 		}
  }
- EXPORT_SYMBOL(cpulist_parse);
+ 
+-
+ /************************************************/
+ /* construct_mic_iv()                           */
+ /* Builds the MIC IV from header fields and PN  */
+@@ -1145,7 +1143,6 @@ static void construct_mic_iv(
+ 		mic_iv[15] = (unsigned char) (payload_length % 256);
+ }
+ 
+-
+ /************************************************/
+ /* construct_mic_header1()                      */
+ /* Builds the first MIC header block from       */
+@@ -1183,7 +1180,6 @@ static void construct_mic_header1(
+ 		mic_header1[15] = mpdu[15];
+ }
+ 
+-
+ /************************************************/
+ /* construct_mic_header2()                      */
+ /* Builds the last MIC header block from        */
+@@ -1211,7 +1207,6 @@ static void construct_mic_header2(
+ 		mic_header2[6] = 0x00;
+ 		mic_header2[7] = 0x00; /* mpdu[23]; */
+ 
+-
+ 		if (!qc_exists && a4_exists) {
+ 			for (i = 0; i < 6; i++)
+ 				mic_header2[8+i] = mpdu[24+i];   /* A4 */
+@@ -1277,7 +1272,6 @@ static void construct_ctr_preload(
+ 	ctr_preload[15] =  (unsigned char) (c % 256);
+ }
+ 
+-
+ /************************************/
+ /* bitwise_xor()                    */
+ /* A 128 bit, bitwise exclusive or  */
+@@ -1291,7 +1285,6 @@ static void bitwise_xor(u8 *ina, u8 *inb, u8 *out)
+ 		}
+ }
+ 
+-
+ static sint aes_cipher(u8 *key, uint	hdrlen,
+ 			u8 *pframe, uint plen)
+ {
+@@ -1314,7 +1307,6 @@ static sint aes_cipher(u8 *key, uint	hdrlen,
+ 
+ 	frsubtype = frsubtype>>4;
+ 
+-
+ 	memset((void *)mic_iv, 0, 16);
+ 	memset((void *)mic_header1, 0, 16);
+ 	memset((void *)mic_header2, 0, 16);
+@@ -1377,7 +1369,6 @@ static sint aes_cipher(u8 *key, uint	hdrlen,
+ 		qc_exists
+ 	);
+ 
+-
+ 	payload_remainder = plen % 16;
+ 	num_blocks = plen / 16;
+ 
+@@ -1484,7 +1475,6 @@ static sint aes_cipher(u8 *key, uint	hdrlen,
+ u32 rtw_aes_encrypt(struct adapter *padapter, u8 *pxmitframe)
+ {	/*  exclude ICV */
+ 
+-
+ 	/*static*/
+ /* 	unsigned char message[MAX_MSG_SIZE]; */
+ 
+@@ -1551,13 +1541,11 @@ static sint aes_decipher(u8 *key, uint	hdrlen,
+ 	u8 padded_buffer[16];
+ 	u8 mic[8];
+ 
+-
+ 	uint frtype  = GetFrameType(pframe);
+ 	uint frsubtype  = GetFrameSubType(pframe);
+ 
+ 	frsubtype = frsubtype>>4;
+ 
+-
+ 	memset((void *)mic_iv, 0, 16);
+ 	memset((void *)mic_header1, 0, 16);
+ 	memset((void *)mic_header2, 0, 16);
+@@ -1603,7 +1591,6 @@ static sint aes_decipher(u8 *key, uint	hdrlen,
+ 	} else
+ 		qc_exists = 0;
+ 
+-
+ 	/*  now, decrypt pframe with hdrlen offset and plen long */
+ 
+ 	payload_index = hdrlen + 8; /*  8 is for extiv */
+@@ -1649,7 +1636,6 @@ static sint aes_decipher(u8 *key, uint	hdrlen,
+ 	if ((hdrlen + plen+8) <= MAX_MSG_SIZE)
+ 		memcpy((void *)message, pframe, (hdrlen + plen+8)); /* 8 is for ext iv len */
+ 
+-
+ 	pn_vector[0] = pframe[hdrlen];
+ 	pn_vector[1] = pframe[hdrlen+1];
+ 	pn_vector[2] = pframe[hdrlen+4];
+@@ -1657,8 +1643,6 @@ static sint aes_decipher(u8 *key, uint	hdrlen,
+ 	pn_vector[4] = pframe[hdrlen+6];
+ 	pn_vector[5] = pframe[hdrlen+7];
+ 
+-
+-
+ 	construct_mic_iv(
+ 		mic_iv,
+ 		qc_exists,
+@@ -1682,7 +1666,6 @@ static sint aes_decipher(u8 *key, uint	hdrlen,
+ 		qc_exists
+ 	);
+ 
+-
+ 	payload_remainder = (plen-8) % 16;
+ 	num_blocks = (plen-8) / 16;
+ 
+@@ -1808,14 +1791,11 @@ static sint aes_decipher(u8 *key, uint	hdrlen,
+ u32 rtw_aes_decrypt(struct adapter *padapter, u8 *precvframe)
+ {	/*  exclude ICV */
+ 
+-
+ 	/*static*/
+ /* 	unsigned char message[MAX_MSG_SIZE]; */
+ 
+-
+ 	/* Intermediate Buffers */
+ 
+-
+ 	sint		length;
+ 	u8 *pframe, *prwskey;	/*  *payload,*iv */
+ 	struct	sta_info 	*stainfo;
+@@ -1879,7 +1859,6 @@ u32 rtw_aes_decrypt(struct adapter *padapter, u8 *precvframe)
+ 			} else
+ 				prwskey = &stainfo->dot118021x_UncstKey.skey[0];
+ 
+-
+ 			length = ((union recv_frame *)precvframe)->u.hdr.len-prxattrib->hdrlen-prxattrib->iv_len;
+ 
+ 			res = aes_decipher(prwskey, prxattrib->hdrlen, pframe, length);
+@@ -2040,6 +2019,7 @@ const u32 Te0[256] = {
+ 	0x824141c3U, 0x299999b0U, 0x5a2d2d77U, 0x1e0f0f11U,
+ 	0x7bb0b0cbU, 0xa85454fcU, 0x6dbbbbd6U, 0x2c16163aU,
+ };
++
+ const u32 Td0[256] = {
+ 	0x51f4a750U, 0x7e416553U, 0x1a17a4c3U, 0x3a275e96U,
+ 	0x3bab6bcbU, 0x1f9d45f1U, 0xacfa58abU, 0x4be30393U,
+@@ -2106,6 +2086,7 @@ const u32 Td0[256] = {
+ 	0x39a80171U, 0x080cb3deU, 0xd8b4e49cU, 0x6456c190U,
+ 	0x7bcb8461U, 0xd532b670U, 0x486c5c74U, 0xd0b85742U,
+ };
++
+ const u8 Td4s[256] = {
+ 	0x52U, 0x09U, 0x6aU, 0xd5U, 0x30U, 0x36U, 0xa5U, 0x38U,
+ 	0xbfU, 0x40U, 0xa3U, 0x9eU, 0x81U, 0xf3U, 0xd7U, 0xfbU,
+@@ -2140,6 +2121,7 @@ const u8 Td4s[256] = {
+ 	0x17U, 0x2bU, 0x04U, 0x7eU, 0xbaU, 0x77U, 0xd6U, 0x26U,
+ 	0xe1U, 0x69U, 0x14U, 0x63U, 0x55U, 0x21U, 0x0cU, 0x7dU,
+ };
++
+ const u8 rcons[] = {
+ 	0x01, 0x02, 0x04, 0x08, 0x10, 0x20, 0x40, 0x80, 0x1B, 0x36
+ 	/* for 128-bit blocks, Rijndael never uses more than 10 rcon values */
+@@ -2221,6 +2203,7 @@ d##3 = TE0(s##3) ^ TE1(s##0) ^ TE2(s##1) ^ TE3(s##2) ^ rk[4 * i + 3]
+ static void *aes_encrypt_init(u8 *key, size_t len)
+ {
+ 	u32 *rk;
++
+ 	if (len != 16)
+ 		return NULL;
+ 	rk = rtw_malloc(AES_PRIV_SIZE);
+@@ -2235,7 +2218,6 @@ static void aes_128_encrypt(void *ctx, u8 *plain, u8 *crypt)
+ 	rijndaelEncrypt(ctx, plain, crypt);
+ }
+ 
+-
+ static void gf_mulx(u8 *pad)
+ {
+ 	int i, carry;
+@@ -2254,7 +2236,6 @@ static void aes_encrypt_deinit(void *ctx)
+ 	kfree_sensitive(ctx);
+ }
+ 
+-
+ /**
+  * omac1_aes_128_vector - One-Key CBC MAC (OMAC1) hash with AES-128
+  * @key: 128-bit key for the hash operation
+@@ -2328,7 +2309,6 @@ static int omac1_aes_128_vector(u8 *key, size_t num_elem,
+ 	return 0;
+ }
+ 
+-
+ /**
+  * omac1_aes_128 - One-Key CBC MAC (OMAC1) hash with AES-128 (aka AES-CMAC)
+  * @key: 128-bit key for the hash operation
+@@ -2371,6 +2351,7 @@ u8 rtw_handle_tkip_countermeasure(struct adapter *adapter, const char *caller)
+ 
+ 	if (securitypriv->btkip_countermeasure) {
+ 		unsigned long passing_ms = jiffies_to_msecs(jiffies - securitypriv->btkip_countermeasure_time);
++
+ 		if (passing_ms > 60*1000) {
+ 			DBG_871X_LEVEL(_drv_always_, "%s(%s) countermeasure time:%lus > 60s\n",
+ 				caller, ADPT_ARG(adapter), passing_ms/1000);
+diff --git a/drivers/staging/rtl8723bs/core/rtw_sta_mgt.c b/drivers/staging/rtl8723bs/core/rtw_sta_mgt.c
+index dad982ed4ecf..f24ad8b1a400 100644
+--- a/drivers/staging/rtl8723bs/core/rtw_sta_mgt.c
++++ b/drivers/staging/rtl8723bs/core/rtw_sta_mgt.c
+@@ -163,6 +163,7 @@ u32 _rtw_free_sta_priv(struct	sta_priv *pstapriv)
+ 
+ 			while (phead != plist) {
+ 				int i;
++
+ 				psta = LIST_CONTAINOR(plist, struct sta_info, hash_list);
+ 				plist = get_next(plist);
+ 
+@@ -282,7 +283,6 @@ struct	sta_info *rtw_alloc_stainfo(struct	sta_priv *pstapriv, u8 *hwaddr)
+ 			rtw_init_recv_timer(preorder_ctrl);
+ 		}
+ 
+-
+ 		/* init for DM */
+ 		psta->rssi_stat.UndecoratedSmoothedPWDB = (-1);
+ 		psta->rssi_stat.UndecoratedSmoothedCCK = (-1);
+@@ -297,7 +297,6 @@ struct	sta_info *rtw_alloc_stainfo(struct	sta_priv *pstapriv, u8 *hwaddr)
+ 
+ exit:
+ 
+-
+ 	return psta;
+ }
+ 
+@@ -315,14 +314,12 @@ u32 rtw_free_stainfo(struct adapter *padapter, struct sta_info *psta)
+ 	if (!psta)
+ 		goto exit;
+ 
+-
+ 	spin_lock_bh(&psta->lock);
+ 	psta->state &= ~_FW_LINKED;
+ 	spin_unlock_bh(&psta->lock);
+ 
+ 	pfree_sta_queue = &pstapriv->free_sta_queue;
+ 
+-
+ 	pstaxmitpriv = &psta->sta_xmitpriv;
+ 
+ 	/* list_del_init(&psta->sleep_list); */
+@@ -405,7 +402,6 @@ u32 rtw_free_stainfo(struct adapter *padapter, struct sta_info *psta)
+ 
+ 		del_timer_sync(&preorder_ctrl->reordering_ctrl_timer);
+ 
+-
+ 		ppending_recvframe_queue = &preorder_ctrl->pending_recvframe_queue;
+ 
+ 		spin_lock_bh(&ppending_recvframe_queue->lock);
+@@ -531,7 +527,6 @@ struct sta_info *rtw_get_stainfo(struct sta_priv *pstapriv, u8 *hwaddr)
+ 	phead = &(pstapriv->sta_hash[index]);
+ 	plist = get_next(phead);
+ 
+-
+ 	while (phead != plist) {
+ 
+ 		psta = LIST_CONTAINOR(plist, struct sta_info, hash_list);
+diff --git a/drivers/staging/rtl8723bs/core/rtw_wlan_util.c b/drivers/staging/rtl8723bs/core/rtw_wlan_util.c
+index c9ac5c685d74..f28536fbc4fb 100644
+--- a/drivers/staging/rtl8723bs/core/rtw_wlan_util.c
++++ b/drivers/staging/rtl8723bs/core/rtw_wlan_util.c
+@@ -259,12 +259,14 @@ void UpdateBrateTblForSoftAP(u8 *bssrateset, u32 bssratelen)
+ void Save_DM_Func_Flag(struct adapter *padapter)
+ {
+ 	u8 bSaveFlag = true;
++
+ 	rtw_hal_set_hwreg(padapter, HW_VAR_DM_FUNC_OP, (u8 *)(&bSaveFlag));
+ }
+ 
+ void Restore_DM_Func_Flag(struct adapter *padapter)
+ {
+ 	u8 bSaveFlag = false;
++
+ 	rtw_hal_set_hwreg(padapter, HW_VAR_DM_FUNC_OP, (u8 *)(&bSaveFlag));
+ }
+ 
+@@ -304,6 +306,7 @@ inline void rtw_set_oper_ch(struct adapter *adapter, u8 ch)
+ 
+ 		for (i = 0; i < dvobj->iface_nums; i++) {
+ 			struct adapter *iface = dvobj->padapters[i];
++
+ 			cnt += scnprintf(msg+cnt, len-cnt, " [%s:", ADPT_ARG(iface));
+ 			if (iface->mlmeextpriv.cur_channel == ch)
+ 				cnt += scnprintf(msg+cnt, len-cnt, "C");
+@@ -420,6 +423,7 @@ inline u8 *get_my_bssid(struct wlan_bssid_ex *pnetwork)
+ u16 get_beacon_interval(struct wlan_bssid_ex *bss)
+ {
+ 	__le16 val;
++
+ 	memcpy((unsigned char *)&val, rtw_get_beacon_interval_from_ie(bss->IEs), 2);
+ 
+ 	return le16_to_cpu(val);
+@@ -493,6 +497,7 @@ void invalidate_cam_all(struct adapter *padapter)
+ static u32 _ReadCAM(struct adapter *padapter, u32 addr)
+ {
+ 	u32 count = 0, cmd;
++
+ 	cmd = CAM_POLLINIG | addr;
+ 	rtw_write32(padapter, RWCAM, cmd);
+ 
+@@ -503,9 +508,11 @@ static u32 _ReadCAM(struct adapter *padapter, u32 addr)
+ 
+ 	return rtw_read32(padapter, REG_CAMREAD);
+ }
++
+ void read_cam(struct adapter *padapter, u8 entry, u8 *get_key)
+ {
+ 	u32 j, addr, cmd;
++
+ 	addr = entry << 3;
+ 
+ 	/* DBG_8192C("********* DUMP CAM Entry_#%02d***************\n", entry); */
+@@ -1876,7 +1883,6 @@ void adaptive_early_32k(struct mlme_ext_priv *pmlmeext, u8 *pframe, uint len)
+ /*
+ 	DBG_871X("%s(): (a)bcn_cnt = %d\n", __func__, pmlmeext->bcn_cnt);
+ 
+-
+ 	for (i = 0; i<9; i++)
+ 	{
+ 		DBG_871X("%s():bcn_delay_cnt[%d]=%d,  bcn_delay_ratio[%d]=%d\n", __func__, i,
+@@ -1980,12 +1986,14 @@ void rtw_release_macid(struct adapter *padapter, struct sta_info *psta)
+ 	}
+ 	spin_unlock_bh(&pdvobj->lock);
+ }
++
+ /* For 8188E RA */
+ u8 rtw_search_max_mac_id(struct adapter *padapter)
+ {
+ 	u8 max_mac_id = 0;
+ 	struct dvobj_priv *pdvobj = adapter_to_dvobj(padapter);
+ 	int i;
++
+ 	spin_lock_bh(&pdvobj->lock);
+ 	for (i = (NUM_STA-1); i >= 0 ; i--) {
+ 		if (pdvobj->macid[i] == true)
+@@ -2111,6 +2119,7 @@ void rtw_get_current_ip_address(struct adapter *padapter, u8 *pcurrentip)
+ 			pmlmeinfo->state & WIFI_FW_AP_STATE) {
+ 		if (my_ip_ptr) {
+ 			struct in_ifaddr *my_ifa_list = my_ip_ptr->ifa_list;
++
+ 			if (my_ifa_list) {
+ 				ipaddress[0] = my_ifa_list->ifa_address & 0xFF;
+ 				ipaddress[1] = (my_ifa_list->ifa_address >> 8) & 0xFF;
+@@ -2149,6 +2158,7 @@ void rtw_get_sec_iv(struct adapter *padapter, u8 *pcur_dot11txpn, u8 *StaAddr)
+ 		pcur_dot11txpn[5], pcur_dot11txpn[6], pcur_dot11txpn[7]);
+ 	}
+ }
++
+ void rtw_set_sec_pn(struct adapter *padapter)
+ {
+ 		struct sta_info         *psta;
+diff --git a/drivers/staging/rtl8723bs/core/rtw_xmit.c b/drivers/staging/rtl8723bs/core/rtw_xmit.c
+index aaafa38c34c4..eba29abfa832 100644
+--- a/drivers/staging/rtl8723bs/core/rtw_xmit.c
++++ b/drivers/staging/rtl8723bs/core/rtw_xmit.c
+@@ -398,6 +398,7 @@ static void update_attrib_vcs_info(struct adapter *padapter, struct xmit_frame *
+ 			/* check HT op mode */
+ 			if (pattrib->ht_en) {
+ 				u8 HTOpMode = pmlmeinfo->HT_protection;
++
+ 				if ((pmlmeext->cur_bwmode && (HTOpMode == 2 || HTOpMode == 3)) ||
+ 					(!pmlmeext->cur_bwmode && HTOpMode == 3)) {
+ 					pattrib->vcs_mode = RTS_CTS;
+@@ -1003,6 +1004,7 @@ s32 rtw_make_wlanhdr(struct adapter *padapter, u8 *hdr, struct pkt_attrib *pattr
+ 		/* Update Seq Num will be handled by f/w */
+ 		{
+ 			struct sta_info *psta;
++
+ 			psta = rtw_get_stainfo(&padapter->stapriv, pattrib->ra);
+ 			if (pattrib->psta != psta) {
+ 				DBG_871X("%s, pattrib->psta(%p) != psta(%p)\n", __func__, pattrib->psta, psta);
+@@ -1243,6 +1245,7 @@ s32 rtw_mgmt_xmitframe_coalesce(struct adapter *padapter, _pkt *pkt, struct xmit
+ 	struct ieee80211_hdr	*pwlanhdr;
+ 	u8 MME[_MME_IE_LENGTH_];
+ 	u32 ori_len;
++
+ 	mem_start = pframe = (u8 *)(pxmitframe->buf_addr) + TXDESC_OFFSET;
+ 	pwlanhdr = (struct ieee80211_hdr *)pframe;
  
 -- 
 2.25.1
