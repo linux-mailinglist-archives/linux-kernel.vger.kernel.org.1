@@ -2,448 +2,655 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1BE32ADA24
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 16:16:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D8122ADA2E
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 16:18:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732768AbgKJPQe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 10:16:34 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58048 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730842AbgKJPQd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 10:16:33 -0500
-Received: from aquarius.haifa.ibm.com (nesher1.haifa.il.ibm.com [195.110.40.7])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S1731961AbgKJPSG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 10:18:06 -0500
+Received: from smtprelay-out1.synopsys.com ([149.117.87.133]:39668 "EHLO
+        smtprelay-out1.synopsys.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730594AbgKJPSC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Nov 2020 10:18:02 -0500
+Received: from mailhost.synopsys.com (us03-mailhost1.synopsys.com [10.4.17.17])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C1297207BB;
-        Tue, 10 Nov 2020 15:16:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605021392;
-        bh=GcYHmVpON//HgfC+Q9fSTKhraRbGw/gcP2/N7E5anYQ=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=IAdulAM/GhGvt6RpFgcTAcNO3AY5mIlRqeatIyKlYUDrx+cWKmckufJHghk9zmVVl
-         uFJKYcKDPTzMLxxDuwlgj6/nr17KKkxaQ5R/1TKG735EcQUESuSBmDi/EoajcuWPLN
-         URTis7QarF/wuXqwOpFPGh7dYTJmWZlZ2+Oy/pew=
-From:   Mike Rapoport <rppt@kernel.org>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andy Lutomirski <luto@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christopher Lameter <cl@linux.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        David Hildenbrand <david@redhat.com>,
-        Elena Reshetova <elena.reshetova@intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
-        James Bottomley <jejb@linux.ibm.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Matthew Wilcox <willy@infradead.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Rick Edgecombe <rick.p.edgecombe@intel.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Tycho Andersen <tycho@tycho.ws>, Will Deacon <will@kernel.org>,
-        linux-api@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-nvdimm@lists.01.org, linux-riscv@lists.infradead.org,
-        x86@kernel.org
-Subject: [PATCH v8 9/9] secretmem: test: add basic selftest for memfd_secret(2)
-Date:   Tue, 10 Nov 2020 17:14:44 +0200
-Message-Id: <20201110151444.20662-10-rppt@kernel.org>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201110151444.20662-1-rppt@kernel.org>
-References: <20201110151444.20662-1-rppt@kernel.org>
+        by smtprelay-out1.synopsys.com (Postfix) with ESMTPS id C7FEAC00AB;
+        Tue, 10 Nov 2020 15:18:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=synopsys.com; s=mail;
+        t=1605021481; bh=dcoxAkfH+z4y28tUEYWjXwRbzROC0UGRnJsnLbVE3fk=;
+        h=From:To:CC:Subject:Date:References:In-Reply-To:From;
+        b=TvmkSSr1cDhZQNAbSWCIw+ulbFDCAuCh2u/4e5AZngmRzPXpVXZUalEaAneokaaQY
+         YqBJmXJuQHsctdCjLv1tABdBsupsCTdIJjio3bbZEiOIJ8edT2GYO/6CMDexxrhTw6
+         uIwTvg6v9Z59zbVkpeIezd8R168eaCGjrsYRx5Q+2hBvx0ewiAaMdWQ+Xmgyee6qQq
+         aogKIGZttampDnOWDBhkzJlV9wqMcOL3rRbXQDoWGpPJYHC4d2GfQOB+f0b3v35DeB
+         U7sRtIR1sPgryVZtAIYiM5x23HkqZaHEtukm4p9dES1uaMqw7GwBZTQy3SI4T4smGT
+         yEUbiO0j82Pew==
+Received: from o365relay-in.synopsys.com (us03-o365relay1.synopsys.com [10.4.161.137])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mailhost.synopsys.com (Postfix) with ESMTPS id 81260A0077;
+        Tue, 10 Nov 2020 15:17:58 +0000 (UTC)
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11lp2171.outbound.protection.outlook.com [104.47.58.171])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client CN "mail.protection.outlook.com", Issuer "GlobalSign Organization Validation CA - SHA256 - G3" (verified OK))
+        by o365relay-in.synopsys.com (Postfix) with ESMTPS id 778E9800C8;
+        Tue, 10 Nov 2020 15:17:57 +0000 (UTC)
+Authentication-Results: o365relay-in.synopsys.com; dmarc=pass (p=reject dis=none) header.from=synopsys.com
+Authentication-Results: o365relay-in.synopsys.com; spf=pass smtp.mailfrom=gustavo@synopsys.com
+Authentication-Results: o365relay-in.synopsys.com;
+        dkim=pass (1024-bit key; unprotected) header.d=synopsys.com header.i=@synopsys.com header.b="Lj23nugY";
+        dkim-atps=neutral
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=jdqgigOdcG5mWa9u4kLSfPj5L9U+4pevg45ftsVznNtqIursBZfZic8TvXNzOqGnzDiKFk1UyZzx6DP4NoIA2J6TWqtS6Ci7pi0sMEQEQMOt+G672zoPNAu3qTQZ48k0Ibpg1LGpqZfS34d57Te0Gvd2VXN4H6nQW21aacIl8rfaHRSqgijGhou0C824vucFmmUrxOl4YiitAXQ54ALaimoGu3FAzfuMcVz94ZNh9xFKg1ve5CGjgG/Uj8MQQqBpMYWloIemd4bae9o+Y9oY0mZXU5ZiqCEQC2QTRkvGz+ey/gBtiDp7uTri5lXgDYK7N3e9tCbW/bqskcAjFvvOgg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=h1Z0yWRs0CaUTUHldZqF2WEJkuTiV65K+m/ttqF4e0U=;
+ b=P/UiwXgx0MzbHKkLz58YNdWXqJc5yqFVse4/7C0BB+YLkSXtbl5GzJ/JsZTX+rkK/Ea7YRjoD/CUwIQtPKtB9ZyQNr8gIhh88fXVMBv8kKkGKvvRjw99E4mh7lCduTR7UzlZi+5lzFEBx1yA+OZKANH25hc0m6Mx4hQdHiWycEc7YPuaxUXaTp8FEnJ4f3xGTCROsoir+mnIsG+5pdCdsY7yFuLGrP0kFhNMk1dE8iXNB7KcDHJPq33AQvxyeIQyWWxTHAFz+/jO6wxyoPc1jtebc61ZN+fYLISFyc89fAJI4LNRUxdjJO0O54F3gKZIKAfdzPAB20vpFOyZ5nybcw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=synopsys.com; dmarc=pass action=none header.from=synopsys.com;
+ dkim=pass header.d=synopsys.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=synopsys.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=h1Z0yWRs0CaUTUHldZqF2WEJkuTiV65K+m/ttqF4e0U=;
+ b=Lj23nugYbP46b2zCoXJmUPI4ajkcss0DXxv+m8xwWRN4wEk7VW0XSMD89L+jA3+vXtOnFXaMiYCsLFQvnAZX/o4wAk62AZn3qT4kChO5TGjUK1MwqFJTy0aBC+CR4WX8uopZb4nG6YmtrxOcilPvd0/SZqkT3NBKwhlaY2ZWhXE=
+Received: from DM5PR12MB1835.namprd12.prod.outlook.com (2603:10b6:3:10c::9) by
+ DM6PR12MB3083.namprd12.prod.outlook.com (2603:10b6:5:11d::28) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.3541.23; Tue, 10 Nov 2020 15:17:54 +0000
+Received: from DM5PR12MB1835.namprd12.prod.outlook.com
+ ([fe80::48e2:11e1:d2f:d12f]) by DM5PR12MB1835.namprd12.prod.outlook.com
+ ([fe80::48e2:11e1:d2f:d12f%8]) with mapi id 15.20.3541.025; Tue, 10 Nov 2020
+ 15:17:54 +0000
+X-SNPS-Relay: synopsys.com
+From:   Gustavo Pimentel <Gustavo.Pimentel@synopsys.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+CC:     Arnd Bergmann <arnd@arndb.de>,
+        Joao Pinto <Joao.Pinto@synopsys.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>
+Subject: RE: [PATCH 1/5] misc: Add Synopsys DesignWare xData IP driver
+Thread-Topic: [PATCH 1/5] misc: Add Synopsys DesignWare xData IP driver
+Thread-Index: AQHWriel+eqJsOA+OU+SbQ480k3k0qnAH+gAgAFbN0A=
+Date:   Tue, 10 Nov 2020 15:17:54 +0000
+Message-ID: <DM5PR12MB183554F4B1DF1AEA157401BFDAE90@DM5PR12MB1835.namprd12.prod.outlook.com>
+References: <cover.1603998630.git.gustavo.pimentel@synopsys.com>
+ <f60c0cbb87bd1505669bf0cf62c56cbaa8d4c1d2.1603998630.git.gustavo.pimentel@synopsys.com>
+ <20201109173108.GA2371851@kroah.com>
+In-Reply-To: <20201109173108.GA2371851@kroah.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-dg-ref: =?us-ascii?Q?PG1ldGE+PGF0IG5tPSJib2R5LnR4dCIgcD0iYzpcdXNlcnNcZ3VzdGF2b1xh?=
+ =?us-ascii?Q?cHBkYXRhXHJvYW1pbmdcMDlkODQ5YjYtMzJkMy00YTQwLTg1ZWUtNmI4NGJh?=
+ =?us-ascii?Q?MjllMzViXG1zZ3NcbXNnLWU0NjEyYjUxLTIzNjctMTFlYi05OGQ2LWY4OTRj?=
+ =?us-ascii?Q?MjczODA0MlxhbWUtdGVzdFxlNDYxMmI1Mi0yMzY3LTExZWItOThkNi1mODk0?=
+ =?us-ascii?Q?YzI3MzgwNDJib2R5LnR4dCIgc3o9IjEzNDgxIiB0PSIxMzI0OTQ5NTA3MTE3?=
+ =?us-ascii?Q?ODgzNzEiIGg9IllOcW9JQmFIS3Y1aWRTYjh6czhjUXJaWVMxYz0iIGlkPSIi?=
+ =?us-ascii?Q?IGJsPSIwIiBibz0iMSIgY2k9ImNBQUFBRVJIVTFSU1JVRk5DZ1VBQUJRSkFB?=
+ =?us-ascii?Q?QlRnN1duZExmV0FScWFya2NvTVNuYUdwcXVSeWd4S2RvT0FBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFIQUFBQUNrQ0FBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFFQUFRQUJBQUFBTnJTVjNnQUFBQUFBQUFBQUFBQUFBSjRBQUFCbUFHa0Fi?=
+ =?us-ascii?Q?Z0JoQUc0QVl3QmxBRjhBY0FCc0FHRUFiZ0J1QUdrQWJnQm5BRjhBZHdCaEFI?=
+ =?us-ascii?Q?UUFaUUJ5QUcwQVlRQnlBR3NBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUVBQUFBQUFBQUFBZ0FBQUFBQW5nQUFBR1lBYndCMUFHNEFaQUJ5QUhrQVh3?=
+ =?us-ascii?Q?QndBR0VBY2dCMEFHNEFaUUJ5QUhNQVh3Qm5BR1lBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFRQUFBQUFBQUFBQ0FB?=
+ =?us-ascii?Q?QUFBQUNlQUFBQVpnQnZBSFVBYmdCa0FISUFlUUJmQUhBQVlRQnlBSFFBYmdC?=
+ =?us-ascii?Q?bEFISUFjd0JmQUhNQVlRQnRBSE1BZFFCdUFHY0FYd0JqQUc4QWJnQm1BQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFCQUFBQUFBQUFBQUlBQUFBQUFKNEFBQUJtQUc4?=
+ =?us-ascii?Q?QWRRQnVBR1FBY2dCNUFGOEFjQUJoQUhJQWRBQnVBR1VBY2dCekFGOEFjd0Jo?=
+ =?us-ascii?Q?QUcwQWN3QjFBRzRBWndCZkFISUFaUUJ6QUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBRUFBQUFBQUFBQUFnQUFBQUFBbmdBQUFHWUFid0IxQUc0QVpBQnlBSGtB?=
+ =?us-ascii?Q?WHdCd0FHRUFjZ0IwQUc0QVpRQnlBSE1BWHdCekFHMEFhUUJqQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQVFBQUFBQUFBQUFD?=
+ =?us-ascii?Q?QUFBQUFBQ2VBQUFBWmdCdkFIVUFiZ0JrQUhJQWVRQmZBSEFBWVFCeUFIUUFi?=
+ =?us-ascii?Q?Z0JsQUhJQWN3QmZBSE1BZEFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUJBQUFBQUFBQUFBSUFBQUFBQUo0QUFBQm1B?=
+ =?us-ascii?Q?RzhBZFFCdUFHUUFjZ0I1QUY4QWNBQmhBSElBZEFCdUFHVUFjZ0J6QUY4QWRB?=
+ =?us-ascii?Q?QnpBRzBBWXdBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFFQUFBQUFBQUFBQWdBQUFBQUFuZ0FBQUdZQWJ3QjFBRzRBWkFCeUFI?=
+ =?us-ascii?Q?a0FYd0J3QUdFQWNnQjBBRzRBWlFCeUFITUFYd0IxQUcwQVl3QUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBUUFBQUFBQUFB?=
+ =?us-ascii?Q?QUNBQUFBQUFDZUFBQUFad0IwQUhNQVh3QndBSElBYndCa0FIVUFZd0IwQUY4?=
+ =?us-ascii?Q?QWRBQnlBR0VBYVFCdUFHa0FiZ0JuQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQkFBQUFBQUFBQUFJQUFBQUFBSjRBQUFC?=
+ =?us-ascii?Q?ekFHRUFiQUJsQUhNQVh3QmhBR01BWXdCdkFIVUFiZ0IwQUY4QWNBQnNBR0VB?=
+ =?us-ascii?Q?YmdBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUVBQUFBQUFBQUFBZ0FBQUFBQW5nQUFBSE1BWVFCc0FHVUFjd0Jm?=
+ =?us-ascii?Q?QUhFQWRRQnZBSFFBWlFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFRQUFBQUFB?=
+ =?us-ascii?Q?QUFBQ0FBQUFBQUNlQUFBQWN3QnVBSEFBY3dCZkFHd0FhUUJqQUdVQWJnQnpB?=
+ =?us-ascii?Q?R1VBWHdCMEFHVUFjZ0J0QUY4QU1RQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFCQUFBQUFBQUFBQUlBQUFBQUFKNEFB?=
+ =?us-ascii?Q?QUJ6QUc0QWNBQnpBRjhBYkFCcEFHTUFaUUJ1QUhNQVpRQmZBSFFBWlFCeUFH?=
+ =?us-ascii?Q?MEFYd0J6QUhRQWRRQmtBR1VBYmdCMEFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBRUFBQUFBQUFBQUFnQUFBQUFBbmdBQUFIWUFad0JmQUdzQVpR?=
+ =?us-ascii?Q?QjVBSGNBYndCeUFHUUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQVFBQUFB?=
+ =?us-ascii?Q?QUFBQUFDQUFBQUFBQT0iLz48L21ldGE+?=
+authentication-results: linuxfoundation.org; dkim=none (message not signed)
+ header.d=none;linuxfoundation.org; dmarc=none action=none
+ header.from=synopsys.com;
+x-originating-ip: [89.155.14.32]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: c6e35797-bd6f-4db8-dad1-08d8858bcc2b
+x-ms-traffictypediagnostic: DM6PR12MB3083:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <DM6PR12MB3083358CEFAB0BDD930EDC40DAE90@DM6PR12MB3083.namprd12.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:2582;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: C9o9EDZ9WixUg+iVf3AzKo/W66FKEPUMQWysDhkDvvQd+3kZvnC6oRyg48nRC6Ms12Y67Alenm104FBozgzhj9/214/5zSvl3xADp98NEp+MKTuwlpuggz1b3b77jr3yNOjHwWb20P945dVy2SILwZEwRj1r/44uLXtZ/4nV5vD4D6vbABD60p8ug2k2v+HZH8F/fzj/sCcfNTlZtdlNVr/WGOOEcZCFNBMR9ZqtCrCmyKInmttyaXh2LFND203C1X1k18dRrXDcxUosLz+IIvH6YgaSKLpOp3kXbdCquh0czVr2vPHf1SK1ESZs26wpQzAS6cqOZg/fXUgbZ2YZwA==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM5PR12MB1835.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(136003)(366004)(39860400002)(346002)(376002)(53546011)(478600001)(186003)(55016002)(54906003)(7696005)(66556008)(33656002)(6506007)(86362001)(316002)(83380400001)(2906002)(26005)(9686003)(8676002)(5660300002)(76116006)(8936002)(52536014)(64756008)(66946007)(30864003)(66476007)(66446008)(4326008)(6916009)(71200400001);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: volVJu09rZv0C3OateO5KPmbQ/4u8+Pw8FcocudFdVJBDmLBnXSfId2TWbzKhFA5Ih+I1NMCtWD4Cz+AZyQ9EqSxqK4J5OKevSeaDVRknMH0zOdtWp9x6NDqu8MsLlf4RIaOIGaXd8cq1EEBY/zrACnXMY3KwXCEkHer0Yo5Vs9FPJeADrnAjp9VZ0vr2yO0/2wbHrOdbjKaByEauweUDzlw5qN6jiSolSCd+f1Bxm0Uxgzpwtfj41q0FmrdH77vHX+ILXUuYFQ0TX1HnyEbJqmJYMXL+p8dg6TtaSF3jiogo1PusCQth5at5l6taS1LPCRX0jMT29wEvaCY6M6HtWNQEyAu1b75DdhpK4uw7+gwewkvux2o1fDJN33kixfyvftjinQRvXmPVdmYiteb/RkJ6zHJpf8K1gJadPyVJQoTm0v5FnA5GuIw5mq4nGmJsvtrf5sVwUoE53FQjCba1kDkk8PcBUfz6NPqQbDRrDv1jDgTSPszyEwtyBAv8WdlfB9N2f7AzmWAkCo+5G0+xkki3wG8nl28wm9JHCfFCTPuMkUG4tgsuxK/QvItpS1I3RMximCjUopldT2Pr0w14CYZT5dKunifrKY4rEH/4UWGTyCtNZNUcJ/sqL2Mq2QtctJ/MDGOeMsQsmdQdfmn6w==
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-OriginatorOrg: synopsys.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DM5PR12MB1835.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: c6e35797-bd6f-4db8-dad1-08d8858bcc2b
+X-MS-Exchange-CrossTenant-originalarrivaltime: 10 Nov 2020 15:17:54.3930
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: c33c9f88-1eb7-4099-9700-16013fd9e8aa
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: uqkXStbjMNNDYM9GUQz0inZp1AfcZDgo4qWCBjMv+5wDRFL54HIVI5FgibCIm6rQhe0iIYfc3HEK+hy/fXiqlg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB3083
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mike Rapoport <rppt@linux.ibm.com>
+Hi Greg,
 
-The test verifies that file descriptor created with memfd_secret does
-not allow read/write operations, that secret memory mappings respect
-RLIMIT_MEMLOCK and that remote accesses with process_vm_read() and
-ptrace() to the secret memory fail.
+On Mon, Nov 9, 2020 at 17:31:8, Greg Kroah-Hartman=20
+<gregkh@linuxfoundation.org> wrote:
 
-Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
----
- tools/testing/selftests/vm/.gitignore     |   1 +
- tools/testing/selftests/vm/Makefile       |   3 +-
- tools/testing/selftests/vm/memfd_secret.c | 298 ++++++++++++++++++++++
- tools/testing/selftests/vm/run_vmtests    |  17 ++
- 4 files changed, 318 insertions(+), 1 deletion(-)
- create mode 100644 tools/testing/selftests/vm/memfd_secret.c
+> On Thu, Oct 29, 2020 at 08:13:36PM +0100, Gustavo Pimentel wrote:
+> > Add Synopsys DesignWare xData IP driver. This driver enables/disables
+> > the PCI traffic generator module pertain to the Synopsys DesignWare
+> > prototype.
+> >=20
+> > Signed-off-by: Gustavo Pimentel <gustavo.pimentel@synopsys.com>
+> > ---
+> >  drivers/misc/dw-xdata-pcie.c | 395 +++++++++++++++++++++++++++++++++++=
+++++++++
+> >  1 file changed, 395 insertions(+)
+> >  create mode 100644 drivers/misc/dw-xdata-pcie.c
+> >=20
+> > diff --git a/drivers/misc/dw-xdata-pcie.c b/drivers/misc/dw-xdata-pcie.=
+c
+> > new file mode 100644
+> > index 00000000..b529dae
+> > --- /dev/null
+> > +++ b/drivers/misc/dw-xdata-pcie.c
+> > @@ -0,0 +1,395 @@
+> > +// SPDX-License-Identifier: GPL-2.0
+> > +/*
+> > + * Copyright (c) 2020 Synopsys, Inc. and/or its affiliates.
+> > + * Synopsys DesignWare xData driver
+> > + *
+> > + * Author: Gustavo Pimentel <gustavo.pimentel@synopsys.com>
+> > + */
+> > +
+> > +#include <linux/pci-epf.h>
+> > +#include <linux/kernel.h>
+> > +#include <linux/module.h>
+> > +#include <linux/device.h>
+> > +#include <linux/delay.h>
+> > +#include <linux/pci.h>
+> > +
+> > +#define DW_XDATA_EP_MEM_OFFSET		0x8000000
+> > +
+> > +static DEFINE_MUTEX(xdata_lock);
+> > +
+> > +struct dw_xdata_pcie_data {
+> > +	/* xData registers location */
+> > +	enum pci_barno			rg_bar;
+> > +	off_t				rg_off;
+> > +	size_t				rg_sz;
+> > +};
+> > +
+> > +static const struct dw_xdata_pcie_data snps_edda_data =3D {
+> > +	/* xData registers location */
+> > +	.rg_bar				=3D BAR_0,
+> > +	.rg_off				=3D 0x00000000,   /*   0 Kbytes */
+> > +	.rg_sz				=3D 0x0000012c,   /* 300  bytes */
+> > +};
+> > +
+> > +static int dw_xdata_command_set(const char *val, const struct kernel_p=
+aram *kp);
+> > +static const struct kernel_param_ops xdata_command_ops =3D {
+> > +	.set =3D dw_xdata_command_set,
+> > +};
+> > +
+> > +static char command;
+> > +module_param_cb(command, &xdata_command_ops, &command, 0644);
+> > +MODULE_PARM_DESC(command, "xData command");
+>=20
+> Please do not add new module parameters.  This is not the 1990's, we
+> have better ways of getting data into a driver.
 
-diff --git a/tools/testing/selftests/vm/.gitignore b/tools/testing/selftests/vm/.gitignore
-index 9a35c3f6a557..c8deddc81e7a 100644
---- a/tools/testing/selftests/vm/.gitignore
-+++ b/tools/testing/selftests/vm/.gitignore
-@@ -21,4 +21,5 @@ va_128TBswitch
- map_fixed_noreplace
- write_to_hugetlbfs
- hmm-tests
-+memfd_secret
- local_config.*
-diff --git a/tools/testing/selftests/vm/Makefile b/tools/testing/selftests/vm/Makefile
-index 62fb15f286ee..9ab98946fbf2 100644
---- a/tools/testing/selftests/vm/Makefile
-+++ b/tools/testing/selftests/vm/Makefile
-@@ -34,6 +34,7 @@ TEST_GEN_FILES += khugepaged
- TEST_GEN_FILES += map_fixed_noreplace
- TEST_GEN_FILES += map_hugetlb
- TEST_GEN_FILES += map_populate
-+TEST_GEN_FILES += memfd_secret
- TEST_GEN_FILES += mlock-random-test
- TEST_GEN_FILES += mlock2-tests
- TEST_GEN_FILES += mremap_dontunmap
-@@ -129,7 +130,7 @@ warn_32bit_failure:
- endif
- endif
- 
--$(OUTPUT)/mlock-random-test: LDLIBS += -lcap
-+$(OUTPUT)/mlock-random-test $(OUTPUT)/memfd_secret: LDLIBS += -lcap
- 
- $(OUTPUT)/gup_test: ../../../../mm/gup_test.h
- 
-diff --git a/tools/testing/selftests/vm/memfd_secret.c b/tools/testing/selftests/vm/memfd_secret.c
-new file mode 100644
-index 000000000000..79578dfd13e6
---- /dev/null
-+++ b/tools/testing/selftests/vm/memfd_secret.c
-@@ -0,0 +1,298 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Copyright IBM Corporation, 2020
-+ *
-+ * Author: Mike Rapoport <rppt@linux.ibm.com>
-+ */
-+
-+#define _GNU_SOURCE
-+#include <sys/uio.h>
-+#include <sys/mman.h>
-+#include <sys/wait.h>
-+#include <sys/types.h>
-+#include <sys/ptrace.h>
-+#include <sys/syscall.h>
-+#include <sys/resource.h>
-+#include <sys/capability.h>
-+
-+#include <stdlib.h>
-+#include <string.h>
-+#include <unistd.h>
-+#include <errno.h>
-+#include <stdio.h>
-+
-+#include "../kselftest.h"
-+
-+#define fail(fmt, ...) ksft_test_result_fail(fmt, ##__VA_ARGS__)
-+#define pass(fmt, ...) ksft_test_result_pass(fmt, ##__VA_ARGS__)
-+#define skip(fmt, ...) ksft_test_result_skip(fmt, ##__VA_ARGS__)
-+
-+#ifdef __NR_memfd_secret
-+
-+#include <linux/secretmem.h>
-+
-+#define PATTERN	0x55
-+
-+static const int prot = PROT_READ | PROT_WRITE;
-+static const int mode = MAP_SHARED;
-+
-+static unsigned long page_size;
-+static unsigned long mlock_limit_cur;
-+static unsigned long mlock_limit_max;
-+
-+static int memfd_secret(unsigned long flags)
-+{
-+	return syscall(__NR_memfd_secret, flags);
-+}
-+
-+static void test_file_apis(int fd)
-+{
-+	char buf[64];
-+
-+	if ((read(fd, buf, sizeof(buf)) >= 0) ||
-+	    (write(fd, buf, sizeof(buf)) >= 0) ||
-+	    (pread(fd, buf, sizeof(buf), 0) >= 0) ||
-+	    (pwrite(fd, buf, sizeof(buf), 0) >= 0))
-+		fail("unexpected file IO\n");
-+	else
-+		pass("file IO is blocked as expected\n");
-+}
-+
-+static void test_mlock_limit(int fd)
-+{
-+	size_t len;
-+	char *mem;
-+
-+	len = mlock_limit_cur;
-+	mem = mmap(NULL, len, prot, mode, fd, 0);
-+	if (mem == MAP_FAILED) {
-+		fail("unable to mmap secret memory\n");
-+		return;
-+	}
-+	munmap(mem, len);
-+
-+	len = mlock_limit_max * 2;
-+	mem = mmap(NULL, len, prot, mode, fd, 0);
-+	if (mem != MAP_FAILED) {
-+		fail("unexpected mlock limit violation\n");
-+		munmap(mem, len);
-+		return;
-+	}
-+
-+	pass("mlock limit is respected\n");
-+}
-+
-+static void try_process_vm_read(int fd, int pipefd[2])
-+{
-+	struct iovec liov, riov;
-+	char buf[64];
-+	char *mem;
-+
-+	if (read(pipefd[0], &mem, sizeof(mem)) < 0) {
-+		fail("pipe write: %s\n", strerror(errno));
-+		exit(KSFT_FAIL);
-+	}
-+
-+	liov.iov_len = riov.iov_len = sizeof(buf);
-+	liov.iov_base = buf;
-+	riov.iov_base = mem;
-+
-+	if (process_vm_readv(getppid(), &liov, 1, &riov, 1, 0) < 0) {
-+		if (errno == ENOSYS)
-+			exit(KSFT_SKIP);
-+		exit(KSFT_PASS);
-+	}
-+
-+	exit(KSFT_FAIL);
-+}
-+
-+static void try_ptrace(int fd, int pipefd[2])
-+{
-+	pid_t ppid = getppid();
-+	int status;
-+	char *mem;
-+	long ret;
-+
-+	if (read(pipefd[0], &mem, sizeof(mem)) < 0) {
-+		perror("pipe write");
-+		exit(KSFT_FAIL);
-+	}
-+
-+	ret = ptrace(PTRACE_ATTACH, ppid, 0, 0);
-+	if (ret) {
-+		perror("ptrace_attach");
-+		exit(KSFT_FAIL);
-+	}
-+
-+	ret = waitpid(ppid, &status, WUNTRACED);
-+	if ((ret != ppid) || !(WIFSTOPPED(status))) {
-+		fprintf(stderr, "weird waitppid result %ld stat %x\n",
-+			ret, status);
-+		exit(KSFT_FAIL);
-+	}
-+
-+	if (ptrace(PTRACE_PEEKDATA, ppid, mem, 0))
-+		exit(KSFT_PASS);
-+
-+	exit(KSFT_FAIL);
-+}
-+
-+static void check_child_status(pid_t pid, const char *name)
-+{
-+	int status;
-+
-+	waitpid(pid, &status, 0);
-+
-+	if (WIFEXITED(status) && WEXITSTATUS(status) == KSFT_SKIP) {
-+		skip("%s is not supported\n", name);
-+		return;
-+	}
-+
-+	if ((WIFEXITED(status) && WEXITSTATUS(status) == KSFT_PASS) ||
-+	    WIFSIGNALED(status)) {
-+		pass("%s is blocked as expected\n", name);
-+		return;
-+	}
-+
-+	fail("%s: unexpected memory access\n", name);
-+}
-+
-+static void test_remote_access(int fd, const char *name,
-+			       void (*func)(int fd, int pipefd[2]))
-+{
-+	int pipefd[2];
-+	pid_t pid;
-+	char *mem;
-+
-+	if (pipe(pipefd)) {
-+		fail("pipe failed: %s\n", strerror(errno));
-+		return;
-+	}
-+
-+	pid = fork();
-+	if (pid < 0) {
-+		fail("fork failed: %s\n", strerror(errno));
-+		return;
-+	}
-+
-+	if (pid == 0) {
-+		func(fd, pipefd);
-+		return;
-+	}
-+
-+	mem = mmap(NULL, page_size, prot, mode, fd, 0);
-+	if (mem == MAP_FAILED) {
-+		fail("Unable to mmap secret memory\n");
-+		return;
-+	}
-+
-+	ftruncate(fd, page_size);
-+	memset(mem, PATTERN, page_size);
-+
-+	if (write(pipefd[1], &mem, sizeof(mem)) < 0) {
-+		fail("pipe write: %s\n", strerror(errno));
-+		return;
-+	}
-+
-+	check_child_status(pid, name);
-+}
-+
-+static void test_process_vm_read(int fd)
-+{
-+	test_remote_access(fd, "process_vm_read", try_process_vm_read);
-+}
-+
-+static void test_ptrace(int fd)
-+{
-+	test_remote_access(fd, "ptrace", try_ptrace);
-+}
-+
-+static int set_cap_limits(rlim_t max)
-+{
-+	struct rlimit new;
-+	cap_t cap = cap_init();
-+
-+	new.rlim_cur = max;
-+	new.rlim_max = max;
-+	if (setrlimit(RLIMIT_MEMLOCK, &new)) {
-+		perror("setrlimit() returns error");
-+		return -1;
-+	}
-+
-+	/* drop capabilities including CAP_IPC_LOCK */
-+	if (cap_set_proc(cap)) {
-+		perror("cap_set_proc() returns error");
-+		return -2;
-+	}
-+
-+	return 0;
-+}
-+
-+static void prepare(void)
-+{
-+	struct rlimit rlim;
-+
-+	page_size = sysconf(_SC_PAGE_SIZE);
-+	if (!page_size)
-+		ksft_exit_fail_msg("Failed to get page size %s\n",
-+				   strerror(errno));
-+
-+	if (getrlimit(RLIMIT_MEMLOCK, &rlim))
-+		ksft_exit_fail_msg("Unable to detect mlock limit: %s\n",
-+				   strerror(errno));
-+
-+	mlock_limit_cur = rlim.rlim_cur;
-+	mlock_limit_max = rlim.rlim_max;
-+
-+	printf("page_size: %ld, mlock.soft: %ld, mlock.hard: %ld\n",
-+	       page_size, mlock_limit_cur, mlock_limit_max);
-+
-+	if (page_size > mlock_limit_cur)
-+		mlock_limit_cur = page_size;
-+	if (page_size > mlock_limit_max)
-+		mlock_limit_max = page_size;
-+
-+	if (set_cap_limits(mlock_limit_max))
-+		ksft_exit_fail_msg("Unable to set mlock limit: %s\n",
-+				   strerror(errno));
-+}
-+
-+#define NUM_TESTS 4
-+
-+int main(int argc, char *argv[])
-+{
-+	int fd;
-+
-+	prepare();
-+
-+	ksft_print_header();
-+	ksft_set_plan(NUM_TESTS);
-+
-+	fd = memfd_secret(0);
-+	if (fd < 0) {
-+		if (errno == ENOSYS)
-+			ksft_exit_skip("memfd_secret is not supported\n");
-+		else
-+			ksft_exit_fail_msg("memfd_secret failed: %s\n",
-+					   strerror(errno));
-+	}
-+
-+	test_mlock_limit(fd);
-+	test_file_apis(fd);
-+	test_process_vm_read(fd);
-+	test_ptrace(fd);
-+
-+	close(fd);
-+
-+	ksft_exit(!ksft_get_fail_cnt());
-+}
-+
-+#else /* __NR_memfd_secret */
-+
-+int main(int argc, char *argv[])
-+{
-+	printf("skip: skipping memfd_secret test (missing __NR_memfd_secret)\n");
-+	return KSFT_SKIP;
-+}
-+
-+#endif /* __NR_memfd_secret */
-diff --git a/tools/testing/selftests/vm/run_vmtests b/tools/testing/selftests/vm/run_vmtests
-index e953f3cd9664..95a67382f132 100755
---- a/tools/testing/selftests/vm/run_vmtests
-+++ b/tools/testing/selftests/vm/run_vmtests
-@@ -346,4 +346,21 @@ else
- 	exitcode=1
- fi
- 
-+echo "running memfd_secret test"
-+echo "------------------------------------"
-+./memfd_secret
-+ret_val=$?
-+
-+if [ $ret_val -eq 0 ]; then
-+	echo "[PASS]"
-+elif [ $ret_val -eq $ksft_skip ]; then
-+	echo "[SKIP]"
-+	exitcode=$ksft_skip
-+else
-+	echo "[FAIL]"
-+	exitcode=1
-+fi
-+
-+exit $exitcode
-+
- exit $exitcode
--- 
-2.28.0
+Ok, I'll move this towards into the future, lol I'll use debugfs instead.
+
+>=20
+> > +
+> > +static struct pci_dev *priv;
+>=20
+> You are only going to support one PCI device in the system at once?
+> That's not needed, again, this isn't the 1990's, please use
+> device-specific data and you will be fine, no "global" variables needed.
+>=20
+> > +
+> > +union dw_xdata_control_reg {
+> > +	u32 reg;
+> > +	struct {
+> > +		u32 doorbell    : 1;			/* 00 */
+> > +		u32 is_write    : 1;			/* 01 */
+> > +		u32 length      : 12;			/* 02..13 */
+> > +		u32 is_64       : 1;			/* 14 */
+> > +		u32 ep		: 1;			/* 15 */
+> > +		u32 pattern_inc : 1;			/* 16 */
+> > +		u32 ie		: 1;			/* 17 */
+> > +		u32 no_addr_inc : 1;			/* 18 */
+> > +		u32 trigger     : 1;			/* 19 */
+> > +		u32 _reserved0  : 12;			/* 20..31 */
+> > +	};
+> > +} __packed;
+>=20
+> What is the endian-ness of these structures?  That needs to be defined
+> somewhere, right?
+
+What you suggest? Use __le32 instead of u32? Or some comment referring=20
+the expected endianness?
+
+>=20
+> > +
+> > +union dw_xdata_status_reg {
+> > +	u32 reg;
+> > +	struct {
+> > +		u32 done	: 1;			/* 00 */
+> > +		u32 _reserved0  : 15;			/* 01..15 */
+> > +		u32 version     : 16;			/* 16..31 */
+> > +	};
+> > +} __packed;
+> > +
+> > +union dw_xdata_xperf_control_reg {
+> > +	u32 reg;
+> > +	struct {
+> > +		u32 _reserved0  : 4;			/* 00..03 */
+> > +		u32 reset       : 1;			/* 04 */
+> > +		u32 enable      : 1;			/* 05 */
+> > +		u32 _reserved1  : 26;			/* 06..31 */
+> > +	};
+> > +} __packed;
+> > +
+> > +union _addr {
+> > +	u64 reg;
+> > +	struct {
+> > +		u32 lsb;
+> > +		u32 msb;
+> > +	};
+> > +};
+> > +
+> > +struct dw_xdata_regs {
+> > +	union _addr addr;				/* 0x000..0x004 */
+> > +	u32 burst_cnt;					/* 0x008 */
+> > +	u32 control;					/* 0x00c */
+> > +	u32 pattern;					/* 0x010 */
+> > +	u32 status;					/* 0x014 */
+> > +	u32 RAM_addr;					/* 0x018 */
+> > +	u32 RAM_port;					/* 0x01c */
+> > +	u32 _reserved0[14];				/* 0x020..0x054 */
+> > +	u32 perf_control;				/* 0x058 */
+> > +	u32 _reserved1[41];				/* 0x05c..0x0fc */
+> > +	union _addr wr_cnt;				/* 0x100..0x104 */
+> > +	union _addr rd_cnt;				/* 0x108..0x10c */
+> > +} __packed;
+>=20
+> Why packed?  Does this cross the user/kernel boundry?  If so, please use
+> the correct data types for the (__u32 not u32).
+
+The idea behind this was to be a *mask* of the HW registers. By using the=20
+packed attribute would ensure that the struct would be matching with what=20
+is defined on the HW.
+Since the used unions definitions are already packed, maybe this packed=20
+attribute on this structure is not needed. What this what you meant?
+
+>=20
+>=20
+> > +
+> > +struct dw_xdata_region {
+> > +	phys_addr_t paddr;				/* physical address */
+> > +	void __iomem *vaddr;				/* virtual address */
+> > +	size_t sz;					/* size */
+> > +};
+> > +
+> > +struct dw_xdata {
+> > +	struct dw_xdata_region rg_region;		/* registers */
+> > +	size_t max_wr_len;				/* max xfer len */
+> > +	size_t max_rd_len;				/* max xfer len */
+> > +};
+> > +
+> > +static inline struct dw_xdata_regs __iomem *__dw_regs(struct dw_xdata =
+*dw)
+> > +{
+> > +	return dw->rg_region.vaddr;
+> > +}
+> > +
+> > +#define SET(dw, name, value) \
+> > +	writel(value, &(__dw_regs(dw)->name))
+> > +
+> > +#define GET(dw, name) \
+> > +	readl(&(__dw_regs(dw)->name))
+>=20
+> Just write out readl() and writel() in the driver, it makes more sense
+> to anyone trying to read the code.
+
+Ok, that's curious. I made this exactly to turn the code more readable.=20
+I'm okay to put like you said, no problem.
+
+>=20
+> > +
+> > +#ifdef CONFIG_64BIT
+> > +#define SET_64(dw, name, value) \
+> > +	writel(value, &(__dw_regs(dw)->name))
+> > +
+> > +#define GET_64(dw, name) \
+> > +	readq(&(__dw_regs(dw)->name))
+> > +#endif /* CONFIG_64BIT */
+>=20
+> No need for this #ifdef, right?
+>=20
+>=20
+> > +
+> > +static void dw_xdata_stop(struct pci_dev *pdev)
+> > +{
+> > +	struct dw_xdata *dw =3D pci_get_drvdata(pdev);
+> > +	u32 tmp =3D GET(dw, burst_cnt);
+> > +
+> > +	if (tmp & 0x80000000) {
+> > +		tmp &=3D 0x7fffffff;
+> > +		SET(dw, burst_cnt, tmp);
+> > +	}
+> > +}
+> > +
+> > +static void dw_xdata_start(struct pci_dev *pdev, bool write)
+> > +{
+> > +	struct dw_xdata *dw =3D pci_get_drvdata(pdev);
+> > +	union dw_xdata_control_reg control;
+> > +	union dw_xdata_status_reg status;
+> > +
+> > +	/* Stop first if xfer in progress */
+> > +	dw_xdata_stop(pdev);
+> > +
+> > +	/* Clear status register */
+> > +	SET(dw, status, 0x0);
+> > +
+> > +	/* Burst count register set for continuous until stopped */
+> > +	SET(dw, burst_cnt, 0x80001001);
+> > +
+> > +	/* Pattern register */
+> > +	SET(dw, pattern, 0x0);
+> > +
+> > +	/* Control register */
+> > +	control.reg =3D 0x0;
+> > +	control.doorbell =3D true;
+> > +	control.is_write =3D write;
+> > +	if (write)
+> > +		control.length =3D dw->max_wr_len;
+> > +	else
+> > +		control.length =3D dw->max_rd_len;
+> > +	control.pattern_inc =3D true;
+> > +	control.no_addr_inc =3D true;
+> > +	SET(dw, control, control.reg);
+> > +
+> > +	usleep_range(100, 150);
+> > +
+> > +	status.reg =3D GET(dw, status);
+> > +	if (!status.done)
+> > +		pci_info(pdev, "xData: started %s direction\n",
+> > +			 write ? "write" : "read");
+>=20
+> Don't be noisy if all is well.  You have a lot of "debugging" messages
+> in this driver, please drop them all down to the debug level, or just
+> remove them.
+
+I understand and I agree with that, but this driver will be only used to=20
+assist a HW bring up. It's focus will be only on FPGA prototype=20
+solutions, restricted to only some cases. This help messages will be=20
+important for a HW design or a solutions tester to find a problem root=20
+cause.
+In this case can this messages be an exception to the rule?
+
+>=20
+>=20
+> > +}
+> > +
+> > +static u64 dw_xdata_perf_meas(struct pci_dev *pdev, u64 *wr, u64 *rd)
+> > +{
+> > +	struct dw_xdata *dw =3D pci_get_drvdata(pdev);
+> > +
+> > +	#ifdef CONFIG_64BIT
+> > +		*wr =3D GET_64(dw, wr_cnt.reg);
+> > +
+> > +		*rd =3D GET_64(dw, rd_cnt.reg);
+> > +	#else /* CONFIG_64BIT */
+> > +		*wr =3D GET(dw, wr_cnt.msb);
+> > +		*wr <<=3D 32;
+> > +		*wr |=3D GET(dw, wr_cnt.lsb);
+> > +
+> > +		*rd =3D GET(dw, rd_cnt.msb);
+> > +		*rd <<=3D 32;
+> > +		*rd |=3D GET(dw, rd_cnt.lsb);
+> > +	#endif /* CONFIG_64BIT */
+> > +
+> > +	return jiffies;
+>=20
+> Why are you returning jiffies???
+
+The goal of this function was to acquire the number of packets on a=20
+determine instant, returning jiffies was a pretty way of having all the=20
+info grouped. But I'll move this outside of the function.
+>=20
+>=20
+> > +}
+> > +
+> > +static u64 dw_xdata_perf_diff(u64 *m1, u64 *m2, u64 time)
+> > +{
+> > +	u64 rate;
+> > +
+> > +	rate =3D (*m1 - *m2);
+> > +	rate *=3D (1000 * 1000 * 1000);
+> > +	rate >>=3D 20;
+> > +	rate =3D DIV_ROUND_CLOSEST_ULL(rate, time);
+> > +
+> > +	return rate;
+> > +}
+> > +
+> > +static void dw_xdata_perf(struct pci_dev *pdev)
+> > +{
+> > +	struct dw_xdata *dw =3D pci_get_drvdata(pdev);
+> > +	union dw_xdata_xperf_control_reg control;
+> > +	u64 wr[2], rd[2], time[2], rate[2], diff;
+> > +
+> > +	/* First measurement */
+> > +	control.reg =3D 0x0;
+> > +	control.enable =3D false;
+> > +	SET(dw, perf_control, control.reg);
+> > +	time[0] =3D dw_xdata_perf_meas(pdev, &wr[0], &rd[0]);
+> > +	control.enable =3D true;
+> > +	SET(dw, perf_control, control.reg);
+> > +
+> > +	/* Delay 100ms */
+> > +	mdelay(100);
+> > +
+> > +	/* Second measurement */
+> > +	control.reg =3D 0x0;
+> > +	control.enable =3D false;
+> > +	SET(dw, perf_control, control.reg);
+> > +	time[1] =3D dw_xdata_perf_meas(pdev, &wr[1], &rd[1]);
+> > +	control.enable =3D true;
+> > +	SET(dw, perf_control, control.reg);
+> > +
+> > +	/* Calculations */
+> > +	diff =3D jiffies_to_nsecs(time[1] - time[0]);
+> > +
+> > +	/* Write performance */
+> > +	rate[0] =3D dw_xdata_perf_diff(&wr[1], &wr[0], diff);
+> > +
+> > +	/* Read performance */
+> > +	rate[1] =3D dw_xdata_perf_diff(&rd[1], &rd[0], diff);
+> > +
+> > +	pci_info(pdev,
+> > +		 "xData: time=3D%llu us, write=3D%llu MB/s, read=3D%llu MB/s\n",
+> > +		 diff, rate[0], rate[1]);
+>=20
+> Again, be quiet.
+>=20
+> > +}
+> > +
+> > +static int dw_xdata_command_set(const char *val, const struct kernel_p=
+aram *kp)
+> > +{
+> > +	int ret =3D -EBUSY;
+> > +
+> > +	mutex_lock(&xdata_lock);
+> > +	if (!priv)
+> > +		goto err;
+> > +
+> > +	ret =3D param_set_charp(val, kp);
+> > +	if (ret)
+> > +		goto err;
+> > +
+> > +	switch (*val) {
+> > +	case 'w':
+> > +	case 'W':
+> > +		pci_info(priv, "xData: requested write transfer\n");
+> > +		dw_xdata_start(priv, true);
+> > +		break;
+> > +	case 'r':
+> > +	case 'R':
+> > +		pci_info(priv, "xData: requested read transfer\n");
+> > +		dw_xdata_start(priv, false);
+> > +		break;
+> > +	case 'p':
+> > +	case 'P':
+> > +		pci_info(priv, "xData: requested performance analysis\n");
+> > +		dw_xdata_perf(priv);
+> > +		break;
+> > +	default:
+> > +		pci_info(priv, "xData: requested stop any transfer\n");
+> > +		dw_xdata_stop(priv);
+> > +		break;
+> > +	}
+> > +
+> > +err:
+> > +	mutex_unlock(&xdata_lock);
+> > +
+> > +	return ret;
+> > +}
+> > +
+> > +static int dw_xdata_pcie_probe(struct pci_dev *pdev,
+> > +			       const struct pci_device_id *pid)
+> > +{
+> > +	const struct dw_xdata_pcie_data *pdata =3D (void *)pid->driver_data;
+> > +	struct device *dev =3D &pdev->dev;
+> > +	struct dw_xdata *dw;
+> > +	u64 addr;
+> > +	int err;
+> > +
+> > +	priv =3D NULL;
+> > +
+> > +	/* Enable PCI device */
+> > +	err =3D pcim_enable_device(pdev);
+> > +	if (err) {
+> > +		pci_err(pdev, "enabling device failed\n");
+> > +		return err;
+> > +	}
+> > +
+> > +	/* Mapping PCI BAR regions */
+> > +	err =3D pcim_iomap_regions(pdev, BIT(pdata->rg_bar), pci_name(pdev));
+> > +	if (err) {
+> > +		pci_err(pdev, "xData BAR I/O remapping failed\n");
+> > +		return err;
+> > +	}
+> > +
+> > +	pci_set_master(pdev);
+> > +
+> > +	/* Allocate memory */
+> > +	dw =3D devm_kzalloc(dev, sizeof(*dw), GFP_KERNEL);
+> > +	if (!dw)
+> > +		return -ENOMEM;
+> > +
+> > +	/* Data structure initialization */
+> > +	dw->rg_region.vaddr =3D pcim_iomap_table(pdev)[pdata->rg_bar];
+> > +	if (!dw->rg_region.vaddr)
+> > +		return -ENOMEM;
+> > +
+> > +	dw->rg_region.vaddr +=3D pdata->rg_off;
+> > +	dw->rg_region.paddr =3D pdev->resource[pdata->rg_bar].start;
+> > +	dw->rg_region.paddr +=3D pdata->rg_off;
+> > +	dw->rg_region.sz =3D pdata->rg_sz;
+> > +
+> > +	dw->max_wr_len =3D pcie_get_mps(pdev);
+> > +	dw->max_wr_len >>=3D 2;
+> > +
+> > +	dw->max_rd_len =3D pcie_get_readrq(pdev);
+> > +	dw->max_rd_len >>=3D 2;
+> > +
+> > +	SET(dw, RAM_addr, 0x0);
+> > +	SET(dw, RAM_port, 0x0);
+> > +
+> > +	addr =3D dw->rg_region.paddr + DW_XDATA_EP_MEM_OFFSET;
+> > +#ifdef CONFIG_64BIT
+> > +	SET_64(dw, addr.reg, addr);
+> > +#else /* CONFIG_64BIT */
+> > +	SET(dw, addr.lsb, lower_32_bits(addr));
+> > +	SET(dw, addr.msb, upper_32_bits(addr));
+> > +#endif /* CONFIG_64BIT */
+> > +	pci_info(pdev, "xData: target address =3D 0x%.16llx\n", addr);
+> > +
+> > +	pci_info(pdev, "xData: wr_len=3D%zu, rd_len=3D%zu\n",
+> > +		 dw->max_wr_len * 4, dw->max_rd_len * 4);
+>=20
+> Drivers need to be quiet...
+>=20
+> thanks,
+>=20
+> greg k-h
+
+-Gustavo
 
