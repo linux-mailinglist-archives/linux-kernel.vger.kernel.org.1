@@ -2,114 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F24682ADCE0
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 18:28:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F7C32ADCEE
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 18:28:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730184AbgKJR2T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 12:28:19 -0500
-Received: from cloudserver094114.home.pl ([79.96.170.134]:61634 "EHLO
-        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726152AbgKJR2S (ORCPT
+        id S1731013AbgKJR2v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 12:28:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60530 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726307AbgKJR2v (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 12:28:18 -0500
-Received: from 89-64-88-129.dynamic.chello.pl (89.64.88.129) (HELO kreacher.localnet)
- by serwer1319399.home.pl (79.96.170.134) with SMTP (IdeaSmtpServer 0.83.520)
- id fda285157de01d86; Tue, 10 Nov 2020 18:28:16 +0100
-From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
-To:     Linux PM <linux-pm@vger.kernel.org>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        Zhang Rui <rui.zhang@intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Doug Smythies <dsmythies@telus.net>
-Subject: [PATCH v3 4/4] cpufreq: intel_pstate: Take CPUFREQ_GOV_STRICT_TARGET into account
-Date:   Tue, 10 Nov 2020 18:27:40 +0100
-Message-ID: <10431634.ybq6RTg3ZS@kreacher>
-In-Reply-To: <11312387.r5AVKgp8zO@kreacher>
-References: <13269660.K2JYd4sGFX@kreacher> <11312387.r5AVKgp8zO@kreacher>
+        Tue, 10 Nov 2020 12:28:51 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1509C0613CF;
+        Tue, 10 Nov 2020 09:28:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=HmUTZYGrR/d2vlH5DfUaqIdhg5JyXUfN+e9H+G1so7Y=; b=O87/okRKGoZqB8rEmfQg1N2Uvz
+        I+k/a0S4IlQ43WJzql61DHZINpXV7IIlx9xTCeYi3oXgjo6zEIf06fAeNzq2xA3D9OfYiMP76jHEw
+        GXCxHDzGv9/LvXcpjyW+BNmG0bVR5J2dPjOUI830ML9/jjYd1QInxu0hdfSxt1IxiXepEWF0ilb+4
+        2UFdMrHOE5TUtzJXIEx42UDI0cButAh7BzuMs3/oMnrw9CTNxqdhr9PUGmSfweambA6tYKJP4EcFc
+        3ffFoepILDPSRIVy2Lon0YFU9YAcpteJUERKnagI2eQ5gKkGE50uoZf71zvtMqnqUwL8+GqepMy4f
+        0UCNw2xA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kcXRh-0004MV-T1; Tue, 10 Nov 2020 17:28:42 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id E6FCD307197;
+        Tue, 10 Nov 2020 18:28:38 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id C14142BDD3947; Tue, 10 Nov 2020 18:28:38 +0100 (CET)
+Date:   Tue, 10 Nov 2020 18:28:38 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Boqun Feng <boqun.feng@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, linux-tip-commits@vger.kernel.org,
+        Qian Cai <cai@redhat.com>,
+        Chris Wilson <chris@chris-wilson.co.uk>,
+        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>
+Subject: Re: [PATCH 1/2] lockdep: Avoid to modify chain keys in
+ validate_chain()
+Message-ID: <20201110172838.GP2594@hirez.programming.kicks-ass.net>
+References: <20201030093806.GA2628@hirez.programming.kicks-ass.net>
+ <20201102053743.450459-1-boqun.feng@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201102053743.450459-1-boqun.feng@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+On Mon, Nov 02, 2020 at 01:37:41PM +0800, Boqun Feng wrote:
+> Chris Wilson reported a problem spotted by check_chain_key(): a chain
+> key got changed in validate_chain() because we modify the ->read in
+> validate_chain() to skip checks for dependency adding, and ->read is
+> taken into calculation for chain key since commit f611e8cf98ec
+> ("lockdep: Take read/write status in consideration when generate
+> chainkey").
+> 
+> Fix this by avoiding to modify ->read in validate_chain() based on two
+> facts: a) since we now support recursive read lock detection, there is
+> no need to skip checks for dependency adding for recursive readers, b)
+> since we have a), there is only one case left (nest_lock) where we want
+> to skip checks in validate_chain(), we simply remove the modification
+> for ->read and rely on the return value of check_deadlock() to skip the
+> dependency adding.
+> 
+> Reported-by: Chris Wilson <chris@chris-wilson.co.uk>
+> Signed-off-by: Boqun Feng <boqun.feng@gmail.com>
+> Cc: Peter Zijlstra <peterz@infradead.org>
 
-Make intel_pstate take the new CPUFREQ_GOV_STRICT_TARGET governor
-flag into account when it operates in the passive mode with HWP
-enabled, so as to fix the "powersave" governor behavior in that
-case (currently, HWP is allowed to scale the performance all the
-way up to the policy max limit when the "powersave" governor is
-used, but it should be constrained to the policy min limit then).
-
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-Acked-by: Viresh Kumar <viresh.kumar@linaro.org>
----
- drivers/cpufreq/intel_pstate.c |   16 +++++++++-------
- 1 file changed, 9 insertions(+), 7 deletions(-)
-
-Index: linux-pm/drivers/cpufreq/intel_pstate.c
-===================================================================
---- linux-pm.orig/drivers/cpufreq/intel_pstate.c
-+++ linux-pm/drivers/cpufreq/intel_pstate.c
-@@ -2527,7 +2527,7 @@ static void intel_cpufreq_trace(struct c
- }
- 
- static void intel_cpufreq_adjust_hwp(struct cpudata *cpu, u32 target_pstate,
--				     bool fast_switch)
-+				     bool strict, bool fast_switch)
- {
- 	u64 prev = READ_ONCE(cpu->hwp_req_cached), value = prev;
- 
-@@ -2539,7 +2539,7 @@ static void intel_cpufreq_adjust_hwp(str
- 	 * field in it, so opportunistically update the max too if needed.
- 	 */
- 	value &= ~HWP_MAX_PERF(~0L);
--	value |= HWP_MAX_PERF(cpu->max_perf_ratio);
-+	value |= HWP_MAX_PERF(strict ? target_pstate : cpu->max_perf_ratio);
- 
- 	if (value == prev)
- 		return;
-@@ -2562,14 +2562,16 @@ static void intel_cpufreq_adjust_perf_ct
- 			      pstate_funcs.get_val(cpu, target_pstate));
- }
- 
--static int intel_cpufreq_update_pstate(struct cpudata *cpu, int target_pstate,
--				       bool fast_switch)
-+static int intel_cpufreq_update_pstate(struct cpufreq_policy *policy,
-+				       int target_pstate, bool fast_switch)
- {
-+	struct cpudata *cpu = all_cpu_data[policy->cpu];
- 	int old_pstate = cpu->pstate.current_pstate;
- 
- 	target_pstate = intel_pstate_prepare_request(cpu, target_pstate);
- 	if (hwp_active) {
--		intel_cpufreq_adjust_hwp(cpu, target_pstate, fast_switch);
-+		intel_cpufreq_adjust_hwp(cpu, target_pstate,
-+					 policy->strict_target, fast_switch);
- 		cpu->pstate.current_pstate = target_pstate;
- 	} else if (target_pstate != old_pstate) {
- 		intel_cpufreq_adjust_perf_ctl(cpu, target_pstate, fast_switch);
-@@ -2609,7 +2611,7 @@ static int intel_cpufreq_target(struct c
- 		break;
- 	}
- 
--	target_pstate = intel_cpufreq_update_pstate(cpu, target_pstate, false);
-+	target_pstate = intel_cpufreq_update_pstate(policy, target_pstate, false);
- 
- 	freqs.new = target_pstate * cpu->pstate.scaling;
- 
-@@ -2628,7 +2630,7 @@ static unsigned int intel_cpufreq_fast_s
- 
- 	target_pstate = DIV_ROUND_UP(target_freq, cpu->pstate.scaling);
- 
--	target_pstate = intel_cpufreq_update_pstate(cpu, target_pstate, true);
-+	target_pstate = intel_cpufreq_update_pstate(policy, target_pstate, true);
- 
- 	return target_pstate * cpu->pstate.scaling;
- }
-
-
-
+Thanks Boqun!
