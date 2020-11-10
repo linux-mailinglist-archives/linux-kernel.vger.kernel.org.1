@@ -2,77 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30CF02AD0C4
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 09:03:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D06B02AD0C7
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 09:03:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726849AbgKJIC5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 03:02:57 -0500
-Received: from mail-m1271.qiye.163.com ([115.236.127.1]:35367 "EHLO
-        mail-m1271.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726467AbgKJIC4 (ORCPT
+        id S1729297AbgKJIDa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 03:03:30 -0500
+Received: from m176115.mail.qiye.163.com ([59.111.176.115]:21877 "EHLO
+        m176115.mail.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726213AbgKJIDa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 03:02:56 -0500
-Received: from vivo-HP-ProDesk-680-G4-PCI-MT.vivo.xyz (unknown [58.251.74.231])
-        by mail-m1271.qiye.163.com (Hmail) with ESMTPA id 0E6B758309A;
-        Tue, 10 Nov 2020 16:02:53 +0800 (CST)
-From:   Wang Qing <wangqing@vivo.com>
-To:     Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Jordan Niethe <jniethe5@gmail.com>,
-        Alistair Popple <alistair@popple.id.au>,
-        Michael Neuling <mikey@neuling.org>,
-        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Cc:     tglx@linutronix.de, Wang Qing <wangqing@vivo.com>
-Subject: [PATCH V2] sched/rt, powerpc: Prepare for PREEMPT_RT
-Date:   Tue, 10 Nov 2020 16:02:47 +0800
-Message-Id: <1604995368-29649-1-git-send-email-wangqing@vivo.com>
-X-Mailer: git-send-email 2.7.4
+        Tue, 10 Nov 2020 03:03:30 -0500
+Received: from ubuntu.localdomain (unknown [157.0.31.124])
+        by m176115.mail.qiye.163.com (Hmail) with ESMTPA id 287A8667105;
+        Tue, 10 Nov 2020 16:03:25 +0800 (CST)
+From:   Bernard Zhao <bernard@vivo.com>
+To:     Harry Wentland <harry.wentland@amd.com>,
+        Leo Li <sunpeng.li@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Nicholas Kazlauskas <nicholas.kazlauskas@amd.com>,
+        Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
+        Mikita Lipski <mikita.lipski@amd.com>,
+        Stylon Wang <stylon.wang@amd.com>,
+        Bhawanpreet Lakha <Bhawanpreet.Lakha@amd.com>,
+        Roman Li <Roman.Li@amd.com>, hersen wu <hersenxs.wu@amd.com>,
+        Aurabindo Pillai <aurabindo.pillai@amd.com>,
+        Alexander Monakov <amonakov@ispras.ru>,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+Cc:     opensource.kernel@vivo.com, Bernard Zhao <bernard@vivo.com>
+Subject: [PATCH] amd/display/amdgpu_dm: delete same check in if condition
+Date:   Tue, 10 Nov 2020 00:03:13 -0800
+Message-Id: <20201110080318.36305-1-bernard@vivo.com>
+X-Mailer: git-send-email 2.29.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
-        oVCBIfWUFZHh4fSU4eQh5CHhpCVkpNS09CQk5ITEhMS05VEwETFhoSFyQUDg9ZV1kWGg8SFR0UWU
-        FZT0tIVUpKS0hKQ1VLWQY+
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6PRw6Mio5FT8uGREdHiEuGhUx
-        GQsaFDlVSlVKTUtPQkJOSExPSkxOVTMWGhIXVQwaFRwKEhUcOw0SDRRVGBQWRVlXWRILWUFZTkNV
-        SU5KVUxPVUlISllXWQgBWUFJQ0lKNwY+
-X-HM-Tid: 0a75b12dda1498b6kuuu0e6b758309a
+        oVCBIfWUFZGENJSkJMSE9LGh5DVkpNS09CQk5PS05OS0tVEwETFhoSFyQUDg9ZV1kWGg8SFR0UWU
+        FZT0tIVUpKS09ISFVLWQY+
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6NE06Vgw*MD8tShEKDi0eEh8M
+        IRAKCRZVSlVKTUtPQkJOT0tNS01JVTMWGhIXVRkeCRUaCR87DRINFFUYFBZFWVdZEgtZQVlKTkxV
+        S1VISlVKSU9ZV1kIAVlBSUJNQjcG
+X-HM-Tid: 0a75b12e56aa9373kuws287a8667105
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PREEMPT_RT is a separate preemption model, CONFIG_PRTTMPT will
- be disabled when CONFIG_PREEMPT_RT is enabled,  so you need
-to add CONFIG_PREEMPT_RT judgments to __die().
+In function amdgpu_dm_connector_get_modes, drm_edid_is_valid
+will check weather (!edid), no need to check again in the if
+branch.
 
-Signed-off-by: Wang Qing <wangqing@vivo.com>
-
-Changes in v2:
- - Modify as Christophe suggested.
+Signed-off-by: Bernard Zhao <bernard@vivo.com>
 ---
- arch/powerpc/kernel/traps.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/powerpc/kernel/traps.c b/arch/powerpc/kernel/traps.c
-index 5006dcb..dec7b81
---- a/arch/powerpc/kernel/traps.c
-+++ b/arch/powerpc/kernel/traps.c
-@@ -262,10 +262,11 @@ static int __die(const char *str, struct pt_regs *regs, long err)
- {
- 	printk("Oops: %s, sig: %ld [#%d]\n", str, err, ++die_counter);
+diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
+index e93e18c06c0e..0a283d07fe10 100644
+--- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
++++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
+@@ -6352,7 +6352,7 @@ static int amdgpu_dm_connector_get_modes(struct drm_connector *connector)
  
--	printk("%s PAGE_SIZE=%luK%s%s%s%s%s%s %s\n",
-+	printk("%s PAGE_SIZE=%luK%s%s%s%s%s%s%s %s\n",
- 	       IS_ENABLED(CONFIG_CPU_LITTLE_ENDIAN) ? "LE" : "BE",
- 	       PAGE_SIZE / 1024, get_mmu_str(),
- 	       IS_ENABLED(CONFIG_PREEMPT) ? " PREEMPT" : "",
-+	       IS_ENABLED(CONFIG_PREEMPT_RT) ? " PREEMPT_RT" : "",
- 	       IS_ENABLED(CONFIG_SMP) ? " SMP" : "",
- 	       IS_ENABLED(CONFIG_SMP) ? (" NR_CPUS=" __stringify(NR_CPUS)) : "",
- 	       debug_pagealloc_enabled() ? " DEBUG_PAGEALLOC" : "",
+ 	encoder = amdgpu_dm_connector_to_encoder(connector);
+ 
+-	if (!edid || !drm_edid_is_valid(edid)) {
++	if (!drm_edid_is_valid(edid)) {
+ 		amdgpu_dm_connector->num_modes =
+ 				drm_add_modes_noedid(connector, 640, 480);
+ 	} else {
 -- 
-2.7.4
+2.29.0
 
