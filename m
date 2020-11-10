@@ -2,113 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C6B12AE381
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 23:42:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 552A22AE37B
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 23:42:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731654AbgKJWmZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 17:42:25 -0500
-Received: from mail-bn7nam10on2052.outbound.protection.outlook.com ([40.107.92.52]:58465
-        "EHLO NAM10-BN7-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1732314AbgKJWmT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 17:42:19 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=kb3x6IFEqMV/HRwf3A3GWdF1Y8/nhXMdD2VITh8h7zPyilrti5C498lf2zs4fwAefbTRg2DUiHR34rrP6podd7Fv8EfI6VAElf7LhW199gBkDE2LIYtwCzj3HQB87lixqse4Hs/Lp9zebdUvPW6kzLVCeEzKYWXM1tcgHHQBrTLf1ODDD4MD5/5/CrpHB6qCccafE5NW7TJceGgw+OSitV3uCQejO4UC3OXIJgfrR1v6t67BgrrAw1R4LlDKllC0wMkYNm3pOtHYS4y9WU3zEHHlvPqJtXOD286dQ9q37F9Lbs/jIeKReOMIeRxWGQCly+qesV7M/DbjUN3SQPDxpg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Ld1/j0FTxqs5JZoQ9D9m+PbpnGiTPmd+wXwhgKpzV4U=;
- b=Mutbevr51szV+QrCQvnMw4jyR8yqKn+gacSShrUp+0f7TjDdEmLr3KPAqdK13arxylWeqBqJ3b5u3aHCNfTim6TXBnllRCUIG6GpdkqdBEh4j+SpCKKp2iaFiQSAIHVuEHc4C5mEWKkmo36ws1gbG3QT/mzb3fR0lSb48ZSlyioOF3j3T2tlGyHNXFCnd2lYsA9nsfHpXGCeKPB4QdkIWnFC+l3FRqxanAsneUJpYTOq2geGjc6ijWS58m+nurmglgoVM4tSogwMaEo6JB3l6QM4VQoOShyNW+bQbdv8vs6bjXSUjfANItsEQZEZ9l3GoOpO9+lP9/bCP/plRV5Ncg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
+        id S1732373AbgKJWmR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 17:42:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53224 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732314AbgKJWmP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Nov 2020 17:42:15 -0500
+Received: from mail-il1-x141.google.com (mail-il1-x141.google.com [IPv6:2607:f8b0:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AED54C0613D6
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 14:42:14 -0800 (PST)
+Received: by mail-il1-x141.google.com with SMTP id e17so138103ili.5
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 14:42:14 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Ld1/j0FTxqs5JZoQ9D9m+PbpnGiTPmd+wXwhgKpzV4U=;
- b=y2ykcCirgBPox+MjgmaZqL9ry494aI05V/s5/CPPnZVoFk1Twu8vn7zM6EnWqgbtzOnPYNd42voBpJmyv4Zc+9XM1RVpEunW/5jQQJAzaFLBC7EEtBRnQLxU8ZjcFKt1viB9Y1G0SgFh7qrg4olQTu/uArYX8bSfbNs3H1/qUig=
-Authentication-Results: redhat.com; dkim=none (message not signed)
- header.d=none;redhat.com; dmarc=none action=none header.from=amd.com;
-Received: from SN6PR12MB2767.namprd12.prod.outlook.com (2603:10b6:805:75::23)
- by SA0PR12MB4590.namprd12.prod.outlook.com (2603:10b6:806:93::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3541.21; Tue, 10 Nov
- 2020 22:42:17 +0000
-Received: from SN6PR12MB2767.namprd12.prod.outlook.com
- ([fe80::d8f2:fde4:5e1d:afec]) by SN6PR12MB2767.namprd12.prod.outlook.com
- ([fe80::d8f2:fde4:5e1d:afec%3]) with mapi id 15.20.3541.025; Tue, 10 Nov 2020
- 22:42:17 +0000
-From:   Ashish Kalra <Ashish.Kalra@amd.com>
-To:     pbonzini@redhat.com
-Cc:     tglx@linutronix.de, mingo@redhat.com, hpa@zytor.com,
-        joro@8bytes.org, bp@suse.de, thomas.lendacky@amd.com,
-        Brijesh.Singh@amd.com, x86@kernel.org, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, ssg.sos.patches@amd.com
-Subject: [PATCH] KVM: SVM: Fix offset computation bug in __sev_dbg_decrypt().
-Date:   Tue, 10 Nov 2020 22:42:05 +0000
-Message-Id: <20201110224205.29444-1-Ashish.Kalra@amd.com>
-X-Mailer: git-send-email 2.17.1
-Content-Type: text/plain
-X-Originating-IP: [165.204.77.1]
-X-ClientProxiedBy: DM3PR14CA0131.namprd14.prod.outlook.com
- (2603:10b6:0:53::15) To SN6PR12MB2767.namprd12.prod.outlook.com
- (2603:10b6:805:75::23)
+        d=linuxfoundation.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=7jSf/XzZ4jyQ+1vMaLtMgIwZ1Hd3aE57H+YNIg7Vd6s=;
+        b=HmAOZ27e8pHLOZtNt33kCndwJB139JyHCZFOiD/C94/+pWb2KGdTlQCvLFR1HyR9mk
+         lFx1ytT/rJSJ7/tpMYshlVQIWUN/TZct4TCzlg9wYsDyPKswhZWrEi9oFiHeYSi0CMuE
+         tmbYZnr4Jy0AgOqG0pqnPBmt6xrLd9kKaYRBo=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=7jSf/XzZ4jyQ+1vMaLtMgIwZ1Hd3aE57H+YNIg7Vd6s=;
+        b=sFOV+yrcy7AStt2CuXesTXOCOJN7STwR3Zy/KhwqmJ6royQm788ZJbSyxjagbxGESG
+         eZW1ivdW0D5zEdv4L6SJ4NUcyxBfeKCcv34mD3N1QXUITfpY84QaH8tzTJkp9KPvx/Zn
+         /m7l4Qn/YszfiB9MJxlJTQDZYBOo9yj9R2YxQyphXOAt8izOc+E8BjVWzNXHQbbprw4R
+         4fgtz2trVGHM8Nf+QoCvad09CTxPwzibAEvuRZXvmWLmMHnQSbPcFV1oB3iIQFmFUjRb
+         1ZTiJ/Yy+2WeyAIDvKyiaIP7H9DbNIcoVVzJ+8vRmhXFejZ00EHS1VCup36scKlL3dn0
+         z7Kg==
+X-Gm-Message-State: AOAM531ioa+uoG08LykGev2izVespS36/LxKhUKHjYY/tFplF7Ecdhv3
+        dq3EuTYUu4irGnXNdG/9ExCOcg==
+X-Google-Smtp-Source: ABdhPJy+/m7HgoPinpwrhFYoHGR3jeRThmYkrgj1Js7jS1hKjj3aF+EFXbp2kYFpSB7gnDlz1TZdJg==
+X-Received: by 2002:a92:99ce:: with SMTP id t75mr16441201ilk.257.1605048133972;
+        Tue, 10 Nov 2020 14:42:13 -0800 (PST)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id e12sm38652ilq.65.2020.11.10.14.42.12
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 10 Nov 2020 14:42:13 -0800 (PST)
+Subject: Re: [PATCH 00/13] Introduce seqnum_ops
+To:     Alan Stern <stern@rowland.harvard.edu>
+Cc:     corbet@lwn.net, keescook@chromium.org, gregkh@linuxfoundation.org,
+        peterz@infradead.org, rafael@kernel.org, lenb@kernel.org,
+        james.morse@arm.com, tony.luck@intel.com, bp@alien8.de,
+        minyard@acm.org, arnd@arndb.de, mchehab@kernel.org,
+        rric@kernel.org, valentina.manea.m@gmail.com, shuah@kernel.org,
+        zohar@linux.ibm.com, dmitry.kasatkin@gmail.com, jmorris@namei.org,
+        serge@hallyn.com, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-acpi@vger.kernel.org,
+        openipmi-developer@lists.sourceforge.net,
+        linux-edac@vger.kernel.org, linux-usb@vger.kernel.org,
+        linux-integrity@vger.kernel.org,
+        linux-security-module@vger.kernel.org
+References: <cover.1605027593.git.skhan@linuxfoundation.org>
+ <20201110204414.GA204624@rowland.harvard.edu>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <c58fde16-4bd1-0e1e-94ce-a15c359f9f91@linuxfoundation.org>
+Date:   Tue, 10 Nov 2020 15:42:11 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.2
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from ashkalra_ubuntu_server.amd.com (165.204.77.1) by DM3PR14CA0131.namprd14.prod.outlook.com (2603:10b6:0:53::15) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3541.21 via Frontend Transport; Tue, 10 Nov 2020 22:42:16 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: 5cc2c8e8-e647-4f8a-8da5-08d885c9e012
-X-MS-TrafficTypeDiagnostic: SA0PR12MB4590:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <SA0PR12MB4590F0504B1BFC3BC5FC9F278EE90@SA0PR12MB4590.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:4714;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Gd8B2gGWYHcoJOH5M3DCHCggF/W3rWx9p+zxg2Q9tS6wLJtGE5AqtLaFhzdIurukNbHTkqcIaFseFRRBDeDUTjY8fmCMcaXvIEZovp0y79r2YKlvF5NX3hMiVqcak6QsEqxIgZsu6T5Skk39cDMD8XRoDIgVSS8p3jBbh6w1NEL1DoY1jirFSrWGn1Wq8VuYQ4njp1YhtN7WXZ3GNM8yaFQgi5gLHQBQchAN6AmA6KIl4vqEGwmMyZe/MZlO9HhrADnbqTXVG4VJPZjdZqQU+Y0cfv8PCAXSTwbUvk6asxXB6KZmvjrv0v/0Tmo/Dlkmua3n+ZF91n5CCLFIRyfCjg==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR12MB2767.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(366004)(39850400004)(376002)(136003)(396003)(83380400001)(8936002)(2906002)(478600001)(26005)(186003)(16526019)(4326008)(316002)(956004)(2616005)(8676002)(52116002)(7696005)(6916009)(66556008)(66476007)(66946007)(6486002)(5660300002)(36756003)(86362001)(6666004)(1076003)(4744005);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: zLPd967Hckv4v8+E4upnL572adzifry9RLyPlM3unIC7E9OuTxaWqLBIR/YbqFLTkVlp2UVMjYNL7j0hP3532hBjo6hoOGYE/lclhzshBlblK0n1oPeeX0x7dhNf1YGtAx5X3K3joFG/atoaEssLRLtB5naZ3nYzGK1UWA+8Jp8Qcb2DtyjvRslH4btR6QsVwIcg4Xa3psFH2UVOEa9yiZBa+E9CNL/qWs0OC/T0tpBjprfo4WF/nNl0AbeJFMIW35iYLCMzBQivKe+pbwloVuzXWG4PKJ7Vj7usLPO5KSCW00OPRMx+xJkB24r+ec7AVuy8axCHbUpNyIBo577wa7rOJvre32KWWm1IMSjsYxMveDZBTmJgzcGGcop5Y2ACK+ttfhgdoonWmnNCZKX8z9CTVE2P3r/svzkQggeS9AlVw0Ti4DVds9zwnq5sdCn4EnWkqdmuxDOTk/s6Mi6pI+Lx0iDUQovIo7NoI4rZU8S+1n+doPQU6tvJi6JlvBM5Shg6HfJ0TJ38If7VMGLpkGxvnAt/FG43AJc9gwPaJEe3waJywNsn0vcYXZcecz1/aByUI+ApRV1JIVzb/09yH61yTfjjWSRJkghYCcXrJdTrf9G4PJEeIN1n2duh2gCnF30tgao4OsK5ZeBhQzbXGSGLZroSGwrcFfSCe3F8rH4bTPRejjB6uKpDL36SU0UU70nIUQoiPmR1BKdKxxs7veOf9yNbLRaIa54aNVfTBHpFthITR0wCxXvOVF2WjQLRWfrGLp4foOQ4Pg3S1SK1mIz7ifw9Hpw1+hYHyXl60NnXSx2umfryIHhqhlDnoccTG47TKpsfs7khNMpaWtRXZCv6O77bkJ15aJvk5+M9Nv8YaoXRdTKR8bvGlF+nmKcXnN6Fk2/dlLdqycQcDw0Zpg==
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5cc2c8e8-e647-4f8a-8da5-08d885c9e012
-X-MS-Exchange-CrossTenant-AuthSource: SN6PR12MB2767.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Nov 2020 22:42:16.8857
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: KCg1ONHlCSgiBNqFt5geaEFqPPea8uciczYoFln9I8N1bmKDe0rDxez/eVGEh2HXfbee/qftFF4fMNjp7YFcDw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA0PR12MB4590
+In-Reply-To: <20201110204414.GA204624@rowland.harvard.edu>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ashish Kalra <ashish.kalra@amd.com>
+On 11/10/20 1:44 PM, Alan Stern wrote:
+> On Tue, Nov 10, 2020 at 12:53:26PM -0700, Shuah Khan wrote:
+>> There are a number of atomic_t usages in the kernel where atomic_t api
+>> is used strictly for counting sequence numbers and other statistical
+>> counters and not for managing object lifetime.
+>>
+>> The purpose of these Sequence Number Ops is to clearly differentiate
+>> atomic_t counter usages from atomic_t usages that guard object lifetimes,
+>> hence prone to overflow and underflow errors.
+>>
+>> The atomic_t api provides a wide range of atomic operations as a base
+>> api to implement atomic counters, bitops, spinlock interfaces. The usages
+>> also evolved into being used for resource lifetimes and state management.
+>> The refcount_t api was introduced to address resource lifetime problems
+>> related to atomic_t wrapping. There is a large overlap between the
+>> atomic_t api used for resource lifetimes and just counters, stats, and
+>> sequence numbers. It has become difficult to differentiate between the
+>> atomic_t usages that should be converted to refcount_t and the ones that
+>> can be left alone. Introducing seqnum_ops to wrap the usages that are
+>> stats, counters, sequence numbers makes it easier for tools that scan
+>> for underflow and overflow on atomic_t usages to detect overflow and
+>> underflows to scan just the cases that are prone to errors.
+>>
+>> Sequence Number api provides interfaces for simple atomic_t counter usages
+>> that just count, and don't guard resource lifetimes. The seqnum_ops are
+>> built on top of atomic_t api, providing a smaller subset of atomic_t
+>> interfaces necessary to support atomic_t usages as simple counters.
+>> This api has init/set/inc/dec/read and doesn't support any other atomic_t
+>> ops with the intent to restrict the use of these interfaces as simple
+>> counting usages.
+>>
+>> Sequence Numbers wrap around to INT_MIN when it overflows and should not
+>> be used to guard resource lifetimes, device usage and open counts that
+>> control state changes, and pm states. Overflowing to INT_MIN is consistent
+>> with the atomic_t api, which it is built on top of.
+> 
+> If Sequence Numbers are subject to wraparound then they aren't reliable.
+> Given that they aren't reliable, why use atomic instructions at all?
+> Why not just use plain regular integers with READ_ONCE and WRITE_ONCE?
+> 
 
-Fix offset computation in __sev_dbg_decrypt() to include the
-source paddr before it is rounded down to be aligned to 16 bytes
-as required by SEV API. This fixes incorrect guest memory dumps
-observed when using qemu monitor.
+You still need atomic update for these numbers. The intent is to provide
+atomic api for cases where the variable doesn't guard lifetimes and yet
+needs atomic instructions.
 
-Signed-off-by: Ashish Kalra <ashish.kalra@amd.com>
----
- arch/x86/kvm/svm/sev.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Several such usages where atomic_t is used for up counting, also use
+upper bounds. It is also an option to switch to seqnum64 to avoid
+wrap around in case there is a concern.
 
-diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
-index c0b14106258a..566f4d18185b 100644
---- a/arch/x86/kvm/svm/sev.c
-+++ b/arch/x86/kvm/svm/sev.c
-@@ -642,8 +642,8 @@ static int __sev_dbg_decrypt(struct kvm *kvm, unsigned long src_paddr,
- 	 * Its safe to read more than we are asked, caller should ensure that
- 	 * destination has enough space.
- 	 */
--	src_paddr = round_down(src_paddr, 16);
- 	offset = src_paddr & 15;
-+	src_paddr = round_down(src_paddr, 16);
- 	sz = round_up(sz + offset, 16);
- 
- 	return __sev_issue_dbg_cmd(kvm, src_paddr, dst_paddr, sz, err, false);
--- 
-2.17.1
+thanks,
+-- Shuah
+
 
