@@ -2,183 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52B9C2ADDE9
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 19:13:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 01BC92ADDED
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 19:14:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731411AbgKJSNP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 13:13:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39162 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731282AbgKJSNN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 13:13:13 -0500
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5608CC0613CF
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 10:13:13 -0800 (PST)
-Received: by mail-pg1-x544.google.com with SMTP id w4so10892871pgg.13
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 10:13:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=WbZNZfdUV+Jb/ecPWV8SHsj0cS3TmcMVN/IJ8mgWjoo=;
-        b=ZecElvz8otZT3eF+V+Jipxwyqbrob11E7XA9qzjhlGlhadYlXS8W8PW9wGVdeswGez
-         CxF2D9SQhatxA8z2yAvhIBDUfw34NXyDVlQHVyanlirj091JZcS8JwyJeU0qoIyFSY7E
-         dYMCcohLw/8s4zcFX5NVO+HVNlr1N+/mvC6PFX0QvSl35tNTidvW5GWpotZHjTh5Lmxi
-         gYTd6QhpWjqAOQjrTLoeIamqeEznAjGasRXXHnvBJ1zi0aclgzVQ6ZKGHKdC4RTXDS/v
-         qTMYCopbRVqS4A2SIr4Ik9k0+zM3YWmqdB7rmVzDEhSh8nZPjPPIV0WBemo3+wz2n2wb
-         OsDA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=WbZNZfdUV+Jb/ecPWV8SHsj0cS3TmcMVN/IJ8mgWjoo=;
-        b=HjAbBpMeMu/nsaJ8kEPpmROir+eI+k2pHVhAsSll7CfH3WWcBwKTVP2vDkOVBBFy0K
-         7yHJStkq07r2sNsskjSqhCJoOkG8PtfUbnTOMCajomqjPcHTviY6aqJrHvUOVnOpdfEd
-         3LYDm6YesczId4Y1zX5ZZEBJfFuo1vVvh+E0YKZZgwcieZ0YCxgEGY3bFtZl8JWpZ7S3
-         tJWKcUu+resiD+VEwBGwL/bekHKVzbgTKMG10x70hv0NSSFdcicoDOt1oI9uLh58apQY
-         kIXN/6cvF9f21N8CKlJAE4z1Eo3Ie5Bs4LmvAwp4KFaYal+3xfHo9XvJbYlDAa9+TVMz
-         wvPA==
-X-Gm-Message-State: AOAM531T0952E5oVDAAcB0ajh6xtk5SbG+1whTM+dhG4vGIZIYcESi6o
-        XkTFQ1K01TyofGYNNVdrgUo=
-X-Google-Smtp-Source: ABdhPJxOUAfMQOEUDeYGAxyPeDNAvEvec0OJ5dlCxusPzBkLXqu1dHgak7I+9muIvRjGfKDPBR3vCg==
-X-Received: by 2002:a17:90a:3f10:: with SMTP id l16mr378261pjc.110.1605031992965;
-        Tue, 10 Nov 2020 10:13:12 -0800 (PST)
-Received: from localhost.localdomain (c-107-3-138-210.hsd1.ca.comcast.net. [107.3.138.210])
-        by smtp.gmail.com with ESMTPSA id k5sm4157369pjj.37.2020.11.10.10.13.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 10 Nov 2020 10:13:11 -0800 (PST)
-From:   Yang Shi <shy828301@gmail.com>
-To:     mhocko@suse.com, ziy@nvidia.com, songliubraving@fb.com,
-        mgorman@suse.de, jack@suse.cz, akpm@linux-foundation.org
-Cc:     shy828301@gmail.com, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: [v2 PATCH 5/5] mm: migrate: return -ENOSYS if THP migration is unsupported
-Date:   Tue, 10 Nov 2020 10:12:50 -0800
-Message-Id: <20201110181250.264394-6-shy828301@gmail.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20201110181250.264394-1-shy828301@gmail.com>
-References: <20201110181250.264394-1-shy828301@gmail.com>
+        id S1731394AbgKJSOi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 13:14:38 -0500
+Received: from z5.mailgun.us ([104.130.96.5]:42066 "EHLO z5.mailgun.us"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725862AbgKJSOh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Nov 2020 13:14:37 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1605032077; h=Date: Message-Id: Cc: To: References:
+ In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
+ Content-Type: Sender; bh=ommY8NbC/6/vCsffz4CKNBy1MT65alpBUD3ahMItC0I=;
+ b=fRewQd0cg4ZMvCug61bJw/0H1EPru89y6uc108/8vTkmV/XM1whpdjySPA28abaHUGTICLPr
+ cGDqiebRhrNWp+fnXbjQLtQeriTpFLXGusLkByJ1dgJ+eC0zmKTczf4EoEwqFHdVnNeve56Z
+ xLpEnCD9Smj+9/wvJdOOYoW4hhw=
+X-Mailgun-Sending-Ip: 104.130.96.5
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
+ 5faad867e9dd187f53286143 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 10 Nov 2020 18:13:59
+ GMT
+Sender: kvalo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 143D8C43382; Tue, 10 Nov 2020 18:13:59 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        MISSING_DATE,MISSING_MID,SPF_FAIL,URIBL_BLOCKED autolearn=no
+        autolearn_force=no version=3.4.0
+Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 66C6DC433C6;
+        Tue, 10 Nov 2020 18:13:56 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 66C6DC433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
+Subject: Re: [PATCH net-next 08/11] ath9k: work around false-positive gcc
+ warning
+From:   Kalle Valo <kvalo@codeaurora.org>
+In-Reply-To: <20201026213040.3889546-8-arnd@kernel.org>
+References: <20201026213040.3889546-8-arnd@kernel.org>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     QCA ath9k Development <ath9k-devel@qca.qualcomm.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, linux-wireless@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.5.2
+Message-Id: <20201110181359.143D8C43382@smtp.codeaurora.org>
+Date:   Tue, 10 Nov 2020 18:13:59 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In the current implementation unmap_and_move() would return -ENOMEM if
-THP migration is unsupported, then the THP will be split.  If split is
-failed just exit without trying to migrate other pages.  It doesn't make
-too much sense since there may be enough free memory to migrate other
-pages and there may be a lot base pages on the list.
+Arnd Bergmann <arnd@kernel.org> wrote:
 
-Return -ENOSYS to make consistent with hugetlb.  And if THP split is
-failed just skip and try other pages on the list.
+> gcc-10 shows a false-positive warning with CONFIG_KASAN:
+> 
+> drivers/net/wireless/ath/ath9k/dynack.c: In function 'ath_dynack_sample_tx_ts':
+> include/linux/etherdevice.h:290:14: warning: writing 4 bytes into a region of size 0 [-Wstringop-overflow=]
+>   290 |  *(u32 *)dst = *(const u32 *)src;
+>       |  ~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~
+> 
+> Until gcc is fixed, work around this by using memcpy() in place
+> of ether_addr_copy(). Hopefully gcc-11 will not have this problem.
+> 
+> Link: https://godbolt.org/z/sab1MK
+> Link: https://gcc.gnu.org/bugzilla/show_bug.cgi?id=97490
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> [kvalo@codeaurora.org: remove ifdef and add a comment]
+> Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
 
-Just skip the whole list and exit when free memory is really low.
+Patch applied to ath-next branch of ath.git, thanks.
 
-Signed-off-by: Yang Shi <shy828301@gmail.com>
----
- mm/migrate.c | 62 ++++++++++++++++++++++++++++++++++++++--------------
- 1 file changed, 46 insertions(+), 16 deletions(-)
+b96fab4e3602 ath9k: work around false-positive gcc warning
 
-diff --git a/mm/migrate.c b/mm/migrate.c
-index 693bf06448ad..d110af76fa4d 100644
---- a/mm/migrate.c
-+++ b/mm/migrate.c
-@@ -1172,7 +1172,7 @@ static int unmap_and_move(new_page_t get_new_page,
- 	struct page *newpage = NULL;
- 
- 	if (!thp_migration_supported() && PageTransHuge(page))
--		return -ENOMEM;
-+		return -ENOSYS;
- 
- 	if (page_count(page) == 1) {
- 		/* page was freed from under us. So we are done. */
-@@ -1376,6 +1376,20 @@ static int unmap_and_move_huge_page(new_page_t get_new_page,
- 	return rc;
- }
- 
-+static inline int try_split_thp(struct page *page, struct page **page2,
-+				struct list_head *from)
-+{
-+	int rc = 0;
-+
-+	lock_page(page);
-+	rc = split_huge_page_to_list(page, from);
-+	unlock_page(page);
-+	if (!rc)
-+		list_safe_reset_next(page, *page2, lru);
-+
-+	return rc;
-+}
-+
- /*
-  * migrate_pages - migrate the pages specified in a list, to the free pages
-  *		   supplied as the target for the page migration
-@@ -1453,24 +1467,40 @@ int migrate_pages(struct list_head *from, new_page_t get_new_page,
- 			 *		     from list
- 			 */
- 			switch(rc) {
-+			/*
-+			 * THP migration might be unsupported or the
-+			 * allocation could've failed so we should
-+			 * retry on the same page with the THP split
-+			 * to base pages.
-+			 *
-+			 * Head page is retried immediately and tail
-+			 * pages are added to the tail of the list so
-+			 * we encounter them after the rest of the list
-+			 * is processed.
-+			 */
-+			case -ENOSYS:
-+				/* THP migration is unsupported */
-+				if (is_thp) {
-+					if (!try_split_thp(page, &page2, from)) {
-+						nr_thp_split++;
-+						goto retry;
-+					}
-+
-+					nr_thp_failed++;
-+					nr_failed += nr_subpages;
-+					break;
-+				}
-+
-+				/* Hugetlb migration is unsupported */
-+				nr_failed++;
-+				break;
- 			case -ENOMEM:
- 				/*
--				 * THP migration might be unsupported or the
--				 * allocation could've failed so we should
--				 * retry on the same page with the THP split
--				 * to base pages.
--				 *
--				 * Head page is retried immediately and tail
--				 * pages are added to the tail of the list so
--				 * we encounter them after the rest of the list
--				 * is processed.
-+				 * When memory is low, don't bother to try to migrate
-+				 * other pages, just exit.
- 				 */
- 				if (is_thp) {
--					lock_page(page);
--					rc = split_huge_page_to_list(page, from);
--					unlock_page(page);
--					if (!rc) {
--						list_safe_reset_next(page, page2, lru);
-+					if (!try_split_thp(page, &page2, from)) {
- 						nr_thp_split++;
- 						goto retry;
- 					}
-@@ -1498,7 +1528,7 @@ int migrate_pages(struct list_head *from, new_page_t get_new_page,
- 				break;
- 			default:
- 				/*
--				 * Permanent failure (-EBUSY, -ENOSYS, etc.):
-+				 * Permanent failure (-EBUSY, etc.):
- 				 * unlike -EAGAIN case, the failed page is
- 				 * removed from migration page list and not
- 				 * retried in the next outer loop.
 -- 
-2.26.2
+https://patchwork.kernel.org/project/linux-wireless/patch/20201026213040.3889546-8-arnd@kernel.org/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
