@@ -2,80 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D7982AD9E1
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 16:13:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 95D962AD9D5
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 16:12:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732424AbgKJPNe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 10:13:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39396 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730981AbgKJPNe (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 10:13:34 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04B16C0613CF;
-        Tue, 10 Nov 2020 07:13:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=yfbAAv9z74vMPfwpK6dKFLRG/wgLDIDQH7gNqCp74iM=; b=X/P7RGRFOzuHDkfSWhHrq0oxGU
-        a4SpAv+nTkiRzo1hMZ6JbF/TxR0o3K7jPnjwja3ywnq25LMYqArUclBG/EjYHBlIMfc6oGtg3Wbwk
-        G6Ul3i3sNWw7cyTNjE86U3KtFq0FLG3FulaFLveDm8rgk/kka2L/zXCgmpa7H46K/FYHwu8XcAywp
-        /FYsD0RUE/NuD+DxxfzdrzaWkm1dWexiGL3YQ/vEGF4nI9+c+4BzyoBd8aJcp1ClrwHPPaOPyplL9
-        z2CxWO2G8ZzL1ZBoijg3CPMH0yZs5yIAzSZ/pZXBFaNkneeYl0XqnrR50NOLmRQwE8iCr/IRbSwwJ
-        venWvckA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kcVKO-0006L3-9E; Tue, 10 Nov 2020 15:13:00 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        id S1732392AbgKJPMN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 10:12:13 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55056 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731450AbgKJPMN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Nov 2020 10:12:13 -0500
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 32FC5301E02;
-        Tue, 10 Nov 2020 16:12:57 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 19AE920289CB5; Tue, 10 Nov 2020 16:12:57 +0100 (CET)
-Date:   Tue, 10 Nov 2020 16:12:57 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Like Xu <like.xu@linux.intel.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Kan Liang <kan.liang@linux.intel.com>, luwei.kang@intel.com,
-        Thomas Gleixner <tglx@linutronix.de>, wei.w.wang@intel.com,
-        Tony Luck <tony.luck@intel.com>,
-        Stephane Eranian <eranian@google.com>,
-        Mark Gross <mgross@linux.intel.com>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH RFC v2 00/17] KVM: x86/pmu: Add support to enable Guest
- PEBS via DS
-Message-ID: <20201110151257.GP2611@hirez.programming.kicks-ass.net>
-References: <20201109021254.79755-1-like.xu@linux.intel.com>
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5A9E820781;
+        Tue, 10 Nov 2020 15:12:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605021133;
+        bh=1mblF7kr35Z4eiJcZUT7eprES5a/ixX706vxu/k08Es=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=R6affz/E4aV4Ui0igg+FgUuyrqzfW1yeSjciWelPZnac0MX47oXKUqccdT9o4yIrS
+         Zq/tiSs8t2198qP/DHxFANqDghshFh9S2MEnZ6/38ZiQR69l9SDdltxHmPKMLa19fC
+         zNJBg03AgkSHkY24s1rAZv4UX2cWWcgAGcHJo85E=
+Date:   Tue, 10 Nov 2020 16:13:09 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Frankie Chang <Frankie.Chang@mediatek.com>
+Cc:     Todd Kjos <tkjos@google.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Martijn Coenen <maco@android.com>,
+        Arve =?iso-8859-1?B?SGr4bm5lduVn?= <arve@android.com>,
+        Christian Brauner <christian@brauner.io>,
+        linux-kernel@vger.kernel.org, wsd_upstream@mediatek.com,
+        Jian-Min Liu <Jian-Min.Liu@mediatek.com>
+Subject: Re: [PATCH v12 2/3] Since the original
+ trace_binder_transaction_received cannot precisely present the real finished
+ time of transaction, adding a trace_binder_txn_latency_free at the point of
+ free transaction may be more close to it.
+Message-ID: <X6quBb28IVvyRhox@kroah.com>
+References: <1604995521.14886.9.camel@mtkswgap22>
+ <1605017955-18027-1-git-send-email-Frankie.Chang@mediatek.com>
+ <1605017955-18027-3-git-send-email-Frankie.Chang@mediatek.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201109021254.79755-1-like.xu@linux.intel.com>
+In-Reply-To: <1605017955-18027-3-git-send-email-Frankie.Chang@mediatek.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 09, 2020 at 10:12:37AM +0800, Like Xu wrote:
-> The Precise Event Based Sampling(PEBS) supported on Intel Ice Lake server
-> platforms can provide an architectural state of the instruction executed
-> after the instruction that caused the event. This patch set enables the
-> the PEBS via DS feature for KVM (also non) Linux guest on the Ice Lake.
-> The Linux guest can use PEBS feature like native:
+On Tue, Nov 10, 2020 at 10:19:14PM +0800, Frankie Chang wrote:
+> From: "Frankie.Chang" <Frankie.Chang@mediatek.com>
 > 
->   # perf record -e instructions:ppp ./br_instr a
->   # perf record -c 100000 -e instructions:pp ./br_instr a
-> 
-> If the counter_freezing is not enabled on the host, the guest PEBS will
-> be disabled on purpose when host is using PEBS facility. By default,
-> KVM disables the co-existence of guest PEBS and host PEBS.
+> Signed-off-by: Frankie.Chang <Frankie.Chang@mediatek.com>
+> Acked-by: Todd Kjos <tkjos@google.com>
 
-Uuhh, what?!? counter_freezing should never be enabled, its broken. Let
-me go delete all that code.
+What happened to the subject line here?
+
+The changelog body is in the subject line, and the subject is gone?
+
+Can you fix this up for all of these patches and resend?
+
+thanks,
+
+greg k-h
