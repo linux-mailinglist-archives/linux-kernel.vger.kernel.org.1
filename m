@@ -2,72 +2,212 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2F582AD448
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 12:01:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 45B422AD44A
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 12:01:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728416AbgKJLB2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 06:01:28 -0500
-Received: from mslow2.mail.gandi.net ([217.70.178.242]:46164 "EHLO
-        mslow2.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726280AbgKJLB0 (ORCPT
+        id S1729949AbgKJLBi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 06:01:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56428 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729630AbgKJLBh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 06:01:26 -0500
-Received: from relay6-d.mail.gandi.net (unknown [217.70.183.198])
-        by mslow2.mail.gandi.net (Postfix) with ESMTP id 0EFFE3B63DD;
-        Tue, 10 Nov 2020 10:57:32 +0000 (UTC)
-X-Originating-IP: 82.255.60.242
-Received: from [192.168.0.28] (lns-bzn-39-82-255-60-242.adsl.proxad.net [82.255.60.242])
-        (Authenticated sender: hadess@hadess.net)
-        by relay6-d.mail.gandi.net (Postfix) with ESMTPSA id 6DCC2C0004;
-        Tue, 10 Nov 2020 10:57:08 +0000 (UTC)
-Message-ID: <fe8ab4cab3740afd261fa902f14ecae002a1122d.camel@hadess.net>
-Subject: How to enable auto-suspend by default
-From:   Bastien Nocera <hadess@hadess.net>
-To:     Linux PM <linux-pm@vger.kernel.org>, linux-usb@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "linux-input@vger.kernel.org" <linux-input@vger.kernel.org>
-Cc:     Hans de Goede <hdegoede@redhat.com>,
-        Mario Limonciello <mario.limonciello@dell.com>
-Date:   Tue, 10 Nov 2020 11:57:07 +0100
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.1 (3.38.1-1.fc33) 
+        Tue, 10 Nov 2020 06:01:37 -0500
+Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9003C0613D1
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 03:01:36 -0800 (PST)
+Received: by mail-ej1-x62c.google.com with SMTP id o9so16951705ejg.1
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 03:01:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=broadcom.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=xdb2zgGFEQQEHTbczr8bQEpfS77URZWXmIJn2AVQgTo=;
+        b=b4idCxF2QUhvIqj52lvXXzu7CKs4naGeRE6cqrEgZQ0/QhMweAGH1pVBrXpyfRrxvy
+         JG5Z2HSJEvV56m2U7aeVicHa8252LK+qY8QxH3q1BGrJ5OcslQnWxp9GfEyXffLcH0Kd
+         PCGpyth/peJUC9qb90mvPmKoXzKvI9Gtn/DeA=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=xdb2zgGFEQQEHTbczr8bQEpfS77URZWXmIJn2AVQgTo=;
+        b=ghOrkrdDS1si0TL8NP8hfN8PljGhp6MCmQhC/UdmWsvi1OrFARyniKwQLDy4mz46ps
+         z65Ue9HwwUZ2RjbM4jheJASIoIdQibpmvifmpjb0c+Rad0t50gliiH5ApxUtRLGwla/h
+         lkOT6IFuQwd+VsKg8UimluzmbgSocchmyeZXPVL2jRiWDzhJt6UhohOufpZ4xwT8iRtU
+         uTYK6OnaySCFJKxEN7Cg8z20kc95OZZQUbtdDzYzn+esSNZ2GHQQwBXWEl5qYnyn/GmS
+         16ztCeCpPapv8Wi/qhFTAuS49S+8+RQBeKZiFZN0Mn0ZC3jMpmU2GbiFmaREacIeG48s
+         pkRw==
+X-Gm-Message-State: AOAM5316mmZdb4bMd5qdiEbxaiJXY/91yaF6+uUlSrg2calEQps3D6KS
+        xzHzfSxgMFjKxE2EdNcInvrCgvChoxIRrferP3Zc5w==
+X-Google-Smtp-Source: ABdhPJxvSd3SexSFwQsaGeXg6n8nPgkYa7kdlNtCDs6UpbNythCe4D/slSvMAcLzGootK2YDAMLDyRD0ee1b1FxuXmU=
+X-Received: by 2002:a17:906:d94:: with SMTP id m20mr19391674eji.279.1605006095351;
+ Tue, 10 Nov 2020 03:01:35 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+References: <20201105060257.35269-1-vikas.gupta@broadcom.com>
+ <20201105060257.35269-2-vikas.gupta@broadcom.com> <20201105000806.1df16656@x1.home>
+ <CAHLZf_vyn1RKEsQWcd7=M1462F2hurSvE37aW3b+1QvFAnBTPQ@mail.gmail.com> <add3a419-dc88-871b-6afa-7fe57aefc597@redhat.com>
+In-Reply-To: <add3a419-dc88-871b-6afa-7fe57aefc597@redhat.com>
+From:   Vikas Gupta <vikas.gupta@broadcom.com>
+Date:   Tue, 10 Nov 2020 16:31:23 +0530
+Message-ID: <CAHLZf_vJOXKmWjpr2+LcWWBhrj+zMhDtOGGe2P14ScoBwov1Ag@mail.gmail.com>
+Subject: Re: [RFC, v0 1/3] vfio/platform: add support for msi
+To:     Auger Eric <eric.auger@redhat.com>
+Cc:     Alex Williamson <alex.williamson@redhat.com>,
+        Cornelia Huck <cohuck@redhat.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Vikram Prakash <vikram.prakash@broadcom.com>
+Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
+        boundary="00000000000032c45505b3be9a14"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hey,
+--00000000000032c45505b3be9a14
+Content-Type: text/plain; charset="UTF-8"
 
-systemd has been shipping this script to enable auto-suspend on a
-number of USB and PCI devices:
-https://github.com/systemd/systemd/blob/master/tools/chromiumos/gen_autosuspend_rules.py
+Hi Eric,
 
-The problem here is twofold. First, the list of devices is updated from
-ChromeOS, and the original list obviously won't be updated by ChromeOS
-developers unless a device listed exists in a ChromeBook computer,
-which means a number of devices that do support autosuspend aren't
-listed.
+On Mon, Nov 9, 2020 at 8:35 PM Auger Eric <eric.auger@redhat.com> wrote:
+>
+> Hi Vikas,
+>
+> On 11/6/20 3:54 AM, Vikas Gupta wrote:
+> > Hi Alex,
+> >
+> > On Thu, Nov 5, 2020 at 12:38 PM Alex Williamson
+> > <alex.williamson@redhat.com> wrote:
+> >>
+> >> On Thu,  5 Nov 2020 11:32:55 +0530
+> >> Vikas Gupta <vikas.gupta@broadcom.com> wrote:
+> >>
+> >>> diff --git a/include/uapi/linux/vfio.h b/include/uapi/linux/vfio.h
+> >>> index 2f313a238a8f..aab051e8338d 100644
+> >>> --- a/include/uapi/linux/vfio.h
+> >>> +++ b/include/uapi/linux/vfio.h
+> >>> @@ -203,6 +203,7 @@ struct vfio_device_info {
+> >>>  #define VFIO_DEVICE_FLAGS_AP (1 << 5)        /* vfio-ap device */
+> >>>  #define VFIO_DEVICE_FLAGS_FSL_MC (1 << 6)    /* vfio-fsl-mc device */
+> >>>  #define VFIO_DEVICE_FLAGS_CAPS       (1 << 7)        /* Info supports caps */
+> >>> +#define VFIO_DEVICE_FLAGS_MSI        (1 << 8)        /* Device supports msi */
+> >>>       __u32   num_regions;    /* Max region index + 1 */
+> >>>       __u32   num_irqs;       /* Max IRQ index + 1 */
+> >>>       __u32   cap_offset;     /* Offset within info struct of first cap */
+> >>
+> >> This doesn't make any sense to me, MSIs are just edge triggered
+> >> interrupts to userspace, so why isn't this fully described via
+> >> VFIO_DEVICE_GET_IRQ_INFO?  If we do need something new to describe it,
+> >> this seems incomplete, which indexes are MSI (IRQ_INFO can describe
+> >> that)?  We also already support MSI with vfio-pci, so a global flag for
+> >> the device advertising this still seems wrong.  Thanks,
+> >>
+> >> Alex
+> >>
+> > Since VFIO platform uses indexes for IRQ numbers so I think MSI(s)
+> > cannot be described using indexes.
+> > In the patch set there is no difference between MSI and normal
+> > interrupt for VFIO_DEVICE_GET_IRQ_INFO.
+> in vfio_platform_irq_init() we first iterate on normal interrupts using
+> get_irq(). Can't we add an MSI index at the end of this list with
+> vdev->irqs[i].count > 1 and set vdev->num_irqs accordingly?
+Yes, I think MSI can be added to the end of list with setting
+vdev->irqs[i].count > 1.
+I`ll consider changing in the next patch set.
+Thanks,
+Vikas
+>
+> Thanks
+>
+> Eric
+> > The patch set adds MSI(s), say as an extension, to the normal
+> > interrupts and handled accordingly. Do you see this is a violation? If
+> > yes, then we`ll think of other possible ways to support MSI for the
+> > platform devices.
+> > Macro VFIO_DEVICE_FLAGS_MSI can be changed to any other name if it
+> > collides with an already supported vfio-pci or if not necessary, we
+> > can remove this flag.
+> >
+> > Thanks,
+> > Vikas
+> >
+>
 
-The other problem is that this list needs to exist at all, and that it
-doesn't seem possible for device driver developers (at various levels
-of the stack) to opt-in to auto-suspend when all the variants of the
-device (or at least detectable ones) support auto-suspend.
+--00000000000032c45505b3be9a14
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Description: S/MIME Cryptographic Signature
 
-So the question is: how can we make it easier for device drivers to
-implicitly allow autosuspend *unless they opt-out*, especially for
-frameworks where the device's transport layer isn't directly available
-(eg. HID devices)?
-
-If that can't be done in the kernel drivers directly, would it be
-possible for the kernel to ship with a somewhat canonical list that
-systemd (or its replacement on other "Linuxes") could use to generate
-those user-space quirks?
-
-Ideally, for example, all new "iwlwifi" or all tested "iwlwifi" devices
-should have autosuspend enabled by the developers adding support for
-them, as in the script above, rather than downstreams (systemd upstream
-included) having to chase new PCI IDs.
-
-Cheers
-
+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
+2lQ6rFUP408r38ha7ieLj9GoHHitwSmKYwUIGObe2Y57xYNj855BF4wx44Z80uM2ugKCZwIDAQAB
+o4IBzzCCAcswDgYDVR0PAQH/BAQDAgWgMIGeBggrBgEFBQcBAQSBkTCBjjBNBggrBgEFBQcwAoZB
+aHR0cDovL3NlY3VyZS5nbG9iYWxzaWduLmNvbS9jYWNlcnQvZ3NwZXJzb25hbHNpZ24yc2hhMmcz
+b2NzcC5jcnQwPQYIKwYBBQUHMAGGMWh0dHA6Ly9vY3NwMi5nbG9iYWxzaWduLmNvbS9nc3BlcnNv
+bmFsc2lnbjJzaGEyZzMwTQYDVR0gBEYwRDBCBgorBgEEAaAyASgKMDQwMgYIKwYBBQUHAgEWJmh0
+dHBzOi8vd3d3Lmdsb2JhbHNpZ24uY29tL3JlcG9zaXRvcnkvMAkGA1UdEwQCMAAwRAYDVR0fBD0w
+OzA5oDegNYYzaHR0cDovL2NybC5nbG9iYWxzaWduLmNvbS9nc3BlcnNvbmFsc2lnbjJzaGEyZzMu
+Y3JsMCMGA1UdEQQcMBqBGHZpa2FzLmd1cHRhQGJyb2FkY29tLmNvbTATBgNVHSUEDDAKBggrBgEF
+BQcDBDAfBgNVHSMEGDAWgBRpcoJiMWeVRIV3kYDEBDZJnXsLYTAdBgNVHQ4EFgQUnmgVV8btvFtO
+FD3kFjPWxD/aB8MwDQYJKoZIhvcNAQELBQADggEBAGCcuBN7G3mbQ7xMF8g8Lpz6WE+UFmkSSqU3
+FZLC2I92SA5lRIthcdz4AEgte6ywnef3+2mG7HWMoQ1wriSG5qLppAD02Uku6yRD52Sn67DB2Ozk
+yhBJayurzUxN1+R5E/YZtj2fkNajS5+i85e83PZPvVJ8/WnseIADGvDoouWqK7mxU/p8hELdb3PW
+JH2nMg39SpVAwmRqfs6mYtenpMwKtQd9goGkIFXqdSvOPATkbS1YIGtU2byLK+/1rIWPoKNmRddj
+WOu/loxldI1sJa1tOHgtb93YpIe0HEmgxLGS0KEnbM+rn9vXNKCe+9n0PhxJIfqcf6rAtK0prRwr
+Y2MxggJvMIICawIBATBtMF0xCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNh
+MTMwMQYDVQQDEypHbG9iYWxTaWduIFBlcnNvbmFsU2lnbiAyIENBIC0gU0hBMjU2IC0gRzMCDDTZ
+lyNZkGMqSi5xbzANBglghkgBZQMEAgEFAKCB1DAvBgkqhkiG9w0BCQQxIgQg+I3XJ4BBVDe2Zon3
+jvo/74K4GmDkbFYOGgyWjE4ina0wGAYJKoZIhvcNAQkDMQsGCSqGSIb3DQEHATAcBgkqhkiG9w0B
+CQUxDxcNMjAxMTEwMTEwMTM1WjBpBgkqhkiG9w0BCQ8xXDBaMAsGCWCGSAFlAwQBKjALBglghkgB
+ZQMEARYwCwYJYIZIAWUDBAECMAoGCCqGSIb3DQMHMAsGCSqGSIb3DQEBCjALBgkqhkiG9w0BAQcw
+CwYJYIZIAWUDBAIBMA0GCSqGSIb3DQEBAQUABIIBAKvF6q0BUW0gR7sXVKqChzGHnoR86HbGyv4q
+c9tX7u8pVTkAbPKgcGqUtl7Wnn3FLj5OZ57XO7kI7Vol+ufgEyDk0c6hdrlYPl7Tiqx6sB7kj5bM
+aJOhLE97H8u+EJKCkSc+Vwby8agPImcE1M0LjP2eKMAvYmYuPIz6gcAC623CGqtgJFIVq8Pf7dyq
+AcR5lGOb4OpZ1z9N9uO6CfoZypi40FzkLSIjwAKHbeoFI4a1lMRobfHCnyM47aMwldVTN7YGbqsl
+7MuHz7IoM08kI+eLFdcBBVSfbaabHvDyW61u7NNCzy5MJ/+JvkcQ0T0hT77IdEG+I/erEdf1BCEg
+A5c=
+--00000000000032c45505b3be9a14--
