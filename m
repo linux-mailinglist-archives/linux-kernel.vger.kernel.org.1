@@ -2,70 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE7932AD920
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 15:46:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E6C3A2AD913
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 15:43:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730572AbgKJOqE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 09:46:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35000 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730200AbgKJOqE (ORCPT
+        id S1732036AbgKJOnX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 09:43:23 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:7626 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730231AbgKJOnU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 09:46:04 -0500
-Received: from michel.telenet-ops.be (michel.telenet-ops.be [IPv6:2a02:1800:110:4::f00:18])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCB76C0613CF
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 06:46:03 -0800 (PST)
-Received: from ramsan.of.borg ([84.195.186.194])
-        by michel.telenet-ops.be with bizsmtp
-        id qem22300G4C55Sk06em2XF; Tue, 10 Nov 2020 15:46:02 +0100
-Received: from rox.of.borg ([192.168.97.57])
-        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1kcUuH-001CUI-Rc; Tue, 10 Nov 2020 15:46:01 +0100
-Received: from geert by rox.of.borg with local (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1kcUuH-00DlDz-CV; Tue, 10 Nov 2020 15:46:01 +0100
-From:   Geert Uytterhoeven <geert+renesas@glider.be>
-To:     Kishon Vijay Abraham I <kishon@ti.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Geert Uytterhoeven <geert+renesas@glider.be>
-Subject: [PATCH] phy: intel: PHY_INTEL_KEEMBAY_EMMC should depend on ARCH_KEEMBAY
-Date:   Tue, 10 Nov 2020 15:46:00 +0100
-Message-Id: <20201110144600.3279752-1-geert+renesas@glider.be>
-X-Mailer: git-send-email 2.25.1
+        Tue, 10 Nov 2020 09:43:20 -0500
+Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4CVrFM01VvzLwLZ;
+        Tue, 10 Nov 2020 22:43:03 +0800 (CST)
+Received: from huawei.com (10.175.113.133) by DGGEMS413-HUB.china.huawei.com
+ (10.3.19.213) with Microsoft SMTP Server id 14.3.487.0; Tue, 10 Nov 2020
+ 22:43:08 +0800
+From:   Wang Hai <wanghai38@huawei.com>
+To:     <davem@davemloft.net>, <kas@fi.muni.cz>, <kuba@kernel.org>
+CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH net] cosa: Add missing kfree in error path of cosa_write
+Date:   Tue, 10 Nov 2020 22:46:14 +0800
+Message-ID: <20201110144614.43194-1-wanghai38@huawei.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.175.113.133]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The Intel Keem Bay eMMC PHY is only present on Intel Keem Bay SoCs.
-Hence add a dependency on ARCH_KEEMBAY, to prevent asking the user about
-this driver when configuring a kernel without Intel Keem Bay platform
-support.
+If memory allocation for 'kbuf' succeed, cosa_write() doesn't have a
+corresponding kfree() in exception handling. Thus add kfree() for this
+function implementation.
 
-Fixes: 885c4f4d6cf448f6 ("phy: intel: Add Keem Bay eMMC PHY support")
-Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Wang Hai <wanghai38@huawei.com>
 ---
- drivers/phy/intel/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/wan/cosa.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/phy/intel/Kconfig b/drivers/phy/intel/Kconfig
-index 58ec695c92ec8fb9..62c24764654b2e5d 100644
---- a/drivers/phy/intel/Kconfig
-+++ b/drivers/phy/intel/Kconfig
-@@ -4,7 +4,7 @@
- #
- config PHY_INTEL_KEEMBAY_EMMC
- 	tristate "Intel Keem Bay EMMC PHY driver"
--	depends on (OF && ARM64) || COMPILE_TEST
-+	depends on ARCH_KEEMBAY || COMPILE_TEST
- 	depends on HAS_IOMEM
- 	select GENERIC_PHY
- 	select REGMAP_MMIO
+diff --git a/drivers/net/wan/cosa.c b/drivers/net/wan/cosa.c
+index f8aed0696d77..2369ca250cd6 100644
+--- a/drivers/net/wan/cosa.c
++++ b/drivers/net/wan/cosa.c
+@@ -889,6 +889,7 @@ static ssize_t cosa_write(struct file *file,
+ 			chan->tx_status = 1;
+ 			spin_unlock_irqrestore(&cosa->lock, flags);
+ 			up(&chan->wsem);
++			kfree(kbuf);
+ 			return -ERESTARTSYS;
+ 		}
+ 	}
 -- 
-2.25.1
+2.17.1
 
