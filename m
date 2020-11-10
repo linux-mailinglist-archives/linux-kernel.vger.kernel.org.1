@@ -2,111 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A5A12AD987
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 15:58:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EF882AD98E
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 15:59:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730829AbgKJO6h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 09:58:37 -0500
-Received: from mx2.suse.de ([195.135.220.15]:41288 "EHLO mx2.suse.de"
+        id S1731038AbgKJO7b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 09:59:31 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49562 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730432AbgKJO6g (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 09:58:36 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1605020314;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=SM0mRE+PVzXgiw6lwVn9+EZO1FGebDrpEtiYSYE8FIk=;
-        b=UgkiC+zz3BDZNiwUsZwwaFxjbgYanrJ0hoQ9FQdkvscnQavKy7fI00hJhl4vXBAvkCssvF
-        Z8nZ6+XHpqW1tsrx3GMtdX0jekdcsqb0LOXAEE1sPg2vrUa+lrQtC9/FbM/sPh/BCzNhHa
-        WlUmNnfLJ+m6Uoc+5IIKsr4ewY6KXMA=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id CE7B3AF3B;
-        Tue, 10 Nov 2020 14:58:34 +0000 (UTC)
-Date:   Tue, 10 Nov 2020 15:58:34 +0100
-From:   Petr Mladek <pmladek@suse.com>
-To:     Matteo Croce <mcroce@linux.microsoft.com>
-Cc:     linux-kernel@vger.kernel.org, Mike Rapoport <rppt@kernel.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Pavel Tatashin <pasha.tatashin@soleen.com>,
-        Kees Cook <keescook@chromium.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Tyler Hicks <tyhicks@linux.microsoft.com>
-Subject: Re: [PATCH v3] reboot: allow to specify reboot mode via sysfs
-Message-ID: <20201110145834.GE20201@alley>
-References: <20201109164538.18934-1-mcroce@linux.microsoft.com>
+        id S1730917AbgKJO72 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Nov 2020 09:59:28 -0500
+Received: from mail-ot1-f53.google.com (mail-ot1-f53.google.com [209.85.210.53])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 768D7216C4;
+        Tue, 10 Nov 2020 14:59:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605020367;
+        bh=qvUn9qNX1M1Qx2QeznJUHEO4kgcTe0+DelhXJxEE0dw=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=O/3QTe6UPGl4+UBnrvNNeMglzQW4NaG0atUAknJXGKmiKlQ3jFAg466x/NwQrKu8/
+         gBOWhF2e4nqsUJikfZBNK85TbHjpqqfBqGUI/fPV3Q4vo0VU27Kg9mYaa1UZ+CPmR7
+         m6tDvxeghc9snLMuu1GE+vc1t3kZ5zdJ+r04K2GU=
+Received: by mail-ot1-f53.google.com with SMTP id f16so12745658otl.11;
+        Tue, 10 Nov 2020 06:59:27 -0800 (PST)
+X-Gm-Message-State: AOAM530/6H67dDL5PAJL3KAeHijbr+1XU2zLAQyWMFDyoERLp8rObvxD
+        Spis/dV5AB9DWng0pGXDXiFUAN1Kt1LNhA2hImg=
+X-Google-Smtp-Source: ABdhPJxoTX+rWXC9j2qbuOi17pSMpsm+frJ8yNOwZPIBGWBUEPxRNPsSN2Sgb5QTmR2TPMukZYJ0UGj/XW9Ewao913I=
+X-Received: by 2002:a9d:23a6:: with SMTP id t35mr13613677otb.210.1605020366593;
+ Tue, 10 Nov 2020 06:59:26 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201109164538.18934-1-mcroce@linux.microsoft.com>
+References: <20200930153519.7282-16-kishon@ti.com> <VI1PR04MB496061EAB6F249F1C394F01092EA0@VI1PR04MB4960.eurprd04.prod.outlook.com>
+ <d6d27475-3464-6772-2122-cc194b8ae022@ti.com> <VI1PR04MB49602D24F65E11FF1F14294F92E90@VI1PR04MB4960.eurprd04.prod.outlook.com>
+ <30c8f7a1-baa5-1eb4-d2c2-9a13be896f0f@ti.com>
+In-Reply-To: <30c8f7a1-baa5-1eb4-d2c2-9a13be896f0f@ti.com>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Tue, 10 Nov 2020 15:59:08 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a38vBXbAWE09H+TSoZUTkFdYDcQmXX97foT4qXQc8t5ZQ@mail.gmail.com>
+Message-ID: <CAK8P3a38vBXbAWE09H+TSoZUTkFdYDcQmXX97foT4qXQc8t5ZQ@mail.gmail.com>
+Subject: Re: [PATCH v7 15/18] NTB: Add support for EPF PCI-Express
+ Non-Transparent Bridge
+To:     Kishon Vijay Abraham I <kishon@ti.com>
+Cc:     Sherry Sun <sherry.sun@nxp.com>,
+        "bhelgaas@google.com" <bhelgaas@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        "lorenzo.pieralisi@arm.com" <lorenzo.pieralisi@arm.com>,
+        "arnd@arndb.de" <arnd@arndb.de>,
+        "jdmason@kudzu.us" <jdmason@kudzu.us>,
+        "dave.jiang@intel.com" <dave.jiang@intel.com>,
+        "allenbh@gmail.com" <allenbh@gmail.com>,
+        "tjoseph@cadence.com" <tjoseph@cadence.com>,
+        Rob Herring <robh@kernel.org>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-ntb@googlegroups.com" <linux-ntb@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 2020-11-09 17:45:38, Matteo Croce wrote:
-> From: Matteo Croce <mcroce@microsoft.com>
-> 
-> The kernel cmdline reboot= option offers some sort of control
-> on how the reboot is issued.
-> Add handles in sysfs to allow setting these reboot options, so they
-> can be changed when the system is booted, other than at boot time.
-> 
-> The handlers are under <sysfs>/kernel/reboot, can be read to
-> get the current configuration and written to alter it.
-> 
-> --- /dev/null
-> +++ b/Documentation/ABI/testing/sysfs-kernel-reboot
-> @@ -0,0 +1,31 @@
-> +What:		/sys/kernel/reboot
-> +Date:		November 2020
-> +KernelVersion:	5.11
-> +Contact:	Matteo Croce <mcroce@microsoft.com>
-> +Description:	Interface to set the kernel reboot mode, similarly to
-> +		what can be done via the reboot= cmdline option.
-> +		(see Documentation/admin-guide/kernel-parameters.txt)
-> +
+On Tue, Nov 10, 2020 at 3:20 PM Kishon Vijay Abraham I <kishon@ti.com> wrote:
+> On 10/11/20 7:55 am, Sherry Sun wrote:
 
-s/reboot mode/reboot behavior/
+> > But for VOP, only two boards are needed(one board as host and one board as card) to realize the
+> > communication between the two systems, so my question is what are the advantages of using NTB?
+>
+> NTB is a bridge that facilitates communication between two different
+> systems. So it by itself will not be source or sink of any data unlike a
+> normal EP to RP system (or the VOP) which will be source or sink of data.
+>
+> > Because I think the architecture of NTB seems more complicated. Many thanks!
+>
+> yeah, I think it enables a different use case all together. Consider you
+> have two x86 HOST PCs (having RP) and they have to be communicate using
+> PCIe. NTB can be used in such cases for the two x86 PCs to communicate
+> with each other over PCIe, which wouldn't be possible without NTB.
 
-The reboot mode is only one of the modified parameters.
+I think for VOP, we should have an abstraction that can work on either NTB
+or directly on the endpoint framework but provide an interface that then
+lets you create logical devices the same way.
 
+Doing VOP based on NTB plus the new NTB_EPF driver would also
+work and just move the abstraction somewhere else, but I guess it
+would complicate setting it up for those users that only care about the
+simpler endpoint case.
 
-> +What:		/sys/kernel/reboot/mode
-> +Date:		November 2020
-> +KernelVersion:	5.11
-> +Contact:	Matteo Croce <mcroce@microsoft.com>
-> +Description:	Reboot mode. Valid values are: cold warm hard soft gpio
-> +
-> +What:		/sys/kernel/reboot/type
-> +Date:		November 2020
-> +KernelVersion:	5.11
-> +Contact:	Matteo Croce <mcroce@microsoft.com>
-> +Description:	Reboot type. Valid values are: bios acpi kbd triple efi pci
-> +
-> +What:		/sys/kernel/reboot/cpu
-> +Date:		November 2020
-> +KernelVersion:	5.11
-> +Contact:	Matteo Croce <mcroce@microsoft.com>
-> +Description:	CPU number to use to reboot.
-> +
-> +What:		/sys/kernel/reboot/force
-> +Date:		November 2020
-> +KernelVersion:	5.11
-> +Contact:	Matteo Croce <mcroce@microsoft.com>
-> +Description:	Force an immediate reboot.
-
-This makes me feel like that the kernel will reboot
-immediately when you write "1". It would deserve a better
-explanation that would make it clear, something like:
-
-Description:	Use forced reboot that does not contact the init system.
-
-
-Otherwise, it looks good to me. With the two above updates:
-
-Reviewed-by: Petr Mladek <pmladek@suse.com>
-
-Best Regards,
-Petr
+      Arnd
