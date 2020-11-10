@@ -2,116 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C3872AD3ED
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 11:39:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 192F32AD3F4
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 11:40:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730196AbgKJKjv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 05:39:51 -0500
-Received: from mail-oi1-f193.google.com ([209.85.167.193]:40702 "EHLO
-        mail-oi1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726219AbgKJKju (ORCPT
+        id S1730630AbgKJKkn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 05:40:43 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:49274 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726900AbgKJKkm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 05:39:50 -0500
-Received: by mail-oi1-f193.google.com with SMTP id m143so13779956oig.7;
-        Tue, 10 Nov 2020 02:39:48 -0800 (PST)
+        Tue, 10 Nov 2020 05:40:42 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1605004840;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=mFapeUoz9EK+CeReEbp81IVPN8G8zVDapgbISzQg6Vs=;
+        b=ZravZIYZ904Xj210Gmu5ZbplPBdlSpO5rWG+ngA15PfevgyevZv0wZs4LJLGpyi8G/Rnhu
+        3IeEzh1F4VbD2kxfTQ3j/0FRltXscjCxKtMpm51gWLKd+foZj9mFu9/BMsB2EokUY7ihoF
+        3Z8sKcL+m9U204JeJkt4RQfNNO5v1pA=
+Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
+ [209.85.218.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-507-DxpXngPQN42gsEhcdRXRuA-1; Tue, 10 Nov 2020 05:40:38 -0500
+X-MC-Unique: DxpXngPQN42gsEhcdRXRuA-1
+Received: by mail-ej1-f70.google.com with SMTP id 27so4538788ejy.8
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 02:40:38 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=PLlsEGFO+UNJyfsrDQkvwYBM++LmH/sVJXHnxUOe2bI=;
-        b=NcMnBdrL65nIlh3wiaKqYV8yvknAy7rrYbgKcBuBEVCmaOd7Zo0jhiWyj23+23Oopa
-         7+vBlbA/ngh2P4inkrrr7SpCZCF6AjffbbgTpmxR+rHCO4lyCIHPg4C5v8vkwQ29tBZz
-         zDYR5Cw1qGGPkJ3qiPexMgK0xoNq4ZT38ypPqEF7gibGzA4dB9q6L63Il02h96tWE3x0
-         D50vfXR4jrQLZAXHNCVj6RXKJx02QDXj0PubkPf6bDprykLnue9dyeMLMcundAgOsQhU
-         T89PROXNRmAdYGlOKUdHZfJdVExwC7BzdHwhnNMEfYJWmIrxtWfJGpLXA+qqHhpGJoK0
-         Yr9A==
-X-Gm-Message-State: AOAM530nT47Q+RXvVpgtcme1U8gQ4SXexisdGnTdxtBurSZEjaucxoMz
-        Z91QnrHns1gtd9x8JHitf9lOCv7zov17l7owjQM=
-X-Google-Smtp-Source: ABdhPJwwKwNbQN1n31gBUed38kgWS04gn0L+J3MkMXf4pM/Ttl8CIVudwz/GsuGTgJomiwwMiiUIQ1OR3y+KTv2H2gQ=
-X-Received: by 2002:aca:52c9:: with SMTP id g192mr2439496oib.54.1605004788072;
- Tue, 10 Nov 2020 02:39:48 -0800 (PST)
+        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=mFapeUoz9EK+CeReEbp81IVPN8G8zVDapgbISzQg6Vs=;
+        b=tjaxCtdOhXN/ig9A3gdShxR+63ZjvjRJHrMFW0NZ/cUbLuR0g3AyU7C43hOAdLhByZ
+         CNHgh4b3zfk5uxEKGnC4QW43eWRAhlUq/BIfJK34WZLILE+N6FUsj2Y/Q2nP6NAYvHag
+         o5dTCnWSwCtOuG/tudmDPW0nmzEHq9QS7xuKGvG22rpNqjJ7CZOwcMwo/N6bL2ZQtHS4
+         jr2JjdccwlcXeM1wK+vTz/Utzp+innTFPTMR7MdG8k0UslRoBSpUahTJVOUXgi/+gJ6f
+         WskPn1QzwDzrb8nb0t0MkF9VIDFwAWCgcyOM3tIe6+jeU0B0mdZAXfzX3Ft8+1k6Zb6W
+         Fmww==
+X-Gm-Message-State: AOAM530fN3oBAIeIDudSAN1AwBPnLRjp2Wcs2Z7BqFx0cpNJzuJkkdLk
+        VcbCyxGCSBE1vzyKPwNPWqjfRUxjCnKYHi/lg8X1xrmNsEIM7Bij3IpXAm7pbXa8jkKjl0eTwwE
+        X6YHT8v9Us8ZFNSn97ietQWVH
+X-Received: by 2002:a17:906:1183:: with SMTP id n3mr19064863eja.188.1605004837137;
+        Tue, 10 Nov 2020 02:40:37 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJwnjrd2VMYhvgmNsyYwtSr3fGttybQrjvuv3QVZvsz5l664w5dGcdQ9COwyU1SYrBNdF5vTUQ==
+X-Received: by 2002:a17:906:1183:: with SMTP id n3mr19064842eja.188.1605004836846;
+        Tue, 10 Nov 2020 02:40:36 -0800 (PST)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id m16sm8760572eja.58.2020.11.10.02.40.35
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 10 Nov 2020 02:40:35 -0800 (PST)
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     "Luck, Tony" <tony.luck@intel.com>,
+        Jim Mattson <jmattson@google.com>, Qian Cai <cai@redhat.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-tip-commits@vger.kernel.org" 
+        <linux-tip-commits@vger.kernel.org>, x86 <x86@kernel.org>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>
+References: <20201030190807.GA13884@agluck-desk2.amr.corp.intel.com>
+ <160431588828.397.16468104725047768957.tip-bot2@tip-bot2>
+ <3f863634cd75824907e8ccf8164548c2ef036f20.camel@redhat.com>
+ <bfc274fc27724ea39ecac1e7ac834ed8@intel.com>
+ <CALMp9eTFaiYkTnVe8xKzg40E4nZ3rAOii0O06bTy0+oLNjyKhA@mail.gmail.com>
+ <a22b5468e1c94906b72c4d8bc83c0f64@intel.com>
+ <20201109232402.GA25492@agluck-desk2.amr.corp.intel.com>
+ <20201110063151.GB7290@nazgul.tnic>
+ <094c2395-b1b3-d908-657c-9bd4144e40ac@redhat.com>
+ <20201110095615.GB9450@nazgul.tnic>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Subject: Re: [PATCH] x86/mce: Check for hypervisor before enabling additional
+ error logging
+Message-ID: <b8de7f7b-7aa1-d98b-74be-62d7c055542b@redhat.com>
+Date:   Tue, 10 Nov 2020 11:40:34 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-References: <20201003013123.20269-1-david.e.box@linux.intel.com> <20201003013123.20269-3-david.e.box@linux.intel.com>
-In-Reply-To: <20201003013123.20269-3-david.e.box@linux.intel.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Tue, 10 Nov 2020 11:39:37 +0100
-Message-ID: <CAMuHMdXPMNGtnvZKRVofQ7KhuveTadfp+V0Q73YOWkdTgr0aZQ@mail.gmail.com>
-Subject: Re: [PATCH V8 2/5] mfd: Intel Platform Monitoring Technology support
-To:     "David E. Box" <david.e.box@linux.intel.com>
-Cc:     Lee Jones <lee.jones@linaro.org>,
-        Darren Hart <dvhart@infradead.org>, andy@infradead.org,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        alexey.budankov@linux.intel.com,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        platform-driver-x86@vger.kernel.org,
-        linux-pci <linux-pci@vger.kernel.org>,
-        Alexander Duyck <alexander.h.duyck@linux.intel.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20201110095615.GB9450@nazgul.tnic>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi David,
+On 10/11/20 10:56, Borislav Petkov wrote:
+> On Tue, Nov 10, 2020 at 09:50:43AM +0100, Paolo Bonzini wrote:
+>> 1) ignore_msrs _cannot_ be on by default.  You cannot know in advance that
+>> for all non-architectural MSRs it's okay for them to read as zero and eat
+>> writes.  For some non-architectural MSR which never reads as zero on real
+>> hardware, who knows that there isn't some code using the contents of the MSR
+>> as a divisor, and causing a division by zero exception with ignore_msrs=1?
+> 
+> So if you're emulating a certain type of hardware - say a certain CPU
+> model - then what are you saying? That you're emulating it but not
+> really all of it, just some bits?
 
-On Sat, Oct 3, 2020 at 3:32 AM David E. Box <david.e.box@linux.intel.com> wrote:
-> Intel Platform Monitoring Technology (PMT) is an architecture for
-> enumerating and accessing hardware monitoring facilities. PMT supports
-> multiple types of monitoring capabilities. This driver creates platform
-> devices for each type so that they may be managed by capability specific
-> drivers (to be introduced). Capabilities are discovered using PCIe DVSEC
-> ids. Support is included for the 3 current capability types, Telemetry,
-> Watcher, and Crashlog. The features are available on new Intel platforms
-> starting from Tiger Lake for which support is added. This patch adds
-> support for Tiger Lake (TGL), Alder Lake (ADL), and Out-of-Band Management
-> Services Module (OOBMSM).
->
-> Also add a quirk mechanism for several early hardware differences and bugs.
-> For Tiger Lake and Alder Lake, do not support Watcher and Crashlog
-> capabilities since they will not be compatible with future product. Also,
-> fix use a quirk to fix the discovery table offset.
->
-> Co-developed-by: Alexander Duyck <alexander.h.duyck@linux.intel.com>
-> Signed-off-by: Alexander Duyck <alexander.h.duyck@linux.intel.com>
-> Signed-off-by: David E. Box <david.e.box@linux.intel.com>
-> Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+We try to emulate all that is described in the SDM as architectural, as 
+long as we expose the corresponding CPUID leaves.
 
-Thanks for your patch, which is now commit 4f8217d5b0ca8ace ("mfd: Intel
-Platform Monitoring Technology support") in the mfd/for-mfd-next.
+However, f/m/s mean nothing when running virtualized.  First, trying to 
+derive any non-architectural property from the f/m/s is going to fail. 
+Second, even the host can be anything as long as it's newer than the 
+f/m/s that the VM reports (i.e. you can get a Sandy Bridge model and 
+model name even if running on Skylake).
 
-> --- a/drivers/mfd/Kconfig
-> +++ b/drivers/mfd/Kconfig
-> @@ -670,6 +670,16 @@ config MFD_INTEL_PMC_BXT
->           Register and P-unit access. In addition this creates devices
->           for iTCO watchdog and telemetry that are part of the PMC.
->
-> +config MFD_INTEL_PMT
-> +       tristate "Intel Platform Monitoring Technology (PMT) support"
-> +       depends on PCI
+Also, X86_FEATURE_HYPERVISOR might be clear even if running virtualized. 
+  (Thank you nVidia for using it to play market segmentation games).
 
-Does this need a "depend on X86 || COMPILE_TEST", to prevent the
-question from showing up on platforms where the PMT cannot be present?
+> Because this is what happens - the kernel checks that it runs on a
+> certain CPU type and this tells it that those MSRs are there. But then
+> comes virt and throws all assumptions out.
+> 
+> So if it emulates a CPU model and the kernel tries to access those MSRs,
+> then the HV should ignore those MSR accesses if it doesn't know about
+> them. Why should the kernel change everytime some tool or virtualization
+> has shortcomings?
 
-I see the TGL and ADL PCI IDs are also referenced from
-drivers/platform/x86/intel_pmt_telemetry.c, which suggests this is X86-only.
-Perhaps the OOBMSM is a PCI device that can be used on non-X86 platforms?
+See above: how can the hypervisor know a safe value for all MSRs, 
+possibly including the undocumented ones?
 
-> +       select MFD_CORE
-> +       help
-> +         The Intel Platform Monitoring Technology (PMT) is an interface that
-> +         provides access to hardware monitor registers. This driver supports
-> +         Telemetry, Watcher, and Crashlog PMT capabilities/devices for
-> +         platforms starting from Tiger Lake.
-> +
+>> 3) because of (1) and (2), the solution is very simple.  If the MSR is
+>> architectural, its absence is a KVM bug and we'll fix it in all stable
+>> versions.  If the MSR is not architectural (and 17Fh isn't; not only it's
+>> not mentioned in the SDM,
+> 
+> It is mentioned in the SDM.
 
-Gr{oetje,eeting}s,
+Oh right they moved the MSRs to a separate manual; found it now.  Still, 
+it's not architectural.
 
-                        Geert
+> But maybe we should have a choice and maybe qemu/kvm should have a way
+> to ignore certain MSRs for certain CPU types, regardless of them being
+> architectural or not.
 
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+If it makes sense to emulate certain non-architectural MSRs we can add 
+them.  Supporting the error control MSR wouldn't even be hard, but I'm 
+not sure it makes sense:
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+1) that MSR has not been there on current processors for several years 
+(and therefore Intel has clearly no intention of making architectural). 
+  For what we know, even current processors might not provide any of 
+that extended information at all (and still the VM could present Sandy 
+Bridge f/m/s).
+
+2) it would only present extended error info if the host itself enables 
+the bit, so one might question the wisdom of backporting that support 
+this to stable kernels
+
+3) It's unclear whether the guest would be able to use the extended 
+error information at all (and in some cases the description in the 
+manual is not even proper English: "allows the iMC to log first device 
+error when corrected error is detected during normal read"?).
+
+4) other hypervisors, including older distros, would likely have the 
+same issue.
+
+Paolo
+
