@@ -2,96 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E8AC2AD060
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 08:23:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5009E2AD062
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 08:24:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731583AbgKJHXW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 02:23:22 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45126 "EHLO mail.kernel.org"
+        id S1731346AbgKJHX5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 02:23:57 -0500
+Received: from mga12.intel.com ([192.55.52.136]:15718 "EHLO mga12.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726307AbgKJHXV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 02:23:21 -0500
-Received: from ogabbay-VM.habana-labs.com (unknown [213.57.90.10])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6C0E7206B6;
-        Tue, 10 Nov 2020 07:23:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604993000;
-        bh=8Qz8LIUkTxY5/gc9OeAz1JzdfBTeCe2Bc+FW79CrHvs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=lxwipDA750+LxYCIEu3zmzw/pUVmCg7SnCXTV+tkp+uRd9HfS7hzKE6EWuqiSM04n
-         JSYs2z775lphf/o41x7822LhK8kSvzL+ukiWXd7qO3bbsyTc3toL9GerxI+wnwO5Bn
-         C0q4F0UuQnc+RBfkG6lgigyNFmnbFtw8EbA34xTQ=
-Date:   Tue, 10 Nov 2020 09:23:10 +0200
-From:   Oded Gabbay <ogabbay@kernel.org>
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Parav Pandit <parav@nvidia.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        "Ertman, David M" <david.m.ertman@intel.com>,
-        "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
-        Takashi Iwai <tiwai@suse.de>,
-        linux-rdma <linux-rdma@vger.kernel.org>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Doug Ledford <dledford@redhat.com>,
-        Netdev <netdev@vger.kernel.org>,
-        David Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Fred Oh <fred.oh@linux.intel.com>,
-        Parav Pandit <parav@mellanox.com>,
-        "Saleem, Shiraz" <shiraz.saleem@intel.com>,
-        "Patil, Kiran" <kiran.patil@intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Leon Romanovsky <leonro@nvidia.com>
-Subject: Re: [PATCH v3 01/10] Add auxiliary bus support
-Message-ID: <20201110072309.GA6508@ogabbay-VM.habana-labs.com>
-References: <20201023003338.1285642-1-david.m.ertman@intel.com>
- <20201023003338.1285642-2-david.m.ertman@intel.com>
- <CAPcyv4i9s=CsO5VJOhPnS77K=bD0LTQ8TUAbhLd+0OmyU8YQ3g@mail.gmail.com>
- <DM6PR11MB284191BAA817540E52E4E2C4DDEE0@DM6PR11MB2841.namprd11.prod.outlook.com>
- <BY5PR12MB43228923300FDE8B087DC4E9DCEE0@BY5PR12MB4322.namprd12.prod.outlook.com>
- <CAPcyv4h1LH+ojRGqvh_R6mfuBbsibGa8DNMG5M1sN5G1BgwiHw@mail.gmail.com>
- <BY5PR12MB43222D59CCCFCF368C357098DCEE0@BY5PR12MB4322.namprd12.prod.outlook.com>
- <20201106193537.GH49612@sirena.org.uk>
+        id S1726307AbgKJHX4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Nov 2020 02:23:56 -0500
+IronPort-SDR: +i3ezlRdRNCxNv8KP7pXTXpOPPRC6ykLdfTOOb4yxo5irrBbthAOx2Eabw+ACHy8LsHOOIfnG5
+ 2UPKe5lPgIBg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9800"; a="149208797"
+X-IronPort-AV: E=Sophos;i="5.77,465,1596524400"; 
+   d="scan'208";a="149208797"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Nov 2020 23:23:56 -0800
+IronPort-SDR: 6ELATngh0c/MTxd0ChanwB2iVNIM7Q5WoJhXaPzTNuWUiWxFY4LzNleuv9Vao9l51hYnSTfVeN
+ DKO45+zk+Vkw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,465,1596524400"; 
+   d="scan'208";a="354396026"
+Received: from lkp-server02.sh.intel.com (HELO c6c5fbb3488a) ([10.239.97.151])
+  by orsmga008.jf.intel.com with ESMTP; 09 Nov 2020 23:23:54 -0800
+Received: from kbuild by c6c5fbb3488a with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1kcO0P-00005m-RL; Tue, 10 Nov 2020 07:23:53 +0000
+Date:   Tue, 10 Nov 2020 15:23:20 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:auto-latest] BUILD SUCCESS
+ 904d67c2f61adcd28726693245e094a273184b95
+Message-ID: <5faa3fe8.j8pRwDA5MNfLnAqi%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201106193537.GH49612@sirena.org.uk>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 06, 2020 at 07:35:37PM +0000, Mark Brown wrote:
-> On Thu, Nov 05, 2020 at 08:37:14PM +0000, Parav Pandit wrote:
-> 
-> > > > This example describes the mlx5 PCI subfunction use case.
-> > > > I didn't follow your question about 'explicit example'.
-> > > > What part is missing to identify it as explicit example?
-> 
-> > > Specifically listing "mlx5" so if someone reading this document thinks to
-> > > themselves "hey mlx5 sounds like my use case" they can go grep for that.
-> 
-> > Ah, I see.
-> > "mlx5" is not listed explicitly, because it is not included in this patchset.
-> > In various previous discussions in this thread, mlx5 subfunction use case is described that justifies the existence of the bus.
-> > I will be happy to update this documentation once mlx5 subfunction will be part of kernel so that grep actually shows valid output.
-> > (waiting to post them as it uses auxiliary bus :-)).
-> 
-> For ease of review if there's a new version it might be as well to just
-> reference it anyway, hopefully the mlx5 code will be merged fairly
-> quickly once the bus itself is merged.  It's probably easier all round
-> than adding the reference later, it seems more likely that mlx5 will get
-> merged than that it'll fall by the wayside.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/peterz/queue.git  auto-latest
+branch HEAD: 904d67c2f61adcd28726693245e094a273184b95  Merge branch 'linus'
 
-Another use-case for this patch-set is going to be the habanalabs driver.
-The GAUDI ASIC is a PCI H/W accelerator for deep-learning which also exposes 
-network ports.We are going to use this auxiliary-bus feature to separate our 
-monolithic driver into several parts that will reside in different subsystems 
-and communicate between them through the bus.
+elapsed time: 1610m
 
-Thanks,
-Oded
+configs tested: 105
+configs skipped: 2
+
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+powerpc                       maple_defconfig
+sh                               alldefconfig
+sh                ecovec24-romimage_defconfig
+m68k                         amcore_defconfig
+powerpc                      katmai_defconfig
+sh                   sh7770_generic_defconfig
+sh                          rsk7203_defconfig
+arm                       cns3420vb_defconfig
+arm                           omap1_defconfig
+c6x                        evmc6472_defconfig
+arm                          ixp4xx_defconfig
+ia64                             allyesconfig
+xtensa                    xip_kc705_defconfig
+sh                            titan_defconfig
+powerpc                     sbc8548_defconfig
+powerpc                     taishan_defconfig
+arm                          collie_defconfig
+sh                          urquell_defconfig
+powerpc                     sequoia_defconfig
+powerpc                     tqm8548_defconfig
+sh                            hp6xx_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+c6x                              allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+x86_64               randconfig-a003-20201110
+x86_64               randconfig-a005-20201110
+x86_64               randconfig-a004-20201110
+x86_64               randconfig-a002-20201110
+x86_64               randconfig-a006-20201110
+x86_64               randconfig-a001-20201110
+i386                 randconfig-a006-20201110
+i386                 randconfig-a005-20201110
+i386                 randconfig-a002-20201110
+i386                 randconfig-a001-20201110
+i386                 randconfig-a003-20201110
+i386                 randconfig-a004-20201110
+i386                 randconfig-a004-20201109
+i386                 randconfig-a006-20201109
+i386                 randconfig-a005-20201109
+i386                 randconfig-a001-20201109
+i386                 randconfig-a003-20201109
+i386                 randconfig-a002-20201109
+i386                 randconfig-a012-20201110
+i386                 randconfig-a014-20201110
+i386                 randconfig-a016-20201110
+i386                 randconfig-a011-20201110
+i386                 randconfig-a015-20201110
+i386                 randconfig-a013-20201110
+i386                 randconfig-a014-20201109
+i386                 randconfig-a015-20201109
+i386                 randconfig-a013-20201109
+i386                 randconfig-a016-20201109
+i386                 randconfig-a011-20201109
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+x86_64                                   rhel
+x86_64                           allyesconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                                  kexec
+
+clang tested configs:
+x86_64               randconfig-a015-20201110
+x86_64               randconfig-a011-20201110
+x86_64               randconfig-a014-20201110
+x86_64               randconfig-a013-20201110
+x86_64               randconfig-a016-20201110
+x86_64               randconfig-a012-20201110
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
