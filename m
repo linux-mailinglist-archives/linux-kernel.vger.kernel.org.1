@@ -2,115 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3D1F2AD1BA
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 09:49:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CAA852AD1C3
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 09:50:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730697AbgKJItX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 03:49:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35816 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726825AbgKJItW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 03:49:22 -0500
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4A63C0613D1
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 00:49:22 -0800 (PST)
-Received: by mail-pg1-x542.google.com with SMTP id i7so9570648pgh.6
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 00:49:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=YvISL/qdLkdwPYX88Kdh3n2uLpOi4eNhrcHOaqAjvcs=;
-        b=Uk6yrwwZGt6DbAqXYz56yubQ3KJD8KXkW0xqOw7DyDlcECvaACAPsdILReYeN5q82/
-         8Gy0PFGdCY/NgzKWoQ5uyEdbr1oYQx5rcLyPcBh+4Ww+uUqA64xsNRAd6KJGsyR/m/q6
-         //UUuS0stlkHCcQa1lVULK6afpmnXoafSeu6g=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=YvISL/qdLkdwPYX88Kdh3n2uLpOi4eNhrcHOaqAjvcs=;
-        b=V08P+wW5c2D3IV8OoDCWUw8zHzLa6X685Hzl4/UgczebTA40qvQBy9lLn9/QFAAdjM
-         l8pqtxm9861HJigY+JsU9qznWDPSKom2JixTxhwuC5UxqnL1hyvd/O4Cf0NFuZHq3BgX
-         rev23yBenx6v4yC4QANz39Md2IXucfWsRLPa4KnLxB3m7Ch71xLEAzXHxMZ9bzi4Qcq6
-         yXPSVCD4UzyglKQYqy+i2S9gh7Mzin0JuvthSK83bon0fvQFi9NMW4w40yMpNAkmLmI0
-         ftGiWliBiBlaygx1UVwndVyBV6oZa1IHH9ySy1kFKc6+VlLpXK6JgRS62UMopSC+8dHc
-         wL+A==
-X-Gm-Message-State: AOAM530q04UF5FsealL5JD+GONI1dLCm8QRsZCjd4b7B8tTEgwR/dNZT
-        1ChrUC/yzAewRqydr94YAiO+Lw==
-X-Google-Smtp-Source: ABdhPJyVW1uWC0lJQFwCgm+h2n2t4eQeWlgNVFy8vHOeVWyRrVPIW/AOUseN+NURRWL0O0Xvz7sPUA==
-X-Received: by 2002:a62:870c:0:b029:18b:d345:70f3 with SMTP id i12-20020a62870c0000b029018bd34570f3mr13536858pfe.30.1604998162297;
-        Tue, 10 Nov 2020 00:49:22 -0800 (PST)
-Received: from localhost ([2401:fa00:1:10:3e52:82ff:fe5e:cc9d])
-        by smtp.gmail.com with ESMTPSA id i2sm2173330pjk.12.2020.11.10.00.49.20
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 10 Nov 2020 00:49:21 -0800 (PST)
-From:   Claire Chang <tientzu@chromium.org>
-To:     johannes@sipsolutions.net, davem@davemloft.net, kuba@kernel.org,
-        hdegoede@redhat.com, marcel@holtmann.org
-Cc:     linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Claire Chang <tientzu@chromium.org>
-Subject: [PATCH] rfkill: Fix use-after-free in rfkill_resume()
-Date:   Tue, 10 Nov 2020 16:49:08 +0800
-Message-Id: <20201110084908.219088-1-tientzu@chromium.org>
-X-Mailer: git-send-email 2.29.2.222.g5d2a92d10f8-goog
+        id S1729275AbgKJIug convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 10 Nov 2020 03:50:36 -0500
+Received: from aposti.net ([89.234.176.197]:34636 "EHLO aposti.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726213AbgKJIug (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Nov 2020 03:50:36 -0500
+Date:   Tue, 10 Nov 2020 08:50:22 +0000
+From:   Paul Cercueil <paul@crapouillou.net>
+Subject: Re: [PATCH] drm/ingenic: ipu: Search for scaling coefs up to 102%
+ =?UTF-8?Q?of=0D=0A?= the screen
+To:     Sam Ravnborg <sam@ravnborg.org>
+Cc:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
+        od@zcrc.me, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org
+Message-Id: <YJOKJQ.8KD9M5MU0NTP2@crapouillou.net>
+In-Reply-To: <20201107193311.GB1039949@ravnborg.org>
+References: <20201105083905.8780-1-paul@crapouillou.net>
+        <20201107193311.GB1039949@ravnborg.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=iso-8859-1; format=flowed
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If a device is getting removed or reprobed during resume, use-after-free
-might happen. For example, h5_btrtl_resume()[drivers/bluetooth/hci_h5.c]
-schedules a work queue for device reprobing. During the reprobing, if
-rfkill_set_block() in rfkill_resume() is called after the corresponding
-*_unregister() and kfree() are called, there will be an use-after-free
-in hci_rfkill_set_block()[net/bluetooth/hci_core.c].
+Hi,
 
-BUG: KASAN: use-after-free in hci_rfkill_set_block+0x58/0xc0 [bluetooth]
-...
-Call trace:
-  dump_backtrace+0x0/0x154
-  show_stack+0x20/0x2c
-  dump_stack+0xbc/0x12c
-  print_address_description+0x88/0x4b0
-  __kasan_report+0x144/0x168
-  kasan_report+0x10/0x18
-  check_memory_region+0x19c/0x1ac
-  __kasan_check_write+0x18/0x24
-  hci_rfkill_set_block+0x58/0xc0 [bluetooth]
-  rfkill_set_block+0x9c/0x120
-  rfkill_resume+0x34/0x70
-  dpm_run_callback+0xf0/0x1f4
-  device_resume+0x210/0x22c
+Le sam. 7 nov. 2020 à 20:33, Sam Ravnborg <sam@ravnborg.org> a écrit :
+> Hi Paul.
+> 
+> On Thu, Nov 05, 2020 at 08:39:05AM +0000, Paul Cercueil wrote:
+>>  Increase the scaled image's theorical width/height until we find a
+>>  configuration that has valid scaling coefficients, up to 102% of the
+>>  screen's resolution. This makes sure that we can scale from almost
+>>  every resolution possible at the cost of a very small distorsion.
+>>  The CRTC_W / CRTC_H are not modified.
+>> 
+>>  This algorithm was already in place but would not try to go above 
+>> the
+>>  screen's resolution, and as a result would only work if the CRTC_W /
+>>  CRTC_H were smaller than the screen resolution. It will now try 
+>> until it
+>>  reaches 102% of the screen's resolution.
+>> 
+>>  Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+> 
+> Looks like the patch does what the descriptions says.
+> So in other words - look OK to me. I am not confident enogh for a r-b
+> but my code reading is enough to warrant an a-b:
+> Acked-by: Sam Ravnborg <sam@ravnborg.org>
 
-Fix this by checking rfkill->registered in rfkill_resume().
-Since device_del() in rfkill_unregister() requires device_lock() and the
-whole rfkill_resume() is also protected by the same lock in
-device_resume()[drivers/base/power/main.c], we can make sure either the
-rfkill->registered is false before rfkill_resume() starts or the rfkill
-device won't be unregistered before rfkill_resume() returns.
+Note that this algorithm exists mostly as a band-aid for a missing 
+functionality: it is not possible for userspace to request the closest 
+mode that would encapsulate the provided one, because the GEM buffer is 
+created beforehand. If there was a way to let the kernel tweak the 
+mode, I could write a better algorithm that would result in a better 
+looking picture.
 
-Fixes: 8589086f4efd ("Bluetooth: hci_h5: Turn off RTL8723BS on suspend, reprobe on resume")
-Signed-off-by: Claire Chang <tientzu@chromium.org>
----
- net/rfkill/core.c | 3 +++
- 1 file changed, 3 insertions(+)
+Cheers,
+-Paul
 
-diff --git a/net/rfkill/core.c b/net/rfkill/core.c
-index 971c73c7d34c..97101c55763d 100644
---- a/net/rfkill/core.c
-+++ b/net/rfkill/core.c
-@@ -876,6 +876,9 @@ static int rfkill_resume(struct device *dev)
- 
- 	rfkill->suspended = false;
- 
-+	if (!rfkill->registered)
-+		return 0;
-+
- 	if (!rfkill->persistent) {
- 		cur = !!(rfkill->state & RFKILL_BLOCK_SW);
- 		rfkill_set_block(rfkill, cur);
--- 
-2.29.2.222.g5d2a92d10f8-goog
 
