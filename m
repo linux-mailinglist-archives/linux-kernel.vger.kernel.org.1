@@ -2,99 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 068242AD182
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 09:43:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 161FC2AD17F
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 09:43:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729344AbgKJInS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 03:43:18 -0500
-Received: from mailgw01.mediatek.com ([210.61.82.183]:51798 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726462AbgKJInP (ORCPT
+        id S1728565AbgKJInO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 03:43:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34856 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726467AbgKJInN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 03:43:15 -0500
-X-UUID: 9a49a4eb747a4336a1463e66c6adc991-20201110
-X-UUID: 9a49a4eb747a4336a1463e66c6adc991-20201110
-Received: from mtkcas08.mediatek.inc [(172.21.101.126)] by mailgw01.mediatek.com
-        (envelope-from <macpaul.lin@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 750161777; Tue, 10 Nov 2020 16:43:11 +0800
-Received: from mtkcas08.mediatek.inc (172.21.101.126) by
- mtkmbs08n1.mediatek.inc (172.21.101.55) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Tue, 10 Nov 2020 16:43:08 +0800
-Received: from mtkswgap22.mediatek.inc (172.21.77.33) by mtkcas08.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Tue, 10 Nov 2020 16:43:09 +0800
-From:   Macpaul Lin <macpaul.lin@mediatek.com>
-To:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Alexander Tsoy <alexander@tsoy.me>,
-        Nicola Lunghi <nick83ola@gmail.com>,
-        Christopher Swenson <swenson@swenson.io>,
-        Nick Kossifidis <mickflemm@gmail.com>,
-        <alsa-devel@alsa-project.org>
-CC:     Ainge Hsu <ainge.hsu@mediatek.com>,
-        Eddie Hung <eddie.hung@mediatek.com>,
-        Chunfeng Yun <chunfeng.yun@mediatek.com>,
-        Mediatek WSD Upstream <wsd_upstream@mediatek.com>,
-        Macpaul Lin <macpaul.lin@mediatek.com>,
-        Macpaul Lin <macpaul@gmail.com>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-usb@vger.kernel.org>, <linux-mediatek@lists.infradead.org>,
-        <stable@vger.kernel.org>
-Subject: [PATCH v2] ALSA: usb-audio: disable 96khz support for HUAWEI USB-C HEADSET
-Date:   Tue, 10 Nov 2020 16:42:54 +0800
-Message-ID: <1604997774-13593-1-git-send-email-macpaul.lin@mediatek.com>
-X-Mailer: git-send-email 1.7.9.5
-In-Reply-To: <1604995443-30453-1-git-send-email-macpaul.lin@mediatek.com>
-References: <1604995443-30453-1-git-send-email-macpaul.lin@mediatek.com>
+        Tue, 10 Nov 2020 03:43:13 -0500
+Received: from sipsolutions.net (s3.sipsolutions.net [IPv6:2a01:4f8:191:4433::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96BB0C0613CF;
+        Tue, 10 Nov 2020 00:43:13 -0800 (PST)
+Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
+        (Exim 4.94)
+        (envelope-from <johannes@sipsolutions.net>)
+        id 1kcPF5-004p3K-PR; Tue, 10 Nov 2020 09:43:07 +0100
+Message-ID: <2aaaefd6cfda1928e5ea397850fa6fca01fb0642.camel@sipsolutions.net>
+Subject: Re: linux-next: build warning after merge of the mac80211-next tree
+From:   Johannes Berg <johannes@sipsolutions.net>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Wireless <linux-wireless@vger.kernel.org>
+Cc:     Jouni Malinen <jouni@codeaurora.org>,
+        Rohan Dutta <drohan@codeaurora.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Date:   Tue, 10 Nov 2020 09:43:06 +0100
+In-Reply-To: <20201109164342.1ff7d645@canb.auug.org.au>
+References: <20201109164342.1ff7d645@canb.auug.org.au>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5 (3.36.5-1.fc32) 
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
+Content-Transfer-Encoding: 7bit
+X-malware-bazaar: not-scanned
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The HUAWEI USB-C headset (VID:0x12d1, PID:0x3a07) reported it supports
-96khz. However there will be some random issue under 96khz.
-Not sure if there is any alternate setting could be applied.
-Hence 48khz is suggested to be applied at this moment.
+On Mon, 2020-11-09 at 16:43 +1100, Stephen Rothwell wrote:
+> Hi all,
+> 
+> After merging the mac80211-next tree, today's linux-next build (htmldocs)
+> produced this warning:
+> 
+> Documentation/driver-api/80211/cfg80211:48: include/net/cfg80211.h:1014: WARNING: Unexpected indentation.
+> Documentation/driver-api/80211/cfg80211:48: include/net/cfg80211.h:1016: WARNING: Block quote ends without a blank line; unexpected unindent.
+> Documentation/driver-api/80211/cfg80211:48: include/net/cfg80211.h:1019: WARNING: Unexpected indentation.
+> 
+> Introduced by commit
+> 
+>   9f0ffa418483 ("cfg80211: Add support to configure SAE PWE value to drivers")
 
-Signed-off-by: Macpaul Lin <macpaul.lin@mediatek.com>
-Signed-off-by: Eddie Hung <eddie.hung@mediatek.com>
-Cc: stable@vger.kernel.org
----
-Changes for v2:
-  - Fix build error.
-  - Add Cc: stable@vger.kernel.org
+Thanks Stephen, fixing it now.
 
- sound/usb/format.c |    6 ++++++
- 1 file changed, 6 insertions(+)
-
-diff --git a/sound/usb/format.c b/sound/usb/format.c
-index 1b28d01..7a4837b 100644
---- a/sound/usb/format.c
-+++ b/sound/usb/format.c
-@@ -202,6 +202,7 @@ static int parse_audio_format_rates_v1(struct snd_usb_audio *chip, struct audiof
- 		fp->rate_min = fp->rate_max = 0;
- 		for (r = 0, idx = offset + 1; r < nr_rates; r++, idx += 3) {
- 			unsigned int rate = combine_triple(&fmt[idx]);
-+			struct usb_device *udev = chip->dev;
- 			if (!rate)
- 				continue;
- 			/* C-Media CM6501 mislabels its 96 kHz altsetting */
-@@ -217,6 +218,11 @@ static int parse_audio_format_rates_v1(struct snd_usb_audio *chip, struct audiof
- 			    (chip->usb_id == USB_ID(0x041e, 0x4064) ||
- 			     chip->usb_id == USB_ID(0x041e, 0x4068)))
- 				rate = 8000;
-+			/* Huawei headset can't support 96kHz fully */
-+			if (rate == 96000 &&
-+			    chip->usb_id == USB_ID(0x12d1, 0x3a07) &&
-+			    le16_to_cpu(udev->descriptor.bcdDevice) == 0x49)
-+				continue;
- 
- 			fp->rate_table[fp->nr_rates] = rate;
- 			if (!fp->rate_min || rate < fp->rate_min)
--- 
-1.7.9.5
+johannes
 
