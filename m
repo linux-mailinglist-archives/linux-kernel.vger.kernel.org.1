@@ -2,135 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37A342AE0B1
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 21:30:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E689C2AE0BF
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 21:33:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731677AbgKJUaG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 15:30:06 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49128 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726706AbgKJUaF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 15:30:05 -0500
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B63702065E;
-        Tue, 10 Nov 2020 20:30:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605040204;
-        bh=qPD+Y/c5XbWSUp40YSha6SI5TcwaBNNhHibumy2giZs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=sCL3BHmtGairaWBM5fU+r2Zwn4wulzIkR3nbO+yK07HiuBAmG06ErAEpEa0OF5Jlo
-         1xHBvP5xnCtt/h2oOeFiTkgJO+vbOOHQx2vQHm9okTTOVpgQ7opq5pxgMbBDpg6iPx
-         7B8uaIHs/AOTFq4FteVjQxCIzh2mbDLJnylTBviw=
-Date:   Tue, 10 Nov 2020 21:31:06 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>
-Cc:     kernel@pengutronix.de, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1] drivers: make struct device_driver::remove return void
-Message-ID: <X6r4ikS3SBPLqjZ1@kroah.com>
-References: <20201110150723.1592682-1-u.kleine-koenig@pengutronix.de>
+        id S1731670AbgKJUdi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 15:33:38 -0500
+Received: from aserp2120.oracle.com ([141.146.126.78]:53548 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725862AbgKJUdh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Nov 2020 15:33:37 -0500
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AAKJm5L005825;
+        Tue, 10 Nov 2020 20:32:57 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=RT7z64OT2cF0627d3gcxVXgoifV1/qIO4IvouGljyV8=;
+ b=ODHXo3gAY+hpzv3UOFyKd3WyR5o8AFJ8VSx2gWvhAvNL2+luZ6TLfSVQG9jLxjKOp8CF
+ clpSSBNjYh0lms8yufqfoWlkCyhokg2iYz53m3/n7+7pDUaMyopS24GLg1aruuQD4QtR
+ 6Fg9gAr5rCXBFQo+c702nDjGwPS55IP5H8Lb2FJp3khPCcacNpDEcRsmWRJaJIAiK2C0
+ nFESfPJ721kbXF2gWrxr5RWv4XAwma1lZwM3JDX0S/Ci22r4sXcGEFsPPDBriaLlfOqD
+ OakRBX6TgA25Zx/eR2PiIzkALF0eHMv/QwXJynB7mtSCO5GN1QYRWJi+s1+tdMmtrNHV WA== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by aserp2120.oracle.com with ESMTP id 34nkhkwqhd-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 10 Nov 2020 20:32:57 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AAKKBBa104831;
+        Tue, 10 Nov 2020 20:30:56 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by userp3030.oracle.com with ESMTP id 34p5gxfsjx-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 10 Nov 2020 20:30:56 +0000
+Received: from abhmp0008.oracle.com (abhmp0008.oracle.com [141.146.116.14])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0AAKUpEX003358;
+        Tue, 10 Nov 2020 20:30:51 GMT
+Received: from [192.168.2.112] (/50.38.35.18)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Tue, 10 Nov 2020 12:30:51 -0800
+Subject: Re: [PATCH v3 03/21] mm/hugetlb: Introduce a new config
+ HUGETLB_PAGE_FREE_VMEMMAP
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Oscar Salvador <osalvador@suse.de>,
+        Muchun Song <songmuchun@bytedance.com>, corbet@lwn.net,
+        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
+        hpa@zytor.com, dave.hansen@linux.intel.com, luto@kernel.org,
+        peterz@infradead.org, viro@zeniv.linux.org.uk,
+        akpm@linux-foundation.org, paulmck@kernel.org,
+        mchehab+huawei@kernel.org, pawan.kumar.gupta@linux.intel.com,
+        rdunlap@infradead.org, oneukum@suse.com, anshuman.khandual@arm.com,
+        jroedel@suse.de, almasrymina@google.com, rientjes@google.com,
+        mhocko@suse.com, duanxiongchun@bytedance.com,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org
+References: <20201108141113.65450-1-songmuchun@bytedance.com>
+ <20201108141113.65450-4-songmuchun@bytedance.com>
+ <20201109135215.GA4778@localhost.localdomain>
+ <ef564084-ea73-d579-9251-ec0440df2b48@oracle.com>
+ <20201110195025.GN17076@casper.infradead.org>
+From:   Mike Kravetz <mike.kravetz@oracle.com>
+Message-ID: <2aec4539-a55d-4df3-7753-75a33250b6b8@oracle.com>
+Date:   Tue, 10 Nov 2020 12:30:48 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201110150723.1592682-1-u.kleine-koenig@pengutronix.de>
+In-Reply-To: <20201110195025.GN17076@casper.infradead.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9801 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 mlxlogscore=999 mlxscore=0
+ spamscore=0 phishscore=0 adultscore=0 malwarescore=0 suspectscore=2
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2011100138
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9801 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 priorityscore=1501
+ mlxscore=0 suspectscore=2 mlxlogscore=999 lowpriorityscore=0 spamscore=0
+ malwarescore=0 adultscore=0 clxscore=1015 bulkscore=0 impostorscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2011100138
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 10, 2020 at 04:07:23PM +0100, Uwe Kleine-König wrote:
-> The driver core doesn't check the return value of the remove callback
-> because there is only little software can do when hardware disappears.
+On 11/10/20 11:50 AM, Matthew Wilcox wrote:
+> On Tue, Nov 10, 2020 at 11:31:31AM -0800, Mike Kravetz wrote:
+>> On 11/9/20 5:52 AM, Oscar Salvador wrote:
+>>> On Sun, Nov 08, 2020 at 10:10:55PM +0800, Muchun Song wrote:
 > 
-> So change the callback to not return a value at all and adapt all users.
-> The motivation for this change is that some driver authors have a
-> misconception about failures in the remove callback. Making it void
-> makes it pretty obvious that there is no error handling to be expected.
-> 
-> Most drivers were easy to convert as they returned 0 unconditionally, I
-> added a warning to code paths that returned an error code (that was
-> ignored already before).
-> 
-> Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
-> ---
-> Hello,
-> 
-> I expect that there are still a few driver that need adaption as I only
-> build tested allmodconfig on ARM and amd64.
-> 
-> Best regards
-> Uwe
-> 
->  drivers/acpi/processor_driver.c         | 10 ++++------
->  drivers/amba/bus.c                      |  7 ++++---
->  drivers/base/platform.c                 | 13 +++++++------
->  drivers/bus/fsl-mc/fsl-mc-bus.c         |  7 ++-----
->  drivers/bus/mhi/core/init.c             |  6 ++----
->  drivers/char/hw_random/optee-rng.c      |  4 +---
->  drivers/char/tpm/tpm_ftpm_tee.c         |  8 ++++----
->  drivers/firmware/broadcom/tee_bnxt_fw.c |  4 +---
->  drivers/fsi/fsi-master-hub.c            |  4 +---
->  drivers/fsi/fsi-sbefifo.c               |  4 +---
->  drivers/fsi/fsi-scom.c                  |  4 +---
->  drivers/gpu/drm/drm_mipi_dsi.c          |  7 +++++--
->  drivers/gpu/host1x/bus.c                | 11 +++++++----
->  drivers/greybus/core.c                  |  4 +---
->  drivers/hsi/clients/cmt_speech.c        |  4 +---
->  drivers/hsi/clients/hsi_char.c          |  4 +---
->  drivers/hsi/clients/nokia-modem.c       |  4 +---
->  drivers/hsi/clients/ssi_protocol.c      |  4 +---
->  drivers/i2c/busses/i2c-fsi.c            |  4 +---
->  drivers/input/rmi4/rmi_bus.c            |  4 +---
->  drivers/input/rmi4/rmi_driver.c         |  4 +---
->  drivers/input/touchscreen/wm97xx-core.c |  7 +++----
->  drivers/mfd/ucb1400_core.c              |  3 +--
->  drivers/net/ethernet/3com/3c509.c       |  5 ++---
->  drivers/net/ethernet/3com/3c59x.c       |  3 +--
->  drivers/net/ethernet/dec/tulip/de4x5.c  |  4 +---
->  drivers/net/fddi/defxx.c                |  5 ++---
->  drivers/net/phy/mdio_device.c           |  4 +---
->  drivers/net/phy/phy_device.c            |  4 +---
->  drivers/pci/pcie/portdrv_core.c         |  5 ++---
->  drivers/scsi/advansys.c                 |  3 +--
->  drivers/scsi/aha1740.c                  |  4 +---
->  drivers/scsi/aic7xxx/aic7770_osm.c      |  3 +--
->  drivers/scsi/ch.c                       |  3 +--
->  drivers/scsi/sd.c                       |  6 ++----
->  drivers/scsi/ses.c                      |  3 +--
->  drivers/scsi/sim710.c                   |  3 +--
->  drivers/scsi/sr.c                       |  6 ++----
->  drivers/scsi/st.c                       |  5 ++---
->  drivers/siox/siox-core.c                |  6 ++++--
->  drivers/soundwire/bus_type.c            | 13 +++++++------
->  drivers/spi/spi.c                       |  8 +++++---
->  drivers/usb/core/driver.c               |  7 ++-----
->  drivers/visorbus/visorbus_main.c        |  5 +----
->  include/linux/device/driver.h           |  2 +-
->  sound/core/seq/oss/seq_oss_synth.c      |  6 ++----
->  sound/core/seq/oss/seq_oss_synth.h      |  2 +-
->  sound/core/seq/seq_midi.c               |  6 +++---
->  sound/drivers/opl3/opl3_seq.c           | 10 ++++++----
->  sound/drivers/opl4/opl4_seq.c           |  9 +++++----
->  sound/hda/ext/hdac_ext_bus.c            |  9 +++++++--
->  sound/isa/sb/emu8000_synth.c            |  5 ++---
->  sound/pci/emu10k1/emu10k1_synth.c       |  5 ++---
->  sound/pci/hda/hda_bind.c                | 11 +++++++----
->  54 files changed, 129 insertions(+), 172 deletions(-)
+> I don't like config options.  I like boot options even less.  I don't
+> know how to describe to an end-user whether they should select this
+> or not.  Is there a way to make this not a tradeoff?  Or make the
+> tradeoff so minimal as to be not worth describing?  (do we have numbers
+> for the worst possible situation when enabling this option?)
 
-First off, that's a lot of drivers with a "raw" remove function, why is
-anyone doing that?  It should all be wrapped up in the bus that the
-drivers are on.
+It is not exactly worst case, but Muchun provided some simple benchmarking
+results in the cover letter.  Quick summary is that hugetlb page creation
+and free time is "~2x slower".  At first glance, one would say that is
+terrible.  However, remember that the majority of use cases create hugetlb
+pages at or shortly after boot time and add them to the pool.  So, additional
+overhead is at pool creation time.  There is no change to 'normal run time'
+operations of getting a page from or returning a page to the pool (think
+page fault/unmap).
 
-In digging, ugh, looks like there's some sound driver abuse here that
-should be fixed up first, which will cause you to get these "for free",
-and some busses should be fixed up as well.
+> I haven't read through these patches in detail, so maybe we do this
+> already, but when we free the pages to the buddy allocator, do we retain
+> the third page to use for the PTEs (and free pages 3-7), or do we allocate
+> a separate page for the PTES and free pages 2-7?
 
-This type of patch should only have to bus code, if things are right,
-not individual drivers.  It's not your fault, but fixing that up will
-make this patch easier as it will be in bisectable pieces :)
-
-thanks,
-
-greg k-h
+I haven't got there in this latest series.  But, in previous revisions the
+code did allocate a separate page.
+-- 
+Mike Kravetz
