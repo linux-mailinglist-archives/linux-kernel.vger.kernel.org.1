@@ -2,84 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C96E2AD082
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 08:33:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AD4E82AD084
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 08:33:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729266AbgKJHdG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 02:33:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52326 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726849AbgKJHdE (ORCPT
+        id S1730198AbgKJHdK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 02:33:10 -0500
+Received: from mailgw01.mediatek.com ([210.61.82.183]:46146 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1727001AbgKJHdI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 02:33:04 -0500
-Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B57A9C0613D4
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Nov 2020 23:33:04 -0800 (PST)
-Received: by mail-io1-xd44.google.com with SMTP id n12so12811780ioc.2
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Nov 2020 23:33:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=o42yGNfUzOTdDPMZ3l6k7Cu/Tlmyay1zu48jmpASnXo=;
-        b=Bab2g9wnlFOdi/TfY6YIOWflmuIFwIHWvW+UQ8g9wuKqnu2gokJkIVhoGPs/zuFUWR
-         jIDj+cDiTAaPP46Y+p15eLHbDUHvcZvnAEQu0v41Xn4IOg/pP94cY6JHYbhopGRLuv9Q
-         90c6vd+0UbBZ+YWv38kcIcwIM/6/LYUazCgbDgD+VYBNpxw57TC6yhhkI+jhcN2Oi4ax
-         JAZjyMajGAMJIOwfeP0FaFBjw+HcggDQNt05ajNW1wcryUsp1dVQ1n1ROGiZ48SthM1W
-         jge5/bI+y2K+BwPs6YfVs+MTULHNdBnZ5lLI8HTnm81Q6mdSWqd1mi2DHVMgwaDEj59z
-         5shg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=o42yGNfUzOTdDPMZ3l6k7Cu/Tlmyay1zu48jmpASnXo=;
-        b=lsaZpj9NnASE7G8ZG+HNtkglwh0LewY80s0mew5i2A56lE5PVuZkfKEaGNIXlK34x9
-         mCDv2lFf1d/OUwDcpfEkby3xHBLtZBuez5Kemx6SNVwhksbgtCYBf7M+yMnnuT4k7/v5
-         UcQI0TafTGqk/c9pZhRQpjMSz/KQZiIz/POA8470W7vFKtNpC0qwCh2X485fH+S5x3RE
-         m2wTF+Cxjxlau/YWuVJ7v2RVVM24Dgs752jZPyHlH0IzaOsFKv7FOqkJJG1w3uU1CIii
-         x8qaQNCNlaQZDLaz+pL5ANR3ZVUQQQ862MnBpJ8Qv2Jay0+1VQo/CCvhDxAVHDxilRjJ
-         +L4Q==
-X-Gm-Message-State: AOAM53205+yK4bkE4Rnf2sivk8/gXHeFuqcpT6QPF7TM++G804EfUe3P
-        uIsj6PrtUV6jXNWUV2FRMxgBbgBphL/nxcDZUSO7hw==
-X-Google-Smtp-Source: ABdhPJyCBy+StTa8YbefPs//qaLrA521z8TjMcBYMBBGBGWOOM43GVtYy+eGtrbbiJr3uDykhgeeYY66LGg9YDDIxiY=
-X-Received: by 2002:a5e:980e:: with SMTP id s14mr13190769ioj.195.1604993583691;
- Mon, 09 Nov 2020 23:33:03 -0800 (PST)
-MIME-Version: 1.0
-References: <CANn89i+ABLMJTEKat=9=qujNwe0BFavphzqYc1CQGtrdkwUnXg@mail.gmail.com>
- <1604967391-123737-1-git-send-email-wenan.mao@linux.alibaba.com>
-In-Reply-To: <1604967391-123737-1-git-send-email-wenan.mao@linux.alibaba.com>
-From:   Eric Dumazet <edumazet@google.com>
-Date:   Tue, 10 Nov 2020 08:32:52 +0100
-Message-ID: <CANn89iL6UW9mG6hW7f3Yv+32Pe_i9F-5cQhfo2uV68wdcgSuZA@mail.gmail.com>
-Subject: Re: [PATCH net v5] net: Update window_clamp if SOCK_RCVBUF is set
-To:     Mao Wenan <wenan.mao@linux.alibaba.com>
-Cc:     David Miller <davem@davemloft.net>,
-        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        netdev <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        kernel-janitors@vger.kernel.org
+        Tue, 10 Nov 2020 02:33:08 -0500
+X-UUID: 05c074f14c3948ab8c43208c91891eaa-20201110
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=U9JPfHBGR2WvVwwvA92XGk3LKUs9KDklcKzR3vYxzLI=;
+        b=V9Kdsh6NnNthQWlgKv6FqhGWS/8sw2Yf4iW94prY9kPNsGzDXEmFR1Olbk4xYqn+exgtiQSBdx+2pFpntMokaUUQ6BxnDnkRvyjyt70ruJelzxi34b5L346kOIfOGVjbkhHwxDuTpAhdF1stdi7/jjO2vg6pzvmSyBrlSbg9Kuw=;
+X-UUID: 05c074f14c3948ab8c43208c91891eaa-20201110
+Received: from mtkcas08.mediatek.inc [(172.21.101.126)] by mailgw01.mediatek.com
+        (envelope-from <frankie.chang@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1381648892; Tue, 10 Nov 2020 15:33:02 +0800
+Received: from mtkcas10.mediatek.inc (172.21.101.39) by
+ mtkmbs08n2.mediatek.inc (172.21.101.56) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Tue, 10 Nov 2020 15:33:01 +0800
+Received: from [172.21.77.33] (172.21.77.33) by mtkcas10.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Tue, 10 Nov 2020 15:33:01 +0800
+Message-ID: <1604993580.14886.5.camel@mtkswgap22>
+Subject: Re: binder: add transaction latency tracer
+From:   Frankie Chang <Frankie.Chang@mediatek.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+CC:     Todd Kjos <tkjos@google.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Martijn Coenen <maco@android.com>,
+        Arve =?ISO-8859-1?Q?Hj=F8nnev=E5g?= <arve@android.com>,
+        Christian Brauner <christian@brauner.io>,
+        <linux-kernel@vger.kernel.org>, <wsd_upstream@mediatek.com>,
+        Jian-Min Liu <Jian-Min.Liu@mediatek.com>
+Date:   Tue, 10 Nov 2020 15:33:00 +0800
+In-Reply-To: <20201109174605.GA2426739@kroah.com>
+References: <1602781377-4278-1-git-send-email-Frankie.Chang@mediatek.com>
+         <1603987737-2763-1-git-send-email-Frankie.Chang@mediatek.com>
+         <20201109174605.GA2426739@kroah.com>
 Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.2.3-0ubuntu6 
+MIME-Version: 1.0
+X-TM-SNTS-SMTP: D2AB75E8C3179218C34EE1323F174F5208CC03FD4132D950F7C409C4ED3434102000:8
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 10, 2020 at 1:16 AM Mao Wenan <wenan.mao@linux.alibaba.com> wrote:
->
-> When net.ipv4.tcp_syncookies=1 and syn flood is happened,
-> cookie_v4_check or cookie_v6_check tries to redo what
-> tcp_v4_send_synack or tcp_v6_send_synack did,
-> rsk_window_clamp will be changed if SOCK_RCVBUF is set,
-> which will make rcv_wscale is different, the client
-> still operates with initial window scale and can overshot
-> granted window, the client use the initial scale but local
-> server use new scale to advertise window value, and session
-> work abnormally.
->
-> Fixes: e88c64f0a425 ("tcp: allow effective reduction of TCP's rcv-buffer via setsockopt")
-> Signed-off-by: Mao Wenan <wenan.mao@linux.alibaba.com>
+T24gTW9uLCAyMDIwLTExLTA5IGF0IDE4OjQ2ICswMTAwLCBHcmVnIEtyb2FoLUhhcnRtYW4gd3Jv
+dGU6DQo+IE9uIEZyaSwgT2N0IDMwLCAyMDIwIGF0IDEyOjA4OjU0QU0gKzA4MDAsIEZyYW5raWUg
+Q2hhbmcgd3JvdGU6DQo+ID4gQ2hhbmdlIGZyb20gdjExOg0KPiA+ICAgLSByZWJhc2UuDQo+IA0K
+PiBUaGlzIHdob2xlIHBhdGNoIHNldCBpcyBzZW50IHdpdGggRE9TIGxpbmUtZW5kcywgd2hpY2gg
+bWFrZXMgZ2l0IHJlYWxseQ0KPiB1bmhhcHB5IHdoZW4gaXQgdHJpZXMgdG8gYXBwbHkgaXQsIGFz
+IHJpZ2h0ZnVsbHksIGl0IGRvZXNuJ3Qga25vdyBob3cgdG8NCj4gY29udmVydCB0aGluZ3MuDQo+
+IA0KSG1tLi4sIGFjdHVhbGx5IEkgY2FuIHVzZSAnZ2l0IGFwcGx5JyBQQVRDSCB2MTEgZnJvbSB0
+aGUgbWVzc2FnZQ0KZGlyZWN0bHkuDQoNCj4gUGxlYXNlIHJlc2VuZCB0aGlzIHBhdGNoIHNlcmll
+cyBhcyBhIHBsYWluLXRleHQgcGF0Y2ggc2VyaWVzLiAgUGVyaGFwcw0KPiB1c2luZyBnaXQgc2Vu
+ZC1lbWFpbD8gIFNvbWV0aGluZyBpcyBjb252ZXJ0aW5nIHRoZXNlIHBhdGNoZXMgdG8gYW4gb2Rk
+DQo+IGVuY29kaW5nIHdoaWNoIG1ha2VzIHRoZW0gbm90IGFibGUgdG8gYmUgYXBwbGllZC4NCj4g
+DQpBbmQgSSBzZW50IHRoZSBwYXRjaCBzZXQgdXNpbmcgZ2l0IHNlbmQtZW1haWwuIEhlbmNlLCBJ
+IGFtIG5vdCBzdXJlIHdoYXQNCmhhcHBlbmVkIHdoZW4gdGhlIHBhdGNoIHNldCBzZW50IHRvIG90
+aGVycy4NCg0KPiBUcnkgc2VuZGluZyB0aGVtIHRvIHlvdXJzZWxmIGZpcnN0LCBhbmQgc2VlaW5n
+IGlmIHlvdSBjYW4gYXBwbHkgdGhlbQ0KPiBmcm9tIHRoZSBtZXNzYWdlcyBkaXJlY3RseSwgYW5k
+IGlmIHNvLCB0aGVuIHJlc2VuZCB0aGVtLg0KPiANCkJ1dCBJIHdpbGwgc3RpbGwgdmVyaWZ5IGxv
+Y2FsbHkgYW5kIHJlc2VuZCBhZ2Fpbi4NCg0KdGhhbmtzDQoNCkZyYW5raWUgQ2hhbmcNCg0K
 
-Signed-off-by: Eric Dumazet <edumazet@google.com>
-
-Thanks !
