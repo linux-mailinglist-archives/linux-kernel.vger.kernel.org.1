@@ -2,63 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ECF7C2AE272
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 23:04:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D2FE2AE274
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 23:05:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731952AbgKJWEY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 17:04:24 -0500
-Received: from smtprelay0200.hostedemail.com ([216.40.44.200]:32950 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727275AbgKJWEY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 17:04:24 -0500
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay06.hostedemail.com (Postfix) with ESMTP id C40A5182251A2;
-        Tue, 10 Nov 2020 22:04:22 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 50,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:967:968:973:988:989:1260:1261:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1537:1561:1593:1594:1711:1714:1730:1747:1777:1792:2393:2525:2560:2563:2682:2685:2828:2859:2933:2937:2939:2942:2945:2947:2951:2954:3022:3138:3139:3140:3141:3142:3622:3865:3866:3867:3868:3871:3874:3934:3936:3938:3941:3944:3947:3950:3953:3956:3959:4321:5007:6742:7652:8985:9025:10004:10400:11232:11658:11914:12043:12297:12438:12555:12740:12760:12895:13069:13311:13357:13439:14181:14659:14721:21080:21627:21811:30054:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: bait31_310502f272f8
-X-Filterd-Recvd-Size: 1717
-Received: from [192.168.0.160] (cpe-72-134-80-165.natsow.res.rr.com [72.134.80.165])
-        (Authenticated sender: joe@perches.com)
-        by omf05.hostedemail.com (Postfix) with ESMTPA;
-        Tue, 10 Nov 2020 22:04:20 +0000 (UTC)
-Message-ID: <26052c5a0a098aa7d9c0c8a1d39cc4a8f7915dd2.camel@perches.com>
-Subject: Re: [PATCH] netfilter: conntrack: fix -Wformat
-From:   Joe Perches <joe@perches.com>
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Pablo Neira Ayuso <pablo@netfilter.org>,
-        Jozsef Kadlecsik <kadlec@netfilter.org>,
-        Florian Westphal <fw@strlen.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
-        Network Development <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>
-Date:   Tue, 10 Nov 2020 14:04:19 -0800
-In-Reply-To: <CAKwvOdn50VP4h7tidMnnFeMA1M-FevykP+Y0ozieisS7Nn4yoQ@mail.gmail.com>
-References: <20201107075550.2244055-1-ndesaulniers@google.com>
-         <4910042649a4f3ab22fac93191b8c1fa0a2e17c3.camel@perches.com>
-         <CAKwvOdn50VP4h7tidMnnFeMA1M-FevykP+Y0ozieisS7Nn4yoQ@mail.gmail.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.38.1-1 
-MIME-Version: 1.0
+        id S1731985AbgKJWFJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 17:05:09 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60346 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726467AbgKJWFI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Nov 2020 17:05:08 -0500
+Received: from localhost.localdomain (c-73-231-172-41.hsd1.ca.comcast.net [73.231.172.41])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5CADC20781;
+        Tue, 10 Nov 2020 22:05:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605045907;
+        bh=Stu7i3M2Uo/SVlEhubU3bTNk3+qQQdYLDn9PbBcZ4nY=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=pzT5MuHjkkk4McY6OXWRKsF27xpJmbWgFhclhRXLzcRm7baEOhuWUexxfoDAM5K3i
+         UijgZ/GN47tIPkBxilk3C+MU0OuhYIbFuVSG3ja8Zdls87qfC6rUwXGUuxYYi6fKX9
+         0EFlEv7teFKMMObsgZpxtjnYVUw5/N1twgn324XM=
+Date:   Tue, 10 Nov 2020 14:05:06 -0800
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     Soheil Hassas Yeganeh <soheil@google.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        linux-fsdevel@vger.kernel.org,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Khazhismel Kumykov <khazhy@google.com>,
+        Guantao Liu <guantaol@google.com>
+Subject: Re: [PATCH 0/8] simplify ep_poll
+Message-Id: <20201110140506.528d8eeb4eb62f26dfdb1c71@linux-foundation.org>
+In-Reply-To: <CACSApva7rcbvtSyV6XY0q3eFQqmPXV=0zY9X1FPKkUk-hSodpA@mail.gmail.com>
+References: <20201106231635.3528496-1-soheil.kdev@gmail.com>
+        <20201107174343.d94369d044c821fb8673bafd@linux-foundation.org>
+        <CACSApva7rcbvtSyV6XY0q3eFQqmPXV=0zY9X1FPKkUk-hSodpA@mail.gmail.com>
+X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2020-11-10 at 14:00 -0800, Nick Desaulniers wrote:
+On Sat, 7 Nov 2020 23:45:30 -0500 Soheil Hassas Yeganeh <soheil@google.com> wrote:
 
-> Yeah, we could go through and remove %h and %hh to solve this, too, right?
+> On Sat, Nov 7, 2020 at 8:43 PM Andrew Morton <akpm@linux-foundation.org> wrote:
+> >
+> > On Fri,  6 Nov 2020 18:16:27 -0500 Soheil Hassas Yeganeh <soheil.kdev@gmail.com> wrote:
+> >
+> > > From: Soheil Hassas Yeganeh <soheil@google.com>
+> > >
+> > > This patch series is a follow up based on the suggestions and feedback by Linus:
+> > > https://lkml.kernel.org/r/CAHk-=wizk=OxUyQPbO8MS41w2Pag1kniUV5WdD5qWL-gq1kjDA@mail.gmail.com
+> >
+> > Al Viro has been playing in here as well - see the below, from
+> > linux-next.
+> >
+> > I think I'll leave it to you folks to sort this out, please.
+> 
+> Thank you Andrew for pointing that out!  Sorry that I didn't notice Al
+> Viro's nice clean ups.
+> 
+> The changes are all orthogonal and apply cleanly except "epoll: pull
+> fatal signal checks into ep_send_events()".   The conflict is trivial
+> and the following patch should cleanly apply to linux-next/master (I
+> didn't move the initialization of `res = 0` after the new branch to
+> keep it simple).
+> 
+> FWIW, I also stress-tested the patch series applied on top of
+> linux-next/master for a couple of hours.
+> 
+> Could you please let me know whether I should send a V2 of the patch
+> series for linux-next? Thanks!
 
-Yup.
-
-I think one of the checkpatch improvement mentees is adding
-some suggestion and I hope an automated fix mechanism for that.
-
-https://lore.kernel.org/lkml/5e3265c241602bb54286fbaae9222070daa4768e.camel@perches.com/
-
+That worked, thanks.  I'll include all this in the next drop for
+linux-next.
 
