@@ -2,40 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF4EF2ACE46
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 05:08:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 94F9D2ACE3D
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 05:08:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732377AbgKJEI1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 23:08:27 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53824 "EHLO mail.kernel.org"
+        id S1731859AbgKJDxf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 22:53:35 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53870 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731341AbgKJDxZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 22:53:25 -0500
+        id S1731631AbgKJDx2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 22:53:28 -0500
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DBD2020870;
-        Tue, 10 Nov 2020 03:53:23 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3765920781;
+        Tue, 10 Nov 2020 03:53:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604980405;
-        bh=Rl2FmOKz3FhvTMwiGKfppdkVk2uGslV89dplTpWMBbw=;
+        s=default; t=1604980408;
+        bh=kJ9D4gPCppPR2jdULZdI/Hn5d/8VvmaLfUWrzlAUvnE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QPEBMhWEoez8HYeHPrKsTajmEGoYiwtdAnWHA6C9I5q8bGwIVYJl3uW8DL4g7SeEF
-         OJgCiNWhSNZcrSNDCWlDctvohqTWsqIy+2ehrbkJdDe1NjG6sshgUAxL+DrfomuTsb
-         jLNuVxyUKvIjaf+bTmTDD1SYMzbXXPS5by3L4Kvs=
+        b=THbT3XMava+DbKbEbtSSr6HKe0yu1xNNUAVTeCKWZL23ecL/2xOz/hdDAML7c+bdf
+         jc2WyYvVVHslzAh282inJy8Eeu3LoygdRe7aDXHQTP2RqJwXvTfcNY0t7O0Dtl4AgP
+         noBF6IWy9iLqUX4eE445cKRsqDEckO+TumTT+ZOQ=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Bard Liao <yung-chuan.liao@linux.intel.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-        Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
-        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
-        Mark Brown <broonie@kernel.org>,
-        Sasha Levin <sashal@kernel.org>,
-        sound-open-firmware@alsa-project.org, alsa-devel@alsa-project.org
-Subject: [PATCH AUTOSEL 5.9 04/55] ASoC: SOF: loader: handle all SOF_IPC_EXT types
-Date:   Mon,  9 Nov 2020 22:52:27 -0500
-Message-Id: <20201110035318.423757-4-sashal@kernel.org>
+Cc:     Viresh Kumar <viresh.kumar@linaro.org>,
+        Rob Clark <robdclark@gmail.com>,
+        Dmitry Osipenko <digetx@gmail.com>,
+        Sasha Levin <sashal@kernel.org>, linux-pm@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.9 06/55] opp: Reduce the size of critical section in _opp_table_kref_release()
+Date:   Mon,  9 Nov 2020 22:52:29 -0500
+Message-Id: <20201110035318.423757-6-sashal@kernel.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20201110035318.423757-1-sashal@kernel.org>
 References: <20201110035318.423757-1-sashal@kernel.org>
@@ -47,44 +43,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bard Liao <yung-chuan.liao@linux.intel.com>
+From: Viresh Kumar <viresh.kumar@linaro.org>
 
-[ Upstream commit 6e5329c6e6032cd997400b43b8299f607a61883e ]
+[ Upstream commit e0df59de670b48a923246fae1f972317b84b2764 ]
 
-Do not emit a warning for extended firmware header fields that are
-not used by kernel. This creates unnecessary noise to kernel logs like:
+There is a lot of stuff here which can be done outside of the big
+opp_table_lock, do that. This helps avoiding few circular dependency
+lockdeps around debugfs and interconnects.
 
-sof-audio-pci 0000:00:1f.3: warning: unknown ext header type 3 size 0x1c
-sof-audio-pci 0000:00:1f.3: warning: unknown ext header type 4 size 0x10
-
-Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
-Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Reviewed-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
-Signed-off-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-Link: https://lore.kernel.org/r/20201021182419.1160391-1-kai.vehmanen@linux.intel.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Reported-by: Rob Clark <robdclark@gmail.com>
+Reported-by: Dmitry Osipenko <digetx@gmail.com>
+Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/sof/loader.c | 5 +++++
- 1 file changed, 5 insertions(+)
+ drivers/opp/core.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/sof/loader.c b/sound/soc/sof/loader.c
-index b94fa5f5d4808..c90c3f3a3b3ee 100644
---- a/sound/soc/sof/loader.c
-+++ b/sound/soc/sof/loader.c
-@@ -118,6 +118,11 @@ int snd_sof_fw_parse_ext_data(struct snd_sof_dev *sdev, u32 bar, u32 offset)
- 		case SOF_IPC_EXT_CC_INFO:
- 			ret = get_cc_info(sdev, ext_hdr);
- 			break;
-+		case SOF_IPC_EXT_UNUSED:
-+		case SOF_IPC_EXT_PROBE_INFO:
-+		case SOF_IPC_EXT_USER_ABI_INFO:
-+			/* They are supported but we don't do anything here */
-+			break;
- 		default:
- 			dev_warn(sdev->dev, "warning: unknown ext header type %d size 0x%x\n",
- 				 ext_hdr->type, ext_hdr->hdr.size);
+diff --git a/drivers/opp/core.c b/drivers/opp/core.c
+index 1a95ad40795be..a963df7bd2749 100644
+--- a/drivers/opp/core.c
++++ b/drivers/opp/core.c
+@@ -1160,6 +1160,10 @@ static void _opp_table_kref_release(struct kref *kref)
+ 	struct opp_device *opp_dev, *temp;
+ 	int i;
+ 
++	/* Drop the lock as soon as we can */
++	list_del(&opp_table->node);
++	mutex_unlock(&opp_table_lock);
++
+ 	_of_clear_opp_table(opp_table);
+ 
+ 	/* Release clk */
+@@ -1187,10 +1191,7 @@ static void _opp_table_kref_release(struct kref *kref)
+ 
+ 	mutex_destroy(&opp_table->genpd_virt_dev_lock);
+ 	mutex_destroy(&opp_table->lock);
+-	list_del(&opp_table->node);
+ 	kfree(opp_table);
+-
+-	mutex_unlock(&opp_table_lock);
+ }
+ 
+ void dev_pm_opp_put_opp_table(struct opp_table *opp_table)
 -- 
 2.27.0
 
