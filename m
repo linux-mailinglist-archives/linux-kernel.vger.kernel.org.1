@@ -2,84 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D2FE2AE274
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 23:05:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 426CB2AE278
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 23:05:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731985AbgKJWFJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 17:05:09 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60346 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726467AbgKJWFI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 17:05:08 -0500
-Received: from localhost.localdomain (c-73-231-172-41.hsd1.ca.comcast.net [73.231.172.41])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5CADC20781;
-        Tue, 10 Nov 2020 22:05:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605045907;
-        bh=Stu7i3M2Uo/SVlEhubU3bTNk3+qQQdYLDn9PbBcZ4nY=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=pzT5MuHjkkk4McY6OXWRKsF27xpJmbWgFhclhRXLzcRm7baEOhuWUexxfoDAM5K3i
-         UijgZ/GN47tIPkBxilk3C+MU0OuhYIbFuVSG3ja8Zdls87qfC6rUwXGUuxYYi6fKX9
-         0EFlEv7teFKMMObsgZpxtjnYVUw5/N1twgn324XM=
-Date:   Tue, 10 Nov 2020 14:05:06 -0800
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Soheil Hassas Yeganeh <soheil@google.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        linux-fsdevel@vger.kernel.org,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Willem de Bruijn <willemb@google.com>,
-        Khazhismel Kumykov <khazhy@google.com>,
-        Guantao Liu <guantaol@google.com>
-Subject: Re: [PATCH 0/8] simplify ep_poll
-Message-Id: <20201110140506.528d8eeb4eb62f26dfdb1c71@linux-foundation.org>
-In-Reply-To: <CACSApva7rcbvtSyV6XY0q3eFQqmPXV=0zY9X1FPKkUk-hSodpA@mail.gmail.com>
-References: <20201106231635.3528496-1-soheil.kdev@gmail.com>
-        <20201107174343.d94369d044c821fb8673bafd@linux-foundation.org>
-        <CACSApva7rcbvtSyV6XY0q3eFQqmPXV=0zY9X1FPKkUk-hSodpA@mail.gmail.com>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S1732017AbgKJWFX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 17:05:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47378 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726467AbgKJWFW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Nov 2020 17:05:22 -0500
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A0CEC0613D1
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 14:05:21 -0800 (PST)
+Received: by mail-wm1-x344.google.com with SMTP id a65so4694751wme.1
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 14:05:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=qZToJzWvZIM70EuRiQ7NoVEKN6DZ5AQGlu/l0sYJbdo=;
+        b=XjyOicW3O9YNxvhwetYYen8NIUXx6DtxhfHeM3eeS7dRqHQTVCI2YXrvlAXna8ubw4
+         91hNbvU5rvEipK0xYxRb+aAFeCVhGN3sXSmKvT9uMnvyRjKZK0MVQZsLsUW0y1NuThB+
+         qpIQUWf4Q0V6cxCuoEiAk5gvoYEqve6tboDkF4bzKsMEEGMaDqknFVAuHon1tPSxft88
+         V067xL1LNtenmB1IGjhefnjnAd+OSJwQqSxSxYntaqlXt+tfZN5Xbu9/CPyqNV+M53Nd
+         jgI1xhFvjcpsQuqb3xpH/SxHFKAFKgfzkzozf2vYODBsdHbjTBxXZ59zgeTdlvW9/9y6
+         K9+Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=qZToJzWvZIM70EuRiQ7NoVEKN6DZ5AQGlu/l0sYJbdo=;
+        b=R8EcXZZ+VcWfGzSu8TVMNm2DO/q8VOPLDOdIaMX7ZXj43T13iItQXniQVN9tWZc9ah
+         FIDv4xLf1t0NOHNt9HFYOKjQqXScLA2BK+yBEUjPV5sRGKOyukxdw45n2U3DE+ChdswQ
+         AgBeSsHyDRyEuDxXAb4iHAL7UuIuWz8iR2SWCAi8FFZfbVYS7NE96YR509DUCW+LuQyL
+         J3vFxzL5M72IXg0kPyub7uTlRQJn0XYFtDClUap80JHnVHdXOsa17jtqKXmBJcvXjRqG
+         nq++Pe9K2X6b8MOvFId3ZiEZ5qCXhr5HlszOv0gAVCZNhCInQTEQj2BNoyzCkPclrzPb
+         E76g==
+X-Gm-Message-State: AOAM532F/0PS656odAkgVxJ0Uiy3LHqam8eGQ0B5pfd2lls98P8sIMzK
+        eCcD3cLYkRa0unjqi+Gy8nQcChrVAwr/3mWwc2Y=
+X-Google-Smtp-Source: ABdhPJwWqoDTPUmRVpXmlstCWEAP5RO5KfmAgKzuWQagXCBAiZ6FokJKfpjc7Kx5J2AQT9MwV7S2Guk+ZWnb/gt8JoM=
+X-Received: by 2002:a7b:c157:: with SMTP id z23mr246689wmi.70.1605045920104;
+ Tue, 10 Nov 2020 14:05:20 -0800 (PST)
+MIME-Version: 1.0
+References: <20201109211855.3340030-1-lee.jones@linaro.org> <20201109211855.3340030-2-lee.jones@linaro.org>
+In-Reply-To: <20201109211855.3340030-2-lee.jones@linaro.org>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Tue, 10 Nov 2020 17:05:07 -0500
+Message-ID: <CADnq5_O2w0D3WcZjWUajYJyGfDXrt90z2PYrxuUcxGwsuwEVqw@mail.gmail.com>
+Subject: Re: [PATCH 01/20] drm/radeon/radeon_ttm: Place declaration of 'rdev'
+ in same clause as its use
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     David Airlie <airlied@linux.ie>,
+        LKML <linux-kernel@vger.kernel.org>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        Jerome Glisse <glisse@freedesktop.org>,
+        Maling list - DRI developers 
+        <dri-devel@lists.freedesktop.org>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 7 Nov 2020 23:45:30 -0500 Soheil Hassas Yeganeh <soheil@google.com> wrote:
+On Mon, Nov 9, 2020 at 4:19 PM Lee Jones <lee.jones@linaro.org> wrote:
+>
+> Fixes the following W=3D1 kernel build warning(s):
+>
+>  drivers/gpu/drm/radeon/radeon_ttm.c: In function =E2=80=98radeon_ttm_tt_=
+create=E2=80=99:
+>  drivers/gpu/drm/radeon/radeon_ttm.c:611:24: warning: variable =E2=80=98r=
+dev=E2=80=99 set but not used [-Wunused-but-set-variable]
+>
+> Cc: Alex Deucher <alexander.deucher@amd.com>
+> Cc: "Christian K=C3=B6nig" <christian.koenig@amd.com>
+> Cc: David Airlie <airlied@linux.ie>
+> Cc: Daniel Vetter <daniel@ffwll.ch>
+> Cc: Jerome Glisse <glisse@freedesktop.org>
+> Cc: amd-gfx@lists.freedesktop.org
+> Cc: dri-devel@lists.freedesktop.org
+> Signed-off-by: Lee Jones <lee.jones@linaro.org>
 
-> On Sat, Nov 7, 2020 at 8:43 PM Andrew Morton <akpm@linux-foundation.org> wrote:
-> >
-> > On Fri,  6 Nov 2020 18:16:27 -0500 Soheil Hassas Yeganeh <soheil.kdev@gmail.com> wrote:
-> >
-> > > From: Soheil Hassas Yeganeh <soheil@google.com>
-> > >
-> > > This patch series is a follow up based on the suggestions and feedback by Linus:
-> > > https://lkml.kernel.org/r/CAHk-=wizk=OxUyQPbO8MS41w2Pag1kniUV5WdD5qWL-gq1kjDA@mail.gmail.com
-> >
-> > Al Viro has been playing in here as well - see the below, from
-> > linux-next.
-> >
-> > I think I'll leave it to you folks to sort this out, please.
-> 
-> Thank you Andrew for pointing that out!  Sorry that I didn't notice Al
-> Viro's nice clean ups.
-> 
-> The changes are all orthogonal and apply cleanly except "epoll: pull
-> fatal signal checks into ep_send_events()".   The conflict is trivial
-> and the following patch should cleanly apply to linux-next/master (I
-> didn't move the initialization of `res = 0` after the new branch to
-> keep it simple).
-> 
-> FWIW, I also stress-tested the patch series applied on top of
-> linux-next/master for a couple of hours.
-> 
-> Could you please let me know whether I should send a V2 of the patch
-> series for linux-next? Thanks!
+Applied.  Thanks!
 
-That worked, thanks.  I'll include all this in the next drop for
-linux-next.
+Alex
 
+
+> ---
+>  drivers/gpu/drm/radeon/radeon_ttm.c | 8 ++++----
+>  1 file changed, 4 insertions(+), 4 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/radeon/radeon_ttm.c b/drivers/gpu/drm/radeon=
+/radeon_ttm.c
+> index 95038ac3382e2..a8c915920070f 100644
+> --- a/drivers/gpu/drm/radeon/radeon_ttm.c
+> +++ b/drivers/gpu/drm/radeon/radeon_ttm.c
+> @@ -608,21 +608,21 @@ static void radeon_ttm_backend_destroy(struct ttm_b=
+o_device *bdev, struct ttm_tt
+>  static struct ttm_tt *radeon_ttm_tt_create(struct ttm_buffer_object *bo,
+>                                            uint32_t page_flags)
+>  {
+> -       struct radeon_device *rdev;
+>         struct radeon_ttm_tt *gtt;
+>         enum ttm_caching caching;
+>         struct radeon_bo *rbo;
+> -
+> -       rbo =3D container_of(bo, struct radeon_bo, tbo);
+> +#if IS_ENABLED(CONFIG_AGP)
+> +       struct radeon_device *rdev;
+>
+>         rdev =3D radeon_get_rdev(bo->bdev);
+> -#if IS_ENABLED(CONFIG_AGP)
+>         if (rdev->flags & RADEON_IS_AGP) {
+>                 return ttm_agp_tt_create(bo, rdev->ddev->agp->bridge,
+>                                          page_flags);
+>         }
+>  #endif
+>
+> +       rbo =3D container_of(bo, struct radeon_bo, tbo);
+> +
+>         gtt =3D kzalloc(sizeof(struct radeon_ttm_tt), GFP_KERNEL);
+>         if (gtt =3D=3D NULL) {
+>                 return NULL;
+> --
+> 2.25.1
+>
+> _______________________________________________
+> dri-devel mailing list
+> dri-devel@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/dri-devel
