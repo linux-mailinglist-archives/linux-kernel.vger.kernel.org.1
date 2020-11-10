@@ -2,139 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D9EE2ADE7E
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 19:38:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A58B2ADE87
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 19:40:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731304AbgKJSic (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 13:38:32 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36722 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726557AbgKJSi2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 13:38:28 -0500
-Received: from paulmck-ThinkPad-P72.home (50-39-104-11.bvtn.or.frontiernet.net [50.39.104.11])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A2E76206F1;
-        Tue, 10 Nov 2020 18:38:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605033506;
-        bh=o1BESqzm8fBdi/X16H0n+RhuelYV3JhYq2tyea7TYx0=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=pyg1U9fcoUMM/AOVDy2cg0BRr2EGQN+i3y+JBKB0VE4LOzs6M0VoPHU47Xtsqt8CB
-         PmvuTUxTkX8dgGVF6UACpcNHL3Qn9crtbBlCXI5+FgtLWid5pQLsumuw/TuQCs4Uvx
-         wqDKP/HcDNd5bnd3/pjHETGyP3GkjaXJiiJES4JU=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 4B99E35226CB; Tue, 10 Nov 2020 10:38:26 -0800 (PST)
-Date:   Tue, 10 Nov 2020 10:38:26 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Colin Ian King <colin.king@canonical.com>
-Cc:     Paul Gortmaker <paul.gortmaker@windriver.com>,
-        Qian Cai <cai@redhat.com>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: [PATCH][next] cpumask: allocate enough space for string and
- trailing '\0' char
-Message-ID: <20201110183826.GV3249@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20201109130447.2080491-1-colin.king@canonical.com>
- <737d5be9eb5af55b1a61bd8bfb49b1829a3ff916.camel@redhat.com>
- <e0458a3f-7635-bc80-9496-731bdfceed0d@windriver.com>
- <20201110152437.GS3249@paulmck-ThinkPad-P72>
- <6050d075-52cc-d1b8-51c4-4d0dac62a42e@canonical.com>
+        id S1730959AbgKJSj7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 13:39:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43364 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726179AbgKJSj7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Nov 2020 13:39:59 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44C0EC0613D1;
+        Tue, 10 Nov 2020 10:39:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=79SE+AKjlqgBbqilhiLeZ8j33rMROxnpjj18eGnMGAA=; b=C7gMd9SPM+bIdOdwPgkWo9RDoB
+        6ZF3yngMrEjxVNvOcaTcQyUm3aCrbUU9x+EALS8F1IjHfoa+o4Bq6uMxBjbSaZtgfSl0pY/4hjbvY
+        2/IxXVA3IqblqosgM8IlDlPBBI3Yzh//Tjg6dzXGk5pS2OSp5/9t9rHSy9ZsoSEn9F31iQbfHZ750
+        lb5ioAP6tStztsmGYbr6Rf07Bhs4I3P30WpcJPT6h/sdUNxb2hNnkvJ5cUUhds4gP+tyHx0f0e1Kl
+        xu2XqNFcm/G2iD0odGhWtuXGTmb+yn+FIxXQMQD/73xyXkYo3AebaX70Iqfvaxm1ZpZh3yQgQXxfk
+        x24Igmxw==;
+Received: from hch by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kcYYb-0002os-Hv; Tue, 10 Nov 2020 18:39:53 +0000
+Date:   Tue, 10 Nov 2020 18:39:53 +0000
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Chris Mason <clm@fb.com>
+Cc:     Christoph Hellwig <hch@infradead.org>,
+        Nick Terrell <nickrterrell@gmail.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        linux-crypto@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        squashfs-devel@lists.sourceforge.net,
+        linux-f2fs-devel@lists.sourceforge.net,
+        linux-kernel@vger.kernel.org, Kernel Team <Kernel-team@fb.com>,
+        Nick Terrell <terrelln@fb.com>, Petr Malat <oss@malat.biz>,
+        Johannes Weiner <jweiner@fb.com>,
+        Niket Agarwal <niketa@fb.com>, Yann Collet <cyan@fb.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: [PATCH v5 1/9] lib: zstd: Add zstd compatibility wrapper
+Message-ID: <20201110183953.GA10656@infradead.org>
+References: <20201103060535.8460-1-nickrterrell@gmail.com>
+ <20201103060535.8460-2-nickrterrell@gmail.com>
+ <20201106183846.GA28005@infradead.org>
+ <D9338FE4-1518-4C7B-8C23-DBDC542DAC35@fb.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <6050d075-52cc-d1b8-51c4-4d0dac62a42e@canonical.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <D9338FE4-1518-4C7B-8C23-DBDC542DAC35@fb.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 10, 2020 at 03:34:05PM +0000, Colin Ian King wrote:
-> On 10/11/2020 15:24, Paul E. McKenney wrote:
-> > On Mon, Nov 09, 2020 at 11:57:15PM -0500, Paul Gortmaker wrote:
-> >>
-> >>
-> >> On 2020-11-09 8:07 p.m., Qian Cai wrote:
-> >>> On Mon, 2020-11-09 at 13:04 +0000, Colin King wrote:
-> >>>> From: Colin Ian King <colin.king@canonical.com>
-> >>>>
-> >>>> Currently the allocation of cpulist is based on the length of buf but does
-> >>>> not include the addition end of string '\0' terminator. Static analysis is
-> >>>> reporting this as a potential out-of-bounds access on cpulist. Fix this by
-> >>>> allocating enough space for the additional '\0' terminator.
-> >>>>
-> >>>> Addresses-Coverity: ("Out-of-bounds access")
-> >>>> Fixes: 65987e67f7ff ("cpumask: add "last" alias for cpu list specifications")
-> >>>
-> >>> Yeah, this bad commit also introduced KASAN errors everywhere and then will
-> >>> disable lockdep that makes our linux-next CI miserable. Confirmed that this
-> >>> patch will fix it.
-> >>
-> >> I appreciate the reports reminding me why I hate touching string handling.
-> >>
-> >> But let us not lose sight of why linux-next exists.  We want to
-> >> encourage code to appear there as a sounding board before it goes
-> >> mainline, so we can fix things and not pollute mainline git history
-> >> with those trivialities.
-> >>
-> >> If you've decided to internalize linux-next as part of your CI, then
-> >> great, but do note that does not elevate linux-next to some pristine
-> >> status for the world at large.  That only means you have to watch more
-> >> closely what is going on.
-> >>
-> >> If you want to declare linux-next unbreakable -- well that would scare
-> >> away others to get the multi-arch or multi-config coverage that they may
-> >> not be able to do themselves.  We are not going to do that.
-> >>
-> >> I have (hopefully) fixed the "bad commit" in v2 -- as part of the
-> >> implicit linux-next rule "you broke it, you better fix it ASAP".
-> >>
-> >> But "bad" and "miserable" can be things that might scare people off of
-> >> making use of linux-next for what it is meant to be for.  And I am not
-> >> OK with that.
-> > 
-> > They would need to use much stronger language to scare me off.  That said,
-> > what on earth is the point of running tests if they do not from time to
-> > time find bugs?  ;-)
-> 
-> For me, part of the QA process is statically analyzing linux-next to
-> catch bugs before they land in linux. I think other testing is equally
-> worth while as catching bugs early saves time and money.
+On Mon, Nov 09, 2020 at 02:01:41PM -0500, Chris Mason wrote:
+> You do consistently ask for a shim layer, but you haven???t explained what
+> we gain by diverging from the documented and tested API of the upstream zstd
+> project.  It???s an important discussion given that we hope to regularly
+> update the kernel side as they make improvements in zstd.
 
-All kidding aside, the fact that this appeared in -next was due to a
-mistake on my part, namely failing to push the changes before starting
-the test.  Please accept my apologies, and I will continue to do my
-best to avoid this sort of thing.
+An API that looks like every other kernel API, and doesn't cause endless
+amount of churn because someone decided they need a new API flavor of
+the day.  Btw, I'm not asking for a shim layer - that was the compromise
+we ended up with.
 
-							Thanx, Paul
-
-> Colin
-> 
-> > 
-> >> Thanks,
-> >> Paul.
-> >> --
-> >>
-> >>>
-> >>>> Signed-off-by: Colin Ian King <colin.king@canonical.com>
-> >>>> ---
-> >>>>   lib/cpumask.c | 2 +-
-> >>>>   1 file changed, 1 insertion(+), 1 deletion(-)
-> >>>>
-> >>>> diff --git a/lib/cpumask.c b/lib/cpumask.c
-> >>>> index 34ecb3005941..cb8a3ef0e73e 100644
-> >>>> --- a/lib/cpumask.c
-> >>>> +++ b/lib/cpumask.c
-> >>>> @@ -185,7 +185,7 @@ int __ref cpulist_parse(const char *buf, struct cpumask
-> >>>> *dstp)
-> >>>>   {
-> >>>>   	int r;
-> >>>>   	char *cpulist, last_cpu[5];	/* NR_CPUS <= 9999 */
-> >>>> -	size_t len = strlen(buf);
-> >>>> +	size_t len = strlen(buf) + 1;
-> >>>>   	bool early = !slab_is_available();
-> >>>>   	if (!strcmp(buf, "all")) {
-> >>>
-> 
+If zstd folks can't maintain a sane code base maybe we should just drop
+this childish churning code base from the tree.
