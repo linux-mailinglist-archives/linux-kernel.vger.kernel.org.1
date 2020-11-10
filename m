@@ -2,67 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80DF92AE071
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 21:05:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3539E2AE06A
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 21:05:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731777AbgKJUFt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 15:05:49 -0500
-Received: from relay12.mail.gandi.net ([217.70.178.232]:44531 "EHLO
-        relay12.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731608AbgKJUFq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 15:05:46 -0500
-Received: from localhost.localdomain (196.109.29.93.rev.sfr.net [93.29.109.196])
-        (Authenticated sender: paul.kocialkowski@bootlin.com)
-        by relay12.mail.gandi.net (Postfix) with ESMTPSA id 9B9F0200004;
-        Tue, 10 Nov 2020 20:05:42 +0000 (UTC)
-From:   Paul Kocialkowski <paul.kocialkowski@bootlin.com>
-To:     dri-devel@lists.freedesktop.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     Sandy Huang <hjc@rock-chips.com>,
-        =?UTF-8?q?Heiko=20St=C3=BCbner?= <heiko@sntech.de>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Mark Yao <markyao0591@gmail.com>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Paul Kocialkowski <paul.kocialkowski@bootlin.com>
-Subject: [PATCH] drm/rockchip: Avoid uninitialized use of endpoint id in LVDS
-Date:   Tue, 10 Nov 2020 21:04:30 +0100
-Message-Id: <20201110200430.1713467-1-paul.kocialkowski@bootlin.com>
-X-Mailer: git-send-email 2.28.0
+        id S1731596AbgKJUFe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 15:05:34 -0500
+Received: from mx2.suse.de ([195.135.220.15]:53080 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726462AbgKJUFd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Nov 2020 15:05:33 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 5BAD6AB93;
+        Tue, 10 Nov 2020 20:05:32 +0000 (UTC)
+From:   Giovanni Gherdovich <ggherdovich@suse.cz>
+To:     Borislav Petkov <bp@alien8.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Len Brown <lenb@kernel.org>,
+        "Rafael J . Wysocki" <rjw@rjwysocki.net>
+Cc:     Jon Grimm <Jon.Grimm@amd.com>,
+        Nathan Fontenot <Nathan.Fontenot@amd.com>,
+        Yazen Ghannam <Yazen.Ghannam@amd.com>,
+        Thomas Lendacky <Thomas.Lendacky@amd.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Pu Wen <puwen@hygon.cn>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Doug Smythies <dsmythies@telus.net>, x86@kernel.org,
+        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-acpi@vger.kernel.org,
+        Giovanni Gherdovich <ggherdovich@suse.cz>
+Subject: [PATCH v3 0/3] Add support for frequency invariance to AMD EPYC Zen2
+Date:   Tue, 10 Nov 2020 21:05:16 +0100
+Message-Id: <20201110200519.18180-1-ggherdovich@suse.cz>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In the Rockchip DRM LVDS component driver, the endpoint id provided to
-drm_of_find_panel_or_bridge is grabbed from the endpoint's reg property.
+v2 at https://lore.kernel.org/lkml/20201110183054.15883-1-ggherdovich@suse.cz/
 
-However, the property may be missing in the case of a single endpoint.
-Initialize the endpoint_id variable to 0 to avoid using an
-uninitialized variable in that case.
+Changes wrt v2:
 
-Fixes: 34cc0aa25456 ("drm/rockchip: Add support for Rockchip Soc LVDS")
-Signed-off-by: Paul Kocialkowski <paul.kocialkowski@bootlin.com>
----
- drivers/gpu/drm/rockchip/rockchip_lvds.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+- "code golf" on the function function init_freq_invariance_cppc().
+  Make better use of the "secondary" argument to init_freq_invariance(),
+  which was introduced at b56e7d45e807 ("x86, sched: Don't enable static key
+  when starting secondary CPUs") to deal with CPU hotplug.
 
-diff --git a/drivers/gpu/drm/rockchip/rockchip_lvds.c b/drivers/gpu/drm/rockchip/rockchip_lvds.c
-index f292c6a6e20f..41edd0a421b2 100644
---- a/drivers/gpu/drm/rockchip/rockchip_lvds.c
-+++ b/drivers/gpu/drm/rockchip/rockchip_lvds.c
-@@ -544,7 +544,7 @@ static int rockchip_lvds_bind(struct device *dev, struct device *master,
- 	struct device_node  *port, *endpoint;
- 	int ret = 0, child_count = 0;
- 	const char *name;
--	u32 endpoint_id;
-+	u32 endpoint_id = 0;
- 
- 	lvds->drm_dev = drm_dev;
- 	port = of_graph_get_port_by_id(dev->of_node, 1);
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+Cover Letter from v2:
+
+v1 at https://lore.kernel.org/lkml/20201110083936.31994-1-ggherdovich@suse.cz/
+
+Changes wrt v1:
+
+- made initialization safe under CPU hotplug.
+  The function init_freq_invariance_cppc now lets only the first caller
+  into init_freq_invariance().
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+Cover Letter from v1:
+
+This series adds support for frequency invariant accounting on AMD EPYC Zen2
+(aka "Rome"). The first patch by Nathan lays out the foundation by querying
+ACPI infrastructure for the max boost frequency of the system. Specifically,
+this value is available via the CPPC machinery; the previous EPYC generation,
+namely Zen aka "Naples", doesn't implement that and frequency invariance won't
+be supported.
+
+The second patch sets the estimate for freq_max to be the midpoint between
+max_boost and max_P, as that works slightly better in practice.
+
+A side effect of this series is to provide, with the invariant schedutil
+governor, a suitable baseline to evaluate a (still work-in-progress)
+CPPC-based cpufreq driver for the AMD platform (see
+https://lore.kernel.org/lkml/cover.1562781484.git.Janakarajan.Natarajan@amd.com
+if/when it will resubmitted.
+
+
+Giovanni Gherdovich (2):
+  x86, sched: Use midpoint of max_boost and max_P for frequency
+    invariance on AMD EPYC
+  x86: Print ratio freq_max/freq_base used in frequency invariance
+    calculations
+
+Nathan Fontenot (1):
+  x86, sched: Calculate frequency invariance for AMD systems
+
+ arch/x86/include/asm/topology.h |  8 ++++
+ arch/x86/kernel/smpboot.c       | 79 ++++++++++++++++++++++++++++++---
+ drivers/acpi/cppc_acpi.c        |  3 ++
+ 3 files changed, 85 insertions(+), 5 deletions(-)
+
 -- 
-2.28.0
+2.26.2
 
