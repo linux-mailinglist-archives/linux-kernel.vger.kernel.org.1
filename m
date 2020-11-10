@@ -2,57 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 246802AE04D
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 20:55:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 685632AE040
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 20:54:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731826AbgKJTyo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 14:54:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55148 "EHLO
+        id S1731791AbgKJTym (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 14:54:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55156 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731687AbgKJTyf (ORCPT
+        with ESMTP id S1731718AbgKJTyg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 14:54:35 -0500
-Received: from mail-il1-x144.google.com (mail-il1-x144.google.com [IPv6:2607:f8b0:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11FA5C0613D4
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 11:54:34 -0800 (PST)
-Received: by mail-il1-x144.google.com with SMTP id q1so13370328ilt.6
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 11:54:34 -0800 (PST)
+        Tue, 10 Nov 2020 14:54:36 -0500
+Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1A47C0613D3
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 11:54:35 -0800 (PST)
+Received: by mail-io1-xd43.google.com with SMTP id p7so15573507ioo.6
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 11:54:35 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linuxfoundation.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=oNTmliIHaPLQZebq8is9WVHRvSAsyFCf7oine4LHGdQ=;
-        b=Dra4b9f8OTQAbW/JrFJp1zGPEVaVaMjdVuAO+zZnM31ynFQ1pcUQG/MykpsdVBTxVI
-         Vc1cnZuJaSZdSJaO1Rj6ij001WeAHh7v8IHibrcPUiej+9QN/Q/Ent5I4ppTsq0Exydb
-         1hW9yuzFYX/JERJaQp2SVW/mtiR0Evm6TI0B4=
+        bh=esDDSNtZdnFGI5HWUHahR5JpDdcEoj2VttF5Zb1WYqw=;
+        b=GdU4lZxE6ToHgmw2Kw9CdAWygce76hmaZ8iu0DAA7AR/NZmId9M17NZvuITkTeUEnQ
+         JBoGn6VwsHrHqr10PUX/v+uI9RqSKRPhFMiol9zE9zUf3mRDi8lXfAaw/1t8smiVF5Rq
+         JRu944yseuS1qwmIJTwzW1pj3x8zEy6idw4CM=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=oNTmliIHaPLQZebq8is9WVHRvSAsyFCf7oine4LHGdQ=;
-        b=rVkHSuieZPyEqt0DEfbVqpGUEgDQ5+onvFEPMhYY4XmtizcvQYb/JoLRWGIqWumSNA
-         LflCDFmQMcG6mjzYGNON+k9ZICO3WbyTS3IYAhmdrbXWu0pbPXbX1d0kgVNRXBM9mduV
-         SnJ4nNYVVXmQOqrPHBOd5YutluahBfudcVxSPgTRxnFkk51WZXSgXAB3+tAVjJubhpfA
-         IJe06GKsm9YxwaO+NCFKjD4UihmTdIvL2A6QB0Wr4GBFN1N1KdV7RtDVR6ut+qx09RIP
-         3grGAOATiHMi19zkmHEcaOwx9ZCQX315ZXJK8I/eUbHCNEzOYjbWSYC9/rVFWXFoDERW
-         i/EA==
-X-Gm-Message-State: AOAM530dZ4dID5DhsFuBzdPFlI7pYTCthsgUWqvzbi0MCy+ZrrBEusMz
-        9gb4lDm5rztCkzhzCx5mVrRzdw==
-X-Google-Smtp-Source: ABdhPJxzA358t+ZLJ7cPi/ahlO0VWxzydi1uFZzn9mE+PIU3atrO2j9vDN2cI/cgRZQ1e7wHVri0yw==
-X-Received: by 2002:a05:6e02:1305:: with SMTP id g5mr16156375ilr.237.1605038073364;
-        Tue, 10 Nov 2020 11:54:33 -0800 (PST)
+        bh=esDDSNtZdnFGI5HWUHahR5JpDdcEoj2VttF5Zb1WYqw=;
+        b=rRy0E5ZQhKF1s+su8omtBbfy7ny1ZS7non9xqkfYaaY8d6JJwKof2ij2RSUGoAL1Vi
+         hJWyV97133D8peSo3V9w+AorktFuyXt2RpMF7VGYZMg92JNkfFEeJWFiMmucbp9YkptV
+         g7qDwRfP4itNNQYD6HIR9tQlDQ3ux7i50UdvIz81rrUEV9ZnV9+nMMloikb12m7GDdgP
+         CxlCR4j4uuGJMRLWZpDptJGAnxqJs/iTN2YcKn74d3ozE9JAlN3oJdP+5pupNRPHzrZI
+         9s1UQY3i8bVTCJZmW+4xxiL84+LBiBhg2wrvJf+B4Vcs+CDYA6A2BK+RioKqRq3MVPN+
+         XTBg==
+X-Gm-Message-State: AOAM532S/EyfIRLEVtc/Lu1CY4CBwIQM5/P4oPZEUVhpkAUw/Ud5fo7i
+        aqn80Hxyb1AJCnt1pUQ7duSESg==
+X-Google-Smtp-Source: ABdhPJzuYyywnCo/b0N6UqgvVuEYVaStg93IgkbevFUlW/T43CvZLOmhAwVaj+Z9Q56nZFtywEsXPQ==
+X-Received: by 2002:a05:6638:d7:: with SMTP id w23mr17329200jao.131.1605038075352;
+        Tue, 10 Nov 2020 11:54:35 -0800 (PST)
 Received: from shuah-t480s.internal (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id o14sm123971ilg.71.2020.11.10.11.54.32
+        by smtp.gmail.com with ESMTPSA id o14sm123971ilg.71.2020.11.10.11.54.34
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 10 Nov 2020 11:54:32 -0800 (PST)
+        Tue, 10 Nov 2020 11:54:34 -0800 (PST)
 From:   Shuah Khan <skhan@linuxfoundation.org>
-To:     corbet@lwn.net, keescook@chromium.org, gregkh@linuxfoundation.org,
-        peterz@infradead.org
-Cc:     Shuah Khan <skhan@linuxfoundation.org>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
-Subject: [PATCH 02/13] selftests:lib:test_seqnum_ops: add new test for seqnum_ops
-Date:   Tue, 10 Nov 2020 12:53:28 -0700
-Message-Id: <754c8befc6ec6deea20c01b9a663a818c5726b88.1605027593.git.skhan@linuxfoundation.org>
+To:     rafael@kernel.org, lenb@kernel.org, gregkh@linuxfoundation.org,
+        keescook@chromium.org, peterz@infradead.org
+Cc:     Shuah Khan <skhan@linuxfoundation.org>, linux-acpi@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 03/13] drivers/acpi: convert seqno seqnum_ops
+Date:   Tue, 10 Nov 2020 12:53:29 -0700
+Message-Id: <c37986b8b0c9f3ba777dd983329cd727d6e97202.1605027593.git.skhan@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <cover.1605027593.git.skhan@linuxfoundation.org>
 References: <cover.1605027593.git.skhan@linuxfoundation.org>
@@ -62,137 +62,59 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a new selftest for testing seqnum_ops. This test loads test_seqnum_ops
-test module and unloads it. The test module runs tests and prints results
-to dmesg.
+seqnum_ops api is introduced to be used when a variable is used as
+a sequence/stat counter and doesn't guard object lifetimes. This
+clearly differentiates atomic_t usages that guard object lifetimes.
 
-There are a number of atomic_t usages in the kernel where atomic_t api
-is used strictly for counting sequence numbers and other statistical
-counters and not for managing object lifetime.
+seqnum32 variables wrap around to INT_MIN when it overflows and
+should not be used to guard resource lifetimes, device usage and
+open counts that control state changes, and pm states.
 
-The purpose of these Sequence Number Ops is to clearly differentiate
-atomic_t counter usages from atomic_t usages that guard object lifetimes,
-hence prone to overflow and underflow errors.
+seqno is a sequence number counter for logging. This counter gets
+incremented. Unsure if there is a chance of this overflowing. It
+doesn't look like overflowing causes any problems since it is used
+to tag the log messages and nothing more. This conversion doesn't
+change the overflow wrap around behavior.
 
-The atomic_t api provides a wide range of atomic operations as a base
-api to implement atomic counters, bitops, spinlock interfaces. The usages
-also evolved into being used for resource lifetimes and state management.
-The refcount_t api was introduced to address resource lifetime problems
-related to atomic_t wrapping. There is a large overlap between the
-atomic_t api used for resource lifetimes and just counters, stats, and
-sequence numbers. It has become difficult to differentiate between the
-atomic_t usages that should be converted to refcount_t and the ones that
-can be left alone. Introducing seqnum_ops to wrap the usages that are
-stats, counters, sequence numbers makes it easier for tools that scan
-for underflow and overflow on atomic_t usages to detect overflow and
-underflows to scan just the cases that are prone to errors.
-
-Sequence Number api provides interfaces for simple atomic_t counter usages
-that just count, and don't guard resource lifetimes. The seqnum_ops are
-built on top of atomic_t api, providing a smaller subset of atomic_t
-interfaces necessary to support atomic_t usages as simple counters.
-This api has init/set/inc/dec/read and doesn't support other atomic_t
-ops with the intent to restrict the use of these interfaces as simple
-counting usages.
-
-Sequence Numbers wrap around to INT_MIN when it overflows and should not
-be used to guard resource lifetimes, device usage and open counts that
-control state changes, and pm states. Overflowing to INT_MIN is consistent
-with the atomic_t api, which it is built on top of.
-
-Using seqnum to guard lifetimes could lead to use-after free when it
-overflows and undefined behavior when used to manage state changes and
-device usage/open states.
+Convert it to use seqnum_ops. This conversion replaces inc_return()
+with _inc() followed by _read().
 
 Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
 ---
- Documentation/core-api/seqnum_ops.rst          |  9 +++++++++
- MAINTAINERS                                    |  1 +
- include/linux/seqnum_ops.h                     |  2 ++
- tools/testing/selftests/lib/Makefile           |  1 +
- tools/testing/selftests/lib/config             |  1 +
- tools/testing/selftests/lib/test_seqnum_ops.sh | 10 ++++++++++
- 6 files changed, 24 insertions(+)
- create mode 100755 tools/testing/selftests/lib/test_seqnum_ops.sh
+ drivers/acpi/acpi_extlog.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/Documentation/core-api/seqnum_ops.rst b/Documentation/core-api/seqnum_ops.rst
-index 7a396c2cda19..3a9ddba985f2 100644
---- a/Documentation/core-api/seqnum_ops.rst
-+++ b/Documentation/core-api/seqnum_ops.rst
-@@ -115,3 +115,12 @@ Decrements sequence number and doesn't return the new value. ::
+diff --git a/drivers/acpi/acpi_extlog.c b/drivers/acpi/acpi_extlog.c
+index 72f1fb77abcd..1e2b36aab9aa 100644
+--- a/drivers/acpi/acpi_extlog.c
++++ b/drivers/acpi/acpi_extlog.c
+@@ -12,6 +12,7 @@
+ #include <linux/ratelimit.h>
+ #include <linux/edac.h>
+ #include <linux/ras.h>
++#include <linux/seqnum_ops.h>
+ #include <asm/cpu.h>
+ #include <asm/mce.h>
  
-         seqnum32_dec() --> atomic_dec()
-         seqnum64_dec() --> atomic64_dec()
-+
-+Where are the seqnum_ops and how to use and test them?
-+------------------------------------------------------
-+
-+.. kernel-doc:: include/linux/seqnum_ops.h
-+
-+Please see lib/test_seqnum_ops.c for examples usages.
-+Please find selftest: testing/selftests/lib/test_seqnum_ops.sh
-+Please check dmesg for results after running test_seqnum_ops.sh.
-diff --git a/MAINTAINERS b/MAINTAINERS
-index c83a6f05610b..e6ae131836a5 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -15983,6 +15983,7 @@ L:	linux-kernel@vger.kernel.org
- S:	Maintained
- F:	include/linux/seqnum_ops.h
- F:	lib/test_seqnum_ops.c
-+F:	tools/testing/selftests/lib/test_seqnum_ops.sh
+@@ -93,7 +94,7 @@ static struct acpi_hest_generic_status *extlog_elog_entry_check(int cpu, int ban
+ static void __print_extlog_rcd(const char *pfx,
+ 			       struct acpi_hest_generic_status *estatus, int cpu)
+ {
+-	static atomic_t seqno;
++	static struct seqnum32 seqno;
+ 	unsigned int curr_seqno;
+ 	char pfx_seq[64];
  
- SIMPLE FIRMWARE INTERFACE (SFI)
- S:	Obsolete
-diff --git a/include/linux/seqnum_ops.h b/include/linux/seqnum_ops.h
-index b97c7f310beb..a1def2ad5bc2 100644
---- a/include/linux/seqnum_ops.h
-+++ b/include/linux/seqnum_ops.h
-@@ -28,6 +28,8 @@
-  *
-  * Reference and API guide:
-  *	Documentation/core-api/seqnum_ops.rst for more information.
-+ *	lib/test_seqnum_ops.c - example usages
-+ *	tools/testing/selftests/lib/test_seqnum_ops.sh
-  *
-  */
- 
-diff --git a/tools/testing/selftests/lib/Makefile b/tools/testing/selftests/lib/Makefile
-index a105f094676e..1818444f0e97 100644
---- a/tools/testing/selftests/lib/Makefile
-+++ b/tools/testing/selftests/lib/Makefile
-@@ -5,5 +5,6 @@
- all:
- 
- TEST_PROGS := printf.sh bitmap.sh prime_numbers.sh strscpy.sh
-+TEST_PROGS += test_seqnum_ops.sh
- 
- include ../lib.mk
-diff --git a/tools/testing/selftests/lib/config b/tools/testing/selftests/lib/config
-index b80ee3f6e265..674ed2a2ac82 100644
---- a/tools/testing/selftests/lib/config
-+++ b/tools/testing/selftests/lib/config
-@@ -3,3 +3,4 @@ CONFIG_TEST_BITMAP=m
- CONFIG_PRIME_NUMBERS=m
- CONFIG_TEST_STRSCPY=m
- CONFIG_TEST_BITOPS=m
-+CONFIG_TEST_SEQNUM_OPS=m
-diff --git a/tools/testing/selftests/lib/test_seqnum_ops.sh b/tools/testing/selftests/lib/test_seqnum_ops.sh
-new file mode 100755
-index 000000000000..fdce16b220ba
---- /dev/null
-+++ b/tools/testing/selftests/lib/test_seqnum_ops.sh
-@@ -0,0 +1,10 @@
-+#!/bin/sh
-+# SPDX-License-Identifier: GPL-2.0
-+#
-+# Copyright (c) 2020 Shuah Khan <skhan@linuxfoundation.org>
-+# Copyright (c) 2020 The Linux Foundation
-+#
-+# Tests the Sequence Number Ops interfaces using test_seqnum_ops
-+# kernel module
-+#
-+$(dirname $0)/../kselftest/module.sh "test_seqnum_ops" test_seqnum_ops
+@@ -103,7 +104,8 @@ static void __print_extlog_rcd(const char *pfx,
+ 		else
+ 			pfx = KERN_ERR;
+ 	}
+-	curr_seqno = atomic_inc_return(&seqno);
++	seqnum32_inc(&seqno);
++	curr_seqno = seqnum32_read(&seqno);
+ 	snprintf(pfx_seq, sizeof(pfx_seq), "%s{%u}", pfx, curr_seqno);
+ 	printk("%s""Hardware error detected on CPU%d\n", pfx_seq, cpu);
+ 	cper_estatus_print(pfx_seq, estatus);
 -- 
 2.27.0
 
