@@ -2,114 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E9CD2ADFFD
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 20:44:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 32BB62AE003
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 20:45:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731675AbgKJToZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 14:44:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53540 "EHLO
+        id S1731609AbgKJTp2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 14:45:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53702 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725862AbgKJToY (ORCPT
+        with ESMTP id S1725862AbgKJTp2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 14:44:24 -0500
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C750C0613D1;
-        Tue, 10 Nov 2020 11:44:24 -0800 (PST)
-Received: by mail-wr1-x444.google.com with SMTP id k2so10667864wrx.2;
-        Tue, 10 Nov 2020 11:44:24 -0800 (PST)
+        Tue, 10 Nov 2020 14:45:28 -0500
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E16CC0613D1;
+        Tue, 10 Nov 2020 11:45:28 -0800 (PST)
+Received: by mail-pf1-x442.google.com with SMTP id q10so12402336pfn.0;
+        Tue, 10 Nov 2020 11:45:28 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=2daIxpcLg8hMHGC3zssSTtccRqZ4pNz/pS6PMgYIGMk=;
-        b=WOaXAM1CzPI351KQb92BW6RsAzWDbwE9uBsr84igNXZL34gKxrtH4XLs3xJ3lRP9VU
-         pxZ1UluCXiE8swzVTBx2f9Ut2euxeZK1Np+rD4LVnAa0ZYEo8zVLeaZbstL/JkH6UjtC
-         CkgYxRfWiHWb9PIefP9l7Pn24977leXo/X3nLB7VTih976YSY+I1uDrkIbBv+JAbyU3d
-         5GxQ6kcnxWWSY/uV5LQu9FVOjf2JSgZxjyS1FepXDdOn1nhHXzDcRUhjqxkWbbu59Upq
-         vju+T/5kT+ApEZriRr/OSTFfELKyxT1iQo6A85CSbUvyWCs40n4QiT03GG/wHfb6YGL/
-         sk7Q==
+         :content-disposition:in-reply-to;
+        bh=FlTBekxLH9k5lDusEIqJe96gy2kgeT7w1mYQIC7teW8=;
+        b=jxd//I0NFIFChmNjGPdP8n7pBMNdp35EWhyQUGVNOEFkxBmgDczY8aKnJ72aGscLiK
+         xIzyZsPlCXjMasMkWXUCKiHfHwnmx2DzZiTZm5bqBDwwcImUAC/JktCOJlZDjztgEONa
+         qtbH+61o+GqAoP48KdwdB/7mZKBkLEnlk9BjOaPasX7pLtcQ6Q07uAJxP5kDH8ge4L2c
+         GTEv8im5JOuzgIFTMM7wYc6kE0/hwOYNhJ1wCG6Yt3Gn4bx48gRzBwNUNvxN1rU7b+xR
+         Qdul0H+cR6XHCU7UAC0ShUPDT7BQuYEt/0E0UyM3aobauUNUVwjS48oRiTk9ZioZ3voB
+         7yxA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=2daIxpcLg8hMHGC3zssSTtccRqZ4pNz/pS6PMgYIGMk=;
-        b=XlJXA5+L/HCVyM1wX979pumgDkUJ+vjwn6A3jL75fwqcngZikkhyhY5pc56UcXh+xF
-         9+x4v8Meq39V2ABdfLzOGKQT9lWznjL4Y1hlwAzCauHqX5FKRGCsi3jniw1KExkg2+WX
-         8IQ6bqvSd0Tzk03qD2V8+7lz1Gq/6kgnbrytLz2w0h0kciyl87yNyMxJ+AuDMcEI4MwP
-         dT147w9IVsSEXF7GnhYY//+NYyKaiMEJlLnoj8BERzVS8AiCN66x0unJ3HgAoJvX47a8
-         rnNp9fEMVHMEP/lUSVI2nHg3mh/zPoJ8asthir4R5qb6YviAfc8rg/o/MxASGbF+mdsI
-         mvRQ==
-X-Gm-Message-State: AOAM533zg62S/dhPEY9WT+b6Vo/OgH3jboXBHiAjR3+JYJvD4WzJsB1h
-        u711icOvXeqsExYOnPgPYgkGUEAXUM4=
-X-Google-Smtp-Source: ABdhPJyLbXcP75ATf7F3uuCKViQN8SfGD+n9mkN6xAlTvfWP03y4YIrvxM9G8rcomNt3yiwOuWHNNw==
-X-Received: by 2002:adf:f00f:: with SMTP id j15mr21777692wro.102.1605037463179;
-        Tue, 10 Nov 2020 11:44:23 -0800 (PST)
-Received: from localhost ([217.111.27.204])
-        by smtp.gmail.com with ESMTPSA id k22sm3952213wmi.34.2020.11.10.11.44.21
+         :mime-version:content-disposition:in-reply-to;
+        bh=FlTBekxLH9k5lDusEIqJe96gy2kgeT7w1mYQIC7teW8=;
+        b=Or1wJVe7VaosTQJvxnmuwWg9hXOHQMXvNQGyPzfZvs0XQbpjxXKZ7K+IQWamA0PBvq
+         n3RNZ3fQDMLPCh6SXA7XuVCOZ/38f7AgtC253+kt1zSxsUxsXN2Ta6PoPfRAKoYyLZJJ
+         sqWFojAQUVi4F/alFi/kOvChAKAixWrnVAfnNyTK5JHxudW3LygAdQ7LoaCdNK99klEf
+         euqHE13wLe86Qo6j3lRrbZt2YhUT+jYW7DmtBGLXOUta6iXxeuGxm1tTBZ9qo65E6vfI
+         p7LPusD3jqi8DUb0WRkua/2aXae64ceVcdmPjIlUNxRaZCVK0RNHvZLncJBzdMp4B9Oz
+         bbPQ==
+X-Gm-Message-State: AOAM532P7cPc8bYBSiL63MgbnFAJdERBGy5mN/bVRrv/ulm+OzQAngeT
+        p43VcdqR11RD0aUrMYS0GNM=
+X-Google-Smtp-Source: ABdhPJwWl1MxrloEhHd7y4GBg3SQI528A+IjM7SIRT9Y15gRTroeExL72kLv0O57JDQ2MrodPavS6Q==
+X-Received: by 2002:a17:90a:8c87:: with SMTP id b7mr782716pjo.162.1605037527447;
+        Tue, 10 Nov 2020 11:45:27 -0800 (PST)
+Received: from Thinkpad ([45.118.167.192])
+        by smtp.gmail.com with ESMTPSA id j9sm3985736pjl.48.2020.11.10.11.45.23
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 10 Nov 2020 11:44:22 -0800 (PST)
-Date:   Tue, 10 Nov 2020 20:44:20 +0100
-From:   Thierry Reding <thierry.reding@gmail.com>
-To:     Sameer Pujar <spujar@nvidia.com>
-Cc:     robh+dt@kernel.org, devicetree@vger.kernel.org,
-        jonathanh@nvidia.com, vkoul@kernel.org, tglx@linutronix.de,
-        jason@lakedaemon.net, maz@kernel.org, linux-tegra@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dmaengine@vger.kernel.org
-Subject: Re: [PATCH v2 1/4] arm64: tegra: Rename ADMA device nodes for
- Tegra210
-Message-ID: <20201110194420.GC2375022@ulmo>
-References: <1604677413-20411-1-git-send-email-spujar@nvidia.com>
- <1604677413-20411-2-git-send-email-spujar@nvidia.com>
+        Tue, 10 Nov 2020 11:45:26 -0800 (PST)
+Date:   Wed, 11 Nov 2020 01:15:18 +0530
+From:   Anmol Karn <anmol.karan123@gmail.com>
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     ralf@linux-mips.org, davem@davemloft.net, saeed@kernel.org,
+        gregkh@linuxfoundation.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-hams@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        syzkaller-bugs@googlegroups.com,
+        syzbot+a1c743815982d9496393@syzkaller.appspotmail.com
+Subject: Re: [Linux-kernel-mentees] [PATCH v3 net] rose: Fix Null pointer
+ dereference in rose_send_frame()
+Message-ID: <20201110194518.GA97719@Thinkpad>
+References: <20201107082041.GA2675@Thinkpad>
+ <20201107191835.5541-1-anmol.karan123@gmail.com>
+ <20201110095815.41577920@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="7qSK/uQB79J36Y4o"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1604677413-20411-2-git-send-email-spujar@nvidia.com>
-User-Agent: Mutt/1.14.7 (2020-08-29)
+In-Reply-To: <20201110095815.41577920@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hello Sir,
 
---7qSK/uQB79J36Y4o
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On Tue, Nov 10, 2020 at 09:58:15AM -0800, Jakub Kicinski wrote:
+> On Sun,  8 Nov 2020 00:48:35 +0530 Anmol Karn wrote:
+> > +			dev = rose_dev_get(dest);
+> 
+> this calls dev_hold internally, you never release that reference in
+> case ..neigh->dev is NULL
+> 
+> > +			if (rose_loopback_neigh->dev && dev) {
 
-On Fri, Nov 06, 2020 at 09:13:30PM +0530, Sameer Pujar wrote:
-> DMA device nodes should follow regex pattern of "^dma-controller(@.*)?$".
-> This is a preparatory patch to use YAML doc format for ADMA.
->=20
-> Signed-off-by: Sameer Pujar <spujar@nvidia.com>
-> ---
->  arch/arm64/boot/dts/nvidia/tegra210-p2371-2180.dts | 2 +-
->  arch/arm64/boot/dts/nvidia/tegra210-p3450-0000.dts | 2 +-
->  arch/arm64/boot/dts/nvidia/tegra210-smaug.dts      | 2 +-
->  arch/arm64/boot/dts/nvidia/tegra210.dtsi           | 2 +-
->  4 files changed, 4 insertions(+), 4 deletions(-)
+Ah, I missed to `dev_put()` the `dev` after checking for, if neigh->dev is NULL,
+I will fix it soon and send another version.
 
-Applied, thanks.
+Thank you for review.
 
-Thierry
 
---7qSK/uQB79J36Y4o
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAl+q7ZQACgkQ3SOs138+
-s6H75BAAnSNDrhSXOY29l82vtouUacMJjlSXsHVHkckIugrAUdNJh8/vL622Tk3x
-0VOl+xcg+sgIUaRFqDqYaErgXIjzLQKlz4PdqQflUD7Yg8w2rGCcQtSfv5BJDiuz
-MguvnRLgNALUAQU0jP70bOXLLO9+FMLh01WS8XrlAM5sf31EBJBtCBp/iHdw5hCl
-hOuigKHMuVsro+KVPTELHUh083naKZRExG8ZKCu4QQ0/ZWR8D2KzIwdc1IyiCBXa
-ZCzBRL1KHJd/qdhojWF3kZB1sRZg9nn7+AO/YanaVFjksG0eAijrmpOxd8+gF12g
-c530Yy4nNZS+MVyAqqFDZNucU3FXQA0ybQmRmkzN4R8OCzi+33E5/S8+SLvWXkKD
-Mgli7V5cFLO5qtib7pxyKAVTP6weie/dgOeLrsf/ktJPWyx+slwIXbFRhQ+zLbNe
-3Ih1w3whd/jGcr7o/qWcKlUCbs2xeBFKNgqOY4e8xXUoMcRjf2eqQxx+Ct+04WTd
-ftnOXMHZWU6OKYTI2ecTZcjYGeakraw0o9wP39xKMDiuctJZ8KX/tS8VHmgzXsyV
-4H0JCdPpr7mlG9S8nK4SNnriXIZQMkcLM+8cDOTXdbVCwudJPSGlipXaL1CUI61G
-PCZrVG+yCr8vdbua10V0ZkChcmtV4tqFEBgB/F4uK1dLuaajvNA=
-=yOB1
------END PGP SIGNATURE-----
-
---7qSK/uQB79J36Y4o--
+Anmol
