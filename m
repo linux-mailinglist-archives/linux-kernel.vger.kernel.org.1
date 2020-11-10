@@ -2,110 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4C592AD88D
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 15:19:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BAC672AD891
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 15:20:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732135AbgKJOTf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 09:19:35 -0500
-Received: from mga04.intel.com ([192.55.52.120]:22917 "EHLO mga04.intel.com"
+        id S1732166AbgKJOT7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 09:19:59 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39650 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730432AbgKJOTd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 09:19:33 -0500
-IronPort-SDR: k8EeUTT8oFEE72KtXcVX6Cp6o6/4uUKYW8Q7AenJ4DBeJd7pbuzQngBVb9YNfYjIo7PD++om7+
- DiMvqTFOQkCA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9800"; a="167395167"
-X-IronPort-AV: E=Sophos;i="5.77,466,1596524400"; 
-   d="scan'208";a="167395167"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Nov 2020 06:19:30 -0800
-IronPort-SDR: hY16sf6hyMU6v0zJxjUSvKW+LZ3JhgqWgbEbmWWhfXvgzIZekPFJN3Z+LDb6LghDPK88bk5jph
- FCGYYtINrHMA==
-X-IronPort-AV: E=Sophos;i="5.77,466,1596524400"; 
-   d="scan'208";a="338737556"
-Received: from otc-nc-03.jf.intel.com (HELO otc-nc-03) ([10.54.39.36])
-  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Nov 2020 06:19:29 -0800
-Date:   Tue, 10 Nov 2020 06:19:28 -0800
-From:   "Raj, Ashok" <ashok.raj@intel.com>
-To:     David Woodhouse <dwmw2@infradead.org>
-Cc:     Jason Gunthorpe <jgg@nvidia.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        "Tian, Kevin" <kevin.tian@intel.com>,
-        "Jiang, Dave" <dave.jiang@intel.com>,
-        Bjorn Helgaas <helgaas@kernel.org>,
-        "vkoul@kernel.org" <vkoul@kernel.org>,
-        "Dey, Megha" <megha.dey@intel.com>,
-        "maz@kernel.org" <maz@kernel.org>,
-        "bhelgaas@google.com" <bhelgaas@google.com>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
-        "Pan, Jacob jun" <jacob.jun.pan@intel.com>,
-        "Liu, Yi L" <yi.l.liu@intel.com>, "Lu, Baolu" <baolu.lu@intel.com>,
-        "Kumar, Sanjay K" <sanjay.k.kumar@intel.com>,
-        "Luck, Tony" <tony.luck@intel.com>,
-        "jing.lin@intel.com" <jing.lin@intel.com>,
-        "kwankhede@nvidia.com" <kwankhede@nvidia.com>,
-        "eric.auger@redhat.com" <eric.auger@redhat.com>,
-        "parav@mellanox.com" <parav@mellanox.com>,
-        "rafael@kernel.org" <rafael@kernel.org>,
-        "netanelg@mellanox.com" <netanelg@mellanox.com>,
-        "shahafs@mellanox.com" <shahafs@mellanox.com>,
-        "yan.y.zhao@linux.intel.com" <yan.y.zhao@linux.intel.com>,
-        "pbonzini@redhat.com" <pbonzini@redhat.com>,
-        "Ortiz, Samuel" <samuel.ortiz@intel.com>,
-        "Hossain, Mona" <mona.hossain@intel.com>,
-        "dmaengine@vger.kernel.org" <dmaengine@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        Ashok Raj <ashok.raj@intel.com>
-Subject: Re: [PATCH v4 06/17] PCI: add SIOV and IMS capability detection
-Message-ID: <20201110141928.GC22336@otc-nc-03>
-References: <20201104135415.GX2620339@nvidia.com>
- <MWHPR11MB1645524BDEDF8899914F32AE8CED0@MWHPR11MB1645.namprd11.prod.outlook.com>
- <20201106131415.GT2620339@nvidia.com>
- <20201106164850.GA85879@otc-nc-03>
- <20201106175131.GW2620339@nvidia.com>
- <CAPcyv4iYHA1acfo=+fTk+U_TrLbSWJjA6v4oeTXgVYDTrnCoGw@mail.gmail.com>
- <20201107001207.GA2620339@nvidia.com>
- <20201108181124.GA28173@araj-mobl1.jf.intel.com>
- <20da76a4cd2e984a307d673e26f76ab73bd820f4.camel@infradead.org>
- <20201108232557.GA32074@araj-mobl1.jf.intel.com>
+        id S1730594AbgKJOT7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Nov 2020 09:19:59 -0500
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 37A5F207D3;
+        Tue, 10 Nov 2020 14:19:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605017998;
+        bh=K7JJrB+ZpQ1NkraBnAoR4CMvmKGwDe7qvMqD9qefqps=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=0FDk3afOEqhgxaKJxzKNjfr1qDa268skoAzIc5DpyZzvns5zLYV9Cy2+XYyyaPahv
+         kZTTKRHD83c35jpnF3WcWijfT29a3Q217C7eVuXoHbuAfmqaN+5qHLcDsezvuSyS56
+         ma7RwqoU6Cv05O0mxeeFOk6/F0HPrO8qeymtYgkY=
+Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.94)
+        (envelope-from <maz@kernel.org>)
+        id 1kcUV2-009THw-4u; Tue, 10 Nov 2020 14:19:56 +0000
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201108232557.GA32074@araj-mobl1.jf.intel.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Tue, 10 Nov 2020 14:19:56 +0000
+From:   Marc Zyngier <maz@kernel.org>
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     Daniel Palmer <daniel@0x0f.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 3/5] gpio: msc313: MStar MSC313 GPIO driver
+In-Reply-To: <CACRpkdYr+yhyROQzaYfFrGwG74DuZiA=fMVOesgOKrDajhTodQ@mail.gmail.com>
+References: <20201019141008.871177-1-daniel@0x0f.com>
+ <20201019141008.871177-4-daniel@0x0f.com>
+ <CACRpkdZNr6sDqJhg3KcX0bCbcd8fh2gXFYbS1r2H2Sq+vGqjUw@mail.gmail.com>
+ <3fd04aeb5047d8059ddecc1eda19c2e4@kernel.org>
+ <CAFr9PX=vxCCQgCWe9FPb6Z=0=a48HwGOfM_uOG3SqGN9VSYQUA@mail.gmail.com>
+ <71f3632bee262a18e1b7edb74980ae9a@kernel.org>
+ <CACRpkdYr+yhyROQzaYfFrGwG74DuZiA=fMVOesgOKrDajhTodQ@mail.gmail.com>
+User-Agent: Roundcube Webmail/1.4.9
+Message-ID: <bc0ab2f10bb72fe5b455ca12958f6444@kernel.org>
+X-Sender: maz@kernel.org
+X-SA-Exim-Connect-IP: 51.254.78.96
+X-SA-Exim-Rcpt-To: linus.walleij@linaro.org, daniel@0x0f.com, linux-gpio@vger.kernel.org, devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi David
+On 2020-11-10 14:02, Linus Walleij wrote:
+> On Thu, Nov 5, 2020 at 4:43 PM Marc Zyngier <maz@kernel.org> wrote:
+>> On 2020-11-05 15:23, Daniel Palmer wrote:
+>> > On Thu, 5 Nov 2020 at 21:08, Marc Zyngier <maz@kernel.org> wrote:
+> 
+>> > >  I see that msc313_gpio_irqchip doesn't have a
+>> >> .irq_set_affinity callback. Is this system UP only?
+>> >
+>> > What is in mainline right now is UP only but there are chips with a
+>> > second cortex A7 that I have working in my tree.
+>> > So I will add that in for v3 if I can work out what I should actually
+>> > do there. :)
+>> 
+>> Probably nothing more than setting the callback to
+>> irq_chip_set_affinity_parent,
+> 
+> Hm, is this something all GPIO irqchips used on SMP systems
+> should be doing? Or just hierarchical ones?
 
-I did't follow the support for 32768 CPUs in guest without IR support.
+Probably only the hierarchical ones. I'd expect the non-hierarchical
+GPIOs to be muxed behind a single interrupt, which makes it impossible
+to move a single GPIO around, and moving the mux interrupt would break
+userspace's expectations that interrupts move independently of each 
+others.
 
-Can you tell me how that is done?
+Thanks,
 
-On Sun, Nov 08, 2020 at 03:25:57PM -0800, Ashok Raj wrote:
-> On Sun, Nov 08, 2020 at 06:34:55PM +0000, David Woodhouse wrote:
-> > > 
-> > > When we do interrupt remapping support in guest which would be required 
-> > > if we support x2apic in guest, I think this is something we should look into more 
-> > > carefully to make this work.
-> > 
-> > No, interrupt remapping is not required for X2APIC in guests
-> > 
-> > They can have X2APIC and up to 32768 CPUs without needing interrupt
-> 
-> How is this made available today without interrupt remapping? 
-> 
-> I thought without IR, the destination ID is still limited to only 8 bits?
-> 
-> On native, even if you have less than 255 cpu's but the APICID are sparsly 
-> distributed due to platform rules, the x2apic id could be more than 8 bits. 
-> Which is why the spec requires IR when x2apic is enabled.
-> 
-> > remapping at all. Only if they want more than 32768 vCPUs, or to do
-> > nested virtualisation and actually remap for the benefit of *their*
-> > (L2+) guests would they need IR.
+         M.
+-- 
+Jazz is not dead. It just smells funny...
