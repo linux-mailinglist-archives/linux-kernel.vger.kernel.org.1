@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D31BC2AD12A
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 09:19:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F4C92AD12D
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 09:19:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729682AbgKJIT1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 03:19:27 -0500
-Received: from mail-lj1-f195.google.com ([209.85.208.195]:37017 "EHLO
-        mail-lj1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726690AbgKJIT1 (ORCPT
+        id S1730120AbgKJITs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 03:19:48 -0500
+Received: from mail-lf1-f67.google.com ([209.85.167.67]:46506 "EHLO
+        mail-lf1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726690AbgKJITs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 03:19:27 -0500
-Received: by mail-lj1-f195.google.com with SMTP id l10so13673295lji.4;
-        Tue, 10 Nov 2020 00:19:25 -0800 (PST)
+        Tue, 10 Nov 2020 03:19:48 -0500
+Received: by mail-lf1-f67.google.com with SMTP id v144so16211479lfa.13;
+        Tue, 10 Nov 2020 00:19:45 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=BKQW8UjOgNdGF9QoJkxH2Wi6SriSEQS6N7g4O9dC5LY=;
-        b=Jbg2il8Xvt/Jz5PlPSLdFx5z4i40qEMJCX9lJsbfOdChAbNrnzBlqD4QKMcLV7Ew1r
-         BcwTt6ES6yw2Y6svGJcXhSk1tXh2EFxiVH0BLEcZ+wgMXYrXYJtdCa5PweffBWxnJSks
-         fYZMQgbdMav2chgh2i2xDYK/gYBZiPTTb4J1RezgVrv+7At5MqEKDZ6yN/PI/BTDshNP
-         KNmbIA2yec+bSfGTjJ6iCdrFH4P9sSKkzR7eKZE/NQiKTH4JBWWZfOteaF1qZD1Zergg
-         6OMDy645que5pVjzupayEv3KTlp+SLLJhFeG+L/d174eG1EFGTTUBeArBIMzitAHe5fo
-         tttg==
-X-Gm-Message-State: AOAM5302F2Y1pPwFR8Jl8EHAjYOBrf9WLhtO8kOTDNXKkfoz1WemJgKz
-        ETM1GJ5edh9vcVLeI6mo7Es=
-X-Google-Smtp-Source: ABdhPJwp1ygrdKtTzz8ykFX4Z/1Tu5WOcaR31C2BkPnqOX91jQzQFnmAcWBB/Ql+edh48hyn/TZN9g==
-X-Received: by 2002:a2e:1556:: with SMTP id 22mr8132700ljv.416.1604996364617;
-        Tue, 10 Nov 2020 00:19:24 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=UlXbMpsFa244UJuIxjSMkR1LlqiCKu1MwIsUY/puf+k=;
+        b=TDVXqybh0Rc2vGrgqqSgCKmbHD94AKd8jvr38BIof3xj9OoF8cJz3XmRRdfP4/qcU2
+         4/+OoZKzUjCQ5kr1vfWPr3wKVrOO+hSIBmC7ZSHi3gUIfBUhP+U6d2BHgVQ/CdeSIpw1
+         8lpIbU2W5iYgE15MqoP/rA/sDGjawbJqMack4gECXaCGdLpHV3ASA9+32VBMq/oMFCkq
+         lcugXeW0os+O0rhnctvZcmovKbMMvmA79z05aCIU3IA7VmPr8MYjT57D4GTxu8WCSWz2
+         9x4jEVmKO+JsgZ1IS9rMsybOqb/aO1e/hUwAgTkBNp/peSYNso9T2ncg4grZgLkhWjNo
+         uIdg==
+X-Gm-Message-State: AOAM531cR0IuvYV2a/g7Lm4cZdtUniSBzrZ9IIn43EX3HIo+Q9SS87jC
+        omNniG5zWkl30X4Z5Z0B4gM=
+X-Google-Smtp-Source: ABdhPJytIDfg1YooZqoNZODuaWFEQsklBhO+zntVJC+zyChrPvMgicM2aZPNrGfVcfd3B0Dhsu6u2A==
+X-Received: by 2002:ac2:5687:: with SMTP id 7mr7047702lfr.149.1604996385134;
+        Tue, 10 Nov 2020 00:19:45 -0800 (PST)
 Received: from localhost.localdomain (62-78-225-252.bb.dnainternet.fi. [62.78.225.252])
-        by smtp.gmail.com with ESMTPSA id l13sm2391057lje.45.2020.11.10.00.19.23
+        by smtp.gmail.com with ESMTPSA id t5sm2030280lfc.75.2020.11.10.00.19.44
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 10 Nov 2020 00:19:23 -0800 (PST)
-Date:   Tue, 10 Nov 2020 10:19:16 +0200
+        Tue, 10 Nov 2020 00:19:44 -0800 (PST)
+Date:   Tue, 10 Nov 2020 10:19:38 +0200
 From:   Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
 To:     mazziesaccount@gmail.com, matti.vaittinen@gmail.com
 Cc:     Liam Girdwood <lgirdwood@gmail.com>,
@@ -43,95 +43,89 @@ Cc:     Liam Girdwood <lgirdwood@gmail.com>,
         Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
         linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
         linux-power@fi.rohmeurope.com
-Subject: [RFC PATCH 0/3] regulator: bd718x7: support voltage scaling
-Message-ID: <cover.1604994184.git.matti.vaittinen@fi.rohmeurope.com>
+Subject: [RFC PATCH 1/3] dt-bindings: regulator: BD71837 support commonly
+ used feedback connection
+Message-ID: <9959924313db7c7165598604f9a07bf227f471a8.1604994184.git.matti.vaittinen@fi.rohmeurope.com>
+References: <cover.1604994184.git.matti.vaittinen@fi.rohmeurope.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <cover.1604994184.git.matti.vaittinen@fi.rohmeurope.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RFC for adding a support for typical voltage scaling connection
+The BD71837 buck output voltages are in a few cases scaled using external
+connection which adds a pull-up to regulator feedback pin. This connection
+will adjust output voltage from regulator in a deterministic way.
 
-In few occasions there has been a need to scale the voltage output
-from bucks on BD71837. Usually this is done when buck8 is used to
-power specific GPU which can utilize voltages down to 0.7V. As lowest
-the buck8 on BD71837 can go is 0.8V, and external connection is used to
-scale the voltages.
+Add support for describing this HW connection so that driver can adjust
+voltage ranges accordingly.
 
-The BD71837, BD71847 and BD71850 bucks can be adjusted by pulling up the
-feedback pin using suitable voltage/resistors.
+Signed-off-by: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+---
+ .../regulator/rohm,bd71837-regulator.yaml     | 48 +++++++++++++++++++
+ 1 file changed, 48 insertions(+)
 
-	|---------------|
-	|       buck 8  |-------+----->Vout
-	|               |       |
-	|---------------|       |
-	       |                |
-	       |                |
-	       +-------+--R2----+
-	               |
-	               R1
-	               |
-	       V FB-pull-up
-
-
-This will scale the voltage as follows:
- - Vout_o = Vo - (Vpu - Vo)*R2/R1
- - Linear_step = step_orig*(R1+R2)/R1
-where:
-Vout_o is adjusted voltage output at vsel reg value 0
-Vo is original voltage output at vsel reg value 0
-Vpu is the pull-up voltage V FB-pull-up in the picture
-R1 and R2 are resistor values.
-
-From HW point of view this does not need to be limited to buck 8. This
-connection can be used to adjust output from any of the bucks on
-BD71837/47/50.
-
-As this seems to be a 'de-facto' way to scale the voltages on BD71837 it
-might be a good idea to support computing the new voltage ranges for
-bucks based on the V-pull-up and resistor R1/R2 values given from
-device-tree. This allows describing the external HW connection using DT
-to correctly scale the voltages.
-
-This RFC uses "rohm,feedback-pull-up-r1-ohms" and
-"rohm,feedback-pull-up-r2-ohms" to provide the resistor values - but
-these names (without the picture) might not be too descriptive. I am
-grateful for all suggestions as better and more descriptive names.
-
-This patch series is an RFC because this connection feels somewhat
-"hacky". OTOH - when hack becomes widely used, it is less of an hack and
-more of a standard - and occasionally supporting HW hacks using SW may
-benefit us all, right? :)
-
-The other thing some projects do is allowing the change of BD71837 buck8
-voltages when buck8 is enabled. This however will introduce voltage
-spikes as buck8 was not originally designed for this. The specific HW
-platform must be evaluated to be able to tolerate these spikes. Thus
-this patch series does not support buck8 voltage changes when buck8 is
-enabled. I wonder if this should be allowed per some config option(?) I
-don't want to help people frying their boards... Opinions? Is there
-suggested way of allowing this type of features at own risk? Config or
-even Some #ifdef which is not listed in Kconfig? Device-tree property?
- If you have (good) suggestions I could add the optional (non default)
-DVS support for non DVS bucks on BD71837.
-
-
-Matti Vaittinen (3):
-  dt-bindings: regulator: BD71837 support commonly used feedback
-    connection
-  dt-bindings: regulator: BD71847 support commonly used feedback
-    connection
-  regulator: bd718x7: Support external connection to scale voltages
-
- .../regulator/rohm,bd71837-regulator.yaml     |  48 +++++
- .../regulator/rohm,bd71847-regulator.yaml     |  49 ++++++
- drivers/regulator/bd718x7-regulator.c         | 164 +++++++++++++++++-
- 3 files changed, 254 insertions(+), 7 deletions(-)
-
-
-base-commit: 3cea11cd5e3b00d91caf0b4730194039b45c5891
+diff --git a/Documentation/devicetree/bindings/regulator/rohm,bd71837-regulator.yaml b/Documentation/devicetree/bindings/regulator/rohm,bd71837-regulator.yaml
+index f5e31196a646..1941b36cf1ef 100644
+--- a/Documentation/devicetree/bindings/regulator/rohm,bd71837-regulator.yaml
++++ b/Documentation/devicetree/bindings/regulator/rohm,bd71837-regulator.yaml
+@@ -105,6 +105,54 @@ patternProperties:
+           PMIC hardware state machine.
+         type: boolean
+ 
++      # Setups where regulator (especially the buck8) output voltage is scaled
++      # by adding external connection where some other regulator output is
++      # connected to feedback-pin (over suitable resistors) is getting popular
++      # amongst users of BD71837. (This allows for example scaling down the
++      # buck8 voltages to suit lover GPU voltages for projects where buck8 is
++      # (ab)used to supply power for GPU.
++      #
++      # So we allow describing this external connection from DT and scale the
++      # voltages accordingly. This is what the connection should look like:
++      #
++      # |---------------|
++      # |       buck 8  |-------+----->Vout
++      # |               |       |
++      # |---------------|       |
++      #        |                |
++      #        |                |
++      #        +-------+--R2----+
++      #                |
++      #                R1
++      #                |
++      #        V FB-pull-up
++      #
++      # Here the buck output is sifted according to formula:
++      #
++      # Vout_o = Vo - (Vpu - Vo)*R2/R1
++      # Linear_step = step_orig*(R1+R2)/R1
++      #
++      # where:
++      # Vout_o is adjusted voltage output at vsel reg value 0
++      # Vo is original voltage output at vsel reg value 0
++      # Vpu is the pull-up voltage V FB-pull-up in the picture
++      # R1 and R2 are resistor values.
++
++      rohm,fb-pull-up-microvolt:
++        description:
++          Feedback-pin has pull-up connection to adjust voltage range. This is
++          the used pull-up voltage before R1.
++
++      rohm,feedback-pull-up-r1-ohms:
++        description:
++          Feedback-pin has pull-up connection to adjust voltage range. This is
++          the used R1 resistor.
++
++      rohm,feedback-pull-up-r2-ohms:
++        description:
++          Feedback-pin has pull-up connection to adjust voltage range. This is
++          the used R2 resistor.
++
+     required:
+       - regulator-name
+ 
 -- 
 2.21.3
 
