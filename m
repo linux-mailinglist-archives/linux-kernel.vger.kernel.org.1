@@ -2,83 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 136F72ADCC2
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 18:20:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 23B502ADCC4
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 18:20:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730232AbgKJRU3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 12:20:29 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43600 "EHLO mail.kernel.org"
+        id S1730681AbgKJRUq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 12:20:46 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43840 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726179AbgKJRU2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 12:20:28 -0500
-Received: from trantor (unknown [2.26.170.190])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1730468AbgKJRUp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Nov 2020 12:20:45 -0500
+Received: from mail-ot1-f43.google.com (mail-ot1-f43.google.com [209.85.210.43])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 89055206F1;
-        Tue, 10 Nov 2020 17:20:25 +0000 (UTC)
-Date:   Tue, 10 Nov 2020 17:20:23 +0000
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Ionela Voinescu <ionela.voinescu@arm.com>
-Cc:     mingo@redhat.com, peterz@infradead.org, vincent.guittot@linaro.org,
-        will@kernel.org, rjw@rjwysocki.net, viresh.kumar@linaro.org,
-        dietmar.eggemann@arm.com, qperret@google.com,
-        valentin.schneider@arm.com, linux-pm@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH RESEND v2 2/3] arm64: rebuild sched domains on invariance
- status changes
-Message-ID: <X6rL1zv/JuqOVBQu@trantor>
-References: <20201027180713.7642-1-ionela.voinescu@arm.com>
- <20201027180713.7642-3-ionela.voinescu@arm.com>
+        by mail.kernel.org (Postfix) with ESMTPSA id 64CD4207D3;
+        Tue, 10 Nov 2020 17:20:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605028844;
+        bh=CCTnDCAuuzm6mDIFcu8KCQsuUDMrKrxDKK90okxS4fk=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=Vr0EYzw3G94OIGuCW5pc5gp1CS6c8tExs5si/3znnJA8VirbiEzX7PVpZJR9FP0me
+         6te5OHu0md9FgCMdhGD8Ia7VTUDYBcvSMkW7ykIhwvYwW6DNMIxS2hSme8xiPvIzeY
+         h8Ft6t25keqfxhMIv34lD+CzZeyFrXpwLjrutDUg=
+Received: by mail-ot1-f43.google.com with SMTP id a15so11543775otf.5;
+        Tue, 10 Nov 2020 09:20:44 -0800 (PST)
+X-Gm-Message-State: AOAM530i/qsvWIpUebCUdfB8d3AK05MvtBJl+uyvgyqwsv1CUbjPtSaP
+        vQGBSzojVgfp8xkG+Jpw9Py3Xi18breqjklZLA==
+X-Google-Smtp-Source: ABdhPJxTW1zyuuGU0nYnE6jokSTkRx0L3GaMfd1E8nJiIRwJDoTnjiX+oRJAcTo4UeF55RMhc+xmv2NCRRQ3bMrB4kg=
+X-Received: by 2002:a9d:5e14:: with SMTP id d20mr13751749oti.107.1605028843571;
+ Tue, 10 Nov 2020 09:20:43 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201027180713.7642-3-ionela.voinescu@arm.com>
+References: <20201109104635.21116-1-laurentiu.tudor@nxp.com>
+ <20201109104635.21116-2-laurentiu.tudor@nxp.com> <20201109221123.GA1846668@bogus>
+In-Reply-To: <20201109221123.GA1846668@bogus>
+From:   Rob Herring <robh+dt@kernel.org>
+Date:   Tue, 10 Nov 2020 11:20:32 -0600
+X-Gmail-Original-Message-ID: <CAL_JsqJ2Ew6GdQmE0gcTgFX9cMZKtkL_rO1F+0EMNy88wF+gXw@mail.gmail.com>
+Message-ID: <CAL_JsqJ2Ew6GdQmE0gcTgFX9cMZKtkL_rO1F+0EMNy88wF+gXw@mail.gmail.com>
+Subject: Re: [PATCH v2 2/2] dt-bindings: misc: convert fsl, qoriq-mc from txt
+ to YAML
+To:     Laurentiu Tudor <laurentiu.tudor@nxp.com>
+Cc:     Ioana Ciornei <ioana.ciornei@nxp.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Yang-Leo Li <leoyang.li@nxp.com>,
+        David Miller <davem@davemloft.net>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        devicetree@vger.kernel.org,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Ionut-robert Aron <ionut-robert.aron@nxp.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 27, 2020 at 06:07:12PM +0000, Ionela Voinescu wrote:
-> Task scheduler behavior depends on frequency invariance (FI) support and
-> the resulting invariant load tracking signals. For example, in order to
-> make accurate predictions across CPUs for all performance states, Energy
-> Aware Scheduling (EAS) needs frequency-invariant load tracking signals
-> and therefore it has a direct dependency on FI. This dependency is known,
-> but EAS enablement is not yet conditioned on the presence of FI during
-> the built of the scheduling domain hierarchy.
-> 
-> Before this is done, the following must be considered: while
-> arch_scale_freq_invariant() will see changes in FI support and could
-> be used to condition the use of EAS, it could return different values
-> during system initialisation.
-> 
-> For arm64, such a scenario will happen for a system that does not support
-> cpufreq driven FI, but does support counter-driven FI. For such a system,
-> arch_scale_freq_invariant() will return false if called before counter
-> based FI initialisation, but change its status to true after it.
-> If EAS becomes explicitly dependent on FI this would affect the task
-> scheduler behavior which builds its scheduling domain hierarchy well
-> before the late counter-based FI init. During that process, EAS would be
-> disabled due to its dependency on FI.
-> 
-> Two points of future early calls to arch_scale_freq_invariant() which
-> would determine EAS enablement are:
->  - (1) drivers/base/arch_topology.c:126 <<update_topology_flags_workfn>>
-> 		rebuild_sched_domains();
->        This will happen after CPU capacity initialisation.
->  - (2) kernel/sched/cpufreq_schedutil.c:917 <<rebuild_sd_workfn>>
-> 		rebuild_sched_domains_energy();
-> 		-->rebuild_sched_domains();
->        This will happen during sched_cpufreq_governor_change() for the
->        schedutil cpufreq governor.
-> 
-> Therefore, before enforcing the presence of FI support for the use of EAS,
-> ensure the following: if there is a change in FI support status after
-> counter init, use the existing rebuild_sched_domains_energy() function to
-> trigger a rebuild of the scheduling and performance domains that in turn
-> will determine the enablement of EAS.
-> 
-> Signed-off-by: Ionela Voinescu <ionela.voinescu@arm.com>
-> Cc: Catalin Marinas <catalin.marinas@arm.com>
-> Cc: Will Deacon <will@kernel.org>
+On Mon, Nov 9, 2020 at 4:11 PM Rob Herring <robh@kernel.org> wrote:
+>
+> On Mon, 09 Nov 2020 12:46:35 +0200, Laurentiu Tudor wrote:
+> > From: Ionut-robert Aron <ionut-robert.aron@nxp.com>
+> >
+> > Convert fsl,qoriq-mc to YAML in order to automate the verification
+> > process of dts files. In addition, update MAINTAINERS accordingly
+> > and, while at it, add some missing files.
+> >
+> > Signed-off-by: Ionut-robert Aron <ionut-robert.aron@nxp.com>
+> > [laurentiu.tudor@nxp.com: update MINTAINERS, updates & fixes in schema]
+> > Signed-off-by: Laurentiu Tudor <laurentiu.tudor@nxp.com>
+> > ---
+> > Changes in v2:
+> >  - fixed errors reported by yamllint
+> >  - dropped multiple unnecessary quotes
+> >  - used schema instead of text in description
+> >  - added constraints on dpmac reg property
+> >
+> >  .../devicetree/bindings/misc/fsl,qoriq-mc.txt | 196 ----------------
+> >  .../bindings/misc/fsl,qoriq-mc.yaml           | 210 ++++++++++++++++++
+> >  .../ethernet/freescale/dpaa2/overview.rst     |   5 +-
+> >  MAINTAINERS                                   |   4 +-
+> >  4 files changed, 217 insertions(+), 198 deletions(-)
+> >  delete mode 100644 Documentation/devicetree/bindings/misc/fsl,qoriq-mc.txt
+> >  create mode 100644 Documentation/devicetree/bindings/misc/fsl,qoriq-mc.yaml
+> >
+>
+> Applied, thanks!
 
-Acked-by: Catalin Marinas <catalin.marinas@arm.com>
+And now dropped. This duplicates what's in commit 0dbcd4991719
+("dt-bindings: net: add the DPAA2 MAC DTS definition") and has
+warnings from it:
+
+/builds/robherring/linux-dt-bindings/Documentation/devicetree/bindings/misc/fsl,qoriq-mc.example.dt.yaml:
+dpmac@1: $nodename:0: 'dpmac@1' does not match '^ethernet(@.*)?$'
+ From schema: /builds/robherring/linux-dt-bindings/Documentation/devicetree/bindings/net/fsl,qoriq-mc-dpmac.yaml
+
+Rob
