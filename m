@@ -2,106 +2,232 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDD662ACB82
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 04:10:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FB3C2ACB88
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 04:12:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730460AbgKJDKd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 22:10:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40110 "EHLO
+        id S1730664AbgKJDMu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 22:12:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40454 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728607AbgKJDKd (ORCPT
+        with ESMTP id S1729454AbgKJDMs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 22:10:33 -0500
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CE8FC0613CF
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Nov 2020 19:10:33 -0800 (PST)
-Received: by mail-pg1-x544.google.com with SMTP id w4so8895571pgg.13
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Nov 2020 19:10:33 -0800 (PST)
+        Mon, 9 Nov 2020 22:12:48 -0500
+Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBBBBC0613D6
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Nov 2020 19:12:46 -0800 (PST)
+Received: by mail-ej1-x643.google.com with SMTP id oq3so15359460ejb.7
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Nov 2020 19:12:46 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=KlEMtRRnho5R/oyJ91jqGRJUyzsYfbjHE3I8y8AmGbY=;
-        b=R9EijyKWLRbgDkV06Ti/5mY8HOQ6susqJloDOVCXIqcYpJ5pb7SPWMpqTcgVWIVS5r
-         UiWNh/k9/+E8/5FvOJc5/z01kkQXtzYtvo34o/4wSuS14FkmgIttf4P8P51S7wPytvTS
-         5B66HUz6Mu3iZsXyOCgw3HOm4eH0CCd4a6HCYOPQim/YG48Q9J2GvppV+acfVBsj2I+n
-         qEn/5duGPZYda8iUehkSKlqVH8gb6oxgUD0TIuYpwuflNL+sFFjEq8RYaStSNbgWxyWf
-         Rfb8TgiWxwR4PAcKDy7UXYv2O0tWoo2fhiZMf9o29JfklOxBeWfqWY/mi6EqSdgIBNWZ
-         nvTw==
+        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=xzmJsWC6dWZQj1XvWO6xJYEz8vIsIxpieR4F7Jap3XY=;
+        b=dxZP5LurjoMY+67L6FJnXmxEHoYPw16qhZAeOyWG1ERPn886+jasIPgXr/LCZ57Mps
+         Isrxb9tNDyGDxpGtiHj+f3ObDkYNk1lcDzVOMJTkdsVyy69uePT5mT6b2prUhBEMf024
+         ZNmPI5b/9pt22TjuKOK87RYl1qeaY7H7dDPx+F1W5i84695rG+cWGjtTREBoaZu3K95S
+         /h81TSnDH8J9EozxG6K23XEfvG23QiG3MgIk3K6fv0sLD6LIA7YnvdtHeZPAxNUjFgoo
+         yrIRf9S9ue3GKiGjICrWDc7M+Yo0DoY1r1tx6/iSYoWEd/TIccktxDGww6KuTXOg4gR2
+         nwfQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=KlEMtRRnho5R/oyJ91jqGRJUyzsYfbjHE3I8y8AmGbY=;
-        b=aFep6Sy4DfwfK+53JFINZ61hE4q8HEG3s38vku/o1ULUU1QZs3nxKq5d0IB2aDTacE
-         Anyci2cjCSHlx/wDhLTHm9aYX5/8OoPS5hFMxCBUYOZXmVdNSUz6A2kgLIp0pHcgWEqa
-         SWXteF8fswuj1Fhtja+6AEeQHb/k6v7CLPWb823HCB+6kcRTXJXlsPBWdRlAtHD5aHvv
-         fn8fmAvAASHmNCDfx3fNoh7fDemU5oPGR3xrGhQZ0H6tnNJ4sD/cY0f8WZYpw6LPGQz+
-         lVYQC8+v72f/FXa/7Yq75Zdc0+sKnKQZYIn9c5uIIhTnYHpAiDKmX2nBB/+Lrp9Q9LWO
-         5K3Q==
-X-Gm-Message-State: AOAM530ZxQKvf9W1EAIE1Zgr3EQluJNoKZOu9s5Ge1PmjGgYTuCxPRyj
-        4DqsRW9D9gaRBz9E9M/UNuR7QA==
-X-Google-Smtp-Source: ABdhPJzMwdYeC7bP7dbpCG3uH9hlZ//GTpy7Fpt+Z4ZQZ5rEo1kP/4pXtYH8kMPqENENg+OpZFmrWA==
-X-Received: by 2002:a17:90a:80c6:: with SMTP id k6mr2547448pjw.73.1604977832879;
-        Mon, 09 Nov 2020 19:10:32 -0800 (PST)
-Received: from Smcdef-MBP.local.net ([61.120.150.78])
-        by smtp.gmail.com with ESMTPSA id i11sm12116305pfd.211.2020.11.09.19.10.24
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 09 Nov 2020 19:10:32 -0800 (PST)
-From:   Muchun Song <songmuchun@bytedance.com>
-To:     hannes@cmpxchg.org, mhocko@kernel.org, vdavydov.dev@gmail.com,
-        akpm@linux-foundation.org, cl@linux.com, penberg@kernel.org,
-        rientjes@google.com, iamjoonsoo.kim@lge.com, shakeelb@google.com,
-        guro@fb.com, vbabka@suse.cz, laoar.shao@gmail.com,
-        songmuchun@bytedance.com, chris@chrisdown.name
-Cc:     linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-        linux-mm@kvack.org
-Subject: [PATCH v2] mm: memcg/slab: Fix root memcg vmstats
-Date:   Tue, 10 Nov 2020 11:10:15 +0800
-Message-Id: <20201110031015.15715-1-songmuchun@bytedance.com>
-X-Mailer: git-send-email 2.21.0 (Apple Git-122)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=xzmJsWC6dWZQj1XvWO6xJYEz8vIsIxpieR4F7Jap3XY=;
+        b=oqjjtGJ2RIDwm2sAgI8FhJq20g9x3GZhoQV7NaLC0q0UdwfGk9fOL+R0R2M4WTaE+m
+         H6P16zIOAeLpqcbC316ttmepTPMRVEihpr3zfnQhIcOyDqaK+8/HbOj4zm4dG7NaLPxP
+         Gt1rAgBwK0elIQ/5oXxBDVPaXmmHEdTf9FyqZZfjoegRHpsylCvX2QMdAnTeHCIqg9Rf
+         GQjRQak6T9EscsV0M+2mK0OlrwrYSoOvVrOZr2NSSPIB5LMJ2XA0g3GMRrBWs90Z+wxK
+         PgZqW6LWTHqvA2xSWn1JzPI4sn/OmlJW62zjET9drC4QEuM4dZgWdsXB6XO64jrQ+F+9
+         8dqA==
+X-Gm-Message-State: AOAM532Elis/Qrysm9Ar4fRiyEVVlRqvf9ARpj1JZHxK44VUxu7fnrAN
+        t7l2cgZNlYcpipeZ6EeHL0jhUKJ6KjmmLeZt+g6r
+X-Google-Smtp-Source: ABdhPJwwIF3MO5LzJ511u4gGvvNF5oo9ZS75tqCLNPpgISHowPuMkNw8MRxvsVJXmkkSV3eBigJKDIMAg0vIkBWE8KU=
+X-Received: by 2002:a17:906:c096:: with SMTP id f22mr17581308ejz.488.1604977965148;
+ Mon, 09 Nov 2020 19:12:45 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20201106155626.3395468-1-lokeshgidra@google.com> <20201106155626.3395468-4-lokeshgidra@google.com>
+In-Reply-To: <20201106155626.3395468-4-lokeshgidra@google.com>
+From:   Paul Moore <paul@paul-moore.com>
+Date:   Mon, 9 Nov 2020 22:12:33 -0500
+Message-ID: <CAHC9VhRsaE5vhcSMr5nYzrHrM6Pc5-JUErNfntsRrPjKQNALxw@mail.gmail.com>
+Subject: Re: [PATCH v12 3/4] selinux: teach SELinux about anonymous inodes
+To:     Lokesh Gidra <lokeshgidra@google.com>
+Cc:     Andrea Arcangeli <aarcange@redhat.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        James Morris <jmorris@namei.org>,
+        Stephen Smalley <stephen.smalley.work@gmail.com>,
+        Casey Schaufler <casey@schaufler-ca.com>,
+        Eric Biggers <ebiggers@kernel.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Eric Paris <eparis@parisplace.org>,
+        Daniel Colascione <dancol@dancol.org>,
+        Kees Cook <keescook@chromium.org>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        KP Singh <kpsingh@google.com>,
+        David Howells <dhowells@redhat.com>,
+        Thomas Cedeno <thomascedeno@google.com>,
+        Anders Roxell <anders.roxell@linaro.org>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Matthew Garrett <matthewgarrett@google.com>,
+        Aaron Goidel <acgoide@tycho.nsa.gov>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
+        YueHaibing <yuehaibing@huawei.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Alexey Budankov <alexey.budankov@linux.intel.com>,
+        Adrian Reber <areber@redhat.com>,
+        Aleksa Sarai <cyphar@cyphar.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-security-module@vger.kernel.org, selinux@vger.kernel.org,
+        kaleshsingh@google.com, calin@google.com, surenb@google.com,
+        nnk@google.com, jeffv@google.com, kernel-team@android.com,
+        linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
+        hch@infradead.org, Daniel Colascione <dancol@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If we reparent the slab objects to the root memcg, when we free
-the slab object, we need to update the per-memcg vmstats to keep
-it correct for the root memcg. Now this at least affects the vmstat
-of NR_KERNEL_STACK_KB for !CONFIG_VMAP_STACK when the thread stack
-size is smaller than the PAGE_SIZE.
+On Fri, Nov 6, 2020 at 10:56 AM Lokesh Gidra <lokeshgidra@google.com> wrote:
+>
+> From: Daniel Colascione <dancol@google.com>
+>
+> This change uses the anon_inodes and LSM infrastructure introduced in
+> the previous patches to give SELinux the ability to control
+> anonymous-inode files that are created using the new
+> anon_inode_getfd_secure() function.
+>
+> A SELinux policy author detects and controls these anonymous inodes by
+> adding a name-based type_transition rule that assigns a new security
+> type to anonymous-inode files created in some domain. The name used
+> for the name-based transition is the name associated with the
+> anonymous inode for file listings --- e.g., "[userfaultfd]" or
+> "[perf_event]".
+>
+> Example:
+>
+> type uffd_t;
+> type_transition sysadm_t sysadm_t : anon_inode uffd_t "[userfaultfd]";
+> allow sysadm_t uffd_t:anon_inode { create };
+>
+> (The next patch in this series is necessary for making userfaultfd
+> support this new interface.  The example above is just
+> for exposition.)
+>
+> Signed-off-by: Daniel Colascione <dancol@google.com>
+> Signed-off-by: Lokesh Gidra <lokeshgidra@google.com>
+> ---
+>  security/selinux/hooks.c            | 53 +++++++++++++++++++++++++++++
+>  security/selinux/include/classmap.h |  2 ++
+>  2 files changed, 55 insertions(+)
+>
+> diff --git a/security/selinux/hooks.c b/security/selinux/hooks.c
+> index 6b1826fc3658..1c0adcdce7a8 100644
+> --- a/security/selinux/hooks.c
+> +++ b/security/selinux/hooks.c
+> @@ -2927,6 +2927,58 @@ static int selinux_inode_init_security(struct inode *inode, struct inode *dir,
+>         return 0;
+>  }
+>
+> +static int selinux_inode_init_security_anon(struct inode *inode,
+> +                                           const struct qstr *name,
+> +                                           const struct inode *context_inode)
+> +{
+> +       const struct task_security_struct *tsec = selinux_cred(current_cred());
+> +       struct common_audit_data ad;
+> +       struct inode_security_struct *isec;
+> +       int rc;
+> +
+> +       if (unlikely(!selinux_initialized(&selinux_state)))
+> +               return 0;
+> +
+> +       isec = selinux_inode(inode);
+> +
+> +       /*
+> +        * We only get here once per ephemeral inode.  The inode has
+> +        * been initialized via inode_alloc_security but is otherwise
+> +        * untouched.
+> +        */
+> +
+> +       if (context_inode) {
+> +               struct inode_security_struct *context_isec =
+> +                       selinux_inode(context_inode);
+> +               isec->sclass = context_isec->sclass;
+> +               isec->sid = context_isec->sid;
 
-Fixes: ec9f02384f60 ("mm: workingset: fix vmstat counters for shadow nodes")
-Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-Acked-by: Roman Gushchin <guro@fb.com>
----
- v1->v2:
- - Just resend the patch.
+I suppose this isn't a major concern given the limited usage at the
+moment, but I wonder if it would be a good idea to make sure the
+context_inode's SELinux label is valid before we assign it to the
+anonymous inode?  If it is invalid, what should we do?  Do we attempt
+to (re)validate it?  Do we simply fallback to the transition approach?
 
- mm/memcontrol.c | 9 +++++++--
- 1 file changed, 7 insertions(+), 2 deletions(-)
+> +       } else {
+> +               isec->sclass = SECCLASS_ANON_INODE;
+> +               rc = security_transition_sid(
+> +                       &selinux_state, tsec->sid, tsec->sid,
+> +                       isec->sclass, name, &isec->sid);
+> +               if (rc)
+> +                       return rc;
+> +       }
+> +
+> +       isec->initialized = LABEL_INITIALIZED;
+> +
+> +       /*
+> +        * Now that we've initialized security, check whether we're
+> +        * allowed to actually create this type of anonymous inode.
+> +        */
+> +
+> +       ad.type = LSM_AUDIT_DATA_INODE;
+> +       ad.u.inode = inode;
+> +
+> +       return avc_has_perm(&selinux_state,
+> +                           tsec->sid,
+> +                           isec->sid,
+> +                           isec->sclass,
+> +                           FILE__CREATE,
 
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index 2dde734df7d1..bbd40c5af61e 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -875,8 +875,13 @@ void __mod_lruvec_kmem_state(void *p, enum node_stat_item idx, int val)
- 	rcu_read_lock();
- 	memcg = mem_cgroup_from_obj(p);
- 
--	/* Untracked pages have no memcg, no lruvec. Update only the node */
--	if (!memcg || memcg == root_mem_cgroup) {
-+	/*
-+	 * Untracked pages have no memcg, no lruvec. Update only the
-+	 * node. If we reparent the slab objects to the root memcg,
-+	 * when we free the slab object, we need to update the per-memcg
-+	 * vmstats to keep it correct for the root memcg.
-+	 */
-+	if (!memcg) {
- 		__mod_node_page_state(pgdat, idx, val);
- 	} else {
- 		lruvec = mem_cgroup_lruvec(memcg, pgdat);
+I believe you want to use ANON_INODE__CREATE here instead of FILE__CREATE, yes?
+
+This brings up another question, and requirement - what testing are
+you doing for this patchset?  We require that new SELinux kernel
+functionality includes additions to the SELinux test suite to help
+verify the functionality.  I'm also *strongly* encouraging that new
+contributions come with updates to The SELinux Notebook.  If you are
+unsure about what to do for either, let us know and we can help get
+you started.
+
+* https://github.com/SELinuxProject/selinux-testsuite
+* https://github.com/SELinuxProject/selinux-notebook
+
+> +                           &ad);
+> +}
+> +
+>  static int selinux_inode_create(struct inode *dir, struct dentry *dentry, umode_t mode)
+>  {
+>         return may_create(dir, dentry, SECCLASS_FILE);
+> @@ -6992,6 +7044,7 @@ static struct security_hook_list selinux_hooks[] __lsm_ro_after_init = {
+>
+>         LSM_HOOK_INIT(inode_free_security, selinux_inode_free_security),
+>         LSM_HOOK_INIT(inode_init_security, selinux_inode_init_security),
+> +       LSM_HOOK_INIT(inode_init_security_anon, selinux_inode_init_security_anon),
+>         LSM_HOOK_INIT(inode_create, selinux_inode_create),
+>         LSM_HOOK_INIT(inode_link, selinux_inode_link),
+>         LSM_HOOK_INIT(inode_unlink, selinux_inode_unlink),
+> diff --git a/security/selinux/include/classmap.h b/security/selinux/include/classmap.h
+> index 40cebde62856..ba2e01a6955c 100644
+> --- a/security/selinux/include/classmap.h
+> +++ b/security/selinux/include/classmap.h
+> @@ -249,6 +249,8 @@ struct security_class_mapping secclass_map[] = {
+>           {"open", "cpu", "kernel", "tracepoint", "read", "write"} },
+>         { "lockdown",
+>           { "integrity", "confidentiality", NULL } },
+> +       { "anon_inode",
+> +         { COMMON_FILE_PERMS, NULL } },
+>         { NULL }
+>    };
+>
+
 -- 
-2.20.1
-
+paul moore
+www.paul-moore.com
