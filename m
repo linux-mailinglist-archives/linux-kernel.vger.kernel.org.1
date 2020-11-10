@@ -2,152 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8488E2ACB3D
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 03:42:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 235EF2ACB42
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 03:47:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731095AbgKJCmi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 21:42:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35790 "EHLO
+        id S1729777AbgKJCr1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 21:47:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36532 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730730AbgKJCmh (ORCPT
+        with ESMTP id S1729336AbgKJCr1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 21:42:37 -0500
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15584C0613D3
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Nov 2020 18:42:37 -0800 (PST)
-Received: by mail-pg1-x544.google.com with SMTP id 62so8836946pgg.12
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Nov 2020 18:42:37 -0800 (PST)
+        Mon, 9 Nov 2020 21:47:27 -0500
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10AD8C0613D3
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Nov 2020 18:47:27 -0800 (PST)
+Received: by mail-pl1-x641.google.com with SMTP id u2so5712349pls.10
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Nov 2020 18:47:26 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=hq04zVLRq/Oo2lQxylxZrXiKhYhzc6TfqjzZNoQvjuk=;
-        b=ua6CPMSivTkkMuhvjWiNRV2yogS0EvNQ/UC0Pjr/Rn5HdVis2pUSXYfVeL9vf1oxGT
-         hCNvfo5Pw164JaLBYdyTMn1I9vyMaw4CPDyGyAAQQEmu/3yS7Cl6BXwukr/Oa/jpVg9f
-         xhB6NeRSUW88dI30uqJwvQecdGD9os2f37RZrOP4CyYParHPpPokLNqLROUP1qzRpHRW
-         4Xz8hpE/LNMIS/HQqYUbDPSdHz1qHlN5p2bGS/YrOUZ6cg67gUs+3EKEhbwgT8oVzbU8
-         ObNl0hMOtWmdMLMkZLRkQVtNMbVPLUqFFhotzABsvrZyXICxjp4vW8Sa6WBblNtpCDzE
-         Y8mw==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=6UuLx7prIHda8827z12iEWkf6vSvIP09lTJVmS5Ox0Q=;
+        b=Kw2B6lykWnSw7p5AV07ZJWL2A+cDzPdUYe9FzX/Us+etFHFI/T/T661fzpgfpmkB23
+         L0s3IqzWxMuEpLtG2nf6epBUGvBgNQslbrwL/xWnLHM+dK3GSDrF8rS8Ot0Oc564aJVq
+         519Wx4Vc34QuvNNgwC7LCzTeN+G1UMlAKa5NF+0slmhYZh6HLDYjufjEZVDPLlIGIQQe
+         VLqdYK/5TswL8tpPoztGNjJ6kb5bI+IoagL3MAll0zOwQtq40+uQ1lh3Pd4g/04WfzRU
+         Ijgf2QTBUMV3h0wJsQ3ydF/lb4a7N9BHcoTppT3suDT0Hqj+oetpijIKCSsBuOfIKIVK
+         ZH/g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=hq04zVLRq/Oo2lQxylxZrXiKhYhzc6TfqjzZNoQvjuk=;
-        b=OFAxI8QQK6pgblbP0leNXTUhU2AWVwbTkNVFh6oPNdnoPjzAaZPWSewk3yTuRLl9g9
-         SKBG9ovY6CFDMSDPIN35znxC2o61C48SPkpPndXExUK9zHT+XJC0klFeb0lxn7RyyjLC
-         W54NI4Vc3wadryYWy0rOC52s86R+6P6forWcMvkeUN4e7jzmEEXytpZxXqWt4ShHeD+k
-         eeFyo3cBmHjBGFML2r+lyqEYlwNQxESS8P8D/HBoq0UVqUJXpUlVgouNwKD618MVv+JY
-         gIrJlQpHOcu+H4YzVKUyHjLgI1EvsBT7IY/aC4ONch7T/rGC+KhsM7SLp5hbprEeFVuY
-         WGEA==
-X-Gm-Message-State: AOAM532IvsUk1uDgCrkvK3XHc/2ONoGNjV95yeTD4zcdNyk46yNcWPFA
-        GO4gw/UaJfELsvJFojy4DxjJ4AdYqsUF7kKiMgicKQ==
-X-Google-Smtp-Source: ABdhPJyrTFLtNejVARR0imvWvzZUIFnztiWYySVLVHRuSDfEWqoJITi1D9tdjXQtR+JXPvE8VQ2dZhviAg5bSaDPVbg=
-X-Received: by 2002:a17:90a:4749:: with SMTP id y9mr2531336pjg.229.1604976156656;
- Mon, 09 Nov 2020 18:42:36 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=6UuLx7prIHda8827z12iEWkf6vSvIP09lTJVmS5Ox0Q=;
+        b=Yi2BJh9bW2shoC4VOmruQGnP+/Nf+bFOBZ76lLITB15vsOCDGTghyceG17j95m/1na
+         Po2Ii5j1zX7NBU1MbTgr+vA4FEddV8OBzmHWXG4BvzCd37XnaFXShtLmDf1qTJ3tG+aX
+         FUm3UPg4NQlshZ9zONBp0b+DUpoJeOoPLfJU9L2hw5eEpHh4LlIMOdQzqLRUY+xuiLxM
+         FGXPgtKJQ1UOc2z/ei0aDGgs86UiL9ZSRFgdSKh52xEZHbuGscQikH2h80frZwQjWfbj
+         7lJzACFM+EE+HrCTayevp1suiPWYNQF38EJMZHC0svpAb0tDk2cGNzvKccGDXXiZ6Yjp
+         DYAg==
+X-Gm-Message-State: AOAM530SzMV+GHjCBDNPOHAdl9fSCX+ZmOBxaXGTY+jru2Jt2mt8SzW9
+        15EWA4PxKt+Cj96atSPqDLH2qE5MeP1DDw==
+X-Google-Smtp-Source: ABdhPJxrMfhkgS5xHKwvNJHFu2FRs4gK6JPlC1peRayhgiaY1blEDcAwRDcyQi3TKu5oxZkNxe3KuQ==
+X-Received: by 2002:a17:902:d309:b029:d7:cc2d:1ee7 with SMTP id b9-20020a170902d309b02900d7cc2d1ee7mr1676854plc.10.1604976446323;
+        Mon, 09 Nov 2020 18:47:26 -0800 (PST)
+Received: from localhost ([122.172.12.172])
+        by smtp.gmail.com with ESMTPSA id i11sm12461961pfq.156.2020.11.09.18.47.25
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 09 Nov 2020 18:47:25 -0800 (PST)
+Date:   Tue, 10 Nov 2020 08:17:23 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>
+Cc:     Linux PM <linux-pm@vger.kernel.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Zhang Rui <rui.zhang@intel.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Doug Smythies <dsmythies@telus.net>
+Subject: Re: [PATCH v2 3/4] cpufreq: Add strict_target to struct
+ cpufreq_policy
+Message-ID: <20201110024723.a5ouawbgj5ftyfe4@vireshk-i7>
+References: <13269660.K2JYd4sGFX@kreacher>
+ <2826323.52ZM0ncLkd@kreacher>
 MIME-Version: 1.0
-References: <20201108141113.65450-1-songmuchun@bytedance.com>
- <20201108141113.65450-5-songmuchun@bytedance.com> <20201109164825.GA17356@linux>
-In-Reply-To: <20201109164825.GA17356@linux>
-From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Tue, 10 Nov 2020 10:42:00 +0800
-Message-ID: <CAMZfGtWxNV874j9io_xcsVm+C6_shrZCw=W9ugJzxrnBpXb_Mw@mail.gmail.com>
-Subject: Re: [External] Re: [PATCH v3 04/21] mm/hugetlb: Introduce
- nr_free_vmemmap_pages in the struct hstate
-To:     Oscar Salvador <osalvador@suse.de>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Thomas Gleixner <tglx@linutronix.de>, mingo@redhat.com,
-        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
-        dave.hansen@linux.intel.com, luto@kernel.org,
-        Peter Zijlstra <peterz@infradead.org>, viro@zeniv.linux.org.uk,
-        Andrew Morton <akpm@linux-foundation.org>, paulmck@kernel.org,
-        mchehab+huawei@kernel.org, pawan.kumar.gupta@linux.intel.com,
-        Randy Dunlap <rdunlap@infradead.org>, oneukum@suse.com,
-        anshuman.khandual@arm.com, jroedel@suse.de,
-        Mina Almasry <almasrymina@google.com>,
-        David Rientjes <rientjes@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Xiongchun duan <duanxiongchun@bytedance.com>,
-        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2826323.52ZM0ncLkd@kreacher>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 10, 2020 at 12:48 AM Oscar Salvador <osalvador@suse.de> wrote:
->
-> On Sun, Nov 08, 2020 at 10:10:56PM +0800, Muchun Song wrote:
-> > +#ifdef CONFIG_HUGETLB_PAGE_FREE_VMEMMAP
-> > +/*
-> > + * There are 512 struct page structs(8 pages) associated with each 2MB
-> > + * hugetlb page. For tail pages, the value of compound_dtor is the same.
-> I gess you meant "For tail pages, the value of compound_head ...", right?
+On 09-11-20, 17:53, Rafael J. Wysocki wrote:
+> From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> 
+> Add a new field to be set when the CPUFREQ_GOV_FLAG_STRICT_TARGET
+> flag is set for the current governor to struct cpufreq_policy, so
+> that the drivers needing to check CPUFREQ_GOV_FLAG_STRICT_TARGET do
+> not have to access the governor object during every frequency
+> transition.
+> 
+> Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> ---
+>  drivers/cpufreq/cpufreq.c |    2 ++
+>  include/linux/cpufreq.h   |    6 ++++++
+>  2 files changed, 8 insertions(+)
+> 
+> Index: linux-pm/drivers/cpufreq/cpufreq.c
+> ===================================================================
+> --- linux-pm.orig/drivers/cpufreq/cpufreq.c
+> +++ linux-pm/drivers/cpufreq/cpufreq.c
+> @@ -2280,6 +2280,8 @@ static int cpufreq_init_governor(struct
+>  		}
+>  	}
+>  
+> +	policy->strict_target = !!(policy->governor->flags & CPUFREQ_GOV_FLAG_STRICT_TARGET);
+> +
+>  	return 0;
+>  }
+>  
+> Index: linux-pm/include/linux/cpufreq.h
+> ===================================================================
+> --- linux-pm.orig/include/linux/cpufreq.h
+> +++ linux-pm/include/linux/cpufreq.h
+> @@ -109,6 +109,12 @@ struct cpufreq_policy {
+>  	bool			fast_switch_enabled;
+>  
+>  	/*
+> +	 * Set if the CPUFREQ_GOV_FLAG_STRICT_TARGET flag is set for the
+> +	 * current governor.
+> +	 */
+> +	bool			strict_target;
+> +
+> +	/*
+>  	 * Preferred average time interval between consecutive invocations of
+>  	 * the driver to set the frequency for this policy.  To be set by the
+>  	 * scaling driver (0, which is the default, means no preference).
 
-Yeah, Thanks.
+I was kind of hoping to avoid adding a field here when I proposed updating the
+gov structure. I do understand the performance related penalty of accessing the
+gov structure for fast switch case though and so wonder if we really need this,
+then should we avoid changing the gov structure at all ? I mean there is only
+one user of that field now, do we really need a flag for it ? We can just do the
+string comparison here with powersave and performance to set strict_target.
 
->
-> > + * So we can reuse first page of tail page structs. We map the virtual
-> > + * addresses of the remaining 6 pages of tail page structs to the first
-> > + * tail page struct, and then free these 6 pages. Therefore, we need to
-> > + * reserve at least 2 pages as vmemmap areas.
-> > + */
-> > +#define RESERVE_VMEMMAP_NR   2U
-> > +
-> > +static void __init hugetlb_vmemmap_init(struct hstate *h)
-> > +{
-> > +     unsigned int order = huge_page_order(h);
-> > +     unsigned int vmemmap_pages;
-> > +
-> > +     vmemmap_pages = ((1 << order) * sizeof(struct page)) >> PAGE_SHIFT;
-> > +     /*
-> > +      * The head page and the first tail page not free to buddy system,
->
-> "The head page and the first tail page are not to be freed to..." better?
+Whatever you feel is better though.
 
-Yeah, sorry for my poor English :).
-
->
->
-> > +      * the others page will map to the first tail page. So there are
-> > +      * (@vmemmap_pages - RESERVE_VMEMMAP_NR) pages can be freed.
->                                                       ^^^
->                                                       that
->
-> > +     else
-> > +             h->nr_free_vmemmap_pages = 0;
->
-> I would specify that this is not expected to happen.
-> (At least I could not come up with a real scenario unless the system is
-> corrupted)
-> So, I would drop a brief comment pointing out that it is only a safety
-> net.
-
-I will add a comment to point out this.
-
->
->
-> Unrelated to this patch but related in general, I am not sure about Mike but
-> would it be cleaner to move all the vmemmap functions to hugetlb_vmemmap.c?
-> hugetlb code is quite tricky, so I am not sure about stuffing more code
-> in there.
->
-
-I also think that you are right, moving all the vmemmap functions to
-hugetlb_vmemmap.c may make the code cleaner.
-
-Hi Mike, what's your opinion?
-
-Thanks.
-
-> --
-> Oscar Salvador
-> SUSE L3
-
-
+Acked-by: Viresh Kumar <viresh.kumar@linaro.org>
 
 -- 
-Yours,
-Muchun
+viresh
