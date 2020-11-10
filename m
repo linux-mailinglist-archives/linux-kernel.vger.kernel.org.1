@@ -2,106 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2CE12ACA09
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 02:07:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8AE252AC9F4
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 02:01:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731019AbgKJBHu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 20:07:50 -0500
-Received: from mgw-01.mpynet.fi ([82.197.21.90]:52812 "EHLO mgw-01.mpynet.fi"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727311AbgKJBHt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 20:07:49 -0500
-Received: from pps.filterd (mgw-01.mpynet.fi [127.0.0.1])
-        by mgw-01.mpynet.fi (8.16.0.42/8.16.0.42) with SMTP id 0AA0nlLx095899;
-        Tue, 10 Nov 2020 02:49:47 +0200
-Received: from ex13.tuxera.com (ex13.tuxera.com [178.16.184.72])
-        by mgw-01.mpynet.fi with ESMTP id 34qdcc03t0-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Tue, 10 Nov 2020 02:49:46 +0200
-Received: from tuxera-exch.ad.tuxera.com (10.20.48.11) by
- tuxera-exch.ad.tuxera.com (10.20.48.11) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Tue, 10 Nov 2020 02:49:46 +0200
-Received: from tuxera-exch.ad.tuxera.com ([fe80::552a:f9f0:68c3:d789]) by
- tuxera-exch.ad.tuxera.com ([fe80::552a:f9f0:68c3:d789%12]) with mapi id
- 15.00.1497.006; Tue, 10 Nov 2020 02:49:46 +0200
-From:   Anton Altaparmakov <anton@tuxera.com>
-To:     Andrew Morton <akpm@linux-foundation.org>
-CC:     "linux-ntfs-dev@lists.sourceforge.net" 
-        <linux-ntfs-dev@lists.sourceforge.net>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Alex Shi <alex.shi@linux.alibaba.com>
-Subject: Re: [PATCH] fs/ntfs: remove unused varibles
-Thread-Topic: [PATCH] fs/ntfs: remove unused varibles
-Thread-Index: AQHWtaIm1teE4V4Bh0iArr/N5UYoyqnAafiA
-Date:   Tue, 10 Nov 2020 00:49:45 +0000
-Message-ID: <D70B90D4-F07D-4B20-ABBF-10A8F9833E9C@tuxera.com>
-References: <1604821092-54631-1-git-send-email-alex.shi@linux.alibaba.com>
-In-Reply-To: <1604821092-54631-1-git-send-email-alex.shi@linux.alibaba.com>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-messagesentrepresentingtype: 1
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [109.154.241.250]
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <E71A9607C268FC43A7DF0DA176E08E81@ex13.tuxera.com>
-Content-Transfer-Encoding: base64
+        id S1730689AbgKJBBX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 20:01:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48446 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729454AbgKJBBW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 20:01:22 -0500
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53E4CC0613CF
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Nov 2020 17:01:21 -0800 (PST)
+Received: by mail-pf1-x444.google.com with SMTP id a18so9659733pfl.3
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Nov 2020 17:01:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=cHCi4Tquwss85wqRJ3mOu6UhLZdJZsJlvCLd0/Ck3sY=;
+        b=jBKACBVfmaUdYHvuEx8v7Eh2gyHv8AYshuUUBc0bMOj77JWMsjTKTXCuaHTp2otRF5
+         2SxhlwXt9zAAr8oH+4+5/ozSWE+rRS8cyBGUQzYv3BocGy4mxbuc/86qiHh1xOeuABpx
+         PVBnmJJKgY8bvVxQekXsMfKgXV/H9mv3yROs0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=cHCi4Tquwss85wqRJ3mOu6UhLZdJZsJlvCLd0/Ck3sY=;
+        b=hUL1LOP4oIo5PZSMIEpmxRcv4+OyXN9x3vck3pEBMvqWlW97XEUHL+Vx7rLJ+wgjys
+         t+Hiv5765/9kpF7olsF4KiQUZLZqLsJeCLAieBw8/T++BpeKdVdDmpbbuEy54HbpDo9Q
+         Vm/0NvTMlrUJ7TrHhwByd+DSzzANQbqE+Q+MtZmTL9KDj+KSomZspD6wuqs+thZfRWQr
+         cHgcnTlAba3sM2HMxwh3CIFtGou6PESYGhmznW5wmX1/Jr0vbHcfmhDRYMmnakuSEWxL
+         gMYiLmEpgSXnUYtzYiqdLO5/qSiigyLqC7zUuCG4aLTodoHe3Sh7X/6Jwx0UXAvutjp4
+         3aTQ==
+X-Gm-Message-State: AOAM532bCMpcAEYJpnxmE5Pnaih1M3K771w479J2NyYacr1MO7/lqIsK
+        ZZM66CUUuRYd4PzL95jPD066cn5WTiVFhA==
+X-Google-Smtp-Source: ABdhPJxUqY2gGHGRfsunj8lilTT95dFw0XRxavx7ePhqQwfi/Gzf/CQvlyeDCZebkTFKY5ET7ItzEw==
+X-Received: by 2002:a62:17c8:0:b029:18b:5a97:a8d1 with SMTP id 191-20020a6217c80000b029018b5a97a8d1mr15856003pfx.15.1604970080793;
+        Mon, 09 Nov 2020 17:01:20 -0800 (PST)
+Received: from tictac2.mtv.corp.google.com ([2620:15c:202:1:42b0:34ff:fe3d:58e6])
+        by smtp.gmail.com with ESMTPSA id u197sm7283233pfc.127.2020.11.09.17.01.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 09 Nov 2020 17:01:20 -0800 (PST)
+From:   Douglas Anderson <dianders@chromium.org>
+To:     Thierry Reding <thierry.reding@gmail.com>,
+        Sam Ravnborg <sam@ravnborg.org>
+Cc:     David Airlie <airlied@linux.ie>, dri-devel@lists.freedesktop.org,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Rob Herring <robh+dt@kernel.org>, robdclark@chromium.org,
+        Douglas Anderson <dianders@chromium.org>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v4 1/5] drm: panel: simple: Fixup the struct panel_desc kernel doc
+Date:   Mon,  9 Nov 2020 17:00:55 -0800
+Message-Id: <20201109170018.v4.1.Icaa86f0a4ca45a9a7184da4bc63386b29792d613@changeid>
+X-Mailer: git-send-email 2.29.2.222.g5d2a92d10f8-goog
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-11-09_15:2020-11-05,2020-11-09 signatures=0
-X-Proofpoint-Spam-Details: rule=mpy_notspam policy=mpy score=0 spamscore=0 mlxscore=0 phishscore=0
- bulkscore=0 suspectscore=0 mlxlogscore=916 adultscore=0 malwarescore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2011100004
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGksDQoNCkFuZHJldywgcGxlYXNlIGNhbiB5b3UgbWVyZ2UgdGhpcz8gIFRoYW5rcyBhIGxvdCBp
-biBhZHZhbmNlIQ0KDQpBbGV4LCB0aGFuayB5b3UgZm9yIHRoZSBwYXRjaCENCg0KQmVzdCByZWdh
-cmRzLA0KDQoJQW50b24NCg0KPiBPbiA4IE5vdiAyMDIwLCBhdCAwNzozOCwgQWxleCBTaGkgPGFs
-ZXguc2hpQGxpbnV4LmFsaWJhYmEuY29tPiB3cm90ZToNCj4gDQo+IFdlIGFjdHVhbGx5IGRvbid0
-IHVzZSB0aGVzZSB2YXJpYmxlcywgc28gcmVtb3ZlIHRoZW0gdG8gYXZvaWQgZ2NjIHdhcm5pbmc6
-DQo+IGZzL250ZnMvZmlsZS5jOjMyNjoxNDogd2FybmluZzogdmFyaWFibGUg4oCYYmFzZV9uaeKA
-mSBzZXQgYnV0IG5vdCB1c2VkDQo+IFstV3VudXNlZC1idXQtc2V0LXZhcmlhYmxlXQ0KPiBmcy9u
-dGZzL2xvZ2ZpbGUuYzo0ODE6MjE6IHdhcm5pbmc6IHZhcmlhYmxlIOKAmGxvZ19wYWdlX21hc2vi
-gJkgc2V0IGJ1dCBub3QNCj4gdXNlZCBbLVd1bnVzZWQtYnV0LXNldC12YXJpYWJsZV0NCj4gDQo+
-IFNpZ25lZC1vZmYtYnk6IEFsZXggU2hpIDxhbGV4LnNoaUBsaW51eC5hbGliYWJhLmNvbT4NCj4g
-QWNrZWQtYnk6IEFudG9uIEFsdGFwYXJtYWtvdiA8YW50b25AdHV4ZXJhLmNvbT4gDQo+IENjOiBs
-aW51eC1udGZzLWRldkBsaXN0cy5zb3VyY2Vmb3JnZS5uZXQgDQo+IENjOiBsaW51eC1rZXJuZWxA
-dmdlci5rZXJuZWwub3JnIA0KPiAtLS0NCj4gZnMvbnRmcy9maWxlLmMgICAgfCA1ICstLS0tDQo+
-IGZzL250ZnMvbG9nZmlsZS5jIHwgMyArLS0NCj4gMiBmaWxlcyBjaGFuZ2VkLCAyIGluc2VydGlv
-bnMoKyksIDYgZGVsZXRpb25zKC0pDQo+IA0KPiBkaWZmIC0tZ2l0IGEvZnMvbnRmcy9maWxlLmMg
-Yi9mcy9udGZzL2ZpbGUuYw0KPiBpbmRleCBmNDI5NjdiNzM4ZWIuLmU1YWFiMjY1ZGZmMSAxMDA2
-NDQNCj4gLS0tIGEvZnMvbnRmcy9maWxlLmMNCj4gKysrIGIvZnMvbnRmcy9maWxlLmMNCj4gQEAg
-LTMyMyw3ICszMjMsNyBAQCBzdGF0aWMgc3NpemVfdCBudGZzX3ByZXBhcmVfZmlsZV9mb3Jfd3Jp
-dGUoc3RydWN0IGtpb2NiICppb2NiLA0KPiAJdW5zaWduZWQgbG9uZyBmbGFnczsNCj4gCXN0cnVj
-dCBmaWxlICpmaWxlID0gaW9jYi0+a2lfZmlscDsNCj4gCXN0cnVjdCBpbm9kZSAqdmkgPSBmaWxl
-X2lub2RlKGZpbGUpOw0KPiAtCW50ZnNfaW5vZGUgKmJhc2VfbmksICpuaSA9IE5URlNfSSh2aSk7
-DQo+ICsJbnRmc19pbm9kZSAqbmkgPSBOVEZTX0kodmkpOw0KPiAJbnRmc192b2x1bWUgKnZvbCA9
-IG5pLT52b2w7DQo+IA0KPiAJbnRmc19kZWJ1ZygiRW50ZXJpbmcgZm9yIGlfaW5vIDB4JWx4LCBh
-dHRyaWJ1dGUgdHlwZSAweCV4LCBwb3MgIg0KPiBAQCAtMzY1LDkgKzM2NSw2IEBAIHN0YXRpYyBz
-c2l6ZV90IG50ZnNfcHJlcGFyZV9maWxlX2Zvcl93cml0ZShzdHJ1Y3Qga2lvY2IgKmlvY2IsDQo+
-IAkJZXJyID0gLUVPUE5PVFNVUFA7DQo+IAkJZ290byBvdXQ7DQo+IAl9DQo+IC0JYmFzZV9uaSA9
-IG5pOw0KPiAtCWlmIChOSW5vQXR0cihuaSkpDQo+IC0JCWJhc2VfbmkgPSBuaS0+ZXh0LmJhc2Vf
-bnRmc19pbm87DQo+IAllcnIgPSBmaWxlX3JlbW92ZV9wcml2cyhmaWxlKTsNCj4gCWlmICh1bmxp
-a2VseShlcnIpKQ0KPiAJCWdvdG8gb3V0Ow0KPiBkaWZmIC0tZ2l0IGEvZnMvbnRmcy9sb2dmaWxl
-LmMgYi9mcy9udGZzL2xvZ2ZpbGUuYw0KPiBpbmRleCBhMGM0MGYxYmU3YWMuLmJjMWJmMjE3YjM4
-ZSAxMDA2NDQNCj4gLS0tIGEvZnMvbnRmcy9sb2dmaWxlLmMNCj4gKysrIGIvZnMvbnRmcy9sb2dm
-aWxlLmMNCj4gQEAgLTQ3OCw3ICs0NzgsNyBAQCBib29sIG50ZnNfY2hlY2tfbG9nZmlsZShzdHJ1
-Y3QgaW5vZGUgKmxvZ192aSwgUkVTVEFSVF9QQUdFX0hFQURFUiAqKnJwKQ0KPiAJdTggKmthZGRy
-ID0gTlVMTDsNCj4gCVJFU1RBUlRfUEFHRV9IRUFERVIgKnJzdHIxX3BoID0gTlVMTDsNCj4gCVJF
-U1RBUlRfUEFHRV9IRUFERVIgKnJzdHIyX3BoID0gTlVMTDsNCj4gLQlpbnQgbG9nX3BhZ2Vfc2l6
-ZSwgbG9nX3BhZ2VfbWFzaywgZXJyOw0KPiArCWludCBsb2dfcGFnZV9zaXplLCBlcnI7DQo+IAli
-b29sIGxvZ2ZpbGVfaXNfZW1wdHkgPSB0cnVlOw0KPiAJdTggbG9nX3BhZ2VfYml0czsNCj4gDQo+
-IEBAIC01MDEsNyArNTAxLDYgQEAgYm9vbCBudGZzX2NoZWNrX2xvZ2ZpbGUoc3RydWN0IGlub2Rl
-ICpsb2dfdmksIFJFU1RBUlRfUEFHRV9IRUFERVIgKipycCkNCj4gCQlsb2dfcGFnZV9zaXplID0g
-RGVmYXVsdExvZ1BhZ2VTaXplOw0KPiAJZWxzZQ0KPiAJCWxvZ19wYWdlX3NpemUgPSBQQUdFX1NJ
-WkU7DQo+IC0JbG9nX3BhZ2VfbWFzayA9IGxvZ19wYWdlX3NpemUgLSAxOw0KPiAJLyoNCj4gCSAq
-IFVzZSBudGZzX2ZmcygpIGluc3RlYWQgb2YgZmZzKCkgdG8gZW5hYmxlIHRoZSBjb21waWxlciB0
-bw0KPiAJICogb3B0aW1pemUgbG9nX3BhZ2Vfc2l6ZSBhbmQgbG9nX3BhZ2VfYml0cyBpbnRvIGNv
-bnN0YW50cy4NCj4gLS0gDQo+IDEuOC4zLjENCj4gDQoNCg0KLS0gDQpBbnRvbiBBbHRhcGFybWFr
-b3YgPGFudG9uIGF0IHR1eGVyYS5jb20+IChyZXBsYWNlIGF0IHdpdGggQCkNCkxlYWQgaW4gRmls
-ZSBTeXN0ZW0gRGV2ZWxvcG1lbnQsIFR1eGVyYSBJbmMuLCBodHRwOi8vd3d3LnR1eGVyYS5jb20v
-DQpMaW51eCBOVEZTIG1haW50YWluZXINCg0K
+When I run:
+  scripts/kernel-doc -rst drivers/gpu/drm/panel/panel-simple.c
+
+I see that several of the kernel-doc entries aren't showing up because
+they don't specify the full path down the hierarchy.  Let's fix that
+and also move to inline kernel docs.
+
+Signed-off-by: Douglas Anderson <dianders@chromium.org>
+---
+
+Changes in v4:
+- ("drm: panel: simple: Fixup the struct panel_desc kernel doc") new for v4.
+
+ drivers/gpu/drm/panel/panel-simple.c | 59 ++++++++++++++++++++--------
+ 1 file changed, 42 insertions(+), 17 deletions(-)
+
+diff --git a/drivers/gpu/drm/panel/panel-simple.c b/drivers/gpu/drm/panel/panel-simple.c
+index 597f676a6591..813c90274631 100644
+--- a/drivers/gpu/drm/panel/panel-simple.c
++++ b/drivers/gpu/drm/panel/panel-simple.c
+@@ -64,33 +64,58 @@ struct panel_desc {
+ 
+ 	unsigned int bpc;
+ 
+-	/**
+-	 * @width: width (in millimeters) of the panel's active display area
+-	 * @height: height (in millimeters) of the panel's active display area
+-	 */
+ 	struct {
++		/**
++		 * @size.width: Width (in mm) of the active display area.
++		 */
+ 		unsigned int width;
++
++		/**
++		 * @size.height: Height (in mm) of the active display area.
++		 */
+ 		unsigned int height;
+ 	} size;
+ 
+-	/**
+-	 * @prepare: the time (in milliseconds) that it takes for the panel to
+-	 *           become ready and start receiving video data
+-	 * @hpd_absent_delay: Add this to the prepare delay if we know Hot
+-	 *                    Plug Detect isn't used.
+-	 * @enable: the time (in milliseconds) that it takes for the panel to
+-	 *          display the first valid frame after starting to receive
+-	 *          video data
+-	 * @disable: the time (in milliseconds) that it takes for the panel to
+-	 *           turn the display off (no content is visible)
+-	 * @unprepare: the time (in milliseconds) that it takes for the panel
+-	 *             to power itself down completely
+-	 */
+ 	struct {
++		/**
++		 * @delay.prepare: Time for the panel to become ready.
++		 *
++		 * The time (in milliseconds) that it takes for the panel to
++		 * become ready and start receiving video data
++		 */
+ 		unsigned int prepare;
++
++		/**
++		 * @delay.hpd_absent_delay: Time to wait if HPD isn't hooked up.
++		 *
++		 * Add this to the prepare delay if we know Hot Plug Detect
++		 * isn't used.
++		 */
+ 		unsigned int hpd_absent_delay;
++
++		/**
++		 * @delay.enable: Time for the panel to display a valid frame.
++		 *
++		 * The time (in milliseconds) that it takes for the panel to
++		 * display the first valid frame after starting to receive
++		 * video data.
++		 */
+ 		unsigned int enable;
++
++		/**
++		 * @delay.disable: Time for the panel to turn the display off.
++		 *
++		 * The time (in milliseconds) that it takes for the panel to
++		 * turn the display off (no content is visible).
++		 */
+ 		unsigned int disable;
++
++		/**
++		 * @delay.unprepare: Time to power down completely.
++		 *
++		 * The time (in milliseconds) that it takes for the panel
++		 * to power itself down completely.
++		 */
+ 		unsigned int unprepare;
+ 	} delay;
+ 
+-- 
+2.29.2.222.g5d2a92d10f8-goog
+
