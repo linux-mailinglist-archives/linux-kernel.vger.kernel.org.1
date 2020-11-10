@@ -2,80 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F8C12AE162
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 22:13:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D2342AE166
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 22:13:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731649AbgKJVNE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 16:13:04 -0500
-Received: from bilbo.ozlabs.org ([203.11.71.1]:60475 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727275AbgKJVNC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 16:13:02 -0500
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CW0vH3kygz9s0b;
-        Wed, 11 Nov 2020 08:12:59 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1605042779;
-        bh=sqPUYH7dd9Iyds0ql3EubkQqUtQJ/UtFyeEmU/huRUI=;
-        h=Date:From:To:Cc:Subject:From;
-        b=k+yjf09pMZbFeBpsUA1txnyc9vInR/YdDC5ScmYfy1/ko3N9o3O5Df5wUEkPkkY2r
-         YnGyN0oZ/DTO9LqWCODg/LIBCy1D05dR6XWmYlRaRBIJlfsqxgPAved6btcco0aq67
-         5ziflbdWvdWkIn1h4s5VjmdPQY+2nJLGgQDpjxDjw6tJS/3PedDVELbTfI3SK+Q4rS
-         Z6IHzW02jVrD22+9vSTyThsJjwycp9NauPrAxIKMpCVwv6d+M8o9jaGSemmzXgqLdy
-         ejemE9w7UawXSDFFKHVwNiIHwAD01HtAmHPjIJkdQRvyerJFxthLi3D1+cOX/SNsT/
-         XcvHpVHOJqQOw==
-Date:   Wed, 11 Nov 2020 08:12:57 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Kalle Valo <kvalo@codeaurora.org>,
-        Wireless <linux-wireless@vger.kernel.org>
-Cc:     Avraham Stern <avraham.stern@intel.com>,
-        Johannes Berg <johannes.berg@intel.com>,
-        Luca Coelho <luciano.coelho@intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: Signed-off-by missing for commit in the
- wireless-drivers tree
-Message-ID: <20201111081257.30418470@canb.auug.org.au>
+        id S1731696AbgKJVNx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 16:13:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39244 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726179AbgKJVNw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Nov 2020 16:13:52 -0500
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3C9EC0613D1;
+        Tue, 10 Nov 2020 13:13:51 -0800 (PST)
+Received: by mail-wm1-x343.google.com with SMTP id d142so4614033wmd.4;
+        Tue, 10 Nov 2020 13:13:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=EvrNTGyzPLrpMkOqbiu0tJDut5rWtaLyxK55CmagbKo=;
+        b=XJPgOv25JZ76wIWvv1r7+oeadXAOemvtCAKknFD8PbF8CojgPH/YzIY5iCoKqSjEww
+         AO4kIyk9jonsdRnRubyCundPh31KWp8SLxnwL3rfWk50qXDRSStPoQSRVPaJt3VjTtAc
+         RkmwIFwDI9S67f0iHFRZZez9aACymlUzkEQq9kGB+nLZNpw+AWrNpkTwlqgOdIfUgpSK
+         gkGo+sSBHdlxsL3xNPa5qubtI2kjE+HQOYmjEJE0Uyz1t3XP5XvvWLPRyY4GDrSIGuK4
+         4Sun/7yYBZAs7vXGGfTTwTHS8r5GIaltZ0gA/fYx/LkrwB0vi0f1lwnRiAtGhYQDckl2
+         ITjw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=EvrNTGyzPLrpMkOqbiu0tJDut5rWtaLyxK55CmagbKo=;
+        b=byuPBnzhfug5G14ymLQg9N24QG0WELoeznmpUchQZ0QZjkOshP+8C751AoPgxNwjQR
+         oznA+OrbQVWGVgVQbU9PYNblOy+YHB5j+84z9cLGt8Bv4p9/8N2V7cMzm4ADsHS5FZzS
+         mIonZOSPraWdwWao7zFP+etRe+iUMXDgny5OIlIJ72DcyGPJwvBFTyeuIzBNkUPlavGv
+         h/Eb8g2/sPcqmSltsGjOqJ1UScFGgSTLx3wQkDcEg5wrwCR2iT3FnfBdrYs9xo8EgbgO
+         q72QGoa1BiOSUewv13RfrRqmoGr1BQkcH0E9S6lNmkacH8pODMjNikMTPc/RaNUINxt3
+         39yw==
+X-Gm-Message-State: AOAM532ZOba0+kOmZ2OTfaPtzGTfv6DpvWU8EiL+X9qs8Sf5vvCK0qUq
+        PqYuY5x6/kMoPbsZNoW5ibUcjB0qgkW1O86h+iw=
+X-Google-Smtp-Source: ABdhPJyHC8vHXsJYCh3vrnV2nELM9iSabVZOSi99vn/Wo7V70lIbQoE1qv+uHNKxSVF66X7FRUYqQDwa+xjr5OZdkGI=
+X-Received: by 2002:a1c:80cb:: with SMTP id b194mr27049wmd.73.1605042830518;
+ Tue, 10 Nov 2020 13:13:50 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/vzn4ewVMJ5LxThH.l=Ihuve";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+References: <20201105144517.1826692-1-lee.jones@linaro.org> <20201105144517.1826692-8-lee.jones@linaro.org>
+In-Reply-To: <20201105144517.1826692-8-lee.jones@linaro.org>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Tue, 10 Nov 2020 16:13:39 -0500
+Message-ID: <CADnq5_MGxcgXN-bbXVi4BidW7oa+qW8g9fOPuH2-1gSNWOW5jw@mail.gmail.com>
+Subject: Re: [PATCH 07/19] gpu: drm: scheduler: sched_entity: Demote
+ non-conformant kernel-doc headers
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     David Airlie <airlied@linux.ie>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Maling list - DRI developers 
+        <dri-devel@lists.freedesktop.org>,
+        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
+        <linaro-mm-sig@lists.linaro.org>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        linux-media <linux-media@vger.kernel.org>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        Nirmoy Das <nirmoy.aiemd@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/vzn4ewVMJ5LxThH.l=Ihuve
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Thu, Nov 5, 2020 at 9:52 AM Lee Jones <lee.jones@linaro.org> wrote:
+>
+> Fixes the following W=3D1 kernel build warning(s):
+>
+>  drivers/gpu/drm/scheduler/sched_entity.c:316: warning: Function paramete=
+r or member 'f' not described in 'drm_sched_entity_clear_dep'
+>  drivers/gpu/drm/scheduler/sched_entity.c:316: warning: Function paramete=
+r or member 'cb' not described in 'drm_sched_entity_clear_dep'
+>  drivers/gpu/drm/scheduler/sched_entity.c:330: warning: Function paramete=
+r or member 'f' not described in 'drm_sched_entity_wakeup'
+>  drivers/gpu/drm/scheduler/sched_entity.c:330: warning: Function paramete=
+r or member 'cb' not described in 'drm_sched_entity_wakeup'
+>
+> Cc: David Airlie <airlied@linux.ie>
+> Cc: Daniel Vetter <daniel@ffwll.ch>
+> Cc: Sumit Semwal <sumit.semwal@linaro.org>
+> Cc: "Christian K=C3=B6nig" <christian.koenig@amd.com>
+> Cc: Alex Deucher <alexander.deucher@amd.com>
+> Cc: Nirmoy Das <nirmoy.aiemd@gmail.com>
+> Cc: dri-devel@lists.freedesktop.org
+> Cc: linux-media@vger.kernel.org
+> Cc: linaro-mm-sig@lists.linaro.org
+> Signed-off-by: Lee Jones <lee.jones@linaro.org>
 
-Hi all,
+Applied.  Thanks!
 
-Commit
+Alex
 
-  97cc16943f23 ("iwlwifi: mvm: write queue_sync_state only for sync")
-
-is missing a Signed-off-by from its author.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/vzn4ewVMJ5LxThH.l=Ihuve
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl+rAlkACgkQAVBC80lX
-0Gz9BAf/U+w1IMbizJotCIWGahTuoqE/J5kzYiFSEXG2qyZZde9rwNVU6c5DZ0uM
-cSf4F8VlT9dPikB9LiRCtov+4NPWplBfPXx8KxJe+7HEbu/tNbdVGEvm2Db1rhDl
-3wQkMGUwrhNlHjJIPL7qq7anH425NS7UQS7+ye6mbN8XOj6yYSfN9jKaSW5hbRIK
-Zj+9KEWPARx3cTZK759Gqfi+MZoalTH1Fd+TV9Pep+JAsYc9tpyAy7RlojpUkSn1
-y43jAKTAz+I7VcaUdst28mBuDOs2S4+cT3E5Ufybedl4gg84xH+saus1H88P/aIH
-L8s8TqUnrolRZ8XP6Cm74rsd75T5OQ==
-=ug87
------END PGP SIGNATURE-----
-
---Sig_/vzn4ewVMJ5LxThH.l=Ihuve--
+> ---
+>  drivers/gpu/drm/scheduler/sched_entity.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/scheduler/sched_entity.c b/drivers/gpu/drm/s=
+cheduler/sched_entity.c
+> index f8ec277a6aa85..c1ac3e4003c6f 100644
+> --- a/drivers/gpu/drm/scheduler/sched_entity.c
+> +++ b/drivers/gpu/drm/scheduler/sched_entity.c
+> @@ -308,7 +308,7 @@ void drm_sched_entity_destroy(struct drm_sched_entity=
+ *entity)
+>  }
+>  EXPORT_SYMBOL(drm_sched_entity_destroy);
+>
+> -/**
+> +/*
+>   * drm_sched_entity_clear_dep - callback to clear the entities dependenc=
+y
+>   */
+>  static void drm_sched_entity_clear_dep(struct dma_fence *f,
+> @@ -321,7 +321,7 @@ static void drm_sched_entity_clear_dep(struct dma_fen=
+ce *f,
+>         dma_fence_put(f);
+>  }
+>
+> -/**
+> +/*
+>   * drm_sched_entity_clear_dep - callback to clear the entities dependenc=
+y and
+>   * wake up scheduler
+>   */
+> --
+> 2.25.1
+>
+> _______________________________________________
+> dri-devel mailing list
+> dri-devel@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/dri-devel
