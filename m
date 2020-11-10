@@ -2,58 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA0542AE03F
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 20:54:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D5DA72AE041
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 20:54:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731753AbgKJTyk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 14:54:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55164 "EHLO
+        id S1731861AbgKJTyq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 14:54:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55172 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731613AbgKJTyi (ORCPT
+        with ESMTP id S1731750AbgKJTyk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 14:54:38 -0500
-Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A723C0613D6
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 11:54:38 -0800 (PST)
-Received: by mail-io1-xd43.google.com with SMTP id u19so15617831ion.3
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 11:54:38 -0800 (PST)
+        Tue, 10 Nov 2020 14:54:40 -0500
+Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6E36C0613D1
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 11:54:39 -0800 (PST)
+Received: by mail-il1-x143.google.com with SMTP id p10so13353924ile.3
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 11:54:39 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linuxfoundation.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=vJU5BF5XUBg+xDNSMiAC8MnJi+PijhO7PLpt5hzre/4=;
-        b=hWBEx6QME80sNP6u2IId4qFwe/A0iEcMW1hZC+POySD/V3cvoUOaZYvmHrKB0jNVWY
-         IQTbrE+m8h45Pq4a7q068aD8d7YTati8uMJ8yS3sQ3lvHMlB7hQjf7DbXdnpxfJqV5yG
-         eGvkPB5rvJmRABPLqNQkNHU6iiCQasGEIl+DQ=
+        bh=1WgRvfWZtIIbrhN4z2kTeTI9w1lTyQBygp9mXnGSOPw=;
+        b=fQcnAiHqDU4asvdCyGxe/c74Z+/7MqBn2bxanHqg4iEeEvgh91DSuLSL7iR0T0lEba
+         r69nOhJpmYaOuxEsryAiy4xjqRStmJSG2mQFKVCiUxfNAB2HptWnfzfSA+l+/ATzVUZ2
+         fDP7kFu/WXK3uGhsWlL5EKMLTJs5z/fqbyMio=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=vJU5BF5XUBg+xDNSMiAC8MnJi+PijhO7PLpt5hzre/4=;
-        b=m61Wg5yLXecgQf43lf3FgBmkHMjdY9yPZ+5cWxvL9Dmmpe2DJoKlMZ1ieNf+C5sP8u
-         6sg8PKfVMTi/Ic8n0fSnSw+XqnW51u+io4bYFn3e1J/3Kth2ZL/NF7/h/JgxZj4BsrbU
-         m9wP1NaPEucIkPSK6iY8vyT+PpUW9MbcJIXM5ZiDiB8sbtUGRvB4DoqXlbW3nQaG59Z7
-         chJf/ySZFWHDg1LrH/OoC28bT1ho6rt4k1C4WbW/OZFNMCWn/Rx2Wo61qVwsPaH2cV4b
-         ULsFG5hM0s2Yuwp916vitJwoKDTI9tveQLu0h1vJaC5I2BFPtDfwtFRAcDpCqXskBlMf
-         rwjg==
-X-Gm-Message-State: AOAM5319GY9S6JQ4cq60DzBx1/sCA/kznFReCnpgQsH6R1A1gGSKYzfq
-        LWed5BVSWOmrfmM0mbNFlABwVNKS/ZB/Lg==
-X-Google-Smtp-Source: ABdhPJxZq4Mqy2gKrCi1yrxiEmOjXBXpfjvBZnB9eJy+Qq21MyWJG4bCHboxEnZ4sQP9xK2EedVD5Q==
-X-Received: by 2002:a02:c884:: with SMTP id m4mr7112536jao.43.1605038077545;
-        Tue, 10 Nov 2020 11:54:37 -0800 (PST)
+        bh=1WgRvfWZtIIbrhN4z2kTeTI9w1lTyQBygp9mXnGSOPw=;
+        b=ApFzmsjRhQfmFgb460IfYveISsaUS2WZuReJcaNv2PdQkahtyljSJCOYq9kOPYVsph
+         cGtZb56HrdiURNqYa/fZ9VLpQhlRPdsEc8yE2Y9NlhG0WEu8AQukKjgLJQh3GvFMSt+y
+         6vApwOo0Oe4uZVopr/6+DB4A9qELbaG4lnbcY0f9UZIxJBk99SmUBCu6agvEO3/LeVx6
+         zGI7qM0GNVs0sqfJ5zCiJlDqNRLTL/m74QN/iPIwk5SLxMziFEHqDFMoczwgKp9ljWmR
+         yKogEkgSdqKk2RQ8jT2F4J17rwIzQ3XIeqzToblqOQTpVXC1MksjwJwEAWt1bapQrqr8
+         LiFg==
+X-Gm-Message-State: AOAM533hN2U5G3KmC2PTlfC9Fh/yEHspOioX2MTJ+gbnxYmXwG3wn4e7
+        gqPy2FgFG+XmE3oEU5Md9H2xqg==
+X-Google-Smtp-Source: ABdhPJw5QuHvqaFsf7o+OfJ/3Ulft+Hl7LLa5nNr5JuhZCQpbh/LI3JCNeA6xtgYeUkb8UR9mXgfQA==
+X-Received: by 2002:a92:dc07:: with SMTP id t7mr8015890iln.189.1605038079086;
+        Tue, 10 Nov 2020 11:54:39 -0800 (PST)
 Received: from shuah-t480s.internal (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id o14sm123971ilg.71.2020.11.10.11.54.36
+        by smtp.gmail.com with ESMTPSA id o14sm123971ilg.71.2020.11.10.11.54.38
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 10 Nov 2020 11:54:37 -0800 (PST)
+        Tue, 10 Nov 2020 11:54:38 -0800 (PST)
 From:   Shuah Khan <skhan@linuxfoundation.org>
-To:     rafael@kernel.org, james.morse@arm.com, tony.luck@intel.com,
-        bp@alien8.de, gregkh@linuxfoundation.org, keescook@chromium.org,
-        peterz@infradead.org
-Cc:     Shuah Khan <skhan@linuxfoundation.org>, linux-acpi@vger.kernel.org,
+To:     gregkh@linuxfoundation.org, rafael@kernel.org,
+        keescook@chromium.org, peterz@infradead.org
+Cc:     Shuah Khan <skhan@linuxfoundation.org>,
         linux-kernel@vger.kernel.org
-Subject: [PATCH 04/13] drivers/acpi/apei: convert seqno to seqnum_ops
-Date:   Tue, 10 Nov 2020 12:53:30 -0700
-Message-Id: <59277751de83120741466b56beaefd75652c4de0.1605027593.git.skhan@linuxfoundation.org>
+Subject: [PATCH 05/13] drivers/base/test/test_async_driver_probe: convert to use seqnum_ops
+Date:   Tue, 10 Nov 2020 12:53:31 -0700
+Message-Id: <afefc59cff147c1e85196447d349df5a8b3000b0.1605027593.git.skhan@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <cover.1605027593.git.skhan@linuxfoundation.org>
 References: <cover.1605027593.git.skhan@linuxfoundation.org>
@@ -71,51 +70,99 @@ seqnum32 variables wrap around to INT_MIN when it overflows and
 should not be used to guard resource lifetimes, device usage and
 open counts that control state changes, and pm states.
 
-seqno is a sequence number counter for logging. This counter gets
-incremented. Unsure if there is a chance of this overflowing. It
-doesn't look like overflowing causes any problems since it is used
-to tag the log messages and nothing more. This conversion doesn't
-change the overflow wrap around behavior.
+atomic_t variables used to count errors, warns, keep track of timeout,
+and async completion are counters.
 
-Convert it to use seqnum_ops. This conversion replaces inc_return()
-with _inc() followed by _read().
+Unsure overflow is a concern for timeout and async completion, and there
+are no checks for overflow to hold them to upper bounds. Overflow and
+wrap around doesn't impact errors, and warns.
+
+Convert them to use seqnum32 and init counters to 0. This conversion
+doesn't change the overflow wrap around behavior.
 
 Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
 ---
- drivers/acpi/apei/ghes.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ drivers/base/test/test_async_driver_probe.c | 26 +++++++++++++--------
+ 1 file changed, 16 insertions(+), 10 deletions(-)
 
-diff --git a/drivers/acpi/apei/ghes.c b/drivers/acpi/apei/ghes.c
-index fce7ade2aba9..aa91998ce6f4 100644
---- a/drivers/acpi/apei/ghes.c
-+++ b/drivers/acpi/apei/ghes.c
-@@ -41,6 +41,7 @@
- #include <linux/uuid.h>
- #include <linux/ras.h>
- #include <linux/task_work.h>
+diff --git a/drivers/base/test/test_async_driver_probe.c b/drivers/base/test/test_async_driver_probe.c
+index 3bb7beb127a9..1886f79ec252 100644
+--- a/drivers/base/test/test_async_driver_probe.c
++++ b/drivers/base/test/test_async_driver_probe.c
+@@ -14,11 +14,15 @@
+ #include <linux/numa.h>
+ #include <linux/nodemask.h>
+ #include <linux/topology.h>
 +#include <linux/seqnum_ops.h>
  
- #include <acpi/actbl1.h>
- #include <acpi/ghes.h>
-@@ -625,7 +626,7 @@ static void __ghes_print_estatus(const char *pfx,
- 				 const struct acpi_hest_generic *generic,
- 				 const struct acpi_hest_generic_status *estatus)
- {
--	static atomic_t seqno;
-+	static struct seqnum32 seqno = SEQNUM_INIT(0);
- 	unsigned int curr_seqno;
- 	char pfx_seq[64];
+ #define TEST_PROBE_DELAY	(5 * 1000)	/* 5 sec */
+ #define TEST_PROBE_THRESHOLD	(TEST_PROBE_DELAY / 2)
  
-@@ -636,7 +637,8 @@ static void __ghes_print_estatus(const char *pfx,
- 		else
- 			pfx = KERN_ERR;
+-static atomic_t warnings, errors, timeout, async_completed;
++static struct seqnum32 warnings = SEQNUM_INIT(0);
++static struct seqnum32 errors = SEQNUM_INIT(0);
++static struct seqnum32 timeout = SEQNUM_INIT(0);
++static struct seqnum32 async_completed = SEQNUM_INIT(0);
+ 
+ static int test_probe(struct platform_device *pdev)
+ {
+@@ -29,9 +33,9 @@ static int test_probe(struct platform_device *pdev)
+ 	 * have then report it as an error, otherwise we wil sleep for the
+ 	 * required amount of time and then report completion.
+ 	 */
+-	if (atomic_read(&timeout)) {
++	if (seqnum32_read(&timeout)) {
+ 		dev_err(dev, "async probe took too long\n");
+-		atomic_inc(&errors);
++		seqnum32_inc(&errors);
+ 	} else {
+ 		dev_dbg(&pdev->dev, "sleeping for %d msecs in probe\n",
+ 			 TEST_PROBE_DELAY);
+@@ -48,10 +52,10 @@ static int test_probe(struct platform_device *pdev)
+ 		    dev_to_node(dev) != numa_node_id()) {
+ 			dev_warn(dev, "NUMA node mismatch %d != %d\n",
+ 				 dev_to_node(dev), numa_node_id());
+-			atomic_inc(&warnings);
++			seqnum32_inc(&warnings);
+ 		}
+ 
+-		atomic_inc(&async_completed);
++		seqnum32_inc(&async_completed);
  	}
--	curr_seqno = atomic_inc_return(&seqno);
-+	seqnum32_inc(&seqno);
-+	curr_seqno = seqnum32_read(&seqno);
- 	snprintf(pfx_seq, sizeof(pfx_seq), "%s{%u}" HW_ERR, pfx, curr_seqno);
- 	printk("%s""Hardware error from APEI Generic Hardware Error Source: %d\n",
- 	       pfx_seq, generic->header.source_id);
+ 
+ 	return 0;
+@@ -244,11 +248,12 @@ static int __init test_async_probe_init(void)
+ 	 * Otherwise if they completed without errors or warnings then
+ 	 * report successful completion.
+ 	 */
+-	if (atomic_read(&async_completed) != async_id) {
++	if (seqnum32_read(&async_completed) != async_id) {
+ 		pr_err("async events still pending, forcing timeout\n");
+-		atomic_inc(&timeout);
++		seqnum32_inc(&timeout);
+ 		err = -ETIMEDOUT;
+-	} else if (!atomic_read(&errors) && !atomic_read(&warnings)) {
++	} else if (!seqnum32_read(&errors) &&
++		   !seqnum32_read(&warnings)) {
+ 		pr_info("completed successfully\n");
+ 		return 0;
+ 	}
+@@ -271,12 +276,13 @@ static int __init test_async_probe_init(void)
+ 	 * errors or warnings being reported by the probe routine.
+ 	 */
+ 	if (err)
+-		atomic_inc(&errors);
++		seqnum32_inc(&errors);
+ 	else
+ 		err = -EINVAL;
+ 
+ 	pr_err("Test failed with %d errors and %d warnings\n",
+-	       atomic_read(&errors), atomic_read(&warnings));
++	       seqnum32_read(&errors),
++	       seqnum32_read(&warnings));
+ 
+ 	return err;
+ }
 -- 
 2.27.0
 
