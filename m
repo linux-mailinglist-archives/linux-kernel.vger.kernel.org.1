@@ -2,279 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EFA72AD339
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 11:13:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 479DE2AD33F
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 11:13:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727003AbgKJKNN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 05:13:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48828 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726344AbgKJKNN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 05:13:13 -0500
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CCAFC0613CF
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 02:13:12 -0800 (PST)
-Received: by mail-wm1-x344.google.com with SMTP id w24so2444980wmi.0
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 02:13:12 -0800 (PST)
+        id S1728922AbgKJKNn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 05:13:43 -0500
+Received: from mail-dm6nam12on2053.outbound.protection.outlook.com ([40.107.243.53]:60240
+        "EHLO NAM12-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726737AbgKJKNn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Nov 2020 05:13:43 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=VSSPxlwW/QPr09jMf/k6ytB+wz2Nu+AL91SyDtIDJCGFpVSVPGR8OJ69rPfK73CkAOTt6CnPE/RYOCs1r43KZrZGkj4E0MClagkH8pA3YjecOVdAY8bR0VBbcGzrcS2+7Lmg7pWs570sgixO2Gd72FpNcrQFRlFs51dSZcz/VuztG1xLJaIGBVPUDIXd/IrRQ9l1D18YZHfeYsaU0itznbwa8o4vz7N3Um8HypgxSKF1K49XXucjiJJ12EhgfcujYZjWmSrrAXj0O9qaJvhomgFUfW0+zS7PF+hy9We7zLG8uMiQeaV7vw/3QZoAYLXQLymO8jNpmBdubgmxKzFtvA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Nk1tTI+1RUwg8nQksIovW/9WlTswIA8IS8jfkkAzqCc=;
+ b=nM2MAPt+hJstUoZgbSL9MKBycCLwXHjeCmW8i+Zdfg9gtLa/eez2jJgSZLT2wZpLKfRbfqAoiFWgqUifD+z2tJZwfWcOJDQMNfRwyBltTkrYlQoJw1n66TRMpXCoBBEKo8GRpkbqGbUGBRHHBj800PUUvSl/wTiLwDWVR26vcdAy8lKs+5tDCsGl+tWbg1OoTgv5o+xqpoyZXus7xyeMWuoBkLG2D2x+AYWciPGpdfke9SmiPKSV8gUF+Mj09AOEV8zbFq5fSw660IrmgHe2GbfyW885DtmQsqkfBYdtocEcUV4EQm+lsasIXyLwH1VjAUOi38mZwC44ar3/5iFhEg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=windriver.com; dmarc=pass action=none
+ header.from=windriver.com; dkim=pass header.d=windriver.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=81I9lvfrdyPbV0Zv1LF5At7fH+qtvyCe4iN6MGiOylA=;
-        b=hl8b31BC5nqy/25RShPeBz1hnO+VADpNVy3T2GuMawHYaOeuvEYi5KLWfF1su1WU4A
-         C7kWLrMDXugBUE/oIFdGkj8BUlxCEuFFz9bWEZwbhQXOHw/q1uS+zIlDlKdSxdBHa9x6
-         ySvU9UURMoZ9yrIGgKt8vyDKWCGkptDqBGppy2bAyPEfZKplxU8VT4mC0VJkhwJD1vPy
-         Zii8jj8br4cL5rBcK1YG4I+Lzh9ZSb6ICdpE44SHnulK95xVaqjBcB6LjL381Q/qke6/
-         HMGd91IH3lytKdXZ4rS4EspG8zHOcMCmsAohE32QYE/jtetI6+n16jrxdGWJl0SfW9e4
-         7Now==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=81I9lvfrdyPbV0Zv1LF5At7fH+qtvyCe4iN6MGiOylA=;
-        b=Dr5x7uMxJPZ3kPCjLlo5g/K5m3B7jdQ7E9dZ7xXxpzxeP6H6Z18ir0mQ2PDtUVHGvv
-         2JCEbLyH1TI+//bAMsK5tw665fZZhxPwGHIRZPDw3br3AwOkbP1oHTrHkUzLa88CAAsX
-         NvgZ4SDyEP4AU8MssKIyeyVuglyd1+0ipPNKDaQ2y7Zsoc3DqIjNE3FlQerJQrC742aV
-         AIJGcWAfJmsNpOSHjWeBcHhKZy43oF5BTbWM2WuM/y3JTT1PIJlwXMTMAHzpRb6mCBYw
-         shZ2/oFLTLun7ZFCtSt4+2JXTPIM+YukIAzdELYAhTGJ6MkaSuOLV+D1dBuXXix03GdG
-         caMg==
-X-Gm-Message-State: AOAM530K41UJKTbXYIcu913fbE2hh4GxqgjAAnUHL8ngCe4yY6nYVSj5
-        PncftZ1wB6+NKYGaaj7mi27XSuoESrV7MnN2
-X-Google-Smtp-Source: ABdhPJxsb+fbImcS3cdrZSPiEPaZpjgLAXdCK2tJL/itsfTsc70k9Kq2nYXZhHhswKD8mFUpjpe4ng==
-X-Received: by 2002:a7b:c8c5:: with SMTP id f5mr3841043wml.174.1605003191052;
-        Tue, 10 Nov 2020 02:13:11 -0800 (PST)
-Received: from [192.168.0.4] (hst-221-71.medicom.bg. [84.238.221.71])
-        by smtp.googlemail.com with ESMTPSA id g138sm2377956wme.39.2020.11.10.02.13.09
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 10 Nov 2020 02:13:10 -0800 (PST)
-Subject: Re: [PATCH 1/3] v4l: Add HDR10 HEVC static metadata controls
-To:     Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org
-Cc:     Nicolas Dufresne <nicolas.dufresne@collabora.com>,
-        Ezequiel Garcia <ezequiel@collabora.com>
-References: <20201109173153.23720-1-stanimir.varbanov@linaro.org>
- <20201109173153.23720-2-stanimir.varbanov@linaro.org>
- <dc70bc75-62af-1bdb-1feb-bb58e6f1ff8c@xs4all.nl>
-From:   Stanimir Varbanov <stanimir.varbanov@linaro.org>
-Message-ID: <ba370fa4-37ab-32c4-dfcc-c56a4be0cb3a@linaro.org>
-Date:   Tue, 10 Nov 2020 12:13:09 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+ d=windriversystems.onmicrosoft.com;
+ s=selector2-windriversystems-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Nk1tTI+1RUwg8nQksIovW/9WlTswIA8IS8jfkkAzqCc=;
+ b=QNc/ATkDwdrYiMM8sG/cY24NIYbBQLsmuOnGxd1noKk5zTCb411r6M8LmPD/5+ZO1f3rWCZFmcsgU1ER1eTXfk2r6/J/9hpT1/2zBvxrzHZM+ugtpmcPo/XByRVMgD0FokVz73noSzBuO6aP6fpNoAVm2Zg0rai/wEPOmQ+g8TU=
+Authentication-Results: holtmann.org; dkim=none (message not signed)
+ header.d=none;holtmann.org; dmarc=none action=none header.from=windriver.com;
+Received: from PH0PR11MB5077.namprd11.prod.outlook.com (2603:10b6:510:3b::17)
+ by PH0PR11MB4966.namprd11.prod.outlook.com (2603:10b6:510:42::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.18; Tue, 10 Nov
+ 2020 10:13:41 +0000
+Received: from PH0PR11MB5077.namprd11.prod.outlook.com
+ ([fe80::3c06:91b4:3df0:a232]) by PH0PR11MB5077.namprd11.prod.outlook.com
+ ([fe80::3c06:91b4:3df0:a232%7]) with mapi id 15.20.3541.025; Tue, 10 Nov 2020
+ 10:13:41 +0000
+From:   Xiaolei Wang <xiaolei.wang@windriver.com>
+To:     marcel@holtmann.org
+Cc:     johan.hedberg@gmail.com, linux-bluetooth@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v2] Bluetooth: hci_ll: add a small delay for wl1271 enable bt_en
+Date:   Tue, 10 Nov 2020 18:13:11 +0800
+Message-Id: <20201110101311.1657220-1-xiaolei.wang@windriver.com>
+X-Mailer: git-send-email 2.25.1
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [60.247.85.82]
+X-ClientProxiedBy: HK0PR01CA0057.apcprd01.prod.exchangelabs.com
+ (2603:1096:203:a6::21) To PH0PR11MB5077.namprd11.prod.outlook.com
+ (2603:10b6:510:3b::17)
 MIME-Version: 1.0
-In-Reply-To: <dc70bc75-62af-1bdb-1feb-bb58e6f1ff8c@xs4all.nl>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from pek-lpggp7.wrs.com (60.247.85.82) by HK0PR01CA0057.apcprd01.prod.exchangelabs.com (2603:1096:203:a6::21) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3541.21 via Frontend Transport; Tue, 10 Nov 2020 10:13:39 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 11a16ed0-634d-494f-1bd2-08d885614bf8
+X-MS-TrafficTypeDiagnostic: PH0PR11MB4966:
+X-Microsoft-Antispam-PRVS: <PH0PR11MB4966C2C1570CA5CD4B64429395E90@PH0PR11MB4966.namprd11.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:5797;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: Z/b74t/vUZERmVaSdFqe8jfA2dUcmbNDPcq1uGRxmklBYxb4aqr2ohSNzWRrgPPo0yN5+TU5005Z6oyTVvBq/dmB+zDxVcsE3D0rObtF6NDkMcrvc2SHfKdoT1A/EkyUZ5rJHmook9HX5l99hqngR2MMjwVT1d5icikMNMkiUJ9MuRkWObZHwWwMdClA5NrZ7UIJTpLakM2L/IsEpLzXCqditXf1C45XorPs2vnTDOhpMzWCXZTblQMyw2wSyM2OrOZW28oaT8VaH0k5vK3qZMzxYHoWO/yfWvR9lXArA+RSN+S199aifT5nqzKu1muNac8F46swLv/paKNo4Tsx9A==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR11MB5077.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39850400004)(396003)(346002)(366004)(376002)(136003)(66946007)(6512007)(316002)(6916009)(52116002)(66556008)(186003)(16526019)(36756003)(26005)(66476007)(86362001)(8676002)(4744005)(2616005)(5660300002)(6506007)(6666004)(8936002)(44832011)(1076003)(6486002)(956004)(478600001)(4326008)(2906002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: FlEevJ9arikWqDGo9nUYSJYgqOjT+XzgXNam3K60eI5U9qekvZJ71pUcanzNVEI2DL9T33+HSRzUJlSPlfXB12UAKLZdwcgz0bwA3rqZh8Ad9Hhvw5x6IHGQJSXI46OTr/WzAXIOeIMrGsWYGs7xeTwuZd+F6OUxaXoOsBiwE6WVZViUBAPUyU7StSWGdbzyI2vv0far2g/IpsLRRU2HFOn5tUFRzy6VDxt0G+5a5EjATXfVyc+nkkdP4sDW3tfN8A8NR7+oNLRDNn+wnL+xXti4Ecsqno1xvkieForJrbXP1kcvsIxk83vG62CCuH38GE8FAbWa98CZmx4jEYK2XRa++6KkHLF1jEaKQ71TMhtzYhWzJnA2PGWC/RIwDzSpLwgfclEKy04JDwfBIeTWkgOR1D3wTLQMdFxOGx7HPtQTHj/ryLzYSrK9YjDhDpK7bnWIalfTuaEPMziG6Lf2avuFt6sKMVVHhHKnk2wixXGPbSPxyq/T840sGjH47tAjrVkm5LEyAdvVKUi523XAC46Vyi95OuSsUZ1xXehAc2l0p4ti5Go/icYaSWEIm8xNUI9/L+GYdiNFKqKJidZR7l6PDGs3ELaV5zdAnFvggH3ER4x9/hvL0I+T39/QNuUyjq74puw+xXYxUAxEXC4qHg==
+X-OriginatorOrg: windriver.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 11a16ed0-634d-494f-1bd2-08d885614bf8
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR11MB5077.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Nov 2020 10:13:40.9452
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ddb2873-a1ad-4a18-ae4e-4644631433be
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: mfU4FXmYmAnBi9LtgIj0UNZZxIVls5KCrShlhGObSZ4R1bdd5ZeCwp4aFUdf9QG68oBz08C2bgJO+ci0q8YgkcQ9yUXQUZxNIZ4azo1i2uE=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR11MB4966
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+When using the wl1271 Bluetooth function of am335x, it is found that the
+Bluetooth module cannot respond in time after Bluetooth is enabled, and
+a small delay is needed to work normally, so whether to add a small
+mdelay.
 
+Signed-off-by: Xiaolei Wang <xiaolei.wang@windriver.com>
+---
+ drivers/bluetooth/hci_ll.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-On 11/10/20 11:43 AM, Hans Verkuil wrote:
-> On 09/11/2020 18:31, Stanimir Varbanov wrote:
->> Add Content light level and Mastering display colour volume v4l2
->> compounf controls, relevant payload structures and validation.
-> 
-> Typo: compounf -> compound
-> 
->>
->> Signed-off-by: Stanimir Varbanov <stanimir.varbanov@linaro.org>
->> ---
->>  drivers/media/v4l2-core/v4l2-ctrls.c | 61 ++++++++++++++++++++++++++++
->>  include/media/hevc-ctrls.h           | 41 +++++++++++++++++++
->>  include/media/v4l2-ctrls.h           |  2 +
->>  3 files changed, 104 insertions(+)
->>
->> diff --git a/drivers/media/v4l2-core/v4l2-ctrls.c b/drivers/media/v4l2-core/v4l2-ctrls.c
->> index bd7f330c941c..f70eaa6a46df 100644
->> --- a/drivers/media/v4l2-core/v4l2-ctrls.c
->> +++ b/drivers/media/v4l2-core/v4l2-ctrls.c
->> @@ -1023,6 +1023,8 @@ const char *v4l2_ctrl_get_name(u32 id)
->>  	case V4L2_CID_MPEG_VIDEO_HEVC_SLICE_PARAMS:		return "HEVC Slice Parameters";
->>  	case V4L2_CID_MPEG_VIDEO_HEVC_DECODE_MODE:		return "HEVC Decode Mode";
->>  	case V4L2_CID_MPEG_VIDEO_HEVC_START_CODE:		return "HEVC Start Code";
->> +	case V4L2_CID_MPEG_VIDEO_HEVC_CLL_INFO:			return "HEVC Content Light Info";
->> +	case V4L2_CID_MPEG_VIDEO_HEVC_MASTERING_DISPLAY:	return "HEVC Mastering Display";
-> 
-> Why is this split up in two controls? Can you have one, but not the other?
-> 
-> From what I can tell they are always combined (see CTA-861-G, SMPTE 2086).
-
-I split to two control IDs because in ITU-T Rec. H265 CLL and Mastering
-Display colour volume are different SEI messages. I guessed that they
-could exist in the bitstream independently, though I'm not sure about that.
-
-I think, if we decide that hdr10-ctrls.h will be better place for these
-controls we can combine CLL and Mastering display in one control -
-V4L2_CID_MPEG_HDR10_STATIC_METADATA.
-And later we could introduce V4L2_CID_MPEG_HDR10_DYNAMIC_METADATA for
-hdr10+ (2094-40).
-
-> 
-> Regards,
-> 
-> 	Hans
-> 
->>  
->>  	/* CAMERA controls */
->>  	/* Keep the order of the 'case's the same as in v4l2-controls.h! */
->> @@ -1461,6 +1463,12 @@ void v4l2_ctrl_fill(u32 id, const char **name, enum v4l2_ctrl_type *type,
->>  	case V4L2_CID_MPEG_VIDEO_HEVC_SLICE_PARAMS:
->>  		*type = V4L2_CTRL_TYPE_HEVC_SLICE_PARAMS;
->>  		break;
->> +	case V4L2_CID_MPEG_VIDEO_HEVC_CLL_INFO:
->> +		*type = V4L2_CTRL_TYPE_HEVC_CLL_INFO;
->> +		break;
->> +	case V4L2_CID_MPEG_VIDEO_HEVC_MASTERING_DISPLAY:
->> +		*type = V4L2_CTRL_TYPE_HEVC_MASTERING_DISPLAY;
->> +		break;
->>  	case V4L2_CID_UNIT_CELL_SIZE:
->>  		*type = V4L2_CTRL_TYPE_AREA;
->>  		*flags |= V4L2_CTRL_FLAG_READ_ONLY;
->> @@ -1775,6 +1783,7 @@ static int std_validate_compound(const struct v4l2_ctrl *ctrl, u32 idx,
->>  	struct v4l2_ctrl_hevc_sps *p_hevc_sps;
->>  	struct v4l2_ctrl_hevc_pps *p_hevc_pps;
->>  	struct v4l2_ctrl_hevc_slice_params *p_hevc_slice_params;
->> +	struct v4l2_ctrl_hevc_mastering_display *p_hevc_mastering;
->>  	struct v4l2_area *area;
->>  	void *p = ptr.p + idx * ctrl->elem_size;
->>  	unsigned int i;
->> @@ -1934,6 +1943,52 @@ static int std_validate_compound(const struct v4l2_ctrl *ctrl, u32 idx,
->>  		zero_padding(*p_hevc_slice_params);
->>  		break;
->>  
->> +	case V4L2_CTRL_TYPE_HEVC_CLL_INFO:
->> +		break;
->> +
->> +	case V4L2_CTRL_TYPE_HEVC_MASTERING_DISPLAY:
->> +		p_hevc_mastering = p;
->> +
->> +		for (i = 0; i < 3; ++i) {
->> +			if (p_hevc_mastering->display_primaries_x[i] <
->> +				V4L2_HEVC_MASTERING_PRIMARIES_X_LOW ||
->> +			    p_hevc_mastering->display_primaries_x[i] >
->> +				V4L2_HEVC_MASTERING_PRIMARIES_X_HIGH ||
->> +			    p_hevc_mastering->display_primaries_y[i] <
->> +				V4L2_HEVC_MASTERING_PRIMARIES_Y_LOW ||
->> +			    p_hevc_mastering->display_primaries_y[i] >
->> +				V4L2_HEVC_MASTERING_PRIMARIES_Y_HIGH)
->> +				return -EINVAL;
->> +		}
->> +
->> +		if (p_hevc_mastering->white_point_x <
->> +			V4L2_HEVC_MASTERING_WHITE_POINT_X_LOW ||
->> +		    p_hevc_mastering->white_point_x >
->> +			V4L2_HEVC_MASTERING_WHITE_POINT_X_HIGH ||
->> +		    p_hevc_mastering->white_point_y <
->> +			V4L2_HEVC_MASTERING_WHITE_POINT_Y_LOW ||
->> +		    p_hevc_mastering->white_point_y >
->> +			V4L2_HEVC_MASTERING_WHITE_POINT_Y_HIGH)
->> +			return -EINVAL;
->> +
->> +		if (p_hevc_mastering->max_luminance <
->> +			V4L2_HEVC_MASTERING_MAX_LUMA_LOW ||
->> +		    p_hevc_mastering->max_luminance >
->> +			V4L2_HEVC_MASTERING_MAX_LUMA_HIGH ||
->> +		    p_hevc_mastering->min_luminance <
->> +			V4L2_HEVC_MASTERING_MIN_LUMA_LOW ||
->> +		    p_hevc_mastering->min_luminance >
->> +			V4L2_HEVC_MASTERING_MIN_LUMA_HIGH)
->> +			return -EINVAL;
->> +
->> +		if (p_hevc_mastering->max_luminance ==
->> +			V4L2_HEVC_MASTERING_MAX_LUMA_LOW &&
->> +		    p_hevc_mastering->min_luminance ==
->> +			V4L2_HEVC_MASTERING_MIN_LUMA_HIGH)
->> +			return -EINVAL;
->> +
->> +		break;
->> +
->>  	case V4L2_CTRL_TYPE_AREA:
->>  		area = p;
->>  		if (!area->width || !area->height)
->> @@ -2626,6 +2681,12 @@ static struct v4l2_ctrl *v4l2_ctrl_new(struct v4l2_ctrl_handler *hdl,
->>  	case V4L2_CTRL_TYPE_HEVC_SLICE_PARAMS:
->>  		elem_size = sizeof(struct v4l2_ctrl_hevc_slice_params);
->>  		break;
->> +	case V4L2_CTRL_TYPE_HEVC_CLL_INFO:
->> +		elem_size = sizeof(struct v4l2_ctrl_hevc_cll_info);
->> +		break;
->> +	case V4L2_CTRL_TYPE_HEVC_MASTERING_DISPLAY:
->> +		elem_size = sizeof(struct v4l2_ctrl_hevc_mastering_display);
->> +		break;
->>  	case V4L2_CTRL_TYPE_AREA:
->>  		elem_size = sizeof(struct v4l2_area);
->>  		break;
->> diff --git a/include/media/hevc-ctrls.h b/include/media/hevc-ctrls.h
->> index 1009cf0891cc..d254457d2846 100644
->> --- a/include/media/hevc-ctrls.h
->> +++ b/include/media/hevc-ctrls.h
->> @@ -209,4 +209,45 @@ struct v4l2_ctrl_hevc_slice_params {
->>  	__u64	flags;
->>  };
->>  
->> +/*
->> + * Content light level information.
->> + * Source Rec. ITU-T H.265 v7 (11/2019) HEVC; D.2.35
->> + */
->> +#define V4L2_CID_MPEG_VIDEO_HEVC_CLL_INFO	(V4L2_CID_MPEG_BASE + 1017)
->> +#define V4L2_CTRL_TYPE_HEVC_CLL_INFO		0x0123
->> +
->> +struct v4l2_ctrl_hevc_cll_info {
->> +	__u16 max_content_light_level;
->> +	__u16 max_pic_average_light_level;
->> +};
->> +
->> +/*
->> + * Mastering display colour volume.
->> + * Source Rec. ITU-T H.265 v7 (11/2019) HEVC; D.2.28
->> + */
->> +#define V4L2_CID_MPEG_VIDEO_HEVC_MASTERING_DISPLAY (V4L2_CID_MPEG_BASE + 1018)
->> +#define V4L2_CTRL_TYPE_HEVC_MASTERING_DISPLAY	0x0124
->> +
->> +#define V4L2_HEVC_MASTERING_PRIMARIES_X_LOW	5
->> +#define V4L2_HEVC_MASTERING_PRIMARIES_X_HIGH	37000
->> +#define V4L2_HEVC_MASTERING_PRIMARIES_Y_LOW	5
->> +#define V4L2_HEVC_MASTERING_PRIMARIES_Y_HIGH	42000
->> +#define V4L2_HEVC_MASTERING_WHITE_POINT_X_LOW	5
->> +#define V4L2_HEVC_MASTERING_WHITE_POINT_X_HIGH	37000
->> +#define V4L2_HEVC_MASTERING_WHITE_POINT_Y_LOW	5
->> +#define V4L2_HEVC_MASTERING_WHITE_POINT_Y_HIGH	42000
->> +#define V4L2_HEVC_MASTERING_MAX_LUMA_LOW	50000
->> +#define V4L2_HEVC_MASTERING_MAX_LUMA_HIGH	100000000
->> +#define V4L2_HEVC_MASTERING_MIN_LUMA_LOW	1
->> +#define V4L2_HEVC_MASTERING_MIN_LUMA_HIGH	50000
->> +
->> +struct v4l2_ctrl_hevc_mastering_display {
->> +	__u16 display_primaries_x[3];
->> +	__u16 display_primaries_y[3];
->> +	__u16 white_point_x;
->> +	__u16 white_point_y;
->> +	__u32 max_luminance;
->> +	__u32 min_luminance;
->> +};
->> +
->>  #endif
->> diff --git a/include/media/v4l2-ctrls.h b/include/media/v4l2-ctrls.h
->> index cb25f345e9ad..6120e29945e1 100644
->> --- a/include/media/v4l2-ctrls.h
->> +++ b/include/media/v4l2-ctrls.h
->> @@ -80,6 +80,8 @@ union v4l2_ctrl_ptr {
->>  	struct v4l2_ctrl_hevc_sps *p_hevc_sps;
->>  	struct v4l2_ctrl_hevc_pps *p_hevc_pps;
->>  	struct v4l2_ctrl_hevc_slice_params *p_hevc_slice_params;
->> +	struct v4l2_ctrl_hevc_cll_info *p_hevc_cll;
->> +	struct v4l2_ctrl_hevc_mastering_display *p_hevc_mastering;
->>  	struct v4l2_area *p_area;
->>  	void *p;
->>  	const void *p_const;
->>
-> 
-
+diff --git a/drivers/bluetooth/hci_ll.c b/drivers/bluetooth/hci_ll.c
+index 8bfe024d1fcd..eb1e736efeeb 100644
+--- a/drivers/bluetooth/hci_ll.c
++++ b/drivers/bluetooth/hci_ll.c
+@@ -626,6 +626,7 @@ static int ll_setup(struct hci_uart *hu)
+ 		gpiod_set_value_cansleep(lldev->enable_gpio, 0);
+ 		msleep(5);
+ 		gpiod_set_value_cansleep(lldev->enable_gpio, 1);
++		mdelay(100);
+ 		err = serdev_device_wait_for_cts(serdev, true, 200);
+ 		if (err) {
+ 			bt_dev_err(hu->hdev, "Failed to get CTS");
 -- 
-regards,
-Stan
+2.25.1
+
