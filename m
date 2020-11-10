@@ -2,315 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA3952AD133
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 09:20:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 15E072AD135
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 09:21:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731796AbgKJIU1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 03:20:27 -0500
-Received: from mail-lf1-f65.google.com ([209.85.167.65]:36579 "EHLO
-        mail-lf1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726462AbgKJIU1 (ORCPT
+        id S1729495AbgKJIVt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 03:21:49 -0500
+Received: from coyote.holtmann.net ([212.227.132.17]:58806 "EHLO
+        mail.holtmann.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726462AbgKJIVt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 03:20:27 -0500
-Received: by mail-lf1-f65.google.com with SMTP id f11so10003323lfs.3;
-        Tue, 10 Nov 2020 00:20:24 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=IDSxpkxHLT4rWHHSEG+47MZJHtsvhN3aVv1OmkPtH0M=;
-        b=Sb8h9kHvMBga7Jpxbh4sn5Z1vh86Lr89Sy9TBJwzRSIJmvjOw0lurUGuIpnMdZC5+g
-         tstxSyyQCbbW5fPtdd+QoQcCdmAXlf+uiBeYvKqc9XgvA239vVI0W7iKGkcwFigfltkd
-         C8GvzPoKCOhZ5gBq4Owg6mm+96IulV3ABp9lodib0PI3MwJcHgYSq21PvjC9s9Qmt/eE
-         bHHv6RaPisA/CoLM5dEHUn+2z+vR5L/9Sh7PfBNemRjUbhBOhXPGH6fVwOrnlgGYwI4V
-         k+81Qp5oHFe7yKrewZZLFD/QDJDk+rKh9BNeb9IjN0SPtAi8EgjxuFQql3kq9W1EhpI1
-         KkJA==
-X-Gm-Message-State: AOAM532Ak8PdolazoigYdWdbKyj5TjA/0Ede1K5HmpquSoIEMaftvNuM
-        06M8qzGXLxC6TSXSE9FwFzc=
-X-Google-Smtp-Source: ABdhPJxHXj0HApjWxiqo2OFKAOybvwc2pXzmMZ7/tBEKstH5VZM68Pu2HpiknM7iE3TFy9713zs+WQ==
-X-Received: by 2002:a19:794:: with SMTP id 142mr184661lfh.232.1604996423735;
-        Tue, 10 Nov 2020 00:20:23 -0800 (PST)
-Received: from localhost.localdomain (62-78-225-252.bb.dnainternet.fi. [62.78.225.252])
-        by smtp.gmail.com with ESMTPSA id z5sm2133915ljk.136.2020.11.10.00.20.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 10 Nov 2020 00:20:23 -0800 (PST)
-Date:   Tue, 10 Nov 2020 10:20:17 +0200
-From:   Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
-To:     mazziesaccount@gmail.com, matti.vaittinen@gmail.com
-Cc:     Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-power@fi.rohmeurope.com
-Subject: [RFC PATCH 3/3] regulator: bd718x7: Support external connection to
- scale voltages
-Message-ID: <89b2be87074f307a8823f15f34e1f662023cbf36.1604994184.git.matti.vaittinen@fi.rohmeurope.com>
-References: <cover.1604994184.git.matti.vaittinen@fi.rohmeurope.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <cover.1604994184.git.matti.vaittinen@fi.rohmeurope.com>
+        Tue, 10 Nov 2020 03:21:49 -0500
+Received: from marcel-macbook.holtmann.net (unknown [37.83.201.106])
+        by mail.holtmann.org (Postfix) with ESMTPSA id DA7F8CECDB;
+        Tue, 10 Nov 2020 09:28:54 +0100 (CET)
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.120.23.2.4\))
+Subject: Re: [PATCH] Bluetooth: btusb: btrtl: Add support for RTL8852A
+From:   Marcel Holtmann <marcel@holtmann.org>
+In-Reply-To: <20201110033837.19373-1-max.chou@realtek.com>
+Date:   Tue, 10 Nov 2020 09:21:45 +0100
+Cc:     Johan Hedberg <johan.hedberg@gmail.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        linux-bluetooth <linux-bluetooth@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org,
+        Alex Lu <alex_lu@realsil.com.cn>, hildawu@realtek.com,
+        kidman@realtek.com
+Content-Transfer-Encoding: 7bit
+Message-Id: <3F294B82-64EF-47B7-A0C5-9D4675D96DE3@holtmann.org>
+References: <20201110033837.19373-1-max.chou@realtek.com>
+To:     Max Chou <max.chou@realtek.com>
+X-Mailer: Apple Mail (2.3608.120.23.2.4)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Setups where regulator (especially the buck8) output voltage is scaled
-by adding external connection where some other regulator output is
-connected to feedback-pin (over suitable resistors) is getting popular
-amongst users of BD71837. This allows for example scaling down the
-buck8 voltages to suit lover GPU voltages for projects where buck8 is
-(ab)used to supply power for GPU. As a note - some setups do allow DVS
-for buck8. This do produce voltage spikes and the HW must be evaluated
-to be able to survive them. Thus this commit still keep the DVS disabled
-for non DVS bucks by default. Let's not help you burn your proto board.
+Hi Max,
 
-Allow describing this external connection from DT and scale the
-voltages accordingly. This is what the connection should look like:
+> Add the support for RTL8852A BT controller on USB interface.
+> The necessary firmware will be submitted to linux-firmware project.
+> 
+> The device info from /sys/kernel/debug/usb/devices as below.
+> 
+> T:  Bus=02 Lev=02 Prnt=02 Port=05 Cnt=01 Dev#= 10 Spd=12   MxCh= 0
+> D:  Ver= 1.00 Cls=e0(wlcon) Sub=01 Prot=01 MxPS=64 #Cfgs=  1
+> P:  Vendor=0bda ProdID=c852 Rev= 0.00
+> S:  Manufacturer=Realtek
+> S:  Product=Bluetooth Radio
+> S:  SerialNumber=00e04c000001
+> C:* #Ifs= 2 Cfg#= 1 Atr=e0 MxPwr=500mA
+> I:* If#= 0 Alt= 0 #EPs= 3 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
+> E:  Ad=81(I) Atr=03(Int.) MxPS=  16 Ivl=1ms
+> E:  Ad=02(O) Atr=02(Bulk) MxPS=  64 Ivl=0ms
+> E:  Ad=82(I) Atr=02(Bulk) MxPS=  64 Ivl=0ms
+> I:* If#= 1 Alt= 0 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
+> E:  Ad=03(O) Atr=01(Isoc) MxPS=   0 Ivl=1ms
+> E:  Ad=83(I) Atr=01(Isoc) MxPS=   0 Ivl=1ms
+> I:  If#= 1 Alt= 1 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
+> E:  Ad=03(O) Atr=01(Isoc) MxPS=   9 Ivl=1ms
+> E:  Ad=83(I) Atr=01(Isoc) MxPS=   9 Ivl=1ms
+> I:  If#= 1 Alt= 2 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
+> E:  Ad=03(O) Atr=01(Isoc) MxPS=  17 Ivl=1ms
+> E:  Ad=83(I) Atr=01(Isoc) MxPS=  17 Ivl=1ms
+> I:  If#= 1 Alt= 3 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
+> E:  Ad=03(O) Atr=01(Isoc) MxPS=  25 Ivl=1ms
+> E:  Ad=83(I) Atr=01(Isoc) MxPS=  25 Ivl=1ms
+> I:  If#= 1 Alt= 4 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
+> E:  Ad=03(O) Atr=01(Isoc) MxPS=  33 Ivl=1ms
+> E:  Ad=83(I) Atr=01(Isoc) MxPS=  33 Ivl=1ms
+> I:  If#= 1 Alt= 5 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
+> E:  Ad=03(O) Atr=01(Isoc) MxPS=  49 Ivl=1ms
+> E:  Ad=83(I) Atr=01(Isoc) MxPS=  49 Ivl=1ms
+> 
+> Signed-off-by: Max Chou <max.chou@realtek.com>
+> ---
+> drivers/bluetooth/btrtl.c | 12 ++++++++++++
+> drivers/bluetooth/btusb.c |  4 ++++
+> 2 files changed, 16 insertions(+)
 
-|------------|
-|    buck 8  |-------+----->Vout
-|            |       |
-|------------|       |
-     | FB pin        |
-     |               |
-     +-------+--R2---+
-             |
-             R1
-             |
-     V FB-pull-up
+patch has been applied to bluetooth-next tree.
 
-     Here the buck output is sifted according to formula:
+Regards
 
-Vout_o = Vo - (Vpu - Vo)*R2/R1
-Linear_step = step_orig*(R1+R2)/R1
+Marcel
 
-where:
-Vout_o is adjusted voltage output at vsel reg value 0
-Vo is original voltage output at vsel reg value 0
-Vpu is the pull-up voltage V FB-pull-up in the picture
-R1 and R2 are resistor values.
-
-Bring support for specifying the Vpu, R1 and R2 from device tree and
-scale voltages if they are given.
-
-Signed-off-by: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
----
- drivers/regulator/bd718x7-regulator.c | 164 ++++++++++++++++++++++++--
- 1 file changed, 157 insertions(+), 7 deletions(-)
-
-diff --git a/drivers/regulator/bd718x7-regulator.c b/drivers/regulator/bd718x7-regulator.c
-index 0774467994fb..e6d5d98c3cea 100644
---- a/drivers/regulator/bd718x7-regulator.c
-+++ b/drivers/regulator/bd718x7-regulator.c
-@@ -1323,13 +1323,142 @@ static void mark_hw_controlled(struct device *dev, struct device_node *np,
- 	dev_warn(dev, "Bad regulator node\n");
- }
- 
--static int get_hw_controlled_regulators(struct device *dev,
--					struct bd718xx_regulator_data *reg_data,
--					unsigned int num_reg_data, int *info)
-+/*
-+ * Setups where regulator (especially the buck8) output voltage is scaled
-+ * by adding external connection where some other regulator output is connected
-+ * to feedback-pin (over suitable resistors) is getting popular amongst users
-+ * of BD71837. (This allows for example scaling down the buck8 voltages to suit
-+ * lover GPU voltages for projects where buck8 is (ab)used to supply power
-+ * for GPU. Additionally some setups do allow DVS for buck8 but as this do
-+ * produce voltage spikes the HW must be evaluated to be able to survive this
-+ * - hence I keep the DVS disabled for non DVS bucks by default. I don't want
-+ * to help you burn your proto board)
-+ *
-+ * So we allow describing this external connection from DT and scale the
-+ * voltages accordingly. This is what the connection should look like:
-+ *
-+ * |------------|
-+ * |	buck 8  |-------+----->Vout
-+ * |		|	|
-+ * |------------|	|
-+ *	| FB pin	|
-+ *	|		|
-+ *	+-------+--R2---+
-+ *		|
-+ *		R1
-+ *		|
-+ *	V FB-pull-up
-+ *
-+ *	Here the buck output is sifted according to formula:
-+ *
-+ * Vout_o = Vo - (Vpu - Vo)*R2/R1
-+ * Linear_step = step_orig*(R1+R2)/R1
-+ *
-+ * where:
-+ * Vout_o is adjusted voltage output at vsel reg value 0
-+ * Vo is original voltage output at vsel reg value 0
-+ * Vpu is the pull-up voltage V FB-pull-up in the picture
-+ * R1 and R2 are resistor values.
-+ *
-+ * As a real world example for buck8 and a specific GPU:
-+ * VLDO = 1.6V (used as FB-pull-up)
-+ * R1 = 1000ohms
-+ * R2 = 150ohms
-+ * VSEL 0x0 => 0.8V – (VLDO – 0.8) * R2 / R1 = 0.68V
-+ * Linear Step = 10mV * (R1 + R2) / R1 = 11.5mV
-+ */
-+static int setup_feedback_loop(struct device *dev, struct device_node *np,
-+			       struct bd718xx_regulator_data *reg_data,
-+			       unsigned int num_reg_data, int fb_uv)
- {
-+	int i, r1, r2, ret;
-+
-+	/*
-+	 * We do adjust the values in the global desc based on DT settings.
-+	 * This may not be best approach as it can cause problems if more than
-+	 * one PMIC is controlled from same processor. I don't see such use-case
-+	 * for BD718x7 now - so we spare some bits.
-+	 *
-+	 * If this will point out to be a problem - then we can allocate new
-+	 * bd718xx_regulator_data array at probe and just use the global
-+	 * array as a template where we copy initial values. Then we can
-+	 * use allocated descs for regultor registration and do IC specific
-+	 * modifications to this copy while leaving other PMICs untouched. But
-+	 * that means allocating new array for each PMIC - and currently I see
-+	 * no need for that.
-+	 */
-+
-+	for (i = 0; i < num_reg_data; i++) {
-+		struct regulator_desc *desc = &reg_data[i].desc;
-+		int j;
-+
-+		if (!of_node_name_eq(np, desc->of_match))
-+			continue;
-+
-+		pr_info("Looking at node '%s'\n", desc->of_match);
-+
-+		/* The feedback loop connection does not make sense for LDOs */
-+		if (desc->id >= BD718XX_LDO1)
-+			return -EINVAL;
-+
-+		ret = of_property_read_u32(np, "rohm,feedback-pull-up-r1-ohms",
-+					   &r1);
-+		if (ret)
-+			return ret;
-+
-+		if (!r1)
-+			return -EINVAL;
-+
-+		ret = of_property_read_u32(np, "rohm,feedback-pull-up-r2-ohms",
-+					   &r2);
-+		if (ret)
-+			return ret;
-+
-+		if (desc->n_linear_ranges && desc->linear_ranges) {
-+			struct linear_range *new;
-+
-+			new = devm_kzalloc(dev, desc->n_linear_ranges *
-+					   sizeof(struct linear_range),
-+					   GFP_KERNEL);
-+			if (!new)
-+				return -ENOMEM;
-+
-+			for (j = 0; j < desc->n_linear_ranges; j++) {
-+				int min = desc->linear_ranges[j].min;
-+				int step = desc->linear_ranges[j].step;
-+
-+				min -= (fb_uv - min)*r2/r1;
-+				step = step * (r1 + r2);
-+				step /= r1;
-+
-+				new[j].min = min;
-+				new[j].step = step;
-+
-+				dev_dbg(dev, "%s: old range min %d, step %d\n",
-+					desc->name, desc->linear_ranges[j].min,
-+					desc->linear_ranges[j].step);
-+				dev_dbg(dev, "new range min %d, step %d\n", min,
-+					step);
-+			}
-+			desc->linear_ranges = new;
-+		}
-+		dev_dbg(dev, "regulator '%s' has FB pull-up configured\n",
-+			desc->name);
-+
-+		return 0;
-+	}
-+
-+	return -ENODEV;
-+}
-+
-+static int get_special_regulators(struct device *dev,
-+				  struct bd718xx_regulator_data *reg_data,
-+				  unsigned int num_reg_data, int *info)
-+{
-+	int ret;
- 	struct device_node *np;
- 	struct device_node *nproot = dev->of_node;
--	const char *prop = "rohm,no-regulator-enable-control";
-+	int uv;
- 
- 	*info = 0;
- 
-@@ -1338,13 +1467,32 @@ static int get_hw_controlled_regulators(struct device *dev,
- 		dev_err(dev, "failed to find regulators node\n");
- 		return -ENODEV;
- 	}
--	for_each_child_of_node(nproot, np)
--		if (of_property_read_bool(np, prop))
-+	for_each_child_of_node(nproot, np) {
-+		if (of_property_read_bool(np, "rohm,no-regulator-enable-control"))
- 			mark_hw_controlled(dev, np, reg_data, num_reg_data,
- 					   info);
-+		ret = of_property_read_u32(np, "rohm,fb-pull-up-microvolt",
-+					   &uv);
-+		if (ret) {
-+			if (ret == -EINVAL)
-+				continue;
-+			else
-+				goto err_out;
-+		}
-+
-+		ret = setup_feedback_loop(dev, np, reg_data, num_reg_data, uv);
-+		if (ret)
-+			goto err_out;
-+	}
- 
- 	of_node_put(nproot);
- 	return 0;
-+
-+err_out:
-+	of_node_put(np);
-+	of_node_put(nproot);
-+
-+	return ret;
- }
- 
- static int bd718xx_probe(struct platform_device *pdev)
-@@ -1432,8 +1580,10 @@ static int bd718xx_probe(struct platform_device *pdev)
- 	 * be affected by PMIC state machine - Eg. regulator is likely to stay
- 	 * on even in SUSPEND
- 	 */
--	get_hw_controlled_regulators(pdev->dev.parent, reg_data, num_reg_data,
-+	err = get_special_regulators(pdev->dev.parent, reg_data, num_reg_data,
- 				     &omit_enable);
-+	if (err)
-+		return err;
- 
- 	for (i = 0; i < num_reg_data; i++) {
- 
--- 
-2.21.3
-
-
--- 
-Matti Vaittinen, Linux device drivers
-ROHM Semiconductors, Finland SWDC
-Kiviharjunlenkki 1E
-90220 OULU
-FINLAND
-
-~~~ "I don't think so," said Rene Descartes. Just then he vanished ~~~
-Simon says - in Latin please.
-~~~ "non cogito me" dixit Rene Descarte, deinde evanescavit ~~~
-Thanks to Simon Glass for the translation =] 
