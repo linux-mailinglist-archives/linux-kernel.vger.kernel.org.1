@@ -2,102 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDD382ACEA6
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 05:48:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AAD1B2ACEAA
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 05:54:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731377AbgKJEsV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 23:48:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55292 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729454AbgKJEsQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 23:48:16 -0500
-Received: from mail-ua1-x944.google.com (mail-ua1-x944.google.com [IPv6:2607:f8b0:4864:20::944])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A204C0613D3
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Nov 2020 20:48:14 -0800 (PST)
-Received: by mail-ua1-x944.google.com with SMTP id t15so3558392ual.6
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Nov 2020 20:48:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=1LG6AI05ymINBvkr43QJrWhW6+Oh0OuOMO1LRwJumoQ=;
-        b=efHLQUtVvktbFbKV0dRhcMiDZ6CiF/nI8yogKkQkXNzkMFEKE5odhT1f13Q4gPJXAu
-         wN0hB9BkQq58Ja7rNMPt1NZVdynEexfdbYBnP6P1V9zpSI+DJlZlVHIYRtDLOuDybsKK
-         SBxayzR/8WM3Q2prP7nQi2dCRyo/MR20sOg6N/LmD6SDjillgAvfoYjFLd2lgcKBMzWH
-         STTrkAhehecfpfomXSDFfie9rZLcKj9V2nN+Xx5m1srFv2/b/ayMzlhJB+vG6YJrW6md
-         +YUyQc+RbXeRLi4+1JZo48a5U5H0fYHqd3kOi7vj283pPMdGH774liDFv7DcOCzqsBmW
-         a6ww==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=1LG6AI05ymINBvkr43QJrWhW6+Oh0OuOMO1LRwJumoQ=;
-        b=mnVMmlpAvB92Tvr8F6vZzRETFJiGlHuiIY74lF04c0D/j4+7jgvc3rgkKpjhJgxjhR
-         KtL9Gm3Z/JRsAgRtkGgQXybdOuFKbz3ChB13ArKR4Wgm0URdJVbCfJyS1MilLVQ889gk
-         AwgKA5VTrN3KSJbi14Dk2RAL4jVXgN7SQ7r1nNGhBe/+KTVQpf2Sk4jZviLF3oR2oKta
-         DM94amLQEdQGQlw1c13eMuDZXVJ9x68gDtuVDRCcpTUUgppXXt8NzBcb9WEpLyGIFFhn
-         NEYMs4DOl/XaNfXoEpiS6UpL8zpFjaS9NePkSW7vpeRGTJOt+JgUSZf02lz3SmayZnHK
-         HqMg==
-X-Gm-Message-State: AOAM531DCnKUQOoE5nB3bQHtppiV4PGCuxK871UAn1WWJrANcjeEuhIs
-        YyHkVN6nfwHJ8iQSDfiK1zOqHPwOHZaU6KjO5/2J/Q==
-X-Google-Smtp-Source: ABdhPJxkDi0IYzwTD9/NuW8drJgZEjV2OxRwIJgfYZxoJw/2It4YGoA7cCSoDZ10V3gQPihhY7p+XtZ3gEYyqR4paw4=
-X-Received: by 2002:ab0:424:: with SMTP id 33mr8354135uav.33.1604983692991;
- Mon, 09 Nov 2020 20:48:12 -0800 (PST)
+        id S1731308AbgKJEyM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 23:54:12 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51552 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729454AbgKJEyK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 23:54:10 -0500
+Received: from localhost (unknown [122.179.121.10])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6643C206D8;
+        Tue, 10 Nov 2020 04:54:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604984049;
+        bh=L7LJEeDj/UFpunPZD6f0tbSvytpg5gu8KTCCVrRrV8Q=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=togUYxvmaizJLL2oqHWZk4B85aDVYa4/hX2kxMY+xZV3+Nd/VlqHziEVqq2BGnui/
+         WMIrK6Ccy9v1nOJ9aAYGfecl3YGN28LuF+qbfK5TpmmTrvzp47uTJP9+J7EbOQMrje
+         2gIG+eNvggY+n0DBexQdA3XoX4ENmyuXP+b1dER4=
+Date:   Tue, 10 Nov 2020 10:24:02 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Jonathan McDowell <noodles@earth.li>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Thomas Pedersen <twp@codeaurora.org>,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        dmaengine@vger.kernel.org
+Subject: Re: [PATCH v4] dmaengine: qcom: Add ADM driver
+Message-ID: <20201110045402.GR3171@vkoul-mobl>
+References: <20200916064326.GA13963@earth.li>
+ <20200919185739.GS3411@earth.li>
+ <20200920181204.GT3411@earth.li>
+ <20200923194056.GY3411@earth.li>
+ <20201109114121.GG3171@vkoul-mobl>
+ <20201109190416.GF32650@earth.li>
 MIME-Version: 1.0
-References: <CAG48ez2baAvKDA0wfYLKy-KnM_1CdOwjU873VJGDM=CErjsv_A@mail.gmail.com>
- <20201015102216.GB2611@hirez.programming.kicks-ass.net> <20201015203942.f3kwcohcwwa6lagd@treble>
- <CABCJKufDLmBCwmgGnfLcBw_B_4U8VY-R-dSNNp86TFfuMobPMw@mail.gmail.com>
- <20201020185217.ilg6w5l7ujau2246@treble> <CABCJKucVjFtrOsw58kn4OnW5kdkUh8G7Zs4s6QU9s6O7soRiAA@mail.gmail.com>
- <20201021085606.GZ2628@hirez.programming.kicks-ass.net> <CABCJKufL6=FiaeD8T0P+mK4JeR9J80hhjvJ6Z9S-m9UnCESxVA@mail.gmail.com>
- <20201023173617.GA3021099@google.com> <CABCJKuee7hUQSiksdRMYNNx05bW7pWaDm4fQ__znGQ99z9-dEw@mail.gmail.com>
- <20201110022924.tekltjo25wtrao7z@treble>
-In-Reply-To: <20201110022924.tekltjo25wtrao7z@treble>
-From:   Sami Tolvanen <samitolvanen@google.com>
-Date:   Mon, 9 Nov 2020 20:48:01 -0800
-Message-ID: <CABCJKuc_-Sxj8HLajx4pKuBpU3AUdBtPv4uzQfMWqVHWwHS1iQ@mail.gmail.com>
-Subject: Re: [PATCH v6 22/25] x86/asm: annotate indirect jumps
-To:     Josh Poimboeuf <jpoimboe@redhat.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Jann Horn <jannh@google.com>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Will Deacon <will@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Kernel Hardening <kernel-hardening@lists.openwall.com>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-kbuild <linux-kbuild@vger.kernel.org>,
-        kernel list <linux-kernel@vger.kernel.org>,
-        linux-pci@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201109190416.GF32650@earth.li>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 9, 2020 at 6:29 PM Josh Poimboeuf <jpoimboe@redhat.com> wrote:
-> How would I recreate all these warnings?
+On 09-11-20, 19:04, Jonathan McDowell wrote:
+> On Mon, Nov 09, 2020 at 05:11:21PM +0530, Vinod Koul wrote:
+> > HI Jonathan,
+> > 
+> > On 23-09-20, 20:40, Jonathan McDowell wrote:
+> > > Add the DMA engine driver for the QCOM Application Data Mover (ADM) DMA
+> > > controller found in the MSM8x60 and IPQ/APQ8064 platforms.
+> > 
+> > Mostly it looks good, some nitpicks
+> > 
+> > > The ADM supports both memory to memory transactions and memory
+> > > to/from peripheral device transactions.  The controller also provides
+> > > flow control capabilities for transactions to/from peripheral devices.
+> > > 
+> > > The initial release of this driver supports slave transfers to/from
+> > > peripherals and also incorporates CRCI (client rate control interface)
+> > > flow control.
+> > 
+> > Can you also convert the binding from txt to yaml?
+> 
+> Seems like that can be a separate patch, but sure, I'll give it a whirl.
 
-You can reproduce all of these using a normal gcc build without any of
-the LTO patches by running objtool check -arfld vmlinux.o. However,
-with gcc you'll see even more warnings due to duplicate symbol names,
-as Peter pointed out elsewhere in the thread, so I looked at only the
-warnings that objtool also prints with LTO.
+Yup a different patch, thanks for looking into that
 
-Note that the LTO series contains a patch to split noinstr validation
-from --vmlinux, as we need to run objtool here even if
-CONFIG_VMLINUX_VALIDATION isn't selected, so I have not looked at the
-noinstr warnings. The latest LTO tree is available here:
+> > > diff --git a/drivers/dma/qcom/Kconfig b/drivers/dma/qcom/Kconfig
+> > > index 3bcb689162c6..0389d60d2604 100644
+> > > --- a/drivers/dma/qcom/Kconfig
+> > > +++ b/drivers/dma/qcom/Kconfig
+> > > @@ -1,4 +1,15 @@
+> > >  # SPDX-License-Identifier: GPL-2.0-only
+> > > +config QCOM_ADM
+> > > +	tristate "Qualcomm ADM support"
+> > > +	depends on (ARCH_QCOM || COMPILE_TEST) && !PHYS_ADDR_T_64BIT
+> > 
+> > why !PHYS_ADDR_T_64BIT ..?
+> 
+> The hardware only supports a 32 bit physical address, so specifying
+> !PHYS_ADDR_T_64BIT gives maximum COMPILE_TEST coverage without having to
+> spend effort on kludging things in the code that will never actually be
+> needed on real hardware.
 
-https://github.com/samitolvanen/linux/commits/clang-lto
+Can we mention that in the log please
 
-> Here's the patch for hopefully making the warnings more helpful:
+> 
+> > > +	select DMA_ENGINE
+> > > +	select DMA_VIRTUAL_CHANNELS
+> > > +	help
+> > > +	  Enable support for the Qualcomm Application Data Mover (ADM) DMA
+> > > +	  controller, as present on MSM8x60, APQ8064, and IPQ8064 devices.
+> > > +	  This controller provides DMA capabilities for both general purpose
+> > > +	  and on-chip peripheral devices.
+> > 
+> > > +static const struct of_device_id adm_of_match[] = {
+> > > +	{ .compatible = "qcom,adm", },
+> > 
+> > I know we have merged the binding, but should we not have a soc specific
+> > compatible?
+> 
+> Which soc? Looking at the other QCOM DMA drivers they mostly have
+> versioned compatibles and I can't find any indication there are multiple
+> variants of this block out there.
 
-Thanks, I'll give it a try.
+So even though ip block can remain same for few versions, we should
+trust hw folks enough to give us spicy flavours in next revs :-) so
+adding a compatible here like qcom,msm8x60-adm would help us.
 
-Sami
+BUT, looking at the QC documentation I dont see it being used in recent
+chips so ok to go with qcom,adm
+
+Thanks
+-- 
+~Vinod
