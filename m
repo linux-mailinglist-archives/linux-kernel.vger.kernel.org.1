@@ -2,69 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C18682AD271
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 10:27:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CFC4D2AD26A
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 10:25:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730014AbgKJJ1F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 04:27:05 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:7165 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726825AbgKJJ1E (ORCPT
+        id S1730444AbgKJJZs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 04:25:48 -0500
+Received: from mo4-p01-ob.smtp.rzone.de ([85.215.255.51]:8570 "EHLO
+        mo4-p01-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729417AbgKJJZr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 04:27:04 -0500
-Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4CVjDY4x5fz15RXC;
-        Tue, 10 Nov 2020 17:26:53 +0800 (CST)
-Received: from localhost.localdomain (10.67.165.24) by
- DGGEMS402-HUB.china.huawei.com (10.3.19.202) with Microsoft SMTP Server id
- 14.3.487.0; Tue, 10 Nov 2020 17:26:54 +0800
-From:   Yicong Yang <yangyicong@hisilicon.com>
-To:     <viro@zeniv.linux.org.uk>, <linux-fsdevel@vger.kernel.org>
-CC:     <akpm@linux-foundation.org>, <akinobu.mita@gmail.com>,
-        <linux-kernel@vger.kernel.org>, <linuxarm@huawei.com>,
-        <prime.zeng@huawei.com>, <yangyicong@hisilicon.com>
-Subject: [RESEND PATCH] libfs: fix error cast of negative value in simple_attr_write()
-Date:   Tue, 10 Nov 2020 17:25:24 +0800
-Message-ID: <1605000324-7428-1-git-send-email-yangyicong@hisilicon.com>
-X-Mailer: git-send-email 2.8.1
+        Tue, 10 Nov 2020 04:25:47 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1605000345;
+        s=strato-dkim-0002; d=chronox.de;
+        h=References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
+        X-RZG-CLASS-ID:X-RZG-AUTH:From:Subject:Sender;
+        bh=Muj+NMY/EMMLy32xXtOumpx5dkBS25Z8v7DfG0sequM=;
+        b=G1L6d83hHPg8Hi49yUxT/RyknXV71nZynuEon/erBwmHMowpoAUMmtfJbBOX1sjFrm
+        3RMtHgKAri8ZIfQDQsx+Vr+JiJdoqDpZO1Iub1ktY5EZpeKglTygMjq/sCgQCcwXdTlJ
+        oFOYRDrG6zY0ErT2g2Xd+Esp9KmsQYU1f3mN7Fke1otOgqENxC6XDLy2uDS34//EK0Pe
+        dB2E/9PX2cl9ONjrkVM7W+B+9GqqXOuZuhuX50sxGex6lHd+m+4Dn23YPunMAcdv/yFP
+        fJ9OsNqVID8CPf44b3M9uw01/+HyC2did9UkA82dD+Qq1mSJP74tM2P5cA0xzqU68x+8
+        Gzcg==
+X-RZG-AUTH: ":P2ERcEykfu11Y98lp/T7+hdri+uKZK8TKWEqNyiHySGSa9k9xmwdNnzGHXPaIvSfEhGW"
+X-RZG-CLASS-ID: mo00
+Received: from tauon.chronox.de
+        by smtp.strato.de (RZmta 47.3.3 DYNA|AUTH)
+        with ESMTPSA id Y03aecwAA9PhFDG
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+        (Client did not present a certificate);
+        Tue, 10 Nov 2020 10:25:43 +0100 (CET)
+From:   Stephan Mueller <smueller@chronox.de>
+To:     Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        Paul Menzel <pmenzel@molgen.mpg.de>
+Cc:     linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: jitterentropy: `jent_mod_init()` takes 17 ms
+Date:   Tue, 10 Nov 2020 10:25:42 +0100
+Message-ID: <4825077.WBkqHH8m98@tauon.chronox.de>
+In-Reply-To: <02fa159f-4f94-cfb7-1f88-bed91c6542a1@molgen.mpg.de>
+References: <02fa159f-4f94-cfb7-1f88-bed91c6542a1@molgen.mpg.de>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.67.165.24]
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The attr->set() receive a value of u64, but simple_strtoll() is used
-for doing the conversion. It will lead to the error cast if user inputs
-a negative value.
+Am Montag, 9. November 2020, 20:31:02 CET schrieb Paul Menzel:
 
-Use kstrtoull() instead of simple_strtoll() to convert a string got
-from the user to an unsigned value. The former will return '-EINVAL' if
-it gets a negetive value, but the latter can't handle the situation
-correctly.
+Hi Paul,
 
-Fixes: f7b88631a897 ("fs/libfs.c: fix simple_attr_write() on 32bit machines")
-Signed-off-by: Yicong Yang <yangyicong@hisilicon.com>
----
- fs/libfs.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+> Dear Linux folks,
+> 
+> 
+> By mistake I built `XFRM_ESP` into the Linux kernel, resulting in
+> 
+>      CONFIG_CRYPTO_SEQIV=y
+>      CONFIG_CRYPTO_ECHAINIV=y
+> 
+> and also the Jitterentropy RNG to be built in.
+> 
+>      CRYPTO_JITTERENTROPY=y
+> 
+> So, on the Asus F2A85-M PRO starting Linux 4.10-rc3 with
+> `initcall_debug`, the init method is run unconditionally, and it takes
+> 17.5 ms, which is over ten percent of the overall 900 ms the Linux
 
-diff --git a/fs/libfs.c b/fs/libfs.c
-index fc34361..2dcf40e 100644
---- a/fs/libfs.c
-+++ b/fs/libfs.c
-@@ -977,7 +977,9 @@ ssize_t simple_attr_write(struct file *file, const char __user *buf,
- 		goto out;
- 
- 	attr->set_buf[size] = '\0';
--	val = simple_strtoll(attr->set_buf, NULL, 0);
-+	ret = kstrtoull(attr->set_buf, 0, &val);
-+	if (ret)
-+		goto out;
- 	ret = attr->set(attr->data, val);
- 	if (ret == 0)
- 		ret = len; /* on success, claim we got the whole input */
--- 
-2.8.1
+Hm, 17.5 / 900 = 2%, or am I missing something?
+
+> kernel needs until loading the init process.
+> 
+>      [    0.300544] calling  jent_mod_init+0x0/0x2c @ 1
+>      [    0.318438] initcall jent_mod_init+0x0/0x2c returned 0 after
+> 17471 usecs
+> 
+> Looking at the output of systemd-bootchart, it looks like, that this
+> indeed delayed the boot a little, as the other init methods seem to be
+> ordered after it.
+> 
+> I am now building it as a module, but am wondering if the time can be
+> reduced to below ten milliseconds.
+
+What you see is the test whether the Jitter RNG has a proper noise source. The 
+function jent_entropy_init() is the cause of the operation. It performs 1024 
+times a test to validate the appropriateness of the noise source. You can 
+adjust that with the TESTLOOPCOUNT in this function. But I am not sure 
+adjusting is a wise course of action.
+
+Ciao
+Stephan
+
 
