@@ -2,258 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0575F2ADE34
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 19:24:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AF0A2ADE3B
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 19:25:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731052AbgKJSYn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 13:24:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40938 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726690AbgKJSYm (ORCPT
+        id S1731383AbgKJSZZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 13:25:25 -0500
+Received: from mail-il1-f199.google.com ([209.85.166.199]:33780 "EHLO
+        mail-il1-f199.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726557AbgKJSZV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 13:24:42 -0500
-Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D8BAC0613D4
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 10:24:40 -0800 (PST)
-Received: by mail-io1-xd41.google.com with SMTP id s24so15215795ioj.13
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 10:24:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=IOH6J0YBVkmN1dduOdBptrakAtOt/X1RoVotGiwpplM=;
-        b=nAZHLD1wNP2fywJokk4jgbvk40kb3W2SbHy4upVPJeYV6HVMkSU/HRg/PRVlU06Whz
-         TALsPG/RgWYNQaPhVD/mknthvlJLWXZmM8xFta7xjpCmDH2a5I4fbv+eznlGUH4TrYDH
-         4vIj+/LT4oB+UrNBVuEtAl03K1E0htqAnJ8MU0AOxxhID/b+BUSNS8Eod2sMZbSkOx8a
-         TelU7TsRBNw9xR2Pz5v6NRRb9E/LZNTFQDmmUamW1ySUZl59u6suJxcyMlRAQOkG4KO0
-         3m7K9iKSKI4mvTy+R8emuvMO2KhsIlRIZWbqL9Zf8l4tyclS6Oibaqo8kL9gt1C6hE5R
-         shUg==
+        Tue, 10 Nov 2020 13:25:21 -0500
+Received: by mail-il1-f199.google.com with SMTP id p17so10150802ilj.0
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 10:25:18 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=IOH6J0YBVkmN1dduOdBptrakAtOt/X1RoVotGiwpplM=;
-        b=fD+pe4ncQZngyy8TtG43Nk3Rb75OxmgGh1uxe6v01VkPY7yzB/gbP+FMfU5Cb1IwwT
-         A5YXfgja747+AfueOaebj7NvQm1cGpiTc88Y11SUezs+axyAQhjq9EH8DfbdKx4JcyK9
-         uYNCYfaY7PxEn/+ZbBZSFTeZ/E8kMyx0VpZEwumNNpXdIf0xw1wPVQNsBnzjpW5R5TDz
-         jOQOFO1miFqOChtKmMhhx4e01l8YwlktEyYu8nl2SW3XTm9Erz2DHsTsCTqKTgGln9Xl
-         dPDF7AkhL1Z7mER9Tk1jaOlaSy0ULXuSA3cvVlYlzYr+VfB62PdOrQguCF09Ecn3tlRn
-         txbg==
-X-Gm-Message-State: AOAM530Oepa9gl52sThuhvk5rpYbMWHg80FZVIJlivluryk/aCh2tOqH
-        HzpO3yVZpoaLI40zs8PAPBX7YCzD9/XxaSa5FhJksA==
-X-Google-Smtp-Source: ABdhPJzYF7f15PCApiJG/Ryo7Fp4i0qaDqB/n4P56vFp3U6LWxeDHbRvZ+rktmtpVpMpeygK6GoiZGFWsmugurZHzY4=
-X-Received: by 2002:a6b:3fd4:: with SMTP id m203mr15357830ioa.25.1605032679312;
- Tue, 10 Nov 2020 10:24:39 -0800 (PST)
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=TXO+2A0GRnZizAfhKjCrCYfOZAWglOyhJBANsYg+Qvc=;
+        b=EtwythL2p/R8g4Sp2mNPBJ+B3iGb0k6ZQnjjUOqmi8HkHdWDbDVjDp0cC8kRvmBUGJ
+         oJDp84ueqEpu7Z+7WWL91lxlEYRI6e7UM0yoAiWGQCAKLtXw4sEw95DDVxw8dOZUS8Ag
+         awFTrZrRhYYmI/VsCm7e42fqEBZic66F4tBYGTsmF9pV8DTHaHmPqh9F62AOUPRVCzkC
+         R7Ier1vGRZbITdwt/tv9Qyw6vVTjFY3WFCgf4TH/EZKWulR9XouRDlaan8PdzKvGqA4A
+         lUqWmb3x/im3fCOkFOEUoAlJq8aS1XSCiI6RpkeOfA8OGzxdHiW4JieepAOkjxgvucdv
+         X4jA==
+X-Gm-Message-State: AOAM5317QH5d94yZZWLW5puAtDHN5CSzkIh0R0k70ZQhKhXrFvHn7uCl
+        BUlQhvjUyOtFNzWgjuWKiA82QNf5EX/wSSYcJ3FCd4XDb5ck
+X-Google-Smtp-Source: ABdhPJwOHCB5GIUsMAjuGWZhIROaeRgS5LavfkwflgWhakL1m4qFtjBI3qpAhgnHK0rtN3vyMX/l36L3iy0g6HpmuV4fwW9qY9W5
 MIME-Version: 1.0
-References: <20201106155626.3395468-1-lokeshgidra@google.com>
- <20201106155626.3395468-4-lokeshgidra@google.com> <CAHC9VhRsaE5vhcSMr5nYzrHrM6Pc5-JUErNfntsRrPjKQNALxw@mail.gmail.com>
-In-Reply-To: <CAHC9VhRsaE5vhcSMr5nYzrHrM6Pc5-JUErNfntsRrPjKQNALxw@mail.gmail.com>
-From:   Lokesh Gidra <lokeshgidra@google.com>
-Date:   Tue, 10 Nov 2020 10:24:28 -0800
-Message-ID: <CA+EESO7LuRM_MH9z=BhLbWJrxMvnepq-NSTu_UJsPXxc0QkEag@mail.gmail.com>
-Subject: Re: [PATCH v12 3/4] selinux: teach SELinux about anonymous inodes
-To:     Paul Moore <paul@paul-moore.com>
-Cc:     Andrea Arcangeli <aarcange@redhat.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        James Morris <jmorris@namei.org>,
-        Stephen Smalley <stephen.smalley.work@gmail.com>,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        Eric Biggers <ebiggers@kernel.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Eric Paris <eparis@parisplace.org>,
-        Daniel Colascione <dancol@dancol.org>,
-        Kees Cook <keescook@chromium.org>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        KP Singh <kpsingh@google.com>,
-        David Howells <dhowells@redhat.com>,
-        Thomas Cedeno <thomascedeno@google.com>,
-        Anders Roxell <anders.roxell@linaro.org>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Matthew Garrett <matthewgarrett@google.com>,
-        Aaron Goidel <acgoide@tycho.nsa.gov>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
-        YueHaibing <yuehaibing@huawei.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Alexey Budankov <alexey.budankov@linux.intel.com>,
-        Adrian Reber <areber@redhat.com>,
-        Aleksa Sarai <cyphar@cyphar.com>,
-        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        LSM List <linux-security-module@vger.kernel.org>,
-        SElinux list <selinux@vger.kernel.org>,
-        Kalesh Singh <kaleshsingh@google.com>,
-        Calin Juravle <calin@google.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Nick Kralevich <nnk@google.com>,
-        Jeffrey Vander Stoep <jeffv@google.com>,
-        "Cc: Android Kernel" <kernel-team@android.com>,
-        "open list:MEMORY MANAGEMENT" <linux-mm@kvack.org>,
-        Andrew Morton <akpm@linux-foundation.org>, hch@infradead.org,
-        Daniel Colascione <dancol@google.com>
+X-Received: by 2002:a6b:e911:: with SMTP id u17mr15144787iof.200.1605032718053;
+ Tue, 10 Nov 2020 10:25:18 -0800 (PST)
+Date:   Tue, 10 Nov 2020 10:25:18 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000000335e105b3c4cd69@google.com>
+Subject: memory leak in ath9k_hif_usb_firmware_cb
+From:   syzbot <syzbot+6692c72009680f7c4eb2@syzkaller.appspotmail.com>
+To:     eli.billauer@gmail.com, gregkh@linuxfoundation.org,
+        gustavoars@kernel.org, ingrassia@epigenesys.com,
+        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
+        stern@rowland.harvard.edu, syzkaller-bugs@googlegroups.com,
+        tiwai@suse.de
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks a lot Paul for the reviewing this patch.
+Hello,
 
-On Mon, Nov 9, 2020 at 7:12 PM Paul Moore <paul@paul-moore.com> wrote:
->
-> On Fri, Nov 6, 2020 at 10:56 AM Lokesh Gidra <lokeshgidra@google.com> wrote:
-> >
-> > From: Daniel Colascione <dancol@google.com>
-> >
-> > This change uses the anon_inodes and LSM infrastructure introduced in
-> > the previous patches to give SELinux the ability to control
-> > anonymous-inode files that are created using the new
-> > anon_inode_getfd_secure() function.
-> >
-> > A SELinux policy author detects and controls these anonymous inodes by
-> > adding a name-based type_transition rule that assigns a new security
-> > type to anonymous-inode files created in some domain. The name used
-> > for the name-based transition is the name associated with the
-> > anonymous inode for file listings --- e.g., "[userfaultfd]" or
-> > "[perf_event]".
-> >
-> > Example:
-> >
-> > type uffd_t;
-> > type_transition sysadm_t sysadm_t : anon_inode uffd_t "[userfaultfd]";
-> > allow sysadm_t uffd_t:anon_inode { create };
-> >
-> > (The next patch in this series is necessary for making userfaultfd
-> > support this new interface.  The example above is just
-> > for exposition.)
-> >
-> > Signed-off-by: Daniel Colascione <dancol@google.com>
-> > Signed-off-by: Lokesh Gidra <lokeshgidra@google.com>
-> > ---
-> >  security/selinux/hooks.c            | 53 +++++++++++++++++++++++++++++
-> >  security/selinux/include/classmap.h |  2 ++
-> >  2 files changed, 55 insertions(+)
-> >
-> > diff --git a/security/selinux/hooks.c b/security/selinux/hooks.c
-> > index 6b1826fc3658..1c0adcdce7a8 100644
-> > --- a/security/selinux/hooks.c
-> > +++ b/security/selinux/hooks.c
-> > @@ -2927,6 +2927,58 @@ static int selinux_inode_init_security(struct inode *inode, struct inode *dir,
-> >         return 0;
-> >  }
-> >
-> > +static int selinux_inode_init_security_anon(struct inode *inode,
-> > +                                           const struct qstr *name,
-> > +                                           const struct inode *context_inode)
-> > +{
-> > +       const struct task_security_struct *tsec = selinux_cred(current_cred());
-> > +       struct common_audit_data ad;
-> > +       struct inode_security_struct *isec;
-> > +       int rc;
-> > +
-> > +       if (unlikely(!selinux_initialized(&selinux_state)))
-> > +               return 0;
-> > +
-> > +       isec = selinux_inode(inode);
-> > +
-> > +       /*
-> > +        * We only get here once per ephemeral inode.  The inode has
-> > +        * been initialized via inode_alloc_security but is otherwise
-> > +        * untouched.
-> > +        */
-> > +
-> > +       if (context_inode) {
-> > +               struct inode_security_struct *context_isec =
-> > +                       selinux_inode(context_inode);
-> > +               isec->sclass = context_isec->sclass;
-> > +               isec->sid = context_isec->sid;
->
-> I suppose this isn't a major concern given the limited usage at the
-> moment, but I wonder if it would be a good idea to make sure the
-> context_inode's SELinux label is valid before we assign it to the
-> anonymous inode?  If it is invalid, what should we do?  Do we attempt
-> to (re)validate it?  Do we simply fallback to the transition approach?
->
-Frankly, I'm not too familiar with SELinux. Originally this patch
-series was developed by Daniel, in consultation with Stephen Smalley.
-In my (probably naive) opinion we should fallback to transition
-approach. But I'd request you to tell me if this needs to be addressed
-now, and if so then what's the right approach.
+syzbot found the following issue on:
 
-If the decision is to address this now, then what's the best way to
-check the SELinux label validity?
+HEAD commit:    407ab579 Merge tag 'for-linus' of git://git.kernel.org/pub..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=134dd026500000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=a3f13716fa0212fd
+dashboard link: https://syzkaller.appspot.com/bug?extid=6692c72009680f7c4eb2
+compiler:       gcc (GCC) 10.1.0-syz 20200507
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=163be156500000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1775d04e500000
 
-> > +       } else {
-> > +               isec->sclass = SECCLASS_ANON_INODE;
-> > +               rc = security_transition_sid(
-> > +                       &selinux_state, tsec->sid, tsec->sid,
-> > +                       isec->sclass, name, &isec->sid);
-> > +               if (rc)
-> > +                       return rc;
-> > +       }
-> > +
-> > +       isec->initialized = LABEL_INITIALIZED;
-> > +
-> > +       /*
-> > +        * Now that we've initialized security, check whether we're
-> > +        * allowed to actually create this type of anonymous inode.
-> > +        */
-> > +
-> > +       ad.type = LSM_AUDIT_DATA_INODE;
-> > +       ad.u.inode = inode;
-> > +
-> > +       return avc_has_perm(&selinux_state,
-> > +                           tsec->sid,
-> > +                           isec->sid,
-> > +                           isec->sclass,
-> > +                           FILE__CREATE,
->
-> I believe you want to use ANON_INODE__CREATE here instead of FILE__CREATE, yes?
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+6692c72009680f7c4eb2@syzkaller.appspotmail.com
 
-ANON_INODE__CREATE definitely seems more appropriate. I'll change it
-in the next revision.
->
-> This brings up another question, and requirement - what testing are
-> you doing for this patchset?  We require that new SELinux kernel
-> functionality includes additions to the SELinux test suite to help
-> verify the functionality.  I'm also *strongly* encouraging that new
-> contributions come with updates to The SELinux Notebook.  If you are
-> unsure about what to do for either, let us know and we can help get
-> you started.
->
-> * https://github.com/SELinuxProject/selinux-testsuite
-> * https://github.com/SELinuxProject/selinux-notebook
->
-I'd definitely need help with both of these. Kindly guide how to proceed.
+BUG: memory leak
+unreferenced object 0xffff888109b4dc00 (size 192):
+  comm "kworker/1:2", pid 3705, jiffies 4294941906 (age 14.110s)
+  hex dump (first 32 bytes):
+    01 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+    00 00 00 00 00 00 00 00 18 dc b4 09 81 88 ff ff  ................
+  backtrace:
+    [<000000006422299c>] kmalloc include/linux/slab.h:557 [inline]
+    [<000000006422299c>] usb_alloc_urb+0x66/0xe0 drivers/usb/core/urb.c:74
+    [<000000007744b258>] ath9k_hif_usb_alloc_tx_urbs drivers/net/wireless/ath/ath9k/hif_usb.c:829 [inline]
+    [<000000007744b258>] ath9k_hif_usb_alloc_urbs+0x148/0x640 drivers/net/wireless/ath/ath9k/hif_usb.c:1008
+    [<000000006c8e4116>] ath9k_hif_usb_dev_init drivers/net/wireless/ath/ath9k/hif_usb.c:1102 [inline]
+    [<000000006c8e4116>] ath9k_hif_usb_firmware_cb+0x88/0x1f0 drivers/net/wireless/ath/ath9k/hif_usb.c:1235
+    [<00000000e5c70763>] request_firmware_work_func+0x47/0x90 drivers/base/firmware_loader/main.c:1079
+    [<0000000089bbfbae>] process_one_work+0x27d/0x590 kernel/workqueue.c:2272
+    [<00000000d58def96>] worker_thread+0x59/0x5d0 kernel/workqueue.c:2418
+    [<000000001b9033f3>] kthread+0x178/0x1b0 kernel/kthread.c:292
+    [<000000001b3150ee>] ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
 
-> > +                           &ad);
-> > +}
-> > +
-> >  static int selinux_inode_create(struct inode *dir, struct dentry *dentry, umode_t mode)
-> >  {
-> >         return may_create(dir, dentry, SECCLASS_FILE);
-> > @@ -6992,6 +7044,7 @@ static struct security_hook_list selinux_hooks[] __lsm_ro_after_init = {
-> >
-> >         LSM_HOOK_INIT(inode_free_security, selinux_inode_free_security),
-> >         LSM_HOOK_INIT(inode_init_security, selinux_inode_init_security),
-> > +       LSM_HOOK_INIT(inode_init_security_anon, selinux_inode_init_security_anon),
-> >         LSM_HOOK_INIT(inode_create, selinux_inode_create),
-> >         LSM_HOOK_INIT(inode_link, selinux_inode_link),
-> >         LSM_HOOK_INIT(inode_unlink, selinux_inode_unlink),
-> > diff --git a/security/selinux/include/classmap.h b/security/selinux/include/classmap.h
-> > index 40cebde62856..ba2e01a6955c 100644
-> > --- a/security/selinux/include/classmap.h
-> > +++ b/security/selinux/include/classmap.h
-> > @@ -249,6 +249,8 @@ struct security_class_mapping secclass_map[] = {
-> >           {"open", "cpu", "kernel", "tracepoint", "read", "write"} },
-> >         { "lockdown",
-> >           { "integrity", "confidentiality", NULL } },
-> > +       { "anon_inode",
-> > +         { COMMON_FILE_PERMS, NULL } },
-> >         { NULL }
-> >    };
-> >
->
-> --
-> paul moore
-> www.paul-moore.com
+BUG: memory leak
+unreferenced object 0xffff88810efed240 (size 192):
+  comm "kworker/1:2", pid 3705, jiffies 4294941906 (age 14.110s)
+  hex dump (first 32 bytes):
+    01 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+    00 00 00 00 00 00 00 00 58 d2 fe 0e 81 88 ff ff  ........X.......
+  backtrace:
+    [<000000006422299c>] kmalloc include/linux/slab.h:557 [inline]
+    [<000000006422299c>] usb_alloc_urb+0x66/0xe0 drivers/usb/core/urb.c:74
+    [<000000007744b258>] ath9k_hif_usb_alloc_tx_urbs drivers/net/wireless/ath/ath9k/hif_usb.c:829 [inline]
+    [<000000007744b258>] ath9k_hif_usb_alloc_urbs+0x148/0x640 drivers/net/wireless/ath/ath9k/hif_usb.c:1008
+    [<000000006c8e4116>] ath9k_hif_usb_dev_init drivers/net/wireless/ath/ath9k/hif_usb.c:1102 [inline]
+    [<000000006c8e4116>] ath9k_hif_usb_firmware_cb+0x88/0x1f0 drivers/net/wireless/ath/ath9k/hif_usb.c:1235
+    [<00000000e5c70763>] request_firmware_work_func+0x47/0x90 drivers/base/firmware_loader/main.c:1079
+    [<0000000089bbfbae>] process_one_work+0x27d/0x590 kernel/workqueue.c:2272
+    [<00000000d58def96>] worker_thread+0x59/0x5d0 kernel/workqueue.c:2418
+    [<000000001b9033f3>] kthread+0x178/0x1b0 kernel/kthread.c:292
+    [<000000001b3150ee>] ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
+
+BUG: memory leak
+unreferenced object 0xffff88810efedb40 (size 192):
+  comm "kworker/1:2", pid 3705, jiffies 4294941906 (age 14.110s)
+  hex dump (first 32 bytes):
+    01 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+    00 00 00 00 00 00 00 00 58 db fe 0e 81 88 ff ff  ........X.......
+  backtrace:
+    [<000000006422299c>] kmalloc include/linux/slab.h:557 [inline]
+    [<000000006422299c>] usb_alloc_urb+0x66/0xe0 drivers/usb/core/urb.c:74
+    [<000000007744b258>] ath9k_hif_usb_alloc_tx_urbs drivers/net/wireless/ath/ath9k/hif_usb.c:829 [inline]
+    [<000000007744b258>] ath9k_hif_usb_alloc_urbs+0x148/0x640 drivers/net/wireless/ath/ath9k/hif_usb.c:1008
+    [<000000006c8e4116>] ath9k_hif_usb_dev_init drivers/net/wireless/ath/ath9k/hif_usb.c:1102 [inline]
+    [<000000006c8e4116>] ath9k_hif_usb_firmware_cb+0x88/0x1f0 drivers/net/wireless/ath/ath9k/hif_usb.c:1235
+    [<00000000e5c70763>] request_firmware_work_func+0x47/0x90 drivers/base/firmware_loader/main.c:1079
+    [<0000000089bbfbae>] process_one_work+0x27d/0x590 kernel/workqueue.c:2272
+    [<00000000d58def96>] worker_thread+0x59/0x5d0 kernel/workqueue.c:2418
+    [<000000001b9033f3>] kthread+0x178/0x1b0 kernel/kthread.c:292
+    [<000000001b3150ee>] ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
+
+BUG: memory leak
+unreferenced object 0xffff88810efedf00 (size 192):
+  comm "kworker/1:2", pid 3705, jiffies 4294941906 (age 14.110s)
+  hex dump (first 32 bytes):
+    01 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+    00 00 00 00 00 00 00 00 18 df fe 0e 81 88 ff ff  ................
+  backtrace:
+    [<000000006422299c>] kmalloc include/linux/slab.h:557 [inline]
+    [<000000006422299c>] usb_alloc_urb+0x66/0xe0 drivers/usb/core/urb.c:74
+    [<000000007744b258>] ath9k_hif_usb_alloc_tx_urbs drivers/net/wireless/ath/ath9k/hif_usb.c:829 [inline]
+    [<000000007744b258>] ath9k_hif_usb_alloc_urbs+0x148/0x640 drivers/net/wireless/ath/ath9k/hif_usb.c:1008
+    [<000000006c8e4116>] ath9k_hif_usb_dev_init drivers/net/wireless/ath/ath9k/hif_usb.c:1102 [inline]
+    [<000000006c8e4116>] ath9k_hif_usb_firmware_cb+0x88/0x1f0 drivers/net/wireless/ath/ath9k/hif_usb.c:1235
+    [<00000000e5c70763>] request_firmware_work_func+0x47/0x90 drivers/base/firmware_loader/main.c:1079
+    [<0000000089bbfbae>] process_one_work+0x27d/0x590 kernel/workqueue.c:2272
+    [<00000000d58def96>] worker_thread+0x59/0x5d0 kernel/workqueue.c:2418
+    [<000000001b9033f3>] kthread+0x178/0x1b0 kernel/kthread.c:292
+    [<000000001b3150ee>] ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
+
+BUG: memory leak
+unreferenced object 0xffff88810efedc00 (size 192):
+  comm "kworker/1:2", pid 3705, jiffies 4294941906 (age 14.110s)
+  hex dump (first 32 bytes):
+    01 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+    00 00 00 00 00 00 00 00 18 dc fe 0e 81 88 ff ff  ................
+  backtrace:
+    [<000000006422299c>] kmalloc include/linux/slab.h:557 [inline]
+    [<000000006422299c>] usb_alloc_urb+0x66/0xe0 drivers/usb/core/urb.c:74
+    [<000000007744b258>] ath9k_hif_usb_alloc_tx_urbs drivers/net/wireless/ath/ath9k/hif_usb.c:829 [inline]
+    [<000000007744b258>] ath9k_hif_usb_alloc_urbs+0x148/0x640 drivers/net/wireless/ath/ath9k/hif_usb.c:1008
+    [<000000006c8e4116>] ath9k_hif_usb_dev_init drivers/net/wireless/ath/ath9k/hif_usb.c:1102 [inline]
+    [<000000006c8e4116>] ath9k_hif_usb_firmware_cb+0x88/0x1f0 drivers/net/wireless/ath/ath9k/hif_usb.c:1235
+    [<00000000e5c70763>] request_firmware_work_func+0x47/0x90 drivers/base/firmware_loader/main.c:1079
+    [<0000000089bbfbae>] process_one_work+0x27d/0x590 kernel/workqueue.c:2272
+    [<00000000d58def96>] worker_thread+0x59/0x5d0 kernel/workqueue.c:2418
+    [<000000001b9033f3>] kthread+0x178/0x1b0 kernel/kthread.c:292
+    [<000000001b3150ee>] ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
+
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
