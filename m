@@ -2,53 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 235EF2ACB42
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 03:47:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 433992ACB44
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 03:48:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729777AbgKJCr1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 21:47:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36532 "EHLO
+        id S1730083AbgKJCsJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 21:48:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36638 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729336AbgKJCr1 (ORCPT
+        with ESMTP id S1729336AbgKJCsJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 21:47:27 -0500
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10AD8C0613D3
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Nov 2020 18:47:27 -0800 (PST)
-Received: by mail-pl1-x641.google.com with SMTP id u2so5712349pls.10
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Nov 2020 18:47:26 -0800 (PST)
+        Mon, 9 Nov 2020 21:48:09 -0500
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18617C0613D3
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Nov 2020 18:48:08 -0800 (PST)
+Received: by mail-pf1-x444.google.com with SMTP id g7so10055843pfc.2
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Nov 2020 18:48:08 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to:user-agent;
-        bh=6UuLx7prIHda8827z12iEWkf6vSvIP09lTJVmS5Ox0Q=;
-        b=Kw2B6lykWnSw7p5AV07ZJWL2A+cDzPdUYe9FzX/Us+etFHFI/T/T661fzpgfpmkB23
-         L0s3IqzWxMuEpLtG2nf6epBUGvBgNQslbrwL/xWnLHM+dK3GSDrF8rS8Ot0Oc564aJVq
-         519Wx4Vc34QuvNNgwC7LCzTeN+G1UMlAKa5NF+0slmhYZh6HLDYjufjEZVDPLlIGIQQe
-         VLqdYK/5TswL8tpPoztGNjJ6kb5bI+IoagL3MAll0zOwQtq40+uQ1lh3Pd4g/04WfzRU
-         Ijgf2QTBUMV3h0wJsQ3ydF/lb4a7N9BHcoTppT3suDT0Hqj+oetpijIKCSsBuOfIKIVK
-         ZH/g==
+        bh=bp4mJcC9PMhcw5y+WqTlQnnOavYlE/Bb079QNbmAgQM=;
+        b=LHVswaHAenoYlpIexQbcoC0/+grtt9LKi1E2jo2Smg96sXIVFZrhjIPEKE3SV9911N
+         wNdc74AHhTtYGy+150UerhwqQfxU8vcLRJu7bLw9+aDfuAJ6XvR+VyLFCVCyC7TwnDI2
+         bgHUBS5bKMGP6z+rxAmpSUnS01bwNM94hdA/ZeBRvuQo462rT2enhiS6tgLaJFNCwS2H
+         inqtf9GQ6YaQESyBEqHjBuWo2dW9ThKPxMVAVBJsJNF+kpC5yYtwK/x9zQqCSpzPUO9q
+         p8v7rx03LfWYbw9YI6L+aYlbE9ii0pEk0UO/TdKj3WcupF5y+5Zu4LjlimUVPj0iwKXN
+         TCaA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=6UuLx7prIHda8827z12iEWkf6vSvIP09lTJVmS5Ox0Q=;
-        b=Yi2BJh9bW2shoC4VOmruQGnP+/Nf+bFOBZ76lLITB15vsOCDGTghyceG17j95m/1na
-         Po2Ii5j1zX7NBU1MbTgr+vA4FEddV8OBzmHWXG4BvzCd37XnaFXShtLmDf1qTJ3tG+aX
-         FUm3UPg4NQlshZ9zONBp0b+DUpoJeOoPLfJU9L2hw5eEpHh4LlIMOdQzqLRUY+xuiLxM
-         FGXPgtKJQ1UOc2z/ei0aDGgs86UiL9ZSRFgdSKh52xEZHbuGscQikH2h80frZwQjWfbj
-         7lJzACFM+EE+HrCTayevp1suiPWYNQF38EJMZHC0svpAb0tDk2cGNzvKccGDXXiZ6Yjp
-         DYAg==
-X-Gm-Message-State: AOAM530SzMV+GHjCBDNPOHAdl9fSCX+ZmOBxaXGTY+jru2Jt2mt8SzW9
-        15EWA4PxKt+Cj96atSPqDLH2qE5MeP1DDw==
-X-Google-Smtp-Source: ABdhPJxrMfhkgS5xHKwvNJHFu2FRs4gK6JPlC1peRayhgiaY1blEDcAwRDcyQi3TKu5oxZkNxe3KuQ==
-X-Received: by 2002:a17:902:d309:b029:d7:cc2d:1ee7 with SMTP id b9-20020a170902d309b02900d7cc2d1ee7mr1676854plc.10.1604976446323;
-        Mon, 09 Nov 2020 18:47:26 -0800 (PST)
+        bh=bp4mJcC9PMhcw5y+WqTlQnnOavYlE/Bb079QNbmAgQM=;
+        b=AoPDgsl4C8bq2UrFJuZIhmbdHq0utHey1zfD/1iVqhWby88CoGTTOgyqALMfkpp07f
+         DUuy1tALc4cBVTVO22gTbeC++d0NZkZyQBBlb1SsxSLIQczzuLIqHNef8p5LulPeLeIC
+         ICB6+iHSBGjz6BuKlzf2F3Ud9xWe6+YKvggnFU83KIS1olXGkte8t6q8rJNFzK2WHn45
+         ZIe9Ot6RSt21EgHGYOTA7K0Yz2tKRvNW1u0RHfS2hI67VnATo0zbwxGUljmsDYRYWQ4i
+         kh6woh66+c270Qx1nZTNAC7WCSSD6p35GuRgzdLV0YejWvxD5vKG3HlbKg52Rmq8ixLk
+         XjKQ==
+X-Gm-Message-State: AOAM530freL5aYplILR+zHUP4ym2o3nU5opyTricnw9akbZwmojLud/x
+        BKrDrWnWRV2CNchOgOxBInvLjA==
+X-Google-Smtp-Source: ABdhPJwVIUbHBSxAxf+YyCqW+lxjYugM/kd0pbnjEn43+haD/CSalZJ/qLW0CpPT2viRXgsA/WVzcg==
+X-Received: by 2002:a17:90b:496:: with SMTP id bh22mr2597127pjb.120.1604976487671;
+        Mon, 09 Nov 2020 18:48:07 -0800 (PST)
 Received: from localhost ([122.172.12.172])
-        by smtp.gmail.com with ESMTPSA id i11sm12461961pfq.156.2020.11.09.18.47.25
+        by smtp.gmail.com with ESMTPSA id k5sm905648pjj.37.2020.11.09.18.48.06
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 09 Nov 2020 18:47:25 -0800 (PST)
-Date:   Tue, 10 Nov 2020 08:17:23 +0530
+        Mon, 09 Nov 2020 18:48:06 -0800 (PST)
+Date:   Tue, 10 Nov 2020 08:18:04 +0530
 From:   Viresh Kumar <viresh.kumar@linaro.org>
 To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>
 Cc:     Linux PM <linux-pm@vger.kernel.org>,
@@ -57,74 +57,95 @@ Cc:     Linux PM <linux-pm@vger.kernel.org>,
         Zhang Rui <rui.zhang@intel.com>,
         LKML <linux-kernel@vger.kernel.org>,
         Doug Smythies <dsmythies@telus.net>
-Subject: Re: [PATCH v2 3/4] cpufreq: Add strict_target to struct
- cpufreq_policy
-Message-ID: <20201110024723.a5ouawbgj5ftyfe4@vireshk-i7>
+Subject: Re: [PATCH v2 4/4] cpufreq: intel_pstate: Take
+ CPUFREQ_GOV_FLAG_STRICT_TARGET into account
+Message-ID: <20201110024804.j6wrzq7bne7pmwzv@vireshk-i7>
 References: <13269660.K2JYd4sGFX@kreacher>
- <2826323.52ZM0ncLkd@kreacher>
+ <2345253.LYi3vV7ftd@kreacher>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <2826323.52ZM0ncLkd@kreacher>
+In-Reply-To: <2345253.LYi3vV7ftd@kreacher>
 User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 09-11-20, 17:53, Rafael J. Wysocki wrote:
+On 09-11-20, 17:55, Rafael J. Wysocki wrote:
 > From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 > 
-> Add a new field to be set when the CPUFREQ_GOV_FLAG_STRICT_TARGET
-> flag is set for the current governor to struct cpufreq_policy, so
-> that the drivers needing to check CPUFREQ_GOV_FLAG_STRICT_TARGET do
-> not have to access the governor object during every frequency
-> transition.
+> Make intel_pstate take the new CPUFREQ_GOV_FLAG_STRICT_TARGET
+> governor flag into account when it operates in the passive mode with
+> HWP enabled, so as to fix the "powersave" governor behavior in that
+> case (currently, HWP is allowed to scale the performance all the way
+> up to the policy max limit when the "powersave" governor is used,
+> but it should be constrained to the policy min limit then).
 > 
 > Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 > ---
->  drivers/cpufreq/cpufreq.c |    2 ++
->  include/linux/cpufreq.h   |    6 ++++++
->  2 files changed, 8 insertions(+)
+>  drivers/cpufreq/intel_pstate.c |   16 +++++++++-------
+>  1 file changed, 9 insertions(+), 7 deletions(-)
 > 
-> Index: linux-pm/drivers/cpufreq/cpufreq.c
+> Index: linux-pm/drivers/cpufreq/intel_pstate.c
 > ===================================================================
-> --- linux-pm.orig/drivers/cpufreq/cpufreq.c
-> +++ linux-pm/drivers/cpufreq/cpufreq.c
-> @@ -2280,6 +2280,8 @@ static int cpufreq_init_governor(struct
->  		}
->  	}
->  
-> +	policy->strict_target = !!(policy->governor->flags & CPUFREQ_GOV_FLAG_STRICT_TARGET);
-> +
->  	return 0;
+> --- linux-pm.orig/drivers/cpufreq/intel_pstate.c
+> +++ linux-pm/drivers/cpufreq/intel_pstate.c
+> @@ -2527,7 +2527,7 @@ static void intel_cpufreq_trace(struct c
 >  }
 >  
-> Index: linux-pm/include/linux/cpufreq.h
-> ===================================================================
-> --- linux-pm.orig/include/linux/cpufreq.h
-> +++ linux-pm/include/linux/cpufreq.h
-> @@ -109,6 +109,12 @@ struct cpufreq_policy {
->  	bool			fast_switch_enabled;
+>  static void intel_cpufreq_adjust_hwp(struct cpudata *cpu, u32 target_pstate,
+> -				     bool fast_switch)
+> +				     bool strict, bool fast_switch)
+>  {
+>  	u64 prev = READ_ONCE(cpu->hwp_req_cached), value = prev;
 >  
->  	/*
-> +	 * Set if the CPUFREQ_GOV_FLAG_STRICT_TARGET flag is set for the
-> +	 * current governor.
-> +	 */
-> +	bool			strict_target;
-> +
-> +	/*
->  	 * Preferred average time interval between consecutive invocations of
->  	 * the driver to set the frequency for this policy.  To be set by the
->  	 * scaling driver (0, which is the default, means no preference).
-
-I was kind of hoping to avoid adding a field here when I proposed updating the
-gov structure. I do understand the performance related penalty of accessing the
-gov structure for fast switch case though and so wonder if we really need this,
-then should we avoid changing the gov structure at all ? I mean there is only
-one user of that field now, do we really need a flag for it ? We can just do the
-string comparison here with powersave and performance to set strict_target.
-
-Whatever you feel is better though.
+> @@ -2539,7 +2539,7 @@ static void intel_cpufreq_adjust_hwp(str
+>  	 * field in it, so opportunistically update the max too if needed.
+>  	 */
+>  	value &= ~HWP_MAX_PERF(~0L);
+> -	value |= HWP_MAX_PERF(cpu->max_perf_ratio);
+> +	value |= HWP_MAX_PERF(strict ? target_pstate : cpu->max_perf_ratio);
+>  
+>  	if (value == prev)
+>  		return;
+> @@ -2562,14 +2562,16 @@ static void intel_cpufreq_adjust_perf_ct
+>  			      pstate_funcs.get_val(cpu, target_pstate));
+>  }
+>  
+> -static int intel_cpufreq_update_pstate(struct cpudata *cpu, int target_pstate,
+> -				       bool fast_switch)
+> +static int intel_cpufreq_update_pstate(struct cpufreq_policy *policy,
+> +				       int target_pstate, bool fast_switch)
+>  {
+> +	struct cpudata *cpu = all_cpu_data[policy->cpu];
+>  	int old_pstate = cpu->pstate.current_pstate;
+>  
+>  	target_pstate = intel_pstate_prepare_request(cpu, target_pstate);
+>  	if (hwp_active) {
+> -		intel_cpufreq_adjust_hwp(cpu, target_pstate, fast_switch);
+> +		intel_cpufreq_adjust_hwp(cpu, target_pstate,
+> +					 policy->strict_target, fast_switch);
+>  		cpu->pstate.current_pstate = target_pstate;
+>  	} else if (target_pstate != old_pstate) {
+>  		intel_cpufreq_adjust_perf_ctl(cpu, target_pstate, fast_switch);
+> @@ -2609,7 +2611,7 @@ static int intel_cpufreq_target(struct c
+>  		break;
+>  	}
+>  
+> -	target_pstate = intel_cpufreq_update_pstate(cpu, target_pstate, false);
+> +	target_pstate = intel_cpufreq_update_pstate(policy, target_pstate, false);
+>  
+>  	freqs.new = target_pstate * cpu->pstate.scaling;
+>  
+> @@ -2628,7 +2630,7 @@ static unsigned int intel_cpufreq_fast_s
+>  
+>  	target_pstate = DIV_ROUND_UP(target_freq, cpu->pstate.scaling);
+>  
+> -	target_pstate = intel_cpufreq_update_pstate(cpu, target_pstate, true);
+> +	target_pstate = intel_cpufreq_update_pstate(policy, target_pstate, true);
+>  
+>  	return target_pstate * cpu->pstate.scaling;
+>  }
 
 Acked-by: Viresh Kumar <viresh.kumar@linaro.org>
 
