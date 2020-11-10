@@ -2,84 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 400FD2AC9DC
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 01:49:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ED7DD2AC9DE
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 01:51:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729740AbgKJAtH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 19:49:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46576 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727311AbgKJAtG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 19:49:06 -0500
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B94AFC0613CF;
-        Mon,  9 Nov 2020 16:49:06 -0800 (PST)
-Received: by mail-pf1-x444.google.com with SMTP id w14so7195084pfd.7;
-        Mon, 09 Nov 2020 16:49:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=IH/P2f3Ur4lgJvhvzpb9ekV/UZANdEcXSKjl/0X0WgI=;
-        b=Ht9rGRxNHSZwhd21h+JqhRq5vg+3OACtJLRIFGWuHjjk/G6NhePNel/8lE1DndRHeW
-         vQhYMKw/JTb8fM6z4ui59xHCCuZ0hdtaCa7mRaeZhSzc05N60lSg17bdHmvUg2WLAaqK
-         s3L8DSOXSxHkeRWDUbu1rJqUgDImFeFyKY0XH7hw1+RbFNCRT/zknqcKRT8wAyQeLgst
-         5HwS6dtbDwyO9JG7xUQeXG55iEfiUcheoU6h+dUHabwDu4fpEm6KYRUwFbLk3wmt7s5y
-         rqidNDEM5+izUoJGkEa7j4Rm4aQSY8zLsOmv7iVYanhyMaAZqJocdR9fDBAkAN58EnGe
-         ns0w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=IH/P2f3Ur4lgJvhvzpb9ekV/UZANdEcXSKjl/0X0WgI=;
-        b=iB+fXCZlo6y6i/VY/fLrgzD1Lbu3OSSOdymzLb0I4jEdcUaSAfclqt0+/MpC2Arc1w
-         WvmpqMStXQzIdJ4JlhE30IA+14ytwFuF+cUVgswcApUZ9kjxhrXjUPu1P6pxU+HrrrMR
-         zdfKxyLnmNUthGK7SkDnsDunGvyc7WbOcXjnD64uhNHhJUIn7Q89T+V6HoL3XyriW3UC
-         PfUNBnz7F2N/sotrSCGKpw6Khy4+KI3ilcQ+jTiLmEhl5WQ1MbxcwGGuIEJTcV1puhOg
-         z+JFIRV+zNaclD01ZIQf6zUSM0Z/8TAVXwh9LbicBWE1W19zL790NHUMWshZbIvzRWKv
-         SjMA==
-X-Gm-Message-State: AOAM531DKTZJDGKJZp0+y21kHKNhUu1+wXf5x68y351vO/6uuqOhDoB6
-        I0fH0W1TsVPLhS+oWEIl9SY=
-X-Google-Smtp-Source: ABdhPJwYEBvLAu0zfxdNIsTVQv9lGQSPMIlS0ssjdpstKFqEiKufPQ8pCBIN1nMs4Ivs2NjMH0HrQw==
-X-Received: by 2002:a63:4546:: with SMTP id u6mr15155222pgk.311.1604969346080;
-        Mon, 09 Nov 2020 16:49:06 -0800 (PST)
-Received: from dtor-ws ([2620:15c:202:201:a6ae:11ff:fe11:fcc3])
-        by smtp.gmail.com with ESMTPSA id c3sm696425pjv.27.2020.11.09.16.49.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 09 Nov 2020 16:49:05 -0800 (PST)
-Date:   Mon, 9 Nov 2020 16:49:03 -0800
-From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     linux-kernel@vger.kernel.org, linux-input@vger.kernel.org
-Subject: Re: [PATCH 05/20] input: rmi4: rmi_f01: Struct headers are expected
- to start with 'struct <name>'
-Message-ID: <20201110004903.GV1003057@dtor-ws>
-References: <20201104162427.2984742-1-lee.jones@linaro.org>
- <20201104162427.2984742-6-lee.jones@linaro.org>
+        id S1730252AbgKJAvg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 19:51:36 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52552 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729454AbgKJAvg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 19:51:36 -0500
+Received: from dragon (80.251.214.228.16clouds.com [80.251.214.228])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 15D1A206D8;
+        Tue, 10 Nov 2020 00:51:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604969495;
+        bh=fHvyMbe0ih6BAcs5WE75jOxBrAq4NHN71OG7fV1KPDQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=UdXCGmxczUfLXuRZoj9VQRABfj6X9ssTda9acK9R9YWCU/6iLpBUBnosZ/aPELOTN
+         UPaxsDMdNRY2/bgpVnNNDzdKRr3z3pa5wMYQxpzhz1y3WDfzu9jFLg0ViqZVghHS+Y
+         qJx0qHJnAsJ020QO1e09IJYgN4dkGqAQw7n3jnMc=
+Date:   Tue, 10 Nov 2020 08:51:30 +0800
+From:   Shawn Guo <shawnguo@kernel.org>
+To:     Joakim Zhang <qiangqing.zhang@nxp.com>
+Cc:     s.hauer@pengutronix.de, festevam@gmail.com, linux-imx@nxp.com,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, mkl@pengutronix.de
+Subject: Re: [PATCH V2] arm64: dts: imx8mp-evk: add CAN support
+Message-ID: <20201110005122.GH31601@dragon>
+References: <20201102021634.6480-1-qiangqing.zhang@nxp.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201104162427.2984742-6-lee.jones@linaro.org>
+In-Reply-To: <20201102021634.6480-1-qiangqing.zhang@nxp.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Lee,
-
-On Wed, Nov 04, 2020 at 04:24:12PM +0000, Lee Jones wrote:
-> Fixes the following W=1 kernel build warning(s):
+On Mon, Nov 02, 2020 at 10:16:34AM +0800, Joakim Zhang wrote:
+> Add CAN device node and pinctrl on i.MX8MP evk board.
 > 
->  drivers/input/rmi4/rmi_f01.c:106: warning: Cannot understand  * @ctrl0 - see the bit definitions above.
-> 
-> Cc: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-> Cc: linux-input@vger.kernel.org
-> Signed-off-by: Lee Jones <lee.jones@linaro.org>
+> Signed-off-by: Joakim Zhang <qiangqing.zhang@nxp.com>
 
-I folded all RMI4 patches together and added more missing field
-descriptions/fixed a few things, and applied.
-
-Thank you.
-
--- 
-Dmitry
+Applied, thanks.
