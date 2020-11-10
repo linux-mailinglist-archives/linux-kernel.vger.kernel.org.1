@@ -2,115 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA0212AE313
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 23:16:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 233CF2AE318
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 23:17:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732492AbgKJWQ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 17:16:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49206 "EHLO
+        id S1732133AbgKJWR1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 17:17:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49356 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731709AbgKJWQ2 (ORCPT
+        with ESMTP id S1727275AbgKJWR1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 17:16:28 -0500
-Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BA6EC0613D1;
-        Tue, 10 Nov 2020 14:16:28 -0800 (PST)
-Received: by mail-ed1-x543.google.com with SMTP id b9so110944edu.10;
-        Tue, 10 Nov 2020 14:16:28 -0800 (PST)
+        Tue, 10 Nov 2020 17:17:27 -0500
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9866C0613D1;
+        Tue, 10 Nov 2020 14:17:26 -0800 (PST)
+Received: by mail-wr1-x444.google.com with SMTP id 23so14403259wrc.8;
+        Tue, 10 Nov 2020 14:17:26 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=v6CRPmglpMlSJ75sQnTKtdS5nqeOdDA0Y1YvrDC2da4=;
-        b=gH0IZdzgQhsqaFGF8ZZb9QoK4FE3+FZKe+BtbDubggQQdqKrh7ZhVb247f30azIZlq
-         V+YnionkOfi3vP5JB5URskoox0o/S6veRihgpd00/8J/bCXs3DpjimbHiRoFfheNq9++
-         gl1RF/UvaQm//IA0TuqBl4Yw9D9aXVqRm0qr0QFHCAL19+VU6a3QaBe6fADUBZe9lTMs
-         FgA6vfRGF69eM7llD9MywtJ+W+Th+sGQYn0Uk/9c4jGKop8bRsg5R6Ne3AXsHQPpciEc
-         dyrUCiddNb+/sLy3TQ7aAs8iHprgQlzFa8VDPdLLK7BbNhogzBIs3RNPpEqL7nhfVPhy
-         ONFg==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=PybHYHD7oH2aLnG+yvTddEPZqr7VRvhfNzCANa+XKfA=;
+        b=AnT0B68fsoy6LnsJzwe/Fm7jjXUzfkVseEBGHrDF8afef5eVu8t5Vc4WHB44H01snU
+         Y0XxjtlSavsWQJ++9Q7cyNMhWTMUCQItMA1xUjro37jdTV1GN3Oi81zHV6/cufsj3hrh
+         IbKlbsH8DnVVcNymAVVEOE4yAhcrgeMFMicm0ObvYEyOPNLwHhMoxAp893ou/pn9lkII
+         riGVsX9X2H6Q3gGnUmc3HIu9VSXp88vjmHfYWlsUCEybqYt0eNc7Nv1H84cBIiCbYmbB
+         Io9FqVA5KHeCT5mAPSrAlLl3ZoQpUTnhdd4q1T5VW47Ta+3f6INB3cihUIhZe6ZS8x6W
+         3PGQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=v6CRPmglpMlSJ75sQnTKtdS5nqeOdDA0Y1YvrDC2da4=;
-        b=tLaCBRGruJLb4qnJsrtCMzWgb6T40kruvYNZ3+bX8kKrnFAvJA/Bkj3EodMBpDnor3
-         RQtbeHIu4RAemMW0ktR/KBStmL84R+ITXP+zq32Dw9Qka/hsUEnIeWhFKv5WIDDlCPaU
-         gmKcvoLlbNzmRjH4w4BHn+UXKXj0aJFdeXWc0WvQ/43my0FfHfJ96NYN422z147Ht7ut
-         jSHDv3wwyCQ9XEi/0vElOaa70iDsM/ay+aaKe7J+svdd3zS2UPg9wNTsG6S8hMypbqfq
-         OhPt1ytHiGEleX04c01uw1Q1LiBZmMkledcHRhsT/nd+3M+omhjnqA/UIZSETzFeW+qQ
-         WkeQ==
-X-Gm-Message-State: AOAM532XuyuUHnVq6i6FlvZQf3axPgF0tuFAmZeoT4EnTc4exMpqzbNV
-        xq2BBTQTneLgdc52ejzGXJUfDrWkssk=
-X-Google-Smtp-Source: ABdhPJyg9VSS3mI3bi3KGq/VLVTotOHKfvclO2y+Lb0exsYvmdRhjn+hWCHlyWRQ0J7mhAevGxHX8g==
-X-Received: by 2002:a50:8b65:: with SMTP id l92mr1679462edl.132.1605046586949;
-        Tue, 10 Nov 2020 14:16:26 -0800 (PST)
-Received: from skbuf ([188.25.2.177])
-        by smtp.gmail.com with ESMTPSA id h24sm60762ejg.15.2020.11.10.14.16.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 10 Nov 2020 14:16:26 -0800 (PST)
-Date:   Wed, 11 Nov 2020 00:16:24 +0200
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     Florian Fainelli <f.fainelli@gmail.com>
-Cc:     netdev@vger.kernel.org, Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>, Ray Jui <rjui@broadcom.com>,
-        Scott Branden <sbranden@broadcom.com>,
-        "maintainer:BROADCOM IPROC ARM ARCHITECTURE" 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        Hauke Mehrtens <hauke@hauke-m.de>,
-        =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "moderated list:BROADCOM IPROC ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        Kurt Kanzenbach <kurt@kmk-computers.de>
-Subject: Re: [PATCH 06/10] ARM: dts: NSP: Update ethernet switch node name
-Message-ID: <20201110221624.ekrvzj7bgeiurzs7@skbuf>
-References: <20201110033113.31090-1-f.fainelli@gmail.com>
- <20201110033113.31090-7-f.fainelli@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=PybHYHD7oH2aLnG+yvTddEPZqr7VRvhfNzCANa+XKfA=;
+        b=SMXMaRMziqBAclovM2b/SGZtm/F0d5l9SqCRQCFobp1gi4alvFGdC39rY/u5CbMAVe
+         yu3Ercmu1o4/i+Lr5f/fdom06rrgy3p97KB1xYwLXznp/eh6V4FPJXqfHluq8UKYZSMz
+         Nz9mXUu8zR+/EB82So59gUG9zDP6E2KaiS/rx2BaI6rY0uQ9kUMo2Y9EoQSji2OK9YQG
+         jjQofT6QUaX+bLMsaW9PPy0ausxdYRMWWngJFMzbIfD5a+d4skj/I26Oq2XOPStG2g0k
+         3L/d52LSuOlQa0F5XflG23e07rg5oNv0s2BxIye2ifyssmBS5niR/t/Rp9ZXLE7sXehv
+         Gl0g==
+X-Gm-Message-State: AOAM530fWyLq1yFU1X+oLKUtxc5IpX9uYU6neadyLDvgCHujkceILpNp
+        PQQYO1KP2XRGvUDLPlSsN3vjYBU8Z4pOMmn1ObY=
+X-Google-Smtp-Source: ABdhPJxh2GeljpewW2T0ti487h5NvVsa43l5KqIELZfR5hDC7Aj0bILRpfkBVbdUXZQrjDANOnsCVpXmp8jNi1eT12o=
+X-Received: by 2002:adf:e9c9:: with SMTP id l9mr27815711wrn.124.1605046645534;
+ Tue, 10 Nov 2020 14:17:25 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201110033113.31090-7-f.fainelli@gmail.com>
+References: <20201109211855.3340030-1-lee.jones@linaro.org> <20201109211855.3340030-12-lee.jones@linaro.org>
+In-Reply-To: <20201109211855.3340030-12-lee.jones@linaro.org>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Tue, 10 Nov 2020 17:17:13 -0500
+Message-ID: <CADnq5_MJQExKjyigHaYc4Vqy7H755qQC80Y7uSqxBPdR41B1cQ@mail.gmail.com>
+Subject: Re: [PATCH 11/20] drm/radeon/r600: Strip out set but unused 'tmp' variables
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     David Airlie <airlied@linux.ie>,
+        LKML <linux-kernel@vger.kernel.org>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
+        <linaro-mm-sig@lists.linaro.org>,
+        Maling list - DRI developers 
+        <dri-devel@lists.freedesktop.org>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        linux-media <linux-media@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 09, 2020 at 07:31:09PM -0800, Florian Fainelli wrote:
-> Update the switch unit name from srab to ethernet-switch, allowing us
-> to fix warnings such as:
-> 
->      CHECK   arch/arm/boot/dts/bcm4708-buffalo-wzr-1750dhp.dt.yaml
->     arch/arm/boot/dts/bcm4708-buffalo-wzr-1750dhp.dt.yaml:
->     srab@18007000: $nodename:0: 'srab@18007000' does not match
->     '^(ethernet-)?switch(@.*)?$'
->             From schema:
->     Documentation/devicetree/bindings/net/dsa/b53.yaml
-> 
-> Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
+On Mon, Nov 9, 2020 at 4:19 PM Lee Jones <lee.jones@linaro.org> wrote:
+>
+> Fixes the following W=3D1 kernel build warning(s):
+>
+>  drivers/gpu/drm/radeon/r600.c: In function =E2=80=98r600_pcie_gart_tlb_f=
+lush=E2=80=99:
+>  drivers/gpu/drm/radeon/r600.c:1083:7: warning: variable =E2=80=98tmp=E2=
+=80=99 set but not used [-Wunused-but-set-variable]
+>  drivers/gpu/drm/radeon/r600.c: At top level:
+>  drivers/gpu/drm/radeon/r600.c: In function =E2=80=98r600_mmio_hdp_flush=
+=E2=80=99:
+>  drivers/gpu/drm/radeon/r600.c:4393:7: warning: variable =E2=80=98tmp=E2=
+=80=99 set but not used [-Wunused-but-set-variable]
+>
+> Cc: Alex Deucher <alexander.deucher@amd.com>
+> Cc: "Christian K=C3=B6nig" <christian.koenig@amd.com>
+> Cc: David Airlie <airlied@linux.ie>
+> Cc: Daniel Vetter <daniel@ffwll.ch>
+> Cc: Sumit Semwal <sumit.semwal@linaro.org>
+> Cc: amd-gfx@lists.freedesktop.org
+> Cc: dri-devel@lists.freedesktop.org
+> Cc: linux-media@vger.kernel.org
+> Cc: linaro-mm-sig@lists.linaro.org
+> Signed-off-by: Lee Jones <lee.jones@linaro.org>
+
+Applied.  Thanks!
+
+Alex
+
 > ---
-
-Reviewed-by: Vladimir Oltean <olteanv@gmail.com>
-
->  arch/arm/boot/dts/bcm-nsp.dtsi | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/arch/arm/boot/dts/bcm-nsp.dtsi b/arch/arm/boot/dts/bcm-nsp.dtsi
-> index e895f7cb8c9f..e7d08959d5fe 100644
-> --- a/arch/arm/boot/dts/bcm-nsp.dtsi
-> +++ b/arch/arm/boot/dts/bcm-nsp.dtsi
-> @@ -385,7 +385,7 @@ ccbtimer1: timer@35000 {
->  			clock-names = "apb_pclk";
->  		};
->  
-> -		srab: srab@36000 {
-> +		srab: ethernet-switch@36000 {
->  			compatible = "brcm,nsp-srab";
->  			reg = <0x36000 0x1000>,
->  			      <0x3f308 0x8>,
-> -- 
+>  drivers/gpu/drm/radeon/r600.c | 6 ++----
+>  1 file changed, 2 insertions(+), 4 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/radeon/r600.c b/drivers/gpu/drm/radeon/r600.=
+c
+> index d9a33ca768f34..6e780b0109995 100644
+> --- a/drivers/gpu/drm/radeon/r600.c
+> +++ b/drivers/gpu/drm/radeon/r600.c
+> @@ -1080,7 +1080,6 @@ void r600_pcie_gart_tlb_flush(struct radeon_device =
+*rdev)
+>         if ((rdev->family >=3D CHIP_RV770) && (rdev->family <=3D CHIP_RV7=
+40) &&
+>             !(rdev->flags & RADEON_IS_AGP)) {
+>                 void __iomem *ptr =3D (void *)rdev->gart.ptr;
+> -               u32 tmp;
+>
+>                 /* r7xx hw bug.  write to HDP_DEBUG1 followed by fb read
+>                  * rather than write to HDP_REG_COHERENCY_FLUSH_CNTL
+> @@ -1088,7 +1087,7 @@ void r600_pcie_gart_tlb_flush(struct radeon_device =
+*rdev)
+>                  * method for them.
+>                  */
+>                 WREG32(HDP_DEBUG1, 0);
+> -               tmp =3D readl((void __iomem *)ptr);
+> +               readl((void __iomem *)ptr);
+>         } else
+>                 WREG32(R_005480_HDP_MEM_COHERENCY_FLUSH_CNTL, 0x1);
+>
+> @@ -4390,10 +4389,9 @@ void r600_mmio_hdp_flush(struct radeon_device *rde=
+v)
+>         if ((rdev->family >=3D CHIP_RV770) && (rdev->family <=3D CHIP_RV7=
+40) &&
+>             rdev->vram_scratch.ptr && !(rdev->flags & RADEON_IS_AGP)) {
+>                 void __iomem *ptr =3D (void *)rdev->vram_scratch.ptr;
+> -               u32 tmp;
+>
+>                 WREG32(HDP_DEBUG1, 0);
+> -               tmp =3D readl((void __iomem *)ptr);
+> +               readl((void __iomem *)ptr);
+>         } else
+>                 WREG32(R_005480_HDP_MEM_COHERENCY_FLUSH_CNTL, 0x1);
+>  }
+> --
 > 2.25.1
-> 
+>
+> _______________________________________________
+> dri-devel mailing list
+> dri-devel@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/dri-devel
