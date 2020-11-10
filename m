@@ -2,99 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 99FDF2AD944
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 15:50:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 383522AD947
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 15:51:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732092AbgKJOud (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 09:50:33 -0500
-Received: from david.siemens.de ([192.35.17.14]:55844 "EHLO david.siemens.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730200AbgKJOuc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 09:50:32 -0500
-Received: from mail2.sbs.de (mail2.sbs.de [192.129.41.66])
-        by david.siemens.de (8.15.2/8.15.2) with ESMTPS id 0AAEoEXS011180
-        (version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 10 Nov 2020 15:50:14 +0100
-Received: from [167.87.33.169] ([167.87.33.169])
-        by mail2.sbs.de (8.15.2/8.15.2) with ESMTP id 0AAEoCko001593;
-        Tue, 10 Nov 2020 15:50:12 +0100
-Subject: Re: [PATCH v3 6/7] gpio: exar: switch to using regmap
-To:     Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Bartosz Golaszewski <brgl@bgdev.pl>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        David Laight <David.Laight@aculab.com>,
-        linux-gpio <linux-gpio@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-References: <20201110123406.3261-1-brgl@bgdev.pl>
- <20201110123406.3261-7-brgl@bgdev.pl>
- <20201110142624.GT4077@smile.fi.intel.com>
- <20201110142750.GU4077@smile.fi.intel.com>
- <CAMpxmJUQ3t02q-Chd-WE+pYRAsOOEnbQ0jB+G_uAGv+sJBK1tg@mail.gmail.com>
-From:   Jan Kiszka <jan.kiszka@siemens.com>
-Message-ID: <a5b0fcd0-eb62-79b3-3f27-6595b9bdb91c@siemens.com>
-Date:   Tue, 10 Nov 2020 15:50:11 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        id S1730828AbgKJOvZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 09:51:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35914 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729898AbgKJOvZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Nov 2020 09:51:25 -0500
+Received: from albert.telenet-ops.be (albert.telenet-ops.be [IPv6:2a02:1800:110:4::f00:1a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 057AFC0613CF
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 06:51:23 -0800 (PST)
+Received: from ramsan.of.borg ([84.195.186.194])
+        by albert.telenet-ops.be with bizsmtp
+        id qerN2300Q4C55Sk06erNwy; Tue, 10 Nov 2020 15:51:22 +0100
+Received: from rox.of.borg ([192.168.97.57])
+        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1kcUzS-001CZj-9Z; Tue, 10 Nov 2020 15:51:22 +0100
+Received: from geert by rox.of.borg with local (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1kcUzR-00DlSc-TP; Tue, 10 Nov 2020 15:51:21 +0100
+From:   Geert Uytterhoeven <geert+renesas@glider.be>
+To:     Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Shengjiu Wang <shengjiu.wang@nxp.com>
+Cc:     alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org,
+        Geert Uytterhoeven <geert+renesas@glider.be>
+Subject: [PATCH] ASoC: fsl: SND_SOC_FSL_AUD2HTX should depend on ARCH_MXC
+Date:   Tue, 10 Nov 2020 15:51:20 +0100
+Message-Id: <20201110145120.3280658-1-geert+renesas@glider.be>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <CAMpxmJUQ3t02q-Chd-WE+pYRAsOOEnbQ0jB+G_uAGv+sJBK1tg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The Freescale/NXP AUDIO TO HDMI TX module is only present on NXP i.MX 8
+Series SoCs.  Hence add a dependency on ARCH_MXC, to prevent asking the
+user about this driver when configuring a kernel without i.MX 8 platform
+support.
 
-On 10.11.20 15:30, Bartosz Golaszewski wrote:
-> On Tue, Nov 10, 2020 at 3:26 PM Andy Shevchenko
-> <andriy.shevchenko@linux.intel.com> wrote:
->>
->> On Tue, Nov 10, 2020 at 04:26:24PM +0200, Andy Shevchenko wrote:
->>> On Tue, Nov 10, 2020 at 01:34:05PM +0100, Bartosz Golaszewski wrote:
->>>> From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
->>>>
->>>> We can simplify the code in gpio-exar by using regmap. This allows us to
->>>> drop the mutex (regmap provides its own locking) and we can also reuse
->>>> regmap's bit operations instead of implementing our own update function.
->>>
->>> ...
->>>
->>>> +   /*
->>>> +    * We don't need to check the return values of mmio regmap operations (unless
->>>> +    * the regmap has a clock attached which is not the case here).
->>>> +    */
->>>> +   exar_gpio->regs = devm_regmap_init_mmio(dev, p, &exar_regmap_config);
->>>> +   if (IS_ERR(exar_gpio->regs))
->>>> +           return PTR_ERR(exar_gpio->regs);
->>>>
->>>>     index = ida_alloc(&ida_index, GFP_KERNEL);
->>>> -   if (index < 0) {
->>>> -           ret = index;
->>>> -           goto err_mutex_destroy;
->>>> -   }
->>>> +   if (index < 0)
->>>> +           return index;
->>>
->>> And below you effectively use p as regmap!
->>> That's what renaming of variable regs -> regmap or map can easily reveal.
->>>
->>>       exar_gpio->regs = p;
->>
->> Jan, if you remove this line, does it help?
->>
-> 
-> Ha! I guess you were right saying that keeping the name is asking for
-> trouble then. :)
-> 
-> I think that may be it but address width should still be changed to 16.
-> 
+Fixes: 8a24c834c053ef1b ("ASoC: fsl_aud2htx: Add aud2htx module driver")
+Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+---
+ sound/soc/fsl/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-Removing the line that Andy found made things work here. And switching
-to 16 for reg_bits didn't make things worse again.
-
-Jan
-
+diff --git a/sound/soc/fsl/Kconfig b/sound/soc/fsl/Kconfig
+index 52a5622150088b49..ad9f90d314b7a033 100644
+--- a/sound/soc/fsl/Kconfig
++++ b/sound/soc/fsl/Kconfig
+@@ -107,6 +107,7 @@ config SND_SOC_FSL_XCVR
+ 
+ config SND_SOC_FSL_AUD2HTX
+ 	tristate "AUDIO TO HDMI TX module support"
++	depends on CONFIG_ARCH_MXC || COMPILE_TEST
+ 	help
+ 	  Say Y if you want to add AUDIO TO HDMI TX support for NXP.
+ 
 -- 
-Siemens AG, T RDA IOT
-Corporate Competence Center Embedded Linux
+2.25.1
+
