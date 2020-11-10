@@ -2,78 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 634282AD0CF
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 09:05:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B34842AD0D5
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 09:06:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728751AbgKJIFb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 03:05:31 -0500
-Received: from mailgw01.mediatek.com ([210.61.82.183]:48898 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726690AbgKJIFb (ORCPT
+        id S1731552AbgKJIGl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 03:06:41 -0500
+Received: from userp2120.oracle.com ([156.151.31.85]:48720 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728579AbgKJIGk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 03:05:31 -0500
-X-UUID: d80d6a35e1714ae2b66c4b019122ba36-20201110
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=G0NM2PJOoQh0fLHTUhw48+H0cz6FqLC37EenK/j49so=;
-        b=SQwzH+8S37KY581bh3i0AQOVbuMI8VMCF1IRVkgRSTimhzHnflX1P2u54NGnfvXouFJr072r39ZPA5swdPdlNGweSAoRTY6CeEcKNfueP180MA31Gi4YHwM5ShuQW9Rgf4wlKYTDm7l7B2mkCmFNMHQE6Ine7yMhLcO3Qyf0NC0=;
-X-UUID: d80d6a35e1714ae2b66c4b019122ba36-20201110
-Received: from mtkexhb02.mediatek.inc [(172.21.101.103)] by mailgw01.mediatek.com
-        (envelope-from <frankie.chang@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 814570119; Tue, 10 Nov 2020 16:05:23 +0800
-Received: from mtkcas08.mediatek.inc (172.21.101.126) by
- mtkmbs08n2.mediatek.inc (172.21.101.56) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Tue, 10 Nov 2020 16:05:21 +0800
-Received: from [172.21.77.33] (172.21.77.33) by mtkcas08.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Tue, 10 Nov 2020 16:05:21 +0800
-Message-ID: <1604995521.14886.9.camel@mtkswgap22>
-Subject: Re: binder: add transaction latency tracer
-From:   Frankie Chang <Frankie.Chang@mediatek.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-CC:     Todd Kjos <tkjos@google.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Martijn Coenen <maco@android.com>,
-        Arve =?ISO-8859-1?Q?Hj=F8nnev=E5g?= <arve@android.com>,
-        Christian Brauner <christian@brauner.io>,
-        <linux-kernel@vger.kernel.org>, <wsd_upstream@mediatek.com>,
-        Jian-Min Liu <Jian-Min.Liu@mediatek.com>
-Date:   Tue, 10 Nov 2020 16:05:21 +0800
-In-Reply-To: <X6pHFAqmH0je0n3I@kroah.com>
-References: <1602781377-4278-1-git-send-email-Frankie.Chang@mediatek.com>
-         <1603987737-2763-1-git-send-email-Frankie.Chang@mediatek.com>
-         <20201109174605.GA2426739@kroah.com> <1604993580.14886.5.camel@mtkswgap22>
-         <X6pGqcXk3VMgUwu0@kroah.com> <X6pHFAqmH0je0n3I@kroah.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.2.3-0ubuntu6 
+        Tue, 10 Nov 2020 03:06:40 -0500
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AA85PfF032636;
+        Tue, 10 Nov 2020 08:06:20 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=8Yc+JuCBcxw5njKSI0AKPzOTkerHm9T7cEaGIy0DBvU=;
+ b=omBLIIFpLmMdKJNUyk8r4/REAbd6LhGG4zz1ijRbQtloSS081SRIj1R4iQDFpQ8mqsXy
+ kEVkyi2R5p69dSGnmYRIuhX05lsFs5mFQF7YNLY/o57DbK30hEm9glMD2cGrIWZBfB5o
+ POIiXz0hTGvWmL5ObCrqEbiwJO3OaIiUEHv50J/SL/gBBkYmI2P0dK+2sn8i4oXZSw8b
+ 2aKGvT6hRP9wsyjTWHu+cJSUlv36EOEjezGl0u+/zm9uQEs1BeLxqermMFSZj+1C8x9F
+ GRg8R56rnfWHteYeAoRKKAeklQg3fG0qMbzVli0kLBo7i9lQsP8hzCpaBGAgy2v4o+1Z 4w== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by userp2120.oracle.com with ESMTP id 34p72eg8n8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 10 Nov 2020 08:06:20 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AA80qTo181652;
+        Tue, 10 Nov 2020 08:06:19 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by aserp3020.oracle.com with ESMTP id 34p5fyvhk5-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 10 Nov 2020 08:06:19 +0000
+Received: from abhmp0002.oracle.com (abhmp0002.oracle.com [141.146.116.8])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0AA86HU7010913;
+        Tue, 10 Nov 2020 08:06:17 GMT
+Received: from kadam (/41.57.98.10)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Tue, 10 Nov 2020 00:06:16 -0800
+Date:   Tue, 10 Nov 2020 11:06:09 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Sudip Mukherjee <sudip.mukherjee@codethink.co.uk>
+Cc:     Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        Balbir Singh <bsingharora@gmail.com>,
+        Tom Rix <trix@redhat.com>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        clang-built-linux@googlegroups.com,
+        kernel-janitors@vger.kernel.org, linux-safety@lists.elisa.tech,
+        linux-kernel@vger.kernel.org
+Subject: Re: [linux-safety] [PATCH] taskstats: remove unneeded dead assignment
+Message-ID: <20201110080609.GD29398@kadam>
+References: <20201106062210.27920-1-lukas.bulwahn@gmail.com>
+ <6ab2415b-0642-16ee-4be0-c909e07e7565@codethink.co.uk>
+ <alpine.DEB.2.21.2011061126130.20338@felia>
+ <aea9d12d-88ee-f262-4328-03993521668f@codethink.co.uk>
 MIME-Version: 1.0
-X-TM-SNTS-SMTP: DE4DB6F0648F9982A4B76E347E9A09A86A5BB17E305FCBA68C8FC8D2A3564AB62000:8
-X-MTK:  N
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <aea9d12d-88ee-f262-4328-03993521668f@codethink.co.uk>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9800 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 spamscore=0 malwarescore=0
+ adultscore=0 phishscore=0 bulkscore=0 mlxlogscore=999 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2011100057
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9800 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 mlxlogscore=999 mlxscore=0
+ malwarescore=0 suspectscore=0 lowpriorityscore=0 adultscore=0 phishscore=0
+ priorityscore=1501 spamscore=0 impostorscore=0 clxscore=1011
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2011100057
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gVHVlLCAyMDIwLTExLTEwIGF0IDA4OjUzICswMTAwLCBHcmVnIEtyb2FoLUhhcnRtYW4gd3Jv
-dGU6DQo+IE9uIFR1ZSwgTm92IDEwLCAyMDIwIGF0IDA4OjUyOjA5QU0gKzAxMDAsIEdyZWcgS3Jv
-YWgtSGFydG1hbiB3cm90ZToNCj4gPiBPbiBUdWUsIE5vdiAxMCwgMjAyMCBhdCAwMzozMzowMFBN
-ICswODAwLCBGcmFua2llIENoYW5nIHdyb3RlOg0KPiA+ID4gT24gTW9uLCAyMDIwLTExLTA5IGF0
-IDE4OjQ2ICswMTAwLCBHcmVnIEtyb2FoLUhhcnRtYW4gd3JvdGU6DQo+ID4gPiA+IE9uIEZyaSwg
-T2N0IDMwLCAyMDIwIGF0IDEyOjA4OjU0QU0gKzA4MDAsIEZyYW5raWUgQ2hhbmcgd3JvdGU6DQo+
-ID4gPiA+ID4gQ2hhbmdlIGZyb20gdjExOg0KPiA+ID4gPiA+ICAgLSByZWJhc2UuDQo+ID4gPiA+
-IA0KPiA+ID4gPiBUaGlzIHdob2xlIHBhdGNoIHNldCBpcyBzZW50IHdpdGggRE9TIGxpbmUtZW5k
-cywgd2hpY2ggbWFrZXMgZ2l0IHJlYWxseQ0KPiA+ID4gPiB1bmhhcHB5IHdoZW4gaXQgdHJpZXMg
-dG8gYXBwbHkgaXQsIGFzIHJpZ2h0ZnVsbHksIGl0IGRvZXNuJ3Qga25vdyBob3cgdG8NCj4gPiA+
-ID4gY29udmVydCB0aGluZ3MuDQo+ID4gPiA+IA0KPiA+ID4gSG1tLi4sIGFjdHVhbGx5IEkgY2Fu
-IHVzZSAnZ2l0IGFwcGx5JyBQQVRDSCB2MTEgZnJvbSB0aGUgbWVzc2FnZQ0KPiA+ID4gZGlyZWN0
-bHkuDQo+ID4gDQo+ID4gT2ssIGxldCBtZSBzZWUgaWYgSSBjYW4gZmlndXJlIHRoaXMgb3V0IG9u
-IG15IGVuZCwgbGV0IG1lIHRyeSB1c2luZyBgYjRgDQo+ID4gb24gdGhpcyB0byBzZWUgaWYgdGhh
-dCBoZWxwcy4uLg0KPiANCj4gTm9wZSwgdGhlcmUncyBzdGlsbCBzb21lIG1lcmdlIGNvbmZsaWN0
-cyBoZXJlLiAgYjQgZml4ZWQgdGhlIGxpbmUtZW5kDQo+IGlzc3VlcywgYnV0IGNhbiB5b3UgcGxl
-YXNlIHJlYmFzZSBvbiB0b3Agb2YgbXkgY2hhci1taXNjLW5leHQgYnJhbmNoIGluDQo+IHRoZSBj
-aGFyLmdpdCB0cmVlIG9uIGdpdC5rZXJuZWwub3JnIGFuZCByZXNlbmQ/ICBJIHRoaW5rIHNvbWUg
-Y2hhbmdlcyBieQ0KPiBvdGhlcnMgYXJlIGNvbmZsaWN0aW5nIHdpdGggdGhpcyBwYXRjaHNldCBz
-b21laG93Lg0KPiANClRoYW5rcyBmb3IgaGVscGluZyB0aGUgbGluZS1lbmQgaXNzdWVzLCANCkkg
-d2lsbCByZWJhc2UgYW5kIHZlcmlmeSBsb2NhbGx5IHRoZW4gcmVzZW5kIHRoZSBwYXRjaCBzZXQg
-YWdhaW4uDQoNCk1hbnkgdGhhbmtzDQoNCkZyYW5raWUgQ2hhbmcNCg0K
+On Fri, Nov 06, 2020 at 12:04:53PM +0000, Sudip Mukherjee wrote:
+> Hi Lukas,
+> 
+> On 06/11/2020 10:31, Lukas Bulwahn wrote:
+> > 
+> > 
+> > On Fri, 6 Nov 2020, Sudip Mukherjee wrote:
+> > 
+> >> Hi Lukas,
+> >>
+> 
+> <snip>
+> 
+> > 
+> > I did not try but I bet (a beverage of your choice) that the object code
+> > remains the same also for your suggested patch. Try to disprove my claim 
+> > and possibly earn yourself a beverage when we meet...
+> 
+> Lets decide which beverage.. ;-)
+> 
+> Using gcc-7.2.0 for MIPS:
+> 
+> original:- ab81d3305d578c2568fbc73aad2f9e61  kernel/taskstats.o
+> After your change:- ab81d3305d578c2568fbc73aad2f9e61  kernel/taskstats.o
+> After my change:- 0acae2c8d72abd3e15bf805fccdca711  kernel/taskstats.o
+
+I'm surprised the line numbers from the printks aren't affecting it...
+
+I personally prefer Lukas's patch.  "rc" should be function scope...
+
+regards,
+dan carpenter
 
