@@ -2,159 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 646E22ADA59
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 16:25:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 73C892ADA67
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 16:27:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732615AbgKJPY6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 10:24:58 -0500
-Received: from mail.kernel.org ([198.145.29.99]:32848 "EHLO mail.kernel.org"
+        id S1732214AbgKJP1Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 10:27:24 -0500
+Received: from mx2.suse.de ([195.135.220.15]:60552 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732232AbgKJPYz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 10:24:55 -0500
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id ABD57207D3;
-        Tue, 10 Nov 2020 15:24:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605021894;
-        bh=6grBIe9Ab1qZ3+EKmKO+hoC/BEgkpYoULIb3EV2t5yo=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=xfNstsPMqn3ECov8nxjyJrLJ1+DSpZyC0Ss8RG/e28rt4BLSM8F0v7CrR9L+ZA0/S
-         RSUEjAK3adrJk6vUBiDTu6vDp24Jz1wWPISq73w6uzLvPeMvrBW1AaQTEgfm7tBt24
-         dVU5iImG7WCRm7bkND2kFaKfCAF6YXP3QSVDTu2w=
-Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
-        by disco-boy.misterjones.org with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94)
-        (envelope-from <maz@kernel.org>)
-        id 1kcVVs-009UKZ-Jg; Tue, 10 Nov 2020 15:24:52 +0000
+        id S1730231AbgKJP1Y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Nov 2020 10:27:24 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id DBFC2ABD1;
+        Tue, 10 Nov 2020 15:27:22 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 7255CDA7D7; Tue, 10 Nov 2020 16:25:41 +0100 (CET)
+Date:   Tue, 10 Nov 2020 16:25:41 +0100
+From:   David Sterba <dsterba@suse.cz>
+To:     Chris Mason <clm@fb.com>
+Cc:     Christoph Hellwig <hch@infradead.org>,
+        Nick Terrell <nickrterrell@gmail.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        linux-crypto@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        squashfs-devel@lists.sourceforge.net,
+        linux-f2fs-devel@lists.sourceforge.net,
+        linux-kernel@vger.kernel.org, Kernel Team <Kernel-team@fb.com>,
+        Nick Terrell <terrelln@fb.com>, Petr Malat <oss@malat.biz>,
+        Johannes Weiner <jweiner@fb.com>,
+        Niket Agarwal <niketa@fb.com>, Yann Collet <cyan@fb.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: [PATCH v5 1/9] lib: zstd: Add zstd compatibility wrapper
+Message-ID: <20201110152541.GK6756@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Chris Mason <clm@fb.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Nick Terrell <nickrterrell@gmail.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        linux-crypto@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        squashfs-devel@lists.sourceforge.net,
+        linux-f2fs-devel@lists.sourceforge.net,
+        linux-kernel@vger.kernel.org, Kernel Team <Kernel-team@fb.com>,
+        Nick Terrell <terrelln@fb.com>, Petr Malat <oss@malat.biz>,
+        Johannes Weiner <jweiner@fb.com>, Niket Agarwal <niketa@fb.com>,
+        Yann Collet <cyan@fb.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+References: <20201103060535.8460-1-nickrterrell@gmail.com>
+ <20201103060535.8460-2-nickrterrell@gmail.com>
+ <20201106183846.GA28005@infradead.org>
+ <D9338FE4-1518-4C7B-8C23-DBDC542DAC35@fb.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Tue, 10 Nov 2020 15:24:52 +0000
-From:   Marc Zyngier <maz@kernel.org>
-To:     David Brazdil <dbrazdil@google.com>
-Cc:     kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Dennis Zhou <dennis@kernel.org>,
-        Tejun Heo <tj@kernel.org>, Christoph Lameter <cl@linux.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Quentin Perret <qperret@google.com>,
-        Andrew Scull <ascull@google.com>,
-        Andrew Walbran <qwandor@google.com>, kernel-team@android.com
-Subject: Re: [PATCH v1 07/24] kvm: arm64: Create nVHE copy of cpu_logical_map
-In-Reply-To: <20201109113233.9012-8-dbrazdil@google.com>
-References: <20201109113233.9012-1-dbrazdil@google.com>
- <20201109113233.9012-8-dbrazdil@google.com>
-User-Agent: Roundcube Webmail/1.4.9
-Message-ID: <d473fd26e5314f2407b70242488f33de@kernel.org>
-X-Sender: maz@kernel.org
-X-SA-Exim-Connect-IP: 51.254.78.96
-X-SA-Exim-Rcpt-To: dbrazdil@google.com, kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, james.morse@arm.com, julien.thierry.kdev@gmail.com, suzuki.poulose@arm.com, catalin.marinas@arm.com, will@kernel.org, dennis@kernel.org, tj@kernel.org, cl@linux.com, mark.rutland@arm.com, lorenzo.pieralisi@arm.com, qperret@google.com, ascull@google.com, qwandor@google.com, kernel-team@android.com
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <D9338FE4-1518-4C7B-8C23-DBDC542DAC35@fb.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-11-09 11:32, David Brazdil wrote:
-> When KVM starts validating host's PSCI requests, it will need to map
-> MPIDR back to the CPU ID. To this end, copy cpu_logical_map into nVHE
-> hyp memory when KVM is initialized.
+On Mon, Nov 09, 2020 at 02:01:41PM -0500, Chris Mason wrote:
+> On 6 Nov 2020, at 13:38, Christoph Hellwig wrote:
+> > You just keep resedning this crap, don't you?  Haven't you been told
+> > multiple times to provide a proper kernel API by now?
 > 
-> Only copy the information for CPUs that are online at the point of KVM
-> initialization so that KVM rejects CPUs whose features were not checked
-> against the finalized capabilities.
+> You do consistently ask for a shim layer, but you haven’t explained 
+> what we gain by diverging from the documented and tested API of the 
+> upstream zstd project.  It’s an important discussion given that we 
+> hope to regularly update the kernel side as they make improvements in 
+> zstd.
 > 
-> Signed-off-by: David Brazdil <dbrazdil@google.com>
-> ---
->  arch/arm64/kvm/arm.c             | 17 +++++++++++++++++
->  arch/arm64/kvm/hyp/nvhe/percpu.c | 16 ++++++++++++++++
->  2 files changed, 33 insertions(+)
-> 
-> diff --git a/arch/arm64/kvm/arm.c b/arch/arm64/kvm/arm.c
-> index 9ba9db2aa7f8..b85b4294b72d 100644
-> --- a/arch/arm64/kvm/arm.c
-> +++ b/arch/arm64/kvm/arm.c
-> @@ -1481,6 +1481,21 @@ static inline void hyp_cpu_pm_exit(void)
->  }
->  #endif
-> 
-> +static void init_cpu_logical_map(void)
-> +{
-> +	extern u64 kvm_nvhe_sym(__cpu_logical_map)[NR_CPUS];
-> +	int cpu;
-> +
-> +	/*
-> +	 * Copy the MPIDR <-> logical CPU ID mapping to hyp.
-> +	 * Only copy the set of online CPUs whose features have been chacked
-> +	 * against the finalized system capabilities. The hypervisor will not
-> +	 * allow any other CPUs from the `possible` set to boot.
-> +	 */
-> +	for_each_online_cpu(cpu)
-> +		CHOOSE_NVHE_SYM(__cpu_logical_map)[cpu] = cpu_logical_map(cpu);
-> +}
-> +
->  static int init_common_resources(void)
->  {
->  	return kvm_set_ipa_limit();
-> @@ -1659,6 +1674,8 @@ static int init_hyp_mode(void)
->  		}
->  	}
-> 
-> +	init_cpu_logical_map();
-> +
->  	return 0;
-> 
->  out_err:
-> diff --git a/arch/arm64/kvm/hyp/nvhe/percpu.c 
-> b/arch/arm64/kvm/hyp/nvhe/percpu.c
-> index 5fd0c5696907..d0b9dbc2df45 100644
-> --- a/arch/arm64/kvm/hyp/nvhe/percpu.c
-> +++ b/arch/arm64/kvm/hyp/nvhe/percpu.c
-> @@ -8,6 +8,22 @@
->  #include <asm/kvm_hyp.h>
->  #include <asm/kvm_mmu.h>
-> 
-> +/*
-> + * nVHE copy of data structures tracking available CPU cores.
-> + * Only entries for CPUs that were online at KVM init are populated.
-> + * Other CPUs should not be allowed to boot because their features 
-> were
-> + * not checked against the finalized system capabilities.
-> + */
-> +u64 __ro_after_init __cpu_logical_map[NR_CPUS] = { [0 ... NR_CPUS-1]
-> = INVALID_HWID };
+> The only benefit described so far seems to be camelcase related, but if 
+> there are problems in the API beyond that, I haven’t seen you describe 
+> them.  I don’t think the camelcase alone justifies the added costs of 
+> the shim.
 
-I'm not sure what __ro_after_init means once we get S2 isolation.
+The API change in this patchset is adding churn that wouldn't be
+necessary if there were an upstream<->kernel API from the beginning.
 
-> +
-> +u64 cpu_logical_map(int cpu)
+The patch 5/9 is almost entirely renaming just some internal identifiers
 
-nit: is there any reason why "cpu" cannot be unsigned? The thought
-of a negative CPU number makes me shiver...
+-			      ZSTD_CStreamWorkspaceBound(params.cParams),
+-			      ZSTD_DStreamWorkspaceBound(ZSTD_BTRFS_MAX_INPUT));
++			      ZSTD_estimateCStreamSize_usingCParams(params.cParams),
++			      ZSTD_estimateDStreamSize(ZSTD_BTRFS_MAX_INPUT));
 
-> +{
-> +	if (cpu < 0 || cpu >= ARRAY_SIZE(__cpu_logical_map))
-> +		hyp_panic();
-> +
-> +	return __cpu_logical_map[cpu];
-> +}
-> +
->  unsigned long __hyp_per_cpu_offset(unsigned int cpu)
->  {
->  	unsigned long *cpu_base_array;
+plus updating the names in the error strings. The compression API that
+filesystems need is simple:
 
-Overall, this patch would make more sense closer it its use case
-(in patch 19). I also don't understand why this lives in percpu.c...
+- set up workspace and parameters
+- compress buffer
+- decompress buffer
 
-Thanks,
+We really should not care if upstream has 3 functions for initializing
+stream (ZSTD_initCStream/ZSTD_initStaticCStream/ZSTD_initCStream_advanced),
+or if the name changes again in the future.
 
-         M.
--- 
-Jazz is not dead. It just smells funny...
+This should not require explicit explanation, this should be a natural
+requirement especially for separate projects that don't share the same
+coding style but have to be integrated in some way.
