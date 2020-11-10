@@ -2,139 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65C8B2ADF0E
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 20:06:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 781CA2ADF18
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 20:08:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731323AbgKJTGN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 14:06:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47496 "EHLO
+        id S1731464AbgKJTIZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 14:08:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47832 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726307AbgKJTGM (ORCPT
+        with ESMTP id S1726307AbgKJTIY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 14:06:12 -0500
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F527C0613D1
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 11:06:12 -0800 (PST)
-Received: by mail-pg1-x541.google.com with SMTP id f38so11068798pgm.2
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 11:06:12 -0800 (PST)
+        Tue, 10 Nov 2020 14:08:24 -0500
+Received: from mail-qt1-x843.google.com (mail-qt1-x843.google.com [IPv6:2607:f8b0:4864:20::843])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C781C0613D1
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 11:08:24 -0800 (PST)
+Received: by mail-qt1-x843.google.com with SMTP id 3so9395987qtx.3
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 11:08:24 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=7dY7jjSH3EzVEpolI5Znb3T2ESiJfVzrs/9o3c81CzY=;
-        b=p6EWMAtM3paOpSMmw8jESAGCXvHyPhayUlLoivbH1QX4/n21FkjSUSZx81CgrRta73
-         HfBmZaWY2r0kwSEciOXdvSlW483IbCR/d+R4Ga6nNMULmA+22uHl5vL4894kNkGlE3KA
-         aGIm71DnomflW/L7iZWe/a5QwJiWnixyI04a/y97lPkFHkYOryfjnhp+ZVZGqMT/8iYa
-         GW73SocBla4dzuB5oK6tNa6aLmHCar4TIf0LL8VD+feZSUu1rWrKxy2NV/lUKQjgHMwH
-         pDp9fdvwj2nd3Cth5OFli4H3TnP+7Kr/Hs8INWyvGQmXEWu2R5adIF+APRJLIhuX6QZ7
-         yBIQ==
+        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=o/P6FAAbZyAhrgG09vfP1BCKKHct1LeQm/LdrSl6xbo=;
+        b=SEkve2d6VJEm0fVm001sIsH50qhvSC+fkG3XYb4FWVK0N4jo3NezX45gV3V1c2JJxR
+         RlB9BUM6fCLmSo3s6Y+Ijb8MGuKJEYSBWECV+upj1zkIkqu9mmBWoc3OHP5rnb7Z8dMI
+         XqnnLdzqv17RKQKD79XOWA0pV6et/HWzqgsbx8EIrk+jEXGI7wXbGmDPKkz87HtaKW2k
+         ynWMuyHTCvF6/PVzX8n0E5VJp1o/mlS6Z9aZR3UXWdad07hThGZp/CFnMmCPtki3dz9U
+         Uhu2qAohDJR7toQ5Ir44j97UxPf8mIj/iyXfszUSca9FeYv2Wgvw3oDYY6qsSTqVH0lq
+         B18g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=7dY7jjSH3EzVEpolI5Znb3T2ESiJfVzrs/9o3c81CzY=;
-        b=ud4JscagiFlsKUY1hEtVBsCKl+5socdPllxA/CqlcGUyFcGgZx7NrDCaQREYQm4gzG
-         BpTB8sjM0SycX9jJC1zpDnyQReBp/WGCBC5SYuW56e9HTb2mJR6AK7HGUfOPltbouVAL
-         3tIOO8G1eHwGwUR2oQ7vvFBIOSAJKZXo/0hy9YrhhygRRY/Wv2VUQQ5jqGc74txbvS8N
-         AVovSfxLDLDTM88/mucZrMWMmmPr7IUejhxWWu149lwlso0TEI+6zoeqrH2yIqEv0Kc/
-         vId2+hSROLbdpEDtc48Io39WP4sPaTk+zo96A4kqziIohjkWflLt2uTHtuIA4JCV241C
-         yrLg==
-X-Gm-Message-State: AOAM533I86/19E4lka1hyG2cQ8ooaH5Teyhw5zoMeKg8PlOwV2CYKC1X
-        lAl7BI46IfUTXzfnamic/zg=
-X-Google-Smtp-Source: ABdhPJz/c5C+ILiWszd+FDifZetc4DCvDqTFaKi1uT9ILpKRnYHVPpTAKS5So1zOivBZ16nLwC0ZRg==
-X-Received: by 2002:a05:6a00:78d:b029:18b:f46:5262 with SMTP id g13-20020a056a00078db029018b0f465262mr20009768pfu.74.1605035171775;
-        Tue, 10 Nov 2020 11:06:11 -0800 (PST)
-Received: from localhost.localdomain ([2402:3a80:413:8adf:79d0:1679:313c:70a2])
-        by smtp.googlemail.com with ESMTPSA id z3sm13530549pgl.73.2020.11.10.11.06.08
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=o/P6FAAbZyAhrgG09vfP1BCKKHct1LeQm/LdrSl6xbo=;
+        b=KTc50wO+g7OiJ1l7J83/T0l18pEAePqDMtKoIVLQuRcyE0EK3kRt3Dwqs2etgLYNRg
+         uSfJ3GlWN+EyIe+O4W4GRgtGQuKqW31jmtDEWRx4vHSpHV/p/QqKrJ7CL1PSkNkLmmDc
+         H/38vLC5uRWKgIGogTSSmGolKCY4NVt94Ve7y02W1KTe1cGyVAgbjny0QK84dZhx0yIc
+         A5fzGKYkLcxqonk43fQlLRFtfDJ0yn5PSWmvPVlyujp4S6cTfbC65bGQQY7j0CkeJdDB
+         +eaeeXsB5pHd+y1BLJxTxtR8TD+FLn+6CwSKAatbYdrG0xMlxmqOeMx7OKIeq8NeecF0
+         63Tw==
+X-Gm-Message-State: AOAM530tP0LZFB4NYWkcoDmnIaJLEaV1cOHoIAa7uGyq8ovZacN8G+tA
+        bMURNx0slOi+Rm5/ZzWToRt4Hw==
+X-Google-Smtp-Source: ABdhPJzfQAT2OcEe14YYdZG0nE07YVG6i4U3vEP7T4ecgGBzSVYiOwyA3Q/DQDNUkOxmRz3uaExLTg==
+X-Received: by 2002:ac8:d48:: with SMTP id r8mr19575791qti.69.1605035303894;
+        Tue, 10 Nov 2020 11:08:23 -0800 (PST)
+Received: from localhost ([2620:10d:c091:480::1:64f7])
+        by smtp.gmail.com with ESMTPSA id y17sm9007791qki.134.2020.11.10.11.08.22
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 10 Nov 2020 11:06:11 -0800 (PST)
-From:   Aditya Srivastava <yashsri421@gmail.com>
-To:     joe@perches.com
-Cc:     yashsri421@gmail.com, lukas.bulwahn@gmail.com,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] checkpatch: add fix option for MISSING_SIGN_OFF
-Date:   Wed, 11 Nov 2020 00:36:03 +0530
-Message-Id: <20201110190603.2193-1-yashsri421@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        Tue, 10 Nov 2020 11:08:22 -0800 (PST)
+Date:   Tue, 10 Nov 2020 14:06:35 -0500
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Alex Shi <alex.shi@linux.alibaba.com>
+Cc:     akpm@linux-foundation.org, mgorman@techsingularity.net,
+        tj@kernel.org, hughd@google.com, khlebnikov@yandex-team.ru,
+        daniel.m.jordan@oracle.com, willy@infradead.org, lkp@intel.com,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        cgroups@vger.kernel.org, shakeelb@google.com,
+        iamjoonsoo.kim@lge.com, richard.weiyang@gmail.com,
+        kirill@shutemov.name, alexander.duyck@gmail.com,
+        rong.a.chen@intel.com, mhocko@suse.com, vdavydov.dev@gmail.com,
+        shy828301@gmail.com, Minchan Kim <minchan@kernel.org>
+Subject: Re: [PATCH v21 06/19] mm/rmap: stop store reordering issue on
+ page->mapping
+Message-ID: <20201110190635.GE850433@cmpxchg.org>
+References: <1604566549-62481-1-git-send-email-alex.shi@linux.alibaba.com>
+ <1604566549-62481-7-git-send-email-alex.shi@linux.alibaba.com>
+ <e66ef2e5-c74c-6498-e8b3-56c37b9d2d15@linux.alibaba.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <e66ef2e5-c74c-6498-e8b3-56c37b9d2d15@linux.alibaba.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently checkpatch warns us if there is no 'Signed-off-by' line
-for the patch.
+On Fri, Nov 06, 2020 at 09:20:04AM +0800, Alex Shi wrote:
+> From 2fd278b1ca6c3e260ad249808b62f671d8db5a7b Mon Sep 17 00:00:00 2001
+> From: Alex Shi <alex.shi@linux.alibaba.com>
+> Date: Thu, 5 Nov 2020 11:38:24 +0800
+> Subject: [PATCH v21 06/19] mm/rmap: stop store reordering issue on
+>  page->mapping
+> 
+> Hugh Dickins and Minchan Kim observed a long time issue which
+> discussed here, but actully the mentioned fix missed.
+> https://lore.kernel.org/lkml/20150504031722.GA2768@blaptop/
+> The store reordering may cause problem in the scenario:
+> 
+> 	CPU 0						CPU1
+>    do_anonymous_page
+> 	page_add_new_anon_rmap()
+> 	  page->mapping = anon_vma + PAGE_MAPPING_ANON
+> 	lru_cache_add_inactive_or_unevictable()
+> 	  spin_lock(lruvec->lock)
+> 	  SetPageLRU()
+> 	  spin_unlock(lruvec->lock)
+> 						/* idletacking judged it as LRU
+> 						 * page so pass the page in
+> 						 * page_idle_clear_pte_refs
+> 						 */
+> 						page_idle_clear_pte_refs
+> 						  rmap_walk
+> 						    if PageAnon(page)
+> 
+> Johannes give detailed examples how the store reordering could cause
+> a trouble:
+> "The concern is the SetPageLRU may get reorder before 'page->mapping'
+> setting, That would make CPU 1 will observe at page->mapping after
+> observing PageLRU set on the page.
+> 
+> 1. anon_vma + PAGE_MAPPING_ANON
+> 
+>    That's the in-order scenario and is fine.
+> 
+> 2. NULL
+> 
+>    That's possible if the page->mapping store gets reordered to occur
+>    after SetPageLRU. That's fine too because we check for it.
+> 
+> 3. anon_vma without the PAGE_MAPPING_ANON bit
+> 
+>    That would be a problem and could lead to all kinds of undesirable
+>    behavior including crashes and data corruption.
+> 
+>    Is it possible? AFAICT the compiler is allowed to tear the store to
+>    page->mapping and I don't see anything that would prevent it.
+> 
+> That said, I also don't see how the reader testing PageLRU under the
+> lru_lock would prevent that in the first place. AFAICT we need that
+> WRITE_ONCE() around the page->mapping assignment."
+> 
+> Signed-off-by: Alex Shi <alex.shi@linux.alibaba.com>
+> Cc: Johannes Weiner <hannes@cmpxchg.org>
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Cc: Hugh Dickins <hughd@google.com>
+> Cc: Matthew Wilcox <willy@infradead.org>
+> Cc: Minchan Kim <minchan@kernel.org>
+> Cc: Vladimir Davydov <vdavydov.dev@gmail.com>
+> Cc: linux-kernel@vger.kernel.org
+> Cc: linux-mm@kvack.org
 
-E.g., running checkpatch on commit 9ac060a708e0 ("leaking_addresses:
-Completely remove --version flag") reports this error:
+Acked-by: Johannes Weiner <hannes@cmpxchg.org>
 
-ERROR: Missing Signed-off-by: line(s)
-
-Provide a fix by adding a Signed-off-by line corresponding to the author
-of the patch before the patch separator line. Also avoid this error for
-the commits where some typo is present in the sign off.
-
-E.g. for commit 8cde5d5f7361 ("bus: ti-sysc: Detect omap4 type timers
-for quirk") we get missing sign off as well as bad sign off for:
-
-Siganed-off-by: Tony Lindgren <tony@atomide.com>
-
-Here it is probably best to give BAD_SIGN_OFF warning for Non-standard
-signature and avoid MISSING_SIGN_OFF
-
-Suggested-by: Joe Perches <joe@perches.com>
-Signed-off-by: Aditya Srivastava <yashsri421@gmail.com>
----
- scripts/checkpatch.pl | 18 +++++++++++++++---
- 1 file changed, 15 insertions(+), 3 deletions(-)
-
-diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-index cb46288127ac..2deffd0c091b 100755
---- a/scripts/checkpatch.pl
-+++ b/scripts/checkpatch.pl
-@@ -2404,6 +2404,8 @@ sub process {
- 
- 	my $last_blank_line = 0;
- 	my $last_coalesced_string_linenr = -1;
-+	my $patch_separator_linenr = 0;
-+	my $non_standard_signature = 0;
- 
- 	our @report = ();
- 	our $cnt_lines = 0;
-@@ -2755,6 +2757,10 @@ sub process {
- 		if ($line =~ /^---$/) {
- 			$has_patch_separator = 1;
- 			$in_commit_log = 0;
-+			# to add missing sign off line before diff(s)
-+			if($patch_separator_linenr == 0) {
-+				$patch_separator_linenr = $linenr;
-+			}
- 		}
- 
- # Check if MAINTAINERS is being updated.  If so, there's probably no need to
-@@ -2775,6 +2781,9 @@ sub process {
- 			if ($sign_off !~ /$signature_tags/) {
- 				WARN("BAD_SIGN_OFF",
- 				     "Non-standard signature: $sign_off\n" . $herecurr);
-+
-+				# to avoid missing_sign_off error as it most probably is just a typo
-+				$non_standard_signature = 1;
- 			}
- 			if (defined $space_before && $space_before ne "") {
- 				if (WARN("BAD_SIGN_OFF",
-@@ -7118,9 +7127,12 @@ sub process {
- 		      "Does not appear to be a unified-diff format patch\n");
- 	}
- 	if ($is_patch && $has_commit_log && $chk_signoff) {
--		if ($signoff == 0) {
--			ERROR("MISSING_SIGN_OFF",
--			      "Missing Signed-off-by: line(s)\n");
-+		if ($signoff == 0 && !$non_standard_signature) {
-+			if (ERROR("MISSING_SIGN_OFF",
-+				  "Missing Signed-off-by: line(s)\n") &&
-+			    $fix) {
-+				fix_insert_line($patch_separator_linenr - 1, "Signed-off-by: $author");
-+			}
- 		} elsif ($authorsignoff != 1) {
- 			# authorsignoff values:
- 			# 0 -> missing sign off
--- 
-2.17.1
-
+Thanks Alex!
