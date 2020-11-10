@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EFAB2ACC23
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 04:53:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 55CA72ACC25
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 04:53:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731256AbgKJDxX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 22:53:23 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53712 "EHLO mail.kernel.org"
+        id S1731484AbgKJDx0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 22:53:26 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53752 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729243AbgKJDxW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 22:53:22 -0500
+        id S1731194AbgKJDxY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 22:53:24 -0500
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2BAC6207BC;
-        Tue, 10 Nov 2020 03:53:21 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 85ED120829;
+        Tue, 10 Nov 2020 03:53:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604980401;
-        bh=Au+MdApOodfV7Qahbj4kNojkYoQIS9jepWa5HMULrSQ=;
+        s=default; t=1604980403;
+        bh=Xk6afGxOhEefhhDTu11Tv5CbmYxiIZBgfet1Akd/Mbs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=WpkfTSuUG00kdXMID0Ud3aRvr6tvBy7WWrbsrQ47rhuIeFOYuj4WKB4zrajhxwyzE
-         +FNYsANSBqtDReFs6iL0BzbLIZCYrWgV2Ixlp8neJXwQKF7ih6u5wWlFu36Bek39aW
-         pLYoCAvU0FQUC3unyN9NpS/Dv0FsleNrMxA+dc4M=
+        b=BCez7dC9T70bYOZrgqgMUIjXyp6Fb4Tig9+uz7pYXsnML4w5CPSts2ScMTX5k7X5S
+         19ynHKo6uEbiEivhs8oW3MR9JXg/Y3NgiuUg7mJK4ROjkDTfpHQnQe4YsB8O6ks8Jf
+         hetvtlzu9zuQPWi5+rWbSacw64az56s4kgzIXlIM=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+Cc:     Olivier Moysan <olivier.moysan@st.com>,
         Mark Brown <broonie@kernel.org>,
-        Sasha Levin <sashal@kernel.org>, alsa-devel@alsa-project.org
-Subject: [PATCH AUTOSEL 5.9 02/55] ASoC: qcom: sdm845: set driver name correctly
-Date:   Mon,  9 Nov 2020 22:52:25 -0500
-Message-Id: <20201110035318.423757-2-sashal@kernel.org>
+        Sasha Levin <sashal@kernel.org>, alsa-devel@alsa-project.org,
+        patches@opensource.cirrus.com
+Subject: [PATCH AUTOSEL 5.9 03/55] ASoC: cs42l51: manage mclk shutdown delay
+Date:   Mon,  9 Nov 2020 22:52:26 -0500
+Message-Id: <20201110035318.423757-3-sashal@kernel.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20201110035318.423757-1-sashal@kernel.org>
 References: <20201110035318.423757-1-sashal@kernel.org>
@@ -42,73 +43,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+From: Olivier Moysan <olivier.moysan@st.com>
 
-[ Upstream commit 3f48b6eba15ea342ef4cb420b580f5ed6605669f ]
+[ Upstream commit 20afe581c9b980848ad097c4d54dde9bec7593ef ]
 
-With the current state of code, we would endup with something like
-below in /proc/asound/cards for 2 machines based on this driver.
+A delay must be introduced before the shutdown down of the mclk,
+as stated in CS42L51 datasheet. Otherwise the codec may
+produce some noise after the end of DAPM power down sequence.
+The delay between DAC and CLOCK_SUPPLY widgets is too short.
+Add a delay in mclk shutdown request to manage the shutdown delay
+explicitly. From experiments, at least 10ms delay is necessary.
+Set delay to 20ms as recommended in Documentation/timers/timers-howto.rst
+when using msleep().
 
-Machine 1:
- 0 [DB845c            ]: DB845c - DB845c
-                       DB845c
-Machine 2:
- 0 [LenovoYOGAC6301]: Lenovo-YOGA-C63 - Lenovo-YOGA-C630-13Q50
-                     LENOVO-81JL-LenovoYOGAC630_13Q50-LNVNB161216
-
-This is not very UCM friendly both w.r.t to common up configs and
-card identification, and UCM2 became totally not usefull with just
-one ucm sdm845.conf for two machines which have different setups
-w.r.t HDMI and other dais.
-
-Reasons for such thing is partly because Qualcomm machine drivers never
-cared to set driver_name.
-
-This patch sets up driver name for the this driver to sort out the
-UCM integration issues!
-
-after this patch contents of /proc/asound/cards:
-
-Machine 1:
- 0 [DB845c         ]: sdm845 - DB845c
-                      DB845c
-Machine 2:
- 0 [LenovoYOGAC6301]: sdm845 - Lenovo-YOGA-C630-13Q50
-                     LENOVO-81JL-LenovoYOGAC630_13Q50-LNVNB161216
-
-with this its possible to align with what UCM2 expects and we can have
-sdm845/DB845.conf
-sdm845/LENOVO-81JL-LenovoYOGAC630_13Q50-LNVNB161216.conf
-... for board variants. This should scale much better!
-
-Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Link: https://lore.kernel.org/r/20201023095849.22894-1-srinivas.kandagatla@linaro.org
+Signed-off-by: Olivier Moysan <olivier.moysan@st.com>
+Link: https://lore.kernel.org/r/20201020150109.482-1-olivier.moysan@st.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/qcom/sdm845.c | 2 ++
- 1 file changed, 2 insertions(+)
+ sound/soc/codecs/cs42l51.c | 22 +++++++++++++++++++++-
+ 1 file changed, 21 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/qcom/sdm845.c b/sound/soc/qcom/sdm845.c
-index ab1bf23c21a68..6c2760e27ea6f 100644
---- a/sound/soc/qcom/sdm845.c
-+++ b/sound/soc/qcom/sdm845.c
-@@ -17,6 +17,7 @@
- #include "qdsp6/q6afe.h"
- #include "../codecs/rt5663.h"
+diff --git a/sound/soc/codecs/cs42l51.c b/sound/soc/codecs/cs42l51.c
+index 764f2ef8f59df..2b617993b0adb 100644
+--- a/sound/soc/codecs/cs42l51.c
++++ b/sound/soc/codecs/cs42l51.c
+@@ -245,8 +245,28 @@ static const struct snd_soc_dapm_widget cs42l51_dapm_widgets[] = {
+ 		&cs42l51_adcr_mux_controls),
+ };
  
-+#define DRIVER_NAME	"sdm845"
- #define DEFAULT_SAMPLE_RATE_48K		48000
- #define DEFAULT_MCLK_RATE		24576000
- #define TDM_BCLK_RATE		6144000
-@@ -552,6 +553,7 @@ static int sdm845_snd_platform_probe(struct platform_device *pdev)
- 	if (!data)
- 		return -ENOMEM;
++static int mclk_event(struct snd_soc_dapm_widget *w,
++		      struct snd_kcontrol *kcontrol, int event)
++{
++	struct snd_soc_component *comp = snd_soc_dapm_to_component(w->dapm);
++	struct cs42l51_private *cs42l51 = snd_soc_component_get_drvdata(comp);
++
++	switch (event) {
++	case SND_SOC_DAPM_PRE_PMU:
++		return clk_prepare_enable(cs42l51->mclk_handle);
++	case SND_SOC_DAPM_POST_PMD:
++		/* Delay mclk shutdown to fulfill power-down sequence requirements */
++		msleep(20);
++		clk_disable_unprepare(cs42l51->mclk_handle);
++		break;
++	}
++
++	return 0;
++}
++
+ static const struct snd_soc_dapm_widget cs42l51_dapm_mclk_widgets[] = {
+-	SND_SOC_DAPM_CLOCK_SUPPLY("MCLK")
++	SND_SOC_DAPM_SUPPLY("MCLK", SND_SOC_NOPM, 0, 0, mclk_event,
++			    SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMD),
+ };
  
-+	card->driver_name = DRIVER_NAME;
- 	card->dapm_widgets = sdm845_snd_widgets;
- 	card->num_dapm_widgets = ARRAY_SIZE(sdm845_snd_widgets);
- 	card->dev = dev;
+ static const struct snd_soc_dapm_route cs42l51_routes[] = {
 -- 
 2.27.0
 
