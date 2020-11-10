@@ -2,122 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DCCFE2AE14E
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 22:03:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F00562AE154
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 22:04:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731760AbgKJVDV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 16:03:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37636 "EHLO
+        id S1731804AbgKJVEI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 16:04:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37762 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727836AbgKJVDV (ORCPT
+        with ESMTP id S1726214AbgKJVEI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 16:03:21 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F188C0613D1;
-        Tue, 10 Nov 2020 13:03:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=jXrVumA1i2kZezBmOTg1+6kfgcCy4jVb7CD/Abz9u0k=; b=kqiYQYL/NsgXXqkSd+EGls3rwZ
-        v1Za/W32bJuLl8briOhT1rGbbS8A/dCgir4neGS2PWrd8O5PMgQXhYbeFQkvyZNWjrUV4ayMPQoEn
-        BTbd2YFwnw3nIgg9NM2k+44zIfRdmms3ixHO6UyIwHlTbwZ0PgRusNtP1gSHn73ikpZeHgKLIQqD5
-        w7KG/AIqajPFv3r9uaTVmgB9bCFgj+Mi5Uoe+ILglcuQkkSafyzex34gt2OYw+keNd+Et12DoONza
-        O0V3N6JRVP4/ixegnsQRH0YEOmz+tGSOLTN9B36UmwrDltgPc+fBcPg9q78/kTJQLW9GS/UEc3GTV
-        ZRDrV/Tw==;
-Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kcanM-0003Jb-UG; Tue, 10 Nov 2020 21:03:17 +0000
-Date:   Tue, 10 Nov 2020 21:03:16 +0000
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Shuah Khan <skhan@linuxfoundation.org>
-Cc:     corbet@lwn.net, keescook@chromium.org, gregkh@linuxfoundation.org,
-        peterz@infradead.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 01/13] seqnum_ops: Introduce Sequence Number Ops
-Message-ID: <20201110210316.GO17076@casper.infradead.org>
-References: <cover.1605027593.git.skhan@linuxfoundation.org>
- <d265685c901ea81c83c18e218a29710317ab7670.1605027593.git.skhan@linuxfoundation.org>
+        Tue, 10 Nov 2020 16:04:08 -0500
+Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B948C0613D3
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 13:04:07 -0800 (PST)
+Received: by mail-ed1-x541.google.com with SMTP id q3so14318741edr.12
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 13:04:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=vanguardiasur-com-ar.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=xI45YnQNiC4P8J4lgBXG/z8cHmMzcRB6aMt37sREgLU=;
+        b=Ffv7bCnbSiujBe1FuKScR6+7em4yb0WJLyXysMA6NcrvjYpAtWgIyLHNA+jRVlDsdU
+         4u5wVWxcT3+j9Wl67L0rtT6CdCkfn6Oy6t5M1Y/Cp9UEaNL8UnbqbFkWs2VCwLtXqxSE
+         cHPycBFCvM/absTS5+alHKmvnhds4dcyIbLjZvSraRbFx7+0YEVCZt0csdnIVX4QYwo1
+         6ZCYX/ldY5YiVAFMlO0iSr+Gnf5itKawwyv88+ZwNObEQ2AQ4Q1oGmHzCTjzkv3HhgzC
+         YI5LNiGNTAjXGJ16IcLPFMWs5z824tT9wonIddIe3cj41Rs6+vO8Y2LZ+I89oMXgslzd
+         rHmA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=xI45YnQNiC4P8J4lgBXG/z8cHmMzcRB6aMt37sREgLU=;
+        b=aXPG4s7xGQTFwPmQxlViD09z7KBe5YPbUhKOWg7D9OUoV1E8LbCMl4n+hxwIzJXmfH
+         vFB7NfQy7oibpMd/zCXtPVgzIu/kfNm12KuL3D2l0UhJnqouI4jbGr5C0V6LLRG8Z0VM
+         CiMhzXkLtwrtTp8s5kBCCXgi+Yv1OHp1a54zzKCFXWc1j3MMBctRbiMDi1kNhLEXXith
+         AjUfEDYiwZqNiq1TnSM291RskJqDP7h9ekOjM3Wj3ajD6bdjH4o2H9wBxOrjwsLAcE2S
+         41GRsCklPT2tZqpQRF6hsUBnJ3wr4o5leTqbubSjLs+sleA42AUQY2Kz/GrTAAMyKHko
+         yB3A==
+X-Gm-Message-State: AOAM53384hM1Jx0A0BOZUNgd+mCe0jdOUcIZHX6vH2K9IozqUl59xebq
+        yHoupkIV0Kx/Yg79Hp70za+eEC7xYbd6xNTk36sEPw==
+X-Google-Smtp-Source: ABdhPJxnvRuAM7u4ej4H8i/UnTcYekXKkcAUFyy9rn3ApxSLFAp/Wb5qXGtnMFV/hiewsNMPOeQvdI0XagDPBEoM/tw=
+X-Received: by 2002:a05:6402:2059:: with SMTP id bc25mr1429498edb.13.1605042245675;
+ Tue, 10 Nov 2020 13:04:05 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <d265685c901ea81c83c18e218a29710317ab7670.1605027593.git.skhan@linuxfoundation.org>
+References: <20201102190551.1223389-1-adrian.ratiu@collabora.com>
+In-Reply-To: <20201102190551.1223389-1-adrian.ratiu@collabora.com>
+From:   Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+Date:   Tue, 10 Nov 2020 18:03:54 -0300
+Message-ID: <CAAEAJfA1N1k9Vho4weZ9VnM_v6K4RXdmERyrWcWPCj64NMzDoQ@mail.gmail.com>
+Subject: Re: [PATCH v5 0/3] media: rkvdec: Add a VP9 backend
+To:     Adrian Ratiu <adrian.ratiu@collabora.com>
+Cc:     linux-media <linux-media@vger.kernel.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Ezequiel Garcia <ezequiel@collabora.com>,
+        Boris Brezillon <boris.brezillon@collabora.com>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        kernel@collabora.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 10, 2020 at 12:53:27PM -0700, Shuah Khan wrote:
-> Sequence Numbers wrap around to INT_MIN when it overflows and should not
+On Mon, 2 Nov 2020 at 16:04, Adrian Ratiu <adrian.ratiu@collabora.com> wrote:
+>
+> Dear all,
+>
+> This is v5 of the series adding VP9 profile 0 decoding to rkvdec.
+>
+> All feedback from v4 should be addressed, there's just one thing I did
+> not address: ref_frame_sign_biases in the uAPI. The userspace tool I'm
 
-Why would sequence numbers be signed?  I know they're built on top of
-atomic_t, which is signed, but conceptually a sequence number is unsigned.
+I believe that Hantro G2 VP9 needs ref_frame_sign_biases.
 
-> +++ b/Documentation/core-api/seqnum_ops.rst
-> @@ -0,0 +1,117 @@
-> +.. SPDX-License-Identifier: GPL-2.0
-> +
-> +.. include:: <isonum.txt>
-> +
-> +.. _seqnum_ops:
-> +
-> +==========================
-> +Sequence Number Operations
-> +==========================
-> +
-> +:Author: Shuah Khan
-> +:Copyright: |copy| 2020, The Linux Foundation
-> +:Copyright: |copy| 2020, Shuah Khan <skhan@linuxfoundation.org>
-> +
-> +There are a number of atomic_t usages in the kernel where atomic_t api
-> +is used strictly for counting sequence numbers and other statistical
-> +counters and not for managing object lifetime.
+I think that it's also needed for the MTK decoder.
+Might be worth checking that as well, if the code is publicly
+available somewhere.
 
-You start by describing why this was introduced.  I think rather, you
-should start by describing what this is.  You can compare and contrast
-it with atomic_t later.  Also, I don't think it's necessary to describe
-its implementation in this document.  This document should explain to
-someone why they want to use this.
+Coming to think about it, I think we are really close to having
+this uAPI directly upstream.
 
-> +Read interface
-> +--------------
-> +
-> +Reads and returns the current value. ::
-> +
-> +        seqnum32_read() --> atomic_read()
-> +        seqnum64_read() --> atomic64_read()
-> +
-> +Increment interface
-> +-------------------
-> +
-> +Increments sequence number and doesn't return the new value. ::
-> +
-> +        seqnum32_inc() --> atomic_inc()
-> +        seqnum64_inc() --> atomic64_inc()
+Let's take a step back on why we have these uAPIs in the staging
+area. Couple years ago, there were some doubts in the media community
+about these uAPIs, and we wanted to wait a bit for more users
+before moving to public land.
 
-That seems odd to me.  For many things, I want to know what the
-sequence number was incremented to.  Obviously seqnum_inc(); followed
-by seqnum_read(); is racy.
+The uAPIs were meant to be in staging until enough users
+appeared and we were confident enough to move to stable.
 
-Do we really want to be explicit about seqnum32 being 32-bit?
-I'd be inclined to have seqnum/seqnum64 instead of seqnum32/seqnum64.
+For VP9, given the feedback received through the year was already
+addressed, I think all that's left is to check the interface and make sure
+it can support Rockchip (RK3399, RK3326, etc), Hantro G2 and Mediatek,
 
-> +static inline int seqnum32_read(const struct seqnum32 *seq)
-> +{
-> +	return atomic_read(&seq->seqnum);
-> +}
-> +
-> +/*
-> + * seqnum32_set() - set seqnum value
-> + * @seq: struct seqnum32 pointer
-> + * @val: new value to set
-> + *
-> + */
-> +static inline void
-> +seqnum32_set(struct seqnum32 *seq, int val)
+We will be very close to having a public API, and we could even merge it
+directly there.
 
-You have some odd formatting like the above line split.
+Thanks,
+Ezequiel
 
-> +static inline void seqnum64_dec(
-> +				struct seqnum64 *seq)
-
-That one is particularly weird.
-
+> using [1] apparently doesn't need it or the default hwreg value for it
+> is capable of decoding the bitstreams I used on the driver, so I don't
+> really have a use-case to change and test that. :)
+>
+> Considering the uAPI is a work in progress and expected to be modified,
+> ref_frame_sign_biases can be added later with others which might be
+> required to enable more functionality (for eg profiles >= 1).
+>
+> Series tested on rk3399 and applies on next-20201030.
+>
+> [1] https://github.com/Kwiboo/FFmpeg/tree/v4l2-request-hwaccel-4.2.2-rkvdec
+>
+> Changelog
+> ---------
+>
+> v5:
+>
+> * Drop unnecessary OUTPUT buffer payload set in .buf_prepare.
+> * Drop obsolete .per_request ctrl flag
+> * Added new vp9 ctrls to v4l2_ctrl_ptr
+> * Fix pahole detected padding issues
+> * Send userspace an error if it tries to reconfigure decode resolution
+>   as v4l2 or rkvdec-vp9 backend do not support dynamic res changes yet
+> * Allow frame ctx probability tables to be non-mandatory so users can
+>   set them directly during frame decoding in cases where no defaults
+>   have been set previously (eg. ffmpeg vp9 backend)
+> * Some comments and documentation clarifications
+> * Minor checkpatch fixes
+>
+> v4:
+>
+> * Drop color_space field from the VP9 interface.
+>   V4L2 API should be used for it.
+> * Clarified Segment-ID comments.
+> * Moved motion vector probabilities to a separate
+>   struct.
+>
+> v3:
+>
+> * Fix documentation issues found by Hans.
+> * Fix smatch detected issues as pointed out by Hans.
+> * Added patch to fix wrong bytesused set on .buf_prepare.
+>
+> v2:
+>
+> * Documentation style issues pointed out by Nicolas internally.
+> * s/VP9_PROFILE_MAX/V4L2_VP9_PROFILE_MAX/
+> * Fix wrong kfree(ctx).
+> * constify a couple structs on rkvdec-vp9.c
+>
+>
+> Boris Brezillon (2):
+>   media: uapi: Add VP9 stateless decoder controls
+>   media: rkvdec: Add the VP9 backend
+>
+> Ezequiel Garcia (1):
+>   media: rkvdec: Fix .buf_prepare
+>
+>  .../userspace-api/media/v4l/biblio.rst        |   10 +
+>  .../media/v4l/ext-ctrls-codec.rst             |  550 ++++++
+>  drivers/media/v4l2-core/v4l2-ctrls.c          |  239 +++
+>  drivers/media/v4l2-core/v4l2-ioctl.c          |    1 +
+>  drivers/staging/media/rkvdec/Makefile         |    2 +-
+>  drivers/staging/media/rkvdec/rkvdec-vp9.c     | 1577 +++++++++++++++++
+>  drivers/staging/media/rkvdec/rkvdec.c         |   72 +-
+>  drivers/staging/media/rkvdec/rkvdec.h         |    6 +
+>  include/media/v4l2-ctrls.h                    |    5 +
+>  include/media/vp9-ctrls.h                     |  486 +++++
+>  10 files changed, 2942 insertions(+), 6 deletions(-)
+>  create mode 100644 drivers/staging/media/rkvdec/rkvdec-vp9.c
+>  create mode 100644 include/media/vp9-ctrls.h
+>
+> --
+> 2.29.0
+>
