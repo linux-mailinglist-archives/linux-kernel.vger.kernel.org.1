@@ -2,30 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FD0B2AD08A
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 08:37:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 36A5F2AD08B
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 08:37:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728301AbgKJHhW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 02:37:22 -0500
-Received: from szxga07-in.huawei.com ([45.249.212.35]:7876 "EHLO
-        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726467AbgKJHhV (ORCPT
+        id S1730756AbgKJHh1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 02:37:27 -0500
+Received: from szxga04-in.huawei.com ([45.249.212.190]:7200 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726467AbgKJHh1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 02:37:21 -0500
-Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4CVfnz0g67z71Lr;
-        Tue, 10 Nov 2020 15:37:11 +0800 (CST)
+        Tue, 10 Nov 2020 02:37:27 -0500
+Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4CVfnx4HvvzkfR6;
+        Tue, 10 Nov 2020 15:37:09 +0800 (CST)
 Received: from localhost.localdomain.localdomain (10.175.113.25) by
- DGGEMS406-HUB.china.huawei.com (10.3.19.206) with Microsoft SMTP Server id
- 14.3.487.0; Tue, 10 Nov 2020 15:37:09 +0800
+ DGGEMS407-HUB.china.huawei.com (10.3.19.207) with Microsoft SMTP Server id
+ 14.3.487.0; Tue, 10 Nov 2020 15:37:10 +0800
 From:   Qinglang Miao <miaoqinglang@huawei.com>
-To:     Sudeep Holla <sudeep.holla@arm.com>
-CC:     <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        Qinglang Miao <miaoqinglang@huawei.com>
-Subject: [PATCH v2] firmware: arm_scmi: fix missing destroy_workqueue()
-Date:   Tue, 10 Nov 2020 15:42:21 +0800
-Message-ID: <20201110074221.41235-1-miaoqinglang@huawei.com>
+To:     Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>
+CC:     <linux-scsi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        "Qinglang Miao" <miaoqinglang@huawei.com>
+Subject: [PATCH v2] scsi: ufshcd: fix missing destroy_workqueue()
+Date:   Tue, 10 Nov 2020 15:42:23 +0800
+Message-ID: <20201110074223.41280-1-miaoqinglang@huawei.com>
 X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7BIT
@@ -36,47 +38,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-destroy_workqueue seems necessary before return from
-scmi_notification_init in the error handling case when
-fails to do devm_kcalloc(). Fix this by simply moving
-devm_kcalloc to the front.
+Add the missing destroy_workqueue() before return from
+ufshcd_init in the error handling case as well as in
+ufshcd_remove.
 
-Fixes: bd31b249692e ("firmware: arm_scmi: Add notification dispatch and delivery")
-Suggested-by: Cristian Marussi <cristian.marussi@arm.com>
+Fixes: 4db7a2360597 ("scsi: ufs: Fix concurrency of error handler and other error recovery paths")
+Suggested-by: Avri Altman <Avri.Altman@wdc.com>
 Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
 ---
- v2: fix this problem by simply moving codes.
+ v2: consider missing destroy_workqueue ufshcd_remove either.
 
- drivers/firmware/arm_scmi/notify.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ drivers/scsi/ufs/ufshcd.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/firmware/arm_scmi/notify.c b/drivers/firmware/arm_scmi/notify.c
-index 2754f9d01636..fdb2cc95dfde 100644
---- a/drivers/firmware/arm_scmi/notify.c
-+++ b/drivers/firmware/arm_scmi/notify.c
-@@ -1468,17 +1468,17 @@ int scmi_notification_init(struct scmi_handle *handle)
- 	ni->gid = gid;
- 	ni->handle = handle;
- 
-+	ni->registered_protocols = devm_kcalloc(handle->dev, SCMI_MAX_PROTO,
-+						sizeof(char *), GFP_KERNEL);
-+	if (!ni->registered_protocols)
-+		goto err;
-+
- 	ni->notify_wq = alloc_workqueue("scmi_notify",
- 					WQ_UNBOUND | WQ_FREEZABLE | WQ_SYSFS,
- 					0);
- 	if (!ni->notify_wq)
- 		goto err;
- 
--	ni->registered_protocols = devm_kcalloc(handle->dev, SCMI_MAX_PROTO,
--						sizeof(char *), GFP_KERNEL);
--	if (!ni->registered_protocols)
--		goto err;
--
- 	mutex_init(&ni->pending_mtx);
- 	hash_init(ni->pending_events_handlers);
- 
+diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
+index b8f573a02713..adbdda4f556b 100644
+--- a/drivers/scsi/ufs/ufshcd.c
++++ b/drivers/scsi/ufs/ufshcd.c
+@@ -8906,6 +8906,7 @@ void ufshcd_remove(struct ufs_hba *hba)
+ 	blk_mq_free_tag_set(&hba->tmf_tag_set);
+ 	blk_cleanup_queue(hba->cmd_queue);
+ 	scsi_remove_host(hba->host);
++	destroy_workqueue(hba->eh_wq);
+ 	/* disable interrupts */
+ 	ufshcd_disable_intr(hba, hba->intr_mask);
+ 	ufshcd_hba_stop(hba);
+@@ -9206,6 +9207,7 @@ int ufshcd_init(struct ufs_hba *hba, void __iomem *mmio_base, unsigned int irq)
+ exit_gating:
+ 	ufshcd_exit_clk_scaling(hba);
+ 	ufshcd_exit_clk_gating(hba);
++	destroy_workqueue(hba->eh_wq);
+ out_disable:
+ 	hba->is_irq_enabled = false;
+ 	ufshcd_hba_exit(hba);
 -- 
 2.23.0
 
