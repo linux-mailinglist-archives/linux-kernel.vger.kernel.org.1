@@ -2,81 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF1612ADB71
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 17:18:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B8BA52ADB7A
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 17:20:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730001AbgKJQSm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 11:18:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49560 "EHLO
+        id S1730150AbgKJQUh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 11:20:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49856 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729359AbgKJQSl (ORCPT
+        with ESMTP id S1727344AbgKJQUg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 11:18:41 -0500
-Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8545BC0613CF;
-        Tue, 10 Nov 2020 08:18:41 -0800 (PST)
-Received: by mail-pf1-x434.google.com with SMTP id w6so6356341pfu.1;
-        Tue, 10 Nov 2020 08:18:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ZlAPGBbSrdcKoakzSoHTXHyKU6sf2rv6f4Yur/1Rqnc=;
-        b=rBWfzbrzED3NIkWUa1wUDxwb+E2u2Zmkc0vS7WBQpjyuPdgDigVAFSl7rcjyFEIvGo
-         YbQUnOInMzN8PtD9u2XcaZzWEPOlG7LzNh3FdTTdzfBbDapAN3gndJFsN4Qx5MknDkgC
-         BTmWbc31IbJa06EudYnwLM2V7rJY5Jus8bxeM5ABMp85Y08xrc3BE+Rijpiv0OG94Y/6
-         o4QPQsyfJldUGXZOGI1pfFYYtmaBrRAa7e0B+J4IE+OLA+iTFKPxqq6V9yI5XRqVEylm
-         ZpmC+Tb01mbqXyz9aWsJ5wAa4qGqT8DPSqwTk5ACB8UpaJCSIrh8iLyiFt0wk2fha5fx
-         W4tA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ZlAPGBbSrdcKoakzSoHTXHyKU6sf2rv6f4Yur/1Rqnc=;
-        b=GsiAntvqcxKF4Z2iep7rHUXnSiEnAuxQRGCRXWVP0Q1DlkSRca21QSOBb6UHRK7We/
-         32nySpCKjH595sX/wpTfW0fIbYFsvwhlblh4g1W8JATqnh07Uc/JsifdKuBSyLY5mgpe
-         ljqcbfRA/LG0bxoba5/bSDTAPGRMMq/4eR6jMyrRqkN5i8LE+Ay9e63z9eKSHjHHSqfP
-         7JHz4J70Cjoz8KBExr+YgPFVZRdECS77cTBlk58kqGfcPKcBV72KBZIB+6eURJllB/aI
-         a9G8QGbd61rVtl/B5+i72f+nwk+FxNFNcUCA9QdO4HARlUw91kVt/GVQ/TIfr9UJitwK
-         EhnQ==
-X-Gm-Message-State: AOAM533KmaQz4fYVrCPg0ZDRboKpIYcp1R22hSUkv16oOVzHMfq8j2nl
-        NQhNrB7OSRRoEYsccK+gRN5emV7V7hgGwKA6VEKtJ7paYbk=
-X-Google-Smtp-Source: ABdhPJyf+vz6mnjiuYO1Xxqfm5tIiJNlw63wgYzxrQFLR1tVdkomnNweUzgGVSzmzQ88Zgc8eMEysiFOpeLar2v2FXU=
-X-Received: by 2002:a62:7c95:0:b029:18c:5002:a1ab with SMTP id
- x143-20020a627c950000b029018c5002a1abmr2517989pfc.40.1605025121022; Tue, 10
- Nov 2020 08:18:41 -0800 (PST)
+        Tue, 10 Nov 2020 11:20:36 -0500
+Received: from xavier.telenet-ops.be (xavier.telenet-ops.be [IPv6:2a02:1800:120:4::f00:14])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F695C0613D1
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 08:20:35 -0800 (PST)
+Received: from ramsan.of.borg ([84.195.186.194])
+        by xavier.telenet-ops.be with bizsmtp
+        id qgLY2300q4C55Sk01gLYVC; Tue, 10 Nov 2020 17:20:33 +0100
+Received: from rox.of.borg ([192.168.97.57])
+        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1kcWNk-001E0n-E5; Tue, 10 Nov 2020 17:20:32 +0100
+Received: from geert by rox.of.borg with local (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1kcWNj-00Dnv7-Tg; Tue, 10 Nov 2020 17:20:31 +0100
+From:   Geert Uytterhoeven <geert+renesas@glider.be>
+To:     Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        linux-renesas-soc@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Geert Uytterhoeven <geert+renesas@glider.be>
+Subject: [PATCH v5 0/2] dt-bindings: timer: renesas: tmu: Document r8a774e1 and
+Date:   Tue, 10 Nov 2020 17:20:12 +0100
+Message-Id: <20201110162014.3290109-1-geert+renesas@glider.be>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20201110145552.23024-1-brgl@bgdev.pl> <20201110150747.GX4077@smile.fi.intel.com>
-In-Reply-To: <20201110150747.GX4077@smile.fi.intel.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Tue, 10 Nov 2020 18:19:29 +0200
-Message-ID: <CAHp75VeK07F9T2bq5R=WetFwZoorgvaSFcPg5qCXW+3JQjycnA@mail.gmail.com>
-Subject: Re: [PATCH v4 0/7] gpio: exar: refactor the driver
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Bartosz Golaszewski <brgl@bgdev.pl>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Jan Kiszka <jan.kiszka@siemens.com>,
-        David Laight <David.Laight@aculab.com>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 10, 2020 at 5:07 PM Andy Shevchenko
-<andriy.shevchenko@linux.intel.com> wrote:
-> On Tue, Nov 10, 2020 at 03:55:45PM +0100, Bartosz Golaszewski wrote:
+	Hi Daniel, Thomas,
 
-> With reverted reg_width change
+This patch series picks up missing Device Tree binding updates for the
+Renesas Timer Unit (TMU), and converts the bindings to json-schema.
 
-I should have relaxed this to "with whatever settlement we become
-about regmap configuration".
+Thanks for applying!
 
-> Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Geert Uytterhoeven (1):
+  dt-bindings: timer: renesas: tmu: Convert to json-schema
 
+Marian-Cristian Rotariu (1):
+  dt-bindings: timer: renesas: tmu: Document r8a774e1 bindings
+
+ .../devicetree/bindings/timer/renesas,tmu.txt | 49 ---------
+ .../bindings/timer/renesas,tmu.yaml           | 99 +++++++++++++++++++
+ 2 files changed, 99 insertions(+), 49 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/timer/renesas,tmu.txt
+ create mode 100644 Documentation/devicetree/bindings/timer/renesas,tmu.yaml
 
 -- 
-With Best Regards,
-Andy Shevchenko
+2.25.1
+
+Gr{oetje,eeting}s,
+
+						Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+							    -- Linus Torvalds
