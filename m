@@ -2,120 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDC472ACF5B
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 07:02:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 313522ACF5C
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 07:02:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731889AbgKJGCk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 01:02:40 -0500
-Received: from ex13-edg-ou-001.vmware.com ([208.91.0.189]:37509 "EHLO
-        EX13-EDG-OU-001.vmware.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728085AbgKJGCj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 01:02:39 -0500
-X-Greylist: delayed 900 seconds by postgrey-1.27 at vger.kernel.org; Tue, 10 Nov 2020 01:02:39 EST
-Received: from sc9-mailhost2.vmware.com (10.113.161.72) by
- EX13-EDG-OU-001.vmware.com (10.113.208.155) with Microsoft SMTP Server id
- 15.0.1156.6; Mon, 9 Nov 2020 21:47:35 -0800
-Received: from localhost.localdomain (unknown [10.197.103.179])
-        by sc9-mailhost2.vmware.com (Postfix) with ESMTP id DEAF2207FC;
-        Mon,  9 Nov 2020 21:47:37 -0800 (PST)
-From:   Tapas Kundu <tkundu@vmware.com>
-To:     <acme@redhat.com>
-CC:     <stable@vger.kernel.org>, <gregkh@linuxfoundation.org>,
-        <srivatsab@vmware.com>, <srivatsa@csail.mit.edu>,
-        <anishs@vmware.com>, <vsirnapalli@vmware.com>, <akaher@vmware.com>,
-        <tkundu@vmware.com>, <peterz@infradead.org>, <mingo@redhat.com>,
-        <mark.rutland@arm.com>, <alexander.shishkin@linux.intel.com>,
-        <jolsa@redhat.com>, <namhyung@kernel.org>,
-        <linux-kernel@vger.kernel.org>, <adrian.hunter@intel.com>,
-        <irogers@google.com>, Jiri Olsa <jolsa@kernel.org>
-Subject: [PATCH v5.9-v4.19] perf scripting python: Avoid declaring function pointers with a visibility attribute
-Date:   Tue, 10 Nov 2020 11:16:12 +0530
-Message-ID: <20201110054612.13170-1-tkundu@vmware.com>
-X-Mailer: git-send-email 2.23.0
+        id S1732121AbgKJGCo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 01:02:44 -0500
+Received: from mail-dm6nam08on2071.outbound.protection.outlook.com ([40.107.102.71]:41728
+        "EHLO NAM04-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726467AbgKJGCl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Nov 2020 01:02:41 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=M4UnNe3XvUy/vPd76Jqh3OaAEN9Q/yR1eOGh5DAco4aaNIxx9X64GoAtMulLG0pHH9aPqZaA+ACh8QbnbgmQ3uo4y4ni1DmWr2QAIV5BRU+dfNUkM49ThD10NUSCjXNIOu/E0vULvAgX7BildldxebtZnKvcnXVccrZtOAg6PJugqwytZVK+GqR+pNZZ3qGoyE3ig9bIyj3sShYuSUapw19lcAmcg4eJJmXV2og0eWKfHK4aIcQyI8JvcrTBThMu+3KsyNFEi9ekaNlr4/dg3dvBj9wcArXBIcHTQCIjxzBKFLiLY5aYN61rVLkm7zkIswSGKzzGzI/P0rajTtUrmA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=aAxPC2PvPJ5MB0p82AJULmOtogvhcMD/ozhFTK6JIgI=;
+ b=mIbvV344sUn6GTZ0MPAnoDxcsrUikf+remHFytKqYY1noOe7/7iL1YLw4PwskMu2guOt2/8kibBRwFVURJ7q0NSb1KBOCr8SyQ4/jnTr2Gp8Lx0g1ZJYBCoGkcF6R/ARPS9/1toHh950fj0cj76fQWpnBwk9d7okZvU+U4dWCzcTFRTnvBpso5cnELHYtFvGnSN472wumYProKjomprOjDNYQSuhi8bXkwAGFK0bfsmreSnHxTpwpv6JS3mftw9+LqQ6QK6+XmI9nYuxwBLBo0M/bXq6ui1/EXL6422ERikQgd5emeWPZ5oNIeY8ro+q4Dd8DV8Fti5j5uQpCCE9jg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=xilinx.com; dmarc=pass action=none header.from=xilinx.com;
+ dkim=pass header.d=xilinx.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=aAxPC2PvPJ5MB0p82AJULmOtogvhcMD/ozhFTK6JIgI=;
+ b=cabDtLB1pYvGV1hcefxIm4U8uYp97GAJ1clKhW1qvwP4WOfbVde787/mvER+EDeRxJAT1O7HP8ap7aWHuyJ0P9KSt3Ps0rUpvHmpjEyztykVbr2on16BuL1B3ho9UA7Modr06xNvIgpbKMEtvQ1ppznw6+llxOOaWdKWxALuIwQ=
+Received: from BYAPR02MB5638.namprd02.prod.outlook.com (2603:10b6:a03:9f::18)
+ by SJ0PR02MB7133.namprd02.prod.outlook.com (2603:10b6:a03:2a2::9) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3541.21; Tue, 10 Nov
+ 2020 06:02:37 +0000
+Received: from BYAPR02MB5638.namprd02.prod.outlook.com
+ ([fe80::c04a:e001:49fc:9780]) by BYAPR02MB5638.namprd02.prod.outlook.com
+ ([fe80::c04a:e001:49fc:9780%4]) with mapi id 15.20.3541.024; Tue, 10 Nov 2020
+ 06:02:37 +0000
+From:   Radhey Shyam Pandey <radheys@xilinx.com>
+To:     Jakub Kicinski <kuba@kernel.org>
+CC:     "davem@davemloft.net" <davem@davemloft.net>,
+        Michal Simek <michals@xilinx.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        git <git@xilinx.com>, Shravya Kumbham <shravyak@xilinx.com>
+Subject: RE: [PATCH net-next] net: emaclite: Add error handling for
+ of_address_ and phy read functions
+Thread-Topic: [PATCH net-next] net: emaclite: Add error handling for
+ of_address_ and phy read functions
+Thread-Index: AQHWseWiNQTJPcLYH02w+4w3GJSlfam9Fn6AgAPOzOA=
+Date:   Tue, 10 Nov 2020 06:02:37 +0000
+Message-ID: <BYAPR02MB56382AEBE633406AC6A258F1C7E90@BYAPR02MB5638.namprd02.prod.outlook.com>
+References: <1604410265-30246-1-git-send-email-radhey.shyam.pandey@xilinx.com>
+ <20201107113527.18232c34@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20201107113527.18232c34@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-Auto-Response-Suppress: DR, RN, NRN, OOF, AutoReply
+X-MS-TNEF-Correlator: 
+authentication-results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=xilinx.com;
+x-originating-ip: [149.199.50.130]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 74cc5b0d-e054-423b-97d5-08d8853e39d7
+x-ms-traffictypediagnostic: SJ0PR02MB7133:
+x-ld-processed: 657af505-d5df-48d0-8300-c31994686c5c,ExtAddr
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <SJ0PR02MB7133BF07BFCE957D01BF5ECCC7E90@SJ0PR02MB7133.namprd02.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:2733;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 2nZmTtTsnfvrqDpGrKzw2AY8gEzhEA+z2sRkQ6Wq1BQQ1KigfU/cDzCbg/TokIKxGLkVUXSQg8nExYhqYpXOpj+5xIJr0jnErFMxYwT+wYWsP3CkCZBC8bQW5WhY5fnpxEbOfdwR6BC5NTUiOrKm4ZXBoLwBpvT1awX8V4iO4H/mxJH+8v/nNt/pWO5Df4GScjlDr37FeKKerOijMw2X0jjK/HOKJgTv/TBJ7X155eFu+gDJd8G2+RRd1Tkjjh/QuO+a2P8E7TuEKbQHkC+zPfOpfj2Ii9L3wu39qok9Z/6JXNFbwI6b4scf77WKeVr4xzP6h05k3JlA5fqdRwsz+g==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR02MB5638.namprd02.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(376002)(366004)(136003)(39860400002)(396003)(66476007)(7696005)(55016002)(4326008)(86362001)(6916009)(64756008)(316002)(66946007)(33656002)(53546011)(76116006)(9686003)(66446008)(66556008)(6506007)(8676002)(478600001)(71200400001)(2906002)(26005)(107886003)(186003)(52536014)(83380400001)(8936002)(54906003)(5660300002);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: 3Q4w36ye3Ui9VppxTOC0YU2cPnItRHz6cgcPyZ7spJYdV2lCJNPfod6vBj4P6YIdubD4yyZTHRG5/SngbhAGB4Zb+FGusmb5OTLCFEpqE1fQlmF/Xz2Vc5Qle9FAqGpqrqDaqXuSf/dW4WrCS87WcJS7PrSLDe5X17FBAJ45rZjZm5jfVj7XzD5arvuZHsC1QQs/areRFwoQ2g9/Vq0RXyIFIGwEGP5/iyF1Q6G+GMqrlLCSto4uHPte1bhVqYXZJRrJ5lS/zbYuM1Akw1AO9OGU/xFh+JDjfnLKKHHUzf8cY+n+izX37xsddQk+SRsFFUdebfBXP25rcrUnhww0zEGLK52qmRb6txHxy7NcAhsnLN63/juH1nJIglnR0VVbj095tx3AhcKqwETRlJx70T2PV2+yji54y1hLQmy3/ggRxWXM9z/kr6d7nuxMu0J1BK7c5gVduS/h2JgskPMbOB2COIQ6aTZ6t4QdCGsFtXkBCoumPwY1dUYgqlnYgnRXPdx2mwLXTQ7pX8Ox4gxDmSZWYAAkvT0kZji9mGrUEHYe9nI0qhWSHRnS8goED0rtWLsLGtxgxUew7AeDdDbzbLKhGBnPHZGG6gVH5P8cKX3/m1gxMpw4T1MvDo/a3ftMIORb8FHmJcCwqOK+GaHKeVRODUwlVtnBm7rFseIDOWj4KlSNRCivQKEMQPs9Eq4tbxJpVczz501C30h0sz48ZCohWvwtlhR6OqzsRLxYI6OGuyUWV2cTJ/f+WPWJGry5Y1oQb7lAicGoUIb1913tkSdnQN+RpvqsZKy7690Fzw3DCjCdai52NK2WIBkyo4qOQXZ65qLOOq7FRYfN80WtEzQ+WLqvqm1oUHMC8YScsFKyYUAR7GOZPsAR62UfugcHa0dVIJzTWm33g9twdtRbwA==
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-Received-SPF: None (EX13-EDG-OU-001.vmware.com: tkundu@vmware.com does not
- designate permitted sender hosts)
+X-OriginatorOrg: xilinx.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR02MB5638.namprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 74cc5b0d-e054-423b-97d5-08d8853e39d7
+X-MS-Exchange-CrossTenant-originalarrivaltime: 10 Nov 2020 06:02:37.6908
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 657af505-d5df-48d0-8300-c31994686c5c
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: qnt/SpY8Ge6Fp/LJHgYwd/3WSdv1V2hycYzFjhj/g8/+00XYbJRX2ehN/ydzevAHXkPmqGhWwcCepYhNXkZfFw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR02MB7133
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnaldo Carvalho de Melo <acme@redhat.com>
+> -----Original Message-----
+> From: Jakub Kicinski <kuba@kernel.org>
+> Sent: Sunday, November 8, 2020 1:05 AM
+> To: Radhey Shyam Pandey <radheys@xilinx.com>
+> Cc: davem@davemloft.net; Michal Simek <michals@xilinx.com>;
+> netdev@vger.kernel.org; linux-arm-kernel@lists.infradead.org; linux-
+> kernel@vger.kernel.org; git <git@xilinx.com>; Shravya Kumbham
+> <shravyak@xilinx.com>
+> Subject: Re: [PATCH net-next] net: emaclite: Add error handling for
+> of_address_ and phy read functions
+>=20
+> On Tue, 3 Nov 2020 19:01:05 +0530 Radhey Shyam Pandey wrote:
+> > From: Shravya Kumbham <shravya.kumbham@xilinx.com>
+> >
+> > Add ret variable, conditions to check the return value and it's error
+> > path for of_address_to_resource() and phy_read() functions.
+> >
+> > Addresses-Coverity: Event check_return value.
+> > Signed-off-by: Shravya Kumbham <shravya.kumbham@xilinx.com>
+> > Signed-off-by: Radhey Shyam Pandey <radhey.shyam.pandey@xilinx.com>
+>=20
+> Any reason not to apply this to net as a fix?
+Yes, it can be applied to net as a fix.=20
+>=20
+> > diff --git a/drivers/net/ethernet/xilinx/xilinx_emaclite.c
+> > b/drivers/net/ethernet/xilinx/xilinx_emaclite.c
+> > index 0c26f5b..fc5ccd1 100644
+> > --- a/drivers/net/ethernet/xilinx/xilinx_emaclite.c
+> > +++ b/drivers/net/ethernet/xilinx/xilinx_emaclite.c
+> > @@ -820,7 +820,7 @@ static int xemaclite_mdio_write(struct mii_bus
+> > *bus, int phy_id, int reg,  static int xemaclite_mdio_setup(struct
+> > net_local *lp, struct device *dev)  {
+> >  	struct mii_bus *bus;
+> > -	int rc;
+> > +	int rc, ret;
+> >  	struct resource res;
+> >  	struct device_node *np =3D of_get_parent(lp->phy_node);
+> >  	struct device_node *npp;
+> > @@ -834,7 +834,13 @@ static int xemaclite_mdio_setup(struct net_local
+> *lp, struct device *dev)
+> >  	}
+> >  	npp =3D of_get_parent(np);
+> >
+> > -	of_address_to_resource(npp, 0, &res);
+> > +	ret =3D of_address_to_resource(npp, 0, &res);
+> > +	if (ret) {
+> > +		dev_err(dev, "%s resource error!\n",
+> > +			dev->of_node->full_name);
+> > +		of_node_put(lp->phy_node);
+>=20
+> I'm always confused by the of_* refcounting. Why do you need to put
+> phy_node here, and nowhere else in this function?
 
-commit d0e7b0c71fbb653de90a7163ef46912a96f0bdaf upstream.
+Initially, we added of_node_put(phy_node) thinking about this=20
+particular coverity change. But agree it has to be added for
+all error path i.e better place would be in xemaclite_of_probe()
+error label.
 
-To avoid this:
-
-  util/scripting-engines/trace-event-python.c: In function 'python_start_script':
-  util/scripting-engines/trace-event-python.c:1595:2: error: 'visibility' attribute ignored [-Werror=attributes]
-   1595 |  PyMODINIT_FUNC (*initfunc)(void);
-        |  ^~~~~~~~~~~~~~
-
-That started breaking when building with PYTHON=python3 and these gcc
-versions (I haven't checked with the clang ones, maybe it breaks there
-as well):
-
-  # export PERF_TARBALL=http://192.168.86.5/perf/perf-5.9.0.tar.xz
-  # dm  fedora:33 fedora:rawhide
-     1   107.80 fedora:33         : Ok   gcc (GCC) 10.2.1 20201005 (Red Hat 10.2.1-5), clang version 11.0.0 (Fedora 11.0.0-1.fc33)
-     2    92.47 fedora:rawhide    : Ok   gcc (GCC) 10.2.1 20201016 (Red Hat 10.2.1-6), clang version 11.0.0 (Fedora 11.0.0-1.fc34)
-  #
-
-Avoid that by ditching that 'initfunc' function pointer with its:
-
-    #define Py_EXPORTED_SYMBOL _attribute_ ((visibility ("default")))
-    #define PyMODINIT_FUNC Py_EXPORTED_SYMBOL PyObject*
-
-And just call PyImport_AppendInittab() at the end of the ifdef python3
-block with the functions that were being attributed to that initfunc.
-
-Cc: Adrian Hunter <adrian.hunter@intel.com>
-Cc: Ian Rogers <irogers@google.com>
-Cc: Jiri Olsa <jolsa@kernel.org>
-Cc: Namhyung Kim <namhyung@kernel.org>
-Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
-Signed-off-by: Tapas Kundu <tkundu@vmware.com>
----
- tools/perf/util/scripting-engines/trace-event-python.c | 7 ++-----
- 1 file changed, 2 insertions(+), 5 deletions(-)
-
-diff --git a/tools/perf/util/scripting-engines/trace-event-python.c b/tools/perf/util/scripting-engines/trace-event-python.c
-index 93c03b39c..3b02c3f1b 100644
---- a/tools/perf/util/scripting-engines/trace-event-python.c
-+++ b/tools/perf/util/scripting-engines/trace-event-python.c
-@@ -1587,7 +1587,6 @@ static void _free_command_line(wchar_t **command_line, int num)
- static int python_start_script(const char *script, int argc, const char **argv)
- {
- 	struct tables *tables = &tables_global;
--	PyMODINIT_FUNC (*initfunc)(void);
- #if PY_MAJOR_VERSION < 3
- 	const char **command_line;
- #else
-@@ -1602,20 +1601,18 @@ static int python_start_script(const char *script, int argc, const char **argv)
- 	FILE *fp;
- 
- #if PY_MAJOR_VERSION < 3
--	initfunc = initperf_trace_context;
- 	command_line = malloc((argc + 1) * sizeof(const char *));
- 	command_line[0] = script;
- 	for (i = 1; i < argc + 1; i++)
- 		command_line[i] = argv[i - 1];
-+	PyImport_AppendInittab(name, initperf_trace_context);
- #else
--	initfunc = PyInit_perf_trace_context;
- 	command_line = malloc((argc + 1) * sizeof(wchar_t *));
- 	command_line[0] = Py_DecodeLocale(script, NULL);
- 	for (i = 1; i < argc + 1; i++)
- 		command_line[i] = Py_DecodeLocale(argv[i - 1], NULL);
-+	PyImport_AppendInittab(name, PyInit_perf_trace_context);
- #endif
--
--	PyImport_AppendInittab(name, initfunc);
- 	Py_Initialize();
- 
- #if PY_MAJOR_VERSION < 3
--- 
-2.23.0
-
+>=20
+> > +		return ret;
+> > +	}
+>=20
+> >  		/* Restart auto negotiation */
+> >  		bmcr =3D phy_read(lp->phy_dev, MII_BMCR);
+> > +		if (bmcr < 0) {
+> > +			dev_err(&lp->ndev->dev, "phy_read failed\n");
+> > +			phy_disconnect(lp->phy_dev);
+> > +			lp->phy_dev =3D NULL;
+> > +
+> > +			return bmcr;
+> > +		}
+> >  		bmcr |=3D (BMCR_ANENABLE | BMCR_ANRESTART);
+> >  		phy_write(lp->phy_dev, MII_BMCR, bmcr);
+>=20
+> Does it really make much sense to validate the return value of
+> phy_read() but not check any errors from phy_write()s?
+Error handling was added for phy_read as it was using return value
+and reported by coverity. But yes we in a follow-up patch we
+can extend error handling for phy_write as well.
+=20
