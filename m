@@ -2,125 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3F4A2AE47E
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 00:56:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EF542AE474
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 00:54:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732400AbgKJX4c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 18:56:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36552 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732120AbgKJX4c (ORCPT
+        id S1732378AbgKJXyr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 18:54:47 -0500
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:32774 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732345AbgKJXyq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 18:56:32 -0500
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D64EDC0613D1;
-        Tue, 10 Nov 2020 15:56:31 -0800 (PST)
-Received: by mail-wr1-x442.google.com with SMTP id j7so424274wrp.3;
-        Tue, 10 Nov 2020 15:56:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=WfB5Zmw3Ux9CKhPt9P+tELn8R3tbn83JjmD6s3cqA8Y=;
-        b=c9GbbbX262i+//lwyN4ABDp41NxBzHGtWZq7nQyCdbooeI+usENJXE6Nz+cVyC05Cs
-         qUC5+HAW2VUn6TxyQfhXa0ZdFtY4b8eyUTH2yDFGy/kqrNAZe2MXG6pg0c6viy7mmQDh
-         x+ma6hb3dQyFRN6LiNBRorma69lXljTii322GH8cdgf9dKJF2ZKdV6j5Hfd5gkDSgiBs
-         Y1vcKeqBk4NCoqK7jgjv/kF4MPoNsL3z7st3PabSApeMZKCAiM8Sr1TW3N7BQroGP3wn
-         zUay39jqPsc2IglPSulSPBVHRrRpig9t0kNsshJh/WrxnxI4soTjwoKewH1GCjZRst3Z
-         5jqQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=WfB5Zmw3Ux9CKhPt9P+tELn8R3tbn83JjmD6s3cqA8Y=;
-        b=mvpH4cglvRvqt3A1eK3Yxx9Af2tY8nRk5bVKoahln5NIxTCqF9Nj7jD4CSv18cD5EL
-         cTn6c3NZhqvXWLMsn8C9vwKJCt4IoU8xBLSc7eHpHC1IXQGGBJ5ivL0pquEVjCBj21qn
-         w9QKxyF3NZ01eC2FbxaF8U07QF1JXQ0SSoKmQM8rCWTA/8GQmh40gqG+IE+7IffsZhNx
-         stpgO/mm7lyVmplGLVZRkBFWf7AuC1SgKgD2OQ3ejtJd1XSZxjhdlqaq9thMI0OnH1NU
-         B9767FTd7RjOI0FpU38Wd9dxEqbbYBiUJT0u8V9QJF5ruH7e2gA7DOPgymAv6tsnhbSZ
-         QVYw==
-X-Gm-Message-State: AOAM532g7rbNWPSTNXtkBDcl8sDLnuUqGHy507od41LVItgDLxsWeN6r
-        2n9fdn0jNfNtx4wI80l1+TVZWzPwBvbFTMKKNHg=
-X-Google-Smtp-Source: ABdhPJwsnW0y/kx7DL1j2p8r9N9uPNtVRi5fDJKmOzzqoro5WBcd2tHjiHixkDcYOyQM+BTSPEn2FX4iUDM/izxfwkM=
-X-Received: by 2002:adf:f246:: with SMTP id b6mr26221425wrp.111.1605052590670;
- Tue, 10 Nov 2020 15:56:30 -0800 (PST)
-MIME-Version: 1.0
-References: <20201110193112.988999-1-lee.jones@linaro.org> <20201110193112.988999-16-lee.jones@linaro.org>
-In-Reply-To: <20201110193112.988999-16-lee.jones@linaro.org>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Tue, 10 Nov 2020 18:56:19 -0500
-Message-ID: <CADnq5_Pq7ODBSwnjRQy8Hu1mTP+t9d8ofcO9KD0_89d9GpWpUQ@mail.gmail.com>
-Subject: Re: [PATCH 15/30] drm/radeon/cik_sdma: Demote vague attempt at kernel-doc
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     David Airlie <airlied@linux.ie>,
+        Tue, 10 Nov 2020 18:54:46 -0500
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: aratiu)
+        with ESMTPSA id 0F4511F4565A
+From:   Adrian Ratiu <adrian.ratiu@collabora.com>
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Nathan Chancellor <natechancellor@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Russell King <linux@armlinux.org.uk>,
         LKML <linux-kernel@vger.kernel.org>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
-        <linaro-mm-sig@lists.linaro.org>,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        linux-media <linux-media@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        Collabora Kernel ML <kernel@collabora.com>,
+        Ard Biesheuvel <ardb@kernel.org>
+Subject: Re: [PATCH 2/2] arm: lib: xor-neon: disable clang vectorization
+In-Reply-To: <CAKwvOdkm3u83TQDBB-fC0TwKZCFXGh5sAfahKXxA+mnzgDid_w@mail.gmail.com>
+References: <20201106051436.2384842-1-adrian.ratiu@collabora.com>
+ <20201106051436.2384842-3-adrian.ratiu@collabora.com>
+ <20201106101419.GB3811063@ubuntu-m3-large-x86>
+ <87wnyyvh56.fsf@collabora.com>
+ <CAKwvOdkodob0M0r_AK_4nG3atLGMyNENMd6qVAHSPa92Zh7UZA@mail.gmail.com>
+ <871rh2i9xg.fsf@iwork.i-did-not-set--mail-host-address--so-tickle-me>
+ <CAKwvOdkm3u83TQDBB-fC0TwKZCFXGh5sAfahKXxA+mnzgDid_w@mail.gmail.com>
+Date:   Wed, 11 Nov 2020 01:56:22 +0200
+Message-ID: <87sg9ghil5.fsf@collabora.com>
+MIME-Version: 1.0
+Content-Type: text/plain; format=flowed
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 10, 2020 at 2:31 PM Lee Jones <lee.jones@linaro.org> wrote:
->
-> Fixes the following W=3D1 kernel build warning(s):
->
->  drivers/gpu/drm/radeon/cik_sdma.c:949: warning: Function parameter or me=
-mber 'ring' not described in 'cik_dma_vm_flush'
->  drivers/gpu/drm/radeon/cik_sdma.c:949: warning: Function parameter or me=
-mber 'vm_id' not described in 'cik_dma_vm_flush'
->  drivers/gpu/drm/radeon/cik_sdma.c:949: warning: Function parameter or me=
-mber 'pd_addr' not described in 'cik_dma_vm_flush'
->
-> Cc: Alex Deucher <alexander.deucher@amd.com>
-> Cc: "Christian K=C3=B6nig" <christian.koenig@amd.com>
-> Cc: David Airlie <airlied@linux.ie>
-> Cc: Daniel Vetter <daniel@ffwll.ch>
-> Cc: Sumit Semwal <sumit.semwal@linaro.org>
-> Cc: amd-gfx@lists.freedesktop.org
-> Cc: dri-devel@lists.freedesktop.org
-> Cc: linux-media@vger.kernel.org
-> Cc: linaro-mm-sig@lists.linaro.org
-> Signed-off-by: Lee Jones <lee.jones@linaro.org>
+On Tue, 10 Nov 2020, Nick Desaulniers <ndesaulniers@google.com> 
+wrote:
+> On Mon, Nov 9, 2020 at 11:51 AM Adrian Ratiu 
+> <adrian.ratiu@collabora.com> wrote: 
+>> 
+>> On Fri, 06 Nov 2020, Nick Desaulniers <ndesaulniers@google.com> 
+>> wrote: 
+>> > +#pragma clang loop vectorize(enable) 
+>> >         do { 
+>> >                 p1[0] ^= p2[0] ^ p3[0] ^ p4[0] ^ p5[0]; p1[1] 
+>> >                 ^= p2[1] ^ p3[1] ^ p4[1] ^ p5[1]; 
+>> > ``` seems to generate the vectorized code. 
+>> > 
+>> > Why don't we find a way to make those pragma's more toolchain 
+>> > portable, rather than open coding them like I have above 
+>> > rather than this series? 
+>> 
+>> Hi again Nick, 
+>> 
+>> How did you verify the above pragmas generate correct 
+>> vectorized code?  Have you tested this specific use case? 
+> 
+> I read the disassembly before and after my suggested use of 
+> pragmas; look for vld/vstr.  You can also add 
+> -Rpass-missed=loop-vectorize to CFLAGS_xor-neon.o in 
+> arch/arm/lib/Makefile and rebuild arch/arm/lib/xor-neon.o with 
+> CONFIG_BTRFS enabled. 
+> 
+>> 
+>> I'm asking because overrulling the cost model might not be 
+>> enough, the only thing I can confirm is that the generated code 
+>> is changed, but not that it is correct in any way. The object 
+>> disasm also looks weird, but I don't have enough knowledge to 
+>> start debugging what's happening within LLVM/Clang itself. 
+> 
+> It doesn't "look weird" to me. The loop is versioned based on a 
+> comparison whether the parameters alias or not. There's a 
+> non-vectorized version if the parameters are equal or close 
+> enough to overlap.  There's another version of the loop that's 
+> vectorized.  If you want just the vectorized version, then you 
+> have to mark the parameters as __restrict qualified, then check 
+> that all callers are ok with that. 
+> 
 
-Applied.  Thanks!
+Thank you for the explanation, that does make sense now. I'm just 
+a compiler optimization noob, sorry. All your help is much 
+appreciated.
 
-Alex
+>> 
+>> I also get some new warnings with your code [1], besides the 
+>> previously 'vectorization was possible but not beneficial' 
+>> which is still present. It is quite funny because these two 
+>> warnings seem to contradict themselves. :) 
+> 
+> From which compiler?  ``` $ clang 
+> -Wpass-failed=transform-warning -c -x c /dev/null warning: 
+> unknown warning option '-Wpass-failed=transform-warning'; did 
+> you mean '-Wprofile-instr-missing'? [-Wunknown-warning-option] 
+> ``` 
 
-> ---
->  drivers/gpu/drm/radeon/cik_sdma.c | 4 +---
->  1 file changed, 1 insertion(+), 3 deletions(-)
+I'm using Clang 10.0.1-1 from the Arch Linux repo.
+
+In the LLVM sources that transform-warning appears to be 
+documented under 
+llvm-10.0.1.src/docs/Passes.rst:1227:-transform-warning
+
+Here's a build log: http://ix.io/2DIc
+
+I always get those warnings with the pragma change you suggested, 
+even on clean builds on latest linux-next.
+
+I looked at the Arch PKGBUILD and they don't appear to do anything 
+special other than patching to enable SSP and PIE by default (eg 
+llvm bug 13410).
+
+> 
+> The pragma is clang specific, hence my recommendation to wrap it 
+> in an #ifdef __clang__. 
 >
-> diff --git a/drivers/gpu/drm/radeon/cik_sdma.c b/drivers/gpu/drm/radeon/c=
-ik_sdma.c
-> index 68403e77756d3..3c709ebe8d1ab 100644
-> --- a/drivers/gpu/drm/radeon/cik_sdma.c
-> +++ b/drivers/gpu/drm/radeon/cik_sdma.c
-> @@ -936,11 +936,9 @@ void cik_sdma_vm_pad_ib(struct radeon_ib *ib)
->                 ib->ptr[ib->length_dw++] =3D SDMA_PACKET(SDMA_OPCODE_NOP,=
- 0, 0);
->  }
+
+Yes, I understand that. :)
+ 
+>> 
+>> At this point I do not trust the compiler and am inclined to do 
+> 
+> Nonsense. 
+> 
+>> like was done for GCC when it was broken: disable the 
+>> optimization and warn users to upgrade after the compiler is 
+>> fixed and confirmed to work. 
+>> 
+>> If you agree I can send a v2 with this and also drop the GCC 
+>> pragma as Arvind and Ard suggested. 
+> 
+> If you resend "this" as in 2/2, I will NACK it.  There's nothing 
+> wrong with the cost model; it's saying there's little point in 
+> generating the vectorized version because you're still going to 
+> need a non-vectorized loop version anyways.  Claiming there is a 
+> compiler bug here is dubious just because the cost models 
+> between two compilers differ slightly.
+
+Ok, so that "remark" from the compiler is safe to ignore.
+
+> 
+> Resend the patch removing the warning, remove the GCC pragma, 
+> but if you want to change anything here for Clang, use `#pragma 
+> clang loop vectorize(enable)` wrapped in an `#ifdef __clang__`. 
 >
-> -/**
-> +/*
->   * cik_dma_vm_flush - cik vm flush using sDMA
->   *
-> - * @rdev: radeon_device pointer
-> - *
->   * Update the page table base and flush the VM TLB
->   * using sDMA (CIK).
->   */
-> --
-> 2.25.1
+
+Thanks for making the NACK clear, so the way forward is to either 
+use the pragma if I can figure out the new 'loop not vectorized' 
+warning (which might also be a red herring) or just leave Clang as 
+is. :)
+
+>>
+>> Kind regards,
+>> Adrian
+>>
+>> [1]
+>> ./include/asm-generic/xor.h:11:1: warning: loop not vectorized:
+>> the optimizer was unable to perform the requested transformation;
+>> the transformation might be disabled or specified as part of an
+>> unsupported transformation ordering
+>> [-Wpass-failed=transform-warning] xor_8regs_2(unsigned long bytes,
+>> unsigned long *p1, unsigned long *p2)
 >
-> _______________________________________________
-> dri-devel mailing list
-> dri-devel@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+>
+> -- 
+> Thanks,
+> ~Nick Desaulniers
