@@ -2,101 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73C892ADA67
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 16:27:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D4CFA2ADA5F
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 16:25:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732214AbgKJP1Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 10:27:24 -0500
-Received: from mx2.suse.de ([195.135.220.15]:60552 "EHLO mx2.suse.de"
+        id S1731360AbgKJPZu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 10:25:50 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33166 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730231AbgKJP1Y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 10:27:24 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id DBFC2ABD1;
-        Tue, 10 Nov 2020 15:27:22 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 7255CDA7D7; Tue, 10 Nov 2020 16:25:41 +0100 (CET)
-Date:   Tue, 10 Nov 2020 16:25:41 +0100
-From:   David Sterba <dsterba@suse.cz>
-To:     Chris Mason <clm@fb.com>
-Cc:     Christoph Hellwig <hch@infradead.org>,
-        Nick Terrell <nickrterrell@gmail.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        linux-crypto@vger.kernel.org, linux-btrfs@vger.kernel.org,
-        squashfs-devel@lists.sourceforge.net,
-        linux-f2fs-devel@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org, Kernel Team <Kernel-team@fb.com>,
-        Nick Terrell <terrelln@fb.com>, Petr Malat <oss@malat.biz>,
-        Johannes Weiner <jweiner@fb.com>,
-        Niket Agarwal <niketa@fb.com>, Yann Collet <cyan@fb.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: Re: [PATCH v5 1/9] lib: zstd: Add zstd compatibility wrapper
-Message-ID: <20201110152541.GK6756@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Chris Mason <clm@fb.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Nick Terrell <nickrterrell@gmail.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        linux-crypto@vger.kernel.org, linux-btrfs@vger.kernel.org,
-        squashfs-devel@lists.sourceforge.net,
-        linux-f2fs-devel@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org, Kernel Team <Kernel-team@fb.com>,
-        Nick Terrell <terrelln@fb.com>, Petr Malat <oss@malat.biz>,
-        Johannes Weiner <jweiner@fb.com>, Niket Agarwal <niketa@fb.com>,
-        Yann Collet <cyan@fb.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-References: <20201103060535.8460-1-nickrterrell@gmail.com>
- <20201103060535.8460-2-nickrterrell@gmail.com>
- <20201106183846.GA28005@infradead.org>
- <D9338FE4-1518-4C7B-8C23-DBDC542DAC35@fb.com>
+        id S1730231AbgKJPZu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Nov 2020 10:25:50 -0500
+Received: from quaco.ghostprotocols.net (unknown [179.97.37.151])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3004120797;
+        Tue, 10 Nov 2020 15:25:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605021949;
+        bh=+6ef0br250e/7DhBKSu+ZFyLg4W13gH4UJV+liaN8Uk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=EytIZ8/qiHJlrUph/VtRiZHWCsj88RS+ImuquAn2pwlJpqwRJin565tlDdqnH0mM7
+         erpduzI7BOKqZXx5yA0LJ6jIDCOwext4xH/zVyDNvLRts1Fpl+7j5lsnInsy76cagA
+         r+hmout4KPoDyf5KQWjIxrSpaCFIMKKtmPalOLAM=
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id C2560411D1; Tue, 10 Nov 2020 12:25:46 -0300 (-03)
+Date:   Tue, 10 Nov 2020 12:25:46 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Jiri Olsa <jolsa@kernel.org>, lkml <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Michael Petlan <mpetlan@redhat.com>,
+        Song Liu <songliubraving@fb.com>,
+        Ian Rogers <irogers@google.com>,
+        Stephane Eranian <eranian@google.com>,
+        Alexey Budankov <alexey.budankov@linux.intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Adrian Hunter <adrian.hunter@intel.com>
+Subject: Re: [PATCH 03/24] perf: Add build id data in mmap2 event
+Message-ID: <20201110152546.GB348806@kernel.org>
+References: <20201109215415.400153-1-jolsa@kernel.org>
+ <20201109215415.400153-4-jolsa@kernel.org>
+ <20201110080716.GU2594@hirez.programming.kicks-ass.net>
+ <20201110115426.GA348806@kernel.org>
+ <20201110122232.GH2594@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <D9338FE4-1518-4C7B-8C23-DBDC542DAC35@fb.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+In-Reply-To: <20201110122232.GH2594@hirez.programming.kicks-ass.net>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 09, 2020 at 02:01:41PM -0500, Chris Mason wrote:
-> On 6 Nov 2020, at 13:38, Christoph Hellwig wrote:
-> > You just keep resedning this crap, don't you?  Haven't you been told
-> > multiple times to provide a proper kernel API by now?
-> 
-> You do consistently ask for a shim layer, but you haven’t explained 
-> what we gain by diverging from the documented and tested API of the 
-> upstream zstd project.  It’s an important discussion given that we 
-> hope to regularly update the kernel side as they make improvements in 
-> zstd.
-> 
-> The only benefit described so far seems to be camelcase related, but if 
-> there are problems in the API beyond that, I haven’t seen you describe 
-> them.  I don’t think the camelcase alone justifies the added costs of 
-> the shim.
+Em Tue, Nov 10, 2020 at 01:22:32PM +0100, Peter Zijlstra escreveu:
+> On Tue, Nov 10, 2020 at 08:54:26AM -0300, Arnaldo Carvalho de Melo wrote:
+> > Em Tue, Nov 10, 2020 at 09:07:16AM +0100, Peter Zijlstra escreveu:
+> > > On Mon, Nov 09, 2020 at 10:53:54PM +0100, Jiri Olsa wrote:
+> > > > Adding support to carry build id data in mmap2 event.
 
-The API change in this patchset is adding churn that wouldn't be
-necessary if there were an upstream<->kernel API from the beginning.
+> > > > The build id data replaces maj/min/ino/ino_generation
+> > > > fields, whichc are also used to identify map's binary,
+> > > > so it's ok to replace them with build id data:
 
-The patch 5/9 is almost entirely renaming just some internal identifiers
+> > > >   union {
+> > > >           struct {
+> > > >                   u32       maj;
+> > > >                   u32       min;
+> > > >                   u64       ino;
+> > > >                   u64       ino_generation;
+> > > >           };
+> > > >           struct {
+> > > >                   u8        build_id[20];
+> > > >                   u8        build_id_size;
 
--			      ZSTD_CStreamWorkspaceBound(params.cParams),
--			      ZSTD_DStreamWorkspaceBound(ZSTD_BTRFS_MAX_INPUT));
-+			      ZSTD_estimateCStreamSize_usingCParams(params.cParams),
-+			      ZSTD_estimateDStreamSize(ZSTD_BTRFS_MAX_INPUT));
+> > > What's the purpose of a size field for a fixed size array? Also, I'd
+> > > flip the order of these fields, first have the size and then the array.
 
-plus updating the names in the error strings. The compression API that
-filesystems need is simple:
+> > There can be different types of build-ids, with different sizes,
+> > flipping the order of the fields is indeed sensible, as we could then
+> > support even larger build_ids if the need arises :)
 
-- set up workspace and parameters
-- compress buffer
-- decompress buffer
+> 3 whole bytes.. whooo!
 
-We really should not care if upstream has 3 functions for initializing
-stream (ZSTD_initCStream/ZSTD_initStaticCStream/ZSTD_initCStream_advanced),
-or if the name changes again in the future.
+Hey, I agreed with you, flip the order of the fields, right? :-)
 
-This should not require explicit explanation, this should be a natural
-requirement especially for separate projects that don't share the same
-coding style but have to be integrated in some way.
+- Arnaldo
