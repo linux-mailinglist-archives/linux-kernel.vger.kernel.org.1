@@ -2,151 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB3DE2AD5F0
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 13:14:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 66F122AD5F3
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 13:16:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729748AbgKJMOz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 07:14:55 -0500
-Received: from out30-133.freemail.mail.aliyun.com ([115.124.30.133]:43770 "EHLO
-        out30-133.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726690AbgKJMOz (ORCPT
+        id S1730068AbgKJMQm convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 10 Nov 2020 07:16:42 -0500
+Received: from eu-smtp-delivery-151.mimecast.com ([207.82.80.151]:24712 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726706AbgKJMQl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 07:14:55 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R521e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04426;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=21;SR=0;TI=SMTPD_---0UEt5Kf8_1605010488;
-Received: from IT-FVFX43SYHV2H.local(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0UEt5Kf8_1605010488)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Tue, 10 Nov 2020 20:14:49 +0800
-Subject: Re: [PATCH v21 00/19] per memcg lru lock
-From:   Alex Shi <alex.shi@linux.alibaba.com>
-To:     akpm@linux-foundation.org, mgorman@techsingularity.net,
-        tj@kernel.org, hughd@google.com, khlebnikov@yandex-team.ru,
-        daniel.m.jordan@oracle.com, willy@infradead.org,
-        hannes@cmpxchg.org, lkp@intel.com, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-        shakeelb@google.com, iamjoonsoo.kim@lge.com,
-        richard.weiyang@gmail.com, kirill@shutemov.name,
-        alexander.duyck@gmail.com, rong.a.chen@intel.com, mhocko@suse.com,
-        vdavydov.dev@gmail.com, shy828301@gmail.com
-References: <1604566549-62481-1-git-send-email-alex.shi@linux.alibaba.com>
-Message-ID: <d28dbde7-9daa-903f-2f7b-be856f6653d5@linux.alibaba.com>
-Date:   Tue, 10 Nov 2020 20:14:24 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
- Gecko/20100101 Thunderbird/68.12.0
+        Tue, 10 Nov 2020 07:16:41 -0500
+Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-216-ep7CIZcmM6mQ50C-RJpcMQ-1; Tue, 10 Nov 2020 12:16:37 +0000
+X-MC-Unique: ep7CIZcmM6mQ50C-RJpcMQ-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
+ Server (TLS) id 15.0.1347.2; Tue, 10 Nov 2020 12:16:37 +0000
+Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
+ AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
+ Tue, 10 Nov 2020 12:16:37 +0000
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Chao Yu' <yuchao0@huawei.com>, Jaegeuk Kim <jaegeuk@kernel.org>
+CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-f2fs-devel@lists.sourceforge.net" 
+        <linux-f2fs-devel@lists.sourceforge.net>
+Subject: RE: [f2fs-dev] [PATCH] f2fs: compress: support chksum
+Thread-Topic: [f2fs-dev] [PATCH] f2fs: compress: support chksum
+Thread-Index: AQHWtyqj1VtcccaQGU+ZRA66ANZtT6nBRPmg
+Date:   Tue, 10 Nov 2020 12:16:37 +0000
+Message-ID: <db1d478cda6642d1b08c3435e84944d9@AcuMS.aculab.com>
+References: <20201102122333.76667-1-yuchao0@huawei.com>
+ <20201102163123.GD529594@google.com>
+ <756e482c-b638-1c09-3868-ae45d33ed2c2@huawei.com>
+ <6b5bce0e-c967-b9cf-3544-a8e65595059c@huawei.com>
+ <20201106211247.GA1474936@google.com>
+ <908682bb-486c-222f-bea7-43fc961ef1b0@huawei.com>
+ <20201109170625.GB2129970@google.com>
+ <3417aea5-ace8-74be-ec26-f491dddea676@huawei.com>
+ <20201110042353.GB1598246@google.com>
+ <513c56d7-cefd-37a8-efdf-fa1ac8c2a1d3@huawei.com>
+In-Reply-To: <513c56d7-cefd-37a8-efdf-fa1ac8c2a1d3@huawei.com>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-In-Reply-To: <1604566549-62481-1-git-send-email-alex.shi@linux.alibaba.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi All,
+From: Chao Yu
+> Sent: 10 November 2020 06:28
+...
+> Actually, I think the both results are the same, inode chksum doesn't match inode
+> metadata, like current case that cluster chksum doesn't match cluster data, it
+> doesn't matter how it becomes mismatched.
+> 
+> And also, in those inode corrupted cases, there should be some cases that hacker
+> or fuzz tester injects random data in chksum intentionally, or bit-flipping happed
+> on chksum value in inode, inode metadata (except inode chksum) is integrated though,
+> we can not distinguish such cases from case of inode metadata (except inode chksum)
+> corruption.
 
-Is any more comments of this version?
+If you reverse the crc algotithm on the checksum error bits and get a
+pattern with a small number of adjacent ones then that would be a burst
+error that would generate the observed crc error.
 
-Thanks
-Alex
+So if you have a 32bit crc on an 8k byte buffer there are 64k bit positions
+so (IIRC from my university days) you can fix an assumed 16 bit error burst.
+That would be a bit dangerous through.
+OTOH if you find an 8-bit error pattern you could assume (and fix)
+a single byte corruption.
 
-在 2020/11/5 下午4:55, Alex Shi 写道:
-> This version rebase on next/master 20201104, with much of Johannes's
-> Acks and some changes according to Johannes comments. And add a new patch
-> v21-0006-mm-rmap-stop-store-reordering-issue-on-page-mapp.patch to support
-> v21-0007.
-> 
-> This patchset followed 2 memcg VM_WARN_ON_ONCE_PAGE patches which were
-> added to -mm tree yesterday.
->  
-> Many thanks for line by line review by Hugh Dickins, Alexander Duyck and
-> Johannes Weiner.
-> 
-> So now this patchset includes 3 parts:
-> 1, some code cleanup and minimum optimization as a preparation. 
-> 2, use TestCleanPageLRU as page isolation's precondition.
-> 3, replace per node lru_lock with per memcg per node lru_lock.
-> 
-> Current lru_lock is one for each of node, pgdat->lru_lock, that guard for
-> lru lists, but now we had moved the lru lists into memcg for long time. Still
-> using per node lru_lock is clearly unscalable, pages on each of memcgs have
-> to compete each others for a whole lru_lock. This patchset try to use per
-> lruvec/memcg lru_lock to repleace per node lru lock to guard lru lists, make
-> it scalable for memcgs and get performance gain.
-> 
-> Currently lru_lock still guards both lru list and page's lru bit, that's ok.
-> but if we want to use specific lruvec lock on the page, we need to pin down
-> the page's lruvec/memcg during locking. Just taking lruvec lock first may be
-> undermined by the page's memcg charge/migration. To fix this problem, we could
-> take out the page's lru bit clear and use it as pin down action to block the
-> memcg changes. That's the reason for new atomic func TestClearPageLRU.
-> So now isolating a page need both actions: TestClearPageLRU and hold the
-> lru_lock.
-> 
-> The typical usage of this is isolate_migratepages_block() in compaction.c
-> we have to take lru bit before lru lock, that serialized the page isolation
-> in memcg page charge/migration which will change page's lruvec and new 
-> lru_lock in it.
-> 
-> The above solution suggested by Johannes Weiner, and based on his new memcg 
-> charge path, then have this patchset. (Hugh Dickins tested and contributed much
-> code from compaction fix to general code polish, thanks a lot!).
-> 
-> Daniel Jordan's testing show 62% improvement on modified readtwice case
-> on his 2P * 10 core * 2 HT broadwell box on v18, which has no much different
-> with this v20.
-> https://lore.kernel.org/lkml/20200915165807.kpp7uhiw7l3loofu@ca-dmjordan1.us.oracle.com/
-> 
-> Thanks Hugh Dickins and Konstantin Khlebnikov, they both brought this
-> idea 8 years ago, and others who give comments as well: Daniel Jordan, 
-> Mel Gorman, Shakeel Butt, Matthew Wilcox, Alexander Duyck etc.
-> 
-> Thanks for Testing support from Intel 0day and Rong Chen, Fengguang Wu,
-> and Yun Wang. Hugh Dickins also shared his kbuild-swap case. Thanks!
-> 
-> 
-> Alex Shi (16):
->   mm/thp: move lru_add_page_tail func to huge_memory.c
->   mm/thp: use head for head page in lru_add_page_tail
->   mm/thp: Simplify lru_add_page_tail()
->   mm/thp: narrow lru locking
->   mm/vmscan: remove unnecessary lruvec adding
->   mm/rmap: stop store reordering issue on page->mapping
->   mm/memcg: add debug checking in lock_page_memcg
->   mm/swap.c: fold vm event PGROTATED into pagevec_move_tail_fn
->   mm/lru: move lock into lru_note_cost
->   mm/vmscan: remove lruvec reget in move_pages_to_lru
->   mm/mlock: remove lru_lock on TestClearPageMlocked
->   mm/mlock: remove __munlock_isolate_lru_page
->   mm/lru: introduce TestClearPageLRU
->   mm/compaction: do page isolation first in compaction
->   mm/swap.c: serialize memcg changes in pagevec_lru_move_fn
->   mm/lru: replace pgdat lru_lock with lruvec lock
-> 
-> Alexander Duyck (1):
->   mm/lru: introduce the relock_page_lruvec function
-> 
-> Hugh Dickins (2):
->   mm: page_idle_get_page() does not need lru_lock
->   mm/lru: revise the comments of lru_lock
-> 
->  Documentation/admin-guide/cgroup-v1/memcg_test.rst |  15 +-
->  Documentation/admin-guide/cgroup-v1/memory.rst     |  21 +--
->  Documentation/trace/events-kmem.rst                |   2 +-
->  Documentation/vm/unevictable-lru.rst               |  22 +--
->  include/linux/memcontrol.h                         | 110 +++++++++++
->  include/linux/mm_types.h                           |   2 +-
->  include/linux/mmzone.h                             |   6 +-
->  include/linux/page-flags.h                         |   1 +
->  include/linux/swap.h                               |   4 +-
->  mm/compaction.c                                    |  94 +++++++---
->  mm/filemap.c                                       |   4 +-
->  mm/huge_memory.c                                   |  45 +++--
->  mm/memcontrol.c                                    |  79 +++++++-
->  mm/mlock.c                                         |  63 ++-----
->  mm/mmzone.c                                        |   1 +
->  mm/page_alloc.c                                    |   1 -
->  mm/page_idle.c                                     |   4 -
->  mm/rmap.c                                          |  11 +-
->  mm/swap.c                                          | 208 ++++++++-------------
->  mm/vmscan.c                                        | 207 ++++++++++----------
->  mm/workingset.c                                    |   2 -
->  21 files changed, 530 insertions(+), 372 deletions(-)
-> 
+Whether that is worth doing depends on any assumed mechanisms
+for generating corruptions.
+
+I don't know of any ethernet hardware that uses the 32bit crc
+to fix very short burst errors (or even single bit errors)
+even though it could be done and burst errors are quite likely.
+(Below Ge speeds.)
+
+	David
+
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
+
