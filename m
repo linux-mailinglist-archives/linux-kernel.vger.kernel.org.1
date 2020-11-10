@@ -2,32 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A8C42ACFDC
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 07:39:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F3DA92ACFE1
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 07:40:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729831AbgKJGj4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 01:39:56 -0500
-Received: from smtp2207-205.mail.aliyun.com ([121.197.207.205]:40458 "EHLO
+        id S1730781AbgKJGkp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 01:40:45 -0500
+Received: from smtp2207-205.mail.aliyun.com ([121.197.207.205]:60946 "EHLO
         smtp2207-205.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726010AbgKJGj4 (ORCPT
+        by vger.kernel.org with ESMTP id S1726006AbgKJGkp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 01:39:56 -0500
-X-Alimail-AntiSpam: AC=CONTINUE;BC=0.07902727|-1;CH=blue;DM=|OVERLOAD|false|;DS=CONTINUE|ham_system_inform|0.627402-0.00133112-0.371267;FP=17316820775139370430|1|1|17|0|-1|-1|-1;HT=ay29a033018047192;MF=frank@allwinnertech.com;NM=1;PH=DS;RN=10;RT=10;SR=0;TI=SMTPD_---.IuovrI7_1604990386;
-Received: from allwinnertech.com(mailfrom:frank@allwinnertech.com fp:SMTPD_---.IuovrI7_1604990386)
-          by smtp.aliyun-inc.com(10.147.41.158);
-          Tue, 10 Nov 2020 14:39:50 +0800
+        Tue, 10 Nov 2020 01:40:45 -0500
+X-Alimail-AntiSpam: AC=CONTINUE;BC=0.316818|-1;CH=blue;DM=|OVERLOAD|false|;DS=CONTINUE|ham_system_inform|0.414304-0.00181664-0.58388;FP=11418629599924430517|1|1|17|0|-1|-1|-1;HT=ay29a033018047194;MF=frank@allwinnertech.com;NM=1;PH=DS;RN=11;RT=11;SR=0;TI=SMTPD_---.IuonUmF_1604990436;
+Received: from allwinnertech.com(mailfrom:frank@allwinnertech.com fp:SMTPD_---.IuonUmF_1604990436)
+          by smtp.aliyun-inc.com(10.147.40.233);
+          Tue, 10 Nov 2020 14:40:40 +0800
 From:   Frank Lee <frank@allwinnertech.com>
 To:     tiny.windzz@gmail.com
-Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, Yangtao Li <frank@allwinnertech.com>,
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Yangtao Li <frank@allwinnertech.com>,
         Kishon Vijay Abraham I <kishon@ti.com>,
         Vinod Koul <vkoul@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
         Maxime Ripard <mripard@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>
-Subject: [RESEND PATCH 12/19] dt-bindings: Add bindings for USB phy on Allwinner A100
-Date:   Tue, 10 Nov 2020 14:39:42 +0800
-Message-Id: <1ce71bac2732620f8fe77b23ca84e062385e7e8a.1604988979.git.frank@allwinnertech.com>
+        Chen-Yu Tsai <wens@csie.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Colin Ian King <colin.king@canonical.com>
+Subject: [RESEND PATCH 13/19] phy: sun4i-usb: add support for A100 USB PHY
+Date:   Tue, 10 Nov 2020 14:40:32 +0800
+Message-Id: <b323d8c7ea4eb6bc325f6a6465cb2547cc6be757.1604988979.git.frank@allwinnertech.com>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <cover.1604988979.git.frank@allwinnertech.com>
 References: <cover.1604988979.git.frank@allwinnertech.com>
@@ -39,125 +41,72 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Yangtao Li <frank@allwinnertech.com>
 
-Add a device tree binding for the A100's USB PHY.
+Add support for a100's usb phy, which with 2 PHYs.
 
 Signed-off-by: Yangtao Li <frank@allwinnertech.com>
 ---
- .../phy/allwinner,sun50i-a100-usb-phy.yaml    | 105 ++++++++++++++++++
- 1 file changed, 105 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/phy/allwinner,sun50i-a100-usb-phy.yaml
+ drivers/phy/allwinner/phy-sun4i-usb.c | 19 +++++++++++++++++++
+ 1 file changed, 19 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/phy/allwinner,sun50i-a100-usb-phy.yaml b/Documentation/devicetree/bindings/phy/allwinner,sun50i-a100-usb-phy.yaml
-new file mode 100644
-index 000000000000..cc9bbebe2bd7
---- /dev/null
-+++ b/Documentation/devicetree/bindings/phy/allwinner,sun50i-a100-usb-phy.yaml
-@@ -0,0 +1,105 @@
-+# SPDX-License-Identifier: GPL-2.0
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/phy/allwinner,sun50i-a100-usb-phy.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
+diff --git a/drivers/phy/allwinner/phy-sun4i-usb.c b/drivers/phy/allwinner/phy-sun4i-usb.c
+index a6900495baa5..1a0e403131e7 100644
+--- a/drivers/phy/allwinner/phy-sun4i-usb.c
++++ b/drivers/phy/allwinner/phy-sun4i-usb.c
+@@ -107,6 +107,7 @@ enum sun4i_usb_phy_type {
+ 	sun8i_r40_phy,
+ 	sun8i_v3s_phy,
+ 	sun50i_a64_phy,
++	sun50i_a100_phy,
+ 	sun50i_h6_phy,
+ };
+ 
+@@ -289,7 +290,13 @@ static int sun4i_usb_phy_init(struct phy *_phy)
+ 	}
+ 
+ 	if (data->cfg->type == sun8i_a83t_phy ||
++	    data->cfg->type == sun50i_a100_phy ||
+ 	    data->cfg->type == sun50i_h6_phy) {
++		if (phy->pmu && data->cfg->enable_pmu_unk1) {
++			val = readl(phy->pmu + REG_PMU_UNK1);
++			writel(val & ~BIT(3), phy->pmu + REG_PMU_UNK1);
++		}
 +
-+title: Allwinner A100 USB PHY Device Tree Bindings
+ 		if (phy->index == 0) {
+ 			val = readl(data->base + data->cfg->phyctl_offset);
+ 			val |= PHY_CTL_VBUSVLDEXT;
+@@ -339,6 +346,7 @@ static int sun4i_usb_phy_exit(struct phy *_phy)
+ 
+ 	if (phy->index == 0) {
+ 		if (data->cfg->type == sun8i_a83t_phy ||
++		    data->cfg->type == sun50i_a100_phy ||
+ 		    data->cfg->type == sun50i_h6_phy) {
+ 			void __iomem *phyctl = data->base +
+ 				data->cfg->phyctl_offset;
+@@ -960,6 +968,16 @@ static const struct sun4i_usb_phy_cfg sun50i_a64_cfg = {
+ 	.phy0_dual_route = true,
+ };
+ 
++static const struct sun4i_usb_phy_cfg sun50i_a100_cfg = {
++	.num_phys = 2,
++	.type = sun50i_a100_phy,
++	.disc_thresh = 3,
++	.phyctl_offset = REG_PHYCTL_A33,
++	.dedicated_clocks = true,
++	.enable_pmu_unk1 = true,
++	.phy0_dual_route = true,
++};
 +
-+maintainers:
-+  - Yangtao Li <tiny.windzz@gmail.com>
-+
-+properties:
-+  "#phy-cells":
-+    const: 1
-+
-+  compatible:
-+    const: allwinner,sun50i-a100-usb-phy
-+
-+  reg:
-+    items:
-+      - description: PHY Control registers
-+      - description: PHY PMU0 registers
-+      - description: PHY PMU1 registers
-+
-+  reg-names:
-+    items:
-+      - const: phy_ctrl
-+      - const: pmu0
-+      - const: pmu1
-+
-+  clocks:
-+    items:
-+      - description: USB OTG PHY bus clock
-+      - description: USB Host 0 PHY bus clock
-+
-+  clock-names:
-+    items:
-+      - const: usb0_phy
-+      - const: usb1_phy
-+
-+  resets:
-+    items:
-+      - description: USB OTG reset
-+      - description: USB Host 1 Controller reset
-+
-+  reset-names:
-+    items:
-+      - const: usb0_reset
-+      - const: usb1_reset
-+
-+  usb0_id_det-gpios:
-+    description: GPIO to the USB OTG ID pin
-+
-+  usb0_vbus_det-gpios:
-+    description: GPIO to the USB OTG VBUS detect pin
-+
-+  usb0_vbus_power-supply:
-+    description: Power supply to detect the USB OTG VBUS
-+
-+  usb0_vbus-supply:
-+    description: Regulator controlling USB OTG VBUS
-+
-+  usb1_vbus-supply:
-+    description: Regulator controlling USB1 Host controller
-+
-+required:
-+  - "#phy-cells"
-+  - compatible
-+  - clocks
-+  - clock-names
-+  - reg
-+  - reg-names
-+  - resets
-+  - reset-names
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    #include <dt-bindings/gpio/gpio.h>
-+    #include <dt-bindings/clock/sun50i-a100-ccu.h>
-+    #include <dt-bindings/reset/sun50i-a100-ccu.h>
-+
-+    phy@5100400 {
-+        #phy-cells = <1>;
-+        compatible = "allwinner,sun50i-a100-usb-phy";
-+        reg = <0x05100400 0x14>,
-+              <0x05101800 0x4>,
-+              <0x05200800 0x4>;
-+        reg-names = "phy_ctrl",
-+                    "pmu0",
-+                    "pmu1";
-+        clocks = <&ccu CLK_USB_PHY0>,
-+                 <&ccu CLK_USB_PHY1>;
-+        clock-names = "usb0_phy",
-+                      "usb1_phy";
-+        resets = <&ccu RST_USB_PHY0>,
-+                 <&ccu RST_USB_PHY1>;
-+        reset-names = "usb0_reset",
-+                      "usb1_reset";
-+        usb0_id_det-gpios = <&pio 7 10 GPIO_ACTIVE_HIGH>; /* PH10 */
-+        usb0_vbus_power-supply = <&usb_power_supply>;
-+        usb0_vbus-supply = <&reg_drivevbus>;
-+        usb1_vbus-supply = <&reg_usb1_vbus>;
-+    };
+ static const struct sun4i_usb_phy_cfg sun50i_h6_cfg = {
+ 	.num_phys = 4,
+ 	.type = sun50i_h6_phy,
+@@ -983,6 +1001,7 @@ static const struct of_device_id sun4i_usb_phy_of_match[] = {
+ 	{ .compatible = "allwinner,sun8i-v3s-usb-phy", .data = &sun8i_v3s_cfg },
+ 	{ .compatible = "allwinner,sun50i-a64-usb-phy",
+ 	  .data = &sun50i_a64_cfg},
++	{ .compatible = "allwinner,sun50i-a100-usb-phy", .data = &sun50i_a100_cfg },
+ 	{ .compatible = "allwinner,sun50i-h6-usb-phy", .data = &sun50i_h6_cfg },
+ 	{ },
+ };
 -- 
 2.28.0
 
