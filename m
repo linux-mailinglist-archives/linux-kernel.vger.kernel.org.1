@@ -2,101 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13FAD2AD5FD
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 13:18:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 183F52AD5FE
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 13:18:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729826AbgKJMSa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 07:18:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40000 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726690AbgKJMS3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 07:18:29 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D159C0613CF
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 04:18:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=XTy/n79CehGxJmq00udI0yIaOLN2MvHchRCnNyXCdfc=; b=KP4Nanp767Oh9WC+p12u/WhSVw
-        EVYH+PCh146ENrVfcEGYKSbJt47x4UAjENkfNVQqj4zdozEGrT2clRJxNUUQNQX/h94puPF+Wk+cP
-        Tbuj7iEkUi/3Dm97av9X4CaeLROQXHl6qUF9z7HXYhS8Jc9VPVMye1kqnPcc1bzIx5F8wntlf0Gz7
-        Q06w+V2iKAZhH+W/zRD9AIfwAydbrTmMiUKhmYxCkCUHEBXKTH/vDHqMy85HT/aexbaZad9+TlemA
-        wWFoWPUx9nrNConA9wc5WC7Qtq9H16xgvbLMElouyL2/TxT1P2JmV5lpO+vowlL2tgym72yFLf9Eo
-        f67hUWuA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kcSbM-000460-Dl; Tue, 10 Nov 2020 12:18:20 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 5B43F300455;
-        Tue, 10 Nov 2020 13:18:17 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 1E6122C29A9E4; Tue, 10 Nov 2020 13:18:17 +0100 (CET)
-Date:   Tue, 10 Nov 2020 13:18:17 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Patrick Bellasi <patrick.bellasi@matbug.net>
-Cc:     Yun Hsiang <hsiang023167@gmail.com>, dietmar.eggemann@arm.com,
-        linux-kernel@vger.kernel.org, qais.yousef@arm.com,
-        kernel test robot <lkp@intel.com>
-Subject: Re: [PATCH v5 1/1] sched/uclamp: add SCHED_FLAG_UTIL_CLAMP_RESET
- flag to reset uclamp
-Message-ID: <20201110121817.GF2594@hirez.programming.kicks-ass.net>
-References: <20201103023756.1012088-1-hsiang023167@gmail.com>
- <87blgag4an.derkling@matbug.net>
+        id S1730229AbgKJMSd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 07:18:33 -0500
+Received: from mga18.intel.com ([134.134.136.126]:53167 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726690AbgKJMSb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Nov 2020 07:18:31 -0500
+IronPort-SDR: q9Gda4OQFT4H/hlBbhhj1MBBunEUQg1yIow8v4APrQ1+uDSLxXBKS1AB4yY8XH+VGCVP2pht5x
+ UCG30/LFhqVQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9800"; a="157742773"
+X-IronPort-AV: E=Sophos;i="5.77,466,1596524400"; 
+   d="scan'208";a="157742773"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Nov 2020 04:18:27 -0800
+IronPort-SDR: CTAlIZNRW0SkuVPtJQ8YVdiyHTAe1vk9SZZ1Kn1Ez683qqd87t3VSFJzooqijxKpOhp6uYyHGH
+ 7LSkgRPDu+UQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,466,1596524400"; 
+   d="scan'208";a="428348328"
+Received: from kuha.fi.intel.com ([10.237.72.162])
+  by fmsmga001.fm.intel.com with SMTP; 10 Nov 2020 04:18:25 -0800
+Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Tue, 10 Nov 2020 14:18:24 +0200
+Date:   Tue, 10 Nov 2020 14:18:24 +0200
+From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
+To:     Utkarsh Patel <utkarsh.h.patel@intel.com>
+Cc:     linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
+        pmalani@chromium.org, enric.balletbo@collabora.com,
+        rajmohan.mani@intel.com, azhar.shaikh@intel.com
+Subject: Re: [PATCH 1/8] usb: typec: Correct the bit values for the
+ Thunderbolt rounded/non-rounded cable support
+Message-ID: <20201110121824.GK1224435@kuha.fi.intel.com>
+References: <20201110003716.5164-1-utkarsh.h.patel@intel.com>
+ <20201110003716.5164-2-utkarsh.h.patel@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <87blgag4an.derkling@matbug.net>
+In-Reply-To: <20201110003716.5164-2-utkarsh.h.patel@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 06, 2020 at 11:36:48AM +0100, Patrick Bellasi wrote:
+On Mon, Nov 09, 2020 at 04:37:09PM -0800, Utkarsh Patel wrote:
+> Rounded and non-rounded Thunderbolt cables are represented by two bits as
+> per USB Type-C Connector specification v2.0 section F.2.6.
+> Corrected that in the Thunderbolt 3 cable discover mode VDO.
+> 
+> Fixes: ca469c292edc ("usb: typec: Add definitions for Thunderbolt 3 Alternate Mode")
 
-> > +static int uclamp_reset(enum uclamp_id clamp_id, unsigned long flags)
-> > +{
-> > +	/* No _UCLAMP_RESET flag set: do not reset */
-> > +	if (!(flags & SCHED_FLAG_UTIL_CLAMP_RESET))
-> > +		return false;
-> > +
-> > +	/* Only _UCLAMP_RESET flag set: reset both clamps */
-> > +	if (!(flags & (SCHED_FLAG_UTIL_CLAMP_MIN | SCHED_FLAG_UTIL_CLAMP_MAX)))
-> > +		return true;
-> > +
-> > +	/* Both _UCLAMP_RESET and _UCLAMP_MIN flags are set: reset only min */
-> > +	if ((flags & SCHED_FLAG_UTIL_CLAMP_MIN) && clamp_id == UCLAMP_MIN)
-> > +		return true;
-> > +
-> > +	/* Both _UCLAMP_RESET and _UCLAMP_MAX flags are set: reset only max */
-> > +	if ((flags & SCHED_FLAG_UTIL_CLAMP_MAX) && clamp_id == UCLAMP_MAX)
-> > +		return true;
-> > +
-> > +	return false;
-> 
-> I was suggesting maybe we need READ_ONCE() in the if above but did not
-> addressed previous Dietmar's question [2] on why.
-> 
-> The function above has a correct semantics only when the ordering of the
-> if statement is strictly observed.
-> 
-> Now, since we don't have any data dependency on the multiple if cases,
-> are we sure an overzealous compiler will never come up with some
-> "optimized reordering" of the checks required?
-> 
-> IOW, if the compiler could scramble the checks on an optimization, we
-> would get a wrong semantics which is also very difficult do debug.
-> Hence the idea to use READ_ONCE, to both tell the compiler to not
-> even attempt reordering those checks and also to better document the
-> code about the importance of the ordering on those checks.
-> 
-> Is now more clear? Does that makes sense?
+Hold on... Why is this tagged as a fix? What is it fixing?
 
-I don't think the compiler is allowed to do as you fear. Specifically it
-cannot move the first branch down because that would change the meaning
-of this function and affect observable behaviour even in the traditional
-single-threaded environment.
+Why do we even need this change? The field may have two bits, but
+only one is used: "10b...11b = Reserved".
 
+> Signed-off-by: Utkarsh Patel <utkarsh.h.patel@intel.com>
+> ---
+>  include/linux/usb/typec_tbt.h | 5 +++++
+>  1 file changed, 5 insertions(+)
+> 
+> diff --git a/include/linux/usb/typec_tbt.h b/include/linux/usb/typec_tbt.h
+> index 47c2d501ddce..aad648d14bb3 100644
+> --- a/include/linux/usb/typec_tbt.h
+> +++ b/include/linux/usb/typec_tbt.h
+> @@ -40,11 +40,16 @@ struct typec_thunderbolt_data {
+>  #define   TBT_CABLE_USB3_PASSIVE	2
+>  #define   TBT_CABLE_10_AND_20GBPS	3
+>  #define TBT_CABLE_ROUNDED		BIT(19)
+> +#define TBT_CABLE_ROUNDED_SUPPORT(_vdo_) \
+> +					(((_vdo_) & GENMASK(20, 19)) >> 19)
+> +#define   TBT_GEN3_NON_ROUNDED                 0
+> +#define   TBT_GEN3_GEN4_ROUNDED_NON_ROUNDED    1
+>  #define TBT_CABLE_OPTICAL		BIT(21)
+>  #define TBT_CABLE_RETIMER		BIT(22)
+>  #define TBT_CABLE_LINK_TRAINING		BIT(23)
+>  
+>  #define TBT_SET_CABLE_SPEED(_s_)	(((_s_) & GENMASK(2, 0)) << 16)
+> +#define TBT_SET_CABLE_ROUNDED(_g_)	(((_g_) & GENMASK(1, 0)) << 19)
+>  
+>  /* TBT3 Device Enter Mode VDO bits */
+>  #define TBT_ENTER_MODE_CABLE_SPEED(s)	TBT_SET_CABLE_SPEED(s)
 
+thanks,
+
+-- 
+heikki
