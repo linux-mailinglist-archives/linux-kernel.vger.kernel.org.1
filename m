@@ -2,121 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CBE82AE1BD
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 22:28:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4145F2AE1C4
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 22:30:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731750AbgKJV2T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 16:28:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41552 "EHLO
+        id S1731847AbgKJVaP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 16:30:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41856 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730254AbgKJV2S (ORCPT
+        with ESMTP id S1726462AbgKJVaO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 16:28:18 -0500
-Received: from mail-oi1-x241.google.com (mail-oi1-x241.google.com [IPv6:2607:f8b0:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72021C0613D1
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 13:28:16 -0800 (PST)
-Received: by mail-oi1-x241.google.com with SMTP id j7so16113648oie.12
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 13:28:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=WdCTcUp3dt98pd8N/bAI9BPR8MUfMdcKBreEIwkfCWE=;
-        b=cKDjQtDDjB5Lky6jr2FC81N8duXbbH+cdB+mUYl9ikTUJ7j9GcojAmJEG5BVI3wyfT
-         EYNwGSw2Q9kY2uRubIVw62LI2LDhWwN1uEmD4wY2AITz56OHuw3gL1tjz9HMqlKwx+nz
-         pA8JHfW05ZyNKM6CDX9Td5f8KN6q7GdIBBbdz0gwo6rMGugKLA4yaEey8lf9HdGhKbpc
-         Ln9/mz15nnvKxS1xeoR5Rn4tNV+0xPqNzUbEFFw+n7J9lchvyBjpYbPWC8U42W0da+/C
-         Cc8wDMJtb+YwfnH1uoSNx2viMYTLeo09VUOauM7XIlRzZJRbn6Ccoqb8a4/CStzG6bcx
-         XU7g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=WdCTcUp3dt98pd8N/bAI9BPR8MUfMdcKBreEIwkfCWE=;
-        b=nlinEdt9UAWDXEzjvgLuoyjYAtj/NUjp3jb1xL6LdFizKlNMOAe9NjYS5sBAJpjfe2
-         V3I1b04xXOyWxJVKoF6CW32o8HJygRBXcUqUYr6sghx6K/FZxOEJFAMIyDXTkqxR2bDB
-         qohRASQxAa5FCfgU1jG09iMO+9esM9nDASf+bZ7yzuc+90JiUA6dFjNPk8bw9t2wKIWV
-         49QzGdtw7LDdkEJyX9dYTwUOSvwvnFY3wXHBiap9XTW4AEX9AyX0Teuv1uJ59+jLUTDU
-         /j8Ka+zg5aWu8vA9lptX9q5qyLe7faexqKUjAo1gojXYzf6yICqXmzSoLfKyYy6o1xLa
-         ACXw==
-X-Gm-Message-State: AOAM533YOfNtNpnePjaFwO5flpPp9eh6GJ9d3OD3BXU3m13tFyiDLvIm
-        RWeBgHSj1RUmLqJjHkH+6qUhaQ==
-X-Google-Smtp-Source: ABdhPJyGV9vepmOEKrlYJxQpWVjB8O0kCfQ9th8PqSMEhyIIM/MxzoaDwll65t2fKnc7Vlu3jyk7kw==
-X-Received: by 2002:aca:b588:: with SMTP id e130mr92461oif.56.1605043695752;
-        Tue, 10 Nov 2020 13:28:15 -0800 (PST)
-Received: from yoga (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id g3sm3422228oif.26.2020.11.10.13.28.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 10 Nov 2020 13:28:15 -0800 (PST)
-Date:   Tue, 10 Nov 2020 15:28:13 -0600
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     Maulik Shah <mkshah@codeaurora.org>,
-        Andy Gross <agross@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        MSM <linux-arm-msm@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM <linux-gpio@vger.kernel.org>, Andy Gross
-        <agross@kernel.org>, Thomas Gleixner <tglx@linutronix.de>, Jason Cooper
-        <jason@lakedaemon.net>, Doug Anderson <dianders@chromium.org>, Rajendra
-        Nayak <rnayak@codeaurora.org>, Lina Iyer <ilina@codeaurora.org>," 
-        <dianders@chromium.org>, Stephen Boyd <swboyd@chromium.org>,
-        Evan Green <evgreen@chromium.org>,
-        Matthias Kaehlcke <mka@chromium.org>,
-        Rajendra Nayak <rnayak@codeaurora.org>,
-        Lina Iyer <ilina@codeaurora.org>,
-        "open list:GPIO SUBSYSTEM <linux-gpio@vger.kernel.org>, Andy Gross
-        <agross@kernel.org>, Thomas Gleixner <tglx@linutronix.de>, Jason Cooper
-        <jason@lakedaemon.net>, Doug Anderson <dianders@chromium.org>, Rajendra
-        Nayak <rnayak@codeaurora.org>, Lina Iyer <ilina@codeaurora.org>," 
-        <lsrao@codeaurora.org>
-Subject: Re: [PATCH] pinctrl: qcom: Move clearing pending IRQ to
- .irq_request_resources callback
-Message-ID: <20201110212813.GF807@yoga>
-References: <1604561884-10166-1-git-send-email-mkshah@codeaurora.org>
- <CACRpkdZJ6yrisNKFG8MJEOhzAV7HRtUTniXpnFVd9fpVy75ruw@mail.gmail.com>
+        Tue, 10 Nov 2020 16:30:14 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50AD3C0613D1
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 13:30:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Message-ID:From:CC:To:Subject:
+        Content-Transfer-Encoding:Content-Type:MIME-Version:References:In-Reply-To:
+        Date:Sender:Reply-To:Content-ID:Content-Description;
+        bh=fq2aucVEZZJCAM7C2M4Blnd6jjxEhJ4M6187ixHV0I0=; b=buAOTdlPXJpTWjMznfx0Tv4XMg
+        LNmff95PIyKewnIsIe7xZrnM0XuwmFVpZ2jiyAXKCkelDXVDv/4XH0byiWVOnVv7d2789mEgu/4ME
+        oLsdCWlOf363Dis48QSkq27Ta6j8OkahXm3LvSQ+vWd1rG0TiCVqPx62JxN4FfVZu3+m1jssx8xjT
+        Bk5KqE2/zAoloiXz+byqylxq6x6tRzyXwUHDFWwxO6Vvu5kl2VZ8T/KZk4IdvZqjySQXie6txXRKf
+        SRFT/yfUJP6rg4E8EyKzThG/XlUcMrBaQpOJUDLslecrYU3myEckhqdt02z9nJbfitFQ/+oOlxwGj
+        jQ+E2cyw==;
+Received: from [2001:8b0:10b:1:b16b:5d8a:941b:e15c]
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kcbDN-0004s6-DU; Tue, 10 Nov 2020 21:30:09 +0000
+Date:   Tue, 10 Nov 2020 21:30:07 +0000
+User-Agent: K-9 Mail for Android
+In-Reply-To: <87y2j9exk2.fsf@nanos.tec.linutronix.de>
+References: <20201024213535.443185-20-dwmw2@infradead.org> <160397373817.397.3191135882528008704.tip-bot2@tip-bot2> <e2e06979-cbcf-8771-0b48-c46f2d034aa8@amd.com> <20201110061046.GA7290@nazgul.tnic> <87d00lgu13.fsf@nanos.tec.linutronix.de> <9a003c2f-f59a-43ab-bbd5-861b14436d29@amd.com> <87a6vpgqbt.fsf@nanos.tec.linutronix.de> <82d54a74-af90-39a4-e483-b3cd73e2ef03@amd.com> <78be575e10034e546cc349d65fac2fcfc6f486b2.camel@infradead.org> <877dqtgkzb.fsf@nanos.tec.linutronix.de> <874klxghwu.fsf@nanos.tec.linutronix.de> <45B3C20C-3BBB-40F3-8A7B-EB20EDD0706F@infradead.org> <87y2j9exk2.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CACRpkdZJ6yrisNKFG8MJEOhzAV7HRtUTniXpnFVd9fpVy75ruw@mail.gmail.com>
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+Subject: Re: [EXTERNAL] [tip: x86/apic] x86/io_apic: Cleanup trigger/polarity helpers
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Borislav Petkov <bp@alien8.de>
+CC:     linux-kernel@vger.kernel.org, x86 <x86@kernel.org>,
+        Qian Cai <cai@redhat.com>, Joerg Roedel <joro@8bytes.org>
+From:   David Woodhouse <dwmw2@infradead.org>
+Message-ID: <8C2E184C-D069-4C60-96B5-0758FBC6E402@infradead.org>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <dwmw2@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 10 Nov 07:31 CST 2020, Linus Walleij wrote:
 
-> On Thu, Nov 5, 2020 at 8:38 AM Maulik Shah <mkshah@codeaurora.org> wrote:
-> 
-> > When GPIOs that are routed to PDC are used as output they can still latch
-> > the IRQ pending at GIC. As a result the spurious IRQ was handled when the
-> > client driver change the direction to input to starts using it as IRQ.
-> >
-> > Currently such erroneous latched IRQ are cleared with .irq_enable callback
-> > however if the driver continue to use GPIO as interrupt and invokes
-> > disable_irq() followed by enable_irq() then everytime during enable_irq()
-> > previously latched interrupt gets cleared.
-> >
-> > This can make edge IRQs not seen after enable_irq() if they had arrived
-> > after the driver has invoked disable_irq() and were pending at GIC.
-> >
-> > Move clearing erroneous IRQ to .irq_request_resources callback as this is
-> > the place where GPIO direction is changed as input and its locked as IRQ.
-> >
-> > While at this add a missing check to invoke msm_gpio_irq_clear_unmask()
-> > from .irq_enable callback only when GPIO is not routed to PDC.
-> >
-> > Fixes: e35a6ae0eb3a ("pinctrl/msm: Setup GPIO chip in hierarchy")
-> > Signed-off-by: Maulik Shah <mkshah@codeaurora.org>
-> 
-> This looks critical so I applied it for fixes so we get some
-> rotation in linux-next.
-> 
-> If Bjorn has other opinions he will tell us :)
-> 
 
-No objections, the patch looks reasonable to me.
+On 10 November 2020 21:01:17 GMT, Thomas Gleixner <tglx@linutronix=2Ede> w=
+rote:
+>On Tue, Nov 10 2020 at 19:21, David Woodhouse wrote:
+>
+>> On 10 November 2020 18:56:17 GMT, Thomas Gleixner
+><tglx@linutronix=2Ede> wrote:
+>>>On Tue, Nov 10 2020 at 18:50, Thomas Gleixner wrote:
+>>>> On Tue, Nov 10 2020 at 16:33, David Woodhouse wrote:
+>>>>> If I could get post-5=2E5 kernels to boot at all with the AMD IOMMU
+>>>>> enabled, I'd have a go at throwing that together now=2E=2E=2E
+>>>>
+>>>> It can share the dmar domain code=2E Let me frob something=2E
+>>>
+>>>Not much to share there and I can't access my AMD machine at the
+>>>moment=2E Something like the untested below should work=2E
+>>
+>> Does it even need its own irqdomain? Can it not just allocate
+>directly
+>> from the vector domain then program its own register directly based
+>on
+>> the irq_cfg?
+>
+>It uses pci_enable_msi() and I have no clue about that piece of
+>hardware
+>and whether that is actually required or not=2E If it is, then it needs a
+>domain because that's what pci_enable_msi() uses=2E
 
-Acked-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+I'd be kind of surprised if it is required, but testing on qemu is obvious=
+ly not going to cut it=2E Tom?
 
-Regards,
-Bjorn
+--=20
+Sent from my Android device with K-9 Mail=2E Please excuse my brevity=2E
