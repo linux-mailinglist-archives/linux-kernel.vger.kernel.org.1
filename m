@@ -2,103 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6B6B2ADFE0
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 20:38:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 12D642ADFEB
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 20:41:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730770AbgKJTh6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 14:37:58 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35080 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726179AbgKJTh6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 14:37:58 -0500
-Received: from localhost.localdomain (adsl-84-226-167-205.adslplus.ch [84.226.167.205])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0BF3020678;
-        Tue, 10 Nov 2020 19:37:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605037077;
-        bh=Fl2UQG2htLleEj9UfjSzEEtMBBatbOujS6Yy09+5Cu8=;
-        h=From:To:Subject:Date:From;
-        b=0uvq151SoGRa1d/cy+GtV4G6jYI9QRlTHeor71pmVztSpQ5jqRyqW/hYocpbHZXWw
-         ZwK/6LXakv1tF7ppRKPL8nzq6aO2N+IhsURtBw0lVAo3wksDWupqyCu4gYNhXmrs9Z
-         AX3GXx9iM/iS/s3eJJ0Fr/vK8oiXAuPGBTmEin3A=
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        Tomasz Figa <tomasz.figa@gmail.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        linux-samsung-soc@vger.kernel.org, linux-clk@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: [PATCH] clk: samsung: allow building the clkout driver as module
-Date:   Tue, 10 Nov 2020 20:37:49 +0100
-Message-Id: <20201110193749.261367-1-krzk@kernel.org>
-X-Mailer: git-send-email 2.25.1
+        id S1731453AbgKJTlO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 14:41:14 -0500
+Received: from aserp2120.oracle.com ([141.146.126.78]:40256 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727275AbgKJTlN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Nov 2020 14:41:13 -0500
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AAJdr5l115875;
+        Tue, 10 Nov 2020 19:40:44 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=9B6dG5PJmz4EQQkDr5Dh7n2gEWp/DBIVSw1s14fCJVU=;
+ b=OlyTE7Om0d0VNz3I0ukpe//2qZClROzGZwZCra5xUP//qOlqKCfittNeQ6mhcqNM8AK3
+ jpETHFilEFxcaTWWblHtv8USZeUNuSMVTpGUi4YVaslCWBNu6+Dhl9b8vud45A7iQLiD
+ G++yb9f1m3QW036sQQ9m4kZkFje6y7Jce0fN5A1d8yzz4z0w1P0+q+1BaowMuMV/qFxe
+ tvkyDaZbDcEEeIcEpC17/LWNXLlgvetZx5KDzPXqXPtxHI+Fow0b66cIhFtCmuTsCIqv
+ hJNOFsux3fIKHNZwGfagU1zvvQdpD/tbZSQjzZwxBwcXcA9dBBoK+Rws/6gxX23kk9Ye xQ== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by aserp2120.oracle.com with ESMTP id 34nkhkwgbh-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 10 Nov 2020 19:40:44 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AAJZ6RW047872;
+        Tue, 10 Nov 2020 19:38:43 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by userp3020.oracle.com with ESMTP id 34qgp7agsf-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 10 Nov 2020 19:38:43 +0000
+Received: from abhmp0017.oracle.com (abhmp0017.oracle.com [141.146.116.23])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0AAJceZ3016558;
+        Tue, 10 Nov 2020 19:38:40 GMT
+Received: from [192.168.2.112] (/50.38.35.18)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Tue, 10 Nov 2020 11:38:39 -0800
+Subject: Re: [External] Re: [PATCH v3 04/21] mm/hugetlb: Introduce
+ nr_free_vmemmap_pages in the struct hstate
+To:     Muchun Song <songmuchun@bytedance.com>,
+        Oscar Salvador <osalvador@suse.de>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Thomas Gleixner <tglx@linutronix.de>, mingo@redhat.com,
+        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
+        dave.hansen@linux.intel.com, luto@kernel.org,
+        Peter Zijlstra <peterz@infradead.org>, viro@zeniv.linux.org.uk,
+        Andrew Morton <akpm@linux-foundation.org>, paulmck@kernel.org,
+        mchehab+huawei@kernel.org, pawan.kumar.gupta@linux.intel.com,
+        Randy Dunlap <rdunlap@infradead.org>, oneukum@suse.com,
+        anshuman.khandual@arm.com, jroedel@suse.de,
+        Mina Almasry <almasrymina@google.com>,
+        David Rientjes <rientjes@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Xiongchun duan <duanxiongchun@bytedance.com>,
+        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>
+References: <20201108141113.65450-1-songmuchun@bytedance.com>
+ <20201108141113.65450-5-songmuchun@bytedance.com>
+ <20201109164825.GA17356@linux>
+ <CAMZfGtWxNV874j9io_xcsVm+C6_shrZCw=W9ugJzxrnBpXb_Mw@mail.gmail.com>
+From:   Mike Kravetz <mike.kravetz@oracle.com>
+Message-ID: <877a4620-fa5c-c5b5-8a42-fdd67a869a38@oracle.com>
+Date:   Tue, 10 Nov 2020 11:38:36 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAMZfGtWxNV874j9io_xcsVm+C6_shrZCw=W9ugJzxrnBpXb_Mw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9801 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 mlxlogscore=999
+ adultscore=0 mlxscore=0 malwarescore=0 suspectscore=0 phishscore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2011100134
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9801 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 priorityscore=1501
+ mlxscore=0 suspectscore=0 mlxlogscore=999 lowpriorityscore=0 spamscore=0
+ malwarescore=0 adultscore=0 clxscore=1015 bulkscore=0 impostorscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2011100134
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The Exynos clock output driver can be built as module (it does not have
-to be part of core init process) for better customization.  Adding a
-KConfig entry allows also compile testing for build coverage.
+On 11/9/20 6:42 PM, Muchun Song wrote:
+> On Tue, Nov 10, 2020 at 12:48 AM Oscar Salvador <osalvador@suse.de> wrote:
+>>
+>> On Sun, Nov 08, 2020 at 10:10:56PM +0800, Muchun Song wrote:
+>>
+>> Unrelated to this patch but related in general, I am not sure about Mike but
+>> would it be cleaner to move all the vmemmap functions to hugetlb_vmemmap.c?
+>> hugetlb code is quite tricky, so I am not sure about stuffing more code
+>> in there.
+>>
+> 
+> I also think that you are right, moving all the vmemmap functions to
+> hugetlb_vmemmap.c may make the code cleaner.
+> 
+> Hi Mike, what's your opinion?
 
-Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
----
- drivers/clk/samsung/Kconfig             | 10 ++++++++++
- drivers/clk/samsung/Makefile            |  2 +-
- drivers/clk/samsung/clk-exynos-clkout.c |  1 +
- 3 files changed, 12 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/clk/samsung/Kconfig b/drivers/clk/samsung/Kconfig
-index 57d4b3f20417..b6b2cb209543 100644
---- a/drivers/clk/samsung/Kconfig
-+++ b/drivers/clk/samsung/Kconfig
-@@ -19,6 +19,16 @@ config EXYNOS_AUDSS_CLK_CON
- 	  on some Exynos SoC variants. Choose M or Y here if you want to
- 	  use audio devices such as I2S, PCM, etc.
- 
-+config EXYNOS_CLK_OUT
-+	tristate "Samsung Exynos clock output driver"
-+	depends on COMMON_CLK_SAMSUNG
-+	default y if ARCH_EXYNOS
-+	help
-+	  Support for the clock output (XCLKOUT) driver present on some of
-+	  Exynos SoC variants. Usually the XCLKOUT is used to monitor the
-+	  status of the certains clocks from SoC, but it could also be tied to
-+	  other devices as an input clock.
-+
- # For S3C24XX platforms, select following symbols:
- config S3C2410_COMMON_CLK
- 	bool "Samsung S3C2410 clock controller support" if COMPILE_TEST
-diff --git a/drivers/clk/samsung/Makefile b/drivers/clk/samsung/Makefile
-index 1a4e6b787978..4adbf972e9f6 100644
---- a/drivers/clk/samsung/Makefile
-+++ b/drivers/clk/samsung/Makefile
-@@ -15,7 +15,7 @@ obj-$(CONFIG_SOC_EXYNOS5420)	+= clk-exynos5420.o
- obj-$(CONFIG_SOC_EXYNOS5420)	+= clk-exynos5-subcmu.o
- obj-$(CONFIG_EXYNOS_ARM64_COMMON_CLK)	+= clk-exynos5433.o
- obj-$(CONFIG_EXYNOS_AUDSS_CLK_CON) += clk-exynos-audss.o
--obj-$(CONFIG_ARCH_EXYNOS)	+= clk-exynos-clkout.o
-+obj-$(CONFIG_EXYNOS_CLK_OUT)	+= clk-exynos-clkout.o
- obj-$(CONFIG_EXYNOS_ARM64_COMMON_CLK)	+= clk-exynos7.o
- obj-$(CONFIG_S3C2410_COMMON_CLK)+= clk-s3c2410.o
- obj-$(CONFIG_S3C2410_COMMON_DCLK)+= clk-s3c2410-dclk.o
-diff --git a/drivers/clk/samsung/clk-exynos-clkout.c b/drivers/clk/samsung/clk-exynos-clkout.c
-index f5f8a956b316..9ec2f40cc400 100644
---- a/drivers/clk/samsung/clk-exynos-clkout.c
-+++ b/drivers/clk/samsung/clk-exynos-clkout.c
-@@ -72,6 +72,7 @@ static const struct of_device_id exynos_clkout_ids[] = {
- 		.data = &exynos_clkout_exynos5,
- 	}, { }
- };
-+MODULE_DEVICE_TABLE(of, exynos_clkout_ids);
- 
- /*
-  * Device will be instantiated as child of PMU device without its own
+I would be happy to see this in a separate file.  As Oscar mentions, the
+hugetlb.c file/code is already somethat difficult to read and understand.
 -- 
-2.25.1
-
+Mike Kravetz
