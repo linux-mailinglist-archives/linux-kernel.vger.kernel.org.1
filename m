@@ -2,160 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73E552AE3E9
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 00:16:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B67C2AE3ED
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 00:20:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731759AbgKJXQI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 18:16:08 -0500
-Received: from foss.arm.com ([217.140.110.172]:36140 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726688AbgKJXQI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 18:16:08 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id BE14C1396;
-        Tue, 10 Nov 2020 15:16:07 -0800 (PST)
-Received: from [10.57.23.123] (unknown [10.57.23.123])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 9687B3F718;
-        Tue, 10 Nov 2020 15:16:06 -0800 (PST)
-Subject: Re: [PATCH v3 18/26] coresight: etm4x: Clean up exception level masks
-To:     Mathieu Poirier <mathieu.poirier@linaro.org>
-Cc:     linux-arm-kernel@lists.infradead.org, mike.leach@linaro.org,
-        coresight@lists.linaro.org, linux-kernel@vger.kernel.org
-References: <20201028220945.3826358-1-suzuki.poulose@arm.com>
- <20201028220945.3826358-20-suzuki.poulose@arm.com>
- <20201106185241.GA3299843@xps15>
-From:   Suzuki K Poulose <suzuki.poulose@arm.com>
-Message-ID: <80b0933d-ef0a-2937-bf47-daf9fefebf3f@arm.com>
-Date:   Tue, 10 Nov 2020 23:15:59 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.1
+        id S1732053AbgKJXUk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 18:20:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59226 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726737AbgKJXUk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Nov 2020 18:20:40 -0500
+Received: from ZenIV.linux.org.uk (zeniv.linux.org.uk [IPv6:2002:c35c:fd02::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3009C0613D1;
+        Tue, 10 Nov 2020 15:20:38 -0800 (PST)
+Received: from viro by ZenIV.linux.org.uk with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kccw8-0037gG-Nt; Tue, 10 Nov 2020 23:20:28 +0000
+Date:   Tue, 10 Nov 2020 23:20:28 +0000
+From:   Al Viro <viro@zeniv.linux.org.uk>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Greg KH <gregkh@linuxfoundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/6] seq_file: add seq_read_iter
+Message-ID: <20201110232028.GX3576660@ZenIV.linux.org.uk>
+References: <20201104082738.1054792-1-hch@lst.de>
+ <20201104082738.1054792-2-hch@lst.de>
+ <20201110213253.GV3576660@ZenIV.linux.org.uk>
+ <20201110213511.GW3576660@ZenIV.linux.org.uk>
 MIME-Version: 1.0
-In-Reply-To: <20201106185241.GA3299843@xps15>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201110213511.GW3576660@ZenIV.linux.org.uk>
+Sender: Al Viro <viro@ftp.linux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/6/20 6:52 PM, Mathieu Poirier wrote:
-> Good morning,
+On Tue, Nov 10, 2020 at 09:35:11PM +0000, Al Viro wrote:
+> On Tue, Nov 10, 2020 at 09:32:53PM +0000, Al Viro wrote:
 > 
-> On Wed, Oct 28, 2020 at 10:09:37PM +0000, Suzuki K Poulose wrote:
->> etm4_get_access_type() calculates the exception level bits
->> for use in address comparator registers. This is also used
->> by the TRCVICTLR register by shifting to the required position.
->>
->> This patch cleans up the logic to make etm4_get_access_type()
->> calcualte a generic mask which can be used by all users by
->> shifting to their field.
->>
->> No functional changes, only code cleanups.
->>
->> Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
->> ---
->> Changes since previous version:
->>    - Fix the duplicate shift. More commentary
->> ---
-
-
->> diff --git a/drivers/hwtracing/coresight/coresight-etm4x.h b/drivers/hwtracing/coresight/coresight-etm4x.h
->> index 2ac4ecb0af61..f1251ddf1984 100644
->> --- a/drivers/hwtracing/coresight/coresight-etm4x.h
->> +++ b/drivers/hwtracing/coresight/coresight-etm4x.h
->> @@ -548,24 +548,38 @@
->>   
->>   #define TRCACATR_EXLEVEL_SHIFT		8
->>   
->> -/* secure state access levels - TRCACATRn */
->> -#define ETM_EXLEVEL_S_APP		BIT(8)
->> -#define ETM_EXLEVEL_S_OS		BIT(9)
->> -#define ETM_EXLEVEL_S_HYP		BIT(10)
->> -#define ETM_EXLEVEL_S_MON		BIT(11)
->> -/* non-secure state access levels - TRCACATRn */
->> -#define ETM_EXLEVEL_NS_APP		BIT(12)
->> -#define ETM_EXLEVEL_NS_OS		BIT(13)
->> -#define ETM_EXLEVEL_NS_HYP		BIT(14)
->> -#define ETM_EXLEVEL_NS_NA		BIT(15)
->> -
->> -/* access level control in TRCVICTLR - same bits as TRCACATRn but shifted */
->> -#define ETM_EXLEVEL_LSHIFT_TRCVICTLR	8
->> +/*
->> + * Exception level mask for Secure and Non-Secure ELs.
->> + * ETM defines the bits for EL control (e.g, TRVICTLR, TRCACTRn).
->> + * The Secure and Non-Secure ELs are always to gether.
->> + * Non-secure EL3 is never implemented.
->> + * We use the following generic mask as they appear in different
->> + * registers and this can be shifted for the appropriate
->> + * fields.
->> + */
->> +#define ETM_EXLEVEL_S_APP		BIT(0)	/* Secure EL0		*/
->> +#define ETM_EXLEVEL_S_OS		BIT(1)	/* Secure EL1		*/
->> +#define ETM_EXLEVEL_S_HYP		BIT(2)	/* Secure EL2		*/
->> +#define ETM_EXLEVEL_S_MON		BIT(3)	/* Secure EL3/Montor	*/
+> > AFAICS, not all callers want that semantics, but I think it's worth
+> > a new primitive.  I'm not saying it should be a prereq for your
+> > series, but either that or an explicit iov_iter_revert() is needed.
 > 
-> s/Montor/Monitor
-> 
->> +#define ETM_EXLEVEL_NS_APP		BIT(4)	/* NonSecure EL0	*/
->> +#define ETM_EXLEVEL_NS_OS		BIT(5)	/* NonSecure EL1	*/
->> +#define ETM_EXLEVEL_NS_HYP		BIT(6)	/* NonSecure EL2	*/
->> +
->> +#define ETM_EXLEVEL_MASK		(GENMASK(6, 0))
-> 
-> Not used.
-> 
+> Seeing that it already went into mainline, it needs a followup fix.
+> And since it's not -stable fodder (AFAICS), I'd rather go with
+> adding a new primitive...
 
-I have updated the patch to use this for creating the TRCVICTLR_EXLEVEL_MASK
-(see below), which is used to clear all the EXLEVEL bits from TRCVICTLR.
+Any objections to the following?
 
->> +#define ETM_EXLEVEL_S_MASK		(GENMASK(3, 0))
->> +#define ETM_EXLEVEL_NS_MASK		(GENMASK(6, 4))
-> 
-> This needs to be GENMASK(2, 0) in order TRCVICTLR_EXLEVEL_NS_SHIFT to be 20.
-> Otherwise the resulting mask is 4 bit off to the left.
+Fix seq_read_iter() behaviour on full pipe
 
-I have retained the ETM_EXLEVEL_NS_MASK as it is above, to keep the defintions
-above consistent. I have fixed the problem by using TRCVICTLR_EXLEVEL_SHIFT whenever
-we use ETM_EXLEVEL_*_MASK.
+generic_file_splice_read() will purge what we'd left in pipe in case
+of error; it will *not* do so in case of short write, so we must make
+sure that reported amount of data stored by ->read_iter() matches the
+reality.
 
-And TRCVICTLR_EXLEVEL_*_SHIFT is used when we set a given value from the sysfs, respectively.
-e.g :
+It's not a rare situation (and we already have it open-coded in at least
+one place), so let's introduce a new primitive - copy_to_iter_full().
+Similar to copy_from_iter_full(), it returns true if we had been able
+to copy everything we'd been asked to and false otherwise.  Iterator
+is advanced only on success.
 
-@@ -795,10 +795,10 @@ static ssize_t ns_exlevel_vinst_store(struct device *dev,
-
-         spin_lock(&drvdata->spinlock);
-         /* clear EXLEVEL_NS bits  */
--       config->vinst_ctrl &= ~(ETM_EXLEVEL_NS_VICTLR_MASK);
-+       config->vinst_ctrl &= ~(TRCVICTLR_EXLEVEL_NS_MASK);
-         /* enable instruction tracing for corresponding exception level */
-         val &= drvdata->ns_ex_level;
--       config->vinst_ctrl |= (val << 20);
-+       config->vinst_ctrl |= (val << TRCVICTLR_EXLEVEL_NS_SHIFT);
-         spin_unlock(&drvdata->spinlock);
-         return size;
-  }
-
-> 
->> +
->> +/* access level controls in TRCACATRn */
->> +#define TRCACATR_EXLEVEL_SHIFT		8
->> +
->> +/* access level control in TRCVICTLR */
->> +#define TRCVICTLR_EXLEVEL_SHIFT		16
->> +#define TRCVICTLR_EXLEVEL_S_SHIFT	16
->> +#define TRCVICTLR_EXLEVEL_NS_SHIFT	20
->>   
->>   /* secure / non secure masks - TRCVICTLR, IDR3 */
->> -#define ETM_EXLEVEL_S_VICTLR_MASK	GENMASK(19, 16)
->> -/* NS MON (EL3) mode never implemented */
->> -#define ETM_EXLEVEL_NS_VICTLR_MASK	GENMASK(22, 20)
->> +#define TRCVICTLR_EXLEVEL_S_MASK	(ETM_EXLEVEL_S_MASK << TRCVICTLR_EXLEVEL_S_SHIFT)
->> +#define TRCVICTLR_EXLEVEL_NS_MASK	(ETM_EXLEVEL_NS_MASK << TRCVICTLR_EXLEVEL_NS_SHIFT)
-
-And the above has been updated to :
-
-+#define TRCVICTLR_EXLEVEL_MASK         (ETM_EXLEVEL_MASK << TRCVICTLR_EXLEVEL_SHIFT)
-+#define TRCVICTLR_EXLEVEL_S_MASK       (ETM_EXLEVEL_S_MASK << TRCVICTLR_EXLEVEL_SHIFT)
-+#define TRCVICTLR_EXLEVEL_NS_MASK      (ETM_EXLEVEL_NS_MASK << TRCVICTLR_EXLEVEL_SHIFT)
-
-Suzuki
+Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
+---
+diff --git a/fs/seq_file.c b/fs/seq_file.c
+index 3b20e21604e7..233d790ea301 100644
+--- a/fs/seq_file.c
++++ b/fs/seq_file.c
+@@ -209,7 +209,7 @@ ssize_t seq_read_iter(struct kiocb *iocb, struct iov_iter *iter)
+ 	/* if not empty - flush it first */
+ 	if (m->count) {
+ 		n = min(m->count, size);
+-		if (copy_to_iter(m->buf + m->from, n, iter) != n)
++		if (!copy_to_iter_full(m->buf + m->from, n, iter))
+ 			goto Efault;
+ 		m->count -= n;
+ 		m->from += n;
+@@ -274,7 +274,7 @@ ssize_t seq_read_iter(struct kiocb *iocb, struct iov_iter *iter)
+ 	}
+ 	m->op->stop(m, p);
+ 	n = min(m->count, size);
+-	if (copy_to_iter(m->buf, n, iter) != n)
++	if (!copy_to_iter_full(m->buf, n, iter))
+ 		goto Efault;
+ 	copied += n;
+ 	m->count -= n;
+diff --git a/include/linux/uio.h b/include/linux/uio.h
+index 72d88566694e..388c05e371ad 100644
+--- a/include/linux/uio.h
++++ b/include/linux/uio.h
+@@ -138,6 +138,18 @@ size_t copy_to_iter(const void *addr, size_t bytes, struct iov_iter *i)
+ }
+ 
+ static __always_inline __must_check
++bool copy_to_iter_full(const void *addr, size_t bytes, struct iov_iter *i)
++{
++	if (likely(check_copy_size(addr, bytes, true))) {
++		size_t n = _copy_to_iter(addr, bytes, i);
++		if (likely(n == bytes))
++			return true;
++		iov_iter_revert(i, n);
++	}
++	return false;
++}
++
++static __always_inline __must_check
+ size_t copy_from_iter(void *addr, size_t bytes, struct iov_iter *i)
+ {
+ 	if (unlikely(!check_copy_size(addr, bytes, false)))
+diff --git a/include/net/udp.h b/include/net/udp.h
+index 295d52a73598..91d1a2998a2d 100644
+--- a/include/net/udp.h
++++ b/include/net/udp.h
+@@ -390,14 +390,7 @@ static inline bool udp_skb_is_linear(struct sk_buff *skb)
+ static inline int copy_linear_skb(struct sk_buff *skb, int len, int off,
+ 				  struct iov_iter *to)
+ {
+-	int n;
+-
+-	n = copy_to_iter(skb->data + off, len, to);
+-	if (n == len)
+-		return 0;
+-
+-	iov_iter_revert(to, n);
+-	return -EFAULT;
++	return copy_to_iter_full(skb->data + off, len, to) ? 0 : -EFAULT;
+ }
+ 
+ /*
