@@ -2,192 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0BBF2AD7C2
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 14:37:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 79D022AD7D1
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 14:39:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732371AbgKJNhZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 08:37:25 -0500
-Received: from correo.us.es ([193.147.175.20]:36768 "EHLO mail.us.es"
+        id S1731062AbgKJNi6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 08:38:58 -0500
+Received: from mx2.suse.de ([195.135.220.15]:35390 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730432AbgKJNhU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 08:37:20 -0500
-Received: from antivirus1-rhel7.int (unknown [192.168.2.11])
-        by mail.us.es (Postfix) with ESMTP id 6FABE396274
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 14:37:18 +0100 (CET)
-Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id 53218DA859
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 14:37:18 +0100 (CET)
-Received: by antivirus1-rhel7.int (Postfix, from userid 99)
-        id 45691DA84F; Tue, 10 Nov 2020 14:37:18 +0100 (CET)
-X-Spam-Checker-Version: SpamAssassin 3.4.1 (2015-04-28) on antivirus1-rhel7.int
-X-Spam-Level: 
-X-Spam-Status: No, score=-108.2 required=7.5 tests=ALL_TRUSTED,BAYES_50,
-        SMTPAUTH_US2,URIBL_BLOCKED,USER_IN_WELCOMELIST,USER_IN_WHITELIST
-        autolearn=disabled version=3.4.1
-Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id ADF1ADA789;
-        Tue, 10 Nov 2020 14:37:15 +0100 (CET)
-Received: from 192.168.1.97 (192.168.1.97)
- by antivirus1-rhel7.int (F-Secure/fsigk_smtp/550/antivirus1-rhel7.int);
- Tue, 10 Nov 2020 14:37:15 +0100 (CET)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/antivirus1-rhel7.int)
-Received: from us.es (unknown [90.77.255.23])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: 1984lsi)
-        by entrada.int (Postfix) with ESMTPSA id 7CCF642EF9E0;
-        Tue, 10 Nov 2020 14:37:15 +0100 (CET)
-Date:   Tue, 10 Nov 2020 14:37:15 +0100
-X-SMTPAUTHUS: auth mail.us.es
-From:   Pablo Neira Ayuso <pablo@netfilter.org>
-To:     Casey Schaufler <casey@schaufler-ca.com>
-Cc:     casey.schaufler@intel.com, jmorris@namei.org,
-        linux-security-module@vger.kernel.org, selinux@vger.kernel.org,
-        linux-audit@redhat.com, keescook@chromium.org,
-        john.johansen@canonical.com, penguin-kernel@i-love.sakura.ne.jp,
-        paul@paul-moore.com, sds@tycho.nsa.gov,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        netfilter-devel@vger.kernel.org
-Subject: Re: [PATCH v22 16/23] LSM: security_secid_to_secctx in netlink
- netfilter
-Message-ID: <20201110133715.GA1890@salvia>
-References: <20201105004924.11651-1-casey@schaufler-ca.com>
- <20201105004924.11651-17-casey@schaufler-ca.com>
+        id S1730534AbgKJNi4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Nov 2020 08:38:56 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 7AAC6ACDB;
+        Tue, 10 Nov 2020 13:38:54 +0000 (UTC)
+Message-ID: <25933d5863cd6ddb98dea25bdedf342ebd063480.camel@suse.de>
+Subject: Re: [PATCH v3 01/11] firmware: raspberrypi: Introduce
+ devm_rpi_firmware_get()
+From:   Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+To:     Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Cc:     Uwe =?ISO-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Ray Jui <rjui@broadcom.com>,
+        Scott Branden <sbranden@broadcom.com>,
+        bcm-kernel-feedback-list@broadcom.com, linux-pwm@vger.kernel.org,
+        arm-soc <linux-arm-kernel@lists.infradead.org>,
+        linux-devicetree <devicetree@vger.kernel.org>, wahrenst@gmx.net,
+        Linux Input <linux-input@vger.kernel.org>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        devel@driverdev.osuosl.org, Philipp Zabel <p.zabel@pengutronix.de>,
+        linux-gpio <linux-gpio@vger.kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        linux-rpi-kernel@lists.infradead.org,
+        Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Tue, 10 Nov 2020 14:38:52 +0100
+In-Reply-To: <CAMpxmJUZ23uYM3+_L2XvTXzvA48JWrxrhZaLnGAxTpJjFiERRA@mail.gmail.com>
+References: <20201104103938.1286-1-nsaenzjulienne@suse.de>
+         <20201104103938.1286-2-nsaenzjulienne@suse.de>
+         <CAMpxmJWJRcQQiLitJCLWKmhQVQWr3bMDY=td5FEn5uy2YZfwkA@mail.gmail.com>
+         <47eaba0bc71c6e23bff87b8a01cebf0c6d12efd0.camel@suse.de>
+         <CAMpxmJUZ23uYM3+_L2XvTXzvA48JWrxrhZaLnGAxTpJjFiERRA@mail.gmail.com>
+Content-Type: multipart/signed; micalg="pgp-sha256";
+        protocol="application/pgp-signature"; boundary="=-aSQnVn7Q9FP2OogzR6s5"
+User-Agent: Evolution 3.36.5 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20201105004924.11651-17-casey@schaufler-ca.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Virus-Scanned: ClamAV using ClamSMTP
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Casey,
 
-On Wed, Nov 04, 2020 at 04:49:17PM -0800, Casey Schaufler wrote:
-> Change netlink netfilter interfaces to use lsmcontext
-> pointers, and remove scaffolding.
-> 
-> Reviewed-by: Kees Cook <keescook@chromium.org>
-> Reviewed-by: John Johansen <john.johansen@canonical.com>
-> Acked-by: Stephen Smalley <sds@tycho.nsa.gov>
-> Signed-off-by: Casey Schaufler <casey@schaufler-ca.com>
-> Cc: netdev@vger.kernel.org
-> Cc: netfilter-devel@vger.kernel.org
+--=-aSQnVn7Q9FP2OogzR6s5
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-You can carry this tag in your follow up patches.
+Hi Bartosz, thanks for the feedback.
 
-Acked-by: Pablo Neira Ayuso <pablo@netfilter.org>
+On Thu, 2020-11-05 at 10:42 +0100, Bartosz Golaszewski wrote:
+> On Thu, Nov 5, 2020 at 10:28 AM Nicolas Saenz Julienne
+> <nsaenzjulienne@suse.de> wrote:
+> > Hi Bartosz, thanks for the review.
+> >=20
+> > On Thu, 2020-11-05 at 10:13 +0100, Bartosz Golaszewski wrote:
+> > > > +/**
+> > > > + * devm_rpi_firmware_get - Get pointer to rpi_firmware structure.
+> > > > + * @firmware_node:    Pointer to the firmware Device Tree node.
+> > > > + *
+> > > > + * Returns NULL is the firmware device is not ready.
+> > > > + */
+> > > > +struct rpi_firmware *devm_rpi_firmware_get(struct device *dev,
+> > > > +                                          struct device_node *firm=
+ware_node)
+> > > > +{
+> > > > +       struct platform_device *pdev =3D of_find_device_by_node(fir=
+mware_node);
+> > > > +       struct rpi_firmware *fw;
+> > > > +
+> > > > +       if (!pdev)
+> > > > +               return NULL;
+> > > > +
+> > > > +       fw =3D platform_get_drvdata(pdev);
+> > > > +       if (!fw)
+> > > > +               return NULL;
+> > > > +
+> > > > +       if (!refcount_inc_not_zero(&fw->consumers))
+> > > > +               return NULL;
+> > > > +
+> > > > +       if (devm_add_action_or_reset(dev, rpi_firmware_put, fw))
+> > > > +               return NULL;
+> > > > +
+> > > > +       return fw;
+> > > > +}
+> > > > +EXPORT_SYMBOL_GPL(devm_rpi_firmware_get);
+> > >=20
+> > > Usually I'd expect the devres variant to simply call
+> > > rpi_firmware_get() and then schedule a release callback which would
+> > > call whatever function is the release counterpart for it currently.
+> > > Devres actions are for drivers which want to schedule some more
+> > > unusual tasks at driver detach. Any reason for designing it this way?
+> >=20
+> > Yes, see patch #8 where I get rid of rpi_firmware_get() altogether afte=
+r
+> > converting all users to devres. Since there is no use for the vanilla v=
+ersion
+> > of the function anymore, I figured it'd be better to merge everything i=
+nto
+> > devm_rpi_firmware_get(). That said it's not something I have strong fee=
+lings
+> > about.
+> >=20
+>=20
+> I see. So the previous version didn't really have any reference
+> counting and it leaked the reference returned by
+> of_find_device_by_node(), got it. Could you just clarify for me the
+> logic behind the wait_queue in rpi_firmware_remove()? If the firmware
+> driver gets detached and remove() stops on the wait_queue - it will be
+> stuck until the last user releases the firmware. I'm not sure this is
+> correct.
 
-Thanks.
+Yes, that's what I meant to implement.
 
-> ---
->  net/netfilter/nfnetlink_queue.c | 37 +++++++++++++--------------------
->  1 file changed, 14 insertions(+), 23 deletions(-)
-> 
-> diff --git a/net/netfilter/nfnetlink_queue.c b/net/netfilter/nfnetlink_queue.c
-> index 84be5a49a157..0d8b83d84422 100644
-> --- a/net/netfilter/nfnetlink_queue.c
-> +++ b/net/netfilter/nfnetlink_queue.c
-> @@ -301,15 +301,13 @@ static int nfqnl_put_sk_uidgid(struct sk_buff *skb, struct sock *sk)
->  	return -1;
->  }
->  
-> -static u32 nfqnl_get_sk_secctx(struct sk_buff *skb, char **secdata)
-> +static void nfqnl_get_sk_secctx(struct sk_buff *skb, struct lsmcontext *context)
->  {
-> -	u32 seclen = 0;
->  #if IS_ENABLED(CONFIG_NETWORK_SECMARK)
->  	struct lsmblob blob;
-> -	struct lsmcontext context = { };
->  
->  	if (!skb || !sk_fullsock(skb->sk))
-> -		return 0;
-> +		return;
->  
->  	read_lock_bh(&skb->sk->sk_callback_lock);
->  
-> @@ -318,14 +316,12 @@ static u32 nfqnl_get_sk_secctx(struct sk_buff *skb, char **secdata)
->  		 * blob. security_secid_to_secctx() will know which security
->  		 * module to use to create the secctx.  */
->  		lsmblob_init(&blob, skb->secmark);
-> -		security_secid_to_secctx(&blob, &context);
-> -		*secdata = context.context;
-> +		security_secid_to_secctx(&blob, context);
->  	}
->  
->  	read_unlock_bh(&skb->sk->sk_callback_lock);
-> -	seclen = context.len;
->  #endif
-> -	return seclen;
-> +	return;
->  }
->  
->  static u32 nfqnl_get_bridge_size(struct nf_queue_entry *entry)
-> @@ -398,12 +394,10 @@ nfqnl_build_packet_message(struct net *net, struct nfqnl_instance *queue,
->  	struct net_device *indev;
->  	struct net_device *outdev;
->  	struct nf_conn *ct = NULL;
-> +	struct lsmcontext context = { };
->  	enum ip_conntrack_info ctinfo;
->  	struct nfnl_ct_hook *nfnl_ct;
->  	bool csum_verify;
-> -	struct lsmcontext scaff; /* scaffolding */
-> -	char *secdata = NULL;
-> -	u32 seclen = 0;
->  
->  	size = nlmsg_total_size(sizeof(struct nfgenmsg))
->  		+ nla_total_size(sizeof(struct nfqnl_msg_packet_hdr))
-> @@ -469,9 +463,9 @@ nfqnl_build_packet_message(struct net *net, struct nfqnl_instance *queue,
->  	}
->  
->  	if ((queue->flags & NFQA_CFG_F_SECCTX) && entskb->sk) {
-> -		seclen = nfqnl_get_sk_secctx(entskb, &secdata);
-> -		if (seclen)
-> -			size += nla_total_size(seclen);
-> +		nfqnl_get_sk_secctx(entskb, &context);
-> +		if (context.len)
-> +			size += nla_total_size(context.len);
->  	}
->  
->  	skb = alloc_skb(size, GFP_ATOMIC);
-> @@ -604,7 +598,8 @@ nfqnl_build_packet_message(struct net *net, struct nfqnl_instance *queue,
->  	    nfqnl_put_sk_uidgid(skb, entskb->sk) < 0)
->  		goto nla_put_failure;
->  
-> -	if (seclen && nla_put(skb, NFQA_SECCTX, seclen, secdata))
-> +	if (context.len &&
-> +	    nla_put(skb, NFQA_SECCTX, context.len, context.context))
->  		goto nla_put_failure;
->  
->  	if (ct && nfnl_ct->build(skb, ct, ctinfo, NFQA_CT, NFQA_CT_INFO) < 0)
-> @@ -632,10 +627,8 @@ nfqnl_build_packet_message(struct net *net, struct nfqnl_instance *queue,
->  	}
->  
->  	nlh->nlmsg_len = skb->len;
-> -	if (seclen) {
-> -		lsmcontext_init(&scaff, secdata, seclen, 0);
-> -		security_release_secctx(&scaff);
-> -	}
-> +	if (context.len)
-> +		security_release_secctx(&context);
->  	return skb;
->  
->  nla_put_failure:
-> @@ -643,10 +636,8 @@ nfqnl_build_packet_message(struct net *net, struct nfqnl_instance *queue,
->  	kfree_skb(skb);
->  	net_err_ratelimited("nf_queue: error creating packet message\n");
->  nlmsg_failure:
-> -	if (seclen) {
-> -		lsmcontext_init(&scaff, secdata, seclen, 0);
-> -		security_release_secctx(&scaff);
-> -	}
-> +	if (context.len)
-> +		security_release_secctx(&context);
->  	return NULL;
->  }
->  
-> -- 
-> 2.24.1
-> 
+> I'd prefer to see a kref with a release callback and remove
+> would simply decrease the kref and return. Each user would do the same
+> and then after the last user is detached the firmware would be
+> destroyed.
+
+Sounds good to me. I'll update it.
+
+> Don't we really have some centralized firmware subsystem that would handl=
+e this?
+
+Sadly no, this is an RPi specific thing, it doesn't live behind a standard =
+like
+other firmware based protocols (for ex. SCMI), and evolves as the needs ari=
+se.
+
+Regards,
+Nicolas
+
+
+--=-aSQnVn7Q9FP2OogzR6s5
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCAAdFiEErOkkGDHCg2EbPcGjlfZmHno8x/4FAl+ql+wACgkQlfZmHno8
+x/5TFQgArzH6eU5ljiN7do5NqV1SI7f2HoX88NazrWiPc8Ixl7QT4jfzWnZeyiBn
+31OdfWDVQeexADs3RDEvq/o5SSxNP+FDGlnzm9PiYaKPWcGdOpe8wW9wggXest4N
+MVtyqksGQlf3MuItqI4HgP/aAhB8EKnYHTVrku2tAPR9cNliVmeusFWsPWIYXSYc
+IcX61cPnzFkqU56k7aNrk452Kme6XDFDi2eD2DXAzHNlSHiQOH5ZQPKBmFUkaCDL
+xP/T5PwL+YwF3ZWO2sU6voMp96QfiO8R/LYt215dIzlmTmdKcIC7scqEkr4HRSJp
+9SW2n981ery3AA1wXoyGhLMJMilzcQ==
+=CaET
+-----END PGP SIGNATURE-----
+
+--=-aSQnVn7Q9FP2OogzR6s5--
+
