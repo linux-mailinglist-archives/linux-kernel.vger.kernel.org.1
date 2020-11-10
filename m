@@ -2,162 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 849E92AE105
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 21:50:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DCBB2AE110
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 21:51:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731758AbgKJUuX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 15:50:23 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58056 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726307AbgKJUuX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 15:50:23 -0500
-Received: from localhost (230.sub-72-107-127.myvzw.com [72.107.127.230])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B6A0720674;
-        Tue, 10 Nov 2020 20:50:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605041422;
-        bh=WKPaItb7R+CrQbgIe5mDPrwwrDH4gEBxthXqj1ObDHA=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=KG/CEcKIyD41PIkSQCVIPLNCKyz9sM1+gQsyb39IVrGL1d0ck3Wcilgz1hIZdsh2i
-         odeNlQ0qBCsqxqQcDIfFcWvpuRv+QTj+l/eo7EKEU0uIxYzYbpotc9X6W/xT9NkQeP
-         4W3+VrygmCBQGgfRn3OP63fC26zg+Pk1mRmIwGHs=
-Date:   Tue, 10 Nov 2020 14:50:20 -0600
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Vidya Sagar <vidyas@nvidia.com>
-Cc:     jingoohan1@gmail.com, gustavo.pimentel@synopsys.com,
-        lorenzo.pieralisi@arm.com, bhelgaas@google.com,
-        amurray@thegoodpenguin.co.uk, robh@kernel.org, treding@nvidia.com,
-        jonathanh@nvidia.com, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kthota@nvidia.com,
-        mmaddireddy@nvidia.com, sagar.tv@gmail.com
-Subject: Re: [PATCH] PCI: dwc: Add support to configure for ECRC
-Message-ID: <20201110205020.GA691818@bjorn-Precision-5520>
+        id S1731781AbgKJUvE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 15:51:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35738 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725862AbgKJUvC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Nov 2020 15:51:02 -0500
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF2AAC0613D1;
+        Tue, 10 Nov 2020 12:51:01 -0800 (PST)
+Received: by mail-wr1-x441.google.com with SMTP id c17so14209859wrc.11;
+        Tue, 10 Nov 2020 12:51:01 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=7HIcKzFu5PUUQcFiE5YVq2OrMCSk+O2P2oBdDfJbjm4=;
+        b=p3IuKkDXlF3/hpGET8e431R9TjI8VmaD+tYyRxHQGfyz1Zii2UqQIUz90t+lwWNG3V
+         BSvrTnzMRaDza3nj7lIX82CRMGAvsjEdjNzfHjEnvpAFxV5wVG9/Tdztnp70jZFTX9n7
+         XVoGGmB3AUEEriWlJRtubCXxQZ+7IfKCFRLa1Bs/eq7/b3hujUOOe/nhApmQ3zZBcQr6
+         XTN4tHq9WBwGu9zozNsOUEZcudsB0kAiBu+SsVkmAu2gY+R5sjJku3BNQyWBpCWiG0dn
+         F9Q53i5FcdYDhmSQYf/6sS4PokOHp+ScuogduJxME0MCnBiwFP3QWlpGVvuQch6XGJqx
+         df+Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=7HIcKzFu5PUUQcFiE5YVq2OrMCSk+O2P2oBdDfJbjm4=;
+        b=V/NHP2WbXVovV9P8XI6d8spuqAj6J4vGunak1qh/2ENHWRJzfoAPfwTrlb/naj3HCX
+         hlfkFjsaEAVzoqbm0j3XxyJkqL8HEpqSuGi6bGLPWVBbiurlX1/N494VF4Pnn843fGba
+         Yhuapk6UsAbWWZcNTLbqQ3MeZVPlWp2BThv/oKmpOD8F9qMymp/sIl8PxFVm+RQttNsG
+         3XkVFWaHeKxWqDiTh8om4Be2Tja9+Y9deVZpcP/P3KeV7zbgJrvFfDq370BfQ7X2BSRj
+         9/S++B4mt3ZGtKfOx8pEREsQbB8wechvFBoC3t+5Cm1YcZ3O+mfMm0u4VZ/hMz6wBgqo
+         0wQw==
+X-Gm-Message-State: AOAM531SasjoXAENlgwHamyZkY1QKIFDSVWkrxCJrqFsHQK8KtWNl1S3
+        6hgrcaj3VLRRWKWd/OQO8uM=
+X-Google-Smtp-Source: ABdhPJxzIEmPPnLANkIp2K03g8rC5eaOPrtyiZGMeuwPXYl02/6Hg+v9qU2Prx3ft4ivHx0jS/Q3dA==
+X-Received: by 2002:a5d:51c2:: with SMTP id n2mr12551938wrv.326.1605041460687;
+        Tue, 10 Nov 2020 12:51:00 -0800 (PST)
+Received: from localhost ([217.111.27.204])
+        by smtp.gmail.com with ESMTPSA id z5sm18029459wrw.87.2020.11.10.12.50.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 10 Nov 2020 12:50:59 -0800 (PST)
+Date:   Tue, 10 Nov 2020 21:50:57 +0100
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Jonathan Hunter <jonathanh@nvidia.com>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Peter Chen <Peter.Chen@nxp.com>,
+        Mark Brown <broonie@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Peter Geis <pgwipeout@gmail.com>,
+        Nicolas Chauvet <kwizart@gmail.com>,
+        linux-samsung-soc@vger.kernel.org, devel@driverdev.osuosl.org,
+        linux-usb@vger.kernel.org, linux-pwm@vger.kernel.org,
+        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-media@vger.kernel.org, linux-tegra@vger.kernel.org
+Subject: Re: [PATCH v1 18/30] pwm: tegra: Support OPP and core voltage scaling
+Message-ID: <20201110205057.GH2375022@ulmo>
+References: <20201104234427.26477-1-digetx@gmail.com>
+ <20201104234427.26477-19-digetx@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="v2Uk6McLiE8OV1El"
 Content-Disposition: inline
-In-Reply-To: <20201109192611.16104-1-vidyas@nvidia.com>
+In-Reply-To: <20201104234427.26477-19-digetx@gmail.com>
+User-Agent: Mutt/1.14.7 (2020-08-29)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 10, 2020 at 12:56:11AM +0530, Vidya Sagar wrote:
-> DesignWare core has a TLP digest (TD) override bit in one of the control
-> registers of ATU. This bit also needs to be programmed for proper ECRC
-> functionality. This is currently identified as an issue with DesignWare
-> IP version 4.90a.
-> 
-> Signed-off-by: Vidya Sagar <vidyas@nvidia.com>
 
-Modulo typos/formatting comments below,
+--v2Uk6McLiE8OV1El
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Acked-by: Bjorn Helgaas <bhelgaas@google.com>
-
-Thanks for working through this.
-
-> ---
->  drivers/pci/controller/dwc/pcie-designware.c | 50 ++++++++++++++++++--
->  drivers/pci/controller/dwc/pcie-designware.h |  1 +
->  2 files changed, 47 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/pci/controller/dwc/pcie-designware.c b/drivers/pci/controller/dwc/pcie-designware.c
-> index c2dea8fc97c8..ebdc37a58e94 100644
-> --- a/drivers/pci/controller/dwc/pcie-designware.c
-> +++ b/drivers/pci/controller/dwc/pcie-designware.c
-> @@ -225,6 +225,44 @@ static void dw_pcie_writel_ob_unroll(struct dw_pcie *pci, u32 index, u32 reg,
->  	dw_pcie_writel_atu(pci, offset + reg, val);
->  }
->  
-> +static inline u32 dw_pcie_enable_ecrc(u32 val)
+On Thu, Nov 05, 2020 at 02:44:15AM +0300, Dmitry Osipenko wrote:
+[...]
+> +static void tegra_pwm_deinit_opp_table(void *data)
 > +{
-> +	/*
-> +	 *     DesignWare core version 4.90A has this strange design issue
-> +	 * where the 'TD' bit in the Control register-1 of the ATU outbound
-> +	 * region acts like an override for the ECRC setting i.e. the presence
-> +	 * of TLP Digest(ECRC) in the outgoing TLPs is solely determined by
-> +	 * this bit. This is contrary to the PCIe spec which says that the
-> +	 * enablement of the ECRC is solely determined by the AER registers.
-> +	 *     Because of this, even when the ECRC is enabled through AER
-> +	 * registers, the transactions going through ATU won't have TLP Digest
-> +	 * as there is no way the AER sub-system could program the TD bit which
-> +	 * is specific to DsignWare core.
-
-s/DsignWare/DesignWare/
-
-> +	 *    The best way to handle this scenario is to program the TD bit
-> +	 * always. It affects only the traffic from root port to downstream
-> +	 * devices.
-
-Convention is to separate paragraphs with blank lines, not to indent
-the first line.
-
-> +	 * At this point,
-> +	 *     When ECRC is enabled in AER registers, everything works
-> +	 * normally
-> +	 *     When ECRC is NOT enabled in AER registers, then,
-> +	 * on Root Port:- TLP Digest (DWord size) gets appended to each packet
-> +	 *                even through it is not required. Since downstream
-> +	 *                TLPs are mostly for configuration accesses and BAR
-> +	 *                accesses, they are not in critical path and won't
-> +	 *                have much negative effect on the performance.
-> +	 * on End Point:- TLP Digest is received for some/all the packets coming
-> +	 *                from the root port. TLP Digest is ignored because,
-> +	 *                as per the PCIe Spec r5.0 v1.0 section 2.2.3 "TLP Digest Rules",
-
-Wrap to fit in 80 columns.
-
-> +	 *                when an endpoint receives TLP Digest when its
-> +	 *                ECRC check functionality is disabled in AER registers,
-> +	 *                received TLP Digest is just ignored.
-> +	 * Since there is no issue or error reported either side, best way to
-> +	 * handle the scenario is to program TD bit by default.
-> +	 */
+> +	struct device *dev = data;
+> +	struct opp_table *opp_table;
 > +
-> +	return val | PCIE_ATU_TD;
+> +	opp_table = dev_pm_opp_get_opp_table(dev);
+> +	dev_pm_opp_of_remove_table(dev);
+> +	dev_pm_opp_put_regulators(opp_table);
+> +	dev_pm_opp_put_opp_table(opp_table);
 > +}
 > +
->  static void dw_pcie_prog_outbound_atu_unroll(struct dw_pcie *pci, u8 func_no,
->  					     int index, int type,
->  					     u64 cpu_addr, u64 pci_addr,
-> @@ -245,8 +283,10 @@ static void dw_pcie_prog_outbound_atu_unroll(struct dw_pcie *pci, u8 func_no,
->  				 lower_32_bits(pci_addr));
->  	dw_pcie_writel_ob_unroll(pci, index, PCIE_ATU_UNR_UPPER_TARGET,
->  				 upper_32_bits(pci_addr));
-> -	dw_pcie_writel_ob_unroll(pci, index, PCIE_ATU_UNR_REGION_CTRL1,
-> -				 type | PCIE_ATU_FUNC_NUM(func_no));
-> +	val = type | PCIE_ATU_FUNC_NUM(func_no);
-> +	if (pci->version == 0x490A)
-> +		val = dw_pcie_enable_ecrc(val);
-> +	dw_pcie_writel_ob_unroll(pci, index, PCIE_ATU_UNR_REGION_CTRL1, val);
->  	dw_pcie_writel_ob_unroll(pci, index, PCIE_ATU_UNR_REGION_CTRL2,
->  				 PCIE_ATU_ENABLE);
->  
-> @@ -292,8 +332,10 @@ static void __dw_pcie_prog_outbound_atu(struct dw_pcie *pci, u8 func_no,
->  			   lower_32_bits(pci_addr));
->  	dw_pcie_writel_dbi(pci, PCIE_ATU_UPPER_TARGET,
->  			   upper_32_bits(pci_addr));
-> -	dw_pcie_writel_dbi(pci, PCIE_ATU_CR1, type |
-> -			   PCIE_ATU_FUNC_NUM(func_no));
-> +	val = type | PCIE_ATU_FUNC_NUM(func_no);
-> +	if (pci->version == 0x490A)
-> +		val = dw_pcie_enable_ecrc(val);
-> +	dw_pcie_writel_dbi(pci, PCIE_ATU_CR1, val);
->  	dw_pcie_writel_dbi(pci, PCIE_ATU_CR2, PCIE_ATU_ENABLE);
->  
->  	/*
-> diff --git a/drivers/pci/controller/dwc/pcie-designware.h b/drivers/pci/controller/dwc/pcie-designware.h
-> index 9d2f511f13fa..285c0ae364ae 100644
-> --- a/drivers/pci/controller/dwc/pcie-designware.h
-> +++ b/drivers/pci/controller/dwc/pcie-designware.h
-> @@ -88,6 +88,7 @@
->  #define PCIE_ATU_TYPE_IO		0x2
->  #define PCIE_ATU_TYPE_CFG0		0x4
->  #define PCIE_ATU_TYPE_CFG1		0x5
-> +#define PCIE_ATU_TD			BIT(8)
->  #define PCIE_ATU_FUNC_NUM(pf)           ((pf) << 20)
->  #define PCIE_ATU_CR2			0x908
->  #define PCIE_ATU_ENABLE			BIT(31)
-> -- 
-> 2.17.1
-> 
+> +static int devm_tegra_pwm_init_opp_table(struct device *dev)
+> +{
+> +	struct opp_table *opp_table;
+> +	const char *rname = "core";
+> +	int err;
+> +
+> +	/* voltage scaling is optional */
+> +	if (device_property_present(dev, "core-supply"))
+> +		opp_table = dev_pm_opp_set_regulators(dev, &rname, 1);
+> +	else
+> +		opp_table = dev_pm_opp_get_opp_table(dev);
+> +
+> +	if (IS_ERR(opp_table))
+> +		return dev_err_probe(dev, PTR_ERR(opp_table),
+> +				     "failed to prepare OPP table\n");
+> +
+> +	/*
+> +	 * OPP table presence is optional and we want the set_rate() of OPP
+> +	 * API to work similarly to clk_set_rate() if table is missing in a
+> +	 * device-tree.  The add_table() errors out if OPP is missing in DT.
+> +	 */
+> +	if (device_property_present(dev, "operating-points-v2")) {
+> +		err = dev_pm_opp_of_add_table(dev);
+> +		if (err) {
+> +			dev_err(dev, "failed to add OPP table: %d\n", err);
+> +			goto put_table;
+> +		}
+> +	}
+> +
+> +	err = devm_add_action(dev, tegra_pwm_deinit_opp_table, dev);
+> +	if (err)
+> +		goto remove_table;
+> +
+> +	return 0;
+> +
+> +remove_table:
+> +	dev_pm_opp_of_remove_table(dev);
+> +put_table:
+> +	dev_pm_opp_put_regulators(opp_table);
+> +
+> +	return err;
+> +}
+
+These two functions seem to be heavily boilerplate across all these
+drivers. Have you considered splitting these out into separate helpers?
+
+Thierry
+
+--v2Uk6McLiE8OV1El
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAl+q/TEACgkQ3SOs138+
+s6FEeBAAokltgZ7HHYhhwbbWHXNUkzO/NUlYWsInWSSKGta8fNY21NFKFf6nxcqg
+ysIyLPN9dv8a9saNwqn3LEtMcfrRlwhNI22SJT9qeJccG/FrVSt9wPszq4Sm/6+/
+XjySJpMVvKGnrZTlrDIqTPjxnocpBDumCM+jSDtNH/VPaGozHg1Zx0qh8/beFTmv
+Vtb0OcnD4qtkufaD0UNVfgFgwtFA3kRYS4cn6HfvqtjefLPSoQPAsdm7Bv4k7x5c
+KT12aYsPstalOtHu+FLiNVpazIpRiQcf1r4C/NtBsZcakeN5yuDe5TjP81BWYYmL
+q2d7TSeKz7bETNVkYlHJYDjvmDKdxfSaCkZYzfrHZlGIIFkDVUldkWLqi3g7SFe8
+SZTVRmWNiXrs6yvvJLLATV+By1fXEUHT+5EncaaS2KKWIER/rkBfZaTU5sm1Dh2e
+1uYKgu1HT00/215AdNLi/QpUSCMoP+RUixydwl9b0+dkJ5mbcY3Zyqz0iyFKEPg6
+EnkFO/edSWtmvQeFqqapWBfvO7ilH+yrlO8usp0A4pFhHFrs5D7k+oij9lDKVDPO
+LT092WpWBVzCxAYioMUGADderKfCTP3Tp4W5Lw9Tp2zyHG6Qze+UsbvNoPwYhb8G
+l0UKpbDA7nfIhJ3zrFcENxPPGXWP7aDaL8sG6HnZ5FQZoyj/w2Y=
+=OvzO
+-----END PGP SIGNATURE-----
+
+--v2Uk6McLiE8OV1El--
