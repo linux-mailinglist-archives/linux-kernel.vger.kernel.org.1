@@ -2,115 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89D7C2AE0DB
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 21:43:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 144CD2AE0D8
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 21:42:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731582AbgKJUnY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 15:43:24 -0500
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:46128 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725862AbgKJUnX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 15:43:23 -0500
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0AAKgu3r061518;
-        Tue, 10 Nov 2020 14:42:56 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1605040976;
-        bh=sifttbW0k5Lxcp2E71JaLXQzbHbeoqMjZBnpIupizDw=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=LmrO7Q7Dlq6pUHsh8dqUlGvFLlSoLm74P/l8Cq/t1BTBUQGrpcEcPXonujHXvweye
-         tqRp6oyq2fnpIGQj5266vsEM13zx1p556lUWq39/CA74cl/jJnK0VE0P4jb6weD7tu
-         x23b+PvFD1x2sNVHla8AJHhSb8BhRHqBIyF9q+cQ=
-Received: from DFLE114.ent.ti.com (dfle114.ent.ti.com [10.64.6.35])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0AAKguLi130035
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 10 Nov 2020 14:42:56 -0600
-Received: from DFLE112.ent.ti.com (10.64.6.33) by DFLE114.ent.ti.com
- (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 10
- Nov 2020 14:42:56 -0600
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE112.ent.ti.com
- (10.64.6.33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Tue, 10 Nov 2020 14:42:56 -0600
-Received: from [10.250.64.205] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0AAKgtB2063474;
-        Tue, 10 Nov 2020 14:42:55 -0600
-Subject: Re: [PATCH] soc: ti: pruss: Remove wrong check against
- *get_match_data return value
-To:     Grzegorz Jaszczyk <grzegorz.jaszczyk@linaro.org>,
-        <ssantosh@kernel.org>
-CC:     <santosh.shilimkar@oracle.com>, <lee.jones@linaro.org>,
-        <linux-kernel@vger.kernel.org>, <linux-omap@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <praneeth@ti.com>,
-        <tony@atomide.com>, Wei Yongjun <weiyongjun1@huawei.com>
-References: <20201026144943.30821-1-grzegorz.jaszczyk@linaro.org>
-From:   Suman Anna <s-anna@ti.com>
-Message-ID: <a1a787b2-efac-3baf-2a3c-ba135b8b32d0@ti.com>
-Date:   Tue, 10 Nov 2020 14:42:55 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1731227AbgKJUmB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 15:42:01 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55296 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725862AbgKJUmA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Nov 2020 15:42:00 -0500
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id BDCC22064B;
+        Tue, 10 Nov 2020 20:41:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605040920;
+        bh=vQgHP6egw+Md3Vr6n6YyK1fyvE/8NWCrMT/RqbKjRfM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=HuP5yW2pvELmkCto0fgddsx6Y+qMD5fMjwAmzuNd+5oW/r6sk4JfkZWwFw/CerZVG
+         aGvc6Jk/vVK83wMT6lWJGXdQfaqaL2DZZxRWDkQRYUDXLK/u5Gg94vwI9kCnKHBmAl
+         1/U1G07GGwKHlpdLxyOVCV5NHgs0m6oUMt1d/6qs=
+Date:   Tue, 10 Nov 2020 21:43:02 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Shuah Khan <skhan@linuxfoundation.org>
+Cc:     corbet@lwn.net, keescook@chromium.org, peterz@infradead.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 01/13] seqnum_ops: Introduce Sequence Number Ops
+Message-ID: <X6r7Vl45bgGQiAD2@kroah.com>
+References: <cover.1605027593.git.skhan@linuxfoundation.org>
+ <d265685c901ea81c83c18e218a29710317ab7670.1605027593.git.skhan@linuxfoundation.org>
+ <X6r7BIG8JTUOLcY0@kroah.com>
 MIME-Version: 1.0
-In-Reply-To: <20201026144943.30821-1-grzegorz.jaszczyk@linaro.org>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <X6r7BIG8JTUOLcY0@kroah.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Greg,
-
-On 10/26/20 9:49 AM, Grzegorz Jaszczyk wrote:
-> Since the of_device_get_match_data() doesn't return error code, remove
-> wrong IS_ERR test. Proper check against NULL pointer is already done
-> later before usage: if (data && data->...).
+On Tue, Nov 10, 2020 at 09:41:40PM +0100, Greg KH wrote:
+> On Tue, Nov 10, 2020 at 12:53:27PM -0700, Shuah Khan wrote:
+> > +Decrement interface
+> > +-------------------
+> > +
+> > +Decrements sequence number and doesn't return the new value. ::
+> > +
+> > +        seqnum32_dec() --> atomic_dec()
+> > +        seqnum64_dec() --> atomic64_dec()
 > 
-> Additionally, proceeding with empty device data is valid (e.g. in case
-> of "ti,am3356-pruss").
+> Why would you need to decrement a sequence number?  Shouldn't they just
+> always go up?
 > 
-> Reported-by: Wei Yongjun <weiyongjun1@huawei.com>
+> I see you use them in your patch 12/13, but I don't think that really is
+> a sequence number there, but rather just some other odd value :)
 
-Please add the appropriate Fixes: tag.
+Note, other than this, I like the idea.  It makes it obvious what these
+atomic variables are being used for, and they can't be abused for other
+things.  Nice work.
 
-And prefer %s/Remove/Fix/ in patch title.
+thanks,
 
-With that,
-Acked-by: Suman Anna <s-anna@ti.com>
-
-regards
-Suman
-
-> Signed-off-by: Grzegorz Jaszczyk <grzegorz.jaszczyk@linaro.org>
-> ---
->  drivers/soc/ti/pruss.c | 6 ------
->  1 file changed, 6 deletions(-)
-> 
-> diff --git a/drivers/soc/ti/pruss.c b/drivers/soc/ti/pruss.c
-> index cc0b4ad7a3d3..5d6e7132a5c4 100644
-> --- a/drivers/soc/ti/pruss.c
-> +++ b/drivers/soc/ti/pruss.c
-> @@ -126,8 +126,6 @@ static int pruss_clk_init(struct pruss *pruss, struct device_node *cfg_node)
->  	int ret = 0;
->  
->  	data = of_device_get_match_data(dev);
-> -	if (IS_ERR(data))
-> -		return -ENODEV;
->  
->  	clks_np = of_get_child_by_name(cfg_node, "clocks");
->  	if (!clks_np) {
-> @@ -175,10 +173,6 @@ static int pruss_probe(struct platform_device *pdev)
->  	const char *mem_names[PRUSS_MEM_MAX] = { "dram0", "dram1", "shrdram2" };
->  
->  	data = of_device_get_match_data(&pdev->dev);
-> -	if (IS_ERR(data)) {
-> -		dev_err(dev, "missing private data\n");
-> -		return -ENODEV;
-> -	}
->  
->  	ret = dma_set_coherent_mask(dev, DMA_BIT_MASK(32));
->  	if (ret) {
-> 
-
+greg k-h
