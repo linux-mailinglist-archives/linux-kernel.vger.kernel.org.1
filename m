@@ -2,132 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A3D32AE066
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 21:04:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 80DF92AE071
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 21:05:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731574AbgKJUEo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 15:04:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56784 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726861AbgKJUEo (ORCPT
+        id S1731777AbgKJUFt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 15:05:49 -0500
+Received: from relay12.mail.gandi.net ([217.70.178.232]:44531 "EHLO
+        relay12.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731608AbgKJUFq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 15:04:44 -0500
-Received: from ZenIV.linux.org.uk (zeniv.linux.org.uk [IPv6:2002:c35c:fd02::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48BF1C0613D1;
-        Tue, 10 Nov 2020 12:04:43 -0800 (PST)
-Received: from viro by ZenIV.linux.org.uk with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kcZsB-0031DR-RH; Tue, 10 Nov 2020 20:04:11 +0000
-Date:   Tue, 10 Nov 2020 20:04:11 +0000
-From:   Al Viro <viro@zeniv.linux.org.uk>
-To:     yulei.kernel@gmail.com
-Cc:     akpm@linux-foundation.org, naoya.horiguchi@nec.com,
-        pbonzini@redhat.com, linux-fsdevel@vger.kernel.org,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        xiaoguangrong.eric@gmail.com, kernellwp@gmail.com,
-        lihaiwei.kernel@gmail.com, Yulei Zhang <yuleixzhang@tencent.com>,
-        Xiao Guangrong <gloryxiao@tencent.com>
-Subject: Re: [PATCH 01/35] fs: introduce dmemfs module
-Message-ID: <20201110200411.GU3576660@ZenIV.linux.org.uk>
-References: <cover.1602093760.git.yuleixzhang@tencent.com>
- <aa553faf9e97ee9306ecd5a67d3324a34f9ed4be.1602093760.git.yuleixzhang@tencent.com>
+        Tue, 10 Nov 2020 15:05:46 -0500
+Received: from localhost.localdomain (196.109.29.93.rev.sfr.net [93.29.109.196])
+        (Authenticated sender: paul.kocialkowski@bootlin.com)
+        by relay12.mail.gandi.net (Postfix) with ESMTPSA id 9B9F0200004;
+        Tue, 10 Nov 2020 20:05:42 +0000 (UTC)
+From:   Paul Kocialkowski <paul.kocialkowski@bootlin.com>
+To:     dri-devel@lists.freedesktop.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     Sandy Huang <hjc@rock-chips.com>,
+        =?UTF-8?q?Heiko=20St=C3=BCbner?= <heiko@sntech.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Mark Yao <markyao0591@gmail.com>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Paul Kocialkowski <paul.kocialkowski@bootlin.com>
+Subject: [PATCH] drm/rockchip: Avoid uninitialized use of endpoint id in LVDS
+Date:   Tue, 10 Nov 2020 21:04:30 +0100
+Message-Id: <20201110200430.1713467-1-paul.kocialkowski@bootlin.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <aa553faf9e97ee9306ecd5a67d3324a34f9ed4be.1602093760.git.yuleixzhang@tencent.com>
-Sender: Al Viro <viro@ftp.linux.org.uk>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 08, 2020 at 03:53:51PM +0800, yulei.kernel@gmail.com wrote:
+In the Rockchip DRM LVDS component driver, the endpoint id provided to
+drm_of_find_panel_or_bridge is grabbed from the endpoint's reg property.
 
-> +static struct inode *
-> +dmemfs_get_inode(struct super_block *sb, const struct inode *dir, umode_t mode,
-> +		 dev_t dev);
+However, the property may be missing in the case of a single endpoint.
+Initialize the endpoint_id variable to 0 to avoid using an
+uninitialized variable in that case.
 
-WTF is 'dev' for?
+Fixes: 34cc0aa25456 ("drm/rockchip: Add support for Rockchip Soc LVDS")
+Signed-off-by: Paul Kocialkowski <paul.kocialkowski@bootlin.com>
+---
+ drivers/gpu/drm/rockchip/rockchip_lvds.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> +static int
-> +dmemfs_mknod(struct inode *dir, struct dentry *dentry, umode_t mode, dev_t dev)
-> +{
-> +	struct inode *inode = dmemfs_get_inode(dir->i_sb, dir, mode, dev);
-> +	int error = -ENOSPC;
-> +
-> +	if (inode) {
-> +		d_instantiate(dentry, inode);
-> +		dget(dentry);	/* Extra count - pin the dentry in core */
-> +		error = 0;
-> +		dir->i_mtime = dir->i_ctime = current_time(inode);
-> +	}
-> +	return error;
-> +}
+diff --git a/drivers/gpu/drm/rockchip/rockchip_lvds.c b/drivers/gpu/drm/rockchip/rockchip_lvds.c
+index f292c6a6e20f..41edd0a421b2 100644
+--- a/drivers/gpu/drm/rockchip/rockchip_lvds.c
++++ b/drivers/gpu/drm/rockchip/rockchip_lvds.c
+@@ -544,7 +544,7 @@ static int rockchip_lvds_bind(struct device *dev, struct device *master,
+ 	struct device_node  *port, *endpoint;
+ 	int ret = 0, child_count = 0;
+ 	const char *name;
+-	u32 endpoint_id;
++	u32 endpoint_id = 0;
+ 
+ 	lvds->drm_dev = drm_dev;
+ 	port = of_graph_get_port_by_id(dev->of_node, 1);
+-- 
+2.28.0
 
-... same here, seeing that you only call that thing from the next two functions
-and you do *not* provide ->mknod() as a method (unsurprisingly - what would
-device nodes do there?)
-
-> +static int dmemfs_create(struct inode *dir, struct dentry *dentry,
-> +			 umode_t mode, bool excl)
-> +{
-> +	return dmemfs_mknod(dir, dentry, mode | S_IFREG, 0);
-> +}
-> +
-> +static int dmemfs_mkdir(struct inode *dir, struct dentry *dentry,
-> +			umode_t mode)
-> +{
-> +	int retval = dmemfs_mknod(dir, dentry, mode | S_IFDIR, 0);
-> +
-> +	if (!retval)
-> +		inc_nlink(dir);
-> +	return retval;
-> +}
-
-> +int dmemfs_file_mmap(struct file *file, struct vm_area_struct *vma)
-> +{
-> +	return 0;
-> +}
-> +
-> +static const struct file_operations dmemfs_file_operations = {
-> +	.mmap = dmemfs_file_mmap,
-> +};
-
-Er...  Is that a placeholder for later in the series?  Because as it is,
-it makes no sense whatsoever - "it can be mmapped, but any access to the
-mapped area will segfault".
-
-> +struct inode *dmemfs_get_inode(struct super_block *sb,
-> +			       const struct inode *dir, umode_t mode, dev_t dev)
-> +{
-> +	struct inode *inode = new_inode(sb);
-> +
-> +	if (inode) {
-> +		inode->i_ino = get_next_ino();
-> +		inode_init_owner(inode, dir, mode);
-> +		inode->i_mapping->a_ops = &empty_aops;
-> +		mapping_set_gfp_mask(inode->i_mapping, GFP_HIGHUSER);
-> +		mapping_set_unevictable(inode->i_mapping);
-> +		inode->i_atime = inode->i_mtime = inode->i_ctime = current_time(inode);
-> +		switch (mode & S_IFMT) {
-> +		default:
-> +			init_special_inode(inode, mode, dev);
-> +			break;
-> +		case S_IFREG:
-> +			inode->i_op = &dmemfs_file_inode_operations;
-> +			inode->i_fop = &dmemfs_file_operations;
-> +			break;
-> +		case S_IFDIR:
-> +			inode->i_op = &dmemfs_dir_inode_operations;
-> +			inode->i_fop = &simple_dir_operations;
-> +
-> +			/*
-> +			 * directory inodes start off with i_nlink == 2
-> +			 * (for "." entry)
-> +			 */
-> +			inc_nlink(inode);
-> +			break;
-> +		case S_IFLNK:
-> +			inode->i_op = &page_symlink_inode_operations;
-> +			break;
-
-Where would symlinks come from?  Or anything other than regular files and
-directories, for that matter...
