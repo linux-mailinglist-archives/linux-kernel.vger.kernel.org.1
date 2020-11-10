@@ -2,76 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6CEB2AD1DB
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 09:53:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A83D42AD1DC
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 09:53:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728305AbgKJIxY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 03:53:24 -0500
-Received: from m42-4.mailgun.net ([69.72.42.4]:40706 "EHLO m42-4.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726462AbgKJIxW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 03:53:22 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1604998402; h=Content-Transfer-Encoding: Content-Type:
- MIME-Version: Message-ID: In-Reply-To: Date: References: Subject: Cc:
- To: From: Sender; bh=HqmvUu7PFG5dpHnRXtX9zBQ5lc3G1AT+/blm4ih6cto=; b=BlN3sfNrRqt1rQ/Hc2thBMLq5FCTcjxcPL/IdVXxyYGgyOkZjo209WkgoyR+XFhDFgxCZce5
- MG4ZWw96NyxlYLrn/oi6vRYCg8K9r7AgyeTxhU/e7JEwCgip69bJ7cHt8HDdtLnw3k4l8B/b
- 7zYggaiFLhnWPoxWzHkAIy3kItA=
-X-Mailgun-Sending-Ip: 69.72.42.4
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n02.prod.us-west-2.postgun.com with SMTP id
- 5faa54fd18b2aa4b1ff025d1 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 10 Nov 2020 08:53:17
- GMT
-Sender: kvalo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 14F61C433FE; Tue, 10 Nov 2020 08:53:17 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
-        autolearn=no autolearn_force=no version=3.4.0
-Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id C5B3FC433C8;
-        Tue, 10 Nov 2020 08:53:14 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org C5B3FC433C8
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
-From:   Kalle Valo <kvalo@codeaurora.org>
-To:     Yejune Deng <yejune.deng@gmail.com>
-Cc:     pizza@shaftnet.org, davem@davemloft.net, kuba@kernel.org,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] Replace a set of atomic_add()
-References: <1604991491-27908-1-git-send-email-yejune.deng@gmail.com>
-        <87mtzpeieb.fsf@codeaurora.org>
-        <CABWKuGXdCffiDYqr_TZpkfkMoKRdCMUZ=fDUqkoU=658miQ3AQ@mail.gmail.com>
-Date:   Tue, 10 Nov 2020 10:53:12 +0200
-In-Reply-To: <CABWKuGXdCffiDYqr_TZpkfkMoKRdCMUZ=fDUqkoU=658miQ3AQ@mail.gmail.com>
-        (Yejune Deng's message of "Tue, 10 Nov 2020 16:44:05 +0800")
-Message-ID: <877dqtegp3.fsf@codeaurora.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/24.5 (gnu/linux)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+        id S1729024AbgKJIxj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 03:53:39 -0500
+Received: from mail-m1271.qiye.163.com ([115.236.127.1]:20913 "EHLO
+        mail-m1271.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727483AbgKJIxj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Nov 2020 03:53:39 -0500
+Received: from vivo-HP-ProDesk-680-G4-PCI-MT.vivo.xyz (unknown [58.251.74.231])
+        by mail-m1271.qiye.163.com (Hmail) with ESMTPA id 974C2582141;
+        Tue, 10 Nov 2020 16:53:36 +0800 (CST)
+From:   Wang Qing <wangqing@vivo.com>
+To:     Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Jordan Niethe <jniethe5@gmail.com>,
+        Alistair Popple <alistair@popple.id.au>,
+        Wang Qing <wangqing@vivo.com>,
+        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Subject: [PATCH V3] sched/rt, powerpc: Prepare for PREEMPT_RT
+Date:   Tue, 10 Nov 2020 16:53:30 +0800
+Message-Id: <1604998411-16116-1-git-send-email-wangqing@vivo.com>
+X-Mailer: git-send-email 2.7.4
+X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
+        oVCBIfWUFZHkIYShlOHR1NSU1JVkpNS09CQkNPSkxKQ09VEwETFhoSFyQUDg9ZV1kWGg8SFR0UWU
+        FZT0tIVUpKS0hKQ1VLWQY+
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6OCo6LBw5Lz8dKxAaHD85PxxL
+        LCIwFD1VSlVKTUtPQkJDT0pMTUtDVTMWGhIXVQwaFRwKEhUcOw0SDRRVGBQWRVlXWRILWUFZTkNV
+        SU5KVUxPVUlISllXWQgBWUFJTEhMNwY+
+X-HM-Tid: 0a75b15c4aa298b6kuuu974c2582141
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Yejune Deng <yejune.deng@gmail.com> writes:
+PREEMPT_RT is a separate preemption model, CONFIG_PREEMPT will
+ be disabled when CONFIG_PREEMPT_RT is enabled,  so we need
+to add CONFIG_PREEMPT_RT output to __die().
 
-> Oh=EF=BC=8CI was forgetting. thanks.=20
+Signed-off-by: Wang Qing <wangqing@vivo.com>
 
-And you should also disable HTML in your emails :) See the wiki link
-below for more.
+Changes in v3:
+ - Fix typo issue.
 
---=20
-https://patchwork.kernel.org/project/linux-wireless/list/
+Changes in v2:
+ - Modify as Christophe suggested.
+---
+ arch/powerpc/kernel/traps.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatc=
-hes
+diff --git a/arch/powerpc/kernel/traps.c b/arch/powerpc/kernel/traps.c
+index 5006dcb..dec7b81
+--- a/arch/powerpc/kernel/traps.c
++++ b/arch/powerpc/kernel/traps.c
+@@ -262,10 +262,11 @@ static int __die(const char *str, struct pt_regs *regs, long err)
+ {
+ 	printk("Oops: %s, sig: %ld [#%d]\n", str, err, ++die_counter);
+ 
+-	printk("%s PAGE_SIZE=%luK%s%s%s%s%s%s %s\n",
++	printk("%s PAGE_SIZE=%luK%s%s%s%s%s%s%s %s\n",
+ 	       IS_ENABLED(CONFIG_CPU_LITTLE_ENDIAN) ? "LE" : "BE",
+ 	       PAGE_SIZE / 1024, get_mmu_str(),
+ 	       IS_ENABLED(CONFIG_PREEMPT) ? " PREEMPT" : "",
++	       IS_ENABLED(CONFIG_PREEMPT_RT) ? " PREEMPT_RT" : "",
+ 	       IS_ENABLED(CONFIG_SMP) ? " SMP" : "",
+ 	       IS_ENABLED(CONFIG_SMP) ? (" NR_CPUS=" __stringify(NR_CPUS)) : "",
+ 	       debug_pagealloc_enabled() ? " DEBUG_PAGEALLOC" : "",
+-- 
+2.7.4
+
