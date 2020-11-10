@@ -2,122 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F51F2ADED6
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 19:55:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 371282ADED8
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 19:55:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731224AbgKJSzJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 13:55:09 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44666 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730468AbgKJSzJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 13:55:09 -0500
-Received: from quaco.ghostprotocols.net (unknown [179.97.37.151])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 25A27206F1;
-        Tue, 10 Nov 2020 18:55:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605034508;
-        bh=jGMJQVhOYYbu7V3KA7lkuZA03vlDOae9KFulBxXATsE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=pyeasDgMpFMhwi4L4dxPrzhjp+0Yom/pzkyA7ZyoXSWyRGQIWX/ldDCQFi2fHVXBI
-         XyDjKj/7sETDCEAbCDVhD/lOkHtfgcHj+H19C0YE5UlY5DiT3zT7Y+vAZOoEI1AM7f
-         5INt1AT7gAK2y5iWgwTcIPhBasJ3/FByhoMnisUM=
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 20B8D411D1; Tue, 10 Nov 2020 15:55:06 -0300 (-03)
-Date:   Tue, 10 Nov 2020 15:55:06 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Jiri Olsa <jolsa@redhat.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Jiri Olsa <jolsa@kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Michael Petlan <mpetlan@redhat.com>,
-        Song Liu <songliubraving@fb.com>,
-        Ian Rogers <irogers@google.com>,
-        Stephane Eranian <eranian@google.com>,
-        Alexey Budankov <alexey.budankov@linux.intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Adrian Hunter <adrian.hunter@intel.com>
-Subject: Re: [PATCH 03/24] perf: Add build id data in mmap2 event
-Message-ID: <20201110185506.GB26034@kernel.org>
-References: <20201109215415.400153-1-jolsa@kernel.org>
- <20201109215415.400153-4-jolsa@kernel.org>
- <20201110082851.GV2594@hirez.programming.kicks-ass.net>
- <20201110101041.GC387652@krava>
- <20201110182334.GG387652@krava>
+        id S1731443AbgKJSzU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 13:55:20 -0500
+Received: from mail-io1-f70.google.com ([209.85.166.70]:53734 "EHLO
+        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730382AbgKJSzT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Nov 2020 13:55:19 -0500
+Received: by mail-io1-f70.google.com with SMTP id c17so9109697iom.20
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 10:55:18 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=UBBVE26iMIwjToKruwBtc4rwDCIqTbom0jdq+SEqTcQ=;
+        b=XMIBSBnPQq3jNIbFsmwPvCz2uV4hyj7ZciDKtidzvZJGfwhGvCD5iZebT7/1Z739SH
+         LSVKuu+mKNF/FCqPUPH+a7+IRxmluCnKzs+e0MkxRs7BCAbRWOm2ERGyNrSHC1D/PNGM
+         wQpvnsQ6lP1/SOjgrcQckyNuvYmubIquAXYu6vuPqrNH3FCoBXnwDoJp4yUtEo1S+O9W
+         b3FFitjLFAYlU5n6+nfUJDfpctlQmtTLQ3RN94tp0e13EYUIpOlkg/KuSIYIK+PnonBY
+         aSdstAe/JFQ1LGITWqoOykmJa4f5RFYlhtajIdOQhP/Aht8rlQXgExBPFVHdNmGMNfmr
+         HIEQ==
+X-Gm-Message-State: AOAM533TqRjFldQ7ZUZoXgXmT17DwCZWU13AVe1yVnVSYxxukNSTUpAb
+        clBCUBOXskII2l4TK2tDj2akNiX2q5VoHkqswwLsBxGQoGk4
+X-Google-Smtp-Source: ABdhPJx2yvRathBvneil1m9OlLm3IiET5QFJeZrZz196892H5xm1bMGH/MwY7oueVpKu8iIjoWIAv5qByTCTXftdXAL+MrzLRyYt
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201110182334.GG387652@krava>
-X-Url:  http://acmel.wordpress.com
+X-Received: by 2002:a02:6948:: with SMTP id e69mr16775986jac.6.1605034518502;
+ Tue, 10 Nov 2020 10:55:18 -0800 (PST)
+Date:   Tue, 10 Nov 2020 10:55:18 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000053e36405b3c538fc@google.com>
+Subject: KASAN: null-ptr-deref Write in start_transaction
+From:   syzbot <syzbot+6700bca07dff187809c4@syzkaller.appspotmail.com>
+To:     clm@fb.com, dsterba@suse.com, josef@toxicpanda.com,
+        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        mingo@kernel.org, mingo@redhat.com, peterz@infradead.org,
+        rostedt@goodmis.org, syzkaller-bugs@googlegroups.com,
+        will@kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Tue, Nov 10, 2020 at 07:23:34PM +0100, Jiri Olsa escreveu:
-> On Tue, Nov 10, 2020 at 11:10:46AM +0100, Jiri Olsa wrote:
-> > On Tue, Nov 10, 2020 at 09:28:51AM +0100, Peter Zijlstra wrote:
-> > > On Mon, Nov 09, 2020 at 10:53:54PM +0100, Jiri Olsa wrote:
-> > > > There's new misc bit for mmap2 to signal there's build
-> > > > id data in it:
-> > > > 
-> > > >   #define PERF_RECORD_MISC_BUILD_ID              (1 << 14)
-> > > 
-> > > PERF_RECORD_MISC_MMAP_BUILD_ID would be consistent with the existing
-> > > PERF_RECORD_MISC_MMAP_DATA naming.
+Hello,
 
-Agreed.
+syzbot found the following issue on:
 
-> > ok
- 
-> > > 
-> > > Also, AFAICT there's still a bunch of unused bits in misc.
-> > > 
-> > > 	012	    CDEF
-> > > 	|||---------||||
-> > > 
-> > > Where:
-> > > 	0-2	CPUMODE_MASK
-> > > 
-> > > 	C	PROC_MAP_PARSE_TIMEOUT
-> > > 	D	MMAP_DATA / COMM_EXEC / FORK_EXEC / SWITCH_OUT
-> > > 	E	EXACT_IP / SCHED_OUT_PREEMPT
-> > > 	F	(reserved)
-> > > 
-> > > Maybe we should put in a comment to keep track of the hole ?
-> > 
-> > ook
-> 
-> how about the change below.. I also switch the build_id with the size,
-> but I kept the build_id size 20, because I think there's bigger chance
-> we will use those reserved bytes for something, than that we will need
-> those extra 3 bytes in build_id array
-> 
->   struct {
->           u8              build_id_size;
->           u8              __reserved_1;
->           u16             __reserved_2;
->           u8              build_id[20];
->   };
+HEAD commit:    521b619a Merge tag 'linux-kselftest-kunit-fixes-5.10-rc3' ..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=173b8fb6500000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=61033507391c77ff
+dashboard link: https://syzkaller.appspot.com/bug?extid=6700bca07dff187809c4
+compiler:       gcc (GCC) 10.1.0-syz 20200507
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14a07ab2500000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=10fe69c6500000
 
-For "maybe we'll use it for something else" doesn't require that it gets
-before build_id, i.e. to use it for something else it can be as above or
+The issue was bisected to:
 
-   struct {
-           u8              build_id_size;
-           u8              build_id[20];
-           u8              __reserved_1;
-           u16             __reserved_2;
-   };
+commit 4d004099a668c41522242aa146a38cc4eb59cb1e
+Author: Peter Zijlstra <peterz@infradead.org>
+Date:   Fri Oct 2 09:04:21 2020 +0000
 
-that groups build_id size with it, but nah, this is getting funny by
-now.
+    lockdep: Fix lockdep recursion
 
-My suggestion was not about increasing build_id to 23, just to leave the
-unused (reserved) bytes after it.
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=100c0532500000
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=120c0532500000
+console output: https://syzkaller.appspot.com/x/log.txt?x=140c0532500000
 
-- Arnaldo
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+6700bca07dff187809c4@syzkaller.appspotmail.com
+Fixes: 4d004099a668 ("lockdep: Fix lockdep recursion")
+
+==================================================================
+BUG: KASAN: null-ptr-deref in instrument_atomic_read_write include/linux/instrumented.h:101 [inline]
+BUG: KASAN: null-ptr-deref in atomic_fetch_add_relaxed include/asm-generic/atomic-instrumented.h:142 [inline]
+BUG: KASAN: null-ptr-deref in __refcount_add include/linux/refcount.h:193 [inline]
+BUG: KASAN: null-ptr-deref in __refcount_inc include/linux/refcount.h:250 [inline]
+BUG: KASAN: null-ptr-deref in refcount_inc include/linux/refcount.h:267 [inline]
+BUG: KASAN: null-ptr-deref in start_transaction+0x158/0x1170 fs/btrfs/transaction.c:541
+Write of size 4 at addr 000000000000003a by task syz-executor154/8513
+
+CPU: 1 PID: 8513 Comm: syz-executor154 Not tainted 5.10.0-rc2-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:118
+ __kasan_report mm/kasan/report.c:549 [inline]
+ kasan_report.cold+0x5/0x37 mm/kasan/report.c:562
+ check_memory_region_inline mm/kasan/generic.c:186 [inline]
+ check_memory_region+0x13d/0x180 mm/kasan/generic.c:192
+ instrument_atomic_read_write include/linux/instrumented.h:101 [inline]
+ atomic_fetch_add_relaxed include/asm-generic/atomic-instrumented.h:142 [inline]
+ __refcount_add include/linux/refcount.h:193 [inline]
+ __refcount_inc include/linux/refcount.h:250 [inline]
+ refcount_inc include/linux/refcount.h:267 [inline]
+ start_transaction+0x158/0x1170 fs/btrfs/transaction.c:541
+ flush_space+0x1c0/0xf60 fs/btrfs/space-info.c:685
+ priority_reclaim_metadata_space fs/btrfs/space-info.c:1154 [inline]
+ handle_reserve_ticket fs/btrfs/space-info.c:1238 [inline]
+ __reserve_bytes+0xd2c/0x1480 fs/btrfs/space-info.c:1403
+ btrfs_reserve_metadata_bytes+0x75/0x260 fs/btrfs/space-info.c:1429
+ btrfs_delalloc_reserve_metadata+0x261/0xb90 fs/btrfs/delalloc-space.c:332
+ btrfs_buffered_write.isra.0+0x445/0xf10 fs/btrfs/file.c:1703
+ __btrfs_direct_write fs/btrfs/file.c:1874 [inline]
+ btrfs_file_write_iter+0xda6/0x16d0 fs/btrfs/file.c:2046
+ call_write_iter include/linux/fs.h:1887 [inline]
+ do_iter_readv_writev+0x46f/0x740 fs/read_write.c:740
+ do_iter_write+0x188/0x670 fs/read_write.c:866
+ vfs_writev+0x1aa/0x2e0 fs/read_write.c:939
+ do_pwritev fs/read_write.c:1036 [inline]
+ __do_sys_pwritev fs/read_write.c:1083 [inline]
+ __se_sys_pwritev fs/read_write.c:1078 [inline]
+ __x64_sys_pwritev+0x231/0x310 fs/read_write.c:1078
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x44d959
+Code: 7d cb fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 4b cb fb ff c3 66 2e 0f 1f 84 00 00 00 00
+RSP: 002b:00007f78b0d8bce8 EFLAGS: 00000246 ORIG_RAX: 0000000000000128
+RAX: ffffffffffffffda RBX: 00000000006e1c28 RCX: 000000000044d959
+RDX: 0000000000000001 RSI: 00000000200014c0 RDI: 0000000000000003
+RBP: 00000000006e1c20 R08: 0000000000000020 R09: 0000000000000000
+R10: 0000000000000002 R11: 0000000000000246 R12: 00000000006e1c2c
+R13: 00007ffefe638f4f R14: 00007f78b0d8c9c0 R15: 20c49ba5e353f7cf
+==================================================================
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
