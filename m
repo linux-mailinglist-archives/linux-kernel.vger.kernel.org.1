@@ -2,54 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C0E492ACF91
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 07:21:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C4D552ACF94
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 07:23:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730172AbgKJGVj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 01:21:39 -0500
-Received: from mx2.suse.de ([195.135.220.15]:50496 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726307AbgKJGVj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 01:21:39 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 8EE0BABCC;
-        Tue, 10 Nov 2020 06:21:38 +0000 (UTC)
-Date:   Tue, 10 Nov 2020 07:21:34 +0100
-From:   Oscar Salvador <osalvador@suse.de>
-To:     n-horiguchi@ah.jp.nec.com
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        akpm@linux-foundation.org
-Subject: Re: [PATCH v5 0/4] HWpoison: further fixes and cleanups
-Message-ID: <20201110062134.GA3741@localhost.localdomain>
-References: <20201013144447.6706-1-osalvador@suse.de>
+        id S1730249AbgKJGXG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 01:23:06 -0500
+Received: from smtp2207-205.mail.aliyun.com ([121.197.207.205]:34524 "EHLO
+        smtp2207-205.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726006AbgKJGXG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Nov 2020 01:23:06 -0500
+X-Alimail-AntiSpam: AC=CONTINUE;BC=0.7373277|0.8969188;CH=green;DM=|SPAM|false|;DS=CONTINUE|ham_system_inform|0.0234519-0.000501654-0.976046;FP=9760415410618500791|1|1|17|0|-1|-1|-1;HT=ay29a033018047208;MF=frank@allwinnertech.com;NM=1;PH=DS;RN=8;RT=8;SR=0;TI=SMTPD_---.Iuo2IDa_1604989377;
+Received: from allwinnertech.com(mailfrom:frank@allwinnertech.com fp:SMTPD_---.Iuo2IDa_1604989377)
+          by smtp.aliyun-inc.com(10.147.42.198);
+          Tue, 10 Nov 2020 14:23:01 +0800
+From:   Frank Lee <frank@allwinnertech.com>
+To:     tiny.windzz@gmail.com
+Cc:     linux-gpio@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, Yangtao Li <frank@allwinnertech.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Maxime Ripard <mripard@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>
+Subject: [RESEND PATCH 01/19] pinctrl: sunxi: fix irq bank map for the Allwinner A100 pin controller
+Date:   Tue, 10 Nov 2020 14:22:55 +0800
+Message-Id: <9db51667bf9065be55beafd56e5c319e3bbe8310.1604988979.git.frank@allwinnertech.com>
+X-Mailer: git-send-email 2.28.0
+In-Reply-To: <cover.1604988979.git.frank@allwinnertech.com>
+References: <cover.1604988979.git.frank@allwinnertech.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201013144447.6706-1-osalvador@suse.de>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 13, 2020 at 04:44:43PM +0200, Oscar Salvador wrote:
-> This patchset includes some more fixes and a cleanup.
-> 
-> Patch#2 and patch#3 are both fixes for taking a HWpoison page off a buddy
-> freelist, since having them there has proved to be bad (see [1] and
-> pathch#2's commit log).
-> Patch#3 does the same for hugetlb pages.
-> 
-> [1] https://lkml.org/lkml/2020/9/22/565
+From: Yangtao Li <frank@allwinnertech.com>
 
-Hi Andrew, I think this slipped through the cracks.
-(Probably because I did not CC you, my bad)
+A100's pin starts with PB, so it should start with 1.
 
-Could you please consider taking this series? It has been already acked
-by Naoya.
+Fixes: 473436e7647d6 ("pinctrl: sunxi: add support for the Allwinner A100 pin controller")
+Signed-off-by: Yangtao Li <frank@allwinnertech.com>
+---
+ drivers/pinctrl/sunxi/pinctrl-sun50i-a100.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Thanks
-
-
+diff --git a/drivers/pinctrl/sunxi/pinctrl-sun50i-a100.c b/drivers/pinctrl/sunxi/pinctrl-sun50i-a100.c
+index 19cfd1e76ee2..e69f6da40dc0 100644
+--- a/drivers/pinctrl/sunxi/pinctrl-sun50i-a100.c
++++ b/drivers/pinctrl/sunxi/pinctrl-sun50i-a100.c
+@@ -677,7 +677,7 @@ static const struct sunxi_desc_pin a100_pins[] = {
+ 		  SUNXI_FUNCTION_IRQ_BANK(0x6, 6, 19)),
+ };
+ 
+-static const unsigned int a100_irq_bank_map[] = { 0, 1, 2, 3, 4, 5, 6};
++static const unsigned int a100_irq_bank_map[] = { 1, 2, 3, 4, 5, 6, 7};
+ 
+ static const struct sunxi_pinctrl_desc a100_pinctrl_data = {
+ 	.pins = a100_pins,
 -- 
-Oscar Salvador
-SUSE L3
+2.28.0
+
