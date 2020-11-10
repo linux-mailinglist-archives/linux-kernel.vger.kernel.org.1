@@ -2,151 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B68302AD885
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 15:19:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 10C212AD889
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 15:19:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731004AbgKJOTN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 09:19:13 -0500
-Received: from nat-hk.nvidia.com ([203.18.50.4]:3819 "EHLO nat-hk.nvidia.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730070AbgKJOTM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 09:19:12 -0500
-Received: from HKMAIL103.nvidia.com (Not Verified[10.18.92.100]) by nat-hk.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5faaa15e0000>; Tue, 10 Nov 2020 22:19:10 +0800
-Received: from HKMAIL103.nvidia.com (10.18.16.12) by HKMAIL103.nvidia.com
- (10.18.16.12) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 10 Nov
- 2020 14:19:09 +0000
-Received: from NAM04-BN3-obe.outbound.protection.outlook.com (104.47.46.57) by
- HKMAIL103.nvidia.com (10.18.16.12) with Microsoft SMTP Server (TLS) id
- 15.0.1473.3 via Frontend Transport; Tue, 10 Nov 2020 14:19:09 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=hWcsI0YFJtTgaz6My2DD1yOWPMb2UV4HRe5f8yWyK/KJZOCDLY9e9Y/u8ZBRzXXcxIsf7gpEnwS/+barDXiG8HHM9RUXEwYpYh6z7eLGXs3ygu3KuJWg5fUrh6ud1+PHHrPjNWrNcf4zfGK6ScZe0ck98YMKPJUWLcvEWfDO4WS03jmQmQmUtrsvY3i/gDwuMh6BxnN7mg+az1lU8rOPSGh8LaMekh9DefaLJvys8NooggoTsg44j0wDMNuITCpdZNx3ynyXypsrpPqTcIQGECRoIZvfpe+9GAzW229JgajRV4vIjzv54WlxiK1nnErjUmBuu0likgd1NRamMsImAA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=EuC9e2e4SYCsCPrdGYOup6bsNVeR1tqITIEOBMGl+KU=;
- b=MKb0JFcsFdpkJ7kJtE4BUSfwDXVW2KY+SETLJw27/EJyYcl5cTD3gAgwV+yx5YqiFaAhCcrmpNnvucagU/571ftyT/tn2fZBp0FOBjE5M9SHs74mSYuCQ//y1mPzLfyGlraPn2pyhgmqFoClaPri7VO98HYd+ItTP9J6xz0/68kWmnG9RteQjsq+82/O5cZGJniPiYgoIomZpxXVYN4bFIQAVHuJL4CQDn5T4juKIAyvuy0sEIaHa+oTC/uHcUTfsUOSmfaOKGJrl0jX5BOPNNjULCGWNaaQuUsAmwB7M5+BsgFyFnaugfT2o3qhbHeTyWYB31LqjyZx023VF6NqJQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM6PR12MB4402.namprd12.prod.outlook.com (2603:10b6:5:2a5::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3541.21; Tue, 10 Nov
- 2020 14:19:02 +0000
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::cdbe:f274:ad65:9a78]) by DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::cdbe:f274:ad65:9a78%7]) with mapi id 15.20.3499.032; Tue, 10 Nov 2020
- 14:19:02 +0000
-Date:   Tue, 10 Nov 2020 10:19:00 -0400
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     "Raj, Ashok" <ashok.raj@intel.com>
-CC:     Thomas Gleixner <tglx@linutronix.de>,
-        Dan Williams <dan.j.williams@intel.com>,
-        "Tian, Kevin" <kevin.tian@intel.com>,
-        "Jiang, Dave" <dave.jiang@intel.com>,
-        Bjorn Helgaas <helgaas@kernel.org>,
-        "vkoul@kernel.org" <vkoul@kernel.org>,
-        "Dey, Megha" <megha.dey@intel.com>,
-        "maz@kernel.org" <maz@kernel.org>,
-        "bhelgaas@google.com" <bhelgaas@google.com>,
-        "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
-        "Pan, Jacob jun" <jacob.jun.pan@intel.com>,
-        "Liu, Yi L" <yi.l.liu@intel.com>, "Lu, Baolu" <baolu.lu@intel.com>,
-        "Kumar, Sanjay K" <sanjay.k.kumar@intel.com>,
-        "Luck, Tony" <tony.luck@intel.com>,
-        "kwankhede@nvidia.com" <kwankhede@nvidia.com>,
-        "eric.auger@redhat.com" <eric.auger@redhat.com>,
-        "parav@mellanox.com" <parav@mellanox.com>,
-        "rafael@kernel.org" <rafael@kernel.org>,
-        "netanelg@mellanox.com" <netanelg@mellanox.com>,
-        "shahafs@mellanox.com" <shahafs@mellanox.com>,
-        "yan.y.zhao@linux.intel.com" <yan.y.zhao@linux.intel.com>,
-        "pbonzini@redhat.com" <pbonzini@redhat.com>,
-        "Ortiz, Samuel" <samuel.ortiz@intel.com>,
-        "Hossain, Mona" <mona.hossain@intel.com>,
-        "dmaengine@vger.kernel.org" <dmaengine@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>
-Subject: Re: [PATCH v4 06/17] PCI: add SIOV and IMS capability detection
-Message-ID: <20201110141900.GO2620339@nvidia.com>
-References: <20201106164850.GA85879@otc-nc-03>
- <20201106175131.GW2620339@nvidia.com>
- <CAPcyv4iYHA1acfo=+fTk+U_TrLbSWJjA6v4oeTXgVYDTrnCoGw@mail.gmail.com>
- <20201107001207.GA2620339@nvidia.com>
- <87pn4nk7nn.fsf@nanos.tec.linutronix.de>
- <20201108235852.GC32074@araj-mobl1.jf.intel.com>
- <874klykc7h.fsf@nanos.tec.linutronix.de>
- <20201109173034.GG2620339@nvidia.com>
- <87pn4mi23u.fsf@nanos.tec.linutronix.de> <20201110051412.GA20147@otc-nc-03>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20201110051412.GA20147@otc-nc-03>
-X-ClientProxiedBy: BL0PR02CA0098.namprd02.prod.outlook.com
- (2603:10b6:208:51::39) To DM6PR12MB3834.namprd12.prod.outlook.com
- (2603:10b6:5:14a::12)
+        id S1731905AbgKJOT2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 09:19:28 -0500
+Received: from mailgw01.mediatek.com ([210.61.82.183]:57323 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1730231AbgKJOT2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Nov 2020 09:19:28 -0500
+X-UUID: 17fc65534dbe4eb18943aab9882922cb-20201110
+X-UUID: 17fc65534dbe4eb18943aab9882922cb-20201110
+Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw01.mediatek.com
+        (envelope-from <frankie.chang@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 400986890; Tue, 10 Nov 2020 22:19:18 +0800
+Received: from mtkcas10.mediatek.inc (172.21.101.39) by
+ mtkmbs01n1.mediatek.inc (172.21.101.68) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Tue, 10 Nov 2020 22:19:16 +0800
+Received: from mtkswgap22.mediatek.inc (172.21.77.33) by mtkcas10.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Tue, 10 Nov 2020 22:19:17 +0800
+From:   Frankie Chang <Frankie.Chang@mediatek.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+CC:     Todd Kjos <tkjos@google.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Martijn Coenen <maco@android.com>,
+        =?UTF-8?q?Arve=20Hj=C3=B8nnev=C3=A5g?= <arve@android.com>,
+        Christian Brauner <christian@brauner.io>,
+        <linux-kernel@vger.kernel.org>, <wsd_upstream@mediatek.com>,
+        Jian-Min Liu <Jian-Min.Liu@mediatek.com>
+Subject: [PATCH v12] binder: add transaction latency tracer
+Date:   Tue, 10 Nov 2020 22:19:12 +0800
+Message-ID: <1605017955-18027-1-git-send-email-Frankie.Chang@mediatek.com>
+X-Mailer: git-send-email 1.7.9.5
+In-Reply-To: <1604995521.14886.9.camel@mtkswgap22>
+References: <1604995521.14886.9.camel@mtkswgap22>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (156.34.48.30) by BL0PR02CA0098.namprd02.prod.outlook.com (2603:10b6:208:51::39) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3541.21 via Frontend Transport; Tue, 10 Nov 2020 14:19:02 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1kcUU8-002Qnu-Td; Tue, 10 Nov 2020 10:19:00 -0400
-X-LD-Processed: 43083d15-7273-40c1-b7db-39efd9ccc17a,ExtAddr
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1605017950; bh=EuC9e2e4SYCsCPrdGYOup6bsNVeR1tqITIEOBMGl+KU=;
-        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
-         From:To:CC:Subject:Message-ID:References:Content-Type:
-         Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
-         X-MS-Exchange-MessageSentRepresentingType:X-LD-Processed;
-        b=SxDagDE0Unw/qz1cnDO1zMo0f4i3z1qe7entKgzoKNYBQlMwhFwo49w0SrnP7LUfJ
-         xu3hXlSX8Qu1KX46W9aBRp1gQmO8wBLWsOuCd4bSnbEPGgjU+t8pIeUGUMs8OIyVpt
-         xhvwwwwPHTmsDGkyI8GwmKtEyJHL/9z8IzA89vRLDdzzqVjjwGqHBAyUzmVjPiTyYO
-         ApkN17Q3dODZqClS8vwd8pqZ9HPFU7tHpd/mAzs4TWNLeJcFsguo/gIG0tLsrKIRVf
-         0cz+GZF04PVY2dd1lJLav/xB/yT0pxCXn3bbDlgT1fJtnQDC8iWN4ZQs8xq+VUT+dE
-         gv5AHHWwXhRJg==
+Content-Type: text/plain
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 09, 2020 at 09:14:12PM -0800, Raj, Ashok wrote:
+Change from v12:
+  - rebase.
 
-> There are multiple tools (such as logic analyzers) and OEM test validation 
-> harnesses that depend on such DWORD sized DMA writes with no PASID as interrupt
-> messages. One of the feedback we had received in the development of the
-> specification was to avoid impacting such tools irrespective of
-> MSI-X or IMS
+Change from v11:
+  - rebase.
 
-This is a really bad reason to make a poor decision for system
-security. Relying on trapping/emulation increases the attack surface
-and complexity of the VMM and the device which now have to create this
-artificial split, which does not exist in SRIOV.
+Change from v10:
+  - replace timespec64 with ktime_t.
+  - fix build warning.
 
-Hopefully we won't see devices get this wrong, but any path that
-allows the guest to cause the device to create TLPs outside its IOMMU
-containment is security worrysome.
+Change from v9:
+  - rename timestamp to ts in binder_internal.h for conciseness.
+  - change timeval to timespec64 in binder_internal.h
 
-> was used for interrupt message storage (on the wire they follow the
-> same format), and also to ensure interoperability of devices
-> supporting IMS across CPU vendors (who may not support PASID TLP
-> prefix).  This is one reason that led to interrupts from IMS to not
-> use PASID (and match the wire format of MSI/MSI-X generated
-> interrupts).  The other problem was disambiguation between DMA to
-> SVM v/s interrupts.
+Change from v8:
+  - change rtc_time_to_tm to rtc_time64_to_tm.
+  - change timeval to __kernel_old_timeval due to 
+    https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=c766d1472c70d25ad475cf56042af1652e792b23
+  - export tracepoint symbol for binder_txn_latency_* which binder_transaction_latency_tracer to be ko needed.
 
-This is a defect in the IOMMU, not something fundamental.
+Change from v7:
+  - Use the passed-in values instead of accessing via t->from/to_proc/to_thread
+    for trace_binder_txn_latency_free, when trace_binder_txn_latency_free_enable() return true.
+  - make a helper function to do the above.
 
-The IOMMU needs to know if the interrupt range is active or not for
-each PASID. Process based SVA will, of course, not enable interrupts
-on the PASID, VM Guest based PASID will.
+Change from v6:
+  - change CONFIG_BINDER_TRANSACTION_LATENCY_TRACKING type from bool to tristate
+  - add comments to @timestamp and @tv under struct binder_transaction
+  - make binder_txn_latency threshold configurable
+  - enhance lock protection
 
-> Intel had published the specification almost 2 years back and have
-> comprehended all the feedback received from the ecosystem 
-> (both open-source and others), along with offering the specification 
-> to be implemented by any vendors (both device and CPU vendors). 
-> There are few device vendors who are implementing to the spec already and 
-> are being explored for support by other CPU vendors
+Change from v5:
+  - change config name to the proper one, CONFIG_BINDER_TRANSACTION_LATENCY_TRACKING.
+  - change tracepoint name to more descriptive one, trace_binder_txn_latency_(alloc|info|free)
+  - enhance some lock protection.
 
-Which is why it is such a shame that including PASID in the MSI was
-deliberately skipped in the document, the ecosystem could have been
-much aligned to this solution by now :(
+Change from v4:
+  - split up into patch series.
 
-Jason
+Change from v3:
+  - use tracepoints for binder_update_info and print_binder_transaction_ext,
+    instead of custom registration functions.
+
+Change from v2:
+  - create transaction latency module to monitor slow transaction.
+
+Change from v1:
+  - first patchset.
+
+
+Frankie.Chang (3):
+  binder: move structs from core file to header file
+  binder: add trace at free transaction.
+  binder: add transaction latency tracer
+
+ drivers/android/Kconfig                 |   8 +
+ drivers/android/Makefile                |   1 +
+ drivers/android/binder.c                | 430 ++----------------------
+ drivers/android/binder_internal.h       | 419 +++++++++++++++++++++++
+ drivers/android/binder_latency_tracer.c | 107 ++++++
+ drivers/android/binder_trace.h          |  49 +++
+ 6 files changed, 608 insertions(+), 406 deletions(-)
+ create mode 100644 drivers/android/binder_latency_tracer.c
