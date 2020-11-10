@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F4F12AD97D
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 15:57:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A1BB12AD967
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 15:56:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731365AbgKJO5T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 09:57:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36680 "EHLO
+        id S1732435AbgKJO43 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 09:56:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36688 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731407AbgKJO4N (ORCPT
+        with ESMTP id S1731550AbgKJO4O (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 09:56:13 -0500
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F8A0C0613D6
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 06:56:13 -0800 (PST)
-Received: by mail-wr1-x444.google.com with SMTP id d12so11453069wrr.13
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 06:56:13 -0800 (PST)
+        Tue, 10 Nov 2020 09:56:14 -0500
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 453ABC061A04
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 06:56:14 -0800 (PST)
+Received: by mail-wm1-x342.google.com with SMTP id 23so2175634wmg.1
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 06:56:14 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=eF5Pv7mEAlXI6C/QGTuoDj1KVDl964SOsKyolgiMmMk=;
-        b=R382tRCdKYLuKQ4UXulN/H8a1Txbho9ExpbMDez21VAC4M5uQFRuZXoX1+krIYaXxk
-         HELbNG4ZeAoGXPUrKQCkRRchnp0i1xyvoSULHQFBcZ5aXUeNd3pD52dFDdbwoJpd4yy+
-         9fiizLd9qckSVqS162yfWwYc9GNDDUd/ZwpgNrjNskSy4Ki1TuEoBFK7XvyiU0kyNzCt
-         3R1qbxEVZAAAQibnTfmB1VDpJVvw8gQEOhl1LeV8sfQfMZmWfGvab+sKEX85Seg1bgjz
-         c4JTM4qUOuh3dfruDRIFwtR72puP6hYcc5LblTdYUdLqfcc+kMV3m4x7IOtt9HxWAz7a
-         B1yA==
+        bh=IQh6Jo5zoHL7/3I5hGMlwjltjV3kz9H+4fZOBa3eDu8=;
+        b=dHlBKlolnhqDQUiW04dQgyoqrmqH4sPOBeDpM+s/gEPkY9Fd552NUSYcptJJCPHOk7
+         ak6DPDgZ5pgdVJQ/LlxjCMqrETWDnz1Y7QPIM/e/6v1f06k3U9v/uRj+QnuruoU8yik6
+         PE22kni59Wt8ooHuvyLlSYaG2BA1AzVYuV/k9Msd3cXyFcO36UvvKC2iJ93qmhYZqJ8c
+         u/d3Hzxfa9QaHfJENsmfkiN5nWIPx8HU88R5Adok4gUIHTbKghxsZyS2DjR8iotznRqN
+         iXawjQznG4Enn1JEOuPZnXvZiPQeqfJvKZYeFkGdYYOfFiSgCy0b7A9tV7fkCBnfwsgV
+         WUTw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=eF5Pv7mEAlXI6C/QGTuoDj1KVDl964SOsKyolgiMmMk=;
-        b=dMKtRpsvtl1hMtXNW2Iazo7ex6TN/2ZfQSGgQlYxsF7hEPQaSlexw4Qlr5rad9NtmX
-         HRghqpyYRU+PwhHtPcT9hgREoQGiBYfx+jIYiGpF4pRfJ6CcclHWUWdCLfxa6hpGkDyz
-         sAp3Sazikg2Z3xKD5D1bY6jxFcsJSvSB9y851TkMD/Zu4S+Vhm9ce8YMxESLp0Aa05w7
-         Bf8D56Awaye6qX7x6pBF3RxyPsMZf1K1C3XyaWQtXURn4TVIb1diHjtPcW4pWxB/I+bz
-         RI+RHHG9O+GyAotVhedk2vdb0jGp3BkMncBXJwwMOCdDVJOPkqbIGTJGdxNcCcD2s3tF
-         6tfQ==
-X-Gm-Message-State: AOAM5338ZZyxCyV5bhANTmpwkjwwqDJO1xWVpyxfIYH933pWSNU4enAA
-        HnEoAFD4Aj/HkW7YhI6KIH3qpA==
-X-Google-Smtp-Source: ABdhPJyCX8uazOJ1aPD5pIfj+zL0aWd17z9E8p/d8V0En7L1q/zCkJICSvvuR/sPd1Gwwve9r0/EXA==
-X-Received: by 2002:adf:e54f:: with SMTP id z15mr23960872wrm.159.1605020171956;
-        Tue, 10 Nov 2020 06:56:11 -0800 (PST)
+        bh=IQh6Jo5zoHL7/3I5hGMlwjltjV3kz9H+4fZOBa3eDu8=;
+        b=OTpUblq3hCXWDR0/NIPjMrDs3wT1upan+FOXqQIblr//bv5xiS8jsYRsDyNMkb9WM1
+         MbyacA1DWp7mozM/9XPA0A/d+csy2Jv/zHFu4CEvL5J+BxxOUFUE2aNHoeeklg3tE/UH
+         vYojJWvyU7kZnya3YZ7Fhsity05vMsTOaastJTYa5ndoRy4ry2StGAowMj94InMlpbvL
+         LfPWA6lnul8sIqBkUoheWu6Esn1B85+uT7LSlyEVLMnpq5581QLRsVwnV+EqGHiQBqfK
+         L+yPix6v2eMmRVNMpR8TB82dT2GoQ6K4e6bQ9r2Zvjjr7Xn8XZoOYCy5RwINHt/vFWOt
+         562A==
+X-Gm-Message-State: AOAM533T8/0LDDE6LhUSEF4rmJeYivIMJeZ0FbA0tyaggKHXVFbb95zE
+        5+BFVC10H/tyz1Vgh4pNrKtxCQ==
+X-Google-Smtp-Source: ABdhPJzHAt9kZO/l5er2IvaDzk5nsY8wRTuZO4a5c5akLJXdSs7Q4ajjgdyStZuZs6jxse0ZVMn6lg==
+X-Received: by 2002:a1c:9e12:: with SMTP id h18mr42650wme.11.1605020173067;
+        Tue, 10 Nov 2020 06:56:13 -0800 (PST)
 Received: from debian-brgl.home (amarseille-656-1-4-167.w90-8.abo.wanadoo.fr. [90.8.158.167])
-        by smtp.gmail.com with ESMTPSA id f17sm3261827wmf.41.2020.11.10.06.56.10
+        by smtp.gmail.com with ESMTPSA id f17sm3261827wmf.41.2020.11.10.06.56.12
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 10 Nov 2020 06:56:11 -0800 (PST)
+        Tue, 10 Nov 2020 06:56:12 -0800 (PST)
 From:   Bartosz Golaszewski <brgl@bgdev.pl>
 To:     Linus Walleij <linus.walleij@linaro.org>,
         Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
@@ -55,9 +55,9 @@ To:     Linus Walleij <linus.walleij@linaro.org>,
         David Laight <David.Laight@aculab.com>
 Cc:     linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
         Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Subject: [PATCH v4 6/7] gpio: exar: switch to using regmap
-Date:   Tue, 10 Nov 2020 15:55:51 +0100
-Message-Id: <20201110145552.23024-7-brgl@bgdev.pl>
+Subject: [PATCH v4 7/7] gpio: exar: use devm action for freeing the IDA and drop remove()
+Date:   Tue, 10 Nov 2020 15:55:52 +0100
+Message-Id: <20201110145552.23024-8-brgl@bgdev.pl>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201110145552.23024-1-brgl@bgdev.pl>
 References: <20201110145552.23024-1-brgl@bgdev.pl>
@@ -69,207 +69,74 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 
-We can simplify the code in gpio-exar by using regmap. This allows us to
-drop the mutex (regmap provides its own locking) and we can also reuse
-regmap's bit operations instead of implementing our own update function.
+We can simplify the error path in probe() and drop remove() entirely if
+we provide a devm action for freeing the device ID.
 
 Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 ---
- drivers/gpio/Kconfig     |  1 +
- drivers/gpio/gpio-exar.c | 91 ++++++++++++++++------------------------
- 2 files changed, 38 insertions(+), 54 deletions(-)
+ drivers/gpio/gpio-exar.c | 27 ++++++++++++---------------
+ 1 file changed, 12 insertions(+), 15 deletions(-)
 
-diff --git a/drivers/gpio/Kconfig b/drivers/gpio/Kconfig
-index 5d4de5cd6759..253a61ec9645 100644
---- a/drivers/gpio/Kconfig
-+++ b/drivers/gpio/Kconfig
-@@ -255,6 +255,7 @@ config GPIO_EP93XX
- config GPIO_EXAR
- 	tristate "Support for GPIO pins on XR17V352/354/358"
- 	depends on SERIAL_8250_EXAR
-+	select REGMAP_MMIO
- 	help
- 	  Selecting this option will enable handling of GPIO pins present
- 	  on Exar XR17V352/354/358 chips.
 diff --git a/drivers/gpio/gpio-exar.c b/drivers/gpio/gpio-exar.c
-index 28b0b4b5fa35..2fdca872c7c0 100644
+index 2fdca872c7c0..d37de78247a6 100644
 --- a/drivers/gpio/gpio-exar.c
 +++ b/drivers/gpio/gpio-exar.c
-@@ -14,6 +14,7 @@
- #include <linux/module.h>
- #include <linux/pci.h>
- #include <linux/platform_device.h>
-+#include <linux/regmap.h>
- 
- #define EXAR_OFFSET_MPIOLVL_LO 0x90
- #define EXAR_OFFSET_MPIOSEL_LO 0x93
-@@ -26,9 +27,8 @@ static DEFINE_IDA(ida_index);
- 
- struct exar_gpio_chip {
- 	struct gpio_chip gpio_chip;
--	struct mutex lock;
-+	struct regmap *regmap;
- 	int index;
--	void __iomem *regs;
- 	char name[20];
- 	unsigned int first_pin;
- };
-@@ -53,51 +53,13 @@ exar_offset_to_bit(struct exar_gpio_chip *exar_gpio, unsigned int offset)
- 	return (offset + exar_gpio->first_pin) % 8;
- }
- 
--static void exar_update(struct gpio_chip *chip, unsigned int reg, int val,
--			unsigned int offset)
--{
--	struct exar_gpio_chip *exar_gpio = gpiochip_get_data(chip);
--	int temp;
--
--	mutex_lock(&exar_gpio->lock);
--	temp = readb(exar_gpio->regs + reg);
--	temp &= ~BIT(offset);
--	if (val)
--		temp |= BIT(offset);
--	writeb(temp, exar_gpio->regs + reg);
--	mutex_unlock(&exar_gpio->lock);
--}
--
--static int exar_set_direction(struct gpio_chip *chip, int direction,
--			      unsigned int offset)
--{
--	struct exar_gpio_chip *exar_gpio = gpiochip_get_data(chip);
--	unsigned int addr = exar_offset_to_sel_addr(exar_gpio, offset);
--	unsigned int bit = exar_offset_to_bit(exar_gpio, offset);
--
--	exar_update(chip, addr, direction, bit);
--	return 0;
--}
--
--static int exar_get(struct gpio_chip *chip, unsigned int reg)
--{
--	struct exar_gpio_chip *exar_gpio = gpiochip_get_data(chip);
--	int value;
--
--	mutex_lock(&exar_gpio->lock);
--	value = readb(exar_gpio->regs + reg);
--	mutex_unlock(&exar_gpio->lock);
--
--	return value;
--}
--
- static int exar_get_direction(struct gpio_chip *chip, unsigned int offset)
- {
- 	struct exar_gpio_chip *exar_gpio = gpiochip_get_data(chip);
- 	unsigned int addr = exar_offset_to_sel_addr(exar_gpio, offset);
- 	unsigned int bit = exar_offset_to_bit(exar_gpio, offset);
- 
--	if (exar_get(chip, addr) & BIT(bit))
-+	if (regmap_test_bits(exar_gpio->regmap, addr, BIT(bit)))
- 		return GPIO_LINE_DIRECTION_IN;
- 
- 	return GPIO_LINE_DIRECTION_OUT;
-@@ -109,7 +71,7 @@ static int exar_get_value(struct gpio_chip *chip, unsigned int offset)
- 	unsigned int addr = exar_offset_to_lvl_addr(exar_gpio, offset);
- 	unsigned int bit = exar_offset_to_bit(exar_gpio, offset);
- 
--	return !!(exar_get(chip, addr) & BIT(bit));
-+	return !!(regmap_test_bits(exar_gpio->regmap, addr, BIT(bit)));
- }
- 
- static void exar_set_value(struct gpio_chip *chip, unsigned int offset,
-@@ -119,21 +81,42 @@ static void exar_set_value(struct gpio_chip *chip, unsigned int offset,
- 	unsigned int addr = exar_offset_to_lvl_addr(exar_gpio, offset);
- 	unsigned int bit = exar_offset_to_bit(exar_gpio, offset);
- 
--	exar_update(chip, addr, value, bit);
-+	if (value)
-+		regmap_set_bits(exar_gpio->regmap, addr, BIT(bit));
-+	else
-+		regmap_clear_bits(exar_gpio->regmap, addr, BIT(bit));
- }
- 
- static int exar_direction_output(struct gpio_chip *chip, unsigned int offset,
- 				 int value)
- {
-+	struct exar_gpio_chip *exar_gpio = gpiochip_get_data(chip);
-+	unsigned int addr = exar_offset_to_sel_addr(exar_gpio, offset);
-+	unsigned int bit = exar_offset_to_bit(exar_gpio, offset);
-+
- 	exar_set_value(chip, offset, value);
--	return exar_set_direction(chip, 0, offset);
-+	regmap_clear_bits(exar_gpio->regmap, addr, BIT(bit));
-+
-+	return 0;
- }
- 
- static int exar_direction_input(struct gpio_chip *chip, unsigned int offset)
- {
--	return exar_set_direction(chip, 1, offset);
-+	struct exar_gpio_chip *exar_gpio = gpiochip_get_data(chip);
-+	unsigned int addr = exar_offset_to_sel_addr(exar_gpio, offset);
-+	unsigned int bit = exar_offset_to_bit(exar_gpio, offset);
-+
-+	regmap_set_bits(exar_gpio->regmap, addr, BIT(bit));
-+
-+	return 0;
- }
- 
-+static const struct regmap_config exar_regmap_config = {
-+	.name		= "exar-gpio",
-+	.reg_bits	= 16,
-+	.val_bits	= 8,
-+};
-+
- static int gpio_exar_probe(struct platform_device *pdev)
- {
- 	struct device *dev = &pdev->dev;
-@@ -163,13 +146,17 @@ static int gpio_exar_probe(struct platform_device *pdev)
- 	if (!exar_gpio)
- 		return -ENOMEM;
- 
--	mutex_init(&exar_gpio->lock);
-+	/*
-+	 * We don't need to check the return values of mmio regmap operations (unless
-+	 * the regmap has a clock attached which is not the case here).
-+	 */
-+	exar_gpio->regmap = devm_regmap_init_mmio(dev, p, &exar_regmap_config);
-+	if (IS_ERR(exar_gpio->regmap))
-+		return PTR_ERR(exar_gpio->regmap);
- 
- 	index = ida_alloc(&ida_index, GFP_KERNEL);
--	if (index < 0) {
--		ret = index;
--		goto err_mutex_destroy;
--	}
-+	if (index < 0)
-+		return index;
- 
- 	sprintf(exar_gpio->name, "exar_gpio%d", index);
- 	exar_gpio->gpio_chip.label = exar_gpio->name;
-@@ -181,7 +168,6 @@ static int gpio_exar_probe(struct platform_device *pdev)
- 	exar_gpio->gpio_chip.set = exar_set_value;
- 	exar_gpio->gpio_chip.base = -1;
- 	exar_gpio->gpio_chip.ngpio = ngpios;
--	exar_gpio->regs = p;
- 	exar_gpio->index = index;
- 	exar_gpio->first_pin = first_pin;
- 
-@@ -195,8 +181,6 @@ static int gpio_exar_probe(struct platform_device *pdev)
- 
- err_destroy:
- 	ida_free(&ida_index, index);
--err_mutex_destroy:
--	mutex_destroy(&exar_gpio->lock);
- 	return ret;
- }
- 
-@@ -205,7 +189,6 @@ static int gpio_exar_remove(struct platform_device *pdev)
- 	struct exar_gpio_chip *exar_gpio = platform_get_drvdata(pdev);
- 
- 	ida_free(&ida_index, exar_gpio->index);
--	mutex_destroy(&exar_gpio->lock);
- 
+@@ -111,6 +111,13 @@ static int exar_direction_input(struct gpio_chip *chip, unsigned int offset)
  	return 0;
  }
+ 
++static void exar_devm_ida_free(void *data)
++{
++	struct exar_gpio_chip *exar_gpio = data;
++
++	ida_free(&ida_index, exar_gpio->index);
++}
++
+ static const struct regmap_config exar_regmap_config = {
+ 	.name		= "exar-gpio",
+ 	.reg_bits	= 16,
+@@ -158,6 +165,10 @@ static int gpio_exar_probe(struct platform_device *pdev)
+ 	if (index < 0)
+ 		return index;
+ 
++	ret = devm_add_action_or_reset(dev, exar_devm_ida_free, exar_gpio);
++	if (ret)
++		return ret;
++
+ 	sprintf(exar_gpio->name, "exar_gpio%d", index);
+ 	exar_gpio->gpio_chip.label = exar_gpio->name;
+ 	exar_gpio->gpio_chip.parent = dev;
+@@ -173,29 +184,15 @@ static int gpio_exar_probe(struct platform_device *pdev)
+ 
+ 	ret = devm_gpiochip_add_data(dev, &exar_gpio->gpio_chip, exar_gpio);
+ 	if (ret)
+-		goto err_destroy;
++		return ret;
+ 
+ 	platform_set_drvdata(pdev, exar_gpio);
+ 
+-	return 0;
+-
+-err_destroy:
+-	ida_free(&ida_index, index);
+-	return ret;
+-}
+-
+-static int gpio_exar_remove(struct platform_device *pdev)
+-{
+-	struct exar_gpio_chip *exar_gpio = platform_get_drvdata(pdev);
+-
+-	ida_free(&ida_index, exar_gpio->index);
+-
+ 	return 0;
+ }
+ 
+ static struct platform_driver gpio_exar_driver = {
+ 	.probe	= gpio_exar_probe,
+-	.remove	= gpio_exar_remove,
+ 	.driver	= {
+ 		.name = DRIVER_NAME,
+ 	},
 -- 
 2.29.1
 
