@@ -2,67 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A0522AE471
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 00:54:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AF5062AE478
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 00:55:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732329AbgKJXyj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 18:54:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36260 "EHLO
+        id S1732119AbgKJXzn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 18:55:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36426 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731558AbgKJXyi (ORCPT
+        with ESMTP id S1726737AbgKJXzn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 18:54:38 -0500
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81219C0613D1;
-        Tue, 10 Nov 2020 15:54:38 -0800 (PST)
-Received: by mail-wr1-x444.google.com with SMTP id s8so375407wrw.10;
-        Tue, 10 Nov 2020 15:54:38 -0800 (PST)
+        Tue, 10 Nov 2020 18:55:43 -0500
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78AACC0613D1
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 15:55:41 -0800 (PST)
+Received: by mail-wm1-x344.google.com with SMTP id 10so183264wml.2
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 15:55:41 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc:content-transfer-encoding;
-        bh=AZu6XPMSl4sNdMFeam8YLAmi7IJLk3RLAZr9T6pEy+0=;
-        b=fUSzbPNd0tO2Gzm4vcTZ8zt25ZmGES+U0kOlXwbx/9kA1KVO/LjWnENIz/ypmwx3Pl
-         prJI63oEHo4t9W6CoudckPSLmn/3+IyQthZQmRsdgT69fB9TEc1yNCn1SJuNMmvb8YHD
-         v/o5cBKfcBOYy+2mqNdvpAOEEzilnHqNcwwJGiRGVRXEpe7QCb25u2wDMCrG96gCmc+D
-         jeD+LANz5mnVAFnaAaAzzdWVDsg00Q/KQIyxhNxGXNKpZD8f7+QWHJiDe8aB9iYaqjg2
-         xI15m1dfVgjGlMnk0LNH3f3gKhGwFBkelDLUxWrSjmF9VaeobkcHMvYBcvkChccOUWd5
-         7LxA==
+        bh=z+yBfCX2B+4qYUf6B+N0IjqaPLgV4glZlJWvIH+aH9I=;
+        b=KTc2bfl5TBP7EGxgz0EAjsl4fik58VwFRmPpwzHLVpUXjPM/2lgnsJhlM5Nir2djh0
+         ReI8TnLWoKplYnSTbn1N64UljnY87U+L7jtuLkOFi7JJZxte0fH0PwyeynEywzyD0l+H
+         nol1qshwMHhP57/g/xBx5CKykOlc+kXNPr/O3HwuVgApKno7dgNS9bP4QKexSEiqqpin
+         eL7uWRpsjNHcXfQDRrpkseRchJSa+6EGb2ZQ5urGw7RixA47JoTZn8Xfl8sAbWlkAkJt
+         8WoseXh2v3IbsMsT9VlGZhxTeskyulLQCTXZDJune9Lvi+3sd5H9xn1qQbCSuV37iuK7
+         vccw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc:content-transfer-encoding;
-        bh=AZu6XPMSl4sNdMFeam8YLAmi7IJLk3RLAZr9T6pEy+0=;
-        b=Eeyf0hLnpIfLwfjisVH7kMYlGXg2xUAyZ+D50sjlDNSAGT+YjkLBy+BIPzqhs1Lxej
-         VkbiVSJ0Q0VRf3eZRGFQlxTKQpN63FvEX3rOtqbnoDhUgOJzKIGp/GUcUh8IDUTFDUxE
-         /5L6W0aqFtx6MNpjYWp8A0kjbST8vlMUH8gOy5QKupoBOxkKhZ/ZkPPZ/cB0LTiOldH3
-         2In8HHh67yWUDMTDA6EM4sUkM/kJvaghk5L4wqvblWF768BwpY2pI5klbznKGTcW2Zeo
-         hD4NKgJiX29w2sjPxGMkioSJsjV9EILUhvT/hSl+uFlghSmJRuktiRLgG2CgTVaqegM8
-         X62Q==
-X-Gm-Message-State: AOAM531XY8aRjbAsz/Qto+tpvAtYXarOi3pUT2Lih358PitorcC/L0qh
-        /qAlOO9WORWAFmqZYcNIj77db7Wi/R9Wd4vA6JI=
-X-Google-Smtp-Source: ABdhPJzP9e5pjH5sCd486bVfOquouBS2v0wH/GmC2ZsacUkp/PcNOrTUbD6snndk/K3H9t7uWbLLbIQPc0ik2RzapKM=
-X-Received: by 2002:adf:e8d0:: with SMTP id k16mr26295254wrn.362.1605052477294;
- Tue, 10 Nov 2020 15:54:37 -0800 (PST)
+        bh=z+yBfCX2B+4qYUf6B+N0IjqaPLgV4glZlJWvIH+aH9I=;
+        b=Hx6wPIxekP6Zij/jPvreufHOqSNVS/8OOd+YbaclDN1eZ1gS+07qEjczVLmenPEBHE
+         KC3BDQdUPtmqGxUNyKVsHLTFTDejO+Cs5hg06jaD2NFX/KMU1XPF4QR9/U0b+FZQsblo
+         5xMziYx1S/4aU1vnJdlXGep4lO02hE9bejowou3R4wTjpi6hyE4TcnR4hVITD4QUsabU
+         C3LPbXCa3F9EGjpyPpEScMlRdiEpgVmse9s3vyFUshos05pN81hp3LSCjT9LissKsDLR
+         jYjnYXSpz4mqdw611uJ38y+0Q7Db1AmbNxcQb3G7FGPhRSJwMtuKcIy7tA1Ba3GZg24i
+         PM6g==
+X-Gm-Message-State: AOAM530sc9BudNx+V1d4rqtuFWGieSy9IeIGz9nI9ajsEiUZq9eigKmC
+        6wFdVJF5kF2pMv9N7SrGrb7Cwv9a8i+jjBQTGYg=
+X-Google-Smtp-Source: ABdhPJzSYbuwJzedvCR1N8X8dNerQyyEPYEPZSTmw4sa+VZ+ms2v3palwlBgV1bk1M3Hj56fe2JbEmkmelE6NwTn9iQ=
+X-Received: by 2002:a1c:46c6:: with SMTP id t189mr612690wma.79.1605052540270;
+ Tue, 10 Nov 2020 15:55:40 -0800 (PST)
 MIME-Version: 1.0
-References: <20201110193112.988999-1-lee.jones@linaro.org> <20201110193112.988999-17-lee.jones@linaro.org>
-In-Reply-To: <20201110193112.988999-17-lee.jones@linaro.org>
+References: <20201110193112.988999-1-lee.jones@linaro.org> <20201110193112.988999-18-lee.jones@linaro.org>
+In-Reply-To: <20201110193112.988999-18-lee.jones@linaro.org>
 From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Tue, 10 Nov 2020 18:54:25 -0500
-Message-ID: <CADnq5_NACtb19H26ruPKOJ2ZBv3WT+o5LQnMtreWp1qsx-w3Fw@mail.gmail.com>
-Subject: Re: [PATCH 16/30] drm/radeon/r100: Fix some kernel-doc formatting,
- misnaming and missing issues
+Date:   Tue, 10 Nov 2020 18:55:28 -0500
+Message-ID: <CADnq5_P29dMM7sbiDY-b0U+nyHppBXduVTY4O2OCG3r=zyEsmw@mail.gmail.com>
+Subject: Re: [PATCH 17/30] drm/radeon/r600_cs: Fix some doc-rot and supply
+ missing function param docs
 To:     Lee Jones <lee.jones@linaro.org>
 Cc:     David Airlie <airlied@linux.ie>,
         LKML <linux-kernel@vger.kernel.org>,
         amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
-        <linaro-mm-sig@lists.linaro.org>,
         Maling list - DRI developers 
         <dri-devel@lists.freedesktop.org>,
         Alex Deucher <alexander.deucher@amd.com>,
-        linux-media <linux-media@vger.kernel.org>
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
@@ -73,73 +70,88 @@ On Tue, Nov 10, 2020 at 2:31 PM Lee Jones <lee.jones@linaro.org> wrote:
 >
 > Fixes the following W=3D1 kernel build warning(s):
 >
->  drivers/gpu/drm/radeon/r100.c:163: warning: Function parameter or member=
- 'async' not described in 'r100_page_flip'
->  drivers/gpu/drm/radeon/r100.c:848: warning: Function parameter or member=
- 'rdev' not described in 'r100_ring_hdp_flush'
->  drivers/gpu/drm/radeon/r100.c:848: warning: Function parameter or member=
- 'ring' not described in 'r100_ring_hdp_flush'
->  drivers/gpu/drm/radeon/r100.c:1425: warning: Function parameter or membe=
-r 'p' not described in 'r100_cs_packet_parse_vline'
->  drivers/gpu/drm/radeon/r100.c:1425: warning: Excess function parameter '=
-parser' description in 'r100_cs_packet_parse_vline'
+>  drivers/gpu/drm/radeon/r600_cs.c:793: warning: Function parameter or mem=
+ber 'p' not described in 'r600_cs_packet_parse_vline'
+>  drivers/gpu/drm/radeon/r600_cs.c:793: warning: Excess function parameter=
+ 'parser' description in 'r600_cs_packet_parse_vline'
+>  drivers/gpu/drm/radeon/r600_cs.c:826: warning: Function parameter or mem=
+ber 'p' not described in 'r600_cs_common_vline_parse'
+>  drivers/gpu/drm/radeon/r600_cs.c:826: warning: Excess function parameter=
+ 'parser' description in 'r600_cs_common_vline_parse'
+>  drivers/gpu/drm/radeon/r600_cs.c:968: warning: Function parameter or mem=
+ber 'p' not described in 'r600_cs_check_reg'
+>  drivers/gpu/drm/radeon/r600_cs.c:968: warning: Excess function parameter=
+ 'parser' description in 'r600_cs_check_reg'
+>  drivers/gpu/drm/radeon/r600_cs.c:1473: warning: Function parameter or me=
+mber 'base_offset' not described in 'r600_check_texture_resource'
+>  drivers/gpu/drm/radeon/r600_cs.c:1473: warning: Function parameter or me=
+mber 'mip_offset' not described in 'r600_check_texture_resource'
+>  drivers/gpu/drm/radeon/r600_cs.c:1473: warning: Function parameter or me=
+mber 'tiling_flags' not described in 'r600_check_texture_resource'
 >
 > Cc: Alex Deucher <alexander.deucher@amd.com>
 > Cc: "Christian K=C3=B6nig" <christian.koenig@amd.com>
 > Cc: David Airlie <airlied@linux.ie>
 > Cc: Daniel Vetter <daniel@ffwll.ch>
-> Cc: Sumit Semwal <sumit.semwal@linaro.org>
 > Cc: amd-gfx@lists.freedesktop.org
 > Cc: dri-devel@lists.freedesktop.org
-> Cc: linux-media@vger.kernel.org
-> Cc: linaro-mm-sig@lists.linaro.org
 > Signed-off-by: Lee Jones <lee.jones@linaro.org>
 
-Applied with minor fixup. Thanks!
+Applied.  Thanks!
 
 Alex
 
 > ---
->  drivers/gpu/drm/radeon/r100.c | 7 ++++---
->  1 file changed, 4 insertions(+), 3 deletions(-)
+>  drivers/gpu/drm/radeon/r600_cs.c | 9 ++++++---
+>  1 file changed, 6 insertions(+), 3 deletions(-)
 >
-> diff --git a/drivers/gpu/drm/radeon/r100.c b/drivers/gpu/drm/radeon/r100.=
-c
-> index 24c8db673931a..92075dedf2cb2 100644
-> --- a/drivers/gpu/drm/radeon/r100.c
-> +++ b/drivers/gpu/drm/radeon/r100.c
-> @@ -153,6 +153,7 @@ void r100_wait_for_vblank(struct radeon_device *rdev,=
- int crtc)
->   * @rdev: radeon_device pointer
->   * @crtc_id: crtc to cleanup pageflip on
->   * @crtc_base: new address of the crtc (GPU MC address)
-> + * @async: unused
->   *
->   * Does the actual pageflip (r1xx-r4xx).
->   * During vblank we take the crtc lock and wait for the update_pending
-> @@ -841,8 +842,8 @@ u32 r100_get_vblank_counter(struct radeon_device *rde=
-v, int crtc)
+> diff --git a/drivers/gpu/drm/radeon/r600_cs.c b/drivers/gpu/drm/radeon/r6=
+00_cs.c
+> index 390a9621604ae..f20b619466816 100644
+> --- a/drivers/gpu/drm/radeon/r600_cs.c
+> +++ b/drivers/gpu/drm/radeon/r600_cs.c
+> @@ -782,7 +782,7 @@ static int r600_cs_track_check(struct radeon_cs_parse=
+r *p)
 >
 >  /**
->   * r100_ring_hdp_flush - flush Host Data Path via the ring buffer
-> - * rdev: radeon device structure
-> - * ring: ring buffer struct for emitting packets
-> + * @rdev: radeon device structure
-> + * @ring: ring buffer struct for emitting packets
->   */
->  static void r100_ring_hdp_flush(struct radeon_device *rdev, struct radeo=
-n_ring *ring)
->  {
-> @@ -1409,7 +1410,7 @@ int r100_cs_parse_packet0(struct radeon_cs_parser *=
-p,
->
->  /**
->   * r100_cs_packet_next_vline() - parse userspace VLINE packet
+>   * r600_cs_packet_parse_vline() - parse userspace VLINE packet
 > - * @parser:            parser structure holding parsing context.
 > + * @p:         parser structure holding parsing context.
 >   *
->   * Userspace sends a special sequence for VLINE waits.
->   * PACKET0 - VLINE_START_END + value
+>   * This is an R600-specific function for parsing VLINE packets.
+>   * Real work is done by r600_cs_common_vline_parse function.
+> @@ -801,7 +801,7 @@ static int r600_cs_packet_parse_vline(struct radeon_c=
+s_parser *p)
+>
+>  /**
+>   * r600_cs_common_vline_parse() - common vline parser
+> - * @parser:            parser structure holding parsing context.
+> + * @p:                 parser structure holding parsing context.
+>   * @vline_start_end:    table of vline_start_end registers
+>   * @vline_status:       table of vline_status registers
+>   *
+> @@ -956,7 +956,7 @@ static int r600_cs_parse_packet0(struct radeon_cs_par=
+ser *p,
+>
+>  /**
+>   * r600_cs_check_reg() - check if register is authorized or not
+> - * @parser: parser structure holding parsing context
+> + * @p: parser structure holding parsing context
+>   * @reg: register we are testing
+>   * @idx: index into the cs buffer
+>   *
+> @@ -1460,6 +1460,9 @@ static void r600_texture_size(unsigned nfaces, unsi=
+gned blevel, unsigned llevel,
+>   * @idx: index into the cs buffer
+>   * @texture: texture's bo structure
+>   * @mipmap: mipmap's bo structure
+> + * @base_offset: base offset (used for error checking)
+> + * @mip_offset: mip offset (used for error checking)
+> + * @tiling_flags: tiling flags
+>   *
+>   * This function will check that the resource has valid field and that
+>   * the texture and mipmap bo object are big enough to cover this resourc=
+e.
 > --
 > 2.25.1
 >
