@@ -2,350 +2,420 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E2012AE0A5
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 21:27:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 51B862AE0A7
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 21:29:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730788AbgKJU1x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 15:27:53 -0500
-Received: from mail-wr1-f68.google.com ([209.85.221.68]:42047 "EHLO
-        mail-wr1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725862AbgKJU1x (ORCPT
+        id S1731638AbgKJU3v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 15:29:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60672 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727851AbgKJU3u (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 15:27:53 -0500
-Received: by mail-wr1-f68.google.com with SMTP id l1so9743770wrb.9
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 12:27:50 -0800 (PST)
+        Tue, 10 Nov 2020 15:29:50 -0500
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E23C0C0613D1;
+        Tue, 10 Nov 2020 12:29:49 -0800 (PST)
+Received: by mail-wr1-x441.google.com with SMTP id o15so6309612wru.6;
+        Tue, 10 Nov 2020 12:29:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=4UXj0aXdW9gXaNBBvnJpHZtjacZH9uKxyGzpJYlr7t4=;
+        b=sTcZcafRBAwE0yIsddr2dFLOortA+s27nvOdZeGKb6Eq67xLZXBrxT0nlEn6pCubIT
+         SzNoVlehdE+t5A5buZP+wZ51MmbBBsTYcnfX0qf1Ondf898N2xJ3taCXq8fx7LhJ2fs/
+         M3sYTmj00ydu559CwYbTxxHqTI+XqAPhZx+x1RxzwlqbBonBgY7TyLIEMqicUPVSwwpz
+         gc9FMPztTzMzG9EYa6oieb2JV48Xvv4bpdAbg/qRMpyn8RM9cwvIKpyxSeWjGCiAvPRg
+         jgIS7PcR6EnU3/p9gTewAs0PmS2ayPzGRvWtFRTmSOU+V++e1CapccOj3WBigIkObAhh
+         AZdg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=mpRK+zLOJHQp62DUrlIAHBuuljGkxUi0buGSEl1vNGg=;
-        b=uk1F2+zh2g0/omvh/dqg+NqdiOPI0wDjmuEJY13IxF7K33MnEpyL2GF0wmd9ovpvpf
-         9Q7angcEMGe9DTooRoW4mvWfADBNBbg4d5br3yv0ciUS2DOF9kZtOeI9V080iNq/ucw3
-         Q143p0XNxbrlgy7sSZNyYPfVAxqR6m5mq8ljipjVR8U0zd4Wq2+tSOLTeQzQivEBAQzV
-         Dm9j9csaZa4YdGF0FUEpXzjmTCMBAntitRI3y40aJoFC1HP6h3+gFPr0YkDNLI2kpGjg
-         Aj2zkznPzP4nfsgqkk6jaZ7aHCChAsegt5Ub+T8oavvJvjVVIjV8Mj33Agqq4PlTA9lT
-         Ujlw==
-X-Gm-Message-State: AOAM531nf2Vou97QMRatPmNLJoMtHGyfI40g1Fx4+D+Eolx8LwRldtQJ
-        53xkWJbZzIWtL+iULvzsib6TKbpgHVca0Ff0
-X-Google-Smtp-Source: ABdhPJyS0weq8SMX8Xmwnv2CNkT1yP9zuQacHiAzbhtBydzzmJSXzCXXSMg/IfOzNHZ8kGxf8Cysew==
-X-Received: by 2002:adf:9066:: with SMTP id h93mr27243325wrh.166.1605040069826;
-        Tue, 10 Nov 2020 12:27:49 -0800 (PST)
-Received: from msft-t490s.teknoraver.net (net-37-182-2-234.cust.vodafonedsl.it. [37.182.2.234])
-        by smtp.gmail.com with ESMTPSA id 89sm19620117wrp.58.2020.11.10.12.27.48
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=4UXj0aXdW9gXaNBBvnJpHZtjacZH9uKxyGzpJYlr7t4=;
+        b=ltInj/g5hfdtEG35sUuL2Wbr7zzl1tRRE8Dy4kN1RGaoj6eeGRiC/iM+9S4Vg6rN1O
+         4c6d5n8pz5NfDEyZFucxw5Egqqe4YcfisZpC+6ztq+RpO1wnxhztr887JAVnTQMJ1fnu
+         YODNPHNZfl1eH12HzmBMM2YpvECJ3zENTznZmQGO0fUWLOUmLfptPZYYrH4k+XEbjPO3
+         BD0GTzw+/sTqclS9V8InVcctx4A5vcgr2deuIbgi1Sz3y5q2xraSNI/iebXQOlFePcMO
+         cuVeCUNPzN3OM721ApFF3DsNKqdElK9kc/sVOTkiaeS50kAladrThf5N4y0516t9Nz0A
+         JBDg==
+X-Gm-Message-State: AOAM530HIlmVmCb6OPX4uForcLI1bc8QmFS/DDLLf+6JZQDIhNdQzIY0
+        CP+4L9t+ybPfX1SczWy7QCw=
+X-Google-Smtp-Source: ABdhPJxddKGmvX3lF2VeI+NI5a9C3RoiI7Kkqb2se1T0igyLh489t/U0Lhfpf8FMjo9WY08okPm0oQ==
+X-Received: by 2002:a5d:444c:: with SMTP id x12mr13847357wrr.6.1605040188325;
+        Tue, 10 Nov 2020 12:29:48 -0800 (PST)
+Received: from localhost ([217.111.27.204])
+        by smtp.gmail.com with ESMTPSA id v19sm4044143wmj.31.2020.11.10.12.29.47
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 10 Nov 2020 12:27:49 -0800 (PST)
-From:   Matteo Croce <mcroce@linux.microsoft.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Mike Rapoport <rppt@kernel.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Arnd Bergmann <arnd@arndb.de>, Petr Mladek <pmladek@suse.com>,
-        Pavel Tatashin <pasha.tatashin@soleen.com>,
-        Kees Cook <keescook@chromium.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Tyler Hicks <tyhicks@linux.microsoft.com>
-Subject: [PATCH v4] reboot: allow to specify reboot mode via sysfs
-Date:   Tue, 10 Nov 2020 21:27:46 +0100
-Message-Id: <20201110202746.9690-1-mcroce@linux.microsoft.com>
-X-Mailer: git-send-email 2.28.0
+        Tue, 10 Nov 2020 12:29:47 -0800 (PST)
+Date:   Tue, 10 Nov 2020 21:29:45 +0100
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Jonathan Hunter <jonathanh@nvidia.com>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Peter Chen <Peter.Chen@nxp.com>,
+        Mark Brown <broonie@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Peter Geis <pgwipeout@gmail.com>,
+        Nicolas Chauvet <kwizart@gmail.com>,
+        linux-samsung-soc@vger.kernel.org, devel@driverdev.osuosl.org,
+        linux-usb@vger.kernel.org, linux-pwm@vger.kernel.org,
+        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-media@vger.kernel.org, linux-tegra@vger.kernel.org
+Subject: Re: [PATCH v1 11/30] drm/tegra: dc: Support OPP and SoC core voltage
+ scaling
+Message-ID: <20201110202945.GF2375022@ulmo>
+References: <20201104234427.26477-1-digetx@gmail.com>
+ <20201104234427.26477-12-digetx@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="twz1s1Hj1O0rHoT0"
+Content-Disposition: inline
+In-Reply-To: <20201104234427.26477-12-digetx@gmail.com>
+User-Agent: Mutt/1.14.7 (2020-08-29)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Matteo Croce <mcroce@microsoft.com>
 
-The kernel cmdline reboot= option offers some sort of control
-on how the reboot is issued.
-Add handles in sysfs to allow setting these reboot options, so they
-can be changed when the system is booted, other than at boot time.
+--twz1s1Hj1O0rHoT0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-The handlers are under <sysfs>/kernel/reboot, can be read to
-get the current configuration and written to alter it.
+On Thu, Nov 05, 2020 at 02:44:08AM +0300, Dmitry Osipenko wrote:
+> Add OPP and SoC core voltage scaling support to the display controller
+> driver. This is required for enabling system-wide DVFS on older Tegra
+> SoCs.
+>=20
+> Tested-by: Peter Geis <pgwipeout@gmail.com>
+> Tested-by: Nicolas Chauvet <kwizart@gmail.com>
+> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+> ---
+>  drivers/gpu/drm/tegra/Kconfig |   1 +
+>  drivers/gpu/drm/tegra/dc.c    | 138 +++++++++++++++++++++++++++++++++-
+>  drivers/gpu/drm/tegra/dc.h    |   5 ++
+>  3 files changed, 143 insertions(+), 1 deletion(-)
+>=20
+> diff --git a/drivers/gpu/drm/tegra/Kconfig b/drivers/gpu/drm/tegra/Kconfig
+> index 1650a448eabd..9eec4c3fbd3b 100644
+> --- a/drivers/gpu/drm/tegra/Kconfig
+> +++ b/drivers/gpu/drm/tegra/Kconfig
+> @@ -12,6 +12,7 @@ config DRM_TEGRA
+>  	select INTERCONNECT
+>  	select IOMMU_IOVA
+>  	select CEC_CORE if CEC_NOTIFIER
+> +	select PM_OPP
+>  	help
+>  	  Choose this option if you have an NVIDIA Tegra SoC.
+> =20
+> diff --git a/drivers/gpu/drm/tegra/dc.c b/drivers/gpu/drm/tegra/dc.c
+> index fd7c8828652d..babcb66a335b 100644
+> --- a/drivers/gpu/drm/tegra/dc.c
+> +++ b/drivers/gpu/drm/tegra/dc.c
+> @@ -11,9 +11,13 @@
+>  #include <linux/interconnect.h>
+>  #include <linux/module.h>
+>  #include <linux/of_device.h>
+> +#include <linux/pm_opp.h>
+>  #include <linux/pm_runtime.h>
+> +#include <linux/regulator/consumer.h>
+>  #include <linux/reset.h>
+> =20
+> +#include <soc/tegra/common.h>
+> +#include <soc/tegra/fuse.h>
+>  #include <soc/tegra/pmc.h>
+> =20
+>  #include <drm/drm_atomic.h>
+> @@ -1699,6 +1703,55 @@ int tegra_dc_state_setup_clock(struct tegra_dc *dc,
+>  	return 0;
+>  }
+> =20
+> +static void tegra_dc_update_voltage_state(struct tegra_dc *dc,
+> +					  struct tegra_dc_state *state)
+> +{
+> +	struct dev_pm_opp *opp;
+> +	unsigned long rate;
+> +	int err, min_uV;
+> +
+> +	/* OPP usage is optional */
+> +	if (!dc->opp_table)
+> +		return;
+> +
+> +	/* calculate actual pixel clock rate which depends on internal divider =
+*/
+> +	rate =3D DIV_ROUND_UP(clk_get_rate(dc->clk) * 2, state->div + 2);
+> +
+> +	/* find suitable OPP for the rate */
+> +	opp =3D dev_pm_opp_find_freq_ceil(dc->dev, &rate);
+> +
+> +	if (opp =3D=3D ERR_PTR(-ERANGE))
+> +		opp =3D dev_pm_opp_find_freq_floor(dc->dev, &rate);
+> +
+> +	if (IS_ERR(opp)) {
+> +		dev_err(dc->dev, "failed to find OPP for %lu Hz: %ld\n",
+> +			rate, PTR_ERR(opp));
+> +		return;
+> +	}
+> +
+> +	min_uV =3D dev_pm_opp_get_voltage(opp);
+> +	dev_pm_opp_put(opp);
+> +
+> +	/*
+> +	 * Voltage scaling is optional and trying to set voltage for a dummy
+> +	 * regulator will error out.
+> +	 */
+> +	if (!device_property_present(dc->dev, "core-supply"))
+> +		return;
 
-	# cd /sys/kernel/reboot/
+This is a potentially heavy operation, so I think we should avoid that
+here. How about you use devm_regulator_get_optional() in ->probe()? That
+returns -ENODEV if no regulator was specified, in which case you can set
+dc->core_reg =3D NULL and use that as the condition here.
 
-	# grep . *
-	cpu:0
-	force:0
-	mode:cold
-	type:acpi
+> +
+> +	/*
+> +	 * Note that the minimum core voltage depends on the pixel clock
+> +	 * rate (which depends on internal clock divider of CRTC) and not on
+> +	 * the rate of the display controller clock. This is why we're not
+> +	 * using dev_pm_opp_set_rate() API and instead are managing the
+> +	 * voltage by ourselves.
+> +	 */
+> +	err =3D regulator_set_voltage(dc->core_reg, min_uV, INT_MAX);
+> +	if (err)
+> +		dev_err(dc->dev, "failed to set CORE voltage to %duV: %d\n",
+> +			min_uV, err);
+> +}
 
-	# echo 2 >cpu
-	# echo yes >force
-	# echo soft >mode
-	# echo bios >type
+Also, I'd prefer if the flow here was more linear, such as:
 
-	# grep . *
-	cpu:2
-	force:1
-	mode:soft
-	type:bios
+	if (dc->core_reg) {
+		err =3D regulator_set_voltage(...);
+		...
+	}
 
-Before setting anything, check for CAP_SYS_BOOT capability, so it's
-possible to allow an unpriviledged process to change these settings
-simply by relaxing the handles permissions, without opening them to
-the world.
+> +
+>  static void tegra_dc_commit_state(struct tegra_dc *dc,
+>  				  struct tegra_dc_state *state)
+>  {
+> @@ -1738,6 +1791,8 @@ static void tegra_dc_commit_state(struct tegra_dc *=
+dc,
+>  	if (err < 0)
+>  		dev_err(dc->dev, "failed to set clock %pC to %lu Hz: %d\n",
+>  			dc->clk, state->pclk, err);
+> +
+> +	tegra_dc_update_voltage_state(dc, state);
+>  }
+> =20
+>  static void tegra_dc_stop(struct tegra_dc *dc)
+> @@ -2521,6 +2576,7 @@ static int tegra_dc_runtime_suspend(struct host1x_c=
+lient *client)
+> =20
+>  	clk_disable_unprepare(dc->clk);
+>  	pm_runtime_put_sync(dev);
+> +	regulator_disable(dc->core_reg);
+> =20
+>  	return 0;
+>  }
+> @@ -2531,10 +2587,16 @@ static int tegra_dc_runtime_resume(struct host1x_=
+client *client)
+>  	struct device *dev =3D client->dev;
+>  	int err;
+> =20
+> +	err =3D regulator_enable(dc->core_reg);
+> +	if (err < 0) {
+> +		dev_err(dev, "failed to enable CORE regulator: %d\n", err);
+> +		return err;
+> +	}
+> +
+>  	err =3D pm_runtime_get_sync(dev);
+>  	if (err < 0) {
+>  		dev_err(dev, "failed to get runtime PM: %d\n", err);
+> -		return err;
+> +		goto disable_regulator;
+>  	}
+> =20
+>  	if (dc->soc->has_powergate) {
+> @@ -2564,6 +2626,9 @@ static int tegra_dc_runtime_resume(struct host1x_cl=
+ient *client)
+>  	clk_disable_unprepare(dc->clk);
+>  put_rpm:
+>  	pm_runtime_put_sync(dev);
+> +disable_regulator:
+> +	regulator_disable(dc->core_reg);
+> +
+>  	return err;
+>  }
+> =20
+> @@ -2879,6 +2944,72 @@ static int tegra_dc_couple(struct tegra_dc *dc)
+>  	return 0;
+>  }
+> =20
+> +static void tegra_dc_deinit_opp_table(void *data)
+> +{
+> +	struct tegra_dc *dc =3D data;
+> +
+> +	dev_pm_opp_of_remove_table(dc->dev);
+> +	dev_pm_opp_put_supported_hw(dc->opp_table);
+> +	dev_pm_opp_put_regulators(dc->opp_table);
+> +}
+> +
+> +static int devm_tegra_dc_opp_table_init(struct tegra_dc *dc)
+> +{
+> +	struct opp_table *hw_opp_table;
+> +	u32 hw_version;
+> +	int err;
+> +
+> +	/* voltage scaling is optional */
+> +	dc->core_reg =3D devm_regulator_get(dc->dev, "core");
+> +	if (IS_ERR(dc->core_reg))
+> +		return dev_err_probe(dc->dev, PTR_ERR(dc->core_reg),
+> +				     "failed to get CORE regulator\n");
+> +
+> +	/* legacy device-trees don't have OPP table */
+> +	if (!device_property_present(dc->dev, "operating-points-v2"))
+> +		return 0;
 
-Signed-off-by: Matteo Croce <mcroce@microsoft.com>
----
- Documentation/ABI/testing/sysfs-kernel-reboot |  32 +++
- kernel/reboot.c                               | 206 ++++++++++++++++++
- 2 files changed, 238 insertions(+)
- create mode 100644 Documentation/ABI/testing/sysfs-kernel-reboot
+"Legacy" is a bit confusing here. For one, no device trees currently
+have these tables and secondly, for newer SoCs we may never need them.
 
-diff --git a/Documentation/ABI/testing/sysfs-kernel-reboot b/Documentation/ABI/testing/sysfs-kernel-reboot
-new file mode 100644
-index 000000000000..837330fb2511
---- /dev/null
-+++ b/Documentation/ABI/testing/sysfs-kernel-reboot
-@@ -0,0 +1,32 @@
-+What:		/sys/kernel/reboot
-+Date:		November 2020
-+KernelVersion:	5.11
-+Contact:	Matteo Croce <mcroce@microsoft.com>
-+Description:	Interface to set the kernel reboot behavior, similarly to
-+		what can be done via the reboot= cmdline option.
-+		(see Documentation/admin-guide/kernel-parameters.txt)
-+
-+What:		/sys/kernel/reboot/mode
-+Date:		November 2020
-+KernelVersion:	5.11
-+Contact:	Matteo Croce <mcroce@microsoft.com>
-+Description:	Reboot mode. Valid values are: cold warm hard soft gpio
-+
-+What:		/sys/kernel/reboot/type
-+Date:		November 2020
-+KernelVersion:	5.11
-+Contact:	Matteo Croce <mcroce@microsoft.com>
-+Description:	Reboot type. Valid values are: bios acpi kbd triple efi pci
-+
-+What:		/sys/kernel/reboot/cpu
-+Date:		November 2020
-+KernelVersion:	5.11
-+Contact:	Matteo Croce <mcroce@microsoft.com>
-+Description:	CPU number to use to reboot.
-+
-+What:		/sys/kernel/reboot/force
-+Date:		November 2020
-+KernelVersion:	5.11
-+Contact:	Matteo Croce <mcroce@microsoft.com>
-+Description:	Don't wait for any other CPUs on reboot and
-+		avoid anything that could hang.
-diff --git a/kernel/reboot.c b/kernel/reboot.c
-index e7b78d5ae1ab..81cc0f0594c6 100644
---- a/kernel/reboot.c
-+++ b/kernel/reboot.c
-@@ -594,3 +594,209 @@ static int __init reboot_setup(char *str)
- 	return 1;
- }
- __setup("reboot=", reboot_setup);
-+
-+#ifdef CONFIG_SYSFS
-+
-+#define REBOOT_COLD_STR		"cold"
-+#define REBOOT_WARM_STR		"warm"
-+#define REBOOT_HARD_STR		"hard"
-+#define REBOOT_SOFT_STR		"soft"
-+#define REBOOT_GPIO_STR		"gpio"
-+#define REBOOT_UNDEFINED_STR	"undefined"
-+
-+#define BOOT_TRIPLE_STR		"triple"
-+#define BOOT_KBD_STR		"kbd"
-+#define BOOT_BIOS_STR		"bios"
-+#define BOOT_ACPI_STR		"acpi"
-+#define BOOT_EFI_STR		"efi"
-+#define BOOT_CF9_FORCE_STR	"cf9_force"
-+#define BOOT_CF9_SAFE_STR	"cf9_safe"
-+
-+static ssize_t mode_show(struct kobject *kobj, struct kobj_attribute *attr, char *buf)
-+{
-+	const char *val;
-+
-+	switch (reboot_mode) {
-+	case REBOOT_COLD:
-+		val = REBOOT_COLD_STR;
-+		break;
-+	case REBOOT_WARM:
-+		val = REBOOT_WARM_STR;
-+		break;
-+	case REBOOT_HARD:
-+		val = REBOOT_HARD_STR;
-+		break;
-+	case REBOOT_SOFT:
-+		val = REBOOT_SOFT_STR;
-+		break;
-+	case REBOOT_GPIO:
-+		val = REBOOT_GPIO_STR;
-+		break;
-+	default:
-+		val = REBOOT_UNDEFINED_STR;
-+	}
-+
-+	return sprintf(buf, "%s\n", val);
-+}
-+static ssize_t mode_store(struct kobject *kobj, struct kobj_attribute *attr,
-+			  const char *buf, size_t count)
-+{
-+	if (!capable(CAP_SYS_BOOT))
-+		return -EPERM;
-+
-+	if (!strncmp(buf, REBOOT_COLD_STR, strlen(REBOOT_COLD_STR)))
-+		reboot_mode = REBOOT_COLD;
-+	else if (!strncmp(buf, REBOOT_WARM_STR, strlen(REBOOT_WARM_STR)))
-+		reboot_mode = REBOOT_WARM;
-+	else if (!strncmp(buf, REBOOT_HARD_STR, strlen(REBOOT_HARD_STR)))
-+		reboot_mode = REBOOT_HARD;
-+	else if (!strncmp(buf, REBOOT_SOFT_STR, strlen(REBOOT_SOFT_STR)))
-+		reboot_mode = REBOOT_SOFT;
-+	else if (!strncmp(buf, REBOOT_GPIO_STR, strlen(REBOOT_GPIO_STR)))
-+		reboot_mode = REBOOT_GPIO;
-+	else
-+		return -EINVAL;
-+
-+	return count;
-+}
-+static struct kobj_attribute reboot_mode_attr = __ATTR_RW(mode);
-+
-+static ssize_t type_show(struct kobject *kobj, struct kobj_attribute *attr, char *buf)
-+{
-+	const char *val;
-+
-+	switch (reboot_type) {
-+	case BOOT_TRIPLE:
-+		val = BOOT_TRIPLE_STR;
-+		break;
-+	case BOOT_KBD:
-+		val = BOOT_KBD_STR;
-+		break;
-+	case BOOT_BIOS:
-+		val = BOOT_BIOS_STR;
-+		break;
-+	case BOOT_ACPI:
-+		val = BOOT_ACPI_STR;
-+		break;
-+	case BOOT_EFI:
-+		val = BOOT_EFI_STR;
-+		break;
-+	case BOOT_CF9_FORCE:
-+		val = BOOT_CF9_FORCE_STR;
-+		break;
-+	case BOOT_CF9_SAFE:
-+		val = BOOT_CF9_SAFE_STR;
-+		break;
-+	default:
-+		val = REBOOT_UNDEFINED_STR;
-+	}
-+
-+	return sprintf(buf, "%s\n", val);
-+}
-+static ssize_t type_store(struct kobject *kobj, struct kobj_attribute *attr,
-+			  const char *buf, size_t count)
-+{
-+	if (!capable(CAP_SYS_BOOT))
-+		return -EPERM;
-+
-+	if (!strncmp(buf, BOOT_TRIPLE_STR, strlen(BOOT_TRIPLE_STR)))
-+		reboot_mode = BOOT_TRIPLE;
-+	else if (!strncmp(buf, BOOT_KBD_STR, strlen(BOOT_KBD_STR)))
-+		reboot_mode = BOOT_KBD;
-+	else if (!strncmp(buf, BOOT_BIOS_STR, strlen(BOOT_BIOS_STR)))
-+		reboot_mode = BOOT_BIOS;
-+	else if (!strncmp(buf, BOOT_ACPI_STR, strlen(BOOT_ACPI_STR)))
-+		reboot_mode = BOOT_ACPI;
-+	else if (!strncmp(buf, BOOT_EFI_STR, strlen(BOOT_EFI_STR)))
-+		reboot_mode = BOOT_EFI;
-+	else if (!strncmp(buf, BOOT_CF9_FORCE_STR, strlen(BOOT_CF9_FORCE_STR)))
-+		reboot_mode = BOOT_CF9_FORCE;
-+	else if (!strncmp(buf, BOOT_CF9_SAFE_STR, strlen(BOOT_CF9_SAFE_STR)))
-+		reboot_mode = BOOT_CF9_SAFE;
-+	else
-+		return -EINVAL;
-+
-+	return count;
-+}
-+static struct kobj_attribute reboot_type_attr = __ATTR_RW(type);
-+
-+static ssize_t cpu_show(struct kobject *kobj, struct kobj_attribute *attr, char *buf)
-+{
-+	return sprintf(buf, "%d\n", reboot_cpu);
-+}
-+static ssize_t cpu_store(struct kobject *kobj, struct kobj_attribute *attr,
-+			  const char *buf, size_t count)
-+{
-+	unsigned int cpunum;
-+	int rc;
-+
-+	if (!capable(CAP_SYS_BOOT))
-+		return -EPERM;
-+
-+	rc = kstrtouint(buf, 0, &cpunum);
-+
-+	if (rc)
-+		return rc;
-+
-+	if (cpunum >= num_possible_cpus())
-+		return -ERANGE;
-+
-+	reboot_cpu = cpunum;
-+
-+	return count;
-+}
-+static struct kobj_attribute reboot_cpu_attr = __ATTR_RW(cpu);
-+
-+static ssize_t force_show(struct kobject *kobj, struct kobj_attribute *attr, char *buf)
-+{
-+	return sprintf(buf, "%d\n", reboot_force);
-+}
-+static ssize_t force_store(struct kobject *kobj, struct kobj_attribute *attr,
-+			  const char *buf, size_t count)
-+{
-+	bool res;
-+
-+	if (!capable(CAP_SYS_BOOT))
-+		return -EPERM;
-+
-+	if (kstrtobool(buf, &res))
-+		return -EINVAL;
-+
-+	reboot_force = res;
-+
-+	return count;
-+}
-+static struct kobj_attribute reboot_force_attr = __ATTR_RW(force);
-+
-+static struct attribute *reboot_attrs[] = {
-+	&reboot_mode_attr.attr,
-+	&reboot_type_attr.attr,
-+	&reboot_cpu_attr.attr,
-+	&reboot_force_attr.attr,
-+	NULL,
-+};
-+
-+static const struct attribute_group reboot_attr_group = {
-+	.attrs = reboot_attrs,
-+};
-+
-+static int __init reboot_ksysfs_init(void)
-+{
-+	struct kobject *reboot_kobj;
-+	int ret;
-+
-+	reboot_kobj = kobject_create_and_add("reboot", kernel_kobj);
-+	if (!reboot_kobj)
-+		return -ENOMEM;
-+
-+	ret = sysfs_create_group(reboot_kobj, &reboot_attr_group);
-+	if (ret) {
-+		kobject_put(reboot_kobj);
-+		return ret;
-+	}
-+
-+	return 0;
-+}
-+late_initcall(reboot_ksysfs_init);
-+
-+#endif
--- 
-2.28.0
+> +
+> +	dc->opp_table =3D dev_pm_opp_get_opp_table(dc->dev);
+> +	if (IS_ERR(dc->opp_table))
+> +		return dev_err_probe(dc->dev, PTR_ERR(dc->opp_table),
+> +				     "failed to prepare OPP table\n");
+> +
+> +	if (of_machine_is_compatible("nvidia,tegra20"))
+> +		hw_version =3D BIT(tegra_sku_info.soc_process_id);
+> +	else
+> +		hw_version =3D BIT(tegra_sku_info.soc_speedo_id);
+> +
+> +	hw_opp_table =3D dev_pm_opp_set_supported_hw(dc->dev, &hw_version, 1);
+> +	err =3D PTR_ERR_OR_ZERO(hw_opp_table);
 
+What's the point of this? A more canonical version would be:
+
+	if (IS_ERR(hw_opp_table)) {
+		err =3D PTR_ERR(hw_opp_table);
+		dev_err(dc->dev, ...);
+		goto put_table;
+	}
+
+That uses the same number of lines but is much easier to read, in my
+opinion, because it is the canonical form.
+
+> +	if (err) {
+> +		dev_err(dc->dev, "failed to set supported HW: %d\n", err);
+> +		goto put_table;
+> +	}
+> +
+> +	err =3D dev_pm_opp_of_add_table(dc->dev);
+> +	if (err) {
+> +		dev_err(dc->dev, "failed to add OPP table: %d\n", err);
+> +		goto put_hw;
+> +	}
+> +
+> +	err =3D devm_add_action(dc->dev, tegra_dc_deinit_opp_table, dc);
+> +	if (err)
+> +		goto remove_table;
+
+Do these functions return positive values? If not, I'd prefer if this
+check was more explicit (i.e. err < 0) for consistency with the rest of
+this code.
+
+> +
+> +	dev_info(dc->dev, "OPP HW ver. 0x%x\n", hw_version);
+> +
+> +	return 0;
+> +
+> +remove_table:
+> +	dev_pm_opp_of_remove_table(dc->dev);
+> +put_hw:
+> +	dev_pm_opp_put_supported_hw(dc->opp_table);
+> +put_table:
+> +	dev_pm_opp_put_opp_table(dc->opp_table);
+> +
+> +	return err;
+> +}
+> +
+>  static int tegra_dc_probe(struct platform_device *pdev)
+>  {
+>  	struct tegra_dc *dc;
+> @@ -2937,6 +3068,10 @@ static int tegra_dc_probe(struct platform_device *=
+pdev)
+>  		tegra_powergate_power_off(dc->powergate);
+>  	}
+> =20
+> +	err =3D devm_tegra_dc_opp_table_init(dc);
+> +	if (err < 0)
+> +		return err;
+> +
+>  	dc->regs =3D devm_platform_ioremap_resource(pdev, 0);
+>  	if (IS_ERR(dc->regs))
+>  		return PTR_ERR(dc->regs);
+> @@ -3007,6 +3142,7 @@ struct platform_driver tegra_dc_driver =3D {
+>  	.driver =3D {
+>  		.name =3D "tegra-dc",
+>  		.of_match_table =3D tegra_dc_of_match,
+> +		.sync_state =3D tegra_soc_device_sync_state,
+>  	},
+>  	.probe =3D tegra_dc_probe,
+>  	.remove =3D tegra_dc_remove,
+> diff --git a/drivers/gpu/drm/tegra/dc.h b/drivers/gpu/drm/tegra/dc.h
+> index ba4ed35139fb..fd774fc5c2e4 100644
+> --- a/drivers/gpu/drm/tegra/dc.h
+> +++ b/drivers/gpu/drm/tegra/dc.h
+> @@ -13,6 +13,8 @@
+> =20
+>  #include "drm.h"
+> =20
+> +struct opp_table;
+> +struct regulator;
+>  struct tegra_output;
+> =20
+>  #define TEGRA_DC_LEGACY_PLANES_NUM	6
+> @@ -107,6 +109,9 @@ struct tegra_dc {
+>  	struct drm_info_list *debugfs_files;
+> =20
+>  	const struct tegra_dc_soc_info *soc;
+> +
+> +	struct opp_table *opp_table;
+> +	struct regulator *core_reg;
+
+We typically use a _supply suffix on regulators to avoid confusing this
+with "register".
+
+Thierry
+
+--twz1s1Hj1O0rHoT0
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAl+q+DYACgkQ3SOs138+
+s6G78Q/+JFiMC7fMw8IFFXbA54oa6iXWSOb0LxFKh2Bk0v6WFM2XYACVU/vtNeCY
+NCwaZ5tdDUbTWQpy4tUW17Fm+iqyCmcuiv7LZkL3yEDhmh9obmZiDWuNwZIlSBss
+lZ/l2EQ7pvj9WwVXQGzej3C4rafihGVqQ4TKlhLz/ouAVCn5wU6u1vXP7IH0fcG7
+ZC/11F8IiaSdB111P0YdASAvdp7Vxg4XPXUlXDJDQkr84jYPJpRWs9+6nPnYOeJD
+n55nOMFi7/TOxOxwWYQoqIWXWU46IQH2zh8Nh90z8rXUvJUHsA5USKCghGanXyLK
+G22wH+pgvEWPOBIQ6aguvCZj0uG5gFUUYSjhMzy+9fDzY67iz9wyOC2ORJ4h3t8d
+gxUyN/01vaOgC+UfDY0eGETNa5JSZ7BNJv+hwUeYT9SGMfmDx+Mxbk9OcE66yuFo
+1GymePPA+aq4zfhlGUBg/BjjmdvrzLhozXbmBdOiDa8zvTJ0OSxlKC3Rj12mN/uf
+PQA/ULnBkKy50qbYg9PqL2vyotwutEEtToOO+kEd7M52LtK8idjYihnlbKoSDwPi
+ceieP/AHMjTA83kLuzIPqdiFZqitNgjUfxb8+KaZ+0NdqlaS0lOnn3ajK6CXg0/q
+idTcYAD7bt7hHwjyBkxp/N34EWzbZw0EtTdg4p5JgGgVO+//cPs=
+=hrR9
+-----END PGP SIGNATURE-----
+
+--twz1s1Hj1O0rHoT0--
