@@ -2,146 +2,243 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 291FB2AD196
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 09:47:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D0302AD186
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 09:43:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728403AbgKJIrM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 03:47:12 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35450 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726462AbgKJIrM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 03:47:12 -0500
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BC71D20731;
-        Tue, 10 Nov 2020 08:47:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604998030;
-        bh=bRvoLrB0UtRy99q/cGp7Y0W/nNNhNmYKBmWRl+RLFkM=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=n/rXYbAVC71GAY98yOi7IDTPuEz4OfcV+kH1tJW8mB85ZVN8bGY7Y5+aqoMF6S24U
-         WGsdNbEbbBxvD2PMWX4BjNXcFCTC/PG0LtTeZok5mnPNEZSZZzFLRpbJc4XeJEwfsT
-         N4ONyRoaXz4wTuNnyIDbpoa9p+XmSzMrWn741cP4=
-Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
-        by disco-boy.misterjones.org with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94)
-        (envelope-from <maz@kernel.org>)
-        id 1kcPIy-009O74-Jr; Tue, 10 Nov 2020 08:47:08 +0000
+        id S1729706AbgKJInc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 03:43:32 -0500
+Received: from mx0a-00128a01.pphosted.com ([148.163.135.77]:46336 "EHLO
+        mx0a-00128a01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726827AbgKJInb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Nov 2020 03:43:31 -0500
+Received: from pps.filterd (m0167089.ppops.net [127.0.0.1])
+        by mx0a-00128a01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0AA8ddPR003483;
+        Tue, 10 Nov 2020 03:43:12 -0500
+Received: from nwd2mta4.analog.com ([137.71.173.58])
+        by mx0a-00128a01.pphosted.com with ESMTP id 34nsc90cv5-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 10 Nov 2020 03:43:12 -0500
+Received: from SCSQMBX11.ad.analog.com (SCSQMBX11.ad.analog.com [10.77.17.10])
+        by nwd2mta4.analog.com (8.14.7/8.14.7) with ESMTP id 0AA8hArq014669
+        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=FAIL);
+        Tue, 10 Nov 2020 03:43:10 -0500
+Received: from SCSQMBX11.ad.analog.com (10.77.17.10) by
+ SCSQMBX11.ad.analog.com (10.77.17.10) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1779.2; Tue, 10 Nov 2020 00:43:09 -0800
+Received: from zeus.spd.analog.com (10.66.68.11) by SCSQMBX11.ad.analog.com
+ (10.77.17.10) with Microsoft SMTP Server id 15.1.1779.2 via Frontend
+ Transport; Tue, 10 Nov 2020 00:43:09 -0800
+Received: from localhost.localdomain ([10.48.65.12])
+        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 0AA8h2G7020044;
+        Tue, 10 Nov 2020 03:43:03 -0500
+From:   Alexandru Ardelean <alexandru.ardelean@analog.com>
+To:     <alsa-devel@alsa-project.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <lars@metafoo.de>, <robh+dt@kernel.org>, <broonie@kernel.org>,
+        <lgirdwood@gmail.com>,
+        Alexandru Ardelean <alexandru.ardelean@analog.com>
+Subject: [PATCH v2] dt-bindings: adau1977: convert text binding to yaml format
+Date:   Tue, 10 Nov 2020 10:47:54 +0200
+Message-ID: <20201110084754.46756-1-alexandru.ardelean@analog.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20201106102052.32582-1-alexandru.ardelean@analog.com>
+References: <20201106102052.32582-1-alexandru.ardelean@analog.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8;
- format=flowed
-Content-Transfer-Encoding: 8bit
-Date:   Tue, 10 Nov 2020 08:47:08 +0000
-From:   Marc Zyngier <maz@kernel.org>
-To:     Kefeng Wang <wangkefeng.wang@huawei.com>
-Cc:     Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] regmap: Properly free allocated name for regmap_config of
- syscon
-In-Reply-To: <18a3857d-3250-e136-7d80-abdab902367c@huawei.com>
-References: <20201109115816.160639-1-wangkefeng.wang@huawei.com>
- <20201109172331.GJ6380@sirena.org.uk>
- <18a3857d-3250-e136-7d80-abdab902367c@huawei.com>
-User-Agent: Roundcube Webmail/1.4.9
-Message-ID: <9b291d6ebdebe8a3a9f07d2bf4033fe9@kernel.org>
-X-Sender: maz@kernel.org
-X-SA-Exim-Connect-IP: 51.254.78.96
-X-SA-Exim-Rcpt-To: wangkefeng.wang@huawei.com, broonie@kernel.org, linux-kernel@vger.kernel.org
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-11-10_03:2020-11-05,2020-11-10 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 spamscore=0
+ priorityscore=1501 bulkscore=0 clxscore=1015 lowpriorityscore=0
+ impostorscore=0 adultscore=0 phishscore=0 mlxlogscore=999 malwarescore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2011100062
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-11-10 01:35, Kefeng Wang wrote:
-> On 2020/11/10 1:23, Mark Brown wrote:
->> On Mon, Nov 09, 2020 at 07:58:16PM +0800, Kefeng Wang wrote:
->> 
->>> syscon_config.name in of_syscon_register is allocated using 
->>> kasprintf,
->>> which should be freed when it is not used after regmap_set_name, fix
->>> the following memory leak.
->>> unreferenced object 0xffffffe07fe8c150 (size 16):
->>>    comm "swapper/0", pid 1, jiffies 4294892540 (age 68.168s)
->>>    hex dump (first 16 bytes):
->>>      74 65 73 74 40 31 30 30 30 30 30 00 e0 ff ff ff  
->>> test@100000.....
->>>    backtrace:
->>>      [<0000000023d86736>] create_object+0xe8/0x348
->>>      [<00000000fe9d1b17>] kmemleak_alloc+0x20/0x2a
->> Please think hard before including complete backtraces in upstream
->> reports, they are very large and contain almost no useful information
->> relative to their size so often obscure the relevant content in your
->> message. If part of the backtrace is usefully illustrative (it often 
->> is
->> for search engines if nothing else) then it's usually better to pull 
->> out
->> the relevant sections.
-> 
-> 2899872b627e   "regmap: debugfs: Fix memory leak in
-> regmap_debugfs_init" add a similar
-> 
-> backtrack, but the address of the trace is useless, will be careful 
-> next time.
-> 
->>> @@ -601,6 +601,7 @@ static int regmap_set_name(struct regmap *map, 
->>> const struct regmap_config *confi
->>>   		if (!name)
->>>   			return -ENOMEM;
->>>   +		kfree_const(config->name);
->>>   		kfree_const(map->name);
->>>   		map->name = name;
->>>   	}
->> Why would we free the passed in name here?  The name wes passed in 
->> from
->> outside regmap in a const configuration struct, we've no idea within
->> regmap if it was dynamically allocted or not and it seems very
->> surprising that we'd go off and free it.  The whole reason we're
->> duplicating it in regmap_set_name() is that we don't know how long 
->> it's
->> going to be around so we don't want to reference it after having
->> returned to the caller.  If the caller has dynamically allocated it 
->> then
->> the caller should deal with freeing it.
-> 
-> Yes, after check it again, this patch is wrong.
-> 
-> Hi Marc,  the regmap debugfs will duplicate a name in 
-> regmap_set_name(), and
-> 
-> syscon_config.name won't be used in syscon,  so your following patch
-> doesn't seem
-> 
-> to be necessary,  right ? Please correct me if I'm wrong, thanks.
+This change converts the old device-tree binding for ADAU1977 from text
+format to the new yaml format.
 
-It was certainly necessary at the time when I wrote the patch, as it
-was fixing some obvious memory corruption (use after free).
+Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
+---
 
-It is very possible that the flow has been reorganised since, as the
-following commit hints at:
+Changelog v1 -> v2:
+* updated libraries to catch newer schema errors/warnings
+* fixed examples, added i2c & spi nodes
 
-commit e15d7f2b81d2e7d93115d46fa931b366c1cdebc2
-Author: Suman Anna <s-anna@ti.com>
-Date:   Mon Jul 27 16:10:08 2020 -0500
+ .../bindings/sound/adi,adau1977.txt           | 61 ------------
+ .../bindings/sound/adi,adau1977.yaml          | 92 +++++++++++++++++++
+ 2 files changed, 92 insertions(+), 61 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/sound/adi,adau1977.txt
+ create mode 100644 Documentation/devicetree/bindings/sound/adi,adau1977.yaml
 
-     mfd: syscon: Use a unique name with regmap_config
-
-     The DT node full name is currently being used in regmap_config
-     which in turn is used to create the regmap debugfs directories.
-     This name however is not guaranteed to be unique and the regmap
-     debugfs registration can fail in the cases where the syscon nodes
-     have the same unit-address but are present in different DT node
-     hierarchies. Replace this logic using the syscon reg resource
-     address instead (inspired from logic used while creating platform
-     devices) to ensure a unique name is given for each syscon.
-
-     Signed-off-by: Suman Anna <s-anna@ti.com>
-     Reviewed-by: Arnd Bergmann <arnd@arndb.de>
-     Signed-off-by: Lee Jones <lee.jones@linaro.org>
-
-I suggest you come up with a more complete analysis of the problem
-and how it came to be.
-
-         M.
+diff --git a/Documentation/devicetree/bindings/sound/adi,adau1977.txt b/Documentation/devicetree/bindings/sound/adi,adau1977.txt
+deleted file mode 100644
+index 37f8aad01203..000000000000
+--- a/Documentation/devicetree/bindings/sound/adi,adau1977.txt
++++ /dev/null
+@@ -1,61 +0,0 @@
+-Analog Devices ADAU1977/ADAU1978/ADAU1979
+-
+-Datasheets:
+-https://www.analog.com/media/en/technical-documentation/data-sheets/ADAU1977.pdf
+-https://www.analog.com/media/en/technical-documentation/data-sheets/ADAU1978.pdf
+-https://www.analog.com/media/en/technical-documentation/data-sheets/ADAU1979.pdf
+-
+-This driver supports both the I2C and SPI bus.
+-
+-Required properties:
+- - compatible: Should contain one of the following:
+-               "adi,adau1977"
+-               "adi,adau1978"
+-               "adi,adau1979"
+-
+- - AVDD-supply: analog power supply for the device, please consult
+-                Documentation/devicetree/bindings/regulator/regulator.txt
+-
+-Optional properties:
+- - reset-gpios: the reset pin for the chip, for more details consult
+-                Documentation/devicetree/bindings/gpio/gpio.txt
+-
+- - DVDD-supply: supply voltage for the digital core, please consult
+-                Documentation/devicetree/bindings/regulator/regulator.txt
+-
+-- adi,micbias: configures the voltage setting for the MICBIAS pin.
+-		Select 0/1/2/3/4/5/6/7/8 to specify MICBIAS voltage
+-		5V/5.5V/6V/6.5V/7V/7.5V/8V/8.5V/9V
+-		If not specified the default value will be "7" meaning 8.5 Volts.
+-		This property is only valid for the ADAU1977
+-
+-For required properties on SPI, please consult
+-Documentation/devicetree/bindings/spi/spi-bus.txt
+-
+-Required properties on I2C:
+-
+- - reg:         The i2c address. Value depends on the state of ADDR0
+-                and ADDR1, as wired in hardware.
+-
+-Examples:
+-
+-	adau1977_spi: adau1977@0 {
+-		compatible = "adi,adau1977";
+-		spi-max-frequency = <600000>;
+-
+-		AVDD-supply = <&regulator>;
+-		DVDD-supply = <&regulator_digital>;
+-
+-		adi,micbias = <3>;
+-		reset-gpios = <&gpio 10 GPIO_ACTIVE_LOW>;
+-	};
+-
+-	adau1977_i2c: adau1977@11 {
+-		compatible = "adi,adau1977";
+-		reg = <0x11>;
+-
+-		AVDD-supply = <&regulator>;
+-		DVDD-supply = <&regulator_digital>;
+-
+-		reset-gpios = <&gpio 10 GPIO_ACTIVE_LOW>;
+-	};
+diff --git a/Documentation/devicetree/bindings/sound/adi,adau1977.yaml b/Documentation/devicetree/bindings/sound/adi,adau1977.yaml
+new file mode 100644
+index 000000000000..b80454ad97da
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/adi,adau1977.yaml
+@@ -0,0 +1,92 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/sound/adi,adau1977.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Analog Devices ADAU1977/ADAU1978/ADAU1979 Quad ADC with Diagnostics
++
++maintainers:
++  - Lars-Peter Clausen <lars@metafoo.de>
++  - Bogdan Togorean <bogdan.togorean@analog.com>
++
++description: |
++  Analog Devices ADAU1977 and similar quad ADC with Diagnostics
++  https://www.analog.com/media/en/technical-documentation/data-sheets/ADAU1977.pdf
++  https://www.analog.com/media/en/technical-documentation/data-sheets/ADAU1978.pdf
++  https://www.analog.com/media/en/technical-documentation/data-sheets/ADAU1979.pdf
++
++properties:
++  compatible:
++    enum:
++      - adi,adau1977
++      - adi,adau1978
++      - adi,adau1979
++
++  reg:
++    maxItems: 1
++
++  "#sound-dai-cells":
++    const: 0
++
++  reset-gpios:
++    maxItems: 1
++
++  spi-max-frequency: true
++
++  AVDD-supply:
++    description: Analog power support for the device.
++
++  DVDD-supply:
++    description: Supply voltage for digital core.
++
++  adi,micbias:
++    description: |
++      Configures the voltage setting for the MICBIAS pin.
++    $ref: /schemas/types.yaml#/definitions/uint32
++    enum: [0, 1, 2, 3, 4, 5, 6, 7, 8]
++    default: 7
++
++required:
++  - reg
++  - compatible
++  - AVDD-supply
++
++additionalProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/gpio/gpio.h>
++
++    spi {
++        #address-cells = <1>;
++        #size-cells = <0>;
++        adau1977_spi: adau1977@0 {
++            compatible = "adi,adau1977";
++            reg = <0>;
++            spi-max-frequency = <600000>;
++
++            AVDD-supply = <&regulator>;
++            DVDD-supply = <&regulator_digital>;
++
++            reset-gpios = <&gpio 10 GPIO_ACTIVE_LOW>;
++
++            adi,micbias = <3>;
++        };
++    };
++  - |
++    #include <dt-bindings/gpio/gpio.h>
++
++    i2c {
++        #address-cells = <1>;
++        #size-cells = <0>;
++        adau1977_i2c: adau1977@11 {
++            compatible = "adi,adau1977";
++            reg = <0x11>;
++
++            AVDD-supply = <&regulator>;
++            DVDD-supply = <&regulator_digital>;
++
++            reset-gpios = <&gpio 10 GPIO_ACTIVE_LOW>;
++        };
++    };
 -- 
-Jazz is not dead. It just smells funny...
+2.17.1
+
