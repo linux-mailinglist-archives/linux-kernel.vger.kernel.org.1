@@ -2,108 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52BB72ADB47
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 17:08:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E44862ADB4B
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 17:08:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731175AbgKJQIH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 11:08:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47942 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730639AbgKJQIH (ORCPT
+        id S1731264AbgKJQIi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 11:08:38 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:33075 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730182AbgKJQIi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 11:08:07 -0500
-Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0AB85C0613D3
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 08:08:07 -0800 (PST)
-Received: by mail-lj1-x242.google.com with SMTP id h23so10843788ljg.13
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 08:08:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=IdXpjX2fMBvN29YoOyMaOI1PARSVc0VzhKJzQ6c/jNY=;
-        b=RejgqHVrBZZu4n1N0vlVzMwLbdbQEz7KDOjszF61G4q8FnDRgS6MlMMKiWMrZXVwRi
-         C8H+ONHnQK3GJnpwFCGrj7Fjjj5F4RE4KtWhAayffxNUeXtlvMXbToJGo2vgtLLcaJqY
-         peRHc6Z8Ayw2KbWU+aISfdBvaP/YrBNtZpBsI0qEWF4/hqkHjLL4F8T+mRom6j/cota6
-         TQSbE1NjoQJKPX856Cxow92rdGCYIcyrktxvr8p8+99382ZchOXMvY62mC+8arBWtKey
-         5U+z/S5+mUycsJXW9CjMbci8JwbcUuiXsjlR3nZ4kRBOE4I8I+YIImyCVntI7tSyibnb
-         GUiA==
+        Tue, 10 Nov 2020 11:08:38 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1605024516;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=J2Sf12kgoaoMwSO7zVui+rmBiPrlupwBdcBqb7pEUrA=;
+        b=CBYvAhNPhmxne0KvUleygGt0iFEn9tmgZB9rOfWctx2V6RzvCc1nnErQRvuIUByviV24It
+        yITxTIjq/DlC8sveeP3WDOOWX1rDEZ/eSb2rxT7PowvhQuSntr9jOUj4O/x3hptcDCSdYO
+        77m2TfcRsTbYUnFHiaeKwdH3s/FDE9s=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-592-4Uci3FkhOcm_IsOUxPjHcQ-1; Tue, 10 Nov 2020 11:08:35 -0500
+X-MC-Unique: 4Uci3FkhOcm_IsOUxPjHcQ-1
+Received: by mail-wm1-f72.google.com with SMTP id 14so982225wmg.1
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 08:08:34 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=IdXpjX2fMBvN29YoOyMaOI1PARSVc0VzhKJzQ6c/jNY=;
-        b=Lpi0TXrWoAWQxszWiemkrzngNdZjYLvPeqPJDwMTcysG3Rfm6j2gujLetoRJE6Jl8m
-         44e8Y1JEoiJl4vFXNKpeni8rrHvPG9viwyunqY9srHEh8AdYJcpZHZEbs92ebxL+byji
-         Kbc0SzSvXsMoG5voXMjHdD5usU3DB47YCMEeqXkkleMojK7lncrM9NdjhlvQ9zxgz5gR
-         4ti/ffngH4ULdlym5b9NgSCL87rLQMCrP5HjCLKmYs9WVPE6A6/0QxNPDTrwA4kZwZIb
-         bF1A5ZY1aT6D9gwj5mIGbMajzXDp+iqb0J/vl7S01cS0BKCuaXRqHy6wr5NpEZijb6aQ
-         nRnw==
-X-Gm-Message-State: AOAM530MWj9Q7CRPUzWJMFhzTdJnymULA/0iPSOzZIjZDgK4gHIF5CA3
-        jWAcXZoisWFVSrMaVpG8T4NJX8Butq5TZJ9UBJKhMpG1DQvBaYOl
-X-Google-Smtp-Source: ABdhPJx+3OPv/DyILoTWnWz5YCDXJQRkrl7b/kpZjceXJV8+4bcdHjQXNz+aJr98/86fydWiNskQFSAqwT5vTI8Eyk0=
-X-Received: by 2002:a2e:9449:: with SMTP id o9mr8049890ljh.457.1605024485448;
- Tue, 10 Nov 2020 08:08:05 -0800 (PST)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=J2Sf12kgoaoMwSO7zVui+rmBiPrlupwBdcBqb7pEUrA=;
+        b=lLZay74pGXrkENT56ze3bhJLjoX5J7LbqDH4YbmB33J/Hi+/5HafpC+MZMh9grwuwa
+         NORaRQMLSEJ5UdfhZVmPNaMEF8W3rkptXlrtFEJr0+Co5N/NOtXM+0+6xYi7qxkj6Fsw
+         s40AjiwGRD2o7znCepe9zV5v8CwHNM+wPfYamWHdag+GZTJlX/iPHZzXhgWRPefVJruD
+         HL9wZQ5ef0N+FFHGrf3T6ziw0dD77W+VZ1sboGmssKP9F9gsOpajCPR7FxsN6RoGJoHJ
+         GF5CvCiXxEzU+Im8R3HfFrouMRDay91+BA9sUgDhoOIClb5KU9Gbi8Sr378e1ecnMVre
+         9HMg==
+X-Gm-Message-State: AOAM5317qlRs7nQJ9TOLMufvnFfDv6CEZQzNqa94SDrepl1Vv5lPwjdb
+        /vmI1XenbNwpeg6cRa0GWLE4WV+K5LIyi18ygGjGdQxWSB1z+Xn6yRpnqOS6xonFfSmWM9E6wNG
+        fB9n71ek2qUhMJA6HcnB5lyaY
+X-Received: by 2002:a1c:7418:: with SMTP id p24mr459764wmc.36.1605024513691;
+        Tue, 10 Nov 2020 08:08:33 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJwX2bp8EAQvFHBwQTJhwBcQNIfAJv7DP1ceAp2mu/MJcNBhBYQdzSeyQiIFxUbOK4ZpE66t/Q==
+X-Received: by 2002:a1c:7418:: with SMTP id p24mr459735wmc.36.1605024513477;
+        Tue, 10 Nov 2020 08:08:33 -0800 (PST)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id h128sm3524684wme.38.2020.11.10.08.08.32
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 10 Nov 2020 08:08:32 -0800 (PST)
+Subject: Re: [PATCH] x86/mce: Check for hypervisor before enabling additional
+ error logging
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     "Luck, Tony" <tony.luck@intel.com>,
+        Jim Mattson <jmattson@google.com>, Qian Cai <cai@redhat.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-tip-commits@vger.kernel.org" 
+        <linux-tip-commits@vger.kernel.org>, x86 <x86@kernel.org>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>
+References: <160431588828.397.16468104725047768957.tip-bot2@tip-bot2>
+ <3f863634cd75824907e8ccf8164548c2ef036f20.camel@redhat.com>
+ <bfc274fc27724ea39ecac1e7ac834ed8@intel.com>
+ <CALMp9eTFaiYkTnVe8xKzg40E4nZ3rAOii0O06bTy0+oLNjyKhA@mail.gmail.com>
+ <a22b5468e1c94906b72c4d8bc83c0f64@intel.com>
+ <20201109232402.GA25492@agluck-desk2.amr.corp.intel.com>
+ <20201110063151.GB7290@nazgul.tnic>
+ <094c2395-b1b3-d908-657c-9bd4144e40ac@redhat.com>
+ <20201110095615.GB9450@nazgul.tnic>
+ <b8de7f7b-7aa1-d98b-74be-62d7c055542b@redhat.com>
+ <20201110155013.GE9857@nazgul.tnic>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <1b587b45-a5a8-2147-ae53-06d1b284ea11@redhat.com>
+Date:   Tue, 10 Nov 2020 17:08:31 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-References: <20201106061433.1483129-1-ajye_huang@compal.corp-partner.google.com>
- <CALprXBZCthdkxGbJBZZ+ESJRDBHY879FZMpB_4Mgpq1YAJun2g@mail.gmail.com> <20201110115631.GA5957@sirena.org.uk>
-In-Reply-To: <20201110115631.GA5957@sirena.org.uk>
-From:   Ajye Huang <ajye_huang@compal.corp-partner.google.com>
-Date:   Wed, 11 Nov 2020 00:07:54 +0800
-Message-ID: <CALprXBZKnJGzFCLp0=UxJQp423QuaiPiaPzyY3-662k1gHUk-g@mail.gmail.com>
-Subject: Re: [PATCH v6 0/2] Modify documentation and machine driver for SC7180
- sound card
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Ajye Huang <ajye.huang@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Rohit kumar <rohitkr@codeaurora.org>,
-        Banajit Goswami <bgoswami@codeaurora.org>,
-        Patrick Lai <plai@codeaurora.org>,
-        Srinivasa Rao Mandadapu <srivasam@codeaurora.org>,
-        Srini Kandagatla <srinivas.kandagatla@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Rob Herring <robh@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Cheng-yi Chiang <cychiang@chromium.org>,
-        Tzung-Bi Shih <tzungbi@chromium.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-arm-kernel@lists.infradead.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        ALSA development <alsa-devel@alsa-project.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20201110155013.GE9857@nazgul.tnic>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,Mark
+On 10/11/20 16:50, Borislav Petkov wrote:
+> I was thinking of
+> having a mapping between f/m/s and a list of MSRs which those models
+> have - even non-architectural ones - but that's a waste of energy. Why?
+> Because using the *msr_safe() variants will give you the same thing
 
-Thank you, I already understand, sorry for causing you trouble.
+Yes, pretty much.
 
-Ajye
+>> If it makes sense to emulate certain non-architectural MSRs we can add them.
+> See above - probably not worth the effort.
 
-On Tue, Nov 10, 2020 at 7:56 PM Mark Brown <broonie@kernel.org> wrote:
->
-> On Tue, Nov 10, 2020 at 05:40:40PM +0800, Ajye Huang wrote:
-> > Hi, Mark
-> >
-> > Could you please kindly review the series patch v6? And may I get your
-> > approval if the review is done.
->
-> Please don't send content free pings and please allow a reasonable time
-> for review.  People get busy, go on holiday, attend conferences and so
-> on so unless there is some reason for urgency (like critical bug fixes)
-> please allow at least a couple of weeks for review.  If there have been
-> review comments then people may be waiting for those to be addressed.
->
-> Sending content free pings adds to the mail volume (if they are seen at
-> all) which is often the problem and since they can't be reviewed
-> directly if something has gone wrong you'll have to resend the patches
-> anyway, so sending again is generally a better approach though there are
-> some other maintainers who like them - if in doubt look at how patches
-> for the subsystem are normally handled.
+When we do, certain Microsoft OSes are usually involved. :)
+
+> I'll take a look at how ugly it would become to make the majority of MSR
+> accesses safe.
+
+I think most of them already are, especially the non-architectural ones, 
+because I remember going through a similar discussion a few years ago 
+and Andy said basically "screw it, let's just use *_safe anywhere" as 
+well.  I don't see any need to do anything but add it to your review 
+checklist if you have it (and do it now for MSR_ERROR_CONTROL).
+
+Paolo
+
