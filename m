@@ -2,114 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 292432AD2BA
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 10:45:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B409F2AD2C0
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 10:48:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730116AbgKJJpM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 04:45:12 -0500
-Received: from mo4-p01-ob.smtp.rzone.de ([85.215.255.51]:27090 "EHLO
-        mo4-p01-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726462AbgKJJpM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 04:45:12 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1605001508;
-        s=strato-dkim-0002; d=chronox.de;
-        h=References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
-        X-RZG-CLASS-ID:X-RZG-AUTH:From:Subject:Sender;
-        bh=fYtlt3qgTK2EV8WwFnk3AJi4d+pmZFUbb1srxPBd1gs=;
-        b=BTypJiJhiR/7xQCC6/hdSqrurVTWYfG36ldHAZcv/YQYfH3mP1VBkAOBlk/ibuWJRa
-        6m/Me7jbd2w7Nvpo+sKY5NOFmvrzaw2TLqiAUpC1gIkf5rjKnEsE2Yd8HUzdsfXXmGi8
-        AUpK7Bb2QR+NsVeoU9FMAOndvmhTEDnCNmXTFWpORWaCJYRYamBZ7yTOacxC7QfHxXWp
-        A3E7AUuwM2w866H6NKqS1//EzNngqUNkUlJntAi+fASlwUh9xZngH3ARKRQUECuIesgA
-        yZa7kpsmaNhafNN66k5t7PCRWelHwddEztHCEYAMwdf3UwZIwf4ZPEqHNj03MBRse/Nh
-        OBBg==
-X-RZG-AUTH: ":P2ERcEykfu11Y98lp/T7+hdri+uKZK8TKWEqNyiHySGSa9k9xmwdNnzGHXPaIvSfEhGW"
-X-RZG-CLASS-ID: mo00
-Received: from tauon.chronox.de
-        by smtp.strato.de (RZmta 47.3.3 DYNA|AUTH)
-        with ESMTPSA id Y03aecwAA9j7FOH
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-        (Client did not present a certificate);
-        Tue, 10 Nov 2020 10:45:07 +0100 (CET)
-From:   Stephan Mueller <smueller@chronox.de>
-To:     Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Paul Menzel <pmenzel@molgen.mpg.de>
-Cc:     linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: jitterentropy: `jent_mod_init()` takes 17 ms
-Date:   Tue, 10 Nov 2020 10:45:06 +0100
-Message-ID: <23252091.ssLaC8jLEa@tauon.chronox.de>
-In-Reply-To: <a422b262-3923-0d29-1a11-3498724a98ad@molgen.mpg.de>
-References: <02fa159f-4f94-cfb7-1f88-bed91c6542a1@molgen.mpg.de> <4825077.WBkqHH8m98@tauon.chronox.de> <a422b262-3923-0d29-1a11-3498724a98ad@molgen.mpg.de>
+        id S1728632AbgKJJsj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 04:48:39 -0500
+Received: from mx2.suse.de ([195.135.220.15]:45758 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726467AbgKJJsj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Nov 2020 04:48:39 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 18320AC1D;
+        Tue, 10 Nov 2020 09:48:38 +0000 (UTC)
+Date:   Tue, 10 Nov 2020 10:48:34 +0100
+From:   Oscar Salvador <osalvador@suse.de>
+To:     Muchun Song <songmuchun@bytedance.com>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Thomas Gleixner <tglx@linutronix.de>, mingo@redhat.com,
+        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
+        dave.hansen@linux.intel.com, luto@kernel.org,
+        Peter Zijlstra <peterz@infradead.org>, viro@zeniv.linux.org.uk,
+        Andrew Morton <akpm@linux-foundation.org>, paulmck@kernel.org,
+        mchehab+huawei@kernel.org, pawan.kumar.gupta@linux.intel.com,
+        Randy Dunlap <rdunlap@infradead.org>, oneukum@suse.com,
+        anshuman.khandual@arm.com, jroedel@suse.de,
+        Mina Almasry <almasrymina@google.com>,
+        David Rientjes <rientjes@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Xiongchun duan <duanxiongchun@bytedance.com>,
+        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>
+Subject: Re: [External] Re: [PATCH v3 09/21] mm/hugetlb: Free the vmemmap
+ pages associated with each hugetlb page
+Message-ID: <20201110094830.GA25373@linux>
+References: <20201108141113.65450-1-songmuchun@bytedance.com>
+ <20201108141113.65450-10-songmuchun@bytedance.com>
+ <20201109185138.GD17356@linux>
+ <CAMZfGtXpXoQ+zVi2Us__7ghSu_3U7+T3tx-EL+zfa=1Obn=55g@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAMZfGtXpXoQ+zVi2Us__7ghSu_3U7+T3tx-EL+zfa=1Obn=55g@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am Dienstag, 10. November 2020, 10:37:02 CET schrieb Paul Menzel:
+On Tue, Nov 10, 2020 at 02:40:54PM +0800, Muchun Song wrote:
+> Only the first HugeTLB page should split the PMD to PTE. The other 63
+> HugeTLB pages
+> do not need to split. Here I want to make sure we are the first.
 
-Hi Paul,
+I think terminology is loosing me here.
 
-> Dear Stephan,
-> 
-> 
-> Thank you for the quick reply.
-> 
-> Am 10.11.20 um 10:25 schrieb Stephan Mueller:
-> > Am Montag, 9. November 2020, 20:31:02 CET schrieb Paul Menzel:
-> >> By mistake I built `XFRM_ESP` into the Linux kernel, resulting in
-> >> 
-> >>       CONFIG_CRYPTO_SEQIV=y
-> >>       CONFIG_CRYPTO_ECHAINIV=y
-> >> 
-> >> and also the Jitterentropy RNG to be built in.
-> >> 
-> >>       CRYPTO_JITTERENTROPY=y
-> >> 
-> >> So, on the Asus F2A85-M PRO starting Linux 4.10-rc3 with
-> >> `initcall_debug`, the init method is run unconditionally, and it takes
-> >> 17.5 ms, which is over ten percent of the overall 900 ms the Linux
-> > 
-> > Hm, 17.5 / 900 = 2%, or am I missing something?
-> 
-> Indeed, that is embarrassing. My bad.
-> 
-> >> kernel needs until loading the init process.
-> >> 
-> >>       [    0.300544] calling  jent_mod_init+0x0/0x2c @ 1
-> >>       [    0.318438] initcall jent_mod_init+0x0/0x2c returned 0 after
-> >>       17471 usecs
-> >> 
-> >> Looking at the output of systemd-bootchart, it looks like, that this
-> >> indeed delayed the boot a little, as the other init methods seem to be
-> >> ordered after it.
-> >> 
-> >> I am now building it as a module, but am wondering if the time can be
-> >> reduced to below ten milliseconds.
-> > 
-> > What you see is the test whether the Jitter RNG has a proper noise source.
-> > The function jent_entropy_init() is the cause of the operation. It
-> > performs 1024 times a test to validate the appropriateness of the noise
-> > source. You can adjust that with the TESTLOOPCOUNT in this function. But
-> > I am not sure adjusting is a wise course of action.
-> 
-> Out of curiosity, why 1024 and not, for example, 128 or 2048? Is there
-> some statistics behind it?
+Say you allocate a 2MB HugeTLB page at ffffea0004100000.
 
-See [1] section 4.3 bullet 4 is the culprit. The startup test includes the 
-referenced test logic.
+The vmemmap range that the represents this is ffffea0004000000 - ffffea0004200000.
+That is a 2MB chunk PMD-mapped.
+So, in order to free some of those vmemmap pages, we need to break down
+that area, remapping it to PTE-based.
+I know what you mean, but we are not really splitting hugetlg pages, but
+the memmap range they are represented with.
 
-[1] https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-90B.pdf
+About:
+
+"Only the first HugeTLB page should split the PMD to PTE. The other 63
+HugeTLB pages
+do not need to split. Here I want to make sure we are the first."
+
+That only refers to gigantic pages, right?
+
+> > > +static void free_huge_page_vmemmap(struct hstate *h, struct page *head)
+> > > +{
+> > > +     pmd_t *pmd;
+> > > +     spinlock_t *ptl;
+> > > +     LIST_HEAD(free_pages);
+> > > +
+> > > +     if (!free_vmemmap_pages_per_hpage(h))
+> > > +             return;
+> > > +
+> > > +     pmd = vmemmap_to_pmd(head);
+> > > +     ptl = vmemmap_pmd_lock(pmd);
+> > > +     if (vmemmap_pmd_huge(pmd)) {
+> > > +             VM_BUG_ON(!pgtable_pages_to_prealloc_per_hpage(h));
+> >
+> > I think that checking for free_vmemmap_pages_per_hpage is enough.
+> > In the end, pgtable_pages_to_prealloc_per_hpage uses free_vmemmap_pages_per_hpage.
 > 
-> 
-> Kind regards,
-> 
-> Paul
+> The free_vmemmap_pages_per_hpage is not enough. See the comments above.
+
+My comment was about the VM_BUG_ON.
 
 
-Ciao
-Stephan
-
-
+-- 
+Oscar Salvador
+SUSE L3
