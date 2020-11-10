@@ -2,196 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BDCD2AD66E
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 13:36:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 49D9B2AD670
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 13:36:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730740AbgKJMf4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 07:35:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42742 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726900AbgKJMfz (ORCPT
+        id S1730242AbgKJMgQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 07:36:16 -0500
+Received: from mail-ot1-f67.google.com ([209.85.210.67]:44306 "EHLO
+        mail-ot1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726900AbgKJMgQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 07:35:55 -0500
-Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABC50C0613CF;
-        Tue, 10 Nov 2020 04:35:55 -0800 (PST)
-Received: by mail-qt1-x842.google.com with SMTP id g15so4645334qtq.13;
-        Tue, 10 Nov 2020 04:35:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=60bLFzbvvDvulZgHHBLzky6FOxllzSiEPloCjEA8pOo=;
-        b=hF5fRLVFXreI/vBVlZwd3WVd2GWIdaLhN4xkNAnh5Na2ltyYUTpJ7JKX9EZfPAeTIY
-         LMu87JVZjdpEyr++y+cz7Mt2uM24qk37umOuc0c0sWWQCXxfRDE7acTDCMOyGqYsIBNp
-         VjcfixBnRaRSFhGkn4jpAOTBk010HsZnYvSifyNGa4un9GJEu2e98aqGHJJ24rqrofao
-         RnZoSwUPpNB9+BS8PrRAUlRQ3y4EU2eRNHzkIr5yw7m/vxJFl5z3PYmUiO/jsOkkTFD+
-         dl1VhAU062OpycQUIjrKVlDcA0cfUwMtRQ/PBeC37XaECr6gg3/9sCG3RQeWREsqYpb8
-         +ZYw==
+        Tue, 10 Nov 2020 07:36:16 -0500
+Received: by mail-ot1-f67.google.com with SMTP id f16so12293504otl.11;
+        Tue, 10 Nov 2020 04:36:15 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=60bLFzbvvDvulZgHHBLzky6FOxllzSiEPloCjEA8pOo=;
-        b=Bhs/AMtCDJuEfSWVUr+25GCDY1fZiKtiTPlX122GZb/nTZgEr/CP4JQCFXj/WykA3j
-         NcroRpBa5Q5Yql3wSEKkIA+6mYYdOXbAeveTgUPFkKY4wNFWwyzRcC1uw/JvzPwjbn5m
-         XbLxbfaPz9nPFL6YonOWUOt5ml1Tlp2aXw9umfTacYRzCLhEV3T5b3GWMlEsnbC2WACk
-         n09uPoZQAthpEYA5xBP2W7wZR7SZjPd9Bl55ugF096exk9j7t/ytikjgCncdDEO8P4Jj
-         I3X0rjLE92EjUS/5ZryoLPTFMaBSNBAjiYTaQ2MiYBRWJL1iBaNmZggI7n1/x6QbD7ZJ
-         tsLQ==
-X-Gm-Message-State: AOAM533PrtycevzgZ6UEre1zaxUG6DfHapBCzXBhYOk9YEZw2+pA0/9m
-        QPtDlnLiaAMOOXzVPAljCpXOoBlb7EJVHQ==
-X-Google-Smtp-Source: ABdhPJxaW679A5HSdRapxYTFAnw2LNRFRTVmYzW8mwUq6VN/j+tL20nYkl8eh7AzLwt3bxrbi+eKpQ==
-X-Received: by 2002:ac8:832:: with SMTP id u47mr17900656qth.376.1605011754845;
-        Tue, 10 Nov 2020 04:35:54 -0800 (PST)
-Received: from shinobu (072-189-064-225.res.spectrum.com. [72.189.64.225])
-        by smtp.gmail.com with ESMTPSA id a206sm8154425qkb.64.2020.11.10.04.35.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 10 Nov 2020 04:35:53 -0800 (PST)
-Date:   Tue, 10 Nov 2020 07:35:38 -0500
-From:   William Breathitt Gray <vilhelm.gray@gmail.com>
-To:     Michal Simek <michal.simek@xilinx.com>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Syed Nayyar Waris <syednwaris@gmail.com>,
-        Arnd Bergmann <arnd@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH v12 4/4] gpio: xilinx: Utilize generic bitmap_get_value
- and _set_value
-Message-ID: <20201110123538.GA3193@shinobu>
-References: <20201101150033.GA68138@shinobu>
- <CAK8P3a0y7mh=ZDPefgpawY97gpYv79UXFLBzoGfu3ex2up2aDQ@mail.gmail.com>
- <20201109123411.GA19869@syed>
- <20201109134128.GA5596@shinobu>
- <CAK8P3a2FMkMc0K+hu0pnqC8wEMeapKPkZXaBm+HFYYPTes5NHA@mail.gmail.com>
- <20201109164529.GA28710@syed.domain.name>
- <20201109171140.GA14045@shinobu>
- <20201109172220.GI4077@smile.fi.intel.com>
- <20201109173107.GA14643@shinobu>
- <fe1cfe4c-e4d7-f9fb-1218-7a1d48e6f68a@xilinx.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=w5f5uEO3r6sI5bF7NOkmG8gXoj1KbzEchukRim9NVXM=;
+        b=jaFeMUIw3NIFMwCF8v6Yl5DQrDw/E0j6r19qdN7/g/lhVYyAI8EOGm+Jkj1HLa78/7
+         yhyF6uInIWWeCI88jtvbeX0no98QN1+/6Lgx2xQhpGVgYgTFDNNq+c7bqpmWRSltKU7M
+         qeW6pK8dTRzdVzsFf14QohqNj3yCeqrHjVXSkGm7RTcQhzvMhIOIdHgc8QLyTHI5Dc6A
+         +a2p5mvuG3sFDSF0HUl5pKziWfsPkDaHax7oeDCd8dS+yUjwUwOiSxVr89hB262nGvCe
+         nQaj/LXNLxuGnTdwzPTQETWpPGUl/LHPuJj/qYO4BNgDQVMDEQojzIlGnfD3ZtTcTDYI
+         QrnA==
+X-Gm-Message-State: AOAM5333+K893422dRdRb3uc+6o3mRmcW8Caz93J9G0kVQLCEwHSx+ov
+        DY8AM7CyYZuotywkHtQBabMb2JyPxw0ZwhTzq3w=
+X-Google-Smtp-Source: ABdhPJw7mPJnbOdO+7/bFNde1IAr06+jLWsQGqCoGogkClkKskzCXz49C20taI6hoTbLByE+OR4kS9he0j9Nwm6qQN4=
+X-Received: by 2002:a9d:222f:: with SMTP id o44mr14179002ota.321.1605011775337;
+ Tue, 10 Nov 2020 04:36:15 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="SUOF0GtieIMvvwua"
-Content-Disposition: inline
-In-Reply-To: <fe1cfe4c-e4d7-f9fb-1218-7a1d48e6f68a@xilinx.com>
+References: <13269660.K2JYd4sGFX@kreacher> <1876249.M1ZxxmeKtZ@kreacher> <20201110024126.v4yxai5hpguj5p5b@vireshk-i7>
+In-Reply-To: <20201110024126.v4yxai5hpguj5p5b@vireshk-i7>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Tue, 10 Nov 2020 13:36:02 +0100
+Message-ID: <CAJZ5v0jkdF7_JKBA0R0kvhzv-ZaLr3m9MS1g_D=vs3ZObv1VVw@mail.gmail.com>
+Subject: Re: [PATCH v2 1/4] cpufreq: Introduce governor flags
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Zhang Rui <rui.zhang@intel.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Doug Smythies <dsmythies@telus.net>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Nov 10, 2020 at 3:41 AM Viresh Kumar <viresh.kumar@linaro.org> wrote:
+>
+> On 09-11-20, 17:51, Rafael J. Wysocki wrote:
+> > From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> >
+> > A new cpufreq governor flag will be added subsequently, so replace
+> > the bool dynamic_switching fleid in struct cpufreq_governor with a
+> > flags field and introduce CPUFREQ_GOV_FLAG_DYN_SWITCH to set for
+> > the "dynamic switching" governors instead of it.
+> >
+> > No intentional functional impact.
+> >
+> > Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> > ---
+> >  drivers/cpufreq/cpufreq.c          |    2 +-
+> >  drivers/cpufreq/cpufreq_governor.h |    2 +-
+> >  include/linux/cpufreq.h            |    9 +++++++--
+> >  kernel/sched/cpufreq_schedutil.c   |    2 +-
+> >  4 files changed, 10 insertions(+), 5 deletions(-)
+> >
+> > Index: linux-pm/drivers/cpufreq/cpufreq.c
+> > ===================================================================
+> > --- linux-pm.orig/drivers/cpufreq/cpufreq.c
+> > +++ linux-pm/drivers/cpufreq/cpufreq.c
+> > @@ -2254,7 +2254,7 @@ static int cpufreq_init_governor(struct
+> >               return -EINVAL;
+> >
+> >       /* Platform doesn't want dynamic frequency switching ? */
+> > -     if (policy->governor->dynamic_switching &&
+>
+> I completely forgot that we had something like this :)
+>
+> > +     if (policy->governor->flags & CPUFREQ_GOV_FLAG_DYN_SWITCH &&
+> >           cpufreq_driver->flags & CPUFREQ_NO_AUTO_DYNAMIC_SWITCHING) {
+> >               struct cpufreq_governor *gov = cpufreq_fallback_governor();
+> >
+> > Index: linux-pm/drivers/cpufreq/cpufreq_governor.h
+> > ===================================================================
+> > --- linux-pm.orig/drivers/cpufreq/cpufreq_governor.h
+> > +++ linux-pm/drivers/cpufreq/cpufreq_governor.h
+> > @@ -156,7 +156,7 @@ void cpufreq_dbs_governor_limits(struct
+> >  #define CPUFREQ_DBS_GOVERNOR_INITIALIZER(_name_)                     \
+> >       {                                                               \
+> >               .name = _name_,                                         \
+> > -             .dynamic_switching = true,                              \
+> > +             .flags = CPUFREQ_GOV_FLAG_DYN_SWITCH,                   \
+> >               .owner = THIS_MODULE,                                   \
+> >               .init = cpufreq_dbs_governor_init,                      \
+> >               .exit = cpufreq_dbs_governor_exit,                      \
+> > Index: linux-pm/include/linux/cpufreq.h
+> > ===================================================================
+> > --- linux-pm.orig/include/linux/cpufreq.h
+> > +++ linux-pm/include/linux/cpufreq.h
+> > @@ -565,12 +565,17 @@ struct cpufreq_governor {
+> >                                        char *buf);
+> >       int     (*store_setspeed)       (struct cpufreq_policy *policy,
+> >                                        unsigned int freq);
+> > -     /* For governors which change frequency dynamically by themselves */
+> > -     bool                    dynamic_switching;
+> >       struct list_head        governor_list;
+> >       struct module           *owner;
+> > +     u8                      flags;
+> >  };
+> >
+> > +/* Governor flags */
+> > +
+> > +/* For governors which change frequency dynamically by themselves */
+> > +#define CPUFREQ_GOV_FLAG_DYN_SWITCH  BIT(0)
+>
+> Maybe just drop the FLAG_ part as we don't use it for other cpufreq related
+> flags as well. That will also give us space to write DYN as DYNAMIC (it may be
+> better as we use the full name in CPUFREQ_NO_AUTO_DYNAMIC_SWITCHING).
 
---SUOF0GtieIMvvwua
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+OK, I'll rename the flag (and the new one too).
 
-On Tue, Nov 10, 2020 at 11:02:43AM +0100, Michal Simek wrote:
->=20
->=20
-> On 09. 11. 20 18:31, William Breathitt Gray wrote:
-> > On Mon, Nov 09, 2020 at 07:22:20PM +0200, Andy Shevchenko wrote:
-> >> On Mon, Nov 09, 2020 at 12:11:40PM -0500, William Breathitt Gray wrote:
-> >>> On Mon, Nov 09, 2020 at 10:15:29PM +0530, Syed Nayyar Waris wrote:
-> >>>> On Mon, Nov 09, 2020 at 03:41:53PM +0100, Arnd Bergmann wrote:
-> >>
-> >> ...
-> >>
-> >>>>  static inline void bitmap_set_value(unsigned long *map,
-> >>>> -                                    unsigned long value,
-> >>>> +                                    unsigned long value, const size=
-_t length,
-> >>>>                                      unsigned long start, unsigned l=
-ong nbits)
-> >>>>  {
-> >>>>          const size_t index =3D BIT_WORD(start);
-> >>>> @@ -15,6 +15,10 @@ static inline void bitmap_set_value(unsigned long=
- *map,
-> >>>>          } else {
-> >>>>                  map[index + 0] &=3D ~BITMAP_FIRST_WORD_MASK(start);
-> >>>>                  map[index + 0] |=3D value << offset;
-> >>>> +
-> >>>> +               if (index + 1 >=3D length)
-> >>>> +                       __builtin_unreachable();
-> >>>> +
-> >>>>                  map[index + 1] &=3D ~BITMAP_LAST_WORD_MASK(start + =
-nbits);
-> >>>>                  map[index + 1] |=3D value >> space;
-> >>>>          }
-> >>>
-> >>> Hi Syed,
-> >>>
-> >>> Let's rename 'length' to 'nbits' as Arnd suggested, and rename 'nbits'
-> >>> to value_width.
-> >>
-> >> length here is in longs. I guess this is the point of entire patch.
-> >=20
-> > Ah yes, this should become 'const unsigned long nbits' and represent the
-> > length of the bitmap in bits and not longs.
-> >=20
-> >> But to me sounds like it would be better to have simply bitmap_set_val=
-ue64() /
-> >> bitmap_set_value32() with proper optimization done and forget about va=
-riadic
-> >> ones for now.
-> >=20
-> > The gpio-xilinx driver can have arbitrary sizes for width[0] and
-> > width[1], so unfortunately that means we don't know the start position
-> > nor the width of the value beforehand.
->=20
-> Start position should be all the time zero. You can't configure this IP
-> to start from bit 2. Width can vary but start is IMHO all the time from
-> 0 bit.
->=20
-> Thanks,
-> Michal
+> Acked-by: Viresh Kumar <viresh.kumar@linaro.org>
 
-Hi Michal,
-
-I'm referring to the mask creation, not the data bus transfer; see the
-implementation of the xgpio_set_multiple() function in linux-next for
-reference:
-<https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/tree/d=
-rivers/gpio/gpio-xilinx.c?h=3Dakpm>.
-
-To generate the old mask we call the following:
-
-	bitmap_set_value(old, state[0], 0, width[0]);
-	bitmap_set_value(old, state[1], width[0], width[1]);
-
-Here, width[0] and width[1] can vary, which makes the exact values of
-the start and nbits parameters unknown beforehand (although we do know
-they are within the bitmap boundary).
-
-Regardless, this is not an issue because we know the bitmap_set_value()
-is supposed to be called with valid values. We just need a way to hint
-to GCC that this is the case, without increasing the latency of the
-function -- which I think is possible if we use __builtin_unreachable()
-for the conditional path checking the index against the length of the
-bitmap.
-
-William Breathitt Gray
-
---SUOF0GtieIMvvwua
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEk5I4PDJ2w1cDf/bghvpINdm7VJIFAl+qiQsACgkQhvpINdm7
-VJK9rxAAjpxkczIhzwXaz+E4XRuM/XqMuez8iWkXN5UVvCVejFZ07j6ryXCEfUea
-GCIhwymRQewCfGC6thkhclYXJRdlpn2B8/8cwStvpgmlNYL0YNwvw1d1ngaxK3f6
-6Xjjl0mdLa41wEj3PooLgCI7gK3gTUqtFQbsOleoTEpJ1ACxTdWqLLC16qnyeK8r
-cmp8U6u+Kt8YUK728+ROBWa1DzJtBSZ81f+nFzzpBVTi9i0mOuKdDQea2aX4uSUx
-HQ+hqlSYnjYrqY67rqtONM6nTONI/e/ZaN+sHx80NcuBuFOBBUrges+dn4iDJlzX
-bGFz5UmomsUz9WJeD8QHMvW7fFjOvUU6ma9n+VhWZPzVNx8p4J/xWEgbZLhGvf88
-8lfyBHBk9ToIUF4hsPCBgb2jI+rNRH1a+ux0EzTqu+vzpkrR3goxokt4Cu41CRbg
-YzMCMD9rsBpzzuHu+wnyFtQEhlOdw8QwBJVubKKEsdLoirueLUQAdYuNQZVwA6Mh
-vFnZgqXfuyNVgVbs8gF9mVn1W0Tu0BIzVQ2prIJQL4ZJTL3P7jCqpZBHBu2AFeXK
-cnppEAX6JH0X8YnQCctbkWP6rVtt1dP/0FdPLJ6uD0mKxB4TXCvbN1rzud80st2s
-N9FVm09Yc4E24LANBH/SwiigiOIh/3EisQAit81kz74X6P2d2jQ=
-=WLlC
------END PGP SIGNATURE-----
-
---SUOF0GtieIMvvwua--
+Thanks!
