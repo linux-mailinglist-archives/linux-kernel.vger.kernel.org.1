@@ -2,90 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BE542ADEE6
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 19:57:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D1D82ADEE8
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 19:58:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731668AbgKJS51 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 13:57:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46078 "EHLO
+        id S1731263AbgKJS6n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 13:58:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46276 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731648AbgKJS50 (ORCPT
+        with ESMTP id S1726179AbgKJS6m (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 13:57:26 -0500
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D0FEC0613D1
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 10:57:26 -0800 (PST)
-Received: by mail-pl1-x642.google.com with SMTP id s2so707840plr.9
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 10:57:26 -0800 (PST)
+        Tue, 10 Nov 2020 13:58:42 -0500
+Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53A1FC0613D1
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 10:58:42 -0800 (PST)
+Received: by mail-ej1-x643.google.com with SMTP id f23so12514098ejk.2
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 10:58:42 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:in-reply-to:message-id:references
-         :user-agent:mime-version;
-        bh=/kb37eWBLDbjDnXmFWfjVVLRM7gSVNXEojlTedCdvIo=;
-        b=JqIkwI7mdvEOLGgaIkz1ad0WiIuxYzgH0Yc+w9hHs29ATydarbNS09YbvxzgGRTA+P
-         4v2AYugE3z7Q2QIeD3OhEndw3WYxeW2qZ16+ck2tb5l8QvEnSQ3AF/yxD9OfnJXgSvfU
-         0kUI2sAyChygWhOdSkQLeY4rXbW4trVTu5JZ6TAtI7Nl4yewa5HMXRcieo9By2J0Sv/1
-         FZfrBAyhW2vT5RjBkJAMyeqeBzWN1CfhkwhjlYL1MDOnm0kZmD51aUsf2d8saiztrvEk
-         sgMVef5QM8EDIEN1uklngMw5xuO1SAjFMC28c0Fo0sTiedCuw73rPx2KgT5Ctj3UEx+K
-         9MNw==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=xY+OYzm36HZ2hizRqFw7LNCZnSuEE495c5e+Ma5DQ2c=;
+        b=Vhj+Cj3Q1ccxlLI6gcrPUEJwiIBfusiKaYvL7ob4w/12LPgA6zNtZ5pjxrYV9aeEAk
+         W1zmVui1It7Km0JFET7bFmNdb0PKdc6sFCfEDiF5OlDbln+C1U7a4bS9PIuLO8TT3aLi
+         Yt16OOHKvIVQ/rxDEM2sOieKmo+PDp8ZZNjjQWiZWOMx6OPrhRa4eefqDwzjRjIuhIER
+         V7VURrtzQVUtioPnjMfH0sb4Ce6hpl9vDtvqlI8QdTOSt8scL+EOlEbmiSvYT9BO3Wyg
+         JrnfGWN/p+Ba8KhlLYLQynf/RAFKjBkmn8l8BAEZsPIrVXEmiE/Q+KXdnDoagWaFoiFp
+         WXqw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
-         :references:user-agent:mime-version;
-        bh=/kb37eWBLDbjDnXmFWfjVVLRM7gSVNXEojlTedCdvIo=;
-        b=A2yRDnS3tmNUhqLH9V9tLFkLxeofHynbCkZm5u7unHTeFNiQaXcx1kIDU+/i4hrdKg
-         kFEUpqTENuBoeUUGb5piMv4EoOV6DZDNcSkn4AL+ufuQhsBeEniv3tuZ/7UUdNa1bcq9
-         jOuNqXEE3nNGGd1HJDZkeqn0Px/8tITL8g8cR+OevJRTbKx0uv1OaarkgzQcabmKei4h
-         N4W+MPkj3AQ/1HMhE/Mqi36AFwJpfgL+WDLZ0laYfh68HytcUKjiJjo+Qs4h6h18w0nI
-         KKWWJKvY3tSWV3yktZUqs46JEGR+/GNS0FO2010IX2yAQlZezgTuxqQTj26n2ZuQnfrx
-         FHeA==
-X-Gm-Message-State: AOAM530rtAbdqyNXy3WMfzFhMSwXbcQwUQS82SHWQQoZ1z4JfqPFzigo
-        79slbKHWDpGn+K1uKpdQfF1vyA==
-X-Google-Smtp-Source: ABdhPJyLZxTXoySuldNuf+7kK21QLpddc/YRss2vggm6jrq66wCxAHCGe8DKoULcFL0dOTVlNbHSEQ==
-X-Received: by 2002:a17:902:e9c4:b029:d6:d5d6:c288 with SMTP id 4-20020a170902e9c4b02900d6d5d6c288mr18061556plk.22.1605034645751;
-        Tue, 10 Nov 2020 10:57:25 -0800 (PST)
-Received: from [2620:15c:17:3:4a0f:cfff:fe51:6667] ([2620:15c:17:3:4a0f:cfff:fe51:6667])
-        by smtp.gmail.com with ESMTPSA id s6sm13826565pgo.8.2020.11.10.10.57.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 10 Nov 2020 10:57:24 -0800 (PST)
-Date:   Tue, 10 Nov 2020 10:57:23 -0800 (PST)
-From:   David Rientjes <rientjes@google.com>
-X-X-Sender: rientjes@chino.kir.corp.google.com
-To:     Muchun Song <songmuchun@bytedance.com>
-cc:     hannes@cmpxchg.org, mhocko@kernel.org, vdavydov.dev@gmail.com,
-        Andrew Morton <akpm@linux-foundation.org>, cl@linux.com,
-        penberg@kernel.org, iamjoonsoo.kim@lge.com, shakeelb@google.com,
-        guro@fb.com, Vlastimil Babka <vbabka@suse.cz>,
-        laoar.shao@gmail.com, chris@chrisdown.name,
-        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-        linux-mm@kvack.org
-Subject: Re: [PATCH v2] mm: memcg/slab: Fix root memcg vmstats
-In-Reply-To: <20201110031015.15715-1-songmuchun@bytedance.com>
-Message-ID: <alpine.DEB.2.23.453.2011101054350.1685210@chino.kir.corp.google.com>
-References: <20201110031015.15715-1-songmuchun@bytedance.com>
-User-Agent: Alpine 2.23 (DEB 453 2020-06-18)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=xY+OYzm36HZ2hizRqFw7LNCZnSuEE495c5e+Ma5DQ2c=;
+        b=eAjz7nsQH1zFNhamNTFDsBomQkKLPHzo2n74n1mdspKJNwfKs8glikqkdxl/N3j/I2
+         a42nYkq+z88sSRwmvGwq9Z6fu9nPHCMjpGgGCjDBPwL2pfXU62FExiQEoGWLd3hbM5f3
+         0Z3tI545OBqynj+owWEDIu2dUi8gkrYmVGywvG8ayWsOz/JwJZMYgYtPnEtnV5f+NSD3
+         XGXjTKDXB5vBJB1f+GkmCugFW/3GWujEBT50uWgxcb0AeDP5iojcTEwQVS0mWp+HK/rp
+         fRHfA4NuDuX8USqOiVOZdckNvfiZdiQPNB0kcNR+Cs8e8fpHfIrIYagGwZVfRo/N4z5P
+         j87w==
+X-Gm-Message-State: AOAM531hcVwI/QnBBVBZCnbcgUZA716oBrFKzX+LinJ3pYAiAIyNu8Nb
+        C3sZcpMSfk24bW1eDbotewwV7Fnrm05NKWkGzVQ=
+X-Google-Smtp-Source: ABdhPJxwDJhG09qcVrcjklXnfM/k9mQpcKMuMSWu2ZjJvkfUOmfZW+dNKN4so2UwpPmnYJYYSHiJ1Ue3oFsUeG2s1X0=
+X-Received: by 2002:a17:906:814:: with SMTP id e20mr21018873ejd.514.1605034720962;
+ Tue, 10 Nov 2020 10:58:40 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+References: <20201110181250.264394-1-shy828301@gmail.com> <20201110181250.264394-4-shy828301@gmail.com>
+ <20201110181636.GJ17076@casper.infradead.org>
+In-Reply-To: <20201110181636.GJ17076@casper.infradead.org>
+From:   Yang Shi <shy828301@gmail.com>
+Date:   Tue, 10 Nov 2020 10:58:29 -0800
+Message-ID: <CAHbLzko+++aGr08js=J6_jmiHSM4zv1XFzGuqpjRdpR_f3+C1A@mail.gmail.com>
+Subject: Re: [v2 PATCH 3/5] mm: migrate: skip shared exec THP for NUMA balancing
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Michal Hocko <mhocko@suse.com>, Zi Yan <ziy@nvidia.com>,
+        Song Liu <songliubraving@fb.com>, Mel Gorman <mgorman@suse.de>,
+        Jan Kara <jack@suse.cz>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux MM <linux-mm@kvack.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 10 Nov 2020, Muchun Song wrote:
+On Tue, Nov 10, 2020 at 10:16 AM Matthew Wilcox <willy@infradead.org> wrote:
+>
+> On Tue, Nov 10, 2020 at 10:12:48AM -0800, Yang Shi wrote:
+> > @@ -2142,6 +2151,10 @@ int migrate_misplaced_transhuge_page(struct mm_struct *mm,
+> >       int page_lru = page_is_file_lru(page);
+> >       unsigned long start = address & HPAGE_PMD_MASK;
+> >
+> > +     if (IS_ENABLED(CONFIG_READ_ONLY_THP_FOR_FS) &&
+> > +         is_shared_exec_page(vma, page))
+> > +             goto out;
+>
+> Why include the IS_ENABLED() check?  Once the ~50 patches I have pending
+> go in, shared executable THPs can exist without this option.  And can't
+> we have executables on tmpfs today without this option too?
 
-> If we reparent the slab objects to the root memcg, when we free
-> the slab object, we need to update the per-memcg vmstats to keep
-> it correct for the root memcg. Now this at least affects the vmstat
-> of NR_KERNEL_STACK_KB for !CONFIG_VMAP_STACK when the thread stack
-> size is smaller than the PAGE_SIZE.
-> 
-> Fixes: ec9f02384f60 ("mm: workingset: fix vmstat counters for shadow nodes")
-> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-> Acked-by: Roman Gushchin <guro@fb.com>
+Aha, yes, thanks for reminding. I had the patches baked in my tree
+before your patches were posted.
 
-Acked-by: David Rientjes <rientjes@google.com>
-
-I assume that without this fix that the root memcg's vmstat would always 
-be inflated if we reparented?  If that's accurate, perhaps this is 
-deserving of a
-
-Cc: stable@vger.kernel.org # 5.3+
+We could have executables on tmpfs w/o that config. Will remove it. Thanks.
