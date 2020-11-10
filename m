@@ -2,152 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 468DA2AD05C
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 08:22:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E8AC2AD060
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 08:23:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731231AbgKJHWr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 02:22:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50726 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726307AbgKJHWq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 02:22:46 -0500
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B453C0613CF
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Nov 2020 23:22:46 -0800 (PST)
-Received: by mail-wr1-x443.google.com with SMTP id p1so11462712wrf.12
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Nov 2020 23:22:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=pgYTv/xDlwDGx17SGvB/gmIGQuabjes19DWEJkyXO6Y=;
-        b=cwHDLKEkoU3j/6kaUgRxnWyiP409LDccPLWTOyHyBR0pT/tPbRhXPW9aCPehvwdKow
-         1hVCnfPhvw0c29TtlfHBUl1QHajuqTtQnbN93IixMRcxlLLJWITG46Qd9L5T51+EBHz1
-         WXOsGB9CbqRiZwVruhdW8wNXrIDqnI70w0NUbKmFDFgSdQB71aEV8cSUrz+v0Viwxy0s
-         ldGSbxePw57Te9VGYcynnwfZqeNgVMNXkCa3we0adZQpcPkjRseKARXjj/GN9ZRafwXY
-         j9/fg7Kr9azoWvLybrRKXCe+y3xhgWtyPAXg5kZ/NSlVgXadm4e1tPR5cW82icqTZYdx
-         XjWg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=pgYTv/xDlwDGx17SGvB/gmIGQuabjes19DWEJkyXO6Y=;
-        b=BGtfG7LDMWtLwTBnVIM5Fxq2p1rqjx4NrDnhCeSku34I17QROkECLMYoL8TCXA/cIb
-         5qepSspO6wWa2pknTOwGVUWgR88dq3Zb7wmAVlC43RzkUFD51GZvIczZmoCF4I1HprjJ
-         BoydlLuEwb+g2TR+qU1DvQfFERfdiTAUoox+uwOiFvdmmOJ9LiWfhBR50HBrqJvsurs6
-         /bT2Dr7QH3gLhHmBsw9Mu3h1VGBQVMPK457014JFszFZlpR6aRXoebrKyGnXudziaw4F
-         +v7SObOOFAHYR6c5sbqV/5Ot/W84lM78Iy25Qav4/i6XgIVweQ1oNxhrDrc/OHywDfgG
-         BrfQ==
-X-Gm-Message-State: AOAM530SJHrVIsCzjDB4VKuQWi8U67x0yTqVOs2qNfDjBFCNhpGSHhlQ
-        WsvsmgObPYEIgx+bwTx804X90w==
-X-Google-Smtp-Source: ABdhPJytbodfPNciSJGHPfGDtp2n8M8AqMAnaG/IPVy9kKlEQBc0JnB43SLpHstkACTrQQIVaCMtfQ==
-X-Received: by 2002:adf:80cb:: with SMTP id 69mr21704418wrl.325.1604992965012;
-        Mon, 09 Nov 2020 23:22:45 -0800 (PST)
-Received: from dell ([91.110.221.139])
-        by smtp.gmail.com with ESMTPSA id n10sm5685079wrv.77.2020.11.09.23.22.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 09 Nov 2020 23:22:44 -0800 (PST)
-Date:   Tue, 10 Nov 2020 07:22:42 +0000
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Alex Deucher <alexdeucher@gmail.com>
-Cc:     David Airlie <airlied@linux.ie>,
-        LKML <linux-kernel@vger.kernel.org>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>
-Subject: Re: [PATCH 15/20] drm/radeon/r600d: Move 'rc600_*' prototypes into
- shared header
-Message-ID: <20201110072242.GF2063125@dell>
-References: <20201109211855.3340030-1-lee.jones@linaro.org>
- <20201109211855.3340030-16-lee.jones@linaro.org>
- <CADnq5_NvitEQWH3Z+5EgOH3zJn=P5YTqwHQo4LLQLi0Hj0Dpww@mail.gmail.com>
+        id S1731583AbgKJHXW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 02:23:22 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45126 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726307AbgKJHXV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Nov 2020 02:23:21 -0500
+Received: from ogabbay-VM.habana-labs.com (unknown [213.57.90.10])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6C0E7206B6;
+        Tue, 10 Nov 2020 07:23:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604993000;
+        bh=8Qz8LIUkTxY5/gc9OeAz1JzdfBTeCe2Bc+FW79CrHvs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=lxwipDA750+LxYCIEu3zmzw/pUVmCg7SnCXTV+tkp+uRd9HfS7hzKE6EWuqiSM04n
+         JSYs2z775lphf/o41x7822LhK8kSvzL+ukiWXd7qO3bbsyTc3toL9GerxI+wnwO5Bn
+         C0q4F0UuQnc+RBfkG6lgigyNFmnbFtw8EbA34xTQ=
+Date:   Tue, 10 Nov 2020 09:23:10 +0200
+From:   Oded Gabbay <ogabbay@kernel.org>
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Parav Pandit <parav@nvidia.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        "Ertman, David M" <david.m.ertman@intel.com>,
+        "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
+        Takashi Iwai <tiwai@suse.de>,
+        linux-rdma <linux-rdma@vger.kernel.org>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Doug Ledford <dledford@redhat.com>,
+        Netdev <netdev@vger.kernel.org>,
+        David Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Fred Oh <fred.oh@linux.intel.com>,
+        Parav Pandit <parav@mellanox.com>,
+        "Saleem, Shiraz" <shiraz.saleem@intel.com>,
+        "Patil, Kiran" <kiran.patil@intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Leon Romanovsky <leonro@nvidia.com>
+Subject: Re: [PATCH v3 01/10] Add auxiliary bus support
+Message-ID: <20201110072309.GA6508@ogabbay-VM.habana-labs.com>
+References: <20201023003338.1285642-1-david.m.ertman@intel.com>
+ <20201023003338.1285642-2-david.m.ertman@intel.com>
+ <CAPcyv4i9s=CsO5VJOhPnS77K=bD0LTQ8TUAbhLd+0OmyU8YQ3g@mail.gmail.com>
+ <DM6PR11MB284191BAA817540E52E4E2C4DDEE0@DM6PR11MB2841.namprd11.prod.outlook.com>
+ <BY5PR12MB43228923300FDE8B087DC4E9DCEE0@BY5PR12MB4322.namprd12.prod.outlook.com>
+ <CAPcyv4h1LH+ojRGqvh_R6mfuBbsibGa8DNMG5M1sN5G1BgwiHw@mail.gmail.com>
+ <BY5PR12MB43222D59CCCFCF368C357098DCEE0@BY5PR12MB4322.namprd12.prod.outlook.com>
+ <20201106193537.GH49612@sirena.org.uk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CADnq5_NvitEQWH3Z+5EgOH3zJn=P5YTqwHQo4LLQLi0Hj0Dpww@mail.gmail.com>
+In-Reply-To: <20201106193537.GH49612@sirena.org.uk>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 09 Nov 2020, Alex Deucher wrote:
-
-> On Mon, Nov 9, 2020 at 4:19 PM Lee Jones <lee.jones@linaro.org> wrote:
-> >
-> > Fixes the following W=1 kernel build warning(s):
-> >
-> >  drivers/gpu/drm/radeon/r600_hdmi.c:177:6: warning: no previous prototype for ‘r600_hdmi_update_acr’ [-Wmissing-prototypes]
-> >  177 | void r600_hdmi_update_acr(struct drm_encoder *encoder, long offset,
-> >  | ^~~~~~~~~~~~~~~~~~~~
-> >  drivers/gpu/drm/radeon/r600_hdmi.c:217:6: warning: no previous prototype for ‘r600_set_avi_packet’ [-Wmissing-prototypes]
-> >  217 | void r600_set_avi_packet(struct radeon_device *rdev, u32 offset,
-> >  | ^~~~~~~~~~~~~~~~~~~
-> >  drivers/gpu/drm/radeon/r600_hdmi.c:314:6: warning: no previous prototype for ‘r600_hdmi_audio_set_dto’ [-Wmissing-prototypes]
-> >  314 | void r600_hdmi_audio_set_dto(struct radeon_device *rdev,
-> >  | ^~~~~~~~~~~~~~~~~~~~~~~
-> >  drivers/gpu/drm/radeon/r600_hdmi.c:340:6: warning: no previous prototype for ‘r600_set_vbi_packet’ [-Wmissing-prototypes]
-> >  340 | void r600_set_vbi_packet(struct drm_encoder *encoder, u32 offset)
-> >  | ^~~~~~~~~~~~~~~~~~~
-> >  drivers/gpu/drm/radeon/r600_hdmi.c:351:6: warning: no previous prototype for ‘r600_set_audio_packet’ [-Wmissing-prototypes]
-> >  351 | void r600_set_audio_packet(struct drm_encoder *encoder, u32 offset)
-> >  | ^~~~~~~~~~~~~~~~~~~~~
-> >  drivers/gpu/drm/radeon/r600_hdmi.c:393:6: warning: no previous prototype for ‘r600_set_mute’ [-Wmissing-prototypes]
-> >  393 | void r600_set_mute(struct drm_encoder *encoder, u32 offset, bool mute)
-> >  | ^~~~~~~~~~~~~
-> >  drivers/gpu/drm/radeon/r600_hdmi.c:469:6: warning: no previous prototype for ‘r600_hdmi_enable’ [-Wmissing-prototypes]
-> >  469 | void r600_hdmi_enable(struct drm_encoder *encoder, bool enable)
-> >  | ^~~~~~~~~~~~~~~~
-> >
-> > Cc: Alex Deucher <alexander.deucher@amd.com>
-> > Cc: "Christian König" <christian.koenig@amd.com>
-> > Cc: David Airlie <airlied@linux.ie>
-> > Cc: Daniel Vetter <daniel@ffwll.ch>
-> > Cc: amd-gfx@lists.freedesktop.org
-> > Cc: dri-devel@lists.freedesktop.org
-> > Signed-off-by: Lee Jones <lee.jones@linaro.org>
-> > ---
-> >  drivers/gpu/drm/radeon/r600d.h        | 14 ++++++++++++++
-> >  drivers/gpu/drm/radeon/radeon_audio.c | 11 +----------
-> >  2 files changed, 15 insertions(+), 10 deletions(-)
-> >
-> > diff --git a/drivers/gpu/drm/radeon/r600d.h b/drivers/gpu/drm/radeon/r600d.h
-> > index 2e00a5287bd2d..db4bcc8bee4e5 100644
-> > --- a/drivers/gpu/drm/radeon/r600d.h
-> > +++ b/drivers/gpu/drm/radeon/r600d.h
-> > @@ -27,6 +27,20 @@
-> >  #ifndef R600D_H
-> >  #define R600D_H
-> >
-> > +struct radeon_crtc;
-> > +struct radeon_hdmi_acr;
-> > +
-> > +void r600_set_audio_packet(struct drm_encoder *encoder, u32 offset);
-> > +void r600_set_mute(struct drm_encoder *encoder, u32 offset, bool mute);
-> > +void r600_hdmi_audio_set_dto(struct radeon_device *rdev,
-> > +       struct radeon_crtc *crtc, unsigned int clock);
-> > +void r600_set_avi_packet(struct radeon_device *rdev, u32 offset,
-> > +       unsigned char *buffer, size_t size);
-> > +void r600_hdmi_update_acr(struct drm_encoder *encoder, long offset,
-> > +       const struct radeon_hdmi_acr *acr);
-> > +void r600_set_vbi_packet(struct drm_encoder *encoder, u32 offset);
-> > +void r600_hdmi_enable(struct drm_encoder *encoder, bool enable);
-> > +
+On Fri, Nov 06, 2020 at 07:35:37PM +0000, Mark Brown wrote:
+> On Thu, Nov 05, 2020 at 08:37:14PM +0000, Parav Pandit wrote:
 > 
-> the *d.h headers are supposed to just be hardware definitions.  I'd
-> prefer to keep driver stuff out of them.
+> > > > This example describes the mlx5 PCI subfunction use case.
+> > > > I didn't follow your question about 'explicit example'.
+> > > > What part is missing to identify it as explicit example?
+> 
+> > > Specifically listing "mlx5" so if someone reading this document thinks to
+> > > themselves "hey mlx5 sounds like my use case" they can go grep for that.
+> 
+> > Ah, I see.
+> > "mlx5" is not listed explicitly, because it is not included in this patchset.
+> > In various previous discussions in this thread, mlx5 subfunction use case is described that justifies the existence of the bus.
+> > I will be happy to update this documentation once mlx5 subfunction will be part of kernel so that grep actually shows valid output.
+> > (waiting to post them as it uses auxiliary bus :-)).
+> 
+> For ease of review if there's a new version it might be as well to just
+> reference it anyway, hopefully the mlx5 code will be merged fairly
+> quickly once the bus itself is merged.  It's probably easier all round
+> than adding the reference later, it seems more likely that mlx5 will get
+> merged than that it'll fall by the wayside.
 
-That's fine (I did wonder if that were the case).
+Another use-case for this patch-set is going to be the habanalabs driver.
+The GAUDI ASIC is a PCI H/W accelerator for deep-learning which also exposes 
+network ports.We are going to use this auxiliary-bus feature to separate our 
+monolithic driver into several parts that will reside in different subsystems 
+and communicate between them through the bus.
 
-I need an answer from you and Sam whether I can create new headers.
-
-For me, it is the right thing to do.
-
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+Thanks,
+Oded
