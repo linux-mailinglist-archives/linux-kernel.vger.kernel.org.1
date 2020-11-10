@@ -2,111 +2,206 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 839052ADF50
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 20:29:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 78B402ADF56
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 20:31:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731281AbgKJT3E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 14:29:04 -0500
-Received: from m42-4.mailgun.net ([69.72.42.4]:62920 "EHLO m42-4.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726307AbgKJT3D (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 14:29:03 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1605036542; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=0VxEoZEjoD8/bkzrSGDJ5C9RtI1ekM+Z0OiDWMyF/eE=; b=jz3UjH9CsyDVMDMM63qygAX0mMZI3NWB9AeoD/OZ6LIrdtOISQY1ZqoP3FU8JCDIgICV8w6b
- TYGaOyhJZjMJBAb8vRwI0aBmnW8mX0rBTNnkwey+N2YttuZt3xF7y6dNxnRo4pG0MIld29Kh
- fRSzwfhj9UwqQRKqX2dhJBsJN78=
-X-Mailgun-Sending-Ip: 69.72.42.4
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n01.prod.us-east-1.postgun.com with SMTP id
- 5faae9fececc309dcb51edea (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 10 Nov 2020 19:29:02
- GMT
-Sender: jhugo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id B2C1AC433C9; Tue, 10 Nov 2020 19:29:01 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.0
-Received: from [10.226.59.216] (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: jhugo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 1D8D5C433C6;
-        Tue, 10 Nov 2020 19:28:59 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 1D8D5C433C6
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=jhugo@codeaurora.org
-Subject: Re: [PATCH] pinctrl: qcom: Fix msm9853 Kconfig entry to depend on,
- not select PINCTRL_MSM
-To:     John Stultz <john.stultz@linaro.org>,
-        lkml <linux-kernel@vger.kernel.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Prasad Sodagudi <psodagud@codeaurora.org>,
-        Vladimir Lypak <junak.pub@gmail.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-arm-msm@vger.kernel.org, linux-gpio@vger.kernel.org
-References: <20201110190054.20517-1-john.stultz@linaro.org>
-From:   Jeffrey Hugo <jhugo@codeaurora.org>
-Message-ID: <19b7b301-3460-7ece-21d3-59cd7490c8ed@codeaurora.org>
-Date:   Tue, 10 Nov 2020 12:28:59 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.3
+        id S1726984AbgKJTbS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 14:31:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51434 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725862AbgKJTbS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Nov 2020 14:31:18 -0500
+Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2EA05C0613D3
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 11:31:18 -0800 (PST)
+Received: by mail-wm1-x336.google.com with SMTP id c16so4309288wmd.2
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 11:31:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=KIXfXFuPLwXB8GBq2vAXvcC0I8sjkpobgKWKDNLykA0=;
+        b=JUjEt2lFTR0iG+Eax3c3Pz0DLhpVkOTbzfvPcFTnuFbl4T6oTJV0Zc7K8h38ORBupm
+         LnUCDldwHm6asihRgXVog41ewvNS+DvA3Z4UVggb1yTKNJ0mxZ2g6LNqva90dcXt6X5J
+         fobritNfiLBI98bcZgFSXqyHYfGz7U4rET2OCpyhknHb8S7tInueAF+1HOs6aKyLXmpd
+         KMmeK10S1GMHx/K/meqnfS+1y0XTXMEh9SKSLUJT7uC0Y7gk7z/NrJNPEpQ3JVJXIqrb
+         httUzSxj0LSNTTxrbGnPVL1yY++5MnASDBwRFeKz222eEdk/7LOFN4fcIUs5kJUoRqoK
+         AguQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=KIXfXFuPLwXB8GBq2vAXvcC0I8sjkpobgKWKDNLykA0=;
+        b=V6pquQpIYikjGeIengg2jOUH5rtIiXP+4qIcI2imCHR460UvVu4qeEiUVOO1kMVyfx
+         CPElsrxvW8lgMUzFZCbIqGyJiHQB+dI6lFIEaDSuZEMZF4gR0RQ5PmPVAz2N9qMGvDN/
+         JEepXNbCvfrFDTcOonWtpK1QqPbz5NUx0JxndwtOjlIXwwiMhuxkFdUkJTjIJQtH7LhV
+         vLSSbvCskkP7Z9JTQCTapzNmm+gOvCTEhAv9Zhk0ahmHaob6Ow4eJFJ8lddm6eunBcuE
+         DpzY/cUb+7QeXxRpAM3TaJNh9z7FsI5YtjpruXCcIE9SDdn01jpG+KHArzLbQuMG3Qrx
+         AJEw==
+X-Gm-Message-State: AOAM532gO2wxvwZUYjiC7G9TRdLGq/dARGKepyE2zUylLKEyxPmM7KpL
+        SS2vbDIggqD0wr2DKzF7Flx2uw==
+X-Google-Smtp-Source: ABdhPJz6SD75kp2GNtnOY5W0GnwQsi2T981/R3O4DcB3jOoL9Zl9xgJ43TkfqHYvJiBjI4G7lgl67A==
+X-Received: by 2002:a1c:190:: with SMTP id 138mr665338wmb.113.1605036676569;
+        Tue, 10 Nov 2020 11:31:16 -0800 (PST)
+Received: from dell.default ([91.110.221.139])
+        by smtp.gmail.com with ESMTPSA id 30sm17635335wrs.84.2020.11.10.11.31.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 10 Nov 2020 11:31:15 -0800 (PST)
+From:   Lee Jones <lee.jones@linaro.org>
+To:     lee.jones@linaro.org
+Cc:     linux-kernel@vger.kernel.org,
+        Alex Deucher <alexander.deucher@amd.com>,
+        amd-gfx@lists.freedesktop.org,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        dri-devel@lists.freedesktop.org, Evan Quan <evan.quan@amd.com>,
+        Gareth Hughes <gareth@valinux.com>,
+        linaro-mm-sig@lists.linaro.org, linux-media@vger.kernel.org,
+        Sumit Semwal <sumit.semwal@linaro.org>
+Subject: [PATCH 00/30] [Set 4] Rid W=1 warnings from GPU
+Date:   Tue, 10 Nov 2020 19:30:42 +0000
+Message-Id: <20201110193112.988999-1-lee.jones@linaro.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <20201110190054.20517-1-john.stultz@linaro.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/10/2020 12:00 PM, John Stultz wrote:
-> One fixup following my patch commit be117ca32261 ("pinctrl:
-> qcom: Kconfig: Rework PINCTRL_MSM to be a depenency rather then
-> a selected config") being queued in LinusW's tree, as a new
-> config entry was added for the msm9853 that also needs the
-> change.
-> 
-> Applies to LinusW's pinctrl devel tree.
-> 
-> Cc: Andy Gross <agross@kernel.org>
-> Cc: Prasad Sodagudi <psodagud@codeaurora.org>
-> Cc: Vladimir Lypak <junak.pub@gmail.com>
-> Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
-> Cc: Linus Walleij <linus.walleij@linaro.org>
-> Cc: linux-arm-msm@vger.kernel.org
-> Cc: linux-gpio@vger.kernel.org
-> Signed-off-by: John Stultz <john.stultz@linaro.org>
-> ---
->   drivers/pinctrl/qcom/Kconfig | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/pinctrl/qcom/Kconfig b/drivers/pinctrl/qcom/Kconfig
-> index 8bdf878fe970c..cf56e029cd9c7 100644
-> --- a/drivers/pinctrl/qcom/Kconfig
-> +++ b/drivers/pinctrl/qcom/Kconfig
-> @@ -115,7 +115,7 @@ config PINCTRL_MSM8916
->   config PINCTRL_MSM8953
->   	tristate "Qualcomm 8953 pin controller driver"
->   	depends on GPIOLIB && OF
-> -	select PINCTRL_MSM
-> +	depends on PINCTRL_MSM
->   	help
->   	  This is the pinctrl, pinmux, pinconf and gpiolib driver for the
->   	  Qualcomm TLMM block found on the Qualcomm MSM8953 platform.
-> 
+This set is part of a larger effort attempting to clean-up W=1
+kernel builds, which are currently overwhelmingly riddled with
+niggly little warnings.
 
-Subject should indicate msm8953, no?
+Exciting times (using Arm as the benchmark):
 
+ Before these sets:
+  5031 drivers/gpu/
+   3923 drivers/gpu/drm/amd/
+    258 drivers/gpu/drm/radeon/
+     95 drivers/gpu/drm/nouveau/
+     77 drivers/gpu/drm/msm/
+
+ After these sets:
+  2236 drivers/gpu/
+    1949 drivers/gpu/drm/amd/
+      97 drivers/gpu/drm/nouveau/
+      83 drivers/gpu/drm/msm/
+      40 drivers/gpu/drm/radeon
+
+Couple more to go.
+
+Plan is to finsish off Radeon, then start targeting AMD tomorrow.
+
+Lee Jones (30):
+  drm/radeon/evergreen: Add comment for 'evergreen_page_flip()'s 'async'
+    param
+  drm/radeon/evergreen: Remove set but unused variable 'mc_shared_chmap'
+  drm/radeon/ni: Demote vague attempt at function header doc
+  drm/radeon/si: Remove set but unused variable 'mc_shared_chmap'
+  drm/radeon/cik: Remove set but unused variable 'mc_shared_chmap'
+  drm/radeon/trinity_dpm: Remove some defined but never used arrays
+  drm/radeon/kv_dpm: Strip out unused functions and their tables
+  drm/radeon/ci_dpm: Remove set but unused variable 'dpm_event_src'
+  drm/radeon/radeon_vm: Fix some function parameter documentation
+  drm/radeon/radeon_sync: Add description for function param 'rdev'
+  drm/radeon/radeon_ib: Supply description for 'radeon_ib_get's get
+    param
+  drm/radeon/radeon_dp_mst: Remove unused variable 'ret' from
+    radeon_mst_encoder_dpms()
+  drm/radeon/radeon_mn: Supply description for 'cur_seq' even if it is
+    unused
+  drm/radeon/evergreen_dma: Fix doc-rot of function parameter 'resv'
+  drm/radeon/cik_sdma: Demote vague attempt at kernel-doc
+  drm/radeon/r100: Fix some kernel-doc formatting, misnaming and missing
+    issues
+  drm/radeon/r600_cs: Fix some doc-rot and supply missing function param
+    docs
+  drm/radeon/evergreen_cs: Fix misnaming issues surrounding 'p' param
+  drm/radeon/radeon_drv: Move 'radeon_mmap()'s prototype to shared
+    header
+  drm/radeon/radeon_drv: Move 'radeon_driver_irq_handler_kms's prototype
+    into shared header
+  drm/radeon/atom: Move 'radeon_atom_hw_i2c_*()'s prototypes into shared
+    header
+  drm/radeon/radeon_gem: Move 'radeon_gem_prime_*()'s prototypes to
+    shared header
+  drm/radeon/evergreen_hdmi: Move 'evergreen_*()' and 'dce4_*()' HDMI
+    prototypes to shared header
+  drm/radeon/rv770: Move 'rv770_get_*()'s prototypes to shared header
+  drm/radeon/sumo_dpm: Move 'sumo_get_pi()'s prototype into shared
+    header
+  drm/radeon/ni_dpm: Move 'ni_get_{pi,ps}()'s into shared header
+  drm/radeon/ni: Remove set but unused variable 'mc_shared_chmap'
+  drm/radeon/evergreen: Move 'cayman_*()'s prototypes to shared header
+  drm/radeon/r600_dma: Move 'r600_gpu_check_soft_reset()'s prototype to
+    shared location
+  drm/radeon/cik: Move 'r600_ih_ring_{alloc,fini}()'s prototypes to
+    shared header
+
+ drivers/gpu/drm/radeon/atom.h           |   6 +
+ drivers/gpu/drm/radeon/btc_dpm.c        |   3 +-
+ drivers/gpu/drm/radeon/ci_dpm.c         |  12 --
+ drivers/gpu/drm/radeon/cik.c            |   7 +-
+ drivers/gpu/drm/radeon/cik_sdma.c       |   4 +-
+ drivers/gpu/drm/radeon/cypress_dpm.c    |   3 +-
+ drivers/gpu/drm/radeon/evergreen.c      |  10 +-
+ drivers/gpu/drm/radeon/evergreen_cs.c   |   6 +-
+ drivers/gpu/drm/radeon/evergreen_dma.c  |   2 +-
+ drivers/gpu/drm/radeon/evergreen_hdmi.c |   1 +
+ drivers/gpu/drm/radeon/evergreen_hdmi.h |  69 ++++++++
+ drivers/gpu/drm/radeon/kv_dpm.c         | 205 +-----------------------
+ drivers/gpu/drm/radeon/ni.c             |   9 +-
+ drivers/gpu/drm/radeon/ni.h             |  36 +++++
+ drivers/gpu/drm/radeon/ni_dpm.c         |   2 +-
+ drivers/gpu/drm/radeon/ni_dpm.h         |   3 +
+ drivers/gpu/drm/radeon/r100.c           |   7 +-
+ drivers/gpu/drm/radeon/r600.c           |   1 +
+ drivers/gpu/drm/radeon/r600.h           |  35 ++++
+ drivers/gpu/drm/radeon/r600_cs.c        |   9 +-
+ drivers/gpu/drm/radeon/r600_dma.c       |   3 +-
+ drivers/gpu/drm/radeon/radeon_audio.c   |  26 +--
+ drivers/gpu/drm/radeon/radeon_dp_mst.c  |  16 +-
+ drivers/gpu/drm/radeon/radeon_drv.c     |   7 +-
+ drivers/gpu/drm/radeon/radeon_gem.c     |   9 +-
+ drivers/gpu/drm/radeon/radeon_i2c.c     |   4 -
+ drivers/gpu/drm/radeon/radeon_ib.c      |   1 +
+ drivers/gpu/drm/radeon/radeon_irq_kms.c |   1 +
+ drivers/gpu/drm/radeon/radeon_kms.h     |   5 +
+ drivers/gpu/drm/radeon/radeon_mn.c      |   1 +
+ drivers/gpu/drm/radeon/radeon_prime.c   |   1 +
+ drivers/gpu/drm/radeon/radeon_prime.h   |  39 +++++
+ drivers/gpu/drm/radeon/radeon_sync.c    |   1 +
+ drivers/gpu/drm/radeon/radeon_ttm.h     |   1 +
+ drivers/gpu/drm/radeon/radeon_vm.c      |   8 +-
+ drivers/gpu/drm/radeon/rv730_dpm.c      |   4 +-
+ drivers/gpu/drm/radeon/rv740_dpm.c      |   3 +-
+ drivers/gpu/drm/radeon/rv770.h          |   5 +
+ drivers/gpu/drm/radeon/rv770_dpm.c      |   1 +
+ drivers/gpu/drm/radeon/si.c             |   7 +-
+ drivers/gpu/drm/radeon/si_dpm.c         |   5 +-
+ drivers/gpu/drm/radeon/sumo_dpm.h       |   1 +
+ drivers/gpu/drm/radeon/sumo_smc.c       |   2 -
+ drivers/gpu/drm/radeon/trinity_dpm.c    |  44 -----
+ 44 files changed, 261 insertions(+), 364 deletions(-)
+ create mode 100644 drivers/gpu/drm/radeon/evergreen_hdmi.h
+ create mode 100644 drivers/gpu/drm/radeon/ni.h
+ create mode 100644 drivers/gpu/drm/radeon/r600.h
+ create mode 100644 drivers/gpu/drm/radeon/radeon_prime.h
+
+Cc: Alex Deucher <alexander.deucher@amd.com>
+Cc: amd-gfx@lists.freedesktop.org
+Cc: "Christian König" <christian.koenig@amd.com>
+Cc: Daniel Vetter <daniel@ffwll.ch>
+Cc: David Airlie <airlied@linux.ie>
+Cc: dri-devel@lists.freedesktop.org
+Cc: Evan Quan <evan.quan@amd.com>
+Cc: Gareth Hughes <gareth@valinux.com>
+Cc: linaro-mm-sig@lists.linaro.org
+Cc: linux-media@vger.kernel.org
+Cc: Sumit Semwal <sumit.semwal@linaro.org>
 -- 
-Jeffrey Hugo
-Qualcomm Technologies, Inc. is a member of the
-Code Aurora Forum, a Linux Foundation Collaborative Project.
+2.25.1
+
