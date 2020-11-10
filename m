@@ -2,172 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7332F2AE377
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 23:42:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C6B12AE381
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 23:42:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732299AbgKJWmK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 17:42:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53202 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730254AbgKJWmJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 17:42:09 -0500
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4F65C0613D1;
-        Tue, 10 Nov 2020 14:42:08 -0800 (PST)
-Received: by mail-wr1-x442.google.com with SMTP id k2so105284wrx.2;
-        Tue, 10 Nov 2020 14:42:08 -0800 (PST)
+        id S1731654AbgKJWmZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 17:42:25 -0500
+Received: from mail-bn7nam10on2052.outbound.protection.outlook.com ([40.107.92.52]:58465
+        "EHLO NAM10-BN7-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1732314AbgKJWmT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Nov 2020 17:42:19 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=kb3x6IFEqMV/HRwf3A3GWdF1Y8/nhXMdD2VITh8h7zPyilrti5C498lf2zs4fwAefbTRg2DUiHR34rrP6podd7Fv8EfI6VAElf7LhW199gBkDE2LIYtwCzj3HQB87lixqse4Hs/Lp9zebdUvPW6kzLVCeEzKYWXM1tcgHHQBrTLf1ODDD4MD5/5/CrpHB6qCccafE5NW7TJceGgw+OSitV3uCQejO4UC3OXIJgfrR1v6t67BgrrAw1R4LlDKllC0wMkYNm3pOtHYS4y9WU3zEHHlvPqJtXOD286dQ9q37F9Lbs/jIeKReOMIeRxWGQCly+qesV7M/DbjUN3SQPDxpg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Ld1/j0FTxqs5JZoQ9D9m+PbpnGiTPmd+wXwhgKpzV4U=;
+ b=Mutbevr51szV+QrCQvnMw4jyR8yqKn+gacSShrUp+0f7TjDdEmLr3KPAqdK13arxylWeqBqJ3b5u3aHCNfTim6TXBnllRCUIG6GpdkqdBEh4j+SpCKKp2iaFiQSAIHVuEHc4C5mEWKkmo36ws1gbG3QT/mzb3fR0lSb48ZSlyioOF3j3T2tlGyHNXFCnd2lYsA9nsfHpXGCeKPB4QdkIWnFC+l3FRqxanAsneUJpYTOq2geGjc6ijWS58m+nurmglgoVM4tSogwMaEo6JB3l6QM4VQoOShyNW+bQbdv8vs6bjXSUjfANItsEQZEZ9l3GoOpO9+lP9/bCP/plRV5Ncg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=hn1gX8PspkDOj8Q527Btx4yJgJJQpfPQNotleBd9s78=;
-        b=RNbImXQqxewVikynVYlsIc5eJiPiI52a7pExrDU21je2KF48bwcH63mSvvUs302Sgb
-         Z/kCa79a/J+G54zd4Ar7skX+R5U6eB+LJ/JImPH+NtKz0e60LTFVZhwZulB5BDGIt+Yk
-         +EnKirDwthqU7BWQpqd2knWu3F31wrB1kNQ6DpITjm5QGJaUw7Wfj1x8YCslrVyDgWfW
-         akZsyQUEMz9O+6/Lu67v+gpy9y1zPV7aV2Gvj8vugD2xxdq7t8OuFdqsj2BSR0GLlNvi
-         1dGdu5vL1SIWczA7+0sg0IJtSPCylkL6OY3IvGXBx6SwtUAWB+LLhTueT73DEdotRN6x
-         lM6Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=hn1gX8PspkDOj8Q527Btx4yJgJJQpfPQNotleBd9s78=;
-        b=Wk1VDtscNT6Hu9gTFshACc9ohA7JYhkQTeCrsT+yeZ8j1LGffCvkrQlXzRjP72y1J3
-         Ac5Ec0nGqVq1K7+AnUO8GWTpjXS1KXeirRoZXilhCEaVSF/cVS33iAlrkHAGRtWm9BKC
-         AuIPMDUTbx7hN9NLGOnoVwnSm3maZvvHpr9DCLaM4EdMVSsclVh4QHtv0rzpMYDBFwhp
-         X7I0Flt2f4ZcqEEolSeCZsz4Z0RzOkWmVPdItfaLHKqNejoMKk+bdQKO1plbBW+YABR3
-         crSaUwIEuuXZNqcfLs8aYoFQEPT1oTUsvwDYy6lJqnJGPFfKoKzM1ypP7FZjPAyW0BU6
-         oUpA==
-X-Gm-Message-State: AOAM531lY5Mu1kO++2sI8oTSUsFd/s5wCo9AMwykiRmRfrOdWnB+Ldie
-        W2JpDdYGsa3HkKH+rvY2kKvWO1m8hcqMa891z3Y=
-X-Google-Smtp-Source: ABdhPJzpeprw0TRKEK/mcA0vV7/Yvkxpg9VGgvNrS9j5WDhVBOU+5lem10Hfpdjv+l80DR3N6054qdXwIeCfk1LsAs4=
-X-Received: by 2002:adf:e8d0:: with SMTP id k16mr26053226wrn.362.1605048127616;
- Tue, 10 Nov 2020 14:42:07 -0800 (PST)
+ d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Ld1/j0FTxqs5JZoQ9D9m+PbpnGiTPmd+wXwhgKpzV4U=;
+ b=y2ykcCirgBPox+MjgmaZqL9ry494aI05V/s5/CPPnZVoFk1Twu8vn7zM6EnWqgbtzOnPYNd42voBpJmyv4Zc+9XM1RVpEunW/5jQQJAzaFLBC7EEtBRnQLxU8ZjcFKt1viB9Y1G0SgFh7qrg4olQTu/uArYX8bSfbNs3H1/qUig=
+Authentication-Results: redhat.com; dkim=none (message not signed)
+ header.d=none;redhat.com; dmarc=none action=none header.from=amd.com;
+Received: from SN6PR12MB2767.namprd12.prod.outlook.com (2603:10b6:805:75::23)
+ by SA0PR12MB4590.namprd12.prod.outlook.com (2603:10b6:806:93::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3541.21; Tue, 10 Nov
+ 2020 22:42:17 +0000
+Received: from SN6PR12MB2767.namprd12.prod.outlook.com
+ ([fe80::d8f2:fde4:5e1d:afec]) by SN6PR12MB2767.namprd12.prod.outlook.com
+ ([fe80::d8f2:fde4:5e1d:afec%3]) with mapi id 15.20.3541.025; Tue, 10 Nov 2020
+ 22:42:17 +0000
+From:   Ashish Kalra <Ashish.Kalra@amd.com>
+To:     pbonzini@redhat.com
+Cc:     tglx@linutronix.de, mingo@redhat.com, hpa@zytor.com,
+        joro@8bytes.org, bp@suse.de, thomas.lendacky@amd.com,
+        Brijesh.Singh@amd.com, x86@kernel.org, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, ssg.sos.patches@amd.com
+Subject: [PATCH] KVM: SVM: Fix offset computation bug in __sev_dbg_decrypt().
+Date:   Tue, 10 Nov 2020 22:42:05 +0000
+Message-Id: <20201110224205.29444-1-Ashish.Kalra@amd.com>
+X-Mailer: git-send-email 2.17.1
+Content-Type: text/plain
+X-Originating-IP: [165.204.77.1]
+X-ClientProxiedBy: DM3PR14CA0131.namprd14.prod.outlook.com
+ (2603:10b6:0:53::15) To SN6PR12MB2767.namprd12.prod.outlook.com
+ (2603:10b6:805:75::23)
 MIME-Version: 1.0
-References: <20201109211855.3340030-1-lee.jones@linaro.org> <20201109211855.3340030-13-lee.jones@linaro.org>
-In-Reply-To: <20201109211855.3340030-13-lee.jones@linaro.org>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Tue, 10 Nov 2020 17:41:55 -0500
-Message-ID: <CADnq5_O7nnvqxXGc4pyZZhMem4+-_mYmLNMU6UyT=6WtPfVSEg@mail.gmail.com>
-Subject: Re: [PATCH 12/20] drm/radeon/radeon_cs: Fix a bunch of doc-rot issues
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     David Airlie <airlied@linux.ie>,
-        LKML <linux-kernel@vger.kernel.org>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
-        <linaro-mm-sig@lists.linaro.org>,
-        Jerome Glisse <glisse@freedesktop.org>,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        linux-media <linux-media@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from ashkalra_ubuntu_server.amd.com (165.204.77.1) by DM3PR14CA0131.namprd14.prod.outlook.com (2603:10b6:0:53::15) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3541.21 via Frontend Transport; Tue, 10 Nov 2020 22:42:16 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: 5cc2c8e8-e647-4f8a-8da5-08d885c9e012
+X-MS-TrafficTypeDiagnostic: SA0PR12MB4590:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <SA0PR12MB4590F0504B1BFC3BC5FC9F278EE90@SA0PR12MB4590.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:4714;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: Gd8B2gGWYHcoJOH5M3DCHCggF/W3rWx9p+zxg2Q9tS6wLJtGE5AqtLaFhzdIurukNbHTkqcIaFseFRRBDeDUTjY8fmCMcaXvIEZovp0y79r2YKlvF5NX3hMiVqcak6QsEqxIgZsu6T5Skk39cDMD8XRoDIgVSS8p3jBbh6w1NEL1DoY1jirFSrWGn1Wq8VuYQ4njp1YhtN7WXZ3GNM8yaFQgi5gLHQBQchAN6AmA6KIl4vqEGwmMyZe/MZlO9HhrADnbqTXVG4VJPZjdZqQU+Y0cfv8PCAXSTwbUvk6asxXB6KZmvjrv0v/0Tmo/Dlkmua3n+ZF91n5CCLFIRyfCjg==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR12MB2767.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(366004)(39850400004)(376002)(136003)(396003)(83380400001)(8936002)(2906002)(478600001)(26005)(186003)(16526019)(4326008)(316002)(956004)(2616005)(8676002)(52116002)(7696005)(6916009)(66556008)(66476007)(66946007)(6486002)(5660300002)(36756003)(86362001)(6666004)(1076003)(4744005);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: zLPd967Hckv4v8+E4upnL572adzifry9RLyPlM3unIC7E9OuTxaWqLBIR/YbqFLTkVlp2UVMjYNL7j0hP3532hBjo6hoOGYE/lclhzshBlblK0n1oPeeX0x7dhNf1YGtAx5X3K3joFG/atoaEssLRLtB5naZ3nYzGK1UWA+8Jp8Qcb2DtyjvRslH4btR6QsVwIcg4Xa3psFH2UVOEa9yiZBa+E9CNL/qWs0OC/T0tpBjprfo4WF/nNl0AbeJFMIW35iYLCMzBQivKe+pbwloVuzXWG4PKJ7Vj7usLPO5KSCW00OPRMx+xJkB24r+ec7AVuy8axCHbUpNyIBo577wa7rOJvre32KWWm1IMSjsYxMveDZBTmJgzcGGcop5Y2ACK+ttfhgdoonWmnNCZKX8z9CTVE2P3r/svzkQggeS9AlVw0Ti4DVds9zwnq5sdCn4EnWkqdmuxDOTk/s6Mi6pI+Lx0iDUQovIo7NoI4rZU8S+1n+doPQU6tvJi6JlvBM5Shg6HfJ0TJ38If7VMGLpkGxvnAt/FG43AJc9gwPaJEe3waJywNsn0vcYXZcecz1/aByUI+ApRV1JIVzb/09yH61yTfjjWSRJkghYCcXrJdTrf9G4PJEeIN1n2duh2gCnF30tgao4OsK5ZeBhQzbXGSGLZroSGwrcFfSCe3F8rH4bTPRejjB6uKpDL36SU0UU70nIUQoiPmR1BKdKxxs7veOf9yNbLRaIa54aNVfTBHpFthITR0wCxXvOVF2WjQLRWfrGLp4foOQ4Pg3S1SK1mIz7ifw9Hpw1+hYHyXl60NnXSx2umfryIHhqhlDnoccTG47TKpsfs7khNMpaWtRXZCv6O77bkJ15aJvk5+M9Nv8YaoXRdTKR8bvGlF+nmKcXnN6Fk2/dlLdqycQcDw0Zpg==
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5cc2c8e8-e647-4f8a-8da5-08d885c9e012
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR12MB2767.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Nov 2020 22:42:16.8857
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: KCg1ONHlCSgiBNqFt5geaEFqPPea8uciczYoFln9I8N1bmKDe0rDxez/eVGEh2HXfbee/qftFF4fMNjp7YFcDw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA0PR12MB4590
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 9, 2020 at 4:19 PM Lee Jones <lee.jones@linaro.org> wrote:
->
-> Fixes the following W=3D1 kernel build warning(s):
->
->  drivers/gpu/drm/radeon/radeon_cs.c:416: warning: Function parameter or m=
-ember 'backoff' not described in 'radeon_cs_parser_fini'
->  drivers/gpu/drm/radeon/radeon_cs.c:735: warning: Function parameter or m=
-ember 'p' not described in 'radeon_cs_packet_parse'
->  drivers/gpu/drm/radeon/radeon_cs.c:735: warning: Function parameter or m=
-ember 'idx' not described in 'radeon_cs_packet_parse'
->  drivers/gpu/drm/radeon/radeon_cs.c:735: warning: Excess function paramet=
-er 'parser' description in 'radeon_cs_packet_parse'
->  drivers/gpu/drm/radeon/radeon_cs.c:844: warning: Function parameter or m=
-ember 'p' not described in 'radeon_cs_packet_next_reloc'
->  drivers/gpu/drm/radeon/radeon_cs.c:844: warning: Function parameter or m=
-ember 'cs_reloc' not described in 'radeon_cs_packet_next_reloc'
->  drivers/gpu/drm/radeon/radeon_cs.c:844: warning: Function parameter or m=
-ember 'nomm' not described in 'radeon_cs_packet_next_reloc'
->  drivers/gpu/drm/radeon/radeon_cs.c:844: warning: Excess function paramet=
-er 'parser' description in 'radeon_cs_packet_next_reloc'
->  drivers/gpu/drm/radeon/radeon_cs.c:844: warning: Excess function paramet=
-er 'data' description in 'radeon_cs_packet_next_reloc'
->  drivers/gpu/drm/radeon/radeon_cs.c:844: warning: Excess function paramet=
-er 'offset_start' description in 'radeon_cs_packet_next_reloc'
->  drivers/gpu/drm/radeon/radeon_cs.c:844: warning: Excess function paramet=
-er 'offset_mask' description in 'radeon_cs_packet_next_reloc'
->  drivers/gpu/drm/radeon/radeon_cs.c:844: warning: Excess function paramet=
-er 'reloc' description in 'radeon_cs_packet_next_reloc'
->
-> Cc: Alex Deucher <alexander.deucher@amd.com>
-> Cc: "Christian K=C3=B6nig" <christian.koenig@amd.com>
-> Cc: David Airlie <airlied@linux.ie>
-> Cc: Daniel Vetter <daniel@ffwll.ch>
-> Cc: Sumit Semwal <sumit.semwal@linaro.org>
-> Cc: Jerome Glisse <glisse@freedesktop.org>
-> Cc: amd-gfx@lists.freedesktop.org
-> Cc: dri-devel@lists.freedesktop.org
-> Cc: linux-media@vger.kernel.org
-> Cc: linaro-mm-sig@lists.linaro.org
-> Signed-off-by: Lee Jones <lee.jones@linaro.org>
+From: Ashish Kalra <ashish.kalra@amd.com>
 
-Applied with some minor fixups.
+Fix offset computation in __sev_dbg_decrypt() to include the
+source paddr before it is rounded down to be aligned to 16 bytes
+as required by SEV API. This fixes incorrect guest memory dumps
+observed when using qemu monitor.
 
-Thanks!
+Signed-off-by: Ashish Kalra <ashish.kalra@amd.com>
+---
+ arch/x86/kvm/svm/sev.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Alex
+diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
+index c0b14106258a..566f4d18185b 100644
+--- a/arch/x86/kvm/svm/sev.c
++++ b/arch/x86/kvm/svm/sev.c
+@@ -642,8 +642,8 @@ static int __sev_dbg_decrypt(struct kvm *kvm, unsigned long src_paddr,
+ 	 * Its safe to read more than we are asked, caller should ensure that
+ 	 * destination has enough space.
+ 	 */
+-	src_paddr = round_down(src_paddr, 16);
+ 	offset = src_paddr & 15;
++	src_paddr = round_down(src_paddr, 16);
+ 	sz = round_up(sz + offset, 16);
+ 
+ 	return __sev_issue_dbg_cmd(kvm, src_paddr, dst_paddr, sz, err, false);
+-- 
+2.17.1
 
-> ---
->  drivers/gpu/drm/radeon/radeon_cs.c | 12 ++++++------
->  1 file changed, 6 insertions(+), 6 deletions(-)
->
-> diff --git a/drivers/gpu/drm/radeon/radeon_cs.c b/drivers/gpu/drm/radeon/=
-radeon_cs.c
-> index 21ce2f9502c09..729939df29cc5 100644
-> --- a/drivers/gpu/drm/radeon/radeon_cs.c
-> +++ b/drivers/gpu/drm/radeon/radeon_cs.c
-> @@ -408,6 +408,7 @@ static int cmp_size_smaller_first(void *priv, struct =
-list_head *a,
->   * cs_parser_fini() - clean parser states
->   * @parser:    parser structure holding parsing context.
->   * @error:     error number
-> + * @backoff:   indicator to backoff the reservation
->   *
->   * If error is set than unvalidate buffer, otherwise just free memory
->   * used by parsing context.
-> @@ -723,8 +724,9 @@ int radeon_cs_ioctl(struct drm_device *dev, void *dat=
-a, struct drm_file *filp)
->
->  /**
->   * radeon_cs_packet_parse() - parse cp packet and point ib index to next=
- packet
-> - * @parser:    parser structure holding parsing context.
-> + * @p:         parser structure holding parsing context.
->   * @pkt:       where to store packet information
-> + * @idx:       packet index
->   *
->   * Assume that chunk_ib_index is properly set. Will return -EINVAL
->   * if packet is bigger than remaining ib size. or if packets is unknown.
-> @@ -829,11 +831,9 @@ void radeon_cs_dump_packet(struct radeon_cs_parser *=
-p,
->
->  /**
->   * radeon_cs_packet_next_reloc() - parse next (should be reloc) packet
-> - * @parser:            parser structure holding parsing context.
-> - * @data:              pointer to relocation data
-> - * @offset_start:      starting offset
-> - * @offset_mask:       offset mask (to align start offset on)
-> - * @reloc:             reloc informations
-> + * @p:                 parser structure holding parsing context.
-> + * @cs_reloc:          reloc informations
-> + * @nomm:              never actually used
->   *
->   * Check if next packet is relocation packet3, do bo validation and comp=
-ute
->   * GPU offset using the provided start.
-> --
-> 2.25.1
->
-> _______________________________________________
-> dri-devel mailing list
-> dri-devel@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/dri-devel
