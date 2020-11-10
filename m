@@ -2,89 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 443392AD298
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 10:37:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 959DF2AD29A
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 10:38:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730154AbgKJJhH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 04:37:07 -0500
-Received: from mx3.molgen.mpg.de ([141.14.17.11]:60451 "EHLO mx1.molgen.mpg.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727991AbgKJJhG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 04:37:06 -0500
-Received: from [192.168.0.2] (ip5f5af431.dynamic.kabel-deutschland.de [95.90.244.49])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: pmenzel)
-        by mx.molgen.mpg.de (Postfix) with ESMTPSA id 20E712064712F;
-        Tue, 10 Nov 2020 10:37:03 +0100 (CET)
-Subject: Re: jitterentropy: `jent_mod_init()` takes 17 ms
-To:     Stephan Mueller <smueller@chronox.de>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>
-Cc:     linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <02fa159f-4f94-cfb7-1f88-bed91c6542a1@molgen.mpg.de>
- <4825077.WBkqHH8m98@tauon.chronox.de>
-From:   Paul Menzel <pmenzel@molgen.mpg.de>
-Message-ID: <a422b262-3923-0d29-1a11-3498724a98ad@molgen.mpg.de>
-Date:   Tue, 10 Nov 2020 10:37:02 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.1
+        id S1728048AbgKJJis (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 04:38:48 -0500
+Received: from lb2-smtp-cloud8.xs4all.net ([194.109.24.25]:38363 "EHLO
+        lb2-smtp-cloud8.xs4all.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726690AbgKJJir (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Nov 2020 04:38:47 -0500
+Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
+        by smtp-cloud8.xs4all.net with ESMTPA
+        id cQ6rkkm8ENanzcQ6uk5Cft; Tue, 10 Nov 2020 10:38:45 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s1;
+        t=1605001125; bh=hv01Kk2652coHy4On3dL8LtUYjb1Cu0evmgcwltbS2g=;
+        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
+         Subject;
+        b=p43vMlCWUcY7EIwJd/zAboLnwAo21/JPQz2g63kIDXBoSX8mOoxPDFmGzXVgQ6uak
+         fS2el7KGr76MErdLR0gjKS/h1JZ1SUNVZj/FKK2iTk5XyH1Mqxdbdr5f/RFz82Xl38
+         LyQYhm5t39lhk0s+4XNpcIWTeLEa2oAR6agr+cw/lNVTfaxoxCEwzv5/1QIxxclShq
+         R/L9Zr0uFS7r5rxHxs4Xz7SerodpmvDC3lOc1ZTQhZC4oXv/Vhd91Egxm56FRmD4eN
+         K0QW3RwXq6VColiDNsWC/524JHEWTGt+XhWLRYuUERjZAWzZT44PNZz2OfmMwVndP4
+         PCCagogYqiUTw==
+Subject: Re: [PATCH 0/3] HDR10 static metadata
+To:     Nicolas Dufresne <nicolas.dufresne@collabora.com>,
+        Stanimir Varbanov <stanimir.varbanov@linaro.org>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org
+Cc:     Ezequiel Garcia <ezequiel@collabora.com>
+References: <20201109173153.23720-1-stanimir.varbanov@linaro.org>
+ <2f907743dbb77f4c2f871675070065dd372514be.camel@collabora.com>
+From:   Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Message-ID: <79148cf4-96dc-0c00-2864-183e526a65e9@xs4all.nl>
+Date:   Tue, 10 Nov 2020 10:38:41 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-In-Reply-To: <4825077.WBkqHH8m98@tauon.chronox.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <2f907743dbb77f4c2f871675070065dd372514be.camel@collabora.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-CMAE-Envelope: MS4xfF7Kw0R/bZ69mWXhzR8X4MduX3aPBOFRa9O5RJOWe1Z4f1EQ6Vov5KtHbM1FIixAH3ZV55idg6X5TVwlT6pHfduWtQlT0g3/IQkeF2rgqepIIWv2ljd/
+ 2Kj6THfk7jm78ahdyMGIGqkJciIuutqgoVmltIO4/0LH4PlSw6rNCZYzkrM9+9YbW270iS66gXvxL9POYzWJU+cDDUz/t0GhDSOIRuAUyodbSrhig9i6VHDW
+ PZXzCo/nMJTqu/7rmPHhRbbi+37t6OxP8uVT0kIe1AWmqeR/wD8HjWkXUK7MhzCY/UIri3UtVejW6lSlSJbZlM+23VIaFLDNTifo2wsCFCCVWbyfokVlmked
+ aHFnh42iPVjpHKmioGDcWPtsvdTlxQ3/gD2jeVkobuEEpkJRu1lk2EuBsS2AXhhPfdDb+67B
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear Stephan,
-
-
-Thank you for the quick reply.
-
-Am 10.11.20 um 10:25 schrieb Stephan Mueller:
-> Am Montag, 9. November 2020, 20:31:02 CET schrieb Paul Menzel:
-
->> By mistake I built `XFRM_ESP` into the Linux kernel, resulting in
+On 09/11/2020 20:53, Nicolas Dufresne wrote:
+> Le lundi 09 novembre 2020 à 19:31 +0200, Stanimir Varbanov a écrit :
+>> Hello,
 >>
->>       CONFIG_CRYPTO_SEQIV=y
->>       CONFIG_CRYPTO_ECHAINIV=y
+>> This patchset adds two HDR10 HEVC v4l2 controls for Content Light Level
+>> and Mastering display colour volume plus implenmentation in Venus encoder
+>> driver.
 >>
->> and also the Jitterentropy RNG to be built in.
->>
->>       CRYPTO_JITTERENTROPY=y
->>
->> So, on the Asus F2A85-M PRO starting Linux 4.10-rc3 with
->> `initcall_debug`, the init method is run unconditionally, and it takes
->> 17.5 ms, which is over ten percent of the overall 900 ms the Linux
+>> Comments are welcome!
 > 
-> Hm, 17.5 / 900 = 2%, or am I missing something?
+> It is not a formal review, but I did walked through the new API and
+> everything looks fine to me. One question though, are you aware that
+> the H.264/AVC equivalent is identical ? What is you plan for that ?
 
-Indeed, that is embarrassing. My bad.
+Not only that, but these structures are lifted straight from the
+CTA-861-G standard: see "6.9 Dynamic Range and Mastering InfoFrame"
+and "6.9.1 Static Metadata Type 1".
 
->> kernel needs until loading the init process.
->>
->>       [    0.300544] calling  jent_mod_init+0x0/0x2c @ 1
->>       [    0.318438] initcall jent_mod_init+0x0/0x2c returned 0 after 17471 usecs
->>
->> Looking at the output of systemd-bootchart, it looks like, that this
->> indeed delayed the boot a little, as the other init methods seem to be
->> ordered after it.
->>
->> I am now building it as a module, but am wondering if the time can be
->> reduced to below ten milliseconds.
+So this is equally useful for HDMI receivers and transmitters.
+
+Actually, include/linux/hdmi.h contains a struct for that, but it seems
+to be missing a lot of fields. But we need a v4l2 control anyway and hdmi.h
+isn't a good fit for that.
+
+Regards,
+
+	Hans
+
 > 
-> What you see is the test whether the Jitter RNG has a proper noise source. The
-> function jent_entropy_init() is the cause of the operation. It performs 1024
-> times a test to validate the appropriateness of the noise source. You can
-> adjust that with the TESTLOOPCOUNT in this function. But I am not sure
-> adjusting is a wise course of action.
+>>
+>> regards,
+>> Stan
+>>
+>> Stanimir Varbanov (3):
+>>   v4l: Add HDR10 HEVC static metadata controls
+>>   docs: media: Document CLL and Mastering display
+>>   venus: venc: Add support for CLL and Mastering display controls
+>>
+>>  .../media/v4l/ext-ctrls-codec.rst             | 61 +++++++++++++++++++
+>>  drivers/media/platform/qcom/venus/core.h      |  3 +
+>>  drivers/media/platform/qcom/venus/hfi_cmds.c  |  8 +++
+>>  .../media/platform/qcom/venus/hfi_helper.h    | 20 ++++++
+>>  drivers/media/platform/qcom/venus/venc.c      | 29 +++++++++
+>>  .../media/platform/qcom/venus/venc_ctrls.c    | 16 ++++-
+>>  drivers/media/v4l2-core/v4l2-ctrls.c          | 61 +++++++++++++++++++
+>>  include/media/hevc-ctrls.h                    | 41 +++++++++++++
+>>  include/media/v4l2-ctrls.h                    |  2 +
+>>  9 files changed, 240 insertions(+), 1 deletion(-)
+>>
+> 
 
-Out of curiosity, why 1024 and not, for example, 128 or 2048? Is there 
-some statistics behind it?
-
-
-Kind regards,
-
-Paul
