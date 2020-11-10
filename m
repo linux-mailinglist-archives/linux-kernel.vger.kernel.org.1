@@ -2,86 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F16E02ADAB3
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 16:43:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E0E6D2ADAB8
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 16:46:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731568AbgKJPnw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 10:43:52 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38076 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730681AbgKJPnw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 10:43:52 -0500
-Received: from mail-oi1-f170.google.com (mail-oi1-f170.google.com [209.85.167.170])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 57F61206A1;
-        Tue, 10 Nov 2020 15:43:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605023031;
-        bh=uCEkPHk3i5H3QXvOGo5NpwKxkLBk3zQGpI0v+bfF5kk=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=vUsSLgCMmvi6fyrJsiFhX0ycHitwB47PBU2zHPa48AAmdWRMzeIavY86JaHFAvNK8
-         aYO36n4BJpbmE/lPeIFn+Eo2PgG76k/66cOCtuXftWioei4K1lhTZDanH941yK0Fn8
-         Hz9A8MHSbJNac8nEC5XTJ3k2iDtzAfM6mlXjFNDw=
-Received: by mail-oi1-f170.google.com with SMTP id m17so14823694oie.4;
-        Tue, 10 Nov 2020 07:43:51 -0800 (PST)
-X-Gm-Message-State: AOAM531EfV4XAZGm4NQIRD3K70Ya++Zi+rot9sIdrDE7NWkVaJ/C1LC4
-        mud6MeCDDjXAMJCxChm4SoIra4clXgUmT0HHwA==
-X-Google-Smtp-Source: ABdhPJz7STEfC4g7LX/bvaOov8G9BfxKI6JR4ciSxAAsm7c9wXNQJwAZ0wJLz2CcbRHNKUNUCVcrce9bIoJy3ifnc6M=
-X-Received: by 2002:aca:fdd4:: with SMTP id b203mr3219209oii.152.1605023030597;
- Tue, 10 Nov 2020 07:43:50 -0800 (PST)
+        id S1730842AbgKJPqW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 10:46:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44534 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729909AbgKJPqW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Nov 2020 10:46:22 -0500
+Received: from laurent.telenet-ops.be (laurent.telenet-ops.be [IPv6:2a02:1800:110:4::f00:19])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6E42C0613D1
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 07:46:21 -0800 (PST)
+Received: from ramsan.of.borg ([84.195.186.194])
+        by laurent.telenet-ops.be with bizsmtp
+        id qfmH2300b4C55Sk01fmHkR; Tue, 10 Nov 2020 16:46:19 +0100
+Received: from rox.of.borg ([192.168.97.57])
+        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1kcVqb-001DMN-DH; Tue, 10 Nov 2020 16:46:17 +0100
+Received: from geert by rox.of.borg with local (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1kcVqa-00DmdO-Qo; Tue, 10 Nov 2020 16:46:16 +0100
+From:   Geert Uytterhoeven <geert+renesas@glider.be>
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     linux-ide@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Arnd Bergmann <arnd@arndb.de>, Li Yang <leoyang.li@nxp.com>
+Subject: [PATCH v2] ahci: qoriq: Add platform dependencies
+Date:   Tue, 10 Nov 2020 16:46:15 +0100
+Message-Id: <20201110154615.3285171-1-geert+renesas@glider.be>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20201022075218.11880-1-o.rempel@pengutronix.de> <20201022075218.11880-3-o.rempel@pengutronix.de>
-In-Reply-To: <20201022075218.11880-3-o.rempel@pengutronix.de>
-From:   Rob Herring <robh+dt@kernel.org>
-Date:   Tue, 10 Nov 2020 09:43:39 -0600
-X-Gmail-Original-Message-ID: <CAL_JsqKSdGAY03HK1SBGec-j4S0cmm-mntJ8e0ujHVX4E3dnMw@mail.gmail.com>
-Message-ID: <CAL_JsqKSdGAY03HK1SBGec-j4S0cmm-mntJ8e0ujHVX4E3dnMw@mail.gmail.com>
-Subject: Re: [PATCH v3 2/2] dt-bindings: can: flexcan: convert fsl,*flexcan
- bindings to yaml
-To:     Oleksij Rempel <o.rempel@pengutronix.de>,
-        Marc Kleine-Budde <mkl@pengutronix.de>
-Cc:     Wolfgang Grandegger <wg@grandegger.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Sascha Hauer <kernel@pengutronix.de>,
-        linux-can@vger.kernel.org, netdev <netdev@vger.kernel.org>,
-        devicetree@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Joakim Zhang <qiangqing.zhang@nxp.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 22, 2020 at 2:52 AM Oleksij Rempel <o.rempel@pengutronix.de> wrote:
->
-> In order to automate the verification of DT nodes convert
-> fsl-flexcan.txt to fsl,flexcan.yaml
->
-> Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
-> Link: https://lore.kernel.org/r/20201016073315.16232-3-o.rempel@pengutronix.de
-> Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
-> ---
->  .../bindings/net/can/fsl,flexcan.yaml         | 135 ++++++++++++++++++
->  .../bindings/net/can/fsl-flexcan.txt          |  57 --------
->  2 files changed, 135 insertions(+), 57 deletions(-)
->  create mode 100644 Documentation/devicetree/bindings/net/can/fsl,flexcan.yaml
->  delete mode 100644 Documentation/devicetree/bindings/net/can/fsl-flexcan.txt
+The Freescale QorIQ AHCI SATA controller is only present on Freescale
+Layerscape SoCs.  Add platform dependencies to the AHCI_QORIQ config
+symbol, to avoid asking the user about it when configuring a kernel
+without Layerscape support.
 
-Why did this go into v5.10-rc3? It's not a fix and now a fix is needed:
+Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Acked-by: Arnd Bergmann <arnd@arndb.de>
+Acked-by: Li Yang <leoyang.li@nxp.com>
+---
+v2:
+  - Add Acked-by.
+---
+ drivers/ata/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-/builds/robherring/linux-dt-bindings/Documentation/devicetree/bindings/clock/imx5-clock.example.dt.yaml:
-can@53fc8000: compatible: 'oneOf' conditional failed, one must be
-fixed:
- ['fsl,imx53-flexcan', 'fsl,p1010-flexcan'] is too long
- Additional items are not allowed ('fsl,p1010-flexcan' was unexpected)
- 'fsl,imx53-flexcan' is not one of ['fsl,imx7d-flexcan',
-'fsl,imx6ul-flexcan', 'fsl,imx6sx-flexcan']
- 'fsl,imx53-flexcan' is not one of ['fsl,ls1028ar1-flexcan']
- 'fsl,imx6q-flexcan' was expected
- 'fsl,lx2160ar1-flexcan' was expected
- From schema: /builds/robherring/linux-dt-bindings/Documentation/devicetree/bindings/net/can/fsl,flexcan.yaml
-/builds/robherring/linux-dt-bindings/Documentation/devicetree/bindings/net/can/fsl,flexcan.example.dt.yaml:
-can@2090000: fsl,stop-mode: [[4294967295, 52, 28]] is too short
- From schema: /builds/robherring/linux-dt-bindings/Documentation/devicetree/bindings/net/can/fsl,flexcan.yaml
+diff --git a/drivers/ata/Kconfig b/drivers/ata/Kconfig
+index 030cb32da980fc47..9ec6bce27c91511b 100644
+--- a/drivers/ata/Kconfig
++++ b/drivers/ata/Kconfig
+@@ -264,6 +264,7 @@ config AHCI_XGENE
+ config AHCI_QORIQ
+ 	tristate "Freescale QorIQ AHCI SATA support"
+ 	depends on OF
++	depends on SOC_LS1021A || ARCH_LAYERSCAPE || COMPILE_TEST
+ 	select SATA_HOST
+ 	help
+ 	  This option enables support for the Freescale QorIQ AHCI SoC's
+-- 
+2.25.1
+
