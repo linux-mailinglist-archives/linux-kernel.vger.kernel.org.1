@@ -2,708 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52FCB2ADD12
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 18:37:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AF1102ADD15
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 18:37:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731125AbgKJRhZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 12:37:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33628 "EHLO
+        id S1731146AbgKJRhr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 12:37:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33688 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730174AbgKJRhY (ORCPT
+        with ESMTP id S1730299AbgKJRhq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 12:37:24 -0500
-Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F4B9C0613D1
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 09:37:24 -0800 (PST)
-Received: by mail-ed1-x541.google.com with SMTP id p93so13636202edd.7
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 09:37:23 -0800 (PST)
+        Tue, 10 Nov 2020 12:37:46 -0500
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2D6FC0613CF;
+        Tue, 10 Nov 2020 09:37:46 -0800 (PST)
+Received: by mail-wm1-x341.google.com with SMTP id h2so3977566wmm.0;
+        Tue, 10 Nov 2020 09:37:46 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=VY0+HM4nF4H73yy3/jhQVbP6bMeJGPkzJIGkmZyiRq4=;
-        b=WKkmZOp0ZIxVL8l4quUJV3CBHHMM84kim514hFqIV7THpzjeBfyT+zvmMfMQGxTTuO
-         m96XIibSUXCRMdQa0bF8DPI3WkxE1vdm7tgqYNqKZQ5sL6DbsaB/ljkZNy9a89svoXeQ
-         let9sxI1aSwdjssvpwoBeycVUulZNvazeWJfI=
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=51b6+UxPYFa0A/YUV9c2HQO4IBez7DRJJ+TISf8XtCY=;
+        b=dOw2kGjbVUiJ5OH1F3rH9MNE2duptSoLDc06fn6tULjHKNi1vJdWp6lHRdvCleZJ7N
+         I4PID+18b2VyOhbyysiyOlsaYNlt9+Kzml9v+s5p/Tt0JfbxORFQhSLaQRg8wEn7tUmR
+         0q7uBefhjpSgHceyM4+7eSTkotS3tWWHl760F+WvZeV2uLkD5rhRH8B+aL8/lWzuzLlo
+         d2MEysUQMGcKgGwwJ9ObeFZXPC2oep5mlm/Dp82ImwZ/EJ2Nbr5UUg7Jrxd+Jyk2sdz0
+         DWrdw2bvY/LGZweq041p3f+lLFNVf542AMYgatmSmKnH/ouSnFEXJ9NW4ZYtKqMXM4g2
+         xIxg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=VY0+HM4nF4H73yy3/jhQVbP6bMeJGPkzJIGkmZyiRq4=;
-        b=WhBZ7a7Y7lDjIv2euklAwMAZtNZ0UIvKRuZGN34/FXzSv3ygz/Y0pvgi25rx+mIxC2
-         LDAt2ZdXW0M3IVqApfmWkZZkpe6Wd53hvMx3D02QEIDiIIASrEOEnMZkbW7hEUxYuur8
-         +ijJkQDbMYQ0sesXPncmrydaQAhPJzgsn6NrMegk7TkvU2Hp6i332cVKY/U6jTd467yF
-         SR74TJ42vFfChjIZcKh5VheHgYAkMa48HSH8GzwWiw8+VxRltAsEvKittA838TcBNc/4
-         IpS42rdJpAHYAGz6DmCFheqXRxLonRIznpAw5svaHBSHKTCNH4fN2Ed/8lhDqXYh1CBi
-         fNtA==
-X-Gm-Message-State: AOAM532QGmubMV5F01eTH6+tGe7/AaULdIaD/GVKWymPiv2xsWhIRI9L
-        nZ9nZGt87/RVlSPLQq8xDnWeBDK8ZQro+Q==
-X-Google-Smtp-Source: ABdhPJzyIOyM6vEuuq235VbLSp5iycYTQaUWTZVjtbWI0FAyKAoBmLHJvjxxtz1MLen9KiXpGfZCNQ==
-X-Received: by 2002:a05:6402:88d:: with SMTP id e13mr22959059edy.366.1605029842236;
-        Tue, 10 Nov 2020 09:37:22 -0800 (PST)
-Received: from mail-wm1-f41.google.com (mail-wm1-f41.google.com. [209.85.128.41])
-        by smtp.gmail.com with ESMTPSA id n1sm11261986edt.66.2020.11.10.09.37.20
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 10 Nov 2020 09:37:21 -0800 (PST)
-Received: by mail-wm1-f41.google.com with SMTP id a3so2596042wmb.5
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 09:37:20 -0800 (PST)
-X-Received: by 2002:a1c:2d93:: with SMTP id t141mr221406wmt.104.1605029839860;
- Tue, 10 Nov 2020 09:37:19 -0800 (PST)
-MIME-Version: 1.0
-References: <20201023125704.4984-1-stanimir.varbanov@linaro.org>
- <20201023125704.4984-4-stanimir.varbanov@linaro.org> <CAMfZQbywe7OcSRebeh0fmphmz8xz8KUyMUMOhxLgh1Uc-gyWQA@mail.gmail.com>
- <aec00b8a87e1e238b755a547b88593f0@codeaurora.org> <393cc53f-6b79-faf0-00f5-c1205294a54a@linaro.org>
- <CAMfZQbw3WBU6GbLHQV=WpSOekF8rWogB0cQhOSRjupL0tRTbPA@mail.gmail.com>
-In-Reply-To: <CAMfZQbw3WBU6GbLHQV=WpSOekF8rWogB0cQhOSRjupL0tRTbPA@mail.gmail.com>
-From:   Fritz Koenig <frkoenig@chromium.org>
-Date:   Tue, 10 Nov 2020 09:37:07 -0800
-X-Gmail-Original-Message-ID: <CAMfZQbxiSs3UCxrv8fFEOa-SFLAL5qeZZ3ky=RHgh1FS35GgMQ@mail.gmail.com>
-Message-ID: <CAMfZQbxiSs3UCxrv8fFEOa-SFLAL5qeZZ3ky=RHgh1FS35GgMQ@mail.gmail.com>
-Subject: Re: [PATCH 3/4] venus: venc: Handle reset encoder state
-To:     Fritz Koenig <frkoenig@chromium.org>
-Cc:     Stanimir Varbanov <stanimir.varbanov@linaro.org>,
-        Vikash Garodia <vgarodia@codeaurora.org>,
-        linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=51b6+UxPYFa0A/YUV9c2HQO4IBez7DRJJ+TISf8XtCY=;
+        b=t05LPmLaJdQqndyqSFf1615h3eyRgJ+JJDXP2NBvTKN2TRnmRy/JfzVESnlgmgdvRe
+         hkjW7RNW45OjcpxqzqaB6i8UXEOqonKZR9D4Nx3p5x7VWhvaIeRfmXl+7jtrwXTkt62T
+         NLPSegOBOiyxfe++gPFQehClMbonQb/7/XVARnxeAQqzcvNjL3GcKj6h/GQaopOUrZYv
+         bMzqlsQaQQodDf92cPn21gniJF8fouzvnY/Ev5H7OyWIdMgnj5IqdFX2nklGQwhS1DVc
+         ruRIy3hGg74kNzpCPJkKYxUl9RZ1PvtwW4Guc+LlTxpAAbtBjF3Id33Q8dlg1uQclW9N
+         E8Hw==
+X-Gm-Message-State: AOAM532h40xJqpAOAYO7SnKW/AFiw4XcRKPhFjTOeOPvi5wcZkC5ED73
+        nXCj8ztFLHQWvflIa0YC/No=
+X-Google-Smtp-Source: ABdhPJyNdN+Oi1VEBqPTXL4GsHEkvOP26KVI9wGAt2jLUwGncIhxnsb6Of6JRzaqvMJ9yrk6E8DYzg==
+X-Received: by 2002:a1c:61c2:: with SMTP id v185mr203855wmb.152.1605029865402;
+        Tue, 10 Nov 2020 09:37:45 -0800 (PST)
+Received: from localhost ([217.111.27.204])
+        by smtp.gmail.com with ESMTPSA id r10sm3604464wmg.16.2020.11.10.09.37.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 10 Nov 2020 09:37:44 -0800 (PST)
+Date:   Tue, 10 Nov 2020 18:37:42 +0100
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     dri-devel@lists.freedesktop.org, linux-tegra@vger.kernel.org,
         linux-kernel@vger.kernel.org,
-        Alexandre Courbot <acourbot@chromium.org>,
-        Tomasz Figa <tfiga@chromium.org>,
-        Dikshita Agarwal <dikshita@codeaurora.org>
-Content-Type: text/plain; charset="UTF-8"
+        Jonathan Hunter <jonathanh@nvidia.com>
+Subject: Re: [PATCH] drm/tegra: sor: Ensure regulators are disabled on
+ teardown
+Message-ID: <20201110173742.GB2297135@ulmo>
+References: <20201013095158.311137-1-maz@kernel.org>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="6sX45UoQRIJXqkqR"
+Content-Disposition: inline
+In-Reply-To: <20201013095158.311137-1-maz@kernel.org>
+User-Agent: Mutt/1.14.7 (2020-08-29)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 9, 2020 at 9:48 PM Fritz Koenig <frkoenig@chromium.org> wrote:
->
-> On Thu, Nov 5, 2020 at 3:51 AM Stanimir Varbanov
-> <stanimir.varbanov@linaro.org> wrote:
-> >
-> >
-> >
-> > On 11/4/20 12:44 PM, vgarodia@codeaurora.org wrote:
-> > > Hi Stan,
-> > >
-> > > On 2020-11-03 06:46, Fritz Koenig wrote:
-> > >> On Fri, Oct 23, 2020 at 5:57 AM Stanimir Varbanov
-> > >> <stanimir.varbanov@linaro.org> wrote:
-> > >>>
-> > >>> Redesign the encoder driver to be compliant with stateful encoder
-> > >>> spec - specifically adds handling of Reset state.
-> > >>>
-> > >>> Signed-off-by: Stanimir Varbanov <stanimir.varbanov@linaro.org>
-> > >>> ---
-> > >>>  drivers/media/platform/qcom/venus/core.h |  10 +-
-> > >>>  drivers/media/platform/qcom/venus/venc.c | 242 ++++++++++++++++++-----
-> > >>>  2 files changed, 197 insertions(+), 55 deletions(-)
-> > >>>
-> > >>> diff --git a/drivers/media/platform/qcom/venus/core.h
-> > >>> b/drivers/media/platform/qcom/venus/core.h
-> > >>> index 5c4693678e3f..294d5467a6a1 100644
-> > >>> --- a/drivers/media/platform/qcom/venus/core.h
-> > >>> +++ b/drivers/media/platform/qcom/venus/core.h
-> > >>> @@ -277,11 +277,11 @@ enum venus_dec_state {
-> > >>>  };
-> > >>>
-> > >>>  enum venus_enc_state {
-> > >>> -       VENUS_ENC_STATE_DEINIT          = 0,
-> > >>> -       VENUS_ENC_STATE_INIT            = 1,
-> > >>> -       VENUS_ENC_STATE_ENCODING        = 2,
-> > >>> -       VENUS_ENC_STATE_STOPPED         = 3,
-> > >>> -       VENUS_ENC_STATE_DRAIN           = 4,
-> > >>> +       VENUS_ENC_STATE_INIT            = 0,
-> > >>> +       VENUS_ENC_STATE_ENCODING        = 1,
-> > >>> +       VENUS_ENC_STATE_STOPPED         = 2,
-> > >>> +       VENUS_ENC_STATE_DRAIN           = 3,
-> > >>> +       VENUS_ENC_STATE_RESET           = 4,
-> > >>>  };
-> > >>>
-> > >>>  struct venus_ts_metadata {
-> > >>> diff --git a/drivers/media/platform/qcom/venus/venc.c
-> > >>> b/drivers/media/platform/qcom/venus/venc.c
-> > >>> index c6143b07914c..aa9255ddb0a5 100644
-> > >>> --- a/drivers/media/platform/qcom/venus/venc.c
-> > >>> +++ b/drivers/media/platform/qcom/venus/venc.c
-> > >>> @@ -565,6 +565,7 @@ static const struct v4l2_ioctl_ops venc_ioctl_ops
-> > >>> = {
-> > >>>         .vidioc_enum_frameintervals = venc_enum_frameintervals,
-> > >>>         .vidioc_subscribe_event = v4l2_ctrl_subscribe_event,
-> > >>>         .vidioc_unsubscribe_event = v4l2_event_unsubscribe,
-> > >>> +       .vidioc_try_encoder_cmd = v4l2_m2m_ioctl_try_encoder_cmd,
-> > >>>         .vidioc_encoder_cmd = venc_encoder_cmd,
-> > >>>  };
-> > >>>
-> > >>> @@ -850,6 +851,69 @@ static int venc_queue_setup(struct vb2_queue *q,
-> > >>>         return ret;
-> > >>>  }
-> > >>>
-> > >>> +static void venc_release_session(struct venus_inst *inst)
-> > >>> +{
-> > >>> +       struct venus_core *core = inst->core;
-> > >>> +       int ret, abort = 0;
-> > >>> +
-> > >>> +       mutex_lock(&inst->lock);
-> > >>> +
-> > >>> +       if (inst->enc_state != VENUS_ENC_STATE_RESET)
-> > >>> +               dev_dbg(core->dev_enc, VDBGH "wrong state!\n");
-> > >>> +
-> > >>> +       ret = hfi_session_stop(inst);
-> > >>> +       abort |= (ret && ret != -EINVAL) ? 1 : 0;
-> > >>> +       ret = hfi_session_unload_res(inst);
-> > >>> +       abort |= (ret && ret != -EINVAL) ? 1 : 0;
-> > >>> +       ret = venus_helper_unregister_bufs(inst);
-> > >>> +       abort |= (ret && ret != -EINVAL) ? 1 : 0;
-> > >>> +       ret = venus_helper_intbufs_free(inst);
-> > >>> +       abort |= (ret && ret != -EINVAL) ? 1 : 0;
-> > >>> +       ret = hfi_session_deinit(inst);
-> > >>> +       abort |= (ret && ret != -EINVAL) ? 1 : 0;
-> > >>> +
-> > >>> +       if (inst->session_error)
-> > >>> +               abort = 1;
-> > >>> +
-> > >>> +       if (abort)
-> > >>> +               hfi_session_abort(inst);
-> > >>> +
-> > >>> +       venus_pm_load_scale(inst);
-> > >>
-> > >> venus_pm_load_scale depends on inst->clk_data.codec_freq_data being
-> > >> set up. This occurs in venc_init_session().  I am seeing scenarios
-> > >> where the encoder is getting setup up, but before it is finished,
-> > >> teardown occurs.  If this teardown occurs before
-> > >> inst->clk_data.codec_freq_data is initalized, a crash occurs.  (also
-> > >> "wrong state!" is printed out)
-> > >
-> > > venus_pm_load_scale(inst) is called here to remove the votes for clock
-> > > and bus bandwidth. This is not needed for instances which are closed
-> > > just after moving them to INIT state. I have tried with below state
-> > > handling
-> > > and it works well i.e call for venus_pm_load_scale(inst) from state other
-> > > than the INIT state.
-> >
-> > IMO we have to check the INST state in venus_pm_load_scale(). We made
-> > similar check in min_loaded_core() here [1].
-> >
-> > [1] https://www.spinics.net/lists/kernel/msg3498215.html
-> >
->
-> I took a look at putting this check in venus_pm_load_scale.  The
-> problem I see with that is venus_pm_load_scale is shared between
-> encoder and decoder.  So checking for VENUS_ENC_STATE_INIT during
-> decode doesn't make sense.  I tried to match up with the instance
-> states in hfi.h, but it doesn't appear to align well.  Is there a hfi
-> state that this would work for?
->
-> -Fritz
->
-I think I found a reasonable approach:
-https://www.spinics.net/lists/linux-media/msg180866.html
 
--Fritz
+--6sX45UoQRIJXqkqR
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> > >
-> > > -       venus_pm_load_scale(inst);
-> > > +       if(inst->enc_state != VENUS_ENC_STATE_INIT)
-> > > +               venus_pm_load_scale(inst);
-> > >
-> > >>
-> > >> [  106.593198] Unable to handle kernel NULL pointer dereference at
-> > >> virtual address 0000000000000008
-> > >> [  106.603916] Mem abort info:
-> > >> [  106.608470]   ESR = 0x96000006
-> > >> [  106.613802]   EC = 0x25: DABT (current EL), IL = 32 bits
-> > >> [  106.619426]   SET = 0, FnV = 0
-> > >> [  106.622619]   EA = 0, S1PTW = 0
-> > >> [  106.625862] Data abort info:
-> > >> [  106.628835]   ISV = 0, ISS = 0x00000006
-> > >> [  106.632785]   CM = 0, WnR = 0
-> > >> [  106.635850] user pgtable: 4k pages, 39-bit VAs, pgdp=000000014839f000
-> > >> [  106.642472] [0000000000000008] pgd=000000016ab1f003,
-> > >> pud=000000016ab1f003, pmd=0000000000000000
-> > >> [  106.651410] Internal error: Oops: 96000006 [#1] PREEMPT SMP
-> > >> [  106.657132] Modules linked in: rfcomm algif_hash algif_skcipher
-> > >> af_alg uinput venus_dec venus_enc videobuf2_dma_sg hci_uart btqca
-> > >> venus_core qcom_spmi_adc5 qcom_spmi_temp_alarm qcom_vadc_common
-> > >> snd_soc_rt5682_i2c v4l2_mem2mem snd_soc_sc7180 snd_soc_rt5682
-> > >> snd_soc_qcom_common snd_soc_rl6231 bluetooth ecdh_generic ecc
-> > >> snd_soc_lpass_sc7180 snd_soc_lpass_hdmi snd_soc_lpass_cpu
-> > >> snd_soc_lpass_platform snd_soc_max98357a xt_MASQUERADE fuse
-> > >> iio_trig_sysfs cros_ec_lid_angle cros_ec_sensors cros_ec_sensors_core
-> > >> industrialio_triggered_buffer cros_ec_sensors_ring rmtfs_mem kfifo_buf
-> > >> cros_ec_sensorhub ath10k_snoc lzo_rle ath10k_core lzo_compress ath
-> > >> zram mac80211 ipa qmi_helpers cfg80211 qcom_q6v5_mss qcom_pil_info
-> > >> qcom_q6v5 qcom_common cdc_ether usbnet r8152 mii uvcvideo
-> > >> videobuf2_vmalloc videobuf2_memops videobuf2_v4l2 videobuf2_common
-> > >> joydev
-> > >> [  106.732576] CPU: 7 PID: 3622 Comm: DrmThread Not tainted 5.4.72 #40
-> > >> [  106.739004] Hardware name: Google Lazor (rev1+) (DT)
-> > >> [  106.744103] pstate: 60400009 (nZCv daif +PAN -UAO)
-> > >> [  106.749027] pc : load_scale_v4+0x160/0x3a4 [venus_core]
-> > >> [  106.754396] lr : load_scale_v4+0x154/0x3a4 [venus_core]
-> > >> [  106.759766] sp : ffffffc0120ab9e0
-> > >> [  106.763171] x29: ffffffc0120ab9e0 x28: 0000000000000005
-> > >> [  106.768629] x27: 0000000000000000 x26: 0000000000000000
-> > >> [  106.774080] x25: 0000000000000000 x24: 000000000000001e
-> > >> [  106.779530] x23: 0000000000000000 x22: ffffff80b41a8000
-> > >> [  106.784980] x21: ffffffd344e97e98 x20: ffffff80cb5b8080
-> > >> [  106.790431] x19: ffffff80fa3b1410 x18: 00000000ffff0a10
-> > >> [  106.795881] x17: 000000000000003c x16: ffffffd398ec2e88
-> > >> [  106.801329] x15: 0000000000000006 x14: ffff001000000600
-> > >> [  106.806779] x13: 000000000002cca2 x12: 0000000000000000
-> > >> [  106.812229] x11: 0000000000000000 x10: 0000000000000000
-> > >> [  106.817679] x9 : 472cbd12793c4600 x8 : 0000000000000000
-> > >> [  106.823137] x7 : 0000000000000000 x6 : ffffffd399dbcc6c
-> > >> [  106.828585] x5 : 0000000000000000 x4 : 0000000000000000
-> > >> [  106.834035] x3 : 0000000000000000 x2 : ffffff80ff6ae5c0
-> > >> [  106.839487] x1 : ffffff80ff69e018 x0 : ffffffd344e990ac
-> > >> [  106.844937] Call trace:
-> > >> [  106.847460]  load_scale_v4+0x160/0x3a4 [venus_core]
-> > >> [  106.852473]  venc_buf_cleanup+0x198/0x1f0 [venus_enc]
-> > >> [  106.857656]  __vb2_queue_free+0x90/0x1f4 [videobuf2_common]
-> > >> [  106.863374]  vb2_core_queue_release+0x3c/0x50 [videobuf2_common]
-> > >> [  106.869541]  vb2_queue_release+0x1c/0x28 [videobuf2_v4l2]
-> > >> [  106.875082]  v4l2_m2m_ctx_release+0x24/0x40 [v4l2_mem2mem]
-> > >> [  106.880710]  venc_close+0x24/0x78 [venus_enc]
-> > >> [  106.885188]  v4l2_release+0x8c/0xdc
-> > >> [  106.888779]  __fput+0xe0/0x214
-> > >> [  106.891916]  ____fput+0x1c/0x28
-> > >> [  106.895148]  task_work_run+0x94/0xc4
-> > >> [  106.898828]  do_exit+0x244/0x7c8
-> > >> [  106.902147]  do_group_exit+0x88/0x98
-> > >> [  106.905825]  get_signal+0x1cc/0x674
-> > >> [  106.909415]  do_notify_resume+0x134/0x1410
-> > >> [  106.913619]  work_pending+0x8/0x10
-> > >> [  106.917119] Code: 97ffd58d f94032c8 90000020 9102b000 (f9400501)
-> > >> [  106.923377] ---[ end trace a9caaf72c228e386 ]---
-> > >> [  106.928767] Kernel panic - not syncing: Fatal exception
-> > >> [  106.934131] SMP: stopping secondary CPUs
-> > >> [  106.938347] Kernel Offset: 0x1388a00000 from 0xffffffc010000000
-> > >> [  106.944426] PHYS_OFFSET: 0xffffffd900000000
-> > >> [  106.948722] CPU features: 0x08102e,2a80aa18
-> > >> [  106.953015] Memory Limit: none
-> > >>
-> > >>
-> > >> This is the debug log before the crash:
-> > >> [Nov 2 15:33] qcom-venus aa00000.video-codec: VenusLow : venus hw
-> > >> version 4.44.20a
-> > >> [  +0.000065] videodev: v4l2_open: video2: open (0)
-> > >> [  +0.000019] video2: VIDIOC_ENUM_FMT: index=0, type=vid-cap-mplane,
-> > >> flags=0x1, pixelformat=H264, description='H.264'
-> > >> [  +0.000017] video2: VIDIOC_ENUM_FMT: index=1, type=vid-cap-mplane,
-> > >> flags=0x1, pixelformat=VP80, description='VP8'
-> > >> [  +0.000042] video2: VIDIOC_ENUM_FMT: index=2, type=vid-cap-mplane,
-> > >> flags=0x1, pixelformat=HEVC, description='HEVC'
-> > >> [  +0.000030] video2: VIDIOC_ENUM_FMT: error -22: index=3,
-> > >> type=vid-cap-mplane, flags=0x0, pixelformat=\x00\x00\x00\x00,
-> > >> description=''
-> > >> [  +0.000068] videodev: v4l2_release: video2: release
-> > >> [  +0.002752] qcom-venus aa00000.video-codec: VenusLow : venus hw
-> > >> version 4.44.20a
-> > >> [  +0.000062] videodev: v4l2_open: video2: open (0)
-> > >> [  +0.000071] video2: VIDIOC_ENUM_FRAMESIZES: index=0,
-> > >> pixelformat=H264, type=3, min=96x96, max=4096x4096, step=16x16
-> > >> [  +0.000012] video2: VIDIOC_TRY_ENCODER_CMD: cmd=1, flags=0x0
-> > >> [  +0.000005] video2: VIDIOC_QUERYCAP: driver=qcom-venus,
-> > >> card=Qualcomm Venus video encoder, bus=platform:qcom-venus,
-> > >> version=0x00050448, capabilities=0x84204000, device_caps=0x04204000
-> > >> [  +0.001055] video2: VIDIOC_REQBUFS: count=0, type=vid-out-mplane,
-> > >> memory=mmap
-> > >> [  +0.000382] video2: VIDIOC_REQBUFS: count=0, type=vid-cap-mplane,
-> > >> memory=mmap
-> > >> [  +0.000227] video2: VIDIOC_S_FMT: type=vid-cap-mplane, width=96,
-> > >> height=96, format=H264, field=none, colorspace=0, num_planes=1,
-> > >> flags=0x0, ycbcr_enc=0, quantization=0, xfer_func=0
-> > >> [  +0.000027] plane 0: bytesperline=0 sizeimage=2097152
-> > >> [  +0.000527] video2: VIDIOC_S_FMT: type=vid-out-mplane, width=384,
-> > >> height=192, format=NV12, field=none, colorspace=0, num_planes=1,
-> > >> flags=0x0, ycbcr_enc=0, quantization=0, xfer_func=0
-> > >> [  +0.000024] plane 0: bytesperline=384 sizeimage=122880
-> > >> [  +0.000032] video2: VIDIOC_S_FMT: type=vid-out-mplane, width=384,
-> > >> height=192, format=NV12, field=none, colorspace=0, num_planes=1,
-> > >> flags=0x0, ycbcr_enc=0, quantization=0, xfer_func=0
-> > >> [  +0.000017] plane 0: bytesperline=384 sizeimage=122880
-> > >> [  +0.000024] video2: VIDIOC_S_FMT: type=vid-out-mplane, width=384,
-> > >> height=192, format=NV12, field=none, colorspace=0, num_planes=1,
-> > >> flags=0x0, ycbcr_enc=0, quantization=0, xfer_func=0
-> > >> [  +0.000017] plane 0: bytesperline=384 sizeimage=122880
-> > >> [  +0.000075] video2: VIDIOC_S_SELECTION: type=vid-out, target=0,
-> > >> flags=0x0, wxh=320x192, x,y=0,0
-> > >> [  +0.028300] video2: VIDIOC_S_FMT: type=vid-out-mplane, width=384,
-> > >> height=192, format=NV12, field=none, colorspace=0, num_planes=1,
-> > >> flags=0x0, ycbcr_enc=0, quantization=0, xfer_func=0
-> > >> [  +0.000036] plane 0: bytesperline=384 sizeimage=122880
-> > >> [  +0.000033] video2: VIDIOC_S_FMT: type=vid-out-mplane, width=384,
-> > >> height=192, format=NV12, field=none, colorspace=0, num_planes=1,
-> > >> flags=0x0, ycbcr_enc=0, quantization=0, xfer_func=0
-> > >> [  +0.000014] plane 0: bytesperline=384 sizeimage=122880
-> > >> [  +0.000020] video2: VIDIOC_S_FMT: type=vid-out-mplane, width=384,
-> > >> height=192, format=NV12, field=none, colorspace=0, num_planes=1,
-> > >> flags=0x0, ycbcr_enc=0, quantization=0, xfer_func=0
-> > >> [  +0.000120] plane 0: bytesperline=384 sizeimage=122880
-> > >> [  +0.000157] video2: VIDIOC_S_SELECTION: type=vid-out, target=0,
-> > >> flags=0x0, wxh=320x192, x,y=0,0
-> > >> [  +0.000250] video2: VIDIOC_S_EXT_CTRLS: which=0x990000, count=1,
-> > >> error_idx=0, request_fd=0, id/val=0x9909d7/0x1
-> > >> [  +0.000120] video2: VIDIOC_QUERYCTRL: error -22: id=0x990b84,
-> > >> type=0, name=, min/max=0/0, step=0, default=0, flags=0x00000000
-> > >> [  +0.000368] v4l2-ctrls: try_set_ext_ctrls: video2: video2:
-> > >> try_set_ext_ctrls_common failed (-22)
-> > >> [  +0.000087] video2: VIDIOC_S_EXT_CTRLS: error -22: which=0x990000,
-> > >> count=5, error_idx=5, request_fd=0, id/val=0x9909ca/0x0,
-> > >> id/val=0x990a62/0x33, id/val=0x990a6b/0x2, id/val=0x990a67/0xb,
-> > >> id/val=0x9909d8/0x1
-> > >> [  +0.000290] v4l2-ctrls: prepare_ext_ctrls: video2: cannot find
-> > >> control id 0x9909da
-> > >> [  +0.000010] v4l2-ctrls: try_set_ext_ctrls: video2: video2:
-> > >> try_set_ext_ctrls_common failed (-22)
-> > >> [  +0.000014] video2: VIDIOC_S_EXT_CTRLS: error -22: which=0x990000,
-> > >> count=2, error_idx=2, request_fd=0, id/val=0x9909da/0x1,
-> > >> id/val=0x9909cb/0x0
-> > >> [  +0.000225] video2: VIDIOC_G_FMT: type=vid-cap-mplane, width=320,
-> > >> height=192, format=H264, field=none, colorspace=0, num_planes=1,
-> > >> flags=0x0, ycbcr_enc=0, quantization=0, xfer_func=0
-> > >> [  +0.000028] plane 0: bytesperline=0 sizeimage=49152
-> > >> [  +0.002272] video2: VIDIOC_REQBUFS: count=4, type=vid-cap-mplane,
-> > >> memory=mmap
-> > >> [  +0.001661] video2: VIDIOC_QUERYBUF: 00:00:00.00000000 index=0,
-> > >> type=vid-cap-mplane, request_fd=0, flags=0x00004000, field=any,
-> > >> sequence=0, memory=mmap
-> > >> [  +0.000034] plane 0: bytesused=0, data_offset=0x00000000,
-> > >> offset/userptr=0xee18ad4840000000, length=2097152
-> > >> [  +0.000009] timecode=00:00:00 type=0, flags=0x00000000, frames=0,
-> > >> userbits=0x00000000
-> > >> [  +0.000142] video2: VIDIOC_QUERYBUF: 00:00:00.00000000 index=1,
-> > >> type=vid-cap-mplane, request_fd=0, flags=0x00004000, field=any,
-> > >> sequence=0, memory=mmap
-> > >> [  +0.000023] plane 0: bytesused=0, data_offset=0x00000000,
-> > >> offset/userptr=0xee18ad4840200000, length=2097152
-> > >> [  +0.000008] timecode=00:00:00 type=0, flags=0x00000000, frames=0,
-> > >> userbits=0x00000000
-> > >> [  +0.000409] video2: VIDIOC_QUERYBUF: 00:00:00.00000000 index=2,
-> > >> type=vid-cap-mplane, request_fd=0, flags=0x00004000, field=any,
-> > >> sequence=0, memory=mmap
-> > >> [  +0.000027] plane 0: bytesused=0, data_offset=0x00000000,
-> > >> offset/userptr=0xee18ad4840400000, length=2097152
-> > >> [  +0.000007] timecode=00:00:00 type=0, flags=0x00000000, frames=0,
-> > >> userbits=0x00000000
-> > >> [  +0.000233] video2: VIDIOC_QUERYBUF: 00:00:00.00000000 index=3,
-> > >> type=vid-cap-mplane, request_fd=0, flags=0x00004000, field=any,
-> > >> sequence=0, memory=mmap
-> > >> [  +0.000023] plane 0: bytesused=0, data_offset=0x00000000,
-> > >> offset/userptr=0xee18ad4840600000, length=2097152
-> > >> [  +0.000015] timecode=00:00:00 type=0, flags=0x00000000, frames=0,
-> > >> userbits=0x00000000
-> > >> [  +0.000288] video2: VIDIOC_S_EXT_CTRLS: which=0x990000, count=1,
-> > >> error_idx=0, request_fd=0, id/val=0x9909cf/0x30d40
-> > >> [  +0.000184] video2: VIDIOC_S_PARM: type=vid-out-mplane,
-> > >> capability=0x1000, outputmode=0x0, timeperframe=1/30, extendedmode=0,
-> > >> writebuffers=0
-> > >> [  +0.310832] qcom-venus-encoder aa00000.video-codec:video-encoder:
-> > >> VenusHigh: wrong state!
-> > >>
-> > >>> +       INIT_LIST_HEAD(&inst->registeredbufs);
-> > >>> +
-> > >>> +       inst->enc_state = VENUS_ENC_STATE_INIT;
-> > >>> +
-> > >>> +       mutex_unlock(&inst->lock);
-> > >>> +
-> > >>> +       venus_pm_release_core(inst);
-> > >>> +}
-> > >>> +
-> > >>> +static int venc_buf_init(struct vb2_buffer *vb)
-> > >>> +{
-> > >>> +       struct venus_inst *inst = vb2_get_drv_priv(vb->vb2_queue);
-> > >>> +
-> > >>> +       inst->buf_count++;
-> > >>> +
-> > >>> +       return venus_helper_vb2_buf_init(vb);
-> > >>> +}
-> > >>> +
-> > >>> +static void venc_buf_cleanup(struct vb2_buffer *vb)
-> > >>> +{
-> > >>> +       struct venus_inst *inst = vb2_get_drv_priv(vb->vb2_queue);
-> > >>> +       struct vb2_v4l2_buffer *vbuf = to_vb2_v4l2_buffer(vb);
-> > >>> +       struct venus_buffer *buf = to_venus_buffer(vbuf);
-> > >>> +
-> > >>> +       mutex_lock(&inst->lock);
-> > >>> +       if (vb->type == V4L2_BUF_TYPE_VIDEO_CAPTURE_MPLANE)
-> > >>> +               if (!list_empty(&inst->registeredbufs))
-> > >>> +                       list_del_init(&buf->reg_list);
-> > >>> +       mutex_unlock(&inst->lock);
-> > >>> +
-> > >>> +       inst->buf_count--;
-> > >>> +       if (!inst->buf_count)
-> > >>> +               venc_release_session(inst);
-> > >>> +}
-> > >>> +
-> > >>>  static int venc_verify_conf(struct venus_inst *inst)
-> > >>>  {
-> > >>>         enum hfi_version ver = inst->core->res->hfi_version;
-> > >>> @@ -881,61 +945,73 @@ static int venc_verify_conf(struct venus_inst
-> > >>> *inst)
-> > >>>  static int venc_start_streaming(struct vb2_queue *q, unsigned int
-> > >>> count)
-> > >>>  {
-> > >>>         struct venus_inst *inst = vb2_get_drv_priv(q);
-> > >>> -       int ret;
-> > >>> +       int ret = 0;
-> > >>>
-> > >>>         mutex_lock(&inst->lock);
-> > >>>
-> > >>> -       if (q->type == V4L2_BUF_TYPE_VIDEO_OUTPUT_MPLANE)
-> > >>> +       if (V4L2_TYPE_IS_OUTPUT(q->type))
-> > >>>                 inst->streamon_out = 1;
-> > >>>         else
-> > >>>                 inst->streamon_cap = 1;
-> > >>>
-> > >>> -       if (!(inst->streamon_out & inst->streamon_cap)) {
-> > >>> -               mutex_unlock(&inst->lock);
-> > >>> -               return 0;
-> > >>> -       }
-> > >>> +       if (!(inst->streamon_out & inst->streamon_cap))
-> > >>> +               goto unlock;
-> > >>>
-> > >>> -       venus_helper_init_instance(inst);
-> > >>> +       if (inst->enc_state == VENUS_ENC_STATE_INIT) {
-> > >>> +               venus_helper_init_instance(inst);
-> > >>>
-> > >>> -       inst->sequence_cap = 0;
-> > >>> -       inst->sequence_out = 0;
-> > >>> +               inst->sequence_cap = 0;
-> > >>> +               inst->sequence_out = 0;
-> > >>>
-> > >>> -       ret = venc_init_session(inst);
-> > >>> -       if (ret)
-> > >>> -               goto bufs_done;
-> > >>> +               ret = venc_init_session(inst);
-> > >>> +               if (ret)
-> > >>> +                       goto bufs_done;
-> > >>>
-> > >>> -       ret = venus_pm_acquire_core(inst);
-> > >>> -       if (ret)
-> > >>> -               goto deinit_sess;
-> > >>> +               ret = venus_pm_acquire_core(inst);
-> > >>> +               if (ret)
-> > >>> +                       goto deinit_sess;
-> > >>>
-> > >>> -       ret = venc_set_properties(inst);
-> > >>> -       if (ret)
-> > >>> -               goto deinit_sess;
-> > >>> +               ret = venc_verify_conf(inst);
-> > >>> +               if (ret)
-> > >>> +                       goto deinit_sess;
-> > >>>
-> > >>> -       ret = venc_verify_conf(inst);
-> > >>> -       if (ret)
-> > >>> -               goto deinit_sess;
-> > >>> +               ret = venus_helper_set_num_bufs(inst,
-> > >>> inst->num_input_bufs,
-> > >>> +
-> > >>> inst->num_output_bufs, 0);
-> > >>> +               if (ret)
-> > >>> +                       goto deinit_sess;
-> > >>>
-> > >>> -       ret = venus_helper_set_num_bufs(inst, inst->num_input_bufs,
-> > >>> -                                       inst->num_output_bufs, 0);
-> > >>> -       if (ret)
-> > >>> -               goto deinit_sess;
-> > >>> +               ret = venus_helper_vb2_start_streaming(inst);
-> > >>> +               if (ret)
-> > >>> +                       goto deinit_sess;
-> > >>>
-> > >>> -       ret = venus_helper_vb2_start_streaming(inst);
-> > >>> -       if (ret)
-> > >>> -               goto deinit_sess;
-> > >>> +               venus_helper_process_initial_out_bufs(inst);
-> > >>> +               venus_helper_process_initial_cap_bufs(inst);
-> > >>>
-> > >>> -       inst->enc_state = VENUS_ENC_STATE_ENCODING;
-> > >>> +               inst->enc_state = VENUS_ENC_STATE_ENCODING;
-> > >>> +       } else if (inst->enc_state == VENUS_ENC_STATE_RESET &&
-> > >>> +                  V4L2_TYPE_IS_CAPTURE(q->type)) {
-> > >>> +               ret = venus_helper_vb2_start_streaming(inst);
-> > >>> +               if (ret)
-> > >>> +                       goto bufs_done;
-> > >>>
-> > >>> -       mutex_unlock(&inst->lock);
-> > >>> +               venus_helper_process_initial_out_bufs(inst);
-> > >>> +               venus_helper_process_initial_cap_bufs(inst);
-> > >>>
-> > >>> -       return 0;
-> > >>> +               inst->enc_state = VENUS_ENC_STATE_ENCODING;
-> > >>> +       } else if (inst->enc_state == VENUS_ENC_STATE_STOPPED &&
-> > >>> +                  V4L2_TYPE_IS_OUTPUT(q->type)) {
-> > >>> +               inst->enc_state = VENUS_ENC_STATE_ENCODING;
-> > >>> +       }
-> > >>> +
-> > >>> +unlock:
-> > >>> +       mutex_unlock(&inst->lock);
-> > >>> +       return ret;
-> > >>>
-> > >>>  deinit_sess:
-> > >>>         hfi_session_deinit(inst);
-> > >>>  bufs_done:
-> > >>>         venus_helper_buffers_done(inst, q->type, VB2_BUF_STATE_QUEUED);
-> > >>> -       if (q->type == V4L2_BUF_TYPE_VIDEO_OUTPUT_MPLANE)
-> > >>> +       if (V4L2_TYPE_IS_OUTPUT(q->type))
-> > >>>                 inst->streamon_out = 0;
-> > >>>         else
-> > >>>                 inst->streamon_cap = 0;
-> > >>> @@ -943,33 +1019,97 @@ static int venc_start_streaming(struct
-> > >>> vb2_queue *q, unsigned int count)
-> > >>>         return ret;
-> > >>>  }
-> > >>>
-> > >>> -static void venc_vb2_buf_queue(struct vb2_buffer *vb)
-> > >>> +static int venc_stop_capture(struct venus_inst *inst)
-> > >>> +{
-> > >>> +       int ret;
-> > >>> +
-> > >>> +       switch (inst->enc_state) {
-> > >>> +       case VENUS_ENC_STATE_ENCODING:
-> > >>> +       case VENUS_ENC_STATE_DRAIN:
-> > >>> +       case VENUS_ENC_STATE_STOPPED:
-> > >>> +               inst->enc_state = VENUS_ENC_STATE_RESET;
-> > >>> +               break;
-> > >>> +       default:
-> > >>> +               return -EINVAL;
-> > >>> +       }
-> > >>> +
-> > >>> +       ret = hfi_session_stop(inst);
-> > >>> +       ret |= hfi_session_unload_res(inst);
-> > >>> +       ret |= venus_helper_unregister_bufs(inst);
-> > >>> +       ret |= venus_helper_intbufs_free(inst);
-> > >>> +
-> > >>> +       return ret;
-> > >>> +}
-> > >>> +
-> > >>> +static int venc_stop_output(struct venus_inst *inst)
-> > >>> +{
-> > >>> +       switch (inst->enc_state) {
-> > >>> +       case VENUS_ENC_STATE_ENCODING:
-> > >>> +               inst->enc_state = VENUS_ENC_STATE_STOPPED;
-> > >>> +               break;
-> > >>> +       case VENUS_ENC_STATE_DRAIN:
-> > >>> +               inst->enc_state = VENUS_ENC_STATE_STOPPED;
-> > >>> +               break;
-> > >>> +       default:
-> > >>> +               return -EINVAL;
-> > >>> +       }
-> > >>> +
-> > >>> +       return 0;
-> > >>> +}
-> > >>> +
-> > >>> +static void venc_stop_streaming(struct vb2_queue *q)
-> > >>> +{
-> > >>> +       struct venus_inst *inst = vb2_get_drv_priv(q);
-> > >>> +       int ret = -EINVAL;
-> > >>> +
-> > >>> +       mutex_lock(&inst->lock);
-> > >>> +
-> > >>> +       if (V4L2_TYPE_IS_OUTPUT(q->type))
-> > >>> +               ret = venc_stop_output(inst);
-> > >>> +       else
-> > >>> +               ret = venc_stop_capture(inst);
-> > >>> +
-> > >>> +       venus_helper_buffers_done(inst, q->type, VB2_BUF_STATE_ERROR);
-> > >>> +
-> > >>> +       if (ret)
-> > >>> +               goto unlock;
-> > >>> +
-> > >>> +       if (V4L2_TYPE_IS_OUTPUT(q->type))
-> > >>> +               inst->streamon_out = 0;
-> > >>> +       else
-> > >>> +               inst->streamon_cap = 0;
-> > >>> +
-> > >>> +unlock:
-> > >>> +       mutex_unlock(&inst->lock);
-> > >>> +}
-> > >>> +
-> > >>> +static void venc_buf_queue(struct vb2_buffer *vb)
-> > >>>  {
-> > >>>         struct venus_inst *inst = vb2_get_drv_priv(vb->vb2_queue);
-> > >>>         struct vb2_v4l2_buffer *vbuf = to_vb2_v4l2_buffer(vb);
-> > >>> +       struct v4l2_m2m_ctx *m2m_ctx = inst->m2m_ctx;
-> > >>>
-> > >>>         mutex_lock(&inst->lock);
-> > >>>
-> > >>> -       if (inst->enc_state == VENUS_ENC_STATE_STOPPED) {
-> > >>> -               vbuf->sequence = inst->sequence_cap++;
-> > >>> -               vbuf->field = V4L2_FIELD_NONE;
-> > >>> -               vb2_set_plane_payload(vb, 0, 0);
-> > >>> -               v4l2_m2m_buf_done(vbuf, VB2_BUF_STATE_DONE);
-> > >>> -               mutex_unlock(&inst->lock);
-> > >>> -               return;
-> > >>> -       }
-> > >>> +       v4l2_m2m_buf_queue(m2m_ctx, vbuf);
-> > >>> +
-> > >>> +       if (!(inst->streamon_out && inst->streamon_cap))
-> > >>> +               goto unlock;
-> > >>> +
-> > >>> +       venus_helper_process_buf(vb);
-> > >>>
-> > >>> -       venus_helper_vb2_buf_queue(vb);
-> > >>> +unlock:
-> > >>>         mutex_unlock(&inst->lock);
-> > >>>  }
-> > >>>
-> > >>>  static const struct vb2_ops venc_vb2_ops = {
-> > >>>         .queue_setup = venc_queue_setup,
-> > >>> -       .buf_init = venus_helper_vb2_buf_init,
-> > >>> +       .buf_init = venc_buf_init,
-> > >>> +       .buf_cleanup = venc_buf_cleanup,
-> > >>>         .buf_prepare = venus_helper_vb2_buf_prepare,
-> > >>>         .start_streaming = venc_start_streaming,
-> > >>> -       .stop_streaming = venus_helper_vb2_stop_streaming,
-> > >>> -       .buf_queue = venc_vb2_buf_queue,
-> > >>> +       .stop_streaming = venc_stop_streaming,
-> > >>> +       .buf_queue = venc_buf_queue,
-> > >>>  };
-> > >>>
-> > >>>  static void venc_buf_done(struct venus_inst *inst, unsigned int
-> > >>> buf_type,
-> > >>> @@ -1025,8 +1165,12 @@ static const struct hfi_inst_ops venc_hfi_ops = {
-> > >>>         .event_notify = venc_event_notify,
-> > >>>  };
-> > >>>
-> > >>> +static void venc_m2m_device_run(void *priv)
-> > >>> +{
-> > >>> +}
-> > >>> +
-> > >>>  static const struct v4l2_m2m_ops venc_m2m_ops = {
-> > >>> -       .device_run = venus_helper_m2m_device_run,
-> > >>> +       .device_run = venc_m2m_device_run,
-> > >>>         .job_abort = venus_helper_m2m_job_abort,
-> > >>>  };
-> > >>>
-> > >>> @@ -1098,11 +1242,9 @@ static int venc_open(struct file *file)
-> > >>>         inst->core = core;
-> > >>>         inst->session_type = VIDC_SESSION_TYPE_ENC;
-> > >>>         inst->clk_data.core_id = VIDC_CORE_ID_DEFAULT;
-> > >>> +       inst->enc_state = VENUS_ENC_STATE_INIT;
-> > >>>         inst->core_acquired = false;
-> > >>>
-> > >>> -       if (inst->enc_state == VENUS_ENC_STATE_DEINIT)
-> > >>> -               inst->enc_state = VENUS_ENC_STATE_INIT;
-> > >>> -
-> > >>>         venus_helper_init_instance(inst);
-> > >>>
-> > >>>         ret = pm_runtime_get_sync(core->dev_enc);
-> > >>> @@ -1167,7 +1309,7 @@ static int venc_close(struct file *file)
-> > >>>         mutex_destroy(&inst->lock);
-> > >>>         v4l2_fh_del(&inst->fh);
-> > >>>         v4l2_fh_exit(&inst->fh);
-> > >>> -       inst->enc_state = VENUS_ENC_STATE_DEINIT;
-> > >>> +
-> > >>>         pm_runtime_put_sync(inst->core->dev_enc);
-> > >>>
-> > >>>         kfree(inst);
-> > >>> --
-> > >>> 2.17.1
-> > >>>
-> > >
-> > > Thanks,
-> > > Vikash
-> >
-> > --
-> > regards,
-> > Stan
+On Tue, Oct 13, 2020 at 10:51:58AM +0100, Marc Zyngier wrote:
+> The Tegra SOR driver uses the devm infrastructure to request regulators,
+> but enables them without registering them with the infrastructure.
+>=20
+> This results in the following splat if probing fails for any odd resaon
+> (such as dependencies not being available):
+>=20
+> [    8.974187] tegra-sor 15580000.sor: cannot get HDMI supply: -517
+> [    9.414403] tegra-sor 15580000.sor: failed to probe HDMI: -517
+> [    9.421240] ------------[ cut here ]------------
+> [    9.425879] WARNING: CPU: 1 PID: 164 at drivers/regulator/core.c:2089 =
+_regulator_put.part.0+0x16c/0x174
+> [    9.435259] Modules linked in: tegra_drm(E+) cec(E) ahci_tegra(E) drm_=
+kms_helper(E) drm(E) libahci_platform(E) libahci(E) max77620_regulator(E) x=
+hci_tegra(E+) sdhci_tegra(E) xhci_hcd(E) libata(E) sdhci_pltfm(E) cqhci(E) =
+fixed(E) usbcore(E) scsi_mod(E) sdhci(E) host1x(E)
+> [    9.459211] CPU: 1 PID: 164 Comm: systemd-udevd Tainted: G S    D W   =
+E     5.9.0-rc7-00298-gf6337624c4fe #1980
+> [    9.469285] Hardware name: NVIDIA Jetson TX2 Developer Kit (DT)
+> [    9.475202] pstate: 80000005 (Nzcv daif -PAN -UAO BTYPE=3D--)
+> [    9.480784] pc : _regulator_put.part.0+0x16c/0x174
+> [    9.485581] lr : regulator_put+0x44/0x60
+> [    9.489501] sp : ffffffc011d837b0
+> [    9.492814] x29: ffffffc011d837b0 x28: ffffff81dd085900
+> [    9.498141] x27: ffffff81de1c8ec0 x26: ffffff81de1c8c10
+> [    9.503464] x25: ffffff81dd085800 x24: ffffffc008f2c6b0
+> [    9.508790] x23: ffffffc0117373f0 x22: 0000000000000005
+> [    9.514101] x21: ffffff81dd085900 x20: ffffffc01172b098
+> [    9.515822] ata1: SATA link down (SStatus 0 SControl 300)
+> [    9.519426] x19: ffffff81dd085100 x18: 0000000000000030
+> [    9.530122] x17: 0000000000000000 x16: 0000000000000000
+> [    9.535453] x15: 0000000000000000 x14: 000000000000038f
+> [    9.540777] x13: 0000000000000003 x12: 0000000000000040
+> [    9.546105] x11: ffffff81eb800000 x10: 0000000000000ae0
+> [    9.551417] x9 : ffffffc0106fea24 x8 : ffffff81de83e6c0
+> [    9.556728] x7 : 0000000000000018 x6 : 00000000000003c3
+> [    9.562064] x5 : 0000000000005660 x4 : 0000000000000000
+> [    9.567392] x3 : ffffffc01172b388 x2 : ffffff81de83db80
+> [    9.572702] x1 : 0000000000000000 x0 : 0000000000000001
+> [    9.578034] Call trace:
+> [    9.580494]  _regulator_put.part.0+0x16c/0x174
+> [    9.584940]  regulator_put+0x44/0x60
+> [    9.588522]  devm_regulator_release+0x20/0x2c
+> [    9.592885]  release_nodes+0x1c8/0x2c0
+> [    9.596636]  devres_release_all+0x44/0x6c
+> [    9.600649]  really_probe+0x1ec/0x504
+> [    9.604316]  driver_probe_device+0x100/0x170
+> [    9.608589]  device_driver_attach+0xcc/0xd4
+> [    9.612774]  __driver_attach+0xb0/0x17c
+> [    9.616614]  bus_for_each_dev+0x7c/0xd4
+> [    9.620450]  driver_attach+0x30/0x3c
+> [    9.624027]  bus_add_driver+0x154/0x250
+> [    9.627867]  driver_register+0x84/0x140
+> [    9.631719]  __platform_register_drivers+0xa0/0x180
+> [    9.636660]  host1x_drm_init+0x60/0x1000 [tegra_drm]
+> [    9.641629]  do_one_initcall+0x54/0x2d0
+> [    9.645490]  do_init_module+0x68/0x29c
+> [    9.649244]  load_module+0x2178/0x26c0
+> [    9.652997]  __do_sys_finit_module+0xb0/0x120
+> [    9.657356]  __arm64_sys_finit_module+0x2c/0x40
+> [    9.661902]  el0_svc_common.constprop.0+0x80/0x240
+> [    9.666701]  do_el0_svc+0x30/0xa0
+> [    9.670022]  el0_svc+0x18/0x50
+> [    9.673081]  el0_sync_handler+0x90/0x318
+> [    9.677006]  el0_sync+0x158/0x180
+> [    9.680324] ---[ end trace 90f6c89d62d85ff6 ]---
+>=20
+> Instead, let's register a callback that will disable the regulators
+> on teardown. This allows for the removal of the .remove callbacks,
+> which are not needed anymore.
+>=20
+> Signed-off-by: Marc Zyngier <maz@kernel.org>
+> ---
+>  drivers/gpu/drm/tegra/sor.c | 59 +++++++++++++++----------------------
+>  1 file changed, 24 insertions(+), 35 deletions(-)
+
+Applied, thanks.
+
+Thierry
+
+--6sX45UoQRIJXqkqR
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAl+qz+YACgkQ3SOs138+
+s6F9Xg//TRAcs2XU/XUt/lYP/+oaVvwF70C4gRU8yuTStqLEnjpsyYRweKfWVOD0
+nPhTD0LPF/XWGJt3n9DacUrUnqsNrbaYp09LNK3GFeP53IuMXbIziuWrfZ6Df/ev
+/XrFOrt3kRWdvGE/XK6FJ3b7w0GsLIwiVHuSNUk7XNICWKGhwNsBM6p1SvDZ0gLW
+NwPosCu8Orr+Yrl+nb/9h4P2B4h+2P0BIMJ9yfeYOdHD6785/u9nKmq6oVpp5ThV
+9FAvHy02RqymT+9mZmzu3t/z4pdexqfEWRTgQshhr/drDfLU8YOEmkOXf6UITDHX
+gFrYJvjjWFYN/zlhulJEhS6MuWdrX2yEsbW6y4SHzyX0mh4BjOyL7XqdYKitD7YH
+EeqgUxN6fN9wd7+ft2eKSHQbK91YgBhkSivCq3MjyMqn29pyLdRLCuRWFvUks6bk
+0At/tr996PSytUs14VZlB8XPI3UiDsymE8mwfwILIYNXNSQ4nZG/ASXXgzyh5FAN
+LYVEfoNo0vuEitJc7sRgdT10pJl/P/ztoMNjx4ACIQmezcy6r4sf89dvFqBEl4RJ
+3l5y1g8tA5RYC14daHnJRG1WhrKKhdtdCSlpbg0wjEuV5LZXItcBaO0PCQZruzPH
+QxRSxQabcI7mbYZfawE3DtUcJjxDQadqbJj9tEQ4eIwsjr8OqxQ=
+=JeKr
+-----END PGP SIGNATURE-----
+
+--6sX45UoQRIJXqkqR--
