@@ -2,126 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 847892ACC00
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 04:40:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E5A72ACC06
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 04:49:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731181AbgKJDkU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 22:40:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44776 "EHLO
+        id S1730863AbgKJDtk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 22:49:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46206 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729452AbgKJDkT (ORCPT
+        with ESMTP id S1730249AbgKJDtj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 22:40:19 -0500
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6852C0613D3
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Nov 2020 19:40:18 -0800 (PST)
-Received: by mail-pf1-x442.google.com with SMTP id 10so10155545pfp.5
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Nov 2020 19:40:18 -0800 (PST)
+        Mon, 9 Nov 2020 22:49:39 -0500
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19057C0613CF
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Nov 2020 19:49:39 -0800 (PST)
+Received: by mail-pg1-x543.google.com with SMTP id z24so9008187pgk.3
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Nov 2020 19:49:39 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=endlessos.org; s=google;
+        d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=ZZg9Y/b3yLTMT/aoFQhRo6VJELwibnkY7U6+AfYs+D0=;
-        b=uzlKBZZS+2ZLBkhtde+QLTwV8poiX5Ivoa3LzYkAvyBUPah1RQyn10WZt0La5VhFUl
-         hJL/SbkiE48Ptmc0lUzxSLbLY5or2VlO4agA1sAEOhdNGKxszGjpJCrGqpyMxjGtMxLi
-         9q1NResKVVfgNn9n4vP0ycBl24WCF1nAwib5l3ZEzkDvlBlW7pF3Kbn3y5WjuGcKN9sU
-         8uUFSz5B1hNCH75t9Nal+2CG6WWTZaKOJUIkqm7upH2e/5FMQhzHlCVOXLzsrZVjqMXQ
-         EM7/emZB+22b3lmvZbl5rqgis30jnkDylXFOJXs2GQODbii1r9ePeI9o4C8WXAFIkvAN
-         2q9Q==
+        bh=sDoxEoYXzOGDTRqKHmsK1PmkQ+v+kjtjORMumiaAdaY=;
+        b=VRHtKHrHp+YYnxmp5gRTU5t79Mq1+WJABfC0oh+1Cza26fX35vqeIx0L7pTcKEGdU6
+         oE7L7TMvPdmMiAWjDBxnEqqH6vZuu7nkQdgMtO4ya0zUSdp7zFPLHG3cAA/4+I6iJTSv
+         Dfl+SskuSqxVcP06diQkjLgkoaYUzFobZyNAuAzBxuDJ8rW3bYmniabBkXEE0iYn6lKD
+         2Offn4yIOhOBLAHNJbPGPN85qS+phnyo+6ye4t7WOzp8VkUz/Fdu0eGL1ZJ/ssKFriBO
+         NlMBufWsCcZcYF5pfeFv30h41qabhd8gLf3ysS0yokatYdlM5+pOlK+I6mntknRC7TcX
+         En8g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=ZZg9Y/b3yLTMT/aoFQhRo6VJELwibnkY7U6+AfYs+D0=;
-        b=WUKc4mJsJ99JQoLRFJXPDcUwdBEYV6WeO4BXR60JROxRRj2tufEp12oWHLEeEBj44H
-         65RVRruldEFyxnrWoj3vgY8lLi0PcL4WZ4cYfYAomB0LV4nwJF/RWDZN/oe4nrwQXpgN
-         wvqqrfdpM/tAni7zm5RIEFW6rvcXPHq3kWQGo/1vOTKUdB9SwPx8X8+DMXtLP0fsE4I+
-         kYnghsIiQWm5/Wnq9Abkmp1l5ULD+7iKMjxKPpGtNwv2Oz9fDYexQqDCXDS5FA99GuON
-         2uLOBEBNt5JKoyMh0+G2xXl5vS7Tl7AUJnZk1c/2QmrkU3FCzs2YzEyRh39LNhcI9AcU
-         GVSg==
-X-Gm-Message-State: AOAM532pvt6vxY+gwawKb5yu/165GhZXnx+cjMGptlRRGivXHijn8jUD
-        P0BAtuKzkdU992Kfx+EoSkPvNu6xJ6TaBD8gyxI=
-X-Google-Smtp-Source: ABdhPJygg5NHHvYiNeD4GNk/5sj99DVzMvWAO0/MkZsPPi09Y5RxXZm5psKY/q3ChyWCKQwSLS8u1g==
-X-Received: by 2002:a17:90a:6309:: with SMTP id e9mr2565126pjj.115.1604979618222;
-        Mon, 09 Nov 2020 19:40:18 -0800 (PST)
-Received: from endless.endlessm-sf.com (ec2-34-209-191-27.us-west-2.compute.amazonaws.com. [34.209.191.27])
-        by smtp.googlemail.com with ESMTPSA id z3sm11333165pgl.73.2020.11.09.19.40.15
+        bh=sDoxEoYXzOGDTRqKHmsK1PmkQ+v+kjtjORMumiaAdaY=;
+        b=rO67m4AHmBWy70BTufpJ4+hDKrTAgMoGmPou5ZG25va/kmGXal0ggu+mFr3AsP536X
+         mJEDUtroRZqXcB6rivV9PiAiR9+GtUnDC7v/+A8SmV698L8v2UJwKWTrkhM0kbDkQuA2
+         6FyXfBWrWfRp5PMSxVnLRN3lYnKOu2n4Y79CF1r0nVT5BEIMqzJeyA4UpxPUtUd1Iv46
+         +V8sX5iU/wzHBK5bJAsVK5H+MeHaIcnQBHd0TCSR11vrujbTEeLW/Z7sJdmKZ7U0H9mR
+         YX9Wfbo+SAcyvYku/Kv0L5pgUhbgsxy88tt0vCVhSGHbvtyG84WQqQZuK+GYzeOJRShx
+         I3uw==
+X-Gm-Message-State: AOAM531KSUJJosX72TANGJa+Cm9h3Z6l4M8lAgZEbpFA0rjuKXLoz2M5
+        ae2SifChqHVcFioqRvmG5dqUo3+q3w0yPw==
+X-Google-Smtp-Source: ABdhPJzH2pSKF1PV/0DDDEBwUaDZ0Qy7l115AmJfeyhAyHCxq657BbYMJVv7zdoWvPj0zHB54WdOCw==
+X-Received: by 2002:a17:90b:3708:: with SMTP id mg8mr2765897pjb.192.1604980178162;
+        Mon, 09 Nov 2020 19:49:38 -0800 (PST)
+Received: from localhost.localdomain ([2601:1c2:680:1319:692:26ff:feda:3a81])
+        by smtp.gmail.com with ESMTPSA id b4sm12380693pfi.208.2020.11.09.19.49.36
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 09 Nov 2020 19:40:17 -0800 (PST)
-From:   Chris Chiu <chiu@endlessos.org>
-To:     johan.hedberg@gmail.com, marcel@holtmann.org
-Cc:     linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux@endlessos.org, Chris Chiu <chiu@endlessos.org>
-Subject: [PATCH v2] Bluetooth: btusb: Add support for 13d3:3560 MediaTek MT7615E device
-Date:   Tue, 10 Nov 2020 11:40:10 +0800
-Message-Id: <20201110034010.11088-1-chiu@endlessos.org>
-X-Mailer: git-send-email 2.20.1
+        Mon, 09 Nov 2020 19:49:37 -0800 (PST)
+From:   John Stultz <john.stultz@linaro.org>
+To:     lkml <linux-kernel@vger.kernel.org>
+Cc:     John Stultz <john.stultz@linaro.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Liam Mark <lmark@codeaurora.org>,
+        Laura Abbott <labbott@kernel.org>,
+        Brian Starkey <Brian.Starkey@arm.com>,
+        Hridya Valsaraju <hridya@google.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Sandeep Patil <sspatil@google.com>,
+        Daniel Mentz <danielmentz@google.com>,
+        Chris Goldsworthy <cgoldswo@codeaurora.org>,
+        =?UTF-8?q?=C3=98rjan=20Eide?= <orjan.eide@arm.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Ezequiel Garcia <ezequiel@collabora.com>,
+        Simon Ser <contact@emersion.fr>,
+        James Jones <jajones@nvidia.com>, linux-media@vger.kernel.org,
+        dri-devel@lists.freedesktop.org
+Subject: [PATCH v5 0/7] dma-buf: Performance improvements for system heap & a system-uncached implementation
+Date:   Tue, 10 Nov 2020 03:49:27 +0000
+Message-Id: <20201110034934.70898-1-john.stultz@linaro.org>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The ASUS X532EQ laptop contains AzureWave AW-CB434NF WiFi/BT combo
-module with an associated MT7615E BT chip using a USB ID of 13d3:3560.
+Hey All,
+  So just wanted to send my last revision of my patch series
+of performance optimizations to the dma-buf system heap.
 
-T:  Bus=03 Lev=01 Prnt=01 Port=09 Cnt=02 Dev#=  3 Spd=480  MxCh= 0
-D:  Ver= 2.10 Cls=ef(misc ) Sub=02 Prot=01 MxPS=64 #Cfgs=  1
-P:  Vendor=13d3 ProdID=3560 Rev= 1.00
-S:  Manufacturer=MediaTek Inc.
-S:  Product=Wireless_Device
-S:  SerialNumber=000000000
-C:* #Ifs= 2 Cfg#= 1 Atr=e0 MxPwr=100mA
-A:  FirstIf#= 0 IfCount= 2 Cls=e0(wlcon) Sub=01 Prot=01
-I:* If#= 0 Alt= 0 #EPs= 3 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
-E:  Ad=81(I) Atr=03(Int.) MxPS=  16 Ivl=125us
-E:  Ad=82(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-E:  Ad=02(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-I:* If#= 1 Alt= 0 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
-E:  Ad=83(I) Atr=01(Isoc) MxPS=   0 Ivl=1ms
-E:  Ad=03(O) Atr=01(Isoc) MxPS=   0 Ivl=1ms
-I:  If#= 1 Alt= 1 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
-E:  Ad=83(I) Atr=01(Isoc) MxPS=   9 Ivl=1ms
-E:  Ad=03(O) Atr=01(Isoc) MxPS=   9 Ivl=1ms
-I:  If#= 1 Alt= 2 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
-E:  Ad=83(I) Atr=01(Isoc) MxPS=  17 Ivl=1ms
-E:  Ad=03(O) Atr=01(Isoc) MxPS=  17 Ivl=1ms
-I:  If#= 1 Alt= 3 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
-E:  Ad=83(I) Atr=01(Isoc) MxPS=  25 Ivl=1ms
-E:  Ad=03(O) Atr=01(Isoc) MxPS=  25 Ivl=1ms
-I:  If#= 1 Alt= 4 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
-E:  Ad=83(I) Atr=01(Isoc) MxPS=  33 Ivl=1ms
-E:  Ad=03(O) Atr=01(Isoc) MxPS=  33 Ivl=1ms
-I:  If#= 1 Alt= 5 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
-E:  Ad=83(I) Atr=01(Isoc) MxPS=  49 Ivl=1ms
-E:  Ad=03(O) Atr=01(Isoc) MxPS=  49 Ivl=1ms
-I:  If#= 1 Alt= 6 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
-E:  Ad=83(I) Atr=01(Isoc) MxPS=  63 Ivl=1ms
-E:  Ad=03(O) Atr=01(Isoc) MxPS=  63 Ivl=1ms
+This series reworks the system heap to use sgtables, and then
+consolidates the pagelist method from the heap-helpers into the
+CMA heap. After which the heap-helpers logic is removed (as it
+is unused). I'd still like to find a better way to avoid some of
+the logic duplication in implementing the entire dma_buf_ops
+handlers per heap. But unfortunately that code is tied somewhat
+to how the buffer's memory is tracked. As more heaps show up I
+think we'll have a better idea how to best share code, so for
+now I think this is ok.
 
-Signed-off-by: Chris Chiu <chiu@endlessos.org>
----
+After this, the series introduces an optimization that
+Ørjan Eide implemented for ION that avoids calling sync on
+attachments that don't have a mapping.
 
-v2:
-  - Add comment for the MT7615E BT device.
+Next, an optimization to use larger order pages for the system
+heap. This change brings us closer to the current performance
+of the ION allocation code (though there still is a gap due
+to ION using a mix of deferred-freeing and page pools, I'll be
+looking at integrating those eventually).
 
- drivers/bluetooth/btusb.c | 3 +++
- 1 file changed, 3 insertions(+)
+Finally, a reworked version of my uncached system heap
+implementation I was submitting a few weeks back. Since it
+duplicated a lot of the now reworked system heap code, I
+realized it would be much simpler to add the functionality to
+the system_heap implementation itself.
 
-diff --git a/drivers/bluetooth/btusb.c b/drivers/bluetooth/btusb.c
-index 5af2e3f30a5e..7e05be1a7bff 100644
---- a/drivers/bluetooth/btusb.c
-+++ b/drivers/bluetooth/btusb.c
-@@ -368,6 +368,9 @@ static const struct usb_device_id blacklist_table[] = {
- 	{ USB_VENDOR_AND_INTERFACE_INFO(0x0e8d, 0xe0, 0x01, 0x01),
- 	  .driver_info = BTUSB_MEDIATEK },
- 
-+	/* Additional MediaTek MT7615E Bluetooth devices */
-+	{ USB_DEVICE(0x13d3, 0x3560), .driver_info = BTUSB_MEDIATEK},
-+
- 	/* Additional Realtek 8723AE Bluetooth devices */
- 	{ USB_DEVICE(0x0930, 0x021d), .driver_info = BTUSB_REALTEK },
- 	{ USB_DEVICE(0x13d3, 0x3394), .driver_info = BTUSB_REALTEK },
+While not improving the core allocation performance, the
+uncached heap allocations do result in *much* improved
+performance on HiKey960 as it avoids a lot of flushing and
+invalidating buffers that the cpu doesn't touch often.
+
+Feedback on these would be great!
+
+thanks
+-john
+
+New in v5:
+* Added a comment explaining why the order sizes are
+  chosen as they are
+
+Cc: Sumit Semwal <sumit.semwal@linaro.org>
+Cc: Liam Mark <lmark@codeaurora.org>
+Cc: Laura Abbott <labbott@kernel.org>
+Cc: Brian Starkey <Brian.Starkey@arm.com>
+Cc: Hridya Valsaraju <hridya@google.com>
+Cc: Suren Baghdasaryan <surenb@google.com>
+Cc: Sandeep Patil <sspatil@google.com>
+Cc: Daniel Mentz <danielmentz@google.com>
+Cc: Chris Goldsworthy <cgoldswo@codeaurora.org>
+Cc: Ørjan Eide <orjan.eide@arm.com>
+Cc: Robin Murphy <robin.murphy@arm.com>
+Cc: Ezequiel Garcia <ezequiel@collabora.com>
+Cc: Simon Ser <contact@emersion.fr>
+Cc: James Jones <jajones@nvidia.com>
+Cc: linux-media@vger.kernel.org
+Cc: dri-devel@lists.freedesktop.org
+
+John Stultz (7):
+  dma-buf: system_heap: Rework system heap to use sgtables instead of
+    pagelists
+  dma-buf: heaps: Move heap-helper logic into the cma_heap
+    implementation
+  dma-buf: heaps: Remove heap-helpers code
+  dma-buf: heaps: Skip sync if not mapped
+  dma-buf: system_heap: Allocate higher order pages if available
+  dma-buf: dma-heap: Keep track of the heap device struct
+  dma-buf: system_heap: Add a system-uncached heap re-using the system
+    heap
+
+ drivers/dma-buf/dma-heap.c           |  33 +-
+ drivers/dma-buf/heaps/Makefile       |   1 -
+ drivers/dma-buf/heaps/cma_heap.c     | 324 +++++++++++++++---
+ drivers/dma-buf/heaps/heap-helpers.c | 270 ---------------
+ drivers/dma-buf/heaps/heap-helpers.h |  53 ---
+ drivers/dma-buf/heaps/system_heap.c  | 494 ++++++++++++++++++++++++---
+ include/linux/dma-heap.h             |   9 +
+ 7 files changed, 753 insertions(+), 431 deletions(-)
+ delete mode 100644 drivers/dma-buf/heaps/heap-helpers.c
+ delete mode 100644 drivers/dma-buf/heaps/heap-helpers.h
+
 -- 
-2.20.1
+2.17.1
 
