@@ -2,141 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B164C2AD868
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 15:13:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B3D52AD86C
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 15:13:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732324AbgKJON2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 09:13:28 -0500
-Received: from mga07.intel.com ([134.134.136.100]:31730 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730880AbgKJON1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 09:13:27 -0500
-IronPort-SDR: sDxNWZ6Dcnc2hqF4qrmyvkHo7hcRftbQTh7g6Kl0D5XDSSg4f0sQrCJPt0yMXFeJErtz9Mrbrb
- Czd8Rj0nwlBw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9800"; a="234142628"
-X-IronPort-AV: E=Sophos;i="5.77,466,1596524400"; 
-   d="scan'208";a="234142628"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Nov 2020 06:13:25 -0800
-IronPort-SDR: jTy2oEcYHeqTR/PuPMFNJsuA1QGjArnEfzapc4ZoNFRvHno4UWo8YNp+R+4SMsBonNTOhF4qwE
- 4QqFJu17y4OQ==
-X-IronPort-AV: E=Sophos;i="5.77,466,1596524400"; 
-   d="scan'208";a="308050541"
-Received: from otc-nc-03.jf.intel.com (HELO otc-nc-03) ([10.54.39.36])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Nov 2020 06:13:24 -0800
-Date:   Tue, 10 Nov 2020 06:13:23 -0800
-From:   "Raj, Ashok" <ashok.raj@intel.com>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Jason Gunthorpe <jgg@nvidia.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        "Tian, Kevin" <kevin.tian@intel.com>,
-        "Jiang, Dave" <dave.jiang@intel.com>,
-        Bjorn Helgaas <helgaas@kernel.org>,
-        "vkoul@kernel.org" <vkoul@kernel.org>,
-        "Dey, Megha" <megha.dey@intel.com>,
-        "maz@kernel.org" <maz@kernel.org>,
-        "bhelgaas@google.com" <bhelgaas@google.com>,
-        "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
-        "Pan, Jacob jun" <jacob.jun.pan@intel.com>,
-        "Liu, Yi L" <yi.l.liu@intel.com>, "Lu, Baolu" <baolu.lu@intel.com>,
-        "Kumar, Sanjay K" <sanjay.k.kumar@intel.com>,
-        "Luck, Tony" <tony.luck@intel.com>,
-        "kwankhede@nvidia.com" <kwankhede@nvidia.com>,
-        "eric.auger@redhat.com" <eric.auger@redhat.com>,
-        "parav@mellanox.com" <parav@mellanox.com>,
-        "rafael@kernel.org" <rafael@kernel.org>,
-        "netanelg@mellanox.com" <netanelg@mellanox.com>,
-        "shahafs@mellanox.com" <shahafs@mellanox.com>,
-        "yan.y.zhao@linux.intel.com" <yan.y.zhao@linux.intel.com>,
-        "pbonzini@redhat.com" <pbonzini@redhat.com>,
-        "Ortiz, Samuel" <samuel.ortiz@intel.com>,
-        "Hossain, Mona" <mona.hossain@intel.com>,
-        "dmaengine@vger.kernel.org" <dmaengine@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        Ashok Raj <ashok.raj@intel.com>
-Subject: Re: [PATCH v4 06/17] PCI: add SIOV and IMS capability detection
-Message-ID: <20201110141323.GB22336@otc-nc-03>
-References: <20201106175131.GW2620339@nvidia.com>
- <CAPcyv4iYHA1acfo=+fTk+U_TrLbSWJjA6v4oeTXgVYDTrnCoGw@mail.gmail.com>
- <20201107001207.GA2620339@nvidia.com>
- <87pn4nk7nn.fsf@nanos.tec.linutronix.de>
- <20201108235852.GC32074@araj-mobl1.jf.intel.com>
- <874klykc7h.fsf@nanos.tec.linutronix.de>
- <20201109173034.GG2620339@nvidia.com>
- <87pn4mi23u.fsf@nanos.tec.linutronix.de>
- <20201110051412.GA20147@otc-nc-03>
- <875z6dik1a.fsf@nanos.tec.linutronix.de>
+        id S1732351AbgKJONy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 09:13:54 -0500
+Received: from mail-mw2nam10on2080.outbound.protection.outlook.com ([40.107.94.80]:24833
+        "EHLO NAM10-MW2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1730524AbgKJONx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Nov 2020 09:13:53 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=mcjXoplSB2IxXenRf/PMFdkZHeRwCPPakgYx7TkFUxTWTLq8qsjSwf/BnPDafPTZ4esMUpClPxiSr832fk4OpPov4zMPb+YEMda/wROajolODMURyGJqBFRDMUgO1g038L904RZmXQB9UhU5wn+G56xaBSL8F2ostjaDY8t/2QWs8++n2dlkcpR2aG2jqhm2vom2HnI3TK8i3kBJxTqCQ2mbk43a//pGrUWrrHXtBjzq4RIBE2KHXE+SNX1wvjPBoVpiuNusoGJyPkrlPGMvtvR3JFrAKF1H5Wc+V0u7+n3KoUlA/BoQZJQckfPY4gfYdeodoMKDJwjKYeghU7N/Xw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=yv+t2JvLivEqRTEIrJPqK3OooDHOZFgf+0RHfUxQyi4=;
+ b=LV0DxBPN6q85YfrzVIWewjyIDUJbJTLc74Ld5A8k94qID7GyUiL4KQaYfbuMZ2KHRIWmqdkJZLqPyPOyQdnkMSbvR3055oHcDwqqgamNeQSQxDJKi3dwKLKVQuhbyI+HSw2+PZ8snHelzjnwFUPaSoyOcNghXihTHouDvqL0dDFNo/tNNVE5ntP1nGSVEf70BkbDix5XraiPbhNTxpRf4gaVefeHU57TJWnOJyevY41CkSufMFC+weafWo6k/7RoA0yZLffDw5WBnKcJdiTMfwiayDYKgQqv8Zfub/MRgNHgSkB/1R1UbeY4AMxaIzlVmSe6Tq195elPALbNYA+FPg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=yv+t2JvLivEqRTEIrJPqK3OooDHOZFgf+0RHfUxQyi4=;
+ b=ZB6FTMqabSGfmCUmtE5+Tw1Xy/MCjXTiXARrBJex3A+ruIz4OaHndJwinomyBqWw4pzWFS9Lqwv8ztxLqGzYvc+h0jXqpMroatxubPtbZTCb/kFGtaUA4+/08UZ33xZvzU/10t8LJvHzl2TMAAQ5N6EqExLOXj5vC7lNpEDvTvw=
+Authentication-Results: vivo.com; dkim=none (message not signed)
+ header.d=none;vivo.com; dmarc=none action=none header.from=amd.com;
+Received: from MW3PR12MB4379.namprd12.prod.outlook.com (2603:10b6:303:5e::11)
+ by MWHPR12MB1293.namprd12.prod.outlook.com (2603:10b6:300:9::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3541.23; Tue, 10 Nov
+ 2020 14:13:51 +0000
+Received: from MW3PR12MB4379.namprd12.prod.outlook.com
+ ([fe80::95e:3860:8b43:1a35]) by MW3PR12MB4379.namprd12.prod.outlook.com
+ ([fe80::95e:3860:8b43:1a35%5]) with mapi id 15.20.3541.025; Tue, 10 Nov 2020
+ 14:13:51 +0000
+Subject: Re: [PATCH] amd/display/amdgpu_dm: delete same check in if condition
+To:     Bernard Zhao <bernard@vivo.com>, Leo Li <sunpeng.li@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Nicholas Kazlauskas <nicholas.kazlauskas@amd.com>,
+        Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
+        Mikita Lipski <mikita.lipski@amd.com>,
+        Stylon Wang <stylon.wang@amd.com>,
+        Bhawanpreet Lakha <Bhawanpreet.Lakha@amd.com>,
+        Roman Li <Roman.Li@amd.com>, hersen wu <hersenxs.wu@amd.com>,
+        Aurabindo Pillai <aurabindo.pillai@amd.com>,
+        Alexander Monakov <amonakov@ispras.ru>,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+Cc:     opensource.kernel@vivo.com
+References: <20201110080318.36305-1-bernard@vivo.com>
+From:   Harry Wentland <harry.wentland@amd.com>
+Message-ID: <2fcfe666-3c83-17ad-f287-6a1801268285@amd.com>
+Date:   Tue, 10 Nov 2020 09:13:47 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
+In-Reply-To: <20201110080318.36305-1-bernard@vivo.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [198.200.67.155]
+X-ClientProxiedBy: YT1PR01CA0053.CANPRD01.PROD.OUTLOOK.COM
+ (2603:10b6:b01:2e::22) To MW3PR12MB4379.namprd12.prod.outlook.com
+ (2603:10b6:303:5e::11)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <875z6dik1a.fsf@nanos.tec.linutronix.de>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [192.168.1.193] (198.200.67.155) by YT1PR01CA0053.CANPRD01.PROD.OUTLOOK.COM (2603:10b6:b01:2e::22) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3541.21 via Frontend Transport; Tue, 10 Nov 2020 14:13:48 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: 40ba4c04-4b6c-48c1-14ac-08d88582d96f
+X-MS-TrafficTypeDiagnostic: MWHPR12MB1293:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <MWHPR12MB1293BBE1BDDECE9D1C80400E8CE90@MWHPR12MB1293.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:4125;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: bVyTJiu/DhfuCeL2t/mgDyHmTMjU83F41Uz+PQOz3Apet/odI7N8RrLLxXrjmGei2dCcyK2PvfJo9oCu1bQjHoLHPMIKBSV8ClCRqKBGvMztOFSDoLvVUvyAMI90wsYAHfBIKnVfwSnd0K8fFOIwVIn9Sg5dsQfl4rqbtrcc36YSpXMdsYxfDDP1NfIA69Ms1LROG2PhX1v5ZIlHB5LlX/VzdgsHzZ77lveHGocmgLhHK049mHJmkP5nkYMhg6ouffw0vFSIMgy+kHcBVsCdiYSeFewe+nm/auKyLjM4PpUnmB9BjQEIGPWG9UApvMy2pxlkkZAgMyHpCBFoAVhRTMS8VPP3y4H1Eyqu9CByFcB5o6TQh6fN29BdDuohWECwdMsOvhIP1j20v+r3ulXBVA==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW3PR12MB4379.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(136003)(39860400002)(366004)(346002)(396003)(31686004)(66556008)(4326008)(44832011)(2616005)(956004)(31696002)(86362001)(26005)(110136005)(316002)(16576012)(478600001)(2906002)(66946007)(6486002)(5660300002)(16526019)(186003)(53546011)(66476007)(52116002)(8936002)(83380400001)(4001150100001)(36756003)(8676002)(921003)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: p6ZfmyXPHdKD8CPtAGOpkWfUk5sdDLlUeOdoSiTPCvrIJ4olIFdrxnOaf7x4FQFEr49d566NS/o3RWYbnLxWCHSFoShAfxbwZKfUhWuJlZWMIfVCYGapHiBMVY84i/j+ybtJ5NNb+pIjNBqxf6oNFPqncPiDgHtvRBLnE0r6vSYMrv9evDlD15YfkatU/Q+su3lTmJ4j8IvxYLiGpSyzT70uEw2aZ4cjslAEYqH765kkCO60Og33PaJ/BmNyeYzrwtSn00rHPOI8AsbwKWC3C4RLDv8FH8Wj4cmpnt+i5j0JCQoqAI9n9OGrLsaDxtemJgFqbEXcDfP+8Nd6Hv7DfUI5GYoHYqGe7gMe66xbv/IPO0s4TsXWt7hSvp4jWIbLiSc+XCOGgvFcamX2b5Y3XRRlbGvlN74tliWMcS0WcG67JaPdD/twf9uwZkpB6OFVmOwBlModdU8NtkaOhpB70XI/OBJzA7UEOsAmqv+BWK5jywbZZmxkYfz4Q6EusS2K+Is8cGGaefgKosZRwn95M/OIqfP7ehF+kb1fzvSSl19EfvkMtcXkTKNNze1+WbiJlKBPPZ29Ap8ZEHDlHSaVOVzgHotlQgA4MwfTPqlyOZb5e2KACDjUD8SVg8Qu1a1hGZ7exab8IRsMqfwwEdweKw==
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 40ba4c04-4b6c-48c1-14ac-08d88582d96f
+X-MS-Exchange-CrossTenant-AuthSource: MW3PR12MB4379.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Nov 2020 14:13:51.5453
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: OV/pKNO6i9ilsVHzFGvSTYw3tN8JBQO+1m2gVAk7ON+MPNE5HVGQie9Uz6rcEAKBHXgTYUbQN5kkCxcVTE07Pg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR12MB1293
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thomas,
-
-With all these interrupt message storms ;-), I'm missing how to move towards
-an end goal.
-
-On Tue, Nov 10, 2020 at 11:27:29AM +0100, Thomas Gleixner wrote:
-> Ashok,
+On 2020-11-10 3:03 a.m., Bernard Zhao wrote:
+> In function amdgpu_dm_connector_get_modes, drm_edid_is_valid
+> will check weather (!edid), no need to check again in the if
+> branch.
 > 
-> On Mon, Nov 09 2020 at 21:14, Ashok Raj wrote:
-> > On Mon, Nov 09, 2020 at 11:42:29PM +0100, Thomas Gleixner wrote:
-> >> On Mon, Nov 09 2020 at 13:30, Jason Gunthorpe wrote:
-> > Approach to IMS is more of a phased approach. 
-> >
-> > #1 Allow physical device to scale beyond limits of PCIe MSIx
-> >    Follows current methodology for guest interrupt programming and
-> >    evolutionary changes rather than drastic.
+> Signed-off-by: Bernard Zhao <bernard@vivo.com>
+
+Reviewed-by: Harry Wentland <harry.wentland@amd.com>
+
+Harry
+
+> ---
+>   drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> Trapping MSI[X] writes is there because it allows to hand a device to an
-> unmodified guest OS and to handle the case where the MSI[X] entries
-> storage cannot be mapped exclusively to the guest.
+> diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
+> index e93e18c06c0e..0a283d07fe10 100644
+> --- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
+> +++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
+> @@ -6352,7 +6352,7 @@ static int amdgpu_dm_connector_get_modes(struct drm_connector *connector)
+>   
+>   	encoder = amdgpu_dm_connector_to_encoder(connector);
+>   
+> -	if (!edid || !drm_edid_is_valid(edid)) {
+> +	if (!drm_edid_is_valid(edid)) {
+>   		amdgpu_dm_connector->num_modes =
+>   				drm_add_modes_noedid(connector, 640, 480);
+>   	} else {
 > 
-> But aside of this, it's not required if the storage can be mapped
-> exclusively, the guest is hypervisor aware and can get a host composed
-> message via a hypercall. That works for physical functions and SRIOV,
-> but not for SIOV.
-
-It would greatly help if you can put down what you see is blocking 
-to move forward in the following areas.
-
-Address Gaps in Spec: 
-
-Specs can accomodate change after review, as the number of ECN's that go on
-with PCIe ;-). Please add what you like to see in the spec if you beleive
-is a gap today.
-
-Hardware Gaps?
-- PASID tagged Interrupts.
-- IOMMU Support for PASID based IR.
-
-As i had called out, there are a lot of moving parts, and requires more
-attention.
-
-OS Gaps?
-- Lack of ability to identify if platform can use IMS.
-- Lack of hypercall.
-
-We will always have devices that have more interrupts but their use doesn't
-need IMS to be directly manipulated by the guest, or the fact those usages
-require more than what is allowed by PCIe in a guest. These devices can 
-scale by adding another sub-device and you get another block of 2048 if needed.
-
-This isn't just for idxd, as I mentioned earlier, there are vendors other
-than Intel already working on this. In all cases the need for guest direct
-manipulation of interrupt store hasn't come up. From the discussion, it
-seems like there are devices today or in future that will require direct
-manipulation of interrupt store in the guest. This needs additional work
-in both the device hardware providing the right plumbing and OS work to
-comprehend those.
-
-Cheers,
-Ashok
