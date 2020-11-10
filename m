@@ -2,116 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EB8C2AD6FD
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 13:59:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BEA32AD700
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 14:00:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730495AbgKJM74 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 07:59:56 -0500
-Received: from mail-ot1-f68.google.com ([209.85.210.68]:36187 "EHLO
-        mail-ot1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726462AbgKJM7z (ORCPT
+        id S1730643AbgKJNAz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 08:00:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46608 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726462AbgKJNAy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 07:59:55 -0500
-Received: by mail-ot1-f68.google.com with SMTP id n89so1169714otn.3;
-        Tue, 10 Nov 2020 04:59:55 -0800 (PST)
+        Tue, 10 Nov 2020 08:00:54 -0500
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C852C0613CF
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 05:00:53 -0800 (PST)
+Received: by mail-wm1-x341.google.com with SMTP id s13so2899681wmh.4
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 05:00:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=ybTfB3rMzNb3Par8rFjgeakZunYZuUZMKJ+Bmz10zcI=;
+        b=rmy95vdpdJpdRJEwkEsHwMF2i7Fz09alyS8dBJCzhsq01cijLN8w5esY1ZgkK53FPV
+         cSZVG2U0tVWBNACNlF4zAsr53awUP6kvc6EZeub8DlRiqt0DTC+er4HbV1uCeFqiPJ99
+         sdFZIsB5B5pl9ED/FsK6NiGe8gsyiW3UxBWgelUOXa/7zqTNhBVRwaNK7nxhA8Gatkxn
+         /+OTNzRCmv/uOkcMA5ccEW7f2IWVHoQ1rtZhE6udkHHOnDKmCgXe09q0K1/KcOtILr8t
+         KmIvz9YQTbrKfjAl+ynn6ylt/s2TIDhpXNSm3OUNTj+K4rN6JazdW82/S48+Lx5HrrIn
+         7q3w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=nQJTAdZ1adBsQ8C+kbyZpy76IwyPcxh02MnCTX/G32M=;
-        b=eUoq5h7WdKBQY9bZOt/rWgaNknaR+NAds5bAB+mEB9Uy9h1FjgXPZsjTiaBaoW7NIf
-         vkFkmo9iL0D4vrSe0RQv2rR0NZWR2ipUADo5O9b5giv5bL+pmLLqnw05J9SHbx7NuqHu
-         T98RymeYRVrYTIrzOHF3A4ulcKbrUt8zqgTg46aELBanYiASoP2yG8oizQQ28lVC517I
-         wuaFuOkreXFNCfu0cWWzqzImRCRD1hMq5FlzJlZIibj00lZEmgrdVUYvO1OjviJuk/7J
-         ma0knsaVLYwzlwuKLNYnAXP7XSiMkylJdp+MiXLRYrQVhuTZx/aNC0c8ZHsyMDJniZ9B
-         WpwA==
-X-Gm-Message-State: AOAM530K9HoCRyKTErOlrPKu52kio8mE3M2qAogWXqpzL5FuOhA90Z+9
-        kKUfRk6s9z99bUHeo0s/Og+4oE/1XYHos12Zw28TBzqW
-X-Google-Smtp-Source: ABdhPJzUgNv59oHa/4ibKbYfwMT74tdKKWstSZKGVCl5k3qih2inBZhq4GNYsjklXLUcM6g/NQIwrNANvQvhHyZtIq4=
-X-Received: by 2002:a9d:16f:: with SMTP id 102mr14776795otu.206.1605013195114;
- Tue, 10 Nov 2020 04:59:55 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ybTfB3rMzNb3Par8rFjgeakZunYZuUZMKJ+Bmz10zcI=;
+        b=HTE/0bNXX00+dFeqeCz0GR4PxMnUx3Z3MgpF+UL65A+r5eoXVABqGuzCtt3b01q3pg
+         ko1ZUOaiA56K+Nz3Shpg8VJ08C0xyxpg2tO2RZELl7WQ7tRzJgjyVPGQMGpak7ztn08x
+         G34/AX4qB/HGGG6paOnlskzT9OLyViFefgtSCCNnevyz+pR22jY3QIzNtLW4o4s6Ua3x
+         K8B1rUQPnVvqkuI7FnQ9aa+5ocexGM1sQkfsAguZCIIalBEa/xByfAIY9LN2k2Nxusvw
+         eREaG0Ql3HzpCD5D+4wcFOEdUZxk9dFj103O3hmGhMoxwKCKgaEgb48kJ2BtcT+0Nj4W
+         UTjQ==
+X-Gm-Message-State: AOAM533Nm83DRIZtbbD/0QuFgQf7iSnrSxedhNMCj+NjjXmDo6yZ8/zq
+        Guv7RyDPc95+XdGDwAvOs+6Ui8+reLhQ3CKA
+X-Google-Smtp-Source: ABdhPJwOPtmMtv6OjKVZB2aVxNghBPp9/tnek0StNVDL8wEHHKGQzndhEh0APrbsGcFVBzNIdtfVVQ==
+X-Received: by 2002:a1c:2bc3:: with SMTP id r186mr4442378wmr.163.1605013251758;
+        Tue, 10 Nov 2020 05:00:51 -0800 (PST)
+Received: from google.com ([2a01:4b00:8523:2d03:870:7715:aaa1:475e])
+        by smtp.gmail.com with ESMTPSA id 35sm15115746wro.71.2020.11.10.05.00.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 10 Nov 2020 05:00:50 -0800 (PST)
+Date:   Tue, 10 Nov 2020 13:00:49 +0000
+From:   David Brazdil <dbrazdil@google.com>
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     kvmarm@lists.cs.columbia.edu, kernel-team@android.com,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Andrew Walbran <qwandor@google.com>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Tejun Heo <tj@kernel.org>, Dennis Zhou <dennis@kernel.org>,
+        Christoph Lameter <cl@linux.com>, Will Deacon <will@kernel.org>
+Subject: Re: [PATCH v1 23/24] kvm: arm64: Trap host SMCs in protected mode.
+Message-ID: <20201110130049.pwc4ilqy2ue2ydvu@google.com>
+References: <20201109113233.9012-1-dbrazdil@google.com>
+ <20201109113233.9012-24-dbrazdil@google.com>
+ <10952bcf24bebd5e317d09ced415bfb1@kernel.org>
 MIME-Version: 1.0
-References: <0e0fb542b6f6b26944cb2cf356041348aeac95f6.1605006378.git.viresh.kumar@linaro.org>
-In-Reply-To: <0e0fb542b6f6b26944cb2cf356041348aeac95f6.1605006378.git.viresh.kumar@linaro.org>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Tue, 10 Nov 2020 13:59:42 +0100
-Message-ID: <CAJZ5v0hqxzE3c6Nz7f=23OBYPA7z-pJaSwk9JGTFTr1SYDFubg@mail.gmail.com>
-Subject: Re: [PATCH] cpufreq: stats: Switch to ktime and msec instead of
- jiffies and usertime
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     Rafael Wysocki <rjw@rjwysocki.net>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Thomas Renninger <trenn@suse.com>,
-        Shuah Khan <shuah@kernel.org>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <10952bcf24bebd5e317d09ced415bfb1@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 10, 2020 at 12:07 PM Viresh Kumar <viresh.kumar@linaro.org> wrote:
->
-> The cpufreq and thermal core, both provide sysfs statistics to help
-> userspace learn about the behavior of frequencies and cooling states.
->
-> This is how they look:
->
-> /sys/devices/system/cpu/cpufreq/policy0/stats/time_in_state:208000 11
-> /sys/devices/system/cpu/cpufreq/policy0/stats/time_in_state:432000 147
-> /sys/devices/system/cpu/cpufreq/policy0/stats/time_in_state:729000 1600
-> /sys/devices/system/cpu/cpufreq/policy0/stats/time_in_state:960000 879
-> /sys/devices/system/cpu/cpufreq/policy0/stats/time_in_state:1200000 399
->
-> /sys/class/thermal/cooling_device0/stats/time_in_state_ms:state0 4097
-> /sys/class/thermal/cooling_device0/stats/time_in_state_ms:state1 8932
-> /sys/class/thermal/cooling_device0/stats/time_in_state_ms:state2 15868
-> /sys/class/thermal/cooling_device0/stats/time_in_state_ms:state3 1384
-> /sys/class/thermal/cooling_device0/stats/time_in_state_ms:state4 103
->
-> Here, state0 of thermal corresponds to the highest frequency of the CPU,
-> i.e. 1200000 and state4 to the lowest one.
->
-> While both of these try to show similar kind of data (which can still be
-> very much different from each other), the values looked different (by a
-> factor of 10, i.e. thermal's time_in_state is almost 10 times that of
-> cpufreq time_in_state).
->
-> This comes from the fact that cpufreq core displays the time in usertime
-> units (10 ms).
->
-> It would be better if both the frameworks displayed times in the same
-> unit as the users may need to correlate between them and different
-> scales just make it awkward. And the choice of thermal core for that
-> (msec) seems to be a better choice as it is easier to read.
->
-> The thermal core also does the stats calculations using ktime, which is
-> much more accurate as compared to jiffies used by cpufreq core.
->
-> This patch updates the cpufreq core to use ktime for the internal
-> calculations and changes the units of time_in_state to msec.
+> > +++ b/arch/arm64/kvm/hyp/nvhe/hyp-init.S
+> > @@ -88,6 +88,12 @@ SYM_CODE_END(__kvm_hyp_init)
+> >   * x0: struct kvm_nvhe_init_params PA
+> >   */
+> >  SYM_CODE_START(___kvm_hyp_init)
+> > +alternative_cb kvm_patch_hcr_flags
+> > +	mov_q	x1, HCR_HOST_NVHE_FLAGS
+> 
+> You really want to be careful here: the mov_q macro expands to 2, 3 or 4
+> instructions, depending on the input data...
+> 
+> It is also odd that you have both a static key and a patching alternative.
+> Why isn't "protected KVM" a capability that can be evaluated as a a non
+> patching alternative? In general, I'd like to reserve patching alternatives
+> to values that cannot be evaluated at compile time (VM offsets, for
+> example).
 
-Well, this may confuse user space using the stats today.
-
->
-> The results look like this after this commit:
->
-> /sys/devices/system/cpu/cpufreq/policy0/stats/time_in_state:208000 13
-> /sys/devices/system/cpu/cpufreq/policy0/stats/time_in_state:432000 790
-> /sys/devices/system/cpu/cpufreq/policy0/stats/time_in_state:729000 12492
-> /sys/devices/system/cpu/cpufreq/policy0/stats/time_in_state:960000 13259
-> /sys/devices/system/cpu/cpufreq/policy0/stats/time_in_state:1200000 3830
->
-> /sys/class/thermal/cooling_device0/stats/time_in_state_ms:state0 3888
-> /sys/class/thermal/cooling_device0/stats/time_in_state_ms:state1 13432
-> /sys/class/thermal/cooling_device0/stats/time_in_state_ms:state2 12336
-> /sys/class/thermal/cooling_device0/stats/time_in_state_ms:state3 740
-> /sys/class/thermal/cooling_device0/stats/time_in_state_ms:state4 0
->
-> FWIW, tools/power/cpupower/ does consume the time_in_state values from
-> the sysfs files but it is independent of the unit of the time and didn't
-> require an update.
-
-But whoever uses cpupower may be confused.
+Capability was my initial idea as well but it looked tied to CPU features.
+Looking at it again, you're right that there is precedent for setting them
+from kernel params. Alright, I'll change it and that will get rid of the
+custom patching.
