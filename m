@@ -2,64 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 936772AE469
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 00:52:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A0522AE471
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 00:54:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732142AbgKJXwa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 18:52:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35926 "EHLO
+        id S1732329AbgKJXyj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 18:54:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36260 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731234AbgKJXw3 (ORCPT
+        with ESMTP id S1731558AbgKJXyi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 18:52:29 -0500
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01FFCC0613D3
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 15:52:29 -0800 (PST)
-Received: by mail-wm1-x342.google.com with SMTP id h62so169316wme.3
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 15:52:28 -0800 (PST)
+        Tue, 10 Nov 2020 18:54:38 -0500
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81219C0613D1;
+        Tue, 10 Nov 2020 15:54:38 -0800 (PST)
+Received: by mail-wr1-x444.google.com with SMTP id s8so375407wrw.10;
+        Tue, 10 Nov 2020 15:54:38 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc:content-transfer-encoding;
-        bh=+5DnaoUF0p5jGghI91j7sY8mMsHYnXiRGnd6iIqVaCI=;
-        b=BfO13MKXIQHCpL8tnKxxIwv+Q7ALe4KlLDC4/v3XD6yZgEgSrXris1Gqyd49dvnjvo
-         xjGn5jmV6yyHGM+hhqcXzRVIrThhv6lCsUhHXALI4MnUGZ7fWKCPM3qZ5qhDbmn0ixyn
-         Xj2gFmceiwJ0/sGZj0+5Vf/4KHoaboA5JZD6A5utOM9v7/JjFEVANMJjo723uO9R3rCl
-         0843C2ZN8Py0VIkGHA4c/qMbKqV7hEyVvk6O4hdqARDw4rxxDms9iPCNTSGEXBJEhT7Z
-         qolN5bUbvEyQjcTSso9WO5wwV5Gl0REaZoYJ1ltAx9P+dyLOWD2ClWjwrfU3AryYhGcY
-         jMgA==
+        bh=AZu6XPMSl4sNdMFeam8YLAmi7IJLk3RLAZr9T6pEy+0=;
+        b=fUSzbPNd0tO2Gzm4vcTZ8zt25ZmGES+U0kOlXwbx/9kA1KVO/LjWnENIz/ypmwx3Pl
+         prJI63oEHo4t9W6CoudckPSLmn/3+IyQthZQmRsdgT69fB9TEc1yNCn1SJuNMmvb8YHD
+         v/o5cBKfcBOYy+2mqNdvpAOEEzilnHqNcwwJGiRGVRXEpe7QCb25u2wDMCrG96gCmc+D
+         jeD+LANz5mnVAFnaAaAzzdWVDsg00Q/KQIyxhNxGXNKpZD8f7+QWHJiDe8aB9iYaqjg2
+         xI15m1dfVgjGlMnk0LNH3f3gKhGwFBkelDLUxWrSjmF9VaeobkcHMvYBcvkChccOUWd5
+         7LxA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc:content-transfer-encoding;
-        bh=+5DnaoUF0p5jGghI91j7sY8mMsHYnXiRGnd6iIqVaCI=;
-        b=BCOmjIPojZ+ojRFgFjqEuKs/Zq3ZI4xfM63Q41A0zo25I9j4F1cNSNnSHYvJHSoZx2
-         /Es+rIkzLf+S8seWfN2Tx1XIsKYdauz5XutHLwmYIbiOg/yykXovV+bTC2Z0het4zEMe
-         CEh9RjT3oTP+TgXJy//z4Mtb3WPlxYAgZA2LnbsvuVAdbo9oNNM2zZKRz6J7mVy42x06
-         uhVRJxoYZ9W3ynfYqjIkxtVZZDNcu9RrmR1qCFbhS+RCTeUp6h8G1ldr+hscXMlTM2LM
-         j4cGDRREmnaHdvH2j2j5O8oRl3N4cObcrI/BT+b7/ISNz78pIWUBTTywlo2vILV6CKtv
-         93vQ==
-X-Gm-Message-State: AOAM530HxMid1g0T+2s7IbfEVq1PqStKeKoJt9W0eSCL86LRteCkHa37
-        WtXESAoPHXGpNut47e/Cstw2jHQ03cMCeKDbIKg=
-X-Google-Smtp-Source: ABdhPJyH7zLqqCWsjHjLSvt2XDyB2UJe1W2H+wypyxoMhN3QyfBm6hwmu+EpFhdllNTCpSZYDJFDNrYghMhR/8RTXzk=
-X-Received: by 2002:a1c:80cb:: with SMTP id b194mr587600wmd.73.1605052347807;
- Tue, 10 Nov 2020 15:52:27 -0800 (PST)
+        bh=AZu6XPMSl4sNdMFeam8YLAmi7IJLk3RLAZr9T6pEy+0=;
+        b=Eeyf0hLnpIfLwfjisVH7kMYlGXg2xUAyZ+D50sjlDNSAGT+YjkLBy+BIPzqhs1Lxej
+         VkbiVSJ0Q0VRf3eZRGFQlxTKQpN63FvEX3rOtqbnoDhUgOJzKIGp/GUcUh8IDUTFDUxE
+         /5L6W0aqFtx6MNpjYWp8A0kjbST8vlMUH8gOy5QKupoBOxkKhZ/ZkPPZ/cB0LTiOldH3
+         2In8HHh67yWUDMTDA6EM4sUkM/kJvaghk5L4wqvblWF768BwpY2pI5klbznKGTcW2Zeo
+         hD4NKgJiX29w2sjPxGMkioSJsjV9EILUhvT/hSl+uFlghSmJRuktiRLgG2CgTVaqegM8
+         X62Q==
+X-Gm-Message-State: AOAM531XY8aRjbAsz/Qto+tpvAtYXarOi3pUT2Lih358PitorcC/L0qh
+        /qAlOO9WORWAFmqZYcNIj77db7Wi/R9Wd4vA6JI=
+X-Google-Smtp-Source: ABdhPJzP9e5pjH5sCd486bVfOquouBS2v0wH/GmC2ZsacUkp/PcNOrTUbD6snndk/K3H9t7uWbLLbIQPc0ik2RzapKM=
+X-Received: by 2002:adf:e8d0:: with SMTP id k16mr26295254wrn.362.1605052477294;
+ Tue, 10 Nov 2020 15:54:37 -0800 (PST)
 MIME-Version: 1.0
-References: <20201110193112.988999-1-lee.jones@linaro.org> <20201110193112.988999-14-lee.jones@linaro.org>
-In-Reply-To: <20201110193112.988999-14-lee.jones@linaro.org>
+References: <20201110193112.988999-1-lee.jones@linaro.org> <20201110193112.988999-17-lee.jones@linaro.org>
+In-Reply-To: <20201110193112.988999-17-lee.jones@linaro.org>
 From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Tue, 10 Nov 2020 18:52:13 -0500
-Message-ID: <CADnq5_MJQgyf_Xu+Qi-=6a9-V1x7YiVY0R+jWM7x_GvXxAdVhw@mail.gmail.com>
-Subject: Re: [PATCH 13/30] drm/radeon/radeon_mn: Supply description for
- 'cur_seq' even if it is unused
+Date:   Tue, 10 Nov 2020 18:54:25 -0500
+Message-ID: <CADnq5_NACtb19H26ruPKOJ2ZBv3WT+o5LQnMtreWp1qsx-w3Fw@mail.gmail.com>
+Subject: Re: [PATCH 16/30] drm/radeon/r100: Fix some kernel-doc formatting,
+ misnaming and missing issues
 To:     Lee Jones <lee.jones@linaro.org>
 Cc:     David Airlie <airlied@linux.ie>,
         LKML <linux-kernel@vger.kernel.org>,
         amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
+        <linaro-mm-sig@lists.linaro.org>,
         Maling list - DRI developers 
         <dri-devel@lists.freedesktop.org>,
         Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
+        linux-media <linux-media@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
@@ -70,39 +73,73 @@ On Tue, Nov 10, 2020 at 2:31 PM Lee Jones <lee.jones@linaro.org> wrote:
 >
 > Fixes the following W=3D1 kernel build warning(s):
 >
->  drivers/gpu/drm/radeon/radeon_mn.c:51: warning: Function parameter or me=
-mber 'cur_seq' not described in 'radeon_mn_invalidate'
+>  drivers/gpu/drm/radeon/r100.c:163: warning: Function parameter or member=
+ 'async' not described in 'r100_page_flip'
+>  drivers/gpu/drm/radeon/r100.c:848: warning: Function parameter or member=
+ 'rdev' not described in 'r100_ring_hdp_flush'
+>  drivers/gpu/drm/radeon/r100.c:848: warning: Function parameter or member=
+ 'ring' not described in 'r100_ring_hdp_flush'
+>  drivers/gpu/drm/radeon/r100.c:1425: warning: Function parameter or membe=
+r 'p' not described in 'r100_cs_packet_parse_vline'
+>  drivers/gpu/drm/radeon/r100.c:1425: warning: Excess function parameter '=
+parser' description in 'r100_cs_packet_parse_vline'
 >
 > Cc: Alex Deucher <alexander.deucher@amd.com>
 > Cc: "Christian K=C3=B6nig" <christian.koenig@amd.com>
 > Cc: David Airlie <airlied@linux.ie>
 > Cc: Daniel Vetter <daniel@ffwll.ch>
+> Cc: Sumit Semwal <sumit.semwal@linaro.org>
 > Cc: amd-gfx@lists.freedesktop.org
 > Cc: dri-devel@lists.freedesktop.org
+> Cc: linux-media@vger.kernel.org
+> Cc: linaro-mm-sig@lists.linaro.org
 > Signed-off-by: Lee Jones <lee.jones@linaro.org>
 
-Applied with minor fixup.  Thanks!
+Applied with minor fixup. Thanks!
 
 Alex
 
-
 > ---
->  drivers/gpu/drm/radeon/radeon_mn.c | 1 +
->  1 file changed, 1 insertion(+)
+>  drivers/gpu/drm/radeon/r100.c | 7 ++++---
+>  1 file changed, 4 insertions(+), 3 deletions(-)
 >
-> diff --git a/drivers/gpu/drm/radeon/radeon_mn.c b/drivers/gpu/drm/radeon/=
-radeon_mn.c
-> index 97b9b6dd6dd3b..3c4c4213a7b57 100644
-> --- a/drivers/gpu/drm/radeon/radeon_mn.c
-> +++ b/drivers/gpu/drm/radeon/radeon_mn.c
-> @@ -41,6 +41,7 @@
+> diff --git a/drivers/gpu/drm/radeon/r100.c b/drivers/gpu/drm/radeon/r100.=
+c
+> index 24c8db673931a..92075dedf2cb2 100644
+> --- a/drivers/gpu/drm/radeon/r100.c
+> +++ b/drivers/gpu/drm/radeon/r100.c
+> @@ -153,6 +153,7 @@ void r100_wait_for_vblank(struct radeon_device *rdev,=
+ int crtc)
+>   * @rdev: radeon_device pointer
+>   * @crtc_id: crtc to cleanup pageflip on
+>   * @crtc_base: new address of the crtc (GPU MC address)
+> + * @async: unused
 >   *
->   * @mn: our notifier
->   * @range: the VMA under invalidation
-> + * @cur_seq: unused
+>   * Does the actual pageflip (r1xx-r4xx).
+>   * During vblank we take the crtc lock and wait for the update_pending
+> @@ -841,8 +842,8 @@ u32 r100_get_vblank_counter(struct radeon_device *rde=
+v, int crtc)
+>
+>  /**
+>   * r100_ring_hdp_flush - flush Host Data Path via the ring buffer
+> - * rdev: radeon device structure
+> - * ring: ring buffer struct for emitting packets
+> + * @rdev: radeon device structure
+> + * @ring: ring buffer struct for emitting packets
+>   */
+>  static void r100_ring_hdp_flush(struct radeon_device *rdev, struct radeo=
+n_ring *ring)
+>  {
+> @@ -1409,7 +1410,7 @@ int r100_cs_parse_packet0(struct radeon_cs_parser *=
+p,
+>
+>  /**
+>   * r100_cs_packet_next_vline() - parse userspace VLINE packet
+> - * @parser:            parser structure holding parsing context.
+> + * @p:         parser structure holding parsing context.
 >   *
->   * We block for all BOs between start and end to be idle and
->   * unmap them by move them into system domain again.
+>   * Userspace sends a special sequence for VLINE waits.
+>   * PACKET0 - VLINE_START_END + value
 > --
 > 2.25.1
 >
