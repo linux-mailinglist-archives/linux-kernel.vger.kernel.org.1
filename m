@@ -2,94 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 552052AE26F
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 23:04:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ECF7C2AE272
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 23:04:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731687AbgKJWEE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 17:04:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47174 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726467AbgKJWEE (ORCPT
+        id S1731952AbgKJWEY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 17:04:24 -0500
+Received: from smtprelay0200.hostedemail.com ([216.40.44.200]:32950 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1727275AbgKJWEY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 17:04:04 -0500
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5AFBCC0613D1
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 14:04:02 -0800 (PST)
-Received: by mail-wm1-x344.google.com with SMTP id 10so4720800wml.2
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 14:04:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=B0CXBxq6ZAXd5FkSitRtEvhYhUL6Gbj9G7WXdfEnSfk=;
-        b=NlJ9XvyD6Efjbam4XOZs3RdXp05ThhueT/ZaAfUoMKZX64pwW0As4AmFTNl6g2zWJe
-         wC5Bm3hw9m34pBqCwFvj16pMRJXAZdl5lMy3aYrkBb3PY7NT7GsiBrira9QCUNs4daIK
-         /M1HUogRRusuSeQTPHUeg/mysiRlHVJXQv9KehIJka2f/8NGYnMvolZcekdO9xzTKv6X
-         +DO7J0053yEKhnQYdnLLPHguoU6Svfj1zOiTF19paXgHIRfDn66UVo3+MGB+wDug3qHF
-         QwJucbv+8toosdND8+bY/PFs196LPH14nzauL4IG6rQmDulhc5jH3nimS0u1aODDfkxu
-         yL7A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=B0CXBxq6ZAXd5FkSitRtEvhYhUL6Gbj9G7WXdfEnSfk=;
-        b=nmC4KnBQllLUKgm1H26wNBQraJddpC66JhkC0JxmNmUQkYz+aXIUnLvl4mlYFt+yQC
-         ZoXXEyw2fSVAdUDNqsXLc6rRifWxoUAW/1tAoOgKjl9GeAnTHhYFgdQ8CQ441K3f3Hrg
-         78KaFautQd4IXqe7UCYUHv6dzB4imh8aU1AOCwC2udo4Qgx2RdjpDHZk2/DUWIk9UFKd
-         E7C5U9smUO0qy3suIgD8j7Nz4wfKRtzx1WOOfveZhGq17kJzU6E5kaV4T2lpK3HOTwSM
-         SzQ7OMjey7d1LQv7nbXp3Sdg6FA3VF01gVSJBuVEnnox7smQOPtDKSQ6h6xgwbShtG1a
-         7Wtg==
-X-Gm-Message-State: AOAM532/n3AUku09qlfQVi96qD61mwgXY+zaTS0Jt8yJJu/yBfu7AutL
-        Y8eLbCZXU2GDzXsRiqNzWpY=
-X-Google-Smtp-Source: ABdhPJyz+xBEcEYwW9IfiVU8hWIVZxGrSztwXDgxqYIFVTdPC+YiSm8Styk/xnzgJ7tM7nCJMYx1nA==
-X-Received: by 2002:a7b:c845:: with SMTP id c5mr191433wml.135.1605045840978;
-        Tue, 10 Nov 2020 14:04:00 -0800 (PST)
-Received: from localhost.localdomain (host-92-5-241-147.as43234.net. [92.5.241.147])
-        by smtp.gmail.com with ESMTPSA id v19sm79099wrf.40.2020.11.10.14.04.00
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 10 Nov 2020 14:04:00 -0800 (PST)
-From:   Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        Chris Zankel <chris@zankel.net>,
-        Max Filippov <jcmvbkbc@gmail.com>,
-        linux-xtensa@linux-xtensa.org,
-        Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-Subject: [PATCH] mm: fix build failure with xtensa
-Date:   Tue, 10 Nov 2020 22:01:51 +0000
-Message-Id: <20201110220151.20911-1-sudipm.mukherjee@gmail.com>
-X-Mailer: git-send-email 2.11.0
+        Tue, 10 Nov 2020 17:04:24 -0500
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay06.hostedemail.com (Postfix) with ESMTP id C40A5182251A2;
+        Tue, 10 Nov 2020 22:04:22 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 50,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:967:968:973:988:989:1260:1261:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1537:1561:1593:1594:1711:1714:1730:1747:1777:1792:2393:2525:2560:2563:2682:2685:2828:2859:2933:2937:2939:2942:2945:2947:2951:2954:3022:3138:3139:3140:3141:3142:3622:3865:3866:3867:3868:3871:3874:3934:3936:3938:3941:3944:3947:3950:3953:3956:3959:4321:5007:6742:7652:8985:9025:10004:10400:11232:11658:11914:12043:12297:12438:12555:12740:12760:12895:13069:13311:13357:13439:14181:14659:14721:21080:21627:21811:30054:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: bait31_310502f272f8
+X-Filterd-Recvd-Size: 1717
+Received: from [192.168.0.160] (cpe-72-134-80-165.natsow.res.rr.com [72.134.80.165])
+        (Authenticated sender: joe@perches.com)
+        by omf05.hostedemail.com (Postfix) with ESMTPA;
+        Tue, 10 Nov 2020 22:04:20 +0000 (UTC)
+Message-ID: <26052c5a0a098aa7d9c0c8a1d39cc4a8f7915dd2.camel@perches.com>
+Subject: Re: [PATCH] netfilter: conntrack: fix -Wformat
+From:   Joe Perches <joe@perches.com>
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Pablo Neira Ayuso <pablo@netfilter.org>,
+        Jozsef Kadlecsik <kadlec@netfilter.org>,
+        Florian Westphal <fw@strlen.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
+        Network Development <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>
+Date:   Tue, 10 Nov 2020 14:04:19 -0800
+In-Reply-To: <CAKwvOdn50VP4h7tidMnnFeMA1M-FevykP+Y0ozieisS7Nn4yoQ@mail.gmail.com>
+References: <20201107075550.2244055-1-ndesaulniers@google.com>
+         <4910042649a4f3ab22fac93191b8c1fa0a2e17c3.camel@perches.com>
+         <CAKwvOdn50VP4h7tidMnnFeMA1M-FevykP+Y0ozieisS7Nn4yoQ@mail.gmail.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.38.1-1 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If CONFIG_ZSMALLOC is enabled with xtensa then the build fails with:
-mm/zsmalloc.c:43:10: fatal error: asm/sparsemem.h: No such file or directory
+On Tue, 2020-11-10 at 14:00 -0800, Nick Desaulniers wrote:
 
-Disable CONFIG_ZSMALLOC for xtensa as xtensa arch has not defined
-sparsemem.h.
+> Yeah, we could go through and remove %h and %hh to solve this, too, right?
 
-Signed-off-by: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
----
+Yup.
 
-Build failed with next-20201110.
-Build log at https://travis-ci.org/github/sudipm-mukherjee/linux-next/jobs/742793855#L13375
+I think one of the checkpatch improvement mentees is adding
+some suggestion and I hope an automated fix mechanism for that.
 
- mm/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+https://lore.kernel.org/lkml/5e3265c241602bb54286fbaae9222070daa4768e.camel@perches.com/
 
-diff --git a/mm/Kconfig b/mm/Kconfig
-index e8587f6bf29a..5b9426ba5e6a 100644
---- a/mm/Kconfig
-+++ b/mm/Kconfig
-@@ -698,7 +698,7 @@ config Z3FOLD
- 
- config ZSMALLOC
- 	tristate "Memory allocator for compressed pages"
--	depends on MMU
-+	depends on (MMU && !XTENSA)
- 	help
- 	  zsmalloc is a slab-based memory allocator designed to store
- 	  compressed RAM pages.  zsmalloc uses virtual memory mapping
--- 
-2.11.0
 
