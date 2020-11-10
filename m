@@ -2,145 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 408992AD27E
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 10:30:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 44BFA2AD27F
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 10:31:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729851AbgKJJ36 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 04:29:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42098 "EHLO
+        id S1729867AbgKJJbh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 04:31:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42356 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726467AbgKJJ36 (ORCPT
+        with ESMTP id S1726467AbgKJJbg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 04:29:58 -0500
-Received: from mail.kmu-office.ch (mail.kmu-office.ch [IPv6:2a02:418:6a02::a2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE108C0613CF
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 01:29:57 -0800 (PST)
-Received: from webmail.kmu-office.ch (unknown [IPv6:2a02:418:6a02::a3])
-        by mail.kmu-office.ch (Postfix) with ESMTPSA id 951625C08E1;
-        Tue, 10 Nov 2020 10:29:54 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=agner.ch; s=dkim;
-        t=1605000594;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=8NOI0TwT6xo5ZLvM79HrQZeOfmGCdQyER0VKFIdm4jQ=;
-        b=GzU+IWNBMbtYev7hrwn1TNuh5sjF7lfZtSTfXNgAbzuyKsAXOOC01YRx7AYTKt6kxvH6hG
-        slBloYBBAFIg68pgdeP2RQST8i95aPm9xHkYGmZm8Nnnk6kQN5CCHpQuieJ4qa9b4hwUJD
-        71xeCBFffdVoOznc2qyUAdcYvZQeFoY=
+        Tue, 10 Nov 2020 04:31:36 -0500
+Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FA4FC0613CF;
+        Tue, 10 Nov 2020 01:31:36 -0800 (PST)
+Received: by mail-lj1-x243.google.com with SMTP id v18so13910734ljc.3;
+        Tue, 10 Nov 2020 01:31:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=qZzUeLUSzED/NYF/wlcfMe4axUEZhGHtLkzkeiA+8sI=;
+        b=fECK1GFswwZVrvBSEBiNzO2LS+qCNfBF8ZMdDejkwlJVudv1rtFL4/5VbBVxGqmQ/+
+         0AwjucQX+Hwh2BPuwqCBea7xS6nkgRffiC/gCHkZSI9Q98MKl25PwUN6kkf98AT7J8Oe
+         EeuwyEb5lzB9nIjd20wQaVQFXMJIYZWoozuOQtI7p+q8Wobyf3i6DVU9eWJb2CYKvWMC
+         5aVsFJe48txhcaDvVuaks6crNOBWznNdWqBn0cORvYEAQcftEExuq1rLqXBh9XpxppYr
+         4ce+iMwLharYadkDzipW21uljCZb/9XdQ5ZJdTEQea+adVKVEjjpuJfHY2/+5cHe08nk
+         Akhg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=qZzUeLUSzED/NYF/wlcfMe4axUEZhGHtLkzkeiA+8sI=;
+        b=YwC68c20/yUIvUShmJc+WL9vKI9jgPrXpNV/m3ESpOansABaUYpt7Rk6lxo9NxlYcJ
+         mXD54JaTiyLEWtaT7/7T8SCgexJz8RW5zCr9VU2gVGsLxDpEGTpSWnkPUS8j21gredSM
+         sZUOu1j8CDJKnWghCfsP3AH1KRCYcSvY9s8t7jzCKL5UY7HUlUvf9GxmoAkvUSH5lbfZ
+         1ILBQLf34L7qAC6R1/RtyFXES5reZ7mhh7qEwTXn9kmPpiJeNLh9DwJPWQq+X+q+agoA
+         0oLdTOMBPMHVpkK30N7NSQw8s+2DQyLmt5KNf0/V6O2S2u3DiiNwTL4CBAE81sOV7jOk
+         GHhg==
+X-Gm-Message-State: AOAM533r6K8SQv9xf10Hy6VZhUKPkLHSndO6zoQSqXptUcwG4R/hzM1M
+        3SCk62aE9KNT+XX4sAghy6ahk4ZO/oM=
+X-Google-Smtp-Source: ABdhPJztddytDpiY5uFOds8GXmrDV34SH4jlXef3pFwX7KyDQfmCDksoGaG7QwPZb3xgytQBrqwNgQ==
+X-Received: by 2002:a2e:a0cf:: with SMTP id f15mr7742089ljm.142.1605000694955;
+        Tue, 10 Nov 2020 01:31:34 -0800 (PST)
+Received: from elitebook.lan (ip-194-187-74-233.konfederacka.maverick.com.pl. [194.187.74.233])
+        by smtp.googlemail.com with ESMTPSA id g10sm2034768lfc.179.2020.11.10.01.31.33
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 10 Nov 2020 01:31:34 -0800 (PST)
+Subject: Re: [PATCH 05/10] ARM: dts: BCM5301X: Provide defaults ports
+ container node
+To:     Florian Fainelli <f.fainelli@gmail.com>, netdev@vger.kernel.org
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>, Ray Jui <rjui@broadcom.com>,
+        Scott Branden <sbranden@broadcom.com>,
+        "maintainer:BROADCOM IPROC ARM ARCHITECTURE" 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        Hauke Mehrtens <hauke@hauke-m.de>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "moderated list:BROADCOM IPROC ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        Kurt Kanzenbach <kurt@kmk-computers.de>
+References: <20201110033113.31090-1-f.fainelli@gmail.com>
+ <20201110033113.31090-6-f.fainelli@gmail.com>
+From:   =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
+Message-ID: <5c424006-90ea-aee3-db2e-96b3a627a4a6@gmail.com>
+Date:   Tue, 10 Nov 2020 10:31:32 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Date:   Tue, 10 Nov 2020 10:29:54 +0100
-From:   Stefan Agner <stefan@agner.ch>
-To:     Mike Rapoport <rppt@kernel.org>
-Cc:     minchan@kernel.org, ngupta@vflare.org,
-        sergey.senozhatsky.work@gmail.com, akpm@linux-foundation.org,
-        sjenning@linux.vnet.ibm.com, gregkh@linuxfoundation.org,
-        arnd@arndb.de, linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mm/zsmalloc: include sparsemem.h for MAX_PHYSMEM_BITS
-In-Reply-To: <20201108064659.GD301837@kernel.org>
-References: <bdfa44bf1c570b05d6c70898e2bbb0acf234ecdf.1604762181.git.stefan@agner.ch>
- <20201108064659.GD301837@kernel.org>
-User-Agent: Roundcube Webmail/1.4.9
-Message-ID: <7782fb694a6b0c500e8f32ecf895b2bf@agner.ch>
-X-Sender: stefan@agner.ch
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <20201110033113.31090-6-f.fainelli@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-11-08 07:46, Mike Rapoport wrote:
-> On Sat, Nov 07, 2020 at 04:22:06PM +0100, Stefan Agner wrote:
->> Most architectures define MAX_PHYSMEM_BITS in asm/sparsemem.h and don't
->> include it in asm/pgtable.h. Include asm/sparsemem.h directly to get
->> the MAX_PHYSMEM_BITS define on all architectures.
->>
->> This fixes a crash when accessing zram on 32-bit ARM platform with LPAE and
->> more than 4GB of memory:
->>   Unable to handle kernel NULL pointer dereference at virtual address 00000000
->>   pgd = a27bd01c
->>   [00000000] *pgd=236a0003, *pmd=1ffa64003
->>   Internal error: Oops: 207 [#1] SMP ARM
->>   Modules linked in: mdio_bcm_unimac(+) brcmfmac cfg80211 brcmutil raspberrypi_hwmon hci_uart crc32_arm_ce bcm2711_thermal phy_generic genet
->>   CPU: 0 PID: 123 Comm: mkfs.ext4 Not tainted 5.9.6 #1
->>   Hardware name: BCM2711
->>   PC is at zs_map_object+0x94/0x338
->>   LR is at zram_bvec_rw.constprop.0+0x330/0xa64
->>   pc : [<c0602b38>]    lr : [<c0bda6a0>]    psr: 60000013
->>   sp : e376bbe0  ip : 00000000  fp : c1e2921c
->>   r10: 00000002  r9 : c1dda730  r8 : 00000000
->>   r7 : e8ff7a00  r6 : 00000000  r5 : 02f9ffa0  r4 : e3710000
->>   r3 : 000fdffe  r2 : c1e0ce80  r1 : ebf979a0  r0 : 00000000
->>   Flags: nZCv  IRQs on  FIQs on  Mode SVC_32  ISA ARM  Segment user
->>   Control: 30c5383d  Table: 235c2a80  DAC: fffffffd
->>   Process mkfs.ext4 (pid: 123, stack limit = 0x495a22e6)
->>   Stack: (0xe376bbe0 to 0xe376c000)
->>   ...
->>   [<c0602b38>] (zs_map_object) from [<c0bda6a0>] (zram_bvec_rw.constprop.0+0x330/0xa64)
->>   [<c0bda6a0>] (zram_bvec_rw.constprop.0) from [<c0bdaf78>] (zram_submit_bio+0x1a4/0x40c)
->>   [<c0bdaf78>] (zram_submit_bio) from [<c085806c>] (submit_bio_noacct+0xd0/0x3c8)
->>   [<c085806c>] (submit_bio_noacct) from [<c08583b0>] (submit_bio+0x4c/0x190)
->>   [<c08583b0>] (submit_bio) from [<c06496b4>] (submit_bh_wbc+0x188/0x1b8)
->>   [<c06496b4>] (submit_bh_wbc) from [<c064ce98>] (__block_write_full_page+0x340/0x5e4)
->>   [<c064ce98>] (__block_write_full_page) from [<c064d3ec>] (block_write_full_page+0x128/0x170)
->>   [<c064d3ec>] (block_write_full_page) from [<c0591ae8>] (__writepage+0x14/0x68)
->>   [<c0591ae8>] (__writepage) from [<c0593efc>] (write_cache_pages+0x1bc/0x494)
->>   [<c0593efc>] (write_cache_pages) from [<c059422c>] (generic_writepages+0x58/0x8c)
->>   [<c059422c>] (generic_writepages) from [<c0594c24>] (do_writepages+0x48/0xec)
->>   [<c0594c24>] (do_writepages) from [<c0589330>] (__filemap_fdatawrite_range+0xf0/0x128)
->>   [<c0589330>] (__filemap_fdatawrite_range) from [<c05894bc>] (file_write_and_wait_range+0x48/0x98)
->>   [<c05894bc>] (file_write_and_wait_range) from [<c064f3f8>] (blkdev_fsync+0x1c/0x44)
->>   [<c064f3f8>] (blkdev_fsync) from [<c064408c>] (do_fsync+0x3c/0x70)
->>   [<c064408c>] (do_fsync) from [<c0400374>] (__sys_trace_return+0x0/0x2c)
->>   Exception stack(0xe376bfa8 to 0xe376bff0)
->>   bfa0:                   0003d2e0 b6f7b6f0 00000003 00046e40 00001000 00000000
->>   bfc0: 0003d2e0 b6f7b6f0 00000000 00000076 00000000 00000000 befcbb20 befcbb28
->>   bfe0: b6f4e060 befcbad8 b6f23e0c b6dc4a80
->>   Code: e5927000 e0050391 e0871005 e5918018 (e5983000)
->>
->> Fixes: 61989a80fb3a ("staging: zsmalloc: zsmalloc memory allocation library")
->> Signed-off-by: Stefan Agner <stefan@agner.ch>
->> ---
->>  mm/zsmalloc.c | 1 +
->>  1 file changed, 1 insertion(+)
->>
->> diff --git a/mm/zsmalloc.c b/mm/zsmalloc.c
->> index c36fdff9a371..260bd48aacd0 100644
->> --- a/mm/zsmalloc.c
->> +++ b/mm/zsmalloc.c
->> @@ -40,6 +40,7 @@
->>  #include <linux/string.h>
->>  #include <linux/slab.h>
->>  #include <linux/pgtable.h>
->> +#include <asm/sparsemem.h>
+  10.11.2020 04:31, Florian Fainelli wrote:
+> Provide an empty 'ports' container node with the correct #address-cells
+> and #size-cells properties. This silences the following warning:
 > 
-> asm/sparsemem.h is not available on some architectures.
-> It's better to use linux/mmzone.h instead.
+> arch/arm/boot/dts/bcm4708-asus-rt-ac56u.dt.yaml:
+> ethernet-switch@18007000: 'oneOf' conditional failed, one must be fixed:
+>          'ports' is a required property
+>          'ethernet-ports' is a required property
+>          From schema:
+> Documentation/devicetree/bindings/net/dsa/b53.yaml
 > 
+> Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
+> ---
+>   arch/arm/boot/dts/bcm5301x.dtsi | 4 ++++
+>   1 file changed, 4 insertions(+)
+> 
+> diff --git a/arch/arm/boot/dts/bcm5301x.dtsi b/arch/arm/boot/dts/bcm5301x.dtsi
+> index 807580dd89f5..89993a8a6765 100644
+> --- a/arch/arm/boot/dts/bcm5301x.dtsi
+> +++ b/arch/arm/boot/dts/bcm5301x.dtsi
+> @@ -489,6 +489,10 @@ srab: ethernet-switch@18007000 {
+>   		status = "disabled";
+>   
+>   		/* ports are defined in board DTS */
+> +		ports {
+> +			#address-cells = <1>;
+> +			#size-cells = <0>;
+> +		};
 
-Hm, linux/mmzone.h only includes asm/sparsemem.h when CONFIG_SPARSEMEM
-is enabled. However, on ARM at least I can have configurations without
-CONFIG_SPARSEMEM and physical address extension on (e.g.
-multi_v7_defconfig + CONFIG_LPAE + CONFIG_ZSMALLOC).
+You can drop those two lines from board files now I believe.
 
-While sparsemem seems to be a good idea with LPAE it really seems not
-required (see also https://lore.kernel.org/patchwork/patch/567589/).
-
-There seem to be also other architectures which define MAX_PHYSMEM_BITS
-only when SPARSEMEM is enabled, e.g.
-arch/riscv/include/asm/sparsemem.h...
-
-Not sure how to get out of this.. Maybe make ZSMALLOC dependent on
-SPARSEMEM? It feels a bit silly restricting ZSMALLOC selection only due
-to a compile time define...
-
---
-Stefan
-
->>  #include <asm/tlbflush.h>
->>  #include <linux/cpumask.h>
->>  #include <linux/cpu.h>
->> --
->> 2.29.1
->>
->>
+grep "ports {" arch/arm/boot/dts/bcm470*
++ arch/arm/boot/dts/bcm953012er.dts
