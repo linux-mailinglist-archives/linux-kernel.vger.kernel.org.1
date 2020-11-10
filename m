@@ -2,138 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5477C2ADEB2
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 19:47:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 41CD32ADEAB
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 19:46:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731492AbgKJSrA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 13:47:00 -0500
-Received: from z5.mailgun.us ([104.130.96.5]:42272 "EHLO z5.mailgun.us"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731373AbgKJSq7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 13:46:59 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1605034019; h=In-Reply-To: Content-Type: MIME-Version:
- References: Message-ID: Subject: Cc: To: From: Date: Sender;
- bh=IZO6rnh8ZWoFV5rz+v+qH/+fcVcTytNYpXi3s4eL7GM=; b=kE1QMUYg1HD0upNIrV+PIj4SaYnvemu+re+Wy6xzVQn4DfVl45E+0HLZLyQe/9CHcgO8OZ6S
- BDpK7bj990TuBrxGXU/UTqUYfDeVe1lFNIM76Lyja4e4JeO6JOW2ZqIUpTYu51dblUNTUE3w
- 0HLF4HfoK2cOyEbKw2Db19SA+Ro=
-X-Mailgun-Sending-Ip: 104.130.96.5
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n05.prod.us-west-2.postgun.com with SMTP id
- 5faadff1e9dd187f53413ff1 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 10 Nov 2020 18:46:09
- GMT
-Sender: jcrouse=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id CC7E2C43387; Tue, 10 Nov 2020 18:46:09 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from jcrouse1-lnx.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: jcrouse)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id C00BEC433C6;
-        Tue, 10 Nov 2020 18:46:07 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org C00BEC433C6
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=jcrouse@codeaurora.org
-Date:   Tue, 10 Nov 2020 11:46:04 -0700
-From:   Jordan Crouse <jcrouse@codeaurora.org>
-To:     Rob Clark <robdclark@gmail.com>
-Cc:     dri-devel@lists.freedesktop.org,
-        Rob Clark <robdclark@chromium.org>,
-        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Jonathan Marek <jonathan@marek.ca>,
-        Sharat Masetty <smasetty@codeaurora.org>,
-        Eric Anholt <eric@anholt.net>,
-        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
-        <linux-arm-msm@vger.kernel.org>,
-        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
-        <freedreno@lists.freedesktop.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/2] drm/msm/a6xx: Clear shadow on suspend
-Message-ID: <20201110184604.GA2661@jcrouse1-lnx.qualcomm.com>
-Mail-Followup-To: Rob Clark <robdclark@gmail.com>,
-        dri-devel@lists.freedesktop.org, Rob Clark <robdclark@chromium.org>,
-        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>, Jonathan Marek <jonathan@marek.ca>,
-        Sharat Masetty <smasetty@codeaurora.org>,
-        Eric Anholt <eric@anholt.net>,
-        "open list:DRM DRIVER FOR MSM ADRENO GPU" <linux-arm-msm@vger.kernel.org>,
-        "open list:DRM DRIVER FOR MSM ADRENO GPU" <freedreno@lists.freedesktop.org>,
-        open list <linux-kernel@vger.kernel.org>
-References: <20201110184401.282982-1-robdclark@gmail.com>
+        id S1730859AbgKJSqW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 13:46:22 -0500
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:30810 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726307AbgKJSqV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Nov 2020 13:46:21 -0500
+Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
+        by m0001303.ppops.net (8.16.0.42/8.16.0.42) with SMTP id 0AAIhVex004300
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 10:46:20 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=facebook; bh=ITddvIBkBb3Qhz3BVWTO4nHuqnQYwvA66dzmBGbF/eU=;
+ b=ftJis+sF20YXuY+E7tCed7JB0FvL/4BaPNeLbuTHU7anPQnVue4kbY9XZ3cPPvWvCR+O
+ ddhG2oD+FbGjDG0ZHVI+9vghFw3TZKHs0WI5L3pAD/FkDJKRu3Kq5q5QNFD2TUK2fwCS
+ PX4kOeZ98NXMuRuhIOz8K5OO/aGBADxfkoM= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by m0001303.ppops.net with ESMTP id 34nr4pye1n-3
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 10:46:20 -0800
+Received: from intmgw004.06.prn3.facebook.com (2620:10d:c085:108::8) by
+ mail.thefacebook.com (2620:10d:c085:11d::5) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Tue, 10 Nov 2020 10:46:18 -0800
+Received: by devvm1755.vll0.facebook.com (Postfix, from userid 111017)
+        id 60001238474C; Tue, 10 Nov 2020 10:46:16 -0800 (PST)
+From:   Roman Gushchin <guro@fb.com>
+To:     Andrew Morton <akpm@linux-foundation.org>, <linux-mm@kvack.org>
+CC:     Shakeel Butt <shakeelb@google.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        <linux-kernel@vger.kernel.org>, <kernel-team@fb.com>,
+        Roman Gushchin <guro@fb.com>
+Subject: [PATCH] mm: memcg: fix obsolete code comments
+Date:   Tue, 10 Nov 2020 10:46:15 -0800
+Message-ID: <20201110184615.311974-1-guro@fb.com>
+X-Mailer: git-send-email 2.24.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201110184401.282982-1-robdclark@gmail.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-11-10_07:2020-11-10,2020-11-10 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 lowpriorityscore=0
+ malwarescore=0 mlxlogscore=709 spamscore=0 suspectscore=2 mlxscore=0
+ bulkscore=0 phishscore=0 clxscore=1015 impostorscore=0 adultscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2011100129
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 10, 2020 at 10:43:59AM -0800, Rob Clark wrote:
-> From: Rob Clark <robdclark@chromium.org>
-> 
-> Clear the shadow rptr on suspend.  Otherwise, when we resume, we can
-> have a stale value until CP_WHERE_AM_I executes.  If we suspend near
-> the ringbuffer wraparound point, this can lead to a chicken/egg
-> situation where we are waiting for ringbuffer space to write the
-> CP_WHERE_AM_I (or CP_INIT) packet, because we mistakenly believe that
-> the ringbuffer is full (due to stale rptr value in the shadow).
-> 
-> Fixes errors like:
-> 
->   [drm:adreno_wait_ring [msm]] *ERROR* timeout waiting for space in ringbuffer 0
-> 
-> in the resume path.
-> 
-> Fixes: d3a569fccfa0 ("drm/msm: a6xx: Use WHERE_AM_I for eligible targets")
-> Signed-off-by: Rob Clark <robdclark@chromium.org>
+This patch fixes/removes some obsolete comments in the code related
+to the kernel memory accounting:
+- kmem_cache->memcg_params.memcg_caches has been removed
+  by commit 9855609bde03 ("mm: memcg/slab: use a single set of
+  kmem_caches for all accounted allocations")
+- memcg->kmemcg_id is not used as a gate for kmem accounting since
+  commit 0b8f73e10428 ("mm: memcontrol: clean up alloc, online,
+  offline, free functions")
 
-Reviewed-by: Jordan Crouse <jcrouse@codeaurora.org>
+Signed-off-by: Roman Gushchin <guro@fb.com>
+---
+ include/linux/memcontrol.h | 6 ++----
+ mm/memcontrol.c            | 6 ------
+ 2 files changed, 2 insertions(+), 10 deletions(-)
 
-> ---
->  drivers/gpu/drm/msm/adreno/a6xx_gpu.c | 11 ++++++++++-
->  1 file changed, 10 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/gpu/drm/msm/adreno/a6xx_gpu.c b/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
-> index 2f236aadfa9c..fcb0aabbc985 100644
-> --- a/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
-> +++ b/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
-> @@ -1043,12 +1043,21 @@ static int a6xx_pm_suspend(struct msm_gpu *gpu)
->  {
->  	struct adreno_gpu *adreno_gpu = to_adreno_gpu(gpu);
->  	struct a6xx_gpu *a6xx_gpu = to_a6xx_gpu(adreno_gpu);
-> +	int i, ret;
->  
->  	trace_msm_gpu_suspend(0);
->  
->  	devfreq_suspend_device(gpu->devfreq.devfreq);
->  
-> -	return a6xx_gmu_stop(a6xx_gpu);
-> +	ret = a6xx_gmu_stop(a6xx_gpu);
-> +	if (ret)
-> +		return ret;
-> +
-> +	if (adreno_gpu->base.hw_apriv || a6xx_gpu->has_whereami)
-> +		for (i = 0; i < gpu->nr_rings; i++)
-> +			a6xx_gpu->shadow[i] = 0;
-> +
-> +	return 0;
->  }
->  
->  static int a6xx_get_timestamp(struct msm_gpu *gpu, uint64_t *value)
-> -- 
-> 2.28.0
-> 
+diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
+index 20108e426f84..01099dfa839c 100644
+--- a/include/linux/memcontrol.h
++++ b/include/linux/memcontrol.h
+@@ -310,7 +310,6 @@ struct mem_cgroup {
+ 	int			tcpmem_pressure;
+=20
+ #ifdef CONFIG_MEMCG_KMEM
+-        /* Index in the kmem_cache->memcg_params.memcg_caches array */
+ 	int kmemcg_id;
+ 	enum memcg_kmem_state kmem_state;
+ 	struct obj_cgroup __rcu *objcg;
+@@ -1641,9 +1640,8 @@ static inline void memcg_kmem_uncharge_page(struct =
+page *page, int order)
+ }
+=20
+ /*
+- * helper for accessing a memcg's index. It will be used as an index in =
+the
+- * child cache array in kmem_cache, and also to derive its name. This fu=
+nction
+- * will return -1 when this is not a kmem-limited memcg.
++ * A helper for accessing memcg's kmem_id, used for getting
++ * corresponding LRU lists.
+  */
+ static inline int memcg_cache_id(struct mem_cgroup *memcg)
+ {
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index 69a2893a6455..62bbd48d8445 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -3680,12 +3680,6 @@ static int memcg_online_kmem(struct mem_cgroup *me=
+mcg)
+=20
+ 	static_branch_enable(&memcg_kmem_enabled_key);
+=20
+-	/*
+-	 * A memory cgroup is considered kmem-online as soon as it gets
+-	 * kmemcg_id. Setting the id after enabling static branching will
+-	 * guarantee no one starts accounting before all call sites are
+-	 * patched.
+-	 */
+ 	memcg->kmemcg_id =3D memcg_id;
+ 	memcg->kmem_state =3D KMEM_ONLINE;
+=20
+--=20
+2.26.2
 
--- 
-The Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
-a Linux Foundation Collaborative Project
