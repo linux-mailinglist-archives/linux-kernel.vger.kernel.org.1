@@ -2,173 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EF542AE474
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 00:54:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CDA02AE483
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 00:57:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732378AbgKJXyr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 18:54:47 -0500
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:32774 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732345AbgKJXyq (ORCPT
+        id S1732054AbgKJX50 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 18:57:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36674 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727275AbgKJX5S (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 18:54:46 -0500
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: aratiu)
-        with ESMTPSA id 0F4511F4565A
-From:   Adrian Ratiu <adrian.ratiu@collabora.com>
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Nathan Chancellor <natechancellor@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Russell King <linux@armlinux.org.uk>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Collabora Kernel ML <kernel@collabora.com>,
-        Ard Biesheuvel <ardb@kernel.org>
-Subject: Re: [PATCH 2/2] arm: lib: xor-neon: disable clang vectorization
-In-Reply-To: <CAKwvOdkm3u83TQDBB-fC0TwKZCFXGh5sAfahKXxA+mnzgDid_w@mail.gmail.com>
-References: <20201106051436.2384842-1-adrian.ratiu@collabora.com>
- <20201106051436.2384842-3-adrian.ratiu@collabora.com>
- <20201106101419.GB3811063@ubuntu-m3-large-x86>
- <87wnyyvh56.fsf@collabora.com>
- <CAKwvOdkodob0M0r_AK_4nG3atLGMyNENMd6qVAHSPa92Zh7UZA@mail.gmail.com>
- <871rh2i9xg.fsf@iwork.i-did-not-set--mail-host-address--so-tickle-me>
- <CAKwvOdkm3u83TQDBB-fC0TwKZCFXGh5sAfahKXxA+mnzgDid_w@mail.gmail.com>
-Date:   Wed, 11 Nov 2020 01:56:22 +0200
-Message-ID: <87sg9ghil5.fsf@collabora.com>
+        Tue, 10 Nov 2020 18:57:18 -0500
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68D7CC0613D1
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 15:57:18 -0800 (PST)
+Received: by mail-wr1-x441.google.com with SMTP id b8so441042wrn.0
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 15:57:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=LE0afzOkIj/zw0NBe6e0ObJGwDPaqDvyeJKttoSBeoM=;
+        b=WtSIs1xD+MaXeb4ffhufvVlCIwYGYGl3mt6GnySmJpVCXy5bBDmq+7ZXsWg3iG8Rp/
+         gdEDCYi+ni0pe3NodHC0IZ0pKlWwiuA/Htn995ZPkOosIEVz9Sj/Ui8N4XZ+9nLKw1/e
+         OqSmVIUrZvbNsiCqB4t2kV/o183c6ZRCPVV8TQOYYKdeSk/oamorEmFGsNLnr5YVnAjG
+         qWVpvtldJORI1nYMNUu6Ih15+efFTYnqy+YX8Ly0nC5Ahb0bvnEur4AJIFtlmdLaKJBW
+         /7q4rf8oVpVbr0YdzAkbr6dnCpGlMUlY6NvCWZL+bFaEk2ah9aCqamm2zRH8+FPUyZmH
+         S34g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=LE0afzOkIj/zw0NBe6e0ObJGwDPaqDvyeJKttoSBeoM=;
+        b=Z7aMpUah+WHB3VU5eF5CcGER9RYYkBsYhSf7l+wwLBh6GKpWVEph9rzaKIVd9K2J/j
+         pOyx3vPqOPxE0iBZ/KomhftUIjOwfhMxqdRyqwTPYe9BT+tgqJD8T7OsuxqcozJRo9sb
+         /J2RDUQlUyUte+gfQ4fwwxM2YvTzAgLxcphOgsO/aWy2Kh4QeFRQx7PKxppImkM4AEo/
+         7eHJg1SZWGyYvIf5dXd8C4aYE3xWvTj3to0GNVMtAI1kf1bdNjTjpaf7WZRHX/CcVKkS
+         HAroe+FJxHla2ndEGE4TsDYZy/0sviQD1CBNn9AQ0LRg5Ld3N43e5J1B+ek1HuDU97ga
+         fvtg==
+X-Gm-Message-State: AOAM533tPG+jhU8SRnlpimD8cxi4Kdy7DT8ysktU78LkoD4A7upWJYUO
+        gN89TAKVbpA1sSYUM83lFFi88kmyVoSX+UURKm/AQG7w
+X-Google-Smtp-Source: ABdhPJx3T38wEbSDtMYgkoopvqAG8NVHXxX+0Z2QyanoquRAnGIg4EhxIojZyJp498+74haST3uNYCspixYe2oDURp8=
+X-Received: by 2002:adf:e551:: with SMTP id z17mr27350227wrm.374.1605052637210;
+ Tue, 10 Nov 2020 15:57:17 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; format=flowed
+References: <20201110193112.988999-1-lee.jones@linaro.org> <20201110193112.988999-19-lee.jones@linaro.org>
+In-Reply-To: <20201110193112.988999-19-lee.jones@linaro.org>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Tue, 10 Nov 2020 18:57:05 -0500
+Message-ID: <CADnq5_OH9n+7gVUhUXJ5gHPtAMpimDLY8QmjNyDS0S+h=Q3xRw@mail.gmail.com>
+Subject: Re: [PATCH 18/30] drm/radeon/evergreen_cs: Fix misnaming issues
+ surrounding 'p' param
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     David Airlie <airlied@linux.ie>,
+        LKML <linux-kernel@vger.kernel.org>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        Maling list - DRI developers 
+        <dri-devel@lists.freedesktop.org>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 10 Nov 2020, Nick Desaulniers <ndesaulniers@google.com> 
-wrote:
-> On Mon, Nov 9, 2020 at 11:51 AM Adrian Ratiu 
-> <adrian.ratiu@collabora.com> wrote: 
->> 
->> On Fri, 06 Nov 2020, Nick Desaulniers <ndesaulniers@google.com> 
->> wrote: 
->> > +#pragma clang loop vectorize(enable) 
->> >         do { 
->> >                 p1[0] ^= p2[0] ^ p3[0] ^ p4[0] ^ p5[0]; p1[1] 
->> >                 ^= p2[1] ^ p3[1] ^ p4[1] ^ p5[1]; 
->> > ``` seems to generate the vectorized code. 
->> > 
->> > Why don't we find a way to make those pragma's more toolchain 
->> > portable, rather than open coding them like I have above 
->> > rather than this series? 
->> 
->> Hi again Nick, 
->> 
->> How did you verify the above pragmas generate correct 
->> vectorized code?  Have you tested this specific use case? 
-> 
-> I read the disassembly before and after my suggested use of 
-> pragmas; look for vld/vstr.  You can also add 
-> -Rpass-missed=loop-vectorize to CFLAGS_xor-neon.o in 
-> arch/arm/lib/Makefile and rebuild arch/arm/lib/xor-neon.o with 
-> CONFIG_BTRFS enabled. 
-> 
->> 
->> I'm asking because overrulling the cost model might not be 
->> enough, the only thing I can confirm is that the generated code 
->> is changed, but not that it is correct in any way. The object 
->> disasm also looks weird, but I don't have enough knowledge to 
->> start debugging what's happening within LLVM/Clang itself. 
-> 
-> It doesn't "look weird" to me. The loop is versioned based on a 
-> comparison whether the parameters alias or not. There's a 
-> non-vectorized version if the parameters are equal or close 
-> enough to overlap.  There's another version of the loop that's 
-> vectorized.  If you want just the vectorized version, then you 
-> have to mark the parameters as __restrict qualified, then check 
-> that all callers are ok with that. 
-> 
-
-Thank you for the explanation, that does make sense now. I'm just 
-a compiler optimization noob, sorry. All your help is much 
-appreciated.
-
->> 
->> I also get some new warnings with your code [1], besides the 
->> previously 'vectorization was possible but not beneficial' 
->> which is still present. It is quite funny because these two 
->> warnings seem to contradict themselves. :) 
-> 
-> From which compiler?  ``` $ clang 
-> -Wpass-failed=transform-warning -c -x c /dev/null warning: 
-> unknown warning option '-Wpass-failed=transform-warning'; did 
-> you mean '-Wprofile-instr-missing'? [-Wunknown-warning-option] 
-> ``` 
-
-I'm using Clang 10.0.1-1 from the Arch Linux repo.
-
-In the LLVM sources that transform-warning appears to be 
-documented under 
-llvm-10.0.1.src/docs/Passes.rst:1227:-transform-warning
-
-Here's a build log: http://ix.io/2DIc
-
-I always get those warnings with the pragma change you suggested, 
-even on clean builds on latest linux-next.
-
-I looked at the Arch PKGBUILD and they don't appear to do anything 
-special other than patching to enable SSP and PIE by default (eg 
-llvm bug 13410).
-
-> 
-> The pragma is clang specific, hence my recommendation to wrap it 
-> in an #ifdef __clang__. 
+On Tue, Nov 10, 2020 at 2:31 PM Lee Jones <lee.jones@linaro.org> wrote:
 >
-
-Yes, I understand that. :)
- 
->> 
->> At this point I do not trust the compiler and am inclined to do 
-> 
-> Nonsense. 
-> 
->> like was done for GCC when it was broken: disable the 
->> optimization and warn users to upgrade after the compiler is 
->> fixed and confirmed to work. 
->> 
->> If you agree I can send a v2 with this and also drop the GCC 
->> pragma as Arvind and Ard suggested. 
-> 
-> If you resend "this" as in 2/2, I will NACK it.  There's nothing 
-> wrong with the cost model; it's saying there's little point in 
-> generating the vectorized version because you're still going to 
-> need a non-vectorized loop version anyways.  Claiming there is a 
-> compiler bug here is dubious just because the cost models 
-> between two compilers differ slightly.
-
-Ok, so that "remark" from the compiler is safe to ignore.
-
-> 
-> Resend the patch removing the warning, remove the GCC pragma, 
-> but if you want to change anything here for Clang, use `#pragma 
-> clang loop vectorize(enable)` wrapped in an `#ifdef __clang__`. 
+> Fixes the following W=3D1 kernel build warning(s):
 >
-
-Thanks for making the NACK clear, so the way forward is to either 
-use the pragma if I can figure out the new 'loop not vectorized' 
-warning (which might also be a red herring) or just leave Clang as 
-is. :)
-
->>
->> Kind regards,
->> Adrian
->>
->> [1]
->> ./include/asm-generic/xor.h:11:1: warning: loop not vectorized:
->> the optimizer was unable to perform the requested transformation;
->> the transformation might be disabled or specified as part of an
->> unsupported transformation ordering
->> [-Wpass-failed=transform-warning] xor_8regs_2(unsigned long bytes,
->> unsigned long *p1, unsigned long *p2)
+>  drivers/gpu/drm/radeon/evergreen_cs.c:1026: warning: Function parameter =
+or member 'p' not described in 'evergreen_cs_packet_parse_vline'
+>  drivers/gpu/drm/radeon/evergreen_cs.c:1026: warning: Excess function par=
+ameter 'parser' description in 'evergreen_cs_packet_parse_vline'
+>  drivers/gpu/drm/radeon/evergreen_cs.c:1095: warning: Function parameter =
+or member 'p' not described in 'evergreen_cs_handle_reg'
+>  drivers/gpu/drm/radeon/evergreen_cs.c:1095: warning: Excess function par=
+ameter 'parser' description in 'evergreen_cs_handle_reg'
+>  drivers/gpu/drm/radeon/evergreen_cs.c:1757: warning: Function parameter =
+or member 'p' not described in 'evergreen_is_safe_reg'
+>  drivers/gpu/drm/radeon/evergreen_cs.c:1757: warning: Excess function par=
+ameter 'parser' description in 'evergreen_is_safe_reg'
 >
+> Cc: Alex Deucher <alexander.deucher@amd.com>
+> Cc: "Christian K=C3=B6nig" <christian.koenig@amd.com>
+> Cc: David Airlie <airlied@linux.ie>
+> Cc: Daniel Vetter <daniel@ffwll.ch>
+> Cc: amd-gfx@lists.freedesktop.org
+> Cc: dri-devel@lists.freedesktop.org
+> Signed-off-by: Lee Jones <lee.jones@linaro.org>
+
+Applied.  Thanks!
+
+Alex
+
+> ---
+>  drivers/gpu/drm/radeon/evergreen_cs.c | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
 >
-> -- 
-> Thanks,
-> ~Nick Desaulniers
+> diff --git a/drivers/gpu/drm/radeon/evergreen_cs.c b/drivers/gpu/drm/rade=
+on/evergreen_cs.c
+> index c410cad28f19f..53b75cf201958 100644
+> --- a/drivers/gpu/drm/radeon/evergreen_cs.c
+> +++ b/drivers/gpu/drm/radeon/evergreen_cs.c
+> @@ -1015,7 +1015,7 @@ static int evergreen_cs_track_check(struct radeon_c=
+s_parser *p)
+>
+>  /**
+>   * evergreen_cs_packet_parse_vline() - parse userspace VLINE packet
+> - * @parser:            parser structure holding parsing context.
+> + * @p:         parser structure holding parsing context.
+>   *
+>   * This is an Evergreen(+)-specific function for parsing VLINE packets.
+>   * Real work is done by r600_cs_common_vline_parse function.
+> @@ -1087,7 +1087,7 @@ static int evergreen_cs_parse_packet0(struct radeon=
+_cs_parser *p,
+>
+>  /**
+>   * evergreen_cs_handle_reg() - process registers that need special handl=
+ing.
+> - * @parser: parser structure holding parsing context
+> + * @p: parser structure holding parsing context
+>   * @reg: register we are testing
+>   * @idx: index into the cs buffer
+>   */
+> @@ -1747,7 +1747,7 @@ static int evergreen_cs_handle_reg(struct radeon_cs=
+_parser *p, u32 reg, u32 idx)
+>
+>  /**
+>   * evergreen_is_safe_reg() - check if register is authorized or not
+> - * @parser: parser structure holding parsing context
+> + * @p: parser structure holding parsing context
+>   * @reg: register we are testing
+>   *
+>   * This function will test against reg_safe_bm and return true
+> --
+> 2.25.1
+>
+> _______________________________________________
+> dri-devel mailing list
+> dri-devel@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/dri-devel
