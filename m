@@ -2,92 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B9BC02AE170
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 22:16:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C4422AE176
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 22:17:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727851AbgKJVQT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 16:16:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39624 "EHLO
+        id S1731779AbgKJVRP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 16:17:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39760 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725862AbgKJVQT (ORCPT
+        with ESMTP id S1725862AbgKJVRM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 16:16:19 -0500
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B9D3C0613D1;
-        Tue, 10 Nov 2020 13:16:19 -0800 (PST)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CW0z30QMZz9s0b;
-        Wed, 11 Nov 2020 08:16:14 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1605042975;
-        bh=hJCP0mj9c+6Wz3Co2SdfUvRDzlP1IxA6ttlTLv+42q4=;
-        h=Date:From:To:Cc:Subject:From;
-        b=aDrwzXg1Q7BFRpNeLa/4LnPKZbLtCbkbc/NcqXjTfBai77b2bmwvMCTP/2CPuLWA3
-         8eXp3Ftw8qm0woxiHi0rEd5JW52wpudDlP9X3/24zKTgUvGg9FQ6tqtrOvCvD2ZMGJ
-         ffN3OTqnrMSXD1aBGiELT4dJGPNo+qNmu6Ub5EClnTBwAMr79h10yZOpktv0XdsFPT
-         bZjwOdyEWdQN0vd0PosTb7wHCihgsjLx3PsfDhm/D5pSRw6tHqqG1ZKZt8nUyWjs55
-         TmQOLpTAQ4rWTccknXvGaJqphjGjfUFnyq2VTf54a7idCxaL+taL0SUg80G6iwBECA
-         4oiCI5z71kKOg==
-Date:   Wed, 11 Nov 2020 08:16:13 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Tony Lindgren <tony@atomide.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: Fixes tag needs some work in the omap-fixes tree
-Message-ID: <20201111081613.0f2ce62a@canb.auug.org.au>
+        Tue, 10 Nov 2020 16:17:12 -0500
+Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8960C0613D1;
+        Tue, 10 Nov 2020 13:17:10 -0800 (PST)
+Received: by mail-lf1-x144.google.com with SMTP id v144so88828lfa.13;
+        Tue, 10 Nov 2020 13:17:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=EGw/lJ2fFtGQXxuehfGhLjJtLJBME8AehCZBZ0GpWKM=;
+        b=NAjhIP+3pP7247wVyMNIoqS0eBQ6Ub6VXzYDVkDW5hh7OeVhZnrCfqxE2LxWyJsKMV
+         90KLTj2Sz4TgROVkbS2FdYgKiKElggblFjPltnMdRMP+LsofRfySn0ZAVRiZ/rJhCxi6
+         Ihb4k6looEtRmT1ELEZ0lM7wPWjSKyFQbZqNuGGZWJnLFo6POVOBCZ35lDBdx6WUlyZo
+         hFkkJUxBTXfhYM1L6nmK/Cdx6WzQfwcvnzNWLiRd/LuWn+G/zTP5qT4snC3j+huX+nYr
+         tA9dCLNuMRHfewvKYy4Ua/ksZbn9fdwQO2uPYg+XI2muKxWHeQxfYp9b34Tx6cpXjg8z
+         oyIg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=EGw/lJ2fFtGQXxuehfGhLjJtLJBME8AehCZBZ0GpWKM=;
+        b=YZRECcJ7PAUTjtP9s4dxXu0vwXJ/TdAvaawxP8WYuIH35iAxGEkfgMhKtPeollmBlq
+         D0Qaih+nf+WySiB7fzwV4vbdpVo7CgtuMXDuqD5CaOA9pKgiBMnw434KzQ5ohbAzJzJW
+         7xgONDva+SlzjQcT/NZPUlnhzdC1Y2iIVtGTBNAohYMX4G4AoX0BTHUd7CWQ8LZAnt1m
+         gPiv9H8Kt9OKrJ46bW6paHblxjXWSurUJXrDTe7nIlvGp3o8QcHAp2Sj8FWlGpMtJEmb
+         QEUoyraWHs9KfeB8iZkiiHusWiIsraLDqtiyixaMkfmwcXuGJtwTGSS3fN+NNqxlFcM8
+         6SzQ==
+X-Gm-Message-State: AOAM531Ih9D4P6xzza1CqNOLFm42BFxdGp2niDJ2OPFi26saNnNkZaka
+        L6NBIndpt1aCVG3h4aOr84fWlsM3ldE=
+X-Google-Smtp-Source: ABdhPJy9MxQ9JDqgbUxs5iJjOZhvvAhbIb4SB90wBtvxj6i+Z1NqL4Sgmd5xFUlSjTl9BiZi3p2X+g==
+X-Received: by 2002:a19:6a07:: with SMTP id u7mr4706867lfu.252.1605043028710;
+        Tue, 10 Nov 2020 13:17:08 -0800 (PST)
+Received: from [192.168.2.145] (109-252-193-159.dynamic.spd-mgts.ru. [109.252.193.159])
+        by smtp.googlemail.com with ESMTPSA id m7sm1658405ljb.37.2020.11.10.13.17.06
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 10 Nov 2020 13:17:07 -0800 (PST)
+Subject: Re: [PATCH v1 18/30] pwm: tegra: Support OPP and core voltage scaling
+To:     Thierry Reding <thierry.reding@gmail.com>
+Cc:     Jonathan Hunter <jonathanh@nvidia.com>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Peter Chen <Peter.Chen@nxp.com>,
+        Mark Brown <broonie@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Peter Geis <pgwipeout@gmail.com>,
+        Nicolas Chauvet <kwizart@gmail.com>,
+        linux-samsung-soc@vger.kernel.org, devel@driverdev.osuosl.org,
+        linux-usb@vger.kernel.org, linux-pwm@vger.kernel.org,
+        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-media@vger.kernel.org, linux-tegra@vger.kernel.org
+References: <20201104234427.26477-1-digetx@gmail.com>
+ <20201104234427.26477-19-digetx@gmail.com> <20201110205057.GH2375022@ulmo>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <a3bf156d-17b8-0edd-9981-a17991266e1d@gmail.com>
+Date:   Wed, 11 Nov 2020 00:17:04 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/yGzM.JyMx/9G/lSrGp4IZk9";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+In-Reply-To: <20201110205057.GH2375022@ulmo>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/yGzM.JyMx/9G/lSrGp4IZk9
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+10.11.2020 23:50, Thierry Reding пишет:
+> On Thu, Nov 05, 2020 at 02:44:15AM +0300, Dmitry Osipenko wrote:
+> [...]
+>> +static void tegra_pwm_deinit_opp_table(void *data)
+>> +{
+>> +	struct device *dev = data;
+>> +	struct opp_table *opp_table;
+>> +
+>> +	opp_table = dev_pm_opp_get_opp_table(dev);
+>> +	dev_pm_opp_of_remove_table(dev);
+>> +	dev_pm_opp_put_regulators(opp_table);
+>> +	dev_pm_opp_put_opp_table(opp_table);
+>> +}
+>> +
+>> +static int devm_tegra_pwm_init_opp_table(struct device *dev)
+>> +{
+>> +	struct opp_table *opp_table;
+>> +	const char *rname = "core";
+>> +	int err;
+>> +
+>> +	/* voltage scaling is optional */
+>> +	if (device_property_present(dev, "core-supply"))
+>> +		opp_table = dev_pm_opp_set_regulators(dev, &rname, 1);
+>> +	else
+>> +		opp_table = dev_pm_opp_get_opp_table(dev);
+>> +
+>> +	if (IS_ERR(opp_table))
+>> +		return dev_err_probe(dev, PTR_ERR(opp_table),
+>> +				     "failed to prepare OPP table\n");
+>> +
+>> +	/*
+>> +	 * OPP table presence is optional and we want the set_rate() of OPP
+>> +	 * API to work similarly to clk_set_rate() if table is missing in a
+>> +	 * device-tree.  The add_table() errors out if OPP is missing in DT.
+>> +	 */
+>> +	if (device_property_present(dev, "operating-points-v2")) {
+>> +		err = dev_pm_opp_of_add_table(dev);
+>> +		if (err) {
+>> +			dev_err(dev, "failed to add OPP table: %d\n", err);
+>> +			goto put_table;
+>> +		}
+>> +	}
+>> +
+>> +	err = devm_add_action(dev, tegra_pwm_deinit_opp_table, dev);
+>> +	if (err)
+>> +		goto remove_table;
+>> +
+>> +	return 0;
+>> +
+>> +remove_table:
+>> +	dev_pm_opp_of_remove_table(dev);
+>> +put_table:
+>> +	dev_pm_opp_put_regulators(opp_table);
+>> +
+>> +	return err;
+>> +}
+> 
+> These two functions seem to be heavily boilerplate across all these
+> drivers. Have you considered splitting these out into separate helpers?
 
-Hi all,
-
-In commit
-
-  e4b5575da267 ("ARM: OMAP2+: Manage MPU state properly for omap_enter_idle=
-_coupled()")
-
-Fixes tag
-
-  Fixes: 8ca5ee624b4c ("ARM: OMAP2+: Restore MPU power domain if cpu_cluste=
-r_pm_enter() fails")
-
-has these problem(s):
-
-  - Target SHA1 does not exist
-
-Maybe you meeant
-
-Fixes: 8f04aea048d5 ("ARM: OMAP2+: Restore MPU power domain if cpu_cluster_=
-pm_enter() fails")
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/yGzM.JyMx/9G/lSrGp4IZk9
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl+rAx0ACgkQAVBC80lX
-0GxAhAgAkmjv9b72TbSwCVRYSjc1Qr1tnX660K0Vnb9SuI0C1ovQ4ic2Vm/Pqmrj
-ch/GFKsyTCgnOSr1Es9p7yPze2bsUBC5RJsQSSYN91UGfOpCiJPNj0txB8tgAKh3
-dm8fr5e2TWhXLtiu8sL8IhLIAQOh324ivYjTBtAi6fphbvhGx5pcsbjvKHI6MFjp
-o3tgKEDZtZrGB9Ul5zIEnO5VQNBm8tIvr25dCjf7Lyp+vaUUz1VCpodNF6hyB5vT
-oaK3K9Ckddh84CaTVsQONJWnYOEnLgzsquk0avPtU6ERLD9YiWLxAPrFhGA/tzhU
-yWWNPWEU/DoS0XTH6RQvm5qAcgolfw==
-=8EdS
------END PGP SIGNATURE-----
-
---Sig_/yGzM.JyMx/9G/lSrGp4IZk9--
+The helper is already prepared for v2.
