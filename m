@@ -2,77 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B63F32AD0F9
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 09:16:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 07EB92AD114
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 09:17:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726746AbgKJIQf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 03:16:35 -0500
-Received: from z5.mailgun.us ([104.130.96.5]:21107 "EHLO z5.mailgun.us"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726827AbgKJIQe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 03:16:34 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1604996194; h=Content-Type: MIME-Version: Message-ID:
- In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
- bh=kuvWj8eqBWR1DBhp8ZGnSxliRk/RtY1alVKAD+etVBk=; b=wdgzVKQnPDeVmuy/cNFavH3JxabsaH8DBvz4Zfw+SFvd1GLsmp4nDMG5TGIyBfCSqqCylvEx
- KQZyAYGt18pdwSodvfAhVh152XUs0HsAIuWyHKIp0XTA2Iz/Z7bitqSu6INBO4hOvwGkUKkJ
- +wE8QadTH+78Zcc/PnqWCRGhFdw=
-X-Mailgun-Sending-Ip: 104.130.96.5
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
- 5faa4c617d4f16f92fe1ca71 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 10 Nov 2020 08:16:33
- GMT
-Sender: kvalo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 04855C433C8; Tue, 10 Nov 2020 08:16:33 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
-        autolearn=no autolearn_force=no version=3.4.0
-Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 93E7DC433C8;
-        Tue, 10 Nov 2020 08:16:30 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 93E7DC433C8
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
-From:   Kalle Valo <kvalo@codeaurora.org>
-To:     Yejune Deng <yejune.deng@gmail.com>
-Cc:     pizza@shaftnet.org, davem@davemloft.net, kuba@kernel.org,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] Replace a set of atomic_add()
-References: <1604991491-27908-1-git-send-email-yejune.deng@gmail.com>
-Date:   Tue, 10 Nov 2020 10:16:28 +0200
-In-Reply-To: <1604991491-27908-1-git-send-email-yejune.deng@gmail.com> (Yejune
-        Deng's message of "Tue, 10 Nov 2020 14:58:11 +0800")
-Message-ID: <87mtzpeieb.fsf@codeaurora.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/24.5 (gnu/linux)
+        id S1729610AbgKJIRl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 03:17:41 -0500
+Received: from smtp-bc09.mail.infomaniak.ch ([45.157.188.9]:43495 "EHLO
+        smtp-bc09.mail.infomaniak.ch" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726825AbgKJIRl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Nov 2020 03:17:41 -0500
+Received: from smtp-2-0001.mail.infomaniak.ch (unknown [10.5.36.108])
+        by smtp-2-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4CVghg2QrmzlhSh0;
+        Tue, 10 Nov 2020 09:17:39 +0100 (CET)
+Received: from ns3096276.ip-94-23-54.eu (unknown [94.23.54.103])
+        by smtp-2-0001.mail.infomaniak.ch (Postfix) with ESMTPA id 4CVghd1jfMzlh8Tf;
+        Tue, 10 Nov 2020 09:17:37 +0100 (CET)
+Subject: Re: [PATCH v23 00/12] Landlock LSM
+To:     James Morris <jmorris@namei.org>
+Cc:     "Serge E . Hallyn" <serge@hallyn.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Casey Schaufler <casey@schaufler-ca.com>,
+        Jann Horn <jannh@google.com>, Jeff Dike <jdike@addtoit.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        Richard Weinberger <richard@nod.at>,
+        Shuah Khan <shuah@kernel.org>,
+        Vincent Dagonneau <vincent.dagonneau@ssi.gouv.fr>,
+        kernel-hardening@lists.openwall.com, linux-api@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org,
+        linux-security-module@vger.kernel.org, x86@kernel.org
+References: <20201103182109.1014179-1-mic@digikod.net>
+ <alpine.LRH.2.21.2011101745100.9130@namei.org>
+From:   =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@digikod.net>
+Message-ID: <421e49f4-d3ec-fd17-be42-7c73448b99a1@digikod.net>
+Date:   Tue, 10 Nov 2020 09:16:47 +0100
+User-Agent: 
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <alpine.LRH.2.21.2011101745100.9130@namei.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Yejune Deng <yejune.deng@gmail.com> writes:
 
-> a set of atomic_inc() looks more readable
->
-> Signed-off-by: Yejune Deng <yejune.deng@gmail.com>
-> ---
->  drivers/net/wireless/st/cw1200/bh.c  | 10 +++++-----
->  drivers/net/wireless/st/cw1200/wsm.c |  8 ++++----
->  2 files changed, 9 insertions(+), 9 deletions(-)
+On 10/11/2020 07:47, James Morris wrote:
+> On Tue, 3 Nov 2020, Mickaël Salaün wrote:
+> 
+>> Hi,
+>>
+>> Can you please consider to merge this into the tree?
+>>
+> 
+> I've added this to my tree:
+> git://git.kernel.org/pub/scm/linux/kernel/git/jmorris/linux-security.git landlock_lsm
+> 
+> and merged into next-testing (which is pulled into linux-next).
+> 
+> 
+> Please make any further changes against the branch in my tree.
 
-The subject prefix should be "cw1200:", but I can fix that.
-
--- 
-https://patchwork.kernel.org/project/linux-wireless/list/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+Great, thanks!
