@@ -2,86 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FE972ACA4A
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 02:20:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CDA262ACA4E
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 02:20:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730762AbgKJBUf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 20:20:35 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58404 "EHLO mail.kernel.org"
+        id S1731271AbgKJBU4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 20:20:56 -0500
+Received: from z5.mailgun.us ([104.130.96.5]:44389 "EHLO z5.mailgun.us"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727311AbgKJBUf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 20:20:35 -0500
-Received: from paulmck-ThinkPad-P72.home (50-39-104-11.bvtn.or.frontiernet.net [50.39.104.11])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1728607AbgKJBUz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 20:20:55 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1604971254; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=t/aMaPilFWKPkOrUGWkhN1HWlqHvRzdumb+OAPpywOM=; b=u4Mg3b/F+VhiPWpfqqEQSiSqCZwyv/TwSAjsTcNJvEYeTTLM2FtTH3rIw84IO9UxK+iagvIs
+ d6Eui38uiDS8y5Dj9duJmwnE+WfYJnpCsItyDLUWC8og5IkxsMlZHKfm3VI1dStUDjpFCd21
+ 7DitJZ7K/ncPDMx33TTLZ8lhamw=
+X-Mailgun-Sending-Ip: 104.130.96.5
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n07.prod.us-west-2.postgun.com with SMTP id
+ 5fa9eaf19d6b206d9423917b (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 10 Nov 2020 01:20:49
+ GMT
+Sender: rishabhb=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id D806BC433FF; Tue, 10 Nov 2020 01:20:48 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from rishabhb-linux.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 11CCB206ED;
-        Tue, 10 Nov 2020 01:20:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604971233;
-        bh=nDAdKFCt1bWycgxovIvv4DTw/Tf27/IvExHmb22q48w=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=KM7y/uBG9ShTjAaswr/2NJbcwyHvh+4JuejwKNDNsJ2LLVIHNUJ9jjnk4SCad2XS7
-         Zi/pXZPQ+fjr+xgmURVl8QlyfnAWqzSaQmNO45uTDvJGohIjUZqMNBLnt/7bXAUrmC
-         GL0Bi+rUG8gTj8CXu5nDSmrRboHC7yoZq7unGiPg=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id C509435225E9; Mon,  9 Nov 2020 17:20:32 -0800 (PST)
-Date:   Mon, 9 Nov 2020 17:20:32 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@fb.com, mingo@kernel.org, jiangshanlai@gmail.com,
-        akpm@linux-foundation.org, mathieu.desnoyers@efficios.com,
-        josh@joshtriplett.org, tglx@linutronix.de, rostedt@goodmis.org,
-        dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
-        oleg@redhat.com, joel@joelfernandes.org, Hui Su <sh_def@163.com>
-Subject: Re: [PATCH tip/core/rcu 4/4] docs/rcu: Update the call_rcu() API
-Message-ID: <20201110012032.GN3249@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20201105230444.GA18574@paulmck-ThinkPad-P72>
- <20201105230510.18660-4-paulmck@kernel.org>
- <20201109122424.GN2594@hirez.programming.kicks-ass.net>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201109122424.GN2594@hirez.programming.kicks-ass.net>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+        (Authenticated sender: rishabhb)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id EE758C433C6;
+        Tue, 10 Nov 2020 01:20:47 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org EE758C433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=rishabhb@codeaurora.org
+From:   Rishabh Bhatnagar <rishabhb@codeaurora.org>
+To:     linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     bjorn.andersson@linaro.org, tsoni@codeaurora.org,
+        psodagud@codeaurora.org, sidgup@codeaurora.org,
+        Rishabh Bhatnagar <rishabhb@codeaurora.org>
+Subject: [PATCH 0/2] Add trace events to q6v5_pas and mdt_loader driver
+Date:   Mon,  9 Nov 2020 17:20:39 -0800
+Message-Id: <1604971241-29000-1-git-send-email-rishabhb@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 09, 2020 at 01:24:24PM +0100, Peter Zijlstra wrote:
-> On Thu, Nov 05, 2020 at 03:05:10PM -0800, paulmck@kernel.org wrote:
-> > From: Hui Su <sh_def@163.com>
-> > 
-> > This commit updates the documented API of call_rcu() to use the
-> > rcu_callback_t typedef instead of the open-coded function definition.
-> > 
-> > Signed-off-by: Hui Su <sh_def@163.com>
-> > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> > ---
-> >  Documentation/RCU/whatisRCU.rst | 3 +--
-> >  1 file changed, 1 insertion(+), 2 deletions(-)
-> > 
-> > diff --git a/Documentation/RCU/whatisRCU.rst b/Documentation/RCU/whatisRCU.rst
-> > index fb3ff76..1a4723f 100644
-> > --- a/Documentation/RCU/whatisRCU.rst
-> > +++ b/Documentation/RCU/whatisRCU.rst
-> > @@ -497,8 +497,7 @@ long -- there might be other high-priority work to be done.
-> >  In such cases, one uses call_rcu() rather than synchronize_rcu().
-> >  The call_rcu() API is as follows::
-> >  
-> > -	void call_rcu(struct rcu_head * head,
-> > -		      void (*func)(struct rcu_head *head));
-> > +	void call_rcu(struct rcu_head *head, rcu_callback_t func);
-> 
-> Personally I much prefer the old form, because now I have to go look up
-> rcu_callback_t to figure out wtf kind of signature is actually required.
+Create and insert trace points in mdt_loader and qcom_q6v5_pas
+drivers. These tracepoints will be used to analyze the time taken
+at each step during bootup/shutdown of the remoteproc. Also 
+provide information about location and size of firmware segments
+being loaded.
 
-How about if this part of the documentation read as follows:
+Rishabh Bhatnagar (2):
+  soc: qcom: Add tracepoints to mdt loader
+  remoteproc: qcom: Add trace events for q6v5_pas driver
 
-	typedef void (*rcu_callback_t)(struct rcu_head *head);
-	void call_rcu(struct rcu_head *head, rcu_callback_t func);
+ drivers/remoteproc/qcom_q6v5_pas.c | 11 ++++++++
+ drivers/soc/qcom/mdt_loader.c      |  8 ++++++
+ include/trace/events/mdt_loader.h  | 57 ++++++++++++++++++++++++++++++++++++++
+ include/trace/events/q6v5_pas.h    | 34 +++++++++++++++++++++++
+ 4 files changed, 110 insertions(+)
+ create mode 100644 include/trace/events/mdt_loader.h
+ create mode 100644 include/trace/events/q6v5_pas.h
 
-Wold that help?
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
 
-							Thanx, Paul
