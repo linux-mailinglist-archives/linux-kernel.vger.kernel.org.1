@@ -2,135 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1E112ADDC3
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 19:07:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DE862ADDC1
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 19:07:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731068AbgKJSHF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 13:07:05 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56100 "EHLO mail.kernel.org"
+        id S1730853AbgKJSHA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 13:07:00 -0500
+Received: from mga07.intel.com ([134.134.136.100]:56468 "EHLO mga07.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726428AbgKJSHD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 13:07:03 -0500
-Received: from kernel.org (unknown [77.125.7.142])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C35F820781;
-        Tue, 10 Nov 2020 18:06:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605031623;
-        bh=bAkJ6qFghBqAmYDEu7geL4WoAC5U+zvSUa3tfgn5GqA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=rsCfawPZ7PZXYREKxvAae+uk/8IQqHbGnFjdff7AGzyGjc4x/SKxcILYVT/rLCce9
-         nmpcocs0Se3KfPVLk80KrhXz6x5Oy3hYomKMAGm/YGBiEJSxYFnSu9uNQghCJwavMR
-         lgeiRSDZJxGsficIgAw5m1qVpszWlc3MZZCq7S1w=
-Date:   Tue, 10 Nov 2020 20:06:48 +0200
-From:   Mike Rapoport <rppt@kernel.org>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andy Lutomirski <luto@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christopher Lameter <cl@linux.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Elena Reshetova <elena.reshetova@intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
-        James Bottomley <jejb@linux.ibm.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Matthew Wilcox <willy@infradead.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Rick Edgecombe <rick.p.edgecombe@intel.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Tycho Andersen <tycho@tycho.ws>, Will Deacon <will@kernel.org>,
-        linux-api@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-nvdimm@lists.01.org, linux-riscv@lists.infradead.org,
-        x86@kernel.org
-Subject: Re: [PATCH v8 2/9] mmap: make mlock_future_check() global
-Message-ID: <20201110180648.GB4758@kernel.org>
-References: <20201110151444.20662-1-rppt@kernel.org>
- <20201110151444.20662-3-rppt@kernel.org>
- <9e2fafd7-abb0-aa79-fa66-cd8662307446@redhat.com>
+        id S1726428AbgKJSHA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Nov 2020 13:07:00 -0500
+IronPort-SDR: 0zA6zNcxjRvIP9M/4krLs9m7neNw04/+fTgIKdBKSaXViF9b+dMJqsxOPiGTbERfAf0vWlOzEc
+ 6lR0o25MobfQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9801"; a="234189632"
+X-IronPort-AV: E=Sophos;i="5.77,467,1596524400"; 
+   d="scan'208";a="234189632"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Nov 2020 10:06:53 -0800
+IronPort-SDR: /nfePAnqjQMI6cF0FnQ+JBblmL1nP/m91B+IUFee3M202qcuN6NkaC3M+Qu5UeYCMuh2ZRuiBn
+ qeJw7PPWPwCQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,467,1596524400"; 
+   d="scan'208";a="356252584"
+Received: from linux.intel.com ([10.54.29.200])
+  by fmsmga004.fm.intel.com with ESMTP; 10 Nov 2020 10:06:53 -0800
+Received: from debox1-desk1.jf.intel.com (debox1-desk1.jf.intel.com [10.7.201.137])
+        by linux.intel.com (Postfix) with ESMTP id 86B9F58088D;
+        Tue, 10 Nov 2020 10:06:53 -0800 (PST)
+Message-ID: <c8b880d6ff609c79b18afd3d0b5a317b6d36f05f.camel@linux.intel.com>
+Subject: Re: [PATCH V8 2/5] mfd: Intel Platform Monitoring Technology support
+From:   "David E. Box" <david.e.box@linux.intel.com>
+Reply-To: david.e.box@linux.intel.com
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Lee Jones <lee.jones@linaro.org>,
+        Darren Hart <dvhart@infradead.org>, andy@infradead.org,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        alexey.budankov@linux.intel.com,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        platform-driver-x86@vger.kernel.org,
+        linux-pci <linux-pci@vger.kernel.org>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Tue, 10 Nov 2020 10:06:53 -0800
+In-Reply-To: <CAMuHMdXPMNGtnvZKRVofQ7KhuveTadfp+V0Q73YOWkdTgr0aZQ@mail.gmail.com>
+References: <20201003013123.20269-1-david.e.box@linux.intel.com>
+         <20201003013123.20269-3-david.e.box@linux.intel.com>
+         <CAMuHMdXPMNGtnvZKRVofQ7KhuveTadfp+V0Q73YOWkdTgr0aZQ@mail.gmail.com>
+Organization: David E. Box
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.34.4 (3.34.4-1.fc31) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <9e2fafd7-abb0-aa79-fa66-cd8662307446@redhat.com>
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 10, 2020 at 06:17:26PM +0100, David Hildenbrand wrote:
-> On 10.11.20 16:14, Mike Rapoport wrote:
-> > From: Mike Rapoport <rppt@linux.ibm.com>
-> > 
-> > It will be used by the upcoming secret memory implementation.
-> > 
-> > Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
-> > ---
-> >   mm/internal.h | 3 +++
-> >   mm/mmap.c     | 5 ++---
-> >   2 files changed, 5 insertions(+), 3 deletions(-)
-> > 
-> > diff --git a/mm/internal.h b/mm/internal.h
-> > index c43ccdddb0f6..ae146a260b14 100644
-> > --- a/mm/internal.h
-> > +++ b/mm/internal.h
-> > @@ -348,6 +348,9 @@ static inline void munlock_vma_pages_all(struct vm_area_struct *vma)
-> >   extern void mlock_vma_page(struct page *page);
-> >   extern unsigned int munlock_vma_page(struct page *page);
-> > +extern int mlock_future_check(struct mm_struct *mm, unsigned long flags,
-> > +			      unsigned long len);
-> > +
-> >   /*
-> >    * Clear the page's PageMlocked().  This can be useful in a situation where
-> >    * we want to unconditionally remove a page from the pagecache -- e.g.,
-> > diff --git a/mm/mmap.c b/mm/mmap.c
-> > index 61f72b09d990..c481f088bd50 100644
-> > --- a/mm/mmap.c
-> > +++ b/mm/mmap.c
-> > @@ -1348,9 +1348,8 @@ static inline unsigned long round_hint_to_min(unsigned long hint)
-> >   	return hint;
-> >   }
-> > -static inline int mlock_future_check(struct mm_struct *mm,
-> > -				     unsigned long flags,
-> > -				     unsigned long len)
-> > +int mlock_future_check(struct mm_struct *mm, unsigned long flags,
-> > +		       unsigned long len)
-> >   {
-> >   	unsigned long locked, lock_limit;
-> > 
+Hi Geert,
+
+On Tue, 2020-11-10 at 11:39 +0100, Geert Uytterhoeven wrote:
+> Hi David,
 > 
-> So, an interesting question is if you actually want to charge secretmem
-> pages against mlock now, or if you want a dedicated secretmem cgroup
-> controller instead?
-
-Well, with the current implementation there are three limits an
-administrator can use to control secretmem limits: mlock, memcg and
-kernel parameter.
-
-The kernel parameter puts a global upper limit for secretmem usage,
-memcg accounts all secretmem allocations, including the unused memory in
-large pages caching and mlock allows per task limit for secretmem
-mappings, well, like mlock does.
-
-I didn't consider a dedicated cgroup, as it seems we already have enough
-existing knobs and a new one would be unnecessary.
-
-> -- 
-> Thanks,
+> On Sat, Oct 3, 2020 at 3:32 AM David E. Box <
+> david.e.box@linux.intel.com> wrote:
+> > Intel Platform Monitoring Technology (PMT) is an architecture for
+> > enumerating and accessing hardware monitoring facilities. PMT
+> > supports
+> > multiple types of monitoring capabilities. This driver creates
+> > platform
+> > devices for each type so that they may be managed by capability
+> > specific
+> > drivers (to be introduced). Capabilities are discovered using PCIe
+> > DVSEC
+> > ids. Support is included for the 3 current capability types,
+> > Telemetry,
+> > Watcher, and Crashlog. The features are available on new Intel
+> > platforms
+> > starting from Tiger Lake for which support is added. This patch
+> > adds
+> > support for Tiger Lake (TGL), Alder Lake (ADL), and Out-of-Band
+> > Management
+> > Services Module (OOBMSM).
+> > 
+> > Also add a quirk mechanism for several early hardware differences
+> > and bugs.
+> > For Tiger Lake and Alder Lake, do not support Watcher and Crashlog
+> > capabilities since they will not be compatible with future product.
+> > Also,
+> > fix use a quirk to fix the discovery table offset.
+> > 
+> > Co-developed-by: Alexander Duyck <alexander.h.duyck@linux.intel.com
+> > >
+> > Signed-off-by: Alexander Duyck <alexander.h.duyck@linux.intel.com>
+> > Signed-off-by: David E. Box <david.e.box@linux.intel.com>
+> > Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
 > 
-> David / dhildenb
+> Thanks for your patch, which is now commit 4f8217d5b0ca8ace ("mfd:
+> Intel
+> Platform Monitoring Technology support") in the mfd/for-mfd-next.
 > 
+> > --- a/drivers/mfd/Kconfig
+> > +++ b/drivers/mfd/Kconfig
+> > @@ -670,6 +670,16 @@ config MFD_INTEL_PMC_BXT
+> >           Register and P-unit access. In addition this creates
+> > devices
+> >           for iTCO watchdog and telemetry that are part of the PMC.
+> > 
+> > +config MFD_INTEL_PMT
+> > +       tristate "Intel Platform Monitoring Technology (PMT)
+> > support"
+> > +       depends on PCI
+> 
+> Does this need a "depend on X86 || COMPILE_TEST", to prevent the
+> question from showing up on platforms where the PMT cannot be
+> present?
 
--- 
-Sincerely yours,
-Mike.
+Though not currently available on non X86 hardware it is not
+restricted. The use of PCIE Designated Vendor Specific Capability
+(DVSEC) was to specifically allow use of this IP by other vendors.
+
+> 
+> I see the TGL and ADL PCI IDs are also referenced from
+> drivers/platform/x86/intel_pmt_telemetry.c, which suggests this is
+> X86-only.
+> Perhaps the OOBMSM is a PCI device that can be used on non-X86
+> platforms?
+
+TGL and AGL are only referenced in this driver because they require
+quirks.
+
+Thanks
+
+David
+
