@@ -2,168 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 062392ACA8D
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 02:38:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3605D2ACA91
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 02:38:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731112AbgKJBiB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 20:38:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54096 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730042AbgKJBiA (ORCPT
+        id S1731448AbgKJBis (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 20:38:48 -0500
+Received: from mailgw02.mediatek.com ([210.61.82.184]:58472 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1731151AbgKJBir (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 20:38:00 -0500
-Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 663B3C0613CF;
-        Mon,  9 Nov 2020 17:38:00 -0800 (PST)
-Received: by mail-qt1-x842.google.com with SMTP id 7so3165599qtp.1;
-        Mon, 09 Nov 2020 17:38:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Wuf5qls7r8K2jneK0GG5xYx1Smw/3UiCzX+IOcpMh74=;
-        b=jWbPvz4sU1Bh6jIeg+ksMoOFSommY9IoXLnJKWs1ts63jKGgGPtwHOR2oxgX6Qs5wJ
-         qprc6ZXed7ihKTRLcW1ZwppwjTjVYLh3L0yJWiSWcQ5jCTswF3KXqx/6b/1QJKqjH0Qv
-         CHJFupmHN2mqCa4V5oaS6U5pvM18YYpBr+XKoJxQzxLm/qxtiHYdw1yUnIaWSDxoPNYi
-         gRDfScZ9OYFPiya7Oe1HQHVr5jj5Hb2/6UmyZvKWytVnH/NPJgsnpM4KUy4CDs/Q5oBP
-         72SoG8ZqCFWsrs8RLD+LzuxC+TvMebA1lyEFgDqoO5v+1JiGRgCZ1XHM+6JjjDUOUU4/
-         bcdg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Wuf5qls7r8K2jneK0GG5xYx1Smw/3UiCzX+IOcpMh74=;
-        b=fSbNB4eAl1IrZ1l6SGdUaXogmv7yXxeoa7JemqA5HLL1HouuPZs+Qt6miRbzkJ9FJ3
-         bT18CC6J+ITIDTZPBe0zRtqyvlIpo1gTe4tdgbsX0eNTq90jhSISravLK/MJKZ92fa+C
-         sElNVDb4MBLFUDyZ//sDR73S7AUP+WWk3qqLm5LgEjKI7ActY3a3asN1yTdC4EH4GhXP
-         N1h4psYjpV5uoTFlyogu60hwdyE/CaA3C5CihGirtw4fwtrmXN6cKK7reI6I///HOQb6
-         PySPYDZrBnPViMqoNLyHJpzA2g3aXjmIF9J8RDqyvnsT43yXeBA3GpOVaa7lB50OR0oo
-         iGwg==
-X-Gm-Message-State: AOAM530XX0UbJcaQsHkPvFfUKfFxga0QCyXLQfgu6s1H9l99Zp2rCu1X
-        dGKWQzkrZMhRp+DAhKKIMGz8PTjDXL0=
-X-Google-Smtp-Source: ABdhPJxmbiNTmK5jwXjXpW6oVA75A3hcHP9A47ipAjsJh3UJp0SfNWLpX/yoT0hXWMupP19gAvW2tQ==
-X-Received: by 2002:ac8:6f05:: with SMTP id g5mr5265849qtv.97.1604972279625;
-        Mon, 09 Nov 2020 17:37:59 -0800 (PST)
-Received: from auth1-smtp.messagingengine.com (auth1-smtp.messagingengine.com. [66.111.4.227])
-        by smtp.gmail.com with ESMTPSA id z1sm6923870qtz.46.2020.11.09.17.37.58
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 09 Nov 2020 17:37:58 -0800 (PST)
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailauth.nyi.internal (Postfix) with ESMTP id AA9C427C0054;
-        Mon,  9 Nov 2020 20:37:57 -0500 (EST)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute5.internal (MEProxy); Mon, 09 Nov 2020 20:37:57 -0500
-X-ME-Sender: <xms:9O6pXwTr5ZOQ97wt1Kuy6rXDgbaHrRPi4sxAIktxKild7GPNWqCWuw>
-    <xme:9O6pX9zEsPFj9GM7b42ce0w1_IwLylBSAYWiwzb9mtEePeW_PbZrsdVufOm8L6zzS
-    z7DDMzMsxp_bYLUCg>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrudduiedgfeekucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhephffvufffkffoggfgsedtkeertdertddtnecuhfhrohhmpeeuohhquhhnucfh
-    vghnghcuoegsohhquhhnrdhfvghnghesghhmrghilhdrtghomheqnecuggftrfgrthhtvg
-    hrnhepieeuveejleehudetfeevfeelgfejteefhedvkedukefggedugefhudfhteevjedu
-    necuffhomhgrihhnpehkvghrnhgvlhdrohhrghenucfkphepudefuddruddtjedrudegje
-    druddvieenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhm
-    pegsohhquhhnodhmvghsmhhtphgruhhthhhpvghrshhonhgrlhhithihqdeiledvgeehtd
-    eigedqudejjeekheehhedvqdgsohhquhhnrdhfvghngheppehgmhgrihhlrdgtohhmsehf
-    ihigmhgvrdhnrghmvg
-X-ME-Proxy: <xmx:9O6pX93RUfN_PnYZgPmUrE6Jkj0LidCK60rUfR9piiWH-jP5wxDm3A>
-    <xmx:9O6pX0BVAn9SOzOc6K3T_budxv7hySfAqO7BJwfhklSlK7fyHBL1gQ>
-    <xmx:9O6pX5iQ2X9y_UP5sFyusvDE6Qxm9rsjAmOT1oFCrp6zaP8sJJYCaA>
-    <xmx:9e6pX6XrPJt3r-_WifwLuidNxoRIGIzjxSji9V7unK0_DjRB-2X1mdORWUk>
-Received: from localhost (unknown [131.107.147.126])
-        by mail.messagingengine.com (Postfix) with ESMTPA id ED3113063081;
-        Mon,  9 Nov 2020 20:37:55 -0500 (EST)
-From:   Boqun Feng <boqun.feng@gmail.com>
-To:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Cc:     Boqun Feng <boqun.feng@gmail.com>,
-        Filipe Manana <fdmanana@gmail.com>,
-        Peter Zijlstra <peterz@infradead.org>, Jan Kara <jack@suse.cz>,
-        David Sterba <dsterba@suse.com>,
-        Nikolay Borisov <nborisov@suse.com>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Ingo Molnar <mingo@kernel.org>
-Subject: [RFC] fs: Avoid to use lockdep information if it's turned off
-Date:   Tue, 10 Nov 2020 09:37:37 +0800
-Message-Id: <20201110013739.686731-1-boqun.feng@gmail.com>
-X-Mailer: git-send-email 2.29.2
+        Mon, 9 Nov 2020 20:38:47 -0500
+X-UUID: ab346585b6d447eebda9f4e3fe62f05a-20201110
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=YjSSNPs9DIKiggA5+V9fbL6MfaunwhMceWHthl8AyvQ=;
+        b=nO8dGzUIDG+QXsinumgcurz/T7wPsQvr1oPc1A7nF2uGE/ORDVrKMr2cPaXTjHVcwXG+f0QJzH/z4yRyz3kSnOATU5ipjC41YTEp5qhOTcaDXEMhpNWle2fifa5iqlrB8JIuxFI+6nZB366Js0YYH18fbyORUb0kY9ga/Rg25VI=;
+X-UUID: ab346585b6d447eebda9f4e3fe62f05a-20201110
+Received: from mtkcas08.mediatek.inc [(172.21.101.126)] by mailgw02.mediatek.com
+        (envelope-from <weiyi.lu@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 362126511; Tue, 10 Nov 2020 09:38:42 +0800
+Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
+ mtkmbs07n2.mediatek.inc (172.21.101.141) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Tue, 10 Nov 2020 09:38:41 +0800
+Received: from [172.21.77.4] (172.21.77.4) by MTKCAS06.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Tue, 10 Nov 2020 09:38:40 +0800
+Message-ID: <1604972321.16474.9.camel@mtksdaap41>
+Subject: Re: [PATCH] clk: mediatek: fix mtk_clk_register_mux() as static
+ function
+From:   Weiyi Lu <weiyi.lu@mediatek.com>
+To:     Greg KH <gregkh@linuxfoundation.org>
+CC:     Matthias Brugger <matthias.bgg@gmail.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-mediatek@lists.infradead.org>, <linux-clk@vger.kernel.org>,
+        <srv_heupstream@mediatek.com>, <stable@vger.kernel.org>,
+        Owen Chen <owen.chen@mediatek.com>
+Date:   Tue, 10 Nov 2020 09:38:41 +0800
+In-Reply-To: <20201109102035.GA1238638@kroah.com>
+References: <1604914627-9203-1-git-send-email-weiyi.lu@mediatek.com>
+         <20201109102035.GA1238638@kroah.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.10.4-0ubuntu2 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Filipe Manana reported a warning followed by task hanging after attempts
-to freeze a filesystem[1]. The problem happened in a LOCKDEP=y kernel,
-and percpu_rwsem_is_held() provided incorrect results when
-debug_locks == 0. Although the behavior is caused by commit 4d004099a668
-("lockdep: Fix lockdep recursion"): after that lock_is_held() and its
-friends always return true if debug_locks == 0. However, one could argue
-that querying the lock holding information regardless if the lockdep
-turn-off status is inappropriate in the first place. Therefore instead
-of reverting lock_is_held() and its friends to the previous semantics,
-add the explicit checking in fs code to avoid use the lock holding
-information if lockdpe is turned off. And since the original problem
-also happened with a silent lockdep turn-off, put a warning if
-debug_locks is 0, which will help us spot the silent lockdep turn-offs.
-
-[1]: https://lore.kernel.org/lkml/a5cf643b-842f-7a60-73c7-85d738a9276f@suse.com/
-
-Reported-by: Filipe Manana <fdmanana@gmail.com>
-Fixes: 4d004099a668 ("lockdep: Fix lockdep recursion")
-Signed-off-by: Boqun Feng <boqun.feng@gmail.com>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Jan Kara <jack@suse.cz>
-Cc: David Sterba <dsterba@suse.com>
-Cc: Nikolay Borisov <nborisov@suse.com>
-Cc: "Darrick J. Wong" <darrick.wong@oracle.com>
----
-Hi Filipe,
-
-I use the slightly different approach to fix this problem, and I think
-it should have the similar effect with my previous fix[2], except that
-you will hit a warning if the problem happens now. The warning is added
-on purpose because I don't want to miss a silent lockdep turn-off.
-
-Could you and other fs folks give this a try?
-
-Regards,
-Boqun
-
-[2]: https://lore.kernel.org/lkml/20201103140828.GA2713762@boqun-archlinux/
-
- fs/super.c | 11 +++++++++++
- 1 file changed, 11 insertions(+)
-
-diff --git a/fs/super.c b/fs/super.c
-index a51c2083cd6b..1803c8d999e9 100644
---- a/fs/super.c
-+++ b/fs/super.c
-@@ -1659,12 +1659,23 @@ int __sb_start_write(struct super_block *sb, int level, bool wait)
- 	 * twice in some cases, which is OK only because we already hold a
- 	 * freeze protection also on higher level. Due to these cases we have
- 	 * to use wait == F (trylock mode) which must not fail.
-+	 *
-+	 * Note: lockdep can only prove correct information if debug_locks != 0
- 	 */
- 	if (wait) {
- 		int i;
- 
- 		for (i = 0; i < level - 1; i++)
- 			if (percpu_rwsem_is_held(sb->s_writers.rw_sem + i)) {
-+				/*
-+				 * XXX: the WARN_ON_ONCE() here is to help
-+				 * track down silent lockdep turn-off, i.e.
-+				 * this warning is triggered, but no lockdep
-+				 * splat is reported.
-+				 */
-+				if (WARN_ON_ONCE(!debug_locks))
-+					break;
-+
- 				force_trylock = true;
- 				break;
- 			}
--- 
-2.29.2
+T24gTW9uLCAyMDIwLTExLTA5IGF0IDExOjIwICswMTAwLCBHcmVnIEtIIHdyb3RlOg0KPiBPbiBN
+b24sIE5vdiAwOSwgMjAyMCBhdCAwNTozNzowN1BNICswODAwLCBXZWl5aSBMdSB3cm90ZToNCj4g
+PiBtdGtfY2xrX3JlZ2lzdGVyX211eCgpIHNob3VsZCBiZSBhIHN0YXRpYyBmdW5jdGlvbg0KPiA+
+IA0KPiA+IEZpeGVzOiBhM2FlNTQ5OTE3ZjE2ICgiY2xrOiBtZWRpYXRlazogQWRkIG5ldyBjbGtt
+dXggcmVnaXN0ZXIgQVBJIikNCj4gPiBDYzogPHN0YWJsZUB2Z2VyLmtlcm5lbC5vcmc+DQo+IA0K
+PiBXaHkgaXMgdGhpcyBmb3Igc3RhYmxlIHRyZWVzPw0KDQpIaSBHcmVnLA0KDQpNeSBNaXN0YWtl
+LiBJbmRlZWQsIHRoaXMgaXMgbm90IGEgYnVnIGZpeCBmb3Igc3RhYmxlIHRyZWUuDQpBbmQgdGhl
+cmUgYXJlIHNpbXBsZSBxdWVzdGlvbnMuDQpXaWxsIEkgYmUgYWxsb3dlZCB0byBrZWVwIHRoZSBm
+aXhlcyB0YWcgaW4gdGhpcyBwYXRjaCB0byBpbmRpY2F0ZSB0aGUNCm1pc3Rha2VzIHdlIG1hZGUg
+aW4gcHJldmlvdXMgY29tbWl0IGlmIGl0J3Mgbm90IGEgYnVnIGZpeCBmb3Igc3RhYmxlDQp0cmVl
+Pw0KQW5kIGFsbCBJIG5lZWQgdG8gZG8gbm93IGlzIHRvIHJlbW92ZSBzdGFibGUgdHJlZSBmcm9t
+IGNjIGxpc3QuIElzIGl0DQpjb3JyZWN0Pw0KDQpNYW55IHRoYW5rcy4NCg0KPiANCg0K
 
