@@ -2,39 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2949E2AE1E4
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 22:38:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C2282AE1E6
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 22:38:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732131AbgKJVio (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 16:38:44 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40718 "EHLO mail.kernel.org"
+        id S1732101AbgKJVim (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 16:38:42 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40786 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731788AbgKJViY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 16:38:24 -0500
+        id S1731711AbgKJVi3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Nov 2020 16:38:29 -0500
 Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2678B20797;
-        Tue, 10 Nov 2020 21:38:22 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9CBBB207D3;
+        Tue, 10 Nov 2020 21:38:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605044303;
-        bh=2QfsYMTIGqExf5FNUHJ1un67gfZSsrKQPoWVhdIAHqk=;
+        s=default; t=1605044309;
+        bh=1wv/W+FAA2wLDi6r6O9opaiMCeNvIC1rPgcrn0Rooxs=;
         h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
-        b=ahh06S4Z3wkwZo6EIiwVGN+Ce0SFmInaxqHOerbq2kKutFpkbJ+9Oul/50G+wurdI
-         R2giXYHGmmyiXsenxUu4Dxl7T2AoNwhyww7zufS0QCm/IWWYs2Sog4rjIt8RIorvGr
-         nBzR+4yxjyd/SGtvJZjMWiefyVrPDODpEcFl84F4=
-Date:   Tue, 10 Nov 2020 21:38:09 +0000
+        b=To+hjNxUK2OWbg0OfzQHC3Q4eCQLWyaXcTYcslaAt6K6bqa7nEVjItClnhIdqOAVJ
+         y5p0CBYi8rvAnkxFj+S7OW+XEmMZ+o3a+zzJ5CPzo0WEl7lCPymSFDkxARdAzaEvJF
+         5V73vnqwQnMV0raNC+VO6a80HFbJSjQ56Hy/EpvU=
+Date:   Tue, 10 Nov 2020 21:38:15 +0000
 From:   Mark Brown <broonie@kernel.org>
-To:     tiwai@suse.com, pierre-louis.bossart@linux.intel.com,
-        lgirdwood@gmail.com, kuninori.morimoto.gx@renesas.com,
-        perex@perex.cz, Sameer Pujar <spujar@nvidia.com>
-Cc:     linux-tegra@vger.kernel.org, alsa-devel@alsa-project.org,
-        thierry.reding@gmail.com, jonathanh@nvidia.com, sharadg@nvidia.com,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <1604329814-24779-1-git-send-email-spujar@nvidia.com>
-References: <1604329814-24779-1-git-send-email-spujar@nvidia.com>
-Subject: Re: [PATCH v5 0/7] Audio Graph Updates
-Message-Id: <160504428418.41991.4621142388350710965.b4-ty@kernel.org>
+To:     Xiubo Li <Xiubo.Lee@gmail.com>, Timur Tabi <timur@kernel.org>,
+        Nicolin Chen <nicoleotsuka@gmail.com>,
+        Fabio Estevam <festevam@gmail.com>,
+        Shengjiu Wang <shengjiu.wang@gmail.com>,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, Jaroslav Kysela <perex@perex.cz>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        "Viorel Suman (OSS)" <viorel.suman@oss.nxp.com>,
+        Takashi Iwai <tiwai@suse.com>
+Cc:     Viorel Suman <viorel.suman@nxp.com>
+In-Reply-To: <20201102161810.902464-1-viorel.suman@oss.nxp.com>
+References: <20201102161810.902464-1-viorel.suman@oss.nxp.com>
+Subject: Re: [PATCH] ASoC: fsl_xcvr: fix break condition
+Message-Id: <160504428419.41991.13993731328162565714.b4-ty@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -42,17 +46,10 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2 Nov 2020 20:40:07 +0530, Sameer Pujar wrote:
-> This series is a prepraration for using generic graph driver for Tegra210
-> audio. Tegra audio graph series will be sent in a separate series because
-> it has some dependency over other series for documentation work. This
-> series can focus on the generic ASoC driver updates. Below are the summary
-> of changes done.
-> 
->  * Support multiple instances of a component. For example there can be
->    multiple I2S devices which can use the same component driver.
-> 
-> [...]
+On Mon, 2 Nov 2020 18:18:10 +0200, Viorel Suman (OSS) wrote:
+> The break condition copied by mistake as same
+> as loop condition in the previous version, but must
+> be the opposite. So fix it.
 
 Applied to
 
@@ -60,20 +57,8 @@ Applied to
 
 Thanks!
 
-[1/7] ASoC: soc-core: Fix component name_prefix parsing
-      commit: 3256ef984b016fc8491f34cad594168b4b500317
-[2/7] ASoC: soc-pcm: Get all BEs along DAPM path
-      commit: aa293777bfeb75fb8872565ef99cc0e8b98b5c7d
-[3/7] ASoC: audio-graph: Use of_node and DAI for DPCM DAI link names
-      commit: e6aeb375d25dba56c4089b1d6aa0a77fe218ef3b
-[4/7] ASoC: audio-graph: Identify 'no_pcm' DAI links for DPCM
-      commit: c21cbb526c0a105d582299839a9c4244dd6bf38a
-[5/7] ASoC: audio-graph: Support empty Codec endpoint
-      commit: 930dd47d74023e7c94a7c256279e12924c14475d
-[6/7] ASoC: audio-graph: Expose new members for asoc_simple_priv
-      commit: d09c774f2f9ff25817866b70f1fb9603e5196971
-[7/7] ASoC: audio-graph: Expose helpers from audio graph
-      commit: e32b100bc6ecbc390aae728fc7d2a3e247faa8a7
+[1/1] ASoC: fsl_xcvr: fix break condition
+      commit: 048751de568816de52dedf0fa967cceada7885f1
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
