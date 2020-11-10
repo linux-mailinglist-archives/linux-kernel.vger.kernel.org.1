@@ -2,101 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B58CA2AD41D
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 11:50:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C1BA2AD41F
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 11:50:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731114AbgKJKuT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 05:50:19 -0500
-Received: from mga04.intel.com ([192.55.52.120]:5635 "EHLO mga04.intel.com"
+        id S1729669AbgKJKup (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 05:50:45 -0500
+Received: from foss.arm.com ([217.140.110.172]:53788 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730751AbgKJKuT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 05:50:19 -0500
-IronPort-SDR: F6ozJGXUHb8OME3pEgKX7c3SqtaAl1i02/XeUyxJy+bIpblflpMTr7wVL8aO+HdysEiMbTzi5I
- RR4en+AU5HQw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9800"; a="167369971"
-X-IronPort-AV: E=Sophos;i="5.77,466,1596524400"; 
-   d="scan'208";a="167369971"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Nov 2020 02:50:19 -0800
-IronPort-SDR: R4mRClaaVexvWM8Xzc9bwEJH8ERSXmXlauViygka+H/aSC/OWKd7d1O6fNbREzsz+WhyXKj+AS
- yv0P6qjVIo0g==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,466,1596524400"; 
-   d="scan'208";a="428325868"
-Received: from kuha.fi.intel.com ([10.237.72.162])
-  by fmsmga001.fm.intel.com with SMTP; 10 Nov 2020 02:50:16 -0800
-Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Tue, 10 Nov 2020 12:50:15 +0200
-Date:   Tue, 10 Nov 2020 12:50:15 +0200
-From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
-To:     Prashant Malani <pmalani@chromium.org>
-Cc:     linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
-        gregkh@linuxfoundation.org, Benson Leung <bleung@chromium.org>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        Guenter Roeck <groeck@chromium.org>
-Subject: Re: [PATCH v2 2/2] platform/chrome: cros_ec_typec: Set partner
- num_altmodes
-Message-ID: <20201110105015.GF1224435@kuha.fi.intel.com>
-References: <20201110061535.2163599-1-pmalani@chromium.org>
- <20201110061535.2163599-2-pmalani@chromium.org>
+        id S1726894AbgKJKuo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Nov 2020 05:50:44 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 10A0B11D4;
+        Tue, 10 Nov 2020 02:50:44 -0800 (PST)
+Received: from [10.57.23.123] (unknown [10.57.23.123])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 34C3C3F6CF;
+        Tue, 10 Nov 2020 02:50:43 -0800 (PST)
+Subject: Re: [PATCH v3 25/26] coresight: etm4x: Add support for sysreg only
+ devices
+To:     Mathieu Poirier <mathieu.poirier@linaro.org>
+Cc:     linux-arm-kernel@lists.infradead.org, mike.leach@linaro.org,
+        coresight@lists.linaro.org, linux-kernel@vger.kernel.org
+References: <20201028220945.3826358-1-suzuki.poulose@arm.com>
+ <20201028220945.3826358-27-suzuki.poulose@arm.com>
+ <20201109204657.GD3396611@xps15>
+From:   Suzuki K Poulose <suzuki.poulose@arm.com>
+Message-ID: <9566bf8c-3e05-7a81-d487-647a057ae4f1@arm.com>
+Date:   Tue, 10 Nov 2020 10:50:36 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201110061535.2163599-2-pmalani@chromium.org>
+In-Reply-To: <20201109204657.GD3396611@xps15>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 09, 2020 at 10:15:36PM -0800, Prashant Malani wrote:
-> Set the number of altmodes available for a registered partner using the
-> Type C connector class framework routine.
+On 11/9/20 8:46 PM, Mathieu Poirier wrote:
+> On Wed, Oct 28, 2020 at 10:09:44PM +0000, Suzuki K Poulose wrote:
+>> Add support for devices with system instruction access only.
+>> They don't have a memory mapped interface and thus are not
+>> AMBA devices.
+>>
+>> Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
+>> Cc: Mike Leach <mike.leach@linaro.org>
+>> Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
+>> ---
+>>   .../coresight/coresight-etm4x-core.c          | 50 +++++++++++++++++--
+>>   1 file changed, 45 insertions(+), 5 deletions(-)
+>>
+>> diff --git a/drivers/hwtracing/coresight/coresight-etm4x-core.c b/drivers/hwtracing/coresight/coresight-etm4x-core.c
+>> index 25fab5513604..50a574228866 100644
+>> --- a/drivers/hwtracing/coresight/coresight-etm4x-core.c
+>> +++ b/drivers/hwtracing/coresight/coresight-etm4x-core.c
+>> @@ -26,6 +26,7 @@
+>>   #include <linux/seq_file.h>
+>>   #include <linux/uaccess.h>
+>>   #include <linux/perf_event.h>
+>> +#include <linux/platform_device.h>
+>>   #include <linux/pm_runtime.h>
+>>   #include <linux/property.h>
+>>   #include <asm/sections.h>
+>> @@ -1623,9 +1624,6 @@ static int etm4_probe(struct device *dev, void __iomem *base)
+>>   			return -ENOMEM;
+>>   	}
+>>   
+>> -	if (fwnode_property_present(dev_fwnode(dev), "qcom,skip-power-up"))
+>> -		drvdata->skip_power_up = true;
+>> -
+>>   	drvdata->base = base;
+>>   
+>>   	spin_lock_init(&drvdata->spinlock);
+>> @@ -1648,6 +1646,11 @@ static int etm4_probe(struct device *dev, void __iomem *base)
+>>   	if (!drvdata->arch)
+>>   		return -EINVAL;
+>>   
+>> +	/* Skip programming TRCPDCR for system instructions. */
 > 
-> Signed-off-by: Prashant Malani <pmalani@chromium.org>
+> It would be nice to mention that TRCPDCR is not available in system instruction
+> mode.
 
-Reviewed-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+Sure.
 
-> ---
 > 
-> Changes in v2:
-> - Patch introduced for the first time in v2.
+>> +	if (!desc.access.io_mem ||
+>> +	    fwnode_property_present(dev_fwnode(dev), "qcom,skip-power-up"))
+>> +		drvdata->skip_power_up = true;
+>> +
+>>   	etm4_init_trace_id(drvdata);
+>>   	etm4_set_default(&drvdata->config);
+>>   
+>> @@ -1706,6 +1709,20 @@ static int etm4_probe_amba(struct amba_device *adev, const struct amba_id *id)
+>>   	return ret;
+>>   }
+>>   
+>> +static int etm4_probe_platform_dev(struct platform_device *pdev)
+>> +{
+>> +	int ret;
+>> +
+>> +	pm_runtime_get_noresume(&pdev->dev);
+>> +	pm_runtime_set_active(&pdev->dev);
+>> +	pm_runtime_enable(&pdev->dev);
+>> +
+>> +	ret = etm4_probe(&pdev->dev, NULL);
+>> +
+>> +	pm_runtime_put(&pdev->dev);
+>> +	return ret;
+>> +}
+>> +
+>>   static struct amba_cs_uci_id uci_id_etm4[] = {
+>>   	{
+>>   		/*  ETMv4 UCI data */
+>> @@ -1781,6 +1798,20 @@ static struct amba_driver etm4x_amba_driver = {
+>>   	.id_table	= etm4_ids,
+>>   };
+>>   
+>> +static const struct of_device_id etm_sysreg_match[] = {
 > 
->  drivers/platform/chrome/cros_ec_typec.c | 8 ++++++++
->  1 file changed, 8 insertions(+)
+> s/etm_sysreg_match/etm4_sysreg_match
 > 
-> diff --git a/drivers/platform/chrome/cros_ec_typec.c b/drivers/platform/chrome/cros_ec_typec.c
-> index ce031a10eb1b..743a28426f98 100644
-> --- a/drivers/platform/chrome/cros_ec_typec.c
-> +++ b/drivers/platform/chrome/cros_ec_typec.c
-> @@ -621,6 +621,7 @@ static int cros_typec_register_altmodes(struct cros_typec_data *typec, int port_
->  	struct cros_typec_altmode_node *node;
->  	struct typec_altmode_desc desc;
->  	struct typec_altmode *amode;
-> +	int num_altmodes = 0;
->  	int ret = 0;
->  	int i, j;
->  
-> @@ -647,9 +648,16 @@ static int cros_typec_register_altmodes(struct cros_typec_data *typec, int port_
->  
->  			node->amode = amode;
->  			list_add_tail(&node->list, &port->partner_mode_list);
-> +			num_altmodes++;
->  		}
->  	}
->  
-> +	ret = typec_partner_set_num_altmodes(port->partner, num_altmodes);
-> +	if (ret < 0) {
-> +		dev_err(typec->dev, "Unable to set partner num_altmodes for port: %d\n", port_num);
-> +		goto err_cleanup;
-> +	}
-> +
->  	return 0;
->  
->  err_cleanup:
-> -- 
-> 2.29.2.222.g5d2a92d10f8-goog
+>> +	{ .compatible	= "arm,coresight-etm-sysreg" },
+> 
+> See my comment in the next patch.
+> 
+> With the above:
+> 
+> Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
+> 
 
-thanks,
+Thanks
 
--- 
-heikki
+Suzuki
