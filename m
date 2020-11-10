@@ -2,152 +2,261 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CADED2ADF42
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 20:26:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EB1732ADF3A
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 20:24:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731648AbgKJT0E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 14:26:04 -0500
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:10836 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728272AbgKJT0D (ORCPT
+        id S1731527AbgKJTYm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 14:24:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50416 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731359AbgKJTYl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 14:26:03 -0500
-Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0AAJOxoA025717;
-        Tue, 10 Nov 2020 11:25:07 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : content-type :
- content-transfer-encoding : mime-version; s=facebook;
- bh=cBT5PR2JeGBNUgAPb7RHkRJPn3QqofArtbbke2qQbkY=;
- b=msc3StAFH+W6bBr+zuVBndumVaI4yqHYQYQgsyhsHlLrJGr7ixbhzFMFdYKI9bEx1MKT
- n1GA+qLUafiYenm2NZyCd3KDmO8fdHv4C9rrzg9/KhuHMQjzspoUfQH/by3oBnTYIc47
- edtp79llzZmH3wk97lGdBEqRwc7+fsCRKpA= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 34pch9vg4x-7
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Tue, 10 Nov 2020 11:25:07 -0800
-Received: from NAM10-BN7-obe.outbound.protection.outlook.com (100.104.98.9) by
- o365-in.thefacebook.com (100.104.94.197) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Tue, 10 Nov 2020 11:24:44 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=SEUoDXtE2ZsfXp1VJTH1CP2k+MVqFpwx38BZrKM5Pm12ZQTFAJ8wMJir5zZInEhsJth0BncWZWFuJesXA5HvxnAN+HABVxWp/uI7lht5vfAnQL98i5HAXCmB/VzoRAeiKlT/4/knuHMDzVRW/e5n/qP6zvBiRnYnIUnel4XMdIkemG/BriGLLwUOqDz3PcHcbu+jHsyY7WXamjnDuDuDz9FaO90fzHvNFc0OJP+Z1qnM3SrvJ/lo1ekNiYhaLjpFGvtUCsxwdb9K2HAvbh8xG9il98PIcxwy1CMWn1M2CMt9ObkG98x6ttsvJUb+s+KIhQanCrFv4C3StRxA+M3zfA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=cBT5PR2JeGBNUgAPb7RHkRJPn3QqofArtbbke2qQbkY=;
- b=FwtJ5mSSonRsdX+J6EAF1uMRD9sfGmBRakJpqd5I/ZTfXdKPjTr+JV1eS4pBs5+17nj4ZRrUIPaDV5LeiITC0hOORvbhQXjec+QiRkA7DYteE3EaLSBXrUu8QpQNurS5XPdRW56trN+9PwPn+MbxN7wDZ79CPZcwsPVcDLWdIFAe2bUQ2/5auQf3i1rqhGolNLiF3QR/lOzdYuzje2qfnXBX9ZOriPejhHudtXijyLp2MqvfHgyHCUCrcml6Lm+awsBaTwKahxbfWG9kIRQIN9AbGA8eG5un6GQwIa5c9IfqQbkTDWw4pGu5WYmH+0pLOkMZq6MfJn9KXe/Qh/uQnA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=cBT5PR2JeGBNUgAPb7RHkRJPn3QqofArtbbke2qQbkY=;
- b=LiJFqrOH6fa7il+3qzsAGz0KC+SfZkj2rZdwoBXANjSaZDK07uuXv19hoSqoh95V9hUsaTia8mgFMdp6/V0MCDozP+19rjI69eZPloZ2uQbDEFmg4Qqg9HPilfrB8NIydHcHmWz27Le7ROk8np0alGTbX2J3uicObLd0lxC1/GE=
-Authentication-Results: infradead.org; dkim=none (message not signed)
- header.d=none;infradead.org; dmarc=none action=none header.from=fb.com;
-Received: from SA0PR15MB3839.namprd15.prod.outlook.com (2603:10b6:806:83::14)
- by SN6PR15MB2301.namprd15.prod.outlook.com (2603:10b6:805:18::24) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.27; Tue, 10 Nov
- 2020 19:24:40 +0000
-Received: from SA0PR15MB3839.namprd15.prod.outlook.com
- ([fe80::988:2e42:b8ca:d347]) by SA0PR15MB3839.namprd15.prod.outlook.com
- ([fe80::988:2e42:b8ca:d347%9]) with mapi id 15.20.3541.025; Tue, 10 Nov 2020
- 19:24:40 +0000
-From:   "Chris Mason" <clm@fb.com>
-To:     Christoph Hellwig <hch@infradead.org>
-CC:     Nick Terrell <nickrterrell@gmail.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        <linux-crypto@vger.kernel.org>, <linux-btrfs@vger.kernel.org>,
-        <squashfs-devel@lists.sourceforge.net>,
-        <linux-f2fs-devel@lists.sourceforge.net>,
-        <linux-kernel@vger.kernel.org>, Kernel Team <Kernel-team@fb.com>,
-        Nick Terrell <terrelln@fb.com>, Petr Malat <oss@malat.biz>,
-        Johannes Weiner <jweiner@fb.com>,
-        Niket Agarwal <niketa@fb.com>, Yann Collet <cyan@fb.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: Re: [PATCH v5 1/9] lib: zstd: Add zstd compatibility wrapper
-Date:   Tue, 10 Nov 2020 14:24:35 -0500
-X-Mailer: MailMate (1.13.2r5673)
-Message-ID: <4ED61269-0F19-46EB-ACE3-C6D81E0A9136@fb.com>
-In-Reply-To: <20201110183953.GA10656@infradead.org>
-References: <20201103060535.8460-1-nickrterrell@gmail.com>
- <20201103060535.8460-2-nickrterrell@gmail.com>
- <20201106183846.GA28005@infradead.org>
- <D9338FE4-1518-4C7B-8C23-DBDC542DAC35@fb.com>
- <20201110183953.GA10656@infradead.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed; markup=markdown
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [172.101.208.204]
-X-ClientProxiedBy: CH2PR05CA0049.namprd05.prod.outlook.com
- (2603:10b6:610:38::26) To SA0PR15MB3839.namprd15.prod.outlook.com
- (2603:10b6:806:83::14)
+        Tue, 10 Nov 2020 14:24:41 -0500
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C75D0C0613D3
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 11:24:40 -0800 (PST)
+Received: by mail-pl1-x643.google.com with SMTP id g11so6961779pll.13
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 11:24:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=broadcom.com; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to;
+        bh=IsudZXqRC65tga/ci8SKCSuhHSLuLKro49PvD6z05FA=;
+        b=DQ+9I0KK8HkgCwavq5LPadtXmXKUVS2HEqIf1hm2MIK5BbvB8QjJ6kmbYN6qT7Z4/Y
+         MqTH1lA3quk2p7ShEYYuofyDEDryV0wLVkgo0IDvuVGFuGE84sIxJ+8kKfoPjcp6I15Q
+         UqSEFGKHKtHBgCcLX+jQvSXXU5419uSPhseD8=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to;
+        bh=IsudZXqRC65tga/ci8SKCSuhHSLuLKro49PvD6z05FA=;
+        b=Ic9by9epSP0xz3xEa17J1y/slKW15ZJMAyxgPzc47+ZNOBBt62KW8L4WvKtlxIpHNf
+         vU1mPTX68Wb/NwiyaWyxqe2izEwIZKXbDM0/wNpfqXkcVF/QzXDVa5GRul5ri43enJ9W
+         Z3PE+zO4kJ8yZdM23DgTQsFYvFJGslHQIjcBczJpLpBk9YI9LhUkOWfFau7YvscXIUhV
+         Uy7rfTb8WXxEr/LYVhEvSlbcPp68KI958C0dUdbAhszIK8A21LVO0/YDogCwUuM0narI
+         GOVOZ140WKjlWFnAziX3JDdOVcRggPoA8Aw6uyK/njjnwiHyCdLXwpWKwKw8Kz5hjdFK
+         VNuw==
+X-Gm-Message-State: AOAM533Q8NkqQiAzGnzi5mRPthGY3SDRBhN0s0EYfJsbk2qwlIMnEjmZ
+        k0RQFCKvHuzAFIt8HCKLcntg8w==
+X-Google-Smtp-Source: ABdhPJww9SyUL4gPn15CySh4Hg8H57l+EV2HFuSrFgmjwuXbaiPJypmlZFSd3tmBIlK5Wz2sQhOmXQ==
+X-Received: by 2002:a17:902:8b8c:b029:d6:df70:fa21 with SMTP id ay12-20020a1709028b8cb02900d6df70fa21mr18328853plb.15.1605036279943;
+        Tue, 10 Nov 2020 11:24:39 -0800 (PST)
+Received: from [10.136.8.243] ([192.19.228.250])
+        by smtp.gmail.com with ESMTPSA id h13sm3013561pjj.30.2020.11.10.11.24.37
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 10 Nov 2020 11:24:38 -0800 (PST)
+Subject: Re: [PATCH v3 5/6] i2c: iproc: handle master read request
+To:     Rayagonda Kokatanur <rayagonda.kokatanur@broadcom.com>
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        BCM Kernel Feedback <bcm-kernel-feedback-list@broadcom.com>,
+        Brendan Higgins <brendanhiggins@google.com>,
+        Dhananjay Phadke <dphadke@linux.microsoft.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+        linux-i2c <linux-i2c@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Lori Hikichi <lori.hikichi@broadcom.com>,
+        Ray Jui <rjui@broadcom.com>,
+        Scott Branden <sbranden@broadcom.com>,
+        Wolfram Sang <wsa@kernel.org>
+References: <CAHO=5PGAMvRAyrBF3_ubbgciqHV3hAbmt4B7Rb3hdibMbgs6ZQ@mail.gmail.com>
+ <1604684486-16272-1-git-send-email-dphadke@linux.microsoft.com>
+ <CAHO=5PEJZ35O2Kwtinw5Kon+fXvciZHJDn9wCp6LKp8wtvVF=Q@mail.gmail.com>
+From:   Ray Jui <ray.jui@broadcom.com>
+Message-ID: <38a23afc-57da-a01f-286c-15f8b3d61705@broadcom.com>
+Date:   Tue, 10 Nov 2020 11:24:36 -0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.1
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [192.168.1.196] (172.101.208.204) by CH2PR05CA0049.namprd05.prod.outlook.com (2603:10b6:610:38::26) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3564.21 via Frontend Transport; Tue, 10 Nov 2020 19:24:38 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 37346c73-784a-4a6c-ebbb-08d885ae4528
-X-MS-TrafficTypeDiagnostic: SN6PR15MB2301:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <SN6PR15MB2301D2B9E8C6804C722D7FE8D3E90@SN6PR15MB2301.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: LsRwZQFU5v+llwo6OOtvCfaXSiaZR2+ylhzRvgAh6YEDUb5VD9KStuLQsLsA+JRG1xNlLEXlttQLzjSoLW4JbCSWg/LnXzh2+vSPOfh4eL0UYPUOYTbI2g87nQq4hg4EFJKlATdHExlabYsODgnQeQAmmNgZOhtUUnNYdRD2mjPR3NlHe0feStmBoJkLARzgnzPZf+QGq0cyMYkejYRF6Td2khoHWd8p56uMX2Vyr6akbl9th3ANYjJ11yiDXiI5WZKicm9VOlj8QybwdRSpAgjbDD+UYAvppOH/TZWefJ8+QIbm1C1BrHw0/gMT1KBHIGEml5XZoFS3NrPKdGakXA==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA0PR15MB3839.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(396003)(366004)(136003)(39860400002)(346002)(376002)(54906003)(52116002)(7416002)(2616005)(478600001)(5660300002)(956004)(26005)(53546011)(8676002)(66946007)(8936002)(66556008)(66476007)(6486002)(6916009)(6666004)(16526019)(83380400001)(186003)(2906002)(36756003)(16576012)(86362001)(316002)(33656002)(4326008);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: sjX+3CXvKprmGU/WqNOyOMXLWtSptHiweM17SUX/en8GudQMQFFWiDwK3SkYD+xJ6nmVZ23O41bMymSZhYXaS62sAn02782m9Ui8E+rVbcnXb4KvUUvKctDizhyq7PARpMUIfzdoe+jupqNok5sVZTaCJLg42CtE4eddVlY53joo+U0EOzMwlp27iC3Fh+yG5nz99Jpo+yxhjKZM9PQMVE9ecJiKm0/t/nIZHTxL8/DEgefViPRp+ZvKriLyEUaAtyJvxSWXFtxjs2VCQxdNuR869k2BQYJ9aZrqWr3FTwjlcqkSLmEryqhmMKCaUzW/Uph6+JMJInJYpcA1+iNUIKXkI1ca8LmOc/JCszWHhBkb1Av6L8fQDiKptxr/NpKvsDN28CK3kGiSozX2SX/NtO3fTr8K4L93j+khQb4NBjFEXIIUZ91bHXH1NXQD7UIMKR+utj3EJsYDiMy8Bmb4i3pLmOJl+7M8pq82gmgdY/BxbO2hEE2i6w6pAvNmtca++kHdbWJivXoVfVsB2AGxbK9Ps0bn0F/4Gk/sF36rMJrkDOKMBR3UyZNZspppNKiiAnsIuh5CcKZWbcSkH3TSerQBowVBfzY1dWsznAaRf6W6fB3z2FR7yn/xaTP9Q/KKYGP9I0mLZEr6IRJyoOa/xscbS/9TY5cJH8QIg58qDigPfXXsjZ6Mb8I9ct9NOmbMEq+ANKNsGMXCPbCzTQ0idrUWZFgZSurcgNRuFZfHv0S7ahbrTIMItP3KF7UqVg14UFfbkWManDuMkRwz17sYGnP98RC+3abDWD+WE0QqTIWb0060sgTOGRt2OxomvoQJEmKPdWe3n6yindNeY5Ep9EfF57FUOAP0m+OsiyjuOdsLVeok8vlE8Dq2c1tlwnt8NkdbHUJdCrz9uWBD/fcneA==
-X-MS-Exchange-CrossTenant-Network-Message-Id: 37346c73-784a-4a6c-ebbb-08d885ae4528
-X-MS-Exchange-CrossTenant-AuthSource: SA0PR15MB3839.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Nov 2020 19:24:40.6009
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: ATvWmPIS1uKdEm4nOglBBH5ITeq4GLYdNJY0EOXxhgusFVO+HHh4F1eq/abxaDnS
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR15MB2301
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-11-10_07:2020-11-10,2020-11-10 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 spamscore=0 clxscore=1015
- suspectscore=0 lowpriorityscore=0 malwarescore=0 adultscore=0 phishscore=0
- bulkscore=0 mlxscore=0 priorityscore=1501 impostorscore=0 mlxlogscore=974
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2011100133
-X-FB-Internal: deliver
+In-Reply-To: <CAHO=5PEJZ35O2Kwtinw5Kon+fXvciZHJDn9wCp6LKp8wtvVF=Q@mail.gmail.com>
+Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
+        boundary="000000000000597e5605b3c5a1fb"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10 Nov 2020, at 13:39, Christoph Hellwig wrote:
+--000000000000597e5605b3c5a1fb
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 
-> On Mon, Nov 09, 2020 at 02:01:41PM -0500, Chris Mason wrote:
->> You do consistently ask for a shim layer, but you haven???t explained 
->> what
->> we gain by diverging from the documented and tested API of the 
->> upstream zstd
->> project.  It???s an important discussion given that we hope to 
->> regularly
->> update the kernel side as they make improvements in zstd.
->
-> An API that looks like every other kernel API, and doesn't cause 
-> endless
-> amount of churn because someone decided they need a new API flavor of
-> the day.  Btw, I'm not asking for a shim layer - that was the 
-> compromise
-> we ended up with.
->
-> If zstd folks can't maintain a sane code base maybe we should just 
-> drop
-> this childish churning code base from the tree.
 
-I think APIs change based on the needs of the project.  We do this all 
-the time in the kernel, and we don’t think twice about updating users 
-of the API as needed.  The zstd changes look awkward and large today 
-because it’ a long time period, but we’ve all been pretty vocal in 
-the past about the importance of being able to advance APIs.
 
--chris
+On 11/9/2020 8:23 PM, Rayagonda Kokatanur wrote:
+> Hi Ray,
+> 
+> Could you please check Dhananjay comments and update your thoughts.
+> 
+> On Fri, Nov 6, 2020 at 11:11 PM Dhananjay Phadke
+> <dphadke@linux.microsoft.com> wrote:
+>>
+>> On Thu, 5 Nov 2020 15:13:04 +0530, Rayagonda Kokatanur wrote:
+>>>> So the suggestion was to set HW threshold for rx fifo interrupt, not
+>>>> really a SW property. By setting it in DT, makes it easier to
+>>>> customize for target system, module param needs or ioctl makes it
+>>>> dependent on userpsace to configure it.
+>>>>
+>>>> The need for tasklet seems to arise from the fact that many bytes are
+>>>> left in the fifo. If there's a common problem here, such tasklet would be
+>>>> needed in i2c subsys rather than controller specific tweak, akin to
+>>>> how networking uses NAPI or adding block transactions to the interface?
+>>>>
+>>>> For master write-read event, it seems both IS_S_RD_EVENT_SHIFT and
+>>>> IS_S_RX_EVENT_SHIFT are detected, which implies that core is late to
+>>>> drain rx fifo i.e. write is complete and the read has started on the bus?
+>>>
+>>> Yes it's true that for master write-read events both
+>>> IS_S_RD_EVENT_SHIFT and IS_S_RX_EVENT_SHIFT  are coming together.
+>>> So before the slave starts transmitting data to the master, it should
+>>> first read all data from rx-fifo i.e. complete master write and then
+>>> process master read.
+>>>
+>>> To minimise interrupt overhead, we are batching 64bytes.
+>>> To keep isr running for less time, we are using a tasklet.
+>>> Again to keep the tasklet not running for more than 20u, we have set
+>>> max of 10 bytes data read from rx-fifo per tasklet run.
+>>>
+>>> If we start processing everything in isr and using rx threshold
+>>> interrupt, then isr will run for a longer time and this may hog the
+>>> system.
+>>> For example, to process 10 bytes it takes 20us, to process 30 bytes it
+>>> takes 60us and so on.
+>>> So is it okay to run isr for so long ?
+>>>
+>>> Keeping all this in mind we thought a tasklet would be a good option
+>>> and kept max of 10 bytes read per tasklet.
+>>>
+>>> Please let me know if you still feel we should not use a tasklet and
+>>> don't batch 64 bytes.
+>>
+>> Deferring to tasklet is OK, could use a kernel thread (i.e. threaded_irq)
+>> as i2c rate is quite low.
+>>
+
+kernel thread was proposed in the internal review. I don't see much
+benefit of using tasklet. If a thread is blocked from running for more
+than several tenth of ms, that's really a system-level issue than an
+issue with this driver.
+
+IMO, it's an overkill to use tasklet here but we can probably leave it
+as it is since it does not have a adverse effect and the code ran in
+tasklet is short.
+
+>> But do enable rx_threshold and read out early. This will avoid fifo full
+>> or master write-read situation where lot of bytes must be drained from rx
+>> fifo before serving tx fifo (avoid tx underrun).
+>>
+>> Best would have been setting up DMA into mem (some controllers seem capable).
+>> In absence of that, it's a trade off: if rx intr threshold is low,
+>> there will be more interrupts, but less time spent in each. Default could
+>> still be 64B or no-thresh (allow override in dtb).
+
+How much time is expected to read 64 bytes from an RX FIFO? Even with
+APB bus each register read is expected to be in the tenth or hundreds of
+nanosecond range. Reading the entire FIFO of 64 bytes should take less
+than 10 us. The interrupt context switch overhead is probably longer
+than that. It's much more effective to read all of them in a single
+batch than breaking them into multiple batches.
+
+Like Florian already suggested, DT property is meant to describe
+variants in HW, it should not be used for this purpose. DT maintainer
+Rob also mentioned this multiple times in other reviews.
+
+
+>>
+>> Few other comments -
+>>
+>>> +              /* schedule tasklet to read data later */
+>>> +              tasklet_schedule(&iproc_i2c->slave_rx_tasklet);
+>>> +
+>>> +              /* clear only IS_S_RX_EVENT_SHIFT interrupt */
+>>> +              iproc_i2c_wr_reg(iproc_i2c, IS_OFFSET,
+>>> +                               BIT(IS_S_RX_EVENT_SHIFT));
+>>> +      }
+>>
+>> Why clearing one rx interrupt bit here after scheduling tasklet? Should all that
+>> be done by tasklet? Also should just return after scheduling tasklet?
+>>
+>> Thanks,
+>> Dhananjay
+
+--000000000000597e5605b3c5a1fb
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Description: S/MIME Cryptographic Signature
+
+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
+Gp3tsmw0Vz7IMJs6DQIm7T8CfIzeId1IIHcH02MbpO7m1Btzyz625FoBWF8CAwEAAaOCAcswggHH
+MA4GA1UdDwEB/wQEAwIFoDCBngYIKwYBBQUHAQEEgZEwgY4wTQYIKwYBBQUHMAKGQWh0dHA6Ly9z
+ZWN1cmUuZ2xvYmFsc2lnbi5jb20vY2FjZXJ0L2dzcGVyc29uYWxzaWduMnNoYTJnM29jc3AuY3J0
+MD0GCCsGAQUFBzABhjFodHRwOi8vb2NzcDIuZ2xvYmFsc2lnbi5jb20vZ3NwZXJzb25hbHNpZ24y
+c2hhMmczME0GA1UdIARGMEQwQgYKKwYBBAGgMgEoCjA0MDIGCCsGAQUFBwIBFiZodHRwczovL3d3
+dy5nbG9iYWxzaWduLmNvbS9yZXBvc2l0b3J5LzAJBgNVHRMEAjAAMEQGA1UdHwQ9MDswOaA3oDWG
+M2h0dHA6Ly9jcmwuZ2xvYmFsc2lnbi5jb20vZ3NwZXJzb25hbHNpZ24yc2hhMmczLmNybDAfBgNV
+HREEGDAWgRRyYXkuanVpQGJyb2FkY29tLmNvbTATBgNVHSUEDDAKBggrBgEFBQcDBDAfBgNVHSME
+GDAWgBRpcoJiMWeVRIV3kYDEBDZJnXsLYTAdBgNVHQ4EFgQUvUTLkCwFvnpejW/KGvdaDA31b+sw
+DQYJKoZIhvcNAQELBQADggEBACMny/9Y1OPK7qwiBKBMt478eBgXnTlJ0J0HNebYcxN/l7fKIKMb
+/eX/AQKIDsHeshmV2ekPU4yY/04veXx3QTgmE1bb4ksKEFEbU0LXlVPrnlgNn8M75cPymegn/2yU
+r1+htd2eve3obmKc5Lrl0GP+4m72XxAOL687Aw5vRa4Lf294s+x4d+VRwUjoFTj9zyLhexWQuJv/
+yX1HjSkrlIsRwi6DN0/ieL04O9aD1UNPlCC6akGnv4tgwlESh51M564qhonlfSW6La+L/aTIuQc0
+88lq8s/VMBBGdc7176/v5TbNwEC/c5QYbp2n76rAmKKjhjwWmBk64yLT7CoIxk0xggJvMIICawIB
+ATBtMF0xCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMTMwMQYDVQQDEypH
+bG9iYWxTaWduIFBlcnNvbmFsU2lnbiAyIENBIC0gU0hBMjU2IC0gRzMCDCUMagLNLily51ao1jAN
+BglghkgBZQMEAgEFAKCB1DAvBgkqhkiG9w0BCQQxIgQgU87nJl7zyIgVLH4IHiOkB3wjV3uYqkOC
+r4EvTcwzrRowGAYJKoZIhvcNAQkDMQsGCSqGSIb3DQEHATAcBgkqhkiG9w0BCQUxDxcNMjAxMTEw
+MTkyNDQwWjBpBgkqhkiG9w0BCQ8xXDBaMAsGCWCGSAFlAwQBKjALBglghkgBZQMEARYwCwYJYIZI
+AWUDBAECMAoGCCqGSIb3DQMHMAsGCSqGSIb3DQEBCjALBgkqhkiG9w0BAQcwCwYJYIZIAWUDBAIB
+MA0GCSqGSIb3DQEBAQUABIIBAEAe4YIjuCe0MsynHGJPOvznxShfFLjL5+Ut5+ue+C8dMpIasEEh
+vPYszXGpvb0aYXCt9fAvQg+49rEfWDpsOuW8aEvxUTbZZY0UdrhHjXJkzLx3GBPOnwdDqbtuY17K
+dx7iE7PvWt8po5bQvzyDd5QklQPZVvmazMKAgQzPbz2mVLmx0UCN8lMTF8mPR+Y8MDYiFuxEgAZ1
+D+6zMwzfsXMOnIpQhVcSlcIiIyAOkKMR3FJ17K7t8UUoyC3BdvOTmYOCfZ9QQMawUmftkZQYNpxS
+xn9DK7uAS4/LhnJZjUVUgeXPX4w7A9gAks26ilkGclNKViOmuqB+LARG2CnEsNo=
+--000000000000597e5605b3c5a1fb--
