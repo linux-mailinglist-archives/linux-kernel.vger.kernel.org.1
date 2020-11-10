@@ -2,160 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 192F32AD3F4
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 11:40:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CD1F2AD3FA
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 11:42:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730630AbgKJKkn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 05:40:43 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:49274 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726900AbgKJKkm (ORCPT
+        id S1726979AbgKJKmF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 05:42:05 -0500
+Received: from relay3.mymailcheap.com ([217.182.119.157]:58538 "EHLO
+        relay3.mymailcheap.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726428AbgKJKmE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 05:40:42 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1605004840;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=mFapeUoz9EK+CeReEbp81IVPN8G8zVDapgbISzQg6Vs=;
-        b=ZravZIYZ904Xj210Gmu5ZbplPBdlSpO5rWG+ngA15PfevgyevZv0wZs4LJLGpyi8G/Rnhu
-        3IeEzh1F4VbD2kxfTQ3j/0FRltXscjCxKtMpm51gWLKd+foZj9mFu9/BMsB2EokUY7ihoF
-        3Z8sKcL+m9U204JeJkt4RQfNNO5v1pA=
-Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
- [209.85.218.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-507-DxpXngPQN42gsEhcdRXRuA-1; Tue, 10 Nov 2020 05:40:38 -0500
-X-MC-Unique: DxpXngPQN42gsEhcdRXRuA-1
-Received: by mail-ej1-f70.google.com with SMTP id 27so4538788ejy.8
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 02:40:38 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=mFapeUoz9EK+CeReEbp81IVPN8G8zVDapgbISzQg6Vs=;
-        b=tjaxCtdOhXN/ig9A3gdShxR+63ZjvjRJHrMFW0NZ/cUbLuR0g3AyU7C43hOAdLhByZ
-         CNHgh4b3zfk5uxEKGnC4QW43eWRAhlUq/BIfJK34WZLILE+N6FUsj2Y/Q2nP6NAYvHag
-         o5dTCnWSwCtOuG/tudmDPW0nmzEHq9QS7xuKGvG22rpNqjJ7CZOwcMwo/N6bL2ZQtHS4
-         jr2JjdccwlcXeM1wK+vTz/Utzp+innTFPTMR7MdG8k0UslRoBSpUahTJVOUXgi/+gJ6f
-         WskPn1QzwDzrb8nb0t0MkF9VIDFwAWCgcyOM3tIe6+jeU0B0mdZAXfzX3Ft8+1k6Zb6W
-         Fmww==
-X-Gm-Message-State: AOAM530fN3oBAIeIDudSAN1AwBPnLRjp2Wcs2Z7BqFx0cpNJzuJkkdLk
-        VcbCyxGCSBE1vzyKPwNPWqjfRUxjCnKYHi/lg8X1xrmNsEIM7Bij3IpXAm7pbXa8jkKjl0eTwwE
-        X6YHT8v9Us8ZFNSn97ietQWVH
-X-Received: by 2002:a17:906:1183:: with SMTP id n3mr19064863eja.188.1605004837137;
-        Tue, 10 Nov 2020 02:40:37 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJwnjrd2VMYhvgmNsyYwtSr3fGttybQrjvuv3QVZvsz5l664w5dGcdQ9COwyU1SYrBNdF5vTUQ==
-X-Received: by 2002:a17:906:1183:: with SMTP id n3mr19064842eja.188.1605004836846;
-        Tue, 10 Nov 2020 02:40:36 -0800 (PST)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id m16sm8760572eja.58.2020.11.10.02.40.35
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 10 Nov 2020 02:40:35 -0800 (PST)
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     "Luck, Tony" <tony.luck@intel.com>,
-        Jim Mattson <jmattson@google.com>, Qian Cai <cai@redhat.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-tip-commits@vger.kernel.org" 
-        <linux-tip-commits@vger.kernel.org>, x86 <x86@kernel.org>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>
-References: <20201030190807.GA13884@agluck-desk2.amr.corp.intel.com>
- <160431588828.397.16468104725047768957.tip-bot2@tip-bot2>
- <3f863634cd75824907e8ccf8164548c2ef036f20.camel@redhat.com>
- <bfc274fc27724ea39ecac1e7ac834ed8@intel.com>
- <CALMp9eTFaiYkTnVe8xKzg40E4nZ3rAOii0O06bTy0+oLNjyKhA@mail.gmail.com>
- <a22b5468e1c94906b72c4d8bc83c0f64@intel.com>
- <20201109232402.GA25492@agluck-desk2.amr.corp.intel.com>
- <20201110063151.GB7290@nazgul.tnic>
- <094c2395-b1b3-d908-657c-9bd4144e40ac@redhat.com>
- <20201110095615.GB9450@nazgul.tnic>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Subject: Re: [PATCH] x86/mce: Check for hypervisor before enabling additional
- error logging
-Message-ID: <b8de7f7b-7aa1-d98b-74be-62d7c055542b@redhat.com>
-Date:   Tue, 10 Nov 2020 11:40:34 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        Tue, 10 Nov 2020 05:42:04 -0500
+Received: from filter2.mymailcheap.com (filter2.mymailcheap.com [91.134.140.82])
+        by relay3.mymailcheap.com (Postfix) with ESMTPS id CCD443F207;
+        Tue, 10 Nov 2020 11:42:00 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+        by filter2.mymailcheap.com (Postfix) with ESMTP id AEEA92A7EE;
+        Tue, 10 Nov 2020 11:42:00 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mymailcheap.com;
+        s=default; t=1605004920;
+        bh=tnNbkV5hJ1TlcMxRPyWz8QfirS3ipn1gcWeawuKN/JY=;
+        h=Date:In-Reply-To:References:Subject:To:CC:From:From;
+        b=BZ2u5Ms+L5GiE8yN4WvSxIEZvo278Jn5swBamVzzkllk5Ke1pUQYoi+H1bh44IJ6u
+         r6C/3dhdoYTogAKhBN1LgA4jkZqp8gyHFkVtfFSgk1kK5ByRI87bBYZkxF0f+BI+J0
+         kKvAkyQE8LAIYwtyowJmt2Hn3DYb/6l1LNDbaCx8=
+X-Virus-Scanned: Debian amavisd-new at filter2.mymailcheap.com
+Received: from filter2.mymailcheap.com ([127.0.0.1])
+        by localhost (filter2.mymailcheap.com [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id NHnQX8awu1RP; Tue, 10 Nov 2020 11:41:59 +0100 (CET)
+Received: from mail20.mymailcheap.com (mail20.mymailcheap.com [51.83.111.147])
+        (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by filter2.mymailcheap.com (Postfix) with ESMTPS;
+        Tue, 10 Nov 2020 11:41:59 +0100 (CET)
+Received: from [148.251.23.173] (ml.mymailcheap.com [148.251.23.173])
+        by mail20.mymailcheap.com (Postfix) with ESMTP id 8BB3241F21;
+        Tue, 10 Nov 2020 10:41:58 +0000 (UTC)
+Authentication-Results: mail20.mymailcheap.com;
+        dkim=pass (1024-bit key; unprotected) header.d=aosc.io header.i=@aosc.io header.b="UjT5Tq0Q";
+        dkim-atps=neutral
+AI-Spam-Status: Not processed
+Received: from [172.19.0.1] (unknown [64.225.114.122])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail20.mymailcheap.com (Postfix) with ESMTPSA id 088A241F21;
+        Tue, 10 Nov 2020 10:41:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=aosc.io; s=default;
+        t=1605004907; bh=tnNbkV5hJ1TlcMxRPyWz8QfirS3ipn1gcWeawuKN/JY=;
+        h=Date:In-Reply-To:References:Subject:To:CC:From:From;
+        b=UjT5Tq0Q8Ap3Pq0tR2W3qI9/AzWxcJNiOVM7LviY09tCSxqOkdPIW4MkD+MTGHjur
+         5vA2tK4N2COXg4MyxeZmlSMpb4HM2ig3+LerbFwDw9gd++ZAu31xH29Vs+HBRtbWf0
+         kofm7Q54woQUzMbDTC4dHpX14YvBq8DG5MnZOZsI=
+Date:   Tue, 10 Nov 2020 18:41:37 +0800
+User-Agent: K-9 Mail for Android
+In-Reply-To: <20201110103925.rbej5ueo2fefbmlp@gilmour.lan>
+References: <20201107124958.2222253-1-icenowy@aosc.io> <20201107125332.2223197-1-icenowy@aosc.io> <20201110103925.rbej5ueo2fefbmlp@gilmour.lan>
 MIME-Version: 1.0
-In-Reply-To: <20201110095615.GB9450@nazgul.tnic>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH 3/3] arm64: allwinner: dts: a64: add DT for PineTab developer sample
+To:     Maxime Ripard <maxime@cerno.tech>
+CC:     Rob Herring <robh+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-sunxi@googlegroups.com
+From:   Icenowy Zheng <icenowy@aosc.io>
+Message-ID: <6175E674-E8BC-4199-8BE8-A983065C32D5@aosc.io>
+X-Rspamd-Queue-Id: 8BB3241F21
+X-Spamd-Result: default: False [1.40 / 10.00];
+         RCVD_VIA_SMTP_AUTH(0.00)[];
+         ARC_NA(0.00)[];
+         R_DKIM_ALLOW(0.00)[aosc.io:s=default];
+         MID_RHS_MATCH_FROM(0.00)[];
+         FROM_HAS_DN(0.00)[];
+         TO_DN_SOME(0.00)[];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         TAGGED_RCPT(0.00)[dt];
+         MIME_GOOD(-0.10)[text/plain];
+         DMARC_NA(0.00)[aosc.io];
+         R_SPF_SOFTFAIL(0.00)[~all];
+         ML_SERVERS(-3.10)[148.251.23.173];
+         DKIM_TRACE(0.00)[aosc.io:+];
+         RCPT_COUNT_SEVEN(0.00)[8];
+         RCVD_NO_TLS_LAST(0.10)[];
+         FROM_EQ_ENVFROM(0.00)[];
+         MIME_TRACE(0.00)[0:+];
+         ASN(0.00)[asn:24940, ipnet:148.251.0.0/16, country:DE];
+         RCVD_COUNT_TWO(0.00)[2];
+         SUSPICIOUS_RECIPS(1.50)[];
+         HFILTER_HELO_BAREIP(3.00)[148.251.23.173,1]
+X-Rspamd-Server: mail20.mymailcheap.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/11/20 10:56, Borislav Petkov wrote:
-> On Tue, Nov 10, 2020 at 09:50:43AM +0100, Paolo Bonzini wrote:
->> 1) ignore_msrs _cannot_ be on by default.  You cannot know in advance that
->> for all non-architectural MSRs it's okay for them to read as zero and eat
->> writes.  For some non-architectural MSR which never reads as zero on real
->> hardware, who knows that there isn't some code using the contents of the MSR
->> as a divisor, and causing a division by zero exception with ignore_msrs=1?
-> 
-> So if you're emulating a certain type of hardware - say a certain CPU
-> model - then what are you saying? That you're emulating it but not
-> really all of it, just some bits?
 
-We try to emulate all that is described in the SDM as architectural, as 
-long as we expose the corresponding CPUID leaves.
 
-However, f/m/s mean nothing when running virtualized.  First, trying to 
-derive any non-architectural property from the f/m/s is going to fail. 
-Second, even the host can be anything as long as it's newer than the 
-f/m/s that the VM reports (i.e. you can get a Sandy Bridge model and 
-model name even if running on Skylake).
+=E4=BA=8E 2020=E5=B9=B411=E6=9C=8810=E6=97=A5 GMT+08:00 =E4=B8=8B=E5=8D=88=
+6:39:25, Maxime Ripard <maxime@cerno=2Etech> =E5=86=99=E5=88=B0:
+>On Sat, Nov 07, 2020 at 08:53:32PM +0800, Icenowy Zheng wrote:
+>> Some developers received PineTab samples that used an old LCD panel=2E
+>>=20
+>> Add device tree for these samples=2E
+>>=20
+>> Signed-off-by: Icenowy Zheng <icenowy@aosc=2Eio>
+>> ---
+>>  arch/arm64/boot/dts/allwinner/Makefile        |  1 +
+>>  =2E=2E=2E/dts/allwinner/sun50i-a64-pinetab-dev=2Edts  | 28
+>+++++++++++++++++++
+>>  2 files changed, 29 insertions(+)
+>>  create mode 100644
+>arch/arm64/boot/dts/allwinner/sun50i-a64-pinetab-dev=2Edts
+>>=20
+>> diff --git a/arch/arm64/boot/dts/allwinner/Makefile
+>b/arch/arm64/boot/dts/allwinner/Makefile
+>> index 211d1e9d4701=2E=2Ea221dcebfad4 100644
+>> --- a/arch/arm64/boot/dts/allwinner/Makefile
+>> +++ b/arch/arm64/boot/dts/allwinner/Makefile
+>> @@ -13,6 +13,7 @@ dtb-$(CONFIG_ARCH_SUNXI) +=3D
+>sun50i-a64-pinephone-1=2E0=2Edtb
+>>  dtb-$(CONFIG_ARCH_SUNXI) +=3D sun50i-a64-pinephone-1=2E1=2Edtb
+>>  dtb-$(CONFIG_ARCH_SUNXI) +=3D sun50i-a64-pinephone-1=2E2=2Edtb
+>>  dtb-$(CONFIG_ARCH_SUNXI) +=3D sun50i-a64-pinetab=2Edtb
+>> +dtb-$(CONFIG_ARCH_SUNXI) +=3D sun50i-a64-pinetab-dev=2Edtb
+>>  dtb-$(CONFIG_ARCH_SUNXI) +=3D sun50i-a64-sopine-baseboard=2Edtb
+>>  dtb-$(CONFIG_ARCH_SUNXI) +=3D sun50i-a64-teres-i=2Edtb
+>>  dtb-$(CONFIG_ARCH_SUNXI) +=3D sun50i-a100-allwinner-perf1=2Edtb
+>> diff --git a/arch/arm64/boot/dts/allwinner/sun50i-a64-pinetab-dev=2Edts
+>b/arch/arm64/boot/dts/allwinner/sun50i-a64-pinetab-dev=2Edts
+>> new file mode 100644
+>> index 000000000000=2E=2E3a4153890f3e
+>> --- /dev/null
+>> +++ b/arch/arm64/boot/dts/allwinner/sun50i-a64-pinetab-dev=2Edts
+>> @@ -0,0 +1,28 @@
+>> +// SPDX-License-Identifier: (GPL-2=2E0+ OR MIT)
+>> +/*
+>> + * Copyright (C) 2020 Icenowy Zheng <icenowy@aosc=2Eio>
+>> + *
+>> + */
+>> +
+>> +/dts-v1/;
+>> +
+>> +#include "sun50i-a64-pinetab=2Edts"
+>> +
+>> +/ {
+>> +	model =3D "PineTab Developer Sample";
+>> +	compatible =3D "pine64,pinetab-dev", "allwinner,sun50i-a64";
+>> +};
+>
+>Changing the DT and the compatible half-way through it isn't ok=2E Please
+>add a new DT with the newer revision like we did for the pinephone
 
-Also, X86_FEATURE_HYPERVISOR might be clear even if running virtualized. 
-  (Thank you nVidia for using it to play market segmentation games).
+We did this on Pine H64=2E
 
-> Because this is what happens - the kernel checks that it runs on a
-> certain CPU type and this tells it that those MSRs are there. But then
-> comes virt and throws all assumptions out.
-> 
-> So if it emulates a CPU model and the kernel tries to access those MSRs,
-> then the HV should ignore those MSR accesses if it doesn't know about
-> them. Why should the kernel change everytime some tool or virtualization
-> has shortcomings?
-
-See above: how can the hypervisor know a safe value for all MSRs, 
-possibly including the undocumented ones?
-
->> 3) because of (1) and (2), the solution is very simple.  If the MSR is
->> architectural, its absence is a KVM bug and we'll fix it in all stable
->> versions.  If the MSR is not architectural (and 17Fh isn't; not only it's
->> not mentioned in the SDM,
-> 
-> It is mentioned in the SDM.
-
-Oh right they moved the MSRs to a separate manual; found it now.  Still, 
-it's not architectural.
-
-> But maybe we should have a choice and maybe qemu/kvm should have a way
-> to ignore certain MSRs for certain CPU types, regardless of them being
-> architectural or not.
-
-If it makes sense to emulate certain non-architectural MSRs we can add 
-them.  Supporting the error control MSR wouldn't even be hard, but I'm 
-not sure it makes sense:
-
-1) that MSR has not been there on current processors for several years 
-(and therefore Intel has clearly no intention of making architectural). 
-  For what we know, even current processors might not provide any of 
-that extended information at all (and still the VM could present Sandy 
-Bridge f/m/s).
-
-2) it would only present extended error info if the host itself enables 
-the bit, so one might question the wisdom of backporting that support 
-this to stable kernels
-
-3) It's unclear whether the guest would be able to use the extended 
-error information at all (and in some cases the description in the 
-manual is not even proper English: "allows the iMC to log first device 
-error when corrected error is detected during normal read"?).
-
-4) other hypervisors, including older distros, would likely have the 
-same issue.
-
-Paolo
-
+>
+>Maxime
