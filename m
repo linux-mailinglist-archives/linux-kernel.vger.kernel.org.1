@@ -2,118 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 211BD2AD097
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 08:44:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FC962AD099
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 08:45:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727285AbgKJHoS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 02:44:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54042 "EHLO
+        id S1728427AbgKJHpL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 02:45:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54180 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726467AbgKJHoR (ORCPT
+        with ESMTP id S1726462AbgKJHpL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 02:44:17 -0500
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E92AC0613CF
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Nov 2020 23:44:17 -0800 (PST)
-Received: by mail-lj1-x241.google.com with SMTP id b17so929353ljf.12
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Nov 2020 23:44:17 -0800 (PST)
+        Tue, 10 Nov 2020 02:45:11 -0500
+Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C68FCC0613CF
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Nov 2020 23:45:10 -0800 (PST)
+Received: by mail-ej1-x642.google.com with SMTP id cw8so16070332ejb.8
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Nov 2020 23:45:10 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=sekTus97mHsi9jFdvTcgScvJxfYD1QrR3Zdvt+L6iSQ=;
-        b=UJ4cLR5lYqNgCxNmSDehUepur7enZnuHajc7VgYX4HWNOgZH8NM2yMLBXMLVClyC1V
-         9hIJgjqV+Y3n/CReWsM5d89nFsaw0iRfIDXodB95IP0aJgtAD5NnIekVv83fF1ObyxWH
-         vlrY5n6iBtT+s0a/RgP8X9SqS5/Ro2SAmyWCk7Ssf+jXmI3JmuueT2gnBx6Y8q7xBb1g
-         x3SZJReVyOIYJdK0m+phkouzHxKm6OGGCUiRsfpE1UT/giZ+H4cim751vBs6WZRBMAjo
-         SQ0VGXyZIjE7nKMmDHTt0KeXqKONxZ4xESC2GvPAVWR/G2ICLQtEuy1T/obaeloID9Em
-         6/+w==
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=tIEVx9J7sAxB8dgvOxJcRL3Qv91aaLpMtBBcDV4ez+8=;
+        b=za6F23BUcGLLOH3GAeEH1mbCMozYPWuAnDLfD0kDTuMY+AQinK9Qie2q4b80AbTKFR
+         0sEvKat52o8U9SfSblgGXnis9jOOrMRfF4Z96Mr0wKcBBHYq/phbUmq1PNAlIQCF23/h
+         iLkdEqspnIMXjNgn9oj1ezoq8uhyUh2qNv+uKEBdNjb4nH32F/9/AMZPo2HbfnrWt/0i
+         F/z/KAlxecE6ItPdmj1KrVLXA0NHXkyLuD1maAiMZxBzpcSAQsWA/qrp59/miVtDNRqC
+         o4MI1u9OPaS9SCL6r3yDnhU1PUUCOtsDQVShMdWbYFx3ISsLELc5So2FA1aj6FmQ3MG6
+         JptQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=sekTus97mHsi9jFdvTcgScvJxfYD1QrR3Zdvt+L6iSQ=;
-        b=XXlKnDWQb72sw41NaPFyX+0tmaLc+Usy/EGkj7NZEL+YaYEVxdpK9gKb2OK98R4TlT
-         /ubiWLLjqmNXYfd2CDfLnNKBlb9XKlKpEiHN09CInAKge2C3qG0TqR8ftEyNexYxdVhb
-         6dpT2i9FcvcjLxBkzfiey1j0M2yMnYQ+qf8VIJxYOluguUddSOazZWSljFtHPwUbYVGx
-         I0jrG+Czc32OjLOx9RXl+ez8yUExfs/ujekiU4OF3LfHiNPa07Qouk97CUwSGV08+2i+
-         xI2/fZL8D/VS7DTWD/Tp6Y+Uuv48WNn4LMXo/kFmoF8+G6L+9ucRSjUbwaQ3Pg/K1c4h
-         UhRA==
-X-Gm-Message-State: AOAM531CXSydvB0fxZnKQUhPTR+ORvVsXEx02QbqEctgSHmjq7I+TLSS
-        nWZ/QJkzuEtKx2Q2+tmwk25KdvAuuXA=
-X-Google-Smtp-Source: ABdhPJyj7Z3ZOhAZLh9+G+rqU5oTRpthnnSilq0DGnDhhkp6qK66UHoy7yLZFEv1cnRvQc5vla0Mog==
-X-Received: by 2002:a05:651c:8a:: with SMTP id 10mr7299000ljq.275.1604994255792;
-        Mon, 09 Nov 2020 23:44:15 -0800 (PST)
-Received: from [192.168.2.145] (109-252-193-159.dynamic.spd-mgts.ru. [109.252.193.159])
-        by smtp.googlemail.com with ESMTPSA id n5sm2017481lfl.175.2020.11.09.23.44.14
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 09 Nov 2020 23:44:14 -0800 (PST)
-Subject: Re: [PATCH v1] ARM: vfp: Use long jump to fix THUMB2 kernel
- compilation error
-To:     Ard Biesheuvel <ardb@kernel.org>
-Cc:     Russell King - ARM Linux admin <linux@armlinux.org.uk>,
-        Kees Cook <keescook@chromium.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-References: <202010211637.7CFD8435@keescook>
- <773fbdb0-5fc4-ab39-e72d-89845faa4c6d@gmail.com>
- <202010212028.32E8A5EF9B@keescook>
- <CAMj1kXHXN56xmuwVG3P93Jjwd+NxXTYHtfibPWg5TUADucOdWg@mail.gmail.com>
- <1d2e2b5d-3035-238c-d2ca-14c0c209a6a1@gmail.com>
- <CAMj1kXERX_Bv1MdfafOVmdmDXPio6Uj897ZZZ7qRERbCXYw_iQ@mail.gmail.com>
- <20201022161118.GP1551@shell.armlinux.org.uk>
- <CAMj1kXGExnUrTuosMpX2NN3=j0HF-8_s1SzLaTyBvq4_LQNT-w@mail.gmail.com>
- <20201022162334.GQ1551@shell.armlinux.org.uk>
- <CAMj1kXF+2kJrUaDyA-Xw4rz2bsuEipX3P4JyPrY1bim76LQvoA@mail.gmail.com>
- <20201022174826.GS1551@shell.armlinux.org.uk>
- <CAMj1kXHpPbwS8zjsr8S65EMj9XOwPxWiQ5WN_ok8ZAFZg9kSAg@mail.gmail.com>
- <CAMj1kXGok50R+2FZ=LqRAx5N3otC3AvC26=+NUqNC6kSvY2-Lg@mail.gmail.com>
- <CAMj1kXF6EdrJWASQQp57L=3gni6R_pLvZfCaFxCoH=rMRzK_6A@mail.gmail.com>
- <CAMj1kXFMiTSakUGnopb8eWRHTM9-0XM0kDaJvTXWDhRPJ3Vsow@mail.gmail.com>
- <f4b4f5ca-2c0c-c1f0-9329-a95967b99bd0@gmail.com>
- <CAMj1kXEJL31KOMs7h_XzxFKXgqi2jOXCmLaxfKwW=wgo2so_RA@mail.gmail.com>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <a438f99d-26a4-a1b5-9fc3-5abd2e76edb3@gmail.com>
-Date:   Tue, 10 Nov 2020 10:44:14 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=tIEVx9J7sAxB8dgvOxJcRL3Qv91aaLpMtBBcDV4ez+8=;
+        b=X0Y6RlgQzNcm9WhCUDat5Vtrgr5tVjTcB56LqV8ZLJWM6iMgeBSV4qccUtgo3K+JzH
+         912VGbpFHfqp/AM1DPOLs0oND+rKCQmnwIWTFdlxxtkvLI09tKQfvHTLQg/To+MAbLXM
+         FS4AJUa3Vu9ggaV5vYCKaDN08XexnvJeKpktCYP+utlqkP+cMSDxTBNcijAFNlGtq6F5
+         7uqZrcEcPIhekrSobIbjyn2ZR6CAskLribAbOgbI1fYBgKGOg6PLdzpdTCisOyd/ca9F
+         Ii0+AwVTp5WxHWo1XU9aE+rgyHp6oOxYc7hK7Bi3gW2XdqbeN1LlSHJDaO0v2VYZcExI
+         GjKQ==
+X-Gm-Message-State: AOAM53207w1eXNNeSsOjBPA34Ty4dOZ8RZfdz5Dyp4e9QLNFcFY+uZw9
+        acT/gZG5mFj8ZTJ1TE2UgXc5PN2NafG4S9qUnTMP4Q==
+X-Google-Smtp-Source: ABdhPJxNKUXfulaBmk+1lqdoXRnK6dmMlRKFKjRAA93HN9RXzvGcL/DZJs/waAaJ08HGJadhPwAnfZoKba2ak0UZMv4=
+X-Received: by 2002:a17:906:4742:: with SMTP id j2mr18486129ejs.247.1604994308945;
+ Mon, 09 Nov 2020 23:45:08 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <CAMj1kXEJL31KOMs7h_XzxFKXgqi2jOXCmLaxfKwW=wgo2so_RA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20201109125019.906191744@linuxfoundation.org>
+In-Reply-To: <20201109125019.906191744@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Tue, 10 Nov 2020 13:14:57 +0530
+Message-ID: <CA+G9fYsQjHSukBtPbJJu8VyQEWJBHFTfox83-eu8AoRdENfKCw@mail.gmail.com>
+Subject: Re: [PATCH 4.19 00/71] 4.19.156-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org,
+        linux- stable <stable@vger.kernel.org>, pavel@denx.de,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-09.11.2020 10:25, Ard Biesheuvel пишет:
-...
->>> So the options are
->>>
->>> a) merge my patch that adds 2 bytes of opcode to the Thumb2 build
->>> b) merge Dmitry's patch that adds an unconditional literal load to all builds
->>> c) remove kernel mode handling from vfp_support_entry() [my other patch]
->>> d) move sections around so that vfp_kmode_exception is guaranteed to
->>> be in range.
->>> e) do nothing
-...
->> The performance argument is questionable to me, to be honest. In
->> practice the performance difference should be absolutely negligible for
->> either of the proposed options, it should stay in a noise even if
->> somebody thoroughly counting cycles, IMO.
->>
->> I'm still thinking that the best option will be to apply a).
->>
-> 
-> Can we take that as an acked-by?
+On Mon, 9 Nov 2020 at 18:40, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 4.19.156 release.
+> There are 71 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Wed, 11 Nov 2020 12:50:04 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-=
+4.19.156-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-4.19.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-Are you asking me for the ack? I think this is a more appropriate
-question to Russel. I'm not arm/ maintainer, but could give r-b and t-b.
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
 
-If you're going to follow approach that I'm suggesting with a) + d),
-then could you please resend the two patches in a single series? The
-first one-line patch-fix should contain the fixes tag.
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+
+NOTE:
+The following kernel warning noticed while cpu hotplug on arm64 db410c devi=
+ce.
+I did not bisect this problem yet.
+WARNING: CPU: 2 at kernel/workqueue.c:4762 workqueue_online_cpu
+https://lore.kernel.org/linux-pm/CA+G9fYu+KK=3Dhm1AmQ78GCCgQTwsRCzyA6WHYR68=
+ozZBzp7USiA@mail.gmail.com/T/#u
+
+Summary
+------------------------------------------------------------------------
+
+kernel: 4.19.156-rc1
+git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
+le-rc.git
+git branch: linux-4.19.y
+git commit: 4d10cdd4ac507ec787b8f4a1770b0c44350ff5cf
+git describe: v4.19.155-72-g4d10cdd4ac50
+Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-4.19=
+.y/build/v4.19.155-72-g4d10cdd4ac50
+
+No regressions (compared to build v4.19.155)
+
+No fixes (compared to build v4.19.155)
+
+Ran 35947 total tests in the following environments and test suites.
+
+Environments
+--------------
+- dragonboard-410c - arm64
+- hi6220-hikey - arm64
+- i386
+- juno-r2 - arm64
+- juno-r2-compat
+- juno-r2-kasan
+- nxp-ls2088
+- qemu-arm64-kasan
+- qemu-x86_64-kasan
+- qemu_arm
+- qemu_arm64
+- qemu_arm64-compat
+- qemu_i386
+- qemu_x86_64
+- qemu_x86_64-compat
+- x15 - arm
+- x86_64
+- x86-kasan
+
+Test Suites
+-----------
+* build
+* install-android-platform-tools-r2600
+* kselftest
+* linux-log-parser
+* ltp-containers-tests
+* ltp-ipc-tests
+* ltp-nptl-tests
+* ltp-pty-tests
+* ltp-securebits-tests
+* ltp-syscalls-tests
+* network-basic-tests
+* perf
+* libhugetlbfs
+* ltp-cap_bounds-tests
+* ltp-commands-tests
+* ltp-controllers-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-cve-tests
+* ltp-dio-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-hugetlb-tests
+* ltp-io-tests
+* ltp-math-tests
+* ltp-mm-tests
+* ltp-open-posix-tests
+* ltp-sched-tests
+* v4l2-compliance
+* kvm-unit-tests
+* ltp-tracing-tests
+* kselftest-vsyscall-mode-native
+* kselftest-vsyscall-mode-none
+
+
+--
+Linaro LKFT
+https://lkft.linaro.org
