@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55CA72ACC25
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 04:53:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 428302ACC27
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 04:53:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731484AbgKJDx0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 22:53:26 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53752 "EHLO mail.kernel.org"
+        id S1731658AbgKJDx2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 22:53:28 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53862 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731194AbgKJDxY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 22:53:24 -0500
+        id S1731487AbgKJDx1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 22:53:27 -0500
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 85ED120829;
-        Tue, 10 Nov 2020 03:53:22 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id AFC6520781;
+        Tue, 10 Nov 2020 03:53:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604980403;
-        bh=Xk6afGxOhEefhhDTu11Tv5CbmYxiIZBgfet1Akd/Mbs=;
+        s=default; t=1604980406;
+        bh=tdRDeBb688Tbj/zy/2sTeleiGzaqdpmOChiOlz+fbb4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=BCez7dC9T70bYOZrgqgMUIjXyp6Fb4Tig9+uz7pYXsnML4w5CPSts2ScMTX5k7X5S
-         19ynHKo6uEbiEivhs8oW3MR9JXg/Y3NgiuUg7mJK4ROjkDTfpHQnQe4YsB8O6ks8Jf
-         hetvtlzu9zuQPWi5+rWbSacw64az56s4kgzIXlIM=
+        b=tafsHTthqGIpMRlxFPrK4CtwsaKQalUqFNOYvUmxzOinjqFgskn8DXDOgod4pz3G9
+         30zF34U+5GDO2uru7m1FEilYQdehAWB0P1OT5oAZpgaGzLbK/kLY5DGnW48gBvfXQG
+         3MgWe+8+WeBS+4gltI2OSL7QZ9xRUcnTIxD9I/mk=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Olivier Moysan <olivier.moysan@st.com>,
-        Mark Brown <broonie@kernel.org>,
-        Sasha Levin <sashal@kernel.org>, alsa-devel@alsa-project.org,
-        patches@opensource.cirrus.com
-Subject: [PATCH AUTOSEL 5.9 03/55] ASoC: cs42l51: manage mclk shutdown delay
-Date:   Mon,  9 Nov 2020 22:52:26 -0500
-Message-Id: <20201110035318.423757-3-sashal@kernel.org>
+Cc:     Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Felipe Balbi <balbi@kernel.org>,
+        Sasha Levin <sashal@kernel.org>, linux-usb@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.9 05/55] usb: dwc3: pci: add support for the Intel Alder Lake-S
+Date:   Mon,  9 Nov 2020 22:52:28 -0500
+Message-Id: <20201110035318.423757-5-sashal@kernel.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20201110035318.423757-1-sashal@kernel.org>
 References: <20201110035318.423757-1-sashal@kernel.org>
@@ -43,61 +42,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Olivier Moysan <olivier.moysan@st.com>
+From: Heikki Krogerus <heikki.krogerus@linux.intel.com>
 
-[ Upstream commit 20afe581c9b980848ad097c4d54dde9bec7593ef ]
+[ Upstream commit 1384ab4fee12c4c4f8bd37bc9f8686881587b286 ]
 
-A delay must be introduced before the shutdown down of the mclk,
-as stated in CS42L51 datasheet. Otherwise the codec may
-produce some noise after the end of DAPM power down sequence.
-The delay between DAC and CLOCK_SUPPLY widgets is too short.
-Add a delay in mclk shutdown request to manage the shutdown delay
-explicitly. From experiments, at least 10ms delay is necessary.
-Set delay to 20ms as recommended in Documentation/timers/timers-howto.rst
-when using msleep().
+This patch adds the necessary PCI ID for Intel Alder Lake-S
+devices.
 
-Signed-off-by: Olivier Moysan <olivier.moysan@st.com>
-Link: https://lore.kernel.org/r/20201020150109.482-1-olivier.moysan@st.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+Signed-off-by: Felipe Balbi <balbi@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/codecs/cs42l51.c | 22 +++++++++++++++++++++-
- 1 file changed, 21 insertions(+), 1 deletion(-)
+ drivers/usb/dwc3/dwc3-pci.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/sound/soc/codecs/cs42l51.c b/sound/soc/codecs/cs42l51.c
-index 764f2ef8f59df..2b617993b0adb 100644
---- a/sound/soc/codecs/cs42l51.c
-+++ b/sound/soc/codecs/cs42l51.c
-@@ -245,8 +245,28 @@ static const struct snd_soc_dapm_widget cs42l51_dapm_widgets[] = {
- 		&cs42l51_adcr_mux_controls),
- };
+diff --git a/drivers/usb/dwc3/dwc3-pci.c b/drivers/usb/dwc3/dwc3-pci.c
+index 242b6210380a4..bae6a70664c80 100644
+--- a/drivers/usb/dwc3/dwc3-pci.c
++++ b/drivers/usb/dwc3/dwc3-pci.c
+@@ -40,6 +40,7 @@
+ #define PCI_DEVICE_ID_INTEL_TGPLP		0xa0ee
+ #define PCI_DEVICE_ID_INTEL_TGPH		0x43ee
+ #define PCI_DEVICE_ID_INTEL_JSP			0x4dee
++#define PCI_DEVICE_ID_INTEL_ADLS		0x7ae1
  
-+static int mclk_event(struct snd_soc_dapm_widget *w,
-+		      struct snd_kcontrol *kcontrol, int event)
-+{
-+	struct snd_soc_component *comp = snd_soc_dapm_to_component(w->dapm);
-+	struct cs42l51_private *cs42l51 = snd_soc_component_get_drvdata(comp);
-+
-+	switch (event) {
-+	case SND_SOC_DAPM_PRE_PMU:
-+		return clk_prepare_enable(cs42l51->mclk_handle);
-+	case SND_SOC_DAPM_POST_PMD:
-+		/* Delay mclk shutdown to fulfill power-down sequence requirements */
-+		msleep(20);
-+		clk_disable_unprepare(cs42l51->mclk_handle);
-+		break;
-+	}
-+
-+	return 0;
-+}
-+
- static const struct snd_soc_dapm_widget cs42l51_dapm_mclk_widgets[] = {
--	SND_SOC_DAPM_CLOCK_SUPPLY("MCLK")
-+	SND_SOC_DAPM_SUPPLY("MCLK", SND_SOC_NOPM, 0, 0, mclk_event,
-+			    SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMD),
- };
+ #define PCI_INTEL_BXT_DSM_GUID		"732b85d5-b7a7-4a1b-9ba0-4bbd00ffd511"
+ #define PCI_INTEL_BXT_FUNC_PMU_PWR	4
+@@ -367,6 +368,9 @@ static const struct pci_device_id dwc3_pci_id_table[] = {
+ 	{ PCI_VDEVICE(INTEL, PCI_DEVICE_ID_INTEL_JSP),
+ 	  (kernel_ulong_t) &dwc3_pci_intel_properties, },
  
- static const struct snd_soc_dapm_route cs42l51_routes[] = {
++	{ PCI_VDEVICE(INTEL, PCI_DEVICE_ID_INTEL_ADLS),
++	  (kernel_ulong_t) &dwc3_pci_intel_properties, },
++
+ 	{ PCI_VDEVICE(AMD, PCI_DEVICE_ID_AMD_NL_USB),
+ 	  (kernel_ulong_t) &dwc3_pci_amd_properties, },
+ 	{  }	/* Terminating Entry */
 -- 
 2.27.0
 
