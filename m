@@ -2,64 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D63C92AE292
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 23:08:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5885B2AE298
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 23:10:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732127AbgKJWIz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 17:08:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47928 "EHLO
+        id S1732008AbgKJWJ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 17:09:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48092 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729862AbgKJWIz (ORCPT
+        with ESMTP id S1731558AbgKJWJ6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 17:08:55 -0500
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BCBDC0613D1
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 14:08:54 -0800 (PST)
-Received: by mail-wm1-x344.google.com with SMTP id p19so2886597wmg.0
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 14:08:53 -0800 (PST)
+        Tue, 10 Nov 2020 17:09:58 -0500
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DEE4C0613D1;
+        Tue, 10 Nov 2020 14:09:58 -0800 (PST)
+Received: by mail-wr1-x442.google.com with SMTP id c17so14386416wrc.11;
+        Tue, 10 Nov 2020 14:09:58 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc:content-transfer-encoding;
-        bh=W/G1cCKiChHWAMYc3JRK1M6ntm3rFjLembXKLShlhjI=;
-        b=jEHvWPHultoa+XlSxa6GFBJtx/Qp4byqG0fkbQf03ZlkKLmHTauy1n04ojprn0LjD7
-         AqjVJD9NAWrabIVHV0GXdLKuJp92lPRC5srbI2D4E/7e1FRBXoKrhpZAVjHn21ZvdPgS
-         fOzCj45HiC2oJV9hrDcVbrF7B9PZxeFuDC2MY/orooI08UpqBYBv3XE6b9HwI6ReKWuN
-         JpqUGDY3BZZRDwa9/eHdDZz11aNpCO/oHrBatIPLHGiAQ2rLJVZ3LbtZIKhXVTw1tDEX
-         AdOQrOx33vTKFSB9ixCB51OYBUhmkkxUu+lFBmgVQrkdbV1Ovi9J3KW2CmoGJfHuMKsX
-         Hz8Q==
+        bh=YcAOS59prb8VFAixQsta0ytgU5jtgd3crgL2WI0lqHU=;
+        b=kUOTnCoLAeRSmj0UAOAE3+x2hPe/pDX+HPK7mpEEd9IDCAcZFkmJZOQhHgqvYPgXUc
+         IlSEjlANGEGWeeYj96Euc12mtNhmrKnraPANYRx+MCzRIXS1IvrH0EUUp3yLtwoRn6cl
+         UYrnyT43isSnVbWjXwWIwYvexHUJwlUlZwRp/oJvJHsdhQJ004txOeefHQZ7DL6DsJFF
+         oB2lORCdBLNERQX3xWfQhTbd3T/cKNsqEqhPfibVli/J44Bqy9teCuxyEfAvw/dUgCaq
+         GcEZMk13pOvzoKszmKYGacw+47l1rlLVD2lTqt/BjjfzeeM9obi97YZxxQI4FQjihPS0
+         C0DQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc:content-transfer-encoding;
-        bh=W/G1cCKiChHWAMYc3JRK1M6ntm3rFjLembXKLShlhjI=;
-        b=BLczGrinDbXQ+Zddfa2saGL9/kbn2JGgErPojO2hlzOovk8kP2XxySia0qXoOwG6cU
-         qG7YsvtvvKxoAZwEk9WudWhce+lMJopLwDyIwp7mbGTEIzmAnYMdt7KaOAsQikVaxAst
-         VE36jSsGMieTJllk67OYdnFZPD/T3Ks9mGr+ywbJFaJ0vr2Q4rh6rayaLiAA/n4FUuqT
-         yEhncAXhSJ0Uw90Ydo3B7/l+2Ke+QzuCwGt5M8ORi99n8jkRlZjGNhEx71RVH4/FW1R5
-         WeJGahNmaPlrP3EExWH2GEt6DICZVP3NNOcwt1H8x78qkRa3kPcx+rJRmT4Em4+NV2M2
-         HuKw==
-X-Gm-Message-State: AOAM531LejjBCRD/JGI7pIv0HxwkiJLvUaon5eiFDN+ivJ+wo9DeQ8U2
-        +vRyJ2iA1/jIteTTOMJLBLgWaPf1TB56CjAyf4o=
-X-Google-Smtp-Source: ABdhPJx34oGTHXB74qraONACHcaotZfbZfG/di5YV/g/5I4xjs1LA59YzHGShOOwna0bWMj0j+kNFCziDgNUvDa0Zn0=
-X-Received: by 2002:a1c:6302:: with SMTP id x2mr273459wmb.56.1605046132845;
- Tue, 10 Nov 2020 14:08:52 -0800 (PST)
+        bh=YcAOS59prb8VFAixQsta0ytgU5jtgd3crgL2WI0lqHU=;
+        b=TRGZdViqYvVKet0WFEvBm3t3rsn0uK6xFfwmuoT3dR/FDqzhsICD7YMjZsufEr/MqH
+         tgnbM4bAPBcbN4zIZEDD5+1fMNR12JyNbm6hHVYJP52O3UcyJz+Xtm750TOG/tVk0qXk
+         K50GAJYFbTttPIbuSATGPmiZEgxZqcV1QPlbEKg6L7ew2DveokbX92PV3gu6tcbuqrM3
+         p4oNa9f9WUEh+mRrFieY62Lb1W3gTlIEixa9JMeqTtgB5HUvmO25wdfvTz0ibfwEUNjA
+         W2jIjAQOGzlaxK9jw4h5DupilwbTqIxLjGfAK8iE6ekVZ3h2SXT7hRY79ldto+Ysy9jc
+         AE7g==
+X-Gm-Message-State: AOAM530GWtyHbavj8gxVCnv7OX0hd83eqPCicV1LPhKOoPBbhGSyVcz4
+        yzEAOZfhKB56Ocfo0l+JbsR6DQpKXg784cuqJ1Q=
+X-Google-Smtp-Source: ABdhPJzYq8S8HxJ8eUtKIYm1d5SwL0ef0M3FjeAuSs+qo8BL/c4huOEldmmpwCCzireXzEYfm4tAWkHJxsxcP323JV8=
+X-Received: by 2002:adf:e9c9:: with SMTP id l9mr27789872wrn.124.1605046197171;
+ Tue, 10 Nov 2020 14:09:57 -0800 (PST)
 MIME-Version: 1.0
-References: <20201109211855.3340030-1-lee.jones@linaro.org> <20201109211855.3340030-7-lee.jones@linaro.org>
-In-Reply-To: <20201109211855.3340030-7-lee.jones@linaro.org>
+References: <20201109211855.3340030-1-lee.jones@linaro.org> <20201109211855.3340030-8-lee.jones@linaro.org>
+In-Reply-To: <20201109211855.3340030-8-lee.jones@linaro.org>
 From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Tue, 10 Nov 2020 17:08:41 -0500
-Message-ID: <CADnq5_Oo6Y3M-dVewXFxKRYooYfpDPLhxHQhXrWt9y759uXjsg@mail.gmail.com>
-Subject: Re: [PATCH 06/20] drm/radeon/radeon_connectors: Strip out set but
- unused variable 'ret'
+Date:   Tue, 10 Nov 2020 17:09:46 -0500
+Message-ID: <CADnq5_Py-VzeGQMzzGZAO=9OqeniBiXT8625YRcTjVe+bRSNSw@mail.gmail.com>
+Subject: Re: [PATCH 07/20] drm/radeon/radeon_display: Remove unused variable 'mod'
 To:     Lee Jones <lee.jones@linaro.org>
 Cc:     David Airlie <airlied@linux.ie>,
         LKML <linux-kernel@vger.kernel.org>,
         amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
+        <linaro-mm-sig@lists.linaro.org>,
         Maling list - DRI developers 
         <dri-devel@lists.freedesktop.org>,
         Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
+        report to <xorg-driver-ati@lists.x.org>,
+        linux-media <linux-media@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
@@ -70,17 +73,21 @@ On Mon, Nov 9, 2020 at 4:19 PM Lee Jones <lee.jones@linaro.org> wrote:
 >
 > Fixes the following W=3D1 kernel build warning(s):
 >
->  drivers/gpu/drm/radeon/radeon_connectors.c: In function =E2=80=98radeon_=
-setup_mst_connector=E2=80=99:
->  drivers/gpu/drm/radeon/radeon_connectors.c:2574:7: warning: variable =E2=
-=80=98ret=E2=80=99 set but not used [-Wunused-but-set-variable]
+>  drivers/gpu/drm/radeon/radeon_display.c: In function =E2=80=98radeon_div=
+=E2=80=99:
+>  drivers/gpu/drm/radeon/radeon_display.c:1094:11: warning: variable =E2=
+=80=98mod=E2=80=99 set but not used [-Wunused-but-set-variable]
 >
 > Cc: Alex Deucher <alexander.deucher@amd.com>
 > Cc: "Christian K=C3=B6nig" <christian.koenig@amd.com>
 > Cc: David Airlie <airlied@linux.ie>
 > Cc: Daniel Vetter <daniel@ffwll.ch>
+> Cc: Sumit Semwal <sumit.semwal@linaro.org>
+> Cc: report to <xorg-driver-ati@lists.x.org>
 > Cc: amd-gfx@lists.freedesktop.org
 > Cc: dri-devel@lists.freedesktop.org
+> Cc: linux-media@vger.kernel.org
+> Cc: linaro-mm-sig@lists.linaro.org
 > Signed-off-by: Lee Jones <lee.jones@linaro.org>
 
 Applied.  Thanks!
@@ -88,32 +95,28 @@ Applied.  Thanks!
 Alex
 
 > ---
->  drivers/gpu/drm/radeon/radeon_connectors.c | 4 +---
+>  drivers/gpu/drm/radeon/radeon_display.c | 4 +---
 >  1 file changed, 1 insertion(+), 3 deletions(-)
 >
-> diff --git a/drivers/gpu/drm/radeon/radeon_connectors.c b/drivers/gpu/drm=
-/radeon/radeon_connectors.c
-> index e308344344425..607ad5620bd99 100644
-> --- a/drivers/gpu/drm/radeon/radeon_connectors.c
-> +++ b/drivers/gpu/drm/radeon/radeon_connectors.c
-> @@ -2571,13 +2571,11 @@ void radeon_setup_mst_connector(struct drm_device=
- *dev)
->                 return;
->
->         list_for_each_entry(connector, &dev->mode_config.connector_list, =
-head) {
-> -               int ret;
+> diff --git a/drivers/gpu/drm/radeon/radeon_display.c b/drivers/gpu/drm/ra=
+deon/radeon_display.c
+> index bd60f16fd0d78..78fceedfd9255 100644
+> --- a/drivers/gpu/drm/radeon/radeon_display.c
+> +++ b/drivers/gpu/drm/radeon/radeon_display.c
+> @@ -1091,11 +1091,9 @@ void radeon_compute_pll_avivo(struct radeon_pll *p=
+ll,
+>  /* pre-avivo */
+>  static inline uint32_t radeon_div(uint64_t n, uint32_t d)
+>  {
+> -       uint64_t mod;
 > -
->                 radeon_connector =3D to_radeon_connector(connector);
+>         n +=3D d / 2;
 >
->                 if (connector->connector_type !=3D DRM_MODE_CONNECTOR_Dis=
-playPort)
->                         continue;
->
-> -               ret =3D radeon_dp_mst_init(radeon_connector);
-> +               radeon_dp_mst_init(radeon_connector);
->         }
+> -       mod =3D do_div(n, d);
+> +       do_div(n, d);
+>         return n;
 >  }
+>
 > --
 > 2.25.1
 >
