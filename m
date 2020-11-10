@@ -2,86 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 306BD2ADA2C
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 16:18:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EBF632ADA58
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 16:25:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731024AbgKJPSC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 10:18:02 -0500
-Received: from mx0a-00128a01.pphosted.com ([148.163.135.77]:60826 "EHLO
-        mx0a-00128a01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730200AbgKJPSC (ORCPT
+        id S1732532AbgKJPYy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 10:24:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41156 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732232AbgKJPYy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 10:18:02 -0500
-Received: from pps.filterd (m0167089.ppops.net [127.0.0.1])
-        by mx0a-00128a01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0AAFDbHg028629;
-        Tue, 10 Nov 2020 10:17:14 -0500
-Received: from nwd2mta4.analog.com ([137.71.173.58])
-        by mx0a-00128a01.pphosted.com with ESMTP id 34nsc91gws-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 10 Nov 2020 10:17:14 -0500
-Received: from ASHBMBX9.ad.analog.com (ashbmbx9.ad.analog.com [10.64.17.10])
-        by nwd2mta4.analog.com (8.14.7/8.14.7) with ESMTP id 0AAFHDls022516
-        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=FAIL);
-        Tue, 10 Nov 2020 10:17:13 -0500
-Received: from ASHBMBX9.ad.analog.com (10.64.17.10) by ASHBMBX9.ad.analog.com
- (10.64.17.10) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1779.2; Tue, 10 Nov
- 2020 10:17:12 -0500
-Received: from zeus.spd.analog.com (10.66.68.11) by ASHBMBX9.ad.analog.com
- (10.64.17.10) with Microsoft SMTP Server id 15.1.1779.2 via Frontend
- Transport; Tue, 10 Nov 2020 10:17:12 -0500
-Received: from localhost.localdomain ([10.48.65.12])
-        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 0AAFH7KT031436;
-        Tue, 10 Nov 2020 10:17:08 -0500
-From:   Alexandru Ardelean <alexandru.ardelean@analog.com>
-To:     <alsa-devel@alsa-project.org>, <linux-kernel@vger.kernel.org>
-CC:     <bogdan.togorean@analog.com>, <tiwai@suse.com>, <perex@perex.cz>,
-        <broonie@kernel.org>, <lgirdwood@gmail.com>,
-        Alexandru Ardelean <alexandru.ardelean@analog.com>
-Subject: [PATCH] ASoc: adi: Kconfig: Remove depends on for ADI reference designs
-Date:   Tue, 10 Nov 2020 17:22:13 +0200
-Message-ID: <20201110152213.37811-1-alexandru.ardelean@analog.com>
-X-Mailer: git-send-email 2.17.1
+        Tue, 10 Nov 2020 10:24:54 -0500
+Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D41E3C0613D1
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 07:24:53 -0800 (PST)
+Received: by mail-qk1-x743.google.com with SMTP id h15so11725029qkl.13
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 07:24:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=4K7M+yU2qQGJnBqVAjylDdUBTFCEnQjaCz6moXfYMEE=;
+        b=on8OoPlw3VSXy8JNQfuM/sHMVZ8emLX5MZJzG0sTRRpgjWF3aRCwxgJSI9FEVC44qS
+         4kQmG920BaTWRgy9W2+iS2syx5dG8Yg/RXtBHWoo/nKw12Ik/Ir0l7CSBjpeXHec2dph
+         lNTHcg4fv8MpCEcu4c1MPc5PltE4KD+y6Lh3c2Wbsrd3pxKmW1K3nSqPVTtn/9yghgNO
+         pM8A1l0COcK6/hiUfry60njJLbjv+PNmAhrx5oDAM/Um3Rwv00auj9hEJ+rr8/0YIKVG
+         vTQ4g4GT+ArZWI37EDyK9bWNccjv5MrIbne6986cr4gqOKWA46X7OiN7nEmlRpHxIGJJ
+         yFIQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=4K7M+yU2qQGJnBqVAjylDdUBTFCEnQjaCz6moXfYMEE=;
+        b=k6NY95UIe+66Clv+uoLuxDhgoUajmFUotOGI0m+T0t9P5QoHsuPKLzTmVVbWofxquB
+         wjil348LRG8Rw7cxf8od8hF71bXweDX+EvOIe7jHy1LU8AtHso8AzE6iSl3uju6rgfUa
+         0tzF2b4NwXJmMVI6Lv0MHeLz9u+qyJbFmFTCi/h+gc/sWdUjeqT7NRbUbnRnJhQKqK8e
+         2JcD8QVjJP4OURWajAVh4HTPrKx8Nogbl5NWHCho8aJ/QQKkir0UDNVJV+FQqpEK15Hi
+         qaymCUzAJU2ebPAyTgSWCkESGS9xzP/H96RfGgwg2w+TnIQIYwalZJq4EHTpj95hgeo6
+         vwPA==
+X-Gm-Message-State: AOAM5317bURXLQTK2PaFRp+m2kYuPOSjMNzYLTlkH0QE8/iaKRP4ekYP
+        xBJm4/zW6IEzrgfD1yqEgjhjarywyh/yDw==
+X-Google-Smtp-Source: ABdhPJxuT7o7jGuflTbr/sPJgqp+0sOaR0b+eEindXqCvTJFRyfwlR+LPCGxtZ48m83DCNLhjDx0mA==
+X-Received: by 2002:a37:8685:: with SMTP id i127mr19241385qkd.37.1605021893130;
+        Tue, 10 Nov 2020 07:24:53 -0800 (PST)
+Received: from localhost ([2620:10d:c091:480::1:64f7])
+        by smtp.gmail.com with ESMTPSA id o16sm589744qkg.27.2020.11.10.07.24.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 10 Nov 2020 07:24:52 -0800 (PST)
+Date:   Tue, 10 Nov 2020 10:23:05 -0500
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Muchun Song <songmuchun@bytedance.com>
+Cc:     mhocko@kernel.org, vdavydov.dev@gmail.com,
+        akpm@linux-foundation.org, cl@linux.com, penberg@kernel.org,
+        rientjes@google.com, iamjoonsoo.kim@lge.com, shakeelb@google.com,
+        guro@fb.com, vbabka@suse.cz, laoar.shao@gmail.com,
+        chris@chrisdown.name, linux-kernel@vger.kernel.org,
+        cgroups@vger.kernel.org, linux-mm@kvack.org
+Subject: Re: [PATCH v2] mm: memcg/slab: Fix root memcg vmstats
+Message-ID: <20201110152305.GB842337@cmpxchg.org>
+References: <20201110031015.15715-1-songmuchun@bytedance.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-11-10_06:2020-11-10,2020-11-10 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 spamscore=0
- priorityscore=1501 bulkscore=0 clxscore=1015 lowpriorityscore=0
- impostorscore=0 adultscore=0 phishscore=0 mlxlogscore=558 malwarescore=0
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2011100110
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201110031015.15715-1-songmuchun@bytedance.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bogdan Togorean <bogdan.togorean@analog.com>
+On Tue, Nov 10, 2020 at 11:10:15AM +0800, Muchun Song wrote:
+> If we reparent the slab objects to the root memcg, when we free
+> the slab object, we need to update the per-memcg vmstats to keep
+> it correct for the root memcg. Now this at least affects the vmstat
+> of NR_KERNEL_STACK_KB for !CONFIG_VMAP_STACK when the thread stack
+> size is smaller than the PAGE_SIZE.
+> 
+> Fixes: ec9f02384f60 ("mm: workingset: fix vmstat counters for shadow nodes")
+> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+> Acked-by: Roman Gushchin <guro@fb.com>
 
-Audio ADI reference designs are also used on some ZynqMP boards, and can
-also be used on Intel FPGA boards and also on some more complex FPGA
-combinations (FPGA cards connected through PCIe).
-
-This change removes the dependency on Microblaze and Zynq architectures
-to allow the usage of this driver for the systems described above.
-
-Signed-off-by: Bogdan Togorean <bogdan.togorean@analog.com>
-Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
----
- sound/soc/adi/Kconfig | 1 -
- 1 file changed, 1 deletion(-)
-
-diff --git a/sound/soc/adi/Kconfig b/sound/soc/adi/Kconfig
-index e321e3b672da..0236dc5b4e9f 100644
---- a/sound/soc/adi/Kconfig
-+++ b/sound/soc/adi/Kconfig
-@@ -1,7 +1,6 @@
- # SPDX-License-Identifier: GPL-2.0-only
- config SND_SOC_ADI
- 	tristate "Audio support for Analog Devices reference designs"
--	depends on MICROBLAZE || ARCH_ZYNQ || COMPILE_TEST
- 	help
- 	  Audio support for various reference designs by Analog Devices.
- 
--- 
-2.17.1
-
+Acked-by: Johannes Weiner <hannes@cmpxchg.org>
