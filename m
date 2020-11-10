@@ -2,53 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C99572ADD5C
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 18:49:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3845F2ADD2A
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 18:41:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731065AbgKJRtQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 12:49:16 -0500
-Received: from out1.migadu.com ([91.121.223.63]:2964 "EHLO out1.migadu.com"
+        id S1730943AbgKJRlb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 12:41:31 -0500
+Received: from first.geanix.com ([116.203.34.67]:56216 "EHLO first.geanix.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726179AbgKJRtH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 12:49:07 -0500
-X-Greylist: delayed 501 seconds by postgrey-1.27 at vger.kernel.org; Tue, 10 Nov 2020 12:49:06 EST
+        id S1726690AbgKJRla (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Nov 2020 12:41:30 -0500
+Received: from zen.localdomain (unknown [185.17.218.86])
+        by first.geanix.com (Postfix) with ESMTPSA id 4C3F6EC6410;
+        Tue, 10 Nov 2020 17:41:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=geanix.com; s=first;
+        t=1605030088; bh=cWDNNUBZUEEgc3PICpvO+QPTV4CcmewbWmJBbcmXrhg=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References;
+        b=YNyuthLBC21U1OOM0a+UPMAWHaLkOIY0pbQkEFPNvXIFnavOSt2HJTbgaU9V44UM0
+         lwskaU4KPoRHKJMQsFya//iNRke7B+D8g2GS75nLMK/CZrQlndXf+fuFT2ArOzqMrF
+         lQDH1Fj1nfhQorDRjH/OGVTE9K8TB2k2kNHpgI/LC/I84xBm1zRmy43PiQ8wFA48Gi
+         fcggL4iNiHWL80bBLdXIV4qjcg0zi/VJi1oPBNc/f7YDIbXUebUSAk4RVsLUzeV2i5
+         Db+t2vBrk1uo04oTufv1st81mewImS5oGfa8MoupoCPO9s0OR0hvOtQ7zwLnSg5yh+
+         t1oY/vweygmOg==
+From:   Sean Nyekjaer <sean@geanix.com>
+To:     yibin.gong@nxp.com, linux-kernel@vger.kernel.org,
+        broonie@kernel.org
+Cc:     Sean Nyekjaer <sean@geanix.com>, stable@vger.kernel.org
+Subject: [PATCH v2] regulator: pfuze100: limit pfuze-support-disable-sw to pfuze{100,200}
+Date:   Tue, 10 Nov 2020 18:41:13 +0100
+Message-Id: <20201110174113.2066534-1-sean@geanix.com>
+X-Mailer: git-send-email 2.28.0
+In-Reply-To: <20201110172721.GA49286@sirena.org.uk>
+References: 
 MIME-Version: 1.0
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cmpwn.com; s=key1;
-        t=1605030044;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:  in-reply-to:in-reply-to;
-        bh=Z9zeRDZ2j+RYvYV/sSKPfJ23GM432ud8SVt0CMnE+Mc=;
-        b=ikA/ah51Ygf4ph1diEptsMPmvqAc8dWOy8moZN6IdZk0XWv3rbTfpu2er8ZcEmmMiS4JUY
-        qIiVv4SuAnOqlKwThZOKWZi5Nfd36v60fpIRsE+G7mlWqiDzqZaJn4XCKCOxS+VgkXmEge
-        QJmOQ+ZKOymLH8xxH3VG3y4/Fr7CtBCVc/1oUnMgra4iXLLQrKX0SnpzxBtntSkFq9NZ4y
-        7EEhd08djCLvIQGPwa01TQXuvvF2RybfXIzhZbJ0PDVkxIVyUO2YhFPci2GDMav4UveOYb
-        0OeWULgT+3AfQJY5jsKCAmKq7m62hOHq461w71vTWLCAx0aKo1zvPVrYiY+nDw==
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Cc:     <lukas.bulwahn@gmail.com>, <joe@perches.com>,
-        <linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-kernel-mentees@lists.linuxfoundation.org>
-Subject: Re: [PATCH v2] Documentation: include sign off for reverts
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   "Drew DeVault" <sir@cmpwn.com>
-To:     "Aditya Srivastava" <yashsri421@gmail.com>, <corbet@lwn.net>
-Date:   Tue, 10 Nov 2020 13:40:18 -0400
-Message-Id: <C6ZRNNLCPJJS.21CMC9SORJPVR@taiga>
-In-Reply-To: <20201110173949.31440-1-yashsri421@gmail.com>
-X-Authenticated-User: sir@cmpwn.com
-X-Spam-Score: 1.64
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-3.1 required=4.0 tests=ALL_TRUSTED,BAYES_00,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,URIBL_BLOCKED
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on ff3d05386fc5
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue Nov 10, 2020 at 1:39 PM EDT, Aditya Srivastava wrote:
-> using your real name (sorry, no pseudonyms or anonymous contributions.)
-> This will be done for you automatically if you use ``git commit -s``.
-> +Also reverts should include a Signed-off-by. ``git revert -s`` does
-> +that for you.
+Limit the fsl,pfuze-support-disable-sw to the pfuze100 and pfuze200
+variants.
+When enabling fsl,pfuze-support-disable-sw and using a pfuze3000 or
+pfuze3001, the driver would choose pfuze100_sw_disable_regulator_ops
+instead of the newly introduced and correct pfuze3000_sw_regulator_ops.
 
-The language here is a bit odd, try this:
+Signed-off-by: Sean Nyekjaer <sean@geanix.com>
+Fixes: 6f1cf5257acc ("regualtor: pfuze100: correct sw1a/sw2 on pfuze3000")
+Cc: stable@vger.kernel.org
+---
+Changes since v1:
+ - Added signoff
+ - fixed typo in commit msg
 
-Reverts should also include "Signed-off-by". ``git revert -s`` does that
-for you.
+ drivers/regulator/pfuze100-regulator.c | 13 ++++++++-----
+ 1 file changed, 8 insertions(+), 5 deletions(-)
+
+diff --git a/drivers/regulator/pfuze100-regulator.c b/drivers/regulator/pfuze100-regulator.c
+index 7e8ba9246167..01a12cfcea7c 100644
+--- a/drivers/regulator/pfuze100-regulator.c
++++ b/drivers/regulator/pfuze100-regulator.c
+@@ -836,11 +836,14 @@ static int pfuze100_regulator_probe(struct i2c_client *client,
+ 		 * the switched regulator till yet.
+ 		 */
+ 		if (pfuze_chip->flags & PFUZE_FLAG_DISABLE_SW) {
+-			if (pfuze_chip->regulator_descs[i].sw_reg) {
+-				desc->ops = &pfuze100_sw_disable_regulator_ops;
+-				desc->enable_val = 0x8;
+-				desc->disable_val = 0x0;
+-				desc->enable_time = 500;
++			if (pfuze_chip->chip_id == PFUZE100 ||
++				pfuze_chip->chip_id == PFUZE200) {
++				if (pfuze_chip->regulator_descs[i].sw_reg) {
++					desc->ops = &pfuze100_sw_disable_regulator_ops;
++					desc->enable_val = 0x8;
++					desc->disable_val = 0x0;
++					desc->enable_time = 500;
++				}
+ 			}
+ 		}
+ 
+-- 
+2.28.0
+
