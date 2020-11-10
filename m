@@ -2,145 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D42602AD317
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 11:04:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A5FD72AD31F
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 11:05:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732059AbgKJKEj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 05:04:39 -0500
-Received: from mail-eopbgr760041.outbound.protection.outlook.com ([40.107.76.41]:24173
-        "EHLO NAM02-CY1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727698AbgKJKEb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 05:04:31 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=nRE3pRlfurEPh77JJLUc2A7IPa6DyTGgeyT1YmTsV8YbMlXYm1uVqAx/hGjk2rmrZhFpPtGBnMOQy5bi80VQQQHYyXvleFnEwkaHqhzpTXBV+wGhg81E9YPU3rsvwviwA7iyt6qeRv7TNBtyv6A5FW5t16DGBxcT71GWy9i/VOnXrcDqUmftk9Q0wHq/GkBiKIe9/u9x9hzVk9wweqS1g0gyy7LyH6XlgRKGFsFfIYg7+VOlo9BqIYoA1lK6h675pFVylS8Kg3qSUGhU/wEU4SSm/Of6z6NW+03b+VEsYdsUAyFSR+Wyfj03253oSNK+bj2IiT0BlLG4oRgBAdpThw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=edlVt8XClrNuNpQ3HYTDkZtqd4K8bz4gIsaPDNKVTJY=;
- b=T4JshIBVuRUFZtPXwXCFSyqbpL3OT+BCnin5lwtmuUi4QBDE+O5fTGv/xdf2PdWe0UgZvJudG5lIcoUo8Q8zKBYJq7gkuisGpHL1U1q7cyq4HW6XwceB5+oSCEKo0X9nuq+OUYXYy5jkrnsElpVL/TT9LUTvn4CB4wYBZ0oldYzm3dydHA6VF3ibq94sMQq8vZ5ZNEDnzB/Ap+xekcCDUlRGe2eBqTUpPs7kcs0p4aizUn9mWRZ2Au6CR0azvxdhmKB9YuDcX/xJBb5aT/IQ6SWZBaq3m+meaNi+m/99r7O4S+1EPkeVXh3C09gTmCRHlaKvfOw9jrMbY1ph79qHYA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 149.199.62.198) smtp.rcpttodomain=huawei.com smtp.mailfrom=xilinx.com;
- dmarc=bestguesspass action=none header.from=xilinx.com; dkim=none (message
- not signed); arc=none
+        id S1732084AbgKJKEx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 05:04:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47548 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727698AbgKJKEv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Nov 2020 05:04:51 -0500
+Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6AC6C0613CF
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 02:04:50 -0800 (PST)
+Received: by mail-ej1-x641.google.com with SMTP id o9so16706961ejg.1
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 02:04:50 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=edlVt8XClrNuNpQ3HYTDkZtqd4K8bz4gIsaPDNKVTJY=;
- b=ZY2wqVwpNUQwnLe1tO8ExW9hsn1n97VKbHUZpN3om8toCAKvkhYMtccxLTZHQgvwSDN84Jri4LsJW08MFOR666IgHRD3s5GVdnaHSVWm1o1uf0sNkaWRDWeXcrTLRrvkHV0TlpkBME20gxjhQcKaZG9kAXqdHTA7md2CK6gQ/nY=
-Received: from BL1PR13CA0124.namprd13.prod.outlook.com (2603:10b6:208:2bb::9)
- by BL0PR02MB4801.namprd02.prod.outlook.com (2603:10b6:208:54::23) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3477.20; Tue, 10 Nov
- 2020 10:04:27 +0000
-Received: from BL2NAM02FT027.eop-nam02.prod.protection.outlook.com
- (2603:10b6:208:2bb:cafe::bf) by BL1PR13CA0124.outlook.office365.com
- (2603:10b6:208:2bb::9) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3564.13 via Frontend
- Transport; Tue, 10 Nov 2020 10:04:27 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 149.199.62.198)
- smtp.mailfrom=xilinx.com; huawei.com; dkim=none (message not signed)
- header.d=none;huawei.com; dmarc=bestguesspass action=none
- header.from=xilinx.com;
-Received-SPF: Pass (protection.outlook.com: domain of xilinx.com designates
- 149.199.62.198 as permitted sender) receiver=protection.outlook.com;
- client-ip=149.199.62.198; helo=xsj-pvapexch02.xlnx.xilinx.com;
-Received: from xsj-pvapexch02.xlnx.xilinx.com (149.199.62.198) by
- BL2NAM02FT027.mail.protection.outlook.com (10.152.77.160) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.3541.17 via Frontend Transport; Tue, 10 Nov 2020 10:04:27 +0000
-Received: from xsj-pvapexch01.xlnx.xilinx.com (172.19.86.40) by
- xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1913.5; Tue, 10 Nov 2020 02:04:26 -0800
-Received: from smtp.xilinx.com (172.19.127.95) by
- xsj-pvapexch01.xlnx.xilinx.com (172.19.86.40) with Microsoft SMTP Server id
- 15.1.1913.5 via Frontend Transport; Tue, 10 Nov 2020 02:04:26 -0800
-Envelope-to: michal.simek@xilinx.com,
- zhangxiaoxu5@huawei.com,
- yi.zhang@huawei.com,
- linux-kernel@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org,
- tglx@linutronix.de,
- daniel.lezcano@linaro.org,
- yukuai3@huawei.com
-Received: from [172.30.17.110] (port=56846)
-        by smtp.xilinx.com with esmtp (Exim 4.90)
-        (envelope-from <michal.simek@xilinx.com>)
-        id 1kcQVl-0003mh-Qf; Tue, 10 Nov 2020 02:04:26 -0800
-Subject: Re: [PATCH] "clocksource/drivers/cadence_ttc: fix memory leak in
- ttc_setup_clockevent()
-To:     Yu Kuai <yukuai3@huawei.com>, <michal.simek@xilinx.com>,
-        <daniel.lezcano@linaro.org>, <tglx@linutronix.de>,
-        <soren.brinkmann@xilinx.com>
-CC:     <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <yi.zhang@huawei.com>,
-        <zhangxiaoxu5@huawei.com>
-References: <20201110011508.2482821-1-yukuai3@huawei.com>
-From:   Michal Simek <michal.simek@xilinx.com>
-Message-ID: <1ff2a871-849e-cbac-b731-8104da213637@xilinx.com>
-Date:   Tue, 10 Nov 2020 11:04:22 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.1
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=zJ2p+bzibDOpbdVH1n11eTi5E30Y4plUc85rtPd49kE=;
+        b=IGoPXQ4WJnOOdmq/1uW4fwMfU8+dWXMomqqukWkATTVyf6lLUXlKrS+zJa8tNuzNVj
+         2eqjpVDhU0bQdnAYOsahp98SloTQiQLrw3rhux12+vICQBn9ARCXTmqp9JjvyA9rKkD7
+         coRp+f6/JMHkLv5f+IzEgGCpSbNA+2Gqq6Y8kjVkBwgOpgkbcI90vJLzwD0fCf3pS47e
+         L2yfWu8ZEnPBs3BTb0XegSU/c79K3UZZWcUwvPg3q9DguNJAO8S2gichLuculw3gl0NC
+         x6cn/XUjHvTgS/N8fIWs4qg04RCvH3c68AvhD469ZrxjR/rqo31evGakxTD6XOzV2hdB
+         YReQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=zJ2p+bzibDOpbdVH1n11eTi5E30Y4plUc85rtPd49kE=;
+        b=YKFcFVfa77GcipamG8zoqbldP3vTuAdVW7OU5+QgnKm0X4dL7aEvTypZXsxQ+vSBPX
+         Sr+6B7VskZlu33CNH1Ix+21brmhwIskiZMoIjGmRCFkZ/qt4FlkL6hRcvqf4QsBXIND1
+         BGdto3ZuMY9/gutraem2H3af/g9p/DYB42ZWyoCBod51qz89OjhDhCEW3YcrEaPqXXxz
+         LCvKe9Y5yN7uCb3C8NinpQUPH7OFsrbgi2iFZ34jJcDIm0Sr2qq76Un8O+LIGz6tuCEQ
+         OsIlkpzDySM+2pMvrvJfkPD4SrC3zFCiR3ElqqWzw6hjQ2jkIDh5qWMIV3IVE+sifthm
+         pWgw==
+X-Gm-Message-State: AOAM533wd7Kp2wuz7FZdZjLU2ONCeURP6qTxrsWBvWSY9i3EQ4jLcmg2
+        kgXipKSao3MzKpTLzGOX5VwyWM/xZkeHmy0Mzq5Pmg==
+X-Google-Smtp-Source: ABdhPJxxfRUZBDDJ5o6WfYg+WNz+92APZKwQUSsqd35YQB6uR/7ikrLQVZdEw5v3H++8Zi8DsLIUx4HavKh4NUMoUJ0=
+X-Received: by 2002:a17:906:5247:: with SMTP id y7mr18841264ejm.503.1605002689425;
+ Tue, 10 Nov 2020 02:04:49 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20201110011508.2482821-1-yukuai3@huawei.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EOPAttributedMessage: 0
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 76fc4090-2894-46ac-a9f8-08d88560025b
-X-MS-TrafficTypeDiagnostic: BL0PR02MB4801:
-X-Microsoft-Antispam-PRVS: <BL0PR02MB4801D67E81D345388EB73DB2C6E90@BL0PR02MB4801.namprd02.prod.outlook.com>
-X-Auto-Response-Suppress: DR, RN, NRN, OOF, AutoReply
-X-MS-Oob-TLC-OOBClassifiers: OLM:826;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 6/AyPagYrFgiwXeY62ofMsf7qlNinU4p8DFTMNgw7gasGv7l8w4OOa5bKb+SCRV9cUD/RAqCQ7pSZmNHORe3Us1G22UHZ+y+tGzODKJt8xpal3UWM1Uj9vCISXkD5MeBsfUpaNq5F5u54VcP1c80yjieSyAolFCHB5KLXpKTHkqOodjKeZaVySzmiNlNceL7znhq0zj3IL+IKeM4WlRfkAGqje1ZLWGmcCFPU4ZFkopEnUWcYekkWuF9V+WijGDJg6kIQu1oSln8tEUt4zP1ic2hXPJ8NChd6oDIqwJptLVisQR6aDqI44/jlcUflAGKXPclvn1IQEV3z0MHHmmbqZtm9xvNfl/xlQ9Z/qkwiKRpIT3dXNb5uqeTaK+6d7X9aLeiVW/vYFhxl5kpvPW7U8PsP84XGnUujD5fouZKoar/2De8CbJ6ok7bV4dxenic
-X-Forefront-Antispam-Report: CIP:149.199.62.198;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:xsj-pvapexch02.xlnx.xilinx.com;PTR:unknown-62-198.xilinx.com;CAT:NONE;SFS:(4636009)(376002)(346002)(39860400002)(136003)(396003)(46966005)(36906005)(70206006)(2906002)(8676002)(36756003)(70586007)(6666004)(316002)(2616005)(82310400003)(4326008)(83380400001)(31696002)(336012)(426003)(8936002)(26005)(6636002)(110136005)(54906003)(82740400003)(9786002)(44832011)(7636003)(478600001)(5660300002)(4744005)(47076004)(356005)(186003)(31686004)(50156003)(43740500002);DIR:OUT;SFP:1101;
-X-OriginatorOrg: xilinx.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Nov 2020 10:04:27.4432
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 76fc4090-2894-46ac-a9f8-08d88560025b
-X-MS-Exchange-CrossTenant-Id: 657af505-d5df-48d0-8300-c31994686c5c
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=657af505-d5df-48d0-8300-c31994686c5c;Ip=[149.199.62.198];Helo=[xsj-pvapexch02.xlnx.xilinx.com]
-X-MS-Exchange-CrossTenant-AuthSource: BL2NAM02FT027.eop-nam02.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL0PR02MB4801
+References: <20201109125016.734107741@linuxfoundation.org>
+In-Reply-To: <20201109125016.734107741@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Tue, 10 Nov 2020 15:34:37 +0530
+Message-ID: <CA+G9fYvixPJEoa1VyaRf5CiRVUP=S0zUqOi+6ZPaEPEHWMf-9g@mail.gmail.com>
+Subject: Re: [PATCH 4.14 00/48] 4.14.205-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org,
+        linux- stable <stable@vger.kernel.org>, pavel@denx.de,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, 9 Nov 2020 at 18:37, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 4.14.205 release.
+> There are 48 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Wed, 11 Nov 2020 12:50:04 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-=
+4.14.205-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-4.14.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
+>
+
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
+
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+
+Summary
+------------------------------------------------------------------------
+
+kernel: 4.14.205-rc1
+git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
+le-rc.git
+git branch: linux-4.14.y
+git commit: 0c03e845a8b978ebed2508e862d6a115d48abd7e
+git describe: v4.14.204-49-g0c03e845a8b9
+Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-4.14=
+.y/build/v4.14.204-49-g0c03e845a8b9
+
+No regressions (compared to build v4.14.204)
+
+No fixes (compared to build v4.14.204)
 
 
-On 10. 11. 20 2:15, Yu Kuai wrote:
-> If clk_notifier_register() failed, ttc_setup_clockevent() will return
-> without freeing 'ttcce', which will leak memory.
-> 
-> Fixes: 70504f311d4b ("clocksource/drivers/cadence_ttc: Convert init function to return error")
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
-> ---
->  drivers/clocksource/timer-cadence-ttc.c | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/drivers/clocksource/timer-cadence-ttc.c b/drivers/clocksource/timer-cadence-ttc.c
-> index 80e960602030..32b9560ce408 100644
-> --- a/drivers/clocksource/timer-cadence-ttc.c
-> +++ b/drivers/clocksource/timer-cadence-ttc.c
-> @@ -426,6 +426,7 @@ static int __init ttc_setup_clockevent(struct clk *clk,
->  				    &ttcce->ttc.clk_rate_change_nb);
->  	if (err) {
->  		pr_warn("Unable to register clock notifier.\n");
-> +		kfree(ttcce);
->  		return err;
->  	}
->  
-> 
+Ran 38548 total tests in the following environments and test suites.
 
-Reviewed-by: Michal Simek <michal.simek@xilinx.com>
+Environments
+--------------
+- dragonboard-410c - arm64
+- hi6220-hikey - arm64
+- i386
+- juno-r2 - arm64
+- juno-r2-compat
+- juno-r2-kasan
+- qemu-arm64-kasan
+- qemu-x86_64-kasan
+- qemu_arm
+- qemu_arm64
+- qemu_arm64-compat
+- qemu_i386
+- qemu_x86_64
+- qemu_x86_64-compat
+- x15 - arm
+- x86_64
+- x86-kasan
 
-Thanks,
-Michal
+Test Suites
+-----------
+* build
+* igt-gpu-tools
+* install-android-platform-tools-r2600
+* libhugetlbfs
+* linux-log-parser
+* ltp-containers-tests
+* ltp-controllers-tests
+* ltp-cap_bounds-tests
+* ltp-commands-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-cve-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-hugetlb-tests
+* ltp-io-tests
+* ltp-ipc-tests
+* ltp-math-tests
+* ltp-mm-tests
+* ltp-nptl-tests
+* ltp-pty-tests
+* ltp-sched-tests
+* ltp-securebits-tests
+* ltp-syscalls-tests
+* ltp-tracing-tests
+* network-basic-tests
+* perf
+* v4l2-compliance
+* ltp-dio-tests
+* ltp-open-posix-tests
+* kvm-unit-tests
+
+--=20
+Linaro LKFT
+https://lkft.linaro.org
