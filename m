@@ -2,63 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77C042ADF9C
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 20:33:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 20D722ADFAC
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 20:33:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731851AbgKJTbl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 14:31:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51490 "EHLO
+        id S1732934AbgKJTdh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 14:33:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51504 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731746AbgKJTbe (ORCPT
+        with ESMTP id S1731779AbgKJTbg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 14:31:34 -0500
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02426C0613D1
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 11:31:34 -0800 (PST)
-Received: by mail-wm1-x344.google.com with SMTP id c9so4342091wml.5
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 11:31:33 -0800 (PST)
+        Tue, 10 Nov 2020 14:31:36 -0500
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28EC9C0613D1
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 11:31:35 -0800 (PST)
+Received: by mail-wr1-x443.google.com with SMTP id b8so14010354wrn.0
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 11:31:35 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=OiQsD+EhT8Lfi4WTa7HEKxexbw01KKvzh7y2CIqIZUI=;
-        b=w2cAylpRUwyxpJxnkGOH1jYHVFj+w4ZCRrbjx0+dHVK/k1SkFYcPeOrIv+gyvgruNi
-         Y9pmut0MJLCqKVCoxh64xgrnCLtmBui1QC8BuC7C9/SyEufCphx7aeEWfu9jvC3U9III
-         ZceExYSW02hI3ANgMEoVc/gxUujRkVafXEX36lKkxEJdphEcj+Nt4JFH1GUruisyFyb+
-         29utA9JZezZormWyyDou7bDSGqHFbvgM5R5KhivIJLJ50sK25XDmyMYhwevxCu0Ro86Q
-         gL5NDS6YAntMe0J1XRsZ/gdpqa72ODvsBFQ7YoDDIP0oYwu/XnoqidkCr8GBJVcGfCnd
-         WUrw==
+        bh=5XOKsZA/efGGZlOKtpGd/v3CZQozhQA1lVakbps4Q9E=;
+        b=He1zbyiMjWMGE0Hn/kJ/07B4HvpFF4l2fTCYTzQKm73uxkjgAjO49RrZRywLhDWfaH
+         mwUj+LJz3HGK4QfSLcNaXCBytZS1llthv7u10eGTB373PipUwbEupelVcIq5Emg5XGDh
+         Bcdhoy88TTDCPJeEjI9zrKilUdxFkSMMJtN7Pc9UPkc8pMoSvIPOi+Uoo7TKU96RG/FT
+         2GAHytLMKR8eElYDMdfPYN5G7EMIy5w2B0a0ILkXtKkXEfgyzehz9JFZgpVbm9iCGsci
+         Ov7rfylLaADoV7Jwk/GvUCXDXmaDoYOWHbOjRUzQqe1vqM5K679Kncl2/mopONbChafV
+         qBgQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=OiQsD+EhT8Lfi4WTa7HEKxexbw01KKvzh7y2CIqIZUI=;
-        b=qNJfja3EgMnZblGtiyKwSNIgtew5whwT7z0ve3An09WJB0SA2o1At0Fmu1ZCbzxQm/
-         PAD/OIL5FuuPw3qXtQr4C+xgty+WN74r5fmEMcCf/HoiVIl8BH9nyMx2WUmaQy0V/Rja
-         VP95z1Xgw4Dwh0X/uA6rgei7B/66WE0B4jqop2Ko+/Mn4xoyne4E0rqFDRKwcpU7vXX7
-         L4phQVK+2Qi0XeGoMJcmaCLzs13jNeH+InBRr688quGLx6YXBj3wqpmryyUp3ctwhbXT
-         H+hv115YcUBhbYwQvtrKRQWIPSWm1WpcMst7kN5AfArQrk+P78ODUrgfOI4U+7uHWpmq
-         Bj7Q==
-X-Gm-Message-State: AOAM530yi6IZck9qFWrhLPwnQeO2Z/zlPZ4qQCtLi1f5eghg4qxP4/GO
-        IRw4dHeVEsrDpbqtm/oJeOoZTw==
-X-Google-Smtp-Source: ABdhPJxCAbP1NBquixJByR3TRuiCtWqX8gVya2e2rBLdVzy1l0jSVoFnzm7ZOkv+OY8g7NTUfw0erw==
-X-Received: by 2002:a1c:660b:: with SMTP id a11mr663260wmc.159.1605036692771;
-        Tue, 10 Nov 2020 11:31:32 -0800 (PST)
+        bh=5XOKsZA/efGGZlOKtpGd/v3CZQozhQA1lVakbps4Q9E=;
+        b=bE32Qb6zKHz67/I76OQInou04glvDIiH2k5Vkh/03xr2nPKQKNe5D4jx8l12Sn4QzY
+         R3VgcuzGaU1aJ7bfAJGE9xjZ6BW1x5dhJCWdWNfd4wLRQYcQK4iei9Qs6m3i7Avv525x
+         uLKmbaLdfXtlzZp79C0CiFZiO3bPm0Wj/IEec8gJDjAkI8o4lMZ4JYiCQfZyPlMAKBEd
+         /uNIcsbPzz2gPbuWWnu/abO0OWEv7fimBjf7fbg2VwWkfxM38+3inZuKisnEZ3rp6JHL
+         tbJV+d/s8ckx488r7xStTXWr4RR160TfJkbrXU26U3mqa0ZwcE6vghZqpNPfJGbPXIYr
+         7JDQ==
+X-Gm-Message-State: AOAM533tKb5vqKAg/Q8JoD4Fd5PmzpGCJL8/S0gwpunN44bGPH7R1OFt
+        1AQ/cngqxodVtoxIIcJvptiD/g==
+X-Google-Smtp-Source: ABdhPJxeAAo4Qn14VIx+iSnKxq73eLUxzVIPDWOXBuFMlEIUrORlJQbFdFaBUotDwNNiIK1H5ZjK6A==
+X-Received: by 2002:a5d:68cb:: with SMTP id p11mr16338979wrw.89.1605036693922;
+        Tue, 10 Nov 2020 11:31:33 -0800 (PST)
 Received: from dell.default ([91.110.221.139])
-        by smtp.gmail.com with ESMTPSA id 30sm17635335wrs.84.2020.11.10.11.31.31
+        by smtp.gmail.com with ESMTPSA id 30sm17635335wrs.84.2020.11.10.11.31.32
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 10 Nov 2020 11:31:32 -0800 (PST)
+        Tue, 10 Nov 2020 11:31:33 -0800 (PST)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
 Cc:     linux-kernel@vger.kernel.org,
         Alex Deucher <alexander.deucher@amd.com>,
         =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
         David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>, amd-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org
-Subject: [PATCH 13/30] drm/radeon/radeon_mn: Supply description for 'cur_seq' even if it is unused
-Date:   Tue, 10 Nov 2020 19:30:55 +0000
-Message-Id: <20201110193112.988999-14-lee.jones@linaro.org>
+        Daniel Vetter <daniel@ffwll.ch>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-media@vger.kernel.org, linaro-mm-sig@lists.linaro.org
+Subject: [PATCH 14/30] drm/radeon/evergreen_dma: Fix doc-rot of function parameter 'resv'
+Date:   Tue, 10 Nov 2020 19:30:56 +0000
+Message-Id: <20201110193112.988999-15-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20201110193112.988999-1-lee.jones@linaro.org>
 References: <20201110193112.988999-1-lee.jones@linaro.org>
@@ -71,31 +73,36 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Fixes the following W=1 kernel build warning(s):
 
- drivers/gpu/drm/radeon/radeon_mn.c:51: warning: Function parameter or member 'cur_seq' not described in 'radeon_mn_invalidate'
+ drivers/gpu/drm/radeon/evergreen_dma.c:112: warning: Function parameter or member 'resv' not described in 'evergreen_copy_dma'
+ drivers/gpu/drm/radeon/evergreen_dma.c:112: warning: Excess function parameter 'fence' description in 'evergreen_copy_dma'
 
 Cc: Alex Deucher <alexander.deucher@amd.com>
 Cc: "Christian König" <christian.koenig@amd.com>
 Cc: David Airlie <airlied@linux.ie>
 Cc: Daniel Vetter <daniel@ffwll.ch>
+Cc: Sumit Semwal <sumit.semwal@linaro.org>
 Cc: amd-gfx@lists.freedesktop.org
 Cc: dri-devel@lists.freedesktop.org
+Cc: linux-media@vger.kernel.org
+Cc: linaro-mm-sig@lists.linaro.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/gpu/drm/radeon/radeon_mn.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/gpu/drm/radeon/evergreen_dma.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/radeon/radeon_mn.c b/drivers/gpu/drm/radeon/radeon_mn.c
-index 97b9b6dd6dd3b..3c4c4213a7b57 100644
---- a/drivers/gpu/drm/radeon/radeon_mn.c
-+++ b/drivers/gpu/drm/radeon/radeon_mn.c
-@@ -41,6 +41,7 @@
+diff --git a/drivers/gpu/drm/radeon/evergreen_dma.c b/drivers/gpu/drm/radeon/evergreen_dma.c
+index a46ee6c2099dd..767857d4a8c5c 100644
+--- a/drivers/gpu/drm/radeon/evergreen_dma.c
++++ b/drivers/gpu/drm/radeon/evergreen_dma.c
+@@ -98,7 +98,7 @@ void evergreen_dma_ring_ib_execute(struct radeon_device *rdev,
+  * @src_offset: src GPU address
+  * @dst_offset: dst GPU address
+  * @num_gpu_pages: number of GPU pages to xfer
+- * @fence: radeon fence object
++ * @resv: reservation object with embedded fence
   *
-  * @mn: our notifier
-  * @range: the VMA under invalidation
-+ * @cur_seq: unused
-  *
-  * We block for all BOs between start and end to be idle and
-  * unmap them by move them into system domain again.
+  * Copy GPU paging using the DMA engine (evergreen-cayman).
+  * Used by the radeon ttm implementation to move pages if
 -- 
 2.25.1
 
