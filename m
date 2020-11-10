@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F148F2ADDEF
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 19:15:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D6A02ADDF0
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 19:15:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730854AbgKJSPG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 13:15:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39134 "EHLO
+        id S1731278AbgKJSPH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 13:15:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39142 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731221AbgKJSNG (ORCPT
+        with ESMTP id S1731309AbgKJSNI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 13:13:06 -0500
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B8FAC0613CF
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 10:13:06 -0800 (PST)
-Received: by mail-pf1-x443.google.com with SMTP id c20so12159212pfr.8
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 10:13:06 -0800 (PST)
+        Tue, 10 Nov 2020 13:13:08 -0500
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 075BDC0613D1
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 10:13:07 -0800 (PST)
+Received: by mail-pf1-x442.google.com with SMTP id g7so12169979pfc.2
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 10:13:07 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=w/5/DKL41ubRzJ/0MsKC6N7liZIas0t4NHg8fh0y8+o=;
-        b=NAfJXPjiMWTtwfhbG9naf/w6U8KyJ/t848F3Iw4AZzgF25FMqWojzAYfNRgl/xGUvP
-         Vy0e2dzmt51qvj7ISeTPzk/djTw0OtsDeUvuJ/FjjAqGgo75RHrMa/aDgcZIsbnOyLQy
-         ayMyu8SRR0c9e/DBI4GaITPL9fYFSQrCI86oXXz9EeP+6ViYuwf078Pc9mSu1fP0gtz4
-         sHu585Amit/hGacdaRBeaxNgP/uQTuX242VUcKTwKEobSzzrZ6I1D9zBCTsHSFGdDGe2
-         8Lm8iyCSHzcbAXmW/vKK71mVL1ddwHn2DpTgEidkKeFqJQl1gL/urfGOPPLa/Vz0OHtT
-         jbsg==
+        bh=wzTkN8x60Q0XiW8/C8IsngN4jAgjA+AlmtZ3C3KQcFM=;
+        b=rMAhKmz2stnt0OpVWI6QWLFxn/frb0pncgv+GV3PkKEKdC+qq81GLDHnQj6s1cISfg
+         7tbs7uTQ7qP5lVTVOMNcs7we8EfQ9a3knrthROKacF0iCS4pF5XeFxgbZrDpG8WuXErQ
+         61lolt0ZG+qJjRyqn7pVHenNxdszmg4JizQFfiYEsf3resqysh/T7Hw7BXC23CGH6PPE
+         fD0VeNXrPG3mvJAvqsxEpTn7g3M5I+C7F5IIMgL2CPmB6XW0lSkgRzlvEh7fB0whTsLx
+         lr0StdAwIW5GEkh49kanqDjL6T8B8amgBl+wMBHMQJpHjzLb8rdWIJaJMRL/UP4QFt+O
+         BGiw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=w/5/DKL41ubRzJ/0MsKC6N7liZIas0t4NHg8fh0y8+o=;
-        b=rON7cnCfjIGraUbd4MSNvQm234V1nZFTW+/vt3+SSJMouAAYIr7d0JtJnsSHN+Q8qt
-         JYO/6+TSN5RFhqMGQXXGpOJYiSvcqOY5zLD5m7gYMntGzY03nnfdV6gggqAZBALHmkW8
-         4D1sN5fBwiWKRfTH9gaoCrTsm+C3L24UXjgy2+X78DwZebyT9AUSaBqKNpCUN0DBTYbi
-         SbbE/idVBGGegzo+ws5Zu5dDZDuBUDGh/dp+DpoJDD81uioape52aSFJ21pJXyCY7D/K
-         GC0r1dlnTAaqaWphgSidSV1hjGqnlsOK5VbvgZCxZh/KqgvFK/U88JlT5TNRgvTsMtq3
-         Ftew==
-X-Gm-Message-State: AOAM530KfUof6TUXCXwZHodbSPC1qrhKCAjPoiINnRS7Ak84uxS14gx1
-        g2J/wswYeSHnEugIBraBoq0=
-X-Google-Smtp-Source: ABdhPJydP5HwqAKtuGteJf/ZKsiG60bFFB9Tp0RZbC4lkxXDLuCnLD/ShKB+VaTHZbeimHfSdhuTnA==
-X-Received: by 2002:a17:90b:496:: with SMTP id bh22mr386015pjb.120.1605031985614;
-        Tue, 10 Nov 2020 10:13:05 -0800 (PST)
+        bh=wzTkN8x60Q0XiW8/C8IsngN4jAgjA+AlmtZ3C3KQcFM=;
+        b=nWOgkSKODNkL9UpzbLgj2xTb+MZZVYlc0ryG9n6l4Rak1Hx9ZWAH1bBMvd6XRb2kIH
+         NFjN1E1nL2Xxq+KmHOI74h+52T3P+1T8Jtx1Cx7g9pTH0JcXzQmf0U51KPJOCd5l12Y/
+         uZodfTXRY6wwsnFAXDSrrEddB5n+MGIZrVC3HoQE8aYq1J08VNdjEeW2epXaDNf59CvE
+         P9pnQ8ylsbafN6/qYY3/+QwY8M4HTSTqvSwVbyixL8IWivdAoIr0XOyAiidYNK8TscxF
+         3JDM1phjzmyfDqm+NLqLln13Ikgj83balBJcEYMlaBFH44pPSOSvhGFUEmCoUNDxmS/s
+         kSqw==
+X-Gm-Message-State: AOAM530Zq9728JwR9Zjlv0o/2mQkJDWGD1zjNYczW/j5SGn8XBPKhqrf
+        abJEPK5/cr8aXPj02K2stKE=
+X-Google-Smtp-Source: ABdhPJz9D38r5ZlM0UCBJXLFJsDSccwf+fHgs+pPgH8XmWGxY4AeJC3hVCEadRPQImntasuJMlolaw==
+X-Received: by 2002:a17:90a:df8f:: with SMTP id p15mr367490pjv.29.1605031987645;
+        Tue, 10 Nov 2020 10:13:07 -0800 (PST)
 Received: from localhost.localdomain (c-107-3-138-210.hsd1.ca.comcast.net. [107.3.138.210])
-        by smtp.gmail.com with ESMTPSA id k5sm4157369pjj.37.2020.11.10.10.13.03
+        by smtp.gmail.com with ESMTPSA id k5sm4157369pjj.37.2020.11.10.10.13.05
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 10 Nov 2020 10:13:04 -0800 (PST)
+        Tue, 10 Nov 2020 10:13:06 -0800 (PST)
 From:   Yang Shi <shy828301@gmail.com>
 To:     mhocko@suse.com, ziy@nvidia.com, songliubraving@fb.com,
         mgorman@suse.de, jack@suse.cz, akpm@linux-foundation.org
 Cc:     shy828301@gmail.com, linux-mm@kvack.org,
         linux-kernel@vger.kernel.org
-Subject: [v2 PATCH 2/5] mm: migrate: simplify the logic for handling permanent failure
-Date:   Tue, 10 Nov 2020 10:12:47 -0800
-Message-Id: <20201110181250.264394-3-shy828301@gmail.com>
+Subject: [v2 PATCH 3/5] mm: migrate: skip shared exec THP for NUMA balancing
+Date:   Tue, 10 Nov 2020 10:12:48 -0800
+Message-Id: <20201110181250.264394-4-shy828301@gmail.com>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20201110181250.264394-1-shy828301@gmail.com>
 References: <20201110181250.264394-1-shy828301@gmail.com>
@@ -65,188 +65,65 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When unmap_and_move{_huge_page}() returns !-EAGAIN and !MIGRATEPAGE_SUCCESS,
-the page would be put back to LRU or proper list if it is non-LRU movable
-page.  But, the callers always call putback_movable_pages() to put the
-failed pages back later on, so it seems not very efficient to put every
-single page back immediately, and the code looks convoluted.
+The NUMA balancing skip shared exec base page.  Since
+CONFIG_READ_ONLY_THP_FOR_FS was introduced, there are probably shared
+exec THP, so skip such THPs for NUMA balancing as well.
 
-Put the failed page on a separate list, then splice the list to migrate
-list when all pages are tried.  It is the caller's responsibility to
-call putback_movable_pages() to handle failures.  This also makes the
-code simpler and more readable.
-
-After the change the rules are:
-    * Success: non hugetlb page will be freed, hugetlb page will be put
-               back
-    * -EAGAIN: stay on the from list
-    * -ENOMEM: stay on the from list
-    * Other errno: put on ret_pages list then splice to from list
-
-The from list would be empty iff all pages are migrated successfully, it
-was not so before.  This has no impact to current existing callsites.
-
-Reviewed-by: Zi Yan <ziy@nvidia.com>
 Signed-off-by: Yang Shi <shy828301@gmail.com>
 ---
- mm/migrate.c | 68 +++++++++++++++++++++++++++++-----------------------
- 1 file changed, 38 insertions(+), 30 deletions(-)
+ mm/migrate.c | 18 ++++++++++++++++--
+ 1 file changed, 16 insertions(+), 2 deletions(-)
 
 diff --git a/mm/migrate.c b/mm/migrate.c
-index 8a2e7e19e27b..d7167f7107bd 100644
+index d7167f7107bd..1b103e801fe4 100644
 --- a/mm/migrate.c
 +++ b/mm/migrate.c
-@@ -1169,7 +1169,8 @@ static int unmap_and_move(new_page_t get_new_page,
- 				   free_page_t put_new_page,
- 				   unsigned long private, struct page *page,
- 				   int force, enum migrate_mode mode,
--				   enum migrate_reason reason)
-+				   enum migrate_reason reason,
-+				   struct list_head *ret)
- {
- 	int rc = MIGRATEPAGE_SUCCESS;
- 	struct page *newpage = NULL;
-@@ -1206,7 +1207,14 @@ static int unmap_and_move(new_page_t get_new_page,
- 		 * migrated will have kept its references and be restored.
- 		 */
- 		list_del(&page->lru);
-+	}
+@@ -2069,6 +2069,16 @@ bool pmd_trans_migrating(pmd_t pmd)
+ 	return PageLocked(page);
+ }
  
-+	/*
-+	 * If migration is successful, releases reference grabbed during
-+	 * isolation. Otherwise, restore the page to right list unless
-+	 * we want to retry.
-+	 */
-+	if (rc == MIGRATEPAGE_SUCCESS) {
- 		/*
- 		 * Compaction can migrate also non-LRU pages which are
- 		 * not accounted to NR_ISOLATED_*. They can be recognized
-@@ -1215,35 +1223,16 @@ static int unmap_and_move(new_page_t get_new_page,
- 		if (likely(!__PageMovable(page)))
- 			mod_node_page_state(page_pgdat(page), NR_ISOLATED_ANON +
- 					page_is_file_lru(page), -thp_nr_pages(page));
--	}
- 
--	/*
--	 * If migration is successful, releases reference grabbed during
--	 * isolation. Otherwise, restore the page to right list unless
--	 * we want to retry.
--	 */
--	if (rc == MIGRATEPAGE_SUCCESS) {
- 		if (reason != MR_MEMORY_FAILURE)
- 			/*
- 			 * We release the page in page_handle_poison.
- 			 */
- 			put_page(page);
- 	} else {
--		if (rc != -EAGAIN) {
--			if (likely(!__PageMovable(page))) {
--				putback_lru_page(page);
--				goto put_new;
--			}
-+		if (rc != -EAGAIN)
-+			list_add_tail(&page->lru, ret);
- 
--			lock_page(page);
--			if (PageMovable(page))
--				putback_movable_page(page);
--			else
--				__ClearPageIsolated(page);
--			unlock_page(page);
--			put_page(page);
--		}
--put_new:
- 		if (put_new_page)
- 			put_new_page(newpage, private);
- 		else
-@@ -1274,7 +1263,8 @@ static int unmap_and_move(new_page_t get_new_page,
- static int unmap_and_move_huge_page(new_page_t get_new_page,
- 				free_page_t put_new_page, unsigned long private,
- 				struct page *hpage, int force,
--				enum migrate_mode mode, int reason)
-+				enum migrate_mode mode, int reason,
-+				struct list_head *ret)
- {
- 	int rc = -EAGAIN;
- 	int page_was_mapped = 0;
-@@ -1290,7 +1280,7 @@ static int unmap_and_move_huge_page(new_page_t get_new_page,
- 	 * kicking migration.
++static inline bool is_shared_exec_page(struct vm_area_struct *vma,
++				       struct page *page)
++{
++	if (page_mapcount(page) != 1 && page_is_file_lru(page) &&
++	    (vma->vm_flags & VM_EXEC))
++		return true;
++
++	return false;
++}
++
+ /*
+  * Attempt to migrate a misplaced page to the specified destination
+  * node. Caller is expected to have an elevated reference count on
+@@ -2086,8 +2096,7 @@ int migrate_misplaced_page(struct page *page, struct vm_area_struct *vma,
+ 	 * Don't migrate file pages that are mapped in multiple processes
+ 	 * with execute permissions as they are probably shared libraries.
  	 */
- 	if (!hugepage_migration_supported(page_hstate(hpage))) {
--		putback_active_hugepage(hpage);
-+		list_move_tail(&hpage->lru, ret);
- 		return -ENOSYS;
- 	}
- 
-@@ -1372,8 +1362,10 @@ static int unmap_and_move_huge_page(new_page_t get_new_page,
- out_unlock:
- 	unlock_page(hpage);
- out:
--	if (rc != -EAGAIN)
-+	if (rc == MIGRATEPAGE_SUCCESS)
- 		putback_active_hugepage(hpage);
-+	else if (rc != -EAGAIN && rc != MIGRATEPAGE_SUCCESS)
-+		list_move_tail(&hpage->lru, ret);
+-	if (page_mapcount(page) != 1 && page_is_file_lru(page) &&
+-	    (vma->vm_flags & VM_EXEC))
++	if (is_shared_exec_page(vma, page))
+ 		goto out;
  
  	/*
- 	 * If migration was not successful and there's a freeing callback, use
-@@ -1404,8 +1396,8 @@ static int unmap_and_move_huge_page(new_page_t get_new_page,
-  *
-  * The function returns after 10 attempts or if no pages are movable any more
-  * because the list has become empty or no retryable pages exist any more.
-- * The caller should call putback_movable_pages() to return pages to the LRU
-- * or free list only if ret != 0.
-+ * It is caller's responsibility to call putback_movable_pages() to return pages
-+ * to the LRU or free list only if ret != 0.
-  *
-  * Returns the number of pages that were not migrated, or an error code.
-  */
-@@ -1426,6 +1418,7 @@ int migrate_pages(struct list_head *from, new_page_t get_new_page,
- 	struct page *page2;
- 	int swapwrite = current->flags & PF_SWAPWRITE;
- 	int rc, nr_subpages;
-+	LIST_HEAD(ret_pages);
+@@ -2142,6 +2151,10 @@ int migrate_misplaced_transhuge_page(struct mm_struct *mm,
+ 	int page_lru = page_is_file_lru(page);
+ 	unsigned long start = address & HPAGE_PMD_MASK;
  
- 	if (!swapwrite)
- 		current->flags |= PF_SWAPWRITE;
-@@ -1448,12 +1441,21 @@ int migrate_pages(struct list_head *from, new_page_t get_new_page,
- 			if (PageHuge(page))
- 				rc = unmap_and_move_huge_page(get_new_page,
- 						put_new_page, private, page,
--						pass > 2, mode, reason);
-+						pass > 2, mode, reason,
-+						&ret_pages);
- 			else
- 				rc = unmap_and_move(get_new_page, put_new_page,
- 						private, page, pass > 2, mode,
--						reason);
--
-+						reason, &ret_pages);
-+			/*
-+			 * The rules are:
-+			 *	Success: non hugetlb page will be freed, hugetlb
-+			 *		 page will be put back
-+			 *	-EAGAIN: stay on the from list
-+			 *	-ENOMEM: stay on the from list
-+			 *	Other errno: put on ret_pages list then splice to
-+			 *		     from list
-+			 */
- 			switch(rc) {
- 			case -ENOMEM:
- 				/*
-@@ -1519,6 +1521,12 @@ int migrate_pages(struct list_head *from, new_page_t get_new_page,
- 	nr_thp_failed += thp_retry;
- 	rc = nr_failed;
- out:
-+	/*
-+	 * Put the permanent failure page back to migration list, they
-+	 * will be put back to the right list by the caller.
-+	 */
-+	list_splice(&ret_pages, from);
++	if (IS_ENABLED(CONFIG_READ_ONLY_THP_FOR_FS) &&
++	    is_shared_exec_page(vma, page))
++		goto out;
 +
- 	count_vm_events(PGMIGRATE_SUCCESS, nr_succeeded);
- 	count_vm_events(PGMIGRATE_FAIL, nr_failed);
- 	count_vm_events(THP_MIGRATION_SUCCESS, nr_thp_succeeded);
+ 	new_page = alloc_pages_node(node,
+ 		(GFP_TRANSHUGE_LIGHT | __GFP_THISNODE),
+ 		HPAGE_PMD_ORDER);
+@@ -2253,6 +2266,7 @@ int migrate_misplaced_transhuge_page(struct mm_struct *mm,
+ 
+ out_unlock:
+ 	unlock_page(page);
++out:
+ 	put_page(page);
+ 	return 0;
+ }
 -- 
 2.26.2
 
