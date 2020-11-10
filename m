@@ -2,67 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3125F2ADE22
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 19:21:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F5572ADE26
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 19:22:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730983AbgKJSVt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 13:21:49 -0500
-Received: from mail-ej1-f66.google.com ([209.85.218.66]:41952 "EHLO
-        mail-ej1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725862AbgKJSVs (ORCPT
+        id S1731154AbgKJSWR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 13:22:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40562 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725862AbgKJSWR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 13:21:48 -0500
-Received: by mail-ej1-f66.google.com with SMTP id cw8so19001104ejb.8;
-        Tue, 10 Nov 2020 10:21:47 -0800 (PST)
+        Tue, 10 Nov 2020 13:22:17 -0500
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9251C0613CF;
+        Tue, 10 Nov 2020 10:22:16 -0800 (PST)
+Received: by mail-wm1-x343.google.com with SMTP id 10so4138576wml.2;
+        Tue, 10 Nov 2020 10:22:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=cYvJfHjuscK/tQLjt2qihh1n1W+yA/1YFVyK1P82TAw=;
+        b=k0SJQaiv7jQV1anYPGtP4qX7ALoNABosujIO0+Y9KidFIpN287u97UW5qFQ6QqMAdP
+         AKIqXmF6ued/EaFd/+020PpmLGKjYtDiUMU2u+Urbc4RyugsoY1caTBGbMv5xWuEKV0H
+         9GNgq7wk4zoeOQ6ISHJmU32vlIDSBUaj9nh30qk/yAAAjs37F4F7/toB8y1OGg6wVHX7
+         EPOCAEc2SHvmq5kE8C1tjC6fcuas20mu1DzSNpN8PTiNMCM7obcOOlRVlj2k4Hxk+oJU
+         hsL1XXr1gH/WdBnOWClIxyXjDD8HSCeqPa93KyFYRqAkCZGixpxc0WaaMr/RlttCvDhA
+         lNVw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=l9G1H7d6H8DN8me8HewkSUvFhp7esQeOJ1hEf3/Bq68=;
-        b=p7aKavWiiFJFu5Eeo09kTp5eU7pkPehDc31CP/VCJ8mX2fcfVZsYL5WEJQXCChL0yE
-         ydGK85hRnzXmwxjKZK19HBN0ib4nBrsxafpsexVC/fZ0WR0oibcdH8+JIL7vmu349r/K
-         AkpZNoOO9NTdbmYOrl//HXXstqabesACOmZ2mLp2G3bp/KUkQ1zSGKix5mH5+jMsCHMm
-         EzkV+xT8dThzus/3OhH9+9dfOmIF+XvnHeqnAT+Yzmo14GILVfP7VFnVeRfbNM5kn+n1
-         0dU9oDhuO7s3As2HSrU9VIa1Bg+uDB+T5efSmbZtxRcfvbPDz5FePQJk7TRzbA8BzDpv
-         k13A==
-X-Gm-Message-State: AOAM532yTRIHDG/xIvtNM+aRMect+dO4ccLjW1woFJvsjcueByzB53eY
-        m8ifMIIukfG39uPSu4y2GtzSHcc6L+o=
-X-Google-Smtp-Source: ABdhPJw8e8YV2zvKY2C/DC1nvB4CpPz2usZQyE7wCNeNbMFrD89t/14vgLrbzkuQFpB456SmQNDhAA==
-X-Received: by 2002:a17:906:ae52:: with SMTP id lf18mr22583160ejb.9.1605032506577;
-        Tue, 10 Nov 2020 10:21:46 -0800 (PST)
-Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
-        by smtp.googlemail.com with ESMTPSA id n11sm1979144eds.3.2020.11.10.10.21.45
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=cYvJfHjuscK/tQLjt2qihh1n1W+yA/1YFVyK1P82TAw=;
+        b=dssVrZIfcgxYv5kLknfB5+cCd9kp27H4gBmup/Q1yUa9GUFfBC9Gy8+/kqomiawado
+         c5og/SomPciUryxXlIi2Chjn877OB+IdkktyAaymKTeIgyFJ5cd2JrkvM8k4+gDs1DJJ
+         r1TFNNa1oGitWvyK65/iMM5ywWmmvmDUszoqHnxBJeHRwMtOpmkmL+cpWXuUFYqNXH6k
+         5fuSi6kOJIPNevt5vProOf9YLBBPS8VuCB2HANpY8JMV0UsHm6x5jWENZCIM0z2V5AOX
+         ImaHE+pd8tnSF6vEN34TV3qQPg97AQvp84SAdkzhGt1rmbpQXF8lEJQXLBfOtlHwKVCI
+         8/CQ==
+X-Gm-Message-State: AOAM531k07ueVeTEUiIjkJYDXmSqSYPGPNaveJSZjVJPgA+g+ZBUWvu6
+        EMNYAW7K4Z1CLnQT5NS60J86BOGiVEo=
+X-Google-Smtp-Source: ABdhPJxS2FWRbdtTxQ1iSp2MuSbDUUIgU12RbKbo1oXnz1v0nzhjGAwvce4BbePOu3juIgugsGTL7Q==
+X-Received: by 2002:a1c:c302:: with SMTP id t2mr373874wmf.189.1605032535569;
+        Tue, 10 Nov 2020 10:22:15 -0800 (PST)
+Received: from localhost ([217.111.27.204])
+        by smtp.gmail.com with ESMTPSA id o205sm3985646wma.25.2020.11.10.10.22.13
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 10 Nov 2020 10:21:45 -0800 (PST)
-Date:   Tue, 10 Nov 2020 19:21:44 +0100
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/6] ARM: dts: exynos: use hyphens in Exynos3250 node
- names
-Message-ID: <20201110182144.GA24131@kozik-lap>
-References: <20201105184506.215648-1-krzk@kernel.org>
+        Tue, 10 Nov 2020 10:22:14 -0800 (PST)
+Date:   Tue, 10 Nov 2020 19:22:12 +0100
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Rob Herring <robh+dt@kernel.org>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Nagarjuna Kristam <nkristam@nvidia.com>,
+        Sowjanya Komatineni <skomatineni@nvidia.com>,
+        devicetree@vger.kernel.org
+Subject: Re: [PATCH] arm64: tegra186: Add missing CPU PMUs
+Message-ID: <20201110182212.GI2297135@ulmo>
+References: <20201013095851.311478-1-maz@kernel.org>
+ <20201110173601.GA2297135@ulmo>
+ <3da5c9b1f93699634aad997b77536a92@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="xQR6quUbZ63TTuTU"
 Content-Disposition: inline
-In-Reply-To: <20201105184506.215648-1-krzk@kernel.org>
+In-Reply-To: <3da5c9b1f93699634aad997b77536a92@kernel.org>
+User-Agent: Mutt/1.14.7 (2020-08-29)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 05, 2020 at 07:45:01PM +0100, Krzysztof Kozlowski wrote:
-> Use hyphens instead of underscores in the Exynos3250 node names which is
-> expected by naming convention, multiple dtschema files and pointed out
-> by dtc W=2 builds.  Use also generic "ppmu" node name for PPMU nodes to
-> match Devicetree specification.
-> 
-> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-> ---
->  arch/arm/boot/dts/exynos3250.dtsi | 48 +++++++++++++++----------------
->  1 file changed, 24 insertions(+), 24 deletions(-)
 
-Applied entire set.
+--xQR6quUbZ63TTuTU
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Best regards,
-Krzysztof
+On Tue, Nov 10, 2020 at 06:08:31PM +0000, Marc Zyngier wrote:
+> On 2020-11-10 17:36, Thierry Reding wrote:
+> > On Tue, Oct 13, 2020 at 10:58:51AM +0100, Marc Zyngier wrote:
+> > > Add the description of CPU PMUs for both the Denver and A57 clusters,
+> > > which enables the perf subsystem.
+> > >=20
+> > > Signed-off-by: Marc Zyngier <maz@kernel.org>
+>=20
+> [...]
+>=20
+> > >=20
+> > > +	pmu_denver {
+> > > +		compatible =3D "nvidia,denver-pmu", "arm,armv8-pmuv3";
+> >=20
+> > checkpatch complains that this isn't documented. Did I miss the DT
+> > bindings patch or do we not have one for this?
+>=20
+> We don't. But I don't think adding a compatible string for each
+> and every micro-architecture makes much sense unless we have something
+> useful to add to that compatible string. Such as a full description
+> of the implementation specific events.
+
+I'm wondering if this isn't going to upset Rob's json-schema bot and
+make him mad.
+
+Thierry
+
+--xQR6quUbZ63TTuTU
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAl+q2lIACgkQ3SOs138+
+s6G+TA/9F6MvLXbUY8goi8p4El2Lxs3U2bJuZ6UfdFXkKiUkx5kY7mtRU/4YQEJJ
+Kork+UnSGtwi1wFXtOPv24b2PZ2xlQoqedvKXrWehBJR75TeRHUxwRQI9XvqubG/
+Xhlh3kQfMx7dQDK70Q4v2r9w7i9IM09aio3si/xE0+C8oE5lcS3Qb5sUJP+1/M+s
+h5SYShD8OAzcmC/G2uun+XSd+RXOpUiP96kWizUdBN6dC2iJdJFhhXd4gEQ9pn2N
+i1wwMuE9QA1lFFafk8SZ70f60vPpbIaFt1s0OZc+sN+UN2/EJJj0/LpAvLHdlBGl
+ObUHsSQmeKtP/4SKo4OAONZWHuqzutZkyDsyKsZh1Jy5SqR7eJk8xuy9XZ9iT75a
+7flZqrYD2L6iTeVXaNip1B5Xed3ObxYWxKaAxy7I0ukLfTZedpainsqXAudNMpJ3
+1bIkWNAdwpgGJGmUIZjszoZxxV0H8FnH3cDGDSBkO9+PAwiMIsrKStW1xnZCgQxQ
+5/cIGHRTXkvMOBbprMG4I7dfehmiL4a/vJBlx6nyTUKTv6S3EYEBNOm6SGB0+bxC
+2uy2vDt5f6KWx1sTo5VmcgmoSbLvHniGFqlE8pyZNi1LWgmozj+ZY4l2sJOFSQ9F
+EapjZcu03ZiIdYFREY51jxDvz36O8aZdbRbyOZYlGVyKuZgjqwA=
+=Ssqv
+-----END PGP SIGNATURE-----
+
+--xQR6quUbZ63TTuTU--
