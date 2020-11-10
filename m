@@ -2,213 +2,218 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7A1D2ACBB3
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 04:29:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C386E2ACBB5
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 04:30:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731002AbgKJD3S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 22:29:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42982 "EHLO
+        id S1730010AbgKJDaf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 22:30:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43184 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730767AbgKJD3S (ORCPT
+        with ESMTP id S1729243AbgKJDaf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 22:29:18 -0500
-Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF36EC0613CF
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Nov 2020 19:29:16 -0800 (PST)
-Received: by mail-ot1-x343.google.com with SMTP id a15so9474993otf.5
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Nov 2020 19:29:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=OBdsDRfH0FHtxmwB5xLlqinVd4Y5dkqyDaI/LWJdwN0=;
-        b=C4LBHiwph1WQAmv/k0YbDnKYv09yEGgtfzYyCaB+NrX06O4FC3KH+N4aBXvoPyhDwu
-         EbUxiMOJARlB92zq9SPdkceLMZbUk1TDcTcmYbeTeojYDlG3Q4dOWZ8D3p6QYDFWaciM
-         yetqgab03WMwbRh/YtK0b9TZJDHCyNjdwiPVniWlnYQrKM49rVcdmzUSX/wCm+2/bTJN
-         LuMqifEVHgVcaC6L4xG8mreqMOf/EnYnLfbJqgat5vGaWDdV84gFqV5T+iJVfo0dx3e/
-         girONLYUsAXDPQcDXGbSG/kb8Kwm+9HRkPffCdZtaCTyjGN8BA/Yu4rJh88Vzkh5fppa
-         aVyQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=OBdsDRfH0FHtxmwB5xLlqinVd4Y5dkqyDaI/LWJdwN0=;
-        b=t8qG/wrenKpG8SHgIOJCAIjofyMWIggFGXLCeID/giGWfGVX8shBGxGmPXhiCVJvpD
-         z059NAg3nq6fLmwhM9KXAmp/mD3Kd5urjXhLk3ZAkXEvNJO2oci7seVH5RVQLf9tMnPu
-         gyoKy74zBmsq6r094iC12ZRj20nRl+kTpCZJWwGdRwYvIy66G8nhiLM4O9g5dzn/b0zj
-         JdZ+RFtm4SxVkCPSDZA9zAjQ4si4md0Qq7LNmBXfGNO3QNY/cUwO4+lqCc7/d6mLZG6K
-         1aro39+hfGTdm1sE5qasZA6/14xMCohPpwicY7y/wXAd4eGe/K3xH2VbUq/V3GWpJCN5
-         cSJw==
-X-Gm-Message-State: AOAM531OeCKRHyxIzyGqvR0cNDEhBLISrMhdp/QNrITz3nDqSJTBA3jx
-        w7m72dpMbb+7Xe1TDDtyVFas0g==
-X-Google-Smtp-Source: ABdhPJw5LvP9zCjf0MwtuDtaGbQ8Jn2DgYUN5KeLGHlc/YGu3BZ3xxRjKkUrfa4CvlLVLf9EHlvV6g==
-X-Received: by 2002:a05:6830:18c9:: with SMTP id v9mr13358229ote.74.1604978956205;
-        Mon, 09 Nov 2020 19:29:16 -0800 (PST)
-Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id q7sm2844609oig.42.2020.11.09.19.29.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 09 Nov 2020 19:29:15 -0800 (PST)
-Date:   Mon, 9 Nov 2020 21:29:13 -0600
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Rishabh Bhatnagar <rishabhb@codeaurora.org>
-Cc:     linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        tsoni@codeaurora.org, psodagud@codeaurora.org,
-        sidgup@codeaurora.org
-Subject: Re: [PATCH 2/2] remoteproc: qcom: Add trace events for q6v5_pas
- driver
-Message-ID: <20201110032913.GC332990@builder.lan>
-References: <1604971241-29000-1-git-send-email-rishabhb@codeaurora.org>
- <1604971241-29000-3-git-send-email-rishabhb@codeaurora.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1604971241-29000-3-git-send-email-rishabhb@codeaurora.org>
+        Mon, 9 Nov 2020 22:30:35 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3345C0613CF
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Nov 2020 19:30:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Mime-Version:Content-Type:References:
+        In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=dBihYU6lbyQi+F3ci2kH01lRRYrp9lDstlBQ/CcAARY=; b=X8qZSj+UCgknLRNzishNynx2se
+        DSFPmjVXiDiBzAbof92MdsdHVzP0cZa7xQYZ9JPFCjki7gwI4U2S6YlvezNeyViVBmK/squRsl8Dv
+        Rc1O3JPAm/Z6QxgpRJyZHgLRoNalQCvIx+Gk7XPDmneOnwkwvNoGNRyv1QMs7bO7QstjQTpbxG7y4
+        zItY55ZAbxcVl3CVVRnz+kd6wOjIqhvhU879vJzmS8PMxU/i6W8MjHeDvQKVOle8KurRn7tBCAkp8
+        /HTtIcuZ+5DRyIZPSJEVUqIyYeLK8ybtBN2D7PClajgZPDFRDek5irDbufGGAsFVdgFfwcnRbMoLg
+        IYFRVwEA==;
+Received: from dyn-227.woodhou.se ([90.155.92.227] helo=u3832b3a9db3152.infradead.org)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kcKMa-0005YA-8I; Tue, 10 Nov 2020 03:30:32 +0000
+Message-ID: <088051dff3012035e468b0cb5dcc8cb488b7d292.camel@infradead.org>
+Subject: Re: [EXTERNAL] [tip: x86/apic] x86/io_apic: Cleanup
+ trigger/polarity helpers
+From:   David Woodhouse <dwmw2@infradead.org>
+To:     Tom Lendacky <thomas.lendacky@amd.com>,
+        linux-kernel@vger.kernel.org
+Cc:     Thomas Gleixner <tglx@linutronix.de>, x86 <x86@kernel.org>
+Date:   Tue, 10 Nov 2020 03:30:30 +0000
+In-Reply-To: <e2e06979-cbcf-8771-0b48-c46f2d034aa8@amd.com>
+References: <20201024213535.443185-20-dwmw2@infradead.org>
+         <160397373817.397.3191135882528008704.tip-bot2@tip-bot2>
+         <e2e06979-cbcf-8771-0b48-c46f2d034aa8@amd.com>
+Content-Type: multipart/signed; micalg="sha-256";
+        protocol="application/x-pkcs7-signature";
+        boundary="=-mi9uN1mm3TJ7BPgEXVic"
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+Mime-Version: 1.0
+X-SRS-Rewrite: SMTP reverse-path rewritten from <dwmw2@infradead.org> by merlin.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 09 Nov 19:20 CST 2020, Rishabh Bhatnagar wrote:
 
-> Add tracepoints for q6v5_pas driver. These will help in
-> analyzing the time taken by each step in remoteproc
-> bootup/shutdown process and also serve as standard
-> checkpoints in code.
-> 
+--=-mi9uN1mm3TJ7BPgEXVic
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-These tracepoints seems quite generic and useful to drivers other than
-the Qualcomm PAS driver. Please move them into the framework instead.
+On Mon, 2020-11-09 at 17:15 -0600, Tom Lendacky wrote:
+> On 10/29/20 7:15 AM, tip-bot2 for Thomas Gleixner wrote:
+> > The following commit has been merged into the x86/apic branch of tip:
+> >=20
+> > Commit-ID:     a27dca645d2c0f31abb7858aa0e10b2fa0f2f659
+> > Gitweb:        https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.=
+git/commit/?id=3Da27dca645d2c0f31abb7858aa0e10b2fa0f2f659
+> > Author:        Thomas Gleixner <tglx@linutronix.de>
+> > AuthorDate:    Sat, 24 Oct 2020 22:35:19 +01:00
+> > Committer:     Thomas Gleixner <tglx@linutronix.de>
+> > CommitterDate: Wed, 28 Oct 2020 20:26:26 +01:00
+> >=20
+> > x86/io_apic: Cleanup trigger/polarity helpers
+> >=20
+> > 'trigger' and 'polarity' are used throughout the I/O-APIC code for hand=
+ling
+> > the trigger type (edge/level) and the active low/high configuration. Wh=
+ile
+> > there are defines for initializing these variables and struct members, =
+they
+> > are not used consequently and the meaning of 'trigger' and 'polarity' i=
+s
+> > opaque and confusing at best.
+> >=20
+> > Rename them to 'is_level' and 'active_low' and make them boolean in var=
+ious
+> > structs so it's entirely clear what the meaning is.
+>=20
+> Running the tip tree on my second generation EPYC system I'm seeing lots
+> of the following:
+>=20
+> [  105.325371] hpet: Lost 9601 RTC interrupts
+> [  105.485766] hpet: Lost 9600 RTC interrupts
+> [  105.639182] hpet: Lost 9601 RTC interrupts
+> [  105.792155] hpet: Lost 9601 RTC interrupts
+> [  105.947076] hpet: Lost 9601 RTC interrupts
+> [  106.100876] hpet: Lost 9600 RTC interrupts
+> [  106.253444] hpet: Lost 9601 RTC interrupts
+> [  106.406722] hpet: Lost 9601 RTC interrupts
+>=20
+> preventing the system from booting. I bisected it to this commit.
+>=20
+> Additionally, I'm seeing warnings and error messages (which I haven't
+> bisected, yet) along these lines:
+>=20
+> [   12.790801] WARNING: CPU: 135 PID: 1 at arch/x86/kernel/apic/apic.c:25=
+05 __irq_msi_compose_msg+0x79/0x80
+> [   98.121716] irq 3: nobody cared (try booting with the "irqpoll" option=
+)
+> [  100.692087] irq 15: nobody cared (try booting with the "irqpoll" optio=
+n)
+> [  100.800217] irq 11: nobody cared (try booting with the "irqpoll" optio=
+n)
+> [  100.800407] irq 10: nobody cared (try booting with the "irqpoll" optio=
+n)
 
-> Signed-off-by: Rishabh Bhatnagar <rishabhb@codeaurora.org>
-> ---
->  drivers/remoteproc/qcom_q6v5_pas.c | 11 +++++++++++
->  include/trace/events/q6v5_pas.h    | 34 ++++++++++++++++++++++++++++++++++
->  2 files changed, 45 insertions(+)
->  create mode 100644 include/trace/events/q6v5_pas.h
-> 
-> diff --git a/drivers/remoteproc/qcom_q6v5_pas.c b/drivers/remoteproc/qcom_q6v5_pas.c
-> index 3837f23..b3c0a6a 100644
-> --- a/drivers/remoteproc/qcom_q6v5_pas.c
-> +++ b/drivers/remoteproc/qcom_q6v5_pas.c
-> @@ -29,6 +29,9 @@
->  #include "qcom_q6v5.h"
->  #include "remoteproc_internal.h"
->  
-> +#define CREATE_TRACE_POINTS
-> +#include <trace/events/q6v5_pas.h>
-> +
->  struct adsp_data {
->  	int crash_reason_smem;
->  	const char *firmware_name;
-> @@ -121,12 +124,14 @@ static int adsp_load(struct rproc *rproc, const struct firmware *fw)
->  	struct qcom_adsp *adsp = (struct qcom_adsp *)rproc->priv;
->  	int ret;
->  
-> +	trace_q6v5_pas("setting up memory and loading segments", rproc->name);
->  	ret = qcom_mdt_load(adsp->dev, fw, rproc->firmware, adsp->pas_id,
->  			    adsp->mem_region, adsp->mem_phys, adsp->mem_size,
->  			    &adsp->mem_reloc);
->  	if (ret)
->  		return ret;
->  
-> +	trace_q6v5_pas("done loading segments", rproc->name);
->  	qcom_pil_info_store(adsp->info_name, adsp->mem_phys, adsp->mem_size);
->  
->  	return 0;
-> @@ -137,6 +142,7 @@ static int adsp_start(struct rproc *rproc)
->  	struct qcom_adsp *adsp = (struct qcom_adsp *)rproc->priv;
->  	int ret;
->  
-> +	trace_q6v5_pas("Voting for resources", rproc->name);
->  	qcom_q6v5_prepare(&adsp->q6v5);
->  
->  	ret = adsp_pds_enable(adsp, adsp->active_pds, adsp->active_pd_count);
-> @@ -163,12 +169,14 @@ static int adsp_start(struct rproc *rproc)
->  	if (ret)
->  		goto disable_cx_supply;
->  
-> +	trace_q6v5_pas("Before authenticate and reset", rproc->name);
->  	ret = qcom_scm_pas_auth_and_reset(adsp->pas_id);
->  	if (ret) {
->  		dev_err(adsp->dev,
->  			"failed to authenticate image and release reset\n");
->  		goto disable_px_supply;
->  	}
-> +	trace_q6v5_pas("After authenticate and reset", rproc->name);
->  
->  	ret = qcom_q6v5_wait_for_start(&adsp->q6v5, msecs_to_jiffies(5000));
->  	if (ret == -ETIMEDOUT) {
-> @@ -177,6 +185,7 @@ static int adsp_start(struct rproc *rproc)
->  		goto disable_px_supply;
->  	}
->  
-> +	trace_q6v5_pas("Remoteproc is up", rproc->name);
->  	return 0;
->  
->  disable_px_supply:
-> @@ -214,6 +223,7 @@ static int adsp_stop(struct rproc *rproc)
->  	int handover;
->  	int ret;
->  
-> +	trace_q6v5_pas("Request stop", rproc->name);
->  	ret = qcom_q6v5_request_stop(&adsp->q6v5);
->  	if (ret == -ETIMEDOUT)
->  		dev_err(adsp->dev, "timed out on wait\n");
-> @@ -227,6 +237,7 @@ static int adsp_stop(struct rproc *rproc)
->  	if (handover)
->  		qcom_pas_handover(&adsp->q6v5);
->  
-> +	trace_q6v5_pas("Remoteproc is down", rproc->name);
->  	return ret;
->  }
->  
-> diff --git a/include/trace/events/q6v5_pas.h b/include/trace/events/q6v5_pas.h
-> new file mode 100644
-> index 0000000..38ee5e2
-> --- /dev/null
-> +++ b/include/trace/events/q6v5_pas.h
-> @@ -0,0 +1,34 @@
-> +/* SPDX-License-Identifier: GPL-2.0-only */
-> +/*
-> + * Copyright (c) 2020, The Linux Foundation. All rights reserved.
-> + */
-> +
-> +#undef TRACE_SYSTEM
-> +#define TRACE_SYSTEM q6v5_pas
-> +
-> +#if !defined(_TRACE_Q6V5_PAS_H) || defined(TRACE_HEADER_MULTI_READ)
-> +#define _TRACE_Q6V5_PAS_H
-> +
-> +#include <linux/tracepoint.h>
-> +
-> +TRACE_EVENT(q6v5_pas,
-> +
-> +	TP_PROTO(const char *event, const char *rproc_name),
+Odd. The warning suggests we're asking __irq_msi_compose_msg() to
+compose an MSI targeted at an APIC ID above 255, which shouldn't ever
+happen.
 
-Rather than distinguishing the trace events by the textual first
-parameter, split it into individual trace events for each event.
+Can we see a full boot log with apic=3Dverbose please?=20
 
-Regards,
-Bjorn
+--=-mi9uN1mm3TJ7BPgEXVic
+Content-Type: application/x-pkcs7-signature; name="smime.p7s"
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Transfer-Encoding: base64
 
-> +
-> +	TP_ARGS(event, rproc_name),
-> +
-> +	TP_STRUCT__entry(
-> +		__string(event, event)
-> +		__string(rproc_name, rproc_name)
-> +	),
-> +
-> +	TP_fast_assign(
-> +		__assign_str(event, event);
-> +		__assign_str(rproc_name, rproc_name);
-> +	),
-> +
-> +	TP_printk("event=%s remoteproc:%s", __get_str(event), __get_str(rproc_name))
-> +);
-> +
-> +#endif
-> +#include <trace/define_trace.h>
-> -- 
-> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-> a Linux Foundation Collaborative Project
-> 
+MIAGCSqGSIb3DQEHAqCAMIACAQExDzANBglghkgBZQMEAgEFADCABgkqhkiG9w0BBwEAAKCCECow
+ggUcMIIEBKADAgECAhEA4rtJSHkq7AnpxKUY8ZlYZjANBgkqhkiG9w0BAQsFADCBlzELMAkGA1UE
+BhMCR0IxGzAZBgNVBAgTEkdyZWF0ZXIgTWFuY2hlc3RlcjEQMA4GA1UEBxMHU2FsZm9yZDEaMBgG
+A1UEChMRQ09NT0RPIENBIExpbWl0ZWQxPTA7BgNVBAMTNENPTU9ETyBSU0EgQ2xpZW50IEF1dGhl
+bnRpY2F0aW9uIGFuZCBTZWN1cmUgRW1haWwgQ0EwHhcNMTkwMTAyMDAwMDAwWhcNMjIwMTAxMjM1
+OTU5WjAkMSIwIAYJKoZIhvcNAQkBFhNkd213MkBpbmZyYWRlYWQub3JnMIIBIjANBgkqhkiG9w0B
+AQEFAAOCAQ8AMIIBCgKCAQEAsv3wObLTCbUA7GJqKj9vHGf+Fa+tpkO+ZRVve9EpNsMsfXhvFpb8
+RgL8vD+L133wK6csYoDU7zKiAo92FMUWaY1Hy6HqvVr9oevfTV3xhB5rQO1RHJoAfkvhy+wpjo7Q
+cXuzkOpibq2YurVStHAiGqAOMGMXhcVGqPuGhcVcVzVUjsvEzAV9Po9K2rpZ52FE4rDkpDK1pBK+
+uOAyOkgIg/cD8Kugav5tyapydeWMZRJQH1vMQ6OVT24CyAn2yXm2NgTQMS1mpzStP2ioPtTnszIQ
+Ih7ASVzhV6csHb8Yrkx8mgllOyrt9Y2kWRRJFm/FPRNEurOeNV6lnYAXOymVJwIDAQABo4IB0zCC
+Ac8wHwYDVR0jBBgwFoAUgq9sjPjF/pZhfOgfPStxSF7Ei8AwHQYDVR0OBBYEFLfuNf820LvaT4AK
+xrGK3EKx1DE7MA4GA1UdDwEB/wQEAwIFoDAMBgNVHRMBAf8EAjAAMB0GA1UdJQQWMBQGCCsGAQUF
+BwMEBggrBgEFBQcDAjBGBgNVHSAEPzA9MDsGDCsGAQQBsjEBAgEDBTArMCkGCCsGAQUFBwIBFh1o
+dHRwczovL3NlY3VyZS5jb21vZG8ubmV0L0NQUzBaBgNVHR8EUzBRME+gTaBLhklodHRwOi8vY3Js
+LmNvbW9kb2NhLmNvbS9DT01PRE9SU0FDbGllbnRBdXRoZW50aWNhdGlvbmFuZFNlY3VyZUVtYWls
+Q0EuY3JsMIGLBggrBgEFBQcBAQR/MH0wVQYIKwYBBQUHMAKGSWh0dHA6Ly9jcnQuY29tb2RvY2Eu
+Y29tL0NPTU9ET1JTQUNsaWVudEF1dGhlbnRpY2F0aW9uYW5kU2VjdXJlRW1haWxDQS5jcnQwJAYI
+KwYBBQUHMAGGGGh0dHA6Ly9vY3NwLmNvbW9kb2NhLmNvbTAeBgNVHREEFzAVgRNkd213MkBpbmZy
+YWRlYWQub3JnMA0GCSqGSIb3DQEBCwUAA4IBAQALbSykFusvvVkSIWttcEeifOGGKs7Wx2f5f45b
+nv2ghcxK5URjUvCnJhg+soxOMoQLG6+nbhzzb2rLTdRVGbvjZH0fOOzq0LShq0EXsqnJbbuwJhK+
+PnBtqX5O23PMHutP1l88AtVN+Rb72oSvnD+dK6708JqqUx2MAFLMevrhJRXLjKb2Mm+/8XBpEw+B
+7DisN4TMlLB/d55WnT9UPNHmQ+3KFL7QrTO8hYExkU849g58Dn3Nw3oCbMUgny81ocrLlB2Z5fFG
+Qu1AdNiBA+kg/UxzyJZpFbKfCITd5yX49bOriL692aMVDyqUvh8fP+T99PqorH4cIJP6OxSTdxKM
+MIIFHDCCBASgAwIBAgIRAOK7SUh5KuwJ6cSlGPGZWGYwDQYJKoZIhvcNAQELBQAwgZcxCzAJBgNV
+BAYTAkdCMRswGQYDVQQIExJHcmVhdGVyIE1hbmNoZXN0ZXIxEDAOBgNVBAcTB1NhbGZvcmQxGjAY
+BgNVBAoTEUNPTU9ETyBDQSBMaW1pdGVkMT0wOwYDVQQDEzRDT01PRE8gUlNBIENsaWVudCBBdXRo
+ZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBMB4XDTE5MDEwMjAwMDAwMFoXDTIyMDEwMTIz
+NTk1OVowJDEiMCAGCSqGSIb3DQEJARYTZHdtdzJAaW5mcmFkZWFkLm9yZzCCASIwDQYJKoZIhvcN
+AQEBBQADggEPADCCAQoCggEBALL98Dmy0wm1AOxiaio/bxxn/hWvraZDvmUVb3vRKTbDLH14bxaW
+/EYC/Lw/i9d98CunLGKA1O8yogKPdhTFFmmNR8uh6r1a/aHr301d8YQea0DtURyaAH5L4cvsKY6O
+0HF7s5DqYm6tmLq1UrRwIhqgDjBjF4XFRqj7hoXFXFc1VI7LxMwFfT6PStq6WedhROKw5KQytaQS
+vrjgMjpICIP3A/CroGr+bcmqcnXljGUSUB9bzEOjlU9uAsgJ9sl5tjYE0DEtZqc0rT9oqD7U57My
+ECIewElc4VenLB2/GK5MfJoJZTsq7fWNpFkUSRZvxT0TRLqznjVepZ2AFzsplScCAwEAAaOCAdMw
+ggHPMB8GA1UdIwQYMBaAFIKvbIz4xf6WYXzoHz0rcUhexIvAMB0GA1UdDgQWBBS37jX/NtC72k+A
+CsaxitxCsdQxOzAOBgNVHQ8BAf8EBAMCBaAwDAYDVR0TAQH/BAIwADAdBgNVHSUEFjAUBggrBgEF
+BQcDBAYIKwYBBQUHAwIwRgYDVR0gBD8wPTA7BgwrBgEEAbIxAQIBAwUwKzApBggrBgEFBQcCARYd
+aHR0cHM6Ly9zZWN1cmUuY29tb2RvLm5ldC9DUFMwWgYDVR0fBFMwUTBPoE2gS4ZJaHR0cDovL2Ny
+bC5jb21vZG9jYS5jb20vQ09NT0RPUlNBQ2xpZW50QXV0aGVudGljYXRpb25hbmRTZWN1cmVFbWFp
+bENBLmNybDCBiwYIKwYBBQUHAQEEfzB9MFUGCCsGAQUFBzAChklodHRwOi8vY3J0LmNvbW9kb2Nh
+LmNvbS9DT01PRE9SU0FDbGllbnRBdXRoZW50aWNhdGlvbmFuZFNlY3VyZUVtYWlsQ0EuY3J0MCQG
+CCsGAQUFBzABhhhodHRwOi8vb2NzcC5jb21vZG9jYS5jb20wHgYDVR0RBBcwFYETZHdtdzJAaW5m
+cmFkZWFkLm9yZzANBgkqhkiG9w0BAQsFAAOCAQEAC20spBbrL71ZEiFrbXBHonzhhirO1sdn+X+O
+W579oIXMSuVEY1LwpyYYPrKMTjKECxuvp24c829qy03UVRm742R9Hzjs6tC0oatBF7KpyW27sCYS
+vj5wbal+TttzzB7rT9ZfPALVTfkW+9qEr5w/nSuu9PCaqlMdjABSzHr64SUVy4ym9jJvv/FwaRMP
+gew4rDeEzJSwf3eeVp0/VDzR5kPtyhS+0K0zvIWBMZFPOPYOfA59zcN6AmzFIJ8vNaHKy5QdmeXx
+RkLtQHTYgQPpIP1Mc8iWaRWynwiE3ecl+PWzq4i+vdmjFQ8qlL4fHz/k/fT6qKx+HCCT+jsUk3cS
+jDCCBeYwggPOoAMCAQICEGqb4Tg7/ytrnwHV2binUlYwDQYJKoZIhvcNAQEMBQAwgYUxCzAJBgNV
+BAYTAkdCMRswGQYDVQQIExJHcmVhdGVyIE1hbmNoZXN0ZXIxEDAOBgNVBAcTB1NhbGZvcmQxGjAY
+BgNVBAoTEUNPTU9ETyBDQSBMaW1pdGVkMSswKQYDVQQDEyJDT01PRE8gUlNBIENlcnRpZmljYXRp
+b24gQXV0aG9yaXR5MB4XDTEzMDExMDAwMDAwMFoXDTI4MDEwOTIzNTk1OVowgZcxCzAJBgNVBAYT
+AkdCMRswGQYDVQQIExJHcmVhdGVyIE1hbmNoZXN0ZXIxEDAOBgNVBAcTB1NhbGZvcmQxGjAYBgNV
+BAoTEUNPTU9ETyBDQSBMaW1pdGVkMT0wOwYDVQQDEzRDT01PRE8gUlNBIENsaWVudCBBdXRoZW50
+aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKC
+AQEAvrOeV6wodnVAFsc4A5jTxhh2IVDzJXkLTLWg0X06WD6cpzEup/Y0dtmEatrQPTRI5Or1u6zf
++bGBSyD9aH95dDSmeny1nxdlYCeXIoymMv6pQHJGNcIDpFDIMypVpVSRsivlJTRENf+RKwrB6vcf
+WlP8dSsE3Rfywq09N0ZfxcBa39V0wsGtkGWC+eQKiz4pBZYKjrc5NOpG9qrxpZxyb4o4yNNwTqza
+aPpGRqXB7IMjtf7tTmU2jqPMLxFNe1VXj9XB1rHvbRikw8lBoNoSWY66nJN/VCJv5ym6Q0mdCbDK
+CMPybTjoNCQuelc0IAaO4nLUXk0BOSxSxt8kCvsUtQIDAQABo4IBPDCCATgwHwYDVR0jBBgwFoAU
+u69+Aj36pvE8hI6t7jiY7NkyMtQwHQYDVR0OBBYEFIKvbIz4xf6WYXzoHz0rcUhexIvAMA4GA1Ud
+DwEB/wQEAwIBhjASBgNVHRMBAf8ECDAGAQH/AgEAMBEGA1UdIAQKMAgwBgYEVR0gADBMBgNVHR8E
+RTBDMEGgP6A9hjtodHRwOi8vY3JsLmNvbW9kb2NhLmNvbS9DT01PRE9SU0FDZXJ0aWZpY2F0aW9u
+QXV0aG9yaXR5LmNybDBxBggrBgEFBQcBAQRlMGMwOwYIKwYBBQUHMAKGL2h0dHA6Ly9jcnQuY29t
+b2RvY2EuY29tL0NPTU9ET1JTQUFkZFRydXN0Q0EuY3J0MCQGCCsGAQUFBzABhhhodHRwOi8vb2Nz
+cC5jb21vZG9jYS5jb20wDQYJKoZIhvcNAQEMBQADggIBAHhcsoEoNE887l9Wzp+XVuyPomsX9vP2
+SQgG1NgvNc3fQP7TcePo7EIMERoh42awGGsma65u/ITse2hKZHzT0CBxhuhb6txM1n/y78e/4ZOs
+0j8CGpfb+SJA3GaBQ+394k+z3ZByWPQedXLL1OdK8aRINTsjk/H5Ns77zwbjOKkDamxlpZ4TKSDM
+KVmU/PUWNMKSTvtlenlxBhh7ETrN543j/Q6qqgCWgWuMAXijnRglp9fyadqGOncjZjaaSOGTTFB+
+E2pvOUtY+hPebuPtTbq7vODqzCM6ryEhNhzf+enm0zlpXK7q332nXttNtjv7VFNYG+I31gnMrwfH
+M5tdhYF/8v5UY5g2xANPECTQdu9vWPoqNSGDt87b3gXb1AiGGaI06vzgkejL580ul+9hz9D0S0U4
+jkhJiA7EuTecP/CFtR72uYRBcunwwH3fciPjviDDAI9SnC/2aPY8ydehzuZutLbZdRJ5PDEJM/1t
+yZR2niOYihZ+FCbtf3D9mB12D4ln9icgc7CwaxpNSCPt8i/GqK2HsOgkL3VYnwtx7cJUmpvVdZ4o
+gnzgXtgtdk3ShrtOS1iAN2ZBXFiRmjVzmehoMof06r1xub+85hFQzVxZx5/bRaTKTlL8YXLI8nAb
+R9HWdFqzcOoB/hxfEyIQpx9/s81rgzdEZOofSlZHynoSMYIDyjCCA8YCAQEwga0wgZcxCzAJBgNV
+BAYTAkdCMRswGQYDVQQIExJHcmVhdGVyIE1hbmNoZXN0ZXIxEDAOBgNVBAcTB1NhbGZvcmQxGjAY
+BgNVBAoTEUNPTU9ETyBDQSBMaW1pdGVkMT0wOwYDVQQDEzRDT01PRE8gUlNBIENsaWVudCBBdXRo
+ZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBAhEA4rtJSHkq7AnpxKUY8ZlYZjANBglghkgB
+ZQMEAgEFAKCCAe0wGAYJKoZIhvcNAQkDMQsGCSqGSIb3DQEHATAcBgkqhkiG9w0BCQUxDxcNMjAx
+MTEwMDMzMDMwWjAvBgkqhkiG9w0BCQQxIgQg5rqL2qck6B7+4Cox8LGeeiS3hMmalpqHc4r8Nk8F
+nLkwgb4GCSsGAQQBgjcQBDGBsDCBrTCBlzELMAkGA1UEBhMCR0IxGzAZBgNVBAgTEkdyZWF0ZXIg
+TWFuY2hlc3RlcjEQMA4GA1UEBxMHU2FsZm9yZDEaMBgGA1UEChMRQ09NT0RPIENBIExpbWl0ZWQx
+PTA7BgNVBAMTNENPTU9ETyBSU0EgQ2xpZW50IEF1dGhlbnRpY2F0aW9uIGFuZCBTZWN1cmUgRW1h
+aWwgQ0ECEQDiu0lIeSrsCenEpRjxmVhmMIHABgsqhkiG9w0BCRACCzGBsKCBrTCBlzELMAkGA1UE
+BhMCR0IxGzAZBgNVBAgTEkdyZWF0ZXIgTWFuY2hlc3RlcjEQMA4GA1UEBxMHU2FsZm9yZDEaMBgG
+A1UEChMRQ09NT0RPIENBIExpbWl0ZWQxPTA7BgNVBAMTNENPTU9ETyBSU0EgQ2xpZW50IEF1dGhl
+bnRpY2F0aW9uIGFuZCBTZWN1cmUgRW1haWwgQ0ECEQDiu0lIeSrsCenEpRjxmVhmMA0GCSqGSIb3
+DQEBAQUABIIBAHqsbbKRb6Bo+pynsddNFiN8fWOqcdSwC5VUDl7V/74DmA4V3b22a+kNQ2Qu3sxv
+B3MkzBx2RpcAildPmrfgYuIcAEJB7NkC51VGHQdwsVYJlhaaiJWEWA73PRK4/Z0HZ+JDdGk0znFy
+3GgT8D3chEjFA42lGHopwIGZkB59YUrkCBH6dQdWjgIU3TCxByQSs31lyFbqkdFJQfIHAj5RJnz9
+Ip32c8SXsPTJJjeVgCh8XQyJq9ob/q6aw1eytxmGPYW3Gc4Bf6pcJPiDACZX8gM+4x7ROsqKw+SH
+/YPiLVVAf/b1YRZahUmvHV5XcAlf6GvqdEwb8IwvEVIrkUskKhoAAAAAAAA=
+
+
+--=-mi9uN1mm3TJ7BPgEXVic--
+
