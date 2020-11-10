@@ -2,58 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CF5D2AD319
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 11:05:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 14C7C2AD31A
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 11:05:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730774AbgKJKEF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 05:04:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47382 "EHLO
+        id S1731031AbgKJKEG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 05:04:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47392 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730497AbgKJKEB (ORCPT
+        with ESMTP id S1726467AbgKJKED (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 05:04:01 -0500
-Received: from mail-pg1-x549.google.com (mail-pg1-x549.google.com [IPv6:2607:f8b0:4864:20::549])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44842C0613CF
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 02:04:01 -0800 (PST)
-Received: by mail-pg1-x549.google.com with SMTP id b20so6227158pgh.17
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 02:04:01 -0800 (PST)
+        Tue, 10 Nov 2020 05:04:03 -0500
+Received: from mail-pf1-x449.google.com (mail-pf1-x449.google.com [IPv6:2607:f8b0:4864:20::449])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7600AC0613CF
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 02:04:03 -0800 (PST)
+Received: by mail-pf1-x449.google.com with SMTP id m64so8981887pfm.0
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 02:04:03 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=sender:date:in-reply-to:message-id:mime-version:references:subject
          :from:to:cc;
-        bh=kRljEZObPmOlmEG10GfyRggYqpxgcTfE83SeeHjTGWA=;
-        b=NVi+0WthpOMBSYtfSOZ+BHft2qFlX97SPyA48MtA2+d25Xa0Ux/movM+kq48oM1UjL
-         Ke943t8vzm+Ati09Y9+qPSqioAstxx9wLtfH5KqFVwAfvwoYDV8ThDA986Yvjrln+DCj
-         fbJbTDnkUAdqMUqNBRg2jBGBSUu4Cg1geXlHiKuE4CTHl98RgG9f49d10HTCPHEFsNGo
-         fwUKH39vujQcmhIGyCuvrOichNIWQtGI7QGvI1Zh6sYojEM8z2ROcS7azZIvec0qiOcm
-         imI9NP+6bLCMrGjwg7WYSlAaL5D3wNjoyt5VL6/tywNT2Doqg3KQgLnc9Sb40Y+CSzgU
-         tA2w==
+        bh=OjHoL/inWek5hCo9cit1xV61j9NIQl3A+WsFNLcr5Nw=;
+        b=OUrZQnYUr6rLTUHXqt0cGvvXsY9197SeGN3MhGEsn7wKbZPINCXB214he0hJSMfX2X
+         yKOj/2mZy7e2jO7PZ1XcUEoiqfV7zidE6lppx3gARM9SvRjxPIiLmVJ2ed7rhQPWRi9t
+         RgACWhNaFw2L07K6FS9wngru78GSmaVoWUHZL3cIasVWT+KdfsAbqCRl5kqoyFPuqASf
+         /mzVpjpBgzRz7URBY8ES29KvnwVyfIUYxL3p9mw19lGSjjhV+S33X1Iw5//beLtp4PO3
+         eZ/lvN2mcj4XD4It6mI57qN6Y4VkPwKZIqrU0jyNe7e2VJh/6xOw4qixK3L/pKDfAn9N
+         7gSg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=kRljEZObPmOlmEG10GfyRggYqpxgcTfE83SeeHjTGWA=;
-        b=Ul3SHo+XIaB96axxaUBGInM/t7kZMGLjrsrdIUbutQiAlIy3F5Rugaq5b2DWqwaduR
-         AV6YzuUR2IVOQEtKSTJQ0T4K/YcBCEP31GdTa7mK5Qi0ymRT1oe2AGiMMA7qc60flF/K
-         5P1A/fnzlsrahBxyqaXu3I5zVzJB8+uD4EwihYmk0r0yhjHdkoR1Yv7n6KMqJ0uWRG0R
-         fng1h01QNK7131OHmxOKhzHZc93e+hnsxhKs8c3BwEdCrNUAvRExNMdPH0xG0HK3WSJM
-         NbBi+QLvmdU4f17S5IYIcrqcPJnwvGnmH87yKjQMwNg2AFcvo33nVU/1WoGi3Qq0ErYl
-         IZZQ==
-X-Gm-Message-State: AOAM532RJjQXocXYS8/Fk/cy9EzsQuxZBtCer83PZbtyYw4PUjwR2PV0
-        5K1njwTnEtFSHFlCfYQpeiiCvo1UJu7P
-X-Google-Smtp-Source: ABdhPJyKhag2cTzLlvCt5bCnOC7+U5rgLrIM9rxwY3pxrtMXPFwjTiF1NIpJ62Jq3v/vm2KctVmz3G+3Pbzf
+        bh=OjHoL/inWek5hCo9cit1xV61j9NIQl3A+WsFNLcr5Nw=;
+        b=ezH4pB0n77dQ2ztLjoFEck7lk4lJSRwb5dhMlnYLnExhlUYMo4caYXoiuOAOdaIGtP
+         /9Tjik3hiBOOQIKwA1Qs/ovncw9SlA8Yf7F2ip8NRf7gPme3j+u3XyaydPiojFKsMt0A
+         8rAYriiGFQFlN4aO8jh1Y9Zuuhh/tEL4CFACu25/lTmUpZlPnF6ry45n3+Gf69oLoMGK
+         2UwFamHEM+inrpnpNHxs939zXmNzZcLrQu4LbTRrmqvhOjmwJYHT1i7BMG3gLiP878DZ
+         MnSZ+SYrzg1tM3lWdvZZ4jcBWC0b8WX90Hct6i/mYrd0dsXaO+FaLdJTuo9+rJdAQ5nx
+         fw6w==
+X-Gm-Message-State: AOAM533ez5tEjv3MGKenRwvy7vKQ9UonhdKK3x6A1xsVEQ28NkV0qll2
+        QOkeeOe6nOHvq5qoJT96fXXIG2u6gcaY
+X-Google-Smtp-Source: ABdhPJwBBHIJmGR0jIcFpH/D4UP127WYRMb6G4wdG7MleICNp2cfTB+0QQ4sSJrQrCnTEfk7koVr6TJbUSuQ
 Sender: "irogers via sendgmr" <irogers@irogers.svl.corp.google.com>
 X-Received: from irogers.svl.corp.google.com ([2620:15c:2cd:2:f693:9fff:fef4:4583])
- (user=irogers job=sendgmr) by 2002:a62:7a47:0:b029:160:193:76bc with SMTP id
- v68-20020a627a470000b0290160019376bcmr3529486pfc.24.1605002640742; Tue, 10
- Nov 2020 02:04:00 -0800 (PST)
-Date:   Tue, 10 Nov 2020 02:03:36 -0800
+ (user=irogers job=sendgmr) by 2002:a17:90b:293:: with SMTP id
+ az19mr417438pjb.1.1605002642689; Tue, 10 Nov 2020 02:04:02 -0800 (PST)
+Date:   Tue, 10 Nov 2020 02:03:37 -0800
 In-Reply-To: <20201110100346.2527031-1-irogers@google.com>
-Message-Id: <20201110100346.2527031-3-irogers@google.com>
+Message-Id: <20201110100346.2527031-4-irogers@google.com>
 Mime-Version: 1.0
 References: <20201110100346.2527031-1-irogers@google.com>
 X-Mailer: git-send-email 2.29.2.222.g5d2a92d10f8-goog
-Subject: [RFC PATCH 02/12] perf topdown-parser: Add utility functions.
+Subject: [RFC PATCH 03/12] perf topdown-paser: Add a CSV file reader.
 From:   Ian Rogers <irogers@google.com>
 To:     Peter Zijlstra <peterz@infradead.org>,
         Ingo Molnar <mingo@redhat.com>,
@@ -76,334 +75,132 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Sandeep Dasgupta <sdasgup@google.com>
 
-Basic string, ostream and file functions.
+Read a CSV file info a two dimensional vector of vectors. Open
+parentheses are counted so that expressions like "min(a,b)" aren't
+split. Escape characters and quotations aren't handled.
 
 Co-authored-by: Ian Rogers <irogers@google.com>
 Signed-off-by: Ian Rogers <irogers@google.com>
 Signed-off-by: Sandeep Dasgupta <sdasgup@google.com>
 ---
- .../topdown-parser/general_utils.cpp          | 173 ++++++++++++++++++
- .../pmu-events/topdown-parser/general_utils.h | 131 +++++++++++++
- 2 files changed, 304 insertions(+)
- create mode 100644 tools/perf/pmu-events/topdown-parser/general_utils.cpp
- create mode 100644 tools/perf/pmu-events/topdown-parser/general_utils.h
+ .../pmu-events/topdown-parser/csvreader.cpp   | 49 ++++++++++++++++++
+ .../pmu-events/topdown-parser/csvreader.h     | 51 +++++++++++++++++++
+ 2 files changed, 100 insertions(+)
+ create mode 100644 tools/perf/pmu-events/topdown-parser/csvreader.cpp
+ create mode 100644 tools/perf/pmu-events/topdown-parser/csvreader.h
 
-diff --git a/tools/perf/pmu-events/topdown-parser/general_utils.cpp b/tools/perf/pmu-events/topdown-parser/general_utils.cpp
+diff --git a/tools/perf/pmu-events/topdown-parser/csvreader.cpp b/tools/perf/pmu-events/topdown-parser/csvreader.cpp
 new file mode 100644
-index 000000000000..810c27cf3724
+index 000000000000..142e0e7e5ce7
 --- /dev/null
-+++ b/tools/perf/pmu-events/topdown-parser/general_utils.cpp
-@@ -0,0 +1,173 @@
++++ b/tools/perf/pmu-events/topdown-parser/csvreader.cpp
+@@ -0,0 +1,49 @@
 +/*
 + * Copyright 2020 Google LLC.
 + * SPDX-License-Identifier: GPL-2.0
 + */
 +
++#include "csvreader.h"
++
++#include <cassert>
++#include <algorithm>
++#include <fstream>
++
 +#include "general_utils.h"
-+
-+#include <dirent.h>
-+#include <sys/stat.h>
-+#include <unistd.h>
-+
-+#include <regex>
-+#include <sstream>
-+
 +#include "logging.h"
 +
 +namespace topdown_parser
 +{
-+std::string Trim(const std::string &str)
++std::vector<std::vector<std::string> > CsvReader::getData() const
 +{
-+	const char *ws = " \t\n\r\f\v";
-+	size_t endpos = str.find_last_not_of(ws);
-+	if (endpos == std::string::npos)
-+		return "";
++	std::vector<std::vector<std::string> > dataList;
++	std::ifstream file(file_name_);
++	std::string line = "";
++	assert(file.is_open() && "unable to open csv file");
 +
-+	size_t startpos = str.find_first_not_of(ws);
-+	return str.substr(startpos, endpos - startpos + 1);
-+}
-+
-+std::vector<std::string> Split(const std::string &str, char delim)
-+{
-+	std::vector<std::string> tokens;
-+	std::string token;
-+	std::istringstream tokenStream(str);
-+	while (std::getline(tokenStream, token, delim)) {
-+		tokens.push_back(Trim(token));
-+	}
-+	return tokens;
-+}
-+
-+std::string Strip(const std::string &str, char delim)
-+{
-+	std::string retval("");
-+	for (size_t i = 0; i < str.length(); ++i) {
-+		if (str[i] != delim) {
-+			retval += str[i];
-+		}
-+	}
-+	return retval;
-+}
-+
-+std::vector<std::string> WhitespaceSplit(const std::string &s)
-+{
-+	std::vector<std::string> split_tokens = Split(s, ' ');
-+	std::vector<std::string> retval;
-+	for (auto &split_token : split_tokens) {
-+		if (split_token.empty() || split_token == " ") {
-+			continue;
-+		}
-+		retval.push_back(split_token);
-+	}
-+	return retval;
-+}
-+
-+bool IsOperator(const std::string &str)
-+{
-+	std::regex r(
-+		"\\/|\\-|\\+|\\*|\\(|\\)|\\<|\\>|min|max|\\?|\\:|,|==|>=|<=|="
-+		"|if|else|d_ratio|#Model|in|\\[|\\]");
-+	return regex_match(Trim(str), r);
-+}
-+
-+bool IsConstant(const std::string &str)
-+{
-+	std::regex integer("[-+]?[0-9]+");
-+	std::regex floating("[-+]?[0-9]*\\.?[0-9]+");
-+
-+	return regex_match(str, integer) || regex_match(str, floating);
-+}
-+
-+time_t GetTimestamp(const std::string &fname)
-+{
-+	struct stat st;
-+	int ierr = stat(fname.c_str(), &st);
-+	if (ierr != 0) {
-+		ERROR("Error getting stat on file: " << fname);
-+		return 0;
-+	}
-+	return st.st_mtime;
-+}
-+
-+bool CheckDirPathExists(const std::string &dirname)
-+{
-+	return opendir(dirname.c_str()) != nullptr;
-+}
-+
-+std::string ConvertToCIdentifier(const std::string &str)
-+{
-+	static const char *int_to_word[] = { "zero",  "one",  "two", "three",
-+					     "four",  "five", "six", "seven",
-+					     "eight", "nine" };
-+	std::regex r("\\/|#|\\.|-|:|=");
-+	std::string retval = regex_replace(str, r, "_");
-+
-+	std::smatch sm;
-+	if (regex_match(retval, sm, std::regex("^([0-9])(.*)"))) {
-+		auto digit = stoi(sm[1].str());
-+		std::string word = int_to_word[digit];
-+		std::string rest = sm[2].str();
-+		return word + "_" + rest;
-+	}
-+	return retval;
-+}
-+
-+std::string ToLower(const std::string &str)
-+{
-+	std::string retval("");
-+
-+	for (auto &c : str) {
-+		retval.append(1, std::tolower(c));
-+	}
-+	return retval;
-+}
-+
-+std::vector<std::string> NormalizeModel(const std::vector<std::string> &tokens,
-+					const std::string &cpu)
-+{
-+	std::vector<std::string> retval;
-+	// Track the event if encountering a '['
-+	bool match_start = false;
-+	// The evaluated value of the sub-expression #Model in ['CPUX' 'CPUY']
-+	int condition = 0;
-+
-+	for (size_t i = 0; i < tokens.size(); ++i) {
-+		// Skip keywords like "#Model" and "in"
-+		if (tokens[i] == "#Model" || tokens[i] == "in") {
-+			continue;
-+		}
-+		if (tokens[i] == "[") {
-+			match_start = true;
-+			continue;
-+		}
-+
-+		if (tokens[i] == "]") {
-+			retval.push_back(std::to_string(condition));
-+			match_start = false;
-+			continue;
-+		}
-+
-+		if (match_start) {
-+			if (cpu == Strip(tokens[i], '\'')) {
-+				condition = condition | 1;
++	while (getline(file, line)) {
++		std::vector<std::string> tokens;
++		int opens = 0;
++		int closes = 0;
++		for (const std::string &str : Split(line, delimeter_)) {
++			std::string stripped_str = Strip(str, '"');
++			if (opens > closes) {
++				tokens.back() += ", " + stripped_str;
++			} else {
++				tokens.push_back(stripped_str);
 +			}
-+			continue;
++			opens += std::count(str.begin(), str.end(), '(');
++			closes += std::count(str.begin(), str.end(), ')');
 +		}
 +
-+		// Rest of tokens
-+		retval.push_back(tokens[i]);
++		dataList.push_back(tokens);
 +	}
 +
-+	return retval;
-+}
++	if (dataList.empty()) {
++		FATAL("Empty csv file" << file_name_);
++	}
 +
-+std::string InjectSanityChecksAndReturn(const std::string &str)
-+{
-+	std::string injected_string =
-+		std::string("double retval = ") + str + ";\n\n";
-+	injected_string += "\treturn  retval < 0.0 ? 0.0 : retval;";
-+
-+	return injected_string;
++	return dataList;
 +}
 +
 +} // namespace topdown_parser
-diff --git a/tools/perf/pmu-events/topdown-parser/general_utils.h b/tools/perf/pmu-events/topdown-parser/general_utils.h
+diff --git a/tools/perf/pmu-events/topdown-parser/csvreader.h b/tools/perf/pmu-events/topdown-parser/csvreader.h
 new file mode 100644
-index 000000000000..6e1213247011
+index 000000000000..a82470041145
 --- /dev/null
-+++ b/tools/perf/pmu-events/topdown-parser/general_utils.h
-@@ -0,0 +1,131 @@
++++ b/tools/perf/pmu-events/topdown-parser/csvreader.h
+@@ -0,0 +1,51 @@
 +/* SPDX-License-Identifier: GPL-2.0 */
 +
-+// ------------------------------------------------
-+// File: general_utils.h
-+// ------------------------------------------------
++// ---------------------------------------------
++// File: csvheader.h
++// ---------------------------------------------
 +//
-+// The header implements the interface of common utilities used by the
-+// topdown generator.
++// The header file provides the interface for parsing csv file using
++// CsvReader::delimeter_ as the delimiter for parsing each line.
++//
++// The library provides the following utilities:
++//  `getData`: Reads the input csv file `file_name_` and parses its
++//             contents, based on the delimeter `delimeter_`, as strings.
++//             The parsed data is returned as a 2D vector, V, of strings such
++//             that V[r][c] is same as the value of the input csv file at row r
++//             and column c.
++//
++//             For example, with the following content of a csv file,
++//             a,b,c,
++//             1,2,3
++//             and delimiter as ',', the return value is
++//
++//             {
++//               {"a", "b", "c"},
++//               {"1", "2", "3"}
++//             }
 +
-+#ifndef TOPDOWN_PARSER_GENERAL_UTILS_H_
-+#define TOPDOWN_PARSER_GENERAL_UTILS_H_
++#ifndef TOPDOWN_PARSER_CSV_READER_H_
++#define TOPDOWN_PARSER_CSV_READER_H_
 +
-+#include <set>
 +#include <string>
-+#include <unordered_set>
 +#include <vector>
 +
 +namespace topdown_parser
 +{
-+/**
-+ * Overloading << operators for various STL containers.
-+ */
-+template <typename T>
-+std::ostream &operator<<(std::ostream &OS, std::vector<T> V)
-+{
-+	for (size_t i = 0; i < V.size(); ++i)
-+		OS << V[i] << ",";
++class CsvReader {
++    public:
++	explicit CsvReader(std::string fname, char delm = ',')
++		: file_name_(fname), delimeter_(delm)
++	{
++	}
 +
-+	return OS;
-+}
++	std::vector<std::vector<std::string> > getData() const;
 +
-+template <typename T> std::ostream &operator<<(std::ostream &OS, std::set<T> V)
-+{
-+	for (auto &f : V)
-+		OS << f << "|";
-+
-+	return OS;
-+}
-+
-+template <typename T>
-+std::ostream &operator<<(std::ostream &OS, std::unordered_set<T> V)
-+{
-+	for (auto &f : V)
-+		OS << f << "|";
-+
-+	return OS;
-+}
-+
-+/**
-+ * Function used for splitting a string 'str' based on a delimiter 'delim'.
-+ */
-+std::vector<std::string> Split(const std::string &str, char delim);
-+
-+/**
-+ * Function used for
-+ * (1) splitting a string 'str' based on a whitespace, and
-+ * (2) pruning the splits resulting in empty string or string containing only
-+ * whitespaces.
-+ * Example: For an input string s = "a  b   d"
-+ *  Result: {"a", "b", "c"}
-+ */
-+std::vector<std::string> WhitespaceSplit(const std::string &str);
-+
-+/**
-+ * Trim removes the leading and trailing whitespaces of a string `str`.
-+ */
-+std::string Trim(const std::string &str);
-+
-+/**
-+ * Remove a char 'delim' from anywhere in string 'str'.
-+ */
-+std::string Strip(const std::string &str, char delim);
-+
-+/**
-+ * Check if the string `str` is an operator.
-+ */
-+bool IsOperator(const std::string &str);
-+
-+/**
-+ * Check if the string `str` is an constant decimal numer or float.
-+ */
-+bool IsConstant(const std::string &);
-+
-+/**
-+ * Returns timestamp of a file `fname`
-+ */
-+time_t GetTimestamp(const std::string &fname);
-+
-+/*
-+ * Check if a directory path `dirname` exists
-+ */
-+bool CheckDirPathExists(const std::string &dirname);
-+
-+/**
-+ * Convert an arbitrary string `str` to C identifier.
-+ * It converts some characters like '#', '.', '-', '=' to '_', if appear
-+ * anywhere in the string.
-+ */
-+std::string ConvertToCIdentifier(const std::string &str);
-+
-+/**
-+ * Lowercase a string `str`
-+ */
-+std::string ToLower(const std::string &str);
-+
-+/**
-+ * The input csv file might contain formula like
-+ *    "Exp1 if #Model in ['CPUX' 'CPUY'] else Expr2 "
-+ *  in a column specifying a list of CPUs as CPUX/CPUY/CPUZ
-+ * We want to generate the following formulas for each cpu
-+ *  For CPUX: Expr1 if 1 else Expr2
-+ *  For CPUY: Expr1 if 1 else Expr2
-+ *  For CPUZ: Expr1 if 0 else Expr2
-+ *
-+ *  `tokens`: A list of tokens representing the formula delimited by whitespace.
-+ *  `cpu`: The CPU for which we want to generate the formula.
-+ */
-+std::vector<std::string> NormalizeModel(const std::vector<std::string> &tokens,
-+					const std::string &cpu);
-+
-+/**
-+ * `InjectSanityChecksAndReturn` converts a formula 'str'
-+ * to
-+ *  double retval = str < 0.0 ? 0.0 : str;
-+ *  return retval;
-+ */
-+std::string InjectSanityChecksAndReturn(const std::string &str);
++    private:
++	const std::string file_name_;
++	const char delimeter_;
++};
 +
 +} // namespace topdown_parser
 +
-+#endif // TOPDOWN_PARSER_GENERAL_UTILS_H_
++#endif // TOPDOWN_PARSER_CSV_READER_H_
 -- 
 2.29.2.222.g5d2a92d10f8-goog
 
