@@ -2,90 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 46C582ADC93
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 18:06:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DD872ADC9A
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 18:08:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730511AbgKJRGu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 12:06:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57118 "EHLO
+        id S1730666AbgKJRH4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 12:07:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57292 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726428AbgKJRGt (ORCPT
+        with ESMTP id S1726344AbgKJRHz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 12:06:49 -0500
-Received: from mail-vk1-xa44.google.com (mail-vk1-xa44.google.com [IPv6:2607:f8b0:4864:20::a44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54405C0613CF;
-        Tue, 10 Nov 2020 09:06:49 -0800 (PST)
-Received: by mail-vk1-xa44.google.com with SMTP id i3so1741944vkk.11;
-        Tue, 10 Nov 2020 09:06:49 -0800 (PST)
+        Tue, 10 Nov 2020 12:07:55 -0500
+Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28EDEC0613D1
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 09:07:55 -0800 (PST)
+Received: by mail-ed1-x544.google.com with SMTP id ay21so13544743edb.2
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 09:07:55 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=S2hWuyWxfHf1nsWdsAhIbK8CXsUZ34HwpLnb4gds8BU=;
-        b=lW6eap4yjPFwd1xqWN/nDsAprEZlgu9pTkSR9mnNtKq9hNOXXSnfbZKvaK8g983w+k
-         +5/MCRNK1AiIEr9DM/ogps8y3szbop8gag+BjlFGjPNqnN3uBiWgTP2daIahCSO3tiJ+
-         xpgZzkWV6FeGT7w+G55XkKUHDMULe4kHUhE98YPgah3hkG0gaRvd+JW60JI9P1gWOO8F
-         yVlZP9F2ehj+sP8PvvrqHC1iwLngn2Ue6osK9rmegIubwPxBFY5MYxUoqZySwj5DACt9
-         BWxiab/Dq3GHmXPqcUZHQ4KL2T85Z7zaK7lZ3OK4qAPg02WYiseVqF5HcVEZ6rytoujr
-         /lqQ==
+        d=monstr-eu.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=2DzsxEVUbZIb01puXVW/bT3rEmRoPOpSkxNXqK+jRRY=;
+        b=TdNHMW555gDky6SjR0G58meQPRqlxg1JQ1rt3295aYJO+Gw/LpbN9GuUZx2QGDlqgl
+         wz6Rhyx27WSTiqj91khzN/mLXv6gmBf0zphzCz7zkGjlrH39CZgxSIDkjyM8lT/azwTD
+         pmmWwb+s1/hS+nP/tuS/FZPkpejRpOuWcADgBInMAW5i2VZz1pOtzh2g3vh1Jx73TZmA
+         x60uaS8hwcFowq045Tp5lc7vfqM14UEckO88ky0ZzmlBEHgvNJYszLYQY/N7vR2Z68ka
+         yxM6Y9hO94JTwUpst08taegwSdDWDe+p/7A7hVQjTvPo8MboFNYwgHpvCg4bVUycy7DJ
+         ut7w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=S2hWuyWxfHf1nsWdsAhIbK8CXsUZ34HwpLnb4gds8BU=;
-        b=c8C708/0Rdqv+F9z0RAQ+rPZxP5CaUgncP5Ps5F0k0QNb7dkZEh65o5oXCjNZoPUP+
-         WkJXWecdaqgFA0xo7xKUgsGeL3Gi9RKIrPRZQDvO0bv0Gw6j0UKFRnNhJ1VAabjMStrh
-         OR2rSjCs/qSi6yWSh+tn+ML9NA2LBIErLOhH4cpvPuCx56k34T8CedJp4kp/8wUK3aUV
-         O0ySE/S/3540Xlqni+EyDPaKkG9mLqPO0cKa1xKbF4pBi9uO6YzIvgu2gc5oxJSqBsz9
-         3V74mlqXHGZauDliBgvUHnJafXu3pd9J/W2/e3m89pQ0favyoDap/G0RmxPKddwzD/1e
-         yC1w==
-X-Gm-Message-State: AOAM533oBfk86YW9H7hgCX9HQMIpJsGej5IRXa0rdHyGlKKO3OnKfmRP
-        +ZIStw8eh7g+qmoq0fI62xvCinL80iBNw0kkfyRA3WZq
-X-Google-Smtp-Source: ABdhPJzdhz3B1Nkrey7mX9SwbyLt0HkCknfCWhlRzq6S8L9mLF1ihwVNQ1vecQE7/g9Mu7sHMVpk+WHFgYSswxoiE10=
-X-Received: by 2002:a1f:5587:: with SMTP id j129mr11529056vkb.0.1605028008315;
- Tue, 10 Nov 2020 09:06:48 -0800 (PST)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=2DzsxEVUbZIb01puXVW/bT3rEmRoPOpSkxNXqK+jRRY=;
+        b=D1e7GphjWkAXbvErEg809jeQQlVjnN/Cq/Z4WD97cJAK1MDn2j1S0vNYEB9w5EgsyH
+         nNOgJW3U3/YPHqTyhlAuOvf6YCopX/Pbuaooi2+nv29MSKwHd0IXOey9cI7+uRoBTygw
+         pcgeXlGq3YNlys9fBTPJoJ8TB8tYBi9C1cc+KQpRZ21qGrOSKDHwhGvgyXnTekRyzZBl
+         FJHNA83pUsd8LBmbSHVZySoIGPjVH1IytJ4K6jeNnVPy7KLI/GHbHhKXEkZHW4+POXUW
+         PRwCS/xFOyVs1V5URoKrAzyCv/h8K4o2RmHpuEdITfioq5Ietyr1VUnAf5xh04Wc07kh
+         5VrQ==
+X-Gm-Message-State: AOAM530PGw+FTTOw26RxJuLS/JRkZvTiYQLS0h/1O7a7zbv7e9XSLDWx
+        owJ30cHilmtMKPKVLHGK8AoCjA==
+X-Google-Smtp-Source: ABdhPJylWuiruvazVv99WQxmOkSKdiwJnj6Rtz31tRZOOPYXcUNuCp2KZ0oGRI2yXj5u69At4sCxYg==
+X-Received: by 2002:a50:e183:: with SMTP id k3mr306629edl.111.1605028073766;
+        Tue, 10 Nov 2020 09:07:53 -0800 (PST)
+Received: from [192.168.0.105] (nat-35.starnet.cz. [178.255.168.35])
+        by smtp.gmail.com with ESMTPSA id d2sm5318702ejr.31.2020.11.10.09.07.52
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 10 Nov 2020 09:07:52 -0800 (PST)
+Subject: Re: [PATCH resend v2] microblaze: Replace <linux/clk-provider.h> by
+ <linux/of_clk.h>
+To:     Geert Uytterhoeven <geert+renesas@glider.be>
+Cc:     linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org,
+        Stephen Boyd <sboyd@kernel.org>
+References: <20201110154851.3285695-1-geert+renesas@glider.be>
+From:   Michal Simek <monstr@monstr.eu>
+Message-ID: <dc5ce0ab-289d-7fa4-97f5-ced102afbfbf@monstr.eu>
+Date:   Tue, 10 Nov 2020 18:07:52 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.1
 MIME-Version: 1.0
-References: <20201110142032.24071-1-TheSven73@gmail.com> <CAHp75Ve7jZyshwLuNKvuk7uvj43SpcZT_=csOYXVFUqhtmFo3A@mail.gmail.com>
-In-Reply-To: <CAHp75Ve7jZyshwLuNKvuk7uvj43SpcZT_=csOYXVFUqhtmFo3A@mail.gmail.com>
-From:   Sven Van Asbroeck <thesven73@gmail.com>
-Date:   Tue, 10 Nov 2020 12:06:37 -0500
-Message-ID: <CAGngYiV6i=fsySH35UgL2fKiNp1VAfdkJ=hrZ8nmMn_1fkaa-Q@mail.gmail.com>
-Subject: Re: [PATCH net v2] net: phy: spi_ks8995: Do not overwrite SPI mode flags
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        "David S. Miller" <davem@davemloft.net>,
-        netdev <netdev@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Mark Brown <broonie@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Frederic LAMBERT <frdrc66@gmail.com>,
-        Gabor Juhos <juhosg@openwrt.org>,
-        Jonathan Cameron <jonathan.cameron@huawei.com>,
-        linux-spi <linux-spi@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20201110154851.3285695-1-geert+renesas@glider.be>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PING Jakub
 
-On Tue, Nov 10, 2020 at 11:30 AM Andy Shevchenko
-<andy.shevchenko@gmail.com> wrote:
->
-> I see that this is a fix for backporing, but maybe you can send a
-> patches on top of this to:
->   1) introduce
->  #define SPI_MODE_MASK  (SPI_CPHA | SPI_CPOL)
->        spi->mode &= ~SPI_MODE_MASK;
-> > +       spi->mode |= SPI_MODE_0;
->
-Jakub,
 
-Is it possible to merge Andy's suggestion into net?
-Or should this go into net-next?
+On 10. 11. 20 16:48, Geert Uytterhoeven wrote:
+> The MicroBlaze platform code is not a clock provider, and just needs to
+> call of_clk_init().
+> 
+> Hence it can include <linux/of_clk.h> instead of <linux/clk-provider.h>.
+> 
+> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+> Reviewed-by: Stephen Boyd <sboyd@kernel.org>
+> ---
+> v2:
+>   - Add Reviewed-by.
+> ---
+>  arch/microblaze/kernel/setup.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/arch/microblaze/kernel/setup.c b/arch/microblaze/kernel/setup.c
+> index 333b09658ca89105..7fcf5279ad15f61f 100644
+> --- a/arch/microblaze/kernel/setup.c
+> +++ b/arch/microblaze/kernel/setup.c
+> @@ -9,7 +9,7 @@
+>   */
+>  
+>  #include <linux/init.h>
+> -#include <linux/clk-provider.h>
+> +#include <linux/of_clk.h>
+>  #include <linux/clocksource.h>
+>  #include <linux/string.h>
+>  #include <linux/seq_file.h>
+> 
 
-Thank you,
-Sven
+Applied.
+
+M
+
+-- 
+Michal Simek, Ing. (M.Eng), OpenPGP -> KeyID: FE3D1F91
+w: www.monstr.eu p: +42-0-721842854
+Maintainer of Linux kernel - Xilinx Microblaze
+Maintainer of Linux kernel - Xilinx Zynq ARM and ZynqMP ARM64 SoCs
+U-Boot custodian - Xilinx Microblaze/Zynq/ZynqMP/Versal SoCs
+
