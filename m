@@ -2,142 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C4BE2AE27D
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 23:06:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 85A852AE28C
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 23:08:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732024AbgKJWGy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 17:06:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47606 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726688AbgKJWGx (ORCPT
+        id S1732157AbgKJWIM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 17:08:12 -0500
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:7132 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726688AbgKJWIH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 17:06:53 -0500
-Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CA06C0613D1;
-        Tue, 10 Nov 2020 14:06:52 -0800 (PST)
-Received: by mail-ed1-x543.google.com with SMTP id l5so81419edq.11;
-        Tue, 10 Nov 2020 14:06:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=ScC75wP02JgAQnoPoluzDISIKUTt7c3WoT6HKef6yH0=;
-        b=dBFVI7ErZs51pKrmKb7dNp8ZBJxmYF/Rccih1C0hZ1zsNz1gioisKEuTMnAGxOnSCn
-         OYidsTp1BF3trdMOWLxITc0kW9J70RVjbXeE3OOrOeJatH7qVDNxz+CMCgJNncRikhL7
-         1PXHVZTTXzQxWU2jqWWnILlYr9zoXfnjKuHa2g05ZWyyQnYAriZmMnpDa52jiJHkeIPd
-         ww3fTgqod9+5UQmP4FSGk9hLZ4fsmB3woK1GzhnGvmOQMUyehTPU5Dc4wldm5ZocQBYy
-         Nsk/Anr5MOyUKqyJr3yTsldPMGpeuDzgi3qtX048qywDxs7xmoZzxkLull1C5lvLu4Tz
-         u0kw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ScC75wP02JgAQnoPoluzDISIKUTt7c3WoT6HKef6yH0=;
-        b=UIS1zFidPp7XC8psdJ8mEdx4iPJTJLIiSXeuX9tgJ1zynjqpeLDsoADhkysOZ/rNwz
-         Y0lykcaTRSRgNQBN2lKFCWsYu2lZR6WZPqqpFe9cYRGPqAiq6YVSvHn6Q9F6KzCRFMjb
-         KCtSkc0d9JGS5jP/kQ8EI8O9uyxXdIjAJX3sZc9xeDUnqNRNkpx+YnqSSmIG59fju3Qf
-         DrLBzvQdD3C7R9aJ8gavrX3JcC8Kd5Lg2ci7aJvHXDRq2UOskhFAWOA8S4G+vwA3D3Qu
-         XLVTo9ONvZp8izk4BnPfx/a/5DD4zss++hPeD1BAhmMde6/99HUN0ZAIXweb6jajTt6q
-         zygA==
-X-Gm-Message-State: AOAM530UuPcmH0lMtpyZREQnuh1M1Q2mmfWnq5N9AevoRhA+977Z5yBH
-        CuBCZMPOn2xVXIwDoJLqoXs=
-X-Google-Smtp-Source: ABdhPJysXoRimH8cY1wEZy+FFZd4ZuxG/cdTeDnWFdxCkTtNate9qgKVA/sLEyqkLNZg6AaZ1rkzRA==
-X-Received: by 2002:a05:6402:783:: with SMTP id d3mr23728408edy.168.1605046010782;
-        Tue, 10 Nov 2020 14:06:50 -0800 (PST)
-Received: from skbuf ([188.25.2.177])
-        by smtp.gmail.com with ESMTPSA id x20sm45449ejv.66.2020.11.10.14.06.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 10 Nov 2020 14:06:50 -0800 (PST)
-Date:   Wed, 11 Nov 2020 00:06:47 +0200
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     Florian Fainelli <f.fainelli@gmail.com>
-Cc:     netdev@vger.kernel.org, Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>, Ray Jui <rjui@broadcom.com>,
-        Scott Branden <sbranden@broadcom.com>,
-        "maintainer:BROADCOM IPROC ARM ARCHITECTURE" 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        Hauke Mehrtens <hauke@hauke-m.de>,
-        =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "moderated list:BROADCOM IPROC ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        Kurt Kanzenbach <kurt@kmk-computers.de>
-Subject: Re: [PATCH 04/10] ARM: dts: BCM5301X: Add a default compatible for
- switch node
-Message-ID: <20201110220647.r5ol44etxa7xxql3@skbuf>
-References: <20201110033113.31090-1-f.fainelli@gmail.com>
- <20201110033113.31090-5-f.fainelli@gmail.com>
+        Tue, 10 Nov 2020 17:08:07 -0500
+Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0AAM4krg009091
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 14:08:05 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : content-type : content-transfer-encoding :
+ mime-version; s=facebook; bh=Bh/X4g7eg1CB8q7LMWLH94dNX8ID4OwoQyO4pPareSM=;
+ b=gcqk0kv9Wccw67j7LH/XGsspTzQNFIxUBpeXpkBYEp8xpF4cTttc70uNy2Vx1P1LoebP
+ 2umyQU2chGmBhsI/BhvvjJffbAtJXrQXFyvpAJY5fYdmu9zYQo+JGFksBg4J3O2JqliC
+ 7zL0DvIcEl2zaXoYUQI7imAwZ7aW5pyFeTw= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 34pcmjdajw-3
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 14:08:05 -0800
+Received: from intmgw001.41.prn1.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:83::6) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Tue, 10 Nov 2020 14:08:05 -0800
+Received: by devvm1755.vll0.facebook.com (Postfix, from userid 111017)
+        id 2DA9C239AED2; Tue, 10 Nov 2020 14:08:01 -0800 (PST)
+From:   Roman Gushchin <guro@fb.com>
+To:     Andrew Morton <akpm@linux-foundation.org>, <linux-mm@kvack.org>
+CC:     Shakeel Butt <shakeelb@google.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        David Rientjes <rientjes@google.com>, <kernel-team@fb.com>,
+        Roman Gushchin <guro@fb.com>
+Subject: [PATCH v1 0/3] mm: memcg: deprecate cgroup v1 non-hierarchical mode
+Date:   Tue, 10 Nov 2020 14:07:57 -0800
+Message-ID: <20201110220800.929549-1-guro@fb.com>
+X-Mailer: git-send-email 2.24.1
+X-FB-Internal: Safe
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201110033113.31090-5-f.fainelli@gmail.com>
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-11-10_08:2020-11-10,2020-11-10 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 bulkscore=0
+ lowpriorityscore=0 adultscore=0 impostorscore=0 spamscore=0
+ priorityscore=1501 mlxscore=0 suspectscore=0 clxscore=1015 phishscore=0
+ mlxlogscore=699 malwarescore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2009150000 definitions=main-2011100150
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 09, 2020 at 07:31:07PM -0800, Florian Fainelli wrote:
-> Provide a default compatible string which is based on the 53010 SRAB
-> compatible, this allows us to have sane defaults and silences the
-> following warnings:
-> 
-> arch/arm/boot/dts/bcm4708-asus-rt-ac56u.dt.yaml:
-> ethernet-switch@18007000: compatible: 'oneOf' conditional failed, one
-> must be fixed:
->         ['brcm,bcm5301x-srab'] is too short
->         'brcm,bcm5325' was expected
->         'brcm,bcm53115' was expected
->         'brcm,bcm53125' was expected
->         'brcm,bcm53128' was expected
->         'brcm,bcm5365' was expected
->         'brcm,bcm5395' was expected
->         'brcm,bcm5389' was expected
->         'brcm,bcm5397' was expected
->         'brcm,bcm5398' was expected
->         'brcm,bcm11360-srab' was expected
->         'brcm,bcm5301x-srab' is not one of ['brcm,bcm53010-srab',
-> 'brcm,bcm53011-srab', 'brcm,bcm53012-srab', 'brcm,bcm53018-srab',
-> 'brcm,bcm53019-srab']
->         'brcm,bcm5301x-srab' is not one of ['brcm,bcm11404-srab',
-> 'brcm,bcm11407-srab', 'brcm,bcm11409-srab', 'brcm,bcm58310-srab',
-> 'brcm,bcm58311-srab', 'brcm,bcm58313-srab']
->         'brcm,bcm5301x-srab' is not one of ['brcm,bcm58522-srab',
-> 'brcm,bcm58523-srab', 'brcm,bcm58525-srab', 'brcm,bcm58622-srab',
-> 'brcm,bcm58623-srab', 'brcm,bcm58625-srab', 'brcm,bcm88312-srab']
->         'brcm,bcm5301x-srab' is not one of ['brcm,bcm3384-switch',
-> 'brcm,bcm6328-switch', 'brcm,bcm6368-switch']
->         From schema:
-> Documentation/devicetree/bindings/net/dsa/b53.yaml
-> 
-> Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
-> ---
+The non-hierarchical cgroup v1 mode is a legacy of early days
+of the memory controller and doesn't bring any value today.
+However, it complicates the code and creates many edge cases
+all over the memory controller code.
 
-Nice, I didn't know DSA supported the switch inside this device. In the
-default AsusWRT, the switch is well hidden from the kernel :)
+It's a good time to deprecate it completely. This patchset removes
+the internal logic, adjusts the user interface and updates
+the documentation. The alt patch removes some bits of the cgroup
+core code, which become obsolete.
 
-Not that it makes any difference as far as I can see, but how do you
-know this a BCM53010 SRAB specifically?
+From Michal Hocko:
+All that we know today is that we have a warning in place to complain
+loudly when somebody relies on use_hierarchy=3D0 with a deeper
+hierarchy. For all those years we have seen _zero_ reports that would
+describe a sensible usecase.
+Moreover we (SUSE) have backported this warning into old distribution
+kernels (since 3.0 based kernels) to extend the coverage and didn't hear
+even for users who adopt new kernels only very slowly. The only report
+we have seen so far was a LTP test suite which doesn't really reflect
+any real life usecase.
 
->  arch/arm/boot/dts/bcm5301x.dtsi | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/arch/arm/boot/dts/bcm5301x.dtsi b/arch/arm/boot/dts/bcm5301x.dtsi
-> index ee23c0841699..807580dd89f5 100644
-> --- a/arch/arm/boot/dts/bcm5301x.dtsi
-> +++ b/arch/arm/boot/dts/bcm5301x.dtsi
-> @@ -483,7 +483,7 @@ thermal: thermal@1800c2c0 {
->  	};
->  
->  	srab: ethernet-switch@18007000 {
-> -		compatible = "brcm,bcm5301x-srab";
-> +		compatible = "brcm,bcm53010-srab", "brcm,bcm5301x-srab";
->  		reg = <0x18007000 0x1000>;
->  
->  		status = "disabled";
-> -- 
-> 2.25.1
-> 
+v1:
+  - added a note from Michal
+  - added acks and reviews
+
+rfc:
+  - https://lwn.net/Articles/835983/
+
+
+Roman Gushchin (3):
+  mm: memcg: deprecate the non-hierarchical mode
+  docs: cgroup-v1: reflect the deprecation of the non-hierarchical mode
+  cgroup: remove obsoleted broken_hierarchy and warned_broken_hierarchy
+
+ .../admin-guide/cgroup-v1/memcg_test.rst      |  8 +-
+ .../admin-guide/cgroup-v1/memory.rst          | 40 +++------
+ include/linux/cgroup-defs.h                   | 15 ----
+ include/linux/memcontrol.h                    |  7 --
+ kernel/cgroup/cgroup.c                        | 12 ---
+ mm/memcontrol.c                               | 90 +++----------------
+ 6 files changed, 29 insertions(+), 143 deletions(-)
+
+--=20
+2.26.2
+
