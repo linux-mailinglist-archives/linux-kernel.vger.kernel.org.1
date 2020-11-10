@@ -2,91 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 763652AD314
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 11:04:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D42602AD317
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 11:04:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728553AbgKJKEb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S1732059AbgKJKEj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 05:04:39 -0500
+Received: from mail-eopbgr760041.outbound.protection.outlook.com ([40.107.76.41]:24173
+        "EHLO NAM02-CY1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727698AbgKJKEb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 10 Nov 2020 05:04:31 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34294 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731960AbgKJKEZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 05:04:25 -0500
-Received: from mail-oo1-f53.google.com (mail-oo1-f53.google.com [209.85.161.53])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EF62421D91
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 10:04:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605002664;
-        bh=7IIeKX2s7WW6cbqVTlUhSpTs98HOO9ub/MiDrEiCkGg=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=aiioJ9LI/t1gpemUaZVzG8Z7WiNDuMZzN9imH/b6vRNBRfDOULcqDgnFdD9S+u7Eb
-         Iit/Fc/vfMYi84z0n1v+wybqXFNe+sYdrKUg6TARjwSZP3LU5iRR6jGWFOGEWN8EJL
-         KxXq9xbUmnmHmQzZECoP3PWiDZ8nNHSrZXUykXxg=
-Received: by mail-oo1-f53.google.com with SMTP id y3so2804042ooq.2
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 02:04:23 -0800 (PST)
-X-Gm-Message-State: AOAM531n1t62jwtXNTm2xMwajN8+JCbA0/3AtrSeVjX+LYfLXD846p0b
-        7kI0N0J3sYzXtSH9JC9cyHKUfKjndau0TBKimyA=
-X-Google-Smtp-Source: ABdhPJzELEiTqwIVykbdQnbr19rVSaEqCjteNtkrsDtuOjKZYvnYUaKufR4R8FuAkHtvScyNBRgsqB/c/ugejO5pWmU=
-X-Received: by 2002:a4a:a217:: with SMTP id m23mr12940161ool.26.1605002663105;
- Tue, 10 Nov 2020 02:04:23 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=nRE3pRlfurEPh77JJLUc2A7IPa6DyTGgeyT1YmTsV8YbMlXYm1uVqAx/hGjk2rmrZhFpPtGBnMOQy5bi80VQQQHYyXvleFnEwkaHqhzpTXBV+wGhg81E9YPU3rsvwviwA7iyt6qeRv7TNBtyv6A5FW5t16DGBxcT71GWy9i/VOnXrcDqUmftk9Q0wHq/GkBiKIe9/u9x9hzVk9wweqS1g0gyy7LyH6XlgRKGFsFfIYg7+VOlo9BqIYoA1lK6h675pFVylS8Kg3qSUGhU/wEU4SSm/Of6z6NW+03b+VEsYdsUAyFSR+Wyfj03253oSNK+bj2IiT0BlLG4oRgBAdpThw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=edlVt8XClrNuNpQ3HYTDkZtqd4K8bz4gIsaPDNKVTJY=;
+ b=T4JshIBVuRUFZtPXwXCFSyqbpL3OT+BCnin5lwtmuUi4QBDE+O5fTGv/xdf2PdWe0UgZvJudG5lIcoUo8Q8zKBYJq7gkuisGpHL1U1q7cyq4HW6XwceB5+oSCEKo0X9nuq+OUYXYy5jkrnsElpVL/TT9LUTvn4CB4wYBZ0oldYzm3dydHA6VF3ibq94sMQq8vZ5ZNEDnzB/Ap+xekcCDUlRGe2eBqTUpPs7kcs0p4aizUn9mWRZ2Au6CR0azvxdhmKB9YuDcX/xJBb5aT/IQ6SWZBaq3m+meaNi+m/99r7O4S+1EPkeVXh3C09gTmCRHlaKvfOw9jrMbY1ph79qHYA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 149.199.62.198) smtp.rcpttodomain=huawei.com smtp.mailfrom=xilinx.com;
+ dmarc=bestguesspass action=none header.from=xilinx.com; dkim=none (message
+ not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=edlVt8XClrNuNpQ3HYTDkZtqd4K8bz4gIsaPDNKVTJY=;
+ b=ZY2wqVwpNUQwnLe1tO8ExW9hsn1n97VKbHUZpN3om8toCAKvkhYMtccxLTZHQgvwSDN84Jri4LsJW08MFOR666IgHRD3s5GVdnaHSVWm1o1uf0sNkaWRDWeXcrTLRrvkHV0TlpkBME20gxjhQcKaZG9kAXqdHTA7md2CK6gQ/nY=
+Received: from BL1PR13CA0124.namprd13.prod.outlook.com (2603:10b6:208:2bb::9)
+ by BL0PR02MB4801.namprd02.prod.outlook.com (2603:10b6:208:54::23) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3477.20; Tue, 10 Nov
+ 2020 10:04:27 +0000
+Received: from BL2NAM02FT027.eop-nam02.prod.protection.outlook.com
+ (2603:10b6:208:2bb:cafe::bf) by BL1PR13CA0124.outlook.office365.com
+ (2603:10b6:208:2bb::9) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3564.13 via Frontend
+ Transport; Tue, 10 Nov 2020 10:04:27 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 149.199.62.198)
+ smtp.mailfrom=xilinx.com; huawei.com; dkim=none (message not signed)
+ header.d=none;huawei.com; dmarc=bestguesspass action=none
+ header.from=xilinx.com;
+Received-SPF: Pass (protection.outlook.com: domain of xilinx.com designates
+ 149.199.62.198 as permitted sender) receiver=protection.outlook.com;
+ client-ip=149.199.62.198; helo=xsj-pvapexch02.xlnx.xilinx.com;
+Received: from xsj-pvapexch02.xlnx.xilinx.com (149.199.62.198) by
+ BL2NAM02FT027.mail.protection.outlook.com (10.152.77.160) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.3541.17 via Frontend Transport; Tue, 10 Nov 2020 10:04:27 +0000
+Received: from xsj-pvapexch01.xlnx.xilinx.com (172.19.86.40) by
+ xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1913.5; Tue, 10 Nov 2020 02:04:26 -0800
+Received: from smtp.xilinx.com (172.19.127.95) by
+ xsj-pvapexch01.xlnx.xilinx.com (172.19.86.40) with Microsoft SMTP Server id
+ 15.1.1913.5 via Frontend Transport; Tue, 10 Nov 2020 02:04:26 -0800
+Envelope-to: michal.simek@xilinx.com,
+ zhangxiaoxu5@huawei.com,
+ yi.zhang@huawei.com,
+ linux-kernel@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org,
+ tglx@linutronix.de,
+ daniel.lezcano@linaro.org,
+ yukuai3@huawei.com
+Received: from [172.30.17.110] (port=56846)
+        by smtp.xilinx.com with esmtp (Exim 4.90)
+        (envelope-from <michal.simek@xilinx.com>)
+        id 1kcQVl-0003mh-Qf; Tue, 10 Nov 2020 02:04:26 -0800
+Subject: Re: [PATCH] "clocksource/drivers/cadence_ttc: fix memory leak in
+ ttc_setup_clockevent()
+To:     Yu Kuai <yukuai3@huawei.com>, <michal.simek@xilinx.com>,
+        <daniel.lezcano@linaro.org>, <tglx@linutronix.de>,
+        <soren.brinkmann@xilinx.com>
+CC:     <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <yi.zhang@huawei.com>,
+        <zhangxiaoxu5@huawei.com>
+References: <20201110011508.2482821-1-yukuai3@huawei.com>
+From:   Michal Simek <michal.simek@xilinx.com>
+Message-ID: <1ff2a871-849e-cbac-b731-8104da213637@xilinx.com>
+Date:   Tue, 10 Nov 2020 11:04:22 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.1
 MIME-Version: 1.0
-References: <CGME20201008071639epcas5p465f13d992a25936ba63436baf1fb6f83@epcas5p4.samsung.com>
- <1602141333-17822-1-git-send-email-maninder1.s@samsung.com>
- <1602141333-17822-3-git-send-email-maninder1.s@samsung.com>
- <CAK8P3a2RYeNiTy9QmwFVKtFifXxWc9XfAT6ThPoSH9wGYsKGpA@mail.gmail.com>
- <CAK8P3a3eZjBVSuhv=Cx4aYC+E9tex+BbJH1b6YyMMief-mO7kQ@mail.gmail.com>
- <20201021124542.GL1551@shell.armlinux.org.uk> <20201021125740.GM1551@shell.armlinux.org.uk>
- <CAK8P3a3s9JJpeBpH38utw9aA1VaEkcBqKEGtwcmoP1zS6xDj5Q@mail.gmail.com>
- <20201109144549.GA26857@atomide.com> <CAK8P3a2tM1Gzy7Y98tiYGoNcLye77je_UCtTUQYcP2UuRNRKwQ@mail.gmail.com>
- <20201110091904.GC26857@atomide.com>
-In-Reply-To: <20201110091904.GC26857@atomide.com>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Tue, 10 Nov 2020 11:04:06 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a3dZMnEV-Sg_ep6_dQ3XEf73fEpCF0T03255KxMrJZH8g@mail.gmail.com>
-Message-ID: <CAK8P3a3dZMnEV-Sg_ep6_dQ3XEf73fEpCF0T03255KxMrJZH8g@mail.gmail.com>
-Subject: Re: [PATCH 2/3] arm: introduce IRQ stacks
-To:     Tony Lindgren <tony@atomide.com>
-Cc:     Russell King - ARM Linux admin <linux@armlinux.org.uk>,
-        v.narang@samsung.com, a.sahrawat@samsung.com,
-        Marc Zyngier <maz@kernel.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Vincent Whitchurch <vincent.whitchurch@axis.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Nathan Huckleberry <nhuck@google.com>,
-        Jian Cai <caij2003@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Dmitry Safonov <0x7f454c46@gmail.com>,
-        Maninder Singh <maninder1.s@samsung.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Will Deacon <will@kernel.org>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20201110011508.2482821-1-yukuai3@huawei.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EOPAttributedMessage: 0
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 76fc4090-2894-46ac-a9f8-08d88560025b
+X-MS-TrafficTypeDiagnostic: BL0PR02MB4801:
+X-Microsoft-Antispam-PRVS: <BL0PR02MB4801D67E81D345388EB73DB2C6E90@BL0PR02MB4801.namprd02.prod.outlook.com>
+X-Auto-Response-Suppress: DR, RN, NRN, OOF, AutoReply
+X-MS-Oob-TLC-OOBClassifiers: OLM:826;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 6/AyPagYrFgiwXeY62ofMsf7qlNinU4p8DFTMNgw7gasGv7l8w4OOa5bKb+SCRV9cUD/RAqCQ7pSZmNHORe3Us1G22UHZ+y+tGzODKJt8xpal3UWM1Uj9vCISXkD5MeBsfUpaNq5F5u54VcP1c80yjieSyAolFCHB5KLXpKTHkqOodjKeZaVySzmiNlNceL7znhq0zj3IL+IKeM4WlRfkAGqje1ZLWGmcCFPU4ZFkopEnUWcYekkWuF9V+WijGDJg6kIQu1oSln8tEUt4zP1ic2hXPJ8NChd6oDIqwJptLVisQR6aDqI44/jlcUflAGKXPclvn1IQEV3z0MHHmmbqZtm9xvNfl/xlQ9Z/qkwiKRpIT3dXNb5uqeTaK+6d7X9aLeiVW/vYFhxl5kpvPW7U8PsP84XGnUujD5fouZKoar/2De8CbJ6ok7bV4dxenic
+X-Forefront-Antispam-Report: CIP:149.199.62.198;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:xsj-pvapexch02.xlnx.xilinx.com;PTR:unknown-62-198.xilinx.com;CAT:NONE;SFS:(4636009)(376002)(346002)(39860400002)(136003)(396003)(46966005)(36906005)(70206006)(2906002)(8676002)(36756003)(70586007)(6666004)(316002)(2616005)(82310400003)(4326008)(83380400001)(31696002)(336012)(426003)(8936002)(26005)(6636002)(110136005)(54906003)(82740400003)(9786002)(44832011)(7636003)(478600001)(5660300002)(4744005)(47076004)(356005)(186003)(31686004)(50156003)(43740500002);DIR:OUT;SFP:1101;
+X-OriginatorOrg: xilinx.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Nov 2020 10:04:27.4432
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 76fc4090-2894-46ac-a9f8-08d88560025b
+X-MS-Exchange-CrossTenant-Id: 657af505-d5df-48d0-8300-c31994686c5c
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=657af505-d5df-48d0-8300-c31994686c5c;Ip=[149.199.62.198];Helo=[xsj-pvapexch02.xlnx.xilinx.com]
+X-MS-Exchange-CrossTenant-AuthSource: BL2NAM02FT027.eop-nam02.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL0PR02MB4801
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 10, 2020 at 10:19 AM Tony Lindgren <tony@atomide.com> wrote:
-> * Arnd Bergmann <arnd@kernel.org> [201109 19:10]:
-> > On Mon, Nov 9, 2020 at 3:45 PM Tony Lindgren <tony@atomide.com> wrote:
-> >
-> > I know it works, my point was that I'm not sure anyone cares
-> > any more ;-)
->
-> Well for example whatever Linux running ARMv6 LTE modems out there might
-> need to be supported for quite some time. Not sure how many of them are
-> able to update kernels though. Certainly network security related issues
-> would be a good reason to update the kernels.
 
-While I agree they should update their kernels, I suspect none of those
-modems do. I am however certain that none of them are running an
-SMP-enabled multiplatform kernel on an ARM1136r0!
 
-Are these actually ARMv6? Most ARM11 cores you'd come across
-in practice are ARMv6K (ARM1136r1, ARM1167, ARM11MPCore),
-in particular every SoC that has any mainline support except for
-the ARM1136r0 based OMAP2 and i.MX3.
+On 10. 11. 20 2:15, Yu Kuai wrote:
+> If clk_notifier_register() failed, ttc_setup_clockevent() will return
+> without freeing 'ttcce', which will leak memory.
+> 
+> Fixes: 70504f311d4b ("clocksource/drivers/cadence_ttc: Convert init function to return error")
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
+> ---
+>  drivers/clocksource/timer-cadence-ttc.c | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/drivers/clocksource/timer-cadence-ttc.c b/drivers/clocksource/timer-cadence-ttc.c
+> index 80e960602030..32b9560ce408 100644
+> --- a/drivers/clocksource/timer-cadence-ttc.c
+> +++ b/drivers/clocksource/timer-cadence-ttc.c
+> @@ -426,6 +426,7 @@ static int __init ttc_setup_clockevent(struct clk *clk,
+>  				    &ttcce->ttc.clk_rate_change_nb);
+>  	if (err) {
+>  		pr_warn("Unable to register clock notifier.\n");
+> +		kfree(ttcce);
+>  		return err;
+>  	}
+>  
+> 
 
-        Arnd
+Reviewed-by: Michal Simek <michal.simek@xilinx.com>
+
+Thanks,
+Michal
