@@ -2,119 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B2E32AD326
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 11:06:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B35212AD328
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 11:07:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729149AbgKJKGp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 05:06:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47840 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726428AbgKJKGo (ORCPT
+        id S1730361AbgKJKHA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 05:07:00 -0500
+Received: from esa6.microchip.iphmx.com ([216.71.154.253]:30804 "EHLO
+        esa6.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729518AbgKJKG7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 05:06:44 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EB7BC0613CF
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 02:06:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=AiYQx2/W48bocrVfmfNOIV8CGrpg/36Uno8XRiWA07w=; b=F0a3XSfk4Aiz2SJvGAUQga/ZP3
-        saYnp7cnOaBwC8kkGTsRs5bDuqQe7fHjnIxGO1nXon71UOyX/hJo45ja5VNoZdS4yoGdtGfRdk/qu
-        54LNl0eIv3n7A4WntMG7/QtbY4BnIU5Fv+etaRitS94dPainn04TOC0GGxscM33i3F0MtDiBoWn6X
-        l+hLnSsHrswI+KgeQ738PsXzqr55BzClVimcc3xIemFrv6NgMBPBDyGEukXzi7iWnxKVVL0CJYcFY
-        baoMrayGNDSIroCKK7g6GjImKFQnCJydEELEu+84H4fvDN/fkHiRqrhimGDQqFm4VXDHj+HyCcyO0
-        0axOdjwQ==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kcQXu-0000WE-Cu; Tue, 10 Nov 2020 10:06:38 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 2FD7E307197;
-        Tue, 10 Nov 2020 11:06:35 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 226D9203DBF59; Tue, 10 Nov 2020 11:06:35 +0100 (CET)
-Date:   Tue, 10 Nov 2020 11:06:35 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Frederic Weisbecker <frederic@kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>, Mel Gorman <mgorman@suse.de>,
-        Michal Hocko <mhocko@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>, Michal Hocko <mhocko@suse.com>
-Subject: Re: [RFC PATCH 1/7] static_call/x86: Add __static_call_returnl0()
-Message-ID: <20201110100635.GB2594@hirez.programming.kicks-ass.net>
-References: <20201110005609.40989-1-frederic@kernel.org>
- <20201110005609.40989-2-frederic@kernel.org>
+        Tue, 10 Nov 2020 05:06:59 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1605002818; x=1636538818;
+  h=from:to:cc:subject:date:message-id:mime-version;
+  bh=QEu3DFmQoPTTcPOvRiqtur5CeOCrmq72y1qW9mxA3lg=;
+  b=QQlqr8EFV5GXA8IGC6kv9Ep+YKLItCQaCKvDjFmiFPOEGDMXEbLVndfp
+   boA0htuU9F7fTHOlrCh4XGd85tIFX0K3Yh84j/CAw6hbEFygfJyUZFVBI
+   Sq5QAKb1lRurtM0lWxhvU6hZP4aw0ReHt/Lac88Vw55pUYGJhYGIcupK2
+   9tKgHWTJWArVNojbDkuvQR4x6eWWfT/dwxaO76ZPT7JXuJLQBlxUBzJkQ
+   rVG361eOwc3pF9MLyT9knlHXali+2Y22Vz5HFYOLPtWlBrSuV7PnIEswn
+   3egiiavC/xHiQVulc6Kl8eIXNQQuZbkT7alp3cHjm/THdYyTMGPmjFdVS
+   A==;
+IronPort-SDR: 9/8A2lQQ8xCIYT3KWDnJJgD2Qo4+mZIIdd4s6MY0jLoovRJ7u8jn1ILmsRgN0lqN2BUuGEzUHA
+ sN02zrJg2CKn5xaBzEXZ73uaMnbX9x3zVml0c/hSWM8kUt5yzDGL7HOdNCXk0108HZex9h9/yk
+ EIeDfBI7Nrjc/gAbFVe9CdOizFiL4HZ4tccHgL5V3Ucz7KCZcStQSbuju1+aymzZ26Ccs4ijLD
+ 139AxFUyE+7u76M1FnODOkVUos8mo+oJb/vjHsHKk1eFhR5KHRbs0b10bk2Q9wpJA4JP8oqvxa
+ 6Gc=
+X-IronPort-AV: E=Sophos;i="5.77,466,1596524400"; 
+   d="scan'208";a="33053859"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa6.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 10 Nov 2020 03:06:58 -0700
+Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
+ chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Tue, 10 Nov 2020 03:06:58 -0700
+Received: from soft-dev2.microsemi.net (10.10.115.15) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server id
+ 15.1.1979.3 via Frontend Transport; Tue, 10 Nov 2020 03:06:56 -0700
+From:   Bjarni Jonasson <bjarni.jonasson@microchip.com>
+To:     Russell King <linux@armlinux.org.uk>, Andrew Lunn <andrew@lunn.ch>,
+        "Heiner Kallweit" <hkallweit1@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+CC:     Bjarni Jonasson <bjarni.jonasson@microchip.com>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        UNGLinuxDriver <UNGLinuxDriver@microchip.com>
+Subject: [PATCH] phy: phylink: Fix CuSFP issue in phylink
+Date:   Tue, 10 Nov 2020 11:06:42 +0100
+Message-ID: <20201110100642.2153-1-bjarni.jonasson@microchip.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201110005609.40989-2-frederic@kernel.org>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 10, 2020 at 01:56:03AM +0100, Frederic Weisbecker wrote:
+There is an issue with the current phylink driver and CuSFPs which
+results in a callback to the phylink validate function without any
+advertisement capabilities.  The workaround (in this changeset)
+is to assign capabilities if a 1000baseT SFP is identified.
 
-> diff --git a/include/linux/static_call.h b/include/linux/static_call.h
-> index 695da4c9b338..055544793430 100644
-> --- a/include/linux/static_call.h
-> +++ b/include/linux/static_call.h
-> @@ -136,6 +136,9 @@ extern void arch_static_call_transform(void *site, void *tramp, void *func, bool
->  
->  #ifdef CONFIG_HAVE_STATIC_CALL_INLINE
->  
-> +extern int __static_call_return0(void);
-> +extern long __static_call_returnl0(void);
-> +
->  extern int __init static_call_init(void);
->  
->  struct static_call_mod {
-> @@ -187,6 +190,9 @@ extern int static_call_text_reserved(void *start, void *end);
->  
->  #elif defined(CONFIG_HAVE_STATIC_CALL)
->  
-> +extern int __static_call_return0(void);
-> +extern long __static_call_returnl0(void);
-> +
->  static inline int static_call_init(void) { return 0; }
->  
->  struct static_call_key {
-> @@ -234,6 +240,9 @@ static inline int static_call_text_reserved(void *start, void *end)
->  
->  #else /* Generic implementation */
->  
-> +static inline int __static_call_return0(void) { return 0; }
-> +static inline long __static_call_returnl0(void) { return 0; }
-> +
->  static inline int static_call_init(void) { return 0; }
->  
->  struct static_call_key {
-> diff --git a/kernel/static_call.c b/kernel/static_call.c
-> index 84565c2a41b8..3cb371e71be6 100644
-> --- a/kernel/static_call.c
-> +++ b/kernel/static_call.c
-> @@ -438,6 +438,16 @@ int __init static_call_init(void)
->  }
->  early_initcall(static_call_init);
->  
-> +int __static_call_return0(void)
-> +{
-> +	return 0;
-> +}
-> +
-> +long __static_call_returnl0(void)
-> +{
-> +	return 0;
-> +}
-> +
->  #ifdef CONFIG_STATIC_CALL_SELFTEST
->  
->  static int func_a(int x)
+Signed-off-by: Bjarni Jonasson <bjarni.jonasson@microchip.com>
+---
+ drivers/net/phy/phylink.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-So yes, we need the out of line copy, but why do we need the int/long
-variants?
+diff --git a/drivers/net/phy/phylink.c b/drivers/net/phy/phylink.c
+index 32f4e8ec96cf..76e25f7f6934 100644
+--- a/drivers/net/phy/phylink.c
++++ b/drivers/net/phy/phylink.c
+@@ -2196,6 +2196,14 @@ static int phylink_sfp_connect_phy(void *upstream, struct phy_device *phy)
+ 		mode = MLO_AN_INBAND;
+ 
+ 	/* Do the initial configuration */
++	if (phylink_test(pl->sfp_support, 1000baseT_Full)) {
++		pr_info("%s:%d: adding 1000baseT to PHY\n", __func__, __LINE__);
++		phylink_set(phy->supported, 1000baseT_Half);
++		phylink_set(phy->supported, 1000baseT_Full);
++		phylink_set(phy->advertising, 1000baseT_Half);
++		phylink_set(phy->advertising, 1000baseT_Full);
++	}
++
+ 	ret = phylink_sfp_config(pl, mode, phy->supported, phy->advertising);
+ 	if (ret < 0)
+ 		return ret;
+-- 
+2.17.1
 
-AFAICT we only need the long version and can cast it to whatever we need
-(provided the return value is no bigger than long).
