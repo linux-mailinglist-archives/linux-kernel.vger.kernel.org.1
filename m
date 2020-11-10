@@ -2,119 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE8282ADEF3
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 20:00:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 78D052ADEF7
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 20:00:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731272AbgKJTAK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 14:00:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46540 "EHLO
+        id S1731315AbgKJTAt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 14:00:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46646 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730770AbgKJTAJ (ORCPT
+        with ESMTP id S1726400AbgKJTAs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 14:00:09 -0500
-Received: from mail-vs1-xe41.google.com (mail-vs1-xe41.google.com [IPv6:2607:f8b0:4864:20::e41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66889C0613D6
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 11:00:08 -0800 (PST)
-Received: by mail-vs1-xe41.google.com with SMTP id r14so7684770vsa.13
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 11:00:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=HQMWJ4qrTrrDaVP4fR8AYbnLL+HhbqUgRWbw+YSQ1PU=;
-        b=UAf9RqBB0qr82AsqOtHV2sesZ3cFzDvVPrFOFo9wUuuHJXryVnBngDsIrGvKaE6X19
-         0SqjoI+qK8F47wcovy/kBeCPJ4lIKLolgnCYTTAinI6LM/5ys2dh6HlhdigZSrVkC/rn
-         ShAlUOfI+vdr9rptwftYPxBYiTijHNtuYVGc3mYzd/3mrO/nNNPGBPmWtes0yy3EJX3R
-         sHQB4adTCc34sogEGEr66NVJxa45ZnJ2DpryOQ0DhgNiqen71LLeDBvfUdLT3d4QP0EK
-         CCvE4ObR4otzBFPgR6yeCqhZTLFHqyDs2Tr4Y5R18i3xk72lbdkEjxSGufRjUQd0yCL8
-         Ojbw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=HQMWJ4qrTrrDaVP4fR8AYbnLL+HhbqUgRWbw+YSQ1PU=;
-        b=sMWjLxtBm/jd0ablxkwsWcRpWPhOJQKgoUJrly8pdtjfwBN7n3JXXQWrF9j1ZgMgL+
-         ZTsTZFmXgNQncLcUWvRIlkQIdcxT6woYZjS39xdpcF5GxcmEO19tZou1o3vX2UxFntDv
-         1I6UaeTUIyMgVmeoKaN34saFCnUkMtVSC4RvbvZIzJeKkyZcZ612HWIxCaQJV22nDp45
-         0FFuy0TDXfRqocbh7U5nGlsxmwelTZiZpSJotaXnINE3dPIucx+r3w1iehTn5BnSgems
-         FJPEzgsWPXUlpc+yjj8EULycPnCRbUZ9bUE4bEDRksp2AdrVWIVlwE5fonejSORzRlFB
-         BuwQ==
-X-Gm-Message-State: AOAM533WUdzdqCNxnnoeJmxGKiQweOGKEVeg867bgSDukcsRsnrSlqbe
-        gc+OKGR+MJJy5k7G/3rzYwRZxKdmgB7WD9tB19wlCQ==
-X-Google-Smtp-Source: ABdhPJw/xQbpb4nm+Nf8IkeXZp9mvPOXpptK1b90vfr96ZwBHQ1ynLFLCpnmKb8sXq4PoJSCYGgPJD2CoGITJLPmHok=
-X-Received: by 2002:a67:ee93:: with SMTP id n19mr12787183vsp.36.1605034807022;
- Tue, 10 Nov 2020 11:00:07 -0800 (PST)
+        Tue, 10 Nov 2020 14:00:48 -0500
+Received: from ZenIV.linux.org.uk (zeniv.linux.org.uk [IPv6:2002:c35c:fd02::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48D02C0613D1;
+        Tue, 10 Nov 2020 11:00:48 -0800 (PST)
+Received: from viro by ZenIV.linux.org.uk with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kcYse-002z22-W0; Tue, 10 Nov 2020 19:00:37 +0000
+Date:   Tue, 10 Nov 2020 19:00:36 +0000
+From:   Al Viro <viro@zeniv.linux.org.uk>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: build failure after merge of the vfs tree
+Message-ID: <20201110190036.GT3576660@ZenIV.linux.org.uk>
+References: <20201027151414.2018d5fd@canb.auug.org.au>
+ <20201027045912.GG3576660@ZenIV.linux.org.uk>
 MIME-Version: 1.0
-References: <20201015102216.GB2611@hirez.programming.kicks-ass.net>
- <20201015203942.f3kwcohcwwa6lagd@treble> <CABCJKufDLmBCwmgGnfLcBw_B_4U8VY-R-dSNNp86TFfuMobPMw@mail.gmail.com>
- <20201020185217.ilg6w5l7ujau2246@treble> <CABCJKucVjFtrOsw58kn4OnW5kdkUh8G7Zs4s6QU9s6O7soRiAA@mail.gmail.com>
- <20201021085606.GZ2628@hirez.programming.kicks-ass.net> <CABCJKufL6=FiaeD8T0P+mK4JeR9J80hhjvJ6Z9S-m9UnCESxVA@mail.gmail.com>
- <20201023173617.GA3021099@google.com> <CABCJKuee7hUQSiksdRMYNNx05bW7pWaDm4fQ__znGQ99z9-dEw@mail.gmail.com>
- <20201110022924.tekltjo25wtrao7z@treble> <20201110174606.mp5m33lgqksks4mt@treble>
-In-Reply-To: <20201110174606.mp5m33lgqksks4mt@treble>
-From:   Sami Tolvanen <samitolvanen@google.com>
-Date:   Tue, 10 Nov 2020 10:59:55 -0800
-Message-ID: <CABCJKuf+Ev=hpCUfDpCFR_wBACr-539opJsSFrDcpDA9Ctp7rg@mail.gmail.com>
-Subject: Re: [PATCH v6 22/25] x86/asm: annotate indirect jumps
-To:     Josh Poimboeuf <jpoimboe@redhat.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Jann Horn <jannh@google.com>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Will Deacon <will@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Kernel Hardening <kernel-hardening@lists.openwall.com>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-kbuild <linux-kbuild@vger.kernel.org>,
-        kernel list <linux-kernel@vger.kernel.org>,
-        linux-pci@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201027045912.GG3576660@ZenIV.linux.org.uk>
+Sender: Al Viro <viro@ftp.linux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 10, 2020 at 9:46 AM Josh Poimboeuf <jpoimboe@redhat.com> wrote:
->
-> On Mon, Nov 09, 2020 at 08:29:24PM -0600, Josh Poimboeuf wrote:
-> > On Mon, Nov 09, 2020 at 03:11:41PM -0800, Sami Tolvanen wrote:
-> > > CONFIG_XEN
-> > >
-> > > __switch_to_asm()+0x0: undefined stack state
-> > >   xen_hypercall_set_trap_table()+0x0: <=== (sym)
->
-> With your branch + GCC 9 I can recreate all the warnings except this
-> one.
+On Tue, Oct 27, 2020 at 04:59:12AM +0000, Al Viro wrote:
 
-In a gcc build this warning is replaced with a different one:
+> I'll rebase that branch on top of sparc tree tomorrow (and eventually I'd like
+> it to go through the sparc tree anyway).
 
-vmlinux.o: warning: objtool: __startup_secondary_64()+0x7: return with
-modified stack frame
-
-This just seems to depend on which function is placed right after the
-code in xen-head.S. With gcc, the disassembly looks like this:
-
-0000000000000000 <asm_cpu_bringup_and_idle>:
-       0:       e8 00 00 00 00          callq  5 <asm_cpu_bringup_and_idle+0x5>
-                        1: R_X86_64_PLT32       cpu_bringup_and_idle-0x4
-       5:       e9 f6 0f 00 00          jmpq   1000
-<xen_hypercall_set_trap_table>
-...
-0000000000001000 <xen_hypercall_set_trap_table>:
-        ...
-...
-0000000000002000 <__startup_secondary_64>:
-
-With Clang+LTO, we end up with __switch_to_asm here instead of
-__startup_secondary_64.
-
-> Will do some digging on the others...
-
-Thanks!
-
-Sami
+Done - sorry for disappearing ;-/
