@@ -2,121 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7E7F2AD94C
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 15:52:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 77EF12AD951
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 15:54:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730993AbgKJOwN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 09:52:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36038 "EHLO
+        id S1730940AbgKJOyE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 09:54:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36316 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730345AbgKJOwM (ORCPT
+        with ESMTP id S1731011AbgKJOyA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 09:52:12 -0500
-Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8313FC0613D1
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 06:52:12 -0800 (PST)
-Received: by mail-ej1-x642.google.com with SMTP id 7so17964335ejm.0
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 06:52:12 -0800 (PST)
+        Tue, 10 Nov 2020 09:54:00 -0500
+Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 169D0C0613CF
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 06:54:00 -0800 (PST)
+Received: by mail-ot1-x344.google.com with SMTP id z16so12732017otq.6
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 06:54:00 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=BiXKJCfFkLckk0QWi3TCRn5PbMUrC26oLIfgwcLzd+Q=;
-        b=kcHocmGBBnCROE3rCMMwA6XbZyw9sxTQm85i46syryc6+zXP7qG5PCFcj8yXFM0R9E
-         r0qNfpTWPg1RZwPnLteh8uR3IZ4D63vxpoauwJM6tvc+W8QH1yUoT+KmyZg4z/4AHg4Q
-         WN5ErfebNRBpIPaNGB4GAsR8PlvR8l4y6CZrCrZVQQf1o0Ws1oQ8cen3pWGZQ1/sPwm0
-         krEgCKwYOG+cDqGQep5moWLaZdi+r4EXg9AIZ6oG2AP/YDwJnO3crIR+E9vb35PeXhud
-         WXSmQvLG65+sqpZHzcnztgfVgL9oDPiClULfGsRH899OIEKbstG6Y7BFYQ3fgiIcrt1K
-         6qxQ==
+        bh=FbcyUD14O34qORQweJ7OM0zfYmKvTkKcQqefmr2UkfI=;
+        b=mNP/K9iv5SYU27emsjB5W17wgZ7cLje94t1rArD5f7lC/L5J98/SvmNImo0623rskX
+         kasAc/JGxTZ5n7ILmHtJbYeD1Umhh05nHDrERl5XklzG/faCGnMqaDT/0wfh/+uibkWC
+         hSHW1p4AoQS82PgP6gXp8Tq0FN+ezzjS9rrzXvvCqdv0INZkid7p2X3A4iKND19XC6VH
+         qQBSxp3kA0i6HVA7WlWhsN8ecJ5h/G9k+7WgvIndzqnR36gler+H9FwJ2SUekC3YH3FF
+         oGx7GLq11eGrqZ+2NCtOHGfP8TfgFv+qPKnI/7GJKEA6f5DtEvEg4kfVjWgcS31A7W8i
+         mnSg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=BiXKJCfFkLckk0QWi3TCRn5PbMUrC26oLIfgwcLzd+Q=;
-        b=KTDFhx6gNdDhPO03/Hb1K0GMLSO4EkHKqwXEvgnj3ExUlUw+PoKZ1AiuN+fIhnsQPP
-         KDrFPqXLLwhgUhO/b+oDPChMpNYfxRPTXHcWqRIz4XNCJz7hpMnskTdUfwD2OYG8NhgR
-         X0SVUN1ZVFu9SNZhMJBvY0QomBMyIM4Wpp8aamvN0rcsyQEGkDOV/h2i5/ID7Tkg+En3
-         JYNnOQv4XyZtCSH4QRt8uEixa+XO0x3CYaEc8iY90QBSpPY7WJYLJnYKRBjyMmIEC7+4
-         drGob4UV+CSOsxiJbW6r7TqUqzvzAPsAmSjRMSzqq95fpVQWN4D0qZRGcuRB6gUl+fsl
-         AbiQ==
-X-Gm-Message-State: AOAM530UBq4EV6boLKPF6gwh7xHu83LcP/A8mkbHFptAn9yr5snfE4cy
-        0wliECbbVa1xt+VkvyUZUfkhcdX2T/wkmdcgi3CuYw==
-X-Google-Smtp-Source: ABdhPJwb5wg8E4j2GzK+yVhaJpDJt11UUG8suYNdjcxYau0Bsrh6HKf8xQwFmqxM4fMwYtnpfVCrp5O0WzRnpGSysoc=
-X-Received: by 2002:a17:906:1c84:: with SMTP id g4mr21577614ejh.155.1605019931251;
- Tue, 10 Nov 2020 06:52:11 -0800 (PST)
+        bh=FbcyUD14O34qORQweJ7OM0zfYmKvTkKcQqefmr2UkfI=;
+        b=tPc1A6I/3YYNVlR0GM16xxZXCYGStdlfOIGcVPBKBDlLycZhzBgaPb95b9/jvAQIiI
+         PyNPIjEYgziruTp88tSCvCA6dyGTjU0AsOlk/ajuitXPlq7vka6fw8IUFlcnoYUojgbE
+         ScqXh2BZONz70sc37VVwPm5lM75kjmnU7WqycZ1Xkh0SsHqqq2CAE47+J+dCJjwLI31G
+         IT3c8EKNrlDz2DgFBHdkvATMDbuhf92pST/pvdfe6bv9kZecVJYiI2dw5H5ioc0fEDhI
+         vNE6Y62kdkT85/ghv5wdfFPaLxvR4aa0Y2J/tm2MfApgYo3s+x0NLWsvn+vO8uH2wncg
+         7SJw==
+X-Gm-Message-State: AOAM530S2YnfIWN8892nh9KIGtjtW4MBQPZ/zhxF/7Hgl+VLi5zHMVl2
+        99Q7EkXLt54+t3YR71H9AuMyzGcYqe8sBZjQCYfwuQ==
+X-Google-Smtp-Source: ABdhPJzuFinlenRa8Bx5uePYypLWzX7wWoUwM8r8lQOjW5+vTNLUDGXOSqq2AKEBjVDLyJoEuP2UPRdRU9h84Bnhw4U=
+X-Received: by 2002:a9d:f44:: with SMTP id 62mr15154590ott.17.1605020039230;
+ Tue, 10 Nov 2020 06:53:59 -0800 (PST)
 MIME-Version: 1.0
-References: <20201110123406.3261-1-brgl@bgdev.pl> <20201110123406.3261-7-brgl@bgdev.pl>
- <20201110142624.GT4077@smile.fi.intel.com> <20201110142750.GU4077@smile.fi.intel.com>
- <CAMpxmJUQ3t02q-Chd-WE+pYRAsOOEnbQ0jB+G_uAGv+sJBK1tg@mail.gmail.com> <a5b0fcd0-eb62-79b3-3f27-6595b9bdb91c@siemens.com>
-In-Reply-To: <a5b0fcd0-eb62-79b3-3f27-6595b9bdb91c@siemens.com>
-From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Date:   Tue, 10 Nov 2020 15:52:00 +0100
-Message-ID: <CAMpxmJW1j9+KAj12OKs3njUWy+UA5B993Pyd=xmo4k8LM-8GUw@mail.gmail.com>
-Subject: Re: [PATCH v3 6/7] gpio: exar: switch to using regmap
-To:     Jan Kiszka <jan.kiszka@siemens.com>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Bartosz Golaszewski <brgl@bgdev.pl>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        David Laight <David.Laight@aculab.com>,
-        linux-gpio <linux-gpio@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
+References: <20201110135320.3309507-1-elver@google.com> <CACT4Y+Y_QarAf_cCNPgRZiSEKty0eSusA1ZMuY61LoGP1RaVtg@mail.gmail.com>
+In-Reply-To: <CACT4Y+Y_QarAf_cCNPgRZiSEKty0eSusA1ZMuY61LoGP1RaVtg@mail.gmail.com>
+From:   Marco Elver <elver@google.com>
+Date:   Tue, 10 Nov 2020 15:53:47 +0100
+Message-ID: <CANpmjNNTDznf3hWFw5tD1+vGoN-p1VrR8BrQvSZqtVtUmFPF3A@mail.gmail.com>
+Subject: Re: [PATCH] kfence: Avoid stalling work queue task without allocations
+To:     Dmitry Vyukov <dvyukov@google.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Alexander Potapenko <glider@google.com>,
+        Jann Horn <jannh@google.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Anders Roxell <anders.roxell@linaro.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 10, 2020 at 3:50 PM Jan Kiszka <jan.kiszka@siemens.com> wrote:
->
->
-> On 10.11.20 15:30, Bartosz Golaszewski wrote:
-> > On Tue, Nov 10, 2020 at 3:26 PM Andy Shevchenko
-> > <andriy.shevchenko@linux.intel.com> wrote:
-> >>
-> >> On Tue, Nov 10, 2020 at 04:26:24PM +0200, Andy Shevchenko wrote:
-> >>> On Tue, Nov 10, 2020 at 01:34:05PM +0100, Bartosz Golaszewski wrote:
-> >>>> From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
-> >>>>
-> >>>> We can simplify the code in gpio-exar by using regmap. This allows us to
-> >>>> drop the mutex (regmap provides its own locking) and we can also reuse
-> >>>> regmap's bit operations instead of implementing our own update function.
-> >>>
-> >>> ...
-> >>>
-> >>>> +   /*
-> >>>> +    * We don't need to check the return values of mmio regmap operations (unless
-> >>>> +    * the regmap has a clock attached which is not the case here).
-> >>>> +    */
-> >>>> +   exar_gpio->regs = devm_regmap_init_mmio(dev, p, &exar_regmap_config);
-> >>>> +   if (IS_ERR(exar_gpio->regs))
-> >>>> +           return PTR_ERR(exar_gpio->regs);
-> >>>>
-> >>>>     index = ida_alloc(&ida_index, GFP_KERNEL);
-> >>>> -   if (index < 0) {
-> >>>> -           ret = index;
-> >>>> -           goto err_mutex_destroy;
-> >>>> -   }
-> >>>> +   if (index < 0)
-> >>>> +           return index;
-> >>>
-> >>> And below you effectively use p as regmap!
-> >>> That's what renaming of variable regs -> regmap or map can easily reveal.
-> >>>
-> >>>       exar_gpio->regs = p;
-> >>
-> >> Jan, if you remove this line, does it help?
-> >>
+On Tue, 10 Nov 2020 at 15:25, Dmitry Vyukov <dvyukov@google.com> wrote:
+> On Tue, Nov 10, 2020 at 2:53 PM Marco Elver <elver@google.com> wrote:
+> > To toggle the allocation gates, we set up a delayed work that calls
+> > toggle_allocation_gate(). Here we use wait_event() to await an
+> > allocation and subsequently disable the static branch again. However, if
+> > the kernel has stopped doing allocations entirely, we'd wait
+> > indefinitely, and stall the worker task. This may also result in the
+> > appropriate warnings if CONFIG_DETECT_HUNG_TASK=y.
 > >
-> > Ha! I guess you were right saying that keeping the name is asking for
-> > trouble then. :)
+> > Therefore, introduce a 1 second timeout and use wait_event_timeout(). If
+> > the timeout is reached, the static branch is disabled and a new delayed
+> > work is scheduled to try setting up an allocation at a later time.
 > >
-> > I think that may be it but address width should still be changed to 16.
+> > Note that, this scenario is very unlikely during normal workloads once
+> > the kernel has booted and user space tasks are running. It can, however,
+> > happen during early boot after KFENCE has been enabled, when e.g.
+> > running tests that do not result in any allocations.
 > >
+> > Link: https://lkml.kernel.org/r/CADYN=9J0DQhizAGB0-jz4HOBBh+05kMBXb4c0cXMS7Qi5NAJiw@mail.gmail.com
+> > Reported-by: Anders Roxell <anders.roxell@linaro.org>
+> > Signed-off-by: Marco Elver <elver@google.com>
+> > ---
+> >  mm/kfence/core.c | 6 +++++-
+> >  1 file changed, 5 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/mm/kfence/core.c b/mm/kfence/core.c
+> > index 9358f42a9a9e..933b197b8634 100644
+> > --- a/mm/kfence/core.c
+> > +++ b/mm/kfence/core.c
+> > @@ -592,7 +592,11 @@ static void toggle_allocation_gate(struct work_struct *work)
+> >         /* Enable static key, and await allocation to happen. */
+> >         atomic_set(&allocation_gate, 0);
+> >         static_branch_enable(&kfence_allocation_key);
+> > -       wait_event(allocation_wait, atomic_read(&allocation_gate) != 0);
+> > +       /*
+> > +        * Await an allocation. Timeout after 1 second, in case the kernel stops
+> > +        * doing allocations, to avoid stalling this worker task for too long.
+> > +        */
+> > +       wait_event_timeout(allocation_wait, atomic_read(&allocation_gate) != 0, HZ);
 >
-> Removing the line that Andy found made things work here. And switching
-> to 16 for reg_bits didn't make things worse again.
->
-> Jan
+> I wonder what happens if we get an allocation right when the timeout fires.
+> Consider, another task already went to the slow path and is about to
+> wake this task. This task wakes on timeout and subsequently enables
+> static branch again. Now we can have 2 tasks on the slow path that
+> both will wake this task. How will it be handled? Can it lead to some
+> warnings or something?
 
-Alright! I'll send a v4 with these things fixed then.
+wake_up() does not require tasks to be in the wait queue, nor is there
+any requirement that it's exclusive (it takes the appropriate locks
+unlike wake_up_locked()). One of the wake_up() calls will wake the
+task, and the other is a noop. So this will work just fine.
 
-Bartosz
+Thanks,
+-- Marco
