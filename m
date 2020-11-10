@@ -2,63 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13FF52AD807
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 14:52:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D06B62AD809
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 14:52:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730373AbgKJNwH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 08:52:07 -0500
-Received: from gecko.sbs.de ([194.138.37.40]:48691 "EHLO gecko.sbs.de"
+        id S1731211AbgKJNwW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 08:52:22 -0500
+Received: from mx2.suse.de ([195.135.220.15]:42498 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726721AbgKJNwG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 08:52:06 -0500
-Received: from mail2.sbs.de (mail2.sbs.de [192.129.41.66])
-        by gecko.sbs.de (8.15.2/8.15.2) with ESMTPS id 0AADpuQ6009455
-        (version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 10 Nov 2020 14:51:56 +0100
-Received: from [167.87.33.169] ([167.87.33.169])
-        by mail2.sbs.de (8.15.2/8.15.2) with ESMTP id 0AADptJ8022405;
-        Tue, 10 Nov 2020 14:51:55 +0100
-Subject: Re: [PATCH v3 6/7] gpio: exar: switch to using regmap
-To:     Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Cc:     Bartosz Golaszewski <brgl@bgdev.pl>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        David Laight <David.Laight@aculab.com>,
-        linux-gpio <linux-gpio@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-References: <20201110123406.3261-1-brgl@bgdev.pl>
- <20201110123406.3261-7-brgl@bgdev.pl>
- <7f890933-71a7-28d5-75ae-8d80d6a67ff5@siemens.com>
- <CAMpxmJXiuuRu0A=GPaqBg=YbW=nQX4WrBm9e-3SOkFuaT0rEFw@mail.gmail.com>
-From:   Jan Kiszka <jan.kiszka@siemens.com>
-Message-ID: <aacaecb9-c493-ed72-58d1-09cfc561e55a@siemens.com>
-Date:   Tue, 10 Nov 2020 14:51:55 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        id S1730059AbgKJNwW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Nov 2020 08:52:22 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 2A0BDABD6;
+        Tue, 10 Nov 2020 13:52:20 +0000 (UTC)
+Date:   Tue, 10 Nov 2020 14:52:15 +0100
+From:   Oscar Salvador <osalvador@suse.de>
+To:     Muchun Song <songmuchun@bytedance.com>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Thomas Gleixner <tglx@linutronix.de>, mingo@redhat.com,
+        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
+        dave.hansen@linux.intel.com, luto@kernel.org,
+        Peter Zijlstra <peterz@infradead.org>, viro@zeniv.linux.org.uk,
+        Andrew Morton <akpm@linux-foundation.org>, paulmck@kernel.org,
+        mchehab+huawei@kernel.org, pawan.kumar.gupta@linux.intel.com,
+        Randy Dunlap <rdunlap@infradead.org>, oneukum@suse.com,
+        anshuman.khandual@arm.com, jroedel@suse.de,
+        Mina Almasry <almasrymina@google.com>,
+        David Rientjes <rientjes@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Xiongchun duan <duanxiongchun@bytedance.com>,
+        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>
+Subject: Re: [External] Re: [PATCH v3 09/21] mm/hugetlb: Free the vmemmap
+ pages associated with each hugetlb page
+Message-ID: <20201110135210.GA29463@linux>
+References: <20201108141113.65450-1-songmuchun@bytedance.com>
+ <20201108141113.65450-10-songmuchun@bytedance.com>
+ <20201109185138.GD17356@linux>
+ <CAMZfGtXpXoQ+zVi2Us__7ghSu_3U7+T3tx-EL+zfa=1Obn=55g@mail.gmail.com>
+ <20201110094830.GA25373@linux>
+ <CAMZfGtW0nwhdgwUwwq5SXgEAk3+6cyDfM5n28UerVuAxatwj4g@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <CAMpxmJXiuuRu0A=GPaqBg=YbW=nQX4WrBm9e-3SOkFuaT0rEFw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAMZfGtW0nwhdgwUwwq5SXgEAk3+6cyDfM5n28UerVuAxatwj4g@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 10.11.20 14:29, Bartosz Golaszewski wrote:
-> On Tue, Nov 10, 2020 at 2:23 PM Jan Kiszka <jan.kiszka@siemens.com> wrote:
->>
->>
->> Unfortunately, this one still crashes:
->>
+On Tue, Nov 10, 2020 at 06:47:08PM +0800, Muchun Song wrote:
+> > That only refers to gigantic pages, right?
 > 
-> Just to confirm: does patch 5/7 alone work?
-> 
+> Yeah, now it only refers to gigantic pages. Originally, I also wanted to merge
+> vmemmap PTE to PMD for normal 2MB HugeTLB pages. So I introduced
+> those macros(e.g. freed_vmemmap_hpage). For 2MB HugeTLB pages, I
+> haven't found an elegant solution. Hopefully, when you or someone have
+> read all of the patch series, we can come up with an elegant solution to
+> merge PTE.
 
-Yes, I've bisected.
+Well, it is quite a lot of "tricky" code, so it takes some time.
 
-Jan
+> > > > > +static void free_huge_page_vmemmap(struct hstate *h, struct page *head)
+> > > > > +{
+> > > > > +     pmd_t *pmd;
+> > > > > +     spinlock_t *ptl;
+> > > > > +     LIST_HEAD(free_pages);
+> > > > > +
+> > > > > +     if (!free_vmemmap_pages_per_hpage(h))
+> > > > > +             return;
+> > > > > +
+> > > > > +     pmd = vmemmap_to_pmd(head);
+> > > > > +     ptl = vmemmap_pmd_lock(pmd);
+
+I forgot about this one.
+You might want to check whether vmemmap_to_pmd returns NULL or not.
+If it does means that something went wrong anyways, but still we should handle
+such case (and print a fat warning or something like that).
+
 
 -- 
-Siemens AG, T RDA IOT
-Corporate Competence Center Embedded Linux
+Oscar Salvador
+SUSE L3
