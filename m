@@ -2,88 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D06B62AD809
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 14:52:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E1E92AD804
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 14:50:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731211AbgKJNwW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 08:52:22 -0500
-Received: from mx2.suse.de ([195.135.220.15]:42498 "EHLO mx2.suse.de"
+        id S1731000AbgKJNut (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 08:50:49 -0500
+Received: from mga06.intel.com ([134.134.136.31]:12929 "EHLO mga06.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730059AbgKJNwW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 08:52:22 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 2A0BDABD6;
-        Tue, 10 Nov 2020 13:52:20 +0000 (UTC)
-Date:   Tue, 10 Nov 2020 14:52:15 +0100
-From:   Oscar Salvador <osalvador@suse.de>
-To:     Muchun Song <songmuchun@bytedance.com>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Thomas Gleixner <tglx@linutronix.de>, mingo@redhat.com,
-        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
-        dave.hansen@linux.intel.com, luto@kernel.org,
-        Peter Zijlstra <peterz@infradead.org>, viro@zeniv.linux.org.uk,
-        Andrew Morton <akpm@linux-foundation.org>, paulmck@kernel.org,
-        mchehab+huawei@kernel.org, pawan.kumar.gupta@linux.intel.com,
-        Randy Dunlap <rdunlap@infradead.org>, oneukum@suse.com,
-        anshuman.khandual@arm.com, jroedel@suse.de,
-        Mina Almasry <almasrymina@google.com>,
-        David Rientjes <rientjes@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Xiongchun duan <duanxiongchun@bytedance.com>,
-        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>
-Subject: Re: [External] Re: [PATCH v3 09/21] mm/hugetlb: Free the vmemmap
- pages associated with each hugetlb page
-Message-ID: <20201110135210.GA29463@linux>
-References: <20201108141113.65450-1-songmuchun@bytedance.com>
- <20201108141113.65450-10-songmuchun@bytedance.com>
- <20201109185138.GD17356@linux>
- <CAMZfGtXpXoQ+zVi2Us__7ghSu_3U7+T3tx-EL+zfa=1Obn=55g@mail.gmail.com>
- <20201110094830.GA25373@linux>
- <CAMZfGtW0nwhdgwUwwq5SXgEAk3+6cyDfM5n28UerVuAxatwj4g@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAMZfGtW0nwhdgwUwwq5SXgEAk3+6cyDfM5n28UerVuAxatwj4g@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        id S1726721AbgKJNut (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Nov 2020 08:50:49 -0500
+IronPort-SDR: ITcDfpF2sn/Bn2HBdMNIioX/Pyc7jNVk8P7BraZ/dXCyUQRazSJGm8LYdTLq6nMLeKyQsCEjG7
+ kw8UXtrS3uow==
+X-IronPort-AV: E=McAfee;i="6000,8403,9800"; a="231600562"
+X-IronPort-AV: E=Sophos;i="5.77,466,1596524400"; 
+   d="scan'208";a="231600562"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Nov 2020 05:50:48 -0800
+IronPort-SDR: szJYNq35NE62HJ8RZ9HSD419vCCDT+zT5SBHFxInAUPWQ0MOzqPuHocbqVzh7zhAbQwOwJm22/
+ KeITNY5Crtnw==
+X-IronPort-AV: E=Sophos;i="5.77,466,1596524400"; 
+   d="scan'208";a="541329911"
+Received: from chenyu-office.sh.intel.com ([10.239.158.173])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Nov 2020 05:50:46 -0800
+From:   Chen Yu <yu.c.chen@intel.com>
+To:     Borislav Petkov <bp@alien8.de>, Len Brown <len.brown@intel.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        "Raj, Ashok" <ashok.raj@intel.com>, Tony Luck <tony.luck@intel.com>
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org,
+        Chen Yu <yu.c.chen@intel.com>
+Subject: [PATCH][RFC] x86/microcode/intel: check cpu stepping and processor flag before saving microcode
+Date:   Tue, 10 Nov 2020 21:52:47 +0800
+Message-Id: <20201110135247.422-1-yu.c.chen@intel.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 10, 2020 at 06:47:08PM +0800, Muchun Song wrote:
-> > That only refers to gigantic pages, right?
-> 
-> Yeah, now it only refers to gigantic pages. Originally, I also wanted to merge
-> vmemmap PTE to PMD for normal 2MB HugeTLB pages. So I introduced
-> those macros(e.g. freed_vmemmap_hpage). For 2MB HugeTLB pages, I
-> haven't found an elegant solution. Hopefully, when you or someone have
-> read all of the patch series, we can come up with an elegant solution to
-> merge PTE.
+Currently scan_microcode() leverages microcode_matches() to check if the
+microcode matches the CPU by comparing the family and model. However before
+saving the microcode in scan_microcode(), the processor stepping and flag
+of the microcode signature should also be considered in order to avoid
+incompatible update and caused the failure of microcode update.
 
-Well, it is quite a lot of "tricky" code, so it takes some time.
+For example on one platform the microcode failed to be updated to the
+latest revison on APs during resume from S3 due to incompatible cpu stepping
+and signature->pf. This is because the scan_microcode() has saved an incompatible
+copy of intel_ucode_patch in save_microcode_in_initrd_intel() after bootup.
+And this intel_ucode_patch is used by APs during early resume from S3 which
+results in unchecked MSR access error during resume from S3:
 
-> > > > > +static void free_huge_page_vmemmap(struct hstate *h, struct page *head)
-> > > > > +{
-> > > > > +     pmd_t *pmd;
-> > > > > +     spinlock_t *ptl;
-> > > > > +     LIST_HEAD(free_pages);
-> > > > > +
-> > > > > +     if (!free_vmemmap_pages_per_hpage(h))
-> > > > > +             return;
-> > > > > +
-> > > > > +     pmd = vmemmap_to_pmd(head);
-> > > > > +     ptl = vmemmap_pmd_lock(pmd);
+[   95.519390] unchecked MSR access error: RDMSR from 0x123 at
+	rIP: 0xffffffffb7676208 (native_read_msr+0x8/0x40)
+[   95.519391] Call Trace:
+[   95.519395]  update_srbds_msr+0x38/0x80
+[   95.519396]  identify_secondary_cpu+0x7a/0x90
+[   95.519397]  smp_store_cpu_info+0x4e/0x60
+[   95.519398]  start_secondary+0x49/0x150
+[   95.519399]  secondary_startup_64_no_verify+0xa6/0xab
 
-I forgot about this one.
-You might want to check whether vmemmap_to_pmd returns NULL or not.
-If it does means that something went wrong anyways, but still we should handle
-such case (and print a fat warning or something like that).
+The system keeps running on old microcode during resume:
+[  210.366757] microcode: load_ucode_intel_ap: CPU1, enter, intel_ucode_patch: 0xffff9bf2816e0000
+[  210.366757] microcode: load_ucode_intel_ap: CPU1, p: 0xffff9bf2816e0000, rev: 0xd6
+[  210.366759] microcode: apply_microcode_early: rev: 0x84
+[  210.367826] microcode: apply_microcode_early: rev after upgrade: 0x84
 
+until mc_cpu_starting() is invoked on each AP during resume and the correct microcode
+is updated via apply_microcode_intel().
 
+To fix this issue, the scan_microcode() uses find_matching_signature() instead of
+microcode_matches() to compare the (family, model, stepping, processor flag), and
+only save the microcode that matches. As there is no other place invoking microcode_matches(),
+remove it accordingly.
+
+Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=208535
+Fixes: 06b8534cb728 ("x86/microcode: Rework microcode loading")
+Suggested-by: "Raj, Ashok" <ashok.raj@intel.com>
+Cc: Borislav Petkov <bp@alien8.de>
+Cc: Len Brown <len.brown@intel.com>
+Cc: "Rafael J. Wysocki" <rjw@rjwysocki.net>
+Cc: "Raj, Ashok" <ashok.raj@intel.com>
+Cc: Tony Luck <tony.luck@intel.com>
+Signed-off-by: Chen Yu <yu.c.chen@intel.com>
+--
+ arch/x86/kernel/cpu/microcode/intel.c | 50 ++-------------------------
+ 1 file changed, 2 insertions(+), 48 deletions(-)
+
+diff --git a/arch/x86/kernel/cpu/microcode/intel.c b/arch/x86/kernel/cpu/microcode/intel.c
+index 6a99535d7f37..923853f79099 100644
+--- a/arch/x86/kernel/cpu/microcode/intel.c
++++ b/arch/x86/kernel/cpu/microcode/intel.c
+@@ -100,53 +100,6 @@ static int has_newer_microcode(void *mc, unsigned int csig, int cpf, int new_rev
+ 	return find_matching_signature(mc, csig, cpf);
+ }
+ 
+-/*
+- * Given CPU signature and a microcode patch, this function finds if the
+- * microcode patch has matching family and model with the CPU.
+- *
+- * %true - if there's a match
+- * %false - otherwise
+- */
+-static bool microcode_matches(struct microcode_header_intel *mc_header,
+-			      unsigned long sig)
+-{
+-	unsigned long total_size = get_totalsize(mc_header);
+-	unsigned long data_size = get_datasize(mc_header);
+-	struct extended_sigtable *ext_header;
+-	unsigned int fam_ucode, model_ucode;
+-	struct extended_signature *ext_sig;
+-	unsigned int fam, model;
+-	int ext_sigcount, i;
+-
+-	fam   = x86_family(sig);
+-	model = x86_model(sig);
+-
+-	fam_ucode   = x86_family(mc_header->sig);
+-	model_ucode = x86_model(mc_header->sig);
+-
+-	if (fam == fam_ucode && model == model_ucode)
+-		return true;
+-
+-	/* Look for ext. headers: */
+-	if (total_size <= data_size + MC_HEADER_SIZE)
+-		return false;
+-
+-	ext_header   = (void *) mc_header + data_size + MC_HEADER_SIZE;
+-	ext_sig      = (void *)ext_header + EXT_HEADER_SIZE;
+-	ext_sigcount = ext_header->count;
+-
+-	for (i = 0; i < ext_sigcount; i++) {
+-		fam_ucode   = x86_family(ext_sig->sig);
+-		model_ucode = x86_model(ext_sig->sig);
+-
+-		if (fam == fam_ucode && model == model_ucode)
+-			return true;
+-
+-		ext_sig++;
+-	}
+-	return false;
+-}
+-
+ static struct ucode_patch *memdup_patch(void *data, unsigned int size)
+ {
+ 	struct ucode_patch *p;
+@@ -344,7 +297,8 @@ scan_microcode(void *data, size_t size, struct ucode_cpu_info *uci, bool save)
+ 
+ 		size -= mc_size;
+ 
+-		if (!microcode_matches(mc_header, uci->cpu_sig.sig)) {
++		if (!find_matching_signature(data, uci->cpu_sig.sig,
++					     uci->cpu_sig.pf)) {
+ 			data += mc_size;
+ 			continue;
+ 		}
 -- 
-Oscar Salvador
-SUSE L3
+2.17.1
+
