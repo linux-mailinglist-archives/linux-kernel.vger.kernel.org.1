@@ -2,198 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63B2C2AE36D
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 23:39:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 878532AE370
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 23:40:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732231AbgKJWjt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 17:39:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52842 "EHLO
+        id S1732253AbgKJWkL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 17:40:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52898 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731558AbgKJWjt (ORCPT
+        with ESMTP id S1732123AbgKJWkL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 17:39:49 -0500
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FDE9C0613D1;
-        Tue, 10 Nov 2020 14:39:49 -0800 (PST)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: ezequiel)
-        with ESMTPSA id DB7A61F4554F
-Message-ID: <ee12e70c92bacf1080ceae82feafa736c0719a2e.camel@collabora.com>
-Subject: Re: [PATCH v5 0/3] media: rkvdec: Add a VP9 backend
-From:   Ezequiel Garcia <ezequiel@collabora.com>
-To:     Adrian Ratiu <adrian.ratiu@collabora.com>,
-        Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
-Cc:     linux-media <linux-media@vger.kernel.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Boris Brezillon <boris.brezillon@collabora.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        kernel@collabora.com
-Date:   Tue, 10 Nov 2020 19:39:38 -0300
-In-Reply-To: <87y2j8hmoc.fsf@collabora.com>
-References: <20201102190551.1223389-1-adrian.ratiu@collabora.com>
-         <CAAEAJfA1N1k9Vho4weZ9VnM_v6K4RXdmERyrWcWPCj64NMzDoQ@mail.gmail.com>
-         <87y2j8hmoc.fsf@collabora.com>
-Organization: Collabora
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.3-1 
+        Tue, 10 Nov 2020 17:40:11 -0500
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B67DC0613D1
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 14:40:11 -0800 (PST)
+Received: by mail-pf1-x443.google.com with SMTP id y7so181124pfq.11
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 14:40:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=NRHRA3dKhIbMgb5WL8qK9dto+UXsm4X1NyrdOoYkubs=;
+        b=Kad0oMCetDBD359mRaATbdWv2pomotW5/Yn01pwT8iBS3NuvNojaW8ID+DXfDit87Q
+         2zTGODEuB8OBXXBsuLpAQUahyBJ1eobfNOTflDzkK/OqdRW8Y/M8DKn84oMS9f7NFgYv
+         2exY/LAIJ7eCw4oabwKobO7EbysTpvfbuOEXA58r6EARcW//3dnGDOW+53VIDruksULz
+         WbL2phMowO9ZPpvayKTRLLg60wc87W9n0mOZX7XaQqw9oEAIjXoHuhLjHhiDfh0Wcari
+         5hCZFn8RRY6TAfquR4Bhriu6+Jdds929nDdMdt0J3Fad859IidR2dcltBomiBG+IyIP2
+         48eA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=NRHRA3dKhIbMgb5WL8qK9dto+UXsm4X1NyrdOoYkubs=;
+        b=YIlxj8JJ6QnbK5O4UZYh3/o7UVRsNKlAJmTL6Ru5HodcdvI8qztYJUBzn/I2HrIHU9
+         dDtp9GmvJl7l/30vfce6xYg6xaHbWwvCMoD0uQZpcOsYSbX8Ep124ja2nv6u2Kq0XPOl
+         S7eloH4cYJv2Y89XViDkEB5SzjRFWKOGqxmcs9boKRcOYfu6psKen3NRfnaUsfanE8Uv
+         OfMNoHCR8G3B/OtuoNv0PkFN9WSB871+5MNjppEUuP7UzLcf2z0JLKGqzRfNZnNHbcbI
+         1sI1veHRSfimax+3c1KRKCeN3/FshdveNo+vi09e9Hd6M3q3JuTrhxft03EECy/51PDi
+         hk+w==
+X-Gm-Message-State: AOAM532/dU+hn9x4c1YKXwB8palKE75WHSwUkoxIC/N5FTVXIqfLIHq4
+        X3i/nriue0jXU5EGn1PaiQKFG4Udr5Bk0paf3zpOqA==
+X-Google-Smtp-Source: ABdhPJwI01Z/nJWUuZlFIciJdgc5tPQghLrXc8NRSLyMtayRzCR9HkW62daIzJwoS9rPzd8kSbAtB38CiiiJZUmLqx4=
+X-Received: by 2002:a17:90a:4881:: with SMTP id b1mr430686pjh.32.1605048010845;
+ Tue, 10 Nov 2020 14:40:10 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+References: <20201106051436.2384842-1-adrian.ratiu@collabora.com>
+ <20201106051436.2384842-3-adrian.ratiu@collabora.com> <20201106101419.GB3811063@ubuntu-m3-large-x86>
+ <87wnyyvh56.fsf@collabora.com> <CAKwvOdkodob0M0r_AK_4nG3atLGMyNENMd6qVAHSPa92Zh7UZA@mail.gmail.com>
+ <871rh2i9xg.fsf@iwork.i-did-not-set--mail-host-address--so-tickle-me>
+ <CAKwvOdkm3u83TQDBB-fC0TwKZCFXGh5sAfahKXxA+mnzgDid_w@mail.gmail.com>
+ <20201110221511.GA1373528@rani.riverdale.lan> <CAKwvOd=NQ==umC+N_Sgji5HCCFTRARh4jWiB3DaBfV6jDd5cRg@mail.gmail.com>
+ <CAKwvOdmsCY8Hb6t8t9jW5DKCZKbja27bGufO=tw3+-UuTTFBOQ@mail.gmail.com>
+In-Reply-To: <CAKwvOdmsCY8Hb6t8t9jW5DKCZKbja27bGufO=tw3+-UuTTFBOQ@mail.gmail.com>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Tue, 10 Nov 2020 14:39:59 -0800
+Message-ID: <CAKwvOd=6nPUvUY6XJULmkZywHJG2kfu46h7=Zm18j9O30ovdpw@mail.gmail.com>
+Subject: Re: [PATCH 2/2] arm: lib: xor-neon: disable clang vectorization
+To:     Arvind Sankar <nivedita@alum.mit.edu>
+Cc:     Adrian Ratiu <adrian.ratiu@collabora.com>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Russell King <linux@armlinux.org.uk>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Collabora Kernel ML <kernel@collabora.com>,
+        Ard Biesheuvel <ardb@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2020-11-11 at 00:28 +0200, Adrian Ratiu wrote:
-> Hi Ezequiel,
->  
-> On Tue, 10 Nov 2020, Ezequiel Garcia 
-> <ezequiel@vanguardiasur.com.ar> wrote:
-> > On Mon, 2 Nov 2020 at 16:04, Adrian Ratiu 
-> > <adrian.ratiu@collabora.com> wrote: 
-> > > Dear all, 
-> > > 
-> > > This is v5 of the series adding VP9 profile 0 decoding to 
-> > > rkvdec. 
-> > > 
-> > > All feedback from v4 should be addressed, there's just one 
-> > > thing I did not address: ref_frame_sign_biases in the uAPI. The 
-> > > userspace tool I'm 
-> > 
-> > I believe that Hantro G2 VP9 needs ref_frame_sign_biases. 
-> > 
-> > I think that it's also needed for the MTK decoder.  Might be 
-> > worth checking that as well, if the code is publicly available 
-> > somewhere.
-> 
-> I consulted the imx8m app ref manual for the Hantro G2 core and 
-> indeed there's not one, but three fields at SWREG11 and 13 (last, 
-> gold, alt) to signify sign biases for ref frames. Thanks for the 
-> hint!
->  
-> > Coming to think about it, I think we are really close to having 
-> > this uAPI directly upstream. 
-> > 
-> > Let's take a step back on why we have these uAPIs in the staging 
-> > area. Couple years ago, there were some doubts in the media 
-> > community about these uAPIs, and we wanted to wait a bit for 
-> > more users before moving to public land. 
-> > 
-> > The uAPIs were meant to be in staging until enough users 
-> > appeared and we were confident enough to move to stable. 
-> > 
-> > For VP9, given the feedback received through the year was 
-> > already addressed, I think all that's left is to check the 
-> > interface and make sure it can support Rockchip (RK3399, RK3326, 
-> > etc), Hantro G2 and Mediatek, 
-> > 
-> > We will be very close to having a public API, and we could even 
-> > merge it directly there.
-> 
-> Thank you very much for this background. I understand that the 
-> uAPI is independent from the driver implementations, so having a 
-> good stable uAPI is beneficial when (for example) adding support 
-> for VP9 on G2 in  hantro or for upstream adoption of these 
-> drivers.
-> 
-> Given this rkvdec driver implementation is also adding the VP9 
-> uAPI and it's very close to stability (maybe only missing ref 
-> frame sign bias, but who knows?) would you like to block its 
-> submission until the uAPI is finalized or would it make sense to 
-> treat the uAPI de-staging process separately because the uAPI is 
-> independent from the driver? 
-> 
+On Tue, Nov 10, 2020 at 2:39 PM Nick Desaulniers
+<ndesaulniers@google.com> wrote:
+>
+> On Tue, Nov 10, 2020 at 2:36 PM Nick Desaulniers
+> <ndesaulniers@google.com> wrote:
+> >
+> > On Tue, Nov 10, 2020 at 2:15 PM Arvind Sankar <nivedita@alum.mit.edu> wrote:
+> > >
+> > > On Tue, Nov 10, 2020 at 01:41:17PM -0800, Nick Desaulniers wrote:
+> > > > On Mon, Nov 9, 2020 at 11:51 AM Adrian Ratiu <adrian.ratiu@collabora.com> wrote:
+> > > > >
+> > > > > On Fri, 06 Nov 2020, Nick Desaulniers <ndesaulniers@google.com>
+> > > > > wrote:
+> > > > > > +#pragma clang loop vectorize(enable)
+> > > > > >         do {
+> > > > > >                 p1[0] ^= p2[0] ^ p3[0] ^ p4[0] ^ p5[0]; p1[1] ^=
+> > > > > >                 p2[1] ^ p3[1] ^ p4[1] ^ p5[1];
+> > > > > > ``` seems to generate the vectorized code.
+> > > > > >
+> > > > > > Why don't we find a way to make those pragma's more toolchain
+> > > > > > portable, rather than open coding them like I have above rather
+> > > > > > than this series?
+> > > > >
+> > > > > Hi again Nick,
+> > > > >
+> > > > > How did you verify the above pragmas generate correct vectorized
+> > > > > code?  Have you tested this specific use case?
+> > > >
+> > > > I read the disassembly before and after my suggested use of pragmas;
+> > > > look for vld/vstr.  You can also add -Rpass-missed=loop-vectorize to
+> > > > CFLAGS_xor-neon.o in arch/arm/lib/Makefile and rebuild
+> > > > arch/arm/lib/xor-neon.o with CONFIG_BTRFS enabled.
+> > > >
+> > >
+> > > https://godbolt.org/z/1oo9M6
+> > >
+> > > With the __restrict__ keywords added, clang seems to vectorize the loop,
+> > > but still reports that vectorization wasn't beneficial -- any idea
+> > > what's going on?
+>
+> Anyways, it's not safe to make that change in the kernel unless you
+> can guarantee that callers of these routines do not alias or overlap.
 
-I don't mean to block it, quite the opposite, to make sure
-we take this opportunity to go through Rockchip, Hantro and Mediatek,
-double-check the uAPI is covering all the VP9 syntax, and then
-target for public API.
+s/callers/parameters passed by callers/
 
-Cheers,
-Ezequiel
-
-> Thanks,
-> Adrian
-> 
+>
+> >
+> > I suspect that loop-vectorize is a higher level pass that relies on
+> > slp-vectorizer for the transform.
+> >
+> > $ clang -O2 --target=arm-linux-gnueabi -S -o - foo.c -mfpu=neon -mllvm
+> > -print-after-all
+> > ...
+> > *** IR Dump After SLP Vectorizer ***
+> > (bunch of <4 x i32> types)
+> >
+> > If you add -Rpass-missed=slp-vectorizer, observe that the existing
+> > warnings from -Rpass-missed=loop-vectorize disappear; I suspect
+> > loop-vectorize will print a "remark" if passes it calls did not, but
+> > returned some for of error code.
+> >
+> > -Rpass=slp-vectorizer shows that it vectorizes two sequences of the
+> > loop, and warns that some third portion (that's
+> > non-immediately-obvious to me) was non beneficial.
+> >
+> > --
 > > Thanks,
-> > Ezequiel
-> > 
-> > > using [1] apparently doesn't need it or the default hwreg value for it
-> > > is capable of decoding the bitstreams I used on the driver, so I don't
-> > > really have a use-case to change and test that. :)
-> > > 
-> > > Considering the uAPI is a work in progress and expected to be modified,
-> > > ref_frame_sign_biases can be added later with others which might be
-> > > required to enable more functionality (for eg profiles >= 1).
-> > > 
-> > > Series tested on rk3399 and applies on next-20201030.
-> > > 
-> > > [1] https://github.com/Kwiboo/FFmpeg/tree/v4l2-request-hwaccel-4.2.2-rkvdec
-> > > 
-> > > Changelog
-> > > ---------
-> > > 
-> > > v5:
-> > > 
-> > > * Drop unnecessary OUTPUT buffer payload set in .buf_prepare.
-> > > * Drop obsolete .per_request ctrl flag
-> > > * Added new vp9 ctrls to v4l2_ctrl_ptr
-> > > * Fix pahole detected padding issues
-> > > * Send userspace an error if it tries to reconfigure decode resolution
-> > >   as v4l2 or rkvdec-vp9 backend do not support dynamic res changes yet
-> > > * Allow frame ctx probability tables to be non-mandatory so users can
-> > >   set them directly during frame decoding in cases where no defaults
-> > >   have been set previously (eg. ffmpeg vp9 backend)
-> > > * Some comments and documentation clarifications
-> > > * Minor checkpatch fixes
-> > > 
-> > > v4:
-> > > 
-> > > * Drop color_space field from the VP9 interface.
-> > >   V4L2 API should be used for it.
-> > > * Clarified Segment-ID comments.
-> > > * Moved motion vector probabilities to a separate
-> > >   struct.
-> > > 
-> > > v3:
-> > > 
-> > > * Fix documentation issues found by Hans.
-> > > * Fix smatch detected issues as pointed out by Hans.
-> > > * Added patch to fix wrong bytesused set on .buf_prepare.
-> > > 
-> > > v2:
-> > > 
-> > > * Documentation style issues pointed out by Nicolas internally.
-> > > * s/VP9_PROFILE_MAX/V4L2_VP9_PROFILE_MAX/
-> > > * Fix wrong kfree(ctx).
-> > > * constify a couple structs on rkvdec-vp9.c
-> > > 
-> > > 
-> > > Boris Brezillon (2):
-> > >   media: uapi: Add VP9 stateless decoder controls
-> > >   media: rkvdec: Add the VP9 backend
-> > > 
-> > > Ezequiel Garcia (1):
-> > >   media: rkvdec: Fix .buf_prepare
-> > > 
-> > >  .../userspace-api/media/v4l/biblio.rst        |   10 +
-> > >  .../media/v4l/ext-ctrls-codec.rst             |  550 ++++++
-> > >  drivers/media/v4l2-core/v4l2-ctrls.c          |  239 +++
-> > >  drivers/media/v4l2-core/v4l2-ioctl.c          |    1 +
-> > >  drivers/staging/media/rkvdec/Makefile         |    2 +-
-> > >  drivers/staging/media/rkvdec/rkvdec-vp9.c     | 1577 +++++++++++++++++
-> > >  drivers/staging/media/rkvdec/rkvdec.c         |   72 +-
-> > >  drivers/staging/media/rkvdec/rkvdec.h         |    6 +
-> > >  include/media/v4l2-ctrls.h                    |    5 +
-> > >  include/media/vp9-ctrls.h                     |  486 +++++
-> > >  10 files changed, 2942 insertions(+), 6 deletions(-)
-> > >  create mode 100644 drivers/staging/media/rkvdec/rkvdec-vp9.c
-> > >  create mode 100644 include/media/vp9-ctrls.h
-> > > 
-> > > --
-> > > 2.29.0
-> > > 
+> > ~Nick Desaulniers
+>
+>
+>
+> --
+> Thanks,
+> ~Nick Desaulniers
 
 
+
+-- 
+Thanks,
+~Nick Desaulniers
