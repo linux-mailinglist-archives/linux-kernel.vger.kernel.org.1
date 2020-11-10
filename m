@@ -2,98 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9380B2ADF04
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 20:02:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ACFE82ADF05
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 20:03:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731544AbgKJTCe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 14:02:34 -0500
-Received: from linux.microsoft.com ([13.77.154.182]:35100 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726179AbgKJTCd (ORCPT
+        id S1730938AbgKJTDZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 14:03:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47060 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726179AbgKJTDZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 14:02:33 -0500
-Received: from localhost.localdomain (c-71-231-190-134.hsd1.wa.comcast.net [71.231.190.134])
-        by linux.microsoft.com (Postfix) with ESMTPSA id C887F20C27C5;
-        Tue, 10 Nov 2020 11:02:32 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com C887F20C27C5
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1605034953;
-        bh=0+7JgM+4vm1ixk2Q3YFgtJOVqHKLd386H8RppwZJm0M=;
-        h=From:To:Cc:Subject:Date:From;
-        b=tDMCrs93uCqojL0gwwUy4jZ1FpoVuRSAtpeX7zXx1t2RL5FH+9hL7QBL4ZBq5D7/K
-         tBPTR1UndEWHBfdFjfDGP18s3kTWTQ+EzhPMG8hAALdNRdz/PQYBwKXvwd6yq9vaoE
-         ZVcj2sE7DBqVF5GIvV7ywZIGRKavcpioSlsr6rdA=
-From:   Chris Co <chrco@linux.microsoft.com>
-To:     linux-hyperv@vger.kernel.org
-Cc:     kys@microsoft.com, haiyangz@microsoft.com, sthemmin@microsoft.com,
-        wei.liu@kernel.org, chrco@microsoft.com, mikelley@microsoft.com,
-        andrea.parri@microsoft.com, parri.andrea@gmail.com,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] Drivers: hv: vmbus: Allow cleanup of VMBUS_CONNECT_CPU if disconnected
-Date:   Tue, 10 Nov 2020 19:01:18 +0000
-Message-Id: <20201110190118.15596-1-chrco@linux.microsoft.com>
-X-Mailer: git-send-email 2.17.1
+        Tue, 10 Nov 2020 14:03:25 -0500
+Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8437C0613D1
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 11:03:24 -0800 (PST)
+Received: by mail-qt1-x841.google.com with SMTP id f93so9375168qtb.10
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 11:03:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=IPj1mYmXqOWOz3TEiog9Zh5vT3acF5XixS22iuZzAIA=;
+        b=oSzlQ+aZKJ+JtX7hBOzJ6QuxNdqcLauhjHFsVIve5PuHfOiAhBQP7vT28Pm0UhsV1F
+         niWeWfpQFlQfk/RbeF3CC/XDpLPH8x2OpyaosMNkEKmofRAP2RLPWK0CISlT7mz8+k6L
+         Ogvl1E8vhzyA4EBAyDF5hZ87LvKJk1nPjzHtRvVxPcpYstS8Y6gbvBorj4CWcBizdaci
+         sXILka5r/IVEdHN6qNh+d4lj/vl6K02b9mjiEJEunCrInhniMjic3dfF9flk981t6QnU
+         L47YPELx/y+49FzFNqmf4vmsapRk4D9hpHq2HOCrTOOAfkdrWtK6Z1iVx4ZUH2br1ppd
+         lENw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=IPj1mYmXqOWOz3TEiog9Zh5vT3acF5XixS22iuZzAIA=;
+        b=TiB7xMvBH/kLk78HafZ11MkAiBgnomQ4rE4/rr4ZjPEBuY8P1lwuWq0gKjWwhbyldU
+         AjYf0osOWuxf51xqEUcMhgfX7uIxtZGtyg1L1DRvGPuz7+bGbDT26YivVS63SLGisfez
+         Xk/U/qE2H/zqcV7zBysiFWCIoYVLj73bZeOUySR3fRq8zD1cnMWVqcRvtStVZqx6gw9g
+         uwmb54+Wj2++wnJ3kQFWAkN88h+Cknnuana6oAOzTfDiA8VcXsAipEXH1fvYBsdU+SWa
+         g5mAGYF/nCx37sOYh/pjTqn4PbnUUKOMH4lXgrgsUyyr1JP8VnNBkhF5+4qDLogZfeZs
+         JosQ==
+X-Gm-Message-State: AOAM533L7hxnVnaXip4o6hemVimBmhYpM2XsiGvk9C7JQ1vC1zHLTT67
+        Q6PVYfpOLLP+O1wa/Vy8334bVQ==
+X-Google-Smtp-Source: ABdhPJytHHzLMJg40qegnPnje7IYDJ+RMvN9cVBdzFFWhbDZGWSSHK7faXUGzh+ZUmYD25cREX9xVg==
+X-Received: by 2002:ac8:6682:: with SMTP id d2mr8584069qtp.349.1605035004225;
+        Tue, 10 Nov 2020 11:03:24 -0800 (PST)
+Received: from localhost ([2620:10d:c091:480::1:64f7])
+        by smtp.gmail.com with ESMTPSA id p13sm8604430qti.58.2020.11.10.11.03.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 10 Nov 2020 11:03:23 -0800 (PST)
+Date:   Tue, 10 Nov 2020 14:01:36 -0500
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Alex Shi <alex.shi@linux.alibaba.com>
+Cc:     akpm@linux-foundation.org, mgorman@techsingularity.net,
+        tj@kernel.org, hughd@google.com, khlebnikov@yandex-team.ru,
+        daniel.m.jordan@oracle.com, willy@infradead.org, lkp@intel.com,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        cgroups@vger.kernel.org, shakeelb@google.com,
+        iamjoonsoo.kim@lge.com, richard.weiyang@gmail.com,
+        kirill@shutemov.name, alexander.duyck@gmail.com,
+        rong.a.chen@intel.com, mhocko@suse.com, vdavydov.dev@gmail.com,
+        shy828301@gmail.com, Vlastimil Babka <vbabka@suse.cz>,
+        Minchan Kim <minchan@kernel.org>
+Subject: Re: [PATCH v21 07/19] mm: page_idle_get_page() does not need lru_lock
+Message-ID: <20201110190136.GD850433@cmpxchg.org>
+References: <1604566549-62481-1-git-send-email-alex.shi@linux.alibaba.com>
+ <1604566549-62481-8-git-send-email-alex.shi@linux.alibaba.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1604566549-62481-8-git-send-email-alex.shi@linux.alibaba.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chris Co <chrco@microsoft.com>
+On Thu, Nov 05, 2020 at 04:55:37PM +0800, Alex Shi wrote:
+> From: Hugh Dickins <hughd@google.com>
+> 
+> It is necessary for page_idle_get_page() to recheck PageLRU() after
+> get_page_unless_zero(), but holding lru_lock around that serves no
+> useful purpose, and adds to lru_lock contention: delete it.
+> 
+> See https://lore.kernel.org/lkml/20150504031722.GA2768@blaptop for the
+> discussion that led to lru_lock there; but __page_set_anon_rmap() now
+> uses WRITE_ONCE(), and I see no other risk in page_idle_clear_pte_refs()
+> using rmap_walk() (beyond the risk of racing PageAnon->PageKsm, mostly
+> but not entirely prevented by page_count() check in ksm.c's
+> write_protect_page(): that risk being shared with page_referenced() and
+> not helped by lru_lock).
+> 
+> Signed-off-by: Hugh Dickins <hughd@google.com>
+> Signed-off-by: Alex Shi <alex.shi@linux.alibaba.com>
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Cc: Vladimir Davydov <vdavydov.dev@gmail.com>
+> Cc: Vlastimil Babka <vbabka@suse.cz>
+> Cc: Minchan Kim <minchan@kernel.org>
+> Cc: Alex Shi <alex.shi@linux.alibaba.com>
+> Cc: linux-mm@kvack.org
+> Cc: linux-kernel@vger.kernel.org
 
-When invoking kexec() on a Linux guest running on a Hyper-V host, the
-kernel panics.
-
-    RIP: 0010:cpuhp_issue_call+0x137/0x140
-    Call Trace:
-    __cpuhp_remove_state_cpuslocked+0x99/0x100
-    __cpuhp_remove_state+0x1c/0x30
-    hv_kexec_handler+0x23/0x30 [hv_vmbus]
-    hv_machine_shutdown+0x1e/0x30
-    machine_shutdown+0x10/0x20
-    kernel_kexec+0x6d/0x96
-    __do_sys_reboot+0x1ef/0x230
-    __x64_sys_reboot+0x1d/0x20
-    do_syscall_64+0x6b/0x3d8
-    entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-This was due to hv_synic_cleanup() callback returning -EBUSY to
-cpuhp_issue_call() when tearing down the VMBUS_CONNECT_CPU, even
-if the vmbus_connection.conn_state = DISCONNECTED. hv_synic_cleanup()
-should succeed in the case where vmbus_connection.conn_state
-is DISCONNECTED.
-
-Fix is to add an extra condition to test for
-vmbus_connection.conn_state == CONNECTED on the VMBUS_CONNECT_CPU and
-only return early if true. This way the kexec() path can still shut
-everything down while preserving the initial behavior of preventing
-CPU offlining on the VMBUS_CONNECT_CPU while the VM is running.
-
-Fixes: 8a857c55420f29 ("Drivers: hv: vmbus: Always handle the VMBus messages on CPU0")
-Signed-off-by: Chris Co <chrco@microsoft.com>
-Cc: stable@vger.kernel.org
----
- drivers/hv/hv.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/hv/hv.c b/drivers/hv/hv.c
-index 0cde10fe0e71..f202ac7f4b3d 100644
---- a/drivers/hv/hv.c
-+++ b/drivers/hv/hv.c
-@@ -244,9 +244,13 @@ int hv_synic_cleanup(unsigned int cpu)
- 
- 	/*
- 	 * Hyper-V does not provide a way to change the connect CPU once
--	 * it is set; we must prevent the connect CPU from going offline.
-+	 * it is set; we must prevent the connect CPU from going offline
-+	 * while the VM is running normally. But in the panic or kexec()
-+	 * path where the vmbus is already disconnected, the CPU must be
-+	 * allowed to shut down.
- 	 */
--	if (cpu == VMBUS_CONNECT_CPU)
-+	if (cpu == VMBUS_CONNECT_CPU &&
-+	    vmbus_connection.conn_state == CONNECTED)
- 		return -EBUSY;
- 
- 	/*
--- 
-2.17.1
-
+Acked-by: Johannes Weiner <hannes@cmpxchg.org>
