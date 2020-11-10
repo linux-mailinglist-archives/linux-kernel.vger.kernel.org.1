@@ -2,88 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 010AC2AD6E4
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 13:54:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D996F2AD6E7
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 13:55:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730406AbgKJMyl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 07:54:41 -0500
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:57278 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726721AbgKJMyl (ORCPT
+        id S1730291AbgKJMz2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 07:55:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45758 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726721AbgKJMz2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 07:54:41 -0500
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0AACsAJ5020651;
-        Tue, 10 Nov 2020 06:54:10 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1605012850;
-        bh=jCWkNxwtZ43dEYnId2Q7mpdUlLKFvEBlwgl1acIy4mg=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=dEbOAZrfCv1qN/Lf7Eopxdbwbls4kEeqsRqHSt+wVoJ4wha77LARhNlxMql11XEKW
-         4aCavO4j+I0eIKuWTI0IibnxtmAt4OAmAnU+Qd3QYXA0wHK67XvLFtqbHXuf6jg0Il
-         IFLZzhla1U4pQksY218L/SN8hWT8ihpVSRe8xVxU=
-Received: from DLEE109.ent.ti.com (dlee109.ent.ti.com [157.170.170.41])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0AACsAP2057958
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 10 Nov 2020 06:54:10 -0600
-Received: from DLEE115.ent.ti.com (157.170.170.26) by DLEE109.ent.ti.com
- (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 10
- Nov 2020 06:54:10 -0600
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE115.ent.ti.com
- (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Tue, 10 Nov 2020 06:54:10 -0600
-Received: from [192.168.2.6] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0AACs6Q6101201;
-        Tue, 10 Nov 2020 06:54:07 -0600
-Subject: Re: [PATCH] [v2] drm/omap: Fix runtime PM imbalance on error
-To:     Dinghao Liu <dinghao.liu@zju.edu.cn>, <kjlu@umn.edu>
-CC:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Wambui Karuga <wambui.karugax@gmail.com>,
-        Tony Lindgren <tony@atomide.com>,
-        Sebastian Reichel <sebastian.reichel@collabora.com>,
-        zhengbin <zhengbin13@huawei.com>, Jyri Sarha <jsarha@ti.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        YueHaibing <yuehaibing@huawei.com>,
-        <dri-devel@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>
-References: <20200822065743.13671-1-dinghao.liu@zju.edu.cn>
-From:   Tomi Valkeinen <tomi.valkeinen@ti.com>
-Message-ID: <1457eb91-eefe-acd1-e605-5f018437fe70@ti.com>
-Date:   Tue, 10 Nov 2020 14:54:06 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Tue, 10 Nov 2020 07:55:28 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 366C4C0613CF
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 04:55:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=NDNamzygZv0UYLaI6V7BJniz/TwKVa8aDWRmQYtojk0=; b=qesK5MM6DtR7AQrXvl2GEGxYG3
+        rF21pgSGmOIHO8HN8ECsQB1WYVdUx0g5+qAFqar/TG8adaN1PLyr+z1Z0Zo0SUxEAQ4VjFnVVkZQY
+        bLu4O5DYnZBkc0oHhiiFWG7gZfziilhTKJPaAGjGDgbdz2I3ww8Lapw+49Cy+7/dTwpg/+SkFKRGB
+        gJRgxXVJAlJKLtqVEmojQGFF4flXRfFZ7HIp9nhZw/32vSST3jCkEg7wnfhTLa/QIN6Ka82ptmcWv
+        eirWbW+sSBwI9KXGASR8c6/KxNcDYU225vVujVkSMqKDckjZbbGV4HUeeaHh0Vk3qUaRFWiF8FAl0
+        pykOtKAQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kcTAx-0006OE-4Q; Tue, 10 Nov 2020 12:55:07 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 2586D301E02;
+        Tue, 10 Nov 2020 13:55:06 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 12F882BA1DD1B; Tue, 10 Nov 2020 13:55:06 +0100 (CET)
+Date:   Tue, 10 Nov 2020 13:55:06 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Vincent Guittot <vincent.guittot@linaro.org>
+Cc:     mingo@redhat.com, juri.lelli@redhat.com, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+        linux-kernel@vger.kernel.org, riel@surriel.com, clm@fb.com,
+        hannes@cmpxchg.org
+Subject: Re: [PATCH] sched/fair: ensure tasks spreading in LLC during LB
+Message-ID: <20201110125506.GJ2594@hirez.programming.kicks-ass.net>
+References: <20201102102457.28808-1-vincent.guittot@linaro.org>
 MIME-Version: 1.0
-In-Reply-To: <20200822065743.13671-1-dinghao.liu@zju.edu.cn>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201102102457.28808-1-vincent.guittot@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 22/08/2020 09:57, Dinghao Liu wrote:
-> pm_runtime_get_sync() increments the runtime PM usage counter
-> even when it returns an error code. However, users of its
-> direct wrappers in omapdrm assume that PM usage counter will
-> not change on error. Thus a pairing decrement is needed on
-> the error handling path for these wrappers to keep the counter
-> balanced.
+On Mon, Nov 02, 2020 at 11:24:57AM +0100, Vincent Guittot wrote:
+> schbench shows latency increase for 95 percentile above since:
+>   commit 0b0695f2b34a ("sched/fair: Rework load_balance()")
 > 
-> Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
-> ---
+> Align the behavior of the load balancer with the wake up path, which tries
+> to select an idle CPU which belongs to the LLC for a waking task.
 > 
-> Changelog:
+> calculate_imbalance() will use nr_running instead of the spare
+> capacity when CPUs share resources (ie cache) at the domain level. This
+> will ensure a better spread of tasks on idle CPUs.
 > 
-> v2: - Fix 5 additional similar cases in omapdrm.
+> Running schbench on a hikey (8cores arm64) shows the problem:
+> 
+> tip/sched/core :
+> schbench -m 2 -t 4 -s 10000 -c 1000000 -r 10
+> Latency percentiles (usec)
+> 	50.0th: 33
+> 	75.0th: 45
+> 	90.0th: 51
+> 	95.0th: 4152
+> 	*99.0th: 14288
+> 	99.5th: 14288
+> 	99.9th: 14288
+> 	min=0, max=14276
+> 
+> tip/sched/core + patch :
+> schbench -m 2 -t 4 -s 10000 -c 1000000 -r 10
+> Latency percentiles (usec)
+> 	50.0th: 34
+> 	75.0th: 47
+> 	90.0th: 52
+> 	95.0th: 78
+> 	*99.0th: 94
+> 	99.5th: 94
+> 	99.9th: 94
+> 	min=0, max=94
+> 
+> Fixes: 0b0695f2b34a ("sched/fair: Rework load_balance()")
+> Reported-by: Chris Mason <clm@fb.com>
+> Suggested-by: Rik van Riel <riel@surriel.com>
+> Signed-off-by: Vincent Guittot <vincent.guittot@linaro.org>
 
-Thanks, I'll apply to drm-misc-next.
-
- Tomi
-
--- 
-Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
-Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
+Thanks!
