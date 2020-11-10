@@ -2,97 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F5CC2ACB95
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 04:19:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 091572ACB99
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 04:19:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730954AbgKJDTH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 22:19:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41422 "EHLO
+        id S1731188AbgKJDTe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 22:19:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41498 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729661AbgKJDTG (ORCPT
+        with ESMTP id S1729648AbgKJDTe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 22:19:06 -0500
-Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 439B8C0613D3
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Nov 2020 19:19:06 -0800 (PST)
-Received: by mail-pg1-x536.google.com with SMTP id e21so8922806pgr.11
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Nov 2020 19:19:06 -0800 (PST)
+        Mon, 9 Nov 2020 22:19:34 -0500
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1150EC0613CF;
+        Mon,  9 Nov 2020 19:19:34 -0800 (PST)
+Received: by mail-pg1-x543.google.com with SMTP id r10so8920587pgb.10;
+        Mon, 09 Nov 2020 19:19:34 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=27ykW6WMBpdjPMmYk+TEkpv4ofG2LVLk39veK8STtAM=;
-        b=XsFFeqcHcwErTDab8bcJJxnRZmdrfwAAmAxnX+0//0jp/RkNoXCmKM8hfyW7U5g8YY
-         wehgfKm1eruNJkdwnQxX/6RNlrNe6CP3uC9uMuIcChKg7gmdAwILZVQXBK3QxQME/vGY
-         n9bBZbqKsp3rUj7gjL3n2idnQJIzZFT2jQDMtCEsHtuxaEBlgAGdozKhGraOM+DNtPKU
-         1TYIu8MdisQa5tafuex26ZLInGgdddCQESLcztFd9caJZ9PszasLRkfq4/Txf1N1n6Z0
-         s8KzSi9dTkyd/sKQMAPCsqQUdj936ITZXkP6f+AREgqbuvxOMRr0Qudq4LaTJaYBzxn8
-         l8Rg==
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=joZ0UwTM2riPXx20HoPLv33hiAIzPPd4tHYUHsZneFE=;
+        b=EIfee/lZh7v9ZQXbL+inP3xW76VtAffEOc3yh20gN53vyExmDKWhYLG4DXuFdxfQT7
+         NJRuws7Z/RVVsvAUA+bDL7gmoYg/m8S9go8nbUvc/SrPeym8aYQpPytVKp74BT+TMSuN
+         hY39ySJ5+6uzOi7NfP61rnNAW5r37YhKT85Y9+zxzfpUrxJBh7FFN7BRWRPa3QJ9FAXb
+         8mm4mvflPFsJMLEYXKKqPWxLJLkqZ021u8Ygp3Zco+1Jcg6vP1pfNLi2H7WGmlVL5Nyo
+         IrTNfF1hD/Gj6GIH96b5JImVYAyHl7RUxXzVhS9Q2xhRs4zzH5vvu/zvHmFca0DhZsl+
+         Cw0w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=27ykW6WMBpdjPMmYk+TEkpv4ofG2LVLk39veK8STtAM=;
-        b=NzO+jgKeVmbicol1EmLyY6YLqpsstkrB5Xh3mPLE/wmEtwwslMjH2nkqIxFQyTdh37
-         fFxOVnVrAJDy8hwUxsRIU9PVh/3PYoogvRFbrXMe4VE5KkrSmwxg1qOnJAfTilgHhjtb
-         Oy50rm4MCqMHXcwHIOjVqmwSD9yg6FWBwhjuxlXNc/+7C1FdJeK6gITZiN8TsmxGop2W
-         vTg92sRK1JFcrNPQZxHJApaek/jZbrJJBMYGWOMSW1gWiiDiTma7r1py24Q13pBj2E9U
-         ty2/pZUidIiE9OCxuxtt6tVyM99tDczTdmtXO3o86zRamdPHig25Pew5oWzyAg3tMQRO
-         WJPQ==
-X-Gm-Message-State: AOAM530qFXZW97VV+SUE0v8rJT8vYtgnhbjb6qLt+djoGFjBBiqgfulD
-        FleCSQO1eV3S//DVSm3lc4mhMJPXcdXjqchld84BQA==
-X-Google-Smtp-Source: ABdhPJw1gHS3sV2n+GuuNrA63YxT/QiulRGIL8Dn09J7EAZtkgIEcv7I2sFS4tI7OV3X2dr4+8t654iME8/HuHneKZ4=
-X-Received: by 2002:a17:90a:4881:: with SMTP id b1mr2684359pjh.32.1604978345526;
- Mon, 09 Nov 2020 19:19:05 -0800 (PST)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=joZ0UwTM2riPXx20HoPLv33hiAIzPPd4tHYUHsZneFE=;
+        b=q+Cr8zDWDQTctaMgyllhyDnuY/9S/LMkkog7juyTbyUqVQTnG+XH7WeJQf1tOfy2lW
+         muBM9vYFMBCGslhMLmhD5imRAcvNrwEirVQ1Y7rg7rkq1rI0Nu9IqYhugflgt0vuwEb4
+         XjAA+HyTnrp7h+4Y3R0/9fFlQl/2wVU9YQB6X1KxyfCYVOQ9Gsjivo8i69c5cEahU4DB
+         Zm182T1CFA4Z8fELAG89NbQOuk5CjNVKjHr8oSwWappz9/4h7PbkzIvOmGILbxrjlXNB
+         cmrOBdjdtEf8Bz0AYmx7uwcIVlkOudZvshRV0GHdBL0XfIWlLJiBHniZh3eirL8LFAEu
+         /6uA==
+X-Gm-Message-State: AOAM531fBd9OIqmUPxUT5+ubNh0k7uXRgvCdB99qEq9boppFoowEkf4y
+        5HVao8gS8wqox4PB42x4KB1SNnZG6dg=
+X-Google-Smtp-Source: ABdhPJzuUrAv1E9O3d0K4Th2pQCk4Jt/dk8nCn8MuALaWpuewUA+IpASgvZLhdM4DhGZp82y38UhQQ==
+X-Received: by 2002:a17:90b:ec2:: with SMTP id gz2mr2592216pjb.211.1604978373169;
+        Mon, 09 Nov 2020 19:19:33 -0800 (PST)
+Received: from [192.168.1.3] (ip68-111-84-250.oc.oc.cox.net. [68.111.84.250])
+        by smtp.gmail.com with ESMTPSA id g4sm12201070pgu.81.2020.11.09.19.19.31
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 09 Nov 2020 19:19:32 -0800 (PST)
+Subject: Re: [PATCH v2 02/13] ARM: dts: mmp2-olpc-xo-1-75: Delete
+ #address-cells from ssp3
+To:     Lubomir Rintel <lkundrak@v3.sk>, Arnd Bergmann <arnd@arndb.de>,
+        Olof Johansson <olof@lixom.net>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     SoC Team <soc@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20200718205019.184927-1-lkundrak@v3.sk>
+ <20200718205019.184927-3-lkundrak@v3.sk>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <a98683e3-c666-a308-9c67-b898134c13fe@gmail.com>
+Date:   Mon, 9 Nov 2020 19:19:30 -0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.4.1
 MIME-Version: 1.0
-References: <CAG48ez2baAvKDA0wfYLKy-KnM_1CdOwjU873VJGDM=CErjsv_A@mail.gmail.com>
- <20201015102216.GB2611@hirez.programming.kicks-ass.net> <20201015203942.f3kwcohcwwa6lagd@treble>
- <CABCJKufDLmBCwmgGnfLcBw_B_4U8VY-R-dSNNp86TFfuMobPMw@mail.gmail.com>
- <20201020185217.ilg6w5l7ujau2246@treble> <CABCJKucVjFtrOsw58kn4OnW5kdkUh8G7Zs4s6QU9s6O7soRiAA@mail.gmail.com>
- <20201021085606.GZ2628@hirez.programming.kicks-ass.net> <CABCJKufL6=FiaeD8T0P+mK4JeR9J80hhjvJ6Z9S-m9UnCESxVA@mail.gmail.com>
- <20201023173617.GA3021099@google.com> <CABCJKuee7hUQSiksdRMYNNx05bW7pWaDm4fQ__znGQ99z9-dEw@mail.gmail.com>
- <20201110022924.tekltjo25wtrao7z@treble>
-In-Reply-To: <20201110022924.tekltjo25wtrao7z@treble>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Mon, 9 Nov 2020 19:18:54 -0800
-Message-ID: <CAKwvOdnO2tZRcB69yJ+FTj+qGpzCasxecCPQ0c5G9Wwn6Wd12w@mail.gmail.com>
-Subject: Re: [PATCH v6 22/25] x86/asm: annotate indirect jumps
-To:     Josh Poimboeuf <jpoimboe@redhat.com>
-Cc:     Sami Tolvanen <samitolvanen@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Jann Horn <jannh@google.com>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Will Deacon <will@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Kernel Hardening <kernel-hardening@lists.openwall.com>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-kbuild <linux-kbuild@vger.kernel.org>,
-        kernel list <linux-kernel@vger.kernel.org>,
-        linux-pci@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200718205019.184927-3-lkundrak@v3.sk>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 9, 2020 at 6:29 PM Josh Poimboeuf <jpoimboe@redhat.com> wrote:
->
-> Also, any details on how to build clang would be appreciated, it's been
-> a while since I tried.
 
-$ git clone https://github.com/llvm/llvm-project.git --depth 1
-$ mkdir llvm-project/llvm/build
-$ cd !$
-$ cmake .. -DCMAKE_BUILD_TYPE=Release -G Ninja
--DLLVM_ENABLE_PROJECTS="clang;lld;compiler-rt"
-$ ninja
-$ export PATH=$(pwd)/bin:$PATH
-$ clang --version
+
+On 7/18/2020 1:50 PM, Lubomir Rintel wrote:
+> On the XO-1.75, this node represents a bus interface that operates in slave
+> mode and thus is only able to accommodate a single subnode; no address
+> cells are necessary.
+> 
+> The Documentation/devicetree/bindings/spi/spi-controller.yaml binding
+> prefers that we drop the property instead of setting it to zero.
+> 
+> This fixes a DT validation error:
+> 
+>   arch/arm/boot/dts/mmp2-olpc-xo-1-75.dt.yaml: spi@d4037000:
+>       { ... } is valid under each of {'required': ['spi-slave']},
+>                                      {'required': ['#address-cells']}
+> 
+> We also need to drop #size-cells:
+> 
+>   arch/arm/boot/dts/mmp2-olpc-xo-1-75.dt.yaml: spi@d4037000:
+>       '#address-cells' is a dependency of '#size-cells'
+> 
+> Signed-off-by: Lubomir Rintel <lkundrak@v3.sk>
+
+This patch causes the following warning to be issued when validating the
+mmp2 DTS files against specific bindings:
+
+arch/arm/boot/dts/mmp2.dtsi:472.23-480.6: Warning (spi_bus_bridge):
+/soc/apb@d4000000/spi@d4037000: incorrect #address-cells for SPI bus
+  also defined at arch/arm/boot/dts/mmp2-olpc-xo-1-75.dts:225.7-237.3
+arch/arm/boot/dts/mmp2.dtsi:472.23-480.6: Warning (spi_bus_bridge):
+/soc/apb@d4000000/spi@d4037000: incorrect #size-cells for SPI bus
+  also defined at arch/arm/boot/dts/mmp2-olpc-xo-1-75.dts:225.7-237.3
+arch/arm/boot/dts/mmp2-olpc-xo-1-75.dt.yaml: Warning (spi_bus_reg):
+Failed prerequisite 'spi_bus_bridge'
+
+Is there a fix that we can apply to silence this warning? Thanks!
 -- 
-Thanks,
-~Nick Desaulniers
+Florian
