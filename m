@@ -2,57 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A8AE2AE2F8
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 23:13:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 97D792AE2DC
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 23:12:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731910AbgKJWMY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 17:12:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48514 "EHLO
+        id S1732867AbgKJWM0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 17:12:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48524 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731996AbgKJWMS (ORCPT
+        with ESMTP id S1732378AbgKJWMU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 17:12:18 -0500
+        Tue, 10 Nov 2020 17:12:20 -0500
 Received: from mail-wr1-x449.google.com (mail-wr1-x449.google.com [IPv6:2a00:1450:4864:20::449])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76C5BC0613D1
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 14:12:17 -0800 (PST)
-Received: by mail-wr1-x449.google.com with SMTP id r16so6152244wrw.22
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 14:12:17 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBAD9C0613D1
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 14:12:19 -0800 (PST)
+Received: by mail-wr1-x449.google.com with SMTP id e18so6179752wrs.23
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 14:12:19 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=sender:date:in-reply-to:message-id:mime-version:references:subject
          :from:to:cc;
-        bh=1bYqciy44TQVhE5hxgy8PR0a5xeoaFJ1mc4wbOxDwLU=;
-        b=Oi4sfQV/nxPKGKeiPqLbOWNo5sDcx2Vvm1Ns9zuV7oMv/FIIGNNfTv+fmhoPrZy3qn
-         hXOeRKrGYRDxREdFPOPa++XM030juJSA5/X9mixbqZUb7fiMMFqjpzGGLPthSA9rSiJX
-         zi3a9t4WQwN2EfkqF/YbWLdP39uznV9md4pYWSc1hV15IrvaUJYuiXO2c7E4To/EQqV5
-         gPisvjateeMGrcfclOXHsIC116APsGMu4qWQdvLKpwxHEhzsntOncHQwQH1sshA9WXPT
-         inrLmVbGKGWb9g9o7cm/uJpA1QsTNcucfVjsM/i7K7FearyNLH/YT1rHEPqZ/GL5Ug0l
-         K+lw==
+        bh=enYgO238HRx8fv1V28RLwo+/DGMZxgWkEarUmOvbocE=;
+        b=uhgZ9csZD7iO1qI6Qf9wFJ3RwWi+HaIB/ZsEM+BTgsl/yXhn93pIfKWDF+LWp7Ehq6
+         HkVWI44U6v7esra2uHzFIuqJvxOXJ25RXc3/waIxHlw4y84+aUtER39aarvklBJYMymH
+         4p+fEA6MgyJxHg2RrDVSOqWc98DF6Y/4I3H6M+8r7iduu4+k+BUIuT0jgT+ioN8/Vxtw
+         rEBplBEl7khkG9TSRns+O/xw+ezRlX2mQ74CuX4deccuP1NvQNdhuXQIjdHSuc7k0kis
+         xGCWPp4mBKD4ANcw6HPb00dN7hzwqAwFbZ8jVPMw9zZtirTAkI9KQLm3pRi6ePx5Mxqa
+         nxgA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=1bYqciy44TQVhE5hxgy8PR0a5xeoaFJ1mc4wbOxDwLU=;
-        b=Mpe53EWs85snTJxUhabSr5lU6YFEppqk0pxD31oNnDHIrrFP4Pm14QjI5utIPkFYmA
-         GuH+uZYQfugFSgfwB0zr+DXVUa6gxUbm7lpLVLBqITlDMnp8Q/pkgvkx5Myym4Uzbdgx
-         gCGfHlhuaaDSJ+vI8jn8Qn/3WLWcDH7mVRONX96w/sotWEGfVU5UEgNVIxvViW7CXqmv
-         aEUi6fzwtCkpk2FtrXs2FRMc4DD7IZqwSl2x+nR+mx94JSbkPSheD13MVIHTNIiVJNzz
-         PLQyEsfOtMPtVT5+0bBJM1/wjTdv1bMXTbBaB4n6m+/GiizrVkzOIoz105+NCk2riMc9
-         +VDQ==
-X-Gm-Message-State: AOAM531JnHSE3z/scBVotdtHDR6S0aTTPHefc5EjWZ0bluAL+P6Ly+wd
-        6e07SsLJLmD10N+ETlFJO4vEJbeQ0EipRUVk
-X-Google-Smtp-Source: ABdhPJzL48w2ZVrFoAJz3+RYrwnDu2LJnt6N9IJPi+T6l/hxyXQkJkt0IamN3lW5N3kFgbBqfZ3Q//3vR3g9JSuN
+        bh=enYgO238HRx8fv1V28RLwo+/DGMZxgWkEarUmOvbocE=;
+        b=IoMKTy1rZu8XcB1AT+YQDbT/GARYFa4vjLkjpo8asCwN/6pPDUIZ4VymryyzznA8H2
+         4HxYXnYJHEsh1juTJRBuANhcFrX7ecSxhIafDzhb7Nc5iEQkRKTVncwM25CRZMNP/pUV
+         Bc/rQhHQh9hlrAWldzs1KcpoePhS/fQRYyzu+UVU0/IlAQKyQVBDO9P5L1j8VC316p7N
+         0yw48WLpCmsQRSenSSH4ua60wSe6Zb7ces22lAYoiqAaf5cDLpDB/AX81pQ4fGioheIX
+         Q8Qs1zfS3qF4TGO6SsyVlrY6sMTYWAm0ibJEgE3ah+5l5ylgFBhHfclV/9P/nPuwjjOf
+         oNMQ==
+X-Gm-Message-State: AOAM530TujVzaTTo3h+KgThtsI2JLgxrYubRExGcr3wN5bu+kQaABlST
+        XekD4Iq+e7TPxam2yUm7pocXvbRaEi4Lc7P+
+X-Google-Smtp-Source: ABdhPJytCtm6LQTjmOMi0OcJ1HLwTSP8X//tBUB6+I2xSLZvpcDaXC2kFN9fd4t6XP4e/No4AV7MW+SJjqCvhfSY
 Sender: "andreyknvl via sendgmr" <andreyknvl@andreyknvl3.muc.corp.google.com>
 X-Received: from andreyknvl3.muc.corp.google.com ([2a00:79e0:15:13:7220:84ff:fe09:7e9d])
- (user=andreyknvl job=sendgmr) by 2002:a7b:cf22:: with SMTP id
- m2mr214895wmg.179.1605046336032; Tue, 10 Nov 2020 14:12:16 -0800 (PST)
-Date:   Tue, 10 Nov 2020 23:10:26 +0100
+ (user=andreyknvl job=sendgmr) by 2002:a1c:bac1:: with SMTP id
+ k184mr261891wmf.76.1605046338668; Tue, 10 Nov 2020 14:12:18 -0800 (PST)
+Date:   Tue, 10 Nov 2020 23:10:27 +0100
 In-Reply-To: <cover.1605046192.git.andreyknvl@google.com>
-Message-Id: <96694ab6b5b64f4ab2de32cdc4773857966d62f1.1605046192.git.andreyknvl@google.com>
+Message-Id: <5ce2fc45920e59623a4a9d8d39b6c96792f1e055.1605046192.git.andreyknvl@google.com>
 Mime-Version: 1.0
 References: <cover.1605046192.git.andreyknvl@google.com>
 X-Mailer: git-send-email 2.29.2.222.g5d2a92d10f8-goog
-Subject: [PATCH v9 29/44] arm64: mte: Add in-kernel tag fault handler
+Subject: [PATCH v9 30/44] arm64: kasan: Allow enabling in-kernel MTE
 From:   Andrey Konovalov <andreyknvl@google.com>
 To:     Catalin Marinas <catalin.marinas@arm.com>
 Cc:     Will Deacon <will.deacon@arm.com>,
@@ -75,140 +75,137 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Vincenzo Frascino <vincenzo.frascino@arm.com>
 
-Add the implementation of the in-kernel fault handler.
+Hardware tag-based KASAN relies on Memory Tagging Extension (MTE)
+feature and requires it to be enabled. MTE supports
 
-When a tag fault happens on a kernel address:
-* MTE is disabled on the current CPU,
-* the execution continues.
+This patch adds a new mte_init_tags() helper, that enables MTE in
+Synchronous mode in EL1 and is intended to be called from KASAN runtime
+during initialization.
 
-When a tag fault happens on a user address:
-* the kernel executes do_bad_area() and panics.
+The Tag Checking operation causes a synchronous data abort as
+a consequence of a tag check fault when MTE is configured in
+synchronous mode.
 
-The tag fault handler for kernel addresses is currently empty and will be
-filled in by a future commit.
+As part of this change enable match-all tag for EL1 to allow the
+kernel to access user pages without faulting. This is required because
+the kernel does not have knowledge of the tags set by the user in a
+page.
+
+Note: For MTE, the TCF bit field in SCTLR_EL1 affects only EL1 in a
+similar way as TCF0 affects EL0.
+
+MTE that is built on top of the Top Byte Ignore (TBI) feature hence we
+enable it as part of this patch as well.
 
 Signed-off-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
 Co-developed-by: Andrey Konovalov <andreyknvl@google.com>
 Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
-Reviewed-by: Catalin Marinas <catalin.marinas@arm.com>
 ---
-Change-Id: I9b8aa79567f7c45f4d6a1290efcf34567e620717
+Change-Id: I4d67497268bb7f0c2fc5dcacefa1e273df4af71d
 ---
- arch/arm64/include/asm/uaccess.h | 23 ++++++++++++++++
- arch/arm64/mm/fault.c            | 45 ++++++++++++++++++++++++++++++++
- 2 files changed, 68 insertions(+)
+ arch/arm64/include/asm/mte-kasan.h |  6 ++++++
+ arch/arm64/kernel/mte.c            |  7 +++++++
+ arch/arm64/mm/proc.S               | 23 ++++++++++++++++++++---
+ 3 files changed, 33 insertions(+), 3 deletions(-)
 
-diff --git a/arch/arm64/include/asm/uaccess.h b/arch/arm64/include/asm/uaccess.h
-index 991dd5f031e4..c7fff8daf2a7 100644
---- a/arch/arm64/include/asm/uaccess.h
-+++ b/arch/arm64/include/asm/uaccess.h
-@@ -200,13 +200,36 @@ do {									\
- 				CONFIG_ARM64_PAN));			\
- } while (0)
+diff --git a/arch/arm64/include/asm/mte-kasan.h b/arch/arm64/include/asm/mte-kasan.h
+index 3a70fb1807fd..aa3ea2e0b3a8 100644
+--- a/arch/arm64/include/asm/mte-kasan.h
++++ b/arch/arm64/include/asm/mte-kasan.h
+@@ -29,6 +29,8 @@ u8 mte_get_mem_tag(void *addr);
+ u8 mte_get_random_tag(void);
+ void *mte_set_mem_tag_range(void *addr, size_t size, u8 tag);
  
-+/*
-+ * The Tag Check Flag (TCF) mode for MTE is per EL, hence TCF0
-+ * affects EL0 and TCF affects EL1 irrespective of which TTBR is
-+ * used.
-+ * The kernel accesses TTBR0 usually with LDTR/STTR instructions
-+ * when UAO is available, so these would act as EL0 accesses using
-+ * TCF0.
-+ * However futex.h code uses exclusives which would be executed as
-+ * EL1, this can potentially cause a tag check fault even if the
-+ * user disables TCF0.
-+ *
-+ * To address the problem we set the PSTATE.TCO bit in uaccess_enable()
-+ * and reset it in uaccess_disable().
-+ *
-+ * The Tag check override (TCO) bit disables temporarily the tag checking
-+ * preventing the issue.
-+ */
- static inline void uaccess_disable(void)
- {
-+	asm volatile(ALTERNATIVE("nop", SET_PSTATE_TCO(0),
-+				 ARM64_MTE, CONFIG_KASAN_HW_TAGS));
++void mte_enable(void);
 +
- 	__uaccess_disable(ARM64_HAS_PAN);
+ #else /* CONFIG_ARM64_MTE */
+ 
+ static inline u8 mte_get_ptr_tag(void *ptr)
+@@ -49,6 +51,10 @@ static inline void *mte_set_mem_tag_range(void *addr, size_t size, u8 tag)
+ 	return addr;
  }
  
- static inline void uaccess_enable(void)
- {
-+	asm volatile(ALTERNATIVE("nop", SET_PSTATE_TCO(1),
-+				 ARM64_MTE, CONFIG_KASAN_HW_TAGS));
-+
- 	__uaccess_enable(ARM64_HAS_PAN);
- }
- 
-diff --git a/arch/arm64/mm/fault.c b/arch/arm64/mm/fault.c
-index 1ee94002801f..fbceb14d93b1 100644
---- a/arch/arm64/mm/fault.c
-+++ b/arch/arm64/mm/fault.c
-@@ -33,6 +33,7 @@
- #include <asm/debug-monitors.h>
- #include <asm/esr.h>
- #include <asm/kprobes.h>
-+#include <asm/mte.h>
- #include <asm/processor.h>
- #include <asm/sysreg.h>
- #include <asm/system_misc.h>
-@@ -296,6 +297,44 @@ static void die_kernel_fault(const char *msg, unsigned long addr,
- 	do_exit(SIGKILL);
- }
- 
-+static void report_tag_fault(unsigned long addr, unsigned int esr,
-+			     struct pt_regs *regs)
++static inline void mte_enable(void)
 +{
 +}
 +
-+static void do_tag_recovery(unsigned long addr, unsigned int esr,
-+			   struct pt_regs *regs)
+ #endif /* CONFIG_ARM64_MTE */
+ 
+ #endif /* __ASSEMBLY__ */
+diff --git a/arch/arm64/kernel/mte.c b/arch/arm64/kernel/mte.c
+index 600b26d65b41..7f477991a6cf 100644
+--- a/arch/arm64/kernel/mte.c
++++ b/arch/arm64/kernel/mte.c
+@@ -129,6 +129,13 @@ void *mte_set_mem_tag_range(void *addr, size_t size, u8 tag)
+ 	return ptr;
+ }
+ 
++void mte_enable(void)
 +{
-+	static bool reported = false;
-+
-+	if (!READ_ONCE(reported)) {
-+		report_tag_fault(addr, esr, regs);
-+		WRITE_ONCE(reported, true);
-+	}
-+
-+	/*
-+	 * Disable MTE Tag Checking on the local CPU for the current EL.
-+	 * It will be done lazily on the other CPUs when they will hit a
-+	 * tag fault.
-+	 */
-+	sysreg_clear_set(sctlr_el1, SCTLR_ELx_TCF_MASK, SCTLR_ELx_TCF_NONE);
++	/* Enable MTE Sync Mode for EL1. */
++	sysreg_clear_set(sctlr_el1, SCTLR_ELx_TCF_MASK, SCTLR_ELx_TCF_SYNC);
 +	isb();
 +}
 +
-+static bool is_el1_mte_sync_tag_check_fault(unsigned int esr)
-+{
-+	unsigned int ec = ESR_ELx_EC(esr);
-+	unsigned int fsc = esr & ESR_ELx_FSC;
-+
-+	if (ec != ESR_ELx_EC_DABT_CUR)
-+		return false;
-+
-+	if (fsc == ESR_ELx_FSC_MTE)
-+		return true;
-+
-+	return false;
-+}
-+
- static void __do_kernel_fault(unsigned long addr, unsigned int esr,
- 			      struct pt_regs *regs)
+ static void update_sctlr_el1_tcf0(u64 tcf0)
  {
-@@ -312,6 +351,12 @@ static void __do_kernel_fault(unsigned long addr, unsigned int esr,
- 	    "Ignoring spurious kernel translation fault at virtual address %016lx\n", addr))
- 		return;
+ 	/* ISB required for the kernel uaccess routines */
+diff --git a/arch/arm64/mm/proc.S b/arch/arm64/mm/proc.S
+index 23c326a06b2d..7c3304fb15d9 100644
+--- a/arch/arm64/mm/proc.S
++++ b/arch/arm64/mm/proc.S
+@@ -40,9 +40,15 @@
+ #define TCR_CACHE_FLAGS	TCR_IRGN_WBWA | TCR_ORGN_WBWA
  
-+	if (is_el1_mte_sync_tag_check_fault(esr)) {
-+		do_tag_recovery(addr, esr, regs);
+ #ifdef CONFIG_KASAN_SW_TAGS
+-#define TCR_KASAN_FLAGS TCR_TBI1
++#define TCR_KASAN_SW_FLAGS TCR_TBI1
+ #else
+-#define TCR_KASAN_FLAGS 0
++#define TCR_KASAN_SW_FLAGS 0
++#endif
 +
-+		return;
-+	}
++#ifdef CONFIG_KASAN_HW_TAGS
++#define TCR_KASAN_HW_FLAGS SYS_TCR_EL1_TCMA1 | TCR_TBI1
++#else
++#define TCR_KASAN_HW_FLAGS 0
+ #endif
+ 
+ /*
+@@ -427,6 +433,10 @@ SYM_FUNC_START(__cpu_setup)
+ 	 */
+ 	mov_q	x5, MAIR_EL1_SET
+ #ifdef CONFIG_ARM64_MTE
++	mte_tcr	.req	x20
 +
- 	if (is_el1_permission_fault(addr, esr, regs)) {
- 		if (esr & ESR_ELx_WNR)
- 			msg = "write to read-only memory";
++	mov	mte_tcr, #0
++
+ 	/*
+ 	 * Update MAIR_EL1, GCR_EL1 and TFSR*_EL1 if MTE is supported
+ 	 * (ID_AA64PFR1_EL1[11:8] > 1).
+@@ -447,6 +457,9 @@ SYM_FUNC_START(__cpu_setup)
+ 	/* clear any pending tag check faults in TFSR*_EL1 */
+ 	msr_s	SYS_TFSR_EL1, xzr
+ 	msr_s	SYS_TFSRE0_EL1, xzr
++
++	/* set the TCR_EL1 bits */
++	mov_q	mte_tcr, TCR_KASAN_HW_FLAGS
+ 1:
+ #endif
+ 	msr	mair_el1, x5
+@@ -456,7 +469,11 @@ SYM_FUNC_START(__cpu_setup)
+ 	 */
+ 	mov_q	x10, TCR_TxSZ(VA_BITS) | TCR_CACHE_FLAGS | TCR_SMP_FLAGS | \
+ 			TCR_TG_FLAGS | TCR_KASLR_FLAGS | TCR_ASID16 | \
+-			TCR_TBI0 | TCR_A1 | TCR_KASAN_FLAGS
++			TCR_TBI0 | TCR_A1 | TCR_KASAN_SW_FLAGS
++#ifdef CONFIG_ARM64_MTE
++	orr	x10, x10, mte_tcr
++	.unreq	mte_tcr
++#endif
+ 	tcr_clear_errata_bits x10, x9, x5
+ 
+ #ifdef CONFIG_ARM64_VA_BITS_52
 -- 
 2.29.2.222.g5d2a92d10f8-goog
 
