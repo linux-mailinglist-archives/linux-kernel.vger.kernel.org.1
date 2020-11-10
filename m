@@ -2,152 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 487052ADA39
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 16:20:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AACCC2ADA3B
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 16:21:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731940AbgKJPU5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 10:20:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40528 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730368AbgKJPU4 (ORCPT
+        id S1732152AbgKJPVO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 10:21:14 -0500
+Received: from mail-ej1-f66.google.com ([209.85.218.66]:39679 "EHLO
+        mail-ej1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730368AbgKJPVN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 10:20:56 -0500
-Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D18EC0613D1
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 07:20:55 -0800 (PST)
-Received: by mail-ed1-x544.google.com with SMTP id k9so13122948edo.5
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 07:20:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=monstr-eu.20150623.gappssmtp.com; s=20150623;
-        h=sender:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=SMNbGLi2Q4/xVsAortlccPXTjS9R1PWvo/pybl2OsXY=;
-        b=e9x07HiS2tn6aNtybXD/R8/ilWG3oIDrDzv8eVGu9iJgWimMKhpRyjxu1KbktXFGJl
-         8XN4aXLRAj1mwsrHfiwUgNOr3nZVvomT2R5kYefqfGl5o0Mr9WJj26YSCpasuRCcvM4Y
-         hp5avp96COv8xMdTf2+htoym/F1/W1Sc/azDo86Wt+QM+Ph/sStL1yAT49G/29f9Er3Y
-         UmDlNNCTZT1l4F5S32AjDXyVnTXT74kSVefM9QmezIKdG2l/+Cy6H1kKGNx8sU4qmdv6
-         XVmaVsOv8C0ebNX3tEq/wZ93ZhYkP3BWVEkUaF7Ic2dU1NnPrSq5uJszykgfVWtnj+gY
-         nT1w==
+        Tue, 10 Nov 2020 10:21:13 -0500
+Received: by mail-ej1-f66.google.com with SMTP id s25so18108046ejy.6;
+        Tue, 10 Nov 2020 07:21:10 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
-         :mime-version:content-transfer-encoding;
-        bh=SMNbGLi2Q4/xVsAortlccPXTjS9R1PWvo/pybl2OsXY=;
-        b=Lxys3vIrsX/3s5Cj5KoCZhhrr2DQcO7rz1FUXXISalu8dyqFiXzV/wDlS4oSFjuq02
-         2vVNytoy8KtwPZ9L5rABAQ6r+qCxiu56cEOQQnkxVUPLGNm1tpE4iJZG/DlH70nlzqio
-         yibDdT5GEqUq3UW21SELpMF2w1bh7NyZrDoWN6vvSwo9BduRglLv6xhURMrBCIPaXL+o
-         LxJ376vRLaE6rAoR0BvXUAJyvuuqmqe8Mk/Nqc8L61kcjo4REeMl61AwwCee96GRZIZQ
-         siXMMWMkvdDS7IwJgfHfzvrti9zcxmswdJfQ3dv8THYMcfq5s2cqzCZasjSZVkkIQub2
-         P3tQ==
-X-Gm-Message-State: AOAM530lbiTF1rq8wxvJqdgBVBcXzWMyOum0Lkejn5cZpbF5Xd97Kbh9
-        9hVEW9ILh26jDCyojmgs0BUaVFkXb+IMh1SA
-X-Google-Smtp-Source: ABdhPJyh/LggTlRIYwsOreK6uI97W8fKKr4yjtDlCbqgtHI3WaqlzIw81U7JCVNmB9x+ikpLE93BPQ==
-X-Received: by 2002:a05:6402:144b:: with SMTP id d11mr21724069edx.195.1605021653284;
-        Tue, 10 Nov 2020 07:20:53 -0800 (PST)
-Received: from localhost (nat-35.starnet.cz. [178.255.168.35])
-        by smtp.gmail.com with ESMTPSA id s26sm6133267edy.1.2020.11.10.07.20.51
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 10 Nov 2020 07:20:51 -0800 (PST)
-Sender: Michal Simek <monstr@monstr.eu>
-From:   Michal Simek <michal.simek@xilinx.com>
-To:     linux-kernel@vger.kernel.org, monstr@monstr.eu,
-        michal.simek@xilinx.com, git@xilinx.com
-Cc:     Paul Thomas <pthomas8589@gmail.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Manish Narani <manish.narani@xilinx.com>,
-        Rajan Vaja <rajan.vaja@xilinx.com>,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: [PATCH] arm64: zynqmp: Move gic node to axi bus
-Date:   Tue, 10 Nov 2020 16:20:46 +0100
-Message-Id: <f767fe007e446a2299fda9905e75b723c650a424.1605021644.git.michal.simek@xilinx.com>
-X-Mailer: git-send-email 2.29.2
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=7sMPHtK+YcLJGhfyVwqh2OOYZXXIIXwv/PyI82yPdK8=;
+        b=AZkZ9cW/rSwDWyuqiXgbtH7SODLbfrwXJqAdfuPthYjFL+gbasx6klsUkHW4TU+AnC
+         fw+XcDf1/GLuy6p/I03AZdli2VI0hkr9gdobeCDAK7sJSJMc2T/fL/GbfLSDhIcUAi5Z
+         Usk9qGyr9zqL3vjlEP79NsglH3MN0f8njPzE/+h8Zd8zc/2i2AulSRhtDnr+ozNMbLEN
+         XZiVz/B0VkpRmufQL0pRBw2wlfo8ssqTG8EDdazuxJnmW0MUUYf7hyOYRvzlc9qpgcYw
+         cE5U1BNgrr9yh1yQjY9TG6gRyTk2hy7S2SqScxpzsErHx7egY+6/XLE46AS2UuFlzq74
+         gj1Q==
+X-Gm-Message-State: AOAM532Yvph1zP4wmcyNQD71uJFNmcMusH2iBqj2nt3dGe9jjGVp/1Tt
+        Yc+6umZQeEPHywP0CRAlEUoQkQ6v9XI=
+X-Google-Smtp-Source: ABdhPJwUY9301EUYBgmnJT+dj4+GVeqVlbKbG+QWb//JSnlXJyePGyz9WjAzqkiTjTQOvjsRdFen/g==
+X-Received: by 2002:a17:906:2850:: with SMTP id s16mr21452986ejc.276.1605021670221;
+        Tue, 10 Nov 2020 07:21:10 -0800 (PST)
+Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
+        by smtp.googlemail.com with ESMTPSA id t3sm10827433edv.59.2020.11.10.07.21.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 10 Nov 2020 07:21:09 -0800 (PST)
+Date:   Tue, 10 Nov 2020 16:21:07 +0100
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Yu Kuai <yukuai3@huawei.com>
+Cc:     thierry.reding@gmail.com, jonathanh@nvidia.com,
+        mperttunen@nvidia.com, tomeu.vizoso@collabora.com,
+        linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
+        yi.zhang@huawei.com, zhangxiaoxu5@huawei.com
+Subject: Re: [PATCH V3] memory: tegra: add missing put_device() call in error
+ path of tegra_emc_probe()
+Message-ID: <20201110152107.GA6203@kozik-lap>
+References: <20201109164154.GA211123@kozik-lap>
+ <20201110013311.2499003-1-yukuai3@huawei.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20201110013311.2499003-1-yukuai3@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The reason for this change is that after change from amba to axi U-Boot
-started to show error like:
-Unable to update property /axi/ethernet@ff0e0000:mac-address, err=FDT_ERR_NOTFOUND
-Unable to update property /axi/ethernet@ff0e0000:local-mac-address, err=FDT_ERR_NOTFOUND
+On Tue, Nov 10, 2020 at 09:33:11AM +0800, Yu Kuai wrote:
+> The reference to device obtained with of_find_device_by_node() should
+> be dropped. Thus add jump target to fix the exception handling for this
+> function implementation.
+> 
+> Fixes: 73a7f0a90641("memory: tegra: Add EMC (external memory controller) driver")
+> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
+> ---
+>  drivers/memory/tegra/tegra124-emc.c | 21 +++++++++++++++------
+>  1 file changed, 15 insertions(+), 6 deletions(-)
 
-The reason is implementation in fdt_nodename_eq_() which is taken from dtc
-to the kernel and to the U-Boot. Especially DTC commit d2a9da045897 ("libfdt:
-Make unit address optional for finding nodes") which is in DTC from 2007.
+I think you missed my previous comment about the issue being fixed
+already.  Are you sure you rebased this on top of latest next?
 
-The part of commit description is
-"   This is contrary to traditional OF-like finddevice() behaviour, which
-    allows the unit address to be omitted (which is useful when the device
-    name is unambiguous without the address)."
-
-The kernel commit dfff9066e60e ("arm64: dts: zynqmp: Rename buses to be
-align with simple-bus yaml") changed amba-apu/amba to axi@0/axi but
-fdt_nodename_eq_() detects /axi/ as match for /axi@0/ because of commit
-above.
-
-That's why it easier to fix one DT inside the kernel by moving GIC node
-from own bus to generic axi bus as is done by others SoCs. This will avoid
-incorrect match because the unit address is omitted.
-
-Reported-by: Paul Thomas <pthomas8589@gmail.com>
-Signed-off-by: Michal Simek <michal.simek@xilinx.com>
----
-
- arch/arm64/boot/dts/xilinx/zynqmp.dtsi | 31 ++++++++++----------------
- 1 file changed, 12 insertions(+), 19 deletions(-)
-
-diff --git a/arch/arm64/boot/dts/xilinx/zynqmp.dtsi b/arch/arm64/boot/dts/xilinx/zynqmp.dtsi
-index 771f60e0346d..515b15ed634a 100644
---- a/arch/arm64/boot/dts/xilinx/zynqmp.dtsi
-+++ b/arch/arm64/boot/dts/xilinx/zynqmp.dtsi
-@@ -182,25 +182,6 @@ fpga_full: fpga-full {
- 		ranges;
- 	};
- 
--	amba_apu: axi@0 {
--		compatible = "simple-bus";
--		#address-cells = <2>;
--		#size-cells = <1>;
--		ranges = <0 0 0 0 0xffffffff>;
--
--		gic: interrupt-controller@f9010000 {
--			compatible = "arm,gic-400";
--			#interrupt-cells = <3>;
--			reg = <0x0 0xf9010000 0x10000>,
--			      <0x0 0xf9020000 0x20000>,
--			      <0x0 0xf9040000 0x20000>,
--			      <0x0 0xf9060000 0x20000>;
--			interrupt-controller;
--			interrupt-parent = <&gic>;
--			interrupts = <1 9 0xf04>;
--		};
--	};
--
- 	amba: axi {
- 		compatible = "simple-bus";
- 		#address-cells = <2>;
-@@ -339,6 +320,18 @@ fpd_dma_chan8: dma@fd570000 {
- 			power-domains = <&zynqmp_firmware PD_GDMA>;
- 		};
- 
-+		gic: interrupt-controller@f9010000 {
-+			compatible = "arm,gic-400";
-+			#interrupt-cells = <3>;
-+			reg = <0x0 0xf9010000 0x0 0x10000>,
-+			      <0x0 0xf9020000 0x0 0x20000>,
-+			      <0x0 0xf9040000 0x0 0x20000>,
-+			      <0x0 0xf9060000 0x0 0x20000>;
-+			interrupt-controller;
-+			interrupt-parent = <&gic>;
-+			interrupts = <1 9 0xf04>;
-+		};
-+
- 		/* LPDDMA default allows only secured access. inorder to enable
- 		 * These dma channels, Users should ensure that these dma
- 		 * Channels are allowed for non secure access.
--- 
-2.29.2
-
+Best regards,
+Krzysztof
