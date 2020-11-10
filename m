@@ -2,122 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A1B42ADFEF
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 20:41:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EDFE2ADFF1
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 20:42:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731573AbgKJTli (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 14:41:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53104 "EHLO
+        id S1731620AbgKJTmO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 14:42:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53196 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726688AbgKJTli (ORCPT
+        with ESMTP id S1725862AbgKJTmN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 14:41:38 -0500
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 079EFC0613D1;
-        Tue, 10 Nov 2020 11:41:38 -0800 (PST)
-Received: by mail-wr1-x442.google.com with SMTP id c17so14027330wrc.11;
-        Tue, 10 Nov 2020 11:41:37 -0800 (PST)
+        Tue, 10 Nov 2020 14:42:13 -0500
+Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6084BC0613D1;
+        Tue, 10 Nov 2020 11:42:13 -0800 (PST)
+Received: by mail-ej1-x643.google.com with SMTP id s25so19325277ejy.6;
+        Tue, 10 Nov 2020 11:42:13 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=K8817vslWcQ6pkFft3f9pvFV9ZyedDDB5cY9PoBej2s=;
-        b=atNvTaN4owKmp2KbJ1ty2u+1QSncoBAZimnQKHZgsmx9bzZGqvCXW6OacYk0iIdnqm
-         mJZA1ZAFY7DSQu55P3+6y0c3907C3JA3EiC3SluVR/9GKmva6bVKo+GbK3E9y+GL01BS
-         GK+1COl55fTZQ/v696b03KhzjMCdV4iYDTfoWNvChh+g3eaQIJxaoCWKgfHUyMx8itZH
-         RuaU8bhMYRYH8Cg7eYlu/I5anzusafobplEwXd/QYGE3vQr6u4SM6MBSBDRY1x6bqRej
-         45bg0QCwKtDNj0/AwKKA/G5frKbzj8OhD0szfSfAZJqNrmwoTTh/+yqBsRclcJdyb8hv
-         UxGQ==
+         :content-disposition:in-reply-to;
+        bh=D8TaLv98xRGgZIwQIJ9LNSGzseJjojNgwBo1ms6iLR4=;
+        b=lfvcJaOnlhX6s73K3OhM1r/yJepcobV0fIhoUk7wLpfDu/x82D0fVrNjw6poc4zTne
+         XKcJWfk0GR9Or2SnDK5vdPffOt3ZP5uNeNZWg962i4x1qrIf9Kn/UbnsRN8kH3uptmSC
+         rF9nOmrssbyZy1Fj0r8xeDOOfyimsT7qmUVq0y0pi5tqwTtYJTBJcMczKa8q5HVwUt+g
+         pKPpU+I37c7/5e6pbadhFZbbqbuDwCEEUzSfgmR6E1+ucTCNSYeZD+cO3FmD9/SZh6ar
+         i8R9JzxOcc845j3NPsKLhwLRh80qEwbCBzJi2V+FdivbKD3cZdWWfRAuVy2OJ1kO0082
+         WvHg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=K8817vslWcQ6pkFft3f9pvFV9ZyedDDB5cY9PoBej2s=;
-        b=QeiZkU1giXBuGSB+9NlByW3bDbX6fGSTg03S8x2jYHncBFrq0pZU4RD/j29yJpSFC/
-         cS72GsPjJlliCmfqV/m36b6vXocjzJF78k8dydrZgO+3hOdC3Flur1QC+bWuc3JL1BA1
-         mWqO2dxuB/O2JK0ftSBS2KrbGsoM8lOp6vZs3Wm8uwopnLZB96lUsda7ZMBJa5T81+8i
-         dK1z0NVSJthTGCskiC/DQRTPmeaLYpdKA8T9INqG8mXlQiswYlPCEpg85XJrbo1gEY9F
-         4z/+j4MwCf8MSCAFo99xFBYkGyOFiam9uJQpadI/8F6v0pVSbMkwXTalwz+8j/sOWZnD
-         MWQA==
-X-Gm-Message-State: AOAM530vdWVpUzAIqIKPAsYOZxchVYSMYYbcP+kq1uhp+QEpRYDe9zx8
-        04CzurxPNC6/vG5/mNdtPGE=
-X-Google-Smtp-Source: ABdhPJzsURBgMeokkO4xz8dSQROBHuBKDaRVOfDu5F5EMzIoLV2kvHTg3hU1vcZDHVdNCjiYi67D7g==
-X-Received: by 2002:adf:f14b:: with SMTP id y11mr10024663wro.248.1605037296770;
-        Tue, 10 Nov 2020 11:41:36 -0800 (PST)
-Received: from localhost ([217.111.27.204])
-        by smtp.gmail.com with ESMTPSA id o11sm19197783wre.39.2020.11.10.11.41.35
+         :mime-version:content-disposition:in-reply-to;
+        bh=D8TaLv98xRGgZIwQIJ9LNSGzseJjojNgwBo1ms6iLR4=;
+        b=Qj9hesBHl2rVEpAPfwh90Hav/pOJ9RryU0i+oev0+thv4FLCoIAA5nkqrQJuzQZ772
+         rDYC60d3KI0BH9op4ZORCe5LLJBrUHLBWAGT8zO0xA64b98z/Stdcb9otS7clMVr+BwX
+         bTvOJCleCvc9Q087KbtXWn9st31x2SUJcjID9MUgW2R5MBgW9GLFqwafsmvgqX+lMa0s
+         A2LbzYPAsAW1cx7UmX9gylpzEReBLdhd9iNsI3XK9GtMb01und0vWgtdXXP1BXYrQBUb
+         C0XMoXhvSBrFfZRJTECAebeQ22uX8gobC3uvVNQCoOBkzE2Crva8mcaL5hsI0KufH2XA
+         yaGg==
+X-Gm-Message-State: AOAM5309xAdHLz8drxb6PoCAK8QmeT0dYTva4mba01WsGZi9/xmn+lYe
+        4At7srZNzSLH1nwYl1K0nFc=
+X-Google-Smtp-Source: ABdhPJwxFsStmpXzGXyKAHx0ReeQi7l0NL4ff2nYr9OdKs3+ntOjd6TAMt2/SFJnEJO+Yrob0+PVAw==
+X-Received: by 2002:a17:907:2063:: with SMTP id qp3mr17537953ejb.314.1605037332095;
+        Tue, 10 Nov 2020 11:42:12 -0800 (PST)
+Received: from skbuf ([188.25.2.177])
+        by smtp.gmail.com with ESMTPSA id qt21sm10908864ejb.111.2020.11.10.11.42.10
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 10 Nov 2020 11:41:35 -0800 (PST)
-Date:   Tue, 10 Nov 2020 20:41:34 +0100
-From:   Thierry Reding <thierry.reding@gmail.com>
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        linux-tegra@vger.kernel.org
-Subject: Re: [PATCH 24/25] soc: tegra: fuse: speedo-tegra210: Remove a group
- of set but unused variables
-Message-ID: <20201110194134.GB2375022@ulmo>
-References: <20201103152838.1290217-1-lee.jones@linaro.org>
- <20201103152838.1290217-25-lee.jones@linaro.org>
+        Tue, 10 Nov 2020 11:42:11 -0800 (PST)
+Date:   Tue, 10 Nov 2020 21:42:09 +0200
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     Florian Fainelli <f.fainelli@gmail.com>
+Cc:     netdev@vger.kernel.org, Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>, Ray Jui <rjui@broadcom.com>,
+        Scott Branden <sbranden@broadcom.com>,
+        "maintainer:BROADCOM IPROC ARM ARCHITECTURE" 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        Hauke Mehrtens <hauke@hauke-m.de>,
+        =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "moderated list:BROADCOM IPROC ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        Kurt Kanzenbach <kurt@kmk-computers.de>
+Subject: Re: [PATCH 01/10] dt-bindings: net: dsa: Extend switch nodes pattern
+Message-ID: <20201110194209.ym56zayskvosq5iq@skbuf>
+References: <20201110033113.31090-1-f.fainelli@gmail.com>
+ <20201110033113.31090-2-f.fainelli@gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="jq0ap7NbKX2Kqbes"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201103152838.1290217-25-lee.jones@linaro.org>
-User-Agent: Mutt/1.14.7 (2020-08-29)
+In-Reply-To: <20201110033113.31090-2-f.fainelli@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
---jq0ap7NbKX2Kqbes
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Tue, Nov 03, 2020 at 03:28:37PM +0000, Lee Jones wrote:
-> Fixes the following W=3D1 kernel build warning(s):
->=20
->  drivers/soc/tegra/fuse/speedo-tegra210.c: In function =E2=80=98tegra210_=
-init_speedo_data=E2=80=99:
->  drivers/soc/tegra/fuse/speedo-tegra210.c:105:56: warning: variable =E2=
-=80=98soc_iddq=E2=80=99 set but not used [-Wunused-but-set-variable]
->  drivers/soc/tegra/fuse/speedo-tegra210.c:105:46: warning: variable =E2=
-=80=98gpu_iddq=E2=80=99 set but not used [-Wunused-but-set-variable]
->  drivers/soc/tegra/fuse/speedo-tegra210.c:105:36: warning: variable =E2=
-=80=98cpu_iddq=E2=80=99 set but not used [-Wunused-but-set-variable]
->=20
-> Cc: Thierry Reding <thierry.reding@gmail.com>
-> Cc: Jonathan Hunter <jonathanh@nvidia.com>
-> Cc: linux-tegra@vger.kernel.org
-> Signed-off-by: Lee Jones <lee.jones@linaro.org>
+On Mon, Nov 09, 2020 at 07:31:04PM -0800, Florian Fainelli wrote:
+> Upon discussion with Kurt, Rob and Vladimir it appears that we should be
+> allowing ethernet-switch as a node name, update dsa.yaml accordingly.
+> 
+> Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
 > ---
->  drivers/soc/tegra/fuse/speedo-tegra210.c | 8 ++++----
->  1 file changed, 4 insertions(+), 4 deletions(-)
 
-Sam as for the previous patch, I applied this and removed the register
-reads altogether, since there aren't any side-effects.
-
-Thierry
-
---jq0ap7NbKX2Kqbes
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAl+q7O4ACgkQ3SOs138+
-s6EFkRAAhqpWmUGAnUA4f4KRoO2MHDUv9vfQmHQF0j61DupskLSqFA6Y50XWUQla
-G9mAtjJmmgKV1941QSzJpe3bcsItT1vwZwptbn51EB7LSBWbiW0t0l89ltv5hptL
-p+40RY6nwwMn/+PDespCvWUK3GS/OiIMzE19/KnznEf4HEO6PbygVKkA5drldAMe
-YbU6uSfhZ4D50rtpccHMjL7A0CaWOaqMeFV36iXahqEQzRMPGnzGRQQ8OT9hDOyW
-1OW5Elgyb5/m6MJ21BT8Ze0XaRXHUbV0RtrD8fPq5LSPlXMzAZjitdvyAqZsri5Q
-ggZLwWh4A72fS2N8xRl6VlYDF1t0siXGAUKcuGZfpUDjGgowACSc4J8Rf3YItWLP
-ra3QqX85gZJxXYCVNjdI93udAP6Nhwk3ZFxw1sp7yx9acpk8gjh+6LqwoJNb3Xfm
-YmqOQLZIWYjKh4vat1+KsxqohL0HJfrWA60528u2JbKXVfC9LaJIs4HgiqW8oNul
-tJpnQirGqrZ8znliPnnf6zQTUXHRglJlA9qZdMB6hwWPmjlfaa7SjgTggKLmLzra
-/20x7Ik5zhJZptqIW4USti1LTrW6cDhtgQomWzREE1Y1e0dVdET62mkly0if1rP4
-jNoG5Kbpl1AY/vNaozBerZC79awQb+xDvSO4l6twBeQjFMyRas8=
-=v/LQ
------END PGP SIGNATURE-----
-
---jq0ap7NbKX2Kqbes--
+Reviewed-by: Vladimir Oltean <olteanv@gmail.com>
