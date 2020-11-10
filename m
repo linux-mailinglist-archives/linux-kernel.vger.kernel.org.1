@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85A852AE28C
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 23:08:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CBDC62AE28E
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 23:08:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732157AbgKJWIM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 17:08:12 -0500
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:7132 "EHLO
-        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726688AbgKJWIH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S1732000AbgKJWIH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Tue, 10 Nov 2020 17:08:07 -0500
-Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0AAM4krg009091
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:1314 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726467AbgKJWIG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Nov 2020 17:08:06 -0500
+Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0AAM5rsP005474
         for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 14:08:05 -0800
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : content-type : content-transfer-encoding :
- mime-version; s=facebook; bh=Bh/X4g7eg1CB8q7LMWLH94dNX8ID4OwoQyO4pPareSM=;
- b=gcqk0kv9Wccw67j7LH/XGsspTzQNFIxUBpeXpkBYEp8xpF4cTttc70uNy2Vx1P1LoebP
- 2umyQU2chGmBhsI/BhvvjJffbAtJXrQXFyvpAJY5fYdmu9zYQo+JGFksBg4J3O2JqliC
- 7zL0DvIcEl2zaXoYUQI7imAwZ7aW5pyFeTw= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 34pcmjdajw-3
+ : date : message-id : in-reply-to : references : mime-version :
+ content-transfer-encoding : content-type; s=facebook;
+ bh=DzQ8RPtZ9/0jMg6/qsxagacHc9kK+sqwtwfHG4yeiYE=;
+ b=clk0YKu+njbeCsTELH+0h6h4Q57phzl+zaE8ag0A1L1LqQF4S93brr8M57o1NZV3MZiv
+ mLaTNqgaf/h+mgUZ32LswnjUYb6ku2gD84jjSWTY05QWOJATZplxsHPJhqVKZZIj1Yn3
+ ryGC8FZ4eWWSWT28mm7dNC7HUbeEJYyVlNk= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com with ESMTP id 34pbxxng68-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
         for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 14:08:05 -0800
-Received: from intmgw001.41.prn1.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:83::6) with Microsoft SMTP Server
+Received: from intmgw002.41.prn1.facebook.com (2620:10d:c085:108::8) by
+ mail.thefacebook.com (2620:10d:c085:21d::6) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Tue, 10 Nov 2020 14:08:05 -0800
+ 15.1.1979.3; Tue, 10 Nov 2020 14:08:04 -0800
 Received: by devvm1755.vll0.facebook.com (Postfix, from userid 111017)
-        id 2DA9C239AED2; Tue, 10 Nov 2020 14:08:01 -0800 (PST)
+        id 30FD9239AED3; Tue, 10 Nov 2020 14:08:01 -0800 (PST)
 From:   Roman Gushchin <guro@fb.com>
 To:     Andrew Morton <akpm@linux-foundation.org>, <linux-mm@kvack.org>
 CC:     Shakeel Butt <shakeelb@google.com>,
@@ -38,23 +39,24 @@ CC:     Shakeel Butt <shakeelb@google.com>,
         Michal Hocko <mhocko@kernel.org>,
         <linux-kernel@vger.kernel.org>,
         David Rientjes <rientjes@google.com>, <kernel-team@fb.com>,
-        Roman Gushchin <guro@fb.com>
-Subject: [PATCH v1 0/3] mm: memcg: deprecate cgroup v1 non-hierarchical mode
-Date:   Tue, 10 Nov 2020 14:07:57 -0800
-Message-ID: <20201110220800.929549-1-guro@fb.com>
+        Roman Gushchin <guro@fb.com>, Michal Hocko <mhocko@suse.com>
+Subject: [PATCH v1 1/3] mm: memcg: deprecate the non-hierarchical mode
+Date:   Tue, 10 Nov 2020 14:07:58 -0800
+Message-ID: <20201110220800.929549-2-guro@fb.com>
 X-Mailer: git-send-email 2.24.1
+In-Reply-To: <20201110220800.929549-1-guro@fb.com>
+References: <20201110220800.929549-1-guro@fb.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 X-FB-Internal: Safe
 Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
-MIME-Version: 1.0
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
  definitions=2020-11-10_08:2020-11-10,2020-11-10 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 bulkscore=0
- lowpriorityscore=0 adultscore=0 impostorscore=0 spamscore=0
- priorityscore=1501 mlxscore=0 suspectscore=0 clxscore=1015 phishscore=0
- mlxlogscore=699 malwarescore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2009150000 definitions=main-2011100150
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 priorityscore=1501
+ impostorscore=0 mlxlogscore=999 bulkscore=0 malwarescore=0 spamscore=0
+ lowpriorityscore=0 suspectscore=0 adultscore=0 mlxscore=0 phishscore=0
+ clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2011100150
 X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -65,43 +67,261 @@ of the memory controller and doesn't bring any value today.
 However, it complicates the code and creates many edge cases
 all over the memory controller code.
 
-It's a good time to deprecate it completely. This patchset removes
-the internal logic, adjusts the user interface and updates
-the documentation. The alt patch removes some bits of the cgroup
-core code, which become obsolete.
+It's a good time to deprecate it completely.
 
-From Michal Hocko:
-All that we know today is that we have a warning in place to complain
-loudly when somebody relies on use_hierarchy=3D0 with a deeper
-hierarchy. For all those years we have seen _zero_ reports that would
-describe a sensible usecase.
-Moreover we (SUSE) have backported this warning into old distribution
-kernels (since 3.0 based kernels) to extend the coverage and didn't hear
-even for users who adopt new kernels only very slowly. The only report
-we have seen so far was a LTP test suite which doesn't really reflect
-any real life usecase.
+Functionally this patch enabled is by default for all cgroups
+and forbids switching it off. Nothing changes if cgroup v2 is used:
+hierarchical mode was enforced from scratch.
 
-v1:
-  - added a note from Michal
-  - added acks and reviews
+To protect the ABI memory.use_hierarchy interface is preserved
+with a limited functionality: reading always returns "1", writing
+of "1" passes silently, writing of any other value fails with
+-EINVAL and a warning to dmesg (on the first occasion).
 
-rfc:
-  - https://lwn.net/Articles/835983/
+Signed-off-by: Roman Gushchin <guro@fb.com>
+Acked-by: Michal Hocko <mhocko@suse.com>
+Reviewed-by: Shakeel Butt <shakeelb@google.com>
+Acked-by: David Rientjes <rientjes@google.com>
+---
+ include/linux/memcontrol.h |  7 ---
+ kernel/cgroup/cgroup.c     |  5 ---
+ mm/memcontrol.c            | 90 ++++++--------------------------------
+ 3 files changed, 13 insertions(+), 89 deletions(-)
 
-
-Roman Gushchin (3):
-  mm: memcg: deprecate the non-hierarchical mode
-  docs: cgroup-v1: reflect the deprecation of the non-hierarchical mode
-  cgroup: remove obsoleted broken_hierarchy and warned_broken_hierarchy
-
- .../admin-guide/cgroup-v1/memcg_test.rst      |  8 +-
- .../admin-guide/cgroup-v1/memory.rst          | 40 +++------
- include/linux/cgroup-defs.h                   | 15 ----
- include/linux/memcontrol.h                    |  7 --
- kernel/cgroup/cgroup.c                        | 12 ---
- mm/memcontrol.c                               | 90 +++----------------
- 6 files changed, 29 insertions(+), 143 deletions(-)
-
+diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
+index 20108e426f84..aaa557dff5f4 100644
+--- a/include/linux/memcontrol.h
++++ b/include/linux/memcontrol.h
+@@ -234,11 +234,6 @@ struct mem_cgroup {
+ 	/* vmpressure notifications */
+ 	struct vmpressure vmpressure;
+=20
+-	/*
+-	 * Should the accounting and control be hierarchical, per subtree?
+-	 */
+-	bool use_hierarchy;
+-
+ 	/*
+ 	 * Should the OOM killer kill all belonging tasks, had it kill one?
+ 	 */
+@@ -758,8 +753,6 @@ static inline bool mem_cgroup_is_descendant(struct me=
+m_cgroup *memcg,
+ {
+ 	if (root =3D=3D memcg)
+ 		return true;
+-	if (!root->use_hierarchy)
+-		return false;
+ 	return cgroup_is_descendant(memcg->css.cgroup, root->css.cgroup);
+ }
+=20
+diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
+index f2eeff74d713..621a586e3529 100644
+--- a/kernel/cgroup/cgroup.c
++++ b/kernel/cgroup/cgroup.c
+@@ -281,9 +281,6 @@ bool cgroup_ssid_enabled(int ssid)
+  * - cpuset: a task can be moved into an empty cpuset, and again it take=
+s
+  *   masks of ancestors.
+  *
+- * - memcg: use_hierarchy is on by default and the cgroup file for the f=
+lag
+- *   is not created.
+- *
+  * - blkcg: blk-throttle becomes properly hierarchical.
+  *
+  * - debug: disallowed on the default hierarchy.
+@@ -5156,8 +5153,6 @@ static struct cgroup_subsys_state *css_create(struc=
+t cgroup *cgrp,
+ 	    cgroup_parent(parent)) {
+ 		pr_warn("%s (%d) created nested cgroup for controller \"%s\" which has=
+ incomplete hierarchy support. Nested cgroups may change behavior in the =
+future.\n",
+ 			current->comm, current->pid, ss->name);
+-		if (!strcmp(ss->name, "memory"))
+-			pr_warn("\"memory\" requires setting use_hierarchy to 1 on the root\n=
+");
+ 		ss->warned_broken_hierarchy =3D true;
+ 	}
+=20
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index 69a2893a6455..ea05e4ed5aa1 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -1127,12 +1127,6 @@ struct mem_cgroup *mem_cgroup_iter(struct mem_cgro=
+up *root,
+ 	if (prev && !reclaim)
+ 		pos =3D prev;
+=20
+-	if (!root->use_hierarchy && root !=3D root_mem_cgroup) {
+-		if (prev)
+-			goto out;
+-		return root;
+-	}
+-
+ 	rcu_read_lock();
+=20
+ 	if (reclaim) {
+@@ -1212,7 +1206,6 @@ struct mem_cgroup *mem_cgroup_iter(struct mem_cgrou=
+p *root,
+=20
+ out_unlock:
+ 	rcu_read_unlock();
+-out:
+ 	if (prev && prev !=3D root)
+ 		css_put(&prev->css);
+=20
+@@ -3438,10 +3431,7 @@ unsigned long mem_cgroup_soft_limit_reclaim(pg_dat=
+a_t *pgdat, int order,
+ }
+=20
+ /*
+- * Test whether @memcg has children, dead or alive.  Note that this
+- * function doesn't care whether @memcg has use_hierarchy enabled and
+- * returns %true if there are child csses according to the cgroup
+- * hierarchy.  Testing use_hierarchy is the caller's responsibility.
++ * Test whether @memcg has children, dead or alive.
+  */
+ static inline bool memcg_has_children(struct mem_cgroup *memcg)
+ {
+@@ -3501,37 +3491,20 @@ static ssize_t mem_cgroup_force_empty_write(struc=
+t kernfs_open_file *of,
+ static u64 mem_cgroup_hierarchy_read(struct cgroup_subsys_state *css,
+ 				     struct cftype *cft)
+ {
+-	return mem_cgroup_from_css(css)->use_hierarchy;
++	return 1;
+ }
+=20
+ static int mem_cgroup_hierarchy_write(struct cgroup_subsys_state *css,
+ 				      struct cftype *cft, u64 val)
+ {
+-	int retval =3D 0;
+-	struct mem_cgroup *memcg =3D mem_cgroup_from_css(css);
+-	struct mem_cgroup *parent_memcg =3D mem_cgroup_from_css(memcg->css.pare=
+nt);
+-
+-	if (memcg->use_hierarchy =3D=3D val)
++	if (val =3D=3D 1)
+ 		return 0;
+=20
+-	/*
+-	 * If parent's use_hierarchy is set, we can't make any modifications
+-	 * in the child subtrees. If it is unset, then the change can
+-	 * occur, provided the current cgroup has no children.
+-	 *
+-	 * For the root cgroup, parent_mem is NULL, we allow value to be
+-	 * set if there are no children.
+-	 */
+-	if ((!parent_memcg || !parent_memcg->use_hierarchy) &&
+-				(val =3D=3D 1 || val =3D=3D 0)) {
+-		if (!memcg_has_children(memcg))
+-			memcg->use_hierarchy =3D val;
+-		else
+-			retval =3D -EBUSY;
+-	} else
+-		retval =3D -EINVAL;
++	pr_warn_once("Non-hierarchical mode is deprecated. "
++		     "Please report your usecase to linux-mm@kvack.org if you "
++		     "depend on this functionality.\n");
+=20
+-	return retval;
++	return -EINVAL;
+ }
+=20
+ static unsigned long mem_cgroup_usage(struct mem_cgroup *memcg, bool swa=
+p)
+@@ -3725,8 +3698,6 @@ static void memcg_offline_kmem(struct mem_cgroup *m=
+emcg)
+ 		child =3D mem_cgroup_from_css(css);
+ 		BUG_ON(child->kmemcg_id !=3D kmemcg_id);
+ 		child->kmemcg_id =3D parent->kmemcg_id;
+-		if (!memcg->use_hierarchy)
+-			break;
+ 	}
+ 	rcu_read_unlock();
+=20
+@@ -5317,38 +5288,22 @@ mem_cgroup_css_alloc(struct cgroup_subsys_state *=
+parent_css)
+ 	if (parent) {
+ 		memcg->swappiness =3D mem_cgroup_swappiness(parent);
+ 		memcg->oom_kill_disable =3D parent->oom_kill_disable;
+-	}
+-	if (!parent) {
+-		page_counter_init(&memcg->memory, NULL);
+-		page_counter_init(&memcg->swap, NULL);
+-		page_counter_init(&memcg->kmem, NULL);
+-		page_counter_init(&memcg->tcpmem, NULL);
+-	} else if (parent->use_hierarchy) {
+-		memcg->use_hierarchy =3D true;
++
+ 		page_counter_init(&memcg->memory, &parent->memory);
+ 		page_counter_init(&memcg->swap, &parent->swap);
+ 		page_counter_init(&memcg->kmem, &parent->kmem);
+ 		page_counter_init(&memcg->tcpmem, &parent->tcpmem);
+ 	} else {
+-		page_counter_init(&memcg->memory, &root_mem_cgroup->memory);
+-		page_counter_init(&memcg->swap, &root_mem_cgroup->swap);
+-		page_counter_init(&memcg->kmem, &root_mem_cgroup->kmem);
+-		page_counter_init(&memcg->tcpmem, &root_mem_cgroup->tcpmem);
+-		/*
+-		 * Deeper hierachy with use_hierarchy =3D=3D false doesn't make
+-		 * much sense so let cgroup subsystem know about this
+-		 * unfortunate state in our controller.
+-		 */
+-		if (parent !=3D root_mem_cgroup)
+-			memory_cgrp_subsys.broken_hierarchy =3D true;
+-	}
++		page_counter_init(&memcg->memory, NULL);
++		page_counter_init(&memcg->swap, NULL);
++		page_counter_init(&memcg->kmem, NULL);
++		page_counter_init(&memcg->tcpmem, NULL);
+=20
+-	/* The following stuff does not apply to the root */
+-	if (!parent) {
+ 		root_mem_cgroup =3D memcg;
+ 		return &memcg->css;
+ 	}
+=20
++	/* The following stuff does not apply to the root */
+ 	error =3D memcg_online_kmem(memcg);
+ 	if (error)
+ 		goto fail;
+@@ -6185,24 +6140,6 @@ static void mem_cgroup_move_task(void)
+ }
+ #endif
+=20
+-/*
+- * Cgroup retains root cgroups across [un]mount cycles making it necessa=
+ry
+- * to verify whether we're attached to the default hierarchy on each mou=
+nt
+- * attempt.
+- */
+-static void mem_cgroup_bind(struct cgroup_subsys_state *root_css)
+-{
+-	/*
+-	 * use_hierarchy is forced on the default hierarchy.  cgroup core
+-	 * guarantees that @root doesn't have any children, so turning it
+-	 * on for the root memcg is enough.
+-	 */
+-	if (cgroup_subsys_on_dfl(memory_cgrp_subsys))
+-		root_mem_cgroup->use_hierarchy =3D true;
+-	else
+-		root_mem_cgroup->use_hierarchy =3D false;
+-}
+-
+ static int seq_puts_memcg_tunable(struct seq_file *m, unsigned long valu=
+e)
+ {
+ 	if (value =3D=3D PAGE_COUNTER_MAX)
+@@ -6540,7 +6477,6 @@ struct cgroup_subsys memory_cgrp_subsys =3D {
+ 	.can_attach =3D mem_cgroup_can_attach,
+ 	.cancel_attach =3D mem_cgroup_cancel_attach,
+ 	.post_attach =3D mem_cgroup_move_task,
+-	.bind =3D mem_cgroup_bind,
+ 	.dfl_cftypes =3D memory_files,
+ 	.legacy_cftypes =3D mem_cgroup_legacy_files,
+ 	.early_init =3D 0,
 --=20
 2.26.2
 
