@@ -2,100 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ABDF52AD881
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 15:18:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B68302AD885
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 15:19:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730617AbgKJOSx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 09:18:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58948 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730070AbgKJOSw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 09:18:52 -0500
-Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE2D5C0613CF
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 06:18:51 -0800 (PST)
-Received: by mail-lf1-x143.google.com with SMTP id v144so17702486lfa.13
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 06:18:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=yEb8SLvwYM6675N1kcLu33g5b43ooDKnUWDg2MuNw70=;
-        b=dySosniDNPpgvWYF4+JGAVaSJLsfzMMHchLwrnUw7r39jGDntjB0KjI86SPwnxMR6L
-         d14V7OlbU1WDRfwoXkx6VPRKNYd+dKojut7EImce3jBAZL4x/MbsJSUO/UzMM8JMKyOe
-         q2KwphZsBP2cGW06PXu0h64z9B6Ldr0uo+jezxWNRu5HFkDXSb9WS3dfHJmk4pkTHmun
-         xAiWGNHwY+DHgl2LMrU9speqjv1MBlOl1y5WbsKUDsN5f8IoPPRIMk5+4j1WxCId9dtG
-         811Pv4gP2GBQ8Tkdvihd7JqGt89vdyUiN7Pw4TdZUdPmbLgP0WmSqLHG4DF36jlB/XIe
-         c62Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=yEb8SLvwYM6675N1kcLu33g5b43ooDKnUWDg2MuNw70=;
-        b=djWagk5L8SZmkRghC6hYXkmsXE7CbBDRC6kQVucaJ8NZBd6dIy/YFv2jFC+pwop0w7
-         oq3o9H81ED5K+OQvCL0jIrvFetoUX9lYJ7CFI6AFvjrd7yZoDA5w5cIATI5RvDoy5Av9
-         YEFVAtslX+6kZNuH7D+cqVzPNU8H4jV9u9uWmlHILdm8dqTir4pBcMASAlEk64Y9XJ+/
-         46DNbeOgC0jqfjJkHZKlWM+ynIICXXTwK8AMgR2DfiLzj0tP3BzrPu9/lQaLLTpr+5PL
-         zbTb1g0gGvOZqNtjo+xWsLnaNKJ5V4e5rfs/avuong2pIoX0DNw6Q6el/FnXdS2W72Zp
-         pvZQ==
-X-Gm-Message-State: AOAM532mP9lwDB0XWZEwfsNZrgmYqKOBKn892plo0/0UzoCisexTOtS1
-        SYHGPqwcHjiNXREaBN3OSzdI3eN3/p0KX2S6Up7UAw==
-X-Google-Smtp-Source: ABdhPJx8DR3A9HZXVyV5Hw/ZIpPtbFQchtKdOZgI87BTIuRS9xLwWyIYq34Y5zWUwvd/nYChAFW4q26/YE5DXMVzvfw=
-X-Received: by 2002:a19:ca05:: with SMTP id a5mr4558685lfg.571.1605017930249;
- Tue, 10 Nov 2020 06:18:50 -0800 (PST)
+        id S1731004AbgKJOTN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 09:19:13 -0500
+Received: from nat-hk.nvidia.com ([203.18.50.4]:3819 "EHLO nat-hk.nvidia.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730070AbgKJOTM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Nov 2020 09:19:12 -0500
+Received: from HKMAIL103.nvidia.com (Not Verified[10.18.92.100]) by nat-hk.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5faaa15e0000>; Tue, 10 Nov 2020 22:19:10 +0800
+Received: from HKMAIL103.nvidia.com (10.18.16.12) by HKMAIL103.nvidia.com
+ (10.18.16.12) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 10 Nov
+ 2020 14:19:09 +0000
+Received: from NAM04-BN3-obe.outbound.protection.outlook.com (104.47.46.57) by
+ HKMAIL103.nvidia.com (10.18.16.12) with Microsoft SMTP Server (TLS) id
+ 15.0.1473.3 via Frontend Transport; Tue, 10 Nov 2020 14:19:09 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=hWcsI0YFJtTgaz6My2DD1yOWPMb2UV4HRe5f8yWyK/KJZOCDLY9e9Y/u8ZBRzXXcxIsf7gpEnwS/+barDXiG8HHM9RUXEwYpYh6z7eLGXs3ygu3KuJWg5fUrh6ud1+PHHrPjNWrNcf4zfGK6ScZe0ck98YMKPJUWLcvEWfDO4WS03jmQmQmUtrsvY3i/gDwuMh6BxnN7mg+az1lU8rOPSGh8LaMekh9DefaLJvys8NooggoTsg44j0wDMNuITCpdZNx3ynyXypsrpPqTcIQGECRoIZvfpe+9GAzW229JgajRV4vIjzv54WlxiK1nnErjUmBuu0likgd1NRamMsImAA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=EuC9e2e4SYCsCPrdGYOup6bsNVeR1tqITIEOBMGl+KU=;
+ b=MKb0JFcsFdpkJ7kJtE4BUSfwDXVW2KY+SETLJw27/EJyYcl5cTD3gAgwV+yx5YqiFaAhCcrmpNnvucagU/571ftyT/tn2fZBp0FOBjE5M9SHs74mSYuCQ//y1mPzLfyGlraPn2pyhgmqFoClaPri7VO98HYd+ItTP9J6xz0/68kWmnG9RteQjsq+82/O5cZGJniPiYgoIomZpxXVYN4bFIQAVHuJL4CQDn5T4juKIAyvuy0sEIaHa+oTC/uHcUTfsUOSmfaOKGJrl0jX5BOPNNjULCGWNaaQuUsAmwB7M5+BsgFyFnaugfT2o3qhbHeTyWYB31LqjyZx023VF6NqJQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
+ by DM6PR12MB4402.namprd12.prod.outlook.com (2603:10b6:5:2a5::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3541.21; Tue, 10 Nov
+ 2020 14:19:02 +0000
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::cdbe:f274:ad65:9a78]) by DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::cdbe:f274:ad65:9a78%7]) with mapi id 15.20.3499.032; Tue, 10 Nov 2020
+ 14:19:02 +0000
+Date:   Tue, 10 Nov 2020 10:19:00 -0400
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     "Raj, Ashok" <ashok.raj@intel.com>
+CC:     Thomas Gleixner <tglx@linutronix.de>,
+        Dan Williams <dan.j.williams@intel.com>,
+        "Tian, Kevin" <kevin.tian@intel.com>,
+        "Jiang, Dave" <dave.jiang@intel.com>,
+        Bjorn Helgaas <helgaas@kernel.org>,
+        "vkoul@kernel.org" <vkoul@kernel.org>,
+        "Dey, Megha" <megha.dey@intel.com>,
+        "maz@kernel.org" <maz@kernel.org>,
+        "bhelgaas@google.com" <bhelgaas@google.com>,
+        "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
+        "Pan, Jacob jun" <jacob.jun.pan@intel.com>,
+        "Liu, Yi L" <yi.l.liu@intel.com>, "Lu, Baolu" <baolu.lu@intel.com>,
+        "Kumar, Sanjay K" <sanjay.k.kumar@intel.com>,
+        "Luck, Tony" <tony.luck@intel.com>,
+        "kwankhede@nvidia.com" <kwankhede@nvidia.com>,
+        "eric.auger@redhat.com" <eric.auger@redhat.com>,
+        "parav@mellanox.com" <parav@mellanox.com>,
+        "rafael@kernel.org" <rafael@kernel.org>,
+        "netanelg@mellanox.com" <netanelg@mellanox.com>,
+        "shahafs@mellanox.com" <shahafs@mellanox.com>,
+        "yan.y.zhao@linux.intel.com" <yan.y.zhao@linux.intel.com>,
+        "pbonzini@redhat.com" <pbonzini@redhat.com>,
+        "Ortiz, Samuel" <samuel.ortiz@intel.com>,
+        "Hossain, Mona" <mona.hossain@intel.com>,
+        "dmaengine@vger.kernel.org" <dmaengine@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>
+Subject: Re: [PATCH v4 06/17] PCI: add SIOV and IMS capability detection
+Message-ID: <20201110141900.GO2620339@nvidia.com>
+References: <20201106164850.GA85879@otc-nc-03>
+ <20201106175131.GW2620339@nvidia.com>
+ <CAPcyv4iYHA1acfo=+fTk+U_TrLbSWJjA6v4oeTXgVYDTrnCoGw@mail.gmail.com>
+ <20201107001207.GA2620339@nvidia.com>
+ <87pn4nk7nn.fsf@nanos.tec.linutronix.de>
+ <20201108235852.GC32074@araj-mobl1.jf.intel.com>
+ <874klykc7h.fsf@nanos.tec.linutronix.de>
+ <20201109173034.GG2620339@nvidia.com>
+ <87pn4mi23u.fsf@nanos.tec.linutronix.de> <20201110051412.GA20147@otc-nc-03>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20201110051412.GA20147@otc-nc-03>
+X-ClientProxiedBy: BL0PR02CA0098.namprd02.prod.outlook.com
+ (2603:10b6:208:51::39) To DM6PR12MB3834.namprd12.prod.outlook.com
+ (2603:10b6:5:14a::12)
 MIME-Version: 1.0
-References: <20201105120410.18305-1-srinivas.kandagatla@linaro.org>
- <20201105120410.18305-2-srinivas.kandagatla@linaro.org> <CACRpkda91ncAVGj8_qcEyKPnRQdJjXMMCQ4ZJ1t7bVfcCZF=CA@mail.gmail.com>
- <f6bfa003-b8c7-f0d1-24f1-14f45fa37a23@linaro.org>
-In-Reply-To: <f6bfa003-b8c7-f0d1-24f1-14f45fa37a23@linaro.org>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Tue, 10 Nov 2020 15:18:39 +0100
-Message-ID: <CACRpkdZatw-zUcRNJRCcdjcv2aeYJn16PdLg3nonTMmWFbhxig@mail.gmail.com>
-Subject: Re: [PATCH v2 1/2] pinctrl: qcom: Add sm8250 lpass lpi pinctrl driver
-To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        MSM <linux-arm-msm@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (156.34.48.30) by BL0PR02CA0098.namprd02.prod.outlook.com (2603:10b6:208:51::39) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3541.21 via Frontend Transport; Tue, 10 Nov 2020 14:19:02 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1kcUU8-002Qnu-Td; Tue, 10 Nov 2020 10:19:00 -0400
+X-LD-Processed: 43083d15-7273-40c1-b7db-39efd9ccc17a,ExtAddr
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1605017950; bh=EuC9e2e4SYCsCPrdGYOup6bsNVeR1tqITIEOBMGl+KU=;
+        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
+         From:To:CC:Subject:Message-ID:References:Content-Type:
+         Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
+         X-MS-Exchange-MessageSentRepresentingType:X-LD-Processed;
+        b=SxDagDE0Unw/qz1cnDO1zMo0f4i3z1qe7entKgzoKNYBQlMwhFwo49w0SrnP7LUfJ
+         xu3hXlSX8Qu1KX46W9aBRp1gQmO8wBLWsOuCd4bSnbEPGgjU+t8pIeUGUMs8OIyVpt
+         xhvwwwwPHTmsDGkyI8GwmKtEyJHL/9z8IzA89vRLDdzzqVjjwGqHBAyUzmVjPiTyYO
+         ApkN17Q3dODZqClS8vwd8pqZ9HPFU7tHpd/mAzs4TWNLeJcFsguo/gIG0tLsrKIRVf
+         0cz+GZF04PVY2dd1lJLav/xB/yT0pxCXn3bbDlgT1fJtnQDC8iWN4ZQs8xq+VUT+dE
+         gv5AHHWwXhRJg==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 6, 2020 at 12:08 PM Srinivas Kandagatla
-<srinivas.kandagatla@linaro.org> wrote:
+On Mon, Nov 09, 2020 at 09:14:12PM -0800, Raj, Ashok wrote:
 
-> Some more detail of wiring of this additional pin-controller IP:
->
-> This IP is an additional pinctrl block on top the existing SoC TLMM
-> pin-controller (Audio) pins.
->
-> The hw setup looks like:
->
-> TLMM GPIO[146 - 159] --> LPASS LPI GPIO [0 - 13]
->
-> However SoC TLMM pin-controller can only be touched for use of those
-> pins in GPIO mode and non gpio mode is completely handled by the LPASS
-> LPI pinctrl block. Apart from this slew rate is also available in this
-> block for certain pins which are connected to SLIMbus or SoundWire Bus.
+> There are multiple tools (such as logic analyzers) and OEM test validation 
+> harnesses that depend on such DWORD sized DMA writes with no PASID as interrupt
+> messages. One of the feedback we had received in the development of the
+> specification was to avoid impacting such tools irrespective of
+> MSI-X or IMS
 
-OK put this in the commit message, good to know!
+This is a really bad reason to make a poor decision for system
+security. Relying on trapping/emulation increases the attack surface
+and complexity of the VMM and the device which now have to create this
+artificial split, which does not exist in SRIOV.
 
-I gues the pins are not quite "GPIO" at this point, instead they are
-turned into LPASS pins?
+Hopefully we won't see devices get this wrong, but any path that
+allows the guest to cause the device to create TLPs outside its IOMMU
+containment is security worrysome.
 
-> Normally we would not expect these pins to be touched by SoC TLMM
-> pin-controller as these pins are used for audio usecase and the control
-> is always with LPASS LPI controller. There are additional bits to
-> configure/enforce this in SoC TLMM block!
+> was used for interrupt message storage (on the wire they follow the
+> same format), and also to ensure interoperability of devices
+> supporting IMS across CPU vendors (who may not support PASID TLP
+> prefix).  This is one reason that led to interrupts from IMS to not
+> use PASID (and match the wire format of MSI/MSI-X generated
+> interrupts).  The other problem was disambiguation between DMA to
+> SVM v/s interrupts.
 
-If you start to use IRQs they might become hierarchical WRT the
-TLMM. But no IRQ support yet, so...
+This is a defect in the IOMMU, not something fundamental.
 
-Yours,
-Linus Walleij
+The IOMMU needs to know if the interrupt range is active or not for
+each PASID. Process based SVA will, of course, not enable interrupts
+on the PASID, VM Guest based PASID will.
+
+> Intel had published the specification almost 2 years back and have
+> comprehended all the feedback received from the ecosystem 
+> (both open-source and others), along with offering the specification 
+> to be implemented by any vendors (both device and CPU vendors). 
+> There are few device vendors who are implementing to the spec already and 
+> are being explored for support by other CPU vendors
+
+Which is why it is such a shame that including PASID in the MSI was
+deliberately skipped in the document, the ecosystem could have been
+much aligned to this solution by now :(
+
+Jason
