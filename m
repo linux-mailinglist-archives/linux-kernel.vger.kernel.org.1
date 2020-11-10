@@ -2,96 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9053C2AD8BC
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 15:26:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 297522AD8B7
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 15:25:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732130AbgKJO0Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 09:26:16 -0500
-Received: from mail-oi1-f196.google.com ([209.85.167.196]:34943 "EHLO
-        mail-oi1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730059AbgKJO0P (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 09:26:15 -0500
-Received: by mail-oi1-f196.google.com with SMTP id c80so14507637oib.2;
-        Tue, 10 Nov 2020 06:26:14 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=I6eINwgPGvryXHeca8G+4NRiZwWs6cwo0lxUCGUsnnM=;
-        b=PDirRAStIMa4VK87ur1eXW+HxdYLTp3veN5PPtGWpTaeFKqJ8DSCP9RlrmN427wTmL
-         i+xNUO0vZNro8rE8nB4LUSrSzNL8oJ7kEnjFtMSzxxIlTdcYAZlrEdZbMIbaiBF+Nvji
-         N+aisTLlQ0RuwkcV5Vqd4sdKIj3Dp8DShbXie+uH+UF2LTGMVCtsPyWARwOIxaadAFRn
-         4GGvMOK1y6B385Jmf5HQWhEb8ld8EJ6skFLbP48yjRnCplWXIqfyStweXvx3wvekcczT
-         I9kIJjks60qp3QUgvJW9iQZ4Gm9t9k7B/JUXddIIiMfMHwPZ0zwhmth1OIMMjS/Wa/S8
-         9UWQ==
-X-Gm-Message-State: AOAM533T0gnDGq7UbhcrQZDzJg2bSuDaJry2Tsp0jIltZcIkRBl81oON
-        wv1z3o4qXGJ+Q3ZisO/DMw==
-X-Google-Smtp-Source: ABdhPJxmEBz2DgpgaTJfUBpq6k0kGF8zZgE3ZaEHQ0GkfG/X/Rq/tzCx9MOVxL5mhsN1tNj0erLv8A==
-X-Received: by 2002:aca:ea54:: with SMTP id i81mr2775381oih.48.1605018374555;
-        Tue, 10 Nov 2020 06:26:14 -0800 (PST)
-Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id 33sm3265678otr.25.2020.11.10.06.26.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 10 Nov 2020 06:26:13 -0800 (PST)
-Received: (nullmailer pid 3120474 invoked by uid 1000);
-        Tue, 10 Nov 2020 14:26:12 -0000
-Date:   Tue, 10 Nov 2020 08:26:12 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Sylwester Nawrocki <s.nawrocki@samsung.com>
-Cc:     krzk@kernel.org, sw0312.kim@samsung.com, myungjoo.ham@samsung.com,
-        devicetree@vger.kernel.org, georgi.djakov@linaro.org,
-        dri-devel@lists.freedesktop.org, cw00.choi@samsung.com,
-        b.zolnierkie@samsung.com, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, robh+dt@kernel.org,
-        linux-samsung-soc@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, m.szyprowski@samsung.com,
-        a.swigon@samsung.com
-Subject: Re: [PATCH v8 1/7] dt-bindings: devfreq: Add documentation for the
- interconnect properties
-Message-ID: <20201110142612.GA3120426@bogus>
-References: <20201104103657.18007-1-s.nawrocki@samsung.com>
- <CGME20201104103718eucas1p1c103f1a96499b03c72e5457ac2542c3d@eucas1p1.samsung.com>
- <20201104103657.18007-2-s.nawrocki@samsung.com>
+        id S1732060AbgKJOZb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 09:25:31 -0500
+Received: from mga17.intel.com ([192.55.52.151]:27858 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730850AbgKJOZa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Nov 2020 09:25:30 -0500
+IronPort-SDR: QzA3QmzmFLJLlJUfxkZYl7IgbaNylm7uRX4OFgq6N42qD0RApPHvHuu3GHZ7HF+dLChFE4iOPy
+ X9elMPPXz2LA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9800"; a="149828463"
+X-IronPort-AV: E=Sophos;i="5.77,466,1596524400"; 
+   d="scan'208";a="149828463"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Nov 2020 06:25:26 -0800
+IronPort-SDR: Z5BU9JB8aJAwr7+dl1qNAFm+zfoqECM4ktvmtgoWJhgIh0y2BNOi8NWKkkzwYZ+OWwfLY6BChN
+ xCxNmLp3vGrw==
+X-IronPort-AV: E=Sophos;i="5.77,466,1596524400"; 
+   d="scan'208";a="529817722"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Nov 2020 06:25:23 -0800
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1kcUbI-005UuV-Kj; Tue, 10 Nov 2020 16:26:24 +0200
+Date:   Tue, 10 Nov 2020 16:26:24 +0200
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Bartosz Golaszewski <brgl@bgdev.pl>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Jan Kiszka <jan.kiszka@siemens.com>,
+        David Laight <David.Laight@aculab.com>,
+        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Subject: Re: [PATCH v3 6/7] gpio: exar: switch to using regmap
+Message-ID: <20201110142624.GT4077@smile.fi.intel.com>
+References: <20201110123406.3261-1-brgl@bgdev.pl>
+ <20201110123406.3261-7-brgl@bgdev.pl>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201104103657.18007-2-s.nawrocki@samsung.com>
+In-Reply-To: <20201110123406.3261-7-brgl@bgdev.pl>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 04 Nov 2020 11:36:51 +0100, Sylwester Nawrocki wrote:
-> Add documentation for new optional properties in the exynos bus nodes:
-> interconnects, #interconnect-cells, samsung,data-clock-ratio.
-> These properties allow to specify the SoC interconnect structure which
-> then allows the interconnect consumer devices to request specific
-> bandwidth requirements.
+On Tue, Nov 10, 2020 at 01:34:05PM +0100, Bartosz Golaszewski wrote:
+> From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 > 
-> Signed-off-by: Artur Świgoń <a.swigon@samsung.com>
-> Signed-off-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
-> ---
-> Changes for v8:
->  - updated description of the interconnects property,
->  - fixed typo in samsung,data-clk-ratio property description.
-> 
-> Changes for v7:
->  - bus-width property replaced with samsung,data-clock-ratio,
->  - the interconnect consumer bindings used instead of vendor specific
->    properties
-> 
-> Changes for v6:
->  - added dts example of bus hierarchy definition and the interconnect
->    consumer,
->  - added new bus-width property.
-> 
-> Changes for v5:
->  - exynos,interconnect-parent-node renamed to samsung,interconnect-parent
-> ---
->  .../devicetree/bindings/devfreq/exynos-bus.txt     | 71 +++++++++++++++++++++-
->  1 file changed, 69 insertions(+), 2 deletions(-)
-> 
+> We can simplify the code in gpio-exar by using regmap. This allows us to
+> drop the mutex (regmap provides its own locking) and we can also reuse
+> regmap's bit operations instead of implementing our own update function.
 
-Acked-by: Rob Herring <robh@kernel.org>
+...
+
+> +	/*
+> +	 * We don't need to check the return values of mmio regmap operations (unless
+> +	 * the regmap has a clock attached which is not the case here).
+> +	 */
+> +	exar_gpio->regs = devm_regmap_init_mmio(dev, p, &exar_regmap_config);
+> +	if (IS_ERR(exar_gpio->regs))
+> +		return PTR_ERR(exar_gpio->regs);
+>  
+>  	index = ida_alloc(&ida_index, GFP_KERNEL);
+> -	if (index < 0) {
+> -		ret = index;
+> -		goto err_mutex_destroy;
+> -	}
+> +	if (index < 0)
+> +		return index;
+
+And below you effectively use p as regmap!
+That's what renaming of variable regs -> regmap or map can easily reveal.
+
+	exar_gpio->regs = p;
+
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
