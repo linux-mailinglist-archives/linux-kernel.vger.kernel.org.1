@@ -2,99 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 403A72ADC24
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 17:26:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 319EC2ADC20
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 17:26:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730430AbgKJQ00 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 11:26:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50772 "EHLO
+        id S1732388AbgKJQ0A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 11:26:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50706 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726152AbgKJQ0Z (ORCPT
+        with ESMTP id S1729674AbgKJQZ6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 11:26:25 -0500
-Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD2A3C0613CF;
-        Tue, 10 Nov 2020 08:26:24 -0800 (PST)
-Received: by mail-ed1-x544.google.com with SMTP id o20so13393439eds.3;
-        Tue, 10 Nov 2020 08:26:24 -0800 (PST)
+        Tue, 10 Nov 2020 11:25:58 -0500
+Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EF91C0613D1;
+        Tue, 10 Nov 2020 08:25:58 -0800 (PST)
+Received: by mail-pl1-x642.google.com with SMTP id x15so5906312pll.2;
+        Tue, 10 Nov 2020 08:25:58 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=sender:subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=2NcAsVTPsYA/NoTEYktfl6/AwcvS1dbUOsrpH4IcvMo=;
-        b=m4+3CV7fPBedSyDJNc3NrHQ+qEZyL//4m+o1MBQ1SyAd3as1QYsZ0A+sxlrZs+uIBn
-         yXNI4cZL68ADq/I0ZyxXYVCK2gb0McEZkv4gKqsjCydl8dU+mlJMWRyABu/nd9KTCdBZ
-         MUJt5PGaJYpyiCWdjnuVMpGp7qDIAF0RZrA2F6eKU+V1OeeEIYStcp3tyWmrRKr85gdk
-         4eOEFGPkX9HCdfDO/lKXjvgNb+rVCYlwxq5GL7cXg6/gANObk+NZkUbEiTZcAFAfd0aT
-         L5myAHFx41BljRl6tWYRQiiiACg9WQWHFlN/yHaxOStPSDwV/KZzcIUQM6MzVt0Tc+SR
-         RXKQ==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=5O4s8BL9ywl7ZsGognmWKnG6sDyMl8Xw+WZ9e3T1IIA=;
+        b=bPs9zH699DF1Siu5O9absy+Kuq0HrKfELJ1ksIWoHFUhXFNIfXZv7GRJl767J3DLip
+         r0b5N+hY/3L4bOL2iRaVW5dU5W7A54XPyJmrd4WEDVMNXvHUW0U6HKrFhWioFXVEK9p8
+         HOwKask5FOqTtEct756aF8BD1AGhUuzI/nn8tCL4P17KoY4B3c/LPDfDWKCbFwLIpKRg
+         gZCuthMLJBvsa+bT2FJqWQ3DckqNyeW2kv2ArkPkJoYU+1VV0hZhfuj6nDDGcoBeJUvT
+         nrKBA/c2bClDI5RzmazOhz6oxW1LFGmDAixCIBp7YeHekGgip3YpFcZ5EpJXOuowru1I
+         lYEQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:subject:to:cc:references:from:message-id
-         :date:user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=2NcAsVTPsYA/NoTEYktfl6/AwcvS1dbUOsrpH4IcvMo=;
-        b=se4zvmiXDtaJ3UVuPRWqnW4Nx15o4wN3QmuZjWGpKNf2SBAQ3DX8aCfcUJ2BxkWvIY
-         4fipuCJyjCzrnhqC+2Y2PJVTgvJv/uBOByN2eEyYsxs+u5IKQRdvMca2kEdXgKoLNTZJ
-         HU1rHPdDnUL6wIOZZ200dGgz0tCO6yoP0gyLSotStgbi+rKtHU7PiKUpAb58ZwnOlI1e
-         MtaAyRIFfX+bolN1DsUrcrR9dkcBZMTObXForN7zW7f917JuN+RUHTFaVDuLqkk7h9X0
-         I6DjjRyO0zEjIKLY1XVe9Lzd8kcjvTEBz4lxBXM8GmUZhjqRQQYFjYYIrC9bhYLYUg+p
-         ZhyA==
-X-Gm-Message-State: AOAM531cF+3uD6n5pBbc1inp825Ufyl561Ow2y0h+It8C16nAo8AT+CA
-        CatwoG0wWnGtXSCNw7255O6O8dWOUy8=
-X-Google-Smtp-Source: ABdhPJwuSP6VnkfK3b2egRw4V5auLe2FLUmM5/5ZMiBr4Avs7VrFlqlnVw0CmhEpsMDOWn3cUuiyhw==
-X-Received: by 2002:aa7:c704:: with SMTP id i4mr93729edq.51.1605025583211;
-        Tue, 10 Nov 2020 08:26:23 -0800 (PST)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.googlemail.com with ESMTPSA id q15sm11048192edt.95.2020.11.10.08.26.22
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 10 Nov 2020 08:26:22 -0800 (PST)
-Sender: Paolo Bonzini <paolo.bonzini@gmail.com>
-Subject: Re: [PATCH v3 19/35] x86/io_apic: Cleanup trigger/polarity helpers
-To:     David Woodhouse <dwmw2@infradead.org>, Qian Cai <cai@redhat.com>,
-        x86@kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Tom Murphy <murphyt7@tcd.ie>
-Cc:     kvm <kvm@vger.kernel.org>, iommu@lists.linux-foundation.org,
-        joro@8bytes.org, linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-hyperv@vger.kernel.org, maz@misterjones.org,
-        Dexuan Cui <decui@microsoft.com>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-References: <e6601ff691afb3266e365a91e8b221179daf22c2.camel@infradead.org>
- <20201024213535.443185-1-dwmw2@infradead.org>
- <20201024213535.443185-20-dwmw2@infradead.org>
- <085029af45f045dcf5b7fb2173d560421b00b44d.camel@redhat.com>
- <23e0a29faad5a9cc43582ba7d40a3073f2fb8c87.camel@infradead.org>
-From:   Paolo Bonzini <bonzini@gnu.org>
-Message-ID: <e213d85f-b29b-e663-29db-10d987feb8d7@gnu.org>
-Date:   Tue, 10 Nov 2020 17:26:21 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=5O4s8BL9ywl7ZsGognmWKnG6sDyMl8Xw+WZ9e3T1IIA=;
+        b=PC5lBRoS6svJeCYZrCwzNt+a9qGqr35l+H/O+1damCmVem+irNsg09An94b5xJMM21
+         R2jO6CzJcjTquiZ64ks9Zl59VhuAJYVGEsEfyTaCAEtkduZOg+dCTF7HHhO2JLHTnR0+
+         dCCOUz3N3G9MXbnLrGudW308GlcC/5vnvfWNYscHOKOoUFy9VuAWIPF3Si3D53S6TOvf
+         0beBvD5apVOLHvBmOfZaI3eZDchEy/cfZQGtBLdTfKz55FJa2YRUF664fhTtFxgRvAuR
+         89CzISnddUFjwzJtV7mdYiWSSFdd4UCBGUqgh/JMUT1frTUcTWxdCzu8V5d5MMn7/4vI
+         Tl6w==
+X-Gm-Message-State: AOAM531iWiLV2YfuOAYNJizwQMBByYWg9a/4izep55v4ZxiH+hTqXhnZ
+        LApgwC1pyqX8eYAp5GY232inr+0arvXqVDdq5ek=
+X-Google-Smtp-Source: ABdhPJz/EiLvvYT1guTS3uZDBbfc/aFjk+4N5P2ZeATb+keF7p3jJxlYAyhkpEPKBD4J3hZZ9gBmAmmbxrPheu9QSAo=
+X-Received: by 2002:a17:902:aa8a:b029:d3:c9dd:77d1 with SMTP id
+ d10-20020a170902aa8ab02900d3c9dd77d1mr17502695plr.0.1605025557907; Tue, 10
+ Nov 2020 08:25:57 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <23e0a29faad5a9cc43582ba7d40a3073f2fb8c87.camel@infradead.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20201109132643.457932-1-lars.povlsen@microchip.com>
+ <20201109132643.457932-3-lars.povlsen@microchip.com> <CAHp75Vdfm7A5=Mi-LZ1sHJS5fSngypZQ50-rGQ7A6kD2kmVFTA@mail.gmail.com>
+ <87361hfbwu.fsf@microchip.com>
+In-Reply-To: <87361hfbwu.fsf@microchip.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Tue, 10 Nov 2020 18:26:46 +0200
+Message-ID: <CAHp75VfZ=hJvpYiAOz72yRpJTxLU6ZOo9hEz4BsBcgSwAcjCFA@mail.gmail.com>
+Subject: Re: [PATCH v8 2/3] pinctrl: pinctrl-microchip-sgpio: Add pinctrl
+ driver for Microsemi Serial GPIO
+To:     Lars Povlsen <lars.povlsen@microchip.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
+        devicetree <devicetree@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/11/20 09:59, David Woodhouse wrote:
-> Hm, attempting to reproduce this shows something else. Ever since
-> commit be62dbf554c5 ("iommu/amd: Convert AMD iommu driver to the dma-
-> iommu api") in 5.5 the following stops working for me:
-> 
-> $ qemu-system-x86_64 -serial mon:stdio -kernel bzImage  -machine q35,accel=kvm,kernel-irqchip=split -m 2G -device amd-iommu,intremap=off -append "console=ttyS0 apic=verbose debug" -display none
-> 
-> It hasn't got a hard drive but I can watch the SATA interrupts fail as
-> it probes the CD-ROM:
-> 
-> [    7.403327] ata3.00: qc timeout (cmd 0xa1)
-> [    7.405980] ata3.00: failed to IDENTIFY (I/O error, err_mask=0x4)
-> 
-> Adding 'iommu=off' to the kernel command line makes it work again, in
-> that it correctly panics at the lack of a root file system, quickly.
+On Tue, Nov 10, 2020 at 5:51 PM Lars Povlsen <lars.povlsen@microchip.com> wrote:
+> > On Mon, Nov 9, 2020 at 3:27 PM Lars Povlsen <lars.povlsen@microchip.com> wrote:
 
-That might well be a QEMU bug though, AMD emulation is kinda experimental.
+> >> This adds a pinctrl driver for the Microsemi/Microchip Serial GPIO
+> >> (SGPIO) device used in various SoC's.
+> >
+> > Please, elaborate what you said previously, because now it has no
+> > justification to be a pin control driver.
+>
+> As previously stated, the individual pins have possible other functions
+> than GPIO. When these functions are added, the driver will need pinctrl
+> functinality. This was accepted by Linux Walleij.
 
-Paolo
+Yes, I understand that. What I meant is to update the commit message
+to tell this to the reviewers / readers / anthropologists.
+
+...
+
+> >> +               return -EOPNOTSUPP;
+> >
+> > Are you sure? IIRC internally we are using ENOTSUPP.
+> >
+> > Couple of drivers seem to be wrongly using the other one.
+>
+> Checkpatch complains about ENOTSUPP:
+>
+> # ENOTSUPP is not a standard error code and should be avoided in new patches.
+> # Folks usually mean EOPNOTSUPP (also called ENOTSUP), when they type ENOTSUPP.
+
+checkpatch is wrong if this is internal code and to me sounds like
+it's not going out of the kernel.
+
+...
+
+> >> +                       err = -EOPNOTSUPP;
+> >
+> > Ditto.
+>
+> Ditto.
+
+Ditto.
+
+...
+
+> >> +               dev_err(pctldev->dev, "Pin %d direction as %s is not possible\n",
+> >> +                       pin, input ? "input" : "output");
+> >
+> > Do we need this noise? Isn't user space getting a proper error code as
+> > per doc and can handle this?
+> >
+>
+> This need not go to user space, as one use-case is using the pin as a
+> i2c mux. In this case no signs of the error condition is recorded, it
+> just doesn't work. So I concur it is not noise, it is sign of an
+> erroneous situation which should be fixed, IMHO.
+>
+> The message makes it easy to locate the issue, if any. The message will
+> not occur on a properly configured system.
+
+It's noise. As we discussed with Alexandre (and I guess came to the
+same page) that its consumer's business how to treat the error.
+
+> Lets have the maintainer make the call.
+
+...
+
+> >> +static int microchip_sgpio_get_ports(struct sgpio_priv *priv)
+> >> +{
+
+> >> +}
+> >
+> > As per previous version comment, i.e. perhaps find an existing API for
+> > this kind of parser or introduce a generic one.
+>
+> I fixed the use of OF api's - that was surely an oversight.
+>
+> I have searched for a suitable API without finding one. The closest
+> thing was the parsing of "gpio-reserved-ranges" in gpiolib-of.c, but
+> that was coded directly. So I think this might not be of general use.
+>
+> If it is, lets do that after the driver is merged.
+
+I guess it will be a lot of benefit to have such API earlier than later.
+
+-- 
+With Best Regards,
+Andy Shevchenko
