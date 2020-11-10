@@ -2,116 +2,212 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E5C8C2ADEBA
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 19:50:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A9D22ADEBE
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 19:50:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730786AbgKJSud (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 13:50:33 -0500
-Received: from aserp2130.oracle.com ([141.146.126.79]:35120 "EHLO
-        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726428AbgKJSuc (ORCPT
+        id S1731309AbgKJSul (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 13:50:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45006 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731311AbgKJSui (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 13:50:32 -0500
-Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
-        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AAIhtQS121445;
-        Tue, 10 Nov 2020 18:49:28 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=wC2jbd2NkDz1nAFghaaz9PjGpzDIDHVMI1YpVUVpkYY=;
- b=mDk3bgC77SfyTsIQJmoA4JjlK+ELV0wEf+2ALlkHf8NY161gdBZxGBHOYExrMjvufFeo
- OopSm1adJ8Aesyn8ejvl+87ql2LgllSnVHTXjmYP8GNn63AYB4x8fKdDOCYsHs5joHiX
- qzPixFaNPY9xtTFmDz8NCUvr1fD21rPU953PcFmPi5czUZAU0IP7f3ANi85nkvSEeDWT
- qM+f3rjlv72E5qJZ+3J+8G9hBM7Pdjzno6nUG4jR80eC3UZLzxRgLWqUFXLiCOGYgqbo
- QqwuiYoTzAHt8QkyZTOEOTKYKX1s2wTQlkhsEEgl4PGpJTU8kTKTuGf0EM4EseGZWe5n IA== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by aserp2130.oracle.com with ESMTP id 34nh3awgb5-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 10 Nov 2020 18:49:28 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AAIjCpC145314;
-        Tue, 10 Nov 2020 18:49:28 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by aserp3030.oracle.com with ESMTP id 34p55p04dn-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 10 Nov 2020 18:49:27 +0000
-Received: from abhmp0019.oracle.com (abhmp0019.oracle.com [141.146.116.25])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0AAInIFC014602;
-        Tue, 10 Nov 2020 18:49:19 GMT
-Received: from kadam (/41.57.98.10)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 10 Nov 2020 10:49:18 -0800
-Date:   Tue, 10 Nov 2020 21:49:03 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>, rafael@kernel.org,
-        Will Deacon <will@kernel.org>, linux-kselftest@vger.kernel.org,
-        joel@joelfernandes.org, rric@kernel.org, shuah@kernel.org,
-        devel@driverdev.osuosl.org, minyard@acm.org, corbet@lwn.net,
-        surenb@google.com, linux-doc@vger.kernel.org,
-        linux-acpi@vger.kernel.org, lenb@kernel.org, tkjos@android.com,
-        arnd@arndb.de, bp@alien8.de,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        openipmi-developer@lists.sourceforge.net, mchehab@kernel.org,
-        maco@android.com, christian@brauner.io, linux-edac@vger.kernel.org,
-        tony.luck@intel.com, gregkh@linuxfoundation.org,
-        linux-kernel@vger.kernel.org, arve@android.com,
-        james.morse@arm.com, hridya@google.com, johannes@sipsolutions.net
-Subject: Re: [PATCH v3 00/11] Introduce Simple atomic counters
-Message-ID: <20201110184903.GG29398@kadam>
-References: <cover.1602209970.git.skhan@linuxfoundation.org>
- <20201009193746.GA1073957@hirez.programming.kicks-ass.net>
- <202010091255.246395A6@keescook>
- <20201010110920.GQ2628@hirez.programming.kicks-ass.net>
- <6e1dd408-653e-817e-b659-23649259a929@linuxfoundation.org>
- <20201014091720.GC2628@hirez.programming.kicks-ass.net>
- <202010141611.70B7A38@keescook>
- <20201016105313.GJ2611@hirez.programming.kicks-ass.net>
- <202010161541.6DD2D1E@keescook>
+        Tue, 10 Nov 2020 13:50:38 -0500
+Received: from mail-vs1-xe44.google.com (mail-vs1-xe44.google.com [IPv6:2607:f8b0:4864:20::e44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFD0AC0613D3
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 10:50:37 -0800 (PST)
+Received: by mail-vs1-xe44.google.com with SMTP id y78so7663651vsy.6
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 10:50:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=z1MyxP0Km6Zy1ESXM9YxE2rbmVw2X+wkPKihjiRYITY=;
+        b=Noi9TFlQ3rEhpispl1llPzVuEcluCRBDohbXmSFCunpTcOkfFoRfz9/vA8AAcuS3Fz
+         AjL7dgCjFdIkkfMVeQPZUNC/tUTGvskOMTLLeUdDIZmcIvISiqEsy8gZP7TIQHU6TkCA
+         0Dp6KdVfP+InfjZV9x1fEFV058NzO5XUHCa6uuCbOyUxbUU99CWfeULR4yVTzJ7f/fgC
+         35sHKxFbvu+DGcRf5eefwLMfRRYzetHwfYBpXjuNtSsJsGRO4xTDpcQox2LyUUIR1Z43
+         SVuc3ybroJhRUEoK0Iuh/tydvu+R3WSy6H/aCgdt7eeSRs5S5NFPR+b4J4pIHqX36SX/
+         D2ZA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=z1MyxP0Km6Zy1ESXM9YxE2rbmVw2X+wkPKihjiRYITY=;
+        b=kQ1zn2eiL+Ns0UYLArfdjMukR7JyF7J3dU42qqJ1Pzkqi/M66WOTKN77Or4f8ZNloV
+         f5uyVHorGiBwTowsuVZJFiVF5/1y7df/ObrlQ5K5gtaAZ8Ubo4nE2k5rv1I3YhaNjt9d
+         G0MX/X3+Yyn0OeObMRjQxRPtNfcklSoA3BZlwAEnQ/4fmLK2TFsR8F6FqdMBvOltNZ/c
+         x42NsxuzHI/aTz58509XbIsAVEmLc6WfE5GpOcf8Tm50MgB+/GLKBpW50x+Mv7v/cp8K
+         /uivAyhCY9j8EHR4u19XbR8KJNN6jo35Y5x7mODdOUw30iZNYwhcCfUWx7u0fD4arx9A
+         UlHA==
+X-Gm-Message-State: AOAM533Xl+48VPXpwJvGuRqtRqWqnlPXy7KALViZAnFbQxDa7Etf6l5I
+        GLag9d6gTKl9GGQTIUp0pmnbjc6MADE=
+X-Google-Smtp-Source: ABdhPJwBEz2JsiuZMeAfgjBNnSQ2MwLw8hf2MoOzYUEg4klQXC1E6/PdHtWgNgryYdsEHvmb5uEmQg==
+X-Received: by 2002:a67:5e42:: with SMTP id s63mr13466377vsb.31.1605034236051;
+        Tue, 10 Nov 2020 10:50:36 -0800 (PST)
+Received: from mail-vs1-f41.google.com (mail-vs1-f41.google.com. [209.85.217.41])
+        by smtp.gmail.com with ESMTPSA id u80sm1625389vsu.23.2020.11.10.10.50.34
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 10 Nov 2020 10:50:35 -0800 (PST)
+Received: by mail-vs1-f41.google.com with SMTP id y73so7656895vsc.5
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 10:50:34 -0800 (PST)
+X-Received: by 2002:a67:ce0e:: with SMTP id s14mr12918161vsl.13.1605034233710;
+ Tue, 10 Nov 2020 10:50:33 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <202010161541.6DD2D1E@keescook>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9801 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 spamscore=0 phishscore=0
- mlxlogscore=999 mlxscore=0 malwarescore=0 bulkscore=0 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2011100129
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9801 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 lowpriorityscore=0 priorityscore=1501
- clxscore=1011 malwarescore=0 mlxscore=0 spamscore=0 suspectscore=0
- mlxlogscore=999 impostorscore=0 phishscore=0 adultscore=0 bulkscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2011100129
+References: <bEm19mEHLokLGc5HrEiEKEUgpZfmDYPoFtoLAAEnIUE@cp3-web-033.plabs.ch>
+In-Reply-To: <bEm19mEHLokLGc5HrEiEKEUgpZfmDYPoFtoLAAEnIUE@cp3-web-033.plabs.ch>
+From:   Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+Date:   Tue, 10 Nov 2020 13:49:56 -0500
+X-Gmail-Original-Message-ID: <CA+FuTScriNKLu=q+xmBGjtBB06SbErZK26M+FPiJBRN-c8gVLw@mail.gmail.com>
+Message-ID: <CA+FuTScriNKLu=q+xmBGjtBB06SbErZK26M+FPiJBRN-c8gVLw@mail.gmail.com>
+Subject: Re: [PATCH v4 net] net: udp: fix Fast/frag0 UDP GRO
+To:     Alexander Lobakin <alobakin@pm.me>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Steffen Klassert <steffen.klassert@secunet.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Network Development <netdev@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 16, 2020 at 03:51:25PM -0700, Kees Cook wrote:
-> On Fri, Oct 16, 2020 at 12:53:13PM +0200, Peter Zijlstra wrote:
-> > That's like saying: "I'm too lazy to track what I've looked at already".
-> > You're basically proposing to graffiti "Kees was here -- 16/10/2020" all
-> > over the kernel. Just so you can see where you still need to go.
-> > 
-> > It says the code was (assuming your audit was correct) good at that
-> > date, but has no guarantees for any moment after that.
-> 
-> That kind of bit-rot marking is exactly what I would like to avoid: just
-> putting a comment in is pointless. Making the expectations of the usage
-> become _enforced_ is the goal. And having it enforced by the _compiler_
-> is key. Just adding a meaningless attribute that a static checker
-> will notice some time and hope people fix them doesn't scale either
-> (just look at how many sparse warnings there are).
+On Mon, Nov 9, 2020 at 7:29 PM Alexander Lobakin <alobakin@pm.me> wrote:
+>
+> From: Alexander Lobakin <alobakin@pm.me>
+> Date: Tue, 10 Nov 2020 00:17:18 +0000
+>
+> > While testing UDP GSO fraglists forwarding through driver that uses
+> > Fast GRO (via napi_gro_frags()), I was observing lots of out-of-order
+> > iperf packets:
+> >
+> > [ ID] Interval           Transfer     Bitrate         Jitter
+> > [SUM]  0.0-40.0 sec  12106 datagrams received out-of-order
+> >
+> > Simple switch to napi_gro_receive() or any other method without frag0
+> > shortcut completely resolved them.
+> >
+> > I've found that UDP GRO uses udp_hdr(skb) in its .gro_receive()
+> > callback. While it's probably OK for non-frag0 paths (when all
+> > headers or even the entire frame are already in skb->data), this
+> > inline points to junk when using Fast GRO (napi_gro_frags() or
+> > napi_gro_receive() with only Ethernet header in skb->data and all
+> > the rest in shinfo->frags) and breaks GRO packet compilation and
+> > the packet flow itself.
+> > To support both modes, skb_gro_header_fast() + skb_gro_header_slow()
+> > are typically used. UDP even has an inline helper that makes use of
+> > them, udp_gro_udphdr(). Use that instead of troublemaking udp_hdr()
+> > to get rid of the out-of-order delivers.
+> >
+> > Present since the introduction of plain UDP GRO in 5.0-rc1.
+> >
+> > Since v3 [1]:
+> >  - restore the original {,__}udp{4,6}_lib_lookup_skb() and use
+> >    private versions of them inside GRO code (Willem).
+>
+> Note: this doesn't cover a support for nested tunnels as it's out of
+> the subject and requires more invasive changes. It will be handled
+> separately in net-next series.
 
-Most Sparse warnings are false positives.  People do actually fix the
-ones which matter.
+Thanks for looking into that.
 
-I think this patchset could be useful.  I'm working on a refcounting
-check for Smatch.  I want to warn about when we forget to drop a
-reference on an error path.  Right now I just assume that anything with
-"error", "drop" or "->stats->" in the name is just a counter.
+In that case, should the p->data + off change be deferred to that,
+too? It adds some risk unrelated to the bug fix.
 
-regards,
-dan carpenter
+> > Since v2 [2]:
+> >  - dropped redundant check introduced in v2 as it's performed right
+> >    before (thanks to Eric);
+> >  - udp_hdr() switched to data + off for skbs from list (also Eric);
+> >  - fixed possible malfunction of {,__}udp{4,6}_lib_lookup_skb() with
+> >    Fast/frag0 due to ip{,v6}_hdr() usage (Willem).
+> >
+> > Since v1 [3]:
+> >  - added a NULL pointer check for "uh" as suggested by Willem.
+> >
+> > [1] https://lore.kernel.org/netdev/MgZce9htmEtCtHg7pmWxXXfdhmQ6AHrnltXC41zOoo@cp7-web-042.plabs.ch
+> > [2] https://lore.kernel.org/netdev/0eaG8xtbtKY1dEKCTKUBubGiC9QawGgB3tVZtNqVdY@cp4-web-030.plabs.ch
+> > [3] https://lore.kernel.org/netdev/YazU6GEzBdpyZMDMwJirxDX7B4sualpDG68ADZYvJI@cp4-web-034.plabs.ch
+> >
+> > Fixes: e20cf8d3f1f7 ("udp: implement GRO for plain UDP sockets.")
+> > Cc: Eric Dumazet <edumazet@google.com>
+> > Cc: Willem de Bruijn <willemb@google.com>
+> > Signed-off-by: Alexander Lobakin <alobakin@pm.me>
+> > ---
+> >  net/ipv4/udp_offload.c | 23 +++++++++++++++++++----
+> >  net/ipv6/udp_offload.c | 14 +++++++++++++-
+> >  2 files changed, 32 insertions(+), 5 deletions(-)
+> >
+> > diff --git a/net/ipv4/udp_offload.c b/net/ipv4/udp_offload.c
+> > index e67a66fbf27b..6064efe17cdb 100644
+> > --- a/net/ipv4/udp_offload.c
+> > +++ b/net/ipv4/udp_offload.c
+> > @@ -366,11 +366,11 @@ static struct sk_buff *udp4_ufo_fragment(struct sk_buff *skb,
+> >  static struct sk_buff *udp_gro_receive_segment(struct list_head *head,
+> >                                              struct sk_buff *skb)
+> >  {
+> > -     struct udphdr *uh = udp_hdr(skb);
+> > +     struct udphdr *uh = udp_gro_udphdr(skb);
+> >       struct sk_buff *pp = NULL;
+> >       struct udphdr *uh2;
+> >       struct sk_buff *p;
+> > -     unsigned int ulen;
+> > +     u32 ulen, off;
 
+a specific reason for changing type here?
+
+> >       int ret = 0;
+> >
+> >       /* requires non zero csum, for symmetry with GSO */
+> > @@ -385,6 +385,9 @@ static struct sk_buff *udp_gro_receive_segment(struct list_head *head,
+> >               NAPI_GRO_CB(skb)->flush = 1;
+> >               return NULL;
+> >       }
+> > +
+> > +     off = skb_gro_offset(skb);
+> > +
+> >       /* pull encapsulating udp header */
+> >       skb_gro_pull(skb, sizeof(struct udphdr));
+> >
+> > @@ -392,7 +395,7 @@ static struct sk_buff *udp_gro_receive_segment(struct list_head *head,
+> >               if (!NAPI_GRO_CB(p)->same_flow)
+> >                       continue;
+> >
+> > -             uh2 = udp_hdr(p);
+> > +             uh2 = (void *)p->data + off;
+> >
+> >               /* Match ports only, as csum is always non zero */
+> >               if ((*(u32 *)&uh->source != *(u32 *)&uh2->source)) {
+> > @@ -500,6 +503,16 @@ struct sk_buff *udp_gro_receive(struct list_head *head, struct sk_buff *skb,
+> >  }
+> >  EXPORT_SYMBOL(udp_gro_receive);
+> >
+> > +static struct sock *udp4_gro_lookup_skb(struct sk_buff *skb, __be16 sport,
+> > +                                     __be16 dport)
+> > +{
+> > +     const struct iphdr *iph = skb_gro_network_header(skb);
+> > +
+> > +     return __udp4_lib_lookup(dev_net(skb->dev), iph->saddr, sport,
+> > +                              iph->daddr, dport, inet_iif(skb),
+> > +                              inet_sdif(skb), &udp_table, NULL);
+> > +}
+> > +
+> >  INDIRECT_CALLABLE_SCOPE
+> >  struct sk_buff *udp4_gro_receive(struct list_head *head, struct sk_buff *skb)
+> >  {
+> > @@ -523,7 +536,9 @@ struct sk_buff *udp4_gro_receive(struct list_head *head, struct sk_buff *skb)
+> >  skip:
+> >       NAPI_GRO_CB(skb)->is_ipv6 = 0;
+> >       rcu_read_lock();
+> > -     sk = static_branch_unlikely(&udp_encap_needed_key) ? udp4_lib_lookup_skb(skb, uh->source, uh->dest) : NULL;
+> > +     sk = static_branch_unlikely(&udp_encap_needed_key) ?
+> > +          udp4_gro_lookup_skb(skb, uh->source, uh->dest) :
+> > +          NULL;
+
+Does this indentation pass checkpatch?
+
+Else, the line limit is no longer strict,a and this only shortens the
+line, so a single line is fine.
