@@ -2,89 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61F2E2AD493
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 12:19:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BBFB2AD497
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 12:19:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727736AbgKJLTA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 06:19:00 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37654 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726219AbgKJLS7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 06:18:59 -0500
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 02E5D20659;
-        Tue, 10 Nov 2020 11:18:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605007139;
-        bh=V+uHbdDrM/jaXwqO4pqWQzjL1Up7i3JN4LAYXoQ2Oew=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=yeQSXFy2W4PDXQzMfbGwukbiIgeh+NHzOf9c34dw0x4NGJg9e5KZvMMY15cajk1xm
-         ONxT65MzXwgo6W4kBXUuZqMpMLY5mCqv1qEO40DLlN1ZGN/lsYxCglUAfFttmkG78k
-         ymwFb968JDcgPO2dnp6FEhINlQvm8kFPsYhkbAVM=
-Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
-        by disco-boy.misterjones.org with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94)
-        (envelope-from <maz@kernel.org>)
-        id 1kcRfs-009QfH-P3; Tue, 10 Nov 2020 11:18:56 +0000
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Tue, 10 Nov 2020 11:18:56 +0000
-From:   Marc Zyngier <maz@kernel.org>
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     David Brazdil <dbrazdil@google.com>, kvmarm@lists.cs.columbia.edu,
-        Mark Rutland <mark.rutland@arm.com>, kernel-team@android.com,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Andrew Walbran <qwandor@google.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Quentin Perret <qperret@google.com>,
-        linux-kernel@vger.kernel.org, James Morse <james.morse@arm.com>,
-        linux-arm-kernel@lists.infradead.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Tejun Heo <tj@kernel.org>, Dennis Zhou <dennis@kernel.org>,
-        Christoph Lameter <cl@linux.com>,
-        Will Deacon <will@kernel.org>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Andrew Scull <ascull@google.com>
-Subject: Re: [PATCH v1 00/24] Opt-in always-on nVHE hypervisor
-In-Reply-To: <20201110101542.GA17572@infradead.org>
-References: <20201109113233.9012-1-dbrazdil@google.com>
- <20201110101542.GA17572@infradead.org>
-User-Agent: Roundcube Webmail/1.4.9
-Message-ID: <b174c468e3df6dc7874b9ab886b38009@kernel.org>
-X-Sender: maz@kernel.org
-X-SA-Exim-Connect-IP: 51.254.78.96
-X-SA-Exim-Rcpt-To: hch@infradead.org, dbrazdil@google.com, kvmarm@lists.cs.columbia.edu, mark.rutland@arm.com, kernel-team@android.com, lorenzo.pieralisi@arm.com, qwandor@google.com, suzuki.poulose@arm.com, qperret@google.com, linux-kernel@vger.kernel.org, james.morse@arm.com, linux-arm-kernel@lists.infradead.org, catalin.marinas@arm.com, tj@kernel.org, dennis@kernel.org, cl@linux.com, will@kernel.org, julien.thierry.kdev@gmail.com, ascull@google.com
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+        id S1729345AbgKJLTh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 06:19:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59222 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726219AbgKJLTg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Nov 2020 06:19:36 -0500
+Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CC97C0613CF
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 03:19:36 -0800 (PST)
+Received: by mail-pl1-x644.google.com with SMTP id cp9so2878926plb.1
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 03:19:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=X4dag7xcL4vnMx5NVKJB+5vVrgE6HapSQew213si/Dw=;
+        b=SNfNLhZ/dpxXrMy4/FK9AWMcOQdw9k1kOpHCwRyMv2hM6sYX8QjWLwUCV9HLXiSs++
+         GzibrEaqkpoMEgwqdu5Dq5S5Ii3qhaZxmsALEQm6+0GtcPf6H1n1DazRzzvyiQdPQ8dD
+         /lpLwXQWAUXch6mzTUfFXNJLuDO1A+ej5zdvWteJ0tqmUsNjlZa9/i+9IxH/WTnTa8aN
+         bbYO8NiBxEDs2CEsj9s+3s4IrYjWGWSaCh3mffIompyLQFiSr0PsclBbak+tP2WWFE7K
+         M6iU8cKDzeZp70OyVeaJ0pu+hHm5pY+dnzjCF8o3FIWCvdHDgcva1P3WNa+94NdEqF9b
+         NB8Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=X4dag7xcL4vnMx5NVKJB+5vVrgE6HapSQew213si/Dw=;
+        b=hcsB0ztTaOBgYLIk61FSlJdNZ2ZNyCfCTVijASFeKgzhaSoojWY12xA0HE9WtBYwgK
+         gcOaKzET1YTX+1EbycL2GbZiDVMFICvJc1+4etwVbSFeN7eqbyoKFrIclMD97cRggY7r
+         UgGj46W/Wn/qSaDLch67PsBHMEfmBABtJrKcMF+0puhYPqic84u7ppcmlqggFkfN+LA8
+         K87DEyL/uE+Asny4ijsphta4SysHzP+oIVkprpWWGzl2GTCfI+RcKHu8MypNp3b88fhB
+         OXmvGTQHlT+tAgIKNysGJNb84URdaKKyB8/ceddOUY628pqUGyxFXr4Ptv59pAIXaWbH
+         z5Aw==
+X-Gm-Message-State: AOAM533G/twGYX04w4odswdlTsLnjW0WcaHKeu4h2XdDz9VnvYi1R+Hg
+        ILNcur1C8ZkpA4H353XAgzQH8OPDo55x
+X-Google-Smtp-Source: ABdhPJyiAwT7goe3svaAUM2ZncwpSApH4A+jbOGzmSqdTK1fW3Iex6KPIHHdoE2c8DF2NZx0tD5CYQ==
+X-Received: by 2002:a17:902:c154:b029:d6:efa5:4ce7 with SMTP id 20-20020a170902c154b02900d6efa54ce7mr16096487plj.73.1605007176212;
+        Tue, 10 Nov 2020 03:19:36 -0800 (PST)
+Received: from he-cluster.localdomain (67.216.221.250.16clouds.com. [67.216.221.250])
+        by smtp.gmail.com with ESMTPSA id s145sm14224197pfs.187.2020.11.10.03.19.34
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 10 Nov 2020 03:19:35 -0800 (PST)
+From:   xiakaixu1987@gmail.com
+X-Google-Original-From: kaixuxia@tencent.com
+To:     fbarrat@linux.ibm.com, ajd@linux.ibm.com, mpe@ellerman.id.au,
+        benh@kernel.crashing.org, paulus@samba.org
+Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        Kaixu Xia <kaixuxia@tencent.com>
+Subject: [PATCH] powerpc/powernv/sriov: fix unsigned int win compared to less than zero
+Date:   Tue, 10 Nov 2020 19:19:30 +0800
+Message-Id: <1605007170-22171-1-git-send-email-kaixuxia@tencent.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-11-10 10:15, Christoph Hellwig wrote:
-> On Mon, Nov 09, 2020 at 11:32:09AM +0000, David Brazdil wrote:
->> As we progress towards being able to keep guest state private to the
->> host running nVHE hypervisor, this series allows the hypervisor to
->> install itself on newly booted CPUs before the host is allowed to run
->> on them.
-> 
-> Why?  I thought we were trying to kill nVHE off now that newer CPUs
-> provide the saner virtualization extensions?
+From: Kaixu Xia <kaixuxia@tencent.com>
 
-We can't kill nVHE at all, because that is the only game in town.
-You can't even buy a decent machine with VHE, no matter how much money
-you put on the table.
+Fix coccicheck warning:
 
-nVHE is here for the foreseeable future, and we even use its misfeatures
-to our advantage in order to offer confidential VMs. See Will's 
-presentation
-at KVM forum a couple of weeks ago for the gory details.
+./arch/powerpc/platforms/powernv/pci-sriov.c:443:7-10: WARNING: Unsigned expression compared with zero: win < 0
+./arch/powerpc/platforms/powernv/pci-sriov.c:462:7-10: WARNING: Unsigned expression compared with zero: win < 0
 
-Thanks,
+Reported-by: Tosk Robot <tencent_os_robot@tencent.com>
+Signed-off-by: Kaixu Xia <kaixuxia@tencent.com>
+---
+ arch/powerpc/platforms/powernv/pci-sriov.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-         M.
+diff --git a/arch/powerpc/platforms/powernv/pci-sriov.c b/arch/powerpc/platforms/powernv/pci-sriov.c
+index c4434f20f42f..92fc861c528f 100644
+--- a/arch/powerpc/platforms/powernv/pci-sriov.c
++++ b/arch/powerpc/platforms/powernv/pci-sriov.c
+@@ -422,7 +422,7 @@ static int pnv_pci_vf_assign_m64(struct pci_dev *pdev, u16 num_vfs)
+ {
+ 	struct pnv_iov_data   *iov;
+ 	struct pnv_phb        *phb;
+-	unsigned int           win;
++	int		       win;
+ 	struct resource       *res;
+ 	int                    i, j;
+ 	int64_t                rc;
 -- 
-Jazz is not dead. It just smells funny...
+2.20.0
+
