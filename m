@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19B6F2ACDB6
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 05:04:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 291742ACDB4
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 05:04:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733305AbgKJEE1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 23:04:27 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55326 "EHLO mail.kernel.org"
+        id S1733252AbgKJEET (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 23:04:19 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55402 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732625AbgKJDy0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 22:54:26 -0500
+        id S1731960AbgKJDy3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 22:54:29 -0500
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 00B1C20870;
-        Tue, 10 Nov 2020 03:54:24 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B838720731;
+        Tue, 10 Nov 2020 03:54:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604980465;
-        bh=ITzL0DHMO5cn7ZHSVUyvh9zs/VOC0VJ6rgNllJ0xRCA=;
+        s=default; t=1604980469;
+        bh=HJPSa0KmKV95ZybTLaMu/IKpYZrY18GvP37V/Fllc/A=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=eSMrK17mvYTIM3nrxQUbskAY0bymg3s8g8LP12ZIbUCEHMwOIOtpEKZx7gmMVYW3o
-         J4ymJ+EHkfNoLgd3exZTOauxNMOYDlRj5/StTirBbji9cXnhWn6Jh5+xrSfbVINs5l
-         4e+LO6hJd6EQCJmhADZu+ewR6yz6roiT5WZZraO0=
+        b=IwJTRFwHXcu69xXgkHndxHFheCIkaqqJBMiKe3n6wiq+Ja+RKehIWT10m17dif05H
+         7AdCPULCCEihdzA9uG8JQ61jTjOa9nFotqQHxKLUkb3MfuVkRFum9ilbhC7Rkadl2V
+         Ll3hHXIWLZNb9XlB2ECgMUpv7JIMxAYhqvG+217E=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Benjamin Gwin <bgwin@google.com>,
-        Ryan O'Leary <ryanoleary@google.com>,
-        Will Deacon <will@kernel.org>, Sasha Levin <sashal@kernel.org>,
-        linux-arm-kernel@lists.infradead.org
-Subject: [PATCH AUTOSEL 5.9 47/55] arm64: kexec_file: try more regions if loading segments fails
-Date:   Mon,  9 Nov 2020 22:53:10 -0500
-Message-Id: <20201110035318.423757-47-sashal@kernel.org>
+Cc:     Ulrich Hecht <uli+renesas@fpond.eu>,
+        Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Wolfram Sang <wsa@kernel.org>, Sasha Levin <sashal@kernel.org>,
+        linux-i2c@vger.kernel.org, linux-media@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org
+Subject: [PATCH AUTOSEL 5.9 49/55] i2c: sh_mobile: implement atomic transfers
+Date:   Mon,  9 Nov 2020 22:53:12 -0500
+Message-Id: <20201110035318.423757-49-sashal@kernel.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20201110035318.423757-1-sashal@kernel.org>
 References: <20201110035318.423757-1-sashal@kernel.org>
@@ -43,129 +45,176 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Benjamin Gwin <bgwin@google.com>
+From: Ulrich Hecht <uli+renesas@fpond.eu>
 
-[ Upstream commit 108aa503657ee2fe8aa071dc620d96372c252ecd ]
+[ Upstream commit a49cc1fe9d64a2dc4e19b599204f403e5d25f44b ]
 
-It's possible that the first region picked for the new kernel will make
-it impossible to fit the other segments in the required 32GB window,
-especially if we have a very large initrd.
+Implements atomic transfers to fix reboot/shutdown on r8a7790 Lager and
+similar boards.
 
-Instead of giving up, we can keep testing other regions for the kernel
-until we find one that works.
-
-Suggested-by: Ryan O'Leary <ryanoleary@google.com>
-Signed-off-by: Benjamin Gwin <bgwin@google.com>
-Link: https://lore.kernel.org/r/20201103201106.2397844-1-bgwin@google.com
-Signed-off-by: Will Deacon <will@kernel.org>
+Signed-off-by: Ulrich Hecht <uli+renesas@fpond.eu>
+Tested-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
+Tested-by: Geert Uytterhoeven <geert+renesas@glider.be>
+[wsa: some whitespace fixing]
+Signed-off-by: Wolfram Sang <wsa@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/kernel/kexec_image.c        | 41 +++++++++++++++++++-------
- arch/arm64/kernel/machine_kexec_file.c |  9 +++++-
- 2 files changed, 39 insertions(+), 11 deletions(-)
+ drivers/i2c/busses/i2c-sh_mobile.c | 86 +++++++++++++++++++++++-------
+ 1 file changed, 66 insertions(+), 20 deletions(-)
 
-diff --git a/arch/arm64/kernel/kexec_image.c b/arch/arm64/kernel/kexec_image.c
-index af9987c154cab..66adee8b5fc81 100644
---- a/arch/arm64/kernel/kexec_image.c
-+++ b/arch/arm64/kernel/kexec_image.c
-@@ -43,7 +43,7 @@ static void *image_load(struct kimage *image,
- 	u64 flags, value;
- 	bool be_image, be_kernel;
- 	struct kexec_buf kbuf;
--	unsigned long text_offset;
-+	unsigned long text_offset, kernel_segment_number;
- 	struct kexec_segment *kernel_segment;
- 	int ret;
+diff --git a/drivers/i2c/busses/i2c-sh_mobile.c b/drivers/i2c/busses/i2c-sh_mobile.c
+index cab7255599991..bdd60770779ad 100644
+--- a/drivers/i2c/busses/i2c-sh_mobile.c
++++ b/drivers/i2c/busses/i2c-sh_mobile.c
+@@ -129,6 +129,7 @@ struct sh_mobile_i2c_data {
+ 	int sr;
+ 	bool send_stop;
+ 	bool stop_after_dma;
++	bool atomic_xfer;
  
-@@ -88,11 +88,37 @@ static void *image_load(struct kimage *image,
- 	/* Adjust kernel segment with TEXT_OFFSET */
- 	kbuf.memsz += text_offset;
+ 	struct resource *res;
+ 	struct dma_chan *dma_tx;
+@@ -330,13 +331,15 @@ static unsigned char i2c_op(struct sh_mobile_i2c_data *pd, enum sh_mobile_i2c_op
+ 		ret = iic_rd(pd, ICDR);
+ 		break;
+ 	case OP_RX_STOP: /* enable DTE interrupt, issue stop */
+-		iic_wr(pd, ICIC,
+-		       ICIC_DTEE | ICIC_WAITE | ICIC_ALE | ICIC_TACKE);
++		if (!pd->atomic_xfer)
++			iic_wr(pd, ICIC,
++			       ICIC_DTEE | ICIC_WAITE | ICIC_ALE | ICIC_TACKE);
+ 		iic_wr(pd, ICCR, ICCR_ICE | ICCR_RACK);
+ 		break;
+ 	case OP_RX_STOP_DATA: /* enable DTE interrupt, read data, issue stop */
+-		iic_wr(pd, ICIC,
+-		       ICIC_DTEE | ICIC_WAITE | ICIC_ALE | ICIC_TACKE);
++		if (!pd->atomic_xfer)
++			iic_wr(pd, ICIC,
++			       ICIC_DTEE | ICIC_WAITE | ICIC_ALE | ICIC_TACKE);
+ 		ret = iic_rd(pd, ICDR);
+ 		iic_wr(pd, ICCR, ICCR_ICE | ICCR_RACK);
+ 		break;
+@@ -429,7 +432,8 @@ static irqreturn_t sh_mobile_i2c_isr(int irq, void *dev_id)
  
--	ret = kexec_add_buffer(&kbuf);
--	if (ret)
-+	kernel_segment_number = image->nr_segments;
+ 	if (wakeup) {
+ 		pd->sr |= SW_DONE;
+-		wake_up(&pd->wait);
++		if (!pd->atomic_xfer)
++			wake_up(&pd->wait);
+ 	}
+ 
+ 	/* defeat write posting to avoid spurious WAIT interrupts */
+@@ -581,6 +585,9 @@ static void start_ch(struct sh_mobile_i2c_data *pd, struct i2c_msg *usr_msg,
+ 	pd->pos = -1;
+ 	pd->sr = 0;
+ 
++	if (pd->atomic_xfer)
++		return;
 +
-+	/*
-+	 * The location of the kernel segment may make it impossible to satisfy
-+	 * the other segment requirements, so we try repeatedly to find a
-+	 * location that will work.
-+	 */
-+	while ((ret = kexec_add_buffer(&kbuf)) == 0) {
-+		/* Try to load additional data */
-+		kernel_segment = &image->segment[kernel_segment_number];
-+		ret = load_other_segments(image, kernel_segment->mem,
-+					  kernel_segment->memsz, initrd,
-+					  initrd_len, cmdline);
-+		if (!ret)
-+			break;
-+
-+		/*
-+		 * We couldn't find space for the other segments; erase the
-+		 * kernel segment and try the next available hole.
-+		 */
-+		image->nr_segments -= 1;
-+		kbuf.buf_min = kernel_segment->mem + kernel_segment->memsz;
-+		kbuf.mem = KEXEC_BUF_MEM_UNKNOWN;
-+	}
-+
-+	if (ret) {
-+		pr_err("Could not find any suitable kernel location!");
- 		return ERR_PTR(ret);
-+	}
- 
--	kernel_segment = &image->segment[image->nr_segments - 1];
-+	kernel_segment = &image->segment[kernel_segment_number];
- 	kernel_segment->mem += text_offset;
- 	kernel_segment->memsz -= text_offset;
- 	image->start = kernel_segment->mem;
-@@ -101,12 +127,7 @@ static void *image_load(struct kimage *image,
- 				kernel_segment->mem, kbuf.bufsz,
- 				kernel_segment->memsz);
- 
--	/* Load additional data */
--	ret = load_other_segments(image,
--				kernel_segment->mem, kernel_segment->memsz,
--				initrd, initrd_len, cmdline);
--
--	return ERR_PTR(ret);
-+	return 0;
+ 	pd->dma_buf = i2c_get_dma_safe_msg_buf(pd->msg, 8);
+ 	if (pd->dma_buf)
+ 		sh_mobile_i2c_xfer_dma(pd);
+@@ -637,15 +644,13 @@ static int poll_busy(struct sh_mobile_i2c_data *pd)
+ 	return i ? 0 : -ETIMEDOUT;
  }
  
- #ifdef CONFIG_KEXEC_IMAGE_VERIFY_SIG
-diff --git a/arch/arm64/kernel/machine_kexec_file.c b/arch/arm64/kernel/machine_kexec_file.c
-index 361a1143e09ee..e443df8569881 100644
---- a/arch/arm64/kernel/machine_kexec_file.c
-+++ b/arch/arm64/kernel/machine_kexec_file.c
-@@ -242,6 +242,11 @@ static int prepare_elf_headers(void **addr, unsigned long *sz)
- 	return ret;
- }
- 
-+/*
-+ * Tries to add the initrd and DTB to the image. If it is not possible to find
-+ * valid locations, this function will undo changes to the image and return non
-+ * zero.
-+ */
- int load_other_segments(struct kimage *image,
- 			unsigned long kernel_load_addr,
- 			unsigned long kernel_size,
-@@ -250,7 +255,8 @@ int load_other_segments(struct kimage *image,
+-static int sh_mobile_i2c_xfer(struct i2c_adapter *adapter,
+-			      struct i2c_msg *msgs,
+-			      int num)
++static int sh_mobile_xfer(struct sh_mobile_i2c_data *pd,
++			 struct i2c_msg *msgs, int num)
  {
- 	struct kexec_buf kbuf;
- 	void *headers, *dtb = NULL;
--	unsigned long headers_sz, initrd_load_addr = 0, dtb_len;
-+	unsigned long headers_sz, initrd_load_addr = 0, dtb_len,
-+		      orig_segments = image->nr_segments;
- 	int ret = 0;
+-	struct sh_mobile_i2c_data *pd = i2c_get_adapdata(adapter);
+ 	struct i2c_msg	*msg;
+ 	int err = 0;
+ 	int i;
+-	long timeout;
++	long time_left;
  
- 	kbuf.image = image;
-@@ -336,6 +342,7 @@ int load_other_segments(struct kimage *image,
- 	return 0;
+ 	/* Wake up device and enable clock */
+ 	pm_runtime_get_sync(pd->dev);
+@@ -662,15 +667,35 @@ static int sh_mobile_i2c_xfer(struct i2c_adapter *adapter,
+ 		if (do_start)
+ 			i2c_op(pd, OP_START);
  
- out_err:
-+	image->nr_segments = orig_segments;
- 	vfree(dtb);
- 	return ret;
+-		/* The interrupt handler takes care of the rest... */
+-		timeout = wait_event_timeout(pd->wait,
+-				       pd->sr & (ICSR_TACK | SW_DONE),
+-				       adapter->timeout);
+-
+-		/* 'stop_after_dma' tells if DMA transfer was complete */
+-		i2c_put_dma_safe_msg_buf(pd->dma_buf, pd->msg, pd->stop_after_dma);
++		if (pd->atomic_xfer) {
++			unsigned long j = jiffies + pd->adap.timeout;
++
++			time_left = time_before_eq(jiffies, j);
++			while (time_left &&
++			       !(pd->sr & (ICSR_TACK | SW_DONE))) {
++				unsigned char sr = iic_rd(pd, ICSR);
++
++				if (sr & (ICSR_AL   | ICSR_TACK |
++					  ICSR_WAIT | ICSR_DTE)) {
++					sh_mobile_i2c_isr(0, pd);
++					udelay(150);
++				} else {
++					cpu_relax();
++				}
++				time_left = time_before_eq(jiffies, j);
++			}
++		} else {
++			/* The interrupt handler takes care of the rest... */
++			time_left = wait_event_timeout(pd->wait,
++					pd->sr & (ICSR_TACK | SW_DONE),
++					pd->adap.timeout);
++
++			/* 'stop_after_dma' tells if DMA xfer was complete */
++			i2c_put_dma_safe_msg_buf(pd->dma_buf, pd->msg,
++						 pd->stop_after_dma);
++		}
+ 
+-		if (!timeout) {
++		if (!time_left) {
+ 			dev_err(pd->dev, "Transfer request timed out\n");
+ 			if (pd->dma_direction != DMA_NONE)
+ 				sh_mobile_i2c_cleanup_dma(pd);
+@@ -696,14 +721,35 @@ static int sh_mobile_i2c_xfer(struct i2c_adapter *adapter,
+ 	return err ?: num;
  }
+ 
++static int sh_mobile_i2c_xfer(struct i2c_adapter *adapter,
++			      struct i2c_msg *msgs,
++			      int num)
++{
++	struct sh_mobile_i2c_data *pd = i2c_get_adapdata(adapter);
++
++	pd->atomic_xfer = false;
++	return sh_mobile_xfer(pd, msgs, num);
++}
++
++static int sh_mobile_i2c_xfer_atomic(struct i2c_adapter *adapter,
++				     struct i2c_msg *msgs,
++				     int num)
++{
++	struct sh_mobile_i2c_data *pd = i2c_get_adapdata(adapter);
++
++	pd->atomic_xfer = true;
++	return sh_mobile_xfer(pd, msgs, num);
++}
++
+ static u32 sh_mobile_i2c_func(struct i2c_adapter *adapter)
+ {
+ 	return I2C_FUNC_I2C | I2C_FUNC_SMBUS_EMUL | I2C_FUNC_PROTOCOL_MANGLING;
+ }
+ 
+ static const struct i2c_algorithm sh_mobile_i2c_algorithm = {
+-	.functionality	= sh_mobile_i2c_func,
+-	.master_xfer	= sh_mobile_i2c_xfer,
++	.functionality = sh_mobile_i2c_func,
++	.master_xfer = sh_mobile_i2c_xfer,
++	.master_xfer_atomic = sh_mobile_i2c_xfer_atomic,
+ };
+ 
+ static const struct i2c_adapter_quirks sh_mobile_i2c_quirks = {
 -- 
 2.27.0
 
