@@ -2,90 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD7932ACFA6
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 07:27:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 00CDF2ACF62
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 07:07:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731087AbgKJG1l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 01:27:41 -0500
-Received: from mx2.suse.de ([195.135.220.15]:52358 "EHLO mx2.suse.de"
+        id S1731733AbgKJGH1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 01:07:27 -0500
+Received: from pegase1.c-s.fr ([93.17.236.30]:31411 "EHLO pegase1.c-s.fr"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726010AbgKJG1l (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 01:27:41 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 301B4ABCC;
-        Tue, 10 Nov 2020 06:27:39 +0000 (UTC)
-Date:   Mon, 9 Nov 2020 22:05:03 -0800
-From:   Davidlohr Bueso <dave@stgolabs.net>
-To:     Soheil Hassas Yeganeh <soheil.kdev@gmail.com>
-Cc:     torvalds@linux-foundation.org, viro@zeniv.linux.org.uk,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        akpm@linux-foundation.org, edumazet@google.com, willemb@google.com,
-        khazhy@google.com, guantaol@google.com,
-        Soheil Hassas Yeganeh <soheil@google.com>
-Subject: Re: [PATCH 1/8] epoll: check for events when removing a timed out
- thread from the wait queue
-Message-ID: <20201110060503.jao4wd4whtyvkcnn@linux-p48b.lan>
-References: <20201106231635.3528496-1-soheil.kdev@gmail.com>
- <20201106231635.3528496-2-soheil.kdev@gmail.com>
+        id S1729243AbgKJGH0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Nov 2020 01:07:26 -0500
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 4CVcpM5whnz9txrh;
+        Tue, 10 Nov 2020 07:07:23 +0100 (CET)
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id S-kiiN4sBykR; Tue, 10 Nov 2020 07:07:23 +0100 (CET)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4CVcpM4TmXz9txrc;
+        Tue, 10 Nov 2020 07:07:23 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 4A31A8B7CD;
+        Tue, 10 Nov 2020 07:07:24 +0100 (CET)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id m21b2CIwh-gp; Tue, 10 Nov 2020 07:07:24 +0100 (CET)
+Received: from [192.168.4.90] (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id D6B428B764;
+        Tue, 10 Nov 2020 07:07:23 +0100 (CET)
+Subject: Re: [PATCH] powerpc/mm: Fix comparing pointer to 0 warning
+To:     xiakaixu1987@gmail.com, mpe@ellerman.id.au,
+        benh@kernel.crashing.org, paulus@samba.org
+Cc:     Kaixu Xia <kaixuxia@tencent.com>, linuxppc-dev@lists.ozlabs.org,
+        linux-kernel@vger.kernel.org
+References: <1604976961-20441-1-git-send-email-kaixuxia@tencent.com>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Message-ID: <9fd91aab-a418-5c48-0b0c-d657ccd2448a@csgroup.eu>
+Date:   Tue, 10 Nov 2020 07:07:18 +0100
+User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20201106231635.3528496-2-soheil.kdev@gmail.com>
-User-Agent: NeoMutt/20180716
+In-Reply-To: <1604976961-20441-1-git-send-email-kaixuxia@tencent.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: fr
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 06 Nov 2020, Soheil Hassas Yeganeh wrote:
 
->From: Soheil Hassas Yeganeh <soheil@google.com>
->
->After abc610e01c66 ("fs/epoll: avoid barrier after an epoll_wait(2)
->timeout"), we break out of the ep_poll loop upon timeout, without checking
->whether there is any new events available.  Prior to that patch-series we
->always called ep_events_available() after exiting the loop.
->
->This can cause races and missed wakeups.  For example, consider the
->following scenario reported by Guantao Liu:
->
->Suppose we have an eventfd added using EPOLLET to an epollfd.
->
->Thread 1: Sleeps for just below 5ms and then writes to an eventfd.
->Thread 2: Calls epoll_wait with a timeout of 5 ms. If it sees an
->          event of the eventfd, it will write back on that fd.
->Thread 3: Calls epoll_wait with a negative timeout.
->
->Prior to abc610e01c66, it is guaranteed that Thread 3 will wake up either
->by Thread 1 or Thread 2.  After abc610e01c66, Thread 3 can be blocked
->indefinitely if Thread 2 sees a timeout right before the write to the
->eventfd by Thread 1.  Thread 2 will be woken up from
->schedule_hrtimeout_range and, with evail 0, it will not call
->ep_send_events().
->
->To fix this issue:
->1) Simplify the timed_out case as suggested by Linus.
->2) while holding the lock, recheck whether the thread was woken up
->   after its time out has reached.
->
->Note that (2) is different from Linus' original suggestion: It do not
->set "eavail = ep_events_available(ep)" to avoid unnecessary contention
->(when there are too many timed-out threads and a small number of events),
->as well as races mentioned in the discussion thread.
->
->This is the first patch in the series so that the backport to stable
->releases is straightforward.
->
->Link: https://lkml.kernel.org/r/CAHk-=wizk=OxUyQPbO8MS41w2Pag1kniUV5WdD5qWL-gq1kjDA@mail.gmail.com
->Fixes: abc610e01c66 ("fs/epoll: avoid barrier after an epoll_wait(2) timeout")
->Tested-by: Guantao Liu <guantaol@google.com>
->Suggested-by: Linus Torvalds <torvalds@linux-foundation.org>
->Signed-off-by: Soheil Hassas Yeganeh <soheil@google.com>
->Reported-by: Guantao Liu <guantaol@google.com>
->Reviewed-by: Eric Dumazet <edumazet@google.com>
->Reviewed-by: Willem de Bruijn <willemb@google.com>
->Reviewed-by: Khazhismel Kumykov <khazhy@google.com>
 
-Thanks for providing the fix and a testcase.
+Le 10/11/2020 à 03:56, xiakaixu1987@gmail.com a écrit :
+> From: Kaixu Xia <kaixuxia@tencent.com>
+> 
+> Fixes coccicheck warning:
+> 
+> ./arch/powerpc/mm/pgtable_32.c:87:11-12: WARNING comparing pointer to 0
+> 
+> Avoid pointer type value compared to 0.
+> 
+> Reported-by: Tosk Robot <tencent_os_robot@tencent.com>
+> Signed-off-by: Kaixu Xia <kaixuxia@tencent.com>
 
-Reviewed-by: Davidlohr Bueso <dbueso@suse.de>
+Reviewed-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+
+> ---
+>   arch/powerpc/mm/pgtable_32.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/arch/powerpc/mm/pgtable_32.c b/arch/powerpc/mm/pgtable_32.c
+> index 079159e97bca..888b9713a316 100644
+> --- a/arch/powerpc/mm/pgtable_32.c
+> +++ b/arch/powerpc/mm/pgtable_32.c
+> @@ -84,7 +84,7 @@ int __ref map_kernel_page(unsigned long va, phys_addr_t pa, pgprot_t prot)
+>   		pg = pte_alloc_kernel(pd, va);
+>   	else
+>   		pg = early_pte_alloc_kernel(pd, va);
+> -	if (pg != 0) {
+> +	if (pg) {
+>   		err = 0;
+>   		/* The PTE should never be already set nor present in the
+>   		 * hash table
+> 
