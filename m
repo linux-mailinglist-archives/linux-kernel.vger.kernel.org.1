@@ -2,103 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D79B2AD3C1
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 11:28:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DFA2A2AD3C4
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 11:28:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731501AbgKJK2A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 05:28:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51198 "EHLO
+        id S1731485AbgKJK2L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 05:28:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51230 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730164AbgKJK17 (ORCPT
+        with ESMTP id S1726690AbgKJK2K (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 05:27:59 -0500
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 625DDC0613CF
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 02:27:59 -0800 (PST)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=[IPv6:::1])
-        by metis.ext.pengutronix.de with esmtp (Exim 4.92)
-        (envelope-from <a.fatoum@pengutronix.de>)
-        id 1kcQsX-0000Gu-S8; Tue, 10 Nov 2020 11:27:57 +0100
-Subject: Re: [PATCH v2 1/2] dt-bindings: arm: stm32: add simple-mfd compatible
- for tamp node
-To:     Alexandre Torgue <alexandre.torgue@st.com>
-Cc:     Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        Christophe Roullier <christophe.roullier@st.com>,
-        Sascha Hauer <kernel@pengutronix.de>,
-        Arnaud Pouliquen <arnaud.pouliquen@st.com>,
-        devicetree@vger.kernel.org,
-        "moderated list:ARM/STM32 ARCHITECTURE" 
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Rob Herring <robh@kernel.org>
-References: <20201021102855.18026-1-a.fatoum@pengutronix.de>
- <20201026143656.GA118160@bogus>
- <23e423ba-25f2-c3ed-ea65-2c2d86ae9522@pengutronix.de>
- <CAL_JsqL8sjw1o6PzCSRM9FtRx7XLDQg2bWXxo4Yw5t6fnroudw@mail.gmail.com>
-From:   Ahmad Fatoum <a.fatoum@pengutronix.de>
-Message-ID: <20d5ccf8-c98f-fe3c-767b-1ad99be9dd19@pengutronix.de>
-Date:   Tue, 10 Nov 2020 11:27:57 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.1
+        Tue, 10 Nov 2020 05:28:10 -0500
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A33EC0613CF
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 02:28:10 -0800 (PST)
+Received: by mail-wr1-x444.google.com with SMTP id p8so11267226wrx.5
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 02:28:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=pqIDM/rZ/Y9RAfg0dyKOEzplrtUBtkplsmTM06tMDJQ=;
+        b=BcAb/EpoDs9F+v8Ugn793tbnYiNlQmUpjuGyNpNKzX4yjbKBv/0r7MEILs5WCoPzhD
+         fNMs2XkoRS+mJ/NFjN4OBygs4qBsWWlb1VSmQAiCKO/AIajH1dTD3Lygh6OEZvM5MUga
+         oFF7nX3RpsXyXYrwW7YlAWso8AvoMlJlN0P1lpckrYoAbjrjbAuxzW3s4MvJt51WQatU
+         cexAGXQXxSUBTpyGm/8+TR5w1+5/E9s1T2EwBL0xRVW9SAcegjg6esqn/6m3r5YfhrX7
+         lFv+3/HjjjiGyeQilK12WlaseZIcOBf8Tn7qqIxzU+l/HtjVN/GNk4iEPTznIQg1YMJs
+         IaxA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=pqIDM/rZ/Y9RAfg0dyKOEzplrtUBtkplsmTM06tMDJQ=;
+        b=SfVCnqlj+svLDtGoJxLoQgXXVEm0N0dKrbWFm76Uf9sOMEtsNVXKQbgs2VIQqtdr+U
+         joREbZ/2gdBBkixWY5LxdIk9oOvkXVDUzu1s0VDcHB/JqMvzB87KEitcKfqyd37kTQmY
+         xJrbyWukp2DTkKc1ksdgZQ5OsxXAYzdoicONprAk5b+TzQI5Vaq0PcTvZFVLcfPBn8O6
+         O2Eq2IJyXd7K8eod5DMc24Hgq8h6aTfYY/w6utHK9bGM4n3ErYOwlE8rsfy2rLIOtSE9
+         /RsQ6td59quWCGmzP+3epJMMAkeBVhbLVTrKmjRmsGYoTm4AJk8ub8kCFLmecqftcAmL
+         dzVQ==
+X-Gm-Message-State: AOAM533bjJOSOU3R9Rn+DThRpOqZIZqnRz1IrqykTuSB0iiGShd26oiA
+        /bFEnW3+L96tLKUkBfMvRx6H/g==
+X-Google-Smtp-Source: ABdhPJwxQlud3/H/xV2Dbfu6P6pYfPXGlRqele+HoGoUBj0HGH9j/JHGsKTEVZU7XxN2PY+0LDQPYQ==
+X-Received: by 2002:a5d:5342:: with SMTP id t2mr21947899wrv.243.1605004089054;
+        Tue, 10 Nov 2020 02:28:09 -0800 (PST)
+Received: from [192.168.0.4] (hst-208-208.medicom.bg. [84.238.208.208])
+        by smtp.googlemail.com with ESMTPSA id w11sm2639462wmg.36.2020.11.10.02.28.07
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 10 Nov 2020 02:28:08 -0800 (PST)
+Subject: Re: [PATCH 2/3] docs: media: Document CLL and Mastering display
+To:     Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org
+Cc:     Nicolas Dufresne <nicolas.dufresne@collabora.com>,
+        Ezequiel Garcia <ezequiel@collabora.com>
+References: <20201109173153.23720-1-stanimir.varbanov@linaro.org>
+ <20201109173153.23720-3-stanimir.varbanov@linaro.org>
+ <c907b185-a272-bef5-1aa0-313c7789b07d@xs4all.nl>
+From:   Stanimir Varbanov <stanimir.varbanov@linaro.org>
+Message-ID: <58fda2db-4c2a-0fde-91ce-39af4fbccf99@linaro.org>
+Date:   Tue, 10 Nov 2020 12:28:07 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <CAL_JsqL8sjw1o6PzCSRM9FtRx7XLDQg2bWXxo4Yw5t6fnroudw@mail.gmail.com>
+In-Reply-To: <c907b185-a272-bef5-1aa0-313c7789b07d@xs4all.nl>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: a.fatoum@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Alex,
 
-On 10/27/20 1:15 PM, Rob Herring wrote:
-> On Mon, Oct 26, 2020 at 4:30 PM Ahmad Fatoum <a.fatoum@pengutronix.de> wrote:
->>
->> Hello Rob,
->>
->> On 10/26/20 3:36 PM, Rob Herring wrote:
->>> On Wed, Oct 21, 2020 at 12:28:55PM +0200, Ahmad Fatoum wrote:
->>>> The stm32mp1 TAMP (Tamper and backup registers) does tamper detection
->>>> and features 32 backup registers that, being in the RTC domain, may
->>>> survive even with Vdd switched off.
->>>>
->>>> This makes it suitable for use to communicate a reboot mode from OS
->>>> to bootloader via the syscon-reboot-mode binding. Add a "simple-mfd"
->>>> to support probing such a child node. The actual reboot mode
->>>> node could then be defined in a board.dts or fixed up by the bootloader.
->>>
->>> 'simple-mfd' implies there is no dependency on the parent node for the
->>> child (such as the regmap perhaps). Is that the case here?
->>
->> No, there's a dependency and the Linux driver does syscon_node_to_regmap
->> on the device tree node's parent but that's how the syscon-reboot-mode binding
->> is documented:
->>
->>   The SYSCON mapped register is retrieved from the
->>   parental dt-node plus the offset. So the SYSCON reboot-mode node
->>   should be represented as a sub-node of a "syscon", "simple-mfd" node.
->>
->> How would you prefer this being done instead?
-> 
-> Well, probably the syscon driver could just probe any children, but
-> I'm not sure if that would break anyone. So I guess fine as-is.
-> 
-> Reviewed-by: Rob Herring <robh@kernel.org>
 
-Gentle ping.
+On 11/10/20 11:50 AM, Hans Verkuil wrote:
+> On 09/11/2020 18:31, Stanimir Varbanov wrote:
+>> Document Content light level and Mastering display colour volume.
+>>
+>> Signed-off-by: Stanimir Varbanov <stanimir.varbanov@linaro.org>
+>> ---
+>>  .../media/v4l/ext-ctrls-codec.rst             | 61 +++++++++++++++++++
+>>  1 file changed, 61 insertions(+)
+>>
+>> diff --git a/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst b/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
+>> index ce728c757eaf..39d0aab5ca3d 100644
+>> --- a/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
+>> +++ b/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
+>> @@ -4382,3 +4382,64 @@ enum v4l2_mpeg_video_hevc_size_of_length_field -
+>>        - Selecting this value specifies that HEVC slices are expected
+>>          to be prefixed by Annex B start codes. According to :ref:`hevc`
+>>          valid start codes can be 3-bytes 0x000001 or 4-bytes 0x00000001.
+>> +
+>> +``V4L2_CID_MPEG_VIDEO_HEVC_CLL_INFO (struct)``
+>> +    The Content Light Level defines upper bounds for the nominal target
+>> +    brightness light level of the pictures.
+>> +
+>> +.. c:type:: v4l2_ctrl_hevc_cll_info
+>> +
+>> +.. cssclass:: longtable
+>> +
+>> +.. flat-table:: struct v4l2_ctrl_hevc_cll_info
+>> +    :header-rows:  0
+>> +    :stub-columns: 0
+>> +    :widths:       1 1 2
+>> +
+>> +    * - __u16
+>> +      - ``max_content_light_level``
+>> +      - An upper bound on the maximum light level among all individual
+>> +        samples for the pictures of coded video sequence, cd/m2.
+>> +    * - __u16
+>> +      - ``max_pic_average_light_level``
+>> +      - An upper bound on the maximum average light level among the
+>> +        samples for any idividual picture of coded video sequence, cd/m2.
+> 
+> idividual -> individual
+> 
+> In the CTA-861-G spec value 0 is used to indicate that this information is
+> not present. How is that handled here? Can it be 0 as well in an HEVC stream?
+
+ITU-T Rec. H265 says: When equal to 0, no such upper bound is indicated
+by max_content_light_level.
+
+So, the meaning is the same as in CTA-861-G.
 
 > 
-> Rob
+> Same for the next control.
+> 
+>> +
+>> +``V4L2_CID_MPEG_VIDEO_HEVC_MASTERING_DISPLAY (struct)``
+>> +    The mastering display defines the colour volume (the colour primaries,
+>> +    white point and luminance range) of a display considered to be the
+>> +    mastering display for current video content.
+>> +
+>> +.. c:type:: v4l2_ctrl_hevc_mastering_display
+>> +
+>> +.. cssclass:: longtable
+>> +
+>> +.. flat-table:: struct v4l2_ctrl_hevc_mastering_display
+>> +    :header-rows:  0
+>> +    :stub-columns: 0
+>> +    :widths:       1 1 2
+>> +
+>> +    * - __u16
+>> +      - ``display_primaries_x[3]``
+>> +      - Specifies the normalized x chromaticity coordinate of the colour
+>> +        primary component of the mastering display.
+> 
+> CTA-861-G defines this as: "coded as unsigned 16-bit values in units
+> of 0.00002, where 0x0000 represents zero and 0xC350 represents 1.0000."
+> 
+> Is that true here as well? If so, then this should be documented because
+> "normalized x chromaticity coordinate" doesn't say anything meaningful.
+
+Yes, it is the same. Will document that in next version.
+
+> 
+>> +    * - __u16
+>> +      - ``display_primaries_y[3]``
+>> +      - Specifies the normalized y chromaticity coordinate of the colour
+>> +        primary component of the mastering display.
+>> +    * - __u16
+>> +      - ``white_point_x``
+>> +      - Specifies the normalized x chromaticity coordinate of the white
+>> +        point of the mastering display.
+>> +    * - __u16
+>> +      - ``white_point_y``
+>> +      - Specifies the normalized y chromaticity coordinate of the white
+>> +        point of the mastering display.
+>> +    * - __u32
+>> +      - ``max_luminance``
+>> +      - Specifies the nominal maximum display luminance of the mastering
+>> +        display.
+> 
+> In CTA-861-G this is in 1 cd/m^2 units.
+
+In Rec. H265 max_luminance is in the range of 50 000 to 100 000 000 and
+units of 0.0001 cd/m2.
+
+> 
+>> +    * - __u32
+>> +      - ``min_luminance``
+>> +      - specifies the nominal minimum display luminance of the mastering
+>> +        display.
+> 
+> And this in units of 0.0001 cd/m^2.
+
+min_luminance - range of 1 to 50 000 and units of 0.0001 cd/m2.
+
+I will update all these in next patchset version.
+
+> 
+> Regards,
+> 
+> 	Hans
 > 
 
 -- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+regards,
+Stan
