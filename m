@@ -2,89 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 673F42AD7DC
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 14:41:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 747572AD7DE
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 14:42:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730677AbgKJNlU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 08:41:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52966 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730589AbgKJNlQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 08:41:16 -0500
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76D6FC0613D4
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 05:41:14 -0800 (PST)
-Received: by mail-pf1-x441.google.com with SMTP id 10so11472962pfp.5
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 05:41:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=NQfunjrgL76uBRcSvfp0hiZgyGWtLS38BjNvSb/rmHU=;
-        b=ry+6q39E+MCi+DidJnllI7SR60cy7IqdcUnNTx4B83AnECr38TLP4o6ihmggX49gMe
-         maXNXqC1VIBmZ+RvRUv6lzYqTKwkgCLRZxIDs1erKA/PtgP6f+XVRPWXGHlzr+3y7D68
-         H4DJKcwXsaPpjbQO7miBlbYO/+atEnSQFYAcFtum6PpCZ5NKxdIiry31hudBM7zmaNGK
-         s8U/FW0zO/uhACXBXIm3/dX/za4uQAv7dYFmkwCBj7n/jFpBSCW8+Kdv/KQ1gzGGMvGJ
-         OUHoHcY5j2UouBfZN0Vf0EuvkfUpLKNP0VE9CIO3xzgTMYY46Nbt5CwMZuhtHA2Qj+jy
-         9pSw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=NQfunjrgL76uBRcSvfp0hiZgyGWtLS38BjNvSb/rmHU=;
-        b=NpL42rQquIceBTHATyj1Z9fsnAOuaUPGodDKYppShkHF3s7dwXJVbWNm6dt2sI3Vxn
-         bXU466OhLNaeW+RhVWGN7Hri6+4ZeLrfPXOY0aqUWjjlaEz6Nw8EyjndrK7n0JMEKI4d
-         jVp9TBbdNHitZrjrBFCkStNEIspk0FTf/9W1ZDnB6iJYdRPE2atG5sgEiOS4VOJX+ZE/
-         a/P18krpiBMChUanwefvk8ihGKm+dn+MzQTJfX6sqSX0HdXfjlp/gtfxOdwSNordm4kA
-         5H07qN6cjdpm0qkNgT+WjDeebioWrYlTe5cthECt5X9nzLQJUAE8pCBEVLKRBP4Bv/uu
-         xn4A==
-X-Gm-Message-State: AOAM5308MTkbQFf09g9t76PZzYDaMEyQOj2oYvNUrBcY9tkKgx0rVcTo
-        e8DiVpTdaH6Ig0fQoKW0MVs=
-X-Google-Smtp-Source: ABdhPJyxRcP8j3iFvakhIlyv1OnS7WMZhL0FbshXihydK5repm8sBncCYdE4NxNTXwSDDTUGPajyEg==
-X-Received: by 2002:a17:90a:a08f:: with SMTP id r15mr3247342pjp.118.1605015674061;
-        Tue, 10 Nov 2020 05:41:14 -0800 (PST)
-Received: from XiaoXinPro-13.hytera.com (ec2-3-112-75-61.ap-northeast-1.compute.amazonaws.com. [3.112.75.61])
-        by smtp.gmail.com with ESMTPSA id r2sm3169273pji.55.2020.11.10.05.41.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 10 Nov 2020 05:41:13 -0800 (PST)
-From:   Qi Zheng <arch0.zheng@gmail.com>
-To:     mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-        bristot@redhat.com
-Cc:     linux-kernel@vger.kernel.org, Qi Zheng <arch0.zheng@gmail.com>
-Subject: [PATCH] sched/fair: Remove the redundant critical section
-Date:   Tue, 10 Nov 2020 21:41:01 +0800
-Message-Id: <20201110134101.434928-1-arch0.zheng@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        id S1730714AbgKJNm1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 08:42:27 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51610 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730044AbgKJNm0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Nov 2020 08:42:26 -0500
+Received: from localhost (unknown [176.177.120.14])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8FFD320731;
+        Tue, 10 Nov 2020 13:42:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605015746;
+        bh=+NH93rVvGxyY03JD5Zll1bmvk3NHXkPunXz2z/0OIbI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=zxvxfOWV6a5UejjfKLERU87WKn3CUEM2NFjGcYHbxaAjhddFiRfXTDFuHaTPCoEQx
+         9TFU169KBmXbXHjw3OohlXeHEAalvbsdrPnaNHrbaVy+/8QFQQp7jQNabtZmcMkc9k
+         crnf2QSeaRAs/wqDUPLo199JxRT+XBp+kQ0Gct1U=
+Date:   Tue, 10 Nov 2020 14:42:23 +0100
+From:   Frederic Weisbecker <frederic@kernel.org>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>, Mel Gorman <mgorman@suse.de>,
+        Michal Hocko <mhocko@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>, Michal Hocko <mhocko@suse.com>
+Subject: Re: [RFC PATCH 1/7] static_call/x86: Add __static_call_returnl0()
+Message-ID: <20201110134223.GB48886@lothringen>
+References: <20201110005609.40989-1-frederic@kernel.org>
+ <20201110005609.40989-2-frederic@kernel.org>
+ <20201110095515.GA2594@hirez.programming.kicks-ass.net>
+ <20201110101307.GO2651@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201110101307.GO2651@hirez.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Now there is nothing in the critical section, so remove it.
+On Tue, Nov 10, 2020 at 11:13:07AM +0100, Peter Zijlstra wrote:
+> On Tue, Nov 10, 2020 at 10:55:15AM +0100, Peter Zijlstra wrote:
+> > On Tue, Nov 10, 2020 at 01:56:03AM +0100, Frederic Weisbecker wrote:
+> > 
+> > > [fweisbec: s/disp16/data16, integrate into text_get_insn(), elaborate
+> > >  comment on the resulting insn, emulate on int3 trap, provide validation,
+> > >  uninline __static_call_return0() for HAVE_STATIC_CALL]
+> 
+> > Why did you add full emulation of this? The patch I send to you used the
+> > text_poke_bp(.emulate) argument to have it emulate an actual call to the
+> > out-of-line version of that function.
+> > 
+> > That should work fine and is a lot less code.
+> 
+> For reference; the below is what I send you. Actually doing the
+> __static_call_return0() call while we poke the magic XOR instruction is
+> much simpler.
 
-Signed-off-by: Qi Zheng <arch0.zheng@gmail.com>
----
- kernel/sched/fair.c | 3 ---
- 1 file changed, 3 deletions(-)
+Ok I'll get back to that. I'll just tweak a bit static_call_validate()
+so that it is aware of that instruction.
 
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 52cacfc62922..06c4f3430e95 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -5114,9 +5114,6 @@ static void do_sched_cfs_slack_timer(struct cfs_bandwidth *cfs_b)
- 		return;
- 
- 	distribute_cfs_runtime(cfs_b);
--
--	raw_spin_lock_irqsave(&cfs_b->lock, flags);
--	raw_spin_unlock_irqrestore(&cfs_b->lock, flags);
- }
- 
- /*
--- 
-2.25.1
-
+Thanks.
