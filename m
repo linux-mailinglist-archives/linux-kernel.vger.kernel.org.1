@@ -2,108 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 44E982AD92E
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 15:48:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 754F42AD937
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 15:49:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731041AbgKJOso (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 09:48:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35466 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730432AbgKJOsn (ORCPT
+        id S1731037AbgKJOtS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 09:49:18 -0500
+Received: from esa5.microchip.iphmx.com ([216.71.150.166]:14620 "EHLO
+        esa5.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730465AbgKJOtR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 09:48:43 -0500
-Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79882C0617A6
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 06:48:43 -0800 (PST)
-Received: by mail-lf1-x143.google.com with SMTP id r9so4195667lfn.11
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 06:48:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=TRtX8baRaCtbeDJjWA3IRYfdgtIW44Wdj4Sdz3HfZMA=;
-        b=An/Ddk0HLR+91xPRpInCFnfZ9o+5szjLSy+NtnyMq7UJRY1S3pi1mcTpeSPq8yWGO7
-         +hYo5dzW6PHxmv0YE0x63sDphTthBePQ7rc/OdTTaSn1XaXPVNTS2Qj572/59VtqdnSE
-         ADq1kQeLGgCPetyHlz4LQ8E+f4lA+tewwA3JqwJikM3iaVmfqn+lcqYRQW/wE7ooEhJ+
-         bUglFTYdPjIL+R6utnbfqDb4IhOZ5rx4bucFlRBZmrj8DrD8Mjij9VzBx0YIKOoIC2Nb
-         AA/x0kRUOLLFfqW7r0bkOIMPkR+YoHRBgD+4KlQ2b15e9/I5sO+IMBiDslv4L69nF3h/
-         5YMg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=TRtX8baRaCtbeDJjWA3IRYfdgtIW44Wdj4Sdz3HfZMA=;
-        b=XM/MMdzNQvURg3699/6Jxh+5HkgD1uTZP2qyizD382Fb0QkgiJRRG+3ITuoqMgYAsP
-         zq7jPIoaZR/XTXboEFfgpIJbCaBJ9fNBm7VqOe3Clshuoob7NuMeyeX3yhG9SHNfWfs/
-         EIRPD41zpxa8np1x0XTU5AlKwy372qcgniKI+hTtor1rDUlBN8ABU/7ljuyw6j5+7dTW
-         tMAkqIKJVLzixXL7hyfjDqNjvokhJxr3UMzVMb9GyFTxRlRCkT562C3uf2Nj3PWhCeNb
-         3cc85WO7aMPQctlp2WMgny/Z0uMg3shJ2nATgtQfkaXDXs8CTynotn2oUS+0hOKnaaVr
-         gHag==
-X-Gm-Message-State: AOAM532zp0+cM0ZqYocdZRj87yKjjzbzUsG+2RyM7cTAtwuz5NVPeDEm
-        n5uLy01H3Drcdq+Y37531m6637q8k+jL9ITYFQE2LQ==
-X-Google-Smtp-Source: ABdhPJw46ud/uUkcZJ6tSOXJvAqor8Mj5zSR0l7JClGYT9/b+K2wIXlkgMzo8k4v5SokXVFThmMVRoGjQRQOqS4C810=
-X-Received: by 2002:ac2:4ac7:: with SMTP id m7mr5517480lfp.572.1605019721579;
- Tue, 10 Nov 2020 06:48:41 -0800 (PST)
+        Tue, 10 Nov 2020 09:49:17 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1605019757; x=1636555757;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=YIfq/cYeNogRWEgZu7eOtkVGhAYuISTT7suK3mro9yU=;
+  b=xV9tTqTdnkJkoO5TP0Gwv9oJpTNx8cRHvWMqNuXqFEHvZvVtk1XhEQeV
+   npzORbdTz2BYevG8bspF0CJQgd4nPThoR7PYiDQeSNSXGyuHqB6vFAVqv
+   k4M3cdsZ0OqUTUZDrpex3yjNgq3zeuRNcEzgKVPBwKjDZSJY7SCkBWmY9
+   SWrLU6LwWCKjae2fAVpUaEjs8xH1HyfeNgq4bXnLt+z15IddZhn/sPz9U
+   VmNiX4k4RRyNMdZ+WVsuiO1v45MMceycmQEhiLB6kxoLE9AnBb1nvJzYK
+   PCjtLHxUz3rmEPH1uHCTx1qBvsbRVNifaam+J4dtoQIZsInmCsaxLTHjO
+   g==;
+IronPort-SDR: QrgFmve+dJ706GFrv3ZxQ1vvG7o+prXXED0MWfxB+yHczQNWJVKrwKwQT9GdoNqP0yF/zi/V40
+ WIJkbgwaT8PLCQHKCGnz0d1YEvhswKGJohY6gfCUc3PFs8EXjO4+lOBNkuDqUvCWWV9ohu13HR
+ yke4iQy3p8nYzr2HQFcsomUBcKIv4jMC9EwSDrb8HatcBUgcnjbLCBBvodSnobL7T58tu9cT7h
+ 0kBeMeZJDuULWt9t9UIHsljGNT1ykN7t0/9eaw0UlD+Qa4QvUXJ/0jtQ2d1+4zW14+ys5myRGw
+ HZM=
+X-IronPort-AV: E=Sophos;i="5.77,466,1596524400"; 
+   d="scan'208";a="97866627"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa5.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 10 Nov 2020 07:49:17 -0700
+Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
+ chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Tue, 10 Nov 2020 07:49:16 -0700
+Received: from mchp-dev-shegelun.microchip.com (10.10.115.15) by
+ chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server id
+ 15.1.1979.3 via Frontend Transport; Tue, 10 Nov 2020 07:49:14 -0700
+From:   Steen Hegelund <steen.hegelund@microchip.com>
+To:     Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>
+CC:     Steen Hegelund <steen.hegelund@microchip.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Lars Povlsen <lars.povlsen@microchip.com>,
+        Bjarni Jonasson <bjarni.jonasson@microchip.com>,
+        Microsemi List <microsemi@lists.bootlin.com>,
+        Microchip UNG Driver List <UNGLinuxDriver@microchip.com>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH v2 0/4] Adding the Sparx5 Serdes driver
+Date:   Tue, 10 Nov 2020 15:49:06 +0100
+Message-ID: <20201110144910.558164-1-steen.hegelund@microchip.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-References: <20201109110654.12547-1-brgl@bgdev.pl> <20201109110654.12547-6-brgl@bgdev.pl>
-In-Reply-To: <20201109110654.12547-6-brgl@bgdev.pl>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Tue, 10 Nov 2020 15:48:30 +0100
-Message-ID: <CACRpkdZ9tRHFS51pnQg_TgKGed3pD_hRE_rGP_9tiFNcGrb1bQ@mail.gmail.com>
-Subject: Re: [PATCH v3 5/9] pinctrl: use krealloc_array()
-To:     Bartosz Golaszewski <brgl@bgdev.pl>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Gustavo Padovan <gustavo@padovan.org>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Borislav Petkov <bp@alien8.de>,
-        Tony Luck <tony.luck@intel.com>,
-        James Morse <james.morse@arm.com>,
-        Robert Richter <rric@kernel.org>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        "Michael S . Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        "open list:DRM PANEL DRIVERS" <dri-devel@lists.freedesktop.org>,
-        linaro-mm-sig@lists.linaro.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        linux-edac@vger.kernel.org,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        kvm@vger.kernel.org, virtualization@lists.linux-foundation.org,
-        netdev <netdev@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..." 
-        <alsa-devel@alsa-project.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 9, 2020 at 12:07 PM Bartosz Golaszewski <brgl@bgdev.pl> wrote:
+Adding the Sparx5 Serdes driver
 
-> From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
->
-> Use the helper that checks for overflows internally instead of manually
-> calculating the size of the new array.
->
-> Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
-> Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+This series of patches provides the serdes driver for the Microchip Sparx5
+ethernet switch.
 
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+The serdes driver supports the 10G and 25G serdes instances available in the
+Sparx5.
 
-Yours,
-Linus Walleij
+The Sparx5 serdes support several interface modes with several speeds and also
+allows the client to change the mode and the speed according to changing in the
+environment such as changing cables from DAC to fiber.
+
+The serdes driver is to be used by the Sparx5 switchdev driver that
+will follow in subsequent series.
+
+History:
+--------
+v1 -> v2: Fixed kernel test robot warnings
+    - Made these structures static:
+      - media_presets_25g
+      - mode_presets_25g
+      - media_presets_10g
+      - mode_presets_10g
+    - Removed these duplicate initializations:
+      - sparx5_sd25g28_params.cfg_rx_reserve_15_8
+      - sparx5_sd25g28_params.cfg_pi_en
+      - sparx5_sd25g28_params.cfg_cdrck_en
+      - sparx5_sd10g28_params.cfg_cdrck_en
+
+Lars Povlsen (2):
+  dt-bindings: phy: Add sparx5-serdes bindings
+  arm64: dts: sparx5: Add Sparx5 serdes driver node
+
+Steen Hegelund (2):
+  phy: Add ethernet serdes configuration option
+  phy: Add Sparx5 ethernet serdes PHY driver
+
+ .../bindings/phy/microchip,sparx5-serdes.yaml |  283 ++
+ arch/arm64/boot/dts/microchip/sparx5.dtsi     |  195 ++
+ drivers/phy/Kconfig                           |    1 +
+ drivers/phy/Makefile                          |    1 +
+ drivers/phy/microchip/Kconfig                 |   12 +
+ drivers/phy/microchip/Makefile                |    6 +
+ drivers/phy/microchip/sparx5_serdes.c         | 2464 +++++++++++++++
+ drivers/phy/microchip/sparx5_serdes_regs.h    | 2773 +++++++++++++++++
+ include/linux/phy/phy-ethernet-serdes.h       |   49 +
+ include/linux/phy/phy.h                       |    4 +
+ 10 files changed, 5788 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/phy/microchip,sparx5-serdes.yaml
+ create mode 100644 drivers/phy/microchip/Kconfig
+ create mode 100644 drivers/phy/microchip/Makefile
+ create mode 100644 drivers/phy/microchip/sparx5_serdes.c
+ create mode 100644 drivers/phy/microchip/sparx5_serdes_regs.h
+ create mode 100644 include/linux/phy/phy-ethernet-serdes.h
+
+
+base-commit: 3cea11cd5e3b00d91caf0b4730194039b45c5891
+prerequisite-patch-id: b155844f6a5e402ba62a39b1a2b276c8378eeb49
+prerequisite-patch-id: 1605ab05e4212d0bba88a858c6dd16df64194282
+prerequisite-patch-id: 8d9741ec8a716b179e39d640b3aab8f934c2573d
+-- 
+2.29.2
+
