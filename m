@@ -2,81 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CE0D2ADCDD
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 18:27:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F24682ADCE0
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 18:28:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730345AbgKJR1h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 12:27:37 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45400 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726152AbgKJR1g (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 12:27:36 -0500
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B98D8206B2;
-        Tue, 10 Nov 2020 17:27:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605029256;
-        bh=ks1LOyBLNDhuxQqZ3iJG1mWuNRCAGal3eA/eaf0LRQk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=uFxi95SE6F1jiW0+cRqP0WSX0ETwYTfQlpDHPYjc8e3gIns3Q9PiilszYYNKZorSZ
-         yzArHERxio2peXf4P2EwjgH3osxneWffCzxi19A8YnsEHt9EnAoIuvlkcbQDrAYSLG
-         nrChi6ADjMEKhOk7gD+o+vvd5QvfZy9TT3FvZ35Q=
-Date:   Tue, 10 Nov 2020 17:27:21 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     Sean Nyekjaer <sean@geanix.com>
-Cc:     yibin.gong@nxp.com, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org
-Subject: Re: [PATCH] regualtor: pfuze100: limit pfuze-support-disable-sw to
- pfuze{100,200}
-Message-ID: <20201110172721.GA49286@sirena.org.uk>
-References: <20201105114926.734553-1-sean@geanix.com>
+        id S1730184AbgKJR2T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 12:28:19 -0500
+Received: from cloudserver094114.home.pl ([79.96.170.134]:61634 "EHLO
+        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726152AbgKJR2S (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Nov 2020 12:28:18 -0500
+Received: from 89-64-88-129.dynamic.chello.pl (89.64.88.129) (HELO kreacher.localnet)
+ by serwer1319399.home.pl (79.96.170.134) with SMTP (IdeaSmtpServer 0.83.520)
+ id fda285157de01d86; Tue, 10 Nov 2020 18:28:16 +0100
+From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
+To:     Linux PM <linux-pm@vger.kernel.org>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Zhang Rui <rui.zhang@intel.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Doug Smythies <dsmythies@telus.net>
+Subject: [PATCH v3 4/4] cpufreq: intel_pstate: Take CPUFREQ_GOV_STRICT_TARGET into account
+Date:   Tue, 10 Nov 2020 18:27:40 +0100
+Message-ID: <10431634.ybq6RTg3ZS@kreacher>
+In-Reply-To: <11312387.r5AVKgp8zO@kreacher>
+References: <13269660.K2JYd4sGFX@kreacher> <11312387.r5AVKgp8zO@kreacher>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="vkogqOf2sHV7VnPd"
-Content-Disposition: inline
-In-Reply-To: <20201105114926.734553-1-sean@geanix.com>
-X-Cookie: Filmed before a live audience.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
---vkogqOf2sHV7VnPd
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Make intel_pstate take the new CPUFREQ_GOV_STRICT_TARGET governor
+flag into account when it operates in the passive mode with HWP
+enabled, so as to fix the "powersave" governor behavior in that
+case (currently, HWP is allowed to scale the performance all the
+way up to the policy max limit when the "powersave" governor is
+used, but it should be constrained to the policy min limit then).
 
-On Thu, Nov 05, 2020 at 12:49:26PM +0100, Sean Nyekjaer wrote:
-> Limit the fsl,pfuze-support-disable-sw to the pfuze100 and pfuze200
-> variants.
-> When enabling fsl,pfuze-support-disable-sw and using a pfuze3000 or
-> pfuze3001, the driver would choose pfuze100_sw_disable_regulator_ops
-> instead of the newly introduced and correct pfuze3000_sw_regulator_ops.
->=20
-> Fixes: 6f1cf5257acc ("regualtor: pfuze100: correct sw1a/sw2 on pfuze3000")
-> Cc: stable@vger.kernel.org
-> ---
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Acked-by: Viresh Kumar <viresh.kumar@linaro.org>
+---
+ drivers/cpufreq/intel_pstate.c |   16 +++++++++-------
+ 1 file changed, 9 insertions(+), 7 deletions(-)
 
-You've not provided a Signed-off-by for this so I can't do anything with
-it, please see Documentation/process/submitting-patches.rst for details
-on what this is and why it's important.
+Index: linux-pm/drivers/cpufreq/intel_pstate.c
+===================================================================
+--- linux-pm.orig/drivers/cpufreq/intel_pstate.c
++++ linux-pm/drivers/cpufreq/intel_pstate.c
+@@ -2527,7 +2527,7 @@ static void intel_cpufreq_trace(struct c
+ }
+ 
+ static void intel_cpufreq_adjust_hwp(struct cpudata *cpu, u32 target_pstate,
+-				     bool fast_switch)
++				     bool strict, bool fast_switch)
+ {
+ 	u64 prev = READ_ONCE(cpu->hwp_req_cached), value = prev;
+ 
+@@ -2539,7 +2539,7 @@ static void intel_cpufreq_adjust_hwp(str
+ 	 * field in it, so opportunistically update the max too if needed.
+ 	 */
+ 	value &= ~HWP_MAX_PERF(~0L);
+-	value |= HWP_MAX_PERF(cpu->max_perf_ratio);
++	value |= HWP_MAX_PERF(strict ? target_pstate : cpu->max_perf_ratio);
+ 
+ 	if (value == prev)
+ 		return;
+@@ -2562,14 +2562,16 @@ static void intel_cpufreq_adjust_perf_ct
+ 			      pstate_funcs.get_val(cpu, target_pstate));
+ }
+ 
+-static int intel_cpufreq_update_pstate(struct cpudata *cpu, int target_pstate,
+-				       bool fast_switch)
++static int intel_cpufreq_update_pstate(struct cpufreq_policy *policy,
++				       int target_pstate, bool fast_switch)
+ {
++	struct cpudata *cpu = all_cpu_data[policy->cpu];
+ 	int old_pstate = cpu->pstate.current_pstate;
+ 
+ 	target_pstate = intel_pstate_prepare_request(cpu, target_pstate);
+ 	if (hwp_active) {
+-		intel_cpufreq_adjust_hwp(cpu, target_pstate, fast_switch);
++		intel_cpufreq_adjust_hwp(cpu, target_pstate,
++					 policy->strict_target, fast_switch);
+ 		cpu->pstate.current_pstate = target_pstate;
+ 	} else if (target_pstate != old_pstate) {
+ 		intel_cpufreq_adjust_perf_ctl(cpu, target_pstate, fast_switch);
+@@ -2609,7 +2611,7 @@ static int intel_cpufreq_target(struct c
+ 		break;
+ 	}
+ 
+-	target_pstate = intel_cpufreq_update_pstate(cpu, target_pstate, false);
++	target_pstate = intel_cpufreq_update_pstate(policy, target_pstate, false);
+ 
+ 	freqs.new = target_pstate * cpu->pstate.scaling;
+ 
+@@ -2628,7 +2630,7 @@ static unsigned int intel_cpufreq_fast_s
+ 
+ 	target_pstate = DIV_ROUND_UP(target_freq, cpu->pstate.scaling);
+ 
+-	target_pstate = intel_cpufreq_update_pstate(cpu, target_pstate, true);
++	target_pstate = intel_cpufreq_update_pstate(policy, target_pstate, true);
+ 
+ 	return target_pstate * cpu->pstate.scaling;
+ }
 
---vkogqOf2sHV7VnPd
-Content-Type: application/pgp-signature; name="signature.asc"
 
------BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl+qzXkACgkQJNaLcl1U
-h9BN8Af/ZOXBrv35z3PfUXA046OtEj86hc8nm8zaCT3pUFLreFjoN5v/vScxOfLn
-ud3sMlFRA04ypHa9Y2hl35OGdrOGotsVl5pFagkjS7sSiuakGCY5IXifWwGy5DCb
-FHjmxJ+BfF624nbYdENmwZkEM1nsf5qHJo+0YBVYio9sKF5DYl7oKfkcT8BcfUvs
-XWHAUPBWj5LiJKPdm8bdE8h2B3T5d2W9xJeWc9XngjKixtM0VuFbJxxPSN77AovT
-ZD9yywg/rzjmaLMWcLYo2wZhrDtBqAhKPW5NTyrd8ltuz7cmZpAxh9NCLWIGonjC
-yMmQc3K4Na/Rv/1SUIdKyrfgbArs8w==
-=VNle
------END PGP SIGNATURE-----
-
---vkogqOf2sHV7VnPd--
