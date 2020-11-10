@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A43782ADDE6
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 19:13:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F148F2ADDEF
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 19:15:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731147AbgKJSNF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 13:13:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39128 "EHLO
+        id S1730854AbgKJSPG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 13:15:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39134 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731052AbgKJSND (ORCPT
+        with ESMTP id S1731221AbgKJSNG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 13:13:03 -0500
-Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9BC5C0613CF
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 10:13:03 -0800 (PST)
-Received: by mail-pg1-x52a.google.com with SMTP id i26so10919149pgl.5
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 10:13:03 -0800 (PST)
+        Tue, 10 Nov 2020 13:13:06 -0500
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B8FAC0613CF
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 10:13:06 -0800 (PST)
+Received: by mail-pf1-x443.google.com with SMTP id c20so12159212pfr.8
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 10:13:06 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=L/nTuHNenKI3mByfAmKMfGl5XsKGSrafuSBjeTgSoyg=;
-        b=IW9ttFO9e6hx5dU8vtwmKHMgFGrf2wc3Frkmon8dAAoTdHNJrxrbbKScyAWE2e0mJ1
-         EU8pheNXLzIIXe/ThlR0xFVbs1CRK6da4/qT1Dp0s8rh8wQxmpVlT9PArNT4BWjgIC6x
-         NIeTwBU14tyFWpC/jpaNg9IVixusJptWjug2HO+amO8SVLsdNEvBMJBPKdChz4Av9R58
-         9Hh/VZi8t8dhuBOoqLw7Va3nnLdWO0Edh6Z/NP1bXUit5fXAnM+WjrXd0ndYaIsm+l32
-         QsyOufxigN1PzwbTcA7+7aI6RtSh6ZtemNcE1ZYen8cJ9R/rEkb2ELWHt+YNq+zvwMCA
-         pPaQ==
+        bh=w/5/DKL41ubRzJ/0MsKC6N7liZIas0t4NHg8fh0y8+o=;
+        b=NAfJXPjiMWTtwfhbG9naf/w6U8KyJ/t848F3Iw4AZzgF25FMqWojzAYfNRgl/xGUvP
+         Vy0e2dzmt51qvj7ISeTPzk/djTw0OtsDeUvuJ/FjjAqGgo75RHrMa/aDgcZIsbnOyLQy
+         ayMyu8SRR0c9e/DBI4GaITPL9fYFSQrCI86oXXz9EeP+6ViYuwf078Pc9mSu1fP0gtz4
+         sHu585Amit/hGacdaRBeaxNgP/uQTuX242VUcKTwKEobSzzrZ6I1D9zBCTsHSFGdDGe2
+         8Lm8iyCSHzcbAXmW/vKK71mVL1ddwHn2DpTgEidkKeFqJQl1gL/urfGOPPLa/Vz0OHtT
+         jbsg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=L/nTuHNenKI3mByfAmKMfGl5XsKGSrafuSBjeTgSoyg=;
-        b=SC2ixPLw6PrDCEIAK7ZlnfWvkSh1b8BhoBEnVMtdzCbgpA3nSxC6kugVdT6l1gWQwe
-         WEaqOLNxxEQTdyQNHl+oVGMwAIs1CW1mquznVoPLm3C+RfarQ1kWN+1QF6txvA0N05y+
-         pvl9L399EpZ68XBHLTu41hJZnydPUburinrDZI9Z3GDZwqAsUEm4UOE1yLYYvg34SCLE
-         ixzXid98mYOlZNJ+tpz9vC2qnbmtEId0Jqu3JV4IN59qGIFo1TY2+oPUo/Og8l9PvMv0
-         jlh1ntMy35c9gfTspE+Nt8e0E465AXXJLYN6JuP8etvLpn+mczNnEJrmak9viBten3eG
-         DPaQ==
-X-Gm-Message-State: AOAM531gEanASIwuPIRe8GmcSlDJDyvQ3ja8lR4VA7hoaUT1sFq/R8B7
-        9F7AzEnY7+vZx6TWjhqv9qI=
-X-Google-Smtp-Source: ABdhPJzDLli+GB2R9J7uCGeYP1eOQbrUR08X6qU11SHG9RToER/J/I4Lnn3AhnuoDAntaaaywb0yOg==
-X-Received: by 2002:a17:90a:67c5:: with SMTP id g5mr368182pjm.13.1605031983399;
-        Tue, 10 Nov 2020 10:13:03 -0800 (PST)
+        bh=w/5/DKL41ubRzJ/0MsKC6N7liZIas0t4NHg8fh0y8+o=;
+        b=rON7cnCfjIGraUbd4MSNvQm234V1nZFTW+/vt3+SSJMouAAYIr7d0JtJnsSHN+Q8qt
+         JYO/6+TSN5RFhqMGQXXGpOJYiSvcqOY5zLD5m7gYMntGzY03nnfdV6gggqAZBALHmkW8
+         4D1sN5fBwiWKRfTH9gaoCrTsm+C3L24UXjgy2+X78DwZebyT9AUSaBqKNpCUN0DBTYbi
+         SbbE/idVBGGegzo+ws5Zu5dDZDuBUDGh/dp+DpoJDD81uioape52aSFJ21pJXyCY7D/K
+         GC0r1dlnTAaqaWphgSidSV1hjGqnlsOK5VbvgZCxZh/KqgvFK/U88JlT5TNRgvTsMtq3
+         Ftew==
+X-Gm-Message-State: AOAM530KfUof6TUXCXwZHodbSPC1qrhKCAjPoiINnRS7Ak84uxS14gx1
+        g2J/wswYeSHnEugIBraBoq0=
+X-Google-Smtp-Source: ABdhPJydP5HwqAKtuGteJf/ZKsiG60bFFB9Tp0RZbC4lkxXDLuCnLD/ShKB+VaTHZbeimHfSdhuTnA==
+X-Received: by 2002:a17:90b:496:: with SMTP id bh22mr386015pjb.120.1605031985614;
+        Tue, 10 Nov 2020 10:13:05 -0800 (PST)
 Received: from localhost.localdomain (c-107-3-138-210.hsd1.ca.comcast.net. [107.3.138.210])
-        by smtp.gmail.com with ESMTPSA id k5sm4157369pjj.37.2020.11.10.10.13.01
+        by smtp.gmail.com with ESMTPSA id k5sm4157369pjj.37.2020.11.10.10.13.03
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 10 Nov 2020 10:13:02 -0800 (PST)
+        Tue, 10 Nov 2020 10:13:04 -0800 (PST)
 From:   Yang Shi <shy828301@gmail.com>
 To:     mhocko@suse.com, ziy@nvidia.com, songliubraving@fb.com,
         mgorman@suse.de, jack@suse.cz, akpm@linux-foundation.org
 Cc:     shy828301@gmail.com, linux-mm@kvack.org,
         linux-kernel@vger.kernel.org
-Subject: [v2 PATCH 1/5] mm: truncate_complete_page is not existed anymore
-Date:   Tue, 10 Nov 2020 10:12:46 -0800
-Message-Id: <20201110181250.264394-2-shy828301@gmail.com>
+Subject: [v2 PATCH 2/5] mm: migrate: simplify the logic for handling permanent failure
+Date:   Tue, 10 Nov 2020 10:12:47 -0800
+Message-Id: <20201110181250.264394-3-shy828301@gmail.com>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20201110181250.264394-1-shy828301@gmail.com>
 References: <20201110181250.264394-1-shy828301@gmail.com>
@@ -65,44 +65,188 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The commit 9f4e41f4717832e34cca153ced62b4a1d7e26c0e ("mm: refactor
-truncate_complete_page()") refactored truncate_complete_page(), and it
-is not existed anymore, correct the comment in vmscan and migrate to avoid
-confusion.
+When unmap_and_move{_huge_page}() returns !-EAGAIN and !MIGRATEPAGE_SUCCESS,
+the page would be put back to LRU or proper list if it is non-LRU movable
+page.  But, the callers always call putback_movable_pages() to put the
+failed pages back later on, so it seems not very efficient to put every
+single page back immediately, and the code looks convoluted.
 
-Reviewed-by: Jan Kara <jack@suse.cz>
+Put the failed page on a separate list, then splice the list to migrate
+list when all pages are tried.  It is the caller's responsibility to
+call putback_movable_pages() to handle failures.  This also makes the
+code simpler and more readable.
+
+After the change the rules are:
+    * Success: non hugetlb page will be freed, hugetlb page will be put
+               back
+    * -EAGAIN: stay on the from list
+    * -ENOMEM: stay on the from list
+    * Other errno: put on ret_pages list then splice to from list
+
+The from list would be empty iff all pages are migrated successfully, it
+was not so before.  This has no impact to current existing callsites.
+
+Reviewed-by: Zi Yan <ziy@nvidia.com>
 Signed-off-by: Yang Shi <shy828301@gmail.com>
 ---
- mm/migrate.c | 2 +-
- mm/vmscan.c  | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ mm/migrate.c | 68 +++++++++++++++++++++++++++++-----------------------
+ 1 file changed, 38 insertions(+), 30 deletions(-)
 
 diff --git a/mm/migrate.c b/mm/migrate.c
-index 5ca5842df5db..8a2e7e19e27b 100644
+index 8a2e7e19e27b..d7167f7107bd 100644
 --- a/mm/migrate.c
 +++ b/mm/migrate.c
-@@ -1106,7 +1106,7 @@ static int __unmap_and_move(struct page *page, struct page *newpage,
- 	 * and treated as swapcache but it has no rmap yet.
- 	 * Calling try_to_unmap() against a page->mapping==NULL page will
- 	 * trigger a BUG.  So handle it here.
--	 * 2. An orphaned page (see truncate_complete_page) might have
-+	 * 2. An orphaned page (see truncate_cleanup_page) might have
- 	 * fs-private metadata. The page can be picked up due to memory
- 	 * offlining.  Everywhere else except page reclaim, the page is
- 	 * invisible to the vm, so the page can not be migrated.  So try to
-diff --git a/mm/vmscan.c b/mm/vmscan.c
-index 1b8f0e059767..165cca87edc8 100644
---- a/mm/vmscan.c
-+++ b/mm/vmscan.c
-@@ -1393,7 +1393,7 @@ static unsigned int shrink_page_list(struct list_head *page_list,
- 		 *
- 		 * Rarely, pages can have buffers and no ->mapping.  These are
- 		 * the pages which were not successfully invalidated in
--		 * truncate_complete_page().  We try to drop those buffers here
-+		 * truncate_cleanup_page().  We try to drop those buffers here
- 		 * and if that worked, and the page is no longer mapped into
- 		 * process address space (page_count == 1) it can be freed.
- 		 * Otherwise, leave the page on the LRU so it is swappable.
+@@ -1169,7 +1169,8 @@ static int unmap_and_move(new_page_t get_new_page,
+ 				   free_page_t put_new_page,
+ 				   unsigned long private, struct page *page,
+ 				   int force, enum migrate_mode mode,
+-				   enum migrate_reason reason)
++				   enum migrate_reason reason,
++				   struct list_head *ret)
+ {
+ 	int rc = MIGRATEPAGE_SUCCESS;
+ 	struct page *newpage = NULL;
+@@ -1206,7 +1207,14 @@ static int unmap_and_move(new_page_t get_new_page,
+ 		 * migrated will have kept its references and be restored.
+ 		 */
+ 		list_del(&page->lru);
++	}
+ 
++	/*
++	 * If migration is successful, releases reference grabbed during
++	 * isolation. Otherwise, restore the page to right list unless
++	 * we want to retry.
++	 */
++	if (rc == MIGRATEPAGE_SUCCESS) {
+ 		/*
+ 		 * Compaction can migrate also non-LRU pages which are
+ 		 * not accounted to NR_ISOLATED_*. They can be recognized
+@@ -1215,35 +1223,16 @@ static int unmap_and_move(new_page_t get_new_page,
+ 		if (likely(!__PageMovable(page)))
+ 			mod_node_page_state(page_pgdat(page), NR_ISOLATED_ANON +
+ 					page_is_file_lru(page), -thp_nr_pages(page));
+-	}
+ 
+-	/*
+-	 * If migration is successful, releases reference grabbed during
+-	 * isolation. Otherwise, restore the page to right list unless
+-	 * we want to retry.
+-	 */
+-	if (rc == MIGRATEPAGE_SUCCESS) {
+ 		if (reason != MR_MEMORY_FAILURE)
+ 			/*
+ 			 * We release the page in page_handle_poison.
+ 			 */
+ 			put_page(page);
+ 	} else {
+-		if (rc != -EAGAIN) {
+-			if (likely(!__PageMovable(page))) {
+-				putback_lru_page(page);
+-				goto put_new;
+-			}
++		if (rc != -EAGAIN)
++			list_add_tail(&page->lru, ret);
+ 
+-			lock_page(page);
+-			if (PageMovable(page))
+-				putback_movable_page(page);
+-			else
+-				__ClearPageIsolated(page);
+-			unlock_page(page);
+-			put_page(page);
+-		}
+-put_new:
+ 		if (put_new_page)
+ 			put_new_page(newpage, private);
+ 		else
+@@ -1274,7 +1263,8 @@ static int unmap_and_move(new_page_t get_new_page,
+ static int unmap_and_move_huge_page(new_page_t get_new_page,
+ 				free_page_t put_new_page, unsigned long private,
+ 				struct page *hpage, int force,
+-				enum migrate_mode mode, int reason)
++				enum migrate_mode mode, int reason,
++				struct list_head *ret)
+ {
+ 	int rc = -EAGAIN;
+ 	int page_was_mapped = 0;
+@@ -1290,7 +1280,7 @@ static int unmap_and_move_huge_page(new_page_t get_new_page,
+ 	 * kicking migration.
+ 	 */
+ 	if (!hugepage_migration_supported(page_hstate(hpage))) {
+-		putback_active_hugepage(hpage);
++		list_move_tail(&hpage->lru, ret);
+ 		return -ENOSYS;
+ 	}
+ 
+@@ -1372,8 +1362,10 @@ static int unmap_and_move_huge_page(new_page_t get_new_page,
+ out_unlock:
+ 	unlock_page(hpage);
+ out:
+-	if (rc != -EAGAIN)
++	if (rc == MIGRATEPAGE_SUCCESS)
+ 		putback_active_hugepage(hpage);
++	else if (rc != -EAGAIN && rc != MIGRATEPAGE_SUCCESS)
++		list_move_tail(&hpage->lru, ret);
+ 
+ 	/*
+ 	 * If migration was not successful and there's a freeing callback, use
+@@ -1404,8 +1396,8 @@ static int unmap_and_move_huge_page(new_page_t get_new_page,
+  *
+  * The function returns after 10 attempts or if no pages are movable any more
+  * because the list has become empty or no retryable pages exist any more.
+- * The caller should call putback_movable_pages() to return pages to the LRU
+- * or free list only if ret != 0.
++ * It is caller's responsibility to call putback_movable_pages() to return pages
++ * to the LRU or free list only if ret != 0.
+  *
+  * Returns the number of pages that were not migrated, or an error code.
+  */
+@@ -1426,6 +1418,7 @@ int migrate_pages(struct list_head *from, new_page_t get_new_page,
+ 	struct page *page2;
+ 	int swapwrite = current->flags & PF_SWAPWRITE;
+ 	int rc, nr_subpages;
++	LIST_HEAD(ret_pages);
+ 
+ 	if (!swapwrite)
+ 		current->flags |= PF_SWAPWRITE;
+@@ -1448,12 +1441,21 @@ int migrate_pages(struct list_head *from, new_page_t get_new_page,
+ 			if (PageHuge(page))
+ 				rc = unmap_and_move_huge_page(get_new_page,
+ 						put_new_page, private, page,
+-						pass > 2, mode, reason);
++						pass > 2, mode, reason,
++						&ret_pages);
+ 			else
+ 				rc = unmap_and_move(get_new_page, put_new_page,
+ 						private, page, pass > 2, mode,
+-						reason);
+-
++						reason, &ret_pages);
++			/*
++			 * The rules are:
++			 *	Success: non hugetlb page will be freed, hugetlb
++			 *		 page will be put back
++			 *	-EAGAIN: stay on the from list
++			 *	-ENOMEM: stay on the from list
++			 *	Other errno: put on ret_pages list then splice to
++			 *		     from list
++			 */
+ 			switch(rc) {
+ 			case -ENOMEM:
+ 				/*
+@@ -1519,6 +1521,12 @@ int migrate_pages(struct list_head *from, new_page_t get_new_page,
+ 	nr_thp_failed += thp_retry;
+ 	rc = nr_failed;
+ out:
++	/*
++	 * Put the permanent failure page back to migration list, they
++	 * will be put back to the right list by the caller.
++	 */
++	list_splice(&ret_pages, from);
++
+ 	count_vm_events(PGMIGRATE_SUCCESS, nr_succeeded);
+ 	count_vm_events(PGMIGRATE_FAIL, nr_failed);
+ 	count_vm_events(THP_MIGRATION_SUCCESS, nr_thp_succeeded);
 -- 
 2.26.2
 
