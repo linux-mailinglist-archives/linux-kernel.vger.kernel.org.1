@@ -2,114 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21CDD2ADEA7
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 19:45:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5477C2ADEB2
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 19:47:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731345AbgKJSp2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 13:45:28 -0500
-Received: from mx2.suse.de ([195.135.220.15]:49622 "EHLO mx2.suse.de"
+        id S1731492AbgKJSrA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 13:47:00 -0500
+Received: from z5.mailgun.us ([104.130.96.5]:42272 "EHLO z5.mailgun.us"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726307AbgKJSp2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 13:45:28 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 8ABCCABD1;
-        Tue, 10 Nov 2020 18:45:26 +0000 (UTC)
-Message-ID: <1605033925.14855.15.camel@suse.cz>
-Subject: Re: [PATCH 1/3] x86, sched: Calculate frequency invariance for AMD
- systems
-From:   Giovanni Gherdovich <ggherdovich@suse.cz>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Borislav Petkov <bp@alien8.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Len Brown <lenb@kernel.org>,
-        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Jon Grimm <Jon.Grimm@amd.com>,
-        Nathan Fontenot <Nathan.Fontenot@amd.com>,
-        Yazen Ghannam <Yazen.Ghannam@amd.com>,
-        Thomas Lendacky <Thomas.Lendacky@amd.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Pu Wen <puwen@hygon.cn>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Doug Smythies <dsmythies@telus.net>, x86@kernel.org,
-        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-acpi@vger.kernel.org
-Date:   Tue, 10 Nov 2020 19:45:25 +0100
-In-Reply-To: <20201110094956.GZ2594@hirez.programming.kicks-ass.net>
-References: <20201110083936.31994-1-ggherdovich@suse.cz>
-         <20201110083936.31994-2-ggherdovich@suse.cz>
-         <20201110094956.GZ2594@hirez.programming.kicks-ass.net>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.26.6 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+        id S1731373AbgKJSq7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Nov 2020 13:46:59 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1605034019; h=In-Reply-To: Content-Type: MIME-Version:
+ References: Message-ID: Subject: Cc: To: From: Date: Sender;
+ bh=IZO6rnh8ZWoFV5rz+v+qH/+fcVcTytNYpXi3s4eL7GM=; b=kE1QMUYg1HD0upNIrV+PIj4SaYnvemu+re+Wy6xzVQn4DfVl45E+0HLZLyQe/9CHcgO8OZ6S
+ BDpK7bj990TuBrxGXU/UTqUYfDeVe1lFNIM76Lyja4e4JeO6JOW2ZqIUpTYu51dblUNTUE3w
+ 0HLF4HfoK2cOyEbKw2Db19SA+Ro=
+X-Mailgun-Sending-Ip: 104.130.96.5
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n05.prod.us-west-2.postgun.com with SMTP id
+ 5faadff1e9dd187f53413ff1 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 10 Nov 2020 18:46:09
+ GMT
+Sender: jcrouse=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id CC7E2C43387; Tue, 10 Nov 2020 18:46:09 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from jcrouse1-lnx.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: jcrouse)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id C00BEC433C6;
+        Tue, 10 Nov 2020 18:46:07 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org C00BEC433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=jcrouse@codeaurora.org
+Date:   Tue, 10 Nov 2020 11:46:04 -0700
+From:   Jordan Crouse <jcrouse@codeaurora.org>
+To:     Rob Clark <robdclark@gmail.com>
+Cc:     dri-devel@lists.freedesktop.org,
+        Rob Clark <robdclark@chromium.org>,
+        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Jonathan Marek <jonathan@marek.ca>,
+        Sharat Masetty <smasetty@codeaurora.org>,
+        Eric Anholt <eric@anholt.net>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
+        <linux-arm-msm@vger.kernel.org>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
+        <freedreno@lists.freedesktop.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 1/2] drm/msm/a6xx: Clear shadow on suspend
+Message-ID: <20201110184604.GA2661@jcrouse1-lnx.qualcomm.com>
+Mail-Followup-To: Rob Clark <robdclark@gmail.com>,
+        dri-devel@lists.freedesktop.org, Rob Clark <robdclark@chromium.org>,
+        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>, Jonathan Marek <jonathan@marek.ca>,
+        Sharat Masetty <smasetty@codeaurora.org>,
+        Eric Anholt <eric@anholt.net>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" <linux-arm-msm@vger.kernel.org>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" <freedreno@lists.freedesktop.org>,
+        open list <linux-kernel@vger.kernel.org>
+References: <20201110184401.282982-1-robdclark@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201110184401.282982-1-robdclark@gmail.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2020-11-10 at 10:49 +0100, Peter Zijlstra wrote:
-> On Tue, Nov 10, 2020 at 09:39:34AM +0100, Giovanni Gherdovich wrote:
+On Tue, Nov 10, 2020 at 10:43:59AM -0800, Rob Clark wrote:
+> From: Rob Clark <robdclark@chromium.org>
 > 
-> > +#ifdef CONFIG_ACPI
-> > +void init_freq_invariance_cppc(void)
-> > +{
-> > +	init_freq_invariance(false, true);
-> > +
-> > +	if (static_branch_likely(&arch_scale_freq_key))
-> > +		on_each_cpu(init_counter_refs, NULL, 0);
-> > +}
-> > +#endif
-> > +
-> >  static void disable_freq_invariance_workfn(struct work_struct *work)
-> >  {
-> >  	static_branch_disable(&arch_scale_freq_key);
-> > diff --git a/drivers/acpi/cppc_acpi.c b/drivers/acpi/cppc_acpi.c
-> > index 7a99b19bb893..e1969ff876ff 100644
-> > --- a/drivers/acpi/cppc_acpi.c
-> > +++ b/drivers/acpi/cppc_acpi.c
-> > @@ -39,6 +39,7 @@
-> >  #include <linux/ktime.h>
-> >  #include <linux/rwsem.h>
-> >  #include <linux/wait.h>
-> > +#include <linux/topology.h>
-> >  
-> >  #include <acpi/cppc_acpi.h>
-> >  
-> > @@ -850,6 +851,10 @@ int acpi_cppc_processor_probe(struct acpi_processor *pr)
-> >  		goto out_free;
-> >  	}
-> >  
-> > +	/* Only needed once, so call on CPU0 */
-> > +	if (pr->id == 0)
-> > +		init_freq_invariance_cppc();
-> > +
+> Clear the shadow rptr on suspend.  Otherwise, when we resume, we can
+> have a stale value until CP_WHERE_AM_I executes.  If we suspend near
+> the ringbuffer wraparound point, this can lead to a chicken/egg
+> situation where we are waiting for ringbuffer space to write the
+> CP_WHERE_AM_I (or CP_INIT) packet, because we mistakenly believe that
+> the ringbuffer is full (due to stale rptr value in the shadow).
 > 
-> This seems broken vs lovely things like booting with maxcpus= or
-> physical hotplug where you add logical CPUs.
-
-Right.
-
+> Fixes errors like:
 > 
-> Given the latter hunk limits it to one invocation (is phys_id 0
-> guaranteed to exist? Can a BIOS monkey screw us over?) only to then call
-> it on all CPUs, shouldn't this be changed to let
-> acpi_cppc_processor_probe() call it for every CPU that comes online?
+>   [drm:adreno_wait_ring [msm]] *ERROR* timeout waiting for space in ringbuffer 0
+> 
+> in the resume path.
+> 
+> Fixes: d3a569fccfa0 ("drm/msm: a6xx: Use WHERE_AM_I for eligible targets")
+> Signed-off-by: Rob Clark <robdclark@chromium.org>
 
-I sent a V2 that basically does that, it just makes sure that
-"init_freq_invariance(secondary=false)" is called only once (the first CPU
-that gets there), and init_counter_refs() instead is called by all.
+Reviewed-by: Jordan Crouse <jcrouse@codeaurora.org>
 
-Which makes me think, I could make better use of the "secondary" argument
-to init_freq_invariance() and trim a couple of lines from
-init_freq_invariance_cppc().
+> ---
+>  drivers/gpu/drm/msm/adreno/a6xx_gpu.c | 11 ++++++++++-
+>  1 file changed, 10 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/gpu/drm/msm/adreno/a6xx_gpu.c b/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
+> index 2f236aadfa9c..fcb0aabbc985 100644
+> --- a/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
+> +++ b/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
+> @@ -1043,12 +1043,21 @@ static int a6xx_pm_suspend(struct msm_gpu *gpu)
+>  {
+>  	struct adreno_gpu *adreno_gpu = to_adreno_gpu(gpu);
+>  	struct a6xx_gpu *a6xx_gpu = to_a6xx_gpu(adreno_gpu);
+> +	int i, ret;
+>  
+>  	trace_msm_gpu_suspend(0);
+>  
+>  	devfreq_suspend_device(gpu->devfreq.devfreq);
+>  
+> -	return a6xx_gmu_stop(a6xx_gpu);
+> +	ret = a6xx_gmu_stop(a6xx_gpu);
+> +	if (ret)
+> +		return ret;
+> +
+> +	if (adreno_gpu->base.hw_apriv || a6xx_gpu->has_whereami)
+> +		for (i = 0; i < gpu->nr_rings; i++)
+> +			a6xx_gpu->shadow[i] = 0;
+> +
+> +	return 0;
+>  }
+>  
+>  static int a6xx_get_timestamp(struct msm_gpu *gpu, uint64_t *value)
+> -- 
+> 2.28.0
+> 
 
-
-Giovanni
-
-
-
-
-
+-- 
+The Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
+a Linux Foundation Collaborative Project
