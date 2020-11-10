@@ -2,398 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 629222ADFA7
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 20:33:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C1E712ADF9A
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 20:33:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732836AbgKJTdV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 14:33:21 -0500
-Received: from mailout2.w1.samsung.com ([210.118.77.12]:57406 "EHLO
-        mailout2.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732783AbgKJTdR (ORCPT
+        id S1732752AbgKJTdA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 14:33:00 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:31275 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1732722AbgKJTc4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 14:33:17 -0500
-Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
-        by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20201110193305euoutp026e421a873158bd58cba488ed86794766~GPHPXIm3o1162011620euoutp02Y
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 19:33:05 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20201110193305euoutp026e421a873158bd58cba488ed86794766~GPHPXIm3o1162011620euoutp02Y
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1605036785;
-        bh=7x3FDqNd6yPXfLPVkvxpFZBwfx5uRBDKoJCZsN7uMCo=;
-        h=From:To:Cc:Subject:Date:References:From;
-        b=KsLUF6DZ/ntqH/mrif1Oq16hKKj4BpAolXyF4FaAC/pmEHkd1PB9QoTgVvMxhRA12
-         pKGRBBPZyzspCSGzwWxevFCfSlKLxL7xhDkCaupsw3kYOf9FLNfgpiAexegD+44Yph
-         ou9V3NAIgkh3XpbTkyNyJBEcGolb7OiIe5uQA5LE=
-Received: from eusmges3new.samsung.com (unknown [203.254.199.245]) by
-        eucas1p2.samsung.com (KnoxPortal) with ESMTP id
-        20201110193254eucas1p2bdc2cc70408736e36a729cb03e2a8921~GPHFaVMDH2267922679eucas1p2A;
-        Tue, 10 Nov 2020 19:32:54 +0000 (GMT)
-Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
-        eusmges3new.samsung.com (EUCPMTA) with SMTP id EB.36.06318.6EAEAAF5; Tue, 10
-        Nov 2020 19:32:54 +0000 (GMT)
-Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
-        eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
-        20201110193254eucas1p22e954946d03c07995c73a019e5593ba0~GPHE001x61074010740eucas1p2E;
-        Tue, 10 Nov 2020 19:32:54 +0000 (GMT)
-Received: from eusmgms1.samsung.com (unknown [182.198.249.179]) by
-        eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20201110193254eusmtrp1717507b811654c1b7837bbb628fc0c62~GPHE0Gtsn2264122641eusmtrp13;
-        Tue, 10 Nov 2020 19:32:54 +0000 (GMT)
-X-AuditID: cbfec7f5-371ff700000018ae-b8-5faaeae62949
-Received: from eusmtip2.samsung.com ( [203.254.199.222]) by
-        eusmgms1.samsung.com (EUCPMTA) with SMTP id B9.8A.06314.5EAEAAF5; Tue, 10
-        Nov 2020 19:32:54 +0000 (GMT)
-Received: from AMDC3061.digital.local (unknown [106.120.51.75]) by
-        eusmtip2.samsung.com (KnoxPortal) with ESMTPA id
-        20201110193253eusmtip24871e6f4d8ba4e0d277fdc21a381f25c~GPHETCJnf2622526225eusmtip2N;
-        Tue, 10 Nov 2020 19:32:53 +0000 (GMT)
-From:   Sylwester Nawrocki <s.nawrocki@samsung.com>
-To:     linux-clk@vger.kernel.org, tomasz.figa@gmail.com,
-        cw00.choi@samsung.com, krzk@kernel.org, m.szyprowski@samsung.com
-Cc:     sboyd@kernel.org, mturquette@baylibre.com,
-        b.zolnierkie@samsung.com, linux-kernel@vger.kernel.org,
-        linux-samsung-soc@vger.kernel.org, s.nawrocki@samsung.com
-Subject: [PATCH v4] clk: samsung: Prevent potential endless loop in the PLL
- set_rate ops
-Date:   Tue, 10 Nov 2020 20:32:26 +0100
-Message-Id: <20201110193226.20681-1-s.nawrocki@samsung.com>
-X-Mailer: git-send-email 2.17.1
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFmpkleLIzCtJLcpLzFFi42LZduzned1nr1bFG5xs0rDYOGM9q8X1L89Z
-        Lc6f38Bu8bHnHqvF5V1z2CxmnN/HZLH2yF12i4unXC0Ov2lntfh3bSOLxapdfxgduD3e32hl
-        99g56y67x6ZVnWwefVtWMXp83iQXwBrFZZOSmpNZllqkb5fAlbFo3VHWggb/iu/vixsYpzl0
-        MXJySAiYSMx5spW5i5GLQ0hgBaPEuesPWSCcL4wSXVsWMEI4nxklPjSfYO9i5ABrOf6yFCK+
-        nFHiwO4jjHAdW38fYgOZyyZgKNF7tI8RxBYRqJA4fekCO0gRs8ASRontyzYygkwSFoiS6G5T
-        AKlhEVCVmNS5EKyeV8Ba4tfPM0wQ98lLrN5wAOw+CYHPbBIvDn1kgUi4SHy9dQ2qSFji1fEt
-        7BC2jMTpyT0sEA3NjBI9u2+zQzgTGCXuH1/ACFFlLXHn3C82kCuYBTQl1u/Shwg7Snz6f5sJ
-        4k0+iRtvBUHCzEDmpG3TmSHCvBIdbUIQ1SoSv1dNhzpBSqL7yX+o0zwkTh35B2YLCcRKPHp5
-        gW0Co9wshF0LGBlXMYqnlhbnpqcWG+ellusVJ+YWl+al6yXn525iBCaM0/+Of93BuO9P0iFG
-        AQ5GJR7eA3+WxQuxJpYVV+YeYpTgYFYS4XU6ezpOiDclsbIqtSg/vqg0J7X4EKM0B4uSOK/x
-        opexQgLpiSWp2ampBalFMFkmDk6pBsbjgh6X13EJxEn6GRy+cr75zh6j86eWsskZJuvsDDnW
-        da6DxWVpuWiqZFMlh2xaxY71JWUuNySUDmWHP5k971ipgtjlCPss9iW+MxdfrC/tbMtc7Va0
-        8/CZvftnTLjOy/BnXdW9dA1BwczLNgI2y2v67zRekpxw/95aeedajuRF8kpd/aU5K5RYijMS
-        DbWYi4oTAUbfsokUAwAA
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrMLMWRmVeSWpSXmKPExsVy+t/xe7rPXq2KN3h6nsli44z1rBbXvzxn
-        tTh/fgO7xceee6wWl3fNYbOYcX4fk8XaI3fZLS6ecrU4/Kad1eLftY0sFqt2/WF04PZ4f6OV
-        3WPnrLvsHptWdbJ59G1ZxejxeZNcAGuUnk1RfmlJqkJGfnGJrVK0oYWRnqGlhZ6RiaWeobF5
-        rJWRqZK+nU1Kak5mWWqRvl2CXsaidUdZCxr8K76/L25gnObQxcjBISFgInH8ZWkXIxeHkMBS
-        RokLn7+wQsSlJOa3KHUxcgKZwhJ/rnWxgdhCAp8YJV626YPYbAKGEr1H+xhBbBGBOokTy6ew
-        g9jMAqsYJc7c9QEZIywQIXH7fRpImEVAVWJS50Kwcl4Ba4lfP88wQYyXl1i94QDzBEaeBYwM
-        qxhFUkuLc9Nziw31ihNzi0vz0vWS83M3MQIDdNuxn5t3MF7aGHyIUYCDUYmH98CfZfFCrIll
-        xZW5hxglOJiVRHidzp6OE+JNSaysSi3Kjy8qzUktPsRoCrR8IrOUaHI+MHrySuINTQ3NLSwN
-        zY3Njc0slMR5OwQOxggJpCeWpGanphakFsH0MXFwSjUw5s7iOpy8PLREjG/jdIcoi+Brlfy7
-        AlepBuzblX9BXcjb1p9fn23l2Ssdc34eX8jn2xU5tUn7h8vaiT9WJ58rF3U2nfJNlMlG6cbJ
-        kAkPPp96cfTGz7RjYZzdP27ulnp4k7Hb66USgz6nzu4NmpbfCrubYmYnbDh5IUblY3HsCdtP
-        p5vZDs2ercRSnJFoqMVcVJwIAGTXd0dmAgAA
-X-CMS-MailID: 20201110193254eucas1p22e954946d03c07995c73a019e5593ba0
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-RootMTR: 20201110193254eucas1p22e954946d03c07995c73a019e5593ba0
-X-EPHeader: CA
-CMS-TYPE: 201P
-X-CMS-RootMailID: 20201110193254eucas1p22e954946d03c07995c73a019e5593ba0
-References: <CGME20201110193254eucas1p22e954946d03c07995c73a019e5593ba0@eucas1p2.samsung.com>
+        Tue, 10 Nov 2020 14:32:56 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1605036774;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=m4Ph1suYX4ben8sinoTI3mwXxIcZAzftReDT/Kw+gqs=;
+        b=dusbLTy0RMeVriT7gRaDs4QgWXsFDDwj1Bp3CaTYhLR5neHZWRmSb65PC8+BYy9YoTRBJ7
+        tNsgRhyQg4J1SKY9P5rCUtpxqvG3Tuoxh3PLeakouZpBnYSd1qMpMVKYaCNf6UYZKGaB3D
+        wjJCl8XCgp7kc1qW/ZfkriVrdKXGNWY=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-200-SDgoVi_HO3GfYuNGMHgeGg-1; Tue, 10 Nov 2020 14:32:50 -0500
+X-MC-Unique: SDgoVi_HO3GfYuNGMHgeGg-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A9DA310082E0;
+        Tue, 10 Nov 2020 19:32:48 +0000 (UTC)
+Received: from t480s.redhat.com (ovpn-114-232.ams2.redhat.com [10.36.114.232])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id A86255B4A0;
+        Tue, 10 Nov 2020 19:32:41 +0000 (UTC)
+From:   David Hildenbrand <david@redhat.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     linux-mm@kvack.org, David Hildenbrand <david@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexander Potapenko <glider@google.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        Kees Cook <keescook@chromium.org>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Subject: [PATCH v1] mm/page_alloc: clear pages in alloc_contig_pages() with init_on_alloc=1 or __GFP_ZERO
+Date:   Tue, 10 Nov 2020 20:32:40 +0100
+Message-Id: <20201110193240.25401-1-david@redhat.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The PLL status polling loops in the set_rate callbacks of some PLLs
-have no timeout detection and may become endless loops when something
-goes wrong with the PLL.
+commit 6471384af2a6 ("mm: security: introduce init_on_alloc=1 and
+init_on_free=1 boot options") resulted with init_on_alloc=1 in all pages
+leaving the buddy via alloc_pages() and friends to be
+initialized/cleared/zeroed on allocation.
 
-For some PLLs there is already the ktime API based timeout detection,
-but it will not work in all conditions when .set_rate gets called.
-In particular, before the clocksource is initialized or when the
-timekeeping is suspended.
+However, the same logic is currently not applied to
+alloc_contig_pages(): allocated pages leaving the buddy aren't cleared
+with init_on_alloc=1 and init_on_free=0. Let's also properly clear
+pages on that allocation path and add support for __GFP_ZERO.
 
-This patch adds a common helper with the PLL status bit polling and
-timeout detection. For conditions where the timekeeping API should not
-be used a simple readl_relaxed/cpu_relax() busy loop is added with the
-iterations limit derived from measurements of readl_relaxed() execution
-time for various PLL types and Exynos SoCs variants.
+With this change, we will see double clearing of pages in some
+cases. One example are gigantic pages (either allocated via CMA, or
+allocated dynamically via alloc_contig_pages()) - which is the right
+thing to do (and to be optimized outside of the buddy in the callers) as
+discussed in:
+  https://lkml.kernel.org/r/20201019182853.7467-1-gpiccoli@canonical.com
 
-Actual PLL lock time depends on the P divider value, the VCO frequency
-and a constant PLL type specific LOCK_FACTOR and can be calculated as
+This change implies that with init_on_alloc=1
+- All CMA allocations will be cleared
+- Gigantic pages allocated via alloc_contig_pages() will be cleared
+- virtio-mem memory to be unplugged will be cleared. While this is
+  suboptimal, it's similar to memory balloon drivers handling, where
+  all pages to be inflated will get cleared as well.
 
- lock_time = Pdiv * LOCK_FACTOR / VCO_freq
-
-For the ktime API use cases a common timeout value of 20 ms is applied
-for all the PLLs with an assumption that maximum possible value of Pdiv
-is 64, maximum possible LOCK_FACTOR value is 3000 and minimum VCO
-frequency is 24 MHz.
-
-Signed-off-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: Alexander Potapenko <glider@google.com>
+Cc: Michal Hocko <mhocko@suse.com>
+Cc: Mike Kravetz <mike.kravetz@oracle.com>
+Cc: Vlastimil Babka <vbabka@suse.cz>
+Cc: Mike Rapoport <rppt@linux.ibm.com>
+Cc: Oscar Salvador <osalvador@suse.de>
+Cc: Kees Cook <keescook@chromium.org>
+Cc: Michael Ellerman <mpe@ellerman.id.au>
+Signed-off-by: David Hildenbrand <david@redhat.com>
 ---
-I'm not sure whether we actually need to implement precise timeouts,
-likely the simple busy loop case would be enough. AFAIK the PLL
-failures happen very rarely, mostly in early code development stage
-for given platform.
+ mm/page_alloc.c | 24 +++++++++++++++++++++---
+ 1 file changed, 21 insertions(+), 3 deletions(-)
 
-Changes since v3:
- - dropped udelay() from the PLL status bit polling loop as it didn't
-   work on arm64 at early boot time, before timekeeping was initialized,
- - use the timekeeping API in cases when it is already initialized and
-   not suspended,
- - use samsung_pll_lock_wait() also in samsung_pll3xxx_enable() function,
-   now all potential endless loops are removed.
----
- drivers/clk/samsung/clk-pll.c | 147 ++++++++++++++++++++----------------------
- 1 file changed, 71 insertions(+), 76 deletions(-)
-
-diff --git a/drivers/clk/samsung/clk-pll.c b/drivers/clk/samsung/clk-pll.c
-index ac70ad7..cefb57e 100644
---- a/drivers/clk/samsung/clk-pll.c
-+++ b/drivers/clk/samsung/clk-pll.c
-@@ -8,14 +8,17 @@
- 
- #include <linux/errno.h>
- #include <linux/hrtimer.h>
-+#include <linux/iopoll.h>
- #include <linux/delay.h>
- #include <linux/slab.h>
-+#include <linux/timekeeping.h>
- #include <linux/clk-provider.h>
- #include <linux/io.h>
- #include "clk.h"
- #include "clk-pll.h"
- 
--#define PLL_TIMEOUT_MS		10
-+#define PLL_TIMEOUT_US		20000U
-+#define PLL_TIMEOUT_LOOPS	1000000U
- 
- struct samsung_clk_pll {
- 	struct clk_hw		hw;
-@@ -63,6 +66,53 @@ static long samsung_pll_round_rate(struct clk_hw *hw,
- 	return rate_table[i - 1].rate;
+diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+index eed4f4075b3c..0361b119b74e 100644
+--- a/mm/page_alloc.c
++++ b/mm/page_alloc.c
+@@ -8453,6 +8453,19 @@ static int __alloc_contig_migrate_range(struct compact_control *cc,
+ 	return 0;
  }
  
-+static bool __early_timeout = true;
-+
-+static int __init samsung_pll_disable_early_timeout(void)
++static void __alloc_contig_clear_range(unsigned long start_pfn,
++				       unsigned long end_pfn)
 +{
-+	__early_timeout = false;
-+	return 0;
-+}
-+arch_initcall(samsung_pll_disable_early_timeout);
++	unsigned long pfn;
 +
-+/* Wait until the PLL is locked */
-+static int samsung_pll_lock_wait(struct samsung_clk_pll *pll,
-+				 unsigned int reg_mask)
-+{
-+	int i, ret;
-+	u32 val;
-+
-+	/*
-+	 * This function might be called when the timekeeping API can't be used
-+	 * to detect timeouts. One situation is when the clocksource is not yet
-+	 * initialized, another when the timekeeping is suspended. udelay() also
-+	 * cannot be used when the clocksource is not running on arm64, since
-+	 * the current timer is used as cycle counter. So a simple busy loop
-+	 * is used here in that special cases. The limit of iterations has been
-+	 * derived from experimental measurements of various PLLs on multiple
-+	 * Exynos SoC variants. Single register read time was usually in range
-+	 * 0.4...1.5 us, never less than 0.4 us.
-+	 */
-+	if (__early_timeout || timekeeping_suspended) {
-+		i = PLL_TIMEOUT_LOOPS;
-+		while (i-- > 0) {
-+			if (readl_relaxed(pll->con_reg) & reg_mask)
-+				return 0;
-+
-+			cpu_relax();
-+		}
-+		ret = -ETIMEDOUT;
-+	} else {
-+		ret = readl_relaxed_poll_timeout_atomic(pll->con_reg, val,
-+					val & reg_mask, 0, PLL_TIMEOUT_US);
++	for (pfn = start_pfn; pfn < end_pfn; pfn += MAX_ORDER_NR_PAGES) {
++		cond_resched();
++		kernel_init_free_pages(pfn_to_page(pfn),
++				       min_t(unsigned long, end_pfn - pfn,
++					     MAX_ORDER_NR_PAGES));
 +	}
-+
-+	if (ret < 0)
-+		pr_err("Could not lock PLL %s\n", clk_hw_get_name(&pll->hw));
-+
-+	return ret;
 +}
 +
- static int samsung_pll3xxx_enable(struct clk_hw *hw)
- {
- 	struct samsung_clk_pll *pll = to_clk_pll(hw);
-@@ -72,13 +122,7 @@ static int samsung_pll3xxx_enable(struct clk_hw *hw)
- 	tmp |= BIT(pll->enable_offs);
- 	writel_relaxed(tmp, pll->con_reg);
+ /**
+  * alloc_contig_range() -- tries to allocate given range of pages
+  * @start:	start PFN to allocate
+@@ -8461,7 +8474,8 @@ static int __alloc_contig_migrate_range(struct compact_control *cc,
+  *			#MIGRATE_MOVABLE or #MIGRATE_CMA).  All pageblocks
+  *			in range must have the same migratetype and it must
+  *			be either of the two.
+- * @gfp_mask:	GFP mask to use during compaction
++ * @gfp_mask:	GFP mask to use during compaction. __GFP_ZERO clears allocated
++ *		pages.
+  *
+  * The PFN range does not have to be pageblock or MAX_ORDER_NR_PAGES
+  * aligned.  The PFN range must belong to a single zone.
+@@ -8488,7 +8502,7 @@ int alloc_contig_range(unsigned long start, unsigned long end,
+ 		.mode = MIGRATE_SYNC,
+ 		.ignore_skip_hint = true,
+ 		.no_set_skip_hint = true,
+-		.gfp_mask = current_gfp_context(gfp_mask),
++		.gfp_mask = current_gfp_context(gfp_mask & ~__GFP_ZERO),
+ 		.alloc_contig = true,
+ 	};
+ 	INIT_LIST_HEAD(&cc.migratepages);
+@@ -8600,6 +8614,9 @@ int alloc_contig_range(unsigned long start, unsigned long end,
+ 	if (end != outer_end)
+ 		free_contig_range(end, outer_end - end);
  
--	/* wait lock time */
--	do {
--		cpu_relax();
--		tmp = readl_relaxed(pll->con_reg);
--	} while (!(tmp & BIT(pll->lock_offs)));
--
--	return 0;
-+	return samsung_pll_lock_wait(pll, BIT(pll->lock_offs));
- }
- 
- static void samsung_pll3xxx_disable(struct clk_hw *hw)
-@@ -240,13 +284,10 @@ static int samsung_pll35xx_set_rate(struct clk_hw *hw, unsigned long drate,
- 			(rate->sdiv << PLL35XX_SDIV_SHIFT);
- 	writel_relaxed(tmp, pll->con_reg);
- 
--	/* Wait until the PLL is locked if it is enabled. */
--	if (tmp & BIT(pll->enable_offs)) {
--		do {
--			cpu_relax();
--			tmp = readl_relaxed(pll->con_reg);
--		} while (!(tmp & BIT(pll->lock_offs)));
--	}
-+	/* Wait for PLL lock if the PLL is enabled */
-+	if (tmp & BIT(pll->enable_offs))
-+		return samsung_pll_lock_wait(pll, BIT(pll->lock_offs));
++	if (!want_init_on_free() && want_init_on_alloc(gfp_mask))
++		__alloc_contig_clear_range(start, end);
 +
- 	return 0;
- }
- 
-@@ -318,7 +359,7 @@ static int samsung_pll36xx_set_rate(struct clk_hw *hw, unsigned long drate,
- 					unsigned long parent_rate)
- {
- 	struct samsung_clk_pll *pll = to_clk_pll(hw);
--	u32 tmp, pll_con0, pll_con1;
-+	u32 pll_con0, pll_con1;
- 	const struct samsung_pll_rate_table *rate;
- 
- 	rate = samsung_get_pll_settings(pll, drate);
-@@ -356,13 +397,8 @@ static int samsung_pll36xx_set_rate(struct clk_hw *hw, unsigned long drate,
- 	pll_con1 |= rate->kdiv << PLL36XX_KDIV_SHIFT;
- 	writel_relaxed(pll_con1, pll->con_reg + 4);
- 
--	/* wait_lock_time */
--	if (pll_con0 & BIT(pll->enable_offs)) {
--		do {
--			cpu_relax();
--			tmp = readl_relaxed(pll->con_reg);
--		} while (!(tmp & BIT(pll->lock_offs)));
--	}
-+	if (pll_con0 & BIT(pll->enable_offs))
-+		return samsung_pll_lock_wait(pll, BIT(pll->lock_offs));
- 
- 	return 0;
- }
-@@ -437,7 +473,6 @@ static int samsung_pll45xx_set_rate(struct clk_hw *hw, unsigned long drate,
- 	struct samsung_clk_pll *pll = to_clk_pll(hw);
- 	const struct samsung_pll_rate_table *rate;
- 	u32 con0, con1;
--	ktime_t start;
- 
- 	/* Get required rate settings from table */
- 	rate = samsung_get_pll_settings(pll, drate);
-@@ -488,21 +523,8 @@ static int samsung_pll45xx_set_rate(struct clk_hw *hw, unsigned long drate,
- 	writel_relaxed(con1, pll->con_reg + 0x4);
- 	writel_relaxed(con0, pll->con_reg);
- 
--	/* Wait for locking. */
--	start = ktime_get();
--	while (!(readl_relaxed(pll->con_reg) & PLL45XX_LOCKED)) {
--		ktime_t delta = ktime_sub(ktime_get(), start);
--
--		if (ktime_to_ms(delta) > PLL_TIMEOUT_MS) {
--			pr_err("%s: could not lock PLL %s\n",
--					__func__, clk_hw_get_name(hw));
--			return -EFAULT;
--		}
--
--		cpu_relax();
--	}
--
--	return 0;
-+	/* Wait for PLL lock */
-+	return samsung_pll_lock_wait(pll, PLL45XX_LOCKED);
- }
- 
- static const struct clk_ops samsung_pll45xx_clk_ops = {
-@@ -588,7 +610,6 @@ static int samsung_pll46xx_set_rate(struct clk_hw *hw, unsigned long drate,
- 	struct samsung_clk_pll *pll = to_clk_pll(hw);
- 	const struct samsung_pll_rate_table *rate;
- 	u32 con0, con1, lock;
--	ktime_t start;
- 
- 	/* Get required rate settings from table */
- 	rate = samsung_get_pll_settings(pll, drate);
-@@ -647,21 +668,8 @@ static int samsung_pll46xx_set_rate(struct clk_hw *hw, unsigned long drate,
- 	writel_relaxed(con0, pll->con_reg);
- 	writel_relaxed(con1, pll->con_reg + 0x4);
- 
--	/* Wait for locking. */
--	start = ktime_get();
--	while (!(readl_relaxed(pll->con_reg) & PLL46XX_LOCKED)) {
--		ktime_t delta = ktime_sub(ktime_get(), start);
--
--		if (ktime_to_ms(delta) > PLL_TIMEOUT_MS) {
--			pr_err("%s: could not lock PLL %s\n",
--					__func__, clk_hw_get_name(hw));
--			return -EFAULT;
--		}
--
--		cpu_relax();
--	}
--
--	return 0;
-+	/* Wait for PLL lock */
-+	return samsung_pll_lock_wait(pll, PLL46XX_LOCKED);
- }
- 
- static const struct clk_ops samsung_pll46xx_clk_ops = {
-@@ -1035,14 +1043,9 @@ static int samsung_pll2550xx_set_rate(struct clk_hw *hw, unsigned long drate,
- 			(rate->sdiv << PLL2550XX_S_SHIFT);
- 	writel_relaxed(tmp, pll->con_reg);
- 
--	/* wait_lock_time */
--	do {
--		cpu_relax();
--		tmp = readl_relaxed(pll->con_reg);
--	} while (!(tmp & (PLL2550XX_LOCK_STAT_MASK
--			<< PLL2550XX_LOCK_STAT_SHIFT)));
--
--	return 0;
-+	/* Wait for PLL lock */
-+	return samsung_pll_lock_wait(pll,
-+			PLL2550XX_LOCK_STAT_MASK << PLL2550XX_LOCK_STAT_SHIFT);
- }
- 
- static const struct clk_ops samsung_pll2550xx_clk_ops = {
-@@ -1132,13 +1135,9 @@ static int samsung_pll2650x_set_rate(struct clk_hw *hw, unsigned long drate,
- 	con1 |= ((rate->kdiv & PLL2650X_K_MASK) << PLL2650X_K_SHIFT);
- 	writel_relaxed(con1, pll->con_reg + 4);
- 
--	do {
--		cpu_relax();
--		con0 = readl_relaxed(pll->con_reg);
--	} while (!(con0 & (PLL2650X_LOCK_STAT_MASK
--			<< PLL2650X_LOCK_STAT_SHIFT)));
--
--	return 0;
-+	/* Wait for PLL lock */
-+	return samsung_pll_lock_wait(pll,
-+			PLL2650X_LOCK_STAT_MASK << PLL2650X_LOCK_STAT_SHIFT);
- }
- 
- static const struct clk_ops samsung_pll2650x_clk_ops = {
-@@ -1196,7 +1195,7 @@ static int samsung_pll2650xx_set_rate(struct clk_hw *hw, unsigned long drate,
- 					unsigned long parent_rate)
- {
- 	struct samsung_clk_pll *pll = to_clk_pll(hw);
--	u32 tmp, pll_con0, pll_con2;
-+	u32 pll_con0, pll_con2;
- 	const struct samsung_pll_rate_table *rate;
- 
- 	rate = samsung_get_pll_settings(pll, drate);
-@@ -1229,11 +1228,7 @@ static int samsung_pll2650xx_set_rate(struct clk_hw *hw, unsigned long drate,
- 	writel_relaxed(pll_con0, pll->con_reg);
- 	writel_relaxed(pll_con2, pll->con_reg + 8);
- 
--	do {
--		tmp = readl_relaxed(pll->con_reg);
--	} while (!(tmp & (0x1 << PLL2650XX_PLL_LOCKTIME_SHIFT)));
--
--	return 0;
-+	return samsung_pll_lock_wait(pll, 0x1 << PLL2650XX_PLL_LOCKTIME_SHIFT);
- }
- 
- static const struct clk_ops samsung_pll2650xx_clk_ops = {
+ done:
+ 	undo_isolate_page_range(pfn_max_align_down(start),
+ 				pfn_max_align_up(end), migratetype);
+@@ -8653,7 +8670,8 @@ static bool zone_spans_last_pfn(const struct zone *zone,
+ /**
+  * alloc_contig_pages() -- tries to find and allocate contiguous range of pages
+  * @nr_pages:	Number of contiguous pages to allocate
+- * @gfp_mask:	GFP mask to limit search and used during compaction
++ * @gfp_mask:	GFP mask to limit search and used during compaction. __GFP_ZERO
++ *		clears allocated pages.
+  * @nid:	Target node
+  * @nodemask:	Mask for other possible nodes
+  *
 -- 
-2.7.4
+2.26.2
 
