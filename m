@@ -2,38 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 69F7F2ACC5D
+	by mail.lfdr.de (Postfix) with ESMTP id DEE922ACC60
 	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 04:55:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732847AbgKJDyy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 22:54:54 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55916 "EHLO mail.kernel.org"
+        id S1732927AbgKJDy5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 22:54:57 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56002 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730877AbgKJDyw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 22:54:52 -0500
+        id S1732900AbgKJDyy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 22:54:54 -0500
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8741320721;
-        Tue, 10 Nov 2020 03:54:50 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4465720E65;
+        Tue, 10 Nov 2020 03:54:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604980491;
-        bh=RxdypS5yFALZA7A6ct64lelo/+SmNXp/dWCwIyV0Fao=;
+        s=default; t=1604980494;
+        bh=hLy+1ve4a8qy/eR6Y7LdHOCpynzkhTeff1KZEgcNzD4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=J6noiNsvWnYEP4eW/fWzJTEY2RlgyrSUGsUlRzEKAlJAAq90VUt3TeBigv8+tZxjj
-         4+DRN6cvQ9a0ZL+sAWxsQJBn1hr5qhUAV/LlU2S0+CMQGSJbIXYDVHYixPQ/WJR+P/
-         sWQ1hbPLDiHrSS/gssXC4KB3i6cW21rrxRsAUF9w=
+        b=jseAhvvrUdv1BNW8lenfgIyYKmClAPh0gvAQHr1gWZsh9zBe9ah8olrrn19iCYy2v
+         DZSR96t6ufzXmHBu0BFWtGuRyjY4bs7PeGT2aKupZrspQimfjxExyTGAPBKVQtCnoi
+         opMHETtLPyQIc3zy8kDD7zlzT4/cbgz6xrJCUhj8=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Tommi Rantala <tommi.t.rantala@nokia.com>,
-        Kees Cook <keescook@chromium.org>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Sasha Levin <sashal@kernel.org>,
-        linux-kselftest@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 07/42] selftests: pidfd: fix compilation errors due to wait.h
-Date:   Mon,  9 Nov 2020 22:54:05 -0500
-Message-Id: <20201110035440.424258-7-sashal@kernel.org>
+Cc:     Kai-Heng Feng <kai.heng.feng@canonical.com>,
+        Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>,
+        alsa-devel@alsa-project.org
+Subject: [PATCH AUTOSEL 5.4 09/42] ALSA: hda: Reinstate runtime_allow() for all hda controllers
+Date:   Mon,  9 Nov 2020 22:54:07 -0500
+Message-Id: <20201110035440.424258-9-sashal@kernel.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20201110035440.424258-1-sashal@kernel.org>
 References: <20201110035440.424258-1-sashal@kernel.org>
@@ -45,52 +42,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tommi Rantala <tommi.t.rantala@nokia.com>
+From: Kai-Heng Feng <kai.heng.feng@canonical.com>
 
-[ Upstream commit 1948172fdba5ad643529ddcd00a601c0caa913ed ]
+[ Upstream commit 9fc149c3bce7bdbb94948a8e6bd025e3b3538603 ]
 
-Drop unneeded <linux/wait.h> header inclusion to fix pidfd compilation
-errors seen in Fedora 32:
+The broken jack detection should be fixed by commit a6e7d0a4bdb0 ("ALSA:
+hda: fix jack detection with Realtek codecs when in D3"), let's try
+enabling runtime PM by default again.
 
-In file included from pidfd_open_test.c:9:
-../../../../usr/include/linux/wait.h:17:16: error: expected identifier before numeric constant
-   17 | #define P_ALL  0
-      |                ^
-
-Signed-off-by: Tommi Rantala <tommi.t.rantala@nokia.com>
-Reviewed-by: Kees Cook <keescook@chromium.org>
-Acked-by: Christian Brauner <christian.brauner@ubuntu.com>
-Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
+Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+Link: https://lore.kernel.org/r/20201027130038.16463-4-kai.heng.feng@canonical.com
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/testing/selftests/pidfd/pidfd_open_test.c | 1 -
- tools/testing/selftests/pidfd/pidfd_poll_test.c | 1 -
- 2 files changed, 2 deletions(-)
+ sound/pci/hda/hda_intel.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/tools/testing/selftests/pidfd/pidfd_open_test.c b/tools/testing/selftests/pidfd/pidfd_open_test.c
-index b9fe75fc3e517..8a59438ccc78b 100644
---- a/tools/testing/selftests/pidfd/pidfd_open_test.c
-+++ b/tools/testing/selftests/pidfd/pidfd_open_test.c
-@@ -6,7 +6,6 @@
- #include <inttypes.h>
- #include <limits.h>
- #include <linux/types.h>
--#include <linux/wait.h>
- #include <sched.h>
- #include <signal.h>
- #include <stdbool.h>
-diff --git a/tools/testing/selftests/pidfd/pidfd_poll_test.c b/tools/testing/selftests/pidfd/pidfd_poll_test.c
-index 4b115444dfe90..6108112753573 100644
---- a/tools/testing/selftests/pidfd/pidfd_poll_test.c
-+++ b/tools/testing/selftests/pidfd/pidfd_poll_test.c
-@@ -3,7 +3,6 @@
- #define _GNU_SOURCE
- #include <errno.h>
- #include <linux/types.h>
--#include <linux/wait.h>
- #include <poll.h>
- #include <signal.h>
- #include <stdbool.h>
+diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
+index ab32d4811c9ef..192e580561efd 100644
+--- a/sound/pci/hda/hda_intel.c
++++ b/sound/pci/hda/hda_intel.c
+@@ -2328,6 +2328,7 @@ static int azx_probe_continue(struct azx *chip)
+ 
+ 	if (azx_has_pm_runtime(chip)) {
+ 		pm_runtime_use_autosuspend(&pci->dev);
++		pm_runtime_allow(&pci->dev);
+ 		pm_runtime_put_autosuspend(&pci->dev);
+ 	}
+ 
 -- 
 2.27.0
 
