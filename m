@@ -2,90 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E8BF2AE1C3
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 22:30:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C14242AE1CE
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 22:32:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731807AbgKJVaM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 16:30:12 -0500
-Received: from aserp2120.oracle.com ([141.146.126.78]:49112 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726462AbgKJVaM (ORCPT
+        id S1731925AbgKJVcc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 16:32:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42218 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725862AbgKJVcb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 16:30:12 -0500
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AALNqu0133383;
-        Tue, 10 Nov 2020 21:30:10 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to :
- subject : message-id : mime-version : content-type; s=corp-2020-01-29;
- bh=lER9kZ6gtiFR/ZbdtUi5Fs5safSxUNLDEPkk5yWRhOk=;
- b=i4YXiZOM/kZNiNeGIJ1heNpquOyTiCZe/5RyC9+Zu79371vzPB9Dw9VZI+QgrHqc1vpo
- musQoQTPO9FfjpqRKFf7sv1V4pi0tFAJNxQNyqnYSEOhlyTZXkG7JJGBkCjYLcDX2kU6
- SiwI5CITbgzYuvJX9YZEwXQ8RKSg+5q5raroX4UDtLS0uz8xQMZNI2Qmpc42011F4TEF
- Yagmy3UZPHSJhpHFmmMRnEyLZqFhhhOgxeBYOghQ6QpoNEok4TVXNOSPJqom4QYFe1GZ
- +Ael1Y3YfHrZdi2Sbh3vrfMojBsmdNcIm+2OrJXn+Z3qACKeFimCZ1OWSyt0nDoDbbTA 0A== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by aserp2120.oracle.com with ESMTP id 34nkhkx1u5-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 10 Nov 2020 21:30:10 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AALOq0p194794;
-        Tue, 10 Nov 2020 21:30:09 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by aserp3020.oracle.com with ESMTP id 34p5g0wape-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 10 Nov 2020 21:30:09 +0000
-Received: from abhmp0007.oracle.com (abhmp0007.oracle.com [141.146.116.13])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0AALU9ql023478;
-        Tue, 10 Nov 2020 21:30:09 GMT
-Received: from char.us.oracle.com (/10.152.32.25)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 10 Nov 2020 13:30:09 -0800
-Received: by char.us.oracle.com (Postfix, from userid 1000)
-        id 01E9B6A0109; Tue, 10 Nov 2020 16:31:57 -0500 (EST)
-Date:   Tue, 10 Nov 2020 16:31:57 -0500
-From:   Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-kernel@vger.kernel.org
-Subject: [GIT PULL] (swiotlb) stable/for-linus-5.10-rc2
-Message-ID: <20201110213157.GB16458@char.us.oracle.com>
+        Tue, 10 Nov 2020 16:32:31 -0500
+Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0AD04C0613D1;
+        Tue, 10 Nov 2020 13:32:31 -0800 (PST)
+Received: by mail-lf1-x143.google.com with SMTP id i6so233139lfd.1;
+        Tue, 10 Nov 2020 13:32:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:from:to:cc:references:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=Udf8izR79EOqP1ijS53zeM3N/JUnCwVrU1fnKC8yXBM=;
+        b=TJmDKYdfhNndOw9Fc/1HEuqiqmcIfs67XGIMRW/n659q4NI/oyLnPwqYqDHpqqSze4
+         yxRdw/JI8MhkLlhqv01SA66a1lehinyiB40p03H4fmPC4kXqdPdOR9DXXI+CA8FSqBk7
+         w6wChwFGwttwXQX2Xdjz29Y+Hwu/v0WRMXMyYljuqE429oOhuZ7qiOzZFPxi1Rkyq/NW
+         nVGYWY6zZm9eoNwo6SyRQJSccBYBxUNPG9MlrFkc8UTPfeDIiXk0WNTxV7mdyps+2+6X
+         OXy/7b5VqZJ3lgMWmZYzyttqwfgys1sL/l1uEmuidS91VXkM+dhRqONrgFsT4PF6pA+C
+         zF8g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Udf8izR79EOqP1ijS53zeM3N/JUnCwVrU1fnKC8yXBM=;
+        b=Sa/uuCxZP4Ptb4d2EkGqIo5mvHCwTvjcX0GOcY8blJ9VGqRI/sCglnNsshb41ZrPpa
+         8wDpnvDc78i92Dl6u5fR0tDsc5qt3lMj34uXKJVdf7qpDeq0ZjOA6Saz80vV7dmK8mX8
+         VlTTkPWWNLpu6yTmugFPICnbMDy/DGStcfM/ye3+r0JymlZGzRdiDI7jGO2Ov2YO6kHo
+         KRjGaMIra+b0+y544PFymU5Glqb3vpjYD5Kdmn/0/XcahIOmyrLMsoSYYBlRXzJo84fr
+         W/BJ47UQaRn7ll3CukfcKKR6nd75/JuQqscxccTSyZBlbUY1lejk0UfGS0w4/MtfNxVa
+         rjgA==
+X-Gm-Message-State: AOAM53201SGdgthvsqceDl90nOoGdj48A35DNQOWHXLUW4hl4V7voN+N
+        PDSfpbRmxgc/LOv3pcBDZHV5RrdE09s=
+X-Google-Smtp-Source: ABdhPJzgddle15uZzQkarcn6HNRYEMFyRgf1xVU2K+91PWIHM5P29WaFydPEJ+nc/MxNTQcdKv1N/w==
+X-Received: by 2002:ac2:5e6e:: with SMTP id a14mr6600177lfr.595.1605043949411;
+        Tue, 10 Nov 2020 13:32:29 -0800 (PST)
+Received: from [192.168.2.145] (109-252-193-159.dynamic.spd-mgts.ru. [109.252.193.159])
+        by smtp.googlemail.com with ESMTPSA id o12sm2721051ljc.59.2020.11.10.13.32.27
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 10 Nov 2020 13:32:28 -0800 (PST)
+Subject: Re: [PATCH v1 07/30] soc/tegra: Add sync state API
+From:   Dmitry Osipenko <digetx@gmail.com>
+To:     Thierry Reding <thierry.reding@gmail.com>
+Cc:     Jonathan Hunter <jonathanh@nvidia.com>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Peter Chen <Peter.Chen@nxp.com>,
+        Mark Brown <broonie@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Peter Geis <pgwipeout@gmail.com>,
+        Nicolas Chauvet <kwizart@gmail.com>,
+        linux-samsung-soc@vger.kernel.org, devel@driverdev.osuosl.org,
+        linux-usb@vger.kernel.org, linux-pwm@vger.kernel.org,
+        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-media@vger.kernel.org, linux-tegra@vger.kernel.org
+References: <20201104234427.26477-1-digetx@gmail.com>
+ <20201104234427.26477-8-digetx@gmail.com> <20201110204727.GG2375022@ulmo>
+ <71934373-8425-345b-7719-0903f846119f@gmail.com>
+Message-ID: <7b6c7c62-495c-eeb8-9cdb-0c33be653e3d@gmail.com>
+Date:   Wed, 11 Nov 2020 00:32:27 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.9.1 (2017-09-22)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9801 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 spamscore=0 malwarescore=0
- adultscore=0 phishscore=0 bulkscore=0 mlxlogscore=999 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2011100146
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9801 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 priorityscore=1501
- mlxscore=0 suspectscore=0 mlxlogscore=999 lowpriorityscore=0 spamscore=0
- malwarescore=0 adultscore=0 clxscore=1015 bulkscore=0 impostorscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2011100146
+In-Reply-To: <71934373-8425-345b-7719-0903f846119f@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear Linus,
+11.11.2020 00:22, Dmitry Osipenko пишет:
+> I added a special spell checking rule for this typo, but it does help
+> reliably.
 
-Please git pull the following branch:
-
- git pull git://git.kernel.org/pub/scm/linux/kernel/git/konrad/swiotlb.git stable/for-linus-5.10-rc2
-
-
-which has two tiny fixes that make drivers under Xen unhappy under certain conditions.
-
-Thank you!
-
-Christoph Hellwig (1):
-      swiotlb: remove the tbl_dma_addr argument to swiotlb_tbl_map_single
-
-Stefano Stabellini (1):
-      swiotlb: fix "x86: Don't panic if can not alloc buffer for swiotlb"
-
- drivers/iommu/intel/iommu.c |  5 ++---
- drivers/xen/swiotlb-xen.c   |  3 +--
- include/linux/swiotlb.h     | 10 +++-------
- kernel/dma/swiotlb.c        | 22 +++++++++++-----------
- 4 files changed, 17 insertions(+), 23 deletions(-)
+does *not*
