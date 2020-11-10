@@ -2,56 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 067F42AD0E5
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 09:10:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A8442AD0E9
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 09:11:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730111AbgKJIK4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 03:10:56 -0500
-Received: from m176150.mail.qiye.163.com ([59.111.176.150]:57084 "EHLO
+        id S1729979AbgKJILC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 03:11:02 -0500
+Received: from m176150.mail.qiye.163.com ([59.111.176.150]:57168 "EHLO
         m176150.mail.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729382AbgKJIKz (ORCPT
+        with ESMTP id S1729564AbgKJILA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 03:10:55 -0500
+        Tue, 10 Nov 2020 03:11:00 -0500
 Received: from vivo.com (wm-10.qy.internal [127.0.0.1])
-        by m176150.mail.qiye.163.com (Hmail) with ESMTP id A68B91A3B62;
-        Tue, 10 Nov 2020 16:10:20 +0800 (CST)
+        by m176150.mail.qiye.163.com (Hmail) with ESMTP id 994491A3B66;
+        Tue, 10 Nov 2020 16:10:24 +0800 (CST)
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: base64
-Message-ID: <APoA5gC4DV1j7eiIeLvDwqqi.1.1604995820664.Hmail.bernard@vivo.com>
-To:     Zhang Rui <rui.zhang@intel.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Amit Kucheria <amitk@kernel.org>, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
+Message-ID: <AGIA*AAMDRjj8OgGeBDLQarV.1.1604995824613.Hmail.bernard@vivo.com>
+To:     Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Kalyan Thota <kalyan_t@codeaurora.org>,
+        Drew Davenport <ddavenport@chromium.org>,
+        Abhinav Kumar <abhinavk@codeaurora.org>,
+        Kuogee Hsieh <khsieh@codeaurora.org>,
+        Zheng Bin <zhengbin13@huawei.com>,
+        Chandan Uddaraju <chandanu@codeaurora.org>,
+        =?UTF-8?Q?Ville_Syrj=C3=A4l=C3=A4?= <ville.syrjala@linux.intel.com>,
+        linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org
 Cc:     opensource.kernel@vivo.com, Bernard Zhao <bernard@vivo.com>
-Subject: =?UTF-8?B?W1Jlc2VuZF1bUEFUQ0hdIGRyaXZlcnMvdGhlcm1hbDogY2xlYW51cCBjb2Rpbmcgc3R5bGUgYSBiaXQ=?=
+Subject: =?UTF-8?B?W1Jlc2VuZF1bUEFUQ0hdIGRybS9tc206IGRlbGV0ZSBjb252ZXJzaW9uIGZyb20gYm9vbCB2YWx1ZSB0byBib29sIHZhcmlhYmxl?=
 X-Priority: 3
 X-Mailer: HMail Webmail Server V2.0 Copyright (c) 2016-163.com
 X-Originating-IP: 58.213.83.157
 MIME-Version: 1.0
-Received: from bernard@vivo.com( [58.213.83.157) ] by ajax-webmail ( [127.0.0.1] ) ; Tue, 10 Nov 2020 16:10:20 +0800 (GMT+08:00)
+Received: from bernard@vivo.com( [58.213.83.157) ] by ajax-webmail ( [127.0.0.1] ) ; Tue, 10 Nov 2020 16:10:24 +0800 (GMT+08:00)
 From:   Bernard <bernard@vivo.com>
-Date:   Tue, 10 Nov 2020 16:10:20 +0800 (GMT+08:00)
+Date:   Tue, 10 Nov 2020 16:10:24 +0800 (GMT+08:00)
 X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
-        oVCBIfWUFZGh0dTRlNTBlCS0JMVkpNS09CQk5DSUtMTUtVEwETFhoSFyQUDg9ZV1kWGg8SFR0UWU
+        oVCBIfWUFZSxhNHkofHhpIHR9CVkpNS09CQk5DSU9MSkNVEwETFhoSFyQUDg9ZV1kWGg8SFR0UWU
         FZT0tIVUpKS0hKQ1VLWQY+
-X-HM-Sender-Digest: e1kMHhlZQQ8JDh5XWRIfHhUPWUFZRzorFDpOHDhPPy1KEUweEjIeNw0*
-        DAoKElVKVUpNS09CQk5DSUpKSUNVMxYaEhdVGR4JFRoJHzsNEg0UVRgUFkVZV1kSC1lBWU5DVUlK
-        SFVDSFVKTkxZV1kIAVlBSU5JTzcG
-X-HM-Tid: 0a75b134ac9a93b4kuwsa68b91a3b62
+X-HM-Sender-Digest: e1kMHhlZQQ8JDh5XWRIfHhUPWUFZRzo8MjpROjo2PykREUM0HDweOT83
+        KhoJLVVKVUpNS09CQk5DSU5JS09VMxYaEhdVGR4JFRoJHzsNEg0UVRgUFkVZV1kSC1lBWU5DVUlK
+        SFVDSFVKTkxZV1kIAVlBSE9LQzcG
+X-HM-Tid: 0a75b134bc0a93b4kuws994491a3b66
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RnVuY3Rpb24gdGhlcm1hbF9hZGRfaHdtb25fc3lzZnMsIGh3bW9uIHdpbGwgYmUgTlVMTCB3aGVu
-Cm5ld19od21vbl9kZXZpY2UgPSAwLCBzbyB0aGVyZSBpcyBubyBuZWVkIHRvIGNoZWNrLCBrZnJl
-ZSB3aWxsCmhhbmRsZSBOVUxMIHBvaW50LgoKU2lnbmVkLW9mZi1ieTogQmVybmFyZCBaaGFvIDxi
-ZXJuYXJkQHZpdm8uY29tPgotLS0KIGRyaXZlcnMvdGhlcm1hbC90aGVybWFsX2h3bW9uLmMgfCAz
-ICstLQogMSBmaWxlIGNoYW5nZWQsIDEgaW5zZXJ0aW9uKCspLCAyIGRlbGV0aW9ucygtKQoKZGlm
-ZiAtLWdpdCBhL2RyaXZlcnMvdGhlcm1hbC90aGVybWFsX2h3bW9uLmMgYi9kcml2ZXJzL3RoZXJt
-YWwvdGhlcm1hbF9od21vbi5jCmluZGV4IDhiOTJlMDBmZjIzNi4uYWQwMzI2MmNjYTU2IDEwMDY0
-NAotLS0gYS9kcml2ZXJzL3RoZXJtYWwvdGhlcm1hbF9od21vbi5jCisrKyBiL2RyaXZlcnMvdGhl
-cm1hbC90aGVybWFsX2h3bW9uLmMKQEAgLTIwNiw4ICsyMDYsNyBAQCBpbnQgdGhlcm1hbF9hZGRf
-aHdtb25fc3lzZnMoc3RydWN0IHRoZXJtYWxfem9uZV9kZXZpY2UgKnR6KQogCWlmIChuZXdfaHdt
-b25fZGV2aWNlKQogCQlod21vbl9kZXZpY2VfdW5yZWdpc3Rlcihod21vbi0+ZGV2aWNlKTsKICBm
-cmVlX21lbToKLQlpZiAobmV3X2h3bW9uX2RldmljZSkKLQkJa2ZyZWUoaHdtb24pOworCWtmcmVl
-KGh3bW9uKTsKIAogCXJldHVybiByZXN1bHQ7CiB9Ci0tIAoyLjI5LjAKCg0KDQo=
+UmVtb3ZlIHRoZSBjb252ZXJzaW9uIGZyb20gYm9vbCB2YWx1ZSB0byBib29sIHZhcmlhYmxlLgoK
+U2lnbmVkLW9mZi1ieTogQmVybmFyZCBaaGFvIDxiZXJuYXJkQHZpdm8uY29tPgotLS0KIGRyaXZl
+cnMvZ3B1L2RybS9tc20vZGlzcC9kcHUxL2RwdV9lbmNvZGVyLmMgfCAyICstCiAxIGZpbGUgY2hh
+bmdlZCwgMSBpbnNlcnRpb24oKyksIDEgZGVsZXRpb24oLSkKCmRpZmYgLS1naXQgYS9kcml2ZXJz
+L2dwdS9kcm0vbXNtL2Rpc3AvZHB1MS9kcHVfZW5jb2Rlci5jIGIvZHJpdmVycy9ncHUvZHJtL21z
+bS9kaXNwL2RwdTEvZHB1X2VuY29kZXIuYwppbmRleCBmN2Y1YzI1OGI1NTMuLmU5OWE1NDNkYTI0
+MyAxMDA2NDQKLS0tIGEvZHJpdmVycy9ncHUvZHJtL21zbS9kaXNwL2RwdTEvZHB1X2VuY29kZXIu
+YworKysgYi9kcml2ZXJzL2dwdS9kcm0vbXNtL2Rpc3AvZHB1MS9kcHVfZW5jb2Rlci5jCkBAIC0x
+MzYyLDcgKzEzNjIsNyBAQCB2b2lkIGRwdV9lbmNvZGVyX3JlZ2lzdGVyX2ZyYW1lX2V2ZW50X2Nh
+bGxiYWNrKHN0cnVjdCBkcm1fZW5jb2RlciAqZHJtX2VuYywKIAl1bnNpZ25lZCBsb25nIGxvY2tf
+ZmxhZ3M7CiAJYm9vbCBlbmFibGU7CiAKLQllbmFibGUgPSBmcmFtZV9ldmVudF9jYiA/IHRydWUg
+OiBmYWxzZTsKKwllbmFibGUgPSAoZnJhbWVfZXZlbnRfY2IgIT0gTlVMTCk7CiAKIAlpZiAoIWRy
+bV9lbmMpIHsKIAkJRFBVX0VSUk9SKCJpbnZhbGlkIGVuY29kZXJcbiIpOwotLSAKMi4yOS4wCgoN
+Cg0K
