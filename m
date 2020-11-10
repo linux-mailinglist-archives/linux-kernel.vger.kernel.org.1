@@ -2,109 +2,356 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D4AF22ADE0C
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 19:18:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D6F922ADE19
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 19:19:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731174AbgKJSSO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 13:18:14 -0500
-Received: from z5.mailgun.us ([104.130.96.5]:42655 "EHLO z5.mailgun.us"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730382AbgKJSSM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 13:18:12 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1605032292; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=1v/7o0QVfMPf/rh8cR2nTJ87U1DD86pv7+KwaCwWMb8=; b=Qu0TJTVWQjhkN0oGJs+7NNcv4mUTnMUmzv48UnMB7MRtx0JzfJnEk/aMWNnN8f6tQ9Zzgljp
- NbaRS9krjEHpx0fGWvO0rdmHX8X9a4bw98+etx4DAGv8L4BMkK1yE0WC8IdFQra5aBaPSr1c
- xv/mImYPUPoqIW6wFsemlW1vWNI=
-X-Mailgun-Sending-Ip: 104.130.96.5
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n06.prod.us-east-1.postgun.com with SMTP id
- 5faad9590d87d63775bc0180 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 10 Nov 2020 18:18:01
- GMT
-Sender: asutoshd=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 193F5C433CB; Tue, 10 Nov 2020 18:18:01 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.0
-Received: from [192.168.8.168] (cpe-70-95-149-85.san.res.rr.com [70.95.149.85])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: asutoshd)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 781EDC433C9;
-        Tue, 10 Nov 2020 18:17:58 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 781EDC433C9
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=asutoshd@codeaurora.org
-Subject: Re: [PATCH v2] scsi: ufshcd: fix missing destroy_workqueue()
-To:     Qinglang Miao <miaoqinglang@huawei.com>,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>
-Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20201110074223.41280-1-miaoqinglang@huawei.com>
-From:   "Asutosh Das (asd)" <asutoshd@codeaurora.org>
-Message-ID: <e765eb4f-a85d-72c8-3f82-1f321e3d6c3b@codeaurora.org>
-Date:   Tue, 10 Nov 2020 10:17:57 -0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.1
+        id S1731389AbgKJSTz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 13:19:55 -0500
+Received: from mx08-00178001.pphosted.com ([91.207.212.93]:7826 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726179AbgKJSTz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Nov 2020 13:19:55 -0500
+Received: from pps.filterd (m0046660.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0AAI7uKb002319;
+        Tue, 10 Nov 2020 19:18:47 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=STMicroelectronics;
+ bh=HFQc5JErdmZfDALgfrh9JjnHmtuTniw6VNnthiWd9sE=;
+ b=OUkYfK3dnA6SvZLtMN9JwdR45T/iUYW5BrJBJ1DEMs0n6bfc1D3BqpRJX3Qi81SHBRCO
+ aChSKN40ERXsus1yNag9XmyOJxjaq0G+UglTlZDtHrzApiKu0kQYHRtQrdxZtw+lKYWs
+ 83AhkW6Or21OIXu/fmysvPWtYAXMPbwJ6rB/Xx/WLWdQub+BGyYfXe3qFUBgfFbuMcGR
+ rT6yRkkkpvwFbPj7JqPnzSnPiG+90l/B85tDyP9wnNS1ZDjVM4VsJkPXNUXG6vfcrRDm
+ OLVz7FM80mX7HeLRMLlMeNYGpf04QkRz9hqs+Y1S6XdO/k0YrnIBBa/EYeKGPrqJaz56 LQ== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 34nhkct9s1-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 10 Nov 2020 19:18:47 +0100
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id E5BFF10002A;
+        Tue, 10 Nov 2020 19:18:46 +0100 (CET)
+Received: from Webmail-eu.st.com (sfhdag3node1.st.com [10.75.127.7])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id D485321060F;
+        Tue, 10 Nov 2020 19:18:46 +0100 (CET)
+Received: from lmecxl0889.lme.st.com (10.75.127.44) by SFHDAG3NODE1.st.com
+ (10.75.127.7) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 10 Nov
+ 2020 19:18:46 +0100
+Subject: Re: [PATCH v5 8/8] rpmsg: Turn name service into a stand alone driver
+To:     Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
+CC:     "ohad@wizery.com" <ohad@wizery.com>,
+        "bjorn.andersson@linaro.org" <bjorn.andersson@linaro.org>,
+        "linux-remoteproc@vger.kernel.org" <linux-remoteproc@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20201105225028.3058818-1-mathieu.poirier@linaro.org>
+ <20201105225028.3058818-9-mathieu.poirier@linaro.org>
+ <20201106131545.GA10889@ubuntu> <20201106140028.GB10889@ubuntu>
+ <20201106175332.GB3203364@xps15>
+ <e7dedfb6-1e9c-4246-9db1-e14a2e16c68c@st.com> <20201109102023.GA17692@ubuntu>
+ <20201109175536.GD3395222@xps15>
+From:   Arnaud POULIQUEN <arnaud.pouliquen@st.com>
+Message-ID: <eb7f6707-4483-3e1a-1e39-7f32fbf437e0@st.com>
+Date:   Tue, 10 Nov 2020 19:18:45 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20201110074223.41280-1-miaoqinglang@huawei.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <20201109175536.GD3395222@xps15>
+Content-Type: text/plain; charset="utf-8"
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.75.127.44]
+X-ClientProxiedBy: SFHDAG4NODE2.st.com (10.75.127.11) To SFHDAG3NODE1.st.com
+ (10.75.127.7)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-11-10_07:2020-11-10,2020-11-10 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/9/2020 11:42 PM, Qinglang Miao wrote:
-> Add the missing destroy_workqueue() before return from
-> ufshcd_init in the error handling case as well as in
-> ufshcd_remove.
-> 
-> Fixes: 4db7a2360597 ("scsi: ufs: Fix concurrency of error handler and other error recovery paths")
-> Suggested-by: Avri Altman <Avri.Altman@wdc.com>
-> Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
-> ---
+Hi Mathieu, Guennadi,
 
-Reviewed-by: Asutosh Das <asutoshd@codeaurora.org>
-
->   v2: consider missing destroy_workqueue ufshcd_remove either.
+On 11/9/20 6:55 PM, Mathieu Poirier wrote:
+> On Mon, Nov 09, 2020 at 11:20:24AM +0100, Guennadi Liakhovetski wrote:
+>> Hi Arnaud,
+>>
+>> On Mon, Nov 09, 2020 at 09:48:37AM +0100, Arnaud POULIQUEN wrote:
+>>> Hi Guennadi, Mathieu,
+>>>
+>>> On 11/6/20 6:53 PM, Mathieu Poirier wrote:
+>>>> On Fri, Nov 06, 2020 at 03:00:28PM +0100, Guennadi Liakhovetski wrote:
+>>>>> On Fri, Nov 06, 2020 at 02:15:45PM +0100, Guennadi Liakhovetski wrote:
+>>>>>> Hi Mathieu, Arnaud,
+>>>>>>
+>>>>>> On Thu, Nov 05, 2020 at 03:50:28PM -0700, Mathieu Poirier wrote:
+>>>>>>> From: Arnaud Pouliquen <arnaud.pouliquen@st.com>
+>>>>>>>
+>>>>>>> Make the RPMSG name service announcement a stand alone driver so that it
+>>>>>>> can be reused by other subsystems.  It is also the first step in making the
+>>>>>>> functionatlity transport independent, i.e that is not tied to virtIO.
+>>>>>>
+>>>>>> Sorry, I just realised that my testing was incomplete. I haven't tested 
+>>>>>> automatic module loading and indeed it doesn't work. If rpmsg_ns is loaded 
+>>>>>> it probes and it's working, but if it isn't loaded and instead the rpmsg 
+>>>>>> bus driver is probed (e.g. virtio_rpmsg_bus), calling 
+>>>>>> rpmsg_ns_register_device() to create a new rpmsg_ns device doesn't cause 
+>>>>>> rpmsg_ns to be loaded.
+>>>>>
+>>>>> A simple fix for that is using MODULE_ALIAS("rpmsg:rpmsg_ns"); in rpmsg_ns.c 
+>>>>> but that alone doesn't fix the problem completely - the module does load then 
+>>>>> but not quickly enough, the NS announcement from the host / remote arrives 
+>>>>> before rpmsg_ns has properly registered. I think the best solution would be 
+>>>>> to link rpmsg_ns.c together with rpmsg_core.c. You'll probably want to keep 
+>>>>> the module name, so you could rename them to just core.c and ns.c.
+>>>>
+>>>> I'm pretty sure it is because virtio_device_ready() in rpmsg_probe() is called
+>>>> before the kernel has finished loading the name space driver.  There has to be
+>>>> a way to prevent that from happening - I will investigate further.
+>>>
+>>> Right, no dependency is set so the rpmsg_ns driver is never probed...
+>>> And  name service announcement messages are dropped if the service is not present.
+>>
+>> The mentioned change
+>>
+>> -MODULE_ALIAS("rpmsg_ns");
+>> +MODULE_ALIAS("rpmsg:rpmsg_ns");
 > 
->   drivers/scsi/ufs/ufshcd.c | 2 ++
->   1 file changed, 2 insertions(+)
+> Yes, I'm good with that part.
 > 
-> diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
-> index b8f573a02713..adbdda4f556b 100644
-> --- a/drivers/scsi/ufs/ufshcd.c
-> +++ b/drivers/scsi/ufs/ufshcd.c
-> @@ -8906,6 +8906,7 @@ void ufshcd_remove(struct ufs_hba *hba)
->   	blk_mq_free_tag_set(&hba->tmf_tag_set);
->   	blk_cleanup_queue(hba->cmd_queue);
->   	scsi_remove_host(hba->host);
-> +	destroy_workqueue(hba->eh_wq);
->   	/* disable interrupts */
->   	ufshcd_disable_intr(hba, hba->intr_mask);
->   	ufshcd_hba_stop(hba);
-> @@ -9206,6 +9207,7 @@ int ufshcd_init(struct ufs_hba *hba, void __iomem *mmio_base, unsigned int irq)
->   exit_gating:
->   	ufshcd_exit_clk_scaling(hba);
->   	ufshcd_exit_clk_gating(hba);
-> +	destroy_workqueue(hba->eh_wq);
->   out_disable:
->   	hba->is_irq_enabled = false;
->   	ufshcd_hba_exit(hba);
+>>
+>> is actually a compulsory fix, without it the driver doesn't even get loaded when 
+>> a device id registered, using rpmsg_ns_register_device(). So this has to be done 
+>> as a minimum *if* we keep RPNsg NS as a separate kernel module. However, that 
+>> still doesn't fix the problem relyably because of timing. I've merged both the 
+>> RPMsg core and NS into a single module, which fixed the issue for me. I'm 
+>> appending a patch to this email, but since it's a "fixup" please, feel free to 
+>> roll it into the original work. But thinking about it, even linking modules 
+>> together doesn't guarantee the order. I think rpmsg_ns_register_device() should 
+>> actually actively wait for NS device probing to finish - successfully or not. 
+>> I can add a complete() / wait_for_completion() pair to the process if you like.
+>>
 > 
+> Working with a completion is the kind of thing I had in mind.  But I would still
+> like to keep the drivers separate and that's the part I need to think about.
 
+I reproduce the problem: the rpmsg_ns might not be probed on first message reception.
+What makes the fix not simple is that the virtio forces the virtio status to ready
+after the probe of the virtio unit [1].
+Set this status tiggs the remote processor first messages.
 
+[1]https://elixir.bootlin.com/linux/latest/source/drivers/virtio/virtio.c#L253
+
+Guennadi: I'm not sure that your patch will solve the problem , look like it just reduces the
+delay between the rpmsg_virtio and the rpmsg_ns probe (the module loading time is saved)
+
+Based on my observations, I can see two alternatives.
+- rpmsg_ns.c is no longer an rpmsg driver but a kind of function library to manage a generic name service.
+- we implement a completion as proposed by Mathieu. 
+
+I tried this second solution based on the component bind mechanism. 
+I added the patch at the end of the mail (the patch is a POC, so not ready for upstream). 
+Maybe something simpler is possible. I'm just keeping in mind that we may have to add similar
+services in the future.
+
+Regards,
+Arnaud
+
+From f2de77027f4a3836f8bf46aa257e5592af6529b7 Mon Sep 17 00:00:00 2001
+From: Arnaud Pouliquen <arnaud.pouliquen@st.com>
+Date: Tue, 10 Nov 2020 18:39:29 +0100
+Subject: [PATCH] rpmsg_ns: add synchronization based on component mechanism
+
+Implement the component bind mechanism to ensure that the rpmsg virtio bus
+driver are probed before treating the first RPMsg.
+
+Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@st.com>
+---
+ drivers/rpmsg/rpmsg_ns.c         | 26 ++++++++++++-
+ drivers/rpmsg/virtio_rpmsg_bus.c | 65 ++++++++++++++++++++++++++++++++
+ 2 files changed, 89 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/rpmsg/rpmsg_ns.c b/drivers/rpmsg/rpmsg_ns.c
+index 5bda7cb44618..057e5d1d29a0 100644
+--- a/drivers/rpmsg/rpmsg_ns.c
++++ b/drivers/rpmsg/rpmsg_ns.c
+@@ -2,6 +2,7 @@
+ /*
+  * Copyright (C) STMicroelectronics 2020 - All Rights Reserved
+  */
++#include <linux/component.h>
+ #include <linux/device.h>
+ #include <linux/kernel.h>
+ #include <linux/module.h>
+@@ -55,6 +56,24 @@ static int rpmsg_ns_cb(struct rpmsg_device *rpdev, void *data, int len,
+ 	return 0;
+ }
+ 
++static int rpmsg_ns_bind(struct device *dev, struct device *master, void *data)
++{
++	dev_info(dev, "rpmsg ns bound\n");
++
++	return 0;
++}
++
++static void rpmsg_ns_unbind(struct device *dev, struct device *master,
++			    void *data)
++{
++	dev_info(dev, "rpmsg ns unbound\n");
++}
++
++static const struct component_ops rpmsg_ns_ops = {
++	.bind = rpmsg_ns_bind,
++	.unbind = rpmsg_ns_unbind,
++};
++
+ static int rpmsg_ns_probe(struct rpmsg_device *rpdev)
+ {
+ 	struct rpmsg_endpoint *ns_ept;
+@@ -63,6 +82,7 @@ static int rpmsg_ns_probe(struct rpmsg_device *rpdev)
+ 		.dst = RPMSG_NS_ADDR,
+ 		.name = "name_service",
+ 	};
++	int ret;
+ 
+ 	/*
+ 	 * Create the NS announcement service endpoint associated to the RPMsg
+@@ -76,7 +96,9 @@ static int rpmsg_ns_probe(struct rpmsg_device *rpdev)
+ 	}
+ 	rpdev->ept = ns_ept;
+ 
+-	return 0;
++	ret = component_add(&rpdev->dev, &rpmsg_ns_ops);
++
++	return ret;
+ }
+ 
+ static struct rpmsg_driver rpmsg_ns_driver = {
+@@ -104,5 +126,5 @@ module_exit(rpmsg_ns_exit);
+ 
+ MODULE_DESCRIPTION("Name service announcement rpmsg Driver");
+ MODULE_AUTHOR("Arnaud Pouliquen <arnaud.pouliquen@st.com>");
+-MODULE_ALIAS("rpmsg_ns");
++MODULE_ALIAS("rpmsg:rpmsg_ns");
+ MODULE_LICENSE("GPL v2");
+diff --git a/drivers/rpmsg/virtio_rpmsg_bus.c b/drivers/rpmsg/virtio_rpmsg_bus.c
+index 30ef4a5de4ed..c28aac1295fa 100644
+--- a/drivers/rpmsg/virtio_rpmsg_bus.c
++++ b/drivers/rpmsg/virtio_rpmsg_bus.c
+@@ -11,6 +11,7 @@
+ 
+ #define pr_fmt(fmt) "%s: " fmt, __func__
+ 
++#include <linux/component.h>
+ #include <linux/dma-mapping.h>
+ #include <linux/idr.h>
+ #include <linux/jiffies.h>
+@@ -67,11 +68,16 @@ struct virtproc_info {
+ 	struct mutex endpoints_lock;
+ 	wait_queue_head_t sendq;
+ 	atomic_t sleepers;
++	struct component_match *match;
++	struct completion completed;
++	int bind_status;
+ };
+ 
+ /* The feature bitmap for virtio rpmsg */
+ #define VIRTIO_RPMSG_F_NS	0 /* RP supports name service notifications */
+ 
++#define BIND_TIMEOUT_MS 1000
++
+ /**
+  * struct rpmsg_hdr - common header for all rpmsg messages
+  * @src: source address
+@@ -768,6 +774,17 @@ static void rpmsg_recv_done(struct virtqueue *rvq)
+ 	unsigned int len, msgs_received = 0;
+ 	int err;
+ 
++	/* Wait for all children to be bound */
++	if (vrp->bind_status) {
++		dev_dbg(dev, "cwait bind\n");
++		if (!wait_for_completion_timeout(&vrp->completed,
++					msecs_to_jiffies(BIND_TIMEOUT_MS)))
++			dev_err(dev, "child device(s) binding timeout\n");
++
++		if (vrp->bind_status)
++			dev_err(dev, "failed to bind RPMsg sub device(s)\n");
++	}
++
+ 	msg = virtqueue_get_buf(rvq, &len);
+ 	if (!msg) {
+ 		dev_err(dev, "uhm, incoming signal, but no used buffer ?\n");
+@@ -808,6 +825,39 @@ static void rpmsg_xmit_done(struct virtqueue *svq)
+ 	wake_up_interruptible(&vrp->sendq);
+ }
+ 
++static int virtio_rpmsg_compare(struct device *dev, void *data)
++{
++	return dev == data;
++}
++
++static void virtio_rpmsg_unbind(struct device *dev)
++{
++	/* undbind all child components */
++	component_unbind_all(dev, NULL);
++}
++
++static int virtio_rpmsg_bind(struct device *dev)
++{
++	struct virtio_device *vdev = dev_to_virtio(dev);
++	struct virtproc_info *vrp = vdev->priv;
++
++	dev_dbg(dev, "Bind virtio rpmsg sub devices\n");
++
++	vdev = container_of(dev, struct virtio_device, dev);
++	vrp->bind_status =  component_bind_all(dev, NULL);
++	if (vrp->bind_status)
++		dev_err(dev, "bind virtio rpmsg failed\n");
++
++	complete(&vrp->completed);
++
++	return vrp->bind_status;
++}
++
++static const struct component_master_ops virtio_rpmsg_cmp_ops = {
++	.bind = virtio_rpmsg_bind,
++	.unbind = virtio_rpmsg_unbind,
++};
++
+ static int rpmsg_probe(struct virtio_device *vdev)
+ {
+ 	vq_callback_t *vq_cbs[] = { rpmsg_recv_done, rpmsg_xmit_done };
+@@ -892,6 +942,7 @@ static int rpmsg_probe(struct virtio_device *vdev)
+ 	/* if supported by the remote processor, enable the name service */
+ 	if (virtio_has_feature(vdev, VIRTIO_RPMSG_F_NS)) {
+ 		vch = kzalloc(sizeof(*vch), GFP_KERNEL);
++
+ 		if (!vch) {
+ 			err = -ENOMEM;
+ 			goto free_coherent;
+@@ -911,6 +962,20 @@ static int rpmsg_probe(struct virtio_device *vdev)
+ 		err = rpmsg_ns_register_device(rpdev_ns);
+ 		if (err)
+ 			goto free_coherent;
++		/* register a component associated to the virtio platform */
++		component_match_add_release(&vdev->dev, &vrp->match,
++					    NULL, virtio_rpmsg_compare,
++					    &rpdev_ns->dev);
++
++		vrp->bind_status = -ENXIO;
++		init_completion(&vrp->completed);
++		err = component_master_add_with_match(&vdev->dev,
++						      &virtio_rpmsg_cmp_ops,
++						      vrp->match);
++		if (err) {
++			dev_err(&vdev->dev, "failed to bind virtio rpmsg\n");
++			goto free_coherent;
++		}
+ 	}
+ 
+ 	/*
 -- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-Linux Foundation Collaborative Project
+2.17.1
+
+
+
+
