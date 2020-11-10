@@ -2,113 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 262BC2AE15F
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 22:13:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F8C12AE162
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 22:13:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727017AbgKJVM6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 16:12:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39102 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726179AbgKJVM5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 16:12:57 -0500
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44539C0613D1;
-        Tue, 10 Nov 2020 13:12:57 -0800 (PST)
-Received: by mail-wr1-x443.google.com with SMTP id 33so14272502wrl.7;
-        Tue, 10 Nov 2020 13:12:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=+1qiY4oDPj4QZfL6qghq1haCSVhCeVDAqKZGD+qkbx8=;
-        b=f1Wqn9BWhlV9TqBzVqcA8K3vSYZ8z/sDMTRNOMC7AqV4HUbCE2abDcOdUls8wIHqNy
-         eQrYCCd2SFjle35FbcRiiYTm0Y1PP2B3U0AlJVSEXUjrhyg+vceiwUomjjZYyUbQM3nw
-         7LIppNWnObnIw+GgAZoRFZ6qxX28Xw5dsd12B+qDqsHpebCW0cp9V5JBqmOqD0mBBKb7
-         8UD7HXinQ7T+n5ZiH9KoG4qeWUQxH3W+uHefFVhjxqQ0JD6Wj1aBXXk0ZdvRA/uNHfeA
-         d76iPm6NrzDUyRavySFTn770WrvScPbvWQhsD+KcCTZX8j0eF/OWeO5drdQMhEnmV4U1
-         IMIQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=+1qiY4oDPj4QZfL6qghq1haCSVhCeVDAqKZGD+qkbx8=;
-        b=PwB8mFUG2PX4X8sN+S97weKx41SbsanNrFIYchxqSXYWcLVG1gDiOPpKFGjQHoD4IQ
-         U/8dHGYPJaMMnnixXRkvMA4xDJ2Efvb0gAe65y/ov1PlbHr+7vNJXvfuR+iGV6vUlM+f
-         Bxz9poNKplWrabRE/UcDOIixnOQPrObXnN8v0Pbx6oVN0r2xLq9WWPM2+VpY7GjpGmCR
-         g2ISrCOGu91edr3ENFUyEoD4H7evdOdbKpOYZDC234tXy97OICbnJYTQgZ/4rI4GPiPV
-         cwS72WhAjtBvGZZxbVkf+Pxac1Vc5TPSTEcZmcsq5iOhfcxhxYtPlbEiw2mfDuX6iA80
-         T4EQ==
-X-Gm-Message-State: AOAM531EaZISLPuuNo6u1B2JmfpJ/r6KPAPiRMszZVLoMOaVw2Moen9r
-        XjAUd5sHOBS+1z+LEXX7ZgrIRBdpvC1ae3YCH9M=
-X-Google-Smtp-Source: ABdhPJwSPi/XzPxpWkWfc667bn3+KfiQNfQ/1d5NUGazQbQobwLyMKIUuc+OEeitOW6AtDYIuvFhcWe6S0QSmLXW+0I=
-X-Received: by 2002:adf:e9c9:: with SMTP id l9mr27585519wrn.124.1605042776045;
- Tue, 10 Nov 2020 13:12:56 -0800 (PST)
+        id S1731649AbgKJVNE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 16:13:04 -0500
+Received: from bilbo.ozlabs.org ([203.11.71.1]:60475 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727275AbgKJVNC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Nov 2020 16:13:02 -0500
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CW0vH3kygz9s0b;
+        Wed, 11 Nov 2020 08:12:59 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1605042779;
+        bh=sqPUYH7dd9Iyds0ql3EubkQqUtQJ/UtFyeEmU/huRUI=;
+        h=Date:From:To:Cc:Subject:From;
+        b=k+yjf09pMZbFeBpsUA1txnyc9vInR/YdDC5ScmYfy1/ko3N9o3O5Df5wUEkPkkY2r
+         YnGyN0oZ/DTO9LqWCODg/LIBCy1D05dR6XWmYlRaRBIJlfsqxgPAved6btcco0aq67
+         5ziflbdWvdWkIn1h4s5VjmdPQY+2nJLGgQDpjxDjw6tJS/3PedDVELbTfI3SK+Q4rS
+         Z6IHzW02jVrD22+9vSTyThsJjwycp9NauPrAxIKMpCVwv6d+M8o9jaGSemmzXgqLdy
+         ejemE9w7UawXSDFFKHVwNiIHwAD01HtAmHPjIJkdQRvyerJFxthLi3D1+cOX/SNsT/
+         XcvHpVHOJqQOw==
+Date:   Wed, 11 Nov 2020 08:12:57 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Kalle Valo <kvalo@codeaurora.org>,
+        Wireless <linux-wireless@vger.kernel.org>
+Cc:     Avraham Stern <avraham.stern@intel.com>,
+        Johannes Berg <johannes.berg@intel.com>,
+        Luca Coelho <luciano.coelho@intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: Signed-off-by missing for commit in the
+ wireless-drivers tree
+Message-ID: <20201111081257.30418470@canb.auug.org.au>
 MIME-Version: 1.0
-References: <20201105144517.1826692-1-lee.jones@linaro.org> <20201105144517.1826692-7-lee.jones@linaro.org>
-In-Reply-To: <20201105144517.1826692-7-lee.jones@linaro.org>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Tue, 10 Nov 2020 16:12:44 -0500
-Message-ID: <CADnq5_Nv_5dbeeBfWN_Kfzt5ZJUDQR9icH_QL10o5v6AW=9qVw@mail.gmail.com>
-Subject: Re: [PATCH 06/19] gpu: drm: scheduler: sched_main: Provide missing
- description for 'sched' paramter
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     David Airlie <airlied@linux.ie>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>,
-        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
-        <linaro-mm-sig@lists.linaro.org>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        linux-media <linux-media@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/signed; boundary="Sig_/vzn4ewVMJ5LxThH.l=Ihuve";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 5, 2020 at 9:52 AM Lee Jones <lee.jones@linaro.org> wrote:
->
-> Fixes the following W=3D1 kernel build warning(s):
->
->  drivers/gpu/drm/scheduler/sched_main.c:74: warning: Function parameter o=
-r member 'sched' not described in 'drm_sched_rq_init'
->
-> Cc: David Airlie <airlied@linux.ie>
-> Cc: Daniel Vetter <daniel@ffwll.ch>
-> Cc: Sumit Semwal <sumit.semwal@linaro.org>
-> Cc: "Christian K=C3=B6nig" <christian.koenig@amd.com>
-> Cc: dri-devel@lists.freedesktop.org
-> Cc: linux-media@vger.kernel.org
-> Cc: linaro-mm-sig@lists.linaro.org
-> Signed-off-by: Lee Jones <lee.jones@linaro.org>
+--Sig_/vzn4ewVMJ5LxThH.l=Ihuve
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Applied.  Thanks!
+Hi all,
 
-Alex
+Commit
 
-> ---
->  drivers/gpu/drm/scheduler/sched_main.c | 1 +
->  1 file changed, 1 insertion(+)
->
-> diff --git a/drivers/gpu/drm/scheduler/sched_main.c b/drivers/gpu/drm/sch=
-eduler/sched_main.c
-> index 9a0d77a680180..da24c4e8b9fb3 100644
-> --- a/drivers/gpu/drm/scheduler/sched_main.c
-> +++ b/drivers/gpu/drm/scheduler/sched_main.c
-> @@ -65,6 +65,7 @@ static void drm_sched_process_job(struct dma_fence *f, =
-struct dma_fence_cb *cb);
->  /**
->   * drm_sched_rq_init - initialize a given run queue struct
->   *
-> + * @sched: scheduler instance to associate with this run queue
->   * @rq: scheduler run queue
->   *
->   * Initializes a scheduler runqueue.
-> --
-> 2.25.1
->
-> _______________________________________________
-> dri-devel mailing list
-> dri-devel@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+  97cc16943f23 ("iwlwifi: mvm: write queue_sync_state only for sync")
+
+is missing a Signed-off-by from its author.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/vzn4ewVMJ5LxThH.l=Ihuve
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl+rAlkACgkQAVBC80lX
+0Gz9BAf/U+w1IMbizJotCIWGahTuoqE/J5kzYiFSEXG2qyZZde9rwNVU6c5DZ0uM
+cSf4F8VlT9dPikB9LiRCtov+4NPWplBfPXx8KxJe+7HEbu/tNbdVGEvm2Db1rhDl
+3wQkMGUwrhNlHjJIPL7qq7anH425NS7UQS7+ye6mbN8XOj6yYSfN9jKaSW5hbRIK
+Zj+9KEWPARx3cTZK759Gqfi+MZoalTH1Fd+TV9Pep+JAsYc9tpyAy7RlojpUkSn1
+y43jAKTAz+I7VcaUdst28mBuDOs2S4+cT3E5Ufybedl4gg84xH+saus1H88P/aIH
+L8s8TqUnrolRZ8XP6Cm74rsd75T5OQ==
+=ug87
+-----END PGP SIGNATURE-----
+
+--Sig_/vzn4ewVMJ5LxThH.l=Ihuve--
