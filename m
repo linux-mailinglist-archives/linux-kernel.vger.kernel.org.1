@@ -2,165 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E5A72ACC06
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 04:49:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 288AF2ACC14
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 04:50:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730863AbgKJDtk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 22:49:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46206 "EHLO
+        id S1731800AbgKJDuH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 22:50:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46300 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730249AbgKJDtj (ORCPT
+        with ESMTP id S1731769AbgKJDuE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 22:49:39 -0500
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19057C0613CF
-        for <linux-kernel@vger.kernel.org>; Mon,  9 Nov 2020 19:49:39 -0800 (PST)
-Received: by mail-pg1-x543.google.com with SMTP id z24so9008187pgk.3
-        for <linux-kernel@vger.kernel.org>; Mon, 09 Nov 2020 19:49:39 -0800 (PST)
+        Mon, 9 Nov 2020 22:50:04 -0500
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 174A3C0613D3
+        for <linux-kernel@vger.kernel.org>; Mon,  9 Nov 2020 19:50:04 -0800 (PST)
+Received: by mail-pf1-x442.google.com with SMTP id w14so7541809pfd.7
+        for <linux-kernel@vger.kernel.org>; Mon, 09 Nov 2020 19:50:04 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=sDoxEoYXzOGDTRqKHmsK1PmkQ+v+kjtjORMumiaAdaY=;
-        b=VRHtKHrHp+YYnxmp5gRTU5t79Mq1+WJABfC0oh+1Cza26fX35vqeIx0L7pTcKEGdU6
-         oE7L7TMvPdmMiAWjDBxnEqqH6vZuu7nkQdgMtO4ya0zUSdp7zFPLHG3cAA/4+I6iJTSv
-         Dfl+SskuSqxVcP06diQkjLgkoaYUzFobZyNAuAzBxuDJ8rW3bYmniabBkXEE0iYn6lKD
-         2Offn4yIOhOBLAHNJbPGPN85qS+phnyo+6ye4t7WOzp8VkUz/Fdu0eGL1ZJ/ssKFriBO
-         NlMBufWsCcZcYF5pfeFv30h41qabhd8gLf3ysS0yokatYdlM5+pOlK+I6mntknRC7TcX
-         En8g==
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=zdSQFTCy7+/L4zU3ZF97r7YPRToNp4hA6tkIQzGJXC4=;
+        b=WMhIYZjfgSz9EDKlHqkGyz5ZV3GJkxZM0EZDQpoCRpa/mt4FNfFVW3mWAbbQMR6ZAw
+         DWUREB0rbwDM0KiLX/mk0a9c9EM6+OxWr7O60vMAwXWt5+ynoAbLx+15YIYnedvgQ5Ts
+         eE5+GDhqy0f5IowDQ89RXMn8D04xZEqRLnz3EBHZrWdHeWuhOVIFDL4MRfrFPoRwpxtC
+         IuKtCgye1t2z4hJZgWhl/bwhtbar9DHYCqe1V5qxtQuJD3ie02wcW1qHiNJO6HML+lF9
+         dDm4LaRgiLYDsXDgWi1nlr++78hDvp1HLDxN5hhteB7YbiYTLTO+Yc2C5NmegLqhz4fS
+         J+1Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=sDoxEoYXzOGDTRqKHmsK1PmkQ+v+kjtjORMumiaAdaY=;
-        b=rO67m4AHmBWy70BTufpJ4+hDKrTAgMoGmPou5ZG25va/kmGXal0ggu+mFr3AsP536X
-         mJEDUtroRZqXcB6rivV9PiAiR9+GtUnDC7v/+A8SmV698L8v2UJwKWTrkhM0kbDkQuA2
-         6FyXfBWrWfRp5PMSxVnLRN3lYnKOu2n4Y79CF1r0nVT5BEIMqzJeyA4UpxPUtUd1Iv46
-         +V8sX5iU/wzHBK5bJAsVK5H+MeHaIcnQBHd0TCSR11vrujbTEeLW/Z7sJdmKZ7U0H9mR
-         YX9Wfbo+SAcyvYku/Kv0L5pgUhbgsxy88tt0vCVhSGHbvtyG84WQqQZuK+GYzeOJRShx
-         I3uw==
-X-Gm-Message-State: AOAM531KSUJJosX72TANGJa+Cm9h3Z6l4M8lAgZEbpFA0rjuKXLoz2M5
-        ae2SifChqHVcFioqRvmG5dqUo3+q3w0yPw==
-X-Google-Smtp-Source: ABdhPJzH2pSKF1PV/0DDDEBwUaDZ0Qy7l115AmJfeyhAyHCxq657BbYMJVv7zdoWvPj0zHB54WdOCw==
-X-Received: by 2002:a17:90b:3708:: with SMTP id mg8mr2765897pjb.192.1604980178162;
-        Mon, 09 Nov 2020 19:49:38 -0800 (PST)
-Received: from localhost.localdomain ([2601:1c2:680:1319:692:26ff:feda:3a81])
-        by smtp.gmail.com with ESMTPSA id b4sm12380693pfi.208.2020.11.09.19.49.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 09 Nov 2020 19:49:37 -0800 (PST)
-From:   John Stultz <john.stultz@linaro.org>
-To:     lkml <linux-kernel@vger.kernel.org>
-Cc:     John Stultz <john.stultz@linaro.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Liam Mark <lmark@codeaurora.org>,
-        Laura Abbott <labbott@kernel.org>,
-        Brian Starkey <Brian.Starkey@arm.com>,
-        Hridya Valsaraju <hridya@google.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Sandeep Patil <sspatil@google.com>,
-        Daniel Mentz <danielmentz@google.com>,
-        Chris Goldsworthy <cgoldswo@codeaurora.org>,
-        =?UTF-8?q?=C3=98rjan=20Eide?= <orjan.eide@arm.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Ezequiel Garcia <ezequiel@collabora.com>,
-        Simon Ser <contact@emersion.fr>,
-        James Jones <jajones@nvidia.com>, linux-media@vger.kernel.org,
-        dri-devel@lists.freedesktop.org
-Subject: [PATCH v5 0/7] dma-buf: Performance improvements for system heap & a system-uncached implementation
-Date:   Tue, 10 Nov 2020 03:49:27 +0000
-Message-Id: <20201110034934.70898-1-john.stultz@linaro.org>
-X-Mailer: git-send-email 2.17.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=zdSQFTCy7+/L4zU3ZF97r7YPRToNp4hA6tkIQzGJXC4=;
+        b=L2dT6A8Qn468qTEGDHiFMJrv4Mop8EjoOmWd1FnlEp4ZKyZDUn11D92kuMUSeTXYEK
+         dJzBpk8vAlNFVZvOHP7Ps7DUz+uvbYJ/YkuyfICdCzb9QSHNFSA94bNvnWzo//mW7UPT
+         dpjLQiWFjfe0E+ftKUCWW8jtB5+aXwQ6ThmoGImaYENACsKU2g63xNc2NtVrSWnu5Q4C
+         bfVrW2mQ3w6Pb+bzrCHKkFKvtKjuFvPIeaxG/T2TiJuD7SlHt6++N7ABAZErNISf+MNG
+         JH7NHQkXFYcX642jmtJs3quAfaqhdlRxEVMkElEfqeMy8pxMQKEzxXIBZAjSVZaQ/GX2
+         15NQ==
+X-Gm-Message-State: AOAM531DIvF4DCxytU+cFizHJdPfXLPo1fwdgJIMcY8B0YHok/ZfaXZV
+        XKqJVOouz0VFUo9jh9USY7sQ6BL3KyZQXgWMgbdDiw==
+X-Google-Smtp-Source: ABdhPJxY3cmAN4MQVkEwrkoDndbn+RE6xEypaDMyAAT/Ov5wENT8YyEsfl1X4Gz4eLu7JEuIJjkGpp2htO2uZlxHZAM=
+X-Received: by 2002:a63:5804:: with SMTP id m4mr15125994pgb.31.1604980203620;
+ Mon, 09 Nov 2020 19:50:03 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <20201108141113.65450-1-songmuchun@bytedance.com>
+ <20201108141113.65450-6-songmuchun@bytedance.com> <20201109172144.GB17356@linux>
+In-Reply-To: <20201109172144.GB17356@linux>
+From:   Muchun Song <songmuchun@bytedance.com>
+Date:   Tue, 10 Nov 2020 11:49:27 +0800
+Message-ID: <CAMZfGtVm9buFPscDVn5F5nUE=Yq+y4NoL0ci74=hUyjaLAPQQg@mail.gmail.com>
+Subject: Re: [External] Re: [PATCH v3 05/21] mm/hugetlb: Introduce pgtable
+ allocation/freeing helpers
+To:     Oscar Salvador <osalvador@suse.de>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Thomas Gleixner <tglx@linutronix.de>, mingo@redhat.com,
+        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
+        dave.hansen@linux.intel.com, luto@kernel.org,
+        Peter Zijlstra <peterz@infradead.org>, viro@zeniv.linux.org.uk,
+        Andrew Morton <akpm@linux-foundation.org>, paulmck@kernel.org,
+        mchehab+huawei@kernel.org, pawan.kumar.gupta@linux.intel.com,
+        Randy Dunlap <rdunlap@infradead.org>, oneukum@suse.com,
+        anshuman.khandual@arm.com, jroedel@suse.de,
+        Mina Almasry <almasrymina@google.com>,
+        David Rientjes <rientjes@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Xiongchun duan <duanxiongchun@bytedance.com>,
+        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hey All,
-  So just wanted to send my last revision of my patch series
-of performance optimizations to the dma-buf system heap.
+On Tue, Nov 10, 2020 at 1:21 AM Oscar Salvador <osalvador@suse.de> wrote:
+>
+> On Sun, Nov 08, 2020 at 10:10:57PM +0800, Muchun Song wrote:
+> > +static inline unsigned int pgtable_pages_to_prealloc_per_hpage(struct hstate *h)
+> > +{
+> > +     unsigned long vmemmap_size = vmemmap_pages_size_per_hpage(h);
+> > +
+> > +     /*
+> > +      * No need pre-allocate page tabels when there is no vmemmap pages
+> > +      * to free.
+>  s /tabels/tables/
 
-This series reworks the system heap to use sgtables, and then
-consolidates the pagelist method from the heap-helpers into the
-CMA heap. After which the heap-helpers logic is removed (as it
-is unused). I'd still like to find a better way to avoid some of
-the logic duplication in implementing the entire dma_buf_ops
-handlers per heap. But unfortunately that code is tied somewhat
-to how the buffer's memory is tracked. As more heaps show up I
-think we'll have a better idea how to best share code, so for
-now I think this is ok.
+Thanks.
 
-After this, the series introduces an optimization that
-Ørjan Eide implemented for ION that avoids calling sync on
-attachments that don't have a mapping.
+>
+> > +static int vmemmap_pgtable_prealloc(struct hstate *h, struct page *page)
+> > +{
+> > +     int i;
+> > +     pgtable_t pgtable;
+> > +     unsigned int nr = pgtable_pages_to_prealloc_per_hpage(h);
+> > +
+> > +     if (!nr)
+> > +             return 0;
+> > +
+> > +     vmemmap_pgtable_init(page);
+> > +
+> > +     for (i = 0; i < nr; i++) {
+> > +             pte_t *pte_p;
+> > +
+> > +             pte_p = pte_alloc_one_kernel(&init_mm);
+> > +             if (!pte_p)
+> > +                     goto out;
+> > +             vmemmap_pgtable_deposit(page, virt_to_page(pte_p));
+> > +     }
+> > +
+> > +     return 0;
+> > +out:
+> > +     while (i-- && (pgtable = vmemmap_pgtable_withdraw(page)))
+> > +             pte_free_kernel(&init_mm, page_to_virt(pgtable));
+>
+>         would not be enough to:
+>
+>         while (pgtable = vmemmap_pgtable_withdrag(page))
+>                 pte_free_kernel(&init_mm, page_to_virt(pgtable));
 
-Next, an optimization to use larger order pages for the system
-heap. This change brings us closer to the current performance
-of the ION allocation code (though there still is a gap due
-to ION using a mix of deferred-freeing and page pools, I'll be
-looking at integrating those eventually).
+The vmemmap_pgtable_withdraw can not return NULL. So we can not
+drop the "i--".
 
-Finally, a reworked version of my uncached system heap
-implementation I was submitting a few weeks back. Since it
-duplicated a lot of the now reworked system heap code, I
-realized it would be much simpler to add the functionality to
-the system_heap implementation itself.
+>
+> > +     return -ENOMEM;
+> > +}
+> > +
+> > +static void vmemmap_pgtable_free(struct hstate *h, struct page *page)
+> > +{
+> > +     pgtable_t pgtable;
+> > +     unsigned int nr = pgtable_pages_to_prealloc_per_hpage(h);
+> > +
+> > +     if (!nr)
+> > +             return;
+>
+> We can get rid of "nr" and its check and keep only the check below, right?
 
-While not improving the core allocation performance, the
-uncached heap allocations do result in *much* improved
-performance on HiKey960 as it avoids a lot of flushing and
-invalidating buffers that the cpu doesn't touch often.
+Great, the check can go away.
 
-Feedback on these would be great!
+> AFAICS, they go together, e.g: if page_huge_pte does not return null,
+> it means that we preallocated a pagetable, and viceversa.
+>
+>
+> > +
+> > +     pgtable = page_huge_pte(page);
+> > +     if (!pgtable)
+> > +             return;
+> > +
+> > +     while (nr-- && (pgtable = vmemmap_pgtable_withdraw(page)))
+> > +             pte_free_kernel(&init_mm, page_to_virt(pgtable));
+>
+>         Same as above, that "nr" can go?
 
-thanks
--john
+Here "nr" can not go. Because the vmemmap_pgtable_withdraw can
+not return NULL.
 
-New in v5:
-* Added a comment explaining why the order sizes are
-  chosen as they are
+Thanks.
 
-Cc: Sumit Semwal <sumit.semwal@linaro.org>
-Cc: Liam Mark <lmark@codeaurora.org>
-Cc: Laura Abbott <labbott@kernel.org>
-Cc: Brian Starkey <Brian.Starkey@arm.com>
-Cc: Hridya Valsaraju <hridya@google.com>
-Cc: Suren Baghdasaryan <surenb@google.com>
-Cc: Sandeep Patil <sspatil@google.com>
-Cc: Daniel Mentz <danielmentz@google.com>
-Cc: Chris Goldsworthy <cgoldswo@codeaurora.org>
-Cc: Ørjan Eide <orjan.eide@arm.com>
-Cc: Robin Murphy <robin.murphy@arm.com>
-Cc: Ezequiel Garcia <ezequiel@collabora.com>
-Cc: Simon Ser <contact@emersion.fr>
-Cc: James Jones <jajones@nvidia.com>
-Cc: linux-media@vger.kernel.org
-Cc: dri-devel@lists.freedesktop.org
+>
+> --
+> Oscar Salvador
+> SUSE L3
 
-John Stultz (7):
-  dma-buf: system_heap: Rework system heap to use sgtables instead of
-    pagelists
-  dma-buf: heaps: Move heap-helper logic into the cma_heap
-    implementation
-  dma-buf: heaps: Remove heap-helpers code
-  dma-buf: heaps: Skip sync if not mapped
-  dma-buf: system_heap: Allocate higher order pages if available
-  dma-buf: dma-heap: Keep track of the heap device struct
-  dma-buf: system_heap: Add a system-uncached heap re-using the system
-    heap
 
- drivers/dma-buf/dma-heap.c           |  33 +-
- drivers/dma-buf/heaps/Makefile       |   1 -
- drivers/dma-buf/heaps/cma_heap.c     | 324 +++++++++++++++---
- drivers/dma-buf/heaps/heap-helpers.c | 270 ---------------
- drivers/dma-buf/heaps/heap-helpers.h |  53 ---
- drivers/dma-buf/heaps/system_heap.c  | 494 ++++++++++++++++++++++++---
- include/linux/dma-heap.h             |   9 +
- 7 files changed, 753 insertions(+), 431 deletions(-)
- delete mode 100644 drivers/dma-buf/heaps/heap-helpers.c
- delete mode 100644 drivers/dma-buf/heaps/heap-helpers.h
 
 -- 
-2.17.1
-
+Yours,
+Muchun
