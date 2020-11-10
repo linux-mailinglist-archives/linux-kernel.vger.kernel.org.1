@@ -2,116 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E689C2AE0BF
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 21:33:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D5B9D2AE0B4
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 21:33:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731670AbgKJUdi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 15:33:38 -0500
-Received: from aserp2120.oracle.com ([141.146.126.78]:53548 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725862AbgKJUdh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 15:33:37 -0500
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AAKJm5L005825;
-        Tue, 10 Nov 2020 20:32:57 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=RT7z64OT2cF0627d3gcxVXgoifV1/qIO4IvouGljyV8=;
- b=ODHXo3gAY+hpzv3UOFyKd3WyR5o8AFJ8VSx2gWvhAvNL2+luZ6TLfSVQG9jLxjKOp8CF
- clpSSBNjYh0lms8yufqfoWlkCyhokg2iYz53m3/n7+7pDUaMyopS24GLg1aruuQD4QtR
- 6Fg9gAr5rCXBFQo+c702nDjGwPS55IP5H8Lb2FJp3khPCcacNpDEcRsmWRJaJIAiK2C0
- nFESfPJ721kbXF2gWrxr5RWv4XAwma1lZwM3JDX0S/Ci22r4sXcGEFsPPDBriaLlfOqD
- OakRBX6TgA25Zx/eR2PiIzkALF0eHMv/QwXJynB7mtSCO5GN1QYRWJi+s1+tdMmtrNHV WA== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by aserp2120.oracle.com with ESMTP id 34nkhkwqhd-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 10 Nov 2020 20:32:57 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AAKKBBa104831;
-        Tue, 10 Nov 2020 20:30:56 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by userp3030.oracle.com with ESMTP id 34p5gxfsjx-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 10 Nov 2020 20:30:56 +0000
-Received: from abhmp0008.oracle.com (abhmp0008.oracle.com [141.146.116.14])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0AAKUpEX003358;
-        Tue, 10 Nov 2020 20:30:51 GMT
-Received: from [192.168.2.112] (/50.38.35.18)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 10 Nov 2020 12:30:51 -0800
-Subject: Re: [PATCH v3 03/21] mm/hugetlb: Introduce a new config
- HUGETLB_PAGE_FREE_VMEMMAP
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Oscar Salvador <osalvador@suse.de>,
-        Muchun Song <songmuchun@bytedance.com>, corbet@lwn.net,
-        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
-        hpa@zytor.com, dave.hansen@linux.intel.com, luto@kernel.org,
-        peterz@infradead.org, viro@zeniv.linux.org.uk,
-        akpm@linux-foundation.org, paulmck@kernel.org,
-        mchehab+huawei@kernel.org, pawan.kumar.gupta@linux.intel.com,
-        rdunlap@infradead.org, oneukum@suse.com, anshuman.khandual@arm.com,
-        jroedel@suse.de, almasrymina@google.com, rientjes@google.com,
-        mhocko@suse.com, duanxiongchun@bytedance.com,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org
-References: <20201108141113.65450-1-songmuchun@bytedance.com>
- <20201108141113.65450-4-songmuchun@bytedance.com>
- <20201109135215.GA4778@localhost.localdomain>
- <ef564084-ea73-d579-9251-ec0440df2b48@oracle.com>
- <20201110195025.GN17076@casper.infradead.org>
-From:   Mike Kravetz <mike.kravetz@oracle.com>
-Message-ID: <2aec4539-a55d-4df3-7753-75a33250b6b8@oracle.com>
-Date:   Tue, 10 Nov 2020 12:30:48 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.1
+        id S1731503AbgKJUdO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 15:33:14 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49786 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725862AbgKJUdM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Nov 2020 15:33:12 -0500
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4A8452065E;
+        Tue, 10 Nov 2020 20:33:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605040391;
+        bh=yJTYZmAXuxpcGEJyYxHhM5frnzHMmu2d66zn6Bja/hc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=0+9M3MIhvG1jKl+29RdqvQt51vR+oaGK/8GCDfVOFt7DeuVYh3d1crHlNZUC8WDds
+         g9vkQkcCbbEoXNQpyaSLrzdPjoLqf+ydgGGXiFyaUf3ctGyVRw0DSvUJ1vfluiCeqN
+         k/eioYuKDJ0bQsdAJATDhkiDO1uTXHoc1BDNDaN4=
+Date:   Tue, 10 Nov 2020 20:32:57 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     Thierry Reding <thierry.reding@gmail.com>
+Cc:     Dmitry Osipenko <digetx@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Peter Chen <Peter.Chen@nxp.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Peter Geis <pgwipeout@gmail.com>,
+        Nicolas Chauvet <kwizart@gmail.com>,
+        linux-samsung-soc@vger.kernel.org, devel@driverdev.osuosl.org,
+        linux-usb@vger.kernel.org, linux-pwm@vger.kernel.org,
+        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-media@vger.kernel.org, linux-tegra@vger.kernel.org
+Subject: Re: [PATCH v1 11/30] drm/tegra: dc: Support OPP and SoC core voltage
+ scaling
+Message-ID: <20201110203257.GC5957@sirena.org.uk>
+References: <20201104234427.26477-1-digetx@gmail.com>
+ <20201104234427.26477-12-digetx@gmail.com>
+ <20201110202945.GF2375022@ulmo>
 MIME-Version: 1.0
-In-Reply-To: <20201110195025.GN17076@casper.infradead.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9801 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 mlxlogscore=999 mlxscore=0
- spamscore=0 phishscore=0 adultscore=0 malwarescore=0 suspectscore=2
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2011100138
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9801 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 priorityscore=1501
- mlxscore=0 suspectscore=2 mlxlogscore=999 lowpriorityscore=0 spamscore=0
- malwarescore=0 adultscore=0 clxscore=1015 bulkscore=0 impostorscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2011100138
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="f+W+jCU1fRNres8c"
+Content-Disposition: inline
+In-Reply-To: <20201110202945.GF2375022@ulmo>
+X-Cookie: Disk crisis, please clean up!
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/10/20 11:50 AM, Matthew Wilcox wrote:
-> On Tue, Nov 10, 2020 at 11:31:31AM -0800, Mike Kravetz wrote:
->> On 11/9/20 5:52 AM, Oscar Salvador wrote:
->>> On Sun, Nov 08, 2020 at 10:10:55PM +0800, Muchun Song wrote:
-> 
-> I don't like config options.  I like boot options even less.  I don't
-> know how to describe to an end-user whether they should select this
-> or not.  Is there a way to make this not a tradeoff?  Or make the
-> tradeoff so minimal as to be not worth describing?  (do we have numbers
-> for the worst possible situation when enabling this option?)
 
-It is not exactly worst case, but Muchun provided some simple benchmarking
-results in the cover letter.  Quick summary is that hugetlb page creation
-and free time is "~2x slower".  At first glance, one would say that is
-terrible.  However, remember that the majority of use cases create hugetlb
-pages at or shortly after boot time and add them to the pool.  So, additional
-overhead is at pool creation time.  There is no change to 'normal run time'
-operations of getting a page from or returning a page to the pool (think
-page fault/unmap).
+--f+W+jCU1fRNres8c
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-> I haven't read through these patches in detail, so maybe we do this
-> already, but when we free the pages to the buddy allocator, do we retain
-> the third page to use for the PTEs (and free pages 3-7), or do we allocate
-> a separate page for the PTES and free pages 2-7?
+On Tue, Nov 10, 2020 at 09:29:45PM +0100, Thierry Reding wrote:
+> On Thu, Nov 05, 2020 at 02:44:08AM +0300, Dmitry Osipenko wrote:
 
-I haven't got there in this latest series.  But, in previous revisions the
-code did allocate a separate page.
--- 
-Mike Kravetz
+> > +	/*
+> > +	 * Voltage scaling is optional and trying to set voltage for a dummy
+> > +	 * regulator will error out.
+> > +	 */
+> > +	if (!device_property_present(dc->dev, "core-supply"))
+> > +		return;
+
+> This is a potentially heavy operation, so I think we should avoid that
+> here. How about you use devm_regulator_get_optional() in ->probe()? That
+> returns -ENODEV if no regulator was specified, in which case you can set
+> dc->core_reg = NULL and use that as the condition here.
+
+Or enumerate the configurable voltages after getting the regulator and
+handle that appropriately which would be more robust in case there's
+missing or unusual constraints.
+
+--f+W+jCU1fRNres8c
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl+q+PkACgkQJNaLcl1U
+h9Di3Af+KvYDy9j9hzr4giaqciyG6ZuO/j4tEwL8vjsyaMREZ12mZ3xOOgu04UTQ
+KYUtOH+AIWAUWOBwJNWEgKiRd04eMyhD6IHeCT1lip3XWBxXOEr9/YGXba3fVI/J
+vvHATycSemWFAYfZ1yjhz2fAxz4zxgwujwivC1/YKWjHZi8vFTy16R9yY5Eex5l/
+eplxyfun7IvJxFiVf5XDK4K2lGmn783N6VYofq6lAUknQ+TxScbl9QNyKNihB7Ys
+tOgGgxJpK6+xFKP8RWC34O3W++wjUL2sUZUhvVKP059roKdB0gej+D9DnV+RCYHf
+AloxftWStaHBnOpYPmbGoUoaK8isGQ==
+=oCrN
+-----END PGP SIGNATURE-----
+
+--f+W+jCU1fRNres8c--
