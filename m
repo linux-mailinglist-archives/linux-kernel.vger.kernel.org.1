@@ -2,202 +2,222 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 479292ADB13
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 17:01:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DE0AF2ADB17
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 17:02:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731294AbgKJQBf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 11:01:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46932 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730473AbgKJQBf (ORCPT
+        id S1731478AbgKJQCG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 11:02:06 -0500
+Received: from plasma4.jpberlin.de ([80.241.57.33]:53077 "EHLO
+        plasma4.jpberlin.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730859AbgKJQCF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 11:01:35 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDFDCC0613CF
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 08:01:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Mime-Version:Content-Type:References:
-        In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=tDoRCi+Zs3T0ppDFS3fLXp7VPeGjcTjJB9j1YqXe0vc=; b=OPeW6X9d7rjdyf3EaydpZ93a1h
-        XasLzKpFZ9zrVO3hzfSpO7sRqV3EuwNqYbNtvzGT6W9lKJZN03zXsI9W6xY3qri5bByDD1cpT5dTO
-        xbrEcSmO6tu62RZEiGq96l2wMD95zdPcEvBClkQRa31G8KeBGmsL0BhpiLuebMA35AeCQVXapDux8
-        EkoPXefCzVVc/tgoRlAGR4qmP+qEp2bOU1tvihvB1khhgK322n10uEGihFD7LYjIuUgY4pM/6/EuR
-        V8a5ecMlRTXK9YzPtVoCxLC/Net27N/NXO2QL7h1rk6/kwX0HrvSvVuNH2M2CnZUmM+qHb0JwRzEP
-        0fyOzW3g==;
-Received: from [54.239.6.187] (helo=freeip.amazon.com)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kcW5J-0001NX-AD; Tue, 10 Nov 2020 16:01:29 +0000
-Message-ID: <9574251616840b634c2c6466ab15e4604f8ac9c2.camel@infradead.org>
-Subject: Re: [EXTERNAL] [tip: x86/apic] x86/io_apic: Cleanup
- trigger/polarity helpers
-From:   David Woodhouse <dwmw2@infradead.org>
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Borislav Petkov <bp@alien8.de>
-Cc:     linux-kernel@vger.kernel.org, x86 <x86@kernel.org>,
-        Qian Cai <cai@redhat.com>, Joerg Roedel <joro@8bytes.org>
-Date:   Tue, 10 Nov 2020 16:01:27 +0000
-In-Reply-To: <87a6vpgqbt.fsf@nanos.tec.linutronix.de>
-References: <20201024213535.443185-20-dwmw2@infradead.org>
-         <160397373817.397.3191135882528008704.tip-bot2@tip-bot2>
-         <e2e06979-cbcf-8771-0b48-c46f2d034aa8@amd.com>
-         <20201110061046.GA7290@nazgul.tnic>
-         <87d00lgu13.fsf@nanos.tec.linutronix.de>
-         <9a003c2f-f59a-43ab-bbd5-861b14436d29@amd.com>
-         <87a6vpgqbt.fsf@nanos.tec.linutronix.de>
-Content-Type: multipart/signed; micalg="sha-256";
-        protocol="application/x-pkcs7-signature";
-        boundary="=-2iAse+pyUizUwDBzmQgf"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
-Mime-Version: 1.0
-X-SRS-Rewrite: SMTP reverse-path rewritten from <dwmw2@infradead.org> by merlin.infradead.org. See http://www.infradead.org/rpr.html
+        Tue, 10 Nov 2020 11:02:05 -0500
+Received: from hefe.heinlein-support.de (hefe.heinlein-support.de [91.198.250.172])
+        by plasma.jpberlin.de (Postfix) with ESMTP id 080C5AAF9B;
+        Tue, 10 Nov 2020 17:02:01 +0100 (CET)
+X-Virus-Scanned: amavisd-new at heinlein-support.de
+Received: from plasma.jpberlin.de ([91.198.250.140])
+        by hefe.heinlein-support.de (hefe.heinlein-support.de [91.198.250.172]) (amavisd-new, port 10030)
+        with ESMTP id VE4u6V1FvHwf; Tue, 10 Nov 2020 17:01:59 +0100 (CET)
+Received: from webmail.opensynergy.com (unknown [217.66.60.5])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+        (Client CN "*.opensynergy.com", Issuer "Starfield Secure Certificate Authority - G2" (not verified))
+        (Authenticated sender: opensynergy@jpberlin.de)
+        by plasma.jpberlin.de (Postfix) with ESMTPSA id 68595A90B5;
+        Tue, 10 Nov 2020 17:01:59 +0100 (CET)
+Subject: Re: [PATCH v2 6/6] firmware: arm_scmi: add SCMIv3.0 Sensor
+ notifications
+To:     Cristian Marussi <cristian.marussi@arm.com>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>
+CC:     <mikhail.golubev@opensynergy.com>, <Igor.Skalkin@opensynergy.com>,
+        <jbhayana@google.com>, <sudeep.holla@arm.com>,
+        <peter.hilber@opensynergy.com>, <james.quinlan@broadcom.com>,
+        <Jonathan.Cameron@Huawei.com>, <egranata@google.com>,
+        <lukasz.luba@arm.com>
+References: <20201026201007.23591-1-cristian.marussi@arm.com>
+ <20201026201007.23591-7-cristian.marussi@arm.com>
+From:   Peter Hilber <peter.hilber@opensynergy.com>
+Autocrypt: addr=peter.hilber@opensynergy.com; prefer-encrypt=mutual; keydata=
+ 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
+ lbekkuPTQs/m
+Message-ID: <8f8e171e-03eb-f818-48e5-f542d1ab9061@opensynergy.com>
+Date:   Tue, 10 Nov 2020 17:01:57 +0100
+MIME-Version: 1.0
+In-Reply-To: <20201026201007.23591-7-cristian.marussi@arm.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: SR-MAIL-02.open-synergy.com (10.26.10.22) To
+ SR-MAIL-01.open-synergy.com (10.26.10.21)
+X-MBO-SPAM-Probability: 
+X-Rspamd-Score: -7.73 / 15.00 / 15.00
+X-Rspamd-Queue-Id: 080C5AAF9B
+X-Rspamd-UID: 248ee4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 26.10.20 21:10, Cristian Marussi wrote:
+> Add support for new SCMIv3.0 SENSOR_UPDATE notification.
+> 
+> Signed-off-by: Cristian Marussi <cristian.marussi@arm.com>
+> ---
+>  drivers/firmware/arm_scmi/sensors.c | 124 ++++++++++++++++++++++++----
+>  include/linux/scmi_protocol.h       |   9 ++
+>  2 files changed, 116 insertions(+), 17 deletions(-)
+> 
+> diff --git a/drivers/firmware/arm_scmi/sensors.c b/drivers/firmware/arm_scmi/sensors.c
+> index 372a3592e99b..51921e279c9f 100644
+> --- a/drivers/firmware/arm_scmi/sensors.c
+> +++ b/drivers/firmware/arm_scmi/sensors.c
+> @@ -24,6 +24,7 @@ enum scmi_sensor_protocol_cmd {
+>  	SENSOR_LIST_UPDATE_INTERVALS = 0x8,
+>  	SENSOR_CONFIG_GET = 0x9,
+>  	SENSOR_CONFIG_SET = 0xA,
+> +	SENSOR_CONTINUOUS_UPDATE_NOTIFY = 0xB,
+>  };
+>  
+>  struct scmi_msg_resp_sensor_attributes {
+> @@ -133,10 +134,10 @@ struct scmi_msg_resp_sensor_list_update_intervals {
+>  	__le32 intervals[];
+>  };
+>  
+> -struct scmi_msg_sensor_trip_point_notify {
+> +struct scmi_msg_sensor_request_notify {
+>  	__le32 id;
+>  	__le32 event_control;
+> -#define SENSOR_TP_NOTIFY_ALL	BIT(0)
+> +#define SENSOR_NOTIFY_ALL	BIT(0)
+>  };
+>  
+>  struct scmi_msg_set_sensor_trip_point {
+> @@ -198,6 +199,17 @@ struct scmi_sensor_trip_notify_payld {
+>  	__le32 trip_point_desc;
+>  };
+>  
+> +struct scmi_msg_sensor_continuous_update_notify {
+> +	__le32 id;
+> +	__le32 event_control;
+> +};
 
---=-2iAse+pyUizUwDBzmQgf
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+This struct appears unused and redundant to struct
+scmi_msg_sensor_request_notify.
 
-On Tue, 2020-11-10 at 16:54 +0100, Thomas Gleixner wrote:
-> On Tue, Nov 10 2020 at 08:55, Tom Lendacky wrote:
-> > On 11/10/20 8:34 AM, Thomas Gleixner wrote:
-> > I was about to send the dmesg output when I saw this. A quick test
-> > with
-> > this change resolves the boot issue, thanks!
->=20
-> /me feels stupid
->=20
-> > I'm still seeing the warning at arch/x86/kernel/apic/apic.c:2527,
-> > but I'll
-> > start a separate thread on that.
->=20
-> Can you please provide the backtrace?
+[...]
 
-We'll want something like this, to stop AMD IOMMU from registering its
-irqdomain even when it shouldn't. But that's the wrong way round; that
-would give you remapped MSIs when it should be using the
-x86_vector_domain for them. And you have the converse, it seems.
+> @@ -850,20 +892,58 @@ static void *scmi_sensor_fill_custom_report(const struct scmi_handle *handle,
+>  					    const void *payld, size_t payld_sz,
+>  					    void *report, u32 *src_id)
+>  {
+> +	void *rep = NULL;
+>  	const struct scmi_sensor_trip_notify_payld *p = payld;
+>  	struct scmi_sensor_trip_point_report *r = report;
 
---- a/drivers/iommu/amd/init.c
-+++ b/drivers/iommu/amd/init.c
-@@ -1601,9 +1601,11 @@ static int __init init_iommu_one(struct amd_iommu *i=
-ommu, struct ivhd_header *h)
- 	if (ret)
- 		return ret;
-=20
--	ret =3D amd_iommu_create_irq_domain(iommu);
--	if (ret)
--		return ret;
-+	if (amd_iommu_irq_remap) {
-+		ret =3D amd_iommu_create_irq_domain(iommu);
-+		if (ret)
-+			return ret;
-+	}
-=20
- 	/*
- 	 * Make sure IOMMU is not considered to translate itself. The IVRS
+Above two variables should be moved into the first case block.
 
+Best regards,
 
---=-2iAse+pyUizUwDBzmQgf
-Content-Type: application/x-pkcs7-signature; name="smime.p7s"
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Transfer-Encoding: base64
+Peter
 
-MIAGCSqGSIb3DQEHAqCAMIACAQExDzANBglghkgBZQMEAgEFADCABgkqhkiG9w0BBwEAAKCCECow
-ggUcMIIEBKADAgECAhEA4rtJSHkq7AnpxKUY8ZlYZjANBgkqhkiG9w0BAQsFADCBlzELMAkGA1UE
-BhMCR0IxGzAZBgNVBAgTEkdyZWF0ZXIgTWFuY2hlc3RlcjEQMA4GA1UEBxMHU2FsZm9yZDEaMBgG
-A1UEChMRQ09NT0RPIENBIExpbWl0ZWQxPTA7BgNVBAMTNENPTU9ETyBSU0EgQ2xpZW50IEF1dGhl
-bnRpY2F0aW9uIGFuZCBTZWN1cmUgRW1haWwgQ0EwHhcNMTkwMTAyMDAwMDAwWhcNMjIwMTAxMjM1
-OTU5WjAkMSIwIAYJKoZIhvcNAQkBFhNkd213MkBpbmZyYWRlYWQub3JnMIIBIjANBgkqhkiG9w0B
-AQEFAAOCAQ8AMIIBCgKCAQEAsv3wObLTCbUA7GJqKj9vHGf+Fa+tpkO+ZRVve9EpNsMsfXhvFpb8
-RgL8vD+L133wK6csYoDU7zKiAo92FMUWaY1Hy6HqvVr9oevfTV3xhB5rQO1RHJoAfkvhy+wpjo7Q
-cXuzkOpibq2YurVStHAiGqAOMGMXhcVGqPuGhcVcVzVUjsvEzAV9Po9K2rpZ52FE4rDkpDK1pBK+
-uOAyOkgIg/cD8Kugav5tyapydeWMZRJQH1vMQ6OVT24CyAn2yXm2NgTQMS1mpzStP2ioPtTnszIQ
-Ih7ASVzhV6csHb8Yrkx8mgllOyrt9Y2kWRRJFm/FPRNEurOeNV6lnYAXOymVJwIDAQABo4IB0zCC
-Ac8wHwYDVR0jBBgwFoAUgq9sjPjF/pZhfOgfPStxSF7Ei8AwHQYDVR0OBBYEFLfuNf820LvaT4AK
-xrGK3EKx1DE7MA4GA1UdDwEB/wQEAwIFoDAMBgNVHRMBAf8EAjAAMB0GA1UdJQQWMBQGCCsGAQUF
-BwMEBggrBgEFBQcDAjBGBgNVHSAEPzA9MDsGDCsGAQQBsjEBAgEDBTArMCkGCCsGAQUFBwIBFh1o
-dHRwczovL3NlY3VyZS5jb21vZG8ubmV0L0NQUzBaBgNVHR8EUzBRME+gTaBLhklodHRwOi8vY3Js
-LmNvbW9kb2NhLmNvbS9DT01PRE9SU0FDbGllbnRBdXRoZW50aWNhdGlvbmFuZFNlY3VyZUVtYWls
-Q0EuY3JsMIGLBggrBgEFBQcBAQR/MH0wVQYIKwYBBQUHMAKGSWh0dHA6Ly9jcnQuY29tb2RvY2Eu
-Y29tL0NPTU9ET1JTQUNsaWVudEF1dGhlbnRpY2F0aW9uYW5kU2VjdXJlRW1haWxDQS5jcnQwJAYI
-KwYBBQUHMAGGGGh0dHA6Ly9vY3NwLmNvbW9kb2NhLmNvbTAeBgNVHREEFzAVgRNkd213MkBpbmZy
-YWRlYWQub3JnMA0GCSqGSIb3DQEBCwUAA4IBAQALbSykFusvvVkSIWttcEeifOGGKs7Wx2f5f45b
-nv2ghcxK5URjUvCnJhg+soxOMoQLG6+nbhzzb2rLTdRVGbvjZH0fOOzq0LShq0EXsqnJbbuwJhK+
-PnBtqX5O23PMHutP1l88AtVN+Rb72oSvnD+dK6708JqqUx2MAFLMevrhJRXLjKb2Mm+/8XBpEw+B
-7DisN4TMlLB/d55WnT9UPNHmQ+3KFL7QrTO8hYExkU849g58Dn3Nw3oCbMUgny81ocrLlB2Z5fFG
-Qu1AdNiBA+kg/UxzyJZpFbKfCITd5yX49bOriL692aMVDyqUvh8fP+T99PqorH4cIJP6OxSTdxKM
-MIIFHDCCBASgAwIBAgIRAOK7SUh5KuwJ6cSlGPGZWGYwDQYJKoZIhvcNAQELBQAwgZcxCzAJBgNV
-BAYTAkdCMRswGQYDVQQIExJHcmVhdGVyIE1hbmNoZXN0ZXIxEDAOBgNVBAcTB1NhbGZvcmQxGjAY
-BgNVBAoTEUNPTU9ETyBDQSBMaW1pdGVkMT0wOwYDVQQDEzRDT01PRE8gUlNBIENsaWVudCBBdXRo
-ZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBMB4XDTE5MDEwMjAwMDAwMFoXDTIyMDEwMTIz
-NTk1OVowJDEiMCAGCSqGSIb3DQEJARYTZHdtdzJAaW5mcmFkZWFkLm9yZzCCASIwDQYJKoZIhvcN
-AQEBBQADggEPADCCAQoCggEBALL98Dmy0wm1AOxiaio/bxxn/hWvraZDvmUVb3vRKTbDLH14bxaW
-/EYC/Lw/i9d98CunLGKA1O8yogKPdhTFFmmNR8uh6r1a/aHr301d8YQea0DtURyaAH5L4cvsKY6O
-0HF7s5DqYm6tmLq1UrRwIhqgDjBjF4XFRqj7hoXFXFc1VI7LxMwFfT6PStq6WedhROKw5KQytaQS
-vrjgMjpICIP3A/CroGr+bcmqcnXljGUSUB9bzEOjlU9uAsgJ9sl5tjYE0DEtZqc0rT9oqD7U57My
-ECIewElc4VenLB2/GK5MfJoJZTsq7fWNpFkUSRZvxT0TRLqznjVepZ2AFzsplScCAwEAAaOCAdMw
-ggHPMB8GA1UdIwQYMBaAFIKvbIz4xf6WYXzoHz0rcUhexIvAMB0GA1UdDgQWBBS37jX/NtC72k+A
-CsaxitxCsdQxOzAOBgNVHQ8BAf8EBAMCBaAwDAYDVR0TAQH/BAIwADAdBgNVHSUEFjAUBggrBgEF
-BQcDBAYIKwYBBQUHAwIwRgYDVR0gBD8wPTA7BgwrBgEEAbIxAQIBAwUwKzApBggrBgEFBQcCARYd
-aHR0cHM6Ly9zZWN1cmUuY29tb2RvLm5ldC9DUFMwWgYDVR0fBFMwUTBPoE2gS4ZJaHR0cDovL2Ny
-bC5jb21vZG9jYS5jb20vQ09NT0RPUlNBQ2xpZW50QXV0aGVudGljYXRpb25hbmRTZWN1cmVFbWFp
-bENBLmNybDCBiwYIKwYBBQUHAQEEfzB9MFUGCCsGAQUFBzAChklodHRwOi8vY3J0LmNvbW9kb2Nh
-LmNvbS9DT01PRE9SU0FDbGllbnRBdXRoZW50aWNhdGlvbmFuZFNlY3VyZUVtYWlsQ0EuY3J0MCQG
-CCsGAQUFBzABhhhodHRwOi8vb2NzcC5jb21vZG9jYS5jb20wHgYDVR0RBBcwFYETZHdtdzJAaW5m
-cmFkZWFkLm9yZzANBgkqhkiG9w0BAQsFAAOCAQEAC20spBbrL71ZEiFrbXBHonzhhirO1sdn+X+O
-W579oIXMSuVEY1LwpyYYPrKMTjKECxuvp24c829qy03UVRm742R9Hzjs6tC0oatBF7KpyW27sCYS
-vj5wbal+TttzzB7rT9ZfPALVTfkW+9qEr5w/nSuu9PCaqlMdjABSzHr64SUVy4ym9jJvv/FwaRMP
-gew4rDeEzJSwf3eeVp0/VDzR5kPtyhS+0K0zvIWBMZFPOPYOfA59zcN6AmzFIJ8vNaHKy5QdmeXx
-RkLtQHTYgQPpIP1Mc8iWaRWynwiE3ecl+PWzq4i+vdmjFQ8qlL4fHz/k/fT6qKx+HCCT+jsUk3cS
-jDCCBeYwggPOoAMCAQICEGqb4Tg7/ytrnwHV2binUlYwDQYJKoZIhvcNAQEMBQAwgYUxCzAJBgNV
-BAYTAkdCMRswGQYDVQQIExJHcmVhdGVyIE1hbmNoZXN0ZXIxEDAOBgNVBAcTB1NhbGZvcmQxGjAY
-BgNVBAoTEUNPTU9ETyBDQSBMaW1pdGVkMSswKQYDVQQDEyJDT01PRE8gUlNBIENlcnRpZmljYXRp
-b24gQXV0aG9yaXR5MB4XDTEzMDExMDAwMDAwMFoXDTI4MDEwOTIzNTk1OVowgZcxCzAJBgNVBAYT
-AkdCMRswGQYDVQQIExJHcmVhdGVyIE1hbmNoZXN0ZXIxEDAOBgNVBAcTB1NhbGZvcmQxGjAYBgNV
-BAoTEUNPTU9ETyBDQSBMaW1pdGVkMT0wOwYDVQQDEzRDT01PRE8gUlNBIENsaWVudCBBdXRoZW50
-aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKC
-AQEAvrOeV6wodnVAFsc4A5jTxhh2IVDzJXkLTLWg0X06WD6cpzEup/Y0dtmEatrQPTRI5Or1u6zf
-+bGBSyD9aH95dDSmeny1nxdlYCeXIoymMv6pQHJGNcIDpFDIMypVpVSRsivlJTRENf+RKwrB6vcf
-WlP8dSsE3Rfywq09N0ZfxcBa39V0wsGtkGWC+eQKiz4pBZYKjrc5NOpG9qrxpZxyb4o4yNNwTqza
-aPpGRqXB7IMjtf7tTmU2jqPMLxFNe1VXj9XB1rHvbRikw8lBoNoSWY66nJN/VCJv5ym6Q0mdCbDK
-CMPybTjoNCQuelc0IAaO4nLUXk0BOSxSxt8kCvsUtQIDAQABo4IBPDCCATgwHwYDVR0jBBgwFoAU
-u69+Aj36pvE8hI6t7jiY7NkyMtQwHQYDVR0OBBYEFIKvbIz4xf6WYXzoHz0rcUhexIvAMA4GA1Ud
-DwEB/wQEAwIBhjASBgNVHRMBAf8ECDAGAQH/AgEAMBEGA1UdIAQKMAgwBgYEVR0gADBMBgNVHR8E
-RTBDMEGgP6A9hjtodHRwOi8vY3JsLmNvbW9kb2NhLmNvbS9DT01PRE9SU0FDZXJ0aWZpY2F0aW9u
-QXV0aG9yaXR5LmNybDBxBggrBgEFBQcBAQRlMGMwOwYIKwYBBQUHMAKGL2h0dHA6Ly9jcnQuY29t
-b2RvY2EuY29tL0NPTU9ET1JTQUFkZFRydXN0Q0EuY3J0MCQGCCsGAQUFBzABhhhodHRwOi8vb2Nz
-cC5jb21vZG9jYS5jb20wDQYJKoZIhvcNAQEMBQADggIBAHhcsoEoNE887l9Wzp+XVuyPomsX9vP2
-SQgG1NgvNc3fQP7TcePo7EIMERoh42awGGsma65u/ITse2hKZHzT0CBxhuhb6txM1n/y78e/4ZOs
-0j8CGpfb+SJA3GaBQ+394k+z3ZByWPQedXLL1OdK8aRINTsjk/H5Ns77zwbjOKkDamxlpZ4TKSDM
-KVmU/PUWNMKSTvtlenlxBhh7ETrN543j/Q6qqgCWgWuMAXijnRglp9fyadqGOncjZjaaSOGTTFB+
-E2pvOUtY+hPebuPtTbq7vODqzCM6ryEhNhzf+enm0zlpXK7q332nXttNtjv7VFNYG+I31gnMrwfH
-M5tdhYF/8v5UY5g2xANPECTQdu9vWPoqNSGDt87b3gXb1AiGGaI06vzgkejL580ul+9hz9D0S0U4
-jkhJiA7EuTecP/CFtR72uYRBcunwwH3fciPjviDDAI9SnC/2aPY8ydehzuZutLbZdRJ5PDEJM/1t
-yZR2niOYihZ+FCbtf3D9mB12D4ln9icgc7CwaxpNSCPt8i/GqK2HsOgkL3VYnwtx7cJUmpvVdZ4o
-gnzgXtgtdk3ShrtOS1iAN2ZBXFiRmjVzmehoMof06r1xub+85hFQzVxZx5/bRaTKTlL8YXLI8nAb
-R9HWdFqzcOoB/hxfEyIQpx9/s81rgzdEZOofSlZHynoSMYIDyjCCA8YCAQEwga0wgZcxCzAJBgNV
-BAYTAkdCMRswGQYDVQQIExJHcmVhdGVyIE1hbmNoZXN0ZXIxEDAOBgNVBAcTB1NhbGZvcmQxGjAY
-BgNVBAoTEUNPTU9ETyBDQSBMaW1pdGVkMT0wOwYDVQQDEzRDT01PRE8gUlNBIENsaWVudCBBdXRo
-ZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBAhEA4rtJSHkq7AnpxKUY8ZlYZjANBglghkgB
-ZQMEAgEFAKCCAe0wGAYJKoZIhvcNAQkDMQsGCSqGSIb3DQEHATAcBgkqhkiG9w0BCQUxDxcNMjAx
-MTEwMTYwMTI3WjAvBgkqhkiG9w0BCQQxIgQg7n/8Yc+q4jNbV/hCe/kvaT+q1f1kEjutX36PvC4u
-kdgwgb4GCSsGAQQBgjcQBDGBsDCBrTCBlzELMAkGA1UEBhMCR0IxGzAZBgNVBAgTEkdyZWF0ZXIg
-TWFuY2hlc3RlcjEQMA4GA1UEBxMHU2FsZm9yZDEaMBgGA1UEChMRQ09NT0RPIENBIExpbWl0ZWQx
-PTA7BgNVBAMTNENPTU9ETyBSU0EgQ2xpZW50IEF1dGhlbnRpY2F0aW9uIGFuZCBTZWN1cmUgRW1h
-aWwgQ0ECEQDiu0lIeSrsCenEpRjxmVhmMIHABgsqhkiG9w0BCRACCzGBsKCBrTCBlzELMAkGA1UE
-BhMCR0IxGzAZBgNVBAgTEkdyZWF0ZXIgTWFuY2hlc3RlcjEQMA4GA1UEBxMHU2FsZm9yZDEaMBgG
-A1UEChMRQ09NT0RPIENBIExpbWl0ZWQxPTA7BgNVBAMTNENPTU9ETyBSU0EgQ2xpZW50IEF1dGhl
-bnRpY2F0aW9uIGFuZCBTZWN1cmUgRW1haWwgQ0ECEQDiu0lIeSrsCenEpRjxmVhmMA0GCSqGSIb3
-DQEBAQUABIIBAI9aDpdE5QqvwrJOBbb551NaREOJJzthNPgT2cTJIZwEIpG0+/gp1+deqv7bh5Ej
-wrXXd8KkZbg7vHmPPNcCi1Ldqch1nEpyUf08r3FVMnn9oJZnvzK/W8xBEfeoxqSS1RoTrCAPQB9K
-idtO0hBVTeZIpv04D7xzAX6jdafW/MLHcM59jqsWYTZQWFV1T8sW5GGgOSr8ZlbdoNe4mpaOPzD1
-kmWcS12Usxxh1g2MIBW23uswB9kfcERK2rMypIKhU2uiAtHDdPXCbnFZlXIK/g3DOVpG8lFSGF/H
-eS/xedoArcXKW3iA1QshYtHpqPE07HcmgwmE/luC0a7/+nQWhqQAAAAAAAA=
-
-
---=-2iAse+pyUizUwDBzmQgf--
+>  
+> -	if (evt_id != SCMI_EVENT_SENSOR_TRIP_POINT_EVENT ||
+> -	    sizeof(*p) != payld_sz)
+> -		return NULL;
+> +	switch (evt_id) {
+> +	case SCMI_EVENT_SENSOR_TRIP_POINT_EVENT:
+> +	{
+> +		if (sizeof(*p) != payld_sz)
+> +			break;
+>  
+> -	r->timestamp = timestamp;
+> -	r->agent_id = le32_to_cpu(p->agent_id);
+> -	r->sensor_id = le32_to_cpu(p->sensor_id);
+> -	r->trip_point_desc = le32_to_cpu(p->trip_point_desc);
+> -	*src_id = r->sensor_id;
+> +		r->timestamp = timestamp;
+> +		r->agent_id = le32_to_cpu(p->agent_id);
+> +		r->sensor_id = le32_to_cpu(p->sensor_id);
+> +		r->trip_point_desc = le32_to_cpu(p->trip_point_desc);
+> +		*src_id = r->sensor_id;
+> +		rep = r;
+> +		break;
+> +	}
+> +	case SCMI_EVENT_SENSOR_UPDATE:
+> +	{
+> +		int i;
+> +		struct scmi_sensor_info *s;
+> +		const struct scmi_sensor_update_notify_payld *p = payld;
+> +		struct scmi_sensor_update_report *r = report;
+> +		struct sensors_info *sinfo = handle->sensor_priv;
+> +
+> +		/* payld_sz is variable for this event */
+> +		r->sensor_id = le32_to_cpu(p->sensor_id);
+> +		if (r->sensor_id >= sinfo->num_sensors)
+> +			break;
+> +		r->timestamp = timestamp;
+> +		r->agent_id = le32_to_cpu(p->agent_id);
+> +		s = &sinfo->sensors[r->sensor_id];
+> +		/*
+> +		 * The generated report r (@struct scmi_sensor_update_report)
+> +		 * was pre-allocated to contain up to SCMI_MAX_NUM_SENSOR_AXIS
+> +		 * readings: here it is filled with the effective @num_axis
+> +		 * readings defined for this sensor or 1 for scalar sensors.
+> +		 */
+> +		r->readings_count = s->num_axis ?: 1;
+> +		for (i = 0; i < r->readings_count; i++)
+> +			scmi_parse_sensor_readings(&r->readings[i],
+> +						   &p->readings[i]);
+> +		*src_id = r->sensor_id;
+> +		rep = r;
+> +		break;
+> +	}
+> +	default:
+> +		break;
+> +	}
+>  
+> -	return r;
+> +	return rep;
+>  }
 
