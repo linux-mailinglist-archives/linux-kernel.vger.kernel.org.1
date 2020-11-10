@@ -2,88 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EDFE2ADFF1
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 20:42:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0986E2ADFF5
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 20:42:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731620AbgKJTmO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 14:42:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53196 "EHLO
+        id S1731642AbgKJTmr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 14:42:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53284 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725862AbgKJTmN (ORCPT
+        with ESMTP id S1725862AbgKJTmr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 14:42:13 -0500
-Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6084BC0613D1;
-        Tue, 10 Nov 2020 11:42:13 -0800 (PST)
-Received: by mail-ej1-x643.google.com with SMTP id s25so19325277ejy.6;
-        Tue, 10 Nov 2020 11:42:13 -0800 (PST)
+        Tue, 10 Nov 2020 14:42:47 -0500
+Received: from mail-oi1-x241.google.com (mail-oi1-x241.google.com [IPv6:2607:f8b0:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79EE7C0613D3
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 11:42:46 -0800 (PST)
+Received: by mail-oi1-x241.google.com with SMTP id c80so15764118oib.2
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 11:42:46 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=D8TaLv98xRGgZIwQIJ9LNSGzseJjojNgwBo1ms6iLR4=;
-        b=lfvcJaOnlhX6s73K3OhM1r/yJepcobV0fIhoUk7wLpfDu/x82D0fVrNjw6poc4zTne
-         XKcJWfk0GR9Or2SnDK5vdPffOt3ZP5uNeNZWg962i4x1qrIf9Kn/UbnsRN8kH3uptmSC
-         rF9nOmrssbyZy1Fj0r8xeDOOfyimsT7qmUVq0y0pi5tqwTtYJTBJcMczKa8q5HVwUt+g
-         pKPpU+I37c7/5e6pbadhFZbbqbuDwCEEUzSfgmR6E1+ucTCNSYeZD+cO3FmD9/SZh6ar
-         i8R9JzxOcc845j3NPsKLhwLRh80qEwbCBzJi2V+FdivbKD3cZdWWfRAuVy2OJ1kO0082
-         WvHg==
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=swnl6W0o1oP58XVc+UEOVDjshhVnK6QW20rMo6jAFFA=;
+        b=UC41n/jce6fD1NaRa69DSR4jUK8fZFtj49DTSyNehqzUE3K1frYQPezID16wqlJLgK
+         QNTY4cryBCkMcmRo+UPX+oUHx6VagXOd2JVdEW2/hJ7BtrI3OE0AG5iXnnftAZdiNjEV
+         2iowooHeJoaA84Desk2qtzqyVRq7SxH2NE9ezhqmmKMaEswke7kDmiGbHjwrN9u6iKG6
+         X1nzBxjJO5XgSteYJGmZ1K8cmBRokIUgtVunJz5rIEFM2/NmItZi4yVjWGfFhrV8HbuY
+         Cccm+xYc7B2JlsE1fdY8u+MUERbrJCYeO58w7cI0TNnFlBw5adBWBERFKfjfZK7au1Ai
+         rikQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=D8TaLv98xRGgZIwQIJ9LNSGzseJjojNgwBo1ms6iLR4=;
-        b=Qj9hesBHl2rVEpAPfwh90Hav/pOJ9RryU0i+oev0+thv4FLCoIAA5nkqrQJuzQZ772
-         rDYC60d3KI0BH9op4ZORCe5LLJBrUHLBWAGT8zO0xA64b98z/Stdcb9otS7clMVr+BwX
-         bTvOJCleCvc9Q087KbtXWn9st31x2SUJcjID9MUgW2R5MBgW9GLFqwafsmvgqX+lMa0s
-         A2LbzYPAsAW1cx7UmX9gylpzEReBLdhd9iNsI3XK9GtMb01und0vWgtdXXP1BXYrQBUb
-         C0XMoXhvSBrFfZRJTECAebeQ22uX8gobC3uvVNQCoOBkzE2Crva8mcaL5hsI0KufH2XA
-         yaGg==
-X-Gm-Message-State: AOAM5309xAdHLz8drxb6PoCAK8QmeT0dYTva4mba01WsGZi9/xmn+lYe
-        4At7srZNzSLH1nwYl1K0nFc=
-X-Google-Smtp-Source: ABdhPJwxFsStmpXzGXyKAHx0ReeQi7l0NL4ff2nYr9OdKs3+ntOjd6TAMt2/SFJnEJO+Yrob0+PVAw==
-X-Received: by 2002:a17:907:2063:: with SMTP id qp3mr17537953ejb.314.1605037332095;
-        Tue, 10 Nov 2020 11:42:12 -0800 (PST)
-Received: from skbuf ([188.25.2.177])
-        by smtp.gmail.com with ESMTPSA id qt21sm10908864ejb.111.2020.11.10.11.42.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 10 Nov 2020 11:42:11 -0800 (PST)
-Date:   Tue, 10 Nov 2020 21:42:09 +0200
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     Florian Fainelli <f.fainelli@gmail.com>
-Cc:     netdev@vger.kernel.org, Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>, Ray Jui <rjui@broadcom.com>,
-        Scott Branden <sbranden@broadcom.com>,
-        "maintainer:BROADCOM IPROC ARM ARCHITECTURE" 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        Hauke Mehrtens <hauke@hauke-m.de>,
-        =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "moderated list:BROADCOM IPROC ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        Kurt Kanzenbach <kurt@kmk-computers.de>
-Subject: Re: [PATCH 01/10] dt-bindings: net: dsa: Extend switch nodes pattern
-Message-ID: <20201110194209.ym56zayskvosq5iq@skbuf>
-References: <20201110033113.31090-1-f.fainelli@gmail.com>
- <20201110033113.31090-2-f.fainelli@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=swnl6W0o1oP58XVc+UEOVDjshhVnK6QW20rMo6jAFFA=;
+        b=PFzCJVXe6igPCNcSYsqVT1NmVQ/PYvMv8U3jbuwXaqptJVXsPcYa1cr7uedkvD3Go8
+         QOTHO1m4Meo6spX0SUIRIm6+zWtFUlwhA48gWAxNDXLqx3uI3W7DVcumzumjQM7rIlYW
+         SBVrHeSW7zlMelrSERWoMoseONySsrVT65rI5eqPVOimvgM1sPpaLVuVCza76QSu6jxA
+         bqO9a79E9utAF6wAJwv69h7NuPPLUdKPg/x1QqgJnbfvDcPw+Rn+yI6Y3Ue0bkHtoUJp
+         Kz+q1jRQskFnySpthw4Q9s86WG5RuoSKaYZT4NjIQZ35sAlnGVyhheMSBida+TrF0GDH
+         uysQ==
+X-Gm-Message-State: AOAM533dvPQ0ipIXS4LVelDT3A6n5/liN+RY2/7QRtQHRXiXsMyn/EUH
+        snVECr0RK+1UWUE2iL01vDQPOSGQfx2SBAbjW9OEaw==
+X-Google-Smtp-Source: ABdhPJyfFrx5cAMFpIKI7aNj+jHmpT3VBake4QKDM5UvN3aHdJ1FxcytkHYM156P6uMG9KvFXdx/gg16hs7RUKnJ17E=
+X-Received: by 2002:a05:6808:4b:: with SMTP id v11mr421954oic.169.1605037365896;
+ Tue, 10 Nov 2020 11:42:45 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201110033113.31090-2-f.fainelli@gmail.com>
+References: <20201110190054.20517-1-john.stultz@linaro.org>
+ <19b7b301-3460-7ece-21d3-59cd7490c8ed@codeaurora.org> <CALAqxLWQua4UWwXomOin5OdizevvY2F=rMExyDbB3o8h5F731Q@mail.gmail.com>
+ <25cf555d-113c-28bc-7776-047e4a412fdb@codeaurora.org>
+In-Reply-To: <25cf555d-113c-28bc-7776-047e4a412fdb@codeaurora.org>
+From:   John Stultz <john.stultz@linaro.org>
+Date:   Tue, 10 Nov 2020 11:42:34 -0800
+Message-ID: <CALAqxLXVdJZBHvHHJ9q7DfWe62VEdWusByNvZF1Gzx8nQKoiVQ@mail.gmail.com>
+Subject: Re: [PATCH] pinctrl: qcom: Fix msm9853 Kconfig entry to depend on,
+ not select PINCTRL_MSM
+To:     Jeffrey Hugo <jhugo@codeaurora.org>
+Cc:     lkml <linux-kernel@vger.kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Prasad Sodagudi <psodagud@codeaurora.org>,
+        Vladimir Lypak <junak.pub@gmail.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 09, 2020 at 07:31:04PM -0800, Florian Fainelli wrote:
-> Upon discussion with Kurt, Rob and Vladimir it appears that we should be
-> allowing ethernet-switch as a node name, update dsa.yaml accordingly.
-> 
-> Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
-> ---
+On Tue, Nov 10, 2020 at 11:33 AM Jeffrey Hugo <jhugo@codeaurora.org> wrote:
+>
+> On 11/10/2020 12:32 PM, John Stultz wrote:
+> > On Tue, Nov 10, 2020 at 11:29 AM Jeffrey Hugo <jhugo@codeaurora.org> wrote:
+> >>
+> >> On 11/10/2020 12:00 PM, John Stultz wrote:
+> >>> One fixup following my patch commit be117ca32261 ("pinctrl:
+> >>> qcom: Kconfig: Rework PINCTRL_MSM to be a depenency rather then
+> >>> a selected config") being queued in LinusW's tree, as a new
+> >>> config entry was added for the msm9853 that also needs the
+> >>> change.
+> >>>
+> >>> Applies to LinusW's pinctrl devel tree.
+> >>>
+> >>> Cc: Andy Gross <agross@kernel.org>
+> >>> Cc: Prasad Sodagudi <psodagud@codeaurora.org>
+> >>> Cc: Vladimir Lypak <junak.pub@gmail.com>
+> >>> Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
+> >>> Cc: Linus Walleij <linus.walleij@linaro.org>
+> >>> Cc: linux-arm-msm@vger.kernel.org
+> >>> Cc: linux-gpio@vger.kernel.org
+> >>> Signed-off-by: John Stultz <john.stultz@linaro.org>
+> >>> ---
+> >>>    drivers/pinctrl/qcom/Kconfig | 2 +-
+> >>>    1 file changed, 1 insertion(+), 1 deletion(-)
+> >>>
+> >>> diff --git a/drivers/pinctrl/qcom/Kconfig b/drivers/pinctrl/qcom/Kconfig
+> >>> index 8bdf878fe970c..cf56e029cd9c7 100644
+> >>> --- a/drivers/pinctrl/qcom/Kconfig
+> >>> +++ b/drivers/pinctrl/qcom/Kconfig
+> >>> @@ -115,7 +115,7 @@ config PINCTRL_MSM8916
+> >>>    config PINCTRL_MSM8953
+> >>>        tristate "Qualcomm 8953 pin controller driver"
+> >>>        depends on GPIOLIB && OF
+> >>> -     select PINCTRL_MSM
+> >>> +     depends on PINCTRL_MSM
+> >>>        help
+> >>>          This is the pinctrl, pinmux, pinconf and gpiolib driver for the
+> >>>          Qualcomm TLMM block found on the Qualcomm MSM8953 platform.
+> >>>
+> >>
+> >> Subject should indicate msm8953, no?
+> >>
+> >
+> > Sorry, I'm confused. :)
+> > The subject is "pinctrl: qcom: Fix msm9853 Kconfig..." is there
+> > something more specific you are suggesting?
+>
+> Yes, that is the current subject.  Yet you are changing a Kconfig for
+> msm8953.
+>
+> msm9853 != msm8953
+>
+> Infact I'm not sure msm9853 is something that actually exists....
 
-Reviewed-by: Vladimir Oltean <olteanv@gmail.com>
+Ah! Apologies! My brain flipped it reading it each time. Will fix that up.
+
+thanks
+-john
