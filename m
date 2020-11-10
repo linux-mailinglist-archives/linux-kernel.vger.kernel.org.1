@@ -2,211 +2,270 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 355B62ADC44
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 17:41:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 96FCF2ADC56
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 17:44:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730231AbgKJQlQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 11:41:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53112 "EHLO
+        id S1730545AbgKJQn7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 11:43:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53560 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726827AbgKJQlN (ORCPT
+        with ESMTP id S1726900AbgKJQn6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 11:41:13 -0500
-Received: from mail-oi1-x242.google.com (mail-oi1-x242.google.com [IPv6:2607:f8b0:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB748C0613D1
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 08:41:13 -0800 (PST)
-Received: by mail-oi1-x242.google.com with SMTP id u127so15054768oib.6
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 08:41:13 -0800 (PST)
+        Tue, 10 Nov 2020 11:43:58 -0500
+Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45031C0613CF;
+        Tue, 10 Nov 2020 08:43:57 -0800 (PST)
+Received: by mail-qk1-x742.google.com with SMTP id v143so7515985qkb.2;
+        Tue, 10 Nov 2020 08:43:57 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc:content-transfer-encoding;
-        bh=izOyzxAEdr+DI01iVm48YK7PFRjR8KW8FC4qJD6+q7g=;
-        b=dfqAtJ6i1g/8zXDewDWAZzZC9ODZMAAauizp0O00z0plxOcWjiq0KhZFTkRW8WUpzD
-         xJtbQbmovoOWkY7KEL8TmYp1Ps7mC/ncBjKhSQkRJuWbdQnVMMW7McBID1pKs2rM71Gb
-         f2KQbU816XD5z+rw9xKdky5heu9LFFcInnynvZZhlddc+VabMKmKOLSe2s1FCMYk6npJ
-         doLkpMOt1lcbPz2ZcvNYnJaGOySktBWJez1fFMmTo03xtQAAoOLV+LHqYcBLTZW6Sv/N
-         qVaKQXRPvttdl4Viygj86GexG/+11Ow/QTyVxIw8mQmtGYRWwjZhMBLXwO7hhG+Ol1ik
-         TKzg==
+        bh=KMWbx+wIxMX04mmHKghtNOC/ct04FiRyKuQcjWAwzKs=;
+        b=iuy6TNkJfVl4KRJAAXU3cRxOhTgpOpMfrvfPrjqAq3tYmcwwGUYoWRWfdrQz53DQhY
+         1pX2A0ZppZy4jBbgGJMT5MsYZQBUo/4exWtSrFd1m/+QG2roenv6S5cCHVd84FY89FHk
+         cgw5uSXrV5KRFP6x46UIW/Y0Gs1B9zziaPSRh26Dqqii3jstNfH+m+ej/4G6XdhPCyqg
+         pEywf4FT5zpzwIDo7NSzq/HRFpwQ/YYBpQlSTZPNpQAvJLPNus0RD/dYgpPfp8Mr4u2r
+         z51FsWqIzLcEe0O2iSXpHiBjXVPsPBoIJhR2IykVDe1xqlte3po0L88kAQFGTbKCWXW0
+         5rsA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc:content-transfer-encoding;
-        bh=izOyzxAEdr+DI01iVm48YK7PFRjR8KW8FC4qJD6+q7g=;
-        b=h4oSF5Njg7oUtgmO5XBy4xpnIx8+nTc+kXGAUOUHk63ljcw5Gox27wRbea8CFiCu43
-         WRMgWjwMkh4XciqUnPBCczfq+/9fTqIghoOYFcV1eBKroEgZKhVNhP1A6OgwvDzg3p0X
-         68T1mgnByqGXbUST938x5PLTNCC/o3jRRtseDnnmh9ws8g8LbwYh5UfpX8RZmIORTtTR
-         +kbOSo5hmUieG3Ns/G2qQXgew+IofsTCy860kIgqy/wG+EIbjB04wkTl6o0722+Ta8Tg
-         yj4/ZCHAjOHddncg3OMep/4L+5abAYipbjhtQDpTZr0ghEN/I8TH8vJYT2tgiZCi/OW1
-         bC3g==
-X-Gm-Message-State: AOAM530h8Rfbnp2bnbxBcaVgbR7m7EMtelB0KBjry3eFaFR8Y/n1VUfF
-        Sz+PcblbqLWuCPk+CgtzF2i/wMrTJNOIRyfSDaJyLw==
-X-Google-Smtp-Source: ABdhPJx/HhVmD026aUKZNmLBW8yx2d6rLrKnKvoUbe5Vy8uCbDu9yQ+y4hcX1WCBNzuJSZLOuwTc032J2CVqt3vmDBA=
-X-Received: by 2002:aca:6206:: with SMTP id w6mr3464315oib.121.1605026472655;
- Tue, 10 Nov 2020 08:41:12 -0800 (PST)
+        bh=KMWbx+wIxMX04mmHKghtNOC/ct04FiRyKuQcjWAwzKs=;
+        b=L9ca8HUb8/UrYUpBlA49E4JpZ09DgG4LODWZnY4/o+NuG5AQELRssmDOQRtxjeHL3p
+         EfEI5obhncJJ4/5UBDzWcc4VZgMypd6543EbNdBZQ4Kpac1c6yDxUZzZjD0q7HeuKsP0
+         Fs5rhK6dt70du/NG3njwgs3G95//R2OiSPMXYCPpF+Q/9eoimJhdUfs70YXsOf9f+lk8
+         xv29fX70qtOsKs0mt6HCsN9Lod7WH9l5r1AMko43MC/NF17paSpsdmzJOPJuQekApcev
+         vbIs1+EptLbYtFE87yKa0LnSCRgDcG5p93hX7RnjFQzLj5vrmctMzJAHrf1qMnPkU0N7
+         GAVw==
+X-Gm-Message-State: AOAM532rd1nla18NdMpcBMxrx6szr1IGJcQqPLE+jSqL8M2QAdk0zJSI
+        HLQLPyVXqJaJQqDQKAqjHa4DTS3AQDlpbUaJDEE=
+X-Google-Smtp-Source: ABdhPJzTc9sxKnRjrg7FKVq/43ru2290b3tBpeWO2ZPxM+yD/pJT0fep5GYvuJ6Lo1jRarTGzYX3I5JzxrAp+oi9OWU=
+X-Received: by 2002:a37:e207:: with SMTP id g7mr8515729qki.44.1605026635907;
+ Tue, 10 Nov 2020 08:43:55 -0800 (PST)
 MIME-Version: 1.0
-References: <20201106192154.51514-1-98.arpi@gmail.com> <CABVgOSkQ6+y7OGw2494cJa2b60EkSjncLNAgc9cJDbS=X9J3WA@mail.gmail.com>
- <CANpmjNNp2RUCE_ypp2R4MznikTYRYeCDuF7VMp+Hbh=55KWa3A@mail.gmail.com>
- <47a05c5a-485d-026b-c1c3-476ed1a97856@gmail.com> <CABVgOSkZ9k6bHPp=LVATWfokMSrEuD87jOfE5MiVYAEbZMmaQQ@mail.gmail.com>
- <CANpmjNMzNauQVNKK_ToWDKrwT1LKY7Tb+ApG8drX8wtBkBbWQQ@mail.gmail.com> <06106c1a-7e1b-c317-91f2-7f9c64072794@gmail.com>
-In-Reply-To: <06106c1a-7e1b-c317-91f2-7f9c64072794@gmail.com>
-From:   Marco Elver <elver@google.com>
-Date:   Tue, 10 Nov 2020 17:41:00 +0100
-Message-ID: <CANpmjNOjtU7v2tXKCESF53OMsrBYE8py1J42D-EjEqpe4XaeDA@mail.gmail.com>
-Subject: Re: [PATCH v6 1/2] kunit: Support for Parameterized Testing
-To:     Arpitha Raghunandan <98.arpi@gmail.com>
-Cc:     David Gow <davidgow@google.com>,
-        Brendan Higgins <brendanhiggins@google.com>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Iurii Zaikin <yzaikin@google.com>,
-        "Theodore Ts'o" <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        KUnit Development <kunit-dev@googlegroups.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-ext4@vger.kernel.org
+References: <20201102174737.2740-1-sargun@sargun.me>
+In-Reply-To: <20201102174737.2740-1-sargun@sargun.me>
+From:   Alban Crequy <alban.crequy@gmail.com>
+Date:   Tue, 10 Nov 2020 17:43:44 +0100
+Message-ID: <CAMXgnP5cVoLKTGPOAO+aLEAGLpkjACy1e4iLBKkfp8Gv1U77xA@mail.gmail.com>
+Subject: Re: [PATCH v4 0/2] NFS: Fix interaction between fs_context and user namespaces
+To:     Sargun Dhillon <sargun@sargun.me>
+Cc:     "J . Bruce Fields" <bfields@fieldses.org>,
+        Chuck Lever <chuck.lever@oracle.com>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Anna Schumaker <anna.schumaker@netapp.com>,
+        Anna Schumaker <schumaker.anna@gmail.com>,
+        David Howells <dhowells@redhat.com>,
+        Scott Mayhew <smayhew@redhat.com>, linux-nfs@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        mauricio@kinvolk.io
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 10 Nov 2020 at 17:32, Arpitha Raghunandan <98.arpi@gmail.com> wrote=
-:
+Hi,
+
+I tested the patches on top of 5.10.0-rc3+ and I could mount an NFS
+share with a different user namespace. fsopen() is done in the
+container namespaces (user, mnt and net namespaces) while fsconfig(),
+fsmount() and move_mount() are done on the host namespaces. The mount
+on the host is available in the container via mount propagation from
+the host mount.
+
+With this, the files on the NFS server with uid 0 are available in the
+container with uid 0. On the host, they are available with uid
+4294967294 (make_kuid(&init_user_ns, -2)).
+
+The code to reproduce my test is available at:
+https://github.com/kinvolk/nfs-mount-in-userns
+And the results and traces are attached at the end.
+
+While the basic feature works, I have some thoughts.
+
+First, doing the fsopen() in the container namespaces implements two
+features in one step:
+1. Selection of the userns for the id mapping translation.
+2. Selection of the netns for the connection to the NFS server.
+
+I was wondering if this only considers the scenario where the user
+wants to make the connection to the NFS server from the network
+namespace of the container. I think there is another valid use case to
+use the userns of the container but the netns of the host or a
+third-party netns. We can use the correct set of setns() to do the
+fsopen() in the container userns but in the host netns, but then we=E2=80=
+=99d
+be in a netns that does not belong to the current userns, so we would
+not have any capability over it. In my tests, that seems to work fine
+when the netns and the userns of the fs_context are not related.
+
+Still, I would find the API cleaner if the userns and netns were
+selected explicitly with something like:
+
+sfd =3D fsopen("nfs4", FSOPEN_CLOEXEC);
+usernsfd =3D pidfd_open(...); or usernsfd =3D open(=E2=80=9C/proc/pid/ns/us=
+er=E2=80=9D)
+fsconfig(sfd, FSCONFIG_SET_FD, "userns", NULL, usernsfd);
+netnsfd =3D pidfd_open(...); or netnsfd =3D open(=E2=80=9C/proc/pid/ns/net=
+=E2=80=9D)
+fsconfig(sfd, FSCONFIG_SET_FD, "netns", NULL, netnsfd);
+
+This would avoid the need for fd passing after the fsopen(). This
+would require fsconfig() (possibly in nfs_fs_context_parse_param()) to
+do the capability check but making it more explicit sounds better to
+me.
+
+Second, the capability check in fsopen() is the following:
+  if (!ns_capable(current->nsproxy->mnt_ns->user_ns, CAP_SYS_ADMIN))
+
+This means that we cannot just create a temporary userns with the
+desired id mapping, but we additionally need to enter a mntns owned by
+the userns. However the code in fsopen() does not seem to do anything
+with the mntns (The new mount will only be associated with the current
+mntns at move_mount() time), so we could just create a temporary
+userns + mntns. It seems weird to me that the capability check is done
+in relation to the current mntns even though the code does not do
+anything with it.
+
+In Kubernetes, the NFS mount is done before creating the user
+namespace. pkg/kubelet/kubelet.go Kubelet's syncPod() will do the
+following in this order:
+1. Mount the volumes with CSI or other volume implementations:
+WaitForAttachAndMount() line 1667
+2. Call the CRI's createPodSandbox via kl.containerRuntime.SyncPod()
+line 1678 to create the user namespace and network namespace.
+
+This means that at the time of the NFS mount, we have not yet created
+the user namespace or the network namespace, and even less configured
+it with the CNI plugin. With this API where the id mapping for the NFS
+mount is decided at the superblock level, we would need to refactor
+the Kubelet code to be able to call the CSI mount after the creation
+of the sandbox, and after the configuration with CNI. This will be
+more complicated to integrate in Kubernetes than the idmapped mounts
+patch set where the id mapping is set at the bind mount level
+(https://lists.linuxfoundation.org/pipermail/containers/2020-October/042477=
+.html).
+However, it is less invasive.
+
+This approach works for NFS volumes in Kubernetes but would not work
+with other volumes like hostPath (bind mount from the host) where we
+don=E2=80=99t have a new superblock.
+
+Lastly, I checked the implementation of nfs_compare_super() and it
+seems fine. In Kubernetes, we want to be able to create several
+Kubernetes pods with different userns and mount the same NFS share in
+several pods. The kernel will have to create different NFS superblocks
+for that scenario and it does that correctly in nfs_compare_super() by
+comparing the userns and comparing the netns as well.
+
+-----
+
+Running ./nfs-mount-in-userns
+strace: Process 4022 attached
+[pid  4022] fsopen("nfs4", FSOPEN_CLOEXEC) =3D 6
+[pid  4022] +++ exited with 0 +++
+--- SIGCHLD {si_signo=3DSIGCHLD, si_code=3DCLD_EXITED, si_pid=3D4022,
+si_uid=3D0, si_status=3D0, si_utime=3D0, si_stime=3D0} ---
+fsconfig(7, FSCONFIG_SET_STRING, "source", "127.0.0.1:/server", 0) =3D 0
+fsconfig(7, FSCONFIG_SET_STRING, "vers", "4.2", 0) =3D 0
+fsconfig(7, FSCONFIG_SET_STRING, "addr", "127.0.0.1", 0) =3D 0
+fsconfig(7, FSCONFIG_SET_STRING, "clientaddr", "127.0.0.1", 0) =3D 0
+fsconfig(7, FSCONFIG_CMD_CREATE, NULL, NULL, 0) =3D 0
+fsmount(7, FSMOUNT_CLOEXEC, 0)          =3D 6
+move_mount(6, "", AT_FDCWD, "/mnt/nfs", MOVE_MOUNT_F_EMPTY_PATH) =3D 0
++++ exited with 0 +++
+./nfs-mount-in-userns returned 0
+last dmesg line about nfs4_create_server
+[55258.702256] nfs4_create_server: Using creds from non-init userns
+459 55 0:40 / /mnt/nfs rw,relatime shared:187 - nfs4 127.0.0.1:/server
+rw,vers=3D4.2,rsize=3D524288,wsize=3D524288,namlen=3D255,hard,proto=3Dtcp,t=
+imeo=3D600,retrans=3D2,sec=3Dsys,clientaddr=3D127.0.0.1,local_lock=3Dnone,a=
+ddr=3D127.0.0.1
+
++ : 'Files on the NFS server:'
++ ls -lani /server/
+total 20
+1048578 drwxr-xr-x.  5    0    0 4096 Nov 10 09:19 .
+      2 dr-xr-xr-x. 21    0    0 4096 Nov  9 14:25 ..
+1048582 drwx------.  2    0    0 4096 Nov 10 09:19 dir-0
+1048583 drwx------.  2 1000 1000 4096 Nov 10 09:19 dir-1000
+1048584 drwx------.  2 3000 3000 4096 Nov 10 09:19 dir-3000
+1048579 -rw-------.  1    0    0    0 Nov 10 09:19 file-0
+1048580 -rw-------.  1 1000 1000    0 Nov 10 09:19 file-1000
+1048581 -rw-------.  1 3000 3000    0 Nov 10 09:19 file-3000
+
++ : 'Files on the NFS mountpoint (from container PoV):'
++ nsenter -U -m -n -t 4002 sh -c 'ls -lani /mnt/nfs'
+total 20
+1048578 drwxr-xr-x. 5     0     0 4096 Nov 10 09:19 .
+ 786433 drwxr-xr-x. 3 65534 65534 4096 May 16 16:08 ..
+1048582 drwx------. 2     0     0 4096 Nov 10 09:19 dir-0
+1048583 drwx------. 2 65534 65534 4096 Nov 10 09:19 dir-1000
+1048584 drwx------. 2 65534 65534 4096 Nov 10 09:19 dir-3000
+1048579 -rw-------. 1     0     0    0 Nov 10 09:19 file-0
+1048580 -rw-------. 1 65534 65534    0 Nov 10 09:19 file-1000
+1048581 -rw-------. 1 65534 65534    0 Nov 10 09:19 file-3000
+
++ : 'Files on the NFS mountpoint (from host PoV):'
++ ls -lani /mnt/nfs/
+total 20
+1048578 drwxr-xr-x. 5       1000       1000 4096 Nov 10 09:19 .
+ 786433 drwxr-xr-x. 3          0          0 4096 May 16 16:08 ..
+1048582 drwx------. 2       1000       1000 4096 Nov 10 09:19 dir-0
+1048583 drwx------. 2 4294967294 4294967294 4096 Nov 10 09:19 dir-1000
+1048584 drwx------. 2 4294967294 4294967294 4096 Nov 10 09:19 dir-3000
+1048579 -rw-------. 1       1000       1000    0 Nov 10 09:19 file-0
+1048580 -rw-------. 1 4294967294 4294967294    0 Nov 10 09:19 file-1000
+1048581 -rw-------. 1 4294967294 4294967294    0 Nov 10 09:19 file-3000
+
+Alban
+
+On Mon, 2 Nov 2020 at 18:48, Sargun Dhillon <sargun@sargun.me> wrote:
 >
-> On 10/11/20 4:05 pm, Marco Elver wrote:
-> > On Tue, 10 Nov 2020 at 08:21, David Gow <davidgow@google.com> wrote:
-> > [...]
-> >>>>
-> >>>> The previous attempt [1] at something similar failed because it seem=
-s
-> >>>> we'd need to teach kunit-tool new tricks [2], too.
-> >>>> [1] https://lkml.kernel.org/r/20201105195503.GA2399621@elver.google.=
-com
-> >>>> [2] https://lkml.kernel.org/r/20201106123433.GA3563235@elver.google.=
-com
-> >>>>
-> >>>> So if we go with a different format, we might need a patch before th=
-is
-> >>>> one to make kunit-tool compatible with that type of diagnostic.
-> >>>>
-> >>>> Currently I think we have the following proposals for a format:
-> >>>>
-> >>>> 1. The current "# [test_case->name]: param-[index] [ok|not ok]" --
-> >>>> this works well, because no changes to kunit-tool are required, and =
-it
-> >>>> also picks up the diagnostic context for the case and displays that =
-on
-> >>>> test failure.
-> >>>>
-> >>>> 2. Your proposed "# [ok|not ok] - [test_case->name]:param-[index]".
-> >>>> As-is, this needs a patch for kunit-tool as well. I just checked, an=
+> This is effectively a resend, but re-based atop Anna's current tree. I ca=
+n
+> add the samples back in an another patchset.
+>
+> Right now, it is possible to mount NFS with an non-matching super block
+> user ns, and NFS sunrpc user ns. This (for the user) results in an awkwar=
 d
-> >>>> if we change it to "# [ok|not ok] - [test_case->name]: param-[index]=
-"
-> >>>> (note the space after ':') it works without changing kunit-tool. ;-)
-> >>>>
-> >>>> 3. Something like "# [ok|not ok] param-[index] - [test_case->name]",
-> >>>> which I had played with earlier but kunit-tool is definitely not yet
-> >>>> happy with.
-> >>>>
-> >>>> So my current preference is (2) with the extra space (no change to
-> >>>> kunit-tool required). WDYT?
-> >>>>
-> >>
-> >> Hmm=E2=80=A6 that failure in kunit_tool is definitely a bug: we should=
-n't care
-> >> what comes after the comment character except if it's an explicit
-> >> subtest declaration or a crash. I'll try to put a patch together to
-> >> fix it, but I'd rather not delay this just for that.
-> >>
-> >> In any thought about this a bit more, It turns out that the proposed
-> >> KTAP spec[1] discourages the use of ':', except as part of a subtest
-> >> declaration, or perhaps an as-yet-unspecified fully-qualified test
-> >> name. The latter is what I was going for, but if it's actively
-> >> breaking kunit_tool, we might want to hold off on it.
-> >>
-> >> If we were to try to treat these as subtests in accordance with that
-> >> spec, the way we'd want to use one of these options:
-> >> A) "[ok|not ok] [index] - param-[index]" -- This doesn't mention the
-> >> test case name, but otherwise treats things exactly the same way we
-> >> treat existing subtests.
-> >>
-> >> B) "[ok|not ok] [index] - [test_case->name]" -- This doesn't name the
-> >> "subtest", just gives repeated results with the same name.
-> >>
-> >> C) "[ok|not ok] [index] - [test_case->name][separator]param-[index]"
-> >> -- This is equivalent to my suggestion with a separator of ":", or 2
-> >> above with a separator of ": ". The in-progress spec doesn't yet
-> >> specify how these fully-qualified names would work, other than that
-> >> they'd use a colon somewhere, and if we comment it out, ": " is
-> >> required.
-> >>
-> >>>
-> >>> Which format do we finally go with?
-> >>>
-> >>
-> >> I'm actually going to make another wild suggestion for this, which is
-> >> a combination of (1) and (A):
-> >> "# [test_case->name]: [ok|not ok] [index] - param-[index]"
-> >>
-> >> This gives us a KTAP-compliant result line, except prepended with "#
-> >> [test_case->name]: ", which makes it formally a diagnostic line,
-> >> rather than an actual subtest. Putting the test name at the start
-> >> matches what kunit_tool is expecting at the moment. If we then want to
-> >> turn it into a proper subtest, we can just get rid of that prefix (and
-> >> add the appropriate counts elsewhere).
-> >>
-> >> Does that sound good?
-> >
-> > Sounds reasonable to me!  The repetition of [index] seems unnecessary
-> > for now, but I think if we at some point have a way to get a string
-> > representation of a param, we can substitute param-[index] with a
-> > string that represents the param.
-> >
+> set of interactions if using anything other than auth_null, where the UID=
+s
+> being sent to the server are different than the local UIDs being checked.
+> This can cause "breakage", where if you try to communicate with the NFS
+> server with any other set of mappings, it breaks.
 >
-> So, with this the inode-test.c will have the following output, right?
+> This is after the initial v5.10 merge window, so hopefully this patchset
+> can be reconsidered, and maybe we can make forward progress? I think that
+> it takes a relatively conservative approach in enabling user namespaces,
+> and it prevents the case where someone is using auth_gss (for now), as th=
+e
+> mappings are non-trivial.
 >
-> TAP version 14
-> 1..7
->     # Subtest: ext4_inode_test
->     1..1
->     # inode_test_xtimestamp_decoding: ok 0 - param-0
-
-So the params should certainly be 0-indexed, but I think TAP starts
-counting at 1, so maybe this should be:
-
-    # inode_test_xtimestamp_decoding: ok 1 - param-0
-
-and so on... ?
-
-Right now it doesn't matter, but it will if we make these subsubtests
-as David suggested.
-
->     # inode_test_xtimestamp_decoding: ok 1 - param-1
->     # inode_test_xtimestamp_decoding: ok 2 - param-2
->     # inode_test_xtimestamp_decoding: ok 3 - param-3
->     # inode_test_xtimestamp_decoding: ok 4 - param-4
->     # inode_test_xtimestamp_decoding: ok 5 - param-5
->     # inode_test_xtimestamp_decoding: ok 6 - param-6
->     # inode_test_xtimestamp_decoding: ok 7 - param-7
->     # inode_test_xtimestamp_decoding: ok 8 - param-8
->     # inode_test_xtimestamp_decoding: ok 9 - param-9
->     # inode_test_xtimestamp_decoding: ok 10 - param-10
->     # inode_test_xtimestamp_decoding: ok 11 - param-11
->     # inode_test_xtimestamp_decoding: ok 12 - param-12
->     # inode_test_xtimestamp_decoding: ok 13 - param-13
->     # inode_test_xtimestamp_decoding: ok 14 - param-14
->     # inode_test_xtimestamp_decoding: ok 15 - param-15
->     ok 1 - inode_test_xtimestamp_decoding
-> ok 1 - ext4_inode_test
+> Changes since v3:
+>   * Rebase atop Anna's tree
+> Changes since v2:
+>   * Removed samples
+>   * Split out NFSv2/v3 patchset from NFSv4 patchset
+>   * Added restrictions around use
+> Changes since v1:
+>   * Added samples
 >
-> I will send another patch with this change.
-> Thanks!
-
-Yes that looks right, but see the comment above ^
-
-Thanks,
--- Marco
+> Sargun Dhillon (2):
+>   NFS: NFSv2/NFSv3: Use cred from fs_context during mount
+>   NFSv4: Refactor NFS to use user namespaces
+>
+>  fs/nfs/client.c     | 10 ++++++++--
+>  fs/nfs/nfs4client.c | 27 ++++++++++++++++++++++++++-
+>  fs/nfs/nfs4idmap.c  |  2 +-
+>  fs/nfs/nfs4idmap.h  |  3 ++-
+>  4 files changed, 37 insertions(+), 5 deletions(-)
+>
+>
+> base-commit: 8c39076c276be0b31982e44654e2c2357473258a
+> --
+> 2.25.1
+>
