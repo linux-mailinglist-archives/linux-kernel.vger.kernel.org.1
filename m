@@ -2,93 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BEA32AD700
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 14:00:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 832412AD710
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 14:04:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730643AbgKJNAz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 08:00:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46608 "EHLO
+        id S1731283AbgKJNEZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 08:04:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47168 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726462AbgKJNAy (ORCPT
+        with ESMTP id S1730188AbgKJNEZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 08:00:54 -0500
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C852C0613CF
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 05:00:53 -0800 (PST)
-Received: by mail-wm1-x341.google.com with SMTP id s13so2899681wmh.4
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 05:00:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=ybTfB3rMzNb3Par8rFjgeakZunYZuUZMKJ+Bmz10zcI=;
-        b=rmy95vdpdJpdRJEwkEsHwMF2i7Fz09alyS8dBJCzhsq01cijLN8w5esY1ZgkK53FPV
-         cSZVG2U0tVWBNACNlF4zAsr53awUP6kvc6EZeub8DlRiqt0DTC+er4HbV1uCeFqiPJ99
-         sdFZIsB5B5pl9ED/FsK6NiGe8gsyiW3UxBWgelUOXa/7zqTNhBVRwaNK7nxhA8Gatkxn
-         /+OTNzRCmv/uOkcMA5ccEW7f2IWVHoQ1rtZhE6udkHHOnDKmCgXe09q0K1/KcOtILr8t
-         KmIvz9YQTbrKfjAl+ynn6ylt/s2TIDhpXNSm3OUNTj+K4rN6JazdW82/S48+Lx5HrrIn
-         7q3w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ybTfB3rMzNb3Par8rFjgeakZunYZuUZMKJ+Bmz10zcI=;
-        b=HTE/0bNXX00+dFeqeCz0GR4PxMnUx3Z3MgpF+UL65A+r5eoXVABqGuzCtt3b01q3pg
-         ko1ZUOaiA56K+Nz3Shpg8VJ08C0xyxpg2tO2RZELl7WQ7tRzJgjyVPGQMGpak7ztn08x
-         G34/AX4qB/HGGG6paOnlskzT9OLyViFefgtSCCNnevyz+pR22jY3QIzNtLW4o4s6Ua3x
-         K8B1rUQPnVvqkuI7FnQ9aa+5ocexGM1sQkfsAguZCIIalBEa/xByfAIY9LN2k2Nxusvw
-         eREaG0Ql3HzpCD5D+4wcFOEdUZxk9dFj103O3hmGhMoxwKCKgaEgb48kJ2BtcT+0Nj4W
-         UTjQ==
-X-Gm-Message-State: AOAM533Nm83DRIZtbbD/0QuFgQf7iSnrSxedhNMCj+NjjXmDo6yZ8/zq
-        Guv7RyDPc95+XdGDwAvOs+6Ui8+reLhQ3CKA
-X-Google-Smtp-Source: ABdhPJwOPtmMtv6OjKVZB2aVxNghBPp9/tnek0StNVDL8wEHHKGQzndhEh0APrbsGcFVBzNIdtfVVQ==
-X-Received: by 2002:a1c:2bc3:: with SMTP id r186mr4442378wmr.163.1605013251758;
-        Tue, 10 Nov 2020 05:00:51 -0800 (PST)
-Received: from google.com ([2a01:4b00:8523:2d03:870:7715:aaa1:475e])
-        by smtp.gmail.com with ESMTPSA id 35sm15115746wro.71.2020.11.10.05.00.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 10 Nov 2020 05:00:50 -0800 (PST)
-Date:   Tue, 10 Nov 2020 13:00:49 +0000
-From:   David Brazdil <dbrazdil@google.com>
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     kvmarm@lists.cs.columbia.edu, kernel-team@android.com,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Andrew Walbran <qwandor@google.com>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Tejun Heo <tj@kernel.org>, Dennis Zhou <dennis@kernel.org>,
-        Christoph Lameter <cl@linux.com>, Will Deacon <will@kernel.org>
-Subject: Re: [PATCH v1 23/24] kvm: arm64: Trap host SMCs in protected mode.
-Message-ID: <20201110130049.pwc4ilqy2ue2ydvu@google.com>
-References: <20201109113233.9012-1-dbrazdil@google.com>
- <20201109113233.9012-24-dbrazdil@google.com>
- <10952bcf24bebd5e317d09ced415bfb1@kernel.org>
+        Tue, 10 Nov 2020 08:04:25 -0500
+X-Greylist: delayed 62 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 10 Nov 2020 05:04:24 PST
+Received: from mxa2.seznam.cz (mxa2.seznam.cz [IPv6:2a02:598:2::90])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFB75C0613CF
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 05:04:24 -0800 (PST)
+Received: from email.seznam.cz
+        by email-smtpc27b.ng.seznam.cz (email-smtpc27b.ng.seznam.cz [10.23.18.39])
+        id 049c592a5f920d4305359574;
+        Tue, 10 Nov 2020 14:04:23 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=seznam.cz; s=beta;
+        t=1605013463; bh=SJXQwxMfRfWIiUrI2lcDhV7COepl6cFlEC3yQDtyH4g=;
+        h=Received:From:To:Cc:Subject:Date:Message-Id:X-Mailer:MIME-Version:
+         Content-Transfer-Encoding;
+        b=MKDuLvE/1hAiWi8nIp8VlYeJQwbps8V9nmJBXSnWwv084MyRpnqwcaAJMcpkcTX7R
+         RaLx0rRTw+t/P3tRgb6GoyoEbeQZ7Z7S47At/d0+nnRG8D00LxOmKSUsrQOTg4qxT0
+         St3ixU/9RrpsYLBtWn5Vf1a8cPanzELcEHtaKhN0=
+Received: from localhost.localdomain (ip-228-128.dynamic.ccinternet.cz [212.69.128.228])
+        by email-relay4.ng.seznam.cz (Seznam SMTPD 1.3.121) with ESMTP;
+        Tue, 10 Nov 2020 14:03:10 +0100 (CET)  
+From:   michael.srba@seznam.cz
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     Beomho Seo <beomho.seo@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        linux-kernel@vger.kernel.org, Michael Srba <Michael.Srba@seznam.cz>
+Subject: [PATCH] mfd: rt5033: fix errorneous defines
+Date:   Tue, 10 Nov 2020 14:00:47 +0100
+Message-Id: <20201110130047.8097-1-michael.srba@seznam.cz>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <10952bcf24bebd5e317d09ced415bfb1@kernel.org>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> > +++ b/arch/arm64/kvm/hyp/nvhe/hyp-init.S
-> > @@ -88,6 +88,12 @@ SYM_CODE_END(__kvm_hyp_init)
-> >   * x0: struct kvm_nvhe_init_params PA
-> >   */
-> >  SYM_CODE_START(___kvm_hyp_init)
-> > +alternative_cb kvm_patch_hcr_flags
-> > +	mov_q	x1, HCR_HOST_NVHE_FLAGS
-> 
-> You really want to be careful here: the mov_q macro expands to 2, 3 or 4
-> instructions, depending on the input data...
-> 
-> It is also odd that you have both a static key and a patching alternative.
-> Why isn't "protected KVM" a capability that can be evaluated as a a non
-> patching alternative? In general, I'd like to reserve patching alternatives
-> to values that cannot be evaluated at compile time (VM offsets, for
-> example).
+From: Michael Srba <Michael.Srba@seznam.cz>
 
-Capability was my initial idea as well but it looked tied to CPU features.
-Looking at it again, you're right that there is precedent for setting them
-from kernel params. Alright, I'll change it and that will get rid of the
-custom patching.
+Fix regulators on rt5033 by converting some values to bitmasks which were 
+errorneously not defined as such in the header file.
+
+Cc: Beomho Seo <beomho.seo@samsung.com>
+Fixes: 0b271258544b ("mfd: rt5033: Add Richtek RT5033 driver core.")
+Signed-off-by: Michael Srba <Michael.Srba@seznam.cz>
+---
+
+Tested on Samsung Galaxy A3 (sm-a3ulte).
+
+Other areas (e.g "RT5033 use internal timer need to set time") still look
+suspicious, but without access to a datasheet it's unfortunately hard
+to evaluate. Moreover, these values are not currently utilized so it's not
+clear what format would be expected. (it's however hard to argue for
+the removal of said values, since with the datasheet not being publicly
+available, this file may be the best documentation of them)
+
+---
+ include/linux/mfd/rt5033-private.h | 28 ++++++++++++++--------------
+ 1 file changed, 14 insertions(+), 14 deletions(-)
+
+diff --git a/include/linux/mfd/rt5033-private.h b/include/linux/mfd/rt5033-private.h
+index 3e1be588e029..964e656272ce 100644
+--- a/include/linux/mfd/rt5033-private.h
++++ b/include/linux/mfd/rt5033-private.h
+@@ -91,14 +91,14 @@ enum rt5033_reg {
+ #define RT5033_RT_HZ_MASK		0x01
+ 
+ /* RT5033 control register */
+-#define RT5033_CTRL_FCCM_BUCK_MASK		0x00
+-#define RT5033_CTRL_BUCKOMS_MASK		0x01
+-#define RT5033_CTRL_LDOOMS_MASK			0x02
+-#define RT5033_CTRL_SLDOOMS_MASK		0x03
+-#define RT5033_CTRL_EN_BUCK_MASK		0x04
+-#define RT5033_CTRL_EN_LDO_MASK			0x05
+-#define RT5033_CTRL_EN_SAFE_LDO_MASK		0x06
+-#define RT5033_CTRL_LDO_SLEEP_MASK		0x07
++#define RT5033_CTRL_FCCM_BUCK_MASK		BIT(0)
++#define RT5033_CTRL_BUCKOMS_MASK		BIT(1)
++#define RT5033_CTRL_LDOOMS_MASK			BIT(2)
++#define RT5033_CTRL_SLDOOMS_MASK		BIT(3)
++#define RT5033_CTRL_EN_BUCK_MASK		BIT(4)
++#define RT5033_CTRL_EN_LDO_MASK			BIT(5)
++#define RT5033_CTRL_EN_SAFE_LDO_MASK		BIT(6)
++#define RT5033_CTRL_LDO_SLEEP_MASK		BIT(7)
+ 
+ /* RT5033 BUCK control register */
+ #define RT5033_BUCK_CTRL_MASK			0x1f
+@@ -247,11 +247,11 @@ enum rt5033_fuel_reg {
+ #define RT5033_FUEL_BAT_PRESENT		0x02
+ 
+ /* RT5033 PMIC interrupts */
+-#define RT5033_PMIC_IRQ_BUCKOCP		2
+-#define RT5033_PMIC_IRQ_BUCKLV		3
+-#define RT5033_PMIC_IRQ_SAFELDOLV	4
+-#define RT5033_PMIC_IRQ_LDOLV		5
+-#define RT5033_PMIC_IRQ_OT		6
+-#define RT5033_PMIC_IRQ_VDDA_UV		7
++#define RT5033_PMIC_IRQ_BUCKOCP		BIT(2)
++#define RT5033_PMIC_IRQ_BUCKLV		BIT(3)
++#define RT5033_PMIC_IRQ_SAFELDOLV	BIT(4)
++#define RT5033_PMIC_IRQ_LDOLV		BIT(5)
++#define RT5033_PMIC_IRQ_OT		BIT(6)
++#define RT5033_PMIC_IRQ_VDDA_UV		BIT(7)
+ 
+ #endif /* __RT5033_PRIVATE_H__ */
+-- 
+2.28.0
+
