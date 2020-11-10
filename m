@@ -2,82 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 62F7B2AD5BD
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 12:58:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BB2972AD5C5
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 12:59:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729679AbgKJL6V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 06:58:21 -0500
-Received: from szxga02-in.huawei.com ([45.249.212.188]:2429 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726152AbgKJL6V (ORCPT
+        id S1729911AbgKJL7H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 06:59:07 -0500
+Received: from out30-44.freemail.mail.aliyun.com ([115.124.30.44]:50202 "EHLO
+        out30-44.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726861AbgKJL7G (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 06:58:21 -0500
-Received: from dggeme755-chm.china.huawei.com (unknown [172.30.72.57])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4CVmb50XQBz53g0;
-        Tue, 10 Nov 2020 19:58:09 +0800 (CST)
-Received: from [10.140.157.68] (10.140.157.68) by
- dggeme755-chm.china.huawei.com (10.3.19.101) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.1913.5; Tue, 10 Nov 2020 19:58:16 +0800
-Subject: Re: [PATCH v2] clk: hisilicon: Free clk_data and unmap region
- obtained by of_iomap
-To:     Markus Elfring <Markus.Elfring@web.de>, <linux-clk@vger.kernel.org>
-CC:     <linux-kernel@vger.kernel.org>, <kernel-janitors@vger.kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>
-References: <20201109180920.43193-1-gengdongjiu@huawei.com>
- <c6d2fe3b-3261-2c0f-f245-49bb5e63c1ed@web.de>
-From:   Dongjiu Geng <gengdongjiu@huawei.com>
-Message-ID: <3252231f-dfb9-789f-e164-11d0e579defe@huawei.com>
-Date:   Tue, 10 Nov 2020 19:58:15 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.6.0
+        Tue, 10 Nov 2020 06:59:06 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R101e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04407;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=4;SR=0;TI=SMTPD_---0UEspu5m_1605009541;
+Received: from IT-FVFX43SYHV2H.local(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0UEspu5m_1605009541)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Tue, 10 Nov 2020 19:59:02 +0800
+Subject: Re: [PATCH] mm/filemap: add static for function
+ __add_to_page_cache_locked
+To:     Souptick Joarder <jrdr.linux@gmail.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Linux-MM <linux-mm@kvack.org>, linux-kernel@vger.kernel.org
+References: <1604661895-5495-1-git-send-email-alex.shi@linux.alibaba.com>
+ <CAFqt6zZU76NOF6uD_c1vRPmEHwOzLp9wEWAmSX2ficpQb0zf6g@mail.gmail.com>
+From:   Alex Shi <alex.shi@linux.alibaba.com>
+Message-ID: <e93696ed-e4e1-879f-2c63-655aae18dbda@linux.alibaba.com>
+Date:   Tue, 10 Nov 2020 19:58:38 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
+ Gecko/20100101 Thunderbird/68.12.0
 MIME-Version: 1.0
-In-Reply-To: <c6d2fe3b-3261-2c0f-f245-49bb5e63c1ed@web.de>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
+In-Reply-To: <CAFqt6zZU76NOF6uD_c1vRPmEHwOzLp9wEWAmSX2ficpQb0zf6g@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.140.157.68]
-X-ClientProxiedBy: dggeme714-chm.china.huawei.com (10.1.199.110) To
- dggeme755-chm.china.huawei.com (10.3.19.101)
-X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
-On 2020/11/10 1:54, Markus Elfring wrote:
-> …
->> +++ b/drivers/clk/hisilicon/clk-hi3620.c
-> …
->> @@ -478,6 +478,10 @@ static void __init hi3620_mmc_clk_init(struct device_node *node)
+在 2020/11/10 上午11:09, Souptick Joarder 写道:
+> On Fri, Nov 6, 2020 at 4:55 PM Alex Shi <alex.shi@linux.alibaba.com> wrote:
 >>
->>  	clk_data->clk_num = num;
->>  	of_clk_add_provider(node, of_clk_src_onecell_get, clk_data);
->> +free_clk_data:
->> +	kfree(clk_data);
-> …
+>> Otherwise it cause gcc warning:
+>>           ^~~~~~~~~~~~~~~
+>> ../mm/filemap.c:830:14: warning: no previous prototype for
+>> ‘__add_to_page_cache_locked’ [-Wmissing-prototypes]
+>>  noinline int __add_to_page_cache_locked(struct page *page,
+>>               ^~~~~~~~~~~~~~~~~~~~~~~~~~
 > 
-> * Should any system resources be kept allocated if the execution
->   of this function implementation succeeded?
-> 
-> * How do you think about to add the statement “return;”
->   after the call of the function “of_clk_add_provider”?
-> 
-> * Should another return value be also checked here?
+> Is CONFIG_DEBUG_INFO_BTF enabled in your .config ?
 
-sure.
+Sorry, I tried to buld the configure with bzImage, but failed on pahole version too low,
+and compiled pahole still can not run in  git://git.kernel.org/pub/scm/devel/pahole/pahole.git
+#pahole
+pahole: symbol lookup error: pahole: undefined symbol: tabs
 
 > 
->   See also:
->   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/drivers/clk/clk.c?id=f8394f232b1eab649ce2df5c5f15b0e528c92091#n4414
->   https://elixir.bootlin.com/linux/v5.10-rc2/source/drivers/clk/clk.c#L4414
-> 
-> * Would you like to use the function “of_clk_add_hw_provider” instead?
-
-    How about we still use of_clk_add_provider()? It doesn't seem to make difference using of_clk_add_hw_provider().
-
-> 
-> Regards,
-> Markus
+>>
+>> Signed-off-by: Alex Shi <alex.shi@linux.alibaba.com>
+>> Cc: Andrew Morton <akpm@linux-foundation.org>
+>> Cc: linux-mm@kvack.org
+>> Cc: linux-kernel@vger.kernel.org
+>> ---
+>>  mm/filemap.c | 2 +-
+>>  1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/mm/filemap.c b/mm/filemap.c
+>> index d90614f501da..249cf489f5df 100644
+>> --- a/mm/filemap.c
+>> +++ b/mm/filemap.c
+>> @@ -827,7 +827,7 @@ int replace_page_cache_page(struct page *old, struct page *new, gfp_t gfp_mask)
+>>  }
+>>  EXPORT_SYMBOL_GPL(replace_page_cache_page);
+>>
+>> -noinline int __add_to_page_cache_locked(struct page *page,
+>> +static noinline int __add_to_page_cache_locked(struct page *page,
+>>                                         struct address_space *mapping,
+>>                                         pgoff_t offset, gfp_t gfp,
+>>                                         void **shadowp)
+>> --
+>> 1.8.3.1
+>>
+>>
