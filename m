@@ -2,129 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49D9B2AD670
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 13:36:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 432782AD672
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 13:36:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730242AbgKJMgQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 07:36:16 -0500
-Received: from mail-ot1-f67.google.com ([209.85.210.67]:44306 "EHLO
-        mail-ot1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726900AbgKJMgQ (ORCPT
+        id S1730476AbgKJMgo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 07:36:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42868 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726900AbgKJMgo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 07:36:16 -0500
-Received: by mail-ot1-f67.google.com with SMTP id f16so12293504otl.11;
-        Tue, 10 Nov 2020 04:36:15 -0800 (PST)
+        Tue, 10 Nov 2020 07:36:44 -0500
+Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D9D5C0613CF;
+        Tue, 10 Nov 2020 04:36:44 -0800 (PST)
+Received: by mail-ed1-x543.google.com with SMTP id v22so2175603edt.9;
+        Tue, 10 Nov 2020 04:36:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=2Q5HlCtOV52Hds+JaJTmz3mdncZ2YT1jJ3ASVmrYmLg=;
+        b=XFaVsHnA4RUVQnjxcpM0XAqmDoj6orZlydUFT2qPtOOvDwmdCm6vinR2V4jepprFo7
+         pI4WtPRvYH4SUGmD/mvqhzm8TgyGn4op3995MnThWbLUB+p8ZaHVw6EXINwu4a7GCfzU
+         AxF6jWpweb2zP0CtsWlI+nyt9wSb6IJmjihUKYt4Vrq0Z2Nfe+3/X6+QaGERsaUf13dm
+         ZKqAJTKibH1FEYfULc7Qsg2wY5xTqYQ0Y9aClVD92la/xImf1XlMLDk5PArv11J0g8+Z
+         x1yixUrdrNaHCqFHZHK9dwRfpwdzSziKV+5/xjw0IHWQfk6NyH5eEXPNmvqqG1Yh0Rg2
+         dQpg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=w5f5uEO3r6sI5bF7NOkmG8gXoj1KbzEchukRim9NVXM=;
-        b=jaFeMUIw3NIFMwCF8v6Yl5DQrDw/E0j6r19qdN7/g/lhVYyAI8EOGm+Jkj1HLa78/7
-         yhyF6uInIWWeCI88jtvbeX0no98QN1+/6Lgx2xQhpGVgYgTFDNNq+c7bqpmWRSltKU7M
-         qeW6pK8dTRzdVzsFf14QohqNj3yCeqrHjVXSkGm7RTcQhzvMhIOIdHgc8QLyTHI5Dc6A
-         +a2p5mvuG3sFDSF0HUl5pKziWfsPkDaHax7oeDCd8dS+yUjwUwOiSxVr89hB262nGvCe
-         nQaj/LXNLxuGnTdwzPTQETWpPGUl/LHPuJj/qYO4BNgDQVMDEQojzIlGnfD3ZtTcTDYI
-         QrnA==
-X-Gm-Message-State: AOAM5333+K893422dRdRb3uc+6o3mRmcW8Caz93J9G0kVQLCEwHSx+ov
-        DY8AM7CyYZuotywkHtQBabMb2JyPxw0ZwhTzq3w=
-X-Google-Smtp-Source: ABdhPJw7mPJnbOdO+7/bFNde1IAr06+jLWsQGqCoGogkClkKskzCXz49C20taI6hoTbLByE+OR4kS9he0j9Nwm6qQN4=
-X-Received: by 2002:a9d:222f:: with SMTP id o44mr14179002ota.321.1605011775337;
- Tue, 10 Nov 2020 04:36:15 -0800 (PST)
+        bh=2Q5HlCtOV52Hds+JaJTmz3mdncZ2YT1jJ3ASVmrYmLg=;
+        b=ahQpDDKa9EU0ZBQ2JfHbxBeQeglSV+BKUv6M9QTq+qyw7+qEmf5ztRJUv30Q44l/3B
+         ZILt1r5n9B/0yPD3FKPv6VNQpKbxwLDZF2TuSwUmlVWOD8C8Ud7yQ7RRTvWrvMeirVeG
+         iQaRH2IQqu5CwKNmpDxjtOkY2oKWcdyKz3Do0Sscf3uLWvFI2Qhj3mq87HRHJay4q9h+
+         fS08UVMtWyNGsw+Bs3hTEcjiyXPseUT3EWpbYtR16efQEnYaZiFmzOUi3cq74e3yVjFu
+         SpbIFu1n19JtS029O2Y9WqD01M9nwGG97oTJ5slq/bdn+4Zo2TE9YvHPCFcSE/PSroPq
+         d9rQ==
+X-Gm-Message-State: AOAM53260NJXOQlvOerLSzRRsTgXd5rm4BltJ0dCf8Do7PenbA7J/xwr
+        rZFz1uCQAmzCEr+/vZN0WmiJndOkhg1nFPGp9VU=
+X-Google-Smtp-Source: ABdhPJwVAa7jp1mtnVm/MZSG2vdCiIRq1+l6veVG3OAiRoBGbz3WmvsUfue23mrYuC1+Y52ydyweC0bMWR1D0lukLCM=
+X-Received: by 2002:a05:6402:17b4:: with SMTP id j20mr21238603edy.24.1605011802891;
+ Tue, 10 Nov 2020 04:36:42 -0800 (PST)
 MIME-Version: 1.0
-References: <13269660.K2JYd4sGFX@kreacher> <1876249.M1ZxxmeKtZ@kreacher> <20201110024126.v4yxai5hpguj5p5b@vireshk-i7>
-In-Reply-To: <20201110024126.v4yxai5hpguj5p5b@vireshk-i7>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Tue, 10 Nov 2020 13:36:02 +0100
-Message-ID: <CAJZ5v0jkdF7_JKBA0R0kvhzv-ZaLr3m9MS1g_D=vs3ZObv1VVw@mail.gmail.com>
-Subject: Re: [PATCH v2 1/4] cpufreq: Introduce governor flags
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        Zhang Rui <rui.zhang@intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Doug Smythies <dsmythies@telus.net>
+References: <20201026035710.593-1-zhenzhong.duan@gmail.com> <20201027075217.GA30879@infradead.org>
+In-Reply-To: <20201027075217.GA30879@infradead.org>
+From:   Zhenzhong Duan <zhenzhong.duan@gmail.com>
+Date:   Tue, 10 Nov 2020 20:36:26 +0800
+Message-ID: <CAFH1YnNqu3DB2Ai48Dwme6uZS-8SOHa++6XGE-w=N50hw5AUCQ@mail.gmail.com>
+Subject: Re: [PATCH v2] PCI: check also dynamic IDs for duplicate in new_id_store()
+To:     Christoph Hellwig <hch@infradead.org>,
+        Bjorn Helgaas <bhelgaas@google.com>
+Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-pci@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 10, 2020 at 3:41 AM Viresh Kumar <viresh.kumar@linaro.org> wrote:
->
-> On 09-11-20, 17:51, Rafael J. Wysocki wrote:
-> > From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> >
-> > A new cpufreq governor flag will be added subsequently, so replace
-> > the bool dynamic_switching fleid in struct cpufreq_governor with a
-> > flags field and introduce CPUFREQ_GOV_FLAG_DYN_SWITCH to set for
-> > the "dynamic switching" governors instead of it.
-> >
-> > No intentional functional impact.
-> >
-> > Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> > ---
-> >  drivers/cpufreq/cpufreq.c          |    2 +-
-> >  drivers/cpufreq/cpufreq_governor.h |    2 +-
-> >  include/linux/cpufreq.h            |    9 +++++++--
-> >  kernel/sched/cpufreq_schedutil.c   |    2 +-
-> >  4 files changed, 10 insertions(+), 5 deletions(-)
-> >
-> > Index: linux-pm/drivers/cpufreq/cpufreq.c
-> > ===================================================================
-> > --- linux-pm.orig/drivers/cpufreq/cpufreq.c
-> > +++ linux-pm/drivers/cpufreq/cpufreq.c
-> > @@ -2254,7 +2254,7 @@ static int cpufreq_init_governor(struct
-> >               return -EINVAL;
-> >
-> >       /* Platform doesn't want dynamic frequency switching ? */
-> > -     if (policy->governor->dynamic_switching &&
->
-> I completely forgot that we had something like this :)
->
-> > +     if (policy->governor->flags & CPUFREQ_GOV_FLAG_DYN_SWITCH &&
-> >           cpufreq_driver->flags & CPUFREQ_NO_AUTO_DYNAMIC_SWITCHING) {
-> >               struct cpufreq_governor *gov = cpufreq_fallback_governor();
-> >
-> > Index: linux-pm/drivers/cpufreq/cpufreq_governor.h
-> > ===================================================================
-> > --- linux-pm.orig/drivers/cpufreq/cpufreq_governor.h
-> > +++ linux-pm/drivers/cpufreq/cpufreq_governor.h
-> > @@ -156,7 +156,7 @@ void cpufreq_dbs_governor_limits(struct
-> >  #define CPUFREQ_DBS_GOVERNOR_INITIALIZER(_name_)                     \
-> >       {                                                               \
-> >               .name = _name_,                                         \
-> > -             .dynamic_switching = true,                              \
-> > +             .flags = CPUFREQ_GOV_FLAG_DYN_SWITCH,                   \
-> >               .owner = THIS_MODULE,                                   \
-> >               .init = cpufreq_dbs_governor_init,                      \
-> >               .exit = cpufreq_dbs_governor_exit,                      \
-> > Index: linux-pm/include/linux/cpufreq.h
-> > ===================================================================
-> > --- linux-pm.orig/include/linux/cpufreq.h
-> > +++ linux-pm/include/linux/cpufreq.h
-> > @@ -565,12 +565,17 @@ struct cpufreq_governor {
-> >                                        char *buf);
-> >       int     (*store_setspeed)       (struct cpufreq_policy *policy,
-> >                                        unsigned int freq);
-> > -     /* For governors which change frequency dynamically by themselves */
-> > -     bool                    dynamic_switching;
-> >       struct list_head        governor_list;
-> >       struct module           *owner;
-> > +     u8                      flags;
-> >  };
-> >
-> > +/* Governor flags */
-> > +
-> > +/* For governors which change frequency dynamically by themselves */
-> > +#define CPUFREQ_GOV_FLAG_DYN_SWITCH  BIT(0)
->
-> Maybe just drop the FLAG_ part as we don't use it for other cpufreq related
-> flags as well. That will also give us space to write DYN as DYNAMIC (it may be
-> better as we use the full name in CPUFREQ_NO_AUTO_DYNAMIC_SWITCHING).
+Hi Bjorn,
 
-OK, I'll rename the flag (and the new one too).
+This patch got reviewed-by, could you kindly check if it can be
+upstreamed? Thanks very much.
 
-> Acked-by: Viresh Kumar <viresh.kumar@linaro.org>
+Zhenzhong
 
-Thanks!
+On Tue, Oct 27, 2020 at 3:52 PM Christoph Hellwig <hch@infradead.org> wrote:
+>
+> On Mon, Oct 26, 2020 at 11:57:10AM +0800, Zhenzhong Duan wrote:
+> > When a device ID data is writen to /sys/bus/pci/drivers/.../new_id,
+> > only static ID table is checked for duplicate and multiple dynamic ID
+> > entries of same kind are allowed to exist in a dynamic linked list.
+> >
+> > Fix it by calling pci_match_device() which checks both dynamic and static
+> > IDs.
+> >
+> > After fix, it shows below result which is expected.
+> >
+> > echo "1af4:1000" > /sys/bus/pci/drivers/vfio-pci/new_id
+> > echo "1af4:1000" > /sys/bus/pci/drivers/vfio-pci/new_id
+> > -bash: echo: write error: File exists
+> >
+> > Drop the static specifier and add a prototype to avoid build error.
+> >
+> > Signed-off-by: Zhenzhong Duan <zhenzhong.duan@gmail.com>
+>
+> Looks good,
+>
+> Reviewed-by: Christoph Hellwig <hch@lst.de>
