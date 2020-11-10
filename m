@@ -2,111 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 808892ADF01
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 20:01:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B9AD52ADEF8
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 20:01:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731472AbgKJTBs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 14:01:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46806 "EHLO
+        id S1731403AbgKJTBA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 14:01:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46684 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726179AbgKJTBs (ORCPT
+        with ESMTP id S1726400AbgKJTBA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 14:01:48 -0500
-Received: from mail-qv1-xf41.google.com (mail-qv1-xf41.google.com [IPv6:2607:f8b0:4864:20::f41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0FCAC0613D1
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 11:01:47 -0800 (PST)
-Received: by mail-qv1-xf41.google.com with SMTP id 63so6386570qva.7
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 11:01:47 -0800 (PST)
+        Tue, 10 Nov 2020 14:01:00 -0500
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76F00C0613D4
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 11:01:00 -0800 (PST)
+Received: by mail-pl1-x643.google.com with SMTP id d3so493502plo.4
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 11:01:00 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=JVcNggoHnnZHnilf65d3Odr5BSO3kl6mZ2aAWXQzRAo=;
-        b=pk0sA6n4GDC9Xw1ArnL9O5vFNkTR5jEvlt0tkXEf4OOrdrRf0iF57WkXkq+aZYt5md
-         SOSYGeOwJSxgei8KKg5Yo31SLqDaLSsHfymGg1j+h3i5xP9aG3N3Ponj3RSQUSa3S+Da
-         MAJrkym3VnKjHe2aMbbHNw47MDcHZDhsY95JowUiHyKM48Bt4wQnhEQcVMcrdx1F0wQ4
-         cqL0zycLg4WR6wrxM8A0O8Pahsaxszc2AP39S+/sfFz72xb9uTzEVB8x6wGdrjSFMGIg
-         oWkRlt3BsWF82RX0mGXyCgQrt1W2lsZfBe7aYt7B3k8TF536jzWY+531OJzHc1fJTPDz
-         nsCQ==
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id;
+        bh=MVoBrAjhEFC0PezMoFr9xs7sKqAwAIK39BN64pdwyhI=;
+        b=yRy9BZRpLEUKgVbF4FtdJHEyaNyO44dEbAR5KNlxRYDB5EjVnL5I2uT3nADt6XvMI8
+         v+yF9fVVrwOgpVm67P+x+Z+7MvPowXHQjiuRXYOgd+YGwonRkYX3kyNIPfAvopmQaknX
+         Dm8f+VOITLpVW9BU0s/AE22svDmDn7XdhMT/HEatYUmmUR9xxoPzarfr/caXGJGq+Wps
+         Fh0gmUVFZB9ve2nFwT2MU0U/6Z6lHaE84G2qDy6xh5u7EJW06qDmRSNuTnB1qh82sEYh
+         KVfc3z5+HpxWQXmufs58xAOUub+tuDPzAN6F6QRcYCsj+F56MXtgsKYAIp4UaZD+evJY
+         oFLA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=JVcNggoHnnZHnilf65d3Odr5BSO3kl6mZ2aAWXQzRAo=;
-        b=XjsHcBG+wlHKgjdYivfmfy2GRCr2bVFMkCngzFm/NuoCDvflZ3np9uihkiW5XkMl6r
-         tIwtx0dv5WywjQ3RxUVcZB+M4d38Ju7jt8xlspjIv8+xDFJ4xsP3U60IBl6rNjgAJ0T3
-         4qAi4pi2LlrrDDRuejC7UX1Doo8UudBbxUTNh6JQJDiLhjGbG3Zz2drig7Ey3qxkAJSI
-         l2Md6eLYHRa0vWO7HgUEktxiCpotQRudfOrCup9Y7+NCpQXaiBIlISORu0Gxk4ZXftCW
-         vYTBR67ogGvdCdbKJlfkSfaKagrB+VAIg7PuK+LlUbwhHF2nUbfk4+0WhMpRls4YBThB
-         re3Q==
-X-Gm-Message-State: AOAM531Ju99HqlgKGYRLinid0OH8ZUIXa9Bur8BInDyTr5prjyHbHWks
-        DvfUJF8a5wJ5d74Zzbr4vghxtw==
-X-Google-Smtp-Source: ABdhPJzqHu0u+YcHQbPCJo8kW9MtBEu4OpLULJDqXdjGYlwoVtkU7rGpiwrGxOD0A9HDtqP73E/74Q==
-X-Received: by 2002:a0c:9bac:: with SMTP id o44mr20889059qve.43.1605034907200;
-        Tue, 10 Nov 2020 11:01:47 -0800 (PST)
-Received: from localhost ([2620:10d:c091:480::1:64f7])
-        by smtp.gmail.com with ESMTPSA id n41sm9027909qtb.18.2020.11.10.11.01.46
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=MVoBrAjhEFC0PezMoFr9xs7sKqAwAIK39BN64pdwyhI=;
+        b=pz/HtDpXBGC112acymBbjOURNUOGv9bahgIPLY7p8XHv2nqv5B526hYSpvBWe/aZWR
+         6JS5VVIVnnPoiB3LeGTshWLjgqLsamghKzYQEHL9PpF8jNeIJP4DjVUpMC+6LAyeBlOU
+         9UlfEQgsbftVAUr0W1UiFXAamepIkfHJ32dCWY8uvs92xvrGkJLATN9Y0HoP5gPgd8cv
+         xDIdq5Q4eOnfp+PUVMQE03xf2rKQM9/bYCmFAnKYeNDW65sqyHEYPiXK+JdUaSgiJ417
+         DW8NYKdCPpmxSPs9xqjnTgskj4YLo3azrLqn1ulcdonY4CIXmIl6EL//1REZMt0QQrss
+         TisA==
+X-Gm-Message-State: AOAM531CXJbZfoSEv0/tRGwHlK7afQ8FASfmC9kkMa4PxXb34ulqO8br
+        pJ/pPDlKO/dxepnuV7ZIvp2qf/a2KmTfOA==
+X-Google-Smtp-Source: ABdhPJy39usNgzc0ELAbsZ1o2b74F4mwRDVHWgQ4MQB9rjXVDvOgTuMkkyOqkdzBTaUA5kpGKQ3SvQ==
+X-Received: by 2002:a17:902:a404:b029:d6:ebe0:6e57 with SMTP id p4-20020a170902a404b02900d6ebe06e57mr18000738plq.12.1605034859388;
+        Tue, 10 Nov 2020 11:00:59 -0800 (PST)
+Received: from localhost.localdomain ([2601:1c2:680:1319:692:26ff:feda:3a81])
+        by smtp.gmail.com with ESMTPSA id n1sm524660pfu.211.2020.11.10.11.00.58
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 10 Nov 2020 11:01:46 -0800 (PST)
-Date:   Tue, 10 Nov 2020 13:59:58 -0500
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     Alex Shi <alex.shi@linux.alibaba.com>
-Cc:     akpm@linux-foundation.org, mgorman@techsingularity.net,
-        tj@kernel.org, hughd@google.com, khlebnikov@yandex-team.ru,
-        daniel.m.jordan@oracle.com, willy@infradead.org, lkp@intel.com,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        cgroups@vger.kernel.org, shakeelb@google.com,
-        iamjoonsoo.kim@lge.com, richard.weiyang@gmail.com,
-        kirill@shutemov.name, alexander.duyck@gmail.com,
-        rong.a.chen@intel.com, mhocko@suse.com, vdavydov.dev@gmail.com,
-        shy828301@gmail.com,
-        Alexander Duyck <alexander.h.duyck@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>
-Subject: Re: [PATCH v21 18/19] mm/lru: introduce the relock_page_lruvec
- function
-Message-ID: <20201110185958.GC850433@cmpxchg.org>
-References: <1604566549-62481-1-git-send-email-alex.shi@linux.alibaba.com>
- <1604566549-62481-19-git-send-email-alex.shi@linux.alibaba.com>
- <66d8e79d-7ec6-bfbc-1c82-bf32db3ae5b7@linux.alibaba.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <66d8e79d-7ec6-bfbc-1c82-bf32db3ae5b7@linux.alibaba.com>
+        Tue, 10 Nov 2020 11:00:58 -0800 (PST)
+From:   John Stultz <john.stultz@linaro.org>
+To:     lkml <linux-kernel@vger.kernel.org>
+Cc:     John Stultz <john.stultz@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        Prasad Sodagudi <psodagud@codeaurora.org>,
+        Vladimir Lypak <junak.pub@gmail.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-arm-msm@vger.kernel.org, linux-gpio@vger.kernel.org
+Subject: [PATCH] pinctrl: qcom: Fix msm9853 Kconfig entry to depend on, not select PINCTRL_MSM
+Date:   Tue, 10 Nov 2020 19:00:54 +0000
+Message-Id: <20201110190054.20517-1-john.stultz@linaro.org>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 06, 2020 at 03:50:22PM +0800, Alex Shi wrote:
-> From 6c142eb582e7d0dbf473572ad092eca07ab75221 Mon Sep 17 00:00:00 2001
-> From: Alexander Duyck <alexander.h.duyck@linux.intel.com>
-> Date: Tue, 26 May 2020 17:31:15 +0800
-> Subject: [PATCH v21 18/19] mm/lru: introduce the relock_page_lruvec function
-> 
-> Use this new function to replace repeated same code, no func change.
-> 
-> When testing for relock we can avoid the need for RCU locking if we simply
-> compare the page pgdat and memcg pointers versus those that the lruvec is
-> holding. By doing this we can avoid the extra pointer walks and accesses of
-> the memory cgroup.
-> 
-> In addition we can avoid the checks entirely if lruvec is currently NULL.
-> 
-> Signed-off-by: Alexander Duyck <alexander.h.duyck@linux.intel.com>
-> Signed-off-by: Alex Shi <alex.shi@linux.alibaba.com>
-> Acked-by: Hugh Dickins <hughd@google.com>
-> Acked-by: Johannes Weiner <hannes@cmpxchg.org>
-> Cc: Johannes Weiner <hannes@cmpxchg.org>
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> Cc: Thomas Gleixner <tglx@linutronix.de>
-> Cc: Andrey Ryabinin <aryabinin@virtuozzo.com>
-> Cc: Matthew Wilcox <willy@infradead.org>
-> Cc: Mel Gorman <mgorman@techsingularity.net>
-> Cc: Konstantin Khlebnikov <khlebnikov@yandex-team.ru>
-> Cc: Hugh Dickins <hughd@google.com>
-> Cc: Tejun Heo <tj@kernel.org>
-> Cc: linux-kernel@vger.kernel.org
-> Cc: cgroups@vger.kernel.org
-> Cc: linux-mm@kvack.org
+One fixup following my patch commit be117ca32261 ("pinctrl:
+qcom: Kconfig: Rework PINCTRL_MSM to be a depenency rather then
+a selected config") being queued in LinusW's tree, as a new
+config entry was added for the msm9853 that also needs the
+change.
 
-Acked-by: Johannes Weiner <hannes@cmpxchg.org>
+Applies to LinusW's pinctrl devel tree.
+
+Cc: Andy Gross <agross@kernel.org>
+Cc: Prasad Sodagudi <psodagud@codeaurora.org>
+Cc: Vladimir Lypak <junak.pub@gmail.com>
+Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc: Linus Walleij <linus.walleij@linaro.org>
+Cc: linux-arm-msm@vger.kernel.org
+Cc: linux-gpio@vger.kernel.org
+Signed-off-by: John Stultz <john.stultz@linaro.org>
+---
+ drivers/pinctrl/qcom/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/pinctrl/qcom/Kconfig b/drivers/pinctrl/qcom/Kconfig
+index 8bdf878fe970c..cf56e029cd9c7 100644
+--- a/drivers/pinctrl/qcom/Kconfig
++++ b/drivers/pinctrl/qcom/Kconfig
+@@ -115,7 +115,7 @@ config PINCTRL_MSM8916
+ config PINCTRL_MSM8953
+ 	tristate "Qualcomm 8953 pin controller driver"
+ 	depends on GPIOLIB && OF
+-	select PINCTRL_MSM
++	depends on PINCTRL_MSM
+ 	help
+ 	  This is the pinctrl, pinmux, pinconf and gpiolib driver for the
+ 	  Qualcomm TLMM block found on the Qualcomm MSM8953 platform.
+-- 
+2.17.1
+
