@@ -2,141 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DDCD32ACB0B
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 03:26:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CE9CC2ACB0D
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 03:28:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730932AbgKJC0g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 21:26:36 -0500
-Received: from mx2.suse.de ([195.135.220.15]:35952 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727311AbgKJC0g (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 21:26:36 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 6520DAB95;
-        Tue, 10 Nov 2020 02:26:34 +0000 (UTC)
-From:   NeilBrown <neilb@suse.de>
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Trond Myklebust <trondmy@hammerspace.com>
-Date:   Tue, 10 Nov 2020 13:26:27 +1100
-Cc:     "juri.lelli@redhat.com" <juri.lelli@redhat.com>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "jiangshanlai@gmail.com" <jiangshanlai@gmail.com>,
-        "tj@kernel.org" <tj@kernel.org>,
-        "mhocko@suse.com" <mhocko@suse.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "vincent.guittot@linaro.org" <vincent.guittot@linaro.org>
-Subject: Re: [PATCH rfc] workqueue: honour cond_resched() more effectively.
-In-Reply-To: <20201109142016.GK2611@hirez.programming.kicks-ass.net>
-References: <87v9efp7cs.fsf@notabene.neil.brown.name>
- <20201109080038.GY2594@hirez.programming.kicks-ass.net>
- <aec65c71c09e803285688d5974193a98b4422428.camel@hammerspace.com>
- <20201109142016.GK2611@hirez.programming.kicks-ass.net>
-Message-ID: <87pn4mosks.fsf@notabene.neil.brown.name>
+        id S1729847AbgKJC2P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 21:28:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33586 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727311AbgKJC2P (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 21:28:15 -0500
+Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 841F5C0613CF;
+        Mon,  9 Nov 2020 18:28:15 -0800 (PST)
+Received: by mail-io1-xd44.google.com with SMTP id n129so12074659iod.5;
+        Mon, 09 Nov 2020 18:28:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to:cc
+         :content-transfer-encoding;
+        bh=keYF4CkgxzM1pesky08YWn1U5fRMi55bwI9myTqfa/U=;
+        b=A1HUlEtAojTRba+JWBSh6M5Xdhez3Q1OvSMAOSpYW3rjeKA70euFOGo/ncD2l69gPJ
+         a5nHSD3s9GgjnXKmijeWT1YdOh2NiDod7oBqRiSPb+ykJM7RNK1EAxc2tzRfzC8R2SFA
+         /L4YlOoE3zb9lBTg/hYUY3xCCIw4iQ7S2VvDY0nQLaHiR5eGqyYQ1NbgeDJRpigpLVXz
+         Ux2FWSv8yYa+KVwKmaVxf4je9mDJyBCnDY8F2qIxDkqnMQ+5dObw7TXqhBIDqGH2PcB9
+         /DKOTj6vasZ5f1D5mkqCduukNOfo4zSFwIPcb4NYM3n8GGUyeMkzWjc9+ML8aMTiewhz
+         ojGQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc
+         :content-transfer-encoding;
+        bh=keYF4CkgxzM1pesky08YWn1U5fRMi55bwI9myTqfa/U=;
+        b=LR1wpUVzNPxEDuOR0/+XLD4hrY9oR84SRZmjEcShdfUicDUW/yCClST+d63n9Cm/i8
+         qNNE5oNocnlJGrjVMUcdm8823tg//Tk+oVp2JCxF2OWbpToZsYZTriMsRojx2QDgW1zw
+         6PH+lmTp4rBX7pOfZJ5nMxQF4iRRh0LhpjTFKh+38EhURcYS8J6g1Frx12IPE5zI8Eg0
+         +9VJ6PHe+G8WEizOQHwPSaHc0dkq8su+Q5yr5/4cG+JJ61ec0WR9N/eEfycIE/h1djUG
+         LfFItXxCflNxxrVCv5qZb8ll2/u8Am0ZG8j637R0OtUsjA3xs7ruvjvi2XsJBAUcwJ/8
+         b7Mg==
+X-Gm-Message-State: AOAM530OcbmLLGr/Zo0Cua8HujJPkLHoLWYwlKenqzJCL+4VuZfrQh1j
+        gzMAVb5fUSpSBj7k6QD2RNjiJ9dTC2+inB/1q6liRrhDrdFN+Y/K
+X-Google-Smtp-Source: ABdhPJxDwrptMszZuKk2HnOQoODlBjgh6e630cLHfANreTNmB2DtR2JbwwGbwINv7gukrkuDGa/4uKyWHpXngx6bsiY=
+X-Received: by 2002:a5d:9842:: with SMTP id p2mr12619519ios.113.1604975295009;
+ Mon, 09 Nov 2020 18:28:15 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="=-=-=";
-        micalg=pgp-sha256; protocol="application/pgp-signature"
+From:   app l <lipc198702@gmail.com>
+Date:   Tue, 10 Nov 2020 10:28:04 +0800
+Message-ID: <CAGaOi3Z5ezAiBB4-YxUa+so1s=PnVzVsfw9rAs3CGKExJHD-ow@mail.gmail.com>
+Subject: Question: gadget: How to realize uvc and uac composite function?
+To:     balbi@kernel.org
+Cc:     gregkh@linuxfoundation.org, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---=-=-=
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
+Hi,
+Version: 4.9 and uac1 driver is V5.9. I tested it based on 4.9 with
+backported dwc3 driver frome v5.9.
+1. According to configfs-usb-gadget-uvc, PC(Windows 10) can get ISO
+data normally;
+2. According to configfs-usb-gadget-uac1, PC(Windows 10) can  install
+audio driver normally(AC Interface,/Captue Input terminal/Speaker);
+3=E3=80=81uvc+uac1 composite device, PC(Windows 10) can get ISO data normal=
+ly,
+but PC shows that the uac1 driver installation failed(AC
+Interface/Capture Inactive/Playback Inactive). AC Interface/Capture
+Inactive/Playback Inactive all show the device cannot start code 10,
+The settings of the I/O device are incorrect or the configuration
+parameters of the driver are incorrect. Through the USB analyzer to
+capture the packet, I found that the Index value seems to be wrong
+when PC host to get the descriptor. The acquisition is Playback
+Inactive and Capture Inactive, and the PC did not send the command
+packet about uac1. It is difficult to debug it.
+I suspect that some parts of the uac1 descriptor need to be modified,
+but I don=E2=80=99t know which one to modify.
+I sincerely hope that everyone can give some suggestions or related
+patches to help me. Thanks very much!
 
-On Mon, Nov 09 2020, Peter Zijlstra wrote:
-
-> On Mon, Nov 09, 2020 at 01:50:40PM +0000, Trond Myklebust wrote:
->> On Mon, 2020-11-09 at 09:00 +0100, Peter Zijlstra wrote:
->
->> > I'm thinking the real problem is that you're abusing workqueues. Just
->> > don't stuff so much work into it that this becomes a problem. Or
->> > rather,
->> > if you do, don't lie to it about it.
->>=20
->> If we can't use workqueues to call iput_final() on an inode, then what
->> is the point of having them at all?
->
-> Running short stuff, apparently.
-
-Also running stuff that sleeps.  If only does work in short bursts, and
-sleeps between the works, it can run as long as it likes.
-It is only sustained bursts that are currently not supported with
-explicit code.
-
->
->> Neil's use case is simply a file that has managed to accumulate a
->> seriously large page cache, and is therefore taking a long time to
->> complete the call to truncate_inode_pages_final(). Are you saying we
->> have to allocate a dedicated thread for every case where this happens?
->
-> I'm not saying anything, but you're trying to wreck the scheduler
-> because of a workqueue 'feature'. The 'new' workqueues limit concurrency
-> by design, if you're then relying on concurrency for things, you're
-> using it wrong.
->
-> I really don't know what the right answer is here, but I thoroughly hate
-> the one proposed.
-
-Oh good - plenty for room for improvement then :-)
-
-I feel strongly that this should work transparently.  Expecting people
-too choose the right option to handle cases that don't often some up in
-testing is naive.
-A warning whenever a bound,non-CPU-intensive worker calls cond_resched()
-is trivial to implement and extremely noise.  As mentioned, I get twenty
-just to boot.
-
-One amusing example is rhashtable which schedule a worker to rehash a
-table.  This is expected to be cpu-intensive because it calls
-cond_resched(), but it is run with schedule_work() - clearly not
-realizing that will block other scheduled work on that CPU.
-
-An amusing example for the flip-side is crypto/cryptd.c which creates a
-WQ_CPU_INTENSIVE workqueue (cryptd) but the cryptd_queue_worker() has
-a comment "Only handle one request at a time to avoid hogging crypto
-workqueue." !!! The whole point of WQ_CPU_INTENSIVE is that you cannot
-hog the workqueue!!
-
-Anyway, I digress....  warning on ever cond_resched() generates lots of
-warnings, including some from printk.... so any work item that might
-ever print a message needs to be CPU_INTENSIVE???
-I don't think that scales.
-
-Is there some way the scheduler can help?  Does the scheduler notice
-"time to check on that CPU over there" and then:
- - if it is in user-space- force it to schedule
- - if it is in kernel-space (and preempt is disabled), then leave it
- alone
- ??
-
-If so, could there be a third case - if it is a bound,non-cpu-intensive
-worker, switch it to cpu-intensive???
-
-I wonder how long workers typically run - do many run long enough that
-the scheduler might want to ask them to take a break?
-
-Thanks,
-NeilBrown
-
---=-=-=
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQJCBAEBCAAsFiEEG8Yp69OQ2HB7X0l6Oeye3VZigbkFAl+p+lMOHG5laWxiQHN1
-c2UuZGUACgkQOeye3VZigbkmURAAkHR6kDOsZoFw+EbfmtbJdJ7p7ffqHcGxk9JH
-a1xngFazd+peJEahsg93p+8E04KEKkXbJW8Pn/7dwhJm2K0sub/sWf8cGquMsKHt
-2pGN61qOkw3PAXJbVm4JWrvi1dXbAYLuj/D0BxKhHB6B8JVf0lTXwgjbGA1c1WsK
-c3snQ2Iaon/y/r5gICHe/vQ3AHFPNZ6ikG3jVT9pyyYecF/UEh1Cdz3fxMzlkfZk
-K3i5u6T9j8QPAkwedU8YY2AtFHba7sElJu8hQ8URQAhsUSh6huRAP5cs0qtviVqw
-eQrEPHk6aPQhuPxgMp2EtjWzL3olu3pWdwLoCD387oRC9CLtTjx5WyTPKA9Pv6Hy
-hqQj6odc+enoLmjz5tSbihaUvluW0Ae4ddRTKX3Jqeqt4BvJWjVlCs055iTMlh25
-CUAop0/hcf6lkmA5teKG3EMlrMuJH/X+XWaV7VS28HnD+H76dL33wNpUIlfZDPrr
-yEk3VU+hBA8Hr6lyiktIFW2XpeIolWA6lTXsmcoLZFpX3VQG3l70BQf4XWtmCenq
-HPCcetsHK3vcCByxaCVj2K7AnNuv7dpQKRkiExBQBPviRKk4IBIC6MXAxAzNafUK
-tWcb+rvDJgyGCSRL0F/OEiQQ8akcQwWRAc4ClYlvYlsq4QYQJWRKhH1oUA5Kx1Vc
-TqV/4VE=
-=z4yF
------END PGP SIGNATURE-----
---=-=-=--
+Regards,
+pengcheng
