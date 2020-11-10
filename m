@@ -2,101 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45FE52AD41C
+	by mail.lfdr.de (Postfix) with ESMTP id B58CA2AD41D
 	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 11:50:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730679AbgKJKuN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 05:50:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54624 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726690AbgKJKuM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 05:50:12 -0500
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF16DC0613CF;
-        Tue, 10 Nov 2020 02:50:11 -0800 (PST)
-Received: by mail-wm1-x344.google.com with SMTP id d142so2521625wmd.4;
-        Tue, 10 Nov 2020 02:50:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=RI3echpmsILHMbwDzAgMqcqkjUKk2AOhPsGaeepkNKI=;
-        b=FrhFbwdHS6/kq3jq8MO8bIfVNpx/tqWrlhlOsA3bKsZghA74MehbDZoUkpZHwRJM9j
-         4g0/JpvOD6J4nGOkh8cLPQG8LK5xHzSP2efrQ+y8UBN7JoBdflYvnLUmqWWmaVOa4XZh
-         HJZP5sqeRG/lRZAvH5YMsdwOxr8dsfPsTrSV+0kJVaPP2Ecm08KQRP1Q6QfUI8+E6gRh
-         uxcowjkBfnD69wwWMgU+E9/miAGpncdYoQGEt2jhyNckw77imOXJ9qirusZt4ptHaADF
-         6SU7wyJzV9+k5IccBZ+nfFT984BpzWZ7p//S+aGMh7NuoIgFqWHshg9WYhW7ahC++LXd
-         yBzQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=RI3echpmsILHMbwDzAgMqcqkjUKk2AOhPsGaeepkNKI=;
-        b=WR4VKww8wnie04JARLuatz1nFnVFknJSi214f/RN+2asQR20Z1K2eiqHieFIUQVHuF
-         aW4mNHS5Em9AdEeI6YjukHGoMplma4EGkzmTwKo03afUedbNwixfOJdHDcHdu7ChPqVg
-         Ba5LSG7yMRBYka9aGbJOpDpKWGNWVsPNd5g32uudBKGPDOmIgTwVNCvX7YtZg6HtGgVg
-         M1UaxKL5XmiGmKxK/lzvWi0mCy6PItBgQ/Hszojs3QHncrHuEKtsITR9t3UjrQy6UF3p
-         snX2SYFRcAmp3an1Wy8uXaqQ9UKmiOHCmWjttra43w36iRMNcopK4KNIF775+NSH2v2c
-         TJEQ==
-X-Gm-Message-State: AOAM5339emz/XGIfC/3R/2VMAzUs5GenrgHgtNsgSVdUxBYOELUikNjn
-        AkqWtoVi3wG8juDLaXZoEHQ=
-X-Google-Smtp-Source: ABdhPJx4aH/axjJpFpDOjbOiN8JuiZiLYbtFxERcm0uuN9Xjc0uKWDIuFz8ESgqBpekhNRBqg9O1LQ==
-X-Received: by 2002:a1c:9652:: with SMTP id y79mr4175402wmd.71.1605005410743;
-        Tue, 10 Nov 2020 02:50:10 -0800 (PST)
-Received: from ziggy.stardust ([213.195.112.112])
-        by smtp.gmail.com with ESMTPSA id m20sm18743080wrg.81.2020.11.10.02.50.09
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 10 Nov 2020 02:50:10 -0800 (PST)
-Subject: Re: [PATCH] clk: mediatek: fix mtk_clk_register_mux() as static
- function
-To:     Weiyi Lu <weiyi.lu@mediatek.com>,
-        Greg KH <gregkh@linuxfoundation.org>
-Cc:     Stephen Boyd <sboyd@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-mediatek@lists.infradead.org, linux-clk@vger.kernel.org,
-        srv_heupstream@mediatek.com, stable@vger.kernel.org,
-        Owen Chen <owen.chen@mediatek.com>
-References: <1604914627-9203-1-git-send-email-weiyi.lu@mediatek.com>
- <20201109102035.GA1238638@kroah.com> <1604972321.16474.9.camel@mtksdaap41>
-From:   Matthias Brugger <matthias.bgg@gmail.com>
-Message-ID: <00a5aabb-b478-66e0-0663-3cf5557e861b@gmail.com>
-Date:   Tue, 10 Nov 2020 11:50:07 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1731114AbgKJKuT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 05:50:19 -0500
+Received: from mga04.intel.com ([192.55.52.120]:5635 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730751AbgKJKuT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Nov 2020 05:50:19 -0500
+IronPort-SDR: F6ozJGXUHb8OME3pEgKX7c3SqtaAl1i02/XeUyxJy+bIpblflpMTr7wVL8aO+HdysEiMbTzi5I
+ RR4en+AU5HQw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9800"; a="167369971"
+X-IronPort-AV: E=Sophos;i="5.77,466,1596524400"; 
+   d="scan'208";a="167369971"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Nov 2020 02:50:19 -0800
+IronPort-SDR: R4mRClaaVexvWM8Xzc9bwEJH8ERSXmXlauViygka+H/aSC/OWKd7d1O6fNbREzsz+WhyXKj+AS
+ yv0P6qjVIo0g==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,466,1596524400"; 
+   d="scan'208";a="428325868"
+Received: from kuha.fi.intel.com ([10.237.72.162])
+  by fmsmga001.fm.intel.com with SMTP; 10 Nov 2020 02:50:16 -0800
+Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Tue, 10 Nov 2020 12:50:15 +0200
+Date:   Tue, 10 Nov 2020 12:50:15 +0200
+From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
+To:     Prashant Malani <pmalani@chromium.org>
+Cc:     linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
+        gregkh@linuxfoundation.org, Benson Leung <bleung@chromium.org>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Guenter Roeck <groeck@chromium.org>
+Subject: Re: [PATCH v2 2/2] platform/chrome: cros_ec_typec: Set partner
+ num_altmodes
+Message-ID: <20201110105015.GF1224435@kuha.fi.intel.com>
+References: <20201110061535.2163599-1-pmalani@chromium.org>
+ <20201110061535.2163599-2-pmalani@chromium.org>
 MIME-Version: 1.0
-In-Reply-To: <1604972321.16474.9.camel@mtksdaap41>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201110061535.2163599-2-pmalani@chromium.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 10/11/2020 02:38, Weiyi Lu wrote:
-> On Mon, 2020-11-09 at 11:20 +0100, Greg KH wrote:
->> On Mon, Nov 09, 2020 at 05:37:07PM +0800, Weiyi Lu wrote:
->>> mtk_clk_register_mux() should be a static function
->>>
->>> Fixes: a3ae549917f16 ("clk: mediatek: Add new clkmux register API")
->>> Cc: <stable@vger.kernel.org>
->>
->> Why is this for stable trees?
+On Mon, Nov 09, 2020 at 10:15:36PM -0800, Prashant Malani wrote:
+> Set the number of altmodes available for a registered partner using the
+> Type C connector class framework routine.
 > 
-> Hi Greg,
+> Signed-off-by: Prashant Malani <pmalani@chromium.org>
+
+Reviewed-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+
+> ---
 > 
-> My Mistake. Indeed, this is not a bug fix for stable tree.
-> And there are simple questions.
-> Will I be allowed to keep the fixes tag in this patch to indicate the
-> mistakes we made in previous commit if it's not a bug fix for stable
-> tree?
-> And all I need to do now is to remove stable tree from cc list. Is it
-> correct?
+> Changes in v2:
+> - Patch introduced for the first time in v2.
+> 
+>  drivers/platform/chrome/cros_ec_typec.c | 8 ++++++++
+>  1 file changed, 8 insertions(+)
+> 
+> diff --git a/drivers/platform/chrome/cros_ec_typec.c b/drivers/platform/chrome/cros_ec_typec.c
+> index ce031a10eb1b..743a28426f98 100644
+> --- a/drivers/platform/chrome/cros_ec_typec.c
+> +++ b/drivers/platform/chrome/cros_ec_typec.c
+> @@ -621,6 +621,7 @@ static int cros_typec_register_altmodes(struct cros_typec_data *typec, int port_
+>  	struct cros_typec_altmode_node *node;
+>  	struct typec_altmode_desc desc;
+>  	struct typec_altmode *amode;
+> +	int num_altmodes = 0;
+>  	int ret = 0;
+>  	int i, j;
+>  
+> @@ -647,9 +648,16 @@ static int cros_typec_register_altmodes(struct cros_typec_data *typec, int port_
+>  
+>  			node->amode = amode;
+>  			list_add_tail(&node->list, &port->partner_mode_list);
+> +			num_altmodes++;
+>  		}
+>  	}
+>  
+> +	ret = typec_partner_set_num_altmodes(port->partner, num_altmodes);
+> +	if (ret < 0) {
+> +		dev_err(typec->dev, "Unable to set partner num_altmodes for port: %d\n", port_num);
+> +		goto err_cleanup;
+> +	}
+> +
+>  	return 0;
+>  
+>  err_cleanup:
+> -- 
+> 2.29.2.222.g5d2a92d10f8-goog
 
-That's my understanding, yes. Keep fixes tag but delete cc to stable.
+thanks,
 
-Regards,
-Matthias
+-- 
+heikki
