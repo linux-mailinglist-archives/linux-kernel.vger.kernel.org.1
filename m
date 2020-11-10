@@ -2,91 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E0642AE0D5
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 21:41:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 89D7C2AE0DB
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 21:43:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731681AbgKJUlX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 15:41:23 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55098 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726462AbgKJUlU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 15:41:20 -0500
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0C8C42064B;
-        Tue, 10 Nov 2020 20:41:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605040879;
-        bh=yKv9frgTvVqzPfRFofFJ3n7ouGgpWudWfrCyAmsq0Ac=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=F6jMqfAn1AHkUEQ1J4oxIJsY6olAVg85Py7bpZib2TmtC6g1lYi0DngBOOIFt5utk
-         EFXiTKY28UDOKNVDreRLLKKohuiIiXg9ONF3YKN2KD9yB2bif5xKWXrE3o0u6sihCB
-         0DBiiPOPHC8Fu7Hr8yhImjwF9Wn4UU/3MV8rT0Eg=
-Date:   Tue, 10 Nov 2020 21:42:21 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Shuah Khan <skhan@linuxfoundation.org>
-Cc:     david.kershner@unisys.com, keescook@chromium.org,
-        peterz@infradead.org, devel@driverdev.osuosl.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 12/13] drivers/staging/unisys/visorhba: convert stats to
- use seqnum_ops
-Message-ID: <X6r7LVcXBBvRIbd8@kroah.com>
-References: <cover.1605027593.git.skhan@linuxfoundation.org>
- <6fb679d23de785bbd1be6a528127e29f8ee6abd7.1605027593.git.skhan@linuxfoundation.org>
+        id S1731582AbgKJUnY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 15:43:24 -0500
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:46128 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725862AbgKJUnX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Nov 2020 15:43:23 -0500
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0AAKgu3r061518;
+        Tue, 10 Nov 2020 14:42:56 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1605040976;
+        bh=sifttbW0k5Lxcp2E71JaLXQzbHbeoqMjZBnpIupizDw=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=LmrO7Q7Dlq6pUHsh8dqUlGvFLlSoLm74P/l8Cq/t1BTBUQGrpcEcPXonujHXvweye
+         tqRp6oyq2fnpIGQj5266vsEM13zx1p556lUWq39/CA74cl/jJnK0VE0P4jb6weD7tu
+         x23b+PvFD1x2sNVHla8AJHhSb8BhRHqBIyF9q+cQ=
+Received: from DFLE114.ent.ti.com (dfle114.ent.ti.com [10.64.6.35])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0AAKguLi130035
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 10 Nov 2020 14:42:56 -0600
+Received: from DFLE112.ent.ti.com (10.64.6.33) by DFLE114.ent.ti.com
+ (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 10
+ Nov 2020 14:42:56 -0600
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE112.ent.ti.com
+ (10.64.6.33) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Tue, 10 Nov 2020 14:42:56 -0600
+Received: from [10.250.64.205] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0AAKgtB2063474;
+        Tue, 10 Nov 2020 14:42:55 -0600
+Subject: Re: [PATCH] soc: ti: pruss: Remove wrong check against
+ *get_match_data return value
+To:     Grzegorz Jaszczyk <grzegorz.jaszczyk@linaro.org>,
+        <ssantosh@kernel.org>
+CC:     <santosh.shilimkar@oracle.com>, <lee.jones@linaro.org>,
+        <linux-kernel@vger.kernel.org>, <linux-omap@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <praneeth@ti.com>,
+        <tony@atomide.com>, Wei Yongjun <weiyongjun1@huawei.com>
+References: <20201026144943.30821-1-grzegorz.jaszczyk@linaro.org>
+From:   Suman Anna <s-anna@ti.com>
+Message-ID: <a1a787b2-efac-3baf-2a3c-ba135b8b32d0@ti.com>
+Date:   Tue, 10 Nov 2020 14:42:55 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <6fb679d23de785bbd1be6a528127e29f8ee6abd7.1605027593.git.skhan@linuxfoundation.org>
+In-Reply-To: <20201026144943.30821-1-grzegorz.jaszczyk@linaro.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 10, 2020 at 12:53:38PM -0700, Shuah Khan wrote:
-> seqnum_ops api is introduced to be used when a variable is used as
-> a sequence/stat counter and doesn't guard object lifetimes. This
-> clearly differentiates atomic_t usages that guard object lifetimes.
+Hi Greg,
+
+On 10/26/20 9:49 AM, Grzegorz Jaszczyk wrote:
+> Since the of_device_get_match_data() doesn't return error code, remove
+> wrong IS_ERR test. Proper check against NULL pointer is already done
+> later before usage: if (data && data->...).
 > 
-> seqnum32 variables wrap around to INT_MIN when it overflows and
-> should not be used to guard resource lifetimes, device usage and
-> open counts that control state changes, and pm states.
+> Additionally, proceeding with empty device data is valid (e.g. in case
+> of "ti,am3356-pruss").
 > 
-> atomic_t variables used for error_count and ios_threshold are atomic
-> counters and guarded by max. values. No change to the behavior with
-> this change.
-> 
-> Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
+> Reported-by: Wei Yongjun <weiyongjun1@huawei.com>
+
+Please add the appropriate Fixes: tag.
+
+And prefer %s/Remove/Fix/ in patch title.
+
+With that,
+Acked-by: Suman Anna <s-anna@ti.com>
+
+regards
+Suman
+
+> Signed-off-by: Grzegorz Jaszczyk <grzegorz.jaszczyk@linaro.org>
 > ---
->  .../staging/unisys/visorhba/visorhba_main.c   | 37 ++++++++++---------
->  1 file changed, 19 insertions(+), 18 deletions(-)
+>  drivers/soc/ti/pruss.c | 6 ------
+>  1 file changed, 6 deletions(-)
 > 
-> diff --git a/drivers/staging/unisys/visorhba/visorhba_main.c b/drivers/staging/unisys/visorhba/visorhba_main.c
-> index 7ae5306b92fe..3209958b8aaa 100644
-> --- a/drivers/staging/unisys/visorhba/visorhba_main.c
-> +++ b/drivers/staging/unisys/visorhba/visorhba_main.c
-> @@ -10,6 +10,7 @@
->  #include <linux/module.h>
->  #include <linux/seq_file.h>
->  #include <linux/visorbus.h>
-> +#include <linux/seqnum_ops.h>
->  #include <scsi/scsi.h>
->  #include <scsi/scsi_host.h>
->  #include <scsi/scsi_cmnd.h>
-> @@ -41,8 +42,8 @@ MODULE_ALIAS("visorbus:" VISOR_VHBA_CHANNEL_GUID_STR);
->  struct visordisk_info {
->  	struct scsi_device *sdev;
->  	u32 valid;
-> -	atomic_t ios_threshold;
-> -	atomic_t error_count;
-> +	struct seqnum32 ios_threshold;
-> +	struct seqnum32 error_count;
+> diff --git a/drivers/soc/ti/pruss.c b/drivers/soc/ti/pruss.c
+> index cc0b4ad7a3d3..5d6e7132a5c4 100644
+> --- a/drivers/soc/ti/pruss.c
+> +++ b/drivers/soc/ti/pruss.c
+> @@ -126,8 +126,6 @@ static int pruss_clk_init(struct pruss *pruss, struct device_node *cfg_node)
+>  	int ret = 0;
+>  
+>  	data = of_device_get_match_data(dev);
+> -	if (IS_ERR(data))
+> -		return -ENODEV;
+>  
+>  	clks_np = of_get_child_by_name(cfg_node, "clocks");
+>  	if (!clks_np) {
+> @@ -175,10 +173,6 @@ static int pruss_probe(struct platform_device *pdev)
+>  	const char *mem_names[PRUSS_MEM_MAX] = { "dram0", "dram1", "shrdram2" };
+>  
+>  	data = of_device_get_match_data(&pdev->dev);
+> -	if (IS_ERR(data)) {
+> -		dev_err(dev, "missing private data\n");
+> -		return -ENODEV;
+> -	}
+>  
+>  	ret = dma_set_coherent_mask(dev, DMA_BIT_MASK(32));
+>  	if (ret) {
+> 
 
-Are you sure the threshold variable is a sequence number?
-
-It goes up and down, not just up and up and up.
-
-An error count just goes up :)
-
-thanks,
-
-greg k-h
