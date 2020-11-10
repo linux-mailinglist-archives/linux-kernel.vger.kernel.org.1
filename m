@@ -2,288 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2E682ADA6E
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 16:30:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 44B902ADA73
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 16:32:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730791AbgKJPa0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 10:30:26 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34102 "EHLO mail.kernel.org"
+        id S1730980AbgKJPcN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 10:32:13 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34518 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730200AbgKJPa0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 10:30:26 -0500
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        id S1730666AbgKJPcM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Nov 2020 10:32:12 -0500
+Received: from paulmck-ThinkPad-P72.home (50-39-104-11.bvtn.or.frontiernet.net [50.39.104.11])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 84A4720797;
-        Tue, 10 Nov 2020 15:30:24 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id BE7172076E;
+        Tue, 10 Nov 2020 15:32:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605022224;
-        bh=p4iuopjuRljxHBDDNrLSLutPV2YsIkBcZAQ/CN7b5Z4=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=z9+sksTtGkjPrDfCsuPoYz3eBJLWgKss6WxR4i9sUeZm093o77dytQAJDhb+uTGkU
-         sKIX+ND0Z0jcIsUXqnCFR2Jhv/cNEx4qs9r6kp0/5t+9stIHC+4O0DLXeqcuwo9NaS
-         D0zPG0svBU4jVSAvfgRvuDVMJpH6pUQYx6+6cgsU=
-Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
-        by disco-boy.misterjones.org with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94)
-        (envelope-from <maz@kernel.org>)
-        id 1kcVbC-009UQ8-B4; Tue, 10 Nov 2020 15:30:22 +0000
+        s=default; t=1605022331;
+        bh=K8VDqFdwKyqA5Y+dk5hxgwCzE73NJ2L201GMD5MtvM4=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=cUKAIFuHhEVNGDkyQhX0/0PFsVhuyVsW6jOBKvmQyyEsUcsqjIV+Isdq32WM4nFf6
+         YSYVcRUuHFKsuSYVJPoVOxOC4bBi2XGgMdAtwkdA4ZsAKEMiA8cs9qzjRDIOBh7jzh
+         ijck5y3HvRUwYrotWhZlntHnEbufKa9nzkc/7vo0=
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id 5723F35226CB; Tue, 10 Nov 2020 07:32:11 -0800 (PST)
+Date:   Tue, 10 Nov 2020 07:32:11 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Paul Gortmaker <paul.gortmaker@windriver.com>
+Cc:     linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+        rdunlap@infradead.org, colin.king@canonical.com,
+        Frederic Weisbecker <fweisbec@gmail.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@kernel.org>, Li Zefan <lizefan@huawei.com>
+Subject: Re: [PATCH v2 0/4] support for global CPU list abbreviations
+Message-ID: <20201110153211.GU3249@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <20201110040725.1478297-1-paul.gortmaker@windriver.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Tue, 10 Nov 2020 15:30:22 +0000
-From:   Marc Zyngier <maz@kernel.org>
-To:     David Brazdil <dbrazdil@google.com>
-Cc:     kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Dennis Zhou <dennis@kernel.org>,
-        Tejun Heo <tj@kernel.org>, Christoph Lameter <cl@linux.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Quentin Perret <qperret@google.com>,
-        Andrew Scull <ascull@google.com>,
-        Andrew Walbran <qwandor@google.com>, kernel-team@android.com
-Subject: Re: [PATCH v1 08/24] kvm: arm64: Move hyp-init params to a per-CPU
- struct
-In-Reply-To: <20201109113233.9012-9-dbrazdil@google.com>
-References: <20201109113233.9012-1-dbrazdil@google.com>
- <20201109113233.9012-9-dbrazdil@google.com>
-User-Agent: Roundcube Webmail/1.4.9
-Message-ID: <be241d5b3db1ce9e5529c18ebef8c800@kernel.org>
-X-Sender: maz@kernel.org
-X-SA-Exim-Connect-IP: 51.254.78.96
-X-SA-Exim-Rcpt-To: dbrazdil@google.com, kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, james.morse@arm.com, julien.thierry.kdev@gmail.com, suzuki.poulose@arm.com, catalin.marinas@arm.com, will@kernel.org, dennis@kernel.org, tj@kernel.org, cl@linux.com, mark.rutland@arm.com, lorenzo.pieralisi@arm.com, qperret@google.com, ascull@google.com, qwandor@google.com, kernel-team@android.com
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201110040725.1478297-1-paul.gortmaker@windriver.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-11-09 11:32, David Brazdil wrote:
-> Once we start initializing KVM on newly booted cores before the rest of
-> the kernel, parameters to __do_hyp_init will need to be provided by EL2
-> rather than EL1. At that point it will not be possible to pass its four
-> arguments directly because PSCI_CPU_ON only supports one context
-> argument.
+On Mon, Nov 09, 2020 at 11:07:21PM -0500, Paul Gortmaker wrote:
+> RFC/v1 ---> v2:
 > 
-> Refactor __do_hyp_init to accept its parameters in a struct. This
-> prepares the code for KVM booting cores as well as removes any limits 
-> on
-> the number of __do_hyp_init arguments.
+> commit #1:
+>    leave one line stub behind for !SMP solving build failures.
+>    Reported by Randy Dunlap and various build bots.
 > 
-> Signed-off-by: David Brazdil <dbrazdil@google.com>
+> commit #4
+>    manage to remember '\0' char in strlen from one line to the next.
+>    Reported by Colin King.
+> 
+> Original description from v1/RFC below remains unchanged...
+
+Queued and this time kicking off testing that actually includes your
+patches!  ;-)
+
+							Thanx, Paul
+
+>  ---
+> 
+> The basic objective here was to add support for "nohz_full=8-last" and/or
+> "rcu_nocbs="4-last" -- essentially introduce "last" as a portable
+> reference evaluated at boot/runtime for anything using a CPU list.
+> 
+> The thinking behind this, is that people carve off a few early CPUs to
+> support housekeeping tasks, and perhaps dedicate one to a busy I/O
+> peripheral, and then the remaining pool of CPUs out to the end are a
+> part of a commonly configured pool used for the real work the user
+> cares about.
+> 
+> Extend that logic out to a fleet of machines - some new, and some
+> nearing EOL, and you've probably got a wide range of core counts to
+> contend with - even though the early number of cores dedicated to the
+> system overhead probably doesn't vary.
+> 
+> This change would enable sysadmins to have a common bootarg across all
+> such systems, and would also avoid any off-by-one fencepost errors that
+> happen for users who might briefly forget that core counts start at
+> zero.
+> 
+> Looking around before starting, I noticed RCU already had a short-form
+> abbreviation "all" -- but if we want to treat CPU lists in a uniform
+> matter, then tokens shouldn't be implemented at a subsystem level and
+> hence be subsystem specific; each with their own variations.
+> 
+> So I moved "all" to global use - for boot args, and for cgroups.  Then
+> I added the inverse "none" and finally, the one I wanted -- "last".
+> 
+> The use of "last" isn't a standalone word like "all" or "none".  It will
+> be a part of a complete range specification, possibly with CSV separate
+> ranges, and possibly specified multiple times.  So I had to be a bit
+> more careful with string matching - and hence un-inlined the parse
+> function as commit #1 in this series.
+> 
+> But it really is a generic support for "replace token ABC with known at
+> boot value XYZ" - for example, it would be trivial to extend support to
+> add "half" as a dynamic token to be replaced with 1/2 the core count,
+> even though I wouldn't suggest that has a use case like "last" does.
+> 
+> I tested the string matching with a bunch of intentionally badly crafted
+> strings in a user-space harness, and tested bootarg use with nohz_full
+> and rcu_nocbs, and also the post-boot cgroup use case as per below:
+> 
+>    root@hackbox:/sys/fs/cgroup/cpuset# mkdir foo
+>    root@hackbox:/sys/fs/cgroup/cpuset# cd foo
+>    root@hackbox:/sys/fs/cgroup/cpuset/foo# cat cpuset.cpus
+>    
+>    root@hackbox:/sys/fs/cgroup/cpuset/foo# /bin/echo 10-last > cpuset.cpus
+>    root@hackbox:/sys/fs/cgroup/cpuset/foo# cat cpuset.cpus
+>    10-15
+>    root@hackbox:/sys/fs/cgroup/cpuset/foo# /bin/echo all > cpuset.cpus
+>    root@hackbox:/sys/fs/cgroup/cpuset/foo# cat cpuset.cpus
+>    0-15
+>    root@hackbox:/sys/fs/cgroup/cpuset/foo# /bin/echo none > cpuset.cpus
+>    root@hackbox:/sys/fs/cgroup/cpuset/foo# cat cpuset.cpus
+>    
+>    root@hackbox:/sys/fs/cgroup/cpuset/foo#
+> 
+> This was on a 16 core machine with CONFIG_NR_CPUS=16 in .config file.
+> 
+> Note that the two use cases (boot and runtime) are why you see "early"
+> parameter in the code - I entertained just sticking the string copy on
+> the stack vs. the early alloc dance, but this felt more correct/robust.
+> The cgroup and modular code using cpulist_parse() are runtime cases.
+> 
 > ---
->  arch/arm64/include/asm/kvm_asm.h   |  7 +++++++
->  arch/arm64/include/asm/kvm_hyp.h   |  4 ++++
->  arch/arm64/kernel/asm-offsets.c    |  4 ++++
->  arch/arm64/kvm/arm.c               | 26 ++++++++++++++------------
->  arch/arm64/kvm/hyp/nvhe/hyp-init.S | 21 ++++++++++-----------
->  arch/arm64/kvm/hyp/nvhe/hyp-main.c |  2 ++
->  6 files changed, 41 insertions(+), 23 deletions(-)
 > 
-> diff --git a/arch/arm64/include/asm/kvm_asm.h 
-> b/arch/arm64/include/asm/kvm_asm.h
-> index 54387ccd1ab2..a49a87a186c3 100644
-> --- a/arch/arm64/include/asm/kvm_asm.h
-> +++ b/arch/arm64/include/asm/kvm_asm.h
-> @@ -150,6 +150,13 @@ extern void *__vhe_undefined_symbol;
+> Cc: Frederic Weisbecker <fweisbec@gmail.com>
+> Cc: "Paul E. McKenney" <paulmck@kernel.org>
+> Cc: Josh Triplett <josh@joshtriplett.org>
+> Cc: Thomas Gleixner <tglx@linutronix.de>
+> Cc: Ingo Molnar <mingo@kernel.org>
+> Cc: Li Zefan <lizefan@huawei.com>
 > 
->  #endif
+> Paul Gortmaker (4):
+>   cpumask: un-inline cpulist_parse for SMP; prepare for ascii helpers
+>   cpumask: make "all" alias global and not just RCU
+>   cpumask: add a "none" alias to complement "all"
+>   cpumask: add "last" alias for cpu list specifications
 > 
-> +struct kvm_nvhe_init_params {
-> +	phys_addr_t pgd_ptr;
-> +	unsigned long tpidr_el2;
-> +	unsigned long hyp_stack_ptr;
-> +	unsigned long vector_ptr;
-> +};
-
-Please add some documentation here, specially indicating what address 
-space
-the values are relative to.
-
-> +
->  /* Translate a kernel address @ptr into its equivalent linear mapping 
-> */
->  #define kvm_ksym_ref(ptr)						\
->  	({								\
-> diff --git a/arch/arm64/include/asm/kvm_hyp.h 
-> b/arch/arm64/include/asm/kvm_hyp.h
-> index 6b664de5ec1f..a3289071f3d8 100644
-> --- a/arch/arm64/include/asm/kvm_hyp.h
-> +++ b/arch/arm64/include/asm/kvm_hyp.h
-> @@ -15,6 +15,10 @@
->  DECLARE_PER_CPU(struct kvm_cpu_context, kvm_hyp_ctxt);
->  DECLARE_PER_CPU(unsigned long, kvm_hyp_vector);
+>  .../admin-guide/kernel-parameters.rst         |  20 +++
+>  .../admin-guide/kernel-parameters.txt         |   4 +-
+>  include/linux/cpumask.h                       |   8 ++
+>  kernel/rcu/tree_plugin.h                      |  13 +-
+>  lib/cpumask.c                                 | 132 ++++++++++++++++++
+>  5 files changed, 165 insertions(+), 12 deletions(-)
 > 
-> +#ifdef __KVM_NVHE_HYPERVISOR__
-> +DECLARE_PER_CPU(struct kvm_nvhe_init_params, kvm_init_params);
-> +#endif
-> +
->  #define read_sysreg_elx(r,nvh,vh)					\
->  	({								\
->  		u64 reg;						\
-> diff --git a/arch/arm64/kernel/asm-offsets.c 
-> b/arch/arm64/kernel/asm-offsets.c
-> index 7d32fc959b1a..0cbb86135c7c 100644
-> --- a/arch/arm64/kernel/asm-offsets.c
-> +++ b/arch/arm64/kernel/asm-offsets.c
-> @@ -110,6 +110,10 @@ int main(void)
->    DEFINE(CPU_APGAKEYLO_EL1,	offsetof(struct kvm_cpu_context,
-> sys_regs[APGAKEYLO_EL1]));
->    DEFINE(HOST_CONTEXT_VCPU,	offsetof(struct kvm_cpu_context,
-> __hyp_running_vcpu));
->    DEFINE(HOST_DATA_CONTEXT,	offsetof(struct kvm_host_data, 
-> host_ctxt));
-> +  DEFINE(NVHE_INIT_PGD_PTR,	offsetof(struct kvm_nvhe_init_params, 
-> pgd_ptr));
-> +  DEFINE(NVHE_INIT_TPIDR_EL2,	offsetof(struct kvm_nvhe_init_params,
-> tpidr_el2));
-> +  DEFINE(NVHE_INIT_STACK_PTR,	offsetof(struct kvm_nvhe_init_params,
-> hyp_stack_ptr));
-> +  DEFINE(NVHE_INIT_VECTOR_PTR,	offsetof(struct kvm_nvhe_init_params,
-> vector_ptr));
->  #endif
->  #ifdef CONFIG_CPU_PM
->    DEFINE(CPU_CTX_SP,		offsetof(struct cpu_suspend_ctx, sp));
-> diff --git a/arch/arm64/kvm/arm.c b/arch/arm64/kvm/arm.c
-> index b85b4294b72d..1a57b6025937 100644
-> --- a/arch/arm64/kvm/arm.c
-> +++ b/arch/arm64/kvm/arm.c
-> @@ -50,6 +50,7 @@ DECLARE_KVM_HYP_PER_CPU(unsigned long, 
-> kvm_hyp_vector);
+> -- 
+> 2.25.1
 > 
->  static DEFINE_PER_CPU(unsigned long, kvm_arm_hyp_stack_page);
->  unsigned long kvm_arm_hyp_percpu_base[NR_CPUS];
-> +DECLARE_KVM_NVHE_PER_CPU(struct kvm_nvhe_init_params, 
-> kvm_init_params);
-> 
->  /* The VMID used in the VTTBR */
->  static atomic64_t kvm_vmid_gen = ATOMIC64_INIT(1);
-> @@ -1331,10 +1332,7 @@ static int kvm_map_vectors(void)
-> 
->  static void cpu_init_hyp_mode(void)
->  {
-> -	phys_addr_t pgd_ptr;
-> -	unsigned long hyp_stack_ptr;
-> -	unsigned long vector_ptr;
-> -	unsigned long tpidr_el2;
-> +	struct kvm_nvhe_init_params *params = 
-> this_cpu_ptr_nvhe_sym(kvm_init_params);
->  	struct arm_smccc_res res;
-> 
->  	/* Switch from the HYP stub to our own HYP init vector */
-> @@ -1345,13 +1343,18 @@ static void cpu_init_hyp_mode(void)
->  	 * kernel's mapping to the linear mapping, and store it in tpidr_el2
->  	 * so that we can use adr_l to access per-cpu variables in EL2.
->  	 */
-> -	tpidr_el2 = (unsigned long)this_cpu_ptr_nvhe_sym(__per_cpu_start) -
-> -		    (unsigned long)kvm_ksym_ref(CHOOSE_NVHE_SYM(__per_cpu_start));
-> +	params->tpidr_el2 = (unsigned 
-> long)this_cpu_ptr_nvhe_sym(__per_cpu_start) -
-> +			    (unsigned long)kvm_ksym_ref(CHOOSE_NVHE_SYM(__per_cpu_start));
-> 
-> -	pgd_ptr = kvm_mmu_get_httbr();
-> -	hyp_stack_ptr = __this_cpu_read(kvm_arm_hyp_stack_page) + PAGE_SIZE;
-> -	hyp_stack_ptr = kern_hyp_va(hyp_stack_ptr);
-> -	vector_ptr = (unsigned 
-> long)kern_hyp_va(kvm_ksym_ref(__kvm_hyp_host_vector));
-> +	params->pgd_ptr = kvm_mmu_get_httbr();
-> +	params->vector_ptr = (unsigned
-> long)kern_hyp_va(kvm_ksym_ref(__kvm_hyp_host_vector));
-> +	params->hyp_stack_ptr =
-> kern_hyp_va(__this_cpu_read(kvm_arm_hyp_stack_page) + PAGE_SIZE);
-> +
-> +	/*
-> +	 * Flush the init params from the data cache because the struct will
-> +	 * be read from while the MMU is off.
-
-s/from while/while/ ?
-
-> +	 */
-> +	__flush_dcache_area(params, sizeof(*params));
-> 
->  	/*
->  	 * Call initialization code, and switch to the full blown HYP code.
-> @@ -1360,8 +1363,7 @@ static void cpu_init_hyp_mode(void)
->  	 * cpus_have_const_cap() wrapper.
->  	 */
->  	BUG_ON(!system_capabilities_finalized());
-> -	arm_smccc_1_1_hvc(KVM_HOST_SMCCC_FUNC(__kvm_hyp_init),
-> -			  pgd_ptr, tpidr_el2, hyp_stack_ptr, vector_ptr, &res);
-> +	arm_smccc_1_1_hvc(KVM_HOST_SMCCC_FUNC(__kvm_hyp_init),
-> virt_to_phys(params), &res);
->  	WARN_ON(res.a0 != SMCCC_RET_SUCCESS);
-> 
->  	/*
-> diff --git a/arch/arm64/kvm/hyp/nvhe/hyp-init.S
-> b/arch/arm64/kvm/hyp/nvhe/hyp-init.S
-> index 96e70f976ff5..6f3ac5d428ec 100644
-> --- a/arch/arm64/kvm/hyp/nvhe/hyp-init.S
-> +++ b/arch/arm64/kvm/hyp/nvhe/hyp-init.S
-> @@ -47,10 +47,7 @@ __invalid:
-> 
->  	/*
->  	 * x0: SMCCC function ID
-> -	 * x1: HYP pgd
-> -	 * x2: per-CPU offset
-> -	 * x3: HYP stack
-> -	 * x4: HYP vectors
-> +	 * x1: struct kvm_nvhe_init_params PA
->  	 */
->  __do_hyp_init:
->  	/* Check for a stub HVC call */
-> @@ -71,10 +68,16 @@ __do_hyp_init:
->  	mov	x0, #SMCCC_RET_NOT_SUPPORTED
->  	eret
-> 
-> -1:
-> -	/* Set tpidr_el2 for use by HYP to free a register */
-> -	msr	tpidr_el2, x2
-> +1:	ldr	x0, [x1, #NVHE_INIT_TPIDR_EL2]
-> +	msr	tpidr_el2, x0
-> 
-> +	ldr	x0, [x1, #NVHE_INIT_STACK_PTR]
-> +	mov	sp, x0
-> +
-> +	ldr	x0, [x1, #NVHE_INIT_VECTOR_PTR]
-> +	msr	vbar_el2, x0
-> +
-> +	ldr	x1, [x1, #NVHE_INIT_PGD_PTR]
->  	phys_to_ttbr x0, x1
->  alternative_if ARM64_HAS_CNP
->  	orr	x0, x0, #TTBR_CNP_BIT
-> @@ -134,10 +137,6 @@ alternative_else_nop_endif
->  	msr	sctlr_el2, x0
->  	isb
-> 
-> -	/* Set the stack and new vectors */
-> -	mov	sp, x3
-> -	msr	vbar_el2, x4
-> -
->  	/* Hello, World! */
->  	mov	x0, #SMCCC_RET_SUCCESS
->  	eret
-> diff --git a/arch/arm64/kvm/hyp/nvhe/hyp-main.c
-> b/arch/arm64/kvm/hyp/nvhe/hyp-main.c
-> index e2eafe2c93af..411b0f652417 100644
-> --- a/arch/arm64/kvm/hyp/nvhe/hyp-main.c
-> +++ b/arch/arm64/kvm/hyp/nvhe/hyp-main.c
-> @@ -14,6 +14,8 @@
-> 
->  #include <kvm/arm_hypercalls.h>
-> 
-> +DEFINE_PER_CPU(struct kvm_nvhe_init_params, kvm_init_params);
-> +
->  static void handle_host_hcall(unsigned long func_id,
->  			      struct kvm_cpu_context *host_ctxt)
->  {
-
-Thanks,
-
-         M.
--- 
-Jazz is not dead. It just smells funny...
