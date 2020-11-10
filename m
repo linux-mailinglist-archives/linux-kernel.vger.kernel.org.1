@@ -2,105 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A70CD2ADB0F
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 17:01:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ED2222ADB12
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 17:01:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731152AbgKJQBJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 11:01:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46858 "EHLO
+        id S1731242AbgKJQBY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 11:01:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46894 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729909AbgKJQBJ (ORCPT
+        with ESMTP id S1729909AbgKJQBV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 11:01:09 -0500
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06153C0613CF;
-        Tue, 10 Nov 2020 08:01:09 -0800 (PST)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: eballetbo)
-        with ESMTPSA id DADA91F44B95
-Subject: Re: [PATCH v2 2/2] platform/chrome: cros_ec_typec: Set partner
- num_altmodes
-To:     Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Prashant Malani <pmalani@chromium.org>
-Cc:     linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
-        gregkh@linuxfoundation.org, Benson Leung <bleung@chromium.org>,
-        Guenter Roeck <groeck@chromium.org>
-References: <20201110061535.2163599-1-pmalani@chromium.org>
- <20201110061535.2163599-2-pmalani@chromium.org>
- <20201110105015.GF1224435@kuha.fi.intel.com>
-From:   Enric Balletbo i Serra <enric.balletbo@collabora.com>
-Message-ID: <ba6c1415-457b-1e8d-b604-fad603fe9be6@collabora.com>
-Date:   Tue, 10 Nov 2020 17:01:04 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        Tue, 10 Nov 2020 11:01:21 -0500
+Received: from mail-oi1-x241.google.com (mail-oi1-x241.google.com [IPv6:2607:f8b0:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6959C0613CF;
+        Tue, 10 Nov 2020 08:01:21 -0800 (PST)
+Received: by mail-oi1-x241.google.com with SMTP id j7so14865826oie.12;
+        Tue, 10 Nov 2020 08:01:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=kDzPapGdXIwmXcJmTQZGIuILt4q/vwSqlKWbIudkGQY=;
+        b=Fg5+setHdx6WcyATDh9i9QQsjuOKojB/1HwsGCqR109+KSbAOS3mznvx0Zmn+VViOH
+         j8y3HTl4hsgjbcXiWmz56YdPS+uvtgUeEjzvAGciQd+uEmR/I4C/hfvY4ttxZ7gny16y
+         tkM93eZBRudiBqKZ6vQMAUSV84S6DrKKpiz8sHeptHCbjmkc8R34MmuyAZwme6iupq9j
+         410RZ+rSPuBFSJLUli3WB4Tlgfu554FOgAg9UjyeMecGI0M2XQLlJEPTQlya9CEhHmwS
+         Z3fgkTQXE63ONPBfjW8t0/OTjBiQJb6wk3AyitVH9Aezn6SyRDdrYCOqQAJz+2Rbynrw
+         3Ktg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to:user-agent;
+        bh=kDzPapGdXIwmXcJmTQZGIuILt4q/vwSqlKWbIudkGQY=;
+        b=ZoPVJd8IbvPF6PkUcu+NNXySi5cByiP3QWNHEmGupEEKGF3T+gkEmj/OWfuxosnYNT
+         H3zKOHLn4DgAeKcwpPNdkM0lbnDqD4r/44+jwuGzrUr0a20ExetcMcevX5gbhrSyAK5t
+         /eQeUcc5fuxu1gvqUxflZLr9+M14Z3drX9mm1/5H9nYV0uHkZbKx4mUwLAZgTcbFgu/J
+         Yxlg5y2ShzZGlSmy96vGJIigW8GA4iEhbUq6D1LakQln1Rgt7MbLAtrym34FwDxXouO/
+         hKCJnDOcYCDoIXrIxK/rl2oduOIu3fyaK29rykssHtH0NSJGCM1A6x44JkweCPht6T+j
+         DAxA==
+X-Gm-Message-State: AOAM533NuL987SriT/3gZQHK2rIZKi4mAFUaZAmri6Vit+JFBWb+J43Y
+        VyGE+gVRD2/qp2Iyh3whPKPH4o4pF6k=
+X-Google-Smtp-Source: ABdhPJwCXuNKmg2h/odhEd9J6ZKMR6oT6qD8+oU+Elb6I9ADZ62BM2n0Y/GvGA1TUOO+UqOucAuKYw==
+X-Received: by 2002:aca:b288:: with SMTP id b130mr3031391oif.152.1605024080787;
+        Tue, 10 Nov 2020 08:01:20 -0800 (PST)
+Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id t6sm3231782ooo.22.2020.11.10.08.01.19
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Tue, 10 Nov 2020 08:01:19 -0800 (PST)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Tue, 10 Nov 2020 08:01:18 -0800
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Wang Wensheng <wangwensheng4@huawei.com>
+Cc:     wim@linux-watchdog.org, linux-watchdog@vger.kernel.org,
+        linux-kernel@vger.kernel.org, rui.xiang@huawei.com
+Subject: Re: [PATCH -next v4] watchdog: Fix potential dereferencing of null
+ pointer
+Message-ID: <20201110160118.GA17288@roeck-us.net>
+References: <20201109130512.28121-1-wangwensheng4@huawei.com>
 MIME-Version: 1.0
-In-Reply-To: <20201110105015.GF1224435@kuha.fi.intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201109130512.28121-1-wangwensheng4@huawei.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On 10/11/20 11:50, Heikki Krogerus wrote:
-> On Mon, Nov 09, 2020 at 10:15:36PM -0800, Prashant Malani wrote:
->> Set the number of altmodes available for a registered partner using the
->> Type C connector class framework routine.
->>
->> Signed-off-by: Prashant Malani <pmalani@chromium.org>
+On Mon, Nov 09, 2020 at 01:05:12PM +0000, Wang Wensheng wrote:
+> A reboot notifier, which stops the WDT by calling the stop hook without
+> any check, would be registered when we set WDOG_STOP_ON_REBOOT flag.
 > 
-> Reviewed-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+> Howerer we allow the WDT driver to omit the stop hook since commit
+> "d0684c8a93549" ("watchdog: Make stop function optional") and provide
+> a module parameter for user that controls the WDOG_STOP_ON_REBOOT flag
+> in commit 9232c80659e94 ("watchdog: Add stop_on_reboot parameter to
+> control reboot policy"). Together that commits make user potential to
+> insert a watchdog driver that don't provide a stop hook but with the
+> stop_on_reboot parameter set, then dereferencing of null pointer occurs
+> on system reboot.
 > 
-
-Acked-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
-
-Heikki, would you like to take these two through your tree? It'd help if you can
-create an inmutable branch so I can pick other cros_ec_typec patches on top of it.
-
-Thanks,
- Enric
-
->> ---
->>
->> Changes in v2:
->> - Patch introduced for the first time in v2.
->>
->>  drivers/platform/chrome/cros_ec_typec.c | 8 ++++++++
->>  1 file changed, 8 insertions(+)
->>
->> diff --git a/drivers/platform/chrome/cros_ec_typec.c b/drivers/platform/chrome/cros_ec_typec.c
->> index ce031a10eb1b..743a28426f98 100644
->> --- a/drivers/platform/chrome/cros_ec_typec.c
->> +++ b/drivers/platform/chrome/cros_ec_typec.c
->> @@ -621,6 +621,7 @@ static int cros_typec_register_altmodes(struct cros_typec_data *typec, int port_
->>  	struct cros_typec_altmode_node *node;
->>  	struct typec_altmode_desc desc;
->>  	struct typec_altmode *amode;
->> +	int num_altmodes = 0;
->>  	int ret = 0;
->>  	int i, j;
->>  
->> @@ -647,9 +648,16 @@ static int cros_typec_register_altmodes(struct cros_typec_data *typec, int port_
->>  
->>  			node->amode = amode;
->>  			list_add_tail(&node->list, &port->partner_mode_list);
->> +			num_altmodes++;
->>  		}
->>  	}
->>  
->> +	ret = typec_partner_set_num_altmodes(port->partner, num_altmodes);
->> +	if (ret < 0) {
->> +		dev_err(typec->dev, "Unable to set partner num_altmodes for port: %d\n", port_num);
->> +		goto err_cleanup;
->> +	}
->> +
->>  	return 0;
->>  
->>  err_cleanup:
->> -- 
->> 2.29.2.222.g5d2a92d10f8-goog
+> Check the stop hook before registering the reboot notifier to fix the
+> issue.
 > 
-> thanks,
+> Fixes: d0684c8a9354 ("watchdog: Make stop function optional")
+> Signed-off-by: Wang Wensheng <wangwensheng4@huawei.com>
+
+Reviewed-by: Guenter Roeck <linux@roeck-us.net>
+
+> ---
+>  drivers/watchdog/watchdog_core.c | 22 +++++++++++++---------
+>  1 file changed, 13 insertions(+), 9 deletions(-)
+> 
+> diff --git a/drivers/watchdog/watchdog_core.c b/drivers/watchdog/watchdog_core.c
+> index 423844757812..0e9a99559609 100644
+> --- a/drivers/watchdog/watchdog_core.c
+> +++ b/drivers/watchdog/watchdog_core.c
+> @@ -267,15 +267,19 @@ static int __watchdog_register_device(struct watchdog_device *wdd)
+>  	}
+>  
+>  	if (test_bit(WDOG_STOP_ON_REBOOT, &wdd->status)) {
+> -		wdd->reboot_nb.notifier_call = watchdog_reboot_notifier;
+> -
+> -		ret = register_reboot_notifier(&wdd->reboot_nb);
+> -		if (ret) {
+> -			pr_err("watchdog%d: Cannot register reboot notifier (%d)\n",
+> -			       wdd->id, ret);
+> -			watchdog_dev_unregister(wdd);
+> -			ida_simple_remove(&watchdog_ida, id);
+> -			return ret;
+> +		if (!wdd->ops->stop)
+> +			pr_warn("watchdog%d: stop_on_reboot not supported\n", wdd->id);
+> +		else {
+> +			wdd->reboot_nb.notifier_call = watchdog_reboot_notifier;
+> +
+> +			ret = register_reboot_notifier(&wdd->reboot_nb);
+> +			if (ret) {
+> +				pr_err("watchdog%d: Cannot register reboot notifier (%d)\n",
+> +					wdd->id, ret);
+> +				watchdog_dev_unregister(wdd);
+> +				ida_simple_remove(&watchdog_ida, id);
+> +				return ret;
+> +			}
+>  		}
+>  	}
+>  
+> -- 
+> 2.25.0
 > 
