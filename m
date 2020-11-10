@@ -2,126 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD8032AD566
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 12:36:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 131902AD56A
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 12:38:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731457AbgKJLgz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 06:36:55 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:59895 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730061AbgKJLgy (ORCPT
+        id S1729890AbgKJLij (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 06:38:39 -0500
+Received: from mail.baikalelectronics.com ([87.245.175.226]:33956 "EHLO
+        mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726721AbgKJLii (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 06:36:54 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1605008213;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=PrGAKVagvZ8eCK0FrYU3d1oHprXELoDjKZm4mUCI5qA=;
-        b=MwpnSE4Chs/0Pu8ShHFVvA5DaB8eTrpN9jn5qCTC139Tg5Q/L7liBMyIXLT+w5m2n27e2M
-        XATtSbyPhJTf760/kqjus8wke7h5/VJRrgGTQlCNQOXadv86YNcYWM1pq0rxdHgSgkmB32
-        M3WC7x0jrLPy8Of7vHLTnjX4LhpaJPg=
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
- [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-357-ch5J07AfMQCd3XS5sDIcfQ-1; Tue, 10 Nov 2020 06:36:49 -0500
-X-MC-Unique: ch5J07AfMQCd3XS5sDIcfQ-1
-Received: by mail-ed1-f70.google.com with SMTP id d1so4110004edz.14
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 03:36:49 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:from:subject:message-id:date:user-agent
-         :mime-version:content-language:content-transfer-encoding;
-        bh=PrGAKVagvZ8eCK0FrYU3d1oHprXELoDjKZm4mUCI5qA=;
-        b=IWy23MI3FS0pItD6PKGukdbiNLfXX3wya5KJLrn5lvDJdXEcDjwvLmgkXRR7DXT1jk
-         LwZly910riuErw6oiyRrzNU2ZHeSS/YKyOvNro1dFKLMR7nVuailUaOPrVxl50dFT35j
-         WvXX3Z9v1zIOWba7qLs+IqDVVlJEfZ9lhMmtfHurYqv1RtkKvdPs1g2c68RnY1K0JN1X
-         GUlI/KnYg2GhkxzLU/B/LgdQueCjAhSfK/+Ux86VrYYRZmcNl85xeplkfTzFgNSjr5B5
-         YWswxUuyN2nWniLC8KWaFzzRCOfV2PVhAxa+sgPSrgkbgVwJYto+FEHbnMFG7q7zonIq
-         DnZQ==
-X-Gm-Message-State: AOAM532dcO5sTFfF8Unsv/HQFigLJ3M4mVvYq3mYh865mEMnCVkEc1mp
-        cSaxr+ckgffuylYAqWKqbbBFkgF8h3lEVQnKXCz7VsP4IQXW6KWGwql7D3e9deI6rQL9Gyq8mwn
-        6uR28JI2+Pay2v4h27aiYaKE0
-X-Received: by 2002:a17:906:2b06:: with SMTP id a6mr20501741ejg.283.1605008208402;
-        Tue, 10 Nov 2020 03:36:48 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJy0T7oj4nyQygzaRngCVKujGhEFLIUzYpC/bDcY/s9IV0O4fegRChPJ3kfISgNtVqUK7ybI+g==
-X-Received: by 2002:a17:906:2b06:: with SMTP id a6mr20501730ejg.283.1605008208230;
-        Tue, 10 Nov 2020 03:36:48 -0800 (PST)
-Received: from x1.localdomain (2001-1c00-0c0c-fe00-6c10-fbf3-14c4-884c.cable.dynamic.v6.ziggo.nl. [2001:1c00:c0c:fe00:6c10:fbf3:14c4:884c])
-        by smtp.gmail.com with ESMTPSA id s12sm10225439ejy.25.2020.11.10.03.36.47
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 10 Nov 2020 03:36:47 -0800 (PST)
-To:     Mathias Nyman <mathias.nyman@intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-usb <linux-usb@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-pci@vger.kernel.org
-From:   Hans de Goede <hdegoede@redhat.com>
-Subject: 5.10 regression, many XHCI swiotlb buffer is full / DMAR: Device
- bounce map failed errors on thunderbolt connected XHCI controller
-Message-ID: <b046dd04-ac4f-3c69-0602-af810fb1b365@redhat.com>
-Date:   Tue, 10 Nov 2020 12:36:47 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.1
+        Tue, 10 Nov 2020 06:38:38 -0500
+Received: from localhost (unknown [127.0.0.1])
+        by mail.baikalelectronics.ru (Postfix) with ESMTP id 7553D803071A;
+        Tue, 10 Nov 2020 11:38:30 +0000 (UTC)
+X-Virus-Scanned: amavisd-new at baikalelectronics.ru
+Received: from mail.baikalelectronics.ru ([127.0.0.1])
+        by localhost (mail.baikalelectronics.ru [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id yNvMC4C0WzIc; Tue, 10 Nov 2020 14:38:29 +0300 (MSK)
+Date:   Tue, 10 Nov 2020 14:38:27 +0300
+From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
+To:     Miquel Raynal <miquel.raynal@bootlin.com>
+CC:     kernel test robot <lkp@intel.com>, <kbuild-all@lists.01.org>,
+        <linux-kernel@vger.kernel.org>, <linux-mtd@lists.infradead.org>
+Subject: Re: drivers/mtd/maps/physmap-bt1-rom.c:78:18: sparse: sparse: cast
+ removes address space '__iomem' of expression
+Message-ID: <20201110113827.hl5i27cpl6exo3md@mobilestation>
+References: <202011021254.XC70BaQT-lkp@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <202011021254.XC70BaQT-lkp@intel.com>
+X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi All,
+Hello Miquel,
 
-Not sure if this is a XHCI driver problem at all, but I needed to start
-somewhere with reporting this so I went with:
+A situation noted by the warning below won't cause any problem because
+the casting is done to a non-dereferenced variable. It is utilized
+as a pointer bias later in that function. Shall we just ignore the
+warning or still fix it somehow?
 
-scripts/get_maintainer.pl -f drivers/usb/host/xhci-pci.c
+-Sergey
 
-And added a Cc: linux-pci@vger.kernel.org as bonus.
+On Mon, Nov 02, 2020 at 12:42:57PM +0800, kernel test robot wrote:
+> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+> head:   3cea11cd5e3b00d91caf0b4730194039b45c5891
+> commit: b3e79e7682e075326df8041b826b03453acacd0a mtd: physmap: Add Baikal-T1 physically mapped ROM support
+> date:   4 weeks ago
+> config: sparc64-randconfig-s032-20201031 (attached as .config)
+> compiler: sparc64-linux-gcc (GCC) 9.3.0
+> reproduce:
+>         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+>         chmod +x ~/bin/make.cross
+>         # apt-get install sparse
+>         # sparse version: v0.6.3-76-gf680124b-dirty
+>         # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=b3e79e7682e075326df8041b826b03453acacd0a
+>         git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+>         git fetch --no-tags linus master
+>         git checkout b3e79e7682e075326df8041b826b03453acacd0a
+>         # save the attached .config to linux build tree
+>         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross C=1 CF='-fdiagnostic-prefix -D__CHECK_ENDIAN__' ARCH=sparc64 
+> 
+> If you fix the issue, kindly add following tag as appropriate
+> Reported-by: kernel test robot <lkp@intel.com>
+> 
+> 
+> "sparse warnings: (new ones prefixed by >>)"
+> >> drivers/mtd/maps/physmap-bt1-rom.c:78:18: sparse: sparse: cast removes address space '__iomem' of expression
+> 
+> vim +/__iomem +78 drivers/mtd/maps/physmap-bt1-rom.c
+> 
+>     57	
+>     58	static void __xipram bt1_rom_map_copy_from(struct map_info *map,
+>     59						   void *to, unsigned long from,
+>     60						   ssize_t len)
+>     61	{
+>     62		void __iomem *src = map->virt + from;
+>     63		ssize_t shift, chunk;
+>     64		u32 data;
+>     65	
+>     66		if (len <= 0 || from >= map->size)
+>     67			return;
+>     68	
+>     69		/* Make sure we don't go over the map limit. */
+>     70		len = min_t(ssize_t, map->size - from, len);
+>     71	
+>     72		/*
+>     73		 * Since requested data size can be pretty big we have to implement
+>     74		 * the copy procedure as optimal as possible. That's why it's split
+>     75		 * up into the next three stages: unaligned head, aligned body,
+>     76		 * unaligned tail.
+>     77		 */
+>   > 78		shift = (ssize_t)src & 0x3;
+>     79		if (shift) {
+>     80			chunk = min_t(ssize_t, 4 - shift, len);
+>     81			data = readl_relaxed(src - shift);
+>     82			memcpy(to, &data + shift, chunk);
+>     83			src += chunk;
+>     84			to += chunk;
+>     85			len -= chunk;
+>     86		}
+>     87	
+>     88		while (len >= 4) {
+>     89			data = readl_relaxed(src);
+>     90			memcpy(to, &data, 4);
+>     91			src += 4;
+>     92			to += 4;
+>     93			len -= 4;
+>     94		}
+>     95	
+>     96		if (len) {
+>     97			data = readl_relaxed(src);
+>     98			memcpy(to, &data, len);
+>     99		}
+>    100	}
+>    101	
+> 
+> ---
+> 0-DAY CI Kernel Test Service, Intel Corporation
+> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
 
-I'm seeing the following errors and very slow network performance with
-the USB NIC in a Lenovo Thunderbolt gen 2 dock.
-
-Note that the USB NIC is connected to the XHCI controller which is
-embedded inside the dock and is connected over thunderbolt!
-
-So the errors are:
-
-[ 1148.744205] swiotlb_tbl_map_single: 6 callbacks suppressed
-[ 1148.744210] xhci_hcd 0000:0a:00.0: swiotlb buffer is full (sz: 8192 bytes), total 32768 (slots), used 16 (slots)
-[ 1148.744218] xhci_hcd 0000:0a:00.0: DMAR: Device bounce map: 16ea@1411c0000 dir 1 --- failed
-[ 1148.744226] r8152 4-2.1.2:1.0 ens1u2u1u2: failed tx_urb -11
-[ 1148.744368] xhci_hcd 0000:0a:00.0: swiotlb buffer is full (sz: 8192 bytes), total 32768 (slots), used 16 (slots)
-[ 1148.744375] xhci_hcd 0000:0a:00.0: DMAR: Device bounce map: 16ea@10aabc000 dir 1 --- failed
-[ 1148.744381] r8152 4-2.1.2:1.0 ens1u2u1u2: failed tx_urb -11
-[ 1148.745141] xhci_hcd 0000:0a:00.0: swiotlb buffer is full (sz: 8192 bytes), total 32768 (slots), used 16 (slots)
-[ 1148.745148] xhci_hcd 0000:0a:00.0: DMAR: Device bounce map: 118e@1411c0000 dir 1 --- failed
-[ 1148.745155] r8152 4-2.1.2:1.0 ens1u2u1u2: failed tx_urb -11
-[ 1148.951282] xhci_hcd 0000:0a:00.0: swiotlb buffer is full (sz: 8192 bytes), total 32768 (slots), used 16 (slots)
-[ 1148.951388] xhci_hcd 0000:0a:00.0: DMAR: Device bounce map: 118e@140988000 dir 1 --- failed
-[ 1148.951420] r8152 4-2.1.2:1.0 ens1u2u1u2: failed tx_urb -11
-[ 1151.013342] xhci_hcd 0000:0a:00.0: swiotlb buffer is full (sz: 8192 bytes), total 32768 (slots), used 16 (slots)
-[ 1151.013357] xhci_hcd 0000:0a:00.0: DMAR: Device bounce map: 1d2a@1411c0000 dir 1 --- failed
-[ 1151.013373] r8152 4-2.1.2:1.0 ens1u2u1u2: failed tx_urb -11
-[ 1151.018660] xhci_hcd 0000:0a:00.0: swiotlb buffer is full (sz: 8192 bytes), total 32768 (slots), used 18 (slots)
-[ 1151.018696] xhci_hcd 0000:0a:00.0: DMAR: Device bounce map: 11da@1411c0000 dir 1 --- failed
-[ 1151.018711] r8152 4-2.1.2:1.0 ens1u2u1u2: failed tx_urb -11
-[ 1151.223022] xhci_hcd 0000:0a:00.0: swiotlb buffer is full (sz: 8192 bytes), total 32768 (slots), used 16 (slots)
-[ 1151.223102] xhci_hcd 0000:0a:00.0: DMAR: Device bounce map: 11da@10aabc000 dir 1 --- failed
-[ 1151.223133] r8152 4-2.1.2:1.0 ens1u2u1u2: failed tx_urb -11
-[ 1151.228810] xhci_hcd 0000:0a:00.0: swiotlb buffer is full (sz: 8192 bytes), total 32768 (slots), used 16 (slots)
-[ 1151.228870] xhci_hcd 0000:0a:00.0: DMAR: Device bounce map: 11da@10aabc000 dir 1 --- failed
-[ 1151.228898] r8152 4-2.1.2:1.0 ens1u2u1u2: failed tx_urb -11
-[ 1151.234792] xhci_hcd 0000:0a:00.0: swiotlb buffer is full (sz: 8192 bytes), total 32768 (slots), used 16 (slots)
-[ 1151.234852] xhci_hcd 0000:0a:00.0: DMAR: Device bounce map: 11da@10aabc000 dir 1 --- failed
-[ 1151.234882] r8152 4-2.1.2:1.0 ens1u2u1u2: failed tx_urb -11
-
-etc.
-
-This happens as soon as I generate any serious amount of outgoing network traffic. E.g. rsyncing files
-to another machine.
-
-Regards,
-
-Hans
 
