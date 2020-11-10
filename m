@@ -2,88 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02B8C2AD9DE
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 16:13:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D7982AD9E1
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 16:13:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732472AbgKJPNA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 10:13:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39300 "EHLO
+        id S1732424AbgKJPNe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 10:13:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39396 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732437AbgKJPNA (ORCPT
+        with ESMTP id S1730981AbgKJPNe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 10:13:00 -0500
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49CD9C0613CF;
-        Tue, 10 Nov 2020 07:12:59 -0800 (PST)
+        Tue, 10 Nov 2020 10:13:34 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04B16C0613CF;
+        Tue, 10 Nov 2020 07:13:34 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=TgTFgxJfzLUks9m+Ot71tdDMXIEqIRGy/HpQQYEbMkU=; b=dcP6Yw+XlJ3bRAR4nQbgPDXzF
-        3wy6uK7qbXMfoSgowUgfBDuSkQwTLSH1cv63nRWPz7gTMTvl6jd/z2QsijKqrDTp5b4ue63Lr5/oz
-        RD4dBzFOr7kThWXavU/0A2NplwIuWlvnPO9wTbS5QzUaYHw6dIVFtm4FHo9A8pmyuNn5plcQjH/Nc
-        DGjvgoVesscn8gKOQbXxxlfGBjHPnV21FDI7csl82OpXZ9FhWnvqOyr66UWy7vgYtsBlPi+Z5Hb3t
-        pvX7Xc9f7YmTvVbSzaxmjcLVMum2vc3ym2kd4wGt5JasXnGSzkaCJc8Y5AX7tZtFEXa3vTgUEQoGH
-        tay2drG9w==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:57982)
-        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1kcVKE-0001EE-1v; Tue, 10 Nov 2020 15:12:50 +0000
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1kcVKC-0001Y1-9R; Tue, 10 Nov 2020 15:12:48 +0000
-Date:   Tue, 10 Nov 2020 15:12:48 +0000
-From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
-To:     Bjarni Jonasson <bjarni.jonasson@microchip.com>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        UNGLinuxDriver <UNGLinuxDriver@microchip.com>
-Subject: Re: [PATCH] phy: phylink: Fix CuSFP issue in phylink
-Message-ID: <20201110151248.GA1551@shell.armlinux.org.uk>
-References: <20201110100642.2153-1-bjarni.jonasson@microchip.com>
- <20201110102552.GZ1551@shell.armlinux.org.uk>
- <87blg5qou5.fsf@microchip.com>
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=yfbAAv9z74vMPfwpK6dKFLRG/wgLDIDQH7gNqCp74iM=; b=X/P7RGRFOzuHDkfSWhHrq0oxGU
+        a4SpAv+nTkiRzo1hMZ6JbF/TxR0o3K7jPnjwja3ywnq25LMYqArUclBG/EjYHBlIMfc6oGtg3Wbwk
+        G6Ul3i3sNWw7cyTNjE86U3KtFq0FLG3FulaFLveDm8rgk/kka2L/zXCgmpa7H46K/FYHwu8XcAywp
+        /FYsD0RUE/NuD+DxxfzdrzaWkm1dWexiGL3YQ/vEGF4nI9+c+4BzyoBd8aJcp1ClrwHPPaOPyplL9
+        z2CxWO2G8ZzL1ZBoijg3CPMH0yZs5yIAzSZ/pZXBFaNkneeYl0XqnrR50NOLmRQwE8iCr/IRbSwwJ
+        venWvckA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kcVKO-0006L3-9E; Tue, 10 Nov 2020 15:13:00 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 32FC5301E02;
+        Tue, 10 Nov 2020 16:12:57 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 19AE920289CB5; Tue, 10 Nov 2020 16:12:57 +0100 (CET)
+Date:   Tue, 10 Nov 2020 16:12:57 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Like Xu <like.xu@linux.intel.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Kan Liang <kan.liang@linux.intel.com>, luwei.kang@intel.com,
+        Thomas Gleixner <tglx@linutronix.de>, wei.w.wang@intel.com,
+        Tony Luck <tony.luck@intel.com>,
+        Stephane Eranian <eranian@google.com>,
+        Mark Gross <mgross@linux.intel.com>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH RFC v2 00/17] KVM: x86/pmu: Add support to enable Guest
+ PEBS via DS
+Message-ID: <20201110151257.GP2611@hirez.programming.kicks-ass.net>
+References: <20201109021254.79755-1-like.xu@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <87blg5qou5.fsf@microchip.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Sender: Russell King - ARM Linux admin <linux@armlinux.org.uk>
+In-Reply-To: <20201109021254.79755-1-like.xu@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 10, 2020 at 03:16:34PM +0100, Bjarni Jonasson wrote:
+On Mon, Nov 09, 2020 at 10:12:37AM +0800, Like Xu wrote:
+> The Precise Event Based Sampling(PEBS) supported on Intel Ice Lake server
+> platforms can provide an architectural state of the instruction executed
+> after the instruction that caused the event. This patch set enables the
+> the PEBS via DS feature for KVM (also non) Linux guest on the Ice Lake.
+> The Linux guest can use PEBS feature like native:
 > 
-> Russell King - ARM Linux admin writes:
+>   # perf record -e instructions:ppp ./br_instr a
+>   # perf record -c 100000 -e instructions:pp ./br_instr a
 > 
-> > On Tue, Nov 10, 2020 at 11:06:42AM +0100, Bjarni Jonasson wrote:
-> >> There is an issue with the current phylink driver and CuSFPs which
-> >> results in a callback to the phylink validate function without any
-> >> advertisement capabilities.  The workaround (in this changeset)
-> >> is to assign capabilities if a 1000baseT SFP is identified.
-> >
-> > How does this happen?  Which PHY is being used?
-> 
-> This occurs just by plugging in the CuSFP.
-> None of the CuSFPs we have tested are working.
-> This is a dump from 3 different CuSFPs, phy regs 0-3:
-> FS SFP: 01:40:79:49 
-> HP SFP: 01:40:01:49
-> Marvel SFP: 01:40:01:49
-> This was working before the delayed mac config was implemented (in dec
-> 2019).
+> If the counter_freezing is not enabled on the host, the guest PEBS will
+> be disabled on purpose when host is using PEBS facility. By default,
+> KVM disables the co-existence of guest PEBS and host PEBS.
 
-You're dumping PHY registers 0 and 1 there, not 0 through 3, which
-the values confirm. I don't recognise the format either. PHY registers
-are always 16-bit.
-
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+Uuhh, what?!? counter_freezing should never be enabled, its broken. Let
+me go delete all that code.
