@@ -2,77 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EDE132AD16E
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 09:40:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A5412AD17A
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 09:41:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730160AbgKJIjz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 03:39:55 -0500
-Received: from mx2.suse.de ([195.135.220.15]:48696 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727483AbgKJIjv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 03:39:51 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id E2430AEAA;
-        Tue, 10 Nov 2020 08:39:49 +0000 (UTC)
-From:   Giovanni Gherdovich <ggherdovich@suse.cz>
-To:     Borislav Petkov <bp@alien8.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Len Brown <lenb@kernel.org>,
-        "Rafael J . Wysocki" <rjw@rjwysocki.net>
-Cc:     Jon Grimm <Jon.Grimm@amd.com>,
-        Nathan Fontenot <Nathan.Fontenot@amd.com>,
-        Yazen Ghannam <Yazen.Ghannam@amd.com>,
-        Thomas Lendacky <Thomas.Lendacky@amd.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Pu Wen <puwen@hygon.cn>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Doug Smythies <dsmythies@telus.net>, x86@kernel.org,
-        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-acpi@vger.kernel.org,
-        Giovanni Gherdovich <ggherdovich@suse.cz>
-Subject: [PATCH 3/3] x86: Print ratio freq_max/freq_base used in frequency invariance calculations
-Date:   Tue, 10 Nov 2020 09:39:36 +0100
-Message-Id: <20201110083936.31994-4-ggherdovich@suse.cz>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20201110083936.31994-1-ggherdovich@suse.cz>
-References: <20201110083936.31994-1-ggherdovich@suse.cz>
+        id S1730735AbgKJIlD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 03:41:03 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:7512 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726462AbgKJIlC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Nov 2020 03:41:02 -0500
+Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4CVhCP6G4dzhfWW;
+        Tue, 10 Nov 2020 16:40:49 +0800 (CST)
+Received: from [10.174.179.81] (10.174.179.81) by
+ DGGEMS410-HUB.china.huawei.com (10.3.19.210) with Microsoft SMTP Server id
+ 14.3.487.0; Tue, 10 Nov 2020 16:40:53 +0800
+Subject: Re: [PATCH v2 bpf] tools: bpftool: Add missing close before bpftool
+ net attach exit
+To:     John Fastabend <john.fastabend@gmail.com>
+CC:     <quentin@isovalent.com>, <mrostecki@opensuse.org>,
+        <ast@kernel.org>, <daniel@iogearbox.net>, <kafai@fb.com>,
+        <songliubraving@fb.com>, <yhs@fb.com>, <andrii@kernel.org>,
+        <kpsingh@chromium.org>, <toke@redhat.com>,
+        <danieltimlee@gmail.com>, <bpf@vger.kernel.org>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20201110014637.6055-1-wanghai38@huawei.com>
+ <5faa18319b71_3e187208f@john-XPS-13-9370.notmuch>
+From:   "wanghai (M)" <wanghai38@huawei.com>
+Message-ID: <52cbaf9b-0680-6a4d-8d42-cd5f6d7f5714@huawei.com>
+Date:   Tue, 10 Nov 2020 16:40:53 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
+In-Reply-To: <5faa18319b71_3e187208f@john-XPS-13-9370.notmuch>
+Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.179.81]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The value freq_max/freq_base is a fundamental component of frequency
-invariance calculations. It may come from a variety of sources such as MSRs
-or ACPI data, tracking it down when troubleshooting a system could be
-non-trivial. It is worth saving it in the kernel logs.
 
- # dmesg | grep 'Estimated ratio of average max'
- [   14.024036] smpboot: Estimated ratio of average max frequency by base frequency (times 1024): 1289
+在 2020/11/10 12:33, John Fastabend 写道:
+> Wang Hai wrote:
+>> progfd is created by prog_parse_fd(), before 'bpftool net attach' exit,
+>> it should be closed.
+>>
+>> Fixes: 04949ccc273e ("tools: bpftool: add net attach command to attach XDP on interface")
+>> Signed-off-by: Wang Hai <wanghai38@huawei.com>
+>> ---
+>> v1->v2: use cleanup tag instead of repeated closes
+>>   tools/bpf/bpftool/net.c | 14 ++++++++------
+>>   1 file changed, 8 insertions(+), 6 deletions(-)
+>>
+>> diff --git a/tools/bpf/bpftool/net.c b/tools/bpf/bpftool/net.c
+>> index 910e7bac6e9e..1ac7228167e6 100644
+>> --- a/tools/bpf/bpftool/net.c
+>> +++ b/tools/bpf/bpftool/net.c
+>> @@ -578,8 +578,8 @@ static int do_attach(int argc, char **argv)
+>>   
+>>   	ifindex = net_parse_dev(&argc, &argv);
+>>   	if (ifindex < 1) {
+>> -		close(progfd);
+>> -		return -EINVAL;
+>> +		err = -EINVAL;
+>> +		goto cleanup;
+>>   	}
+>>   
+>>   	if (argc) {
+>> @@ -587,8 +587,8 @@ static int do_attach(int argc, char **argv)
+>>   			overwrite = true;
+>>   		} else {
+>>   			p_err("expected 'overwrite', got: '%s'?", *argv);
+>> -			close(progfd);
+>> -			return -EINVAL;
+>> +			err = -EINVAL;
+>> +			goto cleanup;
+>>   		}
+>>   	}
+>>   
+>> @@ -600,13 +600,15 @@ static int do_attach(int argc, char **argv)
+> I think now that return value depends on this err it should be 'if (err)'
+> otherwise we risk retunring non-zero error code from do_attach which
+> will cause programs to fail.
+I agree with you. Thanks.
+>>   	if (err < 0) {
+>          ^^^^^^^^^^^^
+>          if (err) {
+>
+>>   		p_err("interface %s attach failed: %s",
+>>   		      attach_type_strings[attach_type], strerror(-err));
+>> -		return err;
+>> +		goto cleanup;
+>>   	}
+>>   
+>>   	if (json_output)
+>>   		jsonw_null(json_wtr);
+>>   
+>> -	return 0;
+>
+> Alternatively we could add an 'err = 0' here, but above should never
+> return a value >0 as far as I can see.
+It's true that 'err > 0' doesn't exist currently , but adding 'err = 0' 
+would make the code clearer. Thanks for your advice.
+>> +cleanup:
+>> +	close(progfd);
+>> +	return err;
+>>   }
+>>   
+>>   static int do_detach(int argc, char **argv)
+>> -- 
+>> 2.17.1
+>>
+Can it be fixed like this?
 
-Signed-off-by: Giovanni Gherdovich <ggherdovich@suse.cz>
----
- arch/x86/kernel/smpboot.c | 1 +
- 1 file changed, 1 insertion(+)
+--- a/tools/bpf/bpftool/net.c
++++ b/tools/bpf/bpftool/net.c
+@@ -578,8 +578,8 @@ static int do_attach(int argc, char **argv)
 
-diff --git a/arch/x86/kernel/smpboot.c b/arch/x86/kernel/smpboot.c
-index 1e6fed437b0c..ad0647b2d7c3 100644
---- a/arch/x86/kernel/smpboot.c
-+++ b/arch/x86/kernel/smpboot.c
-@@ -2110,6 +2110,7 @@ static void init_freq_invariance(bool secondary, bool cppc_ready)
- 	if (ret) {
- 		init_counter_refs(NULL);
- 		static_branch_enable(&arch_scale_freq_key);
-+		pr_info("Estimated ratio of average max frequency by base frequency (times 1024): %llu\n", arch_max_freq_ratio);
- 	} else {
- 		pr_debug("Couldn't determine max cpu frequency, necessary for scale-invariant accounting.\n");
- 	}
--- 
-2.26.2
+         ifindex = net_parse_dev(&argc, &argv);
+         if (ifindex < 1) {
+-               close(progfd);
+-               return -EINVAL;
++               err = -EINVAL;
++               goto cleanup;
+         }
 
+         if (argc) {
+@@ -587,8 +587,8 @@ static int do_attach(int argc, char **argv)
+                         overwrite = true;
+                 } else {
+                         p_err("expected 'overwrite', got: '%s'?", *argv);
+-                       close(progfd);
+-                       return -EINVAL;
++                       err = -EINVAL;
++                       goto cleanup;
+                 }
+         }
+
+@@ -597,16 +597,19 @@ static int do_attach(int argc, char **argv)
+                 err = do_attach_detach_xdp(progfd, attach_type, ifindex,
+                                            overwrite);
+
+-       if (err < 0) {
++       if (err) {
+                 p_err("interface %s attach failed: %s",
+                       attach_type_strings[attach_type], strerror(-err));
+-               return err;
++               goto cleanup;
+         }
+
+         if (json_output)
+                 jsonw_null(json_wtr);
+
+-       return 0;
++       ret = 0;
++cleanup:
++       close(progfd);
++       return err;
+  }
+
+>
+> .
+>
