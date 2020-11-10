@@ -2,121 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A47612ADA52
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 16:24:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 646E22ADA59
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 16:25:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732226AbgKJPYj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 10:24:39 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60918 "EHLO mail.kernel.org"
+        id S1732615AbgKJPY6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 10:24:58 -0500
+Received: from mail.kernel.org ([198.145.29.99]:32848 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730200AbgKJPYi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 10:24:38 -0500
-Received: from paulmck-ThinkPad-P72.home (50-39-104-11.bvtn.or.frontiernet.net [50.39.104.11])
+        id S1732232AbgKJPYz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Nov 2020 10:24:55 -0500
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C5B752076E;
-        Tue, 10 Nov 2020 15:24:37 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id ABD57207D3;
+        Tue, 10 Nov 2020 15:24:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605021877;
-        bh=kUu4A7UyvgIcJqtyjjKImRu/f7NWdJc7XCdZLfc2CZ8=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=M4HehSWTqvBjuX26DgDqPTKDQ1YtYqa1Bn1PVgknqMZWx79I4rKj3BKqWWdBbweuq
-         vqYuq2F+4azIY4gbohugqnTJxEPzNYFGGHO3IadDqoJrt6FUCFPcbufRlbz/Imla6K
-         eAez3cjKzzcs9HKbZEOPhBk/wPw9l0sUOKghyl9s=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 593F635226CB; Tue, 10 Nov 2020 07:24:37 -0800 (PST)
-Date:   Tue, 10 Nov 2020 07:24:37 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Paul Gortmaker <paul.gortmaker@windriver.com>
-Cc:     Qian Cai <cai@redhat.com>, Colin King <colin.king@canonical.com>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: [PATCH][next] cpumask: allocate enough space for string and
- trailing '\0' char
-Message-ID: <20201110152437.GS3249@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20201109130447.2080491-1-colin.king@canonical.com>
- <737d5be9eb5af55b1a61bd8bfb49b1829a3ff916.camel@redhat.com>
- <e0458a3f-7635-bc80-9496-731bdfceed0d@windriver.com>
+        s=default; t=1605021894;
+        bh=6grBIe9Ab1qZ3+EKmKO+hoC/BEgkpYoULIb3EV2t5yo=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=xfNstsPMqn3ECov8nxjyJrLJ1+DSpZyC0Ss8RG/e28rt4BLSM8F0v7CrR9L+ZA0/S
+         RSUEjAK3adrJk6vUBiDTu6vDp24Jz1wWPISq73w6uzLvPeMvrBW1AaQTEgfm7tBt24
+         dVU5iImG7WCRm7bkND2kFaKfCAF6YXP3QSVDTu2w=
+Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.94)
+        (envelope-from <maz@kernel.org>)
+        id 1kcVVs-009UKZ-Jg; Tue, 10 Nov 2020 15:24:52 +0000
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <e0458a3f-7635-bc80-9496-731bdfceed0d@windriver.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Tue, 10 Nov 2020 15:24:52 +0000
+From:   Marc Zyngier <maz@kernel.org>
+To:     David Brazdil <dbrazdil@google.com>
+Cc:     kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Dennis Zhou <dennis@kernel.org>,
+        Tejun Heo <tj@kernel.org>, Christoph Lameter <cl@linux.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Quentin Perret <qperret@google.com>,
+        Andrew Scull <ascull@google.com>,
+        Andrew Walbran <qwandor@google.com>, kernel-team@android.com
+Subject: Re: [PATCH v1 07/24] kvm: arm64: Create nVHE copy of cpu_logical_map
+In-Reply-To: <20201109113233.9012-8-dbrazdil@google.com>
+References: <20201109113233.9012-1-dbrazdil@google.com>
+ <20201109113233.9012-8-dbrazdil@google.com>
+User-Agent: Roundcube Webmail/1.4.9
+Message-ID: <d473fd26e5314f2407b70242488f33de@kernel.org>
+X-Sender: maz@kernel.org
+X-SA-Exim-Connect-IP: 51.254.78.96
+X-SA-Exim-Rcpt-To: dbrazdil@google.com, kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, james.morse@arm.com, julien.thierry.kdev@gmail.com, suzuki.poulose@arm.com, catalin.marinas@arm.com, will@kernel.org, dennis@kernel.org, tj@kernel.org, cl@linux.com, mark.rutland@arm.com, lorenzo.pieralisi@arm.com, qperret@google.com, ascull@google.com, qwandor@google.com, kernel-team@android.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 09, 2020 at 11:57:15PM -0500, Paul Gortmaker wrote:
+On 2020-11-09 11:32, David Brazdil wrote:
+> When KVM starts validating host's PSCI requests, it will need to map
+> MPIDR back to the CPU ID. To this end, copy cpu_logical_map into nVHE
+> hyp memory when KVM is initialized.
 > 
+> Only copy the information for CPUs that are online at the point of KVM
+> initialization so that KVM rejects CPUs whose features were not checked
+> against the finalized capabilities.
 > 
-> On 2020-11-09 8:07 p.m., Qian Cai wrote:
-> > On Mon, 2020-11-09 at 13:04 +0000, Colin King wrote:
-> > > From: Colin Ian King <colin.king@canonical.com>
-> > > 
-> > > Currently the allocation of cpulist is based on the length of buf but does
-> > > not include the addition end of string '\0' terminator. Static analysis is
-> > > reporting this as a potential out-of-bounds access on cpulist. Fix this by
-> > > allocating enough space for the additional '\0' terminator.
-> > > 
-> > > Addresses-Coverity: ("Out-of-bounds access")
-> > > Fixes: 65987e67f7ff ("cpumask: add "last" alias for cpu list specifications")
-> > 
-> > Yeah, this bad commit also introduced KASAN errors everywhere and then will
-> > disable lockdep that makes our linux-next CI miserable. Confirmed that this
-> > patch will fix it.
+> Signed-off-by: David Brazdil <dbrazdil@google.com>
+> ---
+>  arch/arm64/kvm/arm.c             | 17 +++++++++++++++++
+>  arch/arm64/kvm/hyp/nvhe/percpu.c | 16 ++++++++++++++++
+>  2 files changed, 33 insertions(+)
 > 
-> I appreciate the reports reminding me why I hate touching string handling.
+> diff --git a/arch/arm64/kvm/arm.c b/arch/arm64/kvm/arm.c
+> index 9ba9db2aa7f8..b85b4294b72d 100644
+> --- a/arch/arm64/kvm/arm.c
+> +++ b/arch/arm64/kvm/arm.c
+> @@ -1481,6 +1481,21 @@ static inline void hyp_cpu_pm_exit(void)
+>  }
+>  #endif
 > 
-> But let us not lose sight of why linux-next exists.  We want to
-> encourage code to appear there as a sounding board before it goes
-> mainline, so we can fix things and not pollute mainline git history
-> with those trivialities.
+> +static void init_cpu_logical_map(void)
+> +{
+> +	extern u64 kvm_nvhe_sym(__cpu_logical_map)[NR_CPUS];
+> +	int cpu;
+> +
+> +	/*
+> +	 * Copy the MPIDR <-> logical CPU ID mapping to hyp.
+> +	 * Only copy the set of online CPUs whose features have been chacked
+> +	 * against the finalized system capabilities. The hypervisor will not
+> +	 * allow any other CPUs from the `possible` set to boot.
+> +	 */
+> +	for_each_online_cpu(cpu)
+> +		CHOOSE_NVHE_SYM(__cpu_logical_map)[cpu] = cpu_logical_map(cpu);
+> +}
+> +
+>  static int init_common_resources(void)
+>  {
+>  	return kvm_set_ipa_limit();
+> @@ -1659,6 +1674,8 @@ static int init_hyp_mode(void)
+>  		}
+>  	}
 > 
-> If you've decided to internalize linux-next as part of your CI, then
-> great, but do note that does not elevate linux-next to some pristine
-> status for the world at large.  That only means you have to watch more
-> closely what is going on.
+> +	init_cpu_logical_map();
+> +
+>  	return 0;
 > 
-> If you want to declare linux-next unbreakable -- well that would scare
-> away others to get the multi-arch or multi-config coverage that they may
-> not be able to do themselves.  We are not going to do that.
+>  out_err:
+> diff --git a/arch/arm64/kvm/hyp/nvhe/percpu.c 
+> b/arch/arm64/kvm/hyp/nvhe/percpu.c
+> index 5fd0c5696907..d0b9dbc2df45 100644
+> --- a/arch/arm64/kvm/hyp/nvhe/percpu.c
+> +++ b/arch/arm64/kvm/hyp/nvhe/percpu.c
+> @@ -8,6 +8,22 @@
+>  #include <asm/kvm_hyp.h>
+>  #include <asm/kvm_mmu.h>
 > 
-> I have (hopefully) fixed the "bad commit" in v2 -- as part of the
-> implicit linux-next rule "you broke it, you better fix it ASAP".
-> 
-> But "bad" and "miserable" can be things that might scare people off of
-> making use of linux-next for what it is meant to be for.  And I am not
-> OK with that.
+> +/*
+> + * nVHE copy of data structures tracking available CPU cores.
+> + * Only entries for CPUs that were online at KVM init are populated.
+> + * Other CPUs should not be allowed to boot because their features 
+> were
+> + * not checked against the finalized system capabilities.
+> + */
+> +u64 __ro_after_init __cpu_logical_map[NR_CPUS] = { [0 ... NR_CPUS-1]
+> = INVALID_HWID };
 
-They would need to use much stronger language to scare me off.  That said,
-what on earth is the point of running tests if they do not from time to
-time find bugs?  ;-)
+I'm not sure what __ro_after_init means once we get S2 isolation.
 
-							Thanx, Paul
+> +
+> +u64 cpu_logical_map(int cpu)
 
-> Thanks,
-> Paul.
-> --
-> 
-> > 
-> > > Signed-off-by: Colin Ian King <colin.king@canonical.com>
-> > > ---
-> > >   lib/cpumask.c | 2 +-
-> > >   1 file changed, 1 insertion(+), 1 deletion(-)
-> > > 
-> > > diff --git a/lib/cpumask.c b/lib/cpumask.c
-> > > index 34ecb3005941..cb8a3ef0e73e 100644
-> > > --- a/lib/cpumask.c
-> > > +++ b/lib/cpumask.c
-> > > @@ -185,7 +185,7 @@ int __ref cpulist_parse(const char *buf, struct cpumask
-> > > *dstp)
-> > >   {
-> > >   	int r;
-> > >   	char *cpulist, last_cpu[5];	/* NR_CPUS <= 9999 */
-> > > -	size_t len = strlen(buf);
-> > > +	size_t len = strlen(buf) + 1;
-> > >   	bool early = !slab_is_available();
-> > >   	if (!strcmp(buf, "all")) {
-> > 
+nit: is there any reason why "cpu" cannot be unsigned? The thought
+of a negative CPU number makes me shiver...
+
+> +{
+> +	if (cpu < 0 || cpu >= ARRAY_SIZE(__cpu_logical_map))
+> +		hyp_panic();
+> +
+> +	return __cpu_logical_map[cpu];
+> +}
+> +
+>  unsigned long __hyp_per_cpu_offset(unsigned int cpu)
+>  {
+>  	unsigned long *cpu_base_array;
+
+Overall, this patch would make more sense closer it its use case
+(in patch 19). I also don't understand why this lives in percpu.c...
+
+Thanks,
+
+         M.
+-- 
+Jazz is not dead. It just smells funny...
