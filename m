@@ -2,79 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F57D2ADCDB
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 18:26:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CE0D2ADCDD
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 18:27:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730258AbgKJR0n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 12:26:43 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45206 "EHLO mail.kernel.org"
+        id S1730345AbgKJR1h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 12:27:37 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45400 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726152AbgKJR0m (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 12:26:42 -0500
-Received: from trantor (unknown [2.26.170.190])
+        id S1726152AbgKJR1g (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Nov 2020 12:27:36 -0500
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A3BA4206B2;
-        Tue, 10 Nov 2020 17:26:40 +0000 (UTC)
-Date:   Tue, 10 Nov 2020 17:26:38 +0000
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     YiFei Zhu <yifeifz2@illinois.edu>,
-        Russell King <linux@armlinux.org.uk>,
-        Will Deacon <will@kernel.org>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Will Drewry <wad@chromium.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] arm64: Enable seccomp architecture tracking
-Message-ID: <X6rNTgw8z4kreVD9@trantor>
-References: <20201028002000.2666043-1-keescook@chromium.org>
- <20201028002000.2666043-2-keescook@chromium.org>
+        by mail.kernel.org (Postfix) with ESMTPSA id B98D8206B2;
+        Tue, 10 Nov 2020 17:27:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605029256;
+        bh=ks1LOyBLNDhuxQqZ3iJG1mWuNRCAGal3eA/eaf0LRQk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=uFxi95SE6F1jiW0+cRqP0WSX0ETwYTfQlpDHPYjc8e3gIns3Q9PiilszYYNKZorSZ
+         yzArHERxio2peXf4P2EwjgH3osxneWffCzxi19A8YnsEHt9EnAoIuvlkcbQDrAYSLG
+         nrChi6ADjMEKhOk7gD+o+vvd5QvfZy9TT3FvZ35Q=
+Date:   Tue, 10 Nov 2020 17:27:21 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     Sean Nyekjaer <sean@geanix.com>
+Cc:     yibin.gong@nxp.com, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org
+Subject: Re: [PATCH] regualtor: pfuze100: limit pfuze-support-disable-sw to
+ pfuze{100,200}
+Message-ID: <20201110172721.GA49286@sirena.org.uk>
+References: <20201105114926.734553-1-sean@geanix.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="vkogqOf2sHV7VnPd"
 Content-Disposition: inline
-In-Reply-To: <20201028002000.2666043-2-keescook@chromium.org>
+In-Reply-To: <20201105114926.734553-1-sean@geanix.com>
+X-Cookie: Filmed before a live audience.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 27, 2020 at 05:19:59PM -0700, Kees Cook wrote:
-> To enable seccomp constant action bitmaps, we need to have a static
-> mapping to the audit architecture and system call table size. Add these
-> for arm64.
-> 
-> Signed-off-by: Kees Cook <keescook@chromium.org>
+
+--vkogqOf2sHV7VnPd
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Thu, Nov 05, 2020 at 12:49:26PM +0100, Sean Nyekjaer wrote:
+> Limit the fsl,pfuze-support-disable-sw to the pfuze100 and pfuze200
+> variants.
+> When enabling fsl,pfuze-support-disable-sw and using a pfuze3000 or
+> pfuze3001, the driver would choose pfuze100_sw_disable_regulator_ops
+> instead of the newly introduced and correct pfuze3000_sw_regulator_ops.
+>=20
+> Fixes: 6f1cf5257acc ("regualtor: pfuze100: correct sw1a/sw2 on pfuze3000")
+> Cc: stable@vger.kernel.org
 > ---
->  arch/arm64/include/asm/seccomp.h | 15 +++++++++++++++
->  1 file changed, 15 insertions(+)
-> 
-> diff --git a/arch/arm64/include/asm/seccomp.h b/arch/arm64/include/asm/seccomp.h
-> index c36387170936..40f325e7a404 100644
-> --- a/arch/arm64/include/asm/seccomp.h
-> +++ b/arch/arm64/include/asm/seccomp.h
-> @@ -19,4 +19,19 @@
->  
->  #include <asm-generic/seccomp.h>
->  
-> +#ifdef CONFIG_ARM64
-> +# define SECCOMP_ARCH_NATIVE		AUDIT_ARCH_AARCH64
-> +# define SECCOMP_ARCH_NATIVE_NR		NR_syscalls
-> +# define SECCOMP_ARCH_NATIVE_NAME	"arm64"
 
-"aarch64"? (to match ELF_PLATFORM; not sure what this is used for as
-SECCOMP_ARCH_NATIVE_NAME is not defined in 5.10-rc3)
+You've not provided a Signed-off-by for this so I can't do anything with
+it, please see Documentation/process/submitting-patches.rst for details
+on what this is and why it's important.
 
-> +# ifdef CONFIG_COMPAT
-> +#  define SECCOMP_ARCH_COMPAT		AUDIT_ARCH_ARM
-> +#  define SECCOMP_ARCH_COMPAT_NR	__NR_compat_syscalls
-> +#  define SECCOMP_ARCH_COMPAT_NAME	"arm"
-> +# endif
-> +#else /* !CONFIG_ARM64 */
-> +# define SECCOMP_ARCH_NATIVE		AUDIT_ARCH_ARM
-> +# define SECCOMP_ARCH_NATIVE_NR		NR_syscalls
-> +# define SECCOMP_ARCH_NATIVE_NAME	"arm"
-> +#endif
+--vkogqOf2sHV7VnPd
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Why do we need a !CONFIG_ARM64 in an arm64 header file?
+-----BEGIN PGP SIGNATURE-----
 
--- 
-Catalin
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl+qzXkACgkQJNaLcl1U
+h9BN8Af/ZOXBrv35z3PfUXA046OtEj86hc8nm8zaCT3pUFLreFjoN5v/vScxOfLn
+ud3sMlFRA04ypHa9Y2hl35OGdrOGotsVl5pFagkjS7sSiuakGCY5IXifWwGy5DCb
+FHjmxJ+BfF624nbYdENmwZkEM1nsf5qHJo+0YBVYio9sKF5DYl7oKfkcT8BcfUvs
+XWHAUPBWj5LiJKPdm8bdE8h2B3T5d2W9xJeWc9XngjKixtM0VuFbJxxPSN77AovT
+ZD9yywg/rzjmaLMWcLYo2wZhrDtBqAhKPW5NTyrd8ltuz7cmZpAxh9NCLWIGonjC
+yMmQc3K4Na/Rv/1SUIdKyrfgbArs8w==
+=VNle
+-----END PGP SIGNATURE-----
+
+--vkogqOf2sHV7VnPd--
