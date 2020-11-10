@@ -2,88 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C4672ADDCC
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 19:07:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F2702ADDD2
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 19:08:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731202AbgKJSHa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 13:07:30 -0500
-Received: from wout1-smtp.messagingengine.com ([64.147.123.24]:33553 "EHLO
-        wout1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730504AbgKJSH3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 13:07:29 -0500
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailout.west.internal (Postfix) with ESMTP id D0C4F13A9;
-        Tue, 10 Nov 2020 13:07:27 -0500 (EST)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute4.internal (MEProxy); Tue, 10 Nov 2020 13:07:28 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm2; bh=l7QHak7ESVMStgQxNDwhr66Mk5j
-        zNJZi9d5pVFXP3yQ=; b=XYxVrWxByKVxFVxzdide67LilgzkAZOBgE1lFna90e3
-        nnFLvirP58aeNiXIhCMeE3gGkXhAEBueT5Jf4ksA00GFtWqyV1DeAHGWuaoOdeEl
-        Yw3/NTtDUH6y3i3FdmUtjNssiqmhj3bVc0GwsuVBZ8gNJ2EFp+twac5co5AiCrvS
-        lJpGrjk3prlq+xh31CkVpBRTJEHs8XhwIrdz6HfUnZHG0M1qlFaYwaJbSmkHIXAR
-        0FqmHOaFKIK4LNH2hg4wwJebVVOUSC2lVtdm9ZDJ0iraeWJfa1xD3A3ISqp1+4v/
-        sg6433Al0xo9IuwW/8bAgmU0NEf3arEHhhY16/SUChQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=l7QHak
-        7ESVMStgQxNDwhr66Mk5jzNJZi9d5pVFXP3yQ=; b=iaFYyiT26OOCipAbPD4OPz
-        36HHqSImnnPbCNzHU46wdznkzb7bgMsnPv/lDDm2JkcqSOGH0t7epiYMYb9STCBY
-        qzGKtX1PWJa5dJciuCEeWG3CBYLZ1F9jBbNCrkgouI4gl2G6kne3furroFqQ/+nW
-        2Xchn9GMTw2mbiZTPFp+XBTmV8V/lTg2R2K0M9p+0O3zs5LlXeqSoVT6A4jtOetI
-        IZNZr5l/WfH2XY054ZUvgTVbF0Pou4Th9KVELzYOeGMz4lDMtjkUgamJaDcdJz5s
-        /LUQxFhsv5Ma1h96/JQDogXqfKLjriWxOAKEYccwp1YwijeV1X0Azu90npnEtu1g
-        ==
-X-ME-Sender: <xms:39aqXxbu5xqfj0t-zGwjnHaV6nD77bs0e3m7Mnol2hUeZYN2OnYifA>
-    <xme:39aqX4Y_5qx5n-kFkQp3zW4DA0IGIIi-CgjHjKbsAj799Yo1TaSgmxnLGfIHJgL4o
-    mqOUsg-fVvRlA>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedruddujedguddtlecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecunecujfgurhepfffhvffukfhfgggtuggjsehttd
-    ertddttddvnecuhfhrohhmpefirhgvghcumffjuceoghhrvghgsehkrhhorghhrdgtohhm
-    qeenucggtffrrghtthgvrhhnpeeuleeltdehkeeltefhleduuddvhfffuedvffduveeghe
-    ekgeeiffevheegfeetgfenucffohhmrghinhepkhgvrhhnvghlrdhorhhgnecukfhppeek
-    fedrkeeirdejgedrieegnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrg
-    hilhhfrhhomhepghhrvghgsehkrhhorghhrdgtohhm
-X-ME-Proxy: <xmx:39aqXz_IAzb85mwTwms7_2Eu3iMo6PURp7WouAOyDxtRdmDq4NwDrg>
-    <xmx:39aqX_pIfObU1Cg4RvEmCQdvMMzkgrZkabNKlFHMy-MctyDJS06pXw>
-    <xmx:39aqX8pyNxsurzCEXxmY9kvXVelhuB4TkAarf4ryNjDW1W_gBQRGNg>
-    <xmx:39aqXzQORIqm8riB7bC9lLU6UxzIsvk4KRDFiK3o33fhCVUYs8eSEg>
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        by mail.messagingengine.com (Postfix) with ESMTPA id EEE13306307C;
-        Tue, 10 Nov 2020 13:07:26 -0500 (EST)
-Date:   Tue, 10 Nov 2020 19:08:29 +0100
-From:   Greg KH <greg@kroah.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     jgg@nvidia.com, stable-commits@vger.kernel.org
-Subject: Re: Patch "RDMA/ucma: Fix error cases around ucma_alloc_ctx()" has
- been added to the 5.9-stable tree
-Message-ID: <X6rXHRXgoin0xa85@kroah.com>
-References: <20201110150627.EAA1920781@mail.kernel.org>
+        id S1731291AbgKJSIh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 13:08:37 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56684 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731259AbgKJSIe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Nov 2020 13:08:34 -0500
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id C9F1A20797;
+        Tue, 10 Nov 2020 18:08:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605031713;
+        bh=Nz7W27yNGmMjfytfPBBLE46dVYliFnn5Y64uNGZmuIM=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=i4EPEKIegCG7mQAYOmGbseMNaM7wnCzfEd0iU8/20Aa4pJOncA8X8DeXrXwY83Svn
+         t4TZmh34jIHFlzzBC6ekXO/YQdD+VmlrujLZxAQL2FhKQtzqtv4FrSwymf4yOUVjjb
+         X68VAgDfJkOW4vcNM0uJ8ayY6jAZLNdM8G5doyjU=
+Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.94)
+        (envelope-from <maz@kernel.org>)
+        id 1kcY4F-009Wjq-M6; Tue, 10 Nov 2020 18:08:31 +0000
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201110150627.EAA1920781@mail.kernel.org>
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Tue, 10 Nov 2020 18:08:31 +0000
+From:   Marc Zyngier <maz@kernel.org>
+To:     Thierry Reding <thierry.reding@gmail.com>
+Cc:     linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Rob Herring <robh+dt@kernel.org>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Nagarjuna Kristam <nkristam@nvidia.com>,
+        Sowjanya Komatineni <skomatineni@nvidia.com>,
+        devicetree@vger.kernel.org
+Subject: Re: [PATCH] arm64: tegra186: Add missing CPU PMUs
+In-Reply-To: <20201110173601.GA2297135@ulmo>
+References: <20201013095851.311478-1-maz@kernel.org>
+ <20201110173601.GA2297135@ulmo>
+User-Agent: Roundcube Webmail/1.4.9
+Message-ID: <3da5c9b1f93699634aad997b77536a92@kernel.org>
+X-Sender: maz@kernel.org
+X-SA-Exim-Connect-IP: 51.254.78.96
+X-SA-Exim-Rcpt-To: thierry.reding@gmail.com, linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org, robh+dt@kernel.org, jonathanh@nvidia.com, nkristam@nvidia.com, skomatineni@nvidia.com, devicetree@vger.kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 10, 2020 at 10:06:26AM -0500, Sasha Levin wrote:
-> This is a note to let you know that I've just added the patch titled
-> 
->     RDMA/ucma: Fix error cases around ucma_alloc_ctx()
-> 
-> to the 5.9-stable tree which can be found at:
->     http://www.kernel.org/git/?p=linux/kernel/git/stable/stable-queue.git;a=summary
-> 
-> The filename of the patch is:
->      rdma-ucma-fix-error-cases-around-ucma_alloc_ctx.patch
-> and it can be found in the queue-5.9 subdirectory.
-> 
-> If you, or anyone else, feels it should not be added to the stable tree,
-> please let <stable@vger.kernel.org> know about it.
+On 2020-11-10 17:36, Thierry Reding wrote:
+> On Tue, Oct 13, 2020 at 10:58:51AM +0100, Marc Zyngier wrote:
+>> Add the description of CPU PMUs for both the Denver and A57 clusters,
+>> which enables the perf subsystem.
+>> 
+>> Signed-off-by: Marc Zyngier <maz@kernel.org>
 
-This breaks the build as well, dropping it.
+[...]
+
+>> 
+>> +	pmu_denver {
+>> +		compatible = "nvidia,denver-pmu", "arm,armv8-pmuv3";
+> 
+> checkpatch complains that this isn't documented. Did I miss the DT
+> bindings patch or do we not have one for this?
+
+We don't. But I don't think adding a compatible string for each
+and every micro-architecture makes much sense unless we have something
+useful to add to that compatible string. Such as a full description
+of the implementation specific events.
+
+Thanks,
+
+         M.
