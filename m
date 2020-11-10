@@ -2,127 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D47502AE28F
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 23:08:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 579ED2AE290
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 23:08:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732167AbgKJWIU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 17:08:20 -0500
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:33784 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1732160AbgKJWIS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 17:08:18 -0500
-Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0AAM6qt2005169
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 14:08:17 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=facebook;
- bh=x6Bn9rxQlaC3JmjCV92jgNxBPwyEKeOSzCXajeDCw2w=;
- b=Kt+hfktQOO1aZf08LDVjsi1FDtTuUJosGtaKb135shwFnTk9ACv+2bFuahdsdjUHsSUT
- X8Ij0ZD+reZyRfsUUv32y+NFMZm1yVStYIYiGIJBR7+zqSX59Q3hf/oxkKIbNY2ww0N5
- sqQhtg5tvQ6LS7IREXAmI6U+w983w7VsAE8= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 34qwve22w5-12
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 14:08:17 -0800
-Received: from intmgw001.06.prn3.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:82::f) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Tue, 10 Nov 2020 14:08:06 -0800
-Received: by devvm1755.vll0.facebook.com (Postfix, from userid 111017)
-        id 3704B239AED7; Tue, 10 Nov 2020 14:08:01 -0800 (PST)
-From:   Roman Gushchin <guro@fb.com>
-To:     Andrew Morton <akpm@linux-foundation.org>, <linux-mm@kvack.org>
-CC:     Shakeel Butt <shakeelb@google.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        David Rientjes <rientjes@google.com>, <kernel-team@fb.com>,
-        Roman Gushchin <guro@fb.com>
-Subject: [PATCH v1 3/3] cgroup: remove obsoleted broken_hierarchy and warned_broken_hierarchy
-Date:   Tue, 10 Nov 2020 14:08:00 -0800
-Message-ID: <20201110220800.929549-4-guro@fb.com>
-X-Mailer: git-send-email 2.24.1
-In-Reply-To: <20201110220800.929549-1-guro@fb.com>
-References: <20201110220800.929549-1-guro@fb.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-11-10_08:2020-11-10,2020-11-10 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 bulkscore=0
- mlxlogscore=966 spamscore=0 lowpriorityscore=0 priorityscore=1501
- impostorscore=0 clxscore=1015 adultscore=0 malwarescore=0 phishscore=0
- mlxscore=0 suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2011100150
-X-FB-Internal: deliver
+        id S1732151AbgKJWIj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 17:08:39 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33900 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729862AbgKJWIi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Nov 2020 17:08:38 -0500
+Received: from localhost.localdomain (c-73-231-172-41.hsd1.ca.comcast.net [73.231.172.41])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id B4B7220781;
+        Tue, 10 Nov 2020 22:08:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605046118;
+        bh=wzueAwNKUFgTyXUWlQJsepkAlXdOG+naI+ANaxmxCRE=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=M568qlMyReOV/5qEhQduZfhKUTIxTHpSPfVsvUQnpH+NDPeRbQNMPYwH65vJvkFBn
+         vSvi8gg8KELpYBhjtrZ7EPqhNyuIvYqvG+yFvFFNUNianeXLacoojlHkxjHBHV9xQZ
+         dzNrg2CPyGeDqxL7n9lmfn1eV1ObUZyM1Igm0YLI=
+Date:   Tue, 10 Nov 2020 14:08:37 -0800
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        Chris Zankel <chris@zankel.net>,
+        Max Filippov <jcmvbkbc@gmail.com>,
+        linux-xtensa@linux-xtensa.org, ngupta@vflare.org,
+        sergey.senozhatsky.work@gmail.com, sjenning@linux.vnet.ibm.com,
+        gregkh@linuxfoundation.org, arnd@arndb.de,
+        Stefan Agner <stefan@agner.ch>,
+        Minchan Kim <minchan@kernel.org>
+Subject: Re: [PATCH] mm: fix build failure with xtensa
+Message-Id: <20201110140837.99b1feabec8754ce5247e2a0@linux-foundation.org>
+In-Reply-To: <20201110220151.20911-1-sudipm.mukherjee@gmail.com>
+References: <20201110220151.20911-1-sudipm.mukherjee@gmail.com>
+X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-With the deprecation of the non-hierarchical mode of the memory
-controller there are no more examples of broken hierarchies left.
+On Tue, 10 Nov 2020 22:01:51 +0000 Sudip Mukherjee <sudipm.mukherjee@gmail.com> wrote:
 
-Let's remove the cgroup core code which was supposed to print
-warnings about creating of broken hierarchies.
+> If CONFIG_ZSMALLOC is enabled with xtensa then the build fails with:
+> mm/zsmalloc.c:43:10: fatal error: asm/sparsemem.h: No such file or directory
+> 
+> Disable CONFIG_ZSMALLOC for xtensa as xtensa arch has not defined
+> sparsemem.h.
+> 
+> ...
+>
+> --- a/mm/Kconfig
+> +++ b/mm/Kconfig
+> @@ -698,7 +698,7 @@ config Z3FOLD
+>  
+>  config ZSMALLOC
+>  	tristate "Memory allocator for compressed pages"
+> -	depends on MMU
+> +	depends on (MMU && !XTENSA)
+>  	help
+>  	  zsmalloc is a slab-based memory allocator designed to store
+>  	  compressed RAM pages.  zsmalloc uses virtual memory mapping
 
-Signed-off-by: Roman Gushchin <guro@fb.com>
-Reviewed-by: Shakeel Butt <shakeelb@google.com>
-Acked-by: David Rientjes <rientjes@google.com>
----
- include/linux/cgroup-defs.h | 15 ---------------
- kernel/cgroup/cgroup.c      |  7 -------
- 2 files changed, 22 deletions(-)
-
-diff --git a/include/linux/cgroup-defs.h b/include/linux/cgroup-defs.h
-index fee0b5547cd0..559ee05f86b2 100644
---- a/include/linux/cgroup-defs.h
-+++ b/include/linux/cgroup-defs.h
-@@ -668,21 +668,6 @@ struct cgroup_subsys {
- 	 */
- 	bool threaded:1;
-=20
--	/*
--	 * If %false, this subsystem is properly hierarchical -
--	 * configuration, resource accounting and restriction on a parent
--	 * cgroup cover those of its children.  If %true, hierarchy support
--	 * is broken in some ways - some subsystems ignore hierarchy
--	 * completely while others are only implemented half-way.
--	 *
--	 * It's now disallowed to create nested cgroups if the subsystem is
--	 * broken and cgroup core will emit a warning message on such
--	 * cases.  Eventually, all subsystems will be made properly
--	 * hierarchical and this will go away.
--	 */
--	bool broken_hierarchy:1;
--	bool warned_broken_hierarchy:1;
--
- 	/* the following two fields are initialized automtically during boot */
- 	int id;
- 	const char *name;
-diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
-index 621a586e3529..fefa21981027 100644
---- a/kernel/cgroup/cgroup.c
-+++ b/kernel/cgroup/cgroup.c
-@@ -5149,13 +5149,6 @@ static struct cgroup_subsys_state *css_create(stru=
-ct cgroup *cgrp,
- 	if (err)
- 		goto err_list_del;
-=20
--	if (ss->broken_hierarchy && !ss->warned_broken_hierarchy &&
--	    cgroup_parent(parent)) {
--		pr_warn("%s (%d) created nested cgroup for controller \"%s\" which has=
- incomplete hierarchy support. Nested cgroups may change behavior in the =
-future.\n",
--			current->comm, current->pid, ss->name);
--		ss->warned_broken_hierarchy =3D true;
--	}
--
- 	return css;
-=20
- err_list_del:
---=20
-2.26.2
+Thanks.  I believe that Stefan is working on a more general solution
+over in
+https://lkml.kernel.org/r/bdfa44bf1c570b05d6c70898e2bbb0acf234ecdf.1604762181.git.stefan@agner.ch
 
