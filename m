@@ -2,95 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B55C2ACBFB
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 04:38:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E64A92ACBFC
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 04:39:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731463AbgKJDiT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Nov 2020 22:38:19 -0500
-Received: from foss.arm.com ([217.140.110.172]:49784 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729452AbgKJDiS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Nov 2020 22:38:18 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6D18A31B;
-        Mon,  9 Nov 2020 19:38:18 -0800 (PST)
-Received: from p8cg001049571a15.arm.com (unknown [10.163.79.111])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id A6B3B3F6CF;
-        Mon,  9 Nov 2020 19:38:16 -0800 (PST)
-From:   Anshuman Khandual <anshuman.khandual@arm.com>
-To:     linux-arm-kernel@lists.infradead.org
-Cc:     Anshuman Khandual <anshuman.khandual@arm.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] arm/mm: Convert PUD level pgtable helper macros into functions
-Date:   Tue, 10 Nov 2020 09:06:50 +0530
-Message-Id: <1604979410-23997-1-git-send-email-anshuman.khandual@arm.com>
-X-Mailer: git-send-email 2.7.4
+        id S1731581AbgKJDjH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 9 Nov 2020 22:39:07 -0500
+Received: from rtits2.realtek.com ([211.75.126.72]:42966 "EHLO
+        rtits2.realtek.com.tw" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729452AbgKJDjG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 9 Nov 2020 22:39:06 -0500
+Authenticated-By: 
+X-SpamFilter-By: ArmorX SpamTrap 5.73 with qID 0AA3cgXV3008619, This message is accepted by code: ctloc85258
+Received: from mail.realtek.com (rtexmb03.realtek.com.tw[172.21.6.96])
+        by rtits2.realtek.com.tw (8.15.2/2.70/5.88) with ESMTPS id 0AA3cgXV3008619
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Tue, 10 Nov 2020 11:38:42 +0800
+Received: from RTEXMBS03.realtek.com.tw (172.21.6.34) by
+ RTEXMB03.realtek.com.tw (172.21.6.96) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2044.4; Tue, 10 Nov 2020 11:38:42 +0800
+Received: from localhost.localdomain (172.21.132.186) by
+ RTEXMBS03.realtek.com.tw (172.21.6.34) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Tue, 10 Nov 2020 11:38:42 +0800
+From:   <max.chou@realtek.com>
+To:     <marcel@holtmann.org>, <johan.hedberg@gmail.com>,
+        <matthias.bgg@gmail.com>, <linux-bluetooth@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>, <alex_lu@realsil.com.cn>,
+        <hildawu@realtek.com>, <kidman@realtek.com>
+CC:     <max.chou@realtek.com>
+Subject: [PATCH] Bluetooth: btusb: btrtl: Add support for RTL8852A
+Date:   Tue, 10 Nov 2020 11:38:37 +0800
+Message-ID: <20201110033837.19373-1-max.chou@realtek.com>
+X-Mailer: git-send-email 2.17.1
+MIME-Version: 1.0
+Content-Type: text/plain
+X-Originating-IP: [172.21.132.186]
+X-ClientProxiedBy: RTEXMB03.realtek.com.tw (172.21.6.96) To
+ RTEXMBS03.realtek.com.tw (172.21.6.34)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Macros used as functions can be problematic from the compiler perspective.
-There was a build failure report caused primarily because of non reference
-of an argument variable. Hence convert PUD level pgtable helper macros into
-functions in order to avoid such problems in the future. In the process, it
-fixes the argument variables sequence in set_pud() which probably remained
-hidden for being a macro.
+From: Max Chou <max.chou@realtek.com>
 
-https://lore.kernel.org/linux-mm/202011020749.5XQ3Hfzc-lkp@intel.com/
-https://lore.kernel.org/linux-mm/5fa49698.Vu2O3r+dU20UoEJ+%25lkp@intel.com/
+Add the support for RTL8852A BT controller on USB interface.
+The necessary firmware will be submitted to linux-firmware project.
 
-Cc: Russell King <linux@armlinux.org.uk>
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: linux-arm-kernel@lists.infradead.org
-Cc: linux-kernel@vger.kernel.org
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
-Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+The device info from /sys/kernel/debug/usb/devices as below.
+
+T:  Bus=02 Lev=02 Prnt=02 Port=05 Cnt=01 Dev#= 10 Spd=12   MxCh= 0
+D:  Ver= 1.00 Cls=e0(wlcon) Sub=01 Prot=01 MxPS=64 #Cfgs=  1
+P:  Vendor=0bda ProdID=c852 Rev= 0.00
+S:  Manufacturer=Realtek
+S:  Product=Bluetooth Radio
+S:  SerialNumber=00e04c000001
+C:* #Ifs= 2 Cfg#= 1 Atr=e0 MxPwr=500mA
+I:* If#= 0 Alt= 0 #EPs= 3 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
+E:  Ad=81(I) Atr=03(Int.) MxPS=  16 Ivl=1ms
+E:  Ad=02(O) Atr=02(Bulk) MxPS=  64 Ivl=0ms
+E:  Ad=82(I) Atr=02(Bulk) MxPS=  64 Ivl=0ms
+I:* If#= 1 Alt= 0 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
+E:  Ad=03(O) Atr=01(Isoc) MxPS=   0 Ivl=1ms
+E:  Ad=83(I) Atr=01(Isoc) MxPS=   0 Ivl=1ms
+I:  If#= 1 Alt= 1 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
+E:  Ad=03(O) Atr=01(Isoc) MxPS=   9 Ivl=1ms
+E:  Ad=83(I) Atr=01(Isoc) MxPS=   9 Ivl=1ms
+I:  If#= 1 Alt= 2 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
+E:  Ad=03(O) Atr=01(Isoc) MxPS=  17 Ivl=1ms
+E:  Ad=83(I) Atr=01(Isoc) MxPS=  17 Ivl=1ms
+I:  If#= 1 Alt= 3 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
+E:  Ad=03(O) Atr=01(Isoc) MxPS=  25 Ivl=1ms
+E:  Ad=83(I) Atr=01(Isoc) MxPS=  25 Ivl=1ms
+I:  If#= 1 Alt= 4 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
+E:  Ad=03(O) Atr=01(Isoc) MxPS=  33 Ivl=1ms
+E:  Ad=83(I) Atr=01(Isoc) MxPS=  33 Ivl=1ms
+I:  If#= 1 Alt= 5 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
+E:  Ad=03(O) Atr=01(Isoc) MxPS=  49 Ivl=1ms
+E:  Ad=83(I) Atr=01(Isoc) MxPS=  49 Ivl=1ms
+
+Signed-off-by: Max Chou <max.chou@realtek.com>
 ---
-Only build tested.
+ drivers/bluetooth/btrtl.c | 12 ++++++++++++
+ drivers/bluetooth/btusb.c |  4 ++++
+ 2 files changed, 16 insertions(+)
 
- arch/arm/include/asm/pgtable-2level.h | 27 ++++++++++++++++++++++-----
- 1 file changed, 22 insertions(+), 5 deletions(-)
-
-diff --git a/arch/arm/include/asm/pgtable-2level.h b/arch/arm/include/asm/pgtable-2level.h
-index 3502c2f..9d4f5ee 100644
---- a/arch/arm/include/asm/pgtable-2level.h
-+++ b/arch/arm/include/asm/pgtable-2level.h
-@@ -177,11 +177,28 @@
-  * the pud: the pud entry is never bad, always exists, and can't be set or
-  * cleared.
-  */
--#define pud_none(pud)		(0)
--#define pud_bad(pud)		(0)
--#define pud_present(pud)	(1)
--#define pud_clear(pudp)		do { } while (0)
--#define set_pud(pud,pudp)	do { } while (0)
-+static inline int pud_none(pud_t pud)
-+{
-+	return 0;
-+}
-+
-+static inline int pud_bad(pud_t pud)
-+{
-+	return 0;
-+}
-+
-+static inline int pud_present(pud_t pud)
-+{
-+	return 1;
-+}
-+
-+static inline void pud_clear(pud_t *pudp)
-+{
-+}
-+
-+static inline void set_pud(pud_t *pudp, pud_t pud)
-+{
-+}
+diff --git a/drivers/bluetooth/btrtl.c b/drivers/bluetooth/btrtl.c
+index 0ac0f8874ef7..e47736a12f77 100644
+--- a/drivers/bluetooth/btrtl.c
++++ b/drivers/bluetooth/btrtl.c
+@@ -23,6 +23,7 @@
+ #define RTL_ROM_LMP_8821A	0x8821
+ #define RTL_ROM_LMP_8761A	0x8761
+ #define RTL_ROM_LMP_8822B	0x8822
++#define RTL_ROM_LMP_8852A	0x8852
+ #define RTL_CONFIG_MAGIC	0x8723ab55
  
- static inline pmd_t *pmd_offset(pud_t *pud, unsigned long addr)
- {
+ #define IC_MATCH_FL_LMPSUBV	(1 << 0)
+@@ -143,6 +144,13 @@ static const struct id_table ic_id_table[] = {
+ 	  .has_rom_version = true,
+ 	  .fw_name  = "rtl_bt/rtl8822b_fw.bin",
+ 	  .cfg_name = "rtl_bt/rtl8822b_config" },
++
++	/* 8852A */
++	{ IC_INFO(RTL_ROM_LMP_8852A, 0xa, 0xb, HCI_USB),
++	  .config_needed = false,
++	  .has_rom_version = true,
++	  .fw_name  = "rtl_bt/rtl8852au_fw.bin",
++	  .cfg_name = "rtl_bt/rtl8852au_config" },
+ 	};
+ 
+ static const struct id_table *btrtl_match_ic(u16 lmp_subver, u16 hci_rev,
+@@ -250,6 +258,7 @@ static int rtlbt_parse_firmware(struct hci_dev *hdev,
+ 		{ RTL_ROM_LMP_8821A, 10 },	/* 8821C */
+ 		{ RTL_ROM_LMP_8822B, 13 },	/* 8822C */
+ 		{ RTL_ROM_LMP_8761A, 14 },	/* 8761B */
++		{ RTL_ROM_LMP_8852A, 18 },	/* 8852A */
+ 	};
+ 
+ 	min_size = sizeof(struct rtl_epatch_header) + sizeof(extension_sig) + 3;
+@@ -679,6 +688,7 @@ int btrtl_download_firmware(struct hci_dev *hdev,
+ 	case RTL_ROM_LMP_8821A:
+ 	case RTL_ROM_LMP_8761A:
+ 	case RTL_ROM_LMP_8822B:
++	case RTL_ROM_LMP_8852A:
+ 		return btrtl_setup_rtl8723b(hdev, btrtl_dev);
+ 	default:
+ 		rtl_dev_info(hdev, "assuming no firmware upload needed");
+@@ -854,3 +864,5 @@ MODULE_FIRMWARE("rtl_bt/rtl8821a_fw.bin");
+ MODULE_FIRMWARE("rtl_bt/rtl8821a_config.bin");
+ MODULE_FIRMWARE("rtl_bt/rtl8822b_fw.bin");
+ MODULE_FIRMWARE("rtl_bt/rtl8822b_config.bin");
++MODULE_FIRMWARE("rtl_bt/rtl8852au_fw.bin");
++MODULE_FIRMWARE("rtl_bt/rtl8852au_config.bin");
+diff --git a/drivers/bluetooth/btusb.c b/drivers/bluetooth/btusb.c
+index 4a1f877616d6..1ff9e2840b89 100644
+--- a/drivers/bluetooth/btusb.c
++++ b/drivers/bluetooth/btusb.c
+@@ -386,6 +386,10 @@ static const struct usb_device_id blacklist_table[] = {
+ 	{ USB_DEVICE(0x0bda, 0xb00c), .driver_info = BTUSB_REALTEK |
+ 						     BTUSB_WIDEBAND_SPEECH },
+ 
++	/* Realtek 8852AE Bluetooth devices */
++	{ USB_DEVICE(0x0bda, 0xc852), .driver_info = BTUSB_REALTEK |
++						     BTUSB_WIDEBAND_SPEECH },
++
+ 	/* Realtek Bluetooth devices */
+ 	{ USB_VENDOR_AND_INTERFACE_INFO(0x0bda, 0xe0, 0x01, 0x01),
+ 	  .driver_info = BTUSB_REALTEK },
 -- 
-2.7.4
+2.17.1
 
