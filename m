@@ -2,136 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA8832ADCB7
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 18:17:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A298F2ADCB2
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 18:17:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730429AbgKJRRp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 12:17:45 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:41913 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730108AbgKJRRo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 12:17:44 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1605028662;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=LzJjyVY4ylm22B+GsjUVJTMLO29F4ZbRIlWrsGH0w2g=;
-        b=WGKyvXwWUPQdJETyBQ7x+8qm+K8+KAkfS67ZsYyOD5z+T59gT26SZ8M+oHhdgxohJNiFmi
-        zmnfGzvBv3M930oCmUkWlu6L6kgkHVlYWkrvevOFLgE8upwB51nzSjjjEnJpF4S9ApvRFS
-        mxv1UH3rqskLaT+vfDwk8IJs7KhKU8Q=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-373-X1NkAVToMrqmIhC-vp3-wQ-1; Tue, 10 Nov 2020 12:17:40 -0500
-X-MC-Unique: X1NkAVToMrqmIhC-vp3-wQ-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S1729772AbgKJRRM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 12:17:12 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42400 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726344AbgKJRRM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Nov 2020 12:17:12 -0500
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id CAE7D11BD341;
-        Tue, 10 Nov 2020 17:17:34 +0000 (UTC)
-Received: from [10.36.114.232] (ovpn-114-232.ams2.redhat.com [10.36.114.232])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 4FDB65D9D2;
-        Tue, 10 Nov 2020 17:17:27 +0000 (UTC)
-Subject: Re: [PATCH v8 2/9] mmap: make mlock_future_check() global
-To:     Mike Rapoport <rppt@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andy Lutomirski <luto@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christopher Lameter <cl@linux.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Elena Reshetova <elena.reshetova@intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
-        James Bottomley <jejb@linux.ibm.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Matthew Wilcox <willy@infradead.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Rick Edgecombe <rick.p.edgecombe@intel.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Tycho Andersen <tycho@tycho.ws>, Will Deacon <will@kernel.org>,
-        linux-api@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-nvdimm@lists.01.org, linux-riscv@lists.infradead.org,
-        x86@kernel.org
-References: <20201110151444.20662-1-rppt@kernel.org>
- <20201110151444.20662-3-rppt@kernel.org>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat GmbH
-Message-ID: <9e2fafd7-abb0-aa79-fa66-cd8662307446@redhat.com>
-Date:   Tue, 10 Nov 2020 18:17:26 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+        by mail.kernel.org (Postfix) with ESMTPSA id E8ADF206F1;
+        Tue, 10 Nov 2020 17:17:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605028631;
+        bh=IDiwP0RhYpD80ItMS9pgKMzinJ2j4RtNCNx75zFTLog=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=rTE23E2QGj8kKIvhyewqMnyCvmBtSLIvI6AS3O7CXzihw1ZjpE+2bvb94mXPkcsoI
+         SVG6lnO9M8KRECXAnxI94EM3ZlstbwM1R8BmKPWvV2Jrq5FBn/QhsOsLKYb8c+bFPw
+         FS81r8caaLa+AF3dXMajMDqYq2OjVmAfvjYe5Sos=
+Date:   Tue, 10 Nov 2020 18:18:08 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     "Limonciello, Mario" <Mario.Limonciello@dell.com>
+Cc:     Bastien Nocera <hadess@hadess.net>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "linux-input@vger.kernel.org" <linux-input@vger.kernel.org>,
+        Hans de Goede <hdegoede@redhat.com>
+Subject: Re: How to enable auto-suspend by default
+Message-ID: <X6rLUDuG0N98jz18@kroah.com>
+References: <fe8ab4cab3740afd261fa902f14ecae002a1122d.camel@hadess.net>
+ <X6p6ubTOoMPUPPXi@kroah.com>
+ <DM6PR19MB2636C94B56D5FBC0BD98A1B0FAE90@DM6PR19MB2636.namprd19.prod.outlook.com>
 MIME-Version: 1.0
-In-Reply-To: <20201110151444.20662-3-rppt@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <DM6PR19MB2636C94B56D5FBC0BD98A1B0FAE90@DM6PR19MB2636.namprd19.prod.outlook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10.11.20 16:14, Mike Rapoport wrote:
-> From: Mike Rapoport <rppt@linux.ibm.com>
+On Tue, Nov 10, 2020 at 04:02:33PM +0000, Limonciello, Mario wrote:
+> > 
+> > On Tue, Nov 10, 2020 at 11:57:07AM +0100, Bastien Nocera wrote:
+> > > Hey,
+> > >
+> > > systemd has been shipping this script to enable auto-suspend on a
+> > > number of USB and PCI devices:
+> > >
+> > https://github.com/systemd/systemd/blob/master/tools/chromiumos/gen_autosuspen
+> > d_rules.py
+> > >
+> > > The problem here is twofold. First, the list of devices is updated from
+> > > ChromeOS, and the original list obviously won't be updated by ChromeOS
+> > > developers unless a device listed exists in a ChromeBook computer,
+> > > which means a number of devices that do support autosuspend aren't
+> > > listed.
+> > >
+> > > The other problem is that this list needs to exist at all, and that it
+> > > doesn't seem possible for device driver developers (at various levels
+> > > of the stack) to opt-in to auto-suspend when all the variants of the
+> > > device (or at least detectable ones) support auto-suspend.
+> > 
+> > A driver can say they support autosuspend today, but I think you are
+> > concerned about the devices that are controlled by class-compliant
+> > drivers, right?  And for those, no, we can't do this in the kernel as
+> > there are just too many broken devices out there.
+> > 
 > 
-> It will be used by the upcoming secret memory implementation.
+> I guess what Bastien is getting at is for newer devices supported by class
+> drivers rather than having to store an allowlist in udev rules, can we set
+> the allowlist in the kernel instead.  Then distributions that either don't
+> use systemd or don't regularly update udev rules from systemd can take
+> advantage of better defaults on modern hardware.
+
+That's what the "hardware ids" database is supposed to be handling.
+It's easier to manage this in userspace than in the kernel.
+
+I just love systems where people feel it is safer to update the kernel
+than it is to update a hardware database file :)
+
+> The one item that stood out to me in that rules file was 8086:a0ed.
+> It's listed as "Volteer XHCI", but that same device ID is actually present
+> in an XPS 9310 in front of me as well and used by the xhci-pci kernel module.
+
+That's an Intel PCI device id.  If someone else is abusing that number,
+I'm sure Intel would want to know about it and would be glad to go after
+them.
+
+But note, PCI devices can be behind lots of different types of busses,
+so maybe the "can this device autosuspend" differs for them because of
+different implementations of where the device is, right?
+
+> Given we're effectively ending up with the combination of runtime PM turned
+> on by udev rules, do we need something like this for that ID:
 > 
-> Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
-> ---
->   mm/internal.h | 3 +++
->   mm/mmap.c     | 5 ++---
->   2 files changed, 5 insertions(+), 3 deletions(-)
+> https://github.com/torvalds/linux/commit/6a7c533d4a1854f54901a065d8c672e890400d8a
 > 
-> diff --git a/mm/internal.h b/mm/internal.h
-> index c43ccdddb0f6..ae146a260b14 100644
-> --- a/mm/internal.h
-> +++ b/mm/internal.h
-> @@ -348,6 +348,9 @@ static inline void munlock_vma_pages_all(struct vm_area_struct *vma)
->   extern void mlock_vma_page(struct page *page);
->   extern unsigned int munlock_vma_page(struct page *page);
->   
-> +extern int mlock_future_check(struct mm_struct *mm, unsigned long flags,
-> +			      unsigned long len);
-> +
->   /*
->    * Clear the page's PageMlocked().  This can be useful in a situation where
->    * we want to unconditionally remove a page from the pagecache -- e.g.,
-> diff --git a/mm/mmap.c b/mm/mmap.c
-> index 61f72b09d990..c481f088bd50 100644
-> --- a/mm/mmap.c
-> +++ b/mm/mmap.c
-> @@ -1348,9 +1348,8 @@ static inline unsigned long round_hint_to_min(unsigned long hint)
->   	return hint;
->   }
->   
-> -static inline int mlock_future_check(struct mm_struct *mm,
-> -				     unsigned long flags,
-> -				     unsigned long len)
-> +int mlock_future_check(struct mm_struct *mm, unsigned long flags,
-> +		       unsigned long len)
->   {
->   	unsigned long locked, lock_limit;
->   
-> 
+> @Mika Westerberg should 8086:a0ed be quirked like the TCSS xHCI too?
 
-So, an interesting question is if you actually want to charge secretmem 
-pages against mlock now, or if you want a dedicated secretmem cgroup 
-controller instead?
+Submit a patch!
 
--- 
-Thanks,
+thanks,
 
-David / dhildenb
-
+greg k-h
