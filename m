@@ -2,285 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD0E22AD93D
-	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 15:49:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 59F042AD940
+	for <lists+linux-kernel@lfdr.de>; Tue, 10 Nov 2020 15:49:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732353AbgKJOtc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 09:49:32 -0500
-Received: from esa3.microchip.iphmx.com ([68.232.153.233]:9056 "EHLO
-        esa3.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731962AbgKJOtb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 09:49:31 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1605019771; x=1636555771;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=gmfSTmbZrIe0/XCpY9+CpFxXZTmo4ihW6dXadVTsN1g=;
-  b=lLPSnXY5opTcVtWz5QteQ4I5+Pe/mQxOsdFBORCfVww7MPIAF3Ar0kkV
-   MXpCHBEcMIqf7x46ZMFuHpHGtVlInuW7G5vd2uo6R5eIaYo/Y79eTam8C
-   oAJ/4EVKaekYZNx7KQ85IGxP9MmBx3tRdc2D7yautgJ4ZNeA56g5AbKRw
-   QL2RYcbZ5MikrJXnVMHyIiXUfaBlR90alw8FbT6K27DeQCx4WxbsRoswi
-   ntVNwj5Rs3KTHs5jbUVV/vmohrEuRWQPh3cBbBGaINn+NTFSNnBeGS4On
-   GKXqHV5BM6+RN+yeK4rKK4TYWP/+R7W5uG4K8c48LQ8fObzhf3+MYUYk1
-   Q==;
-IronPort-SDR: p1y03YbvVfAguSf1M658XIqeIlQKxbqb2wtVSbIq/NAvU9HRpPgUjiwupw+WxH6sAaeCItD0wK
- dzD5eRNtrPeVNKRLibRL52aNdGEPGkmKYKvXZBT403uCVrfjEesdSiJNrXijGF5UNKOyhzAWsG
- CAJ3clnYCp9XPQWS0H7elw/lvo+Bk1hVdZf/+UHD2qP3hzSTJ32IYmi8tuROLUT9Trm8jb/NW5
- x39DJvwvUNHSYLGwbi/bYjKH8qL18jEsiaRkmJ1ieUeXXUiyrz9fwShIz+LXF0HjSTo//X/rPg
- K2E=
-X-IronPort-AV: E=Sophos;i="5.77,466,1596524400"; 
-   d="scan'208";a="98454927"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa3.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 10 Nov 2020 07:49:30 -0700
-Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
- chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Tue, 10 Nov 2020 07:49:30 -0700
-Received: from mchp-dev-shegelun.microchip.com (10.10.115.15) by
- chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server id
- 15.1.1979.3 via Frontend Transport; Tue, 10 Nov 2020 07:49:28 -0700
-From:   Steen Hegelund <steen.hegelund@microchip.com>
-To:     Kishon Vijay Abraham I <kishon@ti.com>,
-        Vinod Koul <vkoul@kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>
-CC:     Steen Hegelund <steen.hegelund@microchip.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Lars Povlsen <lars.povlsen@microchip.com>,
-        Bjarni Jonasson <bjarni.jonasson@microchip.com>,
-        Microsemi List <microsemi@lists.bootlin.com>,
-        Microchip UNG Driver List <UNGLinuxDriver@microchip.com>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH v2 4/4] arm64: dts: sparx5: Add Sparx5 serdes driver node
-Date:   Tue, 10 Nov 2020 15:49:10 +0100
-Message-ID: <20201110144910.558164-5-steen.hegelund@microchip.com>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201110144910.558164-1-steen.hegelund@microchip.com>
-References: <20201110144910.558164-1-steen.hegelund@microchip.com>
+        id S1732436AbgKJOtl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 09:49:41 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46388 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730345AbgKJOtj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Nov 2020 09:49:39 -0500
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8D11E20797;
+        Tue, 10 Nov 2020 14:49:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605019777;
+        bh=tAjZEoiovmaTc2l6i9NJyRkLG1+GRlxocckY4h/5Yxg=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=i3wkBgX9iavxZDnXWDNhXzMixHokeOy4gBqgZDdpKaCxGcI2nLdzs7BjRwjsniCVy
+         gCu50ZbuVFLlxrxB6QHr6tcSZsyjkiYs76wXIhyfH6ddB4BEbZrrOKgGh+8khiNoDl
+         Az+pEBY+tLQCa6zvQwHZSZ8OkUzJDpK/Qi6MHQfg=
+Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.94)
+        (envelope-from <maz@kernel.org>)
+        id 1kcUxj-009TgL-CD; Tue, 10 Nov 2020 14:49:35 +0000
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Tue, 10 Nov 2020 14:49:35 +0000
+From:   Marc Zyngier <maz@kernel.org>
+To:     David Brazdil <dbrazdil@google.com>
+Cc:     kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Dennis Zhou <dennis@kernel.org>,
+        Tejun Heo <tj@kernel.org>, Christoph Lameter <cl@linux.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Quentin Perret <qperret@google.com>,
+        Andrew Scull <ascull@google.com>,
+        Andrew Walbran <qwandor@google.com>, kernel-team@android.com
+Subject: Re: [PATCH v1 03/24] arm64: Move MAIR_EL1_SET to asm/memory.h
+In-Reply-To: <20201109113233.9012-4-dbrazdil@google.com>
+References: <20201109113233.9012-1-dbrazdil@google.com>
+ <20201109113233.9012-4-dbrazdil@google.com>
+User-Agent: Roundcube Webmail/1.4.9
+Message-ID: <d28d29b91804d97a643bd02c5d1cec95@kernel.org>
+X-Sender: maz@kernel.org
+X-SA-Exim-Connect-IP: 51.254.78.96
+X-SA-Exim-Rcpt-To: dbrazdil@google.com, kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, james.morse@arm.com, julien.thierry.kdev@gmail.com, suzuki.poulose@arm.com, catalin.marinas@arm.com, will@kernel.org, dennis@kernel.org, tj@kernel.org, cl@linux.com, mark.rutland@arm.com, lorenzo.pieralisi@arm.com, qperret@google.com, ascull@google.com, qwandor@google.com, kernel-team@android.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lars Povlsen <lars.povlsen@microchip.com>
+On 2020-11-09 11:32, David Brazdil wrote:
+> KVM currently initializes MAIR_EL2 to the value of MAIR_EL1. In
+> preparation for initializing MAIR_EL2 before MAIR_EL1, move the 
+> constant
+> into a shared header file.
+> 
+> Signed-off-by: David Brazdil <dbrazdil@google.com>
+> ---
+>  arch/arm64/include/asm/memory.h | 13 +++++++++++++
+>  arch/arm64/mm/proc.S            | 13 -------------
+>  2 files changed, 13 insertions(+), 13 deletions(-)
+> 
+> diff --git a/arch/arm64/include/asm/memory.h 
+> b/arch/arm64/include/asm/memory.h
+> index cd61239bae8c..aca00737e771 100644
+> --- a/arch/arm64/include/asm/memory.h
+> +++ b/arch/arm64/include/asm/memory.h
+> @@ -152,6 +152,19 @@
+>  #define MT_S2_FWB_NORMAL	6
+>  #define MT_S2_FWB_DEVICE_nGnRE	1
+> 
+> +/*
+> + * Default MAIR_EL1. MT_NORMAL_TAGGED is initially mapped as Normal 
+> memory and
+> + * changed during __cpu_setup to Normal Tagged if the system supports 
+> MTE.
+> + */
+> +#define MAIR_EL1_SET							\
 
-Add Sparx5 serdes driver node, and enable it generally for all
-reference boards.
+If we are going to use this at EL2 directly, consider renaming it to
+MAIR_ELx_SET, as we do for other constants that are shared across 
+exception
+levels.
 
-Signed-off-by: Lars Povlsen <lars.povlsen@microchip.com>
-Signed-off-by: Steen Hegelund <steen.hegelund@microchip.com>
----
- arch/arm64/boot/dts/microchip/sparx5.dtsi | 195 ++++++++++++++++++++++
- 1 file changed, 195 insertions(+)
+> +	(MAIR_ATTRIDX(MAIR_ATTR_DEVICE_nGnRnE, MT_DEVICE_nGnRnE) |	\
 
-diff --git a/arch/arm64/boot/dts/microchip/sparx5.dtsi b/arch/arm64/boot/dts/microchip/sparx5.dtsi
-index 8e7724d413fb..af927e0002ff 100644
---- a/arch/arm64/boot/dts/microchip/sparx5.dtsi
-+++ b/arch/arm64/boot/dts/microchip/sparx5.dtsi
-@@ -287,5 +287,200 @@ tmon0: tmon@610508110 {
- 			#thermal-sensor-cells = <0>;
- 			clocks = <&ahb_clk>;
- 		};
-+
-+		serdes: serdes@10808000 {
-+			compatible = "microchip,sparx5-serdes";
-+			#phy-cells = <1>;
-+			reg =	<0x6 0x10808000 0x8000>, /* sd_cmu_0 */
-+				<0x6 0x10810000 0x8000>, /* sd_cmu_1 */
-+				<0x6 0x10818000 0x8000>, /* sd_cmu_2 */
-+				<0x6 0x10820000 0x8000>, /* sd_cmu_3 */
-+				<0x6 0x10828000 0x8000>, /* sd_cmu_4 */
-+				<0x6 0x10830000 0x8000>, /* sd_cmu_5 */
-+				<0x6 0x10838000 0x8000>, /* sd_cmu_6 */
-+				<0x6 0x10840000 0x8000>, /* sd_cmu_7 */
-+				<0x6 0x10848000 0x8000>, /* sd_cmu_8 */
-+				<0x6 0x10850000 0x8000>, /* sd_cmu_cfg_0 */
-+				<0x6 0x10858000 0x8000>, /* sd_cmu_cfg_1 */
-+				<0x6 0x10860000 0x8000>, /* sd_cmu_cfg_2 */
-+				<0x6 0x10868000 0x8000>, /* sd_cmu_cfg_3 */
-+				<0x6 0x10870000 0x8000>, /* sd_cmu_cfg_4 */
-+				<0x6 0x10878000 0x8000>, /* sd_cmu_cfg_5 */
-+				<0x6 0x10880000 0x8000>, /* sd_cmu_cfg_6 */
-+				<0x6 0x10888000 0x8000>, /* sd_cmu_cfg_7 */
-+				<0x6 0x10890000 0x8000>, /* sd_cmu_cfg_8 */
-+				<0x6 0x10898000 0x8000>, /* sd6g_lane_0 */
-+				<0x6 0x108a0000 0x8000>, /* sd6g_lane_1 */
-+				<0x6 0x108a8000 0x8000>, /* sd6g_lane_2 */
-+				<0x6 0x108b0000 0x8000>, /* sd6g_lane_3 */
-+				<0x6 0x108b8000 0x8000>, /* sd6g_lane_4 */
-+				<0x6 0x108c0000 0x8000>, /* sd6g_lane_5 */
-+				<0x6 0x108c8000 0x8000>, /* sd6g_lane_6 */
-+				<0x6 0x108d0000 0x8000>, /* sd6g_lane_7 */
-+				<0x6 0x108d8000 0x8000>, /* sd6g_lane_8 */
-+				<0x6 0x108e0000 0x8000>, /* sd6g_lane_9 */
-+				<0x6 0x108e8000 0x8000>, /* sd6g_lane_10 */
-+				<0x6 0x108f0000 0x8000>, /* sd6g_lane_11 */
-+				<0x6 0x108f8000 0x8000>, /* sd6g_lane_12 */
-+				<0x6 0x10900000 0x8000>, /* sd10g_lane_0 */
-+				<0x6 0x10908000 0x8000>, /* sd10g_lane_1 */
-+				<0x6 0x10910000 0x8000>, /* sd10g_lane_2 */
-+				<0x6 0x10918000 0x8000>, /* sd10g_lane_3 */
-+				<0x6 0x109a8000 0x8000>, /* sd_lane_0 */
-+				<0x6 0x109b0000 0x8000>, /* sd_lane_1 */
-+				<0x6 0x109b8000 0x8000>, /* sd_lane_2 */
-+				<0x6 0x109c0000 0x8000>, /* sd_lane_3 */
-+				<0x6 0x109c8000 0x8000>, /* sd_lane_4 */
-+				<0x6 0x109d0000 0x8000>, /* sd_lane_5 */
-+				<0x6 0x109d8000 0x8000>, /* sd_lane_6 */
-+				<0x6 0x109e0000 0x8000>, /* sd_lane_7 */
-+				<0x6 0x109e8000 0x8000>, /* sd_lane_8 */
-+				<0x6 0x109f0000 0x8000>, /* sd_lane_9 */
-+				<0x6 0x109f8000 0x8000>, /* sd_lane_10 */
-+				<0x6 0x10a00000 0x8000>, /* sd_lane_11 */
-+				<0x6 0x10a08000 0x8000>, /* sd_lane_12 */
-+				<0x6 0x10a10000 0x8000>, /* sd_lane_13 */
-+				<0x6 0x10a18000 0x8000>, /* sd_lane_14 */
-+				<0x6 0x10a20000 0x8000>, /* sd_lane_15 */
-+				<0x6 0x10a28000 0x8000>, /* sd_lane_16 */
-+				<0x6 0x10c08000 0x8000>, /* sd_cmu_9 */
-+				<0x6 0x10c10000 0x8000>, /* sd_cmu_10 */
-+				<0x6 0x10c18000 0x8000>, /* sd_cmu_11 */
-+				<0x6 0x10c20000 0x8000>, /* sd_cmu_12 */
-+				<0x6 0x10c28000 0x8000>, /* sd_cmu_13 */
-+				<0x6 0x10c30000 0x8000>, /* sd_cmu_cfg_9 */
-+				<0x6 0x10c38000 0x8000>, /* sd_cmu_cfg_10 */
-+				<0x6 0x10c40000 0x8000>, /* sd_cmu_cfg_11 */
-+				<0x6 0x10c48000 0x8000>, /* sd_cmu_cfg_12 */
-+				<0x6 0x10c50000 0x8000>, /* sd_cmu_cfg_13 */
-+				<0x6 0x10c58000 0x8000>, /* sd10g_lane_4 */
-+				<0x6 0x10c60000 0x8000>, /* sd10g_lane_5 */
-+				<0x6 0x10c68000 0x8000>, /* sd10g_lane_6 */
-+				<0x6 0x10c70000 0x8000>, /* sd10g_lane_7 */
-+				<0x6 0x10c78000 0x8000>, /* sd10g_lane_8 */
-+				<0x6 0x10c80000 0x8000>, /* sd10g_lane_9 */
-+				<0x6 0x10c88000 0x8000>, /* sd10g_lane_10 */
-+				<0x6 0x10c90000 0x8000>, /* sd10g_lane_11 */
-+				<0x6 0x10c98000 0x8000>, /* sd25g_lane_0 */
-+				<0x6 0x10ca0000 0x8000>, /* sd25g_lane_1 */
-+				<0x6 0x10ca8000 0x8000>, /* sd25g_lane_2 */
-+				<0x6 0x10cb0000 0x8000>, /* sd25g_lane_3 */
-+				<0x6 0x10cb8000 0x8000>, /* sd25g_lane_4 */
-+				<0x6 0x10cc0000 0x8000>, /* sd25g_lane_5 */
-+				<0x6 0x10cc8000 0x8000>, /* sd25g_lane_6 */
-+				<0x6 0x10cd0000 0x8000>, /* sd25g_lane_7 */
-+				<0x6 0x10d58000 0x8000>, /* sd_lane_17 */
-+				<0x6 0x10d60000 0x8000>, /* sd_lane_18 */
-+				<0x6 0x10d68000 0x8000>, /* sd_lane_19 */
-+				<0x6 0x10d70000 0x8000>, /* sd_lane_20 */
-+				<0x6 0x10d78000 0x8000>, /* sd_lane_21 */
-+				<0x6 0x10d80000 0x8000>, /* sd_lane_22 */
-+				<0x6 0x10d88000 0x8000>, /* sd_lane_23 */
-+				<0x6 0x10d90000 0x8000>, /* sd_lane_24 */
-+				<0x6 0x10d98000 0x8000>, /* sd_lane_25g_25 */
-+				<0x6 0x10da0000 0x8000>, /* sd_lane_25g_26 */
-+				<0x6 0x10da8000 0x8000>, /* sd_lane_25g_27 */
-+				<0x6 0x10db0000 0x8000>, /* sd_lane_25g_28 */
-+				<0x6 0x10db8000 0x8000>, /* sd_lane_25g_29 */
-+				<0x6 0x10dc0000 0x8000>, /* sd_lane_25g_30 */
-+				<0x6 0x10dc8000 0x8000>, /* sd_lane_25g_31 */
-+				<0x6 0x10dd0000 0x8000>; /* sd_lane_25g_32 */
-+			reg-names =
-+				"sd_cmu_0",
-+				"sd_cmu_1",
-+				"sd_cmu_2",
-+				"sd_cmu_3",
-+				"sd_cmu_4",
-+				"sd_cmu_5",
-+				"sd_cmu_6",
-+				"sd_cmu_7",
-+				"sd_cmu_8",
-+				"sd_cmu_cfg_0",
-+				"sd_cmu_cfg_1",
-+				"sd_cmu_cfg_2",
-+				"sd_cmu_cfg_3",
-+				"sd_cmu_cfg_4",
-+				"sd_cmu_cfg_5",
-+				"sd_cmu_cfg_6",
-+				"sd_cmu_cfg_7",
-+				"sd_cmu_cfg_8",
-+				"sd6g_lane_0",
-+				"sd6g_lane_1",
-+				"sd6g_lane_2",
-+				"sd6g_lane_3",
-+				"sd6g_lane_4",
-+				"sd6g_lane_5",
-+				"sd6g_lane_6",
-+				"sd6g_lane_7",
-+				"sd6g_lane_8",
-+				"sd6g_lane_9",
-+				"sd6g_lane_10",
-+				"sd6g_lane_11",
-+				"sd6g_lane_12",
-+				"sd10g_lane_0",
-+				"sd10g_lane_1",
-+				"sd10g_lane_2",
-+				"sd10g_lane_3",
-+				"sd_lane_0",
-+				"sd_lane_1",
-+				"sd_lane_2",
-+				"sd_lane_3",
-+				"sd_lane_4",
-+				"sd_lane_5",
-+				"sd_lane_6",
-+				"sd_lane_7",
-+				"sd_lane_8",
-+				"sd_lane_9",
-+				"sd_lane_10",
-+				"sd_lane_11",
-+				"sd_lane_12",
-+				"sd_lane_13",
-+				"sd_lane_14",
-+				"sd_lane_15",
-+				"sd_lane_16",
-+				"sd_cmu_9",
-+				"sd_cmu_10",
-+				"sd_cmu_11",
-+				"sd_cmu_12",
-+				"sd_cmu_13",
-+				"sd_cmu_cfg_9",
-+				"sd_cmu_cfg_10",
-+				"sd_cmu_cfg_11",
-+				"sd_cmu_cfg_12",
-+				"sd_cmu_cfg_13",
-+				"sd10g_lane_4",
-+				"sd10g_lane_5",
-+				"sd10g_lane_6",
-+				"sd10g_lane_7",
-+				"sd10g_lane_8",
-+				"sd10g_lane_9",
-+				"sd10g_lane_10",
-+				"sd10g_lane_11",
-+				"sd25g_lane_0",
-+				"sd25g_lane_1",
-+				"sd25g_lane_2",
-+				"sd25g_lane_3",
-+				"sd25g_lane_4",
-+				"sd25g_lane_5",
-+				"sd25g_lane_6",
-+				"sd25g_lane_7",
-+				"sd_lane_17",
-+				"sd_lane_18",
-+				"sd_lane_19",
-+				"sd_lane_20",
-+				"sd_lane_21",
-+				"sd_lane_22",
-+				"sd_lane_23",
-+				"sd_lane_24",
-+				"sd_lane_25g_25",
-+				"sd_lane_25g_26",
-+				"sd_lane_25g_27",
-+				"sd_lane_25g_28",
-+				"sd_lane_25g_29",
-+				"sd_lane_25g_30",
-+				"sd_lane_25g_31",
-+				"sd_lane_25g_32";
-+		};
-+
- 	};
- };
+This creates an implicit dependency between sysreg.h and memory.h.
+Consider including asm/sysreg.h, assuming this doesn't create any 
+circular
+dependency, or even move it to sysreg.h altogether.
+
+> +	 MAIR_ATTRIDX(MAIR_ATTR_DEVICE_nGnRE, MT_DEVICE_nGnRE) |	\
+> +	 MAIR_ATTRIDX(MAIR_ATTR_DEVICE_GRE, MT_DEVICE_GRE) |		\
+> +	 MAIR_ATTRIDX(MAIR_ATTR_NORMAL_NC, MT_NORMAL_NC) |		\
+> +	 MAIR_ATTRIDX(MAIR_ATTR_NORMAL, MT_NORMAL) |			\
+> +	 MAIR_ATTRIDX(MAIR_ATTR_NORMAL_WT, MT_NORMAL_WT) |		\
+> +	 MAIR_ATTRIDX(MAIR_ATTR_NORMAL, MT_NORMAL_TAGGED))
+> +
+>  #ifdef CONFIG_ARM64_4K_PAGES
+>  #define IOREMAP_MAX_ORDER	(PUD_SHIFT)
+>  #else
+> diff --git a/arch/arm64/mm/proc.S b/arch/arm64/mm/proc.S
+> index 23c326a06b2d..25ff21b3a1c6 100644
+> --- a/arch/arm64/mm/proc.S
+> +++ b/arch/arm64/mm/proc.S
+> @@ -45,19 +45,6 @@
+>  #define TCR_KASAN_FLAGS 0
+>  #endif
+> 
+> -/*
+> - * Default MAIR_EL1. MT_NORMAL_TAGGED is initially mapped as Normal 
+> memory and
+> - * changed during __cpu_setup to Normal Tagged if the system supports 
+> MTE.
+> - */
+> -#define MAIR_EL1_SET							\
+> -	(MAIR_ATTRIDX(MAIR_ATTR_DEVICE_nGnRnE, MT_DEVICE_nGnRnE) |	\
+> -	 MAIR_ATTRIDX(MAIR_ATTR_DEVICE_nGnRE, MT_DEVICE_nGnRE) |	\
+> -	 MAIR_ATTRIDX(MAIR_ATTR_DEVICE_GRE, MT_DEVICE_GRE) |		\
+> -	 MAIR_ATTRIDX(MAIR_ATTR_NORMAL_NC, MT_NORMAL_NC) |		\
+> -	 MAIR_ATTRIDX(MAIR_ATTR_NORMAL, MT_NORMAL) |			\
+> -	 MAIR_ATTRIDX(MAIR_ATTR_NORMAL_WT, MT_NORMAL_WT) |		\
+> -	 MAIR_ATTRIDX(MAIR_ATTR_NORMAL, MT_NORMAL_TAGGED))
+> -
+>  #ifdef CONFIG_CPU_PM
+>  /**
+>   * cpu_do_suspend - save CPU registers context
+
+Thanks,
+
+         M.
 -- 
-2.29.2
-
+Jazz is not dead. It just smells funny...
