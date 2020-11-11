@@ -2,107 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 364FB2AFCDB
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 02:48:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 304C92AFD6C
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 03:05:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729019AbgKLBge (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 20:36:34 -0500
-Received: from mo-csw1114.securemx.jp ([210.130.202.156]:52566 "EHLO
-        mo-csw.securemx.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727956AbgKKXmV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 18:42:21 -0500
-Received: by mo-csw.securemx.jp (mx-mo-csw1114) id 0ABNg7JG030509; Thu, 12 Nov 2020 08:42:07 +0900
-X-Iguazu-Qid: 2wHHadmXO0HaSfspQ8
-X-Iguazu-QSIG: v=2; s=0; t=1605138126; q=2wHHadmXO0HaSfspQ8; m=+UEpVNPoNKAz3dfcq+BQXtyCiPyl2pjBsvGtuuQkoeg=
-Received: from imx2.toshiba.co.jp (imx2.toshiba.co.jp [106.186.93.51])
-        by relay.securemx.jp (mx-mr1113) id 0ABNg6Id026074;
-        Thu, 12 Nov 2020 08:42:06 +0900
-Received: from enc01.toshiba.co.jp ([106.186.93.100])
-        by imx2.toshiba.co.jp  with ESMTP id 0ABNg6n1016632;
-        Thu, 12 Nov 2020 08:42:06 +0900 (JST)
-Received: from hop001.toshiba.co.jp ([133.199.164.63])
-        by enc01.toshiba.co.jp  with ESMTP id 0ABNg5hF003444;
-        Thu, 12 Nov 2020 08:42:05 +0900
-From:   Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
-To:     Rob Herring <robh+dt@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>
-Cc:     punit1.agrawal@toshiba.co.jp, yuji2.ishikawa@toshiba.co.jp,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
-Subject: [PATCH v2 4/4] arm: dts: visconti: Add DT support for Toshiba Visconti5 GPIO driver
-Date:   Thu, 12 Nov 2020 17:40:57 +0900
-X-TSB-HOP: ON
-Message-Id: <20201112084057.1399983-5-nobuhiro1.iwamatsu@toshiba.co.jp>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201112084057.1399983-1-nobuhiro1.iwamatsu@toshiba.co.jp>
-References: <20201112084057.1399983-1-nobuhiro1.iwamatsu@toshiba.co.jp>
+        id S1726532AbgKLBbX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 20:31:23 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44200 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726157AbgKKWnI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Nov 2020 17:43:08 -0500
+Received: from localhost (230.sub-72-107-127.myvzw.com [72.107.127.230])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 14B3A208B3;
+        Wed, 11 Nov 2020 22:43:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605134587;
+        bh=ziz9AD0L9QbcwYEV2l2JNVkufhqr9h+LE7Fz/YEme5Q=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=Wy6TcWFvc+0oeRRsXdgQ7pdaOrmNpp0S9B9tyiyhRfDKo3Ys5o4pqbsF7Bzk8r7I3
+         ckMiWEQBhGkHXcZdZD61c+v9iLXT8DUSJrQLb85WgvqlT6ur0dx+PS2lATpjaMlkiQ
+         VZkJ+ZKPKwpbQOHugkPf8T5KCZjFmRCX3lRNVgPQ=
+Date:   Wed, 11 Nov 2020 16:43:05 -0600
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Ben Widawsky <ben.widawsky@intel.com>
+Cc:     linux-cxl@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-pci@vger.kernel.org, linux-acpi@vger.kernel.org,
+        Dan Williams <dan.j.williams@intel.com>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        "Kelley, Sean V" <sean.v.kelley@intel.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>
+Subject: Re: [RFC PATCH 0/9] CXL 2.0 Support
+Message-ID: <20201111224305.GA977584@bjorn-Precision-5520>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201111054356.793390-1-ben.widawsky@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add the GPIO node in Toshiba Visconti5 SoC-specific DT file.
-And enable the GPIO node in TMPV7708 RM main board's board-specific DT file.
+On Tue, Nov 10, 2020 at 09:43:47PM -0800, Ben Widawsky wrote:
+> ...
+> Ben Widawsky (5):
+>   cxl/mem: Map memory device registers
+>   cxl/mem: Find device capabilities
+>   cxl/mem: Initialize the mailbox interface
+>   cxl/mem: Implement polled mode mailbox
+>   MAINTAINERS: Add maintainers of the CXL driver
+> 
+> Dan Williams (2):
+>   cxl/mem: Add a driver for the type-3 mailbox
 
-Signed-off-by: Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
----
- .../boot/dts/toshiba/tmpv7708-rm-mbrc.dts     |  4 +++
- arch/arm64/boot/dts/toshiba/tmpv7708.dtsi     | 27 +++++++++++++++++++
- 2 files changed, 31 insertions(+)
+To include important words first and use "Type 3" as in spec:
 
-diff --git a/arch/arm64/boot/dts/toshiba/tmpv7708-rm-mbrc.dts b/arch/arm64/boot/dts/toshiba/tmpv7708-rm-mbrc.dts
-index ed0bf7f13f54..950010a290f0 100644
---- a/arch/arm64/boot/dts/toshiba/tmpv7708-rm-mbrc.dts
-+++ b/arch/arm64/boot/dts/toshiba/tmpv7708-rm-mbrc.dts
-@@ -41,3 +41,7 @@ &uart1 {
- 	clocks = <&uart_clk>;
- 	clock-names = "apb_pclk";
- };
-+
-+&gpio {
-+	status = "okay";
-+};
-diff --git a/arch/arm64/boot/dts/toshiba/tmpv7708.dtsi b/arch/arm64/boot/dts/toshiba/tmpv7708.dtsi
-index 242f25f4e12a..e202ae52eca9 100644
---- a/arch/arm64/boot/dts/toshiba/tmpv7708.dtsi
-+++ b/arch/arm64/boot/dts/toshiba/tmpv7708.dtsi
-@@ -157,6 +157,33 @@ pmux: pmux@24190000 {
- 			reg = <0 0x24190000 0 0x10000>;
- 		};
- 
-+		gpio: gpio@28020000 {
-+			compatible = "toshiba,gpio-visconti";
-+			reg = <0 0x28020000 0 0x1000>;
-+			#gpio-cells = <0x2>;
-+			gpio-ranges = <&pmux 0 0 32>;
-+			gpio-controller;
-+			interrupt-controller;
-+			#interrupt-cells = <2>;
-+			interrupts =
-+				<GIC_SPI 24 IRQ_TYPE_LEVEL_HIGH>,
-+				<GIC_SPI 25 IRQ_TYPE_LEVEL_HIGH>,
-+				<GIC_SPI 26 IRQ_TYPE_LEVEL_HIGH>,
-+				<GIC_SPI 27 IRQ_TYPE_LEVEL_HIGH>,
-+				<GIC_SPI 28 IRQ_TYPE_LEVEL_HIGH>,
-+				<GIC_SPI 29 IRQ_TYPE_LEVEL_HIGH>,
-+				<GIC_SPI 30 IRQ_TYPE_LEVEL_HIGH>,
-+				<GIC_SPI 31 IRQ_TYPE_LEVEL_HIGH>,
-+				<GIC_SPI 32 IRQ_TYPE_LEVEL_HIGH>,
-+				<GIC_SPI 33 IRQ_TYPE_LEVEL_HIGH>,
-+				<GIC_SPI 34 IRQ_TYPE_LEVEL_HIGH>,
-+				<GIC_SPI 35 IRQ_TYPE_LEVEL_HIGH>,
-+				<GIC_SPI 36 IRQ_TYPE_LEVEL_HIGH>,
-+				<GIC_SPI 37 IRQ_TYPE_LEVEL_HIGH>,
-+				<GIC_SPI 38 IRQ_TYPE_LEVEL_HIGH>,
-+				<GIC_SPI 39 IRQ_TYPE_LEVEL_HIGH>;
-+		};
-+
- 		uart0: serial@28200000 {
- 			compatible = "arm,pl011", "arm,primecell";
- 			reg = <0 0x28200000 0 0x1000>;
--- 
-2.29.2
+  cxl/mem: Add Type 3 mailbox driver
 
+>   cxl/mem: Register CXL memX devices
+> 
+> Vishal Verma (2):
+>   cxl/acpi: Add an acpi_cxl module for the CXL interconnect
+>   cxl/acpi: add OSC support
+
+For consistency:
+
+  cxl/acpi: Add _OSC support
+
+It's conventional in drivers/acpi and drivers/pci to capitalize the
+"ACPI" and "PCI" initialisms except in actual C code.   Seems like
+you're mostly doing the same with "CXL", except in the subject lines
+above.  Since you're making a new directory, I guess you get to
+choose.
+
+I use "PCIe" (not "PCIE" or "PCI-E"; you have a mix) because that
+seems to be the official abbreviation.
