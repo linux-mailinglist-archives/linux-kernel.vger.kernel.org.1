@@ -2,127 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE8B42AEEB1
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 11:24:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4687A2AEE89
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 11:11:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727287AbgKKKYB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 05:24:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52170 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726229AbgKKKYA (ORCPT
+        id S1727292AbgKKKLw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 05:11:52 -0500
+Received: from mailout1.samsung.com ([203.254.224.24]:13731 "EHLO
+        mailout1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727105AbgKKKLv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 05:24:00 -0500
-Received: from mail-il1-x142.google.com (mail-il1-x142.google.com [IPv6:2607:f8b0:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4881C0613D1
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 02:24:00 -0800 (PST)
-Received: by mail-il1-x142.google.com with SMTP id y9so1526970ilb.0
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 02:24:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=WwWtf2IxfiVAWZrn5dCKI7gG2bc7NyL+FT5iICr8YCk=;
-        b=ImcC1leyIi6uZ+JOHqNrIn+Ch/xaQCtpBQZG1p82PESFzJxZejQZCGD47FpyveosuI
-         wn2WyxSpD/dbUx4vvxtDVpYREm9rNXJ/AJrXInIOFMxZXE60znkUB5LqKhBUxmeeqbEw
-         XpglGdt7mYLmAFb4AeS8kfnHwnkRDEMa9P5srEfCYaZI735V1JNQtZ8DF2TWTlKULx7j
-         ePK492Oadb3ggTUPnYtNzZAXzpvme7H/73ncDBwil/qQfbkNjY9FOnQRXtnoM5XcbC8Q
-         lov+017hI8lHdrDWOeKMgmV57Wosaad1uNMwSuWgCbjB4Qig/vyDsc5J/odeqbxLwcuk
-         S3mQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=WwWtf2IxfiVAWZrn5dCKI7gG2bc7NyL+FT5iICr8YCk=;
-        b=SBCvCLMKEoQCzxU2WJEfjpxXF+q6ZWL0gZjR7B14R4NyD/5QplNkLZhgEVEthUPoof
-         QsRVW/0Hv7RaY1frSccL97U9iT+6T3uCBeMEBJoOvWYdVkEk82O/tZwAKlY1LtQ2JzWr
-         XP65Tz60+F/TX+ak0ERbdlV1X9UsaBYEponAnlNZ1+L8zxDWeXBzF+CU5AnY3p2uRXfH
-         OwceqthPnFn/qYpHhIy37m6DeQdWKZRR+RilvUrhKU7Mq84pjrbxKu/9fOxuNkw3M9IK
-         6VicIpozoy+5M3HjkbU2wLqCNoJfMTExV+c4dQeYvZRbTsR1Fn19Gd2GJRIsM+ErNJl+
-         1nWw==
-X-Gm-Message-State: AOAM533CLZ2H4CSCRU8o5nrmsLARWInkgcuU40OOR5m8OBT1X2cu5jEE
-        axUvF3y+2n0BK0OQacG2FGMoxTKhQogbvFpP9+s=
-X-Google-Smtp-Source: ABdhPJw5ABNfL/B/p3VZolIbLokzEsa/blnUkQ2L5UWSO/QA+RfazUr/QBcYuuyL8C8LOAS1L1SiiXFBgx+ZHQNghjI=
-X-Received: by 2002:a92:6508:: with SMTP id z8mr4081483ilb.253.1605090239447;
- Wed, 11 Nov 2020 02:23:59 -0800 (PST)
+        Wed, 11 Nov 2020 05:11:51 -0500
+Received: from epcas1p4.samsung.com (unknown [182.195.41.48])
+        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20201111101148epoutp013f6c56ee7aaae98c0764b875757a801a~GbGdFdlRM1522215222epoutp01K
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 10:11:48 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20201111101148epoutp013f6c56ee7aaae98c0764b875757a801a~GbGdFdlRM1522215222epoutp01K
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1605089508;
+        bh=UK192lurrVstoJVqplp6lLRHryqWEbuY4owgU9ypYPU=;
+        h=Subject:To:From:Date:In-Reply-To:References:From;
+        b=rBcY8PnTgwBhziQQMm9eCvO+ipDVmqRTd6dhK/eybebUfiESNTDJ/QlLERnumnrQQ
+         KsCOgZYC4YbIth1JKz+9Q7fnXt4yrWNStLMGBaIfgI2TkbXXbAfn6NtvcV3uHpcKeG
+         EqA8PLDfPlWGt7LHWcA+AeJfs/KkuT5R6IuyjelI=
+Received: from epsnrtp3.localdomain (unknown [182.195.42.164]) by
+        epcas1p3.samsung.com (KnoxPortal) with ESMTP id
+        20201111101147epcas1p3f9fc958728fc8706400bee24c466d286~GbGctdzi70281302813epcas1p3L;
+        Wed, 11 Nov 2020 10:11:47 +0000 (GMT)
+Received: from epsmges1p4.samsung.com (unknown [182.195.40.158]) by
+        epsnrtp3.localdomain (Postfix) with ESMTP id 4CWL9s2pMtzMqYkk; Wed, 11 Nov
+        2020 10:11:45 +0000 (GMT)
+Received: from epcas1p2.samsung.com ( [182.195.41.46]) by
+        epsmges1p4.samsung.com (Symantec Messaging Gateway) with SMTP id
+        E0.AD.10463.1E8BBAF5; Wed, 11 Nov 2020 19:11:45 +0900 (KST)
+Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
+        epcas1p1.samsung.com (KnoxPortal) with ESMTPA id
+        20201111101144epcas1p13b8e67701630ed85d4984de890f2f6b0~GbGZ0Ujz20897308973epcas1p1B;
+        Wed, 11 Nov 2020 10:11:44 +0000 (GMT)
+Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
+        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20201111101144epsmtrp2631b382c7481c23ca1cb8ac8a857287f~GbGZuAeHT2680026800epsmtrp2R;
+        Wed, 11 Nov 2020 10:11:44 +0000 (GMT)
+X-AuditID: b6c32a38-efbff700000028df-fd-5fabb8e1f058
+Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
+        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        D9.17.13470.0E8BBAF5; Wed, 11 Nov 2020 19:11:44 +0900 (KST)
+Received: from [10.113.221.102] (unknown [10.113.221.102]) by
+        epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
+        20201111101144epsmtip110eaf6e36052b5b5417772605217937d~GbGZZZK9x2400324003epsmtip1U;
+        Wed, 11 Nov 2020 10:11:44 +0000 (GMT)
+Subject: Re: [PATCH] clk: samsung: allow building the clkout driver as
+ module
+To:     Krzysztof Kozlowski <krzk@kernel.org>,
+        Sylwester Nawrocki <s.nawrocki@samsung.com>,
+        Tomasz Figa <tomasz.figa@gmail.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        linux-samsung-soc@vger.kernel.org, linux-clk@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+From:   Chanwoo Choi <cw00.choi@samsung.com>
+Organization: Samsung Electronics
+Message-ID: <0f8c5a70-44e0-b4aa-51e7-73d8db9ff85b@samsung.com>
+Date:   Wed, 11 Nov 2020 19:25:33 +0900
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:59.0) Gecko/20100101
+        Thunderbird/59.0
 MIME-Version: 1.0
-References: <20201111092812.11329-1-vbabka@suse.cz> <20201111092812.11329-4-vbabka@suse.cz>
-In-Reply-To: <20201111092812.11329-4-vbabka@suse.cz>
-From:   Pankaj Gupta <pankaj.gupta.linux@gmail.com>
-Date:   Wed, 11 Nov 2020 11:23:48 +0100
-Message-ID: <CAM9Jb+iMt4f1Qwzp-4pesk5Y_sowbz7K6Hb6w08JaCd-29xsTQ@mail.gmail.com>
-Subject: Re: [PATCH v3 3/7] mm, page_alloc: remove setup_pageset()
-To:     Vlastimil Babka <vbabka@suse.cz>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Linux MM <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Pavel Tatashin <pasha.tatashin@soleen.com>,
-        David Hildenbrand <david@redhat.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Michal Hocko <mhocko@suse.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20201110193749.261367-1-krzk@kernel.org>
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrKJsWRmVeSWpSXmKPExsWy7bCmnu7DHavjDaZs4LM4f34Du8Wmx9dY
+        LT723GO1uLxrDpvFjPP7mCwunnK1OPymndXi37WNLBardv1hdOD0eH+jld1j56y77B6bVnWy
+        eWxeUu/Rt2UVo8fnTXIBbFHZNhmpiSmpRQqpecn5KZl56bZK3sHxzvGmZgaGuoaWFuZKCnmJ
+        uam2Si4+AbpumTlANykplCXmlAKFAhKLi5X07WyK8ktLUhUy8otLbJVSC1JyCiwL9IoTc4tL
+        89L1kvNzrQwNDIxMgQoTsjPaTxoXzBar6OpYztjAuEmoi5GTQ0LAROLG+0csXYxcHEICOxgl
+        vvV0MkM4nxglnv/+xARSJSTwjVFiarcgTEfn5j1QRXsZJSYf6mCFcN4zSpz99IMRpEpYwF/i
+        RdtXdpCEiMBlJonp5yeCjWIT0JLY/+IGG4jNL6AocfXHY7AGXgE7iQ8fT7KA2CwCqhLT9hxn
+        B7FFBcIkTm5rgaoRlDg58wlYDaeAmcSWo3vBbGYBcYlbT+YzQdjyEtvfzgE7T0JgLodE98Et
+        jBB3u0i0dvawQtjCEq+Ob2GHsKUkPr/bywZhV0usPHmEDaK5g1Fiy/4LUA3GEvuXTgbawAG0
+        QVNi/S59iLCixM7fcxkhFvNJvPsKMp8DKM4r0dEGDWBlicsP7jJB2JISi9s7oVZ5SNz/NZ91
+        AqPiLCSvzULyziwk78xCWLyAkWUVo1hqQXFuemqxYYEJcmxvYgSnVy2LHYxz337QO8TIxMF4
+        iFGCg1lJhJepbVW8EG9KYmVValF+fFFpTmrxIUZTYGBPZJYSTc4HJvi8knhDUyNjY2MLE0Mz
+        U0NDJXHeP9od8UIC6YklqdmpqQWpRTB9TBycUg1MDKzKy/5v7+f8qL1cVNbb1Ofaz45Nk89y
+        rV29a4XDJWn2nXdVhC70JZ58eaJBzOxeecmqbXETSk+u2F32aONkQ45NwpI+p56pTLv07ebv
+        xIfSbr82SgaF8C/61djhM6vI6JJG7qH9HtMEmHNXRs4TVPr166lWQPHRmbny53ZHBp3xvsO0
+        VyG+0jpkw+wO/32Wf76uLT0Uly+57sXjCSINU9lDjxsqtS273f/6yb34nEc5qXIn2rgEFPVy
+        9K6nLPhq6fMwQKSDe8M65bknZJiV61K5VK6E+lodk+C08pL1Mlz2itdmZ9RDsU+f9k3ynnSw
+        y1+oomdHm0Umx/3pydUn3RxZ81xcfOR+avPzlV9QYinOSDTUYi4qTgQAlL5jZTgEAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFmphkeLIzCtJLcpLzFFi42LZdlhJTvfBjtXxBp+W81mcP7+B3WLT42us
+        Fh977rFaXN41h81ixvl9TBYXT7laHH7Tzmrx79pGFotVu/4wOnB6vL/Ryu6xc9Zddo9NqzrZ
+        PDYvqffo27KK0ePzJrkAtigum5TUnMyy1CJ9uwSujPaTxgWzxSq6OpYzNjBuEupi5OSQEDCR
+        6Ny8h7mLkYtDSGA3o8SOtzfYIRKSEtMuHgVKcADZwhKHDxdD1LxllHiy7CorSI2wgK/E3KsP
+        GUESIgLXmSSmH1jMCFHVySjxZt0usElsAloS+1/cYAOx+QUUJa7+eMwIYvMK2El8+HiSBcRm
+        EVCVmLbnOFi9qECYxM4lj5kgagQlTs58AlbDKWAmseXoXjCbWUBd4s+8S8wQtrjErSfzmSBs
+        eYntb+cwT2AUmoWkfRaSlllIWmYhaVnAyLKKUTK1oDg3PbfYsMAwL7Vcrzgxt7g0L10vOT93
+        EyM4orQ0dzBuX/VB7xAjEwfjIUYJDmYlEV6mtlXxQrwpiZVVqUX58UWlOanFhxilOViUxHlv
+        FC6MExJITyxJzU5NLUgtgskycXBKNTBFXtt+3KJ9mVb0g7szKhoY5bOdr552nb7P8+y5CD4X
+        gadacXqX9ZOr7ojEPTs/NXLOJN74mIe1TH3XRHOUpP5LaZ9Y/nLaxzmnzjYUZ65hFN5lFrP9
+        5JHJduzJ2g1qNzcXXctdwKXsX1ptkch7S/f7Hb87n+Mc+Zw9mJqXXTQw/fc1sfLZRcVUx0+v
+        5FeWPmk+8VEl9UN64/3zAQrXf35cx9IdbOljWJW82a5Ccfd71Z8yQlKLVjnf5GnPqgnhEaxJ
+        z/2q+Uy0qdzxyvww3gP6S1cnFs1czn9hqvuNN61uL3I6NXW5fFjftm3PX5WVdsnkb90XaX4O
+        11olw6Z25z9zNidf4XjePUNxxxm1ACWW4oxEQy3mouJEAPJ6W1oXAwAA
+X-CMS-MailID: 20201111101144epcas1p13b8e67701630ed85d4984de890f2f6b0
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: SVC_REQ_APPROVE
+CMS-TYPE: 101P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20201110193800epcas1p22bc64cad38fe355f25684175d2c77e83
+References: <CGME20201110193800epcas1p22bc64cad38fe355f25684175d2c77e83@epcas1p2.samsung.com>
+        <20201110193749.261367-1-krzk@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> We initialize boot-time pagesets with setup_pageset(), which sets high and
-> batch values that effectively disable pcplists.
->
-> We can remove this wrapper if we just set these values for all pagesets in
-> pageset_init(). Non-boot pagesets then subsequently update them to the proper
-> values.
->
-> No functional change.
->
-> Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
-> Reviewed-by: David Hildenbrand <david@redhat.com>
-> Reviewed-by: Oscar Salvador <osalvador@suse.de>
-> Acked-by: Michal Hocko <mhocko@suse.com>
-> ---
->  mm/page_alloc.c | 17 ++++++++++-------
->  1 file changed, 10 insertions(+), 7 deletions(-)
->
-> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-> index 2fa432762908..5a8ec7d94884 100644
-> --- a/mm/page_alloc.c
-> +++ b/mm/page_alloc.c
-> @@ -5911,7 +5911,7 @@ static void build_zonelists(pg_data_t *pgdat)
->   * not check if the processor is online before following the pageset pointer.
->   * Other parts of the kernel may not check if the zone is available.
->   */
-> -static void setup_pageset(struct per_cpu_pageset *p);
-> +static void pageset_init(struct per_cpu_pageset *p);
->  static DEFINE_PER_CPU(struct per_cpu_pageset, boot_pageset);
->  static DEFINE_PER_CPU(struct per_cpu_nodestat, boot_nodestats);
->
-> @@ -5979,7 +5979,7 @@ build_all_zonelists_init(void)
->          * (a chicken-egg dilemma).
->          */
->         for_each_possible_cpu(cpu)
-> -               setup_pageset(&per_cpu(boot_pageset, cpu));
-> +               pageset_init(&per_cpu(boot_pageset, cpu));
->
->         mminit_verify_zonelist();
->         cpuset_init_current_mems_allowed();
-> @@ -6298,12 +6298,15 @@ static void pageset_init(struct per_cpu_pageset *p)
->         pcp = &p->pcp;
->         for (migratetype = 0; migratetype < MIGRATE_PCPTYPES; migratetype++)
->                 INIT_LIST_HEAD(&pcp->lists[migratetype]);
-> -}
->
-> -static void setup_pageset(struct per_cpu_pageset *p)
-> -{
-> -       pageset_init(p);
-> -       pageset_update(&p->pcp, 0, 1);
-> +       /*
-> +        * Set batch and high values safe for a boot pageset. A true percpu
-> +        * pageset's initialization will update them subsequently. Here we don't
-> +        * need to be as careful as pageset_update() as nobody can access the
-> +        * pageset yet.
-> +        */
-> +       pcp->high = 0;
-> +       pcp->batch = 1;
->  }
+Hi Krzysztof,
 
- Acked-by: Pankaj Gupta <pankaj.gupta@cloud.ionos.com>
+On 11/11/20 4:37 AM, Krzysztof Kozlowski wrote:
+> The Exynos clock output driver can be built as module (it does not have
+> to be part of core init process) for better customization.  Adding a
+> KConfig entry allows also compile testing for build coverage.
+> 
+> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+> ---
+>  drivers/clk/samsung/Kconfig             | 10 ++++++++++
+>  drivers/clk/samsung/Makefile            |  2 +-
+>  drivers/clk/samsung/clk-exynos-clkout.c |  1 +
+>  3 files changed, 12 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/clk/samsung/Kconfig b/drivers/clk/samsung/Kconfig
+> index 57d4b3f20417..b6b2cb209543 100644
+> --- a/drivers/clk/samsung/Kconfig
+> +++ b/drivers/clk/samsung/Kconfig
+> @@ -19,6 +19,16 @@ config EXYNOS_AUDSS_CLK_CON
+>  	  on some Exynos SoC variants. Choose M or Y here if you want to
+>  	  use audio devices such as I2S, PCM, etc.
+>  
+> +config EXYNOS_CLK_OUT
+> +	tristate "Samsung Exynos clock output driver"
+> +	depends on COMMON_CLK_SAMSUNG
+> +	default y if ARCH_EXYNOS
+> +	help
+> +	  Support for the clock output (XCLKOUT) driver present on some of
+> +	  Exynos SoC variants. Usually the XCLKOUT is used to monitor the
+> +	  status of the certains clocks from SoC, but it could also be tied to
+> +	  other devices as an input clock.
+> +
+>  # For S3C24XX platforms, select following symbols:
+>  config S3C2410_COMMON_CLK
+>  	bool "Samsung S3C2410 clock controller support" if COMPILE_TEST
+> diff --git a/drivers/clk/samsung/Makefile b/drivers/clk/samsung/Makefile
+> index 1a4e6b787978..4adbf972e9f6 100644
+> --- a/drivers/clk/samsung/Makefile
+> +++ b/drivers/clk/samsung/Makefile
+> @@ -15,7 +15,7 @@ obj-$(CONFIG_SOC_EXYNOS5420)	+= clk-exynos5420.o
+>  obj-$(CONFIG_SOC_EXYNOS5420)	+= clk-exynos5-subcmu.o
+>  obj-$(CONFIG_EXYNOS_ARM64_COMMON_CLK)	+= clk-exynos5433.o
+>  obj-$(CONFIG_EXYNOS_AUDSS_CLK_CON) += clk-exynos-audss.o
+> -obj-$(CONFIG_ARCH_EXYNOS)	+= clk-exynos-clkout.o
+> +obj-$(CONFIG_EXYNOS_CLK_OUT)	+= clk-exynos-clkout.o
+>  obj-$(CONFIG_EXYNOS_ARM64_COMMON_CLK)	+= clk-exynos7.o
+>  obj-$(CONFIG_S3C2410_COMMON_CLK)+= clk-s3c2410.o
+>  obj-$(CONFIG_S3C2410_COMMON_DCLK)+= clk-s3c2410-dclk.o
+> diff --git a/drivers/clk/samsung/clk-exynos-clkout.c b/drivers/clk/samsung/clk-exynos-clkout.c
+> index f5f8a956b316..9ec2f40cc400 100644
+> --- a/drivers/clk/samsung/clk-exynos-clkout.c
+> +++ b/drivers/clk/samsung/clk-exynos-clkout.c
+> @@ -72,6 +72,7 @@ static const struct of_device_id exynos_clkout_ids[] = {
+>  		.data = &exynos_clkout_exynos5,
+>  	}, { }
+>  };
+> +MODULE_DEVICE_TABLE(of, exynos_clkout_ids);
+>  
+>  /*
+>   * Device will be instantiated as child of PMU device without its own
+> 
+
+Acked-by: Chanwoo Choi <cw00.choi@samsung.com>
+
+-- 
+Best Regards,
+Chanwoo Choi
+Samsung Electronics
