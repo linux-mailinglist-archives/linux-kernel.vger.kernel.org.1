@@ -2,93 +2,221 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8EE42AE4FB
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 01:40:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EF4F42AE4FC
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 01:41:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732317AbgKKAj7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 19:39:59 -0500
-Received: from mga04.intel.com ([192.55.52.120]:12588 "EHLO mga04.intel.com"
+        id S1732332AbgKKAk5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 19:40:57 -0500
+Received: from z5.mailgun.us ([104.130.96.5]:43692 "EHLO z5.mailgun.us"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727275AbgKKAj7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 19:39:59 -0500
-IronPort-SDR: pfxbqvZBzCS9LxdlzFXr1gnXMzqCfGtrBmiAOeht8KeiN2C9HYOYsWwJEmv0pesSolnRdvnbeD
- dSmxwayl4qFQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9801"; a="167489223"
-X-IronPort-AV: E=Sophos;i="5.77,468,1596524400"; 
-   d="scan'208";a="167489223"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Nov 2020 16:39:57 -0800
-IronPort-SDR: yxsyaDteDfcShgJDHe25SY8PLDJkrEfTHmRI7swP+/uvKoOvYh33CH3Zx0r8pzvBKXTdO1wOly
- JUW3MbeEmqxw==
-X-IronPort-AV: E=Sophos;i="5.77,468,1596524400"; 
-   d="scan'208";a="356389564"
-Received: from agluck-desk2.sc.intel.com (HELO agluck-desk2.amr.corp.intel.com) ([10.3.52.68])
-  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Nov 2020 16:39:56 -0800
-Date:   Tue, 10 Nov 2020 16:39:54 -0800
-From:   "Luck, Tony" <tony.luck@intel.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Borislav Petkov <bp@alien8.de>, Jim Mattson <jmattson@google.com>,
-        Qian Cai <cai@redhat.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-tip-commits@vger.kernel.org" 
-        <linux-tip-commits@vger.kernel.org>, x86 <x86@kernel.org>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>
-Subject: [PATCH v2] x86/mce: Use "safe" MSR functions when enabling
- additional error logging
-Message-ID: <20201111003954.GA11878@agluck-desk2.amr.corp.intel.com>
-References: <a22b5468e1c94906b72c4d8bc83c0f64@intel.com>
- <20201109232402.GA25492@agluck-desk2.amr.corp.intel.com>
- <20201110063151.GB7290@nazgul.tnic>
- <094c2395-b1b3-d908-657c-9bd4144e40ac@redhat.com>
- <20201110095615.GB9450@nazgul.tnic>
- <b8de7f7b-7aa1-d98b-74be-62d7c055542b@redhat.com>
- <20201110155013.GE9857@nazgul.tnic>
- <1b587b45-a5a8-2147-ae53-06d1b284ea11@redhat.com>
- <cacd1cd272e94213a0c82c9871086cf5@intel.com>
- <7bd98718-f800-02ef-037a-4dfc5a7d1a54@redhat.com>
+        id S1727275AbgKKAk5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Nov 2020 19:40:57 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1605055256; h=Message-ID: References: In-Reply-To: Reply-To:
+ Subject: Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=h9nJRMJ3HMDA/rnRX5iuacFcOzRm2As0SPqEkZcvfNY=;
+ b=v0XHxgHkAM6EtyNrJVCIIlLUt9rYtjWj5K/8zV7QcKZMxebnN8lK2uK5BgDZn+8u1hTOQunn
+ ISliwm5DErq5adL52bre62DK7VIh9CQmGYJvFEcYJEhgdGCi1vxnByc/P4e5R+dsv/4rPv9n
+ Bi9u4e2GqQNKJ5gs6so1js7XQho=
+X-Mailgun-Sending-Ip: 104.130.96.5
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
+ 5fab33160d87d637759fff99 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 11 Nov 2020 00:40:54
+ GMT
+Sender: bbhatt=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 7FB14C433C9; Wed, 11 Nov 2020 00:40:53 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: bbhatt)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 905D5C433C6;
+        Wed, 11 Nov 2020 00:40:52 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <7bd98718-f800-02ef-037a-4dfc5a7d1a54@redhat.com>
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Tue, 10 Nov 2020 16:40:52 -0800
+From:   Bhaumik Bhatt <bbhatt@codeaurora.org>
+To:     Loic Poulain <loic.poulain@linaro.org>
+Cc:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Hemant Kumar <hemantk@codeaurora.org>,
+        Jeffrey Hugo <jhugo@codeaurora.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v1 3/4] bus: mhi: core: Add support to pause or resume
+ channel data transfers
+Organization: Qualcomm Innovation Center, Inc.
+Reply-To: bbhatt@codeaurora.org
+Mail-Reply-To: bbhatt@codeaurora.org
+In-Reply-To: <CAMZdPi_dwT+hj26sxJdMS1v-X-MNd1ys34QD=Bf_O+dvmjOD2Q@mail.gmail.com>
+References: <1604961850-27671-1-git-send-email-bbhatt@codeaurora.org>
+ <1604961850-27671-4-git-send-email-bbhatt@codeaurora.org>
+ <CAMZdPi_dwT+hj26sxJdMS1v-X-MNd1ys34QD=Bf_O+dvmjOD2Q@mail.gmail.com>
+Message-ID: <3710a3051c480bf9d125362303815831@codeaurora.org>
+X-Sender: bbhatt@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Booting as a guest under KVM results in error messages about
-unchecked MSR access:
+Hi Loic,
 
-[    6.814328][    T0] unchecked MSR access error: RDMSR from 0x17f at rIP: 0xffffffff84483f16 (mce_intel_feature_init+0x156/0x270)
+On 2020-11-10 03:14, Loic Poulain wrote:
+> Hi Bhaumik,
+> 
+> On Mon, 9 Nov 2020 at 23:44, Bhaumik Bhatt <bbhatt@codeaurora.org> 
+> wrote:
+>> 
+>> Some MHI clients may want to request for pausing or resuming of the
+>> data transfers for their channels. Enable them to do so using the new
+>> APIs provided for the same.
+>> 
+>> Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
+>> ---
+>>  drivers/bus/mhi/core/main.c | 41 
+>> +++++++++++++++++++++++++++++++++++++++++
+>>  include/linux/mhi.h         | 16 ++++++++++++++++
+>>  2 files changed, 57 insertions(+)
+>> 
+>> diff --git a/drivers/bus/mhi/core/main.c b/drivers/bus/mhi/core/main.c
+>> index 1226933..01845c6 100644
+>> --- a/drivers/bus/mhi/core/main.c
+>> +++ b/drivers/bus/mhi/core/main.c
+>> @@ -1560,6 +1560,47 @@ void mhi_unprepare_from_transfer(struct 
+>> mhi_device *mhi_dev)
+>>  }
+>>  EXPORT_SYMBOL_GPL(mhi_unprepare_from_transfer);
+>> 
+>> +static int mhi_update_transfer_state(struct mhi_device *mhi_dev,
+>> +                                    enum mhi_ch_state_type to_state)
+>> +{
+>> +       struct mhi_controller *mhi_cntrl = mhi_dev->mhi_cntrl;
+>> +       struct mhi_chan *mhi_chan;
+>> +       int dir, ret;
+>> +
+>> +       for (dir = 0; dir < 2; dir++) {
+>> +               mhi_chan = dir ? mhi_dev->ul_chan : mhi_dev->dl_chan;
+>> +
+>> +               if (!mhi_chan)
+>> +                       continue;
+>> +
+>> +               /*
+>> +                * Bail out if one of the channels fail as client will 
+>> reset
+>> +                * both upon failure
+>> +                */
+>> +               mutex_lock(&mhi_chan->mutex);
+>> +               ret = mhi_update_channel_state(mhi_cntrl, mhi_chan, 
+>> to_state);
+>> +               if (ret) {
+>> +                       mutex_unlock(&mhi_chan->mutex);
+>> +                       return ret;
+>> +               }
+>> +               mutex_unlock(&mhi_chan->mutex);
+>> +       }
+>> +
+>> +       return 0;
+>> +}
+>> +
+>> +int mhi_pause_transfer(struct mhi_device *mhi_dev)
+>> +{
+>> +       return mhi_update_transfer_state(mhi_dev, 
+>> MHI_CH_STATE_TYPE_STOP);
+>> +}
+>> +EXPORT_SYMBOL_GPL(mhi_pause_transfer);
+>> +
+>> +int mhi_resume_transfer(struct mhi_device *mhi_dev)
+>> +{
+>> +       return mhi_update_transfer_state(mhi_dev, 
+>> MHI_CH_STATE_TYPE_START);
+>> +}
+>> +EXPORT_SYMBOL_GPL(mhi_resume_transfer);
+> 
+> Look like it is stop and start, not pause and resume?
+I wanted to keep it pause and resume because it could get confusing for 
+someone
+looking at this pair of APIs, that a client driver would also need to 
+"start"
+channels after "preparing" them. Since that is not that case, and the
+mhi_prepare_for_transfer() API itself is supposed to also start the 
+channels, it
+would be better to keep these as "pause" and "resume" instead IMO.
 
-because KVM doesn't provide emulation for random model specific registers.
+Any comments in favor or "stop" and "start"?
+> 
+> TBH maybe we should rework/clarify MHI core and having well-defined
+> states, maybe something like that:
+> 
+> 1. When MHI core detects device for a driver, MHI core resets and
+> initializes the channel(s), then call client driver probe function
+>     => channel UNKNOWN->DISABLED state
+>     => channel DISABLED->ENABLED state
+> 2. When driver is ready for sending data, drivers calls 
+> mhi_start_transfer
+>     => Channel is ENABLED->RUNNING state
+> 3. Driver performs normal data transfers
+> 4. The driver can suspend/resume transfer, it stops (suspend) the 
+> channel, can
+>     => Channel is RUNNING->STOP
+>     => Channel is STOP->RUNNING
+>    ...
+> 5. When device is removed, MHI core reset the channel
+>     => channel is (RUNNING|STOP) -> DISABLED
+> 
+> Today mhi_prepare_for_transfer performs both ENABLE and RUNNING
+> transition, the idea would be to keep channel enabling/disabling in
+> the MHI core (before/after driver probe/remove) and channel start/stop
+> managed by the client driver.
+> 
+> Regards,
+> Loic
 
-Switch to using rdmsrl_safe()/wrmsrl_safe() to avoid the message.
+Your idea is good but it would not have much additional benefits and 
+would
+involve MHI core "enabling" channels and allocating memory for each 
+channel
+context when they are only declared as supported by the controller but 
+are not
+actually being put to use.
 
-Reported-by: Qian Cai <cai@redhat.com>
-Fixes: 68299a42f842 ("x86/mce: Enable additional error logging on certain Intel CPUs")
-Signed-off-by: Tony Luck <tony.luck@intel.com>
----
- arch/x86/kernel/cpu/mce/intel.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+mhi_prepare_for_transfer() does both channel context initialization and 
+starts
+the channels, which is good because it allocates memory when needed. So, 
+this
+benefits system memory if a controller with support for many channels 
+exists but
+only a few channels are used.
 
-diff --git a/arch/x86/kernel/cpu/mce/intel.c b/arch/x86/kernel/cpu/mce/intel.c
-index b47883e364b4..42e60ef16c3a 100644
---- a/arch/x86/kernel/cpu/mce/intel.c
-+++ b/arch/x86/kernel/cpu/mce/intel.c
-@@ -521,9 +521,10 @@ static void intel_imc_init(struct cpuinfo_x86 *c)
- 	case INTEL_FAM6_SANDYBRIDGE_X:
- 	case INTEL_FAM6_IVYBRIDGE_X:
- 	case INTEL_FAM6_HASWELL_X:
--		rdmsrl(MSR_ERROR_CONTROL, error_control);
-+		if (rdmsrl_safe(MSR_ERROR_CONTROL, &error_control))
-+			return;
- 		error_control |= 2;
--		wrmsrl(MSR_ERROR_CONTROL, error_control);
-+		wrmsrl_safe(MSR_ERROR_CONTROL, error_control);
- 		break;
- 	}
- }
+Regarding the states to track from host:
+-> DISABLED (We know channels are not active: in reset state or not 
+probed yet)
+-> ENABLED (Active and running when needed for data transfers)
+-> STOP (Paused: leaves the channel context as is since channels are not 
+reset)
+-> SUSPENDED (Unload in progress: Entered before resetting 
+channels/remove())
+
+BTW, we have the debugfs entry for "channels" that dumps the context to 
+show
+exactly what the channel states are from device perspective. We can rely 
+on it
+if needed.
+
+If there are some comments I can add to make things clear, please let me 
+know.
+
+Thanks,
+Bhaumik
 -- 
-2.21.1
-
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora 
+Forum,
+a Linux Foundation Collaborative Project
