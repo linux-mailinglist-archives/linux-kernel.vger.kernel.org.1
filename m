@@ -2,65 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF2122AF839
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 19:37:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 533982AF83A
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 19:37:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727855AbgKKSgd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 13:36:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44616 "EHLO
+        id S1727860AbgKKSgo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 13:36:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44620 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727824AbgKKSgQ (ORCPT
+        with ESMTP id S1726625AbgKKSgR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 13:36:16 -0500
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A71A8C0613D4
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 10:36:15 -0800 (PST)
-Received: by mail-wm1-x344.google.com with SMTP id 23so4636558wmg.1
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 10:36:15 -0800 (PST)
+        Wed, 11 Nov 2020 13:36:17 -0500
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B7FDC0613D1
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 10:36:17 -0800 (PST)
+Received: by mail-wr1-x442.google.com with SMTP id l1so3492424wrb.9
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 10:36:16 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=tediDzLC047hOPrU32KTbEuOLPsPka6LUr15f9wO3Gk=;
-        b=mMr7iJVO6/1xsFbpADaI0KX7kFyobKLggc8W56w7L3MMk2GfW4ljqeSfLeXhfyLEyj
-         XjcdV/fGWT4uj/ehcXbaUUedrwdLzRksO/j39a1M/QzL8AVDA8lY6o8ZYh2yf6BNOu3e
-         DokwqqpsUUt6tr8S1Kux1Dxrv2cbPTLIvSVIdfRuMbKgQ7Ptr3ZS/s4jeJ8fljJD6sYb
-         v9NXlilvlnlZ68adPseWU4ZZM6H2kZQV/8utnv1rtWscJNiwN2k51ux+q5NmB5aAlXKc
-         ZmV8EL5mCTwd7VfZihKfsERIoxLWBGqCUVn8V9w6s6As362FXbEMbtxmVL7KIepHs4eL
-         rpNg==
+        bh=1BMpKgrGRaaFsrowXlZeUlkXnTCJQ5S+7+zF8aRI5RM=;
+        b=gv9rARHr4D0R1XbUNjjQpIHG+8Ukz+VROemjmN9deTxOLLwa57CGwe7Yw2nPVD5LkI
+         x7sBA5S4Izl8Y+DLOybIvelf93pnTPj30GwSDjNqThbgY52WPq9pGugtalPjo4Me6wOi
+         v3Wf9SH9nuttFyN/EE8mWWiXT3JxVUq06ieJknk5W231WtKu0+8a6uSy7vdh1HVUK8ea
+         2AC/M3H/iD7QdDK/feCxSxKB0ScDF6vwy8oQrAZTdgXy/8X1ALdG+Vxo9y/csOsWa8Qz
+         txo6oqrG/NN9rdWgI6GsC3//RR1aBRg7CpXQRIiN8lqFXulSkUJ5ArqmT2m75r2FCIsu
+         /yXQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=tediDzLC047hOPrU32KTbEuOLPsPka6LUr15f9wO3Gk=;
-        b=Mm7k4kIxhNueoz1a99JDzT5e/5vFHXMiE88RNhs7PU8GrWRjWVRWUf/YvjVlr/B6XE
-         Yx9y789aK+/zj5MwB1slhvbxd9W5MziTb9UGYBl9Rd/esSd3WIF1ZnKTl0a6GeewnQru
-         Dq6KzNQAX0HiaFtmO9wgcQ7KuNGRRAAyX/o+aHerank9R33xe/5SElTcFp3a4OgUAkQr
-         P4Txr5Tms64nlo2wSiGWX2yayz4xKKAvgMLMKTGj66SChnZqTlZ7CijueFzbT2YXuz7d
-         /O7YJcrwyxtIkx9nd6fiEfAZE6PFv4pWYVC9OUP9iug7mrAtGt+6+BP47p5AVIZf/IK+
-         D71w==
-X-Gm-Message-State: AOAM530SM9UcbduKhCuY2Afr8hL0NdS95u5pZBnbFWnLeUtEF7cCBFz7
-        o/xJjIHEVdpO7cEElKBNo1Z6eg==
-X-Google-Smtp-Source: ABdhPJyn7zxm7zhP+Z5GtcjvgBa5Dzioyj+ILoping9J7cC5ythGDHHgVffVn5idPPNFm6Tk3Kb7kA==
-X-Received: by 2002:a1c:20d0:: with SMTP id g199mr5981271wmg.68.1605119774423;
-        Wed, 11 Nov 2020 10:36:14 -0800 (PST)
+        bh=1BMpKgrGRaaFsrowXlZeUlkXnTCJQ5S+7+zF8aRI5RM=;
+        b=o9t/8EhcT1M+7zNAW06TeTKNq0LA991drKwotEh52wohXJd4bw8bh4yXmJTQhvivpq
+         K8hiTKGpuBJT87Bo59ZOuAWZxWOCMV7zibeIaV0mW4K56HoRHe8L1xsbvOk8C7Ri8Xxr
+         aVoTQwpMLwqLafsXuDF6ThsiBLr9JDH6CHHR9FaTLxYmYkQWST+iXzyfhx7wwXAutZpX
+         1Bx5dOJwmfeOe95dQpmXbwha70QZcVfjcT2dIqrdRfbQete3DZHSku8NYmzre8p5FBB5
+         DUwtBVw7391G0Ow8Ne0N2XxN7Q0Xs15YtKmOFFqOu+CdqjPp4t6NLMso5T78vhGaGJ2f
+         pTdA==
+X-Gm-Message-State: AOAM530IoPl39mShX2z9z8CxE87rv+UhlH8T0Pw3HUifjj4yyPBaX10p
+        EY9WQAt8ivnpgmqq/Z1kczgjcUFF6sZdjN71
+X-Google-Smtp-Source: ABdhPJyUfP02CiM21bckjb6v/8zvCckUDUA51nDOma7tQN+Oa6OdUY9rQNKYPeBoyCSxr/LkFz5tnQ==
+X-Received: by 2002:a5d:474d:: with SMTP id o13mr33192388wrs.178.1605119775741;
+        Wed, 11 Nov 2020 10:36:15 -0800 (PST)
 Received: from dell.default ([91.110.221.159])
-        by smtp.gmail.com with ESMTPSA id k84sm3558311wmf.42.2020.11.11.10.36.13
+        by smtp.gmail.com with ESMTPSA id k84sm3558311wmf.42.2020.11.11.10.36.14
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 Nov 2020 10:36:13 -0800 (PST)
+        Wed, 11 Nov 2020 10:36:15 -0800 (PST)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
 Cc:     linux-kernel@vger.kernel.org,
         Alex Deucher <alexander.deucher@amd.com>,
         =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
         David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-media@vger.kernel.org, linaro-mm-sig@lists.linaro.org
-Subject: [PATCH 18/19] drm/radeon/cik: Move 'vce_v2_0_enable_mgcg()'s prototype to shared header
-Date:   Wed, 11 Nov 2020 18:35:44 +0000
-Message-Id: <20201111183545.1756994-19-lee.jones@linaro.org>
+        Daniel Vetter <daniel@ffwll.ch>, amd-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org
+Subject: [PATCH 19/19] drm/radeon/evergreen_cs: Move 'r600_dma_cs_next_reloc()'s prototype to shared header
+Date:   Wed, 11 Nov 2020 18:35:45 +0000
+Message-Id: <20201111183545.1756994-20-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20201111183545.1756994-1-lee.jones@linaro.org>
 References: <20201111183545.1756994-1-lee.jones@linaro.org>
@@ -73,69 +71,77 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Fixes the following W=1 kernel build warning(s):
 
- drivers/gpu/drm/radeon/vce_v2_0.c:111:6: warning: no previous prototype for ‘vce_v2_0_enable_mgcg’ [-Wmissing-prototypes]
- 111 | void vce_v2_0_enable_mgcg(struct radeon_device *rdev, bool enable)
- | ^~~~~~~~~~~~~~~~~~~~
+ drivers/gpu/drm/radeon/r600_cs.c:2343:5: warning: no previous prototype for ‘r600_dma_cs_next_reloc’ [-Wmissing-prototypes]
+ 2343 | int r600_dma_cs_next_reloc(struct radeon_cs_parser *p,
+ | ^~~~~~~~~~~~~~~~~~~~~~
 
 Cc: Alex Deucher <alexander.deucher@amd.com>
 Cc: "Christian König" <christian.koenig@amd.com>
 Cc: David Airlie <airlied@linux.ie>
 Cc: Daniel Vetter <daniel@ffwll.ch>
-Cc: Sumit Semwal <sumit.semwal@linaro.org>
 Cc: amd-gfx@lists.freedesktop.org
 Cc: dri-devel@lists.freedesktop.org
-Cc: linux-media@vger.kernel.org
-Cc: linaro-mm-sig@lists.linaro.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/gpu/drm/radeon/cik.c      | 2 +-
- drivers/gpu/drm/radeon/vce.h      | 1 +
- drivers/gpu/drm/radeon/vce_v2_0.c | 1 +
- 3 files changed, 3 insertions(+), 1 deletion(-)
+ drivers/gpu/drm/radeon/evergreen_cs.c | 3 +--
+ drivers/gpu/drm/radeon/r600.h         | 4 ++++
+ drivers/gpu/drm/radeon/r600_cs.c      | 1 +
+ 3 files changed, 6 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/gpu/drm/radeon/cik.c b/drivers/gpu/drm/radeon/cik.c
-index 4520ec4c7b2e2..ae2a507d13bb7 100644
---- a/drivers/gpu/drm/radeon/cik.c
-+++ b/drivers/gpu/drm/radeon/cik.c
-@@ -41,6 +41,7 @@
- #include "radeon_audio.h"
- #include "radeon_ucode.h"
- #include "si.h"
-+#include "vce.h"
+diff --git a/drivers/gpu/drm/radeon/evergreen_cs.c b/drivers/gpu/drm/radeon/evergreen_cs.c
+index 53b75cf201958..0de79f3a7e3ff 100644
+--- a/drivers/gpu/drm/radeon/evergreen_cs.c
++++ b/drivers/gpu/drm/radeon/evergreen_cs.c
+@@ -28,6 +28,7 @@
  
- #define SH_MEM_CONFIG_GFX_DEFAULT \
- 	ALIGNMENT_MODE(SH_MEM_ALIGNMENT_MODE_UNALIGNED)
-@@ -129,7 +130,6 @@ MODULE_FIRMWARE("radeon/mullins_rlc.bin");
- MODULE_FIRMWARE("radeon/mullins_sdma.bin");
- 
- static u32 cik_get_cu_active_bitmap(struct radeon_device *rdev, u32 se, u32 sh);
--extern void vce_v2_0_enable_mgcg(struct radeon_device *rdev, bool enable);
- static void cik_rlc_stop(struct radeon_device *rdev);
- static void cik_pcie_gen3_enable(struct radeon_device *rdev);
- static void cik_program_aspm(struct radeon_device *rdev);
-diff --git a/drivers/gpu/drm/radeon/vce.h b/drivers/gpu/drm/radeon/vce.h
-index 1eb4f5715202e..ccc9c00f0d02c 100644
---- a/drivers/gpu/drm/radeon/vce.h
-+++ b/drivers/gpu/drm/radeon/vce.h
-@@ -30,5 +30,6 @@
- struct radeon_device;
- 
- void vce_v1_0_enable_mgcg(struct radeon_device *rdev, bool enable);
-+void vce_v2_0_enable_mgcg(struct radeon_device *rdev, bool enable);
- 
- #endif                         /* __VCE_H__ */
-diff --git a/drivers/gpu/drm/radeon/vce_v2_0.c b/drivers/gpu/drm/radeon/vce_v2_0.c
-index d6fde3659e65f..163c9bfc03da8 100644
---- a/drivers/gpu/drm/radeon/vce_v2_0.c
-+++ b/drivers/gpu/drm/radeon/vce_v2_0.c
-@@ -30,6 +30,7 @@
  #include "radeon.h"
  #include "radeon_asic.h"
- #include "cikd.h"
-+#include "vce.h"
++#include "r600.h"
+ #include "evergreend.h"
+ #include "evergreen_reg_safe.h"
+ #include "cayman_reg_safe.h"
+@@ -37,8 +38,6 @@
  
- #define VCE_V2_0_FW_SIZE	(256 * 1024)
- #define VCE_V2_0_STACK_SIZE	(64 * 1024)
+ #define REG_SAFE_BM_SIZE ARRAY_SIZE(evergreen_reg_safe_bm)
+ 
+-int r600_dma_cs_next_reloc(struct radeon_cs_parser *p,
+-			   struct radeon_bo_list **cs_reloc);
+ struct evergreen_cs_track {
+ 	u32			group_size;
+ 	u32			nbanks;
+diff --git a/drivers/gpu/drm/radeon/r600.h b/drivers/gpu/drm/radeon/r600.h
+index a259976a95913..21fe44198a966 100644
+--- a/drivers/gpu/drm/radeon/r600.h
++++ b/drivers/gpu/drm/radeon/r600.h
+@@ -29,7 +29,9 @@
+ #define __R600_H__
+ 
+ struct r600_audio_pin;
++struct radeon_bo_list;
+ struct radeon_crtc;
++struct radeon_cs_parser;
+ struct radeon_device;
+ struct radeon_hdmi_acr;
+ 
+@@ -50,4 +52,6 @@ void r600_hdmi_update_acr(struct drm_encoder *encoder, long offset,
+ void r600_set_vbi_packet(struct drm_encoder *encoder, u32 offset);
+ void r600_hdmi_enable(struct drm_encoder *encoder, bool enable);
+ 
++int r600_dma_cs_next_reloc(struct radeon_cs_parser *p,
++			   struct radeon_bo_list **cs_reloc);
+ #endif				/* __R600_H__ */
+diff --git a/drivers/gpu/drm/radeon/r600_cs.c b/drivers/gpu/drm/radeon/r600_cs.c
+index f20b619466816..dc68e538d5a97 100644
+--- a/drivers/gpu/drm/radeon/r600_cs.c
++++ b/drivers/gpu/drm/radeon/r600_cs.c
+@@ -29,6 +29,7 @@
+ 
+ #include "radeon.h"
+ #include "radeon_asic.h"
++#include "r600.h"
+ #include "r600d.h"
+ #include "r600_reg_safe.h"
+ 
 -- 
 2.25.1
 
