@@ -2,63 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C63B2AF83C
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 19:37:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 673072AF83E
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 19:37:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727869AbgKKShA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 13:37:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44598 "EHLO
+        id S1727479AbgKKSg6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 13:36:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44600 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727805AbgKKSgM (ORCPT
+        with ESMTP id S1727768AbgKKSgN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 13:36:12 -0500
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90F15C0617A6
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 10:36:11 -0800 (PST)
-Received: by mail-wm1-x342.google.com with SMTP id a65so3269163wme.1
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 10:36:11 -0800 (PST)
+        Wed, 11 Nov 2020 13:36:13 -0500
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0B9BC0617A7
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 10:36:12 -0800 (PST)
+Received: by mail-wm1-x344.google.com with SMTP id w24so3282423wmi.0
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 10:36:12 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=wcR9SHA/hLxAo0DjnBJYKl1ZjLgHXt+Q6E2OPcU6TRk=;
-        b=ZppS/pPTRTgdttLh54xP750Kj6wz+Skcp0gIoIgehdUbqo2zKnEjGa/yiqC1zsRVT1
-         RojNDkdIIOVwEH/cxzrfw4IzVBy+MNQX717cjqzVcQD/DhZ7iqciX6SM6vWljUD9C7vy
-         INmw17RivPboOAMS7Evvldk4WAubEVgS4S/nkTyULsmgnbzDLjGxfJfy+SxvxwbIOBkd
-         Z8BJJPyj9Xo5ParXgCKw1BIgyM1MPmCqIDQXge0PR3SNWPVIVb1bugXxBYfp9WDf+xld
-         Hhidwk+ywKJksPFcW9w+HUDn2U5kjpbYCXXweJoLxXkIhKaCfiQqoIVuzgh6iYP2RRo0
-         amRQ==
+        bh=spCm618rU4+U7z1bfdflo8X7NldT43iivpTuZ8WssFA=;
+        b=w++rpOszkxweKlNZMXoxmKyy4U42RAzQDXbaasLv0JL6Mz+/P2AanrfR3DqMvCG6c1
+         6NYHQlNcK1yEneyt/TJesz+g5TEv6/JyNC/pI3IvwLglHc9XS5o1OSu4jFsJARQenUoq
+         hlVMNdPMbEo/yCbB22dgrmPaYhbTe2sXVLiN4WH6c5/eTSKDSUwbrSpxpm/b/wxKo2l2
+         t6DEf/qObRqR0J5jb0GnJuV/3qiaKr3eUdjqwz8Y+DVyVz74dyN7lvLkK94HeFmurkGG
+         X2mFN8tNmqv4Ps0arCz3R/jDCYaUObb4KFZDRR/s3vPci46Mdn1FuljOWkDgCvy892l5
+         Hg5w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=wcR9SHA/hLxAo0DjnBJYKl1ZjLgHXt+Q6E2OPcU6TRk=;
-        b=V1tV9c2F3p56x9Fu9QCTKymyS3UVbR9wY/9BG4G4BGEZLm80hEuH/UFxt7v4EN1i3S
-         OhR9IJeeIDGsr/tlMH0NEl8txmq8cW1tmXALGSGnnueZgDjdYyL3xxS2dkNifeFCx6Nc
-         FHMnYiC6Z+VYhsWI9ecomyWhfnAwp+0e7Z2Ew4eV71mywYtZNoxn7KbindmchBixeN3B
-         64vWbMF6afs+BgfBdN0QAhufojdNXU4hk7PuV5n8BIGRZcMTNVXPxZ9fxx+OLdv5tTN7
-         vCZdczld9ViXDeq040QhAFvIUB94rek9WAMFMJOwU/9yOAvfJCyEwbuI7ZFvp7buSpNQ
-         yvyQ==
-X-Gm-Message-State: AOAM533NFDGAOxPQ4EpoaERLH4zmB/EZUMAWFXn6fMziJBN10K6RNd4O
-        YVge5KmvqcV6fgR7ht3KbAqgUw==
-X-Google-Smtp-Source: ABdhPJwRT4ieJ2l8ug/xaqNwACgL0ytg+jIjEVoXnmY/kQp/b2J6n2NQ7oxNVQnCZou2JirHx9ehsw==
-X-Received: by 2002:a1c:b0c4:: with SMTP id z187mr2725638wme.113.1605119770340;
-        Wed, 11 Nov 2020 10:36:10 -0800 (PST)
+        bh=spCm618rU4+U7z1bfdflo8X7NldT43iivpTuZ8WssFA=;
+        b=TIXSQSHRZ/NICcEiATfOsD0BVScch2X4WAmbi5EHF/wsQX+i0A7COwh9F5g7QGWIQL
+         TqikGVZvO4TNskqwr5aj4MNb+cM57539BT7WkuXUWJvKLHyBjfSnEBy6igbg/KdHB9uO
+         BxYGh/f5LAs9V4KztccvgL2wIc2ftA60ncqbnlHmg/9+/AwyaeaHAlt0vevcDywyaY1o
+         BMLXR42Taj9b2YIkhF/AsERX35LcpAcj+ShQPIKZBWlzyYUnf0jyQBJMSMxeUwj9mjYT
+         7CSOhnQbhb08rhV4AwuQJlYyD6A8+UsRGX8DuKz0jwN77t0oC/G34BdjVEmqqFJ7iAve
+         1f7g==
+X-Gm-Message-State: AOAM532ArE2p937AfQ5jqJWJ8Aue3KlTrMlqZbHrJqMggEwxjGaAkNFi
+        oxDqjWeWOTso0YDzz4Drfu2RQw==
+X-Google-Smtp-Source: ABdhPJwiXiLRxkllwzQfnctFOzMf0dtjCV4IwfvBUqJ+unZBgE6lrxNBj3LWkUavdfnVECn/mYqEvg==
+X-Received: by 2002:a1c:4808:: with SMTP id v8mr5734129wma.110.1605119771722;
+        Wed, 11 Nov 2020 10:36:11 -0800 (PST)
 Received: from dell.default ([91.110.221.159])
-        by smtp.gmail.com with ESMTPSA id k84sm3558311wmf.42.2020.11.11.10.36.09
+        by smtp.gmail.com with ESMTPSA id k84sm3558311wmf.42.2020.11.11.10.36.10
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 Nov 2020 10:36:09 -0800 (PST)
+        Wed, 11 Nov 2020 10:36:11 -0800 (PST)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
 Cc:     linux-kernel@vger.kernel.org,
         Alex Deucher <alexander.deucher@amd.com>,
         =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
         David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>, amd-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org
-Subject: [PATCH 15/19] drm/radeon/ci_dpm: Move 'si_*()'s prototypes to shared header
-Date:   Wed, 11 Nov 2020 18:35:41 +0000
-Message-Id: <20201111183545.1756994-16-lee.jones@linaro.org>
+        Daniel Vetter <daniel@ffwll.ch>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-media@vger.kernel.org, linaro-mm-sig@lists.linaro.org
+Subject: [PATCH 16/19] drm/radeon/cik: Move 'Move 'cik_sdma_*()'s prototypes to shared header
+Date:   Wed, 11 Nov 2020 18:35:42 +0000
+Message-Id: <20201111183545.1756994-17-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20201111183545.1756994-1-lee.jones@linaro.org>
 References: <20201111183545.1756994-1-lee.jones@linaro.org>
@@ -71,67 +73,57 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Fixes the following W=1 kernel build warning(s):
 
- drivers/gpu/drm/radeon/si_dpm.c:3802:4: warning: no previous prototype for ‘si_get_ddr3_mclk_frequency_ratio’ [-Wmissing-prototypes]
- 3802 | u8 si_get_ddr3_mclk_frequency_ratio(u32 memory_clock)
- | ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
- drivers/gpu/drm/radeon/si_dpm.c:3815:4: warning: no previous prototype for ‘si_get_mclk_frequency_ratio’ [-Wmissing-prototypes]
- 3815 | u8 si_get_mclk_frequency_ratio(u32 memory_clock, bool strobe_mode)
- | ^~~~~~~~~~~~~~~~~~~~~~~~~~~
- drivers/gpu/drm/radeon/si_dpm.c:3897:6: warning: no previous prototype for ‘si_trim_voltage_table_to_fit_state_table’ [-Wmissing-prototypes]
- 3897 | void si_trim_voltage_table_to_fit_state_table(struct radeon_device *rdev,
- | ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ drivers/gpu/drm/radeon/cik_sdma.c:331:6: warning: no previous prototype for ‘cik_sdma_enable’ [-Wmissing-prototypes]
+ 331 | void cik_sdma_enable(struct radeon_device *rdev, bool enable)
+ | ^~~~~~~~~~~~~~~
+ drivers/gpu/drm/radeon/cik_sdma.c:528:5: warning: no previous prototype for ‘cik_sdma_resume’ [-Wmissing-prototypes]
+ 528 | int cik_sdma_resume(struct radeon_device *rdev)
+ | ^~~~~~~~~~~~~~~
+ drivers/gpu/drm/radeon/cik_sdma.c:557:6: warning: no previous prototype for ‘cik_sdma_fini’ [-Wmissing-prototypes]
+ 557 | void cik_sdma_fini(struct radeon_device *rdev)
+ | ^~~~~~~~~~~~~
 
 Cc: Alex Deucher <alexander.deucher@amd.com>
 Cc: "Christian König" <christian.koenig@amd.com>
 Cc: David Airlie <airlied@linux.ie>
 Cc: Daniel Vetter <daniel@ffwll.ch>
+Cc: Sumit Semwal <sumit.semwal@linaro.org>
 Cc: amd-gfx@lists.freedesktop.org
 Cc: dri-devel@lists.freedesktop.org
+Cc: linux-media@vger.kernel.org
+Cc: linaro-mm-sig@lists.linaro.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/gpu/drm/radeon/ci_dpm.c | 6 +-----
- drivers/gpu/drm/radeon/si_dpm.h | 5 +++++
- 2 files changed, 6 insertions(+), 5 deletions(-)
+ drivers/gpu/drm/radeon/cik.c | 3 ---
+ drivers/gpu/drm/radeon/cik.h | 3 +++
+ 2 files changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/gpu/drm/radeon/ci_dpm.c b/drivers/gpu/drm/radeon/ci_dpm.c
-index a9fc0a552736c..0dfb0ed9af89d 100644
---- a/drivers/gpu/drm/radeon/ci_dpm.c
-+++ b/drivers/gpu/drm/radeon/ci_dpm.c
-@@ -33,6 +33,7 @@
- #include "radeon.h"
- #include "radeon_asic.h"
- #include "radeon_ucode.h"
-+#include "si_dpm.h"
+diff --git a/drivers/gpu/drm/radeon/cik.c b/drivers/gpu/drm/radeon/cik.c
+index 0330ee86a372b..4520ec4c7b2e2 100644
+--- a/drivers/gpu/drm/radeon/cik.c
++++ b/drivers/gpu/drm/radeon/cik.c
+@@ -129,9 +129,6 @@ MODULE_FIRMWARE("radeon/mullins_rlc.bin");
+ MODULE_FIRMWARE("radeon/mullins_sdma.bin");
  
- #define MC_CG_ARB_FREQ_F0           0x0a
- #define MC_CG_ARB_FREQ_F1           0x0b
-@@ -153,11 +154,6 @@ static const struct ci_pt_config_reg didt_config_ci[] =
- extern u8 rv770_get_memory_module_index(struct radeon_device *rdev);
- extern int ni_copy_and_switch_arb_sets(struct radeon_device *rdev,
- 				       u32 arb_freq_src, u32 arb_freq_dest);
--extern u8 si_get_ddr3_mclk_frequency_ratio(u32 memory_clock);
--extern u8 si_get_mclk_frequency_ratio(u32 memory_clock, bool strobe_mode);
--extern void si_trim_voltage_table_to_fit_state_table(struct radeon_device *rdev,
--						     u32 max_voltage_steps,
--						     struct atom_voltage_table *voltage_table);
- static int ci_get_std_voltage_value_sidd(struct radeon_device *rdev,
- 					 struct atom_voltage_table_entry *voltage_table,
- 					 u16 *std_voltage_hi_sidd, u16 *std_voltage_lo_sidd);
-diff --git a/drivers/gpu/drm/radeon/si_dpm.h b/drivers/gpu/drm/radeon/si_dpm.h
-index 1032a68be792b..aa857906ef93d 100644
---- a/drivers/gpu/drm/radeon/si_dpm.h
-+++ b/drivers/gpu/drm/radeon/si_dpm.h
-@@ -234,5 +234,10 @@ struct si_power_info {
- #define SISLANDS_CGULVPARAMETER_DFLT                    0x00040035
- #define SISLANDS_CGULVCONTROL_DFLT                      0x1f007550
+ static u32 cik_get_cu_active_bitmap(struct radeon_device *rdev, u32 se, u32 sh);
+-extern int cik_sdma_resume(struct radeon_device *rdev);
+-extern void cik_sdma_enable(struct radeon_device *rdev, bool enable);
+-extern void cik_sdma_fini(struct radeon_device *rdev);
+ extern void vce_v2_0_enable_mgcg(struct radeon_device *rdev, bool enable);
+ static void cik_rlc_stop(struct radeon_device *rdev);
+ static void cik_pcie_gen3_enable(struct radeon_device *rdev);
+diff --git a/drivers/gpu/drm/radeon/cik.h b/drivers/gpu/drm/radeon/cik.h
+index 420207d19de52..d1bf541da5923 100644
+--- a/drivers/gpu/drm/radeon/cik.h
++++ b/drivers/gpu/drm/radeon/cik.h
+@@ -34,4 +34,7 @@ void cik_init_cp_pg_table(struct radeon_device *rdev);
+ u32 cik_get_csb_size(struct radeon_device *rdev);
+ void cik_get_csb_buffer(struct radeon_device *rdev, volatile u32 *buffer);
  
-+u8 si_get_ddr3_mclk_frequency_ratio(u32 memory_clock);
-+u8 si_get_mclk_frequency_ratio(u32 memory_clock, bool strobe_mode);
-+void si_trim_voltage_table_to_fit_state_table(struct radeon_device *rdev,
-+					      u32 max_voltage_steps,
-+					      struct atom_voltage_table *voltage_table);
- 
- #endif
++int cik_sdma_resume(struct radeon_device *rdev);
++void cik_sdma_enable(struct radeon_device *rdev, bool enable);
++void cik_sdma_fini(struct radeon_device *rdev);
+ #endif                         /* __CIK_H__ */
 -- 
 2.25.1
 
