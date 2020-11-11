@@ -2,295 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 421D32AF89C
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 19:57:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 868E42AF8A5
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 20:04:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727308AbgKKS5c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 13:57:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47922 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725995AbgKKS5c (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 13:57:32 -0500
-Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D248FC0613D6
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 10:57:31 -0800 (PST)
-Received: by mail-io1-xd41.google.com with SMTP id s10so3401002ioe.1
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 10:57:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sargun.me; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=8DKuDB5LEEiDs+HKBVBurFjvTqncsTKUmAwonf+c4kk=;
-        b=iQC2M+ydj+IdRnNKU1Bq4uRd1PSu/wbVcdQBf/5ys2NMbeX6thY4YmEJOZBEeBiILh
-         bf3uCKWYh7jhgAQGH0n0+GgfS2nvC00u4GyzBFiKncZIH25Gxp8PGRWGZ+XRwVG3Wbnb
-         8i/7dGOqJzh3h/k+JvYVjHlomliOq6hqoDeb0=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=8DKuDB5LEEiDs+HKBVBurFjvTqncsTKUmAwonf+c4kk=;
-        b=gIvTwgD7Zv1Bnp+yGVzAqBYOM7XcSPczarCl9cGTd3iRNxA/iMfyTTFAYxLrahC/KZ
-         1ouJ4O6OrzFHBdWLlsm4T6c7RLsQa0mPb1UJMDspehm7TGFyFpUH0SW9J5KokL2WSL7J
-         3e4qWfJd0w7q0gSiIsRQqRJWAVN7tIcT66rElE1lOgYtX3KgbUrnSS/qSt0LuDeumT4v
-         w/QZi/pP0XpMx9PnaiS9zHjctX/LhY5X1LALnPF1KfNod5udbGtk5qlj3JQhR2j6dNEF
-         fUNvLhF+XcfqPJs33Ib6/sI++E1I+6sJcRlymbP+KhAdSElItuNLNVoT27klGm4XGatb
-         E4FQ==
-X-Gm-Message-State: AOAM533WAco8J+8xvTK8JuEH7Kxw4iCqS4aQ/yQaHGBigSTHmOA1e3nY
-        Xi4IwAAjn09GKedq0ocXrLYtKg==
-X-Google-Smtp-Source: ABdhPJzI4P23JL1hsAmkxeShiPup7VXJMrqqKoyBvNA/MDImyGOvOCz2EpOJdjwtPjy0et2hRqrx9Q==
-X-Received: by 2002:a02:6a59:: with SMTP id m25mr21258822jaf.132.1605121050913;
-        Wed, 11 Nov 2020 10:57:30 -0800 (PST)
-Received: from ircssh-2.c.rugged-nimbus-611.internal (80.60.198.104.bc.googleusercontent.com. [104.198.60.80])
-        by smtp.gmail.com with ESMTPSA id n4sm1565046iox.6.2020.11.11.10.57.30
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 11 Nov 2020 10:57:30 -0800 (PST)
-Date:   Wed, 11 Nov 2020 18:57:28 +0000
-From:   Sargun Dhillon <sargun@sargun.me>
-To:     Trond Myklebust <trondmy@hammerspace.com>
-Cc:     "anna.schumaker@netapp.com" <anna.schumaker@netapp.com>,
-        "smayhew@redhat.com" <smayhew@redhat.com>,
-        "chuck.lever@oracle.com" <chuck.lever@oracle.com>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "dhowells@redhat.com" <dhowells@redhat.com>,
-        "schumaker.anna@gmail.com" <schumaker.anna@gmail.com>,
-        "alban.crequy@gmail.com" <alban.crequy@gmail.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "mauricio@kinvolk.io" <mauricio@kinvolk.io>,
-        "bfields@fieldses.org" <bfields@fieldses.org>,
-        "linux-nfs@vger.kernel.org" <linux-nfs@vger.kernel.org>
-Subject: Re: [PATCH v4 0/2] NFS: Fix interaction between fs_context and user
- namespaces
-Message-ID: <20201111185727.GA27945@ircssh-2.c.rugged-nimbus-611.internal>
-References: <20201102174737.2740-1-sargun@sargun.me>
- <CAMXgnP5cVoLKTGPOAO+aLEAGLpkjACy1e4iLBKkfp8Gv1U77xA@mail.gmail.com>
- <f6d86006ccd19d4d101097de309eb21bbbf96e43.camel@hammerspace.com>
- <20201111111233.GA21917@ircssh-2.c.rugged-nimbus-611.internal>
- <8feccf45f6575a204da03e796391cc135283eb88.camel@hammerspace.com>
+        id S1727132AbgKKTEC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 14:04:02 -0500
+Received: from mout.gmx.net ([212.227.17.21]:50195 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725949AbgKKTEB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Nov 2020 14:04:01 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1605121433;
+        bh=RYsTj5FjqUvBgxqmeBhWll0MY0Wgr1pMVG/UHvWxZIo=;
+        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
+        b=hCk+042qd3h10VYMX+WnVEBWnqQ6Qd3MftiA/NPlmuXAHeRNuqJSpTlq80noWjSp4
+         YyTXLvu8NUUZYiLRpCGBOF9Pf0rT18pYm7EcBs2NdYUKjLaUh6ZqT9H3SSw8DcAQwV
+         zXj8SBEPtdEFTYPUJ+RrT9HtLi4MMNrlbPL7llfw=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [192.168.20.60] ([92.116.155.75]) by mail.gmx.com (mrgmx105
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1M3UZG-1kdTdj1N6w-000azp; Wed, 11
+ Nov 2020 20:03:53 +0100
+Subject: Re: [PATCH] parisc/uapi: Use Kbuild logic to provide <asm/types.h>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>,
+        "James E . J . Bottomley" <James.Bottomley@HansenPartnership.com>
+Cc:     linux-parisc@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20201110165136.3411004-1-geert@linux-m68k.org>
+From:   Helge Deller <deller@gmx.de>
+Autocrypt: addr=deller@gmx.de; keydata=
+ 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
+ c2TFWAS8k6RLkk41ZUU8ENX8+qZx/Q==
+Message-ID: <22e6906f-84d6-051b-ff72-66cfb718cbf5@gmx.de>
+Date:   Wed, 11 Nov 2020 20:03:51 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <8feccf45f6575a204da03e796391cc135283eb88.camel@hammerspace.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20201110165136.3411004-1-geert@linux-m68k.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:pniPhszqb7q3viK7UX7xHOtzhuN3YExqvbXLMpGoNzg7MdWKe7h
+ CQXw2yUvpqYQbLmM2qTkNMmT1Zi3JZAN4CXqZswE/3ldH1r4VtFvCrpyxinsT2bazq6DbG9
+ piR9hXDN7pT/8B2l8pV0/19YDozGrXsk/as6kxVh8m/WK2YrIRQWJ1qGh5W5vAqN7mRSvmW
+ x0mC3s872lyvLWPDYQJQA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:SmLO4s0dr8Q=:IzLVGoar9f/zzIwWpd/MXo
+ /aEtRazmsG0UaUizM9JFfurUyuv8iD5GCl38cQQEc30VV7v6THj+1rjqeMssEBbL87rTx2Jbb
+ 6yJsPXpJGA6y8nJl8wkSgNInLj4JoyOT4kXRZZ1Pwsq54u2dxRODSJGVackB2lyy05gr3FB18
+ t0XyJ31eqFxK4gy4wZaJAgjjpgnTxG0RfGCXz3pRWTtwmEKdT/kma5glLg4Fzm8sGc979rmch
+ RjMBsi+ylOTGdKaeowd339Lluh9WPiu4a6zGCKS+bAWQHJZclPRA+tHKnwz0TFsJvWuXOkinS
+ i1KbcdwMAT78q39ZHQwRw6Nwdf81wUEK86MSXNzzPOJZOHGfaUe2hVS4HPghQ/cIE6GdioRpL
+ UH0kFbdddMt25kfpjZ2kv0CU4YlDOGv5Br4lqZtu9GTXFy4deiJcKWsTaKnIYn9HSriFnUBt9
+ pmOK+DrOAbTJY4BmqLZFrgxajntK/zdiz0AKLXZu0E10zGx5UUe0WMEHqwLPk5Esk9L3x1D18
+ eVpftVmYU8t9/5b/FnW0Abp8WZl6FCukqB0miBqfcN1M+qBgfL2AO3Smw3PpdJg2gkPRNcDjH
+ XfdATOaR0U7gl8+UtKqwDB0yZqBcHkW0/jeKbL7iqxO9oOS5Fwma/evVV5LnsbwNS7WSFO4C4
+ jhCeuupb/6vF3x4UgsD1FbF23PynGowi31COUlA2lTibHYhQ2klCrUR+jqZGZnpoW58epVVog
+ YaZvR6xaIfmJiKWb31pX3CTcs0ChH0+7nznc7OQNA9TLh54TcRP3S84J7XnDDVzF6DrA3ARRR
+ xNOrA7X26kQv17ve52W/f/AAejo/UR4pQiu8TNKM15Gxokjhwf5Ay3huvwNjJxAOwKXgbhUEP
+ +sExONDVeoDJhnAObgcw==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 11, 2020 at 02:38:11PM +0000, Trond Myklebust wrote:
-> On Wed, 2020-11-11 at 11:12 +0000, Sargun Dhillon wrote:
-> > On Tue, Nov 10, 2020 at 08:12:01PM +0000, Trond Myklebust wrote:
-> > > On Tue, 2020-11-10 at 17:43 +0100, Alban Crequy wrote:
-> > > > Hi,
-> > > > 
-> > > > I tested the patches on top of 5.10.0-rc3+ and I could mount an
-> > > > NFS
-> > > > share with a different user namespace. fsopen() is done in the
-> > > > container namespaces (user, mnt and net namespaces) while
-> > > > fsconfig(),
-> > > > fsmount() and move_mount() are done on the host namespaces. The
-> > > > mount
-> > > > on the host is available in the container via mount propagation
-> > > > from
-> > > > the host mount.
-> > > > 
-> > > > With this, the files on the NFS server with uid 0 are available
-> > > > in
-> > > > the
-> > > > container with uid 0. On the host, they are available with uid
-> > > > 4294967294 (make_kuid(&init_user_ns, -2)).
-> > > > 
-> > > 
-> > > Can someone please tell me what is broken with the _current_ design
-> > > before we start trying to push "fixes" that clearly break it?
-> > Currently the mechanism of mounting nfs4 in a user namespace is as
-> > follows:
-> > 
-> > Parent: fork()
-> > Child: setns(userns)
-> > C: fsopen("nfs4") = 3
-> > C->P: Send FD 3
-> > P: FSConfig...
-> > P: fsmount... (This is where the CAP_SYS_ADMIN check happens))
-> > 
-> > 
-> > Right now, when you mount an NFS filesystem in a non-init user
-> > namespace, and you have UIDs / GIDs on, the UIDs / GIDs which
-> > are sent to the server are not the UIDs from the mounting namespace,
-> > instead they are the UIDs from the init user ns.
-> > 
-> > The reason for this is that you can call fsopen("nfs4") in the
-> > unprivileged 
-> > namespace, and that configures fs_context with all the right
-> > information for 
-> > that user namespace, but we currently require CAP_SYS_ADMIN in the
-> > init user 
-> > namespace to call fsmount. This means that the superblock's user
-> > namespace is 
-> > set "correctly" to the container, but there's absolutely no way
-> > nfs4uidmap
-> > to consume an unprivileged user namespace.
-> > 
-> > This behaviour happens "the other way" as well, where the UID in the
-> > container
-> > may be 0, but the corresponding kuid is 1000. When a response from an
-> > NFS
-> > server comes in we decode it according to the idmap userns[1]. The
-> > userns
-> > used to get create idmap is generated at fsmount time, and not as
-> > fsopen
-> > time. So, even if the filesystem is in the user namespace, and the
-> > server
-> > responds with UID 0, it'll come up with an unmapped UID.
-> > 
-> > This is because we do
-> > Server UID 0 -> idmap make_kuid(init_user_ns, 0) -> VFS
-> > from_kuid(container_ns, 0) -> invalid uid
-> > 
-> > This is broken behaviour, in my humble opinion as is it makes it
-> > impossible to 
-> > use NFSv4 (and v3 for that matter) out of the box with unprivileged
-> > user 
-> > namespaces. At least in our environment, using usernames / GSS isn't
-> > an option,
-> > so we have to rely on UIDs being set correctly [at least from the
-> > container's
-> > perspective].
-> > 
-> 
-> The current code for setting server->cred was developed independently
-> of fsopen() (and predates it actually). I'm fine with the change to
-> have server->cred be the cred of the user that called fsopen(). That's
-> in line with what we used to do for sys_mount().
-> 
-Just curious, without FS_USERNS, how were you mounting NFSv4 in an
-unprivileged user ns?
+On 11/10/20 5:51 PM, Geert Uytterhoeven wrote:
+> Uapi <asm-generic/types.h> just includes <asm-generic/int-ll64.h>
+>
+> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
 
+Thanks, applied to the parisc for-next tree.
 
-> However all the other stuff to throw errors when the user namespace is
-> not init_user_ns introduces massive regressions.
-> 
+Helge
 
-I can remove that and respin the patch. How do you feel about that?  I would 
-still like to keep the log lines though because it is a uapi change. I am 
-worried that someone might exercise this path with GSS and allow for upcalls 
-into the main namespaces by accident -- or be confused of why they're seeing 
-upcalls "in a different namespace".
+> ---
+> This is a resend of a very old patch from 2013, which is still valid.
+>
+>  arch/parisc/include/uapi/asm/types.h | 7 -------
+>  1 file changed, 7 deletions(-)
+>  delete mode 100644 arch/parisc/include/uapi/asm/types.h
+>
+> diff --git a/arch/parisc/include/uapi/asm/types.h b/arch/parisc/include/=
+uapi/asm/types.h
+> deleted file mode 100644
+> index 28c7d7453b10f9b1..0000000000000000
+> --- a/arch/parisc/include/uapi/asm/types.h
+> +++ /dev/null
+> @@ -1,7 +0,0 @@
+> -/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
+> -#ifndef _PARISC_TYPES_H
+> -#define _PARISC_TYPES_H
+> -
+> -#include <asm-generic/int-ll64.h>
+> -
+> -#endif
+>
 
-Are you okay with picking up ("NFS: NFSv2/NFSv3: Use cred from fs_context during 
-mount") without any changes?
-
-I can respin ("NFSv4: Refactor NFS to use user namespaces") without:
-/*
- * nfs4idmap is not fully isolated by user namespaces. It is currently
- * only network namespace aware. If upcalls never happen, we do not
- * need to worry as nfs_client instances aren't shared between
- * user namespaces.
- */
-if (idmap_userns(server->nfs_client->cl_idmap) != &init_user_ns && 
-	!(server->caps & NFS_CAP_UIDGID_NOMAP)) {
-	error = -EINVAL;
-	errorf(fc, "Mount credentials are from non init user namespace and ID mapping is enabled. This is not allowed.");
-	goto error;
-}
-
-(and making it so we can call idmap_userns)
-
-> > > 
-> > > The current design assumes that the user namespace being used is
-> > > the one where 
-> > > the mount itself is performed. That means that the uids and gids or
-> > > usernames 
-> > > and groupnames that go on the wire match the uids and gids of the
-> > > container in 
-> > > which the mount occurred.
-> > > 
-> > 
-> > Right now, NFS does not have the ability for the fsmount() call to be
-> > called in an unprivileged user namespace. We can change that
-> > behaviour
-> > elsewhere if we want, but it's orthogonal to this.
-> > 
-> > > The assumption is that the server has authenticated that client as
-> > > belonging to a domain that it recognises (either through strong
-> > > RPCSEC_GSS/krb5 authentication, or through weaker matching of IP
-> > > addresses to a list of acceptable clients).
-> > > 
-> > I added a rejection for upcalls because upcalls can happen in the
-> > init 
-> > namespaces. We can drop that restriction from the nfs4 patch if you'd
-> > like. I
-> > *believe* (and I'm not a little out of my depth) that the request-key
-> > handler gets called with the *network namespace* of the NFS mount,
-> > but the userns is a privileged one, allowing for potential hazards.
-> > 
-> 
-> The idmapper already rejects upcalls to the keyring '/sbin/request-key'
-> utility if you're running with your own user namespace.
-> 
-> Quite frankly, switching to using the keyring was a mistake which I'd
-> undo if I could. Aside from not supporting containers, it is horribly
-> slow due to requiring a full process startup/teardown for every upcall,
-> so it scales poorly to large numbers of identities (particularly with
-> an operation like readdir() in which you're doing serial upcalls).
-> 
-> However nothing stops you from using the old NFSv4 idmapper daemon
-> (a.k.a. rpc.idmapd) in the context of the container that called
-> fsopen() so that it can translate identities correctly using whatever
-> userspace tools (ldap, sssd, winbind...) that the container has
-> configured.
-> 
-
-1. We see this as a potential security risk [this being upcalls] into the 
-unconfined portion of the system. Although, I'm sure that the userspace handlers 
-are written perfectly well, it allows for information leakage to occur.
-
-2. Is there a way to do this for NFSv3? 
-
-3. Can rpc.idmapd get the user namespace that the call is from (and is the 
-keyring per-userns?). In general, I think that this change follows the principal 
-of least surprise.
-
-> > The reason I added that block there is that I didn't imagine anyone
-> > was running 
-> > NFS in an unprivileged user namespace, and relying on upcalls
-> > (potentially into 
-> > privileged namespaces) in order to do authz.
-> > 
-> > 
-> > > If you go ahead and change the user namespace on the client without
-> > > going through the mount process again to mount a different super
-> > > block
-> > > with a different user namespace, then you will now get the exact
-> > > same
-> > > behaviour as if you do that with any other filesystem.
-> > 
-> > Not exactly, because other filesystems *only* use the s_user_ns for
-> > conversion 
-> > of UIDs, whereas NFS uses the currend_cred() acquired at mount time,
-> > which 
-> > doesn't match s_user_ns, leading to this behaviour.
-> > 
-> > 1. Mistranslated UIDs in encoding RPCs
-> > 2. The UID / GID exposed to VFS do not match the user ns.
-> > 
-> > > 
-> > > -- 
-> > > Trond Myklebust
-> > > Linux NFS client maintainer, Hammerspace
-> > > trond.myklebust@hammerspace.com
-> > > 
-> > > 
-> > -Thanks,
-> > Sargun
-> > 
-> > [1]:  
-> > https://elixir.bootlin.com/linux/v5.9.8/source/fs/nfs/nfs4idmap.c#L782
-> > [2]:  
-> > https://elixir.bootlin.com/linux/v5.9.8/source/fs/nfs/nfs4client.c#L1154
-> 
-> -- 
-> Trond Myklebust
-> Linux NFS client maintainer, Hammerspace
-> trond.myklebust@hammerspace.com
-> 
-> 
