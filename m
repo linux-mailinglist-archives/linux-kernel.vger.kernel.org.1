@@ -2,94 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 450282AE72D
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 04:45:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C8B62AE72F
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 04:46:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725995AbgKKDpD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 22:45:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43946 "EHLO
+        id S1726020AbgKKDqa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 22:46:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44168 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725849AbgKKDpC (ORCPT
+        with ESMTP id S1725849AbgKKDq3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 22:45:02 -0500
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A2B0C0613D1;
-        Tue, 10 Nov 2020 19:45:02 -0800 (PST)
-Received: by mail-pf1-x441.google.com with SMTP id v12so767320pfm.13;
-        Tue, 10 Nov 2020 19:45:02 -0800 (PST)
+        Tue, 10 Nov 2020 22:46:29 -0500
+Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68E4CC0613D1
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 19:46:29 -0800 (PST)
+Received: by mail-lf1-x144.google.com with SMTP id r9so1224840lfn.11
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 19:46:29 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=rnbLMNtHljBapvM78K/ufrArsOT1Tj93sPuGgYeOtEE=;
-        b=Y5oCbCrfM+Pt96bcFo5KZ/gZRkyWbLRb2GfC6zVEPxyr2HExZgkg7DLoRmG0zvdgcP
-         tC9F/BD2B4Qe8gTOUn7bhcxV69qCmsdOgup+WWtnQ5qJCLVv9RkhbsXkTW1MJstDCIZS
-         Lfc1FBZO+f+7xBHVgsXDEUxGao1HD7BdQMuODda+axxweZfpY7iISBXTxy7FhBJoLFNq
-         Sd/Mdfnetx217r4oRy1V2tLWaMNhDnwM9VB68NtIZ9LFG1+dwbWmiXEFR7iufQpdABrc
-         4/EFH/3DFHDGmPCuVZVwXnFIE2Sa2Vkx4oANi2P2IKNMeAYN9ihxcyXJbeG4+eiCfdI1
-         QYYA==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=3t6N7lawJjBP2JugApBZuMw/tDi4/dja54qTDC3LDTE=;
+        b=TCz7gfD9YvJvcCxajlG6fxu8egxpS/yMtxA7AtAKfhbTeVp9svnlgyN8ae87GeuKTl
+         BzC+tFAEHFRDVWc+1mi4jQSfJV7skfozbiZSehuNU8eINmLL/2dyr7sN4yizhq4b6y2G
+         S0XqaqQxIwN7gfhJicBtnGgxYDMC74UVZ0zyFkFvYSJs8OY877SgXaUy1natQE+fKKEy
+         diWvzzLekC66kRWvJTDtzCHeclpgwWn3LvIsgie6KYnoucH/HQsiinfTsIfpczamaYlP
+         oC0uEdA88n0DZscfoCaJ0hOULesiFw33gCwekJtYA5YnNY+gEFvesVSLswqbMWouofZH
+         7fDQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=rnbLMNtHljBapvM78K/ufrArsOT1Tj93sPuGgYeOtEE=;
-        b=RN2kTQOgapuemCbuGvSVhcXyqwS0lUy8PuBrMvt6pDAkiNQRyPdE0yOG8utueMfw+M
-         pxGJt38CU7DqGd3CwtdKXZ9eOVnQfYzSgnbpX3KPluVn3juF02nkhj2LRKti4qGFqzfe
-         M3W2aCKTYqLTRYfbnDYz0qCQq+Wc/5v8UlN/aywJ88nPPiLDReEdwBz/9478TX/iclJ6
-         6BCDGzm/hwZX35ZSk7Ng8EdZsdiRMp+w4HMEq1gHbgqVXgy+vt32LAuKyp3WwQ6dTJ2p
-         +I6zAASPBLU3KtKJR1+wmZQ0iZZO/9uh2RiD4MRWzvPFsNI5kvQ3JHhv2kGrcWQaU1yt
-         LZ7g==
-X-Gm-Message-State: AOAM533pLKJQXJjuFynVuKI8us/1Csp/P1kFFjDawPzJcprWAjlRv5ks
-        U2n0MpQUCdilpQFcgYe5olI=
-X-Google-Smtp-Source: ABdhPJyQXfdALt9USvkJWka5bDoiURyvSCB8OLjcS0Y62X0s524S2msg1o4hUB9C2SiD4pxWqSlyrw==
-X-Received: by 2002:aa7:9888:0:b029:18b:a9e2:dc7a with SMTP id r8-20020aa798880000b029018ba9e2dc7amr20808115pfl.67.1605066301975;
-        Tue, 10 Nov 2020 19:45:01 -0800 (PST)
-Received: from [192.168.1.3] (ip68-111-84-250.oc.oc.cox.net. [68.111.84.250])
-        by smtp.gmail.com with ESMTPSA id c28sm619137pfj.108.2020.11.10.19.45.00
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 10 Nov 2020 19:45:01 -0800 (PST)
-Subject: Re: [RFC PATCH net-next 2/3] net: dsa: move switchdev event
- implementation under the same switch/case statement
-To:     Vladimir Oltean <olteanv@gmail.com>, Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     DENG Qingfang <dqfext@gmail.com>,
-        Tobias Waldekranz <tobias@waldekranz.com>,
-        Marek Behun <marek.behun@nic.cz>,
-        Russell King - ARM Linux admin <linux@armlinux.org.uk>
-References: <20201108131953.2462644-1-olteanv@gmail.com>
- <20201108131953.2462644-3-olteanv@gmail.com>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <650cc6e2-8bf7-57b9-595d-08624f545a07@gmail.com>
-Date:   Tue, 10 Nov 2020 19:44:59 -0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.4.2
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=3t6N7lawJjBP2JugApBZuMw/tDi4/dja54qTDC3LDTE=;
+        b=EqG0bqI2o1Qc0zsdtEdg8hyepHxxd3NwMAitflrjpcY+WOGa30wBjl3CNN9pZ2I00C
+         lfb/WA2oDfEwHLp8OPVXc708h4xV4A0hsswYuHUVoOKGuDO6hdnrd7iKeRxn4lnN0tHN
+         os0J8JuMmEJj54m23lzhwm7czcFuO7N915XAkFdaZsDjeFtetRFOy1ytSrsMWkqJ/K71
+         +JkmJrbfkPMTybN/reYQ81fVWSFW7QtyJiVROcGHx85C+/J+e9SRHs2ft7bEZ0kkBIKK
+         +x805NbUtrCv7hZlW+Hcls2ylvK31SQkxGSwWOLHRw3WLThJvWMGDwBnqBBaqBPUSwVR
+         lMVg==
+X-Gm-Message-State: AOAM533Escmr4Ml6jyYRzVzOrWYzun9P+i8/ERKEUER8bWaVbplZ+yvF
+        SuB5bRn6ztHZWZcgCluuZQUlGL8mUnV1ovoxoOV4+Q==
+X-Google-Smtp-Source: ABdhPJzhri29Lcv9I2CrgJRKofFFWBADl34Hok9TBcgb9X3tchwfM041ia/PkFydhh3aebhCMShBjKb9IGXv3lgcTqw=
+X-Received: by 2002:a19:3f56:: with SMTP id m83mr8121092lfa.381.1605066387685;
+ Tue, 10 Nov 2020 19:46:27 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20201108131953.2462644-3-olteanv@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20201109191601.14053-1-zengzhaoxiu@163.com> <20201109192508.14186-1-zengzhaoxiu@163.com>
+In-Reply-To: <20201109192508.14186-1-zengzhaoxiu@163.com>
+From:   Jann Horn <jannh@google.com>
+Date:   Wed, 11 Nov 2020 04:46:01 +0100
+Message-ID: <CAG48ez3OyH61+hJ+Azyoae0fA6=8tnVOw3VqKebCcH=dTvh2dg@mail.gmail.com>
+Subject: Re: [PATCH 2/3] lib: zlib_inflate: improves decompression performance
+To:     zengzhaoxiu@163.com
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        kernel list <linux-kernel@vger.kernel.org>,
+        Zhaoxiu Zeng <zhaoxiu.zeng@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Nov 9, 2020 at 8:27 PM <zengzhaoxiu@163.com> wrote:
+> This patch does:
+> 1. Cleanup code and reduce branches
+> 2. Use copy_from_back to copy the matched bytes from the back output buffer
 
-
-On 11/8/2020 5:19 AM, Vladimir Oltean wrote:
-> We'll need to start listening to SWITCHDEV_FDB_{ADD,DEL}_TO_DEVICE
-> events even for interfaces where dsa_slave_dev_check returns false, so
-> we need that check inside the switch-case statement for SWITCHDEV_FDB_*.
-> 
-> This movement also avoids two useless allocation / free paths for
-> switchdev_work, which were difficult to avoid before, due to the code's
-> structure:
-> - on the untreated "default event" case.
-> - on the case where fdb_info->added_by_user is false.
-> 
-> Signed-off-by: Vladimir Oltean <olteanv@gmail.com>
-
-Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
--- 
-Florian
+What exactly is copy_from_back()? Is it like memmove()? If yes, have
+you tried using memmove() instead of the code added in patch 1/3?
