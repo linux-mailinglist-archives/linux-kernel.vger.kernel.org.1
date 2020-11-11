@@ -2,287 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F7B62AEA2B
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 08:28:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7141A2AEA30
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 08:30:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726187AbgKKH2c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 02:28:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51386 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725904AbgKKH21 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 02:28:27 -0500
-Received: from mail-ot1-x342.google.com (mail-ot1-x342.google.com [IPv6:2607:f8b0:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A7D5C0613D6
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 23:28:27 -0800 (PST)
-Received: by mail-ot1-x342.google.com with SMTP id 30so1268495otx.9
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 23:28:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=h/Cku1++groDoIudZSzMGKm2dLSZyb3jfaMxuRhcM44=;
-        b=DtCVoeuLQ0cF4bur7H1dmJR67mXXpDZ75psHAIcNKR35IR5/lZlzo9+7iLl7MZ4U+t
-         HNGUZk348TQ58/Z8UB/yiSBeuPDLhoPH2OCBSCXdtxcGQMuBIRk6ecvgarUs+qacDbm7
-         ZpervRhot+3+XU+NBnyK0Bcksk9OEcKrtmw1M=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=h/Cku1++groDoIudZSzMGKm2dLSZyb3jfaMxuRhcM44=;
-        b=l7jsdc4gBPyNwU/90y5b/imTqPLGpJVcnwvjRBX9W7fU3aqh1u67+vYkAYCJaTZl/e
-         SZSXPBFtLDxuYaVogOrjcWvW4rpboqM5dX0sf5LzpZ/v7RWDbqwZesYWclz9KzMo/f5e
-         yRAgxjFVimUZg8MK3bMrQEb5REb/Bp8RSbHIql3BKWh6Q6zfUBjgnL0eCvoDrxa9V2LH
-         8gmpO/dQCzhLxwd19GUYZDPcG6Gedfh+PTLfPp4D+gYgCEl4gFZQX0VVroQtiEmhXG3H
-         W5DHyCdlCkyS93jMEA3xQGbArvbhAwuhlg9OUDIqeYjRodhK0C8YvR7jCjIiDeh0e1MZ
-         as0A==
-X-Gm-Message-State: AOAM531lkJG5ROJWMKxRVYOpy/l1FkFKM1SCahmRu/7+4jxTIzg9tH5W
-        ImaxGC+4f81gNlLlM1WwlSBfSmncTyykhXtIy6+INQ==
-X-Google-Smtp-Source: ABdhPJzEvrRe1WOy4obCtHzIIXRR8Lo1+duzLVyXSxF+9UALAM0sAEzAIXxDRhpRqGq5EF6jQuOzneU4VyRjGbGtjMI=
-X-Received: by 2002:a9d:a0d:: with SMTP id 13mr15816351otg.348.1605079706407;
- Tue, 10 Nov 2020 23:28:26 -0800 (PST)
+        id S1726136AbgKKHap (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 02:30:45 -0500
+Received: from mga07.intel.com ([134.134.136.100]:51152 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725916AbgKKHai (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Nov 2020 02:30:38 -0500
+IronPort-SDR: 4KKLWYtkMOfbfqfAqC6fU6CeXrmP0Lnk93II3Gj2wQKSrpctPHIQujV/sa0rtca3UnJJ5MdJkb
+ AiI+xaxUTDcg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9801"; a="234275075"
+X-IronPort-AV: E=Sophos;i="5.77,468,1596524400"; 
+   d="scan'208";a="234275075"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Nov 2020 23:30:38 -0800
+IronPort-SDR: oD3LTDIOJ7KQhkC+0v66qCq5kn4+9jf/vj3+0JHksKJAUsQl2DjQCtTUopwNajhVKSl54XMKc1
+ bZozxvbv9q7A==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,468,1596524400"; 
+   d="scan'208";a="323183072"
+Received: from orsmsx601.amr.corp.intel.com ([10.22.229.14])
+  by orsmga003.jf.intel.com with ESMTP; 10 Nov 2020 23:30:38 -0800
+Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
+ ORSMSX601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Tue, 10 Nov 2020 23:30:37 -0800
+Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
+ orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1713.5
+ via Frontend Transport; Tue, 10 Nov 2020 23:30:37 -0800
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (104.47.58.170)
+ by edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.1713.5; Tue, 10 Nov 2020 23:30:37 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=eWiuzZ9JBebki0Wocvlq84CR88Q3Qn98jdJd9SoFE6jtmIaCtgBm6khQ9Y0DX27G4X0/xctf+gpgzOQN786zmrMclfFFu3Sx2XtCLxmY+x/6uyFnPUmrspt3zXBfZVvleQtiQk+EwFTLKfuC5l7SYL+3/rBJ1wY9z7PERWHpFAOSEXDc+w1yEIeNgIlU5Ut8x+M/4PwwJXVuIFwamIKyFMmBwrD/ZxFNGqhVXVLSxItMIehGXMI53+Phjp4yjEVouP3+YgfmurpA2XsLQ2jeMORL5wrN3ZZNvq2iWv2EgIBdw4PV5bqbWw7usKdZgc0fmRsgJwljp+Nkzet60BuQsQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=6IhR5ViETpxIZCnpFVpe/yFG9WUKOi1ItinHgr/zpLo=;
+ b=e+ku9UTOSvji6jWxSs6smDrfnjkYjKjsVg5cXJtUIKqQ2XWhoKJh3e1+5xIRniarGX0IOoQ7pq5nmk5RPAMlsU37D9lEBWcj2RYZ6BLc+B1vfTrcoWihLe+Xhyp7uwYitbpzg1rBiwBnpuXesfvhDoZqRCLFjByRVNtX7NNGPEUM44foGHxjNJN6CDimGl7kboOL+WMS6K1OJyi1lqn+ZBQCpFAUn9jFPceAEeLNJAczoXqeHR1igXGDBoyn3E+4k2tDyqlmknK39GWd+uPj+cQKsiwapeZZiur2skH3+NVj1Jw8MhGCQBWRW6RrazyK7fCjRswTP1jywJpuXJPV9g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
+ s=selector2-intel-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=6IhR5ViETpxIZCnpFVpe/yFG9WUKOi1ItinHgr/zpLo=;
+ b=a0/0/CrNjXTdjbA1nq9qvihLmE1v1NnLvWHteNor53TiMBRCzeXD1JfUTPDMUpIp3j4E+IUNQHiopWUAiEBnQTW0X2kL1iaYY0npi91W2VkBg4eaZmGXPFCib4zD0ERKZnHNnKJsMPALRmvwyPta+Z0+D3ubkLVcRaXakTlRizA=
+Received: from BYAPR11MB3448.namprd11.prod.outlook.com (2603:10b6:a03:76::21)
+ by SJ0PR11MB4976.namprd11.prod.outlook.com (2603:10b6:a03:2d7::5) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3541.25; Wed, 11 Nov
+ 2020 07:30:34 +0000
+Received: from BYAPR11MB3448.namprd11.prod.outlook.com
+ ([fe80::14fe:76f0:df82:d27f]) by BYAPR11MB3448.namprd11.prod.outlook.com
+ ([fe80::14fe:76f0:df82:d27f%5]) with mapi id 15.20.3541.025; Wed, 11 Nov 2020
+ 07:30:34 +0000
+From:   "Verma, Vishal L" <vishal.l.verma@intel.com>
+To:     "Widawsky, Ben" <ben.widawsky@intel.com>,
+        "hch@infradead.org" <hch@infradead.org>
+CC:     "Kelley, Sean V" <sean.v.kelley@intel.com>,
+        "Wysocki, Rafael J" <rafael.j.wysocki@intel.com>,
+        "linux-cxl@vger.kernel.org" <linux-cxl@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Williams, Dan J" <dan.j.williams@intel.com>,
+        "Weiny, Ira" <ira.weiny@intel.com>,
+        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        "bhelgaas@google.com" <bhelgaas@google.com>,
+        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>
+Subject: Re: [RFC PATCH 1/9] cxl/acpi: Add an acpi_cxl module for the CXL
+ interconnect
+Thread-Topic: [RFC PATCH 1/9] cxl/acpi: Add an acpi_cxl module for the CXL
+ interconnect
+Thread-Index: AQHWt+2uigGgJYIEAkacA1Kck/o98anCg4IAgAAFtoA=
+Date:   Wed, 11 Nov 2020 07:30:34 +0000
+Message-ID: <efe7500400db058e1460937fa2e90ded9c54ebe8.camel@intel.com>
+References: <20201111054356.793390-1-ben.widawsky@intel.com>
+         <20201111054356.793390-2-ben.widawsky@intel.com>
+         <20201111071006.GB7829@infradead.org>
+In-Reply-To: <20201111071006.GB7829@infradead.org>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+user-agent: Evolution 3.36.5 (3.36.5-1.fc32) 
+authentication-results: intel.com; dkim=none (message not signed)
+ header.d=none;intel.com; dmarc=none action=none header.from=intel.com;
+x-originating-ip: [134.134.137.75]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: e7a04cea-26be-495c-8d96-08d88613ad8e
+x-ms-traffictypediagnostic: SJ0PR11MB4976:
+x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr,ExtFwd
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <SJ0PR11MB49765F5B566BBE03F8CA0C40C7E80@SJ0PR11MB4976.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:3631;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: kgttTzoy54hVfhzPl80cxKjkkUEXMredpWYmqiWq8CqGd6tf5SgTlF/SnQ1xzwK74WL8sissaoK7+7EdkO9NLpl+M6XW2Ix1vsk1EyDA06LhWjLJ4RNe5/KAJ1dih+Gczky29ums48DpiY8AwO57yb0iEwcPxSdLZAlkWdrIoi8VtHbatLQWdwtRHegWEqWH2Z/fRSr0h6D6QOEw9ci8/EfeMp0/+NR0t3cUMY1P1Eiqew5iej+2KK0IHnp0WIDosjH7jRo4cPkeFQhvMbm+ptCnS2P0WBd5RD4pSBDgU/1+5RnQEwa/6yjJdFXweNcF0d3XgS7Tj2KS2q96+7MYZQ==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR11MB3448.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(346002)(136003)(366004)(39860400002)(376002)(186003)(76116006)(5660300002)(64756008)(66446008)(66946007)(66556008)(66476007)(6512007)(2616005)(86362001)(316002)(91956017)(8936002)(54906003)(4326008)(8676002)(26005)(2906002)(478600001)(6486002)(6506007)(4001150100001)(110136005)(71200400001)(36756003)(83380400001);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: oDBhD13Lg2PWhP8Xb3J7jusZ+5UOZoUZknYh5BzCeAl0tN7vsGbwIWCKvUF1yNlJRlFT/iQ2q71zXxDAh7CxglWwm4OLRPnbI+6D+LFISvjiVla2FUKHLYE8V7MuGsFjHEPyAUZDlrDjJIaDLhW9zBc+Juhv3r5crDBiK51BI59c50HRo/75nMEEZF9XzugY2IBAgL6zC9UduSCIuBS3L7fOPkDCLarqvpnaLesltnCjiIG4JVXVH+Ur3qJnMiA1a6H47bAF2akKbYfy5KxmoxrszTBelOqxcbenl/QuDK7BU8ajBrOSYIm5Ed+a+P+Z/LmBImuWXqJqlGI6EJ+p3N522bHz4wDcANIP7nnEyJ8HWg/SwU2zvf1skKLTm8lvDSDPRbfiKxcYLTLBWIG/w2tQeWlabm18gQKMudzDpGqoYCcdpPYuhzGwg/aQokHdZwG76gZiV1WlRhEaesKy5pTvTFyij42caN2o2RUkKNEJqMN69DyOnT7Es7jvxi2nNIJRdZTfjMmVDcrtkdBWvU/nxzMlncq04x4vTW4vWeYhU/p53HUbNq8cSa2zAv2o/GJhp/wVL9KDqMYZqr9qFDpzFGBCO5ySyCbZk67gmCCadqGFeiZue5jIRW5Agqnf6Jo9goPTvDbWy997EcWiy3cBlD/ldBw5Ynz44BLhwjD/xSgIMxXd0/joySB3EjbtzwnJfQ+ooalGEkw7elrg9/SLsLv1hE6iyfCR948DDpktVgIsLyQUa44rfvVoluzUV7mQ7U92VFGUsevTHvvvdU+7ZmjEW0PcXKqq9bj9FzSbG/sxvq1pCazVbQEdVUfkVaoFxjwrc98GIsT241LS9J0FZsifvEdQ4j6e6FGbvzyXNZzEsbiHBZPbut4iGphPLU9etrecc0N4sJMZGkf7Uw==
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <993D43F3972A5844BF5B73A231369203@namprd11.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-References: <1597850436-116171-1-git-send-email-john.garry@huawei.com>
- <1597850436-116171-18-git-send-email-john.garry@huawei.com>
- <fe3dff7dae4494e5a88caffbb4d877bbf472dceb.camel@redhat.com>
- <385d5408-6ba2-6bb6-52d3-b59c9aa9c5e5@huawei.com> <193a0440eed447209c48bda042f0e4db102355e7.camel@redhat.com>
- <519e0d58-e73e-22ce-0ddb-1be71487ba6d@huawei.com> <d8fd51b11d5d54e6ec7e4e9a4f7dcc83f1215cd3.camel@redhat.com>
- <d4f86cccccc3bffccc4eda39500ce1e1fee2109a.camel@redhat.com>
- <7624d3fe1613f19af5c3a77f4ae8fe55@mail.gmail.com> <d1040c06-74ea-7016-d259-195fa52196a9@huawei.com>
- <CAL2rwxoAAGQDud1djb3_LNvBw95YoYUGhe22FwE=hYhy7XOLSw@mail.gmail.com>
- <aaf849d38ca3cdd45151ffae9b6a99fe6f6ea280.camel@redhat.com>
- <0c75b881-3096-12cf-07cc-1119ca6a453e@huawei.com> <06a1a6bde51a66461d7b3135349641856315401d.camel@redhat.com>
- <db92d37c-28fd-4f81-7b59-8f19e9178543@huawei.com> <8043d516-c041-c94b-a7d9-61bdbfef0d7e@huawei.com>
-In-Reply-To: <8043d516-c041-c94b-a7d9-61bdbfef0d7e@huawei.com>
-From:   Sumit Saxena <sumit.saxena@broadcom.com>
-Date:   Wed, 11 Nov 2020 12:57:59 +0530
-Message-ID: <CAL2rwxpQt-w2Re8ttu0=6Yzb7ibX3_FB6j-kd_cbtrWxzc7chw@mail.gmail.com>
-Subject: Re: [PATCH v8 17/18] scsi: megaraid_sas: Added support for shared
- host tagset for cpuhotplug
-To:     John Garry <john.garry@huawei.com>
-Cc:     Qian Cai <cai@redhat.com>,
-        Kashyap Desai <kashyap.desai@broadcom.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        don.brace@microsemi.com, Ming Lei <ming.lei@redhat.com>,
-        Bart Van Assche <bvanassche@acm.org>, dgilbert@interlog.com,
-        paolo.valente@linaro.org, Hannes Reinecke <hare@suse.de>,
-        Christoph Hellwig <hch@lst.de>, linux-block@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux SCSI List <linux-scsi@vger.kernel.org>,
-        esc.storagedev@microsemi.com,
-        "PDL,MEGARAIDLINUX" <megaraidlinux.pdl@broadcom.com>,
-        chenxiang66@hisilicon.com, luojiaxing@huawei.com,
-        Hannes Reinecke <hare@suse.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR11MB3448.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: e7a04cea-26be-495c-8d96-08d88613ad8e
+X-MS-Exchange-CrossTenant-originalarrivaltime: 11 Nov 2020 07:30:34.5887
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: eDr2RmMaKpPRHy4mt0emIL1dg9m2idzBCFswXzzfdyuiQBvcBuDq1EeQcNJ5ma8JmaMbHWxa/MiwO1bVjnqn/OnyWsIgiYsd2qHSVol2yDU=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR11MB4976
+X-OriginatorOrg: intel.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 10, 2020 at 11:12 PM John Garry <john.garry@huawei.com> wrote:
->
-> On 09/11/2020 14:05, John Garry wrote:
-> > On 09/11/2020 13:39, Qian Cai wrote:
-> >>> I suppose I could try do this myself also, but an authentic version
-> >>> would be nicer.
-> >> The closest one I have here is:
-> >> https://cailca.coding.net/public/linux/mm/git/files/master/arm64.confi=
-g
-> >>
-> >> but it only selects the Thunder X2 platform and needs to manually sele=
-ct
-> >> CONFIG_MEGARAID_SAS=3Dm to start with, but none of arm64 systems here =
-have
-> >> megaraid_sas.
-> >
-> > Thanks, I'm confident I can fix it up to get it going on my Huawei arm6=
-4
-> > D06CS.
-> >
-> > So that board has a megaraid sas card. In addition, it also has hisi_sa=
-s
-> > HW, which is another storage controller which we enabled this same
-> > feature which is causing the problem.
-> >
-> > I'll report back when I can.
->
-> So I had to hack that arm64 config a bit to get it booting:
-> https://github.com/hisilicon/kernel-dev/commits/private-topic-sas-5.10-me=
-garaid-hang
->
-> Boot is ok on my board without the megaraid sas card, but includes
-> hisi_sas HW (which enables the equivalent option which is exposing the
-> problem).
->
-> But the board with the megaraid sas boots very slowly, specifically
-> around the megaraid sas probe:
->
-> : ttyS0 at MMIO 0x3f00002f8 (irq =3D 17, base_baud =3D 115200) is a 16550=
-A
-> [   50.023726][    T1] printk: console [ttyS0] enabled
-> [   50.412597][    T1] megasas: 07.714.04.00-rc1
-> [   50.436614][    T5] megaraid_sas 0000:08:00.0: FW now in Ready state
-> [   50.450079][    T5] megaraid_sas 0000:08:00.0: 63 bit DMA mask and 63
-> bit consistent mask
-> [   50.467811][    T5] megaraid_sas 0000:08:00.0: firmware supports msix
->         : (128)
-> [   50.845995][    T5] megaraid_sas 0000:08:00.0: requested/available
-> msix 128/128
-> [   50.861476][    T5] megaraid_sas 0000:08:00.0: current msix/online
-> cpus      : (128/128)
-> [   50.877616][    T5] megaraid_sas 0000:08:00.0: RDPQ mode     : (enable=
-d)
-> [   50.891018][    T5] megaraid_sas 0000:08:00.0: Current firmware
-> supports maximum commands: 4077       LDIO threshold: 0
-> [   51.262942][    T5] megaraid_sas 0000:08:00.0: Performance mode
-> :Latency (latency index =3D 1)
-> [   51.280749][    T5] megaraid_sas 0000:08:00.0: FW supports sync cache
->         : Yes
-> [   51.295451][    T5] megaraid_sas 0000:08:00.0:
-> megasas_disable_intr_fusion is called outbound_intr_mask:0x40000009
-> [   51.387474][    T5] megaraid_sas 0000:08:00.0: FW provided
-> supportMaxExtLDs: 1       max_lds: 64
-> [   51.404931][    T5] megaraid_sas 0000:08:00.0: controller type
-> : MR(2048MB)
-> [   51.419616][    T5] megaraid_sas 0000:08:00.0: Online Controller
-> Reset(OCR)  : Enabled
-> [   51.436132][    T5] megaraid_sas 0000:08:00.0: Secure JBOD support
-> : Yes
-> [   51.450265][    T5] megaraid_sas 0000:08:00.0: NVMe passthru support
-> : Yes
-> [   51.464757][    T5] megaraid_sas 0000:08:00.0: FW provided TM
-> TaskAbort/Reset timeout        : 6 secs/60 secs
-> [   51.484379][    T5] megaraid_sas 0000:08:00.0: JBOD sequence map
-> support     : Yes
-> [   51.499607][    T5] megaraid_sas 0000:08:00.0: PCI Lane Margining
-> support    : No
-> [   51.547610][    T5] megaraid_sas 0000:08:00.0: NVME page size
-> : (4096)
-> [   51.608635][    T5] megaraid_sas 0000:08:00.0:
-> megasas_enable_intr_fusion is called outbound_intr_mask:0x40000000
-> [   51.630285][    T5] megaraid_sas 0000:08:00.0: INIT adapter done
-> [   51.649854][    T5] megaraid_sas 0000:08:00.0: pci id
-> : (0x1000)/(0x0016)/(0x19e5)/(0xd215)
-> [   51.667873][    T5] megaraid_sas 0000:08:00.0: unevenspan support    :=
- no
-> [   51.681646][    T5] megaraid_sas 0000:08:00.0: firmware crash dump   :=
- no
-> [   51.695596][    T5] megaraid_sas 0000:08:00.0: JBOD sequence map
-> : enabled
-> [   51.711521][    T5] megaraid_sas 0000:08:00.0: Max firmware commands:
-> 4076 shared with nr_hw_queues =3D 127
-> [   51.733056][    T5] scsi host0: Avago SAS based MegaRAID driver
-> [   65.304363][    T5] scsi 0:0:0:0: Direct-Access     ATA      SAMSUNG
-> MZ7KH1T9 404Q PQ: 0 ANSI: 6
-> [   65.392401][    T5] scsi 0:0:1:0: Direct-Access     ATA      SAMSUNG
-> MZ7KH1T9 404Q PQ: 0 ANSI: 6
-> [   79.508307][    T5] scsi 0:0:65:0: Enclosure         HUAWEI
-> Expander 12Gx16  131  PQ: 0 ANSI: 6
-> [  183.965109][   C14] random: fast init done
->
-> Notice the 14 and 104 second delays.
->
-> But does boot fully to get to the console. I'll wait for further issues,
-> which you guys seem to experience after a while.
->
-> Thanks,
-> John
-"megaraid_sas" driver calls =E2=80=9Cscsi_scan_host()=E2=80=9D to discover =
-SCSI
-devices. In this failure case, scsi_scan_host() is taking a long time
-to complete, hence causing delay in system boot.
-With "host_tagset" enabled, scsi_scan_host() takes around 20 mins.
-With "host_tagset" disabled, scsi_scan_host() takes upto 5-8 mins.
-
-The scan time depends upon the number of scsi channels and devices per
-scsi channel is exposed by LLD.
-megaraid_sas driver exposes 4 channels and 128 drives per channel.
-
-Each target scan takes 2 seconds (in case of failure with host_tagset
-enabled).  That's why driver load completes after ~20 minutes. See
-below:
-
-[  299.725271] kobject: 'target18:0:96': free name
-[  301.681267] kobject: 'target18:0:97' (00000000987c7f11):
-kobject_cleanup, parent 0000000000000000
-[  301.681269] kobject: 'target18:0:97' (00000000987c7f11): calling
-ktype release
-[  301.681273] kobject: 'target18:0:97': free name
-[  303.575268] kobject: 'target18:0:98' (00000000a8c34149):
-kobject_cleanup, parent 0000000000000000
-
-In Qian's kernel .config, async scsi scan is disabled so in failure
-case SCSI scan type is synchronous.
-Below is the stack trace when scsi_scan_host() hangs:
-
-[<0>] __wait_rcu_gp+0x134/0x170
-[<0>] synchronize_rcu.part.80+0x53/0x60
-[<0>] blk_free_flush_queue+0x12/0x30
-[<0>] blk_mq_hw_sysfs_release+0x21/0x70
-[<0>] kobject_release+0x46/0x150
-[<0>] blk_mq_release+0xb4/0xf0
-[<0>] blk_release_queue+0xc4/0x130
-[<0>] kobject_release+0x46/0x150
-[<0>] scsi_device_dev_release_usercontext+0x194/0x3f0
-[<0>] execute_in_process_context+0x22/0xa0
-[<0>] device_release+0x2e/0x80
-[<0>] kobject_release+0x46/0x150
-[<0>] scsi_alloc_sdev+0x2e7/0x310
-[<0>] scsi_probe_and_add_lun+0x410/0xbd0
-[<0>] __scsi_scan_target+0xf2/0x530
-[<0>] scsi_scan_channel.part.7+0x51/0x70
-[<0>] scsi_scan_host_selected+0xd4/0x140
-[<0>] scsi_scan_host+0x198/0x1c0
-
-This issue hits when lock related debugging is enabled in kernel config.
-kernel .config parameters(may be subset of this list) are required to
-hit the issue:
-
-CONFIG_PREEMPT_COUNT=3Dy
-CONFIG_UNINLINE_SPIN_UNLOCK=3Dy
-CONFIG_LOCK_STAT=3Dy
-CONFIG_DEBUG_RT_MUTEXES=3Dy
-CONFIG_DEBUG_SPINLOCK=3Dy
-CONFIG_DEBUG_MUTEXES=3Dy
-CONFIG_DEBUG_WW_MUTEX_SLOWPATH=3Dy
-CONFIG_DEBUG_RWSEMS=3Dy
-CONFIG_DEBUG_LOCK_ALLOC=3Dy
-CONFIG_LOCKDEP=3Dy
-CONFIG_DEBUG_LOCKDEP=3Dy
-CONFIG_TRACE_IRQFLAGS=3Dy
-CONFIG_TRACE_IRQFLAGS_NMI=3Dy
-CONFIG_DEBUG_KOBJECT=3Dy
-CONFIG_PROVE_RCU=3Dy
-CONFIG_PREEMPTIRQ_TRACEPOINTS=3Dy
-
-When scsi_scan_host() hangs, there are no outstanding IOs with
-megaraid_sas driver-firmware stack as SCSI "host_busy" counter and
-megaraid_sas driver's internal counter are "0".
-Key takeaways:
-1. Issue is observed when lock related debugging is enabled so issue
-is seen in debug environment.
-2. Issue seems to be related to generic shared "host_tagset" code
-whenever some kind of kernel debugging is enabled. We do not see an
-immediate reason to hide this issue through disabling the
-"host_tagset" feature.
-
-John,
-Issue may hit on ARM platform too using Qian's .config file with other
-adapters (e.g. hisi_sas) as well. So I feel disabling =E2=80=9Chost_tagset=
-=E2=80=9D in
-megaraid_sas driver will not help.  It requires debugging from the
-=E2=80=9CEntire Shared host tag feature=E2=80=9D perspective as scsi_scan_h=
-ost()
-waittime aggravates when "host_tagset" is enabled. Also, I am doing
-parallel debugging and if I find anything useful, I will share.
-
-Qian,
-I need full dmesg logs from your setup with
-megaraid_sas.host_tagset_enable=3D1 and
-megaraid_sas.host_tagset_enable=3D0. Please wait for a long time. I just
-want to make sure that whatever you observe is the same as mine.
-
-Thanks,
-Sumit
+T24gV2VkLCAyMDIwLTExLTExIGF0IDA3OjEwICswMDAwLCBDaHJpc3RvcGggSGVsbHdpZyB3cm90
+ZToNCj4gT24gVHVlLCBOb3YgMTAsIDIwMjAgYXQgMDk6NDM6NDhQTSAtMDgwMCwgQmVuIFdpZGF3
+c2t5IHdyb3RlOg0KPiA+ICttZW51Y29uZmlnIENYTF9CVVMNCj4gPiArCXRyaXN0YXRlICJDWEwg
+KENvbXB1dGUgRXhwcmVzcyBMaW5rKSBEZXZpY2VzIFN1cHBvcnQiDQo+ID4gKwloZWxwDQo+ID4g
+KwkgIENYTCBpcyBhIGJ1cyB0aGF0IGlzIGVsZWN0cmljYWxseSBjb21wYXRpYmxlIHdpdGggUENJ
+LUUsIGJ1dCBsYXllcnMNCj4gPiArCSAgdGhyZWUgcHJvdG9jb2xzIG9uIHRoYXQgc2lnbmFsbGlu
+ZyAoQ1hMLmlvLCBDWEwuY2FjaGUsIGFuZCBDWEwubWVtKS4gVGhlDQo+ID4gKwkgIENYTC5jYWNo
+ZSBwcm90b2NvbCBhbGxvd3MgZGV2aWNlcyB0byBob2xkIGNhY2hlbGluZXMgbG9jYWxseSwgdGhl
+DQo+ID4gKwkgIENYTC5tZW0gcHJvdG9jb2wgYWxsb3dzIGRldmljZXMgdG8gYmUgZnVsbHkgY29o
+ZXJlbnQgbWVtb3J5IHRhcmdldHMsIHRoZQ0KPiA+ICsJICBDWEwuaW8gcHJvdG9jb2wgaXMgZXF1
+aXZhbGVudCB0byBQQ0ktRS4gU2F5ICd5JyB0byBlbmFibGUgc3VwcG9ydCBmb3INCj4gPiArCSAg
+dGhlIGNvbmZpZ3VyYXRpb24gYW5kIG1hbmFnZW1lbnQgb2YgZGV2aWNlcyBzdXBwb3J0aW5nIHRo
+ZXNlIHByb3RvY29scy4NCj4gPiArDQo+IA0KPiBQbGVhc2UgZml4IHRoZSBvdmVybHkgbG9uZyBs
+aW5lcy4NCj4gDQo+ID4gK3N0YXRpYyB2b2lkIGFjcGlfY3hsX2Rlc2NfaW5pdChzdHJ1Y3QgYWNw
+aV9jeGxfZGVzYyAqYWNwaV9kZXNjLCBzdHJ1Y3QgZGV2aWNlICpkZXYpDQo+IA0KPiBBbm90aGVy
+IG92ZXJseSBsb25nIGxpbmUuDQoNCkhpIENocmlzdHBwaCwNCg0KSSB0aG91Z2h0IDEwMCBjb2wu
+IGxpbmVzIHdlcmUgYWNjZXB0YWJsZSBub3cuDQoNCj4gDQo+ID4gK3sNCj4gPiArCWRldl9zZXRf
+ZHJ2ZGF0YShkZXYsIGFjcGlfZGVzYyk7DQo+ID4gKwlhY3BpX2Rlc2MtPmRldiA9IGRldjsNCj4g
+PiArfQ0KPiANCj4gQnV0IHRoaXMgaGVscGVyIHNlZW1zIHByZXR0eSBwb2ludGxlc3MgdG8gc3Rh
+cnQgd2l0aC4NCj4gDQo+ID4gK3N0YXRpYyBpbnQgYWNwaV9jeGxfcmVtb3ZlKHN0cnVjdCBhY3Bp
+X2RldmljZSAqYWRldikNCj4gPiArew0KPiA+ICsJcmV0dXJuIDA7DQo+ID4gK30NCj4gDQo+IFRo
+ZSBlbXB0cnkgcmVtb3ZlIGNhbGxiYWNrIGlzIG5vdCBuZWVkZWQuDQoNCkFncmVlZCBvbiBib3Ro
+IG9mIHRoZSBhYm92ZSBjb21tZW50cyAtIHRoZXNlIGFyZSBqdXN0IGJvaWxlcnBsYXRlIGZvcg0K
+bm93LCBJIGV4cGVjdCB0aGV5IHdpbGwgZ2V0IGZpbGxlZCBpbiBpbiB0aGUgbmV4dCByZXZpc2lv
+biBhcyBtb3JlDQpmdW5jdGlvbmFsaXR5IGdldHMgZmxlc2hlZCBvdXQuIElmIHRoZXkgYXJlIHN0
+aWxsIGVtcHR5L25vLW9wIGJ5IHRoZW4gSQ0Kd2lsbCByZW1vdmUgdGhlbS4NCg0KPiANCj4gPiAr
+LyoNCj4gPiArICogSWYvd2hlbiBDWEwgc3VwcG9ydCBpcyBkZWZpbmVkIGJ5IG90aGVyIHBsYXRm
+b3JtIGZpcm13YXJlIHRoZSBrZXJuZWwNCj4gPiArICogd2lsbCBuZWVkIGEgbWVjaGFuaXNtIHRv
+IHNlbGVjdCBiZXR3ZWVuIHRoZSBwbGF0Zm9ybSBzcGVjaWZpYyB2ZXJzaW9uDQo+ID4gKyAqIG9m
+IHRoaXMgcm91dGluZSwgdW50aWwgdGhlbiwgaGFyZC1jb2RlIEFDUEkgYXNzdW1wdGlvbnMNCj4g
+PiArICovDQo+ID4gK2ludCBjeGxfYnVzX3ByZXBhcmVkKHN0cnVjdCBwY2lfZGV2ICpwZGV2KQ0K
+PiA+ICt7DQo+ID4gKwlzdHJ1Y3QgYWNwaV9kZXZpY2UgKmFkZXY7DQo+ID4gKwlzdHJ1Y3QgcGNp
+X2RldiAqcm9vdF9wb3J0Ow0KPiA+ICsJc3RydWN0IGRldmljZSAqcm9vdDsNCj4gPiArDQo+ID4g
+Kwlyb290X3BvcnQgPSBwY2llX2ZpbmRfcm9vdF9wb3J0KHBkZXYpOw0KPiA+ICsJaWYgKCFyb290
+X3BvcnQpDQo+ID4gKwkJcmV0dXJuIC1FTlhJTzsNCj4gPiArDQo+ID4gKwlyb290ID0gcm9vdF9w
+b3J0LT5kZXYucGFyZW50Ow0KPiA+ICsJaWYgKCFyb290KQ0KPiA+ICsJCXJldHVybiAtRU5YSU87
+DQo+ID4gKw0KPiA+ICsJYWRldiA9IEFDUElfQ09NUEFOSU9OKHJvb3QpOw0KPiA+ICsJaWYgKCFh
+ZGV2KQ0KPiA+ICsJCXJldHVybiAtRU5YSU87DQo+ID4gKw0KPiA+ICsJLyogVE9ETzogT1NDIGVu
+YWJsaW5nICovDQo+ID4gKw0KPiA+ICsJcmV0dXJuIDA7DQo+ID4gK30NCj4gPiArRVhQT1JUX1NZ
+TUJPTF9HUEwoY3hsX2J1c19wcmVwYXJlZCk7DQo+IA0KPiBXaGF0IGlzIHRoZSBwb2ludCBvZiB0
+aGlzIGZ1bmN0aW9uPyAgSSBkb2Vzbid0IHJlYWx5IGRvIGFueXRoaW5nLA0KPiBub3QgZXZlbiBh
+IENYTCBzcGVjaWZpYyBjaGVjay4gIA0KDQpUaGlzIGdldHMgYSBiaXQgbW9yZSBmbGVzaGVkIG91
+dCBpbiBwYXRjaCAyLiBJIGtlcHQgdGhhdCBzZXBhcmF0ZSBzbw0KdGhhdCBpdCBpcyBlYXNpZXIg
+dG8gcmV2aWV3IHRoZSBidWxrIG9mIHRoZSBfT1NDIHdvcmsgaW4gdGhhdCBwYXRjaA0Kd2l0aG91
+dCB0aGlzIGRyaXZlciBib2lsZXJwbGF0ZSBnZXR0aW5nIGluIHRoZSB3YXkuDQoNCj4gDQo+ID4g
+IA0KPiA+ICsvKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioq
+KioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKg0KPiA+ICsgKg0KPiA+ICsgKiBDRURUIC0g
+Q1hMIEVhcmx5IERpc2NvdmVyeSBUYWJsZSAoQUNQSSA2LjQpDQo+ID4gKyAqICAgICAgICBWZXJz
+aW9uIDENCj4gPiArICoNCj4gPiArICoqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioq
+KioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKi8NCj4gPiArDQo+IA0K
+PiBQbGVhZSB1c2UgdGhlIG5vcm1hbCBMaW51eCBjb21tZW50IHN0eWxlLg0KPiANCj4gDQo+ID4g
+KyNkZWZpbmUgQUNQSV9DRURUX0NIQlNfVkVSU0lPTl9DWEwxMSAgICAoMCkNCj4gPiArI2RlZmlu
+ZSBBQ1BJX0NFRFRfQ0hCU19WRVJTSU9OX0NYTDIwICAgICgxKQ0KPiA+ICsNCj4gPiArLyogVmFs
+dWVzIGZvciBsZW5ndGggZmllbGQgYWJvdmUgKi8NCj4gPiArDQo+ID4gKyNkZWZpbmUgQUNQSV9D
+RURUX0NIQlNfTEVOR1RIX0NYTDExICAgICAoMHgyMDAwKQ0KPiA+ICsjZGVmaW5lIEFDUElfQ0VE
+VF9DSEJTX0xFTkdUSF9DWEwyMCAgICAgKDB4MTAwMDApDQo+IA0KPiBObyBuZWVkIGZvciB0aGUg
+YnJhY2VzLg0KDQpGb3IgYm90aCBvZiB0aGVzZSAtIHNlZSB0aGUgbm90ZSBpbiB0aGUgY29tbWl0
+IG1lc3NhZ2UuIEkganVzdCBmb2xsb3dlZA0KdGhlIEFDUEkgaGVhZGVyJ3Mgc3R5bGUsIGFuZCB0
+aGVzZSBodW5rcyBhcmUgb25seSBpbiB0aGlzIHNlcmllcyB0byBtYWtlDQppdCB1c2FibGUuIEkg
+ZXhwZWN0IHRoZSAnYWN0dWFsJyBzdHJ1Y3QgZGVmaW5pdGlvbnMsIG5hbWluZyBldGMgd2lsbA0K
+Y29tZSB0aHJvdWdoIEFDUElDQS4NCg0K
