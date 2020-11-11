@@ -2,164 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51FEF2AF9F2
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 21:46:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 502022AFA02
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 21:47:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726865AbgKKUpw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 15:45:52 -0500
-Received: from mail1.protonmail.ch ([185.70.40.18]:39942 "EHLO
-        mail1.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725900AbgKKUpv (ORCPT
+        id S1726552AbgKKUrd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 15:47:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36716 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725959AbgKKUrd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 15:45:51 -0500
-Date:   Wed, 11 Nov 2020 20:45:38 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me; s=protonmail;
-        t=1605127548; bh=PBGKEoBc5TqnNvKjdre9o7gs+BzG9F9/O6Jd+eE2xuQ=;
-        h=Date:To:From:Cc:Reply-To:Subject:From;
-        b=EbZ6JiWR22TFUuM/vh+9LAASIOmEU0ukpQSy20Xzg4GDNubDLLWbSwteYDViiFHtR
-         O2cMKYclwgCRMomNRCi0CxZ8Qxn44pc1IKxYqs90QtgO17XXYQAwOJbbcIfffDtrBU
-         TuwoaK/rSjc+5vzmP/42e+8tr3Z9IrVqJRO+W6oLmF/uYTqHv1hfWcTr9+jFKT34Yu
-         bvbTGUvT7xEabRdo9jolS+MmjA1Bp0DugikS8Cb2mRXRHpjJH2LEjklIGs+L3buYwH
-         7VUNO5jyGo7JjuPCyLWonX8iwCnpXATNW+YQ7sQDV2KcJkd9UzRc1ra0S5Tz7tzC8A
-         rbOkENCW5vHkQ==
-To:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-From:   Alexander Lobakin <alobakin@pm.me>
-Cc:     Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Willem de Bruijn <willemb@google.com>,
-        Steffen Klassert <steffen.klassert@secunet.com>,
-        Alexander Lobakin <alobakin@pm.me>,
-        Eric Dumazet <edumazet@google.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Reply-To: Alexander Lobakin <alobakin@pm.me>
-Subject: [PATCH v5 net 2/2] net: udp: fix IP header access and skb lookup on Fast/frag0 UDP GRO
-Message-ID: <sc7E1N6fUafwmUSYAu3TKgH39kfjNK5WuUi0wng54@cp4-web-030.plabs.ch>
+        Wed, 11 Nov 2020 15:47:33 -0500
+Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F34F5C0613D1
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 12:47:32 -0800 (PST)
+Received: by mail-lj1-x242.google.com with SMTP id o24so3604135ljj.6
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 12:47:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=kqXzWPcn/O/4CLOVfdqt2sWTguSFm5QeKMfYExO6Es0=;
+        b=GECEhQ1mi8lg9CRGuy+xJpcNXzJmDeYnBwiiuNZcN/mWFilVjdYlB4F6LhtZH6pmJH
+         1HnZyC2Z38vrnyUbjp3jPnWI0nniDsCjZdFRR9ifF2M56scO9VW29NOZhvo6lecArxYI
+         /80OM61hLATiEA267w/X7ja34tNhn/NKroYZw2b8SzT9MEsMUzWWQb/YmlnbHGIh+VSZ
+         eyebZ+6STGqx4mNKzix1cFBKfMaTZEga7XIVgGCI4mhU6XirWI8lupsdgD1ZmAnHAdPW
+         my9XLIlpspU+61ocMhnKv/s9TD4vRUqbWeYTG0gqqe+1rIgTP0u6qQGUTo2LD73oOE3i
+         MozA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=kqXzWPcn/O/4CLOVfdqt2sWTguSFm5QeKMfYExO6Es0=;
+        b=kFLL7x5m7ZUbhbRp013qpE/VDFhxOLjHjGHZAI104dtm+yMl1xdDHBK28Xhf0yY924
+         ankfS86Aqlm9vhE6sdQxxjMNcfAuGrwy9UTH4VZT8NxeAKT979Ml3W/ivjcSO+fsKi86
+         Qlu7V4YCspU5FUQXIp2AAbKA+a/UXJiAAxpQf/xGA+6RgQAARF8HVUPpIz1foXMEfskp
+         cfTure08OV+nZwyMbV94Hh00DtAMHJeZghnR6BsBuw4pps/B0nKjnCuuEEo5oGk9+AlJ
+         ITYMWP7euGaur1tEjctd7LT6syyfXekKf6uKzVNHJ0fLDHqV1bGxfzRwQyhBY9/pv4Wf
+         ztng==
+X-Gm-Message-State: AOAM532uXa7cGP6toIz3Jaq9gS4mLqTbXMel4dLbnxn6VB3yF4KkGZ/o
+        euzsDEB9AyTJpL7rtK9uWDDyRmy5Hdl6KQ==
+X-Google-Smtp-Source: ABdhPJwqT2b3RDMdIpLUc62Fp4ganTpJzm6XRy/RIgwv2RAwlcc7NslxV3tIBd3qngHgRaGEn9nR2g==
+X-Received: by 2002:a2e:8845:: with SMTP id z5mr10793727ljj.281.1605127651376;
+        Wed, 11 Nov 2020 12:47:31 -0800 (PST)
+Received: from octofox.metropolis ([5.19.183.212])
+        by smtp.gmail.com with ESMTPSA id f1sm330971ljp.65.2020.11.11.12.47.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 11 Nov 2020 12:47:30 -0800 (PST)
+From:   Max Filippov <jcmvbkbc@gmail.com>
+To:     linux-xtensa@linux-xtensa.org
+Cc:     Chris Zankel <chris@zankel.net>, linux-kernel@vger.kernel.org,
+        Max Filippov <jcmvbkbc@gmail.com>, Jens Axboe <axboe@kernel.dk>
+Subject: [PATCH] xtensa: fix broken TIF_NOTIFY_SIGNAL assembly
+Date:   Wed, 11 Nov 2020 12:47:23 -0800
+Message-Id: <20201111204723.21634-1-jcmvbkbc@gmail.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-udp{4,6}_lib_lookup_skb() use ip{,v6}_hdr() to get IP header of the
-packet. While it's probably OK for non-frag0 paths, this helpers
-will also point to junk on Fast/frag0 GRO when all headers are
-located in frags. As a result, sk/skb lookup may fail or give wrong
-results. To support both GRO modes, skb_gro_network_header() might
-be used. To not modify original functions, add private versions of
-udp{4,6}_lib_lookup_skb() only to perform correct sk lookups on GRO.
+TIF_NOTIFY_SIGNAL handling in xtensa assembly is implemented
+incorrectly: there should be a call to do_notify_resume when either
+TIF_SIGPENDING, TIF_NOTIFY_RESUME or TIF_NOTIFY_SIGNAL bit is set in the
+thread_info::flags. The straightforward way to do it would be
 
-Present since the introduction of "application-level" UDP GRO
-in 4.7-rc1.
+    _bbsi.l a4, TIF_NEED_RESCHED, 3f
+    _bbsi.l a4, TIF_NOTIFY_RESUME, 2f
+    _bbsi.l a4, TIF_NOTIFY_SIGNAL, 2f
+    _bbci.l a4, TIF_SIGPENDING, 5f
 
-Misc: replace totally unneeded ternaries with plain ifs.
+Optimize it a little bit and use bit mask and bnone opcode to skip
+do_notify_resume invocation. Shuffle _TIF_* flags a bit so that used bit
+mask fits into the immediate field of movi opcode.
 
-Fixes: a6024562ffd7 ("udp: Add GRO functions to UDP socket")
-Suggested-by: Willem de Bruijn <willemb@google.com>
-Cc: Eric Dumazet <edumazet@google.com>
-Cc: Jakub Kicinski <kuba@kernel.org>
-Signed-off-by: Alexander Lobakin <alobakin@pm.me>
+Fixes: 4c6a9dcd4d13 ("xtensa: add support for TIF_NOTIFY_SIGNAL")
+Cc: Jens Axboe <axboe@kernel.dk>
+Signed-off-by: Max Filippov <jcmvbkbc@gmail.com>
 ---
- net/ipv4/udp_offload.c | 17 +++++++++++++++--
- net/ipv6/udp_offload.c | 17 +++++++++++++++--
- 2 files changed, 30 insertions(+), 4 deletions(-)
+ arch/xtensa/include/asm/thread_info.h | 7 ++++---
+ arch/xtensa/kernel/entry.S            | 5 ++---
+ 2 files changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/net/ipv4/udp_offload.c b/net/ipv4/udp_offload.c
-index 13740e9fe6ec..c62805cd3131 100644
---- a/net/ipv4/udp_offload.c
-+++ b/net/ipv4/udp_offload.c
-@@ -500,12 +500,22 @@ struct sk_buff *udp_gro_receive(struct list_head *hea=
-d, struct sk_buff *skb,
- }
- EXPORT_SYMBOL(udp_gro_receive);
-=20
-+static struct sock *udp4_gro_lookup_skb(struct sk_buff *skb, __be16 sport,
-+=09=09=09=09=09__be16 dport)
-+{
-+=09const struct iphdr *iph =3D skb_gro_network_header(skb);
-+
-+=09return __udp4_lib_lookup(dev_net(skb->dev), iph->saddr, sport,
-+=09=09=09=09 iph->daddr, dport, inet_iif(skb),
-+=09=09=09=09 inet_sdif(skb), &udp_table, NULL);
-+}
-+
- INDIRECT_CALLABLE_SCOPE
- struct sk_buff *udp4_gro_receive(struct list_head *head, struct sk_buff *s=
-kb)
- {
- =09struct udphdr *uh =3D udp_gro_udphdr(skb);
-+=09struct sock *sk =3D NULL;
- =09struct sk_buff *pp;
--=09struct sock *sk;
-=20
- =09if (unlikely(!uh))
- =09=09goto flush;
-@@ -523,7 +533,10 @@ struct sk_buff *udp4_gro_receive(struct list_head *hea=
-d, struct sk_buff *skb)
- skip:
- =09NAPI_GRO_CB(skb)->is_ipv6 =3D 0;
- =09rcu_read_lock();
--=09sk =3D static_branch_unlikely(&udp_encap_needed_key) ? udp4_lib_lookup_=
-skb(skb, uh->source, uh->dest) : NULL;
-+
-+=09if (static_branch_unlikely(&udp_encap_needed_key))
-+=09=09sk =3D udp4_gro_lookup_skb(skb, uh->source, uh->dest);
-+
- =09pp =3D udp_gro_receive(head, skb, uh, sk);
- =09rcu_read_unlock();
- =09return pp;
-diff --git a/net/ipv6/udp_offload.c b/net/ipv6/udp_offload.c
-index 584157a07759..f9e888d1b9af 100644
---- a/net/ipv6/udp_offload.c
-+++ b/net/ipv6/udp_offload.c
-@@ -111,12 +111,22 @@ static struct sk_buff *udp6_ufo_fragment(struct sk_bu=
-ff *skb,
- =09return segs;
- }
-=20
-+static struct sock *udp6_gro_lookup_skb(struct sk_buff *skb, __be16 sport,
-+=09=09=09=09=09__be16 dport)
-+{
-+=09const struct ipv6hdr *iph =3D skb_gro_network_header(skb);
-+
-+=09return __udp6_lib_lookup(dev_net(skb->dev), &iph->saddr, sport,
-+=09=09=09=09 &iph->daddr, dport, inet6_iif(skb),
-+=09=09=09=09 inet6_sdif(skb), &udp_table, NULL);
-+}
-+
- INDIRECT_CALLABLE_SCOPE
- struct sk_buff *udp6_gro_receive(struct list_head *head, struct sk_buff *s=
-kb)
- {
- =09struct udphdr *uh =3D udp_gro_udphdr(skb);
-+=09struct sock *sk =3D NULL;
- =09struct sk_buff *pp;
--=09struct sock *sk;
-=20
- =09if (unlikely(!uh))
- =09=09goto flush;
-@@ -135,7 +145,10 @@ struct sk_buff *udp6_gro_receive(struct list_head *hea=
-d, struct sk_buff *skb)
- skip:
- =09NAPI_GRO_CB(skb)->is_ipv6 =3D 1;
- =09rcu_read_lock();
--=09sk =3D static_branch_unlikely(&udpv6_encap_needed_key) ? udp6_lib_looku=
-p_skb(skb, uh->source, uh->dest) : NULL;
-+
-+=09if (static_branch_unlikely(&udpv6_encap_needed_key))
-+=09=09sk =3D udp6_gro_lookup_skb(skb, uh->source, uh->dest);
-+
- =09pp =3D udp_gro_receive(head, skb, uh, sk);
- =09rcu_read_unlock();
- =09return pp;
---=20
-2.29.2
-
+diff --git a/arch/xtensa/include/asm/thread_info.h b/arch/xtensa/include/asm/thread_info.h
+index 6ea521b8e2ec..a312333a9add 100644
+--- a/arch/xtensa/include/asm/thread_info.h
++++ b/arch/xtensa/include/asm/thread_info.h
+@@ -111,22 +111,23 @@ static inline struct thread_info *current_thread_info(void)
+ #define TIF_NEED_RESCHED	2	/* rescheduling necessary */
+ #define TIF_SINGLESTEP		3	/* restore singlestep on return to user mode */
+ #define TIF_SYSCALL_TRACEPOINT	4	/* syscall tracepoint instrumentation */
+-#define TIF_MEMDIE		5	/* is terminating due to OOM killer */
++#define TIF_NOTIFY_SIGNAL	5	/* signal notifications exist */
+ #define TIF_RESTORE_SIGMASK	6	/* restore signal mask in do_signal() */
+ #define TIF_NOTIFY_RESUME	7	/* callback before returning to user */
+ #define TIF_DB_DISABLED		8	/* debug trap disabled for syscall */
+ #define TIF_SYSCALL_AUDIT	9	/* syscall auditing active */
+ #define TIF_SECCOMP		10	/* secure computing */
+-#define TIF_NOTIFY_SIGNAL	11	/* signal notifications exist */
++#define TIF_MEMDIE		11	/* is terminating due to OOM killer */
+ 
+ #define _TIF_SYSCALL_TRACE	(1<<TIF_SYSCALL_TRACE)
+ #define _TIF_SIGPENDING		(1<<TIF_SIGPENDING)
+ #define _TIF_NEED_RESCHED	(1<<TIF_NEED_RESCHED)
+ #define _TIF_SINGLESTEP		(1<<TIF_SINGLESTEP)
+ #define _TIF_SYSCALL_TRACEPOINT	(1<<TIF_SYSCALL_TRACEPOINT)
++#define _TIF_NOTIFY_SIGNAL	(1<<TIF_NOTIFY_SIGNAL)
++#define _TIF_NOTIFY_RESUME	(1<<TIF_NOTIFY_RESUME)
+ #define _TIF_SYSCALL_AUDIT	(1<<TIF_SYSCALL_AUDIT)
+ #define _TIF_SECCOMP		(1<<TIF_SECCOMP)
+-#define _TIF_NOTIFY_SIGNAL	(1<<TIF_NOTIFY_SIGNAL)
+ 
+ #define _TIF_WORK_MASK		(_TIF_SYSCALL_TRACE | _TIF_SINGLESTEP | \
+ 				 _TIF_SYSCALL_TRACEPOINT | \
+diff --git a/arch/xtensa/kernel/entry.S b/arch/xtensa/kernel/entry.S
+index 7f733f40fef0..a367c464217d 100644
+--- a/arch/xtensa/kernel/entry.S
++++ b/arch/xtensa/kernel/entry.S
+@@ -500,9 +500,8 @@ common_exception_return:
+ 	 */
+ 
+ 	_bbsi.l	a4, TIF_NEED_RESCHED, 3f
+-	_bbsi.l	a4, TIF_NOTIFY_RESUME, 2f
+-	_bbci.l	a4, TIF_SIGPENDING, 5f
+-	_bbci.l	a4, TIF_NOTIFY_SIGNAL, 5f
++	movi	a2, _TIF_SIGPENDING | _TIF_NOTIFY_RESUME | _TIF_NOTIFY_SIGNAL
++	bnone	a2, a4, 5f
+ 
+ 2:	l32i	a4, a1, PT_DEPC
+ 	bgeui	a4, VALID_DOUBLE_EXCEPTION_ADDRESS, 4f
+-- 
+2.20.1
 
