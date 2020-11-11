@@ -2,188 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D27422AF353
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 15:16:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EA5182AF325
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 15:10:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726844AbgKKOPt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 09:15:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60452 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726460AbgKKOPV (ORCPT
+        id S1727001AbgKKOKm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 09:10:42 -0500
+Received: from mx0a-00128a01.pphosted.com ([148.163.135.77]:34176 "EHLO
+        mx0a-00128a01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726149AbgKKOKk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 09:15:21 -0500
-Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E751CC0613D1
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 06:15:20 -0800 (PST)
-Received: by mail-qk1-x741.google.com with SMTP id v143so1753551qkb.2
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 06:15:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=UkBccG0kAG6ptvne6HOJOUn3nzbGkGD7oWbn2QDoT/s=;
-        b=JqgXE+q+00P9Y1z90FNa74Dsyd6Cxp1hRSPb3NykRt/kjD1VZpRDyhinfVhTiLfKyV
-         17UYy+lbjEZqPtJ3dAJMWb5Y8VmUpzCPchbsHFa5QuDtxCRilNQvGImE864dj39ZjYZg
-         83CruSkbJwFsQi6BCkJHUMT0UzEPz0pwEcXqw4y8hraT0ajvm19A38jZLr+QuSjfbeFU
-         lDi6s1hsAnt+oTGBc16nLH3zacHRIk4haa8/iXkGzZ5U69DBNtSpht5CyzWLA/XCDehz
-         Unrl4hwdMdQm0vB0mdxGzkYnIydnXzwRKNz7scNbmu8PhJ49yYANg5TXXBJVKLuvj774
-         Wjgg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=UkBccG0kAG6ptvne6HOJOUn3nzbGkGD7oWbn2QDoT/s=;
-        b=J3S3jk0EkcpL893b54KyZd7I89ypFOdMg56PKY4opPOJWtbZ9XVn57vb8Gv/XrEZMZ
-         eOamnL3moUP0t+0vQOBeKTlSmOOOMJICTS9kGHV/KQoPpvxz0zU4B0Z31nbBf7T5w0Gq
-         eUXjraT4I0QtDjUCU1hKf0/SSQSbr5mkGqxSfuAqHsOQ2mLValLfULgbk/a+2esaX8pS
-         wc1vJQVyOCQQrJnj7BeGLAh8AFNFwstfbCW+fyFYHReJs/k3CCLoNK4clDTP6DTA0Phg
-         +0ZAv4gjWyU+w5He+z8IZfwMJINYe/oJ9VUe0IYYwYRgrk5Rewzzj/iiAw+j5tDenxY+
-         2IfA==
-X-Gm-Message-State: AOAM533gLACh50zrZSYKwysMQFNk/qXeeUT5Jx2d1lIlp3egDa2+7lEE
-        jB7o1kmlN6QEGuv0nqfa/H6rANbj6EMKdDGESfmM5g==
-X-Google-Smtp-Source: ABdhPJxss+SD9uXirC0ROcyc6x5toqLCMrF+hoA1k8PUQ4YaZqCR3gQKgTS2hXBC5pD0sbFNPh9jEEQVsORw1SK8F0k=
-X-Received: by 2002:a37:4552:: with SMTP id s79mr19121371qka.6.1605104119855;
- Wed, 11 Nov 2020 06:15:19 -0800 (PST)
+        Wed, 11 Nov 2020 09:10:40 -0500
+Received: from pps.filterd (m0167088.ppops.net [127.0.0.1])
+        by mx0a-00128a01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0ABDtxR2020013;
+        Wed, 11 Nov 2020 09:10:37 -0500
+Received: from nwd2mta4.analog.com ([137.71.173.58])
+        by mx0a-00128a01.pphosted.com with ESMTP id 34npaawjxn-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 11 Nov 2020 09:10:37 -0500
+Received: from SCSQMBX10.ad.analog.com (SCSQMBX10.ad.analog.com [10.77.17.5])
+        by nwd2mta4.analog.com (8.14.7/8.14.7) with ESMTP id 0ABEAZgL046900
+        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=FAIL);
+        Wed, 11 Nov 2020 09:10:36 -0500
+Received: from SCSQMBX10.ad.analog.com (10.77.17.5) by SCSQMBX10.ad.analog.com
+ (10.77.17.5) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1779.2; Wed, 11 Nov
+ 2020 06:10:34 -0800
+Received: from zeus.spd.analog.com (10.66.68.11) by SCSQMBX10.ad.analog.com
+ (10.77.17.5) with Microsoft SMTP Server id 15.1.1779.2 via Frontend
+ Transport; Wed, 11 Nov 2020 06:10:34 -0800
+Received: from localhost.localdomain ([10.48.65.12])
+        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 0ABEAVc7003735;
+        Wed, 11 Nov 2020 09:10:31 -0500
+From:   Alexandru Ardelean <alexandru.ardelean@analog.com>
+To:     <linux-spi@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     <broonie@kernel.org>, <dragos.bogdan@analog.com>,
+        <ardeleanalex@gmail.com>,
+        Alexandru Ardelean <alexandru.ardelean@analog.com>
+Subject: [PATCH] spi: Add SPI_NO_TX/RX support
+Date:   Wed, 11 Nov 2020 16:15:29 +0200
+Message-ID: <20201111141529.98147-1-alexandru.ardelean@analog.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-References: <cover.1605046192.git.andreyknvl@google.com> <37a9648ffa16572583a7513323cc9be88a726eb1.1605046192.git.andreyknvl@google.com>
-In-Reply-To: <37a9648ffa16572583a7513323cc9be88a726eb1.1605046192.git.andreyknvl@google.com>
-From:   Alexander Potapenko <glider@google.com>
-Date:   Wed, 11 Nov 2020 15:15:08 +0100
-Message-ID: <CAG_fn=WgBr=NxYTiPGq=0HADk5e=RO3BS-OTxVVT4w=pOKu_uA@mail.gmail.com>
-Subject: Re: [PATCH v9 11/44] kasan: rename report and tags files
-To:     Andrey Konovalov <andreyknvl@google.com>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will.deacon@arm.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Marco Elver <elver@google.com>,
-        Evgenii Stepanov <eugenis@google.com>,
-        Branislav Rankov <Branislav.Rankov@arm.com>,
-        Kevin Brodsky <kevin.brodsky@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-11-11_06:2020-11-10,2020-11-11 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
+ priorityscore=1501 mlxlogscore=858 clxscore=1011 lowpriorityscore=0
+ suspectscore=0 bulkscore=0 impostorscore=0 adultscore=0 spamscore=0
+ mlxscore=0 phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2011110082
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 10, 2020 at 11:11 PM Andrey Konovalov <andreyknvl@google.com> w=
-rote:
->
-> Rename generic_report.c to report_generic.c and tags_report.c to
-> report_sw_tags.c, as their content is more relevant to report.c file.
-> Also rename tags.c to sw_tags.c to better reflect that this file contains
-> code for software tag-based mode.
->
-> No functional changes.
->
-> Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
-> Signed-off-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
-> Reviewed-by: Marco Elver <elver@google.com>
-Reviewed-by: Alexander Potapenko <glider@google.com>
+From: Dragos Bogdan <dragos.bogdan@analog.com>
 
-> ---
-> Change-Id: If77d21f655d52ef3e58c4c37fd6621a07f505f18
-> ---
->  mm/kasan/Makefile                               | 16 ++++++++--------
->  mm/kasan/report.c                               |  2 +-
->  mm/kasan/{generic_report.c =3D> report_generic.c} |  0
->  mm/kasan/{tags_report.c =3D> report_sw_tags.c}    |  0
->  mm/kasan/{tags.c =3D> sw_tags.c}                  |  0
->  5 files changed, 9 insertions(+), 9 deletions(-)
->  rename mm/kasan/{generic_report.c =3D> report_generic.c} (100%)
->  rename mm/kasan/{tags_report.c =3D> report_sw_tags.c} (100%)
->  rename mm/kasan/{tags.c =3D> sw_tags.c} (100%)
->
-> diff --git a/mm/kasan/Makefile b/mm/kasan/Makefile
-> index 7cc1031e1ef8..f1d68a34f3c9 100644
-> --- a/mm/kasan/Makefile
-> +++ b/mm/kasan/Makefile
-> @@ -6,13 +6,13 @@ KCOV_INSTRUMENT :=3D n
->  # Disable ftrace to avoid recursion.
->  CFLAGS_REMOVE_common.o =3D $(CC_FLAGS_FTRACE)
->  CFLAGS_REMOVE_generic.o =3D $(CC_FLAGS_FTRACE)
-> -CFLAGS_REMOVE_generic_report.o =3D $(CC_FLAGS_FTRACE)
->  CFLAGS_REMOVE_init.o =3D $(CC_FLAGS_FTRACE)
->  CFLAGS_REMOVE_quarantine.o =3D $(CC_FLAGS_FTRACE)
->  CFLAGS_REMOVE_report.o =3D $(CC_FLAGS_FTRACE)
-> +CFLAGS_REMOVE_report_generic.o =3D $(CC_FLAGS_FTRACE)
-> +CFLAGS_REMOVE_report_sw_tags.o =3D $(CC_FLAGS_FTRACE)
->  CFLAGS_REMOVE_shadow.o =3D $(CC_FLAGS_FTRACE)
-> -CFLAGS_REMOVE_tags.o =3D $(CC_FLAGS_FTRACE)
-> -CFLAGS_REMOVE_tags_report.o =3D $(CC_FLAGS_FTRACE)
-> +CFLAGS_REMOVE_sw_tags.o =3D $(CC_FLAGS_FTRACE)
->
->  # Function splitter causes unnecessary splits in __asan_load1/__asan_sto=
-re1
->  # see: https://gcc.gnu.org/bugzilla/show_bug.cgi?id=3D63533
-> @@ -23,14 +23,14 @@ CC_FLAGS_KASAN_RUNTIME +=3D -DDISABLE_BRANCH_PROFILIN=
-G
->
->  CFLAGS_common.o :=3D $(CC_FLAGS_KASAN_RUNTIME)
->  CFLAGS_generic.o :=3D $(CC_FLAGS_KASAN_RUNTIME)
-> -CFLAGS_generic_report.o :=3D $(CC_FLAGS_KASAN_RUNTIME)
->  CFLAGS_init.o :=3D $(CC_FLAGS_KASAN_RUNTIME)
->  CFLAGS_quarantine.o :=3D $(CC_FLAGS_KASAN_RUNTIME)
->  CFLAGS_report.o :=3D $(CC_FLAGS_KASAN_RUNTIME)
-> +CFLAGS_report_generic.o :=3D $(CC_FLAGS_KASAN_RUNTIME)
-> +CFLAGS_report_sw_tags.o :=3D $(CC_FLAGS_KASAN_RUNTIME)
->  CFLAGS_shadow.o :=3D $(CC_FLAGS_KASAN_RUNTIME)
-> -CFLAGS_tags.o :=3D $(CC_FLAGS_KASAN_RUNTIME)
-> -CFLAGS_tags_report.o :=3D $(CC_FLAGS_KASAN_RUNTIME)
-> +CFLAGS_sw_tags.o :=3D $(CC_FLAGS_KASAN_RUNTIME)
->
->  obj-$(CONFIG_KASAN) :=3D common.o report.o
-> -obj-$(CONFIG_KASAN_GENERIC) +=3D init.o generic.o generic_report.o shado=
-w.o quarantine.o
-> -obj-$(CONFIG_KASAN_SW_TAGS) +=3D init.o shadow.o tags.o tags_report.o
-> +obj-$(CONFIG_KASAN_GENERIC) +=3D init.o generic.o report_generic.o shado=
-w.o quarantine.o
-> +obj-$(CONFIG_KASAN_SW_TAGS) +=3D init.o report_sw_tags.o shadow.o sw_tag=
-s.o
-> diff --git a/mm/kasan/report.c b/mm/kasan/report.c
-> index 7b8dcb799a78..fff0c7befbfe 100644
-> --- a/mm/kasan/report.c
-> +++ b/mm/kasan/report.c
-> @@ -1,6 +1,6 @@
->  // SPDX-License-Identifier: GPL-2.0
->  /*
-> - * This file contains common generic and tag-based KASAN error reporting=
- code.
-> + * This file contains common KASAN error reporting code.
->   *
->   * Copyright (c) 2014 Samsung Electronics Co., Ltd.
->   * Author: Andrey Ryabinin <ryabinin.a.a@gmail.com>
-> diff --git a/mm/kasan/generic_report.c b/mm/kasan/report_generic.c
-> similarity index 100%
-> rename from mm/kasan/generic_report.c
-> rename to mm/kasan/report_generic.c
-> diff --git a/mm/kasan/tags_report.c b/mm/kasan/report_sw_tags.c
-> similarity index 100%
-> rename from mm/kasan/tags_report.c
-> rename to mm/kasan/report_sw_tags.c
-> diff --git a/mm/kasan/tags.c b/mm/kasan/sw_tags.c
-> similarity index 100%
-> rename from mm/kasan/tags.c
-> rename to mm/kasan/sw_tags.c
-> --
-> 2.29.2.222.g5d2a92d10f8-goog
->
+Transmit/receive only is a valid SPI mode. For example, the MOSI/TX line
+might be missing from an ADC while for a DAC the MISO/RX line may be
+optional. This patch adds these two new modes: SPI_NO_TX and
+SPI_NO_RX. This way, the drivers will be able to identify if any of
+these two lines is missing and to adjust the transfers accordingly.
 
+Signed-off-by: Dragos Bogdan <dragos.bogdan@analog.com>
+Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
+---
+ drivers/spi/spi.c       | 25 ++++++++++++++++++++-----
+ include/linux/spi/spi.h |  2 ++
+ 2 files changed, 22 insertions(+), 5 deletions(-)
 
---=20
-Alexander Potapenko
-Software Engineer
+diff --git a/drivers/spi/spi.c b/drivers/spi/spi.c
+index 22679c8645db..fc12fcf11126 100644
+--- a/drivers/spi/spi.c
++++ b/drivers/spi/spi.c
+@@ -1934,6 +1934,9 @@ static int of_spi_parse_dt(struct spi_controller *ctlr, struct spi_device *spi,
+ 	/* Device DUAL/QUAD mode */
+ 	if (!of_property_read_u32(nc, "spi-tx-bus-width", &value)) {
+ 		switch (value) {
++		case 0:
++			spi->mode |= SPI_NO_TX;
++			break;
+ 		case 1:
+ 			break;
+ 		case 2:
+@@ -1955,6 +1958,9 @@ static int of_spi_parse_dt(struct spi_controller *ctlr, struct spi_device *spi,
+ 
+ 	if (!of_property_read_u32(nc, "spi-rx-bus-width", &value)) {
+ 		switch (value) {
++		case 0:
++			spi->mode |= SPI_NO_RX;
++			break;
+ 		case 1:
+ 			break;
+ 		case 2:
+@@ -3275,12 +3281,16 @@ int spi_setup(struct spi_device *spi)
+ 	unsigned	bad_bits, ugly_bits;
+ 	int		status;
+ 
+-	/* check mode to prevent that DUAL and QUAD set at the same time
++	/* check mode to prevent that any two of DUAL, QUAD and NO_MOSI/MISO
++	 * are set at the same time
+ 	 */
+-	if (((spi->mode & SPI_TX_DUAL) && (spi->mode & SPI_TX_QUAD)) ||
+-		((spi->mode & SPI_RX_DUAL) && (spi->mode & SPI_RX_QUAD))) {
++	if ((hweight_long(spi->mode &
++		(SPI_TX_DUAL | SPI_TX_QUAD | SPI_NO_TX)) > 1) ||
++	    (hweight_long(spi->mode &
++		(SPI_RX_DUAL | SPI_RX_QUAD | SPI_NO_RX)) > 1)) {
+ 		dev_err(&spi->dev,
+-		"setup: can not select dual and quad at the same time\n");
++		"setup: can not select any two of dual, quad and no-rx/tx "
++		"at the same time\n");
+ 		return -EINVAL;
+ 	}
+ 	/* if it is SPI_3WIRE mode, DUAL and QUAD should be forbidden
+@@ -3294,7 +3304,8 @@ int spi_setup(struct spi_device *spi)
+ 	 * SPI_CS_WORD has a fallback software implementation,
+ 	 * so it is ignored here.
+ 	 */
+-	bad_bits = spi->mode & ~(spi->controller->mode_bits | SPI_CS_WORD);
++	bad_bits = spi->mode & ~(spi->controller->mode_bits | SPI_CS_WORD |
++				 SPI_NO_TX | SPI_NO_RX);
+ 	/* nothing prevents from working with active-high CS in case if it
+ 	 * is driven by GPIO.
+ 	 */
+@@ -3550,6 +3561,8 @@ static int __spi_validate(struct spi_device *spi, struct spi_message *message)
+ 		 * 2. check tx/rx_nbits match the mode in spi_device
+ 		 */
+ 		if (xfer->tx_buf) {
++			if (spi->mode & SPI_NO_TX)
++				return -EINVAL;
+ 			if (xfer->tx_nbits != SPI_NBITS_SINGLE &&
+ 				xfer->tx_nbits != SPI_NBITS_DUAL &&
+ 				xfer->tx_nbits != SPI_NBITS_QUAD)
+@@ -3563,6 +3576,8 @@ static int __spi_validate(struct spi_device *spi, struct spi_message *message)
+ 		}
+ 		/* check transfer rx_nbits */
+ 		if (xfer->rx_buf) {
++			if (spi->mode & SPI_NO_RX)
++				return -EINVAL;
+ 			if (xfer->rx_nbits != SPI_NBITS_SINGLE &&
+ 				xfer->rx_nbits != SPI_NBITS_DUAL &&
+ 				xfer->rx_nbits != SPI_NBITS_QUAD)
+diff --git a/include/linux/spi/spi.h b/include/linux/spi/spi.h
+index 99380c0825db..2e9058f79b2d 100644
+--- a/include/linux/spi/spi.h
++++ b/include/linux/spi/spi.h
+@@ -185,6 +185,8 @@ struct spi_device {
+ #define	SPI_TX_OCTAL	0x2000			/* transmit with 8 wires */
+ #define	SPI_RX_OCTAL	0x4000			/* receive with 8 wires */
+ #define	SPI_3WIRE_HIZ	0x8000			/* high impedance turnaround */
++#define	SPI_NO_TX	0x10000			/* no transmit wire */
++#define	SPI_NO_RX	0x20000			/* no receive wire */
+ 	int			irq;
+ 	void			*controller_state;
+ 	void			*controller_data;
+-- 
+2.17.1
 
-Google Germany GmbH
-Erika-Mann-Stra=C3=9Fe, 33
-80636 M=C3=BCnchen
-
-Gesch=C3=A4ftsf=C3=BChrer: Paul Manicle, Halimah DeLaine Prado
-Registergericht und -nummer: Hamburg, HRB 86891
-Sitz der Gesellschaft: Hamburg
