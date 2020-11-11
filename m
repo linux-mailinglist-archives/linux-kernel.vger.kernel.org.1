@@ -2,84 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34A472AF7E0
+	by mail.lfdr.de (Postfix) with ESMTP id A21CC2AF7E1
 	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 19:28:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727387AbgKKS1z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 13:27:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43238 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727150AbgKKS1x (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 13:27:53 -0500
-Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CC69C0617A6
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 10:27:52 -0800 (PST)
-Received: by mail-ej1-x642.google.com with SMTP id o9so4117011ejg.1
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 10:27:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=PaIQwQ+15TEIyZyj8/aGmJs71bDkEvM66klWaC5vlLw=;
-        b=cnRi1TRg7jw+Q2T7s80k8pjxHp2E5efgzbSibQo+wp0XYHn6gCIhi3vNHWCxptg9Nz
-         jGfzwu0NWVsuKRnP9w2nD9AnEdmLkkVNSjB3vDpMYog/W0vHnXhUzJxwGm1XUaHJvDMt
-         a6AhEicgbyD1kVVvpqKJc4wSVXrHptK1B3U8WBilNceCSKVEhKmNjkUak68xGcMmygjV
-         9x3OdkxyOqZ5x4cTKB3QUXAn1XFPJaFLEg/1FRP021/QuMG89u9neAGRG5y0mAD9D2u9
-         mId9w4sM6GZFqJHiK0BfdgPyAvkCWLFrxs9XhsRj4XNwSEXWnbFndg8+Yes9F0MqPbpZ
-         3W0w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=PaIQwQ+15TEIyZyj8/aGmJs71bDkEvM66klWaC5vlLw=;
-        b=czOwPs3crepXpJsy7jPvA1LlS7WfqgayGiHbaACaeFKuCkyYLdBhGFocFG2byK9hcG
-         unWZUFJ0zlkRwA5e6BxPqQrUvNlmzvPFUZPEHBCORmyedak+PXkV7oRZRS3MfN5lNZxx
-         H+lvUsOz0E44/T8q79lt0TY1ygP6NVwF1xTIQM6GnOY19GlczN381AhyB2w5nvb1b1QI
-         whEMgFdwgvhdAXy3XEL57z2uX2HV6CA2mLmLkCkwHpyz18SUHvpDrqwIQBbjyFnsW0FZ
-         OE8BJkF+MDZhRCfgSM1dXoBPIe+gno6OfNCYVlmDui0E0duji4fLBKsxNTJ+rVGxINO2
-         f4MQ==
-X-Gm-Message-State: AOAM530e3P1hUV2cdSb+cSYnfn3XfMNgkqoUAw8CAEXR0nTq+F3dyV4J
-        6brjH532NpkawTRYjUDtL4IBmLJ2Rlnj0OGDDml2sQ==
-X-Google-Smtp-Source: ABdhPJzROlVJ4lA34wzyb9HvHhqu0mRf5kwgVaNxyAE7k7nKG3aTa/QRqzTSgMFmoZ8jVa9/01KcLJhtrdpoiTDHIQg=
-X-Received: by 2002:a17:906:d92c:: with SMTP id rn12mr26103639ejb.472.1605119270879;
- Wed, 11 Nov 2020 10:27:50 -0800 (PST)
+        id S1727153AbgKKS16 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 11 Nov 2020 13:27:58 -0500
+Received: from mx2.suse.de ([195.135.220.15]:53368 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725966AbgKKS1y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Nov 2020 13:27:54 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 573E2ABCC;
+        Wed, 11 Nov 2020 18:27:51 +0000 (UTC)
+Received: from localhost (brahms [local])
+        by brahms (OpenSMTPD) with ESMTPA id f0408218;
+        Wed, 11 Nov 2020 18:28:02 +0000 (UTC)
+From:   Luis Henriques <lhenriques@suse.de>
+To:     Jeff Layton <jlayton@kernel.org>
+Cc:     Ilya Dryomov <idryomov@gmail.com>, ceph-devel@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH] ceph: fix cross quota realms renames with new
+ truncated files
+References: <20201111153915.23426-1-lhenriques@suse.de>
+        <0609b9014d4032e4fc4a8c8b74c935bf0cf4524a.camel@kernel.org>
+Date:   Wed, 11 Nov 2020 18:28:02 +0000
+In-Reply-To: <0609b9014d4032e4fc4a8c8b74c935bf0cf4524a.camel@kernel.org> (Jeff
+        Layton's message of "Wed, 11 Nov 2020 12:40:35 -0500")
+Message-ID: <87361feojx.fsf@suse.de>
 MIME-Version: 1.0
-References: <20201111054356.793390-1-ben.widawsky@intel.com>
- <20201111054356.793390-4-ben.widawsky@intel.com> <20201111071231.GC7829@infradead.org>
- <CAPcyv4iA_hNc=xdcbR-eb57W9o4br1BognSr5Sj4pAO3uMm69g@mail.gmail.com>
-In-Reply-To: <CAPcyv4iA_hNc=xdcbR-eb57W9o4br1BognSr5Sj4pAO3uMm69g@mail.gmail.com>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Wed, 11 Nov 2020 10:27:38 -0800
-Message-ID: <CAPcyv4g=pcai9FrKaGcAHtyfm=Lzzgh8xFyG6QLA4J6FPdy5yQ@mail.gmail.com>
-Subject: Re: [RFC PATCH 3/9] cxl/mem: Add a driver for the type-3 mailbox
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     Ben Widawsky <ben.widawsky@intel.com>, linux-cxl@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux PCI <linux-pci@vger.kernel.org>,
-        Linux ACPI <linux-acpi@vger.kernel.org>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        "Kelley, Sean V" <sean.v.kelley@intel.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 11, 2020 at 9:17 AM Dan Williams <dan.j.williams@intel.com> wrote:
-[..]
-> > > +
-> > > +             pci_read_config_word(pdev, pos + PCI_DVSEC_VENDOR_OFFSET, &vendor);
-> > > +             pci_read_config_word(pdev, pos + PCI_DVSEC_ID_OFFSET, &id);
-> > > +             if (vendor == PCI_DVSEC_VENDOR_CXL && dvsec == id)
-> > > +                     return pos;
-> > > +
-> > > +             pos = pci_find_next_ext_capability(pdev, pos, PCI_EXT_CAP_ID_DVSEC);
-> >
-> > Overly long lines again.
->
-> I thought 100 is the new 80 these days?
+Jeff Layton <jlayton@kernel.org> writes:
 
-Saw your clarification to Vishal, I had missed that. Will trim.
+> On Wed, 2020-11-11 at 15:39 +0000, Luis Henriques wrote:
+>> When doing a rename across quota realms, there's a corner case that isn't
+>> handled correctly.  Here's a testcase:
+>> 
+>>   mkdir files limit
+>>   truncate files/file -s 10G
+>>   setfattr limit -n ceph.quota.max_bytes -v 1000000
+>>   mv files limit/
+>> 
+>> The above will succeed because ftruncate(2) won't result in an immediate
+>> notification of the MDSs with the new file size, and thus the quota realms
+>> stats won't be updated.
+>> 
+>> This patch forces a sync with the MDS every time there's an ATTR_SIZE that
+>> sets a new i_size, even if we have Fx caps.
+>> 
+>> Cc: stable@vger.kernel.org
+>> Fixes: dffdcd71458e ("ceph: allow rename operation under different quota realms")
+>> URL: https://tracker.ceph.com/issues/36593
+>> Signed-off-by: Luis Henriques <lhenriques@suse.de>
+>> ---
+>>  fs/ceph/inode.c | 11 ++---------
+>>  1 file changed, 2 insertions(+), 9 deletions(-)
+>> 
+>> diff --git a/fs/ceph/inode.c b/fs/ceph/inode.c
+>> index 526faf4778ce..30e3f240ac96 100644
+>> --- a/fs/ceph/inode.c
+>> +++ b/fs/ceph/inode.c
+>> @@ -2136,15 +2136,8 @@ int __ceph_setattr(struct inode *inode, struct iattr *attr)
+>>  	if (ia_valid & ATTR_SIZE) {
+>>  		dout("setattr %p size %lld -> %lld\n", inode,
+>>  		     inode->i_size, attr->ia_size);
+>> -		if ((issued & CEPH_CAP_FILE_EXCL) &&
+>> -		    attr->ia_size > inode->i_size) {
+>> -			i_size_write(inode, attr->ia_size);
+>> -			inode->i_blocks = calc_inode_blocks(attr->ia_size);
+>> -			ci->i_reported_size = attr->ia_size;
+>> -			dirtied |= CEPH_CAP_FILE_EXCL;
+>> -			ia_valid |= ATTR_MTIME;
+>> -		} else if ((issued & CEPH_CAP_FILE_SHARED) == 0 ||
+>> -			   attr->ia_size != inode->i_size) {
+>> +		if ((issued & (CEPH_CAP_FILE_EXCL|CEPH_CAP_FILE_SHARED)) ||
+>> +		    (attr->ia_size != inode->i_size)) {
+>>  			req->r_args.setattr.size = cpu_to_le64(attr->ia_size);
+>>  			req->r_args.setattr.old_size =
+>>  				cpu_to_le64(inode->i_size);
+>
+> Hmm...this makes truncates more expensive when we have caps. I'd rather
+> not do that if we can help it.
+
+Yeah, as I mentioned in the tracker, there's indeed a performance impact
+with this fix.  That's what made me add the RFC in the subject ;-)
+
+> What about instead having the client mimic a fsync when there is a
+> rename across quota realms? If we can't tell that reliably then we could
+> also just do an effective fsync ahead of any cross-directory rename?
+
+Ok, thanks for the suggestion.  That may actually work, although it will
+make the rename more expensive of course.  I'll test that tomorrow and
+eventually follow-up with a patch.
+
+Cheers,
+-- 
+Luis
