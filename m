@@ -2,97 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 069BC2AF68B
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 17:31:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 644972AF6A3
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 17:35:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727471AbgKKQbY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 11:31:24 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53796 "EHLO mail.kernel.org"
+        id S1726884AbgKKQfg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 11:35:36 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54618 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726208AbgKKQbX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 11:31:23 -0500
+        id S1725979AbgKKQfg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Nov 2020 11:35:36 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 06267206B5;
-        Wed, 11 Nov 2020 16:31:21 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 339F9206F1;
+        Wed, 11 Nov 2020 16:35:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605112282;
-        bh=u1W79eBhFJDijrV1bXsrDHc02dojBuPzlmTjNRwzECM=;
+        s=default; t=1605112533;
+        bh=vF5/Tu4Qygs39cHM41EGa7wsINPDLQw8Vbqv8foqudM=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=pTJO7zCDEAIc4ENcSgzN9lsMdGt7wXtmAxlhGhYh9RxxpVjT7DGXoeXUS10GeaFoJ
-         TqdEeulUJiiE6h4kRf+qbVUdou0DBrWTQpZdIfznMNMFg0Uy+wXHd5P9E0SvPkdoXw
-         eDeNfg3jKEyZgGrNPO6pRBc2UXlWpwDPeeHKE9T4=
-Date:   Wed, 11 Nov 2020 17:32:22 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     "Limonciello, Mario" <Mario.Limonciello@dell.com>
-Cc:     Hans de Goede <hdegoede@redhat.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Bastien Nocera <hadess@hadess.net>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "linux-input@vger.kernel.org" <linux-input@vger.kernel.org>,
-        Mathias Nyman <mathias.nyman@linux.intel.com>
-Subject: Re: How to enable auto-suspend by default
-Message-ID: <X6wSFojYLvwGhY/g@kroah.com>
-References: <fe8ab4cab3740afd261fa902f14ecae002a1122d.camel@hadess.net>
- <X6p6ubTOoMPUPPXi@kroah.com>
- <DM6PR19MB2636C94B56D5FBC0BD98A1B0FAE90@DM6PR19MB2636.namprd19.prod.outlook.com>
- <20201110172517.GC2495@lahna.fi.intel.com>
- <30957f1a-1fe5-5d9a-101b-25f12fb93907@redhat.com>
- <DM6PR19MB26366008D59FC94D384A1E3BFAE80@DM6PR19MB2636.namprd19.prod.outlook.com>
+        b=1ISaLpxz5fjyy8Mjol+l4WNuSyZcAD1T9cf8EI7cIbFXSPjlF3WqAiSoTzuz3jq20
+         vO3Mv0IYXTQD7wIsoQD46GSJD0I8VGO3k8ueHWCbD3WGfAKr2qCDqQCA3fpLJ3voRh
+         C3XZxJmR0FyrNSbgjdYMR7ABeimRYrtkW/GyfZlQ=
+Date:   Wed, 11 Nov 2020 17:36:34 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Petr Mladek <pmladek@suse.com>
+Cc:     Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        John Ogness <john.ogness@linutronix.de>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Shreyas Joshi <shreyas.joshi@biamp.com>,
+        shreyasjoshi15@gmail.com,
+        Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] init/console: Use ttynull as a fallback when there
+ is no console
+Message-ID: <X6wTEpJwC+ZoLSAy@kroah.com>
+References: <20201111135450.11214-1-pmladek@suse.com>
+ <20201111135450.11214-2-pmladek@suse.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <DM6PR19MB26366008D59FC94D384A1E3BFAE80@DM6PR19MB2636.namprd19.prod.outlook.com>
+In-Reply-To: <20201111135450.11214-2-pmladek@suse.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 11, 2020 at 04:03:30PM +0000, Limonciello, Mario wrote:
-> > >> Given we're effectively ending up with the combination of runtime PM turned
-> > >> on by udev rules, do we need something like this for that ID:
-> > >>
-> > >>
-> > https://github.com/torvalds/linux/commit/6a7c533d4a1854f54901a065d8c672e890400
-> > d8a
-> > >>
-> > >> @Mika Westerberg should 8086:a0ed be quirked like the TCSS xHCI too?
-> > >
-> > > I think this one is the TGL PCH xHCI. The quirk currently for xHCI
-> > > controllers that are part of the TCSS (Type-C SubSystem) where it is
-> > > important to put all devices into low power mode whenever possible,
-> > > otherwise it keeps the whole block on.
-> > 
-> > Note that there are currently some IDs missing from the xHCIs which
-> > are part of the TCSS too. At least the id for the xHCI in the thunderbolt
-> > controller on the Lenovo T14 gen 1 is missing. I started a discussion
-> > about extending the kernel quirk list for this vs switching to hwdb
-> > a while a go:
-> > 
-> > https://lore.kernel.org/linux-usb/b8b21ba3-0a8a-ff54-5e12-
-> > cf8960651086@redhat.com/
-> > 
-> > The conclusion back then was to switch to hwdb, but I never got around to
-> > this.
+On Wed, Nov 11, 2020 at 02:54:49PM +0100, Petr Mladek wrote:
+> stdin, stdout, and stderr standard I/O stream are created for the init
+> process. They are not available when there is no console registered
+> for /dev/console. It might lead to a crash when the init process
+> tries to use them, see the commit 48021f98130880dd742 ("printk: handle
+> blank console arguments passed in.").
 > 
-> I guess the problem I see with switching to a hwdb for this type of thing is
-> that if there is a "bug" in your kernel driver around autosuspend you will
-> then be potentially causing it to occur more regularly on a kernel that didn't
-> necessarily pick up the fix but does have the newer hwdb.
+> Normally, ttySX and ttyX consoles are used as a fallback when no consoles
+> are defined via the command line, device tree, or SPCR. But there
+> will be no console registered when an invalid console name is configured
+> or when the configured consoles do not exist on the system.
 > 
-> I don't know how common that will really be though.
+> Users even try to avoid the console intentionally, for example,
+> by using console="" or console=null. It is used on production
+> systems where the serial port or terminal are not visible to
+> users. Pushing messages to these consoles would just unnecessary
+> slowdown the system.
 > 
-> Since Mika mentioned the really light userspace scenario, what about shipping
-> the hwdb "with" the kernel in tree?  This could allow evicting all these quirk
-> scenarios from the kernel at the same time as switching to a hwdb and also cover
-> the problem I suggested might happen with a bug in older kernel and newer userspace.
+> Make sure that stdin, stdout, stderr, and /dev/console are always
+> available by a fallback to the existing ttynull driver. It has
+> been implemented for exactly this purpose but it was used only
+> when explicitly configured.
+> 
+> Signed-off-by: Petr Mladek <pmladek@suse.com>
 
-We took things out of the kernel to put it in hwdb years ago as it was
-easier for people to update a "text file" than it was their kernel
-image.  I don't think you want to go backwards here :)
+Tricky, and nice to use the existing driver for this, I like it:
 
-thanks,
-
-greg k-h
+Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
