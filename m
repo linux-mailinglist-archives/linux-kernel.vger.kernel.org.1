@@ -2,105 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6204D2AE98D
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 08:19:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EDFAA2AE9A4
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 08:20:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726438AbgKKHT2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 02:19:28 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39160 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726038AbgKKHT1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 02:19:27 -0500
-Received: from mail-ot1-f43.google.com (mail-ot1-f43.google.com [209.85.210.43])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S1726575AbgKKHUv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 02:20:51 -0500
+Received: from asavdk3.altibox.net ([109.247.116.14]:60736 "EHLO
+        asavdk3.altibox.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726560AbgKKHUs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Nov 2020 02:20:48 -0500
+Received: from ravnborg.org (unknown [188.228.123.71])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 573D721D7F;
-        Wed, 11 Nov 2020 07:19:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605079166;
-        bh=CAQVZqtxtSOwUyW8EqmnyD/K8yMmd2zuMQylnTG3pAg=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=guq6CmAiRLq4R57MddTf3q6FwEUAeGMSddkiHps3KcyrTTkyZgtGjcSmcOIsYZj0M
-         RIXnQSaNESRz5bdvVKxisfCpa82vtPflR7f31OGH6AfHdtg9UUX+aLE+fkQkqYSZm9
-         ibIc3iuUQl0WCalegb6OGnkKiHD0ZFDeAI5/tccU=
-Received: by mail-ot1-f43.google.com with SMTP id i18so1301416ots.0;
-        Tue, 10 Nov 2020 23:19:26 -0800 (PST)
-X-Gm-Message-State: AOAM531102nF+TmYgHnqKLijp4Ay8DngYbSXrdz5bO/NrSJ9+SJv0zhU
-        Q32FXfif3rTNKqT927zHMOBOHCbDykmPTOvtOQQ=
-X-Google-Smtp-Source: ABdhPJy/FX3/haQPkbbnTxCEyFCfcbR6nBwOK2StlreaD3AMalrsdDe04JmnBGrk4RF2qWP6H6cn3ss1V/mpW5hPHIQ=
-X-Received: by 2002:a05:6830:214c:: with SMTP id r12mr7308063otd.90.1605079165545;
- Tue, 10 Nov 2020 23:19:25 -0800 (PST)
+        by asavdk3.altibox.net (Postfix) with ESMTPS id 2252C2003B;
+        Wed, 11 Nov 2020 08:20:39 +0100 (CET)
+Date:   Wed, 11 Nov 2020 08:20:37 +0100
+From:   Sam Ravnborg <sam@ravnborg.org>
+To:     Yang Yingliang <yangyingliang@huawei.com>
+Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        thierry.reding@gmail.com
+Subject: Re: [PATCH] drm/panel: add missing platform_driver_unregister() on
+ error path
+Message-ID: <20201111072037.GA2950611@ravnborg.org>
+References: <20201111064425.3395558-1-yangyingliang@huawei.com>
 MIME-Version: 1.0
-References: <e9b1ba517f06b81bd24e54c84f5e44d81c27c566.camel@perches.com>
- <20201022073307.GP2628@hirez.programming.kicks-ass.net> <133aa0c8c5e2cbc862df109200b982e89046dbc0.camel@perches.com>
-In-Reply-To: <133aa0c8c5e2cbc862df109200b982e89046dbc0.camel@perches.com>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Wed, 11 Nov 2020 08:19:13 +0100
-X-Gmail-Original-Message-ID: <CAMj1kXF_0_bu0nbJyUU-yBDCOAirRvGkX-V8kQPVh_GHO2WM-g@mail.gmail.com>
-Message-ID: <CAMj1kXF_0_bu0nbJyUU-yBDCOAirRvGkX-V8kQPVh_GHO2WM-g@mail.gmail.com>
-Subject: Re: [PATCH -next] treewide: Remove stringification from __alias macro definition
-To:     Joe Perches <joe@perches.com>, Russell King <linux@armlinux.org.uk>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>, X86 ML <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
-        Marco Elver <elver@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Alexander Potapenko <glider@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-efi <linux-efi@vger.kernel.org>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201111064425.3395558-1-yangyingliang@huawei.com>
+X-CMAE-Score: 0
+X-CMAE-Analysis: v=2.3 cv=VbvZwmh9 c=1 sm=1 tr=0
+        a=S6zTFyMACwkrwXSdXUNehg==:117 a=S6zTFyMACwkrwXSdXUNehg==:17
+        a=kj9zAlcOel0A:10 a=i0EeH86SAAAA:8 a=-Gbx0BpZB59qaVUEe18A:9
+        a=CjuIK1q_8ugA:10 a=-RoEEKskQ1sA:10
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-(+ Russell)
+Hi Yang,
 
-On Thu, 22 Oct 2020 at 18:20, Joe Perches <joe@perches.com> wrote:
->
-> On Thu, 2020-10-22 at 09:33 +0200, Peter Zijlstra wrote:
-> > On Wed, Oct 21, 2020 at 11:58:25AM -0700, Joe Perches wrote:
-> > > Like the __section macro, the __alias macro uses
-> > > macro # stringification to create quotes around
-> > > the section name used in the __attribute__.
-> > >
-> > > Remove the stringification and add quotes or a
-> > > stringification to the uses instead.
-> >
-> > There's a complete lack of rationale for this change.
->
-> I'll eventually post V2.
-> I'm waiting to see if there are more comments.
->
-> As I wrote in reply to Ard:
->
-> https://lore.kernel.org/lkml/1cecfbfc853b2e71a96ab58661037c28a2f9280e.camel@perches.com/
->
-> Using quotes in __section caused/causes differences
-> between clang and gcc.
->
-> https://lkml.org/lkml/2020/9/29/2187
->
-> Using common styles for details like this is good.
->
+On Wed, Nov 11, 2020 at 02:44:25PM +0800, Yang Yingliang wrote:
+> If mipi_dsi_driver_register() failed, platform_driver_unregister()
+> need be called.
+> 
+> Fixes: 210fcd9d9cf1 ("drm/panel: Add support for Panasonic VVX10F004B0")
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
 
-This patch is now causing problems in the ARM tree, because some new
-uses of __alias() have been queued (for KASAN), and since this is a
-non-backwards compatible change, we have to choose between breaking
-the maintainer's tree or breaking -next (given that the change has
-been pulled in there now)
+Thanks for the patch but this is already fixed in drm-misx-next.
+See:
 
-I am still not convinced we need this change, as I don't see how the
-concerns regarding __section apply to __alias. But if we do, can we
-please use the same approach, i.e., revert the current patch, and
-queue it again after v5.11-rc1 with all new occurrences covered as
-well?
+    commit f2e66f212a9de04afc2caa5ec79057c0ac75c728
+    drm: panel: simple: add missing platform_driver_unregister() in panel_simple_init
+
+	Sam
