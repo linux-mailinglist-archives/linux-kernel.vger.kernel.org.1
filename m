@@ -2,135 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7250F2AEF96
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 12:27:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F18EF2AEF98
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 12:27:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726360AbgKKL1U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 06:27:20 -0500
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:44332 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726290AbgKKL1D (ORCPT
+        id S1726203AbgKKL1o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 06:27:44 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:32940 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725860AbgKKL1l (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 06:27:03 -0500
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0ABBQxYs011819;
-        Wed, 11 Nov 2020 05:26:59 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1605094019;
-        bh=Hh+jDkF3giVGi/vYUSRN6JLLmVGAiVoDwWr3Matv26M=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=ZNjsT5S4RT8K+0KUcgzSJ3SvTMjxHGScI1woE3Q5tjT3KgDCMXSOz+R/xSrqTEVXi
-         upC4lyZOrU73kG4AfUvAB9LD8LP8HZTuLFfQN2+yi+H1gHQ1xAmB2lrHTuLdLM1xvV
-         r3akqygfdSvxxTKA2IAIM9zgi4gEOrtWBLhboE/o=
-Received: from DFLE114.ent.ti.com (dfle114.ent.ti.com [10.64.6.35])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0ABBQxUG003515
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 11 Nov 2020 05:26:59 -0600
-Received: from DFLE115.ent.ti.com (10.64.6.36) by DFLE114.ent.ti.com
- (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 11
- Nov 2020 05:26:59 -0600
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE115.ent.ti.com
- (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Wed, 11 Nov 2020 05:26:59 -0600
-Received: from ula0132425.ent.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0ABBQsLC076461;
-        Wed, 11 Nov 2020 05:26:57 -0600
-From:   Vignesh Raghavendra <vigneshr@ti.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-CC:     Jiri Slaby <jirislaby@kernel.org>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Naresh Kamboju <naresh.kamboju@linaro.org>,
-        <linux-serial@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH 2/2] serial: 8250: 8250_omap: Fix unused variable warning
-Date:   Wed, 11 Nov 2020 16:56:53 +0530
-Message-ID: <20201111112653.2710-2-vigneshr@ti.com>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201111112653.2710-1-vigneshr@ti.com>
-References: <20201111112653.2710-1-vigneshr@ti.com>
+        Wed, 11 Nov 2020 06:27:41 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1605094060;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=7mmS90S83tFEhf0c8FgtqNUv8njBrefiR0OxTEZyr2M=;
+        b=L0mAhd79wIZuKzmF6LGq/NibA0+4XYSRFS8xMeHsmo3TTq2CQNK9H4hbyVUCIfHZZF2XZY
+        k7Lto0tZNLv1DqRXWiXES5yqACdKQqZgsXvpk2cvdabzPJ+NH/81qvq1XdKBpigeiq7ZQV
+        2hDDs80GwWKjNokBWPpRJS0EwaoNuVg=
+Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
+ [209.85.218.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-130-t1s2hE0TNLCKD78LBXIEBw-1; Wed, 11 Nov 2020 06:27:35 -0500
+X-MC-Unique: t1s2hE0TNLCKD78LBXIEBw-1
+Received: by mail-ej1-f72.google.com with SMTP id z25so602615ejd.2
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 03:27:35 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=7mmS90S83tFEhf0c8FgtqNUv8njBrefiR0OxTEZyr2M=;
+        b=Tv/otcEyQ7kDHPpcxb3hjgDhfUmudRnRR72tl0grw+hcD9hpNv621K3Ag7e3tX08n5
+         TMNO2cENM7LCex5RryMsvvy3AtZwntQfi2YaCbxeyv7MpBQUgtE+GFUhLWLJ4H6G9r1D
+         JDpc383FYOGt8H8CyvF1pnQZoOSeKIGaWNpP2iObrdV5tkfWcyit1FVRecwBGVImix1k
+         8wECZCdpam1leexSHBReiQoZE1PFAu0aAxGC+3oVo+yqhv58jILWyjT4U2zavk+6ye2h
+         pyxvqIg6h70tGK/axTVXO8yXL67v5X/Yx9zSP0xKGCDEag7tADcgJQSldrKm40xOVylR
+         criA==
+X-Gm-Message-State: AOAM532zu2HqJP8EbmlkM61aFEezRDv/msofmCpRQWzo69/ITECj/tFC
+        tExYmp6MpU1AgYAcqm4VzzJN5dIsNKAYb1OvmUdEd1ey/COimnzzWiPNp6m0vZhUGq5Suqqncfn
+        sAYVwwGRMb7+8RNLbAcX9OuzW
+X-Received: by 2002:a17:906:ccd3:: with SMTP id ot19mr25670729ejb.44.1605094054110;
+        Wed, 11 Nov 2020 03:27:34 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJxUqyaU0omIOv5C+Qp9U4J8pr/SqkfPBudloMrG7hTbiFv2Lv6TAsDLoqT2VrHnNCMl5TA0mQ==
+X-Received: by 2002:a17:906:ccd3:: with SMTP id ot19mr25670705ejb.44.1605094053841;
+        Wed, 11 Nov 2020 03:27:33 -0800 (PST)
+Received: from x1.localdomain (2001-1c00-0c0c-fe00-6c10-fbf3-14c4-884c.cable.dynamic.v6.ziggo.nl. [2001:1c00:c0c:fe00:6c10:fbf3:14c4:884c])
+        by smtp.gmail.com with ESMTPSA id h7sm779566edt.24.2020.11.11.03.27.32
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 11 Nov 2020 03:27:33 -0800 (PST)
+Subject: Re: How to enable auto-suspend by default
+To:     Mika Westerberg <mika.westerberg@linux.intel.com>,
+        "Limonciello, Mario" <Mario.Limonciello@dell.com>
+Cc:     Greg KH <gregkh@linuxfoundation.org>,
+        Bastien Nocera <hadess@hadess.net>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "linux-input@vger.kernel.org" <linux-input@vger.kernel.org>,
+        Mathias Nyman <mathias.nyman@linux.intel.com>
+References: <fe8ab4cab3740afd261fa902f14ecae002a1122d.camel@hadess.net>
+ <X6p6ubTOoMPUPPXi@kroah.com>
+ <DM6PR19MB2636C94B56D5FBC0BD98A1B0FAE90@DM6PR19MB2636.namprd19.prod.outlook.com>
+ <20201110172517.GC2495@lahna.fi.intel.com>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <30957f1a-1fe5-5d9a-101b-25f12fb93907@redhat.com>
+Date:   Wed, 11 Nov 2020 12:27:32 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+In-Reply-To: <20201110172517.GC2495@lahna.fi.intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-With commit 439c7183e5b9 ("serial: 8250: 8250_omap: Disable RX interrupt after DMA enable"),
-below warning is seen with W=1 and CONFIG_SERIAL_8250_DMA is disabled:
+Hi,
 
-   drivers/tty/serial/8250/8250_omap.c:1199:42: warning: unused variable 'k3_soc_devices' [-Wunused-const-variable]
+On 11/10/20 6:25 PM, Mika Westerberg wrote:
+> On Tue, Nov 10, 2020 at 04:02:33PM +0000, Limonciello, Mario wrote:
+>>>
+>>> On Tue, Nov 10, 2020 at 11:57:07AM +0100, Bastien Nocera wrote:
+>>>> Hey,
+>>>>
+>>>> systemd has been shipping this script to enable auto-suspend on a
+>>>> number of USB and PCI devices:
+>>>>
+>>> https://github.com/systemd/systemd/blob/master/tools/chromiumos/gen_autosuspen
+>>> d_rules.py
+>>>>
+>>>> The problem here is twofold. First, the list of devices is updated from
+>>>> ChromeOS, and the original list obviously won't be updated by ChromeOS
+>>>> developers unless a device listed exists in a ChromeBook computer,
+>>>> which means a number of devices that do support autosuspend aren't
+>>>> listed.
+>>>>
+>>>> The other problem is that this list needs to exist at all, and that it
+>>>> doesn't seem possible for device driver developers (at various levels
+>>>> of the stack) to opt-in to auto-suspend when all the variants of the
+>>>> device (or at least detectable ones) support auto-suspend.
+>>>
+>>> A driver can say they support autosuspend today, but I think you are
+>>> concerned about the devices that are controlled by class-compliant
+>>> drivers, right?  And for those, no, we can't do this in the kernel as
+>>> there are just too many broken devices out there.
+>>>
+>>
+>> I guess what Bastien is getting at is for newer devices supported by class
+>> drivers rather than having to store an allowlist in udev rules, can we set
+>> the allowlist in the kernel instead.  Then distributions that either don't
+>> use systemd or don't regularly update udev rules from systemd can take
+>> advantage of better defaults on modern hardware.
+>>
+>> The one item that stood out to me in that rules file was 8086:a0ed.
+>> It's listed as "Volteer XHCI", but that same device ID is actually present
+>> in an XPS 9310 in front of me as well and used by the xhci-pci kernel module.
+>>
+>> Given we're effectively ending up with the combination of runtime PM turned
+>> on by udev rules, do we need something like this for that ID:
+>>
+>> https://github.com/torvalds/linux/commit/6a7c533d4a1854f54901a065d8c672e890400d8a
+>>
+>> @Mika Westerberg should 8086:a0ed be quirked like the TCSS xHCI too?
+> 
+> I think this one is the TGL PCH xHCI. The quirk currently for xHCI
+> controllers that are part of the TCSS (Type-C SubSystem) where it is
+> important to put all devices into low power mode whenever possible,
+> otherwise it keeps the whole block on.
 
-Fix this by moving the code using k3_soc_devices array to
-omap_serial_fill_features_erratas() that handles other errata flags as
-well.
+Note that there are currently some IDs missing from the xHCIs which
+are part of the TCSS too. At least the id for the xHCI in the thunderbolt
+controller on the Lenovo T14 gen 1 is missing. I started a discussion
+about extending the kernel quirk list for this vs switching to hwdb
+a while a go:
 
-Fixes: 439c7183e5b9 ("serial: 8250: 8250_omap: Disable RX interrupt after DMA enable")
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Vignesh Raghavendra <vigneshr@ti.com>
----
- drivers/tty/serial/8250/8250_omap.c | 26 +++++++++++++-------------
- 1 file changed, 13 insertions(+), 13 deletions(-)
+https://lore.kernel.org/linux-usb/b8b21ba3-0a8a-ff54-5e12-cf8960651086@redhat.com/
 
-diff --git a/drivers/tty/serial/8250/8250_omap.c b/drivers/tty/serial/8250/8250_omap.c
-index ab18ef035659..0ab6517d389a 100644
---- a/drivers/tty/serial/8250/8250_omap.c
-+++ b/drivers/tty/serial/8250/8250_omap.c
-@@ -539,6 +539,11 @@ static void omap_8250_pm(struct uart_port *port, unsigned int state,
- static void omap_serial_fill_features_erratas(struct uart_8250_port *up,
- 					      struct omap8250_priv *priv)
- {
-+	const struct soc_device_attribute k3_soc_devices[] = {
-+		{ .family = "AM65X",  },
-+		{ .family = "J721E", .revision = "SR1.0" },
-+		{ /* sentinel */ }
-+	};
- 	u32 mvr, scheme;
- 	u16 revision, major, minor;
- 
-@@ -586,6 +591,14 @@ static void omap_serial_fill_features_erratas(struct uart_8250_port *up,
- 	default:
- 		break;
- 	}
-+
-+	/*
-+	 * AM65x SR1.0, AM65x SR2.0 and J721e SR1.0 don't
-+	 * don't have RHR_IT_DIS bit in IER2 register. So drop to flag
-+	 * to enable errata workaround.
-+	 */
-+	if (soc_device_match(k3_soc_devices))
-+		priv->habit &= ~UART_HAS_RHR_IT_DIS;
- }
- 
- static void omap8250_uart_qos_work(struct work_struct *work)
-@@ -1196,12 +1209,6 @@ static int omap8250_no_handle_irq(struct uart_port *port)
- 	return 0;
- }
- 
--static const struct soc_device_attribute k3_soc_devices[] = {
--	{ .family = "AM65X",  },
--	{ .family = "J721E", .revision = "SR1.0" },
--	{ /* sentinel */ }
--};
--
- static struct omap8250_dma_params am654_dma = {
- 	.rx_size = SZ_2K,
- 	.rx_trigger = 1,
-@@ -1406,13 +1413,6 @@ static int omap8250_probe(struct platform_device *pdev)
- 			up.dma->rxconf.src_maxburst = RX_TRIGGER;
- 			up.dma->txconf.dst_maxburst = TX_TRIGGER;
- 		}
--
--		/*
--		 * AM65x SR1.0, AM65x SR2.0 and J721e SR1.0 don't
--		 * don't have RHR_IT_DIS bit in IER2 register
--		 */
--		if (soc_device_match(k3_soc_devices))
--			priv->habit &= ~UART_HAS_RHR_IT_DIS;
- 	}
- #endif
- 	ret = serial8250_register_8250_port(&up);
--- 
-2.29.2
+The conclusion back then was to switch to hwdb, but I never got around to this.
+
+> Typically we haven't done that for PCH side xHCI controllers though, but
+> I don't see why not if it works that is. Adding Mathias to comment more
+> on that since he is the xHCI maintainer.
+
+If we are also going to enable this for the non TCSS Intel XHCI controllers,
+maybe just uncondtionally enable it for all Intel XHCI controllers, or
+if necessary do a deny-list for some older models and enable it for anything
+not on the deny-list (so all newer models). That should avoid the game of
+whack-a-mole which we will have with this otherwise.
+
+Note the deny-list + enable anything not on it approach could be done
+either in the kernel or in a udev-rule + hwdb combo.
+
+Regards,
+
+Hans
 
