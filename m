@@ -2,126 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23FD72AFA94
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 22:37:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B1ED2AFAA0
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 22:42:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727768AbgKKVgY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 16:36:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44222 "EHLO
+        id S1726203AbgKKVkX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 16:40:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44842 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727238AbgKKVgY (ORCPT
+        with ESMTP id S1725949AbgKKVkW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 16:36:24 -0500
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EAF28C0613D1;
-        Wed, 11 Nov 2020 13:36:23 -0800 (PST)
-Received: by mail-pl1-x643.google.com with SMTP id s2so1650396plr.9;
-        Wed, 11 Nov 2020 13:36:23 -0800 (PST)
+        Wed, 11 Nov 2020 16:40:22 -0500
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CEA5C0613D1;
+        Wed, 11 Nov 2020 13:40:22 -0800 (PST)
+Received: by mail-pf1-x443.google.com with SMTP id q5so2512893pfk.6;
+        Wed, 11 Nov 2020 13:40:22 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=TuIWEKHfoc1+Oar3jiYPK/6gE0dULFhfw6x7KSeby7M=;
-        b=Gtx0/j3xLAcFbBKJlW4/LZoLu2SoY7QK8+mzI5+o1q8Ci1cfpGqd97LDcn7fbBAAK3
-         W8ktagV7asRNm5FlxZcN0SL+kapEXQWNR7JimsO4LKXYmovhznPn0KXaMS50Osztudch
-         44U/LqZyjbJSiyXGngnQLiihQ8lD3pX97HXYuNdbTkagtwCLy4MIyp5UP1aJuw2UVGfz
-         fxm6ZhjUvnJXgseiNN1PINleLqTAeipfg8yUw9fv81fpl1luD6TtVy1NkcNmAFTPxoj2
-         dQ7e14bT0r/U+M6QMldeghKmCziHZUztFwkkx4Gf7TQNw03sC7Ka8clh8SCTSKLck1bp
-         5L0w==
+        bh=+fzlfnA2TEDDFFxjWmlVuY8W0FfkEiYNB2C9rSQv2Nw=;
+        b=tGbRKnfEbiFdiYH22xCoHpmARpVopCQnFSWi+fbgjBIRTEZqkv26kgFRi+e+NEYG45
+         x5jKQvvsKn7rvdRUSGKR2UkF57rw7akl7AZTiO79wtdtN4Y1yQkN8DIiK7evq8wR1k5H
+         KvvyIaPcELxpO7Kv6t3OMKZ0vsuVNs++eO2lZ6O9wCbzqKQImq81kkZn4ht82+w8P0mx
+         T0RTRqep7HTrig/hfSXmqlEkNW7oA8vDpPGtE2nz0fWPnuhsI2RIhqKGJb0TytXF8nVX
+         GEyKZI+5ThdqLnNr7p6ObxR0UIlh75bnnx5UJwATfw7lHmSpTcQzyQHDSAZ4hzAU79L/
+         gkVw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=TuIWEKHfoc1+Oar3jiYPK/6gE0dULFhfw6x7KSeby7M=;
-        b=JMaL+0XMufgV31u3INYFIWGNSx/Kyb+nlpYegLb0FbhLDQYk/r5ERv5UGq+d8WPgwk
-         ojIFoj4y5DGRWrs/v9MNXVsl6aJGdHP7muLuXHoEFvQn22SgNvqdrxYOQyBVH9UeoqfQ
-         NDyO8LTZRO988b/EwwKN5fERT3WtDY/BzqutRzGumC4THs5dm9AQ0EtNOW5l7PRalIJA
-         4LgAOOdFxfbKDy7FcsGlaA2A++VC/hMVxMVwFGZ8z2ST5RiABRjMf9uCIjcScY8ZG5IE
-         gcHN8IH1vRcgl7FLX15aKWC9M6tg3ayjFuyXNXRNyBTsJRiadnGyuJu5gAktWYwnc2CF
-         B+1g==
-X-Gm-Message-State: AOAM5325OrX7QZyawCd87Zyxprk/kI43k/tIaTVpzXVAa+ZvHskp4vjH
-        aRBdcfnApvV9aAg+Ctho0uHWMFD+R/Q=
-X-Google-Smtp-Source: ABdhPJx5qhVnEGEEPCngW/VXN0kg4ISOHnIhlJ0rW8GF+wT45bUM8cKAyXfGl89s+spifyKa8BKA7Q==
-X-Received: by 2002:a17:902:82c3:b029:d6:c377:c87d with SMTP id u3-20020a17090282c3b02900d6c377c87dmr22639481plz.37.1605130583538;
-        Wed, 11 Nov 2020 13:36:23 -0800 (PST)
-Received: from shane-XPS-13-9380.hsd1.ca.comcast.net ([2601:646:8800:1c00:b2ab:a08f:30f:70b8])
-        by smtp.gmail.com with ESMTPSA id b29sm3747792pff.194.2020.11.11.13.36.21
+        bh=+fzlfnA2TEDDFFxjWmlVuY8W0FfkEiYNB2C9rSQv2Nw=;
+        b=nWvYnfIrTVFxIsV4vEt3YxsiPUxYekQMwmDV7U8/XudQlrarX7X55ZZUWOwlMszbep
+         9L8O5F74mi8ETQpYhfKdUJJBiKkjD/nFVsgrCBUU/c2ervIUbZ06TADqOqZBQcnITvvs
+         Osco8rBESoWb8hPCAi206XbNWqeG1Pms8BaBiC3PV4oolLOUJtydVGlAGv3dE7IRgE3I
+         R60eFBsjYYNDhdk4rkTGpjmpJdvbsG8D14KSMMQiZRGdbXpOLwnvePDjkQiB/49jUfZP
+         jXIp4h68cyWuc0Jv5Uu5MW/vDN2zEfeJXbXQ2W4zlWQ/rC9tsu2mb9GntkbFw9IZFt6l
+         Ed5g==
+X-Gm-Message-State: AOAM530YAzjHgn/Rbtr8maWW14O3dyh3bw9UXAp334WDTCsHpgF6MohB
+        64rsqbi7HXqLxJbBrEBfVYcuWI7JGBtsDQ==
+X-Google-Smtp-Source: ABdhPJzcXpb4uTDj7Ogjg2XMxp+t0CrGGeSWWaRMxQObt1T6Y9+Ez39YZ+6uFOCTJKt/X6F6iszSbA==
+X-Received: by 2002:a63:fb50:: with SMTP id w16mr22695107pgj.202.1605130821725;
+        Wed, 11 Nov 2020 13:40:21 -0800 (PST)
+Received: from localhost (g133.220-213-56.ppp.wakwak.ne.jp. [220.213.56.133])
+        by smtp.gmail.com with ESMTPSA id a11sm3683616pfn.125.2020.11.11.13.40.20
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 Nov 2020 13:36:22 -0800 (PST)
-From:   Xie He <xie.he.0141@gmail.com>
-To:     Jakub Kicinski <kuba@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Martin Schiller <ms@dev.tdt.de>
-Cc:     Xie He <xie.he.0141@gmail.com>,
-        Andrew Hendry <andrew.hendry@gmail.com>
-Subject: [PATCH net-next RFC] MAINTAINERS: Add Martin Schiller as a maintainer for the X.25 stack
-Date:   Wed, 11 Nov 2020 13:36:08 -0800
-Message-Id: <20201111213608.27846-1-xie.he.0141@gmail.com>
-X-Mailer: git-send-email 2.27.0
+        Wed, 11 Nov 2020 13:40:20 -0800 (PST)
+From:   Stafford Horne <shorne@gmail.com>
+To:     LKML <linux-kernel@vger.kernel.org>
+Cc:     Filip Kokosinski <fkokosinski@antmicro.com>,
+        Mateusz Holenko <mholenko@antmicro.com>,
+        Stafford Horne <shorne@gmail.com>,
+        Karol Gugala <kgugala@antmicro.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Jonas Bonn <jonas@southpole.se>,
+        Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
+        devicetree@vger.kernel.org, openrisc@lists.librecores.org
+Subject: [PATCH] openrisc: add support for LiteX
+Date:   Thu, 12 Nov 2020 06:39:59 +0900
+Message-Id: <20201111214003.1506246-1-shorne@gmail.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Martin Schiller, would you like to be a maintainer for the X.25 stack?
+From: Filip Kokosinski <fkokosinski@antmicro.com>
 
-As we know the linux-x25 mail list has stopped working for a long time.
-Adding you as a maintainer may make you be Cc'd for new patches so that
-you can review them.
+This adds support for a basic LiteX-based SoC with a mor1kx soft CPU.
 
-The original maintainer of X.25 network layer (Andrew Hendry) has stopped
-sending emails to the netdev mail list since 2013. So there is practically
-no maintainer for X.25 code currently.
-
-Cc: Martin Schiller <ms@dev.tdt.de>
-Cc: Andrew Hendry <andrew.hendry@gmail.com>
-Signed-off-by: Xie He <xie.he.0141@gmail.com>
+Signed-off-by: Filip Kokosinski <fkokosinski@antmicro.com>
+Signed-off-by: Mateusz Holenko <mholenko@antmicro.com>
+[shorne: Merged in soc-cntl patch, removed CROSS_COMPILE, sort MAINT.]
+Signed-off-by: Stafford Horne <shorne@gmail.com>
 ---
- MAINTAINERS | 20 ++++++++++----------
- 1 file changed, 10 insertions(+), 10 deletions(-)
+ MAINTAINERS                               |  1 +
+ arch/openrisc/boot/dts/or1klitex.dts      | 55 +++++++++++++++++++++++
+ arch/openrisc/configs/or1klitex_defconfig | 18 ++++++++
+ 3 files changed, 74 insertions(+)
+ create mode 100644 arch/openrisc/boot/dts/or1klitex.dts
+ create mode 100644 arch/openrisc/configs/or1klitex_defconfig
 
 diff --git a/MAINTAINERS b/MAINTAINERS
-index 2a0fde12b650..9ebcb0708d5d 100644
+index 0b1f39b3938d..9c55a54c9673 100644
 --- a/MAINTAINERS
 +++ b/MAINTAINERS
-@@ -9832,13 +9832,6 @@ S:	Maintained
- F:	arch/mips/lantiq
- F:	drivers/soc/lantiq
- 
--LAPB module
--L:	linux-x25@vger.kernel.org
--S:	Orphan
--F:	Documentation/networking/lapb-module.rst
--F:	include/*/lapb.h
--F:	net/lapb/
--
- LASI 53c700 driver for PARISC
- M:	"James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>
- L:	linux-scsi@vger.kernel.org
-@@ -18979,12 +18972,19 @@ L:	linux-kernel@vger.kernel.org
+@@ -10177,6 +10177,7 @@ M:	Karol Gugala <kgugala@antmicro.com>
+ M:	Mateusz Holenko <mholenko@antmicro.com>
  S:	Maintained
- N:	axp[128]
- 
--X.25 NETWORK LAYER
--M:	Andrew Hendry <andrew.hendry@gmail.com>
-+X.25 STACK
-+M:	Martin Schiller <ms@dev.tdt.de>
- L:	linux-x25@vger.kernel.org
--S:	Odd Fixes
-+L:	netdev@vger.kernel.org
-+S:	Maintained
-+F:	Documentation/networking/lapb-module.txt
- F:	Documentation/networking/x25*
-+F:	drivers/net/wan/hdlc_x25.c
-+F:	drivers/net/wan/lapbether.c
-+F:	include/*/lapb.h
- F:	include/net/x25*
-+F:	include/uapi/linux/x25.h
-+F:	net/lapb/
- F:	net/x25/
- 
- X86 ARCHITECTURE (32-BIT AND 64-BIT)
+ F:	Documentation/devicetree/bindings/*/litex,*.yaml
++F:	arch/openrisc/boot/dts/or1klitex.dts
+ F:	drivers/soc/litex/litex_soc_ctrl.c
+ F:	drivers/tty/serial/liteuart.c
+ F:	include/linux/litex.h
+diff --git a/arch/openrisc/boot/dts/or1klitex.dts b/arch/openrisc/boot/dts/or1klitex.dts
+new file mode 100644
+index 000000000000..3f9867aa3844
+--- /dev/null
++++ b/arch/openrisc/boot/dts/or1klitex.dts
+@@ -0,0 +1,55 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * LiteX-based System on Chip
++ *
++ * Copyright (C) 2019 Antmicro <www.antmicro.com>
++ */
++
++/dts-v1/;
++/ {
++	compatible = "opencores,or1ksim";
++	#address-cells = <1>;
++	#size-cells = <1>;
++	interrupt-parent = <&pic>;
++
++	aliases {
++		serial0 = &serial0;
++	};
++
++	chosen {
++		bootargs = "console=liteuart";
++	};
++
++	memory@0 {
++		device_type = "memory";
++		reg = <0x00000000 0x10000000>;
++	};
++
++	cpus {
++		#address-cells = <1>;
++		#size-cells = <0>;
++		cpu@0 {
++			compatible = "opencores,or1200-rtlsvn481";
++			reg = <0>;
++			clock-frequency = <100000000>;
++		};
++	};
++
++	pic: pic {
++		compatible = "opencores,or1k-pic";
++		#interrupt-cells = <1>;
++		interrupt-controller;
++	};
++
++	serial0: serial@e0002000 {
++		device_type = "serial";
++		compatible = "litex,liteuart";
++		reg = <0xe0002000 0x100>;
++	};
++
++	soc_ctrl0: soc_controller@e0000000 {
++			compatible = "litex,soc-controller";
++			reg = <0xe0000000 0xc>;
++			status = "okay";
++	};
++};
+diff --git a/arch/openrisc/configs/or1klitex_defconfig b/arch/openrisc/configs/or1klitex_defconfig
+new file mode 100644
+index 000000000000..3c2c70d3d740
+--- /dev/null
++++ b/arch/openrisc/configs/or1klitex_defconfig
+@@ -0,0 +1,18 @@
++CONFIG_BLK_DEV_INITRD=y
++CONFIG_BOOTPARAM_SOFTLOCKUP_PANIC=y
++CONFIG_BUG_ON_DATA_CORRUPTION=y
++CONFIG_CC_OPTIMIZE_FOR_SIZE=y
++CONFIG_DEVTMPFS=y
++CONFIG_DEVTMPFS_MOUNT=y
++CONFIG_EMBEDDED=y
++CONFIG_HZ_100=y
++CONFIG_INITRAMFS_SOURCE="openrisc-rootfs.cpio.gz"
++CONFIG_OF_OVERLAY=y
++CONFIG_OPENRISC_BUILTIN_DTB="or1klitex"
++CONFIG_PANIC_ON_OOPS=y
++CONFIG_PRINTK_TIME=y
++CONFIG_LITEX_SOC_CONTROLLER=y
++CONFIG_SERIAL_LITEUART=y
++CONFIG_SERIAL_LITEUART_CONSOLE=y
++CONFIG_SOFTLOCKUP_DETECTOR=y
++CONFIG_TTY_PRINTK=y
 -- 
-2.27.0
+2.26.2
 
