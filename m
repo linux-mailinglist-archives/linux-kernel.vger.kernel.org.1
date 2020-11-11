@@ -2,231 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C13B2AF383
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 15:27:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 886D82AF388
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 15:29:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726756AbgKKO1m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 09:27:42 -0500
-Received: from perceval.ideasonboard.com ([213.167.242.64]:53136 "EHLO
-        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725909AbgKKO1l (ORCPT
+        id S1726338AbgKKO3K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 09:29:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34366 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725900AbgKKO3J (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 09:27:41 -0500
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 63E02A19;
-        Wed, 11 Nov 2020 15:27:38 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1605104858;
-        bh=x+6cQdl3k6jIh9Epg7yQvBNQmgdjXU7lzidL9akFX4Y=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=djkgxwnReI8Qzr43qRLT7ZIrkKza7QhYr59Lo/FuXnVJjGZITCeg2N9C48rPUf6AY
-         TGjXqQXtkvCyVLZwzJ8hUehXvczXNqOZKI0TbHdXts5ecvGc7FIG+GNwm+UhZQ13iU
-         zonazKkes7jcZp+Jl797CRXvmWeD7ixI/nfWq8IM=
-Date:   Wed, 11 Nov 2020 16:27:35 +0200
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Rob Herring <robh@kernel.org>
-Cc:     devicetree@vger.kernel.org, Sameer Pujar <spujar@nvidia.com>,
-        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
-        Jacopo Mondi <jacopo+renesas@jmondi.org>
-Subject: Re: [PATCH v3 1/3] dt-bindings: Convert graph bindings to json-schema
-Message-ID: <20201111142735.GG4115@pendragon.ideasonboard.com>
-References: <20201102203656.220187-1-robh@kernel.org>
- <20201102203656.220187-2-robh@kernel.org>
- <20201111140009.GD4115@pendragon.ideasonboard.com>
- <CAL_Jsq+A6Ga+h4qK0nzyL87M1DvrRSnzxtjwUNpq--L7MDHxfA@mail.gmail.com>
+        Wed, 11 Nov 2020 09:29:09 -0500
+Received: from mail-oi1-x244.google.com (mail-oi1-x244.google.com [IPv6:2607:f8b0:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 856F3C0613D1;
+        Wed, 11 Nov 2020 06:29:09 -0800 (PST)
+Received: by mail-oi1-x244.google.com with SMTP id m13so2336218oih.8;
+        Wed, 11 Nov 2020 06:29:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:subject:to:cc:references:from:autocrypt:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=R8B3c+/kXSfNa1B6GwshGOoXMqR4OPpxhJAynKdEYDQ=;
+        b=DzfXXepeB+68CS32asW2qhQM7ad77y5qB/kPEocKrvxFsok4AIZIv0VISIv6lGY6fu
+         f87oqRjk3476vIxQ2C8XYd2FZDxa2dhxN3FX3CEzBY79Kv2DLdDibXV8R7xt3QujOaHD
+         8Nbh/ysfiyUKmZzNxcKBXkbzPqJ1D/7idOEyXi1OlDLGR9mH7JP1NekoR4fmNrTugnMg
+         sa+6IF+nnfAK57XbxizZ33hqCbWSZGapmR0VDUQatybR7U4H8gUeGaVL37scB1TrgDNk
+         mBnhqlgMCBX91xrMvrbAaZ480PfChpXMGfHUtqtp+BgGicSbC1ODwhJz/IPCXxvZUOSu
+         5o6w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:subject:to:cc:references:from:autocrypt
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=R8B3c+/kXSfNa1B6GwshGOoXMqR4OPpxhJAynKdEYDQ=;
+        b=B3vY0OAvWy5P/pRZjmgH74xozWyBqSSitCtom1P9Ci9AvjHH8jcdlqSbgQkny1erqV
+         oCqr8I9ui1Za9yJM1OvnU6mxv+FPTYH9j9V8suS2vZ2Fcp02PIf5/o42V3abB5Vx39Xf
+         UIR4DnA1dwWgv6FHfDyO4fqKdk6gTqTugsyhEDSIb0EtoFMKmHiQAfBO/zV/3Mg7skML
+         piCskpdHUtjzR6R6JYYeBPp7nQqDuKY+v8yWTxhLaNQFTw3fjUR4syLwjtoaJjveuy+W
+         goy6rk/Q1GFbPybcLoI66PLd1p22h7nIJ4rJp3fxrzxwBZC4AX0scfAr92FSemJtX4so
+         83Pg==
+X-Gm-Message-State: AOAM532IW5wBTNkS8h6vHV/kpO19+tqzTZ8W1CPQ7hjjCfOMDXTlbT7N
+        uQvD5BNf6bb6i0R2m0eRJkLcU798zZE=
+X-Google-Smtp-Source: ABdhPJwoRBLsGNjcAuGX7xXDAeLsAsnn7cHUXjwsJVJDLT09p0kpJQSEbLRzs5Foyi4arUhedwWPXg==
+X-Received: by 2002:a05:6808:983:: with SMTP id a3mr2169480oic.15.1605104948907;
+        Wed, 11 Nov 2020 06:29:08 -0800 (PST)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id o63sm545158ooa.10.2020.11.11.06.29.07
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 11 Nov 2020 06:29:07 -0800 (PST)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Subject: Re: [PATCH] hwmon: Fix unsigned 'reg' compared with zero in
+ amc6821_update_device
+To:     xiakaixu1987@gmail.com, jdelvare@suse.com
+Cc:     linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Kaixu Xia <kaixuxia@tencent.com>
+References: <1605082396-26560-1-git-send-email-kaixuxia@tencent.com>
+From:   Guenter Roeck <linux@roeck-us.net>
+Autocrypt: addr=linux@roeck-us.net; keydata=
+ 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
+ mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
+Message-ID: <6d1e9fbf-86a4-9427-de7a-48d946cb59b8@roeck-us.net>
+Date:   Wed, 11 Nov 2020 06:29:06 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
+In-Reply-To: <1605082396-26560-1-git-send-email-kaixuxia@tencent.com>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CAL_Jsq+A6Ga+h4qK0nzyL87M1DvrRSnzxtjwUNpq--L7MDHxfA@mail.gmail.com>
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rob,
-
-On Wed, Nov 11, 2020 at 08:25:40AM -0600, Rob Herring wrote:
-> On Wed, Nov 11, 2020 at 8:00 AM Laurent Pinchart wrote:
-> > On Mon, Nov 02, 2020 at 02:36:54PM -0600, Rob Herring wrote:
-> > > From: Sameer Pujar <spujar@nvidia.com>
-> > >
-> > > Convert device tree bindings of graph to YAML format. Currently graph.txt
-> > > doc is referenced in multiple files and all of these need to use schema
-> > > references. For now graph.txt is updated to refer to graph.yaml.
-> > >
-> > > For users of the graph binding, they should reference to the graph
-> > > schema from either 'ports' or 'port' property:
-> > >
-> > > properties:
-> > >   ports:
-> > >     type: object
-> > >     $ref: graph.yaml#/properties/ports
-> > >
-> > >     properties:
-> > >       port@0:
-> > >         description: What data this port has
-> > >
-> > >       ...
-> > >
-> > > Or:
-> > >
-> > > properties:
-> > >   port:
-> > >     description: What data this port has
-> > >     type: object
-> > >     $ref: graph.yaml#/properties/port
-> >
-> > Sounds like a good approach.
-> >
-> > > Signed-off-by: Sameer Pujar <spujar@nvidia.com>
-> > > Acked-by: Philipp Zabel <p.zabel@pengutronix.de>
-> > > Signed-off-by: Rob Herring <robh@kernel.org>
-> > > ---
-> > > v3:
-> > >  - Move port 'reg' to port@* and make required
-> > >  - Make remote-endpoint required
-> > >  - Add 'additionalProperties: true' now required
-> > >  - Fix yamllint warnings
-> > >
-> > >  Documentation/devicetree/bindings/graph.txt  | 129 +-----------
-> > >  Documentation/devicetree/bindings/graph.yaml | 199 +++++++++++++++++++
-> > >  2 files changed, 200 insertions(+), 128 deletions(-)
-> > >  create mode 100644 Documentation/devicetree/bindings/graph.yaml
+On 11/11/20 12:13 AM, xiakaixu1987@gmail.com wrote:
+> From: Kaixu Xia <kaixuxia@tencent.com>
 > 
-> [...]
+> The unsigned variable reg is assigned a return value from the call
+> to i2c_smbus_read_byte_data(), which may return negative error code.
 > 
-> > > diff --git a/Documentation/devicetree/bindings/graph.yaml b/Documentation/devicetree/bindings/graph.yaml
-> > > new file mode 100644
-> > > index 000000000000..b56720c5a13e
-> > > --- /dev/null
-> > > +++ b/Documentation/devicetree/bindings/graph.yaml
-> > > @@ -0,0 +1,199 @@
-> > > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> > > +%YAML 1.2
-> > > +---
-> > > +$id: http://devicetree.org/schemas/graph.yaml#
-> > > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > > +
-> > > +title: Common bindings for device graphs
-> > > +
-> > > +description: |
-> > > +  The hierarchical organisation of the device tree is well suited to describe
-> > > +  control flow to devices, but there can be more complex connections between
-> > > +  devices that work together to form a logical compound device, following an
-> > > +  arbitrarily complex graph.
-> > > +  There already is a simple directed graph between devices tree nodes using
-> > > +  phandle properties pointing to other nodes to describe connections that
-> > > +  can not be inferred from device tree parent-child relationships. The device
-> > > +  tree graph bindings described herein abstract more complex devices that can
-> > > +  have multiple specifiable ports, each of which can be linked to one or more
-> > > +  ports of other devices.
-> > > +
-> > > +  These common bindings do not contain any information about the direction or
-> > > +  type of the connections, they just map their existence. Specific properties
-> > > +  may be described by specialized bindings depending on the type of connection.
-> > > +
-> > > +  To see how this binding applies to video pipelines, for example, see
-> > > +  Documentation/devicetree/bindings/media/video-interfaces.txt.
-> > > +  Here the ports describe data interfaces, and the links between them are
-> > > +  the connecting data buses. A single port with multiple connections can
-> > > +  correspond to multiple devices being connected to the same physical bus.
-> > > +
-> > > +maintainers:
-> > > +  - Philipp Zabel <p.zabel@pengutronix.de>
-> > > +
-> > > +select: false
-> > > +
-> > > +properties:
-> > > +  port:
-> > > +    type: object
-> > > +    description:
-> > > +      If there is more than one endpoint node or 'reg' property present in
-> > > +      endpoint nodes then '#address-cells' and '#size-cells' properties are
-> > > +      required.
-> > > +
-> > > +    properties:
-> > > +      "#address-cells":
-> > > +        const: 1
-> > > +
-> > > +      "#size-cells":
-> > > +        const: 0
-> > > +
-> > > +    patternProperties:
-> > > +      "^endpoint(@[0-9a-f]+)?$":
-> > > +        type: object
-> > > +        properties:
-> > > +          reg:
-> > > +            maxItems: 1
-> > > +
-> > > +          remote-endpoint:
-> > > +            description: |
-> > > +              phandle to an 'endpoint' subnode of a remote device node.
-> > > +            $ref: /schemas/types.yaml#/definitions/phandle
-> > > +
-> > > +        required:
-> > > +          - remote-endpoint
-> >
-> > As noted elsewhere, this shouldn't be required.
-> >
-> > Should we set additionalProperties: false here ?
+> Fixes coccicheck warning:
 > 
-> No, we've got a bunch of properties that get added to endpoint nodes.
-> There's a few cases where 'port' nodes have properties too.
-
-I meant the port node, which I wasn't aware needed additional
-properties. Do you have any example ? (I wonder if you will point me to
-bindings that I have written ;-))
-
-> > > +  ports:
-> > > +    type: object
-> > > +    description: |
-> > > +      If there is more than one port node or 'reg' property present in port
-> > > +      nodes then '#address-cells' and '#size-cells' properties are required.
-> > > +      In such cases all port nodes can be grouped under 'ports' independently
-> > > +      from any other child device nodes a device might have.
-> >
-> > Allowing multiple port nodes not grouped in a ports node has created
-> > complexity, with very little gain. Should we forbid that going forward ?
+> ./drivers/hwmon/amc6821.c:215:6-9: WARNING: Unsigned expression compared with zero: reg > 0
+> ./drivers/hwmon/amc6821.c:228:6-9: WARNING: Unsigned expression compared with zero: reg > 0
 > 
-> Yes, that's probably a separate change. The examples need updating
-> too. We do have a few cases we'll have to support though.
-
-Sure, it can be done on top.
-
-> > > +    properties:
-> > > +      "#address-cells":
-> > > +        const: 1
-> > > +
-> > > +      "#size-cells":
-> > > +        const: 0
-> > > +
-> > > +    patternProperties:
-> > > +      "^port(@[0-9a-f]+)?$":
-> > > +        $ref: "#/properties/port"
-> > > +        type: object
-> > > +
-> > > +        properties:
-> > > +          reg:
-> > > +            maxItems: 1
-> > > +
-> > > +        required:
-> > > +          - reg
-> > > +
-> > > +
-> >
-> > Maybe a single blank line ?
-> >
-> > Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+> Reported-by: Tosk Robot <tencent_os_robot@tencent.com>
+> Signed-off-by: Kaixu Xia <kaixuxia@tencent.com>
+> ---
+>  drivers/hwmon/amc6821.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> I've gone thru and updated schemas to use this. Primarily to prove out
-> a meta-schema for it. So I'll be sending out another version.
+> diff --git a/drivers/hwmon/amc6821.c b/drivers/hwmon/amc6821.c
+> index 6b1ce2242c61..ce7c9f412538 100644
+> --- a/drivers/hwmon/amc6821.c
+> +++ b/drivers/hwmon/amc6821.c
+> @@ -166,7 +166,7 @@ static struct amc6821_data *amc6821_update_device(struct device *dev)
+>  	struct amc6821_data *data = dev_get_drvdata(dev);
+>  	struct i2c_client *client = data->client;
+>  	int timeout = HZ;
+> -	u8 reg;
+> +	s8 reg;
 
--- 
-Regards,
+That is pointless since the return value is not checked. On top of that,
+there are many similar assignments to u8 variables, return values
+from calls to i2c_smbus_read_byte_data() are never checked in
+this function, and the u8 part is actually needed. If you want to
+fix it, please go ahead, but please fix the entire driver and please
+do it correctly (here: the variable should be 'int' and the return
+value should be checked).
 
-Laurent Pinchart
+Thanks,
+Guenter
