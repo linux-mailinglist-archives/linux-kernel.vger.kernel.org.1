@@ -2,117 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9186D2AF7BC
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 19:09:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D18CB2AF7A7
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 19:01:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727342AbgKKSJC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 13:09:02 -0500
-Received: from z5.mailgun.us ([104.130.96.5]:15225 "EHLO z5.mailgun.us"
+        id S1727152AbgKKSBe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 13:01:34 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41596 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725966AbgKKSJA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 13:09:00 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1605118140; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=L/7UfRWhvf87d6KJzTiNV4kTZAtKUk11tsijaAnZsFg=; b=O9Hs7b9SvZqcg/mP9dg52FzXTeA14d0aADQht+SUb8Xve3Wz8RGWW0N5NgBCOISe/bBUY3vl
- jbL3FpBdufYjCnikH41hGzONN1cgcp5juW33JOXJKzZDvMciXjz1lzJVAnquaQcOjn/UHMYN
- TyNVN7ekPFlFtHt0KaCIbuVG3SY=
-X-Mailgun-Sending-Ip: 104.130.96.5
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n01.prod.us-east-1.postgun.com with SMTP id
- 5fac207c0d87d63775a26c7e (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 11 Nov 2020 17:33:48
- GMT
-Sender: asutoshd=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 38205C43385; Wed, 11 Nov 2020 17:33:47 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL autolearn=no autolearn_force=no version=3.4.0
-Received: from [192.168.8.168] (cpe-70-95-149-85.san.res.rr.com [70.95.149.85])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S1725966AbgKKSBa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Nov 2020 13:01:30 -0500
+Received: from quaco.ghostprotocols.net (unknown [179.97.37.151])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        (Authenticated sender: asutoshd)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 4491EC433C6;
-        Wed, 11 Nov 2020 17:33:45 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 4491EC433C6
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=asutoshd@codeaurora.org
-Subject: Re: [PATCH v1 1/2] scsi: ufs: Fix unbalanced scsi_block_reqs_cnt
- caused by ufshcd_hold()
-To:     Can Guo <cang@codeaurora.org>, nguyenb@codeaurora.org,
-        hongwus@codeaurora.org, rnayak@codeaurora.org,
-        linux-scsi@vger.kernel.org, kernel-team@android.com,
-        saravanak@google.com, salyzyn@google.com
-Cc:     Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Stanley Chu <stanley.chu@mediatek.com>,
-        Bean Huo <beanhuo@micron.com>,
-        Bart Van Assche <bvanassche@acm.org>,
-        open list <linux-kernel@vger.kernel.org>
-References: <1604384682-15837-1-git-send-email-cang@codeaurora.org>
- <1604384682-15837-2-git-send-email-cang@codeaurora.org>
-From:   "Asutosh Das (asd)" <asutoshd@codeaurora.org>
-Message-ID: <ddefc6a0-6a70-692b-b9bc-d3a290273f72@codeaurora.org>
-Date:   Wed, 11 Nov 2020 09:33:44 -0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.1
+        by mail.kernel.org (Postfix) with ESMTPSA id 052A5206B6;
+        Wed, 11 Nov 2020 18:01:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605117690;
+        bh=rWIlCSVLkxy6U/Oi8BLJipuAg6hfbgdqGmwN3XRb5NQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=rhB4e5zezCUflGLHAy5npSm00xFopJIbgN4b5ju8T3p34nghdDlSzKKE85MLRAAns
+         hb6VapXatmNnYp6avXw33gpt2kbM9b1++XJOUHby6vVXMfSBDDSgMv1RtMqEMNH+AM
+         995Y4fU95RHGjpV3xK1/f0cEw0fiX1B90AMIzehc=
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 29330411D1; Wed, 11 Nov 2020 15:01:27 -0300 (-03)
+Date:   Wed, 11 Nov 2020 15:01:27 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Dave Martin <Dave.Martin@arm.com>
+Cc:     Andre Przywara <Andre.Przywara@arm.com>,
+        "leo.yan@linaro.org" <leo.yan@linaro.org>,
+        James Clark <James.Clark@arm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <Mark.Rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Al Grant <Al.Grant@arm.com>, Wei Li <liwei391@huawei.com>,
+        John Garry <john.garry@huawei.com>,
+        Will Deacon <will@kernel.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v8 06/22] perf arm-spe: Refactor printing string to buffer
+Message-ID: <20201111180127.GD380127@kernel.org>
+References: <20201111071149.815-1-leo.yan@linaro.org>
+ <20201111071149.815-7-leo.yan@linaro.org>
+ <20201111153555.GG355344@kernel.org>
+ <a1ca3412-3815-e2a8-0334-f3059802df6a@arm.com>
+ <20201111173922.GA380127@kernel.org>
+ <20201111175827.GR6882@arm.com>
 MIME-Version: 1.0
-In-Reply-To: <1604384682-15837-2-git-send-email-cang@codeaurora.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201111175827.GR6882@arm.com>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/2/2020 10:24 PM, Can Guo wrote:
-> The scsi_block_reqs_cnt increased in ufshcd_hold() is supposed to be
-> decreased back in ufshcd_ungate_work() in a paired way. However, if
-> specific ufshcd_hold/release sequences are met, it is possible that
-> scsi_block_reqs_cnt is increased twice but only one ungate work is
-> queued. To make sure scsi_block_reqs_cnt is handled by ufshcd_hold() and
-> ufshcd_ungate_work() in a paired way, increase it only if queue_work()
-> returns true.
+Em Wed, Nov 11, 2020 at 05:58:27PM +0000, Dave Martin escreveu:
 > 
-> Signed-off-by: Can Guo <cang@codeaurora.org>
-> Reviewed-by: Hongwu Su <hongwus@codeaurora.org>
-> ---
+> On Wed, Nov 11, 2020 at 05:39:22PM +0000, Arnaldo Carvalho de Melo wrote:
+> > Em Wed, Nov 11, 2020 at 03:45:23PM +0000, Andr� Przywara escreveu:
+> > > On 11/11/2020 15:35, Arnaldo Carvalho de Melo wrote:
+> > > > Isn't this 'ret +=' ? Otherwise if any of these arm_spe_pkt_snprintf()
+> > > > calls are made the previous 'ret' value is simply discarded. Can you
+> > > > clarify this?
 
-Reviewed-by: Asutosh Das <asutoshd@codeaurora.org>
+> > > ret is the same as err. If err is negative (from previous calls), we
+> > > return that straight away, so it does nothing but propagating the error.
 
->   drivers/scsi/ufs/ufshcd.c | 6 +++---
->   1 file changed, 3 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
-> index 847f355..efa7d86 100644
-> --- a/drivers/scsi/ufs/ufshcd.c
-> +++ b/drivers/scsi/ufs/ufshcd.c
-> @@ -1634,12 +1634,12 @@ int ufshcd_hold(struct ufs_hba *hba, bool async)
->   		 */
->   		/* fallthrough */
->   	case CLKS_OFF:
-> -		ufshcd_scsi_block_requests(hba);
->   		hba->clk_gating.state = REQ_CLKS_ON;
->   		trace_ufshcd_clk_gating(dev_name(hba->dev),
->   					hba->clk_gating.state);
-> -		queue_work(hba->clk_gating.clk_gating_workq,
-> -			   &hba->clk_gating.ungate_work);
-> +		if (queue_work(hba->clk_gating.clk_gating_workq,
-> +			       &hba->clk_gating.ungate_work))
-> +			ufshcd_scsi_block_requests(hba);
->   		/*
->   		 * fall through to check if we should wait for this
->   		 * work to be done or not.
-> 
+> > Usually the return of a snprintf is used to account for buffer space, ok
+> > I'll have to read it, which I shouldn't as snprintf has a well defined
+> > meaning...
 
+> > Ok, now that I look at it, I realize it is not a snprintf() routine, but
+> > something with different semantics, that will look at a pointer to an
+> > integer and then do nothing if it comes with some error, etc, confusing
+> > :-/
 
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-Linux Foundation Collaborative Project
+> Would you be happier if the function were renamed?
+
+> Originally we were aiming for snprintf() semantics, but this still
+> spawns a lot of boilerplate code and encourages mistakes in the local
+> caller here -- hence the current sticky error approach.
+
+> So maybe the name should now be less "snprintf"-like.
+
+Please, its important to stick to semantics for such well known type of
+routines, helps reviewing, etc.
+
+I'll keep the series up to that point and will run my build tests, then
+push it publicly to acme/perf/core and you can go from there, ok?
+
+I've changed the BIT() to BIT_ULL() as Andre suggested and I'm testing
+it again.
+
+- Arnaldo
