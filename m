@@ -2,186 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4024F2AF798
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 18:50:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FE262AF799
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 18:51:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727365AbgKKRur (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 12:50:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37536 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727266AbgKKRuq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 12:50:46 -0500
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F7B3C0613D1
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 09:50:46 -0800 (PST)
-Received: by mail-wm1-x341.google.com with SMTP id p19so4562375wmg.0
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 09:50:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=pMy5H5o1v+WngKr1b+qy1lo8XFp3TrTTXnTQCqUhuZg=;
-        b=fAVKGBzKjAe4FzmDhdDDIdaDB5BezRl0ARbzRYYJnSFvDZui2+PV9PzMunIgpyBtFV
-         1e1pdPHRVceAMBXgozczlGqUNQhPkCQqlFHjTAd3nPNZ6ycbPnymnqNOKlEW+SdgZEbZ
-         Ca7t42UZkCex/Ik+BLFF0tKwXxS0hdm+OvHaTu3VQurOOSra1XAOInP9k8Lxu517uOJi
-         yiyjOxWAeLsKn1mXFIW6KhPvCXcw3qC2VhYFr+mwvUtdnjXV4r3i2oMaWcAiAu3C8HYL
-         SBxTEcfnRjP5ln+tXuaFcbzMSN9dBNP0fcH1BaeZfGHH3CyfJyJc8T0FvBTxlpvCxJiC
-         c9Pw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=pMy5H5o1v+WngKr1b+qy1lo8XFp3TrTTXnTQCqUhuZg=;
-        b=QzqplC7c9umWO1Iva1Lhe6SqWGiZsXzVMRD2WFofuK/PZRkR7yEjW9PHsppZCgr+qU
-         Ub21hmmqIsCV8PS3PyFnMGurTEpuTYp2rD9FX7kRlU9pY1z1RKIch8XWGPOcPju+3WBq
-         z9CSgC72njhs+MYINfObFEDwczmwqv0Kfoa0g86lyNSjOrw7nfbxWyGoWwlWgMOXuNjG
-         rKHzcewTeg7IGzJ24sZaem1Omm//Q4cvWQF0U7sq4NEpKFB0D3mlO3tdwYpOLWmRtkdY
-         3ePfhBX7vMmE43WrTtCeE8XRYvNJZJTvrenk+wdblsmDCKO8Yz/VyqwiP0EZce995K/6
-         W5Fg==
-X-Gm-Message-State: AOAM531WGObPOlI1Mgt4QNV1MZsK/yZamMUwJjHy9I1mw3k0shZKa8n9
-        eI7jGReIDy1U90mOKIssqs3umw==
-X-Google-Smtp-Source: ABdhPJwZ1ZTomPkEm6NnFS5XcoFOE7jbre2KnwrSxfqY1ikuV8ZC4b2EjuVGNlFN60bBV2WWFhhU0g==
-X-Received: by 2002:a1c:7e87:: with SMTP id z129mr5390876wmc.176.1605117044596;
-        Wed, 11 Nov 2020 09:50:44 -0800 (PST)
-Received: from elver.google.com ([2a00:79e0:15:13:f693:9fff:fef4:2449])
-        by smtp.gmail.com with ESMTPSA id v8sm3346969wmg.28.2020.11.11.09.50.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 Nov 2020 09:50:43 -0800 (PST)
-Date:   Wed, 11 Nov 2020 18:50:38 +0100
-From:   Marco Elver <elver@google.com>
-To:     Andrey Konovalov <andreyknvl@google.com>
-Cc:     Dmitry Vyukov <dvyukov@google.com>,
-        Alexander Potapenko <glider@google.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will.deacon@arm.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Evgenii Stepanov <eugenis@google.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Branislav Rankov <Branislav.Rankov@arm.com>,
-        Kevin Brodsky <kevin.brodsky@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        kasan-dev@googlegroups.com, linux-arm-kernel@lists.infradead.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 09/20] kasan: inline kasan_poison_memory and
- check_invalid_free
-Message-ID: <20201111175038.GL517454@elver.google.com>
-References: <cover.1605046662.git.andreyknvl@google.com>
- <e14ac53d7c43b4381ad94665c63a154dffc04b6b.1605046662.git.andreyknvl@google.com>
+        id S1726960AbgKKRv1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 12:51:27 -0500
+Received: from foss.arm.com ([217.140.110.172]:59078 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725933AbgKKRv0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Nov 2020 12:51:26 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 18690139F;
+        Wed, 11 Nov 2020 09:51:26 -0800 (PST)
+Received: from [192.168.2.22] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 090A83F718;
+        Wed, 11 Nov 2020 09:51:23 -0800 (PST)
+Subject: Re: [PATCH v8 00/22] perf arm-spe: Refactor decoding & dumping flow
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     Leo Yan <leo.yan@linaro.org>, Dave Martin <Dave.Martin@arm.com>,
+        James Clark <james.clark@arm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Al Grant <Al.Grant@arm.com>, Wei Li <liwei391@huawei.com>,
+        John Garry <john.garry@huawei.com>,
+        Will Deacon <will@kernel.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        linux-kernel@vger.kernel.org
+References: <20201111071149.815-1-leo.yan@linaro.org>
+ <20201111161051.GH355344@kernel.org> <20201111161535.GI355344@kernel.org>
+ <c22d9fa3-51bb-d86f-2a03-390c6844256a@arm.com>
+ <20201111174408.GC380127@kernel.org>
+From:   =?UTF-8?Q?Andr=c3=a9_Przywara?= <andre.przywara@arm.com>
+Organization: ARM Ltd.
+Message-ID: <159cb569-c64d-0685-bcfc-0103dd4de703@arm.com>
+Date:   Wed, 11 Nov 2020 17:51:19 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <e14ac53d7c43b4381ad94665c63a154dffc04b6b.1605046662.git.andreyknvl@google.com>
-User-Agent: Mutt/1.14.6 (2020-07-11)
+In-Reply-To: <20201111174408.GC380127@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 10, 2020 at 11:20PM +0100, 'Andrey Konovalov' via kasan-dev wrote:
-> Using kasan_poison_memory() or check_invalid_free() currently results in
-> function calls. Move their definitions to mm/kasan/kasan.h and turn them
-> into static inline functions for hardware tag-based mode to avoid
-> unneeded function calls.
+On 11/11/2020 17:44, Arnaldo Carvalho de Melo wrote:
+> Em Wed, Nov 11, 2020 at 04:20:26PM +0000, Andrï¿½ Przywara escreveu:
+>> On 11/11/2020 16:15, Arnaldo Carvalho de Melo wrote:
+>>> Em Wed, Nov 11, 2020 at 01:10:51PM -0300, Arnaldo Carvalho de Melo escreveu:
+>>>> Em Wed, Nov 11, 2020 at 03:11:27PM +0800, Leo Yan escreveu:
+>>>>> This is patch set v8 for refactoring Arm SPE trace decoding and dumping.
+>>>>>
+>>>>> This version addresses Andre's comment to pass parameter '&buf_len' at
+>>>>> the last call arm_spe_pkt_snprintf() in the function arm_spe_pkt_desc().
+>>>>>
+>>>>> This patch set is cleanly applied on the top of perf/core branch
+>>>>> with commit 644bf4b0f7ac ("perf jevents: Add test for arch std events").
+>>>>>
+>>>>> I retested this patch set on Hisilicon D06 platform with commands
+>>>>> "perf report -D" and "perf script", compared the decoding results
+>>>>> between with this patch set and without this patch set, "diff" tool
+>>>>> shows the result as expected.
+>>>>
+>>>> With the patches I applied I'm getting:
+>>>>
+>>>> util/arm-spe-decoder/arm-spe-pkt-decoder.c: In function 'arm_spe_pkt_desc':
+>>>> util/arm-spe-decoder/arm-spe-pkt-decoder.c:410:3: error: left shift count >= width of type [-Werror]
+>>>>    case 1: ns = !!(packet->payload & NS_FLAG);
+>>>>    ^
+>>>> util/arm-spe-decoder/arm-spe-pkt-decoder.c:411:4: error: left shift count >= width of type [-Werror]
+>>>>     el = (packet->payload & EL_FLAG) >> 61;
+>>>>     ^
+>>>> util/arm-spe-decoder/arm-spe-pkt-decoder.c:411:4: error: left shift count >= width of type [-Werror]
+>>>> util/arm-spe-decoder/arm-spe-pkt-decoder.c:416:3: error: left shift count >= width of type [-Werror]
+>>>>    case 3: ns = !!(packet->payload & NS_FLAG);
+>>>>    ^
+>>>>   CC       /tmp/build/perf/util/arm-spe-decoder/arm-spe-decoder.o
+>>>>  
+>>>>
+>>>> On:
+>>>>
+>>>>   16    11.70 android-ndk:r12b-arm          : FAIL arm-linux-androideabi-gcc (GCC) 4.9.x 20150123 (prerelease)
+>>>>   17    11.32 android-ndk:r15c-arm          : FAIL arm-linux-androideabi-gcc (GCC) 4.9.x 20150123 (prerelease)
+>>>>
+>>>> That were building ok before, builds still under way, perhaps its just
+>>>> on these old systems...
+>>>
+>>> [acme@five perf]$ git bisect good
+>>> cc6fa07fb1458cca3741919774eb050976471000 is the first bad commit
+>>> commit cc6fa07fb1458cca3741919774eb050976471000
+>>> Author: Leo Yan <leo.yan@linaro.org>
+>>> Date:   Wed Nov 11 15:11:28 2020 +0800
+>>>
+>>>     perf arm-spe: Include bitops.h for BIT() macro
+>>>
+>>>     Include header linux/bitops.h, directly use its BIT() macro and remove
+>>>     the self defined macros.
+>>>
+>>>     Signed-off-by: Leo Yan <leo.yan@linaro.org>
+>>>     Reviewed-by: Andre Przywara <andre.przywara@arm.com>
+>>>     Link: https://lore.kernel.org/r/20201111071149.815-2-leo.yan@linaro.org
+>>>     Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+>>>
+>>>  tools/perf/util/arm-spe-decoder/arm-spe-decoder.c     | 5 +----
+>>>  tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c | 3 +--
+>>>  2 files changed, 2 insertions(+), 6 deletions(-)
+>>
+>>
+>> Ah, thanks! I think I mentioned the missing usage of BIT_ULL() in an
+>> earlier review, and thought this was fixed. Possibly this gets fixed in
+>> a later patch in this series, and is a temporary regression?
 > 
-> Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
-> Reviewed-by: Dmitry Vyukov <dvyukov@google.com>
-> Link: https://linux-review.googlesource.com/id/Ia9d8191024a12d1374675b3d27197f10193f50bb
-> ---
->  mm/kasan/hw_tags.c | 15 ---------------
->  mm/kasan/kasan.h   | 28 ++++++++++++++++++++++++----
->  2 files changed, 24 insertions(+), 19 deletions(-)
-
-Reviewed-by: Marco Elver <elver@google.com>
-
-> diff --git a/mm/kasan/hw_tags.c b/mm/kasan/hw_tags.c
-> index 1476ac07666e..0303e49904b4 100644
-> --- a/mm/kasan/hw_tags.c
-> +++ b/mm/kasan/hw_tags.c
-> @@ -30,27 +30,12 @@ void kasan_init_hw_tags(void)
->  	pr_info("KernelAddressSanitizer initialized\n");
->  }
->  
-> -void kasan_poison_memory(const void *address, size_t size, u8 value)
-> -{
-> -	hw_set_mem_tag_range(kasan_reset_tag(address),
-> -			round_up(size, KASAN_GRANULE_SIZE), value);
-> -}
-> -
->  void kasan_unpoison_memory(const void *address, size_t size)
->  {
->  	hw_set_mem_tag_range(kasan_reset_tag(address),
->  			round_up(size, KASAN_GRANULE_SIZE), get_tag(address));
->  }
->  
-> -bool check_invalid_free(void *addr)
-> -{
-> -	u8 ptr_tag = get_tag(addr);
-> -	u8 mem_tag = hw_get_mem_tag(addr);
-> -
-> -	return (mem_tag == KASAN_TAG_INVALID) ||
-> -		(ptr_tag != KASAN_TAG_KERNEL && ptr_tag != mem_tag);
-> -}
-> -
->  void kasan_set_free_info(struct kmem_cache *cache,
->  				void *object, u8 tag)
->  {
-> diff --git a/mm/kasan/kasan.h b/mm/kasan/kasan.h
-> index 7498839a15d3..ab7314418604 100644
-> --- a/mm/kasan/kasan.h
-> +++ b/mm/kasan/kasan.h
-> @@ -153,8 +153,6 @@ struct kasan_alloc_meta *kasan_get_alloc_meta(struct kmem_cache *cache,
->  struct kasan_free_meta *kasan_get_free_meta(struct kmem_cache *cache,
->  						const void *object);
->  
-> -void kasan_poison_memory(const void *address, size_t size, u8 value);
-> -
->  #if defined(CONFIG_KASAN_GENERIC) || defined(CONFIG_KASAN_SW_TAGS)
->  
->  static inline const void *kasan_shadow_to_mem(const void *shadow_addr)
-> @@ -194,8 +192,6 @@ void print_tags(u8 addr_tag, const void *addr);
->  static inline void print_tags(u8 addr_tag, const void *addr) { }
->  #endif
->  
-> -bool check_invalid_free(void *addr);
-> -
->  void *find_first_bad_addr(void *addr, size_t size);
->  const char *get_bug_type(struct kasan_access_info *info);
->  void metadata_fetch_row(char *buffer, void *row);
-> @@ -279,6 +275,30 @@ static inline u8 random_tag(void)
->  }
->  #endif
->  
-> +#ifdef CONFIG_KASAN_HW_TAGS
-> +
-> +static inline void kasan_poison_memory(const void *address, size_t size, u8 value)
-> +{
-> +	hw_set_mem_tag_range(kasan_reset_tag(address),
-> +			round_up(size, KASAN_GRANULE_SIZE), value);
-> +}
-> +
-> +static inline bool check_invalid_free(void *addr)
-> +{
-> +	u8 ptr_tag = get_tag(addr);
-> +	u8 mem_tag = hw_get_mem_tag(addr);
-> +
-> +	return (mem_tag == KASAN_TAG_INVALID) ||
-> +		(ptr_tag != KASAN_TAG_KERNEL && ptr_tag != mem_tag);
-> +}
-> +
-> +#else /* CONFIG_KASAN_HW_TAGS */
-> +
-> +void kasan_poison_memory(const void *address, size_t size, u8 value);
-> +bool check_invalid_free(void *addr);
-> +
-> +#endif /* CONFIG_KASAN_HW_TAGS */
-> +
->  /*
->   * Exported functions for interfaces called from assembly or from generated
->   * code. Declarations here to avoid warning about missing declarations.
-> -- 
-> 2.29.2.222.g5d2a92d10f8-goog
+> you mean this on that patch that ditches the local BIT() macro, right?
 > 
-> -- 
-> You received this message because you are subscribed to the Google Groups "kasan-dev" group.
-> To unsubscribe from this group and stop receiving emails from it, send an email to kasan-dev+unsubscribe@googlegroups.com.
-> To view this discussion on the web visit https://groups.google.com/d/msgid/kasan-dev/e14ac53d7c43b4381ad94665c63a154dffc04b6b.1605046662.git.andreyknvl%40google.com.
+> [acme@five perf]$ vim tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c
+> [acme@five perf]$ git diff
+> diff --git a/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c b/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c
+> index 46ddb53a645714bb..5f65a3a70c577207 100644
+> --- a/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c
+> +++ b/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c
+> @@ -12,8 +12,8 @@
+> 
+>  #include "arm-spe-pkt-decoder.h"
+> 
+> -#define NS_FLAG                BIT(63)
+> -#define EL_FLAG                (BIT(62) | BIT(61))
+> +#define NS_FLAG                BIT_ULL(63)
+> +#define EL_FLAG                (BIT_ULL(62) | BIT_ULL(61))
+> 
+>  #define SPE_HEADER0_PAD                        0x0
+>  #define SPE_HEADER0_END                        0x1
+
+Yes, that basically happens in patch 10/22, so this will then
+(trivially) clash when you rebase.
+
+Thanks!
+Andre.
+
+
+> [acme@five perf]$
+>  
+>> How do you want to handle this? Shall Leo resend, amending this patch
+>> (and merging 06 and 07 on the way ;-)?
+
