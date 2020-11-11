@@ -2,255 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E90CC2AF526
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 16:38:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A0CFA2AF4D4
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 16:36:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726817AbgKKPih (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 10:38:37 -0500
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:38414 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727698AbgKKPie (ORCPT
+        id S1727254AbgKKPgV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 10:36:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44810 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726788AbgKKPgU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 10:38:34 -0500
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0ABFcM7v098070;
-        Wed, 11 Nov 2020 09:38:22 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1605109102;
-        bh=4Fz6/znawPVT5Re4ej/ysxXwiAWhNVKJ7aypY2BXCzQ=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=ZhFPix0YRsrGDRfHqmSW/ZihjckVO7hyHxQXYlqthQObncyRfSZMW1xzfIIDxyBWU
-         0HiXeN9oVfbIJl1Wq4zm7PoYjUeya/hIeyMwMlo/MXScm4GKcCw3pjo0bFfJpo1O/z
-         NF0E5HJnJtxkrUpxdbwf3Pwz/YmtA7EKJqHejqH4=
-Received: from DFLE103.ent.ti.com (dfle103.ent.ti.com [10.64.6.24])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0ABFcMqh116008
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 11 Nov 2020 09:38:22 -0600
-Received: from DFLE110.ent.ti.com (10.64.6.31) by DFLE103.ent.ti.com
- (10.64.6.24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 11
- Nov 2020 09:38:21 -0600
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE110.ent.ti.com
- (10.64.6.31) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Wed, 11 Nov 2020 09:38:21 -0600
-Received: from a0393678-ssd.dal.design.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0ABFa049042109;
-        Wed, 11 Nov 2020 09:38:17 -0600
-From:   Kishon Vijay Abraham I <kishon@ti.com>
-To:     Bjorn Helgaas <bhelgaas@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Arnd Bergmann <arnd@arndb.de>, Jon Mason <jdmason@kudzu.us>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Allen Hubbe <allenbh@gmail.com>,
-        Tom Joseph <tjoseph@cadence.com>, Rob Herring <robh@kernel.org>
-CC:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        <linux-pci@vger.kernel.org>, <linux-doc@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-ntb@googlegroups.com>
-Subject: [PATCH v8 18/18] Documentation: PCI: Add userguide for PCI endpoint NTB function
-Date:   Wed, 11 Nov 2020 21:05:59 +0530
-Message-ID: <20201111153559.19050-19-kishon@ti.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20201111153559.19050-1-kishon@ti.com>
-References: <20201111153559.19050-1-kishon@ti.com>
+        Wed, 11 Nov 2020 10:36:20 -0500
+Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [IPv6:2a01:488:42:1000:50ed:8234::])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BEE6C0613D4;
+        Wed, 11 Nov 2020 07:36:19 -0800 (PST)
+Received: from ip4d145e30.dynamic.kabel-deutschland.de ([77.20.94.48] helo=[192.168.66.101]); authenticated
+        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        id 1kcsAT-0008J6-20; Wed, 11 Nov 2020 16:36:17 +0100
+From:   Thorsten Leemhuis <linux@leemhuis.info>
+To:     Randy Dunlap <rdunlap@infradead.org>,
+        Jonathan Corbet <corbet@lwn.net>
+Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <cover.1601541165.git.linux@leemhuis.info>
+ <e9166fcbb777e9b7685745e572ab7c7322596ec2.1601541165.git.linux@leemhuis.info>
+ <275187e0-92b5-d0a6-0bf7-76c827e2c808@infradead.org>
+ <a08d1012-78bf-5f84-26d2-4f596bc3b59d@leemhuis.info>
+Subject: Re: [RFC PATCH v1 15/26] docs: reporting-bugs: make readers test
+ mainline, but leave a loophole
+Message-ID: <873abf9c-5651-8dc3-70ea-b14e498661a7@leemhuis.info>
+Date:   Wed, 11 Nov 2020 16:36:16 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+In-Reply-To: <a08d1012-78bf-5f84-26d2-4f596bc3b59d@leemhuis.info>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-bounce-key: webpack.hosteurope.de;linux@leemhuis.info;1605108980;4708b4d6;
+X-HE-SMSGID: 1kcsAT-0008J6-20
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add documentation to help users use pci-epf-ntb function driver and
-existing host side NTB infrastructure for NTB functionality.
+Am 03.10.20 um 12:11 schrieb Thorsten Leemhuis:
+> Am 02.10.20 um 19:51 schrieb Randy Dunlap:
+>> On 10/1/20 1:39 AM, Thorsten Leemhuis wrote:
+>>> = RFC =
+>>>
+>>> Am I asking for too much from users by telling them to test mainline? But most
+>>> will likely have an outdated and heavily patched vendor kernel anyway, so they
+>>> have to install a vanilla kernel if they want to report something upstream;
+>>> that's why I thought "well, then let's go all in and make them test mainline.
+>> That is appropriate IMO.
 
-Signed-off-by: Kishon Vijay Abraham I <kishon@ti.com>
-Reviewed-by: Randy Dunlap <rdunlap@infradead.org>
----
- Documentation/PCI/endpoint/index.rst         |   1 +
- Documentation/PCI/endpoint/pci-ntb-howto.rst | 160 +++++++++++++++++++
- 2 files changed, 161 insertions(+)
- create mode 100644 Documentation/PCI/endpoint/pci-ntb-howto.rst
+I'm preparing to send v2 and was a bit unhappy with this and another 
+section when seeing it again after weeks. In the end I reshuffled and 
+rewrote significant parts of it, see below.
 
-diff --git a/Documentation/PCI/endpoint/index.rst b/Documentation/PCI/endpoint/index.rst
-index 9cb6e5f3c4d5..38ea1f604b6d 100644
---- a/Documentation/PCI/endpoint/index.rst
-+++ b/Documentation/PCI/endpoint/index.rst
-@@ -12,6 +12,7 @@ PCI Endpoint Framework
-    pci-test-function
-    pci-test-howto
-    pci-ntb-function
-+   pci-ntb-howto
- 
-    function/binding/pci-test
-    function/binding/pci-ntb
-diff --git a/Documentation/PCI/endpoint/pci-ntb-howto.rst b/Documentation/PCI/endpoint/pci-ntb-howto.rst
-new file mode 100644
-index 000000000000..b6e1073c9a39
---- /dev/null
-+++ b/Documentation/PCI/endpoint/pci-ntb-howto.rst
-@@ -0,0 +1,160 @@
-+.. SPDX-License-Identifier: GPL-2.0
-+
-+===================================================================
-+PCI Non-Transparent Bridge (NTB) Endpoint Function (EPF) User Guide
-+===================================================================
-+
-+:Author: Kishon Vijay Abraham I <kishon@ti.com>
-+
-+This document is a guide to help users use pci-epf-ntb function driver
-+and ntb_hw_epf host driver for NTB functionality. The list of steps to
-+be followed in the host side and EP side is given below. For the hardware
-+configuration and internals of NTB using configurable endpoints see
-+Documentation/PCI/endpoint/pci-ntb-function.rst
-+
-+Endpoint Device
-+===============
-+
-+Endpoint Controller Devices
-+---------------------------
-+
-+For implementing NTB functionality at least two endpoint controller devices
-+are required.
-+To find the list of endpoint controller devices in the system::
-+
-+        # ls /sys/class/pci_epc/
-+          2900000.pcie-ep  2910000.pcie-ep
-+
-+If PCI_ENDPOINT_CONFIGFS is enabled::
-+
-+	# ls /sys/kernel/config/pci_ep/controllers
-+	  2900000.pcie-ep  2910000.pcie-ep
-+
-+
-+Endpoint Function Drivers
-+-------------------------
-+
-+To find the list of endpoint function drivers in the system::
-+
-+	# ls /sys/bus/pci-epf/drivers
-+	  pci_epf_ntb   pci_epf_ntb
-+
-+If PCI_ENDPOINT_CONFIGFS is enabled::
-+
-+	# ls /sys/kernel/config/pci_ep/functions
-+	  pci_epf_ntb   pci_epf_ntb
-+
-+
-+Creating pci-epf-ntb Device
-+----------------------------
-+
-+PCI endpoint function device can be created using the configfs. To create
-+pci-epf-ntb device, the following commands can be used::
-+
-+	# mount -t configfs none /sys/kernel/config
-+	# cd /sys/kernel/config/pci_ep/
-+	# mkdir functions/pci_epf_ntb/func1
-+
-+The "mkdir func1" above creates the pci-epf-ntb function device that will
-+be probed by pci_epf_ntb driver.
-+
-+The PCI endpoint framework populates the directory with the following
-+configurable fields::
-+
-+	# ls functions/pci_epf_ntb/func1
-+          baseclass_code    deviceid          msi_interrupts    pci-epf-ntb.0
-+          progif_code       secondary         subsys_id         vendorid
-+          cache_line_size   interrupt_pin     msix_interrupts   primary
-+          revid             subclass_code     subsys_vendor_id
-+
-+The PCI endpoint function driver populates these entries with default values
-+when the device is bound to the driver. The pci-epf-ntb driver populates
-+vendorid with 0xffff and interrupt_pin with 0x0001::
-+
-+	# cat functions/pci_epf_ntb/func1/vendorid
-+	  0xffff
-+	# cat functions/pci_epf_ntb/func1/interrupt_pin
-+	  0x0001
-+
-+
-+Configuring pci-epf-ntb Device
-+-------------------------------
-+
-+The user can configure the pci-epf-ntb device using its configfs entry. In order
-+to change the vendorid and the deviceid, the following
-+commands can be used::
-+
-+	# echo 0x104c > functions/pci_epf_ntb/func1/vendorid
-+	# echo 0xb00d > functions/pci_epf_ntb/func1/deviceid
-+
-+In order to configure NTB specific attributes, a new sub-directory to func1
-+should be created::
-+
-+	# mkdir functions/pci_epf_ntb/func1/pci_epf_ntb.0/
-+
-+The NTB function driver will populate this directory with various attributes
-+that can be configured by the user::
-+
-+	# ls functions/pci_epf_ntb/func1/pci_epf_ntb.0/
-+          db_count    mw1         mw2         mw3         mw4         num_mws
-+          spad_count
-+
-+A sample configuration for NTB function is given below::
-+
-+	# echo 4 > functions/pci_epf_ntb/func1/pci_epf_ntb.0/db_count
-+	# echo 128 > functions/pci_epf_ntb/func1/pci_epf_ntb.0/spad_count
-+	# echo 2 > functions/pci_epf_ntb/func1/pci_epf_ntb.0/num_mws
-+	# echo 0x100000 > functions/pci_epf_ntb/func1/pci_epf_ntb.0/mw1
-+	# echo 0x100000 > functions/pci_epf_ntb/func1/pci_epf_ntb.0/mw2
-+
-+Binding pci-epf-ntb Device to EP Controller
-+--------------------------------------------
-+
-+NTB function device should be attached to two PCIe endpoint controllers
-+connected to the two hosts. Use the 'primary' and 'secondary' entries
-+inside NTB function device to attach one PCIe endpoint controller to
-+primary interface and the other PCIe endpoint controller to the secondary
-+interface. ::
-+
-+        # ln -s controllers/2900000.pcie-ep/ functions/pci-epf-ntb/func1/primary
-+        # ln -s controllers/2910000.pcie-ep/ functions/pci-epf-ntb/func1/secondary
-+
-+Once the above step is completed, both the PCI endpoint controllers are ready to
-+establish a link with the host.
-+
-+
-+Start the Link
-+--------------
-+
-+In order for the endpoint device to establish a link with the host, the _start_
-+field should be populated with '1'. For NTB, both the PCIe endpoint controllers
-+should establish link with the host::
-+
-+        #echo 1 > controllers/2900000.pcie-ep/start
-+        #echo 1 > controllers/2910000.pcie-ep/start
-+
-+
-+RootComplex Device
-+==================
-+
-+lspci Output
-+------------
-+
-+Note that the devices listed here correspond to the values populated in
-+"Creating pci-epf-ntb Device" section above::
-+
-+        # lspci
-+        0000:00:00.0 PCI bridge: Texas Instruments Device b00d
-+        0000:01:00.0 RAM memory: Texas Instruments Device b00d
-+
-+
-+Using ntb_hw_epf Device
-+-----------------------
-+
-+The host side software follows the standard NTB software architecture in Linux.
-+All the existing client side NTB utilities like NTB Transport Client and NTB
-+Netdev, NTB Ping Pong Test Client and NTB Tool Test Client can be used with NTB
-+function device.
-+
-+For more information on NTB see
-+:doc:`Non-Transparent Bridge <../../driver-api/ntb>`
--- 
-2.17.1
+Randy, would be great if you could take another look, but no pressure: 
+just ignore it, if you lack the time or energy.
 
+```
+Install a fresh kernel for testing
+----------------------------------
+
+     *Install the latest Linux mainline kernel: that's where all issues 
+get fixed first, because it's the version line the kernel developers 
+mainly care about. Testing and reporting with the latest Linux stable 
+kernel can be an acceptable alternative in some situations, for example 
+during the merge window; but during that period you might want to 
+suspend your efforts till its end anyway.*
+
+Reporting an issue to the Linux kernel developers they fixed weeks or 
+months ago is annoying for them and wasting their and your time. That's 
+why it's in everybody's interest to check if the issue occurs with the 
+latest codebase before reporting it.
+
+In the scope of the Linux kernel the term 'latest' means: a kernel 
+version recently created from the main line of development, as this 
+'mainline' tree is where developer first apply fixes; only after that 
+they are allowed to get backported to older, still supported version 
+lines called 'stable' and 'longterm' kernels. That's why you should 
+check a recent mainline kernel, even if you deal with an issue you only 
+want to see fixed in an older version line. Another reason: some fixes 
+are only applied to mainline or recent version lines, as it's too hard 
+or risky to backport them to older versions. If that the case, reporting 
+the issue again is unlikely to change anything.
+
+Longterm kernels (sometimes called "LTS kernels") are therefore 
+unsuitable for testing, they simply are too distant from current 
+development. Even the latest Linux 'stable' kernel is a significant bit 
+behind and thus better avoided. But sometimes it's even the right 
+choice, but in those cases you might want to wait a few days before 
+trying to reproduce an issue with the latest codebase:
+
+Choosing between mainline, stable and waiting
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Head over to `kernel.org <https://kernel.org/>`_ to decide which version 
+to use. Ignore the big yellow button that says 'Latest release' and look 
+a little lower for a table. At its top you'll see a line starting with 
+'mainline', which most of the time will point to a pre-release with a 
+version number like '5.8-rc2'. If that's the case, you'll want to use 
+this mainline kernel for testing. Do not let that 'rc' scare you, these 
+'development kernels' are pretty reliable — and you made a backup, as 
+you were instructed above, don't you?
+
+In about two out of every nine to ten weeks, 'mainline' might point you 
+to a proper release with a version number like '5.7'. If that happens, 
+consider suspending the reporting process until the first pre-release of 
+the next version  (5.8-rc1) shows up on kernel.org. That's because the 
+Linux development cycle then is in its two-week long 'merge window'. The 
+bulk of the changes and all intrusive ones get merged for the next 
+release during this time. It's a bit more risky to use mainline during 
+this period. Kernel developers are also often quite busy then and might 
+have no spare time to deal with issue reports. It's also quite possible 
+that one of the many changes applied during the merge window fixes the 
+issue you face; that's why you soon would have to retest with a newer 
+kernel version anyway, as outlined below in the section 'Duties after 
+the report when out'.
+
+That's why it might make sense to wait till the merge window is over. 
+But don't to that if you're dealing with something that shouldn't wait. 
+In that case consider obtaining the latest mainline kernel via git (see 
+below) or use the latest stable version offered on kernel.org. Using 
+that is also acceptable in case mainline for some reason does currently 
+not work for you. An in general: using it for reproducing the issue is 
+also better than not reporting it issue at all.
+
+How to obtain a fresh Linux kernel
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+You can use pre-build or self-compiled kernel for testing; if you chose 
+the latter approach, you can either obtain the source-code using git or 
+download it as tar archive.
+
+Using a pre-compiled kernel for testing is often the quickest, easiest, 
+and safest way – especially is you are unfamiliar with the Linux kernel. 
+But it needs to be a vanilla kernel, which can be hard to come buy. You 
+are in luck if you are using a popular Linux distribution: for quite a 
+few of them you'll find repositories on the net that contain packages 
+with the latest mainline or stable kernels in vanilla fashion. It's 
+totally okay to use these, just make sure from the repository's 
+documentation they are really vanilla. And ensure the packages contain 
+the latest versions as offered on kernel.org; they are likely unsuitable 
+if the package is older than a week, as new mainline and stable kernels 
+typically bet released at least once a week. And be aware that you might 
+need to build your own kernel later anyway when it comes helping to test 
+fixes, as described later in this document.
+
+Developers and experienced Linux users familiar with git are often best 
+served by obtaining the latest Linux kernel sources straight from the 
+`official development repository on kernel.org 
+<https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/>`_. 
+Those are likely a bit ahead of the latest mainline pre-release. Don't 
+worry about it: they are as reliable as a proper pre-release, unless the 
+kernel's development cycle is currently in the middle of a merge window. 
+But even then they are quite reliable.
+
+People unfamiliar with git are often best served by downloading the 
+sources as tarball from `kernel.org <https://kernel.org/>`_.
+
+How to actually build a kernel not described here, as many websites 
+explain the necessary steps already. If you are new to it, consider 
+following one of those how-to's that suggest to use ``make 
+localmodconfig``, as that tries to pick up the configuration of your 
+current kernel and then tries to adjust it somewhat for your system. 
+That does not make the resulting kernel any better, but quicker to compile.
+```
+
+Ciao, Thorsten
