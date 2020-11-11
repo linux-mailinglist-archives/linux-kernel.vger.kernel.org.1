@@ -2,93 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A19912AE54E
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 02:08:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CC4A62AE54F
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 02:08:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732174AbgKKBIh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 20:08:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47650 "EHLO
+        id S1732398AbgKKBIi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 20:08:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47660 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727275AbgKKBIh (ORCPT
+        with ESMTP id S1732233AbgKKBIh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 10 Nov 2020 20:08:37 -0500
-Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00B44C0613D1
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 17:08:34 -0800 (PST)
-Received: by mail-lf1-x143.google.com with SMTP id i6so906980lfd.1
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 17:08:34 -0800 (PST)
+Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D4E7C0613D4
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 17:08:36 -0800 (PST)
+Received: by mail-ej1-x643.google.com with SMTP id dk16so408129ejb.12
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 17:08:35 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
+        d=vanguardiasur-com-ar.20150623.gappssmtp.com; s=20150623;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=OKnTpb6WDK79h6wzA/BGMIqbAHNaR/GEp/A0ryb8Y1s=;
-        b=ST83Kv6mMeTo+80B4tYYL95DnnqVTImdY5ZZb3uEwhr9CRDv2QHlUfRCNcmxIoMHuc
-         +kHBzQG7KQA5gBSNNuGb9jqENXxRGimjrlkEkZ0K+lpssMvOVnK4JbS8L4O8wBgq2UNB
-         ykrpf8YV4mHTIUtsErKhFjpGIpRNLKk3iIHMa0aXTLWvUqQTOBB8Q/2nbecCIAvjFFTg
-         iE2FFBrv3xPe9vSOjZvcNcrzz6G4hA3JcoMq1V3P9wmmp5wy/1JmAhAQQ7FNvkoSk3KG
-         TAOKk3y3pJJDeuO8ZU7NgyXI6ByFBJVT5cDcoMLhw1/hDGsL++oo6AgN8wxNZQrUspEh
-         18YQ==
+         :cc:content-transfer-encoding;
+        bh=hHQDiEVFp1foYy6daRs4fHFD9ayYaszDLVuF2Z51ya8=;
+        b=Lovjln1fIbkD2LOWfwf5p5B1YNXCK0mWG+9fGH4sigwtycevhDKQ0AeODjSfHWpjwF
+         iNdy65rI1Wq5x2Grg8/Relh95qlXkU51w/ZD0lb9LhW7+fZEozkHk34DrT0UMCUN6cZK
+         iPllHOzKkEliSAK+mJhJhzW+6hAXS8kRfEc/mBC9gPXCg/l/b8iy2GV7cFhZDAUD+UIi
+         j4prnHj/aTGgJC/9VBDvxk8HE9lsb0hdMkmXEc2OhmWjr10S6kulM4D/D/k2NonVfPgX
+         1Uj1X6kTPhq9mHhJF+/r4mwzp3aPzJFUKDSUdlBWYLIeWryBNUUdb8Mdv+M7VDq8KMqv
+         Mbvg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=OKnTpb6WDK79h6wzA/BGMIqbAHNaR/GEp/A0ryb8Y1s=;
-        b=CiOYp6cZTRkVcLKkV3SLdrQdRcyIMGbWkARi7DNmYhQPhIlo2344q0GQIWv8+kZt6L
-         yfXFYMnAjcBYV+YQKKApj15kQ8e3R9p/vjQRGBKtb/GY5I+u4VQClMtZMefBvkqphVg4
-         8d0+Kn47TBNciHmjE4IXodVyI0DrrDJItMF9LnUJd9Sw8EpfSZH/qAdpAgmOJxO49quZ
-         3T+t8Dq7w7Re2clFrhWFp6BWn9agJnB7zgzSWyF78QjS9KEG7zXWTPSCa8fMTppStqby
-         NilWmEll6ivbC1NZ4qMMjs8JspanVuKmluDw3k+zo+C/dnmFSwsZ0kjTzyJj5pvQ17tb
-         +RVA==
-X-Gm-Message-State: AOAM532upZk5bp6g4U8Hle+tnv3/33aPLCTasxZOXgFDB0qi2w6Nuq9J
-        6GB+0eTEDzINq7FnjCFHSlCbU1m0sNdLuky1JJrcSw==
-X-Google-Smtp-Source: ABdhPJyTz8edr2BkyMyzpSGiwVzBOi5L8wucnKcO8juRdvYXVu85AtYasLPNSH9oTli6dkFHHgq6lfKAkHprd/QE7Bw=
-X-Received: by 2002:a19:5e0b:: with SMTP id s11mr7865088lfb.502.1605056907439;
- Tue, 10 Nov 2020 17:08:27 -0800 (PST)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=hHQDiEVFp1foYy6daRs4fHFD9ayYaszDLVuF2Z51ya8=;
+        b=HshU1EvqTuj00WvVxSGazLRKhlp6aYKqSAiD0bIPJaULPZIwSxeUDBwvcmDyuqGyw3
+         dJAsfIXVTBDvxmu/p+AZnAWF4RSSTmcnpL8s/tbNB1xuNT/Djs2h2D4vqIYBS3dA9geZ
+         ULTsRjvG3oY3DJ3cQ6ZriuAYv20GJDiTZnOhryWhDZRftk6zyX9/mIurGg3/NipFlhtn
+         145Ze3pHoOyNQJQ7RAS+k5rODUFIRpOqXdJ2yjvUblK8ny4t5UcAyk3dThxnulYYdQUW
+         PgKr6qF0blFyLGBF0tA5PBf4hLLUGsCQyq9yvCeuzRAXMBM1GaEqVv9o3H2AWVWSvaY4
+         OwUA==
+X-Gm-Message-State: AOAM532EX/AaoaPFMsbGSJlGY2ozxz4w2JExkylHDoU4oM4F1Q4l7y3c
+        jkpXiozvhf34jT9zSuaDaS+eolxxnvFmQt1oPk+Wzg==
+X-Google-Smtp-Source: ABdhPJxTkNCrHxkNrKMGfx/redHh8XOwE0W/+nPr1awBqj+Z+Er5yh4soUAWZNDAv2tGIUavyTgUj5FavxbQfUNMpTU=
+X-Received: by 2002:a17:906:3541:: with SMTP id s1mr23454310eja.413.1605056913762;
+ Tue, 10 Nov 2020 17:08:33 -0800 (PST)
 MIME-Version: 1.0
-References: <20201106150706.29089-1-TheSven73@gmail.com>
-In-Reply-To: <20201106150706.29089-1-TheSven73@gmail.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Wed, 11 Nov 2020 02:08:16 +0100
-Message-ID: <CACRpkdbti4j+oL8=7i=G8YOGjpNre9X5dMs+HH0vLA4QpYPD0A@mail.gmail.com>
-Subject: Re: [PATCH v1] spi: fix client driver breakages when using GPIO descriptors
-To:     Sven Van Asbroeck <thesven73@gmail.com>
-Cc:     Mark Brown <broonie@kernel.org>,
-        Jonathan Cameron <jonathan.cameron@huawei.com>,
-        Simon Han <z.han@kunbus.com>, Lukas Wunner <lukas@wunner.de>,
-        linux-spi <linux-spi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20201109162244.16531-1-linkmauve@linkmauve.fr>
+In-Reply-To: <20201109162244.16531-1-linkmauve@linkmauve.fr>
+From:   Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+Date:   Tue, 10 Nov 2020 22:08:21 -0300
+Message-ID: <CAAEAJfDhQpZYRMQoQRy=2AUSQFpmy2cQ4y=2sczWgkDp03dYEw@mail.gmail.com>
+Subject: Re: [RESEND PATCH 0/2] media: uapi: Expose VP8 probability lengths as defines
+To:     Emmanuel Gil Peyrot <linkmauve@linkmauve.fr>
+Cc:     Ezequiel Garcia <ezequiel@collabora.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-media <linux-media@vger.kernel.org>,
+        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
+        devel@driverdev.osuosl.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 6, 2020 at 4:07 PM Sven Van Asbroeck <thesven73@gmail.com> wrote:
+Hi Emmanuel,
 
-> From: Sven Van Asbroeck <thesven73@gmail.com>
->
-> Commit f3186dd87669 ("spi: Optionally use GPIO descriptors for CS GPIOs")
-> introduced the optional use of GPIO descriptors for chip selects.
->
-> A side-effect of this change: when a SPI bus uses GPIO descriptors,
-> all its client devices have SPI_CS_HIGH set in spi->mode. This flag is
-> required for the SPI bus to operate correctly.
->
-> This unfortunately breaks many client drivers, which use the following
-> pattern to configure their underlying SPI bus:
->
-> static int client_device_probe(struct spi_device *spi)
-> {
->         ...
->         spi->mode = SPI_MODE_0;
->         spi->bits_per_word = 8;
->         err = spi_setup(spi);
+Thanks for the patch.
 
-I feel torn about it, there are so many weird corners of semantics
-in this code. The patch makes the code easier to understand
-too.
+On Mon, 9 Nov 2020 at 15:37, Emmanuel Gil Peyrot <linkmauve@linkmauve.fr> w=
+rote:
+>
+> These values will be used by various drivers implementing the VP8
+> stateless API.
+>
+> This had been suggested by Ezequiel Garcia for the Cedrus VP8 driver.
+>
+> The only driver using this API (until now) has also been updated to use
+> these new defines.
+>
+> This is a resend because I forgot to include most maintainers, sorry for
+> that.  It=E2=80=99s my very first patch to the kernel, I didn=E2=80=99t k=
+now about
+> scripts/get_maintainers.pl
+>
 
-If it provedly fixes more than it breaks:
-Acked-by: Linus Walleij <linus.walleij@linaro.org>
+I haven't validated these two patches, but on a first look,
+it seems it's a low-hanging fruit nice cleanup. Thanks for that!
 
-Yours,
-Linus Walleij
+Since it seems you are looking for interesting things to contribute,
+note that the vp8-ctrls.h header is lacking some nice documentation
+on each structure.
+
+This should be done by looking at the VP8 syntax spec and documenting
+things appropriately. See how it's done for H.264 and VP9:
+
+https://patchwork.linuxtv.org/project/linux-media/patch/20200928201433.3270=
+68-1-ezequiel@collabora.com/
+https://patchwork.kernel.org/project/linux-rockchip/patch/20201102190551.12=
+23389-3-adrian.ratiu@collabora.com/
+
+Thanks,
+Ezequiel
+
+> Emmanuel Gil Peyrot (2):
+>   media: uapi: Expose probability lengths as defines
+>   media: hantro: Use VP8 lengths defined in uapi
+>
+>  drivers/staging/media/hantro/hantro_vp8.c | 4 ++--
+>  include/media/vp8-ctrls.h                 | 6 ++++--
+>  2 files changed, 6 insertions(+), 4 deletions(-)
+>
+> --
+> 2.29.2
+>
