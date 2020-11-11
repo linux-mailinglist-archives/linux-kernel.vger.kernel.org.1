@@ -2,123 +2,209 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E49E52AFA32
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 22:10:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F118A2AFA35
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 22:11:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726901AbgKKVKs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 16:10:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40274 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726731AbgKKVKq (ORCPT
+        id S1726960AbgKKVLB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 16:11:01 -0500
+Received: from mail-oi1-f195.google.com ([209.85.167.195]:44893 "EHLO
+        mail-oi1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725933AbgKKVLA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 16:10:46 -0500
-Received: from mail-qv1-xf44.google.com (mail-qv1-xf44.google.com [IPv6:2607:f8b0:4864:20::f44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 841AEC0613D1
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 13:10:44 -0800 (PST)
-Received: by mail-qv1-xf44.google.com with SMTP id ec16so1694897qvb.0
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 13:10:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=9R/Pa8NNo4ywGaBUbUuK+3FrXWVJKG/glnSDMHfk+R4=;
-        b=SovQwhuwKEKB57uvFYyzOgNnioRQGluOrHKwP/8+Dp4aEJl2/Pk3m+CSyu3/vMC8Kc
-         OyDX4LF4sSvsfsOouuuz6U7jSO1B5Nh14eAlmem1RmukHdcsNbGq0DueN+AiYu7xy991
-         eEZGFAJLsmYStrxMrhnHwZJpdxN2GL2JHUZbE=
+        Wed, 11 Nov 2020 16:11:00 -0500
+Received: by mail-oi1-f195.google.com with SMTP id t16so3762700oie.11;
+        Wed, 11 Nov 2020 13:10:58 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=9R/Pa8NNo4ywGaBUbUuK+3FrXWVJKG/glnSDMHfk+R4=;
-        b=NaHMNfckUB6DdZ4Z3rZqBm0mcSpAQY4PUKzxCFT9IIMAmq+KcEWGw54PfvFTEafiz+
-         BIgfPN2MNsOlXca44z5o84FkYpacOL0U4SSs+ZWTK58Z+HCjmhhlcDlefcdXhg0s7ULH
-         VBAUgEMrtkhYNUEKY7mO42Ar0HU6My6QGK00bCRBd8XvKxJyi5CyW7iKO5Ef+Z9g5wOx
-         tEwaAm1chyV6VZwDWzqTrf6zo5BHvSnFSA1HnnsbhrQHAe43X/vmSdATFeZBt5sY97l3
-         No+l/174HHpfSz8KyuLQdKQVbR/9fBVT/aoicFhhA0+Gbs2wAW0cFjDY8O9gR8Yd/odG
-         opYA==
-X-Gm-Message-State: AOAM531BYewcS4jmtqwTJGZJ/lzreWVH6huYgm/O56Hgcs6MCBkajx0M
-        aPb3DevMLl4CgEgeifzF7+oB/w==
-X-Google-Smtp-Source: ABdhPJzweHC+xrQqB3fgT6ZvYBHb2b4YzCN/eQV8auGy+GrlIciHvlXrhOHXdRJaTP7EZwg3jlKtkw==
-X-Received: by 2002:a0c:a5a2:: with SMTP id z31mr27905708qvz.15.1605129043813;
-        Wed, 11 Nov 2020 13:10:43 -0800 (PST)
-Received: from joelaf.cam.corp.google.com ([2620:15c:6:411:cad3:ffff:feb3:bd59])
-        by smtp.gmail.com with ESMTPSA id d66sm2112389qke.132.2020.11.11.13.10.41
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=nSLYOx15FeQ/MCYp8Li7XlQ86kVHnDDAJubkDv/yxEk=;
+        b=Oc24VwnsPQurfbvZhnDR8hAGHIUUVKUUn1XXRDAGqbGAiqtSF/kf6plYtk+EZqZZKb
+         hsaZCHIkgoJ5cyCAQ1b+JiGhy2wPVh90EbIObfb75EWi3nUW/eZKd7LAuNkrRsUYOFFd
+         WKI3/bXu2sJLYnfx87DVn5TxJ9bdhIoWc2i8PS0XiTCSOoHXeMwISCALdmJeqDUvqY7m
+         aiK8pLd3xw+dea8zrGuZykMYQYzXqHGcYplAMDK78tY/Ot5npJsmIqz6H3Y+IVgy0N/Y
+         JYGlS6yZ3ItGh9rU2+3TkQGlhSe/zpUhtl5Coa8DlqbwteQVoLqnMunDvV/Iz8vDCi2T
+         lG/Q==
+X-Gm-Message-State: AOAM533mVdsjm8l70L8NNaX54DvXRyigJcIN4+OBBMGMR1+hye6+9Lel
+        M2197fpQmzOzrOxbUTjTlw==
+X-Google-Smtp-Source: ABdhPJxCfCJ3WMwVcdYy9u0JqMve0f8zuX0Dvk7p0e5M6k8GAY30Pce9WUhCB0StbLmzvcV6L1nWuw==
+X-Received: by 2002:aca:2217:: with SMTP id b23mr3372474oic.124.1605129057739;
+        Wed, 11 Nov 2020 13:10:57 -0800 (PST)
+Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id s20sm775356oof.39.2020.11.11.13.10.56
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 Nov 2020 13:10:43 -0800 (PST)
-From:   "Joel Fernandes (Google)" <joel@joelfernandes.org>
-To:     Nishanth Aravamudan <naravamudan@digitalocean.com>,
-        Julien Desfossez <jdesfossez@digitalocean.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Tim Chen <tim.c.chen@linux.intel.com>,
-        Vineeth Pillai <viremana@linux.microsoft.com>,
-        Aaron Lu <aaron.lwe@gmail.com>,
-        Aubrey Li <aubrey.intel@gmail.com>, tglx@linutronix.de,
+        Wed, 11 Nov 2020 13:10:56 -0800 (PST)
+Received: (nullmailer pid 2039191 invoked by uid 1000);
+        Wed, 11 Nov 2020 21:10:55 -0000
+Date:   Wed, 11 Nov 2020 15:10:55 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc:     linus.walleij@linaro.org, bjorn.andersson@linaro.org,
+        agross@kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-gpio@vger.kernel.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Cc:     mingo@kernel.org, torvalds@linux-foundation.org,
-        fweisbec@gmail.com, keescook@chromium.org, kerrnel@google.com,
-        Phil Auld <pauld@redhat.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
-        Paolo Bonzini <pbonzini@redhat.com>, joel@joelfernandes.org,
-        vineeth@bitbyteword.org, Chen Yu <yu.c.chen@intel.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Agata Gruza <agata.gruza@intel.com>,
-        Antonio Gomez Iglesias <antonio.gomez.iglesias@intel.com>,
-        graf@amazon.com, konrad.wilk@oracle.com, dfaggioli@suse.com,
-        pjt@google.com, rostedt@goodmis.org, derkling@google.com,
-        benbjiang@tencent.com,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
-        James.Bottomley@hansenpartnership.com, OWeisse@umich.edu,
-        Dhaval Giani <dhaval.giani@oracle.com>,
-        Junaid Shahid <junaids@google.com>, jsbarnes@google.com,
-        chris.hyser@oracle.com, Ben Segall <bsegall@google.com>,
-        Josh Don <joshdon@google.com>, Hao Luo <haoluo@google.com>,
-        amistry@google.com, Borislav Petkov <bp@alien8.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Mel Gorman <mgorman@suse.de>, Mike Rapoport <rppt@kernel.org>,
-        thomas.lendacky@amd.com, Tony Luck <tony.luck@intel.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        x86@kernel.org (maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT))
-Subject: [RFC 2/2] sched/debug: Add debug information about whether coresched is enabled
-Date:   Wed, 11 Nov 2020 16:10:11 -0500
-Message-Id: <20201111211011.1381848-3-joel@joelfernandes.org>
-X-Mailer: git-send-email 2.29.2.222.g5d2a92d10f8-goog
-In-Reply-To: <20201111211011.1381848-1-joel@joelfernandes.org>
-References: <20201111211011.1381848-1-joel@joelfernandes.org>
+Subject: Re: [PATCH v3 1/2] dt-bindings: pinctrl: qcom: Add sm8250 lpass lpi
+ pinctrl bindings
+Message-ID: <20201111211055.GA2033978@bogus>
+References: <20201109130135.28589-1-srinivas.kandagatla@linaro.org>
+ <20201109130135.28589-2-srinivas.kandagatla@linaro.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201109130135.28589-2-srinivas.kandagatla@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It is useful to see whether coresched is enabled or not, especially in
-devices that don't need it. Add information about the same to
-/proc/sched_debug.
+On Mon, Nov 09, 2020 at 01:01:34PM +0000, Srinivas Kandagatla wrote:
+> Add device tree binding Documentation details for Qualcomm SM8250
+> LPASS(Low Power Audio Sub System) LPI(Low Power Island) pinctrl driver.
+> 
+> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+> ---
+>  .../pinctrl/qcom,lpass-lpi-pinctrl.yaml       | 129 ++++++++++++++++++
+>  1 file changed, 129 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/pinctrl/qcom,lpass-lpi-pinctrl.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/pinctrl/qcom,lpass-lpi-pinctrl.yaml b/Documentation/devicetree/bindings/pinctrl/qcom,lpass-lpi-pinctrl.yaml
+> new file mode 100644
+> index 000000000000..562520f41a33
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/pinctrl/qcom,lpass-lpi-pinctrl.yaml
+> @@ -0,0 +1,129 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/pinctrl/qcom,lpass-lpi-pinctrl.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Qualcomm Technologies, Inc. Low Power Audio SubSystem (LPASS)
+> +  Low Power Island (LPI) TLMM block
+> +
+> +maintainers:
+> +  - Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+> +
+> +description: |
+> +  This binding describes the Top Level Mode Multiplexer block found in the
+> +  LPASS LPI IP on most Qualcomm SoCs
+> +
+> +properties:
+> +  compatible:
+> +    const: qcom,sm8250-lpass-lpi-pinctrl
+> +
+> +  reg:
+> +    minItems: 2
+> +    maxItems: 2
+> +
+> +  clocks:
+> +    items:
+> +      - description: LPASS Core voting clock
+> +      - description: LPASS Audio voting clock
+> +
+> +  clock-names:
+> +    items:
+> +      - const: core
+> +      - const: audio
+> +
+> +  gpio-controller: true
+> +
+> +  '#gpio-cells':
+> +    description: Specifying the pin number and flags, as defined in
+> +      include/dt-bindings/gpio/gpio.h
+> +    const: 2
+> +
+> +  gpio-ranges:
+> +    maxItems: 1
+> +
+> +#PIN CONFIGURATION NODES
+> +patternProperties:
+> +  '-pins$':
+> +    if:
+> +      type: object
+> +    then:
 
-Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
----
- kernel/sched/debug.c | 4 ++++
- 1 file changed, 4 insertions(+)
+The hacky part was also the if/then. You can drop that (and keep 'type: 
+object').
 
-diff --git a/kernel/sched/debug.c b/kernel/sched/debug.c
-index 88bf45267672..935b68be18cd 100644
---- a/kernel/sched/debug.c
-+++ b/kernel/sched/debug.c
-@@ -782,6 +782,10 @@ static void sched_debug_header(struct seq_file *m)
- 		"sysctl_sched_tunable_scaling",
- 		sysctl_sched_tunable_scaling,
- 		sched_tunable_scaling_names[sysctl_sched_tunable_scaling]);
-+#ifdef CONFIG_SCHED_CORE
-+	SEQ_printf(m, "  .%-40s: %d\n", "core_sched_enabled",
-+		   !!static_branch_likely(&__sched_core_enabled));
-+#endif
- 	SEQ_printf(m, "\n");
- }
- 
--- 
-2.29.2.222.g5d2a92d10f8-goog
-
+> +      properties:
+> +        pins:
+> +          description:
+> +            List of gpio pins affected by the properties specified in this
+> +            subnode.
+> +          items:
+> +            oneOf:
+> +              - pattern: "^gpio([0-9]|[1-9][0-9])$"
+> +          minItems: 1
+> +          maxItems: 14
+> +
+> +        function:
+> +          enum: [ gpio, swr_tx_clk, qua_mi2s_sclk, swr_tx_data1, qua_mi2s_ws,
+> +                  swr_tx_data2, qua_mi2s_data0, swr_rx_clk, qua_mi2s_data1,
+> +                  swr_rx_data1, qua_mi2s_data2, swr_tx_data3, swr_rx_data2,
+> +                  dmic1_clk, i2s1_clk, dmic1_data, i2s1_ws, dmic2_clk,
+> +                  i2s1_data0, dmic2_data, i2s1_data1, i2s2_clk, wsa_swr_clk,
+> +                  i2s2_ws, wsa_swr_data, dmic3_clk, i2s2_data0, dmic3_data,
+> +                  i2s2_data1 ]
+> +          description:
+> +            Specify the alternative function to be configured for the specified
+> +            pins.
+> +
+> +        drive-strength:
+> +          enum: [2, 4, 6, 8, 10, 12, 14, 16]
+> +          default: 2
+> +          description:
+> +            Selects the drive strength for the specified pins, in mA.
+> +
+> +        slew-rate:
+> +          enum: [0, 1, 2, 3]
+> +          default: 0
+> +          description: |
+> +              0: No adjustments
+> +              1: Higher Slew rate (faster edges)
+> +              2: Lower Slew rate (slower edges)
+> +              3: Reserved (No adjustments)
+> +
+> +        bias-pull-down: true
+> +
+> +        bias-pull-up: true
+> +
+> +        bias-disable: true
+> +
+> +        output-high: true
+> +
+> +        output-low: true
+> +
+> +      required:
+> +        - pins
+> +        - function
+> +
+> +      additionalProperties: false
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - clocks
+> +  - clock-names
+> +  - gpio-controller
+> +  - '#gpio-cells'
+> +  - gpio-ranges
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/sound/qcom,q6afe.h>
+> +    lpi_tlmm: pinctrl@33c0000 {
+> +        compatible = "qcom,sm8250-lpass-lpi-pinctrl";
+> +        reg = <0x33c0000 0x20000>,
+> +              <0x355a000 0x1000>;
+> +        clocks = <&q6afecc LPASS_HW_MACRO_VOTE LPASS_CLK_ATTRIBUTE_COUPLE_NO>,
+> +                 <&q6afecc LPASS_HW_DCODEC_VOTE LPASS_CLK_ATTRIBUTE_COUPLE_NO>;
+> +        clock-names = "core", "audio";
+> +        gpio-controller;
+> +        #gpio-cells = <2>;
+> +        gpio-ranges = <&lpi_tlmm 0 0 14>;
+> +    };
+> -- 
+> 2.21.0
+> 
