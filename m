@@ -2,210 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA1262AF457
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 16:04:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D49AE2AF45E
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 16:04:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726136AbgKKPEJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 10:04:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39846 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725900AbgKKPEG (ORCPT
+        id S1726898AbgKKPEy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 10:04:54 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:56245 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726702AbgKKPEx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 10:04:06 -0500
-Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 066DFC0613D4
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 07:04:05 -0800 (PST)
-Received: by mail-qt1-x842.google.com with SMTP id b16so1224939qtb.6
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 07:04:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=T/yXDCUDWYrYlUTbV+JUoEICw4sgibdbwn70JC0Gn9g=;
-        b=uipkPj5W8JpRde1BZ8RAaTk9NNHw2+YlqXJ9JyUBQZaxzWzWJpraEeWTseMYn8FZXp
-         FKIXsmIhMmyw/YkTLrJgima1BzZ45nn97MrH3SBkR1haPsTid1Nw/feF041VY1qzXoXm
-         3KQwJmppshISmVLG9BsZWDmtZPd5loGkwaZOX7bkXNAQZqkThZp4m7BXNpCVX9RBW3UY
-         ryz1+Ra8ZyoYrNZxsJIexs1r+0TS5decAGbSe8KGMnnCQYWhKs2RiYP8GxFDlHjLeFHl
-         EHSRRn/O6GdECsNaDztAisH/9kcU3X4w/Efuw8iD8XrxNp4vg2kDDfvMMv/CQGZ1f8n+
-         azyA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=T/yXDCUDWYrYlUTbV+JUoEICw4sgibdbwn70JC0Gn9g=;
-        b=X8f2848uhfe5H8k/lZU7JIHJu0tnXl9lEI2fiEl0b7Qbr07S39Tp1qiKOp4BoVZUgr
-         JbRspQKkp4F/n08WkZckXWgTyNfSpelg0x6qkM6L+5HXqqthr5yMElhNwjmkWw5Up2nN
-         JNfILsZGMJ5zSXtROwZhm4k8LBebpmSkEsmRanpCcVLklFZ6eYgrRK4SlLUcqP9Hvx1+
-         50lbgv14u6LrZfbxDGvM2myln7S6PWCI7zrHIpuGQEPEyh45RlvRM0mw7NePS2QL0YO7
-         PlaDiJxTi2puXAGntaDn0hDafV1qJSaZCau7ZBs86KNG+QsVCEuDtxrOU1Jm5f2DW0a5
-         CoIA==
-X-Gm-Message-State: AOAM5314pNG4j50cFryXBzZ1RpsskVvzAAzvX7Dv9LHHBT+7PRUslELt
-        2ZEZzhawrMGJtk/FYsJAKVCq2R/EoWfHVLK5y1Wcpg==
-X-Google-Smtp-Source: ABdhPJxwRAJlkZXtCgjwOCfZ+vnUzrbvfBbQunngaC7AOJ1FHkYD1IJxWn+erS2dZuE2R6iUURWasBaDXnRAgK0eLjU=
-X-Received: by 2002:ac8:4884:: with SMTP id i4mr24115822qtq.300.1605107044904;
- Wed, 11 Nov 2020 07:04:04 -0800 (PST)
+        Wed, 11 Nov 2020 10:04:53 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1605107092;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=pdnxDrJbnGriYJu6lUmTawYA8DwyKEDmav8yDLXk2oY=;
+        b=TnLjsUQirwEBKHyub7r78gxLWdPCyyvr7dYqA31yyPCQAzX9TIg8C+Z6CaAKPjJv0bs+Tp
+        PxdOJ3XD8pwzxNDTo/POk0buL4wUwQI/fEDjs7LiK8sVQPVv0LgYzERf9dA2F3qUJcdd7E
+        6UVKxBoGbGsTAWsN5dfL8YJYQez5xxU=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-441-oUWQ_G-SPlSh4zZtW33d7Q-1; Wed, 11 Nov 2020 10:04:46 -0500
+X-MC-Unique: oUWQ_G-SPlSh4zZtW33d7Q-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C37971074661;
+        Wed, 11 Nov 2020 15:04:41 +0000 (UTC)
+Received: from T590 (ovpn-12-145.pek2.redhat.com [10.72.12.145])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id E73046EF7F;
+        Wed, 11 Nov 2020 15:04:25 +0000 (UTC)
+Date:   Wed, 11 Nov 2020 23:04:21 +0800
+From:   Ming Lei <ming.lei@redhat.com>
+To:     Qian Cai <cai@redhat.com>
+Cc:     Sumit Saxena <sumit.saxena@broadcom.com>,
+        John Garry <john.garry@huawei.com>,
+        Kashyap Desai <kashyap.desai@broadcom.com>,
+        Jens Axboe <axboe@kernel.dk>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        don.brace@microsemi.com, Bart Van Assche <bvanassche@acm.org>,
+        dgilbert@interlog.com, paolo.valente@linaro.org,
+        Hannes Reinecke <hare@suse.de>, Christoph Hellwig <hch@lst.de>,
+        linux-block@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Linux SCSI List <linux-scsi@vger.kernel.org>,
+        esc.storagedev@microsemi.com,
+        "PDL,MEGARAIDLINUX" <megaraidlinux.pdl@broadcom.com>,
+        chenxiang66@hisilicon.com, luojiaxing@huawei.com,
+        Hannes Reinecke <hare@suse.com>
+Subject: Re: [PATCH v8 17/18] scsi: megaraid_sas: Added support for shared
+ host tagset for cpuhotplug
+Message-ID: <20201111150421.GA611503@T590>
+References: <d1040c06-74ea-7016-d259-195fa52196a9@huawei.com>
+ <CAL2rwxoAAGQDud1djb3_LNvBw95YoYUGhe22FwE=hYhy7XOLSw@mail.gmail.com>
+ <aaf849d38ca3cdd45151ffae9b6a99fe6f6ea280.camel@redhat.com>
+ <0c75b881-3096-12cf-07cc-1119ca6a453e@huawei.com>
+ <06a1a6bde51a66461d7b3135349641856315401d.camel@redhat.com>
+ <db92d37c-28fd-4f81-7b59-8f19e9178543@huawei.com>
+ <8043d516-c041-c94b-a7d9-61bdbfef0d7e@huawei.com>
+ <CAL2rwxpQt-w2Re8ttu0=6Yzb7ibX3_FB6j-kd_cbtrWxzc7chw@mail.gmail.com>
+ <20201111092743.GC545929@T590>
+ <b6bfe375866a061c1207ada5eeb6029176cf3521.camel@redhat.com>
 MIME-Version: 1.0
-References: <cover.1605046192.git.andreyknvl@google.com> <619cb0edad35d946c4796976c25bddb5b3eb0c56.1605046192.git.andreyknvl@google.com>
-In-Reply-To: <619cb0edad35d946c4796976c25bddb5b3eb0c56.1605046192.git.andreyknvl@google.com>
-From:   Alexander Potapenko <glider@google.com>
-Date:   Wed, 11 Nov 2020 16:03:52 +0100
-Message-ID: <CAG_fn=UKSp8shtYujRbM=8ndhLg_Ccdpk9eSfOeb=KpwNi7HBg@mail.gmail.com>
-Subject: Re: [PATCH v9 17/44] kasan, arm64: move initialization message
-To:     Andrey Konovalov <andreyknvl@google.com>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will.deacon@arm.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Marco Elver <elver@google.com>,
-        Evgenii Stepanov <eugenis@google.com>,
-        Branislav Rankov <Branislav.Rankov@arm.com>,
-        Kevin Brodsky <kevin.brodsky@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <b6bfe375866a061c1207ada5eeb6029176cf3521.camel@redhat.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 10, 2020 at 11:11 PM Andrey Konovalov <andreyknvl@google.com> w=
-rote:
->
-> Software tag-based KASAN mode is fully initialized with kasan_init_tags()=
-,
-> while the generic mode only requires kasan_init(). Move the
-> initialization message for tag-based mode into kasan_init_tags().
->
-> Also fix pr_fmt() usage for KASAN code: generic.c doesn't need it as it
-> doesn't use any printing functions; tag-based mode should use "kasan:"
-> instead of KBUILD_MODNAME (which stands for file name).
->
-> Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
-> Reviewed-by: Catalin Marinas <catalin.marinas@arm.com>
-> ---
-> Change-Id: Iddca9764b30ff0fab1922f26ca9d4f39b6f22673
-> ---
->  arch/arm64/include/asm/kasan.h |  9 +++------
->  arch/arm64/mm/kasan_init.c     | 13 +++++--------
->  mm/kasan/generic.c             |  2 --
->  mm/kasan/sw_tags.c             |  4 +++-
->  4 files changed, 11 insertions(+), 17 deletions(-)
->
-> diff --git a/arch/arm64/include/asm/kasan.h b/arch/arm64/include/asm/kasa=
-n.h
-> index f7ea70d02cab..0aaf9044cd6a 100644
-> --- a/arch/arm64/include/asm/kasan.h
-> +++ b/arch/arm64/include/asm/kasan.h
-> @@ -12,14 +12,10 @@
->  #define arch_kasan_reset_tag(addr)     __tag_reset(addr)
->  #define arch_kasan_get_tag(addr)       __tag_get(addr)
->
-> -#ifdef CONFIG_KASAN
-> -void kasan_init(void);
-> -#else
-> -static inline void kasan_init(void) { }
-> -#endif
-> -
->  #if defined(CONFIG_KASAN_GENERIC) || defined(CONFIG_KASAN_SW_TAGS)
->
-> +void kasan_init(void);
-> +
->  /*
->   * KASAN_SHADOW_START: beginning of the kernel virtual addresses.
->   * KASAN_SHADOW_END: KASAN_SHADOW_START + 1/N of kernel virtual addresse=
-s,
-> @@ -43,6 +39,7 @@ void kasan_copy_shadow(pgd_t *pgdir);
->  asmlinkage void kasan_early_init(void);
->
->  #else
-> +static inline void kasan_init(void) { }
->  static inline void kasan_copy_shadow(pgd_t *pgdir) { }
->  #endif
->
-> diff --git a/arch/arm64/mm/kasan_init.c b/arch/arm64/mm/kasan_init.c
-> index 5172799f831f..e35ce04beed1 100644
-> --- a/arch/arm64/mm/kasan_init.c
-> +++ b/arch/arm64/mm/kasan_init.c
-> @@ -278,17 +278,14 @@ static void __init kasan_init_depth(void)
->         init_task.kasan_depth =3D 0;
->  }
->
-> -#else /* CONFIG_KASAN_GENERIC || CONFIG_KASAN_SW_TAGS) */
-> -
-> -static inline void __init kasan_init_shadow(void) { }
-> -
-> -static inline void __init kasan_init_depth(void) { }
-> -
-> -#endif /* CONFIG_KASAN_GENERIC || CONFIG_KASAN_SW_TAGS */
-> -
->  void __init kasan_init(void)
->  {
->         kasan_init_shadow();
->         kasan_init_depth();
-> +#if defined(CONFIG_KASAN_GENERIC)
-> +       /* CONFIG_KASAN_SW_TAGS also requires kasan_init_tags(). */
->         pr_info("KernelAddressSanitizer initialized\n");
-> +#endif
->  }
+On Wed, Nov 11, 2020 at 09:42:17AM -0500, Qian Cai wrote:
+> On Wed, 2020-11-11 at 17:27 +0800, Ming Lei wrote:
+> > Can this issue disappear by applying the following change?
+> 
+> This makes the system boot again as well.
 
-Cannot we have a single kasan_init() function that will call
-tool-specific initialization functions and print the message at the
-end?
+OK, actually it isn't necessary to register one new lock key for each
+hctx(blk_flush_queue) instance, and the current way is really over-kill
+because there can be lots of hw queues in one system.
 
-> +
-> +#endif /* CONFIG_KASAN_GENERIC || CONFIG_KASAN_SW_TAGS */
-> diff --git a/mm/kasan/generic.c b/mm/kasan/generic.c
-> index e1af3b6c53b8..adb254df1b1d 100644
-> --- a/mm/kasan/generic.c
-> +++ b/mm/kasan/generic.c
-> @@ -9,8 +9,6 @@
->   *        Andrey Konovalov <andreyknvl@gmail.com>
->   */
->
-> -#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
-> -
->  #include <linux/export.h>
->  #include <linux/interrupt.h>
->  #include <linux/init.h>
-> diff --git a/mm/kasan/sw_tags.c b/mm/kasan/sw_tags.c
-> index b2638c2cd58a..d25f8641b7cd 100644
-> --- a/mm/kasan/sw_tags.c
-> +++ b/mm/kasan/sw_tags.c
-> @@ -6,7 +6,7 @@
->   * Author: Andrey Konovalov <andreyknvl@google.com>
->   */
->
-> -#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
-> +#define pr_fmt(fmt) "kasan: " fmt
->
->  #include <linux/export.h>
->  #include <linux/interrupt.h>
-> @@ -41,6 +41,8 @@ void kasan_init_tags(void)
->
->         for_each_possible_cpu(cpu)
->                 per_cpu(prng_state, cpu) =3D (u32)get_cycles();
-> +
-> +       pr_info("KernelAddressSanitizer initialized\n");
->  }
->
->  /*
-> --
-> 2.29.2.222.g5d2a92d10f8-goog
->
+The original lockdep warning can be avoided by setting one nvme_loop
+specific lock class simply. If nvme_loop is backed against another nvme_loop,
+we still can avoid the warning by killing the direct end io chain, or
+assign another lock class.
 
+Will prepare one formal patch tomorrow.
 
---=20
-Alexander Potapenko
-Software Engineer
+Thanks,
+Ming
 
-Google Germany GmbH
-Erika-Mann-Stra=C3=9Fe, 33
-80636 M=C3=BCnchen
-
-Gesch=C3=A4ftsf=C3=BChrer: Paul Manicle, Halimah DeLaine Prado
-Registergericht und -nummer: Hamburg, HRB 86891
-Sitz der Gesellschaft: Hamburg
