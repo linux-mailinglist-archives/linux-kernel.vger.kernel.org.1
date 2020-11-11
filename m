@@ -2,125 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A04372AF06A
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 13:18:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1736C2AF054
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 13:14:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725979AbgKKMSw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 07:18:52 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:35384 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726424AbgKKMLM (ORCPT
+        id S1726237AbgKKMOv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 07:14:51 -0500
+Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:5805 "EHLO
+        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726134AbgKKMMd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 07:11:12 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1605096624;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Y65as4hO2k5CaDRlNinPuyS+/mcMvfkWE/AmgknX/f0=;
-        b=ePDDo/IVplNCu6+gd4seMQu+2rPdX3cHBMzVu9QTYHqQUVrcaSwN0PV8h4gpmlB5DFEOMu
-        Jiftqd9w5r5Qg7H77fmS/aW0HwdlwSwsjXOGqvnZbpw5/eUUnaaN+GcPiQb+BrG/Zo7w99
-        oweXDrQhLj8Czf24r0OUuRqQyfetEjc=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-172-KIVkhXwCPsa4RlcUPDHLEA-1; Wed, 11 Nov 2020 07:10:20 -0500
-X-MC-Unique: KIVkhXwCPsa4RlcUPDHLEA-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id AEE2A879526;
-        Wed, 11 Nov 2020 12:10:18 +0000 (UTC)
-Received: from [10.36.114.151] (ovpn-114-151.ams2.redhat.com [10.36.114.151])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 721865C62B;
-        Wed, 11 Nov 2020 12:10:16 +0000 (UTC)
-Subject: Re: [PATCH v1 2/4] powerpc/mm: print warning in
- arch_remove_linear_mapping()
-To:     osalvador <osalvador@suse.de>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linuxppc-dev@lists.ozlabs.org,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Rashmica Gupta <rashmica.g@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Mike Rapoport <rppt@kernel.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Wei Yang <richard.weiyang@linux.alibaba.com>
-References: <20201029162718.29910-1-david@redhat.com>
- <20201029162718.29910-3-david@redhat.com>
- <20201104094255.GA4981@localhost.localdomain>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat GmbH
-Message-ID: <78f48ca7-d801-238d-f107-11b82d8a6384@redhat.com>
-Date:   Wed, 11 Nov 2020 13:10:15 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+        Wed, 11 Nov 2020 07:12:33 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5fabd5090000>; Wed, 11 Nov 2020 04:11:53 -0800
+Received: from HQMAIL105.nvidia.com (172.20.187.12) by HQMAIL111.nvidia.com
+ (172.20.187.18) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 11 Nov
+ 2020 12:11:53 +0000
+Received: from vidyas-desktop.nvidia.com (10.124.1.5) by mail.nvidia.com
+ (172.20.187.12) with Microsoft SMTP Server id 15.0.1473.3 via Frontend
+ Transport; Wed, 11 Nov 2020 12:11:49 +0000
+From:   Vidya Sagar <vidyas@nvidia.com>
+To:     <jingoohan1@gmail.com>, <gustavo.pimentel@synopsys.com>,
+        <lorenzo.pieralisi@arm.com>, <bhelgaas@google.com>,
+        <amurray@thegoodpenguin.co.uk>, <robh@kernel.org>,
+        <treding@nvidia.com>, <jonathanh@nvidia.com>
+CC:     <linux-pci@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <kthota@nvidia.com>, <mmaddireddy@nvidia.com>, <vidyas@nvidia.com>,
+        <sagar.tv@gmail.com>
+Subject: [PATCH V2] PCI: dwc: Add support to configure for ECRC
+Date:   Wed, 11 Nov 2020 17:41:45 +0530
+Message-ID: <20201111121145.7015-1-vidyas@nvidia.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20201109192611.16104-1-vidyas@nvidia.com>
+References: <20201109192611.16104-1-vidyas@nvidia.com>
+X-NVConfidentiality: public
 MIME-Version: 1.0
-In-Reply-To: <20201104094255.GA4981@localhost.localdomain>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+Content-Type: text/plain
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1605096713; bh=3PVEtDLordAcntknKXFr6xJm6HXQLS+d+52npBfKPDM=;
+        h=From:To:CC:Subject:Date:Message-ID:X-Mailer:In-Reply-To:
+         References:X-NVConfidentiality:MIME-Version:Content-Type;
+        b=eQcWhd+4KvPSn576Ax7dBDW9FsdRJtr+UYcZ5sjs/tzuTc04czC4OSg+0ZYPNICnH
+         fQ1Mgcas814zfjbNyXNYNQlREMngDQO5TxpMORx4QhuiHa/wUe/rAgGYmCe9ThCXB/
+         9aPHvkp8ZlHyg+FO9z8yTRZUNMV+RwfIHkdGYL39GOSZrW+b43zmeNG09pTBLHuKro
+         fhnR6E+ZouluqRd5pXl1JXqUNmJmyqqV2XTgOpetWBwulX/KQNhi36IEW7P2tnY1Ru
+         xsLKXT+kCzOTgLQhW5RET7ugixHad+byL3/yxj3deTMeqOXRLOa5ThqaibQgTSCMPu
+         k0WXmAqz8Pvhg==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 04.11.20 10:42, osalvador wrote:
-> On Thu, Oct 29, 2020 at 05:27:16PM +0100, David Hildenbrand wrote:
->> Let's print a warning similar to in arch_add_linear_mapping() instead of
->> WARN_ON_ONCE() and eventually crashing the kernel.
->>
->> Cc: Michael Ellerman <mpe@ellerman.id.au>
->> Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
->> Cc: Paul Mackerras <paulus@samba.org>
->> Cc: Rashmica Gupta <rashmica.g@gmail.com>
->> Cc: Andrew Morton <akpm@linux-foundation.org>
->> Cc: Mike Rapoport <rppt@kernel.org>
->> Cc: Michal Hocko <mhocko@suse.com>
->> Cc: Oscar Salvador <osalvador@suse.de>
->> Cc: Wei Yang <richard.weiyang@linux.alibaba.com>
->> Signed-off-by: David Hildenbrand <david@redhat.com>
->> ---
->>   arch/powerpc/mm/mem.c | 4 +++-
->>   1 file changed, 3 insertions(+), 1 deletion(-)
->>
->> diff --git a/arch/powerpc/mm/mem.c b/arch/powerpc/mm/mem.c
->> index 8a86d81f8df0..685028451dd2 100644
->> --- a/arch/powerpc/mm/mem.c
->> +++ b/arch/powerpc/mm/mem.c
->> @@ -145,7 +145,9 @@ void __ref arch_remove_linear_mapping(u64 start, u64 size)
->>   	flush_dcache_range_chunked(start, start + size, FLUSH_CHUNK_SIZE);
->>   
->>   	ret = remove_section_mapping(start, start + size);
->> -	WARN_ON_ONCE(ret);
->> +	if (ret)
->> +		pr_warn("Unable to remove linear mapping for 0x%llx..0x%llx: %d\n",
->> +			start, start + size, ret);
-> 
-> I guess the fear is to panic on systems that do have panic_on_warn (not
-> sure how many productions systems have this out there).
+DesignWare core has a TLP digest (TD) override bit in one of the control
+registers of ATU. This bit also needs to be programmed for proper ECRC
+functionality. This is currently identified as an issue with DesignWare
+IP version 4.90a.
 
-Exactly.
+Signed-off-by: Vidya Sagar <vidyas@nvidia.com>
+Acked-by: Bjorn Helgaas <bhelgaas@google.com>
+---
+V2:
+* Addressed Bjorn's comments
 
-> But anyway, being coherent with that, I think you should remove the WARN_ON
-> in hash__remove_section_mapping as well.
+ drivers/pci/controller/dwc/pcie-designware.c | 52 ++++++++++++++++++--
+ drivers/pci/controller/dwc/pcie-designware.h |  1 +
+ 2 files changed, 49 insertions(+), 4 deletions(-)
 
-Thanks, I'll add a patch doing that.
-
-> 
-> Besides that:
-> 
-> Reviewed-by: Oscar Salvador <osalvador@suse.
-> 
-> Not sure if the functions below that also have any sort of WARN_ON.
-> native_hpte_removebolted has a VM_WARN_ON, but that is on
-> CONFIG_DEBUG_VM so does not really matter.
-
-Right. Thanks!
-
+diff --git a/drivers/pci/controller/dwc/pcie-designware.c b/drivers/pci/controller/dwc/pcie-designware.c
+index c2dea8fc97c8..ec0d13ab6bad 100644
+--- a/drivers/pci/controller/dwc/pcie-designware.c
++++ b/drivers/pci/controller/dwc/pcie-designware.c
+@@ -225,6 +225,46 @@ static void dw_pcie_writel_ob_unroll(struct dw_pcie *pci, u32 index, u32 reg,
+ 	dw_pcie_writel_atu(pci, offset + reg, val);
+ }
+ 
++static inline u32 dw_pcie_enable_ecrc(u32 val)
++{
++	/*
++	 * DesignWare core version 4.90A has this strange design issue
++	 * where the 'TD' bit in the Control register-1 of the ATU outbound
++	 * region acts like an override for the ECRC setting i.e. the presence
++	 * of TLP Digest(ECRC) in the outgoing TLPs is solely determined by
++	 * this bit. This is contrary to the PCIe spec which says that the
++	 * enablement of the ECRC is solely determined by the AER registers.
++	 *
++	 * Because of this, even when the ECRC is enabled through AER
++	 * registers, the transactions going through ATU won't have TLP Digest
++	 * as there is no way the AER sub-system could program the TD bit which
++	 * is specific to DesignWare core.
++	 *
++	 * The best way to handle this scenario is to program the TD bit
++	 * always. It affects only the traffic from root port to downstream
++	 * devices.
++	 *
++	 * At this point,
++	 * When ECRC is enabled in AER registers, everything works normally
++	 * When ECRC is NOT enabled in AER registers, then,
++	 * on Root Port:- TLP Digest (DWord size) gets appended to each packet
++	 *                even through it is not required. Since downstream
++	 *                TLPs are mostly for configuration accesses and BAR
++	 *                accesses, they are not in critical path and won't
++	 *                have much negative effect on the performance.
++	 * on End Point:- TLP Digest is received for some/all the packets coming
++	 *                from the root port. TLP Digest is ignored because,
++	 *                as per the PCIe Spec r5.0 v1.0 section 2.2.3
++	 *                "TLP Digest Rules", when an endpoint receives TLP
++	 *                Digest when its ECRC check functionality is disabled
++	 *                in AER registers, received TLP Digest is just ignored.
++	 * Since there is no issue or error reported either side, best way to
++	 * handle the scenario is to program TD bit by default.
++	 */
++
++	return val | PCIE_ATU_TD;
++}
++
+ static void dw_pcie_prog_outbound_atu_unroll(struct dw_pcie *pci, u8 func_no,
+ 					     int index, int type,
+ 					     u64 cpu_addr, u64 pci_addr,
+@@ -245,8 +285,10 @@ static void dw_pcie_prog_outbound_atu_unroll(struct dw_pcie *pci, u8 func_no,
+ 				 lower_32_bits(pci_addr));
+ 	dw_pcie_writel_ob_unroll(pci, index, PCIE_ATU_UNR_UPPER_TARGET,
+ 				 upper_32_bits(pci_addr));
+-	dw_pcie_writel_ob_unroll(pci, index, PCIE_ATU_UNR_REGION_CTRL1,
+-				 type | PCIE_ATU_FUNC_NUM(func_no));
++	val = type | PCIE_ATU_FUNC_NUM(func_no);
++	if (pci->version == 0x490A)
++		val = dw_pcie_enable_ecrc(val);
++	dw_pcie_writel_ob_unroll(pci, index, PCIE_ATU_UNR_REGION_CTRL1, val);
+ 	dw_pcie_writel_ob_unroll(pci, index, PCIE_ATU_UNR_REGION_CTRL2,
+ 				 PCIE_ATU_ENABLE);
+ 
+@@ -292,8 +334,10 @@ static void __dw_pcie_prog_outbound_atu(struct dw_pcie *pci, u8 func_no,
+ 			   lower_32_bits(pci_addr));
+ 	dw_pcie_writel_dbi(pci, PCIE_ATU_UPPER_TARGET,
+ 			   upper_32_bits(pci_addr));
+-	dw_pcie_writel_dbi(pci, PCIE_ATU_CR1, type |
+-			   PCIE_ATU_FUNC_NUM(func_no));
++	val = type | PCIE_ATU_FUNC_NUM(func_no);
++	if (pci->version == 0x490A)
++		val = dw_pcie_enable_ecrc(val);
++	dw_pcie_writel_dbi(pci, PCIE_ATU_CR1, val);
+ 	dw_pcie_writel_dbi(pci, PCIE_ATU_CR2, PCIE_ATU_ENABLE);
+ 
+ 	/*
+diff --git a/drivers/pci/controller/dwc/pcie-designware.h b/drivers/pci/controller/dwc/pcie-designware.h
+index 9d2f511f13fa..285c0ae364ae 100644
+--- a/drivers/pci/controller/dwc/pcie-designware.h
++++ b/drivers/pci/controller/dwc/pcie-designware.h
+@@ -88,6 +88,7 @@
+ #define PCIE_ATU_TYPE_IO		0x2
+ #define PCIE_ATU_TYPE_CFG0		0x4
+ #define PCIE_ATU_TYPE_CFG1		0x5
++#define PCIE_ATU_TD			BIT(8)
+ #define PCIE_ATU_FUNC_NUM(pf)           ((pf) << 20)
+ #define PCIE_ATU_CR2			0x908
+ #define PCIE_ATU_ENABLE			BIT(31)
 -- 
-Thanks,
-
-David / dhildenb
+2.17.1
 
