@@ -2,82 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 805C42AED0F
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 10:12:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 230492AECAD
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 10:08:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726647AbgKKJMr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 04:12:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40448 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726989AbgKKJMB (ORCPT
+        id S1726544AbgKKJIZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 04:08:25 -0500
+Received: from mx0a-00128a01.pphosted.com ([148.163.135.77]:8920 "EHLO
+        mx0a-00128a01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726130AbgKKJIY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 04:12:01 -0500
-Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59076C0613D1
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 01:12:01 -0800 (PST)
-Received: by mail-lf1-x12b.google.com with SMTP id a9so1200295lfh.2
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 01:12:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Nbnt6veYw6qTwcMDRL4+mV8KXeaSuLnKhno6+5s2SFU=;
-        b=ty5YHZnWhYAcWsKkLNWiqJBKnBrNi5lXjTSZ32spL4wqL6UtA6AbHjprIxTz2iMOiE
-         7NvsJXhMLQXVaeyWfyE94zxEGVf4a01pagdCHqtXlvIdjqELf35c/jNzbcV3DDeU2odX
-         aIhx4RYmhkNYPo74YQ/Pfl2ewAKmoeUrL40WuyIxJ03UrfnVmanZnEEw+F0tR8vf2D79
-         yjDVk1rKlxp67wThAFS/KJqiEgssn3/2MiUCp8Z2YkNsnXdc4p1db9Gf9ilp3A2PguGA
-         Lvj0VM16+uUbPKSbLNMxTUGkl+Rq8zc3QrEknvEK6zb5emqqqP2QL6O3SgsTy/hhN/z/
-         UOvA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Nbnt6veYw6qTwcMDRL4+mV8KXeaSuLnKhno6+5s2SFU=;
-        b=a1o2wKZA/BhL34ER08EZXK11jYBX6FZDU6mo3IaVZdysXP+DdH2NhtJv5/bksdjMTz
-         6daWfNe9z/lE5MrdP1zHRfvrr4Idd3DaRn5vp4hlloQubRQ4NQdTfDltBfp5ymcE3Ysa
-         3eSav1Q/ohVCTllHyioUBRBewC4Nl+M+tJrJ9xjjen8RCEWnENQjwaFjg2m7yXcoS9wH
-         CyCPbk3dVmDkKNPLp9Oj+usWTeN5pvqapmK1fZuv1BPY9AYzP2/c5ew8MC78ikeJYSUh
-         5qqg0RTjgBPB8DSuVOVWep5Rcx0+OynO4aK90A43tNfecNByYtyXdhLGqAf0BHze0hrS
-         ViEw==
-X-Gm-Message-State: AOAM533AD3rAe54SQt+oH5u2fFBrLQAQS2riFTiciPk0YteuToomq0OM
-        P3qyWCaMJ6l2QZhGoPH4FwxnXI6HeD0qIjoUbPouj3Irb7eTtg==
-X-Google-Smtp-Source: ABdhPJwos4mzSJfmoOsowN+ImAeNCfboX3OCQ3wQdi+b27K1mVTdppGK3LmHg1zytVgXlWp7fxJcgNHKY9Yn6AOigTo=
-X-Received: by 2002:ac2:50c1:: with SMTP id h1mr8771651lfm.333.1605085919810;
- Wed, 11 Nov 2020 01:11:59 -0800 (PST)
+        Wed, 11 Nov 2020 04:08:24 -0500
+Received: from pps.filterd (m0167089.ppops.net [127.0.0.1])
+        by mx0a-00128a01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0AB981ax014206;
+        Wed, 11 Nov 2020 04:08:06 -0500
+Received: from nwd2mta4.analog.com ([137.71.173.58])
+        by mx0a-00128a01.pphosted.com with ESMTP id 34nsc94j4h-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 11 Nov 2020 04:08:06 -0500
+Received: from ASHBMBX8.ad.analog.com (ASHBMBX8.ad.analog.com [10.64.17.5])
+        by nwd2mta4.analog.com (8.14.7/8.14.7) with ESMTP id 0AB985LK040528
+        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=FAIL);
+        Wed, 11 Nov 2020 04:08:05 -0500
+Received: from ASHBMBX9.ad.analog.com (10.64.17.10) by ASHBMBX8.ad.analog.com
+ (10.64.17.5) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1779.2; Wed, 11 Nov
+ 2020 04:08:04 -0500
+Received: from zeus.spd.analog.com (10.66.68.11) by ASHBMBX9.ad.analog.com
+ (10.64.17.10) with Microsoft SMTP Server id 15.1.1779.2 via Frontend
+ Transport; Wed, 11 Nov 2020 04:08:04 -0500
+Received: from localhost.localdomain ([10.48.65.12])
+        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 0AB981gE023509;
+        Wed, 11 Nov 2020 04:08:01 -0500
+From:   Alexandru Ardelean <alexandru.ardelean@analog.com>
+To:     <linux-hwmon@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <robh+dt@kernel.org>, <linux@roeck-us.net>, <jdelvare@suse.com>,
+        <mark.thoren@analog.com>, <ardeleanalex@gmail.com>,
+        Alexandru Ardelean <alexandru.ardelean@analog.com>
+Subject: [PATCH v2 0/4] hwmon: (ltc2945): add support for sense resistor
+Date:   Wed, 11 Nov 2020 11:12:55 +0200
+Message-ID: <20201111091259.46773-1-alexandru.ardelean@analog.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-References: <CA+G9fYtrOq66zz8ux=G+SDH7ZUJevv-L0W+xvtERHAJCuCmj_g@mail.gmail.com>
- <CAMj1kXESZU2w98gX3uSc-uAw_w9KxSYTKUr6Ne6XHCPWsYT=jQ@mail.gmail.com>
-In-Reply-To: <CAMj1kXESZU2w98gX3uSc-uAw_w9KxSYTKUr6Ne6XHCPWsYT=jQ@mail.gmail.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Wed, 11 Nov 2020 10:11:48 +0100
-Message-ID: <CACRpkdbs__j01qQ5ZudiZ3HX7ifY0ENdF3Tk_8vpfKc9OW=7gg@mail.gmail.com>
-Subject: Re: arm: kasan: WARNING: CPU: 0 PID: 0 at arch/arm/kernel/insn.c:47 __arm_gen_branch
-To:     Ard Biesheuvel <ardb@kernel.org>
-Cc:     Naresh Kamboju <naresh.kamboju@linaro.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux-Next Mailing List <linux-next@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>, lkft-triage@lists.linaro.org,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Steven Rostedt <rostedt@goodmis.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-11-11_02:2020-11-10,2020-11-11 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 spamscore=0
+ priorityscore=1501 bulkscore=0 clxscore=1015 lowpriorityscore=0
+ impostorscore=0 adultscore=0 phishscore=0 mlxlogscore=999 malwarescore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2011110050
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 11, 2020 at 9:15 AM Ard Biesheuvel <ardb@kernel.org> wrote:
+This changeset adds support the sense resistor that can be connected on
+a board to computer current & power.
 
-> (23552K kernel code, 9970K rwdata, 16736K rodata, 3072K init, 4849K
-> bss, 189072K reserved, 65536K cma-reserved, 2293756K highmem)
->
-> and so the kernel text section is too large to resolve relative branches.
+The sense resistor is a parameter of the board. It should be configured in
+the driver via a device-tree / ACPI property, so that the proper current
+measurements can be done in the driver.
 
-Hm, that's really exotic but it's bound to happen. It'd be great if we
-could warn about that. Maybe even at link
-time, I wonder how hard it would be?
+Changelog v1 -> v2:
+* https://lore.kernel.org/linux-hwmon/20201106101825.30960-1-alexandru.ardelean@analog.com/
+* reverted kstrotoull() -> kstrtoul()
+* added sanity check for resistor, to prevent crashing when DT provides
+  zero value
+* add DT binding doc for ltc2945
 
-Yours,
-Linus Walleij
+Alexandru Ardelean (4):
+  hwmon: (ltc2945): wrap regmap into an ltc2945_state struct
+  docs: hwmon: (ltc2945): change type of val to ULL in
+    ltc2945_val_to_reg()
+  hwmon: (ltc2945): add support for sense resistor
+  dt-bindings: hwmon: ltc2945: add device tree doc for ltc2945
+
+ .../bindings/hwmon/adi,ltc2945.yaml           | 49 ++++++++++
+ drivers/hwmon/ltc2945.c                       | 89 +++++++++++--------
+ 2 files changed, 103 insertions(+), 35 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/hwmon/adi,ltc2945.yaml
+
+-- 
+2.17.1
+
