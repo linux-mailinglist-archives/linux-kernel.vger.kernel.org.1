@@ -2,72 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 44E982AF7C4
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 19:13:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5ECA12AF7C6
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 19:13:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727042AbgKKSM5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 13:12:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40950 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726456AbgKKSM4 (ORCPT
+        id S1727192AbgKKSNk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 13:13:40 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:25947 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726157AbgKKSNj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 13:12:56 -0500
-Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14AC9C0613D4
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 10:12:56 -0800 (PST)
-Received: by mail-lf1-x12b.google.com with SMTP id j205so4439919lfj.6
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 10:12:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=lucidpixels.com; s=google;
-        h=mime-version:from:date:message-id:subject:to:cc;
-        bh=VzE8BDaL/n6JBFIiUCtyweyNiqD2rbfzZl05aVLw9Z4=;
-        b=BOODpSb5zU+KwM9sx1qPBXcrfWDmhXnHjrX9u+W8LwPEsG+sBo5JjILCLJcFDzhQJr
-         zFLZXOEdd9kdGDLJhtaIOR6AkD0AYFwY9+1ig88IO2xWktU3mNm0KeSfOAfHBqwCv403
-         0w4wW+5sXMT9itogqMe234o8z6ocruH8lPupM=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=VzE8BDaL/n6JBFIiUCtyweyNiqD2rbfzZl05aVLw9Z4=;
-        b=epz/61/07/LnoD55Pgu6dQOuvsPinwD8F5p+HEpLDgLLAydK0ia2dsYct0c1hT04LG
-         gatlSVq3ZUTAXw7dh0J9CHGLYS6uWPKBbHSsSjyjSXZucEk+uCR0mEheyAv5ihoOcWcJ
-         KdFrTZMTvZuQhnQ/Yzo7AdMsPCrh1SQWyPexRY67LQNH/T6tRj1mC4guJviMX+eLtJKw
-         M37542QsUccvfsf+YJyxNb/it5DOoGQls1l0bcUtMufnjz0go3whpRAK9A8fWBZJlHw5
-         s935VFm53c8aG7xHYTNjg6jKh343fHzNxujxdzmnLVbX0oODeXx376xYGm6Hspe04EML
-         vN4A==
-X-Gm-Message-State: AOAM531wAYQms0uqtVABEJkoXVh3mtd8g2c1nMTWVRnGCsdy8fzzzzm3
-        zfotIg5cgDgwEV9Vz7P510S2O8euXb6EiYY10bzjIvLyt8wgCA==
-X-Google-Smtp-Source: ABdhPJwMy0RQwbcNeV3E/RqNsvvERd0DhLw5UIIHAS6OGVPC3Mj6ghAHXJryoYs2uwNsQa22a3ygQ1LjSmss7aT4PeQ=
-X-Received: by 2002:a19:c8ca:: with SMTP id y193mr1722705lff.150.1605118373925;
- Wed, 11 Nov 2020 10:12:53 -0800 (PST)
+        Wed, 11 Nov 2020 13:13:39 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1605118418;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=BzfSA1UIOUzYMmUrrNLsV0Zn7y194VWwPiSaU2NsQ7s=;
+        b=OtumNEAS9BZy/8xqMncVZbxo1RJt43VxGKeQieSx9+LNqDA3XOhqqtOf1Xh3SL9bdQ0dtK
+        W7mT2f7aS/xYP54TA57rbAj5xpHOcOjKWGBid3eHQ7vzNrgNlc8u8DB+sY2rqq+TEWbWUs
+        wOQ/NKLrPVaJ+seP9W1Qhw5XqV7Cyf8=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-313-RxykxU2TOem2Yxp1g2uyQw-1; Wed, 11 Nov 2020 13:13:34 -0500
+X-MC-Unique: RxykxU2TOem2Yxp1g2uyQw-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id CF9FD100831B;
+        Wed, 11 Nov 2020 18:13:32 +0000 (UTC)
+Received: from treble (ovpn-120-65.rdu2.redhat.com [10.10.120.65])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 5AFD36EF52;
+        Wed, 11 Nov 2020 18:13:31 +0000 (UTC)
+Date:   Wed, 11 Nov 2020 12:13:28 -0600
+From:   Josh Poimboeuf <jpoimboe@redhat.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Shinichiro Kawasaki <shinichiro.kawasaki@wdc.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Damien Le Moal <Damien.LeMoal@wdc.com>,
+        andrew.cooper3@citrix.com, jgross@suse.com
+Subject: Re: WARNING: can't access registers at asm_common_interrupt
+Message-ID: <20201111181328.mbxcz2uap2vnqpxq@treble>
+References: <20201106060414.edtcb7nrbzm4a32t@shindev.dhcp.fujisawa.hgst.com>
+ <20201111170536.arx2zbn4ngvjoov7@treble>
+ <20201111174736.GH2628@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-From:   Justin Piszcz <jpiszcz@lucidpixels.com>
-Date:   Wed, 11 Nov 2020 13:12:38 -0500
-Message-ID: <CAO9zADxBz5q2FrdL4zxSU5Cs6kX7qrkrc__DT4eEaJ0aZKTVtg@mail.gmail.com>
-Subject: 5.9.3: "md0:" is showing in dmesg/printk but with no other
- information is provided
-To:     LKML <linux-kernel@vger.kernel.org>
-Cc:     linux-raid@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20201111174736.GH2628@hirez.programming.kicks-ass.net>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Kernel: 5.9.3
-Arch: x86_64
+On Wed, Nov 11, 2020 at 06:47:36PM +0100, Peter Zijlstra wrote:
+> This is PARAVIRT_XXL only, which is a Xen special. My preference, as
+> always, is to kill it... Sadly the Xen people have a different opinion.
 
-These are showing up in dmesg every so often and they are not
-associated with any type of message/alert or user associated action.
-What is causing this & why are there no details associated with this
-message?
+That would be soooo nice... then we could get rid of paravirt patching
+altogether and replace it with static calls.
 
-[Wed Nov  4 17:05:56 2020]  md0:
-[Thu Nov  5 08:23:32 2020]  md0:
-[Thu Nov  5 13:12:00 2020]  md0:
-[Sat Nov  7 06:53:59 2020]  md0:
-[Sat Nov  7 06:54:07 2020]  md0:
-[Tue Nov 10 08:09:27 2020]  md0:
-[Wed Nov 11 12:43:06 2020]  md0:
+> > Objtool doesn't know about the pushf/pop paravirt patch, so ORC gets
+> > confused by the changed stack layout.
+> > 
+> > I'm thinking we either need to teach objtool how to deal with
+> > save_fl/restore_fl patches, or we need to just get rid of those nasty
+> > patches somehow.  Peter, any thoughts?
+> 
+> Don't use Xen? ;-)
+> 
+> So with PARAVIRT_XXL the compiler will emit something like:
+> 
+>   "CALL *pvops.save_fl"
+> 
+> Which we then overwrite at runtime with "pushf; pop %[re]ax" and a few
+> NOPs.
+> 
+> Now, objtool understands alternatives, and ensures they have the same
+> stack layout, it has no chance in hell of understanding this, simply
+> because paravirt_patch.c is magic.
+> 
+> I don't have any immediate clever ideas, but let me ponder it a wee bit.
+> 
+> ....
+> 
+> Something really disguisting we could do is recognise the indirect call
+> offset and emit an extra ORC entry for RIP+1. So the cases are:
+> 
+> 	CALL *pv_ops.save_fl	-- 7 bytes IIRC
+> 	CALL $imm;		-- 5 bytes
+> 	PUSHF; POP %[RE]AX	-- 2 bytes
+> 
+> so the RIP+1 (the POP insn) will only ever exist in this case. The
+> indirect and direct call cases would never land on that IP.
 
-Regards,
+I had a similar idea, and a bit of deja vu - we may have talked about
+this before.  At least I know we talked about doing something similar
+for alternatives which muck with the stack.
 
-Justin.
+> > It looks like 044d0d6de9f5 ("lockdep: Only trace IRQ edges") is making
+> > the problem more likely, by adding the irqs_disabled() check for every
+> > local_irq_disable().
+> > 
+> > Also - Peter, Nicholas - is that irqs_disabled() check really necessary
+> > in local_irq_disable()?  Presumably irqs would typically be be enabled
+> > before calling it?
+> 
+> Yeah, so it's all a giant can of worms that; also see:
+> 
+>   https://lkml.kernel.org/r/20200821084738.508092956@infradead.org
+> 
+> The basic idea is to only trace edges, ie. when the hardware state
+> actually changes. Sadly this means doing a pushf/pop before the cli.
+> Ideally CLI would store the old IF in CF or something like that, but
+> alas.
+
+Right, that makes sense for save/restore, but is the disabled check
+really needed for local_irq_disable()?  Wouldn't that always be an edge?
+
+And anyway I don't see a similar check for local_irq_enable().
+
+-- 
+Josh
+
