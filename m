@@ -2,101 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73BE32AF72E
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 18:06:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 79EC82AF739
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 18:12:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727166AbgKKRGY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 12:06:24 -0500
-Received: from muru.com ([72.249.23.125]:48078 "EHLO muru.com"
+        id S1726812AbgKKRMf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 12:12:35 -0500
+Received: from mx2.suse.de ([195.135.220.15]:35408 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725995AbgKKRGX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 12:06:23 -0500
-Received: from hillo.muru.com (localhost [127.0.0.1])
-        by muru.com (Postfix) with ESMTP id 7DAF88126;
-        Wed, 11 Nov 2020 17:06:27 +0000 (UTC)
-From:   Tony Lindgren <tony@atomide.com>
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Carl Philipp Klemm <philipp@uvos.xyz>,
-        Laxminath Kasam <lkasam@codeaurora.org>,
-        Merlijn Wajer <merlijn@wizzup.org>,
-        Mark Brown <broonie@kernel.org>, Pavel Machek <pavel@ucw.cz>,
-        Sebastian Reichel <sre@kernel.org>,
-        Tim Harvey <tharvey@gateworks.com>
-Subject: [PATCH] mfd: cpcap: Fix interrupt regression with regmap clear_ack
-Date:   Wed, 11 Nov 2020 19:06:13 +0200
-Message-Id: <20201111170613.46057-1-tony@atomide.com>
-X-Mailer: git-send-email 2.29.2
+        id S1725995AbgKKRMe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Nov 2020 12:12:34 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 51074AC24;
+        Wed, 11 Nov 2020 17:12:32 +0000 (UTC)
+To:     Alex Shi <alex.shi@linux.alibaba.com>, akpm@linux-foundation.org,
+        mgorman@techsingularity.net, tj@kernel.org, hughd@google.com,
+        khlebnikov@yandex-team.ru, daniel.m.jordan@oracle.com,
+        willy@infradead.org, hannes@cmpxchg.org, lkp@intel.com,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        cgroups@vger.kernel.org, shakeelb@google.com,
+        iamjoonsoo.kim@lge.com, richard.weiyang@gmail.com,
+        kirill@shutemov.name, alexander.duyck@gmail.com,
+        rong.a.chen@intel.com, mhocko@suse.com, vdavydov.dev@gmail.com,
+        shy828301@gmail.com
+References: <1604566549-62481-1-git-send-email-alex.shi@linux.alibaba.com>
+ <1604566549-62481-16-git-send-email-alex.shi@linux.alibaba.com>
+From:   Vlastimil Babka <vbabka@suse.cz>
+Subject: Re: [PATCH v21 15/19] mm/compaction: do page isolation first in
+ compaction
+Message-ID: <a0b8c198-6bd0-2ccb-fe55-970895c26a0b@suse.cz>
+Date:   Wed, 11 Nov 2020 18:12:28 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
+In-Reply-To: <1604566549-62481-16-git-send-email-alex.shi@linux.alibaba.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-With commit 3a6f0fb7b8eb ("regmap: irq: Add support to clear ack
-registers"), the cpcap interrupts are no longer getting acked properly
-leading to a very unresponsive device with CPUs fully loaded spinning
-in the threaded IRQ handlers.
+On 11/5/20 9:55 AM, Alex Shi wrote:
+> Currently, compaction would get the lru_lock and then do page isolation
+> which works fine with pgdat->lru_lock, since any page isoltion would
+> compete for the lru_lock. If we want to change to memcg lru_lock, we
+> have to isolate the page before getting lru_lock, thus isoltion would
+> block page's memcg change which relay on page isoltion too. Then we
+> could safely use per memcg lru_lock later.
+> 
+> The new page isolation use previous introduced TestClearPageLRU() +
+> pgdat lru locking which will be changed to memcg lru lock later.
+> 
+> Hugh Dickins <hughd@google.com> fixed following bugs in this patch's
+> early version:
+> 
+> Fix lots of crashes under compaction load: isolate_migratepages_block()
+> must clean up appropriately when rejecting a page, setting PageLRU again
+> if it had been cleared; and a put_page() after get_page_unless_zero()
+> cannot safely be done while holding locked_lruvec - it may turn out to
+> be the final put_page(), which will take an lruvec lock when PageLRU.
+> And move __isolate_lru_page_prepare back after get_page_unless_zero to
+> make trylock_page() safe:
+> trylock_page() is not safe to use at this time: its setting PG_locked
+> can race with the page being freed or allocated ("Bad page"), and can
+> also erase flags being set by one of those "sole owners" of a freshly
+> allocated page who use non-atomic __SetPageFlag().
+> 
+> Suggested-by: Johannes Weiner <hannes@cmpxchg.org>
+> Signed-off-by: Alex Shi <alex.shi@linux.alibaba.com>
+> Acked-by: Hugh Dickins <hughd@google.com>
+> Acked-by: Johannes Weiner <hannes@cmpxchg.org>
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Cc: Matthew Wilcox <willy@infradead.org>
+> Cc: linux-kernel@vger.kernel.org
+> Cc: linux-mm@kvack.org
 
-To me it looks like the clear_ack commit above actually fixed a long
-standing bug in regmap_irq_thread() where we unconditionally acked the
-interrupts earlier without considering ack_invert. And the issue with
-cpcap started happening as we now also consider ack_invert.
+Acked-by: Vlastimil Babka <vbabka@suse.cz>
 
-Tim Harvey <tharvey@gateworks.com> tried to fix this issue earlier with
-"[PATCH v2] regmap: irq: fix ack-invert", but the reading of the ack
-register was considered unnecessary for just ack_invert, and we did not
-have clear_ack available yet. As the cpcap irqs worked both with and
-without ack_invert earlier because of the unconditional ack, the
-problem remained hidden until now.
+A question below:
 
-Also, looks like the earlier v3.0.8 based Motorola Android Linux kernel
-does clear_ack style read-clear-write with "ireg_val & ~mreg_val" instead
-of just ack_invert style write. So let's switch cpcap to use clear_ack
-to fix the issue.
+> @@ -979,10 +995,6 @@ static bool too_many_isolated(pg_data_t *pgdat)
+>   					goto isolate_abort;
+>   			}
+>   
+> -			/* Recheck PageLRU and PageCompound under lock */
+> -			if (!PageLRU(page))
+> -				goto isolate_fail;
+> -
+>   			/*
+>   			 * Page become compound since the non-locked check,
+>   			 * and it's on LRU. It can only be a THP so the order
+> @@ -990,16 +1002,13 @@ static bool too_many_isolated(pg_data_t *pgdat)
+>   			 */
+>   			if (unlikely(PageCompound(page) && !cc->alloc_contig)) {
+>   				low_pfn += compound_nr(page) - 1;
+> -				goto isolate_fail;
+> +				SetPageLRU(page);
+> +				goto isolate_fail_put;
+>   			}
 
-Fixes: 3a6f0fb7b8eb ("regmap: irq: Add support to clear ack registers")
-Cc: Carl Philipp Klemm <philipp@uvos.xyz>
-Cc: Laxminath Kasam <lkasam@codeaurora.org>
-Cc: Merlijn Wajer <merlijn@wizzup.org>
-Cc: Mark Brown <broonie@kernel.org>
-Cc: Pavel Machek <pavel@ucw.cz>
-Cc: Sebastian Reichel <sre@kernel.org>
-Cc: Tim Harvey <tharvey@gateworks.com>
-Signed-off-by: Tony Lindgren <tony@atomide.com>
----
- drivers/mfd/motorola-cpcap.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/mfd/motorola-cpcap.c b/drivers/mfd/motorola-cpcap.c
---- a/drivers/mfd/motorola-cpcap.c
-+++ b/drivers/mfd/motorola-cpcap.c
-@@ -97,7 +97,7 @@ static struct regmap_irq_chip cpcap_irq_chip[CPCAP_NR_IRQ_CHIPS] = {
- 		.ack_base = CPCAP_REG_MI1,
- 		.mask_base = CPCAP_REG_MIM1,
- 		.use_ack = true,
--		.ack_invert = true,
-+		.clear_ack = true,
- 	},
- 	{
- 		.name = "cpcap-m2",
-@@ -106,7 +106,7 @@ static struct regmap_irq_chip cpcap_irq_chip[CPCAP_NR_IRQ_CHIPS] = {
- 		.ack_base = CPCAP_REG_MI2,
- 		.mask_base = CPCAP_REG_MIM2,
- 		.use_ack = true,
--		.ack_invert = true,
-+		.clear_ack = true,
- 	},
- 	{
- 		.name = "cpcap1-4",
-@@ -115,7 +115,7 @@ static struct regmap_irq_chip cpcap_irq_chip[CPCAP_NR_IRQ_CHIPS] = {
- 		.ack_base = CPCAP_REG_INT1,
- 		.mask_base = CPCAP_REG_INTM1,
- 		.use_ack = true,
--		.ack_invert = true,
-+		.clear_ack = true,
- 	},
- };
- 
--- 
-2.29.2
+IIUC the danger here is khugepaged will collapse a THP. For that, 
+__collapse_huge_page_isolate() has to succeed isolate_lru_page(). Under the new 
+scheme, it shouldn't be possible, right? If that's correct, we can remove this part?
