@@ -2,71 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B01872AF8D6
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 20:18:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BC232AF8DA
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 20:18:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727514AbgKKTSM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 14:18:12 -0500
-Received: from mail-oi1-f196.google.com ([209.85.167.196]:41819 "EHLO
-        mail-oi1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726136AbgKKTSL (ORCPT
+        id S1727629AbgKKTSl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 14:18:41 -0500
+Received: from mail-oi1-f193.google.com ([209.85.167.193]:46635 "EHLO
+        mail-oi1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725955AbgKKTSl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 14:18:11 -0500
-Received: by mail-oi1-f196.google.com with SMTP id m13so3403612oih.8;
-        Wed, 11 Nov 2020 11:18:10 -0800 (PST)
+        Wed, 11 Nov 2020 14:18:41 -0500
+Received: by mail-oi1-f193.google.com with SMTP id q206so3379810oif.13;
+        Wed, 11 Nov 2020 11:18:40 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=dyEeJt9nKugdWpL04ZKWH+UXJAulW34IvqV/SnkPbEQ=;
-        b=aK2m/Cwb738OMPgeIbAJcgHmE6q6w+vdRkwvM1ICq0lGz7CgdIjGBHoyZ+OsIUjtLL
-         UW+kY4ku3/E2fOH8f+sk20e0+vKIwEJVnCaiJyCyLWoBZdEWUG/gZTD4iltaM52KP0kX
-         4ke/SH0/Nu+JhbXTshGX6gJUDdZjh5iIi/MNeSZvVzNeHh4NW5NrSkklayPB62Ju6j5o
-         YBmzcN3BDFlGfF56Da5VbBQbxPetBhQamVzXQ4oIJevBYdnC5pYIb63FXcrPziTAIInu
-         GhlAp3UH1F8fm3AHd30wwcDrmFbGV0U2B3LqQgwLUl/w6Eqd50gqkU2hdxG9cenZ1w/5
-         6xlQ==
-X-Gm-Message-State: AOAM533stbyV7KbRVHsh6BoMz1+jv54K8Erq+reImUYOgsTGzPfp3BRF
-        W3f3ocOZ5RnFCngRYtIqAg==
-X-Google-Smtp-Source: ABdhPJwB14taliF6U+AUf/N1OtoYTH8z013eOiMtyiinNMjQGcQuTpoj1Dzd40dASYXXh/ijQBZabA==
-X-Received: by 2002:aca:378a:: with SMTP id e132mr2977001oia.112.1605122290641;
-        Wed, 11 Nov 2020 11:18:10 -0800 (PST)
+        bh=di89ZznidawI0fMPrCxwKTCrqn1VoBZdN86rMbY1IMU=;
+        b=ENz2AS9qObd278EHm1mjKHtmsZvokB9l/x7XeQcajnXck01tyYMd37SReWVE5tzM0m
+         rI2q3H/5I4qJuSCUKinHan7lFyjsphBAwBZQ62gHYNovBKzvWzTXpwWs7Nw9imKOViuG
+         Vj+513ddz3h3wZwn314poP7rCoYVWGpIcJfmQg5MqUyyh4qQtv2lBwnBvoQWzJg8J6qe
+         RIwJ2E9DpfeaMAzBbq2rlwOFInnvQEyfEb4YzCFzb43Av6wbC4+EwHozy6QB/W+plQIC
+         WiY0nsP4P0smGMBs/E1jHLzY59n4gmnd2CvAz8lRxZAjufwC/bHR63hQJS8U8N4XKJ1p
+         QL9g==
+X-Gm-Message-State: AOAM532Y0yaumzkuvtFQA3Vwl8thEmuSi7r1F2PtACwppg6t2JSYMoKB
+        bKrFziLEOeMNIpFb3Ee03A==
+X-Google-Smtp-Source: ABdhPJzE5izdS/sK8OLSXsE4E3wtRh49ZnaKPqcrf64roQtnapt1kpAeuSbgJ27Zyva0dTwPbTN8vg==
+X-Received: by 2002:aca:492:: with SMTP id 140mr3029530oie.108.1605122320334;
+        Wed, 11 Nov 2020 11:18:40 -0800 (PST)
 Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id t199sm606106oif.25.2020.11.11.11.18.09
+        by smtp.gmail.com with ESMTPSA id n15sm693407otj.41.2020.11.11.11.18.39
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 Nov 2020 11:18:10 -0800 (PST)
-Received: (nullmailer pid 1860547 invoked by uid 1000);
-        Wed, 11 Nov 2020 19:18:09 -0000
-Date:   Wed, 11 Nov 2020 13:18:09 -0600
+        Wed, 11 Nov 2020 11:18:39 -0800 (PST)
+Received: (nullmailer pid 1861378 invoked by uid 1000);
+        Wed, 11 Nov 2020 19:18:38 -0000
+Date:   Wed, 11 Nov 2020 13:18:38 -0600
 From:   Rob Herring <robh@kernel.org>
-To:     Adam Ford <aford173@gmail.com>
-Cc:     aford@beaconembedded.com, Rob Herring <robh+dt@kernel.org>,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        Shawn Guo <shawnguo@kernel.org>
-Subject: Re: [PATCH V4] dt-bindings: soc: imx: Add binding doc for spba bus
-Message-ID: <20201111191809.GA1859246@bogus>
-References: <20201111152523.76254-1-aford173@gmail.com>
+To:     Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
+Cc:     linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-gpio@vger.kernel.org, devicetree@vger.kernel.org,
+        punit1.agrawal@toshiba.co.jp, linux-arm-kernel@lists.infradead.org,
+        yuji2.ishikawa@toshiba.co.jp
+Subject: Re: [PATCH 1/4] dt-bindings: gpio: Add bindings for Toshiba Visconti
+ GPIO Controller
+Message-ID: <20201111191838.GA1860931@bogus>
+References: <20201111172553.1369282-1-nobuhiro1.iwamatsu@toshiba.co.jp>
+ <20201111172553.1369282-2-nobuhiro1.iwamatsu@toshiba.co.jp>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201111152523.76254-1-aford173@gmail.com>
+In-Reply-To: <20201111172553.1369282-2-nobuhiro1.iwamatsu@toshiba.co.jp>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 11 Nov 2020 09:25:23 -0600, Adam Ford wrote:
-> Add binding doc for fsl,spba-bus.
+On Thu, 12 Nov 2020 02:25:50 +0900, Nobuhiro Iwamatsu wrote:
+> Add bindings for the Toshiba Visconti GPIO Controller.
 > 
-> Signed-off-by: Adam Ford <aford173@gmail.com>
+> Signed-off-by: Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
 > ---
-> make dt_binding_check showed no errors if I did this right.
-> 
-> V4:  Remove an accidental makefile change
->      Move type:object under additional properties
-> 
-> V3:  Rebase sample from aips-bus example
->      Split off from series adding i.MX8M Nano functions to reduce noise
-> 
-> V2:  Attempted to update yaml from feedback
+>  .../bindings/gpio/toshiba,gpio-visconti.yaml  | 85 +++++++++++++++++++
+>  1 file changed, 85 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/gpio/toshiba,gpio-visconti.yaml
 > 
 
 
@@ -75,11 +73,12 @@ My bot found errors running 'make dt_binding_check' on your patch:
 yamllint warnings/errors:
 
 dtschema/dtc warnings/errors:
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/bus/fsl,spba-bus.example.dt.yaml: bus@30000000: reg: [[805306368, 1048576]] is not of type 'object'
-	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/bus/fsl,spba-bus.yaml
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/gpio/toshiba,gpio-visconti.yaml: properties:gpio-ranges: 'truei' is not of type 'object', 'boolean'
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/gpio/toshiba,gpio-visconti.yaml: ignoring, error in schema: properties: gpio-ranges
+warning: no schema found in file: ./Documentation/devicetree/bindings/gpio/toshiba,gpio-visconti.yaml
 
 
-See https://patchwork.ozlabs.org/patch/1398351
+See https://patchwork.ozlabs.org/patch/1398028
 
 The base for the patch is generally the last rc1. Any dependencies
 should be noted.
