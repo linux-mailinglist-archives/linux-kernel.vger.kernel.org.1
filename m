@@ -2,28 +2,28 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D48BF2AF109
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 13:42:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C34FC2AF10A
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 13:42:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726615AbgKKMmQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 07:42:16 -0500
-Received: from mailgw02.mediatek.com ([210.61.82.184]:58790 "EHLO
+        id S1727041AbgKKMm0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 07:42:26 -0500
+Received: from mailgw02.mediatek.com ([210.61.82.184]:58931 "EHLO
         mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726149AbgKKMmF (ORCPT
+        with ESMTP id S1727029AbgKKMmR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 07:42:05 -0500
-X-UUID: 2d7f767a0b104d5db2fc99f6e2825a85-20201111
-X-UUID: 2d7f767a0b104d5db2fc99f6e2825a85-20201111
-Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw02.mediatek.com
+        Wed, 11 Nov 2020 07:42:17 -0500
+X-UUID: 4ba3ef86842241bda09b2de57d869861-20201111
+X-UUID: 4ba3ef86842241bda09b2de57d869861-20201111
+Received: from mtkcas07.mediatek.inc [(172.21.101.84)] by mailgw02.mediatek.com
         (envelope-from <yong.wu@mediatek.com>)
         (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1996219515; Wed, 11 Nov 2020 20:42:02 +0800
+        with ESMTP id 1843626026; Wed, 11 Nov 2020 20:42:10 +0800
 Received: from mtkcas07.mediatek.inc (172.21.101.84) by
- mtkmbs07n1.mediatek.inc (172.21.101.16) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Wed, 11 Nov 2020 20:42:00 +0800
+ mtkmbs07n2.mediatek.inc (172.21.101.141) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Wed, 11 Nov 2020 20:42:07 +0800
 Received: from localhost.localdomain (10.17.3.153) by mtkcas07.mediatek.inc
  (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Wed, 11 Nov 2020 20:41:59 +0800
+ Transport; Wed, 11 Nov 2020 20:42:07 +0800
 From:   Yong Wu <yong.wu@mediatek.com>
 To:     Joerg Roedel <joro@8bytes.org>,
         Matthias Brugger <matthias.bgg@gmail.com>,
@@ -42,9 +42,9 @@ CC:     Krzysztof Kozlowski <krzk@kernel.org>,
         <anan.sun@mediatek.com>, <chao.hao@mediatek.com>,
         Greg Kroah-Hartman <gregkh@google.com>,
         <kernel-team@android.com>
-Subject: [PATCH v4 23/24] iommu/mediatek: Add mt8192 support
-Date:   Wed, 11 Nov 2020 20:38:37 +0800
-Message-ID: <20201111123838.15682-24-yong.wu@mediatek.com>
+Subject: [PATCH v4 24/24] MAINTAINERS: Add entry for MediaTek IOMMU
+Date:   Wed, 11 Nov 2020 20:38:38 +0800
+Message-ID: <20201111123838.15682-25-yong.wu@mediatek.com>
 X-Mailer: git-send-email 2.18.0
 In-Reply-To: <20201111123838.15682-1-yong.wu@mediatek.com>
 References: <20201111123838.15682-1-yong.wu@mediatek.com>
@@ -55,79 +55,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add mt8192 iommu support.
-
-For multi domain, Add 1M gap for the vdec domain size. That is because
-vdec HW has a end address register which require (start_addr +
-len) rather than (start_addr + len - 1). Take a example, if the start_addr
-is 0xfff00000, size is 0x100000, then the end_address is 0xfff00000 +
-0x100000 = 0x1 0000 0000. but the register only is 32bit. thus HW will get
-the end address is 0. To avoid this issue, I add 1M gap for this.
+I am the author of MediaTek iommu driver, and will to maintain and
+develop it further.
+Add myself to cover these items.
 
 Signed-off-by: Yong Wu <yong.wu@mediatek.com>
 ---
- drivers/iommu/mtk_iommu.c | 22 ++++++++++++++++++++++
- drivers/iommu/mtk_iommu.h |  1 +
- 2 files changed, 23 insertions(+)
+ MAINTAINERS | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
-diff --git a/drivers/iommu/mtk_iommu.c b/drivers/iommu/mtk_iommu.c
-index 355052a98b14..22f01eea0a61 100644
---- a/drivers/iommu/mtk_iommu.c
-+++ b/drivers/iommu/mtk_iommu.c
-@@ -173,6 +173,16 @@ static const struct mtk_iommu_iova_region single_domain[] = {
- 	{.iova_base = 0,		.size = SZ_4G},
- };
+diff --git a/MAINTAINERS b/MAINTAINERS
+index e73636b75f29..462a87ee19c8 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -11056,6 +11056,15 @@ S:	Maintained
+ F:	Documentation/devicetree/bindings/i2c/i2c-mt65xx.txt
+ F:	drivers/i2c/busses/i2c-mt65xx.c
  
-+static const struct mtk_iommu_iova_region mt8192_multi_dom[] = {
-+	{ .iova_base = 0x0,		.size = SZ_4G},		/* disp: 0 ~ 4G */
-+	#if IS_ENABLED(CONFIG_ARCH_DMA_ADDR_T_64BIT)
-+	{ .iova_base = SZ_4G,		.size = SZ_4G - SZ_1M},	/* vdec: 4G ~ 8G gap: 1M */
-+	{ .iova_base = SZ_4G * 2,	.size = SZ_4G - SZ_1M},	/* CAM/MDP: 8G ~ 12G */
-+	{ .iova_base = 0x240000000ULL,	.size = 0x4000000},	/* CCU0 */
-+	{ .iova_base = 0x244000000ULL,	.size = 0x4000000},	/* CCU1 */
-+	#endif
-+};
++MEDIATEK IOMMU DRIVER
++M:	Yong Wu <yong.wu@mediatek.com>
++L:	iommu@lists.linux-foundation.org
++L:	linux-mediatek@lists.infradead.org (moderated for non-subscribers)
++S:	Supported
++F:	Documentation/devicetree/bindings/iommu/mediatek*
++F:	drivers/iommu/mtk-iommu*
++F:	include/dt-bindings/memory/mt*-larb-port.h
 +
- /*
-  * There may be 1 or 2 M4U HWs, But we always expect they are in the same domain
-  * for the performance.
-@@ -1019,12 +1029,24 @@ static const struct mtk_iommu_plat_data mt8183_data = {
- 	.larbid_remap = {{0}, {4}, {5}, {6}, {7}, {2}, {3}, {1}},
- };
- 
-+static const struct mtk_iommu_plat_data mt8192_data = {
-+	.m4u_plat       = M4U_MT8192,
-+	.flags          = HAS_BCLK | HAS_SUB_COMM | OUT_ORDER_WR_EN |
-+			  WR_THROT_EN | IOVA_34_EN,
-+	.inv_sel_reg    = REG_MMU_INV_SEL_GEN2,
-+	.iova_region    = mt8192_multi_dom,
-+	.iova_region_nr = ARRAY_SIZE(mt8192_multi_dom),
-+	.larbid_remap   = {{0}, {1}, {4, 5}, {7}, {2}, {9, 11, 19, 20},
-+			   {0, 14, 16}, {0, 13, 18, 17}},
-+};
-+
- static const struct of_device_id mtk_iommu_of_ids[] = {
- 	{ .compatible = "mediatek,mt2712-m4u", .data = &mt2712_data},
- 	{ .compatible = "mediatek,mt6779-m4u", .data = &mt6779_data},
- 	{ .compatible = "mediatek,mt8167-m4u", .data = &mt8167_data},
- 	{ .compatible = "mediatek,mt8173-m4u", .data = &mt8173_data},
- 	{ .compatible = "mediatek,mt8183-m4u", .data = &mt8183_data},
-+	{ .compatible = "mediatek,mt8192-m4u", .data = &mt8192_data},
- 	{}
- };
- 
-diff --git a/drivers/iommu/mtk_iommu.h b/drivers/iommu/mtk_iommu.h
-index b54862307128..e96b1b8639f4 100644
---- a/drivers/iommu/mtk_iommu.h
-+++ b/drivers/iommu/mtk_iommu.h
-@@ -43,6 +43,7 @@ enum mtk_iommu_plat {
- 	M4U_MT8167,
- 	M4U_MT8173,
- 	M4U_MT8183,
-+	M4U_MT8192,
- };
- 
- struct mtk_iommu_iova_region;
+ MEDIATEK JPEG DRIVER
+ M:	Rick Chang <rick.chang@mediatek.com>
+ M:	Bin Liu <bin.liu@mediatek.com>
 -- 
 2.18.0
 
