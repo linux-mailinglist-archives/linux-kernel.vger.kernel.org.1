@@ -2,115 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D31352AF5F5
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 17:15:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CD492AF5F7
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 17:16:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727100AbgKKQPj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 11:15:39 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49952 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725900AbgKKQPi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 11:15:38 -0500
-Received: from quaco.ghostprotocols.net (unknown [179.97.37.151])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7B4EF20756;
-        Wed, 11 Nov 2020 16:15:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605111337;
-        bh=Cc3XydRNQ/rJhLlFtO+1Ab5/V57B3mncWgHChCGggD8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=GcbwJ3D+ajgN+JZXObYOE19B+m3OGxQK1lqLOAUo5m71I1ZhLzCjQDVi3sA/Nfnij
-         yqLQVVyPvK/FV9ZL38YvNbhzHVBhgoci0d7MRJLNptNTADNQdQ6EWSeD6NndTJW33v
-         jP36J5wCvnsqbt1S3C7oKn4Vd8zry5Jm0X9aZUNE=
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 6268C411D1; Wed, 11 Nov 2020 13:15:35 -0300 (-03)
-Date:   Wed, 11 Nov 2020 13:15:35 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Leo Yan <leo.yan@linaro.org>
-Cc:     Andre Przywara <andre.przywara@arm.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        James Clark <james.clark@arm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Al Grant <Al.Grant@arm.com>, Wei Li <liwei391@huawei.com>,
-        John Garry <john.garry@huawei.com>,
-        Will Deacon <will@kernel.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v8 00/22] perf arm-spe: Refactor decoding & dumping flow
-Message-ID: <20201111161535.GI355344@kernel.org>
-References: <20201111071149.815-1-leo.yan@linaro.org>
- <20201111161051.GH355344@kernel.org>
+        id S1726739AbgKKQQA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 11:16:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51064 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725900AbgKKQP7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Nov 2020 11:15:59 -0500
+Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71666C0613D1
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 08:15:59 -0800 (PST)
+Received: by mail-qk1-x741.google.com with SMTP id 199so2139900qkg.9
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 08:15:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=OzAPueyrhVv88UcsvPpSA8EQHYLLbDVW6Lc+mOLNNXQ=;
+        b=Vjz+TKcmMvDIi4x/ar4uY4t318aSssb/Bi00N/cvybkvZ0bQuWCHSXXWjFNDdo/AW5
+         wf3BRNBsjczZqvgOnjodmE94tf+FxWGAwT9KfeklgDukMqe8wbEiRed+i3KckYdMRj2t
+         w3iMvHe+vGvgBMHY/k9S6RcEG2tO6ZXg/dkdI5iq9oLCrIlwTTSJIzOUnfnylaSffYoM
+         w+J56PLndPh1ZLAcHJqUhlJcSGmxHptSW1hUtZL8piWgcQhc/XwbNQN4OWKonflAXMU8
+         faY+AJ/FjycggZSbb8QJgzEDaJgFuDNTcf5dTKXWOHl9PUbIJAXBen3gXzi8h7goKMwb
+         YefA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=OzAPueyrhVv88UcsvPpSA8EQHYLLbDVW6Lc+mOLNNXQ=;
+        b=fn0ap/LfYwrL6QNAW9hS6l6Yddpf3WJYvHxfF3SuxT8svjQifdp0VQkKprOo+ShUkC
+         KMYn24BroZ7n3Wklo9IXV3CulFdO0fHHbv18/TuQURIfGFiO7I1mZvmdonF2CPBsUjN7
+         7B7ethkWRpYTWjleLlFb2L7IkEPFt1Va894ae4WGmGiCvRDocEHNUVZjIyQS5kN57wX5
+         7uwbTDhDqwZVSx5AmVqNBF/tmAkNhVItOuXCJKN+OcIdhmSenDIol8z9JwQzAIeh2I1r
+         DDPM0KC4JgKXnnR3RBUVnUi9k0U3Dy0I64Eu7e7seL6M3OWQraq/7/RbwcygAbXbWKgI
+         +1ag==
+X-Gm-Message-State: AOAM530H2K0/INLom43O4VYYYI3wBw5K06svIMXUvSyxJuHhaNS922BU
+        KhyKW8AqQzX6wXUErgh+wSW/ElBMxjjzEc/Bg0O9ig==
+X-Google-Smtp-Source: ABdhPJziyGpIKAWU3FNOuQHdFdj+U2aB2YZwjumAvSOhwce7yiugHZwFMB9uqvmIVjmm8tY3TwPsTYRlCHUQXCJsmcs=
+X-Received: by 2002:a37:b545:: with SMTP id e66mr8798166qkf.392.1605111358447;
+ Wed, 11 Nov 2020 08:15:58 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201111161051.GH355344@kernel.org>
-X-Url:  http://acmel.wordpress.com
+References: <cover.1605046192.git.andreyknvl@google.com> <096906ff06c532bbd0e9bda53bcba2ba0a1da873.1605046192.git.andreyknvl@google.com>
+In-Reply-To: <096906ff06c532bbd0e9bda53bcba2ba0a1da873.1605046192.git.andreyknvl@google.com>
+From:   Alexander Potapenko <glider@google.com>
+Date:   Wed, 11 Nov 2020 17:15:46 +0100
+Message-ID: <CAG_fn=U5bs8U8uw1765wDXuWg+0uGWkxUw4THjmW5cgVv3rrVw@mail.gmail.com>
+Subject: Re: [PATCH v9 37/44] kasan, x86, s390: update undef CONFIG_KASAN
+To:     Andrey Konovalov <andreyknvl@google.com>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will.deacon@arm.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Marco Elver <elver@google.com>,
+        Evgenii Stepanov <eugenis@google.com>,
+        Branislav Rankov <Branislav.Rankov@arm.com>,
+        Kevin Brodsky <kevin.brodsky@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Vasily Gorbik <gor@linux.ibm.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Wed, Nov 11, 2020 at 01:10:51PM -0300, Arnaldo Carvalho de Melo escreveu:
-> Em Wed, Nov 11, 2020 at 03:11:27PM +0800, Leo Yan escreveu:
-> > This is patch set v8 for refactoring Arm SPE trace decoding and dumping.
-> > 
-> > This version addresses Andre's comment to pass parameter '&buf_len' at
-> > the last call arm_spe_pkt_snprintf() in the function arm_spe_pkt_desc().
-> > 
-> > This patch set is cleanly applied on the top of perf/core branch
-> > with commit 644bf4b0f7ac ("perf jevents: Add test for arch std events").
-> > 
-> > I retested this patch set on Hisilicon D06 platform with commands
-> > "perf report -D" and "perf script", compared the decoding results
-> > between with this patch set and without this patch set, "diff" tool
-> > shows the result as expected.
-> 
-> With the patches I applied I'm getting:
-> 
-> util/arm-spe-decoder/arm-spe-pkt-decoder.c: In function 'arm_spe_pkt_desc':
-> util/arm-spe-decoder/arm-spe-pkt-decoder.c:410:3: error: left shift count >= width of type [-Werror]
->    case 1: ns = !!(packet->payload & NS_FLAG);
->    ^
-> util/arm-spe-decoder/arm-spe-pkt-decoder.c:411:4: error: left shift count >= width of type [-Werror]
->     el = (packet->payload & EL_FLAG) >> 61;
->     ^
-> util/arm-spe-decoder/arm-spe-pkt-decoder.c:411:4: error: left shift count >= width of type [-Werror]
-> util/arm-spe-decoder/arm-spe-pkt-decoder.c:416:3: error: left shift count >= width of type [-Werror]
->    case 3: ns = !!(packet->payload & NS_FLAG);
->    ^
->   CC       /tmp/build/perf/util/arm-spe-decoder/arm-spe-decoder.o
->  
-> 
-> On:
-> 
->   16    11.70 android-ndk:r12b-arm          : FAIL arm-linux-androideabi-gcc (GCC) 4.9.x 20150123 (prerelease)
->   17    11.32 android-ndk:r15c-arm          : FAIL arm-linux-androideabi-gcc (GCC) 4.9.x 20150123 (prerelease)
-> 
-> That were building ok before, builds still under way, perhaps its just
-> on these old systems...
+On Tue, Nov 10, 2020 at 11:12 PM Andrey Konovalov <andreyknvl@google.com> w=
+rote:
+>
+> With the intoduction of hardware tag-based KASAN some kernel checks of
+> this kind:
+>
+>   ifdef CONFIG_KASAN
+>
+> will be updated to:
+>
+>   if defined(CONFIG_KASAN_GENERIC) || defined(CONFIG_KASAN_SW_TAGS)
+>
+> x86 and s390 use a trick to #undef CONFIG_KASAN for some of the code
+> that isn't linked with KASAN runtime and shouldn't have any KASAN
+> annotations.
+>
+> Also #undef CONFIG_KASAN_GENERIC with CONFIG_KASAN.
+>
+> Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
+> Signed-off-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
+> Reviewed-by: Marco Elver <elver@google.com>
+> Acked-by: Vasily Gorbik <gor@linux.ibm.com>
+Reviewed-by: Alexander Potapenko <glider@google.com>
 
-[acme@five perf]$ git bisect good
-cc6fa07fb1458cca3741919774eb050976471000 is the first bad commit
-commit cc6fa07fb1458cca3741919774eb050976471000
-Author: Leo Yan <leo.yan@linaro.org>
-Date:   Wed Nov 11 15:11:28 2020 +0800
+> ---
+> Change-Id: I2a622db0cb86a8feb60c30d8cb09190075be2a90
+> ---
+>  arch/s390/boot/string.c         | 1 +
+>  arch/x86/boot/compressed/misc.h | 1 +
+>  2 files changed, 2 insertions(+)
+>
+> diff --git a/arch/s390/boot/string.c b/arch/s390/boot/string.c
+> index b11e8108773a..faccb33b462c 100644
+> --- a/arch/s390/boot/string.c
+> +++ b/arch/s390/boot/string.c
+> @@ -3,6 +3,7 @@
+>  #include <linux/kernel.h>
+>  #include <linux/errno.h>
+>  #undef CONFIG_KASAN
+> +#undef CONFIG_KASAN_GENERIC
+>  #include "../lib/string.c"
+>
+>  int strncmp(const char *cs, const char *ct, size_t count)
+> diff --git a/arch/x86/boot/compressed/misc.h b/arch/x86/boot/compressed/m=
+isc.h
+> index d9a631c5973c..901ea5ebec22 100644
+> --- a/arch/x86/boot/compressed/misc.h
+> +++ b/arch/x86/boot/compressed/misc.h
+> @@ -12,6 +12,7 @@
+>  #undef CONFIG_PARAVIRT_XXL
+>  #undef CONFIG_PARAVIRT_SPINLOCKS
+>  #undef CONFIG_KASAN
+> +#undef CONFIG_KASAN_GENERIC
+>
+>  /* cpu_feature_enabled() cannot be used this early */
+>  #define USE_EARLY_PGTABLE_L5
+> --
+> 2.29.2.222.g5d2a92d10f8-goog
+>
 
-    perf arm-spe: Include bitops.h for BIT() macro
 
-    Include header linux/bitops.h, directly use its BIT() macro and remove
-    the self defined macros.
+--=20
+Alexander Potapenko
+Software Engineer
 
-    Signed-off-by: Leo Yan <leo.yan@linaro.org>
-    Reviewed-by: Andre Przywara <andre.przywara@arm.com>
-    Link: https://lore.kernel.org/r/20201111071149.815-2-leo.yan@linaro.org
-    Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+Google Germany GmbH
+Erika-Mann-Stra=C3=9Fe, 33
+80636 M=C3=BCnchen
 
- tools/perf/util/arm-spe-decoder/arm-spe-decoder.c     | 5 +----
- tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c | 3 +--
- 2 files changed, 2 insertions(+), 6 deletions(-)
-[acme@five perf]$
+Gesch=C3=A4ftsf=C3=BChrer: Paul Manicle, Halimah DeLaine Prado
+Registergericht und -nummer: Hamburg, HRB 86891
+Sitz der Gesellschaft: Hamburg
