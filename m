@@ -2,157 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5678F2AF40E
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 15:50:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DC4E2AF413
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 15:52:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727083AbgKKOu0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 09:50:26 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53934 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725939AbgKKOuZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 09:50:25 -0500
-Received: from mail-ot1-f44.google.com (mail-ot1-f44.google.com [209.85.210.44])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BEC5C2084C
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 14:50:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605106224;
-        bh=W99cUaT/T2r9/lNVdUmyP/STTIt8zjAs4F589k8vKow=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=h0/bqlI+7HWUic+NvFlTDIUrpftVZmIfO9i/F9/hwTHwV13FK+BpHRq+xs9aqusXM
-         mJVDGLJZEJPQ96LK5w4wdm82YgJ8aMADimRUEP7HTufhiVrnzK0DYX5Xkb5/USYOdm
-         I36QprLA77LPKAqx52KiRTqEcfDBrcyZdrRmYGdU=
-Received: by mail-ot1-f44.google.com with SMTP id k3so2326771otp.12
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 06:50:24 -0800 (PST)
-X-Gm-Message-State: AOAM532hQvwZajW4DVTf5A18a6DdmKNzfDkty5g1Javz1jgMhP3HZMR9
-        VnF8cT9RowXuFVbGNbug2zJ/5OABqJh3zcrAXA==
-X-Google-Smtp-Source: ABdhPJxCN1k+W/NYHNniZFwbMqv8c55ZUGUAQz/PR2HjSXUCv29qqtfGg3zGKzQCJSDRaOfKxx2UBSYgVwRSf4JHUTA=
-X-Received: by 2002:a05:6830:2259:: with SMTP id t25mr18389347otd.192.1605106223862;
- Wed, 11 Nov 2020 06:50:23 -0800 (PST)
+        id S1727105AbgKKOwq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 09:52:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38068 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725939AbgKKOwq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Nov 2020 09:52:46 -0500
+Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F567C0613D1;
+        Wed, 11 Nov 2020 06:52:45 -0800 (PST)
+Received: by mail-lj1-x242.google.com with SMTP id x9so2388462ljc.7;
+        Wed, 11 Nov 2020 06:52:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=iqXzG4nSzYlFe8ERET+8xQRhF1wCxB96YJaw1rg7Nak=;
+        b=GFqiS60DyrCfM1v2COjz1L8aPOKbkFCZMxXXwNmGs56gUSPDHLYHHVxCG1WOcOA0r/
+         zJ67aEtqoGmaNU8183/2qa2hft+O6C9tJRgq4idjTDzKPAsKerSkA8Lfc+xiRpZKV4IM
+         5FoPU9NIceR+zbrHauVmDhemtQyDJRbXh/26ffgNANVvLFgCbF1bMm5xIsyzNYXGvuz1
+         Az0bZzh0IfppnuDQo27Sui6kXfskC179909Vlpf36CqfI6spQ1F9megy1EihZwEd89Ze
+         c/BO2w/VQcWj44skVBFQ16U8Z+CB0+S8vsjBlPIbZBaIXPJC4IjzKP5yUBTQV7fISN+V
+         +pPA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=iqXzG4nSzYlFe8ERET+8xQRhF1wCxB96YJaw1rg7Nak=;
+        b=qMTVGsUb+0G10vL7Rm5CsWpJpmEkJp2TYdkIuBUQx0MRHXEHvo/em7eGyICvtKpoP/
+         g2J4449aAPy68ZvgGCzvWmDnRbnYvmL8aU4ZF8VfQ4LSixJ+PeXZHREVpcbElSi97w2e
+         o1VRjRukfQNNUmhFOC5P0wpeQwTobjCqGwPUVZ4iJNof1dkK4B6AJfVEKhGdx0p0r3yt
+         qancldqZV68tlOyuL0gGOTH9YeNMj6Is971TsxeryouuyE5v/v7QvKmdUZqXly4F7+Jz
+         KqbXeW3AXMSRHSi16VfM1bK+PSyuXlKS+CPjNqQXBWolarxATDrrnPYxpmps5NU1YeyS
+         oRSw==
+X-Gm-Message-State: AOAM532DC2iqrPmUsHstFcGFVX9keTt1oRHNNsu/qIoAWml1xLHt0TE7
+        FX4xVqvzppM4X40Wx5HmNKM=
+X-Google-Smtp-Source: ABdhPJz7uS4/+RqawyJ4T9Xx5mM/wUT99cm10QHAEiN6poWT/wUAcN5U8iRqye6ZakFOdBzTtYei1Q==
+X-Received: by 2002:a05:651c:95:: with SMTP id 21mr9979022ljq.307.1605106363632;
+        Wed, 11 Nov 2020 06:52:43 -0800 (PST)
+Received: from mobilestation ([95.79.141.114])
+        by smtp.gmail.com with ESMTPSA id k3sm238958lfd.245.2020.11.11.06.52.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 11 Nov 2020 06:52:43 -0800 (PST)
+Date:   Wed, 11 Nov 2020 17:52:40 +0300
+From:   Serge Semin <fancer.lancer@gmail.com>
+To:     Alexander Sverdlin <alexander.sverdlin@nokia.com>
+Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        linux-mips@vger.kernel.org, Paul Burton <paulburton@kernel.org>,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Subject: Re: [PATCH] MIPS: reserve the memblock right after the kernel
+Message-ID: <20201111145240.lok3q5g3pgcvknqr@mobilestation>
+References: <20201106141001.57637-1-alexander.sverdlin@nokia.com>
+ <20201107094028.GA4918@alpha.franken.de>
+ <1d6a424e-944e-7f21-1f30-989fb61018a8@nokia.com>
+ <20201110095503.GA10357@alpha.franken.de>
+ <c435b3df-4e82-7c10-366a-5a3d1543c73f@nokia.com>
 MIME-Version: 1.0
-References: <20201014110527.GA1349644@krava> <CAL_Jsq+5_uzAdn+rq-rWVACeaMMd4q+ntxxOd5JisOiBzwvDbw@mail.gmail.com>
- <20201019201541.GN1461394@krava> <CAL_JsqKpbdvxn7w1PSWrE7fLP+NtwwxtTjr02yxSkjy00yN9Xw@mail.gmail.com>
- <20201020153527.GD2113901@krava> <CAL_JsqKUK3ajL63dAs4KSPJ2VOJa9HKeiZ0AWNPhe=uvFE8zZA@mail.gmail.com>
- <20201021112430.GE2189784@krava> <CAL_JsqJd1W_n1vGYmUP+Azcv__pCT+UU+VLPqLy2aJDwajZzCg@mail.gmail.com>
- <20201105224121.GA4112111@krava> <CAL_JsqJzeCebq4VP+xBtfh=fbomvaJoVMp35AQQDGTYD-fRWgw@mail.gmail.com>
- <20201111120056.GJ387652@krava>
-In-Reply-To: <20201111120056.GJ387652@krava>
-From:   Rob Herring <robh@kernel.org>
-Date:   Wed, 11 Nov 2020 08:50:12 -0600
-X-Gmail-Original-Message-ID: <CAL_JsqLw17nN9BKw3dberg-nE8vb70vLKtrtEGemej75CKgs6w@mail.gmail.com>
-Message-ID: <CAL_JsqLw17nN9BKw3dberg-nE8vb70vLKtrtEGemej75CKgs6w@mail.gmail.com>
-Subject: Re: [PATCH v4 4/9] libperf: Add libperf_evsel__mmap()
-To:     Jiri Olsa <jolsa@redhat.com>
-Cc:     Will Deacon <will@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Raphael Gault <raphael.gault@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Ian Rogers <irogers@google.com>,
-        Honnappa Nagarahalli <honnappa.nagarahalli@arm.com>,
-        Itaru Kitayama <itaru.kitayama@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <c435b3df-4e82-7c10-366a-5a3d1543c73f@nokia.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 11, 2020 at 6:01 AM Jiri Olsa <jolsa@redhat.com> wrote:
->
-> On Fri, Nov 06, 2020 at 03:56:11PM -0600, Rob Herring wrote:
-> > On Thu, Nov 5, 2020 at 4:41 PM Jiri Olsa <jolsa@redhat.com> wrote:
-> > >
-> > > On Thu, Nov 05, 2020 at 10:19:24AM -0600, Rob Herring wrote:
-> > >
-> > > SNIP
-> > >
-> > > > > > >
-> > > > > > > that maps page for each event, then perf_evsel__read
-> > > > > > > could go through the fast code, no?
-> > > > > >
-> > > > > > No, because we're not self-monitoring (pid == 0 and cpu == -1). With
-> > > > > > the following change:
-> > > > > >
-> > > > > > diff --git a/tools/lib/perf/tests/test-evsel.c
-> > > > > > b/tools/lib/perf/tests/test-evsel.c
-> > > > > > index eeca8203d73d..1fca9c121f7c 100644
-> > > > > > --- a/tools/lib/perf/tests/test-evsel.c
-> > > > > > +++ b/tools/lib/perf/tests/test-evsel.c
-> > > > > > @@ -17,6 +17,7 @@ static int test_stat_cpu(void)
-> > > > > >  {
-> > > > > >         struct perf_cpu_map *cpus;
-> > > > > >         struct perf_evsel *evsel;
-> > > > > > +       struct perf_event_mmap_page *pc;
-> > > > > >         struct perf_event_attr attr = {
-> > > > > >                 .type   = PERF_TYPE_SOFTWARE,
-> > > > > >                 .config = PERF_COUNT_SW_CPU_CLOCK,
-> > > > > > @@ -32,6 +33,15 @@ static int test_stat_cpu(void)
-> > > > > >         err = perf_evsel__open(evsel, cpus, NULL);
-> > > > > >         __T("failed to open evsel", err == 0);
-> > > > > >
-> > > > > > +       pc = perf_evsel__mmap(evsel, 0);
-> > > > > > +       __T("failed to mmap evsel", pc);
-> > > > > > +
-> > > > > > +#if defined(__i386__) || defined(__x86_64__) || defined(__aarch64__)
-> > > > > > +       __T("userspace counter access not supported", pc->cap_user_rdpmc);
-> > > > > > +       __T("userspace counter access not enabled", pc->index);
-> > > > > > +       __T("userspace counter width not set", pc->pmc_width >= 32);
-> > > > > > +#endif
-> > > > >
-> > > > > I'll need to check, I'm surprised this would depend on the way
-> > > > > you open the event
-> > > >
-> > > > Any more thoughts on this?
-> > >
-> > > sry I got stuck with other stuff.. I tried your change
-> > > and pc->cap_user_rdpmc is 0 because the test creates
-> > > software event, which does not support that
-> >
-> > Sigh, yes, of course.
-> >
-> > > when I change that to:
-> > >
-> > >         .type   = PERF_TYPE_HARDWARE,
-> > >         .config = PERF_COUNT_HW_CPU_CYCLES,
-> > >
-> > > I don't see any of those warning you added
-> >
-> > So I've now implemented the per fd mmap. It seems to run and get some
-> > data, but for the above case the counts don't look right.
-> >
-> > cpu0: count = 0x10883, ena = 0xbf42, run = 0xbf42
-> > cpu1: count = 0x1bc65, ena = 0xa278, run = 0xa278
-> > cpu2: count = 0x1fab2, ena = 0x91ea, run = 0x91ea
-> > cpu3: count = 0x23d61, ena = 0x81ac, run = 0x81ac
-> > cpu4: count = 0x2936a, ena = 0x7149, run = 0x7149
-> > cpu5: count = 0x2cd4e, ena = 0x634f, run = 0x634f
-> > cpu6: count = 0x3139f, ena = 0x53e7, run = 0x53e7
-> > cpu7: count = 0x35350, ena = 0x4690, run = 0x4690
-> >
-> > For comparison, this is what I get using the slow path read():
-> > cpu0: count = 0x1c40, ena = 0x188b5, run = 0x188b5
-> > cpu1: count = 0x18e0, ena = 0x1b8f4, run = 0x1b8f4
-> > cpu2: count = 0x745e, ena = 0x1ab9e, run = 0x1ab9e
-> > cpu3: count = 0x2416, ena = 0x1a280, run = 0x1a280
-> > cpu4: count = 0x19c7, ena = 0x19b00, run = 0x19b00
-> > cpu5: count = 0x1737, ena = 0x19262, run = 0x19262
-> > cpu6: count = 0x11d0e, ena = 0x18944, run = 0x18944
-> > cpu7: count = 0x20dbe, ena = 0x181f4, run = 0x181f4
->
-> hum, could you please send/push changes with that test?
-> I can try it and check
+Hello Alexander
 
-Here you go:
+On Tue, Nov 10, 2020 at 11:29:50AM +0100, Alexander Sverdlin wrote:
+> Hello Thomas,
+> 
+> On 10/11/2020 10:55, Thomas Bogendoerfer wrote:
+> >>>> Linux doesn't own the memory immediately after the kernel image. On Octeon
+> >>>> bootloader places a shared structure right close after the kernel _end,
+> >>>> refer to "struct cvmx_bootinfo *octeon_bootinfo" in cavium-octeon/setup.c.
+> >>>>
+> >>>> If check_kernel_sections_mem() rounds the PFNs up, first memblock_alloc()
+> >>>> inside early_init_dt_alloc_memory_arch() <= device_tree_init() returns
+> >>>> memory block overlapping with the above octeon_bootinfo structure, which
+> >>>> is being overwritten afterwards.
+> >>> as this special for Octeon how about added the memblock_reserve
+> >>> in octen specific code ?
+> >> while the shared structure which is being corrupted is indeed Octeon-specific,
+> >> the wrong assumption that the memory right after the kernel can be allocated by memblock
+> >> allocator and re-used somewhere in Linux is in MIPS-generic check_kernel_sections_mem().
+> > ok, I see your point. IMHO this whole check_kernel_sections_mem() should
+> > be removed. IMHO memory adding should only be done my memory detection code.
+> > 
+> > Could you send a patch, which removes check_kernel_section_mem completly ?
+> 
 
-git://git.kernel.org/pub/scm/linux/kernel/git/robh/linux.git user-perf-event-v5
+> this will expose one issue:
+> platforms usually do it in a sane way, like it was done last 15 years, namely
+> add kernel image without non-complete pages on the boundaries.
+> This will lead to the situation, that request_resource() will fail at least
+> for .bss section of the kernel and it will not be properly displayed under
+> /proc/iomem (and probably same problem will appear, which initially motivated
+> the creation of check_kernel_section_mem()).
 
-Just comment out the mmap parts to get original behavior.
+Are you saying that some old platforms rely on the
+check_kernel_section_mem() method adding the memory occupied by the
+kernel to the system? If so, do you have an example of such?
 
-Rob
+Personally I also had my hand itching to remove that method years ago,
+but I didn't dare to do so for the same reason in mind... On the other
+hand if we detected all the platforms that needed that method, we could
+have moved it to their prom_init() or something and got rid of that
+atavism for good.
+
+> 
+> As I understood, the issue is that memblock API operates internally on the
+> page granularity (at least there are many ROUND_DOWN() inside for the size
+> or upper boundary),
+
+Hm, I don't think so. Memblock doesn't work with the pages granularity,
+but with memory ranges. round_down()/round_up() are used to find a memory
+range with proper alignment. (See __memblock_find_range_top_{up,down}()
+method implementation.)
+
+Memblock allocates a memory region with exact size and alignment as
+requested. That's the beauty of that allocator and one of the reasons
+why the kernel platforms have been painfully converted to using it instead
+of the old bootmem allocator. BTW the later one has indeed operated
+with page granularity.
+
+Getting back to the memblock allocator. It works with pages only when
+the kernel comes to starting the buddy allocator. So the kernel
+invokes memblock_free_all(), which eventually gets to calling
+free_low_memory_core_early()->__free_memory_core(). The later method indeed
+sets the memory pages free, but as you can see it's done with correct
+aligning PFN_UP(phys_start)/PFN_DOWN(end).
+
+> so for request_resource() to success one has to claim
+> the rest of the .bss last page. And with current memblock API
+> memblock_reserve() must appear somewhere, being this ARCH or platform code.
+
+After a short glance at the request_resource() code I didn't manage to
+find a reason why the method would fail to request a page-unaligned
+region. AFAICS it will fail only if the memory occupied by the kernel
+hasn't been registered as system memory. The later case may happen
+only for the systems which rely on the check_kernel_section_mem()
+method being called in the generic arch_mem_init(). Of course we
+shouldn't blindly have it removed, but instead move it to the
+platforms, which have been unfortunate enough not to add the kernel
+memory to the system memory pool.
+
+So IMHO what could be the best conclusion in the framework of this patch:
+1) As Thomas said any platform-specific reservation should be done in the
+platform-specific code. That means if octeon needs some memory behind
+the kernel being reserved, then it should be done for example in
+prom_init().
+2) The check_kernel_sections_mem() method can be removed. But it
+should be done carefully. We at least need to try to find all the
+platforms, which rely on its functionality.
+
+-Sergey
+
+> 
+> -- 
+> Best regards,
+> Alexander Sverdlin.
