@@ -2,98 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A3652AF675
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 17:30:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F08EE2AF6A7
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 17:37:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727732AbgKKQak (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 11:30:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53340 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727682AbgKKQa1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 11:30:27 -0500
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFE44C0613D4;
-        Wed, 11 Nov 2020 08:30:26 -0800 (PST)
-Received: by mail-wr1-x441.google.com with SMTP id 33so3115162wrl.7;
-        Wed, 11 Nov 2020 08:30:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=R48LKl5uD2WOhx9sVKsENNgBh5qFklRsFvrBh/MY3WI=;
-        b=uQw8HWW5Lg8VPRI5TX4As3orIqYvpjuJD8ETj35RV9rTM2Z4/aIls/S6qXgcXoy4+b
-         k09LO7xzwSavojAbYia+az0zqhTZiHu52M098b3oPXcgOvVSIKueuFQmXvQ/SdZC6LQl
-         m3NK7N76KgAtLSPcijj2fFklWcoYll907qMEtRC8Ufa7T6jRzca42Hd5o7/ja+O6Excw
-         yrau8pKrCORJ/NSwO94+3NRb0S1XxDbUDdoytCn/XOcQ+SpYzndyqkK3eAuPabUSJJOr
-         6A74IPFCorMRVYuMH0zpj/esrfOOhXB1djuA8xMqYinH18ywlyW2ZOMidYSCPE8oOin+
-         laDw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=R48LKl5uD2WOhx9sVKsENNgBh5qFklRsFvrBh/MY3WI=;
-        b=fy8HEA6kVIz5W48TqlM1g1hOGL5uu4u6XAdKv/qh+qkDDpyfKk7r+4vNt1D2j6f+1I
-         lOClnKL5ZjLpBsbKj5LnO0AH/o0SYIEh2DRRQQDEDCCMigSelwVyEqpt0+/6Wi8tPQy5
-         ohmKhravKMt18Oyf4QULcXe/1SS8KsTuA+FzAKcLEcdMCrJ+enyf3KcNwYJua106Xre1
-         7nVWsV1ID04k0WXEeVvKku2KNS8Rp46R3FYqZBOJF6wyDx17BSw8KPIC7wOrAe+KQjOl
-         xOnSTOESA8X2lM/aFDPAZyqXMMXBSBQncg97OuPaCoSai3oYChmreTfKYHdMdCd4mnHn
-         DrWA==
-X-Gm-Message-State: AOAM531AgwILBWE1vVzoAsm0c7/wJBTk5u/18z0GObE0tafcfeqBMNe1
-        2HuY/Bc5Uqkt/mB+ylyzNlI8IEOph9bKSqGb
-X-Google-Smtp-Source: ABdhPJw4OZZ5bKoc+TqQ7yNk7FmYt2R4fov1i9MSbikC6ofPjSY82yH4MDbF76GaqSr1KHQC8rvluA==
-X-Received: by 2002:adf:f846:: with SMTP id d6mr14020338wrq.128.1605112225740;
-        Wed, 11 Nov 2020 08:30:25 -0800 (PST)
-Received: from localhost.localdomain (245.red-79-158-78.dynamicip.rima-tde.net. [79.158.78.245])
-        by smtp.gmail.com with ESMTPSA id w186sm3196753wmb.26.2020.11.11.08.30.24
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 11 Nov 2020 08:30:25 -0800 (PST)
-From:   Sergio Paracuellos <sergio.paracuellos@gmail.com>
-To:     mturquette@baylibre.com
-Cc:     sboyd@kernel.org, robh+dt@kernel.org, tsbogend@alpha.franken.de,
-        john@phrozen.org, gregkh@linuxfoundation.org, gch981213@gmail.com,
-        hackpascal@gmail.com, jiaxun.yang@flygoat.com,
-        linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org,
-        devel@driverdev.osuosl.org
-Subject: [PATCH 7/7] MAINTAINERS: add MT7621 CLOCK maintainer
-Date:   Wed, 11 Nov 2020 17:30:13 +0100
-Message-Id: <20201111163013.29412-8-sergio.paracuellos@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20201111163013.29412-1-sergio.paracuellos@gmail.com>
-References: <20201111163013.29412-1-sergio.paracuellos@gmail.com>
+        id S1727284AbgKKQhV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 11:37:21 -0500
+Received: from m42-4.mailgun.net ([69.72.42.4]:24591 "EHLO m42-4.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725979AbgKKQhV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Nov 2020 11:37:21 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1605112640; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=0MTZNm0gtvDrGwPQUJrq8djAu9H1QIhfhQ6Ri7dD6yI=; b=ssZwUWdYUBIBmxFW1StrxUvfWpXr7yUjrpCHIYrczu+fSsxug3OSlhC2GFTy0a+lfzoBill1
+ xUD/AnATZpikvHxAmtkJpwK0C+EqTo0hJB2TfYf9KUH8kCFCdyCU2MeZ4loxeahVd9QVqdFw
+ xSm7dJ3NPYwBl/+QFEBgJofuRLs=
+X-Mailgun-Sending-Ip: 69.72.42.4
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n07.prod.us-east-1.postgun.com with SMTP id
+ 5fac0fe71b0f99048360dbf2 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 11 Nov 2020 16:22:48
+ GMT
+Sender: vbadigan=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 2402AC43385; Wed, 11 Nov 2020 16:22:48 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.0
+Received: from [192.168.0.105] (unknown [49.205.245.25])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: vbadigan)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 34773C433C6;
+        Wed, 11 Nov 2020 16:22:43 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 34773C433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=vbadigan@codeaurora.org
+Subject: Re: [PATCH] mmc: block: Prevent new req entering queue while freeing
+ up the queue
+To:     Ulf Hansson <ulf.hansson@linaro.org>
+Cc:     Adrian Hunter <adrian.hunter@intel.com>,
+        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Jens Axboe <axboe@kernel.dk>,
+        Baolin Wang <baolin.wang@linaro.org>,
+        Chaotian Jing <chaotian.jing@mediatek.com>,
+        Peng Hao <richard.peng@oppo.com>
+References: <1603883984-24333-1-git-send-email-vbadigan@codeaurora.org>
+ <CAPDyKFq0zikjeps36=Mq-Y9MuyiOHZyGVELV+Eh56evu8b8D2A@mail.gmail.com>
+From:   Veerabhadrarao Badiganti <vbadigan@codeaurora.org>
+Message-ID: <4f27eecd-3d10-796c-6b6c-594770502037@codeaurora.org>
+Date:   Wed, 11 Nov 2020 21:52:35 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAPDyKFq0zikjeps36=Mq-Y9MuyiOHZyGVELV+Eh56evu8b8D2A@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Adding myself as maintainer for mt7621 clock driver.
 
-Signed-off-by: Sergio Paracuellos <sergio.paracuellos@gmail.com>
----
- MAINTAINERS | 8 ++++++++
- 1 file changed, 8 insertions(+)
+On 11/3/2020 8:55 PM, Ulf Hansson wrote:
+> On Wed, 28 Oct 2020 at 12:20, Veerabhadrarao Badiganti
+> <vbadigan@codeaurora.org> wrote:
+>> The commit bbdc74dc19e0 ("mmc: block: Prevent new req entering queue
+>> after its cleanup") has introduced this change but it got moved after
+>> del_gendisk() with commit 57678e5a3d51 ("mmc: block: Delete gendisk
+>> before cleaning up the request queue").
+> This isn't the first time we have spotted errors in this path. Seems
+> like a difficult path to get correct. :-)
+>
+>> It is blocking reboot with below Call stack().
+>>
+>> INFO: task reboot:3086 blocked for more than 122 seconds.
+>>       __schedule
+>>       schedule
+>>       schedule_timeout
+>>       io_schedule_timeout
+>>       do_wait_for_common
+>>       wait_for_completion_io
+>>       submit_bio_wait
+>>       blkdev_issue_flush
+>>       ext4_sync_fs
+>>       __sync_filesystem
+>>       sync_filesystem
+>>       fsync_bdev
+>>       invalidate_partition
+>>       del_gendisk
+>>       mmc_blk_remove_req
+>>       mmc_blk_remove
+>>       mmc_bus_remove
+>>       device_release_driver_internal
+>>       device_release_driver
+>>       bus_remove_device
+>>       device_del
+>>       mmc_remove_card
+>>       mmc_remove
+>>       mmc_stop_host
+>>       mmc_remove_host
+>>       sdhci_remove_host
+>>       sdhci_msm_remove
+> Why do you call sdhci_msm_remove() from the shutdown callback? What
+> specific operations do you need to run in the shutdown path for sdhci
+> msm?
+I was suggested to add shutdown callback by memory team to gracefully 
+de-register with smmu driver
+during reboot/shutdown. So tried adding it. Since SMMU team.
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index f1f088a29bc2..c34c12d62355 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -11142,6 +11142,14 @@ L:	linux-wireless@vger.kernel.org
- S:	Maintained
- F:	drivers/net/wireless/mediatek/mt7601u/
- 
-+MEDIATEK MT7621 CLOCK DRIVER
-+M:	Sergio Paracuellos <sergio.paracuellos@gmail.com>
-+S:	Maintained
-+F:	Documentation/devicetree/bindings/clock/mediatek,mt7621-clk.yaml
-+F:	Documentation/devicetree/bindings/clock/mediatek,mt7621-pll.yaml
-+F:	arch/mips/ralink/mt7621.c
-+F:	drivers/clk/ralink/clk-mt7621.c
-+
- MEDIATEK MT7621/28/88 I2C DRIVER
- M:	Stefan Roese <sr@denx.de>
- L:	linux-i2c@vger.kernel.org
--- 
-2.25.1
-
+I just need to ensure that controller is not active anymore and not 
+accessing memory related to any
+requests and de-register with smmu driver during shutdown.
+>
+> The important part should be to do a graceful shutdown of the card
+> (and the block device) - is there anything else?
+>
+> Or you are just using the shutdown callback as a simple way to trigger
+> this problem? Could unbinding the driver trigger the same issue?
+>
+>>       sdhci_msm_shutdown
+>>       platform_drv_shutdown
+>>       device_shutdown
+>>       kernel_restart_prepare
+>>       kernel_restart
+>>
+>> So bringing this change back.
+>>
+>> Signed-off-by: Veerabhadrarao Badiganti <vbadigan@codeaurora.org>
+>> ---
+>>
+>> I'm observing this issue 100% of the time with shutdown callback added to sdhci-msm driver.
+>> I'm trying on 5.4 kernel with ChromeOS.
+>>
+>> Please let me know if this can be fixed in a better way.
+> I don't know yet, but I will have a closer look. Let's also see if
+> Adrian has some thoughts.
+>
+> Kind regards
+> Uffe
+>
+>> ---
+>>
+>>   drivers/mmc/core/block.c | 1 +
+>>   1 file changed, 1 insertion(+)
+>>
+>> diff --git a/drivers/mmc/core/block.c b/drivers/mmc/core/block.c
+>> index 8d3df0be0355..76dbb2b8a13b 100644
+>> --- a/drivers/mmc/core/block.c
+>> +++ b/drivers/mmc/core/block.c
+>> @@ -2627,6 +2627,7 @@ static void mmc_blk_remove_req(struct mmc_blk_data *md)
+>>                   * from being accepted.
+>>                   */
+>>                  card = md->queue.card;
+>> +               blk_set_queue_dying(md->queue.queue);
+>>                  if (md->disk->flags & GENHD_FL_UP) {
+>>                          device_remove_file(disk_to_dev(md->disk), &md->force_ro);
+>>                          if ((md->area_type & MMC_BLK_DATA_AREA_BOOT) &&
+>> --
+>> Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc., is a member of Code Aurora Forum, a Linux Foundation Collaborative Project
+>>
