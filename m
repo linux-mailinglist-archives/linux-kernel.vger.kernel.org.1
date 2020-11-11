@@ -2,199 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD9B82AF896
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 19:53:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A28962AF897
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 19:53:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727560AbgKKSxf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 13:53:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47294 "EHLO
+        id S1727647AbgKKSxn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 13:53:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47318 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725949AbgKKSxe (ORCPT
+        with ESMTP id S1726460AbgKKSxm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 13:53:34 -0500
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56B8DC0613D1
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 10:53:34 -0800 (PST)
-Received: by mail-wm1-x342.google.com with SMTP id c16so3299440wmd.2
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 10:53:34 -0800 (PST)
+        Wed, 11 Nov 2020 13:53:42 -0500
+Received: from mail-pl1-x649.google.com (mail-pl1-x649.google.com [IPv6:2607:f8b0:4864:20::649])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 990F6C0613D4
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 10:53:42 -0800 (PST)
+Received: by mail-pl1-x649.google.com with SMTP id v20so1664869plo.3
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 10:53:42 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=BsqGYO3Z3LmOG3+gEI3hEN4Yp+SLkMxnpyJBNBk4sQ4=;
-        b=mJji5oqY1OzEJWl5UZxRmQOZNoPQQXzgVLDrguwlN3KVjusaaRWAIW55bqLaOdTrO8
-         8kxw3cgrFCfaLLsOFFp/61ToJUxCIhbKTYlAS7SIOQg9jIjMP1YBpno35r/ktCMAe94t
-         GCTR14pyKLAIKWyBusMI9wPH2oxilh0yPLT4awiKGTO1Lw2BEyxk/R/rL1VZYTTtHPAU
-         phUaRyeSdFCMkFeg1nZ3Rhp6Lzx0bt9MLd7wHCrO13piwCQ3lmW9zsUc48mjZmhUFqsh
-         ep+Dh+x97AfCaJTvgHpIpa4PKlmi67Od3AicLntN9/tdxCudDvTK0f6vR981qSQ613s0
-         wY0Q==
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=93R4ztQrLrDF9Ja7P3toIKUvpq9Mkw15Zf+bh5c6Tqo=;
+        b=kK51WkYoFHiSWND2/+N+C4Ova1zafjAVM+MPR0hpWwVY8W6VovOfLNmIiMynognenH
+         lbj/HnGi8LUypoLkUvvq6ifdmaKSM7Qs5KY8OLvuNSHqi93xn9P6OKqDth56mfLf7TmS
+         eTy6XVOeyZYgAtmx4jHnLmdF44tZnyR7Y37vDyXD8JbUe+YWpWxdIFOY2Nm8WnVKjlrZ
+         mxOlGUs7o2Q964Dlth1cEweUi0t1TPbzd6pUE+KsV14NikSdbNfPu+/9c1+67WbwQh0t
+         up5tbY5R9KY1/3ZqfWU+oDjfpEZZf3nt8OrukS3kW8t8SAHkHMKBe8JkEeeJE8heHb7y
+         6zVQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=BsqGYO3Z3LmOG3+gEI3hEN4Yp+SLkMxnpyJBNBk4sQ4=;
-        b=exi0kykkrMd1ijcSkH6w9OFv0at2hb+MynXF+0n+oS/Hf9kwELs6i7x98VNvXgpZbE
-         wM2skRlEJD2WlAYhSj9aVMQ7AIkisG+q4UUyBeE2rmGgkS9Ad+JZYupng9Nc8BgAVSY0
-         YhIDtWLzvzK95wdVc0Vo2SfTObMUABqcos6vA0jrGXTeYVh2wytrcYVqjiDl9vTliDA5
-         D+KmU+aMX0p+/Emjc7FD+Hl9JbaN9D/k1ZfdnzgmEJUxWHSpTbuv1+hQtyLI7oBkZ7Kp
-         4jPq9vZMlIkHNn1eXYmb3lKPzuZy2vLUGpAWcQ7w3v0J5aVc+klXlC1Z2JoOqkVmrJEr
-         GXGA==
-X-Gm-Message-State: AOAM533MrgiLOlyS6CC4qbYNw0YZVffoHsbXlWOBP51XVotk/ymqtPUT
-        KuuaUEFqJo7dc55e9bp+GKp9lg==
-X-Google-Smtp-Source: ABdhPJxHLlPHjhrZhLExbqq4w/IszUCQZ0kyVJhn4iwR+4mytZR8qD9mf3bIoOZO54mtGqE6oZNn7Q==
-X-Received: by 2002:a1c:66c4:: with SMTP id a187mr5688966wmc.186.1605120812851;
-        Wed, 11 Nov 2020 10:53:32 -0800 (PST)
-Received: from elver.google.com ([2a00:79e0:15:13:f693:9fff:fef4:2449])
-        by smtp.gmail.com with ESMTPSA id c185sm3646674wma.44.2020.11.11.10.53.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 Nov 2020 10:53:32 -0800 (PST)
-Date:   Wed, 11 Nov 2020 19:53:26 +0100
-From:   Marco Elver <elver@google.com>
-To:     Andrey Konovalov <andreyknvl@google.com>
-Cc:     Dmitry Vyukov <dvyukov@google.com>,
-        Alexander Potapenko <glider@google.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will.deacon@arm.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Evgenii Stepanov <eugenis@google.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Branislav Rankov <Branislav.Rankov@arm.com>,
-        Kevin Brodsky <kevin.brodsky@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        kasan-dev@googlegroups.com, linux-arm-kernel@lists.infradead.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 14/20] kasan, mm: rename kasan_poison_kfree
-Message-ID: <20201111185326.GP517454@elver.google.com>
-References: <cover.1605046662.git.andreyknvl@google.com>
- <ee33aa1d9c57c3f2b2c700e8f2c6c24db8703612.1605046662.git.andreyknvl@google.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ee33aa1d9c57c3f2b2c700e8f2c6c24db8703612.1605046662.git.andreyknvl@google.com>
-User-Agent: Mutt/1.14.6 (2020-07-11)
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=93R4ztQrLrDF9Ja7P3toIKUvpq9Mkw15Zf+bh5c6Tqo=;
+        b=lNt7ISFZZrkhRDCUfNHfigWeR2gq5FZ4/x1ll+u8RWyOZrj8V5Qz2OrQAvW+n8T5s6
+         CNxwVl5okHkX2x73HFWtHWCg/m7R+Shq/Li896OnVbF+PrbLYWz586o1kmEPbdIFJ1QC
+         lP/7RJqTwzsG3ApqmC/htasyjOoDbsduKfEWqMp+FWB3ULLDFFpvRthLBYWREMN9kysI
+         9zpZiiRUoDyzZjWjX/aecjJPorDxLHBgtQEtr26HMAU/0TP5jxbEOATOuNnBilTt4/A9
+         qLJ2G45J7PxGdsGo/yX1LlmNvzVVI+2gM0eEM2Rr7qLovSSLCd2ZdTStphOS/1N5q4Ym
+         QCyw==
+X-Gm-Message-State: AOAM5324XNDMjnw+VvHzZogmaNiL1IBZxuSuFrEDUzUIRKzfYizdmwyF
+        uJwQP+7eDfVFuOBl10srTIjsJVJBTnFT5mIwqP9Yx2K6lfWB86LnxaOl1PU6O2ZEBczGzOF592Z
+        29KMFzEbK5QqRl8zKQDc8ilDwrgo0Tc8FGkju+kAnJRX1QIYRIyg1H/M8llXBKyX/UeRgJDwq
+X-Google-Smtp-Source: ABdhPJyl7J/4ZMYI6a1D98WFOkbXOBJ8G/8pul2PYv3oklRs7dNvgDUFi0coDy0Z5skyieCqVo68nE6HtM2h
+Sender: "bgardon via sendgmr" <bgardon@bgardon.sea.corp.google.com>
+X-Received: from bgardon.sea.corp.google.com ([2620:15c:100:202:f693:9fff:fef4:a293])
+ (user=bgardon job=sendgmr) by 2002:a17:902:bc46:b029:d6:d98a:1a68 with SMTP
+ id t6-20020a170902bc46b02900d6d98a1a68mr10718919plz.63.1605120821929; Wed, 11
+ Nov 2020 10:53:41 -0800 (PST)
+Date:   Wed, 11 Nov 2020 10:53:37 -0800
+Message-Id: <20201111185337.1237383-1-bgardon@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.29.2.222.g5d2a92d10f8-goog
+Subject: [PATCH] kvm: x86/mmu: Fix is_tdp_mmu_check when using PAE
+From:   Ben Gardon <bgardon@google.com>
+To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Peter Shier <pshier@google.com>,
+        Jim Mattson <jmattson@google.com>,
+        Zdenek Kaspar <zkaspar82@gmail.com>,
+        Ben Gardon <bgardon@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 10, 2020 at 11:20PM +0100, Andrey Konovalov wrote:
-> Rename kasan_poison_kfree() to kasan_slab_free_mempool() as it better
-> reflects what this annotation does.
+When PAE is in use, the root_hpa will not have a shadow page assoicated
+with it. In this case the kernel will crash with a NULL pointer
+dereference. Add checks to ensure is_tdp_mmu_root works as intended even
+when using PAE.
 
-This function is again so simple, and now it seems it's mempool
-specific, can't we just remove it and open-code it in mempool.c?
+Tested: compiles
 
-> No functional changes.
-> 
-> Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
-> Reviewed-by: Dmitry Vyukov <dvyukov@google.com>
-> Link: https://linux-review.googlesource.com/id/I5026f87364e556b506ef1baee725144bb04b8810
-> ---
->  include/linux/kasan.h | 16 ++++++++--------
->  mm/kasan/common.c     | 16 ++++++++--------
->  mm/mempool.c          |  2 +-
->  3 files changed, 17 insertions(+), 17 deletions(-)
-> 
-> diff --git a/include/linux/kasan.h b/include/linux/kasan.h
-> index 779f8e703982..534ab3e2935a 100644
-> --- a/include/linux/kasan.h
-> +++ b/include/linux/kasan.h
-> @@ -177,6 +177,13 @@ static inline bool kasan_slab_free(struct kmem_cache *s, void *object, unsigned
->  	return false;
->  }
->  
-> +void __kasan_slab_free_mempool(void *ptr, unsigned long ip);
-> +static inline void kasan_slab_free_mempool(void *ptr, unsigned long ip)
-> +{
-> +	if (kasan_enabled())
-> +		__kasan_slab_free_mempool(ptr, ip);
-> +}
-> +
->  void * __must_check __kasan_slab_alloc(struct kmem_cache *s,
->  				       void *object, gfp_t flags);
->  static inline void * __must_check kasan_slab_alloc(struct kmem_cache *s,
-> @@ -217,13 +224,6 @@ static inline void * __must_check kasan_krealloc(const void *object,
->  	return (void *)object;
->  }
->  
-> -void __kasan_poison_kfree(void *ptr, unsigned long ip);
-> -static inline void kasan_poison_kfree(void *ptr, unsigned long ip)
-> -{
-> -	if (kasan_enabled())
-> -		__kasan_poison_kfree(ptr, ip);
-> -}
-> -
->  void __kasan_kfree_large(void *ptr, unsigned long ip);
->  static inline void kasan_kfree_large(void *ptr, unsigned long ip)
->  {
-> @@ -263,6 +263,7 @@ static inline bool kasan_slab_free(struct kmem_cache *s, void *object,
->  {
->  	return false;
->  }
-> +static inline void kasan_slab_free_mempool(void *ptr, unsigned long ip) {}
->  static inline void *kasan_slab_alloc(struct kmem_cache *s, void *object,
->  				   gfp_t flags)
->  {
-> @@ -282,7 +283,6 @@ static inline void *kasan_krealloc(const void *object, size_t new_size,
->  {
->  	return (void *)object;
->  }
-> -static inline void kasan_poison_kfree(void *ptr, unsigned long ip) {}
->  static inline void kasan_kfree_large(void *ptr, unsigned long ip) {}
->  
->  #endif /* CONFIG_KASAN */
-> diff --git a/mm/kasan/common.c b/mm/kasan/common.c
-> index 819403548f2e..60793f8695a8 100644
-> --- a/mm/kasan/common.c
-> +++ b/mm/kasan/common.c
-> @@ -336,6 +336,14 @@ bool __kasan_slab_free(struct kmem_cache *cache, void *object, unsigned long ip)
->  	return ____kasan_slab_free(cache, object, ip, true);
->  }
->  
-> +void __kasan_slab_free_mempool(void *ptr, unsigned long ip)
-> +{
-> +	struct page *page;
-> +
-> +	page = virt_to_head_page(ptr);
-> +	____kasan_slab_free(page->slab_cache, ptr, ip, false);
-> +}
-> +
->  static void set_alloc_info(struct kmem_cache *cache, void *object, gfp_t flags)
->  {
->  	kasan_set_track(&kasan_get_alloc_meta(cache, object)->alloc_track, flags);
-> @@ -427,14 +435,6 @@ void * __must_check __kasan_krealloc(const void *object, size_t size, gfp_t flag
->  						flags, true);
->  }
->  
-> -void __kasan_poison_kfree(void *ptr, unsigned long ip)
-> -{
-> -	struct page *page;
-> -
-> -	page = virt_to_head_page(ptr);
-> -	____kasan_slab_free(page->slab_cache, ptr, ip, false);
-> -}
-> -
->  void __kasan_kfree_large(void *ptr, unsigned long ip)
->  {
->  	if (ptr != page_address(virt_to_head_page(ptr)))
-> diff --git a/mm/mempool.c b/mm/mempool.c
-> index f473cdddaff0..b1f39fa75ade 100644
-> --- a/mm/mempool.c
-> +++ b/mm/mempool.c
-> @@ -104,7 +104,7 @@ static inline void poison_element(mempool_t *pool, void *element)
->  static __always_inline void kasan_poison_element(mempool_t *pool, void *element)
->  {
->  	if (pool->alloc == mempool_alloc_slab || pool->alloc == mempool_kmalloc)
-> -		kasan_poison_kfree(element, _RET_IP_);
-> +		kasan_slab_free_mempool(element, _RET_IP_);
+Fixes: 02c00b3a2f7e ("kvm: x86/mmu: Allocate and free TDP MMU roots")
+Reported-by: Zdenek Kaspar <zkaspar82@gmail.com>
+Signed-off-by: Ben Gardon <bgardon@google.com>
+---
+ arch/x86/kvm/mmu/tdp_mmu.c | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
-This is already a kasan-prefixed function, so if
-kasan_slab_free_mempool() is only ever called in this function, we
-should just call kasan_slab_free() here directly with the 2 extra args
-it requires open-coded.
+diff --git a/arch/x86/kvm/mmu/tdp_mmu.c b/arch/x86/kvm/mmu/tdp_mmu.c
+index 27e381c9da6c..13013f4d98ad 100644
+--- a/arch/x86/kvm/mmu/tdp_mmu.c
++++ b/arch/x86/kvm/mmu/tdp_mmu.c
+@@ -49,8 +49,18 @@ bool is_tdp_mmu_root(struct kvm *kvm, hpa_t hpa)
+ {
+ 	struct kvm_mmu_page *sp;
+ 
++	if (WARN_ON(!VALID_PAGE(hpa)))
++		return false;
++
+ 	sp = to_shadow_page(hpa);
+ 
++	/*
++	 * If this VM is being run with PAE, the TDP MMU will not be enabled
++	 * and the root HPA will not have a shadow page associated with it.
++	 */
++	if (!sp)
++		return false;
++
+ 	return sp->tdp_mmu_page && sp->root_count;
+ }
+ 
+-- 
+2.29.2.222.g5d2a92d10f8-goog
 
->  	else if (pool->alloc == mempool_alloc_pages)
->  		kasan_free_pages(element, (unsigned long)pool->pool_data);
->  }
-
-Thanks,
--- Marco
