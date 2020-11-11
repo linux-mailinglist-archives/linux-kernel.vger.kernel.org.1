@@ -2,123 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F5382AF61E
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 17:21:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 991062AF5FA
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 17:16:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726915AbgKKQVA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 11:21:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51856 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726208AbgKKQU7 (ORCPT
+        id S1727307AbgKKQQQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 11:16:16 -0500
+Received: from mx0a-00128a01.pphosted.com ([148.163.135.77]:11852 "EHLO
+        mx0a-00128a01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725955AbgKKQQQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 11:20:59 -0500
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E7ECC0613D1
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 08:20:59 -0800 (PST)
-Received: by mail-wr1-x441.google.com with SMTP id s8so3059738wrw.10
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 08:20:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=h04pzBWTT3/7lLb3bXzNbuLnpXPPVyksc65veB41bHc=;
-        b=OU4m2N6jkD06QsJEXoNnGq0wTIDtVx0xAr8Tn48tUcHrNQ6oZMQaIXgV0aTQyhQ/s/
-         hcx4mzotI1Ij0H53R2Kl0kdmmhSObzVIgQXnbSrByJEBQoWiRtFNrvhX8Zw/FvEcyGLh
-         0O6nYFqBiJtIeVc+jpxx/qWGlAjdDIgvXUDMoEQiu0SItxmPIkmVO/eFAbEEiZLwbQ4b
-         JNnDO3Zm80rL9yOcl6JmyZ1iGaex18g0qBLsIbXw3fk8HVFjyNJ/lihVXuf4j8+1Eq8I
-         jiVMONhB80oBkc6GeNwWahRtHmooRA420R2IvNWUfErKxiCtR0q+qefshibDanhm6G38
-         yH+A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=h04pzBWTT3/7lLb3bXzNbuLnpXPPVyksc65veB41bHc=;
-        b=ftUACVgCwbQ85rWSTCWq6sWZbEKjrJOSHweRj26mtrtlxBodYRhqzw0ISDCq3hf0uk
-         nZR4+870j/qg0e3Co/UdBxDVq0pxKYmCxj5u6F7pkvCN/Kt88detaXFrzWZJo/CUMJXp
-         mSYVJtqkqPRDYRThnkI7UJuNNvpohHChyWI2khduQo9HLv/LcOqkVVhP2WM3nIvfD0b/
-         Dwa9NYKkt66jqSm9h6OFHyUisT5NxrO/VenYWy6lkJeTPqM22+exiKya9G+I8XceDIWp
-         mR8EYZFgp0rSedLmRnZVBQc1L/7vn6LAoAe4RgiB79YcpY6fazCV+ra/qhIAOybsIS+4
-         arnA==
-X-Gm-Message-State: AOAM5320qSr0dG96k+vlpSbNsfTlNWNN7zEt2KeIU9U5O8tM3f0JIqYa
-        tU+AYGgW0AT4v+SfWjHeOnl6nA==
-X-Google-Smtp-Source: ABdhPJxxlFWci8j3QfAeiJZTWzJ9B8pX9QXgXgNEi+Jmxe1zXm9nOMW05oMxWDt7zaDOuJjiX9bynA==
-X-Received: by 2002:a05:6000:364:: with SMTP id f4mr3136596wrf.290.1605111658027;
-        Wed, 11 Nov 2020 08:20:58 -0800 (PST)
-Received: from elver.google.com ([2a00:79e0:15:13:f693:9fff:fef4:2449])
-        by smtp.gmail.com with ESMTPSA id e5sm1926733wrs.84.2020.11.11.08.20.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 Nov 2020 08:20:57 -0800 (PST)
-Date:   Wed, 11 Nov 2020 17:20:51 +0100
-From:   Marco Elver <elver@google.com>
-To:     Andrey Konovalov <andreyknvl@google.com>
-Cc:     Dmitry Vyukov <dvyukov@google.com>,
-        Alexander Potapenko <glider@google.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will.deacon@arm.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Evgenii Stepanov <eugenis@google.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Branislav Rankov <Branislav.Rankov@arm.com>,
-        Kevin Brodsky <kevin.brodsky@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        kasan-dev@googlegroups.com, linux-arm-kernel@lists.infradead.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 05/20] kasan: allow VMAP_STACK for HW_TAGS mode
-Message-ID: <20201111162051.GG517454@elver.google.com>
-References: <cover.1605046662.git.andreyknvl@google.com>
- <3443e106c40799e5dc3981dec2011379f3cbbb0c.1605046662.git.andreyknvl@google.com>
+        Wed, 11 Nov 2020 11:16:16 -0500
+Received: from pps.filterd (m0167089.ppops.net [127.0.0.1])
+        by mx0a-00128a01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0ABG7jxp031237;
+        Wed, 11 Nov 2020 11:16:02 -0500
+Received: from nwd2mta4.analog.com ([137.71.173.58])
+        by mx0a-00128a01.pphosted.com with ESMTP id 34nsc95tcj-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 11 Nov 2020 11:16:01 -0500
+Received: from SCSQMBX11.ad.analog.com (SCSQMBX11.ad.analog.com [10.77.17.10])
+        by nwd2mta4.analog.com (8.14.7/8.14.7) with ESMTP id 0ABGG0ZT049562
+        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=FAIL);
+        Wed, 11 Nov 2020 11:16:00 -0500
+Received: from SCSQCASHYB6.ad.analog.com (10.77.17.132) by
+ SCSQMBX11.ad.analog.com (10.77.17.10) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1779.2; Wed, 11 Nov 2020 08:15:59 -0800
+Received: from SCSQMBX10.ad.analog.com (10.77.17.5) by
+ SCSQCASHYB6.ad.analog.com (10.77.17.132) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1779.2; Wed, 11 Nov 2020 08:14:47 -0800
+Received: from zeus.spd.analog.com (10.66.68.11) by SCSQMBX10.ad.analog.com
+ (10.77.17.5) with Microsoft SMTP Server id 15.1.1779.2 via Frontend
+ Transport; Wed, 11 Nov 2020 08:15:58 -0800
+Received: from localhost.localdomain ([10.48.65.12])
+        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 0ABGFtWg009875;
+        Wed, 11 Nov 2020 11:15:55 -0500
+From:   <alexandru.tachici@analog.com>
+To:     <linux-hwmon@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <devicetree@vger.kernel.org>
+CC:     <robh+dt@kernel.org>, <linux@roeck-us.net>,
+        Alexandru Tachici <alexandru.tachici@analog.com>
+Subject: [PATCH v2 0/3] hwmon: ltc2992: Add support
+Date:   Wed, 11 Nov 2020 18:20:54 +0200
+Message-ID: <20201111162057.73055-1-alexandru.tachici@analog.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <3443e106c40799e5dc3981dec2011379f3cbbb0c.1605046662.git.andreyknvl@google.com>
-User-Agent: Mutt/1.14.6 (2020-07-11)
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-11-11_07:2020-11-10,2020-11-11 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 spamscore=0
+ priorityscore=1501 bulkscore=0 clxscore=1015 lowpriorityscore=0
+ impostorscore=0 adultscore=0 phishscore=0 mlxlogscore=999 malwarescore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2011110095
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 10, 2020 at 11:20PM +0100, Andrey Konovalov wrote:
-> Even though hardware tag-based mode currently doesn't support checking
-> vmalloc allocations, it doesn't use shadow memory and works with
-> VMAP_STACK as is. Change VMAP_STACK definition accordingly.
-> 
-> Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
-> Link: https://linux-review.googlesource.com/id/I3552cbc12321dec82cd7372676e9372a2eb452ac
-> ---
+From: Alexandru Tachici <alexandru.tachici@analog.com>
 
-Shouldn't this be in the other series?
+LTC2992 is a rail-to-rail system monitor that
+measures current, voltage, and power of two supplies.
 
-FWIW,
+Two ADCs simultaneously measure each supply’s current.
+A third ADC monitors the input voltages and four
+auxiliary external voltages (GPIOs).
 
-Reviewed-by: Marco Elver <elver@google.com>
+1. Use hwmon to create sysfs entries for current, voltage
+and power of two 0V to 100V supplies. Create sysfs entries
+for voltage sensed on the 4 GPIO pins.
 
->  arch/Kconfig | 8 ++++----
->  1 file changed, 4 insertions(+), 4 deletions(-)
-> 
-> diff --git a/arch/Kconfig b/arch/Kconfig
-> index 56b6ccc0e32d..7e7d14fae568 100644
-> --- a/arch/Kconfig
-> +++ b/arch/Kconfig
-> @@ -914,16 +914,16 @@ config VMAP_STACK
->  	default y
->  	bool "Use a virtually-mapped stack"
->  	depends on HAVE_ARCH_VMAP_STACK
-> -	depends on !KASAN || KASAN_VMALLOC
-> +	depends on !KASAN || KASAN_HW_TAGS || KASAN_VMALLOC
->  	help
->  	  Enable this if you want the use virtually-mapped kernel stacks
->  	  with guard pages.  This causes kernel stack overflows to be
->  	  caught immediately rather than causing difficult-to-diagnose
->  	  corruption.
->  
-> -	  To use this with KASAN, the architecture must support backing
-> -	  virtual mappings with real shadow memory, and KASAN_VMALLOC must
-> -	  be enabled.
-> +	  To use this with software KASAN modes, the architecture must support
-> +	  backing virtual mappings with real shadow memory, and KASAN_VMALLOC
-> +	  must be enabled.
->  
->  config ARCH_OPTIONAL_KERNEL_RWX
->  	def_bool n
-> -- 
-> 2.29.2.222.g5d2a92d10f8-goog
-> 
+2. Expose to userspace the 4 open-drain GPIOs provided by ltc2992.
+
+3. DT bindings for ltc2992.
+
+Alexandru Tachici (3):
+  hwmon: ltc2992: Add support
+  hwmon: ltc2992: Add support for GPIOs.
+  dt-binding: hwmon: Add documentation for ltc2992
+
+Changelog v1 -> v2:
+- ltc2992_read_reg function returns the reg value directly
+- historical min max values are reported now through lowest and highest sysfs
+- added alarm sysfs for both min and max values
+- added reset history option: writing to in_reset_history will reset all
+lowest/highest values
+- fixed missing static
+- fixed dt bindings errors
+
+ .../bindings/hwmon/adi,ltc2992.yaml           |  80 ++
+ Documentation/hwmon/index.rst                 |   1 +
+ Documentation/hwmon/ltc2992.rst               |  56 +
+ drivers/hwmon/Kconfig                         |  12 +
+ drivers/hwmon/Makefile                        |   1 +
+ drivers/hwmon/ltc2992.c                       | 976 ++++++++++++++++++
+ 6 files changed, 1126 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/hwmon/adi,ltc2992.yaml
+ create mode 100644 Documentation/hwmon/ltc2992.rst
+ create mode 100644 drivers/hwmon/ltc2992.c
+
+-- 
+2.20.1
+
