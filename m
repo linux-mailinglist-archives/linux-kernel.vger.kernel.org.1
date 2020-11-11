@@ -2,114 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A25972AF4AD
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 16:24:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 368792AF4B0
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 16:25:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727053AbgKKPYn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 10:24:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43028 "EHLO
+        id S1727061AbgKKPZg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 10:25:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43164 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726081AbgKKPYm (ORCPT
+        with ESMTP id S1726081AbgKKPZf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 10:24:42 -0500
-Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [IPv6:2a01:488:42:1000:50ed:8234::])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87CAAC0613D1;
-        Wed, 11 Nov 2020 07:24:42 -0800 (PST)
-Received: from ip4d145e30.dynamic.kabel-deutschland.de ([77.20.94.48] helo=[192.168.66.101]); authenticated
-        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        id 1kcrz9-0005Vg-GH; Wed, 11 Nov 2020 16:24:35 +0100
-From:   Thorsten Leemhuis <linux@leemhuis.info>
-To:     Randy Dunlap <rdunlap@infradead.org>,
-        Jonathan Corbet <corbet@lwn.net>
-Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <cover.1601541165.git.linux@leemhuis.info>
- <dc293f6d4f71ea827c861c64e88dfa0316f1d934.1601541165.git.linux@leemhuis.info>
- <8f3fce56-fdc4-c248-05ec-4fda1ee6fc54@infradead.org>
- <2b87f58f-ca74-6c73-fb7a-853cca2751bb@leemhuis.info>
-Subject: Re: [RFC PATCH v1 02/26] docs: reporting-bugs: Create a TLDR how to
- report issues
-Message-ID: <6a8ffd01-ff1c-284b-42ac-23cd164e0873@leemhuis.info>
-Date:   Wed, 11 Nov 2020 16:24:31 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        Wed, 11 Nov 2020 10:25:35 -0500
+Received: from mail-io1-xd34.google.com (mail-io1-xd34.google.com [IPv6:2607:f8b0:4864:20::d34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7988BC0613D1;
+        Wed, 11 Nov 2020 07:25:35 -0800 (PST)
+Received: by mail-io1-xd34.google.com with SMTP id s24so2619487ioj.13;
+        Wed, 11 Nov 2020 07:25:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=V98jdF8UJSRGGjJzgv2zEND8PLBL6i+WJRmu7tvsP5c=;
+        b=NNAMJxzpcjpmFESW+exwKjmjg6Z1AwFum4Il5mV22nH4uZB70yp5HCQCZaUG3h03zX
+         1z7uTrFugW54OYjtC1//rVn7k8PcA3Wj9f+KgB1K6Udv9IkvvrnYCsVo617HedpgQMsj
+         pUfn8MYA4GkygtCE+s7+hxW9P9rpmxrAFndepzzx3FDtlRomdscE3YBWIdyEVd88ry81
+         jpoEzhGdg7UoVXxH81ZTL2yOKyCq0wtaqe7l4SRKFUnX9uSKawrV3xE/SavmbKRjCq08
+         P0CI5Y2frOqY0pvOfpxrbmWfThzUWP3NMfarULkXZ1dmmaaQcS4kK17lF/YGM2WN26DA
+         kE/w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=V98jdF8UJSRGGjJzgv2zEND8PLBL6i+WJRmu7tvsP5c=;
+        b=gGpdL4hEasTto8EBADTtI8jvEU8A7Hq7cc+o9QIX0Y0BcvUnTv28GJk49hCOf8ivxz
+         b8cVvVS03gCC7J3MasHzxTM42vYUy9X5BW5e5R3FdBXxQK30YxjDAKx3+izzsxt2+MDB
+         yqZYePrOYicNVlA6gaoD+n3ztf4L80OFbK2++fxsCr0DZslfCsoA2h67wEeWVpa9oITW
+         WXBO9ZC48KNwWaViaND8bkgdcbvQm78jqwuGgk1MVG+tMqZtfGhwqbW5YiA9fc5Tml8H
+         7qFOFF25xR1h69lSBaOzpt/0hMI/x9RqXGSWp1GLqlpEtXpZGGkfY85qyfuuD26vzCt2
+         LSCw==
+X-Gm-Message-State: AOAM5321W1DJ/7NeIs0f+69doVoJDa3u0ZBPD0oBM3BjfYq0OHN+xszJ
+        jYn8b3wZ4VDy/ohpNzEWoMYcbI5CVAdT4w==
+X-Google-Smtp-Source: ABdhPJx++TM5QV5gtKa9Ti3tuP80IYznVcus5VhHdm+/bsACr4rzTrbjfJB+1bN0pHw2PgeSsmCpiA==
+X-Received: by 2002:a5d:9850:: with SMTP id p16mr18889062ios.22.1605108334174;
+        Wed, 11 Nov 2020 07:25:34 -0800 (PST)
+Received: from aford-IdeaCentre-A730.lan ([2601:448:8400:9e8:59b1:ae74:30a3:447f])
+        by smtp.gmail.com with ESMTPSA id f77sm1424395ilf.40.2020.11.11.07.25.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 11 Nov 2020 07:25:33 -0800 (PST)
+From:   Adam Ford <aford173@gmail.com>
+To:     devicetree@vger.kernel.org
+Cc:     aford@beaconembedded.com, Adam Ford <aford173@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>, linux-kernel@vger.kernel.org
+Subject: [PATCH V4] dt-bindings: soc: imx: Add binding doc for spba bus
+Date:   Wed, 11 Nov 2020 09:25:23 -0600
+Message-Id: <20201111152523.76254-1-aford173@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <2b87f58f-ca74-6c73-fb7a-853cca2751bb@leemhuis.info>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-bounce-key: webpack.hosteurope.de;linux@leemhuis.info;1605108282;e75545b1;
-X-HE-SMSGID: 1kcrz9-0005Vg-GH
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 03.10.20 um 09:27 schrieb Thorsten Leemhuis:
-> Randy, many thanks for looking through this, you feedback is much
-> appreciated! Consider all the obvious spelling and grammatical mistakes
-> you pointed out fixed, I won't mention all of them in this reply to keep
-> things easier to follow.
-> 
-> Am 02.10.20 um 04:32 schrieb Randy Dunlap:
->> On 10/1/20 1:39 AM, Thorsten Leemhuis wrote:
->> […]
->>> +<https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/plain/MAINTAINERS>`_
->>> +how developers of that particular area expect to be told about issues; note,
->>     for how
->> ?
-> Not sure myself, but I guess you're right and thus followed your advice :-D
+Add binding doc for fsl,spba-bus.
 
-I'm preparing to send v2 and was a bit unhappy with this and another 
-section when seeing it again after weeks. In the end I reshuffled and 
-rewrote significant parts of it, see below.
+Signed-off-by: Adam Ford <aford173@gmail.com>
+---
+make dt_binding_check showed no errors if I did this right.
 
-Randy, would be great if you could take another look, but no pressure: 
-just ignore it, if you lack the time or energy.
+V4:  Remove an accidental makefile change
+     Move type:object under additional properties
 
-```
-The short guide (aka TL;DR)
-===========================
+V3:  Rebase sample from aips-bus example
+     Split off from series adding i.MX8M Nano functions to reduce noise
 
-If you're facing multiple issues with the Linux kernel at once, report 
-each separately to its developers. Try your best guess which kernel part 
-might be causing the issue. Check the :ref:`MAINTAINERS <maintainers>` 
-file for how its developers expect to be told about issues. Note, it's 
-rarely `bugzilla.kernel.org <https://bugzilla.kernel.org/>`_, as in 
-almost all cases the report needs to be sent by email!
+V2:  Attempted to update yaml from feedback
 
-Check the destination thoroughly for existing reports; also search the 
-LKML archives and the web. Join existing discussion if you find matches. 
-If you don't find any, install `the latest Linux mainline kernel 
-<https://kernel.org/>`_. Make sure it's vanilla, thus is not patched or 
-using add-on kernel modules. Also ensure the kernel is running in a 
-healthy environment and is not already tainted before the issue occurs.
+diff --git a/Documentation/devicetree/bindings/bus/fsl,spba-bus.yaml b/Documentation/devicetree/bindings/bus/fsl,spba-bus.yaml
+new file mode 100644
+index 000000000000..48d0c27d2e77
+--- /dev/null
++++ b/Documentation/devicetree/bindings/bus/fsl,spba-bus.yaml
+@@ -0,0 +1,64 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/bus/fsl,spba-bus.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Shared Peripherals Bus Interface
++
++maintainers:
++  - Shawn Guo <shawnguo@kernel.org>
++
++description: |
++  A simple bus enabling access to shared peripherals.
++
++  The "spba-bus" follows the "simple-bus" set of properties, as
++  specified in the Devicetree Specification.  It is an extension of
++  "simple-bus" because the SDMA controller uses this compatible flag to
++  determine which peripherals are available to it and the range over which
++  the SDMA can access.  There are no special clocks for the bus, because
++  the SDMA controller itself has its interrupt, and clock assignments.
++
++select:
++  properties:
++    compatible:
++      contains:
++        const: fsl,spba-bus
++  required:
++    - compatible
++
++properties:
++  $nodename:
++    pattern: "^bus(@[0-9a-f]+)?$"
++
++  compatible:
++    items:
++      - const: fsl,spba-bus
++      - const: simple-bus
++
++  '#address-cells':
++    enum: [ 1, 2 ]
++
++  '#size-cells':
++    enum: [ 1, 2 ]
++
++  ranges: true
++
++required:
++  - compatible
++  - '#address-cells'
++  - '#size-cells'
++  - ranges
++
++additionalProperties:
++  type: object
++
++examples:
++  - |
++    bus@30000000 {
++        compatible = "fsl,spba-bus", "simple-bus";
++        #address-cells = <1>;
++        #size-cells = <1>;
++        reg = <0x30000000 0x100000>;
++        ranges;
++    };
+-- 
+2.25.1
 
-If you can reproduce your issue with the mainline kernel, send a report 
-to the destination you determined earlier. Make sure it includes all 
-relevant information, which in case of a regression should mention the 
-change that's causing it which can often can be found with a bisection. 
-Also ensure the report reaches all people that need to know about it, 
-for example the security team, the stable maintainers or the developers 
-of the patch that causes a regression. Once the report it out, answer 
-any questions that might be raised and help where you can. That includes 
-keeping the ball rolling: every time a new rc1 mainline kernel is 
-released, check if the issue is still happening there and attach a 
-status update to your initial report.
-
-If you can not reproduce the issue with the mainline kernel, consider 
-sticking with it; if you'd like to use an older version line and want to 
-see it fixed there, first make sure it's still supported. Install its 
-latest release as vanilla kernel. If you cannot reproduce the issue 
-there, try to find the commit that fixed it in mainline or any 
-discussion preceding it: those will often mention if backporting is 
-planed or considered impassable. If backporting was not discussed, ask 
-if it's in the cards. In case you don't find any commits or a preceding 
-discussion, see the Linux-stable mailing list archives for existing 
-reports, as it might be a regression specific to the version line. If it 
-is, it round about needs to be reported like a problem in mainline 
-(including the bisection).
-
-If you reached this point without a solution, ask for advice one the 
-subsystem's mailing list.
-```
-
-Ciao, Thorsten
