@@ -2,184 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E0ED2AEF4A
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 12:13:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B1982AEF50
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 12:13:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726491AbgKKLMz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 06:12:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59828 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726449AbgKKLMl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 06:12:41 -0500
-Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A242C0613D1
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 03:12:40 -0800 (PST)
-Received: by mail-io1-xd44.google.com with SMTP id o11so1834202ioo.11
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 03:12:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sargun.me; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=d0GfdO7JXkiEcLNK6+4nDT65yhOpVcfU3tMJUKAFX/Y=;
-        b=jafUJjOqF5iuCiNKamzhXZfEZ2b/KMJSV/69Aov1fbD58v8fUzXzme/k77v5/PTBtq
-         IZ8QYN2UjmF2OEApFLD9HSnQFavdr4UUDX7cpXt0w3tCrPn1m6Eoyfl6901jVQGwiYym
-         cFr29OMMYLb3oXnjmecSGsiRxF37VX406vLxs=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=d0GfdO7JXkiEcLNK6+4nDT65yhOpVcfU3tMJUKAFX/Y=;
-        b=G5EC9qf0k2wl00b6g2718SY06EfIA/k+0jgOazK6ePfaetM34D/BnzGJmuf+49gx+m
-         vj+aCm+6wSUqqfNitq4mXbQ4KvMd80sPkbb1jcMQvqCLwuz2q6GpSzE6kPuWQcspco8V
-         6XSZdjs1H5VJNKV/t8TmKlfQkj3QmXfOtSJWHB1LWV/cjewLBWUsgaMyBZPyDn5A0Vcr
-         lkdyeQbtih+F+qbUQYf7vg1ecNI3HLdXuXfRobMvCoPsqsYIWHgJrZtAk0R/FhGpk5sx
-         cpO8zJK2V9jOS7TwqYpgf5G1eFtNrUycXv+i9xFiM6USnn4SX2M75uZO7VQp4oVYtaX0
-         PXTg==
-X-Gm-Message-State: AOAM532dQkPmQi52ih1tW3DORPX2SgFmnRPzzk6opBuJqLwdEhEEkjEy
-        WKkwejs0RfT93tS5jkHJK2I1zA==
-X-Google-Smtp-Source: ABdhPJx24PI5gINDAmGN9cKsbgQ8QJ/4C3dXJyR8HTMiufSH56fhugdT1cUZE1UKaMsItJ8xsCSweA==
-X-Received: by 2002:a02:c884:: with SMTP id m4mr9701932jao.43.1605093159708;
-        Wed, 11 Nov 2020 03:12:39 -0800 (PST)
-Received: from ircssh-2.c.rugged-nimbus-611.internal (80.60.198.104.bc.googleusercontent.com. [104.198.60.80])
-        by smtp.gmail.com with ESMTPSA id z11sm1094793iop.22.2020.11.11.03.12.38
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 11 Nov 2020 03:12:38 -0800 (PST)
-Date:   Wed, 11 Nov 2020 11:12:36 +0000
-From:   Sargun Dhillon <sargun@sargun.me>
-To:     Trond Myklebust <trondmy@hammerspace.com>
-Cc:     "alban.crequy@gmail.com" <alban.crequy@gmail.com>,
-        "mauricio@kinvolk.io" <mauricio@kinvolk.io>,
-        "smayhew@redhat.com" <smayhew@redhat.com>,
-        "dhowells@redhat.com" <dhowells@redhat.com>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "chuck.lever@oracle.com" <chuck.lever@oracle.com>,
-        "schumaker.anna@gmail.com" <schumaker.anna@gmail.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "bfields@fieldses.org" <bfields@fieldses.org>,
-        "linux-nfs@vger.kernel.org" <linux-nfs@vger.kernel.org>,
-        "anna.schumaker@netapp.com" <anna.schumaker@netapp.com>
-Subject: Re: [PATCH v4 0/2] NFS: Fix interaction between fs_context and user
- namespaces
-Message-ID: <20201111111233.GA21917@ircssh-2.c.rugged-nimbus-611.internal>
-References: <20201102174737.2740-1-sargun@sargun.me>
- <CAMXgnP5cVoLKTGPOAO+aLEAGLpkjACy1e4iLBKkfp8Gv1U77xA@mail.gmail.com>
- <f6d86006ccd19d4d101097de309eb21bbbf96e43.camel@hammerspace.com>
+        id S1726499AbgKKLNU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 06:13:20 -0500
+Received: from ozlabs.org ([203.11.71.1]:40773 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726039AbgKKLNJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Nov 2020 06:13:09 -0500
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CWMXV5mSTz9sSs;
+        Wed, 11 Nov 2020 22:12:58 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1605093181;
+        bh=QE1/yS9A+y7apFmQa9E6DBK0BKDrYI0qrcJCc+5O2Fk=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=WSivZMUuFx6UDN1/vyBmQUbbtks3lK2MkkHMbBq91c8+7lsfmb4kP9XSt1DqdaCTH
+         A35OlMR2A1BcFrEpEKGWBb2xdfRfrEyYVAtR2Z/G74lbvUPE+beBdkmDI1yFVyRGH6
+         uTkr7ptr4paiukHoqOz4tjWOXhgUbBmQwLkvNCRCLyVvQYGosYQ3q5Gbw5escDzjQL
+         8MoR2Z5fSscYhDwxMqTzrTlarhysFifkwLFSuxsDdhioAPk1ub6xUqUSF6sIqZ3jwf
+         B1JeOQ0zWASSBvCKQx5ayHpPHvO+53ojBuJqQNfuWr+thoL7BB9pIfESms+vG4vw6P
+         d6742qRZd1oxQ==
+Date:   Wed, 11 Nov 2020 22:12:54 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Christian Borntraeger <borntraeger@de.ibm.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        akpm@linux-foundation.org, dan.j.williams@intel.com,
+        daniel@ffwll.ch, linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-nvdimm@lists.01.org, Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        clang-built-linux@googlegroups.com,
+        Linux-Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: [PATCH 2/2] mm: simplify follow_pte{,pmd}
+Message-ID: <20201111221254.7f6a3658@canb.auug.org.au>
+In-Reply-To: <20201111082842.GA23677@lst.de>
+References: <20201029101432.47011-3-hch@lst.de>
+        <20201111022122.1039505-1-ndesaulniers@google.com>
+        <20201111081800.GA23492@lst.de>
+        <673267d5-93f5-7278-7a9d-a7b35ede6d48@de.ibm.com>
+        <20201111082842.GA23677@lst.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <f6d86006ccd19d4d101097de309eb21bbbf96e43.camel@hammerspace.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: multipart/signed; boundary="Sig_/Mc_NX=GVNozxrVPRgbb7NWp";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 10, 2020 at 08:12:01PM +0000, Trond Myklebust wrote:
-> On Tue, 2020-11-10 at 17:43 +0100, Alban Crequy wrote:
-> > Hi,
-> > 
-> > I tested the patches on top of 5.10.0-rc3+ and I could mount an NFS
-> > share with a different user namespace. fsopen() is done in the
-> > container namespaces (user, mnt and net namespaces) while fsconfig(),
-> > fsmount() and move_mount() are done on the host namespaces. The mount
-> > on the host is available in the container via mount propagation from
-> > the host mount.
-> > 
-> > With this, the files on the NFS server with uid 0 are available in
-> > the
-> > container with uid 0. On the host, they are available with uid
-> > 4294967294 (make_kuid(&init_user_ns, -2)).
-> > 
-> 
-> Can someone please tell me what is broken with the _current_ design
-> before we start trying to push "fixes" that clearly break it?
-Currently the mechanism of mounting nfs4 in a user namespace is as follows:
+--Sig_/Mc_NX=GVNozxrVPRgbb7NWp
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Parent: fork()
-Child: setns(userns)
-C: fsopen("nfs4") = 3
-C->P: Send FD 3
-P: FSConfig...
-P: fsmount... (This is where the CAP_SYS_ADMIN check happens))
+Hi Christoph,
 
+On Wed, 11 Nov 2020 09:28:42 +0100 Christoph Hellwig <hch@lst.de> wrote:
+>
+> On Wed, Nov 11, 2020 at 09:26:20AM +0100, Christian Borntraeger wrote:
+> >=20
+> > On 11.11.20 09:18, Christoph Hellwig wrote: =20
+> > > On Tue, Nov 10, 2020 at 06:21:22PM -0800, Nick Desaulniers wrote: =20
+> > >> Sorry, I think this patch may be causing a regression for us for s39=
+0?
+> > >> https://travis-ci.com/github/ClangBuiltLinux/continuous-integration/=
+jobs/432129279#L768
+> > >>
+> > >> (via https://lore.kernel.org/linux-mm/20201029101432.47011-3-hch@lst=
+.de) =20
+> > >=20
+> > > Hmm, the call to follow_pte_pmd in the s390 code does not actually ex=
+ist
+> > > in my tree. =20
+> >=20
+> > This is a mid-air collision in linux-next between
+> >=20
+> > b2ff5796a934 ("mm: simplify follow_pte{,pmd}")
+> > a67a88b0b8de ("s390/pci: remove races against pte updates") =20
+>=20
+> Ah.  The fixup is trivial: just s/follow_pte_pmd/follow_pte/.
 
-Right now, when you mount an NFS filesystem in a non-init user
-namespace, and you have UIDs / GIDs on, the UIDs / GIDs which
-are sent to the server are not the UIDs from the mounting namespace,
-instead they are the UIDs from the init user ns.
+ok, so tomorrow I will add the following to the merge of the
+akpm-current tree:
 
-The reason for this is that you can call fsopen("nfs4") in the unprivileged 
-namespace, and that configures fs_context with all the right information for 
-that user namespace, but we currently require CAP_SYS_ADMIN in the init user 
-namespace to call fsmount. This means that the superblock's user namespace is 
-set "correctly" to the container, but there's absolutely no way nfs4uidmap
-to consume an unprivileged user namespace.
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+Date: Wed, 11 Nov 2020 22:08:32 +1100
+Subject: [PATCH] merge fix for "s390/pci: remove races against pte updates"
 
-This behaviour happens "the other way" as well, where the UID in the container
-may be 0, but the corresponding kuid is 1000. When a response from an NFS
-server comes in we decode it according to the idmap userns[1]. The userns
-used to get create idmap is generated at fsmount time, and not as fsopen
-time. So, even if the filesystem is in the user namespace, and the server
-responds with UID 0, it'll come up with an unmapped UID.
+Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
+---
+ arch/s390/pci/pci_mmio.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-This is because we do
-Server UID 0 -> idmap make_kuid(init_user_ns, 0) -> VFS from_kuid(container_ns, 0) -> invalid uid
+diff --git a/arch/s390/pci/pci_mmio.c b/arch/s390/pci/pci_mmio.c
+index 1a6adbc68ee8..4a4993837413 100644
+--- a/arch/s390/pci/pci_mmio.c
++++ b/arch/s390/pci/pci_mmio.c
+@@ -173,7 +173,7 @@ SYSCALL_DEFINE3(s390_pci_mmio_write, unsigned long, mmi=
+o_addr,
+ 	if (!(vma->vm_flags & VM_WRITE))
+ 		goto out_unlock_mmap;
+=20
+-	ret =3D follow_pte_pmd(vma->vm_mm, mmio_addr, NULL, &ptep, NULL, &ptl);
++	ret =3D follow_pte(vma->vm_mm, mmio_addr, NULL, &ptep, NULL, &ptl);
+ 	if (ret)
+ 		goto out_unlock_mmap;
+=20
+@@ -317,7 +317,7 @@ SYSCALL_DEFINE3(s390_pci_mmio_read, unsigned long, mmio=
+_addr,
+ 	if (!(vma->vm_flags & VM_WRITE))
+ 		goto out_unlock_mmap;
+=20
+-	ret =3D follow_pte_pmd(vma->vm_mm, mmio_addr, NULL, &ptep, NULL, &ptl);
++	ret =3D follow_pte(vma->vm_mm, mmio_addr, NULL, &ptep, NULL, &ptl);
+ 	if (ret)
+ 		goto out_unlock_mmap;
+=20
+--=20
+2.29.2
 
-This is broken behaviour, in my humble opinion as is it makes it impossible to 
-use NFSv4 (and v3 for that matter) out of the box with unprivileged user 
-namespaces. At least in our environment, using usernames / GSS isn't an option,
-so we have to rely on UIDs being set correctly [at least from the container's
-perspective].
+--=20
+Cheers,
+Stephen Rothwell
 
+--Sig_/Mc_NX=GVNozxrVPRgbb7NWp
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
-> 
-> The current design assumes that the user namespace being used is the one where 
-> the mount itself is performed. That means that the uids and gids or usernames 
-> and groupnames that go on the wire match the uids and gids of the container in 
-> which the mount occurred.
-> 
+-----BEGIN PGP SIGNATURE-----
 
-Right now, NFS does not have the ability for the fsmount() call to be
-called in an unprivileged user namespace. We can change that behaviour
-elsewhere if we want, but it's orthogonal to this.
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl+rxzYACgkQAVBC80lX
+0GzxoggAnTSbP2MvHm/AvrWkgYxvOlLSLXdQ/ImkKzdhpKhThkA1ncXWZFIvTgHc
+46Y9TwSWR1HQOm/f/jyDe0qAIJP0857bxOHXTlFvY/3FSDv+WZc/2pSf1v5zAZnG
+edhdutlXgBgCqwhnux5ooDQUqwjwqiom+evJLaLtWzRAopB3QoLWA4vjk3KQ4HPa
+Z30h1i+dcqrXCDfbELftpAIDBZ7S0OWZakJzDPWKAYHlz4cbV/BhkDRf9rpb0i+I
+c/tpAnopxEVSWx1JCooiR7ZC2y/kXNl18K+Y83xy8bJdAmaR1jCSqlZsHDdBnpU3
+k/JOL0denkdXvrOMB7V3apBHpRJ8iQ==
+=AA7r
+-----END PGP SIGNATURE-----
 
-> The assumption is that the server has authenticated that client as
-> belonging to a domain that it recognises (either through strong
-> RPCSEC_GSS/krb5 authentication, or through weaker matching of IP
-> addresses to a list of acceptable clients).
-> 
-I added a rejection for upcalls because upcalls can happen in the init 
-namespaces. We can drop that restriction from the nfs4 patch if you'd like. I
-*believe* (and I'm not a little out of my depth) that the request-key
-handler gets called with the *network namespace* of the NFS mount,
-but the userns is a privileged one, allowing for potential hazards.
-
-The reason I added that block there is that I didn't imagine anyone was running 
-NFS in an unprivileged user namespace, and relying on upcalls (potentially into 
-privileged namespaces) in order to do authz.
-
-
-> If you go ahead and change the user namespace on the client without
-> going through the mount process again to mount a different super block
-> with a different user namespace, then you will now get the exact same
-> behaviour as if you do that with any other filesystem.
-
-Not exactly, because other filesystems *only* use the s_user_ns for conversion 
-of UIDs, whereas NFS uses the currend_cred() acquired at mount time, which 
-doesn't match s_user_ns, leading to this behaviour.
-
-1. Mistranslated UIDs in encoding RPCs
-2. The UID / GID exposed to VFS do not match the user ns.
-
-> 
-> -- 
-> Trond Myklebust
-> Linux NFS client maintainer, Hammerspace
-> trond.myklebust@hammerspace.com
-> 
-> 
--Thanks,
-Sargun
-
-[1]: https://elixir.bootlin.com/linux/v5.9.8/source/fs/nfs/nfs4idmap.c#L782
-[2]: https://elixir.bootlin.com/linux/v5.9.8/source/fs/nfs/nfs4client.c#L1154
+--Sig_/Mc_NX=GVNozxrVPRgbb7NWp--
