@@ -2,82 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52D932AEEC0
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 11:29:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A0C352AEEBD
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 11:28:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727477AbgKKK25 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 05:28:57 -0500
-Received: from mga17.intel.com ([192.55.52.151]:63529 "EHLO mga17.intel.com"
+        id S1727459AbgKKK2w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 05:28:52 -0500
+Received: from mx2.suse.de ([195.135.220.15]:58322 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726303AbgKKK2y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 05:28:54 -0500
-IronPort-SDR: u9s7dLkHfgKe9WlPURPq1+dQZuhvLwpTP2p7IOlrWSI4Tb6oc1mjitRLvgymBmlSPwQkSabEzh
- 0criZ4UyLs0A==
-X-IronPort-AV: E=McAfee;i="6000,8403,9801"; a="149975353"
-X-IronPort-AV: E=Sophos;i="5.77,469,1596524400"; 
-   d="scan'208";a="149975353"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Nov 2020 02:28:50 -0800
-IronPort-SDR: 3PvLC/oraPbDSJ+zaC+oB8C8AQj+wEBG0daPdiSxR5Xf9qrpTgcIDOewMMnFb8mp4fAxUf3BhY
- ojFX+9slVHJQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,469,1596524400"; 
-   d="scan'208";a="428708253"
-Received: from kuha.fi.intel.com ([10.237.72.162])
-  by fmsmga001.fm.intel.com with SMTP; 11 Nov 2020 02:28:47 -0800
-Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Wed, 11 Nov 2020 12:28:46 +0200
-Date:   Wed, 11 Nov 2020 12:28:46 +0200
-From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
-To:     Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        gregkh@linuxfoundation.org
-Cc:     Prashant Malani <pmalani@chromium.org>,
-        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
-        Benson Leung <bleung@chromium.org>,
-        Guenter Roeck <groeck@chromium.org>
-Subject: Re: [PATCH v2 2/2] platform/chrome: cros_ec_typec: Set partner
- num_altmodes
-Message-ID: <20201111102846.GP1224435@kuha.fi.intel.com>
-References: <20201110061535.2163599-1-pmalani@chromium.org>
- <20201110061535.2163599-2-pmalani@chromium.org>
- <20201110105015.GF1224435@kuha.fi.intel.com>
- <ba6c1415-457b-1e8d-b604-fad603fe9be6@collabora.com>
+        id S1727438AbgKKK2v (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Nov 2020 05:28:51 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 2474EADC1;
+        Wed, 11 Nov 2020 10:28:50 +0000 (UTC)
+Date:   Wed, 11 Nov 2020 11:28:48 +0100
+From:   Michal =?iso-8859-1?Q?Such=E1nek?= <msuchanek@suse.de>
+To:     Dave Chinner <david@fromorbit.com>
+Cc:     "Darrick J. Wong" <darrick.wong@oracle.com>,
+        linux-xfs@vger.kernel.org, linux-ext4@vger.kernel.org,
+        Theodore Ts'o <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Ira Weiny <ira.weiny@intel.com>, Jan Kara <jack@suse.cz>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] xfs: show the dax option in mount options.
+Message-ID: <20201111102848.GD29778@kitsune.suse.cz>
+References: <cover.1604948373.git.msuchanek@suse.de>
+ <f9f7ba25e97dacd92c09eb3ee6a4aca8b4f72b00.1604948373.git.msuchanek@suse.de>
+ <20201109192419.GC9695@magnolia>
+ <20201109202705.GZ29778@kitsune.suse.cz>
+ <20201109210823.GI7391@dread.disaster.area>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <ba6c1415-457b-1e8d-b604-fad603fe9be6@collabora.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201109210823.GI7391@dread.disaster.area>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 10, 2020 at 05:01:04PM +0100, Enric Balletbo i Serra wrote:
-> Hi,
+On Tue, Nov 10, 2020 at 08:08:23AM +1100, Dave Chinner wrote:
+> On Mon, Nov 09, 2020 at 09:27:05PM +0100, Michal Suchánek wrote:
+> > On Mon, Nov 09, 2020 at 11:24:19AM -0800, Darrick J. Wong wrote:
+> > > On Mon, Nov 09, 2020 at 08:10:08PM +0100, Michal Suchanek wrote:
+> > > > xfs accepts both dax and dax_enum but shows only dax_enum. Show both
+> > > > options.
+> > > > 
+> > > > Fixes: 8d6c3446ec23 ("fs/xfs: Make DAX mount option a tri-state")
+> > > > Signed-off-by: Michal Suchanek <msuchanek@suse.de>
+> > > > ---
+> > > >  fs/xfs/xfs_super.c | 2 +-
+> > > >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > > > 
+> > > > diff --git a/fs/xfs/xfs_super.c b/fs/xfs/xfs_super.c
+> > > > index e3e229e52512..a3b00003840d 100644
+> > > > --- a/fs/xfs/xfs_super.c
+> > > > +++ b/fs/xfs/xfs_super.c
+> > > > @@ -163,7 +163,7 @@ xfs_fs_show_options(
+> > > >  		{ XFS_MOUNT_GRPID,		",grpid" },
+> > > >  		{ XFS_MOUNT_DISCARD,		",discard" },
+> > > >  		{ XFS_MOUNT_LARGEIO,		",largeio" },
+> > > > -		{ XFS_MOUNT_DAX_ALWAYS,		",dax=always" },
+> > > > +		{ XFS_MOUNT_DAX_ALWAYS,		",dax,dax=always" },
+> > > 
+> > > NAK, programs that require DAX semantics for files stored on XFS must
+> > > call statx to detect the STATX_ATTR_DAX flag, as outlined in "Enabling
+> > > DAX on xfs" in Documentation/filesystems/dax.txt.
+> > statx can be used to query S_DAX.  NOTE that only regular files will
+> > ever have S_DAX set and therefore statx will never indicate that S_DAX
+> > is set on directories.
 > 
-> On 10/11/20 11:50, Heikki Krogerus wrote:
-> > On Mon, Nov 09, 2020 at 10:15:36PM -0800, Prashant Malani wrote:
-> >> Set the number of altmodes available for a registered partner using the
-> >> Type C connector class framework routine.
-> >>
-> >> Signed-off-by: Prashant Malani <pmalani@chromium.org>
-> > 
-> > Reviewed-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
-> > 
+> Yup, by design.
 > 
-> Acked-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
+> The application doesn't need to do anything complex to make this
+> work. If the app wants to use DAX, then it should use
+> FS_IOC_FS{GS}ETXATTR to always set the on disk per inode DAX flags
+> for it's data dirs and files, and then STATX_ATTR_DAX will *always*
+> tell it whether DAX is actively in use at runtime. It's pretty
+> simple, really.
 > 
-> Heikki, would you like to take these two through your tree? It'd help if you can
-> create an inmutable branch so I can pick other cros_ec_typec patches on top of it.
+> > The filesystem may not have any files so statx cannot be used.
+> 
+> Really?  The app or installer is about to *write to the fs* and has
+> all the permissions it needs to modify the contents of the fs. It's
+> pretty simple to create a tmpdir, set the DAX flag on the tmpdir,
+> then create a tmpfile in the tmpdir and run STATX_ATTR_DAX on it to
+> see if DAX is active or not.....
 
-I'm sorry, but I don't actually maintain a tree for the USB Type-C
-stuff.
+Have you ever seen a 'wizard' style installer?
 
-Greg, I'm sorry to bother you with this, but can you provide the
-immutable branch for Enric?
+Like one that firsts asks what to install, and then presents a list of
+suitable locations that have enough space, supported filesystem features
+enabled, and whatnot?
 
-Maybe I should set up a tree for the USB Type-C stuff?
+So to present a list of mountpoints that support DAX one has to scribble
+over every mountpoint on the system?
 
-thanks,
+That sounds ridiculous.
+> 
+> However, keep in mind that from a system design perspective having
+> the installer detect DAX properties to make application level
+> install/config decisions is problematic from a lot of different
+> angles.
+> 
+> - DAX is property of the *block device*, not the filesystem, so the
+>   filesystem can make arbitrary decisions on whether to use DAX or
+>   not to access data and these can change at any time without
+>   warning.
+It is property of the mount point. Device supporting DAX is useless on
+its own - the filesystem must support and enable it as well. Filesystem
+support on its own is useless - it must be on a device that supports
+DAX, has matching block sise, it must be enabled at mount time.
 
--- 
-heikki
+Then don't be surprised that the users use 'creative' ways to determine
+the information the kernel chooses to not share with them.
+> 
+> - Some filesystems may not have any user visible signs they are
+>   using DAX to access data except for STATX_ATTR_DAX because they
+>   always use DAX and only work on DAX capable block devices. e.g
+>   NVFS.
+That's broken indeed.
+> 
+> - For filesystems where DAX is optional, the user can -always-
+>   change the dax state of the fs (mount options) or even parts of
+>   the filesystem (per inode flags) at any time after the installer
+>   has run.
+The user can do a lot of thing indeed. They can even unmount the
+filesystem.
+> 
+> - The application might be storing it's data on a different
+>   filesystem that isn't mounted at install time, so the installer
+>   has no chance of detecting that the application is going to use
+>   DAX enabled storage.
+> 
+> IOWs, the installer cannot make decisions based on DAX state on
+> behalf of applications because it does not know what environment the
+> application is going to be configured to run in.  DAX can only be
+> deteted reliably by the application at runtime inside it's
+> production execution environment.
+It can check that the mount point is suitable at the time of
+installation. Of course, if the system is reconfigured afterwards the
+application might fail. However, checking the requirements prior to
+installtion still provides valuable feedback to the user. They can be
+sure that the system was configured properly.
+
+Thanks
+
+Michal
