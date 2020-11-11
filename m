@@ -2,82 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C87372AF690
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 17:32:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 069BC2AF68B
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 17:31:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727407AbgKKQcS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 11:32:18 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53974 "EHLO mail.kernel.org"
+        id S1727471AbgKKQbY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 11:31:24 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53796 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725979AbgKKQcQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 11:32:16 -0500
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+        id S1726208AbgKKQbX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Nov 2020 11:31:23 -0500
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 95440206F1;
-        Wed, 11 Nov 2020 16:32:15 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 06267206B5;
+        Wed, 11 Nov 2020 16:31:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605112336;
-        bh=72CkBFpUBSDsvXuGAkNdpZijpYjYImRaVmVjuqTUVSg=;
+        s=default; t=1605112282;
+        bh=u1W79eBhFJDijrV1bXsrDHc02dojBuPzlmTjNRwzECM=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=2hPhikYb426IkOVPIC3MrzCFHFFGowsTGGP9W+7zyN2WVeHWWvDlNLo0YTpIc14Cl
-         4kMiFfMUpyUQby7aqWmQpQHmXv+//df6OZWIQfRbKkEK51K4foczvQCK7ZoJZcbw7A
-         Dlg0/B1WCirPhIo3ozdMghQ5HMuVWTGLGfDj6oGg=
-Date:   Wed, 11 Nov 2020 16:32:00 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     Sven Van Asbroeck <thesven73@gmail.com>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Jonathan Cameron <jonathan.cameron@huawei.com>,
-        Lukas Wunner <lukas@wunner.de>,
-        linux-spi <linux-spi@vger.kernel.org>,
-        Simon Han <z.han@kunbus.com>,
+        b=pTJO7zCDEAIc4ENcSgzN9lsMdGt7wXtmAxlhGhYh9RxxpVjT7DGXoeXUS10GeaFoJ
+         TqdEeulUJiiE6h4kRf+qbVUdou0DBrWTQpZdIfznMNMFg0Uy+wXHd5P9E0SvPkdoXw
+         eDeNfg3jKEyZgGrNPO6pRBc2UXlWpwDPeeHKE9T4=
+Date:   Wed, 11 Nov 2020 17:32:22 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     "Limonciello, Mario" <Mario.Limonciello@dell.com>
+Cc:     Hans de Goede <hdegoede@redhat.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Bastien Nocera <hadess@hadess.net>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Charles Keepax <ckeepax@opensource.cirrus.com>
-Subject: Re: [PATCH v1] spi: fix client driver breakages when using GPIO
- descriptors
-Message-ID: <20201111163200.GC4847@sirena.org.uk>
-References: <20201106150706.29089-1-TheSven73@gmail.com>
- <160510968064.12304.14797288117651443603.b4-ty@kernel.org>
- <CAGngYiVAdPSCEQm5pJdFQ+3VpwNH1vGD6rPNK1_SQK3Uvfbt5A@mail.gmail.com>
+        "linux-input@vger.kernel.org" <linux-input@vger.kernel.org>,
+        Mathias Nyman <mathias.nyman@linux.intel.com>
+Subject: Re: How to enable auto-suspend by default
+Message-ID: <X6wSFojYLvwGhY/g@kroah.com>
+References: <fe8ab4cab3740afd261fa902f14ecae002a1122d.camel@hadess.net>
+ <X6p6ubTOoMPUPPXi@kroah.com>
+ <DM6PR19MB2636C94B56D5FBC0BD98A1B0FAE90@DM6PR19MB2636.namprd19.prod.outlook.com>
+ <20201110172517.GC2495@lahna.fi.intel.com>
+ <30957f1a-1fe5-5d9a-101b-25f12fb93907@redhat.com>
+ <DM6PR19MB26366008D59FC94D384A1E3BFAE80@DM6PR19MB2636.namprd19.prod.outlook.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="JWEK1jqKZ6MHAcjA"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAGngYiVAdPSCEQm5pJdFQ+3VpwNH1vGD6rPNK1_SQK3Uvfbt5A@mail.gmail.com>
-X-Cookie: I'm not available for comment..
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <DM6PR19MB26366008D59FC94D384A1E3BFAE80@DM6PR19MB2636.namprd19.prod.outlook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Nov 11, 2020 at 04:03:30PM +0000, Limonciello, Mario wrote:
+> > >> Given we're effectively ending up with the combination of runtime PM turned
+> > >> on by udev rules, do we need something like this for that ID:
+> > >>
+> > >>
+> > https://github.com/torvalds/linux/commit/6a7c533d4a1854f54901a065d8c672e890400
+> > d8a
+> > >>
+> > >> @Mika Westerberg should 8086:a0ed be quirked like the TCSS xHCI too?
+> > >
+> > > I think this one is the TGL PCH xHCI. The quirk currently for xHCI
+> > > controllers that are part of the TCSS (Type-C SubSystem) where it is
+> > > important to put all devices into low power mode whenever possible,
+> > > otherwise it keeps the whole block on.
+> > 
+> > Note that there are currently some IDs missing from the xHCIs which
+> > are part of the TCSS too. At least the id for the xHCI in the thunderbolt
+> > controller on the Lenovo T14 gen 1 is missing. I started a discussion
+> > about extending the kernel quirk list for this vs switching to hwdb
+> > a while a go:
+> > 
+> > https://lore.kernel.org/linux-usb/b8b21ba3-0a8a-ff54-5e12-
+> > cf8960651086@redhat.com/
+> > 
+> > The conclusion back then was to switch to hwdb, but I never got around to
+> > this.
+> 
+> I guess the problem I see with switching to a hwdb for this type of thing is
+> that if there is a "bug" in your kernel driver around autosuspend you will
+> then be potentially causing it to occur more regularly on a kernel that didn't
+> necessarily pick up the fix but does have the newer hwdb.
+> 
+> I don't know how common that will really be though.
+> 
+> Since Mika mentioned the really light userspace scenario, what about shipping
+> the hwdb "with" the kernel in tree?  This could allow evicting all these quirk
+> scenarios from the kernel at the same time as switching to a hwdb and also cover
+> the problem I suggested might happen with a bug in older kernel and newer userspace.
 
---JWEK1jqKZ6MHAcjA
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+We took things out of the kernel to put it in hwdb years ago as it was
+easier for people to update a "text file" than it was their kernel
+image.  I don't think you want to go backwards here :)
 
-On Wed, Nov 11, 2020 at 11:24:14AM -0500, Sven Van Asbroeck wrote:
+thanks,
 
-> Now that our minds are still focused on this subject, should
-> commit 138c9c32f090 ("spi: spidev: Fix CS polarity if GPIO descriptors
-> are used")
-> be reverted?
-
-If you think changes should be made to the code please propose patches
-making them - reverts are just normal patches with changelogs.
-
---JWEK1jqKZ6MHAcjA
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl+sEf8ACgkQJNaLcl1U
-h9CmaAf6A0ij5B2nu0gr76TVf+bSTOgpbMF9zasf5KZtW4r9mjsLt9cG8UL7EV/d
-y1K9ISunQ1OrYvORnXa2zi/NDR+sc7hZ3Qv3yF4Uow4YBhCQb8Kgl2+IsuwKbSFG
-jt6WGWseblvCeg320k6JWlDrv2yKzEJUOeCHf7uWH6cm9wF0/87EE/XJ88O/13iG
-juxL85pM05WwiqYGcjdZA0EiyrzX0V5bOQqQhjtDg29QpnugizUh1itHJrMEJaGH
-H6ZBcXhSmWMltY6gqUV840P1sdsNLYGlL8i7cLAlg63LJVuM/GOC5iP/Ck2tGTnw
-bkrL7HIbmV/zRL8T+Z1/bFjZND0uZw==
-=JgJA
------END PGP SIGNATURE-----
-
---JWEK1jqKZ6MHAcjA--
+greg k-h
