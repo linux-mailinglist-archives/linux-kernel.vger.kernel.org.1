@@ -2,108 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C72F2AEE50
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 10:58:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B863B2AEE3E
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 10:56:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727298AbgKKJ6m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 04:58:42 -0500
-Received: from userp2120.oracle.com ([156.151.31.85]:57846 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726216AbgKKJ6j (ORCPT
+        id S1727211AbgKKJ4l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 04:56:41 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:32522 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725870AbgKKJ4k (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 04:58:39 -0500
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AB9rM1a026154;
-        Wed, 11 Nov 2020 09:58:31 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=oA61zxEVlmMNqsCkjllOctTkDy6MHEZz/u0CS0f0GR4=;
- b=EQ8585thJHiooh6+1JOWtvq0C3AVYE3QmSIqvUKrsXCKk1jWJbWXvTMWy7zl2LOx++72
- 08NZQ9P7fWkAcWVE64rNpSs9iiZOrBDkLo6KFUbH6M2hpKf68PsNajR+F/LbYkA5NMy4
- QPQ2kaVm45VRbpFLGQfWi+0JxbL9qLk1C/WBmuws9owZJ/0IriOGLGHd23/VTGOtHQtw
- aPHm89YLeIvSVUXWmBZFiVX9kOP0neTChUC2qW9p4ejmMyDYZpyb2tnNncsl2afn+hwS
- f3C3bP6tonLgknMS2su1C+EQYimJGBhOpmw2mQ5wqX9diAcREKhCHLlgajSc48U4YJfT cA== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by userp2120.oracle.com with ESMTP id 34p72epbfd-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 11 Nov 2020 09:58:31 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AB9uANX188256;
-        Wed, 11 Nov 2020 09:56:31 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by userp3030.oracle.com with ESMTP id 34p5gy5h87-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 11 Nov 2020 09:56:30 +0000
-Received: from abhmp0010.oracle.com (abhmp0010.oracle.com [141.146.116.16])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0AB9uSol008867;
-        Wed, 11 Nov 2020 09:56:29 GMT
-Received: from kadam (/41.57.98.10)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Wed, 11 Nov 2020 01:56:28 -0800
-Date:   Wed, 11 Nov 2020 12:56:21 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     LABBE Corentin <clabbe@baylibre.com>
-Cc:     kbuild@lists.01.org, lkp@intel.com,
-        Dan Carpenter <error27@gmail.com>, kbuild-all@lists.01.org,
-        linux-kernel@vger.kernel.org,
-        Herbert Xu <herbert@gondor.apana.org.au>
-Subject: Re: drivers/crypto/allwinner/sun8i-ce/sun8i-ce-hash.c:412
- sun8i_ce_hash_run() warn: possible memory leak of 'result'
-Message-ID: <20201111095621.GJ29398@kadam>
-References: <20201110104737.GF29398@kadam>
- <20201111080134.GA4359@Red>
+        Wed, 11 Nov 2020 04:56:40 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1605088599;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=+XA2Ly6G9+uqaj4t90Nv+OVjOkGfko8/whq+z9+8i7E=;
+        b=M26e/h6zs+HjxGVLwJYDHiFz4t27J3kLNajwJBNM7aQHDV++S+AGljnW3f1H6diqcBo7at
+        iCIH1vW+r8Oi1DvHVzRDi/JswbRRgOU6xD2v1FrNeoKsMkvPi7TlEYcgMDImb07Fr8bKHn
+        l3aYXXAV8zZPFDxIENicIz4gZ2bi0rc=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-375-kw35YCLhNA-EYDOl6FMLMQ-1; Wed, 11 Nov 2020 04:56:36 -0500
+X-MC-Unique: kw35YCLhNA-EYDOl6FMLMQ-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D0F3C80476E;
+        Wed, 11 Nov 2020 09:56:28 +0000 (UTC)
+Received: from file01.intranet.prod.int.rdu2.redhat.com (file01.intranet.prod.int.rdu2.redhat.com [10.11.5.7])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id A0B3C6EF5B;
+        Wed, 11 Nov 2020 09:56:28 +0000 (UTC)
+Received: from file01.intranet.prod.int.rdu2.redhat.com (localhost [127.0.0.1])
+        by file01.intranet.prod.int.rdu2.redhat.com (8.14.4/8.14.4) with ESMTP id 0AB9uSqU029365;
+        Wed, 11 Nov 2020 04:56:28 -0500
+Received: from localhost (mpatocka@localhost)
+        by file01.intranet.prod.int.rdu2.redhat.com (8.14.4/8.14.4/Submit) with ESMTP id 0AB9uSYG029361;
+        Wed, 11 Nov 2020 04:56:28 -0500
+X-Authentication-Warning: file01.intranet.prod.int.rdu2.redhat.com: mpatocka owned process doing -bs
+Date:   Wed, 11 Nov 2020 04:56:27 -0500 (EST)
+From:   Mikulas Patocka <mpatocka@redhat.com>
+X-X-Sender: mpatocka@file01.intranet.prod.int.rdu2.redhat.com
+To:     Nick Desaulniers <ndesaulniers@google.com>
+cc:     Alasdair Kergon <agk@redhat.com>,
+        Mike Snitzer <snitzer@redhat.com>,
+        Rob Herring <robherring2@gmail.com>,
+        clang-built-linux@googlegroups.com, dm-devel@redhat.com,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] Revert "dm cache: fix arm link errors with inline"
+In-Reply-To: <20201111024140.1483879-1-ndesaulniers@google.com>
+Message-ID: <alpine.LRH.2.02.2011110456030.25804@file01.intranet.prod.int.rdu2.redhat.com>
+References: <20201111024140.1483879-1-ndesaulniers@google.com>
+User-Agent: Alpine 2.02 (LRH 1266 2009-07-14)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201111080134.GA4359@Red>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9801 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 mlxlogscore=999 mlxscore=0
- spamscore=0 phishscore=0 adultscore=0 malwarescore=0 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2011110054
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9801 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 mlxlogscore=999 mlxscore=0
- malwarescore=0 suspectscore=0 lowpriorityscore=0 adultscore=0 phishscore=0
- priorityscore=1501 spamscore=0 impostorscore=0 clxscore=1015
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2011110054
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 11, 2020 at 09:01:34AM +0100, LABBE Corentin wrote:
-> On Tue, Nov 10, 2020 at 01:47:37PM +0300, Dan Carpenter wrote:
-> > tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-> > head:   407ab579637ced6dc32cfb2295afb7259cca4b22
-> > commit: 56f6d5aee88d129b2424902cd630f10794550763 crypto: sun8i-ce - support hash algorithms
-> > config: x86_64-randconfig-m001-20201109 (attached as .config)
-> > compiler: gcc-9 (Debian 9.3.0-15) 9.3.0
-> > 
-> > If you fix the issue, kindly add following tag as appropriate
-> > Reported-by: kernel test robot <lkp@intel.com>
-> > Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
-> > 
+Acked-by: Mikulas Patocka <mpatocka@redhat.com>
+
+
+
+On Tue, 10 Nov 2020, Nick Desaulniers wrote:
+
+> This reverts commit 43aeaa29573924df76f44eda2bbd94ca36e407b5.
 > 
-> Hello
+> Since
+> commit 0bddd227f3dc ("Documentation: update for gcc 4.9 requirement")
+> the minimum supported version of GCC is gcc-4.9. It's now safe to remove
+> this code.
 > 
-> Thanks for the report, I will send a patch soon.
-> Note that you should send this report to the maintainer also (but this time it is me with another address, so its fine).
+> Link: https://github.com/ClangBuiltLinux/linux/issues/427
+> Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
+> ---
+>  drivers/md/dm-cache-target.c | 4 ----
+>  1 file changed, 4 deletions(-)
+> 
+> diff --git a/drivers/md/dm-cache-target.c b/drivers/md/dm-cache-target.c
+> index 9644424591da..4bc453f5bbaa 100644
+> --- a/drivers/md/dm-cache-target.c
+> +++ b/drivers/md/dm-cache-target.c
+> @@ -712,10 +712,6 @@ static bool block_size_is_power_of_two(struct cache *cache)
+>  	return cache->sectors_per_block_shift >= 0;
+>  }
+>  
+> -/* gcc on ARM generates spurious references to __udivdi3 and __umoddi3 */
+> -#if defined(CONFIG_ARM) && __GNUC__ == 4 && __GNUC_MINOR__ <= 6
+> -__always_inline
+> -#endif
+>  static dm_block_t block_div(dm_block_t b, uint32_t n)
+>  {
+>  	do_div(b, n);
+> -- 
+> 2.29.2.222.g5d2a92d10f8-goog
 > 
 
-These are automated emails from the kbuild bot.  I just look over the
-Smatch warnings and forward them.  It don't know how the CC list is
-chosen.  I guess just from who signed off on the patch...  My guess is
-that people would be annoyed if we CC'd more people.
-
-Generally, we have a really good success rate with people fixing these
-warnings.  I recently had a case where the zero day bot email wasn't
-clear, but I caught that because I'm looking at new Smatch warnings on
-my own system.  There was another case, where the bug was fixed and then
-re-introduced via a bad merge and we almost missed that because it was
-marked as old.  Fortunately, I discoverd it while looking at a different
-bug.
-
-regards,
-dan carpenter
