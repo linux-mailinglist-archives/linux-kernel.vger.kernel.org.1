@@ -2,245 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B889D2AEFEE
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 12:48:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3674A2AEFF4
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 12:49:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726339AbgKKLsP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 06:48:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37562 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725860AbgKKLsN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 06:48:13 -0500
-Received: from mail-qv1-xf42.google.com (mail-qv1-xf42.google.com [IPv6:2607:f8b0:4864:20::f42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA09EC0613D1
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 03:48:13 -0800 (PST)
-Received: by mail-qv1-xf42.google.com with SMTP id 13so713028qvr.5
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 03:48:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=5/bsZJ2SXh7EWUOoj25+V0UBuv9sNRFfAJnPmwXVu1s=;
-        b=u5HABaE355NHv54+nsM4vzu7xItgx0bQHDH2oFWb6imxmfuScr2jqNWW9XgYnl2fXm
-         0dJj3090WHnTYYiAJI03sv1PFoeTpFS0EM4G9e7pYlUrph8o/iHjnw836qP7wIX2KQc6
-         hHVirZoSrFeQo5ctaC139iDJnI+/H+JlScB0leoVqTZQMIUBbcjLN+xv45LULAE3/MCp
-         Icje2YNe/vdtZGfFSHYBqnoAIzNN1hoXNuGARlURG9vZOq6A1O186BWmZNgRWcGtcplG
-         gHyc4nPOcsK0Kl7q7YXiZmWMHIJxXFH+A4TInnVI1HPQxlrtaS7bxLchejT9DeQwd8gi
-         X/Xw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=5/bsZJ2SXh7EWUOoj25+V0UBuv9sNRFfAJnPmwXVu1s=;
-        b=IQR3pnwtIHTprcodNYP6xE/wNnfp5f+y8eWQen2mUd4NdFxb6KSN/lxd8QJeYyrUKS
-         +7vylKNC9MY1MkCBwrY+TDA5G9Sj2ABqCpzArDTVo/pwMraqsvYPYQiOxxMQhqBDYYwH
-         DVvC8fkyDGci0xO4A43AkzfT2luNBBmRge/HoNTqx1Jyq1Dmn2do6dsIC23TCIavDVsZ
-         tZ3xCNXiwLocWiguuILs7f4abOW4LVLh9TCOC4SDTcauGN45H+YOYDCpwMhxMFiDkDnA
-         aG0ORlem04AHbRXpptHzFcWQ7yX4cXDUB1syRJg5njYGbrrVm+mHhunxdSTOBFXdu65X
-         CGYw==
-X-Gm-Message-State: AOAM530Fnzf9xfLaHQHYi4j3r5K8S3Je10ART/hFU649v4RKwQeAiMVT
-        7PIiMLq38VgOl8VoH5PH+oEukyUAH6FOadmiOARvpQ==
-X-Google-Smtp-Source: ABdhPJweQklfC8h2MxgH/sGjP1zb3U75XU///xckXr9YQGBWjDC0IaHCs2qgjypRFDn52a26LrzfhAWQ8TwFdUjcW7E=
-X-Received: by 2002:a05:6214:209:: with SMTP id i9mr24657975qvt.38.1605095292686;
- Wed, 11 Nov 2020 03:48:12 -0800 (PST)
+        id S1726308AbgKKLtD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 06:49:03 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47028 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725860AbgKKLs4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Nov 2020 06:48:56 -0500
+Received: from mail-oi1-f172.google.com (mail-oi1-f172.google.com [209.85.167.172])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 70A73206FB
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 11:48:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605095335;
+        bh=thpkcneAuU2okRMVMJwAiJlvQnf7AlL9RhNX38F2U3c=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=uLw4MVnmUlmM3N8V1R9mLgezylV6JD2+gzDtqhLW9nijyGcMIhtOWGgrG1u6HqgnF
+         nHWeKjYhR+uL4K3hzgsnYmcsNjU91D5tWDIN2EtXm6zwQuHMIyeoinpqe40F4NrU7o
+         YJOk9VQ46gTYWzkWFiQPmdpS8Yj7Hw+CvUDhXZuM=
+Received: by mail-oi1-f172.google.com with SMTP id d9so1865866oib.3
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 03:48:55 -0800 (PST)
+X-Gm-Message-State: AOAM531Va9H7nc31okkupvyzceZI5QNXtNX8ywdPkEtdb6PuG2ok4GBX
+        Ddddnf4vF9wzDly/f/WvVl2MYk/9euyxACilXDE=
+X-Google-Smtp-Source: ABdhPJyXudDvaZhvjMLhyRjTOa0DbFsY5YGNerRtqO0XvUr+gKOz/VD8FaFC8Wi0k+wQ5AF/8H5TfS3BvA11tdACsZY=
+X-Received: by 2002:aca:5c82:: with SMTP id q124mr1918562oib.33.1605095334631;
+ Wed, 11 Nov 2020 03:48:54 -0800 (PST)
 MIME-Version: 1.0
-References: <20201111104409.1530957-1-a.nogikh@gmail.com> <20201111104409.1530957-2-a.nogikh@gmail.com>
-In-Reply-To: <20201111104409.1530957-2-a.nogikh@gmail.com>
-From:   Alexander Potapenko <glider@google.com>
-Date:   Wed, 11 Nov 2020 12:48:01 +0100
-Message-ID: <CAG_fn=U63McR4-0uAfK44=GeYr78wP5PRzasG59CoSXLm0fCcQ@mail.gmail.com>
-Subject: Re: [PATCH v4 1/2] security: add fault injection capability
-To:     Aleksandr Nogikh <a.nogikh@gmail.com>
-Cc:     James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Akinobu Mita <akinobu.mita@gmail.com>,
-        Andrey Konovalov <andreyknvl@google.com>,
-        Dmitriy Vyukov <dvyukov@google.com>,
-        Marco Elver <elver@google.com>,
-        Kees Cook <keescook@google.com>,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-security-module <linux-security-module@vger.kernel.org>,
-        mortonm@chromium.org, Aleksandr Nogikh <nogikh@google.com>
+References: <20201105152944.16953-1-ardb@kernel.org> <CAMj1kXGtxWk3Z4fxm=b5YMU1Dy2HfaOAynaMiMGKZx9vLArpmg@mail.gmail.com>
+ <0b0d47d9-76a5-723f-6642-d5ddadce7f94@arm.com> <CAMj1kXHBcb_UxeLs23XZt0VvNM-8JqchutU+qDwdWJm-WQpt5Q@mail.gmail.com>
+ <fe355153-a718-4259-9ff3-26170b385353@arm.com>
+In-Reply-To: <fe355153-a718-4259-9ff3-26170b385353@arm.com>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Wed, 11 Nov 2020 12:48:42 +0100
+X-Gmail-Original-Message-ID: <CAMj1kXGboqZppYpHOk2B3cvVG12t2aqe5QYU6b6pt6pdm1vM=Q@mail.gmail.com>
+Message-ID: <CAMj1kXGboqZppYpHOk2B3cvVG12t2aqe5QYU6b6pt6pdm1vM=Q@mail.gmail.com>
+Subject: Re: [PATCH] random: avoid arch_get_random_seed_long() when collecting
+ IRQ randomness
+To:     =?UTF-8?Q?Andr=C3=A9_Przywara?= <andre.przywara@arm.com>
+Cc:     "Theodore Y. Ts'o" <tytso@mit.edu>,
+        Eric Biggers <ebiggers@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Mark Brown <broonie@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 11, 2020 at 11:45 AM Aleksandr Nogikh <a.nogikh@gmail.com> wrot=
-e:
+On Wed, 11 Nov 2020 at 11:46, Andr=C3=A9 Przywara <andre.przywara@arm.com> =
+wrote:
 >
-> From: Aleksandr Nogikh <nogikh@google.com>
+> On 11/11/2020 10:05, Ard Biesheuvel wrote:
 >
-> Add a fault injection capability to call_int_hook macro. This will
-> facilitate testing of fault tolerance of the code that invokes
-> security hooks as well as the fault tolerance of the LSM
-> implementations themselves.
+> Hi,
 >
-> Add a KConfig option (CONFIG_FAIL_LSM_HOOKS) that controls whether the
-> capability is enabled. In order to enable configuration from the user
-> space, add the standard debugfs entries for fault injection (if
-> CONFIG_FAULT_INJECTION_DEBUG_FS is enabled).
+> > On Wed, 11 Nov 2020 at 10:45, Andr=C3=A9 Przywara <andre.przywara@arm.c=
+om> wrote:
+> >>
+> >> On 11/11/2020 08:19, Ard Biesheuvel wrote:
+> >>
+> >> Hi,
+> >>
+> >>> (+ Eric)
+> >>>
+> >>> On Thu, 5 Nov 2020 at 16:29, Ard Biesheuvel <ardb@kernel.org> wrote:
+> >>>>
+> >>>> When reseeding the CRNG periodically, arch_get_random_seed_long() is
+> >>>> called to obtain entropy from an architecture specific source if one
+> >>>> is implemented. In most cases, these are special instructions, but i=
+n
+> >>>> some cases, such as on ARM, we may want to back this using firmware
+> >>>> calls, which are considerably more expensive.
+> >>>>
+> >>>> Another call to arch_get_random_seed_long() exists in the CRNG drive=
+r,
+> >>>> in add_interrupt_randomness(), which collects entropy by capturing
+> >>>> inter-interrupt timing and relying on interrupt jitter to provide
+> >>>> random bits. This is done by keeping a per-CPU state, and mixing in
+> >>>> the IRQ number, the cycle counter and the return address every time =
+an
+> >>>> interrupt is taken, and mixing this per-CPU state into the entropy p=
+ool
+> >>>> every 64 invocations, or at least once per second. The entropy that =
+is
+> >>>> gathered this way is credited as 1 bit of entropy. Every time this
+> >>>> happens, arch_get_random_seed_long() is invoked, and the result is
+> >>>> mixed in as well, and also credited with 1 bit of entropy.
+> >>>>
+> >>>> This means that arch_get_random_seed_long() is called at least once
+> >>>> per second on every CPU, which seems excessive, and doesn't really
+> >>>> scale, especially in a virtualization scenario where CPUs may be
+> >>>> oversubscribed: in cases where arch_get_random_seed_long() is backed
+> >>>> by an instruction that actually goes back to a shared hardware entro=
+py
+> >>>> source (such as RNDRRS on ARM), we will end up hitting it hundreds o=
+f
+> >>>> times per second.
+> >>
+> >> May I ask why this should be a particular problem? Form what I gathere=
+d
+> >> on the web, it seems like most h/w RNGs have a capacity of multiple
+> >> MBit/s. Wikipedia [1] suggests that the x86 CPU instructions generate =
+at
+> >> least 20 Mbit/s (worst case: AMD's 2500 cycles @ 800 MHz), and I
+> >> measured around 78 Mbit/s with the raw entropy source on my Juno
+> >> (possibly even limited by slow MMIO).
+> >> So it seems unlikely that a few kbit/s drain the hardware entropy sour=
+ce.
+> >>
+> >> If we consider this interface comparably cheap, should we then not try
+> >> to plug the Arm firmware interface into this?
+> >>
+> >
+> > I'm not sure I follow. Are you saying we should not wire up a
+> > comparatively expensive firmware interface to
+> > arch_get_random_seed_long() because we currently assume it is backed
+> > by something cheap?
 >
-> Signed-off-by: Aleksandr Nogikh <nogikh@google.com>
-> Reviewed-by: Marco Elver <elver@google.com>
-> Reviewed-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-> Reviewed-by: Andrey Konovalov <andreyknvl@google.com>
-Reviewed-by: Alexander Potapenko <glider@google.com>
-
-> ---
-> v4:
-> - Changed retval debugfs file type - now it keeps a signed integer.
-> - Made CONFIG_FAIL_LSM_HOOKS depend on CONFIG_SECURITY.
-> v2:
-> - Renamed should_fail_lsm_hook() to lsm_hooks_inject_fail().
-> ---
->  lib/Kconfig.debug   |  6 ++++
->  security/security.c | 69 +++++++++++++++++++++++++++++++++++++++++++--
->  2 files changed, 72 insertions(+), 3 deletions(-)
->
-> diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
-> index 6140413174be..5f4399816019 100644
-> --- a/lib/Kconfig.debug
-> +++ b/lib/Kconfig.debug
-> @@ -1813,6 +1813,12 @@ config FAIL_MAKE_REQUEST
->         help
->           Provide fault-injection capability for disk IO.
->
-> +config FAIL_LSM_HOOKS
-> +       bool "Fault-injection capability for LSM hooks"
-> +       depends on FAULT_INJECTION && SECURITY
-> +       help
-> +         Provide fault-injection capability for LSM hooks.
-> +
->  config FAIL_IO_TIMEOUT
->         bool "Fault-injection capability for faking disk interrupts"
->         depends on FAULT_INJECTION && BLOCK
-> diff --git a/security/security.c b/security/security.c
-> index 69ff6e2e2cd4..be3a3c7c6d6a 100644
-> --- a/security/security.c
-> +++ b/security/security.c
-> @@ -28,6 +28,7 @@
->  #include <linux/backing-dev.h>
->  #include <linux/string.h>
->  #include <linux/msg.h>
-> +#include <linux/fault-inject.h>
->  #include <net/flow.h>
->
->  #define MAX_LSM_EVM_XATTR      2
-> @@ -669,6 +670,67 @@ static void __init lsm_early_task(struct task_struct=
- *task)
->                 panic("%s: Early task alloc failed.\n", __func__);
->  }
->
-> +
-> +#ifdef CONFIG_FAIL_LSM_HOOKS
-> +
-> +static struct {
-> +       struct fault_attr attr;
-> +       int retval;
-> +} fail_lsm_hooks =3D {
-> +       .attr =3D FAULT_ATTR_INITIALIZER,
-> +       .retval =3D -EACCES
-> +};
-> +
-> +static int __init setup_fail_lsm_hooks(char *str)
-> +{
-> +       return setup_fault_attr(&fail_lsm_hooks.attr, str);
-> +}
-> +__setup("fail_lsm_hooks=3D", setup_fail_lsm_hooks);
-> +
-> +static int lsm_hooks_inject_fail(void)
-> +{
-> +       return should_fail(&fail_lsm_hooks.attr, 1) ? fail_lsm_hooks.retv=
-al : 0;
-> +}
-> +
-> +#ifdef CONFIG_FAULT_INJECTION_DEBUG_FS
-> +
-> +static int fail_lsm_retval_set(void *data, u64 val)
-> +{
-> +       fail_lsm_hooks.retval =3D (int)val;
-> +       return 0;
-> +}
-> +
-> +static int fail_lsm_retval_get(void *data, u64 *val)
-> +{
-> +       *val =3D (u64)fail_lsm_hooks.retval;
-> +       return 0;
-> +}
-> +
-> +DEFINE_DEBUGFS_ATTRIBUTE(fail_lsm_retval_ops, fail_lsm_retval_get,
-> +                                                fail_lsm_retval_set, "%l=
-ld\n");
-> +
-> +static int __init fail_lsm_hooks_debugfs(void)
-> +{
-> +       umode_t mode =3D S_IFREG | 0600;
-> +       struct dentry *dir;
-> +
-> +       dir =3D fault_create_debugfs_attr("fail_lsm_hooks", NULL,
-> +                                       &fail_lsm_hooks.attr);
-> +       debugfs_create_file("retval", mode, dir, NULL,
-> +                                               &fail_lsm_retval_ops);
-> +       return 0;
-> +}
-> +
-> +late_initcall(fail_lsm_hooks_debugfs);
-> +
-> +#endif /* CONFIG_FAULT_INJECTION_DEBUG_FS */
-> +
-> +#else
-> +
-> +static inline int lsm_hooks_inject_fail(void) { return 0; }
-> +
-> +#endif /* CONFIG_FAIL_LSM_HOOKS */
-> +
->  /*
->   * The default value of the LSM hook is defined in linux/lsm_hook_defs.h=
- and
->   * can be accessed with:
-> @@ -707,16 +769,17 @@ static void __init lsm_early_task(struct task_struc=
-t *task)
->         } while (0)
->
->  #define call_int_hook(FUNC, IRC, ...) ({                       \
-> -       int RC =3D IRC;                                           \
-> -       do {                                                    \
-> +       int RC =3D lsm_hooks_inject_fail();                       \
-> +       if (RC =3D=3D 0) {                                               =
-           \
->                 struct security_hook_list *P;                   \
-> +               RC =3D IRC;                                              =
-                 \
->                                                                 \
->                 hlist_for_each_entry(P, &security_hook_heads.FUNC, list) =
-{ \
->                         RC =3D P->hook.FUNC(__VA_ARGS__);         \
->                         if (RC !=3D 0)                            \
->                                 break;                          \
->                 }                                               \
-> -       } while (0);                                            \
-> +       }                                                       \
->         RC;                                                     \
->  })
->
-> --
-> 2.29.2.222.g5d2a92d10f8-goog
+> Yes. I wanted to (ab)use this patch to clarify this. x86 and arm64 use
+> CPU instructions (so far), S390 copies from some buffer. PPC uses either
+> a CPU instruction or an MMIO access. All of these I would consider
+> comparably cheap, especially when compared to a firmware call with
+> unknown costs. In fact the current Trusted Firmware implementation[1] is
+> not really terse, also the generic SMC dispatcher calls a platform
+> defined routine, which could do anything.
+> So to also guide the implementation in TF-A, it would be good to
+> establish what arch_get_random expects to be. The current
+> implementations and the fact that it lives in a header file suggests
+> that it's meant as a slim wrapper around something cheap.
 >
 
+Reseeding a random number generator is simply not something that you
+should need to do hundreds of times per second, regardless of whether
+its invocation is from a header file.
 
---=20
-Alexander Potapenko
-Software Engineer
 
-Google Germany GmbH
-Erika-Mann-Stra=C3=9Fe, 33
-80636 M=C3=BCnchen
 
-Gesch=C3=A4ftsf=C3=BChrer: Paul Manicle, Halimah DeLaine Prado
-Registergericht und -nummer: Hamburg, HRB 86891
-Sitz der Gesellschaft: Hamburg
+> > Because doing so would add significantly to the cost. Also note that a
+> > firmware interface would permit other ways of gathering entropy that
+> > are not necessarily backed by a dedicated high bandwidth noise source
+> > (and we already have examples of this)
+>
+> Yes, agreed.
+> So I have a hwrng driver for the Arm SMCCC TRNG interface ready. I would
+> post this, but would like to know if we should drop the proposed
+> arch_get_random implementation [2][3] of this interface.
+>
+
+No, that would defeat the whole point. There is no reason we should
+wait for the entire driver stack to come up just to issue an
+architected SMC call. This is basically the reason the spec got issued
+in the first place.
+
+> >> I am not against this patch, actually am considering this a nice
+> >> cleanup, to separate interrupt generated entropy from other sources.
+> >> Especially since we call arch_get_random_seed_long() under a spinlock =
+here.
+> >> But I am curious about the expectations from arch_get_random in genera=
+l.
+> >>
+> >
+> > I think it is reasonable to clean this up a little bit. A random
+> > *seed* is not the same thing as a random number, and given that we
+> > expose both interfaces, it makes sense to permit the seed variant to
+> > be more costly, and only use it as intended (i.e., to seed a random
+> > number generator)
+>
+> That's true, it seems we chickened out on the arm64 implementation
+> already, by not using the intended stronger instruction for seed
+> (RNDRRS), and not implementing arch_get_random_long() at all.
+> But I guess that's another story.
+>
+
+Yes it is.
