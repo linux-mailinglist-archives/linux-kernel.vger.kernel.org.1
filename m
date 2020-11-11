@@ -2,184 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B30D22AEC9D
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 10:06:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DFFE82AEC9B
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 10:06:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726418AbgKKJGx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 04:06:53 -0500
-Received: from m42-4.mailgun.net ([69.72.42.4]:57904 "EHLO m42-4.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726036AbgKKJGs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 04:06:48 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1605085606; h=Content-Type: MIME-Version: Message-ID:
- In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
- bh=aPPJFGoN2SnlxqopD4gZN8rje+MIoQNisIJDTUGH1Oc=; b=YY+WCc3B3S/TEYxNatjPylgOAymZ1ZAZRnLjERi04VspfCs4xpu0gNh7LJKPhn/KEN2iJdig
- mA6ckuWcv8r97EULEoCeRPAGnbMiw6kp7dcFTnu+WVJdxcGAsTNKPqBcgJmMiDd5b2rK8NOB
- qa8yiPJX8hfllbNT/X695lhtz6E=
-X-Mailgun-Sending-Ip: 69.72.42.4
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
- 5faba991e9dd187f53a6e79d (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 11 Nov 2020 09:06:25
- GMT
-Sender: kvalo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 6CA7CC433F0; Wed, 11 Nov 2020 09:06:25 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
-        autolearn=no autolearn_force=no version=3.4.0
-Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S1726248AbgKKJGc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 04:06:32 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:23777 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726036AbgKKJGa (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Nov 2020 04:06:30 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1605085588;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=MweZ+zDjGfskRd7/rs12EFNBHUajWWPBiHREeUxcr1E=;
+        b=VatQ7YkQM5yuvwtWjxBBQmct0wbpy8moN436dfSvo95q7Fw021BwyYUZ1i+hEdnpnlI0Mm
+        2yIrc17H9rl0AaQwSWqLNJ7MjiMD3IT7kFhJRtliwKzypU98A5HNsGFSvIAr8qdTDAK9vT
+        LzTbdbocatOzuK3zPDcZFOpgbpDZSxk=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-196-W0ZwdTqeNTS5jCcAKWO8Lg-1; Wed, 11 Nov 2020 04:06:26 -0500
+X-MC-Unique: W0ZwdTqeNTS5jCcAKWO8Lg-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id A9E53C433C6;
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C6F0F1017DC3;
+        Wed, 11 Nov 2020 09:06:23 +0000 (UTC)
+Received: from [10.36.114.151] (ovpn-114-151.ams2.redhat.com [10.36.114.151])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 773225B4B6;
         Wed, 11 Nov 2020 09:06:21 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org A9E53C433C6
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
-From:   Kalle Valo <kvalo@codeaurora.org>
-To:     Tsuchiya Yuto <kitakar@gmail.com>
-Cc:     Amitkumar Karwar <amitkarwar@gmail.com>,
-        Ganapathi Bhat <ganapathi.bhat@nxp.com>,
-        Xinming Hu <huxinming820@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Maximilian Luz <luzmaximilian@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@intel.com>, verdre@v0yd.nl
-Subject: Re: [PATCH] mwifiex: pcie: skip cancel_work_sync() on reset failure path
-References: <20201028142346.18355-1-kitakar@gmail.com>
-        <20201110185139.A1541C433C9@smtp.codeaurora.org>
-        <bb398a320ba538e92bbe550d877b6f9d1b666cdd.camel@gmail.com>
-Date:   Wed, 11 Nov 2020 11:06:19 +0200
-In-Reply-To: <bb398a320ba538e92bbe550d877b6f9d1b666cdd.camel@gmail.com>
-        (Tsuchiya Yuto's message of "Wed, 11 Nov 2020 17:53:37 +0900")
-Message-ID: <87zh3o9sac.fsf@codeaurora.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/24.5 (gnu/linux)
+Subject: Re: [PATCH v1] mm/page_alloc: clear pages in alloc_contig_pages()
+ with init_on_alloc=1 or __GFP_ZERO
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexander Potapenko <glider@google.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        Kees Cook <keescook@chromium.org>,
+        Michael Ellerman <mpe@ellerman.id.au>
+References: <20201110193240.25401-1-david@redhat.com>
+ <20201111084738.GT12240@dhcp22.suse.cz>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat GmbH
+Message-ID: <4ebc711e-7fbc-62aa-b88f-3d6ffa9379ff@redhat.com>
+Date:   Wed, 11 Nov 2020 10:06:20 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <20201111084738.GT12240@dhcp22.suse.cz>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Tsuchiya Yuto <kitakar@gmail.com> writes:
+On 11.11.20 09:47, Michal Hocko wrote:
+> On Tue 10-11-20 20:32:40, David Hildenbrand wrote:
+>> commit 6471384af2a6 ("mm: security: introduce init_on_alloc=1 and
+>> init_on_free=1 boot options") resulted with init_on_alloc=1 in all pages
+>> leaving the buddy via alloc_pages() and friends to be
+>> initialized/cleared/zeroed on allocation.
+>>
+>> However, the same logic is currently not applied to
+>> alloc_contig_pages(): allocated pages leaving the buddy aren't cleared
+>> with init_on_alloc=1 and init_on_free=0. Let's also properly clear
+>> pages on that allocation path and add support for __GFP_ZERO.
+> 
+> AFAIR we do not have any user for __GFP_ZERO right? Not that this is
 
-> On Tue, 2020-11-10 at 18:51 +0000, Kalle Valo wrote:
->> Tsuchiya Yuto <kitakar@gmail.com> wrote:
->> 
->> > If a reset is performed, but even the reset fails for some reasons (e.g.,
->> > on Surface devices, the fw reset requires another quirks),
->> > cancel_work_sync() hangs in mwifiex_cleanup_pcie().
->> > 
->> >     # firmware went into a bad state
->> >     [...]
->> >     [ 1608.281690] mwifiex_pcie 0000:03:00.0: info: shutdown mwifiex...
->> >     [ 1608.282724] mwifiex_pcie 0000:03:00.0: rx_pending=0, tx_pending=1,	cmd_pending=0
->> >     [ 1608.292400] mwifiex_pcie 0000:03:00.0: PREP_CMD: card is removed
->> >     [ 1608.292405] mwifiex_pcie 0000:03:00.0: PREP_CMD: card is removed
->> >     # reset performed after firmware went into a bad state
->> >     [ 1609.394320] mwifiex_pcie 0000:03:00.0: WLAN FW already running! Skip FW dnld
->> >     [ 1609.394335] mwifiex_pcie 0000:03:00.0: WLAN FW is active
->> >     # but even the reset failed
->> >     [ 1619.499049] mwifiex_pcie 0000:03:00.0: mwifiex_cmd_timeout_func: Timeout cmd id = 0xfa, act = 0xe000
->> >     [ 1619.499094] mwifiex_pcie 0000:03:00.0: num_data_h2c_failure = 0
->> >     [ 1619.499103] mwifiex_pcie 0000:03:00.0: num_cmd_h2c_failure = 0
->> >     [ 1619.499110] mwifiex_pcie 0000:03:00.0: is_cmd_timedout = 1
->> >     [ 1619.499117] mwifiex_pcie 0000:03:00.0: num_tx_timeout = 0
->> >     [ 1619.499124] mwifiex_pcie 0000:03:00.0: last_cmd_index = 0
->> >     [ 1619.499133] mwifiex_pcie 0000:03:00.0: last_cmd_id: fa 00 07 01 07 01 07 01 07 01
->> >     [ 1619.499140] mwifiex_pcie 0000:03:00.0: last_cmd_act: 00 e0 00 00 00 00 00 00 00 00
->> >     [ 1619.499147] mwifiex_pcie 0000:03:00.0: last_cmd_resp_index = 3
->> >     [ 1619.499155] mwifiex_pcie 0000:03:00.0: last_cmd_resp_id: 07 81 07 81 07 81 07 81 07 81
->> >     [ 1619.499162] mwifiex_pcie 0000:03:00.0: last_event_index = 2
->> >     [ 1619.499169] mwifiex_pcie 0000:03:00.0: last_event: 58 00 58 00 58 00 58 00 58 00
->> >     [ 1619.499177] mwifiex_pcie 0000:03:00.0: data_sent=0 cmd_sent=1
->> >     [ 1619.499185] mwifiex_pcie 0000:03:00.0: ps_mode=0 ps_state=0
->> >     [ 1619.499215] mwifiex_pcie 0000:03:00.0: info: _mwifiex_fw_dpc: unregister device
->> >     # mwifiex_pcie_work hang happening
->> >     [ 1823.233923] INFO: task kworker/3:1:44 blocked for more than 122 seconds.
->> >     [ 1823.233932]       Tainted: G        WC OE     5.10.0-rc1-1-mainline #1
->> >     [ 1823.233935] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
->> >     [ 1823.233940] task:kworker/3:1     state:D stack:    0 pid:   44 ppid:     2 flags:0x00004000
->> >     [ 1823.233960] Workqueue: events mwifiex_pcie_work [mwifiex_pcie]
->> >     [ 1823.233965] Call Trace:
->> >     [ 1823.233981]  __schedule+0x292/0x820
->> >     [ 1823.233990]  schedule+0x45/0xe0
->> >     [ 1823.233995]  schedule_timeout+0x11c/0x160
->> >     [ 1823.234003]  wait_for_completion+0x9e/0x100
->> >     [ 1823.234012]  __flush_work.isra.0+0x156/0x210
->> >     [ 1823.234018]  ? flush_workqueue_prep_pwqs+0x130/0x130
->> >     [ 1823.234026]  __cancel_work_timer+0x11e/0x1a0
->> >     [ 1823.234035]  mwifiex_cleanup_pcie+0x28/0xd0 [mwifiex_pcie]
->> >     [ 1823.234049]  mwifiex_free_adapter+0x24/0xe0 [mwifiex]
->> >     [ 1823.234060]  _mwifiex_fw_dpc+0x294/0x560 [mwifiex]
->> >     [ 1823.234074]  mwifiex_reinit_sw+0x15d/0x300 [mwifiex]
->> >     [ 1823.234080]  mwifiex_pcie_reset_done+0x50/0x80 [mwifiex_pcie]
->> >     [ 1823.234087]  pci_try_reset_function+0x5c/0x90
->> >     [ 1823.234094]  process_one_work+0x1d6/0x3a0
->> >     [ 1823.234100]  worker_thread+0x4d/0x3d0
->> >     [ 1823.234107]  ? rescuer_thread+0x410/0x410
->> >     [ 1823.234112]  kthread+0x142/0x160
->> >     [ 1823.234117]  ? __kthread_bind_mask+0x60/0x60
->> >     [ 1823.234124]  ret_from_fork+0x22/0x30
->> >     [...]
->> > 
->> > This is a deadlock caused by calling cancel_work_sync() in
->> > mwifiex_cleanup_pcie():
->> > 
->> > - Device resets are done via mwifiex_pcie_card_reset()
->> > - which schedules card->work to call mwifiex_pcie_card_reset_work()
->> > - which calls pci_try_reset_function().
->> > - This leads to mwifiex_pcie_reset_done() be called on the same workqueue,
->> >   which in turn calls
->> > - mwifiex_reinit_sw() and that calls
->> > - _mwifiex_fw_dpc().
->> > 
->> > The problem is now that _mwifiex_fw_dpc() calls mwifiex_free_adapter()
->> > in case firmware initialization fails. That ends up calling
->> > mwifiex_cleanup_pcie().
->> > 
->> > Note that all those calls are still running on the workqueue. So when
->> > mwifiex_cleanup_pcie() now calls cancel_work_sync(), it's really waiting
->> > on itself to complete, causing a deadlock.
->> > 
->> > This commit fixes the deadlock by skipping cancel_work_sync() on a reset
->> > failure path.
->> > 
->> > After this commit, when reset fails, the following output is
->> > expected to be shown:
->> > 
->> >     kernel: mwifiex_pcie 0000:03:00.0: info: _mwifiex_fw_dpc: unregister device
->> >     kernel: mwifiex: Failed to bring up adapter: -5
->> >     kernel: mwifiex_pcie 0000:03:00.0: reinit failed: -5
->> > 
->> > To reproduce this issue, for example, try putting the root port of wifi
->> > into D3 (replace "00:1d.3" with your setup).
->> > 
->> >     # put into D3 (root port)
->> >     sudo setpci -v -s 00:1d.3 CAP_PM+4.b=0b
->> > 
->> > Cc: Maximilian Luz <luzmaximilian@gmail.com>
->> > Signed-off-by: Tsuchiya Yuto <kitakar@gmail.com>
->> 
->> Patch applied to wireless-drivers-next.git, thanks.
->> 
->> 4add4d988f95 mwifiex: pcie: skip cancel_work_sync() on reset failure path
->> 
->
-> Sorry, but is it too late to ask you to change my commit message? I'd
-> really appreciate it if it's still possible. If it's difficult, please
-> ignore this.
+Sorry, I had extended information under "---" but accidentally 
+regenerated the patch before sending it out.
 
-Yeah, it's too late. I rebase my trees only in very exceptional cases.
+__GFP_ZERO is not used yet. It's intended to be used in 
+https://lkml.kernel.org/r/20201029162718.29910-1-david@redhat.com
+and I can move that change into a separate patch if desired.
+
+> harmful but it is better to call that explicitly because a missing
+> implementation would be a real problem and as such a bug fix.
+> 
+> I am also not sure handling init_on_free at the higher level is good.
+> As we have discussed recently the primary point of this feature is to
+> add clearing at very few well defined entry points rather than spill it over
+> many places. In this case the entry point for the allocator is
+> __isolate_free_page which removes pages from the page allocator. I
+> haven't checked how much this is used elsewhere but I would expect
+> init_on_alloc to be handled there.
+
+Well, this is the entry point to our range allocator, which lives in 
+page_alloc.c - used by actual high-level allocators (CMA, gigantic 
+pages, etc). It's just a matter of taste where we want to have that 
+handling exactly inside our allocator.
+
+isolate_freepages_range()->split_map_pages() does the post_alloc_hook 
+call. As we certainly don't want to zero pages during compaction, we 
+could either pass the gfp_mask/"bool clear" down to that functions and 
+handle it in there, or handle it in isolate_freepages_range(), after the 
+->split_map_pages() call. Whatever you prefer.
+
+Thanks!
 
 -- 
-https://patchwork.kernel.org/project/linux-wireless/list/
+Thanks,
 
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+David / dhildenb
+
