@@ -2,80 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F6222AEB3B
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 09:25:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CBCE2AEB00
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 09:23:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726744AbgKKIZV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 03:25:21 -0500
-Received: from m42-4.mailgun.net ([69.72.42.4]:61335 "EHLO m42-4.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726126AbgKKIXS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 03:23:18 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1605082997; h=Content-Type: MIME-Version: Message-ID:
- In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
- bh=dkFX6E0yIWhdqL4jLjA5m8xbjtyfaMXK7QDyGRUb1hw=; b=FzFQL1xZ0oQ9rE76EwP5d5m0zYTjMIhtoraaWxW+mNIv295har4dn9eMCg2DgKHln1LErjuA
- 9ZC2qzWbeWY+eKCYeIiRdhGTThN1dvvnfhxRcqXy0lyPV4TY8MVlgitSCScpASLASubZPjKn
- s+yTol+WPzblO5edGv2hxUmgFAY=
-X-Mailgun-Sending-Ip: 69.72.42.4
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n08.prod.us-east-1.postgun.com with SMTP id
- 5fab9f6a97cfcbc962b3ce3b (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 11 Nov 2020 08:23:06
- GMT
-Sender: kvalo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 60405C433CB; Wed, 11 Nov 2020 08:23:05 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 59486C433C8;
-        Wed, 11 Nov 2020 08:23:02 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 59486C433C8
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
-From:   Kalle Valo <kvalo@codeaurora.org>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Wireless <linux-wireless@vger.kernel.org>,
-        Avraham Stern <avraham.stern@intel.com>,
-        Johannes Berg <johannes.berg@intel.com>,
-        Luca Coelho <luciano.coelho@intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: Signed-off-by missing for commit in the wireless-drivers tree
-References: <20201111081257.30418470@canb.auug.org.au>
-Date:   Wed, 11 Nov 2020 10:23:00 +0200
-In-Reply-To: <20201111081257.30418470@canb.auug.org.au> (Stephen Rothwell's
-        message of "Wed, 11 Nov 2020 08:12:57 +1100")
-Message-ID: <87eel0cnff.fsf@codeaurora.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/24.5 (gnu/linux)
+        id S1726137AbgKKIXP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 03:23:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32770 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725859AbgKKIXO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Nov 2020 03:23:14 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D140C0613D1;
+        Wed, 11 Nov 2020 00:23:14 -0800 (PST)
+Date:   Wed, 11 Nov 2020 08:23:10 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1605082991;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=TY5TxBKNnEAFKhri/u5pCFAsNXAeU2T4LtZ6aNmY0Z0=;
+        b=z7xBxPe35S8KIGqOSEt19AcdrkEtP/OAkrbE5twdme04W7XDlXGeVqBDBIvmwWAKV006zj
+        2+2hUF8gAOuXAZez1UZzbrrgfaCq4HtVMgBnbSXLinm2gRdj35hTe9aJjrvx+Jz9c3kSpg
+        n1zsrP0MDN8r5IopEOynD0ORAjE6c945GdHgTjMONl3m69uUkVBqR7ZfGu/hckRyhlO7tU
+        JIpFjw7G92s5j1DqfXj40C3n9QUOR9HPfvL2Dh9zNfDop+cjDp1ksxMJ4c8LL0xhx9LJjA
+        RFfgkPblMbHjOvWF+0wCw9UQy9Vmo09B9alEq+Z0px+36S34L2HLMzrRBSj7Uw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1605082991;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=TY5TxBKNnEAFKhri/u5pCFAsNXAeU2T4LtZ6aNmY0Z0=;
+        b=Z6P4KAJURu7FXXjMfIgrbzsDzXz0LuJLmLijPxhKUJNw5uigNZtHk9cLHI7nW3HJogmQsx
+        P4PY7pfis4dxWvCg==
+From:   "tip-bot2 for Boqun Feng" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: locking/urgent] lockdep: Avoid to modify chain keys in validate_chain()
+Cc:     Chris Wilson <chris@chris-wilson.co.uk>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20201102053743.450459-1-boqun.feng@gmail.com>
+References: <20201102053743.450459-1-boqun.feng@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Message-ID: <160508299029.11244.18427700216581701358.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2.linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Stephen Rothwell <sfr@canb.auug.org.au> writes:
+The following commit has been merged into the locking/urgent branch of tip:
 
-> Commit
->
->   97cc16943f23 ("iwlwifi: mvm: write queue_sync_state only for sync")
->
-> is missing a Signed-off-by from its author.
+Commit-ID:     d61fc96a37603384cd531622c1e89de1096b5123
+Gitweb:        https://git.kernel.org/tip/d61fc96a37603384cd531622c1e89de1096b5123
+Author:        Boqun Feng <boqun.feng@gmail.com>
+AuthorDate:    Mon, 02 Nov 2020 13:37:41 +08:00
+Committer:     Peter Zijlstra <peterz@infradead.org>
+CommitterDate: Tue, 10 Nov 2020 18:38:38 +01:00
 
-Doh, missed that. But as it has s-o-b from Johannes and Luca, both also
-from Intel, I think I'll leave it as is so that I don't need to rebase
-wireless-drivers.
+lockdep: Avoid to modify chain keys in validate_chain()
 
--- 
-https://patchwork.kernel.org/project/linux-wireless/list/
+Chris Wilson reported a problem spotted by check_chain_key(): a chain
+key got changed in validate_chain() because we modify the ->read in
+validate_chain() to skip checks for dependency adding, and ->read is
+taken into calculation for chain key since commit f611e8cf98ec
+("lockdep: Take read/write status in consideration when generate
+chainkey").
 
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+Fix this by avoiding to modify ->read in validate_chain() based on two
+facts: a) since we now support recursive read lock detection, there is
+no need to skip checks for dependency adding for recursive readers, b)
+since we have a), there is only one case left (nest_lock) where we want
+to skip checks in validate_chain(), we simply remove the modification
+for ->read and rely on the return value of check_deadlock() to skip the
+dependency adding.
+
+Reported-by: Chris Wilson <chris@chris-wilson.co.uk>
+Signed-off-by: Boqun Feng <boqun.feng@gmail.com>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Link: https://lkml.kernel.org/r/20201102053743.450459-1-boqun.feng@gmail.com
+---
+ kernel/locking/lockdep.c | 19 +++++++++----------
+ 1 file changed, 9 insertions(+), 10 deletions(-)
+
+diff --git a/kernel/locking/lockdep.c b/kernel/locking/lockdep.c
+index b71ad8d..d9fb9e1 100644
+--- a/kernel/locking/lockdep.c
++++ b/kernel/locking/lockdep.c
+@@ -2765,7 +2765,9 @@ print_deadlock_bug(struct task_struct *curr, struct held_lock *prev,
+  * (Note that this has to be done separately, because the graph cannot
+  * detect such classes of deadlocks.)
+  *
+- * Returns: 0 on deadlock detected, 1 on OK, 2 on recursive read
++ * Returns: 0 on deadlock detected, 1 on OK, 2 if another lock with the same
++ * lock class is held but nest_lock is also held, i.e. we rely on the
++ * nest_lock to avoid the deadlock.
+  */
+ static int
+ check_deadlock(struct task_struct *curr, struct held_lock *next)
+@@ -2788,7 +2790,7 @@ check_deadlock(struct task_struct *curr, struct held_lock *next)
+ 		 * lock class (i.e. read_lock(lock)+read_lock(lock)):
+ 		 */
+ 		if ((next->read == 2) && prev->read)
+-			return 2;
++			continue;
+ 
+ 		/*
+ 		 * We're holding the nest_lock, which serializes this lock's
+@@ -3593,15 +3595,12 @@ static int validate_chain(struct task_struct *curr,
+ 		if (!ret)
+ 			return 0;
+ 		/*
+-		 * Mark recursive read, as we jump over it when
+-		 * building dependencies (just like we jump over
+-		 * trylock entries):
+-		 */
+-		if (ret == 2)
+-			hlock->read = 2;
+-		/*
+ 		 * Add dependency only if this lock is not the head
+-		 * of the chain, and if it's not a secondary read-lock:
++		 * of the chain, and if the new lock introduces no more
++		 * lock dependency (because we already hold a lock with the
++		 * same lock class) nor deadlock (because the nest_lock
++		 * serializes nesting locks), see the comments for
++		 * check_deadlock().
+ 		 */
+ 		if (!chain_head && ret != 2) {
+ 			if (!check_prevs_add(curr, hlock))
