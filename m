@@ -2,173 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91C392AEDE4
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 10:34:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 92A082AEDDF
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 10:34:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727236AbgKKJe1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 04:34:27 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60774 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727187AbgKKJeY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 04:34:24 -0500
-Received: from mail-oi1-f171.google.com (mail-oi1-f171.google.com [209.85.167.171])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BE41920759;
-        Wed, 11 Nov 2020 09:34:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605087263;
-        bh=W9LKJJA9td+bZqyMuy9lW4F+N9UwVvkc4npiuY6/nL8=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=sdXPT9ufwr9fVZcL/j8i0rSkPmF0K8kpJ0B3ps32DH54CpwRWCpudFmVohdzuLLqI
-         mHImJstvBqkfY7Bv9QjqAwcj6zjhETFN9xiOuLzk89U/QDTQzxtFAaQVcY7piZs788
-         ANoy8zWl2BQ66ujk5xvfZlBDd0yTXXNHLJG4NJKQ=
-Received: by mail-oi1-f171.google.com with SMTP id k26so1527505oiw.0;
-        Wed, 11 Nov 2020 01:34:23 -0800 (PST)
-X-Gm-Message-State: AOAM531/tfu1fmxpW1CHqwRJIi44O8gJNCAD+Cj1Condi6uFMQwFLMB/
-        QBhDfDkRC1g74x5gltk9ujcWlqjJ+jH95NnpMF8=
-X-Google-Smtp-Source: ABdhPJxSx93RRc8sf7gftr2sW8DQOQItwMQjHP/P+aqjoIbJAaovKFXVmGh+T6eO80PhsSh1WpQNCpdbCpErwfeE5Gs=
-X-Received: by 2002:aca:6004:: with SMTP id u4mr1701769oib.8.1605087262641;
- Wed, 11 Nov 2020 01:34:22 -0800 (PST)
-MIME-Version: 1.0
-References: <20201111090853.14112-1-Sergey.Semin@baikalelectronics.ru>
- <20201111090853.14112-11-Sergey.Semin@baikalelectronics.ru>
- <20201111091628.GC4050@kozik-lap> <20201111093213.gio6mrowjvmvnzoi@mobilestation>
-In-Reply-To: <20201111093213.gio6mrowjvmvnzoi@mobilestation>
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-Date:   Wed, 11 Nov 2020 10:34:10 +0100
-X-Gmail-Original-Message-ID: <CAJKOXPcYQjNvuyxYFn3f=YV+P+xSj=5tJckH8w8GgE=rMbeE6w@mail.gmail.com>
-Message-ID: <CAJKOXPcYQjNvuyxYFn3f=YV+P+xSj=5tJckH8w8GgE=rMbeE6w@mail.gmail.com>
-Subject: Re: [PATCH v4 10/18] dt-bindings: usb: Convert DWC USB3 bindings to
- DT schema
-To:     Serge Semin <Sergey.Semin@baikalelectronics.ru>
-Cc:     Serge Semin <fancer.lancer@gmail.com>,
-        Mathias Nyman <mathias.nyman@intel.com>,
-        Felipe Balbi <balbi@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
-        Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Manu Gautam <mgautam@codeaurora.org>,
-        Roger Quadros <rogerq@ti.com>,
-        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Kevin Hilman <khilman@baylibre.com>,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        Chunfeng Yun <chunfeng.yun@mediatek.com>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-snps-arc@lists.infradead.org, linux-mips@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-usb@vger.kernel.org,
-        devicetree@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        id S1727184AbgKKJeV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 04:34:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43878 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726722AbgKKJeU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Nov 2020 04:34:20 -0500
+Received: from mail-oi1-x242.google.com (mail-oi1-x242.google.com [IPv6:2607:f8b0:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD758C0613D1;
+        Wed, 11 Nov 2020 01:34:19 -0800 (PST)
+Received: by mail-oi1-x242.google.com with SMTP id k26so1527366oiw.0;
+        Wed, 11 Nov 2020 01:34:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:message-id:in-reply-to:references:subject
+         :mime-version:content-transfer-encoding;
+        bh=36NotezYoC/yyfzMqnUfq9zBlq7QxW9QNIrKCRtwRLY=;
+        b=pox7M5sP0Uml+SVYXZ08brVDykvoVVYnZgc8mI0lk93NjnXTmtpK1ZYotFvDa5qcux
+         dlxxF/miW84iYycj9tSsv9N2V18A+StM1WI7N+xcCi3WDkkFKPZSI+733Uv+bMyzexGn
+         c3uhgUZIJhDMtX3sIxNyjApC0U5zJzjEX1lh1jCeW0cWRGi51pdLmHRBGyoErj29fakz
+         SBOohq3UMWrlzkNllxkf4zixaqOAwu8svdoowwW6QzlPOxjtfFgkWjNQhyoIi3zbwHYD
+         oBBD4ZkLGHy509OP4bqbI4kD+MomUXeI1zsA83Rw58cFkK84vInW0gdmsjDDpWcFy78X
+         7S7A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
+         :references:subject:mime-version:content-transfer-encoding;
+        bh=36NotezYoC/yyfzMqnUfq9zBlq7QxW9QNIrKCRtwRLY=;
+        b=qOkngKCC2WMXthS+9m2gisXo4uaV8+DY5Ps8yxKD6pWWeGINxbevR7JtOTozARk+mt
+         PHVoGUIGBigNAXfvoX5iTIH3QsFfYRaCcuvkZsrss3njY42cNss1IIlCuExzpH5Wksuq
+         T1z3LgM8726gDKvLSwO25qbeRwJK4kbEvPKz7gdCFCadpXACRTjIylvTFT/+WWh7mzTM
+         RjyElHfVBAh2OCYF0fnKV5D19IdeiFLAiO6rBc4zh6nAxs9AxZ4IP30QuvwX4gtxZ+r8
+         aIoYgf4vC1P4cP94q77CNFhM4EvejUUqEPWIfoKFVKvghcjkLiG/1ypSQeL12Yd6crTg
+         rZGw==
+X-Gm-Message-State: AOAM531Zi2mf0tHmuMfETw0WHn9ekPosHmZ/NpXQJ5iWBlN6cX7FiWru
+        wTU/Drg3pW1bfgqadXiY0H8=
+X-Google-Smtp-Source: ABdhPJxhY6BIamR+E6BAfcKKF3uledUuIVKFBCbjublGaqm/oVke/eYtwlyVeUJgab9VzMzvQto6kA==
+X-Received: by 2002:aca:4a0d:: with SMTP id x13mr1603348oia.155.1605087259295;
+        Wed, 11 Nov 2020 01:34:19 -0800 (PST)
+Received: from localhost ([184.63.162.180])
+        by smtp.gmail.com with ESMTPSA id q18sm392421otf.46.2020.11.11.01.34.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 11 Nov 2020 01:34:18 -0800 (PST)
+Date:   Wed, 11 Nov 2020 01:34:11 -0800
+From:   John Fastabend <john.fastabend@gmail.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>, xiakaixu1987@gmail.com
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
+        Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        john fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Kaixu Xia <kaixuxia@tencent.com>
+Message-ID: <5fabb0135718_bb260208a8@john-XPS-13-9370.notmuch>
+In-Reply-To: <CAEf4BzZzGZTFky0F=U1_XKSBu8AqhuNzQgY7yibWYokrMbWK0Q@mail.gmail.com>
+References: <1605071026-25906-1-git-send-email-kaixuxia@tencent.com>
+ <CAEf4BzZzGZTFky0F=U1_XKSBu8AqhuNzQgY7yibWYokrMbWK0Q@mail.gmail.com>
+Subject: Re: [PATCH v3] bpf: Fix unsigned 'datasec_id' compared with zero in
+ check_pseudo_btf_id
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 11 Nov 2020 at 10:32, Serge Semin
-<Sergey.Semin@baikalelectronics.ru> wrote:
->
-> On Wed, Nov 11, 2020 at 10:16:28AM +0100, Krzysztof Kozlowski wrote:
-> > On Wed, Nov 11, 2020 at 12:08:45PM +0300, Serge Semin wrote:
-> > > DWC USB3 DT node is supposed to be compliant with the Generic xHCI
-> > > Controller schema, but with additional vendor-specific properties, the
-> > > controller-specific reference clocks and PHYs. So let's convert the
-> > > currently available legacy text-based DWC USB3 bindings to the DT schema
-> > > and make sure the DWC USB3 nodes are also validated against the
-> > > usb-xhci.yaml schema.
-> > >
-> > > Note we have to discard the nodename restriction of being prefixed with
-> > > "dwc3@" string, since in accordance with the usb-hcd.yaml schema USB nodes
-> > > are supposed to be named as "^usb(@.*)".
-> > >
-> > > Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
-> > >
-> > > ---
-> > >
-> > > Changelog v2:
-> > > - Discard '|' from the descriptions, since we don't need to preserve
-> > >   the text formatting in any of them.
-> > > - Drop quotes from around the string constants.
-> > > - Fix the "clock-names" prop description to be referring the enumerated
-> > >   clock-names instead of the ones from the Databook.
-> > >
-> > > Changelog v3:
-> > > - Apply usb-xhci.yaml# schema only if the controller is supposed to work
-> > >   as either host or otg.
-> > >
-> > > Changelog v4:
-> > > - Apply usb-drd.yaml schema first. If the controller is configured
-> > >   to work in a gadget mode only, then apply the usb.yaml schema too,
-> > >   otherwise apply the usb-xhci.yaml schema.
-> > > - Discard the Rob'es Reviewed-by tag. Please review the patch one more
-> > >   time.
-> > > ---
-> > >  .../devicetree/bindings/usb/dwc3.txt          | 125 --------
-> > >  .../devicetree/bindings/usb/snps,dwc3.yaml    | 303 ++++++++++++++++++
-> > >  2 files changed, 303 insertions(+), 125 deletions(-)
-> > >  delete mode 100644 Documentation/devicetree/bindings/usb/dwc3.txt
-> > >  create mode 100644 Documentation/devicetree/bindings/usb/snps,dwc3.yaml
-> > >
-> > > diff --git a/Documentation/devicetree/bindings/usb/dwc3.txt b/Documentation/devicetree/bindings/usb/dwc3.txt
-> > > deleted file mode 100644
-> > > index d03edf9d3935..000000000000
-> > > --- a/Documentation/devicetree/bindings/usb/dwc3.txt
-> > > +++ /dev/null
-> > > @@ -1,125 +0,0 @@
-> > > -synopsys DWC3 CORE
-> > > -
-> > > -DWC3- USB3 CONTROLLER. Complies to the generic USB binding properties
-> > > -      as described in 'usb/generic.txt'
-> > > -
-> > > -Required properties:
-> > > - - compatible: must be "snps,dwc3"
-> > > - - reg : Address and length of the register set for the device
-> > > - - interrupts: Interrupts used by the dwc3 controller.
->
-> > > - - clock-names: list of clock names. Ideally should be "ref",
-> > > -                "bus_early", "suspend" but may be less or more.
-> > > - - clocks: list of phandle and clock specifier pairs corresponding to
-> > > -           entries in the clock-names property.
-> > > -
-> > > -Exception for clocks:
-> > > -  clocks are optional if the parent node (i.e. glue-layer) is compatible to
-> > > -  one of the following:
-> > > -    "cavium,octeon-7130-usb-uctl"
-> > > -    "qcom,dwc3"
-> > > -    "samsung,exynos5250-dwusb3"
-> > > -    "samsung,exynos5433-dwusb3"
-> > > -    "samsung,exynos7-dwusb3"
-> > > -    "sprd,sc9860-dwc3"
-> > > -    "st,stih407-dwc3"
-> > > -    "ti,am437x-dwc3"
-> > > -    "ti,dwc3"
-> > > -    "ti,keystone-dwc3"
-> > > -    "rockchip,rk3399-dwc3"
-> > > -    "xlnx,zynqmp-dwc3"
+Andrii Nakryiko wrote:
+> On Tue, Nov 10, 2020 at 9:03 PM <xiakaixu1987@gmail.com> wrote:
 > >
-> > What happened with this part of dtschema? It sees you removed it.
->
-> You meant "bindings", right?
->
-> I don't think it's a good idea to implement that weak binding in the
-> generic DWC USB3 DT schema. Of course I could have created it under
-> the allOf conditional schema and stuff. But in that case we would have
-> needed to support the clock-related vendor-specific peculiarities in
-> both the generic DWC USB3 DT schema and in the vendor-specific binding
-> files. That wouldn't be that maintainable. As I see it all the
-> vendor-specific clock requirements should be reflected in the
-> glue-node DT schema. The DWC USB3 node binding just declares the
-> clocks as optional. Moreover the DWC USB3 driver also considers them
-> as optional.
+> > From: Kaixu Xia <kaixuxia@tencent.com>
+> >
+> > The unsigned variable datasec_id is assigned a return value from the call
+> > to check_pseudo_btf_id(), which may return negative error code.
+> >
+> > Fixes coccicheck warning:
+> >
+> > ./kernel/bpf/verifier.c:9616:5-15: WARNING: Unsigned expression compared with zero: datasec_id > 0
+> >
+> > Reported-by: Tosk Robot <tencent_os_robot@tencent.com>
+> > Signed-off-by: Kaixu Xia <kaixuxia@tencent.com>
+> > ---
+> 
+> Looks good.
+> 
+> Acked-by: Andrii Nakryiko <andrii@kernel.org>
+> 
+> [...]
 
-Sure, rationale is good, but it needs to be explained in commit msg.
-Otherwise you state that you just "convert" but it's not a simple
-conversion. The meaning is changed.
-
-
-Best regards,
-Krzysztof
+Acked-by: John Fastabend <john.fastabend@gmail.com>
