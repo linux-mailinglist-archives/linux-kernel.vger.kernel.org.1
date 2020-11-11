@@ -2,89 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67EEE2AF28E
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 14:52:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 067152AF28C
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 14:52:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727107AbgKKNwU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 08:52:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56828 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727080AbgKKNwR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 08:52:17 -0500
-Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BE9CC0613D4
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 05:52:17 -0800 (PST)
-Received: by mail-qk1-x744.google.com with SMTP id l2so1686301qkf.0
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 05:52:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=m80oT1JfZEh7w9pLk5CWjzhWzy3pvKhfVuBt46eLCBw=;
-        b=ruYOIkEm/5N7tXFU9wnoobpSSwg6ScTTQcUGJl4xQvztJCtpHPICTHlzj52Ws0uUn0
-         DC39qewbtysvAam0v/xotz7/Fo/BfTQtsNPVxofXvrtftF0tCiNaYDfUIgL3/+AImpV1
-         d2QoUb5xBzp/rwuCfttZ1GNLH5ro9M7FyxelmSHEwvahc7zT9p5tAxaEydOUjI0ph3VL
-         /U7adurRdeyE1Nz9Hum4FnJP49bOIH+1/UOVEfJWELAu3VkFK67PQwJLNCNtudVqXgXE
-         /WgORiHN6IFJ1Gn4SY8n+rWQxkD1FtqPdzf9LeAJ8ymLniGa0IATUJb22l/Mq1lULOUt
-         G0Rw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=m80oT1JfZEh7w9pLk5CWjzhWzy3pvKhfVuBt46eLCBw=;
-        b=fUXasuitPbJdUBR9tSAexgQXmrl594Tm591Fq4O5Kk+M4WEDEm/DiJRPv04Lxz7vWj
-         AN717DCyTYFIQHWv/RU0X4aGgz23vl/PGvp4mNz48tzUetzggX/cU+DPHdybo89WllK1
-         iwn01TjvHmFrEJC+NtDqdf0BLKSJAC3kjDg0rTYl8E2U8oimvP9MOFA9f4USGYyiFm6F
-         ElP1wQgeZCZ9GdYG7kzHZc78AH5rkYbbta8GSREjsG8mqNGm7N7qo3ktAnMspfN/IQAO
-         84jaJA7sxpkQ+RkWB4/2NsZJ4DSzdQImZwsb/4fRYNQm4OVRWSaT3D65ZdVaFn13/NbC
-         FgRg==
-X-Gm-Message-State: AOAM53220zbPTxnOAWktbMWOk4fqawYdFurhB3HO2HeowpaA7lVf6r3r
-        2KzXxEkkMczgSqjAhI4zsBC48TO9B+8ef7sSnFkywA==
-X-Google-Smtp-Source: ABdhPJyqhSwQAMi7KabE5H8i99YpFBEAgyBaMgInJ4zyZ3IFflyUyoUrw58EdIQt6hUjGikYX6RbliJBfZjpbkt8VXQ=
-X-Received: by 2002:a37:49d6:: with SMTP id w205mr25091516qka.501.1605102736439;
- Wed, 11 Nov 2020 05:52:16 -0800 (PST)
+        id S1727065AbgKKNwQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 08:52:16 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42122 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726983AbgKKNwJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Nov 2020 08:52:09 -0500
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id B6D702072C;
+        Wed, 11 Nov 2020 13:52:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605102728;
+        bh=vpzQhD31kZiz0Ds3ndWnHcNtFHrzT9rX+xjSS3L2qxs=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=WvD1Kt0rYFg9LPKQES5pJcwfYvw83ZpPUhh0NWExD5onFN9DyY3DuF/q61lUKfdpD
+         CIoap2gAK2Q2fSkijiMy5U01a8voRmPb8f4kaqvbDtPWP8k/1FphdUqx4VNzfHAkiK
+         WxDnceLo/UM3VrVCveroTBou4ju2eMynmawPEs5E=
+Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.94)
+        (envelope-from <maz@kernel.org>)
+        id 1kcqXe-009mGl-JM; Wed, 11 Nov 2020 13:52:06 +0000
 MIME-Version: 1.0
-References: <000000000000d03eea0571adfe83@google.com> <000000000000ad052105b383350a@google.com>
-In-Reply-To: <000000000000ad052105b383350a@google.com>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Wed, 11 Nov 2020 14:52:05 +0100
-Message-ID: <CACT4Y+Z=WF1jbjjSX0hWSJXqUpNGJgwW=f2tBFkJH=mSjyMqag@mail.gmail.com>
-Subject: Re: possible deadlock in mnt_want_write
-To:     syzbot <syzbot+ae82084b07d0297e566b@syzkaller.appspotmail.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        overlayfs <linux-unionfs@vger.kernel.org>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
-Cc:     Amir Goldstein <amir73il@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Wed, 11 Nov 2020 13:52:06 +0000
+From:   Marc Zyngier <maz@kernel.org>
+To:     David Brazdil <dbrazdil@google.com>
+Cc:     kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Dennis Zhou <dennis@kernel.org>,
+        Tejun Heo <tj@kernel.org>, Christoph Lameter <cl@linux.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Quentin Perret <qperret@google.com>,
+        Andrew Scull <ascull@google.com>,
+        Andrew Walbran <qwandor@google.com>, kernel-team@android.com
+Subject: Re: [PATCH v1 07/24] kvm: arm64: Create nVHE copy of cpu_logical_map
+In-Reply-To: <20201111134527.ygzf5cm6qpdpcroo@google.com>
+References: <20201109113233.9012-1-dbrazdil@google.com>
+ <20201109113233.9012-8-dbrazdil@google.com>
+ <d473fd26e5314f2407b70242488f33de@kernel.org>
+ <20201111130321.qalrzfabdonrwvsz@google.com>
+ <15a580e6ac06294ead8859fba8f51deb@kernel.org>
+ <20201111134527.ygzf5cm6qpdpcroo@google.com>
+User-Agent: Roundcube Webmail/1.4.9
+Message-ID: <3ed604d7837fa64ec7c4fe5920c57382@kernel.org>
+X-Sender: maz@kernel.org
+X-SA-Exim-Connect-IP: 51.254.78.96
+X-SA-Exim-Rcpt-To: dbrazdil@google.com, kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, james.morse@arm.com, julien.thierry.kdev@gmail.com, suzuki.poulose@arm.com, catalin.marinas@arm.com, will@kernel.org, dennis@kernel.org, tj@kernel.org, cl@linux.com, mark.rutland@arm.com, lorenzo.pieralisi@arm.com, qperret@google.com, ascull@google.com, qwandor@google.com, kernel-team@android.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Nov 7, 2020 at 1:10 PM syzbot
-<syzbot+ae82084b07d0297e566b@syzkaller.appspotmail.com> wrote:
->
-> syzbot suspects this issue was fixed by commit:
->
-> commit 146d62e5a5867fbf84490d82455718bfb10fe824
-> Author: Amir Goldstein <amir73il@gmail.com>
-> Date:   Thu Apr 18 14:42:08 2019 +0000
->
->     ovl: detect overlapping layers
->
-> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=11e40184500000
-> start commit:   6d906f99 Merge tag 'arm64-fixes' of git://git.kernel.org/p..
-> git tree:       upstream
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=856fc6d0fbbeede9
-> dashboard link: https://syzkaller.appspot.com/bug?extid=ae82084b07d0297e566b
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=111767b7200000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1611ab2d200000
->
-> If the result looks correct, please mark the issue as fixed by replying with:
->
-> #syz fix: ovl: detect overlapping layers
->
-> For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+On 2020-11-11 13:45, David Brazdil wrote:
+> On Wed, Nov 11, 2020 at 01:29:29PM +0000, Marc Zyngier wrote:
+>> On 2020-11-11 13:03, David Brazdil wrote:
+>> > > > +/*
+>> > > > + * nVHE copy of data structures tracking available CPU cores.
+>> > > > + * Only entries for CPUs that were online at KVM init are populated.
+>> > > > + * Other CPUs should not be allowed to boot because their features were
+>> > > > + * not checked against the finalized system capabilities.
+>> > > > + */
+>> > > > +u64 __ro_after_init __cpu_logical_map[NR_CPUS] = { [0 ... NR_CPUS-1]
+>> > > > = INVALID_HWID };
+>> > >
+>> > > I'm not sure what __ro_after_init means once we get S2 isolation.
+>> >
+>> > It is stretching the definition of 'init' a bit, I know, but I don't see
+>> > what
+>> > your worry is about S2? The intention is to mark this read-only for
+>> > .hyp.text
+>> > at runtime. With S2, the host won't be able to write to it after KVM
+>> > init.
+>> > Obviously that's currently not the case.
+>> 
+>> More importantly, EL2 can write to it at any time, which is the bit 
+>> I'm
+>> worried
+>> about, as it makes the annotation misleading.
+> 
+> EL2 can't, at least not accidentally. The hyp memory mapping is 
+> PAGE_HYP_RO
+> (see patch 05).
 
-#syz fix: ovl: detect overlapping layers
+Ah, I obviously overlooked that. Thanks for setting me straight.
+
+> Shouldn't clash with include files. Where fixing the kernel might clash 
+> is
+> all the users of for_each_*_cpu that use an int for the iterator var.
+
+I don't think that's a problem (nobody expects that many CPUs). But if 
+you
+are confident that we don't have a problem, no need to change the kernel
+itself.
+
+         M.
+-- 
+Jazz is not dead. It just smells funny...
