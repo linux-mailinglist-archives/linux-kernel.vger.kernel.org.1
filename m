@@ -2,106 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A28962AF897
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 19:53:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F3FA52AF89B
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 19:55:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727647AbgKKSxn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 13:53:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47318 "EHLO
+        id S1727232AbgKKSzC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 13:55:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47526 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726460AbgKKSxm (ORCPT
+        with ESMTP id S1726460AbgKKSzB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 13:53:42 -0500
-Received: from mail-pl1-x649.google.com (mail-pl1-x649.google.com [IPv6:2607:f8b0:4864:20::649])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 990F6C0613D4
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 10:53:42 -0800 (PST)
-Received: by mail-pl1-x649.google.com with SMTP id v20so1664869plo.3
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 10:53:42 -0800 (PST)
+        Wed, 11 Nov 2020 13:55:01 -0500
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18C42C0613D1
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 10:55:01 -0800 (PST)
+Received: by mail-pl1-x641.google.com with SMTP id w11so1439477pll.8
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 10:55:01 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=sender:date:message-id:mime-version:subject:from:to:cc;
-        bh=93R4ztQrLrDF9Ja7P3toIKUvpq9Mkw15Zf+bh5c6Tqo=;
-        b=kK51WkYoFHiSWND2/+N+C4Ova1zafjAVM+MPR0hpWwVY8W6VovOfLNmIiMynognenH
-         lbj/HnGi8LUypoLkUvvq6ifdmaKSM7Qs5KY8OLvuNSHqi93xn9P6OKqDth56mfLf7TmS
-         eTy6XVOeyZYgAtmx4jHnLmdF44tZnyR7Y37vDyXD8JbUe+YWpWxdIFOY2Nm8WnVKjlrZ
-         mxOlGUs7o2Q964Dlth1cEweUi0t1TPbzd6pUE+KsV14NikSdbNfPu+/9c1+67WbwQh0t
-         up5tbY5R9KY1/3ZqfWU+oDjfpEZZf3nt8OrukS3kW8t8SAHkHMKBe8JkEeeJE8heHb7y
-         6zVQ==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=6WeV7hUrwro5zFQ6cbjkRFYCH8+pe7+r1CSRKZroL8E=;
+        b=OOpFfVi/gVy3Ut+OvJxI25rQEImfpUbgYF9V6jx/0UFT7h7TkXGH51fM6/RjYFDW17
+         obuvmP9bEGYLo7FWYXb/XCQIr1Lgn+6C+bxD3jCLNZPAsMIwxIYiUTfRSkc8Z4u6JF+D
+         NLgnujAr7tytsqwCPjP1GyDipCfBaqNu3nG4+eGjzedAzAer/6lDPK14L1sm1+033hhp
+         DSUFcsWjGRKkesSLPhe42w+Y6XHEWvox9/lKqIgGKx16HPbi31IUni3jjipTBzmZ+0x4
+         t+K3OV7s//7HZtarBx8kyTbk7N15Qp/Qf4yabZhpDdWkmbj3oz9zbamQU/Z3/MtiUkn9
+         6ITg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
-         :to:cc;
-        bh=93R4ztQrLrDF9Ja7P3toIKUvpq9Mkw15Zf+bh5c6Tqo=;
-        b=lNt7ISFZZrkhRDCUfNHfigWeR2gq5FZ4/x1ll+u8RWyOZrj8V5Qz2OrQAvW+n8T5s6
-         CNxwVl5okHkX2x73HFWtHWCg/m7R+Shq/Li896OnVbF+PrbLYWz586o1kmEPbdIFJ1QC
-         lP/7RJqTwzsG3ApqmC/htasyjOoDbsduKfEWqMp+FWB3ULLDFFpvRthLBYWREMN9kysI
-         9zpZiiRUoDyzZjWjX/aecjJPorDxLHBgtQEtr26HMAU/0TP5jxbEOATOuNnBilTt4/A9
-         qLJ2G45J7PxGdsGo/yX1LlmNvzVVI+2gM0eEM2Rr7qLovSSLCd2ZdTStphOS/1N5q4Ym
-         QCyw==
-X-Gm-Message-State: AOAM5324XNDMjnw+VvHzZogmaNiL1IBZxuSuFrEDUzUIRKzfYizdmwyF
-        uJwQP+7eDfVFuOBl10srTIjsJVJBTnFT5mIwqP9Yx2K6lfWB86LnxaOl1PU6O2ZEBczGzOF592Z
-        29KMFzEbK5QqRl8zKQDc8ilDwrgo0Tc8FGkju+kAnJRX1QIYRIyg1H/M8llXBKyX/UeRgJDwq
-X-Google-Smtp-Source: ABdhPJyl7J/4ZMYI6a1D98WFOkbXOBJ8G/8pul2PYv3oklRs7dNvgDUFi0coDy0Z5skyieCqVo68nE6HtM2h
-Sender: "bgardon via sendgmr" <bgardon@bgardon.sea.corp.google.com>
-X-Received: from bgardon.sea.corp.google.com ([2620:15c:100:202:f693:9fff:fef4:a293])
- (user=bgardon job=sendgmr) by 2002:a17:902:bc46:b029:d6:d98a:1a68 with SMTP
- id t6-20020a170902bc46b02900d6d98a1a68mr10718919plz.63.1605120821929; Wed, 11
- Nov 2020 10:53:41 -0800 (PST)
-Date:   Wed, 11 Nov 2020 10:53:37 -0800
-Message-Id: <20201111185337.1237383-1-bgardon@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.29.2.222.g5d2a92d10f8-goog
-Subject: [PATCH] kvm: x86/mmu: Fix is_tdp_mmu_check when using PAE
-From:   Ben Gardon <bgardon@google.com>
-To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Peter Shier <pshier@google.com>,
-        Jim Mattson <jmattson@google.com>,
-        Zdenek Kaspar <zkaspar82@gmail.com>,
-        Ben Gardon <bgardon@google.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=6WeV7hUrwro5zFQ6cbjkRFYCH8+pe7+r1CSRKZroL8E=;
+        b=jQN6qX62sAHyI8cZJWhJewfMyrNKOIaIAtk63I/EXuge9IiEPkdI9bYRp0BRXjcQ35
+         NtHTYuy7cJ3LqZcdh+0hWDttPcwWBnBPjvOEoMVJSr2qy3VvDjtUF2i2N+2ckvTGcyon
+         IecpKV6xo/Ksi4ttMOdZdym3GE5ojh1UJet05UQJtlg0WDCa+pC7axm12vuGQuuXankQ
+         5JT6hXfZAshtWUuEhJLcoNiLQkC/sJhUS0l2l07lj6ELacPEsZu+e0IlPQSXFUJyJySW
+         SzdIysCi54LnMq/cFetNih9C25d1rZn1L3Lj2MzMoB97HcLAcAlL/y5+4Ja2RyuxWehr
+         2O2g==
+X-Gm-Message-State: AOAM532RMFNxOAlyzTqBV5dEzdtJNJAFHWZLdIBFKaa+5ge5/veZnjUt
+        0PRtcOk6pG9MC9nJhOqsoTYXfaNGHRFx0by2noIP9A==
+X-Google-Smtp-Source: ABdhPJyQZ5eQvqybr3BJ/5FSSyY2drvPVG9WdMj9qDTwqgoShNEtsMOA0jv0Ggva8IBP26cwt8EVrvJcVSIQ6tPAzFI=
+X-Received: by 2002:a17:902:8d95:b029:d8:c2ee:7dc with SMTP id
+ v21-20020a1709028d95b02900d8c2ee07dcmr2128379plo.57.1605120900544; Wed, 11
+ Nov 2020 10:55:00 -0800 (PST)
+MIME-Version: 1.0
+References: <cover.1605046192.git.andreyknvl@google.com> <e9077072bcdd4ccaecb1c84105f54bac5dc6f182.1605046192.git.andreyknvl@google.com>
+ <CAG_fn=XvXDe=+wuBNBq=fmidZkghNx_g6RbHRjgMMa658_1LXA@mail.gmail.com>
+In-Reply-To: <CAG_fn=XvXDe=+wuBNBq=fmidZkghNx_g6RbHRjgMMa658_1LXA@mail.gmail.com>
+From:   Andrey Konovalov <andreyknvl@google.com>
+Date:   Wed, 11 Nov 2020 19:54:49 +0100
+Message-ID: <CAAeHK+xoPQ5sVFVf2aRqcLJX8d9e7t1sNAF5F=gwTArDVN99Aw@mail.gmail.com>
+Subject: Re: [PATCH v9 43/44] kasan: add documentation for hardware tag-based mode
+To:     Alexander Potapenko <glider@google.com>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will.deacon@arm.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Marco Elver <elver@google.com>,
+        Evgenii Stepanov <eugenis@google.com>,
+        Branislav Rankov <Branislav.Rankov@arm.com>,
+        Kevin Brodsky <kevin.brodsky@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When PAE is in use, the root_hpa will not have a shadow page assoicated
-with it. In this case the kernel will crash with a NULL pointer
-dereference. Add checks to ensure is_tdp_mmu_root works as intended even
-when using PAE.
+On Wed, Nov 11, 2020 at 5:57 PM Alexander Potapenko <glider@google.com> wrote:
+>
+> On Tue, Nov 10, 2020 at 11:12 PM Andrey Konovalov <andreyknvl@google.com> wrote:
+> >
+> > Add documentation for hardware tag-based KASAN mode and also add some
+> > clarifications for software tag-based mode.
+> >
+> > Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
+> > Signed-off-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
+> > Reviewed-by: Marco Elver <elver@google.com>
+> > ---
+> > Change-Id: Ib46cb444cfdee44054628940a82f5139e10d0258
+>
+> > +
+> > +Software tag-based KASAN currently only supports tagging of slab memory.
+>
+> I think the reader may confuse "slab memory" here with "memory
+> returned by SLAB" (as opposed to SLUB).
+> Maybe "heap memory" is less ambiguous?
 
-Tested: compiles
-
-Fixes: 02c00b3a2f7e ("kvm: x86/mmu: Allocate and free TDP MMU roots")
-Reported-by: Zdenek Kaspar <zkaspar82@gmail.com>
-Signed-off-by: Ben Gardon <bgardon@google.com>
----
- arch/x86/kvm/mmu/tdp_mmu.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
-
-diff --git a/arch/x86/kvm/mmu/tdp_mmu.c b/arch/x86/kvm/mmu/tdp_mmu.c
-index 27e381c9da6c..13013f4d98ad 100644
---- a/arch/x86/kvm/mmu/tdp_mmu.c
-+++ b/arch/x86/kvm/mmu/tdp_mmu.c
-@@ -49,8 +49,18 @@ bool is_tdp_mmu_root(struct kvm *kvm, hpa_t hpa)
- {
- 	struct kvm_mmu_page *sp;
- 
-+	if (WARN_ON(!VALID_PAGE(hpa)))
-+		return false;
-+
- 	sp = to_shadow_page(hpa);
- 
-+	/*
-+	 * If this VM is being run with PAE, the TDP MMU will not be enabled
-+	 * and the root HPA will not have a shadow page associated with it.
-+	 */
-+	if (!sp)
-+		return false;
-+
- 	return sp->tdp_mmu_page && sp->root_count;
- }
- 
--- 
-2.29.2.222.g5d2a92d10f8-goog
-
+I think heap memory isn't widely used in the kernel context. But I'll
+clarify this part in v10, thanks!
