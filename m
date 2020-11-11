@@ -2,310 +2,232 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8132E2AF6FD
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 17:55:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A4F282AF6FE
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 17:55:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726915AbgKKQzC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 11:55:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57144 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726216AbgKKQzB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 11:55:01 -0500
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F17A5C0613D1
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 08:55:00 -0800 (PST)
-Received: by mail-wr1-x443.google.com with SMTP id j7so3212763wrp.3
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 08:55:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=OrzYDM8svlnj5hHY+u0nDuLQxqJ3IUm9fI7fqLn+JR4=;
-        b=nmgpixr7TQcfSpLeX7EBSjatykOIgcRi6jIwa2Cnv4kpT/6Xc+TNBbeJdA/YR2RsTM
-         bxuNFKs8wK0WK7ZEQEzu/PWX5njPJDewgHT/NUJVtfmv9GCdHjMXqDU/Br1ui6FYtd9q
-         iydNeZWSU7eZJKsfwZG7mGlZyDNCUeprixAX9bcYqpi3roIxq4p4GHoe8j918JAKjike
-         Z2QS3aQ6SXJQrk7cWQ0rq3FLAYy42LwykLmuG0efhqvZUitFiYLzviMHpXHoMgskLhRD
-         p2wgo6jSjFNM5Z/i30OlNs4WzlbGN8+A29tSuUVIKQ/9Q2D1aHw212lF/WXTkLqcPgpc
-         1hIw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=OrzYDM8svlnj5hHY+u0nDuLQxqJ3IUm9fI7fqLn+JR4=;
-        b=HnaubFDfGZa3lh81Gjjxm/vuoEIMqxFY6GOCQieAxfnZ1pKqYwhRIhH+z2QWeE6PMb
-         On0WmpYky5M83eN6WnEHYovkwtMxm8v8X2blHNBdHPOKVLOBGUP8P7lSwQu+FzmubDa5
-         5zxjiga37zd6/CfYEb7tAP1cAMMs/BAnA83lxsMLuShRzLix3XOY9FITOgl5N38vbC7t
-         XDwFYxofWBhCrfBNmQA+QDf5e4+51viM1Sx1/IRWiyIZ1XuX7lkIO1eHBLKsy3VQcFGy
-         Y4hyRs6jZjj4jugJ/IPIEFWzQE5QfT99IDQLx3eLoO05WLVPK6bgO5UgWNnZdejyO3zv
-         795A==
-X-Gm-Message-State: AOAM530XbrIQXtQgz+CFYGA2Y59FSR90v4p8YBJHZAyly1jzFAdueCbL
-        ouw44IOrmKl7WchCI14y+njrGw==
-X-Google-Smtp-Source: ABdhPJyNx1VvORBnMwVAByjb8ipGJUMdGVWt8clrxDGcqRyXQ1S2kTw9LdV6nCEcngDdAVK+jUhmTg==
-X-Received: by 2002:a5d:5651:: with SMTP id j17mr20421341wrw.221.1605113699452;
-        Wed, 11 Nov 2020 08:54:59 -0800 (PST)
-Received: from elver.google.com ([2a00:79e0:15:13:f693:9fff:fef4:2449])
-        by smtp.gmail.com with ESMTPSA id v19sm3148470wmj.31.2020.11.11.08.54.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 Nov 2020 08:54:58 -0800 (PST)
-Date:   Wed, 11 Nov 2020 17:54:53 +0100
-From:   Marco Elver <elver@google.com>
-To:     Andrey Konovalov <andreyknvl@google.com>
-Cc:     Dmitry Vyukov <dvyukov@google.com>,
-        Alexander Potapenko <glider@google.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will.deacon@arm.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Evgenii Stepanov <eugenis@google.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Branislav Rankov <Branislav.Rankov@arm.com>,
-        Kevin Brodsky <kevin.brodsky@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        kasan-dev@googlegroups.com, linux-arm-kernel@lists.infradead.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 07/20] kasan: inline kasan_reset_tag for tag-based
- modes
-Message-ID: <20201111165453.GI517454@elver.google.com>
-References: <cover.1605046662.git.andreyknvl@google.com>
- <ceba8fba477518e5dc26b77bc395c264cd1e593a.1605046662.git.andreyknvl@google.com>
+        id S1727308AbgKKQzX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 11:55:23 -0500
+Received: from mga12.intel.com ([192.55.52.136]:43978 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726523AbgKKQzW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Nov 2020 11:55:22 -0500
+IronPort-SDR: xanFHdH1o18uzeV1TYDO6IAN+IFKE0CyMzTluKI0PcO0EDSfZXCvzpVOT9hHrUSJVacXxoY53O
+ ZId7pS2sDC4w==
+X-IronPort-AV: E=McAfee;i="6000,8403,9802"; a="149449335"
+X-IronPort-AV: E=Sophos;i="5.77,470,1596524400"; 
+   d="scan'208";a="149449335"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Nov 2020 08:55:19 -0800
+IronPort-SDR: iBdoHNfmwEz2iL31d6UO7v4YdMgw1auk59kyd11fUfAtwauesji6LXZB9Gc0XZRrMaS/OkewCI
+ 290H9rpNtbCA==
+X-IronPort-AV: E=Sophos;i="5.77,470,1596524400"; 
+   d="scan'208";a="541873069"
+Received: from shuo-intel.sh.intel.com (HELO localhost) ([10.239.154.30])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Nov 2020 08:55:16 -0800
+Date:   Thu, 12 Nov 2020 00:55:14 +0800
+From:   Shuo A Liu <shuo.a.liu@intel.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, x86@kernel.org,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Yu Wang <yu1.wang@intel.com>,
+        Reinette Chatre <reinette.chatre@intel.com>,
+        Zhi Wang <zhi.a.wang@intel.com>,
+        Zhenyu Wang <zhenyuw@linux.intel.com>
+Subject: Re: [PATCH v5 07/17] virt: acrn: Introduce an ioctl to set vCPU
+ registers state
+Message-ID: <20201111165514.GJ17702@shuo-intel.sh.intel.com>
+References: <20201019061803.13298-1-shuo.a.liu@intel.com>
+ <20201019061803.13298-8-shuo.a.liu@intel.com>
+ <20201109170940.GA2013864@kroah.com>
+ <20201110131419.GG17702@shuo-intel.sh.intel.com>
+ <X6qpovz2TVpvZjDh@kroah.com>
+ <20201111095431.GH17702@shuo-intel.sh.intel.com>
+ <X6u82BylaUR8nZec@kroah.com>
+ <20201111120348.GI17702@shuo-intel.sh.intel.com>
+ <X6vZHoA1Yyfev6QU@kroah.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Disposition: inline
-In-Reply-To: <ceba8fba477518e5dc26b77bc395c264cd1e593a.1605046662.git.andreyknvl@google.com>
-User-Agent: Mutt/1.14.6 (2020-07-11)
+In-Reply-To: <X6vZHoA1Yyfev6QU@kroah.com>
+User-Agent: Mutt/1.8.3 (2017-05-23)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 10, 2020 at 11:20PM +0100, Andrey Konovalov wrote:
-> Using kasan_reset_tag() currently results in a function call. As it's
-> called quite often from the allocator code, this leads to a noticeable
-> slowdown. Move it to include/linux/kasan.h and turn it into a static
-> inline function. Also remove the now unneeded reset_tag() internal KASAN
-> macro and use kasan_reset_tag() instead.
-> 
-> Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
-> Link: https://linux-review.googlesource.com/id/I4d2061acfe91d480a75df00b07c22d8494ef14b5
-> ---
->  include/linux/kasan.h     | 5 ++++-
->  mm/kasan/common.c         | 6 +++---
->  mm/kasan/hw_tags.c        | 9 ++-------
->  mm/kasan/kasan.h          | 4 ----
->  mm/kasan/report.c         | 4 ++--
->  mm/kasan/report_hw_tags.c | 2 +-
->  mm/kasan/report_sw_tags.c | 4 ++--
->  mm/kasan/shadow.c         | 4 ++--
->  mm/kasan/sw_tags.c        | 9 ++-------
->  9 files changed, 18 insertions(+), 29 deletions(-)
+On Wed 11.Nov'20 at 13:29:18 +0100, Greg Kroah-Hartman wrote:
+>On Wed, Nov 11, 2020 at 08:03:48PM +0800, Shuo A Liu wrote:
+>> On Wed 11.Nov'20 at 11:28:40 +0100, Greg Kroah-Hartman wrote:
+>> > On Wed, Nov 11, 2020 at 05:54:31PM +0800, Shuo A Liu wrote:
+>> > > On Tue 10.Nov'20 at 15:54:26 +0100, Greg Kroah-Hartman wrote:
+>> > > > On Tue, Nov 10, 2020 at 09:14:19PM +0800, Shuo A Liu wrote:
+>> > > > > > And there really is no validation of
+>> > > > > > any fields?
+>> > > > >
+>> > > > > Yes. Because HSM driver has little knowledge to do the validation.
+>> > > >
+>> > > > What is "HSM driver"?  And you all are ready for fuzzers to break this
+>> > > > into small pieces, right?  No validation of any input parameters feels
+>> > > > really really wrong.  Best of luck!
+>> > >
+>> > > This driver is HSM (Hypervisor Service Module) driver.
+>> > > Take this hypercall for example. The register values are set by user, we
+>> > > can do nothing to verify them. If the values are wrong, the VM will
+>> > > crash and the hypervisor will handle that.
+>> >
+>> > Ah, nice, so you are creating a situation where any user can crash the
+>> > VM, what can go wrong :(
+>>
+>> Not any user, only the one who create the VM. Others cannot access the
+>> same VM. Let me list a piece of pesudo code of the device usage:
+>>
+>>  fd = open the /dev/acrn_hsm, HSM driver binds a VM with the fd
+>>  ioctl (fd, CREATE_VM, SET_VCPU_REGS, START_VM ...)
+>>  close fd
+>>
+>> The one who create the VM should have full control of the VM.
+>
+>Including crashing it and potentially corrupting the hypervisor?  Great,
+>remind me to never use this code :)
 
-Reviewed-by: Marco Elver <elver@google.com>
+The crashing here is within guest VM itself. It should not affect the
+hypervisor, else bug appears. The hypervisor should handle such case
+correctly (e.g. add more validataion in hypervisor) :)
 
-> diff --git a/include/linux/kasan.h b/include/linux/kasan.h
-> index b9b9db335d87..53c8e8b12fbc 100644
-> --- a/include/linux/kasan.h
-> +++ b/include/linux/kasan.h
-> @@ -193,7 +193,10 @@ static inline void kasan_record_aux_stack(void *ptr) {}
->  
->  #if defined(CONFIG_KASAN_SW_TAGS) || defined(CONFIG_KASAN_HW_TAGS)
->  
-> -void *kasan_reset_tag(const void *addr);
-> +static inline void *kasan_reset_tag(const void *addr)
-> +{
-> +	return (void *)arch_kasan_reset_tag(addr);
-> +}
->  
->  bool kasan_report(unsigned long addr, size_t size,
->  		bool is_write, unsigned long ip);
-> diff --git a/mm/kasan/common.c b/mm/kasan/common.c
-> index 9008fc6b0810..a266b90636a1 100644
-> --- a/mm/kasan/common.c
-> +++ b/mm/kasan/common.c
-> @@ -174,14 +174,14 @@ size_t kasan_metadata_size(struct kmem_cache *cache)
->  struct kasan_alloc_meta *kasan_get_alloc_meta(struct kmem_cache *cache,
->  					      const void *object)
->  {
-> -	return (void *)reset_tag(object) + cache->kasan_info.alloc_meta_offset;
-> +	return kasan_reset_tag(object) + cache->kasan_info.alloc_meta_offset;
->  }
->  
->  struct kasan_free_meta *kasan_get_free_meta(struct kmem_cache *cache,
->  					    const void *object)
->  {
->  	BUILD_BUG_ON(sizeof(struct kasan_free_meta) > 32);
-> -	return (void *)reset_tag(object) + cache->kasan_info.free_meta_offset;
-> +	return kasan_reset_tag(object) + cache->kasan_info.free_meta_offset;
->  }
->  
->  void kasan_poison_slab(struct page *page)
-> @@ -278,7 +278,7 @@ static bool __kasan_slab_free(struct kmem_cache *cache, void *object,
->  
->  	tag = get_tag(object);
->  	tagged_object = object;
-> -	object = reset_tag(object);
-> +	object = kasan_reset_tag(object);
->  
->  	if (unlikely(nearest_obj(cache, virt_to_head_page(object), object) !=
->  	    object)) {
-> diff --git a/mm/kasan/hw_tags.c b/mm/kasan/hw_tags.c
-> index 70b88dd40cd8..49ea5f5c5643 100644
-> --- a/mm/kasan/hw_tags.c
-> +++ b/mm/kasan/hw_tags.c
-> @@ -30,20 +30,15 @@ void kasan_init_hw_tags(void)
->  	pr_info("KernelAddressSanitizer initialized\n");
->  }
->  
-> -void *kasan_reset_tag(const void *addr)
-> -{
-> -	return reset_tag(addr);
-> -}
-> -
->  void kasan_poison_memory(const void *address, size_t size, u8 value)
->  {
-> -	hw_set_mem_tag_range(reset_tag(address),
-> +	hw_set_mem_tag_range(kasan_reset_tag(address),
->  			round_up(size, KASAN_GRANULE_SIZE), value);
->  }
->  
->  void kasan_unpoison_memory(const void *address, size_t size)
->  {
-> -	hw_set_mem_tag_range(reset_tag(address),
-> +	hw_set_mem_tag_range(kasan_reset_tag(address),
->  			round_up(size, KASAN_GRANULE_SIZE), get_tag(address));
->  }
->  
-> diff --git a/mm/kasan/kasan.h b/mm/kasan/kasan.h
-> index db8a7a508121..8a5501ef2339 100644
-> --- a/mm/kasan/kasan.h
-> +++ b/mm/kasan/kasan.h
-> @@ -246,15 +246,11 @@ static inline const void *arch_kasan_set_tag(const void *addr, u8 tag)
->  	return addr;
->  }
->  #endif
-> -#ifndef arch_kasan_reset_tag
-> -#define arch_kasan_reset_tag(addr)	((void *)(addr))
-> -#endif
->  #ifndef arch_kasan_get_tag
->  #define arch_kasan_get_tag(addr)	0
->  #endif
->  
->  #define set_tag(addr, tag)	((void *)arch_kasan_set_tag((addr), (tag)))
-> -#define reset_tag(addr)		((void *)arch_kasan_reset_tag(addr))
->  #define get_tag(addr)		arch_kasan_get_tag(addr)
->  
->  #ifdef CONFIG_KASAN_HW_TAGS
-> diff --git a/mm/kasan/report.c b/mm/kasan/report.c
-> index 0cac53a57c14..25ca66c99e48 100644
-> --- a/mm/kasan/report.c
-> +++ b/mm/kasan/report.c
-> @@ -328,7 +328,7 @@ void kasan_report_invalid_free(void *object, unsigned long ip)
->  	unsigned long flags;
->  	u8 tag = get_tag(object);
->  
-> -	object = reset_tag(object);
-> +	object = kasan_reset_tag(object);
->  
->  #if IS_ENABLED(CONFIG_KUNIT)
->  	if (current->kunit_test)
-> @@ -361,7 +361,7 @@ static void __kasan_report(unsigned long addr, size_t size, bool is_write,
->  	disable_trace_on_warning();
->  
->  	tagged_addr = (void *)addr;
-> -	untagged_addr = reset_tag(tagged_addr);
-> +	untagged_addr = kasan_reset_tag(tagged_addr);
->  
->  	info.access_addr = tagged_addr;
->  	if (addr_has_metadata(untagged_addr))
-> diff --git a/mm/kasan/report_hw_tags.c b/mm/kasan/report_hw_tags.c
-> index da543eb832cd..57114f0e14d1 100644
-> --- a/mm/kasan/report_hw_tags.c
-> +++ b/mm/kasan/report_hw_tags.c
-> @@ -22,7 +22,7 @@ const char *get_bug_type(struct kasan_access_info *info)
->  
->  void *find_first_bad_addr(void *addr, size_t size)
->  {
-> -	return reset_tag(addr);
-> +	return kasan_reset_tag(addr);
->  }
->  
->  void metadata_fetch_row(char *buffer, void *row)
-> diff --git a/mm/kasan/report_sw_tags.c b/mm/kasan/report_sw_tags.c
-> index 317100fd95b9..7604b46239d4 100644
-> --- a/mm/kasan/report_sw_tags.c
-> +++ b/mm/kasan/report_sw_tags.c
-> @@ -41,7 +41,7 @@ const char *get_bug_type(struct kasan_access_info *info)
->  	int i;
->  
->  	tag = get_tag(info->access_addr);
-> -	addr = reset_tag(info->access_addr);
-> +	addr = kasan_reset_tag(info->access_addr);
->  	page = kasan_addr_to_page(addr);
->  	if (page && PageSlab(page)) {
->  		cache = page->slab_cache;
-> @@ -72,7 +72,7 @@ const char *get_bug_type(struct kasan_access_info *info)
->  void *find_first_bad_addr(void *addr, size_t size)
->  {
->  	u8 tag = get_tag(addr);
-> -	void *p = reset_tag(addr);
-> +	void *p = kasan_reset_tag(addr);
->  	void *end = p + size;
->  
->  	while (p < end && tag == *(u8 *)kasan_mem_to_shadow(p))
-> diff --git a/mm/kasan/shadow.c b/mm/kasan/shadow.c
-> index 616ac64c4a21..8e4fa9157a0b 100644
-> --- a/mm/kasan/shadow.c
-> +++ b/mm/kasan/shadow.c
-> @@ -81,7 +81,7 @@ void kasan_poison_memory(const void *address, size_t size, u8 value)
->  	 * some of the callers (e.g. kasan_poison_object_data) pass tagged
->  	 * addresses to this function.
->  	 */
-> -	address = reset_tag(address);
-> +	address = kasan_reset_tag(address);
->  
->  	shadow_start = kasan_mem_to_shadow(address);
->  	shadow_end = kasan_mem_to_shadow(address + size);
-> @@ -98,7 +98,7 @@ void kasan_unpoison_memory(const void *address, size_t size)
->  	 * some of the callers (e.g. kasan_unpoison_object_data) pass tagged
->  	 * addresses to this function.
->  	 */
-> -	address = reset_tag(address);
-> +	address = kasan_reset_tag(address);
->  
->  	kasan_poison_memory(address, size, tag);
->  
-> diff --git a/mm/kasan/sw_tags.c b/mm/kasan/sw_tags.c
-> index 3bffb489b144..d1af6f6c6d12 100644
-> --- a/mm/kasan/sw_tags.c
-> +++ b/mm/kasan/sw_tags.c
-> @@ -67,11 +67,6 @@ u8 random_tag(void)
->  	return (u8)(state % (KASAN_TAG_MAX + 1));
->  }
->  
-> -void *kasan_reset_tag(const void *addr)
-> -{
-> -	return reset_tag(addr);
-> -}
-> -
->  bool check_memory_region(unsigned long addr, size_t size, bool write,
->  				unsigned long ret_ip)
->  {
-> @@ -107,7 +102,7 @@ bool check_memory_region(unsigned long addr, size_t size, bool write,
->  	if (tag == KASAN_TAG_KERNEL)
->  		return true;
->  
-> -	untagged_addr = reset_tag((const void *)addr);
-> +	untagged_addr = kasan_reset_tag((const void *)addr);
->  	if (unlikely(untagged_addr <
->  			kasan_shadow_to_mem((void *)KASAN_SHADOW_START))) {
->  		return !kasan_report(addr, size, write, ret_ip);
-> @@ -126,7 +121,7 @@ bool check_memory_region(unsigned long addr, size_t size, bool write,
->  bool check_invalid_free(void *addr)
->  {
->  	u8 tag = get_tag(addr);
-> -	u8 shadow_byte = READ_ONCE(*(u8 *)kasan_mem_to_shadow(reset_tag(addr)));
-> +	u8 shadow_byte = READ_ONCE(*(u8 *)kasan_mem_to_shadow(kasan_reset_tag(addr)));
->  
->  	return (shadow_byte == KASAN_TAG_INVALID) ||
->  		(tag != KASAN_TAG_KERNEL && tag != shadow_byte);
-> -- 
-> 2.29.2.222.g5d2a92d10f8-goog
-> 
+>
+>> > > > > >
+>> > > > > > Is there a pointer to a public document for all of these structures
+>> > > > > > somewhere?
+>> > > > >
+>> > > > > Unfortunately, no. I have added some documents for some strutures
+>> > > > > in the code via kernel-doc format.
+>> > > >
+>> > > > Is this not the hypervisor that this code is for:
+>> > > > 	https://projectacrn.org/
+>> > > > ?
+>> > > >
+>> > > > If not, what is this thing?
+>> > > >
+>> > > > If so, how is there not documentation for it?
+>> > >
+>> > > Oh, yes. We have the structures documentation on the website. Pls refer
+>> > > https://projectacrn.github.io/latest/api/hypercall_api.html#
+>> > > I meant that some fields of structures might be lack of explanation.
+>> >
+>> > Please work on the documentation of the fields, otherwise it doesn't
+>> > really make much sense what is happening here, right?
+>>
+>> Right. We will try to enrich them.
+>>
+>> >
+>> > Along these lines, where is the userspace code that makes all of these
+>> > ioctls?  Surely the fields must be documented there, right?
+>>
+>> A userspace tool uses the ioctls, you can find the source from:
+>> https://github.com/projectacrn/acrn-hypervisor/blob/master/devicemodel/core/vmmapi.c
+>> There is a bit difference with the version i posted as i did some polish for
+>> upstream.
+>
+>I do not understand, this isn't your version?  Where is the "correct"
+>implementation?  Shouldn't that be part of the patch series
+>documentation?  Or was it and I missed it as this thread is so long?
+
+You didn't miss that. The link i pasted above is from a userspace
+application (named devicemodel in ACRN project) that using this driver
+on ACRN hypervisor (like QEMU on KVM). I didn't put it in the patch,
+because it's a huge program. There are some difference of the
+ioctl definition within this patchset (changing of name and definition),
+because we are using that currently for daily development. When the
+upstreaming patch got merged, they will be updated.
+
+So, it seems you wanted a brief example code of driver usage in
+documentation, am i right? If yes, i can try to make one. But it
+might only show a brief flow of VM creating, memory setup, vcpu setup,
+VM starting, maybe IO handling, VM destroy, ..etc. Is that ok? 
+
+>
+>> > > > > > > +	struct acrn_regs	vcpu_regs;
+>> > > > > > > +} __attribute__((aligned(8)));
+>> > > > > >
+>> > > > > > What does the alignment do here?
+>> > > > >
+>> > > > > The hypervisor wants to access aligned data block to improve the
+>> > > > > efficiency. Currently, the hypervisor only runs on x86_64 platform.
+>> > > >
+>> > > > That's nice, but what do you think that adding this attribute to a
+>> > > > structure provides you?  Have you tested this really is doing what you
+>> > > > think it is doing?
+>> > >
+>> > > It could make the compiler put the data structure at aligned address.
+>> >
+>> > Are you sure this is the correct way to do that?
+>>
+>> I tried the attribute it works.
+>>
+>> test.c:
+>>
+>> struct foo_256_aligned {
+>> 	int a;
+>> 	unsigned char b;
+>> } __attribute__((aligned(256)));
+>>
+>> struct foo {
+>> 	int a;
+>> 	unsigned char b;
+>> };
+>> int main(int argc, char** argv) {
+>> 	struct foo_256_aligned a;
+>> 	struct foo b;
+>> 	printf("%p %p\n", &a, &b);
+>> }
+>>
+>> # gcc -o test test.c && ./test
+>> 0x7ffe2af04b00 0x7ffe2af04af8
+>
+>But you will not have these data structures defined on the stack like
+>this in the kernel source.
+>
+>You will be assigning the structure to some chunk of memory you
+>dynamically allocate, right?  That's my main point here, if this is
+
+Understand.
+
+>something that you HAVE to have right, then you HAVE to test and verify
+>it is true when the structure is sent to you.
+>
+>To just assume that a compiler marking will somehow enforce this
+>alignment on random chunks of allocated memory is very odd.
+>
+>> > > In the kernel the structures are almost from kmalloc, so the attribute
+>> > > might be not meaningful. But in the hypervisor, there are many such data
+>> > > structures in stack or in static pool, this attribute can make sure the
+>> > > data structures are located at the aligned address.
+>> >
+>> > This is kernel data, not hypervisor data, in kernel memory.  If you
+>> > require the hypervisor to get the structures at a specific alignment in
+>> > memory, you better check that in the kernel code, otherwise how can you
+>> > ensure it?
+>>
+>> Oh, this is a public header file which will be used by the hypervisor as
+>> well.
+>
+>Then you HAVE to use the proper user/kernel structures for it.
+
+Sorry, i didn't follow here. The structures are used in 
+
+  * devicemodel (userspace application, like QEMU in KVM)
+  * HSM (this driver, pass the data from devicemodel to hypervisor)
+  * hypervisor
+
+They all should be compiled with the same public header from kernel, is
+my understanding right? If hypervisor source wants to use the compiler
+marking, need i only duplicate one header with the modification for
+that?
+
+
+Thanks
+shuo
