@@ -2,463 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ADBB02AF9DB
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 21:38:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 84A612AF9D7
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 21:37:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726573AbgKKUiY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 15:38:24 -0500
-Received: from sender11-of-o52.zoho.eu ([31.186.226.238]:21392 "EHLO
-        sender11-of-o52.zoho.eu" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725900AbgKKUiY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 15:38:24 -0500
-ARC-Seal: i=1; a=rsa-sha256; t=1605127050; cv=none; 
-        d=zohomail.eu; s=zohoarc; 
-        b=Wnkv/QXcItappIIusTAM7VcY8pGBgqKMfE7rX3pCIDld6oAam3R1Qok+mKYWZxKMbkLmwFeI6nQ5zhEMmrENpfXcdOCWNOFFN1Px+zO1dZYp5kjOCYW8vvLpJzMzWI8FG7dR4eC2O+GLwx+oIfYFeWyqRyEbxPnwLQyhtFCtYCQ=
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.eu; s=zohoarc; 
-        t=1605127050; h=Content-Type:Content-Transfer-Encoding:Date:From:In-Reply-To:MIME-Version:Message-ID:References:Subject:To; 
-        bh=fUKQDqHeLuhI+vL40TWi+VXLMpx0XJroQR1INOqrMYE=; 
-        b=BvBQiRAuyzXc8y9qgt/0ZFqGs0AkB+99PsHFALEDXJoN0EVXDYR5O+pKJtYqB7Khs+FpyuPB+hHBMS50SY5Vb7nwERug73wdrZwk1Fp69hue8xxThk4yXJCl1h928m+p88WTZjjFvuktCGdwT4E6AO6C1hKHuw18ACUBUPDLrEk=
-ARC-Authentication-Results: i=1; mx.zohomail.eu;
-        dkim=pass  header.i=shytyi.net;
-        spf=pass  smtp.mailfrom=dmytro@shytyi.net;
-        dmarc=pass header.from=<dmytro@shytyi.net> header.from=<dmytro@shytyi.net>
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1605127050;
-        s=hs; d=shytyi.net; i=dmytro@shytyi.net;
-        h=Date:From:To:Message-ID:In-Reply-To:References:Subject:MIME-Version:Content-Type:Content-Transfer-Encoding;
-        bh=fUKQDqHeLuhI+vL40TWi+VXLMpx0XJroQR1INOqrMYE=;
-        b=N4RHQpWG59rl4MZ4Eh1+PW4j4APDM8bPJrdNy4hFbthrySihUmPvCjpMiVv01fNM
-        M1FFl47KWqqLy0v55RIzBmwaWfUgAMFY1AhX/5iV1qyn+RU0UqJnxMRFCS9O+Sna6hK
-        fQmfCRCaBxqFPHagt0sbpwUBS4ka7DUKIZFlRpp0=
-Received: from mail.zoho.eu by mx.zoho.eu
-        with SMTP id 1605127043989512.4389783412504; Wed, 11 Nov 2020 21:37:23 +0100 (CET)
-Date:   Wed, 11 Nov 2020 21:37:23 +0100
-From:   Dmytro Shytyi <dmytro@shytyi.net>
-To:     "kuba" <kuba@kernel.org>, "kuznet" <kuznet@ms2.inr.ac.ru>,
-        "yoshfuji" <yoshfuji@linux-ipv6.org>,
-        "liuhangbin" <liuhangbin@gmail.com>, "davem" <davem@davemloft.net>,
-        "netdev" <netdev@vger.kernel.org>,
-        "linux-kernel" <linux-kernel@vger.kernel.org>
-Message-ID: <175b906fb93.ff57bd9d71578.3965069181875730887@shytyi.net>
-In-Reply-To: <202011110944.7zNVZmvB-lkp@intel.com>
-References: <175b3433a4c.aea7c06513321.4158329434310691736@shytyi.net> <202011110944.7zNVZmvB-lkp@intel.com>
-Subject: [PATCH net-next V2] net: Variable SLAAC: SLAAC with prefixes of
- arbitrary length in PIO
+        id S1726546AbgKKUhi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 15:37:38 -0500
+Received: from mail-mw2nam12on2086.outbound.protection.outlook.com ([40.107.244.86]:60896
+        "EHLO NAM12-MW2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725971AbgKKUhh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Nov 2020 15:37:37 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=W56Wvu8ku6MwGB2dC8DRcPW1YQLd1xctNU5mfb1a81iDNfHogp4du4xrTmHl7GFOuf1/hU361j798mUtboPGrQYuzOmzcm+kOWzFrmw1UWqsCIuoASrf5bTJmPAJpQ9D9dsecrrznMNaBGt57X9XioAhUYQQs8VhKgUGh1N4AxnXFB6+XhOad8QQ/c0zY2FSrRzU+delp+7EIrrbhKqsFzoX5BmR+11efCbUShvFQqzn1BUDhZYZ4YhopFd4OHmfOkE1RsDhca5YDea3Nuic6dmmnlz48AAs6UiLOm536jwpuuf0wUfhGVjvJDw/iwgFG9e03yYVxsNR7cS3r2ujag==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=jxeCTyHawwcEmWvz8X0ctbv4qA40ywc94iv127apNqE=;
+ b=j4lYeQ4itt8V44HCdtBsmmphsiXqGvp8tNNVMHzhxEpB7OaHZMaUi0aGQ76PaEQsMfRkkANKQEbNgI1xYIsZrt/coNVuI7W6B75Y9Z7vxDs8VBkrara7y96Tl54/JD3xMnO5lyUTiEW5bTcFOCeqepTFwCxPQSgP+Bl2UTRnLZ7hkKxwKTVtvPVKajp8b7geaCG3oi0Is3QzjPYH84knSC4AbhHQs++C/NAWkzmWI8I5ZB9P2ezPumkw9wNjKbAfKBdTSA8SKkxhoeeJN5nDGb1Jfud+7X2V56VbmKPF39tC2wOmqqAecsrdEt3t2aSry65LqVTWjlA8KRPkPQTDVQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=jxeCTyHawwcEmWvz8X0ctbv4qA40ywc94iv127apNqE=;
+ b=RWdJh7XFr7Q8pXtd//SyjvBdoFSgEPWcHJf1P0TjkxS3pi9MKdt0wii2jq5sTsIyQ00EfQtyDi3rKpZ6pUvdgj5p0KEdq9ukaWXhdzfUr5s5HivTnYxZ40zgY838JIUL7SlV1GupXLaOXykH6FxtFl2zr53KVJCZHA6Nj5T469k=
+Authentication-Results: amd.com; dkim=none (message not signed)
+ header.d=none;amd.com; dmarc=none action=none header.from=amd.com;
+Received: from SN6PR12MB2685.namprd12.prod.outlook.com (2603:10b6:805:67::33)
+ by SN1PR12MB2367.namprd12.prod.outlook.com (2603:10b6:802:26::31) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3541.21; Wed, 11 Nov
+ 2020 20:37:34 +0000
+Received: from SN6PR12MB2685.namprd12.prod.outlook.com
+ ([fe80::a160:c63e:b49a:8f9a]) by SN6PR12MB2685.namprd12.prod.outlook.com
+ ([fe80::a160:c63e:b49a:8f9a%3]) with mapi id 15.20.3541.025; Wed, 11 Nov 2020
+ 20:37:34 +0000
+Subject: Re: [PATCH v5] cper, apei, mce: Pass x86 CPER through the MCA
+ handling chain
+From:   Smita Koralahalli Channabasappa <skoralah@amd.com>
+To:     Punit Agrawal <punit1.agrawal@toshiba.co.jp>,
+        Borislav Petkov <bp@alien8.de>
+Cc:     Smita Koralahalli <Smita.KoralahalliChannabasappa@amd.com>,
+        x86@kernel.org, linux-kernel@vger.kernel.org,
+        linux-pm@vger.kernel.org, linux-edac@vger.kernel.org,
+        linux-efi@vger.kernel.org, linux-acpi@vger.kernel.org,
+        Tony Luck <tony.luck@intel.com>,
+        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <len.brown@intel.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Yazen Ghannam <yazen.ghannam@amd.com>
+References: <20201103164952.5126-1-Smita.KoralahalliChannabasappa@amd.com>
+ <87a6vv9hch.fsf@kokedama.swc.toshiba.co.jp> <20201106120950.GC14914@zn.tnic>
+ <874klz9vk9.fsf@kokedama.swc.toshiba.co.jp>
+ <982e0243-b144-f8b6-d69d-45af94ed8bb9@amd.com>
+Message-ID: <651b7dba-d36a-d4db-4a0f-fd67aa9b985f@amd.com>
+Date:   Wed, 11 Nov 2020 14:37:29 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.2.1
+In-Reply-To: <982e0243-b144-f8b6-d69d-45af94ed8bb9@amd.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Originating-IP: [2603:8080:1840:5c4:2d3f:50b3:ce8f:b4ef]
+X-ClientProxiedBy: DM5PR2001CA0009.namprd20.prod.outlook.com
+ (2603:10b6:4:16::19) To SN6PR12MB2685.namprd12.prod.outlook.com
+ (2603:10b6:805:67::33)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-Importance: Medium
-User-Agent: Zoho Mail
-X-Mailer: Zoho Mail
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [IPv6:2603:8080:1840:5c4:2d3f:50b3:ce8f:b4ef] (2603:8080:1840:5c4:2d3f:50b3:ce8f:b4ef) by DM5PR2001CA0009.namprd20.prod.outlook.com (2603:10b6:4:16::19) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3541.25 via Frontend Transport; Wed, 11 Nov 2020 20:37:33 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: fa6fe525-6a81-48ca-2ca1-08d886819ec7
+X-MS-TrafficTypeDiagnostic: SN1PR12MB2367:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <SN1PR12MB23675E71B8535F55D09383E090E80@SN1PR12MB2367.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: Q8VEB0bDruBWogtTxiLi8iuhHuTi19+fbpr4jXkzQidSLY6qiNVu0Mf6HhTa+jpx9HintzpPjlZD7br0uMBAbfwh+U2xbOuJXVsXvymrBh7y4QnbZBJ25M3EjaVoWIVfDiWrthTfGZbgEc04fcmbDzOMdsz970D1ZnyUe8g8iukvv6O+327hLXZY6KmZQKRCeyJuLeKR57V+Hc1ZrNKgleayyFtC5nrS4ySFjwFAPD1lEWvh8jcAxoAPN7PocYTwN7SXAqnDCuGfHg36SN3UkRZdLnygA7wzCsTb310RwNjEycMPfzxmP1gxp6BcpXfIwQzFY1IbiMq3cd+DpsZ5PjYtJGHJNm2D3JPuWTQ/GQR3UDodMTOwBssCpY8z7TBN
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR12MB2685.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(396003)(346002)(136003)(39860400002)(366004)(478600001)(36756003)(110136005)(54906003)(316002)(2906002)(31696002)(83380400001)(31686004)(53546011)(16526019)(186003)(8676002)(66556008)(2616005)(5660300002)(7416002)(8936002)(6486002)(4326008)(6666004)(66946007)(66476007)(52116002)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?cHhYeXA5d2Zkd0l3elN0VU54bHJ2NzdsNzAwTitPWHpWczl0RnZqRkIyOCtw?=
+ =?utf-8?B?UkwzRHpHanBNUVIyOGg5WXZ6dkNwaVQ2VThpbk9hNitaanJJYnVrVCtMUGty?=
+ =?utf-8?B?U1d4K1RtR2RvNHRXbXlreHJvY0N3cG9FKzY5Qzlvc1V5RnplOWhOSk9iTmNL?=
+ =?utf-8?B?MDU0YVZlY2tEWHNXL3VmRXZqZGJoTFJzdkFoenphOFlmMTVDUWVuSFJmVTU4?=
+ =?utf-8?B?dmZzbmkydkpxY040Q2lFSTdLWWc3anNJVG1wOWVNdmVBMy9INCtLSmhzb05U?=
+ =?utf-8?B?ODU3UnVqL1NkaXN6aENtUDRvS3E1Z2dJMEFJcmhGb2J1cDF4UFlDM29Wb3hy?=
+ =?utf-8?B?bWo2eXJ2YlAyZVVvb3JzRitxOHVqYVNqUFVPS2pmOXlSN1JITnMwcStaeE5L?=
+ =?utf-8?B?OU5JSEdGOVArNk1zME9EcCtFNys4UU11akVmMjZvN3ZFL1VndVRkUVBqMkpL?=
+ =?utf-8?B?L1BXK3VPTlZWSzFROE5MWG11eVVXUVBGQStjY09VV08xNUhobmx1QkMwZW9L?=
+ =?utf-8?B?QkhVc3YwL0QxZ2Z1b2QrbFNMU3BzbitOTmJVK2pPdzlncjNKeTU2MUZpaUhk?=
+ =?utf-8?B?M25SNmN5TlpnKytVT240NE50emtoU05KUTQzN2NzeHFhTGVFRzM1eThTTlp0?=
+ =?utf-8?B?ak1pM0dIVGJ6K2tYQ1FuZ3dlZ2pxN1dNZFFGY1BNVHE2QlEyU0pWTTVuTExM?=
+ =?utf-8?B?a3NTRDd1bmZ1a1NOY2hRT1JEekF2TWVia2srSU83QlBRVWVuV0cyRzdiQ0tr?=
+ =?utf-8?B?MjdXdHRyZ0cyRVNRU2lnd0FyQXhneGhTbk55cDczd1ZEb3RrZGlIK2JsRU51?=
+ =?utf-8?B?UHFsVVFUMGhzSVc0UTZZV3lydFd6Yk9ydWlXNjRjMFR4U1hRcEE3SGNuVnNh?=
+ =?utf-8?B?YTlVZWNpTU1PcFl1c2tVbVEvRi84MVNsdXlHSGxPRUZBRGdCM1lBUndvdVha?=
+ =?utf-8?B?UDZmTVYzU2JxNGlQaWNET090UExFQnZrRFVWYjNCV015UHZPdmxNYUtNWU4v?=
+ =?utf-8?B?dThIVjF4NGRpdmYxU2RITExJN1lwYnU1MmtrbHhWRkxMMURnTjVjZnNhbUxW?=
+ =?utf-8?B?TWFpV2J4cEFnUHluNWc3dktaNUIwWGIydVhubHg2bjNvVWxSTDQraTNVdVJ2?=
+ =?utf-8?B?di83T2ZyalYvNWhTd0oxSDFlQzFBK1NDUnE3ODM1QmlienlmQ0RSaVk4b1Nk?=
+ =?utf-8?B?Zk5LNTlvVm51L3dQSitnOWFjSkpqQmw4VFpGdjEweVh4UXFKQXlsZTZiV094?=
+ =?utf-8?B?WWdyekltTkNkRkNNaThZZkdFQUNRcmIvUkJ3UkhsSGJkQm1Wdz09?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: fa6fe525-6a81-48ca-2ca1-08d886819ec7
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR12MB2685.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Nov 2020 20:37:34.8050
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: T25XRBktqS343o6u0Q4FK72bxfKeS8Gasy05k4FkrSVDqIulgHNShMdUtD2pw8iAkMHxLMOFmgKziXHj8HvNug==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN1PR12MB2367
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Variable SLAAC: SLAAC with prefixes of arbitrary length in PIO (randomly
-generated hostID or stable privacy + privacy extensions).
-The main problem is that SLAAC RA or PD allocates a /64 by the Wireless
-carrier 4G, 5G to a mobile hotspot, however segmentation of the /64 via
-SLAAC is required so that downstream interfaces can be further subnetted.
-Example: uCPE device (4G + WI-FI enabled) receives /64 via Wireless, and
-assigns /72 to VNF-Firewall, /72 to WIFI, /72 to VNF-Router, /72 to
-Load-Balancer and /72 to wired connected devices.
-IETF document that defines problem statement:
-draft-mishra-v6ops-variable-slaac-problem-stmt
-IETF document that specifies variable slaac:
-draft-mishra-6man-variable-slaac
+Punit,
 
-Signed-off-by: Dmytro Shytyi <dmytro@shytyi.net>
-Reported-by: kernel test robot <lkp@intel.com>
----
-diff -rupN net-next-5.10.0-rc2/include/net/if_inet6.h net-next-patch-5.10.0-rc2/include/net/if_inet6.h
---- net-next-5.10.0-rc2/include/net/if_inet6.h	2020-11-10 08:46:00.195180579 +0100
-+++ net-next-patch-5.10.0-rc2/include/net/if_inet6.h	2020-11-11 18:11:05.627550135 +0100
-@@ -22,6 +22,12 @@
- #define IF_RS_SENT	0x10
- #define IF_READY	0x80000000
- 
-+/* Variable SLAAC (Contact: Dmytro Shytyi)
-+ * draft-mishra-6man-variable-slaac
-+ * draft-mishra-v6ops-variable-slaac-problem-stmt
-+ */
-+#define IF_RA_VAR_PLEN	0x08
-+
- /* prefix flags */
- #define IF_PREFIX_ONLINK	0x01
- #define IF_PREFIX_AUTOCONF	0x02
-diff -rupN net-next-5.10.0-rc2/include/uapi/linux/icmpv6.h net-next-patch-5.10.0-rc2/include/uapi/linux/icmpv6.h
---- net-next-5.10.0-rc2/include/uapi/linux/icmpv6.h	2020-11-10 08:46:00.351849525 +0100
-+++ net-next-patch-5.10.0-rc2/include/uapi/linux/icmpv6.h	2020-11-11 18:11:05.627550135 +0100
-@@ -42,7 +42,9 @@ struct icmp6hdr {
-                 struct icmpv6_nd_ra {
- 			__u8		hop_limit;
- #if defined(__LITTLE_ENDIAN_BITFIELD)
--			__u8		reserved:3,
-+			__u8		reserved:1,
-+					slaac_var_plen:1,
-+					proxy:1,
- 					router_pref:2,
- 					home_agent:1,
- 					other:1,
-@@ -53,7 +55,9 @@ struct icmp6hdr {
- 					other:1,
- 					home_agent:1,
- 					router_pref:2,
--					reserved:3;
-+					proxy:1,
-+					slaac_var_plen:1,
-+					reserved:1;
- #else
- #error	"Please fix <asm/byteorder.h>"
- #endif
-@@ -78,9 +82,9 @@ struct icmp6hdr {
- #define icmp6_addrconf_other	icmp6_dataun.u_nd_ra.other
- #define icmp6_rt_lifetime	icmp6_dataun.u_nd_ra.rt_lifetime
- #define icmp6_router_pref	icmp6_dataun.u_nd_ra.router_pref
-+#define icmp6_slaac_var_plen	icmp6_dataun.u_nd_ra.slaac_var_plen
- };
- 
--
- #define ICMPV6_ROUTER_PREF_LOW		0x3
- #define ICMPV6_ROUTER_PREF_MEDIUM	0x0
- #define ICMPV6_ROUTER_PREF_HIGH		0x1
-diff -rupN net-next-5.10.0-rc2/net/ipv6/addrconf.c net-next-patch-5.10.0-rc2/net/ipv6/addrconf.c
---- net-next-5.10.0-rc2/net/ipv6/addrconf.c	2020-11-10 08:46:01.075193379 +0100
-+++ net-next-patch-5.10.0-rc2/net/ipv6/addrconf.c	2020-11-11 19:47:08.529992394 +0100
-@@ -11,6 +11,8 @@
- /*
-  *	Changes:
-  *
-+ *	Dmytro Shytyi			:	Variable SLAAC: SLAAC with
-+ *	<dmytro@shytyi.net>			prefixes of arbitrary length.
-  *	Janos Farkas			:	delete timer on ifdown
-  *	<chexum@bankinf.banki.hu>
-  *	Andi Kleen			:	kill double kfree on module
-@@ -142,7 +144,12 @@ static int ipv6_count_addresses(const st
- static int ipv6_generate_stable_address(struct in6_addr *addr,
- 					u8 dad_count,
- 					const struct inet6_dev *idev);
--
-+static int ipv6_generate_address_variable_plen(struct in6_addr *address,
-+					       u8 dad_count,
-+					       const struct inet6_dev *idev,
-+					       unsigned int rcvd_prfx_len,
-+					       bool stable_privacy_mode);
-+unsigned char reverse_bits(unsigned char num);
- #define IN6_ADDR_HSIZE_SHIFT	8
- #define IN6_ADDR_HSIZE		(1 << IN6_ADDR_HSIZE_SHIFT)
- /*
-@@ -1314,11 +1321,26 @@ static int ipv6_create_tempaddr(struct i
- 	struct inet6_ifaddr *ift;
- 	struct ifa6_config cfg;
- 	long max_desync_factor;
-+
- 	struct in6_addr addr;
--	int ret = 0;
- 
--	write_lock_bh(&idev->lock);
-+	int ret;
-+#if defined(CONFIG_ARCH_SUPPORTS_INT128)
-+	__int128 host_id;
-+	__int128 net_prfx;
-+	__int128 ipv6addr;
-+	__int128 mask_128;
-+	__int128 mask_host_id;
-+	__int128 mask_net_prfx;
-+	struct in6_addr temp;
-+	int i;
-+	unsigned char mask_host_id_arr[128];
-+
- 
-+	memset(&mask_128, 0xFF, 16);
-+	write_lock_bh(&idev->lock);
-+#endif
-+	ret = 0;
- retry:
- 	in6_dev_hold(idev);
- 	if (idev->cnf.use_tempaddr <= 0) {
-@@ -1340,9 +1362,32 @@ retry:
- 		goto out;
- 	}
- 	in6_ifa_hold(ifp);
--	memcpy(addr.s6_addr, ifp->addr.s6_addr, 8);
--	ipv6_gen_rnd_iid(&addr);
- 
-+	if (ifp->prefix_len == 64) {
-+		memcpy(addr.s6_addr, ifp->addr.s6_addr, 8);
-+		ipv6_gen_rnd_iid(&addr);
-+	} else if (ifp->prefix_len > 0 && ifp->prefix_len <= 128) {
-+#if defined(CONFIG_ARCH_SUPPORTS_INT128)
-+		memcpy(addr.s6_addr, ifp->addr.s6_addr, 16);
-+		get_random_bytes(temp.s6_addr32, 16);
-+
-+		memcpy(&host_id, temp.s6_addr32, sizeof(host_id));
-+		memcpy(&net_prfx, addr.s6_addr, sizeof(net_prfx));
-+
-+		mask_host_id = ifp->prefix_len != 128 ? (mask_128 << ifp->prefix_len) : 0x0;
-+		memcpy(mask_host_id_arr, &mask_host_id, 16);
-+		for (i = 0; i < 128; i++)
-+			mask_host_id_arr[i] = reverse_bits(mask_host_id_arr[i]);
-+		memcpy(&mask_host_id, mask_host_id_arr, 16);
-+		host_id = host_id & mask_host_id;
-+
-+		mask_net_prfx = mask_128 ^ mask_host_id;
-+		net_prfx = net_prfx & mask_net_prfx;
-+
-+		ipv6addr = net_prfx | host_id;
-+		memcpy(addr.s6_addr, &ipv6addr, 16);
-+#endif
-+	}
- 	age = (now - ifp->tstamp) / HZ;
- 
- 	regen_advance = idev->cnf.regen_max_retry *
-@@ -1398,7 +1443,11 @@ retry:
- 	/* set in addrconf_prefix_rcv() */
- 	if (ifp->flags & IFA_F_OPTIMISTIC)
- 		cfg.ifa_flags |= IFA_F_OPTIMISTIC;
--
-+
-+	if (in6_pton("::", -1, addr.s6_addr, -1, NULL)) {
-+		ret = -1;
-+		goto out;
-+	}
- 	cfg.pfx = &addr;
- 	cfg.scope = ipv6_addr_scope(cfg.pfx);
- 
-@@ -2576,9 +2625,64 @@ int addrconf_prefix_rcv_add_addr(struct
- 				 u32 addr_flags, bool sllao, bool tokenized,
- 				 __u32 valid_lft, u32 prefered_lft)
- {
--	struct inet6_ifaddr *ifp = ipv6_get_ifaddr(net, addr, dev, 1);
-+	struct inet6_ifaddr *ifp = NULL;
- 	int create = 0;
- 
-+	if ((in6_dev->if_flags & IF_RA_VAR_PLEN) == IF_RA_VAR_PLEN &&
-+	    in6_dev->cnf.addr_gen_mode != IN6_ADDR_GEN_MODE_STABLE_PRIVACY) {
-+#if defined(CONFIG_ARCH_SUPPORTS_INT128)
-+		struct inet6_ifaddr *result = NULL;
-+		struct inet6_ifaddr *result_base = NULL;
-+		__int128 mask_128;
-+		__int128 mask_net_prfx;
-+		__int128 net_prfx;
-+		__int128 curr_net_prfx;
-+		int hostid_len;
-+		int i;
-+		unsigned char mask_host_id_arr[128];
-+
-+		memset(&mask_128, 0xFF, 16);
-+		result_base = result;
-+		rcu_read_lock();
-+		list_for_each_entry_rcu(ifp, &in6_dev->addr_list, if_list) {
-+			if (!net_eq(dev_net(ifp->idev->dev), net))
-+				continue;
-+			/* 128bit network prefix mask calculation */
-+			hostid_len = 128 - pinfo->prefix_len;
-+			mask_net_prfx =
-+				pinfo->prefix_len != 128 ? (mask_128 << pinfo->prefix_len) : 0x0;
-+			mask_net_prfx = ~mask_net_prfx;
-+			memcpy(mask_host_id_arr, &mask_net_prfx, 16);
-+			for (i = 0; i < 128; i++)
-+				mask_host_id_arr[i] = reverse_bits(mask_host_id_arr[i]);
-+			memcpy(&mask_net_prfx, mask_host_id_arr, 16);
-+
-+			/* Received/new IPv6 prefix */
-+			memcpy(&net_prfx, pinfo->prefix.s6_addr32, 16);
-+			net_prfx &= mask_net_prfx;
-+
-+			/* Configured/old IPv6 prefix */
-+			memcpy(&curr_net_prfx, ifp->addr.s6_addr32, 16);
-+			curr_net_prfx &=  mask_net_prfx;
-+
-+			/* IPv6 prefixes comparison */
-+			if ((net_prfx ^ curr_net_prfx) == 0 &&
-+			    pinfo->prefix_len == ifp->prefix_len) {
-+				result = ifp;
-+				in6_ifa_hold(ifp);
-+				break;
-+			}
-+		}
-+		rcu_read_unlock();
-+		if (result_base != result)
-+			ifp = result;
-+		else
-+			ifp = NULL;
-+#endif
-+	} else {
-+		ifp = ipv6_get_ifaddr(net, addr, dev, 1);
-+	}
-+
- 	if (!ifp && valid_lft) {
- 		int max_addresses = in6_dev->cnf.max_addresses;
- 		struct ifa6_config cfg = {
-@@ -2781,9 +2885,35 @@ void addrconf_prefix_rcv(struct net_devi
- 				dev_addr_generated = true;
- 			}
- 			goto ok;
-+		goto put;
-+		} else if (((in6_dev->if_flags & IF_RA_VAR_PLEN) == IF_RA_VAR_PLEN) &&
-+			  pinfo->prefix_len > 0 && pinfo->prefix_len <= 128) {
-+			/* SLAAC with prefixes of arbitrary length (Variable SLAAC).
-+			 * draft-mishra-6man-variable-slaac
-+			 * draft-mishra-v6ops-variable-slaac-problem-stmt
-+			 * Contact: Dmytro Shytyi.
-+			 */
-+			memcpy(&addr, &pinfo->prefix, 16);
-+			if (in6_dev->cnf.addr_gen_mode == IN6_ADDR_GEN_MODE_STABLE_PRIVACY) {
-+				if (!ipv6_generate_address_variable_plen(&addr,
-+									 0,
-+									 in6_dev,
-+									 pinfo->prefix_len,
-+									 true)) {
-+					addr_flags |= IFA_F_STABLE_PRIVACY;
-+					goto ok;
-+			}
-+			} else if (!ipv6_generate_address_variable_plen(&addr,
-+									0,
-+									in6_dev,
-+									pinfo->prefix_len,
-+									false)) {
-+				goto ok;
-+			}
-+		} else {
-+			net_dbg_ratelimited("IPv6: Prefix with unexpected length %d\n",
-+					    pinfo->prefix_len);
- 		}
--		net_dbg_ratelimited("IPv6 addrconf: prefix with wrong length %d\n",
--				    pinfo->prefix_len);
- 		goto put;
- 
- ok:
-@@ -3264,6 +3394,120 @@ retry:
- 	return 0;
- }
- 
-+unsigned char reverse_bits(unsigned char num)
-+{
-+	unsigned char count = sizeof(num) * 8 - 1;
-+	unsigned char reverse_num = num;
-+
-+	num >>= 1;
-+	while (num) {
-+		reverse_num <<= 1;
-+		reverse_num |= num & 1;
-+		num >>= 1;
-+		count--;
-+	}
-+	reverse_num <<= count;
-+	return reverse_num;
-+}
-+
-+static int ipv6_generate_address_variable_plen(struct in6_addr *address,
-+					       u8 dad_count,
-+					       const struct inet6_dev *idev,
-+					       unsigned int rcvd_prfx_len,
-+					       bool stable_privacy_mode)
-+{
-+#if defined(CONFIG_ARCH_SUPPORTS_INT128)
-+	static DEFINE_SPINLOCK(lock);
-+	static __u32 digest[SHA1_DIGEST_WORDS];
-+	static __u32 workspace[SHA1_WORKSPACE_WORDS];
-+
-+	static union {
-+		char __data[SHA1_BLOCK_SIZE];
-+		struct {
-+			struct in6_addr secret;
-+			__be32 prefix[2];
-+			unsigned char hwaddr[MAX_ADDR_LEN];
-+			u8 dad_count;
-+		} __packed;
-+	} data;
-+
-+	struct in6_addr secret;
-+	struct in6_addr temp;
-+	struct net *net = dev_net(idev->dev);
-+	__int128 host_id;
-+	__int128 net_prfx;
-+	__int128 ipv6addr;
-+	__int128 mask_128;
-+	__int128 mask_host_id;
-+	__int128 mask_net_prfx;
-+	int i;
-+	unsigned char mask_host_id_arr[128];
-+
-+	memset(&mask_128, 0xFF, 16);
-+	BUILD_BUG_ON(sizeof(data.__data) != sizeof(data));
-+
-+	if (stable_privacy_mode) {
-+		if (idev->cnf.stable_secret.initialized)
-+			secret = idev->cnf.stable_secret.secret;
-+		else if (net->ipv6.devconf_dflt->stable_secret.initialized)
-+			secret = net->ipv6.devconf_dflt->stable_secret.secret;
-+		else
-+			return -1;
-+	}
-+
-+retry:
-+	spin_lock_bh(&lock);
-+	if (stable_privacy_mode) {
-+		sha1_init(digest);
-+		memset(&data, 0, sizeof(data));
-+		memset(workspace, 0, sizeof(workspace));
-+		memcpy(data.hwaddr, idev->dev->perm_addr, idev->dev->addr_len);
-+		data.prefix[0] = address->s6_addr32[0];
-+		data.prefix[1] = address->s6_addr32[1];
-+		data.secret = secret;
-+		data.dad_count = dad_count;
-+
-+		sha1_transform(digest, data.__data, workspace);
-+
-+		temp = *address;
-+		temp.s6_addr32[0] = (__force __be32)digest[0];
-+		temp.s6_addr32[1] = (__force __be32)digest[1];
-+		temp.s6_addr32[2] = (__force __be32)digest[2];
-+		temp.s6_addr32[3] = (__force __be32)digest[3];
-+	} else {
-+		temp = *address;
-+		get_random_bytes(temp.s6_addr32, 16);
-+	}
-+	spin_unlock_bh(&lock);
-+
-+	if (ipv6_reserved_interfaceid(temp)) {
-+		dad_count++;
-+		if (dad_count > dev_net(idev->dev)->ipv6.sysctl.idgen_retries)
-+			return -1;
-+		goto retry;
-+	}
-+
-+	memcpy(&host_id, temp.s6_addr32, 16);
-+	memcpy(&net_prfx, address->s6_addr32, 16);
-+
-+	mask_host_id = rcvd_prfx_len != 128 ? (mask_128 << rcvd_prfx_len) : 0x0;
-+	memcpy(mask_host_id_arr, &mask_host_id, 16);
-+	for (i = 0; i < 128; i++)
-+		mask_host_id_arr[i] = reverse_bits(mask_host_id_arr[i]);
-+	memcpy(&mask_host_id, mask_host_id_arr, 16);
-+	host_id = host_id & mask_host_id;
-+
-+	mask_net_prfx = mask_128 ^ mask_host_id;
-+	net_prfx = net_prfx & mask_net_prfx;
-+
-+	ipv6addr = net_prfx | host_id;
-+	memcpy(temp.s6_addr32, &ipv6addr, 16);
-+
-+	*address = temp;
-+#endif
-+	return 0;
-+}
-+
- static void ipv6_gen_mode_random_init(struct inet6_dev *idev)
- {
- 	struct ipv6_stable_secret *s = &idev->cnf.stable_secret;
-diff -rupN net-next-5.10.0-rc2/net/ipv6/ndisc.c net-next-patch-5.10.0-rc2/net/ipv6/ndisc.c
---- net-next-5.10.0-rc2/net/ipv6/ndisc.c	2020-11-10 08:46:01.091860289 +0100
-+++ net-next-patch-5.10.0-rc2/net/ipv6/ndisc.c	2020-11-11 18:11:05.630883513 +0100
-@@ -1244,6 +1244,8 @@ static void ndisc_router_discovery(struc
- 		in6_dev->if_flags |= IF_RA_RCVD;
- 	}
- 
-+	in6_dev->if_flags |= ra_msg->icmph.icmp6_slaac_var_plen ?
-+					IF_RA_VAR_PLEN : 0;
- 	/*
- 	 * Remember the managed/otherconf flags from most recently
- 	 * received RA message (RFC 2462) -- yoshfuji
+On 11/9/20 1:05 PM, Smita Koralahalli Channabasappa wrote:
+
+> On 11/8/20 7:18 PM, Punit Agrawal wrote:
+>> Borislav Petkov <bp@alien8.de> writes:
+>>> On Fri, Nov 06, 2020 at 02:36:46PM +0900, Punit Agrawal wrote:
+>>>>> diff --git a/drivers/firmware/efi/cper-x86.c b/drivers/firmware/efi/cper-x86.c
+>>>>> index 2531de49f56c..438ed9eff6d0 100644
+>>>>> --- a/drivers/firmware/efi/cper-x86.c
+>>>>> +++ b/drivers/firmware/efi/cper-x86.c
+>>>>> @@ -2,6 +2,7 @@
+>>>>>    // Copyright (C) 2018, Advanced Micro Devices, Inc.
+>>>>>      #include <linux/cper.h>
+>>>>> +#include <linux/acpi.h>
+>>>> Did you mean to include <asm/acpi.h>?
+>>> Why?
+>> Because arch_apei_report_x86_error() used in the patch is defined
+>> there. The indirect include works but pulls in additional definitions
+>> not needed by the patch.
+>>
+>> Do you prefer the more generic include?
+> I agree, it's generally a good practice to avoid pulling up additional
+> definitions. I had this when I made the declaration in generic header
+> file and may be I did not consider it changing initially as my build
+> didn't break after moving the declaration from generic header to arch
+> specific header file.
+> I will take care henceforth and make the changes as required.
+
+The asm specific include throws out a warning when I run checkpatch.pl
+
+WARNING: Use #include <linux/acpi.h> instead of <asm/acpi.h>
+#215: FILE: drivers/firmware/efi/cper-x86.c:5:
++#include <asm/acpi.h>
+
+Should I just keep the generic include?
+
+Thanks,
+Smita
+
