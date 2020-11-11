@@ -2,82 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B86552AEEE6
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 11:42:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B90E2AEEE4
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 11:42:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725987AbgKKKmW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 05:42:22 -0500
-Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:3844 "EHLO
-        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725860AbgKKKmV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 05:42:21 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5fabc0080000>; Wed, 11 Nov 2020 02:42:16 -0800
-Received: from HQMAIL109.nvidia.com (172.20.187.15) by HQMAIL109.nvidia.com
- (172.20.187.15) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 11 Nov
- 2020 10:42:21 +0000
-Received: from moonraker.nvidia.com (172.20.13.39) by mail.nvidia.com
- (172.20.187.15) with Microsoft SMTP Server id 15.0.1473.3 via Frontend
- Transport; Wed, 11 Nov 2020 10:42:19 +0000
-From:   Jon Hunter <jonathanh@nvidia.com>
-To:     Rob Herring <robh+dt@kernel.org>,
-        Thierry Reding <thierry.reding@gmail.com>
-CC:     <devicetree@vger.kernel.org>, <linux-tegra@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, Jon Hunter <jonathanh@nvidia.com>,
-        <stable@vger.kernel.org>
-Subject: [PATCH] ARM64: tegra: Correct the UART for Jetson Xavier NX
-Date:   Wed, 11 Nov 2020 10:41:17 +0000
-Message-ID: <20201111104117.153020-1-jonathanh@nvidia.com>
-X-Mailer: git-send-email 2.25.1
+        id S1725925AbgKKKmD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 05:42:03 -0500
+Received: from foss.arm.com ([217.140.110.172]:46782 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725860AbgKKKmC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Nov 2020 05:42:02 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 34F7C101E;
+        Wed, 11 Nov 2020 02:42:01 -0800 (PST)
+Received: from bogus (unknown [10.57.15.107])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 4AEB33F6CF;
+        Wed, 11 Nov 2020 02:42:00 -0800 (PST)
+Date:   Wed, 11 Nov 2020 10:41:57 +0000
+From:   Sudeep Holla <sudeep.holla@arm.com>
+To:     Jim Quinlan <james.quinlan@broadcom.com>
+Cc:     bcm-kernel-feedback-list@broadcom.com,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Cristian Marussi <cristian.marussi@arm.com>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v1 2/2] firmware: arm_scmi: Augment SMC/HVC to allow
+ optional interrupt
+Message-ID: <20201111104157.wpll6en4qvlhb2ws@bogus>
+References: <20201110183827.19731-1-james.quinlan@broadcom.com>
+ <20201110183827.19731-2-james.quinlan@broadcom.com>
 MIME-Version: 1.0
-X-NVConfidentiality: public
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1605091336; bh=r4fMM7xgP6lLcIwOOTHqiwhWzQEK5LAvY225pbt0k64=;
-        h=From:To:CC:Subject:Date:Message-ID:X-Mailer:MIME-Version:
-         X-NVConfidentiality:Content-Transfer-Encoding:Content-Type;
-        b=Tpi31tAieoFTOX5KYcUukdtvJxIh5HVaV65segZ4VhUt7uqyIBHY1kw3UvR35Ga5o
-         QVfzyjJeYXyS2kKdraTTvqWviN0jD7IMK4Ad5KdiPZMJgRTBDSjL0YCKmEctnP1k+4
-         b/6ez6bXNeKCUPr2qDjC5++q8ZakSSY6kLbsudQ9T1odVzG6/e5awI8ZTxnx8V/u0j
-         OdMDIspRq1xMXmFr5V+1vEdsYdJ0rKpHXWzeq5VqGXj6CqCakhzjjrU9ePSAziT5q+
-         tEaLym9e2dqPRRzQSy6pKfSWTwuUbONlLWKQc/DQoGaMIky4tenuJrpc4f+fvavRes
-         yTi7ETedLwo4w==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201110183827.19731-2-james.quinlan@broadcom.com>
+User-Agent: NeoMutt/20171215
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The Jetson Xavier NX board routes UARTA to the 40-pin header and UARTC
-to a 12-pin debug header. The UARTs can be used by either the Tegra
-Combined UART (TCU) driver or the Tegra 8250 driver. By default, the
-TCU will use UARTC on Jetson Xavier NX. Currently, device-tree for
-Xavier NX enables the TCU and the Tegra 8250 node for UARTC. Fix this
-by disabling the Tegra 8250 node for UARTC and enabling the Tegra 8250
-node for UARTA.
+On Tue, Nov 10, 2020 at 01:38:19PM -0500, Jim Quinlan wrote:
+> The SMC/HVC SCMI transport is modified to allow the completion of an SCMI
+> message to be indicated by an interrupt rather than the return of the smc
+> call.  This accommodates the existing behavior of the BrcmSTB SCMI
+> "platform" whose SW is already out in the field and cannot be changed.
+>
+> Signed-off-by: Jim Quinlan <james.quinlan@broadcom.com>
+> ---
+>  drivers/firmware/arm_scmi/smc.c | 31 +++++++++++++++++++++++++++++++
+>  1 file changed, 31 insertions(+)
+>
+> diff --git a/drivers/firmware/arm_scmi/smc.c b/drivers/firmware/arm_scmi/smc.c
+> index 82a82a5dc86a..3bf935dbd00e 100644
+> --- a/drivers/firmware/arm_scmi/smc.c
+> +++ b/drivers/firmware/arm_scmi/smc.c
+> @@ -9,9 +9,11 @@
+>  #include <linux/arm-smccc.h>
+>  #include <linux/device.h>
+>  #include <linux/err.h>
+> +#include <linux/interrupt.h>
+>  #include <linux/mutex.h>
+>  #include <linux/of.h>
+>  #include <linux/of_address.h>
+> +#include <linux/of_irq.h>
+>  #include <linux/slab.h>
+>
+>  #include "common.h"
+> @@ -23,6 +25,8 @@
+>   * @shmem: Transmit/Receive shared memory area
+>   * @shmem_lock: Lock to protect access to Tx/Rx shared memory area
+>   * @func_id: smc/hvc call function id
+> + * @irq: Optional; employed when platforms indicates msg completion by intr.
+> + * @tx_complete: Optional, employed only when irq is valid.
+>   */
+>
+>  struct scmi_smc {
+> @@ -30,8 +34,19 @@ struct scmi_smc {
+>  	struct scmi_shared_mem __iomem *shmem;
+>  	struct mutex shmem_lock;
+>  	u32 func_id;
+> +	int irq;
+> +	struct completion tx_complete;
+>  };
+>
+> +static irqreturn_t smc_msg_done_isr(int irq, void *data)
+> +{
+> +	struct scmi_smc *scmi_info = data;
+> +
+> +	complete(&scmi_info->tx_complete);
+> +
+> +	return IRQ_HANDLED;
+> +}
+> +
+>  static bool smc_chan_available(struct device *dev, int idx)
+>  {
+>  	struct device_node *np = of_parse_phandle(dev->of_node, "shmem", 0);
+> @@ -79,6 +94,20 @@ static int smc_chan_setup(struct scmi_chan_info *cinfo, struct device *dev,
+>  	if (ret < 0)
+>  		return ret;
+>
+> +	/* Optional feature -- signal message completion using an interrupt */
+> +	ret = of_irq_get_byname(cdev->of_node, "msg-serviced");
 
-Fixes: 3f9efbbe57bc ("arm64: tegra: Add support for Jetson Xavier NX")
-Cc: stable@vger.kernel.org
+So, looks like it is mandatory if "interrupts" is used. Please update the
+binding or if that is not the practice followed elsewhere, drop search by
+name. Also I prefer full name "message-serviced" if possible, not strong
+opinion.
 
-Signed-off-by: Jon Hunter <jonathanh@nvidia.com>
----
- arch/arm64/boot/dts/nvidia/tegra194-p3668-0000.dtsi | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> +	if (ret > 0) {
+> +		scmi_info->irq = ret;
 
-diff --git a/arch/arm64/boot/dts/nvidia/tegra194-p3668-0000.dtsi b/arch/arm=
-64/boot/dts/nvidia/tegra194-p3668-0000.dtsi
-index a2893be80507..0dc8304a2edd 100644
---- a/arch/arm64/boot/dts/nvidia/tegra194-p3668-0000.dtsi
-+++ b/arch/arm64/boot/dts/nvidia/tegra194-p3668-0000.dtsi
-@@ -54,7 +54,7 @@ memory-controller@2c00000 {
- 			status =3D "okay";
- 		};
-=20
--		serial@c280000 {
-+		serial@3100000 {
- 			status =3D "okay";
- 		};
-=20
---=20
-2.25.1
+May be set this only if we succeed setting up handler ? I mean move this
+down.
 
+Other than these, the changes look fine.
+
+--
+Regards,
+Sudeep
