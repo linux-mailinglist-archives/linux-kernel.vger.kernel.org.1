@@ -2,159 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F39E2AFCD0
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 02:48:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 260C42AFCD2
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 02:48:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728717AbgKLBeW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 20:34:22 -0500
-Received: from mga09.intel.com ([134.134.136.24]:5849 "EHLO mga09.intel.com"
+        id S1728736AbgKLBea (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 20:34:30 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47828 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727692AbgKKXDa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 18:03:30 -0500
-IronPort-SDR: dS8j9radFcvvHx9OSXdJkQaTYCizEfZiy+jjRSib2g6lnDSTtKEfVeYUrR91MYSv8Im0vqwote
- W+1bR2N2qjeA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9802"; a="170397424"
-X-IronPort-AV: E=Sophos;i="5.77,470,1596524400"; 
-   d="scan'208";a="170397424"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Nov 2020 15:03:25 -0800
-IronPort-SDR: 9vu89CvyJXkUEk06TLcFmU+GckpICnGsnpD4GxW6EfoVk0xaYkiNp0FqmfcJlBW5QryeyHr12+
- C/SzsWljaXFA==
-X-IronPort-AV: E=Sophos;i="5.77,470,1596524400"; 
-   d="scan'208";a="308638506"
-Received: from otc-nc-03.jf.intel.com (HELO otc-nc-03) ([10.54.39.36])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Nov 2020 15:03:23 -0800
-Date:   Wed, 11 Nov 2020 15:03:21 -0800
-From:   "Raj, Ashok" <ashok.raj@intel.com>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Christoph Hellwig <hch@infradead.org>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        "Tian, Kevin" <kevin.tian@intel.com>,
-        "Jiang, Dave" <dave.jiang@intel.com>,
-        Bjorn Helgaas <helgaas@kernel.org>,
-        "vkoul@kernel.org" <vkoul@kernel.org>,
-        "Dey, Megha" <megha.dey@intel.com>,
-        "maz@kernel.org" <maz@kernel.org>,
-        "bhelgaas@google.com" <bhelgaas@google.com>,
-        "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
-        "Pan, Jacob jun" <jacob.jun.pan@intel.com>,
-        "Liu, Yi L" <yi.l.liu@intel.com>, "Lu, Baolu" <baolu.lu@intel.com>,
-        "Kumar, Sanjay K" <sanjay.k.kumar@intel.com>,
-        "Luck, Tony" <tony.luck@intel.com>,
-        "jing.lin@intel.com" <jing.lin@intel.com>,
-        "kwankhede@nvidia.com" <kwankhede@nvidia.com>,
-        "eric.auger@redhat.com" <eric.auger@redhat.com>,
-        "parav@mellanox.com" <parav@mellanox.com>,
-        "rafael@kernel.org" <rafael@kernel.org>,
-        "netanelg@mellanox.com" <netanelg@mellanox.com>,
-        "shahafs@mellanox.com" <shahafs@mellanox.com>,
-        "yan.y.zhao@linux.intel.com" <yan.y.zhao@linux.intel.com>,
-        "pbonzini@redhat.com" <pbonzini@redhat.com>,
-        "Ortiz, Samuel" <samuel.ortiz@intel.com>,
-        "Hossain, Mona" <mona.hossain@intel.com>,
-        "dmaengine@vger.kernel.org" <dmaengine@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        Ashok Raj <ashok.raj@intel.com>
-Subject: Re: [PATCH v4 06/17] PCI: add SIOV and IMS capability detection
-Message-ID: <20201111230321.GC83266@otc-nc-03>
-References: <20201106131415.GT2620339@nvidia.com>
- <20201106164850.GA85879@otc-nc-03>
- <20201106175131.GW2620339@nvidia.com>
- <CAPcyv4iYHA1acfo=+fTk+U_TrLbSWJjA6v4oeTXgVYDTrnCoGw@mail.gmail.com>
- <20201107001207.GA2620339@nvidia.com>
- <87pn4nk7nn.fsf@nanos.tec.linutronix.de>
- <d69953378bd1fdcdda54a2fbe285f6c0b1484e8a.camel@infradead.org>
- <20201111154159.GA24059@infradead.org>
- <20201111160922.GA83266@otc-nc-03>
- <87k0uro7fz.fsf@nanos.tec.linutronix.de>
+        id S1727699AbgKKXDj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Nov 2020 18:03:39 -0500
+Received: from mail-ot1-f53.google.com (mail-ot1-f53.google.com [209.85.210.53])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6063B2068D;
+        Wed, 11 Nov 2020 23:03:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605135818;
+        bh=PWOn9j23HBOzfWJ+D7iBJ6pZYlRlV+JmuVCCNUonjPo=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=ckd1+//mOLH7RgvxkTLysy6MxP5eH7hJNdLV4I/o8+PE/weWfEIkux51/g4Pyn11q
+         106c1+FuoqTJF3kvAp8NnXPtR9gJaqw2g7ZdS/T+ltWbJ9j7tVdzrLpCPW1J/6b/+2
+         5ni2r5bMGphhfSWHfWUk7JS72J9lYlsVPpoN30Vc=
+Received: by mail-ot1-f53.google.com with SMTP id l36so3792242ota.4;
+        Wed, 11 Nov 2020 15:03:38 -0800 (PST)
+X-Gm-Message-State: AOAM531pryYSImpMz7jERBSK7ordaUctQv2CEd8vRD0dGkLkAw/nKz6E
+        /RpAt3Xp9W684cJnEyL9mz0HOIxoRhInPgM1HA==
+X-Google-Smtp-Source: ABdhPJzBs9eNBSs8wb1VTALrHXsAiuAdWpF5UQjrAxgZa3Z8XnfjIUO+OfFrmd99j2tX9RNZUaQ2Mlp6aeTtQTGHV1k=
+X-Received: by 2002:a05:6830:2259:: with SMTP id t25mr19837860otd.192.1605135817564;
+ Wed, 11 Nov 2020 15:03:37 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87k0uro7fz.fsf@nanos.tec.linutronix.de>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+References: <20201102203656.220187-1-robh@kernel.org> <20201102203656.220187-2-robh@kernel.org>
+ <20201111140009.GD4115@pendragon.ideasonboard.com> <CAL_Jsq+A6Ga+h4qK0nzyL87M1DvrRSnzxtjwUNpq--L7MDHxfA@mail.gmail.com>
+ <20201111142735.GG4115@pendragon.ideasonboard.com>
+In-Reply-To: <20201111142735.GG4115@pendragon.ideasonboard.com>
+From:   Rob Herring <robh@kernel.org>
+Date:   Wed, 11 Nov 2020 17:03:26 -0600
+X-Gmail-Original-Message-ID: <CAL_JsqJUTDAxpmXTGaPfhhF5cCuh++We6-nXyH2b2WXrh+3NmQ@mail.gmail.com>
+Message-ID: <CAL_JsqJUTDAxpmXTGaPfhhF5cCuh++We6-nXyH2b2WXrh+3NmQ@mail.gmail.com>
+Subject: Re: [PATCH v3 1/3] dt-bindings: Convert graph bindings to json-schema
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc:     devicetree@vger.kernel.org, Sameer Pujar <spujar@nvidia.com>,
+        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+        Jacopo Mondi <jacopo+renesas@jmondi.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 11, 2020 at 11:27:28PM +0100, Thomas Gleixner wrote:
-> On Wed, Nov 11 2020 at 08:09, Ashok Raj wrote:
-> >> > We'd also need a way for an OS running on bare metal to *know* that
-> >> > it's on bare metal and can just compose MSI messages for itself. Since
-> >> > we do expect bare metal to have an IOMMU, perhaps that is just a
-> >> > feature flag on the IOMMU?
-> >> 
-> >> Have the platform firmware advertise if it needs native or virtualized
-> >> IMS handling.  If it advertises neither don't support IMS?
+On Wed, Nov 11, 2020 at 8:27 AM Laurent Pinchart
+<laurent.pinchart@ideasonboard.com> wrote:
+>
+> Hi Rob,
+>
+> On Wed, Nov 11, 2020 at 08:25:40AM -0600, Rob Herring wrote:
+> > On Wed, Nov 11, 2020 at 8:00 AM Laurent Pinchart wrote:
+> > > On Mon, Nov 02, 2020 at 02:36:54PM -0600, Rob Herring wrote:
+> > > > From: Sameer Pujar <spujar@nvidia.com>
+> > > >
+> > > > Convert device tree bindings of graph to YAML format. Currently graph.txt
+> > > > doc is referenced in multiple files and all of these need to use schema
+> > > > references. For now graph.txt is updated to refer to graph.yaml.
+> > > >
+> > > > For users of the graph binding, they should reference to the graph
+> > > > schema from either 'ports' or 'port' property:
+> > > >
+> > > > properties:
+> > > >   ports:
+> > > >     type: object
+> > > >     $ref: graph.yaml#/properties/ports
+> > > >
+> > > >     properties:
+> > > >       port@0:
+> > > >         description: What data this port has
+> > > >
+> > > >       ...
+> > > >
+> > > > Or:
+> > > >
+> > > > properties:
+> > > >   port:
+> > > >     description: What data this port has
+> > > >     type: object
+> > > >     $ref: graph.yaml#/properties/port
+> > >
+> > > Sounds like a good approach.
+> > >
+> > > > Signed-off-by: Sameer Pujar <spujar@nvidia.com>
+> > > > Acked-by: Philipp Zabel <p.zabel@pengutronix.de>
+> > > > Signed-off-by: Rob Herring <robh@kernel.org>
+> > > > ---
+> > > > v3:
+> > > >  - Move port 'reg' to port@* and make required
+> > > >  - Make remote-endpoint required
+> > > >  - Add 'additionalProperties: true' now required
+> > > >  - Fix yamllint warnings
+> > > >
+> > > >  Documentation/devicetree/bindings/graph.txt  | 129 +-----------
+> > > >  Documentation/devicetree/bindings/graph.yaml | 199 +++++++++++++++++++
+> > > >  2 files changed, 200 insertions(+), 128 deletions(-)
+> > > >  create mode 100644 Documentation/devicetree/bindings/graph.yaml
 > >
-> > The platform hint can be easily accomplished via DMAR table flags. We could
-> > have an IMS_OPTOUT(similart to x2apic optout flag) flag, when 0 its native 
-> > and IMS is supported.
+> > [...]
 > >
-> > When vIOMMU is presented to guest, virtual DMAR table will have this flag
-> > set to 1. Indicates to GuestOS, native IMS isn't supported.
-> 
-> These opt-out bits suck by definition. It comes all back to the fact
-> that the whole virt thing didn't have a hardware defined way to tell
-> that the OS runs in a VM and not on bare metal. It wouldn't have been
-> rocket science to do so.
+> > > > diff --git a/Documentation/devicetree/bindings/graph.yaml b/Documentation/devicetree/bindings/graph.yaml
+> > > > new file mode 100644
+> > > > index 000000000000..b56720c5a13e
+> > > > --- /dev/null
+> > > > +++ b/Documentation/devicetree/bindings/graph.yaml
+> > > > @@ -0,0 +1,199 @@
+> > > > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> > > > +%YAML 1.2
+> > > > +---
+> > > > +$id: http://devicetree.org/schemas/graph.yaml#
+> > > > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > > > +
+> > > > +title: Common bindings for device graphs
+> > > > +
+> > > > +description: |
+> > > > +  The hierarchical organisation of the device tree is well suited to describe
+> > > > +  control flow to devices, but there can be more complex connections between
+> > > > +  devices that work together to form a logical compound device, following an
+> > > > +  arbitrarily complex graph.
+> > > > +  There already is a simple directed graph between devices tree nodes using
+> > > > +  phandle properties pointing to other nodes to describe connections that
+> > > > +  can not be inferred from device tree parent-child relationships. The device
+> > > > +  tree graph bindings described herein abstract more complex devices that can
+> > > > +  have multiple specifiable ports, each of which can be linked to one or more
+> > > > +  ports of other devices.
+> > > > +
+> > > > +  These common bindings do not contain any information about the direction or
+> > > > +  type of the connections, they just map their existence. Specific properties
+> > > > +  may be described by specialized bindings depending on the type of connection.
+> > > > +
+> > > > +  To see how this binding applies to video pipelines, for example, see
+> > > > +  Documentation/devicetree/bindings/media/video-interfaces.txt.
+> > > > +  Here the ports describe data interfaces, and the links between them are
+> > > > +  the connecting data buses. A single port with multiple connections can
+> > > > +  correspond to multiple devices being connected to the same physical bus.
+> > > > +
+> > > > +maintainers:
+> > > > +  - Philipp Zabel <p.zabel@pengutronix.de>
+> > > > +
+> > > > +select: false
+> > > > +
+> > > > +properties:
+> > > > +  port:
+> > > > +    type: object
+> > > > +    description:
+> > > > +      If there is more than one endpoint node or 'reg' property present in
+> > > > +      endpoint nodes then '#address-cells' and '#size-cells' properties are
+> > > > +      required.
+> > > > +
+> > > > +    properties:
+> > > > +      "#address-cells":
+> > > > +        const: 1
+> > > > +
+> > > > +      "#size-cells":
+> > > > +        const: 0
+> > > > +
+> > > > +    patternProperties:
+> > > > +      "^endpoint(@[0-9a-f]+)?$":
+> > > > +        type: object
+> > > > +        properties:
+> > > > +          reg:
+> > > > +            maxItems: 1
+> > > > +
+> > > > +          remote-endpoint:
+> > > > +            description: |
+> > > > +              phandle to an 'endpoint' subnode of a remote device node.
+> > > > +            $ref: /schemas/types.yaml#/definitions/phandle
+> > > > +
+> > > > +        required:
+> > > > +          - remote-endpoint
+> > >
+> > > As noted elsewhere, this shouldn't be required.
+> > >
+> > > Should we set additionalProperties: false here ?
+> >
+> > No, we've got a bunch of properties that get added to endpoint nodes.
+> > There's a few cases where 'port' nodes have properties too.
+>
+> I meant the port node, which I wasn't aware needed additional
+> properties. Do you have any example ? (I wonder if you will point me to
+> bindings that I have written ;-))
 
-I'm sure everybody dislikes (hate being a strong word :-)). 
-DVSEC capability. Real hardware always sets it to 1 for the IMS capability.
+Not you, but Renesas. dual-lvds-{odd,even}-pixels was the only one I
+think. But really, I think we could actually drop those if the port
+numbering defines even/odd instead. There's a patch I just reviewed
+for common dual lane panels. See
+1604993797-14240-1-git-send-email-victor.liu@nxp.com
 
-By default the DVSEC is not presented to guest even when the full PF is
-presented to guest. I believe VFIO only builds and presents known standard
-capabilities and specific extended capabilities. I'm a bit weak but maybe
-@AlexWilliamson can confirm if I'm off track.
-
-This tells the driver in guest that IMS is not available and will not
-create those new dev_msi calls. 
-
-Only if the VMM has build support to expose IMS for this device, guest SW
-can even see DVSEC.SIOV.IMS=1. This also means the required plumbing, say
-vIOMMU, or a hypercall has been provisioned, and adminstrator knows the
-guest is compatible for these options. 
-
-There maybe better ways to do this. If this has to be done differently
-we certainly can and will do. 
-
-> 
-> And because that does not exist, we need magic opt-out bits for every
-> other piece of functionality which gets added. Can we please stop this
-> and provide a well defined way to tell the OS whether it runs on bare
-> metal or not?
-> 
-> The point is that you really want opt-in bits so that decisions come
-> down to
-
-How would we opt-in when the feature is not available? You need someway to
-tell the capability is available in the guest?, but then there is no reason
-to opt-in though.. its ready for use isn't it?
-
-> 
->      if (!virt || virt->supports_X)
-
-The only closest thing that comes to mind is the CPUID bits, you had
-mentioned they aren't reliable if the VMM didn't set those in an earlier
-mail. If you want a platform level generic support.
-
-- DMAR table optout's you had mentioned that's ugly
-- We could use caching mode, but its not a platform level thing, and vendor
-  specific. I'm not sure if other vendors have a similar feature. If there
-  is a generic capabilty, we could expose via the iommu api's if we are in
-  virt or real platform.
-> 
-> which is the obvious sane and safe logic. But sure, why am I asking for
-> sane and safe in the context of virtualization?
-
-We can pick how to solve this, and just waiting for you to tell, what
-mechanism you prefer that's less painful and architecturally acceptible for
-virtualization and linux. We are all ears!
-
-Cheers,
-Ashok
+Rob
