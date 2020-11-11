@@ -2,221 +2,207 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F38802AFA3B
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 22:14:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2ACF52AFA44
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 22:19:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726875AbgKKVOi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 16:14:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40870 "EHLO
+        id S1726731AbgKKVTg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 16:19:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41636 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726492AbgKKVOh (ORCPT
+        with ESMTP id S1725933AbgKKVTf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 16:14:37 -0500
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74E24C0613D1;
-        Wed, 11 Nov 2020 13:14:37 -0800 (PST)
-Received: by mail-wm1-x342.google.com with SMTP id p22so3508877wmg.3;
-        Wed, 11 Nov 2020 13:14:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=bY6vAZ0tSmVBFVA037gzrHtbWFO6SEFgmLPgtYjY22g=;
-        b=PCJJ9Z/MM17eDD5kZkQcWeB6SBIS1/Ucd1SMiZuYXSCwrZoxludcCx9XmzK9Jq0KSC
-         iGOCQfDcOoHL48VBqF204XCc3nyUdjmwxu36jTyGUzwaDbzM0YWViZk0oKqzZIhHNLFy
-         h7kLKoXIuE5Kx8oUF3iYT6VLFjGeC/uRY5P9Ndu4IXjJ2aez3I89Vb+pOgF30Sm52JgW
-         BcAaQpvMKLsfNS0I2kZYxx2chfOO41Nd44Clo7oXuy5A2cDfE+zYFalOE8zj8IOskMab
-         2NoJZpiqqhnT0A9f3OSL6YjKYD38HGGkE8IzaxIDnZjPji/9hom0IdFMsRBaXZE1ABNK
-         mvPA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=bY6vAZ0tSmVBFVA037gzrHtbWFO6SEFgmLPgtYjY22g=;
-        b=J9sv5rxN8jpi9M/Z9Iif28ibwrHouBEI7eucUreYir/bYE/LTFmJemPCie1rDhFret
-         jPRIWRqr882tLBcoXDLznG/ez8QInfrrr006HXHVW1L0NU3VTUwB/IoWjdoyqJlUwV8S
-         cHzCPCLcQTtqtL6bFxEyPlxxavOLcgknHd89FDUcwW/YrN5Imnpktg5JGELx5KdEN16A
-         fIRN4A4jpgaNacRw08T+T5pzfL96QlXB+W2cUrinXmZIDAIjR6MszOfW+OyHLzU67Y84
-         Qj99sMyhQUJoJ8JWHwocYT7pZZa77VD2JKOVlVjO39gs3khjbgJBhmQzLpKaWeatrvl6
-         BTDg==
-X-Gm-Message-State: AOAM530cANF8TasKCl9EtOtaoPj1WA1GMTD9YtQY7U838w3Ozpgl8iKD
-        Ss8Qeh7/L12EMHYdbLbB4rs=
-X-Google-Smtp-Source: ABdhPJwIQVD9sMCTm7j2oLshwB0nlaXclMyL3UfR34Z7VTGFy9XFFHdUAWCJmMVJq2MgFNhkn8yM8g==
-X-Received: by 2002:a1c:6a0d:: with SMTP id f13mr6083297wmc.172.1605129276237;
-        Wed, 11 Nov 2020 13:14:36 -0800 (PST)
-Received: from localhost ([217.111.27.204])
-        by smtp.gmail.com with ESMTPSA id t5sm3991082wmg.19.2020.11.11.13.14.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 Nov 2020 13:14:34 -0800 (PST)
-Date:   Wed, 11 Nov 2020 22:14:32 +0100
-From:   Thierry Reding <thierry.reding@gmail.com>
-To:     Rahul Tanwar <rahul.tanwar@linux.intel.com>
-Cc:     u.kleine-koenig@pengutronix.de, linux-pwm@vger.kernel.org,
-        lee.jones@linaro.org, p.zabel@pengutronix.de, robh+dt@kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        andriy.shevchenko@intel.com, songjun.Wu@intel.com,
-        cheol.yong.kim@intel.com, qi-ming.wu@intel.com,
-        rahul.tanwar.linux@gmail.com
-Subject: Re: [PATCH v15 0/2] pwm: intel: Add PWM driver for a new SoC
-Message-ID: <20201111211432.GA571441@ulmo>
-References: <cover.1604555266.git.rahul.tanwar@linux.intel.com>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="gBBFr7Ir9EOA20Yy"
-Content-Disposition: inline
-In-Reply-To: <cover.1604555266.git.rahul.tanwar@linux.intel.com>
-User-Agent: Mutt/1.14.7 (2020-08-29)
+        Wed, 11 Nov 2020 16:19:35 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7595BC0613D1
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 13:19:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Mime-Version:Content-Type:References:
+        In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=eQcdYTlo0ntI0P2yOf1JL91MJ+1VqNnj8GveJiyWEu0=; b=v8Go1hO0JaJaCKhcUADLgCVlcY
+        biXb0OQuyyEtD/7E9OiyahEjzyTspPcVZCvHI1E17pDg2dzY9jMtjDF7DWaLjgHqwYuVUM/h7XF/j
+        Cp0RCzcfUJ3AP0doemIk969yn2kbiieHs6DvN0Y2Vrq8kBXUHvWka3mqQ9IPL2rNlHtCt/Y9xYwjW
+        fBbnKXQM0WquuEi4r30g+nbgfaIXCUIPpMb8V3JYfWmre1ACGSszeLhoKEW2yOpfR5sdvkeYbn768
+        pkSOsqSq3UK9Amn9eKhLg5qcHJZAtCS/jgZWcfEuI78JvGS5dj5KtIg0BOs0LF2539v/3IaYdX7SM
+        mEb5p/NQ==;
+Received: from [54.239.6.177] (helo=vpn-10-85-91-5.fra53.corp.amazon.com)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kcxWa-0000rn-9T; Wed, 11 Nov 2020 21:19:28 +0000
+Message-ID: <f2ff951445d83b0bb73e6ea497039beb8bf92d39.camel@infradead.org>
+Subject: Re: [EXTERNAL] [tip: x86/apic] x86/io_apic: Cleanup
+ trigger/polarity helpers
+From:   David Woodhouse <dwmw2@infradead.org>
+To:     Tom Lendacky <thomas.lendacky@amd.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>
+Cc:     linux-kernel@vger.kernel.org, x86 <x86@kernel.org>,
+        Qian Cai <cai@redhat.com>, Joerg Roedel <joro@8bytes.org>,
+        Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>
+Date:   Wed, 11 Nov 2020 21:19:24 +0000
+In-Reply-To: <13f8cb3c-713e-c26e-b2ef-4700f9f6ceac@amd.com>
+References: <20201024213535.443185-20-dwmw2@infradead.org>
+         <160397373817.397.3191135882528008704.tip-bot2@tip-bot2>
+         <e2e06979-cbcf-8771-0b48-c46f2d034aa8@amd.com>
+         <20201110061046.GA7290@nazgul.tnic>
+         <87d00lgu13.fsf@nanos.tec.linutronix.de>
+         <9a003c2f-f59a-43ab-bbd5-861b14436d29@amd.com>
+         <87a6vpgqbt.fsf@nanos.tec.linutronix.de>
+         <82d54a74-af90-39a4-e483-b3cd73e2ef03@amd.com>
+         <78be575e10034e546cc349d65fac2fcfc6f486b2.camel@infradead.org>
+         <877dqtgkzb.fsf@nanos.tec.linutronix.de>
+         <874klxghwu.fsf@nanos.tec.linutronix.de>
+         <45B3C20C-3BBB-40F3-8A7B-EB20EDD0706F@infradead.org>
+         <87y2j9exk2.fsf@nanos.tec.linutronix.de>
+         <8C2E184C-D069-4C60-96B5-0758FBC6E402@infradead.org>
+         <d4115cc7-3876-e012-b6ec-c525d608834f@amd.com>
+         <87tutwg76j.fsf@nanos.tec.linutronix.de>
+         <5c86570ce3bedb90514bc1e73b96011660f520b0.camel@infradead.org>
+         <87o8k4fcpc.fsf@nanos.tec.linutronix.de>
+         <6b44a048de974fb6e2ecb5bf688c122b3107537d.camel@infradead.org>
+         <20d99e1f359b448d042d27112e55f8070bf460bb.camel@infradead.org>
+         <13f8cb3c-713e-c26e-b2ef-4700f9f6ceac@amd.com>
+Content-Type: multipart/signed; micalg="sha-256";
+        protocol="application/x-pkcs7-signature";
+        boundary="=-xGHrJ/7XDJFMq83uwPgD"
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+Mime-Version: 1.0
+X-SRS-Rewrite: SMTP reverse-path rewritten from <dwmw2@infradead.org> by merlin.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---gBBFr7Ir9EOA20Yy
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+--=-xGHrJ/7XDJFMq83uwPgD
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Nov 05, 2020 at 01:49:38PM +0800, Rahul Tanwar wrote:
-> Patch 1 adds dt binding document in YAML format.
-> Patch 2 add PWM fan controller driver for LGM SoC.
+On Wed, 2020-11-11 at 14:30 -0600, Tom Lendacky wrote:
+> On 11/11/20 6:32 AM, David Woodhouse wrote:
+> > On Wed, 2020-11-11 at 10:36 +0000, David Woodhouse wrote:
+> > > On Wed, 2020-11-11 at 10:46 +0100, Thomas Gleixner wrote:
+> > > > Looking at it now with brain awake, the XTSUP stuff is pretty much
+> > > > the same as DMAR, which I didn't realize yesterday. The affinity
+> > > > notifier muck is not needed when we have a write_msg() function whi=
+ch
+> > > > twiddles the bits into those other locations.
+> > >=20
+> > > I kind of hate the fact that it's swizzling those bits through invali=
+d
+> > > MSI messages, so I did it as its own irqdomain using
+> > > irq_domain_create_hierarchy() directly instead of
+> > > msi_create_irq_domain().
+> >=20
+> > Please give this a spin:
+> >=20
+> > https://git.infradead.org/users/dwmw2/linux.git/shortlog/refs/heads/amd=
+vi
 >=20
-> v15:
-> - Rebase to latest linux 5.10-rc2
->=20
-> v14:
-> - Address below review concerns from Uwe Kleine-K?nig.
->  * Add limitations info about fixed 2-wire mode support.
->  * Rename clk/reset _disable function names to _release.
->  * Remove clk & rst from driver data structure. Instead
->    use them as arguments.
->  * Add pwm_chip.base =3D -1.
-> - Resolve missing MODULE_LICENSE warning.
->=20
-> v13:
-> - Address below review concerns (Philipp Zabel)
->  * Make unnecessary 2 line comment as 1 line comment.
->  * Move reset_deassert at the last after clk_enable.
->  * Remove unnecessary return ret statement from .remove()
-> - Move platform_set_drvdata() at the top of probe.=20
->=20
-> v12:
-> - Rebase to linux 5.9-rc4
-> - Add Reviewed-by tags from Andy Shevchenko & Rob Herring.
->=20
-> v11:
-> - Address below review concerns (Andy Shevchenko)
->   * Fix a issue with dev_err_probe() usage & improve the usage.
->   * Fix & improve a ordering issue with clk_enable/disable &
->     reset_control assert/deassert.
->=20
-> v10:
-> - Removed unused of_device.h and added platform_device.h
->   & mod_devicetable.h
->=20
-> v9:
-> - Address code quality related review concerns (Andy Shevchenko)
-> - Use devm_add_action_or_reset() instead of explicit unwind calls.
->=20
-> v8:
-> - Remove fan related optional properties usage, keep
->   them as default. If needed, change pwm-fan driver
->   separately in future to add them as generic properties.
->=20
-> v7:
-> - Address code quality related review concerns.
-> - Rename fan related property to pwm-*.
-> - Fix one make dt_binding_check reported error.
->=20
-> v6:
-> - Readjust .apply op as per review feedback.
-> - Add back pwm-cells property to resolve make dt_binding_check error.
->   pwm-cells is a required property for PWM driver.
-> - Add back fan related optional properties.
->=20
-> v5:
-> - Address below review concerns from Uwe Kleine-K?nig.
->   * Improve comments about Limitations.
->   * Use return value of regmap_update_bits if container function returns
->     error code.
->   * Modify .apply op to have strict checking for fixed period supported
->     by PWM HW.
->   * Use u64 as type when use min_t for duty_cycle.
->   * Add reset_control_assert() in failure case in probe where it was miss=
-ing
->     earlier.
-> - Remove fan specific optional properties from pwm dt binding document (R=
-ob Herring)
->=20
-> v4:
-> - Address below review concerns from Uwe Kleine-K?nig.
->   * Improve notes and limitations comments.
->   * Add common prefixes for all #defines.
->   * Modify/Improve logic in .apply & .get_state ops as advised.
->   * Skip error messages in probe when error is -EPROBE_DEFER.
->   * Add dependencies in Kconfig (OF & HAS_IOMEM) and add select REGMAP_MM=
-IO.
->   * Address other code quality related review concerns.
-> - Fix make dt_binding_check reported error in YAML file.
->=20
-> v3:
-> - Address below review concerns from Uwe Kleine-K?nig.
->   * Remove fan rpm calibration task from the driver.
->   * Modify apply op as per the review feedback.
->   * Add roundup & round down where necessary.
->   * Address other misc code quality related review concerns.
->   * Use devm_reset_control_get_exclusive(). (Philipp Zabel)
->   * Improve dt binding document.
->=20
-> v2:
-> - Address below review concerns from Uwe Kleine-K?nig.
->   * Add notes and limitations about PWM HW.
->   * Rename all functions and structure to lgm_pwm_*=20
->   * Readjust space aligninment in structure fields to single space.
->   * Switch to using apply instead of config/enable/disable.
->   * Address other code quality related concerns.
->   * Rebase to 5.8-rc1.
-> - Address review concerns in dt binding YAML from Rob Herring.
->=20
-> v1:
-> - Initial version.
->=20
->=20
-> Rahul Tanwar (2):
->   Add DT bindings YAML schema for PWM fan controller of LGM SoC
->   Add PWM fan controller driver for LGM SoC
->=20
->  .../devicetree/bindings/pwm/intel,lgm-pwm.yaml     |  44 ++++
->  drivers/pwm/Kconfig                                |  11 +
->  drivers/pwm/Makefile                               |   1 +
->  drivers/pwm/pwm-intel-lgm.c                        | 244 +++++++++++++++=
-++++++
->  4 files changed, 300 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/pwm/intel,lgm-pwm.y=
-aml
->  create mode 100644 drivers/pwm/pwm-intel-lgm.c
+> I had trouble cloning your tree for some reason, so just took the top
+> three patches and applied them to the tip tree. This all appears to be
+> working. I'll let the IOMMU experts take a closer look (adding Suravee).
 
-Both patches applied, thanks.
+Thanks. Exercising it by actually triggering faults and observing the
+IOMMU interrupt really working would be quite useful =E2=80=94 on hardware =
+with
+both INTCAPXT and the older MSI delivery.
 
-Thierry
+--=-xGHrJ/7XDJFMq83uwPgD
+Content-Type: application/x-pkcs7-signature; name="smime.p7s"
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Transfer-Encoding: base64
 
---gBBFr7Ir9EOA20Yy
-Content-Type: application/pgp-signature; name="signature.asc"
+MIAGCSqGSIb3DQEHAqCAMIACAQExDzANBglghkgBZQMEAgEFADCABgkqhkiG9w0BBwEAAKCCECow
+ggUcMIIEBKADAgECAhEA4rtJSHkq7AnpxKUY8ZlYZjANBgkqhkiG9w0BAQsFADCBlzELMAkGA1UE
+BhMCR0IxGzAZBgNVBAgTEkdyZWF0ZXIgTWFuY2hlc3RlcjEQMA4GA1UEBxMHU2FsZm9yZDEaMBgG
+A1UEChMRQ09NT0RPIENBIExpbWl0ZWQxPTA7BgNVBAMTNENPTU9ETyBSU0EgQ2xpZW50IEF1dGhl
+bnRpY2F0aW9uIGFuZCBTZWN1cmUgRW1haWwgQ0EwHhcNMTkwMTAyMDAwMDAwWhcNMjIwMTAxMjM1
+OTU5WjAkMSIwIAYJKoZIhvcNAQkBFhNkd213MkBpbmZyYWRlYWQub3JnMIIBIjANBgkqhkiG9w0B
+AQEFAAOCAQ8AMIIBCgKCAQEAsv3wObLTCbUA7GJqKj9vHGf+Fa+tpkO+ZRVve9EpNsMsfXhvFpb8
+RgL8vD+L133wK6csYoDU7zKiAo92FMUWaY1Hy6HqvVr9oevfTV3xhB5rQO1RHJoAfkvhy+wpjo7Q
+cXuzkOpibq2YurVStHAiGqAOMGMXhcVGqPuGhcVcVzVUjsvEzAV9Po9K2rpZ52FE4rDkpDK1pBK+
+uOAyOkgIg/cD8Kugav5tyapydeWMZRJQH1vMQ6OVT24CyAn2yXm2NgTQMS1mpzStP2ioPtTnszIQ
+Ih7ASVzhV6csHb8Yrkx8mgllOyrt9Y2kWRRJFm/FPRNEurOeNV6lnYAXOymVJwIDAQABo4IB0zCC
+Ac8wHwYDVR0jBBgwFoAUgq9sjPjF/pZhfOgfPStxSF7Ei8AwHQYDVR0OBBYEFLfuNf820LvaT4AK
+xrGK3EKx1DE7MA4GA1UdDwEB/wQEAwIFoDAMBgNVHRMBAf8EAjAAMB0GA1UdJQQWMBQGCCsGAQUF
+BwMEBggrBgEFBQcDAjBGBgNVHSAEPzA9MDsGDCsGAQQBsjEBAgEDBTArMCkGCCsGAQUFBwIBFh1o
+dHRwczovL3NlY3VyZS5jb21vZG8ubmV0L0NQUzBaBgNVHR8EUzBRME+gTaBLhklodHRwOi8vY3Js
+LmNvbW9kb2NhLmNvbS9DT01PRE9SU0FDbGllbnRBdXRoZW50aWNhdGlvbmFuZFNlY3VyZUVtYWls
+Q0EuY3JsMIGLBggrBgEFBQcBAQR/MH0wVQYIKwYBBQUHMAKGSWh0dHA6Ly9jcnQuY29tb2RvY2Eu
+Y29tL0NPTU9ET1JTQUNsaWVudEF1dGhlbnRpY2F0aW9uYW5kU2VjdXJlRW1haWxDQS5jcnQwJAYI
+KwYBBQUHMAGGGGh0dHA6Ly9vY3NwLmNvbW9kb2NhLmNvbTAeBgNVHREEFzAVgRNkd213MkBpbmZy
+YWRlYWQub3JnMA0GCSqGSIb3DQEBCwUAA4IBAQALbSykFusvvVkSIWttcEeifOGGKs7Wx2f5f45b
+nv2ghcxK5URjUvCnJhg+soxOMoQLG6+nbhzzb2rLTdRVGbvjZH0fOOzq0LShq0EXsqnJbbuwJhK+
+PnBtqX5O23PMHutP1l88AtVN+Rb72oSvnD+dK6708JqqUx2MAFLMevrhJRXLjKb2Mm+/8XBpEw+B
+7DisN4TMlLB/d55WnT9UPNHmQ+3KFL7QrTO8hYExkU849g58Dn3Nw3oCbMUgny81ocrLlB2Z5fFG
+Qu1AdNiBA+kg/UxzyJZpFbKfCITd5yX49bOriL692aMVDyqUvh8fP+T99PqorH4cIJP6OxSTdxKM
+MIIFHDCCBASgAwIBAgIRAOK7SUh5KuwJ6cSlGPGZWGYwDQYJKoZIhvcNAQELBQAwgZcxCzAJBgNV
+BAYTAkdCMRswGQYDVQQIExJHcmVhdGVyIE1hbmNoZXN0ZXIxEDAOBgNVBAcTB1NhbGZvcmQxGjAY
+BgNVBAoTEUNPTU9ETyBDQSBMaW1pdGVkMT0wOwYDVQQDEzRDT01PRE8gUlNBIENsaWVudCBBdXRo
+ZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBMB4XDTE5MDEwMjAwMDAwMFoXDTIyMDEwMTIz
+NTk1OVowJDEiMCAGCSqGSIb3DQEJARYTZHdtdzJAaW5mcmFkZWFkLm9yZzCCASIwDQYJKoZIhvcN
+AQEBBQADggEPADCCAQoCggEBALL98Dmy0wm1AOxiaio/bxxn/hWvraZDvmUVb3vRKTbDLH14bxaW
+/EYC/Lw/i9d98CunLGKA1O8yogKPdhTFFmmNR8uh6r1a/aHr301d8YQea0DtURyaAH5L4cvsKY6O
+0HF7s5DqYm6tmLq1UrRwIhqgDjBjF4XFRqj7hoXFXFc1VI7LxMwFfT6PStq6WedhROKw5KQytaQS
+vrjgMjpICIP3A/CroGr+bcmqcnXljGUSUB9bzEOjlU9uAsgJ9sl5tjYE0DEtZqc0rT9oqD7U57My
+ECIewElc4VenLB2/GK5MfJoJZTsq7fWNpFkUSRZvxT0TRLqznjVepZ2AFzsplScCAwEAAaOCAdMw
+ggHPMB8GA1UdIwQYMBaAFIKvbIz4xf6WYXzoHz0rcUhexIvAMB0GA1UdDgQWBBS37jX/NtC72k+A
+CsaxitxCsdQxOzAOBgNVHQ8BAf8EBAMCBaAwDAYDVR0TAQH/BAIwADAdBgNVHSUEFjAUBggrBgEF
+BQcDBAYIKwYBBQUHAwIwRgYDVR0gBD8wPTA7BgwrBgEEAbIxAQIBAwUwKzApBggrBgEFBQcCARYd
+aHR0cHM6Ly9zZWN1cmUuY29tb2RvLm5ldC9DUFMwWgYDVR0fBFMwUTBPoE2gS4ZJaHR0cDovL2Ny
+bC5jb21vZG9jYS5jb20vQ09NT0RPUlNBQ2xpZW50QXV0aGVudGljYXRpb25hbmRTZWN1cmVFbWFp
+bENBLmNybDCBiwYIKwYBBQUHAQEEfzB9MFUGCCsGAQUFBzAChklodHRwOi8vY3J0LmNvbW9kb2Nh
+LmNvbS9DT01PRE9SU0FDbGllbnRBdXRoZW50aWNhdGlvbmFuZFNlY3VyZUVtYWlsQ0EuY3J0MCQG
+CCsGAQUFBzABhhhodHRwOi8vb2NzcC5jb21vZG9jYS5jb20wHgYDVR0RBBcwFYETZHdtdzJAaW5m
+cmFkZWFkLm9yZzANBgkqhkiG9w0BAQsFAAOCAQEAC20spBbrL71ZEiFrbXBHonzhhirO1sdn+X+O
+W579oIXMSuVEY1LwpyYYPrKMTjKECxuvp24c829qy03UVRm742R9Hzjs6tC0oatBF7KpyW27sCYS
+vj5wbal+TttzzB7rT9ZfPALVTfkW+9qEr5w/nSuu9PCaqlMdjABSzHr64SUVy4ym9jJvv/FwaRMP
+gew4rDeEzJSwf3eeVp0/VDzR5kPtyhS+0K0zvIWBMZFPOPYOfA59zcN6AmzFIJ8vNaHKy5QdmeXx
+RkLtQHTYgQPpIP1Mc8iWaRWynwiE3ecl+PWzq4i+vdmjFQ8qlL4fHz/k/fT6qKx+HCCT+jsUk3cS
+jDCCBeYwggPOoAMCAQICEGqb4Tg7/ytrnwHV2binUlYwDQYJKoZIhvcNAQEMBQAwgYUxCzAJBgNV
+BAYTAkdCMRswGQYDVQQIExJHcmVhdGVyIE1hbmNoZXN0ZXIxEDAOBgNVBAcTB1NhbGZvcmQxGjAY
+BgNVBAoTEUNPTU9ETyBDQSBMaW1pdGVkMSswKQYDVQQDEyJDT01PRE8gUlNBIENlcnRpZmljYXRp
+b24gQXV0aG9yaXR5MB4XDTEzMDExMDAwMDAwMFoXDTI4MDEwOTIzNTk1OVowgZcxCzAJBgNVBAYT
+AkdCMRswGQYDVQQIExJHcmVhdGVyIE1hbmNoZXN0ZXIxEDAOBgNVBAcTB1NhbGZvcmQxGjAYBgNV
+BAoTEUNPTU9ETyBDQSBMaW1pdGVkMT0wOwYDVQQDEzRDT01PRE8gUlNBIENsaWVudCBBdXRoZW50
+aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKC
+AQEAvrOeV6wodnVAFsc4A5jTxhh2IVDzJXkLTLWg0X06WD6cpzEup/Y0dtmEatrQPTRI5Or1u6zf
++bGBSyD9aH95dDSmeny1nxdlYCeXIoymMv6pQHJGNcIDpFDIMypVpVSRsivlJTRENf+RKwrB6vcf
+WlP8dSsE3Rfywq09N0ZfxcBa39V0wsGtkGWC+eQKiz4pBZYKjrc5NOpG9qrxpZxyb4o4yNNwTqza
+aPpGRqXB7IMjtf7tTmU2jqPMLxFNe1VXj9XB1rHvbRikw8lBoNoSWY66nJN/VCJv5ym6Q0mdCbDK
+CMPybTjoNCQuelc0IAaO4nLUXk0BOSxSxt8kCvsUtQIDAQABo4IBPDCCATgwHwYDVR0jBBgwFoAU
+u69+Aj36pvE8hI6t7jiY7NkyMtQwHQYDVR0OBBYEFIKvbIz4xf6WYXzoHz0rcUhexIvAMA4GA1Ud
+DwEB/wQEAwIBhjASBgNVHRMBAf8ECDAGAQH/AgEAMBEGA1UdIAQKMAgwBgYEVR0gADBMBgNVHR8E
+RTBDMEGgP6A9hjtodHRwOi8vY3JsLmNvbW9kb2NhLmNvbS9DT01PRE9SU0FDZXJ0aWZpY2F0aW9u
+QXV0aG9yaXR5LmNybDBxBggrBgEFBQcBAQRlMGMwOwYIKwYBBQUHMAKGL2h0dHA6Ly9jcnQuY29t
+b2RvY2EuY29tL0NPTU9ET1JTQUFkZFRydXN0Q0EuY3J0MCQGCCsGAQUFBzABhhhodHRwOi8vb2Nz
+cC5jb21vZG9jYS5jb20wDQYJKoZIhvcNAQEMBQADggIBAHhcsoEoNE887l9Wzp+XVuyPomsX9vP2
+SQgG1NgvNc3fQP7TcePo7EIMERoh42awGGsma65u/ITse2hKZHzT0CBxhuhb6txM1n/y78e/4ZOs
+0j8CGpfb+SJA3GaBQ+394k+z3ZByWPQedXLL1OdK8aRINTsjk/H5Ns77zwbjOKkDamxlpZ4TKSDM
+KVmU/PUWNMKSTvtlenlxBhh7ETrN543j/Q6qqgCWgWuMAXijnRglp9fyadqGOncjZjaaSOGTTFB+
+E2pvOUtY+hPebuPtTbq7vODqzCM6ryEhNhzf+enm0zlpXK7q332nXttNtjv7VFNYG+I31gnMrwfH
+M5tdhYF/8v5UY5g2xANPECTQdu9vWPoqNSGDt87b3gXb1AiGGaI06vzgkejL580ul+9hz9D0S0U4
+jkhJiA7EuTecP/CFtR72uYRBcunwwH3fciPjviDDAI9SnC/2aPY8ydehzuZutLbZdRJ5PDEJM/1t
+yZR2niOYihZ+FCbtf3D9mB12D4ln9icgc7CwaxpNSCPt8i/GqK2HsOgkL3VYnwtx7cJUmpvVdZ4o
+gnzgXtgtdk3ShrtOS1iAN2ZBXFiRmjVzmehoMof06r1xub+85hFQzVxZx5/bRaTKTlL8YXLI8nAb
+R9HWdFqzcOoB/hxfEyIQpx9/s81rgzdEZOofSlZHynoSMYIDyjCCA8YCAQEwga0wgZcxCzAJBgNV
+BAYTAkdCMRswGQYDVQQIExJHcmVhdGVyIE1hbmNoZXN0ZXIxEDAOBgNVBAcTB1NhbGZvcmQxGjAY
+BgNVBAoTEUNPTU9ETyBDQSBMaW1pdGVkMT0wOwYDVQQDEzRDT01PRE8gUlNBIENsaWVudCBBdXRo
+ZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBAhEA4rtJSHkq7AnpxKUY8ZlYZjANBglghkgB
+ZQMEAgEFAKCCAe0wGAYJKoZIhvcNAQkDMQsGCSqGSIb3DQEHATAcBgkqhkiG9w0BCQUxDxcNMjAx
+MTExMjExOTI0WjAvBgkqhkiG9w0BCQQxIgQg5PjlY55zX6SHrKYS0ZKEUPtjE7TjE+CJxQ65waYM
+/sUwgb4GCSsGAQQBgjcQBDGBsDCBrTCBlzELMAkGA1UEBhMCR0IxGzAZBgNVBAgTEkdyZWF0ZXIg
+TWFuY2hlc3RlcjEQMA4GA1UEBxMHU2FsZm9yZDEaMBgGA1UEChMRQ09NT0RPIENBIExpbWl0ZWQx
+PTA7BgNVBAMTNENPTU9ETyBSU0EgQ2xpZW50IEF1dGhlbnRpY2F0aW9uIGFuZCBTZWN1cmUgRW1h
+aWwgQ0ECEQDiu0lIeSrsCenEpRjxmVhmMIHABgsqhkiG9w0BCRACCzGBsKCBrTCBlzELMAkGA1UE
+BhMCR0IxGzAZBgNVBAgTEkdyZWF0ZXIgTWFuY2hlc3RlcjEQMA4GA1UEBxMHU2FsZm9yZDEaMBgG
+A1UEChMRQ09NT0RPIENBIExpbWl0ZWQxPTA7BgNVBAMTNENPTU9ETyBSU0EgQ2xpZW50IEF1dGhl
+bnRpY2F0aW9uIGFuZCBTZWN1cmUgRW1haWwgQ0ECEQDiu0lIeSrsCenEpRjxmVhmMA0GCSqGSIb3
+DQEBAQUABIIBAFnHP8gQaSMS3V66rMAAbtJT7LoLG/7qFVj5JUQ5FtnRPwL3fjVfv+EE8B5IFgra
+/UrWOfPNwjpDepB5w1aEMfqYf5nI3XtAOAE3XPW4DtKDVG3u3IE2eMbj2FXwtULHEMHLEyCAjtuZ
+56MmDFu1k5wm0/q5VG9DFoPQIN8zl7WPwia2NVBQ1ZFj/3drKuqcaGNNASi2YbQ5kcvxpVcGGkYq
+VYrD5TcvAFTj7SdOAuMctjG8gZlpoBE0VoUHg33fGp7CM5EKMLvB3DYQeRR3QrJ4bz00LSl1vnEj
+Y6HBD/Q+sau+LCdg74o0dL38xPiHxJYxAi5Ug3QvOMiVXb4IgoUAAAAAAAA=
 
------BEGIN PGP SIGNATURE-----
 
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAl+sVDQACgkQ3SOs138+
-s6FAgA//bkEboSKJlHm6SeyDedY/54jZJJ743Gsg3m+KrPwS1JvLILrLuZDSCWxC
-zdAG6+2OSeKTbtZn0dcNkG6/v3ng1mKMqCYhJrXOFPWwaBT8TmrvBaAOY9UJIr3E
-aWXjN7AogW6U8zOAK08T5S18hlwxdPZIVUcs6fheSbeEzb9ux2rNiCtNbY0LCJah
-nqp+3TLfR6b6lyd7vgB2iM8Ut2won9M21ig2HiNAST/+ixV7AyW/ejSmy62QcY+K
-iDOOO6h7VfNt5DUSqNkdA0OBGZPcrKKgHD2UqKpSc0rywEaAGlOn2RhsjK9/x5Ru
-9VZhvpQGHLK9yNeS9746EKeE07gMocaHqGXGhh57ltxHFGbm9m79of+SHJB6JzEM
-NxJqQo7Bb2WZVkHaDsk1vkO7KhZ5nitcEUvI8T1lD/Id5eF8F03ghzCrc7OYp4fo
-KlWTNj5F/4sc/IcF55sayceqQu/jKigKgfVIr2ur/o7z81ykh99Ghvm5cGSRfpO/
-2xqBPvYvmhFgumuY+fUKWJzePJxXmAyt3DHWFhL8kfj3sdChTgua8BdgMYurbxLz
-f6i4KH3yHm3lZWXovGFv3LzeCKGGGcLYPI/jvKGyEXeT5b4/u5ksrOHMiOVE8xXW
-H4sY+Is81ABh8dVXsKdhWgPId1//jrUPgISYPDlBhh/P5n3UMlU=
-=MrmB
------END PGP SIGNATURE-----
+--=-xGHrJ/7XDJFMq83uwPgD--
 
---gBBFr7Ir9EOA20Yy--
