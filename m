@@ -2,142 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 901102AFD5B
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 02:56:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BA822AFC32
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 02:34:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726219AbgKLBbQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 20:31:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54248 "EHLO
+        id S1728630AbgKLBdj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 20:33:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55592 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725996AbgKKWnF (ORCPT
+        with ESMTP id S1727256AbgKKWvp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 17:43:05 -0500
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDAB5C061A54;
-        Wed, 11 Nov 2020 14:34:48 -0800 (PST)
-Received: by mail-pg1-x542.google.com with SMTP id w4so2399025pgg.13;
-        Wed, 11 Nov 2020 14:34:48 -0800 (PST)
+        Wed, 11 Nov 2020 17:51:45 -0500
+Received: from mail-ua1-x943.google.com (mail-ua1-x943.google.com [IPv6:2607:f8b0:4864:20::943])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D60EC0613D6
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 14:23:40 -0800 (PST)
+Received: by mail-ua1-x943.google.com with SMTP id r23so1232285uak.0
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 14:23:40 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=/zDY1txU9YKSfZBMxX5zBFPuLz5WqGhiHVEhwalxC/s=;
-        b=UlwsqDqzWFZ79M8Fw7RxcklsuwDjf5UXKrNC47sCENdlujbBC5k1ybowNyIA9Y92Uo
-         C5icN7prkQNh9nmAUXG5Si8jtnFMMEW/4NO3oKYESc+Bzu9yJcNqLlY+x6wt7nEEZbHt
-         HnphqJEFV7i1TerWRZD0IdyY8l0Jzl2qnJIaELzwIph9k9oJ/Iu/MsDm+qoHZKMEzV7c
-         ATxMqHuNf1+JiRGfNmf5gLio6+YsfwndcOc0n/Jwfm1U3HjURlEpB8YPJxSYYxh6BC1D
-         QXW/+KckNB/eGCnK68Pel26Hk1y1Pvq1bIzKeJ5KqKwiqkmFA8nXFrcSHzvrYkj+vA9l
-         QDnw==
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=DnpRf3DpQZWPCc8K1L4I004+4MFqzM2ZdFbLNwwHnYw=;
+        b=C9k51AwCxEhPRdeOTRakEQTuFFOQh4UZkwHCz1URxF01p2AOtXY84wjFUBZ43stsfn
+         LYvn0PUhMDdNs4dwckpA3Hg6lINDOc2zIzXRILApPx9B4pT1moEvZ7weshsWRZf1CUEq
+         W+7naCTDF4POLE2bhgaEEUARcAhnDvxf7N3Qo=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=/zDY1txU9YKSfZBMxX5zBFPuLz5WqGhiHVEhwalxC/s=;
-        b=ajNKNMc2SpZ6gOd7GXFf6X9d7M6x5pV+slBMOjaDdabmW3u5G8TMgo8qOROUVb5bKl
-         tzgFCG+CyyVRBzVwQy3TepZju7ZwtQAuMY2nhcH21aWwkSBT+6+3eFhfga+uS4rqBAYC
-         i/jj1bNBnsfk5cvRNMtWWu5DJQAasDs7cRwHwUjhOYnAqZ5eLnlU5Ba0mZRO26llHkyy
-         A6iq0+Xm4IEfShnVgW1O+ObNbw3lIQN+uhS/KKqvv3W0PBAB8ekPpxV//JwIOkz8yTVa
-         S9z6etmBzKtVqZ4chT0380F/45AVdS+4yovfvvfB//5Aq3s3EgPXL38bb3fL30QgJ7im
-         bW4A==
-X-Gm-Message-State: AOAM532py7NMjRs8rycpRxxaycCfxNz8vaM99seXG6Vl3YjKPvfskQEY
-        SAnZWgfxGBR5PDiumQR6b28=
-X-Google-Smtp-Source: ABdhPJxd9Q9AnaCOoG+ZhCtsAd/jU8tGhe/KqjdM2axh75mPJwCkLVtJyOJYzZwYVRBhIToy4m9pDA==
-X-Received: by 2002:a17:90a:f00a:: with SMTP id bt10mr5693143pjb.91.1605134088440;
-        Wed, 11 Nov 2020 14:34:48 -0800 (PST)
-Received: from Asurada-Nvidia.nvidia.com (thunderhill.nvidia.com. [216.228.112.22])
-        by smtp.gmail.com with ESMTPSA id a20sm3605096pff.118.2020.11.11.14.34.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 Nov 2020 14:34:47 -0800 (PST)
-From:   Nicolin Chen <nicoleotsuka@gmail.com>
-To:     thierry.reding@gmail.com, joro@8bytes.org
-Cc:     linux-kernel@vger.kernel.org, iommu@lists.linux-foundation.org,
-        linux-tegra@vger.kernel.org, jonathanh@nvidia.com,
-        vdumpa@nvidia.com
-Subject: [PATCH RESEND 5/5] iommu/tegra-smmu: Add PCI support
-Date:   Wed, 11 Nov 2020 14:21:29 -0800
-Message-Id: <20201111222129.15736-6-nicoleotsuka@gmail.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20201111222129.15736-1-nicoleotsuka@gmail.com>
-References: <20201111222129.15736-1-nicoleotsuka@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=DnpRf3DpQZWPCc8K1L4I004+4MFqzM2ZdFbLNwwHnYw=;
+        b=UvFSjoiUV2pCWLazPVkJMstovN/k2c6MkU4lW6qO5voRLylTHMaILbo0wQECTc96cZ
+         z0FBJcmaJwrjBFIe86LaDRpbdrav5pSNF0I2Ad3wKYT9KAQWsXL4/Hjjgx69ZMn7aNWU
+         p0V5VelV120ItFZUCYwkeLhf/hG4XihT5HtG5EtMzimPM1TtZrnYbVsWEzRlSXLSfffF
+         ydwcVIFG0h7Yx0h5XC20bnevffk+vSuQuDV92CaT7wWkzUOHdu3Pkup/R8ZMUHxmC+ed
+         I6y0GHlMhG1Etg7hyKPNCBd6KMOX8DNKLr6Jq1esW1qOPSTZ7ILDkKHz2zknWCNqW7Lq
+         9clg==
+X-Gm-Message-State: AOAM530lz1wOktWzja6NMTOyFbPWYaNfHX4i8TKJZfG7x1nQFeAfBXl2
+        o/J6uRSi7IxtJEEtDIZrWSFotygKWv4D8A==
+X-Google-Smtp-Source: ABdhPJydLm7sTEzv1y13WiVbeAhbHs14gnrXu9RcesUZa1H7iS6xLX+LYI1rL8x+MKRqYdXwghCKbw==
+X-Received: by 2002:ab0:2259:: with SMTP id z25mr14072580uan.59.1605133419316;
+        Wed, 11 Nov 2020 14:23:39 -0800 (PST)
+Received: from mail-ua1-f46.google.com (mail-ua1-f46.google.com. [209.85.222.46])
+        by smtp.gmail.com with ESMTPSA id v76sm422345vkd.4.2020.11.11.14.23.37
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 11 Nov 2020 14:23:38 -0800 (PST)
+Received: by mail-ua1-f46.google.com with SMTP id w3so1237345uau.2
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 14:23:37 -0800 (PST)
+X-Received: by 2002:a9f:24eb:: with SMTP id 98mr14362417uar.90.1605133417432;
+ Wed, 11 Nov 2020 14:23:37 -0800 (PST)
+MIME-Version: 1.0
+References: <20201111120334.1.Ifc04ea235c3c370e3b21ec3b4d5dead83cc403b4@changeid>
+In-Reply-To: <20201111120334.1.Ifc04ea235c3c370e3b21ec3b4d5dead83cc403b4@changeid>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Wed, 11 Nov 2020 14:23:25 -0800
+X-Gmail-Original-Message-ID: <CAD=FV=V6fFoEdj8bSQmz4fAJwLvzY0o8Vd+E0fknZaLTq4ZQnA@mail.gmail.com>
+Message-ID: <CAD=FV=V6fFoEdj8bSQmz4fAJwLvzY0o8Vd+E0fknZaLTq4ZQnA@mail.gmail.com>
+Subject: Re: [PATCH] arm64: dts: qcom: sc7180: Set 'polling-delay-passive' for
+ thermal zones back to 250 ms
+To:     Matthias Kaehlcke <mka@chromium.org>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Amit Kucheria <amit.kucheria@linaro.org>,
+        Rajeshwari <rkambl@codeaurora.org>,
+        Akhil P Oommen <akhilpo@codeaurora.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch simply adds support for PCI devices.
+Hi,
 
-Reviewed-by: Dmitry Osipenko <digetx@gmail.com>
-Tested-by: Dmitry Osipenko <digetx@gmail.com>
-Signed-off-by: Nicolin Chen <nicoleotsuka@gmail.com>
----
- drivers/iommu/tegra-smmu.c | 35 +++++++++++++++++++++++++----------
- 1 file changed, 25 insertions(+), 10 deletions(-)
+On Wed, Nov 11, 2020 at 12:03 PM Matthias Kaehlcke <mka@chromium.org> wrote:
+>
+> Commit 22337b91022d ("arm64: dts: qcom: sc7180: Changed polling mode
+> in Thermal-zones node") sets both 'polling-delay' and
+> 'polling-delay-passive' to zero with the rationale that TSENS interrupts
+> are enabled. A TSENS interrupt fires when the temperature of a thermal
+> zone reaches a trip point, which makes regular polling below the passive
+> trip point temperature unnecessary. However the situation is different
+> when passive cooling is active, regular polling is still needed to
+> trigger a periodic evaluation of the thermal zone by the thermal governor.
+>
+> Change 'polling-delay-passive' back to the original value of 250 ms.
+> Commit 2315ae70af95 ("arm64: dts: qcom: sc7180: Add gpu cooling
+> support") recently changed the value for the GPU thermal zones from
+> zero to 100 ms, also set it to 250 ms for uniformity. If some zones
+> really need different values these can be changed in dedicated patches.
+>
+> Fixes: 22337b91022d ("arm64: dts: qcom: sc7180: Changed polling mode in Thermal-zones node")
+> Signed-off-by: Matthias Kaehlcke <mka@chromium.org>
+> ---
+>
+>  arch/arm64/boot/dts/qcom/sc7180.dtsi | 50 ++++++++++++++--------------
+>  1 file changed, 25 insertions(+), 25 deletions(-)
 
-diff --git a/drivers/iommu/tegra-smmu.c b/drivers/iommu/tegra-smmu.c
-index f45ed43cf8db..4a3f095a1c26 100644
---- a/drivers/iommu/tegra-smmu.c
-+++ b/drivers/iommu/tegra-smmu.c
-@@ -10,6 +10,7 @@
- #include <linux/kernel.h>
- #include <linux/of.h>
- #include <linux/of_device.h>
-+#include <linux/pci.h>
- #include <linux/platform_device.h>
- #include <linux/slab.h>
- #include <linux/spinlock.h>
-@@ -865,7 +866,11 @@ static struct iommu_group *tegra_smmu_device_group(struct device *dev)
- 	group->smmu = smmu;
- 	group->soc = soc;
- 
--	group->group = iommu_group_alloc();
-+	if (dev_is_pci(dev))
-+		group->group = pci_device_group(dev);
-+	else
-+		group->group = generic_device_group(dev);
-+
- 	if (IS_ERR(group->group)) {
- 		devm_kfree(smmu->dev, group);
- 		mutex_unlock(&smmu->lock);
-@@ -1075,22 +1080,32 @@ struct tegra_smmu *tegra_smmu_probe(struct device *dev,
- 	iommu_device_set_fwnode(&smmu->iommu, dev->fwnode);
- 
- 	err = iommu_device_register(&smmu->iommu);
--	if (err) {
--		iommu_device_sysfs_remove(&smmu->iommu);
--		return ERR_PTR(err);
--	}
-+	if (err)
-+		goto remove_sysfs;
- 
- 	err = bus_set_iommu(&platform_bus_type, &tegra_smmu_ops);
--	if (err < 0) {
--		iommu_device_unregister(&smmu->iommu);
--		iommu_device_sysfs_remove(&smmu->iommu);
--		return ERR_PTR(err);
--	}
-+	if (err < 0)
-+		goto unregister;
-+
-+#ifdef CONFIG_PCI
-+	err = bus_set_iommu(&pci_bus_type, &tegra_smmu_ops);
-+	if (err < 0)
-+		goto unset_platform_bus;
-+#endif
- 
- 	if (IS_ENABLED(CONFIG_DEBUG_FS))
- 		tegra_smmu_debugfs_init(smmu);
- 
- 	return smmu;
-+
-+unset_platform_bus: __maybe_unused;
-+	bus_set_iommu(&platform_bus_type, NULL);
-+unregister:
-+	iommu_device_unregister(&smmu->iommu);
-+remove_sysfs:
-+	iommu_device_sysfs_remove(&smmu->iommu);
-+
-+	return ERR_PTR(err);
- }
- 
- void tegra_smmu_remove(struct tegra_smmu *smmu)
--- 
-2.17.1
+For further context:
 
+https://lore.kernel.org/r/a4be2cf9e51e4f40aae3f9a56989a42f@codeaurora.org
+https://lore.kernel.org/r/20201015221920.GA1657396@google.com
+
+I didn't personally go dig through the code, but what's said in those
+emails seems reasonable to me.
+
+Reviewed-by: Douglas Anderson <dianders@chromium.org>
