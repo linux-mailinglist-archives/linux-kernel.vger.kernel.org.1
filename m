@@ -2,174 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E7B6C2AEDFB
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 10:40:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C9012AEE00
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 10:42:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727041AbgKKJkl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 04:40:41 -0500
-Received: from mail.baikalelectronics.com ([87.245.175.226]:40162 "EHLO
-        mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725912AbgKKJkk (ORCPT
+        id S1726844AbgKKJmn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 04:42:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45164 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725912AbgKKJmm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 04:40:40 -0500
-Received: from localhost (unknown [127.0.0.1])
-        by mail.baikalelectronics.ru (Postfix) with ESMTP id E15AE80305E2;
-        Wed, 11 Nov 2020 09:40:36 +0000 (UTC)
-X-Virus-Scanned: amavisd-new at baikalelectronics.ru
-Received: from mail.baikalelectronics.ru ([127.0.0.1])
-        by localhost (mail.baikalelectronics.ru [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id Hw9as541MfnW; Wed, 11 Nov 2020 12:40:35 +0300 (MSK)
-Date:   Wed, 11 Nov 2020 12:40:33 +0300
-From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
-To:     Krzysztof Kozlowski <krzk@kernel.org>
-CC:     Serge Semin <fancer.lancer@gmail.com>,
-        Mathias Nyman <mathias.nyman@intel.com>,
-        Felipe Balbi <balbi@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
-        Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Manu Gautam <mgautam@codeaurora.org>,
-        Roger Quadros <rogerq@ti.com>,
-        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Kevin Hilman <khilman@baylibre.com>,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        Chunfeng Yun <chunfeng.yun@mediatek.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-snps-arc@lists.infradead.org>, <linux-mips@vger.kernel.org>,
-        <linuxppc-dev@lists.ozlabs.org>, <linux-usb@vger.kernel.org>,
-        <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v4 10/18] dt-bindings: usb: Convert DWC USB3 bindings to
- DT schema
-Message-ID: <20201111094033.pfq2jx3lhni2gkiy@mobilestation>
-References: <20201111090853.14112-1-Sergey.Semin@baikalelectronics.ru>
- <20201111090853.14112-11-Sergey.Semin@baikalelectronics.ru>
- <20201111091628.GC4050@kozik-lap>
- <20201111093213.gio6mrowjvmvnzoi@mobilestation>
- <CAJKOXPcYQjNvuyxYFn3f=YV+P+xSj=5tJckH8w8GgE=rMbeE6w@mail.gmail.com>
+        Wed, 11 Nov 2020 04:42:42 -0500
+Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7CC9C0613D1
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 01:42:42 -0800 (PST)
+Received: by mail-pl1-x642.google.com with SMTP id t18so711921plo.0
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 01:42:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=HWsx9B0i+km7rETi/ATPtzslVhr3RwpBYH13dBR/3Ho=;
+        b=aKabU+d70ye27wRjrFfr+zLkzU7wnCVr3xRHRKWIE7Oq9GDMjvy8utFfxpWMpQBPFs
+         3YfKsz8+rgkxal0IkYjsU9OGcszs+1HpGO90e0i5dny0FGSHqHz0rDENOBO8ri83guof
+         AAWx+LuEEG4CvzX/MhgwPMNjaZTMBkIM1+Cii+f3+8mMCKSTQ9ezsWb/smYac4M1MafP
+         gY+xV99NJcackueC0L6Lbkf5RumOpkFhaQTVCHq6kCMmepexWf72hRpaW+xOgdzRyPXQ
+         sH5QOCosy2tgkj8ZeyXlbRigHC/NKh6eGKv0ecQwnZCjrOyb+ITneQakI9fL/7RYE0e+
+         cPPA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=HWsx9B0i+km7rETi/ATPtzslVhr3RwpBYH13dBR/3Ho=;
+        b=N4ymu5eMw8CdXJIpkrQMuHuyfj+qpkn6zooqqueVfVRmmVQiGkYW8xjyi3Nk2TH8ON
+         V7GePvD8klYd4J2FfAkUPwQksBmfW3l6MeyYUNPiHQFvVKerRW23HgIkfgA0jzTISJ02
+         kPkaz1+HrJT0TF+zrwlEMAga9BCvsIE2G20V09c7e5VCTaJwdwMpxltT3zHQj4GOzBJZ
+         +9LaUGuO/cnltxFwCm/xgyGMZpSB0N45euNTOkdJsMzBm3VutatMd8LGNDflWGJAL8At
+         SJ7BPhO2XT3YTdT04gf37y0Hx5LdzCTeWJX8x8FHHNTLPlTvUovbBVJoGCcbfNtVHXZW
+         rUoQ==
+X-Gm-Message-State: AOAM533yPhz1GYP9Fuz2cFPryx4dHctKBCR8v/nMopRptO1OHTYs4MHe
+        W84Ap8hiaDJ/DuIKuh9z+Zg=
+X-Google-Smtp-Source: ABdhPJxF9CrnQP3mrjGSrpaI3VkSCPqLt91T6zdmfpg6ZKKbVlMCoPMLu8DxAAjOxRgn5GwVkcpSeQ==
+X-Received: by 2002:a17:90b:300a:: with SMTP id hg10mr3134852pjb.30.1605087762350;
+        Wed, 11 Nov 2020 01:42:42 -0800 (PST)
+Received: from robinhsu-p520.ntc.corp.google.com ([2401:fa00:fc:202:1ea0:b8ff:fe77:fe45])
+        by smtp.gmail.com with ESMTPSA id o132sm1857300pfg.100.2020.11.11.01.42.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 11 Nov 2020 01:42:41 -0800 (PST)
+From:   Robin Hsu <robinh3123@gmail.com>
+To:     linux-f2fs-devel@lists.sourceforge.net, jaegeuk@kernel.org,
+        chao@kernel.org
+Cc:     linux-kernel@vger.kernel.org, Robin Hsu <robinhsu@google.com>
+Subject: [PATCH] f2fs-tools: skipped to end on error syntax error
+Date:   Wed, 11 Nov 2020 17:40:57 +0800
+Message-Id: <20201111094057.565522-1-robinh3123@gmail.com>
+X-Mailer: git-send-email 2.29.2.222.g5d2a92d10f8-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <CAJKOXPcYQjNvuyxYFn3f=YV+P+xSj=5tJckH8w8GgE=rMbeE6w@mail.gmail.com>
-X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 11, 2020 at 10:34:10AM +0100, Krzysztof Kozlowski wrote:
-> On Wed, 11 Nov 2020 at 10:32, Serge Semin
-> <Sergey.Semin@baikalelectronics.ru> wrote:
-> >
-> > On Wed, Nov 11, 2020 at 10:16:28AM +0100, Krzysztof Kozlowski wrote:
-> > > On Wed, Nov 11, 2020 at 12:08:45PM +0300, Serge Semin wrote:
-> > > > DWC USB3 DT node is supposed to be compliant with the Generic xHCI
-> > > > Controller schema, but with additional vendor-specific properties, the
-> > > > controller-specific reference clocks and PHYs. So let's convert the
-> > > > currently available legacy text-based DWC USB3 bindings to the DT schema
-> > > > and make sure the DWC USB3 nodes are also validated against the
-> > > > usb-xhci.yaml schema.
-> > > >
-> > > > Note we have to discard the nodename restriction of being prefixed with
-> > > > "dwc3@" string, since in accordance with the usb-hcd.yaml schema USB nodes
-> > > > are supposed to be named as "^usb(@.*)".
-> > > >
-> > > > Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
-> > > >
-> > > > ---
-> > > >
-> > > > Changelog v2:
-> > > > - Discard '|' from the descriptions, since we don't need to preserve
-> > > >   the text formatting in any of them.
-> > > > - Drop quotes from around the string constants.
-> > > > - Fix the "clock-names" prop description to be referring the enumerated
-> > > >   clock-names instead of the ones from the Databook.
-> > > >
-> > > > Changelog v3:
-> > > > - Apply usb-xhci.yaml# schema only if the controller is supposed to work
-> > > >   as either host or otg.
-> > > >
-> > > > Changelog v4:
-> > > > - Apply usb-drd.yaml schema first. If the controller is configured
-> > > >   to work in a gadget mode only, then apply the usb.yaml schema too,
-> > > >   otherwise apply the usb-xhci.yaml schema.
-> > > > - Discard the Rob'es Reviewed-by tag. Please review the patch one more
-> > > >   time.
-> > > > ---
-> > > >  .../devicetree/bindings/usb/dwc3.txt          | 125 --------
-> > > >  .../devicetree/bindings/usb/snps,dwc3.yaml    | 303 ++++++++++++++++++
-> > > >  2 files changed, 303 insertions(+), 125 deletions(-)
-> > > >  delete mode 100644 Documentation/devicetree/bindings/usb/dwc3.txt
-> > > >  create mode 100644 Documentation/devicetree/bindings/usb/snps,dwc3.yaml
-> > > >
-> > > > diff --git a/Documentation/devicetree/bindings/usb/dwc3.txt b/Documentation/devicetree/bindings/usb/dwc3.txt
-> > > > deleted file mode 100644
-> > > > index d03edf9d3935..000000000000
-> > > > --- a/Documentation/devicetree/bindings/usb/dwc3.txt
-> > > > +++ /dev/null
-> > > > @@ -1,125 +0,0 @@
-> > > > -synopsys DWC3 CORE
-> > > > -
-> > > > -DWC3- USB3 CONTROLLER. Complies to the generic USB binding properties
-> > > > -      as described in 'usb/generic.txt'
-> > > > -
-> > > > -Required properties:
-> > > > - - compatible: must be "snps,dwc3"
-> > > > - - reg : Address and length of the register set for the device
-> > > > - - interrupts: Interrupts used by the dwc3 controller.
-> >
-> > > > - - clock-names: list of clock names. Ideally should be "ref",
-> > > > -                "bus_early", "suspend" but may be less or more.
-> > > > - - clocks: list of phandle and clock specifier pairs corresponding to
-> > > > -           entries in the clock-names property.
-> > > > -
-> > > > -Exception for clocks:
-> > > > -  clocks are optional if the parent node (i.e. glue-layer) is compatible to
-> > > > -  one of the following:
-> > > > -    "cavium,octeon-7130-usb-uctl"
-> > > > -    "qcom,dwc3"
-> > > > -    "samsung,exynos5250-dwusb3"
-> > > > -    "samsung,exynos5433-dwusb3"
-> > > > -    "samsung,exynos7-dwusb3"
-> > > > -    "sprd,sc9860-dwc3"
-> > > > -    "st,stih407-dwc3"
-> > > > -    "ti,am437x-dwc3"
-> > > > -    "ti,dwc3"
-> > > > -    "ti,keystone-dwc3"
-> > > > -    "rockchip,rk3399-dwc3"
-> > > > -    "xlnx,zynqmp-dwc3"
-> > >
-> > > What happened with this part of dtschema? It sees you removed it.
-> >
-> > You meant "bindings", right?
-> >
-> > I don't think it's a good idea to implement that weak binding in the
-> > generic DWC USB3 DT schema. Of course I could have created it under
-> > the allOf conditional schema and stuff. But in that case we would have
-> > needed to support the clock-related vendor-specific peculiarities in
-> > both the generic DWC USB3 DT schema and in the vendor-specific binding
-> > files. That wouldn't be that maintainable. As I see it all the
-> > vendor-specific clock requirements should be reflected in the
-> > glue-node DT schema. The DWC USB3 node binding just declares the
-> > clocks as optional. Moreover the DWC USB3 driver also considers them
-> > as optional.
-> 
+From: Robin Hsu <robinhsu@google.com>
 
-> Sure, rationale is good, but it needs to be explained in commit msg.
-> Otherwise you state that you just "convert" but it's not a simple
-> conversion. The meaning is changed.
+When error were found, we won't need to do any initialization but
+just quit.
 
-Right. I should have explained it in the commit log. It has just
-slipped out of my mind. If v3 is needed I'll add the proper text in the
-commit message.
+Signed-off-by: Robin Hsu <robinhsu@google.com>
+---
+ fsck/main.c | 24 +++++++++++++-----------
+ 1 file changed, 13 insertions(+), 11 deletions(-)
 
--Sergey
+diff --git a/fsck/main.c b/fsck/main.c
+index 32559f1..e70048b 100644
+--- a/fsck/main.c
++++ b/fsck/main.c
+@@ -597,20 +597,22 @@ void f2fs_parse_options(int argc, char *argv[])
+ 		}
+ 	}
+ 
+-	add_default_options();
++	if (err == NOERROR) {
++		add_default_options();
+ 
+-	if (optind >= argc) {
+-		MSG(0, "\tError: Device not specified\n");
+-		error_out(prog);
+-	}
++		if (optind >= argc) {
++			MSG(0, "\tError: Device not specified\n");
++			error_out(prog);
++		}
+ 
+-	c.devices[0].path = strdup(argv[optind]);
+-	if (argc > (optind + 1)) {
+-		c.dbg_lv = 0;
+-		err = EUNKNOWN_ARG;
++		c.devices[0].path = strdup(argv[optind]);
++		if (argc > (optind + 1)) {
++			c.dbg_lv = 0;
++			err = EUNKNOWN_ARG;
++		}
++		if (err == NOERROR)
++			return;
+ 	}
+-	if (err == NOERROR)
+-		return;
+ 
+ 	/* print out error */
+ 	switch (err) {
+-- 
+2.29.2.222.g5d2a92d10f8-goog
 
-> 
-> 
-> Best regards,
-> Krzysztof
