@@ -2,118 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 422812AF225
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 14:29:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F6E72AF227
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 14:29:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726227AbgKKN3Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 08:29:16 -0500
-Received: from mail-pj1-f67.google.com ([209.85.216.67]:55384 "EHLO
-        mail-pj1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725900AbgKKN3Q (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 08:29:16 -0500
-Received: by mail-pj1-f67.google.com with SMTP id r9so703312pjl.5
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 05:29:14 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=dyqXpSq/ETs0u8CiBbSX7eqpqfckYmI3158TguRAUWc=;
-        b=oe15BqSjSbACDdDgh8AAI7TAkWGQJB9b+F6ALYtL2EOG4axZbS9Bj36zkPElTTOXvE
-         2a/iRdXdKNcgHhmG0ro8FsWR/mmICyuZ1bG1FUhoL3F1/T6UZQ01isRkzcHtdJIkgWoC
-         4SeXgdBLpLyBbbG68McQXQZ72nFkxVyec3DpF3NmVi/WFdzGHP2LeY2YfwMLbaQlKJ7P
-         5+SAAvNf6qCPFP/jKUtF6kwg9wHIRfU7M4FlRIDM9s0jhtd/2IytygybGQndp5rkdO9r
-         i1UWb9mnkUsMlSulLDeqYDKIZlX5hKOlXozt7C3KKLSuAfwwa+PzfuI8w1z5wUIvEyXL
-         AApA==
-X-Gm-Message-State: AOAM5332WRlzveOufH0S0JKl+7dRFcVIwgK5rm/4HYRo/oJkoIRbo2v0
-        MTUlEPY59xxrsW0xqmd1zUI8QGs+EyxFSA==
-X-Google-Smtp-Source: ABdhPJyfd0cBH2MaHyAteGa8ksz4vab+NNOANeRNJhS/98ux3YIGeOhmKgAAF7GpnmTVH9AJEN0irQ==
-X-Received: by 2002:a17:902:c142:b029:d6:ac10:6d25 with SMTP id 2-20020a170902c142b02900d6ac106d25mr21664187plj.37.1605101354112;
-        Wed, 11 Nov 2020 05:29:14 -0800 (PST)
-Received: from 42.do-not-panic.com (42.do-not-panic.com. [157.230.128.187])
-        by smtp.gmail.com with ESMTPSA id f17sm2909335pfk.70.2020.11.11.05.29.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 Nov 2020 05:29:12 -0800 (PST)
-Received: by 42.do-not-panic.com (Postfix, from userid 1000)
-        id 060B840715; Wed, 11 Nov 2020 13:29:11 +0000 (UTC)
-Date:   Wed, 11 Nov 2020 13:29:11 +0000
-From:   Luis Chamberlain <mcgrof@kernel.org>
-To:     Vlastimil Babka <vbabka@suse.cz>
-Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org,
-        Alexander Potapenko <glider@google.com>,
-        Kees Cook <keescook@chromium.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        David Hildenbrand <david@redhat.com>,
-        Mateusz Nosek <mateusznosek0@gmail.com>,
-        Peter Zijlstra <peterz@infradead.org>
-Subject: Re: [PATCH 2/3] mm, page_poison: use static key more efficiently
-Message-ID: <20201111132911.GG4332@42.do-not-panic.com>
-References: <20201026173358.14704-1-vbabka@suse.cz>
- <20201026173358.14704-3-vbabka@suse.cz>
- <20201030162743.GA17058@42.do-not-panic.com>
- <23a693bd-49cb-99a3-8691-afc74050887b@suse.cz>
+        id S1726470AbgKKN3d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 08:29:33 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60476 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725900AbgKKN3c (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Nov 2020 08:29:32 -0500
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 79F7E206CA;
+        Wed, 11 Nov 2020 13:29:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605101371;
+        bh=ylTTLDgMGhQsPJGM41QX1ib3jMY1oRlkQOFl8wohlls=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=LQOyM7PkxvpiYnD3r6xnWlmHvX0F0NhA8zzxDBs0TxhOmTjWZbcTycsjIfAAsvLUx
+         U/Vqm/+0M/PlXBPlSSu31FqiCseSlSMtrm5W/kcxxpGntOMRNIvbXTDrQRiewNgHLb
+         2b68uft0I0UJKxxucNiks+kjPAjXb6+gvVNwD900=
+Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.94)
+        (envelope-from <maz@kernel.org>)
+        id 1kcqBl-009lwE-4n; Wed, 11 Nov 2020 13:29:29 +0000
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <23a693bd-49cb-99a3-8691-afc74050887b@suse.cz>
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Wed, 11 Nov 2020 13:29:29 +0000
+From:   Marc Zyngier <maz@kernel.org>
+To:     David Brazdil <dbrazdil@google.com>
+Cc:     kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Dennis Zhou <dennis@kernel.org>,
+        Tejun Heo <tj@kernel.org>, Christoph Lameter <cl@linux.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Quentin Perret <qperret@google.com>,
+        Andrew Scull <ascull@google.com>,
+        Andrew Walbran <qwandor@google.com>, kernel-team@android.com
+Subject: Re: [PATCH v1 07/24] kvm: arm64: Create nVHE copy of cpu_logical_map
+In-Reply-To: <20201111130321.qalrzfabdonrwvsz@google.com>
+References: <20201109113233.9012-1-dbrazdil@google.com>
+ <20201109113233.9012-8-dbrazdil@google.com>
+ <d473fd26e5314f2407b70242488f33de@kernel.org>
+ <20201111130321.qalrzfabdonrwvsz@google.com>
+User-Agent: Roundcube Webmail/1.4.9
+Message-ID: <15a580e6ac06294ead8859fba8f51deb@kernel.org>
+X-Sender: maz@kernel.org
+X-SA-Exim-Connect-IP: 51.254.78.96
+X-SA-Exim-Rcpt-To: dbrazdil@google.com, kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, james.morse@arm.com, julien.thierry.kdev@gmail.com, suzuki.poulose@arm.com, catalin.marinas@arm.com, will@kernel.org, dennis@kernel.org, tj@kernel.org, cl@linux.com, mark.rutland@arm.com, lorenzo.pieralisi@arm.com, qperret@google.com, ascull@google.com, qwandor@google.com, kernel-team@android.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 30, 2020 at 11:56:48PM +0100, Vlastimil Babka wrote:
-> On 10/30/20 5:27 PM, Luis Chamberlain wrote:
-> > On Mon, Oct 26, 2020 at 06:33:57PM +0100, Vlastimil Babka wrote:
-> > > Commit 11c9c7edae06 ("mm/page_poison.c: replace bool variable with static key")
-> > > changed page_poisoning_enabled() to a static key check. However, the function
-> > > is not inlined, so each check still involves a function call with overhead not
-> > > eliminated when page poisoning is disabled.
-> > > 
-> > > Analogically to how debug_pagealloc is handled, this patch converts
-> > > page_poisoning_enabled() back to boolean check, and introduces
-> > > page_poisoning_enabled_static() for fast paths. Both functions are inlined.
-> > > 
-> > > Also optimize the check that enables page poisoning instead of debug_pagealloc
-> > > for architectures without proper debug_pagealloc support. Move the check to
-> > > init_mem_debugging() to enable a single static key instead of having two
-> > > static branches in page_poisoning_enabled_static().
-> > > 
-> > > Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
-> > 
-> > <sad trombone>
-> > 
-> > This patchset causes a regression x86_64 as a guest. I was able
-> > to bisect this on the following linux-next tags:
-> > 
-> > next-20201015 OK
-> > next-20201023 OK
-> > next-20201026 OK
-> > next-20201027 BAD
-> > next-20201028 BAD
-> > 
-> > Bisection inside next-20201027 lands me on:
-> > 
-> > "mm, page_alloc: do not rely on the order of page_poison and init_on_alloc/free parameters"
+On 2020-11-11 13:03, David Brazdil wrote:
+>> > +/*
+>> > + * nVHE copy of data structures tracking available CPU cores.
+>> > + * Only entries for CPUs that were online at KVM init are populated.
+>> > + * Other CPUs should not be allowed to boot because their features were
+>> > + * not checked against the finalized system capabilities.
+>> > + */
+>> > +u64 __ro_after_init __cpu_logical_map[NR_CPUS] = { [0 ... NR_CPUS-1]
+>> > = INVALID_HWID };
+>> 
+>> I'm not sure what __ro_after_init means once we get S2 isolation.
 > 
-> CC peterz.
+> It is stretching the definition of 'init' a bit, I know, but I don't 
+> see what
+> your worry is about S2? The intention is to mark this read-only for 
+> .hyp.text
+> at runtime. With S2, the host won't be able to write to it after KVM 
+> init.
+> Obviously that's currently not the case.
+
+More importantly, EL2 can write to it at any time, which is the bit I'm 
+worried
+about, as it makes the annotation misleading.
+
+> One thing we might change in the future is marking it RW for some 
+> initial
+> setup in a HVC handler, then marking it RO for the rest of uptime.
+
+That'd be a desirable outcome, and it would be consistent with the rest
+of the kernel.
+
 > 
-> I wonder if it's because I converted some static keys to _RO
-> DEFINE_STATIC_KEY_FALSE_RO(init_on_alloc);.
-> ...
-> DEFINE_STATIC_KEY_FALSE_RO(init_on_free);
+>> 
+>> > +
+>> > +u64 cpu_logical_map(int cpu)
+>> 
+>> nit: is there any reason why "cpu" cannot be unsigned? The thought
+>> of a negative CPU number makes me shiver...
+> 
+> Same here. That's how it's defined in kernel proper, so I went with 
+> that.
 
-This was along the lines of what I suspected but I didn't have time
-to provide an alternative.
+I'm happy to deviate from the kernel (give the function a different name
+if this clashes with existing include files).
 
-> I thought it was ok since we only enable them during init. But maybe it's
-> incompatible with use by modules? Not that I immediately see how
-> drm_kms_helper(E+) uses them.
+We can also fix the rest of the kernel (I've just written the trivial 
+patch).
 
-I can reproduce easily so happy to test alterantive patchsets!
+>> 
+>> > +{
+>> > +	if (cpu < 0 || cpu >= ARRAY_SIZE(__cpu_logical_map))
+>> > +		hyp_panic();
+>> > +
+>> > +	return __cpu_logical_map[cpu];
+>> > +}
+>> > +
+>> >  unsigned long __hyp_per_cpu_offset(unsigned int cpu)
+>> >  {
+>> >  	unsigned long *cpu_base_array;
+>> 
+>> Overall, this patch would make more sense closer it its use case
+>> (in patch 19). I also don't understand why this lives in percpu.c...
+> 
+> I didn't think it called for adding another C file for this. How about 
+> we
+> rename this file to smp.c? Would that make sense for both?
 
-> Andrew, I'm fine if you drop the patchset for now. I fear the next version
-> would be tedious to integrate in form of -fix-fix patches anyway...
+Make that hyp-smp.c, please!
 
-Thanks for this, I confirm next-20201111 boots fine now on kdevops.
-
-  Luis
+         M.
+-- 
+Jazz is not dead. It just smells funny...
