@@ -2,166 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5CAD2AF101
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 13:42:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E2C682AF115
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 13:44:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727000AbgKKMlx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 07:41:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45866 "EHLO
+        id S1726318AbgKKMob (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 07:44:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46282 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726955AbgKKMlt (ORCPT
+        with ESMTP id S1725859AbgKKMoa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 07:41:49 -0500
-Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73C25C0613D1;
-        Wed, 11 Nov 2020 04:41:49 -0800 (PST)
-Received: by mail-lf1-x144.google.com with SMTP id w142so2935985lff.8;
-        Wed, 11 Nov 2020 04:41:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=p09sB7YHU/bDDzgMxuLQXPTX1TBYFFjC8vLK3IStYYs=;
-        b=jsacUJVfZifsMa0Od0ifyXIYeQBOyfqKY1dbaeYP1+U9OUQdn+hdRyObztAbzcnx/p
-         uk++tbnY2njal5E0vTh/ByNS5edhg1cnmwO0W1QO7jZCHQkCwbvXo6TqElo7HqOw05Z9
-         L4KpZ+Yzd9ZHXSsbtNej6L1ebjaqigRDmPe+xkHWN+XfTsCn/g96sMCBN5hp4K7k9NKB
-         ksueb4mmGgqR3zq8U9FLjOH2EjrKem904+I8ckgWVMeEyar2a5QwfowcoKqK6o3pNAEp
-         dcM6cx7zf9DZ8j4RAC555BCLYLxOe6gOHlXRzWVT35VWg8r9A4LNpmSp6uwKtUtDNFfx
-         VkzQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=p09sB7YHU/bDDzgMxuLQXPTX1TBYFFjC8vLK3IStYYs=;
-        b=BfvRNJU2/2Ysu3vfZ6bpYe+Yqz6Tdt+MmdJXV0MtDOstKRDZa5AbcqcCVI+eIhG6UQ
-         8ofewDISqqYS98AT+Z14nQZaWHmN72E+hoIeRVr2Ym480VsnUx6zoW0CTIVmmAKttT5z
-         VdMCQUPNktYFfMjYN+vvHfSgokOMQUGb2oTY+JZHDIBnzkdvznWCKDDPaLgPS9es43pv
-         crGNomEeriSnFe/SKc1VzDD+kOCsupy6oCzuZX7T1oKIjIIlIOk94Ar0Kz0SEeFrBkMg
-         LcCqW+Luf3TlqQSyNsudCl9mgjPGJThvX89HAc2s4CdEbG+NhGLXFsvoq0DyF2h3OZxx
-         bENA==
-X-Gm-Message-State: AOAM530IOoVSuM51G4IfcMj79mK614GuQ1bfU81w7KcXoG+7AzRcwvQp
-        fO8UHkjbbTVvL9ReHRt7W0PDcvFQBqNReSF/xveyFdsekpB6qA==
-X-Google-Smtp-Source: ABdhPJyeoMTvxm99hJFLil3+3qpGIB8eKHBJ0gbr+qzyieVuMOkPPf61uLVEpXxwtJRNLz5hZvU35qVMLpDGRDBw/xo=
-X-Received: by 2002:a19:2292:: with SMTP id i140mr607457lfi.77.1605098507820;
- Wed, 11 Nov 2020 04:41:47 -0800 (PST)
+        Wed, 11 Nov 2020 07:44:30 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 510DEC0613D1
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 04:44:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=6tLGLpk1EezWZwtwUC8VAuKl13a1TQOC6LFMQf+zejg=; b=moyXqW+upZidbk4p/nGEeku4bp
+        EJ774Vg9KfGW5BWbjA7puJv9vzEPUgM6yJabRuKv+zO21a92tmwJeiVz+6b8kqUikxpBVGvn2O9gO
+        oZXyq/Wma2LEfxxqfWZhz30doBdXoqwSB6lcNui8ejcLKdPUUSZN4r8yWG1BnFEzIfvMz9XuCsAFr
+        kZ/HuMuJ2x+U1SNBw7l9BohJyCNAyCb+ORHQajutXr5CBIQINiXkvRutUMOxJC7Z1EmubZPiRIEnl
+        y5g5kUkN9f+FWx3nbutTbublHeRIXnvsvKpsA5rk+fMG5MaeyQIK3exZsSzn9dz0XhDwZpjbkM7oc
+        T32pGW7A==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kcpTl-0003SN-Hc; Wed, 11 Nov 2020 12:44:01 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 079DB301324;
+        Wed, 11 Nov 2020 13:43:58 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id E8F912025CA2B; Wed, 11 Nov 2020 13:43:57 +0100 (CET)
+Date:   Wed, 11 Nov 2020 13:43:57 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     "Liang, Kan" <kan.liang@linux.intel.com>
+Cc:     Will Deacon <will@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>, mingo@redhat.com,
+        acme@kernel.org, linux-kernel@vger.kernel.org,
+        mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
+        jolsa@redhat.com, eranian@google.com, ak@linux.intel.com,
+        dave.hansen@intel.com, kirill.shutemov@linux.intel.com,
+        benh@kernel.crashing.org, paulus@samba.org,
+        David Miller <davem@davemloft.net>, vbabka@suse.cz,
+        willy@infradead.org
+Subject: Re: [PATCH V9 1/4] perf/core: Add PERF_SAMPLE_DATA_PAGE_SIZE
+Message-ID: <20201111124357.GS2651@hirez.programming.kicks-ass.net>
+References: <20201001135749.2804-2-kan.liang@linux.intel.com>
+ <20201009090927.GQ2611@hirez.programming.kicks-ass.net>
+ <877drz1qbc.fsf@mpe.ellerman.id.au>
+ <20201012084829.GA1151@willie-the-truck>
+ <de47984b-9a69-733c-3bd1-7b24ceb9b7f0@linux.intel.com>
+ <20201013154615.GE2594@hirez.programming.kicks-ass.net>
+ <20201013163449.GR2651@hirez.programming.kicks-ass.net>
+ <8e88ba79-7c40-ea32-a7ed-bdc4fc04b2af@linux.intel.com>
+ <20201111095750.GS2594@hirez.programming.kicks-ass.net>
+ <20201111112246.GR2651@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-References: <20201022122421.133976-1-gnurou@gmail.com> <c6454292-935b-f14a-e743-838ccabc6590@xs4all.nl>
- <CAAVeFuKCEQYBs84ssCvwAkGUxGikeDFc+XNX2LzkENGc5B1n8g@mail.gmail.com>
- <db7a95b0-3d63-ed38-fb8a-62f32c83c13e@xs4all.nl> <CAAVeFuL8TaArTd_fOLSSE-854n9vwpob5LxdqgHNa-bTTn5Gxg@mail.gmail.com>
- <695e6163-7bdc-d120-cd02-0cff6efb53ef@xs4all.nl> <CAAVeFuL9PDgirADEVXUNbNKY4YVw9uFpjbr5Zmt_Vb-3K4-2Yg@mail.gmail.com>
- <92db8b0e-c348-70ef-a607-eb5c42f86fac@xs4all.nl> <CAAVeFuJ_rSN=JBi-2L2-v7eVonarGRzL5agTL-UW_WOD91D_tw@mail.gmail.com>
-In-Reply-To: <CAAVeFuJ_rSN=JBi-2L2-v7eVonarGRzL5agTL-UW_WOD91D_tw@mail.gmail.com>
-From:   Alexandre Courbot <gnurou@gmail.com>
-Date:   Wed, 11 Nov 2020 21:41:35 +0900
-Message-ID: <CAAVeFu+ASgmkWhddJrhkrsoYbW1u1uCjckU44GTDxoKykc9aVQ@mail.gmail.com>
-Subject: Re: [PATCH] media: v4l2-mem2mem: always call poll_wait() on queues
-To:     Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media <linux-media@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201111112246.GR2651@hirez.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 5, 2020 at 11:05 PM Alexandre Courbot <gnurou@gmail.com> wrote:
->
-> On Thu, Nov 5, 2020 at 10:12 PM Hans Verkuil <hverkuil-cisco@xs4all.nl> wrote:
-> >
-> > On 05/11/2020 13:52, Alexandre Courbot wrote:
-> > > On Thu, Nov 5, 2020 at 9:36 PM Hans Verkuil <hverkuil-cisco@xs4all.nl> wrote:
-> > >>
-> > >> On 05/11/2020 13:21, Alexandre Courbot wrote:
-> > >>> On Tue, Nov 3, 2020 at 6:48 PM Hans Verkuil <hverkuil-cisco@xs4all.nl> wrote:
-> > >>>>
-> > >>>> On 03/11/2020 09:51, Alexandre Courbot wrote:
-> > >>>>> Hi Hans,
-> > >>>>>
-> > >>>>> On Sat, Oct 31, 2020 at 12:09 AM Hans Verkuil <hverkuil-cisco@xs4all.nl> wrote:
-> > >>>>>>
-> > >>>>>> On 22/10/2020 14:24, Alexandre Courbot wrote:
-> > >>>>>>> do_poll()/do_select() seem to set the _qproc member of poll_table to
-> > >>>>>>> NULL the first time they are called on a given table, making subsequent
-> > >>>>>>> calls of poll_wait() on that table no-ops. This is a problem for mem2mem
-> > >>>>>>> which calls poll_wait() on the V4L2 queues' waitqueues only when a
-> > >>>>>>> queue-related event is requested, which may not necessarily be the case
-> > >>>>>>> during the first poll.
-> > >>>>>>>
-> > >>>>>>> For instance, a stateful decoder is typically only interested in
-> > >>>>>>> EPOLLPRI events when it starts, and will switch to listening to both
-> > >>>>>>> EPOLLPRI and EPOLLIN after receiving the initial resolution change event
-> > >>>>>>> and configuring the CAPTURE queue. However by the time that switch
-> > >>>>>>> happens and v4l2_m2m_poll_for_data() is called for the first time,
-> > >>>>>>> poll_wait() has become a no-op and the V4L2 queues waitqueues thus
-> > >>>>>>> cannot be registered.
-> > >>>>>>>
-> > >>>>>>> Fix this by moving the registration to v4l2_m2m_poll() and do it whether
-> > >>>>>>> or not one of the queue-related events are requested.
-> > >>>>>>
-> > >>>>>> This looks good, but would it be possible to add a test for this to
-> > >>>>>> v4l2-compliance? (Look for POLL_MODE_EPOLL in v4l2-test-buffers.cpp)
-> > >>>>>>
-> > >>>>>> If I understand this right, calling EPOLL_CTL_ADD for EPOLLPRI, then
-> > >>>>>> calling EPOLL_CTL_ADD for EPOLLIN/OUT would trigger this? Or does there
-> > >>>>>> have to be an epoll_wait call in between?
-> > >>>>>
-> > >>>>> Even without an epoll_wait() in between the behavior is visible.
-> > >>>>> v4l2_m2m_poll() will be called once during the initial EPOLL_CTL_ADD
-> > >>>>> and this will trigger the bug.
-> > >>>>>
-> > >>>>>> Another reason for adding this test is that I wonder if regular capture
-> > >>>>>> or output V4L2 devices don't have the same issue.
-> > >>>>>>
-> > >>>>>> It's a very subtle bug and so adding a test for this to v4l2-compliance
-> > >>>>>> would be very useful.
-> > >>>>>
-> > >>>>> I fully agree, this is very counter-intuitive since what basically
-> > >>>>> happens is that the kernel's poll_wait() function becomes a no-op
-> > >>>>> after the poll() hook of a driver is called for the first time. There
-> > >>>>> is no way one can expect this behavior just from browsing the code so
-> > >>>>> this is likely to affect other drivers.
-> > >>>>>
-> > >>>>> As for the test itself, we can easily reproduce the conditions for
-> > >>>>> failure in v4l2-test-buffers.cpp's captureBufs() function, but doing
-> > >>>>> so will make the streaming tests fail without being specific about the
-> > >>>>> cause. Or maybe we should add another pollmode to specifically test
-> > >>>>> epoll in this setup? Can I get your thoughts?
-> > >>>>
-> > >>>> No, just keep it as part of the poll test. Just add comments at the place
-> > >>>> where it fails describing this error.
-> > >>>>
-> > >>>> After all, it *is* a poll() bug, so it is only fair that it is tested as
-> > >>>> part of the epoll test.
-> > >>>>
-> > >>>> Can you call EPOLL_CTL_ADD with ev.events set to 0? And then call it again
-> > >>>> with the actual value that you need? If that triggers this issue as well,
-> > >>>> then that is a nice test (but perhaps EPOLL_CTL_ADD won't call poll() if
-> > >>>> ev.events is 0, but perhaps EPOLLERR would work instead of 0).
-> > >>>
-> > >>> Yup, actually the following is enough to make v4l2-compliance -s fail
-> > >>> with vicodec:
-> > >>
-> > >> Does it also fail with vivid? I am curious to know whether this issue is
-> > >> m2m specific or a more general problem.
-> > >
-> > > It does fail actually! And that made me notice that vb2_poll() uses
-> > > the same pattern as v4l2_m2m_poll() (probably because the latter is
-> > > inspired by the former?) and needs to be fixed similarly. I will send
-> > > another patch to fix vb2_poll() as well, thanks for pointing it out!
-> >
-> > I was afraid of that.
-> >
-> > Testing epoll for control events would be interesting as well. The
-> > vivid radio device is an example of a device that has controls, but
-> > does not do streaming (so is not using vb2).
-> >
-> > But from what I can see v4l2_ctrl_poll() does the right thing, so this
-> > should be fine.
->
-> Indeed, it unconditionally calls poll_wait() with all the wait queues
-> that may wake us up (that is, only one), so there is no problem there.
+On Wed, Nov 11, 2020 at 12:22:46PM +0100, Peter Zijlstra wrote:
 
-Sorry, I noticed that this patch was marked with "Changes Requested"
-in patchwork, but isn't it valid as-is? We need a similar change to
-VB2, but that should go as a separate patch IMHO. I'm fine with doing
-both in one go if you prefer that though.
+> Trying to match the Code: to PageHuge as generate here makes this the
+> PageCompound() test burning, not even compound_head() going bad.
+> 
+> must ponder more...
+
+Oooh.. does this help?
+
+---
+ kernel/events/core.c | 81 +++++++++++++++++++++++++++++++---------------------
+ 1 file changed, 49 insertions(+), 32 deletions(-)
+
+diff --git a/kernel/events/core.c b/kernel/events/core.c
+index d2f3ca792936..3b42576c99f1 100644
+--- a/kernel/events/core.c
++++ b/kernel/events/core.c
+@@ -7015,65 +7015,82 @@ static u64 perf_virt_to_phys(u64 virt)
+  */
+ __weak u64 arch_perf_get_page_size(struct mm_struct *mm, unsigned long addr)
+ {
++#ifdef CONFIG_ARCH_HAS_PTE_SPECIAL
+ 	struct page *page;
+-	pgd_t *pgd;
+-	p4d_t *p4d;
+-	pud_t *pud;
+-	pmd_t *pmd;
+-	pte_t *pte;
+-
+-	pgd = pgd_offset(mm, addr);
+-	if (pgd_none(*pgd))
++	pgd_t *pgdp, pgd;
++	p4d_t *p4dp, p4d;
++	pud_t *pudp, pud;
++	pmd_t *pmdp, pmd;
++	pte_t *ptep, pte;
++
++	pgdp = pgd_offset(mm, addr);
++	pgd = READ_ONCE(*pgdp);
++	if (pgd_none(pgd))
+ 		return 0;
+ 
+-	p4d = p4d_offset(pgd, addr);
+-	if (!p4d_present(*p4d))
++	p4dp = p4d_offset(&pgd, addr);
++	p4d = READ_ONCE(*p4dp);
++	if (!p4d_present(p4d))
+ 		return 0;
+ 
+-	if (p4d_leaf(*p4d))
++	if (p4d_leaf(p4d))
+ 		return 1ULL << P4D_SHIFT;
+ 
+-	pud = pud_offset(p4d, addr);
+-	if (!pud_present(*pud))
++	pudp = pud_offset(&p4d, addr);
++	pud = READ_ONCE(*pudp);
++	if (!pud_present(pud))
+ 		return 0;
+ 
+-	if (pud_leaf(*pud)) {
++	if (pud_leaf(pud)) {
+ #ifdef pud_page
+-		page = pud_page(*pud);
+-		if (PageHuge(page))
+-			return page_size(compound_head(page));
++		if (!pud_devmap(pud)) {
++			page = pud_page(pud);
++			if (PageHuge(page))
++				return page_size(compound_head(page));
++		}
+ #endif
+ 		return 1ULL << PUD_SHIFT;
+ 	}
+ 
+-	pmd = pmd_offset(pud, addr);
+-	if (!pmd_present(*pmd))
++	pmdp = pmd_offset(&pud, addr);
++	pmd = READ_ONCE(*pmdp);
++	if (!pmd_present(pmd))
+ 		return 0;
+ 
+-	if (pmd_leaf(*pmd)) {
++	if (pmd_leaf(pmd)) {
+ #ifdef pmd_page
+-		page = pmd_page(*pmd);
+-		if (PageHuge(page))
+-			return page_size(compound_head(page));
++		if (!pmd_devmap(pmd)) {
++			page = pmd_page(pmd);
++			if (PageHuge(page))
++				return page_size(compound_head(page));
++		}
+ #endif
+ 		return 1ULL << PMD_SHIFT;
+ 	}
+ 
+-	pte = pte_offset_map(pmd, addr);
+-	if (!pte_present(*pte)) {
+-		pte_unmap(pte);
++	ptep = pte_offset_map(&pmd, addr);
++	pte = READ_ONCE(*ptep); // gup_get_pte()
++	if (!pte_present(pte)) {
++		pte_unmap(ptep);
+ 		return 0;
+ 	}
+ 
+-	page = pte_page(*pte);
+-	if (PageHuge(page)) {
+-		u64 size = page_size(compound_head(page));
+-		pte_unmap(pte);
+-		return size;
++	if (!pte_devmap(pte) && !pte_special(pte)) {
++		page = pte_page(pte);
++		if (PageHuge(page)) {
++			u64 size = page_size(compound_head(page));
++			pte_unmap(ptep);
++			return size;
++		}
+ 	}
+ 
+-	pte_unmap(pte);
++	pte_unmap(ptep);
+ 	return PAGE_SIZE;
++
++#else /* CONFIG_ARCH_HAS_PTE_SPECIAL */
++
++	return 0;
++#endif /* CONFIG_ARCH_HAS_PTE_SPECIAL */
+ }
+ 
+ #else
