@@ -2,150 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0C352AEEBD
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 11:28:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 08CA32AEEC8
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 11:31:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727459AbgKKK2w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 05:28:52 -0500
-Received: from mx2.suse.de ([195.135.220.15]:58322 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727438AbgKKK2v (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 05:28:51 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 2474EADC1;
-        Wed, 11 Nov 2020 10:28:50 +0000 (UTC)
-Date:   Wed, 11 Nov 2020 11:28:48 +0100
-From:   Michal =?iso-8859-1?Q?Such=E1nek?= <msuchanek@suse.de>
-To:     Dave Chinner <david@fromorbit.com>
-Cc:     "Darrick J. Wong" <darrick.wong@oracle.com>,
-        linux-xfs@vger.kernel.org, linux-ext4@vger.kernel.org,
-        Theodore Ts'o <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Ira Weiny <ira.weiny@intel.com>, Jan Kara <jack@suse.cz>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] xfs: show the dax option in mount options.
-Message-ID: <20201111102848.GD29778@kitsune.suse.cz>
-References: <cover.1604948373.git.msuchanek@suse.de>
- <f9f7ba25e97dacd92c09eb3ee6a4aca8b4f72b00.1604948373.git.msuchanek@suse.de>
- <20201109192419.GC9695@magnolia>
- <20201109202705.GZ29778@kitsune.suse.cz>
- <20201109210823.GI7391@dread.disaster.area>
+        id S1727372AbgKKKbJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 05:31:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53268 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726229AbgKKKbI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Nov 2020 05:31:08 -0500
+Received: from mail-il1-x141.google.com (mail-il1-x141.google.com [IPv6:2607:f8b0:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8345C0613D1
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 02:31:07 -0800 (PST)
+Received: by mail-il1-x141.google.com with SMTP id k1so1496810ilc.10
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 02:31:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=xBSaTVNMPfPGHhUMYI+hLxMazSzPKmRe0TGeaaYm9k0=;
+        b=NBf76nxF8SYIXnF1uxIp6uEJk1vKHazjN5TMSYYJlKXeCPRNA3pnhuMtd0P1ZNSpME
+         3mja89cGywM7iTDWtb3OdMU2Avz9uX7px03SspZYe5GkejHSzqHKxGmfn4g8tOPegQtx
+         SbhG9IPeQNhP7TITrcAw7vLteIANRbifk1YnO3ewF9yVMk9Hx7HnLY9m1bPiSYVZReZ3
+         ZcULoQDJ5pn8p8nr8hQAAqiEwzy5eV2D8IgC3stZ384ebbCI3jPaohUfoycuUOStnNxl
+         scCt8LtnWmvreD9qMP5xUhBcXoQGW4l1SjYiT1BH6jDGIQovDaV7kqAjDVgD6cb8NKMb
+         vH7Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=xBSaTVNMPfPGHhUMYI+hLxMazSzPKmRe0TGeaaYm9k0=;
+        b=K3o0+SDXwZST3Je6YtR/CfACOCKGrypMtzwBvDOVXNqkE9P8hCC8TUrzKHZl9Q1qi/
+         l01Fp3FyjcTDYv3M5gou7KXjc4NBp5timgNP/ORD2pWXtT3eLydnyfLH2PQod0tiHro+
+         Mr7XJWTRz6IfaOFq89JCZcOSpPsZntftgqIusJ2wrqnRjUSDUILg7jwqvmRTyI4B2M2s
+         VCN78LO9FasCpz3+uQQIwJpbnF35EfBsTbsV3ixf9RjqCckotiLeI+R7MqYdwJw15ROt
+         gnzWeenq/dNlgCbzmolWkLhaVAr5TvmvFTAQZ5lI2F1QjNUhDjMSce8c46e136e78NDW
+         fmPA==
+X-Gm-Message-State: AOAM530vq4gemvT7ktz0FFgoq53yQCvdmbd37+GM28IRbuCfcAdIt9u9
+        REZ6PUd9nYog+pfyEEDkzZWy/27VaEpyqPYzirXDbwvF6VMQ/Q==
+X-Google-Smtp-Source: ABdhPJz4jKYLr4F43q8xNORwFZsZCagRvl3wgei5q+sYGOnSxVMPwutCYElFaUeTKeaIzpu07E2zccDIiIQQro5noPU=
+X-Received: by 2002:a92:cb51:: with SMTP id f17mr17208165ilq.64.1605090667090;
+ Wed, 11 Nov 2020 02:31:07 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201109210823.GI7391@dread.disaster.area>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20201111090143.9230-1-yashsri421@gmail.com>
+In-Reply-To: <20201111090143.9230-1-yashsri421@gmail.com>
+From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Date:   Wed, 11 Nov 2020 11:30:58 +0100
+Message-ID: <CAKXUXMzg6Wg310s-N8hWOEiXFkg1ZAga+NkFQkFQ5_bS16TLnA@mail.gmail.com>
+Subject: Re: [PATCH v2] checkpatch: add fix option for MISSING_SIGN_OFF
+To:     Aditya Srivastava <yashsri421@gmail.com>
+Cc:     Joe Perches <joe@perches.com>,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 10, 2020 at 08:08:23AM +1100, Dave Chinner wrote:
-> On Mon, Nov 09, 2020 at 09:27:05PM +0100, Michal Suchánek wrote:
-> > On Mon, Nov 09, 2020 at 11:24:19AM -0800, Darrick J. Wong wrote:
-> > > On Mon, Nov 09, 2020 at 08:10:08PM +0100, Michal Suchanek wrote:
-> > > > xfs accepts both dax and dax_enum but shows only dax_enum. Show both
-> > > > options.
-> > > > 
-> > > > Fixes: 8d6c3446ec23 ("fs/xfs: Make DAX mount option a tri-state")
-> > > > Signed-off-by: Michal Suchanek <msuchanek@suse.de>
-> > > > ---
-> > > >  fs/xfs/xfs_super.c | 2 +-
-> > > >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > > > 
-> > > > diff --git a/fs/xfs/xfs_super.c b/fs/xfs/xfs_super.c
-> > > > index e3e229e52512..a3b00003840d 100644
-> > > > --- a/fs/xfs/xfs_super.c
-> > > > +++ b/fs/xfs/xfs_super.c
-> > > > @@ -163,7 +163,7 @@ xfs_fs_show_options(
-> > > >  		{ XFS_MOUNT_GRPID,		",grpid" },
-> > > >  		{ XFS_MOUNT_DISCARD,		",discard" },
-> > > >  		{ XFS_MOUNT_LARGEIO,		",largeio" },
-> > > > -		{ XFS_MOUNT_DAX_ALWAYS,		",dax=always" },
-> > > > +		{ XFS_MOUNT_DAX_ALWAYS,		",dax,dax=always" },
-> > > 
-> > > NAK, programs that require DAX semantics for files stored on XFS must
-> > > call statx to detect the STATX_ATTR_DAX flag, as outlined in "Enabling
-> > > DAX on xfs" in Documentation/filesystems/dax.txt.
-> > statx can be used to query S_DAX.  NOTE that only regular files will
-> > ever have S_DAX set and therefore statx will never indicate that S_DAX
-> > is set on directories.
-> 
-> Yup, by design.
-> 
-> The application doesn't need to do anything complex to make this
-> work. If the app wants to use DAX, then it should use
-> FS_IOC_FS{GS}ETXATTR to always set the on disk per inode DAX flags
-> for it's data dirs and files, and then STATX_ATTR_DAX will *always*
-> tell it whether DAX is actively in use at runtime. It's pretty
-> simple, really.
-> 
-> > The filesystem may not have any files so statx cannot be used.
-> 
-> Really?  The app or installer is about to *write to the fs* and has
-> all the permissions it needs to modify the contents of the fs. It's
-> pretty simple to create a tmpdir, set the DAX flag on the tmpdir,
-> then create a tmpfile in the tmpdir and run STATX_ATTR_DAX on it to
-> see if DAX is active or not.....
+On Wed, Nov 11, 2020 at 10:01 AM Aditya Srivastava <yashsri421@gmail.com> wrote:
+>
+> Currently checkpatch warns us if there is no 'Signed-off-by' line
+> for the patch.
+>
+> E.g., running checkpatch on commit 9ac060a708e0 ("leaking_addresses:
+> Completely remove --version flag") reports this error:
+>
+> ERROR: Missing Signed-off-by: line(s)
+>
+> Provide a fix by adding a Signed-off-by line corresponding to the author
+> of the patch before the patch separator line. Also avoid this error for
+> the commits where some typo is present in the sign off.
+>
+> E.g. for commit 8cde5d5f7361 ("bus: ti-sysc: Detect omap4 type timers
+> for quirk") we get missing sign off as well as bad sign off for:
+>
+> Siganed-off-by: Tony Lindgren <tony@atomide.com>
+>
+> Here it is probably best to give BAD_SIGN_OFF warning for Non-standard
+> signature and avoid MISSING_SIGN_OFF
+>
+> Suggested-by: Joe Perches <joe@perches.com>
+> Signed-off-by: Aditya Srivastava <yashsri421@gmail.com>
+> ---
+> Changes in v2:
+> Add space after 'if'
+> Add check for $patch_separator_linenr to be greater than 0
+>
+>  scripts/checkpatch.pl | 18 +++++++++++++++---
+>  1 file changed, 15 insertions(+), 3 deletions(-)
+>
+> diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+> index cb46288127ac..ac7e5ac80b58 100755
+> --- a/scripts/checkpatch.pl
+> +++ b/scripts/checkpatch.pl
+> @@ -2404,6 +2404,8 @@ sub process {
+>
+>         my $last_blank_line = 0;
+>         my $last_coalesced_string_linenr = -1;
+> +       my $patch_separator_linenr = 0;
+> +       my $non_standard_signature = 0;
+>
+>         our @report = ();
+>         our $cnt_lines = 0;
+> @@ -2755,6 +2757,10 @@ sub process {
+>                 if ($line =~ /^---$/) {
+>                         $has_patch_separator = 1;
+>                         $in_commit_log = 0;
+> +                       # to add missing sign off line before diff(s)
+> +                       if ($patch_separator_linenr == 0) {
+> +                               $patch_separator_linenr = $linenr;
+> +                       }
+>                 }
+>
+>  # Check if MAINTAINERS is being updated.  If so, there's probably no need to
+> @@ -2775,6 +2781,9 @@ sub process {
+>                         if ($sign_off !~ /$signature_tags/) {
+>                                 WARN("BAD_SIGN_OFF",
+>                                      "Non-standard signature: $sign_off\n" . $herecurr);
+> +
+> +                               # to avoid missing_sign_off error as it most probably is just a typo
+> +                               $non_standard_signature = 1;
+>                         }
+>                         if (defined $space_before && $space_before ne "") {
+>                                 if (WARN("BAD_SIGN_OFF",
+> @@ -7118,9 +7127,12 @@ sub process {
+>                       "Does not appear to be a unified-diff format patch\n");
+>         }
+>         if ($is_patch && $has_commit_log && $chk_signoff) {
+> -               if ($signoff == 0) {
+> -                       ERROR("MISSING_SIGN_OFF",
+> -                             "Missing Signed-off-by: line(s)\n");
+> +               if ($signoff == 0 && !$non_standard_signature) {
+> +                       if (ERROR("MISSING_SIGN_OFF",
+> +                                 "Missing Signed-off-by: line(s)\n") &&
+> +                           $fix && $patch_separator_linenr > 0) {
+> +                               fix_insert_line($patch_separator_linenr - 1, "Signed-off-by: $author");
+> +                       }
 
-Have you ever seen a 'wizard' style installer?
+Maybe I am already digging too much in the details... however:
 
-Like one that firsts asks what to install, and then presents a list of
-suitable locations that have enough space, supported filesystem features
-enabled, and whatnot?
+I think it should still warn about a Missing Signed-off-by: even when
+we know there is a $non_standard_signature. So, checkpatch simply
+emits two warnings; that is okay in that case.
 
-So to present a list of mountpoints that support DAX one has to scribble
-over every mountpoint on the system?
+It is just that our evaluation shows that the provided fix option
+should not be suggested when there is a $non_standard_signature
+because we actually would predict that there is typo in the intended
+Signed-off-by tag and the fix that checkpatch would suggest would not
+be adequate.
 
-That sounds ridiculous.
-> 
-> However, keep in mind that from a system design perspective having
-> the installer detect DAX properties to make application level
-> install/config decisions is problematic from a lot of different
-> angles.
-> 
-> - DAX is property of the *block device*, not the filesystem, so the
->   filesystem can make arbitrary decisions on whether to use DAX or
->   not to access data and these can change at any time without
->   warning.
-It is property of the mount point. Device supporting DAX is useless on
-its own - the filesystem must support and enable it as well. Filesystem
-support on its own is useless - it must be on a device that supports
-DAX, has matching block sise, it must be enabled at mount time.
+Joe, what is your opinion?
 
-Then don't be surprised that the users use 'creative' ways to determine
-the information the kernel chooses to not share with them.
-> 
-> - Some filesystems may not have any user visible signs they are
->   using DAX to access data except for STATX_ATTR_DAX because they
->   always use DAX and only work on DAX capable block devices. e.g
->   NVFS.
-That's broken indeed.
-> 
-> - For filesystems where DAX is optional, the user can -always-
->   change the dax state of the fs (mount options) or even parts of
->   the filesystem (per inode flags) at any time after the installer
->   has run.
-The user can do a lot of thing indeed. They can even unmount the
-filesystem.
-> 
-> - The application might be storing it's data on a different
->   filesystem that isn't mounted at install time, so the installer
->   has no chance of detecting that the application is going to use
->   DAX enabled storage.
-> 
-> IOWs, the installer cannot make decisions based on DAX state on
-> behalf of applications because it does not know what environment the
-> application is going to be configured to run in.  DAX can only be
-> deteted reliably by the application at runtime inside it's
-> production execution environment.
-It can check that the mount point is suitable at the time of
-installation. Of course, if the system is reconfigured afterwards the
-application might fail. However, checking the requirements prior to
-installtion still provides valuable feedback to the user. They can be
-sure that the system was configured properly.
+Aditya, it should not be too difficult to implement the rule that way, right?
 
-Thanks
 
-Michal
+>                 } elsif ($authorsignoff != 1) {
+>                         # authorsignoff values:
+>                         # 0 -> missing sign off
+> --
+> 2.17.1
+>
