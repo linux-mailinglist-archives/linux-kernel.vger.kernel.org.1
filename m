@@ -2,341 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B41B2AEF6A
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 12:18:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F90C2AEF6C
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 12:19:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726311AbgKKLSa convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 11 Nov 2020 06:18:30 -0500
-Received: from coyote.holtmann.net ([212.227.132.17]:37843 "EHLO
-        mail.holtmann.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725859AbgKKLSS (ORCPT
+        id S1726290AbgKKLTG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 06:19:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60868 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726142AbgKKLSh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 06:18:18 -0500
-Received: from marcel-macbook.holtmann.net (unknown [37.83.201.106])
-        by mail.holtmann.org (Postfix) with ESMTPSA id 06C39CECFE;
-        Wed, 11 Nov 2020 12:25:23 +0100 (CET)
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.120.23.2.4\))
-Subject: Re: [PATCH v9 2/6] Bluetooth: Interleave with allowlist scan
-From:   Marcel Holtmann <marcel@holtmann.org>
-In-Reply-To: <20201111150115.v9.2.Ib75f58e90c477f9b82c5598f00c59f0e95a1a352@changeid>
-Date:   Wed, 11 Nov 2020 12:18:14 +0100
-Cc:     linux-bluetooth <linux-bluetooth@vger.kernel.org>,
-        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-        alainm@chromium.org, mmandlik@chromium.org, mcchou@chromium.org,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
-Content-Transfer-Encoding: 8BIT
-Message-Id: <8A8B9E30-CA36-4996-A0C2-9F4E30751C0B@holtmann.org>
-References: <20201111150115.v9.1.I55fa38874edc240d726c1de6e82b2ce57b64f5eb@changeid>
- <20201111150115.v9.2.Ib75f58e90c477f9b82c5598f00c59f0e95a1a352@changeid>
-To:     Howard Chung <howardchung@google.com>
-X-Mailer: Apple Mail (2.3608.120.23.2.4)
+        Wed, 11 Nov 2020 06:18:37 -0500
+Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6C83C0613D1
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 03:18:32 -0800 (PST)
+Received: by mail-qt1-x842.google.com with SMTP id m65so965482qte.11
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 03:18:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=BXYC2kW2Ds9O4Nh+KWAHh8xMvJkVmyy/COi0eqVK5Os=;
+        b=DmJM0qkEm2nDrGG4rzLAHcIxueKFTC/abgSivXYx6KnBVXCdGf4mH77Huj7aUXdjfm
+         l64b+cXDCluUsOwFIc7YdSTrLzhKp5Ipcjk4BHHoBe4S8xm9akA6hPjmkngZhwQsvzI0
+         h/EpoSw6VMF9N1SbWkvn3Mn8mdbp0Dy1jgqwzMr4+dqb1xtQMNbsckDiWwBJ1iUQP6ML
+         Im8oGD7KX+Q89KxronQ9TkHpw1/VJ4nSpBdkG9pyQZIAlEmiE05b8V8CYaS4L+RfiQk1
+         JSy1YztuSfMW+8fMtdWThprsN49Gn3CkSOWs9M32va84IVWXU6QPQqfp6nYMJZRBX++0
+         WC5A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=BXYC2kW2Ds9O4Nh+KWAHh8xMvJkVmyy/COi0eqVK5Os=;
+        b=e+vJ9ElzOBNguFb/+Z2UuXsKGkJ+BG4gNJiq7eKXAe9UD8Q/WlVDmfXJIpC6XNCPjM
+         j8uybi3EJ3trfSGKTTCD9xZ3df6I7gF+5SneqyqGENIRhFh9e4HbEroKa8dG6OgS2IaM
+         K7yQHPt5iaWrNel5bpJN5GyJrUAQnE952DBVwrdDTxVYmExBzouRoaTFN+ZEir0C/h1h
+         w9UszWodx4NA07ta8vQCyvgbAeRZE7ZvUfQCU3khHxXV/h56DHkX2FtJRhT9nmkfpba3
+         sx9LZmrtOqiWQ4LWlneJDPhp1/A8vD5DD5asFxt12/VQd8xHKWQDTKmxeK+Pv5XGr9Y2
+         3dQw==
+X-Gm-Message-State: AOAM531aNioJjugoR4wjORyiGH1m13cpFZ1fXfwvvmnalNscNWSUrE5m
+        g0EQRHb1EKswma0BxMVfiQbCmiw9OhhfnA3niIKMSA==
+X-Google-Smtp-Source: ABdhPJxFpYdl3Svxjlxyb2lDwXiuwj2rn969GU4XaV0QtEY6n7dMdKYchMbrTDheUspnnHnTAsRSns42JGTaP5fURPE=
+X-Received: by 2002:ac8:c04:: with SMTP id k4mr23409836qti.66.1605093511590;
+ Wed, 11 Nov 2020 03:18:31 -0800 (PST)
+MIME-Version: 1.0
+References: <0000000000006226c805adf16cb8@google.com>
+In-Reply-To: <0000000000006226c805adf16cb8@google.com>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Wed, 11 Nov 2020 12:18:20 +0100
+Message-ID: <CACT4Y+b5imco8=HO4NKHUZzQ0=Nq99yQNUAica0yC8OHSKWvtg@mail.gmail.com>
+Subject: Re: WARNING: ODEBUG bug in exit_to_user_mode_prepare
+To:     syzbot <syzbot+fbd7ba7207767ed15165@syzkaller.appspotmail.com>
+Cc:     Jens Axboe <axboe@kernel.dk>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, maz@kernel.org,
+        Oleg Nesterov <oleg@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        Al Viro <viro@zeniv.linux.org.uk>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Howard,
+On Fri, Aug 28, 2020 at 5:08 PM syzbot
+<syzbot+fbd7ba7207767ed15165@syzkaller.appspotmail.com> wrote:
+>
+> Hello,
+>
+> syzbot found the following issue on:
+>
+> HEAD commit:    d012a719 Linux 5.9-rc2
+> git tree:       upstream
+> console output: https://syzkaller.appspot.com/x/log.txt?x=15e9e90e900000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=978db74cb30aa994
+> dashboard link: https://syzkaller.appspot.com/bug?extid=fbd7ba7207767ed15165
+> compiler:       gcc (GCC) 10.1.0-syz 20200507
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=12f81666900000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=15abb10e900000
+>
+> The issue was bisected to:
+>
+> commit a9ed4a6560b8562b7e2e2bed9527e88001f7b682
+> Author: Marc Zyngier <maz@kernel.org>
+> Date:   Wed Aug 19 16:12:17 2020 +0000
+>
+>     epoll: Keep a reference on files added to the check list
+>
+> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=130823a9900000
+> final oops:     https://syzkaller.appspot.com/x/report.txt?x=108823a9900000
+> console output: https://syzkaller.appspot.com/x/log.txt?x=170823a9900000
 
-> This patch implements the interleaving between allowlist scan and
-> no-filter scan. It'll be used to save power when at least one monitor is
-> registered and at least one pending connection or one device to be
-> scanned for.
-> 
-> The durations of the allowlist scan and the no-filter scan are
-> controlled by MGMT command: Set Default System Configuration. The
-> default values are set randomly for now.
-> 
-> Signed-off-by: Howard Chung <howardchung@google.com>
-> Reviewed-by: Alain Michaud <alainm@chromium.org>
-> Reviewed-by: Manish Mandlik <mmandlik@chromium.org>
+#syz fix:
+fix regression in "epoll: Keep a reference on files added to the check list"
+
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+fbd7ba7207767ed15165@syzkaller.appspotmail.com
+> Fixes: a9ed4a6560b8 ("epoll: Keep a reference on files added to the check list")
+>
+> ------------[ cut here ]------------
+> ODEBUG: free active (active state 1) object type: rcu_head hint: 0x0
+> WARNING: CPU: 1 PID: 10170 at lib/debugobjects.c:485 debug_print_object+0x160/0x250 lib/debugobjects.c:485
+> Kernel panic - not syncing: panic_on_warn set ...
+> CPU: 1 PID: 10170 Comm: syz-executor403 Not tainted 5.9.0-rc2-syzkaller #0
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+> Call Trace:
+>  __dump_stack lib/dump_stack.c:77 [inline]
+>  dump_stack+0x18f/0x20d lib/dump_stack.c:118
+>  panic+0x2e3/0x75c kernel/panic.c:231
+>  __warn.cold+0x20/0x4a kernel/panic.c:600
+>  report_bug+0x1bd/0x210 lib/bug.c:198
+>  handle_bug+0x38/0x90 arch/x86/kernel/traps.c:234
+>  exc_invalid_op+0x14/0x40 arch/x86/kernel/traps.c:254
+>  asm_exc_invalid_op+0x12/0x20 arch/x86/include/asm/idtentry.h:536
+> RIP: 0010:debug_print_object+0x160/0x250 lib/debugobjects.c:485
+> Code: dd e0 26 94 88 48 89 fa 48 c1 ea 03 80 3c 02 00 0f 85 bf 00 00 00 48 8b 14 dd e0 26 94 88 48 c7 c7 40 1c 94 88 e8 82 3b a6 fd <0f> 0b 83 05 83 54 13 07 01 48 83 c4 20 5b 5d 41 5c 41 5d c3 48 89
+> RSP: 0018:ffffc9000dabfdd0 EFLAGS: 00010082
+> RAX: 0000000000000000 RBX: 0000000000000003 RCX: 0000000000000000
+> RDX: ffff888093ada540 RSI: ffffffff815dafc7 RDI: fffff52001b57fac
+> RBP: 0000000000000001 R08: 0000000000000001 R09: ffff8880ae720f8b
+> R10: 0000000000000000 R11: 0000000000000000 R12: ffffffff89bd6780
+> R13: 0000000000000000 R14: dead000000000100 R15: dffffc0000000000
+>  __debug_check_no_obj_freed lib/debugobjects.c:967 [inline]
+>  debug_check_no_obj_freed+0x301/0x41c lib/debugobjects.c:998
+>  kmem_cache_free.part.0+0x16d/0x1f0 mm/slab.c:3692
+>  task_work_run+0xdd/0x190 kernel/task_work.c:141
+>  tracehook_notify_resume include/linux/tracehook.h:188 [inline]
+>  exit_to_user_mode_loop kernel/entry/common.c:140 [inline]
+>  exit_to_user_mode_prepare+0x195/0x1c0 kernel/entry/common.c:167
+>  syscall_exit_to_user_mode+0x59/0x2b0 kernel/entry/common.c:242
+>  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> RIP: 0033:0x447849
+> Code: e8 9c e6 ff ff 48 83 c4 18 c3 0f 1f 80 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 bb 04 fc ff c3 66 2e 0f 1f 84 00 00 00 00
+> RSP: 002b:00007f37799a7db8 EFLAGS: 00000246 ORIG_RAX: 00000000000000e9
+> RAX: 0000000000000000 RBX: 00000000006ddc68 RCX: 0000000000447849
+> RDX: 0000000000000003 RSI: 0000000000000001 RDI: 0000000000000004
+> RBP: 00000000006ddc60 R08: 0000000000000000 R09: 0000000000000000
+> R10: 0000000020000000 R11: 0000000000000246 R12: 00000000006ddc6c
+> R13: 00007ffcdbf7f6bf R14: 00007f37799a89c0 R15: 0000000000000000
+> Shutting down cpus with NMI
+> Kernel Offset: disabled
+> Rebooting in 86400 seconds..
+>
+>
 > ---
-> 
-> (no changes since v8)
-> 
-> Changes in v8:
-> - Simplified logic in __hci_update_interleaved_scan
-> - remove hdev->name when calling bt_dev_dbg
-> - remove 'default' in hci_req_add_le_interleaved_scan switch block
-> - remove {} around :1915
-> 
-> include/net/bluetooth/hci_core.h |  10 +++
-> net/bluetooth/hci_core.c         |   4 +
-> net/bluetooth/hci_request.c      | 128 +++++++++++++++++++++++++++++--
-> net/bluetooth/mgmt_config.c      |  10 +++
-> 4 files changed, 145 insertions(+), 7 deletions(-)
-> 
-> diff --git a/include/net/bluetooth/hci_core.h b/include/net/bluetooth/hci_core.h
-> index 9873e1c8cd163..cfede18709d8f 100644
-> --- a/include/net/bluetooth/hci_core.h
-> +++ b/include/net/bluetooth/hci_core.h
-> @@ -361,6 +361,8 @@ struct hci_dev {
-> 	__u8		ssp_debug_mode;
-> 	__u8		hw_error_code;
-> 	__u32		clock;
-> +	__u16		advmon_allowlist_duration;
-> +	__u16		advmon_no_filter_duration;
-> 
-> 	__u16		devid_source;
-> 	__u16		devid_vendor;
-> @@ -542,6 +544,14 @@ struct hci_dev {
-> 	struct delayed_work	rpa_expired;
-> 	bdaddr_t		rpa;
-> 
-> +	enum {
-> +		INTERLEAVE_SCAN_NONE,
-> +		INTERLEAVE_SCAN_NO_FILTER,
-> +		INTERLEAVE_SCAN_ALLOWLIST
-> +	} interleave_scan_state;
-> +
-> +	struct delayed_work	interleave_scan;
-> +
-> #if IS_ENABLED(CONFIG_BT_LEDS)
-> 	struct led_trigger	*power_led;
-> #endif
-> diff --git a/net/bluetooth/hci_core.c b/net/bluetooth/hci_core.c
-> index 502552d6e9aff..65b7b74baba4c 100644
-> --- a/net/bluetooth/hci_core.c
-> +++ b/net/bluetooth/hci_core.c
-> @@ -3592,6 +3592,10 @@ struct hci_dev *hci_alloc_dev(void)
-> 	hdev->cur_adv_instance = 0x00;
-> 	hdev->adv_instance_timeout = 0;
-> 
-> +	/* The default values will be chosen in the future */
-
-this comment is misleading. You are choosing the default values right now. So just scrap it.
-
-> +	hdev->advmon_allowlist_duration = 300;
-> +	hdev->advmon_no_filter_duration = 500;
-> +
-> 	hdev->sniff_max_interval = 800;
-> 	hdev->sniff_min_interval = 80;
-> 
-> diff --git a/net/bluetooth/hci_request.c b/net/bluetooth/hci_request.c
-> index 048d4db9d4ea5..2fd56ee21d31f 100644
-> --- a/net/bluetooth/hci_request.c
-> +++ b/net/bluetooth/hci_request.c
-> @@ -378,6 +378,53 @@ void __hci_req_write_fast_connectable(struct hci_request *req, bool enable)
-> 		hci_req_add(req, HCI_OP_WRITE_PAGE_SCAN_TYPE, 1, &type);
-> }
-> 
-> +static void start_interleave_scan(struct hci_dev *hdev)
-> +{
-> +	hdev->interleave_scan_state = INTERLEAVE_SCAN_NO_FILTER;
-> +	queue_delayed_work(hdev->req_workqueue,
-> +			   &hdev->interleave_scan, 0);
-> +}
-> +
-> +static bool is_interleave_scanning(struct hci_dev *hdev)
-> +{
-> +	return hdev->interleave_scan_state != INTERLEAVE_SCAN_NONE;
-> +}
-> +
-> +static void cancel_interleave_scan(struct hci_dev *hdev)
-> +{
-> +	bt_dev_dbg(hdev, "cancelling interleave scan");
-> +
-> +	cancel_delayed_work_sync(&hdev->interleave_scan);
-> +
-> +	hdev->interleave_scan_state = INTERLEAVE_SCAN_NONE;
-> +}
-> +
-> +/* Return true if interleave_scan wasn't started until exiting this function,
-> + * otherwise, return false
-> + */
-> +static bool __hci_update_interleaved_scan(struct hci_dev *hdev)
-> +{
-> +	/* If there is at least one ADV monitors and one pending LE connection
-> +	 * or one device to be scanned for, we should alternate between
-> +	 * allowlist scan and one without any filters to save power.
-> +	 */
-> +	bool should_interleaving = hci_is_adv_monitoring(hdev) &&
-> +				   !(list_empty(&hdev->pend_le_conns) &&
-> +				     list_empty(&hdev->pend_le_reports));
-
-the name should_interleaving is not sitting right with me. Can we find a
-naming that sounds a bit more like proper English. Do you actually mean
-use_interleaving in this case?
-
-> +	bool is_interleaving = is_interleave_scanning(hdev);
-> +
-> +	if (should_interleaving && !is_interleaving) {
-> +		start_interleave_scan(hdev);
-> +		bt_dev_dbg(hdev, "starting interleave scan");
-> +		return true;
-> +	}
-> +
-> +	if (!should_interleaving && is_interleaving)
-> +		cancel_interleave_scan(hdev);
-> +
-> +	return false;
-> +}
-> +
-> /* This function controls the background scanning based on hdev->pend_le_conns
->  * list. If there are pending LE connection we start the background scanning,
->  * otherwise we stop it.
-> @@ -450,8 +497,7 @@ static void __hci_update_background_scan(struct hci_request *req)
-> 			hci_req_add_le_scan_disable(req, false);
-> 
-> 		hci_req_add_le_passive_scan(req);
-> -
-> -		BT_DBG("%s starting background scanning", hdev->name);
-> +		bt_dev_dbg(hdev, "starting background scanning");
-> 	}
-> }
-> 
-> @@ -848,12 +894,17 @@ static u8 update_white_list(struct hci_request *req)
-> 			return 0x00;
-> 	}
-> 
-> -	/* Once the controller offloading of advertisement monitor is in place,
-> -	 * the if condition should include the support of MSFT extension
-> -	 * support. If suspend is ongoing, whitelist should be the default to
-> -	 * prevent waking by random advertisements.
-> +	/* Use the allowlist unless the following conditions are all true:
-> +	 * - We are not currently suspending
-> +	 * - There are 1 or more ADV monitors registered
-> +	 * - Interleaved scanning is not currently using the allowlist
-> +	 *
-> +	 * Once the controller offloading of advertisement monitor is in place,
-> +	 * the above condition should include the support of MSFT extension
-> +	 * support.
-> 	 */
-> -	if (!idr_is_empty(&hdev->adv_monitors_idr) && !hdev->suspended)
-> +	if (!idr_is_empty(&hdev->adv_monitors_idr) && !hdev->suspended &&
-> +	    hdev->interleave_scan_state != INTERLEAVE_SCAN_ALLOWLIST)
-> 		return 0x00;
-> 
-> 	/* Select filter policy to use white list */
-> @@ -1006,6 +1057,10 @@ void hci_req_add_le_passive_scan(struct hci_request *req)
-> 				      &own_addr_type))
-> 		return;
-> 
-> +	if (__hci_update_interleaved_scan(hdev))
-> +		return;
-> +
-> +	bt_dev_dbg(hdev, "interleave state %d", hdev->interleave_scan_state);
-> 	/* Adding or removing entries from the white list must
-> 	 * happen before enabling scanning. The controller does
-> 	 * not allow white list modification while scanning.
-> @@ -1886,6 +1941,62 @@ static void adv_timeout_expire(struct work_struct *work)
-> 	hci_dev_unlock(hdev);
-> }
-> 
-> +static int hci_req_add_le_interleaved_scan(struct hci_request *req,
-> +					   unsigned long opt)
-> +{
-> +	struct hci_dev *hdev = req->hdev;
-> +	int ret = 0;
-> +
-> +	hci_dev_lock(hdev);
-> +
-> +	if (hci_dev_test_flag(hdev, HCI_LE_SCAN))
-> +		hci_req_add_le_scan_disable(req, false);
-> +	hci_req_add_le_passive_scan(req);
-> +
-> +	switch (hdev->interleave_scan_state) {
-> +	case INTERLEAVE_SCAN_ALLOWLIST:
-> +		bt_dev_dbg(hdev, "next state: allowlist");
-> +		hdev->interleave_scan_state = INTERLEAVE_SCAN_NO_FILTER;
-> +		break;
-> +	case INTERLEAVE_SCAN_NO_FILTER:
-> +		bt_dev_dbg(hdev, "next state: no filter");
-> +		hdev->interleave_scan_state = INTERLEAVE_SCAN_ALLOWLIST;
-> +		break;
-> +	case INTERLEAVE_SCAN_NONE:
-> +		BT_ERR("unexpected error");
-> +		ret = -1;
-> +	}
-> +
-> +	hci_dev_unlock(hdev);
-> +
-> +	return ret;
-> +}
-> +
-> +static void interleave_scan_work(struct work_struct *work)
-> +{
-> +	struct hci_dev *hdev = container_of(work, struct hci_dev,
-> +					    interleave_scan.work);
-> +	u8 status;
-> +	unsigned long timeout;
-> +
-> +	if (hdev->interleave_scan_state == INTERLEAVE_SCAN_ALLOWLIST) {
-> +		timeout = msecs_to_jiffies(hdev->advmon_allowlist_duration);
-> +	} else if (hdev->interleave_scan_state == INTERLEAVE_SCAN_NO_FILTER) {
-> +		timeout = msecs_to_jiffies(hdev->advmon_no_filter_duration);
-> +	} else {
-> +		bt_dev_err(hdev, "unexpected error");
-> +		return;
-> +	}
-> +
-> +	hci_req_sync(hdev, hci_req_add_le_interleaved_scan, 0,
-> +		     HCI_CMD_TIMEOUT, &status);
-> +
-> +	/* Don't continue interleaving if it was canceled */
-> +	if (is_interleave_scanning(hdev))
-> +		queue_delayed_work(hdev->req_workqueue,
-> +				   &hdev->interleave_scan, timeout);
-> +}
-> +
-> int hci_get_random_address(struct hci_dev *hdev, bool require_privacy,
-> 			   bool use_rpa, struct adv_info *adv_instance,
-> 			   u8 *own_addr_type, bdaddr_t *rand_addr)
-> @@ -3313,6 +3424,7 @@ void hci_request_setup(struct hci_dev *hdev)
-> 	INIT_DELAYED_WORK(&hdev->le_scan_disable, le_scan_disable_work);
-> 	INIT_DELAYED_WORK(&hdev->le_scan_restart, le_scan_restart_work);
-> 	INIT_DELAYED_WORK(&hdev->adv_instance_expire, adv_timeout_expire);
-> +	INIT_DELAYED_WORK(&hdev->interleave_scan, interleave_scan_work);
-> }
-> 
-> void hci_request_cancel_all(struct hci_dev *hdev)
-> @@ -3332,4 +3444,6 @@ void hci_request_cancel_all(struct hci_dev *hdev)
-> 		cancel_delayed_work_sync(&hdev->adv_instance_expire);
-> 		hdev->adv_instance_timeout = 0;
-> 	}
-> +
-> +	cancel_interleave_scan(hdev);
-> }
-> diff --git a/net/bluetooth/mgmt_config.c b/net/bluetooth/mgmt_config.c
-> index b30b571f8caf8..2d3ad288c78ac 100644
-> --- a/net/bluetooth/mgmt_config.c
-> +++ b/net/bluetooth/mgmt_config.c
-> @@ -67,6 +67,8 @@ int read_def_system_config(struct sock *sk, struct hci_dev *hdev, void *data,
-> 		HDEV_PARAM_U16(0x001a, le_supv_timeout),
-> 		HDEV_PARAM_U16_JIFFIES_TO_MSECS(0x001b,
-> 						def_le_autoconnect_timeout),
-> +		HDEV_PARAM_U16(0x001d, advmon_allowlist_duration),
-> +		HDEV_PARAM_U16(0x001e, advmon_no_filter_duration),
-> 	};
-> 	struct mgmt_rp_read_def_system_config *rp = (void *)params;
-> 
-> @@ -138,6 +140,8 @@ int set_def_system_config(struct sock *sk, struct hci_dev *hdev, void *data,
-> 		case 0x0019:
-> 		case 0x001a:
-> 		case 0x001b:
-> +		case 0x001d:
-> +		case 0x001e:
-> 			if (len != sizeof(u16)) {
-> 				bt_dev_warn(hdev, "invalid length %d, exp %zu for type %d",
-> 					    len, sizeof(u16), type);
-> @@ -251,6 +255,12 @@ int set_def_system_config(struct sock *sk, struct hci_dev *hdev, void *data,
-> 			hdev->def_le_autoconnect_timeout =
-> 					msecs_to_jiffies(TLV_GET_LE16(buffer));
-> 			break;
-> +		case 0x0001d:
-> +			hdev->advmon_allowlist_duration = TLV_GET_LE16(buffer);
-> +			break;
-> +		case 0x0001e:
-> +			hdev->advmon_no_filter_duration = TLV_GET_LE16(buffer);
-> +			break;
-> 		default:
-> 			bt_dev_warn(hdev, "unsupported parameter %u", type);
-> 			break;
-
-Regards
-
-Marcel
-
+> This report is generated by a bot. It may contain errors.
+> See https://goo.gl/tpsmEJ for more information about syzbot.
+> syzbot engineers can be reached at syzkaller@googlegroups.com.
+>
+> syzbot will keep track of this issue. See:
+> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+> For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+> syzbot can test patches for this issue, for details see:
+> https://goo.gl/tpsmEJ#testing-patches
+>
+> --
+> You received this message because you are subscribed to the Google Groups "syzkaller-bugs" group.
+> To unsubscribe from this group and stop receiving emails from it, send an email to syzkaller-bugs+unsubscribe@googlegroups.com.
+> To view this discussion on the web visit https://groups.google.com/d/msgid/syzkaller-bugs/0000000000006226c805adf16cb8%40google.com.
