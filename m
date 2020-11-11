@@ -2,129 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E47622AF27D
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 14:48:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 499452AF274
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 14:48:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727184AbgKKNsO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 08:48:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56100 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726854AbgKKNrd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 08:47:33 -0500
-Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D071C0613D1;
-        Wed, 11 Nov 2020 05:47:31 -0800 (PST)
-Received: by mail-lf1-x143.google.com with SMTP id v144so3157593lfa.13;
-        Wed, 11 Nov 2020 05:47:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=YBHMNmAOhYdHvBHjnStemujfpU3IXRUzuSHXrC3Zax0=;
-        b=ZZQkLQM8NNjkbIRP3s5mXJa/90H1xB+lYkX/FspeQruHDmbVRV32zpRoG5PJB4T5Ji
-         Mb9l+3zYUIWpTm4DQfWkVsVvA8qHcYG3L8t0x88ydanm8ljeX+69uR4szGvVc+fLJBuu
-         dZ0yDkM4q3jgjaStXdPuQIq5unESa/+e8OevoKIA4MCsc4MpPFaxDg94R5y2lABk/dFe
-         pw3JWoTP9f9xXO8JW3le5NeP6K5dvvmdPh6x77yoTaqVxQ053ldLOoQlvlH/PGi16xgn
-         RGlEtHpgKrbgCjfvzmc/cQDOXsoEHTAlSCU9rF2ubcvUKJZgZYcL06GDY3yG0qC+KQyY
-         BqAQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=YBHMNmAOhYdHvBHjnStemujfpU3IXRUzuSHXrC3Zax0=;
-        b=MKSUhNBpCUDgOFYRFN3S5dG7LyXZznQZ29tlha3/iSC5TyFPHyvTE1unCxRA575KZ/
-         o4rWDzeEi2FLDQHJtry7tLyJL95pFAlEy/0/IKpNM81Ucj7Z0fDfIcqhIRdrWsEgwFRn
-         SGcYKPT/EAmUBucZpTHPqqlCIIAQL7KKTlGJn2IIfVdxbb6FV/wTwP+99snLLccNKmBV
-         EHm2745m7txfNOc0dzmt9m2dbQqD+QdtDsqU0leQoBrCpharC224Rpc2XRqTajvUVCBH
-         RuSjnW8w1a9lYXflQ/KamHN7Z8C9jBl5b10ObfQA/KbM0Iixl9xHBqpG7uuVb9BzjjmV
-         LAqw==
-X-Gm-Message-State: AOAM531NLWLUpKrzAioB6ulEbtXHLATMFF30Q08Hd4C/IYBrGwG1uS5H
-        Y4+Hs/doHyxGsx4lkQNHVlEioZcBtis=
-X-Google-Smtp-Source: ABdhPJz1/b/zPAQ3KPPZ/x+HTmaWiJjAvrsEWiPZes7SQg69AfTivBIpYr5HUtTo/l2OpD232Rt3gg==
-X-Received: by 2002:ac2:57c7:: with SMTP id k7mr10005249lfo.20.1605102449554;
-        Wed, 11 Nov 2020 05:47:29 -0800 (PST)
-Received: from [192.168.2.145] (109-252-193-159.dynamic.spd-mgts.ru. [109.252.193.159])
-        by smtp.googlemail.com with ESMTPSA id 16sm223765lfk.186.2020.11.11.05.47.28
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 11 Nov 2020 05:47:28 -0800 (PST)
-Subject: Re: [PATCH] ARM: tegra: Populate OPP table for Tegra20 Ventana
-To:     Jon Hunter <jonathanh@nvidia.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Thierry Reding <thierry.reding@gmail.com>
-Cc:     devicetree@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org
-References: <20201111103847.152721-1-jonathanh@nvidia.com>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <7e40cd3e-7c34-c9a9-bf00-ba7d507a2d6b@gmail.com>
-Date:   Wed, 11 Nov 2020 16:47:27 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.2
+        id S1727161AbgKKNsL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 08:48:11 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35958 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726412AbgKKNrb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Nov 2020 08:47:31 -0500
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id D74222072C;
+        Wed, 11 Nov 2020 13:47:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605102451;
+        bh=O75Cb/oSTOVEsh2cfT+C7Cb6UuFAt0jwxEEIDWUu0Yk=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=s6qdkedV3+4fsv9ewvPeAiOR1c16RxhYCj1bxqVcF8hYBi4cakLSoT6XUMMqSTaN4
+         CXEY3k1jZuMLQuGBUBc+i5/+4MQxW2NWjIkXf7oYbmQMiG7ZoybazDCyw0dRCQBTjz
+         bk5cbgxOFOFRrOJSG862TzA8ZbBF3FvDVdFJCC+4=
+Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.94)
+        (envelope-from <maz@kernel.org>)
+        id 1kcqTA-009mCw-Hm; Wed, 11 Nov 2020 13:47:28 +0000
 MIME-Version: 1.0
-In-Reply-To: <20201111103847.152721-1-jonathanh@nvidia.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Wed, 11 Nov 2020 13:47:28 +0000
+From:   Marc Zyngier <maz@kernel.org>
+To:     David Brazdil <dbrazdil@google.com>
+Cc:     kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Dennis Zhou <dennis@kernel.org>,
+        Tejun Heo <tj@kernel.org>, Christoph Lameter <cl@linux.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Quentin Perret <qperret@google.com>,
+        Andrew Scull <ascull@google.com>,
+        Andrew Walbran <qwandor@google.com>, kernel-team@android.com
+Subject: Re: [PATCH v1 16/24] kvm: arm64: Add offset for hyp VA <-> PA
+ conversion
+In-Reply-To: <20201109113233.9012-17-dbrazdil@google.com>
+References: <20201109113233.9012-1-dbrazdil@google.com>
+ <20201109113233.9012-17-dbrazdil@google.com>
+User-Agent: Roundcube Webmail/1.4.9
+Message-ID: <ded6b623ea8ddc43f7dcabd0ec59d4b5@kernel.org>
+X-Sender: maz@kernel.org
+X-SA-Exim-Connect-IP: 51.254.78.96
+X-SA-Exim-Rcpt-To: dbrazdil@google.com, kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, james.morse@arm.com, julien.thierry.kdev@gmail.com, suzuki.poulose@arm.com, catalin.marinas@arm.com, will@kernel.org, dennis@kernel.org, tj@kernel.org, cl@linux.com, mark.rutland@arm.com, lorenzo.pieralisi@arm.com, qperret@google.com, ascull@google.com, qwandor@google.com, kernel-team@android.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-11.11.2020 13:38, Jon Hunter пишет:
-> Commit 9ce274630495 ("cpufreq: tegra20: Use generic cpufreq-dt driver
-> (Tegra30 supported now)") update the Tegra20 CPUFREQ driver to use the
-> generic CPUFREQ device-tree driver. Since this change CPUFREQ support
-> on the Tegra20 Ventana platform has been broken because the necessary
-> device-tree nodes with the operating point information are not populated
-> for this platform. Fix this by updating device-tree for Venata to
-> include the operating point informration for Tegra20.
+On 2020-11-09 11:32, David Brazdil wrote:
+> Add a host-initialized constant to KVM nVHE hyp code for converting
+> between EL2 linear map virtual addresses and physical addresses.
+> Also add `__hyp_pa` macro that performs the conversion.
 > 
-> Fixes: 9ce274630495 ("cpufreq: tegra20: Use generic cpufreq-dt driver (Tegra30 supported now)")
-> Cc: stable@vger.kernel.org
-> 
-> Signed-off-by: Jon Hunter <jonathanh@nvidia.com>
+> Signed-off-by: David Brazdil <dbrazdil@google.com>
 > ---
->  arch/arm/boot/dts/tegra20-ventana.dts | 11 +++++++++++
->  1 file changed, 11 insertions(+)
+>  arch/arm64/kvm/arm.c           | 15 +++++++++++++++
+>  arch/arm64/kvm/hyp/nvhe/psci.c |  3 +++
+>  2 files changed, 18 insertions(+)
 > 
-> diff --git a/arch/arm/boot/dts/tegra20-ventana.dts b/arch/arm/boot/dts/tegra20-ventana.dts
-> index b158771ac0b7..055334ae3d28 100644
-> --- a/arch/arm/boot/dts/tegra20-ventana.dts
-> +++ b/arch/arm/boot/dts/tegra20-ventana.dts
-> @@ -3,6 +3,7 @@
->  
->  #include <dt-bindings/input/input.h>
->  #include "tegra20.dtsi"
-> +#include "tegra20-cpu-opp.dtsi"
->  
->  / {
->  	model = "NVIDIA Tegra20 Ventana evaluation board";
-> @@ -592,6 +593,16 @@ clk32k_in: clock@0 {
->  		#clock-cells = <0>;
->  	};
->  
-> +	cpus {
-> +		cpu0: cpu@0 {
-> +			operating-points-v2 = <&cpu0_opp_table>;
-> +		};
-> +
-> +		cpu@1 {
-> +			operating-points-v2 = <&cpu0_opp_table>;
-> +		};
-> +	};
-> +
->  	gpio-keys {
->  		compatible = "gpio-keys";
->  
+> diff --git a/arch/arm64/kvm/arm.c b/arch/arm64/kvm/arm.c
+> index 28e3bc056225..dc7d43d7785a 100644
+> --- a/arch/arm64/kvm/arm.c
+> +++ b/arch/arm64/kvm/arm.c
+> @@ -1484,6 +1484,20 @@ static inline void hyp_cpu_pm_exit(void)
+>  }
+>  #endif
 > 
+> +static void init_hyp_physvirt_offset(void)
+> +{
+> +	extern s64 kvm_nvhe_sym(hyp_physvirt_offset);
+> +	unsigned long kern_vaddr, hyp_vaddr, paddr;
+> +
+> +	/* Check that kvm_arm_hyp_percpu_base has been set. */
+> +	BUG_ON(kvm_arm_hyp_percpu_base[0] == 0);
 
-This could be wrong to do because CPU voltage is fixed to 1000mV in
-Ventana's DT, are you sure that higher clock rates don't require higher
-voltages? What is the CPU process ID and SoC speedo ID on Ventana?
+Why is this dependent on the percpu base? Or is that just a convenient
+symbol?
 
-You could easily hook up CPU voltage scaling, please see acer-500 DT and
-patch [1] for examples of how to set up regulators in DT. But then it
-shouldn't be a stable patch.
+> +
+> +	kern_vaddr = kvm_arm_hyp_percpu_base[0];
+> +	hyp_vaddr = kern_hyp_va(kern_vaddr);
+> +	paddr = __pa(kern_vaddr);
+> +	CHOOSE_NVHE_SYM(hyp_physvirt_offset) = (s64)paddr - (s64)hyp_vaddr;
+> +}
 
-[1]
-https://patchwork.ozlabs.org/project/linux-tegra/patch/20201104234427.26477-27-digetx@gmail.com/
+It feels like this offset could be set at the point where we compute
+the hyp_va offset in va_layout.c, couldn't it? It would have the
+advantage of keeping all the ugly VA hacks together.
+
+> +
+>  static void init_cpu_logical_map(void)
+>  {
+>  	extern u64 kvm_nvhe_sym(__cpu_logical_map)[NR_CPUS];
+> @@ -1688,6 +1702,7 @@ static int init_hyp_mode(void)
+>  		}
+>  	}
+> 
+> +	init_hyp_physvirt_offset();
+>  	init_cpu_logical_map();
+>  	init_psci();
+> 
+> diff --git a/arch/arm64/kvm/hyp/nvhe/psci.c 
+> b/arch/arm64/kvm/hyp/nvhe/psci.c
+> index 82d3b2c89658..b0b5df590ba5 100644
+> --- a/arch/arm64/kvm/hyp/nvhe/psci.c
+> +++ b/arch/arm64/kvm/hyp/nvhe/psci.c
+> @@ -16,6 +16,9 @@
+>  /* Config options set by the host. */
+>  u32 kvm_host_psci_version = PSCI_VERSION(0, 0);
+>  u32 kvm_host_psci_function_id[PSCI_FN_MAX];
+> +s64 hyp_physvirt_offset;
+> +
+> +#define __hyp_pa(x) ((phys_addr_t)((x)) + hyp_physvirt_offset)
+> 
+>  static u64 get_psci_func_id(struct kvm_cpu_context *host_ctxt)
+>  {
+
+Thanks,
+
+         M.
+-- 
+Jazz is not dead. It just smells funny...
