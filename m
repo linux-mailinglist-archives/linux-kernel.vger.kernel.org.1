@@ -2,145 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1527E2AEECA
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 11:32:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E69E2AEED1
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 11:36:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727408AbgKKKci (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 05:32:38 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:29113 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726229AbgKKKch (ORCPT
+        id S1725965AbgKKKgG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 05:36:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54026 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725860AbgKKKgF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 05:32:37 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1605090756;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=nQanxT8X3ELig0XMX5/McNaRarJw9LhbTOfvsbkiJyA=;
-        b=ejkvmBsyGlqVnbMqCGlI/MAup1rOADJ+yNAHh/e+qaAfEFy6kf/2+ZSn8c4ADcXuaZdNmC
-        gtRD+W/FcmUkUrXIvMPOBH0p8/ofP+eHe6zT5VqPcPZBWuam97Ig9VmBfDWXGBAfBaTomj
-        NzFfUoDILCDqh3/2DnANcBp5bloUhrU=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-84-sLOqzFc1OsW-ZY8MMNDcjw-1; Wed, 11 Nov 2020 05:32:32 -0500
-X-MC-Unique: sLOqzFc1OsW-ZY8MMNDcjw-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5E5B3186DD4D;
-        Wed, 11 Nov 2020 10:32:30 +0000 (UTC)
-Received: from [10.36.114.151] (ovpn-114-151.ams2.redhat.com [10.36.114.151])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id EF30E7513C;
-        Wed, 11 Nov 2020 10:32:26 +0000 (UTC)
-Subject: Re: [PATCH v1] mm/page_alloc: clear pages in alloc_contig_pages()
- with init_on_alloc=1 or __GFP_ZERO
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Vlastimil Babka <vbabka@suse.cz>, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Potapenko <glider@google.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        Kees Cook <keescook@chromium.org>,
-        Michael Ellerman <mpe@ellerman.id.au>
-References: <20201110193240.25401-1-david@redhat.com>
- <20201111084738.GT12240@dhcp22.suse.cz>
- <4ebc711e-7fbc-62aa-b88f-3d6ffa9379ff@redhat.com>
- <b2d29dc2-cfe9-415d-7037-402dcc0c0f17@suse.cz>
- <5e104380-c0b1-4911-b484-b6e1e1c46f7d@redhat.com>
- <20201111102207.GV12240@dhcp22.suse.cz>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat GmbH
-Message-ID: <c828742e-ce1c-08e1-5204-7bfb9e0f564a@redhat.com>
-Date:   Wed, 11 Nov 2020 11:32:25 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+        Wed, 11 Nov 2020 05:36:05 -0500
+Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 166E7C0613D1;
+        Wed, 11 Nov 2020 02:36:05 -0800 (PST)
+Received: by mail-ej1-x642.google.com with SMTP id 7so2115418ejm.0;
+        Wed, 11 Nov 2020 02:36:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=D2Ugx4D0J57kDynM1FB/co+swcqeET31GLiY2vmdTik=;
+        b=sM3nglk9r5Az20iBquKX/2aTxunFf973kbnWZEzO63Nz84dOqf254nANdHzT1+RToH
+         iaU85OnOGo3NuuQTrpMEp0z6CQkcTijqUc2AAvopfVQ5gAhNrSp6LhDtePtgf4luk8Bo
+         o94IMatDrbTYtfC9WsJIoaJrC8EGe058CohKerCeSpHLXdaMNGyUI0rWJizKlS6meLPs
+         BQy219Nv/tzkImyMqSYeNlguBpztf3OphAjFSDTYIOhr9e1qmq/wDxpJO4Vb552TePue
+         1ylzgyAaSAcTv7Lp2fTVfyd7nlZiM8TWMH70u4la+dkFIpdf2a3TM+PXpLOOCmTJXWTG
+         //qg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=D2Ugx4D0J57kDynM1FB/co+swcqeET31GLiY2vmdTik=;
+        b=McDbWxcdApnHuNdVE98CJ6E6xh5x8rjK8EQT7Zc4eSlFl9JRHKoRcErk6M+DUImgWi
+         pY8ddYageIKEG1YJ/+snQ5tX5k7zJaMny3dO2aQnlc77ZsOgsyjiceCddcblYC5RIE+o
+         u89ZlvX3DfcczyEMogk5y/zFXVG/3zCKA5VheLZ/rMgPHu8g51c56xjqSyLVKBwHiTDD
+         1pckGcV/K/+YyGO4Bmn92VBUbBREFfDOVS/2Jnn2RPYjdlzp8JdkUQWUcAyhJ6MMqnm7
+         FhyPpD20leWmOHGpw3zb1Q4t2T0rU7NeWZi9F7iyUc4rBFeqoT7t9b8B3aWZEIr7oWj3
+         pcFg==
+X-Gm-Message-State: AOAM533CcgDEsMiIWNKiRQOcoK+E95IoiSen3o47nz6pQcnupkIkQ8+0
+        XfqpQ1EJ2cT0QfXeGwh/67M=
+X-Google-Smtp-Source: ABdhPJyylYZHj415vOO55tvEdKxmQV+TizDR2IOLgsBQXD6IxkpUVn9sjIAXRxIwNtFRlX+LXhfYqQ==
+X-Received: by 2002:a17:906:c0c1:: with SMTP id bn1mr24199810ejb.454.1605090963790;
+        Wed, 11 Nov 2020 02:36:03 -0800 (PST)
+Received: from skbuf ([188.25.2.177])
+        by smtp.gmail.com with ESMTPSA id j9sm707020edv.92.2020.11.11.02.36.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 11 Nov 2020 02:36:02 -0800 (PST)
+Date:   Wed, 11 Nov 2020 12:36:01 +0200
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     Alexandra Winter <wintera@linux.ibm.com>
+Cc:     DENG Qingfang <dqfext@gmail.com>, Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        netdev <netdev@vger.kernel.org>, linux-kernel@vger.kernel.org,
+        Tobias Waldekranz <tobias@waldekranz.com>,
+        Marek Behun <marek.behun@nic.cz>,
+        Russell King - ARM Linux admin <linux@armlinux.org.uk>
+Subject: Re: [RFC PATCH net-next 3/3] net: dsa: listen for
+ SWITCHDEV_{FDB,DEL}_ADD_TO_DEVICE on foreign bridge neighbors
+Message-ID: <20201111103601.67kqkaphgztoifzl@skbuf>
+References: <20201108131953.2462644-1-olteanv@gmail.com>
+ <20201108131953.2462644-4-olteanv@gmail.com>
+ <CALW65jb+Njb3WkY-TUhsHh1YWEzfMcXoRAXshnT8ke02wc10Uw@mail.gmail.com>
+ <20201108172355.5nwsw3ek5qg6z7yx@skbuf>
+ <c35d48cd-a1ea-7867-a125-0f900e1e8808@linux.ibm.com>
 MIME-Version: 1.0
-In-Reply-To: <20201111102207.GV12240@dhcp22.suse.cz>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <c35d48cd-a1ea-7867-a125-0f900e1e8808@linux.ibm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11.11.20 11:22, Michal Hocko wrote:
-> On Wed 11-11-20 11:05:21, David Hildenbrand wrote:
->> On 11.11.20 10:58, Vlastimil Babka wrote:
->>> On 11/11/20 10:06 AM, David Hildenbrand wrote:
->>>> On 11.11.20 09:47, Michal Hocko wrote:
->>>>> On Tue 10-11-20 20:32:40, David Hildenbrand wrote:
->>>>>> commit 6471384af2a6 ("mm: security: introduce init_on_alloc=1 and
->>>>>> init_on_free=1 boot options") resulted with init_on_alloc=1 in all pages
->>>>>> leaving the buddy via alloc_pages() and friends to be
->>>>>> initialized/cleared/zeroed on allocation.
->>>>>>
->>>>>> However, the same logic is currently not applied to
->>>>>> alloc_contig_pages(): allocated pages leaving the buddy aren't cleared
->>>>>> with init_on_alloc=1 and init_on_free=0. Let's also properly clear
->>>>>> pages on that allocation path and add support for __GFP_ZERO.
->>>>>
->>>>> AFAIR we do not have any user for __GFP_ZERO right? Not that this is
->>>>
->>>> Sorry, I had extended information under "---" but accidentally
->>>> regenerated the patch before sending it out.
->>>>
->>>> __GFP_ZERO is not used yet. It's intended to be used in
->>>> https://lkml.kernel.org/r/20201029162718.29910-1-david@redhat.com
->>>> and I can move that change into a separate patch if desired.
-> 
-> OK, it would make sense to add it with its user.
-> 
->>>>> harmful but it is better to call that explicitly because a missing
->>>>> implementation would be a real problem and as such a bug fix.
->>>>>
->>>>> I am also not sure handling init_on_free at the higher level is good.
->>>>> As we have discussed recently the primary point of this feature is to
->>>>> add clearing at very few well defined entry points rather than spill it over
->>>>> many places. In this case the entry point for the allocator is
->>>>> __isolate_free_page which removes pages from the page allocator. I
->>>>> haven't checked how much this is used elsewhere but I would expect
->>>>> init_on_alloc to be handled there.
->>>>
->>>> Well, this is the entry point to our range allocator, which lives in
->>>> page_alloc.c - used by actual high-level allocators (CMA, gigantic
->>>> pages, etc). It's just a matter of taste where we want to have that
->>>> handling exactly inside our allocator.
-> 
-> Yes I completely agree here. I just believe it should the lowest we can
-> achieve.
-> 
->>> I agree alloc_contig_range() is fine as an entry point.
->>
->> Thanks, let's see if Michal insists of having this somewhere inside
->> isolate_freepages_range() instead.
->   
-> It's not that I would be insisting. I am just pointing out that changes
-> like this one go against the idea of init_on_alloc because it is adding
-> more special casing and long term more places to be really careful about
-> when one has to be really careful to not undermine the security aspect
-> of the feature. I haven't really checked why compaction is not the
-> problem but I suspect it is the fact that it unconditionally copy the
-> full page content to the isolated page so there is no way to sneak
-> any data leak there. That is fine. We should however make that clear by
+Hi Alexandra,
 
-Exactly.
+On Wed, Nov 11, 2020 at 11:13:03AM +0100, Alexandra Winter wrote:
+> On 08.11.20 18:23, Vladimir Oltean wrote:
+> > On Sun, Nov 08, 2020 at 10:09:25PM +0800, DENG Qingfang wrote:
+> >> Can it be turned off for switches that support SA learning from CPU?
+> > 
+> > Is there a good reason I would add another property per switch and not
+> > just do it unconditionally?
+> > 
+> I have a similar concern for a future patch, where I want to turn on or off, whether the
+> device driver listens to SWITCHDEV_{FDB,DEL}_ADD_TO_DEVICE for a certain interface.
+> (Options will be: static MACs only, learning in the device or learning in bridge and notifications to device)
+> What about 'bridge link set dev $netdev learning_sync on self' respectively the corresponding netlink message?
 
-> using a special cased function which skips this particular
-> initialization and make sure everybody else will just do the right thing
-> without much thinking.
-
-I totally agree, but I think we don't have many places where free pages 
-actually leave the buddy besides alloc_pages() and friends (compaction 
-is something special). I agree having a single place to handle that 
-would be preferred. I'll have a look if that can be reworked without 
-doing too much harm / affecting other hot paths.
-
--- 
-Thanks,
-
-David / dhildenb
-
+My understanding is that "learning_sync" is for pushing learnt addresses
+from device to bridge, not from bridge to device.
