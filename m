@@ -2,623 +2,441 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77F392AF409
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 15:48:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C53C32AF40D
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 15:50:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727010AbgKKOsZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 09:48:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37412 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726654AbgKKOsZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 09:48:25 -0500
-Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28460C0613D1
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 06:48:25 -0800 (PST)
-Received: by mail-ot1-x344.google.com with SMTP id y22so2336862oti.10
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 06:48:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=iW+SeLw4qDkPhrVByahN0lhroGswkKPImUUWFzcSB/M=;
-        b=pIExn6DjZDiz41nnB+UVtf3RChKQkaTI1pK/tdQzJ2zalz0k0Ghxk8v+NMnwHyl4xj
-         MwY5G2gXVFixJE1wz7nOsETnN409hNLrqPv/srUWmbiI/PuP72WLam9jRxZqhNSE/i4a
-         GKMWDAVngBkFUtFsGdMoXz8YA1k7/ax80qXN2bW2484x5TaXuSKX0icDg2P22qlnMSBF
-         LJMVvrYRv3EcyqVccIJVSEjuqO6/cafVpP4t1WL0tSYvnpx/7jcEQcjrJ2/lypKMxpHO
-         VQFC8lU+0Caww7yDGVnQ9lNzaFhXnhorIhKacX5hJdEGPeTD40B3ZCrIamloVnP0djpt
-         fV8A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=iW+SeLw4qDkPhrVByahN0lhroGswkKPImUUWFzcSB/M=;
-        b=JIfoOoG+Jv9WPHmq8iH2hNeZEgcoCKc+NX+BH1VodJUDxxgg8mCFhxdt/U1RR5JvRq
-         QuTRb/ZDDIyR4Dyuso6Plgv8vHWkPSnKmoa/GtMfSqqNlL4/5YYGqiwFiK61qnYCSt1i
-         rbiT1+4t3rEHDJCCCwmzQrl1j4L26gJD35oppS8EEHh0IQbcoxi6NuZQgQQVXR27hpHu
-         HoBS71pyLR1JS2YzpYFg1PLrhxPHMvmhdlVL0igovSUZQLwgptXkXgYMPZOG4Hi4ADMw
-         AIy/jT0+Ia8KGLvlPipTBdgtHAk7JKrJ9inNIXwJ4aKb2xfaqDNLQEa2q8HeHavA+gX4
-         jmhw==
-X-Gm-Message-State: AOAM532NNyo9AYkGo9UuY9uCWNJRpUQeb2dKr9x3CdOZRApzG6xB+8/y
-        s0cm1hmzNarzodgOrOStTCcjsDxIngAchOKa5wRNT0wewh/MmA==
-X-Google-Smtp-Source: ABdhPJxcrgaM0+jksvAj+ymOWurbMF3Iu3XACvQ1HFwd1s+eyWrBBDZp4E8Lt2+ys8P75/it9t4z3t/JetwfAk2T0ps=
-X-Received: by 2002:a9d:65d5:: with SMTP id z21mr16663023oth.251.1605106104189;
- Wed, 11 Nov 2020 06:48:24 -0800 (PST)
+        id S1727046AbgKKOuB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 09:50:01 -0500
+Received: from mga09.intel.com ([134.134.136.24]:22874 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726274AbgKKOuA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Nov 2020 09:50:00 -0500
+IronPort-SDR: 1kBqAn7EfpgPGYUQ9WNbdmPq0Nhhw+bWO5h6cTqgv90y7LOx7P4Kbe53/W++sFlY/7uTowx9XX
+ P8rgUdvjNNtQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9801"; a="170319372"
+X-IronPort-AV: E=Sophos;i="5.77,469,1596524400"; 
+   d="scan'208";a="170319372"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Nov 2020 06:49:58 -0800
+IronPort-SDR: nszjxZ1WzIKc2Pxw8DQfnhz6/q/US7HaaQtNwKi7YUiH8A2/Sp/vYSp3/uZTbVyZVJHcDcMo/i
+ bKuURJmhd+sg==
+X-IronPort-AV: E=Sophos;i="5.77,469,1596524400"; 
+   d="scan'208";a="541828571"
+Received: from gliakhov-mobl2.ger.corp.intel.com (HELO ubuntu) ([10.252.49.146])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Nov 2020 06:49:56 -0800
+Date:   Wed, 11 Nov 2020 15:49:43 +0100
+From:   Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
+To:     Arnaud POULIQUEN <arnaud.pouliquen@st.com>
+Cc:     Mathieu Poirier <mathieu.poirier@linaro.org>,
+        "ohad@wizery.com" <ohad@wizery.com>,
+        "bjorn.andersson@linaro.org" <bjorn.andersson@linaro.org>,
+        "linux-remoteproc@vger.kernel.org" <linux-remoteproc@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v5 8/8] rpmsg: Turn name service into a stand alone driver
+Message-ID: <20201111144942.GA6403@ubuntu>
+References: <20201105225028.3058818-1-mathieu.poirier@linaro.org>
+ <20201105225028.3058818-9-mathieu.poirier@linaro.org>
+ <20201106131545.GA10889@ubuntu>
+ <20201106140028.GB10889@ubuntu>
+ <20201106175332.GB3203364@xps15>
+ <e7dedfb6-1e9c-4246-9db1-e14a2e16c68c@st.com>
+ <20201109102023.GA17692@ubuntu>
+ <20201109175536.GD3395222@xps15>
+ <eb7f6707-4483-3e1a-1e39-7f32fbf437e0@st.com>
 MIME-Version: 1.0
-References: <cover.1605046662.git.andreyknvl@google.com> <22c1a837d4d0c0b241a700c88f180f5e831a1953.1605046662.git.andreyknvl@google.com>
-In-Reply-To: <22c1a837d4d0c0b241a700c88f180f5e831a1953.1605046662.git.andreyknvl@google.com>
-From:   Marco Elver <elver@google.com>
-Date:   Wed, 11 Nov 2020 15:48:12 +0100
-Message-ID: <CANpmjNOLQm3Em4uNKyrFsxD4umr0M22XYzah7TOGaJaSYCZe1Q@mail.gmail.com>
-Subject: Re: [PATCH v2 12/20] kasan, mm: check kasan_enabled in annotations
-To:     Andrey Konovalov <andreyknvl@google.com>
-Cc:     Dmitry Vyukov <dvyukov@google.com>,
-        Alexander Potapenko <glider@google.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will.deacon@arm.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Evgenii Stepanov <eugenis@google.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Branislav Rankov <Branislav.Rankov@arm.com>,
-        Kevin Brodsky <kevin.brodsky@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <eb7f6707-4483-3e1a-1e39-7f32fbf437e0@st.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 10 Nov 2020 at 23:20, Andrey Konovalov <andreyknvl@google.com> wrote:
->
-> Declare the kasan_enabled static key in include/linux/kasan.h and in
-> include/linux/mm.h and check it in all kasan annotations. This allows to
-> avoid any slowdown caused by function calls when kasan_enabled is
-> disabled.
->
-> Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
-> Link: https://linux-review.googlesource.com/id/I2589451d3c96c97abbcbf714baabe6161c6f153e
-> ---
->  include/linux/kasan.h | 220 ++++++++++++++++++++++++++++++++----------
->  include/linux/mm.h    |  22 +++--
->  mm/kasan/common.c     |  60 ++++++------
->  3 files changed, 216 insertions(+), 86 deletions(-)
->
-> diff --git a/include/linux/kasan.h b/include/linux/kasan.h
-> index f1a5042ae4fc..779f8e703982 100644
-> --- a/include/linux/kasan.h
-> +++ b/include/linux/kasan.h
-> @@ -2,6 +2,7 @@
->  #ifndef _LINUX_KASAN_H
->  #define _LINUX_KASAN_H
->
-> +#include <linux/jump_label.h>
->  #include <linux/types.h>
->
->  struct kmem_cache;
-> @@ -74,56 +75,179 @@ static inline void kasan_disable_current(void) {}
->
->  #ifdef CONFIG_KASAN
->
-> -void kasan_alloc_pages(struct page *page, unsigned int order);
-> -void kasan_free_pages(struct page *page, unsigned int order);
-> +struct kasan_cache {
-> +       int alloc_meta_offset;
-> +       int free_meta_offset;
-> +};
->
-> -void kasan_cache_create(struct kmem_cache *cache, unsigned int *size,
-> -                       slab_flags_t *flags);
-> +#ifdef CONFIG_KASAN_HW_TAGS
-> +DECLARE_STATIC_KEY_FALSE(kasan_flag_enabled);
-> +static inline kasan_enabled(void)
+Hi Arnaud,
 
-These are missing types, as noticed by Andrew:
-https://marc.info/?l=linux-mm-commits&m=160505097028591&w=2
+On Tue, Nov 10, 2020 at 07:18:45PM +0100, Arnaud POULIQUEN wrote:
+> Hi Mathieu, Guennadi,
+> 
+> On 11/9/20 6:55 PM, Mathieu Poirier wrote:
+> > On Mon, Nov 09, 2020 at 11:20:24AM +0100, Guennadi Liakhovetski wrote:
+> >> Hi Arnaud,
+> >>
+> >> On Mon, Nov 09, 2020 at 09:48:37AM +0100, Arnaud POULIQUEN wrote:
+> >>> Hi Guennadi, Mathieu,
+> >>>
+> >>> On 11/6/20 6:53 PM, Mathieu Poirier wrote:
+> >>>> On Fri, Nov 06, 2020 at 03:00:28PM +0100, Guennadi Liakhovetski wrote:
+> >>>>> On Fri, Nov 06, 2020 at 02:15:45PM +0100, Guennadi Liakhovetski wrote:
+> >>>>>> Hi Mathieu, Arnaud,
+> >>>>>>
+> >>>>>> On Thu, Nov 05, 2020 at 03:50:28PM -0700, Mathieu Poirier wrote:
+> >>>>>>> From: Arnaud Pouliquen <arnaud.pouliquen@st.com>
+> >>>>>>>
+> >>>>>>> Make the RPMSG name service announcement a stand alone driver so that it
+> >>>>>>> can be reused by other subsystems.  It is also the first step in making the
+> >>>>>>> functionatlity transport independent, i.e that is not tied to virtIO.
+> >>>>>>
+> >>>>>> Sorry, I just realised that my testing was incomplete. I haven't tested 
+> >>>>>> automatic module loading and indeed it doesn't work. If rpmsg_ns is loaded 
+> >>>>>> it probes and it's working, but if it isn't loaded and instead the rpmsg 
+> >>>>>> bus driver is probed (e.g. virtio_rpmsg_bus), calling 
+> >>>>>> rpmsg_ns_register_device() to create a new rpmsg_ns device doesn't cause 
+> >>>>>> rpmsg_ns to be loaded.
+> >>>>>
+> >>>>> A simple fix for that is using MODULE_ALIAS("rpmsg:rpmsg_ns"); in rpmsg_ns.c 
+> >>>>> but that alone doesn't fix the problem completely - the module does load then 
+> >>>>> but not quickly enough, the NS announcement from the host / remote arrives 
+> >>>>> before rpmsg_ns has properly registered. I think the best solution would be 
+> >>>>> to link rpmsg_ns.c together with rpmsg_core.c. You'll probably want to keep 
+> >>>>> the module name, so you could rename them to just core.c and ns.c.
+> >>>>
+> >>>> I'm pretty sure it is because virtio_device_ready() in rpmsg_probe() is called
+> >>>> before the kernel has finished loading the name space driver.  There has to be
+> >>>> a way to prevent that from happening - I will investigate further.
+> >>>
+> >>> Right, no dependency is set so the rpmsg_ns driver is never probed...
+> >>> And  name service announcement messages are dropped if the service is not present.
+> >>
+> >> The mentioned change
+> >>
+> >> -MODULE_ALIAS("rpmsg_ns");
+> >> +MODULE_ALIAS("rpmsg:rpmsg_ns");
+> > 
+> > Yes, I'm good with that part.
+> > 
+> >>
+> >> is actually a compulsory fix, without it the driver doesn't even get loaded when 
+> >> a device id registered, using rpmsg_ns_register_device(). So this has to be done 
+> >> as a minimum *if* we keep RPNsg NS as a separate kernel module. However, that 
+> >> still doesn't fix the problem relyably because of timing. I've merged both the 
+> >> RPMsg core and NS into a single module, which fixed the issue for me. I'm 
+> >> appending a patch to this email, but since it's a "fixup" please, feel free to 
+> >> roll it into the original work. But thinking about it, even linking modules 
+> >> together doesn't guarantee the order. I think rpmsg_ns_register_device() should 
+> >> actually actively wait for NS device probing to finish - successfully or not. 
+> >> I can add a complete() / wait_for_completion() pair to the process if you like.
+> >>
+> > 
+> > Working with a completion is the kind of thing I had in mind.  But I would still
+> > like to keep the drivers separate and that's the part I need to think about.
+> 
+> I reproduce the problem: the rpmsg_ns might not be probed on first message reception.
+> What makes the fix not simple is that the virtio forces the virtio status to ready
+> after the probe of the virtio unit [1].
+> Set this status tiggs the remote processor first messages.
+> 
+> [1]https://elixir.bootlin.com/linux/latest/source/drivers/virtio/virtio.c#L253
+> 
+> Guennadi: I'm not sure that your patch will solve the problem , look like it just reduces the
+> delay between the rpmsg_virtio and the rpmsg_ns probe (the module loading time is saved)
 
-> +{
-> +       return static_branch_likely(&kasan_flag_enabled);
-> +}
+Right, as I mentioned in the email, that specific patch version only makes the
+race window smaller, but doesn't close it completely. However, I think, we could
+use a completion to close it fully, we discussed it with Mathieu and I think he
+is working on a solution ATM.
 
-I think this should be __always_inline, as not inlining is a bug.
+> Based on my observations, I can see two alternatives.
+> - rpmsg_ns.c is no longer an rpmsg driver but a kind of function library to manage a 
+> generic name service.
 
-Also, I believe that all the below wrappers need to become
-__always_inline, as we really cannot tolerate them not being inlined.
+Right, this is basically the current state of the virtio_rpmsg_bus.c driver. You'd 
+just need to make __rpmsg_create_ept() and rpmsg_ns_cb() global and generic.
 
-> +#else
-> +static inline kasan_enabled(void)
-> +{
-> +       return true;
-> +}
+> - we implement a completion as proposed by Mathieu. 
 
-(Some of these could be on 1 line, but I don't mind.)
+Exactly, this is the second option. And I think if we link NS with the rpmsg core 
+together (or use a different method to make sure it's loaded early), we can use 
+a completion to close the raice completely. And since the waiting and the completing 
+take place in the same NS driver, I think we can keep it quite simple. An updated 
+version of my earlier patch is below. Note, that it also fixes a memory leak in the 
+proposed NS implementation:
 
-> +#endif
+@@ -920,6 +920,7 @@ static int rpmsg_probe(struct virtio_device *vdev)
+ 	return 0;
+ 
+ free_coherent:
++	kfree(vch);
+ 	dma_free_coherent(vdev->dev.parent, total_buf_space,
+ 			  bufs_va, vrp->bufs_dma);
+ vqs_del:
 
-> -void kasan_unpoison_data(const void *address, size_t size);
-> -void kasan_unpoison_slab(const void *ptr);
-> +void __kasan_alloc_pages(struct page *page, unsigned int order);
-> +static inline void kasan_alloc_pages(struct page *page, unsigned int order)
-> +{
-> +       if (kasan_enabled())
-> +               __kasan_alloc_pages(page, order);
-> +}
->
-> -void kasan_poison_slab(struct page *page);
-> -void kasan_unpoison_object_data(struct kmem_cache *cache, void *object);
-> -void kasan_poison_object_data(struct kmem_cache *cache, void *object);
-> -void * __must_check kasan_init_slab_obj(struct kmem_cache *cache,
-> -                                       const void *object);
-> +void __kasan_free_pages(struct page *page, unsigned int order);
-> +static inline void kasan_free_pages(struct page *page, unsigned int order)
-> +{
-> +       if (kasan_enabled())
-> +               __kasan_free_pages(page, order);
-> +}
->
-> -void * __must_check kasan_kmalloc_large(const void *ptr, size_t size,
-> -                                               gfp_t flags);
-> -void kasan_kfree_large(void *ptr, unsigned long ip);
-> -void kasan_poison_kfree(void *ptr, unsigned long ip);
-> -void * __must_check kasan_kmalloc(struct kmem_cache *s, const void *object,
-> -                                       size_t size, gfp_t flags);
-> -void * __must_check kasan_krealloc(const void *object, size_t new_size,
-> -                                       gfp_t flags);
-> +void __kasan_cache_create(struct kmem_cache *cache, unsigned int *size,
-> +                               slab_flags_t *flags);
-> +static inline void kasan_cache_create(struct kmem_cache *cache,
-> +                       unsigned int *size, slab_flags_t *flags)
-> +{
-> +       if (kasan_enabled())
-> +               __kasan_cache_create(cache, size, flags);
-> +}
->
-> -void * __must_check kasan_slab_alloc(struct kmem_cache *s, void *object,
-> -                                       gfp_t flags);
-> -bool kasan_slab_free(struct kmem_cache *s, void *object, unsigned long ip);
-> +size_t __kasan_metadata_size(struct kmem_cache *cache);
-> +static inline size_t kasan_metadata_size(struct kmem_cache *cache)
-> +{
-> +       if (kasan_enabled())
-> +               return __kasan_metadata_size(cache);
-> +       return 0;
-> +}
->
-> -struct kasan_cache {
-> -       int alloc_meta_offset;
-> -       int free_meta_offset;
-> -};
-> +void __kasan_unpoison_data(const void *addr, size_t size);
-> +static inline void kasan_unpoison_data(const void *addr, size_t size)
-> +{
-> +       if (kasan_enabled())
-> +               __kasan_unpoison_data(addr, size);
-> +}
-> +
-> +void __kasan_unpoison_slab(const void *ptr);
-> +static inline void kasan_unpoison_slab(const void *ptr)
-> +{
-> +       if (kasan_enabled())
-> +               __kasan_unpoison_slab(ptr);
-> +}
-> +
-> +void __kasan_poison_slab(struct page *page);
-> +static inline void kasan_poison_slab(struct page *page)
-> +{
-> +       if (kasan_enabled())
-> +               return __kasan_poison_slab(page);
-> +}
-> +
-> +void __kasan_unpoison_object_data(struct kmem_cache *cache, void *object);
-> +static inline void kasan_unpoison_object_data(struct kmem_cache *cache, void *object)
-> +{
-> +       if (kasan_enabled())
-> +               return __kasan_unpoison_object_data(cache, object);
-> +}
-> +
-> +void __kasan_poison_object_data(struct kmem_cache *cache, void *object);
-> +static inline void kasan_poison_object_data(struct kmem_cache *cache, void *object)
-> +{
-> +       if (kasan_enabled())
-> +               __kasan_poison_object_data(cache, object);
-> +}
-> +
-> +void * __must_check __kasan_init_slab_obj(struct kmem_cache *cache,
-> +                                         const void *object);
-> +static inline void * __must_check kasan_init_slab_obj(struct kmem_cache *cache,
-> +                                                     const void *object)
-> +{
-> +       if (kasan_enabled())
-> +               return __kasan_init_slab_obj(cache, object);
-> +       return (void *)object;
-> +}
-> +
-> +bool __kasan_slab_free(struct kmem_cache *s, void *object, unsigned long ip);
-> +static inline bool kasan_slab_free(struct kmem_cache *s, void *object, unsigned long ip)
-> +{
-> +       if (kasan_enabled())
-> +               return __kasan_slab_free(s, object, ip);
-> +       return false;
-> +}
-> +
-> +void * __must_check __kasan_slab_alloc(struct kmem_cache *s,
-> +                                      void *object, gfp_t flags);
-> +static inline void * __must_check kasan_slab_alloc(struct kmem_cache *s,
-> +                                                  void *object, gfp_t flags)
-> +{
-> +       if (kasan_enabled())
-> +               return __kasan_slab_alloc(s, object, flags);
-> +       return object;
-> +}
->
-> -size_t kasan_metadata_size(struct kmem_cache *cache);
-> +void * __must_check __kasan_kmalloc(struct kmem_cache *s, const void *object,
-> +                                   size_t size, gfp_t flags);
-> +static inline void * __must_check kasan_kmalloc(struct kmem_cache *s, const void *object,
-> +                                               size_t size, gfp_t flags)
-> +{
-> +       if (kasan_enabled())
-> +               return __kasan_kmalloc(s, object, size, flags);
-> +       return (void *)object;
-> +}
-> +
-> +void * __must_check __kasan_kmalloc_large(const void *ptr,
-> +                                         size_t size, gfp_t flags);
-> +static inline void * __must_check kasan_kmalloc_large(const void *ptr,
-> +                                                     size_t size, gfp_t flags)
-> +{
-> +       if (kasan_enabled())
-> +               return __kasan_kmalloc_large(ptr, size, flags);
-> +       return (void *)ptr;
-> +}
-> +
-> +void * __must_check __kasan_krealloc(const void *object,
-> +                                    size_t new_size, gfp_t flags);
-> +static inline void * __must_check kasan_krealloc(const void *object,
-> +                                                size_t new_size, gfp_t flags)
-> +{
-> +       if (kasan_enabled())
-> +               return __kasan_krealloc(object, new_size, flags);
-> +       return (void *)object;
-> +}
-> +
-> +void __kasan_poison_kfree(void *ptr, unsigned long ip);
-> +static inline void kasan_poison_kfree(void *ptr, unsigned long ip)
-> +{
-> +       if (kasan_enabled())
-> +               __kasan_poison_kfree(ptr, ip);
-> +}
-> +
-> +void __kasan_kfree_large(void *ptr, unsigned long ip);
-> +static inline void kasan_kfree_large(void *ptr, unsigned long ip)
-> +{
-> +       if (kasan_enabled())
-> +               __kasan_kfree_large(ptr, ip);
-> +}
->
->  bool kasan_save_enable_multi_shot(void);
->  void kasan_restore_multi_shot(bool enabled);
->
->  #else /* CONFIG_KASAN */
->
-> +static inline kasan_enabled(void)
-> +{
-> +       return false;
-> +}
->  static inline void kasan_alloc_pages(struct page *page, unsigned int order) {}
->  static inline void kasan_free_pages(struct page *page, unsigned int order) {}
-> -
->  static inline void kasan_cache_create(struct kmem_cache *cache,
->                                       unsigned int *size,
->                                       slab_flags_t *flags) {}
-> -
-> -static inline void kasan_unpoison_data(const void *address, size_t size) { }
-> -static inline void kasan_unpoison_slab(const void *ptr) { }
-> -
-> +static inline size_t kasan_metadata_size(struct kmem_cache *cache) { return 0; }
-> +static inline void kasan_unpoison_data(const void *address, size_t size) {}
-> +static inline void kasan_unpoison_slab(const void *ptr) {}
->  static inline void kasan_poison_slab(struct page *page) {}
->  static inline void kasan_unpoison_object_data(struct kmem_cache *cache,
->                                         void *object) {}
-> @@ -134,36 +258,32 @@ static inline void *kasan_init_slab_obj(struct kmem_cache *cache,
->  {
->         return (void *)object;
->  }
-> -
-> -static inline void *kasan_kmalloc_large(void *ptr, size_t size, gfp_t flags)
-> +static inline bool kasan_slab_free(struct kmem_cache *s, void *object,
-> +                                  unsigned long ip)
->  {
-> -       return ptr;
-> +       return false;
-> +}
-> +static inline void *kasan_slab_alloc(struct kmem_cache *s, void *object,
-> +                                  gfp_t flags)
-> +{
-> +       return object;
->  }
-> -static inline void kasan_kfree_large(void *ptr, unsigned long ip) {}
-> -static inline void kasan_poison_kfree(void *ptr, unsigned long ip) {}
->  static inline void *kasan_kmalloc(struct kmem_cache *s, const void *object,
->                                 size_t size, gfp_t flags)
->  {
->         return (void *)object;
->  }
-> +static inline void *kasan_kmalloc_large(const void *ptr, size_t size, gfp_t flags)
-> +{
-> +       return (void *)ptr;
-> +}
->  static inline void *kasan_krealloc(const void *object, size_t new_size,
->                                  gfp_t flags)
->  {
->         return (void *)object;
->  }
-> -
-> -static inline void *kasan_slab_alloc(struct kmem_cache *s, void *object,
-> -                                  gfp_t flags)
-> -{
-> -       return object;
-> -}
-> -static inline bool kasan_slab_free(struct kmem_cache *s, void *object,
-> -                                  unsigned long ip)
-> -{
-> -       return false;
-> -}
-> -
-> -static inline size_t kasan_metadata_size(struct kmem_cache *cache) { return 0; }
-> +static inline void kasan_poison_kfree(void *ptr, unsigned long ip) {}
-> +static inline void kasan_kfree_large(void *ptr, unsigned long ip) {}
->
->  #endif /* CONFIG_KASAN */
->
-> diff --git a/include/linux/mm.h b/include/linux/mm.h
-> index 0793d03a4183..8d84a6b2fa3c 100644
-> --- a/include/linux/mm.h
-> +++ b/include/linux/mm.h
-> @@ -31,6 +31,7 @@
->  #include <linux/sizes.h>
->  #include <linux/sched.h>
->  #include <linux/pgtable.h>
-> +#include <linux/kasan.h>
->
->  struct mempolicy;
->  struct anon_vma;
-> @@ -1414,22 +1415,30 @@ static inline bool cpupid_match_pid(struct task_struct *task, int cpupid)
->  #endif /* CONFIG_NUMA_BALANCING */
->
->  #if defined(CONFIG_KASAN_SW_TAGS) || defined(CONFIG_KASAN_HW_TAGS)
-> +
->  static inline u8 page_kasan_tag(const struct page *page)
->  {
-> -       return (page->flags >> KASAN_TAG_PGSHIFT) & KASAN_TAG_MASK;
-> +       if (kasan_enabled())
-> +               return (page->flags >> KASAN_TAG_PGSHIFT) & KASAN_TAG_MASK;
-> +       return 0xff;
->  }
->
->  static inline void page_kasan_tag_set(struct page *page, u8 tag)
->  {
-> -       page->flags &= ~(KASAN_TAG_MASK << KASAN_TAG_PGSHIFT);
-> -       page->flags |= (tag & KASAN_TAG_MASK) << KASAN_TAG_PGSHIFT;
-> +       if (kasan_enabled()) {
-> +               page->flags &= ~(KASAN_TAG_MASK << KASAN_TAG_PGSHIFT);
-> +               page->flags |= (tag & KASAN_TAG_MASK) << KASAN_TAG_PGSHIFT;
-> +       }
->  }
->
->  static inline void page_kasan_tag_reset(struct page *page)
->  {
-> -       page_kasan_tag_set(page, 0xff);
-> +       if (kasan_enabled())
-> +               page_kasan_tag_set(page, 0xff);
->  }
-> -#else
-> +
-> +#else /* CONFIG_KASAN_SW_TAGS || CONFIG_KASAN_HW_TAGS */
-> +
->  static inline u8 page_kasan_tag(const struct page *page)
->  {
->         return 0xff;
-> @@ -1437,7 +1446,8 @@ static inline u8 page_kasan_tag(const struct page *page)
->
->  static inline void page_kasan_tag_set(struct page *page, u8 tag) { }
->  static inline void page_kasan_tag_reset(struct page *page) { }
-> -#endif
-> +
-> +#endif /* CONFIG_KASAN_SW_TAGS || CONFIG_KASAN_HW_TAGS */
->
->  static inline struct zone *page_zone(const struct page *page)
->  {
-> diff --git a/mm/kasan/common.c b/mm/kasan/common.c
-> index efad5ed6a3bd..385863eaec2c 100644
-> --- a/mm/kasan/common.c
-> +++ b/mm/kasan/common.c
-> @@ -81,7 +81,7 @@ asmlinkage void kasan_unpoison_task_stack_below(const void *watermark)
->  }
->  #endif /* CONFIG_KASAN_STACK */
->
-> -void kasan_alloc_pages(struct page *page, unsigned int order)
-> +void __kasan_alloc_pages(struct page *page, unsigned int order)
->  {
->         u8 tag;
->         unsigned long i;
-> @@ -95,7 +95,7 @@ void kasan_alloc_pages(struct page *page, unsigned int order)
->         kasan_unpoison_memory(page_address(page), PAGE_SIZE << order);
->  }
->
-> -void kasan_free_pages(struct page *page, unsigned int order)
-> +void __kasan_free_pages(struct page *page, unsigned int order)
->  {
->         if (likely(!PageHighMem(page)))
->                 kasan_poison_memory(page_address(page),
-> @@ -122,8 +122,8 @@ static inline unsigned int optimal_redzone(unsigned int object_size)
->                 object_size <= (1 << 16) - 1024 ? 1024 : 2048;
->  }
->
-> -void kasan_cache_create(struct kmem_cache *cache, unsigned int *size,
-> -                       slab_flags_t *flags)
-> +void __kasan_cache_create(struct kmem_cache *cache, unsigned int *size,
-> +                         slab_flags_t *flags)
->  {
->         unsigned int orig_size = *size;
->         unsigned int redzone_size;
-> @@ -168,7 +168,7 @@ void kasan_cache_create(struct kmem_cache *cache, unsigned int *size,
->         *flags |= SLAB_KASAN;
->  }
->
-> -size_t kasan_metadata_size(struct kmem_cache *cache)
-> +size_t __kasan_metadata_size(struct kmem_cache *cache)
->  {
->         if (!kasan_stack_collection_enabled())
->                 return 0;
-> @@ -191,17 +191,17 @@ struct kasan_free_meta *kasan_get_free_meta(struct kmem_cache *cache,
->         return kasan_reset_tag(object) + cache->kasan_info.free_meta_offset;
->  }
->
-> -void kasan_unpoison_data(const void *address, size_t size)
-> +void __kasan_unpoison_data(const void *addr, size_t size)
->  {
-> -       kasan_unpoison_memory(address, size);
-> +       kasan_unpoison_memory(addr, size);
->  }
->
-> -void kasan_unpoison_slab(const void *ptr)
-> +void __kasan_unpoison_slab(const void *ptr)
->  {
->         kasan_unpoison_memory(ptr, __ksize(ptr));
->  }
->
-> -void kasan_poison_slab(struct page *page)
-> +void __kasan_poison_slab(struct page *page)
->  {
->         unsigned long i;
->
-> @@ -211,12 +211,12 @@ void kasan_poison_slab(struct page *page)
->                         KASAN_KMALLOC_REDZONE);
->  }
->
-> -void kasan_unpoison_object_data(struct kmem_cache *cache, void *object)
-> +void __kasan_unpoison_object_data(struct kmem_cache *cache, void *object)
->  {
->         kasan_unpoison_memory(object, cache->object_size);
->  }
->
-> -void kasan_poison_object_data(struct kmem_cache *cache, void *object)
-> +void __kasan_poison_object_data(struct kmem_cache *cache, void *object)
->  {
->         kasan_poison_memory(object,
->                         round_up(cache->object_size, KASAN_GRANULE_SIZE),
-> @@ -269,7 +269,7 @@ static u8 assign_tag(struct kmem_cache *cache, const void *object,
->  #endif
->  }
->
-> -void * __must_check kasan_init_slab_obj(struct kmem_cache *cache,
-> +void * __must_check __kasan_init_slab_obj(struct kmem_cache *cache,
->                                                 const void *object)
->  {
->         struct kasan_alloc_meta *alloc_meta;
-> @@ -288,7 +288,7 @@ void * __must_check kasan_init_slab_obj(struct kmem_cache *cache,
->         return (void *)object;
->  }
->
-> -static bool __kasan_slab_free(struct kmem_cache *cache, void *object,
-> +static bool ____kasan_slab_free(struct kmem_cache *cache, void *object,
->                               unsigned long ip, bool quarantine)
->  {
->         u8 tag;
-> @@ -331,9 +331,9 @@ static bool __kasan_slab_free(struct kmem_cache *cache, void *object,
->         return IS_ENABLED(CONFIG_KASAN_GENERIC);
->  }
->
-> -bool kasan_slab_free(struct kmem_cache *cache, void *object, unsigned long ip)
-> +bool __kasan_slab_free(struct kmem_cache *cache, void *object, unsigned long ip)
->  {
-> -       return __kasan_slab_free(cache, object, ip, true);
-> +       return ____kasan_slab_free(cache, object, ip, true);
->  }
->
->  static void set_alloc_info(struct kmem_cache *cache, void *object, gfp_t flags)
-> @@ -341,7 +341,7 @@ static void set_alloc_info(struct kmem_cache *cache, void *object, gfp_t flags)
->         kasan_set_track(&kasan_get_alloc_meta(cache, object)->alloc_track, flags);
->  }
->
-> -static void *__kasan_kmalloc(struct kmem_cache *cache, const void *object,
-> +static void *____kasan_kmalloc(struct kmem_cache *cache, const void *object,
->                                 size_t size, gfp_t flags, bool keep_tag)
->  {
->         unsigned long redzone_start;
-> @@ -373,20 +373,20 @@ static void *__kasan_kmalloc(struct kmem_cache *cache, const void *object,
->         return set_tag(object, tag);
->  }
->
-> -void * __must_check kasan_slab_alloc(struct kmem_cache *cache, void *object,
-> -                                       gfp_t flags)
-> +void * __must_check __kasan_slab_alloc(struct kmem_cache *cache,
-> +                                       void *object, gfp_t flags)
->  {
-> -       return __kasan_kmalloc(cache, object, cache->object_size, flags, false);
-> +       return ____kasan_kmalloc(cache, object, cache->object_size, flags, false);
->  }
->
-> -void * __must_check kasan_kmalloc(struct kmem_cache *cache, const void *object,
-> -                               size_t size, gfp_t flags)
-> +void * __must_check __kasan_kmalloc(struct kmem_cache *cache, const void *object,
-> +                                       size_t size, gfp_t flags)
->  {
-> -       return __kasan_kmalloc(cache, object, size, flags, true);
-> +       return ____kasan_kmalloc(cache, object, size, flags, true);
->  }
-> -EXPORT_SYMBOL(kasan_kmalloc);
-> +EXPORT_SYMBOL(__kasan_kmalloc);
->
-> -void * __must_check kasan_kmalloc_large(const void *ptr, size_t size,
-> +void * __must_check __kasan_kmalloc_large(const void *ptr, size_t size,
->                                                 gfp_t flags)
->  {
->         struct page *page;
-> @@ -411,7 +411,7 @@ void * __must_check kasan_kmalloc_large(const void *ptr, size_t size,
->         return (void *)ptr;
->  }
->
-> -void * __must_check kasan_krealloc(const void *object, size_t size, gfp_t flags)
-> +void * __must_check __kasan_krealloc(const void *object, size_t size, gfp_t flags)
->  {
->         struct page *page;
->
-> @@ -421,13 +421,13 @@ void * __must_check kasan_krealloc(const void *object, size_t size, gfp_t flags)
->         page = virt_to_head_page(object);
->
->         if (unlikely(!PageSlab(page)))
-> -               return kasan_kmalloc_large(object, size, flags);
-> +               return __kasan_kmalloc_large(object, size, flags);
->         else
-> -               return __kasan_kmalloc(page->slab_cache, object, size,
-> +               return ____kasan_kmalloc(page->slab_cache, object, size,
->                                                 flags, true);
->  }
->
-> -void kasan_poison_kfree(void *ptr, unsigned long ip)
-> +void __kasan_poison_kfree(void *ptr, unsigned long ip)
->  {
->         struct page *page;
->
-> @@ -440,11 +440,11 @@ void kasan_poison_kfree(void *ptr, unsigned long ip)
->                 }
->                 kasan_poison_memory(ptr, page_size(page), KASAN_FREE_PAGE);
->         } else {
-> -               __kasan_slab_free(page->slab_cache, ptr, ip, false);
-> +               ____kasan_slab_free(page->slab_cache, ptr, ip, false);
->         }
->  }
->
-> -void kasan_kfree_large(void *ptr, unsigned long ip)
-> +void __kasan_kfree_large(void *ptr, unsigned long ip)
->  {
->         if (ptr != page_address(virt_to_head_page(ptr)))
->                 kasan_report_invalid_free(ptr, ip);
-> --
-> 2.29.2.222.g5d2a92d10f8-goog
->
+Thanks
+Guennadi
+
+> I tried this second solution based on the component bind mechanism. 
+> I added the patch at the end of the mail (the patch is a POC, so not ready for upstream). 
+> Maybe something simpler is possible. I'm just keeping in mind that we may have to add similar
+> services in the future.
+> 
+> Regards,
+> Arnaud
+
+From: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
+Subject: [PATCH] fixup! rpmsg: Turn name service into a stand alone driver
+
+Link ns.c with core.c together to guarantee immediate probing.
+
+Signed-off-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
+---
+ drivers/rpmsg/Makefile                        |  2 +-
+ drivers/rpmsg/{rpmsg_core.c => core.c}        | 13 +++--
+ drivers/rpmsg/{rpmsg_ns.c => ns.c}            | 49 ++++++++++++++-----
+ drivers/rpmsg/virtio_rpmsg_bus.c              |  5 +-
+ include/linux/rpmsg.h                         |  4 +-
+ .../{rpmsg_byteorder.h => rpmsg/byteorder.h}  |  0
+ include/linux/{rpmsg_ns.h => rpmsg/ns.h}      | 16 +++---
+ 7 files changed, 61 insertions(+), 28 deletions(-)
+ rename drivers/rpmsg/{rpmsg_core.c => core.c} (99%)
+ rename drivers/rpmsg/{rpmsg_ns.c => ns.c} (76%)
+ rename include/linux/{rpmsg_byteorder.h => rpmsg/byteorder.h} (100%)
+ rename include/linux/{rpmsg_ns.h => rpmsg/ns.h} (82%)
+
+diff --git a/drivers/rpmsg/Makefile b/drivers/rpmsg/Makefile
+index 8d452656f0ee..5aa79e167372 100644
+--- a/drivers/rpmsg/Makefile
++++ b/drivers/rpmsg/Makefile
+@@ -1,7 +1,7 @@
+ # SPDX-License-Identifier: GPL-2.0
++rpmsg_core-objs			:= core.o ns.o
+ obj-$(CONFIG_RPMSG)		+= rpmsg_core.o
+ obj-$(CONFIG_RPMSG_CHAR)	+= rpmsg_char.o
+-obj-$(CONFIG_RPMSG_NS)		+= rpmsg_ns.o
+ obj-$(CONFIG_RPMSG_MTK_SCP)	+= mtk_rpmsg.o
+ qcom_glink-objs			:= qcom_glink_native.o qcom_glink_ssr.o
+ obj-$(CONFIG_RPMSG_QCOM_GLINK) += qcom_glink.o
+diff --git a/drivers/rpmsg/rpmsg_core.c b/drivers/rpmsg/core.c
+similarity index 99%
+rename from drivers/rpmsg/rpmsg_core.c
+rename to drivers/rpmsg/core.c
+index 6381c1e00741..0c622cced804 100644
+--- a/drivers/rpmsg/rpmsg_core.c
++++ b/drivers/rpmsg/core.c
+@@ -14,6 +14,7 @@
+ #include <linux/kernel.h>
+ #include <linux/module.h>
+ #include <linux/rpmsg.h>
++#include <linux/rpmsg/ns.h>
+ #include <linux/of_device.h>
+ #include <linux/pm_domain.h>
+ #include <linux/slab.h>
+@@ -625,21 +626,27 @@ void unregister_rpmsg_driver(struct rpmsg_driver *rpdrv)
+ }
+ EXPORT_SYMBOL(unregister_rpmsg_driver);
+ 
+-
+ static int __init rpmsg_init(void)
+ {
+ 	int ret;
+ 
+ 	ret = bus_register(&rpmsg_bus);
+-	if (ret)
++	if (ret) {
+ 		pr_err("failed to register rpmsg bus: %d\n", ret);
++		return ret;
++	}
++
++	ret = rpmsg_ns_init();
++	if (ret)
++		bus_unregister(&rpmsg_bus);
+ 
+ 	return ret;
+ }
+ postcore_initcall(rpmsg_init);
+ 
+-static void __exit rpmsg_fini(void)
++static void rpmsg_fini(void)
+ {
++	rpmsg_ns_exit();
+ 	bus_unregister(&rpmsg_bus);
+ }
+ module_exit(rpmsg_fini);
+diff --git a/drivers/rpmsg/rpmsg_ns.c b/drivers/rpmsg/ns.c
+similarity index 76%
+rename from drivers/rpmsg/rpmsg_ns.c
+rename to drivers/rpmsg/ns.c
+index 8e26824ca328..86c011bfb62f 100644
+--- a/drivers/rpmsg/rpmsg_ns.c
++++ b/drivers/rpmsg/ns.c
+@@ -2,15 +2,47 @@
+ /*
+  * Copyright (C) STMicroelectronics 2020 - All Rights Reserved
+  */
++#include <linux/completion.h>
+ #include <linux/device.h>
++#include <linux/export.h>
+ #include <linux/kernel.h>
+ #include <linux/module.h>
+-#include <linux/slab.h>
+ #include <linux/rpmsg.h>
+-#include <linux/rpmsg_ns.h>
++#include <linux/rpmsg/ns.h>
++#include <linux/slab.h>
+ 
+ #include "rpmsg_internal.h"
+ 
++int rpmsg_ns_register_device(struct rpmsg_device *rpdev)
++{
++	int ret;
++
++	strcpy(rpdev->id.name, "rpmsg_ns");
++	rpdev->driver_override = "rpmsg_ns";
++	rpdev->src = RPMSG_NS_ADDR;
++	rpdev->dst = RPMSG_NS_ADDR;
++
++	ret = rpmsg_register_device(rpdev);
++	if (ret < 0)
++		return ret;
++
++	if (!wait_for_completion_timeout(&rpdev->ns_ready,
++					 msecs_to_jiffies(1))) {
++		struct rpmsg_channel_info info = {
++			.name = "rpmsg_ns",
++			.src = rpdev->src,
++			.dst = rpdev->dst,
++		};
++
++		rpmsg_unregister_device(rpdev->dev.parent, &info);
++
++		return -ETIMEDOUT;
++	}
++
++	return 0;
++}
++EXPORT_SYMBOL(rpmsg_ns_register_device);
++
+ /* invoked when a name service announcement arrives */
+ static int rpmsg_ns_cb(struct rpmsg_device *rpdev, void *data, int len,
+ 		       void *priv, u32 src)
+@@ -76,6 +108,8 @@ static int rpmsg_ns_probe(struct rpmsg_device *rpdev)
+ 	}
+ 	rpdev->ept = ns_ept;
+ 
++	complete(&rpdev->ns_ready);
++
+ 	return 0;
+ }
+ 
+@@ -84,7 +118,7 @@ static struct rpmsg_driver rpmsg_ns_driver = {
+ 	.probe = rpmsg_ns_probe,
+ };
+ 
+-static int rpmsg_ns_init(void)
++int rpmsg_ns_init(void)
+ {
+ 	int ret;
+ 
+@@ -94,15 +128,8 @@ static int rpmsg_ns_init(void)
+ 
+ 	return ret;
+ }
+-postcore_initcall(rpmsg_ns_init);
+ 
+-static void rpmsg_ns_exit(void)
++void rpmsg_ns_exit(void)
+ {
+ 	unregister_rpmsg_driver(&rpmsg_ns_driver);
+ }
+-module_exit(rpmsg_ns_exit);
+-
+-MODULE_DESCRIPTION("Name service announcement rpmsg Driver");
+-MODULE_AUTHOR("Arnaud Pouliquen <arnaud.pouliquen@st.com>");
+-MODULE_ALIAS("rpmsg_ns");
+-MODULE_LICENSE("GPL v2");
+diff --git a/drivers/rpmsg/virtio_rpmsg_bus.c b/drivers/rpmsg/virtio_rpmsg_bus.c
+index 10a16be986fc..fdf00cc5f57f 100644
+--- a/drivers/rpmsg/virtio_rpmsg_bus.c
++++ b/drivers/rpmsg/virtio_rpmsg_bus.c
+@@ -19,8 +19,8 @@
+ #include <linux/mutex.h>
+ #include <linux/of_device.h>
+ #include <linux/rpmsg.h>
+-#include <linux/rpmsg_byteorder.h>
+-#include <linux/rpmsg_ns.h>
++#include <linux/rpmsg/byteorder.h>
++#include <linux/rpmsg/ns.h>
+ #include <linux/rpmsg/virtio.h>
+ #include <linux/scatterlist.h>
+ #include <linux/slab.h>
+@@ -920,6 +920,7 @@ static int rpmsg_probe(struct virtio_device *vdev)
+ 	return 0;
+ 
+ free_coherent:
++	kfree(vch);
+ 	dma_free_coherent(vdev->dev.parent, total_buf_space,
+ 			  bufs_va, vrp->bufs_dma);
+ vqs_del:
+diff --git a/include/linux/rpmsg.h b/include/linux/rpmsg.h
+index 8ee1b1dab657..71fd15ada5c0 100644
+--- a/include/linux/rpmsg.h
++++ b/include/linux/rpmsg.h
+@@ -10,6 +10,7 @@
+ #ifndef _LINUX_RPMSG_H
+ #define _LINUX_RPMSG_H
+ 
++#include <linux/completion.h>
+ #include <linux/types.h>
+ #include <linux/device.h>
+ #include <linux/err.h>
+@@ -17,7 +18,7 @@
+ #include <linux/kref.h>
+ #include <linux/mutex.h>
+ #include <linux/poll.h>
+-#include <linux/rpmsg_byteorder.h>
++#include <linux/rpmsg/byteorder.h>
+ 
+ #define RPMSG_ADDR_ANY		0xFFFFFFFF
+ 
+@@ -58,6 +59,7 @@ struct rpmsg_device {
+ 	struct rpmsg_endpoint *ept;
+ 	bool announce;
+ 	bool little_endian;
++	struct completion ns_ready;
+ 
+ 	const struct rpmsg_device_ops *ops;
+ };
+diff --git a/include/linux/rpmsg_byteorder.h b/include/linux/rpmsg/byteorder.h
+similarity index 100%
+rename from include/linux/rpmsg_byteorder.h
+rename to include/linux/rpmsg/byteorder.h
+diff --git a/include/linux/rpmsg_ns.h b/include/linux/rpmsg/ns.h
+similarity index 82%
+rename from include/linux/rpmsg_ns.h
+rename to include/linux/rpmsg/ns.h
+index 42786bb759b5..2499db0c8c3d 100644
+--- a/include/linux/rpmsg_ns.h
++++ b/include/linux/rpmsg/ns.h
+@@ -4,8 +4,9 @@
+ #define _LINUX_RPMSG_NS_H
+ 
+ #include <linux/mod_devicetable.h>
++#include <linux/rpmsg.h>
++#include <linux/rpmsg/byteorder.h>
+ #include <linux/types.h>
+-#include <linux/rpmsg_byteorder.h>
+ 
+ /**
+  * struct rpmsg_ns_msg - dynamic name service announcement message
+@@ -46,14 +47,9 @@ enum rpmsg_ns_flags {
+  * This function wraps rpmsg_register_device() preparing the rpdev for use as
+  * basis for the rpmsg name service device.
+  */
+-static inline int rpmsg_ns_register_device(struct rpmsg_device *rpdev)
+-{
+-       strcpy(rpdev->id.name, "rpmsg_ns");
+-       rpdev->driver_override = "rpmsg_ns";
+-       rpdev->src = RPMSG_NS_ADDR;
+-       rpdev->dst = RPMSG_NS_ADDR;
+-
+-       return rpmsg_register_device(rpdev);
+-}
++int rpmsg_ns_register_device(struct rpmsg_device *rpdev);
++
++int rpmsg_ns_init(void);
++void rpmsg_ns_exit(void);
+ 
+ #endif
+-- 
+2.28.0
+
