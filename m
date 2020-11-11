@@ -2,156 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93E022AF9CF
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 21:32:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 251802AF9D3
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 21:35:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726479AbgKKUcA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 15:32:00 -0500
-Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:12148 "EHLO
-        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725860AbgKKUb7 (ORCPT
+        id S1726497AbgKKUft (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 15:35:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34908 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725971AbgKKUft (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 15:31:59 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5fac4a390000>; Wed, 11 Nov 2020 12:31:54 -0800
-Received: from [10.26.72.124] (10.124.1.5) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 11 Nov
- 2020 20:31:56 +0000
-Subject: Re: [PATCH] ARM: tegra: Populate OPP table for Tegra20 Ventana
-To:     Dmitry Osipenko <digetx@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Thierry Reding <thierry.reding@gmail.com>
-CC:     <devicetree@vger.kernel.org>, <linux-tegra@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <stable@vger.kernel.org>
-References: <20201111103847.152721-1-jonathanh@nvidia.com>
- <7e40cd3e-7c34-c9a9-bf00-ba7d507a2d6b@gmail.com>
-From:   Jon Hunter <jonathanh@nvidia.com>
-Message-ID: <5409bbb4-d3f9-ccc9-ac3e-6344975bd58e@nvidia.com>
-Date:   Wed, 11 Nov 2020 20:31:54 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Wed, 11 Nov 2020 15:35:49 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2AD89C0613D1
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 12:35:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=dgXCjKGBt/mXh3REDlqg6FKMBu6tSua5dmepdSOWDrM=; b=VbHl+v+/u33GvlwUFPvaAQtuwL
+        dYui/9xqmyT9GsUJOc9yuKurvmJIUpVYMBExMtV9pKHCwTkBddJXyDSf3OUeIXJsub18gT6XPyMEv
+        gD3FjOeO8pzzT8PVi4Ke1ikRNGphJCpJ/sqQ0MVUsLlDLq709PDEoOcg4SB1iQkQmc+0ajmX7sxXV
+        YVl/Oj5MCpIpuhpwZGEiKUsxZPwi/dsX4svAhp83SxNWymJQEGMMJD5irq25eMn0fEcJccQL01avt
+        R+E671rPZd9dTWsLRlDRk+iEy+zTJtY/RCBeKmCEQ2UCGpvNnLGNlv8JBfyhi9EHs+JSVyaj1UU0e
+        lA159UWA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kcwqB-0007pb-7D; Wed, 11 Nov 2020 20:35:40 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 18A9D301A42;
+        Wed, 11 Nov 2020 21:35:38 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id F3F772BCE962A; Wed, 11 Nov 2020 21:35:37 +0100 (CET)
+Date:   Wed, 11 Nov 2020 21:35:37 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Josh Poimboeuf <jpoimboe@redhat.com>
+Cc:     Andrew Cooper <andrew.cooper3@citrix.com>,
+        Shinichiro Kawasaki <shinichiro.kawasaki@wdc.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Damien Le Moal <Damien.LeMoal@wdc.com>, jgross@suse.com,
+        x86@kernel.org
+Subject: Re: WARNING: can't access registers at asm_common_interrupt
+Message-ID: <20201111203537.GO2628@hirez.programming.kicks-ass.net>
+References: <20201106060414.edtcb7nrbzm4a32t@shindev.dhcp.fujisawa.hgst.com>
+ <20201111170536.arx2zbn4ngvjoov7@treble>
+ <20201111174736.GH2628@hirez.programming.kicks-ass.net>
+ <20201111181328.mbxcz2uap2vnqpxq@treble>
+ <33843b7f-ed8a-8fcb-19bc-c76cf00f453d@citrix.com>
+ <20201111194206.GK2628@hirez.programming.kicks-ass.net>
+ <20201111195900.2x7kfce2ejkmrzi3@treble>
+ <20201111200730.GM2628@hirez.programming.kicks-ass.net>
+ <20201111201506.bftpmx4svxn376tn@treble>
 MIME-Version: 1.0
-In-Reply-To: <7e40cd3e-7c34-c9a9-bf00-ba7d507a2d6b@gmail.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-X-Originating-IP: [10.124.1.5]
-X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
- HQMAIL107.nvidia.com (172.20.187.13)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1605126714; bh=9ANYYF/RxveGkqEmqPgH2v4yk5gp3dxoJ5KwqVgeNXk=;
-        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
-         MIME-Version:In-Reply-To:Content-Type:Content-Language:
-         Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy;
-        b=QRdEF8pyuNFSyj2A/dP5cEdifzrb47G+YbmVyV9ebe3BPshIkrNQ8q/QMbJk/Bjs/
-         7ye0VNn8nwekRC6yCNvm/Ts7VlJSfHQ/prp/CVZzgiAvDfnw/qonBCe652kVFw5xuD
-         xFMXCBmtAApNt+RDL45VBoEiOk/sW0gD9sSsRou1B3I3/c4jOJQo1uyvcIgiHzTYr6
-         5nOE6PjtSSKYECrL1a0GfVqwx8Rymfi/AsB2g0JaPcIVuu8fBs4F7aWvG5eAAZwFmk
-         xbGXV4+YkDh9o2XlzF7tOQIxPZ1U8ogcURs4NdwOarQjLi0UenVuRnCmmNmbZaZKQs
-         2ILS1OgganO5g==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201111201506.bftpmx4svxn376tn@treble>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Nov 11, 2020 at 02:15:06PM -0600, Josh Poimboeuf wrote:
+> On Wed, Nov 11, 2020 at 09:07:30PM +0100, Peter Zijlstra wrote:
 
-On 11/11/2020 13:47, Dmitry Osipenko wrote:
-> 11.11.2020 13:38, Jon Hunter =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
->> Commit 9ce274630495 ("cpufreq: tegra20: Use generic cpufreq-dt driver
->> (Tegra30 supported now)") update the Tegra20 CPUFREQ driver to use the
->> generic CPUFREQ device-tree driver. Since this change CPUFREQ support
->> on the Tegra20 Ventana platform has been broken because the necessary
->> device-tree nodes with the operating point information are not populated
->> for this platform. Fix this by updating device-tree for Venata to
->> include the operating point informration for Tegra20.
->>
->> Fixes: 9ce274630495 ("cpufreq: tegra20: Use generic cpufreq-dt driver (T=
-egra30 supported now)")
->> Cc: stable@vger.kernel.org
->>
->> Signed-off-by: Jon Hunter <jonathanh@nvidia.com>
->> ---
->>  arch/arm/boot/dts/tegra20-ventana.dts | 11 +++++++++++
->>  1 file changed, 11 insertions(+)
->>
->> diff --git a/arch/arm/boot/dts/tegra20-ventana.dts b/arch/arm/boot/dts/t=
-egra20-ventana.dts
->> index b158771ac0b7..055334ae3d28 100644
->> --- a/arch/arm/boot/dts/tegra20-ventana.dts
->> +++ b/arch/arm/boot/dts/tegra20-ventana.dts
->> @@ -3,6 +3,7 @@
->> =20
->>  #include <dt-bindings/input/input.h>
->>  #include "tegra20.dtsi"
->> +#include "tegra20-cpu-opp.dtsi"
->> =20
->>  / {
->>  	model =3D "NVIDIA Tegra20 Ventana evaluation board";
->> @@ -592,6 +593,16 @@ clk32k_in: clock@0 {
->>  		#clock-cells =3D <0>;
->>  	};
->> =20
->> +	cpus {
->> +		cpu0: cpu@0 {
->> +			operating-points-v2 =3D <&cpu0_opp_table>;
->> +		};
->> +
->> +		cpu@1 {
->> +			operating-points-v2 =3D <&cpu0_opp_table>;
->> +		};
->> +	};
->> +
->>  	gpio-keys {
->>  		compatible =3D "gpio-keys";
->> =20
->>
->=20
-> This could be wrong to do because CPU voltage is fixed to 1000mV in
-> Ventana's DT, are you sure that higher clock rates don't require higher
-> voltages? What is the CPU process ID and SoC speedo ID on Ventana?
+> > Possible, we just need to be _really_ careful to not allow changing
+> > those static_call()s. So maybe we need DEFINE_STATIC_CALL_RO() which
+> > does a __ro_after_init on the whole thing.
+> 
+> But what if you want to live migrate to another hypervisor ;-)
 
-I see this in the bootlog ...
+Then you get to keep the pieces ;-)
 
-[    2.797684] tegra20-cpufreq tegra20-cpufreq: hardware version 0x2 0x2
+> > > Either way it doesn't make objtool's job much easier.  But it would be
+> > > nice to consolidate runtime patching mechanisms and get rid of
+> > > .parainstructions.
+> > 
+> > I think the above (combining alternative and paravirt/static_call) does
+> > make objtool's job easier, since then we at least have the actual
+> > alternative instructions available to inspect, or am I mis-understanding
+> > things?
+> 
+> Right, it makes objtool's job a _little_ easier, since it already knows
+> how to read alternatives.  But it still has to learn to deal with the
+> conflicting stack layouts.
 
-> You could easily hook up CPU voltage scaling, please see acer-500 DT and
-> patch [1] for examples of how to set up regulators in DT. But then it
-> shouldn't be a stable patch.
+Right, but at least now it can see the instructions. Which is a lot
+better than: `add a magic +1 ORC entry when you see an indirect call to
+$magic`.
 
-According to the Ventana design guide the CPU voltage range is 0.8-1.0V
-and so it appears to be set to the max. The CPUFREQ test is reporting
-the following ...
+Anyway, __orc_find(addr) looks for the ORC entry with the highest IP <=
+@addr. So if we have:
 
-cpu: cpufreq: - CPU#0:
-cpu: cpufreq:   - supported governors:
-cpu: cpufreq:     - ondemand *
-cpu: cpufreq:     - performance
-cpu: cpufreq:     - schedutil
-cpu: cpufreq:   - supported rates:
-cpu: cpufreq:     -  216000
-cpu: cpufreq:     -  312000
-cpu: cpufreq:     -  456000
-cpu: cpufreq:     -  608000
-cpu: cpufreq:     -  760000
-cpu: cpufreq:     -  816000
-cpu: cpufreq:     -  912000
-cpu: cpufreq:     - 1000000 *
-cpu: cpufreq: - CPU#1:
-cpu: cpufreq:   - supported governors:
-cpu: cpufreq:     - ondemand *
-cpu: cpufreq:     - performance
-cpu: cpufreq:     - schedutil
-cpu: cpufreq:   - supported rates:
-cpu: cpufreq:     -  216000
-cpu: cpufreq:     -  312000
-cpu: cpufreq:     -  456000
-cpu: cpufreq:     -  608000
-cpu: cpufreq:     -  760000
-cpu: cpufreq:     -  816000
-cpu: cpufreq:     -  912000
-cpu: cpufreq:     - 1000000 *
+	alt0			alt1
 
-Cheers
-Jon
+	0x00 CALL *foo		0x00 PUSHF
+	0x07 insn		0x01 POP %rax
+				0x02 .nops 5
+				0x07 insn
 
---=20
-nvpublic
+we have ORC entries for alt1.0x00 and alt1.0x01. Then if we hit insn,
+it'll find the alt1.0x01 entry, but that had better be the same as the
+state at 0x00.
+
+This means that for every alt, we have to unwind using the CFI of every
+other alt and match for every instruction. Which should be doable I
+think.
+
+Certainly more complicated that outright disallowing CFI changes inside
+alt groups though :/
