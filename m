@@ -2,242 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 14D982AE952
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 08:03:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E1BCD2AE95C
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 08:06:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726203AbgKKHDI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 02:03:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47348 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726125AbgKKHC6 (ORCPT
+        id S1726070AbgKKHGc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 02:06:32 -0500
+Received: from ns3.fnarfbargle.com ([103.4.19.87]:47356 "EHLO
+        ns3.fnarfbargle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725828AbgKKHGc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 02:02:58 -0500
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10672C0613D1
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 23:02:57 -0800 (PST)
-Received: by mail-yb1-xb4a.google.com with SMTP id g129so1420987ybf.20
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 23:02:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:in-reply-to:message-id:mime-version:references:subject
-         :from:to:cc;
-        bh=0BLblQY5wrVo/fV4Esb72ZfcDIufvpzhr8oLTdedeD8=;
-        b=qtEy1ym+hJuQ8GZ7r5v/LMDnwiFdZ4FI3VSHHVJwtvexpWksX2rDQYYqOsLsQ/XUv3
-         /Pteu55fSW0Hgq1lDhIhVezZGhxcl2m5WaUpt4jQREUGjVEBWmaILzJb8ge6YSn3O8Be
-         +LOhz18qwGG9cSnc2k1tzh/MSaLQTDHt1iQMPlaSUxidpOC6XoMM3Zff2dVtAQuXIvNT
-         MSRhCkDerGtA9bdw8qAPGeof+F4kq72mYXt5M6OsacnHeG6nk3dfDq+OC7wzJLb+UHl/
-         EEIVTJKuR35FcTBKeeipxp+sElXlBTz1Xw/t33g+mbfA69yThqfhTSZpCyWjLRrOV5+3
-         uNhg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=0BLblQY5wrVo/fV4Esb72ZfcDIufvpzhr8oLTdedeD8=;
-        b=dgqYaD6MDA6cBj97sh1DWMq+Ewallo9uSRr5fkCupoSU/HxltQMPxBZoXyqMmBukqO
-         /RShLBrcZfGhVy8gDz3od6vediavWAyZdcKevT9bkPYoVjZ90yRynbPbgxI6cpSOPRr5
-         cBJ7r5jAzeRMxIMc6cmIFUGtT/g2cfdOkDkMDFFlRfFHH9ISWd9nFUEJLskjiWEZnmnJ
-         jKsHg5lWupHiFhkumq2T2W5p7mzGAdit4kN3SjEh6pIRuOrm/cvI37KndeA3zg5+MZJC
-         CSJFVr3X4jC/cWf9a5svUKX0shUxVtr6ZpXDdLZ0BOLEUcX9Q1nnOvydTn0cKJbMd3v6
-         nStw==
-X-Gm-Message-State: AOAM532efhLXmWldUfRGm/K/O+wcvaPF0qk/Cderq+DGP2WqAseYm9IH
-        nLpx/T4sZ5mPZr4uMOSSdeHbb2Soct8pkQYUNQ==
-X-Google-Smtp-Source: ABdhPJzdpnwSyw8bJ6trSORlaz0L9j7EKDEBfMG2827Ib3CUiD6YWliIYT6yrLt+TpkS0cGVW3g61cL+TGqEWfT7Zg==
-Sender: "howardchung via sendgmr" 
-        <howardchung@howardchung-p920.tpe.corp.google.com>
-X-Received: from howardchung-p920.tpe.corp.google.com ([2401:fa00:1:10:f693:9fff:fef4:4e45])
- (user=howardchung job=sendgmr) by 2002:a5b:78d:: with SMTP id
- b13mr28739061ybq.493.1605078176284; Tue, 10 Nov 2020 23:02:56 -0800 (PST)
-Date:   Wed, 11 Nov 2020 15:02:24 +0800
-In-Reply-To: <20201111150115.v9.1.I55fa38874edc240d726c1de6e82b2ce57b64f5eb@changeid>
-Message-Id: <20201111150115.v9.6.I756c1fecc03bcc0cd94400b4992cd7e743f4b3e2@changeid>
-Mime-Version: 1.0
-References: <20201111150115.v9.1.I55fa38874edc240d726c1de6e82b2ce57b64f5eb@changeid>
-X-Mailer: git-send-email 2.29.2.222.g5d2a92d10f8-goog
-Subject: [PATCH v9 6/6] Bluetooth: Add toggle to switch off interleave scan
-From:   Howard Chung <howardchung@google.com>
-To:     linux-bluetooth@vger.kernel.org, marcel@holtmann.org,
-        luiz.dentz@gmail.com
-Cc:     alainm@chromium.org, mmandlik@chromium.org, mcchou@chromium.org,
-        Howard Chung <howardchung@google.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        Wed, 11 Nov 2020 02:06:32 -0500
+Received: from srv.home ([10.8.0.1] ident=heh32733)
+        by ns3.fnarfbargle.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.84_2)
+        (envelope-from <brad@fnarfbargle.com>)
+        id 1kckCL-0004ED-Fw; Wed, 11 Nov 2020 15:05:41 +0800
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=fnarfbargle.com; s=mail;
+        h=Content-Transfer-Encoding:Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject; bh=gCy+cez+T1kyiig5SozaCSgBHWDf0Nv1yRJwi/tf86Y=;
+        b=ex0/yuJuvhPzPYT61UJzOJYwlCKHxupsapTwh2FTn4TIPNUPwe6y+3pwaLMLoho1dQiWd6Qm8jUkDHaEXurZrP3ojo0m0E8eDj5LDpECvQx0uoheoVLpxW8BPNYBCIqLqawNxJthdxjtZVYllEYMcyWXrzVYhUL6A+ozbzG3aIE=;
+Subject: Re: [PATCH v4 1/1] applesmc: Re-work SMC comms
+To:     Guenter Roeck <linux@roeck-us.net>, linux-hwmon@vger.kernel.org
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        hns@goldelico.com, Andreas Kemnade <andreas@kemnade.info>,
+        Jean Delvare <jdelvare@suse.com>,
+        Henrik Rydberg <rydberg@bitmath.org>
+References: <20200930105442.3f642f6c@aktux>
+ <db042e9b-be41-11b1-7059-3881b1da5c8b@fnarfbargle.com>
+ <68467f1b-cea1-47ea-a4d4-8319214b072a@fnarfbargle.com>
+ <20201104142057.62493c12@aktux>
+ <2436afef-99c6-c352-936d-567bf553388c@fnarfbargle.com>
+ <7a085650-2399-08c0-3c4d-6cd1fa28a365@roeck-us.net>
+ <fc36d066-c432-e7d2-312f-a0a592446fe2@fnarfbargle.com>
+ <10027199-5d31-93e7-9bd8-7baaebff8b71@roeck-us.net>
+ <70331f82-35a1-50bd-685d-0b06061dd213@fnarfbargle.com>
+ <3c72ccc3-4de1-b5d0-423d-7b8c80991254@fnarfbargle.com>
+ <6d071547-10ee-ca92-ec8b-4b5069d04501@bitmath.org>
+ <8e117844-d62a-bcb1-398d-c59cc0d4b878@fnarfbargle.com>
+ <e5a856b1-fb1a-db5d-0fde-c86d0bcca1df@bitmath.org>
+ <aa60f673-427a-1a47-7593-54d1404c3c92@bitmath.org>
+ <9109d059-d9cb-7464-edba-3f42aa78ce92@bitmath.org>
+ <5310c0ab-0f80-1f9e-8807-066223edae13@bitmath.org>
+ <57057d07-d3a0-8713-8365-7b12ca222bae@fnarfbargle.com>
+ <4eca09dc-7b32-767c-eab0-b9ad8b41efcc@fnarfbargle.com>
+ <b6345525-c4d0-6949-1231-a47c3053e343@roeck-us.net>
+From:   Brad Campbell <brad@fnarfbargle.com>
+Message-ID: <49d025e1-779a-6829-bf24-8b0fd5e2586b@fnarfbargle.com>
+Date:   Wed, 11 Nov 2020 18:05:42 +1100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.2.2
+MIME-Version: 1.0
+In-Reply-To: <b6345525-c4d0-6949-1231-a47c3053e343@roeck-us.net>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch add a configurable parameter to switch off the interleave
-scan feature.
+On 11/11/20 4:56 pm, Guenter Roeck wrote:
+> On 11/10/20 7:38 PM, Brad Campbell wrote:
+>> Commit fff2d0f701e6 ("hwmon: (applesmc) avoid overlong udelay()")
+>> introduced an issue whereby communication with the SMC became
+>> unreliable with write errors like :
+>>
+>> [  120.378614] applesmc: send_byte(0x00, 0x0300) fail: 0x40
+>> [  120.378621] applesmc: LKSB: write data fail
+>> [  120.512782] applesmc: send_byte(0x00, 0x0300) fail: 0x40
+>> [  120.512787] applesmc: LKSB: write data fail
+>>
+>> The original code appeared to be timing sensitive and was not reliable
+>> with the timing changes in the aforementioned commit.
+>>
+>> This patch re-factors the SMC communication to remove the timing
+>> dependencies and restore function with the changes previously
+>> committed.
+>>
+>> Tested on : MacbookAir6,2 MacBookPro11,1 iMac12,2, MacBookAir1,1,
+>> MacBookAir3,1
+>>
+>> Fixes: fff2d0f701e6 ("hwmon: (applesmc) avoid overlong udelay()")
+>> Reported-by: Andreas Kemnade <andreas@kemnade.info>
+>> Tested-by: Andreas Kemnade <andreas@kemnade.info> # MacBookAir6,2
+>> Acked-by: Arnd Bergmann <arnd@arndb.de>
+>> Signed-off-by: Brad Campbell <brad@fnarfbargle.com>
+>> Signed-off-by: Henrik Rydberg <rydberg@bitmath.org>
+>>
+>> ---
+>> Changelog : 
+>> v1 : Initial attempt
+>> v2 : Address logic and coding style
+>> v3 : Removed some debug hangover. Added tested-by. Modifications for MacBookAir1,1
+>> v4 : Re-factored logic based on Apple driver. Simplified wait_status loop
+>> Index: linux-stable/drivers/hwmon/applesmc.c
+>> ===================================================================
+>> --- linux-stable.orig/drivers/hwmon/applesmc.c
+>> +++ linux-stable/drivers/hwmon/applesmc.c
+>> @@ -32,6 +32,7 @@
+>>  #include <linux/hwmon.h>
+>>  #include <linux/workqueue.h>
+>>  #include <linux/err.h>
+>> +#include <linux/bits.h>
+>>  
+>>  /* data port used by Apple SMC */
+>>  #define APPLESMC_DATA_PORT	0x300
+>> @@ -42,10 +43,14 @@
+>>  
+>>  #define APPLESMC_MAX_DATA_LENGTH 32
+>>  
+>> -/* wait up to 128 ms for a status change. */
+>> -#define APPLESMC_MIN_WAIT	0x0010
+>> -#define APPLESMC_RETRY_WAIT	0x0100
+>> -#define APPLESMC_MAX_WAIT	0x20000
+>> +/* Apple SMC status bits */
+>> +#define SMC_STATUS_AWAITING_DATA  BIT(0) /* SMC has data waiting to be read */
+>> +#define SMC_STATUS_IB_CLOSED      BIT(1) /* Will ignore any input */
+>> +#define SMC_STATUS_BUSY           BIT(2) /* Command in progress */
+>> +
+>> +/* Exponential delay boundaries */
+>> +#define APPLESMC_MIN_WAIT	0x0008
+>> +#define APPLESMC_MAX_WAIT	0x100000
+> 
+> This is a substantial increase in wait time which should be documented.
+> 0x20000 was explained (it translated to 128 ms), but this isn't,
+> and no reason is provided why it was increased to one second.
+> Is there any evidence that this is needed ? The only "benefit" I
+> can see is that a stuck SMC will now hang everything 8 times longer.
+> 
+> There really should be some evidence suggesting that the longer
+> timeout is really needed, better than "the apple driver does it".
+> The timeout was increased to 128 ms back in 2012, according to
+> the commit because timeouts were observed on MacBookPro6,1.
+> I would expect something similar here. In other words, describe
+> the circumstances of observed timeouts and the affected system(s).
+> 
+G'day Guenter,
 
-Reviewed-by: Alain Michaud <alainm@chromium.org>
-Signed-off-by: Howard Chung <howardchung@google.com>
----
+The wait timer turns out to be the most contentious part of the whole patch.
 
-Changes in v9:
-- Update and rename the macro TLV_GET_LE8
+That particular algorithm was put forward off list, and in testing it was as
+fast as {while true ; do stuff; udelay(10)}. The reason for the larger max value
+isn't actually for timing purposes. It was to allow a minimum of 16 times around the hedge.
 
-Changes in v7:
-- Fix bt_dev_warn arguemnt type warning
+I've probably had 10 chops at this timeout trying to balance performance with a sane
+algorithm. 
 
-Changes in v6:
-- Set EnableAdvMonInterleaveScan to 1 byte long
+How does this look? This performs pretty well.
 
-Changes in v4:
-- Set EnableAdvMonInterleaveScan default to Disable
-- Fix 80 chars limit in mgmt_config.c
+/* Minimum sleep time is 8uS */
+#define APPLESMC_MIN_WAIT      0x0008
 
- include/net/bluetooth/hci_core.h |  1 +
- net/bluetooth/hci_core.c         |  1 +
- net/bluetooth/hci_request.c      |  3 ++-
- net/bluetooth/mgmt_config.c      | 41 +++++++++++++++++++++++++-------
- 4 files changed, 37 insertions(+), 9 deletions(-)
+/*
+ * Wait for specific status bits with a mask on the SMC.
+ * Used before all transactions.
+ * This does 10 fast loops of 8us then exponentially backs off for a 
+ * minimum total wait of 262ms. Depending on usleep_range this could
+ * run out past 500ms. 
+ */
 
-diff --git a/include/net/bluetooth/hci_core.h b/include/net/bluetooth/hci_core.h
-index cfede18709d8f..63c6d656564a1 100644
---- a/include/net/bluetooth/hci_core.h
-+++ b/include/net/bluetooth/hci_core.h
-@@ -363,6 +363,7 @@ struct hci_dev {
- 	__u32		clock;
- 	__u16		advmon_allowlist_duration;
- 	__u16		advmon_no_filter_duration;
-+	__u8		enable_advmon_interleave_scan;
- 
- 	__u16		devid_source;
- 	__u16		devid_vendor;
-diff --git a/net/bluetooth/hci_core.c b/net/bluetooth/hci_core.c
-index 65b7b74baba4c..b7cb7bfe250bd 100644
---- a/net/bluetooth/hci_core.c
-+++ b/net/bluetooth/hci_core.c
-@@ -3595,6 +3595,7 @@ struct hci_dev *hci_alloc_dev(void)
- 	/* The default values will be chosen in the future */
- 	hdev->advmon_allowlist_duration = 300;
- 	hdev->advmon_no_filter_duration = 500;
-+	hdev->enable_advmon_interleave_scan = 0x00;	/* Default to disable */
- 
- 	hdev->sniff_max_interval = 800;
- 	hdev->sniff_min_interval = 80;
-diff --git a/net/bluetooth/hci_request.c b/net/bluetooth/hci_request.c
-index 172ccbf4f0cd2..28520c4d2d229 100644
---- a/net/bluetooth/hci_request.c
-+++ b/net/bluetooth/hci_request.c
-@@ -1057,7 +1057,8 @@ void hci_req_add_le_passive_scan(struct hci_request *req)
- 				      &own_addr_type))
- 		return;
- 
--	if (__hci_update_interleaved_scan(hdev))
-+	if (hdev->enable_advmon_interleave_scan &&
-+	    __hci_update_interleaved_scan(hdev))
- 		return;
- 
- 	bt_dev_dbg(hdev, "interleave state %d", hdev->interleave_scan_state);
-diff --git a/net/bluetooth/mgmt_config.c b/net/bluetooth/mgmt_config.c
-index 282fbf82f3192..1deb0ca7a9297 100644
---- a/net/bluetooth/mgmt_config.c
-+++ b/net/bluetooth/mgmt_config.c
-@@ -17,12 +17,24 @@
- 		__le16 value; \
- 	} __packed _param_name_
- 
-+#define HDEV_PARAM_U8(_param_name_) \
-+	struct {\
-+		struct mgmt_tlv entry; \
-+		__u8 value; \
-+	} __packed _param_name_
-+
- #define TLV_SET_U16(_param_code_, _param_name_) \
- 	{ \
- 		{ cpu_to_le16(_param_code_), sizeof(__u16) }, \
- 		cpu_to_le16(hdev->_param_name_) \
- 	}
- 
-+#define TLV_SET_U8(_param_code_, _param_name_) \
-+	{ \
-+		{ cpu_to_le16(_param_code_), sizeof(__u8) }, \
-+		hdev->_param_name_ \
-+	}
-+
- #define TLV_SET_U16_JIFFIES_TO_MSECS(_param_code_, _param_name_) \
- 	{ \
- 		{ cpu_to_le16(_param_code_), sizeof(__u16) }, \
-@@ -65,6 +77,7 @@ int read_def_system_config(struct sock *sk, struct hci_dev *hdev, void *data,
- 		HDEV_PARAM_U16(def_le_autoconnect_timeout);
- 		HDEV_PARAM_U16(advmon_allowlist_duration);
- 		HDEV_PARAM_U16(advmon_no_filter_duration);
-+		HDEV_PARAM_U8(enable_advmon_interleave_scan);
- 	} __packed rp = {
- 		TLV_SET_U16(0x0000, def_page_scan_type),
- 		TLV_SET_U16(0x0001, def_page_scan_int),
-@@ -97,6 +110,7 @@ int read_def_system_config(struct sock *sk, struct hci_dev *hdev, void *data,
- 					     def_le_autoconnect_timeout),
- 		TLV_SET_U16(0x001d, advmon_allowlist_duration),
- 		TLV_SET_U16(0x001e, advmon_no_filter_duration),
-+		TLV_SET_U8(0x001f, enable_advmon_interleave_scan),
- 	};
- 
- 	bt_dev_dbg(hdev, "sock %p", sk);
-@@ -109,6 +123,7 @@ int read_def_system_config(struct sock *sk, struct hci_dev *hdev, void *data,
- 
- #define TO_TLV(x)		((struct mgmt_tlv *)(x))
- #define TLV_GET_LE16(tlv)	le16_to_cpu(*((__le16 *)(TO_TLV(tlv)->value)))
-+#define TLV_GET_U8(tlv)		(*((__u8 *)(TO_TLV(tlv)->value)))
- 
- int set_def_system_config(struct sock *sk, struct hci_dev *hdev, void *data,
- 			  u16 data_len)
-@@ -125,6 +140,7 @@ int set_def_system_config(struct sock *sk, struct hci_dev *hdev, void *data,
- 	/* First pass to validate the tlv */
- 	while (buffer_left >= sizeof(struct mgmt_tlv)) {
- 		const u8 len = TO_TLV(buffer)->length;
-+		size_t exp_type_len;
- 		const u16 exp_len = sizeof(struct mgmt_tlv) +
- 				    len;
- 		const u16 type = le16_to_cpu(TO_TLV(buffer)->type);
-@@ -170,20 +186,26 @@ int set_def_system_config(struct sock *sk, struct hci_dev *hdev, void *data,
- 		case 0x001b:
- 		case 0x001d:
- 		case 0x001e:
--			if (len != sizeof(u16)) {
--				bt_dev_warn(hdev, "invalid length %d, exp %zu for type %d",
--					    len, sizeof(u16), type);
--
--				return mgmt_cmd_status(sk, hdev->id,
--					MGMT_OP_SET_DEF_SYSTEM_CONFIG,
--					MGMT_STATUS_INVALID_PARAMS);
--			}
-+			exp_type_len = sizeof(u16);
-+			break;
-+		case 0x001f:
-+			exp_type_len = sizeof(u8);
- 			break;
- 		default:
-+			exp_type_len = 0;
- 			bt_dev_warn(hdev, "unsupported parameter %u", type);
- 			break;
- 		}
- 
-+		if (exp_type_len && len != exp_type_len) {
-+			bt_dev_warn(hdev, "invalid length %d, exp %zu for type %d",
-+				    len, exp_type_len, type);
-+
-+			return mgmt_cmd_status(sk, hdev->id,
-+				MGMT_OP_SET_DEF_SYSTEM_CONFIG,
-+				MGMT_STATUS_INVALID_PARAMS);
-+		}
-+
- 		buffer_left -= exp_len;
- 		buffer += exp_len;
- 	}
-@@ -289,6 +311,9 @@ int set_def_system_config(struct sock *sk, struct hci_dev *hdev, void *data,
- 		case 0x0001e:
- 			hdev->advmon_no_filter_duration = TLV_GET_LE16(buffer);
- 			break;
-+		case 0x0001f:
-+			hdev->enable_advmon_interleave_scan = TLV_GET_U8(buffer);
-+			break;
- 		default:
- 			bt_dev_warn(hdev, "unsupported parameter %u", type);
- 			break;
--- 
-2.29.2.222.g5d2a92d10f8-goog
+static int wait_status(u8 val, u8 mask)
+{
+	u8 status;
+	int us;
+	int i;
+	
+	us=APPLESMC_MIN_WAIT;
+	for (i = 0; i < 24 ; i++) {
+		status = inb(APPLESMC_CMD_PORT);
+		if ((status & mask) == val)
+			return 0;
+		usleep_range(us, us * 2);
+		if (i > 9)
+			us <<= 1;
+	}
+	return -EIO;
+}
 
+Regards,
+Brad
