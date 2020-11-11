@@ -2,92 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45C1E2AEADE
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 09:13:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E25482AEAE1
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 09:13:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726020AbgKKINW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 03:13:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58836 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725468AbgKKINW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 03:13:22 -0500
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D4A8C0613D1;
-        Wed, 11 Nov 2020 00:13:22 -0800 (PST)
-Received: by mail-pg1-x543.google.com with SMTP id h6so976031pgk.4;
-        Wed, 11 Nov 2020 00:13:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=iitQh+q0FehiLOu43hjjhxpuoRgl98YfNKBT516DQYM=;
-        b=Czhh1dXG+fwgj+ZQkXc2uNm118mSTuHDaEhV6Ist2DRhb8kajD2WQvL9QqO0+ypROq
-         PXtHcg36gqod6Hbs2Pbl4SUAuAo8M3pjniYVHAHRTmZC+jcGDlUSXx0VWmiWI2q4cXvZ
-         FoZ/mII6eZGxyMvf+gB9UT8kowp6AMTVJY5KOKQPoAVJb1VymUC4aAZ7KZFPIUd8qRXw
-         vTyt+nRS9tYPpZmBvu5xrxQklGwILQ7BlWBMzMA5BMcRz9ZORKDT/OUxNg9q7O44gxye
-         oy//KCwnJAEgiH3Uxspa8hgDodYJIXAs4wVl9FGxuvcTG5Py27m+rZU3ls9Y0SzgpVRI
-         VBdQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=iitQh+q0FehiLOu43hjjhxpuoRgl98YfNKBT516DQYM=;
-        b=Ai3+/L9Ng39KZxfaXVNFUeHBCyYeJK90oepF56arO1IbGH/zg4jAuipsBSAm0X3bb6
-         JeEMeTaKgkGabGkC+r9qX0S7oGH+lrGLoLi2vNKc/AhSRucYkoRDIh/DBXKi2TlACbx2
-         6HiCCFaboCUNAW+SUrL3yEI4aAXcB03OeYqM2e1vhtjgDzeOkGZ1zNxOK8kJCJtgExlN
-         W8PHnye2jGbfsEcPt/fyDHUPadh4j1Rmf51tOBv5M30JHBFu6AOal42p+X8Cl/bNkqEv
-         M/Zg85fvJ08/ujiQrzpmv7VeRMPiLgZJjMMosfYR54QSj+bEbBJmA0MVRGtn1W97y4H+
-         dnsQ==
-X-Gm-Message-State: AOAM532CuweChxePrpOl9POUyJTrsJcQgc8OwqjFt8JybaZMN3ynATKN
-        lGDVkvel7SvBYy/WuyBOrHfLzDUvFv00
-X-Google-Smtp-Source: ABdhPJxYPan4v7/DonqVyf1X76RnRlHbsJeLLo0Pzx/dOCMb/4dqVii1RB0aISxsCH5Ml9v6rTRNKw==
-X-Received: by 2002:a63:5864:: with SMTP id i36mr10876045pgm.68.1605082401603;
-        Wed, 11 Nov 2020 00:13:21 -0800 (PST)
-Received: from he-cluster.localdomain (67.216.221.250.16clouds.com. [67.216.221.250])
-        by smtp.gmail.com with ESMTPSA id w127sm1562138pfc.172.2020.11.11.00.13.20
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 11 Nov 2020 00:13:20 -0800 (PST)
-From:   xiakaixu1987@gmail.com
-X-Google-Original-From: kaixuxia@tencent.com
-To:     jdelvare@suse.com, linux@roeck-us.net
-Cc:     linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Kaixu Xia <kaixuxia@tencent.com>
-Subject: [PATCH] hwmon: Fix unsigned 'reg' compared with zero in amc6821_update_device
-Date:   Wed, 11 Nov 2020 16:13:16 +0800
-Message-Id: <1605082396-26560-1-git-send-email-kaixuxia@tencent.com>
-X-Mailer: git-send-email 1.8.3.1
+        id S1726142AbgKKIN3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 03:13:29 -0500
+Received: from mx2.suse.de ([195.135.220.15]:48932 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725468AbgKKIN2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Nov 2020 03:13:28 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 73CA3ACC5;
+        Wed, 11 Nov 2020 08:13:26 +0000 (UTC)
+From:   Thomas Renninger <trenn@suse.de>
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     Rafael Wysocki <rjw@rjwysocki.net>,
+        Jonathan Corbet <corbet@lwn.net>, linux-pm@vger.kernel.org,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Shuah Khan <shuah@kernel.org>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] cpufreq: stats: Switch to ktime and msec instead of jiffies and usertime
+Date:   Wed, 11 Nov 2020 09:13:24 +0100
+Message-ID: <2047155.4hzcE6bcFl@c100>
+In-Reply-To: <20201111051350.qxevqcca5775h2xa@vireshk-i7>
+References: <0e0fb542b6f6b26944cb2cf356041348aeac95f6.1605006378.git.viresh.kumar@linaro.org> <1832747.5iOEhN7m9D@c100> <20201111051350.qxevqcca5775h2xa@vireshk-i7>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kaixu Xia <kaixuxia@tencent.com>
+Am Mittwoch, 11. November 2020, 06:13:50 CET schrieb Viresh Kumar:
+> On 10-11-20, 13:53, Thomas Renninger wrote:
+> > Am Dienstag, 10. November 2020, 12:07:37 CET schrieb Viresh Kumar:
+> > > The cpufreq and thermal core, both provide sysfs statistics to help
+> > > userspace learn about the behavior of frequencies and cooling states.
+> > > 
+> > > This is how they look:
+> > > /sys/devices/system/cpu/cpufreq/policy0/stats/time_in_state:1200000 399
+> > > 
+> > > The results look like this after this commit:
+> > > /sys/devices/system/cpu/cpufreq/policy0/stats/time_in_state:1200000 3830
+> > 
+> > How would userspace know whether it's ms or 10ms?
 
-The unsigned variable reg is assigned a return value from the call
-to i2c_smbus_read_byte_data(), which may return negative error code.
+Again:
+How would userspace know whether it's ms or 10ms?
 
-Fixes coccicheck warning:
+> > whatabout a new file with the same convention as cooling devices (adding ms):
+> Keeping two files for same stuff is not great, and renaming the file
+> breaks userspace ABI.
 
-./drivers/hwmon/amc6821.c:215:6-9: WARNING: Unsigned expression compared with zero: reg > 0
-./drivers/hwmon/amc6821.c:228:6-9: WARNING: Unsigned expression compared with zero: reg > 0
+No exactly the other way around:
+- Renaming, breaks the userspace ABI.
+- Two files would be the super correct way to go:
+  - Deprecate the old file and keep the 10ms around for some years
+    ./Documentation/ABI/obsolete
+  - Add the new interface and document it in:
+   ./Documentation/ABI/testing
 
-Reported-by: Tosk Robot <tencent_os_robot@tencent.com>
-Signed-off-by: Kaixu Xia <kaixuxia@tencent.com>
----
- drivers/hwmon/amc6821.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+As this is about a minor cpufreq_stat debug file, it is enough if
+you rename to:
+> /sys/devices/system/cpu/cpufreq/policy0/stats/time_in_state_ms
+Ideally document it in ./Documentation/ABI/testing
+But I guess for this one this is also not mandatory.
 
-diff --git a/drivers/hwmon/amc6821.c b/drivers/hwmon/amc6821.c
-index 6b1ce2242c61..ce7c9f412538 100644
---- a/drivers/hwmon/amc6821.c
-+++ b/drivers/hwmon/amc6821.c
-@@ -166,7 +166,7 @@ static struct amc6821_data *amc6821_update_device(struct device *dev)
- 	struct amc6821_data *data = dev_get_drvdata(dev);
- 	struct i2c_client *client = data->client;
- 	int timeout = HZ;
--	u8 reg;
-+	s8 reg;
- 	int i;
+Then userspace can do:
+MS_FILE="/sys/devices/system/cpu/cpufreq/policy0/stats/time_in_state_ms"
+10MS_FILE="/sys/devices/system/cpu/cpufreq/policy0/stats/time_in_state"
+
+if [ -r "$MS_FILE" ]; then
+    POLICY0_MS=$(<"$MS_FILE")
+    echo "Found ms stats file"
+elif [ -r "$10MS_FILE" ]; then
+    echo "Found 10ms stats file, converting..."
+    POLICY0_MS=$(<"$10MS_FILE")
+    POLICY0_MS=$(echo "$POLICY0_MS 10 /" |dc)
+else
+    echo "cpufreq stat not compiled in?"
+fi
+
+> I am not sure what's the right thing to do here.
+
+Use a new *_ms name.
+If you are unsure how many people this still might use, keep the old file and mark
+it deprecated and remove it in some years.
+You could also add:
+pr_info("%s userspace process accessed deprecated sysfs file %s", task->comm, OLD_SYSFS_FILE_PATH);
+To find other userspace apps making use of it.
+
+...
  
- 	mutex_lock(&data->update_lock);
--- 
-2.20.0
+> I already fixed this recently and stats don't appear empty for fast
+> switch anymore.
+
+Then cpufreq_stats could be a module again?
+
+      Thomas
+
 
