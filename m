@@ -2,207 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 471E42AE540
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 02:03:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 416212AE545
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 02:05:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732441AbgKKBDc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 10 Nov 2020 20:03:32 -0500
-Received: from m42-4.mailgun.net ([69.72.42.4]:56142 "EHLO m42-4.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731657AbgKKBDc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 10 Nov 2020 20:03:32 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1605056610; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=PRPWPlKvfoqup5yOYOvRoxNoeYSOWPJdVPHods/P4Tk=;
- b=wSKPhyLPN4I754MxHVDysV16psJJyy6l4scY99V8OdoOmhQBnXlMadcei6Hpcjg0bMwKZ8Nd
- Qzj5Tva5Qr2HV+WsjjnvLdkYYP5O/fYWMDG/IKIhaJG4T6zNnZv7PvwXZTpribAacNt/q6NK
- K07G87CuRqDzcZHe02PtIpND3jg=
-X-Mailgun-Sending-Ip: 69.72.42.4
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-west-2.postgun.com with SMTP id
- 5fab38628bd2e3c222410749 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 11 Nov 2020 01:03:30
- GMT
-Sender: rishabhb=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id E1182C433C6; Wed, 11 Nov 2020 01:03:29 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: rishabhb)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 7F5D6C433C8;
-        Wed, 11 Nov 2020 01:03:27 +0000 (UTC)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Tue, 10 Nov 2020 17:03:27 -0800
-From:   rishabhb@codeaurora.org
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     Andy Gross <agross@kernel.org>, Ohad Ben-Cohen <ohad@wizery.com>,
-        Siddharth Gupta <sidgup@codeaurora.org>,
-        Sibi Sankar <sibis@codeaurora.org>,
-        linux-arm-msm@vger.kernel.org, linux-remoteproc@vger.kernel.org,
+        id S1732446AbgKKBFB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 10 Nov 2020 20:05:01 -0500
+Received: from mx0b-002e3701.pphosted.com ([148.163.143.35]:34296 "EHLO
+        mx0b-002e3701.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1731982AbgKKBFB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 10 Nov 2020 20:05:01 -0500
+Received: from pps.filterd (m0150244.ppops.net [127.0.0.1])
+        by mx0b-002e3701.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0AB0wJIF008620;
+        Wed, 11 Nov 2020 01:04:29 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hpe.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pps0720;
+ bh=gj4FGYPPEFu5y5//Sn6dcPRQx9fXFoM5v85DlCNQGHk=;
+ b=ZbNwdIHhcOLLmpF/SqzMuOYiVsAu4h/2+1AlvdazhBovEgclDgMc6CHlmgzd2hCO5pqb
+ i17awatACudMYQeE+CH5LYgnsPpK91+gDS8vT9b4yrxDZvhCteX8TsgmCYcR9XISDTBc
+ mKsAXgzOaduTaHw2PT0KU7qdUnoQIcmuPW5uqkTYvgWEZAti1VxkTQi8R0AAYfe6mtfL
+ WQVVaUWXUtT6wbl6EmSdGRuunFlZyyJyQ15AgDz9+faTDInYw4ZEPlSoVYuRyuoUh7f2
+ BeKZuY3CvCH/lcMm/kH7g9ckFPNHVIv7qETDAc1EGMwymi06HJkU8CmG1rl45oFiM41n sQ== 
+Received: from g4t3425.houston.hpe.com (g4t3425.houston.hpe.com [15.241.140.78])
+        by mx0b-002e3701.pphosted.com with ESMTP id 34nmh6w17n-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 11 Nov 2020 01:04:28 +0000
+Received: from g9t2301.houston.hpecorp.net (g9t2301.houston.hpecorp.net [16.220.97.129])
+        by g4t3425.houston.hpe.com (Postfix) with ESMTP id 3A98AA1;
+        Wed, 11 Nov 2020 01:04:28 +0000 (UTC)
+Received: from dog.eag.rdlabs.hpecorp.net (dog.eag.rdlabs.hpecorp.net [128.162.243.181])
+        by g9t2301.houston.hpecorp.net (Postfix) with ESMTP id 4D9B14C;
+        Wed, 11 Nov 2020 01:04:27 +0000 (UTC)
+From:   Mike Travis <mike.travis@hpe.com>
+To:     Borislav Petkov <bp@alien8.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        Steve Wahl <steve.wahl@hpe.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org
+Cc:     Mike Travis <mike.travis@hpe.com>,
+        Dimitri Sivanich <dimitri.sivanich@hpe.com>,
+        Russ Anderson <russ.anderson@hpe.com>,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 3/4] remoteproc: qcom: q6v5: Query sysmon before
- graceful shutdown
-In-Reply-To: <20201105045051.1365780-4-bjorn.andersson@linaro.org>
-References: <20201105045051.1365780-1-bjorn.andersson@linaro.org>
- <20201105045051.1365780-4-bjorn.andersson@linaro.org>
-Message-ID: <9b917882cc9191bbfadc69dbcb067f6b@codeaurora.org>
-X-Sender: rishabhb@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Subject: [PATCH] x86/platform/uv: UV5 Fix copied output archtype
+Date:   Tue, 10 Nov 2020 19:04:18 -0600
+Message-Id: <20201111010418.82133-1-mike.travis@hpe.com>
+X-Mailer: git-send-email 2.21.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-HPE-SCL: -1
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-11-10_09:2020-11-10,2020-11-10 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
+ priorityscore=1501 spamscore=0 lowpriorityscore=0 bulkscore=0 adultscore=0
+ phishscore=0 suspectscore=0 mlxlogscore=999 clxscore=1015 impostorscore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2011110002
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-11-04 20:50, Bjorn Andersson wrote:
-> Requesting a graceful shutdown through the shared memory state signals
-> will not be acked in the event that sysmon has already successfully 
-> shut
-> down the remote firmware. So extend the stop request API to optinally
-optionally
-> take the remoteproc's sysmon instance and query if there's already been
-> a successful shutdown attempt, before doing the signal dance.
-> 
-> Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-> ---
-> 
-> Changes since v1:
-> - New patch
-> 
->  drivers/remoteproc/qcom_q6v5.c      | 8 +++++++-
->  drivers/remoteproc/qcom_q6v5.h      | 3 ++-
->  drivers/remoteproc/qcom_q6v5_adsp.c | 2 +-
->  drivers/remoteproc/qcom_q6v5_mss.c  | 2 +-
->  drivers/remoteproc/qcom_q6v5_pas.c  | 2 +-
->  drivers/remoteproc/qcom_q6v5_wcss.c | 2 +-
->  6 files changed, 13 insertions(+), 6 deletions(-)
-> 
-> diff --git a/drivers/remoteproc/qcom_q6v5.c 
-> b/drivers/remoteproc/qcom_q6v5.c
-> index fd6fd36268d9..9627a950928e 100644
-> --- a/drivers/remoteproc/qcom_q6v5.c
-> +++ b/drivers/remoteproc/qcom_q6v5.c
-> @@ -13,6 +13,7 @@
->  #include <linux/soc/qcom/smem.h>
->  #include <linux/soc/qcom/smem_state.h>
->  #include <linux/remoteproc.h>
-> +#include "qcom_common.h"
->  #include "qcom_q6v5.h"
-> 
->  #define Q6V5_PANIC_DELAY_MS	200
-> @@ -146,15 +147,20 @@ static irqreturn_t q6v5_stop_interrupt(int irq,
-> void *data)
->  /**
->   * qcom_q6v5_request_stop() - request the remote processor to stop
->   * @q6v5:	reference to qcom_q6v5 context
-> + * @sysmon:	reference to the remote's sysmon instance, or NULL
->   *
->   * Return: 0 on success, negative errno on failure
->   */
-> -int qcom_q6v5_request_stop(struct qcom_q6v5 *q6v5)
-> +int qcom_q6v5_request_stop(struct qcom_q6v5 *q6v5, struct qcom_sysmon 
-> *sysmon)
->  {
->  	int ret;
-> 
->  	q6v5->running = false;
-> 
-> +	/* Don't perform SMP2P dance if sysmon already shut down the remote 
-> */
-> +	if (qcom_sysmon_shutdown_acked(sysmon))
-> +		return 0;
-> +
->  	qcom_smem_state_update_bits(q6v5->state,
->  				    BIT(q6v5->stop_bit), BIT(q6v5->stop_bit));
-> 
-> diff --git a/drivers/remoteproc/qcom_q6v5.h 
-> b/drivers/remoteproc/qcom_q6v5.h
-> index c4ed887c1499..1c212f670cbc 100644
-> --- a/drivers/remoteproc/qcom_q6v5.h
-> +++ b/drivers/remoteproc/qcom_q6v5.h
-> @@ -8,6 +8,7 @@
-> 
->  struct rproc;
->  struct qcom_smem_state;
-> +struct qcom_sysmon;
-> 
->  struct qcom_q6v5 {
->  	struct device *dev;
-> @@ -40,7 +41,7 @@ int qcom_q6v5_init(struct qcom_q6v5 *q6v5, struct
-> platform_device *pdev,
-> 
->  int qcom_q6v5_prepare(struct qcom_q6v5 *q6v5);
->  int qcom_q6v5_unprepare(struct qcom_q6v5 *q6v5);
-> -int qcom_q6v5_request_stop(struct qcom_q6v5 *q6v5);
-> +int qcom_q6v5_request_stop(struct qcom_q6v5 *q6v5, struct qcom_sysmon 
-> *sysmon);
->  int qcom_q6v5_wait_for_start(struct qcom_q6v5 *q6v5, int timeout);
->  unsigned long qcom_q6v5_panic(struct qcom_q6v5 *q6v5);
-> 
-> diff --git a/drivers/remoteproc/qcom_q6v5_adsp.c
-> b/drivers/remoteproc/qcom_q6v5_adsp.c
-> index efb2c1aa80a3..9db0380236e7 100644
-> --- a/drivers/remoteproc/qcom_q6v5_adsp.c
-> +++ b/drivers/remoteproc/qcom_q6v5_adsp.c
-> @@ -264,7 +264,7 @@ static int adsp_stop(struct rproc *rproc)
->  	int handover;
->  	int ret;
-> 
-> -	ret = qcom_q6v5_request_stop(&adsp->q6v5);
-> +	ret = qcom_q6v5_request_stop(&adsp->q6v5, adsp->sysmon);
->  	if (ret == -ETIMEDOUT)
->  		dev_err(adsp->dev, "timed out on wait\n");
-> 
-> diff --git a/drivers/remoteproc/qcom_q6v5_mss.c
-> b/drivers/remoteproc/qcom_q6v5_mss.c
-> index 9a473cfef758..501764934014 100644
-> --- a/drivers/remoteproc/qcom_q6v5_mss.c
-> +++ b/drivers/remoteproc/qcom_q6v5_mss.c
-> @@ -1370,7 +1370,7 @@ static int q6v5_stop(struct rproc *rproc)
->  	struct q6v5 *qproc = (struct q6v5 *)rproc->priv;
->  	int ret;
-> 
-> -	ret = qcom_q6v5_request_stop(&qproc->q6v5);
-> +	ret = qcom_q6v5_request_stop(&qproc->q6v5, qproc->sysmon);
->  	if (ret == -ETIMEDOUT)
->  		dev_err(qproc->dev, "timed out on wait\n");
-> 
-> diff --git a/drivers/remoteproc/qcom_q6v5_pas.c
-> b/drivers/remoteproc/qcom_q6v5_pas.c
-> index 3837f23995e0..ed1772bfa55d 100644
-> --- a/drivers/remoteproc/qcom_q6v5_pas.c
-> +++ b/drivers/remoteproc/qcom_q6v5_pas.c
-> @@ -214,7 +214,7 @@ static int adsp_stop(struct rproc *rproc)
->  	int handover;
->  	int ret;
-> 
-> -	ret = qcom_q6v5_request_stop(&adsp->q6v5);
-> +	ret = qcom_q6v5_request_stop(&adsp->q6v5, adsp->sysmon);
->  	if (ret == -ETIMEDOUT)
->  		dev_err(adsp->dev, "timed out on wait\n");
-> 
-> diff --git a/drivers/remoteproc/qcom_q6v5_wcss.c
-> b/drivers/remoteproc/qcom_q6v5_wcss.c
-> index 8846ef0b0f1a..d6639856069b 100644
-> --- a/drivers/remoteproc/qcom_q6v5_wcss.c
-> +++ b/drivers/remoteproc/qcom_q6v5_wcss.c
-> @@ -390,7 +390,7 @@ static int q6v5_wcss_stop(struct rproc *rproc)
->  	int ret;
-> 
->  	/* WCSS powerdown */
-> -	ret = qcom_q6v5_request_stop(&wcss->q6v5);
-> +	ret = qcom_q6v5_request_stop(&wcss->q6v5, wcss->sysmon);
->  	if (ret == -ETIMEDOUT) {
->  		dev_err(wcss->dev, "timed out on wait\n");
->  		return ret;
-Reviewed-by: Rishabh Bhatnagar <rishabhb@codeaurora.org>
+A test shows that the output contains a space:
+    # cat /proc/sgi_uv/archtype
+    NSGI4 U/UVX
+Remove that embedded space by copying the "trimmed" buffer instead of the
+untrimmed input character list.  Use sizeof to remove size dependency
+on copy out length.  Increase output buffer size by one character just
+in case BIOS sends an 8 character string for archtype.
+
+Fixes: 1e61f5a95f191 (Add and decode Arch Type in UVsystab)
+
+Signed-off-by: Mike Travis <mike.travis@hpe.com>
+---
+ arch/x86/kernel/apic/x2apic_uv_x.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/arch/x86/kernel/apic/x2apic_uv_x.c b/arch/x86/kernel/apic/x2apic_uv_x.c
+index 3115caa7d7d0..1b98f8c12b96 100644
+--- a/arch/x86/kernel/apic/x2apic_uv_x.c
++++ b/arch/x86/kernel/apic/x2apic_uv_x.c
+@@ -33,7 +33,7 @@ static union uvh_apicid		uvh_apicid;
+ static int			uv_node_id;
+ 
+ /* Unpack AT/OEM/TABLE ID's to be NULL terminated strings */
+-static u8 uv_archtype[UV_AT_SIZE];
++static u8 uv_archtype[UV_AT_SIZE + 1];
+ static u8 oem_id[ACPI_OEM_ID_SIZE + 1];
+ static u8 oem_table_id[ACPI_OEM_TABLE_ID_SIZE + 1];
+ 
+@@ -320,7 +320,7 @@ static int __init decode_arch_type(unsigned long ptr)
+ 
+ 	if (n > 0 && n < sizeof(uv_ate->archtype)) {
+ 		pr_info("UV: UVarchtype received from BIOS\n");
+-		uv_stringify(UV_AT_SIZE, uv_archtype, uv_ate->archtype);
++		uv_stringify(sizeof(uv_archtype), uv_archtype, uv_ate->archtype);
+ 		return 1;
+ 	}
+ 	return 0;
+@@ -378,7 +378,7 @@ static int __init uv_set_system_type(char *_oem_id, char *_oem_table_id)
+ 	if (!early_get_arch_type())
+ 
+ 		/* If not use OEM ID for UVarchtype */
+-		uv_stringify(UV_AT_SIZE, uv_archtype, _oem_id);
++		uv_stringify(sizeof(uv_archtype), uv_archtype, oem_id);
+ 
+ 	/* Check if not hubbed */
+ 	if (strncmp(uv_archtype, "SGI", 3) != 0) {
+-- 
+2.21.0
+
