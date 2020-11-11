@@ -2,119 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ADA372AF495
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 16:18:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F1FF72AF49A
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 16:18:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726081AbgKKPSI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 10:18:08 -0500
-Received: from esa4.microchip.iphmx.com ([68.232.154.123]:63990 "EHLO
-        esa4.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726104AbgKKPSH (ORCPT
+        id S1727215AbgKKPS5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 10:18:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42138 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726904AbgKKPS4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 10:18:07 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1605107886; x=1636643886;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=65Tynn75RgpP8T+yxXaaqSS23is8krJbOCI3Iny+Zzs=;
-  b=JbBq4xRTr2EkIJwK9NCaUlk8g11zZlxz+bf0YfegfWEcL6S+PGWKf1ab
-   WV7OCrAVeukLgyFG0AdLnQv1M1OcEYXv2nKJf4eSzPjU7oUFAt1rdznAq
-   pNX0QkVygpk+6PDAIW1u3MXxmba+Q2Bf877tN6nC48uDBp2D2RLW6VBYI
-   f4dUujnu/hLe6J7Tx+VolHmJfSkLXP25lqGwzgVpSyZRDIs0JRb69VM2E
-   v5aQJRAotL/Q27LRoCL1xfkBkMh/rk4vjW5t52g5DOL5dSFgWcZBHwQ2j
-   TSpi2St2ob3oilLNMEz46RQuRckjqy2VSjj8X8YYECYrk1oxD3VKDO295
-   Q==;
-IronPort-SDR: P+R7/qioqfqZF8wkHmwNJTWQQ7RIgyM0e5tz1Bmt8VRoQLG/ou/XdsL8afFhYa4z+H7PxvLpwo
- FvthggixE6bCvk8irSMPLni18kPxwr4zF8SCzBE+UEDHX5yfrntDbV/kEKDRQlNYRKQkd5DDhP
- 01AcpSbUMAKOAS8gSUR7q+PMIOddZc2vgh1YgJmEyHKR0pJ3LDj/e8OjR5UguVOwLiXbFMLnxc
- Gd8WHHlazzJp06FpHNdslB9HQnd+h3rNDvMnPnJTr91lpRWD0dsG252zLzX+IZU1xsNzlsOq/L
- ul8=
-X-IronPort-AV: E=Sophos;i="5.77,469,1596524400"; 
-   d="scan'208";a="93292656"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa4.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 11 Nov 2020 08:18:06 -0700
-Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Wed, 11 Nov 2020 08:18:05 -0700
-Received: from mchp-dev-shegelun.microchip.com (10.10.115.15) by
- chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server id
- 15.1.1979.3 via Frontend Transport; Wed, 11 Nov 2020 08:18:03 -0700
-From:   Steen Hegelund <steen.hegelund@microchip.com>
-To:     Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Antoine Tenart <atenart@kernel.org>,
-        Bryan Whitehead <Bryan.Whitehead@microchip.com>
-CC:     Steen Hegelund <steen.hegelund@microchip.com>,
-        Microchip UNG Driver List <UNGLinuxDriver@microchip.com>,
-        John Haechten <John.Haechten@microchip.com>,
-        Netdev List <netdev@vger.kernel.org>,
-        Linux Kernel List <linux-kernel@vger.kernel.org>
-Subject: [net v2] net: phy: mscc: adjust the phy support for PTP and MACsec
-Date:   Wed, 11 Nov 2020 16:17:53 +0100
-Message-ID: <20201111151753.840364-1-steen.hegelund@microchip.com>
-X-Mailer: git-send-email 2.29.2
+        Wed, 11 Nov 2020 10:18:56 -0500
+Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 878B6C0613D1
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 07:18:56 -0800 (PST)
+Received: by mail-qt1-x842.google.com with SMTP id h12so1487162qtc.9
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 07:18:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=3XxacOuX3QMvhk3diut0JoyxopS0EmCY/QAdadNPdVM=;
+        b=gyKbCHEvMSsk8Irp2rXztZu1dowW4d7MJeILveQ2vZu+MGAuBTlLZZfmurmnsW0dq6
+         Pz0stgrwWryX/EpsrWfAjlwofnpJz2zHTUwDOHUKOlKICRUt2SylO8mh3Ey8Saa19sgK
+         wHd2/ZjLoWBU89By2001w9A8SlfNuPkoE+eE3vGcr8QrRlaPMNzcUhEYVvgjHPL/C0Y2
+         33zdC9PFn1cQEL4CUAcHpbkIkvzTqAAS5r/+2oav9jUkzts6lpKmozQzOJ6G/JZTWrDz
+         HRUm03gTixCRn89R0tWszQYcUPyHSTU+wHyyBrGL5DyRPyIrwyWTrB8B+poDKe7fiFzY
+         Pkcw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=3XxacOuX3QMvhk3diut0JoyxopS0EmCY/QAdadNPdVM=;
+        b=ohWsEBNn98p7hyECPlxlfbMD1Hd9i0a1r2Jku/BM5Mx5Mfa1XufL3bFCbJjR0RwPnb
+         Artm9PKBcpOwkqlko5pjfEDOvH0Uh1Ekrkjk0ekaZB/0vUM2vl5iXAHw7ME/EMoY7M8m
+         onkvj5YsqueNzqEu3fb7xXLK5az1B6A/hSTrMPvy8ahQL7KfJI2fpehbOwD8FcEfWlIw
+         exKJIQcHNJPpmOt5Ep3VK8zzCivzsgHysHcjHF6fobx7tsYXWgTraYzGJz630RO+XKJj
+         a+QyZwTx3jr9oPp17f/tzKGPSUOSXFZ6fc2Vs1LhjYrazZ89sUUk5Kj2lwuYqdaL8wFl
+         mSXg==
+X-Gm-Message-State: AOAM530J+V0ZpyrvdERgiMK1sWp2w7QCBGK/XXn95JZGu2GYnl//IWlD
+        8CvBWUXxWZWwy7vZKc4m4XS6KF5sGFXq5ZrLcZPUAg==
+X-Google-Smtp-Source: ABdhPJzzTtpZKzryIB5iY91wMMpoKoaRlpfD/zhQ3TLmjx6u5ZGI+L4GdfLl8xeG2FfGSbieam7/2814RlEfmz8oxvg=
+X-Received: by 2002:ac8:5c85:: with SMTP id r5mr19136944qta.8.1605107935487;
+ Wed, 11 Nov 2020 07:18:55 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
+References: <cover.1605046192.git.andreyknvl@google.com> <f24f24cf8c75844531a01668b314aced88f5f3e1.1605046192.git.andreyknvl@google.com>
+In-Reply-To: <f24f24cf8c75844531a01668b314aced88f5f3e1.1605046192.git.andreyknvl@google.com>
+From:   Alexander Potapenko <glider@google.com>
+Date:   Wed, 11 Nov 2020 16:18:43 +0100
+Message-ID: <CAG_fn=UbOixaO_CZgNw8vqpzZJDdb5LFQgq3CWs7Shru4ZtJyg@mail.gmail.com>
+Subject: Re: [PATCH v9 22/44] kasan: rename SHADOW layout macros to META
+To:     Andrey Konovalov <andreyknvl@google.com>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will.deacon@arm.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Marco Elver <elver@google.com>,
+        Evgenii Stepanov <eugenis@google.com>,
+        Branislav Rankov <Branislav.Rankov@arm.com>,
+        Kevin Brodsky <kevin.brodsky@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The MSCC PHYs selected for PTP and MACSec was not correct
+On Tue, Nov 10, 2020 at 11:12 PM Andrey Konovalov <andreyknvl@google.com> w=
+rote:
+>
+> This is a preparatory commit for the upcoming addition of a new hardware
+> tag-based (MTE-based) KASAN mode.
+>
+> Hardware tag-based KASAN won't be using shadow memory, but will reuse
+> these macros. Rename "SHADOW" to implementation-neutral "META".
+>
+> No functional changes.
+>
+> Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
+> Signed-off-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
+> Reviewed-by: Marco Elver <elver@google.com>
+Reviewed-by: Alexander Potapenko <glider@google.com>
 
-- PTP
-    - Add VSC8572 and VSC8574
+> ---
+> Change-Id: Id2d836bf43b401bce1221cc06e745185f17b1cc
+> ---
+>  mm/kasan/report.c | 30 +++++++++++++++---------------
+>  1 file changed, 15 insertions(+), 15 deletions(-)
+>
+> diff --git a/mm/kasan/report.c b/mm/kasan/report.c
+> index 594bad2a3a5e..8c588588c88f 100644
+> --- a/mm/kasan/report.c
+> +++ b/mm/kasan/report.c
+> @@ -33,11 +33,11 @@
+>  #include "kasan.h"
+>  #include "../slab.h"
+>
+> -/* Shadow layout customization. */
+> -#define SHADOW_BYTES_PER_BLOCK 1
+> -#define SHADOW_BLOCKS_PER_ROW 16
+> -#define SHADOW_BYTES_PER_ROW (SHADOW_BLOCKS_PER_ROW * SHADOW_BYTES_PER_B=
+LOCK)
+> -#define SHADOW_ROWS_AROUND_ADDR 2
+> +/* Metadata layout customization. */
+> +#define META_BYTES_PER_BLOCK 1
+> +#define META_BLOCKS_PER_ROW 16
+> +#define META_BYTES_PER_ROW (META_BLOCKS_PER_ROW * META_BYTES_PER_BLOCK)
+> +#define META_ROWS_AROUND_ADDR 2
+>
+>  static unsigned long kasan_flags;
+>
+> @@ -240,7 +240,7 @@ static void print_address_description(void *addr, u8 =
+tag)
+>
+>  static bool row_is_guilty(const void *row, const void *guilty)
+>  {
+> -       return (row <=3D guilty) && (guilty < row + SHADOW_BYTES_PER_ROW)=
+;
+> +       return (row <=3D guilty) && (guilty < row + META_BYTES_PER_ROW);
+>  }
+>
+>  static int shadow_pointer_offset(const void *row, const void *shadow)
+> @@ -249,7 +249,7 @@ static int shadow_pointer_offset(const void *row, con=
+st void *shadow)
+>          *    3 + (BITS_PER_LONG/8)*2 chars.
+>          */
+>         return 3 + (BITS_PER_LONG/8)*2 + (shadow - row)*2 +
+> -               (shadow - row) / SHADOW_BYTES_PER_BLOCK + 1;
+> +               (shadow - row) / META_BYTES_PER_BLOCK + 1;
+>  }
+>
+>  static void print_memory_metadata(const void *addr)
+> @@ -259,15 +259,15 @@ static void print_memory_metadata(const void *addr)
+>         const void *shadow_row;
+>
+>         shadow_row =3D (void *)round_down((unsigned long)shadow,
+> -                                       SHADOW_BYTES_PER_ROW)
+> -               - SHADOW_ROWS_AROUND_ADDR * SHADOW_BYTES_PER_ROW;
+> +                                       META_BYTES_PER_ROW)
+> +               - META_ROWS_AROUND_ADDR * META_BYTES_PER_ROW;
+>
+>         pr_err("Memory state around the buggy address:\n");
+>
+> -       for (i =3D -SHADOW_ROWS_AROUND_ADDR; i <=3D SHADOW_ROWS_AROUND_AD=
+DR; i++) {
+> +       for (i =3D -META_ROWS_AROUND_ADDR; i <=3D META_ROWS_AROUND_ADDR; =
+i++) {
+>                 const void *kaddr =3D kasan_shadow_to_mem(shadow_row);
+>                 char buffer[4 + (BITS_PER_LONG/8)*2];
+> -               char shadow_buf[SHADOW_BYTES_PER_ROW];
+> +               char shadow_buf[META_BYTES_PER_ROW];
+>
+>                 snprintf(buffer, sizeof(buffer),
+>                         (i =3D=3D 0) ? ">%px: " : " %px: ", kaddr);
+> @@ -276,17 +276,17 @@ static void print_memory_metadata(const void *addr)
+>                  * function, because generic functions may try to
+>                  * access kasan mapping for the passed address.
+>                  */
+> -               memcpy(shadow_buf, shadow_row, SHADOW_BYTES_PER_ROW);
+> +               memcpy(shadow_buf, shadow_row, META_BYTES_PER_ROW);
+>                 print_hex_dump(KERN_ERR, buffer,
+> -                       DUMP_PREFIX_NONE, SHADOW_BYTES_PER_ROW, 1,
+> -                       shadow_buf, SHADOW_BYTES_PER_ROW, 0);
+> +                       DUMP_PREFIX_NONE, META_BYTES_PER_ROW, 1,
+> +                       shadow_buf, META_BYTES_PER_ROW, 0);
+>
+>                 if (row_is_guilty(shadow_row, shadow))
+>                         pr_err("%*c\n",
+>                                 shadow_pointer_offset(shadow_row, shadow)=
+,
+>                                 '^');
+>
+> -               shadow_row +=3D SHADOW_BYTES_PER_ROW;
+> +               shadow_row +=3D META_BYTES_PER_ROW;
+>         }
+>  }
+>
+> --
+> 2.29.2.222.g5d2a92d10f8-goog
+>
 
-- MACsec
-    - Removed VSC8575
 
-The relevant datasheets can be found here:
-  - VSC8572: https://www.microchip.com/wwwproducts/en/VSC8572
-  - VSC8574: https://www.microchip.com/wwwproducts/en/VSC8574
-  - VSC8575: https://www.microchip.com/wwwproducts/en/VSC8575
+--=20
+Alexander Potapenko
+Software Engineer
 
-History:
-v1 -> v2:
-  - Added "fixes:" tags to the commit message
+Google Germany GmbH
+Erika-Mann-Stra=C3=9Fe, 33
+80636 M=C3=BCnchen
 
-Fixes: bb56c016a1257 ("net: phy: mscc: split the driver into separate files")
-Fixes: ab2bf93393571 ("net: phy: mscc: 1588 block initialization")
-Signed-off-by: Steen Hegelund <steen.hegelund@microchip.com>
----
- drivers/net/phy/mscc/mscc_macsec.c | 1 -
- drivers/net/phy/mscc/mscc_ptp.c    | 2 ++
- 2 files changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/net/phy/mscc/mscc_macsec.c b/drivers/net/phy/mscc/mscc_macsec.c
-index 1d4c012194e9..72292bf6c51c 100644
---- a/drivers/net/phy/mscc/mscc_macsec.c
-+++ b/drivers/net/phy/mscc/mscc_macsec.c
-@@ -981,7 +981,6 @@ int vsc8584_macsec_init(struct phy_device *phydev)
- 
- 	switch (phydev->phy_id & phydev->drv->phy_id_mask) {
- 	case PHY_ID_VSC856X:
--	case PHY_ID_VSC8575:
- 	case PHY_ID_VSC8582:
- 	case PHY_ID_VSC8584:
- 		INIT_LIST_HEAD(&vsc8531->macsec_flows);
-diff --git a/drivers/net/phy/mscc/mscc_ptp.c b/drivers/net/phy/mscc/mscc_ptp.c
-index b97ee79f3cdf..f0537299c441 100644
---- a/drivers/net/phy/mscc/mscc_ptp.c
-+++ b/drivers/net/phy/mscc/mscc_ptp.c
-@@ -1510,6 +1510,8 @@ void vsc8584_config_ts_intr(struct phy_device *phydev)
- int vsc8584_ptp_init(struct phy_device *phydev)
- {
- 	switch (phydev->phy_id & phydev->drv->phy_id_mask) {
-+	case PHY_ID_VSC8572:
-+	case PHY_ID_VSC8574:
- 	case PHY_ID_VSC8575:
- 	case PHY_ID_VSC8582:
- 	case PHY_ID_VSC8584:
--- 
-2.29.2
-
+Gesch=C3=A4ftsf=C3=BChrer: Paul Manicle, Halimah DeLaine Prado
+Registergericht und -nummer: Hamburg, HRB 86891
+Sitz der Gesellschaft: Hamburg
