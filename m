@@ -2,127 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40FE12AF87A
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 19:46:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E4E32AF87F
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 19:48:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726734AbgKKSqp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 13:46:45 -0500
-Received: from esa2.hc3370-68.iphmx.com ([216.71.145.153]:7155 "EHLO
-        esa2.hc3370-68.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725949AbgKKSqo (ORCPT
+        id S1726884AbgKKSsC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 13:48:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46430 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726126AbgKKSsB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 13:46:44 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=citrix.com; s=securemail; t=1605120404;
-  h=subject:to:cc:references:from:message-id:date:
-   mime-version:in-reply-to:content-transfer-encoding;
-  bh=z3jhtaJZLiN9XVyLCAwhBQIKtAh04ByTPeZi01LbSUQ=;
-  b=LF6ZKEz37MPew3dAhlvFkvjTpfNJrKQDlaSycvC5Dvh3mgNvlpHBsK82
-   W6SpkGUopYcHmv5RvnLhNzfRqNq0FBKpYkACivOZLyVRUteiinG2T2YZs
-   XS2Y11czkY0c6TMrPFlhK2HeGm374L8c6QfyIFtDqsNLS59YKPX2nDdu/
-   c=;
-Authentication-Results: esa2.hc3370-68.iphmx.com; dkim=none (message not signed) header.i=none
-IronPort-SDR: HDLk/AZWty5ZNWjWZNb8koA65e8K14mJtddMeDa99tsiYspklG0uMbgO1sx5MqHSqZ2CKVqVnL
- 0cgaiFw1h+jEju4ehE157KOYrPs8UQ9e5Tbrj3s8eBm1NbSCLkpKwkiHdq2UpmXLRXGoRYvwJb
- 9hs7Nf2VyA83/rQzIGQ6dLewSxFdwOUn77kZCKEQy8zct+pBwWgflPEkBxWTunR6qYV0fj7H16
- 3R1N+0EmYhhvoM47XES0t8GV+kVz5OVUqgqnWu9wRTDGmU5KyqkAwTdYVUxsDrgcCmuxrgAxan
- OkQ=
-X-SBRS: None
-X-MesageID: 30975574
-X-Ironport-Server: esa2.hc3370-68.iphmx.com
-X-Remote-IP: 162.221.158.21
-X-Policy: $RELAYED
-X-IronPort-AV: E=Sophos;i="5.77,470,1596513600"; 
-   d="scan'208";a="30975574"
-Subject: Re: WARNING: can't access registers at asm_common_interrupt
-To:     Josh Poimboeuf <jpoimboe@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>
-CC:     Shinichiro Kawasaki <shinichiro.kawasaki@wdc.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Nicholas Piggin" <npiggin@gmail.com>,
-        Damien Le Moal <Damien.LeMoal@wdc.com>, <jgross@suse.com>
-References: <20201106060414.edtcb7nrbzm4a32t@shindev.dhcp.fujisawa.hgst.com>
- <20201111170536.arx2zbn4ngvjoov7@treble>
- <20201111174736.GH2628@hirez.programming.kicks-ass.net>
- <20201111181328.mbxcz2uap2vnqpxq@treble>
-From:   Andrew Cooper <andrew.cooper3@citrix.com>
-Message-ID: <33843b7f-ed8a-8fcb-19bc-c76cf00f453d@citrix.com>
-Date:   Wed, 11 Nov 2020 18:46:37 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Wed, 11 Nov 2020 13:48:01 -0500
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C5C3C0613D1
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 10:48:00 -0800 (PST)
+Received: by mail-pj1-x1043.google.com with SMTP id g21so1144117pjv.2
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 10:48:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Y30nQOc9Erw1djQyyLfK/qeAvjp84VdQVely6oznPn8=;
+        b=F4hURf+RTl0225vrWEfSZbmk7Bq//Kjebnui8EwY/qNqYqonykgLg+oX5/8q2RUpEa
+         IBKu+B6Kjr8csyGFXKQLcXMl1wFQdLHM3PjHQLOdnm6UhmEv3LEkoQC1hc6wUq/Sthvd
+         TKw6SUMvaRqBMi1QFlABZaiIxDsHx05tvJXz8c1HFxNl9P/2CzA8p1rvts3Uvo+LoG68
+         uCGnYptuf0HoaOHyOLerQOQxr5IGVfv57rGUGC4eQT2+dPNT2l4atE0UI4tpZjl9bxTT
+         eKkIy362bjYc5GOqF7YWK3NoSOxBfeVbQHVn4uO1DrVZkDh2AmOoAE92dRVl8mTd0Hog
+         1v7w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Y30nQOc9Erw1djQyyLfK/qeAvjp84VdQVely6oznPn8=;
+        b=unHaxXn0p5+obubVgBaDX6fw2xXqKgS/jiElHYolqPnNHep5EJTTVEQVX/XsIf5mU3
+         B8W41maru6ruuJaelsfq5/erTUXGmXu2/gYQTAqFZnSgisPxHjXVvFtbh9xb8IUFJJh0
+         iHMrJd0RToTOdssNGvK1VmRHwcRJYaSca/1Bn6wj1xKE3bQQuoTvcIIY7NOrd9zguqVk
+         6TwEjGQl62tvKA+30v408+HmLgdYmTjevaPbSKF4nUCOOx01zp6zQrcTQIinkB5Jj5H1
+         LtjF0+jgnnHVKr0GsQcnyFNlvyivLG4WV8jd5UrZeblIoPxvXk9lwFobItVEVcYAoVUP
+         q6RQ==
+X-Gm-Message-State: AOAM532k41wMCfDvJvoLS76Fu0FpQE5zWMh6KjKoLBJIaeDRSKj1N00Y
+        053XwinGCb1AxlprOc0QwdFI2TJWC3yRDJrmZlL2Xg==
+X-Google-Smtp-Source: ABdhPJxyRtx5vT7XfBzyH9lLS1IUWO0PgVwLLoumJN665dnbbcXnWUCn1uGDeLllBgnPNhNPXKk7tkr6Z4OjTzz8vL8=
+X-Received: by 2002:a17:90b:3111:: with SMTP id gc17mr5116219pjb.41.1605120479739;
+ Wed, 11 Nov 2020 10:47:59 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20201111181328.mbxcz2uap2vnqpxq@treble>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Content-Language: en-GB
-X-ClientProxiedBy: AMSPEX02CAS01.citrite.net (10.69.22.112) To
- FTLPEX02CL04.citrite.net (10.13.108.177)
+References: <cover.1605046192.git.andreyknvl@google.com> <85aba371903b749412fac34e44e54c89e5ddae30.1605046192.git.andreyknvl@google.com>
+ <CAG_fn=VuM=4axS6ex7_MgCeZ47o+Scon1WuFGStF78T36sHayw@mail.gmail.com>
+In-Reply-To: <CAG_fn=VuM=4axS6ex7_MgCeZ47o+Scon1WuFGStF78T36sHayw@mail.gmail.com>
+From:   Andrey Konovalov <andreyknvl@google.com>
+Date:   Wed, 11 Nov 2020 19:47:48 +0100
+Message-ID: <CAAeHK+xq2tuVYGOPx=_uj08Xwa_1o9Wv-ODrgN3yWXxAgEGV3w@mail.gmail.com>
+Subject: Re: [PATCH v9 10/44] kasan: define KASAN_GRANULE_PAGE
+To:     Alexander Potapenko <glider@google.com>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will.deacon@arm.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Marco Elver <elver@google.com>,
+        Evgenii Stepanov <eugenis@google.com>,
+        Branislav Rankov <Branislav.Rankov@arm.com>,
+        Kevin Brodsky <kevin.brodsky@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/11/2020 18:13, Josh Poimboeuf wrote:
-> On Wed, Nov 11, 2020 at 06:47:36PM +0100, Peter Zijlstra wrote:
->> This is PARAVIRT_XXL only, which is a Xen special. My preference, as
->> always, is to kill it... Sadly the Xen people have a different opinion.
-> That would be soooo nice... then we could get rid of paravirt patching
-> altogether and replace it with static calls.
+On Wed, Nov 11, 2020 at 3:13 PM Alexander Potapenko <glider@google.com> wrote:
 >
->>> Objtool doesn't know about the pushf/pop paravirt patch, so ORC gets
->>> confused by the changed stack layout.
->>>
->>> I'm thinking we either need to teach objtool how to deal with
->>> save_fl/restore_fl patches, or we need to just get rid of those nasty
->>> patches somehow.  Peter, any thoughts?
->> Don't use Xen? ;-)
->>
->> So with PARAVIRT_XXL the compiler will emit something like:
->>
->>   "CALL *pvops.save_fl"
->>
->> Which we then overwrite at runtime with "pushf; pop %[re]ax" and a few
->> NOPs.
->>
->> Now, objtool understands alternatives, and ensures they have the same
->> stack layout, it has no chance in hell of understanding this, simply
->> because paravirt_patch.c is magic.
->>
->> I don't have any immediate clever ideas, but let me ponder it a wee bit.
+> On Tue, Nov 10, 2020 at 11:11 PM Andrey Konovalov <andreyknvl@google.com> wrote:
+> >
+> > Define KASAN_GRANULE_PAGE as (KASAN_GRANULE_SIZE << PAGE_SHIFT), which is
+> > the same as (KASAN_GRANULE_SIZE * PAGE_SIZE), and use it across KASAN code
+> > to simplify it.
+>
+> What's the physical sense behind KASAN_GRANULE_PAGE? Is it something
+> more than just a product of two constants?
 
-Well...
+No, just a product.
 
-static_calls are a newer, and more generic, form of pvops.  Most of the
-magic is to do with inlining small fragments, but static calls can do
-that now too, IIRC?
+> The name suggests it might be something page-sized, but in reality it is not.
 
->> ....
->>
->> Something really disguisting we could do is recognise the indirect call
->> offset and emit an extra ORC entry for RIP+1. So the cases are:
->>
->> 	CALL *pv_ops.save_fl	-- 7 bytes IIRC
->> 	CALL $imm;		-- 5 bytes
->> 	PUSHF; POP %[RE]AX	-- 2 bytes
->>
->> so the RIP+1 (the POP insn) will only ever exist in this case. The
->> indirect and direct call cases would never land on that IP.
-> I had a similar idea, and a bit of deja vu - we may have talked about
-> this before.  At least I know we talked about doing something similar
-> for alternatives which muck with the stack.
-
-The main complexity with pvops is that the
-
-    CALL *pv_ops.save_fl
-
-form needs to be usable from extremely early in the day (pre general
-patching), hence the use of function pointers and some non-standard ABIs.
-
-For performance reasons, the end result of this pvop wants to be `pushf;
-pop %[re]ax` in then native case, and `call xen_pv_save_fl` in the Xen
-case, but this doesn't mean that the compiled instruction needs to be a
-function pointer to begin with.
-
-Would objtool have an easier time coping if this were implemented in
-terms of a static call?
-
-~Andrew
+What name would you prefer?
