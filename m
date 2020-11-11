@@ -2,184 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D0262AF38F
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 15:30:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BFBF32AF38D
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 15:30:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726516AbgKKOam (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 09:30:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34588 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725900AbgKKOah (ORCPT
+        id S1726789AbgKKOan (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 09:30:43 -0500
+Received: from esa6.microchip.iphmx.com ([216.71.154.253]:34324 "EHLO
+        esa6.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725909AbgKKOai (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 09:30:37 -0500
-Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18F70C0613D1
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 06:30:37 -0800 (PST)
-Received: by mail-qk1-x743.google.com with SMTP id r7so1801035qkf.3
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 06:30:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=Z/BqGgtubdX37tmwe08Rq/1pXj9l2Bza+T3BZlmbJiM=;
-        b=jvL+NTnBHSWLApmS7P+p19pqyWxpgB69jp9uis0hZF42uoT1XBnYFN9NaAsKlKEASe
-         uLIq9e2d44ooNO/MNgOUL0JOwRBhmd7/PgJJIX16fc3mKZgm2FBx8nw7gei6jegiqeeR
-         sdhTv70Bs/qQjzy6ZSoT3Q2yL8+mWAxuXtzBHmcIyoZOCJU3yBdYiNrNX8f4Pf4dhIZc
-         aCJnxCPX4ug/8Oxl3oftLj5SqRHMigxoH48jO4FloEHaMA9GnPX4JzdAs05y788Nbn+e
-         /cZOvwwfUw23tXlNFRpUgGAk5Gx5bpgailYjw2c08mjEAkLHFZlLDf5MYjeUQPm+EPuF
-         Q7Rw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=Z/BqGgtubdX37tmwe08Rq/1pXj9l2Bza+T3BZlmbJiM=;
-        b=Du+EnzZvWo6+khSQC1Mo4i+pI+fD8tcJgA9Ve16BhnB2Tj8Bz/4u4lYMM/Mz5E2B7F
-         85DrZ4OxBcHKMabLXH2104quNXLklxoqfY5J/4vubBgIf8gcx9kZqX6h1q6BusR3+7Bm
-         m3nsRPO3ZNUDcaBM3KdO+FKDpYkAM2+J1JkJ4yNA7vhIcGbJ4oGTmkEWuFwyo69HfGBV
-         xlQ7hSXVl7XrtcKeS8IzsYz4Y8kOJDNod8Q7gVplniDi2xJFxmQ+p1LHw9C3Vbeiho0z
-         VQqNiJkQ6uYha8WcV5f1bEktuxmeJFY1B/KVeCvBJDlqEICiEaI6bZQ0uJYYObo9Vm38
-         Vz7Q==
-X-Gm-Message-State: AOAM531O++/mIBouEjvilmmDzOTA9H3ogx0uEdQlpQ8oBnQDyEdapMrb
-        QVlKmxlJceE8Gf6zIxDFMtveRrWsi6GeRbJoKxT8Ag==
-X-Google-Smtp-Source: ABdhPJyD3/xRKtJaSbF5ZNq+W+FQDm38hz+bmHdD0jgz0vEW7Rwi9biDt4z3OdyzDxWL4SWvUZu8Z7RK8lNOhpzQ7+4=
-X-Received: by 2002:a37:b545:: with SMTP id e66mr8296564qkf.392.1605105035446;
- Wed, 11 Nov 2020 06:30:35 -0800 (PST)
+        Wed, 11 Nov 2020 09:30:38 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1605105037; x=1636641037;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=eQwSLKz3XcJYspomITX3s4KppwTX/4B5QZmOwyUr1wI=;
+  b=ZTVMbZJJbLQW2oo8Ag2lqZuu+PfC1011yGGeXX4fCxoT0Zh1IJ9wbqKi
+   Hk/Tja5SU61c0IlGruETxzOlR35wqNRa1FDV/zUGbaMub14gUx4rugaNu
+   xXICORBeF94Ip92qEiWPZerxHYArhQ0O+sTC6GxC6tdaGPubANSgNDEP3
+   RMqvXHSiVgWX7nq0+3yS5eKpWOjWW8qXhZnIGp6Pr6SlU8X7FZhY5JsZ2
+   sQK9C0llhUcL8Q+BoHJ6oNnHB34vcFKPODs20iESduMPe8wQCV85JItYi
+   PiFAmKUiM2OypQ20UIIQ010Ts5ChcnUw7xnKuJYp85jsHC8aC255vTR4F
+   g==;
+IronPort-SDR: d8DTRE2MFM5D0g3PbD8aV5mvP9KIllAr0fSvuCxGSoSW4MSZb1W8Bp8OGXwgwwshKcuavCFLY7
+ CWt3mIfPSstjRrWbYGuiKG/eX+t0b7FUsSFE/ykQI2CZte2K/W8WnhL1oVC8qiS3s7k4jYndKq
+ cYEYgc6RAcAxFRMtzUNYjOMsrCrnvJ8K+J1ZNcOGmqZmDH5P7dqz+1Lh6Z2AC2kTrw8i7tA37h
+ bAh0+7QFOGdOFRuOWOI6BiqNHQGESNpTo3MnDXJl41RspkIkeLpWkdHR64Tn9xJfaMI+DP5aCd
+ RTA=
+X-IronPort-AV: E=Sophos;i="5.77,469,1596524400"; 
+   d="scan'208";a="33232780"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa6.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 11 Nov 2020 07:30:36 -0700
+Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Wed, 11 Nov 2020 07:30:36 -0700
+Received: from localhost (10.10.115.15) by chn-vm-ex04.mchp-main.com
+ (10.10.85.152) with Microsoft SMTP Server id 15.1.1979.3 via Frontend
+ Transport; Wed, 11 Nov 2020 07:30:36 -0700
+Date:   Wed, 11 Nov 2020 15:30:35 +0100
+From:   Steen Hegelund <steen.hegelund@microchip.com>
+To:     Antoine Tenart <atenart@kernel.org>
+CC:     "David S. Miller" <davem@davemloft.net>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Bryan Whitehead <Bryan.Whitehead@microchip.com>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Quentin Schulz <quentin.schulz@bootlin.com>,
+        Russell King <linux@armlinux.org.uk>,
+        "Microchip UNG Driver List" <UNGLinuxDriver@microchip.com>,
+        John Haechten <John.Haechten@microchip.com>,
+        Netdev List <netdev@vger.kernel.org>,
+        "Linux Kernel List" <linux-kernel@vger.kernel.org>
+Subject: Re: [net] net: phy: mscc: adjust the phy support for PTP and MACsec
+Message-ID: <20201111143035.fr5dh3eirtxvwqeu@mchp-dev-shegelun>
+References: <20201111095511.671539-1-steen.hegelund@microchip.com>
+ <160510327378.144114.15670288040387928079@surface.local>
 MIME-Version: 1.0
-References: <cover.1605046192.git.andreyknvl@google.com> <3aae3b3f931618b4418af7992bff1e258e4eb1ad.1605046192.git.andreyknvl@google.com>
-In-Reply-To: <3aae3b3f931618b4418af7992bff1e258e4eb1ad.1605046192.git.andreyknvl@google.com>
-From:   Alexander Potapenko <glider@google.com>
-Date:   Wed, 11 Nov 2020 15:30:23 +0100
-Message-ID: <CAG_fn=Vze9yV7Hy6rf-Sy+F0NP-bPPZZ8QYa3QQu5J8a1q=5hw@mail.gmail.com>
-Subject: Re: [PATCH v9 15/44] kasan, arm64: only init shadow for software modes
-To:     Andrey Konovalov <andreyknvl@google.com>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will.deacon@arm.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Marco Elver <elver@google.com>,
-        Evgenii Stepanov <eugenis@google.com>,
-        Branislav Rankov <Branislav.Rankov@arm.com>,
-        Kevin Brodsky <kevin.brodsky@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Disposition: inline
+In-Reply-To: <160510327378.144114.15670288040387928079@surface.local>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 10, 2020 at 11:11 PM Andrey Konovalov <andreyknvl@google.com> w=
-rote:
+On 11.11.2020 15:01, Antoine Tenart wrote:
+>EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
 >
-> This is a preparatory commit for the upcoming addition of a new hardware
-> tag-based (MTE-based) KASAN mode.
+>Hi Steen!
 >
-> Hardware tag-based KASAN won't be using shadow memory. Only initialize
-> it when one of the software KASAN modes are enabled.
+>Either this is a fix and it would need a Fixes: tag in addition to the
+>Signed-off-by: one (you can have a look at the git history to see what
+>is the format); or the patch is not a fix and then it should have
+>[net-next] in its subject instead of [net].
 >
-> No functional changes for software modes.
+>Please have a look at the relevant documentation,
+>https://www.kernel.org/doc/html/latest/networking/netdev-FAQ.html
 >
-> Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
-> Signed-off-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
-> Reviewed-by: Catalin Marinas <catalin.marinas@arm.com>
-Reviewed-by: Alexander Potapenko <glider@google.com>
-> ---
-> Change-Id: I055e0651369b14d3e54cdaa8c48e6329b2e8952d
-> ---
->  arch/arm64/include/asm/kasan.h |  8 ++++++--
->  arch/arm64/mm/kasan_init.c     | 15 ++++++++++++++-
->  2 files changed, 20 insertions(+), 3 deletions(-)
->
-> diff --git a/arch/arm64/include/asm/kasan.h b/arch/arm64/include/asm/kasa=
-n.h
-> index b0dc4abc3589..f7ea70d02cab 100644
-> --- a/arch/arm64/include/asm/kasan.h
-> +++ b/arch/arm64/include/asm/kasan.h
-> @@ -13,6 +13,12 @@
->  #define arch_kasan_get_tag(addr)       __tag_get(addr)
->
->  #ifdef CONFIG_KASAN
-> +void kasan_init(void);
-> +#else
-> +static inline void kasan_init(void) { }
-> +#endif
-> +
-> +#if defined(CONFIG_KASAN_GENERIC) || defined(CONFIG_KASAN_SW_TAGS)
->
->  /*
->   * KASAN_SHADOW_START: beginning of the kernel virtual addresses.
-> @@ -33,12 +39,10 @@
->  #define _KASAN_SHADOW_START(va)        (KASAN_SHADOW_END - (1UL << ((va)=
- - KASAN_SHADOW_SCALE_SHIFT)))
->  #define KASAN_SHADOW_START      _KASAN_SHADOW_START(vabits_actual)
->
-> -void kasan_init(void);
->  void kasan_copy_shadow(pgd_t *pgdir);
->  asmlinkage void kasan_early_init(void);
->
->  #else
-> -static inline void kasan_init(void) { }
->  static inline void kasan_copy_shadow(pgd_t *pgdir) { }
->  #endif
->
-> diff --git a/arch/arm64/mm/kasan_init.c b/arch/arm64/mm/kasan_init.c
-> index b24e43d20667..ffeb80d5aa8d 100644
-> --- a/arch/arm64/mm/kasan_init.c
-> +++ b/arch/arm64/mm/kasan_init.c
-> @@ -21,6 +21,8 @@
->  #include <asm/sections.h>
->  #include <asm/tlbflush.h>
->
-> +#if defined(CONFIG_KASAN_GENERIC) || defined(CONFIG_KASAN_SW_TAGS)
-> +
->  static pgd_t tmp_pg_dir[PTRS_PER_PGD] __initdata __aligned(PGD_SIZE);
->
->  /*
-> @@ -208,7 +210,7 @@ static void __init clear_pgds(unsigned long start,
->                 set_pgd(pgd_offset_k(start), __pgd(0));
->  }
->
-> -void __init kasan_init(void)
-> +static void __init kasan_init_shadow(void)
->  {
->         u64 kimg_shadow_start, kimg_shadow_end;
->         u64 mod_shadow_start, mod_shadow_end;
-> @@ -269,6 +271,17 @@ void __init kasan_init(void)
->
->         memset(kasan_early_shadow_page, KASAN_SHADOW_INIT, PAGE_SIZE);
->         cpu_replace_ttbr1(lm_alias(swapper_pg_dir));
-> +}
-> +
-> +#else /* CONFIG_KASAN_GENERIC || CONFIG_KASAN_SW_TAGS) */
-> +
-> +static inline void __init kasan_init_shadow(void) { }
-> +
-> +#endif /* CONFIG_KASAN_GENERIC || CONFIG_KASAN_SW_TAGS */
-> +
-> +void __init kasan_init(void)
-> +{
-> +       kasan_init_shadow();
->
->         /* At this point kasan is fully initialized. Enable error message=
-s */
->         init_task.kasan_depth =3D 0;
-> --
-> 2.29.2.222.g5d2a92d10f8-goog
->
+>Thanks!
+>Antoine
 
+Hi Antoine,
+Thanks for pointing this out.  It is a fix, so I will add a Fixes tag to
+the commit message.
 
---=20
-Alexander Potapenko
-Software Engineer
+BR
+Steen
 
-Google Germany GmbH
-Erika-Mann-Stra=C3=9Fe, 33
-80636 M=C3=BCnchen
+>
+>Quoting Steen Hegelund (2020-11-11 10:55:11)
+>> The MSCC PHYs selected for PTP and MACSec was not correct
+>>
+>> - PTP
+>>     - Add VSC8572 and VSC8574
+>>
+>> - MACsec
+>>     - Removed VSC8575
+>>
+>> The relevant datasheets can be found here:
+>>   - VSC8572: https://www.microchip.com/wwwproducts/en/VSC8572
+>>   - VSC8574: https://www.microchip.com/wwwproducts/en/VSC8574
+>>   - VSC8575: https://www.microchip.com/wwwproducts/en/VSC8575
+>>
+>> Signed-off-by: Steen Hegelund <steen.hegelund@microchip.com>
+>> ---
+>>  drivers/net/phy/mscc/mscc_macsec.c | 1 -
+>>  drivers/net/phy/mscc/mscc_ptp.c    | 2 ++
+>>  2 files changed, 2 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/net/phy/mscc/mscc_macsec.c b/drivers/net/phy/mscc/mscc_macsec.c
+>> index 1d4c012194e9..72292bf6c51c 100644
+>> --- a/drivers/net/phy/mscc/mscc_macsec.c
+>> +++ b/drivers/net/phy/mscc/mscc_macsec.c
+>> @@ -981,7 +981,6 @@ int vsc8584_macsec_init(struct phy_device *phydev)
+>>
+>>         switch (phydev->phy_id & phydev->drv->phy_id_mask) {
+>>         case PHY_ID_VSC856X:
+>> -       case PHY_ID_VSC8575:
+>>         case PHY_ID_VSC8582:
+>>         case PHY_ID_VSC8584:
+>>                 INIT_LIST_HEAD(&vsc8531->macsec_flows);
+>> diff --git a/drivers/net/phy/mscc/mscc_ptp.c b/drivers/net/phy/mscc/mscc_ptp.c
+>> index b97ee79f3cdf..f0537299c441 100644
+>> --- a/drivers/net/phy/mscc/mscc_ptp.c
+>> +++ b/drivers/net/phy/mscc/mscc_ptp.c
+>> @@ -1510,6 +1510,8 @@ void vsc8584_config_ts_intr(struct phy_device *phydev)
+>>  int vsc8584_ptp_init(struct phy_device *phydev)
+>>  {
+>>         switch (phydev->phy_id & phydev->drv->phy_id_mask) {
+>> +       case PHY_ID_VSC8572:
+>> +       case PHY_ID_VSC8574:
+>>         case PHY_ID_VSC8575:
+>>         case PHY_ID_VSC8582:
+>>         case PHY_ID_VSC8584:
+>> --
+>> 2.29.2
+>>
 
-Gesch=C3=A4ftsf=C3=BChrer: Paul Manicle, Halimah DeLaine Prado
-Registergericht und -nummer: Hamburg, HRB 86891
-Sitz der Gesellschaft: Hamburg
+BR
+Steen
+
+---------------------------------------
+Steen Hegelund
+steen.hegelund@microchip.com
