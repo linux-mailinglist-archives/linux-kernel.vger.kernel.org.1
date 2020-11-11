@@ -2,71 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 009542AEDA2
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 10:26:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 20D0A2AED80
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 10:25:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727027AbgKKJ0c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 04:26:32 -0500
-Received: from frasgout.his.huawei.com ([185.176.79.56]:2092 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726136AbgKKJ03 (ORCPT
+        id S1726807AbgKKJZF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 04:25:05 -0500
+Received: from mail-m1271.qiye.163.com ([115.236.127.1]:62822 "EHLO
+        mail-m1271.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725960AbgKKJZE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 04:26:29 -0500
-Received: from fraeml714-chm.china.huawei.com (unknown [172.18.147.226])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4CWK7z0xjbz67KnT;
-        Wed, 11 Nov 2020 17:25:03 +0800 (CST)
-Received: from roberto-HP-EliteDesk-800-G2-DM-65W.huawei.com (10.204.65.161)
- by fraeml714-chm.china.huawei.com (10.206.15.33) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1913.5; Wed, 11 Nov 2020 10:26:26 +0100
-From:   Roberto Sassu <roberto.sassu@huawei.com>
-To:     <zohar@linux.ibm.com>, <mjg59@google.com>
-CC:     <linux-integrity@vger.kernel.org>,
-        <linux-security-module@vger.kernel.org>,
-        <linux-fsdevel@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <silviu.vlasceanu@huawei.com>,
-        Roberto Sassu <roberto.sassu@huawei.com>
-Subject: [PATCH v3 11/11] ima: Don't remove security.ima if file must not be appraised
-Date:   Wed, 11 Nov 2020 10:23:02 +0100
-Message-ID: <20201111092302.1589-12-roberto.sassu@huawei.com>
-X-Mailer: git-send-email 2.27.GIT
-In-Reply-To: <20201111092302.1589-1-roberto.sassu@huawei.com>
-References: <20201111092302.1589-1-roberto.sassu@huawei.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.204.65.161]
-X-ClientProxiedBy: lhreml735-chm.china.huawei.com (10.201.108.86) To
- fraeml714-chm.china.huawei.com (10.206.15.33)
-X-CFilter-Loop: Reflected
+        Wed, 11 Nov 2020 04:25:04 -0500
+Received: from vivo-HP-ProDesk-680-G4-PCI-MT.vivo.xyz (unknown [58.251.74.231])
+        by mail-m1271.qiye.163.com (Hmail) with ESMTPA id 9896A582895;
+        Wed, 11 Nov 2020 17:25:01 +0800 (CST)
+From:   Wang Qing <wangqing@vivo.com>
+To:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Grygorii Strashko <grygorii.strashko@ti.com>,
+        Samuel Zou <zou_wei@huawei.com>,
+        Kurt Kanzenbach <kurt@linutronix.de>,
+        Murali Karicheri <m-karicheri2@ti.com>,
+        Ivan Khoronzhuk <ivan.khoronzhuk@linaro.org>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     richardcochran@gmail.com, Wang Qing <wangqing@vivo.com>
+Subject: [PATCH V4 net-bugfixs] net/ethernet: Update ret when ptp_clock is ERROR
+Date:   Wed, 11 Nov 2020 17:24:41 +0800
+Message-Id: <1605086686-5140-1-git-send-email-wangqing@vivo.com>
+X-Mailer: git-send-email 2.7.4
+X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
+        oVCBIfWUFZTx0dGBhJQ0tPT0pIVkpNS05LQ01MS0lJSEpVEwETFhoSFyQUDg9ZV1kWGg8SFR0UWU
+        FZT0tIVUpKS09ISVVLWQY+
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6NxA6Dzo6Sz8qHRcSIhlIHD8W
+        NzZPCTJVSlVKTUtOS0NNTEtJTUxKVTMWGhIXVQwaFRwKEhUcOw0SDRRVGBQWRVlXWRILWUFZTkNV
+        SU5KVUxPVUlISllXWQgBWUFJSkNONwY+
+X-HM-Tid: 0a75b69f69f898b6kuuu9896a582895
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Files might come from a remote source and might have xattrs, including
-security.ima. It should not be IMA task to decide whether security.ima
-should be kept or not. This patch removes the removexattr() system
-call in ima_inode_post_setattr().
+We always have to update the value of ret, otherwise the error value
+ may be the previous one. And ptp_clock_register() never return NULL
+ when PTP_1588_CLOCK enable.
 
-Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
-Reviewed-by: Mimi Zohar <zohar@linux.ibm.com>
+Signed-off-by: Wang Qing <wangqing@vivo.com>
 ---
- security/integrity/ima/ima_appraise.c | 2 --
- 1 file changed, 2 deletions(-)
+ drivers/net/ethernet/ti/am65-cpts.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/security/integrity/ima/ima_appraise.c b/security/integrity/ima/ima_appraise.c
-index 00b038941a10..f03cb4b7270d 100644
---- a/security/integrity/ima/ima_appraise.c
-+++ b/security/integrity/ima/ima_appraise.c
-@@ -529,8 +529,6 @@ void ima_inode_post_setattr(struct dentry *dentry)
- 		return;
- 
- 	action = ima_must_appraise(inode, MAY_ACCESS, POST_SETATTR);
--	if (!action)
--		__vfs_removexattr(dentry, XATTR_NAME_IMA);
- 	iint = integrity_iint_find(inode);
- 	if (iint) {
- 		set_bit(IMA_CHANGE_ATTR, &iint->atomic_flags);
+diff --git a/drivers/net/ethernet/ti/am65-cpts.c b/drivers/net/ethernet/ti/am65-cpts.c
+index 75056c1..b319d45
+--- a/drivers/net/ethernet/ti/am65-cpts.c
++++ b/drivers/net/ethernet/ti/am65-cpts.c
+@@ -1001,8 +1001,7 @@ struct am65_cpts *am65_cpts_create(struct device *dev, void __iomem *regs,
+ 	if (IS_ERR_OR_NULL(cpts->ptp_clock)) {
+ 		dev_err(dev, "Failed to register ptp clk %ld\n",
+ 			PTR_ERR(cpts->ptp_clock));
+-		if (!cpts->ptp_clock)
+-			ret = -ENODEV;
++		ret = PTR_ERR(cpts->ptp_clock);
+ 		goto refclk_disable;
+ 	}
+ 	cpts->phc_index = ptp_clock_index(cpts->ptp_clock);
 -- 
-2.27.GIT
+2.7.4
 
