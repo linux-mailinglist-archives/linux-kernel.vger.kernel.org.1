@@ -2,112 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86EBA2AF994
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 21:12:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 809312AF997
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 21:14:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726215AbgKKUMd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 15:12:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59540 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725860AbgKKUMc (ORCPT
+        id S1726245AbgKKUOF convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 11 Nov 2020 15:14:05 -0500
+Received: from youngberry.canonical.com ([91.189.89.112]:36624 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725860AbgKKUOF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 15:12:32 -0500
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32F53C0613D1;
-        Wed, 11 Nov 2020 12:12:32 -0800 (PST)
-Received: by mail-wr1-x442.google.com with SMTP id p8so3765279wrx.5;
-        Wed, 11 Nov 2020 12:12:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=F7AKQnS/USiMmoeHPSK9/AG/hMH5sRwDB1LYC95VaV0=;
-        b=WBFn3M3gsXz+myqgSRvR+Xh0vzo3h+nm+pSDbvSyBTEm5KUh9soCZVmhtsy9LOhq3x
-         1yPTlBFTSGT4tTIDWL94SV2WarUIsU8k8OccKfKLvYAkjTH6b5Ucqd26nSMNG8RbCNh3
-         FDIqmKUVYa0MdIs0/s9wtPSuOSkZn0riu9dzr4hUI4lY5sgqajHazh8uO40Cd3g60QCQ
-         ZipweSOUKgaIge1PBdSPKM7Yfhbz6Fjg7NfyzFmUcrjcs0Pd5Xe/scVM4OyMdnT6+rnU
-         9cOK+4M8PORSgsbBjlvexbYur66shtARcESIANsjqMZdX/9dIC/ugUfwt2R2qPAVdrOQ
-         wAxw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=F7AKQnS/USiMmoeHPSK9/AG/hMH5sRwDB1LYC95VaV0=;
-        b=I0qK+mwr6yI/eOYIO42xeG250pJ1nIsvOSKKcQVgO4Ekeu3VhulLCbg1IyiBC+FnRz
-         /9QLO5h+JttsOHM7mdNXVYPjo3BixXldcabHUQ9D4LVu3Dnqq3atdbVRQp4ZigI+s7iB
-         DLqkgGzLis43CtD5k7mi8JVtt9Jr4s+eHflRJDNyISddQN3Em/dKbGYMlYKIPZhy8kEm
-         Sa+KevKFzxTjmoXSKwf4z5wycfdBLYeKTxEx2O9zpoaRv1nOCuuA2f3AxodOlYnu53Kb
-         syHnRLzSZ8QLC9RL6YohLuO/URDDrknqMB23gOuQyGuffFOyFk2t4QdBzj8diZ76xGf1
-         06gw==
-X-Gm-Message-State: AOAM531wymKFqHIxyW905e+dpwCQtp3U5WP86VPrYDxLjc2R9XXSgIVd
-        NIJKoxsEINAoodX9OT32ImgH219aZ3Q=
-X-Google-Smtp-Source: ABdhPJw6cMu90IqqINQAf+KGfdYbYf/pQsdQVqpwJdz+NlcNKrlwYeMEGTf+ULXm7bJDFg1OHoONKQ==
-X-Received: by 2002:a5d:4d0a:: with SMTP id z10mr31457501wrt.244.1605125550909;
-        Wed, 11 Nov 2020 12:12:30 -0800 (PST)
-Received: from localhost ([217.111.27.204])
-        by smtp.gmail.com with ESMTPSA id y16sm3364397wrt.25.2020.11.11.12.12.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 Nov 2020 12:12:29 -0800 (PST)
-Date:   Wed, 11 Nov 2020 21:12:27 +0100
-From:   Thierry Reding <thierry.reding@gmail.com>
-To:     Lokesh Vutla <lokeshvutla@ti.com>
-Cc:     u.kleine-koenig@pengutronix.de, Lee Jones <lee.jones@linaro.org>,
-        linux-pwm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Sekhar Nori <nsekhar@ti.com>
-Subject: Re: [PATCH] pwm: lp3943: Dynamically allocate pwm chip base
-Message-ID: <20201111201227.GJ6125@ulmo>
-References: <20201030134135.28730-1-lokeshvutla@ti.com>
+        Wed, 11 Nov 2020 15:14:05 -0500
+Received: from 1.general.jvosburgh.us.vpn ([10.172.68.206] helo=famine.localdomain)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <jay.vosburgh@canonical.com>)
+        id 1kcwVB-0002LF-Sq; Wed, 11 Nov 2020 20:13:58 +0000
+Received: by famine.localdomain (Postfix, from userid 1000)
+        id 57C5D5FEE8; Wed, 11 Nov 2020 12:13:56 -0800 (PST)
+Received: from famine (localhost [127.0.0.1])
+        by famine.localdomain (Postfix) with ESMTP id 4F9CEA0409;
+        Wed, 11 Nov 2020 12:13:56 -0800 (PST)
+From:   Jay Vosburgh <jay.vosburgh@canonical.com>
+To:     Jarod Wilson <jarod@redhat.com>
+cc:     linux-kernel@vger.kernel.org, Veaceslav Falico <vfalico@gmail.com>,
+        Andy Gospodarek <andy@greyhouse.net>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Thomas Davis <tadavis@lbl.gov>, netdev@vger.kernel.org
+Subject: Re: [PATCH net-next v4 0/5] bonding: rename bond components
+In-reply-to: <20201106200436.943795-1-jarod@redhat.com>
+References: <20201106200436.943795-1-jarod@redhat.com>
+Comments: In-reply-to Jarod Wilson <jarod@redhat.com>
+   message dated "Fri, 06 Nov 2020 15:04:31 -0500."
+X-Mailer: MH-E 8.6+git; nmh 1.6; GNU Emacs 27.0.50
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="5cSRzy0VGBWAML+b"
-Content-Disposition: inline
-In-Reply-To: <20201030134135.28730-1-lokeshvutla@ti.com>
-User-Agent: Mutt/1.14.7 (2020-08-29)
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <10064.1605125636.1@famine>
+Content-Transfer-Encoding: 8BIT
+Date:   Wed, 11 Nov 2020 12:13:56 -0800
+Message-ID: <10065.1605125636@famine>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Jarod Wilson <jarod@redhat.com> wrote:
 
---5cSRzy0VGBWAML+b
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+>The bonding driver's use of master and slave, while largely understood
+>in technical circles, poses a barrier for inclusion to some potential
+>members of the development and user community, due to the historical
+>context of masters and slaves, particularly in the United States. This
+>is a first full pass at replacing those phrases with more socially
+>inclusive ones, opting for bond to replace master and port to
+>replace slave, which is congruent with the bridge and team drivers.
+>
+>There are a few problems with this change. First up, "port" is used in
+>the bonding 802.3ad code, so the first step here is to rename port to
+>ad_port, so we can reuse port. Second, we have the issue of not wanting
+>to break any existing userspace, which I believe this patchset
+>accomplishes, preserving all existing sysfs and procfs interfaces, and
+>adding module parameter aliases where necessary.
+>
+>Third, we do still have the issue of ease of backporting fixes to
+>-stable trees. I've not had a huge amount of time to spend on it, but
+>brief forays into coccinelle didn't really pay off (since it's meant to
+>operate on code, not patches), and the best solution I can come up with
+>is providing a shell script someone could run over git-format-patch
+>output before git-am'ing the result to a -stable tree, though scripting
+>these changes in the first place turned out to be not the best thing to
+>do anyway, due to subtle cases where use of master or slave can NOT yet
+>be replaced, so a large amount of work was done by hand, inspection,
+>trial and error, which is why this set is a lot longer in coming than
+>I'd originally hoped. I don't expect -stable backports to be horrible to
+>figure out one way or another though, and I don't believe that a bit of
+>inconvenience on that front is enough to warrant not making these
+>changes.
 
-On Fri, Oct 30, 2020 at 07:11:35PM +0530, Lokesh Vutla wrote:
-> When there are other pwm controllers enabled along with pwm-lp3943,
-> pwm-lp3942 is failing to probe with -EEXIST error. This is because
-> other pwm controller is probed first and assigned pwmchip 0 and
-> pwm-lp3943 is requesting for 0 again. In order to avoid this, assign the
-> chip base with -1, so that id is dynamically allocated.
->=20
-> Fixes: af66b3c0934e ("pwm: Add LP3943 PWM driver")
-> Signed-off-by: Lokesh Vutla <lokeshvutla@ti.com>
-> ---
->  drivers/pwm/pwm-lp3943.c | 1 +
->  1 file changed, 1 insertion(+)
+	I think this undersells the impact a bit; this will most likely
+break the majority of cherry-picks for the bonding driver to stable
+going forward should this patch set be committed.  Yes, the volume of
+patches to bonding is relatively low, and the manual backports are not
+likely to be technically difficult.  Nevertheless, I expect that most
+bonding backports to stable that cross this patch set will require
+manual intervention.
 
-Applied, thanks.
+	As such, I'd still like to see explicit direction from the
+kernel development community leadership that change sets of this nature
+(not technically driven, with long term maintenance implications) are
+changes that should be undertaken rather than are merely permitted.
 
-Thierry
+	-J
 
---5cSRzy0VGBWAML+b
-Content-Type: application/pgp-signature; name="signature.asc"
+>See here for further details on Red Hat's commitment to this work:
+>https://www.redhat.com/en/blog/making-open-source-more-inclusive-eradicating-problematic-language
+>
+>As far as testing goes, I've manually operated on various bonds while
+>working on this code, and have run it through multiple lnst test runs,
+>which exercises the existing sysfs interfaces fairly extensively. As far
+>as I can tell through testing and inspection, there is no breakage of
+>any existing interfaces with this set.
+>
+>v2: legacy module parameters are retained this time, and we're trying
+>out bond/port instead of aggregator/link in place of master/slave. The
+>procfs interface legacy output is also duplicated or dropped, depending
+>on Kconfig, rather than being replaced.
+>
+>v3: remove Kconfig knob, leave sysfs and procfs interfaces entirely
+>untouched, but update documentation to reference their deprecated
+>nature, explain the name changes, add references to NetworkManager,
+>include more netlink/iproute2 examples and make note of netlink
+>being the preferred interface for userspace interaction with bonds.
+>
+>v4: documentation table of contents fixes
+>
+>Cc: Jay Vosburgh <j.vosburgh@gmail.com>
+>Cc: Veaceslav Falico <vfalico@gmail.com>
+>Cc: Andy Gospodarek <andy@greyhouse.net>
+>Cc: "David S. Miller" <davem@davemloft.net>
+>Cc: Jakub Kicinski <kuba@kernel.org>
+>Cc: Thomas Davis <tadavis@lbl.gov>
+>Cc: netdev@vger.kernel.org
+>
+>Jarod Wilson (5):
+>  bonding: rename 802.3ad's struct port to ad_port
+>  bonding: replace use of the term master where possible
+>  bonding: rename slave to port where possible
+>  bonding: rename bonding_sysfs_slave.c to _port.c
+>  bonding: update Documentation for port/bond terminology
+>
+> .clang-format                                 |    4 +-
+> Documentation/networking/bonding.rst          |  581 ++--
+> drivers/infiniband/core/cma.c                 |    2 +-
+> drivers/infiniband/core/lag.c                 |    2 +-
+> drivers/infiniband/core/roce_gid_mgmt.c       |   10 +-
+> drivers/infiniband/hw/mlx4/main.c             |    2 +-
+> drivers/net/bonding/Makefile                  |    2 +-
+> drivers/net/bonding/bond_3ad.c                | 1701 ++++++------
+> drivers/net/bonding/bond_alb.c                |  689 ++---
+> drivers/net/bonding/bond_debugfs.c            |    2 +-
+> drivers/net/bonding/bond_main.c               | 2341 +++++++++--------
+> drivers/net/bonding/bond_netlink.c            |  114 +-
+> drivers/net/bonding/bond_options.c            |  258 +-
+> drivers/net/bonding/bond_procfs.c             |   86 +-
+> drivers/net/bonding/bond_sysfs.c              |   78 +-
+> drivers/net/bonding/bond_sysfs_port.c         |  185 ++
+> drivers/net/bonding/bond_sysfs_slave.c        |  176 --
+> .../ethernet/chelsio/cxgb3/cxgb3_offload.c    |    2 +-
+> .../net/ethernet/mellanox/mlx4/en_netdev.c    |   14 +-
+> .../ethernet/mellanox/mlx5/core/en/rep/bond.c |    4 +-
+> .../net/ethernet/mellanox/mlx5/core/en_tc.c   |    2 +-
+> .../ethernet/netronome/nfp/flower/lag_conf.c  |    2 +-
+> .../ethernet/qlogic/netxen/netxen_nic_main.c  |   12 +-
+> include/linux/netdevice.h                     |   22 +-
+> include/net/bond_3ad.h                        |   42 +-
+> include/net/bond_alb.h                        |   74 +-
+> include/net/bond_options.h                    |   18 +-
+> include/net/bonding.h                         |  362 +--
+> include/net/lag.h                             |    2 +-
+> 29 files changed, 3482 insertions(+), 3307 deletions(-)
+> create mode 100644 drivers/net/bonding/bond_sysfs_port.c
+> delete mode 100644 drivers/net/bonding/bond_sysfs_slave.c
+>
+>-- 
+>2.28.0
+>
 
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAl+sRasACgkQ3SOs138+
-s6EA0A//aBd9sU58jvIjRrNEWYcibPTj/Szyp+xrYw1XjmCm3vwWVTH1nwcAT3+6
-5ac228oAshC3zsALkDg0brhgZqQLTk22BSEd+Z6b8P14vKAzT+N+z+fsiu0xYbzU
-Wr2JKyoB74vt3utb2YGSwCmECKP9tB8dWcntUN/LDHKT/VPfFqngcoLNL8lr9BX4
-9Xq/uvcR/QL8+J/YcuWK6LQxAW+zhCJhpj/XS70oBlLPgEPm7ZPFkydr17qgWhMo
-P5xfNfnWyUSSmmW+Ephl1BHXMUHR+nIOFApET/w0SxtWXi7mHv+ECOHUNQb10iTi
-/Aoy2n0ajlZQ1dE5QaeAHX+47+RnIyS8OoGw2ZnEB1Sl2bH6Mr1tFJotU0JAUOK5
-3EQgHY1Id22EsffQNNFGTC0Mm7fVFmoHEe1vJ6AzXv7RI3e8W/7SY/IUYQ5RdwzU
-4ENutUmLkC0WNXOIhjv7NtBfNFbCRCUXEBBXAPNLZLyQIHpIvPVuR9B3Z8nAxR2n
-9edST3QHUC1sWhDVp+cJGRrNGZ6YrP8QAja2BEr6b9gXOzz168LRefrToUZEDd9k
-/bFzrWB/YxlUgD1ZXPgJ7z3jHNTH5ed1oAWioe1rAuMHC60gcthKeRHJMeIW/w3l
-pLF7tmAFXaH9U/b7mSh1FSDtKcq/e+qP5UMq6C6bYtnA51RJrTI=
-=yWn6
------END PGP SIGNATURE-----
-
---5cSRzy0VGBWAML+b--
+---
+	-Jay Vosburgh, jay.vosburgh@canonical.com
