@@ -2,105 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B7D02AEEFB
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 11:50:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A88A42AEF00
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 11:53:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726042AbgKKKum (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 05:50:42 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:49309 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725912AbgKKKuj (ORCPT
+        id S1725986AbgKKKxn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 05:53:43 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:7515 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725903AbgKKKxm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 05:50:39 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1605091838;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=mnA7XsiGSJFXhW6YNgCg1O0O0+tMAkowMzr0RmATALo=;
-        b=ZnvTuVK5FsVtsj2ls3L/0j1BBP2vJyBJjMhgaPFm6y6lcyHGhJ2JGCo0xgQ+RR4vcgHZdq
-        wB/sdqf4X/BbGI5m4qwy+vBkYecNF0kf9GjMQaiA9cHHtY4ne8deTWlDNNHHgzkIaCPiPg
-        gF1Z1MWx7XWKB0d/hyLmtOyppTGU6NE=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-298-D15SCLTqO1OvKzlDygIzZg-1; Wed, 11 Nov 2020 05:50:36 -0500
-X-MC-Unique: D15SCLTqO1OvKzlDygIzZg-1
-Received: by mail-wr1-f71.google.com with SMTP id e11so462161wrw.14
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 02:50:36 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=mnA7XsiGSJFXhW6YNgCg1O0O0+tMAkowMzr0RmATALo=;
-        b=uOGgXBHbrMv9ZGlFU63n2CYF7ex/qT8bTI1T9NdmRdjR4cAW9SHf0f/dSShYeJ5wam
-         IzOXymgYBVEWX/jiLXQld2bWoSb+7dyVK4HVV4N01KgABPwh3TO9EgtPP3WbRG+odkjz
-         gJpHCSGzSoarkUPjbutJks7Payyg37a3Ry59yhPWJunr6djxQXkCa/WaYrUwz/ILi3EB
-         aRZiIqtb5S6eF0moc669CPMJBfMoFZYT1qINOAZ/emfFASay99wYIhFXqJOuhoKiwYtX
-         OnLQtItke8XYvTmyxRgXVCBxAVAs9Gls/iJAEfavk3VtQoxgN5tBdI411D24D7qthZyn
-         xlTw==
-X-Gm-Message-State: AOAM530D07m+mpr4Bki/YcSOe3/87p3T78FGVl8cKEDTY7xVp2SqSeot
-        fD+Cae7G62rtlbakqcBIljRqlJREiB6zsSCe/9SsRdzAYs025jf3HMpELIjchDbb1cKivyFvSlq
-        kfcRDSwxAETKXpoxqjtnnrV37
-X-Received: by 2002:adf:eeca:: with SMTP id a10mr24970191wrp.186.1605091835504;
-        Wed, 11 Nov 2020 02:50:35 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJxz4TPJxgCHN7vv+R3d7jzN9KDvG9vgiS4za2+hlcdJRS27vg4GofYWp6iFMLk0C1lnkV/R+w==
-X-Received: by 2002:adf:eeca:: with SMTP id a10mr24970172wrp.186.1605091835295;
-        Wed, 11 Nov 2020 02:50:35 -0800 (PST)
-Received: from steredhat (host-79-47-126-226.retail.telecomitalia.it. [79.47.126.226])
-        by smtp.gmail.com with ESMTPSA id p4sm2017826wrm.51.2020.11.11.02.50.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 Nov 2020 02:50:34 -0800 (PST)
-Date:   Wed, 11 Nov 2020 11:50:31 +0100
-From:   Stefano Garzarella <sgarzare@redhat.com>
-To:     Tian Tao <tiantao6@hisilicon.com>
-Cc:     mst@redhat.com, jasowang@redhat.com, kvm@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] vhost_vdpa: switch to vmemdup_user()
-Message-ID: <20201111105031.mtdbvt7grkxeuwn4@steredhat>
-References: <1605057288-60400-1-git-send-email-tiantao6@hisilicon.com>
+        Wed, 11 Nov 2020 05:53:42 -0500
+Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4CWM5t3d6FzhjpV;
+        Wed, 11 Nov 2020 18:53:22 +0800 (CST)
+Received: from [10.174.177.244] (10.174.177.244) by
+ DGGEMS412-HUB.china.huawei.com (10.3.19.212) with Microsoft SMTP Server id
+ 14.3.487.0; Wed, 11 Nov 2020 18:53:25 +0800
+Subject: Re: [PATCH] regmap: Properly free allocated name for regmap_config of
+ syscon
+To:     Marc Zyngier <maz@kernel.org>
+CC:     Mark Brown <broonie@kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20201109115816.160639-1-wangkefeng.wang@huawei.com>
+ <20201109172331.GJ6380@sirena.org.uk>
+ <18a3857d-3250-e136-7d80-abdab902367c@huawei.com>
+ <9b291d6ebdebe8a3a9f07d2bf4033fe9@kernel.org>
+From:   Kefeng Wang <wangkefeng.wang@huawei.com>
+Message-ID: <5660a879-2f11-c577-fe8e-0e1c6f244d8c@huawei.com>
+Date:   Wed, 11 Nov 2020 18:53:25 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <1605057288-60400-1-git-send-email-tiantao6@hisilicon.com>
+In-Reply-To: <9b291d6ebdebe8a3a9f07d2bf4033fe9@kernel.org>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Originating-IP: [10.174.177.244]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 11, 2020 at 09:14:48AM +0800, Tian Tao wrote:
->Replace opencoded alloc and copy with vmemdup_user()
->
->Signed-off-by: Tian Tao <tiantao6@hisilicon.com>
->---
-> drivers/vhost/vdpa.c | 10 +++-------
-> 1 file changed, 3 insertions(+), 7 deletions(-)
 
-Reviewed-by: Stefano Garzarella <sgarzare@redhat.com>
+On 2020/11/10 16:47, Marc Zyngier wrote:
+> On 2020-11-10 01:35, Kefeng Wang wrote:
+>> On 2020/11/10 1:23, Mark Brown wrote:
+>>> On Mon, Nov 09, 2020 at 07:58:16PM +0800, Kefeng Wang wrote:
+>>>
+>> Hi Marc,  the regmap debugfs will duplicate a name in 
+>> regmap_set_name(), and
+>>
+>> syscon_config.name won't be used in syscon,  so your following patch
+>> doesn't seem
+>>
+>> to be necessary,  right ? Please correct me if I'm wrong, thanks.
+>
+> It was certainly necessary at the time when I wrote the patch, as it
+> was fixing some obvious memory corruption (use after free).
+>
+> It is very possible that the flow has been reorganised since, as the
+> following commit hints at:
+>
+> commit e15d7f2b81d2e7d93115d46fa931b366c1cdebc2
+> Author: Suman Anna <s-anna@ti.com>
+> Date:   Mon Jul 27 16:10:08 2020 -0500
+>
+>     mfd: syscon: Use a unique name with regmap_config
+>
+>     The DT node full name is currently being used in regmap_config
+>     which in turn is used to create the regmap debugfs directories.
+>     This name however is not guaranteed to be unique and the regmap
+>     debugfs registration can fail in the cases where the syscon nodes
+>     have the same unit-address but are present in different DT node
+>     hierarchies. Replace this logic using the syscon reg resource
+>     address instead (inspired from logic used while creating platform
+>     devices) to ensure a unique name is given for each syscon.
+>
+>     Signed-off-by: Suman Anna <s-anna@ti.com>
+>     Reviewed-by: Arnd Bergmann <arnd@arndb.de>
+>     Signed-off-by: Lee Jones <lee.jones@linaro.org>
+>
+> I suggest you come up with a more complete analysis of the problem
+> and how it came to be.
+
+I check the history of above patch[1],
+
+"The regmap name is expected to be managed by the caller and should be
+live as long as the regmap is live, it is almost always static data."
+
+so keep it as your patch said, thanks.
+
+[1] 
+https://patchwork.kernel.org/project/linux-arm-kernel/patch/20200727211008.24225-1-s-anna@ti.com/#23575471
+
 
 >
->diff --git a/drivers/vhost/vdpa.c b/drivers/vhost/vdpa.c
->index 2754f30..4c39583 100644
->--- a/drivers/vhost/vdpa.c
->+++ b/drivers/vhost/vdpa.c
->@@ -245,14 +245,10 @@ static long vhost_vdpa_set_config(struct vhost_vdpa *v,
-> 		return -EFAULT;
-> 	if (vhost_vdpa_config_validate(v, &config))
-> 		return -EINVAL;
->-	buf = kvzalloc(config.len, GFP_KERNEL);
->-	if (!buf)
->-		return -ENOMEM;
->
->-	if (copy_from_user(buf, c->buf, config.len)) {
->-		kvfree(buf);
->-		return -EFAULT;
->-	}
->+	buf = vmemdup_user(c->buf, config.len);
->+	if (IS_ERR(buf))
->+		return PTR_ERR(buf);
->
-> 	ops->set_config(vdpa, config.off, buf, config.len);
->
->-- 
->2.7.4
->
-
+>         M.
