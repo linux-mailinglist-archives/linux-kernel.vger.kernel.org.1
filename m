@@ -2,457 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AB832AF2DA
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 15:00:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BF502AF352
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 15:15:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727076AbgKKOAU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 09:00:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58094 "EHLO
+        id S1726384AbgKKNea (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 08:34:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54062 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726204AbgKKOAR (ORCPT
+        with ESMTP id S1725975AbgKKNea (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 09:00:17 -0500
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7224DC0613D1;
-        Wed, 11 Nov 2020 06:00:17 -0800 (PST)
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 1B976A19;
-        Wed, 11 Nov 2020 15:00:13 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1605103213;
-        bh=mKuIU8+K1pEz/DAf9qGA5X2ulnU2pOxz9ZcXmP8HD6g=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=u96T04zATw1qPei0aXyrH2433zbXh1G9obPHYvbsb8oJMPdKIUvmSL36VIwDE1xyl
-         VPpviWXc3ojSf7nYbaZOj23SUvEKeaaCjpLtrkcQLizYbR5OS4C4Bbont2A0FFfQ5I
-         N7mD3h0IsIAtd7QLOpOVEDiK3qeLIgX3/nlBVjEE=
-Date:   Wed, 11 Nov 2020 16:00:09 +0200
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Rob Herring <robh@kernel.org>
-Cc:     devicetree@vger.kernel.org, Sameer Pujar <spujar@nvidia.com>,
-        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        kuninori.morimoto.gx@renesas.com,
-        Jacopo Mondi <jacopo+renesas@jmondi.org>
-Subject: Re: [PATCH v3 1/3] dt-bindings: Convert graph bindings to json-schema
-Message-ID: <20201111140009.GD4115@pendragon.ideasonboard.com>
-References: <20201102203656.220187-1-robh@kernel.org>
- <20201102203656.220187-2-robh@kernel.org>
+        Wed, 11 Nov 2020 08:34:30 -0500
+Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 235CCC0613D1;
+        Wed, 11 Nov 2020 05:34:30 -0800 (PST)
+Received: by mail-qt1-x841.google.com with SMTP id 7so1260483qtp.1;
+        Wed, 11 Nov 2020 05:34:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ADY2JmYxE9Xly9S24Z1LRnTUA3RyY71p6BFzajWHuao=;
+        b=YJSxGfIbb1UUIY/29x8l4T1Jgc/yvQs31iNrz+gq8lShwrVPuHybhNR6GJR2b7ujTh
+         QXkNda2M3eSKkjAcLLD3C+040OUac/TeqxIQ4kKWh1L61WubktOhPd4WOSZc7To8b+sR
+         jcvHPDdLofNDeZQFZI6zTyzwiTZI58E4j7EHZSBLV1AVXppIZtxsLNOxs1YSHzxtaIyi
+         /8HpFYA+y+MUg78ZtzBB1bfvaT8TL/NlfNctAizFSHUGW5eGeI6PDGrklFXYAAJQKgEB
+         E8onifEyVUdSHl7UZUr5Lsm3j3fv9Fv5friHKntdo5FtOXwpCVL7DFWbsNCOMCfZLyYf
+         O7Sg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ADY2JmYxE9Xly9S24Z1LRnTUA3RyY71p6BFzajWHuao=;
+        b=LsFvUFhvtSYg5FariRxlsEZVqBjzMzARa8KF5wkM0NE7Q6ew73nia6T5CgOMeF3LEk
+         irmbL9JJDjgnuQaJQpO43jFL7qqUH0lt7UCTlz+gy2z/RT+jBrlluX74WvNfwDM05gVk
+         a/thaUMApzQhGJyg2CqeoB81ssIMyS1ykkFZSwg4WASmnYa7INsxeIfBeAh+jDJN0t3Q
+         aOzti8U5QMK0gndSGZsQmD2nXMXTP7yZfsLUk8YycmHDalx/1ZHXlS316pFVa+CAP3h6
+         abkEDqir5vcj+InWuX/z6lM9MWBeGI+ID2qC/oVUu0akYfw5UAdd3mohBXLFifZjG8K4
+         M+JA==
+X-Gm-Message-State: AOAM5336sTqmPporWB9gyUM6m4k3E9CjEQZQCHefTndrwSkWrX7l9m+D
+        ArZ0NBlYkskdtJTx0gcBDhk=
+X-Google-Smtp-Source: ABdhPJzHUfo2j/Nsf18vB+1vJm4vfXG7t/Ethu+Cj5/ykTWucn6CwriV6xUlfxlPz1n756bgw31C9g==
+X-Received: by 2002:ac8:130d:: with SMTP id e13mr23000296qtj.3.1605101669342;
+        Wed, 11 Nov 2020 05:34:29 -0800 (PST)
+Received: from localhost.localdomain (host-173-230-99-154.tnkngak.clients.pavlovmedia.com. [173.230.99.154])
+        by smtp.gmail.com with ESMTPSA id r190sm1997814qkf.101.2020.11.11.05.34.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 11 Nov 2020 05:34:28 -0800 (PST)
+From:   YiFei Zhu <zhuyifei1999@gmail.com>
+To:     containers@lists.linux-foundation.org
+Cc:     YiFei Zhu <yifeifz2@illinois.edu>, linux-csky@vger.kernel.org,
+        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
+        linux-sh@vger.kernel.org, linux-xtensa@linux-xtensa.org,
+        linux-kernel@vger.kernel.org, Aleksa Sarai <cyphar@cyphar.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Andy Lutomirski <luto@amacapital.net>,
+        David Laight <David.Laight@aculab.com>,
+        Dimitrios Skarlatos <dskarlat@cs.cmu.edu>,
+        Giuseppe Scrivano <gscrivan@redhat.com>,
+        Hubertus Franke <frankeh@us.ibm.com>,
+        Jack Chen <jianyan2@illinois.edu>,
+        Jann Horn <jannh@google.com>,
+        Josep Torrellas <torrella@illinois.edu>,
+        Kees Cook <keescook@chromium.org>,
+        Tianyin Xu <tyxu@illinois.edu>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Tycho Andersen <tycho@tycho.pizza>,
+        Valentin Rothberg <vrothber@redhat.com>,
+        Will Drewry <wad@chromium.org>
+Subject: [PATCH seccomp v2 0/8] seccomp: add bitmap cache support on remaining arches and report cache in procfs
+Date:   Wed, 11 Nov 2020 07:33:46 -0600
+Message-Id: <cover.1605101222.git.yifeifz2@illinois.edu>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20201102203656.220187-2-robh@kernel.org>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rob and Sameer,
+From: YiFei Zhu <yifeifz2@illinois.edu>
 
-Thank you for the patch.
+This patch series enables bitmap cache for the remaining arches with
+SECCOMP_FILTER, other than MIPS.
 
-On Mon, Nov 02, 2020 at 02:36:54PM -0600, Rob Herring wrote:
-> From: Sameer Pujar <spujar@nvidia.com>
-> 
-> Convert device tree bindings of graph to YAML format. Currently graph.txt
-> doc is referenced in multiple files and all of these need to use schema
-> references. For now graph.txt is updated to refer to graph.yaml.
-> 
-> For users of the graph binding, they should reference to the graph
-> schema from either 'ports' or 'port' property:
-> 
-> properties:
->   ports:
->     type: object
->     $ref: graph.yaml#/properties/ports
-> 
->     properties:
->       port@0:
->         description: What data this port has
-> 
->       ...
-> 
-> Or:
-> 
-> properties:
->   port:
->     description: What data this port has
->     type: object
->     $ref: graph.yaml#/properties/port
+I was unable to find any of the arches having subarch-specific NR_syscalls
+macros, so generic NR_syscalls is used. SH's syscall_get_arch seems to
+only have the 32-bit subarch implementation. I'm not sure if this is
+expected.
 
-Sounds like a good approach.
+This series has not been tested; I have not built all the cross compilers
+necessary to build test, let alone run the kernel or benchmark the
+performance, so help on making sure the bitmap cache works as expected
+(selftests/seccomp/{seccomp_benchmark,seccomp_bpf}) would be appreciated.
+The series applies on top of Kees's for-next/seccomp branch.
 
-> Signed-off-by: Sameer Pujar <spujar@nvidia.com>
-> Acked-by: Philipp Zabel <p.zabel@pengutronix.de>
-> Signed-off-by: Rob Herring <robh@kernel.org>
-> ---
-> v3:
->  - Move port 'reg' to port@* and make required
->  - Make remote-endpoint required
->  - Add 'additionalProperties: true' now required
->  - Fix yamllint warnings
-> 
->  Documentation/devicetree/bindings/graph.txt  | 129 +-----------
->  Documentation/devicetree/bindings/graph.yaml | 199 +++++++++++++++++++
->  2 files changed, 200 insertions(+), 128 deletions(-)
->  create mode 100644 Documentation/devicetree/bindings/graph.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/graph.txt b/Documentation/devicetree/bindings/graph.txt
-> index 0415e2c53ba0..b7818d61cef7 100644
-> --- a/Documentation/devicetree/bindings/graph.txt
-> +++ b/Documentation/devicetree/bindings/graph.txt
-> @@ -1,128 +1 @@
-> -Common bindings for device graphs
-> -
-> -General concept
-> ----------------
-> -
-> -The hierarchical organisation of the device tree is well suited to describe
-> -control flow to devices, but there can be more complex connections between
-> -devices that work together to form a logical compound device, following an
-> -arbitrarily complex graph.
-> -There already is a simple directed graph between devices tree nodes using
-> -phandle properties pointing to other nodes to describe connections that
-> -can not be inferred from device tree parent-child relationships. The device
-> -tree graph bindings described herein abstract more complex devices that can
-> -have multiple specifiable ports, each of which can be linked to one or more
-> -ports of other devices.
-> -
-> -These common bindings do not contain any information about the direction or
-> -type of the connections, they just map their existence. Specific properties
-> -may be described by specialized bindings depending on the type of connection.
-> -
-> -To see how this binding applies to video pipelines, for example, see
-> -Documentation/devicetree/bindings/media/video-interfaces.txt.
-> -Here the ports describe data interfaces, and the links between them are
-> -the connecting data buses. A single port with multiple connections can
-> -correspond to multiple devices being connected to the same physical bus.
-> -
-> -Organisation of ports and endpoints
-> ------------------------------------
-> -
-> -Ports are described by child 'port' nodes contained in the device node.
-> -Each port node contains an 'endpoint' subnode for each remote device port
-> -connected to this port. If a single port is connected to more than one
-> -remote device, an 'endpoint' child node must be provided for each link.
-> -If more than one port is present in a device node or there is more than one
-> -endpoint at a port, or a port node needs to be associated with a selected
-> -hardware interface, a common scheme using '#address-cells', '#size-cells'
-> -and 'reg' properties is used to number the nodes.
-> -
-> -device {
-> -        ...
-> -        #address-cells = <1>;
-> -        #size-cells = <0>;
-> -
-> -        port@0 {
-> -	        #address-cells = <1>;
-> -	        #size-cells = <0>;
-> -		reg = <0>;
-> -
-> -                endpoint@0 {
-> -			reg = <0>;
-> -			...
-> -		};
-> -                endpoint@1 {
-> -			reg = <1>;
-> -			...
-> -		};
-> -        };
-> -
-> -        port@1 {
-> -		reg = <1>;
-> -
-> -		endpoint { ... };
-> -	};
-> -};
-> -
-> -All 'port' nodes can be grouped under an optional 'ports' node, which
-> -allows to specify #address-cells, #size-cells properties for the 'port'
-> -nodes independently from any other child device nodes a device might
-> -have.
-> -
-> -device {
-> -        ...
-> -        ports {
-> -                #address-cells = <1>;
-> -                #size-cells = <0>;
-> -
-> -                port@0 {
-> -                        ...
-> -                        endpoint@0 { ... };
-> -                        endpoint@1 { ... };
-> -                };
-> -
-> -                port@1 { ... };
-> -        };
-> -};
-> -
-> -Links between endpoints
-> ------------------------
-> -
-> -Each endpoint should contain a 'remote-endpoint' phandle property that points
-> -to the corresponding endpoint in the port of the remote device. In turn, the
-> -remote endpoint should contain a 'remote-endpoint' property. If it has one, it
-> -must not point to anything other than the local endpoint. Two endpoints with
-> -their 'remote-endpoint' phandles pointing at each other form a link between the
-> -containing ports.
-> -
-> -device-1 {
-> -        port {
-> -                device_1_output: endpoint {
-> -                        remote-endpoint = <&device_2_input>;
-> -                };
-> -        };
-> -};
-> -
-> -device-2 {
-> -        port {
-> -                device_2_input: endpoint {
-> -                        remote-endpoint = <&device_1_output>;
-> -                };
-> -        };
-> -};
-> -
-> -Required properties
-> --------------------
-> -
-> -If there is more than one 'port' or more than one 'endpoint' node or 'reg'
-> -property present in the port and/or endpoint nodes then the following
-> -properties are required in a relevant parent node:
-> -
-> - - #address-cells : number of cells required to define port/endpoint
-> -                    identifier, should be 1.
-> - - #size-cells    : should be zero.
-> -
-> -Optional endpoint properties
-> -----------------------------
-> -
-> -- remote-endpoint: phandle to an 'endpoint' subnode of a remote device node.
-> -
-> +This file has moved to graph.yaml
-> diff --git a/Documentation/devicetree/bindings/graph.yaml b/Documentation/devicetree/bindings/graph.yaml
-> new file mode 100644
-> index 000000000000..b56720c5a13e
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/graph.yaml
-> @@ -0,0 +1,199 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/graph.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Common bindings for device graphs
-> +
-> +description: |
-> +  The hierarchical organisation of the device tree is well suited to describe
-> +  control flow to devices, but there can be more complex connections between
-> +  devices that work together to form a logical compound device, following an
-> +  arbitrarily complex graph.
-> +  There already is a simple directed graph between devices tree nodes using
-> +  phandle properties pointing to other nodes to describe connections that
-> +  can not be inferred from device tree parent-child relationships. The device
-> +  tree graph bindings described herein abstract more complex devices that can
-> +  have multiple specifiable ports, each of which can be linked to one or more
-> +  ports of other devices.
-> +
-> +  These common bindings do not contain any information about the direction or
-> +  type of the connections, they just map their existence. Specific properties
-> +  may be described by specialized bindings depending on the type of connection.
-> +
-> +  To see how this binding applies to video pipelines, for example, see
-> +  Documentation/devicetree/bindings/media/video-interfaces.txt.
-> +  Here the ports describe data interfaces, and the links between them are
-> +  the connecting data buses. A single port with multiple connections can
-> +  correspond to multiple devices being connected to the same physical bus.
-> +
-> +maintainers:
-> +  - Philipp Zabel <p.zabel@pengutronix.de>
-> +
-> +select: false
-> +
-> +properties:
-> +  port:
-> +    type: object
-> +    description:
-> +      If there is more than one endpoint node or 'reg' property present in
-> +      endpoint nodes then '#address-cells' and '#size-cells' properties are
-> +      required.
-> +
-> +    properties:
-> +      "#address-cells":
-> +        const: 1
-> +
-> +      "#size-cells":
-> +        const: 0
-> +
-> +    patternProperties:
-> +      "^endpoint(@[0-9a-f]+)?$":
-> +        type: object
-> +        properties:
-> +          reg:
-> +            maxItems: 1
-> +
-> +          remote-endpoint:
-> +            description: |
-> +              phandle to an 'endpoint' subnode of a remote device node.
-> +            $ref: /schemas/types.yaml#/definitions/phandle
-> +
-> +        required:
-> +          - remote-endpoint
+v1 -> v2:
+* ppc, sh: s/__SECCOMP_ARCH_LE_BIT/__SECCOMP_ARCH_LE/
+* ppc: add "le" suffix to arch name when the arch is little endian.
+* ppc: add explanation of why __LITTLE_ENDIAN__ is used to commit message.
 
-As noted elsewhere, this shouldn't be required.
+YiFei Zhu (8):
+  csky: Enable seccomp architecture tracking
+  parisc: Enable seccomp architecture tracking
+  powerpc: Enable seccomp architecture tracking
+  riscv: Enable seccomp architecture tracking
+  s390: Enable seccomp architecture tracking
+  sh: Enable seccomp architecture tracking
+  xtensa: Enable seccomp architecture tracking
+  seccomp/cache: Report cache data through /proc/pid/seccomp_cache
 
-Should we set additionalProperties: false here ?
+ arch/Kconfig                       | 15 ++++++++
+ arch/csky/include/asm/Kbuild       |  1 -
+ arch/csky/include/asm/seccomp.h    | 11 ++++++
+ arch/parisc/include/asm/Kbuild     |  1 -
+ arch/parisc/include/asm/seccomp.h  | 22 +++++++++++
+ arch/powerpc/include/asm/seccomp.h | 23 ++++++++++++
+ arch/riscv/include/asm/seccomp.h   | 10 +++++
+ arch/s390/include/asm/seccomp.h    |  9 +++++
+ arch/sh/include/asm/seccomp.h      | 10 +++++
+ arch/xtensa/include/asm/Kbuild     |  1 -
+ arch/xtensa/include/asm/seccomp.h  | 11 ++++++
+ fs/proc/base.c                     |  6 +++
+ include/linux/seccomp.h            |  7 ++++
+ kernel/seccomp.c                   | 59 ++++++++++++++++++++++++++++++
+ 14 files changed, 183 insertions(+), 3 deletions(-)
+ create mode 100644 arch/csky/include/asm/seccomp.h
+ create mode 100644 arch/parisc/include/asm/seccomp.h
+ create mode 100644 arch/xtensa/include/asm/seccomp.h
 
-> +
-> +  ports:
-> +    type: object
-> +    description: |
-> +      If there is more than one port node or 'reg' property present in port
-> +      nodes then '#address-cells' and '#size-cells' properties are required.
-> +      In such cases all port nodes can be grouped under 'ports' independently
-> +      from any other child device nodes a device might have.
 
-Allowing multiple port nodes not grouped in a ports node has created
-complexity, with very little gain. Should we forbid that going forward ?
-
-> +
-> +    properties:
-> +      "#address-cells":
-> +        const: 1
-> +
-> +      "#size-cells":
-> +        const: 0
-> +
-> +    patternProperties:
-> +      "^port(@[0-9a-f]+)?$":
-> +        $ref: "#/properties/port"
-> +        type: object
-> +
-> +        properties:
-> +          reg:
-> +            maxItems: 1
-> +
-> +        required:
-> +          - reg
-> +
-> +
-
-Maybe a single blank line ?
-
-Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-
-> +    additionalProperties: false
-> +
-> +additionalProperties: true
-> +
-> +examples:
-> +  # Organisation of ports and endpoints:
-> +  #
-> +  # Ports are described by child 'port' nodes contained in the device node.
-> +  # Each port node contains an 'endpoint' subnode for each remote device port
-> +  # connected to this port. If a single port is connected to more than one
-> +  # remote device, an 'endpoint' child node must be provided for each link.
-> +  # If more than one port is present in a device node or there is more than
-> +  # one endpoint at a port, or a port node needs to be associated with a
-> +  # selected hardware interface, a common scheme using '#address-cells',
-> +  # '#size-cells' and 'reg' properties is used to number the nodes.
-> +  - |
-> +    device {
-> +        #address-cells = <1>;
-> +        #size-cells = <0>;
-> +
-> +        port@0 {
-> +            #address-cells = <1>;
-> +            #size-cells = <0>;
-> +            reg = <0>;
-> +
-> +            endpoint@0 {
-> +                reg = <0>;
-> +                // ...
-> +            };
-> +            endpoint@1 {
-> +                reg = <1>;
-> +                // ...
-> +            };
-> +        };
-> +
-> +        port@1 {
-> +            reg = <1>;
-> +
-> +            endpoint {
-> +                // ...
-> +            };
-> +        };
-> +    };
-> +
-> +  # All 'port' nodes can be grouped under an optional 'ports' node, which
-> +  # allows to specify #address-cells, #size-cells properties for the 'port'
-> +  # nodes independently from any other child device nodes a device might
-> +  # have.
-> +  - |
-> +    device {
-> +        // ...
-> +        ports {
-> +            #address-cells = <1>;
-> +            #size-cells = <0>;
-> +
-> +            port@0 {
-> +                #address-cells = <1>;
-> +                #size-cells = <0>;
-> +                reg = <0>;
-> +                // ...
-> +
-> +                endpoint@0 {
-> +                    reg = <0>;
-> +                    // ...
-> +                };
-> +                endpoint@1 {
-> +                    reg = <1>;
-> +                    // ...
-> +                };
-> +            };
-> +
-> +            port@1 {
-> +                #address-cells = <1>;
-> +                #size-cells = <0>;
-> +                reg = <1>;
-> +                // ...
-> +            };
-> +        };
-> +    };
-> +
-> +  # Links between endpoints:
-> +  #
-> +  # Each endpoint should contain a 'remote-endpoint' phandle property that
-> +  # points to the corresponding endpoint in the port of the remote device.
-> +  # In turn, the remote endpoint should contain a 'remote-endpoint' property.
-> +  # If it has one, it must not point to anything other than the local endpoint.
-> +  # Two endpoints with their 'remote-endpoint' phandles pointing at each other
-> +  # form a link between the containing ports.
-> +  - |
-> +    device-1 {
-> +        port {
-> +            device_1_output: endpoint {
-> +                remote-endpoint = <&device_2_input>;
-> +            };
-> +        };
-> +    };
-> +
-> +    device-2 {
-> +        port {
-> +            device_2_input: endpoint {
-> +                remote-endpoint = <&device_1_output>;
-> +            };
-> +        };
-> +    };
-> +
-> +...
-
--- 
-Regards,
-
-Laurent Pinchart
+base-commit: 38c37e8fd3d2590c4234d8cfbc22158362f0eb04
+--
+2.29.2
