@@ -2,101 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C47C2AEACF
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 09:05:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 45C1E2AEADE
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 09:13:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726245AbgKKIFi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 03:05:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57092 "EHLO
+        id S1726020AbgKKINW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 03:13:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58836 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725916AbgKKIFh (ORCPT
+        with ESMTP id S1725468AbgKKINW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 03:05:37 -0500
-Received: from mail-ua1-x941.google.com (mail-ua1-x941.google.com [IPv6:2607:f8b0:4864:20::941])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9DC0C0613D4
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 00:05:36 -0800 (PST)
-Received: by mail-ua1-x941.google.com with SMTP id 91so454530uar.5
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 00:05:36 -0800 (PST)
+        Wed, 11 Nov 2020 03:13:22 -0500
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D4A8C0613D1;
+        Wed, 11 Nov 2020 00:13:22 -0800 (PST)
+Received: by mail-pg1-x543.google.com with SMTP id h6so976031pgk.4;
+        Wed, 11 Nov 2020 00:13:22 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=szeredi.hu; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=T52zolihXR5yVqpLPyKqfWvMWU33QxIhE3DUTqobAyk=;
-        b=KdW1JirNzZixAW0y6k03W4n0oUx1mwgYHoRio7qxTLAW1sQch9eFg3FdNoi1F44WGb
-         4AkF+mvvdOPJ70KxK4PyyiX26OuZGXP9KqvLg7dG2TAWats96jew/pbpzo7MCLUbTZPq
-         1xzv974+79AmgYpqdDxT/LcxLdiwKZL43xtFw=
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=iitQh+q0FehiLOu43hjjhxpuoRgl98YfNKBT516DQYM=;
+        b=Czhh1dXG+fwgj+ZQkXc2uNm118mSTuHDaEhV6Ist2DRhb8kajD2WQvL9QqO0+ypROq
+         PXtHcg36gqod6Hbs2Pbl4SUAuAo8M3pjniYVHAHRTmZC+jcGDlUSXx0VWmiWI2q4cXvZ
+         FoZ/mII6eZGxyMvf+gB9UT8kowp6AMTVJY5KOKQPoAVJb1VymUC4aAZ7KZFPIUd8qRXw
+         vTyt+nRS9tYPpZmBvu5xrxQklGwILQ7BlWBMzMA5BMcRz9ZORKDT/OUxNg9q7O44gxye
+         oy//KCwnJAEgiH3Uxspa8hgDodYJIXAs4wVl9FGxuvcTG5Py27m+rZU3ls9Y0SzgpVRI
+         VBdQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=T52zolihXR5yVqpLPyKqfWvMWU33QxIhE3DUTqobAyk=;
-        b=CKAHQOfkqft5Uhoewn2v0HYqhuSl/JjAxeb1uy/mx10RikXRmLtudN3dmL3ZiIRVdV
-         5AygRZ2+Q6TXeG545LuAhoshdwJtxkHBnCmsk7Lnn9gk/w8DzkjcGECp6behNEvzNo20
-         XZ408ggoxT0CI1XD7ug7lyI1B+chDPxE32KODRWWWjxuvqJ66B75kD9yqZKWDCiY79te
-         v/ehc8BRF+3IInggOb78AuBv9XRqaRWC4zrt1rcrkOos18IcZwrsJCP9LRiSj6gBn9TF
-         AZ1h9eZuG19UsZQSGWY7vFDz33JBkSUuJr8ZDzp67TTRSW6I5KCqVUZcLVZLtcj4c25l
-         OwIA==
-X-Gm-Message-State: AOAM532eNgbT5v9aWPTRE04qMKOnw8+YBUG5uZornwoKurDhsLnmwpCk
-        d2Nj0r/f0WJGBlIo9usX5ULDD7H02YqLYKUH952ZEw==
-X-Google-Smtp-Source: ABdhPJyVOGS5SgFT01Xc25kGbuYM8gjuJNx097W3WndVTFEeW06YEX0O0gClxTuu7GxCB3YblpehRMUpXUIJCHBBoc0=
-X-Received: by 2002:ab0:6f54:: with SMTP id r20mr9470960uat.9.1605081935843;
- Wed, 11 Nov 2020 00:05:35 -0800 (PST)
-MIME-Version: 1.0
-References: <1e796f9e008fb78fb96358ff74f39bd4865a7c88.1604926010.git.gladkov.alexey@gmail.com>
- <CAJfpegua_ahmNa4p0me6R10wtcPpQVKNiKQOVKjuNW67RHFOOA@mail.gmail.com>
- <87v9ee2wer.fsf@x220.int.ebiederm.org> <CAJfpegugWh7r=h9T+fbb7FKrz2JpWtA==ck2iYq1DYJ25_-WyA@mail.gmail.com>
- <87d00ks5jg.fsf@x220.int.ebiederm.org>
-In-Reply-To: <87d00ks5jg.fsf@x220.int.ebiederm.org>
-From:   Miklos Szeredi <miklos@szeredi.hu>
-Date:   Wed, 11 Nov 2020 09:05:24 +0100
-Message-ID: <CAJfpeguyFLOKWgrU_7oUHgWkqUzBOf8zPRnL8aqGK3g0sghk=w@mail.gmail.com>
-Subject: Re: [RESEND PATCH v3] fuse: Abort waiting for a response if the
- daemon receives a fatal signal
-To:     "Eric W. Biederman" <ebiederm@xmission.com>
-Cc:     Alexey Gladkov <gladkov.alexey@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-fsdevel@vger.kernel.org, Alexey Gladkov <legion@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=iitQh+q0FehiLOu43hjjhxpuoRgl98YfNKBT516DQYM=;
+        b=Ai3+/L9Ng39KZxfaXVNFUeHBCyYeJK90oepF56arO1IbGH/zg4jAuipsBSAm0X3bb6
+         JeEMeTaKgkGabGkC+r9qX0S7oGH+lrGLoLi2vNKc/AhSRucYkoRDIh/DBXKi2TlACbx2
+         6HiCCFaboCUNAW+SUrL3yEI4aAXcB03OeYqM2e1vhtjgDzeOkGZ1zNxOK8kJCJtgExlN
+         W8PHnye2jGbfsEcPt/fyDHUPadh4j1Rmf51tOBv5M30JHBFu6AOal42p+X8Cl/bNkqEv
+         M/Zg85fvJ08/ujiQrzpmv7VeRMPiLgZJjMMosfYR54QSj+bEbBJmA0MVRGtn1W97y4H+
+         dnsQ==
+X-Gm-Message-State: AOAM532CuweChxePrpOl9POUyJTrsJcQgc8OwqjFt8JybaZMN3ynATKN
+        lGDVkvel7SvBYy/WuyBOrHfLzDUvFv00
+X-Google-Smtp-Source: ABdhPJxYPan4v7/DonqVyf1X76RnRlHbsJeLLo0Pzx/dOCMb/4dqVii1RB0aISxsCH5Ml9v6rTRNKw==
+X-Received: by 2002:a63:5864:: with SMTP id i36mr10876045pgm.68.1605082401603;
+        Wed, 11 Nov 2020 00:13:21 -0800 (PST)
+Received: from he-cluster.localdomain (67.216.221.250.16clouds.com. [67.216.221.250])
+        by smtp.gmail.com with ESMTPSA id w127sm1562138pfc.172.2020.11.11.00.13.20
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 11 Nov 2020 00:13:20 -0800 (PST)
+From:   xiakaixu1987@gmail.com
+X-Google-Original-From: kaixuxia@tencent.com
+To:     jdelvare@suse.com, linux@roeck-us.net
+Cc:     linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Kaixu Xia <kaixuxia@tencent.com>
+Subject: [PATCH] hwmon: Fix unsigned 'reg' compared with zero in amc6821_update_device
+Date:   Wed, 11 Nov 2020 16:13:16 +0800
+Message-Id: <1605082396-26560-1-git-send-email-kaixuxia@tencent.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 11, 2020 at 8:42 AM Eric W. Biederman <ebiederm@xmission.com> wrote:
->
-> Miklos Szeredi <miklos@szeredi.hu> writes:
+From: Kaixu Xia <kaixuxia@tencent.com>
 
-> > Okay, so the problem with making the wait_event() at the end of
-> > request_wait_answer() killable is that it would allow compromising the
-> > server's integrity by unlocking the VFS level lock (which protects the
-> > fs) while the server hasn't yet finished the request.
-> >
-> > The way this would be solvable is to add a fuse level lock for each
-> > VFS level lock.   That lock would be taken before the request is sent
-> > to userspace and would be released when the answer is received.
-> > Normally there would be zero contention on these shadow locks, but if
-> > a request is forcibly killed, then the VFS lock is released and the
-> > shadow lock now protects the filesystem.
-> >
-> > This wouldn't solve the case where a fuse fs is deadlocked on a VFS
-> > lock (e.g. task B), but would allow tasks blocked directly on a fuse
-> > filesystem to be killed (e.g. task A or C, both of which would unwind
-> > the deadlock).
->
-> Are we just talking the inode lock here?
->
-> I am trying to figure out if this is a straight forward change.
-> Or if it will take a fair amount of work.
+The unsigned variable reg is assigned a return value from the call
+to i2c_smbus_read_byte_data(), which may return negative error code.
 
-Inode lock and cross directory rename lock should suffice, I think.
+Fixes coccicheck warning:
 
-One issue is that we are losing normal ref on dentry+mount, so in case
-the process is killed we need to take a ref on the inode.
+./drivers/hwmon/amc6821.c:215:6-9: WARNING: Unsigned expression compared with zero: reg > 0
+./drivers/hwmon/amc6821.c:228:6-9: WARNING: Unsigned expression compared with zero: reg > 0
 
-Since multiple inode locks can be held for one op, we need to take
-care of ordering the shadow locks as well.
+Reported-by: Tosk Robot <tencent_os_robot@tencent.com>
+Signed-off-by: Kaixu Xia <kaixuxia@tencent.com>
+---
+ drivers/hwmon/amc6821.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-It's not a trivial change, but I'd be much happier if we would take
-this instead of the hackish one.
+diff --git a/drivers/hwmon/amc6821.c b/drivers/hwmon/amc6821.c
+index 6b1ce2242c61..ce7c9f412538 100644
+--- a/drivers/hwmon/amc6821.c
++++ b/drivers/hwmon/amc6821.c
+@@ -166,7 +166,7 @@ static struct amc6821_data *amc6821_update_device(struct device *dev)
+ 	struct amc6821_data *data = dev_get_drvdata(dev);
+ 	struct i2c_client *client = data->client;
+ 	int timeout = HZ;
+-	u8 reg;
++	s8 reg;
+ 	int i;
+ 
+ 	mutex_lock(&data->update_lock);
+-- 
+2.20.0
 
-Thanks,
-Miklos
