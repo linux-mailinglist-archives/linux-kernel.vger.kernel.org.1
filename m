@@ -2,98 +2,235 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 695E12AEF52
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 12:13:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 578962AEF54
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 12:13:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726136AbgKKLNY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 06:13:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59952 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726495AbgKKLNU (ORCPT
+        id S1726519AbgKKLNd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 06:13:33 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:59647 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726495AbgKKLN0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 06:13:20 -0500
-Received: from mail-qv1-xf43.google.com (mail-qv1-xf43.google.com [IPv6:2607:f8b0:4864:20::f43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8279C0613D1
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 03:13:19 -0800 (PST)
-Received: by mail-qv1-xf43.google.com with SMTP id 63so671668qva.7
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 03:13:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=G25H3cRGlnqgYp9qHwhX1vczcSDgPbi+Ig9bY020mP0=;
-        b=LuFMYk0dUlPR4FVrsNh5uk1umraI3MMg3mRmkuVk63xZv/LMdVaDxOtmuISraXdmiu
-         UKgk7K9acPBkbNd769WbQNAn09tEAJWByf8wi9Mgnl5wFZtywKSQYUfQ66tgAEbq0r0k
-         Rizv5JWEieM46t96h8fnk0/M4EOOEnS9dzd3kd8H79mDZ3OlTmWv97UbsSo+U7OUp5ts
-         AT1fhh+uAxruSeumevEQIRGkKjU+p3qmFrVLRkFzEWFip4RL0bGK7YmBH0+ojSVSVOFr
-         yI+aEuPz4c8ZyDe7ncItC/NQqJ5HyLESYlxYaUMCKbfNTi7fFhNCOi47apfNHoaYVD8G
-         qLSg==
+        Wed, 11 Nov 2020 06:13:26 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1605093205;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Z8S+siqoexZXXM7q29fDjpzHS86Gh3tR8QOyHiVyeH8=;
+        b=e6mH6jbcFomB98NH9MzbAqx2OPrc8A2AqAbNQAa1VWK/p85TNiFDwZMdbcrKZC2Ew52Vg1
+        SvBIyjKqNo4WXfAkeDXtf7Ys2QDz55PLcvLant9BjvTLhuyNZNHtz0F6KtnbAT5u6UVNKN
+        tkfRsWMZU60UVrpjmK45rbCSI2h6li0=
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-407-6e0oF8PIMsWbj4ozdafWHQ-1; Wed, 11 Nov 2020 06:13:22 -0500
+X-MC-Unique: 6e0oF8PIMsWbj4ozdafWHQ-1
+Received: by mail-ed1-f70.google.com with SMTP id c2so711008edw.21
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 03:13:22 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=G25H3cRGlnqgYp9qHwhX1vczcSDgPbi+Ig9bY020mP0=;
-        b=ZaOi6mrHFErcNhFbF0jaFvTK75NCXueFRyCIwPdiLLBmrJlt0wqXnMqFHly21/NZ5e
-         2bZ3LxIyUCbUAcbisEsBF8nPtWx8swXjC0+pTj4xh2G3B/AMQpp14JnKzE6paxaFxaTT
-         nmRJdJNJpLhZW9IUt4s8Pr+odp/r8I6RRdIXOK4dG8O3ziw91NDpBSGmQ/VShWGpRAGy
-         Vs5HW1f4KdGXKAGAB7w+hKa6DlaZUsYoo4iLDWGlFOX1QqySSczLWlgogyZ5qQTjW/qg
-         jYmuNzm+xKUhPNkoHllLFYhPvsSI4mkQrvBfXze6hw8FbEHGIu2B3th1fs1t7267xRey
-         xFpw==
-X-Gm-Message-State: AOAM530B5SI//r7P41pKvhjLJ+kenMG59X7OIcvSpePi5fp0spotkhHZ
-        CE1rstDZxSZbF06EiA9LRWbMAfJgBZ2jDoivU1ZPnA==
-X-Google-Smtp-Source: ABdhPJyg+2GPaoQR0835u3ehaZDK5bPh7OzIzQ+ehRY2+fCdQNAjE/kWDN0+UK+JeflqywTVYJzDTAQlIzWcj2Yj2r4=
-X-Received: by 2002:a05:6214:9c4:: with SMTP id dp4mr3755509qvb.44.1605093198973;
- Wed, 11 Nov 2020 03:13:18 -0800 (PST)
-MIME-Version: 1.0
-References: <0000000000009323e705ae870d48@google.com> <0000000000008dab1205b1208fe6@google.com>
-In-Reply-To: <0000000000008dab1205b1208fe6@google.com>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Wed, 11 Nov 2020 12:13:07 +0100
-Message-ID: <CACT4Y+ba6jB8h1AptYx31AKsW=adXfgSyr1AdEEyqLmy=d6b9w@mail.gmail.com>
-Subject: Re: KASAN: use-after-free Read in delete_partition
-To:     syzbot <syzbot+b8639c8dcb5ec4483d4f@syzkaller.appspotmail.com>
-Cc:     Anant Thazhemadam <anant.thazhemadam@gmail.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Dan Williams <dan.j.williams@intel.com>, dragonjetli@gmail.com,
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Z8S+siqoexZXXM7q29fDjpzHS86Gh3tR8QOyHiVyeH8=;
+        b=bn32DZnbs/vj95ca6rnvt1WGwuj3CfmAhvuSx7yiunbkjgS+Rl8nWjzHwEUIjNCpEd
+         Y4elhXRIF3xRZ/H1+B7muwcHDYVOkHLs9MpQueR+j+pKLjWCQ/KF2TB5V1P6sQAeytNu
+         95ZbrB3WK+ctYspbUI8mmS48ba2SVV63eNHTi6FOV1xK4zb+dwmrB+ym6s2bieL7R+jL
+         izgsDg99cNdE0T6HeZ+0+Xk6MZ1z75TeDriKFHr4SflVB9kQLAto9r3enjvwB5nL9Jdx
+         Bu+5FIaSm/Gd9JcCDQNaPAKzKjbEHgrggmwImbBnX25SUk7+JOEtwnS85CmwJARa2NC6
+         2o8Q==
+X-Gm-Message-State: AOAM533lyVTrYjjpbKDZJeskTEu2sth7q4x4eyYvCYxCYXhTnib5jvA3
+        h93uB8ZdmCDwsLPIsD299vw4fq6ddwSvE19WW4wmIZejtSTFTnGiqYsLfDWC6ppjR9zMj3AJ3QY
+        8sOE2u8+2GakTmfFGyAte8kpziHiEhAzi8fN5utrOT72VvYJcW+USWroygs+2NG5VDW83DkWpzS
+        KA
+X-Received: by 2002:a17:906:892:: with SMTP id n18mr24125352eje.1.1605093200668;
+        Wed, 11 Nov 2020 03:13:20 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJz99HJvX1FUbNByylAknLNJ/wBG4xsEFBX+F/mEyCsUbAfospfLtXxB8FtKEDJXIrvF2zhZ3w==
+X-Received: by 2002:a17:906:892:: with SMTP id n18mr24125309eje.1.1605093200346;
+        Wed, 11 Nov 2020 03:13:20 -0800 (PST)
+Received: from x1.localdomain (2001-1c00-0c0c-fe00-6c10-fbf3-14c4-884c.cable.dynamic.v6.ziggo.nl. [2001:1c00:c0c:fe00:6c10:fbf3:14c4:884c])
+        by smtp.gmail.com with ESMTPSA id h2sm725863ejx.55.2020.11.11.03.13.19
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 11 Nov 2020 03:13:19 -0800 (PST)
+Subject: Re: [PATCH v5 1/4] HID: i2c-hid: Reorganize so ACPI and OF are
+ separate modules
+To:     Doug Anderson <dianders@chromium.org>
+Cc:     Jiri Kosina <jkosina@suse.cz>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Christoph Hellwig <hch@lst.de>, hl1998@protonmail.com,
-        Jan Kara <jack@suse.cz>, jean-philippe@linaro.org,
-        johannes.thumshirn@wdc.com, jroedel@suse.de,
-        linux-block <linux-block@vger.kernel.org>,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Rafael Wysocki <rafael@kernel.org>,
-        Saravana Kannan <saravanak@google.com>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Kai-Heng Feng <kai.heng.feng@canonical.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        "open list:HID CORE LAYER" <linux-input@vger.kernel.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Andrea Borgia <andrea@borgia.bo.it>,
+        Jiri Kosina <jikos@kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Pavel Balan <admin@kryma.net>,
+        Xiaofei Tan <tanxiaofei@huawei.com>,
+        You-Sheng Yang <vicamo.yang@canonical.com>,
+        LKML <linux-kernel@vger.kernel.org>
+References: <20201109213636.1267536-1-dianders@chromium.org>
+ <20201109133526.v5.1.Ied4ce10d229cd7c69abf13a0361ba0b8d82eb9c4@changeid>
+ <d51318d1-5d26-f840-2651-42a1134d407b@redhat.com>
+ <CAD=FV=WL7C_OPOQqJY_9nDP4Riz6c4XMHXBBj7FkzMJPBVo9Nw@mail.gmail.com>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <38773dae-32fa-b153-a774-27b474d1a778@redhat.com>
+Date:   Wed, 11 Nov 2020 12:13:18 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.1
+MIME-Version: 1.0
+In-Reply-To: <CAD=FV=WL7C_OPOQqJY_9nDP4Riz6c4XMHXBBj7FkzMJPBVo9Nw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 8, 2020 at 5:38 AM syzbot
-<syzbot+b8639c8dcb5ec4483d4f@syzkaller.appspotmail.com> wrote:
->
-> syzbot suspects this issue was fixed by commit:
->
-> commit 08fc1ab6d748ab1a690fd483f41e2938984ce353
-> Author: Christoph Hellwig <hch@lst.de>
-> Date:   Tue Sep 1 09:59:41 2020 +0000
->
->     block: fix locking in bdev_del_partition
->
-> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=1259b1e7900000
-> start commit:   f75aef39 Linux 5.9-rc3
-> git tree:       upstream
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=3c5f6ce8d5b68299
-> dashboard link: https://syzkaller.appspot.com/bug?extid=b8639c8dcb5ec4483d4f
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=15c43c79900000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=173dfa1e900000
->
-> If the result looks correct, please mark the issue as fixed by replying with:
->
-> #syz fix: block: fix locking in bdev_del_partition
->
-> For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+Hi,
 
-#syz fix: block: fix locking in bdev_del_partition
+On 11/10/20 11:17 PM, Doug Anderson wrote:
+> Hi,
+> 
+> On Tue, Nov 10, 2020 at 1:01 AM Hans de Goede <hdegoede@redhat.com> wrote:
+>>
+>> Hi,
+>>
+>> On 11/9/20 10:36 PM, Douglas Anderson wrote:
+>>> This patch rejiggers the i2c-hid code so that the OF (Open Firmware
+>>> aka Device Tree) and ACPI support is separated out a bit.  The OF and
+>>> ACPI drivers are now separate modules that wrap the core module.
+>>>
+>>> Essentially, what we're doing here:
+>>> * Make "power up" and "power down" a function that can be (optionally)
+>>>   implemented by a given user of the i2c-hid core.
+>>> * The OF and ACPI modules are drivers on their own, so they implement
+>>>   probe / remove / suspend / resume / shutdown.  The core code
+>>>   provides implementations that OF and ACPI can call into.
+>>>
+>>> We'll organize this so that we now have 3 modules: the old i2c-hid
+>>> module becomes the "core" module and two new modules will depend on
+>>> it, handling probing the specific device.
+>>>
+>>> As part of this work, we'll remove the i2c-hid "platform data"
+>>> concept since it's not needed.
+>>>
+>>> Signed-off-by: Douglas Anderson <dianders@chromium.org>
+>>> ---
+>>>
+>>> Changes in v5:
+>>> - Add shutdown_tail op and use it in ACPI.
+>>> - i2chid_subclass_data => i2chid_ops.
+>>> - power_up_device => power_up (same with power_down).
+>>> - subclass => ops.
+>>>
+>>
+>> Thanks this looks good to now, 2 small remarks below (since you are
+>> going to do a v6 anyways). Feel free to ignore these remarks if
+>> you prefer to keep things as is.
+>>
+>> And feel free to add my reviewed-by to v6 of this patch:
+>>
+>> Reviewed-by: Hans de Goede <hdegoede@redhat.com>
+> 
+> Thanks!
+> 
+> 
+>>> +static const struct i2c_device_id i2c_hid_acpi_id_table[] = {
+>>> +     { "hid", 0 },
+>>> +     { "hid-over-i2c", 0 },
+>>> +     { },
+>>> +};
+>>> +MODULE_DEVICE_TABLE(i2c, i2c_hid_acpi_id_table);
+>>
+>> Hmm, I do not think these old-style i2c-ids are necessarry at
+>> all in this driver. I expect all use-cases to use either
+>> of or acpi matches.
+>>
+>> This was already present in the code before though, so
+>> please ignore this remark. This is just something which
+>> I noticed and thought was worth while pointing out as
+>> a future cleanup.
+> 
+> Yeah, I wasn't sure if there was anyone using them.
+> 
+> Hrm.  Thinking about it, though, is it really OK for two drivers to
+> both have the same table listed?  I'm not sure how that would work.
+> Do you know?
+
+Ah I missed that you are adding the i2c_device_id table to
+both the new -acpi and -of drivers.
+
+That indeed is not a good idea.
+
+> I don't know a ton about ACPI, but for device tree I know i2c has a
+> fallback mode.  Specifically having this table means that we'll match
+> compatible strings such as:
+> 
+>   "zipzapzing,hid"
+>   "kapowzers,hid-over-i2c"
+> 
+> In other words it'll ignore the vendor part and just match on the
+> second half.
+
+Yeah I know about that clever hack the i2c subsys has. 
+
+> Just to make sure I wasn't remembering that from a dream
+> I tried it and it worked.  I don't see any mainline device trees that
+> look like that, though.  I could delete it, though it doesn't really
+> take up much space and it seems nice to keep it working in case anyone
+> was relying on it?
+
+Ack, so in the of case there is a reason to keep this. But ACPI binding
+does not use anything similar, so the old-style i2c_device_id table
+should probably be removed from the -acpi driver.
+
+> For ACPI is there a similar fallback?  If not then it seems like it'd
+> be easy to remove it from there...
+> 
+> 
+>> <snip>
+>>
+>>> diff --git a/drivers/hid/i2c-hid/i2c-hid-core.c b/drivers/hid/i2c-hid/i2c-hid-core.c
+>>> index aeff1ffb0c8b..9551ba96dc49 100644
+>>> --- a/drivers/hid/i2c-hid/i2c-hid-core.c
+>>> +++ b/drivers/hid/i2c-hid/i2c-hid-core.c
+>>> @@ -35,12 +35,8 @@
+>>>  #include <linux/kernel.h>
+>>>  #include <linux/hid.h>
+>>>  #include <linux/mutex.h>
+>>> -#include <linux/acpi.h>
+>>> -#include <linux/of.h>
+>>>  #include <linux/regulator/consumer.h>
+>>
+>> I think you can drop this regulator include here now too ?
+> 
+> Good point.
+> 
+> 
+>>> diff --git a/drivers/hid/i2c-hid/i2c-hid-of.c b/drivers/hid/i2c-hid/i2c-hid-of.c
+>>> new file mode 100644
+>>> index 000000000000..15d533be2b24
+>>> --- /dev/null
+>>> +++ b/drivers/hid/i2c-hid/i2c-hid-of.c
+>> <snip>
+>>
+>>> +static const struct dev_pm_ops i2c_hid_of_pm = {
+>>> +     SET_SYSTEM_SLEEP_PM_OPS(i2c_hid_core_suspend, i2c_hid_core_resume)
+>>> +};
+>>
+>> This dev_pm_ops struct is identical to the one in i2c-hid-acpi.c
+>> and the one which you introduce later in i2c-hid-of-goodix.c
+>> is also identical, so that is 3 copies.
+>>
+>> Maybe just put a shared dev_pm_ops struct in the i2c-core
+>> (and don't export the suspend/resume handlers) ?
+> 
+> Sounds good.
+
+Regards,
+
+Hans
+
