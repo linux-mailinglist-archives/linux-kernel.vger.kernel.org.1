@@ -2,108 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2C102AFA11
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 21:54:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 925702AFA14
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 21:55:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726859AbgKKUyi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 15:54:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37808 "EHLO
+        id S1727010AbgKKUz1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 15:55:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37934 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725966AbgKKUyi (ORCPT
+        with ESMTP id S1725933AbgKKUz1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 15:54:38 -0500
-Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F05B7C0613D1
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 12:54:37 -0800 (PST)
-Received: by mail-ot1-x344.google.com with SMTP id 79so3454251otc.7
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 12:54:37 -0800 (PST)
+        Wed, 11 Nov 2020 15:55:27 -0500
+Received: from mail-vs1-xe44.google.com (mail-vs1-xe44.google.com [IPv6:2607:f8b0:4864:20::e44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EEC19C0613D1
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 12:55:26 -0800 (PST)
+Received: by mail-vs1-xe44.google.com with SMTP id 128so1980156vso.7
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 12:55:26 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=sender:from:to:cc:subject:date:message-id;
-        bh=VgpeWsRTTojekaZd0nKJIZviZMfkuw29mtRuDlp4Q38=;
-        b=ueclBL5aYloNM73FTRpAK46UaQtvV4N9obrKltg66JadAKp9kzv2yThjqZNLeAVU5+
-         ImPGB4Wrz8k4VnRPx3COlhBID/uCFV1U2ytFIGuvXORDLoJ8t3BYJeNgA5DAItJ8HwWj
-         SHuVV3qNKWlWuoq4wYRDIyChUgyZP9U0/tK+8oJBw/X+KJb0LI0WrTG/y9zOnwDvMXt7
-         d7zMYfJZcfD/oC2oQwKC9GtHxu7Euv1FeVQizLbwhnsT3EuSDR8qLkJjuqKIVJC5kSMm
-         AKPB32BuzpOz9gwT0kbt30kMpCTNrQeFKzPAGVhZ6xyqhfCDKhvI1VR5PJKFV5q7CiZP
-         /oTQ==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=d6wXQms3X2jDTGkCw8WsYRVzU1kvWpMHgYkx09XvOSo=;
+        b=t+grscLb20Tx0eHT7Z0/3k9KRGG3yAc0IuHJ5S/pi0ek59meKkGY0CtxIplTBbl11j
+         oTSxcbEMlEMkj8W7RMJlTS1d4xPkr1a9fJ0aFfgLvj6eONeTK+BAqezy+ExOkbkaSFzz
+         25gAAZ2u1RLDBe9B4QZXGhEYkSSCOeUc7BJkODARM3xlgpQ9PPXQCewu0QQltVG2UlA3
+         hiXI4alqL1PNC3XL+Mdn1mA6QhEf2vUaKUaZKqM29U31JUVzowAbMa0xAARMQGraosCI
+         4BfQtavFo6mDftIYj2i2ouxw3RpRrZIH2N0LuBt/ad/yK0c6L409r2KUGMroCHWjHZ1X
+         YA4g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id;
-        bh=VgpeWsRTTojekaZd0nKJIZviZMfkuw29mtRuDlp4Q38=;
-        b=fifThd88yZQPjcETYo69CrXx578zDok8oNnXKkE99Xwt91OMpMS4W4s+Z48ypGWavk
-         fGRzoFBpGjpr4H3nsh0AYsPvFSjT/2GKpCdUt7qmHwRSXCg/5BsOY9uE1ZUp64r5nGsw
-         CYcq+IZRSJi+hYjgdcHmsJofIKmXPwC3R/K98XBifyVk5tveX5oPazahMbeBXOfFYUAc
-         +eeEy5qwRqx/RKa4mXEQ2Ij5xDdY1Cfn76vQqcvEF3oV2+1j2ZwaQVxR3snSwiTQ3YGF
-         SdUI4dsNlRqJYO9B//VpI6E+3pEvc7/sySthGnEt6TAbTSYpanSRNTCpwTTlS5xwxg7l
-         qE4w==
-X-Gm-Message-State: AOAM533U6leG0YBVTyiTEac0GNo+BFoFIRbmgS2zWFb04MT0SZ3SUxQP
-        KNZA3FsgE/KydqcCJ3OOR8M=
-X-Google-Smtp-Source: ABdhPJw6aPFYn8VWrBcJU1RgKXK7hcAi8FtKraIiknX01BQ4W8eGnJ7DJs6qh75SuuP4AobdzvaXyA==
-X-Received: by 2002:a05:6830:2259:: with SMTP id t25mr19495062otd.192.1605128077307;
-        Wed, 11 Nov 2020 12:54:37 -0800 (PST)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id p126sm651793oia.24.2020.11.11.12.54.36
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 11 Nov 2020 12:54:36 -0800 (PST)
-Sender: Guenter Roeck <groeck7@gmail.com>
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Cezary Rojewski <cezary.rojewski@intel.com>
-Cc:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
-        Jie Yang <yang.jie@linux.intel.com>,
-        Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org,
-        linux-kernel@vger.kernel.org, Guenter Roeck <linux@roeck-us.net>,
-        Brent Lu <brent.lu@intel.com>,
-        Curtis Malainey <cujomalainey@chromium.org>
-Subject: [PATCH] ASOC: Intel: kbl_rt5663_rt5514_max98927: Do not try to disable disabled clock
-Date:   Wed, 11 Nov 2020 12:54:34 -0800
-Message-Id: <20201111205434.207610-1-linux@roeck-us.net>
-X-Mailer: git-send-email 2.17.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=d6wXQms3X2jDTGkCw8WsYRVzU1kvWpMHgYkx09XvOSo=;
+        b=Mi/ND6+FXn1yG3786N3YcKCPBhaQPOfZ5xAgXwdhkGunyAyivRmML0kGsjy7RKzKiE
+         jOw+HIv9LjIVzdTmBLp3LGCLeVKWTB166jBSgmXbWNdd39JaXadlDeVCAor+LDnfYEzO
+         NL1sv8M6Vyyqx2Co0MSvBl7rMivM+jTesy+Qky4Iau8S1zCYpokCsU/jgiHxjqV8p7K0
+         UAcUQYU2cPCMU5TwFdax8CXnNwQVT1rlA29p4j1XLB4h4z1PUfA/FpYxsSjl31nNAEiq
+         D1K9h4h50CbVOlNwEmLxbYDEwhmf2UMSH3I9ssZZcUUloobZVwax0BFct+jRMB/2krWW
+         3dUg==
+X-Gm-Message-State: AOAM533+9BeksLUGeY5ayCFUyX1z2yfh/UNPvyEw1vgsIYZap/ppXUBe
+        vEnk6mcLpeEKTQRmOSqOGmpUi0YcpHg=
+X-Google-Smtp-Source: ABdhPJxJoTMVfOBF5yolF7BhGfblnJyIWUmQsf+Lb0Y3YqxtyMkX6eYTpuwl8ev5YRGdsQwj3EQ7RQ==
+X-Received: by 2002:a05:6102:a17:: with SMTP id t23mr9679209vsa.25.1605128125345;
+        Wed, 11 Nov 2020 12:55:25 -0800 (PST)
+Received: from mail-vs1-f51.google.com (mail-vs1-f51.google.com. [209.85.217.51])
+        by smtp.gmail.com with ESMTPSA id 59sm293490uag.13.2020.11.11.12.55.24
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 11 Nov 2020 12:55:24 -0800 (PST)
+Received: by mail-vs1-f51.google.com with SMTP id m16so1969075vsl.8
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 12:55:24 -0800 (PST)
+X-Received: by 2002:a67:ce0e:: with SMTP id s14mr16942916vsl.13.1605128123561;
+ Wed, 11 Nov 2020 12:55:23 -0800 (PST)
+MIME-Version: 1.0
+References: <sc7E1N6fUafwmUSYAu3TKgH39kfjNK5WuUi0wng54@cp4-web-030.plabs.ch>
+In-Reply-To: <sc7E1N6fUafwmUSYAu3TKgH39kfjNK5WuUi0wng54@cp4-web-030.plabs.ch>
+From:   Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+Date:   Wed, 11 Nov 2020 15:54:45 -0500
+X-Gmail-Original-Message-ID: <CA+FuTSc3Xk9U51f1PCLVAmu-+Wfs8i2+gb8K2igcV5fUq_b40A@mail.gmail.com>
+Message-ID: <CA+FuTSc3Xk9U51f1PCLVAmu-+Wfs8i2+gb8K2igcV5fUq_b40A@mail.gmail.com>
+Subject: Re: [PATCH v5 net 2/2] net: udp: fix IP header access and skb lookup
+ on Fast/frag0 UDP GRO
+To:     Alexander Lobakin <alobakin@pm.me>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Steffen Klassert <steffen.klassert@secunet.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Network Development <netdev@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In kabylake_set_bias_level(), enabling mclk may fail if the clock has
-already been enabled by the firmware. Attempts to disable that clock
-later will fail with a warning backtrace.
+On Wed, Nov 11, 2020 at 3:45 PM Alexander Lobakin <alobakin@pm.me> wrote:
+>
+> udp{4,6}_lib_lookup_skb() use ip{,v6}_hdr() to get IP header of the
+> packet. While it's probably OK for non-frag0 paths, this helpers
+> will also point to junk on Fast/frag0 GRO when all headers are
+> located in frags. As a result, sk/skb lookup may fail or give wrong
+> results. To support both GRO modes, skb_gro_network_header() might
+> be used. To not modify original functions, add private versions of
+> udp{4,6}_lib_lookup_skb() only to perform correct sk lookups on GRO.
+>
+> Present since the introduction of "application-level" UDP GRO
+> in 4.7-rc1.
+>
+> Misc: replace totally unneeded ternaries with plain ifs.
+>
+> Fixes: a6024562ffd7 ("udp: Add GRO functions to UDP socket")
+> Suggested-by: Willem de Bruijn <willemb@google.com>
+> Cc: Eric Dumazet <edumazet@google.com>
+> Cc: Jakub Kicinski <kuba@kernel.org>
+> Signed-off-by: Alexander Lobakin <alobakin@pm.me>
 
-mclk already disabled
-WARNING: CPU: 2 PID: 108 at drivers/clk/clk.c:952 clk_core_disable+0x1b6/0x1cf
-...
-Call Trace:
- clk_disable+0x2d/0x3a
- kabylake_set_bias_level+0x72/0xfd [snd_soc_kbl_rt5663_rt5514_max98927]
- snd_soc_card_set_bias_level+0x2b/0x6f
- snd_soc_dapm_set_bias_level+0xe1/0x209
- dapm_pre_sequence_async+0x63/0x96
- async_run_entry_fn+0x3d/0xd1
- process_one_work+0x2a9/0x526
-...
-
-Only disable the clock if it has been enabled.
-
-Fixes: 15747a802075 ("ASoC: eve: implement set_bias_level function for rt5514")
-Cc: Brent Lu <brent.lu@intel.com>
-Cc: Curtis Malainey <cujomalainey@chromium.org>
-Signed-off-by: Guenter Roeck <linux@roeck-us.net>
----
- sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c b/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c
-index 922cd0176e1f..f95546c184aa 100644
---- a/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c
-+++ b/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c
-@@ -700,6 +700,8 @@ static int kabylake_set_bias_level(struct snd_soc_card *card,
- 	switch (level) {
- 	case SND_SOC_BIAS_PREPARE:
- 		if (dapm->bias_level == SND_SOC_BIAS_ON) {
-+			if (!__clk_is_enabled(priv->mclk))
-+				return 0;
- 			dev_dbg(card->dev, "Disable mclk");
- 			clk_disable_unprepare(priv->mclk);
- 		} else {
--- 
-2.17.1
-
+Acked-by: Willem de Bruijn <willemb@google.com>
