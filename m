@@ -2,230 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52DC62AED22
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 10:16:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E52592AED26
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 10:16:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726886AbgKKJQf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 04:16:35 -0500
-Received: from mail.baikalelectronics.com ([87.245.175.226]:39700 "EHLO
-        mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726636AbgKKJQP (ORCPT
+        id S1727003AbgKKJQn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 04:16:43 -0500
+Received: from mail-ej1-f67.google.com ([209.85.218.67]:36993 "EHLO
+        mail-ej1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726843AbgKKJQf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 04:16:15 -0500
-Received: from localhost (unknown [127.0.0.1])
-        by mail.baikalelectronics.ru (Postfix) with ESMTP id 8ED15803017F;
-        Wed, 11 Nov 2020 09:16:12 +0000 (UTC)
-X-Virus-Scanned: amavisd-new at baikalelectronics.ru
-Received: from mail.baikalelectronics.ru ([127.0.0.1])
-        by localhost (mail.baikalelectronics.ru [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id B4wRods4ZTeD; Wed, 11 Nov 2020 12:16:11 +0300 (MSK)
-From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
-To:     Felipe Balbi <balbi@kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
+        Wed, 11 Nov 2020 04:16:35 -0500
+Received: by mail-ej1-f67.google.com with SMTP id f20so1784437ejz.4;
+        Wed, 11 Nov 2020 01:16:31 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=5GcEmhwwM9IRtfJDyYsg4AcdXZ2r4D6ZuT6XDfsXG3U=;
+        b=uhVIjLeSDfdQ0fMQ050R9E7mC1gLN30tzzbMbzceHbJ5JuErY2DL9VMulwhEHsSS4M
+         5DX3rp0X+WBRjGejgwTB0kwfJP3tsTa+kkKTqiZWsIKuagLfTxZj4AlDURx/tjRN7X8k
+         VWjm+fwGViTi+p37rQdvWYcUDxYfX5bI6tZ+z0Q6H6QgPeWiIGlJ44KKuZh2w03Xag+l
+         KAD67kOuDstQjFmFJwrrVqTgjCKyVDpCgdMGbk1fe3aTqQgeyW1FgHiNpSnLl7xMHCMx
+         bduG/gh4kiTEQY0KylL0a+SdN52m1QQL94+PyQhg9Wzb+83VNiVrHnWy6GkdkoqCGZV9
+         /ddQ==
+X-Gm-Message-State: AOAM531CSilfWTEXn/uTC2NCjlrdZ8jFp3vcfLOttms35w0j61a27Rk8
+        qvf8SCuJwPVuRii3g5WUQls=
+X-Google-Smtp-Source: ABdhPJwnk3jD93uxeY/uvOhBZvJMTv9+ToMcbWATfaaN/gyNNy295JDWNoeMCMqf8CBghVZn1l5k+Q==
+X-Received: by 2002:a17:906:7a11:: with SMTP id d17mr20705465ejo.153.1605086190784;
+        Wed, 11 Nov 2020 01:16:30 -0800 (PST)
+Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
+        by smtp.googlemail.com with ESMTPSA id nd5sm597535ejb.37.2020.11.11.01.16.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 11 Nov 2020 01:16:29 -0800 (PST)
+Date:   Wed, 11 Nov 2020 10:16:28 +0100
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Serge Semin <Sergey.Semin@baikalelectronics.ru>
+Cc:     Mathias Nyman <mathias.nyman@intel.com>,
+        Felipe Balbi <balbi@kernel.org>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>
-CC:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
+        Rob Herring <robh+dt@kernel.org>,
         Serge Semin <fancer.lancer@gmail.com>,
-        <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH v2 18/18] arm64: dts: qcom: Harmonize DWC USB3 DT nodes name
-Date:   Wed, 11 Nov 2020 12:15:52 +0300
-Message-ID: <20201111091552.15593-19-Sergey.Semin@baikalelectronics.ru>
-In-Reply-To: <20201111091552.15593-1-Sergey.Semin@baikalelectronics.ru>
-References: <20201111091552.15593-1-Sergey.Semin@baikalelectronics.ru>
+        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
+        Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Manu Gautam <mgautam@codeaurora.org>,
+        Roger Quadros <rogerq@ti.com>,
+        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        Chunfeng Yun <chunfeng.yun@mediatek.com>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-snps-arc@lists.infradead.org, linux-mips@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-usb@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 10/18] dt-bindings: usb: Convert DWC USB3 bindings to
+ DT schema
+Message-ID: <20201111091628.GC4050@kozik-lap>
+References: <20201111090853.14112-1-Sergey.Semin@baikalelectronics.ru>
+ <20201111090853.14112-11-Sergey.Semin@baikalelectronics.ru>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20201111090853.14112-11-Sergey.Semin@baikalelectronics.ru>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In accordance with the DWC USB3 bindings the corresponding node
-name is suppose to comply with the Generic USB HCD DT schema, which
-requires the USB nodes to have the name acceptable by the regexp:
-"^usb(@.*)?" . Make sure the "snps,dwc3"-compatible nodes are correctly
-named.
+On Wed, Nov 11, 2020 at 12:08:45PM +0300, Serge Semin wrote:
+> DWC USB3 DT node is supposed to be compliant with the Generic xHCI
+> Controller schema, but with additional vendor-specific properties, the
+> controller-specific reference clocks and PHYs. So let's convert the
+> currently available legacy text-based DWC USB3 bindings to the DT schema
+> and make sure the DWC USB3 nodes are also validated against the
+> usb-xhci.yaml schema.
+> 
+> Note we have to discard the nodename restriction of being prefixed with
+> "dwc3@" string, since in accordance with the usb-hcd.yaml schema USB nodes
+> are supposed to be named as "^usb(@.*)".
+> 
+> Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
+> 
+> ---
+> 
+> Changelog v2:
+> - Discard '|' from the descriptions, since we don't need to preserve
+>   the text formatting in any of them.
+> - Drop quotes from around the string constants.
+> - Fix the "clock-names" prop description to be referring the enumerated
+>   clock-names instead of the ones from the Databook.
+> 
+> Changelog v3:
+> - Apply usb-xhci.yaml# schema only if the controller is supposed to work
+>   as either host or otg.
+> 
+> Changelog v4:
+> - Apply usb-drd.yaml schema first. If the controller is configured
+>   to work in a gadget mode only, then apply the usb.yaml schema too,
+>   otherwise apply the usb-xhci.yaml schema.
+> - Discard the Rob'es Reviewed-by tag. Please review the patch one more
+>   time.
+> ---
+>  .../devicetree/bindings/usb/dwc3.txt          | 125 --------
+>  .../devicetree/bindings/usb/snps,dwc3.yaml    | 303 ++++++++++++++++++
+>  2 files changed, 303 insertions(+), 125 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/usb/dwc3.txt
+>  create mode 100644 Documentation/devicetree/bindings/usb/snps,dwc3.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/usb/dwc3.txt b/Documentation/devicetree/bindings/usb/dwc3.txt
+> deleted file mode 100644
+> index d03edf9d3935..000000000000
+> --- a/Documentation/devicetree/bindings/usb/dwc3.txt
+> +++ /dev/null
+> @@ -1,125 +0,0 @@
+> -synopsys DWC3 CORE
+> -
+> -DWC3- USB3 CONTROLLER. Complies to the generic USB binding properties
+> -      as described in 'usb/generic.txt'
+> -
+> -Required properties:
+> - - compatible: must be "snps,dwc3"
+> - - reg : Address and length of the register set for the device
+> - - interrupts: Interrupts used by the dwc3 controller.
+> - - clock-names: list of clock names. Ideally should be "ref",
+> -                "bus_early", "suspend" but may be less or more.
+> - - clocks: list of phandle and clock specifier pairs corresponding to
+> -           entries in the clock-names property.
+> -
+> -Exception for clocks:
+> -  clocks are optional if the parent node (i.e. glue-layer) is compatible to
+> -  one of the following:
+> -    "cavium,octeon-7130-usb-uctl"
+> -    "qcom,dwc3"
+> -    "samsung,exynos5250-dwusb3"
+> -    "samsung,exynos5433-dwusb3"
+> -    "samsung,exynos7-dwusb3"
+> -    "sprd,sc9860-dwc3"
+> -    "st,stih407-dwc3"
+> -    "ti,am437x-dwc3"
+> -    "ti,dwc3"
+> -    "ti,keystone-dwc3"
+> -    "rockchip,rk3399-dwc3"
+> -    "xlnx,zynqmp-dwc3"
 
-Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
-Acked-by: Krzysztof Kozlowski <krzk@kernel.org>
----
- arch/arm64/boot/dts/qcom/apq8096-db820c.dtsi | 4 ++--
- arch/arm64/boot/dts/qcom/ipq8074.dtsi        | 4 ++--
- arch/arm64/boot/dts/qcom/msm8996.dtsi        | 4 ++--
- arch/arm64/boot/dts/qcom/msm8998.dtsi        | 2 +-
- arch/arm64/boot/dts/qcom/qcs404-evb.dtsi     | 2 +-
- arch/arm64/boot/dts/qcom/qcs404.dtsi         | 4 ++--
- arch/arm64/boot/dts/qcom/sc7180.dtsi         | 2 +-
- arch/arm64/boot/dts/qcom/sdm845.dtsi         | 4 ++--
- arch/arm64/boot/dts/qcom/sm8150.dtsi         | 2 +-
- 9 files changed, 14 insertions(+), 14 deletions(-)
+What happened with this part of dtschema? It sees you removed it.
 
-diff --git a/arch/arm64/boot/dts/qcom/apq8096-db820c.dtsi b/arch/arm64/boot/dts/qcom/apq8096-db820c.dtsi
-index defcbd15edf9..34e97da98270 100644
---- a/arch/arm64/boot/dts/qcom/apq8096-db820c.dtsi
-+++ b/arch/arm64/boot/dts/qcom/apq8096-db820c.dtsi
-@@ -1064,7 +1064,7 @@ &usb2 {
- 	status = "okay";
- 	extcon = <&usb2_id>;
- 
--	dwc3@7600000 {
-+	usb@7600000 {
- 		extcon = <&usb2_id>;
- 		dr_mode = "otg";
- 		maximum-speed = "high-speed";
-@@ -1075,7 +1075,7 @@ &usb3 {
- 	status = "okay";
- 	extcon = <&usb3_id>;
- 
--	dwc3@6a00000 {
-+	usb@6a00000 {
- 		extcon = <&usb3_id>;
- 		dr_mode = "otg";
- 	};
-diff --git a/arch/arm64/boot/dts/qcom/ipq8074.dtsi b/arch/arm64/boot/dts/qcom/ipq8074.dtsi
-index 96a5ec89b5f0..1129062a4ca1 100644
---- a/arch/arm64/boot/dts/qcom/ipq8074.dtsi
-+++ b/arch/arm64/boot/dts/qcom/ipq8074.dtsi
-@@ -427,7 +427,7 @@ usb_0: usb@8af8800 {
- 			resets = <&gcc GCC_USB0_BCR>;
- 			status = "disabled";
- 
--			dwc_0: dwc3@8a00000 {
-+			dwc_0: usb@8a00000 {
- 				compatible = "snps,dwc3";
- 				reg = <0x8a00000 0xcd00>;
- 				interrupts = <GIC_SPI 140 IRQ_TYPE_LEVEL_HIGH>;
-@@ -468,7 +468,7 @@ usb_1: usb@8cf8800 {
- 			resets = <&gcc GCC_USB1_BCR>;
- 			status = "disabled";
- 
--			dwc_1: dwc3@8c00000 {
-+			dwc_1: usb@8c00000 {
- 				compatible = "snps,dwc3";
- 				reg = <0x8c00000 0xcd00>;
- 				interrupts = <GIC_SPI 99 IRQ_TYPE_LEVEL_HIGH>;
-diff --git a/arch/arm64/boot/dts/qcom/msm8996.dtsi b/arch/arm64/boot/dts/qcom/msm8996.dtsi
-index 9951286db775..66b6d2f0a093 100644
---- a/arch/arm64/boot/dts/qcom/msm8996.dtsi
-+++ b/arch/arm64/boot/dts/qcom/msm8996.dtsi
-@@ -1767,7 +1767,7 @@ usb3: usb@6af8800 {
- 			power-domains = <&gcc USB30_GDSC>;
- 			status = "disabled";
- 
--			dwc3@6a00000 {
-+			usb@6a00000 {
- 				compatible = "snps,dwc3";
- 				reg = <0x06a00000 0xcc00>;
- 				interrupts = <0 131 IRQ_TYPE_LEVEL_HIGH>;
-@@ -1978,7 +1978,7 @@ usb2: usb@76f8800 {
- 			power-domains = <&gcc USB30_GDSC>;
- 			status = "disabled";
- 
--			dwc3@7600000 {
-+			usb@7600000 {
- 				compatible = "snps,dwc3";
- 				reg = <0x07600000 0xcc00>;
- 				interrupts = <0 138 IRQ_TYPE_LEVEL_HIGH>;
-diff --git a/arch/arm64/boot/dts/qcom/msm8998.dtsi b/arch/arm64/boot/dts/qcom/msm8998.dtsi
-index c45870600909..7cc7897e7b83 100644
---- a/arch/arm64/boot/dts/qcom/msm8998.dtsi
-+++ b/arch/arm64/boot/dts/qcom/msm8998.dtsi
-@@ -1678,7 +1678,7 @@ usb3: usb@a8f8800 {
- 
- 			resets = <&gcc GCC_USB_30_BCR>;
- 
--			usb3_dwc3: dwc3@a800000 {
-+			usb3_dwc3: usb@a800000 {
- 				compatible = "snps,dwc3";
- 				reg = <0x0a800000 0xcd00>;
- 				interrupts = <GIC_SPI 131 IRQ_TYPE_LEVEL_HIGH>;
-diff --git a/arch/arm64/boot/dts/qcom/qcs404-evb.dtsi b/arch/arm64/boot/dts/qcom/qcs404-evb.dtsi
-index 6422cf9d5855..88d7b7a53743 100644
---- a/arch/arm64/boot/dts/qcom/qcs404-evb.dtsi
-+++ b/arch/arm64/boot/dts/qcom/qcs404-evb.dtsi
-@@ -337,7 +337,7 @@ &usb2_phy_sec {
- &usb3 {
- 	status = "okay";
- 
--	dwc3@7580000 {
-+	usb@7580000 {
- 		dr_mode = "host";
- 	};
- };
-diff --git a/arch/arm64/boot/dts/qcom/qcs404.dtsi b/arch/arm64/boot/dts/qcom/qcs404.dtsi
-index b654b802e95c..f6ef17553064 100644
---- a/arch/arm64/boot/dts/qcom/qcs404.dtsi
-+++ b/arch/arm64/boot/dts/qcom/qcs404.dtsi
-@@ -544,7 +544,7 @@ usb3: usb@7678800 {
- 			assigned-clock-rates = <19200000>, <200000000>;
- 			status = "disabled";
- 
--			dwc3@7580000 {
-+			usb@7580000 {
- 				compatible = "snps,dwc3";
- 				reg = <0x07580000 0xcd00>;
- 				interrupts = <GIC_SPI 26 IRQ_TYPE_LEVEL_HIGH>;
-@@ -573,7 +573,7 @@ usb2: usb@79b8800 {
- 			assigned-clock-rates = <19200000>, <133333333>;
- 			status = "disabled";
- 
--			dwc3@78c0000 {
-+			usb@78c0000 {
- 				compatible = "snps,dwc3";
- 				reg = <0x078c0000 0xcc00>;
- 				interrupts = <GIC_SPI 44 IRQ_TYPE_LEVEL_HIGH>;
-diff --git a/arch/arm64/boot/dts/qcom/sc7180.dtsi b/arch/arm64/boot/dts/qcom/sc7180.dtsi
-index d46b3833e52f..bbc9a2b5c570 100644
---- a/arch/arm64/boot/dts/qcom/sc7180.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sc7180.dtsi
-@@ -2673,7 +2673,7 @@ usb_1: usb@a6f8800 {
- 					<&gem_noc MASTER_APPSS_PROC &config_noc SLAVE_USB3>;
- 			interconnect-names = "usb-ddr", "apps-usb";
- 
--			usb_1_dwc3: dwc3@a600000 {
-+			usb_1_dwc3: usb@a600000 {
- 				compatible = "snps,dwc3";
- 				reg = <0 0x0a600000 0 0xe000>;
- 				interrupts = <GIC_SPI 133 IRQ_TYPE_LEVEL_HIGH>;
-diff --git a/arch/arm64/boot/dts/qcom/sdm845.dtsi b/arch/arm64/boot/dts/qcom/sdm845.dtsi
-index 2884577dcb77..ca20e4e91f61 100644
---- a/arch/arm64/boot/dts/qcom/sdm845.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sdm845.dtsi
-@@ -3573,7 +3573,7 @@ usb_1: usb@a6f8800 {
- 					<&gladiator_noc MASTER_APPSS_PROC &config_noc SLAVE_USB3_0>;
- 			interconnect-names = "usb-ddr", "apps-usb";
- 
--			usb_1_dwc3: dwc3@a600000 {
-+			usb_1_dwc3: usb@a600000 {
- 				compatible = "snps,dwc3";
- 				reg = <0 0x0a600000 0 0xcd00>;
- 				interrupts = <GIC_SPI 133 IRQ_TYPE_LEVEL_HIGH>;
-@@ -3621,7 +3621,7 @@ usb_2: usb@a8f8800 {
- 					<&gladiator_noc MASTER_APPSS_PROC &config_noc SLAVE_USB3_1>;
- 			interconnect-names = "usb-ddr", "apps-usb";
- 
--			usb_2_dwc3: dwc3@a800000 {
-+			usb_2_dwc3: usb@a800000 {
- 				compatible = "snps,dwc3";
- 				reg = <0 0x0a800000 0 0xcd00>;
- 				interrupts = <GIC_SPI 138 IRQ_TYPE_LEVEL_HIGH>;
-diff --git a/arch/arm64/boot/dts/qcom/sm8150.dtsi b/arch/arm64/boot/dts/qcom/sm8150.dtsi
-index b86a7ead3006..167d14dda974 100644
---- a/arch/arm64/boot/dts/qcom/sm8150.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sm8150.dtsi
-@@ -846,7 +846,7 @@ usb_1: usb@a6f8800 {
- 
- 			resets = <&gcc GCC_USB30_PRIM_BCR>;
- 
--			usb_1_dwc3: dwc3@a600000 {
-+			usb_1_dwc3: usb@a600000 {
- 				compatible = "snps,dwc3";
- 				reg = <0 0x0a600000 0 0xcd00>;
- 				interrupts = <GIC_SPI 133 IRQ_TYPE_LEVEL_HIGH>;
--- 
-2.28.0
-
+Best regards,
+Krzysztof
