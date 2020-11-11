@@ -2,337 +2,203 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 456AA2AF1D8
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 14:18:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E84882AF1E0
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 14:19:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726588AbgKKNSh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 08:18:37 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57624 "EHLO mail.kernel.org"
+        id S1726669AbgKKNTN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 08:19:13 -0500
+Received: from mga01.intel.com ([192.55.52.88]:27319 "EHLO mga01.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725912AbgKKNSh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 08:18:37 -0500
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BE975206CA;
-        Wed, 11 Nov 2020 13:18:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605100714;
-        bh=2UjjwH5biuFlA50cCFnf82KlU1eXrzuyTr+6/ZrA9eU=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=kswMQ0HCpUJxy8M8bcxw4/NcKntRa1348ErHx3OUNO+Ips8QtfBPgIdbOwulX37D4
-         j0Feoeuw7hV9UWdH+Tu3Lsru9fZuorX1RzbBnwthDjFLulnha+r5ryib8OlEoJVsbt
-         HNCIT9zMXs8AUs1LpCcbRdd3t3oUTZp9Bgiyls60=
-Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
-        by disco-boy.misterjones.org with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94)
-        (envelope-from <maz@kernel.org>)
-        id 1kcq1A-009lkV-Hr; Wed, 11 Nov 2020 13:18:32 +0000
+        id S1725912AbgKKNTN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Nov 2020 08:19:13 -0500
+IronPort-SDR: 78SL6KyKK2YKcWiKL7CbshwOjGP3kP/fkUqAGgQlJA17rb83E9n5zRxBfggCdRY42lFPlyysi8
+ 0VAg9SFz5JUg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9801"; a="188123837"
+X-IronPort-AV: E=Sophos;i="5.77,469,1596524400"; 
+   d="scan'208";a="188123837"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Nov 2020 05:19:04 -0800
+IronPort-SDR: mSF6DKR1d7plVEUXtdZXIU68gckRtwFsoIo4F0Bp69Q5D6Vw/A0ftz7nd7zkDt5+7TYksJvtVv
+ aTSNnELYEzlA==
+X-IronPort-AV: E=Sophos;i="5.77,469,1596524400"; 
+   d="scan'208";a="308827889"
+Received: from paasikivi.fi.intel.com ([10.237.72.42])
+  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Nov 2020 05:19:00 -0800
+Received: by paasikivi.fi.intel.com (Postfix, from userid 1000)
+        id AECA420867; Wed, 11 Nov 2020 15:18:57 +0200 (EET)
+Date:   Wed, 11 Nov 2020 15:18:57 +0200
+From:   Sakari Ailus <sakari.ailus@linux.intel.com>
+To:     Paul Kocialkowski <paul.kocialkowski@bootlin.com>
+Cc:     linux-media@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Hans Verkuil <hverkuil@xs4all.nl>,
+        Maxime Ripard <mripard@kernel.org>, kevin.lhopital@hotmail.com,
+        =?iso-8859-1?Q?K=E9vin_L'h=F4pital?= <kevin.lhopital@bootlin.com>
+Subject: Re: [PATCH 1/3] dt-bindings: media: i2c: Add OV8865 bindings
+ documentation
+Message-ID: <20201111131857.GC26150@paasikivi.fi.intel.com>
+References: <20201023175406.504527-1-paul.kocialkowski@bootlin.com>
+ <20201023175406.504527-2-paul.kocialkowski@bootlin.com>
+ <20201102232411.GD26150@paasikivi.fi.intel.com>
+ <20201104102643.GH2123@aptenodytes>
+ <20201105081954.GX26150@paasikivi.fi.intel.com>
+ <20201105153534.GD615923@aptenodytes>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Wed, 11 Nov 2020 13:18:32 +0000
-From:   Marc Zyngier <maz@kernel.org>
-To:     David Brazdil <dbrazdil@google.com>
-Cc:     kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Dennis Zhou <dennis@kernel.org>,
-        Tejun Heo <tj@kernel.org>, Christoph Lameter <cl@linux.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Quentin Perret <qperret@google.com>,
-        Andrew Scull <ascull@google.com>,
-        Andrew Walbran <qwandor@google.com>, kernel-team@android.com
-Subject: Re: [PATCH v1 15/24] kvm: arm64: Bootstrap PSCI SMC handler in nVHE
- EL2
-In-Reply-To: <20201109113233.9012-16-dbrazdil@google.com>
-References: <20201109113233.9012-1-dbrazdil@google.com>
- <20201109113233.9012-16-dbrazdil@google.com>
-User-Agent: Roundcube Webmail/1.4.9
-Message-ID: <46c6df6087535d61146db7553a7b1e44@kernel.org>
-X-Sender: maz@kernel.org
-X-SA-Exim-Connect-IP: 51.254.78.96
-X-SA-Exim-Rcpt-To: dbrazdil@google.com, kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, james.morse@arm.com, julien.thierry.kdev@gmail.com, suzuki.poulose@arm.com, catalin.marinas@arm.com, will@kernel.org, dennis@kernel.org, tj@kernel.org, cl@linux.com, mark.rutland@arm.com, lorenzo.pieralisi@arm.com, qperret@google.com, ascull@google.com, qwandor@google.com, kernel-team@android.com
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201105153534.GD615923@aptenodytes>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-11-09 11:32, David Brazdil wrote:
-> Add a handler of PSCI SMCs in nVHE hyp code. The handler is initialized
-> with the version used by the host's PSCI driver and the function IDs it
-> was configured with. If the SMC function ID matches one of the
-> configured PSCI calls (for v0.1) or falls into the PSCI function ID
-> range (for v0.2+), the SMC is handled by the PSCI handler. For now, all
-> SMCs return PSCI_RET_NOT_SUPPORTED.
+Hi Paul,
+
+On Thu, Nov 05, 2020 at 04:35:34PM +0100, Paul Kocialkowski wrote:
+> Hi Sakari,
 > 
-> Signed-off-by: David Brazdil <dbrazdil@google.com>
-> ---
->  arch/arm64/include/asm/kvm_hyp.h   |   4 ++
->  arch/arm64/kvm/arm.c               |  13 ++++
->  arch/arm64/kvm/hyp/nvhe/Makefile   |   2 +-
->  arch/arm64/kvm/hyp/nvhe/hyp-main.c |   4 ++
->  arch/arm64/kvm/hyp/nvhe/psci.c     | 102 +++++++++++++++++++++++++++++
->  include/uapi/linux/psci.h          |   1 +
->  6 files changed, 125 insertions(+), 1 deletion(-)
->  create mode 100644 arch/arm64/kvm/hyp/nvhe/psci.c
+> On Thu 05 Nov 20, 10:19, Sakari Ailus wrote:
+> > Hi Paul,
+> > 
+> > On Wed, Nov 04, 2020 at 11:26:43AM +0100, Paul Kocialkowski wrote:
+> > > Hi Sakari and thanks for the review!
+> > > 
+> > > On Tue 03 Nov 20, 01:24, Sakari Ailus wrote:
+> > > > On Fri, Oct 23, 2020 at 07:54:04PM +0200, Paul Kocialkowski wrote:
+> > > > > This introduces YAML bindings documentation for the OV8865
+> > > > > image sensor.
+> > > > > 
+> > > > > Co-developed-by: Kévin L'hôpital <kevin.lhopital@bootlin.com>
+> > > > > Signed-off-by: Kévin L'hôpital <kevin.lhopital@bootlin.com>
+> > > > > Signed-off-by: Paul Kocialkowski <paul.kocialkowski@bootlin.com>
+> > > > > ---
+> > > > >  .../bindings/media/i2c/ovti,ov8865.yaml       | 124 ++++++++++++++++++
+> > > > >  1 file changed, 124 insertions(+)
+> > > > >  create mode 100644 Documentation/devicetree/bindings/media/i2c/ovti,ov8865.yaml
+> > > > > 
+> > > > > diff --git a/Documentation/devicetree/bindings/media/i2c/ovti,ov8865.yaml b/Documentation/devicetree/bindings/media/i2c/ovti,ov8865.yaml
+> > > > > new file mode 100644
+> > > > > index 000000000000..807f1a94afae
+> > > > > --- /dev/null
+> > > > > +++ b/Documentation/devicetree/bindings/media/i2c/ovti,ov8865.yaml
+> > > > > @@ -0,0 +1,124 @@
+> > > > > +# SPDX-License-Identifier: GPL-2.0
+> > > > > +%YAML 1.2
+> > > > > +---
+> > > > > +$id: http://devicetree.org/schemas/media/i2c/ovti,ov8865.yaml#
+> > > > > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > > > > +
+> > > > > +title: OmniVision OV8865 Image Sensor Device Tree Bindings
+> > > > > +
+> > > > > +maintainers:
+> > > > > +  - Paul Kocialkowski <paul.kocialkowski@bootlin.com>
+> > > > > +
+> > > > > +properties:
+> > > > > +  compatible:
+> > > > > +    const: ovti,ov8865
+> > > > > +
+> > > > > +  reg:
+> > > > > +    maxItems: 1
+> > > > > +
+> > > > > +  clocks:
+> > > > > +    items:
+> > > > > +      - description: EXTCLK Clock
+> > > > > +
+> > > > > +  clock-names:
+> > > > > +    items:
+> > > > > +      - const: extclk
+> > > > 
+> > > > Is this needed with a single clock?
+> > > 
+> > > Yes I think so: we grab the clock with devm_clk_get which takes a name string
+> > > that matches the clock-names property.
+> > 
+> > That argument may be NULL.
 > 
-> diff --git a/arch/arm64/include/asm/kvm_hyp.h 
-> b/arch/arm64/include/asm/kvm_hyp.h
-> index a3289071f3d8..95a2bbbcc7e1 100644
-> --- a/arch/arm64/include/asm/kvm_hyp.h
-> +++ b/arch/arm64/include/asm/kvm_hyp.h
-> @@ -96,6 +96,10 @@ void deactivate_traps_vhe_put(void);
+> Understood, let's get rid of clock-names then. I see this is done in a few
+> drivers already, but many also give it a name with a single clock.
 > 
->  u64 __guest_enter(struct kvm_vcpu *vcpu);
+> It would be nice if that was consistent across all drivers just so that the
+> expectation is clear (that the best way for that to happen is probably to
+> fix up a patch myself though).
+
+I guess somewhat different practices exist depending on the tree albeit
+it's all DT bindings. It's also not wrong to have the name of the clock
+there, no, but virtually all camera sensors consume a single clock, so you
+may as well omit the information.
+
 > 
-> +#ifdef __KVM_NVHE_HYPERVISOR__
-> +bool kvm_host_psci_handler(struct kvm_cpu_context *host_ctxt);
-> +#endif
-> +
->  void __noreturn hyp_panic(void);
->  #ifdef __KVM_NVHE_HYPERVISOR__
->  void __noreturn __hyp_do_panic(bool restore_host, u64 spsr, u64 elr, 
-> u64 par);
-> diff --git a/arch/arm64/kvm/arm.c b/arch/arm64/kvm/arm.c
-> index 1a57b6025937..28e3bc056225 100644
-> --- a/arch/arm64/kvm/arm.c
-> +++ b/arch/arm64/kvm/arm.c
-> @@ -19,6 +19,7 @@
->  #include <linux/kvm_irqfd.h>
->  #include <linux/irqbypass.h>
->  #include <linux/sched/stat.h>
-> +#include <linux/psci.h>
->  #include <trace/events/kvm.h>
+> > > > And... shouldn't this also come with assigned-clock-rates etc., to set the
+> > > > clock frequency?
+> > > 
+> > > I'm a bit confused why we would need to do that in the device-tree rather than
+> > > setting the clock rate with clk_set_rate in the driver, like any other driver
+> > > does. I think this was discussed before (on the initial ov8865 series) and the
+> > > conclusion was that there is no particular reason for media i2c drivers to
+> > > behave differently. So I believe this is the correct approach.
+> > 
+> > I'm not exactly sure about that conclusion.
 > 
->  #define CREATE_TRACE_POINTS
-> @@ -1498,6 +1499,17 @@ static void init_cpu_logical_map(void)
->  		CHOOSE_NVHE_SYM(__cpu_logical_map)[cpu] = cpu_logical_map(cpu);
->  }
+> I may have jumped too far here. It's not exactly clear to me what was the
+> conclusion from...
+> https://lore.kernel.org/linux-arm-kernel/20200401080705.j4goeqcqhoswhx4u@gilmour.lan/
+
+Yes, there has been more discussion on the topic, most recently in this
+thread:
+
+<URL:https://lore.kernel.org/linux-arm-kernel/20201102150547.GY26150@paasikivi.fi.intel.com/>
+
+I think this deserves to be added to camera-sensor.rst .
+
 > 
-> +static void init_psci(void)
-
-nit: init_psci_relay?
-
-> +{
-> +	extern u32 kvm_nvhe_sym(kvm_host_psci_version);
-> +	extern u32 kvm_nvhe_sym(kvm_host_psci_function_id)[PSCI_FN_MAX];
-> +	int i;
-> +
-> +	CHOOSE_NVHE_SYM(kvm_host_psci_version) = psci_driver_version();
-> +	for (i = 0; i < PSCI_FN_MAX; ++i)
-> +		CHOOSE_NVHE_SYM(kvm_host_psci_function_id)[i] = 
-> psci_get_function_id(i);
-> +}
-> +
->  static int init_common_resources(void)
->  {
->  	return kvm_set_ipa_limit();
-> @@ -1677,6 +1689,7 @@ static int init_hyp_mode(void)
->  	}
+> > You can use clk_set_rate() if you get the frequency from DT, but we
+> > recently did conclude that camera sensor drivers can expect to get the
+> > frequency indicated by assigned-clock-rate property.
 > 
->  	init_cpu_logical_map();
-> +	init_psci();
+> ...but it looks like clock-frequency was preferred over assigned-clock-rates
+> and this is what the binding that was merged suggests. Is that correct?
+
+assigned-clock-rates is fine. The assumption is that the clock frequency
+does not change from the value set through DT, and the driver gets that
+exact frequency.
+
 > 
->  	return 0;
+> I now understand that the clock frequency may depend on the system integration
+> for this special case so we have to specify it via dt.
+
+Correct.
+
 > 
-> diff --git a/arch/arm64/kvm/hyp/nvhe/Makefile 
-> b/arch/arm64/kvm/hyp/nvhe/Makefile
-> index c45f440cce51..647b63337a51 100644
-> --- a/arch/arm64/kvm/hyp/nvhe/Makefile
-> +++ b/arch/arm64/kvm/hyp/nvhe/Makefile
-> @@ -7,7 +7,7 @@ asflags-y := -D__KVM_NVHE_HYPERVISOR__
->  ccflags-y := -D__KVM_NVHE_HYPERVISOR__
+> > In other words, the driver may not be specific to a particular board and
+> > SoC you have.
 > 
->  obj-y := timer-sr.o sysreg-sr.o debug-sr.o switch.o tlb.o hyp-init.o 
-> host.o \
-> -	 hyp-main.o percpu.o
-> +	 hyp-main.o percpu.o psci.o
->  obj-y += ../vgic-v3-sr.o ../aarch32.o ../vgic-v2-cpuif-proxy.o 
-> ../entry.o \
->  	 ../fpsimd.o ../hyp-entry.o
+> Although this is sadly more than often the case, because handling a variable
+> clock rate in the driver is quite complex (and even more with static init tables
+> that include PLL configuration). And sadly my driver is no exception and
+> only supports 24 MHz input.
+
+That's fine. If someone needs other frequencies, they can always add
+support for those in the driver.
+
 > 
-> diff --git a/arch/arm64/kvm/hyp/nvhe/hyp-main.c
-> b/arch/arm64/kvm/hyp/nvhe/hyp-main.c
-> index 8661bc7deaa9..69f34d4f2773 100644
-> --- a/arch/arm64/kvm/hyp/nvhe/hyp-main.c
-> +++ b/arch/arm64/kvm/hyp/nvhe/hyp-main.c
-> @@ -134,6 +134,10 @@ static void handle_host_smc(struct
-> kvm_cpu_context *host_ctxt)
->  	 */
->  	skip_host_instruction();
+> > Please also read Documentation/driver-api/media/camera-sensor.rst .
 > 
-> +	/* Try to handle host's PSCI SMCs. */
-> +	if (kvm_host_psci_handler(host_ctxt))
-> +		return;
-> +
->  	/* Forward SMC not handled in EL2 to EL3. */
->  	forward_host_smc(host_ctxt);
->  }
-> diff --git a/arch/arm64/kvm/hyp/nvhe/psci.c 
-> b/arch/arm64/kvm/hyp/nvhe/psci.c
-> new file mode 100644
-> index 000000000000..82d3b2c89658
-> --- /dev/null
-> +++ b/arch/arm64/kvm/hyp/nvhe/psci.c
+> Thanks, I hadn't seen that document before. It's great that it exists!
 
-nit: can we please name this psci-relay.c, or psci-proxy.c?
-We already have a psci.c in the tree, and having the same file name 
-messes
-with my editor... ;-)
+You're welcome!
 
-> @@ -0,0 +1,102 @@
-> +// SPDX-License-Identifier: GPL-2.0-only
-> +/*
-> + * Copyright (C) 2020 - Google LLC
-> + * Author: David Brazdil <dbrazdil@google.com>
-> + */
-> +
-> +#include <asm/kvm_asm.h>
-> +#include <asm/kvm_hyp.h>
-> +#include <asm/kvm_mmu.h>
-> +#include <kvm/arm_hypercalls.h>
-> +#include <linux/arm-smccc.h>
-> +#include <linux/psci.h>
-> +#include <kvm/arm_psci.h>
-> +#include <uapi/linux/psci.h>
-> +
-> +/* Config options set by the host. */
-> +u32 kvm_host_psci_version = PSCI_VERSION(0, 0);
-> +u32 kvm_host_psci_function_id[PSCI_FN_MAX];
-> +
-> +static u64 get_psci_func_id(struct kvm_cpu_context *host_ctxt)
-> +{
-> +	return host_ctxt->regs.regs[0];
-> +}
-> +
-> +static bool is_psci_0_1_call(u64 func_id)
-> +{
-> +	unsigned int i;
-> +
-> +	for (i = 0; i < ARRAY_SIZE(kvm_host_psci_function_id); ++i) {
-> +		if (func_id == kvm_host_psci_function_id[i])
-> +			return true;
-> +	}
-> +	return false;
-> +}
-> +
-> +static bool is_psci_0_2_fn_call(u64 func_id)
-> +{
-> +	u64 base = func_id & ~PSCI_0_2_FN_ID_MASK;
-> +
-> +	return base == PSCI_0_2_FN_BASE || base == PSCI_0_2_FN64_BASE;
+This was indeed written to reduce the number of patch revisions needed ot
+get a driver to upstream. :-)
 
-I couldn't spot in the spec where PSCI reserves 16bit worth of IDs in
-each range.
-
-> +}
-> +
-> +static bool is_psci_call(u64 func_id)
-> +{
-> +	if (kvm_host_psci_version == PSCI_VERSION(0, 0))
-> +		return false;
-> +	else if (kvm_host_psci_version == PSCI_VERSION(0, 1))
-> +		return is_psci_0_1_call(func_id);
-> +	else
-> +		return is_psci_0_2_fn_call(func_id);
-
-Consider using switch/case constructs for readability.
-
-> +}
-> +
-> +static unsigned long psci_0_1_handler(u64 func_id, struct
-> kvm_cpu_context *host_ctxt)
-> +{
-> +	return PSCI_RET_NOT_SUPPORTED;
-> +}
-> +
-> +static unsigned long psci_0_2_handler(u64 func_id, struct
-> kvm_cpu_context *host_ctxt)
-> +{
-> +	switch (func_id) {
-> +	default:
-> +		return PSCI_RET_NOT_SUPPORTED;
-> +	}
-> +}
-> +
-> +static unsigned long psci_1_0_handler(u64 func_id, struct
-> kvm_cpu_context *host_ctxt)
-> +{
-> +	int ret;
-> +
-> +	ret = psci_0_2_handler(func_id, host_ctxt);
-> +	if (ret != PSCI_RET_NOT_SUPPORTED)
-> +		return ret;
-> +
-> +	switch (func_id) {
-> +	default:
-> +		return PSCI_RET_NOT_SUPPORTED;
-> +	}
-
-It would probably help to adopt the same structure as we have in the
-KVM PSCI implementation:
-
-	switch(psci_fn) {
-	case PSCI_0_2_FN_PSCI_VERSION:
-		val = KVM_ARM_PSCI_1_0;
-		break;
-
-         [...]
-	default:
-		return kvm_psci_0_2_call(vcpu);
-
-which allows 1.0 to override some 0.2 functions, and otherwise leave
-it to the 0.2 backend.
-
-> +}
-> +
-> +bool kvm_host_psci_handler(struct kvm_cpu_context *host_ctxt)
-> +{
-> +	u64 func_id = get_psci_func_id(host_ctxt);
-> +	unsigned long ret;
-> +
-> +	if (!is_psci_call(func_id))
-> +		return false;
-> +
-> +	if (kvm_host_psci_version == PSCI_VERSION(0, 1))
-> +		ret = psci_0_1_handler(func_id, host_ctxt);
-> +	else if (kvm_host_psci_version == PSCI_VERSION(0, 2))
-> +		ret = psci_0_2_handler(func_id, host_ctxt);
-> +	else if (PSCI_VERSION_MAJOR(kvm_host_psci_version) >= 1)
-> +		ret = psci_1_0_handler(func_id, host_ctxt);
-> +	else
-> +		ret = PSCI_RET_NOT_SUPPORTED;
-
-Same remark about the use of switch/case.
-
-> +
-> +	host_ctxt->regs.regs[0] = ret;
-> +	host_ctxt->regs.regs[1] = 0;
-> +	host_ctxt->regs.regs[2] = 0;
-> +	host_ctxt->regs.regs[3] = 0;
-> +	return true;
-> +}
-> diff --git a/include/uapi/linux/psci.h b/include/uapi/linux/psci.h
-> index 2fcad1dd0b0e..0d52b8dbe8c2 100644
-> --- a/include/uapi/linux/psci.h
-> +++ b/include/uapi/linux/psci.h
-> @@ -29,6 +29,7 @@
->  #define PSCI_0_2_FN64_BASE			\
->  					(PSCI_0_2_FN_BASE + PSCI_0_2_64BIT)
->  #define PSCI_0_2_FN64(n)			(PSCI_0_2_FN64_BASE + (n))
-> +#define PSCI_0_2_FN_ID_MASK			0xffff
-> 
->  #define PSCI_0_2_FN_PSCI_VERSION		PSCI_0_2_FN(0)
->  #define PSCI_0_2_FN_CPU_SUSPEND			PSCI_0_2_FN(1)
-
-Thanks,
-
-         M.
 -- 
-Jazz is not dead. It just smells funny...
+Kind regards,
+
+Sakari Ailus
