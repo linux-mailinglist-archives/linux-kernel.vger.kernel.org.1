@@ -2,118 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ADF7D2AF349
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 15:14:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D27422AF353
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 15:16:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727215AbgKKOOu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 09:14:50 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:55306 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726579AbgKKOOr (ORCPT
+        id S1726844AbgKKOPt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 09:15:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60452 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726460AbgKKOPV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 09:14:47 -0500
-Received: from pps.filterd (m0098410.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0ABE4A6i000777;
-        Wed, 11 Nov 2020 09:14:33 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=cHXVAY0fd+tYs+jDZoHzFAggoj7yOsxXuwyonRI/dYw=;
- b=SE1IkHoxVCSy6JJipO3oqonK86ozKI5TAA8J+L2RAgPlrF0oXB9+z+zNXLdN6pVAYl4q
- mmzMB4k7htnuIvNwk3ao9dXcW1RTnD7CP0iOgpQNsLOLgB2PcQMiGGjdDWPy+4e2W76S
- E63wxFOHCQZ7ppB7AbNdMva8x+PX8nXa4gbZOn1B1uhVHh5qu7T24XqTCmpP99cZdn6S
- O+MVtLyBY9t+41YKAN5sgwlcUDkkPcVuVC3mibMWfYrUzswcrNw0J91QNY39rfVVbNd6
- bFJ/SY+n8eAyu2lBSf/Vbl0uI04/Qsk/q7AJcfKdMRGc6uatjPcKpgzucqwBvP6f/xzx 9A== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 34r6k0apy8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 11 Nov 2020 09:14:32 -0500
-Received: from m0098410.ppops.net (m0098410.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0ABE4W5r002814;
-        Wed, 11 Nov 2020 09:14:32 -0500
-Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 34r6k0apwy-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 11 Nov 2020 09:14:32 -0500
-Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
-        by ppma06ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0ABECCK9024073;
-        Wed, 11 Nov 2020 14:14:29 GMT
-Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
-        by ppma06ams.nl.ibm.com with ESMTP id 34njuh4euq-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 11 Nov 2020 14:14:29 +0000
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
-        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0ABEERdE10683020
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 11 Nov 2020 14:14:27 GMT
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 76AD2A4062;
-        Wed, 11 Nov 2020 14:14:27 +0000 (GMT)
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id EBD22A405F;
-        Wed, 11 Nov 2020 14:14:26 +0000 (GMT)
-Received: from Alexandras-MBP.fritz.box (unknown [9.145.163.254])
-        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Wed, 11 Nov 2020 14:14:26 +0000 (GMT)
-Subject: Re: [RFC PATCH net-next 3/3] net: dsa: listen for
- SWITCHDEV_{FDB,DEL}_ADD_TO_DEVICE on foreign bridge neighbors
-To:     Vladimir Oltean <olteanv@gmail.com>
-Cc:     DENG Qingfang <dqfext@gmail.com>, Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        netdev <netdev@vger.kernel.org>, linux-kernel@vger.kernel.org,
-        Tobias Waldekranz <tobias@waldekranz.com>,
-        Marek Behun <marek.behun@nic.cz>,
-        Russell King - ARM Linux admin <linux@armlinux.org.uk>
-References: <20201108131953.2462644-1-olteanv@gmail.com>
- <20201108131953.2462644-4-olteanv@gmail.com>
- <CALW65jb+Njb3WkY-TUhsHh1YWEzfMcXoRAXshnT8ke02wc10Uw@mail.gmail.com>
- <20201108172355.5nwsw3ek5qg6z7yx@skbuf>
- <c35d48cd-a1ea-7867-a125-0f900e1e8808@linux.ibm.com>
- <20201111103601.67kqkaphgztoifzl@skbuf>
-From:   Alexandra Winter <wintera@linux.ibm.com>
-Message-ID: <dd9c1f37-a049-ef69-b915-214c869edb51@linux.ibm.com>
-Date:   Wed, 11 Nov 2020 15:14:26 +0100
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:78.0)
- Gecko/20100101 Thunderbird/78.4.0
+        Wed, 11 Nov 2020 09:15:21 -0500
+Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E751CC0613D1
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 06:15:20 -0800 (PST)
+Received: by mail-qk1-x741.google.com with SMTP id v143so1753551qkb.2
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 06:15:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=UkBccG0kAG6ptvne6HOJOUn3nzbGkGD7oWbn2QDoT/s=;
+        b=JqgXE+q+00P9Y1z90FNa74Dsyd6Cxp1hRSPb3NykRt/kjD1VZpRDyhinfVhTiLfKyV
+         17UYy+lbjEZqPtJ3dAJMWb5Y8VmUpzCPchbsHFa5QuDtxCRilNQvGImE864dj39ZjYZg
+         83CruSkbJwFsQi6BCkJHUMT0UzEPz0pwEcXqw4y8hraT0ajvm19A38jZLr+QuSjfbeFU
+         lDi6s1hsAnt+oTGBc16nLH3zacHRIk4haa8/iXkGzZ5U69DBNtSpht5CyzWLA/XCDehz
+         Unrl4hwdMdQm0vB0mdxGzkYnIydnXzwRKNz7scNbmu8PhJ49yYANg5TXXBJVKLuvj774
+         Wjgg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=UkBccG0kAG6ptvne6HOJOUn3nzbGkGD7oWbn2QDoT/s=;
+        b=J3S3jk0EkcpL893b54KyZd7I89ypFOdMg56PKY4opPOJWtbZ9XVn57vb8Gv/XrEZMZ
+         eOamnL3moUP0t+0vQOBeKTlSmOOOMJICTS9kGHV/KQoPpvxz0zU4B0Z31nbBf7T5w0Gq
+         eUXjraT4I0QtDjUCU1hKf0/SSQSbr5mkGqxSfuAqHsOQ2mLValLfULgbk/a+2esaX8pS
+         wc1vJQVyOCQQrJnj7BeGLAh8AFNFwstfbCW+fyFYHReJs/k3CCLoNK4clDTP6DTA0Phg
+         +0ZAv4gjWyU+w5He+z8IZfwMJINYe/oJ9VUe0IYYwYRgrk5Rewzzj/iiAw+j5tDenxY+
+         2IfA==
+X-Gm-Message-State: AOAM533gLACh50zrZSYKwysMQFNk/qXeeUT5Jx2d1lIlp3egDa2+7lEE
+        jB7o1kmlN6QEGuv0nqfa/H6rANbj6EMKdDGESfmM5g==
+X-Google-Smtp-Source: ABdhPJxss+SD9uXirC0ROcyc6x5toqLCMrF+hoA1k8PUQ4YaZqCR3gQKgTS2hXBC5pD0sbFNPh9jEEQVsORw1SK8F0k=
+X-Received: by 2002:a37:4552:: with SMTP id s79mr19121371qka.6.1605104119855;
+ Wed, 11 Nov 2020 06:15:19 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20201111103601.67kqkaphgztoifzl@skbuf>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-11-11_07:2020-11-10,2020-11-11 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- clxscore=1015 mlxlogscore=999 phishscore=0 adultscore=0 bulkscore=0
- malwarescore=0 spamscore=0 mlxscore=0 suspectscore=0 priorityscore=1501
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2011110083
+References: <cover.1605046192.git.andreyknvl@google.com> <37a9648ffa16572583a7513323cc9be88a726eb1.1605046192.git.andreyknvl@google.com>
+In-Reply-To: <37a9648ffa16572583a7513323cc9be88a726eb1.1605046192.git.andreyknvl@google.com>
+From:   Alexander Potapenko <glider@google.com>
+Date:   Wed, 11 Nov 2020 15:15:08 +0100
+Message-ID: <CAG_fn=WgBr=NxYTiPGq=0HADk5e=RO3BS-OTxVVT4w=pOKu_uA@mail.gmail.com>
+Subject: Re: [PATCH v9 11/44] kasan: rename report and tags files
+To:     Andrey Konovalov <andreyknvl@google.com>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will.deacon@arm.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Marco Elver <elver@google.com>,
+        Evgenii Stepanov <eugenis@google.com>,
+        Branislav Rankov <Branislav.Rankov@arm.com>,
+        Kevin Brodsky <kevin.brodsky@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Nov 10, 2020 at 11:11 PM Andrey Konovalov <andreyknvl@google.com> w=
+rote:
+>
+> Rename generic_report.c to report_generic.c and tags_report.c to
+> report_sw_tags.c, as their content is more relevant to report.c file.
+> Also rename tags.c to sw_tags.c to better reflect that this file contains
+> code for software tag-based mode.
+>
+> No functional changes.
+>
+> Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
+> Signed-off-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
+> Reviewed-by: Marco Elver <elver@google.com>
+Reviewed-by: Alexander Potapenko <glider@google.com>
+
+> ---
+> Change-Id: If77d21f655d52ef3e58c4c37fd6621a07f505f18
+> ---
+>  mm/kasan/Makefile                               | 16 ++++++++--------
+>  mm/kasan/report.c                               |  2 +-
+>  mm/kasan/{generic_report.c =3D> report_generic.c} |  0
+>  mm/kasan/{tags_report.c =3D> report_sw_tags.c}    |  0
+>  mm/kasan/{tags.c =3D> sw_tags.c}                  |  0
+>  5 files changed, 9 insertions(+), 9 deletions(-)
+>  rename mm/kasan/{generic_report.c =3D> report_generic.c} (100%)
+>  rename mm/kasan/{tags_report.c =3D> report_sw_tags.c} (100%)
+>  rename mm/kasan/{tags.c =3D> sw_tags.c} (100%)
+>
+> diff --git a/mm/kasan/Makefile b/mm/kasan/Makefile
+> index 7cc1031e1ef8..f1d68a34f3c9 100644
+> --- a/mm/kasan/Makefile
+> +++ b/mm/kasan/Makefile
+> @@ -6,13 +6,13 @@ KCOV_INSTRUMENT :=3D n
+>  # Disable ftrace to avoid recursion.
+>  CFLAGS_REMOVE_common.o =3D $(CC_FLAGS_FTRACE)
+>  CFLAGS_REMOVE_generic.o =3D $(CC_FLAGS_FTRACE)
+> -CFLAGS_REMOVE_generic_report.o =3D $(CC_FLAGS_FTRACE)
+>  CFLAGS_REMOVE_init.o =3D $(CC_FLAGS_FTRACE)
+>  CFLAGS_REMOVE_quarantine.o =3D $(CC_FLAGS_FTRACE)
+>  CFLAGS_REMOVE_report.o =3D $(CC_FLAGS_FTRACE)
+> +CFLAGS_REMOVE_report_generic.o =3D $(CC_FLAGS_FTRACE)
+> +CFLAGS_REMOVE_report_sw_tags.o =3D $(CC_FLAGS_FTRACE)
+>  CFLAGS_REMOVE_shadow.o =3D $(CC_FLAGS_FTRACE)
+> -CFLAGS_REMOVE_tags.o =3D $(CC_FLAGS_FTRACE)
+> -CFLAGS_REMOVE_tags_report.o =3D $(CC_FLAGS_FTRACE)
+> +CFLAGS_REMOVE_sw_tags.o =3D $(CC_FLAGS_FTRACE)
+>
+>  # Function splitter causes unnecessary splits in __asan_load1/__asan_sto=
+re1
+>  # see: https://gcc.gnu.org/bugzilla/show_bug.cgi?id=3D63533
+> @@ -23,14 +23,14 @@ CC_FLAGS_KASAN_RUNTIME +=3D -DDISABLE_BRANCH_PROFILIN=
+G
+>
+>  CFLAGS_common.o :=3D $(CC_FLAGS_KASAN_RUNTIME)
+>  CFLAGS_generic.o :=3D $(CC_FLAGS_KASAN_RUNTIME)
+> -CFLAGS_generic_report.o :=3D $(CC_FLAGS_KASAN_RUNTIME)
+>  CFLAGS_init.o :=3D $(CC_FLAGS_KASAN_RUNTIME)
+>  CFLAGS_quarantine.o :=3D $(CC_FLAGS_KASAN_RUNTIME)
+>  CFLAGS_report.o :=3D $(CC_FLAGS_KASAN_RUNTIME)
+> +CFLAGS_report_generic.o :=3D $(CC_FLAGS_KASAN_RUNTIME)
+> +CFLAGS_report_sw_tags.o :=3D $(CC_FLAGS_KASAN_RUNTIME)
+>  CFLAGS_shadow.o :=3D $(CC_FLAGS_KASAN_RUNTIME)
+> -CFLAGS_tags.o :=3D $(CC_FLAGS_KASAN_RUNTIME)
+> -CFLAGS_tags_report.o :=3D $(CC_FLAGS_KASAN_RUNTIME)
+> +CFLAGS_sw_tags.o :=3D $(CC_FLAGS_KASAN_RUNTIME)
+>
+>  obj-$(CONFIG_KASAN) :=3D common.o report.o
+> -obj-$(CONFIG_KASAN_GENERIC) +=3D init.o generic.o generic_report.o shado=
+w.o quarantine.o
+> -obj-$(CONFIG_KASAN_SW_TAGS) +=3D init.o shadow.o tags.o tags_report.o
+> +obj-$(CONFIG_KASAN_GENERIC) +=3D init.o generic.o report_generic.o shado=
+w.o quarantine.o
+> +obj-$(CONFIG_KASAN_SW_TAGS) +=3D init.o report_sw_tags.o shadow.o sw_tag=
+s.o
+> diff --git a/mm/kasan/report.c b/mm/kasan/report.c
+> index 7b8dcb799a78..fff0c7befbfe 100644
+> --- a/mm/kasan/report.c
+> +++ b/mm/kasan/report.c
+> @@ -1,6 +1,6 @@
+>  // SPDX-License-Identifier: GPL-2.0
+>  /*
+> - * This file contains common generic and tag-based KASAN error reporting=
+ code.
+> + * This file contains common KASAN error reporting code.
+>   *
+>   * Copyright (c) 2014 Samsung Electronics Co., Ltd.
+>   * Author: Andrey Ryabinin <ryabinin.a.a@gmail.com>
+> diff --git a/mm/kasan/generic_report.c b/mm/kasan/report_generic.c
+> similarity index 100%
+> rename from mm/kasan/generic_report.c
+> rename to mm/kasan/report_generic.c
+> diff --git a/mm/kasan/tags_report.c b/mm/kasan/report_sw_tags.c
+> similarity index 100%
+> rename from mm/kasan/tags_report.c
+> rename to mm/kasan/report_sw_tags.c
+> diff --git a/mm/kasan/tags.c b/mm/kasan/sw_tags.c
+> similarity index 100%
+> rename from mm/kasan/tags.c
+> rename to mm/kasan/sw_tags.c
+> --
+> 2.29.2.222.g5d2a92d10f8-goog
+>
 
 
-On 11.11.20 11:36, Vladimir Oltean wrote:
-> Hi Alexandra,
-> 
-> On Wed, Nov 11, 2020 at 11:13:03AM +0100, Alexandra Winter wrote:
->> On 08.11.20 18:23, Vladimir Oltean wrote:
->>> On Sun, Nov 08, 2020 at 10:09:25PM +0800, DENG Qingfang wrote:
->>>> Can it be turned off for switches that support SA learning from CPU?
->>>
->>> Is there a good reason I would add another property per switch and not
->>> just do it unconditionally?
->>>
->> I have a similar concern for a future patch, where I want to turn on or off, whether the
->> device driver listens to SWITCHDEV_{FDB,DEL}_ADD_TO_DEVICE for a certain interface.
->> (Options will be: static MACs only, learning in the device or learning in bridge and notifications to device)
->> What about 'bridge link set dev $netdev learning_sync on self' respectively the corresponding netlink message?
-> 
-> My understanding is that "learning_sync" is for pushing learnt addresses
-> from device to bridge, not from bridge to device.
-> 
-uh, sorry copy-paste error. I meant:
-'bridge link set dev $netdev learning on self'
+--=20
+Alexander Potapenko
+Software Engineer
+
+Google Germany GmbH
+Erika-Mann-Stra=C3=9Fe, 33
+80636 M=C3=BCnchen
+
+Gesch=C3=A4ftsf=C3=BChrer: Paul Manicle, Halimah DeLaine Prado
+Registergericht und -nummer: Hamburg, HRB 86891
+Sitz der Gesellschaft: Hamburg
