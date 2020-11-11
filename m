@@ -2,98 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 601762AF540
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 16:42:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B0732AF53A
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 16:42:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727392AbgKKPmV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 10:42:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45742 "EHLO
+        id S1726575AbgKKPmN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 10:42:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45724 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727100AbgKKPmT (ORCPT
+        with ESMTP id S1726812AbgKKPmN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 10:42:19 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B850C0613D1;
-        Wed, 11 Nov 2020 07:42:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=QDIYgmHBIy32D7QMJNlh1Fjiv1S5HS5loWTZCLGENSc=; b=sVzlTzvFGPcaqnv5C/H2WY6QKi
-        /unIroT+1YmBBbvs8x+xexAEOhkNbqZDvS8PxUSO9q/HUDdE0beM8VeroRpSDI8SPMv5NNiQ1NJH/
-        lSI33hhfgTSmjUf2/nh5eXMoQ+zbvNz6k4ffHUvIWZV7xYrKCkfE4LtlQL9THAz5F133sQ986c7et
-        kSA+KEkgmVYDvSSpYkEAzBIT7KjbPwLNXBr3rWkWD7TNe8CNSbODlZddMvphjrYbREixwvj7vQnyS
-        IGKBbLyJhaSLtWGFIBkQholxO3GactuGlBeJt4HU+lA6tgUvbtxJizVX/J2+w/3vVWWTfHulqlRIK
-        DUu2UOhw==;
-Received: from hch by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kcsFz-0006Ri-Kf; Wed, 11 Nov 2020 15:41:59 +0000
-Date:   Wed, 11 Nov 2020 15:41:59 +0000
-From:   Christoph Hellwig <hch@infradead.org>
-To:     David Woodhouse <dwmw2@infradead.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        "Raj, Ashok" <ashok.raj@intel.com>,
-        "Tian, Kevin" <kevin.tian@intel.com>,
-        "Jiang, Dave" <dave.jiang@intel.com>,
-        Bjorn Helgaas <helgaas@kernel.org>,
-        "vkoul@kernel.org" <vkoul@kernel.org>,
-        "Dey, Megha" <megha.dey@intel.com>,
-        "maz@kernel.org" <maz@kernel.org>,
-        "bhelgaas@google.com" <bhelgaas@google.com>,
-        "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
-        "Pan, Jacob jun" <jacob.jun.pan@intel.com>,
-        "Liu, Yi L" <yi.l.liu@intel.com>, "Lu, Baolu" <baolu.lu@intel.com>,
-        "Kumar, Sanjay K" <sanjay.k.kumar@intel.com>,
-        "Luck, Tony" <tony.luck@intel.com>,
-        "jing.lin@intel.com" <jing.lin@intel.com>,
-        "kwankhede@nvidia.com" <kwankhede@nvidia.com>,
-        "eric.auger@redhat.com" <eric.auger@redhat.com>,
-        "parav@mellanox.com" <parav@mellanox.com>,
-        "rafael@kernel.org" <rafael@kernel.org>,
-        "netanelg@mellanox.com" <netanelg@mellanox.com>,
-        "shahafs@mellanox.com" <shahafs@mellanox.com>,
-        "yan.y.zhao@linux.intel.com" <yan.y.zhao@linux.intel.com>,
-        "pbonzini@redhat.com" <pbonzini@redhat.com>,
-        "Ortiz, Samuel" <samuel.ortiz@intel.com>,
-        "Hossain, Mona" <mona.hossain@intel.com>,
-        "dmaengine@vger.kernel.org" <dmaengine@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>
-Subject: Re: [PATCH v4 06/17] PCI: add SIOV and IMS capability detection
-Message-ID: <20201111154159.GA24059@infradead.org>
-References: <MWHPR11MB1645862A8F7CF7FB8DD011778CEF0@MWHPR11MB1645.namprd11.prod.outlook.com>
- <20201104135415.GX2620339@nvidia.com>
- <MWHPR11MB1645524BDEDF8899914F32AE8CED0@MWHPR11MB1645.namprd11.prod.outlook.com>
- <20201106131415.GT2620339@nvidia.com>
- <20201106164850.GA85879@otc-nc-03>
- <20201106175131.GW2620339@nvidia.com>
- <CAPcyv4iYHA1acfo=+fTk+U_TrLbSWJjA6v4oeTXgVYDTrnCoGw@mail.gmail.com>
- <20201107001207.GA2620339@nvidia.com>
- <87pn4nk7nn.fsf@nanos.tec.linutronix.de>
- <d69953378bd1fdcdda54a2fbe285f6c0b1484e8a.camel@infradead.org>
+        Wed, 11 Nov 2020 10:42:13 -0500
+Received: from mail-il1-x144.google.com (mail-il1-x144.google.com [IPv6:2607:f8b0:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2A3FC0613D1
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 07:42:12 -0800 (PST)
+Received: by mail-il1-x144.google.com with SMTP id l12so2382578ilo.1
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 07:42:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=Z9fVURIh1ER6ryj3li/bebG5BOkx6rFg0fsV5guNvWI=;
+        b=Ho3JBDNNIVPE4/GwgCS1VzTOC770TDnSxBlntV0nhBGRbxZ59U7hm7+NsBw51FiB0u
+         g3/XOj+ah9TAuRr4+bcoruY7D1dHifRt0oGdxEU6ZfygBGeqWmWn4ous38dhWzM3mni/
+         dtGoIZHhv0siIg/+usU/s+an5Is2f65bPVOrY=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Z9fVURIh1ER6ryj3li/bebG5BOkx6rFg0fsV5guNvWI=;
+        b=F9muDKK6+h9SBii7PEgelORF+Cg47indRuQOVH8yg3pLuqcZW6tXJjkLlAJDx4TYgI
+         wjPzWvOcfy68poXoil2ErVrLmzcZdgv9TZEfdwMXqieWvw2I0nHZ1TReCSKS3iyxyxoP
+         t13lgCLOunZiPMQmd4CLxWQoPczmV94GwaJLTjZC1G74aY52ZmrZU/6+DCFHDHl7Ub64
+         h+J4I+9FjWv9/uD67Nng8LEVOy7r3ACf4mFpZIh8mIJ5M/Zbqb9Uw57m6WzxtUqcXqEJ
+         nheMl55UgVa8blre0SkZukHgdKcezmIUc/VExykHqpTPj8U2EB3+bF2CQ8AD4Sw+zCR6
+         ZELQ==
+X-Gm-Message-State: AOAM531GR0M0vMtd2/8eKLCtxailNQ9dalc4vJDjd+8W9t/KDSlzWldv
+        3Hvqx5LWG1TOSkFtVy0R2sIWGw==
+X-Google-Smtp-Source: ABdhPJwsr569jIVesYjxm/+fgY2MvsX62MIEDQSgyZMjjD+bNdv4lH2nZ/r/ftaN0VOKuA7ob5LlTg==
+X-Received: by 2002:a92:c88c:: with SMTP id w12mr20306988ilo.204.1605109332217;
+        Wed, 11 Nov 2020 07:42:12 -0800 (PST)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id i18sm1471925ile.73.2020.11.11.07.42.11
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 11 Nov 2020 07:42:11 -0800 (PST)
+Subject: Re: [PATCH 01/13] seqnum_ops: Introduce Sequence Number Ops
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Matthew Wilcox <willy@infradead.org>, corbet@lwn.net,
+        gregkh@linuxfoundation.org, peterz@infradead.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Shuah Khan <skhan@linuxfoundation.org>
+References: <cover.1605027593.git.skhan@linuxfoundation.org>
+ <d265685c901ea81c83c18e218a29710317ab7670.1605027593.git.skhan@linuxfoundation.org>
+ <20201110210316.GO17076@casper.infradead.org>
+ <11b5153f-e092-d1c9-deb1-e81a171bb866@linuxfoundation.org>
+ <202011101619.341C9C7E64@keescook>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <d0d6a857-6e12-1a41-c4bf-8fcc92d94d0a@linuxfoundation.org>
+Date:   Wed, 11 Nov 2020 08:42:10 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <d69953378bd1fdcdda54a2fbe285f6c0b1484e8a.camel@infradead.org>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+In-Reply-To: <202011101619.341C9C7E64@keescook>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Nov 08, 2020 at 07:36:34PM +0000, David Woodhouse wrote:
-> So it does look like we're going to need a hypercall interface to
-> compose an MSI message on behalf of the guest, for IMS to use. In fact
-> PCI devices assigned to a guest could use that too, and then we'd only
-> need to trap-and-remap any attempt to write a Compatibility Format MSI
-> to the device's MSI table, while letting Remappable Format messages get
-> written directly.
+On 11/10/20 5:20 PM, Kees Cook wrote:
+> On Tue, Nov 10, 2020 at 03:58:48PM -0700, Shuah Khan wrote:
+>> Yes we have some instances where unsigned is being used. I considered
+>> going to unsigned. Changing the API to unsigned has other ramifications
+>> and cascading changes to current atomic_t usages that are up counters.
 > 
-> We'd also need a way for an OS running on bare metal to *know* that
-> it's on bare metal and can just compose MSI messages for itself. Since
-> we do expect bare metal to have an IOMMU, perhaps that is just a
-> feature flag on the IOMMU?
+> As in, existing callers expect the "read" value to be int?
+> 
 
-Have the platform firmware advertise if it needs native or virtualized
-IMS handling.  If it advertises neither don't support IMS?
+Correct. In addition, these values are returned by other functions as
+signed and it will result in lot of churn to use unsigned.
+
+thanks,
+-- Shuah
