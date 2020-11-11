@@ -2,236 +2,270 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CFFEE2AF79F
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 18:58:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DB6D32AF7A0
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 18:58:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726235AbgKKR6e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 12:58:34 -0500
-Received: from foss.arm.com ([217.140.110.172]:59202 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725900AbgKKR6e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 12:58:34 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 35F8D139F;
-        Wed, 11 Nov 2020 09:58:33 -0800 (PST)
-Received: from arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 334C13F718;
-        Wed, 11 Nov 2020 09:58:31 -0800 (PST)
-Date:   Wed, 11 Nov 2020 17:58:27 +0000
-From:   Dave Martin <Dave.Martin@arm.com>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     Andre Przywara <Andre.Przywara@arm.com>,
-        "leo.yan@linaro.org" <leo.yan@linaro.org>,
-        James Clark <James.Clark@arm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <Mark.Rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Al Grant <Al.Grant@arm.com>, Wei Li <liwei391@huawei.com>,
-        John Garry <john.garry@huawei.com>,
-        Will Deacon <will@kernel.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v8 06/22] perf arm-spe: Refactor printing string to buffer
-Message-ID: <20201111175827.GR6882@arm.com>
-References: <20201111071149.815-1-leo.yan@linaro.org>
- <20201111071149.815-7-leo.yan@linaro.org>
- <20201111153555.GG355344@kernel.org>
- <a1ca3412-3815-e2a8-0334-f3059802df6a@arm.com>
- <20201111173922.GA380127@kernel.org>
+        id S1726744AbgKKR6s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 12:58:48 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:25100 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726397AbgKKR6r (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Nov 2020 12:58:47 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1605117524;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ciK9r023Tpi3UGiTFGhz7IuU3n7JAjfqAod4vSoQAgc=;
+        b=aQs65UnD4efgBTujju/DvYeWwNP1L2fnVE6IqAJcUV/Hvu7a//CWVhnXn5GasbH1odd0qN
+        B0xShofGOtv7MuAOPXenr8H+E6dIF8AYbKuI5vuI1CJQkLtlGHDi+mfUjnast2s86rHlH6
+        f31hIXPu+TFWdFsqhnY7bv9CPzq03Uw=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-579-TUhbgmdKPoGL2GAgJjvWGw-1; Wed, 11 Nov 2020 12:58:40 -0500
+X-MC-Unique: TUhbgmdKPoGL2GAgJjvWGw-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 10D591084D63;
+        Wed, 11 Nov 2020 17:58:39 +0000 (UTC)
+Received: from [10.36.114.151] (ovpn-114-151.ams2.redhat.com [10.36.114.151])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id C80405091D;
+        Wed, 11 Nov 2020 17:58:36 +0000 (UTC)
+Subject: Re: [PATCH v3 7/7] mm, page_alloc: disable pcplists during memory
+ offline
+To:     Vlastimil Babka <vbabka@suse.cz>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Michal Hocko <mhocko@kernel.org>,
+        Pavel Tatashin <pasha.tatashin@soleen.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Michal Hocko <mhocko@suse.com>
+References: <20201111092812.11329-1-vbabka@suse.cz>
+ <20201111092812.11329-8-vbabka@suse.cz>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat GmbH
+Message-ID: <6fdaaeeb-154b-5de1-3008-e56a8be53a5a@redhat.com>
+Date:   Wed, 11 Nov 2020 18:58:35 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201111173922.GA380127@kernel.org>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+In-Reply-To: <20201111092812.11329-8-vbabka@suse.cz>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On Wed, Nov 11, 2020 at 05:39:22PM +0000, Arnaldo Carvalho de Melo wrote:
-> Em Wed, Nov 11, 2020 at 03:45:23PM +0000, Andr� Przywara escreveu:
-> > On 11/11/2020 15:35, Arnaldo Carvalho de Melo wrote:
-> > 
-> > Hi Arnaldo,
-> > 
-> > thanks for taking a look!
-> > 
-> > > Em Wed, Nov 11, 2020 at 03:11:33PM +0800, Leo Yan escreveu:
-> > >> When outputs strings to the decoding buffer with function snprintf(),
-> > >> SPE decoder needs to detects if any error returns from snprintf() and if
-> > >> so needs to directly bail out.  If snprintf() returns success, it needs
-> > >> to update buffer pointer and reduce the buffer length so can continue to
-> > >> output the next string into the consequent memory space.
-> > >>
-> > >> This complex logics are spreading in the function arm_spe_pkt_desc() so
-> > >> there has many duplicate codes for handling error detecting, increment
-> > >> buffer pointer and decrement buffer size.
-> > >>
-> > >> To avoid the duplicate code, this patch introduces a new helper function
-> > >> arm_spe_pkt_snprintf() which is used to wrap up the complex logics, and
-> > >> it's used by the caller arm_spe_pkt_desc().
-> > >>
-> > >> This patch also moves the variable 'blen' as the function's local
-> > >> variable, this allows to remove the unnecessary braces and improve the
-> > >> readability.
-> > >>
-> > >> Suggested-by: Dave Martin <Dave.Martin@arm.com>
-> > >> Signed-off-by: Leo Yan <leo.yan@linaro.org>
-> > >> Reviewed-by: Andre Przywara <andre.przywara@arm.com>
-> > >> ---
-> > >>  .../arm-spe-decoder/arm-spe-pkt-decoder.c     | 260 +++++++++---------
-> > >>  1 file changed, 126 insertions(+), 134 deletions(-)
-> > >>
-> > >> diff --git a/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c b/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c
-> > >> index 04fd7fd7c15f..1970686f7020 100644
-> > >> --- a/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c
-> > >> +++ b/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c
-> > >> @@ -9,6 +9,7 @@
-> > >>  #include <endian.h>
-> > >>  #include <byteswap.h>
-> > >>  #include <linux/bitops.h>
-> > >> +#include <stdarg.h>
-> > >>  
-> > >>  #include "arm-spe-pkt-decoder.h"
-> > >>  
-> > >> @@ -258,192 +259,183 @@ int arm_spe_get_packet(const unsigned char *buf, size_t len,
-> > >>  	return ret;
-> > >>  }
-> > >>  
-> > >> +static int arm_spe_pkt_snprintf(int *err, char **buf_p, size_t *blen,
-> > >> +				const char *fmt, ...)
-> > >> +{
-> > >> +	va_list ap;
-> > >> +	int ret;
-> > >> +
-> > >> +	/* Bail out if any error occurred */
-> > >> +	if (err && *err)
-> > >> +		return *err;
-> > >> +
-> > >> +	va_start(ap, fmt);
-> > >> +	ret = vsnprintf(*buf_p, *blen, fmt, ap);
-> > >> +	va_end(ap);
-> > >> +
-> > >> +	if (ret < 0) {
-> > >> +		if (err && !*err)
-> > >> +			*err = ret;
-> > >> +
-> > >> +	/*
-> > >> +	 * A return value of (*blen - 1) or more means that the
-> > >> +	 * output was truncated and the buffer is overrun.
-> > >> +	 */
-> > >> +	} else if (ret >= ((int)*blen - 1)) {
-> > >> +		(*buf_p)[*blen - 1] = '\0';
-> > >> +
-> > >> +		/*
-> > >> +		 * Set *err to 'ret' to avoid overflow if tries to
-> > >> +		 * fill this buffer sequentially.
-> > >> +		 */
-> > >> +		if (err && !*err)
-> > >> +			*err = ret;
-> > >> +	} else {
-> > >> +		*buf_p += ret;
-> > >> +		*blen -= ret;
-> > >> +	}
-> > >> +
-> > >> +	return ret;
-> > >> +}
-> > >> +
-> > >>  int arm_spe_pkt_desc(const struct arm_spe_pkt *packet, char *buf,
-> > >>  		     size_t buf_len)
-> > >>  {
-> > >>  	int ret, ns, el, idx = packet->index;
-> > >>  	unsigned long long payload = packet->payload;
-> > >>  	const char *name = arm_spe_pkt_name(packet->type);
-> > >> +	size_t blen = buf_len;
-> > >> +	int err = 0;
-> > >>  
-> > >>  	switch (packet->type) {
-> > >>  	case ARM_SPE_BAD:
-> > >>  	case ARM_SPE_PAD:
-> > >>  	case ARM_SPE_END:
-> > >> -		return snprintf(buf, buf_len, "%s", name);
-> > >> -	case ARM_SPE_EVENTS: {
-> > >> -		size_t blen = buf_len;
-> > >> -
-> > >> -		ret = 0;
-> > >> -		ret = snprintf(buf, buf_len, "EV");
-> > >> -		buf += ret;
-> > >> -		blen -= ret;
-> > >> -		if (payload & 0x1) {
-> > >> -			ret = snprintf(buf, buf_len, " EXCEPTION-GEN");
-> > >> -			buf += ret;
-> > >> -			blen -= ret;
-> > >> -		}
-> > >> -		if (payload & 0x2) {
-> > >> -			ret = snprintf(buf, buf_len, " RETIRED");
-> > >> -			buf += ret;
-> > >> -			blen -= ret;
-> > >> -		}
-> > >> -		if (payload & 0x4) {
-> > >> -			ret = snprintf(buf, buf_len, " L1D-ACCESS");
-> > >> -			buf += ret;
-> > >> -			blen -= ret;
-> > >> -		}
-> > >> -		if (payload & 0x8) {
-> > >> -			ret = snprintf(buf, buf_len, " L1D-REFILL");
-> > >> -			buf += ret;
-> > >> -			blen -= ret;
-> > >> -		}
-> > >> -		if (payload & 0x10) {
-> > >> -			ret = snprintf(buf, buf_len, " TLB-ACCESS");
-> > >> -			buf += ret;
-> > >> -			blen -= ret;
-> > >> -		}
-> > >> -		if (payload & 0x20) {
-> > >> -			ret = snprintf(buf, buf_len, " TLB-REFILL");
-> > >> -			buf += ret;
-> > >> -			blen -= ret;
-> > >> -		}
-> > >> -		if (payload & 0x40) {
-> > >> -			ret = snprintf(buf, buf_len, " NOT-TAKEN");
-> > >> -			buf += ret;
-> > >> -			blen -= ret;
-> > >> -		}
-> > >> -		if (payload & 0x80) {
-> > >> -			ret = snprintf(buf, buf_len, " MISPRED");
-> > >> -			buf += ret;
-> > >> -			blen -= ret;
-> > >> -		}
-> > >> +		return arm_spe_pkt_snprintf(&err, &buf, &blen, "%s", name);
-> > >> +	case ARM_SPE_EVENTS:
-> > >> +		ret = arm_spe_pkt_snprintf(&err, &buf, &blen, "EV");
-> > >> +
-> > >> +		if (payload & 0x1)
-> > >> +			ret = arm_spe_pkt_snprintf(&err, &buf, &blen, " EXCEPTION-GEN");
-> > > 
-> > > Isn't this 'ret +=' ? Otherwise if any of these arm_spe_pkt_snprintf()
-> > > calls are made the previous 'ret' value is simply discarded. Can you
-> > > clarify this?
-> > 
-> > ret is the same as err. If err is negative (from previous calls), we
-> > return that straight away, so it does nothing but propagating the error.
+On 11.11.20 10:28, Vlastimil Babka wrote:
+> Memory offlining relies on page isolation to guarantee a forward
+> progress because pages cannot be reused while they are isolated. But the
+> page isolation itself doesn't prevent from races while freed pages are
+> stored on pcp lists and thus can be reused.  This can be worked around by
+> repeated draining of pcplists, as done by commit 968318261221
+> ("mm/memory_hotplug: drain per-cpu pages again during memory offline").
 > 
-> Usually the return of a snprintf is used to account for buffer space, ok
-> I'll have to read it, which I shouldn't as snprintf has a well defined
-> meaning...
+> David and Michal would prefer that this race was closed in a way that callers
+> of page isolation who need stronger guarantees don't need to repeatedly drain.
+> David suggested disabling pcplists usage completely during page isolation,
+> instead of repeatedly draining them.
 > 
-> Ok, now that I look at it, I realize it is not a snprintf() routine, but
-> something with different semantics, that will look at a pointer to an
-> integer and then do nothing if it comes with some error, etc, confusing
-> :-/
+> To achieve this without adding special cases in alloc/free fastpath, we can use
+> the same approach as boot pagesets - when pcp->high is 0, any pcplist addition
+> will be immediately flushed.
+> 
+> The race can thus be closed by setting pcp->high to 0 and draining pcplists
+> once, before calling start_isolate_page_range(). The draining will serialize
+> after processes that already disabled interrupts and read the old value of
+> pcp->high in free_unref_page_commit(), and processes that have not yet disabled
+> interrupts, will observe pcp->high == 0 when they are rescheduled, and skip
+> pcplists. This guarantees no stray pages on pcplists in zones where isolation
+> happens.
+> 
+> This patch thus adds zone_pcp_disable() and zone_pcp_enable() functions that
+> page isolation users can call before start_isolate_page_range() and after
+> unisolating (or offlining) the isolated pages.
+> 
+> Also, drain_all_pages() is optimized to only execute on cpus where pcplists are
+> not empty. The check can however race with a free to pcplist that has not yet
+> increased the pcp->count from 0 to 1. Thus make the drain optionally skip the
+> racy check and drain on all cpus, and use this option in zone_pcp_disable().
+> 
+> As we have to avoid external updates to high and batch while pcplists are
+> disabled, we take pcp_batch_high_lock in zone_pcp_disable() and release it in
+> zone_pcp_enable(). This also synchronizes multiple users of
+> zone_pcp_disable()/enable().
+> 
+> Currently the only user of this functionality is offline_pages().
+> 
+> Suggested-by: David Hildenbrand <david@redhat.com>
+> Suggested-by: Michal Hocko <mhocko@suse.com>
+> Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
+> Reviewed-by: Oscar Salvador <osalvador@suse.de>
+> Acked-by: Michal Hocko <mhocko@suse.com>
+> ---
+>   mm/internal.h       |  2 ++
+>   mm/memory_hotplug.c | 28 ++++++++----------
+>   mm/page_alloc.c     | 69 +++++++++++++++++++++++++++++++++++----------
+>   mm/page_isolation.c |  6 ++--
+>   4 files changed, 71 insertions(+), 34 deletions(-)
+> 
+> diff --git a/mm/internal.h b/mm/internal.h
+> index c43ccdddb0f6..2966496680bc 100644
+> --- a/mm/internal.h
+> +++ b/mm/internal.h
+> @@ -201,6 +201,8 @@ extern int user_min_free_kbytes;
+>   
+>   extern void zone_pcp_update(struct zone *zone);
+>   extern void zone_pcp_reset(struct zone *zone);
+> +extern void zone_pcp_disable(struct zone *zone);
+> +extern void zone_pcp_enable(struct zone *zone);
+>   
+>   #if defined CONFIG_COMPACTION || defined CONFIG_CMA
+>   
+> diff --git a/mm/memory_hotplug.c b/mm/memory_hotplug.c
+> index 3c494ab0d075..e0a561c550b3 100644
+> --- a/mm/memory_hotplug.c
+> +++ b/mm/memory_hotplug.c
+> @@ -1491,17 +1491,21 @@ int __ref offline_pages(unsigned long start_pfn, unsigned long nr_pages)
+>   	}
+>   	node = zone_to_nid(zone);
+>   
+> +	/*
+> +	 * Disable pcplists so that page isolation cannot race with freeing
+> +	 * in a way that pages from isolated pageblock are left on pcplists.
+> +	 */
+> +	zone_pcp_disable(zone);
+> +
+>   	/* set above range as isolated */
+>   	ret = start_isolate_page_range(start_pfn, end_pfn,
+>   				       MIGRATE_MOVABLE,
+>   				       MEMORY_OFFLINE | REPORT_FAILURE);
+>   	if (ret) {
+>   		reason = "failure to isolate range";
+> -		goto failed_removal;
+> +		goto failed_removal_pcplists_disabled;
+>   	}
+>   
+> -	drain_all_pages(zone);
+> -
+>   	arg.start_pfn = start_pfn;
+>   	arg.nr_pages = nr_pages;
+>   	node_states_check_changes_offline(nr_pages, zone, &arg);
+> @@ -1551,20 +1555,8 @@ int __ref offline_pages(unsigned long start_pfn, unsigned long nr_pages)
+>   			goto failed_removal_isolated;
+>   		}
+>   
+> -		/*
+> -		 * per-cpu pages are drained after start_isolate_page_range, but
+> -		 * if there are still pages that are not free, make sure that we
+> -		 * drain again, because when we isolated range we might have
+> -		 * raced with another thread that was adding pages to pcp list.
+> -		 *
+> -		 * Forward progress should be still guaranteed because
+> -		 * pages on the pcp list can only belong to MOVABLE_ZONE
+> -		 * because has_unmovable_pages explicitly checks for
+> -		 * PageBuddy on freed pages on other zones.
+> -		 */
+>   		ret = test_pages_isolated(start_pfn, end_pfn, MEMORY_OFFLINE);
+> -		if (ret)
+> -			drain_all_pages(zone);
+> +
 
-Would you be happier if the function were renamed?
+Why two empty lines before the "} while (ret);" ? (unless I'm confused 
+while looking at this diff)
 
-Originally we were aiming for snprintf() semantics, but this still
-spawns a lot of boilerplate code and encourages mistakes in the local
-caller here -- hence the current sticky error approach.
+[...]
 
-So maybe the name should now be less "snprintf"-like.
+> +void __drain_all_pages(struct zone *zone, bool force_all_cpus)
+>   {
+>   	int cpu;
+>   
+> @@ -3076,7 +3069,13 @@ void drain_all_pages(struct zone *zone)
+>   		struct zone *z;
+>   		bool has_pcps = false;
+>   
+> -		if (zone) {
+> +		if (force_all_cpus) {
+> +			/*
+> +			 * The pcp.count check is racy, some callers need a
+> +			 * guarantee that no cpu is missed.
 
-Cheers
----Dave
+Why this comment is helpful, it doesn't tell the whole story. Who 
+exactly/in which situations?
+
+> +			 */
+> +			has_pcps = true;
+> +		} else if (zone) {
+>   			pcp = per_cpu_ptr(zone->pageset, cpu);
+>   			if (pcp->pcp.count)
+>   				has_pcps = true;
+> @@ -3109,6 +3108,18 @@ void drain_all_pages(struct zone *zone)
+>   	mutex_unlock(&pcpu_drain_mutex);
+>   }
+>   
+> +/*
+> + * Spill all the per-cpu pages from all CPUs back into the buddy allocator.
+> + *
+> + * When zone parameter is non-NULL, spill just the single zone's pages.
+> + *
+> + * Note that this can be extremely slow as the draining happens in a workqueue.
+> + */
+> +void drain_all_pages(struct zone *zone)
+> +{
+> +	__drain_all_pages(zone, false);
+
+It's still somewhat unclear to me why we don't need "force_all_cpus" 
+here. Can you clarify that? (e.g., add a comment somewhere?)
+
+[...]
+
+> +void __zone_set_pageset_high_and_batch(struct zone *zone, unsigned long high,
+> +		unsigned long batch)
+> +{
+> +	struct per_cpu_pageset *p;
+> +	int cpu;
+> +
+> +	for_each_possible_cpu(cpu) {
+> +		p = per_cpu_ptr(zone->pageset, cpu);
+> +		pageset_update(&p->pcp, high, batch);
+> +	}
+> +}
+> +
+>   /*
+>    * Calculate and set new high and batch values for all per-cpu pagesets of a
+>    * zone, based on the zone's size and the percpu_pagelist_fraction sysctl.
+> @@ -6315,8 +6338,6 @@ static void pageset_init(struct per_cpu_pageset *p)
+>   static void zone_set_pageset_high_and_batch(struct zone *zone)
+>   {
+>   	unsigned long new_high, new_batch;
+> -	struct per_cpu_pageset *p;
+> -	int cpu;
+>   
+>   	if (percpu_pagelist_fraction) {
+>   		new_high = zone_managed_pages(zone) / percpu_pagelist_fraction;
+> @@ -6336,10 +6357,7 @@ static void zone_set_pageset_high_and_batch(struct zone *zone)
+>   	zone->pageset_high = new_high;
+>   	zone->pageset_batch = new_batch;
+>   
+> -	for_each_possible_cpu(cpu) {
+> -		p = per_cpu_ptr(zone->pageset, cpu);
+> -		pageset_update(&p->pcp, new_high, new_batch);
+> -	}
+> +	__zone_set_pageset_high_and_batch(zone, new_high, new_batch);
+>   }
+
+These two hunks look like an unrelated cleanup, or am I missing something?
+
+Thanks for looking into this!
+
+-- 
+Thanks,
+
+David / dhildenb
+
