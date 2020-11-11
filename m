@@ -2,186 +2,457 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E66872AF2C8
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 14:59:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0AB832AF2DA
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 15:00:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726514AbgKKN72 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 08:59:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57868 "EHLO
+        id S1727076AbgKKOAU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 09:00:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58094 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726553AbgKKN6u (ORCPT
+        with ESMTP id S1726204AbgKKOAR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 08:58:50 -0500
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F5A8C0613D1;
-        Wed, 11 Nov 2020 05:58:50 -0800 (PST)
-Received: by mail-pf1-x442.google.com with SMTP id q5so1656192pfk.6;
-        Wed, 11 Nov 2020 05:58:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=qX2IknY34AVLLsHKeEvJf13PSvdzJ2CHpJHjlbr+QWs=;
-        b=DHcXpGaP1Bhzy1k2x0jQBqu7WZ7PgcGJh1laWS28dfzZ4qUwBw2VDcUAjkhrRS/7Yg
-         kka5FFAw6g8OwGQ7eEzt4SV/lrk6w84Dqw21JDebOJ6ABzIZSt0V2kt8vWa6Yl4tPnrD
-         cvp9sb95LU6olmxJ3Gu1oad3z0nh4u6XpnERWrehlKFGYREqQr/jvNzb2o397wY9R8dO
-         FrhJ2oSLsQdRyQ+saY0TDBH/PCofMYfL47gTbJ2rPzahNLULTh+FE07Xf21c3qktKgF+
-         73W1RBcm72nASy9BumLe9MV3Uo7kvK3nwm9cK6Ey9QIjb0UEeYqt2tkf9KoQZG3uu4vL
-         SYpg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=qX2IknY34AVLLsHKeEvJf13PSvdzJ2CHpJHjlbr+QWs=;
-        b=s4sLjA9+0KA8bo+0a5ts2WqFuLLk7fx9FWxVxsL7/L/rhVef/Lxb2JegpVI+D4LtqC
-         4XuxBYGs/O4D5FRur4UOYRfDTZq9SY+bkt0fvDJOTIW6oWOLOvMUBVmzIS6zgpnLdU3l
-         LpQ7sDHa8MYlkMHv4mCP8IUbIhUFDBJqX+yh6Bx+1TsIhEw9UXp+6D8obtpiU10SelIj
-         Z0yhYaitXAIXZJGokjF/Q6t8ktee9ar14mafZG4VEMgnszf/xdr01AT0f0cEsDNxrFwf
-         T1G2GMegrFZR0AVK1x07KMOpl0UuLRg4f5F1+9blBjFUlJyM77Z2GCNMctsMxSLALzla
-         L+xA==
-X-Gm-Message-State: AOAM532T3OevRK82/eJynqCUsLbIYKDUYYusycJZclJw6lCa3TO6PGi3
-        /qSe0nAG2udXlbgFs7ijUOgpJzztnndeCOaJqphGLRN9Hfo=
-X-Google-Smtp-Source: ABdhPJz5ScUzutVG3Yc6hFE+som1BIyVyqo/NnVgIKRNwsYUcaN7O04JLogjpy9P/0a2RrS/HKq6ftC5P8kENZpR7CM=
-X-Received: by 2002:a63:4d64:: with SMTP id n36mr13334019pgl.203.1605103130049;
- Wed, 11 Nov 2020 05:58:50 -0800 (PST)
+        Wed, 11 Nov 2020 09:00:17 -0500
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7224DC0613D1;
+        Wed, 11 Nov 2020 06:00:17 -0800 (PST)
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 1B976A19;
+        Wed, 11 Nov 2020 15:00:13 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1605103213;
+        bh=mKuIU8+K1pEz/DAf9qGA5X2ulnU2pOxz9ZcXmP8HD6g=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=u96T04zATw1qPei0aXyrH2433zbXh1G9obPHYvbsb8oJMPdKIUvmSL36VIwDE1xyl
+         VPpviWXc3ojSf7nYbaZOj23SUvEKeaaCjpLtrkcQLizYbR5OS4C4Bbont2A0FFfQ5I
+         N7mD3h0IsIAtd7QLOpOVEDiK3qeLIgX3/nlBVjEE=
+Date:   Wed, 11 Nov 2020 16:00:09 +0200
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Rob Herring <robh@kernel.org>
+Cc:     devicetree@vger.kernel.org, Sameer Pujar <spujar@nvidia.com>,
+        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        kuninori.morimoto.gx@renesas.com,
+        Jacopo Mondi <jacopo+renesas@jmondi.org>
+Subject: Re: [PATCH v3 1/3] dt-bindings: Convert graph bindings to json-schema
+Message-ID: <20201111140009.GD4115@pendragon.ideasonboard.com>
+References: <20201102203656.220187-1-robh@kernel.org>
+ <20201102203656.220187-2-robh@kernel.org>
 MIME-Version: 1.0
-References: <20201111130435.432982-1-f.suligoi@asem.it>
-In-Reply-To: <20201111130435.432982-1-f.suligoi@asem.it>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Wed, 11 Nov 2020 15:59:38 +0200
-Message-ID: <CAHp75VeccWtKRQkQE0XyyDZVvkD3QrBig2yU6=pz3KEG-bCKjA@mail.gmail.com>
-Subject: Re: [PATCH v1] Documentation: ACPI: explain how to use gpio-line-names
-To:     Flavio Suligoi <f.suligoi@asem.it>
-Cc:     Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20201102203656.220187-2-robh@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 11, 2020 at 3:07 PM Flavio Suligoi <f.suligoi@asem.it> wrote:
->
-> The "gpio-line-names" declaration is not fully
-> documented, so can be useful to add some important
-> information and one more example.
->
-> This commit also fix a trivial syntax error.
+Hi Rob and Sameer,
 
-fix -> fixes
-syntax error -> spelling mistake
+Thank you for the patch.
 
-Taking into account this done from the experience, it's a very good job, thanks!
+On Mon, Nov 02, 2020 at 02:36:54PM -0600, Rob Herring wrote:
+> From: Sameer Pujar <spujar@nvidia.com>
+> 
+> Convert device tree bindings of graph to YAML format. Currently graph.txt
+> doc is referenced in multiple files and all of these need to use schema
+> references. For now graph.txt is updated to refer to graph.yaml.
+> 
+> For users of the graph binding, they should reference to the graph
+> schema from either 'ports' or 'port' property:
+> 
+> properties:
+>   ports:
+>     type: object
+>     $ref: graph.yaml#/properties/ports
+> 
+>     properties:
+>       port@0:
+>         description: What data this port has
+> 
+>       ...
+> 
+> Or:
+> 
+> properties:
+>   port:
+>     description: What data this port has
+>     type: object
+>     $ref: graph.yaml#/properties/port
 
-Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+Sounds like a good approach.
 
-Also nit-picks below.
-
-> Signed-off-by: Flavio Suligoi <f.suligoi@asem.it>
+> Signed-off-by: Sameer Pujar <spujar@nvidia.com>
+> Acked-by: Philipp Zabel <p.zabel@pengutronix.de>
+> Signed-off-by: Rob Herring <robh@kernel.org>
 > ---
->  .../firmware-guide/acpi/gpio-properties.rst   | 58 ++++++++++++++++++-
->  1 file changed, 56 insertions(+), 2 deletions(-)
->
-> diff --git a/Documentation/firmware-guide/acpi/gpio-properties.rst b/Documentation/firmware-guide/acpi/gpio-properties.rst
-> index bb6d74f23ee0..a9f4dfa932cc 100644
-> --- a/Documentation/firmware-guide/acpi/gpio-properties.rst
-> +++ b/Documentation/firmware-guide/acpi/gpio-properties.rst
-> @@ -107,7 +107,61 @@ Example::
->
->  - gpio-line-names
->
-> -Example::
-> +The "gpio-line-names" declaration is a list of strings ("names"), which
-> +describes each line/pin of a GPIO controller/expander.
-> +This list, contained in a package, must be inserted inside the GPIO controller
-> +declaration of an ACPI table (typically inside the DSDT).
-> +The gpio-line-names list must respect the following rules (see also the
-> +examples):
-
-Since it's rest, I would expect gpio-line-names in above paragraphs to
-be a term, something like
-``gpio-line-names`` (double back quotes on each side). Yes, I know
-that there are other places which need to be amended, but I believe
-it's out of scope of this patch.
-
-Also no need to have each sentence to be started from a new line, it
-will be rendered as it has one white space in between.
-
-> +  - the first name in the list corresponds with the first line/pin of the GPIO
-> +    controller/expander
-> +  - the names inside the list must be consecutive (no "holes" are permitted)
-> +  - the list can be incomplete and can end before the last GPIO line: in
-> +    other words, it is not mandatory to fill all the GPIO lines
-> +  - empty names are allowed (two quotation marks "" correspond to an empty name)
-
-``""`` but better to check the resulting (rendered) file. You may use
-rst2pdf script for that.
-
-> +Example of a GPIO controller of 16 lines, with an incomplete list with two
-> +empty names::
+> v3:
+>  - Move port 'reg' to port@* and make required
+>  - Make remote-endpoint required
+>  - Add 'additionalProperties: true' now required
+>  - Fix yamllint warnings
+> 
+>  Documentation/devicetree/bindings/graph.txt  | 129 +-----------
+>  Documentation/devicetree/bindings/graph.yaml | 199 +++++++++++++++++++
+>  2 files changed, 200 insertions(+), 128 deletions(-)
+>  create mode 100644 Documentation/devicetree/bindings/graph.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/graph.txt b/Documentation/devicetree/bindings/graph.txt
+> index 0415e2c53ba0..b7818d61cef7 100644
+> --- a/Documentation/devicetree/bindings/graph.txt
+> +++ b/Documentation/devicetree/bindings/graph.txt
+> @@ -1,128 +1 @@
+> -Common bindings for device graphs
+> -
+> -General concept
+> ----------------
+> -
+> -The hierarchical organisation of the device tree is well suited to describe
+> -control flow to devices, but there can be more complex connections between
+> -devices that work together to form a logical compound device, following an
+> -arbitrarily complex graph.
+> -There already is a simple directed graph between devices tree nodes using
+> -phandle properties pointing to other nodes to describe connections that
+> -can not be inferred from device tree parent-child relationships. The device
+> -tree graph bindings described herein abstract more complex devices that can
+> -have multiple specifiable ports, each of which can be linked to one or more
+> -ports of other devices.
+> -
+> -These common bindings do not contain any information about the direction or
+> -type of the connections, they just map their existence. Specific properties
+> -may be described by specialized bindings depending on the type of connection.
+> -
+> -To see how this binding applies to video pipelines, for example, see
+> -Documentation/devicetree/bindings/media/video-interfaces.txt.
+> -Here the ports describe data interfaces, and the links between them are
+> -the connecting data buses. A single port with multiple connections can
+> -correspond to multiple devices being connected to the same physical bus.
+> -
+> -Organisation of ports and endpoints
+> ------------------------------------
+> -
+> -Ports are described by child 'port' nodes contained in the device node.
+> -Each port node contains an 'endpoint' subnode for each remote device port
+> -connected to this port. If a single port is connected to more than one
+> -remote device, an 'endpoint' child node must be provided for each link.
+> -If more than one port is present in a device node or there is more than one
+> -endpoint at a port, or a port node needs to be associated with a selected
+> -hardware interface, a common scheme using '#address-cells', '#size-cells'
+> -and 'reg' properties is used to number the nodes.
+> -
+> -device {
+> -        ...
+> -        #address-cells = <1>;
+> -        #size-cells = <0>;
+> -
+> -        port@0 {
+> -	        #address-cells = <1>;
+> -	        #size-cells = <0>;
+> -		reg = <0>;
+> -
+> -                endpoint@0 {
+> -			reg = <0>;
+> -			...
+> -		};
+> -                endpoint@1 {
+> -			reg = <1>;
+> -			...
+> -		};
+> -        };
+> -
+> -        port@1 {
+> -		reg = <1>;
+> -
+> -		endpoint { ... };
+> -	};
+> -};
+> -
+> -All 'port' nodes can be grouped under an optional 'ports' node, which
+> -allows to specify #address-cells, #size-cells properties for the 'port'
+> -nodes independently from any other child device nodes a device might
+> -have.
+> -
+> -device {
+> -        ...
+> -        ports {
+> -                #address-cells = <1>;
+> -                #size-cells = <0>;
+> -
+> -                port@0 {
+> -                        ...
+> -                        endpoint@0 { ... };
+> -                        endpoint@1 { ... };
+> -                };
+> -
+> -                port@1 { ... };
+> -        };
+> -};
+> -
+> -Links between endpoints
+> ------------------------
+> -
+> -Each endpoint should contain a 'remote-endpoint' phandle property that points
+> -to the corresponding endpoint in the port of the remote device. In turn, the
+> -remote endpoint should contain a 'remote-endpoint' property. If it has one, it
+> -must not point to anything other than the local endpoint. Two endpoints with
+> -their 'remote-endpoint' phandles pointing at each other form a link between the
+> -containing ports.
+> -
+> -device-1 {
+> -        port {
+> -                device_1_output: endpoint {
+> -                        remote-endpoint = <&device_2_input>;
+> -                };
+> -        };
+> -};
+> -
+> -device-2 {
+> -        port {
+> -                device_2_input: endpoint {
+> -                        remote-endpoint = <&device_1_output>;
+> -                };
+> -        };
+> -};
+> -
+> -Required properties
+> --------------------
+> -
+> -If there is more than one 'port' or more than one 'endpoint' node or 'reg'
+> -property present in the port and/or endpoint nodes then the following
+> -properties are required in a relevant parent node:
+> -
+> - - #address-cells : number of cells required to define port/endpoint
+> -                    identifier, should be 1.
+> - - #size-cells    : should be zero.
+> -
+> -Optional endpoint properties
+> -----------------------------
+> -
+> -- remote-endpoint: phandle to an 'endpoint' subnode of a remote device node.
+> -
+> +This file has moved to graph.yaml
+> diff --git a/Documentation/devicetree/bindings/graph.yaml b/Documentation/devicetree/bindings/graph.yaml
+> new file mode 100644
+> index 000000000000..b56720c5a13e
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/graph.yaml
+> @@ -0,0 +1,199 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/graph.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
 > +
-> +  Package () {
-> +      "gpio-line-names",
-> +      Package () {
-> +          "pin_0",
-> +          "pin_1",
-> +          "",
-> +          "",
-> +          "pin_3",
-> +          "pin_4_push_button"
-
-+ comma at the end here as well.
-
-> +      }
-> +  }
+> +title: Common bindings for device graphs
 > +
-> +At runtime, the above declaration produces the following result (using the
-> +"libgpiod" tools)::
+> +description: |
+> +  The hierarchical organisation of the device tree is well suited to describe
+> +  control flow to devices, but there can be more complex connections between
+> +  devices that work together to form a logical compound device, following an
+> +  arbitrarily complex graph.
+> +  There already is a simple directed graph between devices tree nodes using
+> +  phandle properties pointing to other nodes to describe connections that
+> +  can not be inferred from device tree parent-child relationships. The device
+> +  tree graph bindings described herein abstract more complex devices that can
+> +  have multiple specifiable ports, each of which can be linked to one or more
+> +  ports of other devices.
 > +
-> +  root@debian:~# gpioinfo gpiochip4
-> +  gpiochip4 - 16 lines:
-> +          line   0:      "pin_0"       unused   input  active-high
-> +          line   1:      "pin_1"       unused   input  active-high
-> +          line   2:      unnamed       unused   input  active-high
-> +          line   3:      unnamed       unused   input  active-high
-> +          line   4:      "pin_3"       unused   input  active-high
-> +          line   5: "pin_4_push_button" unused input active-high
-> +          line   6:      unnamed       unused   input  active-high
-> +          line   7       unnamed       unused   input  active-high
-> +          line   8:      unnamed       unused   input  active-high
-> +          line   9:      unnamed       unused   input  active-high
-> +          line  10:      unnamed       unused   input  active-high
-> +          line  11:      unnamed       unused   input  active-high
-> +          line  12:      unnamed       unused   input  active-high
-> +          line  13:      unnamed       unused   input  active-high
-> +          line  14:      unnamed       unused   input  active-high
-> +          line  15:      unnamed       unused   input  active-high
-> +  root@debian:~# gpiofind pin_4_push_button
-> +  gpiochip4 5
-> +  root@debian:~#
+> +  These common bindings do not contain any information about the direction or
+> +  type of the connections, they just map their existence. Specific properties
+> +  may be described by specialized bindings depending on the type of connection.
 > +
-> +Another example::
->
->    Package () {
->        "gpio-line-names",
-> @@ -191,7 +245,7 @@ The driver might expect to get the right GPIO when it does::
->  but since there is no way to know the mapping between "reset" and
->  the GpioIo() in _CRS desc will hold ERR_PTR(-ENOENT).
->
-> -The driver author can solve this by passing the mapping explictly
-> +The driver author can solve this by passing the mapping explicitly
->  (the recommended way and documented in the above chapter).
->
->  The ACPI GPIO mapping tables should not contaminate drivers that are not
-> --
-> 2.25.1
->
+> +  To see how this binding applies to video pipelines, for example, see
+> +  Documentation/devicetree/bindings/media/video-interfaces.txt.
+> +  Here the ports describe data interfaces, and the links between them are
+> +  the connecting data buses. A single port with multiple connections can
+> +  correspond to multiple devices being connected to the same physical bus.
+> +
+> +maintainers:
+> +  - Philipp Zabel <p.zabel@pengutronix.de>
+> +
+> +select: false
+> +
+> +properties:
+> +  port:
+> +    type: object
+> +    description:
+> +      If there is more than one endpoint node or 'reg' property present in
+> +      endpoint nodes then '#address-cells' and '#size-cells' properties are
+> +      required.
+> +
+> +    properties:
+> +      "#address-cells":
+> +        const: 1
+> +
+> +      "#size-cells":
+> +        const: 0
+> +
+> +    patternProperties:
+> +      "^endpoint(@[0-9a-f]+)?$":
+> +        type: object
+> +        properties:
+> +          reg:
+> +            maxItems: 1
+> +
+> +          remote-endpoint:
+> +            description: |
+> +              phandle to an 'endpoint' subnode of a remote device node.
+> +            $ref: /schemas/types.yaml#/definitions/phandle
+> +
+> +        required:
+> +          - remote-endpoint
 
+As noted elsewhere, this shouldn't be required.
+
+Should we set additionalProperties: false here ?
+
+> +
+> +  ports:
+> +    type: object
+> +    description: |
+> +      If there is more than one port node or 'reg' property present in port
+> +      nodes then '#address-cells' and '#size-cells' properties are required.
+> +      In such cases all port nodes can be grouped under 'ports' independently
+> +      from any other child device nodes a device might have.
+
+Allowing multiple port nodes not grouped in a ports node has created
+complexity, with very little gain. Should we forbid that going forward ?
+
+> +
+> +    properties:
+> +      "#address-cells":
+> +        const: 1
+> +
+> +      "#size-cells":
+> +        const: 0
+> +
+> +    patternProperties:
+> +      "^port(@[0-9a-f]+)?$":
+> +        $ref: "#/properties/port"
+> +        type: object
+> +
+> +        properties:
+> +          reg:
+> +            maxItems: 1
+> +
+> +        required:
+> +          - reg
+> +
+> +
+
+Maybe a single blank line ?
+
+Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+
+> +    additionalProperties: false
+> +
+> +additionalProperties: true
+> +
+> +examples:
+> +  # Organisation of ports and endpoints:
+> +  #
+> +  # Ports are described by child 'port' nodes contained in the device node.
+> +  # Each port node contains an 'endpoint' subnode for each remote device port
+> +  # connected to this port. If a single port is connected to more than one
+> +  # remote device, an 'endpoint' child node must be provided for each link.
+> +  # If more than one port is present in a device node or there is more than
+> +  # one endpoint at a port, or a port node needs to be associated with a
+> +  # selected hardware interface, a common scheme using '#address-cells',
+> +  # '#size-cells' and 'reg' properties is used to number the nodes.
+> +  - |
+> +    device {
+> +        #address-cells = <1>;
+> +        #size-cells = <0>;
+> +
+> +        port@0 {
+> +            #address-cells = <1>;
+> +            #size-cells = <0>;
+> +            reg = <0>;
+> +
+> +            endpoint@0 {
+> +                reg = <0>;
+> +                // ...
+> +            };
+> +            endpoint@1 {
+> +                reg = <1>;
+> +                // ...
+> +            };
+> +        };
+> +
+> +        port@1 {
+> +            reg = <1>;
+> +
+> +            endpoint {
+> +                // ...
+> +            };
+> +        };
+> +    };
+> +
+> +  # All 'port' nodes can be grouped under an optional 'ports' node, which
+> +  # allows to specify #address-cells, #size-cells properties for the 'port'
+> +  # nodes independently from any other child device nodes a device might
+> +  # have.
+> +  - |
+> +    device {
+> +        // ...
+> +        ports {
+> +            #address-cells = <1>;
+> +            #size-cells = <0>;
+> +
+> +            port@0 {
+> +                #address-cells = <1>;
+> +                #size-cells = <0>;
+> +                reg = <0>;
+> +                // ...
+> +
+> +                endpoint@0 {
+> +                    reg = <0>;
+> +                    // ...
+> +                };
+> +                endpoint@1 {
+> +                    reg = <1>;
+> +                    // ...
+> +                };
+> +            };
+> +
+> +            port@1 {
+> +                #address-cells = <1>;
+> +                #size-cells = <0>;
+> +                reg = <1>;
+> +                // ...
+> +            };
+> +        };
+> +    };
+> +
+> +  # Links between endpoints:
+> +  #
+> +  # Each endpoint should contain a 'remote-endpoint' phandle property that
+> +  # points to the corresponding endpoint in the port of the remote device.
+> +  # In turn, the remote endpoint should contain a 'remote-endpoint' property.
+> +  # If it has one, it must not point to anything other than the local endpoint.
+> +  # Two endpoints with their 'remote-endpoint' phandles pointing at each other
+> +  # form a link between the containing ports.
+> +  - |
+> +    device-1 {
+> +        port {
+> +            device_1_output: endpoint {
+> +                remote-endpoint = <&device_2_input>;
+> +            };
+> +        };
+> +    };
+> +
+> +    device-2 {
+> +        port {
+> +            device_2_input: endpoint {
+> +                remote-endpoint = <&device_1_output>;
+> +            };
+> +        };
+> +    };
+> +
+> +...
 
 -- 
-With Best Regards,
-Andy Shevchenko
+Regards,
+
+Laurent Pinchart
