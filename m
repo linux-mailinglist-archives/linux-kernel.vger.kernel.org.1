@@ -2,50 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD35F2AFC5F
+	by mail.lfdr.de (Postfix) with ESMTP id 4EECE2AFC5E
 	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 02:35:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728909AbgKLBfj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 20:35:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60552 "EHLO
+        id S1728903AbgKLBff (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 20:35:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60560 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727899AbgKKXX4 (ORCPT
+        with ESMTP id S1727895AbgKKXX4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 11 Nov 2020 18:23:56 -0500
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDFCBC0613D6;
-        Wed, 11 Nov 2020 15:23:46 -0800 (PST)
-Received: by mail-pg1-x542.google.com with SMTP id r186so2553119pgr.0;
-        Wed, 11 Nov 2020 15:23:46 -0800 (PST)
+Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE9FCC0617A6;
+        Wed, 11 Nov 2020 15:23:48 -0800 (PST)
+Received: by mail-pl1-x644.google.com with SMTP id k7so1792386plk.3;
+        Wed, 11 Nov 2020 15:23:48 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=rmvEzNyFoJX1iHYxKsv0/EGBjX8DBa3yt0/jMPmZuc0=;
-        b=SIfjbVbXY9g2nGpr3BqroW0o9pCuBd41UimxHetMt19exNTV0jskvTTI4D/ubKIHsB
-         DUf4SCe+EqQ/6L2D52wX8PE5uJ9dSwBdlrq1GFulADQLx1Thh3z8/UgMxLuaLxr8I0d9
-         8haeVcVDKdVJvIdEYtH0oxYWVhiOV8ajBx2YGhgg40jK3lUEkPeIOC3+yJ8SQst6SfER
-         ALddFewf+XAW2+kSkKkVgWuLwSK1CETx+eXOTrJsH9h4RdGYW00TCaNlHaJkZ2ZVTFM0
-         s2beFieRVB7U64JwJDuxp2kiSK5JmU4L8UMmJ4UsmY/2/pPc9GiFxNyfnL08fUywSk4f
-         QlBQ==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references;
+        bh=DmCrvjpAUpHnNbD1lkcgSKsP0QAPloTIQfmWpnOPB6c=;
+        b=reLJJMyPdImrWK05zeLDBEyEa+lRFqCxJL2fiD3yq3ecHIyBqW4XFTT8XcjleNy9m3
+         wg0L/IhbV2ukdebXrv9JnMC9XYmn8IAoS/XtVsFrIOygkMGKYDfGho4GtQ2j4RPzMH/a
+         UdZQqvA9O2MVjrFxUII1JEl24x88Lnxv4sOSWmc0jmf5cpYT3M0+VybSYXe3beGScVzW
+         +YBS8wBYPvBCUXFQJ77x7zxheM8ZNjflJ/cn1GVfLXxtAh7oUZuunYj3hK8aESlD7ts4
+         OJozDB2QvkxSJbO2h0LKK0HNo8UBDq/RFggxG6O2iuP/7109ccMkE8fbkecRXrkc5Qgu
+         W4lg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=rmvEzNyFoJX1iHYxKsv0/EGBjX8DBa3yt0/jMPmZuc0=;
-        b=Ge/xDdwdGwUPrn7ShOjHCFmCW66MdRcFaVf1E/rJCHvTHRhfyFWpuzPu+TDyTiTFj4
-         OoLD1Ai0+QrU/oGFvXUB2tDPMPI/nBLSORR3sgG2E9yHoJQzTxFTaRS5CrZigeyB47eC
-         Ew+W8fMsUZzLxwPDSteRFCx5gAnEiF7qq8L9lKrH2kYc52/A/JL4mXlUsCkNFBvc/Ku8
-         3UshPo8POKRUEuJHj+OBQLZbtvaG8/aRkO5ThbQ5q1fTWNdSMN/3GInsN0AXXokpoOUn
-         PUtCFAqVO+Z7m/wEbAIoNoMuPE5LnQCoDikXnUEfD8SArxXwelpywzayTKdckvsStt/T
-         M8sg==
-X-Gm-Message-State: AOAM530+sAP/5v4jUIbhmx/jNYy8dhMUzLEvHC05LgxPVwuKMIeInhGc
-        d0hynPLYX5dS9ntpW1+fUjMbBvq/FrP3Eo7Z
-X-Google-Smtp-Source: ABdhPJwLIkmY1lx2BkFH6Ky9XCzcwXy2Tiedp8iEyPSz0H7c5glq67safBqMDc1pSrdZwJsRHwPlYg==
-X-Received: by 2002:a17:90a:4208:: with SMTP id o8mr6176658pjg.19.1605137026461;
-        Wed, 11 Nov 2020 15:23:46 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references;
+        bh=DmCrvjpAUpHnNbD1lkcgSKsP0QAPloTIQfmWpnOPB6c=;
+        b=EoKqYk8beWZVdbqB9ZqK2XVP8vo+aqimUn1sKFpd6XSGTvC5pogeuVSzVW7Q3QAhqF
+         5zCNNAf2Hz2RYCtRuy2fVceTFk6XV3+1o0FkZ4+CYoFe4C5tUi06scVyLcCUyUf6CjRA
+         WKrkccWo1GpVJoxbNaMPvsgW+mINlQmI6e82FoUFZhWFIrENKWrMy2ZT9kS1J7K7WoWM
+         Ywu9OBSR2YuGIc25BDm8NDltijOFuPz+R0SY/SHHoh9JgieVCe1sIU0HWVNh6fgdebA8
+         XuZt+LAbmi9wLTnuGpjXLNHEJxDaRqQIJfhDK56a8eg5yM87Iku/OIbgR90ybX883hc7
+         SnWA==
+X-Gm-Message-State: AOAM531Ucal+GtfxWUUAheipd3A1oPHrJGsK/jqAGTL06ao+6oo8Qn1p
+        cnHH5Wnr15imMyMDFknb4aY=
+X-Google-Smtp-Source: ABdhPJx7DNOCqgSH2RzbcEL3w1fsullIxZN84n7XV8wUg6NQo+acSWRmrtrjziKiamGQXEM/LOxiUA==
+X-Received: by 2002:a17:902:328:b029:d7:eba5:83ce with SMTP id 37-20020a1709020328b02900d7eba583cemr10218120pld.57.1605137028251;
+        Wed, 11 Nov 2020 15:23:48 -0800 (PST)
 Received: from taoren-ubuntu-R90MNF91.thefacebook.com (c-73-252-146-110.hsd1.ca.comcast.net. [73.252.146.110])
-        by smtp.gmail.com with ESMTPSA id a128sm3901431pfb.195.2020.11.11.15.23.44
+        by smtp.gmail.com with ESMTPSA id a128sm3901431pfb.195.2020.11.11.15.23.46
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 Nov 2020 15:23:45 -0800 (PST)
+        Wed, 11 Nov 2020 15:23:47 -0800 (PST)
 From:   rentao.bupt@gmail.com
 To:     Rob Herring <robh+dt@kernel.org>, Joel Stanley <joel@jms.id.au>,
         Andrew Jeffery <andrew@aj.id.au>, devicetree@vger.kernel.org,
@@ -53,44 +54,151 @@ To:     Rob Herring <robh+dt@kernel.org>, Joel Stanley <joel@jms.id.au>,
         linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org,
         openbmc@lists.ozlabs.org, taoren@fb.com
 Cc:     Tao Ren <rentao.bupt@gmail.com>
-Subject: [PATCH 0/4] ARM: dts: aspeed: Add Facebook Galaxy100 BMC
-Date:   Wed, 11 Nov 2020 15:23:26 -0800
-Message-Id: <20201111232330.30843-1-rentao.bupt@gmail.com>
+Subject: [PATCH 1/4] ARM: dts: aspeed: Common dtsi for Facebook AST2400 Network BMCs
+Date:   Wed, 11 Nov 2020 15:23:27 -0800
+Message-Id: <20201111232330.30843-2-rentao.bupt@gmail.com>
 X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20201111232330.30843-1-rentao.bupt@gmail.com>
+References: <20201111232330.30843-1-rentao.bupt@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Tao Ren <rentao.bupt@gmail.com>
 
-The patch series adds the initial version of device tree for Facebook
-Galaxy100 (AST2400) BMC.
+This common descirption is included by all Facebook AST2400 Network BMC
+platforms to minimize duplicated device entries across Facebook Network
+BMC device trees.
 
-Patch #1 adds common dtsi to minimize duplicated device entries across
-Facebook Network AST2400 BMC device trees.
-
-Patch #2 simplfies Wedge40 device tree by using the common dtsi.
-
-Patch #3 simplfies Wedge100 device tree by using the common dtsi.
-
-Patch #4 adds the initial version of device tree for Facebook Galaxy100
-BMC.
-
-Tao Ren (4):
-  ARM: dts: aspeed: Common dtsi for Facebook AST2400 Network BMCs
-  ARM: dts: aspeed: wedge40: Use common dtsi
-  ARM: dts: aspeed: wedge100: Use common dtsi
-  ARM: dts: aspeed: Add Facebook Galaxy100 (AST2400) BMC
-
- arch/arm/boot/dts/Makefile                    |   1 +
- .../dts/aspeed-bmc-facebook-galaxy100.dts     |  57 +++++++++
- .../boot/dts/aspeed-bmc-facebook-wedge100.dts | 120 +++---------------
- .../boot/dts/aspeed-bmc-facebook-wedge40.dts  | 112 +---------------
- .../dts/ast2400-facebook-netbmc-common.dtsi   | 117 +++++++++++++++++
- 5 files changed, 191 insertions(+), 216 deletions(-)
- create mode 100644 arch/arm/boot/dts/aspeed-bmc-facebook-galaxy100.dts
+Signed-off-by: Tao Ren <rentao.bupt@gmail.com>
+---
+ .../dts/ast2400-facebook-netbmc-common.dtsi   | 117 ++++++++++++++++++
+ 1 file changed, 117 insertions(+)
  create mode 100644 arch/arm/boot/dts/ast2400-facebook-netbmc-common.dtsi
 
+diff --git a/arch/arm/boot/dts/ast2400-facebook-netbmc-common.dtsi b/arch/arm/boot/dts/ast2400-facebook-netbmc-common.dtsi
+new file mode 100644
+index 000000000000..73a5503be78c
+--- /dev/null
++++ b/arch/arm/boot/dts/ast2400-facebook-netbmc-common.dtsi
+@@ -0,0 +1,117 @@
++// SPDX-License-Identifier: GPL-2.0+
++// Copyright (c) 2020 Facebook Inc.
++/dts-v1/;
++
++#include "aspeed-g4.dtsi"
++
++/ {
++	aliases {
++		/*
++		 * Override the default uart aliases to avoid breaking
++		 * the legacy applications.
++		 */
++		serial0 = &uart5;
++		serial1 = &uart1;
++		serial2 = &uart3;
++		serial3 = &uart4;
++	};
++
++	memory@40000000 {
++		reg = <0x40000000 0x20000000>;
++	};
++};
++
++&wdt1 {
++	status = "okay";
++	aspeed,reset-type = "system";
++};
++
++&fmc {
++	status = "okay";
++	flash@0 {
++		status = "okay";
++		m25p,fast-read;
++		label = "spi0.0";
++#include "facebook-bmc-flash-layout.dtsi"
++	};
++};
++
++&uart1 {
++	status = "okay";
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_txd1_default
++		     &pinctrl_rxd1_default>;
++};
++
++&uart3 {
++	status = "okay";
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_txd3_default
++		     &pinctrl_rxd3_default>;
++};
++
++&uart4 {
++	status = "okay";
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_txd4_default
++		     &pinctrl_rxd4_default
++		     &pinctrl_ndts4_default>;
++};
++
++&uart5 {
++	status = "okay";
++};
++
++&mac1 {
++	status = "okay";
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_rgmii2_default &pinctrl_mdio2_default>;
++};
++
++&i2c0 {
++	status = "okay";
++};
++
++&i2c1 {
++	status = "okay";
++};
++
++&i2c2 {
++	status = "okay";
++};
++
++&i2c3 {
++	status = "okay";
++};
++
++&i2c4 {
++	status = "okay";
++};
++
++&i2c5 {
++	status = "okay";
++};
++
++&i2c6 {
++	status = "okay";
++};
++
++&i2c7 {
++	status = "okay";
++};
++
++&i2c8 {
++	status = "okay";
++};
++
++&i2c11 {
++	status = "okay";
++};
++
++&i2c12 {
++	status = "okay";
++};
++
++&vhub {
++	status = "okay";
++};
 -- 
 2.17.1
 
