@@ -2,147 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 14DED2AFA92
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 22:37:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 23FD72AFA94
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 22:37:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727134AbgKKVgT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 16:36:19 -0500
-Received: from mail-co1nam11on2071.outbound.protection.outlook.com ([40.107.220.71]:13633
-        "EHLO NAM11-CO1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725959AbgKKVgS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 16:36:18 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Cdp6pYWd91RiTOmA01ZgLnWYD2suGYIOBVq/u64LGOiJwbZmtM6qypvcjS3Lg+2pVFWbOdi0v6tIjZcsWwfwBKN6LEh/wT2GoNSvDEm7Yga41kmsxB4oQFh0aKmx+d24qje+kWC+fFmvOlc7TDryImdIGMEyzLGj06leatNYBR5OcJlZ/m2h+klXbgdRl0xjnr+4FlNeF+F+xSVpl2xGYrHEc6h7HNUE28Hf56q2SIeYXQXKnXJIHpwadi/IbPXLU1tD8d3cAipvbyjBqmuqVo42fs731NjsTc8ceMDUiPpOCvCWQ5zg/lueG1ypgveYl5v1jc4ifhnMigmDAoo/fA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=rqJwHCEmVZnpxtQr3Yn2jQOk8owns8XmwjiBoH3RPEg=;
- b=LreClDNE82fYVFmhLDIjbm0ind0OYX20389pOBeZZBpyZkMt8jKOy8uPT7c2ArWj2OnL7uxIB9zS4Fg9rSg2iB5bBGQKg8Oo3a8GC3q+gr4C6k2yAJtLSV58zjIGIW+BUHMw9vgFKZ0bDmHlnCxPjRWIJJUFSIZDdRdcGTj13Ck8PrN/kE8WadxLhaf02Qx0VlVfINxEYRkeV0URT1JpnHLZv57fFZwvtNsoXOlZNoWSO8pP2UKcpsOmPem9GkKzKF23EDVKDBWgd3K+p8jcT+OrzSPGMboPNPjgekZdVbICf50wn4HD9Ho3RRTdGb7m0JXY6BbVTsMZHbgY77+AZQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
+        id S1727768AbgKKVgY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 16:36:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44222 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727238AbgKKVgY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Nov 2020 16:36:24 -0500
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EAF28C0613D1;
+        Wed, 11 Nov 2020 13:36:23 -0800 (PST)
+Received: by mail-pl1-x643.google.com with SMTP id s2so1650396plr.9;
+        Wed, 11 Nov 2020 13:36:23 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=rqJwHCEmVZnpxtQr3Yn2jQOk8owns8XmwjiBoH3RPEg=;
- b=G0HGo/HeUAEd2GteMnqBJS8YMwaWJ4CfM3LDbAkkt8JB0vHaNpIe+Oy0ucDRIX90Ct8HJ3I80zV2G544uuTLPXAzVSQMLVfJU9B/iWdr2j313gJ4LzTqZNSyhq57XDXpJgu57cuQLwCGjIYW5cUvdyyFhP9CM3OTS2LdD/Fpe4w=
-Authentication-Results: intel.com; dkim=none (message not signed)
- header.d=none;intel.com; dmarc=none action=none header.from=amd.com;
-Received: from SN1PR12MB2560.namprd12.prod.outlook.com (2603:10b6:802:26::19)
- by SN1PR12MB2462.namprd12.prod.outlook.com (2603:10b6:802:28::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3541.21; Wed, 11 Nov
- 2020 21:36:16 +0000
-Received: from SN1PR12MB2560.namprd12.prod.outlook.com
- ([fe80::d877:baf6:9425:ece]) by SN1PR12MB2560.namprd12.prod.outlook.com
- ([fe80::d877:baf6:9425:ece%3]) with mapi id 15.20.3541.025; Wed, 11 Nov 2020
- 21:36:16 +0000
-Subject: RE: [PATCH v3 0/2] KVM: SVM: Create separate vmcbs for L1 and L2
-To:     Cathy Avery <cavery@redhat.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "pbonzini@redhat.com" <pbonzini@redhat.com>
-Cc:     "vkuznets@redhat.com" <vkuznets@redhat.com>,
-        "Huang2, Wei" <Wei.Huang2@amd.com>,
-        "mlevitsk@redhat.com" <mlevitsk@redhat.com>,
-        "sean.j.christopherson@intel.com" <sean.j.christopherson@intel.com>
-References: <20201026174222.21811-1-cavery@redhat.com>
-From:   Babu Moger <babu.moger@amd.com>
-Message-ID: <75b85cc7-96d9-eab9-9748-715ed951034d@amd.com>
-Date:   Wed, 11 Nov 2020 15:35:49 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-In-Reply-To: <20201026174222.21811-1-cavery@redhat.com>
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [165.204.77.1]
-X-ClientProxiedBy: DM3PR12CA0074.namprd12.prod.outlook.com
- (2603:10b6:0:57::18) To SN1PR12MB2560.namprd12.prod.outlook.com
- (2603:10b6:802:26::19)
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=TuIWEKHfoc1+Oar3jiYPK/6gE0dULFhfw6x7KSeby7M=;
+        b=Gtx0/j3xLAcFbBKJlW4/LZoLu2SoY7QK8+mzI5+o1q8Ci1cfpGqd97LDcn7fbBAAK3
+         W8ktagV7asRNm5FlxZcN0SL+kapEXQWNR7JimsO4LKXYmovhznPn0KXaMS50Osztudch
+         44U/LqZyjbJSiyXGngnQLiihQ8lD3pX97HXYuNdbTkagtwCLy4MIyp5UP1aJuw2UVGfz
+         fxm6ZhjUvnJXgseiNN1PINleLqTAeipfg8yUw9fv81fpl1luD6TtVy1NkcNmAFTPxoj2
+         dQ7e14bT0r/U+M6QMldeghKmCziHZUztFwkkx4Gf7TQNw03sC7Ka8clh8SCTSKLck1bp
+         5L0w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=TuIWEKHfoc1+Oar3jiYPK/6gE0dULFhfw6x7KSeby7M=;
+        b=JMaL+0XMufgV31u3INYFIWGNSx/Kyb+nlpYegLb0FbhLDQYk/r5ERv5UGq+d8WPgwk
+         ojIFoj4y5DGRWrs/v9MNXVsl6aJGdHP7muLuXHoEFvQn22SgNvqdrxYOQyBVH9UeoqfQ
+         NDyO8LTZRO988b/EwwKN5fERT3WtDY/BzqutRzGumC4THs5dm9AQ0EtNOW5l7PRalIJA
+         4LgAOOdFxfbKDy7FcsGlaA2A++VC/hMVxMVwFGZ8z2ST5RiABRjMf9uCIjcScY8ZG5IE
+         gcHN8IH1vRcgl7FLX15aKWC9M6tg3ayjFuyXNXRNyBTsJRiadnGyuJu5gAktWYwnc2CF
+         B+1g==
+X-Gm-Message-State: AOAM5325OrX7QZyawCd87Zyxprk/kI43k/tIaTVpzXVAa+ZvHskp4vjH
+        aRBdcfnApvV9aAg+Ctho0uHWMFD+R/Q=
+X-Google-Smtp-Source: ABdhPJx5qhVnEGEEPCngW/VXN0kg4ISOHnIhlJ0rW8GF+wT45bUM8cKAyXfGl89s+spifyKa8BKA7Q==
+X-Received: by 2002:a17:902:82c3:b029:d6:c377:c87d with SMTP id u3-20020a17090282c3b02900d6c377c87dmr22639481plz.37.1605130583538;
+        Wed, 11 Nov 2020 13:36:23 -0800 (PST)
+Received: from shane-XPS-13-9380.hsd1.ca.comcast.net ([2601:646:8800:1c00:b2ab:a08f:30f:70b8])
+        by smtp.gmail.com with ESMTPSA id b29sm3747792pff.194.2020.11.11.13.36.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 11 Nov 2020 13:36:22 -0800 (PST)
+From:   Xie He <xie.he.0141@gmail.com>
+To:     Jakub Kicinski <kuba@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Martin Schiller <ms@dev.tdt.de>
+Cc:     Xie He <xie.he.0141@gmail.com>,
+        Andrew Hendry <andrew.hendry@gmail.com>
+Subject: [PATCH net-next RFC] MAINTAINERS: Add Martin Schiller as a maintainer for the X.25 stack
+Date:   Wed, 11 Nov 2020 13:36:08 -0800
+Message-Id: <20201111213608.27846-1-xie.he.0141@gmail.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [10.236.31.136] (165.204.77.1) by DM3PR12CA0074.namprd12.prod.outlook.com (2603:10b6:0:57::18) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3541.21 via Frontend Transport; Wed, 11 Nov 2020 21:36:15 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: c88fc693-b791-4638-83b3-08d88689d1ca
-X-MS-TrafficTypeDiagnostic: SN1PR12MB2462:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <SN1PR12MB2462C1556BD149094AF8FC5395E80@SN1PR12MB2462.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Q7PBpv1M6rL4F9j+/8rxOU+do0FejtfbNXz/XBOr7CbzvjgJlk2bYBhZAjXi1BdvAjxe8tKBT0gTYZb+FZiJe/192YjM+MBDl9k3Z0zveb3z3bEnEjEZgEtx8l1lKxy2+ifQAa3ncUCoO8rw0blDme99oedeIx4MAYUUpj3qxVyfKJVyaoCwXNhLTqLOgWphVUOzvI1F1NZDpkFAPhiOhzhe4h6qoBfnBQkI00OKGv5IPTb7mW4pHNRG7ImK6SJyQ+Tx3nlwHNkVTbYaptSV4joMJFrizZRhD5nDhqKOEE0XJDRw/i3Kgt7fqqW/2Hv6pdyYivSlqnqYf+9YoXYwGIypgLha/YRAoGUnX40NQJV5iWRtonvjOH/+dtfc2vEBlZss8/r4AEVcWbjypsIuQDmbkT2c8paEW3omjuFWBfsJHO4vS0aToTuwTUHTEeNxYQDPsE2oUA6rMajN08cgDQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN1PR12MB2560.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(366004)(136003)(376002)(396003)(346002)(26005)(66946007)(66476007)(66556008)(6666004)(4326008)(44832011)(52116002)(8676002)(316002)(478600001)(53546011)(54906003)(16576012)(110136005)(86362001)(8936002)(956004)(16526019)(2906002)(5660300002)(2616005)(31686004)(36756003)(186003)(83380400001)(6486002)(31696002)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: lINqzttXy7T9yypWJ2vOIGZBXCeTxrsdimG5XTizTrVmKbAHq6mKSYGpHv7LagOPe6L8JNFCk61rOVN2mnNLxROMPeMmbT7Lpo9gMwgXe/AUiYOi/ZKq9+EpgUOgbW6Gxm2X68JQMvoccFZZ0m3sRTVZCUGHwYezKeF0ofAKQuSLL45L2Y+LEYZPp8SzStmHx5kVAWZWQgOB6zI0FmH3TioLgpws34QHubi8VBVdgmFYLViO2FWX1iL0no1n9y73E++eZCeAFMS/VB+55zKhrBwHefGJXQ0frhMfDZcM0QozFYFYAbJz9lm91e1e7yuaoWajtPMG8o+aZ+QNUXCOQClULzrqxunS4B71IXUl7i82BRuWLFYNOPT80q4HxK0eybtD66HKzOvSuuzoGzuL90Dj517hFRbUPUV22dMCn9ReYEaww5fkMHlHzDcOIk+NLHqa0zd3vKAbHBhRo8D35pNf3MhtvbWtig2zvxAlGl7G2p9kP9N5llJimBw+tpUhzOAnX5vDYNhKNvnro4MYN2crKHXYNzd/PH729NzGIr3YS5qFkYN7wbTAHmmXpNyvlxUiWyGTHKt96OloQ/teCdSNOSkWRpY8IyOn3NcbP1Zo/EO30xHSVWlEepAYVOWIXhw4cz53H6OAD1YJ8Ryu9w==
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: c88fc693-b791-4638-83b3-08d88689d1ca
-X-MS-Exchange-CrossTenant-AuthSource: SN1PR12MB2560.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Nov 2020 21:36:16.2586
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: HPfD1uFiHwyBx6/PARciJEAx2/bzpN0A8rOa8Xww3f1MSFarbImXBbkeKdRcUf7L
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN1PR12MB2462
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Cathy,
-I was going to test these patches. But it did not apply on my tree.
-Tried on kvm(https://git.kernel.org/pub/scm/virt/kvm/kvm.git) and
-Mainline
-(https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git). What
-is your base tree?
-thanks
-Babu
+Hi Martin Schiller, would you like to be a maintainer for the X.25 stack?
 
-> -----Original Message-----
-> From: Cathy Avery <cavery@redhat.com>
-> Sent: Monday, October 26, 2020 12:42 PM
-> To: linux-kernel@vger.kernel.org; kvm@vger.kernel.org; pbonzini@redhat.com
-> Cc: vkuznets@redhat.com; Huang2, Wei <Wei.Huang2@amd.com>;
-> mlevitsk@redhat.com; sean.j.christopherson@intel.com
-> Subject: [PATCH v3 0/2] KVM: SVM: Create separate vmcbs for L1 and L2
-> 
-> svm->vmcb will now point to either a separate vmcb L1 ( not nested ) or L2 vmcb
-> ( nested ).
-> 
-> Changes:
-> v2 -> v3
->  - Added vmcb switching helper.
->  - svm_set_nested_state always forces to L1 before determining state
->    to set. This is more like vmx and covers any potential L2 to L2 nested state
-> switch.
->  - Moved svm->asid tracking to pre_svm_run and added ASID set dirty bit
->    checking.
-> 
-> v1 -> v2
->  - Removed unnecessary update check of L1 save.cr3 during nested_svm_vmexit.
->  - Moved vmcb01_pa to svm.
->  - Removed get_host_vmcb() function.
->  - Updated vmsave/vmload corresponding vmcb state during L2
->    enter and exit which fixed the L2 load issue.
->  - Moved asid workaround to a new patch which adds asid to svm.
->  - Init previously uninitialized L2 vmcb save.gpat and save.cr4
-> 
-> Tested:
-> kvm-unit-tests
-> kvm self tests
-> Loaded fedora nested guest on fedora
-> 
-> Cathy Avery (2):
->   KVM: SVM: Track asid from vcpu_svm
->   KVM: SVM: Use a separate vmcb for the nested L2 guest
-> 
->  arch/x86/kvm/svm/nested.c | 125 ++++++++++++++++++--------------------
->  arch/x86/kvm/svm/svm.c    |  58 +++++++++++-------
->  arch/x86/kvm/svm/svm.h    |  51 +++++-----------
->  3 files changed, 110 insertions(+), 124 deletions(-)
-> 
-> --
-> 2.20.1
+As we know the linux-x25 mail list has stopped working for a long time.
+Adding you as a maintainer may make you be Cc'd for new patches so that
+you can review them.
+
+The original maintainer of X.25 network layer (Andrew Hendry) has stopped
+sending emails to the netdev mail list since 2013. So there is practically
+no maintainer for X.25 code currently.
+
+Cc: Martin Schiller <ms@dev.tdt.de>
+Cc: Andrew Hendry <andrew.hendry@gmail.com>
+Signed-off-by: Xie He <xie.he.0141@gmail.com>
+---
+ MAINTAINERS | 20 ++++++++++----------
+ 1 file changed, 10 insertions(+), 10 deletions(-)
+
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 2a0fde12b650..9ebcb0708d5d 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -9832,13 +9832,6 @@ S:	Maintained
+ F:	arch/mips/lantiq
+ F:	drivers/soc/lantiq
+ 
+-LAPB module
+-L:	linux-x25@vger.kernel.org
+-S:	Orphan
+-F:	Documentation/networking/lapb-module.rst
+-F:	include/*/lapb.h
+-F:	net/lapb/
+-
+ LASI 53c700 driver for PARISC
+ M:	"James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>
+ L:	linux-scsi@vger.kernel.org
+@@ -18979,12 +18972,19 @@ L:	linux-kernel@vger.kernel.org
+ S:	Maintained
+ N:	axp[128]
+ 
+-X.25 NETWORK LAYER
+-M:	Andrew Hendry <andrew.hendry@gmail.com>
++X.25 STACK
++M:	Martin Schiller <ms@dev.tdt.de>
+ L:	linux-x25@vger.kernel.org
+-S:	Odd Fixes
++L:	netdev@vger.kernel.org
++S:	Maintained
++F:	Documentation/networking/lapb-module.txt
+ F:	Documentation/networking/x25*
++F:	drivers/net/wan/hdlc_x25.c
++F:	drivers/net/wan/lapbether.c
++F:	include/*/lapb.h
+ F:	include/net/x25*
++F:	include/uapi/linux/x25.h
++F:	net/lapb/
+ F:	net/x25/
+ 
+ X86 ARCHITECTURE (32-BIT AND 64-BIT)
+-- 
+2.27.0
 
