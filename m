@@ -2,51 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D31982AFC5D
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 02:35:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AC0942AFC60
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 02:36:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728894AbgKLBfe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 20:35:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60568 "EHLO
+        id S1728407AbgKLBfs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 20:35:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60674 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727898AbgKKXX4 (ORCPT
+        with ESMTP id S1727903AbgKKXYc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 18:23:56 -0500
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CDF5C0617A7;
-        Wed, 11 Nov 2020 15:23:50 -0800 (PST)
-Received: by mail-pg1-x543.google.com with SMTP id w4so2496221pgg.13;
-        Wed, 11 Nov 2020 15:23:50 -0800 (PST)
+        Wed, 11 Nov 2020 18:24:32 -0500
+Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8AA3CC061A04;
+        Wed, 11 Nov 2020 15:23:53 -0800 (PST)
+Received: by mail-pl1-x642.google.com with SMTP id b3so1766588pls.11;
+        Wed, 11 Nov 2020 15:23:53 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=N2LgTSKfWk09fHPTlpgxk+FWUKycAN1+sy73/0N+lpU=;
-        b=htAnRd+1Sh/deb/MzYSg8ZeA9XmDxI9jAdDA0mdVUSephAAcr+sk4XPbMu2XhoEz3Y
-         S/5IVFFvTCXKr3Ae2ZQ2oJlJxscC9MsoGvPhVpcIIFEvQksXXyUnR/5YBbr0A4lGgkM8
-         G3Kxj6WM1eucze+yfJK4gcL81WDbpUQDMl4gxQ+ll+Z2EARLhqzfwE03w2DxDNQ3my6h
-         6/cXJ3qBl08htrN7k2u41QkoXF6cfpVnr696bc1Vgev09HckSFKMVV+8QI4+UJMYSCUL
-         FAjZMgLMCQbzSbHShqrAoyjJ/r3wUcBJm6CVZiVp8tBmFkA27wUpNdX1BHxs18COVb6A
-         jDtA==
+        bh=MW5X8Ll2JhETf4+ug/bVFsXNI7M19MuHlME7/bl5UmU=;
+        b=XNDDuBEQWCdL7ehrCtLL9MwLE0+4qdUXIXWOdwLPALUgwiTmzHC6e+cBPJ0SYsJ9wO
+         iZREhUmjxK2KZ+YOYwtOFLWwpKHjkAtDdXdDniQyrTFYbasEU0nd4WjnrpTnzdOPNcjy
+         h6ZPQ/FRMloM7Pxt6JRsVK2JWJWUE9InUYw/5+jCIWMmfU48Qt6u86FGlyPEqpfg/BQo
+         j0qJnzHOeosNN73wMOZjrXqXQBgp34zU3Tk+VdjMZIsysDNjJ5wMky5Onx3k5m1hFU+i
+         OltNoE7k0n90eB7m62oLeT2GEsSUq0Xw+PeQJrrN6TooOD0QSC9U9dnOpXReyKjJUBsd
+         JGZg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=N2LgTSKfWk09fHPTlpgxk+FWUKycAN1+sy73/0N+lpU=;
-        b=HqFyQ6j7QN3tg8CMANlJYPulC3Z4LE84ZNdAPvJf9owTlh+xWUS7z8XzQShv+oaVUj
-         cQqA+TIGFBckDrum/lIqSYXpubR+5BW1E8+0S2zEGU094sElH4WxW8PupTqBh1UVXVHM
-         Jb/JyJj+r3sVfnG4/mPvvJj0MC87EEiPUEjcluubfFAIWx8ydrk0Ko4AcPTli6zKZ/fo
-         KzYclmUdrKXVdEFrC9g2sGOTEt/YHqET2e2yaQMo27IEW9nw0SVCMAM63+kSYJTcyBc6
-         OxQ3T5WkMlB4KGm2rkMHc0BTeqTI4e/p4966N+Zx5uGAiRxpVysYu7v98FxvonhYQF4q
-         P3dw==
-X-Gm-Message-State: AOAM530Wn8YxyEkjLLKmSorUbJgtqs36m7eVoEp4KZzDwLxojQWvXbb9
-        MYmctDe9e+C4kj1MwfQjkh8=
-X-Google-Smtp-Source: ABdhPJwv6OQ30nQ97SFeBeF3qKT8VGyjMlYPqqYu2bKPk/BTa4gv+G14hGPvZVJb410AHvWRB2bfTg==
-X-Received: by 2002:a17:90a:c693:: with SMTP id n19mr6296334pjt.69.1605137030062;
-        Wed, 11 Nov 2020 15:23:50 -0800 (PST)
+        bh=MW5X8Ll2JhETf4+ug/bVFsXNI7M19MuHlME7/bl5UmU=;
+        b=nShnjnwTrNisg3DTi0CzZMeu9qDz6mUaOnTM0LMwp+ZfzsiH1tlQ9BLQQlhlJaEoxH
+         hK12vjSWT1HrFEIjCGjMoCjm1w0g5pvVSrRQFs7glSCks2NnnWSy7CLVh8TtdEsrlx0E
+         ZVPqtTdBol73ZPeP+HAbmseO0+t+GH1tg5FCi8J4y3jNHOl1OSqK8zz13j4x8iJ+K5/U
+         EMOwJSHxD25CB+OxhrFZfWzk6qnkXDrwti/SYwV86VMLyqDiH0F3GjIz6wuqGKSV8hnu
+         Ggq6oL9JqbXy9YEb1GdGos454y9aTKcr2MUK1DoBkF88F7i8HJcoFK01KL3YslJGrKE0
+         mB4A==
+X-Gm-Message-State: AOAM5326JbigWkf9AtQbNyqSM7xaFI6xBozth2P958wjyxX87m12VgX5
+        cOcH+Z3U93x/qWRgDkpVN+o=
+X-Google-Smtp-Source: ABdhPJyGqjMWGPlLfIn0X4jMQxKAX1+rKJqgTIjpJUpE+FnEIxMy7E2037uO5ew8oEfGzGFL6YWlSw==
+X-Received: by 2002:a17:902:7402:b029:d6:8558:7920 with SMTP id g2-20020a1709027402b02900d685587920mr22805813pll.8.1605137032352;
+        Wed, 11 Nov 2020 15:23:52 -0800 (PST)
 Received: from taoren-ubuntu-R90MNF91.thefacebook.com (c-73-252-146-110.hsd1.ca.comcast.net. [73.252.146.110])
-        by smtp.gmail.com with ESMTPSA id a128sm3901431pfb.195.2020.11.11.15.23.48
+        by smtp.gmail.com with ESMTPSA id a128sm3901431pfb.195.2020.11.11.15.23.50
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 Nov 2020 15:23:49 -0800 (PST)
+        Wed, 11 Nov 2020 15:23:51 -0800 (PST)
 From:   rentao.bupt@gmail.com
 To:     Rob Herring <robh+dt@kernel.org>, Joel Stanley <joel@jms.id.au>,
         Andrew Jeffery <andrew@aj.id.au>, devicetree@vger.kernel.org,
@@ -54,9 +54,9 @@ To:     Rob Herring <robh+dt@kernel.org>, Joel Stanley <joel@jms.id.au>,
         linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org,
         openbmc@lists.ozlabs.org, taoren@fb.com
 Cc:     Tao Ren <rentao.bupt@gmail.com>
-Subject: [PATCH 2/4] ARM: dts: aspeed: wedge40: Use common dtsi
-Date:   Wed, 11 Nov 2020 15:23:28 -0800
-Message-Id: <20201111232330.30843-3-rentao.bupt@gmail.com>
+Subject: [PATCH 3/4] ARM: dts: aspeed: wedge100: Use common dtsi
+Date:   Wed, 11 Nov 2020 15:23:29 -0800
+Message-Id: <20201111232330.30843-4-rentao.bupt@gmail.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20201111232330.30843-1-rentao.bupt@gmail.com>
 References: <20201111232330.30843-1-rentao.bupt@gmail.com>
@@ -66,18 +66,21 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Tao Ren <rentao.bupt@gmail.com>
 
-Simplify the Wedge40 device tree by using the common dtsi.
+Simplify the Wedge100 device tree by using the common dtsi.
+
+In addition this enables the second firmware flash, and turns on the
+"i2c-mux-idle-disconnect" flag for I2C switch 7-0070.
 
 Signed-off-by: Tao Ren <rentao.bupt@gmail.com>
 ---
- .../boot/dts/aspeed-bmc-facebook-wedge40.dts  | 112 +-----------------
- 1 file changed, 1 insertion(+), 111 deletions(-)
+ .../boot/dts/aspeed-bmc-facebook-wedge100.dts | 120 +++---------------
+ 1 file changed, 15 insertions(+), 105 deletions(-)
 
-diff --git a/arch/arm/boot/dts/aspeed-bmc-facebook-wedge40.dts b/arch/arm/boot/dts/aspeed-bmc-facebook-wedge40.dts
-index 8c426ba2f8ab..2dcfeae3c92a 100644
---- a/arch/arm/boot/dts/aspeed-bmc-facebook-wedge40.dts
-+++ b/arch/arm/boot/dts/aspeed-bmc-facebook-wedge40.dts
-@@ -2,137 +2,27 @@
+diff --git a/arch/arm/boot/dts/aspeed-bmc-facebook-wedge100.dts b/arch/arm/boot/dts/aspeed-bmc-facebook-wedge100.dts
+index 322587b7b67d..39c6be91d53f 100644
+--- a/arch/arm/boot/dts/aspeed-bmc-facebook-wedge100.dts
++++ b/arch/arm/boot/dts/aspeed-bmc-facebook-wedge100.dts
+@@ -2,36 +2,16 @@
  // Copyright (c) 2018 Facebook Inc.
  /dts-v1/;
  
@@ -85,8 +88,8 @@ index 8c426ba2f8ab..2dcfeae3c92a 100644
 +#include "ast2400-facebook-netbmc-common.dtsi"
  
  / {
- 	model = "Facebook Wedge 40 BMC";
- 	compatible = "facebook,wedge40-bmc", "aspeed,ast2400";
+ 	model = "Facebook Wedge 100 BMC";
+ 	compatible = "facebook,wedge100-bmc", "aspeed,ast2400";
  
 -	aliases {
 -		/*
@@ -103,36 +106,44 @@ index 8c426ba2f8ab..2dcfeae3c92a 100644
  		stdout-path = &uart3;
  		bootargs = "console=ttyS2,9600n8 root=/dev/ram rw";
  	};
- 
+-
 -	memory@40000000 {
 -		reg = <0x40000000 0x20000000>;
 -	};
+-};
 -
- 	ast-adc-hwmon {
- 		compatible = "iio-hwmon";
- 		io-channels = <&adc 5>, <&adc 6>, <&adc 7>, <&adc 8>, <&adc 9>;
- 	};
- };
- 
 -&wdt1 {
 -	status = "okay";
 -	aspeed,reset-type = "system";
--};
--
- &wdt2 {
- 	status = "disabled";
  };
  
--&fmc {
+ &wdt2 {
+@@ -40,108 +20,38 @@
+ };
+ 
+ &fmc {
 -	status = "okay";
 -	flash@0 {
--		status = "okay";
--		m25p,fast-read;
--		label = "spi0.0";
++	flash@1 {
+ 		status = "okay";
+ 		m25p,fast-read;
+-		label = "fmc0";
 -#include "facebook-bmc-flash-layout.dtsi"
--	};
--};
--
++		label = "spi0.1";
++
++		partitions {
++			compatible = "fixed-partitions";
++			#address-cells = <1>;
++			#size-cells = <1>;
++
++			flash1@0 {
++				reg = <0x0 0x2000000>;
++				label = "flash1";
++			};
++		};
+ 	};
+ };
+ 
 -&uart1 {
 -	status = "okay";
 -	pinctrl-names = "default";
@@ -151,8 +162,7 @@ index 8c426ba2f8ab..2dcfeae3c92a 100644
 -	status = "okay";
 -	pinctrl-names = "default";
 -	pinctrl-0 = <&pinctrl_txd4_default
--		     &pinctrl_rxd4_default
--		     &pinctrl_ndts4_default>;
+-		     &pinctrl_rxd4_default>;
 -};
 -
 -&uart5 {
@@ -193,11 +203,27 @@ index 8c426ba2f8ab..2dcfeae3c92a 100644
 -	status = "okay";
 -};
 -
--&i2c7 {
+ &i2c7 {
+-	status = "okay";
+-
+ 	i2c-switch@70 {
+ 		compatible = "nxp,pca9548";
+ 		#address-cells = <1>;
+ 		#size-cells = <0>;
+ 		reg = <0x70>;
++		i2c-mux-idle-disconnect;
+ 	};
+ };
+ 
+-&i2c8 {
 -	status = "okay";
 -};
 -
--&i2c8 {
+ &i2c9 {
+ 	status = "okay";
+ };
+ 
+-&i2c10 {
 -	status = "okay";
 -};
 -
@@ -209,13 +235,12 @@ index 8c426ba2f8ab..2dcfeae3c92a 100644
 -	status = "okay";
 -};
 -
--&vhub {
+-&i2c13 {
 -	status = "okay";
 -};
--
- &adc {
+ 
+ &vhub {
  	status = "okay";
- };
 -- 
 2.17.1
 
