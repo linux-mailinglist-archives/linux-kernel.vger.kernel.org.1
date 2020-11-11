@@ -2,118 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84AC82AF982
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 21:07:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D1012AF987
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 21:09:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726101AbgKKUHl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 15:07:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58760 "EHLO
+        id S1726146AbgKKUJ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 15:09:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59030 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725860AbgKKUHk (ORCPT
+        with ESMTP id S1725860AbgKKUJ2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 15:07:40 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE69DC0613D1
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 12:07:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=2ST2r5WnetY2RquWgw15GPzxl3IPqx3s4bHU/aEd59M=; b=D5/Uyz2z/qPyuGRyI1Aq6cufhu
-        2hu1GI91+9tgYH6JdDAztmurVzGWG6Xf67QrUwhqgZxDGksVYil4SYzfbU4MSx4WDXFxV3D0dQS4D
-        wnqwSQwKTLDceSADGBGCl1fPtHoZqDiJrjx6P7esTJ432prqlc281UsiEoxZLp+K6RD5jYBB/5KF6
-        /636p9QnhED5rTd2oUDo8SN50Bgb1RRsIovaXIVGOGBMBx8Wg37JZd25VsG81nZwmojcmUyAQ1XEj
-        1/eEbiPZTZT8feF95cjMJQS21myF2YXWxDJDJ0B1Z+7JBQr7GdITa5RLVLgDwgqi/yLCqPIvATh4S
-        zJcCowdA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kcwOx-00068J-LL; Wed, 11 Nov 2020 20:07:32 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 055CA301324;
-        Wed, 11 Nov 2020 21:07:30 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id DCA0B2BCE933C; Wed, 11 Nov 2020 21:07:30 +0100 (CET)
-Date:   Wed, 11 Nov 2020 21:07:30 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Josh Poimboeuf <jpoimboe@redhat.com>
-Cc:     Andrew Cooper <andrew.cooper3@citrix.com>,
-        Shinichiro Kawasaki <shinichiro.kawasaki@wdc.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Damien Le Moal <Damien.LeMoal@wdc.com>, jgross@suse.com,
-        x86@kernel.org
-Subject: Re: WARNING: can't access registers at asm_common_interrupt
-Message-ID: <20201111200730.GM2628@hirez.programming.kicks-ass.net>
-References: <20201106060414.edtcb7nrbzm4a32t@shindev.dhcp.fujisawa.hgst.com>
- <20201111170536.arx2zbn4ngvjoov7@treble>
- <20201111174736.GH2628@hirez.programming.kicks-ass.net>
- <20201111181328.mbxcz2uap2vnqpxq@treble>
- <33843b7f-ed8a-8fcb-19bc-c76cf00f453d@citrix.com>
- <20201111194206.GK2628@hirez.programming.kicks-ass.net>
- <20201111195900.2x7kfce2ejkmrzi3@treble>
+        Wed, 11 Nov 2020 15:09:28 -0500
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C880AC0613D1;
+        Wed, 11 Nov 2020 12:09:26 -0800 (PST)
+Received: by mail-wr1-x443.google.com with SMTP id s8so3722822wrw.10;
+        Wed, 11 Nov 2020 12:09:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=Xiuab5loLiZQ4GVsxMBNthWxs97cvVYwFd3nDnMmqgk=;
+        b=D9VOymny/GjO8Dta8qvkdEajDwH/kAlYUet+sY+pJRvP44LyaiB1GaUWTzi6PLKk/F
+         FDgaAX+suXosQlbCO3mUYREqIYeE5uD4joYzCygSLtCmoiRX7mfSbxXnUsSq2DpHdPEz
+         GCQG1YhrqumW+DemUqN6pP7b7Rux1vFdyPk9FSVr7LhFYbWo3eNe0ZYZR1enxdRdW740
+         0dCPAYzeKOh3N6V7MsgPP0gqT311Sxx/R/XaZGodW3unmrq55ymQiMbflgbNLajHH2I3
+         IaNeHbyE5IY0iCThcA5s0XhstJfkt8KV23wA9bfXHriHju3mXzBm6A4HUSSz8wzj8QwU
+         uDpA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=Xiuab5loLiZQ4GVsxMBNthWxs97cvVYwFd3nDnMmqgk=;
+        b=bwavL6xW8ZOzq2biYN/AvEhfir20Nz2pbjQriKvlu73dvIAKOtkUQ/faWekxYz4kyv
+         WoYYxom0pm0TLVhSqC92W1lDPwrdtlH8IGcQBLYy/gSkKTwiwVtglimHBb/KfOG8uqCq
+         0z07SoxDujnLRGR3rGzxDEeCzZZARw9dsg45x96jOXzVQPJIqpfeL8ndH+qm4sdIkPNK
+         7yp7jk+SHVJjGNMRAeTew4klQaUGurJA81OPYoTX+0V2sb73oMH4DvzNaxhTDtTTiqp9
+         bi3mjbteE2JbP5+LeaQxB1hibMO92+DMjX/yutSiWP5R/2W6bgJjVho+dGXSPgtH2cgu
+         bijQ==
+X-Gm-Message-State: AOAM532wkITg5u4qb1v2Rn76Mwu4nW3t8zjmd9xnnNj7vqqWTF7x7IeS
+        ZiCSkIAHMNkc2njUdM1750Q=
+X-Google-Smtp-Source: ABdhPJwq7FKsezH6nXrx4aFnOFjKW00DQEGCftsmVgeTppuOgRzBDAUh7nSqZ2c7kErtOPbBgcBIMw==
+X-Received: by 2002:adf:eb08:: with SMTP id s8mr33448589wrn.12.1605125365553;
+        Wed, 11 Nov 2020 12:09:25 -0800 (PST)
+Received: from localhost ([217.111.27.204])
+        by smtp.gmail.com with ESMTPSA id y16sm3356603wrt.25.2020.11.11.12.09.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 11 Nov 2020 12:09:24 -0800 (PST)
+Date:   Wed, 11 Nov 2020 21:09:22 +0100
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     Alexandre Belloni <alexandre.belloni@bootlin.com>
+Cc:     Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        linux-pwm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 0/4] pwm: atmel-tcb: rework device tree binding
+Message-ID: <20201111200922.GI6125@ulmo>
+References: <20201030183658.1007395-1-alexandre.belloni@bootlin.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="fmvA4kSBHQVZhkR6"
 Content-Disposition: inline
-In-Reply-To: <20201111195900.2x7kfce2ejkmrzi3@treble>
+In-Reply-To: <20201030183658.1007395-1-alexandre.belloni@bootlin.com>
+User-Agent: Mutt/1.14.7 (2020-08-29)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 11, 2020 at 01:59:00PM -0600, Josh Poimboeuf wrote:
-> On Wed, Nov 11, 2020 at 08:42:06PM +0100, Peter Zijlstra wrote:
-> > > Would objtool have an easier time coping if this were implemented in
-> > > terms of a static call?
-> > 
-> > I doubt it, the big problem is that there is no visibility into the
-> > actual alternative text. Runtime patching fragments into static call
-> > would have the exact same problem.
-> > 
-> > Something that _might_ maybe work is trying to morph the immediate
-> > fragments into an alternative. That is, instead of this:
-> > 
-> > static inline notrace unsigned long arch_local_save_flags(void)
-> > {
-> > 	return PVOP_CALLEE0(unsigned long, irq.save_fl);
-> > }
-> > 
-> > Write it something like:
-> > 
-> > static inline notrace unsigned long arch_local_save_flags(void)
-> > {
-> > 	PVOP_CALL_ARGS;
-> > 	PVOP_TEST_NULL(irq.save_fl);
-> > 	asm_inline volatile(ALTERNATIVE(paravirt_alt(PARAVIRT_CALL),
-> > 					"PUSHF; POP _ASM_AX",
-> > 					X86_FEATURE_NATIVE)
-> > 			    : CLBR_RET_REG, ASM_CALL_CONSTRAINT
-> > 			    : paravirt_type(irq.save_fl.func),
-> > 			      paravirt_clobber(PVOP_CALLEE_CLOBBERS)
-> > 			    : "memory", "cc");
-> > 	return __eax;
-> > }
-> > 
-> > And then we have to teach objtool how to deal with conflicting
-> > alternatives...
-> > 
-> > That would remove most (all, if we can figure out a form that deals with
-> > the spinlock fragments) of paravirt_patch.c
-> > 
-> > Hmm?
-> 
-> I was going to suggest something similar.  Though I would try to take it
-> further and replace paravirt_patch_default() with static calls.
 
-Possible, we just need to be _really_ careful to not allow changing
-those static_call()s. So maybe we need DEFINE_STATIC_CALL_RO() which
-does a __ro_after_init on the whole thing.
+--fmvA4kSBHQVZhkR6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> Either way it doesn't make objtool's job much easier.  But it would be
-> nice to consolidate runtime patching mechanisms and get rid of
-> .parainstructions.
+On Fri, Oct 30, 2020 at 07:36:54PM +0100, Alexandre Belloni wrote:
+> Hello,
+>=20
+> This was sent as part of a 58 patches series back in 2017. The bindings
+> were agreed upon back then:
+>=20
+> https://lore.kernel.org/linux-arm-kernel/20170607211752.avts3cofvac7ks3q@=
+rob-hp-laptop/
+>=20
+> There is still only one user of atmel,tcb-pwm in the tree and I still
+> think it is worth doing that change now.
+>=20
+> The various dependencies are now in v5.9-rc1 so it is ready to be
+> applied.
+>=20
+> I have another series removing atmel_tclib once this is applied.
+>=20
+> Changes in v2:
+>  - rework binding commit message
+>  - use enum for the pwm node reg values
+>=20
+> Alexandre Belloni (4):
+>   dt-bindings: microchip: atmel,at91rm9200-tcb: add atmel,tcb-pwm
+>   pwm: atmel-tcb: switch to new binding
+>   pwm: atmel-tcb: add sama5d2 support
+>   ARM: dts: at91: kizbox: switch to new pwm-atmel-tcb binding
+>=20
+>  .../devicetree/bindings/pwm/atmel-tcb-pwm.txt |  16 --
+>  .../soc/microchip/atmel,at91rm9200-tcb.yaml   |  34 ++-
+>  arch/arm/boot/dts/at91-kizbox.dts             |  45 ++-
+>  drivers/pwm/Kconfig                           |   3 +-
+>  drivers/pwm/pwm-atmel-tcb.c                   | 264 ++++++++++--------
+>  5 files changed, 220 insertions(+), 142 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/pwm/atmel-tcb-pwm.t=
+xt
 
-I think the above (combining alternative and paravirt/static_call) does
-make objtool's job easier, since then we at least have the actual
-alternative instructions available to inspect, or am I mis-understanding
-things?
+Patches 1-3 applied, thanks.
+
+Thierry
+
+--fmvA4kSBHQVZhkR6
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAl+sRPIACgkQ3SOs138+
+s6EjIRAAtR608Qmo8RQVZLEXLwAC8ZuqnunjrxJxrzNKdFQ4EzdOBXp7XHquYp6b
+w+NRvsDLrl7qTHJe39G/TzX187h0rGA944QKXuEpUoJUjN413xb6yQ24LKSdze+S
+YBTDxtiDi9MKEH0v+Q80l0QYQ71dg59IQmkbSEu922eLIDfwucYC5hEqLh8iylpT
+owt1X0xFE4g/cyX10SSvXveYZiQZQ9jDFRPpQY/HZFixHKSpHIiQP/c479qeh/Nq
+Bd7W16YgLZ59iyxFwvBfEBPu/jMRKAzo7r786hoBLdGwqajKMjSnoag/YaBKR/tR
+nqG604+SEoqtWz76UArW0cwNGgCZuCZ0HmEDgAXS5eRDjdWYRxaA068rDKLYmk6C
+K4chBp7kn51YL/xIGhzt8OBArsdWtJLxpzCG3NmbUg9wM9oMtSlqju12fXtvTgBi
+uYgHtWStTD5EUd0r1w7VsJ989FDXn6CYE5xaN9vrcP1nhbxcmWkUUtXeEpHAdMb8
+Ng2oz+PqSuT6aNZp4oY0fT1ErFvSA+pNkh1Ek1NSSyjSnJIUuV1y45O+Nm7pBYnK
+wHphDrErPVqNTi2y6UmItE/r6D3+7ranz7lNXOwAsPx7h+cnjgT3a7W8f6B9/WVV
+BTe0P79UPgvQ+2VwAyfd4EWjs2CitUQNoJVFTGhD5QcVWV4hQv0=
+=xnU/
+-----END PGP SIGNATURE-----
+
+--fmvA4kSBHQVZhkR6--
