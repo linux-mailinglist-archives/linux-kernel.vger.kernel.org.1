@@ -2,140 +2,244 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF6EA2AF8B6
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 20:09:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 576D32AF8C7
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 20:15:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726204AbgKKTJH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 14:09:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49696 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725860AbgKKTJH (ORCPT
+        id S1726466AbgKKTPg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 14:15:36 -0500
+Received: from mail-ot1-f68.google.com ([209.85.210.68]:46004 "EHLO
+        mail-ot1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725949AbgKKTPd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 14:09:07 -0500
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13959C0613D1
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 11:09:07 -0800 (PST)
-Received: by mail-wm1-x343.google.com with SMTP id a3so3317804wmb.5
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 11:09:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=3pzzdEUXqdlUXkCITd16mcn7xREtcEGzt0MbcAZyF9Q=;
-        b=K4eTAtSNaW4ABsK0MqA/oBSfqpOpmAkKezax7uQfKZcTaJ+hBqs19gsrUKLp/FXRJU
-         O760l4QF+zosCex1gestm4r7y6yf0HghWKDx04bnNI5AmE6kUZndcQK/32kGLglEhy9j
-         MOeKPIC3K6zOl0SHsZuAIHhrp4aICC4GMFcLmsVHwq2AckJxCTfIv7KfGbCHP/tT0qFy
-         sE4RszEvcBgy+9xGmuo/ZBlTPaHin8FPDoZrrdBvdz4x6Wxq56YDXL2dCLP1pB06a4V4
-         lsZTH4rRG5hyHg3IXj05ISjFMgPt8Hg79+16grf2IsCFwJ4JJJSnYUjQ9oBXPSFISNSg
-         bQLQ==
+        Wed, 11 Nov 2020 14:15:33 -0500
+Received: by mail-ot1-f68.google.com with SMTP id k3so3156577otp.12;
+        Wed, 11 Nov 2020 11:15:32 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=3pzzdEUXqdlUXkCITd16mcn7xREtcEGzt0MbcAZyF9Q=;
-        b=Fgr2WPnGG22xiDZMBWyAmTgwiJrLjlZW3+6eTbriMDh0jMy5Hry3JLNqTkmRpiTNn2
-         gIDWjHA/Jz7SYOQXOUgctvqzVf3j+le3F1tYfApEAYAkKrCUB1u4/U3hisVFYuZ7c1hA
-         zV+k+B+EZqCie4g3aHC14cLd0OMuZ0b/I0sJVXdLCkyHEvDcSZzzzrqzDKwtzGRHEtW2
-         zMgSAaHoovK6S4k/+n11Gr1lsKgyr4xnVP/Hu1khoxDstWT+soe3AD75ZMk4ow+D//Bg
-         7QMEtARzDxgl7Sg5oU9MZGARn2mVfnPocsRBsWlefodIpRpzXYZhSy5+RA5DzVpjWDx5
-         BQ5g==
-X-Gm-Message-State: AOAM532+xZKIAGahhoyuG5JjWgmCyRafNc8d/NjDFzuVJ23e/ZvIaJCg
-        P4BsSwSb/1pi53hnylfMb10uSg==
-X-Google-Smtp-Source: ABdhPJwS+C4LRdXb3iKiJxV4xKpwDFm//prTWZiywKw/Bpavh2WuyLygkDLjWVWENWJ3krNCPCfbMA==
-X-Received: by 2002:a1c:46c5:: with SMTP id t188mr5871850wma.68.1605121745575;
-        Wed, 11 Nov 2020 11:09:05 -0800 (PST)
-Received: from elver.google.com ([2a00:79e0:15:13:f693:9fff:fef4:2449])
-        by smtp.gmail.com with ESMTPSA id 130sm3739700wmd.18.2020.11.11.11.09.04
+         :mime-version:content-disposition:in-reply-to;
+        bh=8gKCHEvFzJANeCSj/Y9iNsSZFzZ8Qf0AqO8I6cBIIJE=;
+        b=H3/GE5aKxRh/ljtNXu3KAmLUJa6E/EZmV/M9VCJzLNv05o60n45qTFRDXjVEcZeRhM
+         rkUwW3UVI74RrDezaZrHeC1wTDDr01NBsT+ESUezMuGNvbnwDnFrrMu0AYiGYjZaFgqZ
+         VQ8EUjrIGOsMWhgDKSSu0EY4hAzeKR9epFssRz/gKnlggaaEEH7q0WDWH1WEWxKuBpMF
+         Qrx6BSLRrIR7BpJlJ3/x9WJqNs8U1iwJphkSYs6L9rNaMGssP5ZFR+J52bAK0r3WoPT0
+         fLdcroSGpi7eMgCxLCoFKAaRolR02boH0ST94RpS+NlFpL5pOWWmCfsses1DPQCqTcRF
+         97/g==
+X-Gm-Message-State: AOAM532ynhNucEbjXx8jnrBrHThk5AYAeXqKOtWQ6OxlyaBWh7I2H8Kq
+        NLB6c7ejPbaaO69nc7iLBg==
+X-Google-Smtp-Source: ABdhPJzC2WcNGxa3VvkHl8Hj3vaDJyYVrenKAKyMQ7gEegGH0RsScqxeETtYU2hIe3kc6mY8OKMi2A==
+X-Received: by 2002:a9d:d37:: with SMTP id 52mr17544349oti.326.1605122132280;
+        Wed, 11 Nov 2020 11:15:32 -0800 (PST)
+Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id i1sm700680ool.43.2020.11.11.11.15.31
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 Nov 2020 11:09:04 -0800 (PST)
-Date:   Wed, 11 Nov 2020 20:08:59 +0100
-From:   Marco Elver <elver@google.com>
-To:     Andrey Konovalov <andreyknvl@google.com>
-Cc:     Dmitry Vyukov <dvyukov@google.com>,
-        Alexander Potapenko <glider@google.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will.deacon@arm.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Evgenii Stepanov <eugenis@google.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Branislav Rankov <Branislav.Rankov@arm.com>,
-        Kevin Brodsky <kevin.brodsky@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        kasan-dev@googlegroups.com, linux-arm-kernel@lists.infradead.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 15/20] kasan: don't round_up too much
-Message-ID: <20201111190859.GQ517454@elver.google.com>
-References: <cover.1605046662.git.andreyknvl@google.com>
- <b11824e1cb87c75c4def2b3ac592abb409cebf82.1605046662.git.andreyknvl@google.com>
+        Wed, 11 Nov 2020 11:15:31 -0800 (PST)
+Received: (nullmailer pid 1856229 invoked by uid 1000);
+        Wed, 11 Nov 2020 19:15:30 -0000
+Date:   Wed, 11 Nov 2020 13:15:30 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Eugen Hristev <eugen.hristev@microchip.com>
+Cc:     linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        devicetree@vger.kernel.org, sakari.ailus@iki.fi,
+        laurent.pinchart@ideasonboard.com, jacopo@jmondi.org
+Subject: Re: [PATCH v4 1/3] dt-bindings: media: atmel: csi2dc: add bindings
+ for microchip csi2dc
+Message-ID: <20201111191530.GC1844086@bogus>
+References: <20201110151116.161260-1-eugen.hristev@microchip.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <b11824e1cb87c75c4def2b3ac592abb409cebf82.1605046662.git.andreyknvl@google.com>
-User-Agent: Mutt/1.14.6 (2020-07-11)
+In-Reply-To: <20201110151116.161260-1-eugen.hristev@microchip.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 10, 2020 at 11:20PM +0100, Andrey Konovalov wrote:
-> For hardware tag-based mode kasan_poison_memory() already rounds up the
-> size. Do the same for software modes and remove round_up() from the common
-> code.
+On Tue, Nov 10, 2020 at 05:11:14PM +0200, Eugen Hristev wrote:
+> Add bindings documentation for Microchip CSI2 Demultiplexer controller.
 > 
-> Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
-> Reviewed-by: Dmitry Vyukov <dvyukov@google.com>
-> Link: https://linux-review.googlesource.com/id/Ib397128fac6eba874008662b4964d65352db4aa4
+> CSI2DC is a demultiplexer from Synopsys IDI interface specification to
+> parallel interface connection or direct memory access.
+> 
+> Signed-off-by: Eugen Hristev <eugen.hristev@microchip.com>
 > ---
->  mm/kasan/common.c | 8 ++------
->  mm/kasan/shadow.c | 1 +
->  2 files changed, 3 insertions(+), 6 deletions(-)
+> Changes in v4:
+> - Removed property for inter-line-delay and for clock continuous/non-continuous
+> - Removed virtual channel by reg for second endpoint
+> 
+> Changes in v3:
+> - Removed some text from description, as it was explained in the schema
+> - fixed other things as per Rob's review
+> - moved some text inside the schema, like the clock description
+> 
+> Changes in v2:
+> - fixed warnings reported by dt_binding_check
+> 
+>  .../bindings/media/microchip,csi2dc.yaml      | 144 ++++++++++++++++++
+>  1 file changed, 144 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/media/microchip,csi2dc.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/media/microchip,csi2dc.yaml b/Documentation/devicetree/bindings/media/microchip,csi2dc.yaml
+> new file mode 100644
+> index 000000000000..967e8fefe363
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/media/microchip,csi2dc.yaml
+> @@ -0,0 +1,144 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/media/microchip,csi2dc.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Microchip CSI2 Demux Controller (CSI2DC)
+> +
+> +maintainers:
+> +  - Eugen Hristev <eugen.hristev@microchip.com>
+> +
+> +description:
+> +  CSI2DC - Camera Serial Interface 2 Demux Controller
+> +
+> +  CSI2DC is a hardware block that receives incoming data from an IDI interface
+> +  and filters packets based on their data type and virtual channel identifier,
+> +  then converts the byte stream into a cross clock domain to a pixel stream
+> +  to a parallel interface that can be read by a sensor controller.
+> +
+> +  CSI2DC provides two pipes, one video pipe and one data pipe. Video pipe
+> +  is connected to a sensor controller and the data pipe is accessible
+> +  as a DMA slave port to a DMA controller.
+> +
+> +  CSI2DC supports a single 'port' node as a source pad with Synopsys 32-bit
+> +  IDI interface. The connected endpoint must be a IDI interface compatible
+> +  device (like Synopsys CSI2HOST) , that can provide 32-bit IDI interface
+> +  connection as sink pad.
+> +  For media entity and endpoints please refer to the bindings defined in
+> +  Documentation/devicetree/bindings/media/video-interfaces.txt.
+> +  For Synopsys IDI interface please refer to
+> +  Documentation/devicetree/bindings/media/snps,dw-csi-plat.txt
+> +
+> +  CSI2DC supports one 'port' node as sink pad with parallel interface. This is
+> +  called video pipe.
+> +  This port has an 'endpoint' can then be used as a source pad for another
+> +  controller (next in pipeline).
+> +  Please refer to the bindings defined in
+> +  Documentation/devicetree/bindings/media/video-interfaces.txt.
+> +
+> +  CSI2DC also supports direct access to the data through AHB, via DMA channel,
+> +  called data pipe.
+> +  Because of this, the sink 'port' child node (second) is not mandatory.
+> +  If the sink 'port' child node is missing, only data pipe is available.
+> +
+> +properties:
+> +  compatible:
+> +    const: microchip,sama7g5-csi2dc
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  clocks:
+> +    maxItems: 2
+> +
+> +  clock-names:
+> +    description:
+> +      CSI2DC must have two clocks to function correctly. One clock is the
+> +      peripheral clock for the inside functionality of the hardware block.
+> +      This is named 'pclk'. The second clock must be the cross domain clock,
+> +      in which CSI2DC will perform clock crossing. This clock must be fed
+> +      by the next controller in pipeline, which usually is a sensor controller.
+> +      Normally this clock should be given by this sensor controller who
+> +      is also a clock source. This clock is named 'scck', sensor controller clock.
+> +    items:
+> +      - const: pclk
+> +      - const: scck
+> +
+> +  port@0:
 
-Reviewed-by: Marco Elver <elver@google.com>
+Put multiple 'port' nodes under a 'ports' node.
 
-> diff --git a/mm/kasan/common.c b/mm/kasan/common.c
-> index 60793f8695a8..69ab880abacc 100644
-> --- a/mm/kasan/common.c
-> +++ b/mm/kasan/common.c
-> @@ -218,9 +218,7 @@ void __kasan_unpoison_object_data(struct kmem_cache *cache, void *object)
->  
->  void __kasan_poison_object_data(struct kmem_cache *cache, void *object)
->  {
-> -	kasan_poison_memory(object,
-> -			round_up(cache->object_size, KASAN_GRANULE_SIZE),
-> -			KASAN_KMALLOC_REDZONE);
-> +	kasan_poison_memory(object, cache->object_size, KASAN_KMALLOC_REDZONE);
->  }
->  
->  /*
-> @@ -293,7 +291,6 @@ static bool ____kasan_slab_free(struct kmem_cache *cache, void *object,
->  {
->  	u8 tag;
->  	void *tagged_object;
-> -	unsigned long rounded_up_size;
->  
->  	tag = get_tag(object);
->  	tagged_object = object;
-> @@ -314,8 +311,7 @@ static bool ____kasan_slab_free(struct kmem_cache *cache, void *object,
->  		return true;
->  	}
->  
-> -	rounded_up_size = round_up(cache->object_size, KASAN_GRANULE_SIZE);
-> -	kasan_poison_memory(object, rounded_up_size, KASAN_KMALLOC_FREE);
-> +	kasan_poison_memory(object, cache->object_size, KASAN_KMALLOC_FREE);
->  
->  	if (!kasan_stack_collection_enabled())
->  		return false;
-> diff --git a/mm/kasan/shadow.c b/mm/kasan/shadow.c
-> index 8e4fa9157a0b..3f64c9ecbcc0 100644
-> --- a/mm/kasan/shadow.c
-> +++ b/mm/kasan/shadow.c
-> @@ -82,6 +82,7 @@ void kasan_poison_memory(const void *address, size_t size, u8 value)
->  	 * addresses to this function.
->  	 */
->  	address = kasan_reset_tag(address);
-> +	size = round_up(size, KASAN_GRANULE_SIZE);
->  
->  	shadow_start = kasan_mem_to_shadow(address);
->  	shadow_end = kasan_mem_to_shadow(address + size);
+> +    type: object
+> +    description:
+> +      Input port node, single endpoint describing the input pad.
+
+This:
+
+> +
+> +    properties:
+> +      reg:
+> +        const: 0
+> +
+> +      endpoint:
+> +        type: object
+> +
+> +        properties:
+> +          remote-endpoint: true
+> +
+> +        required:
+> +          - remote-endpoint
+> +
+> +        additionalProperties: false
+> +
+> +    additionalProperties: false
+
+...to here can be omitted.
+
+> +
+> +  port@1:
+> +    type: object
+> +    description:
+> +      Output port node, single endpoint, describing the output pad.
+> +
+> +    properties:
+> +      reg:
+> +        const: 1
+> +
+> +      endpoint:
+> +        type: object
+> +
+> +        properties:
+> +          remote-endpoint: true
+> +
+> +        required:
+> +          - remote-endpoint
+> +
+> +        additionalProperties: false
+> +
+> +    additionalProperties: false
+
+Same here.
+
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - clocks
+> +  - clock-names
+> +  - port@0
+> +
+> +examples:
+> +  - |
+> +    csi2dc@e1404000 {
+> +        compatible = "microchip,sama7g5-csi2dc";
+> +        #address-cells = <1>;
+> +        #size-cells = <0>;
+> +        reg = <0xe1404000 0x500>;
+> +        clocks = <&pclk>, <&scck>;
+> +        clock-names = "pclk", "scck";
+> +
+> +        port@0 {
+> +               reg = <0>; /* must be 0, first child port */
+> +               csi2dc_in: endpoint { /* input from IDI interface */
+> +                     remote-endpoint = <&csi2host_out>;
+> +               };
+> +        };
+> +
+> +        port@1 {
+> +                reg = <1>; /* must be 1, second child port */
+> +                csi2dc_out: endpoint {
+> +                        remote-endpoint = <&xisc_in>; /* output to sensor controller */
+> +                };
+> +        };
+> +    };
+> +
+> +...
 > -- 
-> 2.29.2.222.g5d2a92d10f8-goog
+> 2.25.1
 > 
