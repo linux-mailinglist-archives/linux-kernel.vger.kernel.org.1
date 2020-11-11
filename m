@@ -2,95 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB6C12AF7DD
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 19:27:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 34A472AF7E0
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 19:28:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726934AbgKKS1u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 13:27:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43226 "EHLO
+        id S1727387AbgKKS1z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 13:27:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43238 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725966AbgKKS1u (ORCPT
+        with ESMTP id S1727150AbgKKS1x (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 13:27:50 -0500
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C94ECC0613D1
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 10:27:49 -0800 (PST)
-Received: by mail-lj1-x241.google.com with SMTP id p12so3148826ljc.9
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 10:27:49 -0800 (PST)
+        Wed, 11 Nov 2020 13:27:53 -0500
+Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CC69C0617A6
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 10:27:52 -0800 (PST)
+Received: by mail-ej1-x642.google.com with SMTP id o9so4117011ejg.1
+        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 10:27:52 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
+        d=intel-com.20150623.gappssmtp.com; s=20150623;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=DrsyHZk/O2OEXnomf8HUKcJ85BnbH4b8YIUsPgfTs30=;
-        b=HORcm5/n0XcKL6tEHP+60AJWgd1xBEFxs9MUd5W9eya2U4cVjf4a8xGntNLBC2rlt+
-         QmyFAKOWD2uO7jb2+wuOcQMtVuzmQdzcT/XTwe7pd7TnS2csi4X7NNTBNul6GSOLiWZ/
-         ABUs8OCSWSE2FfVFbtGwS+x1FM4NOYyMVRhu0=
+        bh=PaIQwQ+15TEIyZyj8/aGmJs71bDkEvM66klWaC5vlLw=;
+        b=cnRi1TRg7jw+Q2T7s80k8pjxHp2E5efgzbSibQo+wp0XYHn6gCIhi3vNHWCxptg9Nz
+         jGfzwu0NWVsuKRnP9w2nD9AnEdmLkkVNSjB3vDpMYog/W0vHnXhUzJxwGm1XUaHJvDMt
+         a6AhEicgbyD1kVVvpqKJc4wSVXrHptK1B3U8WBilNceCSKVEhKmNjkUak68xGcMmygjV
+         9x3OdkxyOqZ5x4cTKB3QUXAn1XFPJaFLEg/1FRP021/QuMG89u9neAGRG5y0mAD9D2u9
+         mId9w4sM6GZFqJHiK0BfdgPyAvkCWLFrxs9XhsRj4XNwSEXWnbFndg8+Yes9F0MqPbpZ
+         3W0w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=DrsyHZk/O2OEXnomf8HUKcJ85BnbH4b8YIUsPgfTs30=;
-        b=sa3FaJ2n2soFnKJK0UE3ZvXgGePoCqabFLkgBq/escOMLaxdFIlApK5mZFJcHPHyJa
-         bIN89T3QIyk+hKLu+cF7nmbFnkY8u0K83KJ/584IQjAmQbyYvxcTA0o6Jxc9Z/EwijhM
-         IoA7DJQqSStsRwOhuPbmt8b4M0UU0w++8v8/tx3BBSxe+7UYFTmavE7bvHyKh6OEj8/Y
-         16VL9RW419FDZZToKlueH5hngxxveUkcaOsSjqO86+uQYlKGMxRiy7HkEFvUyqzYu+LO
-         oLnUKp+7he4iixyJqxT6XNnJeFhbX4jviac1obuYL5fDMBkATgezShgkBC1+d0pGCgZD
-         saLA==
-X-Gm-Message-State: AOAM531rToolYidgbtYIbwNGYuz+tcAPk0WaP/MWxxUAs79x7pUJbkbF
-        vTNT0wru8wTW+0kxOlDvYj942KtxLjpXWA==
-X-Google-Smtp-Source: ABdhPJwAy5mxh2Xa3oYleNGmGkmCDD6aJJ+xmNUOGZlKhdjCDIH7Om+SGyZXdyc71AntHu5U89rN5A==
-X-Received: by 2002:a2e:b536:: with SMTP id z22mr11383541ljm.177.1605119267808;
-        Wed, 11 Nov 2020 10:27:47 -0800 (PST)
-Received: from mail-lj1-f178.google.com (mail-lj1-f178.google.com. [209.85.208.178])
-        by smtp.gmail.com with ESMTPSA id k3sm292076lfd.245.2020.11.11.10.27.45
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 11 Nov 2020 10:27:46 -0800 (PST)
-Received: by mail-lj1-f178.google.com with SMTP id s9so3139047ljo.11
-        for <linux-kernel@vger.kernel.org>; Wed, 11 Nov 2020 10:27:45 -0800 (PST)
-X-Received: by 2002:a2e:8092:: with SMTP id i18mr10549600ljg.314.1605119265247;
- Wed, 11 Nov 2020 10:27:45 -0800 (PST)
+        bh=PaIQwQ+15TEIyZyj8/aGmJs71bDkEvM66klWaC5vlLw=;
+        b=czOwPs3crepXpJsy7jPvA1LlS7WfqgayGiHbaACaeFKuCkyYLdBhGFocFG2byK9hcG
+         unWZUFJ0zlkRwA5e6BxPqQrUvNlmzvPFUZPEHBCORmyedak+PXkV7oRZRS3MfN5lNZxx
+         H+lvUsOz0E44/T8q79lt0TY1ygP6NVwF1xTIQM6GnOY19GlczN381AhyB2w5nvb1b1QI
+         whEMgFdwgvhdAXy3XEL57z2uX2HV6CA2mLmLkCkwHpyz18SUHvpDrqwIQBbjyFnsW0FZ
+         OE8BJkF+MDZhRCfgSM1dXoBPIe+gno6OfNCYVlmDui0E0duji4fLBKsxNTJ+rVGxINO2
+         f4MQ==
+X-Gm-Message-State: AOAM530e3P1hUV2cdSb+cSYnfn3XfMNgkqoUAw8CAEXR0nTq+F3dyV4J
+        6brjH532NpkawTRYjUDtL4IBmLJ2Rlnj0OGDDml2sQ==
+X-Google-Smtp-Source: ABdhPJzROlVJ4lA34wzyb9HvHhqu0mRf5kwgVaNxyAE7k7nKG3aTa/QRqzTSgMFmoZ8jVa9/01KcLJhtrdpoiTDHIQg=
+X-Received: by 2002:a17:906:d92c:: with SMTP id rn12mr26103639ejb.472.1605119270879;
+ Wed, 11 Nov 2020 10:27:50 -0800 (PST)
 MIME-Version: 1.0
-References: <0-v4-908497cf359a+4782-gup_fork_jgg@nvidia.com>
-In-Reply-To: <0-v4-908497cf359a+4782-gup_fork_jgg@nvidia.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Wed, 11 Nov 2020 10:27:29 -0800
-X-Gmail-Original-Message-ID: <CAHk-=wizYDXb0Ej0JRdVJfguhGthmZMushJDT9MUezeX2jtvww@mail.gmail.com>
-Message-ID: <CAHk-=wizYDXb0Ej0JRdVJfguhGthmZMushJDT9MUezeX2jtvww@mail.gmail.com>
-Subject: Re: [PATCH v4 0/2] Add a seqcount between gup_fast and copy_page_range()
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Peter Xu <peterx@redhat.com>,
-        "Ahmed S. Darwish" <a.darwish@linutronix.de>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Hugh Dickins <hughd@google.com>, Jan Kara <jack@suse.cz>,
-        Jann Horn <jannh@google.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Kirill Shutemov <kirill@shutemov.name>,
-        Kirill Tkhai <ktkhai@virtuozzo.com>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        Linux-MM <linux-mm@kvack.org>, Michal Hocko <mhocko@suse.com>,
-        Oleg Nesterov <oleg@redhat.com>
+References: <20201111054356.793390-1-ben.widawsky@intel.com>
+ <20201111054356.793390-4-ben.widawsky@intel.com> <20201111071231.GC7829@infradead.org>
+ <CAPcyv4iA_hNc=xdcbR-eb57W9o4br1BognSr5Sj4pAO3uMm69g@mail.gmail.com>
+In-Reply-To: <CAPcyv4iA_hNc=xdcbR-eb57W9o4br1BognSr5Sj4pAO3uMm69g@mail.gmail.com>
+From:   Dan Williams <dan.j.williams@intel.com>
+Date:   Wed, 11 Nov 2020 10:27:38 -0800
+Message-ID: <CAPcyv4g=pcai9FrKaGcAHtyfm=Lzzgh8xFyG6QLA4J6FPdy5yQ@mail.gmail.com>
+Subject: Re: [RFC PATCH 3/9] cxl/mem: Add a driver for the type-3 mailbox
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     Ben Widawsky <ben.widawsky@intel.com>, linux-cxl@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux PCI <linux-pci@vger.kernel.org>,
+        Linux ACPI <linux-acpi@vger.kernel.org>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        "Kelley, Sean V" <sean.v.kelley@intel.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 10, 2020 at 3:44 PM Jason Gunthorpe <jgg@nvidia.com> wrote:
+On Wed, Nov 11, 2020 at 9:17 AM Dan Williams <dan.j.williams@intel.com> wrote:
+[..]
+> > > +
+> > > +             pci_read_config_word(pdev, pos + PCI_DVSEC_VENDOR_OFFSET, &vendor);
+> > > +             pci_read_config_word(pdev, pos + PCI_DVSEC_ID_OFFSET, &id);
+> > > +             if (vendor == PCI_DVSEC_VENDOR_CXL && dvsec == id)
+> > > +                     return pos;
+> > > +
+> > > +             pos = pci_find_next_ext_capability(pdev, pos, PCI_EXT_CAP_ID_DVSEC);
+> >
+> > Overly long lines again.
 >
-> As discussed and suggested by Linus use a seqcount to close the small race
-> between gup_fast and copy_page_range().
->
-> Ahmed confirms that raw_write_seqcount_begin() is the correct API to use
-> in this case and it doesn't trigger any lockdeps.
->
-> I was able to test it using two threads, one forking and the other using
-> ibv_reg_mr() to trigger GUP fast. Modifying copy_page_range() to sleep
-> made the window large enough to reliably hit to test the logic.
+> I thought 100 is the new 80 these days?
 
-Looks all good to me.
-
-             Linus
+Saw your clarification to Vishal, I had missed that. Will trim.
