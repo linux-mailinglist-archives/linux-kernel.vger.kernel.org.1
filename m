@@ -2,258 +2,287 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B0F52AEA29
-	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 08:28:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F7B62AEA2B
+	for <lists+linux-kernel@lfdr.de>; Wed, 11 Nov 2020 08:28:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726222AbgKKH2P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 02:28:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51334 "EHLO
+        id S1726187AbgKKH2c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 02:28:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51386 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726297AbgKKH2L (ORCPT
+        with ESMTP id S1725904AbgKKH21 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 02:28:11 -0500
-Received: from mail-oo1-xc44.google.com (mail-oo1-xc44.google.com [IPv6:2607:f8b0:4864:20::c44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C8A0C0613D1
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 23:28:11 -0800 (PST)
-Received: by mail-oo1-xc44.google.com with SMTP id c25so207050ooe.13
-        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 23:28:11 -0800 (PST)
+        Wed, 11 Nov 2020 02:28:27 -0500
+Received: from mail-ot1-x342.google.com (mail-ot1-x342.google.com [IPv6:2607:f8b0:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A7D5C0613D6
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 23:28:27 -0800 (PST)
+Received: by mail-ot1-x342.google.com with SMTP id 30so1268495otx.9
+        for <linux-kernel@vger.kernel.org>; Tue, 10 Nov 2020 23:28:27 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:in-reply-to:message-id:references
-         :user-agent:mime-version;
-        bh=DkcV1x7MgfBS236GtgzpXoMpSPJBXCFSqYnEz2asS8Y=;
-        b=Gf4tMT9irso5W1qAZaQwEIQlLc3fBbqGXy95E/Xm26rt6qFj3o/whHQ2xSvngDlqYF
-         +vJUBG9fAZrNuVlOA2/pgxsCcs+9epBcBrAWtNFVQKW2WZk8qjMPoyBWWBuqh7OCHJjt
-         dUAHkYVjqsx9e9QbCBr8oznfG0H/DVtWt8iwN8Xrq1XUdCjDyrqOPb3m3o/Vco87M76t
-         3+5Ka0GhgcEy1jngP+hKdR+QfAVxpZSSyL+K/aL/gmDpirv0lu7X6Bo+RoKAAycLxRXL
-         5Rdkwa4r3TqZyyWgSD+i5GkOhkQlSKG5Ib1aweIyfEM7O5r+WQkKzqz0U8SgnKu0G15/
-         fWXA==
+        d=broadcom.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=h/Cku1++groDoIudZSzMGKm2dLSZyb3jfaMxuRhcM44=;
+        b=DtCVoeuLQ0cF4bur7H1dmJR67mXXpDZ75psHAIcNKR35IR5/lZlzo9+7iLl7MZ4U+t
+         HNGUZk348TQ58/Z8UB/yiSBeuPDLhoPH2OCBSCXdtxcGQMuBIRk6ecvgarUs+qacDbm7
+         ZpervRhot+3+XU+NBnyK0Bcksk9OEcKrtmw1M=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
-         :references:user-agent:mime-version;
-        bh=DkcV1x7MgfBS236GtgzpXoMpSPJBXCFSqYnEz2asS8Y=;
-        b=VLoWXO3dhq9u5S4PeTaBtu+pbzAwzXIW08t7CcSw2Wun5yGx7uI3ljdod0nerEjwlG
-         19p8l//G3+AFmuDNdeFXo4R7I8dcyj4qawu8MkkMUB3b3iH7Edsxk7YTNP8Me84ApCeL
-         2jo4N7obzPXzv/eGFYDuVcQffr8duhm3AyrkMgANx0KVkC5dOfhLTGW5+6aX/iZa+r3c
-         nrcM7VjmsjRnImILvD+DMqK57A4uQQieXb5TEHHAnWJ+1TIEhYZV3pfnDNhp5Fq0ep0o
-         i5CmEcNOQs3xS28NyTphA82/GGPB6lcnwYBx72Zd3RGiOXsxl4vTeobC4meX7bqHzlpI
-         ksLg==
-X-Gm-Message-State: AOAM531Nae1rBv4PXO86+TpVcA2bCir5T2uP3RP8voc1cfKByyAZaNww
-        Q2LGxBXfTVAeu4SuykfBfHHM1w==
-X-Google-Smtp-Source: ABdhPJzL1ToOpmmFpblyXPcpRbSl5YEfquIJpnotyhSxXxlp+lwCXytEgF+mxcgvDW5vfPNiX4gDnA==
-X-Received: by 2002:a4a:b3c5:: with SMTP id q5mr1122260ooo.60.1605079690270;
-        Tue, 10 Nov 2020 23:28:10 -0800 (PST)
-Received: from eggly.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
-        by smtp.gmail.com with ESMTPSA id w14sm378030oou.16.2020.11.10.23.28.07
-        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
-        Tue, 10 Nov 2020 23:28:09 -0800 (PST)
-Date:   Tue, 10 Nov 2020 23:27:54 -0800 (PST)
-From:   Hugh Dickins <hughd@google.com>
-X-X-Sender: hugh@eggly.anvils
-To:     Johannes Weiner <hannes@cmpxchg.org>
-cc:     Alex Shi <alex.shi@linux.alibaba.com>, akpm@linux-foundation.org,
-        mgorman@techsingularity.net, tj@kernel.org, hughd@google.com,
-        khlebnikov@yandex-team.ru, daniel.m.jordan@oracle.com,
-        willy@infradead.org, lkp@intel.com, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-        shakeelb@google.com, iamjoonsoo.kim@lge.com,
-        richard.weiyang@gmail.com, kirill@shutemov.name,
-        alexander.duyck@gmail.com, rong.a.chen@intel.com, mhocko@suse.com,
-        vdavydov.dev@gmail.com, shy828301@gmail.com,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Minchan Kim <minchan@kernel.org>
-Subject: Re: [PATCH v20 08/20] mm: page_idle_get_page() does not need
- lru_lock
-In-Reply-To: <20201102144110.GB724984@cmpxchg.org>
-Message-ID: <alpine.LSU.2.11.2011102244420.1183@eggly.anvils>
-References: <1603968305-8026-1-git-send-email-alex.shi@linux.alibaba.com> <1603968305-8026-9-git-send-email-alex.shi@linux.alibaba.com> <20201102144110.GB724984@cmpxchg.org>
-User-Agent: Alpine 2.11 (LSU 23 2013-08-11)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=h/Cku1++groDoIudZSzMGKm2dLSZyb3jfaMxuRhcM44=;
+        b=l7jsdc4gBPyNwU/90y5b/imTqPLGpJVcnwvjRBX9W7fU3aqh1u67+vYkAYCJaTZl/e
+         SZSXPBFtLDxuYaVogOrjcWvW4rpboqM5dX0sf5LzpZ/v7RWDbqwZesYWclz9KzMo/f5e
+         yRAgxjFVimUZg8MK3bMrQEb5REb/Bp8RSbHIql3BKWh6Q6zfUBjgnL0eCvoDrxa9V2LH
+         8gmpO/dQCzhLxwd19GUYZDPcG6Gedfh+PTLfPp4D+gYgCEl4gFZQX0VVroQtiEmhXG3H
+         W5DHyCdlCkyS93jMEA3xQGbArvbhAwuhlg9OUDIqeYjRodhK0C8YvR7jCjIiDeh0e1MZ
+         as0A==
+X-Gm-Message-State: AOAM531lkJG5ROJWMKxRVYOpy/l1FkFKM1SCahmRu/7+4jxTIzg9tH5W
+        ImaxGC+4f81gNlLlM1WwlSBfSmncTyykhXtIy6+INQ==
+X-Google-Smtp-Source: ABdhPJzEvrRe1WOy4obCtHzIIXRR8Lo1+duzLVyXSxF+9UALAM0sAEzAIXxDRhpRqGq5EF6jQuOzneU4VyRjGbGtjMI=
+X-Received: by 2002:a9d:a0d:: with SMTP id 13mr15816351otg.348.1605079706407;
+ Tue, 10 Nov 2020 23:28:26 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+References: <1597850436-116171-1-git-send-email-john.garry@huawei.com>
+ <1597850436-116171-18-git-send-email-john.garry@huawei.com>
+ <fe3dff7dae4494e5a88caffbb4d877bbf472dceb.camel@redhat.com>
+ <385d5408-6ba2-6bb6-52d3-b59c9aa9c5e5@huawei.com> <193a0440eed447209c48bda042f0e4db102355e7.camel@redhat.com>
+ <519e0d58-e73e-22ce-0ddb-1be71487ba6d@huawei.com> <d8fd51b11d5d54e6ec7e4e9a4f7dcc83f1215cd3.camel@redhat.com>
+ <d4f86cccccc3bffccc4eda39500ce1e1fee2109a.camel@redhat.com>
+ <7624d3fe1613f19af5c3a77f4ae8fe55@mail.gmail.com> <d1040c06-74ea-7016-d259-195fa52196a9@huawei.com>
+ <CAL2rwxoAAGQDud1djb3_LNvBw95YoYUGhe22FwE=hYhy7XOLSw@mail.gmail.com>
+ <aaf849d38ca3cdd45151ffae9b6a99fe6f6ea280.camel@redhat.com>
+ <0c75b881-3096-12cf-07cc-1119ca6a453e@huawei.com> <06a1a6bde51a66461d7b3135349641856315401d.camel@redhat.com>
+ <db92d37c-28fd-4f81-7b59-8f19e9178543@huawei.com> <8043d516-c041-c94b-a7d9-61bdbfef0d7e@huawei.com>
+In-Reply-To: <8043d516-c041-c94b-a7d9-61bdbfef0d7e@huawei.com>
+From:   Sumit Saxena <sumit.saxena@broadcom.com>
+Date:   Wed, 11 Nov 2020 12:57:59 +0530
+Message-ID: <CAL2rwxpQt-w2Re8ttu0=6Yzb7ibX3_FB6j-kd_cbtrWxzc7chw@mail.gmail.com>
+Subject: Re: [PATCH v8 17/18] scsi: megaraid_sas: Added support for shared
+ host tagset for cpuhotplug
+To:     John Garry <john.garry@huawei.com>
+Cc:     Qian Cai <cai@redhat.com>,
+        Kashyap Desai <kashyap.desai@broadcom.com>,
+        Jens Axboe <axboe@kernel.dk>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        don.brace@microsemi.com, Ming Lei <ming.lei@redhat.com>,
+        Bart Van Assche <bvanassche@acm.org>, dgilbert@interlog.com,
+        paolo.valente@linaro.org, Hannes Reinecke <hare@suse.de>,
+        Christoph Hellwig <hch@lst.de>, linux-block@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux SCSI List <linux-scsi@vger.kernel.org>,
+        esc.storagedev@microsemi.com,
+        "PDL,MEGARAIDLINUX" <megaraidlinux.pdl@broadcom.com>,
+        chenxiang66@hisilicon.com, luojiaxing@huawei.com,
+        Hannes Reinecke <hare@suse.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2 Nov 2020, Johannes Weiner wrote:
-> On Thu, Oct 29, 2020 at 06:44:53PM +0800, Alex Shi wrote:
-> > From: Hugh Dickins <hughd@google.com>
-> > 
-> > It is necessary for page_idle_get_page() to recheck PageLRU() after
-> > get_page_unless_zero(), but holding lru_lock around that serves no
-> > useful purpose, and adds to lru_lock contention: delete it.
-> > 
-> > See https://lore.kernel.org/lkml/20150504031722.GA2768@blaptop for the
-> > discussion that led to lru_lock there; but __page_set_anon_rmap() now
-> > uses WRITE_ONCE(),
-> 
-> That doesn't seem to be the case in Linus's or Andrew's tree. Am I
-> missing a dependent patch series?
+On Tue, Nov 10, 2020 at 11:12 PM John Garry <john.garry@huawei.com> wrote:
+>
+> On 09/11/2020 14:05, John Garry wrote:
+> > On 09/11/2020 13:39, Qian Cai wrote:
+> >>> I suppose I could try do this myself also, but an authentic version
+> >>> would be nicer.
+> >> The closest one I have here is:
+> >> https://cailca.coding.net/public/linux/mm/git/files/master/arm64.confi=
+g
+> >>
+> >> but it only selects the Thunder X2 platform and needs to manually sele=
+ct
+> >> CONFIG_MEGARAID_SAS=3Dm to start with, but none of arm64 systems here =
+have
+> >> megaraid_sas.
+> >
+> > Thanks, I'm confident I can fix it up to get it going on my Huawei arm6=
+4
+> > D06CS.
+> >
+> > So that board has a megaraid sas card. In addition, it also has hisi_sa=
+s
+> > HW, which is another storage controller which we enabled this same
+> > feature which is causing the problem.
+> >
+> > I'll report back when I can.
+>
+> So I had to hack that arm64 config a bit to get it booting:
+> https://github.com/hisilicon/kernel-dev/commits/private-topic-sas-5.10-me=
+garaid-hang
+>
+> Boot is ok on my board without the megaraid sas card, but includes
+> hisi_sas HW (which enables the equivalent option which is exposing the
+> problem).
+>
+> But the board with the megaraid sas boots very slowly, specifically
+> around the megaraid sas probe:
+>
+> : ttyS0 at MMIO 0x3f00002f8 (irq =3D 17, base_baud =3D 115200) is a 16550=
+A
+> [   50.023726][    T1] printk: console [ttyS0] enabled
+> [   50.412597][    T1] megasas: 07.714.04.00-rc1
+> [   50.436614][    T5] megaraid_sas 0000:08:00.0: FW now in Ready state
+> [   50.450079][    T5] megaraid_sas 0000:08:00.0: 63 bit DMA mask and 63
+> bit consistent mask
+> [   50.467811][    T5] megaraid_sas 0000:08:00.0: firmware supports msix
+>         : (128)
+> [   50.845995][    T5] megaraid_sas 0000:08:00.0: requested/available
+> msix 128/128
+> [   50.861476][    T5] megaraid_sas 0000:08:00.0: current msix/online
+> cpus      : (128/128)
+> [   50.877616][    T5] megaraid_sas 0000:08:00.0: RDPQ mode     : (enable=
+d)
+> [   50.891018][    T5] megaraid_sas 0000:08:00.0: Current firmware
+> supports maximum commands: 4077       LDIO threshold: 0
+> [   51.262942][    T5] megaraid_sas 0000:08:00.0: Performance mode
+> :Latency (latency index =3D 1)
+> [   51.280749][    T5] megaraid_sas 0000:08:00.0: FW supports sync cache
+>         : Yes
+> [   51.295451][    T5] megaraid_sas 0000:08:00.0:
+> megasas_disable_intr_fusion is called outbound_intr_mask:0x40000009
+> [   51.387474][    T5] megaraid_sas 0000:08:00.0: FW provided
+> supportMaxExtLDs: 1       max_lds: 64
+> [   51.404931][    T5] megaraid_sas 0000:08:00.0: controller type
+> : MR(2048MB)
+> [   51.419616][    T5] megaraid_sas 0000:08:00.0: Online Controller
+> Reset(OCR)  : Enabled
+> [   51.436132][    T5] megaraid_sas 0000:08:00.0: Secure JBOD support
+> : Yes
+> [   51.450265][    T5] megaraid_sas 0000:08:00.0: NVMe passthru support
+> : Yes
+> [   51.464757][    T5] megaraid_sas 0000:08:00.0: FW provided TM
+> TaskAbort/Reset timeout        : 6 secs/60 secs
+> [   51.484379][    T5] megaraid_sas 0000:08:00.0: JBOD sequence map
+> support     : Yes
+> [   51.499607][    T5] megaraid_sas 0000:08:00.0: PCI Lane Margining
+> support    : No
+> [   51.547610][    T5] megaraid_sas 0000:08:00.0: NVME page size
+> : (4096)
+> [   51.608635][    T5] megaraid_sas 0000:08:00.0:
+> megasas_enable_intr_fusion is called outbound_intr_mask:0x40000000
+> [   51.630285][    T5] megaraid_sas 0000:08:00.0: INIT adapter done
+> [   51.649854][    T5] megaraid_sas 0000:08:00.0: pci id
+> : (0x1000)/(0x0016)/(0x19e5)/(0xd215)
+> [   51.667873][    T5] megaraid_sas 0000:08:00.0: unevenspan support    :=
+ no
+> [   51.681646][    T5] megaraid_sas 0000:08:00.0: firmware crash dump   :=
+ no
+> [   51.695596][    T5] megaraid_sas 0000:08:00.0: JBOD sequence map
+> : enabled
+> [   51.711521][    T5] megaraid_sas 0000:08:00.0: Max firmware commands:
+> 4076 shared with nr_hw_queues =3D 127
+> [   51.733056][    T5] scsi host0: Avago SAS based MegaRAID driver
+> [   65.304363][    T5] scsi 0:0:0:0: Direct-Access     ATA      SAMSUNG
+> MZ7KH1T9 404Q PQ: 0 ANSI: 6
+> [   65.392401][    T5] scsi 0:0:1:0: Direct-Access     ATA      SAMSUNG
+> MZ7KH1T9 404Q PQ: 0 ANSI: 6
+> [   79.508307][    T5] scsi 0:0:65:0: Enclosure         HUAWEI
+> Expander 12Gx16  131  PQ: 0 ANSI: 6
+> [  183.965109][   C14] random: fast init done
+>
+> Notice the 14 and 104 second delays.
+>
+> But does boot fully to get to the console. I'll wait for further issues,
+> which you guys seem to experience after a while.
+>
+> Thanks,
+> John
+"megaraid_sas" driver calls =E2=80=9Cscsi_scan_host()=E2=80=9D to discover =
+SCSI
+devices. In this failure case, scsi_scan_host() is taking a long time
+to complete, hence causing delay in system boot.
+With "host_tagset" enabled, scsi_scan_host() takes around 20 mins.
+With "host_tagset" disabled, scsi_scan_host() takes upto 5-8 mins.
 
-Sorry, I was out of action, then slower than ever, for a while.
+The scan time depends upon the number of scsi channels and devices per
+scsi channel is exposed by LLD.
+megaraid_sas driver exposes 4 channels and 128 drives per channel.
 
-Many thanks for calling out my falsehood there, Johannes.
+Each target scan takes 2 seconds (in case of failure with host_tagset
+enabled).  That's why driver load completes after ~20 minutes. See
+below:
 
-What led me to write that?  It has baffled me, but at last I see:
-this patch to page_idle_get_page() was 0002 in my lru_lock patchset
-against v5.3 last year, and 0001 was the patch which made it true.
-Then when I checked against mainline, I must have got confused by
-the similar WRITE_ONCE in page_move_anon_rmap().
+[  299.725271] kobject: 'target18:0:96': free name
+[  301.681267] kobject: 'target18:0:97' (00000000987c7f11):
+kobject_cleanup, parent 0000000000000000
+[  301.681269] kobject: 'target18:0:97' (00000000987c7f11): calling
+ktype release
+[  301.681273] kobject: 'target18:0:97': free name
+[  303.575268] kobject: 'target18:0:98' (00000000a8c34149):
+kobject_cleanup, parent 0000000000000000
 
-Appended below, but not rediffed, and let's not hold up Alex's set
-for the rest of it: it is all theoretical until the kernel gets to
-be built with a suitably malicious compiler; but I'll follow up
-with a fresh version of the below after his set is safely in.
+In Qian's kernel .config, async scsi scan is disabled so in failure
+case SCSI scan type is synchronous.
+Below is the stack trace when scsi_scan_host() hangs:
 
-From a1abcbc2aac70c6ba47b8991992bb85b86b4a160 Mon Sep 17 00:00:00 2001
-From: Hugh Dickins <hughd@google.com>
-Date: Thu, 22 Aug 2019 15:49:44 -0700
-Subject: [PATCH 1/9] mm: more WRITE_ONCE and READ_ONCE on page->mapping
+[<0>] __wait_rcu_gp+0x134/0x170
+[<0>] synchronize_rcu.part.80+0x53/0x60
+[<0>] blk_free_flush_queue+0x12/0x30
+[<0>] blk_mq_hw_sysfs_release+0x21/0x70
+[<0>] kobject_release+0x46/0x150
+[<0>] blk_mq_release+0xb4/0xf0
+[<0>] blk_release_queue+0xc4/0x130
+[<0>] kobject_release+0x46/0x150
+[<0>] scsi_device_dev_release_usercontext+0x194/0x3f0
+[<0>] execute_in_process_context+0x22/0xa0
+[<0>] device_release+0x2e/0x80
+[<0>] kobject_release+0x46/0x150
+[<0>] scsi_alloc_sdev+0x2e7/0x310
+[<0>] scsi_probe_and_add_lun+0x410/0xbd0
+[<0>] __scsi_scan_target+0xf2/0x530
+[<0>] scsi_scan_channel.part.7+0x51/0x70
+[<0>] scsi_scan_host_selected+0xd4/0x140
+[<0>] scsi_scan_host+0x198/0x1c0
 
-v4.2 commit 414e2fb8ce5a ("rmap: fix theoretical race between do_wp_page
-and shrink_active_list") added a WRITE_ONCE() where page_move_anon_rmap()
-composes page->mapping from anon_vma pointer and PAGE_MAPPING_ANON.
+This issue hits when lock related debugging is enabled in kernel config.
+kernel .config parameters(may be subset of this list) are required to
+hit the issue:
 
-Now do the same where __page_set_anon_rmap() does the same, and where
-compaction.c applies PAGE_MAPPING_MOVABLE, and ksm.c PAGE_MAPPING_KSM.
+CONFIG_PREEMPT_COUNT=3Dy
+CONFIG_UNINLINE_SPIN_UNLOCK=3Dy
+CONFIG_LOCK_STAT=3Dy
+CONFIG_DEBUG_RT_MUTEXES=3Dy
+CONFIG_DEBUG_SPINLOCK=3Dy
+CONFIG_DEBUG_MUTEXES=3Dy
+CONFIG_DEBUG_WW_MUTEX_SLOWPATH=3Dy
+CONFIG_DEBUG_RWSEMS=3Dy
+CONFIG_DEBUG_LOCK_ALLOC=3Dy
+CONFIG_LOCKDEP=3Dy
+CONFIG_DEBUG_LOCKDEP=3Dy
+CONFIG_TRACE_IRQFLAGS=3Dy
+CONFIG_TRACE_IRQFLAGS_NMI=3Dy
+CONFIG_DEBUG_KOBJECT=3Dy
+CONFIG_PROVE_RCU=3Dy
+CONFIG_PREEMPTIRQ_TRACEPOINTS=3Dy
 
-rmap.c already uses READ_ONCE(page->mapping), but util.c should too:
-add READ_ONCE() in page_rmapping(), page_anon_vma() and page_mapping().
-Delete the then unused helper __page_rmapping().
+When scsi_scan_host() hangs, there are no outstanding IOs with
+megaraid_sas driver-firmware stack as SCSI "host_busy" counter and
+megaraid_sas driver's internal counter are "0".
+Key takeaways:
+1. Issue is observed when lock related debugging is enabled so issue
+is seen in debug environment.
+2. Issue seems to be related to generic shared "host_tagset" code
+whenever some kind of kernel debugging is enabled. We do not see an
+immediate reason to hide this issue through disabling the
+"host_tagset" feature.
 
-I doubt that this commit fixes anything, but it's harmless and
-unintrusive, and makes reasoning about page mapping flags easier.
+John,
+Issue may hit on ARM platform too using Qian's .config file with other
+adapters (e.g. hisi_sas) as well. So I feel disabling =E2=80=9Chost_tagset=
+=E2=80=9D in
+megaraid_sas driver will not help.  It requires debugging from the
+=E2=80=9CEntire Shared host tag feature=E2=80=9D perspective as scsi_scan_h=
+ost()
+waittime aggravates when "host_tagset" is enabled. Also, I am doing
+parallel debugging and if I find anything useful, I will share.
 
-What if a compiler implements "page->mapping = mapping" in other places
-by, say, first assigning the odd bits of mapping, then adding in the
-even bits?  Then we shall not build the kernel with such a compiler.
+Qian,
+I need full dmesg logs from your setup with
+megaraid_sas.host_tagset_enable=3D1 and
+megaraid_sas.host_tagset_enable=3D0. Please wait for a long time. I just
+want to make sure that whatever you observe is the same as mine.
 
-Signed-off-by: Hugh Dickins <hughd@google.com>
-Cc: Vladimir Davydov <vdavydov.dev@gmail.com>
-Cc: Vlastimil Babka <vbabka@suse.cz>
-Cc: Minchan Kim <minchan@kernel.org>
-Cc: Yu Zhao <yuzhao@google.com>
-Cc: Alex Shi <alex.shi@linux.alibaba.com>
----
- mm/compaction.c |  7 ++++---
- mm/ksm.c        |  2 +-
- mm/rmap.c       |  7 ++++++-
- mm/util.c       | 24 ++++++++++--------------
- 4 files changed, 21 insertions(+), 19 deletions(-)
-
-diff --git a/mm/compaction.c b/mm/compaction.c
-index 952dc2fb24e5..c405f4362624 100644
---- a/mm/compaction.c
-+++ b/mm/compaction.c
-@@ -113,7 +113,8 @@ void __SetPageMovable(struct page *page, struct address_space *mapping)
- {
- 	VM_BUG_ON_PAGE(!PageLocked(page), page);
- 	VM_BUG_ON_PAGE((unsigned long)mapping & PAGE_MAPPING_MOVABLE, page);
--	page->mapping = (void *)((unsigned long)mapping | PAGE_MAPPING_MOVABLE);
-+	WRITE_ONCE(page->mapping,
-+		   (unsigned long)mapping | PAGE_MAPPING_MOVABLE);
- }
- EXPORT_SYMBOL(__SetPageMovable);
- 
-@@ -126,8 +127,8 @@ void __ClearPageMovable(struct page *page)
- 	 * flag so that VM can catch up released page by driver after isolation.
- 	 * With it, VM migration doesn't try to put it back.
- 	 */
--	page->mapping = (void *)((unsigned long)page->mapping &
--				PAGE_MAPPING_MOVABLE);
-+	WRITE_ONCE(page->mapping,
-+		   (unsigned long)page->mapping & PAGE_MAPPING_MOVABLE);
- }
- EXPORT_SYMBOL(__ClearPageMovable);
- 
-diff --git a/mm/ksm.c b/mm/ksm.c
-index 3dc4346411e4..426b6a40ea41 100644
---- a/mm/ksm.c
-+++ b/mm/ksm.c
-@@ -865,7 +865,7 @@ static inline struct stable_node *page_stable_node(struct page *page)
- static inline void set_page_stable_node(struct page *page,
- 					struct stable_node *stable_node)
- {
--	page->mapping = (void *)((unsigned long)stable_node | PAGE_MAPPING_KSM);
-+	WRITE_ONCE(page->mapping, (unsigned long)stable_node | PAGE_MAPPING_KSM);
- }
- 
- #ifdef CONFIG_SYSFS
-diff --git a/mm/rmap.c b/mm/rmap.c
-index 003377e24232..9480df437edc 100644
---- a/mm/rmap.c
-+++ b/mm/rmap.c
-@@ -1044,7 +1044,12 @@ static void __page_set_anon_rmap(struct page *page,
- 		anon_vma = anon_vma->root;
- 
- 	anon_vma = (void *) anon_vma + PAGE_MAPPING_ANON;
--	page->mapping = (struct address_space *) anon_vma;
-+	/*
-+	 * Ensure that anon_vma and the PAGE_MAPPING_ANON bit are written
-+	 * simultaneously, so a concurrent reader (eg page_referenced()'s
-+	 * PageAnon()) will not see one without the other.
-+	 */
-+	WRITE_ONCE(page->mapping, (struct address_space *) anon_vma);
- 	page->index = linear_page_index(vma, address);
- }
- 
-diff --git a/mm/util.c b/mm/util.c
-index e6351a80f248..09b9fcbedac3 100644
---- a/mm/util.c
-+++ b/mm/util.c
-@@ -489,21 +489,14 @@ void kvfree(const void *addr)
- }
- EXPORT_SYMBOL(kvfree);
- 
--static inline void *__page_rmapping(struct page *page)
--{
--	unsigned long mapping;
--
--	mapping = (unsigned long)page->mapping;
--	mapping &= ~PAGE_MAPPING_FLAGS;
--
--	return (void *)mapping;
--}
--
- /* Neutral page->mapping pointer to address_space or anon_vma or other */
- void *page_rmapping(struct page *page)
- {
-+	unsigned long mapping;
-+
- 	page = compound_head(page);
--	return __page_rmapping(page);
-+	mapping = (unsigned long)READ_ONCE(page->mapping);
-+	return (void *)(mapping & ~PAGE_MAPPING_FLAGS);
- }
- 
- /*
-@@ -534,10 +527,11 @@ struct anon_vma *page_anon_vma(struct page *page)
- 	unsigned long mapping;
- 
- 	page = compound_head(page);
--	mapping = (unsigned long)page->mapping;
-+	mapping = (unsigned long)READ_ONCE(page->mapping);
-+	/* Return NULL if file or PageMovable or PageKsm */
- 	if ((mapping & PAGE_MAPPING_FLAGS) != PAGE_MAPPING_ANON)
- 		return NULL;
--	return __page_rmapping(page);
-+	return (struct anon_vma *)(mapping & ~PAGE_MAPPING_FLAGS);
- }
- 
- struct address_space *page_mapping(struct page *page)
-@@ -557,10 +551,12 @@ struct address_space *page_mapping(struct page *page)
- 		return swap_address_space(entry);
- 	}
- 
--	mapping = page->mapping;
-+	mapping = READ_ONCE(page->mapping);
-+	/* Return NULL if PageAnon (including PageKsm) */
- 	if ((unsigned long)mapping & PAGE_MAPPING_ANON)
- 		return NULL;
- 
-+	/* Return struct address_space pointer if file or PageMovable */
- 	return (void *)((unsigned long)mapping & ~PAGE_MAPPING_FLAGS);
- }
- EXPORT_SYMBOL(page_mapping);
--- 
-2.23.0.187.g17f5b7556c-goog
+Thanks,
+Sumit
