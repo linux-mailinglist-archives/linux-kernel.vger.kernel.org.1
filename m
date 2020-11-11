@@ -2,80 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 538CC2AFC58
-	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 02:35:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 660BE2AFCD7
+	for <lists+linux-kernel@lfdr.de>; Thu, 12 Nov 2020 02:48:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728819AbgKLBfE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 11 Nov 2020 20:35:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58316 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727813AbgKKXJ2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 11 Nov 2020 18:09:28 -0500
-Received: from ZenIV.linux.org.uk (zeniv.linux.org.uk [IPv6:2002:c35c:fd02::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC1A7C0613D4;
-        Wed, 11 Nov 2020 15:09:28 -0800 (PST)
-Received: from viro by ZenIV.linux.org.uk with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kczEi-003t2b-3Z; Wed, 11 Nov 2020 23:09:08 +0000
-Date:   Wed, 11 Nov 2020 23:09:08 +0000
-From:   Al Viro <viro@zeniv.linux.org.uk>
-To:     yulei zhang <yulei.kernel@gmail.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Naoya Horiguchi <naoya.horiguchi@nec.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        kvm <kvm@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        Xiao Guangrong <xiaoguangrong.eric@gmail.com>,
-        Wanpeng Li <kernellwp@gmail.com>,
-        Haiwei Li <lihaiwei.kernel@gmail.com>,
-        Yulei Zhang <yuleixzhang@tencent.com>,
-        Xiao Guangrong <gloryxiao@tencent.com>
-Subject: Re: [PATCH 01/35] fs: introduce dmemfs module
-Message-ID: <20201111230908.GC3576660@ZenIV.linux.org.uk>
-References: <cover.1602093760.git.yuleixzhang@tencent.com>
- <aa553faf9e97ee9306ecd5a67d3324a34f9ed4be.1602093760.git.yuleixzhang@tencent.com>
- <20201110200411.GU3576660@ZenIV.linux.org.uk>
- <CACZOiM1L2W+neaF-rd=k9cJTnQfNBLx2k9GLZydYuQiJqr=iXg@mail.gmail.com>
+        id S1728832AbgKLBfM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 11 Nov 2020 20:35:12 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49174 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727855AbgKKXPo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 11 Nov 2020 18:15:44 -0500
+Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.6])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id EF5B720797;
+        Wed, 11 Nov 2020 23:15:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605136544;
+        bh=BsryHKz3dVxK2sBEfXD2LfC5W276gDYqCQDz8imsdS0=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=bZOBzJf7ulaTmNfU8C4zP9exUVyaxz1AzeaDx7ywfgMz8C0uigyiwwMLY23x1hme0
+         +sDAq6cLhG00Msc1SSLgguG6y5ZbNluc1o3aKotR7yEAVx4LDxh4e0jR8YuTC+58+S
+         ID4KS6X1Rea3PE8uKEF6V3AbK8P9diX8nNZrgTE8=
+Date:   Wed, 11 Nov 2020 15:15:42 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Jisheng Zhang <Jisheng.Zhang@synaptics.com>
+Cc:     Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next] net: stmmac: dwc-qos: Change the
+ dwc_eth_dwmac_data's .probe prototype
+Message-ID: <20201111151542.4b9addde@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20201109160440.3a736ee3@xhacker.debian>
+References: <20201109160440.3a736ee3@xhacker.debian>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CACZOiM1L2W+neaF-rd=k9cJTnQfNBLx2k9GLZydYuQiJqr=iXg@mail.gmail.com>
-Sender: Al Viro <viro@ftp.linux.org.uk>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 11, 2020 at 04:53:00PM +0800, yulei zhang wrote:
-
-> > ... same here, seeing that you only call that thing from the next two functions
-> > and you do *not* provide ->mknod() as a method (unsurprisingly - what would
-> > device nodes do there?)
-> >
+On Mon, 9 Nov 2020 16:05:14 +0800 Jisheng Zhang wrote:
+> The return pointer of dwc_eth_dwmac_data's .probe isn't used, and
+> "probe" usually return int, so change the prototype to follow standard
+> way. Secondly, it can simplify the tegra_eqos_probe() code.
 > 
-> Thanks for pointing this out. we may need support the mknod method, otherwise
-> the dev is redundant  and need to be removed.
+> Signed-off-by: Jisheng Zhang <Jisheng.Zhang@synaptics.com>
 
-I'd suggest turning that into (static) __create_file(....) with
-
-static int dmemfs_create(struct inode *dir, struct dentry *dentry,
-			 umode_t mode, bool excl)
-{
-	return __create_file(dir, dentry, mode | S_IFREG);
-}
-
-static int dmemfs_mkdir(struct inode *dir, struct dentry *dentry,
-			 umode_t mode)
-{
-	return __create_file(dir, dentry, mode | S_IFDIR);
-}
-
-(i.e. even inc_nlink() of parent folded into that).
-
-[snip]
-
-> Yes, we seperate the full implementation for dmemfs_file_mmap into
-> patch 05/35, it
-> will assign the interfaces to handle the page fault.
-
-It would be less confusing to move the introduction of ->mmap() to that patch,
-then.
+Applied, thanks!
